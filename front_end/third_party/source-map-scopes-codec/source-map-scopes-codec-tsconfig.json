@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/third_party/source-map-scopes-codec",
     "skipLibCheck": true,
     "sourceMap": true,

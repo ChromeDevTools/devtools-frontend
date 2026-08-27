@@ -266,6 +266,10 @@ export class ViewportDataGrid extends Common.ObjectWrapper.eventMixin(DataGridIm
         return this.rootNode().flatChildren().filter(this.testNodeWithFilters.bind(this));
     }
 }
+export var Events;
+(function (Events) {
+    Events["VIEWPORT_CALCULATED"] = "ViewportCalculated";
+})(Events || (Events = {}));
 export class ViewportDataGridNode extends DataGridNode {
     stale;
     flatNodes;

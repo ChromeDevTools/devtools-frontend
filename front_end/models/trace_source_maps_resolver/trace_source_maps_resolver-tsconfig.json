@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/models/trace_source_maps_resolver",
     "skipLibCheck": true,
     "sourceMap": true,

@@ -423,6 +423,39 @@ export function data() {
 export function deps() {
     return ['Meta'];
 }
+export var ScoreClassification;
+(function (ScoreClassification) {
+    ScoreClassification["GOOD"] = "good";
+    ScoreClassification["OK"] = "ok";
+    ScoreClassification["BAD"] = "bad";
+    // Some metrics (such as DOMContentLoaded) don't have a Good/OK/Bad classification, hence this additional entry.
+    ScoreClassification["UNCLASSIFIED"] = "unclassified";
+})(ScoreClassification || (ScoreClassification = {}));
+export var MetricName;
+(function (MetricName) {
+    // First Contentful Paint
+    MetricName["FCP"] = "FCP";
+    // First Paint
+    MetricName["FP"] = "FP";
+    // MarkLoad
+    MetricName["L"] = "L";
+    MetricName["LCP"] = "LCP";
+    // Mark DOM Content
+    MetricName["DCL"] = "DCL";
+    // Time To Interactive
+    MetricName["TTI"] = "TTI";
+    // Total Blocking Time
+    MetricName["TBT"] = "TBT";
+    // Cumulative Layout Shift
+    MetricName["CLS"] = "CLS";
+    // Navigation
+    MetricName["NAV"] = "Nav";
+    // Soft Navigation and Soft Metrics
+    MetricName["SOFT_NAV"] = "Nav*";
+    MetricName["SOFT_FCP"] = "FCP*";
+    MetricName["SOFT_LCP"] = "LCP*";
+    // Note: INP is handled in UserInteractionsHandler
+})(MetricName || (MetricName = {}));
 export function metricIsLCP(metric) {
     return metric.metricName === "LCP" /* MetricName.LCP */;
 }

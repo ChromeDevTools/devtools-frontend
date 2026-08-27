@@ -415,6 +415,11 @@ const UIStringsNotTranslate = {
      */
     revealStorageBreakdown: 'Reveal storage breakdown in Application panel',
 };
+export var ChatMessageEntity;
+(function (ChatMessageEntity) {
+    ChatMessageEntity["MODEL"] = "model";
+    ChatMessageEntity["USER"] = "user";
+})(ChatMessageEntity || (ChatMessageEntity = {}));
 export const DEFAULT_VIEW = (input, output, target) => {
     const message = input.message;
     if (message.entity === "user" /* ChatMessageEntity.USER */) {

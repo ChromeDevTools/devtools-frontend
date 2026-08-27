@@ -9,6 +9,12 @@ export default `/*
  * found in the LICENSE file.
  */
 
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+}
+
 .empty-view-scroller {
   overflow: auto;
 }

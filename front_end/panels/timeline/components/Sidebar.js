@@ -37,6 +37,11 @@ export class AnnotationHoverOut extends Event {
         super(AnnotationHoverOut.eventName, { bubbles: true, composed: true });
     }
 }
+export var SidebarTabs;
+(function (SidebarTabs) {
+    SidebarTabs["INSIGHTS"] = "insights";
+    SidebarTabs["ANNOTATIONS"] = "annotations";
+})(SidebarTabs || (SidebarTabs = {}));
 export const DEFAULT_SIDEBAR_TAB = "insights" /* SidebarTabs.INSIGHTS */;
 export const DEFAULT_SIDEBAR_WIDTH_PX = 240;
 const MIN_SIDEBAR_WIDTH_PX = 170;

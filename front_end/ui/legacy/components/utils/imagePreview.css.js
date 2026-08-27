@@ -16,7 +16,7 @@ export default `/*
 }
 
 .image-preview-container img {
-  margin: 6px 0;
+  margin: var(--sys-size-4) 0;
   width: auto;
   max-height: 100px;
   background-image: var(--image-file-checker);

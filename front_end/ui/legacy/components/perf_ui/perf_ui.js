@@ -9,9 +9,9 @@ var BrickBreaker_exports = {};
 __export(BrickBreaker_exports, {
   BrickBreaker: () => BrickBreaker
 });
-import * as i18n from "./../../../../core/i18n/i18n.js";
-import * as UI from "./../../legacy.js";
-import * as ThemeSupport from "./../../theme_support/theme_support.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
+import * as UI from "../../legacy.js";
+import * as ThemeSupport from "../../theme_support/theme_support.js";
 var UIStrings = {
   /**
    * @description Message congratulating the user for winning the brick breaker game.
@@ -494,10 +494,10 @@ var ChartViewport_exports = {};
 __export(ChartViewport_exports, {
   ChartViewport: () => ChartViewport
 });
-import * as Common2 from "./../../../../core/common/common.js";
-import * as Platform3 from "./../../../../core/platform/platform.js";
-import * as RenderCoordinator from "./../../../components/render_coordinator/render_coordinator.js";
-import * as UI4 from "./../../legacy.js";
+import * as Common2 from "../../../../core/common/common.js";
+import * as Platform3 from "../../../../core/platform/platform.js";
+import * as RenderCoordinator from "../../../components/render_coordinator/render_coordinator.js";
+import * as UI4 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/chartViewport.css.js
 var chartViewport_css_default = `/*
@@ -513,7 +513,7 @@ var chartViewport_css_default = `/*
   bottom: 0;
   overflow-x: hidden;
   z-index: 200;
-  padding-left: 1px;
+  padding-left: var(--sys-size-1);
 }
 
 .chart-viewport-v-scroll.always-show-scrollbar {
@@ -522,13 +522,13 @@ var chartViewport_css_default = `/*
 /* force non overlay scrollbars for Mac */
 
 :host-context(.platform-mac) .chart-viewport-v-scroll {
-  right: 2px;
+  right: var(--sys-size-2);
   top: 3px;
   bottom: 3px;
 }
 
 :host-context(.platform-mac) ::-webkit-scrollbar {
-  width: 8px;
+  width: var(--sys-size-5);
 }
 
 :host-context(.platform-mac) ::-webkit-scrollbar-thumb {
@@ -558,7 +558,7 @@ var chartViewport_css_default = `/*
   z-index: 100;
   background-color: var(--sys-color-state-ripple-primary);
   border-color: var(--sys-color-primary);
-  border-width: 0 1px;
+  border-width: 0 var(--sys-size-1);
   border-style: solid;
   pointer-events: none;
   top: 0;
@@ -581,26 +581,31 @@ var FlameChart_exports = {};
 __export(FlameChart_exports, {
   ARROW_SIDE: () => ARROW_SIDE,
   EDIT_ICON_WIDTH: () => EDIT_ICON_WIDTH,
+  Events: () => Events,
+  FilterAction: () => FilterAction,
   FlameChart: () => FlameChart,
+  FlameChartDecorationType: () => FlameChartDecorationType,
   FlameChartTimelineData: () => FlameChartTimelineData,
+  GroupCollapsibleState: () => GroupCollapsibleState,
+  HoverType: () => HoverType,
   MinimalTimeWindowMs: () => MinimalTimeWindowMs,
   RulerHeight: () => RulerHeight,
   calculatePopoverOffset: () => calculatePopoverOffset,
   sortDecorationsForRenderingOrder: () => sortDecorationsForRenderingOrder
 });
-import * as Common from "./../../../../core/common/common.js";
-import * as Host2 from "./../../../../core/host/host.js";
-import * as i18n3 from "./../../../../core/i18n/i18n.js";
-import * as Platform2 from "./../../../../core/platform/platform.js";
-import * as Trace from "./../../../../models/trace/trace.js";
-import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
-import * as Buttons from "./../../../components/buttons/buttons.js";
-import { html, nothing, render } from "./../../../lit/lit.js";
-import * as UI3 from "./../../legacy.js";
-import * as ThemeSupport7 from "./../../theme_support/theme_support.js";
+import * as Common from "../../../../core/common/common.js";
+import * as Host2 from "../../../../core/host/host.js";
+import * as i18n3 from "../../../../core/i18n/i18n.js";
+import * as Platform2 from "../../../../core/platform/platform.js";
+import * as Trace from "../../../../models/trace/trace.js";
+import * as VisualLogging from "../../../visual_logging/visual_logging.js";
+import * as Buttons from "../../../components/buttons/buttons.js";
+import { html, nothing, render } from "../../../lit/lit.js";
+import * as UI3 from "../../legacy.js";
+import * as ThemeSupport7 from "../../theme_support/theme_support.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/CanvasHelper.js
-import * as ThemeSupport3 from "./../../theme_support/theme_support.js";
+import * as ThemeSupport3 from "../../theme_support/theme_support.js";
 function horizontalLine(context, width, y) {
   context.moveTo(0, y);
   context.lineTo(width, y);
@@ -650,17 +655,17 @@ var flameChart_css_default = `/*
 
 .flame-chart-marker-highlight-element {
   position: absolute;
-  top: 1px;
+  top: var(--sys-size-1);
   height: 18px;
-  width: 6px;
+  width: var(--sys-size-4);
   margin: 0 -3px;
   content: "";
   display: block;
 }
 
 .flame-chart-canvas:focus-visible {
-  border-top: 1px solid var(--sys-color-state-focus-ring);
-  border-bottom: 1px solid var(--sys-color-state-focus-ring);
+  border-top: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
 }
 
 .flame-chart-highlight-element {
@@ -678,7 +683,7 @@ var flameChart_css_default = `/*
 .flame-chart-selected-element {
   position: absolute;
   pointer-events: none;
-  outline: 2px solid var(--sys-color-primary);
+  outline: var(--sys-size-2) solid var(--sys-color-primary);
   background-color: var(--sys-color-state-ripple-primary);
 }
 
@@ -687,7 +692,7 @@ var flameChart_css_default = `/*
   top: 0;
   bottom: 0;
   z-index: 100;
-  width: 2px;
+  width: var(--sys-size-2);
   background-color: var(--ref-palette-pink50);
   pointer-events: none;
 }
@@ -698,7 +703,7 @@ var flameChart_css_default = `/*
   contain: content;
   background-color: var(--sys-color-cdt-base-container);
   pointer-events: none;
-  padding: 4px 8px;
+  padding: var(--sys-size-3) var(--sys-size-5);
   white-space: nowrap;
   max-width: 80%;
   box-shadow: var(--drop-shadow);
@@ -735,7 +740,7 @@ __export(Font_exports, {
   DEFAULT_FONT_SIZE: () => DEFAULT_FONT_SIZE,
   getFontFamilyForCanvas: () => getFontFamilyForCanvas
 });
-import * as Host from "./../../../../core/host/host.js";
+import * as Host from "../../../../core/host/host.js";
 function getFontFamilyForCanvas() {
   return Host.Platform.fontFamily();
 }
@@ -746,8 +751,8 @@ var TimelineGrid_exports = {};
 __export(TimelineGrid_exports, {
   TimelineGrid: () => TimelineGrid
 });
-import * as UI2 from "./../../legacy.js";
-import * as ThemeSupport5 from "./../../theme_support/theme_support.js";
+import * as UI2 from "../../legacy.js";
+import * as ThemeSupport5 from "../../theme_support/theme_support.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/timelineGrid.css.js
 var timelineGrid_css_default = `/*
@@ -778,7 +783,7 @@ var timelineGrid_css_default = `/*
   left: 0;
   right: 0;
   background-clip: padding-box;
-  height: 20px;
+  height: var(--sys-size-9);
   z-index: 200;
   pointer-events: none;
   overflow: hidden;
@@ -786,7 +791,7 @@ var timelineGrid_css_default = `/*
 
 .resources-divider {
   position: absolute;
-  width: 1px;
+  width: var(--sys-size-1);
   top: 0;
   bottom: 0;
   background-color: var(--sys-color-divider);
@@ -794,7 +799,7 @@ var timelineGrid_css_default = `/*
 
 .resources-event-divider {
   position: absolute;
-  width: 1px;
+  width: var(--sys-size-1);
   top: 0;
   bottom: 0;
   z-index: 300;
@@ -802,7 +807,7 @@ var timelineGrid_css_default = `/*
 
 .resources-divider-label {
   position: absolute;
-  top: 4px;
+  top: var(--sys-size-3);
   right: 3px;
   font-size: 80%;
   white-space: nowrap;
@@ -810,7 +815,7 @@ var timelineGrid_css_default = `/*
 }
 
 .timeline-grid-header {
-  height: 20px;
+  height: var(--sys-size-9);
   pointer-events: none;
 }
 
@@ -1065,6 +1070,31 @@ var moveUpIconPath = "M9.25 17V5.875L7.062 8.062L6 7L10 3L14 7L12.938 8.062L10.7
 var moveDownIconPath = "M9.25 3V14.125L7.062 11.938L6 13L10 17L14 13L12.938 11.938L10.75 14.125V3H9.25Z";
 var hideIconPath = "M13.2708 11.1459L11.9792 9.85419C12.0347 9.32641 11.875 8.87155 11.5 8.4896C11.125 8.10766 10.6736 7.94446 10.1458 8.00002L8.85417 6.70835C9.03472 6.63891 9.22222 6.58683 9.41667 6.5521C9.61111 6.51738 9.80556 6.50002 10 6.50002C10.9722 6.50002 11.7986 6.8403 12.4792 7.52085C13.1597 8.20141 13.5 9.0278 13.5 10C13.5 10.1945 13.4826 10.3889 13.4479 10.5834C13.4132 10.7778 13.3542 10.9653 13.2708 11.1459ZM16.0417 13.9167L14.9583 12.8334C15.4583 12.4445 15.9132 12.0174 16.3229 11.5521C16.7326 11.0868 17.0764 10.5695 17.3542 10C16.6736 8.59724 15.6701 7.49655 14.3438 6.69794C13.0174 5.89933 11.5694 5.50002 10 5.50002C9.63889 5.50002 9.28472 5.52085 8.9375 5.56252C8.59028 5.60419 8.25 5.67363 7.91667 5.77085L6.70833 4.56252C7.23611 4.35419 7.77431 4.20835 8.32292 4.12502C8.87153 4.04169 9.43056 4.00002 10 4.00002C11.9861 4.00002 13.8021 4.53821 15.4479 5.6146C17.0938 6.69099 18.2778 8.1528 19 10C18.6944 10.7917 18.2882 11.5104 17.7813 12.1563C17.2743 12.8021 16.6944 13.3889 16.0417 13.9167ZM16 18.125L13.2917 15.4167C12.7639 15.6111 12.2257 15.757 11.6771 15.8542C11.1285 15.9514 10.5694 16 10 16C8.01389 16 6.19792 15.4618 4.55208 14.3854C2.90625 13.309 1.72222 11.8472 1 10C1.30556 9.20835 1.70833 8.48613 2.20833 7.83335C2.70833 7.18058 3.29167 6.5903 3.95833 6.06252L1.875 3.97919L2.9375 2.91669L17.0625 17.0625L16 18.125ZM5.02083 7.14585C4.53472 7.53474 4.08333 7.96183 3.66667 8.4271C3.25 8.89238 2.90972 9.41669 2.64583 10C3.32639 11.4028 4.32986 12.5035 5.65625 13.3021C6.98264 14.1007 8.43056 14.5 10 14.5C10.3611 14.5 10.7153 14.4757 11.0625 14.4271C11.4097 14.3785 11.7569 14.3125 12.1042 14.2292L11.1667 13.2917C10.9722 13.3611 10.7778 13.4132 10.5833 13.4479C10.3889 13.4827 10.1944 13.5 10 13.5C9.02778 13.5 8.20139 13.1597 7.52083 12.4792C6.84028 11.7986 6.5 10.9722 6.5 10C6.5 9.80558 6.52431 9.61113 6.57292 9.41669C6.62153 9.22224 6.66667 9.0278 6.70833 8.83335L5.02083 7.14585Z";
 var showIconPath = "M10 13.5C10.972 13.5 11.7983 13.1597 12.479 12.479C13.1597 11.7983 13.5 10.972 13.5 10C13.5 9.028 13.1597 8.20167 12.479 7.521C11.7983 6.84033 10.972 6.5 10 6.5C9.028 6.5 8.20167 6.84033 7.521 7.521C6.84033 8.20167 6.5 9.028 6.5 10C6.5 10.972 6.84033 11.7983 7.521 12.479C8.20167 13.1597 9.028 13.5 10 13.5ZM10 12C9.44467 12 8.97233 11.8057 8.583 11.417C8.19433 11.0277 8 10.5553 8 10C8 9.44467 8.19433 8.97233 8.583 8.583C8.97233 8.19433 9.44467 8 10 8C10.5553 8 11.0277 8.19433 11.417 8.583C11.8057 8.97233 12 9.44467 12 10C12 10.5553 11.8057 11.0277 11.417 11.417C11.0277 11.8057 10.5553 12 10 12ZM10 16C8.014 16 6.20833 15.455 4.583 14.365C2.95833 13.2743 1.764 11.8193 1 10C1.764 8.18067 2.95833 6.72567 4.583 5.635C6.20833 4.545 8.014 4 10 4C11.986 4 13.7917 4.545 15.417 5.635C17.0417 6.72567 18.236 8.18067 19 10C18.236 11.8193 17.0417 13.2743 15.417 14.365C13.7917 15.455 11.986 16 10 16ZM10 14.5C11.5553 14.5 12.9927 14.0973 14.312 13.292C15.632 12.486 16.646 11.3887 17.354 10C16.646 8.61133 15.632 7.514 14.312 6.708C12.9927 5.90267 11.5553 5.5 10 5.5C8.44467 5.5 7.00733 5.90267 5.688 6.708C4.368 7.514 3.354 8.61133 2.646 10C3.354 11.3887 4.368 12.486 5.688 13.292C7.00733 14.0973 8.44467 14.5 10 14.5Z";
+var HoverType;
+(function(HoverType2) {
+  HoverType2["TRACK_CONFIG_UP_BUTTON"] = "TRACK_CONFIG_UP_BUTTON";
+  HoverType2["TRACK_CONFIG_DOWN_BUTTON"] = "TRACK_CONFIG_DOWN_BUTTON";
+  HoverType2["TRACK_CONFIG_HIDE_BUTTON"] = "TRACK_CONFIG_HIDE_BUTTON";
+  HoverType2["TRACK_CONFIG_SHOW_BUTTON"] = "TRACK_CONFIG_SHOW_BUTTON";
+  HoverType2["INSIDE_TRACK_HEADER"] = "INSIDE_TRACK_HEADER";
+  HoverType2["INSIDE_TRACK"] = "INSIDE_TRACK";
+  HoverType2["OUTSIDE_TRACKS"] = "OUTSIDE_TRACKS";
+  HoverType2["ERROR"] = "ERROR";
+})(HoverType || (HoverType = {}));
+var GroupCollapsibleState;
+(function(GroupCollapsibleState2) {
+  GroupCollapsibleState2[GroupCollapsibleState2["ALWAYS"] = 0] = "ALWAYS";
+  GroupCollapsibleState2[GroupCollapsibleState2["NEVER"] = 1] = "NEVER";
+  GroupCollapsibleState2[GroupCollapsibleState2["IF_MULTI_ROW"] = 2] = "IF_MULTI_ROW";
+})(GroupCollapsibleState || (GroupCollapsibleState = {}));
+var FilterAction;
+(function(FilterAction2) {
+  FilterAction2["MERGE_FUNCTION"] = "MERGE_FUNCTION";
+  FilterAction2["COLLAPSE_FUNCTION"] = "COLLAPSE_FUNCTION";
+  FilterAction2["COLLAPSE_REPEATING_DESCENDANTS"] = "COLLAPSE_REPEATING_DESCENDANTS";
+  FilterAction2["RESET_CHILDREN"] = "RESET_CHILDREN";
+  FilterAction2["UNDO_ALL_ACTIONS"] = "UNDO_ALL_ACTIONS";
+})(FilterAction || (FilterAction = {}));
 var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) {
   flameChartDelegate;
   chartViewport;
@@ -4209,6 +4239,12 @@ var FlameChart = class extends Common.ObjectWrapper.eventMixin(UI3.Widget.VBox) 
 };
 var RulerHeight = 15;
 var MinimalTimeWindowMs = 0.5;
+var FlameChartDecorationType;
+(function(FlameChartDecorationType2) {
+  FlameChartDecorationType2["CANDY"] = "CANDY";
+  FlameChartDecorationType2["WARNING_TRIANGLE"] = "WARNING_TRIANGLE";
+  FlameChartDecorationType2["HIDDEN_DESCENDANTS_ARROW"] = "HIDDEN_DESCENDANTS_ARROW";
+})(FlameChartDecorationType || (FlameChartDecorationType = {}));
 var decorationDrawOrder = {
   CANDY: 1,
   WARNING_TRIANGLE: 2,
@@ -4277,6 +4313,18 @@ var FlameChartTimelineData = class _FlameChartTimelineData {
     this.initiatorsData = [];
   }
 };
+var Events;
+(function(Events5) {
+  Events5["CANVAS_FOCUSED"] = "CanvasFocused";
+  Events5["ENTRY_INVOKED"] = "EntryInvoked";
+  Events5["ENTRY_LABEL_ANNOTATION_ADDED"] = "EntryLabelAnnotationAdded";
+  Events5["ENTRIES_LINK_ANNOTATION_CREATED"] = "EntriesLinkAnnotationCreated";
+  Events5["TRACKS_REORDER_STATE_CHANGED"] = "TracksReorderStateChange";
+  Events5["ENTRY_SELECTED"] = "EntrySelected";
+  Events5["ENTRY_HOVERED"] = "EntryHovered";
+  Events5["LATEST_DRAW_DIMENSIONS"] = "LatestDrawDimensions";
+  Events5["MOUSE_MOVE"] = "MouseMove";
+})(Events || (Events = {}));
 function calculatePopoverOffset(options) {
   const { mouseX, mouseY, parentWidth, parentHeight, infoWidth, infoHeight, offsetX, offsetY } = options;
   const quadrants = [
@@ -4779,14 +4827,15 @@ var ChartViewport = class extends UI4.Widget.VBox {
 var FilmStripView_exports = {};
 __export(FilmStripView_exports, {
   Dialog: () => Dialog2,
+  Events: () => Events2,
   FilmStripView: () => FilmStripView
 });
-import * as Common3 from "./../../../../core/common/common.js";
-import * as Host3 from "./../../../../core/host/host.js";
-import * as i18n5 from "./../../../../core/i18n/i18n.js";
-import * as Trace2 from "./../../../../models/trace/trace.js";
-import * as VisualLogging2 from "./../../../visual_logging/visual_logging.js";
-import * as UI5 from "./../../legacy.js";
+import * as Common3 from "../../../../core/common/common.js";
+import * as Host3 from "../../../../core/host/host.js";
+import * as i18n5 from "../../../../core/i18n/i18n.js";
+import * as Trace2 from "../../../../models/trace/trace.js";
+import * as VisualLogging2 from "../../../visual_logging/visual_logging.js";
+import * as UI5 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/filmStripView.css.js
 var filmStripView_css_default = `/*
@@ -4803,7 +4852,7 @@ var filmStripView_css_default = `/*
 
 .film-strip-view .frame .time {
   font-size: 10px;
-  margin-top: 2px;
+  margin-top: var(--sys-size-2);
 }
 
 .film-strip-view .gray-info-message {
@@ -4816,19 +4865,19 @@ var filmStripView_css_default = `/*
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4px;
+  padding: var(--sys-size-3);
   flex: none;
   cursor: pointer;
 }
 
 .film-strip-view .frame .thumbnail {
-  min-width: 24px;
+  min-width: var(--sys-size-11);
   display: flex;
   flex-direction: row;
   align-items: center;
   pointer-events: none;
-  margin: 4px 0 2px;
-  border: 2px solid transparent;
+  margin: var(--sys-size-3) 0 var(--sys-size-2);
+  border: var(--sys-size-2) solid transparent;
 }
 
 .film-strip-view .frame:hover .thumbnail,
@@ -4839,7 +4888,7 @@ var filmStripView_css_default = `/*
 .film-strip-view .frame .thumbnail img {
   height: auto;
   width: auto;
-  max-width: 80px;
+  max-width: var(--sys-size-19);
   max-height: 50px;
   pointer-events: none;
   box-shadow: 0 0 3px var(--box-shadow-outline-color);
@@ -4985,6 +5034,12 @@ var FilmStripView = class _FilmStripView extends Common3.ObjectWrapper.eventMixi
     this.statusLabel.textContent = text;
   }
 };
+var Events2;
+(function(Events5) {
+  Events5["FRAME_SELECTED"] = "FrameSelected";
+  Events5["FRAME_ENTER"] = "FrameEnter";
+  Events5["FRAME_EXIT"] = "FrameExit";
+})(Events2 || (Events2 = {}));
 var Dialog2 = class _Dialog {
   widget;
   index;
@@ -5119,9 +5174,9 @@ var GCActionDelegate_exports = {};
 __export(GCActionDelegate_exports, {
   GCActionDelegate: () => GCActionDelegate
 });
-import * as i18n7 from "./../../../../core/i18n/i18n.js";
-import * as SDK from "./../../../../core/sdk/sdk.js";
-import * as Snackbars from "./../../../components/snackbars/snackbars.js";
+import * as i18n7 from "../../../../core/i18n/i18n.js";
+import * as SDK from "../../../../core/sdk/sdk.js";
+import * as Snackbars from "../../../components/snackbars/snackbars.js";
 var UIStrings4 = {
   /**
    * @description Notification message shown when garbage collection completes.
@@ -5146,9 +5201,9 @@ __export(LineLevelProfile_exports, {
   Helper: () => Helper,
   Performance: () => Performance
 });
-import * as SDK2 from "./../../../../core/sdk/sdk.js";
-import * as Bindings from "./../../../../models/bindings/bindings.js";
-import * as Workspace from "./../../../../models/workspace/workspace.js";
+import * as SDK2 from "../../../../core/sdk/sdk.js";
+import * as Bindings from "../../../../models/bindings/bindings.js";
+import * as Workspace from "../../../../models/workspace/workspace.js";
 var performanceInstance;
 var Performance = class _Performance {
   helper;
@@ -5330,7 +5385,7 @@ __export(NetworkPriorities_exports, {
   uiLabelForNetworkPriority: () => uiLabelForNetworkPriority,
   uiLabelToNetworkPriority: () => uiLabelToNetworkPriority
 });
-import * as i18n9 from "./../../../../core/i18n/i18n.js";
+import * as i18n9 from "../../../../core/i18n/i18n.js";
 var UIStrings5 = {
   /**
    * @description Label for lowest network priority.
@@ -5395,16 +5450,17 @@ function networkPriorityWeight(priority) {
 // gen/front_end/ui/legacy/components/perf_ui/OverviewGrid.js
 var OverviewGrid_exports = {};
 __export(OverviewGrid_exports, {
+  Events: () => Events3,
   OverviewGrid: () => OverviewGrid,
   Window: () => Window,
   WindowSelector: () => WindowSelector
 });
-import * as Common4 from "./../../../../core/common/common.js";
-import * as i18n11 from "./../../../../core/i18n/i18n.js";
-import * as Platform5 from "./../../../../core/platform/platform.js";
-import { createIcon } from "./../../../kit/kit.js";
-import * as VisualLogging3 from "./../../../visual_logging/visual_logging.js";
-import * as UI6 from "./../../legacy.js";
+import * as Common4 from "../../../../core/common/common.js";
+import * as i18n11 from "../../../../core/i18n/i18n.js";
+import * as Platform5 from "../../../../core/platform/platform.js";
+import { createIcon } from "../../../kit/kit.js";
+import * as VisualLogging3 from "../../../visual_logging/visual_logging.js";
+import * as UI6 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/overviewGrid.css.js
 var overviewGrid_css_default = `/*
@@ -5429,7 +5485,7 @@ var overviewGrid_css_default = `/*
   width: 10px;
   margin-left: -5px; /* half width (incl the border) */
   background-color: var(--sys-color-tonal-container);
-  border: 1px solid var(--sys-color-tonal-outline);
+  border: var(--sys-size-1) solid var(--sys-color-tonal-outline);
   z-index: 500;
   border-radius: 3px;
 }
@@ -5438,13 +5494,13 @@ var overviewGrid_css_default = `/*
 .overview-grid-window-resizer::before,
 .overview-grid-window-resizer::after {
   content: "";
-  width: 1px;
+  width: var(--sys-size-1);
   background: var(--sys-color-primary);
   height: 7px;
   position: absolute;
-  left: 2px;
+  left: var(--sys-size-2);
   top: 5px;
-  border-radius: 1px;
+  border-radius: var(--sys-size-1);
 }
 
 .overview-grid-window-resizer::after {
@@ -5457,7 +5513,7 @@ var overviewGrid_css_default = `/*
 
 .overview-grid-cursor-area {
   position: absolute;
-  inset: 20px 0 0;
+  inset: var(--sys-size-9) 0 0;
   z-index: 500;
   cursor: text;
 }
@@ -5466,7 +5522,7 @@ var overviewGrid_css_default = `/*
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 2px;
+  width: var(--sys-size-2);
   background-color: var(--sys-color-primary);
   z-index: 500;
   pointer-events: none;
@@ -5482,7 +5538,7 @@ var overviewGrid_css_default = `/*
   height: 100%;
   z-index: 300;
   pointer-events: none;
-  border: 2px none var(--sys-color-tonal-outline);
+  border: var(--sys-size-2) none var(--sys-color-tonal-outline);
 }
 
 .window-curtain-left {
@@ -5516,7 +5572,7 @@ var overviewGrid_css_default = `/*
 .create-breadcrumb-button-container.with-screenshots {
   /* We have more room when screenshots are enabled,
    * so push the button down slightly */
-  top: 20px;
+  top: var(--sys-size-9);
 }
 
 .create-breadcrumb-button {
@@ -5525,9 +5581,9 @@ var overviewGrid_css_default = `/*
   align-items: center;
   background: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow-depth-3);
-  border-radius: 50px;
-  padding: 1px 6px;
-  gap: 2px;
+  border-radius: var(--sys-shape-corner-full);
+  padding: var(--sys-size-1) var(--sys-size-4);
+  gap: var(--sys-size-2);
 }
 
 .create-breadcrumb-button:active {
@@ -6111,6 +6167,12 @@ var Window = class extends Common4.ObjectWrapper.ObjectWrapper {
     this.setWindowRatio(leftRatio, rightRatio);
   }
 };
+var Events3;
+(function(Events5) {
+  Events5["WINDOW_CHANGED"] = "WindowChanged";
+  Events5["WINDOW_CHANGED_WITH_POSITION"] = "WindowChangedWithPosition";
+  Events5["BREADCRUMB_ADDED"] = "BreadcrumbAdded";
+})(Events3 || (Events3 = {}));
 var WindowSelector = class {
   startPosition;
   width;
@@ -6146,9 +6208,9 @@ var PieChart_exports = {};
 __export(PieChart_exports, {
   PieChart: () => PieChart
 });
-import * as i18n13 from "./../../../../core/i18n/i18n.js";
-import { html as html2, render as render2, svg } from "./../../../lit/lit.js";
-import * as VisualLogging4 from "./../../../visual_logging/visual_logging.js";
+import * as i18n13 from "../../../../core/i18n/i18n.js";
+import { html as html2, render as render2, svg } from "../../../lit/lit.js";
+import * as VisualLogging4 from "../../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/pieChart.css.js
 var pieChart_css_default = `/*
@@ -6181,7 +6243,7 @@ var pieChart_css_default = `/*
 
 .pie-chart-total {
   margin: auto;
-  padding: 2px 5px;
+  padding: var(--sys-size-2) 5px;
   pointer-events: auto;
 }
 
@@ -6206,7 +6268,7 @@ var pieChart_css_default = `/*
 }
 
 .pie-chart-legend-row {
-  margin: 5px 2px 5px auto;
+  margin: 5px var(--sys-size-2) 5px auto;
   padding-right: 25px;
 }
 
@@ -6215,17 +6277,17 @@ var pieChart_css_default = `/*
 }
 
 .pie-chart-legend-row:focus-visible {
-  box-shadow: 0 0 0 2px var(--sys-color-state-focus-ring) !important; /* stylelint-disable-line declaration-no-important */
+  box-shadow: 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .pie-chart-swatch {
   display: inline-block;
   width: 11px;
   height: 11px;
-  margin: 0 6px;
-  top: 1px;
+  margin: 0 var(--sys-size-4);
+  top: var(--sys-size-1);
   position: relative;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
 }
 
 .pie-chart-name {
@@ -6435,8 +6497,8 @@ var TimelineOverviewCalculator_exports = {};
 __export(TimelineOverviewCalculator_exports, {
   TimelineOverviewCalculator: () => TimelineOverviewCalculator
 });
-import * as i18n15 from "./../../../../core/i18n/i18n.js";
-import * as Trace3 from "./../../../../models/trace/trace.js";
+import * as i18n15 from "../../../../core/i18n/i18n.js";
+import * as Trace3 from "../../../../models/trace/trace.js";
 var TimelineOverviewCalculator = class {
   #minimumBoundary = Trace3.Types.Timing.Milli(0);
   #maximumBoundary = Trace3.Types.Timing.Milli(100);
@@ -6504,16 +6566,17 @@ var TimelineOverviewCalculator = class {
 // gen/front_end/ui/legacy/components/perf_ui/TimelineOverviewPane.js
 var TimelineOverviewPane_exports = {};
 __export(TimelineOverviewPane_exports, {
+  Events: () => Events4,
   OverviewInfo: () => OverviewInfo,
   TimelineOverviewBase: () => TimelineOverviewBase,
   TimelineOverviewPane: () => TimelineOverviewPane
 });
-import * as Common5 from "./../../../../core/common/common.js";
-import * as Trace4 from "./../../../../models/trace/trace.js";
-import * as TraceBounds from "./../../../../services/trace_bounds/trace_bounds.js";
-import * as VisualLoggging from "./../../../visual_logging/visual_logging.js";
-import * as UI7 from "./../../legacy.js";
-import * as ThemeSupport9 from "./../../theme_support/theme_support.js";
+import * as Common5 from "../../../../core/common/common.js";
+import * as Trace4 from "../../../../models/trace/trace.js";
+import * as TraceBounds from "../../../../services/trace_bounds/trace_bounds.js";
+import * as VisualLoggging from "../../../visual_logging/visual_logging.js";
+import * as UI7 from "../../legacy.js";
+import * as ThemeSupport9 from "../../theme_support/theme_support.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/timelineOverviewInfo.css.js
 var timelineOverviewInfo_css_default = `/*
@@ -6871,6 +6934,13 @@ var TimelineOverviewPane = class extends Common5.ObjectWrapper.eventMixin(UI7.Wi
     this.#dimHighlightSVG.classList.add("hidden");
   }
 };
+var Events4;
+(function(Events5) {
+  Events5["OVERVIEW_PANE_WINDOW_CHANGED"] = "OverviewPaneWindowChanged";
+  Events5["OVERVIEW_PANE_BREADCRUMB_ADDED"] = "OverviewPaneBreadcrumbAdded";
+  Events5["OVERVIEW_PANE_MOUSE_MOVE"] = "OverviewPaneMouseMove";
+  Events5["OVERVIEW_PANE_MOUSE_LEAVE"] = "OverviewPaneMouseLeave";
+})(Events4 || (Events4 = {}));
 var TimelineOverviewBase = class extends UI7.Widget.VBox {
   #calculator;
   canvas;

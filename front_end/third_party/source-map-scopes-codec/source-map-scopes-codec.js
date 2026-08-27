@@ -376,6 +376,11 @@ function encode(scopesInfo, inputSourceMap) {
 }
 
 // gen/front_end/third_party/source-map-scopes-codec/package/src/decode/decode.js
+var DecodeMode;
+(function(DecodeMode2) {
+  DecodeMode2[DecodeMode2["STRICT"] = 1] = "STRICT";
+  DecodeMode2[DecodeMode2["LAX"] = 2] = "LAX";
+})(DecodeMode || (DecodeMode = {}));
 var DEFAULT_DECODE_OPTIONS = {
   mode: 2,
   generatedOffset: { line: 0, column: 0 }
@@ -1181,6 +1186,7 @@ var SafeScopeInfoBuilder = class extends ScopeInfoBuilder {
   }
 };
 export {
+  DecodeMode,
   SafeScopeInfoBuilder,
   ScopeInfoBuilder,
   decode,

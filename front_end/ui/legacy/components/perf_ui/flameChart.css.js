@@ -21,17 +21,17 @@ export default `/*
 
 .flame-chart-marker-highlight-element {
   position: absolute;
-  top: 1px;
+  top: var(--sys-size-1);
   height: 18px;
-  width: 6px;
+  width: var(--sys-size-4);
   margin: 0 -3px;
   content: "";
   display: block;
 }
 
 .flame-chart-canvas:focus-visible {
-  border-top: 1px solid var(--sys-color-state-focus-ring);
-  border-bottom: 1px solid var(--sys-color-state-focus-ring);
+  border-top: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
 }
 
 .flame-chart-highlight-element {
@@ -49,7 +49,7 @@ export default `/*
 .flame-chart-selected-element {
   position: absolute;
   pointer-events: none;
-  outline: 2px solid var(--sys-color-primary);
+  outline: var(--sys-size-2) solid var(--sys-color-primary);
   background-color: var(--sys-color-state-ripple-primary);
 }
 
@@ -58,7 +58,7 @@ export default `/*
   top: 0;
   bottom: 0;
   z-index: 100;
-  width: 2px;
+  width: var(--sys-size-2);
   background-color: var(--ref-palette-pink50);
   pointer-events: none;
 }
@@ -69,7 +69,7 @@ export default `/*
   contain: content;
   background-color: var(--sys-color-cdt-base-container);
   pointer-events: none;
-  padding: 4px 8px;
+  padding: var(--sys-size-3) var(--sys-size-5);
   white-space: nowrap;
   max-width: 80%;
   box-shadow: var(--drop-shadow);

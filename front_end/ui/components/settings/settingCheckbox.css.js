@@ -15,11 +15,11 @@ export default `/*
 }
 
 input {
-  height: 12px;
-  width: 12px;
-  min-height: 12px;
-  min-width: 12px;
-  margin: 6px;
+  height: var(--sys-size-6);
+  width: var(--sys-size-6);
+  min-height: var(--sys-size-6);
+  min-width: var(--sys-size-6);
+  margin: var(--sys-size-4);
 }
 
 label {
@@ -30,7 +30,7 @@ label {
 }
 
 p {
-  margin: 6px 0;
+  margin: var(--sys-size-4) 0;
 }
 
 .info-icon {

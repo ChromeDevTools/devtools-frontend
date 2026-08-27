@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "breakpointEditDialog.css.js",
+    "breakpointsView.css.js",
+    "callStackSidebarPane.css.js",
+    "debuggerPausedMessage.css.js",
+    "dialog.css.js",
+    "filteredUISourceCodeListProvider.css.js",
+    "navigatorTree.css.js",
+    "navigatorView.css.js",
+    "scopeChainSidebarPane.css.js",
+    "sourcesNavigator.css.js",
+    "sourcesPanel.css.js",
+    "sourcesView.css.js",
+    "threadsSidebarPane.css.js",
+    "watchExpressionsSidebarPane.css.js"
+  ]
+}

@@ -11,7 +11,7 @@ export default `/*
 
 .search-bar {
   flex: 0 0 33px;
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 
   devtools-icon[name="search"] {
     width: var(--sys-size-8);
@@ -88,7 +88,7 @@ export default `/*
     grid-column: 1/3;
     display: inline-flex;
     padding: 0 var(--sys-size-2) 0 var(--sys-size-5);
-    border-radius: 100px;
+    border-radius: var(--sys-shape-corner-full);
     height: var(--sys-size-10);
     position: relative;
 
@@ -105,7 +105,7 @@ export default `/*
       left: 0;
       background: var(--sys-color-cdt-base);
       z-index: -10;
-      border-radius: 100px;
+      border-radius: var(--sys-shape-corner-full);
       padding: var(--sys-size-2);
     }
 
@@ -154,11 +154,11 @@ export default `/*
   }
 
   .replace-element:has(input:focus) {
-    box-shadow: inset 0 0 0 2px var(--sys-color-state-focus-ring);
+    box-shadow: inset 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring);
   }
 
   .search-inputs:has(input[type="search"]:focus) .search-input-background {
-    box-shadow: inset 0 0 0 2px var(--sys-color-state-focus-ring);
+    box-shadow: inset 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring);
   }
 }
 

@@ -70,6 +70,16 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerMessagesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+var MessageLevelBitfield;
+(function (MessageLevelBitfield) {
+    MessageLevelBitfield[MessageLevelBitfield["ERROR"] = 1] = "ERROR";
+    MessageLevelBitfield[MessageLevelBitfield["WARNING"] = 2] = "WARNING";
+    MessageLevelBitfield[MessageLevelBitfield["INFO"] = 4] = "INFO";
+    MessageLevelBitfield[MessageLevelBitfield["DEBUG"] = 8] = "DEBUG";
+    MessageLevelBitfield[MessageLevelBitfield["DEFAULT"] = 7] = "DEFAULT";
+    MessageLevelBitfield[MessageLevelBitfield["ALL"] = 15] = "ALL";
+    MessageLevelBitfield[MessageLevelBitfield["CUSTOM"] = 0] = "CUSTOM";
+})(MessageLevelBitfield || (MessageLevelBitfield = {}));
 class MessageLevelSelector {
     items;
     view;

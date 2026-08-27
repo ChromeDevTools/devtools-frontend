@@ -9,7 +9,7 @@ var Extensions_exports = {};
 __export(Extensions_exports, {
   buildTrackDataFromExtensionEntries: () => buildTrackDataFromExtensionEntries
 });
-import * as Platform3 from "./../../../core/platform/platform.js";
+import * as Platform3 from "../../../core/platform/platform.js";
 
 // gen/front_end/models/trace/helpers/Trace.js
 var Trace_exports = {};
@@ -46,9 +46,9 @@ __export(Trace_exports, {
   sortTraceEventsInPlace: () => sortTraceEventsInPlace,
   stackTraceInEvent: () => stackTraceInEvent
 });
-import * as Common from "./../../../core/common/common.js";
-import * as Platform2 from "./../../../core/platform/platform.js";
-import * as Types2 from "./../types/types.js";
+import * as Common from "../../../core/common/common.js";
+import * as Platform2 from "../../../core/platform/platform.js";
+import * as Types2 from "../types/types.js";
 
 // gen/front_end/models/trace/helpers/SyntheticEvents.js
 var SyntheticEvents_exports = {};
@@ -147,8 +147,8 @@ __export(Timing_exports, {
   windowFitsInsideBounds: () => windowFitsInsideBounds,
   windowsEqual: () => windowsEqual
 });
-import * as Platform from "./../../../core/platform/platform.js";
-import * as Types from "./../types/types.js";
+import * as Platform from "../../../core/platform/platform.js";
+import * as Types from "../types/types.js";
 var milliToMicro = (value) => Types.Timing.Micro(value * 1e3);
 var secondsToMilli = (value) => Types.Timing.Milli(value * 1e3);
 var secondsToMicro = (value) => milliToMicro(secondsToMilli(value));
@@ -940,7 +940,7 @@ __export(TreeHelpers_exports, {
   walkEntireTree: () => walkEntireTree,
   walkTreeFromEntry: () => walkTreeFromEntry
 });
-import * as Types3 from "./../types/types.js";
+import * as Types3 from "../types/types.js";
 var nodeIdCount = 0;
 var makeTraceEntryNodeId = () => ++nodeIdCount;
 var makeEmptyTraceEntryTree = () => ({
@@ -1198,7 +1198,7 @@ var SamplesIntegrator_exports = {};
 __export(SamplesIntegrator_exports, {
   SamplesIntegrator: () => SamplesIntegrator
 });
-import * as Types4 from "./../types/types.js";
+import * as Types4 from "../types/types.js";
 var _a;
 var SamplesIntegrator = class {
   /**
@@ -1578,6 +1578,13 @@ var SamplesIntegrator = class {
   }
 };
 _a = SamplesIntegrator;
+(function(SamplesIntegrator2) {
+  let NativeGroups;
+  (function(NativeGroups2) {
+    NativeGroups2["COMPILE"] = "Compile";
+    NativeGroups2["PARSE"] = "Parse";
+  })(NativeGroups = SamplesIntegrator2.NativeGroups || (SamplesIntegrator2.NativeGroups = {}));
+})(SamplesIntegrator || (SamplesIntegrator = {}));
 export {
   Extensions_exports as Extensions,
   Network_exports as Network,

@@ -11,7 +11,7 @@ export default `/*
 
 .list {
   border: none !important; /* stylelint-disable-line declaration-no-important */
-  border-top: 1px solid var(--sys-color-divider) !important; /* stylelint-disable-line declaration-no-important */
+  border-top: var(--sys-size-1) solid var(--sys-color-divider) !important; /* stylelint-disable-line declaration-no-important */
   display: flex;
   height: 100%;
 }
@@ -21,7 +21,7 @@ export default `/*
 }
 
 .editor-container {
-  padding: 0 4px;
+  padding: 0 var(--sys-size-3);
 }
 
 .blocked-urls {
@@ -49,7 +49,7 @@ export default `/*
 }
 
 .blocked-url-checkbox {
-  margin-left: 8px;
+  margin-left: var(--sys-size-5);
   flex: none;
 }
 
@@ -84,7 +84,7 @@ export default `/*
 .blocked-url-edit-row input {
   width: 100%;
   text-align: inherit;
-  height: 22px;
+  height: var(--sys-size-10);
 }
 
 .conditions-selector {

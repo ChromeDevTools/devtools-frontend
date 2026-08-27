@@ -6,15 +6,7 @@ import * as TimelineComponents from './components/components.js';
 import type { TimelineModeViewDelegate } from './TimelinePanel.js';
 import { type TimelineSelection } from './TimelineSelection.js';
 import { AggregatedTimelineTreeView, TimelineTreeView } from './TimelineTreeView.js';
-declare const TimelineDetailsPane_base: (new (...args: any[]) => {
-    __events: Common.ObjectWrapper.ObjectWrapper<TimelineTreeView.EventTypes>;
-    addEventListener<T extends keyof TimelineTreeView.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<TimelineTreeView.EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<TimelineTreeView.EventTypes, T>;
-    once<T extends keyof TimelineTreeView.EventTypes>(eventType: T): Promise<TimelineTreeView.EventTypes[T]>;
-    removeEventListener<T extends keyof TimelineTreeView.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<TimelineTreeView.EventTypes[T], any>) => void, thisObject?: Object): void;
-    hasEventListeners(eventType: keyof TimelineTreeView.EventTypes): boolean;
-    dispatchEventToListeners<T extends keyof TimelineTreeView.EventTypes>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<TimelineTreeView.EventTypes, T>): void;
-    dispatchDOMEvent?(event: Event): void;
-}) & typeof UI.Widget.VBox;
+declare const TimelineDetailsPane_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<TimelineTreeView.EventTypes>, any[]> & typeof UI.Widget.VBox;
 export declare class TimelineDetailsPane extends TimelineDetailsPane_base {
     #private;
     private readonly detailsLinkifier;

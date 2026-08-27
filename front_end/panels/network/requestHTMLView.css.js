@@ -15,7 +15,7 @@ export default `/*
     background: var(--ref-palette-neutral100);
     color-scheme: light;
     flex-grow: 1;
-    margin: 20px;
+    margin: var(--sys-size-9);
   }
 }
 

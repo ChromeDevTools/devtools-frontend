@@ -16,7 +16,7 @@ import * as PlusButton from './PlusButton.js';
 import { StackedPane } from './StackedPane.js';
 import { Events as TabbedPaneEvents, TabbedPane } from './TabbedPane.js';
 import { ToolbarMenuButton } from './Toolbar.js';
-import { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, getRegisteredViewExtensions, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, } from './ViewRegistration.js';
+import { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, getRegisteredViewExtensions, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, ViewLocationCategory, ViewLocationValues, ViewPersistence, } from './ViewRegistration.js';
 import { VBox } from './Widget.js';
 const UIStrings = {
     /**
@@ -114,6 +114,10 @@ export class PreRegisteredView {
     }
 }
 let viewManagerInstance;
+export var Events;
+(function (Events) {
+    Events["VIEW_VISIBILITY_CHANGED"] = "ViewVisibilityChanged";
+})(Events || (Events = {}));
 export class ViewManager extends Common.ObjectWrapper.ObjectWrapper {
     views = new Map();
     locationNameByViewId = new Map();
@@ -735,5 +739,5 @@ export class StackLocation extends Location {
         }
     }
 }
-export { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, };
+export { getLocalizedViewLocationCategory, getRegisteredLocationResolvers, maybeRemoveViewExtension, registerLocationResolver, registerViewExtension, resetViewRegistration, ViewLocationCategory, ViewLocationValues, ViewPersistence, };
 //# sourceMappingURL=ViewManager.js.map

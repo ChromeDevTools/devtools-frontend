@@ -24,8 +24,8 @@ export default `/*
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px;
-  border: 4px dashed var(--sys-color-neutral-outline);
+  margin: var(--sys-size-9);
+  border: var(--sys-size-3) dashed var(--sys-color-neutral-outline);
   pointer-events: none;
 }
 

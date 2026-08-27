@@ -23,7 +23,7 @@ export default `/*
 }
 
 .custom-headers-header {
-  padding: 2px;
+  padding: var(--sys-size-2);
 }
 
 .custom-headers-list-item {

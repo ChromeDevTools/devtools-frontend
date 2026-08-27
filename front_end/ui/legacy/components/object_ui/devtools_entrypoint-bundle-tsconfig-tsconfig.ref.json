@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "../../../../../../tsc/front_end/ui/legacy/components/object_ui/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./object_ui-tsconfig.ref.json"

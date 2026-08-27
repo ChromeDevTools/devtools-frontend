@@ -354,6 +354,12 @@ function maybeLogDebugEvent(entry) {
         console.info('VE Debug:', entry);
     }
 }
+export var DebugLoggingFormat;
+(function (DebugLoggingFormat) {
+    DebugLoggingFormat["INTUITIVE"] = "Intuitive";
+    DebugLoggingFormat["TEST"] = "Test";
+    DebugLoggingFormat["AD_HOC_ANALYSIS"] = "AdHocAnalysis";
+})(DebugLoggingFormat || (DebugLoggingFormat = {}));
 export function setVeDebugLoggingEnabled(enabled, format = "Intuitive" /* DebugLoggingFormat.INTUITIVE */) {
     if (enabled) {
         localStorage.setItem('veDebugLoggingEnabled', format);

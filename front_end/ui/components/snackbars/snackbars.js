@@ -10,11 +10,11 @@ __export(Snackbar_exports, {
   DEFAULT_AUTO_DISMISS_MS: () => DEFAULT_AUTO_DISMISS_MS,
   Snackbar: () => Snackbar
 });
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
-import * as UI from "./../../legacy/legacy.js";
-import * as Lit from "./../../lit/lit.js";
-import * as Buttons from "./../buttons/buttons.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
+import * as UI from "../../legacy/legacy.js";
+import * as Lit from "../../lit/lit.js";
+import * as Buttons from "../buttons/buttons.js";
 
 // gen/front_end/ui/components/snackbars/snackbar.css.js
 var snackbar_css_default = `/*

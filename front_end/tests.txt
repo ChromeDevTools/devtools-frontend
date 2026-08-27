@@ -216,6 +216,7 @@ models/ai_assistance/tools/GetStyles.test.js
 models/ai_assistance/tools/GetTraceEventByKey.test.js
 models/ai_assistance/tools/GetTraceMainThreadSummary.test.js
 models/ai_assistance/tools/GetTraceNetworkSummary.test.js
+models/ai_assistance/tools/ListCookies.test.js
 models/ai_assistance/tools/ListNetworkRequests.test.js
 models/ai_assistance/tools/ListPageOrigins.test.js
 models/ai_assistance/tools/ListSources.test.js
@@ -359,6 +360,7 @@ models/trace_source_maps_resolver/SourceMapsResolver.test.js
 models/web_mcp/WebMCPModel.test.js
 models/workspace_diff/WorkspaceDiff.test.js
 panels/accessibility/ARIAAttributesView.test.js
+panels/accessibility/AccessibilityAnnouncementRecordingView.test.js
 panels/accessibility/AccessibilitySidebarView.test.js
 panels/ai_assistance/AiAssistancePanel.test.js
 panels/ai_assistance/ExportConversation.test.js
@@ -768,6 +770,7 @@ ui/legacy/ContextMenu.test.js
 ui/legacy/DOMUtilities.test.js
 ui/legacy/Dialog.test.js
 ui/legacy/DockController.test.js
+ui/legacy/EmptyWidget.test.js
 ui/legacy/FilterBar.test.js
 ui/legacy/Infobar.test.js
 ui/legacy/InspectorDrawerView.test.js

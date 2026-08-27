@@ -113,7 +113,7 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     childCount?: () => number;
     closingTagElement?: () => Element | null;
     updateShadowRootDepth?: (depth: number) => void;
-    computeLeftIndent?: () => number;
+    computeLeftIndent?: number | (() => number);
     setChildrenListElementVisible?: (visible: boolean) => void;
     findStartTagWidget?: () => ElementsTreeWidget | null;
     selectDOMNode?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;

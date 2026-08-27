@@ -26,6 +26,11 @@ export class NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
         return this.#projectToTargetMap.get(uiSourceCode.project()) ?? null;
     }
 }
+export var Events;
+(function (Events) {
+    Events["FRAME_ATTRIBUTION_ADDED"] = "FrameAttributionAdded";
+    Events["FRAME_ATTRIBUTION_REMOVED"] = "FrameAttributionRemoved";
+})(Events || (Events = {}));
 export class NetworkProject {
     static resolveFrame(uiSourceCode, frameId) {
         const target = NetworkProject.targetForUISourceCode(uiSourceCode);

@@ -1576,6 +1576,10 @@ export class ExtensionServer extends Common.ObjectWrapper.ObjectWrapper {
         SDK.NetworkManager.MultitargetNetworkManager.instance().setExtraHTTPHeaders(allHeaders);
     }
 }
+export var Events;
+(function (Events) {
+    Events["SidebarPaneAdded"] = "SidebarPaneAdded";
+})(Events || (Events = {}));
 class ExtensionServerPanelView extends UI.View.SimpleView {
     name;
     panel;

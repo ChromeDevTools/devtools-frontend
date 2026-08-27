@@ -5,11 +5,11 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/models/trace/lantern/metrics/FirstContentfulPaint.js
-import * as Graph2 from "./../graph/graph.js";
+import * as Graph2 from "../graph/graph.js";
 
 // gen/front_end/models/trace/lantern/metrics/Metric.js
-import * as Core from "./../core/core.js";
-import * as Graph from "./../graph/graph.js";
+import * as Core from "../core/core.js";
+import * as Graph from "../graph/graph.js";
 var Metric = class {
   static getScriptUrls(dependencyGraph, treatNodeAsRenderBlocking) {
     const scriptUrls = /* @__PURE__ */ new Set();
@@ -181,8 +181,8 @@ var FirstContentfulPaint = class extends Metric {
 };
 
 // gen/front_end/models/trace/lantern/metrics/Interactive.js
-import * as Core2 from "./../core/core.js";
-import * as Graph3 from "./../graph/graph.js";
+import * as Core2 from "../core/core.js";
+import * as Graph3 from "../graph/graph.js";
 var CRITICAL_LONG_TASK_THRESHOLD = 20;
 var Interactive = class _Interactive extends Metric {
   static get coefficients() {
@@ -237,7 +237,7 @@ var Interactive = class _Interactive extends Metric {
 };
 
 // gen/front_end/models/trace/lantern/metrics/LargestContentfulPaint.js
-import * as Core3 from "./../core/core.js";
+import * as Core3 from "../core/core.js";
 var LargestContentfulPaint = class _LargestContentfulPaint extends Metric {
   static get coefficients() {
     return {
@@ -299,8 +299,8 @@ var LargestContentfulPaint = class _LargestContentfulPaint extends Metric {
 };
 
 // gen/front_end/models/trace/lantern/metrics/MaxPotentialFID.js
-import * as Core4 from "./../core/core.js";
-import * as Graph4 from "./../graph/graph.js";
+import * as Core4 from "../core/core.js";
+import * as Graph4 from "../graph/graph.js";
 var MaxPotentialFID = class _MaxPotentialFID extends Metric {
   static get coefficients() {
     return {
@@ -339,8 +339,8 @@ var MaxPotentialFID = class _MaxPotentialFID extends Metric {
 };
 
 // gen/front_end/models/trace/lantern/metrics/SpeedIndex.js
-import * as Core5 from "./../core/core.js";
-import * as Graph5 from "./../graph/graph.js";
+import * as Core5 from "../core/core.js";
+import * as Graph5 from "../graph/graph.js";
 var mobileSlow4GRtt = 150;
 var SpeedIndex = class _SpeedIndex extends Metric {
   static get coefficients() {
@@ -424,8 +424,8 @@ var SpeedIndex = class _SpeedIndex extends Metric {
 };
 
 // gen/front_end/models/trace/lantern/metrics/TotalBlockingTime.js
-import * as Core6 from "./../core/core.js";
-import * as Graph6 from "./../graph/graph.js";
+import * as Core6 from "../core/core.js";
+import * as Graph6 from "../graph/graph.js";
 
 // gen/front_end/models/trace/lantern/metrics/TBTUtils.js
 var TBTUtils_exports = {};

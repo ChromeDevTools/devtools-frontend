@@ -11,7 +11,7 @@ export default `/*
 
 .request-initiator-view {
   display: flex;
-  margin: 6px;
+  margin: var(--sys-size-4);
 }
 
 /*# sourceURL=${import.meta.resolve('./requestInitiatorView.css')} */`;

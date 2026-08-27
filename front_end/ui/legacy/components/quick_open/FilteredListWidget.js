@@ -503,6 +503,10 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin(UI.Widge
         }
     }
 }
+export var Events;
+(function (Events) {
+    Events["HIDDEN"] = "hidden";
+})(Events || (Events = {}));
 export class Provider {
     refreshCallback;
     jslogContext = '';

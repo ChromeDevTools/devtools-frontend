@@ -19,7 +19,7 @@
       "path": "./components-tsconfig.ref.json"
     },
     {
-      "path": "../../../../../../tsc/front_end/panels/settings/emulation/components/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     }
   ]
 }

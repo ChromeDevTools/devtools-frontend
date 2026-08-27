@@ -12,12 +12,12 @@ export default `/*
 @scope to (devtools-widget > *) {
   * {
     box-sizing: border-box;
-    font-size: 12px;
+    font-size: var(--sys-typescale-body4-size);
   }
 
   .header {
     background-color: var(--sys-color-surface2);
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     line-height: 1.6;
     overflow: hidden;
     padding: 0 5px;
@@ -26,7 +26,7 @@ export default `/*
 
   .header::marker {
     color: var(--sys-color-on-surface-subtle);
-    font-size: 11px;
+    font-size: var(--sys-typescale-body5-size);
     line-height: 1;
   }
 
@@ -35,13 +35,13 @@ export default `/*
   }
 
   .content-section {
-    padding: 16px;
-    border-bottom: 1px solid var(--sys-color-divider);
+    padding: var(--sys-size-8);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     overflow-x: hidden;
   }
 
   .content-section-title {
-    font-size: 12px;
+    font-size: var(--sys-typescale-body4-size);
     font-weight: 500;
     line-height: 1.1;
     margin: 0;
@@ -62,12 +62,12 @@ export default `/*
   devtools-checkbox {
     /* Allows label text to get ellipsed */
     flex-shrink: unset;
-    margin: 0 6px 0 0;
+    margin: 0 var(--sys-size-4) 0 0;
     padding: 0;
   }
 
   .select-settings {
-    margin-top: 16px;
+    margin-top: var(--sys-size-8);
     width: fit-content;
   }
 
@@ -77,22 +77,22 @@ export default `/*
   }
 
   .select-label span {
-    margin-bottom: 4px;
+    margin-bottom: var(--sys-size-3);
   }
 
   .elements {
-    margin-top: 12px;
+    margin-top: var(--sys-size-6);
     color: var(--sys-color-token-tag);
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
-    gap: 8px;
+    gap: var(--sys-size-5);
   }
 
   .element {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 8px;
+    gap: var(--sys-size-5);
   }
 
   .show-element {
@@ -109,7 +109,7 @@ export default `/*
   }
 
   .color-picker-label {
-    border: 1px solid var(--sys-color-neutral-outline);
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
     cursor: default;
     display: inline-block;
     flex: none;
@@ -118,9 +118,9 @@ export default `/*
     position: relative;
 
     &:focus-within {
-      outline: 2px solid var(--sys-color-state-focus-ring);
-      outline-offset: 2px;
-      border-radius: 2px;
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+      outline-offset: var(--sys-size-2);
+      border-radius: var(--sys-size-2);
     }
   }
   /* We set dimensions for the invisible input to support quick highlight a11y feature
@@ -133,12 +133,12 @@ export default `/*
 
   .color-picker-label:hover,
   .color-picker-label:focus {
-    border: 1px solid var(--sys-color-outline);
+    border: var(--sys-size-1) solid var(--sys-color-outline);
     transform: scale(1.2);
   }
 
   .node-text-container {
-    line-height: 16px;
+    line-height: var(--sys-typescale-body4-line-height);
     padding: 0 0.5ex;
     border-radius: 5px;
   }

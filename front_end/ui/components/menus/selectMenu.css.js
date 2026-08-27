@@ -10,7 +10,7 @@ export default `/*
  */
 
 :host {
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-extra-small);
   width: fit-content;
   display: flex;
@@ -34,7 +34,7 @@ button {
 }
 
 #side-button {
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: 3px 0 0 3px;
   border-right: none;
   height: 100%;

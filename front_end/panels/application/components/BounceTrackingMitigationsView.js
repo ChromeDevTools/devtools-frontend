@@ -50,6 +50,13 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/components/BounceTrackingMitigationsView.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export var ScreenStatusType;
+(function (ScreenStatusType) {
+    ScreenStatusType["INITIALIZING"] = "Initializing";
+    ScreenStatusType["RUNNING"] = "Running";
+    ScreenStatusType["RESULT"] = "Result";
+    ScreenStatusType["DISABLED"] = "Disabled";
+})(ScreenStatusType || (ScreenStatusType = {}));
 const renderForceRunButton = (input) => {
     const isMitigationRunning = (input.screenStatus === "Running" /* ScreenStatusType.RUNNING */);
     // clang-format off

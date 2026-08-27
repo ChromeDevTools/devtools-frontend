@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../../front_end/models/trace/handlers",
     "skipLibCheck": true,
     "sourceMap": true,

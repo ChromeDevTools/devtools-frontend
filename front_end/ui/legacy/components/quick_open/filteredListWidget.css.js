@@ -13,7 +13,7 @@ export default `/*
   display: flex;
   flex-direction: column;
   flex: auto;
-  border: 1px solid transparent;
+  border: var(--sys-size-1) solid transparent;
 }
 
 .hbox {
@@ -115,14 +115,14 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item .deprecated-tag {
-  font-size: 11px;
+  font-size: var(--sys-typescale-body5-size);
   color: var(--sys-color-token-subtle);
 }
 
 .not-found-text {
   height: 34px;
   line-height: 34px;
-  padding-left: 8px;
+  padding-left: var(--sys-size-5);
   font-style: italic;
   color: var(--sys-color-state-disabled);
   background: var(--sys-color-state-disabled-container);

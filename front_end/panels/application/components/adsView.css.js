@@ -66,6 +66,7 @@ export default `/*
 
 .metrics-title,
 .ad-frames-title,
+.ad-scripts-title,
 .settings-title {
   color: var(--sys-color-on-surface);
   flex: 0 0 auto;
@@ -73,11 +74,13 @@ export default `/*
   margin-bottom: var(--sys-size-5);
 }
 
-.ad-frames-data-grid {
+.ad-frames-data-grid,
+.ad-scripts-data-grid {
   flex: auto;
 }
 
-.ad-frames-container {
+.ad-frames-container,
+.ad-scripts-container {
   border: 1px solid var(--sys-color-divider);
   display: flex;
   flex: 1; /* Takes up remaining space */

@@ -9,9 +9,9 @@ var LogManager_exports = {};
 __export(LogManager_exports, {
   LogManager: () => LogManager
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as Root2 from "./../../core/root/root.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as Common2 from "../../core/common/common.js";
+import * as Root2 from "../../core/root/root.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
 
 // gen/front_end/models/logs/NetworkLog.js
 var NetworkLog_exports = {};
@@ -20,11 +20,11 @@ __export(NetworkLog_exports, {
   NetworkLog: () => NetworkLog,
   recordNetworkLogSettingDescriptor: () => recordNetworkLogSettingDescriptor
 });
-import * as Common from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as Common from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as Root from "../../core/root/root.js";
+import * as SDK from "../../core/sdk/sdk.js";
 var UIStrings = {
   /**
    * @description When DevTools doesn't know the URL that initiated a network request, we
@@ -566,7 +566,7 @@ var RequestResolver_exports = {};
 __export(RequestResolver_exports, {
   RequestResolver: () => RequestResolver
 });
-import * as Common3 from "./../../core/common/common.js";
+import * as Common3 from "../../core/common/common.js";
 var RequestResolver = class extends Common3.ResolverBase.ResolverBase {
   networkListener = null;
   networkLog;

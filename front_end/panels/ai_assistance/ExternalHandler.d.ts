@@ -1,3 +1,4 @@
+import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 export type ContextType = 'NETWORK_REQUEST';
 export interface ExternalAIRequestOptions {
     context?: {
@@ -11,6 +12,7 @@ export interface IndividualPromptRequestResponse {
     response: string;
     error?: string;
 }
+export declare function getMatchingFlavorContext(contextOptions?: ExternalAIRequestOptions['context']): AiAssistanceModel.AiAgent.ConversationContext<unknown> | null;
 export declare function handleExternalAIRequest(options: ExternalAIRequestOptions): Promise<unknown[]>;
 declare global {
     interface Window {

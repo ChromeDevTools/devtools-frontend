@@ -83,6 +83,7 @@ elements/sidebar-event-listeners.test.js
 elements/style-flash.test.js
 elements/style-pane-properties.test.js
 elements/styles-disable-inherited.test.js
+elements/styles-inactive-rules.test.js
 elements/switch-panels-while-editing-as-html.test.js
 elements/violating-element-and-attributes.test.js
 emulation/custom-device-ua-clear.test.js

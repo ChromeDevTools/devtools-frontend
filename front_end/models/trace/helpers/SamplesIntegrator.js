@@ -502,4 +502,11 @@ export class SamplesIntegrator {
     }
 }
 _a = SamplesIntegrator;
+(function (SamplesIntegrator) {
+    let NativeGroups;
+    (function (NativeGroups) {
+        NativeGroups["COMPILE"] = "Compile";
+        NativeGroups["PARSE"] = "Parse";
+    })(NativeGroups = SamplesIntegrator.NativeGroups || (SamplesIntegrator.NativeGroups = {}));
+})(SamplesIntegrator || (SamplesIntegrator = {}));
 //# sourceMappingURL=SamplesIntegrator.js.map

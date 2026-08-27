@@ -614,6 +614,11 @@ export class SourcesView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox)
         this.requestUpdate();
     }
 }
+export var Events;
+(function (Events) {
+    Events["EDITOR_CLOSED"] = "EditorClosed";
+    Events["EDITOR_SELECTED"] = "EditorSelected";
+})(Events || (Events = {}));
 export class SwitchFileActionDelegate {
     static nextFile(currentUISourceCode) {
         function fileNamePrefix(name) {

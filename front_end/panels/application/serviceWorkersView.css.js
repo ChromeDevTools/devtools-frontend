@@ -27,10 +27,10 @@ export default `/*
 .service-worker-version-stack-bar {
   position: absolute;
   top: 10px;
-  bottom: 20px;
-  left: 4px;
+  bottom: var(--sys-size-9);
+  left: var(--sys-size-3);
   content: "";
-  border-left: 1px solid var(--sys-color-divider);
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
   z-index: 0;
 }
 
@@ -55,7 +55,7 @@ export default `/*
   z-index: 10;
   margin-right: 5px;
   border-radius: 50%;
-  border: 1px solid var(--sys-color-token-subtle);
+  border: var(--sys-size-1) solid var(--sys-color-token-subtle);
   align-self: center;
   /* The circle should not shrink, to avoid risking becoming invisible. */
   flex-shrink: 0;
@@ -78,8 +78,8 @@ export default `/*
 }
 
 .service-worker-subtitle {
-  padding-left: 14px;
-  line-height: 14px;
+  padding-left: var(--sys-size-7);
+  line-height: var(--sys-size-7);
   color: var(--sys-color-state-disabled);
 }
 
@@ -93,12 +93,12 @@ export default `/*
 }
 
 .service-worker-notification-editor {
-  border: 1px solid var(--sys-color-divider);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
   display: flex;
   flex: auto;
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
   max-width: 400px;
-  min-width: 80px;
+  min-width: var(--sys-size-19);
 }
 
 .report-field-value-filename,
@@ -123,13 +123,13 @@ export default `/*
 
 .service-worker-client-focus-link {
   flex: none;
-  margin-left: 2px;
+  margin-left: var(--sys-size-2);
   align-self: center;
 }
 
 .service-worker-notification-editor.source-code {
   /** Simulate CodeMirror that is shown above */
-  padding: 4px;
+  padding: var(--sys-size-3);
 }
 
 .service-worker-list {
@@ -143,13 +143,13 @@ export default `/*
 }
 
 .devtools-link {
-  line-height: 14px;
+  line-height: var(--sys-size-7);
   align-self: center;
-  padding: 1px;
+  padding: var(--sys-size-1);
 }
 
 button.link {
-  padding: 1px;
+  padding: var(--sys-size-1);
 }
 
 button.link:focus-visible {
@@ -176,7 +176,7 @@ devtools-icon.error-icon {
 .report-field-name {
   font: var(--sys-typescale-body5-medium);
   color: var(--sys-color-on-surface-subtle);
-  flex: 0 0 128px;
+  flex: 0 0 var(--sys-size-21);
   text-align: left;
   white-space: pre-wrap;
 }
@@ -190,7 +190,7 @@ devtools-icon.error-icon {
 }
 
 .service-worker-section {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   grid-column: 1 / 3;
   padding: 0 var(--sys-size-9) 11px var(--sys-size-9);
 }
@@ -202,6 +202,5 @@ devtools-icon.error-icon {
 devtools-widget {
   display: block;
 }
-
 
 /*# sourceURL=${import.meta.resolve('./serviceWorkersView.css')} */`;

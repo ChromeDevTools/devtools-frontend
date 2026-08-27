@@ -111,6 +111,10 @@ const UIStrings = {
      * @description Accessibility label for the button that collapses an expanded CSS rule in the Styles tab.
      */
     collapseExpandedRule: 'Collapse expanded rule',
+    /**
+     * @description Text displayed next to a CSS rule that was previously matched but no longer is.
+     */
+    notMatching: 'This rule doesn’t currently match the selected element',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertiesSection.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -158,12 +162,17 @@ export class StylePropertiesSection {
     sectionTooltipIdPrefix = StylePropertiesSection.#nextSectionTooltipIdPrefix++;
     ghostStyleTreeElements = [];
     #activeAiSuggestion;
+    #isInactive = false;
+    #manuallyCollapsed = false;
+    #statusElement;
+    #lastInheritedNode = null;
     constructor(stylesContainer, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields, customHeaderText) {
         this.#customHeaderText = customHeaderText;
         this.stylesContainer = stylesContainer;
         this.sectionIdx = sectionIdx;
         this.styleInternal = style;
         this.matchedStyles = matchedStyles;
+        this.#lastInheritedNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
         this.computedStyles = computedStyles;
         this.parentsComputedStyles = parentsComputedStyles;
         this.computedStyleExtraFields = computedStyleExtraFields;
@@ -236,6 +245,8 @@ export class StylePropertiesSection {
         }, false);
         this.selectorElement.addEventListener('mouseleave', this.onMouseOutSelector.bind(this), false);
         this.#specificityTooltips = selectorContainer.createChild('span');
+        this.#statusElement = createIcon('warning', 'styles-section-status hidden medium');
+        selectorContainer.appendChild(this.#statusElement);
         // We only add braces for style rules with selectors and non-style rules, which create their own sections.
         if (headerText.length > 0 || !(rule instanceof SDK.CSSRule.CSSStyleRule)) {
             const openBrace = selectorContainer.createChild('span', 'sidebar-pane-open-brace');
@@ -322,6 +333,35 @@ export class StylePropertiesSection {
     }
     getSectionIdx() {
         return this.sectionIdx;
+    }
+    setInactive(inactive) {
+        const wasInactive = this.#isInactive;
+        this.#isInactive = inactive;
+        this.element.classList.toggle('styles-section-inactive', inactive);
+        this.propertiesTreeOutline.element.classList.toggle('styles-section-inactive', inactive);
+        if (this.#statusElement) {
+            this.#statusElement.classList.toggle('hidden', !inactive);
+            this.#statusElement.title = inactive ? i18nString(UIStrings.notMatching) : '';
+        }
+        this.markSelectorMatches();
+        if (wasInactive !== inactive) {
+            this.updateCollapsedState();
+        }
+    }
+    isInactive() {
+        return this.#isInactive;
+    }
+    rebuildWithPayload(matchedStyles, style, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
+        this.matchedStyles = matchedStyles;
+        this.styleInternal = style;
+        this.computedStyles = computedStyles;
+        this.parentsComputedStyles = parentsComputedStyles;
+        this.computedStyleExtraFields = computedStyleExtraFields;
+        this.#lastInheritedNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
+        this.update(true);
+    }
+    inheritedNode() {
+        return this.#lastInheritedNode;
     }
     treeScopeDistance() {
         const treeScope = this.styleInternal.parentRule?.treeScope;
@@ -1178,6 +1218,9 @@ export class StylePropertiesSection {
         if (!Common.Settings.Settings.instance().moduleSetting('collapse-non-contributing-css-rules').get()) {
             return false;
         }
+        if (this.#isInactive) {
+            return true;
+        }
         const style = this.styleInternal;
         const properties = style.leadingProperties();
         // Never collapse the element's own inline style section.
@@ -1199,10 +1242,15 @@ export class StylePropertiesSection {
         return allOverloaded;
     }
     updateCollapsedState() {
+        if (this.#manuallyCollapsed) {
+            // Preserve user action if they have manually toggled the collapse state.
+            return;
+        }
         const shouldCollapse = this.#shouldCollapse();
         // Mark as collapsible so the toggle icon is always shown for
         // sections that can be collapsed, even after manual expansion.
-        this.element.classList.toggle('collapsible', shouldCollapse);
+        // Always make it an option to collapse inactive styles.
+        this.element.classList.toggle('collapsible', shouldCollapse || this.#isInactive);
         this.#setCollapsed(shouldCollapse);
     }
     #setCollapsed(collapsed) {
@@ -1216,6 +1264,7 @@ export class StylePropertiesSection {
         }
     }
     #toggleCollapsed() {
+        this.#manuallyCollapsed = true;
         this.#setCollapsed(!this.#isCollapsed);
     }
     /**

@@ -25,17 +25,17 @@ __export(ApplicationPanelSidebar_exports, {
   StorageCategoryView: () => StorageCategoryView,
   StorageTreeElement: () => StorageTreeElement
 });
-import * as Common18 from "./../../core/common/common.js";
-import * as Host4 from "./../../core/host/host.js";
-import * as i18n57 from "./../../core/i18n/i18n.js";
-import * as Platform11 from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
-import * as SDK24 from "./../../core/sdk/sdk.js";
-import * as AiAssistance2 from "./../../models/ai_assistance/ai_assistance.js";
-import * as LegacyWrapper3 from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import { createIcon as createIcon11 } from "./../../ui/kit/kit.js";
-import * as SourceFrame6 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI31 from "./../../ui/legacy/legacy.js";
+import * as Common18 from "../../core/common/common.js";
+import * as Host4 from "../../core/host/host.js";
+import * as i18n57 from "../../core/i18n/i18n.js";
+import * as Platform11 from "../../core/platform/platform.js";
+import * as Root2 from "../../core/root/root.js";
+import * as SDK24 from "../../core/sdk/sdk.js";
+import * as AiAssistance2 from "../../models/ai_assistance/ai_assistance.js";
+import * as LegacyWrapper3 from "../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import { createIcon as createIcon11 } from "../../ui/kit/kit.js";
+import * as SourceFrame6 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI31 from "../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/application/ApplicationPanelTreeElement.js
 var ApplicationPanelTreeElement_exports = {};
@@ -43,12 +43,12 @@ __export(ApplicationPanelTreeElement_exports, {
   ApplicationPanelTreeElement: () => ApplicationPanelTreeElement,
   ExpandableApplicationPanelTreeElement: () => ExpandableApplicationPanelTreeElement
 });
-import "./../../ui/components/buttons/buttons.js";
-import * as Common from "./../../core/common/common.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as AiAssistance from "./../../models/ai_assistance/ai_assistance.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import * as Lit from "./../../ui/lit/lit.js";
+import "../../ui/components/buttons/buttons.js";
+import * as Common from "../../core/common/common.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as AiAssistance from "../../models/ai_assistance/ai_assistance.js";
+import * as UI from "../../ui/legacy/legacy.js";
+import * as Lit from "../../ui/lit/lit.js";
 var { html } = Lit;
 var ApplicationPanelTreeElement = class _ApplicationPanelTreeElement extends UI.TreeOutline.TreeElement {
   resourcesPanel;
@@ -216,20 +216,21 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
 var AppManifestView_exports = {};
 __export(AppManifestView_exports, {
   AppManifestView: () => AppManifestView,
-  DEFAULT_VIEW: () => DEFAULT_VIEW
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  Events: () => Events
 });
-import "./../../ui/legacy/components/inline_editor/inline_editor.js";
-import "./../../ui/components/report_view/report_view.js";
-import * as Common2 from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as Components from "./../../ui/legacy/components/utils/utils.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html2, i18nTemplate, nothing, render as render2 } from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/components/inline_editor/inline_editor.js";
+import "../../ui/components/report_view/report_view.js";
+import * as Common2 from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
+import * as Components from "../../ui/legacy/components/utils/utils.js";
+import * as UI2 from "../../ui/legacy/legacy.js";
+import { Directives, html as html2, i18nTemplate, nothing, render as render2 } from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/appManifestView.css.js
 var appManifestView_css_default = `/*
@@ -1656,11 +1657,15 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     };
   }
 };
+var Events;
+(function(Events5) {
+  Events5["MANIFEST_DETECTED"] = "ManifestDetected";
+})(Events || (Events = {}));
 
 // gen/front_end/panels/application/BackForwardCacheTreeElement.js
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import { createIcon } from "./../../ui/kit/kit.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import { createIcon } from "../../ui/kit/kit.js";
+import * as UI3 from "../../ui/legacy/legacy.js";
 import * as ApplicationComponents2 from "./components/components.js";
 var UIStrings2 = {
   /**
@@ -1695,10 +1700,10 @@ var BackForwardCacheTreeElement = class extends ApplicationPanelTreeElement {
 var BackgroundServiceModel_exports = {};
 __export(BackgroundServiceModel_exports, {
   BackgroundServiceModel: () => BackgroundServiceModel,
-  Events: () => Events
+  Events: () => Events2
 });
-import * as Platform2 from "./../../core/platform/platform.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as Platform2 from "../../core/platform/platform.js";
+import * as SDK3 from "../../core/sdk/sdk.js";
 var BackgroundServiceModel = class extends SDK3.SDKModel.SDKModel {
   backgroundServiceAgent;
   events;
@@ -1723,21 +1728,21 @@ var BackgroundServiceModel = class extends SDK3.SDKModel.SDKModel {
     return this.events.get(service) || [];
   }
   recordingStateChanged({ isRecording, service }) {
-    this.dispatchEventToListeners(Events.RecordingStateChanged, { isRecording, serviceName: service });
+    this.dispatchEventToListeners(Events2.RecordingStateChanged, { isRecording, serviceName: service });
   }
   backgroundServiceEventReceived({ backgroundServiceEvent }) {
     const events = this.events.get(backgroundServiceEvent.service);
     Platform2.assertNotNullOrUndefined(events);
     events.push(backgroundServiceEvent);
-    this.dispatchEventToListeners(Events.BackgroundServiceEventReceived, backgroundServiceEvent);
+    this.dispatchEventToListeners(Events2.BackgroundServiceEventReceived, backgroundServiceEvent);
   }
 };
 SDK3.SDKModel.SDKModel.register(BackgroundServiceModel, { capabilities: 1, autostart: false });
-var Events;
-(function(Events3) {
-  Events3["RecordingStateChanged"] = "RecordingStateChanged";
-  Events3["BackgroundServiceEventReceived"] = "BackgroundServiceEventReceived";
-})(Events || (Events = {}));
+var Events2;
+(function(Events5) {
+  Events5["RecordingStateChanged"] = "RecordingStateChanged";
+  Events5["BackgroundServiceEventReceived"] = "BackgroundServiceEventReceived";
+})(Events2 || (Events2 = {}));
 
 // gen/front_end/panels/application/BackgroundServiceView.js
 var BackgroundServiceView_exports = {};
@@ -1746,32 +1751,17 @@ __export(BackgroundServiceView_exports, {
   BackgroundServiceView: () => BackgroundServiceView,
   EventDataNode: () => EventDataNode
 });
-import "./../../ui/legacy/legacy.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Platform3 from "./../../core/platform/platform.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
-import * as Bindings from "./../../models/bindings/bindings.js";
-import * as Workspace from "./../../models/workspace/workspace.js";
-import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
-import * as DataGrid from "./../../ui/legacy/components/data_grid/data_grid.js";
-
-// gen/front_end/ui/legacy/emptyWidget.css.js
-var emptyWidget_css_default = `/*
- * Copyright 2015 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.empty-view-scroller {
-  overflow: auto;
-}
-
-/*# sourceURL=${import.meta.resolve("./emptyWidget.css")} */`;
-
-// gen/front_end/panels/application/BackgroundServiceView.js
-import * as UI4 from "./../../ui/legacy/legacy.js";
-import { html as html3, render as render3 } from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/legacy.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
+import * as Platform3 from "../../core/platform/platform.js";
+import * as SDK4 from "../../core/sdk/sdk.js";
+import * as Bindings from "../../models/bindings/bindings.js";
+import * as Workspace from "../../models/workspace/workspace.js";
+import * as Buttons2 from "../../ui/components/buttons/buttons.js";
+import * as DataGrid from "../../ui/legacy/components/data_grid/data_grid.js";
+import * as UI4 from "../../ui/legacy/legacy.js";
+import { html as html3, nothing as nothing2, render as render3 } from "../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/backgroundServiceView.css.js
 var backgroundServiceView_css_default = `/*
@@ -1851,6 +1841,10 @@ var backgroundServiceView_css_default = `/*
 
 .background-service-record-inline-button {
   margin-bottom: 6px;
+}
+
+.start-recording-button {
+  margin-top: var(--sys-size-7);
 }
 
 /*# sourceURL=${import.meta.resolve("./backgroundServiceView.css")} */`;
@@ -2015,11 +2009,11 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI4.Widget.VBox
       jslog: `${VisualLogging2.pane().context(Platform3.StringUtilities.toKebabCase(serviceName))}`,
       useShadowDom: true
     });
-    this.registerRequiredCSS(emptyWidget_css_default, backgroundServiceView_css_default);
+    this.registerRequiredCSS(backgroundServiceView_css_default);
     this.serviceName = serviceName;
     this.model = model;
-    this.model.addEventListener(Events.RecordingStateChanged, this.onRecordingStateChanged, this);
-    this.model.addEventListener(Events.BackgroundServiceEventReceived, this.onEventReceived, this);
+    this.model.addEventListener(Events2.RecordingStateChanged, this.onRecordingStateChanged, this);
+    this.model.addEventListener(Events2.BackgroundServiceEventReceived, this.onEventReceived, this);
     this.model.enable(this.serviceName);
     this.serviceWorkerManager = this.model.target().model(SDK4.ServiceWorkerManager.ServiceWorkerManager);
     this.securityOriginManager = this.model.target().model(SDK4.SecurityOriginManager.SecurityOriginManager);
@@ -2250,35 +2244,47 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI4.Widget.VBox
   #updatePreview() {
     if (this.preview) {
       this.preview.detach();
+      this.preview = null;
     }
     if (this.#selectedEventNode) {
+      render3(nothing2, this.previewPanel.contentElement, { host: this });
       this.preview = this.#selectedEventNode.createPreview();
       this.preview.show(this.previewPanel.contentElement);
       return;
     }
-    let emptyWidget;
+    let header = "";
+    let text = "";
+    let link2;
+    let showButton = false;
     if (this.dataGrid.rootNode().children.length) {
-      emptyWidget = new UI4.EmptyWidget.EmptyWidget(i18nString3(UIStrings3.noEventSelected), i18nString3(UIStrings3.selectAnEventToViewMetadata));
+      header = i18nString3(UIStrings3.noEventSelected);
+      text = i18nString3(UIStrings3.selectAnEventToViewMetadata);
     } else if (this.#isRecording) {
       const featureName = _BackgroundServiceView.getUIString(this.serviceName).toLowerCase();
-      emptyWidget = new UI4.EmptyWidget.EmptyWidget(i18nString3(UIStrings3.recordingSActivity, { PH1: featureName }), i18nString3(UIStrings3.devtoolsWillRecordAllSActivity, { PH1: featureName }));
+      header = i18nString3(UIStrings3.recordingSActivity, { PH1: featureName });
+      text = i18nString3(UIStrings3.devtoolsWillRecordAllSActivity, { PH1: featureName });
     } else {
       const recordShortcuts = UI4.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction("background-service.toggle-recording")[0];
-      emptyWidget = new UI4.EmptyWidget.EmptyWidget(i18nString3(UIStrings3.noRecording), i18nString3(UIStrings3.startRecordingToDebug, {
+      header = i18nString3(UIStrings3.noRecording);
+      text = i18nString3(UIStrings3.startRecordingToDebug, {
         PH1: i18nString3(UIStrings3.startRecordingEvents),
         PH2: recordShortcuts ? recordShortcuts.title() : ""
-      }));
-      emptyWidget.link = this.createLearnMoreLink();
-      const button = UI4.UIUtils.createTextButton(i18nString3(UIStrings3.startRecordingEvents), () => this.toggleRecording(), {
-        jslogContext: "start-recording",
-        variant: "tonal"
-        /* Buttons.Button.Variant.TONAL */
       });
-      emptyWidget.contentElement.appendChild(button);
+      link2 = this.createLearnMoreLink();
+      showButton = true;
     }
-    emptyWidget.setDefaultFocusedElement(emptyWidget.contentElement);
-    this.preview = emptyWidget;
-    this.preview.show(this.previewPanel.contentElement);
+    render3(html3`
+      <devtools-widget ${UI4.Widget.widget(UI4.EmptyWidget.EmptyWidget, { header, text, link: link2 })}>
+        ${showButton ? html3`
+          <devtools-button
+            class="start-recording-button"
+            .variant=${"tonal"}
+            .jslogContext=${"start-recording"}
+            @click=${() => this.toggleRecording()}>
+            ${i18nString3(UIStrings3.startRecordingEvents)}
+          </devtools-button>
+        ` : nothing2}
+      </devtools-widget>`, this.previewPanel.contentElement, { host: this });
   }
   /**
    * Saves all currently displayed events in a file (JSON format).
@@ -2339,9 +2345,9 @@ __export(BounceTrackingMitigationsTreeElement_exports, {
   BounceTrackingMitigationsTreeElement: () => BounceTrackingMitigationsTreeElement,
   i18nString: () => i18nString4
 });
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
+import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
+import * as UI5 from "../../ui/legacy/legacy.js";
 import * as ApplicationComponents3 from "./components/components.js";
 var UIStrings4 = {
   /**
@@ -2378,10 +2384,11 @@ import * as ApplicationComponents13 from "./components/components.js";
 // gen/front_end/panels/application/DeviceBoundSessionsModel.js
 var DeviceBoundSessionsModel_exports = {};
 __export(DeviceBoundSessionsModel_exports, {
+  DeviceBoundSessionModelEvents: () => DeviceBoundSessionModelEvents,
   DeviceBoundSessionsModel: () => DeviceBoundSessionsModel
 });
-import * as Common3 from "./../../core/common/common.js";
-import * as SDK5 from "./../../core/sdk/sdk.js";
+import * as Common3 from "../../core/common/common.js";
+import * as SDK5 from "../../core/sdk/sdk.js";
 var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper {
   #siteSessions = /* @__PURE__ */ new Map();
   #visibleSites = /* @__PURE__ */ new Set();
@@ -2531,15 +2538,23 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
     this.dispatchEventToListeners("EVENT_OCCURRED", { site: eventWithTimestamp.event.site, sessionId: eventWithTimestamp.event.sessionId });
   }
 };
+var DeviceBoundSessionModelEvents;
+(function(DeviceBoundSessionModelEvents2) {
+  DeviceBoundSessionModelEvents2["INITIALIZE_SESSIONS"] = "INITIALIZE_SESSIONS";
+  DeviceBoundSessionModelEvents2["ADD_VISIBLE_SITE"] = "ADD_VISIBLE_SITE";
+  DeviceBoundSessionModelEvents2["CLEAR_VISIBLE_SITES"] = "CLEAR_VISIBLE_SITES";
+  DeviceBoundSessionModelEvents2["EVENT_OCCURRED"] = "EVENT_OCCURRED";
+  DeviceBoundSessionModelEvents2["CLEAR_EVENTS"] = "CLEAR_EVENTS";
+})(DeviceBoundSessionModelEvents || (DeviceBoundSessionModelEvents = {}));
 
 // gen/front_end/panels/application/DeviceBoundSessionsTreeElement.js
 var DeviceBoundSessionsTreeElement_exports = {};
 __export(DeviceBoundSessionsTreeElement_exports, {
   RootTreeElement: () => RootTreeElement
 });
-import * as i18n9 from "./../../core/i18n/i18n.js";
-import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
+import { createIcon as createIcon3 } from "../../ui/kit/kit.js";
+import * as UI6 from "../../ui/legacy/legacy.js";
 var UIStrings5 = {
   /**
    *@description Text for section title Application panel sidebar. A website
@@ -2798,11 +2813,12 @@ var RootTreeElement = class extends ApplicationPanelTreeElement {
 // gen/front_end/panels/application/ExtensionStorageModel.js
 var ExtensionStorageModel_exports = {};
 __export(ExtensionStorageModel_exports, {
+  Events: () => Events3,
   ExtensionStorage: () => ExtensionStorage,
   ExtensionStorageModel: () => ExtensionStorageModel
 });
-import * as Common4 from "./../../core/common/common.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
+import * as Common4 from "../../core/common/common.js";
+import * as SDK6 from "../../core/sdk/sdk.js";
 var ExtensionStorage = class extends Common4.ObjectWrapper.ObjectWrapper {
   #model;
   #extensionId;
@@ -2977,6 +2993,11 @@ var ExtensionStorageModel = class extends SDK6.SDKModel.SDKModel {
   }
 };
 SDK6.SDKModel.SDKModel.register(ExtensionStorageModel, { capabilities: 4, autostart: false });
+var Events3;
+(function(Events5) {
+  Events5["EXTENSION_STORAGE_ADDED"] = "ExtensionStorageAdded";
+  Events5["EXTENSION_STORAGE_REMOVED"] = "ExtensionStorageRemoved";
+})(Events3 || (Events3 = {}));
 
 // gen/front_end/panels/application/FrameDetailsView.js
 var FrameDetailsView_exports = {};
@@ -2984,24 +3005,24 @@ __export(FrameDetailsView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   FrameDetailsReportView: () => FrameDetailsReportView
 });
-import "./../../ui/kit/kit.js";
-import "./../../ui/components/expandable_list/expandable_list.js";
-import "./../../ui/components/report_view/report_view.js";
-import * as Common5 from "./../../core/common/common.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Root from "./../../core/root/root.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
-import * as Bindings2 from "./../../models/bindings/bindings.js";
-import * as Workspace2 from "./../../models/workspace/workspace.js";
-import * as PanelCommon from "./../common/common.js";
-import * as NetworkForward from "./../network/forward/forward.js";
-import * as CspEvaluator from "./../../third_party/csp_evaluator/csp_evaluator.js";
-import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
-import * as UIHelpers from "./../../ui/helpers/helpers.js";
-import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
-import { html as html5, nothing as nothing3, render as render5 } from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/kit/kit.js";
+import "../../ui/components/expandable_list/expandable_list.js";
+import "../../ui/components/report_view/report_view.js";
+import * as Common5 from "../../core/common/common.js";
+import * as i18n13 from "../../core/i18n/i18n.js";
+import * as Root from "../../core/root/root.js";
+import * as SDK7 from "../../core/sdk/sdk.js";
+import * as Bindings2 from "../../models/bindings/bindings.js";
+import * as Workspace2 from "../../models/workspace/workspace.js";
+import * as PanelCommon from "../common/common.js";
+import * as NetworkForward from "../network/forward/forward.js";
+import * as CspEvaluator from "../../third_party/csp_evaluator/csp_evaluator.js";
+import * as Buttons3 from "../../ui/components/buttons/buttons.js";
+import * as UIHelpers from "../../ui/helpers/helpers.js";
+import * as Components2 from "../../ui/legacy/components/utils/utils.js";
+import * as UI8 from "../../ui/legacy/legacy.js";
+import { html as html5, nothing as nothing4, render as render5 } from "../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents4 from "./components/components.js";
 
 // gen/front_end/panels/application/frameDetailsReportView.css.js
@@ -3022,7 +3043,7 @@ var frameDetailsReportView_css_default = `/*
 }
 
 button ~ .text-ellipsis {
-  padding-left: 2px;
+  padding-left: var(--sys-size-2);
 }
 
 .link,
@@ -3030,7 +3051,7 @@ button ~ .text-ellipsis {
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
   padding: 0;
   margin-left: var(--sys-size-3);
   white-space: nowrap;;
@@ -3041,7 +3062,7 @@ button.link {
   background: none;
   font-family: inherit;
   font-size: inherit;
-  height: 16px;
+  height: var(--sys-size-8);
 }
 
 button.link:has(devtools-icon) {
@@ -3049,12 +3070,12 @@ button.link:has(devtools-icon) {
 }
 
 devtools-button.help-button {
-  top: 4px;
+  top: var(--sys-size-3);
   position: relative;
 }
 
 button.text-link {
-  padding-left: 2px;
+  padding-left: var(--sys-size-2);
   height: 26px;
 }
 
@@ -3077,7 +3098,7 @@ button.text-link {
 
 .inline-name {
   color: var(--sys-color-token-subtle);
-  padding-inline: 4px;
+  padding-inline: var(--sys-size-3);
   user-select: none;
   white-space: pre-line;
 }
@@ -3087,21 +3108,21 @@ button.text-link {
 }
 
 .inline-items devtools-button {
-  flex: 0 0 20px;
-  width: 20px;
-  height: 20px;
+  flex: 0 0 var(--sys-size-9);
+  width: var(--sys-size-9);
+  height: var(--sys-size-9);
 }
 
 .inline-items .text-ellipsis {
   flex: 0 1 auto;
   min-width: 0;
-  padding-left: 2px;
+  padding-left: var(--sys-size-2);
 }
 
 .span-cols {
   grid-column-start: span 2;
   margin-left: var(--sys-size-9);
-  line-height: 28px;
+  line-height: var(--sys-size-12);
 }
 
 .report-section:has(.link) {
@@ -3144,12 +3165,12 @@ __export(OriginTrialTreeView_exports, {
   OriginTrialTokenRows: () => OriginTrialTokenRows,
   OriginTrialTreeView: () => OriginTrialTreeView
 });
-import "./../../ui/kit/kit.js";
-import "./../../ui/legacy/legacy.js";
-import "./../../ui/components/adorners/adorners.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html4, nothing as nothing2, render as render4 } from "./../../ui/lit/lit.js";
+import "../../ui/kit/kit.js";
+import "../../ui/legacy/legacy.js";
+import "../../ui/components/adorners/adorners.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
+import * as UI7 from "../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html4, nothing as nothing3, render as render4 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/originTrialTokenRows.css.js
 var originTrialTokenRows_css_default = `/*
@@ -3165,7 +3186,7 @@ var originTrialTokenRows_css_default = `/*
 
 .key {
   color: var(--sys-color-token-subtle);
-  padding: 0 6px;
+  padding: 0 var(--sys-size-4);
   text-align: right;
   white-space: pre;
 }
@@ -3173,7 +3194,7 @@ var originTrialTokenRows_css_default = `/*
 .value {
   color: var(--sys-color-token-subtle);
   margin-inline-start: 0;
-  padding: 0 6px;
+  padding: 0 var(--sys-size-4);
 }
 
 .error-text {
@@ -3192,8 +3213,8 @@ var originTrialTreeView_css_default = `/*
 
 :host {
   .status-badge {
-    border-radius: 4px;
-    padding: 4px;
+    border-radius: var(--sys-shape-corner-extra-small);
+    padding: var(--sys-size-3);
     background: var(--sys-color-neutral-container);
 
     & > devtools-icon {
@@ -3229,6 +3250,7 @@ var originTrialTreeView_css_default = `/*
     display: inline-flex;
   }
 }
+
 /*# sourceURL=${import.meta.resolve("./originTrialTreeView.css")} */`;
 
 // gen/front_end/panels/application/OriginTrialTreeView.js
@@ -3299,7 +3321,7 @@ function renderOriginTrialTree(originTrial) {
       ${originTrial.tokensWithStatus.length > 1 ? html4`
         <devtools-adorner class="badge-secondary">
           ${i18nString6(UIStrings6.tokens, { PH1: originTrial.tokensWithStatus.length })}
-        </devtools-adorner>` : nothing2}
+        </devtools-adorner>` : nothing3}
       <ul role="group">
         ${originTrial.tokensWithStatus.length > 1 ? originTrial.tokensWithStatus.map(renderTokenNode) : renderTokenDetailsNodes(originTrial.tokensWithStatus[0])}
       </ul>
@@ -3711,14 +3733,14 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
       ${input.permissionsPolicies ? widget3(ApplicationComponents4.PermissionsPolicySection.PermissionsPolicySection, {
     policies: input.permissionsPolicies,
     showDetails: false
-  }) : nothing3}
-      ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : nothing3}
+  }) : nothing4}
+      ${input.protocolMonitorExperimentEnabled ? renderAdditionalInfoSection(input.frame) : nothing4}
     </devtools-report>
   `, target);
 };
 function renderOriginTrial(trials) {
   if (!trials) {
-    return nothing3;
+    return nothing4;
   }
   const data = { trials };
   return html5`
@@ -3740,15 +3762,15 @@ function renderOriginTrial(trials) {
 }
 function renderDocumentSection(input) {
   if (!input.frame) {
-    return nothing3;
+    return nothing4;
   }
   return html5`
       <devtools-report-section-header>${i18nString7(UIStrings7.document)}</devtools-report-section-header>
       <devtools-report-key>${i18nString7(UIStrings7.url)}</devtools-report-key>
       <devtools-report-value>
         <div class="inline-items">
-          ${!input.frame?.unreachableUrl() ? renderSourcesLinkForURL(input.onRevealInSources) : nothing3}
-          ${input.onRevealInNetwork ? renderNetworkLinkForURL(input.onRevealInNetwork) : nothing3}
+          ${!input.frame?.unreachableUrl() ? renderSourcesLinkForURL(input.onRevealInSources) : nothing4}
+          ${input.onRevealInNetwork ? renderNetworkLinkForURL(input.onRevealInNetwork) : nothing4}
           <div class="text-ellipsis" title=${input.frame.url}>${input.frame.url}</div>
         </div>
       </devtools-report-value>
@@ -3768,7 +3790,7 @@ function renderNetworkLinkForURL(onRevealInNetwork) {
 }
 function maybeRenderUnreachableURL(unreachableUrl) {
   if (!unreachableUrl) {
-    return nothing3;
+    return nothing4;
   }
   return html5`
       <devtools-report-key>${i18nString7(UIStrings7.unreachableUrl)}</devtools-report-key>
@@ -3796,7 +3818,7 @@ function renderNetworkLinkForUnreachableURL(unreachableUrlString) {
       ]));
     }, "unreachable-url.reveal-in-network");
   }
-  return nothing3;
+  return nothing4;
 }
 function maybeRenderOrigin(securityOrigin) {
   if (securityOrigin && securityOrigin !== "://") {
@@ -3807,7 +3829,7 @@ function maybeRenderOrigin(securityOrigin) {
         </devtools-report-value>
       `;
   }
-  return nothing3;
+  return nothing4;
 }
 function renderOwnerElement(linkTargetDOMNode) {
   if (linkTargetDOMNode) {
@@ -3820,7 +3842,7 @@ function renderOwnerElement(linkTargetDOMNode) {
         </devtools-report-value>
       `;
   }
-  return nothing3;
+  return nothing4;
 }
 function maybeRenderCreationStacktrace(stackTrace) {
   if (stackTrace) {
@@ -3831,7 +3853,7 @@ function maybeRenderCreationStacktrace(stackTrace) {
         </devtools-report-value>
       `;
   }
-  return nothing3;
+  return nothing4;
 }
 function getAdFrameTypeStrings(type) {
   switch (type) {
@@ -3853,7 +3875,7 @@ function getAdFrameExplanationString(explanation) {
 }
 function maybeRenderAdStatus(adFrameType, adFrameStatus) {
   if (adFrameType === void 0 || adFrameType === "none") {
-    return nothing3;
+    return nothing4;
   }
   const typeStrings = getAdFrameTypeStrings(adFrameType);
   const rows = [html5`<div title=${typeStrings.description}>${typeStrings.value}</div>`];
@@ -3869,10 +3891,10 @@ function maybeRenderAdStatus(adFrameType, adFrameStatus) {
 }
 function maybeRenderCreatorAdScriptAncestry(adFrameType, target, adScriptAncestry) {
   if (adFrameType === "none") {
-    return nothing3;
+    return nothing4;
   }
   if (!target || !adScriptAncestry || adScriptAncestry.ancestryChain.length === 0) {
-    return nothing3;
+    return nothing4;
   }
   const rows = adScriptAncestry.ancestryChain.map((adScriptId) => {
     return html5`<div>
@@ -3889,12 +3911,12 @@ function maybeRenderCreatorAdScriptAncestry(adFrameType, target, adScriptAncestr
       ${shouldRenderFilterlistRule ? html5`
         <devtools-report-key>${i18nString7(UIStrings7.rootScriptFilterlistRule)}</devtools-report-key>
         <devtools-report-value jslog=${VisualLogging3.section("root-script-filterlist-rule")}>${adScriptAncestry.rootScriptFilterlistRule}</devtools-report-value>
-      ` : nothing3}
+      ` : nothing4}
     `;
 }
 function renderIsolationSection(input) {
   if (!input.frame) {
-    return nothing3;
+    return nothing4;
   }
   return html5`
       <devtools-report-section-header>${i18nString7(UIStrings7.securityIsolation)}</devtools-report-section-header>
@@ -3915,7 +3937,7 @@ function maybeRenderSecureContextExplanation(frame) {
   if (explanation) {
     return html5`<span class="inline-comment">${explanation}</span>`;
   }
-  return nothing3;
+  return nothing4;
 }
 function getSecureContextExplanation(frame) {
   switch (frame?.getSecureContextType()) {
@@ -3948,11 +3970,11 @@ function maybeRenderCoopCoepCSPStatus(info) {
           ${renderCSPSection(info.csp)}
         `;
   }
-  return nothing3;
+  return nothing4;
 }
 function maybeRenderCrossOriginStatus(info, policyName, noneValue) {
   if (!info) {
-    return nothing3;
+    return nothing4;
   }
   function crossOriginValueToString(value) {
     switch (value) {
@@ -3985,8 +4007,8 @@ function maybeRenderCrossOriginStatus(info, policyName, noneValue) {
       <devtools-report-key>${policyName}</devtools-report-key>
       <devtools-report-value>
         ${crossOriginValueToString(isEnabled ? info.value : info.reportOnlyValue)}
-        ${isReportOnly ? html5`<span class="inline-comment">report-only</span>` : nothing3}
-        ${endpoint ? html5`<span class="inline-name">${i18nString7(UIStrings7.reportingTo)}</span>${endpoint}` : nothing3}
+        ${isReportOnly ? html5`<span class="inline-comment">report-only</span>` : nothing4}
+        ${endpoint ? html5`<span class="inline-name">${i18nString7(UIStrings7.reportingTo)}</span>${endpoint}` : nothing4}
       </devtools-report-value>
     `;
 }
@@ -4023,7 +4045,7 @@ function renderSingleCSP(cspInfo, divider) {
         ${cspInfo.source === "HTTP" ? i18n13.i18n.lockedString("HTTP header") : i18n13.i18n.lockedString("Meta tag")}
         ${renderEffectiveDirectives(cspInfo.effectiveDirectives)}
       </devtools-report-value>
-      ${divider ? html5`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing3}
+      ${divider ? html5`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing4}
     `;
 }
 function renderCSPSection(cspInfos) {
@@ -4044,7 +4066,7 @@ function renderCSPSection(cspInfos) {
 }
 function renderApiAvailabilitySection(frame) {
   if (!frame) {
-    return nothing3;
+    return nothing4;
   }
   return html5`
       <devtools-report-section-header>
@@ -4071,7 +4093,7 @@ function renderSharedArrayBufferAvailability(frame) {
       let renderHint = function(frame2) {
         switch (frame2.getCrossOriginIsolatedContextType()) {
           case "Isolated":
-            return nothing3;
+            return nothing4;
           case "NotIsolated":
             if (sabAvailable) {
               return html5`
@@ -4090,7 +4112,7 @@ function renderSharedArrayBufferAvailability(frame) {
             }
             break;
         }
-        return nothing3;
+        return nothing4;
       };
       const sabAvailable = features.includes(
         "SharedArrayBuffers"
@@ -4110,7 +4132,7 @@ function renderSharedArrayBufferAvailability(frame) {
         `;
     }
   }
-  return nothing3;
+  return nothing4;
 }
 function renderMeasureMemoryAvailability(frame) {
   if (frame) {
@@ -4124,11 +4146,11 @@ function renderMeasureMemoryAvailability(frame) {
         </devtools-report-value>
       `;
   }
-  return nothing3;
+  return nothing4;
 }
 function renderAdditionalInfoSection(frame) {
   if (!frame) {
-    return nothing3;
+    return nothing4;
   }
   return html5`
       <devtools-report-section-header
@@ -4248,13 +4270,13 @@ __export(IndexedDBModel_exports, {
   Database: () => Database,
   DatabaseId: () => DatabaseId,
   Entry: () => Entry,
-  Events: () => Events2,
+  Events: () => Events4,
   Index: () => Index,
   IndexedDBModel: () => IndexedDBModel,
   ObjectStore: () => ObjectStore
 });
-import * as Common6 from "./../../core/common/common.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
+import * as Common6 from "../../core/common/common.js";
+import * as SDK8 from "../../core/sdk/sdk.js";
 var DEFAULT_BUCKET = "";
 var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
   storageBucketModel;
@@ -4403,7 +4425,7 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
         }
       }
     }
-    this.dispatchEventToListeners(Events2.DatabaseNamesRefreshed);
+    this.dispatchEventToListeners(Events4.DatabaseNamesRefreshed);
   }
   refreshDatabase(databaseId) {
     void this.loadDatabase(databaseId, true);
@@ -4478,10 +4500,10 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
     return result;
   }
   databaseAddedForStorageBucket(databaseId) {
-    this.dispatchEventToListeners(Events2.DatabaseAdded, { model: this, databaseId });
+    this.dispatchEventToListeners(Events4.DatabaseAdded, { model: this, databaseId });
   }
   databaseRemovedForStorageBucket(databaseId) {
-    this.dispatchEventToListeners(Events2.DatabaseRemoved, { model: this, databaseId });
+    this.dispatchEventToListeners(Events4.DatabaseRemoved, { model: this, databaseId });
   }
   async loadDatabaseNamesByStorageBucket(storageBucket) {
     const { storageKey } = storageBucket;
@@ -4523,7 +4545,7 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
       }
       databaseModel.objectStores.set(objectStoreModel.name, objectStoreModel);
     }
-    this.dispatchEventToListeners(Events2.DatabaseLoaded, { model: this, database: databaseModel, entriesUpdated });
+    this.dispatchEventToListeners(Events4.DatabaseLoaded, { model: this, database: databaseModel, entriesUpdated });
   }
   loadObjectStoreData(databaseId, objectStoreName, idbKeyRange, skipCount, pageSize, callback) {
     void this.requestData(
@@ -4606,7 +4628,7 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
     const storageBucket = this.storageBucketModel?.getBucketById(bucketId)?.bucket;
     if (storageBucket) {
       const databaseId = new DatabaseId(storageBucket, databaseName);
-      this.dispatchEventToListeners(Events2.IndexedDBContentUpdated, { databaseId, objectStoreName, model: this });
+      this.dispatchEventToListeners(Events4.IndexedDBContentUpdated, { databaseId, objectStoreName, model: this });
     }
   }
   cacheStorageListUpdated(_event) {
@@ -4619,14 +4641,14 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
   }
 };
 SDK8.SDKModel.SDKModel.register(IndexedDBModel, { capabilities: 8192, autostart: false });
-var Events2;
-(function(Events3) {
-  Events3["DatabaseAdded"] = "DatabaseAdded";
-  Events3["DatabaseRemoved"] = "DatabaseRemoved";
-  Events3["DatabaseLoaded"] = "DatabaseLoaded";
-  Events3["DatabaseNamesRefreshed"] = "DatabaseNamesRefreshed";
-  Events3["IndexedDBContentUpdated"] = "IndexedDBContentUpdated";
-})(Events2 || (Events2 = {}));
+var Events4;
+(function(Events5) {
+  Events5["DatabaseAdded"] = "DatabaseAdded";
+  Events5["DatabaseRemoved"] = "DatabaseRemoved";
+  Events5["DatabaseLoaded"] = "DatabaseLoaded";
+  Events5["DatabaseNamesRefreshed"] = "DatabaseNamesRefreshed";
+  Events5["IndexedDBContentUpdated"] = "IndexedDBContentUpdated";
+})(Events4 || (Events4 = {}));
 var Entry = class {
   key;
   primaryKey;
@@ -4716,16 +4738,16 @@ __export(IndexedDBViews_exports, {
   IDB_DATA_VIEW_DEFAULT_VIEW: () => IDB_DATA_VIEW_DEFAULT_VIEW,
   ObjectPropertiesSectionWidget: () => ObjectPropertiesSectionWidget
 });
-import "./../../ui/components/report_view/report_view.js";
-import "./../../ui/legacy/legacy.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
-import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
-import * as DataGrid3 from "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as UI9 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html6, nothing as nothing4, render as render6 } from "./../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/components/report_view/report_view.js";
+import "../../ui/legacy/legacy.js";
+import * as i18n15 from "../../core/i18n/i18n.js";
+import * as SDK9 from "../../core/sdk/sdk.js";
+import * as Buttons4 from "../../ui/components/buttons/buttons.js";
+import * as DataGrid3 from "../../ui/legacy/components/data_grid/data_grid.js";
+import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
+import * as UI9 from "../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html6, nothing as nothing5, render as render6 } from "../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents5 from "./components/components.js";
 
 // gen/front_end/panels/application/indexedDBViews.css.js
@@ -4738,7 +4760,7 @@ var indexedDBViews_css_default = `/*
 .indexed-db-data-view .data-view-toolbar {
   position: relative;
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .indexed-db-data-view devtools-data-grid {
@@ -4755,7 +4777,7 @@ var indexedDBViews_css_default = `/*
 }
 
 :host-context(.indexed-db-data-view) .data-grid .data-container tr:nth-last-child(2) td {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 :host-context(.indexed-db-data-view) .data-grid:focus .data-container tr.selected {
@@ -4806,7 +4828,7 @@ var indexedDBViews_css_default = `/*
   line-height: 27px;
   padding-left: 5px;
   background-color: var(--sys-color-cdt-base-container);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -4823,15 +4845,15 @@ var indexedDBViews_css_default = `/*
 .stale-data-warning {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 0 4px;
+  gap: var(--sys-size-3);
+  padding: 0 var(--sys-size-3);
 }
 
 .stale-data-warning .warning-icon {
   --icon-color: var(--icon-warning);
 
-  width: 20px;
-  height: 20px;
+  width: var(--sys-size-9);
+  height: var(--sys-size-9);
 }
 
 .data-grid-container {
@@ -4975,7 +4997,7 @@ var IDBDatabaseView = class extends ApplicationComponents5.StorageMetadataView.S
   }
   async renderReportContent() {
     if (!this.database) {
-      return nothing4;
+      return nothing5;
     }
     return html6`
       ${await super.renderReportContent()}
@@ -5064,7 +5086,7 @@ var renderDataGrid = (input) => {
       <tr>
         <th id="number" fixed width="50px">#</th>
         <th id="key">${renderKeyColumnHeader(i18nString8(UIStrings8.keyString), keyPath)}</th>
-        ${input.isIndex ? html6`<th id="primary-key">${renderKeyColumnHeader(i18nString8(UIStrings8.primaryKey), input.objectStore.keyPath)}</th>` : nothing4}
+        ${input.isIndex ? html6`<th id="primary-key">${renderKeyColumnHeader(i18nString8(UIStrings8.primaryKey), input.objectStore.keyPath)}</th>` : nothing5}
         <th id="value">${i18nString8(UIStrings8.valueString)}</th>
       </tr>
       ${repeat(input.entries, (_entry, index) => index, (entry, index) => {
@@ -5076,7 +5098,7 @@ var renderDataGrid = (input) => {
               @contextmenu=${populateContextMenu}>
             <td>${index + input.skipCount}</td>
             <td>${widget4(ObjectPropertiesSectionWidget, { value: entry.key })}</td>
-            ${input.isIndex ? html6`<td>${widget4(ObjectPropertiesSectionWidget, { value: entry.primaryKey })}</td>` : nothing4}
+            ${input.isIndex ? html6`<td>${widget4(ObjectPropertiesSectionWidget, { value: entry.primaryKey })}</td>` : nothing5}
             <td class="value-column">${widget4(ObjectPropertiesSectionWidget, { value: entry.value })}</td>
           </tr>`;
   })}
@@ -5148,20 +5170,20 @@ var renderToolbar = (input) => {
           <devtools-icon name="warning" class="warning-icon"></devtools-icon>
           <span>${i18nString8(UIStrings8.dataMayBeStale)}</span>
         </div>
-      ` : nothing4}
+      ` : nothing5}
     </devtools-toolbar>`;
 };
 var renderSummaryBar = (input) => {
   const metadata = input.metadata;
   if (!metadata) {
-    return nothing4;
+    return nothing5;
   }
   return html6`
     <div class="object-store-summary-bar">
       <span>${i18nString8(UIStrings8.totalEntriesS, { PH1: String(metadata.entriesCount) })}</span>
       ${input.objectStore.autoIncrement ? html6`
         <span class="separator">\u2758</span>
-        <span>${i18nString8(UIStrings8.keyGeneratorValueS, { PH1: String(metadata.keyGeneratorValue) })}</span>` : nothing4}
+        <span>${i18nString8(UIStrings8.keyGeneratorValueS, { PH1: String(metadata.keyGeneratorValue) })}</span>` : nothing5}
     </div>`;
 };
 var IDB_DATA_VIEW_DEFAULT_VIEW = (input, _output, target) => {
@@ -5401,7 +5423,7 @@ var IDBDataView = class extends UI9.View.SimpleView {
 };
 var OBJECT_PROPERTIES_SECTION_WIDGET_DEFAULT_VIEW = (input, output, target) => {
   if (!input.objectTree) {
-    render6(nothing4, target);
+    render6(nothing5, target);
     return;
   }
   render6(ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(
@@ -5459,11 +5481,11 @@ __export(OpenedWindowDetailsView_exports, {
   OpenedWindowDetailsView: () => OpenedWindowDetailsView,
   WorkerDetailsView: () => WorkerDetailsView
 });
-import * as Common7 from "./../../core/common/common.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as SDK10 from "./../../core/sdk/sdk.js";
-import { createIcon as createIcon4 } from "./../../ui/kit/kit.js";
-import * as UI10 from "./../../ui/legacy/legacy.js";
+import * as Common7 from "../../core/common/common.js";
+import * as i18n17 from "../../core/i18n/i18n.js";
+import * as SDK10 from "../../core/sdk/sdk.js";
+import { createIcon as createIcon4 } from "../../ui/kit/kit.js";
+import * as UI10 from "../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/application/openedWindowDetailsView.css.js
 var openedWindowDetailsView_css_default = `/*
@@ -5797,8 +5819,8 @@ __export(PreloadingTreeElement_exports, {
   PreloadingRuleSetTreeElement: () => PreloadingRuleSetTreeElement,
   PreloadingSummaryTreeElement: () => PreloadingSummaryTreeElement
 });
-import * as i18n21 from "./../../core/i18n/i18n.js";
-import { createIcon as createIcon5 } from "./../../ui/kit/kit.js";
+import * as i18n21 from "../../core/i18n/i18n.js";
+import { createIcon as createIcon5 } from "../../ui/kit/kit.js";
 import * as PreloadingHelper2 from "./preloading/helper/helper.js";
 
 // gen/front_end/panels/application/preloading/PreloadingView.js
@@ -5809,18 +5831,39 @@ __export(PreloadingView_exports, {
   PreloadingSummaryView: () => PreloadingSummaryView,
   applyFilterText: () => applyFilterText
 });
-import "./../../ui/kit/kit.js";
-import "./../../ui/legacy/legacy.js";
-import * as Common8 from "./../../core/common/common.js";
-import * as i18n19 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../../core/platform/platform.js";
-import * as SDK11 from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
-import * as UI11 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html7, render as render7 } from "./../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/kit/kit.js";
+import "../../ui/legacy/legacy.js";
+import * as Common8 from "../../core/common/common.js";
+import * as i18n19 from "../../core/i18n/i18n.js";
+import * as Platform4 from "../../core/platform/platform.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "../../core/platform/platform.js";
+import * as SDK11 from "../../core/sdk/sdk.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as Buttons5 from "../../ui/components/buttons/buttons.js";
+
+// gen/front_end/ui/legacy/emptyWidget.css.js
+var emptyWidget_css_default = `/*
+ * Copyright 2015 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+}
+
+.empty-view-scroller {
+  overflow: auto;
+}
+
+/*# sourceURL=${import.meta.resolve("./emptyWidget.css")} */`;
+
+// gen/front_end/panels/application/preloading/PreloadingView.js
+import * as UI11 from "../../ui/legacy/legacy.js";
+import { Directives as Directives4, html as html7, render as render7 } from "../../ui/lit/lit.js";
+import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as PreloadingComponents from "./preloading/components/components.js";
 import * as PreloadingHelper from "./preloading/helper/helper.js";
 
@@ -5847,7 +5890,7 @@ var preloadingView_css_default = `/*
 
 .preloading-toolbar {
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
   button.toolbar-has-dropdown {
     margin: var(--sys-size-2) 0;
@@ -5874,15 +5917,15 @@ var preloadingViewDropDown_css_default = `/*
  */
 
 :host {
-  padding: 2px 1px 2px 2px;
+  padding: var(--sys-size-2) var(--sys-size-1) var(--sys-size-2) var(--sys-size-2);
 }
 
 .title {
-  padding-left: 8px;
+  padding-left: var(--sys-size-5);
 }
 
 .subtitle {
-  padding-left: 8px;
+  padding-left: var(--sys-size-5);
 }
 
 /*# sourceURL=${import.meta.resolve("./preloading/preloadingViewDropDown.css")} */`;
@@ -6679,9 +6722,9 @@ __export(ReportingApiTreeElement_exports, {
   ReportingApiTreeElement: () => ReportingApiTreeElement,
   i18nString: () => i18nString14
 });
-import * as i18n27 from "./../../core/i18n/i18n.js";
-import { createIcon as createIcon6 } from "./../../ui/kit/kit.js";
-import * as UI14 from "./../../ui/legacy/legacy.js";
+import * as i18n27 from "../../core/i18n/i18n.js";
+import { createIcon as createIcon6 } from "../../ui/kit/kit.js";
+import * as UI14 from "../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/application/CrashReportContextView.js
 var CrashReportContextView_exports = {};
@@ -6689,14 +6732,14 @@ __export(CrashReportContextView_exports, {
   CrashReportContextView: () => CrashReportContextView,
   DEFAULT_VIEW: () => DEFAULT_VIEW4
 });
-import "./../../ui/legacy/legacy.js";
-import * as i18n23 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
-import * as SDK12 from "./../../core/sdk/sdk.js";
-import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
-import * as UI12 from "./../../ui/legacy/legacy.js";
-import { html as html8, render as render8 } from "./../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/legacy.js";
+import * as i18n23 from "../../core/i18n/i18n.js";
+import * as Platform5 from "../../core/platform/platform.js";
+import * as SDK12 from "../../core/sdk/sdk.js";
+import * as Buttons6 from "../../ui/components/buttons/buttons.js";
+import * as UI12 from "../../ui/legacy/legacy.js";
+import { html as html8, render as render8 } from "../../ui/lit/lit.js";
+import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents6 from "./components/components.js";
 var UIStrings12 = {
   /**
@@ -6883,12 +6926,12 @@ __export(ReportingApiView_exports, {
   ReportingApiView: () => ReportingApiView,
   i18nString: () => i18nString13
 });
-import * as i18n25 from "./../../core/i18n/i18n.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
-import * as SourceFrame from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI13 from "./../../ui/legacy/legacy.js";
-import { html as html9, render as render9 } from "./../../ui/lit/lit.js";
-import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
+import * as i18n25 from "../../core/i18n/i18n.js";
+import * as SDK13 from "../../core/sdk/sdk.js";
+import * as SourceFrame from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI13 from "../../ui/legacy/legacy.js";
+import { html as html9, render as render9 } from "../../ui/lit/lit.js";
+import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents7 from "./components/components.js";
 var { widget: widget6 } = UI13.Widget;
 var UIStrings13 = {
@@ -7186,10 +7229,10 @@ __export(ServiceWorkerCacheTreeElement_exports, {
   SWCacheTreeElement: () => SWCacheTreeElement,
   ServiceWorkerCacheTreeElement: () => ServiceWorkerCacheTreeElement
 });
-import * as i18n31 from "./../../core/i18n/i18n.js";
-import * as SDK15 from "./../../core/sdk/sdk.js";
-import { createIcon as createIcon7 } from "./../../ui/kit/kit.js";
-import * as UI16 from "./../../ui/legacy/legacy.js";
+import * as i18n31 from "../../core/i18n/i18n.js";
+import * as SDK15 from "../../core/sdk/sdk.js";
+import { createIcon as createIcon7 } from "../../ui/kit/kit.js";
+import * as UI16 from "../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/application/ServiceWorkerCacheViews.js
 var ServiceWorkerCacheViews_exports = {};
@@ -7198,16 +7241,16 @@ __export(ServiceWorkerCacheViews_exports, {
   RequestView: () => RequestView,
   ServiceWorkerCacheView: () => ServiceWorkerCacheView
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common9 from "./../../core/common/common.js";
-import * as i18n29 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
-import * as SDK14 from "./../../core/sdk/sdk.js";
-import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
-import * as DataGrid4 from "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as UI15 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
-import * as Network from "./../network/network.js";
+import "../../ui/legacy/legacy.js";
+import * as Common9 from "../../core/common/common.js";
+import * as i18n29 from "../../core/i18n/i18n.js";
+import * as Platform6 from "../../core/platform/platform.js";
+import * as SDK14 from "../../core/sdk/sdk.js";
+import * as TextUtils3 from "../../core/text_utils/text_utils.js";
+import * as DataGrid4 from "../../ui/legacy/components/data_grid/data_grid.js";
+import * as UI15 from "../../ui/legacy/legacy.js";
+import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
+import * as Network from "../network/network.js";
 import * as ApplicationComponents8 from "./components/components.js";
 
 // gen/front_end/panels/application/serviceWorkerCacheViews.css.js
@@ -7954,19 +7997,19 @@ __export(ServiceWorkersView_exports, {
   ServiceWorkersView: () => ServiceWorkersView,
   setThrottleDisabledForDebugging: () => setThrottleDisabledForDebugging
 });
-import "./../../ui/components/report_view/report_view.js";
-import "./../../ui/kit/kit.js";
-import * as Common10 from "./../../core/common/common.js";
-import * as Host2 from "./../../core/host/host.js";
-import * as i18n35 from "./../../core/i18n/i18n.js";
-import * as SDK17 from "./../../core/sdk/sdk.js";
-import * as NetworkForward2 from "./../network/forward/forward.js";
-import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
-import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI18 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html11, nothing as nothing6, render as render11 } from "./../../ui/lit/lit.js";
-import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
-import * as MobileThrottling from "./../mobile_throttling/mobile_throttling.js";
+import "../../ui/components/report_view/report_view.js";
+import "../../ui/kit/kit.js";
+import * as Common10 from "../../core/common/common.js";
+import * as Host2 from "../../core/host/host.js";
+import * as i18n35 from "../../core/i18n/i18n.js";
+import * as SDK17 from "../../core/sdk/sdk.js";
+import * as NetworkForward2 from "../network/forward/forward.js";
+import * as Buttons7 from "../../ui/components/buttons/buttons.js";
+import * as Components3 from "../../ui/legacy/components/utils/utils.js";
+import * as UI18 from "../../ui/legacy/legacy.js";
+import { Directives as Directives5, html as html11, nothing as nothing7, render as render11 } from "../../ui/lit/lit.js";
+import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
+import * as MobileThrottling from "../mobile_throttling/mobile_throttling.js";
 import * as ApplicationComponents9 from "./components/components.js";
 
 // gen/front_end/panels/application/serviceWorkersView.css.js
@@ -7994,10 +8037,10 @@ var serviceWorkersView_css_default = `/*
 .service-worker-version-stack-bar {
   position: absolute;
   top: 10px;
-  bottom: 20px;
-  left: 4px;
+  bottom: var(--sys-size-9);
+  left: var(--sys-size-3);
   content: "";
-  border-left: 1px solid var(--sys-color-divider);
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
   z-index: 0;
 }
 
@@ -8022,7 +8065,7 @@ var serviceWorkersView_css_default = `/*
   z-index: 10;
   margin-right: 5px;
   border-radius: 50%;
-  border: 1px solid var(--sys-color-token-subtle);
+  border: var(--sys-size-1) solid var(--sys-color-token-subtle);
   align-self: center;
   /* The circle should not shrink, to avoid risking becoming invisible. */
   flex-shrink: 0;
@@ -8045,8 +8088,8 @@ var serviceWorkersView_css_default = `/*
 }
 
 .service-worker-subtitle {
-  padding-left: 14px;
-  line-height: 14px;
+  padding-left: var(--sys-size-7);
+  line-height: var(--sys-size-7);
   color: var(--sys-color-state-disabled);
 }
 
@@ -8060,12 +8103,12 @@ var serviceWorkersView_css_default = `/*
 }
 
 .service-worker-notification-editor {
-  border: 1px solid var(--sys-color-divider);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
   display: flex;
   flex: auto;
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
   max-width: 400px;
-  min-width: 80px;
+  min-width: var(--sys-size-19);
 }
 
 .report-field-value-filename,
@@ -8090,13 +8133,13 @@ var serviceWorkersView_css_default = `/*
 
 .service-worker-client-focus-link {
   flex: none;
-  margin-left: 2px;
+  margin-left: var(--sys-size-2);
   align-self: center;
 }
 
 .service-worker-notification-editor.source-code {
   /** Simulate CodeMirror that is shown above */
-  padding: 4px;
+  padding: var(--sys-size-3);
 }
 
 .service-worker-list {
@@ -8110,13 +8153,13 @@ var serviceWorkersView_css_default = `/*
 }
 
 .devtools-link {
-  line-height: 14px;
+  line-height: var(--sys-size-7);
   align-self: center;
-  padding: 1px;
+  padding: var(--sys-size-1);
 }
 
 button.link {
-  padding: 1px;
+  padding: var(--sys-size-1);
 }
 
 button.link:focus-visible {
@@ -8143,7 +8186,7 @@ devtools-icon.error-icon {
 .report-field-name {
   font: var(--sys-typescale-body5-medium);
   color: var(--sys-color-on-surface-subtle);
-  flex: 0 0 128px;
+  flex: 0 0 var(--sys-size-21);
   text-align: left;
   white-space: pre-wrap;
 }
@@ -8157,7 +8200,7 @@ devtools-icon.error-icon {
 }
 
 .service-worker-section {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   grid-column: 1 / 3;
   padding: 0 var(--sys-size-9) 11px var(--sys-size-9);
 }
@@ -8170,20 +8213,20 @@ devtools-widget {
   display: block;
 }
 
-
 /*# sourceURL=${import.meta.resolve("./serviceWorkersView.css")} */`;
 
 // gen/front_end/panels/application/ServiceWorkerUpdateCycleView.js
 var ServiceWorkerUpdateCycleView_exports = {};
 __export(ServiceWorkerUpdateCycleView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW6,
-  ServiceWorkerUpdateCycleView: () => ServiceWorkerUpdateCycleView
+  ServiceWorkerUpdateCycleView: () => ServiceWorkerUpdateCycleView,
+  ServiceWorkerUpdateNames: () => ServiceWorkerUpdateNames
 });
-import * as i18n33 from "./../../core/i18n/i18n.js";
-import * as SDK16 from "./../../core/sdk/sdk.js";
-import * as UI17 from "./../../ui/legacy/legacy.js";
-import { html as html10, nothing as nothing5, render as render10 } from "./../../ui/lit/lit.js";
-import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
+import * as i18n33 from "../../core/i18n/i18n.js";
+import * as SDK16 from "../../core/sdk/sdk.js";
+import * as UI17 from "../../ui/legacy/legacy.js";
+import { html as html10, nothing as nothing6, render as render10 } from "../../ui/lit/lit.js";
+import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/serviceWorkerUpdateCycleView.css.js
 var serviceWorkerUpdateCycleView_css_default = `/*
@@ -8195,13 +8238,13 @@ var serviceWorkerUpdateCycleView_css_default = `/*
 @scope to (devtools-widget > *) {
   .resource-service-worker-update-view {
     display: block;
-    margin: 6px;
+    margin: var(--sys-size-4);
     color: var(--sys-color-on-surface-subtle);
     overflow: auto;
   }
 
   .service-worker-update-timing-table {
-    border: 1px solid var(--sys-color-divider);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     border-spacing: 0;
     padding-left: 10px;
     padding-right: 10px;
@@ -8212,14 +8255,14 @@ var serviceWorkerUpdateCycleView_css_default = `/*
 
   .service-worker-update-timing-row {
     position: relative;
-    height: 20px;
+    height: var(--sys-size-9);
     overflow: hidden;
-    min-width: 80px;
+    min-width: var(--sys-size-19);
   }
 
   .service-worker-update-timing-bar {
     position: absolute;
-    min-width: 1px;
+    min-width: var(--sys-size-1);
     top: 0;
     bottom: 0;
   }
@@ -8228,9 +8271,9 @@ var serviceWorkerUpdateCycleView_css_default = `/*
     user-select: none;
     mask-image: var(--image-file-triangle-right);
     float: left;
-    width: 14px;
-    height: 14px;
-    margin-right: 2px;
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
+    margin-right: var(--sys-size-2);
     content: "";
     position: relative;
     background-color: var(--icon-default);
@@ -8239,7 +8282,7 @@ var serviceWorkerUpdateCycleView_css_default = `/*
 
   .service-worker-update-timing-bar-clickable {
     position: relative;
-    left: -12px;
+    left: calc(-1 * var(--sys-size-6));
   }
 
   .service-worker-update-timing-bar-clickable:focus-visible {
@@ -8281,7 +8324,7 @@ var serviceWorkerUpdateCycleView_css_default = `/*
   }
 
   .service-worker-update-timing-table > tbody > tr > td {
-    padding: 4px 0;
+    padding: var(--sys-size-3) 0;
     padding-right: 10px;
   }
 
@@ -8291,11 +8334,11 @@ var serviceWorkerUpdateCycleView_css_default = `/*
   }
 
   table.service-worker-update-timing-table > tbody > tr.service-worker-update-timing-bar-details > td:first-child {
-    padding-left: 12px;
+    padding-left: var(--sys-size-6);
   }
 
   table.service-worker-update-timing-table > tbody > tr.service-worker-update-timeline > td:first-child {
-    padding-left: 12px;
+    padding-left: var(--sys-size-6);
   }
 }
 
@@ -8329,7 +8372,7 @@ var UIStrings17 = {
 var str_17 = i18n33.i18n.registerUIStrings("panels/application/ServiceWorkerUpdateCycleView.ts", UIStrings17);
 var i18nString17 = i18n33.i18n.getLocalizedString.bind(void 0, str_17);
 var DEFAULT_VIEW6 = (input, _output, target) => {
-  let tableRows = nothing5;
+  let tableRows = nothing6;
   if (input.timeRanges.length > 0) {
     const startTimes = input.timeRanges.map((r) => r.start);
     const endTimes = input.timeRanges.map((r) => r.end);
@@ -8593,6 +8636,12 @@ var ServiceWorkerUpdateCycleView = class extends UI17.Widget.Widget {
     event.preventDefault();
   }
 };
+var ServiceWorkerUpdateNames;
+(function(ServiceWorkerUpdateNames2) {
+  ServiceWorkerUpdateNames2["INSTALL"] = "Install";
+  ServiceWorkerUpdateNames2["WAIT"] = "Wait";
+  ServiceWorkerUpdateNames2["ACTIVATE"] = "Activate";
+})(ServiceWorkerUpdateNames || (ServiceWorkerUpdateNames = {}));
 
 // gen/front_end/panels/application/ServiceWorkersView.js
 var UIStrings18 = {
@@ -8820,7 +8869,7 @@ function getTimeStamp(registration) {
 }
 function renderOriginReport(input) {
   if (!input.canManageServiceWorkers) {
-    return nothing6;
+    return nothing7;
   }
   const sortedSections = [...input.sections];
   sortedSections.sort((a, b) => {
@@ -9044,7 +9093,7 @@ function renderSyncNotificationField(label, initialValue, placeholder, callback,
       </div>
     </div>`;
 }
-function renderVersion(icon, label, content = nothing6) {
+function renderVersion(icon, label, content = nothing7) {
   return html11`
     <div class="service-worker-version">
       <div class=${icon}></div>
@@ -9097,13 +9146,13 @@ function renderSourceField(input, version) {
             <devtools-icon name="cross-circle-filled" class="error-icon">
             </devtools-icon>
             ${input.errorsLength}
-          </button>` : nothing6}
+          </button>` : nothing7}
       </div>
       ${version.scriptResponseTime !== void 0 ? html11`
         <div class="report-field-value-subtitle">
           ${i18nString18(UIStrings18.receivedS, { PH1: new Date(version.scriptResponseTime * 1e3).toLocaleString() })}
         </div>
-      ` : nothing6}
+      ` : nothing7}
     </div>
   </div>`;
 }
@@ -9132,7 +9181,7 @@ function renderStatusField(input, active, waiting, installing, redundant) {
   }}
                               @click=${input.onStart}>
                   ${i18nString18(UIStrings18.startString)}
-              </devtools-button>` : nothing6) : redundant ? renderVersion("service-worker-redundant-circle", i18nString18(UIStrings18.sIsRedundant, { PH1: redundant.id })) : nothing6}
+              </devtools-button>` : nothing7) : redundant ? renderVersion("service-worker-redundant-circle", i18nString18(UIStrings18.sIsRedundant, { PH1: redundant.id })) : nothing7}
         ${waiting ? renderVersion("service-worker-waiting-circle", i18nString18(UIStrings18.sWaitingToActivate, { PH1: waiting.id }), html11`
               <devtools-button .data=${{
     jslogContext: "skip-waiting",
@@ -9147,12 +9196,12 @@ function renderStatusField(input, active, waiting, installing, redundant) {
                 <div class="service-worker-subtitle">
                   ${i18nString18(UIStrings18.receivedS, { PH1: new Date(waiting.scriptResponseTime * 1e3).toLocaleString() })}
                 </div>
-              ` : nothing6}
-          `) : nothing6}
+              ` : nothing7}
+          `) : nothing7}
         ${installing ? renderVersion("service-worker-installing-circle", i18nString18(UIStrings18.sTryingToInstall, { PH1: installing.id }), installing.scriptResponseTime !== void 0 ? html11`
             <div class="service-worker-subtitle">
               ${i18nString18(UIStrings18.receivedS, { PH1: new Date(installing.scriptResponseTime * 1e3).toLocaleString() })}
-            </div>` : nothing6) : nothing6}
+            </div>` : nothing7) : nothing7}
       </div>
     </div>
   </div>`;
@@ -9181,7 +9230,7 @@ function renderRouterField(input) {
         </div>
       </div>`;
   }
-  return nothing6;
+  return nothing7;
 }
 var DEFAULT_SECTION_VIEW = (input, _output, target) => {
   render11(html11`
@@ -9334,7 +9383,7 @@ var Section = class extends UI18.Widget.VBox {
     if (!targetInfo) {
       const response = await this.manager.target().targetAgent().invoke_getTargetInfo({ targetId: clientId });
       if (!response.targetInfo) {
-        return nothing6;
+        return nothing7;
       }
       targetInfo = response.targetInfo;
       this.clientInfoCache.set(clientId, targetInfo);
@@ -9379,11 +9428,11 @@ __export(StorageBucketsTreeElement_exports, {
   StorageBucketsTreeParentElement: () => StorageBucketsTreeParentElement,
   i18nString: () => i18nString19
 });
-import * as i18n37 from "./../../core/i18n/i18n.js";
-import * as SDK18 from "./../../core/sdk/sdk.js";
-import * as LegacyWrapper from "./../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import { createIcon as createIcon8 } from "./../../ui/kit/kit.js";
-import * as UI19 from "./../../ui/legacy/legacy.js";
+import * as i18n37 from "../../core/i18n/i18n.js";
+import * as SDK18 from "../../core/sdk/sdk.js";
+import * as LegacyWrapper from "../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import { createIcon as createIcon8 } from "../../ui/kit/kit.js";
+import * as UI19 from "../../ui/legacy/legacy.js";
 import { StorageMetadataView as StorageMetadataView3 } from "./components/components.js";
 var UIStrings19 = {
   /**
@@ -9536,16 +9585,16 @@ __export(StorageView_exports, {
   StorageView: () => StorageView,
   storagePieColors: () => storagePieColors
 });
-import * as Common16 from "./../../core/common/common.js";
-import * as i18n51 from "./../../core/i18n/i18n.js";
-import * as Platform9 from "./../../core/platform/platform.js";
-import * as SDK22 from "./../../core/sdk/sdk.js";
-import * as uiI18n from "./../../ui/i18n/i18n.js";
-import { Icon, Link } from "./../../ui/kit/kit.js";
-import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
-import * as UI27 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common16 from "../../core/common/common.js";
+import * as i18n51 from "../../core/i18n/i18n.js";
+import * as Platform9 from "../../core/platform/platform.js";
+import * as SDK22 from "../../core/sdk/sdk.js";
+import * as uiI18n from "../../ui/i18n/i18n.js";
+import { Icon, Link } from "../../ui/kit/kit.js";
+import * as PerfUI from "../../ui/legacy/components/perf_ui/perf_ui.js";
+import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.js";
+import * as UI27 from "../../ui/legacy/legacy.js";
+import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/ResourcesPanel.js
 var ResourcesPanel_exports = {};
@@ -9557,14 +9606,14 @@ __export(ResourcesPanel_exports, {
   RuleSetViewRevealer: () => RuleSetViewRevealer,
   StorageBucketRevealer: () => StorageBucketRevealer
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common15 from "./../../core/common/common.js";
-import * as Platform8 from "./../../core/platform/platform.js";
-import * as SDK21 from "./../../core/sdk/sdk.js";
-import * as SourceFrame5 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI26 from "./../../ui/legacy/legacy.js";
-import { render as render16 } from "./../../ui/lit/lit.js";
-import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/legacy.js";
+import * as Common15 from "../../core/common/common.js";
+import * as Platform8 from "../../core/platform/platform.js";
+import * as SDK21 from "../../core/sdk/sdk.js";
+import * as SourceFrame5 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI26 from "../../ui/legacy/legacy.js";
+import { render as render16 } from "../../ui/lit/lit.js";
+import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/CookieItemsView.js
 var CookieItemsView_exports = {};
@@ -9573,16 +9622,16 @@ __export(CookieItemsView_exports, {
   DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW: () => DEFAULT_COOKIE_PREVIEW_WIDGET_VIEW,
   DEFAULT_VIEW: () => DEFAULT_VIEW9
 });
-import * as Common12 from "./../../core/common/common.js";
-import * as i18n41 from "./../../core/i18n/i18n.js";
-import * as SDK19 from "./../../core/sdk/sdk.js";
-import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
-import * as Geometry from "./../../models/geometry/geometry.js";
-import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
-import * as CookieTable from "./../../ui/legacy/components/cookie_table/cookie_table.js";
-import * as UI21 from "./../../ui/legacy/legacy.js";
-import { html as html13, render as render13 } from "./../../ui/lit/lit.js";
-import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common12 from "../../core/common/common.js";
+import * as i18n41 from "../../core/i18n/i18n.js";
+import * as SDK19 from "../../core/sdk/sdk.js";
+import * as AiAssistanceModel from "../../models/ai_assistance/ai_assistance.js";
+import * as Geometry from "../../models/geometry/geometry.js";
+import * as IssuesManager from "../../models/issues_manager/issues_manager.js";
+import * as CookieTable from "../../ui/legacy/components/cookie_table/cookie_table.js";
+import * as UI21 from "../../ui/legacy/legacy.js";
+import { html as html13, render as render13 } from "../../ui/lit/lit.js";
+import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/cookieItemsView.css.js
 var cookieItemsView_css_default = `/*
@@ -9593,14 +9642,14 @@ var cookieItemsView_css_default = `/*
 
 @scope to (devtools-widget > *) {
   .cookie-preview-widget {
-    padding: 2px 6px;
+    padding: var(--sys-size-2) var(--sys-size-4);
   }
 
   .cookie-preview-widget-header {
     font-weight: bold;
     user-select: none;
     white-space: nowrap;
-    margin-bottom: 4px;
+    margin-bottom: var(--sys-size-3);
     flex: 0 0 18px;
     display: flex;
     align-items: center;
@@ -9619,7 +9668,7 @@ var cookieItemsView_css_default = `/*
   }
 
   .cookie-preview-widget-toggle {
-    margin-left: 12px;
+    margin-left: var(--sys-size-6);
     font-weight: normal;
     flex-shrink: 1;
   }
@@ -9633,14 +9682,14 @@ __export(StorageItemsToolbar_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW8,
   StorageItemsToolbar: () => StorageItemsToolbar
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common11 from "./../../core/common/common.js";
-import * as i18n39 from "./../../core/i18n/i18n.js";
-import * as Platform7 from "./../../core/platform/platform.js";
-import * as Buttons8 from "./../../ui/components/buttons/buttons.js";
-import * as UI20 from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
-import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/legacy.js";
+import * as Common11 from "../../core/common/common.js";
+import * as i18n39 from "../../core/i18n/i18n.js";
+import * as Platform7 from "../../core/platform/platform.js";
+import * as Buttons8 from "../../ui/components/buttons/buttons.js";
+import * as UI20 from "../../ui/legacy/legacy.js";
+import * as Lit2 from "../../ui/lit/lit.js";
+import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents10 from "./components/components.js";
 var UIStrings20 = {
   /**
@@ -9799,6 +9848,15 @@ var StorageItemsToolbar = class extends Common11.ObjectWrapper.eventMixin(UI20.W
     this.requestUpdate();
   }
 };
+(function(StorageItemsToolbar2) {
+  let Events5;
+  (function(Events6) {
+    Events6["REFRESH"] = "Refresh";
+    Events6["FILTER_CHANGED"] = "FilterChanged";
+    Events6["DELETE_ALL"] = "DeleteAll";
+    Events6["DELETE_SELECTED"] = "DeleteSelected";
+  })(Events5 = StorageItemsToolbar2.Events || (StorageItemsToolbar2.Events = {}));
+})(StorageItemsToolbar || (StorageItemsToolbar = {}));
 
 // gen/front_end/panels/application/CookieItemsView.js
 var UIStrings21 = {
@@ -10150,13 +10208,13 @@ __export(DeviceBoundSessionsView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW10,
   DeviceBoundSessionsView: () => DeviceBoundSessionsView
 });
-import "./../../ui/components/report_view/report_view.js";
-import "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n43 from "./../../core/i18n/i18n.js";
-import * as SourceFrame2 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI22 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives6, html as html14, nothing as nothing7, render as render14 } from "./../../ui/lit/lit.js";
-import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/components/report_view/report_view.js";
+import "../../ui/legacy/components/data_grid/data_grid.js";
+import * as i18n43 from "../../core/i18n/i18n.js";
+import * as SourceFrame2 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI22 from "../../ui/legacy/legacy.js";
+import { Directives as Directives6, html as html14, nothing as nothing8, render as render14 } from "../../ui/lit/lit.js";
+import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/deviceBoundSessionsView.css.js
 var deviceBoundSessionsView_css_default = `/*
@@ -10165,7 +10223,7 @@ var deviceBoundSessionsView_css_default = `/*
  * found in the LICENSE file.
  */
 .device-bound-session-grid-wrapper {
-  margin: 0 20px 5px;
+  margin: 0 var(--sys-size-9) 5px;
 }
 
 .device-bound-session-grid-wrapper devtools-data-grid {
@@ -10175,11 +10233,11 @@ var deviceBoundSessionsView_css_default = `/*
 .device-bound-session-view-wrapper, .device-bound-session-sidebar {
   overflow-y: auto;
   scroll-behavior: smooth;
-  padding-bottom: 20px;
+  padding-bottom: var(--sys-size-9);
 }
 
 .device-bound-session-no-events-wrapper, .device-bound-session-no-event-details {
-  padding: 0 20px;
+  padding: 0 var(--sys-size-9);
 }
 
 .device-bound-sessions-toolbar {
@@ -10726,10 +10784,10 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
         <devtools-toolbar class="device-bound-sessions-toolbar">
         <devtools-checkbox title=${i18nString22(UIStrings22.doNotClearLogOnPageReload)} ${UI22.UIUtils.bindToSetting(preserveLogSetting)}>${i18nString22(UIStrings22.preserveLog)}</devtools-checkbox>
         </devtools-toolbar>
-  ` : nothing7;
+  ` : nothing8;
   if (!sessionAndEvents) {
     if (!defaultTitle || !defaultDescription) {
-      render14(nothing7, target);
+      render14(nothing8, target);
       return;
     }
     render14(html14`
@@ -10787,7 +10845,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
               </table>
             </devtools-data-grid>
           </div>
-        ` : nothing7}
+        ` : nothing8}
         <devtools-report-section-header role="heading" aria-level="2">${i18nString22(UIStrings22.cookieCravings)}</devtools-report-section-header>
         ${cookieCravings.length > 0 ? html14`
           <div class="device-bound-session-grid-wrapper">
@@ -10818,7 +10876,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
               </table>
             </devtools-data-grid>
           </div>
-        ` : nothing7}`;
+        ` : nothing8}`;
   }
   const events = [...sessionAndEvents.eventsById.values()];
   const eventsHtml = html14`
@@ -10856,7 +10914,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
           ` : html14`<div class="device-bound-session-no-events-wrapper">${i18nString22(UIStrings22.noEvents)}</div>`}`;
   const failedRequestDetailsGetter = (failedRequest) => {
     if (!failedRequest) {
-      return nothing7;
+      return nothing8;
     }
     return html14`${failedRequest.requestUrl && html14`
           <devtools-report-key>${i18nString22(UIStrings22.failedRequestUrl)}</devtools-report-key>
@@ -10866,7 +10924,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
           <devtools-report-value>${failedRequest.netError}</devtools-report-value>`}
         ${failedRequest.responseError !== void 0 ? html14`
           <devtools-report-key>${i18nString22(UIStrings22.failedRequestResponseCode)}</devtools-report-key>
-          <devtools-report-value>${failedRequest.responseError}</devtools-report-value>` : nothing7}
+          <devtools-report-value>${failedRequest.responseError}</devtools-report-value>` : nothing8}
         ${failedRequest.responseErrorBody && html14`
           <devtools-report-key>${i18nString22(UIStrings22.failedRequestResponseBody)}</devtools-report-key>
           <devtools-report-value>
@@ -10935,7 +10993,7 @@ var DEFAULT_VIEW10 = (input, _output, target) => {
         ${toolbarHtml}
         <devtools-split-view sidebar-position="second">
           <div slot="main" class="device-bound-session-view-wrapper" role="region" aria-label=${i18nString22(UIStrings22.sessionDetails)}>
-            ${sessionDetailsHtml || nothing7}
+            ${sessionDetailsHtml || nothing8}
             ${eventsHtml}
           </div>
           <div slot="sidebar" class="device-bound-session-sidebar" role="region" aria-label=${i18nString22(UIStrings22.eventDetails)}>
@@ -11255,24 +11313,24 @@ var DOMStorageItemsView_exports = {};
 __export(DOMStorageItemsView_exports, {
   DOMStorageItemsView: () => DOMStorageItemsView
 });
-import * as Common13 from "./../../core/common/common.js";
-import * as i18n47 from "./../../core/i18n/i18n.js";
-import * as SDK20 from "./../../core/sdk/sdk.js";
-import * as TextUtils4 from "./../../core/text_utils/text_utils.js";
-import * as AiAssistanceModel2 from "./../../models/ai_assistance/ai_assistance.js";
-import * as SourceFrame3 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI24 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common13 from "../../core/common/common.js";
+import * as i18n47 from "../../core/i18n/i18n.js";
+import * as SDK20 from "../../core/sdk/sdk.js";
+import * as TextUtils4 from "../../core/text_utils/text_utils.js";
+import * as AiAssistanceModel2 from "../../models/ai_assistance/ai_assistance.js";
+import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI24 from "../../ui/legacy/legacy.js";
+import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/KeyValueStorageItemsView.js
 var KeyValueStorageItemsView_exports = {};
 __export(KeyValueStorageItemsView_exports, {
   KeyValueStorageItemsView: () => KeyValueStorageItemsView
 });
-import "./../../ui/components/buttons/buttons.js";
-import * as i18n45 from "./../../core/i18n/i18n.js";
-import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
-import * as Geometry2 from "./../../models/geometry/geometry.js";
+import "../../ui/components/buttons/buttons.js";
+import * as i18n45 from "../../core/i18n/i18n.js";
+import * as AIAssistance from "../../models/ai_assistance/ai_assistance.js";
+import * as Geometry2 from "../../models/geometry/geometry.js";
 
 // gen/front_end/ui/legacy/components/data_grid/dataGridAiButton.css.js
 var dataGridAiButton_css_default = `/*
@@ -11299,9 +11357,9 @@ var dataGridAiButton_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./dataGridAiButton.css")} */`;
 
 // gen/front_end/panels/application/KeyValueStorageItemsView.js
-import * as UI23 from "./../../ui/legacy/legacy.js";
-import { Directives as LitDirectives, html as html15, nothing as nothing8, render as render15 } from "./../../ui/lit/lit.js";
-import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
+import * as UI23 from "../../ui/legacy/legacy.js";
+import { Directives as LitDirectives, html as html15, nothing as nothing9, render as render15 } from "../../ui/lit/lit.js";
+import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 import * as ApplicationComponents11 from "./components/components.js";
 var STORAGE_FLOATING_BUTTON_ACTION_ID = "ai-assistance.storage-floating-button";
 var { ARIAUtils: ARIAUtils7 } = UI23;
@@ -11377,7 +11435,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
                   @deselect=${() => input.onSelect(null)}
                 >
                   <table>
-                    ${input.showAiButton ? html15`<style>${dataGridAiButton_css_default}</style>` : nothing8}
+                    ${input.showAiButton ? html15`<style>${dataGridAiButton_css_default}</style>` : nothing9}
                     <tr>
                       <th id="key" sortable ?editable=${input.editable}>
                         ${i18nString23(UIStrings23.key)}
@@ -11392,7 +11450,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
                           @edit=${(e) => input.onEdit(item3.key, item3.value, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
                           @delete=${() => input.onDelete(item3.key)}
                           @contextmenu=${(e) => input.onContextMenu?.(item3, e.detail)}
-                          selected=${input.selectedKey === item3.key || nothing8}>
+                          selected=${input.selectedKey === item3.key || nothing9}>
                         <td>${input.showAiButton ? html15`
                             <span class="ai-button-container">
                               <devtools-floating-button
@@ -11401,7 +11459,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
                                 @click=${(e) => input.onAiButtonClick?.(item3, e)}
                               ></devtools-floating-button>
                             </span>
-                          ` : nothing8}${item3.key}</td>
+                          ` : nothing9}${item3.key}</td>
                         <td>${item3.value.substr(0, MAX_VALUE_LENGTH)}</td>
                       </tr>`)}
                       <tr placeholder></tr>
@@ -11815,15 +11873,16 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
 // gen/front_end/panels/application/ExtensionStorageItemsView.js
 var ExtensionStorageItemsView_exports = {};
 __export(ExtensionStorageItemsView_exports, {
+  ExtensionStorageItemsDispatcher: () => ExtensionStorageItemsDispatcher,
   ExtensionStorageItemsView: () => ExtensionStorageItemsView
 });
-import * as Common14 from "./../../core/common/common.js";
-import * as i18n49 from "./../../core/i18n/i18n.js";
-import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
-import * as JSON5 from "./../../third_party/json5/json5.js";
-import * as SourceFrame4 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI25 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common14 from "../../core/common/common.js";
+import * as i18n49 from "../../core/i18n/i18n.js";
+import * as TextUtils5 from "../../core/text_utils/text_utils.js";
+import * as JSON5 from "../../third_party/json5/json5.js";
+import * as SourceFrame4 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI25 from "../../ui/legacy/legacy.js";
+import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
 var UIStrings25 = {
   /**
    * @description Name for the "Extension Storage Items" table that shows the content of the extension Storage.
@@ -11837,6 +11896,14 @@ var UIStrings25 = {
 };
 var str_25 = i18n49.i18n.registerUIStrings("panels/application/ExtensionStorageItemsView.ts", UIStrings25);
 var i18nString25 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
+var ExtensionStorageItemsDispatcher;
+(function(ExtensionStorageItemsDispatcher2) {
+  let Events5;
+  (function(Events6) {
+    Events6["ITEM_EDITED"] = "ItemEdited";
+    Events6["ITEMS_REFRESHED"] = "ItemsRefreshed";
+  })(Events5 = ExtensionStorageItemsDispatcher2.Events || (ExtensionStorageItemsDispatcher2.Events = {}));
+})(ExtensionStorageItemsDispatcher || (ExtensionStorageItemsDispatcher = {}));
 var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
   #extensionStorage;
   extensionStorageItemsDispatcher;
@@ -13049,9 +13116,9 @@ __export(TrustTokensTreeElement_exports, {
   TrustTokensTreeElement: () => TrustTokensTreeElement,
   i18nString: () => i18nString27
 });
-import * as i18n53 from "./../../core/i18n/i18n.js";
-import { createIcon as createIcon9 } from "./../../ui/kit/kit.js";
-import * as UI28 from "./../../ui/legacy/legacy.js";
+import * as i18n53 from "../../core/i18n/i18n.js";
+import { createIcon as createIcon9 } from "../../ui/kit/kit.js";
+import * as UI28 from "../../ui/legacy/legacy.js";
 import * as ApplicationComponents12 from "./components/components.js";
 var UIStrings27 = {
   /**
@@ -13088,9 +13155,9 @@ var WebMCPTreeElement_exports = {};
 __export(WebMCPTreeElement_exports, {
   WebMCPTreeElement: () => WebMCPTreeElement
 });
-import { createIcon as createIcon10 } from "./../../ui/kit/kit.js";
-import * as UI30 from "./../../ui/legacy/legacy.js";
-import { html as html17, render as render18 } from "./../../ui/lit/lit.js";
+import { createIcon as createIcon10 } from "../../ui/kit/kit.js";
+import * as UI30 from "../../ui/legacy/legacy.js";
+import { html as html17, render as render18 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/WebMCPView.js
 var WebMCPView_exports = {};
@@ -13098,6 +13165,7 @@ __export(WebMCPView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW11,
   PAYLOAD_DEFAULT_VIEW: () => PAYLOAD_DEFAULT_VIEW,
   PayloadWidget: () => PayloadWidget,
+  TabId: () => TabId,
   ToolDetailsWidget: () => ToolDetailsWidget,
   WebMCPView: () => WebMCPView,
   filterToolCalls: () => filterToolCalls,
@@ -13105,25 +13173,25 @@ __export(WebMCPView_exports, {
   parsePayload: () => parsePayload,
   parseToolSchema: () => parseToolSchema
 });
-import "./../../ui/components/icon_button/icon_button.js";
-import "./../../ui/components/lists/lists.js";
-import "./../../ui/components/node_text/node_text.js";
-import "./../../ui/legacy/components/data_grid/data_grid.js";
-import "./../../ui/legacy/legacy.js";
-import * as Common17 from "./../../core/common/common.js";
-import * as Host3 from "./../../core/host/host.js";
-import * as i18n55 from "./../../core/i18n/i18n.js";
-import * as Platform10 from "./../../core/platform/platform.js";
-import * as SDK23 from "./../../core/sdk/sdk.js";
-import * as WebMCP from "./../../models/web_mcp/web_mcp.js";
-import * as Adorners from "./../../ui/components/adorners/adorners.js";
-import * as Buttons9 from "./../../ui/components/buttons/buttons.js";
-import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI29 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives7, html as html16, nothing as nothing9, render as render17 } from "./../../ui/lit/lit.js";
-import * as VisualLogging19 from "./../../ui/visual_logging/visual_logging.js";
-import * as Console2 from "./../console/console.js";
+import "../../ui/components/icon_button/icon_button.js";
+import "../../ui/components/lists/lists.js";
+import "../../ui/components/node_text/node_text.js";
+import "../../ui/legacy/components/data_grid/data_grid.js";
+import "../../ui/legacy/legacy.js";
+import * as Common17 from "../../core/common/common.js";
+import * as Host3 from "../../core/host/host.js";
+import * as i18n55 from "../../core/i18n/i18n.js";
+import * as Platform10 from "../../core/platform/platform.js";
+import * as SDK23 from "../../core/sdk/sdk.js";
+import * as WebMCP from "../../models/web_mcp/web_mcp.js";
+import * as Adorners from "../../ui/components/adorners/adorners.js";
+import * as Buttons9 from "../../ui/components/buttons/buttons.js";
+import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
+import * as Components4 from "../../ui/legacy/components/utils/utils.js";
+import * as UI29 from "../../ui/legacy/legacy.js";
+import { Directives as Directives7, html as html16, nothing as nothing10, render as render17 } from "../../ui/lit/lit.js";
+import * as VisualLogging19 from "../../ui/visual_logging/visual_logging.js";
+import * as Console2 from "../console/console.js";
 
 // gen/front_end/panels/console/symbolizedErrorWidget.css.js
 var symbolizedErrorWidget_css_default = `/*
@@ -13178,7 +13246,7 @@ var symbolizedErrorWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./symbolizedErrorWidget.css")} */`;
 
 // gen/front_end/panels/application/WebMCPView.js
-import * as ProtocolMonitor from "./../protocol_monitor/protocol_monitor.js";
+import * as ProtocolMonitor from "../protocol_monitor/protocol_monitor.js";
 
 // gen/front_end/panels/application/webMCPView.css.js
 var webMCPView_css_default = `/*
@@ -13666,6 +13734,12 @@ var UIStrings28 = {
 var str_28 = i18n55.i18n.registerUIStrings("panels/application/WebMCPView.ts", UIStrings28);
 var i18nString28 = i18n55.i18n.getLocalizedString.bind(void 0, str_28);
 var { widget: widget11 } = UI29.Widget;
+var TabId;
+(function(TabId2) {
+  TabId2["DETAILS"] = "webmcp.tool-details";
+  TabId2["INPUT"] = "webmcp.call-inputs";
+  TabId2["OUTPUT"] = "webmcp.call-outputs";
+})(TabId || (TabId = {}));
 function filterToolCalls(toolCalls, filterState) {
   let filtered = [...toolCalls];
   const statusTypes = filterState.statusTypes;
@@ -13878,7 +13952,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
                             ${!input.selectedCall ? html16`
                     <th id="input" weight="30">${i18nString28(UIStrings28.input)}</th>
                     <th id="output" weight="30">${i18nString28(UIStrings28.output)}</th>
-                            ` : nothing9}
+                            ` : nothing10}
                   </tr>
                       ${Directives7.repeat(input.toolCalls, (call) => call.invocationId + "-" + (call.result?.status ?? ""), (call) => html16`
                     <tr class=${Directives7.classMap({
@@ -13954,7 +14028,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
       /* TabId.OUTPUT */
     );
   }}>${call.result?.output !== void 0 ? JSON.stringify(call.result.output) : call.result?.errorText ?? ""}</td>
-                        ` : nothing9}
+                        ` : nothing10}
                     </tr>
                   `)}
                   </table>`}>
@@ -14125,7 +14199,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
       });
     }
   }}>${i18nString28(UIStrings28.runTool)}</devtools-button>
-          ` : nothing9}
+          ` : nothing10}
         </div>
       </devtools-split-view>
     </devtools-split-view>
@@ -14332,7 +14406,7 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
 };
 var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
   if (input.valueObject === void 0 && input.valueString === void 0 && !input.errorText && !input.symbolizedError) {
-    render17(nothing9, target);
+    render17(nothing10, target);
     return;
   }
   const isParsable = input.valueObject !== void 0;
@@ -14349,7 +14423,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
           <ul role="tree">
             <li role=treeitem class="object-properties-section-root-element object-properties-section source-code" open>
               ${object.description}
-              ${object.hasChildren ? ObjectUI2.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing9}
+              ${object.hasChildren ? ObjectUI2.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing10}
             </li>
           </ul>
         `}></devtools-tree>`;
@@ -14358,7 +14432,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
   const createErrorText = (text) => html16`<div class="payload-value source-code error-text">${text}</div>`;
   const createException = (error) => {
     if (!error) {
-      return nothing9;
+      return nothing10;
     }
     return html16`
       <div class="payload-value source-code error-text">
@@ -14373,7 +14447,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
     <style>${symbolizedErrorWidget_css_default}</style>
     <div class="call-payload-view">
       <div class="call-payload-content">
-            ${isParsable ? createPayload(input.valueObject) : input.valueString !== void 0 ? createSourceText(input.valueString) : input.symbolizedError ? createException(input.symbolizedError) : input.errorText ? createErrorText(input.errorText) : nothing9}
+            ${isParsable ? createPayload(input.valueObject) : input.valueString !== void 0 ? createSourceText(input.valueString) : input.symbolizedError ? createException(input.symbolizedError) : input.errorText ? createErrorText(input.errorText) : nothing10}
       </div>
     </div>
   `, target);
@@ -14445,7 +14519,7 @@ var PayloadWidget = class extends UI29.Widget.Widget {
 };
 var TOOL_DETAILS_VIEW = (input, output, target) => {
   if (!input.tool) {
-    render17(nothing9, target);
+    render17(nothing10, target);
     return;
   }
   const tool = input.tool;
@@ -14466,11 +14540,11 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
       ${flags.length > 0 ? html16`
       <div class="label">${i18nString28(UIStrings28.flags)}</div>
       <div class="value">${formattedFlags}</div>
-      ` : nothing9}
+      ` : nothing10}
       ${tool.frame ? html16`
       <div class="label">${i18nString28(UIStrings28.frame)}</div>
       <div class="value">${Components4.Linkifier.Linkifier.linkifyRevealable(tool.frame, tool.frame.displayName())}</div>
-      ` : nothing9}
+      ` : nothing10}
       ${origin instanceof SDK23.DOMModel.DOMNode ? html16`
       <div class="label">${i18nString28(UIStrings28.origin)}</div>
       <div class="value tool-origin-container">
@@ -14499,7 +14573,7 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
       <div class="label">${i18nString28(UIStrings28.origin)}</div>
       <div class="value stack-trace">
         ${widget11(Components4.JSPresentationUtils.StackTracePreviewContent, { stackTrace: origin, options: { expandable: true } })}
-      </div>` : nothing9}
+      </div>` : nothing10}
     </div>
     ${input.isUnregistered ? html16`
       <div class="call-to-action">
@@ -14510,7 +14584,7 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
           </div>
         </div>
       </div>
-    ` : nothing9}
+    ` : nothing10}
   `, target);
 };
 var ToolDetailsWidget = class extends UI29.Widget.Widget {
@@ -15741,10 +15815,10 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
     this.initialize();
   }
   initialize() {
-    SDK24.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, Events2.DatabaseAdded, this.indexedDBAdded, this, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, Events2.DatabaseRemoved, this.indexedDBRemoved, this, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, Events2.DatabaseLoaded, this.indexedDBLoaded, this, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, Events2.IndexedDBContentUpdated, this.indexedDBContentUpdated, this, { scoped: true });
+    SDK24.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, Events4.DatabaseAdded, this.indexedDBAdded, this, { scoped: true });
+    SDK24.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, Events4.DatabaseRemoved, this.indexedDBRemoved, this, { scoped: true });
+    SDK24.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, Events4.DatabaseLoaded, this.indexedDBLoaded, this, { scoped: true });
+    SDK24.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, Events4.IndexedDBContentUpdated, this.indexedDBContentUpdated, this, { scoped: true });
     this.idbDatabaseTreeElements = [];
     for (const indexedDBModel of SDK24.TargetManager.TargetManager.instance().models(IndexedDBModel, { scoped: true })) {
       const databases = indexedDBModel.databases();
@@ -15843,7 +15917,7 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
     this.idbObjectStoreTreeElements = /* @__PURE__ */ new Map();
     const icon = createIcon11("database");
     this.setLeadingIcons([icon]);
-    this.model.addEventListener(Events2.DatabaseNamesRefreshed, this.refreshIndexedDB, this);
+    this.model.addEventListener(Events4.DatabaseNamesRefreshed, this.refreshIndexedDB, this);
   }
   get itemURL() {
     return "indexedDB://" + this.databaseId.storageBucket.storageKey + "/" + (this.databaseId.storageBucket.name ?? "") + "/" + this.databaseId.name;

@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/models/computed_style",
     "skipLibCheck": true,
     "sourceMap": true,

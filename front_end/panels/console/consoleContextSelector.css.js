@@ -11,7 +11,7 @@ export default `/*
 
 .widget {
   .console-context-selector-element{
-    padding: 2px 1px 2px 2px;
+    padding: var(--sys-size-2) var(--sys-size-1) var(--sys-size-2) var(--sys-size-2);
     white-space: nowrap;
     display: flex;
     flex-direction: column;
@@ -35,7 +35,7 @@ export default `/*
 
     .badge {
       pointer-events: none;
-      margin-right: 4px;
+      margin-right: var(--sys-size-3);
       display: inline-block;
       height: 15px;
     }

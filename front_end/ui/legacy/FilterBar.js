@@ -133,6 +133,14 @@ export class FilterBar extends Common.ObjectWrapper.eventMixin(HBox) {
         return this.alwaysShowFilters || (this.stateSetting.get() && this.enabled);
     }
 }
+export var FilterBarEvents;
+(function (FilterBarEvents) {
+    FilterBarEvents["CHANGED"] = "Changed";
+})(FilterBarEvents || (FilterBarEvents = {}));
+export var FilterUIEvents;
+(function (FilterUIEvents) {
+    FilterUIEvents["FILTER_CHANGED"] = "FilterChanged";
+})(FilterUIEvents || (FilterUIEvents = {}));
 export class TextFilterUI extends Common.ObjectWrapper.ObjectWrapper {
     filterElement;
     #filter;

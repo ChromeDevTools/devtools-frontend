@@ -10,11 +10,11 @@ __export(AddSourceMapURLDialog_exports, {
   AddDebugInfoURLDialog: () => AddDebugInfoURLDialog,
   DEFAULT_VIEW: () => DEFAULT_VIEW
 });
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import { html, render } from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
+import * as UI from "../../ui/legacy/legacy.js";
+import { html, render } from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/dialog.css.js
 var dialog_css_default = `/*
@@ -128,13 +128,13 @@ var AiCodeCompletionPlugin_exports = {};
 __export(AiCodeCompletionPlugin_exports, {
   AiCodeCompletionPlugin: () => AiCodeCompletionPlugin
 });
-import * as Host from "./../../core/host/host.js";
-import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
-import * as AiCodeGeneration from "./../../models/ai_code_generation/ai_code_generation.js";
-import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
-import * as SourceFrame from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import * as PanelCommon from "./../common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as AiCodeCompletion from "../../models/ai_code_completion/ai_code_completion.js";
+import * as AiCodeGeneration from "../../models/ai_code_generation/ai_code_generation.js";
+import * as TextEditor from "../../ui/components/text_editor/text_editor.js";
+import * as SourceFrame from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI2 from "../../ui/legacy/legacy.js";
+import * as PanelCommon from "../common/common.js";
 
 // gen/front_end/panels/sources/Plugin.js
 var Plugin_exports = {};
@@ -383,16 +383,16 @@ __export(BreakpointEditDialog_exports, {
   BreakpointEditDialog: () => BreakpointEditDialog,
   DEFAULT_VIEW: () => DEFAULT_VIEW2
 });
-import "./../../ui/kit/kit.js";
-import "./../../ui/legacy/legacy.js";
-import * as Common from "./../../core/common/common.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
-import * as TextEditor2 from "./../../ui/components/text_editor/text_editor.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html2, render as render2 } from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/kit/kit.js";
+import "../../ui/legacy/legacy.js";
+import * as Common from "../../core/common/common.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as CodeMirror from "../../third_party/codemirror.next/codemirror.next.js";
+import * as TextEditor2 from "../../ui/components/text_editor/text_editor.js";
+import * as UI3 from "../../ui/legacy/legacy.js";
+import { Directives, html as html2, render as render2 } from "../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/breakpointEditDialog.css.js
 var breakpointEditDialog_css_default = `/*
@@ -740,26 +740,27 @@ var BreakpointEditDialog = class extends UI3.Widget.Widget {
 // gen/front_end/panels/sources/BreakpointsView.js
 var BreakpointsView_exports = {};
 __export(BreakpointsView_exports, {
+  BreakpointStatus: () => BreakpointStatus,
   BreakpointsSidebarController: () => BreakpointsSidebarController,
   BreakpointsView: () => BreakpointsView,
   DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
-import "./../../ui/kit/kit.js";
-import * as Common3 from "./../../core/common/common.js";
-import * as Host2 from "./../../core/host/host.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Platform2 from "./../../core/platform/platform.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../../core/platform/platform.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as Bindings from "./../../models/bindings/bindings.js";
-import * as Breakpoints from "./../../models/breakpoints/breakpoints.js";
-import * as Workspace from "./../../models/workspace/workspace.js";
-import * as Input from "./../../ui/components/input/input.js";
-import * as RenderCoordinator from "./../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
-import * as Lit from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/kit/kit.js";
+import * as Common3 from "../../core/common/common.js";
+import * as Host2 from "../../core/host/host.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
+import * as Platform2 from "../../core/platform/platform.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "../../core/platform/platform.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as Bindings from "../../models/bindings/bindings.js";
+import * as Breakpoints from "../../models/breakpoints/breakpoints.js";
+import * as Workspace from "../../models/workspace/workspace.js";
+import * as Input from "../../ui/components/input/input.js";
+import * as RenderCoordinator from "../../ui/components/render_coordinator/render_coordinator.js";
+import * as UI4 from "../../ui/legacy/legacy.js";
+import * as Lit from "../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/breakpointsView.css.js
 var breakpointsView_css_default = `/*
@@ -1047,9 +1048,9 @@ __export(BreakpointsViewUtils_exports, {
   findNextNodeForKeyboardNavigation: () => findNextNodeForKeyboardNavigation,
   getDifferentiatingPathMap: () => getDifferentiatingPathMap
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as Platform from "./../../core/platform/platform.js";
-import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
+import * as Common2 from "../../core/common/common.js";
+import * as Platform from "../../core/platform/platform.js";
+import { assertNotNullOrUndefined } from "../../core/platform/platform.js";
 var SUMMARY_ELEMENT_SELECTOR = "summary";
 var domNodeIsTree = (domNode) => {
   return domNode.getAttribute("role") === "tree";
@@ -1350,6 +1351,12 @@ var UIStrings3 = {
 var str_3 = i18n5.i18n.registerUIStrings("panels/sources/BreakpointsView.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var MAX_SNIPPET_LENGTH = 200;
+var BreakpointStatus;
+(function(BreakpointStatus2) {
+  BreakpointStatus2["ENABLED"] = "ENABLED";
+  BreakpointStatus2["DISABLED"] = "DISABLED";
+  BreakpointStatus2["INDETERMINATE"] = "INDETERMINATE";
+})(BreakpointStatus || (BreakpointStatus = {}));
 var breakpointsViewInstance = null;
 var breakpointsViewControllerInstance;
 var BreakpointsSidebarController = class _BreakpointsSidebarController {
@@ -2092,18 +2099,18 @@ __export(CallStackSidebarPane_exports, {
   defaultMaxAsyncStackChainDepth: () => defaultMaxAsyncStackChainDepth,
   elementSymbol: () => elementSymbol
 });
-import * as Common13 from "./../../core/common/common.js";
-import * as Host9 from "./../../core/host/host.js";
-import * as i18n35 from "./../../core/i18n/i18n.js";
-import * as Platform13 from "./../../core/platform/platform.js";
-import * as Bindings9 from "./../../models/bindings/bindings.js";
-import * as Persistence10 from "./../../models/persistence/persistence.js";
-import * as StackTrace5 from "./../../models/stack_trace/stack_trace.js";
-import * as Workspace23 from "./../../models/workspace/workspace.js";
-import { Icon as Icon3 } from "./../../ui/kit/kit.js";
-import * as UI18 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html8, render as render9 } from "./../../ui/lit/lit.js";
-import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common13 from "../../core/common/common.js";
+import * as Host9 from "../../core/host/host.js";
+import * as i18n35 from "../../core/i18n/i18n.js";
+import * as Platform13 from "../../core/platform/platform.js";
+import * as Bindings9 from "../../models/bindings/bindings.js";
+import * as Persistence10 from "../../models/persistence/persistence.js";
+import * as StackTrace5 from "../../models/stack_trace/stack_trace.js";
+import * as Workspace23 from "../../models/workspace/workspace.js";
+import { Icon as Icon3 } from "../../ui/kit/kit.js";
+import * as UI18 from "../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html8, render as render9 } from "../../ui/lit/lit.js";
+import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/callStackSidebarPane.css.js
 var callStackSidebarPane_css_default = `/*
@@ -2259,25 +2266,25 @@ __export(SourcesPanel_exports, {
   lastModificationTimeout: () => lastModificationTimeout,
   minToolbarWidth: () => minToolbarWidth
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common12 from "./../../core/common/common.js";
-import * as Host8 from "./../../core/host/host.js";
-import * as i18n33 from "./../../core/i18n/i18n.js";
-import * as Platform12 from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
-import * as SDK11 from "./../../core/sdk/sdk.js";
-import * as Badges2 from "./../../models/badges/badges.js";
-import * as Bindings8 from "./../../models/bindings/bindings.js";
-import * as Breakpoints3 from "./../../models/breakpoints/breakpoints.js";
-import * as StackTrace3 from "./../../models/stack_trace/stack_trace.js";
-import * as Workspace21 from "./../../models/workspace/workspace.js";
-import * as PanelCommon3 from "./../common/common.js";
-import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
-import * as UI17 from "./../../ui/legacy/legacy.js";
-import * as Settings9 from "./../../ui/settings/settings.js";
-import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
-import * as Snippets4 from "./../snippets/snippets.js";
+import "../../ui/legacy/legacy.js";
+import * as Common12 from "../../core/common/common.js";
+import * as Host8 from "../../core/host/host.js";
+import * as i18n33 from "../../core/i18n/i18n.js";
+import * as Platform12 from "../../core/platform/platform.js";
+import * as Root2 from "../../core/root/root.js";
+import * as SDK11 from "../../core/sdk/sdk.js";
+import * as Badges2 from "../../models/badges/badges.js";
+import * as Bindings8 from "../../models/bindings/bindings.js";
+import * as Breakpoints3 from "../../models/breakpoints/breakpoints.js";
+import * as StackTrace3 from "../../models/stack_trace/stack_trace.js";
+import * as Workspace21 from "../../models/workspace/workspace.js";
+import * as PanelCommon3 from "../common/common.js";
+import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
+import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.js";
+import * as UI17 from "../../ui/legacy/legacy.js";
+import * as Settings9 from "../../ui/settings/settings.js";
+import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
+import * as Snippets4 from "../snippets/snippets.js";
 
 // gen/front_end/panels/sources/DebuggerPausedMessage.js
 var DebuggerPausedMessage_exports = {};
@@ -2285,20 +2292,20 @@ __export(DebuggerPausedMessage_exports, {
   BreakpointTypeNouns: () => BreakpointTypeNouns,
   DebuggerPausedMessage: () => DebuggerPausedMessage
 });
-import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon from "./../common/common.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
+import * as SDK4 from "../../core/sdk/sdk.js";
+import * as UI5 from "../../ui/legacy/legacy.js";
+import * as Lit2 from "../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon from "../common/common.js";
 
 // gen/front_end/panels/sources/CategorizedBreakpointL10n.js
 var CategorizedBreakpointL10n_exports = {};
 __export(CategorizedBreakpointL10n_exports, {
   getLocalizedBreakpointName: () => getLocalizedBreakpointName
 });
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
+import * as SDK3 from "../../core/sdk/sdk.js";
 var UIStrings4 = {
   /**
    * @description Name of a breakpoint type.
@@ -2866,23 +2873,23 @@ __export(NavigatorView_exports, {
   NavigatorView: () => NavigatorView,
   Types: () => Types
 });
-import * as Common6 from "./../../core/common/common.js";
-import * as Host3 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
-import * as SDK5 from "./../../core/sdk/sdk.js";
-import * as TextUtils4 from "./../../core/text_utils/text_utils.js";
-import * as AiAssistance from "./../../models/ai_assistance/ai_assistance.js";
-import * as Bindings3 from "./../../models/bindings/bindings.js";
-import * as Persistence3 from "./../../models/persistence/persistence.js";
-import * as Workspace5 from "./../../models/workspace/workspace.js";
-import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
-import * as Spinners from "./../../ui/components/spinners/spinners.js";
-import { createIcon } from "./../../ui/kit/kit.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
-import * as Snippets from "./../snippets/snippets.js";
-import { PanelUtils } from "./../utils/utils.js";
+import * as Common6 from "../../core/common/common.js";
+import * as Host3 from "../../core/host/host.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
+import * as Platform5 from "../../core/platform/platform.js";
+import * as SDK5 from "../../core/sdk/sdk.js";
+import * as TextUtils4 from "../../core/text_utils/text_utils.js";
+import * as AiAssistance from "../../models/ai_assistance/ai_assistance.js";
+import * as Bindings3 from "../../models/bindings/bindings.js";
+import * as Persistence3 from "../../models/persistence/persistence.js";
+import * as Workspace5 from "../../models/workspace/workspace.js";
+import * as Buttons2 from "../../ui/components/buttons/buttons.js";
+import * as Spinners from "../../ui/components/spinners/spinners.js";
+import { createIcon } from "../../ui/kit/kit.js";
+import * as UI7 from "../../ui/legacy/legacy.js";
+import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
+import * as Snippets from "../snippets/snippets.js";
+import { PanelUtils } from "../utils/utils.js";
 
 // gen/front_end/panels/sources/navigatorTree.css.js
 var navigatorTree_css_default = `/*
@@ -3071,9 +3078,9 @@ __export(SearchSourcesView_exports, {
   SearchSources: () => SearchSources,
   SearchSourcesView: () => SearchSourcesView
 });
-import * as Common5 from "./../../core/common/common.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
-import * as Search from "./../search/search.js";
+import * as Common5 from "../../core/common/common.js";
+import * as UI6 from "../../ui/legacy/legacy.js";
+import * as Search from "../search/search.js";
 
 // gen/front_end/panels/sources/SourcesSearchScope.js
 var SourcesSearchScope_exports = {};
@@ -3081,12 +3088,12 @@ __export(SourcesSearchScope_exports, {
   FileBasedSearchResult: () => FileBasedSearchResult,
   SourcesSearchScope: () => SourcesSearchScope
 });
-import * as Common4 from "./../../core/common/common.js";
-import * as Platform3 from "./../../core/platform/platform.js";
-import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
-import * as Bindings2 from "./../../models/bindings/bindings.js";
-import * as Persistence from "./../../models/persistence/persistence.js";
-import * as Workspace3 from "./../../models/workspace/workspace.js";
+import * as Common4 from "../../core/common/common.js";
+import * as Platform3 from "../../core/platform/platform.js";
+import * as TextUtils2 from "../../core/text_utils/text_utils.js";
+import * as Bindings2 from "../../models/bindings/bindings.js";
+import * as Persistence from "../../models/persistence/persistence.js";
+import * as Workspace3 from "../../models/workspace/workspace.js";
 var SourcesSearchScope = class _SourcesSearchScope {
   searchId;
   searchResultCandidates;
@@ -5155,22 +5162,23 @@ var SourcesView_exports = {};
 __export(SourcesView_exports, {
   ActionDelegate: () => ActionDelegate2,
   DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  Events: () => Events3,
   SourcesView: () => SourcesView,
   SwitchFileActionDelegate: () => SwitchFileActionDelegate
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common11 from "./../../core/common/common.js";
-import * as i18n29 from "./../../core/i18n/i18n.js";
-import * as Platform11 from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
-import * as Bindings7 from "./../../models/bindings/bindings.js";
-import * as Persistence9 from "./../../models/persistence/persistence.js";
-import * as Workspace19 from "./../../models/workspace/workspace.js";
-import * as QuickOpen from "./../../ui/legacy/components/quick_open/quick_open.js";
-import * as UI15 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html6, render as render7 } from "./../../ui/lit/lit.js";
-import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/legacy.js";
+import * as Common11 from "../../core/common/common.js";
+import * as i18n29 from "../../core/i18n/i18n.js";
+import * as Platform11 from "../../core/platform/platform.js";
+import * as Root from "../../core/root/root.js";
+import * as SDK9 from "../../core/sdk/sdk.js";
+import * as Bindings7 from "../../models/bindings/bindings.js";
+import * as Persistence9 from "../../models/persistence/persistence.js";
+import * as Workspace19 from "../../models/workspace/workspace.js";
+import * as QuickOpen from "../../ui/legacy/components/quick_open/quick_open.js";
+import * as UI15 from "../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html6, render as render7 } from "../../ui/lit/lit.js";
+import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/EditingLocationHistoryManager.js
 var EditingLocationHistoryManager_exports = {};
@@ -5178,8 +5186,8 @@ __export(EditingLocationHistoryManager_exports, {
   EditingLocationHistoryManager: () => EditingLocationHistoryManager,
   HistoryDepth: () => HistoryDepth
 });
-import * as Workspace7 from "./../../models/workspace/workspace.js";
-import * as SourceFrame3 from "./../../ui/legacy/components/source_frame/source_frame.js";
+import * as Workspace7 from "../../models/workspace/workspace.js";
+import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
 var HistoryDepth = 20;
 var EditingLocationHistoryManager = class {
   sourcesView;
@@ -5323,37 +5331,39 @@ var sourcesView_css_default = `/*
 var TabbedEditorContainer_exports = {};
 __export(TabbedEditorContainer_exports, {
   EditorContainerTabDelegate: () => EditorContainerTabDelegate,
+  Events: () => Events2,
   History: () => History,
   HistoryItem: () => HistoryItem,
   TabbedEditorContainer: () => TabbedEditorContainer
 });
-import * as Common10 from "./../../core/common/common.js";
-import * as Host7 from "./../../core/host/host.js";
-import * as i18n27 from "./../../core/i18n/i18n.js";
-import * as Platform10 from "./../../core/platform/platform.js";
-import * as TextUtils10 from "./../../core/text_utils/text_utils.js";
-import * as Persistence7 from "./../../models/persistence/persistence.js";
-import * as Workspace17 from "./../../models/workspace/workspace.js";
-import * as Tooltips2 from "./../../ui/components/tooltips/tooltips.js";
-import * as uiI18n2 from "./../../ui/i18n/i18n.js";
-import { Icon as Icon2, Link } from "./../../ui/kit/kit.js";
-import * as SourceFrame8 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI14 from "./../../ui/legacy/legacy.js";
-import { html as html5, render as render6 } from "./../../ui/lit/lit.js";
-import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelCommon2 from "./../common/common.js";
-import * as Snippets3 from "./../snippets/snippets.js";
+import * as Common10 from "../../core/common/common.js";
+import * as Host7 from "../../core/host/host.js";
+import * as i18n27 from "../../core/i18n/i18n.js";
+import * as Platform10 from "../../core/platform/platform.js";
+import * as TextUtils10 from "../../core/text_utils/text_utils.js";
+import * as Persistence7 from "../../models/persistence/persistence.js";
+import * as Workspace17 from "../../models/workspace/workspace.js";
+import * as Tooltips2 from "../../ui/components/tooltips/tooltips.js";
+import * as uiI18n2 from "../../ui/i18n/i18n.js";
+import { Icon as Icon2, Link } from "../../ui/kit/kit.js";
+import * as SourceFrame8 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI14 from "../../ui/legacy/legacy.js";
+import { html as html5, render as render6 } from "../../ui/lit/lit.js";
+import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
+import * as PanelCommon2 from "../common/common.js";
+import * as Snippets3 from "../snippets/snippets.js";
 import * as Components2 from "./components/components.js";
 
 // gen/front_end/panels/sources/UISourceCodeFrame.js
 var UISourceCodeFrame_exports = {};
 __export(UISourceCodeFrame_exports, {
+  Events: () => Events,
   UISourceCodeFrame: () => UISourceCodeFrame
 });
-import * as Common9 from "./../../core/common/common.js";
-import * as Host6 from "./../../core/host/host.js";
-import * as i18n25 from "./../../core/i18n/i18n.js";
-import * as TextUtils8 from "./../../core/text_utils/text_utils.js";
+import * as Common9 from "../../core/common/common.js";
+import * as Host6 from "../../core/host/host.js";
+import * as i18n25 from "../../core/i18n/i18n.js";
+import * as TextUtils8 from "../../core/text_utils/text_utils.js";
 
 // gen/front_end/entrypoints/formatter_worker/FormatterActions.js
 var FORMATTABLE_MEDIA_TYPES = [
@@ -5363,33 +5373,34 @@ var FORMATTABLE_MEDIA_TYPES = [
   "text/css",
   "text/html",
   "text/javascript"
+  /* TEXT_JAVASCRIPT */
 ];
 
 // gen/front_end/panels/sources/UISourceCodeFrame.js
-import * as AiCodeCompletion3 from "./../../models/ai_code_completion/ai_code_completion.js";
-import * as Formatter2 from "./../../models/formatter/formatter.js";
-import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
-import * as Persistence5 from "./../../models/persistence/persistence.js";
-import * as Workspace15 from "./../../models/workspace/workspace.js";
-import * as CodeMirror6 from "./../../third_party/codemirror.next/codemirror.next.js";
-import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
-import * as TextEditor5 from "./../../ui/components/text_editor/text_editor.js";
-import { Icon } from "./../../ui/kit/kit.js";
-import * as SourceFrame6 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI13 from "./../../ui/legacy/legacy.js";
+import * as AiCodeCompletion3 from "../../models/ai_code_completion/ai_code_completion.js";
+import * as Formatter2 from "../../models/formatter/formatter.js";
+import * as IssuesManager from "../../models/issues_manager/issues_manager.js";
+import * as Persistence5 from "../../models/persistence/persistence.js";
+import * as Workspace15 from "../../models/workspace/workspace.js";
+import * as CodeMirror6 from "../../third_party/codemirror.next/codemirror.next.js";
+import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.js";
+import * as TextEditor5 from "../../ui/components/text_editor/text_editor.js";
+import { Icon } from "../../ui/kit/kit.js";
+import * as SourceFrame6 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI13 from "../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/sources/CoveragePlugin.js
 var CoveragePlugin_exports = {};
 __export(CoveragePlugin_exports, {
   CoveragePlugin: () => CoveragePlugin
 });
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
-import * as Workspace9 from "./../../models/workspace/workspace.js";
-import * as CodeMirror2 from "./../../third_party/codemirror.next/codemirror.next.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
-import * as Coverage from "./../coverage/coverage.js";
+import * as i18n13 from "../../core/i18n/i18n.js";
+import * as SDK6 from "../../core/sdk/sdk.js";
+import * as TextUtils5 from "../../core/text_utils/text_utils.js";
+import * as Workspace9 from "../../models/workspace/workspace.js";
+import * as CodeMirror2 from "../../third_party/codemirror.next/codemirror.next.js";
+import * as UI8 from "../../ui/legacy/legacy.js";
+import * as Coverage from "../coverage/coverage.js";
 var UIStrings7 = {
   /**
    * @description Text for coverage status bar item in Sources panel.
@@ -5598,19 +5609,19 @@ __export(CSSPlugin_exports, {
   CSSPlugin: () => CSSPlugin,
   cssBindings: () => cssBindings
 });
-import * as Common7 from "./../../core/common/common.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined3 } from "./../../core/platform/platform.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
-import * as Bindings4 from "./../../models/bindings/bindings.js";
-import * as Geometry from "./../../models/geometry/geometry.js";
-import * as Workspace10 from "./../../models/workspace/workspace.js";
-import * as CodeMirror3 from "./../../third_party/codemirror.next/codemirror.next.js";
-import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
-import * as ColorPicker from "./../../ui/legacy/components/color_picker/color_picker.js";
-import * as InlineEditor from "./../../ui/legacy/components/inline_editor/inline_editor.js";
-import * as UI9 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common7 from "../../core/common/common.js";
+import * as i18n15 from "../../core/i18n/i18n.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined3 } from "../../core/platform/platform.js";
+import * as SDK7 from "../../core/sdk/sdk.js";
+import * as Bindings4 from "../../models/bindings/bindings.js";
+import * as Geometry from "../../models/geometry/geometry.js";
+import * as Workspace10 from "../../models/workspace/workspace.js";
+import * as CodeMirror3 from "../../third_party/codemirror.next/codemirror.next.js";
+import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
+import * as ColorPicker from "../../ui/legacy/components/color_picker/color_picker.js";
+import * as InlineEditor from "../../ui/legacy/components/inline_editor/inline_editor.js";
+import * as UI9 from "../../ui/legacy/legacy.js";
+import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 var UIStrings8 = {
   /**
    * @description Swatch icon element title in CSSPlugin of the Sources panel
@@ -5792,6 +5803,11 @@ var CurveSwatchWidget = class extends CodeMirror3.WidgetType {
     return true;
   }
 };
+var TooltipType;
+(function(TooltipType2) {
+  TooltipType2[TooltipType2["COLOR"] = 0] = "COLOR";
+  TooltipType2[TooltipType2["CURVE"] = 1] = "CURVE";
+})(TooltipType || (TooltipType = {}));
 function createCSSTooltip(active) {
   return {
     pos: active.pos,
@@ -6013,28 +6029,28 @@ __export(DebuggerPlugin_exports, {
   getVariableNamesByLine: () => getVariableNamesByLine,
   getVariableValuesByLine: () => getVariableValuesByLine
 });
-import * as Common8 from "./../../core/common/common.js";
-import * as Host4 from "./../../core/host/host.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
-import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
-import * as Badges from "./../../models/badges/badges.js";
-import * as Bindings5 from "./../../models/bindings/bindings.js";
-import * as Breakpoints2 from "./../../models/breakpoints/breakpoints.js";
-import * as Formatter from "./../../models/formatter/formatter.js";
-import * as SourceMapScopes from "./../../models/source_map_scopes/source_map_scopes.js";
-import * as StackTrace from "./../../models/stack_trace/stack_trace.js";
-import * as Workspace12 from "./../../models/workspace/workspace.js";
-import * as CodeMirror4 from "./../../third_party/codemirror.next/codemirror.next.js";
-import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
-import * as TextEditor3 from "./../../ui/components/text_editor/text_editor.js";
-import * as Tooltips from "./../../ui/components/tooltips/tooltips.js";
-import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as SourceFrame4 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI10 from "./../../ui/legacy/legacy.js";
-import { render as render5 } from "./../../ui/lit/lit.js";
-import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common8 from "../../core/common/common.js";
+import * as Host4 from "../../core/host/host.js";
+import * as i18n17 from "../../core/i18n/i18n.js";
+import * as Platform6 from "../../core/platform/platform.js";
+import * as SDK8 from "../../core/sdk/sdk.js";
+import * as TextUtils6 from "../../core/text_utils/text_utils.js";
+import * as Badges from "../../models/badges/badges.js";
+import * as Bindings5 from "../../models/bindings/bindings.js";
+import * as Breakpoints2 from "../../models/breakpoints/breakpoints.js";
+import * as Formatter from "../../models/formatter/formatter.js";
+import * as SourceMapScopes from "../../models/source_map_scopes/source_map_scopes.js";
+import * as StackTrace from "../../models/stack_trace/stack_trace.js";
+import * as Workspace12 from "../../models/workspace/workspace.js";
+import * as CodeMirror4 from "../../third_party/codemirror.next/codemirror.next.js";
+import * as Buttons3 from "../../ui/components/buttons/buttons.js";
+import * as TextEditor3 from "../../ui/components/text_editor/text_editor.js";
+import * as Tooltips from "../../ui/components/tooltips/tooltips.js";
+import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
+import * as SourceFrame4 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI10 from "../../ui/legacy/legacy.js";
+import { render as render5 } from "../../ui/lit/lit.js";
+import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 var { EMPTY_BREAKPOINT_CONDITION, NEVER_PAUSE_HERE_CONDITION } = Breakpoints2.BreakpointManager;
 var UIStrings9 = {
   /**
@@ -8067,10 +8083,10 @@ function inlineLogpointArrow(color, outline2, opacity = "1") {
 }
 
 // gen/front_end/panels/sources/ProfilePlugin.js
-import * as i18n19 from "./../../core/i18n/i18n.js";
-import * as Platform7 from "./../../core/platform/platform.js";
-import * as Workspace14 from "./../../models/workspace/workspace.js";
-import * as CodeMirror5 from "./../../third_party/codemirror.next/codemirror.next.js";
+import * as i18n19 from "../../core/i18n/i18n.js";
+import * as Platform7 from "../../core/platform/platform.js";
+import * as Workspace14 from "../../models/workspace/workspace.js";
+import * as CodeMirror5 from "../../third_party/codemirror.next/codemirror.next.js";
 var UIStrings10 = {
   /**
    * @description The millisecond unit.
@@ -8203,11 +8219,11 @@ var ResourceOriginPlugin_exports = {};
 __export(ResourceOriginPlugin_exports, {
   ResourceOriginPlugin: () => ResourceOriginPlugin
 });
-import * as i18n21 from "./../../core/i18n/i18n.js";
-import * as Bindings6 from "./../../models/bindings/bindings.js";
-import * as uiI18n from "./../../ui/i18n/i18n.js";
-import * as Components from "./../../ui/legacy/components/utils/utils.js";
-import * as UI11 from "./../../ui/legacy/legacy.js";
+import * as i18n21 from "../../core/i18n/i18n.js";
+import * as Bindings6 from "../../models/bindings/bindings.js";
+import * as uiI18n from "../../ui/i18n/i18n.js";
+import * as Components from "../../ui/legacy/components/utils/utils.js";
+import * as UI11 from "../../ui/legacy/legacy.js";
 var UIStrings11 = {
   /**
    * @description Text in the bottom toolbar of the Sources panel that lists the source mapped origin scripts.
@@ -8275,11 +8291,11 @@ var SnippetsPlugin_exports = {};
 __export(SnippetsPlugin_exports, {
   SnippetsPlugin: () => SnippetsPlugin
 });
-import * as Host5 from "./../../core/host/host.js";
-import * as i18n23 from "./../../core/i18n/i18n.js";
-import * as TextEditor4 from "./../../ui/components/text_editor/text_editor.js";
-import * as UI12 from "./../../ui/legacy/legacy.js";
-import * as Snippets2 from "./../snippets/snippets.js";
+import * as Host5 from "../../core/host/host.js";
+import * as i18n23 from "../../core/i18n/i18n.js";
+import * as TextEditor4 from "../../ui/components/text_editor/text_editor.js";
+import * as UI12 from "../../ui/legacy/legacy.js";
+import * as Snippets2 from "../snippets/snippets.js";
 var UIStrings12 = {
   /**
    * @description Text in Snippets plugin of the Sources panel.
@@ -8777,6 +8793,10 @@ function getIconDataForMessage(message) {
   }
   return getIconDataForLevel(message.level());
 }
+var Events;
+(function(Events4) {
+  Events4["TOOLBAR_ITEMS_CHANGED"] = "ToolbarItemsChanged";
+})(Events || (Events = {}));
 var pluginCompartment = new CodeMirror6.Compartment();
 var RowMessage = class {
   origin;
@@ -9066,6 +9086,13 @@ var UIStrings14 = {
 };
 var str_14 = i18n27.i18n.registerUIStrings("panels/sources/TabbedEditorContainer.ts", UIStrings14);
 var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
+var SourceViewType;
+(function(SourceViewType2) {
+  SourceViewType2["IMAGE_VIEW"] = "ImageView";
+  SourceViewType2["FONT_VIEW"] = "FontView";
+  SourceViewType2["HEADERS_VIEW"] = "HeadersView";
+  SourceViewType2["SOURCE_VIEW"] = "SourceView";
+})(SourceViewType || (SourceViewType = {}));
 var HEADER_OVERRIDES_FILENAME = ".headers";
 var tabId = 0;
 var TabbedEditorContainer = class extends Common10.ObjectWrapper.eventMixin(UI14.Widget.VBox) {
@@ -9721,6 +9748,11 @@ var TabbedEditorContainer = class extends Common10.ObjectWrapper.eventMixin(UI14
   }
 };
 var nextTooltipId = 1;
+var Events2;
+(function(Events4) {
+  Events4["EDITOR_SELECTED"] = "EditorSelected";
+  Events4["EDITOR_CLOSED"] = "EditorClosed";
+})(Events2 || (Events2 = {}));
 var MAX_PREVIOUSLY_VIEWED_FILES_COUNT = 30;
 var MAX_SERIALIZABLE_URL_LENGTH = 4096;
 function historyItemKey(uiSourceCode) {
@@ -10441,6 +10473,11 @@ var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(U
     this.requestUpdate();
   }
 };
+var Events3;
+(function(Events4) {
+  Events4["EDITOR_CLOSED"] = "EditorClosed";
+  Events4["EDITOR_SELECTED"] = "EditorSelected";
+})(Events3 || (Events3 = {}));
 var SwitchFileActionDelegate = class _SwitchFileActionDelegate {
   static nextFile(currentUISourceCode) {
     function fileNamePrefix(name2) {
@@ -10529,11 +10566,11 @@ var ThreadsSidebarPane_exports = {};
 __export(ThreadsSidebarPane_exports, {
   ThreadsSidebarPane: () => ThreadsSidebarPane
 });
-import * as i18n31 from "./../../core/i18n/i18n.js";
-import * as SDK10 from "./../../core/sdk/sdk.js";
-import * as UI16 from "./../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
-import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
+import * as i18n31 from "../../core/i18n/i18n.js";
+import * as SDK10 from "../../core/sdk/sdk.js";
+import * as UI16 from "../../ui/legacy/legacy.js";
+import * as Lit3 from "../../ui/lit/lit.js";
+import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/threadsSidebarPane.css.js
 var threadsSidebarPane_css_default = `/*
@@ -12386,13 +12423,13 @@ var FilteredUISourceCodeListProvider_exports = {};
 __export(FilteredUISourceCodeListProvider_exports, {
   FilteredUISourceCodeListProvider: () => FilteredUISourceCodeListProvider
 });
-import "./../../ui/components/highlighting/highlighting.js";
-import * as Common14 from "./../../core/common/common.js";
-import * as i18n37 from "./../../core/i18n/i18n.js";
-import * as Persistence12 from "./../../models/persistence/persistence.js";
-import * as Workspace24 from "./../../models/workspace/workspace.js";
-import * as QuickOpen3 from "./../../ui/legacy/components/quick_open/quick_open.js";
-import { Directives as Directives4, html as html9, nothing as nothing5 } from "./../../ui/lit/lit.js";
+import "../../ui/components/highlighting/highlighting.js";
+import * as Common14 from "../../core/common/common.js";
+import * as i18n37 from "../../core/i18n/i18n.js";
+import * as Persistence12 from "../../models/persistence/persistence.js";
+import * as Workspace24 from "../../models/workspace/workspace.js";
+import * as QuickOpen3 from "../../ui/legacy/components/quick_open/quick_open.js";
+import { Directives as Directives4, html as html9, nothing as nothing5 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/sources/filteredUISourceCodeListProvider.css.js
 var filteredUISourceCodeListProvider_css_default = `/*
@@ -12681,11 +12718,11 @@ var GoToLineQuickOpen_exports = {};
 __export(GoToLineQuickOpen_exports, {
   GoToLineQuickOpen: () => GoToLineQuickOpen
 });
-import "./../../ui/kit/kit.js";
-import * as i18n39 from "./../../core/i18n/i18n.js";
-import * as QuickOpen4 from "./../../ui/legacy/components/quick_open/quick_open.js";
-import * as UI19 from "./../../ui/legacy/legacy.js";
-import { html as html10 } from "./../../ui/lit/lit.js";
+import "../../ui/kit/kit.js";
+import * as i18n39 from "../../core/i18n/i18n.js";
+import * as QuickOpen4 from "../../ui/legacy/components/quick_open/quick_open.js";
+import * as UI19 from "../../ui/legacy/legacy.js";
+import { html as html10 } from "../../ui/lit/lit.js";
 var UIStrings20 = {
   /**
    * @description Text in the go to line quick open menu of the Sources panel.
@@ -12833,11 +12870,11 @@ var OpenFileQuickOpen_exports = {};
 __export(OpenFileQuickOpen_exports, {
   OpenFileQuickOpen: () => OpenFileQuickOpen
 });
-import "./../../ui/kit/kit.js";
-import * as Common15 from "./../../core/common/common.js";
-import * as Host10 from "./../../core/host/host.js";
-import { PanelUtils as PanelUtils2 } from "./../utils/utils.js";
-import { Directives as Directives5, html as html11 } from "./../../ui/lit/lit.js";
+import "../../ui/kit/kit.js";
+import * as Common15 from "../../core/common/common.js";
+import * as Host10 from "../../core/host/host.js";
+import { PanelUtils as PanelUtils2 } from "../utils/utils.js";
+import { Directives as Directives5, html as html11 } from "../../ui/lit/lit.js";
 var { styleMap } = Directives5;
 var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   attach() {
@@ -12872,13 +12909,13 @@ __export(OutlineQuickOpen_exports, {
   OutlineQuickOpen: () => OutlineQuickOpen,
   outline: () => outline
 });
-import "./../../ui/kit/kit.js";
-import "./../../ui/components/highlighting/highlighting.js";
-import * as i18n41 from "./../../core/i18n/i18n.js";
-import * as CodeMirror7 from "./../../third_party/codemirror.next/codemirror.next.js";
-import * as QuickOpen5 from "./../../ui/legacy/components/quick_open/quick_open.js";
-import * as UI20 from "./../../ui/legacy/legacy.js";
-import { html as html12, nothing as nothing6 } from "./../../ui/lit/lit.js";
+import "../../ui/kit/kit.js";
+import "../../ui/components/highlighting/highlighting.js";
+import * as i18n41 from "../../core/i18n/i18n.js";
+import * as CodeMirror7 from "../../third_party/codemirror.next/codemirror.next.js";
+import * as QuickOpen5 from "../../ui/legacy/components/quick_open/quick_open.js";
+import * as UI20 from "../../ui/legacy/legacy.js";
+import { html as html12, nothing as nothing6 } from "../../ui/lit/lit.js";
 var UIStrings21 = {
   /**
    * @description Text in Go to line Quick Open of the Sources panel.
@@ -13231,15 +13268,15 @@ var PersistenceActions_exports = {};
 __export(PersistenceActions_exports, {
   ContextMenuProvider: () => ContextMenuProvider
 });
-import * as Common16 from "./../../core/common/common.js";
-import * as Host11 from "./../../core/host/host.js";
-import * as i18n43 from "./../../core/i18n/i18n.js";
-import * as SDK12 from "./../../core/sdk/sdk.js";
-import * as TextUtils11 from "./../../core/text_utils/text_utils.js";
-import * as Bindings10 from "./../../models/bindings/bindings.js";
-import * as Persistence14 from "./../../models/persistence/persistence.js";
-import * as Workspace26 from "./../../models/workspace/workspace.js";
-import * as UI21 from "./../../ui/legacy/legacy.js";
+import * as Common16 from "../../core/common/common.js";
+import * as Host11 from "../../core/host/host.js";
+import * as i18n43 from "../../core/i18n/i18n.js";
+import * as SDK12 from "../../core/sdk/sdk.js";
+import * as TextUtils11 from "../../core/text_utils/text_utils.js";
+import * as Bindings10 from "../../models/bindings/bindings.js";
+import * as Persistence14 from "../../models/persistence/persistence.js";
+import * as Workspace26 from "../../models/workspace/workspace.js";
+import * as UI21 from "../../ui/legacy/legacy.js";
 var UIStrings22 = {
   /**
    * @description Text to save content as a specific file type.
@@ -13457,15 +13494,15 @@ __export(ScopeChainSidebarPane_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW7,
   ScopeChainSidebarPane: () => ScopeChainSidebarPane
 });
-import * as i18n45 from "./../../core/i18n/i18n.js";
-import * as Bindings11 from "./../../models/bindings/bindings.js";
-import * as SourceMapScopes2 from "./../../models/source_map_scopes/source_map_scopes.js";
-import * as StackTrace7 from "./../../models/stack_trace/stack_trace.js";
-import * as ObjectUI3 from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI22 from "./../../ui/legacy/legacy.js";
-import { html as html13, nothing as nothing7, render as render10 } from "./../../ui/lit/lit.js";
-import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
+import * as i18n45 from "../../core/i18n/i18n.js";
+import * as Bindings11 from "../../models/bindings/bindings.js";
+import * as SourceMapScopes2 from "../../models/source_map_scopes/source_map_scopes.js";
+import * as StackTrace7 from "../../models/stack_trace/stack_trace.js";
+import * as ObjectUI3 from "../../ui/legacy/components/object_ui/object_ui.js";
+import * as Components3 from "../../ui/legacy/components/utils/utils.js";
+import * as UI22 from "../../ui/legacy/legacy.js";
+import { html as html13, nothing as nothing7, render as render10 } from "../../ui/lit/lit.js";
+import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/scopeChainSidebarPane.css.js
 var scopeChainSidebarPane_css_default = `/*
@@ -13740,20 +13777,20 @@ __export(SourcesNavigator_exports, {
   OverridesNavigatorView: () => OverridesNavigatorView,
   SnippetsNavigatorView: () => SnippetsNavigatorView
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common17 from "./../../core/common/common.js";
-import * as Host12 from "./../../core/host/host.js";
-import * as i18n47 from "./../../core/i18n/i18n.js";
-import * as Platform15 from "./../../core/platform/platform.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
-import * as TextUtils12 from "./../../core/text_utils/text_utils.js";
-import * as Bindings12 from "./../../models/bindings/bindings.js";
-import * as Persistence16 from "./../../models/persistence/persistence.js";
-import * as Workspace28 from "./../../models/workspace/workspace.js";
-import * as uiI18n3 from "./../../ui/i18n/i18n.js";
-import { Link as Link2 } from "./../../ui/kit/kit.js";
-import * as UI23 from "./../../ui/legacy/legacy.js";
-import * as Snippets5 from "./../snippets/snippets.js";
+import "../../ui/legacy/legacy.js";
+import * as Common17 from "../../core/common/common.js";
+import * as Host12 from "../../core/host/host.js";
+import * as i18n47 from "../../core/i18n/i18n.js";
+import * as Platform15 from "../../core/platform/platform.js";
+import * as SDK13 from "../../core/sdk/sdk.js";
+import * as TextUtils12 from "../../core/text_utils/text_utils.js";
+import * as Bindings12 from "../../models/bindings/bindings.js";
+import * as Persistence16 from "../../models/persistence/persistence.js";
+import * as Workspace28 from "../../models/workspace/workspace.js";
+import * as uiI18n3 from "../../ui/i18n/i18n.js";
+import { Link as Link2 } from "../../ui/kit/kit.js";
+import * as UI23 from "../../ui/legacy/legacy.js";
+import * as Snippets5 from "../snippets/snippets.js";
 
 // gen/front_end/panels/sources/sourcesNavigator.css.js
 var sourcesNavigator_css_default = `/*
@@ -14146,18 +14183,18 @@ __export(WatchExpressionsSidebarPane_exports, {
   WatchExpressionPromptWidget: () => WatchExpressionPromptWidget,
   WatchExpressionsSidebarPane: () => WatchExpressionsSidebarPane
 });
-import * as Common18 from "./../../core/common/common.js";
-import * as Host13 from "./../../core/host/host.js";
-import * as i18n49 from "./../../core/i18n/i18n.js";
-import * as Platform16 from "./../../core/platform/platform.js";
-import * as SDK14 from "./../../core/sdk/sdk.js";
-import * as Bindings13 from "./../../models/bindings/bindings.js";
-import * as Formatter3 from "./../../models/formatter/formatter.js";
-import * as SourceMapScopes3 from "./../../models/source_map_scopes/source_map_scopes.js";
-import * as StackTrace9 from "./../../models/stack_trace/stack_trace.js";
-import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
-import * as TextEditor6 from "./../../ui/components/text_editor/text_editor.js";
-import * as ObjectUI4 from "./../../ui/legacy/components/object_ui/object_ui.js";
+import * as Common18 from "../../core/common/common.js";
+import * as Host13 from "../../core/host/host.js";
+import * as i18n49 from "../../core/i18n/i18n.js";
+import * as Platform16 from "../../core/platform/platform.js";
+import * as SDK14 from "../../core/sdk/sdk.js";
+import * as Bindings13 from "../../models/bindings/bindings.js";
+import * as Formatter3 from "../../models/formatter/formatter.js";
+import * as SourceMapScopes3 from "../../models/source_map_scopes/source_map_scopes.js";
+import * as StackTrace9 from "../../models/stack_trace/stack_trace.js";
+import * as Buttons4 from "../../ui/components/buttons/buttons.js";
+import * as TextEditor6 from "../../ui/components/text_editor/text_editor.js";
+import * as ObjectUI4 from "../../ui/legacy/components/object_ui/object_ui.js";
 
 // gen/front_end/ui/legacy/components/object_ui/objectValue.css.js
 var objectValue_css_default = `/*
@@ -14269,10 +14306,10 @@ var objectValue_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./objectValue.css")} */`;
 
 // gen/front_end/panels/sources/WatchExpressionsSidebarPane.js
-import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI24 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives6, html as html14, nothing as nothing8, render as render11 } from "./../../ui/lit/lit.js";
-import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
+import * as Components4 from "../../ui/legacy/components/utils/utils.js";
+import * as UI24 from "../../ui/legacy/legacy.js";
+import { Directives as Directives6, html as html14, nothing as nothing8, render as render11 } from "../../ui/lit/lit.js";
+import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/watchExpressionsSidebarPane.css.js
 var watchExpressionsSidebarPane_css_default = `/*

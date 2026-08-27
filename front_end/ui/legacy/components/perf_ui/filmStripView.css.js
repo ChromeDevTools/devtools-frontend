@@ -17,7 +17,7 @@ export default `/*
 
 .film-strip-view .frame .time {
   font-size: 10px;
-  margin-top: 2px;
+  margin-top: var(--sys-size-2);
 }
 
 .film-strip-view .gray-info-message {
@@ -30,19 +30,19 @@ export default `/*
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4px;
+  padding: var(--sys-size-3);
   flex: none;
   cursor: pointer;
 }
 
 .film-strip-view .frame .thumbnail {
-  min-width: 24px;
+  min-width: var(--sys-size-11);
   display: flex;
   flex-direction: row;
   align-items: center;
   pointer-events: none;
-  margin: 4px 0 2px;
-  border: 2px solid transparent;
+  margin: var(--sys-size-3) 0 var(--sys-size-2);
+  border: var(--sys-size-2) solid transparent;
 }
 
 .film-strip-view .frame:hover .thumbnail,
@@ -53,7 +53,7 @@ export default `/*
 .film-strip-view .frame .thumbnail img {
   height: auto;
   width: auto;
-  max-width: 80px;
+  max-width: var(--sys-size-19);
   max-height: 50px;
   pointer-events: none;
   box-shadow: 0 0 3px var(--box-shadow-outline-color);

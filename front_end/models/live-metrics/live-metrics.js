@@ -1,12 +1,12 @@
 // gen/front_end/models/live-metrics/LiveMetrics.js
-import * as Common from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as EmulationModel from "./../emulation/emulation.js";
-import * as CrUXManager from "./../crux-manager/crux-manager.js";
+import * as Common from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as Root from "../../core/root/root.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as EmulationModel from "../emulation/emulation.js";
+import * as CrUXManager from "../crux-manager/crux-manager.js";
 import * as Spec from "./web-vitals-injected/spec/spec.js";
 var timelineEnableSoftNavigationsSettingDescriptor = {
   name: "timeline-enable-soft-navigations",
@@ -531,7 +531,12 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
     this.#isCollectingMetrics = false;
   }
 };
+var Events;
+(function(Events2) {
+  Events2["STATUS"] = "status";
+})(Events || (Events = {}));
 export {
+  Events,
   LiveMetrics,
   timelineEnableSoftNavigationsSettingDescriptor
 };

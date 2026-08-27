@@ -314,6 +314,10 @@ export class LayerDetailsView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         }, undefined, this.contentElement);
     }
 }
+export var Events;
+(function (Events) {
+    Events["PAINT_PROFILER_REQUESTED"] = "PaintProfilerRequested";
+})(Events || (Events = {}));
 export const slowScrollRectNames = new Map([
     ["NonFastScrollable" /* SDK.LayerTreeBase.Layer.ScrollRectType.NON_FAST_SCROLLABLE */, i18nLazyString(UIStrings.nonFastScrollable)],
     ["TouchEventHandler" /* SDK.LayerTreeBase.Layer.ScrollRectType.TOUCH_EVENT_HANDLER */, i18nLazyString(UIStrings.touchEventHandler)],

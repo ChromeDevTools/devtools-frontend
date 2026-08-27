@@ -68,6 +68,13 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/sources/TabbedEditorContainer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+var SourceViewType;
+(function (SourceViewType) {
+    SourceViewType["IMAGE_VIEW"] = "ImageView";
+    SourceViewType["FONT_VIEW"] = "FontView";
+    SourceViewType["HEADERS_VIEW"] = "HeadersView";
+    SourceViewType["SOURCE_VIEW"] = "SourceView";
+})(SourceViewType || (SourceViewType = {}));
 const HEADER_OVERRIDES_FILENAME = '.headers';
 let tabId = 0;
 export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
@@ -764,6 +771,11 @@ export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin(UI.Wi
     }
 }
 let nextTooltipId = 1;
+export var Events;
+(function (Events) {
+    Events["EDITOR_SELECTED"] = "EditorSelected";
+    Events["EDITOR_CLOSED"] = "EditorClosed";
+})(Events || (Events = {}));
 const MAX_PREVIOUSLY_VIEWED_FILES_COUNT = 30;
 const MAX_SERIALIZABLE_URL_LENGTH = 4096;
 function historyItemKey(uiSourceCode) {

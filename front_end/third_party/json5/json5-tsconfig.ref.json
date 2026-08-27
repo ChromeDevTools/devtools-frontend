@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "outDir": ".",
+    "rootDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "lib/index.d.ts",
+    "package/lib/index.d.ts",
+    "package/lib/parse.d.ts",
+    "package/lib/stringify.d.ts"
+  ],
+  "references": [
+
+  ]
+}

@@ -7,11 +7,29 @@ var __export = (target, all) => {
 // gen/front_end/panels/settings/emulation/utils/StructuredHeaders.js
 var StructuredHeaders_exports = {};
 __export(StructuredHeaders_exports, {
+  ResultKind: () => ResultKind,
   parseItem: () => parseItem,
   parseList: () => parseList,
   serializeItem: () => serializeItem,
   serializeList: () => serializeList
 });
+var ResultKind;
+(function(ResultKind2) {
+  ResultKind2[ResultKind2["ERROR"] = 0] = "ERROR";
+  ResultKind2[ResultKind2["PARAM_NAME"] = 1] = "PARAM_NAME";
+  ResultKind2[ResultKind2["PARAMETER"] = 2] = "PARAMETER";
+  ResultKind2[ResultKind2["PARAMETERS"] = 3] = "PARAMETERS";
+  ResultKind2[ResultKind2["ITEM"] = 4] = "ITEM";
+  ResultKind2[ResultKind2["INTEGER"] = 5] = "INTEGER";
+  ResultKind2[ResultKind2["DECIMAL"] = 6] = "DECIMAL";
+  ResultKind2[ResultKind2["STRING"] = 7] = "STRING";
+  ResultKind2[ResultKind2["TOKEN"] = 8] = "TOKEN";
+  ResultKind2[ResultKind2["BINARY"] = 9] = "BINARY";
+  ResultKind2[ResultKind2["BOOLEAN"] = 10] = "BOOLEAN";
+  ResultKind2[ResultKind2["LIST"] = 11] = "LIST";
+  ResultKind2[ResultKind2["INNER_LIST"] = 12] = "INNER_LIST";
+  ResultKind2[ResultKind2["SERIALIZATION_RESULT"] = 13] = "SERIALIZATION_RESULT";
+})(ResultKind || (ResultKind = {}));
 var CHAR_MINUS = "-".charCodeAt(0);
 var CHAR_0 = "0".charCodeAt(0);
 var CHAR_9 = "9".charCodeAt(0);

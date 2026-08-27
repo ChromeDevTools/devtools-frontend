@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "../../../../tsc/front_end/third_party/marked/marked-tsconfig.ref.json"
+      "path": "./marked-tsconfig.ref.json"
     }
   ]
 }

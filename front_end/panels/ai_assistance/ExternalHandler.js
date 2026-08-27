@@ -14,7 +14,7 @@ function resolveConversationType(contextType) {
             return "none" /* AiAssistanceModel.AiHistoryStorage.ConversationType.NONE */;
     }
 }
-function getMatchingFlavorContext(contextOptions) {
+export function getMatchingFlavorContext(contextOptions) {
     if (!contextOptions?.contextIdentifier) {
         return null;
     }

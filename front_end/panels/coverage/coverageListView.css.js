@@ -35,8 +35,8 @@ export default `/*
 
   .data-grid td .bar {
     display: inline-block;
-    height: 8px;
-    border: 1px solid transparent;
+    height: var(--sys-size-5);
+    border: var(--sys-size-1) solid transparent;
   }
 
   .data-grid td .bar-unused-size {

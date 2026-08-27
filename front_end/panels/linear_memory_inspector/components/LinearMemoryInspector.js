@@ -23,6 +23,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryInspector.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { widget } = UI.Widget;
+export var Events;
+(function (Events) {
+    Events["MEMORY_REQUEST"] = "MemoryRequest";
+    Events["ADDRESS_CHANGED"] = "AddressChanged";
+    Events["SETTINGS_CHANGED"] = "SettingsChanged";
+    Events["DELETE_MEMORY_HIGHLIGHT"] = "DeleteMemoryHighlight";
+})(Events || (Events = {}));
 class AddressHistoryEntry {
     #address = 0;
     #callback;

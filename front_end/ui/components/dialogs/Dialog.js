@@ -597,4 +597,29 @@ export class ForcedDialogClose extends Event {
         super(ForcedDialogClose.eventName, { bubbles: true, composed: true });
     }
 }
+export var DialogVerticalPosition;
+(function (DialogVerticalPosition) {
+    DialogVerticalPosition["TOP"] = "top";
+    DialogVerticalPosition["BOTTOM"] = "bottom";
+    DialogVerticalPosition["AUTO"] = "auto";
+})(DialogVerticalPosition || (DialogVerticalPosition = {}));
+export var DialogState;
+(function (DialogState) {
+    DialogState["EXPANDED"] = "expanded";
+    DialogState["COLLAPSED"] = "collapsed";
+    DialogState["DISABLED"] = "disabled";
+})(DialogState || (DialogState = {}));
+export var DialogHorizontalAlignment;
+(function (DialogHorizontalAlignment) {
+    // Dialog and anchor are aligned on their left borders.
+    DialogHorizontalAlignment["LEFT"] = "left";
+    // Dialog and anchor are aligned on their right borders.
+    DialogHorizontalAlignment["RIGHT"] = "right";
+    DialogHorizontalAlignment["CENTER"] = "center";
+    // This option allows to set the alignment
+    // automatically to LEFT or RIGHT depending
+    // on whether the dialog overflows the
+    // viewport if it's aligned to the left.
+    DialogHorizontalAlignment["AUTO"] = "auto";
+})(DialogHorizontalAlignment || (DialogHorizontalAlignment = {}));
 //# sourceMappingURL=Dialog.js.map

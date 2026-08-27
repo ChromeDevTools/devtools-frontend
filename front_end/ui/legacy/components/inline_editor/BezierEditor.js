@@ -195,6 +195,10 @@ export class BezierEditor extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox
         }
     }
 }
+export var Events;
+(function (Events) {
+    Events["BEZIER_CHANGED"] = "BezierChanged";
+})(Events || (Events = {}));
 export const Presets = [
     [
         { name: 'linear', value: 'linear' },

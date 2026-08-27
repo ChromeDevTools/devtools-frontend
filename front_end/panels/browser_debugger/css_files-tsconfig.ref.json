@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "categorizedBreakpointsSidebarPane.css.js",
+    "domBreakpointsSidebarPane.css.js",
+    "xhrBreakpointsSidebarPane.css.js"
+  ]
+}

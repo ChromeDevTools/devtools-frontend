@@ -10,14 +10,14 @@ __export(CodeBlock_exports, {
   CodeBlock: () => CodeBlock,
   languageFromToken: () => languageFromToken
 });
-import "./../../kit/kit.js";
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as CodeMirror from "./../../../third_party/codemirror.next/codemirror.next.js";
-import * as Buttons from "./../buttons/buttons.js";
-import * as TextEditor from "./../text_editor/text_editor.js";
-import * as UI from "./../../legacy/legacy.js";
-import * as Lit from "./../../lit/lit.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
+import "../../kit/kit.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as CodeMirror from "../../../third_party/codemirror.next/codemirror.next.js";
+import * as Buttons from "../buttons/buttons.js";
+import * as TextEditor from "../text_editor/text_editor.js";
+import * as UI from "../../legacy/legacy.js";
+import * as Lit from "../../lit/lit.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/markdown_view/codeBlock.css.js
 var codeBlock_css_default = `/*
@@ -428,8 +428,8 @@ var MarkdownImage_exports = {};
 __export(MarkdownImage_exports, {
   MarkdownImage: () => MarkdownImage
 });
-import "./../../kit/kit.js";
-import * as Lit2 from "./../../lit/lit.js";
+import "../../kit/kit.js";
+import * as Lit2 from "../../lit/lit.js";
 
 // gen/front_end/ui/components/markdown_view/markdownImage.css.js
 var markdownImage_css_default = `/*
@@ -613,9 +613,9 @@ __export(MarkdownView_exports, {
   MarkdownLitRenderer: () => MarkdownLitRenderer,
   MarkdownView: () => MarkdownView
 });
-import "./../../kit/kit.js";
-import * as Lit3 from "./../../lit/lit.js";
-import * as VisualLogging2 from "./../../visual_logging/visual_logging.js";
+import "../../kit/kit.js";
+import * as Lit3 from "../../lit/lit.js";
+import * as VisualLogging2 from "../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/markdown_view/markdownView.css.js
 var markdownView_css_default = `/*
@@ -640,7 +640,7 @@ var markdownView_css_default = `/*
 
 devtools-link {
   color: var(--sys-color-primary);
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
   text-decoration: underline;
 }
 
@@ -660,7 +660,7 @@ devtools-code-block.animating {
 
 .message {
   line-height: 18px;
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   color: var(--sys-color-on-surface);
   user-select: text;
 }
@@ -670,7 +670,7 @@ devtools-code-block.animating {
 }
 
 .message p:not(:first-child) {
-  margin-block-start: 2px;
+  margin-block-start: var(--sys-size-2);
 }
 
 .message p:not(:last-child) {
@@ -687,7 +687,7 @@ devtools-code-block.animating {
 }
 
 .message li {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
   display: list-item;
   list-style-type: disc;
 }
@@ -718,14 +718,14 @@ devtools-code-block.animating {
 .message code {
   color: var(--sys-color-on-surface);
   font-family: var(--monospace-font-family);
-  font-size: 11px;
+  font-size: var(--sys-typescale-monospace-size);
   user-select: text;
   cursor: text;
   /* This is still using design tokens because \\'--code-background-color\\' is defined with them by default */
   /* stylelint-disable-next-line plugin/use_theme_colors */
   background-color: var(--code-background-color);
-  border-radius: 2px;
-  padding: 1px 3px;
+  border-radius: var(--sys-size-2);
+  padding: var(--sys-size-1) 3px;
 }
 
 devtools-code-block {

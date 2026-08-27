@@ -14,7 +14,7 @@ export default `/*
   list-style: none;
   padding: 0;
   margin: 0;
-  padding-inline-start: 16px;
+  padding-inline-start: var(--sys-size-8);
 }
 
 ol.tree-outline {
@@ -22,11 +22,11 @@ ol.tree-outline {
 }
 
 .tree-outline li {
-  min-height: 12px;
+  min-height: var(--sys-size-6);
 }
 
 ::part(shadow-xml-view-close-tag) {
-  margin-left: -16px;
+  margin-left: calc(-1 * var(--sys-size-8));
 }
 
 ::part(shadow-xml-view-close-tag),::part(shadow-xml-view-tag) {

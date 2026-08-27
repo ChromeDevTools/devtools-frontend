@@ -1,15 +1,15 @@
 // gen/front_end/panels/utils/utils.prebundle.js
-import "./../../ui/kit/kit.js";
-import "./../../ui/components/icon_button/icon_button.js";
-import * as Common from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as Formatter from "./../../models/formatter/formatter.js";
-import * as Persistence from "./../../models/persistence/persistence.js";
-import * as DiffView from "./../../ui/components/diff_view/diff_view.js";
-import { Directives, html } from "./../../ui/lit/lit.js";
-import * as PanelCommon from "./../common/common.js";
-import * as Snippets from "./../snippets/snippets.js";
+import "../../ui/kit/kit.js";
+import "../../ui/components/icon_button/icon_button.js";
+import * as Common from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as Formatter from "../../models/formatter/formatter.js";
+import * as Persistence from "../../models/persistence/persistence.js";
+import * as DiffView from "../../ui/components/diff_view/diff_view.js";
+import { Directives, html } from "../../ui/lit/lit.js";
+import * as PanelCommon from "../common/common.js";
+import * as Snippets from "../snippets/snippets.js";
 var { ref, styleMap, ifDefined } = Directives;
 var UIStrings = {
   /**

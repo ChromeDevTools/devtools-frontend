@@ -161,6 +161,13 @@ export class Infobar {
         return detailsRowMessage;
     }
 }
+export var Type;
+(function (Type) {
+    Type["WARNING"] = "warning";
+    Type["INFO"] = "info";
+    Type["ISSUE"] = "issue";
+    Type["ERROR"] = "error";
+})(Type || (Type = {}));
 const TYPE_TO_ICON = {
     ["warning" /* Type.WARNING */]: 'warning',
     ["info" /* Type.INFO */]: 'info',

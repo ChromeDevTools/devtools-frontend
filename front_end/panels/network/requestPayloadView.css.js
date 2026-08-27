@@ -21,7 +21,7 @@ export default `/*
   min-height: 200px;
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .request-payload-tree {

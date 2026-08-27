@@ -88,22 +88,16 @@ export declare class ServiceWorkerVersion {
     get runningStatus(): Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus;
     mode(): string;
     private parseJSONRules;
+    /**
+     * `urlPattern` can be either plain text (e.g. '/foo/*') or a JSON-serialized URLPattern/URLPatternInit object.
+     * Parses it to an object if valid JSON, otherwise falls back to the original string.
+     */
+    private parseURLPatternCondition;
+    private parseTypedRules;
 }
 export declare namespace ServiceWorkerVersion {
-    const RunningStatus: {
-        running: () => Platform.UIString.LocalizedString;
-        starting: () => Platform.UIString.LocalizedString;
-        stopped: () => Platform.UIString.LocalizedString;
-        stopping: () => Platform.UIString.LocalizedString;
-    };
-    const Status: {
-        activated: () => Platform.UIString.LocalizedString;
-        activating: () => Platform.UIString.LocalizedString;
-        installed: () => Platform.UIString.LocalizedString;
-        installing: () => Platform.UIString.LocalizedString;
-        new: () => Platform.UIString.LocalizedString;
-        redundant: () => Platform.UIString.LocalizedString;
-    };
+    const RunningStatus: Record<Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus, () => Platform.UIString.LocalizedString>;
+    const Status: Record<Protocol.ServiceWorker.ServiceWorkerVersionStatus, () => Platform.UIString.LocalizedString>;
     const enum Modes {
         INSTALLING = "installing",
         WAITING = "waiting",

@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": ".",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -48,13 +49,13 @@
       "path": "./components-tsconfig.ref.json"
     },
     {
-      "path": "../../../../../tsc/front_end/panels/elements/components/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
-      "path": "../../../../../tsc/front_end/panels/elements/css_files-tsconfig.ref.json"
+      "path": "../css_files-tsconfig.ref.json"
     },
     {
-      "path": "../../../../../tsc/front_end/ui/legacy/css_files-tsconfig.ref.json"
+      "path": "../../../ui/legacy/css_files-tsconfig.ref.json"
     }
   ]
 }

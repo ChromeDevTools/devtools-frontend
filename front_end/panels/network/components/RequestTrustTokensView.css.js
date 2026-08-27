@@ -23,7 +23,7 @@ export default `/*
   }
 
   .status-icon {
-    margin: 0 0.3em 2px 0;
+    margin: 0 0.3em var(--sys-size-2) 0;
     vertical-align: middle;
 
     &.failure {

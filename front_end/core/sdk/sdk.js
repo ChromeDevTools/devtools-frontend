@@ -4,12 +4,12 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/core/sdk/SDKModel.js
+// ../../front_end/core/sdk/SDKModel.ts
 var SDKModel_exports = {};
 __export(SDKModel_exports, {
   SDKModel: () => SDKModel
 });
-import * as Common from "./../common/common.js";
+import * as Common from "../common/common.js";
 var registeredModels = /* @__PURE__ */ new Map();
 var SDKModel = class extends Common.ObjectWrapper.ObjectWrapper {
   #target;
@@ -49,14 +49,16 @@ var SDKModel = class extends Common.ObjectWrapper.ObjectWrapper {
   }
 };
 
-// gen/front_end/core/sdk/CSSMetadata.js
+// ../../front_end/core/sdk/CSSMetadata.ts
 var CSSMetadata_exports = {};
 __export(CSSMetadata_exports, {
   CSSMetadata: () => CSSMetadata,
+  CSSWideKeyword: () => CSSWideKeyword,
   CSSWideKeywords: () => CSSWideKeywords,
   CubicBezierKeywordValues: () => CubicBezierKeywordValues,
   CustomVariableRegex: () => CustomVariableRegex,
   GridAreaRowRegex: () => GridAreaRowRegex,
+  PositionTryOrderKeyword: () => PositionTryOrderKeyword,
   PositionTryOrderKeywords: () => PositionTryOrderKeywords,
   URLRegex: () => URLRegex,
   VariableNameRegex: () => VariableNameRegex,
@@ -64,7 +66,2807 @@ __export(CSSMetadata_exports, {
   cssMetadata: () => cssMetadata
 });
 
-// gen/front_end/generated/SupportedCSSProperties.js
+// ../../front_end/generated/protocol.ts
+var Accessibility;
+((Accessibility2) => {
+  let AXValueType;
+  ((AXValueType2) => {
+    AXValueType2["Boolean"] = "boolean";
+    AXValueType2["Tristate"] = "tristate";
+    AXValueType2["BooleanOrUndefined"] = "booleanOrUndefined";
+    AXValueType2["Idref"] = "idref";
+    AXValueType2["IdrefList"] = "idrefList";
+    AXValueType2["Integer"] = "integer";
+    AXValueType2["Node"] = "node";
+    AXValueType2["NodeList"] = "nodeList";
+    AXValueType2["Number"] = "number";
+    AXValueType2["String"] = "string";
+    AXValueType2["ComputedString"] = "computedString";
+    AXValueType2["Token"] = "token";
+    AXValueType2["TokenList"] = "tokenList";
+    AXValueType2["DomRelation"] = "domRelation";
+    AXValueType2["Role"] = "role";
+    AXValueType2["InternalRole"] = "internalRole";
+    AXValueType2["ValueUndefined"] = "valueUndefined";
+  })(AXValueType = Accessibility2.AXValueType || (Accessibility2.AXValueType = {}));
+  let AXValueSourceType;
+  ((AXValueSourceType2) => {
+    AXValueSourceType2["Attribute"] = "attribute";
+    AXValueSourceType2["Implicit"] = "implicit";
+    AXValueSourceType2["Style"] = "style";
+    AXValueSourceType2["Contents"] = "contents";
+    AXValueSourceType2["Placeholder"] = "placeholder";
+    AXValueSourceType2["RelatedElement"] = "relatedElement";
+  })(AXValueSourceType = Accessibility2.AXValueSourceType || (Accessibility2.AXValueSourceType = {}));
+  let AXValueNativeSourceType;
+  ((AXValueNativeSourceType2) => {
+    AXValueNativeSourceType2["Description"] = "description";
+    AXValueNativeSourceType2["Figcaption"] = "figcaption";
+    AXValueNativeSourceType2["Label"] = "label";
+    AXValueNativeSourceType2["Labelfor"] = "labelfor";
+    AXValueNativeSourceType2["Labelwrapped"] = "labelwrapped";
+    AXValueNativeSourceType2["Legend"] = "legend";
+    AXValueNativeSourceType2["Rubyannotation"] = "rubyannotation";
+    AXValueNativeSourceType2["Tablecaption"] = "tablecaption";
+    AXValueNativeSourceType2["Title"] = "title";
+    AXValueNativeSourceType2["Other"] = "other";
+  })(AXValueNativeSourceType = Accessibility2.AXValueNativeSourceType || (Accessibility2.AXValueNativeSourceType = {}));
+  let AXPropertyName;
+  ((AXPropertyName2) => {
+    AXPropertyName2["Actions"] = "actions";
+    AXPropertyName2["Busy"] = "busy";
+    AXPropertyName2["Disabled"] = "disabled";
+    AXPropertyName2["Editable"] = "editable";
+    AXPropertyName2["Focusable"] = "focusable";
+    AXPropertyName2["Focused"] = "focused";
+    AXPropertyName2["Hidden"] = "hidden";
+    AXPropertyName2["HiddenRoot"] = "hiddenRoot";
+    AXPropertyName2["Invalid"] = "invalid";
+    AXPropertyName2["Keyshortcuts"] = "keyshortcuts";
+    AXPropertyName2["Settable"] = "settable";
+    AXPropertyName2["Roledescription"] = "roledescription";
+    AXPropertyName2["Live"] = "live";
+    AXPropertyName2["Atomic"] = "atomic";
+    AXPropertyName2["Relevant"] = "relevant";
+    AXPropertyName2["Root"] = "root";
+    AXPropertyName2["Autocomplete"] = "autocomplete";
+    AXPropertyName2["HasPopup"] = "hasPopup";
+    AXPropertyName2["Level"] = "level";
+    AXPropertyName2["Multiselectable"] = "multiselectable";
+    AXPropertyName2["Orientation"] = "orientation";
+    AXPropertyName2["Multiline"] = "multiline";
+    AXPropertyName2["Readonly"] = "readonly";
+    AXPropertyName2["Required"] = "required";
+    AXPropertyName2["Valuemin"] = "valuemin";
+    AXPropertyName2["Valuemax"] = "valuemax";
+    AXPropertyName2["Valuetext"] = "valuetext";
+    AXPropertyName2["Checked"] = "checked";
+    AXPropertyName2["Expanded"] = "expanded";
+    AXPropertyName2["Modal"] = "modal";
+    AXPropertyName2["Pressed"] = "pressed";
+    AXPropertyName2["Selected"] = "selected";
+    AXPropertyName2["Activedescendant"] = "activedescendant";
+    AXPropertyName2["Controls"] = "controls";
+    AXPropertyName2["Describedby"] = "describedby";
+    AXPropertyName2["Details"] = "details";
+    AXPropertyName2["Errormessage"] = "errormessage";
+    AXPropertyName2["Flowto"] = "flowto";
+    AXPropertyName2["Labelledby"] = "labelledby";
+    AXPropertyName2["Owns"] = "owns";
+    AXPropertyName2["Url"] = "url";
+    AXPropertyName2["ActiveFullscreenElement"] = "activeFullscreenElement";
+    AXPropertyName2["ActiveModalDialog"] = "activeModalDialog";
+    AXPropertyName2["ActiveAriaModalDialog"] = "activeAriaModalDialog";
+    AXPropertyName2["AriaHiddenElement"] = "ariaHiddenElement";
+    AXPropertyName2["AriaHiddenSubtree"] = "ariaHiddenSubtree";
+    AXPropertyName2["EmptyAlt"] = "emptyAlt";
+    AXPropertyName2["EmptyText"] = "emptyText";
+    AXPropertyName2["InertElement"] = "inertElement";
+    AXPropertyName2["InertSubtree"] = "inertSubtree";
+    AXPropertyName2["LabelContainer"] = "labelContainer";
+    AXPropertyName2["LabelFor"] = "labelFor";
+    AXPropertyName2["NotRendered"] = "notRendered";
+    AXPropertyName2["NotVisible"] = "notVisible";
+    AXPropertyName2["PresentationalRole"] = "presentationalRole";
+    AXPropertyName2["ProbablyPresentational"] = "probablyPresentational";
+    AXPropertyName2["InactiveCarouselTabContent"] = "inactiveCarouselTabContent";
+    AXPropertyName2["Uninteresting"] = "uninteresting";
+  })(AXPropertyName = Accessibility2.AXPropertyName || (Accessibility2.AXPropertyName = {}));
+})(Accessibility || (Accessibility = {}));
+var Animation;
+((Animation2) => {
+  let AnimationType;
+  ((AnimationType2) => {
+    AnimationType2["CSSTransition"] = "CSSTransition";
+    AnimationType2["CSSAnimation"] = "CSSAnimation";
+    AnimationType2["WebAnimation"] = "WebAnimation";
+  })(AnimationType = Animation2.AnimationType || (Animation2.AnimationType = {}));
+})(Animation || (Animation = {}));
+var Audits;
+((Audits2) => {
+  let CookieExclusionReason;
+  ((CookieExclusionReason2) => {
+    CookieExclusionReason2["ExcludeSameSiteUnspecifiedTreatedAsLax"] = "ExcludeSameSiteUnspecifiedTreatedAsLax";
+    CookieExclusionReason2["ExcludeSameSiteNoneInsecure"] = "ExcludeSameSiteNoneInsecure";
+    CookieExclusionReason2["ExcludeSameSiteLax"] = "ExcludeSameSiteLax";
+    CookieExclusionReason2["ExcludeSameSiteStrict"] = "ExcludeSameSiteStrict";
+    CookieExclusionReason2["ExcludeDomainNonASCII"] = "ExcludeDomainNonASCII";
+    CookieExclusionReason2["ExcludeThirdPartyCookieBlockedInFirstPartySet"] = "ExcludeThirdPartyCookieBlockedInFirstPartySet";
+    CookieExclusionReason2["ExcludeThirdPartyPhaseout"] = "ExcludeThirdPartyPhaseout";
+    CookieExclusionReason2["ExcludePortMismatch"] = "ExcludePortMismatch";
+    CookieExclusionReason2["ExcludeSchemeMismatch"] = "ExcludeSchemeMismatch";
+  })(CookieExclusionReason = Audits2.CookieExclusionReason || (Audits2.CookieExclusionReason = {}));
+  let CookieWarningReason;
+  ((CookieWarningReason2) => {
+    CookieWarningReason2["WarnSameSiteUnspecifiedCrossSiteContext"] = "WarnSameSiteUnspecifiedCrossSiteContext";
+    CookieWarningReason2["WarnSameSiteNoneInsecure"] = "WarnSameSiteNoneInsecure";
+    CookieWarningReason2["WarnSameSiteUnspecifiedLaxAllowUnsafe"] = "WarnSameSiteUnspecifiedLaxAllowUnsafe";
+    CookieWarningReason2["WarnSameSiteStrictLaxDowngradeStrict"] = "WarnSameSiteStrictLaxDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteStrictCrossDowngradeStrict"] = "WarnSameSiteStrictCrossDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteStrictCrossDowngradeLax"] = "WarnSameSiteStrictCrossDowngradeLax";
+    CookieWarningReason2["WarnSameSiteLaxCrossDowngradeStrict"] = "WarnSameSiteLaxCrossDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteLaxCrossDowngradeLax"] = "WarnSameSiteLaxCrossDowngradeLax";
+    CookieWarningReason2["WarnAttributeValueExceedsMaxSize"] = "WarnAttributeValueExceedsMaxSize";
+    CookieWarningReason2["WarnDomainNonASCII"] = "WarnDomainNonASCII";
+    CookieWarningReason2["WarnThirdPartyPhaseout"] = "WarnThirdPartyPhaseout";
+    CookieWarningReason2["WarnCrossSiteRedirectDowngradeChangesInclusion"] = "WarnCrossSiteRedirectDowngradeChangesInclusion";
+    CookieWarningReason2["WarnDeprecationTrialMetadata"] = "WarnDeprecationTrialMetadata";
+    CookieWarningReason2["WarnThirdPartyCookieHeuristic"] = "WarnThirdPartyCookieHeuristic";
+  })(CookieWarningReason = Audits2.CookieWarningReason || (Audits2.CookieWarningReason = {}));
+  let CookieOperation;
+  ((CookieOperation2) => {
+    CookieOperation2["SetCookie"] = "SetCookie";
+    CookieOperation2["ReadCookie"] = "ReadCookie";
+  })(CookieOperation = Audits2.CookieOperation || (Audits2.CookieOperation = {}));
+  let InsightType;
+  ((InsightType2) => {
+    InsightType2["GitHubResource"] = "GitHubResource";
+    InsightType2["GracePeriod"] = "GracePeriod";
+    InsightType2["Heuristics"] = "Heuristics";
+  })(InsightType = Audits2.InsightType || (Audits2.InsightType = {}));
+  let PerformanceIssueType;
+  ((PerformanceIssueType2) => {
+    PerformanceIssueType2["DocumentCookie"] = "DocumentCookie";
+  })(PerformanceIssueType = Audits2.PerformanceIssueType || (Audits2.PerformanceIssueType = {}));
+  let MixedContentResolutionStatus;
+  ((MixedContentResolutionStatus2) => {
+    MixedContentResolutionStatus2["MixedContentBlocked"] = "MixedContentBlocked";
+    MixedContentResolutionStatus2["MixedContentAutomaticallyUpgraded"] = "MixedContentAutomaticallyUpgraded";
+    MixedContentResolutionStatus2["MixedContentWarning"] = "MixedContentWarning";
+  })(MixedContentResolutionStatus = Audits2.MixedContentResolutionStatus || (Audits2.MixedContentResolutionStatus = {}));
+  let MixedContentResourceType;
+  ((MixedContentResourceType2) => {
+    MixedContentResourceType2["Audio"] = "Audio";
+    MixedContentResourceType2["Beacon"] = "Beacon";
+    MixedContentResourceType2["CSPReport"] = "CSPReport";
+    MixedContentResourceType2["Download"] = "Download";
+    MixedContentResourceType2["EventSource"] = "EventSource";
+    MixedContentResourceType2["Favicon"] = "Favicon";
+    MixedContentResourceType2["Font"] = "Font";
+    MixedContentResourceType2["Form"] = "Form";
+    MixedContentResourceType2["Frame"] = "Frame";
+    MixedContentResourceType2["Image"] = "Image";
+    MixedContentResourceType2["Import"] = "Import";
+    MixedContentResourceType2["JSON"] = "JSON";
+    MixedContentResourceType2["Manifest"] = "Manifest";
+    MixedContentResourceType2["Ping"] = "Ping";
+    MixedContentResourceType2["PluginData"] = "PluginData";
+    MixedContentResourceType2["PluginResource"] = "PluginResource";
+    MixedContentResourceType2["Prefetch"] = "Prefetch";
+    MixedContentResourceType2["Resource"] = "Resource";
+    MixedContentResourceType2["Script"] = "Script";
+    MixedContentResourceType2["ServiceWorker"] = "ServiceWorker";
+    MixedContentResourceType2["SharedWorker"] = "SharedWorker";
+    MixedContentResourceType2["SpeculationRules"] = "SpeculationRules";
+    MixedContentResourceType2["Stylesheet"] = "Stylesheet";
+    MixedContentResourceType2["Track"] = "Track";
+    MixedContentResourceType2["Video"] = "Video";
+    MixedContentResourceType2["Worker"] = "Worker";
+    MixedContentResourceType2["XMLHttpRequest"] = "XMLHttpRequest";
+    MixedContentResourceType2["XSLT"] = "XSLT";
+  })(MixedContentResourceType = Audits2.MixedContentResourceType || (Audits2.MixedContentResourceType = {}));
+  let BlockedByResponseReason;
+  ((BlockedByResponseReason2) => {
+    BlockedByResponseReason2["CoepFrameResourceNeedsCoepHeader"] = "CoepFrameResourceNeedsCoepHeader";
+    BlockedByResponseReason2["CoopSandboxedIFrameCannotNavigateToCoopPage"] = "CoopSandboxedIFrameCannotNavigateToCoopPage";
+    BlockedByResponseReason2["CorpNotSameOrigin"] = "CorpNotSameOrigin";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoep"] = "CorpNotSameOriginAfterDefaultedToSameOriginByCoep";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByDip"] = "CorpNotSameOriginAfterDefaultedToSameOriginByDip";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"] = "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip";
+    BlockedByResponseReason2["CorpNotSameSite"] = "CorpNotSameSite";
+    BlockedByResponseReason2["SRIMessageSignatureMismatch"] = "SRIMessageSignatureMismatch";
+  })(BlockedByResponseReason = Audits2.BlockedByResponseReason || (Audits2.BlockedByResponseReason = {}));
+  let HeavyAdResolutionStatus;
+  ((HeavyAdResolutionStatus2) => {
+    HeavyAdResolutionStatus2["HeavyAdBlocked"] = "HeavyAdBlocked";
+    HeavyAdResolutionStatus2["HeavyAdWarning"] = "HeavyAdWarning";
+  })(HeavyAdResolutionStatus = Audits2.HeavyAdResolutionStatus || (Audits2.HeavyAdResolutionStatus = {}));
+  let HeavyAdReason;
+  ((HeavyAdReason2) => {
+    HeavyAdReason2["NetworkTotalLimit"] = "NetworkTotalLimit";
+    HeavyAdReason2["CpuTotalLimit"] = "CpuTotalLimit";
+    HeavyAdReason2["CpuPeakLimit"] = "CpuPeakLimit";
+  })(HeavyAdReason = Audits2.HeavyAdReason || (Audits2.HeavyAdReason = {}));
+  let ContentSecurityPolicyViolationType;
+  ((ContentSecurityPolicyViolationType2) => {
+    ContentSecurityPolicyViolationType2["KInlineViolation"] = "kInlineViolation";
+    ContentSecurityPolicyViolationType2["KEvalViolation"] = "kEvalViolation";
+    ContentSecurityPolicyViolationType2["KURLViolation"] = "kURLViolation";
+    ContentSecurityPolicyViolationType2["KSRIViolation"] = "kSRIViolation";
+    ContentSecurityPolicyViolationType2["KTrustedTypesSinkViolation"] = "kTrustedTypesSinkViolation";
+    ContentSecurityPolicyViolationType2["KTrustedTypesPolicyViolation"] = "kTrustedTypesPolicyViolation";
+    ContentSecurityPolicyViolationType2["KWasmEvalViolation"] = "kWasmEvalViolation";
+  })(ContentSecurityPolicyViolationType = Audits2.ContentSecurityPolicyViolationType || (Audits2.ContentSecurityPolicyViolationType = {}));
+  let SharedArrayBufferIssueType;
+  ((SharedArrayBufferIssueType2) => {
+    SharedArrayBufferIssueType2["TransferIssue"] = "TransferIssue";
+    SharedArrayBufferIssueType2["CreationIssue"] = "CreationIssue";
+  })(SharedArrayBufferIssueType = Audits2.SharedArrayBufferIssueType || (Audits2.SharedArrayBufferIssueType = {}));
+  let SharedDictionaryError;
+  ((SharedDictionaryError2) => {
+    SharedDictionaryError2["UseErrorCrossOriginNoCorsRequest"] = "UseErrorCrossOriginNoCorsRequest";
+    SharedDictionaryError2["UseErrorDictionaryLoadFailure"] = "UseErrorDictionaryLoadFailure";
+    SharedDictionaryError2["UseErrorMatchingDictionaryNotUsed"] = "UseErrorMatchingDictionaryNotUsed";
+    SharedDictionaryError2["UseErrorUnexpectedContentDictionaryHeader"] = "UseErrorUnexpectedContentDictionaryHeader";
+    SharedDictionaryError2["WriteErrorCossOriginNoCorsRequest"] = "WriteErrorCossOriginNoCorsRequest";
+    SharedDictionaryError2["WriteErrorDisallowedBySettings"] = "WriteErrorDisallowedBySettings";
+    SharedDictionaryError2["WriteErrorExpiredResponse"] = "WriteErrorExpiredResponse";
+    SharedDictionaryError2["WriteErrorFeatureDisabled"] = "WriteErrorFeatureDisabled";
+    SharedDictionaryError2["WriteErrorInsufficientResources"] = "WriteErrorInsufficientResources";
+    SharedDictionaryError2["WriteErrorInvalidMatchField"] = "WriteErrorInvalidMatchField";
+    SharedDictionaryError2["WriteErrorInvalidStructuredHeader"] = "WriteErrorInvalidStructuredHeader";
+    SharedDictionaryError2["WriteErrorInvalidTTLField"] = "WriteErrorInvalidTTLField";
+    SharedDictionaryError2["WriteErrorNavigationRequest"] = "WriteErrorNavigationRequest";
+    SharedDictionaryError2["WriteErrorNoMatchField"] = "WriteErrorNoMatchField";
+    SharedDictionaryError2["WriteErrorNonIntegerTTLField"] = "WriteErrorNonIntegerTTLField";
+    SharedDictionaryError2["WriteErrorNonListMatchDestField"] = "WriteErrorNonListMatchDestField";
+    SharedDictionaryError2["WriteErrorNonSecureContext"] = "WriteErrorNonSecureContext";
+    SharedDictionaryError2["WriteErrorNonStringIdField"] = "WriteErrorNonStringIdField";
+    SharedDictionaryError2["WriteErrorNonStringInMatchDestList"] = "WriteErrorNonStringInMatchDestList";
+    SharedDictionaryError2["WriteErrorInvalidMatchDestList"] = "WriteErrorInvalidMatchDestList";
+    SharedDictionaryError2["WriteErrorNonStringMatchField"] = "WriteErrorNonStringMatchField";
+    SharedDictionaryError2["WriteErrorNonTokenTypeField"] = "WriteErrorNonTokenTypeField";
+    SharedDictionaryError2["WriteErrorRequestAborted"] = "WriteErrorRequestAborted";
+    SharedDictionaryError2["WriteErrorShuttingDown"] = "WriteErrorShuttingDown";
+    SharedDictionaryError2["WriteErrorTooLongIdField"] = "WriteErrorTooLongIdField";
+    SharedDictionaryError2["WriteErrorUnsupportedType"] = "WriteErrorUnsupportedType";
+  })(SharedDictionaryError = Audits2.SharedDictionaryError || (Audits2.SharedDictionaryError = {}));
+  let SRIMessageSignatureError;
+  ((SRIMessageSignatureError2) => {
+    SRIMessageSignatureError2["MissingSignatureHeader"] = "MissingSignatureHeader";
+    SRIMessageSignatureError2["MissingSignatureInputHeader"] = "MissingSignatureInputHeader";
+    SRIMessageSignatureError2["InvalidSignatureHeader"] = "InvalidSignatureHeader";
+    SRIMessageSignatureError2["InvalidSignatureInputHeader"] = "InvalidSignatureInputHeader";
+    SRIMessageSignatureError2["SignatureHeaderValueIsNotByteSequence"] = "SignatureHeaderValueIsNotByteSequence";
+    SRIMessageSignatureError2["SignatureHeaderValueIsParameterized"] = "SignatureHeaderValueIsParameterized";
+    SRIMessageSignatureError2["SignatureHeaderValueIsIncorrectLength"] = "SignatureHeaderValueIsIncorrectLength";
+    SRIMessageSignatureError2["SignatureInputHeaderMissingLabel"] = "SignatureInputHeaderMissingLabel";
+    SRIMessageSignatureError2["SignatureInputHeaderValueNotInnerList"] = "SignatureInputHeaderValueNotInnerList";
+    SRIMessageSignatureError2["SignatureInputHeaderValueMissingComponents"] = "SignatureInputHeaderValueMissingComponents";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidComponentType"] = "SignatureInputHeaderInvalidComponentType";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidComponentName"] = "SignatureInputHeaderInvalidComponentName";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidHeaderComponentParameter"] = "SignatureInputHeaderInvalidHeaderComponentParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidDerivedComponentParameter"] = "SignatureInputHeaderInvalidDerivedComponentParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderKeyIdLength"] = "SignatureInputHeaderKeyIdLength";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidParameter"] = "SignatureInputHeaderInvalidParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderMissingRequiredParameters"] = "SignatureInputHeaderMissingRequiredParameters";
+    SRIMessageSignatureError2["ValidationFailedSignatureExpired"] = "ValidationFailedSignatureExpired";
+    SRIMessageSignatureError2["ValidationFailedInvalidLength"] = "ValidationFailedInvalidLength";
+    SRIMessageSignatureError2["ValidationFailedSignatureMismatch"] = "ValidationFailedSignatureMismatch";
+    SRIMessageSignatureError2["ValidationFailedIntegrityMismatch"] = "ValidationFailedIntegrityMismatch";
+    SRIMessageSignatureError2["SignatureBaseUnknownDerivedComponent"] = "SignatureBaseUnknownDerivedComponent";
+    SRIMessageSignatureError2["SignatureBaseMissingHeader"] = "SignatureBaseMissingHeader";
+    SRIMessageSignatureError2["SignatureBaseInvalidUnencodedDigest"] = "SignatureBaseInvalidUnencodedDigest";
+    SRIMessageSignatureError2["SignatureBaseUnsupportedComponent"] = "SignatureBaseUnsupportedComponent";
+  })(SRIMessageSignatureError = Audits2.SRIMessageSignatureError || (Audits2.SRIMessageSignatureError = {}));
+  let UnencodedDigestError;
+  ((UnencodedDigestError2) => {
+    UnencodedDigestError2["MalformedDictionary"] = "MalformedDictionary";
+    UnencodedDigestError2["UnknownAlgorithm"] = "UnknownAlgorithm";
+    UnencodedDigestError2["IncorrectDigestType"] = "IncorrectDigestType";
+    UnencodedDigestError2["IncorrectDigestLength"] = "IncorrectDigestLength";
+  })(UnencodedDigestError = Audits2.UnencodedDigestError || (Audits2.UnencodedDigestError = {}));
+  let ConnectionAllowlistError;
+  ((ConnectionAllowlistError2) => {
+    ConnectionAllowlistError2["InvalidHeader"] = "InvalidHeader";
+    ConnectionAllowlistError2["MoreThanOneList"] = "MoreThanOneList";
+    ConnectionAllowlistError2["ItemNotInnerList"] = "ItemNotInnerList";
+    ConnectionAllowlistError2["InvalidAllowlistItemType"] = "InvalidAllowlistItemType";
+    ConnectionAllowlistError2["ReportingEndpointNotToken"] = "ReportingEndpointNotToken";
+    ConnectionAllowlistError2["InvalidUrlPattern"] = "InvalidUrlPattern";
+    ConnectionAllowlistError2["IFrameAttributeLoosensEmbeddingRequirement"] = "IFrameAttributeLoosensEmbeddingRequirement";
+    ConnectionAllowlistError2["InvalidAllowConnectionAllowlistFrom"] = "InvalidAllowConnectionAllowlistFrom";
+    ConnectionAllowlistError2["EmbeddingRequirementNotSatisfied"] = "EmbeddingRequirementNotSatisfied";
+  })(ConnectionAllowlistError = Audits2.ConnectionAllowlistError || (Audits2.ConnectionAllowlistError = {}));
+  let GenericIssueErrorType;
+  ((GenericIssueErrorType2) => {
+    GenericIssueErrorType2["FormLabelForNameError"] = "FormLabelForNameError";
+    GenericIssueErrorType2["FormDuplicateIdForInputError"] = "FormDuplicateIdForInputError";
+    GenericIssueErrorType2["FormInputWithNoLabelError"] = "FormInputWithNoLabelError";
+    GenericIssueErrorType2["FormAutocompleteAttributeEmptyError"] = "FormAutocompleteAttributeEmptyError";
+    GenericIssueErrorType2["FormEmptyIdAndNameAttributesForInputError"] = "FormEmptyIdAndNameAttributesForInputError";
+    GenericIssueErrorType2["FormAriaLabelledByToNonExistingIdError"] = "FormAriaLabelledByToNonExistingIdError";
+    GenericIssueErrorType2["FormInputAssignedAutocompleteValueToIdOrNameAttributeError"] = "FormInputAssignedAutocompleteValueToIdOrNameAttributeError";
+    GenericIssueErrorType2["FormLabelHasNeitherForNorNestedInputError"] = "FormLabelHasNeitherForNorNestedInputError";
+    GenericIssueErrorType2["FormLabelForMatchesNonExistingIdError"] = "FormLabelForMatchesNonExistingIdError";
+    GenericIssueErrorType2["FormInputHasWrongButWellIntendedAutocompleteValueError"] = "FormInputHasWrongButWellIntendedAutocompleteValueError";
+    GenericIssueErrorType2["ResponseWasBlockedByORB"] = "ResponseWasBlockedByORB";
+    GenericIssueErrorType2["NavigationEntryMarkedSkippable"] = "NavigationEntryMarkedSkippable";
+    GenericIssueErrorType2["BackUINavigationWouldSkipAd"] = "BackUINavigationWouldSkipAd";
+    GenericIssueErrorType2["AutofillAndManualTextPolicyControlledFeaturesInfo"] = "AutofillAndManualTextPolicyControlledFeaturesInfo";
+    GenericIssueErrorType2["AutofillPolicyControlledFeatureInfo"] = "AutofillPolicyControlledFeatureInfo";
+    GenericIssueErrorType2["ManualTextPolicyControlledFeatureInfo"] = "ManualTextPolicyControlledFeatureInfo";
+    GenericIssueErrorType2["FormModelContextParameterMissingTitleAndDescription"] = "FormModelContextParameterMissingTitleAndDescription";
+    GenericIssueErrorType2["FormModelContextMissingToolName"] = "FormModelContextMissingToolName";
+    GenericIssueErrorType2["FormModelContextMissingToolDescription"] = "FormModelContextMissingToolDescription";
+    GenericIssueErrorType2["FormModelContextRequiredParameterMissingName"] = "FormModelContextRequiredParameterMissingName";
+    GenericIssueErrorType2["FormModelContextParameterMissingName"] = "FormModelContextParameterMissingName";
+  })(GenericIssueErrorType = Audits2.GenericIssueErrorType || (Audits2.GenericIssueErrorType = {}));
+  let ClientHintIssueReason;
+  ((ClientHintIssueReason2) => {
+    ClientHintIssueReason2["MetaTagAllowListInvalidOrigin"] = "MetaTagAllowListInvalidOrigin";
+    ClientHintIssueReason2["MetaTagModifiedHTML"] = "MetaTagModifiedHTML";
+  })(ClientHintIssueReason = Audits2.ClientHintIssueReason || (Audits2.ClientHintIssueReason = {}));
+  let FederatedAuthRequestIssueReason;
+  ((FederatedAuthRequestIssueReason2) => {
+    FederatedAuthRequestIssueReason2["ShouldEmbargo"] = "ShouldEmbargo";
+    FederatedAuthRequestIssueReason2["TooManyRequests"] = "TooManyRequests";
+    FederatedAuthRequestIssueReason2["WellKnownHttpNotFound"] = "WellKnownHttpNotFound";
+    FederatedAuthRequestIssueReason2["WellKnownNoResponse"] = "WellKnownNoResponse";
+    FederatedAuthRequestIssueReason2["WellKnownBlockedByConnectionAllowlist"] = "WellKnownBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["WellKnownInvalidResponse"] = "WellKnownInvalidResponse";
+    FederatedAuthRequestIssueReason2["WellKnownListEmpty"] = "WellKnownListEmpty";
+    FederatedAuthRequestIssueReason2["WellKnownInvalidContentType"] = "WellKnownInvalidContentType";
+    FederatedAuthRequestIssueReason2["ConfigNotInWellKnown"] = "ConfigNotInWellKnown";
+    FederatedAuthRequestIssueReason2["WellKnownTooBig"] = "WellKnownTooBig";
+    FederatedAuthRequestIssueReason2["ConfigHttpNotFound"] = "ConfigHttpNotFound";
+    FederatedAuthRequestIssueReason2["ConfigNoResponse"] = "ConfigNoResponse";
+    FederatedAuthRequestIssueReason2["ConfigBlockedByConnectionAllowlist"] = "ConfigBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["ConfigInvalidResponse"] = "ConfigInvalidResponse";
+    FederatedAuthRequestIssueReason2["ConfigInvalidContentType"] = "ConfigInvalidContentType";
+    FederatedAuthRequestIssueReason2["IdpNotPotentiallyTrustworthy"] = "IdpNotPotentiallyTrustworthy";
+    FederatedAuthRequestIssueReason2["DisabledInSettings"] = "DisabledInSettings";
+    FederatedAuthRequestIssueReason2["DisabledInFlags"] = "DisabledInFlags";
+    FederatedAuthRequestIssueReason2["ErrorFetchingSignin"] = "ErrorFetchingSignin";
+    FederatedAuthRequestIssueReason2["InvalidSigninResponse"] = "InvalidSigninResponse";
+    FederatedAuthRequestIssueReason2["AccountsHttpNotFound"] = "AccountsHttpNotFound";
+    FederatedAuthRequestIssueReason2["AccountsNoResponse"] = "AccountsNoResponse";
+    FederatedAuthRequestIssueReason2["AccountsBlockedByConnectionAllowlist"] = "AccountsBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["AccountsInvalidResponse"] = "AccountsInvalidResponse";
+    FederatedAuthRequestIssueReason2["AccountsListEmpty"] = "AccountsListEmpty";
+    FederatedAuthRequestIssueReason2["AccountsInvalidContentType"] = "AccountsInvalidContentType";
+    FederatedAuthRequestIssueReason2["IdTokenHttpNotFound"] = "IdTokenHttpNotFound";
+    FederatedAuthRequestIssueReason2["IdTokenNoResponse"] = "IdTokenNoResponse";
+    FederatedAuthRequestIssueReason2["IdTokenBlockedByConnectionAllowlist"] = "IdTokenBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidResponse"] = "IdTokenInvalidResponse";
+    FederatedAuthRequestIssueReason2["IdTokenIdpErrorResponse"] = "IdTokenIdpErrorResponse";
+    FederatedAuthRequestIssueReason2["IdTokenCrossSiteIdpErrorResponse"] = "IdTokenCrossSiteIdpErrorResponse";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidRequest"] = "IdTokenInvalidRequest";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidContentType"] = "IdTokenInvalidContentType";
+    FederatedAuthRequestIssueReason2["ErrorIdToken"] = "ErrorIdToken";
+    FederatedAuthRequestIssueReason2["Canceled"] = "Canceled";
+    FederatedAuthRequestIssueReason2["RpPageNotVisible"] = "RpPageNotVisible";
+    FederatedAuthRequestIssueReason2["SilentMediationFailure"] = "SilentMediationFailure";
+    FederatedAuthRequestIssueReason2["NotSignedInWithIdp"] = "NotSignedInWithIdp";
+    FederatedAuthRequestIssueReason2["MissingTransientUserActivation"] = "MissingTransientUserActivation";
+    FederatedAuthRequestIssueReason2["ReplacedByActiveMode"] = "ReplacedByActiveMode";
+    FederatedAuthRequestIssueReason2["RelyingPartyOriginIsOpaque"] = "RelyingPartyOriginIsOpaque";
+    FederatedAuthRequestIssueReason2["TypeNotMatching"] = "TypeNotMatching";
+    FederatedAuthRequestIssueReason2["UiDismissedNoEmbargo"] = "UiDismissedNoEmbargo";
+    FederatedAuthRequestIssueReason2["CorsError"] = "CorsError";
+    FederatedAuthRequestIssueReason2["SuppressedBySegmentationPlatform"] = "SuppressedBySegmentationPlatform";
+  })(FederatedAuthRequestIssueReason = Audits2.FederatedAuthRequestIssueReason || (Audits2.FederatedAuthRequestIssueReason = {}));
+  let FederatedAuthUserInfoRequestIssueReason;
+  ((FederatedAuthUserInfoRequestIssueReason2) => {
+    FederatedAuthUserInfoRequestIssueReason2["NotSameOrigin"] = "NotSameOrigin";
+    FederatedAuthUserInfoRequestIssueReason2["NotIframe"] = "NotIframe";
+    FederatedAuthUserInfoRequestIssueReason2["NotPotentiallyTrustworthy"] = "NotPotentiallyTrustworthy";
+    FederatedAuthUserInfoRequestIssueReason2["NoAPIPermission"] = "NoApiPermission";
+    FederatedAuthUserInfoRequestIssueReason2["NotSignedInWithIdp"] = "NotSignedInWithIdp";
+    FederatedAuthUserInfoRequestIssueReason2["NoAccountSharingPermission"] = "NoAccountSharingPermission";
+    FederatedAuthUserInfoRequestIssueReason2["InvalidConfigOrWellKnown"] = "InvalidConfigOrWellKnown";
+    FederatedAuthUserInfoRequestIssueReason2["InvalidAccountsResponse"] = "InvalidAccountsResponse";
+    FederatedAuthUserInfoRequestIssueReason2["NoReturningUserFromFetchedAccounts"] = "NoReturningUserFromFetchedAccounts";
+  })(FederatedAuthUserInfoRequestIssueReason = Audits2.FederatedAuthUserInfoRequestIssueReason || (Audits2.FederatedAuthUserInfoRequestIssueReason = {}));
+  let EmailVerificationRequestIssueReason;
+  ((EmailVerificationRequestIssueReason2) => {
+    EmailVerificationRequestIssueReason2["InvalidEmail"] = "InvalidEmail";
+    EmailVerificationRequestIssueReason2["DnsFetchFailed"] = "DnsFetchFailed";
+    EmailVerificationRequestIssueReason2["DnsInvalidRecord"] = "DnsInvalidRecord";
+    EmailVerificationRequestIssueReason2["WellKnownHttpNotFound"] = "WellKnownHttpNotFound";
+    EmailVerificationRequestIssueReason2["WellKnownNoResponse"] = "WellKnownNoResponse";
+    EmailVerificationRequestIssueReason2["WellKnownInvalidResponse"] = "WellKnownInvalidResponse";
+    EmailVerificationRequestIssueReason2["WellKnownListEmpty"] = "WellKnownListEmpty";
+    EmailVerificationRequestIssueReason2["WellKnownInvalidContentType"] = "WellKnownInvalidContentType";
+    EmailVerificationRequestIssueReason2["WellKnownMissingIssuanceEndpoint"] = "WellKnownMissingIssuanceEndpoint";
+    EmailVerificationRequestIssueReason2["WellKnownIssuanceEndpointCrossOrigin"] = "WellKnownIssuanceEndpointCrossOrigin";
+    EmailVerificationRequestIssueReason2["WellKnownUnsupportedSigningAlgorithm"] = "WellKnownUnsupportedSigningAlgorithm";
+    EmailVerificationRequestIssueReason2["TokenHttpNotFound"] = "TokenHttpNotFound";
+    EmailVerificationRequestIssueReason2["TokenNoResponse"] = "TokenNoResponse";
+    EmailVerificationRequestIssueReason2["TokenInvalidResponse"] = "TokenInvalidResponse";
+    EmailVerificationRequestIssueReason2["TokenInvalidContentType"] = "TokenInvalidContentType";
+    EmailVerificationRequestIssueReason2["TokenMalformedSdJwt"] = "TokenMalformedSdJwt";
+    EmailVerificationRequestIssueReason2["TokenInvalidSdJwt"] = "TokenInvalidSdJwt";
+    EmailVerificationRequestIssueReason2["KeyBindingSigningFailed"] = "KeyBindingSigningFailed";
+    EmailVerificationRequestIssueReason2["RpOriginIsOpaque"] = "RpOriginIsOpaque";
+    EmailVerificationRequestIssueReason2["WellKnownMissingAccountsEndpoint"] = "WellKnownMissingAccountsEndpoint";
+    EmailVerificationRequestIssueReason2["UserLoggedOut"] = "UserLoggedOut";
+    EmailVerificationRequestIssueReason2["WellKnownAccountsEndpointCrossOrigin"] = "WellKnownAccountsEndpointCrossOrigin";
+    EmailVerificationRequestIssueReason2["AccountsHttpNotFound"] = "AccountsHttpNotFound";
+    EmailVerificationRequestIssueReason2["AccountsNoResponse"] = "AccountsNoResponse";
+    EmailVerificationRequestIssueReason2["AccountsInvalidResponse"] = "AccountsInvalidResponse";
+    EmailVerificationRequestIssueReason2["AccountsInvalidContentType"] = "AccountsInvalidContentType";
+    EmailVerificationRequestIssueReason2["AccountsEmptyList"] = "AccountsEmptyList";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownHttpNotFound"] = "EmailVerificationWellKnownHttpNotFound";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownNoResponse"] = "EmailVerificationWellKnownNoResponse";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownInvalidResponse"] = "EmailVerificationWellKnownInvalidResponse";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownInvalidContentType"] = "EmailVerificationWellKnownInvalidContentType";
+    EmailVerificationRequestIssueReason2["JwksHttpNotFound"] = "JwksHttpNotFound";
+    EmailVerificationRequestIssueReason2["JwksInvalidResponse"] = "JwksInvalidResponse";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtUnsupportedHeaderAlg"] = "TokenVerificationSdJwtUnsupportedHeaderAlg";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidTyp"] = "TokenVerificationSdJwtInvalidTyp";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingIss"] = "TokenVerificationSdJwtMissingIss";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingIat"] = "TokenVerificationSdJwtMissingIat";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingCnf"] = "TokenVerificationSdJwtMissingCnf";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingEmail"] = "TokenVerificationSdJwtMissingEmail";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidIssuedAt"] = "TokenVerificationSdJwtInvalidIssuedAt";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidIssuer"] = "TokenVerificationSdJwtInvalidIssuer";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtJwksMissingKeys"] = "TokenVerificationSdJwtJwksMissingKeys";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtSignatureFailed"] = "TokenVerificationSdJwtSignatureFailed";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidEmailVerified"] = "TokenVerificationSdJwtInvalidEmailVerified";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidEmail"] = "TokenVerificationSdJwtInvalidEmail";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidHolderKey"] = "TokenVerificationSdJwtInvalidHolderKey";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidTyp"] = "TokenVerificationKbInvalidTyp";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingAud"] = "TokenVerificationKbMissingAud";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingNonce"] = "TokenVerificationKbMissingNonce";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingIat"] = "TokenVerificationKbMissingIat";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingSdHash"] = "TokenVerificationKbMissingSdHash";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidIssuedAt"] = "TokenVerificationKbInvalidIssuedAt";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidAudience"] = "TokenVerificationKbInvalidAudience";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidNonce"] = "TokenVerificationKbInvalidNonce";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidSdHash"] = "TokenVerificationKbInvalidSdHash";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingCnf"] = "TokenVerificationKbMissingCnf";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbSignatureFailed"] = "TokenVerificationKbSignatureFailed";
+  })(EmailVerificationRequestIssueReason = Audits2.EmailVerificationRequestIssueReason || (Audits2.EmailVerificationRequestIssueReason = {}));
+  let PartitioningBlobURLInfo;
+  ((PartitioningBlobURLInfo2) => {
+    PartitioningBlobURLInfo2["BlockedCrossPartitionFetching"] = "BlockedCrossPartitionFetching";
+    PartitioningBlobURLInfo2["EnforceNoopenerForNavigation"] = "EnforceNoopenerForNavigation";
+  })(PartitioningBlobURLInfo = Audits2.PartitioningBlobURLInfo || (Audits2.PartitioningBlobURLInfo = {}));
+  let ElementAccessibilityIssueReason;
+  ((ElementAccessibilityIssueReason2) => {
+    ElementAccessibilityIssueReason2["DisallowedSelectChild"] = "DisallowedSelectChild";
+    ElementAccessibilityIssueReason2["DisallowedOptGroupChild"] = "DisallowedOptGroupChild";
+    ElementAccessibilityIssueReason2["NonPhrasingContentOptionChild"] = "NonPhrasingContentOptionChild";
+    ElementAccessibilityIssueReason2["InteractiveContentOptionChild"] = "InteractiveContentOptionChild";
+    ElementAccessibilityIssueReason2["InteractiveContentLegendChild"] = "InteractiveContentLegendChild";
+    ElementAccessibilityIssueReason2["InteractiveContentSummaryDescendant"] = "InteractiveContentSummaryDescendant";
+  })(ElementAccessibilityIssueReason = Audits2.ElementAccessibilityIssueReason || (Audits2.ElementAccessibilityIssueReason = {}));
+  let StyleSheetLoadingIssueReason;
+  ((StyleSheetLoadingIssueReason2) => {
+    StyleSheetLoadingIssueReason2["LateImportRule"] = "LateImportRule";
+    StyleSheetLoadingIssueReason2["RequestFailed"] = "RequestFailed";
+  })(StyleSheetLoadingIssueReason = Audits2.StyleSheetLoadingIssueReason || (Audits2.StyleSheetLoadingIssueReason = {}));
+  let PropertyRuleIssueReason;
+  ((PropertyRuleIssueReason2) => {
+    PropertyRuleIssueReason2["InvalidSyntax"] = "InvalidSyntax";
+    PropertyRuleIssueReason2["InvalidInitialValue"] = "InvalidInitialValue";
+    PropertyRuleIssueReason2["InvalidInherits"] = "InvalidInherits";
+    PropertyRuleIssueReason2["InvalidName"] = "InvalidName";
+  })(PropertyRuleIssueReason = Audits2.PropertyRuleIssueReason || (Audits2.PropertyRuleIssueReason = {}));
+  let UserReidentificationIssueType;
+  ((UserReidentificationIssueType2) => {
+    UserReidentificationIssueType2["BlockedFrameNavigation"] = "BlockedFrameNavigation";
+    UserReidentificationIssueType2["BlockedSubresource"] = "BlockedSubresource";
+    UserReidentificationIssueType2["NoisedCanvasReadback"] = "NoisedCanvasReadback";
+  })(UserReidentificationIssueType = Audits2.UserReidentificationIssueType || (Audits2.UserReidentificationIssueType = {}));
+  let PermissionElementIssueType;
+  ((PermissionElementIssueType2) => {
+    PermissionElementIssueType2["InvalidType"] = "InvalidType";
+    PermissionElementIssueType2["FencedFrameDisallowed"] = "FencedFrameDisallowed";
+    PermissionElementIssueType2["CspFrameAncestorsMissing"] = "CspFrameAncestorsMissing";
+    PermissionElementIssueType2["PermissionsPolicyBlocked"] = "PermissionsPolicyBlocked";
+    PermissionElementIssueType2["PaddingRightUnsupported"] = "PaddingRightUnsupported";
+    PermissionElementIssueType2["PaddingBottomUnsupported"] = "PaddingBottomUnsupported";
+    PermissionElementIssueType2["InsetBoxShadowUnsupported"] = "InsetBoxShadowUnsupported";
+    PermissionElementIssueType2["RequestInProgress"] = "RequestInProgress";
+    PermissionElementIssueType2["UntrustedEvent"] = "UntrustedEvent";
+    PermissionElementIssueType2["RegistrationFailed"] = "RegistrationFailed";
+    PermissionElementIssueType2["TypeNotSupported"] = "TypeNotSupported";
+    PermissionElementIssueType2["InvalidTypeActivation"] = "InvalidTypeActivation";
+    PermissionElementIssueType2["SecurityChecksFailed"] = "SecurityChecksFailed";
+    PermissionElementIssueType2["ActivationDisabled"] = "ActivationDisabled";
+    PermissionElementIssueType2["GeolocationDeprecated"] = "GeolocationDeprecated";
+    PermissionElementIssueType2["InvalidDisplayStyle"] = "InvalidDisplayStyle";
+    PermissionElementIssueType2["NonOpaqueColor"] = "NonOpaqueColor";
+    PermissionElementIssueType2["LowContrast"] = "LowContrast";
+    PermissionElementIssueType2["FontSizeTooSmall"] = "FontSizeTooSmall";
+    PermissionElementIssueType2["FontSizeTooLarge"] = "FontSizeTooLarge";
+    PermissionElementIssueType2["InvalidSizeValue"] = "InvalidSizeValue";
+    PermissionElementIssueType2["NonSecureContext"] = "NonSecureContext";
+    PermissionElementIssueType2["MissingTransientUserActivation"] = "MissingTransientUserActivation";
+  })(PermissionElementIssueType = Audits2.PermissionElementIssueType || (Audits2.PermissionElementIssueType = {}));
+  let InspectorIssueCode;
+  ((InspectorIssueCode2) => {
+    InspectorIssueCode2["CookieIssue"] = "CookieIssue";
+    InspectorIssueCode2["MixedContentIssue"] = "MixedContentIssue";
+    InspectorIssueCode2["BlockedByResponseIssue"] = "BlockedByResponseIssue";
+    InspectorIssueCode2["HeavyAdIssue"] = "HeavyAdIssue";
+    InspectorIssueCode2["ContentSecurityPolicyIssue"] = "ContentSecurityPolicyIssue";
+    InspectorIssueCode2["SharedArrayBufferIssue"] = "SharedArrayBufferIssue";
+    InspectorIssueCode2["CorsIssue"] = "CorsIssue";
+    InspectorIssueCode2["QuirksModeIssue"] = "QuirksModeIssue";
+    InspectorIssueCode2["PartitioningBlobURLIssue"] = "PartitioningBlobURLIssue";
+    InspectorIssueCode2["NavigatorUserAgentIssue"] = "NavigatorUserAgentIssue";
+    InspectorIssueCode2["GenericIssue"] = "GenericIssue";
+    InspectorIssueCode2["DeprecationIssue"] = "DeprecationIssue";
+    InspectorIssueCode2["ClientHintIssue"] = "ClientHintIssue";
+    InspectorIssueCode2["FederatedAuthRequestIssue"] = "FederatedAuthRequestIssue";
+    InspectorIssueCode2["BounceTrackingIssue"] = "BounceTrackingIssue";
+    InspectorIssueCode2["CookieDeprecationMetadataIssue"] = "CookieDeprecationMetadataIssue";
+    InspectorIssueCode2["StylesheetLoadingIssue"] = "StylesheetLoadingIssue";
+    InspectorIssueCode2["FederatedAuthUserInfoRequestIssue"] = "FederatedAuthUserInfoRequestIssue";
+    InspectorIssueCode2["PropertyRuleIssue"] = "PropertyRuleIssue";
+    InspectorIssueCode2["SharedDictionaryIssue"] = "SharedDictionaryIssue";
+    InspectorIssueCode2["ElementAccessibilityIssue"] = "ElementAccessibilityIssue";
+    InspectorIssueCode2["SRIMessageSignatureIssue"] = "SRIMessageSignatureIssue";
+    InspectorIssueCode2["UnencodedDigestIssue"] = "UnencodedDigestIssue";
+    InspectorIssueCode2["ConnectionAllowlistIssue"] = "ConnectionAllowlistIssue";
+    InspectorIssueCode2["UserReidentificationIssue"] = "UserReidentificationIssue";
+    InspectorIssueCode2["PermissionElementIssue"] = "PermissionElementIssue";
+    InspectorIssueCode2["PerformanceIssue"] = "PerformanceIssue";
+    InspectorIssueCode2["SelectivePermissionsInterventionIssue"] = "SelectivePermissionsInterventionIssue";
+    InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
+    InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
+  })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
+  let GetEncodedResponseRequestEncoding;
+  ((GetEncodedResponseRequestEncoding2) => {
+    GetEncodedResponseRequestEncoding2["Webp"] = "webp";
+    GetEncodedResponseRequestEncoding2["Jpeg"] = "jpeg";
+    GetEncodedResponseRequestEncoding2["Png"] = "png";
+  })(GetEncodedResponseRequestEncoding = Audits2.GetEncodedResponseRequestEncoding || (Audits2.GetEncodedResponseRequestEncoding = {}));
+})(Audits || (Audits = {}));
+var Autofill;
+((Autofill2) => {
+  let FillingStrategy;
+  ((FillingStrategy2) => {
+    FillingStrategy2["AutocompleteAttribute"] = "autocompleteAttribute";
+    FillingStrategy2["AutofillInferred"] = "autofillInferred";
+  })(FillingStrategy = Autofill2.FillingStrategy || (Autofill2.FillingStrategy = {}));
+})(Autofill || (Autofill = {}));
+var BackgroundService;
+((BackgroundService2) => {
+  let ServiceName;
+  ((ServiceName2) => {
+    ServiceName2["BackgroundFetch"] = "backgroundFetch";
+    ServiceName2["BackgroundSync"] = "backgroundSync";
+    ServiceName2["PushMessaging"] = "pushMessaging";
+    ServiceName2["Notifications"] = "notifications";
+    ServiceName2["PaymentHandler"] = "paymentHandler";
+    ServiceName2["PeriodicBackgroundSync"] = "periodicBackgroundSync";
+  })(ServiceName = BackgroundService2.ServiceName || (BackgroundService2.ServiceName = {}));
+})(BackgroundService || (BackgroundService = {}));
+var BluetoothEmulation;
+((BluetoothEmulation2) => {
+  let CentralState;
+  ((CentralState2) => {
+    CentralState2["Absent"] = "absent";
+    CentralState2["PoweredOff"] = "powered-off";
+    CentralState2["PoweredOn"] = "powered-on";
+  })(CentralState = BluetoothEmulation2.CentralState || (BluetoothEmulation2.CentralState = {}));
+  let GATTOperationType;
+  ((GATTOperationType2) => {
+    GATTOperationType2["Connection"] = "connection";
+    GATTOperationType2["Discovery"] = "discovery";
+  })(GATTOperationType = BluetoothEmulation2.GATTOperationType || (BluetoothEmulation2.GATTOperationType = {}));
+  let CharacteristicWriteType;
+  ((CharacteristicWriteType2) => {
+    CharacteristicWriteType2["WriteDefaultDeprecated"] = "write-default-deprecated";
+    CharacteristicWriteType2["WriteWithResponse"] = "write-with-response";
+    CharacteristicWriteType2["WriteWithoutResponse"] = "write-without-response";
+  })(CharacteristicWriteType = BluetoothEmulation2.CharacteristicWriteType || (BluetoothEmulation2.CharacteristicWriteType = {}));
+  let CharacteristicOperationType;
+  ((CharacteristicOperationType2) => {
+    CharacteristicOperationType2["Read"] = "read";
+    CharacteristicOperationType2["Write"] = "write";
+    CharacteristicOperationType2["SubscribeToNotifications"] = "subscribe-to-notifications";
+    CharacteristicOperationType2["UnsubscribeFromNotifications"] = "unsubscribe-from-notifications";
+  })(CharacteristicOperationType = BluetoothEmulation2.CharacteristicOperationType || (BluetoothEmulation2.CharacteristicOperationType = {}));
+  let DescriptorOperationType;
+  ((DescriptorOperationType2) => {
+    DescriptorOperationType2["Read"] = "read";
+    DescriptorOperationType2["Write"] = "write";
+  })(DescriptorOperationType = BluetoothEmulation2.DescriptorOperationType || (BluetoothEmulation2.DescriptorOperationType = {}));
+})(BluetoothEmulation || (BluetoothEmulation = {}));
+var Browser;
+((Browser2) => {
+  let WindowState;
+  ((WindowState2) => {
+    WindowState2["Normal"] = "normal";
+    WindowState2["Minimized"] = "minimized";
+    WindowState2["Maximized"] = "maximized";
+    WindowState2["Fullscreen"] = "fullscreen";
+  })(WindowState = Browser2.WindowState || (Browser2.WindowState = {}));
+  let PermissionType;
+  ((PermissionType2) => {
+    PermissionType2["Ar"] = "ar";
+    PermissionType2["AudioCapture"] = "audioCapture";
+    PermissionType2["AutomaticFullscreen"] = "automaticFullscreen";
+    PermissionType2["BackgroundFetch"] = "backgroundFetch";
+    PermissionType2["BackgroundSync"] = "backgroundSync";
+    PermissionType2["CameraPanTiltZoom"] = "cameraPanTiltZoom";
+    PermissionType2["CapturedSurfaceControl"] = "capturedSurfaceControl";
+    PermissionType2["ClipboardReadWrite"] = "clipboardReadWrite";
+    PermissionType2["ClipboardSanitizedWrite"] = "clipboardSanitizedWrite";
+    PermissionType2["DisplayCapture"] = "displayCapture";
+    PermissionType2["DurableStorage"] = "durableStorage";
+    PermissionType2["Geolocation"] = "geolocation";
+    PermissionType2["HandTracking"] = "handTracking";
+    PermissionType2["IdleDetection"] = "idleDetection";
+    PermissionType2["KeyboardLock"] = "keyboardLock";
+    PermissionType2["LocalFonts"] = "localFonts";
+    PermissionType2["LocalNetwork"] = "localNetwork";
+    PermissionType2["LocalNetworkAccess"] = "localNetworkAccess";
+    PermissionType2["LoopbackNetwork"] = "loopbackNetwork";
+    PermissionType2["Midi"] = "midi";
+    PermissionType2["MidiSysex"] = "midiSysex";
+    PermissionType2["Nfc"] = "nfc";
+    PermissionType2["Notifications"] = "notifications";
+    PermissionType2["PaymentHandler"] = "paymentHandler";
+    PermissionType2["PeriodicBackgroundSync"] = "periodicBackgroundSync";
+    PermissionType2["PointerLock"] = "pointerLock";
+    PermissionType2["ProtectedMediaIdentifier"] = "protectedMediaIdentifier";
+    PermissionType2["Sensors"] = "sensors";
+    PermissionType2["SmartCard"] = "smartCard";
+    PermissionType2["SpeakerSelection"] = "speakerSelection";
+    PermissionType2["StorageAccess"] = "storageAccess";
+    PermissionType2["TopLevelStorageAccess"] = "topLevelStorageAccess";
+    PermissionType2["VideoCapture"] = "videoCapture";
+    PermissionType2["Vr"] = "vr";
+    PermissionType2["WakeLockScreen"] = "wakeLockScreen";
+    PermissionType2["WakeLockSystem"] = "wakeLockSystem";
+    PermissionType2["WebAppInstallation"] = "webAppInstallation";
+    PermissionType2["WebPrinting"] = "webPrinting";
+    PermissionType2["WindowManagement"] = "windowManagement";
+  })(PermissionType = Browser2.PermissionType || (Browser2.PermissionType = {}));
+  let PermissionSetting;
+  ((PermissionSetting2) => {
+    PermissionSetting2["Granted"] = "granted";
+    PermissionSetting2["Denied"] = "denied";
+    PermissionSetting2["Prompt"] = "prompt";
+  })(PermissionSetting = Browser2.PermissionSetting || (Browser2.PermissionSetting = {}));
+  let BrowserCommandId;
+  ((BrowserCommandId2) => {
+    BrowserCommandId2["OpenTabSearch"] = "openTabSearch";
+    BrowserCommandId2["CloseTabSearch"] = "closeTabSearch";
+    BrowserCommandId2["OpenGlic"] = "openGlic";
+  })(BrowserCommandId = Browser2.BrowserCommandId || (Browser2.BrowserCommandId = {}));
+  let SetDownloadBehaviorRequestBehavior;
+  ((SetDownloadBehaviorRequestBehavior2) => {
+    SetDownloadBehaviorRequestBehavior2["Deny"] = "deny";
+    SetDownloadBehaviorRequestBehavior2["Allow"] = "allow";
+    SetDownloadBehaviorRequestBehavior2["AllowAndName"] = "allowAndName";
+    SetDownloadBehaviorRequestBehavior2["Default"] = "default";
+  })(SetDownloadBehaviorRequestBehavior = Browser2.SetDownloadBehaviorRequestBehavior || (Browser2.SetDownloadBehaviorRequestBehavior = {}));
+  let DownloadProgressEventState;
+  ((DownloadProgressEventState2) => {
+    DownloadProgressEventState2["InProgress"] = "inProgress";
+    DownloadProgressEventState2["Completed"] = "completed";
+    DownloadProgressEventState2["Canceled"] = "canceled";
+  })(DownloadProgressEventState = Browser2.DownloadProgressEventState || (Browser2.DownloadProgressEventState = {}));
+})(Browser || (Browser = {}));
+var CSS;
+((CSS2) => {
+  let StyleSheetOrigin;
+  ((StyleSheetOrigin2) => {
+    StyleSheetOrigin2["Injected"] = "injected";
+    StyleSheetOrigin2["UserAgent"] = "user-agent";
+    StyleSheetOrigin2["Inspector"] = "inspector";
+    StyleSheetOrigin2["Regular"] = "regular";
+  })(StyleSheetOrigin = CSS2.StyleSheetOrigin || (CSS2.StyleSheetOrigin = {}));
+  let CSSRuleType;
+  ((CSSRuleType2) => {
+    CSSRuleType2["MediaRule"] = "MediaRule";
+    CSSRuleType2["SupportsRule"] = "SupportsRule";
+    CSSRuleType2["ContainerRule"] = "ContainerRule";
+    CSSRuleType2["LayerRule"] = "LayerRule";
+    CSSRuleType2["ScopeRule"] = "ScopeRule";
+    CSSRuleType2["StyleRule"] = "StyleRule";
+    CSSRuleType2["StartingStyleRule"] = "StartingStyleRule";
+    CSSRuleType2["NavigationRule"] = "NavigationRule";
+  })(CSSRuleType = CSS2.CSSRuleType || (CSS2.CSSRuleType = {}));
+  let CSSMediaSource;
+  ((CSSMediaSource2) => {
+    CSSMediaSource2["MediaRule"] = "mediaRule";
+    CSSMediaSource2["ImportRule"] = "importRule";
+    CSSMediaSource2["LinkedSheet"] = "linkedSheet";
+    CSSMediaSource2["InlineSheet"] = "inlineSheet";
+  })(CSSMediaSource = CSS2.CSSMediaSource || (CSS2.CSSMediaSource = {}));
+  let CSSAtRuleType;
+  ((CSSAtRuleType2) => {
+    CSSAtRuleType2["FontFace"] = "font-face";
+    CSSAtRuleType2["FontFeatureValues"] = "font-feature-values";
+    CSSAtRuleType2["FontPaletteValues"] = "font-palette-values";
+    CSSAtRuleType2["CounterStyle"] = "counter-style";
+  })(CSSAtRuleType = CSS2.CSSAtRuleType || (CSS2.CSSAtRuleType = {}));
+  let CSSAtRuleSubsection;
+  ((CSSAtRuleSubsection2) => {
+    CSSAtRuleSubsection2["Swash"] = "swash";
+    CSSAtRuleSubsection2["Annotation"] = "annotation";
+    CSSAtRuleSubsection2["Ornaments"] = "ornaments";
+    CSSAtRuleSubsection2["Stylistic"] = "stylistic";
+    CSSAtRuleSubsection2["Styleset"] = "styleset";
+    CSSAtRuleSubsection2["CharacterVariant"] = "character-variant";
+  })(CSSAtRuleSubsection = CSS2.CSSAtRuleSubsection || (CSS2.CSSAtRuleSubsection = {}));
+})(CSS || (CSS = {}));
+var CacheStorage;
+((CacheStorage2) => {
+  let CachedResponseType;
+  ((CachedResponseType2) => {
+    CachedResponseType2["Basic"] = "basic";
+    CachedResponseType2["Cors"] = "cors";
+    CachedResponseType2["Default"] = "default";
+    CachedResponseType2["Error"] = "error";
+    CachedResponseType2["OpaqueResponse"] = "opaqueResponse";
+    CachedResponseType2["OpaqueRedirect"] = "opaqueRedirect";
+  })(CachedResponseType = CacheStorage2.CachedResponseType || (CacheStorage2.CachedResponseType = {}));
+})(CacheStorage || (CacheStorage = {}));
+var DOM;
+((DOM2) => {
+  let PseudoType;
+  ((PseudoType2) => {
+    PseudoType2["FirstLine"] = "first-line";
+    PseudoType2["FirstLetter"] = "first-letter";
+    PseudoType2["Checkmark"] = "checkmark";
+    PseudoType2["Before"] = "before";
+    PseudoType2["After"] = "after";
+    PseudoType2["ExpandIcon"] = "expand-icon";
+    PseudoType2["PickerIcon"] = "picker-icon";
+    PseudoType2["InterestButton"] = "interest-button";
+    PseudoType2["Marker"] = "marker";
+    PseudoType2["Backdrop"] = "backdrop";
+    PseudoType2["Column"] = "column";
+    PseudoType2["Selection"] = "selection";
+    PseudoType2["SearchText"] = "search-text";
+    PseudoType2["TargetText"] = "target-text";
+    PseudoType2["SpellingError"] = "spelling-error";
+    PseudoType2["GrammarError"] = "grammar-error";
+    PseudoType2["Highlight"] = "highlight";
+    PseudoType2["FirstLineInherited"] = "first-line-inherited";
+    PseudoType2["ScrollMarker"] = "scroll-marker";
+    PseudoType2["ScrollMarkerGroup"] = "scroll-marker-group";
+    PseudoType2["ScrollButton"] = "scroll-button";
+    PseudoType2["Scrollbar"] = "scrollbar";
+    PseudoType2["ScrollbarThumb"] = "scrollbar-thumb";
+    PseudoType2["ScrollbarButton"] = "scrollbar-button";
+    PseudoType2["ScrollbarTrack"] = "scrollbar-track";
+    PseudoType2["ScrollbarTrackPiece"] = "scrollbar-track-piece";
+    PseudoType2["ScrollbarCorner"] = "scrollbar-corner";
+    PseudoType2["Resizer"] = "resizer";
+    PseudoType2["InputListButton"] = "input-list-button";
+    PseudoType2["ViewTransition"] = "view-transition";
+    PseudoType2["ViewTransitionGroup"] = "view-transition-group";
+    PseudoType2["ViewTransitionImagePair"] = "view-transition-image-pair";
+    PseudoType2["ViewTransitionGroupChildren"] = "view-transition-group-children";
+    PseudoType2["ViewTransitionOld"] = "view-transition-old";
+    PseudoType2["ViewTransitionNew"] = "view-transition-new";
+    PseudoType2["Placeholder"] = "placeholder";
+    PseudoType2["FileSelectorButton"] = "file-selector-button";
+    PseudoType2["DetailsContent"] = "details-content";
+    PseudoType2["Picker"] = "picker";
+    PseudoType2["SelectListbox"] = "select-listbox";
+    PseudoType2["PermissionIcon"] = "permission-icon";
+    PseudoType2["OverscrollAreaParent"] = "overscroll-area-parent";
+    PseudoType2["OverscrollBackdrop"] = "overscroll-backdrop";
+    PseudoType2["Skeleton"] = "skeleton";
+  })(PseudoType = DOM2.PseudoType || (DOM2.PseudoType = {}));
+  let ShadowRootType;
+  ((ShadowRootType2) => {
+    ShadowRootType2["UserAgent"] = "user-agent";
+    ShadowRootType2["Open"] = "open";
+    ShadowRootType2["Closed"] = "closed";
+  })(ShadowRootType = DOM2.ShadowRootType || (DOM2.ShadowRootType = {}));
+  let CompatibilityMode;
+  ((CompatibilityMode2) => {
+    CompatibilityMode2["QuirksMode"] = "QuirksMode";
+    CompatibilityMode2["LimitedQuirksMode"] = "LimitedQuirksMode";
+    CompatibilityMode2["NoQuirksMode"] = "NoQuirksMode";
+  })(CompatibilityMode = DOM2.CompatibilityMode || (DOM2.CompatibilityMode = {}));
+  let PhysicalAxes;
+  ((PhysicalAxes2) => {
+    PhysicalAxes2["Horizontal"] = "Horizontal";
+    PhysicalAxes2["Vertical"] = "Vertical";
+    PhysicalAxes2["Both"] = "Both";
+  })(PhysicalAxes = DOM2.PhysicalAxes || (DOM2.PhysicalAxes = {}));
+  let LogicalAxes;
+  ((LogicalAxes2) => {
+    LogicalAxes2["Inline"] = "Inline";
+    LogicalAxes2["Block"] = "Block";
+    LogicalAxes2["Both"] = "Both";
+  })(LogicalAxes = DOM2.LogicalAxes || (DOM2.LogicalAxes = {}));
+  let ScrollOrientation;
+  ((ScrollOrientation2) => {
+    ScrollOrientation2["Horizontal"] = "horizontal";
+    ScrollOrientation2["Vertical"] = "vertical";
+  })(ScrollOrientation = DOM2.ScrollOrientation || (DOM2.ScrollOrientation = {}));
+  let EnableRequestIncludeWhitespace;
+  ((EnableRequestIncludeWhitespace2) => {
+    EnableRequestIncludeWhitespace2["None"] = "none";
+    EnableRequestIncludeWhitespace2["All"] = "all";
+  })(EnableRequestIncludeWhitespace = DOM2.EnableRequestIncludeWhitespace || (DOM2.EnableRequestIncludeWhitespace = {}));
+  let GetElementByRelationRequestRelation;
+  ((GetElementByRelationRequestRelation2) => {
+    GetElementByRelationRequestRelation2["PopoverTarget"] = "PopoverTarget";
+    GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
+    GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
+  })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+})(DOM || (DOM = {}));
+var DOMDebugger;
+((DOMDebugger2) => {
+  let DOMBreakpointType;
+  ((DOMBreakpointType2) => {
+    DOMBreakpointType2["SubtreeModified"] = "subtree-modified";
+    DOMBreakpointType2["AttributeModified"] = "attribute-modified";
+    DOMBreakpointType2["NodeRemoved"] = "node-removed";
+  })(DOMBreakpointType = DOMDebugger2.DOMBreakpointType || (DOMDebugger2.DOMBreakpointType = {}));
+  let CSPViolationType;
+  ((CSPViolationType2) => {
+    CSPViolationType2["TrustedtypeSinkViolation"] = "trustedtype-sink-violation";
+    CSPViolationType2["TrustedtypePolicyViolation"] = "trustedtype-policy-violation";
+  })(CSPViolationType = DOMDebugger2.CSPViolationType || (DOMDebugger2.CSPViolationType = {}));
+})(DOMDebugger || (DOMDebugger = {}));
+var DigitalCredentials;
+((DigitalCredentials2) => {
+  let VirtualWalletAction;
+  ((VirtualWalletAction2) => {
+    VirtualWalletAction2["Respond"] = "respond";
+    VirtualWalletAction2["Decline"] = "decline";
+    VirtualWalletAction2["Wait"] = "wait";
+    VirtualWalletAction2["Clear"] = "clear";
+  })(VirtualWalletAction = DigitalCredentials2.VirtualWalletAction || (DigitalCredentials2.VirtualWalletAction = {}));
+})(DigitalCredentials || (DigitalCredentials = {}));
+var Emulation;
+((Emulation2) => {
+  let ScreenOrientationType;
+  ((ScreenOrientationType2) => {
+    ScreenOrientationType2["PortraitPrimary"] = "portraitPrimary";
+    ScreenOrientationType2["PortraitSecondary"] = "portraitSecondary";
+    ScreenOrientationType2["LandscapePrimary"] = "landscapePrimary";
+    ScreenOrientationType2["LandscapeSecondary"] = "landscapeSecondary";
+  })(ScreenOrientationType = Emulation2.ScreenOrientationType || (Emulation2.ScreenOrientationType = {}));
+  let DisplayFeatureOrientation;
+  ((DisplayFeatureOrientation2) => {
+    DisplayFeatureOrientation2["Vertical"] = "vertical";
+    DisplayFeatureOrientation2["Horizontal"] = "horizontal";
+  })(DisplayFeatureOrientation = Emulation2.DisplayFeatureOrientation || (Emulation2.DisplayFeatureOrientation = {}));
+  let DevicePostureType;
+  ((DevicePostureType2) => {
+    DevicePostureType2["Continuous"] = "continuous";
+    DevicePostureType2["Folded"] = "folded";
+  })(DevicePostureType = Emulation2.DevicePostureType || (Emulation2.DevicePostureType = {}));
+  let VirtualTimePolicy;
+  ((VirtualTimePolicy2) => {
+    VirtualTimePolicy2["Advance"] = "advance";
+    VirtualTimePolicy2["Pause"] = "pause";
+    VirtualTimePolicy2["PauseIfNetworkFetchesPending"] = "pauseIfNetworkFetchesPending";
+  })(VirtualTimePolicy = Emulation2.VirtualTimePolicy || (Emulation2.VirtualTimePolicy = {}));
+  let SensorType;
+  ((SensorType2) => {
+    SensorType2["AbsoluteOrientation"] = "absolute-orientation";
+    SensorType2["Accelerometer"] = "accelerometer";
+    SensorType2["AmbientLight"] = "ambient-light";
+    SensorType2["Gravity"] = "gravity";
+    SensorType2["Gyroscope"] = "gyroscope";
+    SensorType2["LinearAcceleration"] = "linear-acceleration";
+    SensorType2["Magnetometer"] = "magnetometer";
+    SensorType2["RelativeOrientation"] = "relative-orientation";
+  })(SensorType = Emulation2.SensorType || (Emulation2.SensorType = {}));
+  let PressureSource;
+  ((PressureSource2) => {
+    PressureSource2["Cpu"] = "cpu";
+  })(PressureSource = Emulation2.PressureSource || (Emulation2.PressureSource = {}));
+  let PressureState;
+  ((PressureState2) => {
+    PressureState2["Nominal"] = "nominal";
+    PressureState2["Fair"] = "fair";
+    PressureState2["Serious"] = "serious";
+    PressureState2["Critical"] = "critical";
+  })(PressureState = Emulation2.PressureState || (Emulation2.PressureState = {}));
+  let DisabledImageType;
+  ((DisabledImageType2) => {
+    DisabledImageType2["Avif"] = "avif";
+    DisabledImageType2["Jxl"] = "jxl";
+    DisabledImageType2["Webp"] = "webp";
+  })(DisabledImageType = Emulation2.DisabledImageType || (Emulation2.DisabledImageType = {}));
+  let SetDeviceMetricsOverrideRequestScrollbarType;
+  ((SetDeviceMetricsOverrideRequestScrollbarType2) => {
+    SetDeviceMetricsOverrideRequestScrollbarType2["Overlay"] = "overlay";
+    SetDeviceMetricsOverrideRequestScrollbarType2["Default"] = "default";
+  })(SetDeviceMetricsOverrideRequestScrollbarType = Emulation2.SetDeviceMetricsOverrideRequestScrollbarType || (Emulation2.SetDeviceMetricsOverrideRequestScrollbarType = {}));
+  let SetEmitTouchEventsForMouseRequestConfiguration;
+  ((SetEmitTouchEventsForMouseRequestConfiguration2) => {
+    SetEmitTouchEventsForMouseRequestConfiguration2["Mobile"] = "mobile";
+    SetEmitTouchEventsForMouseRequestConfiguration2["Desktop"] = "desktop";
+  })(SetEmitTouchEventsForMouseRequestConfiguration = Emulation2.SetEmitTouchEventsForMouseRequestConfiguration || (Emulation2.SetEmitTouchEventsForMouseRequestConfiguration = {}));
+  let SetEmulatedVisionDeficiencyRequestType;
+  ((SetEmulatedVisionDeficiencyRequestType2) => {
+    SetEmulatedVisionDeficiencyRequestType2["None"] = "none";
+    SetEmulatedVisionDeficiencyRequestType2["BlurredVision"] = "blurredVision";
+    SetEmulatedVisionDeficiencyRequestType2["ReducedContrast"] = "reducedContrast";
+    SetEmulatedVisionDeficiencyRequestType2["Achromatopsia"] = "achromatopsia";
+    SetEmulatedVisionDeficiencyRequestType2["Deuteranopia"] = "deuteranopia";
+    SetEmulatedVisionDeficiencyRequestType2["Protanopia"] = "protanopia";
+    SetEmulatedVisionDeficiencyRequestType2["Tritanopia"] = "tritanopia";
+  })(SetEmulatedVisionDeficiencyRequestType = Emulation2.SetEmulatedVisionDeficiencyRequestType || (Emulation2.SetEmulatedVisionDeficiencyRequestType = {}));
+  let SetCPUPerformanceOverrideRequestPerformanceTier;
+  ((SetCPUPerformanceOverrideRequestPerformanceTier2) => {
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Unknown"] = "unknown";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Low"] = "low";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Mid"] = "mid";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["High"] = "high";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Ultra"] = "ultra";
+  })(SetCPUPerformanceOverrideRequestPerformanceTier = Emulation2.SetCPUPerformanceOverrideRequestPerformanceTier || (Emulation2.SetCPUPerformanceOverrideRequestPerformanceTier = {}));
+})(Emulation || (Emulation = {}));
+var Extensions;
+((Extensions2) => {
+  let StorageArea;
+  ((StorageArea2) => {
+    StorageArea2["Session"] = "session";
+    StorageArea2["Local"] = "local";
+    StorageArea2["Sync"] = "sync";
+    StorageArea2["Managed"] = "managed";
+  })(StorageArea = Extensions2.StorageArea || (Extensions2.StorageArea = {}));
+})(Extensions || (Extensions = {}));
+var FedCm;
+((FedCm2) => {
+  let LoginState;
+  ((LoginState2) => {
+    LoginState2["SignIn"] = "SignIn";
+    LoginState2["SignUp"] = "SignUp";
+  })(LoginState = FedCm2.LoginState || (FedCm2.LoginState = {}));
+  let DialogType;
+  ((DialogType2) => {
+    DialogType2["AccountChooser"] = "AccountChooser";
+    DialogType2["AutoReauthn"] = "AutoReauthn";
+    DialogType2["ConfirmIdpLogin"] = "ConfirmIdpLogin";
+    DialogType2["Error"] = "Error";
+  })(DialogType = FedCm2.DialogType || (FedCm2.DialogType = {}));
+  let DialogButton;
+  ((DialogButton2) => {
+    DialogButton2["ConfirmIdpLoginContinue"] = "ConfirmIdpLoginContinue";
+    DialogButton2["ErrorGotIt"] = "ErrorGotIt";
+    DialogButton2["ErrorMoreDetails"] = "ErrorMoreDetails";
+  })(DialogButton = FedCm2.DialogButton || (FedCm2.DialogButton = {}));
+  let AccountUrlType;
+  ((AccountUrlType2) => {
+    AccountUrlType2["TermsOfService"] = "TermsOfService";
+    AccountUrlType2["PrivacyPolicy"] = "PrivacyPolicy";
+  })(AccountUrlType = FedCm2.AccountUrlType || (FedCm2.AccountUrlType = {}));
+})(FedCm || (FedCm = {}));
+var Fetch;
+((Fetch2) => {
+  let RequestStage;
+  ((RequestStage2) => {
+    RequestStage2["Request"] = "Request";
+    RequestStage2["Response"] = "Response";
+  })(RequestStage = Fetch2.RequestStage || (Fetch2.RequestStage = {}));
+  let AuthChallengeSource;
+  ((AuthChallengeSource2) => {
+    AuthChallengeSource2["Server"] = "Server";
+    AuthChallengeSource2["Proxy"] = "Proxy";
+  })(AuthChallengeSource = Fetch2.AuthChallengeSource || (Fetch2.AuthChallengeSource = {}));
+  let AuthChallengeResponseResponse;
+  ((AuthChallengeResponseResponse2) => {
+    AuthChallengeResponseResponse2["Default"] = "Default";
+    AuthChallengeResponseResponse2["CancelAuth"] = "CancelAuth";
+    AuthChallengeResponseResponse2["ProvideCredentials"] = "ProvideCredentials";
+  })(AuthChallengeResponseResponse = Fetch2.AuthChallengeResponseResponse || (Fetch2.AuthChallengeResponseResponse = {}));
+})(Fetch || (Fetch = {}));
+var HeadlessExperimental;
+((HeadlessExperimental2) => {
+  let ScreenshotParamsFormat;
+  ((ScreenshotParamsFormat2) => {
+    ScreenshotParamsFormat2["Jpeg"] = "jpeg";
+    ScreenshotParamsFormat2["Png"] = "png";
+    ScreenshotParamsFormat2["Webp"] = "webp";
+  })(ScreenshotParamsFormat = HeadlessExperimental2.ScreenshotParamsFormat || (HeadlessExperimental2.ScreenshotParamsFormat = {}));
+})(HeadlessExperimental || (HeadlessExperimental = {}));
+var IndexedDB;
+((IndexedDB2) => {
+  let KeyType;
+  ((KeyType2) => {
+    KeyType2["Number"] = "number";
+    KeyType2["String"] = "string";
+    KeyType2["Date"] = "date";
+    KeyType2["Array"] = "array";
+  })(KeyType = IndexedDB2.KeyType || (IndexedDB2.KeyType = {}));
+  let KeyPathType;
+  ((KeyPathType2) => {
+    KeyPathType2["Null"] = "null";
+    KeyPathType2["String"] = "string";
+    KeyPathType2["Array"] = "array";
+  })(KeyPathType = IndexedDB2.KeyPathType || (IndexedDB2.KeyPathType = {}));
+})(IndexedDB || (IndexedDB = {}));
+var Input;
+((Input2) => {
+  let GestureSourceType;
+  ((GestureSourceType2) => {
+    GestureSourceType2["Default"] = "default";
+    GestureSourceType2["Touch"] = "touch";
+    GestureSourceType2["Mouse"] = "mouse";
+  })(GestureSourceType = Input2.GestureSourceType || (Input2.GestureSourceType = {}));
+  let MouseButton;
+  ((MouseButton2) => {
+    MouseButton2["None"] = "none";
+    MouseButton2["Left"] = "left";
+    MouseButton2["Middle"] = "middle";
+    MouseButton2["Right"] = "right";
+    MouseButton2["Back"] = "back";
+    MouseButton2["Forward"] = "forward";
+  })(MouseButton = Input2.MouseButton || (Input2.MouseButton = {}));
+  let DispatchDragEventRequestType;
+  ((DispatchDragEventRequestType2) => {
+    DispatchDragEventRequestType2["DragEnter"] = "dragEnter";
+    DispatchDragEventRequestType2["DragOver"] = "dragOver";
+    DispatchDragEventRequestType2["Drop"] = "drop";
+    DispatchDragEventRequestType2["DragCancel"] = "dragCancel";
+  })(DispatchDragEventRequestType = Input2.DispatchDragEventRequestType || (Input2.DispatchDragEventRequestType = {}));
+  let DispatchKeyEventRequestType;
+  ((DispatchKeyEventRequestType2) => {
+    DispatchKeyEventRequestType2["KeyDown"] = "keyDown";
+    DispatchKeyEventRequestType2["KeyUp"] = "keyUp";
+    DispatchKeyEventRequestType2["RawKeyDown"] = "rawKeyDown";
+    DispatchKeyEventRequestType2["Char"] = "char";
+  })(DispatchKeyEventRequestType = Input2.DispatchKeyEventRequestType || (Input2.DispatchKeyEventRequestType = {}));
+  let DispatchMouseEventRequestType;
+  ((DispatchMouseEventRequestType2) => {
+    DispatchMouseEventRequestType2["MousePressed"] = "mousePressed";
+    DispatchMouseEventRequestType2["MouseReleased"] = "mouseReleased";
+    DispatchMouseEventRequestType2["MouseMoved"] = "mouseMoved";
+    DispatchMouseEventRequestType2["MouseWheel"] = "mouseWheel";
+  })(DispatchMouseEventRequestType = Input2.DispatchMouseEventRequestType || (Input2.DispatchMouseEventRequestType = {}));
+  let DispatchMouseEventRequestPointerType;
+  ((DispatchMouseEventRequestPointerType2) => {
+    DispatchMouseEventRequestPointerType2["Mouse"] = "mouse";
+    DispatchMouseEventRequestPointerType2["Pen"] = "pen";
+  })(DispatchMouseEventRequestPointerType = Input2.DispatchMouseEventRequestPointerType || (Input2.DispatchMouseEventRequestPointerType = {}));
+  let DispatchTouchEventRequestType;
+  ((DispatchTouchEventRequestType2) => {
+    DispatchTouchEventRequestType2["TouchStart"] = "touchStart";
+    DispatchTouchEventRequestType2["TouchEnd"] = "touchEnd";
+    DispatchTouchEventRequestType2["TouchMove"] = "touchMove";
+    DispatchTouchEventRequestType2["TouchCancel"] = "touchCancel";
+  })(DispatchTouchEventRequestType = Input2.DispatchTouchEventRequestType || (Input2.DispatchTouchEventRequestType = {}));
+  let EmulateTouchFromMouseEventRequestType;
+  ((EmulateTouchFromMouseEventRequestType2) => {
+    EmulateTouchFromMouseEventRequestType2["MousePressed"] = "mousePressed";
+    EmulateTouchFromMouseEventRequestType2["MouseReleased"] = "mouseReleased";
+    EmulateTouchFromMouseEventRequestType2["MouseMoved"] = "mouseMoved";
+    EmulateTouchFromMouseEventRequestType2["MouseWheel"] = "mouseWheel";
+  })(EmulateTouchFromMouseEventRequestType = Input2.EmulateTouchFromMouseEventRequestType || (Input2.EmulateTouchFromMouseEventRequestType = {}));
+})(Input || (Input = {}));
+var LayerTree;
+((LayerTree2) => {
+  let ScrollRectType;
+  ((ScrollRectType2) => {
+    ScrollRectType2["RepaintsOnScroll"] = "RepaintsOnScroll";
+    ScrollRectType2["TouchEventHandler"] = "TouchEventHandler";
+    ScrollRectType2["WheelEventHandler"] = "WheelEventHandler";
+  })(ScrollRectType = LayerTree2.ScrollRectType || (LayerTree2.ScrollRectType = {}));
+})(LayerTree || (LayerTree = {}));
+var Log;
+((Log2) => {
+  let LogEntrySource;
+  ((LogEntrySource2) => {
+    LogEntrySource2["XML"] = "xml";
+    LogEntrySource2["Javascript"] = "javascript";
+    LogEntrySource2["Network"] = "network";
+    LogEntrySource2["Storage"] = "storage";
+    LogEntrySource2["Appcache"] = "appcache";
+    LogEntrySource2["Rendering"] = "rendering";
+    LogEntrySource2["Security"] = "security";
+    LogEntrySource2["Deprecation"] = "deprecation";
+    LogEntrySource2["Worker"] = "worker";
+    LogEntrySource2["Violation"] = "violation";
+    LogEntrySource2["Intervention"] = "intervention";
+    LogEntrySource2["Recommendation"] = "recommendation";
+    LogEntrySource2["Other"] = "other";
+  })(LogEntrySource = Log2.LogEntrySource || (Log2.LogEntrySource = {}));
+  let LogEntryLevel;
+  ((LogEntryLevel2) => {
+    LogEntryLevel2["Verbose"] = "verbose";
+    LogEntryLevel2["Info"] = "info";
+    LogEntryLevel2["Warning"] = "warning";
+    LogEntryLevel2["Error"] = "error";
+  })(LogEntryLevel = Log2.LogEntryLevel || (Log2.LogEntryLevel = {}));
+  let LogEntryCategory;
+  ((LogEntryCategory2) => {
+    LogEntryCategory2["Cors"] = "cors";
+  })(LogEntryCategory = Log2.LogEntryCategory || (Log2.LogEntryCategory = {}));
+  let ViolationSettingName;
+  ((ViolationSettingName2) => {
+    ViolationSettingName2["LongTask"] = "longTask";
+    ViolationSettingName2["LongLayout"] = "longLayout";
+    ViolationSettingName2["BlockedEvent"] = "blockedEvent";
+    ViolationSettingName2["BlockedParser"] = "blockedParser";
+    ViolationSettingName2["DiscouragedAPIUse"] = "discouragedAPIUse";
+    ViolationSettingName2["Handler"] = "handler";
+    ViolationSettingName2["RecurringHandler"] = "recurringHandler";
+  })(ViolationSettingName = Log2.ViolationSettingName || (Log2.ViolationSettingName = {}));
+})(Log || (Log = {}));
+var Media;
+((Media2) => {
+  let PlayerMessageLevel;
+  ((PlayerMessageLevel2) => {
+    PlayerMessageLevel2["Error"] = "error";
+    PlayerMessageLevel2["Warning"] = "warning";
+    PlayerMessageLevel2["Info"] = "info";
+    PlayerMessageLevel2["Debug"] = "debug";
+  })(PlayerMessageLevel = Media2.PlayerMessageLevel || (Media2.PlayerMessageLevel = {}));
+})(Media || (Media = {}));
+var Memory;
+((Memory2) => {
+  let PressureLevel;
+  ((PressureLevel2) => {
+    PressureLevel2["Moderate"] = "moderate";
+    PressureLevel2["Critical"] = "critical";
+  })(PressureLevel = Memory2.PressureLevel || (Memory2.PressureLevel = {}));
+})(Memory || (Memory = {}));
+var Network;
+((Network2) => {
+  let ResourceType7;
+  ((ResourceType8) => {
+    ResourceType8["Document"] = "Document";
+    ResourceType8["Stylesheet"] = "Stylesheet";
+    ResourceType8["Image"] = "Image";
+    ResourceType8["Media"] = "Media";
+    ResourceType8["Font"] = "Font";
+    ResourceType8["Script"] = "Script";
+    ResourceType8["TextTrack"] = "TextTrack";
+    ResourceType8["XHR"] = "XHR";
+    ResourceType8["Fetch"] = "Fetch";
+    ResourceType8["Prefetch"] = "Prefetch";
+    ResourceType8["EventSource"] = "EventSource";
+    ResourceType8["WebSocket"] = "WebSocket";
+    ResourceType8["Manifest"] = "Manifest";
+    ResourceType8["SignedExchange"] = "SignedExchange";
+    ResourceType8["Ping"] = "Ping";
+    ResourceType8["CSPViolationReport"] = "CSPViolationReport";
+    ResourceType8["Preflight"] = "Preflight";
+    ResourceType8["FedCM"] = "FedCM";
+    ResourceType8["Other"] = "Other";
+  })(ResourceType7 = Network2.ResourceType || (Network2.ResourceType = {}));
+  let ErrorReason;
+  ((ErrorReason2) => {
+    ErrorReason2["Failed"] = "Failed";
+    ErrorReason2["Aborted"] = "Aborted";
+    ErrorReason2["TimedOut"] = "TimedOut";
+    ErrorReason2["AccessDenied"] = "AccessDenied";
+    ErrorReason2["ConnectionClosed"] = "ConnectionClosed";
+    ErrorReason2["ConnectionReset"] = "ConnectionReset";
+    ErrorReason2["ConnectionRefused"] = "ConnectionRefused";
+    ErrorReason2["ConnectionAborted"] = "ConnectionAborted";
+    ErrorReason2["ConnectionFailed"] = "ConnectionFailed";
+    ErrorReason2["NameNotResolved"] = "NameNotResolved";
+    ErrorReason2["InternetDisconnected"] = "InternetDisconnected";
+    ErrorReason2["AddressUnreachable"] = "AddressUnreachable";
+    ErrorReason2["BlockedByClient"] = "BlockedByClient";
+    ErrorReason2["BlockedByResponse"] = "BlockedByResponse";
+  })(ErrorReason = Network2.ErrorReason || (Network2.ErrorReason = {}));
+  let ConnectionType;
+  ((ConnectionType2) => {
+    ConnectionType2["None"] = "none";
+    ConnectionType2["Cellular2g"] = "cellular2g";
+    ConnectionType2["Cellular3g"] = "cellular3g";
+    ConnectionType2["Cellular4g"] = "cellular4g";
+    ConnectionType2["Bluetooth"] = "bluetooth";
+    ConnectionType2["Ethernet"] = "ethernet";
+    ConnectionType2["Wifi"] = "wifi";
+    ConnectionType2["Wimax"] = "wimax";
+    ConnectionType2["Other"] = "other";
+  })(ConnectionType = Network2.ConnectionType || (Network2.ConnectionType = {}));
+  let CookieSameSite;
+  ((CookieSameSite2) => {
+    CookieSameSite2["Strict"] = "Strict";
+    CookieSameSite2["Lax"] = "Lax";
+    CookieSameSite2["None"] = "None";
+  })(CookieSameSite = Network2.CookieSameSite || (Network2.CookieSameSite = {}));
+  let CookiePriority;
+  ((CookiePriority2) => {
+    CookiePriority2["Low"] = "Low";
+    CookiePriority2["Medium"] = "Medium";
+    CookiePriority2["High"] = "High";
+  })(CookiePriority = Network2.CookiePriority || (Network2.CookiePriority = {}));
+  let CookieSourceScheme;
+  ((CookieSourceScheme2) => {
+    CookieSourceScheme2["Unset"] = "Unset";
+    CookieSourceScheme2["NonSecure"] = "NonSecure";
+    CookieSourceScheme2["Secure"] = "Secure";
+  })(CookieSourceScheme = Network2.CookieSourceScheme || (Network2.CookieSourceScheme = {}));
+  let ResourcePriority;
+  ((ResourcePriority2) => {
+    ResourcePriority2["VeryLow"] = "VeryLow";
+    ResourcePriority2["Low"] = "Low";
+    ResourcePriority2["Medium"] = "Medium";
+    ResourcePriority2["High"] = "High";
+    ResourcePriority2["VeryHigh"] = "VeryHigh";
+  })(ResourcePriority = Network2.ResourcePriority || (Network2.ResourcePriority = {}));
+  let RenderBlockingBehavior;
+  ((RenderBlockingBehavior2) => {
+    RenderBlockingBehavior2["Blocking"] = "Blocking";
+    RenderBlockingBehavior2["InBodyParserBlocking"] = "InBodyParserBlocking";
+    RenderBlockingBehavior2["NonBlocking"] = "NonBlocking";
+    RenderBlockingBehavior2["NonBlockingDynamic"] = "NonBlockingDynamic";
+    RenderBlockingBehavior2["PotentiallyBlocking"] = "PotentiallyBlocking";
+  })(RenderBlockingBehavior = Network2.RenderBlockingBehavior || (Network2.RenderBlockingBehavior = {}));
+  let RequestReferrerPolicy;
+  ((RequestReferrerPolicy2) => {
+    RequestReferrerPolicy2["UnsafeUrl"] = "unsafe-url";
+    RequestReferrerPolicy2["NoReferrerWhenDowngrade"] = "no-referrer-when-downgrade";
+    RequestReferrerPolicy2["NoReferrer"] = "no-referrer";
+    RequestReferrerPolicy2["Origin"] = "origin";
+    RequestReferrerPolicy2["OriginWhenCrossOrigin"] = "origin-when-cross-origin";
+    RequestReferrerPolicy2["SameOrigin"] = "same-origin";
+    RequestReferrerPolicy2["StrictOrigin"] = "strict-origin";
+    RequestReferrerPolicy2["StrictOriginWhenCrossOrigin"] = "strict-origin-when-cross-origin";
+  })(RequestReferrerPolicy = Network2.RequestReferrerPolicy || (Network2.RequestReferrerPolicy = {}));
+  let CertificateTransparencyCompliance;
+  ((CertificateTransparencyCompliance2) => {
+    CertificateTransparencyCompliance2["Unknown"] = "unknown";
+    CertificateTransparencyCompliance2["NotCompliant"] = "not-compliant";
+    CertificateTransparencyCompliance2["Compliant"] = "compliant";
+  })(CertificateTransparencyCompliance = Network2.CertificateTransparencyCompliance || (Network2.CertificateTransparencyCompliance = {}));
+  let BlockedReason;
+  ((BlockedReason2) => {
+    BlockedReason2["Other"] = "other";
+    BlockedReason2["Csp"] = "csp";
+    BlockedReason2["MixedContent"] = "mixed-content";
+    BlockedReason2["Origin"] = "origin";
+    BlockedReason2["Inspector"] = "inspector";
+    BlockedReason2["Integrity"] = "integrity";
+    BlockedReason2["SubresourceFilter"] = "subresource-filter";
+    BlockedReason2["ContentType"] = "content-type";
+    BlockedReason2["CoepFrameResourceNeedsCoepHeader"] = "coep-frame-resource-needs-coep-header";
+    BlockedReason2["CoopSandboxedIframeCannotNavigateToCoopPage"] = "coop-sandboxed-iframe-cannot-navigate-to-coop-page";
+    BlockedReason2["CorpNotSameOrigin"] = "corp-not-same-origin";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoep"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByDip"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-dip";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip";
+    BlockedReason2["CorpNotSameSite"] = "corp-not-same-site";
+    BlockedReason2["SriMessageSignatureMismatch"] = "sri-message-signature-mismatch";
+  })(BlockedReason = Network2.BlockedReason || (Network2.BlockedReason = {}));
+  let CorsError;
+  ((CorsError2) => {
+    CorsError2["DisallowedByMode"] = "DisallowedByMode";
+    CorsError2["InvalidResponse"] = "InvalidResponse";
+    CorsError2["WildcardOriginNotAllowed"] = "WildcardOriginNotAllowed";
+    CorsError2["MissingAllowOriginHeader"] = "MissingAllowOriginHeader";
+    CorsError2["MultipleAllowOriginValues"] = "MultipleAllowOriginValues";
+    CorsError2["InvalidAllowOriginValue"] = "InvalidAllowOriginValue";
+    CorsError2["AllowOriginMismatch"] = "AllowOriginMismatch";
+    CorsError2["InvalidAllowCredentials"] = "InvalidAllowCredentials";
+    CorsError2["CorsDisabledScheme"] = "CorsDisabledScheme";
+    CorsError2["PreflightInvalidStatus"] = "PreflightInvalidStatus";
+    CorsError2["PreflightDisallowedRedirect"] = "PreflightDisallowedRedirect";
+    CorsError2["PreflightWildcardOriginNotAllowed"] = "PreflightWildcardOriginNotAllowed";
+    CorsError2["PreflightMissingAllowOriginHeader"] = "PreflightMissingAllowOriginHeader";
+    CorsError2["PreflightMultipleAllowOriginValues"] = "PreflightMultipleAllowOriginValues";
+    CorsError2["PreflightInvalidAllowOriginValue"] = "PreflightInvalidAllowOriginValue";
+    CorsError2["PreflightAllowOriginMismatch"] = "PreflightAllowOriginMismatch";
+    CorsError2["PreflightInvalidAllowCredentials"] = "PreflightInvalidAllowCredentials";
+    CorsError2["PreflightMissingAllowExternal"] = "PreflightMissingAllowExternal";
+    CorsError2["PreflightInvalidAllowExternal"] = "PreflightInvalidAllowExternal";
+    CorsError2["InvalidAllowMethodsPreflightResponse"] = "InvalidAllowMethodsPreflightResponse";
+    CorsError2["InvalidAllowHeadersPreflightResponse"] = "InvalidAllowHeadersPreflightResponse";
+    CorsError2["MethodDisallowedByPreflightResponse"] = "MethodDisallowedByPreflightResponse";
+    CorsError2["HeaderDisallowedByPreflightResponse"] = "HeaderDisallowedByPreflightResponse";
+    CorsError2["RedirectContainsCredentials"] = "RedirectContainsCredentials";
+    CorsError2["InsecureLocalNetwork"] = "InsecureLocalNetwork";
+    CorsError2["InvalidLocalNetworkAccess"] = "InvalidLocalNetworkAccess";
+    CorsError2["NoCorsRedirectModeNotFollow"] = "NoCorsRedirectModeNotFollow";
+    CorsError2["LocalNetworkAccessPermissionDenied"] = "LocalNetworkAccessPermissionDenied";
+  })(CorsError = Network2.CorsError || (Network2.CorsError = {}));
+  let ServiceWorkerResponseSource;
+  ((ServiceWorkerResponseSource2) => {
+    ServiceWorkerResponseSource2["CacheStorage"] = "cache-storage";
+    ServiceWorkerResponseSource2["HttpCache"] = "http-cache";
+    ServiceWorkerResponseSource2["FallbackCode"] = "fallback-code";
+    ServiceWorkerResponseSource2["Network"] = "network";
+  })(ServiceWorkerResponseSource = Network2.ServiceWorkerResponseSource || (Network2.ServiceWorkerResponseSource = {}));
+  let TrustTokenParamsRefreshPolicy;
+  ((TrustTokenParamsRefreshPolicy2) => {
+    TrustTokenParamsRefreshPolicy2["UseCached"] = "UseCached";
+    TrustTokenParamsRefreshPolicy2["Refresh"] = "Refresh";
+  })(TrustTokenParamsRefreshPolicy = Network2.TrustTokenParamsRefreshPolicy || (Network2.TrustTokenParamsRefreshPolicy = {}));
+  let TrustTokenOperationType;
+  ((TrustTokenOperationType2) => {
+    TrustTokenOperationType2["Issuance"] = "Issuance";
+    TrustTokenOperationType2["Redemption"] = "Redemption";
+    TrustTokenOperationType2["Signing"] = "Signing";
+  })(TrustTokenOperationType = Network2.TrustTokenOperationType || (Network2.TrustTokenOperationType = {}));
+  let AlternateProtocolUsage;
+  ((AlternateProtocolUsage2) => {
+    AlternateProtocolUsage2["AlternativeJobWonWithoutRace"] = "alternativeJobWonWithoutRace";
+    AlternateProtocolUsage2["AlternativeJobWonRace"] = "alternativeJobWonRace";
+    AlternateProtocolUsage2["MainJobWonRace"] = "mainJobWonRace";
+    AlternateProtocolUsage2["MappingMissing"] = "mappingMissing";
+    AlternateProtocolUsage2["Broken"] = "broken";
+    AlternateProtocolUsage2["DnsAlpnH3JobWonWithoutRace"] = "dnsAlpnH3JobWonWithoutRace";
+    AlternateProtocolUsage2["DnsAlpnH3JobWonRace"] = "dnsAlpnH3JobWonRace";
+    AlternateProtocolUsage2["UnspecifiedReason"] = "unspecifiedReason";
+  })(AlternateProtocolUsage = Network2.AlternateProtocolUsage || (Network2.AlternateProtocolUsage = {}));
+  let ServiceWorkerRouterSource;
+  ((ServiceWorkerRouterSource2) => {
+    ServiceWorkerRouterSource2["Network"] = "network";
+    ServiceWorkerRouterSource2["Cache"] = "cache";
+    ServiceWorkerRouterSource2["FetchEvent"] = "fetch-event";
+    ServiceWorkerRouterSource2["RaceNetworkAndFetchHandler"] = "race-network-and-fetch-handler";
+    ServiceWorkerRouterSource2["RaceNetworkAndCache"] = "race-network-and-cache";
+  })(ServiceWorkerRouterSource = Network2.ServiceWorkerRouterSource || (Network2.ServiceWorkerRouterSource = {}));
+  let InitiatorType2;
+  ((InitiatorType3) => {
+    InitiatorType3["Parser"] = "parser";
+    InitiatorType3["Script"] = "script";
+    InitiatorType3["Preload"] = "preload";
+    InitiatorType3["SignedExchange"] = "SignedExchange";
+    InitiatorType3["Preflight"] = "preflight";
+    InitiatorType3["FedCM"] = "FedCM";
+    InitiatorType3["Other"] = "other";
+  })(InitiatorType2 = Network2.InitiatorType || (Network2.InitiatorType = {}));
+  let SetCookieBlockedReason;
+  ((SetCookieBlockedReason2) => {
+    SetCookieBlockedReason2["SecureOnly"] = "SecureOnly";
+    SetCookieBlockedReason2["SameSiteStrict"] = "SameSiteStrict";
+    SetCookieBlockedReason2["SameSiteLax"] = "SameSiteLax";
+    SetCookieBlockedReason2["SameSiteUnspecifiedTreatedAsLax"] = "SameSiteUnspecifiedTreatedAsLax";
+    SetCookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
+    SetCookieBlockedReason2["UserPreferences"] = "UserPreferences";
+    SetCookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
+    SetCookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
+    SetCookieBlockedReason2["SyntaxError"] = "SyntaxError";
+    SetCookieBlockedReason2["SchemeNotSupported"] = "SchemeNotSupported";
+    SetCookieBlockedReason2["OverwriteSecure"] = "OverwriteSecure";
+    SetCookieBlockedReason2["InvalidDomain"] = "InvalidDomain";
+    SetCookieBlockedReason2["InvalidPrefix"] = "InvalidPrefix";
+    SetCookieBlockedReason2["UnknownError"] = "UnknownError";
+    SetCookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
+    SetCookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
+    SetCookieBlockedReason2["SchemefulSameSiteUnspecifiedTreatedAsLax"] = "SchemefulSameSiteUnspecifiedTreatedAsLax";
+    SetCookieBlockedReason2["NameValuePairExceedsMaxSize"] = "NameValuePairExceedsMaxSize";
+    SetCookieBlockedReason2["DisallowedCharacter"] = "DisallowedCharacter";
+    SetCookieBlockedReason2["NoCookieContent"] = "NoCookieContent";
+  })(SetCookieBlockedReason = Network2.SetCookieBlockedReason || (Network2.SetCookieBlockedReason = {}));
+  let CookieBlockedReason;
+  ((CookieBlockedReason2) => {
+    CookieBlockedReason2["SecureOnly"] = "SecureOnly";
+    CookieBlockedReason2["NotOnPath"] = "NotOnPath";
+    CookieBlockedReason2["DomainMismatch"] = "DomainMismatch";
+    CookieBlockedReason2["SameSiteStrict"] = "SameSiteStrict";
+    CookieBlockedReason2["SameSiteLax"] = "SameSiteLax";
+    CookieBlockedReason2["SameSiteUnspecifiedTreatedAsLax"] = "SameSiteUnspecifiedTreatedAsLax";
+    CookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
+    CookieBlockedReason2["UserPreferences"] = "UserPreferences";
+    CookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
+    CookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
+    CookieBlockedReason2["UnknownError"] = "UnknownError";
+    CookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
+    CookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
+    CookieBlockedReason2["SchemefulSameSiteUnspecifiedTreatedAsLax"] = "SchemefulSameSiteUnspecifiedTreatedAsLax";
+    CookieBlockedReason2["NameValuePairExceedsMaxSize"] = "NameValuePairExceedsMaxSize";
+    CookieBlockedReason2["PortMismatch"] = "PortMismatch";
+    CookieBlockedReason2["SchemeMismatch"] = "SchemeMismatch";
+    CookieBlockedReason2["AnonymousContext"] = "AnonymousContext";
+  })(CookieBlockedReason = Network2.CookieBlockedReason || (Network2.CookieBlockedReason = {}));
+  let CookieExemptionReason;
+  ((CookieExemptionReason2) => {
+    CookieExemptionReason2["None"] = "None";
+    CookieExemptionReason2["UserSetting"] = "UserSetting";
+    CookieExemptionReason2["EnterprisePolicy"] = "EnterprisePolicy";
+    CookieExemptionReason2["StorageAccess"] = "StorageAccess";
+    CookieExemptionReason2["TopLevelStorageAccess"] = "TopLevelStorageAccess";
+    CookieExemptionReason2["Scheme"] = "Scheme";
+    CookieExemptionReason2["SameSiteNoneCookiesInSandbox"] = "SameSiteNoneCookiesInSandbox";
+  })(CookieExemptionReason = Network2.CookieExemptionReason || (Network2.CookieExemptionReason = {}));
+  let AuthChallengeSource;
+  ((AuthChallengeSource2) => {
+    AuthChallengeSource2["Server"] = "Server";
+    AuthChallengeSource2["Proxy"] = "Proxy";
+  })(AuthChallengeSource = Network2.AuthChallengeSource || (Network2.AuthChallengeSource = {}));
+  let AuthChallengeResponseResponse;
+  ((AuthChallengeResponseResponse2) => {
+    AuthChallengeResponseResponse2["Default"] = "Default";
+    AuthChallengeResponseResponse2["CancelAuth"] = "CancelAuth";
+    AuthChallengeResponseResponse2["ProvideCredentials"] = "ProvideCredentials";
+  })(AuthChallengeResponseResponse = Network2.AuthChallengeResponseResponse || (Network2.AuthChallengeResponseResponse = {}));
+  let SignedExchangeErrorField;
+  ((SignedExchangeErrorField2) => {
+    SignedExchangeErrorField2["SignatureSig"] = "signatureSig";
+    SignedExchangeErrorField2["SignatureIntegrity"] = "signatureIntegrity";
+    SignedExchangeErrorField2["SignatureCertUrl"] = "signatureCertUrl";
+    SignedExchangeErrorField2["SignatureCertSha256"] = "signatureCertSha256";
+    SignedExchangeErrorField2["SignatureValidityUrl"] = "signatureValidityUrl";
+    SignedExchangeErrorField2["SignatureTimestamps"] = "signatureTimestamps";
+  })(SignedExchangeErrorField = Network2.SignedExchangeErrorField || (Network2.SignedExchangeErrorField = {}));
+  let DirectSocketDnsQueryType;
+  ((DirectSocketDnsQueryType2) => {
+    DirectSocketDnsQueryType2["Ipv4"] = "ipv4";
+    DirectSocketDnsQueryType2["Ipv6"] = "ipv6";
+  })(DirectSocketDnsQueryType = Network2.DirectSocketDnsQueryType || (Network2.DirectSocketDnsQueryType = {}));
+  let LocalNetworkAccessRequestPolicy;
+  ((LocalNetworkAccessRequestPolicy2) => {
+    LocalNetworkAccessRequestPolicy2["Allow"] = "Allow";
+    LocalNetworkAccessRequestPolicy2["BlockFromInsecureToMorePrivate"] = "BlockFromInsecureToMorePrivate";
+    LocalNetworkAccessRequestPolicy2["WarnFromInsecureToMorePrivate"] = "WarnFromInsecureToMorePrivate";
+    LocalNetworkAccessRequestPolicy2["PermissionBlock"] = "PermissionBlock";
+    LocalNetworkAccessRequestPolicy2["PermissionWarn"] = "PermissionWarn";
+  })(LocalNetworkAccessRequestPolicy = Network2.LocalNetworkAccessRequestPolicy || (Network2.LocalNetworkAccessRequestPolicy = {}));
+  let IPAddressSpace;
+  ((IPAddressSpace2) => {
+    IPAddressSpace2["Loopback"] = "Loopback";
+    IPAddressSpace2["Local"] = "Local";
+    IPAddressSpace2["Public"] = "Public";
+    IPAddressSpace2["Unknown"] = "Unknown";
+  })(IPAddressSpace = Network2.IPAddressSpace || (Network2.IPAddressSpace = {}));
+  let CrossOriginOpenerPolicyValue;
+  ((CrossOriginOpenerPolicyValue2) => {
+    CrossOriginOpenerPolicyValue2["SameOrigin"] = "SameOrigin";
+    CrossOriginOpenerPolicyValue2["SameOriginAllowPopups"] = "SameOriginAllowPopups";
+    CrossOriginOpenerPolicyValue2["RestrictProperties"] = "RestrictProperties";
+    CrossOriginOpenerPolicyValue2["UnsafeNone"] = "UnsafeNone";
+    CrossOriginOpenerPolicyValue2["SameOriginPlusCoep"] = "SameOriginPlusCoep";
+    CrossOriginOpenerPolicyValue2["RestrictPropertiesPlusCoep"] = "RestrictPropertiesPlusCoep";
+    CrossOriginOpenerPolicyValue2["NoopenerAllowPopups"] = "NoopenerAllowPopups";
+  })(CrossOriginOpenerPolicyValue = Network2.CrossOriginOpenerPolicyValue || (Network2.CrossOriginOpenerPolicyValue = {}));
+  let CrossOriginEmbedderPolicyValue;
+  ((CrossOriginEmbedderPolicyValue2) => {
+    CrossOriginEmbedderPolicyValue2["None"] = "None";
+    CrossOriginEmbedderPolicyValue2["Credentialless"] = "Credentialless";
+    CrossOriginEmbedderPolicyValue2["RequireCorp"] = "RequireCorp";
+  })(CrossOriginEmbedderPolicyValue = Network2.CrossOriginEmbedderPolicyValue || (Network2.CrossOriginEmbedderPolicyValue = {}));
+  let ContentSecurityPolicySource;
+  ((ContentSecurityPolicySource2) => {
+    ContentSecurityPolicySource2["HTTP"] = "HTTP";
+    ContentSecurityPolicySource2["Meta"] = "Meta";
+  })(ContentSecurityPolicySource = Network2.ContentSecurityPolicySource || (Network2.ContentSecurityPolicySource = {}));
+  let ReportStatus;
+  ((ReportStatus2) => {
+    ReportStatus2["Queued"] = "Queued";
+    ReportStatus2["Pending"] = "Pending";
+    ReportStatus2["MarkedForRemoval"] = "MarkedForRemoval";
+    ReportStatus2["Success"] = "Success";
+  })(ReportStatus = Network2.ReportStatus || (Network2.ReportStatus = {}));
+  let DeviceBoundSessionWithUsageUsage;
+  ((DeviceBoundSessionWithUsageUsage2) => {
+    DeviceBoundSessionWithUsageUsage2["NotInScope"] = "NotInScope";
+    DeviceBoundSessionWithUsageUsage2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+    DeviceBoundSessionWithUsageUsage2["InScopeRefreshNotAllowed"] = "InScopeRefreshNotAllowed";
+    DeviceBoundSessionWithUsageUsage2["ProactiveRefreshNotPossible"] = "ProactiveRefreshNotPossible";
+    DeviceBoundSessionWithUsageUsage2["ProactiveRefreshAttempted"] = "ProactiveRefreshAttempted";
+    DeviceBoundSessionWithUsageUsage2["Deferred"] = "Deferred";
+  })(DeviceBoundSessionWithUsageUsage = Network2.DeviceBoundSessionWithUsageUsage || (Network2.DeviceBoundSessionWithUsageUsage = {}));
+  let DeviceBoundSessionUrlRuleRuleType;
+  ((DeviceBoundSessionUrlRuleRuleType2) => {
+    DeviceBoundSessionUrlRuleRuleType2["Exclude"] = "Exclude";
+    DeviceBoundSessionUrlRuleRuleType2["Include"] = "Include";
+  })(DeviceBoundSessionUrlRuleRuleType = Network2.DeviceBoundSessionUrlRuleRuleType || (Network2.DeviceBoundSessionUrlRuleRuleType = {}));
+  let DeviceBoundSessionFetchResult;
+  ((DeviceBoundSessionFetchResult2) => {
+    DeviceBoundSessionFetchResult2["Success"] = "Success";
+    DeviceBoundSessionFetchResult2["SigningKeyGenerationError"] = "SigningKeyGenerationError";
+    DeviceBoundSessionFetchResult2["AttestationKeyGenerationError"] = "AttestationKeyGenerationError";
+    DeviceBoundSessionFetchResult2["SigningError"] = "SigningError";
+    DeviceBoundSessionFetchResult2["TransientSigningError"] = "TransientSigningError";
+    DeviceBoundSessionFetchResult2["ServerRequestedTermination"] = "ServerRequestedTermination";
+    DeviceBoundSessionFetchResult2["InvalidSessionId"] = "InvalidSessionId";
+    DeviceBoundSessionFetchResult2["InvalidChallenge"] = "InvalidChallenge";
+    DeviceBoundSessionFetchResult2["TooManyChallenges"] = "TooManyChallenges";
+    DeviceBoundSessionFetchResult2["InvalidFetcherUrl"] = "InvalidFetcherUrl";
+    DeviceBoundSessionFetchResult2["InvalidRefreshUrl"] = "InvalidRefreshUrl";
+    DeviceBoundSessionFetchResult2["TransientHttpError"] = "TransientHttpError";
+    DeviceBoundSessionFetchResult2["ScopeOriginSameSiteMismatch"] = "ScopeOriginSameSiteMismatch";
+    DeviceBoundSessionFetchResult2["RefreshUrlSameSiteMismatch"] = "RefreshUrlSameSiteMismatch";
+    DeviceBoundSessionFetchResult2["MismatchedSessionId"] = "MismatchedSessionId";
+    DeviceBoundSessionFetchResult2["MissingScope"] = "MissingScope";
+    DeviceBoundSessionFetchResult2["NoCredentials"] = "NoCredentials";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationWellKnownUnavailable"] = "SubdomainRegistrationWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationUnauthorized"] = "SubdomainRegistrationUnauthorized";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationWellKnownMalformed"] = "SubdomainRegistrationWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownUnavailable"] = "SessionProviderWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownUnavailable"] = "RelyingPartyWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["FederatedKeyThumbprintMismatch"] = "FederatedKeyThumbprintMismatch";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionUrl"] = "InvalidFederatedSessionUrl";
+    DeviceBoundSessionFetchResult2["InvalidFederatedKey"] = "InvalidFederatedKey";
+    DeviceBoundSessionFetchResult2["TooManyRelyingOriginLabels"] = "TooManyRelyingOriginLabels";
+    DeviceBoundSessionFetchResult2["BoundCookieSetForbidden"] = "BoundCookieSetForbidden";
+    DeviceBoundSessionFetchResult2["NetError"] = "NetError";
+    DeviceBoundSessionFetchResult2["ProxyError"] = "ProxyError";
+    DeviceBoundSessionFetchResult2["EmptySessionConfig"] = "EmptySessionConfig";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsConfig"] = "InvalidCredentialsConfig";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsType"] = "InvalidCredentialsType";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsEmptyName"] = "InvalidCredentialsEmptyName";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookie"] = "InvalidCredentialsCookie";
+    DeviceBoundSessionFetchResult2["PersistentHttpError"] = "PersistentHttpError";
+    DeviceBoundSessionFetchResult2["RegistrationAttemptedChallenge"] = "RegistrationAttemptedChallenge";
+    DeviceBoundSessionFetchResult2["InvalidScopeOrigin"] = "InvalidScopeOrigin";
+    DeviceBoundSessionFetchResult2["ScopeOriginContainsPath"] = "ScopeOriginContainsPath";
+    DeviceBoundSessionFetchResult2["RefreshInitiatorNotString"] = "RefreshInitiatorNotString";
+    DeviceBoundSessionFetchResult2["RefreshInitiatorInvalidHostPattern"] = "RefreshInitiatorInvalidHostPattern";
+    DeviceBoundSessionFetchResult2["InvalidScopeSpecification"] = "InvalidScopeSpecification";
+    DeviceBoundSessionFetchResult2["MissingScopeSpecificationType"] = "MissingScopeSpecificationType";
+    DeviceBoundSessionFetchResult2["EmptyScopeSpecificationDomain"] = "EmptyScopeSpecificationDomain";
+    DeviceBoundSessionFetchResult2["EmptyScopeSpecificationPath"] = "EmptyScopeSpecificationPath";
+    DeviceBoundSessionFetchResult2["InvalidScopeSpecificationType"] = "InvalidScopeSpecificationType";
+    DeviceBoundSessionFetchResult2["InvalidScopeIncludeSite"] = "InvalidScopeIncludeSite";
+    DeviceBoundSessionFetchResult2["MissingScopeIncludeSite"] = "MissingScopeIncludeSite";
+    DeviceBoundSessionFetchResult2["FederatedNotAuthorizedByProvider"] = "FederatedNotAuthorizedByProvider";
+    DeviceBoundSessionFetchResult2["FederatedNotAuthorizedByRelyingParty"] = "FederatedNotAuthorizedByRelyingParty";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownMalformed"] = "SessionProviderWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownHasProviderOrigin"] = "SessionProviderWellKnownHasProviderOrigin";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownMalformed"] = "RelyingPartyWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownHasRelyingOrigins"] = "RelyingPartyWellKnownHasRelyingOrigins";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionProviderSessionMissing"] = "InvalidFederatedSessionProviderSessionMissing";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionWrongProviderOrigin"] = "InvalidFederatedSessionWrongProviderOrigin";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieCreationTime"] = "InvalidCredentialsCookieCreationTime";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieName"] = "InvalidCredentialsCookieName";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieParsing"] = "InvalidCredentialsCookieParsing";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieUnpermittedAttribute"] = "InvalidCredentialsCookieUnpermittedAttribute";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieInvalidDomain"] = "InvalidCredentialsCookieInvalidDomain";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookiePrefix"] = "InvalidCredentialsCookiePrefix";
+    DeviceBoundSessionFetchResult2["InvalidScopeRulePath"] = "InvalidScopeRulePath";
+    DeviceBoundSessionFetchResult2["InvalidScopeRuleHostPattern"] = "InvalidScopeRuleHostPattern";
+    DeviceBoundSessionFetchResult2["ScopeRuleOriginScopedHostPatternMismatch"] = "ScopeRuleOriginScopedHostPatternMismatch";
+    DeviceBoundSessionFetchResult2["ScopeRuleSiteScopedHostPatternMismatch"] = "ScopeRuleSiteScopedHostPatternMismatch";
+    DeviceBoundSessionFetchResult2["SigningQuotaExceeded"] = "SigningQuotaExceeded";
+    DeviceBoundSessionFetchResult2["InvalidConfigJson"] = "InvalidConfigJson";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionProviderFailedToRestoreKey"] = "InvalidFederatedSessionProviderFailedToRestoreKey";
+    DeviceBoundSessionFetchResult2["FailedToUnwrapKey"] = "FailedToUnwrapKey";
+    DeviceBoundSessionFetchResult2["SessionDeletedDuringRefresh"] = "SessionDeletedDuringRefresh";
+    DeviceBoundSessionFetchResult2["CrossOriginRegistrationSiteNotIncluded"] = "CrossOriginRegistrationSiteNotIncluded";
+    DeviceBoundSessionFetchResult2["InvalidPreProvisionedKeyInitiatorMissing"] = "InvalidPreProvisionedKeyInitiatorMissing";
+    DeviceBoundSessionFetchResult2["PreProvisionedKeyAccessNotGranted"] = "PreProvisionedKeyAccessNotGranted";
+    DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
+    DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
+    DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+  })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
+  let RefreshEventDetailsRefreshResult;
+  ((RefreshEventDetailsRefreshResult2) => {
+    RefreshEventDetailsRefreshResult2["Refreshed"] = "Refreshed";
+    RefreshEventDetailsRefreshResult2["InitializedService"] = "InitializedService";
+    RefreshEventDetailsRefreshResult2["Unreachable"] = "Unreachable";
+    RefreshEventDetailsRefreshResult2["ServerError"] = "ServerError";
+    RefreshEventDetailsRefreshResult2["FatalError"] = "FatalError";
+    RefreshEventDetailsRefreshResult2["SigningQuotaExceeded"] = "SigningQuotaExceeded";
+    RefreshEventDetailsRefreshResult2["RefreshedAsWaiter"] = "RefreshedAsWaiter";
+    RefreshEventDetailsRefreshResult2["TransientSigningError"] = "TransientSigningError";
+    RefreshEventDetailsRefreshResult2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+  })(RefreshEventDetailsRefreshResult = Network2.RefreshEventDetailsRefreshResult || (Network2.RefreshEventDetailsRefreshResult = {}));
+  let TerminationEventDetailsDeletionReason;
+  ((TerminationEventDetailsDeletionReason2) => {
+    TerminationEventDetailsDeletionReason2["Expired"] = "Expired";
+    TerminationEventDetailsDeletionReason2["FailedToRestoreKey"] = "FailedToRestoreKey";
+    TerminationEventDetailsDeletionReason2["FailedToUnwrapKey"] = "FailedToUnwrapKey";
+    TerminationEventDetailsDeletionReason2["StoragePartitionCleared"] = "StoragePartitionCleared";
+    TerminationEventDetailsDeletionReason2["ClearBrowsingData"] = "ClearBrowsingData";
+    TerminationEventDetailsDeletionReason2["ServerRequested"] = "ServerRequested";
+    TerminationEventDetailsDeletionReason2["InvalidSessionParams"] = "InvalidSessionParams";
+    TerminationEventDetailsDeletionReason2["RefreshFatalError"] = "RefreshFatalError";
+    TerminationEventDetailsDeletionReason2["DevTools"] = "DevTools";
+  })(TerminationEventDetailsDeletionReason = Network2.TerminationEventDetailsDeletionReason || (Network2.TerminationEventDetailsDeletionReason = {}));
+  let ChallengeEventDetailsChallengeResult;
+  ((ChallengeEventDetailsChallengeResult2) => {
+    ChallengeEventDetailsChallengeResult2["Success"] = "Success";
+    ChallengeEventDetailsChallengeResult2["NoSessionId"] = "NoSessionId";
+    ChallengeEventDetailsChallengeResult2["NoSessionMatch"] = "NoSessionMatch";
+    ChallengeEventDetailsChallengeResult2["CantSetBoundCookie"] = "CantSetBoundCookie";
+  })(ChallengeEventDetailsChallengeResult = Network2.ChallengeEventDetailsChallengeResult || (Network2.ChallengeEventDetailsChallengeResult = {}));
+  let TrustTokenOperationDoneEventStatus;
+  ((TrustTokenOperationDoneEventStatus2) => {
+    TrustTokenOperationDoneEventStatus2["Ok"] = "Ok";
+    TrustTokenOperationDoneEventStatus2["InvalidArgument"] = "InvalidArgument";
+    TrustTokenOperationDoneEventStatus2["MissingIssuerKeys"] = "MissingIssuerKeys";
+    TrustTokenOperationDoneEventStatus2["FailedPrecondition"] = "FailedPrecondition";
+    TrustTokenOperationDoneEventStatus2["ResourceExhausted"] = "ResourceExhausted";
+    TrustTokenOperationDoneEventStatus2["AlreadyExists"] = "AlreadyExists";
+    TrustTokenOperationDoneEventStatus2["ResourceLimited"] = "ResourceLimited";
+    TrustTokenOperationDoneEventStatus2["Unauthorized"] = "Unauthorized";
+    TrustTokenOperationDoneEventStatus2["BadResponse"] = "BadResponse";
+    TrustTokenOperationDoneEventStatus2["InternalError"] = "InternalError";
+    TrustTokenOperationDoneEventStatus2["UnknownError"] = "UnknownError";
+    TrustTokenOperationDoneEventStatus2["FulfilledLocally"] = "FulfilledLocally";
+    TrustTokenOperationDoneEventStatus2["SiteIssuerLimit"] = "SiteIssuerLimit";
+  })(TrustTokenOperationDoneEventStatus = Network2.TrustTokenOperationDoneEventStatus || (Network2.TrustTokenOperationDoneEventStatus = {}));
+})(Network || (Network = {}));
+var Overlay;
+((Overlay2) => {
+  let LineStylePattern;
+  ((LineStylePattern2) => {
+    LineStylePattern2["Dashed"] = "dashed";
+    LineStylePattern2["Dotted"] = "dotted";
+  })(LineStylePattern = Overlay2.LineStylePattern || (Overlay2.LineStylePattern = {}));
+  let ContrastAlgorithm;
+  ((ContrastAlgorithm2) => {
+    ContrastAlgorithm2["Aa"] = "aa";
+    ContrastAlgorithm2["Aaa"] = "aaa";
+    ContrastAlgorithm2["Apca"] = "apca";
+  })(ContrastAlgorithm = Overlay2.ContrastAlgorithm || (Overlay2.ContrastAlgorithm = {}));
+  let ColorFormat;
+  ((ColorFormat2) => {
+    ColorFormat2["Rgb"] = "rgb";
+    ColorFormat2["Hsl"] = "hsl";
+    ColorFormat2["Hwb"] = "hwb";
+    ColorFormat2["Hex"] = "hex";
+  })(ColorFormat = Overlay2.ColorFormat || (Overlay2.ColorFormat = {}));
+  let DisplayCutoutShape;
+  ((DisplayCutoutShape2) => {
+    DisplayCutoutShape2["Pill"] = "pill";
+    DisplayCutoutShape2["Notch"] = "notch";
+    DisplayCutoutShape2["Circle"] = "circle";
+    DisplayCutoutShape2["Rectangle"] = "rectangle";
+  })(DisplayCutoutShape = Overlay2.DisplayCutoutShape || (Overlay2.DisplayCutoutShape = {}));
+  let InspectMode;
+  ((InspectMode2) => {
+    InspectMode2["SearchForNode"] = "searchForNode";
+    InspectMode2["SearchForUAShadowDOM"] = "searchForUAShadowDOM";
+    InspectMode2["CaptureAreaScreenshot"] = "captureAreaScreenshot";
+    InspectMode2["None"] = "none";
+  })(InspectMode = Overlay2.InspectMode || (Overlay2.InspectMode = {}));
+})(Overlay || (Overlay = {}));
+var PWA;
+((PWA2) => {
+  let DisplayMode;
+  ((DisplayMode2) => {
+    DisplayMode2["Standalone"] = "standalone";
+    DisplayMode2["Browser"] = "browser";
+  })(DisplayMode = PWA2.DisplayMode || (PWA2.DisplayMode = {}));
+})(PWA || (PWA = {}));
+var Page;
+((Page2) => {
+  let AdFrameType;
+  ((AdFrameType2) => {
+    AdFrameType2["None"] = "none";
+    AdFrameType2["Child"] = "child";
+    AdFrameType2["Root"] = "root";
+  })(AdFrameType = Page2.AdFrameType || (Page2.AdFrameType = {}));
+  let AdFrameExplanation;
+  ((AdFrameExplanation2) => {
+    AdFrameExplanation2["ParentIsAd"] = "ParentIsAd";
+    AdFrameExplanation2["CreatedByAdScript"] = "CreatedByAdScript";
+    AdFrameExplanation2["MatchedBlockingRule"] = "MatchedBlockingRule";
+  })(AdFrameExplanation = Page2.AdFrameExplanation || (Page2.AdFrameExplanation = {}));
+  let SecureContextType;
+  ((SecureContextType2) => {
+    SecureContextType2["Secure"] = "Secure";
+    SecureContextType2["SecureLocalhost"] = "SecureLocalhost";
+    SecureContextType2["InsecureScheme"] = "InsecureScheme";
+    SecureContextType2["InsecureAncestor"] = "InsecureAncestor";
+  })(SecureContextType = Page2.SecureContextType || (Page2.SecureContextType = {}));
+  let CrossOriginIsolatedContextType;
+  ((CrossOriginIsolatedContextType2) => {
+    CrossOriginIsolatedContextType2["Isolated"] = "Isolated";
+    CrossOriginIsolatedContextType2["NotIsolated"] = "NotIsolated";
+    CrossOriginIsolatedContextType2["NotIsolatedFeatureDisabled"] = "NotIsolatedFeatureDisabled";
+  })(CrossOriginIsolatedContextType = Page2.CrossOriginIsolatedContextType || (Page2.CrossOriginIsolatedContextType = {}));
+  let GatedAPIFeatures;
+  ((GatedAPIFeatures2) => {
+    GatedAPIFeatures2["SharedArrayBuffers"] = "SharedArrayBuffers";
+    GatedAPIFeatures2["SharedArrayBuffersTransferAllowed"] = "SharedArrayBuffersTransferAllowed";
+    GatedAPIFeatures2["PerformanceMeasureMemory"] = "PerformanceMeasureMemory";
+    GatedAPIFeatures2["PerformanceProfile"] = "PerformanceProfile";
+  })(GatedAPIFeatures = Page2.GatedAPIFeatures || (Page2.GatedAPIFeatures = {}));
+  let PermissionsPolicyFeature;
+  ((PermissionsPolicyFeature2) => {
+    PermissionsPolicyFeature2["Accelerometer"] = "accelerometer";
+    PermissionsPolicyFeature2["AllScreensCapture"] = "all-screens-capture";
+    PermissionsPolicyFeature2["AmbientLightSensor"] = "ambient-light-sensor";
+    PermissionsPolicyFeature2["AriaNotify"] = "aria-notify";
+    PermissionsPolicyFeature2["Autofill"] = "autofill";
+    PermissionsPolicyFeature2["Autoplay"] = "autoplay";
+    PermissionsPolicyFeature2["Bluetooth"] = "bluetooth";
+    PermissionsPolicyFeature2["BrowsingTopics"] = "browsing-topics";
+    PermissionsPolicyFeature2["Camera"] = "camera";
+    PermissionsPolicyFeature2["CapturedSurfaceControl"] = "captured-surface-control";
+    PermissionsPolicyFeature2["ChDpr"] = "ch-dpr";
+    PermissionsPolicyFeature2["ChDeviceMemory"] = "ch-device-memory";
+    PermissionsPolicyFeature2["ChDownlink"] = "ch-downlink";
+    PermissionsPolicyFeature2["ChEct"] = "ch-ect";
+    PermissionsPolicyFeature2["ChPrefersColorScheme"] = "ch-prefers-color-scheme";
+    PermissionsPolicyFeature2["ChPrefersReducedMotion"] = "ch-prefers-reduced-motion";
+    PermissionsPolicyFeature2["ChPrefersReducedTransparency"] = "ch-prefers-reduced-transparency";
+    PermissionsPolicyFeature2["ChRtt"] = "ch-rtt";
+    PermissionsPolicyFeature2["ChSaveData"] = "ch-save-data";
+    PermissionsPolicyFeature2["ChUa"] = "ch-ua";
+    PermissionsPolicyFeature2["ChUaArch"] = "ch-ua-arch";
+    PermissionsPolicyFeature2["ChUaBitness"] = "ch-ua-bitness";
+    PermissionsPolicyFeature2["ChUaHighEntropyValues"] = "ch-ua-high-entropy-values";
+    PermissionsPolicyFeature2["ChUaPlatform"] = "ch-ua-platform";
+    PermissionsPolicyFeature2["ChUaModel"] = "ch-ua-model";
+    PermissionsPolicyFeature2["ChUaMobile"] = "ch-ua-mobile";
+    PermissionsPolicyFeature2["ChUaFormFactors"] = "ch-ua-form-factors";
+    PermissionsPolicyFeature2["ChUaFullVersion"] = "ch-ua-full-version";
+    PermissionsPolicyFeature2["ChUaFullVersionList"] = "ch-ua-full-version-list";
+    PermissionsPolicyFeature2["ChUaPlatformVersion"] = "ch-ua-platform-version";
+    PermissionsPolicyFeature2["ChUaWow64"] = "ch-ua-wow64";
+    PermissionsPolicyFeature2["ChViewportHeight"] = "ch-viewport-height";
+    PermissionsPolicyFeature2["ChViewportWidth"] = "ch-viewport-width";
+    PermissionsPolicyFeature2["ChWidth"] = "ch-width";
+    PermissionsPolicyFeature2["ClipboardRead"] = "clipboard-read";
+    PermissionsPolicyFeature2["ClipboardWrite"] = "clipboard-write";
+    PermissionsPolicyFeature2["ComputePressure"] = "compute-pressure";
+    PermissionsPolicyFeature2["ControlledFrame"] = "controlled-frame";
+    PermissionsPolicyFeature2["CrossOriginIsolated"] = "cross-origin-isolated";
+    PermissionsPolicyFeature2["DeferredFetch"] = "deferred-fetch";
+    PermissionsPolicyFeature2["DeferredFetchMinimal"] = "deferred-fetch-minimal";
+    PermissionsPolicyFeature2["DeviceAttributes"] = "device-attributes";
+    PermissionsPolicyFeature2["DigitalCredentialsCreate"] = "digital-credentials-create";
+    PermissionsPolicyFeature2["DigitalCredentialsGet"] = "digital-credentials-get";
+    PermissionsPolicyFeature2["DirectSockets"] = "direct-sockets";
+    PermissionsPolicyFeature2["DirectSocketsMulticast"] = "direct-sockets-multicast";
+    PermissionsPolicyFeature2["DisplayCapture"] = "display-capture";
+    PermissionsPolicyFeature2["DocumentDomain"] = "document-domain";
+    PermissionsPolicyFeature2["EncryptedMedia"] = "encrypted-media";
+    PermissionsPolicyFeature2["ExecutionWhileOutOfViewport"] = "execution-while-out-of-viewport";
+    PermissionsPolicyFeature2["ExecutionWhileNotRendered"] = "execution-while-not-rendered";
+    PermissionsPolicyFeature2["FocusWithoutUserActivation"] = "focus-without-user-activation";
+    PermissionsPolicyFeature2["Fullscreen"] = "fullscreen";
+    PermissionsPolicyFeature2["Frobulate"] = "frobulate";
+    PermissionsPolicyFeature2["Gamepad"] = "gamepad";
+    PermissionsPolicyFeature2["Geolocation"] = "geolocation";
+    PermissionsPolicyFeature2["Gyroscope"] = "gyroscope";
+    PermissionsPolicyFeature2["Hid"] = "hid";
+    PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
+    PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
+    PermissionsPolicyFeature2["InterestCohort"] = "interest-cohort";
+    PermissionsPolicyFeature2["KeyboardMap"] = "keyboard-map";
+    PermissionsPolicyFeature2["LanguageDetector"] = "language-detector";
+    PermissionsPolicyFeature2["LanguageModel"] = "language-model";
+    PermissionsPolicyFeature2["LocalFonts"] = "local-fonts";
+    PermissionsPolicyFeature2["LocalNetwork"] = "local-network";
+    PermissionsPolicyFeature2["LocalNetworkAccess"] = "local-network-access";
+    PermissionsPolicyFeature2["LoopbackNetwork"] = "loopback-network";
+    PermissionsPolicyFeature2["Magnetometer"] = "magnetometer";
+    PermissionsPolicyFeature2["ManualText"] = "manual-text";
+    PermissionsPolicyFeature2["MediaPlaybackWhileNotVisible"] = "media-playback-while-not-visible";
+    PermissionsPolicyFeature2["Microphone"] = "microphone";
+    PermissionsPolicyFeature2["Midi"] = "midi";
+    PermissionsPolicyFeature2["OnDeviceSpeechRecognition"] = "on-device-speech-recognition";
+    PermissionsPolicyFeature2["OtpCredentials"] = "otp-credentials";
+    PermissionsPolicyFeature2["Payment"] = "payment";
+    PermissionsPolicyFeature2["PictureInPicture"] = "picture-in-picture";
+    PermissionsPolicyFeature2["PrivateStateTokenIssuance"] = "private-state-token-issuance";
+    PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
+    PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
+    PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["Rewriter"] = "rewriter";
+    PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["Serial"] = "serial";
+    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
+    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
+    PermissionsPolicyFeature2["SmartCard"] = "smart-card";
+    PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
+    PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
+    PermissionsPolicyFeature2["SubApps"] = "sub-apps";
+    PermissionsPolicyFeature2["Summarizer"] = "summarizer";
+    PermissionsPolicyFeature2["SyncXhr"] = "sync-xhr";
+    PermissionsPolicyFeature2["Tools"] = "tools";
+    PermissionsPolicyFeature2["Translator"] = "translator";
+    PermissionsPolicyFeature2["Unload"] = "unload";
+    PermissionsPolicyFeature2["Usb"] = "usb";
+    PermissionsPolicyFeature2["UsbUnrestricted"] = "usb-unrestricted";
+    PermissionsPolicyFeature2["VerticalScroll"] = "vertical-scroll";
+    PermissionsPolicyFeature2["WebAppInstallation"] = "web-app-installation";
+    PermissionsPolicyFeature2["Webnn"] = "webnn";
+    PermissionsPolicyFeature2["WebPrinting"] = "web-printing";
+    PermissionsPolicyFeature2["WebShare"] = "web-share";
+    PermissionsPolicyFeature2["WindowManagement"] = "window-management";
+    PermissionsPolicyFeature2["Writer"] = "writer";
+    PermissionsPolicyFeature2["XrSpatialTracking"] = "xr-spatial-tracking";
+  })(PermissionsPolicyFeature = Page2.PermissionsPolicyFeature || (Page2.PermissionsPolicyFeature = {}));
+  let PermissionsPolicyBlockReason;
+  ((PermissionsPolicyBlockReason2) => {
+    PermissionsPolicyBlockReason2["Header"] = "Header";
+    PermissionsPolicyBlockReason2["IframeAttribute"] = "IframeAttribute";
+    PermissionsPolicyBlockReason2["InFencedFrameTree"] = "InFencedFrameTree";
+    PermissionsPolicyBlockReason2["InIsolatedApp"] = "InIsolatedApp";
+  })(PermissionsPolicyBlockReason = Page2.PermissionsPolicyBlockReason || (Page2.PermissionsPolicyBlockReason = {}));
+  let OriginTrialTokenStatus;
+  ((OriginTrialTokenStatus2) => {
+    OriginTrialTokenStatus2["Success"] = "Success";
+    OriginTrialTokenStatus2["NotSupported"] = "NotSupported";
+    OriginTrialTokenStatus2["Insecure"] = "Insecure";
+    OriginTrialTokenStatus2["Expired"] = "Expired";
+    OriginTrialTokenStatus2["WrongOrigin"] = "WrongOrigin";
+    OriginTrialTokenStatus2["InvalidSignature"] = "InvalidSignature";
+    OriginTrialTokenStatus2["Malformed"] = "Malformed";
+    OriginTrialTokenStatus2["WrongVersion"] = "WrongVersion";
+    OriginTrialTokenStatus2["FeatureDisabled"] = "FeatureDisabled";
+    OriginTrialTokenStatus2["TokenDisabled"] = "TokenDisabled";
+    OriginTrialTokenStatus2["FeatureDisabledForUser"] = "FeatureDisabledForUser";
+    OriginTrialTokenStatus2["UnknownTrial"] = "UnknownTrial";
+  })(OriginTrialTokenStatus = Page2.OriginTrialTokenStatus || (Page2.OriginTrialTokenStatus = {}));
+  let OriginTrialStatus;
+  ((OriginTrialStatus2) => {
+    OriginTrialStatus2["Enabled"] = "Enabled";
+    OriginTrialStatus2["ValidTokenNotProvided"] = "ValidTokenNotProvided";
+    OriginTrialStatus2["OSNotSupported"] = "OSNotSupported";
+    OriginTrialStatus2["TrialNotAllowed"] = "TrialNotAllowed";
+  })(OriginTrialStatus = Page2.OriginTrialStatus || (Page2.OriginTrialStatus = {}));
+  let OriginTrialUsageRestriction;
+  ((OriginTrialUsageRestriction2) => {
+    OriginTrialUsageRestriction2["None"] = "None";
+    OriginTrialUsageRestriction2["Subset"] = "Subset";
+  })(OriginTrialUsageRestriction = Page2.OriginTrialUsageRestriction || (Page2.OriginTrialUsageRestriction = {}));
+  let TransitionType;
+  ((TransitionType2) => {
+    TransitionType2["Link"] = "link";
+    TransitionType2["Typed"] = "typed";
+    TransitionType2["Address_bar"] = "address_bar";
+    TransitionType2["Auto_bookmark"] = "auto_bookmark";
+    TransitionType2["Auto_subframe"] = "auto_subframe";
+    TransitionType2["Manual_subframe"] = "manual_subframe";
+    TransitionType2["Generated"] = "generated";
+    TransitionType2["Auto_toplevel"] = "auto_toplevel";
+    TransitionType2["Form_submit"] = "form_submit";
+    TransitionType2["Reload"] = "reload";
+    TransitionType2["Keyword"] = "keyword";
+    TransitionType2["Keyword_generated"] = "keyword_generated";
+    TransitionType2["Other"] = "other";
+  })(TransitionType = Page2.TransitionType || (Page2.TransitionType = {}));
+  let DialogType;
+  ((DialogType2) => {
+    DialogType2["Alert"] = "alert";
+    DialogType2["Confirm"] = "confirm";
+    DialogType2["Prompt"] = "prompt";
+    DialogType2["Beforeunload"] = "beforeunload";
+  })(DialogType = Page2.DialogType || (Page2.DialogType = {}));
+  let ClientNavigationReason;
+  ((ClientNavigationReason2) => {
+    ClientNavigationReason2["AnchorClick"] = "anchorClick";
+    ClientNavigationReason2["FormSubmissionGet"] = "formSubmissionGet";
+    ClientNavigationReason2["FormSubmissionPost"] = "formSubmissionPost";
+    ClientNavigationReason2["HttpHeaderRefresh"] = "httpHeaderRefresh";
+    ClientNavigationReason2["InitialFrameNavigation"] = "initialFrameNavigation";
+    ClientNavigationReason2["MetaTagRefresh"] = "metaTagRefresh";
+    ClientNavigationReason2["Other"] = "other";
+    ClientNavigationReason2["PageBlockInterstitial"] = "pageBlockInterstitial";
+    ClientNavigationReason2["Reload"] = "reload";
+    ClientNavigationReason2["ScriptInitiated"] = "scriptInitiated";
+  })(ClientNavigationReason = Page2.ClientNavigationReason || (Page2.ClientNavigationReason = {}));
+  let ClientNavigationDisposition;
+  ((ClientNavigationDisposition2) => {
+    ClientNavigationDisposition2["CurrentTab"] = "currentTab";
+    ClientNavigationDisposition2["NewTab"] = "newTab";
+    ClientNavigationDisposition2["NewWindow"] = "newWindow";
+    ClientNavigationDisposition2["Download"] = "download";
+  })(ClientNavigationDisposition = Page2.ClientNavigationDisposition || (Page2.ClientNavigationDisposition = {}));
+  let ReferrerPolicy;
+  ((ReferrerPolicy2) => {
+    ReferrerPolicy2["NoReferrer"] = "noReferrer";
+    ReferrerPolicy2["NoReferrerWhenDowngrade"] = "noReferrerWhenDowngrade";
+    ReferrerPolicy2["Origin"] = "origin";
+    ReferrerPolicy2["OriginWhenCrossOrigin"] = "originWhenCrossOrigin";
+    ReferrerPolicy2["SameOrigin"] = "sameOrigin";
+    ReferrerPolicy2["StrictOrigin"] = "strictOrigin";
+    ReferrerPolicy2["StrictOriginWhenCrossOrigin"] = "strictOriginWhenCrossOrigin";
+    ReferrerPolicy2["UnsafeUrl"] = "unsafeUrl";
+  })(ReferrerPolicy = Page2.ReferrerPolicy || (Page2.ReferrerPolicy = {}));
+  let NavigationType;
+  ((NavigationType2) => {
+    NavigationType2["Navigation"] = "Navigation";
+    NavigationType2["BackForwardCacheRestore"] = "BackForwardCacheRestore";
+  })(NavigationType = Page2.NavigationType || (Page2.NavigationType = {}));
+  let BackForwardCacheNotRestoredReason;
+  ((BackForwardCacheNotRestoredReason2) => {
+    BackForwardCacheNotRestoredReason2["NotPrimaryMainFrame"] = "NotPrimaryMainFrame";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabled"] = "BackForwardCacheDisabled";
+    BackForwardCacheNotRestoredReason2["RelatedActiveContentsExist"] = "RelatedActiveContentsExist";
+    BackForwardCacheNotRestoredReason2["HTTPStatusNotOK"] = "HTTPStatusNotOK";
+    BackForwardCacheNotRestoredReason2["SchemeNotHTTPOrHTTPS"] = "SchemeNotHTTPOrHTTPS";
+    BackForwardCacheNotRestoredReason2["Loading"] = "Loading";
+    BackForwardCacheNotRestoredReason2["WasGrantedMediaAccess"] = "WasGrantedMediaAccess";
+    BackForwardCacheNotRestoredReason2["DisableForRenderFrameHostCalled"] = "DisableForRenderFrameHostCalled";
+    BackForwardCacheNotRestoredReason2["DomainNotAllowed"] = "DomainNotAllowed";
+    BackForwardCacheNotRestoredReason2["HTTPMethodNotGET"] = "HTTPMethodNotGET";
+    BackForwardCacheNotRestoredReason2["SubframeIsNavigating"] = "SubframeIsNavigating";
+    BackForwardCacheNotRestoredReason2["Timeout"] = "Timeout";
+    BackForwardCacheNotRestoredReason2["CacheLimit"] = "CacheLimit";
+    BackForwardCacheNotRestoredReason2["JavaScriptExecution"] = "JavaScriptExecution";
+    BackForwardCacheNotRestoredReason2["RendererProcessKilled"] = "RendererProcessKilled";
+    BackForwardCacheNotRestoredReason2["RendererProcessCrashed"] = "RendererProcessCrashed";
+    BackForwardCacheNotRestoredReason2["SchedulerTrackedFeatureUsed"] = "SchedulerTrackedFeatureUsed";
+    BackForwardCacheNotRestoredReason2["ConflictingBrowsingInstance"] = "ConflictingBrowsingInstance";
+    BackForwardCacheNotRestoredReason2["CacheFlushed"] = "CacheFlushed";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerVersionActivation"] = "ServiceWorkerVersionActivation";
+    BackForwardCacheNotRestoredReason2["SessionRestored"] = "SessionRestored";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerPostMessage"] = "ServiceWorkerPostMessage";
+    BackForwardCacheNotRestoredReason2["EnteredBackForwardCacheBeforeServiceWorkerHostAdded"] = "EnteredBackForwardCacheBeforeServiceWorkerHostAdded";
+    BackForwardCacheNotRestoredReason2["RenderFrameHostReused_SameSite"] = "RenderFrameHostReused_SameSite";
+    BackForwardCacheNotRestoredReason2["RenderFrameHostReused_CrossSite"] = "RenderFrameHostReused_CrossSite";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerClaim"] = "ServiceWorkerClaim";
+    BackForwardCacheNotRestoredReason2["IgnoreEventAndEvict"] = "IgnoreEventAndEvict";
+    BackForwardCacheNotRestoredReason2["HaveInnerContents"] = "HaveInnerContents";
+    BackForwardCacheNotRestoredReason2["TimeoutPuttingInCache"] = "TimeoutPuttingInCache";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledByLowMemory"] = "BackForwardCacheDisabledByLowMemory";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledByCommandLine"] = "BackForwardCacheDisabledByCommandLine";
+    BackForwardCacheNotRestoredReason2["NetworkRequestDatAPIpeDrainedAsBytesConsumer"] = "NetworkRequestDatapipeDrainedAsBytesConsumer";
+    BackForwardCacheNotRestoredReason2["NetworkRequestRedirected"] = "NetworkRequestRedirected";
+    BackForwardCacheNotRestoredReason2["NetworkRequestTimeout"] = "NetworkRequestTimeout";
+    BackForwardCacheNotRestoredReason2["NetworkExceedsBufferLimit"] = "NetworkExceedsBufferLimit";
+    BackForwardCacheNotRestoredReason2["NavigationCancelledWhileRestoring"] = "NavigationCancelledWhileRestoring";
+    BackForwardCacheNotRestoredReason2["NotMostRecentNavigationEntry"] = "NotMostRecentNavigationEntry";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledForPrerender"] = "BackForwardCacheDisabledForPrerender";
+    BackForwardCacheNotRestoredReason2["UserAgentOverrideDiffers"] = "UserAgentOverrideDiffers";
+    BackForwardCacheNotRestoredReason2["ForegroundCacheLimit"] = "ForegroundCacheLimit";
+    BackForwardCacheNotRestoredReason2["ForwardCacheDisabled"] = "ForwardCacheDisabled";
+    BackForwardCacheNotRestoredReason2["BrowsingInstanceNotSwapped"] = "BrowsingInstanceNotSwapped";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledForDelegate"] = "BackForwardCacheDisabledForDelegate";
+    BackForwardCacheNotRestoredReason2["UnloadHandlerExistsInMainFrame"] = "UnloadHandlerExistsInMainFrame";
+    BackForwardCacheNotRestoredReason2["UnloadHandlerExistsInSubFrame"] = "UnloadHandlerExistsInSubFrame";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerUnregistration"] = "ServiceWorkerUnregistration";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStore"] = "CacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreCookieModified"] = "CacheControlNoStoreCookieModified";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreHTTPOnlyCookieModified"] = "CacheControlNoStoreHTTPOnlyCookieModified";
+    BackForwardCacheNotRestoredReason2["NoResponseHead"] = "NoResponseHead";
+    BackForwardCacheNotRestoredReason2["Unknown"] = "Unknown";
+    BackForwardCacheNotRestoredReason2["ActivationNavigationsDisallowedForBug1234857"] = "ActivationNavigationsDisallowedForBug1234857";
+    BackForwardCacheNotRestoredReason2["ErrorDocument"] = "ErrorDocument";
+    BackForwardCacheNotRestoredReason2["FencedFramesEmbedder"] = "FencedFramesEmbedder";
+    BackForwardCacheNotRestoredReason2["CookieDisabled"] = "CookieDisabled";
+    BackForwardCacheNotRestoredReason2["HTTPAuthRequired"] = "HTTPAuthRequired";
+    BackForwardCacheNotRestoredReason2["CookieFlushed"] = "CookieFlushed";
+    BackForwardCacheNotRestoredReason2["BroadcastChannelOnMessage"] = "BroadcastChannelOnMessage";
+    BackForwardCacheNotRestoredReason2["WebViewSettingsChanged"] = "WebViewSettingsChanged";
+    BackForwardCacheNotRestoredReason2["WebViewJavaScriptObjectChanged"] = "WebViewJavaScriptObjectChanged";
+    BackForwardCacheNotRestoredReason2["WebViewMessageListenerInjected"] = "WebViewMessageListenerInjected";
+    BackForwardCacheNotRestoredReason2["WebViewSafeBrowsingAllowlistChanged"] = "WebViewSafeBrowsingAllowlistChanged";
+    BackForwardCacheNotRestoredReason2["WebViewDocumentStartJavascriptChanged"] = "WebViewDocumentStartJavascriptChanged";
+    BackForwardCacheNotRestoredReason2["WebSocket"] = "WebSocket";
+    BackForwardCacheNotRestoredReason2["WebTransport"] = "WebTransport";
+    BackForwardCacheNotRestoredReason2["WebRTC"] = "WebRTC";
+    BackForwardCacheNotRestoredReason2["MainResourceHasCacheControlNoStore"] = "MainResourceHasCacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["MainResourceHasCacheControlNoCache"] = "MainResourceHasCacheControlNoCache";
+    BackForwardCacheNotRestoredReason2["SubresourceHasCacheControlNoStore"] = "SubresourceHasCacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["SubresourceHasCacheControlNoCache"] = "SubresourceHasCacheControlNoCache";
+    BackForwardCacheNotRestoredReason2["ContainsPlugins"] = "ContainsPlugins";
+    BackForwardCacheNotRestoredReason2["DocumentLoaded"] = "DocumentLoaded";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestOthers"] = "OutstandingNetworkRequestOthers";
+    BackForwardCacheNotRestoredReason2["RequestedMIDIPermission"] = "RequestedMIDIPermission";
+    BackForwardCacheNotRestoredReason2["RequestedAudioCapturePermission"] = "RequestedAudioCapturePermission";
+    BackForwardCacheNotRestoredReason2["RequestedVideoCapturePermission"] = "RequestedVideoCapturePermission";
+    BackForwardCacheNotRestoredReason2["RequestedBackForwardCacheBlockedSensors"] = "RequestedBackForwardCacheBlockedSensors";
+    BackForwardCacheNotRestoredReason2["RequestedBackgroundWorkPermission"] = "RequestedBackgroundWorkPermission";
+    BackForwardCacheNotRestoredReason2["BroadcastChannel"] = "BroadcastChannel";
+    BackForwardCacheNotRestoredReason2["WebXR"] = "WebXR";
+    BackForwardCacheNotRestoredReason2["SharedWorker"] = "SharedWorker";
+    BackForwardCacheNotRestoredReason2["SharedWorkerMessage"] = "SharedWorkerMessage";
+    BackForwardCacheNotRestoredReason2["SharedWorkerWithNoActiveClient"] = "SharedWorkerWithNoActiveClient";
+    BackForwardCacheNotRestoredReason2["WebLocks"] = "WebLocks";
+    BackForwardCacheNotRestoredReason2["WebLocksContention"] = "WebLocksContention";
+    BackForwardCacheNotRestoredReason2["WebHID"] = "WebHID";
+    BackForwardCacheNotRestoredReason2["WebBluetooth"] = "WebBluetooth";
+    BackForwardCacheNotRestoredReason2["WebShare"] = "WebShare";
+    BackForwardCacheNotRestoredReason2["RequestedStorageAccessGrant"] = "RequestedStorageAccessGrant";
+    BackForwardCacheNotRestoredReason2["WebNfc"] = "WebNfc";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestFetch"] = "OutstandingNetworkRequestFetch";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestXHR"] = "OutstandingNetworkRequestXHR";
+    BackForwardCacheNotRestoredReason2["AppBanner"] = "AppBanner";
+    BackForwardCacheNotRestoredReason2["Printing"] = "Printing";
+    BackForwardCacheNotRestoredReason2["WebDatabase"] = "WebDatabase";
+    BackForwardCacheNotRestoredReason2["PictureInPicture"] = "PictureInPicture";
+    BackForwardCacheNotRestoredReason2["SpeechRecognizer"] = "SpeechRecognizer";
+    BackForwardCacheNotRestoredReason2["IdleManager"] = "IdleManager";
+    BackForwardCacheNotRestoredReason2["PaymentManager"] = "PaymentManager";
+    BackForwardCacheNotRestoredReason2["SpeechSynthesis"] = "SpeechSynthesis";
+    BackForwardCacheNotRestoredReason2["KeyboardLock"] = "KeyboardLock";
+    BackForwardCacheNotRestoredReason2["WebOTPService"] = "WebOTPService";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestDirectSocket"] = "OutstandingNetworkRequestDirectSocket";
+    BackForwardCacheNotRestoredReason2["InjectedJavascript"] = "InjectedJavascript";
+    BackForwardCacheNotRestoredReason2["InjectedStyleSheet"] = "InjectedStyleSheet";
+    BackForwardCacheNotRestoredReason2["KeepaliveRequest"] = "KeepaliveRequest";
+    BackForwardCacheNotRestoredReason2["IndexedDBEvent"] = "IndexedDBEvent";
+    BackForwardCacheNotRestoredReason2["Dummy"] = "Dummy";
+    BackForwardCacheNotRestoredReason2["JsNetworkRequestReceivedCacheControlNoStoreResource"] = "JsNetworkRequestReceivedCacheControlNoStoreResource";
+    BackForwardCacheNotRestoredReason2["WebRTCUsedWithCCNS"] = "WebRTCUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["WebTransportUsedWithCCNS"] = "WebTransportUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["WebSocketUsedWithCCNS"] = "WebSocketUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["SmartCard"] = "SmartCard";
+    BackForwardCacheNotRestoredReason2["LiveMediaStreamTrack"] = "LiveMediaStreamTrack";
+    BackForwardCacheNotRestoredReason2["UnloadHandler"] = "UnloadHandler";
+    BackForwardCacheNotRestoredReason2["ParserAborted"] = "ParserAborted";
+    BackForwardCacheNotRestoredReason2["ContentSecurityHandler"] = "ContentSecurityHandler";
+    BackForwardCacheNotRestoredReason2["ContentWebAuthenticationAPI"] = "ContentWebAuthenticationAPI";
+    BackForwardCacheNotRestoredReason2["ContentFileChooser"] = "ContentFileChooser";
+    BackForwardCacheNotRestoredReason2["ContentSerial"] = "ContentSerial";
+    BackForwardCacheNotRestoredReason2["ContentFileSystemAccess"] = "ContentFileSystemAccess";
+    BackForwardCacheNotRestoredReason2["ContentMediaDevicesDispatcherHost"] = "ContentMediaDevicesDispatcherHost";
+    BackForwardCacheNotRestoredReason2["ContentWebBluetooth"] = "ContentWebBluetooth";
+    BackForwardCacheNotRestoredReason2["ContentWebUSB"] = "ContentWebUSB";
+    BackForwardCacheNotRestoredReason2["ContentMediaSessionService"] = "ContentMediaSessionService";
+    BackForwardCacheNotRestoredReason2["ContentScreenReader"] = "ContentScreenReader";
+    BackForwardCacheNotRestoredReason2["ContentDiscarded"] = "ContentDiscarded";
+    BackForwardCacheNotRestoredReason2["EmbedderPopupBlockerTabHelper"] = "EmbedderPopupBlockerTabHelper";
+    BackForwardCacheNotRestoredReason2["EmbedderSafeBrowsingTriggeredPopupBlocker"] = "EmbedderSafeBrowsingTriggeredPopupBlocker";
+    BackForwardCacheNotRestoredReason2["EmbedderSafeBrowsingThreatDetails"] = "EmbedderSafeBrowsingThreatDetails";
+    BackForwardCacheNotRestoredReason2["EmbedderAppBannerManager"] = "EmbedderAppBannerManager";
+    BackForwardCacheNotRestoredReason2["EmbedderDomDistillerViewerSource"] = "EmbedderDomDistillerViewerSource";
+    BackForwardCacheNotRestoredReason2["EmbedderDomDistillerSelfDeletingRequestDelegate"] = "EmbedderDomDistillerSelfDeletingRequestDelegate";
+    BackForwardCacheNotRestoredReason2["EmbedderOomInterventionTabHelper"] = "EmbedderOomInterventionTabHelper";
+    BackForwardCacheNotRestoredReason2["EmbedderOfflinePage"] = "EmbedderOfflinePage";
+    BackForwardCacheNotRestoredReason2["EmbedderChromePasswordManagerClientBindCredentialManager"] = "EmbedderChromePasswordManagerClientBindCredentialManager";
+    BackForwardCacheNotRestoredReason2["EmbedderPermissionRequestManager"] = "EmbedderPermissionRequestManager";
+    BackForwardCacheNotRestoredReason2["EmbedderModalDialog"] = "EmbedderModalDialog";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensions"] = "EmbedderExtensions";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionMessaging"] = "EmbedderExtensionMessaging";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionMessagingForOpenPort"] = "EmbedderExtensionMessagingForOpenPort";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionSentMessageToCachedFrame"] = "EmbedderExtensionSentMessageToCachedFrame";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionFrame"] = "EmbedderExtensionFrame";
+    BackForwardCacheNotRestoredReason2["EmbedderPrivilegedWebContents"] = "EmbedderPrivilegedWebContents";
+    BackForwardCacheNotRestoredReason2["RequestedByWebViewClient"] = "RequestedByWebViewClient";
+    BackForwardCacheNotRestoredReason2["PostMessageByWebViewClient"] = "PostMessageByWebViewClient";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreDeviceBoundSessionTerminated"] = "CacheControlNoStoreDeviceBoundSessionTerminated";
+    BackForwardCacheNotRestoredReason2["CacheLimitPrunedOnModerateMemoryPressure"] = "CacheLimitPrunedOnModerateMemoryPressure";
+    BackForwardCacheNotRestoredReason2["CacheLimitPrunedOnCriticalMemoryPressure"] = "CacheLimitPrunedOnCriticalMemoryPressure";
+  })(BackForwardCacheNotRestoredReason = Page2.BackForwardCacheNotRestoredReason || (Page2.BackForwardCacheNotRestoredReason = {}));
+  let BackForwardCacheNotRestoredReasonType;
+  ((BackForwardCacheNotRestoredReasonType2) => {
+    BackForwardCacheNotRestoredReasonType2["SupportPending"] = "SupportPending";
+    BackForwardCacheNotRestoredReasonType2["PageSupportNeeded"] = "PageSupportNeeded";
+    BackForwardCacheNotRestoredReasonType2["Circumstantial"] = "Circumstantial";
+  })(BackForwardCacheNotRestoredReasonType = Page2.BackForwardCacheNotRestoredReasonType || (Page2.BackForwardCacheNotRestoredReasonType = {}));
+  let CaptureScreenshotRequestFormat;
+  ((CaptureScreenshotRequestFormat2) => {
+    CaptureScreenshotRequestFormat2["Jpeg"] = "jpeg";
+    CaptureScreenshotRequestFormat2["Png"] = "png";
+    CaptureScreenshotRequestFormat2["Webp"] = "webp";
+  })(CaptureScreenshotRequestFormat = Page2.CaptureScreenshotRequestFormat || (Page2.CaptureScreenshotRequestFormat = {}));
+  let CaptureSnapshotRequestFormat;
+  ((CaptureSnapshotRequestFormat2) => {
+    CaptureSnapshotRequestFormat2["MHTML"] = "mhtml";
+  })(CaptureSnapshotRequestFormat = Page2.CaptureSnapshotRequestFormat || (Page2.CaptureSnapshotRequestFormat = {}));
+  let PrintToPDFRequestTransferMode;
+  ((PrintToPDFRequestTransferMode2) => {
+    PrintToPDFRequestTransferMode2["ReturnAsBase64"] = "ReturnAsBase64";
+    PrintToPDFRequestTransferMode2["ReturnAsStream"] = "ReturnAsStream";
+  })(PrintToPDFRequestTransferMode = Page2.PrintToPDFRequestTransferMode || (Page2.PrintToPDFRequestTransferMode = {}));
+  let SetDownloadBehaviorRequestBehavior;
+  ((SetDownloadBehaviorRequestBehavior2) => {
+    SetDownloadBehaviorRequestBehavior2["Deny"] = "deny";
+    SetDownloadBehaviorRequestBehavior2["Allow"] = "allow";
+    SetDownloadBehaviorRequestBehavior2["Default"] = "default";
+  })(SetDownloadBehaviorRequestBehavior = Page2.SetDownloadBehaviorRequestBehavior || (Page2.SetDownloadBehaviorRequestBehavior = {}));
+  let SetTouchEmulationEnabledRequestConfiguration;
+  ((SetTouchEmulationEnabledRequestConfiguration2) => {
+    SetTouchEmulationEnabledRequestConfiguration2["Mobile"] = "mobile";
+    SetTouchEmulationEnabledRequestConfiguration2["Desktop"] = "desktop";
+  })(SetTouchEmulationEnabledRequestConfiguration = Page2.SetTouchEmulationEnabledRequestConfiguration || (Page2.SetTouchEmulationEnabledRequestConfiguration = {}));
+  let StartScreencastRequestFormat;
+  ((StartScreencastRequestFormat2) => {
+    StartScreencastRequestFormat2["Jpeg"] = "jpeg";
+    StartScreencastRequestFormat2["Png"] = "png";
+  })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let SetWebLifecycleStateRequestState;
+  ((SetWebLifecycleStateRequestState2) => {
+    SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
+    SetWebLifecycleStateRequestState2["Active"] = "active";
+  })(SetWebLifecycleStateRequestState = Page2.SetWebLifecycleStateRequestState || (Page2.SetWebLifecycleStateRequestState = {}));
+  let SetSPCTransactionModeRequestMode;
+  ((SetSPCTransactionModeRequestMode2) => {
+    SetSPCTransactionModeRequestMode2["None"] = "none";
+    SetSPCTransactionModeRequestMode2["AutoAccept"] = "autoAccept";
+    SetSPCTransactionModeRequestMode2["AutoChooseToAuthAnotherWay"] = "autoChooseToAuthAnotherWay";
+    SetSPCTransactionModeRequestMode2["AutoReject"] = "autoReject";
+    SetSPCTransactionModeRequestMode2["AutoOptOut"] = "autoOptOut";
+  })(SetSPCTransactionModeRequestMode = Page2.SetSPCTransactionModeRequestMode || (Page2.SetSPCTransactionModeRequestMode = {}));
+  let SetRPHRegistrationModeRequestMode;
+  ((SetRPHRegistrationModeRequestMode2) => {
+    SetRPHRegistrationModeRequestMode2["None"] = "none";
+    SetRPHRegistrationModeRequestMode2["AutoAccept"] = "autoAccept";
+    SetRPHRegistrationModeRequestMode2["AutoReject"] = "autoReject";
+  })(SetRPHRegistrationModeRequestMode = Page2.SetRPHRegistrationModeRequestMode || (Page2.SetRPHRegistrationModeRequestMode = {}));
+  let FileChooserOpenedEventMode;
+  ((FileChooserOpenedEventMode2) => {
+    FileChooserOpenedEventMode2["SelectSingle"] = "selectSingle";
+    FileChooserOpenedEventMode2["SelectMultiple"] = "selectMultiple";
+  })(FileChooserOpenedEventMode = Page2.FileChooserOpenedEventMode || (Page2.FileChooserOpenedEventMode = {}));
+  let FrameDetachedEventReason;
+  ((FrameDetachedEventReason2) => {
+    FrameDetachedEventReason2["Remove"] = "remove";
+    FrameDetachedEventReason2["Swap"] = "swap";
+  })(FrameDetachedEventReason = Page2.FrameDetachedEventReason || (Page2.FrameDetachedEventReason = {}));
+  let FrameStartedNavigatingEventNavigationType;
+  ((FrameStartedNavigatingEventNavigationType2) => {
+    FrameStartedNavigatingEventNavigationType2["Reload"] = "reload";
+    FrameStartedNavigatingEventNavigationType2["ReloadBypassingCache"] = "reloadBypassingCache";
+    FrameStartedNavigatingEventNavigationType2["Restore"] = "restore";
+    FrameStartedNavigatingEventNavigationType2["RestoreWithPost"] = "restoreWithPost";
+    FrameStartedNavigatingEventNavigationType2["HistorySameDocument"] = "historySameDocument";
+    FrameStartedNavigatingEventNavigationType2["HistoryDifferentDocument"] = "historyDifferentDocument";
+    FrameStartedNavigatingEventNavigationType2["SameDocument"] = "sameDocument";
+    FrameStartedNavigatingEventNavigationType2["DifferentDocument"] = "differentDocument";
+  })(FrameStartedNavigatingEventNavigationType = Page2.FrameStartedNavigatingEventNavigationType || (Page2.FrameStartedNavigatingEventNavigationType = {}));
+  let DownloadProgressEventState;
+  ((DownloadProgressEventState2) => {
+    DownloadProgressEventState2["InProgress"] = "inProgress";
+    DownloadProgressEventState2["Completed"] = "completed";
+    DownloadProgressEventState2["Canceled"] = "canceled";
+  })(DownloadProgressEventState = Page2.DownloadProgressEventState || (Page2.DownloadProgressEventState = {}));
+  let NavigatedWithinDocumentEventNavigationType;
+  ((NavigatedWithinDocumentEventNavigationType2) => {
+    NavigatedWithinDocumentEventNavigationType2["Fragment"] = "fragment";
+    NavigatedWithinDocumentEventNavigationType2["HistoryAPI"] = "historyApi";
+    NavigatedWithinDocumentEventNavigationType2["Other"] = "other";
+  })(NavigatedWithinDocumentEventNavigationType = Page2.NavigatedWithinDocumentEventNavigationType || (Page2.NavigatedWithinDocumentEventNavigationType = {}));
+})(Page || (Page = {}));
+var Performance;
+((Performance2) => {
+  let EnableRequestTimeDomain;
+  ((EnableRequestTimeDomain2) => {
+    EnableRequestTimeDomain2["TimeTicks"] = "timeTicks";
+    EnableRequestTimeDomain2["ThreadTicks"] = "threadTicks";
+  })(EnableRequestTimeDomain = Performance2.EnableRequestTimeDomain || (Performance2.EnableRequestTimeDomain = {}));
+  let SetTimeDomainRequestTimeDomain;
+  ((SetTimeDomainRequestTimeDomain2) => {
+    SetTimeDomainRequestTimeDomain2["TimeTicks"] = "timeTicks";
+    SetTimeDomainRequestTimeDomain2["ThreadTicks"] = "threadTicks";
+  })(SetTimeDomainRequestTimeDomain = Performance2.SetTimeDomainRequestTimeDomain || (Performance2.SetTimeDomainRequestTimeDomain = {}));
+})(Performance || (Performance = {}));
+var Preload;
+((Preload2) => {
+  let RuleSetErrorType;
+  ((RuleSetErrorType2) => {
+    RuleSetErrorType2["SourceIsNotJsonObject"] = "SourceIsNotJsonObject";
+    RuleSetErrorType2["InvalidRulesSkipped"] = "InvalidRulesSkipped";
+    RuleSetErrorType2["InvalidRulesetLevelTag"] = "InvalidRulesetLevelTag";
+  })(RuleSetErrorType = Preload2.RuleSetErrorType || (Preload2.RuleSetErrorType = {}));
+  let SpeculationAction;
+  ((SpeculationAction2) => {
+    SpeculationAction2["Prefetch"] = "Prefetch";
+    SpeculationAction2["Prerender"] = "Prerender";
+    SpeculationAction2["PrerenderUntilScript"] = "PrerenderUntilScript";
+  })(SpeculationAction = Preload2.SpeculationAction || (Preload2.SpeculationAction = {}));
+  let SpeculationTargetHint;
+  ((SpeculationTargetHint2) => {
+    SpeculationTargetHint2["Blank"] = "Blank";
+    SpeculationTargetHint2["Self"] = "Self";
+  })(SpeculationTargetHint = Preload2.SpeculationTargetHint || (Preload2.SpeculationTargetHint = {}));
+  let PrerenderFinalStatus;
+  ((PrerenderFinalStatus2) => {
+    PrerenderFinalStatus2["Activated"] = "Activated";
+    PrerenderFinalStatus2["Destroyed"] = "Destroyed";
+    PrerenderFinalStatus2["LowEndDevice"] = "LowEndDevice";
+    PrerenderFinalStatus2["InvalidSchemeRedirect"] = "InvalidSchemeRedirect";
+    PrerenderFinalStatus2["InvalidSchemeNavigation"] = "InvalidSchemeNavigation";
+    PrerenderFinalStatus2["NavigationRequestBlockedByCsp"] = "NavigationRequestBlockedByCsp";
+    PrerenderFinalStatus2["MojoBinderPolicy"] = "MojoBinderPolicy";
+    PrerenderFinalStatus2["RendererProcessCrashed"] = "RendererProcessCrashed";
+    PrerenderFinalStatus2["RendererProcessKilled"] = "RendererProcessKilled";
+    PrerenderFinalStatus2["Download"] = "Download";
+    PrerenderFinalStatus2["TriggerDestroyed"] = "TriggerDestroyed";
+    PrerenderFinalStatus2["NavigationNotCommitted"] = "NavigationNotCommitted";
+    PrerenderFinalStatus2["NavigationBadHttpStatus"] = "NavigationBadHttpStatus";
+    PrerenderFinalStatus2["ClientCertRequested"] = "ClientCertRequested";
+    PrerenderFinalStatus2["NavigationRequestNetworkError"] = "NavigationRequestNetworkError";
+    PrerenderFinalStatus2["CancelAllHostsForTesting"] = "CancelAllHostsForTesting";
+    PrerenderFinalStatus2["DidFailLoad"] = "DidFailLoad";
+    PrerenderFinalStatus2["Stop"] = "Stop";
+    PrerenderFinalStatus2["SslCertificateError"] = "SslCertificateError";
+    PrerenderFinalStatus2["LoginAuthRequested"] = "LoginAuthRequested";
+    PrerenderFinalStatus2["UaChangeRequiresReload"] = "UaChangeRequiresReload";
+    PrerenderFinalStatus2["BlockedByClient"] = "BlockedByClient";
+    PrerenderFinalStatus2["AudioOutputDeviceRequested"] = "AudioOutputDeviceRequested";
+    PrerenderFinalStatus2["MixedContent"] = "MixedContent";
+    PrerenderFinalStatus2["TriggerBackgrounded"] = "TriggerBackgrounded";
+    PrerenderFinalStatus2["MemoryLimitExceeded"] = "MemoryLimitExceeded";
+    PrerenderFinalStatus2["DataSaverEnabled"] = "DataSaverEnabled";
+    PrerenderFinalStatus2["TriggerUrlHasEffectiveUrl"] = "TriggerUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["ActivatedBeforeStarted"] = "ActivatedBeforeStarted";
+    PrerenderFinalStatus2["InactivePageRestriction"] = "InactivePageRestriction";
+    PrerenderFinalStatus2["StartFailed"] = "StartFailed";
+    PrerenderFinalStatus2["TimeoutBackgrounded"] = "TimeoutBackgrounded";
+    PrerenderFinalStatus2["CrossSiteRedirectInInitialNavigation"] = "CrossSiteRedirectInInitialNavigation";
+    PrerenderFinalStatus2["CrossSiteNavigationInInitialNavigation"] = "CrossSiteNavigationInInitialNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginRedirectNotOptInInInitialNavigation"] = "SameSiteCrossOriginRedirectNotOptInInInitialNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginNavigationNotOptInInInitialNavigation"] = "SameSiteCrossOriginNavigationNotOptInInInitialNavigation";
+    PrerenderFinalStatus2["ActivationNavigationParameterMismatch"] = "ActivationNavigationParameterMismatch";
+    PrerenderFinalStatus2["ActivatedInBackground"] = "ActivatedInBackground";
+    PrerenderFinalStatus2["EmbedderHostDisallowed"] = "EmbedderHostDisallowed";
+    PrerenderFinalStatus2["ActivationNavigationDestroyedBeforeSuccess"] = "ActivationNavigationDestroyedBeforeSuccess";
+    PrerenderFinalStatus2["TabClosedByUserGesture"] = "TabClosedByUserGesture";
+    PrerenderFinalStatus2["TabClosedWithoutUserGesture"] = "TabClosedWithoutUserGesture";
+    PrerenderFinalStatus2["PrimaryMainFrameRendererProcessCrashed"] = "PrimaryMainFrameRendererProcessCrashed";
+    PrerenderFinalStatus2["PrimaryMainFrameRendererProcessKilled"] = "PrimaryMainFrameRendererProcessKilled";
+    PrerenderFinalStatus2["ActivationFramePolicyNotCompatible"] = "ActivationFramePolicyNotCompatible";
+    PrerenderFinalStatus2["PreloadingDisabled"] = "PreloadingDisabled";
+    PrerenderFinalStatus2["BatterySaverEnabled"] = "BatterySaverEnabled";
+    PrerenderFinalStatus2["ActivatedDuringMainFrameNavigation"] = "ActivatedDuringMainFrameNavigation";
+    PrerenderFinalStatus2["PreloadingUnsupportedByWebContents"] = "PreloadingUnsupportedByWebContents";
+    PrerenderFinalStatus2["CrossSiteRedirectInMainFrameNavigation"] = "CrossSiteRedirectInMainFrameNavigation";
+    PrerenderFinalStatus2["CrossSiteNavigationInMainFrameNavigation"] = "CrossSiteNavigationInMainFrameNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation"] = "SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation"] = "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation";
+    PrerenderFinalStatus2["MemoryPressureOnTrigger"] = "MemoryPressureOnTrigger";
+    PrerenderFinalStatus2["MemoryPressureAfterTriggered"] = "MemoryPressureAfterTriggered";
+    PrerenderFinalStatus2["PrerenderingDisabledByDevTools"] = "PrerenderingDisabledByDevTools";
+    PrerenderFinalStatus2["SpeculationRuleRemoved"] = "SpeculationRuleRemoved";
+    PrerenderFinalStatus2["ActivatedWithAuxiliaryBrowsingContexts"] = "ActivatedWithAuxiliaryBrowsingContexts";
+    PrerenderFinalStatus2["MaxNumOfRunningEagerPrerendersExceeded"] = "MaxNumOfRunningEagerPrerendersExceeded";
+    PrerenderFinalStatus2["MaxNumOfRunningNonEagerPrerendersExceeded"] = "MaxNumOfRunningNonEagerPrerendersExceeded";
+    PrerenderFinalStatus2["MaxNumOfRunningEmbedderPrerendersExceeded"] = "MaxNumOfRunningEmbedderPrerendersExceeded";
+    PrerenderFinalStatus2["PrerenderingUrlHasEffectiveUrl"] = "PrerenderingUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["RedirectedPrerenderingUrlHasEffectiveUrl"] = "RedirectedPrerenderingUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["ActivationUrlHasEffectiveUrl"] = "ActivationUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["JavaScriptInterfaceAdded"] = "JavaScriptInterfaceAdded";
+    PrerenderFinalStatus2["JavaScriptInterfaceRemoved"] = "JavaScriptInterfaceRemoved";
+    PrerenderFinalStatus2["AllPrerenderingCanceled"] = "AllPrerenderingCanceled";
+    PrerenderFinalStatus2["WindowClosed"] = "WindowClosed";
+    PrerenderFinalStatus2["SlowNetwork"] = "SlowNetwork";
+    PrerenderFinalStatus2["OtherPrerenderedPageActivated"] = "OtherPrerenderedPageActivated";
+    PrerenderFinalStatus2["V8OptimizerDisabled"] = "V8OptimizerDisabled";
+    PrerenderFinalStatus2["PrerenderFailedDuringPrefetch"] = "PrerenderFailedDuringPrefetch";
+    PrerenderFinalStatus2["BrowsingDataRemoved"] = "BrowsingDataRemoved";
+    PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
+    PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
+    PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+  })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
+  let PreloadingStatus2;
+  ((PreloadingStatus3) => {
+    PreloadingStatus3["Pending"] = "Pending";
+    PreloadingStatus3["Running"] = "Running";
+    PreloadingStatus3["Ready"] = "Ready";
+    PreloadingStatus3["Success"] = "Success";
+    PreloadingStatus3["Failure"] = "Failure";
+    PreloadingStatus3["NotSupported"] = "NotSupported";
+  })(PreloadingStatus2 = Preload2.PreloadingStatus || (Preload2.PreloadingStatus = {}));
+  let PrefetchStatus;
+  ((PrefetchStatus2) => {
+    PrefetchStatus2["PrefetchAllowed"] = "PrefetchAllowed";
+    PrefetchStatus2["PrefetchFailedIneligibleRedirect"] = "PrefetchFailedIneligibleRedirect";
+    PrefetchStatus2["PrefetchFailedInvalidRedirect"] = "PrefetchFailedInvalidRedirect";
+    PrefetchStatus2["PrefetchFailedMIMENotSupported"] = "PrefetchFailedMIMENotSupported";
+    PrefetchStatus2["PrefetchFailedNetError"] = "PrefetchFailedNetError";
+    PrefetchStatus2["PrefetchFailedNon2XX"] = "PrefetchFailedNon2XX";
+    PrefetchStatus2["PrefetchEvictedAfterBrowsingDataRemoved"] = "PrefetchEvictedAfterBrowsingDataRemoved";
+    PrefetchStatus2["PrefetchEvictedAfterCandidateRemoved"] = "PrefetchEvictedAfterCandidateRemoved";
+    PrefetchStatus2["PrefetchEvictedForNewerPrefetch"] = "PrefetchEvictedForNewerPrefetch";
+    PrefetchStatus2["PrefetchHeldback"] = "PrefetchHeldback";
+    PrefetchStatus2["PrefetchIneligibleRetryAfter"] = "PrefetchIneligibleRetryAfter";
+    PrefetchStatus2["PrefetchIsPrivacyDecoy"] = "PrefetchIsPrivacyDecoy";
+    PrefetchStatus2["PrefetchIsStale"] = "PrefetchIsStale";
+    PrefetchStatus2["PrefetchNotEligibleBlockedByConnectionAllowlist"] = "PrefetchNotEligibleBlockedByConnectionAllowlist";
+    PrefetchStatus2["PrefetchNotEligibleBrowserContextOffTheRecord"] = "PrefetchNotEligibleBrowserContextOffTheRecord";
+    PrefetchStatus2["PrefetchNotEligibleCrossOrigin"] = "PrefetchNotEligibleCrossOrigin";
+    PrefetchStatus2["PrefetchNotEligibleDataSaverEnabled"] = "PrefetchNotEligibleDataSaverEnabled";
+    PrefetchStatus2["PrefetchNotEligibleExistingProxy"] = "PrefetchNotEligibleExistingProxy";
+    PrefetchStatus2["PrefetchNotEligibleHostIsNonUnique"] = "PrefetchNotEligibleHostIsNonUnique";
+    PrefetchStatus2["PrefetchNotEligibleNonDefaultStoragePartition"] = "PrefetchNotEligibleNonDefaultStoragePartition";
+    PrefetchStatus2["PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy"] = "PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy";
+    PrefetchStatus2["PrefetchNotEligibleSchemeIsNotHttps"] = "PrefetchNotEligibleSchemeIsNotHttps";
+    PrefetchStatus2["PrefetchNotEligibleUserHasCookies"] = "PrefetchNotEligibleUserHasCookies";
+    PrefetchStatus2["PrefetchNotEligibleUserHasServiceWorker"] = "PrefetchNotEligibleUserHasServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler"] = "PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler";
+    PrefetchStatus2["PrefetchNotEligibleRedirectFromServiceWorker"] = "PrefetchNotEligibleRedirectFromServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleRedirectToServiceWorker"] = "PrefetchNotEligibleRedirectToServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleBatterySaverEnabled"] = "PrefetchNotEligibleBatterySaverEnabled";
+    PrefetchStatus2["PrefetchNotEligiblePreloadingDisabled"] = "PrefetchNotEligiblePreloadingDisabled";
+    PrefetchStatus2["PrefetchNotFinishedInTime"] = "PrefetchNotFinishedInTime";
+    PrefetchStatus2["PrefetchNotStarted"] = "PrefetchNotStarted";
+    PrefetchStatus2["PrefetchNotUsedCookiesChanged"] = "PrefetchNotUsedCookiesChanged";
+    PrefetchStatus2["PrefetchProxyNotAvailable"] = "PrefetchProxyNotAvailable";
+    PrefetchStatus2["PrefetchResponseUsed"] = "PrefetchResponseUsed";
+    PrefetchStatus2["PrefetchSuccessfulButNotUsed"] = "PrefetchSuccessfulButNotUsed";
+    PrefetchStatus2["PrefetchNotUsedProbeFailed"] = "PrefetchNotUsedProbeFailed";
+    PrefetchStatus2["PrefetchCancelledOnUserNavigation"] = "PrefetchCancelledOnUserNavigation";
+  })(PrefetchStatus = Preload2.PrefetchStatus || (Preload2.PrefetchStatus = {}));
+})(Preload || (Preload = {}));
+var Security;
+((Security2) => {
+  let MixedContentType;
+  ((MixedContentType2) => {
+    MixedContentType2["Blockable"] = "blockable";
+    MixedContentType2["OptionallyBlockable"] = "optionally-blockable";
+    MixedContentType2["None"] = "none";
+  })(MixedContentType = Security2.MixedContentType || (Security2.MixedContentType = {}));
+  let SecurityState;
+  ((SecurityState2) => {
+    SecurityState2["Unknown"] = "unknown";
+    SecurityState2["Neutral"] = "neutral";
+    SecurityState2["Insecure"] = "insecure";
+    SecurityState2["Secure"] = "secure";
+    SecurityState2["Info"] = "info";
+    SecurityState2["InsecureBroken"] = "insecure-broken";
+  })(SecurityState = Security2.SecurityState || (Security2.SecurityState = {}));
+  let SafetyTipStatus;
+  ((SafetyTipStatus2) => {
+    SafetyTipStatus2["BadReputation"] = "badReputation";
+    SafetyTipStatus2["Lookalike"] = "lookalike";
+  })(SafetyTipStatus = Security2.SafetyTipStatus || (Security2.SafetyTipStatus = {}));
+  let CertificateErrorAction;
+  ((CertificateErrorAction2) => {
+    CertificateErrorAction2["Continue"] = "continue";
+    CertificateErrorAction2["Cancel"] = "cancel";
+  })(CertificateErrorAction = Security2.CertificateErrorAction || (Security2.CertificateErrorAction = {}));
+})(Security || (Security = {}));
+var ServiceWorker;
+((ServiceWorker2) => {
+  let ServiceWorkerVersionRunningStatus;
+  ((ServiceWorkerVersionRunningStatus2) => {
+    ServiceWorkerVersionRunningStatus2["Stopped"] = "stopped";
+    ServiceWorkerVersionRunningStatus2["Starting"] = "starting";
+    ServiceWorkerVersionRunningStatus2["Running"] = "running";
+    ServiceWorkerVersionRunningStatus2["Stopping"] = "stopping";
+  })(ServiceWorkerVersionRunningStatus = ServiceWorker2.ServiceWorkerVersionRunningStatus || (ServiceWorker2.ServiceWorkerVersionRunningStatus = {}));
+  let ServiceWorkerVersionStatus;
+  ((ServiceWorkerVersionStatus2) => {
+    ServiceWorkerVersionStatus2["New"] = "new";
+    ServiceWorkerVersionStatus2["Installing"] = "installing";
+    ServiceWorkerVersionStatus2["Installed"] = "installed";
+    ServiceWorkerVersionStatus2["Activating"] = "activating";
+    ServiceWorkerVersionStatus2["Activated"] = "activated";
+    ServiceWorkerVersionStatus2["Redundant"] = "redundant";
+  })(ServiceWorkerVersionStatus = ServiceWorker2.ServiceWorkerVersionStatus || (ServiceWorker2.ServiceWorkerVersionStatus = {}));
+  let ServiceWorkerRouterSourceType;
+  ((ServiceWorkerRouterSourceType2) => {
+    ServiceWorkerRouterSourceType2["Cache"] = "cache";
+    ServiceWorkerRouterSourceType2["FetchEvent"] = "fetchEvent";
+    ServiceWorkerRouterSourceType2["Network"] = "network";
+    ServiceWorkerRouterSourceType2["RaceNetworkAndFetchHandler"] = "raceNetworkAndFetchHandler";
+    ServiceWorkerRouterSourceType2["RaceNetworkAndCache"] = "raceNetworkAndCache";
+    ServiceWorkerRouterSourceType2["SourceDict"] = "sourceDict";
+  })(ServiceWorkerRouterSourceType = ServiceWorker2.ServiceWorkerRouterSourceType || (ServiceWorker2.ServiceWorkerRouterSourceType = {}));
+})(ServiceWorker || (ServiceWorker = {}));
+var SmartCardEmulation;
+((SmartCardEmulation2) => {
+  let ResultCode;
+  ((ResultCode2) => {
+    ResultCode2["Success"] = "success";
+    ResultCode2["RemovedCard"] = "removed-card";
+    ResultCode2["ResetCard"] = "reset-card";
+    ResultCode2["UnpoweredCard"] = "unpowered-card";
+    ResultCode2["UnresponsiveCard"] = "unresponsive-card";
+    ResultCode2["UnsupportedCard"] = "unsupported-card";
+    ResultCode2["ReaderUnavailable"] = "reader-unavailable";
+    ResultCode2["SharingViolation"] = "sharing-violation";
+    ResultCode2["NotTransacted"] = "not-transacted";
+    ResultCode2["NoSmartcard"] = "no-smartcard";
+    ResultCode2["ProtoMismatch"] = "proto-mismatch";
+    ResultCode2["SystemCancelled"] = "system-cancelled";
+    ResultCode2["NotReady"] = "not-ready";
+    ResultCode2["Cancelled"] = "cancelled";
+    ResultCode2["InsufficientBuffer"] = "insufficient-buffer";
+    ResultCode2["InvalidHandle"] = "invalid-handle";
+    ResultCode2["InvalidParameter"] = "invalid-parameter";
+    ResultCode2["InvalidValue"] = "invalid-value";
+    ResultCode2["NoMemory"] = "no-memory";
+    ResultCode2["Timeout"] = "timeout";
+    ResultCode2["UnknownReader"] = "unknown-reader";
+    ResultCode2["UnsupportedFeature"] = "unsupported-feature";
+    ResultCode2["NoReadersAvailable"] = "no-readers-available";
+    ResultCode2["ServiceStopped"] = "service-stopped";
+    ResultCode2["NoService"] = "no-service";
+    ResultCode2["CommError"] = "comm-error";
+    ResultCode2["InternalError"] = "internal-error";
+    ResultCode2["ServerTooBusy"] = "server-too-busy";
+    ResultCode2["Unexpected"] = "unexpected";
+    ResultCode2["Shutdown"] = "shutdown";
+    ResultCode2["UnknownCard"] = "unknown-card";
+    ResultCode2["Unknown"] = "unknown";
+  })(ResultCode = SmartCardEmulation2.ResultCode || (SmartCardEmulation2.ResultCode = {}));
+  let ShareMode;
+  ((ShareMode2) => {
+    ShareMode2["Shared"] = "shared";
+    ShareMode2["Exclusive"] = "exclusive";
+    ShareMode2["Direct"] = "direct";
+  })(ShareMode = SmartCardEmulation2.ShareMode || (SmartCardEmulation2.ShareMode = {}));
+  let Disposition;
+  ((Disposition2) => {
+    Disposition2["LeaveCard"] = "leave-card";
+    Disposition2["ResetCard"] = "reset-card";
+    Disposition2["UnpowerCard"] = "unpower-card";
+    Disposition2["EjectCard"] = "eject-card";
+  })(Disposition = SmartCardEmulation2.Disposition || (SmartCardEmulation2.Disposition = {}));
+  let ConnectionState;
+  ((ConnectionState2) => {
+    ConnectionState2["Absent"] = "absent";
+    ConnectionState2["Present"] = "present";
+    ConnectionState2["Swallowed"] = "swallowed";
+    ConnectionState2["Powered"] = "powered";
+    ConnectionState2["Negotiable"] = "negotiable";
+    ConnectionState2["Specific"] = "specific";
+  })(ConnectionState = SmartCardEmulation2.ConnectionState || (SmartCardEmulation2.ConnectionState = {}));
+  let Protocol;
+  ((Protocol2) => {
+    Protocol2["T0"] = "t0";
+    Protocol2["T1"] = "t1";
+    Protocol2["Raw"] = "raw";
+  })(Protocol = SmartCardEmulation2.Protocol || (SmartCardEmulation2.Protocol = {}));
+})(SmartCardEmulation || (SmartCardEmulation = {}));
+var Storage;
+((Storage2) => {
+  let StorageType;
+  ((StorageType2) => {
+    StorageType2["Cookies"] = "cookies";
+    StorageType2["File_systems"] = "file_systems";
+    StorageType2["Indexeddb"] = "indexeddb";
+    StorageType2["Local_storage"] = "local_storage";
+    StorageType2["Shader_cache"] = "shader_cache";
+    StorageType2["Websql"] = "websql";
+    StorageType2["Service_workers"] = "service_workers";
+    StorageType2["Cache_storage"] = "cache_storage";
+    StorageType2["Storage_buckets"] = "storage_buckets";
+    StorageType2["All"] = "all";
+    StorageType2["Other"] = "other";
+  })(StorageType = Storage2.StorageType || (Storage2.StorageType = {}));
+  let StorageBucketsDurability;
+  ((StorageBucketsDurability2) => {
+    StorageBucketsDurability2["Relaxed"] = "relaxed";
+    StorageBucketsDurability2["Strict"] = "strict";
+  })(StorageBucketsDurability = Storage2.StorageBucketsDurability || (Storage2.StorageBucketsDurability = {}));
+})(Storage || (Storage = {}));
+var SystemInfo;
+((SystemInfo2) => {
+  let SubsamplingFormat;
+  ((SubsamplingFormat2) => {
+    SubsamplingFormat2["Yuv420"] = "yuv420";
+    SubsamplingFormat2["Yuv422"] = "yuv422";
+    SubsamplingFormat2["Yuv444"] = "yuv444";
+  })(SubsamplingFormat = SystemInfo2.SubsamplingFormat || (SystemInfo2.SubsamplingFormat = {}));
+  let ImageType;
+  ((ImageType2) => {
+    ImageType2["Jpeg"] = "jpeg";
+    ImageType2["Webp"] = "webp";
+    ImageType2["Unknown"] = "unknown";
+  })(ImageType = SystemInfo2.ImageType || (SystemInfo2.ImageType = {}));
+})(SystemInfo || (SystemInfo = {}));
+var Target;
+((Target3) => {
+  let WindowState;
+  ((WindowState2) => {
+    WindowState2["Normal"] = "normal";
+    WindowState2["Minimized"] = "minimized";
+    WindowState2["Maximized"] = "maximized";
+    WindowState2["Fullscreen"] = "fullscreen";
+  })(WindowState = Target3.WindowState || (Target3.WindowState = {}));
+})(Target || (Target = {}));
+var Tracing;
+((Tracing2) => {
+  let TraceConfigRecordMode;
+  ((TraceConfigRecordMode2) => {
+    TraceConfigRecordMode2["RecordUntilFull"] = "recordUntilFull";
+    TraceConfigRecordMode2["RecordContinuously"] = "recordContinuously";
+    TraceConfigRecordMode2["RecordAsMuchAsPossible"] = "recordAsMuchAsPossible";
+    TraceConfigRecordMode2["EchoToConsole"] = "echoToConsole";
+  })(TraceConfigRecordMode = Tracing2.TraceConfigRecordMode || (Tracing2.TraceConfigRecordMode = {}));
+  let StreamFormat;
+  ((StreamFormat2) => {
+    StreamFormat2["Json"] = "json";
+    StreamFormat2["Proto"] = "proto";
+  })(StreamFormat = Tracing2.StreamFormat || (Tracing2.StreamFormat = {}));
+  let StreamCompression;
+  ((StreamCompression2) => {
+    StreamCompression2["None"] = "none";
+    StreamCompression2["Gzip"] = "gzip";
+  })(StreamCompression = Tracing2.StreamCompression || (Tracing2.StreamCompression = {}));
+  let MemoryDumpLevelOfDetail;
+  ((MemoryDumpLevelOfDetail2) => {
+    MemoryDumpLevelOfDetail2["Background"] = "background";
+    MemoryDumpLevelOfDetail2["Light"] = "light";
+    MemoryDumpLevelOfDetail2["Detailed"] = "detailed";
+  })(MemoryDumpLevelOfDetail = Tracing2.MemoryDumpLevelOfDetail || (Tracing2.MemoryDumpLevelOfDetail = {}));
+  let TracingBackend;
+  ((TracingBackend2) => {
+    TracingBackend2["Auto"] = "auto";
+    TracingBackend2["Chrome"] = "chrome";
+    TracingBackend2["System"] = "system";
+  })(TracingBackend = Tracing2.TracingBackend || (Tracing2.TracingBackend = {}));
+  let StartRequestTransferMode;
+  ((StartRequestTransferMode2) => {
+    StartRequestTransferMode2["ReportEvents"] = "ReportEvents";
+    StartRequestTransferMode2["ReturnAsStream"] = "ReturnAsStream";
+  })(StartRequestTransferMode = Tracing2.StartRequestTransferMode || (Tracing2.StartRequestTransferMode = {}));
+})(Tracing || (Tracing = {}));
+var WebAudio;
+((WebAudio2) => {
+  let ContextType;
+  ((ContextType2) => {
+    ContextType2["Realtime"] = "realtime";
+    ContextType2["Offline"] = "offline";
+  })(ContextType = WebAudio2.ContextType || (WebAudio2.ContextType = {}));
+  let ContextState;
+  ((ContextState2) => {
+    ContextState2["Suspended"] = "suspended";
+    ContextState2["Running"] = "running";
+    ContextState2["Closed"] = "closed";
+    ContextState2["Interrupted"] = "interrupted";
+  })(ContextState = WebAudio2.ContextState || (WebAudio2.ContextState = {}));
+  let ChannelCountMode;
+  ((ChannelCountMode2) => {
+    ChannelCountMode2["ClampedMax"] = "clamped-max";
+    ChannelCountMode2["Explicit"] = "explicit";
+    ChannelCountMode2["Max"] = "max";
+  })(ChannelCountMode = WebAudio2.ChannelCountMode || (WebAudio2.ChannelCountMode = {}));
+  let ChannelInterpretation;
+  ((ChannelInterpretation2) => {
+    ChannelInterpretation2["Discrete"] = "discrete";
+    ChannelInterpretation2["Speakers"] = "speakers";
+  })(ChannelInterpretation = WebAudio2.ChannelInterpretation || (WebAudio2.ChannelInterpretation = {}));
+  let AutomationRate;
+  ((AutomationRate2) => {
+    AutomationRate2["ARate"] = "a-rate";
+    AutomationRate2["KRate"] = "k-rate";
+  })(AutomationRate = WebAudio2.AutomationRate || (WebAudio2.AutomationRate = {}));
+})(WebAudio || (WebAudio = {}));
+var WebAuthn;
+((WebAuthn2) => {
+  let AuthenticatorProtocol;
+  ((AuthenticatorProtocol2) => {
+    AuthenticatorProtocol2["U2f"] = "u2f";
+    AuthenticatorProtocol2["Ctap2"] = "ctap2";
+  })(AuthenticatorProtocol = WebAuthn2.AuthenticatorProtocol || (WebAuthn2.AuthenticatorProtocol = {}));
+  let Ctap2Version;
+  ((Ctap2Version2) => {
+    Ctap2Version2["Ctap2_0"] = "ctap2_0";
+    Ctap2Version2["Ctap2_1"] = "ctap2_1";
+    Ctap2Version2["Ctap2_2"] = "ctap2_2";
+  })(Ctap2Version = WebAuthn2.Ctap2Version || (WebAuthn2.Ctap2Version = {}));
+  let AuthenticatorTransport;
+  ((AuthenticatorTransport2) => {
+    AuthenticatorTransport2["Usb"] = "usb";
+    AuthenticatorTransport2["Nfc"] = "nfc";
+    AuthenticatorTransport2["Ble"] = "ble";
+    AuthenticatorTransport2["Cable"] = "cable";
+    AuthenticatorTransport2["Hybrid"] = "hybrid";
+    AuthenticatorTransport2["SmartCard"] = "smart-card";
+    AuthenticatorTransport2["Internal"] = "internal";
+  })(AuthenticatorTransport = WebAuthn2.AuthenticatorTransport || (WebAuthn2.AuthenticatorTransport = {}));
+})(WebAuthn || (WebAuthn = {}));
+var WebMCP;
+((WebMCP2) => {
+  let InvocationStatus;
+  ((InvocationStatus2) => {
+    InvocationStatus2["Completed"] = "Completed";
+    InvocationStatus2["Canceled"] = "Canceled";
+    InvocationStatus2["Error"] = "Error";
+  })(InvocationStatus = WebMCP2.InvocationStatus || (WebMCP2.InvocationStatus = {}));
+})(WebMCP || (WebMCP = {}));
+var Debugger;
+((Debugger2) => {
+  let ScopeType;
+  ((ScopeType2) => {
+    ScopeType2["Global"] = "global";
+    ScopeType2["Local"] = "local";
+    ScopeType2["With"] = "with";
+    ScopeType2["Closure"] = "closure";
+    ScopeType2["Catch"] = "catch";
+    ScopeType2["Block"] = "block";
+    ScopeType2["Script"] = "script";
+    ScopeType2["Eval"] = "eval";
+    ScopeType2["Module"] = "module";
+    ScopeType2["WasmExpressionStack"] = "wasm-expression-stack";
+  })(ScopeType = Debugger2.ScopeType || (Debugger2.ScopeType = {}));
+  let BreakLocationType;
+  ((BreakLocationType2) => {
+    BreakLocationType2["DebuggerStatement"] = "debuggerStatement";
+    BreakLocationType2["Call"] = "call";
+    BreakLocationType2["Return"] = "return";
+  })(BreakLocationType = Debugger2.BreakLocationType || (Debugger2.BreakLocationType = {}));
+  let ScriptLanguage;
+  ((ScriptLanguage2) => {
+    ScriptLanguage2["JavaScript"] = "JavaScript";
+    ScriptLanguage2["WebAssembly"] = "WebAssembly";
+  })(ScriptLanguage = Debugger2.ScriptLanguage || (Debugger2.ScriptLanguage = {}));
+  let DebugSymbolsType;
+  ((DebugSymbolsType2) => {
+    DebugSymbolsType2["SourceMap"] = "SourceMap";
+    DebugSymbolsType2["EmbeddedDWARF"] = "EmbeddedDWARF";
+    DebugSymbolsType2["ExternalDWARF"] = "ExternalDWARF";
+  })(DebugSymbolsType = Debugger2.DebugSymbolsType || (Debugger2.DebugSymbolsType = {}));
+  let ContinueToLocationRequestTargetCallFrames;
+  ((ContinueToLocationRequestTargetCallFrames2) => {
+    ContinueToLocationRequestTargetCallFrames2["Any"] = "any";
+    ContinueToLocationRequestTargetCallFrames2["Current"] = "current";
+  })(ContinueToLocationRequestTargetCallFrames = Debugger2.ContinueToLocationRequestTargetCallFrames || (Debugger2.ContinueToLocationRequestTargetCallFrames = {}));
+  let RestartFrameRequestMode;
+  ((RestartFrameRequestMode2) => {
+    RestartFrameRequestMode2["StepInto"] = "StepInto";
+  })(RestartFrameRequestMode = Debugger2.RestartFrameRequestMode || (Debugger2.RestartFrameRequestMode = {}));
+  let SetInstrumentationBreakpointRequestInstrumentation;
+  ((SetInstrumentationBreakpointRequestInstrumentation2) => {
+    SetInstrumentationBreakpointRequestInstrumentation2["BeforeScriptExecution"] = "beforeScriptExecution";
+    SetInstrumentationBreakpointRequestInstrumentation2["BeforeScriptWithSourceMapExecution"] = "beforeScriptWithSourceMapExecution";
+  })(SetInstrumentationBreakpointRequestInstrumentation = Debugger2.SetInstrumentationBreakpointRequestInstrumentation || (Debugger2.SetInstrumentationBreakpointRequestInstrumentation = {}));
+  let SetPauseOnExceptionsRequestState;
+  ((SetPauseOnExceptionsRequestState2) => {
+    SetPauseOnExceptionsRequestState2["None"] = "none";
+    SetPauseOnExceptionsRequestState2["Caught"] = "caught";
+    SetPauseOnExceptionsRequestState2["Uncaught"] = "uncaught";
+    SetPauseOnExceptionsRequestState2["All"] = "all";
+  })(SetPauseOnExceptionsRequestState = Debugger2.SetPauseOnExceptionsRequestState || (Debugger2.SetPauseOnExceptionsRequestState = {}));
+  let SetScriptSourceResponseStatus;
+  ((SetScriptSourceResponseStatus2) => {
+    SetScriptSourceResponseStatus2["Ok"] = "Ok";
+    SetScriptSourceResponseStatus2["CompileError"] = "CompileError";
+    SetScriptSourceResponseStatus2["BlockedByActiveGenerator"] = "BlockedByActiveGenerator";
+    SetScriptSourceResponseStatus2["BlockedByActiveFunction"] = "BlockedByActiveFunction";
+    SetScriptSourceResponseStatus2["BlockedByTopLevelEsModuleChange"] = "BlockedByTopLevelEsModuleChange";
+  })(SetScriptSourceResponseStatus = Debugger2.SetScriptSourceResponseStatus || (Debugger2.SetScriptSourceResponseStatus = {}));
+  let PausedEventReason;
+  ((PausedEventReason2) => {
+    PausedEventReason2["Ambiguous"] = "ambiguous";
+    PausedEventReason2["Assert"] = "assert";
+    PausedEventReason2["CSPViolation"] = "CSPViolation";
+    PausedEventReason2["DebugCommand"] = "debugCommand";
+    PausedEventReason2["DOM"] = "DOM";
+    PausedEventReason2["EventListener"] = "EventListener";
+    PausedEventReason2["Exception"] = "exception";
+    PausedEventReason2["Instrumentation"] = "instrumentation";
+    PausedEventReason2["OOM"] = "OOM";
+    PausedEventReason2["Other"] = "other";
+    PausedEventReason2["PromiseRejection"] = "promiseRejection";
+    PausedEventReason2["XHR"] = "XHR";
+    PausedEventReason2["Step"] = "step";
+  })(PausedEventReason = Debugger2.PausedEventReason || (Debugger2.PausedEventReason = {}));
+})(Debugger || (Debugger = {}));
+var Runtime;
+((Runtime10) => {
+  let SerializationOptionsSerialization;
+  ((SerializationOptionsSerialization2) => {
+    SerializationOptionsSerialization2["Deep"] = "deep";
+    SerializationOptionsSerialization2["Json"] = "json";
+    SerializationOptionsSerialization2["IdOnly"] = "idOnly";
+  })(SerializationOptionsSerialization = Runtime10.SerializationOptionsSerialization || (Runtime10.SerializationOptionsSerialization = {}));
+  let DeepSerializedValueType;
+  ((DeepSerializedValueType2) => {
+    DeepSerializedValueType2["Undefined"] = "undefined";
+    DeepSerializedValueType2["Null"] = "null";
+    DeepSerializedValueType2["String"] = "string";
+    DeepSerializedValueType2["Number"] = "number";
+    DeepSerializedValueType2["Boolean"] = "boolean";
+    DeepSerializedValueType2["Bigint"] = "bigint";
+    DeepSerializedValueType2["Regexp"] = "regexp";
+    DeepSerializedValueType2["Date"] = "date";
+    DeepSerializedValueType2["Symbol"] = "symbol";
+    DeepSerializedValueType2["Array"] = "array";
+    DeepSerializedValueType2["Object"] = "object";
+    DeepSerializedValueType2["Function"] = "function";
+    DeepSerializedValueType2["Map"] = "map";
+    DeepSerializedValueType2["Set"] = "set";
+    DeepSerializedValueType2["Weakmap"] = "weakmap";
+    DeepSerializedValueType2["Weakset"] = "weakset";
+    DeepSerializedValueType2["Error"] = "error";
+    DeepSerializedValueType2["Proxy"] = "proxy";
+    DeepSerializedValueType2["Promise"] = "promise";
+    DeepSerializedValueType2["Typedarray"] = "typedarray";
+    DeepSerializedValueType2["Arraybuffer"] = "arraybuffer";
+    DeepSerializedValueType2["Node"] = "node";
+    DeepSerializedValueType2["Window"] = "window";
+    DeepSerializedValueType2["Generator"] = "generator";
+  })(DeepSerializedValueType = Runtime10.DeepSerializedValueType || (Runtime10.DeepSerializedValueType = {}));
+  let RemoteObjectType;
+  ((RemoteObjectType2) => {
+    RemoteObjectType2["Object"] = "object";
+    RemoteObjectType2["Function"] = "function";
+    RemoteObjectType2["Undefined"] = "undefined";
+    RemoteObjectType2["String"] = "string";
+    RemoteObjectType2["Number"] = "number";
+    RemoteObjectType2["Boolean"] = "boolean";
+    RemoteObjectType2["Symbol"] = "symbol";
+    RemoteObjectType2["Bigint"] = "bigint";
+  })(RemoteObjectType = Runtime10.RemoteObjectType || (Runtime10.RemoteObjectType = {}));
+  let RemoteObjectSubtype;
+  ((RemoteObjectSubtype2) => {
+    RemoteObjectSubtype2["Array"] = "array";
+    RemoteObjectSubtype2["Null"] = "null";
+    RemoteObjectSubtype2["Node"] = "node";
+    RemoteObjectSubtype2["Regexp"] = "regexp";
+    RemoteObjectSubtype2["Date"] = "date";
+    RemoteObjectSubtype2["Map"] = "map";
+    RemoteObjectSubtype2["Set"] = "set";
+    RemoteObjectSubtype2["Weakmap"] = "weakmap";
+    RemoteObjectSubtype2["Weakset"] = "weakset";
+    RemoteObjectSubtype2["Iterator"] = "iterator";
+    RemoteObjectSubtype2["Generator"] = "generator";
+    RemoteObjectSubtype2["Error"] = "error";
+    RemoteObjectSubtype2["Proxy"] = "proxy";
+    RemoteObjectSubtype2["Promise"] = "promise";
+    RemoteObjectSubtype2["Typedarray"] = "typedarray";
+    RemoteObjectSubtype2["Arraybuffer"] = "arraybuffer";
+    RemoteObjectSubtype2["Dataview"] = "dataview";
+    RemoteObjectSubtype2["Webassemblymemory"] = "webassemblymemory";
+    RemoteObjectSubtype2["Wasmvalue"] = "wasmvalue";
+    RemoteObjectSubtype2["Trustedtype"] = "trustedtype";
+  })(RemoteObjectSubtype = Runtime10.RemoteObjectSubtype || (Runtime10.RemoteObjectSubtype = {}));
+  let ObjectPreviewType;
+  ((ObjectPreviewType2) => {
+    ObjectPreviewType2["Object"] = "object";
+    ObjectPreviewType2["Function"] = "function";
+    ObjectPreviewType2["Undefined"] = "undefined";
+    ObjectPreviewType2["String"] = "string";
+    ObjectPreviewType2["Number"] = "number";
+    ObjectPreviewType2["Boolean"] = "boolean";
+    ObjectPreviewType2["Symbol"] = "symbol";
+    ObjectPreviewType2["Bigint"] = "bigint";
+  })(ObjectPreviewType = Runtime10.ObjectPreviewType || (Runtime10.ObjectPreviewType = {}));
+  let ObjectPreviewSubtype;
+  ((ObjectPreviewSubtype2) => {
+    ObjectPreviewSubtype2["Array"] = "array";
+    ObjectPreviewSubtype2["Null"] = "null";
+    ObjectPreviewSubtype2["Node"] = "node";
+    ObjectPreviewSubtype2["Regexp"] = "regexp";
+    ObjectPreviewSubtype2["Date"] = "date";
+    ObjectPreviewSubtype2["Map"] = "map";
+    ObjectPreviewSubtype2["Set"] = "set";
+    ObjectPreviewSubtype2["Weakmap"] = "weakmap";
+    ObjectPreviewSubtype2["Weakset"] = "weakset";
+    ObjectPreviewSubtype2["Iterator"] = "iterator";
+    ObjectPreviewSubtype2["Generator"] = "generator";
+    ObjectPreviewSubtype2["Error"] = "error";
+    ObjectPreviewSubtype2["Proxy"] = "proxy";
+    ObjectPreviewSubtype2["Promise"] = "promise";
+    ObjectPreviewSubtype2["Typedarray"] = "typedarray";
+    ObjectPreviewSubtype2["Arraybuffer"] = "arraybuffer";
+    ObjectPreviewSubtype2["Dataview"] = "dataview";
+    ObjectPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
+    ObjectPreviewSubtype2["Wasmvalue"] = "wasmvalue";
+    ObjectPreviewSubtype2["Trustedtype"] = "trustedtype";
+  })(ObjectPreviewSubtype = Runtime10.ObjectPreviewSubtype || (Runtime10.ObjectPreviewSubtype = {}));
+  let PropertyPreviewType;
+  ((PropertyPreviewType2) => {
+    PropertyPreviewType2["Object"] = "object";
+    PropertyPreviewType2["Function"] = "function";
+    PropertyPreviewType2["Undefined"] = "undefined";
+    PropertyPreviewType2["String"] = "string";
+    PropertyPreviewType2["Number"] = "number";
+    PropertyPreviewType2["Boolean"] = "boolean";
+    PropertyPreviewType2["Symbol"] = "symbol";
+    PropertyPreviewType2["Accessor"] = "accessor";
+    PropertyPreviewType2["Bigint"] = "bigint";
+  })(PropertyPreviewType = Runtime10.PropertyPreviewType || (Runtime10.PropertyPreviewType = {}));
+  let PropertyPreviewSubtype;
+  ((PropertyPreviewSubtype2) => {
+    PropertyPreviewSubtype2["Array"] = "array";
+    PropertyPreviewSubtype2["Null"] = "null";
+    PropertyPreviewSubtype2["Node"] = "node";
+    PropertyPreviewSubtype2["Regexp"] = "regexp";
+    PropertyPreviewSubtype2["Date"] = "date";
+    PropertyPreviewSubtype2["Map"] = "map";
+    PropertyPreviewSubtype2["Set"] = "set";
+    PropertyPreviewSubtype2["Weakmap"] = "weakmap";
+    PropertyPreviewSubtype2["Weakset"] = "weakset";
+    PropertyPreviewSubtype2["Iterator"] = "iterator";
+    PropertyPreviewSubtype2["Generator"] = "generator";
+    PropertyPreviewSubtype2["Error"] = "error";
+    PropertyPreviewSubtype2["Proxy"] = "proxy";
+    PropertyPreviewSubtype2["Promise"] = "promise";
+    PropertyPreviewSubtype2["Typedarray"] = "typedarray";
+    PropertyPreviewSubtype2["Arraybuffer"] = "arraybuffer";
+    PropertyPreviewSubtype2["Dataview"] = "dataview";
+    PropertyPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
+    PropertyPreviewSubtype2["Wasmvalue"] = "wasmvalue";
+    PropertyPreviewSubtype2["Trustedtype"] = "trustedtype";
+  })(PropertyPreviewSubtype = Runtime10.PropertyPreviewSubtype || (Runtime10.PropertyPreviewSubtype = {}));
+  let ConsoleAPICalledEventType;
+  ((ConsoleAPICalledEventType2) => {
+    ConsoleAPICalledEventType2["Log"] = "log";
+    ConsoleAPICalledEventType2["Debug"] = "debug";
+    ConsoleAPICalledEventType2["Info"] = "info";
+    ConsoleAPICalledEventType2["Error"] = "error";
+    ConsoleAPICalledEventType2["Warning"] = "warning";
+    ConsoleAPICalledEventType2["Dir"] = "dir";
+    ConsoleAPICalledEventType2["DirXML"] = "dirxml";
+    ConsoleAPICalledEventType2["Table"] = "table";
+    ConsoleAPICalledEventType2["Trace"] = "trace";
+    ConsoleAPICalledEventType2["Clear"] = "clear";
+    ConsoleAPICalledEventType2["StartGroup"] = "startGroup";
+    ConsoleAPICalledEventType2["StartGroupCollapsed"] = "startGroupCollapsed";
+    ConsoleAPICalledEventType2["EndGroup"] = "endGroup";
+    ConsoleAPICalledEventType2["Assert"] = "assert";
+    ConsoleAPICalledEventType2["Profile"] = "profile";
+    ConsoleAPICalledEventType2["ProfileEnd"] = "profileEnd";
+    ConsoleAPICalledEventType2["Count"] = "count";
+    ConsoleAPICalledEventType2["TimeEnd"] = "timeEnd";
+  })(ConsoleAPICalledEventType = Runtime10.ConsoleAPICalledEventType || (Runtime10.ConsoleAPICalledEventType = {}));
+})(Runtime || (Runtime = {}));
+
+// ../../front_end/generated/SupportedCSSProperties.ts
 var generatedProperties = [
   {
     "longhands": [
@@ -9851,8 +12653,8 @@ var generatedAliasesFor = /* @__PURE__ */ new Map([
   ]
 ]);
 
-// gen/front_end/core/sdk/CSSMetadata.js
-import * as Common2 from "./../common/common.js";
+// ../../front_end/core/sdk/CSSMetadata.ts
+import * as Common2 from "../common/common.js";
 var CSSMetadata = class _CSSMetadata {
   #values = [];
   #longhands = /* @__PURE__ */ new Map();
@@ -10132,7 +12934,7 @@ var CSSMetadata = class _CSSMetadata {
     return { text, startColumn, endColumn };
   }
   isHighlightPseudoType(pseudoType) {
-    return pseudoType === "highlight" || pseudoType === "selection" || pseudoType === "target-text" || pseudoType === "grammar-error" || pseudoType === "spelling-error";
+    return pseudoType === DOM.PseudoType.Highlight || pseudoType === DOM.PseudoType.Selection || pseudoType === DOM.PseudoType.TargetText || pseudoType === DOM.PseudoType.GrammarError || pseudoType === DOM.PseudoType.SpellingError;
   }
 };
 var CubicBezierKeywordValues = /* @__PURE__ */ new Map([
@@ -10142,20 +12944,37 @@ var CubicBezierKeywordValues = /* @__PURE__ */ new Map([
   ["ease-in-out", "cubic-bezier(0.42, 0, 0.58, 1)"],
   ["ease-out", "cubic-bezier(0, 0, 0.58, 1)"]
 ]);
+var CSSWideKeyword = /* @__PURE__ */ ((CSSWideKeyword2) => {
+  CSSWideKeyword2["INHERIT"] = "inherit";
+  CSSWideKeyword2["INITIAL"] = "initial";
+  CSSWideKeyword2["REVERT"] = "revert";
+  CSSWideKeyword2["REVERT_LAYER"] = "revert-layer";
+  CSSWideKeyword2["REVERT_RULE"] = "revert-rule";
+  CSSWideKeyword2["UNSET"] = "unset";
+  return CSSWideKeyword2;
+})(CSSWideKeyword || {});
 var CSSWideKeywords = [
-  "inherit",
-  "initial",
-  "revert",
-  "revert-layer",
-  "revert-rule",
-  "unset"
+  "inherit" /* INHERIT */,
+  "initial" /* INITIAL */,
+  "revert" /* REVERT */,
+  "revert-layer" /* REVERT_LAYER */,
+  "revert-rule" /* REVERT_RULE */,
+  "unset" /* UNSET */
 ];
+var PositionTryOrderKeyword = /* @__PURE__ */ ((PositionTryOrderKeyword2) => {
+  PositionTryOrderKeyword2["NORMAL"] = "normal";
+  PositionTryOrderKeyword2["MOST_HEIGHT"] = "most-height";
+  PositionTryOrderKeyword2["MOST_WIDTH"] = "most-width";
+  PositionTryOrderKeyword2["MOST_BLOCK_SIZE"] = "most-block-size";
+  PositionTryOrderKeyword2["MOST_INLINE_SIZE"] = "most-inline-size";
+  return PositionTryOrderKeyword2;
+})(PositionTryOrderKeyword || {});
 var PositionTryOrderKeywords = [
-  "normal",
-  "most-height",
-  "most-width",
-  "most-block-size",
-  "most-inline-size"
+  "normal" /* NORMAL */,
+  "most-height" /* MOST_HEIGHT */,
+  "most-width" /* MOST_WIDTH */,
+  "most-block-size" /* MOST_BLOCK_SIZE */,
+  "most-inline-size" /* MOST_INLINE_SIZE */
 ];
 var VariableNameRegex = /(\s*--.*?)/gs;
 var VariableRegex = /(var\(\s*--.*?\))/gs;
@@ -11617,13 +14436,14 @@ var Weight = /* @__PURE__ */ new Map([
 ]);
 var CommonKeywords = ["auto", "none"];
 
-// gen/front_end/core/sdk/NetworkRequest.js
+// ../../front_end/core/sdk/NetworkRequest.ts
 var NetworkRequest_exports = {};
 __export(NetworkRequest_exports, {
   DirectSocketChunkType: () => DirectSocketChunkType,
   DirectSocketStatus: () => DirectSocketStatus,
   DirectSocketType: () => DirectSocketType,
-  Events: () => Events10,
+  Events: () => Events19,
+  InitiatorType: () => InitiatorType,
   NetworkRequest: () => NetworkRequest,
   WebSocketFrameType: () => WebSocketFrameType,
   cookieBlockedReasonToAttribute: () => cookieBlockedReasonToAttribute,
@@ -11632,24 +14452,17 @@ __export(NetworkRequest_exports, {
   setCookieBlockedReasonToAttribute: () => setCookieBlockedReasonToAttribute,
   setCookieBlockedReasonToUiString: () => setCookieBlockedReasonToUiString
 });
-import * as Common29 from "./../common/common.js";
-import * as i18n25 from "./../i18n/i18n.js";
-import * as Platform18 from "./../platform/platform.js";
-import * as TextUtils24 from "./../text_utils/text_utils.js";
+import * as Common29 from "../common/common.js";
+import * as i18n25 from "../i18n/i18n.js";
+import * as Platform18 from "../platform/platform.js";
+import * as TextUtils24 from "../text_utils/text_utils.js";
 
-// gen/front_end/core/sdk/CookieModel.js
-var CookieModel_exports = {};
-__export(CookieModel_exports, {
-  CookieModel: () => CookieModel
-});
-import * as Common27 from "./../common/common.js";
-import * as Platform17 from "./../platform/platform.js";
-import * as Root9 from "./../root/root.js";
-
-// gen/front_end/core/sdk/Cookie.js
+// ../../front_end/core/sdk/Cookie.ts
 var Cookie_exports = {};
 __export(Cookie_exports, {
-  Cookie: () => Cookie
+  Attribute: () => Attribute,
+  Cookie: () => Cookie,
+  Type: () => Type
 });
 var OPAQUE_PARTITION_KEY = "<opaque>";
 var Cookie = class _Cookie {
@@ -11670,39 +14483,36 @@ var Cookie = class _Cookie {
   }
   static fromProtocolCookie(protocolCookie) {
     const cookie = new _Cookie(protocolCookie.name, protocolCookie.value, null, protocolCookie.priority);
-    cookie.addAttribute("domain", protocolCookie["domain"]);
-    cookie.addAttribute("path", protocolCookie["path"]);
+    cookie.addAttribute("domain" /* DOMAIN */, protocolCookie["domain"]);
+    cookie.addAttribute("path" /* PATH */, protocolCookie["path"]);
     if (protocolCookie["expires"]) {
-      cookie.addAttribute("expires", protocolCookie["expires"] * 1e3);
+      cookie.addAttribute("expires" /* EXPIRES */, protocolCookie["expires"] * 1e3);
     }
     if (protocolCookie["httpOnly"]) {
-      cookie.addAttribute(
-        "http-only"
-        /* Attribute.HTTP_ONLY */
-      );
+      cookie.addAttribute("http-only" /* HTTP_ONLY */);
     }
     if (protocolCookie["secure"]) {
-      cookie.addAttribute(
-        "secure"
-        /* Attribute.SECURE */
-      );
+      cookie.addAttribute("secure" /* SECURE */);
     }
     if (protocolCookie["sameSite"]) {
-      cookie.addAttribute("same-site", protocolCookie["sameSite"]);
+      cookie.addAttribute("same-site" /* SAME_SITE */, protocolCookie["sameSite"]);
     }
     if ("sourcePort" in protocolCookie) {
-      cookie.addAttribute("source-port", protocolCookie.sourcePort);
+      cookie.addAttribute("source-port" /* SOURCE_PORT */, protocolCookie.sourcePort);
     }
     if ("sourceScheme" in protocolCookie) {
-      cookie.addAttribute("source-scheme", protocolCookie.sourceScheme);
+      cookie.addAttribute("source-scheme" /* SOURCE_SCHEME */, protocolCookie.sourceScheme);
     }
     if ("partitionKey" in protocolCookie) {
       if (protocolCookie.partitionKey) {
-        cookie.setPartitionKey(protocolCookie.partitionKey.topLevelSite, protocolCookie.partitionKey.hasCrossSiteAncestor);
+        cookie.setPartitionKey(
+          protocolCookie.partitionKey.topLevelSite,
+          protocolCookie.partitionKey.hasCrossSiteAncestor
+        );
       }
     }
     if ("partitionKeyOpaque" in protocolCookie && protocolCookie.partitionKeyOpaque) {
-      cookie.addAttribute("partition-key", OPAQUE_PARTITION_KEY);
+      cookie.addAttribute("partition-key" /* PARTITION_KEY */, OPAQUE_PARTITION_KEY);
     }
     cookie.setSize(protocolCookie["size"]);
     return cookie;
@@ -11720,42 +14530,24 @@ var Cookie = class _Cookie {
     return this.#type;
   }
   httpOnly() {
-    return this.#attributes.has(
-      "http-only"
-      /* Attribute.HTTP_ONLY */
-    );
+    return this.#attributes.has("http-only" /* HTTP_ONLY */);
   }
   secure() {
-    return this.#attributes.has(
-      "secure"
-      /* Attribute.SECURE */
-    );
+    return this.#attributes.has("secure" /* SECURE */);
   }
   partitioned() {
-    return this.#attributes.has(
-      "partitioned"
-      /* Attribute.PARTITIONED */
-    ) || Boolean(this.partitionKey()) || this.partitionKeyOpaque();
+    return this.#attributes.has("partitioned" /* PARTITIONED */) || Boolean(this.partitionKey()) || this.partitionKeyOpaque();
   }
   sameSite() {
-    return this.#attributes.get(
-      "same-site"
-      /* Attribute.SAME_SITE */
-    );
+    return this.#attributes.get("same-site" /* SAME_SITE */);
   }
   partitionKey() {
     return this.#partitionKey;
   }
   setPartitionKey(topLevelSite, hasCrossSiteAncestor) {
     this.#partitionKey = { topLevelSite, hasCrossSiteAncestor };
-    if (!this.#attributes.has(
-      "partitioned"
-      /* Attribute.PARTITIONED */
-    )) {
-      this.addAttribute(
-        "partitioned"
-        /* Attribute.PARTITIONED */
-      );
+    if (!this.#attributes.has("partitioned" /* PARTITIONED */)) {
+      this.addAttribute("partitioned" /* PARTITIONED */);
     }
   }
   topLevelSite() {
@@ -11786,56 +14578,32 @@ var Cookie = class _Cookie {
     return this.topLevelSite() === OPAQUE_PARTITION_KEY;
   }
   setPartitionKeyOpaque() {
-    this.addAttribute("partition-key", OPAQUE_PARTITION_KEY);
+    this.addAttribute("partition-key" /* PARTITION_KEY */, OPAQUE_PARTITION_KEY);
     this.setPartitionKey(OPAQUE_PARTITION_KEY, false);
   }
   priority() {
     return this.#priority;
   }
   session() {
-    return !(this.#attributes.has(
-      "expires"
-      /* Attribute.EXPIRES */
-    ) || this.#attributes.has(
-      "max-age"
-      /* Attribute.MAX_AGE */
-    ));
+    return !(this.#attributes.has("expires" /* EXPIRES */) || this.#attributes.has("max-age" /* MAX_AGE */));
   }
   path() {
-    return this.#attributes.get(
-      "path"
-      /* Attribute.PATH */
-    );
+    return this.#attributes.get("path" /* PATH */);
   }
   domain() {
-    return this.#attributes.get(
-      "domain"
-      /* Attribute.DOMAIN */
-    );
+    return this.#attributes.get("domain" /* DOMAIN */);
   }
   expires() {
-    return this.#attributes.get(
-      "expires"
-      /* Attribute.EXPIRES */
-    );
+    return this.#attributes.get("expires" /* EXPIRES */);
   }
   maxAge() {
-    return this.#attributes.get(
-      "max-age"
-      /* Attribute.MAX_AGE */
-    );
+    return this.#attributes.get("max-age" /* MAX_AGE */);
   }
   sourcePort() {
-    return this.#attributes.get(
-      "source-port"
-      /* Attribute.SOURCE_PORT */
-    );
+    return this.#attributes.get("source-port" /* SOURCE_PORT */);
   }
   sourceScheme() {
-    return this.#attributes.get(
-      "source-scheme"
-      /* Attribute.SOURCE_SCHEME */
-    );
+    return this.#attributes.get("source-scheme" /* SOURCE_SCHEME */);
   }
   size() {
     return this.#size;
@@ -11871,7 +14639,7 @@ var Cookie = class _Cookie {
       return;
     }
     switch (key) {
-      case "priority":
+      case "priority" /* PRIORITY */:
         this.#priority = value;
         break;
       default:
@@ -11907,13 +14675,48 @@ var Cookie = class _Cookie {
     return hostname.length > domain.length && hostname.endsWith(domain);
   }
 };
+var Type = /* @__PURE__ */ ((Type4) => {
+  Type4[Type4["REQUEST"] = 0] = "REQUEST";
+  Type4[Type4["RESPONSE"] = 1] = "RESPONSE";
+  return Type4;
+})(Type || {});
+var Attribute = /* @__PURE__ */ ((Attribute2) => {
+  Attribute2["NAME"] = "name";
+  Attribute2["VALUE"] = "value";
+  Attribute2["SIZE"] = "size";
+  Attribute2["DOMAIN"] = "domain";
+  Attribute2["PATH"] = "path";
+  Attribute2["EXPIRES"] = "expires";
+  Attribute2["MAX_AGE"] = "max-age";
+  Attribute2["HTTP_ONLY"] = "http-only";
+  Attribute2["SECURE"] = "secure";
+  Attribute2["SAME_SITE"] = "same-site";
+  Attribute2["SOURCE_SCHEME"] = "source-scheme";
+  Attribute2["SOURCE_PORT"] = "source-port";
+  Attribute2["PRIORITY"] = "priority";
+  Attribute2["PARTITIONED"] = "partitioned";
+  Attribute2["PARTITION_KEY"] = "partition-key";
+  Attribute2["PARTITION_KEY_SITE"] = "partition-key-site";
+  Attribute2["HAS_CROSS_SITE_ANCESTOR"] = "has-cross-site-ancestor";
+  return Attribute2;
+})(Attribute || {});
 
-// gen/front_end/core/sdk/NetworkManager.js
+// ../../front_end/core/sdk/CookieModel.ts
+var CookieModel_exports = {};
+__export(CookieModel_exports, {
+  CookieModel: () => CookieModel,
+  Events: () => Events20
+});
+import * as Common27 from "../common/common.js";
+import * as Platform17 from "../platform/platform.js";
+import * as Root9 from "../root/root.js";
+
+// ../../front_end/core/sdk/NetworkManager.ts
 var NetworkManager_exports = {};
 __export(NetworkManager_exports, {
   AppliedNetworkConditions: () => AppliedNetworkConditions,
   BlockingConditions: () => BlockingConditions,
-  Events: () => Events9,
+  Events: () => Events17,
   Fast4GConditions: () => Fast4GConditions,
   FetchDispatcher: () => FetchDispatcher,
   InterceptedRequest: () => InterceptedRequest,
@@ -11922,9 +14725,11 @@ __export(NetworkManager_exports, {
   NetworkManager: () => NetworkManager,
   NoThrottlingConditions: () => NoThrottlingConditions,
   OfflineConditions: () => OfflineConditions,
+  PredefinedThrottlingConditionKey: () => PredefinedThrottlingConditionKey,
   RequestCondition: () => RequestCondition,
   RequestConditions: () => RequestConditions,
   RequestURLPattern: () => RequestURLPattern,
+  RequestURLPatternValidity: () => RequestURLPatternValidity,
   Slow3GConditions: () => Slow3GConditions,
   Slow4GConditions: () => Slow4GConditions,
   THROTTLING_CONDITIONS_LOOKUP: () => THROTTLING_CONDITIONS_LOOKUP,
@@ -11936,45 +14741,47 @@ __export(NetworkManager_exports, {
   keyIsCustomUser: () => keyIsCustomUser,
   networkConditionsEqual: () => networkConditionsEqual
 });
-import * as Common26 from "./../common/common.js";
-import * as Host7 from "./../host/host.js";
-import * as i18n19 from "./../i18n/i18n.js";
-import * as Platform16 from "./../platform/platform.js";
-import * as Root8 from "./../root/root.js";
-import * as TextUtils21 from "./../text_utils/text_utils.js";
+import * as Common26 from "../common/common.js";
+import * as Host7 from "../host/host.js";
+import * as i18n19 from "../i18n/i18n.js";
+import * as Platform16 from "../platform/platform.js";
+import * as Root8 from "../root/root.js";
+import * as TextUtils21 from "../text_utils/text_utils.js";
 
-// gen/front_end/core/sdk/RuntimeModel.js
+// ../../front_end/core/sdk/RuntimeModel.ts
 var RuntimeModel_exports = {};
 __export(RuntimeModel_exports, {
-  Events: () => Events3,
+  Events: () => Events5,
   ExecutionContext: () => ExecutionContext,
   RuntimeModel: () => RuntimeModel
 });
-import * as Common25 from "./../common/common.js";
-import * as Host6 from "./../host/host.js";
+import * as Common25 from "../common/common.js";
+import * as Host6 from "../host/host.js";
 
-// gen/front_end/core/sdk/DebuggerModel.js
+// ../../front_end/core/sdk/DebuggerModel.ts
 var DebuggerModel_exports = {};
 __export(DebuggerModel_exports, {
   BreakLocation: () => BreakLocation,
+  BreakpointType: () => BreakpointType,
   COND_BREAKPOINT_SOURCE_URL: () => COND_BREAKPOINT_SOURCE_URL,
   CallFrame: () => CallFrame,
   DebuggerModel: () => DebuggerModel,
   DebuggerPausedDetails: () => DebuggerPausedDetails,
-  Events: () => Events,
+  Events: () => Events3,
   LOGPOINT_SOURCE_URL: () => LOGPOINT_SOURCE_URL,
   Location: () => Location,
   PauseOnExceptionsState: () => PauseOnExceptionsState,
   Scope: () => Scope,
+  StepMode: () => StepMode,
   WASM_SYMBOLS_PRIORITY: () => WASM_SYMBOLS_PRIORITY,
   skipAllPausesSettingDescriptor: () => skipAllPausesSettingDescriptor,
   sortAndMergeRanges: () => sortAndMergeRanges
 });
-import * as Common24 from "./../common/common.js";
-import * as i18n17 from "./../i18n/i18n.js";
-import * as Root7 from "./../root/root.js";
+import * as Common24 from "../common/common.js";
+import * as i18n17 from "../i18n/i18n.js";
+import * as Root7 from "../root/root.js";
 
-// gen/front_end/core/sdk/RemoteObject.js
+// ../../front_end/core/sdk/RemoteObject.ts
 var RemoteObject_exports = {};
 __export(RemoteObject_exports, {
   LinearMemoryInspectable: () => LinearMemoryInspectable,
@@ -12008,9 +14815,9 @@ var RemoteObject = class _RemoteObject {
       return true;
     }
     switch (remoteObject.type) {
-      case "object":
-        return remoteObject.subtype === "null";
-      case "undefined":
+      case Runtime.RemoteObjectType.Object:
+        return remoteObject.subtype === Runtime.RemoteObjectSubtype.Null;
+      case Runtime.RemoteObjectType.Undefined:
         return true;
       default:
         return false;
@@ -12042,9 +14849,9 @@ var RemoteObject = class _RemoteObject {
     if (typeof object === "number") {
       const description = String(object);
       if (object === 0 && 1 / object < 0) {
-        return "-0";
+        return "-0" /* NEGATIVE_ZERO */;
       }
-      if (description === "NaN" || description === "Infinity" || description === "-Infinity") {
+      if (description === "NaN" /* NAN */ || description === "Infinity" /* INFINITY */ || description === "-Infinity" /* NEGATIVE_INFINITY */) {
         return description;
       }
     }
@@ -12207,7 +15014,7 @@ var RemoteObjectImpl = class extends RemoteObject {
       this.#hasChildren = false;
       if (typeof unserializableValue === "string") {
         this.#unserializableValue = unserializableValue;
-        if (unserializableValue === "Infinity" || unserializableValue === "-Infinity" || unserializableValue === "-0" || unserializableValue === "NaN") {
+        if (unserializableValue === "Infinity" /* INFINITY */ || unserializableValue === "-Infinity" /* NEGATIVE_INFINITY */ || unserializableValue === "-0" /* NEGATIVE_ZERO */ || unserializableValue === "NaN" /* NAN */) {
           this.#value = Number(unserializableValue);
         } else if (type === "bigint" && unserializableValue.endsWith("n")) {
           this.#value = BigInt(unserializableValue.substring(0, unserializableValue.length - 1));
@@ -12286,7 +15093,15 @@ var RemoteObjectImpl = class extends RemoteObject {
     for (const property of properties) {
       const propertyValue = property.value ? await this.createRemoteObject(property.value) : null;
       const propertySymbol = property.symbol ? this.#runtimeModel.createRemoteObject(property.symbol) : null;
-      const remoteProperty = new RemoteObjectProperty(property.name, propertyValue, Boolean(property.enumerable), Boolean(property.writable), Boolean(property.isOwn), Boolean(property.wasThrown), propertySymbol);
+      const remoteProperty = new RemoteObjectProperty(
+        property.name,
+        propertyValue,
+        Boolean(property.enumerable),
+        Boolean(property.writable),
+        Boolean(property.isOwn),
+        Boolean(property.wasThrown),
+        propertySymbol
+      );
       if (typeof property.value === "undefined") {
         if (property.get && property.get.type !== "undefined") {
           remoteProperty.getter = this.#runtimeModel.createRemoteObject(property.get);
@@ -12299,7 +15114,18 @@ var RemoteObjectImpl = class extends RemoteObject {
     }
     for (const property of privateProperties) {
       const propertyValue = property.value ? this.#runtimeModel.createRemoteObject(property.value) : null;
-      const remoteProperty = new RemoteObjectProperty(property.name, propertyValue, true, true, true, false, void 0, false, void 0, true);
+      const remoteProperty = new RemoteObjectProperty(
+        property.name,
+        propertyValue,
+        true,
+        true,
+        true,
+        false,
+        void 0,
+        false,
+        void 0,
+        true
+      );
       if (typeof property.value === "undefined") {
         if (property.get && property.get.type !== "undefined") {
           remoteProperty.getter = this.#runtimeModel.createRemoteObject(property.get);
@@ -12316,7 +15142,9 @@ var RemoteObjectImpl = class extends RemoteObject {
         continue;
       }
       const propertyValue = this.#runtimeModel.createRemoteObject(property.value);
-      internalPropertiesResult.push(new RemoteObjectProperty(property.name, propertyValue, true, false, void 0, void 0, void 0, true));
+      internalPropertiesResult.push(
+        new RemoteObjectProperty(property.name, propertyValue, true, false, void 0, void 0, void 0, true)
+      );
     }
     return { properties: result, internalProperties: internalPropertiesResult };
   }
@@ -12452,7 +15280,12 @@ var ScopeRemoteObject = class extends RemoteObjectImpl {
   }
   async doSetObjectPropertyValue(result, argumentName) {
     const name = argumentName.value;
-    const error = await this.debuggerModel().setVariableValue(this.#scopeRef.number, name, RemoteObject.toCallArgument(result), this.#scopeRef.callFrameId);
+    const error = await this.debuggerModel().setVariableValue(
+      this.#scopeRef.number,
+      name,
+      RemoteObject.toCallArgument(result),
+      this.#scopeRef.callFrameId
+    );
     if (error) {
       return error;
     }
@@ -12532,7 +15365,18 @@ var RemoteObjectProperty = class _RemoteObjectProperty {
     return true;
   }
   cloneWithNewName(newName) {
-    const property = new _RemoteObjectProperty(newName, this.value ?? null, this.enumerable, this.writable, this.isOwn, this.wasThrown, this.symbol, this.synthetic, this.syntheticSetter, this.private);
+    const property = new _RemoteObjectProperty(
+      newName,
+      this.value ?? null,
+      this.enumerable,
+      this.writable,
+      this.isOwn,
+      this.wasThrown,
+      this.symbol,
+      this.synthetic,
+      this.syntheticSetter,
+      this.private
+    );
     property.getter = this.getter;
     property.setter = this.setter;
     return property;
@@ -12664,7 +15508,10 @@ var LocalJSONObject = class extends RemoteObject {
     }
     if (!this.#cachedChildren) {
       this.#cachedChildren = Object.entries(this.#value).map(([name, value]) => {
-        return new RemoteObjectProperty(name, value instanceof RemoteObject ? value : RemoteObject.fromLocalObject(value));
+        return new RemoteObjectProperty(
+          name,
+          value instanceof RemoteObject ? value : RemoteObject.fromLocalObject(value)
+        );
       });
     }
     return this.#cachedChildren;
@@ -12869,19 +15716,20 @@ var LinearMemoryInspectable = class {
   }
 };
 
-// gen/front_end/core/sdk/ResourceTreeModel.js
+// ../../front_end/core/sdk/ResourceTreeModel.ts
 var ResourceTreeModel_exports = {};
 __export(ResourceTreeModel_exports, {
-  Events: () => Events2,
+  Events: () => Events4,
   PageDispatcher: () => PageDispatcher,
+  PrimaryPageChangeType: () => PrimaryPageChangeType,
   ResourceTreeFrame: () => ResourceTreeFrame,
   ResourceTreeModel: () => ResourceTreeModel
 });
-import * as Common22 from "./../common/common.js";
-import * as i18n13 from "./../i18n/i18n.js";
-import * as Platform14 from "./../platform/platform.js";
+import * as Common22 from "../common/common.js";
+import * as i18n13 from "../i18n/i18n.js";
+import * as Platform14 from "../platform/platform.js";
 
-// gen/front_end/core/sdk/DOMModel.js
+// ../../front_end/core/sdk/DOMModel.ts
 var DOMModel_exports = {};
 __export(DOMModel_exports, {
   ARIA_ATTRIBUTES: () => ARIA_ATTRIBUTES,
@@ -12895,525 +15743,58 @@ __export(DOMModel_exports, {
   DOMNodeShortcut: () => DOMNodeShortcut,
   DOMNodeSnapshot: () => DOMNodeSnapshot,
   DeferredDOMNode: () => DeferredDOMNode,
-  Events: () => Events7,
+  Events: () => Events13,
+  NodeType: () => NodeType,
   cssEscape: () => cssEscape
 });
-import * as Common19 from "./../common/common.js";
-import * as Platform12 from "./../platform/platform.js";
-import * as Root6 from "./../root/root.js";
+import * as Common19 from "../common/common.js";
+import * as Platform12 from "../platform/platform.js";
+import * as Root6 from "../root/root.js";
 
-// gen/front_end/core/sdk/ConsoleModel.js
+// ../../front_end/core/sdk/ConsoleModel.ts
 var ConsoleModel_exports = {};
 __export(ConsoleModel_exports, {
   ConsoleMessage: () => ConsoleMessage,
   ConsoleModel: () => ConsoleModel,
-  Events: () => Events4,
+  Events: () => Events6,
   FrontendMessageType: () => FrontendMessageType,
   MessageSourceDisplayName: () => MessageSourceDisplayName
 });
-import * as Common5 from "./../common/common.js";
-import * as Host2 from "./../host/host.js";
-import * as i18n3 from "./../i18n/i18n.js";
-import * as Platform2 from "./../platform/platform.js";
+import * as Common5 from "../common/common.js";
+import * as Host2 from "../host/host.js";
+import * as i18n3 from "../i18n/i18n.js";
+import * as Platform2 from "../platform/platform.js";
 
-// gen/front_end/core/sdk/ConsoleModelTypes.js
-var FrontendMessageType;
-(function(FrontendMessageType2) {
+// ../../front_end/core/sdk/ConsoleModelTypes.ts
+var FrontendMessageType = /* @__PURE__ */ ((FrontendMessageType2) => {
   FrontendMessageType2["Result"] = "result";
   FrontendMessageType2["Command"] = "command";
   FrontendMessageType2["System"] = "system";
   FrontendMessageType2["QueryObjectResult"] = "queryObjectResult";
-})(FrontendMessageType || (FrontendMessageType = {}));
+  return FrontendMessageType2;
+})(FrontendMessageType || {});
 
-// gen/front_end/core/sdk/CPUProfilerModel.js
+// ../../front_end/core/sdk/CPUProfilerModel.ts
 var CPUProfilerModel_exports = {};
 __export(CPUProfilerModel_exports, {
   CPUProfilerModel: () => CPUProfilerModel,
+  Events: () => Events,
   ProfileFinishedData: () => ProfileFinishedData
 });
-import * as i18n from "./../i18n/i18n.js";
-var UIStrings = {
-  /**
-   * @description Name of a profile. Placeholder is either a user-supplied name or a number automatically assigned to the profile.
-   * @example {2} PH1
-   */
-  profileD: "Profile {PH1}"
-};
-var str_ = i18n.i18n.registerUIStrings("core/sdk/CPUProfilerModel.ts", UIStrings);
-var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var CPUProfilerModel = class extends SDKModel {
-  #nextAnonymousConsoleProfileNumber;
-  #anonymousConsoleProfileIdToTitle;
-  #profilerAgent;
-  #preciseCoverageDeltaUpdateCallback;
-  #debuggerModel;
-  constructor(target) {
-    super(target);
-    this.#nextAnonymousConsoleProfileNumber = 1;
-    this.#anonymousConsoleProfileIdToTitle = /* @__PURE__ */ new Map();
-    this.#profilerAgent = target.profilerAgent();
-    this.#preciseCoverageDeltaUpdateCallback = null;
-    target.registerProfilerDispatcher(this);
-    void this.#profilerAgent.invoke_enable();
-    this.#debuggerModel = target.model(DebuggerModel);
-  }
-  runtimeModel() {
-    return this.#debuggerModel.runtimeModel();
-  }
-  debuggerModel() {
-    return this.#debuggerModel;
-  }
-  consoleProfileStarted({ id, location, title }) {
-    if (!title) {
-      title = i18nString(UIStrings.profileD, { PH1: this.#nextAnonymousConsoleProfileNumber++ });
-      this.#anonymousConsoleProfileIdToTitle.set(id, title);
-    }
-    const eventData = this.createEventDataFrom(id, location, title);
-    this.dispatchEventToListeners("ConsoleProfileStarted", eventData);
-  }
-  consoleProfileFinished({ id, location, profile, title }) {
-    if (!title) {
-      title = this.#anonymousConsoleProfileIdToTitle.get(id);
-      this.#anonymousConsoleProfileIdToTitle.delete(id);
-    }
-    const eventData = new ProfileFinishedData(this.createEventDataFrom(id, location, title), profile);
-    this.dispatchEventToListeners("ConsoleProfileFinished", eventData);
-  }
-  createEventDataFrom(id, scriptLocation, title) {
-    const debuggerLocation = Location.fromPayload(this.#debuggerModel, scriptLocation);
-    const globalId = this.target().id() + "." + id;
-    return {
-      id: globalId,
-      scriptLocation: debuggerLocation,
-      title: title || "",
-      cpuProfilerModel: this
-    };
-  }
-  startRecording() {
-    const intervalUs = 100;
-    void this.#profilerAgent.invoke_setSamplingInterval({ interval: intervalUs });
-    return this.#profilerAgent.invoke_start();
-  }
-  stopRecording() {
-    return this.#profilerAgent.invoke_stop().then((response) => response.profile || null);
-  }
-  startPreciseCoverage(jsCoveragePerBlock, preciseCoverageDeltaUpdateCallback) {
-    const callCount = false;
-    this.#preciseCoverageDeltaUpdateCallback = preciseCoverageDeltaUpdateCallback;
-    const allowUpdatesTriggeredByBackend = true;
-    return this.#profilerAgent.invoke_startPreciseCoverage({ callCount, detailed: jsCoveragePerBlock, allowTriggeredUpdates: allowUpdatesTriggeredByBackend });
-  }
-  async takePreciseCoverage() {
-    const r = await this.#profilerAgent.invoke_takePreciseCoverage();
-    const timestamp = r?.timestamp || 0;
-    const coverage = r?.result || [];
-    return { timestamp, coverage };
-  }
-  stopPreciseCoverage() {
-    this.#preciseCoverageDeltaUpdateCallback = null;
-    return this.#profilerAgent.invoke_stopPreciseCoverage();
-  }
-  preciseCoverageDeltaUpdate({ timestamp, result }) {
-    if (this.#preciseCoverageDeltaUpdateCallback) {
-      void this.#preciseCoverageDeltaUpdateCallback(timestamp, result);
-    }
-  }
-};
-SDKModel.register(CPUProfilerModel, { capabilities: 4, autostart: true });
-var ProfileFinishedData = class {
-  id;
-  scriptLocation;
-  title;
-  cpuProfilerModel;
-  cpuProfile;
-  constructor(eventData, cpuProfile) {
-    this.id = eventData.id;
-    this.scriptLocation = eventData.scriptLocation;
-    this.title = eventData.title;
-    this.cpuProfilerModel = eventData.cpuProfilerModel;
-    this.cpuProfile = cpuProfile;
-  }
-};
+import * as i18n from "../i18n/i18n.js";
 
-// gen/front_end/core/sdk/LogModel.js
-var LogModel_exports = {};
-__export(LogModel_exports, {
-  LogModel: () => LogModel
-});
-import * as Host from "./../host/host.js";
-var LogModel = class extends SDKModel {
-  #logAgent;
-  constructor(target) {
-    super(target);
-    target.registerLogDispatcher(this);
-    this.#logAgent = target.logAgent();
-    void this.#logAgent.invoke_enable();
-    if (!Host.InspectorFrontendHost.isUnderTest()) {
-      void this.#logAgent.invoke_startViolationsReport({
-        config: [
-          { name: "longTask", threshold: 200 },
-          { name: "longLayout", threshold: 30 },
-          { name: "blockedEvent", threshold: 100 },
-          { name: "blockedParser", threshold: -1 },
-          { name: "handler", threshold: 150 },
-          { name: "recurringHandler", threshold: 50 },
-          { name: "discouragedAPIUse", threshold: -1 }
-        ]
-      });
-    }
-  }
-  entryAdded({ entry }) {
-    this.dispatchEventToListeners("EntryAdded", { logModel: this, entry });
-  }
-  requestClear() {
-    void this.#logAgent.invoke_clear();
-  }
-};
-SDKModel.register(LogModel, { capabilities: 8, autostart: true });
-
-// gen/front_end/core/sdk/SDKSettings.js
-var SDKSettings_exports = {};
-__export(SDKSettings_exports, {
-  apcaSettingDescriptor: () => apcaSettingDescriptor,
-  avifFormatDisabledSettingDescriptor: () => avifFormatDisabledSettingDescriptor,
-  breakpointsActiveSettingDescriptor: () => breakpointsActiveSettingDescriptor,
-  cacheDisabledSettingDescriptor: () => cacheDisabledSettingDescriptor,
-  consoleUserActivationEvalSettingDescriptor: () => consoleUserActivationEvalSettingDescriptor,
-  cpuPressureSettingDescriptor: () => cpuPressureSettingDescriptor,
-  cssSourceMapsEnabledSettingDescriptor: () => cssSourceMapsEnabledSettingDescriptor,
-  customFormattersSettingDescriptor: () => customFormattersSettingDescriptor,
-  disableAsyncStackTracesSettingDescriptor: () => disableAsyncStackTracesSettingDescriptor,
-  disablePausedStateOverlaySettingDescriptor: () => disablePausedStateOverlaySettingDescriptor,
-  emulateAutoDarkModeSettingDescriptor: () => emulateAutoDarkModeSettingDescriptor,
-  emulatePageFocusSettingDescriptor: () => emulatePageFocusSettingDescriptor,
-  emulatedCSSMediaFeatureColorGamutSettingDescriptor: () => emulatedCSSMediaFeatureColorGamutSettingDescriptor,
-  emulatedCSSMediaFeatureForcedColorsSettingDescriptor: () => emulatedCSSMediaFeatureForcedColorsSettingDescriptor,
-  emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor: () => emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor,
-  emulatedCSSMediaFeaturePrefersContrastSettingDescriptor: () => emulatedCSSMediaFeaturePrefersContrastSettingDescriptor,
-  emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor: () => emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor,
-  emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor: () => emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor,
-  emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor: () => emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor,
-  emulatedCSSMediaSettingDescriptor: () => emulatedCSSMediaSettingDescriptor,
-  emulatedOSTextScaleSettingDescriptor: () => emulatedOSTextScaleSettingDescriptor,
-  emulatedVisionDeficiencySettingDescriptor: () => emulatedVisionDeficiencySettingDescriptor,
-  enableRemoteFileLoadingSettingDescriptor: () => enableRemoteFileLoadingSettingDescriptor,
-  extendGridLinesSettingDescriptor: () => extendGridLinesSettingDescriptor,
-  idleDetectionSettingDescriptor: () => idleDetectionSettingDescriptor,
-  javaScriptDisabledSettingDescriptor: () => javaScriptDisabledSettingDescriptor,
-  jpegXlFormatDisabledSettingDescriptor: () => jpegXlFormatDisabledSettingDescriptor,
-  jsSourceMapsEnabledSettingDescriptor: () => jsSourceMapsEnabledSettingDescriptor,
-  localFontsDisabledSettingDescriptor: () => localFontsDisabledSettingDescriptor,
-  monitoringXHREnabledSettingDescriptor: () => monitoringXHREnabledSettingDescriptor,
-  pauseOnCaughtExceptionSettingDescriptor: () => pauseOnCaughtExceptionSettingDescriptor,
-  pauseOnExceptionEnabledSettingDescriptor: () => pauseOnExceptionEnabledSettingDescriptor,
-  pauseOnUncaughtExceptionSettingDescriptor: () => pauseOnUncaughtExceptionSettingDescriptor,
-  preserveConsoleLogSettingDescriptor: () => preserveConsoleLogSettingDescriptor,
-  preserveNetworkLogSettingDescriptor: () => preserveNetworkLogSettingDescriptor,
-  requestBlockingEnabledSettingDescriptor: () => requestBlockingEnabledSettingDescriptor,
-  showAdHighlightsSettingDescriptor: () => showAdHighlightsSettingDescriptor,
-  showDebugBordersSettingDescriptor: () => showDebugBordersSettingDescriptor,
-  showFPSCounterSettingDescriptor: () => showFPSCounterSettingDescriptor,
-  showGridAreasSettingDescriptor: () => showGridAreasSettingDescriptor,
-  showGridLineLabelsSettingDescriptor: () => showGridLineLabelsSettingDescriptor,
-  showGridTrackSizesSettingDescriptor: () => showGridTrackSizesSettingDescriptor,
-  showLayoutShiftRegionsSettingDescriptor: () => showLayoutShiftRegionsSettingDescriptor,
-  showMetricsRulersSettingDescriptor: () => showMetricsRulersSettingDescriptor,
-  showPaintRectsSettingDescriptor: () => showPaintRectsSettingDescriptor,
-  showScrollBottleneckRectsSettingDescriptor: () => showScrollBottleneckRectsSettingDescriptor,
-  touchSettingDescriptor: () => touchSettingDescriptor,
-  webpFormatDisabledSettingDescriptor: () => webpFormatDisabledSettingDescriptor
-});
-import * as Common3 from "./../common/common.js";
-var jsSourceMapsEnabledSettingDescriptor = {
-  name: "js-source-maps-enabled",
-  type: "boolean",
-  defaultValue: true,
-  storageType: "Synced"
-};
-var cssSourceMapsEnabledSettingDescriptor = {
-  name: "css-source-maps-enabled",
-  type: "boolean",
-  defaultValue: true,
-  storageType: "Synced"
-};
-var preserveConsoleLogSettingDescriptor = {
-  name: "preserve-console-log",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Synced"
-};
-var pauseOnExceptionEnabledSettingDescriptor = {
-  name: "pause-on-exception-enabled",
-  type: "boolean",
-  defaultValue: false
-};
-var pauseOnCaughtExceptionSettingDescriptor = {
-  name: "pause-on-caught-exception",
-  type: "boolean",
-  defaultValue: false
-};
-var pauseOnUncaughtExceptionSettingDescriptor = {
-  name: "pause-on-uncaught-exception",
-  type: "boolean",
-  defaultValue: false
-};
-var javaScriptDisabledSettingDescriptor = {
-  name: "java-script-disabled",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Session"
-};
-var disableAsyncStackTracesSettingDescriptor = {
-  name: "disable-async-stack-traces",
-  type: "boolean",
-  defaultValue: false
-};
-var breakpointsActiveSettingDescriptor = {
-  name: "breakpoints-active",
-  type: "boolean",
-  defaultValue: true,
-  storageType: "Session"
-};
-var showMetricsRulersSettingDescriptor = {
-  name: "show-metrics-rulers",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Synced"
-};
-var apcaSettingDescriptor = {
-  name: "apca",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Synced"
-};
-var showGridAreasSettingDescriptor = {
-  name: "show-grid-areas",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Synced"
-};
-var showGridTrackSizesSettingDescriptor = {
-  name: "show-grid-track-sizes",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Synced"
-};
-var extendGridLinesSettingDescriptor = {
-  name: "extend-grid-lines",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Synced"
-};
-var showGridLineLabelsSettingDescriptor = {
-  name: "show-grid-line-labels",
-  type: "enum",
-  defaultValue: "lineNumbers",
-  storageType: "Synced"
-};
-var showPaintRectsSettingDescriptor = {
-  name: "show-paint-rects",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Session"
-};
-var showLayoutShiftRegionsSettingDescriptor = {
-  name: "show-layout-shift-regions",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Session"
-};
-var showAdHighlightsSettingDescriptor = {
-  name: "show-ad-highlights",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Session"
-};
-var showDebugBordersSettingDescriptor = {
-  name: "show-debug-borders",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Session"
-};
-var showFPSCounterSettingDescriptor = {
-  name: "show-fps-counter",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Session"
-};
-var showScrollBottleneckRectsSettingDescriptor = {
-  name: "show-scroll-bottleneck-rects",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Session"
-};
-var emulatePageFocusSettingDescriptor = {
-  name: "emulate-page-focus",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Local"
-};
-var emulatedCSSMediaSettingDescriptor = {
-  name: "emulated-css-media",
-  type: "enum",
-  defaultValue: "",
-  storageType: "Session"
-};
-var cpuPressureSettingDescriptor = {
-  name: "emulation.cpu-pressure",
-  type: "enum",
-  defaultValue: "none"
-};
-var touchSettingDescriptor = {
-  name: "emulation.touch",
-  type: "enum",
-  defaultValue: "none"
-};
-var idleDetectionSettingDescriptor = {
-  name: "emulation.idle-detection",
-  type: "enum",
-  defaultValue: "none"
-};
-var emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor = {
-  name: "emulated-css-media-feature-prefers-color-scheme",
-  type: "enum",
-  defaultValue: "",
-  storageType: "Session"
-};
-var emulatedCSSMediaFeatureForcedColorsSettingDescriptor = {
-  name: "emulated-css-media-feature-forced-colors",
-  type: "enum",
-  defaultValue: "",
-  storageType: "Session"
-};
-var emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor = {
-  name: "emulated-css-media-feature-prefers-reduced-motion",
-  type: "enum",
-  defaultValue: "",
-  storageType: "Session"
-};
-var emulatedCSSMediaFeaturePrefersContrastSettingDescriptor = {
-  name: "emulated-css-media-feature-prefers-contrast",
-  type: "enum",
-  defaultValue: "",
-  storageType: "Session"
-};
-var emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor = {
-  name: "emulated-css-media-feature-prefers-reduced-data",
-  type: "enum",
-  defaultValue: "",
-  storageType: "Session"
-};
-var emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor = {
-  name: "emulated-css-media-feature-prefers-reduced-transparency",
-  type: "enum",
-  defaultValue: "",
-  storageType: "Session"
-};
-var emulatedCSSMediaFeatureColorGamutSettingDescriptor = {
-  name: "emulated-css-media-feature-color-gamut",
-  type: "enum",
-  defaultValue: "",
-  storageType: "Session"
-};
-var emulatedVisionDeficiencySettingDescriptor = {
-  name: "emulated-vision-deficiency",
-  type: "enum",
-  defaultValue: "none",
-  storageType: "Session"
-};
-var emulatedOSTextScaleSettingDescriptor = {
-  name: "emulated-os-text-scale",
-  type: "enum",
-  defaultValue: "",
-  storageType: "Session"
-};
-var localFontsDisabledSettingDescriptor = {
-  name: "local-fonts-disabled",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Session"
-};
-var avifFormatDisabledSettingDescriptor = {
-  name: "avif-format-disabled",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Session"
-};
-var jpegXlFormatDisabledSettingDescriptor = {
-  name: "jpeg-xl-format-disabled",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Session"
-};
-var webpFormatDisabledSettingDescriptor = {
-  name: "webp-format-disabled",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Session"
-};
-var customFormattersSettingDescriptor = {
-  name: "custom-formatters",
-  type: "boolean",
-  defaultValue: false
-};
-var requestBlockingEnabledSettingDescriptor = {
-  name: "request-blocking-enabled",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Local"
-};
-var cacheDisabledSettingDescriptor = {
-  name: "cache-disabled",
-  type: "boolean",
-  defaultValue: false
-};
-var emulateAutoDarkModeSettingDescriptor = {
-  name: "emulate-auto-dark-mode",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Session"
-};
-var enableRemoteFileLoadingSettingDescriptor = {
-  name: "network.enable-remote-file-loading",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Synced"
-};
-var consoleUserActivationEvalSettingDescriptor = {
-  name: "console-user-activation-eval",
-  type: "boolean",
-  defaultValue: true,
-  storageType: "Synced"
-};
-var monitoringXHREnabledSettingDescriptor = {
-  name: "monitoring-xhr-enabled",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Synced"
-};
-var disablePausedStateOverlaySettingDescriptor = {
-  name: "disable-paused-state-overlay",
-  type: "boolean",
-  defaultValue: false,
-  storageType: "Synced"
-};
-var preserveNetworkLogSettingDescriptor = {
-  name: "network-log.preserve-log",
-  type: "boolean",
-  defaultValue: false
-};
-
-// gen/front_end/core/sdk/Target.js
+// ../../front_end/core/sdk/Target.ts
 var Target_exports = {};
 __export(Target_exports, {
-  Target: () => Target,
-  Type: () => Type
+  Capability: () => Capability,
+  Target: () => Target2,
+  Type: () => Type2
 });
-import * as Common4 from "./../common/common.js";
-import * as Platform from "./../platform/platform.js";
-import * as ProtocolClient from "./../protocol_client/protocol_client.js";
-import * as Root from "./../root/root.js";
-var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
+import * as Common3 from "../common/common.js";
+import * as Platform from "../platform/platform.js";
+import * as ProtocolClient from "../protocol_client/protocol_client.js";
+import * as Root from "../root/root.js";
+var Target2 = class extends ProtocolClient.InspectorBackend.TargetBase {
   #targetManager;
   #name;
   #inspectedURL = Platform.DevToolsPath.EmptyUrlString;
@@ -13444,53 +15825,53 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
     this.#name = name;
     this.#capabilitiesMask = 0;
     switch (type) {
-      case Type.FRAME:
-        this.#capabilitiesMask = 1 | 8192 | 2 | 4 | 8 | 16 | 32 | 128 | 256 | 1024 | 2048 | 32768 | 65536 | 131072 | 262144 | 524288 | 1048576;
+      case "frame" /* FRAME */:
+        this.#capabilitiesMask = 1 /* BROWSER */ | 8192 /* STORAGE */ | 2 /* DOM */ | 4 /* JS */ | 8 /* LOG */ | 16 /* NETWORK */ | 32 /* TARGET */ | 128 /* TRACING */ | 256 /* EMULATION */ | 1024 /* INPUT */ | 2048 /* INSPECTOR */ | 32768 /* AUDITS */ | 65536 /* WEB_AUTHN */ | 131072 /* IO */ | 262144 /* MEDIA */ | 524288 /* EVENT_BREAKPOINTS */ | 1048576 /* DOM_STORAGE */;
         if (Root.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
-          this.#capabilitiesMask |= 2097152;
+          this.#capabilitiesMask |= 2097152 /* WEB_MCP */;
         }
-        if (parentTarget?.type() !== Type.FRAME) {
-          this.#capabilitiesMask |= 4096 | 64 | 512 | 16384;
-          if (Common4.ParsedURL.schemeIs(targetInfo?.url, "chrome-extension:")) {
-            this.#capabilitiesMask &= ~512;
+        if (parentTarget?.type() !== "frame" /* FRAME */) {
+          this.#capabilitiesMask |= 4096 /* DEVICE_EMULATION */ | 64 /* SCREEN_CAPTURE */ | 512 /* SECURITY */ | 16384 /* SERVICE_WORKER */;
+          if (Common3.ParsedURL.schemeIs(targetInfo?.url, "chrome-extension:")) {
+            this.#capabilitiesMask &= ~512 /* SECURITY */;
           }
         }
         break;
-      case Type.ServiceWorker:
-        this.#capabilitiesMask = 4 | 8 | 16 | 32 | 2048 | 131072 | 524288;
-        if (parentTarget?.type() !== Type.FRAME) {
-          this.#capabilitiesMask |= 1 | 8192;
+      case "service-worker" /* ServiceWorker */:
+        this.#capabilitiesMask = 4 /* JS */ | 8 /* LOG */ | 16 /* NETWORK */ | 32 /* TARGET */ | 2048 /* INSPECTOR */ | 131072 /* IO */ | 524288 /* EVENT_BREAKPOINTS */;
+        if (parentTarget?.type() !== "frame" /* FRAME */) {
+          this.#capabilitiesMask |= 1 /* BROWSER */ | 8192 /* STORAGE */;
         }
         break;
-      case Type.SHARED_WORKER:
-        this.#capabilitiesMask = 4 | 8 | 16 | 32 | 131072 | 262144 | 2048 | 524288;
-        if (parentTarget?.type() !== Type.FRAME) {
-          this.#capabilitiesMask |= 8192;
+      case "shared-worker" /* SHARED_WORKER */:
+        this.#capabilitiesMask = 4 /* JS */ | 8 /* LOG */ | 16 /* NETWORK */ | 32 /* TARGET */ | 131072 /* IO */ | 262144 /* MEDIA */ | 2048 /* INSPECTOR */ | 524288 /* EVENT_BREAKPOINTS */;
+        if (parentTarget?.type() !== "frame" /* FRAME */) {
+          this.#capabilitiesMask |= 8192 /* STORAGE */;
         }
         break;
-      case Type.Worker:
-        this.#capabilitiesMask = 4 | 8 | 16 | 32 | 131072 | 262144 | 256 | 524288;
-        if (parentTarget?.type() !== Type.FRAME) {
-          this.#capabilitiesMask |= 8192;
+      case "worker" /* Worker */:
+        this.#capabilitiesMask = 4 /* JS */ | 8 /* LOG */ | 16 /* NETWORK */ | 32 /* TARGET */ | 131072 /* IO */ | 262144 /* MEDIA */ | 256 /* EMULATION */ | 524288 /* EVENT_BREAKPOINTS */;
+        if (parentTarget?.type() !== "frame" /* FRAME */) {
+          this.#capabilitiesMask |= 8192 /* STORAGE */;
         }
         break;
-      case Type.WORKLET:
-        this.#capabilitiesMask = 4 | 8 | 524288 | 16;
+      case "worklet" /* WORKLET */:
+        this.#capabilitiesMask = 4 /* JS */ | 8 /* LOG */ | 524288 /* EVENT_BREAKPOINTS */ | 16 /* NETWORK */;
         break;
-      case Type.NODE:
-        this.#capabilitiesMask = 4 | 16 | 32 | 131072 | 1048576;
+      case "node" /* NODE */:
+        this.#capabilitiesMask = 4 /* JS */ | 16 /* NETWORK */ | 32 /* TARGET */ | 131072 /* IO */ | 1048576 /* DOM_STORAGE */;
         break;
-      case Type.AUCTION_WORKLET:
-        this.#capabilitiesMask = 4 | 524288;
+      case "auction-worklet" /* AUCTION_WORKLET */:
+        this.#capabilitiesMask = 4 /* JS */ | 524288 /* EVENT_BREAKPOINTS */;
         break;
-      case Type.BROWSER:
-        this.#capabilitiesMask = 32 | 131072;
+      case "browser" /* BROWSER */:
+        this.#capabilitiesMask = 32 /* TARGET */ | 131072 /* IO */;
         break;
-      case Type.TAB:
-        this.#capabilitiesMask = 32 | 128;
+      case "tab" /* TAB */:
+        this.#capabilitiesMask = 32 /* TARGET */ | 128 /* TRACING */;
         break;
-      case Type.NODE_WORKER:
-        this.#capabilitiesMask = 4 | 16 | 32 | 131072;
+      case "node-worker" /* NODE_WORKER */:
+        this.#capabilitiesMask = 4 /* JS */ | 16 /* NETWORK */ | 32 /* TARGET */ | 131072 /* IO */;
     }
     this.#type = type;
     this.#parentTarget = parentTarget;
@@ -13523,7 +15904,7 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
     return this.#type;
   }
   markAsNodeJSForTest() {
-    this.#type = Type.NODE;
+    this.#type = "node" /* NODE */;
   }
   targetManager() {
     return this.#targetManager;
@@ -13532,7 +15913,7 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
     return (this.#capabilitiesMask & capabilitiesMask) === capabilitiesMask;
   }
   decorateLabel(label) {
-    return this.#type === Type.Worker || this.#type === Type.ServiceWorker ? "\u2699 " + label : label;
+    return this.#type === "worker" /* Worker */ || this.#type === "service-worker" /* ServiceWorker */ ? "\u2699 " + label : label;
   }
   parentTarget() {
     return this.#parentTarget;
@@ -13541,7 +15922,7 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
     let lastTarget = null;
     let currentTarget = this;
     do {
-      if (currentTarget.type() !== Type.TAB && currentTarget.type() !== Type.BROWSER) {
+      if (currentTarget.type() !== "tab" /* TAB */ && currentTarget.type() !== "browser" /* BROWSER */) {
         lastTarget = currentTarget;
       }
       currentTarget = currentTarget.parentTarget();
@@ -13579,7 +15960,7 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
   }
   setInspectedURL(inspectedURL) {
     this.#inspectedURL = inspectedURL;
-    const parsedURL = Common4.ParsedURL.ParsedURL.fromString(inspectedURL);
+    const parsedURL = Common3.ParsedURL.ParsedURL.fromString(inspectedURL);
     this.#inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + this.#id;
     this.#targetManager.onInspectedURLChange(this);
     if (!this.#name) {
@@ -13628,21 +16009,537 @@ var Target = class extends ProtocolClient.InspectorBackend.TargetBase {
     return this.#targetInfo;
   }
 };
-var Type;
-(function(Type3) {
-  Type3["FRAME"] = "frame";
-  Type3["ServiceWorker"] = "service-worker";
-  Type3["Worker"] = "worker";
-  Type3["SHARED_WORKER"] = "shared-worker";
-  Type3["NODE"] = "node";
-  Type3["BROWSER"] = "browser";
-  Type3["AUCTION_WORKLET"] = "auction-worklet";
-  Type3["WORKLET"] = "worklet";
-  Type3["TAB"] = "tab";
-  Type3["NODE_WORKER"] = "node-worker";
-})(Type || (Type = {}));
+var Type2 = /* @__PURE__ */ ((Type4) => {
+  Type4["FRAME"] = "frame";
+  Type4["ServiceWorker"] = "service-worker";
+  Type4["Worker"] = "worker";
+  Type4["SHARED_WORKER"] = "shared-worker";
+  Type4["NODE"] = "node";
+  Type4["BROWSER"] = "browser";
+  Type4["AUCTION_WORKLET"] = "auction-worklet";
+  Type4["WORKLET"] = "worklet";
+  Type4["TAB"] = "tab";
+  Type4["NODE_WORKER"] = "node-worker";
+  return Type4;
+})(Type2 || {});
+var Capability = /* @__PURE__ */ ((Capability2) => {
+  Capability2[Capability2["BROWSER"] = 1] = "BROWSER";
+  Capability2[Capability2["DOM"] = 2] = "DOM";
+  Capability2[Capability2["JS"] = 4] = "JS";
+  Capability2[Capability2["LOG"] = 8] = "LOG";
+  Capability2[Capability2["NETWORK"] = 16] = "NETWORK";
+  Capability2[Capability2["TARGET"] = 32] = "TARGET";
+  Capability2[Capability2["SCREEN_CAPTURE"] = 64] = "SCREEN_CAPTURE";
+  Capability2[Capability2["TRACING"] = 128] = "TRACING";
+  Capability2[Capability2["EMULATION"] = 256] = "EMULATION";
+  Capability2[Capability2["SECURITY"] = 512] = "SECURITY";
+  Capability2[Capability2["INPUT"] = 1024] = "INPUT";
+  Capability2[Capability2["INSPECTOR"] = 2048] = "INSPECTOR";
+  Capability2[Capability2["DEVICE_EMULATION"] = 4096] = "DEVICE_EMULATION";
+  Capability2[Capability2["STORAGE"] = 8192] = "STORAGE";
+  Capability2[Capability2["SERVICE_WORKER"] = 16384] = "SERVICE_WORKER";
+  Capability2[Capability2["AUDITS"] = 32768] = "AUDITS";
+  Capability2[Capability2["WEB_AUTHN"] = 65536] = "WEB_AUTHN";
+  Capability2[Capability2["IO"] = 131072] = "IO";
+  Capability2[Capability2["MEDIA"] = 262144] = "MEDIA";
+  Capability2[Capability2["EVENT_BREAKPOINTS"] = 524288] = "EVENT_BREAKPOINTS";
+  Capability2[Capability2["DOM_STORAGE"] = 1048576] = "DOM_STORAGE";
+  Capability2[Capability2["WEB_MCP"] = 2097152] = "WEB_MCP";
+  Capability2[Capability2["NONE"] = 0] = "NONE";
+  return Capability2;
+})(Capability || {});
 
-// gen/front_end/core/sdk/ConsoleModel.js
+// ../../front_end/core/sdk/CPUProfilerModel.ts
+var UIStrings = {
+  /**
+   * @description Name of a profile. Placeholder is either a user-supplied name or a number automatically assigned to the profile.
+   * @example {2} PH1
+   */
+  profileD: "Profile {PH1}"
+};
+var str_ = i18n.i18n.registerUIStrings("core/sdk/CPUProfilerModel.ts", UIStrings);
+var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
+var CPUProfilerModel = class extends SDKModel {
+  #nextAnonymousConsoleProfileNumber;
+  #anonymousConsoleProfileIdToTitle;
+  #profilerAgent;
+  #preciseCoverageDeltaUpdateCallback;
+  #debuggerModel;
+  constructor(target) {
+    super(target);
+    this.#nextAnonymousConsoleProfileNumber = 1;
+    this.#anonymousConsoleProfileIdToTitle = /* @__PURE__ */ new Map();
+    this.#profilerAgent = target.profilerAgent();
+    this.#preciseCoverageDeltaUpdateCallback = null;
+    target.registerProfilerDispatcher(this);
+    void this.#profilerAgent.invoke_enable();
+    this.#debuggerModel = target.model(DebuggerModel);
+  }
+  runtimeModel() {
+    return this.#debuggerModel.runtimeModel();
+  }
+  debuggerModel() {
+    return this.#debuggerModel;
+  }
+  consoleProfileStarted({ id, location, title }) {
+    if (!title) {
+      title = i18nString(UIStrings.profileD, { PH1: this.#nextAnonymousConsoleProfileNumber++ });
+      this.#anonymousConsoleProfileIdToTitle.set(id, title);
+    }
+    const eventData = this.createEventDataFrom(id, location, title);
+    this.dispatchEventToListeners("ConsoleProfileStarted" /* CONSOLE_PROFILE_STARTED */, eventData);
+  }
+  consoleProfileFinished({ id, location, profile, title }) {
+    if (!title) {
+      title = this.#anonymousConsoleProfileIdToTitle.get(id);
+      this.#anonymousConsoleProfileIdToTitle.delete(id);
+    }
+    const eventData = new ProfileFinishedData(this.createEventDataFrom(id, location, title), profile);
+    this.dispatchEventToListeners("ConsoleProfileFinished" /* CONSOLE_PROFILE_FINISHED */, eventData);
+  }
+  createEventDataFrom(id, scriptLocation, title) {
+    const debuggerLocation = Location.fromPayload(this.#debuggerModel, scriptLocation);
+    const globalId = this.target().id() + "." + id;
+    return {
+      id: globalId,
+      scriptLocation: debuggerLocation,
+      title: title || "",
+      cpuProfilerModel: this
+    };
+  }
+  startRecording() {
+    const intervalUs = 100;
+    void this.#profilerAgent.invoke_setSamplingInterval({ interval: intervalUs });
+    return this.#profilerAgent.invoke_start();
+  }
+  stopRecording() {
+    return this.#profilerAgent.invoke_stop().then((response) => response.profile || null);
+  }
+  startPreciseCoverage(jsCoveragePerBlock, preciseCoverageDeltaUpdateCallback) {
+    const callCount = false;
+    this.#preciseCoverageDeltaUpdateCallback = preciseCoverageDeltaUpdateCallback;
+    const allowUpdatesTriggeredByBackend = true;
+    return this.#profilerAgent.invoke_startPreciseCoverage(
+      { callCount, detailed: jsCoveragePerBlock, allowTriggeredUpdates: allowUpdatesTriggeredByBackend }
+    );
+  }
+  async takePreciseCoverage() {
+    const r = await this.#profilerAgent.invoke_takePreciseCoverage();
+    const timestamp = r?.timestamp || 0;
+    const coverage = r?.result || [];
+    return { timestamp, coverage };
+  }
+  stopPreciseCoverage() {
+    this.#preciseCoverageDeltaUpdateCallback = null;
+    return this.#profilerAgent.invoke_stopPreciseCoverage();
+  }
+  preciseCoverageDeltaUpdate({ timestamp, result }) {
+    if (this.#preciseCoverageDeltaUpdateCallback) {
+      void this.#preciseCoverageDeltaUpdateCallback(timestamp, result);
+    }
+  }
+};
+var Events = /* @__PURE__ */ ((Events35) => {
+  Events35["CONSOLE_PROFILE_STARTED"] = "ConsoleProfileStarted";
+  Events35["CONSOLE_PROFILE_FINISHED"] = "ConsoleProfileFinished";
+  return Events35;
+})(Events || {});
+SDKModel.register(CPUProfilerModel, { capabilities: 4 /* JS */, autostart: true });
+var ProfileFinishedData = class {
+  id;
+  scriptLocation;
+  title;
+  cpuProfilerModel;
+  cpuProfile;
+  constructor(eventData, cpuProfile) {
+    this.id = eventData.id;
+    this.scriptLocation = eventData.scriptLocation;
+    this.title = eventData.title;
+    this.cpuProfilerModel = eventData.cpuProfilerModel;
+    this.cpuProfile = cpuProfile;
+  }
+};
+
+// ../../front_end/core/sdk/LogModel.ts
+var LogModel_exports = {};
+__export(LogModel_exports, {
+  Events: () => Events2,
+  LogModel: () => LogModel
+});
+import * as Host from "../host/host.js";
+var LogModel = class extends SDKModel {
+  #logAgent;
+  constructor(target) {
+    super(target);
+    target.registerLogDispatcher(this);
+    this.#logAgent = target.logAgent();
+    void this.#logAgent.invoke_enable();
+    if (!Host.InspectorFrontendHost.isUnderTest()) {
+      void this.#logAgent.invoke_startViolationsReport({
+        config: [
+          { name: Log.ViolationSettingName.LongTask, threshold: 200 },
+          { name: Log.ViolationSettingName.LongLayout, threshold: 30 },
+          { name: Log.ViolationSettingName.BlockedEvent, threshold: 100 },
+          { name: Log.ViolationSettingName.BlockedParser, threshold: -1 },
+          { name: Log.ViolationSettingName.Handler, threshold: 150 },
+          { name: Log.ViolationSettingName.RecurringHandler, threshold: 50 },
+          { name: Log.ViolationSettingName.DiscouragedAPIUse, threshold: -1 }
+        ]
+      });
+    }
+  }
+  entryAdded({ entry }) {
+    this.dispatchEventToListeners("EntryAdded" /* ENTRY_ADDED */, { logModel: this, entry });
+  }
+  requestClear() {
+    void this.#logAgent.invoke_clear();
+  }
+};
+var Events2 = /* @__PURE__ */ ((Events35) => {
+  Events35["ENTRY_ADDED"] = "EntryAdded";
+  return Events35;
+})(Events2 || {});
+SDKModel.register(LogModel, { capabilities: 8 /* LOG */, autostart: true });
+
+// ../../front_end/core/sdk/SDKSettings.ts
+var SDKSettings_exports = {};
+__export(SDKSettings_exports, {
+  apcaSettingDescriptor: () => apcaSettingDescriptor,
+  avifFormatDisabledSettingDescriptor: () => avifFormatDisabledSettingDescriptor,
+  breakpointsActiveSettingDescriptor: () => breakpointsActiveSettingDescriptor,
+  cacheDisabledSettingDescriptor: () => cacheDisabledSettingDescriptor,
+  consoleUserActivationEvalSettingDescriptor: () => consoleUserActivationEvalSettingDescriptor,
+  cpuPerformanceSettingDescriptor: () => cpuPerformanceSettingDescriptor,
+  cpuPressureSettingDescriptor: () => cpuPressureSettingDescriptor,
+  cssSourceMapsEnabledSettingDescriptor: () => cssSourceMapsEnabledSettingDescriptor,
+  customFormattersSettingDescriptor: () => customFormattersSettingDescriptor,
+  disableAsyncStackTracesSettingDescriptor: () => disableAsyncStackTracesSettingDescriptor,
+  disablePausedStateOverlaySettingDescriptor: () => disablePausedStateOverlaySettingDescriptor,
+  emulateAutoDarkModeSettingDescriptor: () => emulateAutoDarkModeSettingDescriptor,
+  emulatePageFocusSettingDescriptor: () => emulatePageFocusSettingDescriptor,
+  emulatedCSSMediaFeatureColorGamutSettingDescriptor: () => emulatedCSSMediaFeatureColorGamutSettingDescriptor,
+  emulatedCSSMediaFeatureForcedColorsSettingDescriptor: () => emulatedCSSMediaFeatureForcedColorsSettingDescriptor,
+  emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor: () => emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor,
+  emulatedCSSMediaFeaturePrefersContrastSettingDescriptor: () => emulatedCSSMediaFeaturePrefersContrastSettingDescriptor,
+  emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor: () => emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor,
+  emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor: () => emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor,
+  emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor: () => emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor,
+  emulatedCSSMediaSettingDescriptor: () => emulatedCSSMediaSettingDescriptor,
+  emulatedOSTextScaleSettingDescriptor: () => emulatedOSTextScaleSettingDescriptor,
+  emulatedVisionDeficiencySettingDescriptor: () => emulatedVisionDeficiencySettingDescriptor,
+  enableRemoteFileLoadingSettingDescriptor: () => enableRemoteFileLoadingSettingDescriptor,
+  extendGridLinesSettingDescriptor: () => extendGridLinesSettingDescriptor,
+  idleDetectionSettingDescriptor: () => idleDetectionSettingDescriptor,
+  javaScriptDisabledSettingDescriptor: () => javaScriptDisabledSettingDescriptor,
+  jpegXlFormatDisabledSettingDescriptor: () => jpegXlFormatDisabledSettingDescriptor,
+  jsSourceMapsEnabledSettingDescriptor: () => jsSourceMapsEnabledSettingDescriptor,
+  localFontsDisabledSettingDescriptor: () => localFontsDisabledSettingDescriptor,
+  monitoringXHREnabledSettingDescriptor: () => monitoringXHREnabledSettingDescriptor,
+  pauseOnCaughtExceptionSettingDescriptor: () => pauseOnCaughtExceptionSettingDescriptor,
+  pauseOnExceptionEnabledSettingDescriptor: () => pauseOnExceptionEnabledSettingDescriptor,
+  pauseOnUncaughtExceptionSettingDescriptor: () => pauseOnUncaughtExceptionSettingDescriptor,
+  preserveConsoleLogSettingDescriptor: () => preserveConsoleLogSettingDescriptor,
+  preserveNetworkLogSettingDescriptor: () => preserveNetworkLogSettingDescriptor,
+  requestBlockingEnabledSettingDescriptor: () => requestBlockingEnabledSettingDescriptor,
+  showAdHighlightsSettingDescriptor: () => showAdHighlightsSettingDescriptor,
+  showDebugBordersSettingDescriptor: () => showDebugBordersSettingDescriptor,
+  showFPSCounterSettingDescriptor: () => showFPSCounterSettingDescriptor,
+  showGridAreasSettingDescriptor: () => showGridAreasSettingDescriptor,
+  showGridLineLabelsSettingDescriptor: () => showGridLineLabelsSettingDescriptor,
+  showGridTrackSizesSettingDescriptor: () => showGridTrackSizesSettingDescriptor,
+  showLayoutShiftRegionsSettingDescriptor: () => showLayoutShiftRegionsSettingDescriptor,
+  showMetricsRulersSettingDescriptor: () => showMetricsRulersSettingDescriptor,
+  showPaintRectsSettingDescriptor: () => showPaintRectsSettingDescriptor,
+  showScrollBottleneckRectsSettingDescriptor: () => showScrollBottleneckRectsSettingDescriptor,
+  touchSettingDescriptor: () => touchSettingDescriptor,
+  webpFormatDisabledSettingDescriptor: () => webpFormatDisabledSettingDescriptor
+});
+import * as Common4 from "../common/common.js";
+var jsSourceMapsEnabledSettingDescriptor = {
+  name: "js-source-maps-enabled",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var cssSourceMapsEnabledSettingDescriptor = {
+  name: "css-source-maps-enabled",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var preserveConsoleLogSettingDescriptor = {
+  name: "preserve-console-log",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var pauseOnExceptionEnabledSettingDescriptor = {
+  name: "pause-on-exception-enabled",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false
+};
+var pauseOnCaughtExceptionSettingDescriptor = {
+  name: "pause-on-caught-exception",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false
+};
+var pauseOnUncaughtExceptionSettingDescriptor = {
+  name: "pause-on-uncaught-exception",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false
+};
+var javaScriptDisabledSettingDescriptor = {
+  name: "java-script-disabled",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var disableAsyncStackTracesSettingDescriptor = {
+  name: "disable-async-stack-traces",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false
+};
+var breakpointsActiveSettingDescriptor = {
+  name: "breakpoints-active",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var showMetricsRulersSettingDescriptor = {
+  name: "show-metrics-rulers",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var apcaSettingDescriptor = {
+  name: "apca",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var showGridAreasSettingDescriptor = {
+  name: "show-grid-areas",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var showGridTrackSizesSettingDescriptor = {
+  name: "show-grid-track-sizes",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var extendGridLinesSettingDescriptor = {
+  name: "extend-grid-lines",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var showGridLineLabelsSettingDescriptor = {
+  name: "show-grid-line-labels",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "lineNumbers",
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var showPaintRectsSettingDescriptor = {
+  name: "show-paint-rects",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var showLayoutShiftRegionsSettingDescriptor = {
+  name: "show-layout-shift-regions",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var showAdHighlightsSettingDescriptor = {
+  name: "show-ad-highlights",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var showDebugBordersSettingDescriptor = {
+  name: "show-debug-borders",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var showFPSCounterSettingDescriptor = {
+  name: "show-fps-counter",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var showScrollBottleneckRectsSettingDescriptor = {
+  name: "show-scroll-bottleneck-rects",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var emulatePageFocusSettingDescriptor = {
+  name: "emulate-page-focus",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.LOCAL
+};
+var emulatedCSSMediaSettingDescriptor = {
+  name: "emulated-css-media",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "",
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var cpuPressureSettingDescriptor = {
+  name: "emulation.cpu-pressure",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "none"
+};
+var cpuPerformanceSettingDescriptor = {
+  name: "emulation.cpu-performance",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "no-override"
+};
+var touchSettingDescriptor = {
+  name: "emulation.touch",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "none"
+};
+var idleDetectionSettingDescriptor = {
+  name: "emulation.idle-detection",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "none"
+};
+var emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor = {
+  name: "emulated-css-media-feature-prefers-color-scheme",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "",
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var emulatedCSSMediaFeatureForcedColorsSettingDescriptor = {
+  name: "emulated-css-media-feature-forced-colors",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "",
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var emulatedCSSMediaFeaturePrefersReducedMotionSettingDescriptor = {
+  name: "emulated-css-media-feature-prefers-reduced-motion",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "",
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var emulatedCSSMediaFeaturePrefersContrastSettingDescriptor = {
+  name: "emulated-css-media-feature-prefers-contrast",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "",
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor = {
+  name: "emulated-css-media-feature-prefers-reduced-data",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "",
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor = {
+  name: "emulated-css-media-feature-prefers-reduced-transparency",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "",
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var emulatedCSSMediaFeatureColorGamutSettingDescriptor = {
+  name: "emulated-css-media-feature-color-gamut",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "",
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var emulatedVisionDeficiencySettingDescriptor = {
+  name: "emulated-vision-deficiency",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "none",
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var emulatedOSTextScaleSettingDescriptor = {
+  name: "emulated-os-text-scale",
+  type: Common4.Settings.SettingType.ENUM,
+  defaultValue: "",
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var localFontsDisabledSettingDescriptor = {
+  name: "local-fonts-disabled",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var avifFormatDisabledSettingDescriptor = {
+  name: "avif-format-disabled",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var jpegXlFormatDisabledSettingDescriptor = {
+  name: "jpeg-xl-format-disabled",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var webpFormatDisabledSettingDescriptor = {
+  name: "webp-format-disabled",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var customFormattersSettingDescriptor = {
+  name: "custom-formatters",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false
+};
+var requestBlockingEnabledSettingDescriptor = {
+  name: "request-blocking-enabled",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.LOCAL
+};
+var cacheDisabledSettingDescriptor = {
+  name: "cache-disabled",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false
+};
+var emulateAutoDarkModeSettingDescriptor = {
+  name: "emulate-auto-dark-mode",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SESSION
+};
+var enableRemoteFileLoadingSettingDescriptor = {
+  name: "network.enable-remote-file-loading",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var consoleUserActivationEvalSettingDescriptor = {
+  name: "console-user-activation-eval",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: true,
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var monitoringXHREnabledSettingDescriptor = {
+  name: "monitoring-xhr-enabled",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var disablePausedStateOverlaySettingDescriptor = {
+  name: "disable-paused-state-overlay",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false,
+  storageType: Common4.Settings.SettingStorageType.SYNCED
+};
+var preserveNetworkLogSettingDescriptor = {
+  name: "network-log.preserve-log",
+  type: Common4.Settings.SettingType.BOOLEAN,
+  defaultValue: false
+};
+
+// ../../front_end/core/sdk/ConsoleModel.ts
 var UIStrings2 = {
   /**
    * @description Text shown when the main frame (page) of the website was navigated to a different URL.
@@ -13690,7 +16587,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       this.initTarget(target);
       return;
     }
-    const eventListener = resourceTreeModel.addEventListener(Events2.CachedResourcesLoaded, () => {
+    const eventListener = resourceTreeModel.addEventListener("CachedResourcesLoaded" /* CachedResourcesLoaded */, () => {
       Common5.EventTarget.removeEventListeners([eventListener]);
       this.initTarget(target);
     });
@@ -13699,22 +16596,48 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     const eventListeners = [];
     const cpuProfilerModel = target.model(CPUProfilerModel);
     if (cpuProfilerModel) {
-      eventListeners.push(cpuProfilerModel.addEventListener("ConsoleProfileStarted", this.consoleProfileStarted.bind(this, cpuProfilerModel)));
-      eventListeners.push(cpuProfilerModel.addEventListener("ConsoleProfileFinished", this.consoleProfileFinished.bind(this, cpuProfilerModel)));
+      eventListeners.push(cpuProfilerModel.addEventListener(
+        "ConsoleProfileStarted" /* CONSOLE_PROFILE_STARTED */,
+        this.consoleProfileStarted.bind(this, cpuProfilerModel)
+      ));
+      eventListeners.push(cpuProfilerModel.addEventListener(
+        "ConsoleProfileFinished" /* CONSOLE_PROFILE_FINISHED */,
+        this.consoleProfileFinished.bind(this, cpuProfilerModel)
+      ));
     }
     const resourceTreeModel = target.model(ResourceTreeModel);
-    if (resourceTreeModel && target.parentTarget()?.type() !== Type.FRAME) {
-      eventListeners.push(resourceTreeModel.addEventListener(Events2.PrimaryPageChanged, this.primaryPageChanged, this));
+    if (resourceTreeModel && target.parentTarget()?.type() !== "frame" /* FRAME */) {
+      eventListeners.push(resourceTreeModel.addEventListener(
+        "PrimaryPageChanged" /* PrimaryPageChanged */,
+        this.primaryPageChanged,
+        this
+      ));
     }
     const runtimeModel = target.model(RuntimeModel);
     if (runtimeModel) {
-      eventListeners.push(runtimeModel.addEventListener(Events3.ExceptionThrown, this.exceptionThrown.bind(this, runtimeModel)));
-      eventListeners.push(runtimeModel.addEventListener(Events3.ExceptionRevoked, this.exceptionRevoked.bind(this, runtimeModel)));
-      eventListeners.push(runtimeModel.addEventListener(Events3.ConsoleAPICalled, this.consoleAPICalled.bind(this, runtimeModel)));
-      if (target.parentTarget()?.type() !== Type.FRAME) {
-        eventListeners.push(runtimeModel.debuggerModel().addEventListener(Events.GlobalObjectCleared, this.clearIfNecessary, this));
+      eventListeners.push(runtimeModel.addEventListener(
+        "ExceptionThrown" /* ExceptionThrown */,
+        this.exceptionThrown.bind(this, runtimeModel)
+      ));
+      eventListeners.push(runtimeModel.addEventListener(
+        "ExceptionRevoked" /* ExceptionRevoked */,
+        this.exceptionRevoked.bind(this, runtimeModel)
+      ));
+      eventListeners.push(runtimeModel.addEventListener(
+        "ConsoleAPICalled" /* ConsoleAPICalled */,
+        this.consoleAPICalled.bind(this, runtimeModel)
+      ));
+      if (target.parentTarget()?.type() !== "frame" /* FRAME */) {
+        eventListeners.push(runtimeModel.debuggerModel().addEventListener(
+          "GlobalObjectCleared" /* GlobalObjectCleared */,
+          this.clearIfNecessary,
+          this
+        ));
       }
-      eventListeners.push(runtimeModel.addEventListener(Events3.QueryObjectRequested, this.queryObjectRequested.bind(this, runtimeModel)));
+      eventListeners.push(runtimeModel.addEventListener(
+        "QueryObjectRequested" /* QueryObjectRequested */,
+        this.queryObjectRequested.bind(this, runtimeModel)
+      ));
     }
     this.#targetListeners.set(target, eventListeners);
   }
@@ -13749,17 +16672,26 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       await this.#console.showPromise();
     } catch {
     }
-    this.dispatchEventToListeners(Events4.CommandEvaluated, { result: result.object, commandMessage: originatingMessage, exceptionDetails: result.exceptionDetails });
+    this.dispatchEventToListeners(
+      "CommandEvaluated" /* CommandEvaluated */,
+      { result: result.object, commandMessage: originatingMessage, exceptionDetails: result.exceptionDetails }
+    );
   }
   addCommandMessage(executionContext, text) {
-    const commandMessage = new ConsoleMessage(executionContext.runtimeModel, "javascript", null, text, { type: FrontendMessageType.Command });
+    const commandMessage = new ConsoleMessage(
+      executionContext.runtimeModel,
+      Log.LogEntrySource.Javascript,
+      null,
+      text,
+      { type: "command" /* Command */ }
+    );
     commandMessage.setExecutionContextId(executionContext.id);
     this.addMessage(commandMessage);
     return commandMessage;
   }
   addMessage(msg) {
     msg.setPageLoadSequenceNumber(this.#pageLoadSequenceNumber);
-    if (msg.source === Common5.Console.FrontendMessageSource.ConsoleAPI && msg.type === "clear") {
+    if (msg.source === Common5.Console.FrontendMessageSource.ConsoleAPI && msg.type === Runtime.ConsoleAPICalledEventType.Clear) {
       this.clearIfNecessary();
     }
     this.#messages.push(msg);
@@ -13775,12 +16707,19 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       modelMap.set(exceptionId, msg);
     }
     this.incrementErrorWarningCount(msg);
-    this.dispatchEventToListeners(Events4.MessageAdded, msg);
+    this.dispatchEventToListeners("MessageAdded" /* MessageAdded */, msg);
   }
   exceptionThrown(runtimeModel, event) {
     const exceptionWithTimestamp = event.data;
     const affectedResources = extractExceptionMetaData(exceptionWithTimestamp.details.exceptionMetaData);
-    const consoleMessage = ConsoleMessage.fromException(runtimeModel, exceptionWithTimestamp.details, void 0, exceptionWithTimestamp.timestamp, void 0, affectedResources);
+    const consoleMessage = ConsoleMessage.fromException(
+      runtimeModel,
+      exceptionWithTimestamp.details,
+      void 0,
+      exceptionWithTimestamp.timestamp,
+      void 0,
+      affectedResources
+    );
     consoleMessage.setExceptionId(exceptionWithTimestamp.details.exceptionId);
     this.addMessage(consoleMessage);
   }
@@ -13792,20 +16731,20 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       return;
     }
     this.#errors--;
-    exceptionMessage.level = "verbose";
-    this.dispatchEventToListeners(Events4.MessageUpdated, exceptionMessage);
+    exceptionMessage.level = Log.LogEntryLevel.Verbose;
+    this.dispatchEventToListeners("MessageUpdated" /* MessageUpdated */, exceptionMessage);
   }
   consoleAPICalled(runtimeModel, event) {
     const call = event.data;
-    let level = "info";
-    if (call.type === "debug") {
-      level = "verbose";
-    } else if (call.type === "error" || call.type === "assert") {
-      level = "error";
-    } else if (call.type === "warning") {
-      level = "warning";
-    } else if (call.type === "info" || call.type === "log") {
-      level = "info";
+    let level = Log.LogEntryLevel.Info;
+    if (call.type === Runtime.ConsoleAPICalledEventType.Debug) {
+      level = Log.LogEntryLevel.Verbose;
+    } else if (call.type === Runtime.ConsoleAPICalledEventType.Error || call.type === Runtime.ConsoleAPICalledEventType.Assert) {
+      level = Log.LogEntryLevel.Error;
+    } else if (call.type === Runtime.ConsoleAPICalledEventType.Warning) {
+      level = Log.LogEntryLevel.Warning;
+    } else if (call.type === Runtime.ConsoleAPICalledEventType.Info || call.type === Runtime.ConsoleAPICalledEventType.Log) {
+      level = Log.LogEntryLevel.Info;
     }
     let message = "";
     if (call.args.length && call.args[0].unserializableValue) {
@@ -13838,11 +16777,17 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
   queryObjectRequested(runtimeModel, event) {
     const { objects, executionContextId } = event.data;
     const details = {
-      type: FrontendMessageType.QueryObjectResult,
+      type: "queryObjectResult" /* QueryObjectResult */,
       parameters: [objects],
       executionContextId
     };
-    const consoleMessage = new ConsoleMessage(runtimeModel, Common5.Console.FrontendMessageSource.ConsoleAPI, "info", "", details);
+    const consoleMessage = new ConsoleMessage(
+      runtimeModel,
+      Common5.Console.FrontendMessageSource.ConsoleAPI,
+      Log.LogEntryLevel.Info,
+      "",
+      details
+    );
     this.addMessage(consoleMessage);
   }
   clearIfNecessary() {
@@ -13865,11 +16810,21 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
   }
   consoleProfileStarted(cpuProfilerModel, event) {
     const { data } = event;
-    this.addConsoleProfileMessage(cpuProfilerModel, "profile", data.scriptLocation, i18nString2(UIStrings2.profileSStarted, { PH1: data.title }));
+    this.addConsoleProfileMessage(
+      cpuProfilerModel,
+      Runtime.ConsoleAPICalledEventType.Profile,
+      data.scriptLocation,
+      i18nString2(UIStrings2.profileSStarted, { PH1: data.title })
+    );
   }
   consoleProfileFinished(cpuProfilerModel, event) {
     const { data } = event;
-    this.addConsoleProfileMessage(cpuProfilerModel, "profileEnd", data.scriptLocation, i18nString2(UIStrings2.profileSFinished, { PH1: data.title }));
+    this.addConsoleProfileMessage(
+      cpuProfilerModel,
+      Runtime.ConsoleAPICalledEventType.ProfileEnd,
+      data.scriptLocation,
+      i18nString2(UIStrings2.profileSFinished, { PH1: data.title })
+    );
   }
   addConsoleProfileMessage(cpuProfilerModel, type, scriptLocation, messageText) {
     const script = scriptLocation.script();
@@ -13880,18 +16835,24 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
       lineNumber: scriptLocation.lineNumber,
       columnNumber: scriptLocation.columnNumber || 0
     }];
-    this.addMessage(new ConsoleMessage(cpuProfilerModel.runtimeModel(), Common5.Console.FrontendMessageSource.ConsoleAPI, "info", messageText, { type, stackTrace: { callFrames } }));
+    this.addMessage(new ConsoleMessage(
+      cpuProfilerModel.runtimeModel(),
+      Common5.Console.FrontendMessageSource.ConsoleAPI,
+      Log.LogEntryLevel.Info,
+      messageText,
+      { type, stackTrace: { callFrames } }
+    ));
   }
   incrementErrorWarningCount(msg) {
-    if (msg.source === "violation") {
+    if (msg.source === Log.LogEntrySource.Violation) {
       this.#violations++;
       return;
     }
     switch (msg.level) {
-      case "warning":
+      case Log.LogEntryLevel.Warning:
         this.#warnings++;
         break;
-      case "error":
+      case Log.LogEntryLevel.Error:
         this.#errors++;
         break;
     }
@@ -13927,7 +16888,7 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     this.#errors = 0;
     this.#warnings = 0;
     this.#violations = 0;
-    this.dispatchEventToListeners(Events4.ConsoleCleared);
+    this.dispatchEventToListeners("ConsoleCleared" /* ConsoleCleared */);
   }
   errors() {
     return this.#errors;
@@ -14006,13 +16967,13 @@ var ConsoleModel = class _ConsoleModel extends SDKModel {
     }
   }
 };
-var Events4;
-(function(Events12) {
-  Events12["ConsoleCleared"] = "ConsoleCleared";
-  Events12["MessageAdded"] = "MessageAdded";
-  Events12["MessageUpdated"] = "MessageUpdated";
-  Events12["CommandEvaluated"] = "CommandEvaluated";
-})(Events4 || (Events4 = {}));
+var Events6 = /* @__PURE__ */ ((Events35) => {
+  Events35["ConsoleCleared"] = "ConsoleCleared";
+  Events35["MessageAdded"] = "MessageAdded";
+  Events35["MessageUpdated"] = "MessageUpdated";
+  Events35["CommandEvaluated"] = "CommandEvaluated";
+  return Events35;
+})(Events6 || {});
 function extractExceptionMetaData(metaData) {
   if (!metaData) {
     return void 0;
@@ -14077,7 +17038,7 @@ var ConsoleMessage = class _ConsoleMessage {
     this.source = source;
     this.level = level;
     this.messageText = messageText;
-    this.type = details?.type || "log";
+    this.type = details?.type || Runtime.ConsoleAPICalledEventType.Log;
     this.url = details?.url;
     this.line = details?.line || 0;
     this.column = details?.column || 0;
@@ -14127,7 +17088,13 @@ var ConsoleMessage = class _ConsoleMessage {
       affectedResources,
       exceptionDetails
     };
-    return new _ConsoleMessage(runtimeModel, "javascript", "error", RuntimeModel.simpleTextFromException(exceptionDetails), details);
+    return new _ConsoleMessage(
+      runtimeModel,
+      Log.LogEntrySource.Javascript,
+      Log.LogEntryLevel.Error,
+      RuntimeModel.simpleTextFromException(exceptionDetails),
+      details
+    );
   }
   runtimeModel() {
     return this.#runtimeModel;
@@ -14155,17 +17122,17 @@ var ConsoleMessage = class _ConsoleMessage {
     this.#exceptionId = exceptionId;
   }
   isGroupMessage() {
-    return this.type === "startGroup" || this.type === "startGroupCollapsed" || this.type === "endGroup";
+    return this.type === Runtime.ConsoleAPICalledEventType.StartGroup || this.type === Runtime.ConsoleAPICalledEventType.StartGroupCollapsed || this.type === Runtime.ConsoleAPICalledEventType.EndGroup;
   }
   isGroupStartMessage() {
-    return this.type === "startGroup" || this.type === "startGroupCollapsed";
+    return this.type === Runtime.ConsoleAPICalledEventType.StartGroup || this.type === Runtime.ConsoleAPICalledEventType.StartGroupCollapsed;
   }
   isErrorOrWarning() {
-    return this.level === "warning" || this.level === "error";
+    return this.level === Log.LogEntryLevel.Warning || this.level === Log.LogEntryLevel.Error;
   }
   isGroupable() {
-    const isUngroupableError = this.level === "error" && (this.source === "javascript" || this.source === "network");
-    return this.source !== Common5.Console.FrontendMessageSource.ConsoleAPI && this.type !== FrontendMessageType.Command && this.type !== FrontendMessageType.Result && this.type !== FrontendMessageType.System && !isUngroupableError;
+    const isUngroupableError = this.level === Log.LogEntryLevel.Error && (this.source === Log.LogEntrySource.Javascript || this.source === Log.LogEntrySource.Network);
+    return this.source !== Common5.Console.FrontendMessageSource.ConsoleAPI && this.type !== "command" /* Command */ && this.type !== "result" /* Result */ && this.type !== "system" /* System */ && !isUngroupableError;
   }
   groupCategoryKey() {
     return [this.source, this.level, this.type, this.#pageLoadSequenceNumber].join(":");
@@ -14197,11 +17164,11 @@ var ConsoleMessage = class _ConsoleMessage {
     return this.runtimeModel() === msg.runtimeModel() && this.source === msg.source && this.type === msg.type && this.level === msg.level && this.line === msg.line && this.url === msg.url && this.scriptId === msg.scriptId && this.messageText === msg.messageText && this.#executionContextId === msg.#executionContextId && areAffectedResourcesEquivalent(this.#affectedResources, msg.#affectedResources) && areStackTracesEquivalent(this.stackTrace, msg.stackTrace);
   }
   get originatesFromLogpoint() {
-    return this.#originatingBreakpointType === "LOGPOINT";
+    return this.#originatingBreakpointType === "LOGPOINT" /* LOGPOINT */;
   }
   /** @returns true, iff this was a console.* call in a conditional breakpoint */
   get originatesFromConditionalBreakpoint() {
-    return this.#originatingBreakpointType === "CONDITIONAL_BREAKPOINT";
+    return this.#originatingBreakpointType === "CONDITIONAL_BREAKPOINT" /* CONDITIONAL_BREAKPOINT */;
   }
   static #stackFrameWithBreakpoint({ callFrames }) {
     const markerSourceUrls = [COND_BREAKPOINT_SOURCE_URL, LOGPOINT_SOURCE_URL];
@@ -14209,47 +17176,49 @@ var ConsoleMessage = class _ConsoleMessage {
     if (lastBreakpointFrameIndex === -1 || lastBreakpointFrameIndex === callFrames.length - 1) {
       return { callFrame: null, type: null };
     }
-    const type = callFrames[lastBreakpointFrameIndex].url === LOGPOINT_SOURCE_URL ? "LOGPOINT" : "CONDITIONAL_BREAKPOINT";
+    const type = callFrames[lastBreakpointFrameIndex].url === LOGPOINT_SOURCE_URL ? "LOGPOINT" /* LOGPOINT */ : "CONDITIONAL_BREAKPOINT" /* CONDITIONAL_BREAKPOINT */;
     return { callFrame: callFrames[lastBreakpointFrameIndex + 1], type };
   }
 };
-SDKModel.register(ConsoleModel, { capabilities: 4, autostart: true });
+SDKModel.register(ConsoleModel, { capabilities: 4 /* JS */, autostart: true });
 var MessageSourceDisplayName = /* @__PURE__ */ new Map([
-  ["xml", "xml"],
-  ["javascript", "javascript"],
-  ["network", "network"],
+  [Log.LogEntrySource.XML, "xml"],
+  [Log.LogEntrySource.Javascript, "javascript"],
+  [Log.LogEntrySource.Network, "network"],
   [Common5.Console.FrontendMessageSource.ConsoleAPI, "console-api"],
-  ["storage", "storage"],
-  ["appcache", "appcache"],
-  ["rendering", "rendering"],
+  [Log.LogEntrySource.Storage, "storage"],
+  [Log.LogEntrySource.Appcache, "appcache"],
+  [Log.LogEntrySource.Rendering, "rendering"],
   [Common5.Console.FrontendMessageSource.CSS, "css"],
-  ["security", "security"],
-  ["deprecation", "deprecation"],
-  ["worker", "worker"],
-  ["violation", "violation"],
-  ["intervention", "intervention"],
-  ["recommendation", "recommendation"],
-  ["other", "other"],
+  [Log.LogEntrySource.Security, "security"],
+  [Log.LogEntrySource.Deprecation, "deprecation"],
+  [Log.LogEntrySource.Worker, "worker"],
+  [Log.LogEntrySource.Violation, "violation"],
+  [Log.LogEntrySource.Intervention, "intervention"],
+  [Log.LogEntrySource.Recommendation, "recommendation"],
+  [Log.LogEntrySource.Other, "other"],
   [Common5.Console.FrontendMessageSource.ISSUE_PANEL, "issue-panel"]
 ]);
 
-// gen/front_end/core/sdk/CSSModel.js
+// ../../front_end/core/sdk/CSSModel.ts
 var CSSModel_exports = {};
 __export(CSSModel_exports, {
   CSSLocation: () => CSSLocation,
   CSSModel: () => CSSModel,
   CSSPropertyTracker: () => CSSPropertyTracker,
+  CSSPropertyTrackerEvents: () => CSSPropertyTrackerEvents,
+  ColorScheme: () => ColorScheme,
   Edit: () => Edit,
-  Events: () => Events6,
+  Events: () => Events12,
   InlineStyleResult: () => InlineStyleResult
 });
-import * as Common15 from "./../common/common.js";
-import * as Host5 from "./../host/host.js";
-import * as Platform10 from "./../platform/platform.js";
-import * as Root5 from "./../root/root.js";
-import * as TextUtils16 from "./../text_utils/text_utils.js";
+import * as Common15 from "../common/common.js";
+import * as Host5 from "../host/host.js";
+import * as Platform10 from "../platform/platform.js";
+import * as Root5 from "../root/root.js";
+import * as TextUtils16 from "../text_utils/text_utils.js";
 
-// gen/front_end/core/sdk/CSSFontFace.js
+// ../../front_end/core/sdk/CSSFontFace.ts
 var CSSFontFace_exports = {};
 __export(CSSFontFace_exports, {
   CSSFontFace: () => CSSFontFace
@@ -14283,27 +17252,29 @@ var CSSFontFace = class {
   }
 };
 
-// gen/front_end/core/sdk/CSSMatchedStyles.js
+// ../../front_end/core/sdk/CSSMatchedStyles.ts
 var CSSMatchedStyles_exports = {};
 __export(CSSMatchedStyles_exports, {
   CSSMatchedStyles: () => CSSMatchedStyles,
   CSSRegisteredProperty: () => CSSRegisteredProperty,
   CSSValueSource: () => CSSValueSource,
+  PropertyState: () => PropertyState,
   distanceToTreeScope: () => distanceToTreeScope
 });
-import * as Platform5 from "./../platform/platform.js";
+import * as Platform5 from "../platform/platform.js";
 
-// gen/front_end/core/sdk/CSSProperty.js
+// ../../front_end/core/sdk/CSSProperty.ts
 var CSSProperty_exports = {};
 __export(CSSProperty_exports, {
-  CSSProperty: () => CSSProperty
+  CSSProperty: () => CSSProperty,
+  Events: () => Events7
 });
-import * as Common7 from "./../common/common.js";
-import * as HostModule from "./../host/host.js";
-import * as Platform3 from "./../platform/platform.js";
-import * as TextUtils from "./../text_utils/text_utils.js";
+import * as Common7 from "../common/common.js";
+import * as HostModule from "../host/host.js";
+import * as Platform3 from "../platform/platform.js";
+import * as TextUtils from "../text_utils/text_utils.js";
 
-// gen/front_end/core/sdk/CSSPropertyParser.js
+// ../../front_end/core/sdk/CSSPropertyParser.ts
 var CSSPropertyParser_exports = {};
 __export(CSSPropertyParser_exports, {
   ASTUtils: () => ASTUtils,
@@ -14323,15 +17294,16 @@ __export(CSSPropertyParser_exports, {
   tokenizeDeclaration: () => tokenizeDeclaration,
   tokenizePropertyName: () => tokenizePropertyName
 });
-import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror from "../../third_party/codemirror.next/codemirror.next.js";
 
-// gen/front_end/core/sdk/CSSPropertyParserMatchers.js
+// ../../front_end/core/sdk/CSSPropertyParserMatchers.ts
 var CSSPropertyParserMatchers_exports = {};
 __export(CSSPropertyParserMatchers_exports, {
   AnchorFunctionMatch: () => AnchorFunctionMatch,
   AnchorFunctionMatcher: () => AnchorFunctionMatcher,
   AngleMatch: () => AngleMatch,
   AngleMatcher: () => AngleMatcher,
+  ArithmeticFunction: () => ArithmeticFunction,
   AttributeMatch: () => AttributeMatch,
   AttributeMatcher: () => AttributeMatcher,
   AutoBaseMatch: () => AutoBaseMatch,
@@ -14359,6 +17331,7 @@ __export(CSSPropertyParserMatchers_exports, {
   FlexGridGridLanesMatcher: () => FlexGridGridLanesMatcher,
   GridTemplateMatch: () => GridTemplateMatch,
   GridTemplateMatcher: () => GridTemplateMatcher,
+  LayoutType: () => LayoutType,
   LengthMatch: () => LengthMatch,
   LengthMatcher: () => LengthMatcher,
   LightDarkColorMatch: () => LightDarkColorMatch,
@@ -14367,6 +17340,7 @@ __export(CSSPropertyParserMatchers_exports, {
   LinearGradientMatcher: () => LinearGradientMatcher,
   LinkableNameMatch: () => LinkableNameMatch,
   LinkableNameMatcher: () => LinkableNameMatcher,
+  LinkableNameProperties: () => LinkableNameProperties,
   MathFunctionMatch: () => MathFunctionMatch,
   MathFunctionMatcher: () => MathFunctionMatcher,
   PositionAnchorMatch: () => PositionAnchorMatch,
@@ -14376,8 +17350,10 @@ __export(CSSPropertyParserMatchers_exports, {
   RAW_STRING_TYPE: () => RAW_STRING_TYPE,
   RelativeColorChannelMatch: () => RelativeColorChannelMatch,
   RelativeColorChannelMatcher: () => RelativeColorChannelMatcher,
+  SelectFunction: () => SelectFunction,
   ShadowMatch: () => ShadowMatch,
   ShadowMatcher: () => ShadowMatcher,
+  ShadowType: () => ShadowType,
   StringMatch: () => StringMatch,
   StringMatcher: () => StringMatcher,
   TextMatch: () => TextMatch,
@@ -14393,14 +17369,8 @@ __export(CSSPropertyParserMatchers_exports, {
   localEvalCSS: () => localEvalCSS,
   removeCSSEvaluationElement: () => removeCSSEvaluationElement
 });
-import * as Common6 from "./../common/common.js";
+import * as Common6 from "../common/common.js";
 var BaseVariableMatch = class {
-  text;
-  node;
-  name;
-  fallback;
-  matching;
-  computedTextCallback;
   constructor(text, node, name, fallback, matching, computedTextCallback) {
     this.text = text;
     this.node = node;
@@ -14425,7 +17395,8 @@ var BaseVariableMatch = class {
     return this.matching.getComputedTextRange(this.fallback[0], this.fallback[this.fallback.length - 1]);
   }
 };
-var BaseVariableMatcher = class extends matcherBase(BaseVariableMatch) {
+var BaseVariableMatcherBase = matcherBase(BaseVariableMatch);
+var BaseVariableMatcher = class extends BaseVariableMatcherBase {
   // clang-format on
   #computedTextCallback;
   constructor(computedTextCallback) {
@@ -14450,12 +17421,17 @@ var BaseVariableMatcher = class extends matcherBase(BaseVariableMatch) {
     if (!varName.startsWith("--")) {
       return null;
     }
-    return new BaseVariableMatch(matching.ast.text(node), node, varName, fallback, matching, this.#computedTextCallback);
+    return new BaseVariableMatch(
+      matching.ast.text(node),
+      node,
+      varName,
+      fallback,
+      matching,
+      this.#computedTextCallback
+    );
   }
 };
 var VariableMatch = class extends BaseVariableMatch {
-  matchedStyles;
-  style;
   constructor(text, node, name, fallback, matching, matchedStyles, style) {
     super(text, node, name, fallback, matching, () => this.resolveVariable()?.value ?? this.fallbackValue());
     this.matchedStyles = matchedStyles;
@@ -14465,9 +17441,8 @@ var VariableMatch = class extends BaseVariableMatch {
     return this.matchedStyles.computeCSSVariable(this.style, this.name);
   }
 };
-var VariableMatcher = class extends matcherBase(VariableMatch) {
-  matchedStyles;
-  style;
+var VariableMatcherBase = matcherBase(VariableMatch);
+var VariableMatcher = class extends VariableMatcherBase {
   // clang-format on
   constructor(matchedStyles, style) {
     super();
@@ -14476,14 +17451,18 @@ var VariableMatcher = class extends matcherBase(VariableMatch) {
   }
   matches(node, matching) {
     const match = new BaseVariableMatcher(() => null).matches(node, matching);
-    return match ? new VariableMatch(match.text, match.node, match.name, match.fallback, match.matching, this.matchedStyles, this.style) : null;
+    return match ? new VariableMatch(
+      match.text,
+      match.node,
+      match.name,
+      match.fallback,
+      match.matching,
+      this.matchedStyles,
+      this.style
+    ) : null;
   }
 };
 var VariableNameMatch = class {
-  node;
-  text;
-  matchedStyles;
-  style;
   constructor(node, text, matchedStyles, style) {
     this.node = node;
     this.text = text;
@@ -14494,9 +17473,8 @@ var VariableNameMatch = class {
     return this.matchedStyles.computeCSSVariable(this.style, this.text);
   }
 };
-var VariableNameMatcher = class extends matcherBase(VariableNameMatch) {
-  matchedStyles;
-  style;
+var VariableNameMatcherBase = matcherBase(VariableNameMatch);
+var VariableNameMatcher = class extends VariableNameMatcherBase {
   // clang-format on
   constructor(matchedStyles, style) {
     super();
@@ -14524,13 +17502,6 @@ var VariableNameMatcher = class extends matcherBase(VariableNameMatch) {
   }
 };
 var AttributeMatch = class extends BaseVariableMatch {
-  type;
-  isCSSTokens;
-  isValidType;
-  rawValue;
-  substitutionText;
-  matchedStyles;
-  style;
   constructor(text, node, name, fallback, matching, type, isCSSTokens, isValidType, rawValue, substitutionText, matchedStyles, style, computedTextCallback) {
     super(text, node, name, fallback, matching, (_, matching2) => computedTextCallback(this, matching2));
     this.type = type;
@@ -14548,7 +17519,11 @@ var AttributeMatch = class extends BaseVariableMatch {
     return this.type ?? RAW_STRING_TYPE;
   }
   resolveAttributeValue() {
-    return this.matchedStyles.computeAttribute(this.style, this.name, { type: this.cssType(), isCSSTokens: this.isCSSTokens });
+    return this.matchedStyles.computeAttribute(
+      this.style,
+      this.name,
+      { type: this.cssType(), isCSSTokens: this.isCSSTokens }
+    );
   }
 };
 var cssEvaluationElement = null;
@@ -14588,10 +17563,8 @@ function defaultValueForCSSType(type) {
   return element.computedStyleMap().get("--evaluation")?.toString() ?? null;
 }
 var RAW_STRING_TYPE = "raw-string";
-var AttributeMatcher = class extends matcherBase(AttributeMatch) {
-  matchedStyles;
-  style;
-  computedTextCallback;
+var AttributeMatcherBase = matcherBase(AttributeMatch);
+var AttributeMatcher = class extends AttributeMatcherBase {
   // clang-format on
   constructor(matchedStyles, style, computedTextCallback) {
     super();
@@ -14637,21 +17610,34 @@ var AttributeMatcher = class extends matcherBase(AttributeMatch) {
     } else if (!fallback) {
       substitutionText = defaultValueForCSSType(type);
     }
-    return new AttributeMatch(matching.ast.text(node), node, attrName, fallback, matching, type, isCSSTokens, isValidType, rawValue, substitutionText, this.matchedStyles, this.style, this.computedTextCallback ?? defaultComputeText);
+    return new AttributeMatch(
+      matching.ast.text(node),
+      node,
+      attrName,
+      fallback,
+      matching,
+      type,
+      isCSSTokens,
+      isValidType,
+      rawValue,
+      substitutionText,
+      this.matchedStyles,
+      this.style,
+      this.computedTextCallback ?? defaultComputeText
+    );
     function defaultComputeText(match, _matching) {
       return match.resolveAttributeValue() ?? (isValidType ? match.fallbackValue() : defaultValueForCSSType(match.type));
     }
   }
 };
 var BinOpMatch = class {
-  text;
-  node;
   constructor(text, node) {
     this.text = text;
     this.node = node;
   }
 };
-var BinOpMatcher = class extends matcherBase(BinOpMatch) {
+var BinOpMatcherBase = matcherBase(BinOpMatch);
+var BinOpMatcher = class extends BinOpMatcherBase {
   // clang-format on
   accepts() {
     return true;
@@ -14661,9 +17647,6 @@ var BinOpMatcher = class extends matcherBase(BinOpMatch) {
   }
 };
 var TextMatch = class {
-  text;
-  node;
-  computedText;
   constructor(text, node) {
     this.text = text;
     this.node = node;
@@ -14671,13 +17654,15 @@ var TextMatch = class {
       this.computedText = () => "";
     }
   }
+  computedText;
   render() {
     const span = document.createElement("span");
     span.appendChild(document.createTextNode(this.text));
     return [span];
   }
 };
-var TextMatcher = class extends matcherBase(TextMatch) {
+var TextMatcherBase = matcherBase(TextMatch);
+var TextMatcher = class extends TextMatcherBase {
   // clang-format on
   accepts() {
     return true;
@@ -14693,8 +17678,6 @@ var TextMatcher = class extends matcherBase(TextMatch) {
   }
 };
 var AngleMatch = class {
-  text;
-  node;
   constructor(text, node) {
     this.text = text;
     this.node = node;
@@ -14703,7 +17686,8 @@ var AngleMatch = class {
     return this.text;
   }
 };
-var AngleMatcher = class extends matcherBase(AngleMatch) {
+var AngleMatcherBase = matcherBase(AngleMatch);
+var AngleMatcher = class extends AngleMatcherBase {
   // clang-format on
   accepts(propertyName) {
     return cssMetadata().isAngleAwareProperty(propertyName);
@@ -14727,11 +17711,6 @@ function literalToNumber(node, ast) {
   return Number(text.substring(0, text.length - ast.text(node.getChild("Unit")).length));
 }
 var ColorMixMatch = class {
-  text;
-  node;
-  space;
-  color1;
-  color2;
   constructor(text, node, space, color1, color2) {
     this.text = text;
     this.node = node;
@@ -14740,7 +17719,8 @@ var ColorMixMatch = class {
     this.color2 = color2;
   }
 };
-var ColorMixMatcher = class extends matcherBase(ColorMixMatch) {
+var ColorMixMatcherBase = matcherBase(ColorMixMatch);
+var ColorMixMatcher = class extends ColorMixMatcherBase {
   // clang-format on
   accepts(propertyName) {
     return cssMetadata().isColorAwareProperty(propertyName);
@@ -14782,16 +17762,14 @@ var ColorMixMatcher = class extends matcherBase(ColorMixMatch) {
   }
 };
 var ContrastColorMatch = class {
-  text;
-  node;
-  color;
   constructor(text, node, color) {
     this.text = text;
     this.node = node;
     this.color = color;
   }
 };
-var ContrastColorMatcher = class extends matcherBase(ContrastColorMatch) {
+var ContrastColorMatcherBase = matcherBase(ContrastColorMatch);
+var ContrastColorMatcher = class extends ContrastColorMatcherBase {
   // clang-format on
   accepts(propertyName) {
     return cssMetadata().isColorAwareProperty(propertyName);
@@ -14811,16 +17789,14 @@ var ContrastColorMatcher = class extends matcherBase(ContrastColorMatch) {
   }
 };
 var URLMatch = class {
-  url;
-  text;
-  node;
   constructor(url, text, node) {
     this.url = url;
     this.text = text;
     this.node = node;
   }
 };
-var URLMatcher = class extends matcherBase(URLMatch) {
+var URLMatcherBase = matcherBase(URLMatch);
+var URLMatcher = class extends URLMatcherBase {
   // clang-format on
   matches(node, matching) {
     if (node.name !== "CallLiteral") {
@@ -14840,14 +17816,13 @@ var URLMatcher = class extends matcherBase(URLMatch) {
   }
 };
 var LinearGradientMatch = class {
-  text;
-  node;
   constructor(text, node) {
     this.text = text;
     this.node = node;
   }
 };
-var LinearGradientMatcher = class extends matcherBase(LinearGradientMatch) {
+var LinearGradientMatcherBase = matcherBase(LinearGradientMatch);
+var LinearGradientMatcher = class extends LinearGradientMatcherBase {
   // clang-format on
   matches(node, matching) {
     const text = matching.ast.text(node);
@@ -14861,11 +17836,6 @@ var LinearGradientMatcher = class extends matcherBase(LinearGradientMatch) {
   }
 };
 var ColorMatch = class {
-  text;
-  node;
-  currentColorCallback;
-  relativeColor;
-  computedText;
   constructor(text, node, currentColorCallback, relativeColor) {
     this.text = text;
     this.node = node;
@@ -14873,9 +17843,10 @@ var ColorMatch = class {
     this.relativeColor = relativeColor;
     this.computedText = currentColorCallback;
   }
+  computedText;
 };
-var ColorMatcher = class _ColorMatcher extends matcherBase(ColorMatch) {
-  currentColorCallback;
+var ColorMatcherBase = matcherBase(ColorMatch);
+var ColorMatcher = class _ColorMatcher extends ColorMatcherBase {
   constructor(currentColorCallback) {
     super();
     this.currentColorCallback = currentColorCallback;
@@ -14933,27 +17904,25 @@ var ColorMatcher = class _ColorMatcher extends matcherBase(ColorMatch) {
 function isRelativeColorChannelName(channel) {
   const maybeChannel = channel;
   switch (maybeChannel) {
-    case "a":
-    case "alpha":
-    case "b":
-    case "c":
-    case "g":
-    case "h":
-    case "l":
-    case "r":
-    case "s":
-    case "w":
-    case "x":
-    case "y":
-    case "z":
+    case Common6.Color.ColorChannel.A:
+    case Common6.Color.ColorChannel.ALPHA:
+    case Common6.Color.ColorChannel.B:
+    case Common6.Color.ColorChannel.C:
+    case Common6.Color.ColorChannel.G:
+    case Common6.Color.ColorChannel.H:
+    case Common6.Color.ColorChannel.L:
+    case Common6.Color.ColorChannel.R:
+    case Common6.Color.ColorChannel.S:
+    case Common6.Color.ColorChannel.W:
+    case Common6.Color.ColorChannel.X:
+    case Common6.Color.ColorChannel.Y:
+    case Common6.Color.ColorChannel.Z:
       return true;
   }
   const catchFallback = maybeChannel;
   return false;
 }
 var RelativeColorChannelMatch = class {
-  text;
-  node;
   constructor(text, node) {
     this.text = text;
     this.node = node;
@@ -14962,30 +17931,30 @@ var RelativeColorChannelMatch = class {
     const color = Common6.Color.parse(relativeColor.baseColor.text)?.as(relativeColor.colorSpace);
     if (color instanceof Common6.Color.ColorFunction) {
       switch (this.text) {
-        case "r":
+        case Common6.Color.ColorChannel.R:
           return color.isXYZ() ? null : color.p0;
-        case "g":
+        case Common6.Color.ColorChannel.G:
           return color.isXYZ() ? null : color.p1;
-        case "b":
+        case Common6.Color.ColorChannel.B:
           return color.isXYZ() ? null : color.p2;
-        case "x":
+        case Common6.Color.ColorChannel.X:
           return color.isXYZ() ? color.p0 : null;
-        case "y":
+        case Common6.Color.ColorChannel.Y:
           return color.isXYZ() ? color.p1 : null;
-        case "z":
+        case Common6.Color.ColorChannel.Z:
           return color.isXYZ() ? color.p2 : null;
-        case "alpha":
+        case Common6.Color.ColorChannel.ALPHA:
           return color.alpha;
       }
     } else if (color instanceof Common6.Color.Legacy) {
       switch (this.text) {
-        case "r":
+        case Common6.Color.ColorChannel.R:
           return color.rgba()[0];
-        case "g":
+        case Common6.Color.ColorChannel.G:
           return color.rgba()[1];
-        case "b":
+        case Common6.Color.ColorChannel.B:
           return color.rgba()[2];
-        case "alpha":
+        case Common6.Color.ColorChannel.ALPHA:
           return color.rgba()[3];
       }
     } else if (color && this.text in color) {
@@ -14997,7 +17966,8 @@ var RelativeColorChannelMatch = class {
     return this.text;
   }
 };
-var RelativeColorChannelMatcher = class extends matcherBase(RelativeColorChannelMatch) {
+var RelativeColorChannelMatcherBase = matcherBase(RelativeColorChannelMatch);
+var RelativeColorChannelMatcher = class extends RelativeColorChannelMatcherBase {
   // clang-format on
   accepts(propertyName) {
     return cssMetadata().isColorAwareProperty(propertyName);
@@ -15011,11 +17981,6 @@ var RelativeColorChannelMatcher = class extends matcherBase(RelativeColorChannel
   }
 };
 var LightDarkColorMatch = class {
-  text;
-  node;
-  light;
-  dark;
-  style;
   constructor(text, node, light, dark, style) {
     this.text = text;
     this.node = node;
@@ -15024,8 +17989,8 @@ var LightDarkColorMatch = class {
     this.style = style;
   }
 };
-var LightDarkColorMatcher = class extends matcherBase(LightDarkColorMatch) {
-  style;
+var LightDarkColorMatcherBase = matcherBase(LightDarkColorMatch);
+var LightDarkColorMatcher = class extends LightDarkColorMatcherBase {
   // clang-format on
   constructor(style) {
     super();
@@ -15046,10 +18011,6 @@ var LightDarkColorMatcher = class extends matcherBase(LightDarkColorMatch) {
   }
 };
 var AutoBaseMatch = class {
-  text;
-  node;
-  auto;
-  base;
   constructor(text, node, auto, base) {
     this.text = text;
     this.node = node;
@@ -15057,7 +18018,8 @@ var AutoBaseMatch = class {
     this.base = base;
   }
 };
-var AutoBaseMatcher = class extends matcherBase(AutoBaseMatch) {
+var AutoBaseMatcherBase = matcherBase(AutoBaseMatch);
+var AutoBaseMatcher = class extends AutoBaseMatcherBase {
   // clang-format on
   matches(node, matching) {
     if (node.name !== "CallExpression" || matching.ast.text(node.getChild("Callee")) !== "-internal-auto-base") {
@@ -15070,63 +18032,70 @@ var AutoBaseMatcher = class extends matcherBase(AutoBaseMatch) {
     return new AutoBaseMatch(matching.ast.text(node), node, args[0], args[1]);
   }
 };
+var LinkableNameProperties = /* @__PURE__ */ ((LinkableNameProperties2) => {
+  LinkableNameProperties2["ANIMATION"] = "animation";
+  LinkableNameProperties2["ANIMATION_NAME"] = "animation-name";
+  LinkableNameProperties2["FONT_PALETTE"] = "font-palette";
+  LinkableNameProperties2["LIST_STYLE"] = "list-style";
+  LinkableNameProperties2["LIST_STYLE_TYPE"] = "list-style-type";
+  LinkableNameProperties2["POSITION_TRY"] = "position-try";
+  LinkableNameProperties2["POSITION_TRY_FALLBACKS"] = "position-try-fallbacks";
+  return LinkableNameProperties2;
+})(LinkableNameProperties || {});
 var LinkableNameMatch = class {
-  text;
-  node;
-  propertyName;
   constructor(text, node, propertyName) {
     this.text = text;
     this.node = node;
     this.propertyName = propertyName;
   }
 };
-var LinkableNameMatcher = class _LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
+var LinkableNameMatcherBase = matcherBase(LinkableNameMatch);
+var LinkableNameMatcher = class _LinkableNameMatcher extends LinkableNameMatcherBase {
   // clang-format on
   static isLinkableNameProperty(propertyName) {
     const names = [
-      "animation",
-      "animation-name",
-      "font-palette",
-      "list-style",
-      "list-style-type",
-      "position-try",
-      "position-try-fallbacks"
+      "animation" /* ANIMATION */,
+      "animation-name" /* ANIMATION_NAME */,
+      "font-palette" /* FONT_PALETTE */,
+      "list-style" /* LIST_STYLE */,
+      "list-style-type" /* LIST_STYLE_TYPE */,
+      "position-try" /* POSITION_TRY */,
+      "position-try-fallbacks" /* POSITION_TRY_FALLBACKS */
     ];
     return names.includes(propertyName);
   }
-  static identifierAnimationLonghandMap = new Map(Object.entries({
-    normal: "direction",
-    alternate: "direction",
-    reverse: "direction",
-    "alternate-reverse": "direction",
-    none: "fill-mode",
-    forwards: "fill-mode",
-    backwards: "fill-mode",
-    both: "fill-mode",
-    running: "play-state",
-    paused: "play-state",
-    infinite: "iteration-count",
-    linear: "easing-function",
-    ease: "easing-function",
-    "ease-in": "easing-function",
-    "ease-out": "easing-function",
-    "ease-in-out": "easing-function",
-    steps: "easing-function",
-    "step-start": "easing-function",
-    "step-end": "easing-function"
-  }));
+  static identifierAnimationLonghandMap = new Map(
+    Object.entries({
+      normal: "direction" /* DIRECTION */,
+      alternate: "direction" /* DIRECTION */,
+      reverse: "direction" /* DIRECTION */,
+      "alternate-reverse": "direction" /* DIRECTION */,
+      none: "fill-mode" /* FILL_MODE */,
+      forwards: "fill-mode" /* FILL_MODE */,
+      backwards: "fill-mode" /* FILL_MODE */,
+      both: "fill-mode" /* FILL_MODE */,
+      running: "play-state" /* PLAY_STATE */,
+      paused: "play-state" /* PLAY_STATE */,
+      infinite: "iteration-count" /* ITERATION_COUNT */,
+      linear: "easing-function" /* EASING_FUNCTION */,
+      ease: "easing-function" /* EASING_FUNCTION */,
+      "ease-in": "easing-function" /* EASING_FUNCTION */,
+      "ease-out": "easing-function" /* EASING_FUNCTION */,
+      "ease-in-out": "easing-function" /* EASING_FUNCTION */,
+      steps: "easing-function" /* EASING_FUNCTION */,
+      "step-start": "easing-function" /* EASING_FUNCTION */,
+      "step-end": "easing-function" /* EASING_FUNCTION */
+    })
+  );
   matchAnimationNameInShorthand(node, matching) {
     const text = matching.ast.text(node);
     if (!_LinkableNameMatcher.identifierAnimationLonghandMap.has(text)) {
-      return new LinkableNameMatch(
-        text,
-        node,
-        "animation"
-        /* LinkableNameProperties.ANIMATION */
-      );
+      return new LinkableNameMatch(text, node, "animation" /* ANIMATION */);
     }
     const declarations = ASTUtils.split(ASTUtils.siblings(ASTUtils.declValue(matching.ast.tree)));
-    const currentDeclarationNodes = declarations.find((declaration2) => declaration2[0].from <= node.from && declaration2[declaration2.length - 1].to >= node.to);
+    const currentDeclarationNodes = declarations.find(
+      (declaration2) => declaration2[0].from <= node.from && declaration2[declaration2.length - 1].to >= node.to
+    );
     if (!currentDeclarationNodes) {
       return null;
     }
@@ -15140,12 +18109,7 @@ var LinkableNameMatcher = class _LinkableNameMatcher extends matcherBase(Linkabl
       if (itNode.name === "ValueName") {
         const categoryValue = _LinkableNameMatcher.identifierAnimationLonghandMap.get(tokenized.text(itNode));
         if (categoryValue && categoryValue === identifierCategory) {
-          return new LinkableNameMatch(
-            text,
-            node,
-            "animation"
-            /* LinkableNameProperties.ANIMATION */
-          );
+          return new LinkableNameMatch(text, node, "animation" /* ANIMATION */);
         }
       }
     }
@@ -15164,7 +18128,7 @@ var LinkableNameMatcher = class _LinkableNameMatcher extends matcherBase(Linkabl
     const isParentADeclaration = parentNode.name === "Declaration";
     const isInsideVarCall = parentNode.name === "ArgList" && parentNode.prevSibling?.name === "Callee" && matching.ast.text(parentNode.prevSibling) === "var";
     const isAParentDeclarationOrVarCall = isParentADeclaration || isInsideVarCall;
-    const shouldMatchOnlyVariableName = propertyName === "position-try" || propertyName === "position-try-fallbacks";
+    const shouldMatchOnlyVariableName = propertyName === "position-try" /* POSITION_TRY */ || propertyName === "position-try-fallbacks" /* POSITION_TRY_FALLBACKS */;
     if (!propertyName || node.name !== "ValueName" && node.name !== "VariableName" || !isAParentDeclarationOrVarCall || node.name === "ValueName" && shouldMatchOnlyVariableName) {
       return null;
     }
@@ -15178,14 +18142,13 @@ var LinkableNameMatcher = class _LinkableNameMatcher extends matcherBase(Linkabl
   }
 };
 var BezierMatch = class {
-  text;
-  node;
   constructor(text, node) {
     this.text = text;
     this.node = node;
   }
 };
-var BezierMatcher = class extends matcherBase(BezierMatch) {
+var BezierMatcherBase = matcherBase(BezierMatch);
+var BezierMatcher = class extends BezierMatcherBase {
   // clang-format on
   accepts(propertyName) {
     return cssMetadata().isBezierAwareProperty(propertyName);
@@ -15201,30 +18164,32 @@ var BezierMatcher = class extends matcherBase(BezierMatch) {
   }
 };
 var StringMatch = class {
-  text;
-  node;
   constructor(text, node) {
     this.text = text;
     this.node = node;
   }
 };
-var StringMatcher = class extends matcherBase(StringMatch) {
+var StringMatcherBase = matcherBase(StringMatch);
+var StringMatcher = class extends StringMatcherBase {
   // clang-format on
   matches(node, matching) {
     return node.name === "StringLiteral" ? new StringMatch(matching.ast.text(node), node) : null;
   }
 };
+var ShadowType = /* @__PURE__ */ ((ShadowType2) => {
+  ShadowType2["BOX_SHADOW"] = "boxShadow";
+  ShadowType2["TEXT_SHADOW"] = "textShadow";
+  return ShadowType2;
+})(ShadowType || {});
 var ShadowMatch = class {
-  text;
-  node;
-  shadowType;
   constructor(text, node, shadowType) {
     this.text = text;
     this.node = node;
     this.shadowType = shadowType;
   }
 };
-var ShadowMatcher = class extends matcherBase(ShadowMatch) {
+var ShadowMatcherBase = matcherBase(ShadowMatch);
+var ShadowMatcher = class extends ShadowMatcherBase {
   // clang-format on
   accepts(propertyName) {
     return cssMetadata().isShadowProperty(propertyName);
@@ -15241,22 +18206,19 @@ var ShadowMatcher = class extends matcherBase(ShadowMatch) {
     return new ShadowMatch(
       valueText,
       node,
-      matching.ast.propertyName === "text-shadow" ? "textShadow" : "boxShadow"
-      /* ShadowType.BOX_SHADOW */
+      matching.ast.propertyName === "text-shadow" ? "textShadow" /* TEXT_SHADOW */ : "boxShadow" /* BOX_SHADOW */
     );
   }
 };
 var LengthMatch = class {
-  text;
-  node;
-  unit;
   constructor(text, node, unit) {
     this.text = text;
     this.node = node;
     this.unit = unit;
   }
 };
-var LengthMatcher = class _LengthMatcher extends matcherBase(LengthMatch) {
+var LengthMatcherBase = matcherBase(LengthMatch);
+var LengthMatcher = class _LengthMatcher extends LengthMatcherBase {
   // clang-format on
   static LENGTH_UNITS = /* @__PURE__ */ new Set([
     "em",
@@ -15325,11 +18287,22 @@ var LengthMatcher = class _LengthMatcher extends matcherBase(LengthMatch) {
     return new LengthMatch(text, node, unit);
   }
 };
+var SelectFunction = /* @__PURE__ */ ((SelectFunction2) => {
+  SelectFunction2["MIN"] = "min";
+  SelectFunction2["MAX"] = "max";
+  SelectFunction2["CLAMP"] = "clamp";
+  return SelectFunction2;
+})(SelectFunction || {});
+var ArithmeticFunction = /* @__PURE__ */ ((ArithmeticFunction2) => {
+  ArithmeticFunction2["CALC"] = "calc";
+  ArithmeticFunction2["SIBLING_COUNT"] = "sibling-count";
+  ArithmeticFunction2["SIBLING_INDEX"] = "sibling-index";
+  ArithmeticFunction2["ROUND"] = "round";
+  ArithmeticFunction2["MOD"] = "mod";
+  ArithmeticFunction2["REM"] = "rem";
+  return ArithmeticFunction2;
+})(ArithmeticFunction || {});
 var BaseFunctionMatch = class {
-  text;
-  node;
-  func;
-  args;
   constructor(text, node, func, args) {
     this.text = text;
     this.node = node;
@@ -15341,33 +18314,34 @@ var MathFunctionMatch = class extends BaseFunctionMatch {
   isArithmeticFunctionCall() {
     const func = this.func;
     switch (func) {
-      case "calc":
-      case "sibling-count":
-      case "sibling-index":
-      case "round":
-      case "mod":
-      case "rem":
+      case "calc" /* CALC */:
+      case "sibling-count" /* SIBLING_COUNT */:
+      case "sibling-index" /* SIBLING_INDEX */:
+      case "round" /* ROUND */:
+      case "mod" /* MOD */:
+      case "rem" /* REM */:
         return true;
     }
     const catchFallback = func;
     return false;
   }
 };
-var MathFunctionMatcher = class _MathFunctionMatcher extends matcherBase(MathFunctionMatch) {
+var MathFunctionMatcherBase = matcherBase(MathFunctionMatch);
+var MathFunctionMatcher = class _MathFunctionMatcher extends MathFunctionMatcherBase {
   // clang-format on
   static getFunctionType(callee) {
     const maybeFunc = callee;
     switch (maybeFunc) {
       case null:
-      case "min":
-      case "max":
-      case "clamp":
-      case "calc":
-      case "sibling-count":
-      case "sibling-index":
-      case "round":
-      case "mod":
-      case "rem":
+      case "min" /* MIN */:
+      case "max" /* MAX */:
+      case "clamp" /* CLAMP */:
+      case "calc" /* CALC */:
+      case "sibling-count" /* SIBLING_COUNT */:
+      case "sibling-index" /* SIBLING_INDEX */:
+      case "round" /* ROUND */:
+      case "mod" /* MOD */:
+      case "rem" /* REM */:
         return maybeFunc;
     }
     const catchFallback = maybeFunc;
@@ -15395,7 +18369,8 @@ var MathFunctionMatcher = class _MathFunctionMatcher extends matcherBase(MathFun
 };
 var CustomFunctionMatch = class extends BaseFunctionMatch {
 };
-var CustomFunctionMatcher = class extends matcherBase(CustomFunctionMatch) {
+var CustomFunctionMatcherBase = matcherBase(CustomFunctionMatch);
+var CustomFunctionMatcher = class extends CustomFunctionMatcherBase {
   // clang-format on
   matches(node, matching) {
     if (node.name !== "CallExpression") {
@@ -15413,17 +18388,21 @@ var CustomFunctionMatcher = class extends matcherBase(CustomFunctionMatch) {
     return new CustomFunctionMatch(text, node, callee, args);
   }
 };
+var LayoutType = /* @__PURE__ */ ((LayoutType2) => {
+  LayoutType2["FLEX"] = "flex";
+  LayoutType2["GRID"] = "grid";
+  LayoutType2["GRID_LANES"] = "grid-lanes";
+  return LayoutType2;
+})(LayoutType || {});
 var FlexGridGridLanesMatch = class {
-  text;
-  node;
-  layoutType;
   constructor(text, node, layoutType) {
     this.text = text;
     this.node = node;
     this.layoutType = layoutType;
   }
 };
-var FlexGridGridLanesMatcher = class _FlexGridGridLanesMatcher extends matcherBase(FlexGridGridLanesMatch) {
+var FlexGridGridLanesMatcherBase = matcherBase(FlexGridGridLanesMatch);
+var FlexGridGridLanesMatcher = class _FlexGridGridLanesMatcher extends FlexGridGridLanesMatcherBase {
   // clang-format on
   static FLEX = ["flex", "inline-flex", "block flex", "inline flex"];
   static GRID = ["grid", "inline-grid", "block grid", "inline grid"];
@@ -15442,43 +18421,26 @@ var FlexGridGridLanesMatcher = class _FlexGridGridLanesMatcher extends matcherBa
     const values = valueNodes.filter((node2) => node2.name !== "Important").map((node2) => matching.getComputedText(node2).trim()).filter((value) => value);
     const text = values.join(" ");
     if (_FlexGridGridLanesMatcher.FLEX.includes(text)) {
-      return new FlexGridGridLanesMatch(
-        matching.ast.text(node),
-        node,
-        "flex"
-        /* LayoutType.FLEX */
-      );
+      return new FlexGridGridLanesMatch(matching.ast.text(node), node, "flex" /* FLEX */);
     }
     if (_FlexGridGridLanesMatcher.GRID.includes(text)) {
-      return new FlexGridGridLanesMatch(
-        matching.ast.text(node),
-        node,
-        "grid"
-        /* LayoutType.GRID */
-      );
+      return new FlexGridGridLanesMatch(matching.ast.text(node), node, "grid" /* GRID */);
     }
     if (_FlexGridGridLanesMatcher.GRID_LANES.includes(text)) {
-      return new FlexGridGridLanesMatch(
-        matching.ast.text(node),
-        node,
-        "grid-lanes"
-        /* LayoutType.GRID_LANES */
-      );
+      return new FlexGridGridLanesMatch(matching.ast.text(node), node, "grid-lanes" /* GRID_LANES */);
     }
     return null;
   }
 };
 var GridTemplateMatch = class {
-  text;
-  node;
-  lines;
   constructor(text, node, lines) {
     this.text = text;
     this.node = node;
     this.lines = lines;
   }
 };
-var GridTemplateMatcher = class extends matcherBase(GridTemplateMatch) {
+var GridTemplateMatcherBase = matcherBase(GridTemplateMatch);
+var GridTemplateMatcher = class extends GridTemplateMatcherBase {
   // clang-format on
   accepts(propertyName) {
     return cssMetadata().isGridAreaDefiningProperty(propertyName);
@@ -15549,16 +18511,14 @@ var GridTemplateMatcher = class extends matcherBase(GridTemplateMatch) {
   }
 };
 var AnchorFunctionMatch = class {
-  text;
-  node;
-  functionName;
   constructor(text, node, functionName) {
     this.text = text;
     this.node = node;
     this.functionName = functionName;
   }
 };
-var AnchorFunctionMatcher = class extends matcherBase(AnchorFunctionMatch) {
+var AnchorFunctionMatcherBase = matcherBase(AnchorFunctionMatch);
+var AnchorFunctionMatcher = class extends AnchorFunctionMatcherBase {
   // clang-format on
   anchorFunction(node, matching) {
     if (node.name !== "CallExpression") {
@@ -15597,16 +18557,14 @@ var AnchorFunctionMatcher = class extends matcherBase(AnchorFunctionMatch) {
   }
 };
 var PositionAnchorMatch = class {
-  text;
-  matching;
-  node;
   constructor(text, matching, node) {
     this.text = text;
     this.matching = matching;
     this.node = node;
   }
 };
-var PositionAnchorMatcher = class extends matcherBase(PositionAnchorMatch) {
+var PositionAnchorMatcherBase = matcherBase(PositionAnchorMatch);
+var PositionAnchorMatcher = class extends PositionAnchorMatcherBase {
   // clang-format on
   accepts(propertyName) {
     return propertyName === "position-anchor";
@@ -15620,10 +18578,6 @@ var PositionAnchorMatcher = class extends matcherBase(PositionAnchorMatch) {
   }
 };
 var CSSWideKeywordMatch = class {
-  text;
-  node;
-  property;
-  matchedStyles;
   constructor(text, node, property, matchedStyles) {
     this.text = text;
     this.node = node;
@@ -15637,9 +18591,8 @@ var CSSWideKeywordMatch = class {
     return this.resolveProperty()?.value ?? null;
   }
 };
-var CSSWideKeywordMatcher = class extends matcherBase(CSSWideKeywordMatch) {
-  property;
-  matchedStyles;
+var CSSWideKeywordMatcherBase = matcherBase(CSSWideKeywordMatch);
+var CSSWideKeywordMatcher = class extends CSSWideKeywordMatcherBase {
   // clang-format on
   constructor(property, matchedStyles) {
     super();
@@ -15662,10 +18615,6 @@ var CSSWideKeywordMatcher = class extends matcherBase(CSSWideKeywordMatch) {
   }
 };
 var PositionTryMatch = class {
-  text;
-  node;
-  preamble;
-  fallbacks;
   constructor(text, node, preamble, fallbacks) {
     this.text = text;
     this.node = node;
@@ -15673,10 +18622,11 @@ var PositionTryMatch = class {
     this.fallbacks = fallbacks;
   }
 };
-var PositionTryMatcher = class extends matcherBase(PositionTryMatch) {
+var PositionTryMatcherBase = matcherBase(PositionTryMatch);
+var PositionTryMatcher = class extends PositionTryMatcherBase {
   // clang-format on
   accepts(propertyName) {
-    return propertyName === "position-try" || propertyName === "position-try-fallbacks";
+    return propertyName === "position-try" /* POSITION_TRY */ || propertyName === "position-try-fallbacks" /* POSITION_TRY_FALLBACKS */;
   }
   matches(node, matching) {
     if (node.name !== "Declaration") {
@@ -15685,7 +18635,7 @@ var PositionTryMatcher = class extends matcherBase(PositionTryMatch) {
     let preamble = [];
     const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
     const fallbacks = ASTUtils.split(valueNodes);
-    if (matching.ast.propertyName === "position-try") {
+    if (matching.ast.propertyName === "position-try" /* POSITION_TRY */) {
       for (const [i, n] of fallbacks[0].entries()) {
         const computedText = matching.getComputedText(n);
         if (CSSMetadata.isCSSWideKeyword(computedText)) {
@@ -15702,11 +18652,6 @@ var PositionTryMatcher = class extends matcherBase(PositionTryMatch) {
   }
 };
 var EnvFunctionMatch = class {
-  text;
-  node;
-  varName;
-  value;
-  varNameIsValid;
   constructor(text, node, varName, value, varNameIsValid) {
     this.text = text;
     this.node = node;
@@ -15718,8 +18663,8 @@ var EnvFunctionMatch = class {
     return this.value;
   }
 };
-var EnvFunctionMatcher = class extends matcherBase(EnvFunctionMatch) {
-  matchedStyles;
+var EnvFunctionMatcherBase = matcherBase(EnvFunctionMatch);
+var EnvFunctionMatcher = class extends EnvFunctionMatcherBase {
   // clang-format on
   constructor(matchedStyles) {
     super();
@@ -15740,7 +18685,7 @@ var EnvFunctionMatcher = class extends matcherBase(EnvFunctionMatch) {
   }
 };
 
-// gen/front_end/core/sdk/CSSPropertyParser.js
+// ../../front_end/core/sdk/CSSPropertyParser.ts
 var globalValues = /* @__PURE__ */ new Set(["inherit", "initial", "unset"]);
 var tagRegexp = /[\x20-\x7E]{4}/;
 var numRegexp = /[+-]?(?:\d*\.)?\d+(?:[eE]\d+)?/;
@@ -15945,14 +18890,12 @@ var BottomUpTreeMatching = class extends TreeWalker {
   }
 };
 var ComputedTextChunk = class {
-  match;
-  offset;
-  #cachedComputedText = null;
-  #topLevelValueCount = null;
   constructor(match, offset) {
     this.match = match;
     this.offset = offset;
   }
+  #cachedComputedText = null;
+  #topLevelValueCount = null;
   get end() {
     return this.offset + this.length;
   }
@@ -16107,7 +19050,9 @@ var ComputedText = class {
   }
   countTopLevelValues(begin, end) {
     const pieces = Array.from(this.#getPieces(begin, end));
-    const counts = pieces.map((chunk) => chunk instanceof ComputedTextChunk ? chunk.topLevelValueCount : this.#countTopLevelValuesInStringPiece(chunk));
+    const counts = pieces.map(
+      (chunk) => chunk instanceof ComputedTextChunk ? chunk.topLevelValueCount : this.#countTopLevelValuesInStringPiece(chunk)
+    );
     const count = counts.reduce((sum, v) => sum + v, 0);
     return count;
   }
@@ -16123,7 +19068,7 @@ function requiresSpace(a, b) {
 }
 var CSSControlMap = Map;
 var ASTUtils;
-(function(ASTUtils2) {
+((ASTUtils2) => {
   function siblings(node) {
     const result = [];
     while (node) {
@@ -16271,7 +19216,11 @@ var TreeSearch = class _TreeSearch extends TreeWalker {
   }
 };
 
-// gen/front_end/core/sdk/CSSProperty.js
+// ../../front_end/core/sdk/CSSProperty.ts
+var Events7 = /* @__PURE__ */ ((Events35) => {
+  Events35["LOCAL_VALUE_UPDATED"] = "localValueUpdated";
+  return Events35;
+})(Events7 || {});
 var CSSProperty = class _CSSProperty extends Common7.ObjectWrapper.ObjectWrapper {
   ownerStyle;
   index;
@@ -16302,17 +19251,33 @@ var CSSProperty = class _CSSProperty extends Common7.ObjectWrapper.ObjectWrapper
     this.range = range ? TextUtils.TextRange.TextRange.fromObject(range) : null;
     if (longhandProperties && longhandProperties.length > 0) {
       for (const property of longhandProperties) {
-        this.#longhandProperties.push(new _CSSProperty(ownerStyle, ++index, property.name, property.value, important, disabled, parsedOk, true));
+        this.#longhandProperties.push(
+          new _CSSProperty(ownerStyle, ++index, property.name, property.value, important, disabled, parsedOk, true)
+        );
       }
     } else {
       const longhandNames = cssMetadata().getLonghands(name);
       for (const longhandName of longhandNames || []) {
-        this.#longhandProperties.push(new _CSSProperty(ownerStyle, ++index, longhandName, "", important, disabled, parsedOk, true));
+        this.#longhandProperties.push(
+          new _CSSProperty(ownerStyle, ++index, longhandName, "", important, disabled, parsedOk, true)
+        );
       }
     }
   }
   static parsePayload(ownerStyle, index, payload) {
-    const result = new _CSSProperty(ownerStyle, index, payload.name, payload.value, payload.important || false, payload.disabled || false, "parsedOk" in payload ? Boolean(payload.parsedOk) : true, Boolean(payload.implicit), payload.text, payload.range, payload.longhandProperties);
+    const result = new _CSSProperty(
+      ownerStyle,
+      index,
+      payload.name,
+      payload.value,
+      payload.important || false,
+      payload.disabled || false,
+      "parsedOk" in payload ? Boolean(payload.parsedOk) : true,
+      Boolean(payload.implicit),
+      payload.text,
+      payload.range,
+      payload.longhandProperties
+    );
     return result;
   }
   parseExpression(expression, matchedStyles, computedStyles) {
@@ -16501,10 +19466,7 @@ var CSSProperty = class _CSSProperty extends Common7.ObjectWrapper.ObjectWrapper
   // Updates the value stored locally and emits an event to signal its update.
   setLocalValue(value) {
     this.value = value;
-    this.dispatchEventToListeners(
-      "localValueUpdated"
-      /* Events.LOCAL_VALUE_UPDATED */
-    );
+    this.dispatchEventToListeners("localValueUpdated" /* LOCAL_VALUE_UPDATED */);
   }
   async setDisabled(disabled) {
     if (!this.ownerStyle) {
@@ -16569,7 +19531,7 @@ var CSSProperty = class _CSSProperty extends Common7.ObjectWrapper.ObjectWrapper
   }
 };
 
-// gen/front_end/core/sdk/CSSRule.js
+// ../../front_end/core/sdk/CSSRule.ts
 var CSSRule_exports = {};
 __export(CSSRule_exports, {
   CSSAtRule: () => CSSAtRule,
@@ -16581,20 +19543,22 @@ __export(CSSRule_exports, {
   CSSRule: () => CSSRule,
   CSSStyleRule: () => CSSStyleRule
 });
-import * as Platform4 from "./../platform/platform.js";
-import * as TextUtils11 from "./../text_utils/text_utils.js";
+import * as Platform4 from "../platform/platform.js";
+import * as TextUtils11 from "../text_utils/text_utils.js";
 
-// gen/front_end/core/sdk/CSSContainerQuery.js
+// ../../front_end/core/sdk/CSSContainerQuery.ts
 var CSSContainerQuery_exports = {};
 __export(CSSContainerQuery_exports, {
   CSSContainerQuery: () => CSSContainerQuery,
   CSSContainerQueryContainer: () => CSSContainerQueryContainer,
+  PhysicalAxis: () => PhysicalAxis,
+  QueryAxis: () => QueryAxis,
   getPhysicalAxisFromQueryAxis: () => getPhysicalAxisFromQueryAxis,
   getQueryAxisFromContainerType: () => getQueryAxisFromContainerType
 });
-import * as TextUtils3 from "./../text_utils/text_utils.js";
+import * as TextUtils3 from "../text_utils/text_utils.js";
 
-// gen/front_end/core/sdk/CSSQuery.js
+// ../../front_end/core/sdk/CSSQuery.ts
 var CSSQuery_exports = {};
 __export(CSSQuery_exports, {
   CSSQuery: () => CSSQuery
@@ -16648,7 +19612,7 @@ var CSSQuery = class {
   }
 };
 
-// gen/front_end/core/sdk/CSSContainerQuery.js
+// ../../front_end/core/sdk/CSSContainerQuery.ts
 var CSSContainerQuery = class _CSSContainerQuery extends CSSQuery {
   name;
   physicalAxes;
@@ -16678,7 +19642,14 @@ var CSSContainerQuery = class _CSSContainerQuery extends CSSQuery {
     return true;
   }
   async getContainerForNode(nodeId) {
-    const containerNode = await this.cssModel.domModel().getContainerForNode(nodeId, this.name, this.physicalAxes, this.logicalAxes, this.queriesScrollState, this.queriesAnchored);
+    const containerNode = await this.cssModel.domModel().getContainerForNode(
+      nodeId,
+      this.name,
+      this.physicalAxes,
+      this.logicalAxes,
+      this.queriesScrollState,
+      this.queriesAnchored
+    );
     if (!containerNode) {
       return;
     }
@@ -16703,10 +19674,10 @@ var CSSContainerQueryContainer = class {
     const queryAxis = getQueryAxisFromContainerType(`${containerType}`);
     const physicalAxis = getPhysicalAxisFromQueryAxis(queryAxis, writingMode);
     let width, height;
-    if (physicalAxis === "Both" || physicalAxis === "Horizontal") {
+    if (physicalAxis === "Both" /* BOTH */ || physicalAxis === "Horizontal" /* HORIZONTAL */) {
       width = styles.get("width");
     }
-    if (physicalAxis === "Both" || physicalAxis === "Vertical") {
+    if (physicalAxis === "Both" /* BOTH */ || physicalAxis === "Vertical" /* VERTICAL */) {
       height = styles.get("height");
     }
     return {
@@ -16722,35 +19693,49 @@ var getQueryAxisFromContainerType = (propertyValue) => {
   let isInline = false;
   for (const segment of segments) {
     if (segment === "size") {
-      return "size";
+      return "size" /* BOTH */;
     }
     isInline = isInline || segment === "inline-size";
   }
   if (isInline) {
-    return "inline-size";
+    return "inline-size" /* INLINE */;
   }
-  return "";
+  return "" /* NONE */;
 };
 var getPhysicalAxisFromQueryAxis = (queryAxis, writingMode) => {
   const isVerticalWritingMode = writingMode.startsWith("vertical");
   switch (queryAxis) {
-    case "":
-      return "";
-    case "size":
-      return "Both";
-    case "inline-size":
-      return isVerticalWritingMode ? "Vertical" : "Horizontal";
-    case "block-size":
-      return isVerticalWritingMode ? "Horizontal" : "Vertical";
+    case "" /* NONE */:
+      return "" /* NONE */;
+    case "size" /* BOTH */:
+      return "Both" /* BOTH */;
+    case "inline-size" /* INLINE */:
+      return isVerticalWritingMode ? "Vertical" /* VERTICAL */ : "Horizontal" /* HORIZONTAL */;
+    case "block-size" /* BLOCK */:
+      return isVerticalWritingMode ? "Horizontal" /* HORIZONTAL */ : "Vertical" /* VERTICAL */;
   }
 };
+var QueryAxis = /* @__PURE__ */ ((QueryAxis2) => {
+  QueryAxis2["NONE"] = "";
+  QueryAxis2["INLINE"] = "inline-size";
+  QueryAxis2["BLOCK"] = "block-size";
+  QueryAxis2["BOTH"] = "size";
+  return QueryAxis2;
+})(QueryAxis || {});
+var PhysicalAxis = /* @__PURE__ */ ((PhysicalAxis2) => {
+  PhysicalAxis2["NONE"] = "";
+  PhysicalAxis2["HORIZONTAL"] = "Horizontal";
+  PhysicalAxis2["VERTICAL"] = "Vertical";
+  PhysicalAxis2["BOTH"] = "Both";
+  return PhysicalAxis2;
+})(PhysicalAxis || {});
 
-// gen/front_end/core/sdk/CSSLayer.js
+// ../../front_end/core/sdk/CSSLayer.ts
 var CSSLayer_exports = {};
 __export(CSSLayer_exports, {
   CSSLayer: () => CSSLayer
 });
-import * as TextUtils4 from "./../text_utils/text_utils.js";
+import * as TextUtils4 from "../text_utils/text_utils.js";
 var CSSLayer = class _CSSLayer extends CSSQuery {
   static parseLayerPayload(cssModel, payload) {
     return payload.map((supports) => new _CSSLayer(cssModel, supports));
@@ -16769,7 +19754,7 @@ var CSSLayer = class _CSSLayer extends CSSQuery {
   }
 };
 
-// gen/front_end/core/sdk/CSSMedia.js
+// ../../front_end/core/sdk/CSSMedia.ts
 var CSSMedia_exports = {};
 __export(CSSMedia_exports, {
   CSSMedia: () => CSSMedia,
@@ -16777,7 +19762,7 @@ __export(CSSMedia_exports, {
   CSSMediaQueryExpression: () => CSSMediaQueryExpression,
   Source: () => Source
 });
-import * as TextUtils5 from "./../text_utils/text_utils.js";
+import * as TextUtils5 from "../text_utils/text_utils.js";
 var CSSMediaQuery = class _CSSMediaQuery {
   #active;
   #expressions;
@@ -16874,12 +19859,12 @@ var Source = {
   IMPORT_RULE: "importRule"
 };
 
-// gen/front_end/core/sdk/CSSNavigation.js
+// ../../front_end/core/sdk/CSSNavigation.ts
 var CSSNavigation_exports = {};
 __export(CSSNavigation_exports, {
   CSSNavigation: () => CSSNavigation
 });
-import * as TextUtils6 from "./../text_utils/text_utils.js";
+import * as TextUtils6 from "../text_utils/text_utils.js";
 var CSSNavigation = class _CSSNavigation extends CSSQuery {
   static parseNavigationPayload(cssModel, payload) {
     return payload.map((navigation) => new _CSSNavigation(cssModel, navigation));
@@ -16900,12 +19885,12 @@ var CSSNavigation = class _CSSNavigation extends CSSQuery {
   }
 };
 
-// gen/front_end/core/sdk/CSSScope.js
+// ../../front_end/core/sdk/CSSScope.ts
 var CSSScope_exports = {};
 __export(CSSScope_exports, {
   CSSScope: () => CSSScope
 });
-import * as TextUtils7 from "./../text_utils/text_utils.js";
+import * as TextUtils7 from "../text_utils/text_utils.js";
 var CSSScope = class _CSSScope extends CSSQuery {
   static parseScopesPayload(cssModel, payload) {
     return payload.map((scope) => new _CSSScope(cssModel, scope));
@@ -16924,12 +19909,12 @@ var CSSScope = class _CSSScope extends CSSQuery {
   }
 };
 
-// gen/front_end/core/sdk/CSSStartingStyle.js
+// ../../front_end/core/sdk/CSSStartingStyle.ts
 var CSSStartingStyle_exports = {};
 __export(CSSStartingStyle_exports, {
   CSSStartingStyle: () => CSSStartingStyle
 });
-import * as TextUtils8 from "./../text_utils/text_utils.js";
+import * as TextUtils8 from "../text_utils/text_utils.js";
 var CSSStartingStyle = class _CSSStartingStyle extends CSSQuery {
   static parseStartingStylePayload(cssModel, payload) {
     return payload.map((p) => new _CSSStartingStyle(cssModel, p));
@@ -16947,13 +19932,13 @@ var CSSStartingStyle = class _CSSStartingStyle extends CSSQuery {
   }
 };
 
-// gen/front_end/core/sdk/CSSStyleDeclaration.js
+// ../../front_end/core/sdk/CSSStyleDeclaration.ts
 var CSSStyleDeclaration_exports = {};
 __export(CSSStyleDeclaration_exports, {
   CSSStyleDeclaration: () => CSSStyleDeclaration,
-  Type: () => Type2
+  Type: () => Type3
 });
-import * as TextUtils9 from "./../text_utils/text_utils.js";
+import * as TextUtils9 from "../text_utils/text_utils.js";
 var CSSStyleDeclaration = class {
   #cssModel;
   parentRule;
@@ -17062,7 +20047,16 @@ var CSSStyleDeclaration = class {
           continue;
         }
         const shorthandImportance = Boolean(this.#shorthandIsImportant.has(shorthand));
-        const shorthandProperty = new CSSProperty(this, this.allProperties().length, shorthand, shorthandValue, shorthandImportance, false, true, false);
+        const shorthandProperty = new CSSProperty(
+          this,
+          this.allProperties().length,
+          shorthand,
+          shorthandValue,
+          shorthandImportance,
+          false,
+          true,
+          false
+        );
         generatedProperties2.push(shorthandProperty);
         propertiesSet.add(shorthand);
       }
@@ -17197,22 +20191,22 @@ var CSSStyleDeclaration = class {
     this.insertPropertyAt(this.allProperties().length, name, value, userCallback);
   }
 };
-var Type2;
-(function(Type3) {
-  Type3["Regular"] = "Regular";
-  Type3["Inline"] = "Inline";
-  Type3["Attributes"] = "Attributes";
-  Type3["Pseudo"] = "Pseudo";
-  Type3["Transition"] = "Transition";
-  Type3["Animation"] = "Animation";
-})(Type2 || (Type2 = {}));
+var Type3 = /* @__PURE__ */ ((Type4) => {
+  Type4["Regular"] = "Regular";
+  Type4["Inline"] = "Inline";
+  Type4["Attributes"] = "Attributes";
+  Type4["Pseudo"] = "Pseudo";
+  Type4["Transition"] = "Transition";
+  Type4["Animation"] = "Animation";
+  return Type4;
+})(Type3 || {});
 
-// gen/front_end/core/sdk/CSSSupports.js
+// ../../front_end/core/sdk/CSSSupports.ts
 var CSSSupports_exports = {};
 __export(CSSSupports_exports, {
   CSSSupports: () => CSSSupports
 });
-import * as TextUtils10 from "./../text_utils/text_utils.js";
+import * as TextUtils10 from "../text_utils/text_utils.js";
 var CSSSupports = class _CSSSupports extends CSSQuery {
   static parseSupportsPayload(cssModel, payload) {
     return payload.map((supports) => new _CSSSupports(cssModel, supports));
@@ -17233,7 +20227,7 @@ var CSSSupports = class _CSSSupports extends CSSQuery {
   }
 };
 
-// gen/front_end/core/sdk/CSSRule.js
+// ../../front_end/core/sdk/CSSRule.ts
 function styleSheetHeaderForRule(cssModel, { styleSheetId }) {
   return styleSheetId && cssModel.styleSheetHeaderForId(styleSheetId) || null;
 }
@@ -17248,7 +20242,7 @@ var CSSRule = class {
     this.cssModelInternal = cssModel;
     this.origin = payload.origin;
     this.treeScope = payload.originTreeScopeNodeId;
-    this.style = new CSSStyleDeclaration(this.cssModelInternal, this, payload.style, Type2.Regular);
+    this.style = new CSSStyleDeclaration(this.cssModelInternal, this, payload.style, "Regular" /* Regular */);
   }
   get sourceURL() {
     return this.header?.sourceURL;
@@ -17263,16 +20257,16 @@ var CSSRule = class {
     return this.header?.resourceURL() ?? Platform4.DevToolsPath.EmptyUrlString;
   }
   isUserAgent() {
-    return this.origin === "user-agent";
+    return this.origin === CSS.StyleSheetOrigin.UserAgent;
   }
   isInjected() {
-    return this.origin === "injected";
+    return this.origin === CSS.StyleSheetOrigin.Injected;
   }
   isViaInspector() {
-    return this.origin === "inspector";
+    return this.origin === CSS.StyleSheetOrigin.Inspector;
   }
   isRegular() {
-    return this.origin === "regular";
+    return this.origin === CSS.StyleSheetOrigin.Regular;
   }
   isKeyframeRule() {
     return false;
@@ -17344,7 +20338,7 @@ var CSSStyleRule = class _CSSStyleRule extends CSSRule {
         shorthandEntries: [],
         cssProperties: []
       },
-      origin: "inspector"
+      origin: CSS.StyleSheetOrigin.Inspector
     };
     return new _CSSStyleRule(cssModel, dummyPayload);
   }
@@ -17377,7 +20371,12 @@ var CSSStyleRule = class _CSSStyleRule extends CSSRule {
     if (!firstRange || !lastRange) {
       return null;
     }
-    return new TextUtils11.TextRange.TextRange(firstRange.startLine, firstRange.startColumn, lastRange.endLine, lastRange.endColumn);
+    return new TextUtils11.TextRange.TextRange(
+      firstRange.startLine,
+      firstRange.startColumn,
+      lastRange.endLine,
+      lastRange.endColumn
+    );
   }
   lineNumberInSource(selectorIndex) {
     const selector = this.selectors[selectorIndex];
@@ -17595,7 +20594,7 @@ var CSSFunctionRule = class _CSSFunctionRule extends CSSRule {
   }
   protocolNodeToNestedStyle(node) {
     if (node.style) {
-      return { style: new CSSStyleDeclaration(this.cssModelInternal, this, node.style, Type2.Regular) };
+      return { style: new CSSStyleDeclaration(this.cssModelInternal, this, node.style, "Regular" /* Regular */) };
     }
     if (node.condition) {
       const children = this.protocolNodesToNestedStyles(node.condition.children);
@@ -17686,7 +20685,7 @@ var CSSFunctionRule = class _CSSFunctionRule extends CSSRule {
   }
 };
 
-// gen/front_end/core/sdk/CSSMatchedStyles.js
+// ../../front_end/core/sdk/CSSMatchedStyles.ts
 function containsStyle(styles, query) {
   if (!query.styleSheetId || !query.range) {
     return false;
@@ -17792,7 +20791,7 @@ function queryMatches(style) {
   return true;
 }
 function treeScopeDistance(node, property) {
-  if (!property.ownerStyle.parentRule && property.ownerStyle.type !== Type2.Inline) {
+  if (!property.ownerStyle.parentRule && property.ownerStyle.type !== "Inline" /* Inline */) {
     return -1;
   }
   const root = node.getTreeRoot();
@@ -17837,7 +20836,11 @@ var CSSRegisteredProperty = class {
     if (!value) {
       return null;
     }
-    return matchDeclaration(this.propertyName(), value, matchedStyles.propertyMatchers(this.style(), computedStyles));
+    return matchDeclaration(
+      this.propertyName(),
+      value,
+      matchedStyles.propertyMatchers(this.style(), computedStyles)
+    );
   }
   #asCSSProperties() {
     if (this.#registration instanceof CSSPropertyRule) {
@@ -17855,7 +20858,12 @@ var CSSRegisteredProperty = class {
   }
   style() {
     if (!this.#style) {
-      this.#style = this.#registration instanceof CSSPropertyRule ? this.#registration.style : new CSSStyleDeclaration(this.#cssModel, null, { cssProperties: this.#asCSSProperties(), shorthandEntries: [] }, Type2.Pseudo);
+      this.#style = this.#registration instanceof CSSPropertyRule ? this.#registration.style : new CSSStyleDeclaration(
+        this.#cssModel,
+        null,
+        { cssProperties: this.#asCSSProperties(), shorthandEntries: [] },
+        "Pseudo" /* Pseudo */
+      );
     }
     return this.#style;
   }
@@ -17886,7 +20894,18 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
     await cssMatchedStyles.init(payload);
     return cssMatchedStyles;
   }
-  constructor({ cssModel, node, animationsPayload, parentLayoutNodeId, positionTryRules, propertyRules, cssPropertyRegistrations, activePositionFallbackIndex, functionRules, atRules }) {
+  constructor({
+    cssModel,
+    node,
+    animationsPayload,
+    parentLayoutNodeId,
+    positionTryRules,
+    propertyRules,
+    cssPropertyRegistrations,
+    activePositionFallbackIndex,
+    functionRules,
+    atRules
+  }) {
     this.#cssModel = cssModel;
     this.#node = node;
     this.#registeredProperties = [
@@ -17902,13 +20921,31 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
     this.#functionRules = functionRules.map((rule) => new CSSFunctionRule(cssModel, rule));
     this.#atRules = atRules.map((rule) => new CSSAtRule(cssModel, rule));
   }
-  async init({ matchedPayload, inheritedPayload, inlinePayload, attributesPayload, pseudoPayload, inheritedPseudoPayload, animationStylesPayload, transitionsStylePayload, inheritedAnimatedPayload }) {
+  async init({
+    matchedPayload,
+    inheritedPayload,
+    inlinePayload,
+    attributesPayload,
+    pseudoPayload,
+    inheritedPseudoPayload,
+    animationStylesPayload,
+    transitionsStylePayload,
+    inheritedAnimatedPayload
+  }) {
     matchedPayload = cleanUserAgentPayload(matchedPayload);
     for (const inheritedResult of inheritedPayload) {
       inheritedResult.matchedCSSRules = cleanUserAgentPayload(inheritedResult.matchedCSSRules);
     }
     this.#environmentVariables = await this.cssModel().getEnvironmentVariables();
-    this.#mainDOMCascade = await this.buildMainCascade(inlinePayload, attributesPayload, matchedPayload, inheritedPayload, animationStylesPayload, transitionsStylePayload, inheritedAnimatedPayload);
+    this.#mainDOMCascade = await this.buildMainCascade(
+      inlinePayload,
+      attributesPayload,
+      matchedPayload,
+      inheritedPayload,
+      animationStylesPayload,
+      transitionsStylePayload,
+      inheritedAnimatedPayload
+    );
     [this.#pseudoDOMCascades, this.#customHighlightPseudoDOMCascades] = this.buildPseudoCascades(pseudoPayload, inheritedPseudoPayload);
     for (const domCascade of Array.from(this.#customHighlightPseudoDOMCascades.values()).concat(Array.from(this.#pseudoDOMCascades.values())).concat(this.#mainDOMCascade)) {
       for (const style of domCascade.styles()) {
@@ -17931,22 +20968,22 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       if (!attributesPayload) {
         return;
       }
-      const style = new CSSStyleDeclaration(this.#cssModel, null, attributesPayload, Type2.Attributes);
+      const style = new CSSStyleDeclaration(this.#cssModel, null, attributesPayload, "Attributes" /* Attributes */);
       this.#nodeForStyle.set(style, this.#node);
       nodeStyles.push(style);
     }
     if (transitionsStylePayload) {
-      const style = new CSSStyleDeclaration(this.#cssModel, null, transitionsStylePayload, Type2.Transition);
+      const style = new CSSStyleDeclaration(this.#cssModel, null, transitionsStylePayload, "Transition" /* Transition */);
       this.#nodeForStyle.set(style, this.#node);
       nodeStyles.push(style);
     }
     for (const animationsStyle of animationStylesPayload) {
-      const style = new CSSStyleDeclaration(this.#cssModel, null, animationsStyle.style, Type2.Animation, animationsStyle.name);
+      const style = new CSSStyleDeclaration(this.#cssModel, null, animationsStyle.style, "Animation" /* Animation */, animationsStyle.name);
       this.#nodeForStyle.set(style, this.#node);
       nodeStyles.push(style);
     }
-    if (inlinePayload && this.#node.nodeType() === 1) {
-      const style = new CSSStyleDeclaration(this.#cssModel, null, inlinePayload, Type2.Inline);
+    if (inlinePayload && this.#node.nodeType() === 1 /* ELEMENT_NODE */) {
+      const style = new CSSStyleDeclaration(this.#cssModel, null, inlinePayload, "Inline" /* Inline */);
       this.#nodeForStyle.set(style, this.#node);
       nodeStyles.push(style);
     }
@@ -17982,9 +21019,22 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       const inheritedStyles = [];
       const entryPayload = inheritedPayload[i];
       const inheritedAnimatedEntryPayload = inheritedAnimatedPayload[i];
-      const inheritedInlineStyle = entryPayload.inlineStyle ? new CSSStyleDeclaration(this.#cssModel, null, entryPayload.inlineStyle, Type2.Inline) : null;
-      const inheritedTransitionsStyle = inheritedAnimatedEntryPayload?.transitionsStyle ? new CSSStyleDeclaration(this.#cssModel, null, inheritedAnimatedEntryPayload?.transitionsStyle, Type2.Transition) : null;
-      const inheritedAnimationStyles = inheritedAnimatedEntryPayload?.animationStyles?.map((animationStyle) => new CSSStyleDeclaration(this.#cssModel, null, animationStyle.style, Type2.Animation, animationStyle.name)) ?? [];
+      const inheritedInlineStyle = entryPayload.inlineStyle ? new CSSStyleDeclaration(this.#cssModel, null, entryPayload.inlineStyle, "Inline" /* Inline */) : null;
+      const inheritedTransitionsStyle = inheritedAnimatedEntryPayload?.transitionsStyle ? new CSSStyleDeclaration(
+        this.#cssModel,
+        null,
+        inheritedAnimatedEntryPayload?.transitionsStyle,
+        "Transition" /* Transition */
+      ) : null;
+      const inheritedAnimationStyles = inheritedAnimatedEntryPayload?.animationStyles?.map(
+        (animationStyle) => new CSSStyleDeclaration(
+          this.#cssModel,
+          null,
+          animationStyle.style,
+          "Animation" /* Animation */,
+          animationStyle.name
+        )
+      ) ?? [];
       if (inheritedTransitionsStyle && containsInherited(inheritedTransitionsStyle)) {
         this.#nodeForStyle.set(inheritedTransitionsStyle, parentNode);
         inheritedStyles.push(inheritedTransitionsStyle);
@@ -18089,8 +21139,13 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       const pseudoElement = this.#node.pseudoElements().get(entryPayload.pseudoType)?.at(-1) || null;
       const pseudoStyles = [];
       const rules = entryPayload.matches || [];
-      if (entryPayload.pseudoType === "highlight") {
-        this.buildSplitCustomHighlightCascades(rules, this.#node, false, customHighlightPseudoCascades);
+      if (entryPayload.pseudoType === DOM.PseudoType.Highlight) {
+        this.buildSplitCustomHighlightCascades(
+          rules,
+          this.#node,
+          false,
+          customHighlightPseudoCascades
+        );
       } else {
         for (let j = rules.length - 1; j >= 0; --j) {
           const pseudoRule = new CSSStyleRule(this.#cssModel, rules[j].rule);
@@ -18120,8 +21175,13 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
         for (let j = 0; j < inheritedPseudoMatches.length; ++j) {
           const inheritedEntryPayload = inheritedPseudoMatches[j];
           const rules = inheritedEntryPayload.matches || [];
-          if (inheritedEntryPayload.pseudoType === "highlight") {
-            this.buildSplitCustomHighlightCascades(rules, parentNode, true, customHighlightPseudoCascades);
+          if (inheritedEntryPayload.pseudoType === DOM.PseudoType.Highlight) {
+            this.buildSplitCustomHighlightCascades(
+              rules,
+              parentNode,
+              true,
+              customHighlightPseudoCascades
+            );
           } else {
             const pseudoStyles = [];
             for (let k = rules.length - 1; k >= 0; --k) {
@@ -18152,10 +21212,16 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       }
     }
     for (const [pseudoType, nodeCascade] of pseudoCascades.entries()) {
-      pseudoInheritanceCascades.set(pseudoType, new DOMInheritanceCascade(this, nodeCascade, this.#registeredProperties, this.#mainDOMCascade));
+      pseudoInheritanceCascades.set(
+        pseudoType,
+        new DOMInheritanceCascade(this, nodeCascade, this.#registeredProperties, this.#mainDOMCascade)
+      );
     }
     for (const [highlightName, nodeCascade] of customHighlightPseudoCascades.entries()) {
-      customHighlightPseudoInheritanceCascades.set(highlightName, new DOMInheritanceCascade(this, nodeCascade, this.#registeredProperties, this.#mainDOMCascade));
+      customHighlightPseudoInheritanceCascades.set(
+        highlightName,
+        new DOMInheritanceCascade(this, nodeCascade, this.#registeredProperties, this.#mainDOMCascade)
+      );
     }
     return [pseudoInheritanceCascades, customHighlightPseudoInheritanceCascades];
   }
@@ -18253,10 +21319,10 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
     return this.#mainDOMCascade?.styles().filter((style) => this.isInherited(style)) ?? [];
   }
   animationStyles() {
-    return this.#mainDOMCascade?.styles().filter((style) => !this.isInherited(style) && style.type === Type2.Animation) ?? [];
+    return this.#mainDOMCascade?.styles().filter((style) => !this.isInherited(style) && style.type === "Animation" /* Animation */) ?? [];
   }
   transitionsStyle() {
-    return this.#mainDOMCascade?.styles().find((style) => !this.isInherited(style) && style.type === Type2.Transition) ?? null;
+    return this.#mainDOMCascade?.styles().find((style) => !this.isInherited(style) && style.type === "Transition" /* Transition */) ?? null;
   }
   registeredProperties() {
     return this.#registeredProperties;
@@ -18393,8 +21459,7 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
       const keyframeName = style.parentRule.parentRuleName();
       const activeStyle = this.#mainDOMCascade?.styles().find((searchStyle) => {
         return searchStyle.allProperties().some(
-          (property) => property.name === "animation-name" && property.value === keyframeName && this.#mainDOMCascade?.propertyState(property) === "Active"
-          /* PropertyState.ACTIVE */
+          (property) => property.name === "animation-name" && property.value === keyframeName && this.#mainDOMCascade?.propertyState(property) === "Active" /* ACTIVE */
         );
       });
       if (!activeStyle) {
@@ -18488,14 +21553,6 @@ var CSSMatchedStyles = class _CSSMatchedStyles {
   }
 };
 var NodeCascade = class {
-  isHighlightPseudoCascade;
-  #matchedStyles;
-  styles;
-  #isInherited;
-  propertiesState = /* @__PURE__ */ new Map();
-  propertiesOverriddenByAnimation = /* @__PURE__ */ new Set();
-  activeProperties = /* @__PURE__ */ new Map();
-  #node;
   constructor(matchedStyles, styles, node, isInherited, isHighlightPseudoCascade = false) {
     this.isHighlightPseudoCascade = isHighlightPseudoCascade;
     this.#matchedStyles = matchedStyles;
@@ -18503,6 +21560,13 @@ var NodeCascade = class {
     this.#isInherited = isInherited;
     this.#node = node;
   }
+  #matchedStyles;
+  styles;
+  #isInherited;
+  propertiesState = /* @__PURE__ */ new Map();
+  propertiesOverriddenByAnimation = /* @__PURE__ */ new Set();
+  activeProperties = /* @__PURE__ */ new Map();
+  #node;
   node() {
     return this.#node;
   }
@@ -18534,21 +21598,13 @@ var NodeCascade = class {
           continue;
         }
         if (!property.activeInStyle()) {
-          this.propertiesState.set(
-            property,
-            "Overloaded"
-            /* PropertyState.OVERLOADED */
-          );
+          this.propertiesState.set(property, "Overloaded" /* OVERLOADED */);
           continue;
         }
         if (this.#isInherited) {
           const registration = this.#matchedStyles.getRegisteredProperty(property.name);
           if (registration && !registration.inherits()) {
-            this.propertiesState.set(
-              property,
-              "Overloaded"
-              /* PropertyState.OVERLOADED */
-            );
+            this.propertiesState.set(property, "Overloaded" /* OVERLOADED */);
             continue;
           }
         }
@@ -18575,28 +21631,16 @@ var NodeCascade = class {
   updatePropertyState(propertyWithHigherSpecificity, canonicalName) {
     const activeProperty = this.activeProperties.get(canonicalName);
     if (activeProperty?.important && !propertyWithHigherSpecificity.important || activeProperty && this.#needsCascadeContextStep() && treeScopeDistance(this.#node, activeProperty) > treeScopeDistance(this.#node, propertyWithHigherSpecificity)) {
-      this.propertiesState.set(
-        propertyWithHigherSpecificity,
-        "Overloaded"
-        /* PropertyState.OVERLOADED */
-      );
+      this.propertiesState.set(propertyWithHigherSpecificity, "Overloaded" /* OVERLOADED */);
       return;
     }
     if (activeProperty) {
-      this.propertiesState.set(
-        activeProperty,
-        "Overloaded"
-        /* PropertyState.OVERLOADED */
-      );
-      if (propertyWithHigherSpecificity.ownerStyle.type === Type2.Animation || propertyWithHigherSpecificity.ownerStyle.type === Type2.Transition) {
+      this.propertiesState.set(activeProperty, "Overloaded" /* OVERLOADED */);
+      if (propertyWithHigherSpecificity.ownerStyle.type === "Animation" /* Animation */ || propertyWithHigherSpecificity.ownerStyle.type === "Transition" /* Transition */) {
         this.propertiesOverriddenByAnimation.add(activeProperty);
       }
     }
-    this.propertiesState.set(
-      propertyWithHigherSpecificity,
-      "Active"
-      /* PropertyState.ACTIVE */
-    );
+    this.propertiesState.set(propertyWithHigherSpecificity, "Active" /* ACTIVE */);
     this.activeProperties.set(canonicalName, propertyWithHigherSpecificity);
   }
 };
@@ -18619,21 +21663,18 @@ var CSSValueSource = class {
   }
 };
 var SCCRecordEntry = class {
-  nodeCascade;
-  name;
-  discoveryTime;
+  constructor(nodeCascade, name, discoveryTime) {
+    this.nodeCascade = nodeCascade;
+    this.name = name;
+    this.discoveryTime = discoveryTime;
+    this.rootDiscoveryTime = discoveryTime;
+  }
   rootDiscoveryTime;
   get isRootEntry() {
     return this.rootDiscoveryTime === this.discoveryTime;
   }
   updateRoot(neighbor) {
     this.rootDiscoveryTime = Math.min(this.rootDiscoveryTime, neighbor.rootDiscoveryTime);
-  }
-  constructor(nodeCascade, name, discoveryTime) {
-    this.nodeCascade = nodeCascade;
-    this.name = name;
-    this.discoveryTime = discoveryTime;
-    this.rootDiscoveryTime = discoveryTime;
   }
 };
 var SCCRecord = class {
@@ -18775,38 +21816,29 @@ var DOMInheritanceCascade = class {
       if (!(other.ownerStyle.parentRule instanceof CSSStyleRule)) {
         return false;
       }
-      if (property.ownerStyle.type === Type2.Inline) {
+      if (property.ownerStyle.type === "Inline" /* Inline */) {
         return true;
       }
-      if (property.ownerStyle.parentRule instanceof CSSStyleRule && other.ownerStyle.parentRule?.origin === "regular") {
+      if (property.ownerStyle.parentRule instanceof CSSStyleRule && other.ownerStyle.parentRule?.origin === CSS.StyleSheetOrigin.Regular) {
         return JSON.stringify(other.ownerStyle.parentRule.layers) !== JSON.stringify(property.ownerStyle.parentRule.layers);
       }
       return false;
     };
     switch (keyword) {
-      case "initial":
+      case "initial" /* INITIAL */:
         return this.#findCustomPropertyRegistration(property.name);
-      case "inherit":
+      case "inherit" /* INHERIT */:
         return this.#findPropertyInParentCascade(property) ?? this.#findCustomPropertyRegistration(property.name);
-      case "revert":
-        return this.#findPropertyInPreviousStyle(property, (other) => other.ownerStyle.parentRule !== null && other.ownerStyle.parentRule.origin !== (property.ownerStyle.parentRule?.origin ?? "regular")) ?? this.resolveGlobalKeyword(
+      case "revert" /* REVERT */:
+        return this.#findPropertyInPreviousStyle(
           property,
-          "unset"
-          /* CSSWideKeyword.UNSET */
-        );
-      case "revert-layer":
-        return this.#findPropertyInPreviousStyle(property, isPreviousLayer) ?? this.resolveGlobalKeyword(
-          property,
-          "revert"
-          /* CSSWideKeyword.REVERT */
-        );
-      case "revert-rule":
-        return this.#findPropertyInPreviousStyle(property, () => true) ?? this.resolveGlobalKeyword(
-          property,
-          "unset"
-          /* CSSWideKeyword.UNSET */
-        );
-      case "unset":
+          (other) => other.ownerStyle.parentRule !== null && other.ownerStyle.parentRule.origin !== (property.ownerStyle.parentRule?.origin ?? CSS.StyleSheetOrigin.Regular)
+        ) ?? this.resolveGlobalKeyword(property, "unset" /* UNSET */);
+      case "revert-layer" /* REVERT_LAYER */:
+        return this.#findPropertyInPreviousStyle(property, isPreviousLayer) ?? this.resolveGlobalKeyword(property, "revert" /* REVERT */);
+      case "revert-rule" /* REVERT_RULE */:
+        return this.#findPropertyInPreviousStyle(property, () => true) ?? this.resolveGlobalKeyword(property, "unset" /* UNSET */);
+      case "unset" /* UNSET */:
         return this.#findPropertyInParentCascadeIfInherited(property) ?? this.#findCustomPropertyRegistration(property.name);
     }
   }
@@ -18858,7 +21890,14 @@ var DOMInheritanceCascade = class {
     if (!ast) {
       return null;
     }
-    return this.#walkTree(nodeCascade, ast, definedValue.declaration.style, variableName, sccRecord, definedValue.declaration);
+    return this.#walkTree(
+      nodeCascade,
+      ast,
+      definedValue.declaration.style,
+      variableName,
+      sccRecord,
+      definedValue.declaration
+    );
   }
   computeAttribute(style, attributeName, type) {
     this.ensureInitialized();
@@ -18902,7 +21941,10 @@ var DOMInheritanceCascade = class {
     const innerNodeCascade = this.#styleToNodeCascade.get(parentStyle);
     const matching = BottomUpTreeMatching.walk(ast, [
       new BaseVariableMatcher((match) => {
-        const { value, mayFallback } = recurseWithCycleDetection(match.name, (nodeCascade) => this.#computeCSSVariable(nodeCascade, match.name, sccRecord)?.value ?? null);
+        const { value, mayFallback } = recurseWithCycleDetection(
+          match.name,
+          (nodeCascade) => this.#computeCSSVariable(nodeCascade, match.name, sccRecord)?.value ?? null
+        );
         if (!mayFallback || value !== null) {
           return value;
         }
@@ -18912,32 +21954,42 @@ var DOMInheritanceCascade = class {
         return evaluateFallback(match.fallback, match.matching);
       }),
       new EnvFunctionMatcher(this.#matchedStyles),
-      new AttributeMatcher(this.#matchedStyles, parentStyle, (match) => {
-        const recordName = `attr(${match.name})`;
-        let attributeValue = null;
-        if (!match.isCSSTokens) {
-          const { value, mayFallback } = recurseWithCycleDetection(recordName, () => this.attributeValueAsType(parentStyle, match.name, match.cssType()));
-          if (value === null && !mayFallback) {
-            return null;
-          }
-          attributeValue = value;
-        } else {
-          const { value, mayFallback } = recurseWithCycleDetection(recordName, (nodeCascade) => this.attributeValueWithSubstitutions(nodeCascade, parentStyle, match.name, sccRecord));
-          if (value === null && !mayFallback) {
-            return null;
-          }
-          if (value !== null && localEvalCSS(value, match.cssType()) !== null) {
+      new AttributeMatcher(
+        this.#matchedStyles,
+        parentStyle,
+        (match) => {
+          const recordName = `attr(${match.name})`;
+          let attributeValue = null;
+          if (!match.isCSSTokens) {
+            const { value, mayFallback } = recurseWithCycleDetection(
+              recordName,
+              () => this.attributeValueAsType(parentStyle, match.name, match.cssType())
+            );
+            if (value === null && !mayFallback) {
+              return null;
+            }
             attributeValue = value;
+          } else {
+            const { value, mayFallback } = recurseWithCycleDetection(
+              recordName,
+              (nodeCascade) => this.attributeValueWithSubstitutions(nodeCascade, parentStyle, match.name, sccRecord)
+            );
+            if (value === null && !mayFallback) {
+              return null;
+            }
+            if (value !== null && localEvalCSS(value, match.cssType()) !== null) {
+              attributeValue = value;
+            }
           }
+          if (attributeValue !== null) {
+            return attributeValue;
+          }
+          if (!match.fallback || !match.isValidType) {
+            return defaultValueForCSSType(match.type);
+          }
+          return evaluateFallback(match.fallback, match.matching);
         }
-        if (attributeValue !== null) {
-          return attributeValue;
-        }
-        if (!match.fallback || !match.isValidType) {
-          return defaultValueForCSSType(match.type);
-        }
-        return evaluateFallback(match.fallback, match.matching);
-      })
+      )
     ]);
     const decl = ASTUtils.siblings(ASTUtils.declValue(matching.ast.tree));
     const declText = decl.length > 0 ? matching.getComputedTextRange(decl[0], decl[decl.length - 1]) : "";
@@ -19021,12 +22073,8 @@ var DOMInheritanceCascade = class {
     for (const nodeCascade of this.#nodeCascades) {
       nodeCascade.computeActiveProperties();
       for (const [property, state] of nodeCascade.propertiesState) {
-        if (state === "Overloaded") {
-          this.#propertiesState.set(
-            property,
-            "Overloaded"
-            /* PropertyState.OVERLOADED */
-          );
+        if (state === "Overloaded" /* OVERLOADED */) {
+          this.#propertiesState.set(property, "Overloaded" /* OVERLOADED */);
           if (nodeCascade.propertiesOverriddenByAnimation.has(property)) {
             this.#propertiesOverriddenByAnimation.add(property);
           }
@@ -19034,23 +22082,15 @@ var DOMInheritanceCascade = class {
         }
         const canonicalName = cssMetadata().canonicalPropertyName(property.name);
         if (activeProperties.has(canonicalName)) {
-          this.#propertiesState.set(
-            property,
-            "Overloaded"
-            /* PropertyState.OVERLOADED */
-          );
+          this.#propertiesState.set(property, "Overloaded" /* OVERLOADED */);
           const activeProperty = activeProperties.get(canonicalName);
-          if (activeProperty && (activeProperty.ownerStyle.type === Type2.Animation || activeProperty.ownerStyle.type === Type2.Transition)) {
+          if (activeProperty && (activeProperty.ownerStyle.type === "Animation" /* Animation */ || activeProperty.ownerStyle.type === "Transition" /* Transition */)) {
             this.#propertiesOverriddenByAnimation.add(property);
           }
           continue;
         }
         activeProperties.set(canonicalName, property);
-        this.#propertiesState.set(
-          property,
-          "Active"
-          /* PropertyState.ACTIVE */
-        );
+        this.#propertiesState.set(property, "Active" /* ACTIVE */);
       }
     }
     for (const [canonicalName, shorthandProperty] of activeProperties) {
@@ -19075,16 +22115,15 @@ var DOMInheritanceCascade = class {
         continue;
       }
       activeProperties.delete(canonicalName);
-      this.#propertiesState.set(
-        shorthandProperty,
-        "Overloaded"
-        /* PropertyState.OVERLOADED */
-      );
+      this.#propertiesState.set(shorthandProperty, "Overloaded" /* OVERLOADED */);
     }
     const accumulatedCSSVariables = /* @__PURE__ */ new Map();
     for (const rule of this.#registeredProperties) {
       const initialValue = rule.initialValue();
-      accumulatedCSSVariables.set(rule.propertyName(), initialValue !== null ? { value: initialValue, declaration: new CSSValueSource(rule) } : null);
+      accumulatedCSSVariables.set(
+        rule.propertyName(),
+        initialValue !== null ? { value: initialValue, declaration: new CSSValueSource(rule) } : null
+      );
     }
     if (this.#fallbackCascade) {
       this.#fallbackCascade.ensureInitialized();
@@ -19094,7 +22133,9 @@ var DOMInheritanceCascade = class {
       for (const [cascade, computed] of this.#fallbackCascade.#computedCSSVariables) {
         this.#computedCSSVariables.set(cascade, computed);
       }
-      for (const [key, value] of this.#fallbackCascade.#availableCSSVariables.get(this.#fallbackCascade.#nodeCascades[0]) ?? []) {
+      for (const [key, value] of this.#fallbackCascade.#availableCSSVariables.get(
+        this.#fallbackCascade.#nodeCascades[0]
+      ) ?? []) {
         accumulatedCSSVariables.set(key, value);
       }
     }
@@ -19125,16 +22166,21 @@ var DOMInheritanceCascade = class {
     }
   }
 };
+var PropertyState = /* @__PURE__ */ ((PropertyState2) => {
+  PropertyState2["ACTIVE"] = "Active";
+  PropertyState2["OVERLOADED"] = "Overloaded";
+  return PropertyState2;
+})(PropertyState || {});
 
-// gen/front_end/core/sdk/CSSStyleSheetHeader.js
+// ../../front_end/core/sdk/CSSStyleSheetHeader.ts
 var CSSStyleSheetHeader_exports = {};
 __export(CSSStyleSheetHeader_exports, {
   CSSStyleSheetHeader: () => CSSStyleSheetHeader
 });
-import * as Common8 from "./../common/common.js";
-import * as i18n5 from "./../i18n/i18n.js";
-import * as Platform6 from "./../platform/platform.js";
-import * as TextUtils12 from "./../text_utils/text_utils.js";
+import * as Common8 from "../common/common.js";
+import * as i18n5 from "../i18n/i18n.js";
+import * as Platform6 from "../platform/platform.js";
+import * as TextUtils12 from "../text_utils/text_utils.js";
 var UIStrings3 = {
   /**
    * @description Error message for when a CSS file can't be loaded.
@@ -19302,34 +22348,35 @@ var CSSStyleSheetHeader = class {
   }
 };
 
-// gen/front_end/core/sdk/SourceMapManager.js
+// ../../front_end/core/sdk/SourceMapManager.ts
 var SourceMapManager_exports = {};
 __export(SourceMapManager_exports, {
-  Events: () => Events5,
+  Events: () => Events11,
   SourceMapManager: () => SourceMapManager,
   lazyLoadingSettingDescriptor: () => lazyLoadingSettingDescriptor,
   tryLoadSourceMap: () => tryLoadSourceMap
 });
-import * as Common14 from "./../common/common.js";
-import * as Platform9 from "./../platform/platform.js";
+import * as Common14 from "../common/common.js";
+import * as Platform9 from "../platform/platform.js";
 
-// gen/front_end/core/sdk/PageResourceLoader.js
+// ../../front_end/core/sdk/PageResourceLoader.ts
 var PageResourceLoader_exports = {};
 __export(PageResourceLoader_exports, {
+  Events: () => Events10,
   PageResourceLoader: () => PageResourceLoader,
   ResourceKey: () => ResourceKey
 });
-import * as Common12 from "./../common/common.js";
-import * as Host4 from "./../host/host.js";
-import * as i18n7 from "./../i18n/i18n.js";
-import * as Root4 from "./../root/root.js";
+import * as Common12 from "../common/common.js";
+import * as Host4 from "../host/host.js";
+import * as i18n7 from "../i18n/i18n.js";
+import * as Root4 from "../root/root.js";
 
-// gen/front_end/core/sdk/IOModel.js
+// ../../front_end/core/sdk/IOModel.ts
 var IOModel_exports = {};
 __export(IOModel_exports, {
   IOModel: () => IOModel
 });
-import * as Common9 from "./../common/common.js";
+import * as Common9 from "../common/common.js";
 var IOModel = class extends SDKModel {
   async read(handle, size, offset) {
     const result = await this.target().ioAgent().invoke_read({ handle, offset, size });
@@ -19401,28 +22448,30 @@ var IOModel = class extends SDKModel {
     return result;
   }
 };
-SDKModel.register(IOModel, { capabilities: 131072, autostart: true });
+SDKModel.register(IOModel, { capabilities: 131072 /* IO */, autostart: true });
 
-// gen/front_end/core/sdk/TargetManager.js
+// ../../front_end/core/sdk/TargetManager.ts
 var TargetManager_exports = {};
 __export(TargetManager_exports, {
+  Events: () => Events9,
   Observer: () => Observer,
   SDKModelObserver: () => SDKModelObserver,
   TargetManager: () => TargetManager
 });
-import * as Common11 from "./../common/common.js";
-import * as Host3 from "./../host/host.js";
-import * as Platform7 from "./../platform/platform.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../platform/platform.js";
-import * as Root3 from "./../root/root.js";
+import * as Common11 from "../common/common.js";
+import * as Host3 from "../host/host.js";
+import * as Platform7 from "../platform/platform.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "../platform/platform.js";
+import * as Root3 from "../root/root.js";
 
-// gen/front_end/core/sdk/FrameManager.js
+// ../../front_end/core/sdk/FrameManager.ts
 var FrameManager_exports = {};
 __export(FrameManager_exports, {
+  Events: () => Events8,
   FrameManager: () => FrameManager
 });
-import * as Common10 from "./../common/common.js";
-import * as Root2 from "./../root/root.js";
+import * as Common10 from "../common/common.js";
+import * as Root2 from "../root/root.js";
 var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrapper {
   #eventListeners = /* @__PURE__ */ new WeakMap();
   // Maps frameIds to #frames and a count of how many ResourceTreeModels contain this frame.
@@ -19447,11 +22496,14 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
     Root2.DevToolsContext.globalInstance().delete(_FrameManager);
   }
   modelAdded(resourceTreeModel) {
-    const addListener = resourceTreeModel.addEventListener(Events2.FrameAdded, this.frameAdded, this);
-    const detachListener = resourceTreeModel.addEventListener(Events2.FrameDetached, this.frameDetached, this);
-    const navigatedListener = resourceTreeModel.addEventListener(Events2.FrameNavigated, this.frameNavigated, this);
-    const resourceAddedListener = resourceTreeModel.addEventListener(Events2.ResourceAdded, this.resourceAdded, this);
-    this.#eventListeners.set(resourceTreeModel, [addListener, detachListener, navigatedListener, resourceAddedListener]);
+    const addListener = resourceTreeModel.addEventListener("FrameAdded" /* FrameAdded */, this.frameAdded, this);
+    const detachListener = resourceTreeModel.addEventListener("FrameDetached" /* FrameDetached */, this.frameDetached, this);
+    const navigatedListener = resourceTreeModel.addEventListener("FrameNavigated" /* FrameNavigated */, this.frameNavigated, this);
+    const resourceAddedListener = resourceTreeModel.addEventListener("ResourceAdded" /* ResourceAdded */, this.resourceAdded, this);
+    this.#eventListeners.set(
+      resourceTreeModel,
+      [addListener, detachListener, navigatedListener, resourceAddedListener]
+    );
     this.#framesForTarget.set(resourceTreeModel.target().id(), /* @__PURE__ */ new Set());
   }
   modelRemoved(resourceTreeModel) {
@@ -19489,7 +22541,7 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
     if (frameSet) {
       frameSet.add(frame.id);
     }
-    this.dispatchEventToListeners("FrameAddedToTarget", { frame });
+    this.dispatchEventToListeners("FrameAddedToTarget" /* FRAME_ADDED_TO_TARGET */, { frame });
     this.resolveAwaitedFrame(frame);
   }
   frameDetached(event) {
@@ -19510,13 +22562,13 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
   }
   frameNavigated(event) {
     const frame = event.data;
-    this.dispatchEventToListeners("FrameNavigated", { frame });
+    this.dispatchEventToListeners("FrameNavigated" /* FRAME_NAVIGATED */, { frame });
     if (frame.isOutermostFrame()) {
-      this.dispatchEventToListeners("OutermostFrameNavigated", { frame });
+      this.dispatchEventToListeners("OutermostFrameNavigated" /* OUTERMOST_FRAME_NAVIGATED */, { frame });
     }
   }
   resourceAdded(event) {
-    this.dispatchEventToListeners("ResourceAdded", { resource: event.data });
+    this.dispatchEventToListeners("ResourceAdded" /* RESOURCE_ADDED */, { resource: event.data });
   }
   decreaseOrRemoveFrame(frameId) {
     const frameData = this.#frames.get(frameId);
@@ -19524,7 +22576,7 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
       if (frameData.count === 1) {
         this.#frames.delete(frameId);
         this.resetOutermostFrame();
-        this.dispatchEventToListeners("FrameRemoved", { frameId });
+        this.dispatchEventToListeners("FrameRemoved" /* FRAME_REMOVED */, { frameId });
       } else {
         frameData.count--;
       }
@@ -19592,8 +22644,16 @@ var FrameManager = class _FrameManager extends Common10.ObjectWrapper.ObjectWrap
     }
   }
 };
+var Events8 = /* @__PURE__ */ ((Events35) => {
+  Events35["FRAME_ADDED_TO_TARGET"] = "FrameAddedToTarget";
+  Events35["FRAME_NAVIGATED"] = "FrameNavigated";
+  Events35["FRAME_REMOVED"] = "FrameRemoved";
+  Events35["RESOURCE_ADDED"] = "ResourceAdded";
+  Events35["OUTERMOST_FRAME_NAVIGATED"] = "OutermostFrameNavigated";
+  return Events35;
+})(Events8 || {});
 
-// gen/front_end/core/sdk/TargetManager.js
+// ../../front_end/core/sdk/TargetManager.ts
 var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWrapper {
   /**
    * @deprecated
@@ -19669,7 +22729,10 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
   }
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root3.DevToolsContext.globalInstance().has(_TargetManager) || forceNew) {
-      Root3.DevToolsContext.globalInstance().set(_TargetManager, new _TargetManager(Root3.DevToolsContext.globalInstance()));
+      Root3.DevToolsContext.globalInstance().set(
+        _TargetManager,
+        new _TargetManager(Root3.DevToolsContext.globalInstance())
+      );
     }
     return Root3.DevToolsContext.globalInstance().get(_TargetManager);
   }
@@ -19697,21 +22760,20 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
     if (target !== this.#scopeTarget) {
       return;
     }
-    Host3.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(target.inspectedURL() || Platform7.DevToolsPath.EmptyUrlString);
-    this.dispatchEventToListeners("InspectedURLChanged", target);
+    Host3.InspectorFrontendHost.InspectorFrontendHostInstance.inspectedURLChanged(
+      target.inspectedURL() || Platform7.DevToolsPath.EmptyUrlString
+    );
+    this.dispatchEventToListeners("InspectedURLChanged" /* INSPECTED_URL_CHANGED */, target);
   }
   onNameChange(target) {
-    this.dispatchEventToListeners("NameChanged", target);
+    this.dispatchEventToListeners("NameChanged" /* NAME_CHANGED */, target);
   }
   async suspendAllTargets(reason) {
     if (this.#isSuspended) {
       return;
     }
     this.#isSuspended = true;
-    this.dispatchEventToListeners(
-      "SuspendStateChanged"
-      /* Events.SUSPEND_STATE_CHANGED */
-    );
+    this.dispatchEventToListeners("SuspendStateChanged" /* SUSPEND_STATE_CHANGED */);
     const suspendPromises = Array.from(this.#targets.values(), (target) => target.suspend(reason));
     await Promise.all(suspendPromises);
   }
@@ -19730,10 +22792,7 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
       return;
     }
     this.#isSuspended = false;
-    this.dispatchEventToListeners(
-      "SuspendStateChanged"
-      /* Events.SUSPEND_STATE_CHANGED */
-    );
+    this.dispatchEventToListeners("SuspendStateChanged" /* SUSPEND_STATE_CHANGED */);
     const resumePromises = Array.from(this.#targets.values(), async (target) => {
       await this.#waitForPromiseWithTimeout(target.resume(), `Timeout waiting for target ${target.name()} to resume`);
     });
@@ -19849,7 +22908,17 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
     return [...earlyModels, ...models];
   }
   createTarget(id, name, type, parentTarget, sessionId, waitForDebuggerInPage, connection, targetInfo) {
-    const target = new Target(this, id, name, type, parentTarget, sessionId || "", this.#isSuspended, connection || null, targetInfo);
+    const target = new Target2(
+      this,
+      id,
+      name,
+      type,
+      parentTarget,
+      sessionId || "",
+      this.#isSuspended,
+      connection || null,
+      targetInfo
+    );
     if (waitForDebuggerInPage) {
       void target.pageAgent().invoke_waitForDebugger();
     }
@@ -19872,7 +22941,7 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
         }
       }
     }
-    if (target === target.outermostTarget() && (target.type() !== Type.FRAME || target === this.primaryPageTarget()) && !this.#defaultScopeSet) {
+    if (target === target.outermostTarget() && (target.type() !== "frame" /* FRAME */ || target === this.primaryPageTarget()) && !this.#defaultScopeSet) {
       this.setScopeTarget(target);
     }
     return target;
@@ -19916,8 +22985,10 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
   }
   primaryPageTarget() {
     let target = this.rootTarget();
-    if (target?.type() === Type.TAB) {
-      target = this.targets().find((t) => t.parentTarget() === target && t.type() === Type.FRAME && !t.targetInfo()?.subtype?.length) || null;
+    if (target?.type() === "tab" /* TAB */) {
+      target = this.targets().find(
+        (t) => t.parentTarget() === target && t.type() === "frame" /* FRAME */ && !t.targetInfo()?.subtype?.length
+      ) || null;
     }
     return target;
   }
@@ -19929,13 +23000,13 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
       return false;
     }
     if (!this.#browserTarget) {
-      this.#browserTarget = new Target(
+      this.#browserTarget = new Target2(
         this,
         /* #id*/
         "main",
         /* #name*/
         "browser",
-        Type.BROWSER,
+        "browser" /* BROWSER */,
         /* #parentTarget*/
         null,
         /* #sessionId */
@@ -20033,6 +23104,13 @@ var TargetManager = class _TargetManager extends Common11.ObjectWrapper.ObjectWr
     return this.#scopeTarget;
   }
 };
+var Events9 = /* @__PURE__ */ ((Events35) => {
+  Events35["AVAILABLE_TARGETS_CHANGED"] = "AvailableTargetsChanged";
+  Events35["INSPECTED_URL_CHANGED"] = "InspectedURLChanged";
+  Events35["NAME_CHANGED"] = "NameChanged";
+  Events35["SUSPEND_STATE_CHANGED"] = "SuspendStateChanged";
+  return Events35;
+})(Events9 || {});
 var Observer = class {
   targetAdded(_target) {
   }
@@ -20049,7 +23127,7 @@ function isSDKModelEvent(arg) {
   return "source" in arg && arg.source instanceof SDKModel;
 }
 
-// gen/front_end/core/sdk/PageResourceLoader.js
+// ../../front_end/core/sdk/PageResourceLoader.ts
 var UIStrings4 = {
   /**
    * @description Error message for canceled source map loads.
@@ -20083,7 +23161,12 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     this.#settings = settings;
     this.#userAgentProvider = userAgentProvider;
     this.#maxConcurrentLoads = maxConcurrentLoads;
-    this.#targetManager.addModelListener(ResourceTreeModel, Events2.PrimaryPageChanged, this.onPrimaryPageChanged, this);
+    this.#targetManager.addModelListener(
+      ResourceTreeModel,
+      "PrimaryPageChanged" /* PrimaryPageChanged */,
+      this.onPrimaryPageChanged,
+      this
+    );
     this.#loadOverride = loadOverride;
   }
   static instance({ forceNew, targetManager, settings, userAgentProvider, loadOverride, maxConcurrentLoads } = {
@@ -20091,7 +23174,16 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     loadOverride: null
   }) {
     if (forceNew) {
-      Root4.DevToolsContext.globalInstance().set(_PageResourceLoader, new _PageResourceLoader(targetManager ?? TargetManager.instance(), settings ?? Common12.Settings.Settings.instance(), userAgentProvider ?? MultitargetNetworkManager.instance(), loadOverride, maxConcurrentLoads));
+      Root4.DevToolsContext.globalInstance().set(
+        _PageResourceLoader,
+        new _PageResourceLoader(
+          targetManager ?? TargetManager.instance(),
+          settings ?? Common12.Settings.Settings.instance(),
+          userAgentProvider ?? MultitargetNetworkManager.instance(),
+          loadOverride,
+          maxConcurrentLoads
+        )
+      );
     }
     return Root4.DevToolsContext.globalInstance().get(_PageResourceLoader);
   }
@@ -20110,21 +23202,20 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     const mainFrameTarget = mainFrame.resourceTreeModel().target();
     const keptResources = /* @__PURE__ */ new Map();
     for (const [key, pageResource] of this.#pageResources.entries()) {
-      if (type === "Activation" && mainFrameTarget === pageResource.initiator.target) {
+      if (type === "Activation" /* ACTIVATION */ && mainFrameTarget === pageResource.initiator.target) {
         keptResources.set(key, pageResource);
       }
     }
     this.#pageResources = keptResources;
-    this.dispatchEventToListeners(
-      "Update"
-      /* Events.UPDATE */
-    );
+    this.dispatchEventToListeners("Update" /* UPDATE */);
   }
   getResourcesLoaded() {
     return this.#pageResources;
   }
   getScopedResourcesLoaded() {
-    return new Map([...this.#pageResources].filter(([_, pageResource]) => this.#targetManager.isInScope(pageResource.initiator.target) || isExtensionInitiator(pageResource.initiator)));
+    return new Map([...this.#pageResources].filter(
+      ([_, pageResource]) => this.#targetManager.isInScope(pageResource.initiator.target) || isExtensionInitiator(pageResource.initiator)
+    ));
   }
   /**
    * Loading is the number of currently loading and queued items. Resources is the total number of resources,
@@ -20151,7 +23242,11 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       this.#currentlyLoadingPerTarget.set(target.id(), currentCount + 1);
     }
     if (this.#currentlyLoading > this.#maxConcurrentLoads) {
-      const { promise: waitForCapacity, resolve, reject } = Promise.withResolvers();
+      const {
+        promise: waitForCapacity,
+        resolve,
+        reject
+      } = Promise.withResolvers();
       this.#queuedLoads.push({ resolve, reject });
       await waitForCapacity;
     }
@@ -20187,10 +23282,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
   resourceLoadedThroughExtension(pageResource) {
     const key = _PageResourceLoader.makeExtensionKey(pageResource.url, pageResource.initiator);
     this.#pageResources.set(key, pageResource);
-    this.dispatchEventToListeners(
-      "Update"
-      /* Events.UPDATE */
-    );
+    this.dispatchEventToListeners("Update" /* UPDATE */);
   }
   async loadResource(url, initiator, isBinary = false) {
     if (isExtensionInitiator(initiator)) {
@@ -20205,10 +23297,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       initiator
     };
     this.#pageResources.set(key, pageResource);
-    this.dispatchEventToListeners(
-      "Update"
-      /* Events.UPDATE */
-    );
+    this.dispatchEventToListeners("Update" /* UPDATE */);
     const startTime = performance.now();
     try {
       await this.acquireLoadSlot(initiator.target);
@@ -20232,10 +23321,7 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
     } finally {
       pageResource.duration = performance.now() - startTime;
       this.releaseLoadSlot(initiator.target);
-      this.dispatchEventToListeners(
-        "Update"
-        /* Events.UPDATE */
-      );
+      this.dispatchEventToListeners("Update" /* UPDATE */);
     }
   }
   async dispatchLoad(url, initiator, isBinary) {
@@ -20331,7 +23417,11 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
           statusCode: resource.httpStatusCode || 0,
           netError: resource.netError,
           netErrorName: resource.netErrorName,
-          message: Host4.ResourceLoader.netErrorToMessage(resource.netError, resource.httpStatusCode, resource.netErrorName) || ""
+          message: Host4.ResourceLoader.netErrorToMessage(
+            resource.netError,
+            resource.httpStatusCode,
+            resource.netErrorName
+          ) || ""
         }
       };
     } finally {
@@ -20350,16 +23440,22 @@ var PageResourceLoader = class _PageResourceLoader extends Common12.ObjectWrappe
       headers["Cache-Control"] = "no-cache";
     }
     const allowRemoteFilePaths = this.#settings.resolve(enableRemoteFileLoadingSettingDescriptor).get();
-    return await new Promise((resolve) => Host4.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
-      resolve({ success, content, errorDescription });
-    }, allowRemoteFilePaths));
+    return await new Promise(
+      (resolve) => Host4.ResourceLoader.load(url, headers, (success, _responseHeaders, content, errorDescription) => {
+        resolve({ success, content, errorDescription });
+      }, allowRemoteFilePaths)
+    );
   }
   getLoadThroughTargetSetting() {
     return this.#settings.createSetting("load-through-target", true);
   }
 };
+var Events10 = /* @__PURE__ */ ((Events35) => {
+  Events35["UPDATE"] = "Update";
+  return Events35;
+})(Events10 || {});
 
-// gen/front_end/core/sdk/SourceMap.js
+// ../../front_end/core/sdk/SourceMap.ts
 var SourceMap_exports = {};
 __export(SourceMap_exports, {
   SourceMap: () => SourceMap,
@@ -20367,18 +23463,18 @@ __export(SourceMap_exports, {
   TokenIterator: () => TokenIterator,
   parseSourceMap: () => parseSourceMap
 });
-import * as ScopesCodec from "./../../third_party/source-map-scopes-codec/source-map-scopes-codec.js";
-import * as Common13 from "./../common/common.js";
-import * as Platform8 from "./../platform/platform.js";
-import * as TextUtils15 from "./../text_utils/text_utils.js";
+import * as ScopesCodec from "../../third_party/source-map-scopes-codec/source-map-scopes-codec.js";
+import * as Common13 from "../common/common.js";
+import * as Platform8 from "../platform/platform.js";
+import * as TextUtils15 from "../text_utils/text_utils.js";
 
-// gen/front_end/core/sdk/ScopeTreeCache.js
+// ../../front_end/core/sdk/ScopeTreeCache.ts
 var ScopeTreeCache_exports = {};
 __export(ScopeTreeCache_exports, {
   scopeTreeForScript: () => scopeTreeForScript
 });
-import * as Formatter from "./../../models/formatter/formatter.js";
-import * as TextUtils14 from "./../text_utils/text_utils.js";
+import * as Formatter from "../../models/formatter/formatter.js";
+import * as TextUtils14 from "../text_utils/text_utils.js";
 var scopeTrees = /* @__PURE__ */ new WeakMap();
 function scopeTreeForScript(script) {
   if (script.isWasm()) {
@@ -20398,7 +23494,7 @@ function scopeTreeForScript(script) {
   return promise;
 }
 
-// gen/front_end/core/sdk/SourceMapFunctionRanges.js
+// ../../front_end/core/sdk/SourceMapFunctionRanges.ts
 var SourceMapFunctionRanges_exports = {};
 __export(SourceMapFunctionRanges_exports, {
   buildOriginalScopes: () => buildOriginalScopes,
@@ -20493,20 +23589,20 @@ function comparePositions(a, b) {
   return a.line - b.line || a.column - b.column;
 }
 
-// gen/front_end/core/sdk/SourceMapScopesInfo.js
+// ../../front_end/core/sdk/SourceMapScopesInfo.ts
 var SourceMapScopesInfo_exports = {};
 __export(SourceMapScopesInfo_exports, {
   SourceMapScopesInfo: () => SourceMapScopesInfo,
   contains: () => contains
 });
-import * as Formatter2 from "./../../models/formatter/formatter.js";
+import * as Formatter2 from "../../models/formatter/formatter.js";
 
-// gen/front_end/core/sdk/SourceMapScopeChainEntry.js
+// ../../front_end/core/sdk/SourceMapScopeChainEntry.ts
 var SourceMapScopeChainEntry_exports = {};
 __export(SourceMapScopeChainEntry_exports, {
   SourceMapScopeChainEntry: () => SourceMapScopeChainEntry
 });
-import * as i18n9 from "./../i18n/i18n.js";
+import * as i18n9 from "../i18n/i18n.js";
 var UIStrings5 = {
   /**
    * @description Title of a section in the debugger showing local JavaScript variables.
@@ -20570,11 +23666,11 @@ var SourceMapScopeChainEntry = class {
   type() {
     switch (this.#scope.kind) {
       case "global":
-        return "global";
+        return Debugger.ScopeType.Global;
       case "function":
-        return this.#isInnerMostFunction ? "local" : "closure";
+        return this.#isInnerMostFunction ? Debugger.ScopeType.Local : Debugger.ScopeType.Closure;
       case "block":
-        return "block";
+        return Debugger.ScopeType.Block;
     }
     return this.#scope.kind ?? "";
   }
@@ -20691,7 +23787,7 @@ var SourceMapScopeRemoteObject = class _SourceMapScopeRemoteObject extends Remot
   }
 };
 
-// gen/front_end/core/sdk/SourceMapScopesInfo.js
+// ../../front_end/core/sdk/SourceMapScopesInfo.ts
 var SourceMapScopesInfo = class _SourceMapScopesInfo {
   #sourceMap;
   #originalScopes;
@@ -20735,7 +23831,7 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
       const endEntry = sourceMap.findEntry(end.line, end.column);
       const sourceIndex = startEntry?.sourceIndex;
       const canMapOriginalPosition = startEntry && endEntry && sourceIndex !== void 0 && startEntry.sourceIndex === endEntry.sourceIndex && startEntry.sourceIndex !== void 0 && sourceIndex >= 0 && sourceIndex < numSourceUrls;
-      const isStackFrame = node.kind === 2 || node.kind === 4;
+      const isStackFrame = node.kind === Formatter2.FormatterWorkerPool.ScopeKind.FUNCTION || node.kind === Formatter2.FormatterWorkerPool.ScopeKind.ARROW_FUNCTION;
       let name = void 0;
       for (const offset of node.nameMappingLocations ?? []) {
         const position = positionFromOffset(offset);
@@ -20970,11 +24066,13 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
       const isFunctionScope = originalScope.kind === "function";
       const isInnerMostFunction = isFunctionScope && !seenFunctionScope;
       const returnValue = isInnerMostFunction ? callFrame.returnValue() : null;
-      result.push(new SourceMapScopeChainEntry(callFrame, originalScope, range, isInnerMostFunction, returnValue ?? void 0));
+      result.push(
+        new SourceMapScopeChainEntry(callFrame, originalScope, range, isInnerMostFunction, returnValue ?? void 0)
+      );
       seenFunctionScope ||= isFunctionScope;
     }
     if (callFrame.returnValue() !== null) {
-      while (result.length && result[0].type() !== "local") {
+      while (result.length && result[0].type() !== Debugger.ScopeType.Local) {
         result.shift();
       }
     }
@@ -21014,7 +24112,9 @@ var SourceMapScopesInfo = class _SourceMapScopesInfo {
       if (entry?.sourceIndex === void 0) {
         return null;
       }
-      originalInnerMostScope = this.#findOriginalScopeChain({ sourceIndex: entry.sourceIndex, line: entry.sourceLineNumber, column: entry.sourceColumnNumber }).at(-1);
+      originalInnerMostScope = this.#findOriginalScopeChain(
+        { sourceIndex: entry.sourceIndex, line: entry.sourceLineNumber, column: entry.sourceColumnNumber }
+      ).at(-1);
     }
     if (!originalInnerMostScope) {
       return null;
@@ -21116,8 +24216,7 @@ function contains(range, line, column) {
   return true;
 }
 
-// gen/front_end/core/sdk/SourceMap.js
-var _a;
+// ../../front_end/core/sdk/SourceMap.ts
 function parseSourceMap(content) {
   if (content.startsWith(")]}")) {
     content = content.substring(content.indexOf("\n"));
@@ -21151,7 +24250,7 @@ var SourceMapEntry = class {
     return entry1.columnNumber - entry2.columnNumber;
   }
 };
-var SourceMap = class {
+var SourceMap = class _SourceMap {
   static retainRawSourceMaps = false;
   #json;
   #compiledURL;
@@ -21242,7 +24341,11 @@ var SourceMap = class {
   findEntry(lineNumber, columnNumber) {
     this.#ensureSourceMapProcessed();
     const mappings = this.mappings();
-    const index = Platform8.ArrayUtilities.upperBound(mappings, void 0, (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
+    const index = Platform8.ArrayUtilities.upperBound(
+      mappings,
+      void 0,
+      (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber
+    );
     return index ? mappings[index - 1] : null;
   }
   /** Returns the entry at the given position but only if an entry exists for that exact position */
@@ -21255,7 +24358,11 @@ var SourceMap = class {
   }
   findEntryRanges(lineNumber, columnNumber) {
     const mappings = this.mappings();
-    const endIndex = Platform8.ArrayUtilities.upperBound(mappings, void 0, (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber);
+    const endIndex = Platform8.ArrayUtilities.upperBound(
+      mappings,
+      void 0,
+      (_, entry) => lineNumber - entry.lineNumber || columnNumber - entry.columnNumber
+    );
     if (!endIndex) {
       return null;
     }
@@ -21266,11 +24373,20 @@ var SourceMap = class {
     }
     const endLine = endIndex < mappings.length ? mappings[endIndex].lineNumber : 2 ** 31 - 1;
     const endColumn = endIndex < mappings.length ? mappings[endIndex].columnNumber : 2 ** 31 - 1;
-    const range = new TextUtils15.TextRange.TextRange(mappings[startIndex].lineNumber, mappings[startIndex].columnNumber, endLine, endColumn);
+    const range = new TextUtils15.TextRange.TextRange(
+      mappings[startIndex].lineNumber,
+      mappings[startIndex].columnNumber,
+      endLine,
+      endColumn
+    );
     const reverseMappings = this.reversedMappings(sourceURL);
     const startSourceLine = mappings[startIndex].sourceLineNumber;
     const startSourceColumn = mappings[startIndex].sourceColumnNumber;
-    const endReverseIndex = Platform8.ArrayUtilities.upperBound(reverseMappings, void 0, (_, i) => startSourceLine - mappings[i].sourceLineNumber || startSourceColumn - mappings[i].sourceColumnNumber);
+    const endReverseIndex = Platform8.ArrayUtilities.upperBound(
+      reverseMappings,
+      void 0,
+      (_, i) => startSourceLine - mappings[i].sourceLineNumber || startSourceColumn - mappings[i].sourceColumnNumber
+    );
     if (!endReverseIndex) {
       return null;
     }
@@ -21291,7 +24407,11 @@ var SourceMap = class {
     if (!columnMappings.length) {
       return null;
     }
-    const index = Platform8.ArrayUtilities.lowerBound(columnMappings, columnNumber, (columnNumber2, i) => columnNumber2 - mappings[i].sourceColumnNumber);
+    const index = Platform8.ArrayUtilities.lowerBound(
+      columnMappings,
+      columnNumber,
+      (columnNumber2, i) => columnNumber2 - mappings[i].sourceColumnNumber
+    );
     return index >= columnMappings.length ? mappings[columnMappings[columnMappings.length - 1]] : mappings[columnMappings[index]];
     function lineComparator(lineNumber2, i) {
       return lineNumber2 - mappings[i].sourceLineNumber;
@@ -21300,7 +24420,11 @@ var SourceMap = class {
   findReverseIndices(sourceURL, lineNumber, columnNumber) {
     const mappings = this.mappings();
     const reverseMappings = this.reversedMappings(sourceURL);
-    const endIndex = Platform8.ArrayUtilities.upperBound(reverseMappings, void 0, (_, i) => lineNumber - mappings[i].sourceLineNumber || columnNumber - mappings[i].sourceColumnNumber);
+    const endIndex = Platform8.ArrayUtilities.upperBound(
+      reverseMappings,
+      void 0,
+      (_, i) => lineNumber - mappings[i].sourceLineNumber || columnNumber - mappings[i].sourceColumnNumber
+    );
     let startIndex = endIndex;
     while (startIndex > 0 && mappings[reverseMappings[startIndex - 1]].sourceLineNumber === mappings[reverseMappings[endIndex - 1]].sourceLineNumber && mappings[reverseMappings[startIndex - 1]].sourceColumnNumber === mappings[reverseMappings[endIndex - 1]].sourceColumnNumber) {
       --startIndex;
@@ -21372,7 +24496,7 @@ var SourceMap = class {
       this.mappings().sort(SourceMapEntry.compare);
       this.#computeReverseMappings(this.#mappings);
     }
-    if (!_a.retainRawSourceMaps) {
+    if (!_SourceMap.retainRawSourceMaps) {
       this.#json = null;
     }
   }
@@ -21482,17 +24606,30 @@ var SourceMap = class {
       sourceLineNumber += tokenIter.nextVLQ();
       sourceColumnNumber += tokenIter.nextVLQ();
       if (!tokenIter.hasNext() || this.isSeparator(tokenIter.peek())) {
-        this.mappings().push(new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber));
+        this.mappings().push(
+          new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber)
+        );
         continue;
       }
       nameIndex += tokenIter.nextVLQ();
-      this.mappings().push(new SourceMapEntry(lineNumber, columnNumber, sourceIndex, sourceURL, sourceLineNumber, sourceColumnNumber, names[nameIndex]));
+      this.mappings().push(new SourceMapEntry(
+        lineNumber,
+        columnNumber,
+        sourceIndex,
+        sourceURL,
+        sourceLineNumber,
+        sourceColumnNumber,
+        names[nameIndex]
+      ));
     }
     if (!this.#scopesInfo) {
       this.#scopesInfo = new SourceMapScopesInfo(this, { scopes: [], ranges: [] });
     }
     if (map.scopes) {
-      const { scopes, ranges } = ScopesCodec.decode(map, { mode: 2, generatedOffset: { line: baseLineNumber, column: baseColumnNumber } });
+      const { scopes, ranges } = ScopesCodec.decode(
+        map,
+        { mode: ScopesCodec.DecodeMode.LAX, generatedOffset: { line: baseLineNumber, column: baseColumnNumber } }
+      );
       this.#scopesInfo.addOriginalScopes(scopes);
       this.#scopesInfo.addGeneratedRanges(ranges);
     } else if (map.x_com_bloomberg_sourcesFunctionMappings) {
@@ -21556,7 +24693,10 @@ var SourceMap = class {
     const ranges = [];
     for (let reverseIndex = startReverseIndex; reverseIndex < endReverseIndex; ++reverseIndex) {
       const startIndex = reverseMappings[reverseIndex], endIndex = startIndex + 1;
-      const range = TextUtils15.TextRange.TextRange.createUnboundedFromLocation(mappings[startIndex].lineNumber, mappings[startIndex].columnNumber);
+      const range = TextUtils15.TextRange.TextRange.createUnboundedFromLocation(
+        mappings[startIndex].lineNumber,
+        mappings[startIndex].columnNumber
+      );
       if (endIndex < mappings.length) {
         range.endLine = mappings[endIndex].lineNumber;
         range.endColumn = mappings[endIndex].columnNumber;
@@ -21661,7 +24801,6 @@ var SourceMap = class {
     return this.#scopesInfo?.translateCallSite(generatedLine, generatedColumn) ?? [];
   }
 };
-_a = SourceMap;
 var VLQ_BASE_SHIFT = 5;
 var VLQ_BASE_MASK = (1 << 5) - 1;
 var VLQ_CONTINUATION_MASK = 1 << 5;
@@ -21721,7 +24860,7 @@ var TokenIterator = class {
   }
 };
 
-// gen/front_end/core/sdk/SourceMapCache.js
+// ../../front_end/core/sdk/SourceMapCache.ts
 var SourceMapCache_exports = {};
 __export(SourceMapCache_exports, {
   SourceMapCache: () => SourceMapCache
@@ -21777,12 +24916,12 @@ var IN_MEMORY_INSTANCE = new class {
   }
 }();
 
-// gen/front_end/core/sdk/SourceMapManager.js
+// ../../front_end/core/sdk/SourceMapManager.ts
 var lazyLoadingSettingDescriptor = {
   name: "source-maps-lazy-loading",
-  type: "boolean",
+  type: Common14.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: "Local"
+  storageType: Common14.Settings.SettingStorageType.LOCAL
 };
 var SourceMapManager = class _SourceMapManager extends Common14.ObjectWrapper.ObjectWrapper {
   #target;
@@ -21817,7 +24956,7 @@ var SourceMapManager = class _SourceMapManager extends Common14.ObjectWrapper.Ob
     }
   }
   static getBaseUrl(target) {
-    while (target && target.type() !== Type.FRAME) {
+    while (target && target.type() !== "frame" /* FRAME */) {
       target = target.parentTarget();
     }
     return target?.inspectedURL() ?? Platform9.DevToolsPath.EmptyUrlString;
@@ -21865,31 +25004,34 @@ var SourceMapManager = class _SourceMapManager extends Common14.ObjectWrapper.Ob
               console.error("Attaching source map may cancel previously attaching source map");
             }
             this.#attachingClient = client;
-            this.dispatchEventToListeners(Events5.SourceMapWillAttach, { client });
+            this.dispatchEventToListeners("SourceMapWillAttach" /* SourceMapWillAttach */, { client });
             if (this.#attachingClient === client) {
               this.#attachingClient = null;
               const initiator = client.createPageResourceLoadInitiator();
               const resourceLoader = this.#target.targetManager().context.get(PageResourceLoader);
-              sourceMapPromise = loadSourceMap(resourceLoader, this.#sourceMapCache, sourceMapURL, client.debugId(), initiator).then((payload) => {
-                const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
-                if (this.#clientData.get(client) === clientData) {
-                  clientData.sourceMap = sourceMap;
-                  this.#sourceMaps.set(sourceMap, client);
-                  this.dispatchEventToListeners(Events5.SourceMapAttached, { client, sourceMap });
+              sourceMapPromise = loadSourceMap(resourceLoader, this.#sourceMapCache, sourceMapURL, client.debugId(), initiator).then(
+                (payload) => {
+                  const sourceMap = this.#factory(sourceURL, sourceMapURL, payload, client);
+                  if (this.#clientData.get(client) === clientData) {
+                    clientData.sourceMap = sourceMap;
+                    this.#sourceMaps.set(sourceMap, client);
+                    this.dispatchEventToListeners("SourceMapAttached" /* SourceMapAttached */, { client, sourceMap });
+                  }
+                  return sourceMap;
+                },
+                () => {
+                  if (this.#clientData.get(client) === clientData) {
+                    this.dispatchEventToListeners("SourceMapFailedToAttach" /* SourceMapFailedToAttach */, { client });
+                  }
+                  return void 0;
                 }
-                return sourceMap;
-              }, () => {
-                if (this.#clientData.get(client) === clientData) {
-                  this.dispatchEventToListeners(Events5.SourceMapFailedToAttach, { client });
-                }
-                return void 0;
-              });
+              );
             } else {
               if (this.#attachingClient) {
                 console.error("Cancelling source map attach because another source map is attaching");
               }
               this.#clientData.delete(client);
-              this.dispatchEventToListeners(Events5.SourceMapFailedToAttach, { client });
+              this.dispatchEventToListeners("SourceMapFailedToAttach" /* SourceMapFailedToAttach */, { client });
               sourceMapPromise = Promise.resolve(void 0);
             }
           }
@@ -21925,9 +25067,9 @@ var SourceMapManager = class _SourceMapManager extends Common14.ObjectWrapper.Ob
     const { sourceMap } = clientData;
     if (sourceMap) {
       this.#sourceMaps.delete(sourceMap);
-      this.dispatchEventToListeners(Events5.SourceMapDetached, { client, sourceMap });
+      this.dispatchEventToListeners("SourceMapDetached" /* SourceMapDetached */, { client, sourceMap });
     } else {
-      this.dispatchEventToListeners(Events5.SourceMapFailedToAttach, { client });
+      this.dispatchEventToListeners("SourceMapFailedToAttach" /* SourceMapFailedToAttach */, { client });
     }
   }
   waitForSourceMapsProcessedForTest() {
@@ -21962,15 +25104,20 @@ async function tryLoadSourceMap(resourceLoader, url, initiator) {
     return null;
   }
 }
-var Events5;
-(function(Events12) {
-  Events12["SourceMapWillAttach"] = "SourceMapWillAttach";
-  Events12["SourceMapFailedToAttach"] = "SourceMapFailedToAttach";
-  Events12["SourceMapAttached"] = "SourceMapAttached";
-  Events12["SourceMapDetached"] = "SourceMapDetached";
-})(Events5 || (Events5 = {}));
+var Events11 = /* @__PURE__ */ ((Events35) => {
+  Events35["SourceMapWillAttach"] = "SourceMapWillAttach";
+  Events35["SourceMapFailedToAttach"] = "SourceMapFailedToAttach";
+  Events35["SourceMapAttached"] = "SourceMapAttached";
+  Events35["SourceMapDetached"] = "SourceMapDetached";
+  return Events35;
+})(Events11 || {});
 
-// gen/front_end/core/sdk/CSSModel.js
+// ../../front_end/core/sdk/CSSModel.ts
+var ColorScheme = /* @__PURE__ */ ((ColorScheme2) => {
+  ColorScheme2["LIGHT"] = "light";
+  ColorScheme2["DARK"] = "dark";
+  return ColorScheme2;
+})(ColorScheme || {});
 var CSSModel = class _CSSModel extends SDKModel {
   agent;
   #domModel;
@@ -21998,7 +25145,11 @@ var CSSModel = class _CSSModel extends SDKModel {
     this.#styleLoader = new ComputedStyleLoader(this);
     this.#resourceTreeModel = target.model(ResourceTreeModel);
     if (this.#resourceTreeModel) {
-      this.#resourceTreeModel.addEventListener(Events2.PrimaryPageChanged, this.onPrimaryPageChanged, this);
+      this.#resourceTreeModel.addEventListener(
+        "PrimaryPageChanged" /* PrimaryPageChanged */,
+        this.onPrimaryPageChanged,
+        this
+      );
     }
     target.registerCSSDispatcher(new CSSDispatcher(this));
     if (!target.suspended()) {
@@ -22010,9 +25161,11 @@ var CSSModel = class _CSSModel extends SDKModel {
   }
   async colorScheme() {
     if (!this.#colorScheme) {
-      const colorSchemeResponse = await this.domModel()?.target().runtimeAgent().invoke_evaluate({ expression: 'window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches' });
+      const colorSchemeResponse = await this.domModel()?.target().runtimeAgent().invoke_evaluate(
+        { expression: 'window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches' }
+      );
       if (colorSchemeResponse && !colorSchemeResponse.exceptionDetails && !colorSchemeResponse.getError()) {
-        this.#colorScheme = colorSchemeResponse.result.value ? "dark" : "light";
+        this.#colorScheme = colorSchemeResponse.result.value ? "dark" /* DARK */ : "light" /* LIGHT */;
       }
     }
     return this.#colorScheme;
@@ -22040,7 +25193,11 @@ var CSSModel = class _CSSModel extends SDKModel {
   createRawLocationsByURL(sourceURL, lineNumber, columnNumber = 0) {
     const headers = this.headersForSourceURL(sourceURL);
     headers.sort(stylesheetComparator);
-    const endIndex = Platform10.ArrayUtilities.upperBound(headers, void 0, (_, header) => lineNumber - header.startLine || columnNumber - header.startColumn);
+    const endIndex = Platform10.ArrayUtilities.upperBound(
+      headers,
+      void 0,
+      (_, header) => lineNumber - header.startLine || columnNumber - header.startColumn
+    );
     if (!endIndex) {
       return [];
     }
@@ -22190,7 +25347,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     if (this.#isRuleUsageTrackingEnabled) {
       await this.startCoverage();
     }
-    this.dispatchEventToListeners(Events6.ModelWasEnabled);
+    this.dispatchEventToListeners("ModelWasEnabled" /* ModelWasEnabled */);
   }
   async getAnimatedStylesForNode(nodeId) {
     const response = await this.agent.invoke_getAnimatedStylesForNode({ nodeId });
@@ -22316,13 +25473,13 @@ var CSSModel = class _CSSModel extends SDKModel {
     if (response.getError() || !response.inlineStyle) {
       return null;
     }
-    const inlineStyle = new CSSStyleDeclaration(this, null, response.inlineStyle, Type2.Inline);
-    const attributesStyle = response.attributesStyle ? new CSSStyleDeclaration(this, null, response.attributesStyle, Type2.Attributes) : null;
+    const inlineStyle = new CSSStyleDeclaration(this, null, response.inlineStyle, "Inline" /* Inline */);
+    const attributesStyle = response.attributesStyle ? new CSSStyleDeclaration(this, null, response.attributesStyle, "Attributes" /* Attributes */) : null;
     return new InlineStyleResult(inlineStyle, attributesStyle);
   }
   forceStartingStyle(node, forced) {
     void this.agent.invoke_forceStartingStyle({ nodeId: node.id, forced });
-    this.dispatchEventToListeners(Events6.StartingStylesStateForced, node);
+    this.dispatchEventToListeners("StartingStylesStateForced" /* StartingStylesStateForced */, node);
     return true;
   }
   forcePseudoState(node, pseudoClass, enable) {
@@ -22349,7 +25506,7 @@ var CSSModel = class _CSSModel extends SDKModel {
       return false;
     }
     void this.agent.invoke_forcePseudoState({ nodeId: node.id, forcedPseudoClasses });
-    this.dispatchEventToListeners(Events6.PseudoStateForced, { node, pseudoClass, enable });
+    this.dispatchEventToListeners("PseudoStateForced" /* PseudoStateForced */, { node, pseudoClass, enable });
     return true;
   }
   pseudoState(node) {
@@ -22393,7 +25550,9 @@ var CSSModel = class _CSSModel extends SDKModel {
     Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.StyleRuleEdited);
     try {
       await this.ensureOriginalStyleSheetText(styleSheetId);
-      const { containerQuery } = await this.agent.invoke_setContainerQueryConditionText({ styleSheetId, range, text: newContainerQueryConditionText });
+      const { containerQuery } = await this.agent.invoke_setContainerQueryConditionText(
+        { styleSheetId, range, text: newContainerQueryConditionText }
+      );
       if (!containerQuery) {
         return false;
       }
@@ -22499,13 +25658,13 @@ var CSSModel = class _CSSModel extends SDKModel {
   }
   mediaQueryResultChanged() {
     this.#colorScheme = void 0;
-    this.dispatchEventToListeners(Events6.MediaQueryResultChanged);
+    this.dispatchEventToListeners("MediaQueryResultChanged" /* MediaQueryResultChanged */);
   }
   fontsUpdated(fontFace) {
     if (fontFace) {
       this.#fontFaces.set(fontFace.src, new CSSFontFace(fontFace));
     }
-    this.dispatchEventToListeners(Events6.FontsUpdated);
+    this.dispatchEventToListeners("FontsUpdated" /* FontsUpdated */);
   }
   fontFaces() {
     return [...this.#fontFaces.values()];
@@ -22520,7 +25679,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     return [...this.#styleSheetIdToHeader.values()];
   }
   fireStyleSheetChanged(styleSheetId, edit) {
-    this.dispatchEventToListeners(Events6.StyleSheetChanged, { styleSheetId, edit });
+    this.dispatchEventToListeners("StyleSheetChanged" /* StyleSheetChanged */, { styleSheetId, edit });
   }
   ensureOriginalStyleSheetText(styleSheetId) {
     const header = this.styleSheetHeaderForId(styleSheetId);
@@ -22544,7 +25703,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     return this.#styleSheetIdToHeader.values();
   }
   computedStyleUpdated(nodeId) {
-    this.dispatchEventToListeners(Events6.ComputedStyleUpdated, { nodeId });
+    this.dispatchEventToListeners("ComputedStyleUpdated" /* ComputedStyleUpdated */, { nodeId });
   }
   styleSheetAdded(header) {
     console.assert(!this.#styleSheetIdToHeader.get(header.styleSheetId));
@@ -22573,7 +25732,7 @@ var CSSModel = class _CSSModel extends SDKModel {
       styleSheetIds.add(styleSheetHeader.id);
     }
     this.#sourceMapManager.attachSourceMap(styleSheetHeader, styleSheetHeader.sourceURL, styleSheetHeader.sourceMapURL);
-    this.dispatchEventToListeners(Events6.StyleSheetAdded, styleSheetHeader);
+    this.dispatchEventToListeners("StyleSheetAdded" /* StyleSheetAdded */, styleSheetHeader);
   }
   styleSheetRemoved(id) {
     const header = this.#styleSheetIdToHeader.get(id);
@@ -22584,7 +25743,10 @@ var CSSModel = class _CSSModel extends SDKModel {
     this.#styleSheetIdToHeader.delete(id);
     const url = header.resourceURL();
     const frameIdToStyleSheetIds = this.#styleSheetIdsForURL.get(url);
-    console.assert(Boolean(frameIdToStyleSheetIds), "No frameId to styleSheetId map is available for given style sheet URL.");
+    console.assert(
+      Boolean(frameIdToStyleSheetIds),
+      "No frameId to styleSheetId map is available for given style sheet URL."
+    );
     if (frameIdToStyleSheetIds) {
       const stylesheetIds = frameIdToStyleSheetIds.get(header.frameId);
       if (stylesheetIds) {
@@ -22599,7 +25761,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     }
     this.#originalStyleSheetText.delete(header);
     this.#sourceMapManager.detachSourceMap(header);
-    this.dispatchEventToListeners(Events6.StyleSheetRemoved, header);
+    this.dispatchEventToListeners("StyleSheetRemoved" /* StyleSheetRemoved */, header);
   }
   getStyleSheetIdsForURL(url) {
     const frameIdToStyleSheetIds = this.#styleSheetIdsForURL.get(url);
@@ -22646,7 +25808,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     if (event.data.frame.backForwardCacheDetails.restoredFromCache) {
       await this.suspendModel();
       await this.resumeModel();
-    } else if (event.data.type !== "Activation") {
+    } else if (event.data.type !== "Activation" /* ACTIVATION */) {
       this.resetStyleSheets();
       this.resetFontFaces();
     }
@@ -22657,7 +25819,7 @@ var CSSModel = class _CSSModel extends SDKModel {
     this.#styleSheetIdToHeader.clear();
     for (const header of headers) {
       this.#sourceMapManager.detachSourceMap(header);
-      this.dispatchEventToListeners(Events6.StyleSheetRemoved, header);
+      this.dispatchEventToListeners("StyleSheetRemoved" /* StyleSheetRemoved */, header);
     }
   }
   resetFontFaces() {
@@ -22726,7 +25888,10 @@ var CSSModel = class _CSSModel extends SDKModel {
         return;
       }
       if (this.#cssPropertyTracker) {
-        this.#cssPropertyTracker.dispatchEventToListeners("TrackedCSSPropertiesUpdated", result.nodeIds.map((nodeId) => this.#domModel.nodeForId(nodeId)));
+        this.#cssPropertyTracker.dispatchEventToListeners(
+          "TrackedCSSPropertiesUpdated" /* TRACKED_CSS_PROPERTIES_UPDATED */,
+          result.nodeIds.map((nodeId) => this.#domModel.nodeForId(nodeId))
+        );
       }
     }
     if (this.#isCSSPropertyTrackingEnabled) {
@@ -22736,25 +25901,25 @@ var CSSModel = class _CSSModel extends SDKModel {
   dispose() {
     this.disableCSSPropertyTracker();
     super.dispose();
-    this.dispatchEventToListeners(Events6.ModelDisposed, this);
+    this.dispatchEventToListeners("ModelDisposed" /* ModelDisposed */, this);
   }
   getAgent() {
     return this.agent;
   }
 };
-var Events6;
-(function(Events12) {
-  Events12["FontsUpdated"] = "FontsUpdated";
-  Events12["MediaQueryResultChanged"] = "MediaQueryResultChanged";
-  Events12["ModelWasEnabled"] = "ModelWasEnabled";
-  Events12["ModelDisposed"] = "ModelDisposed";
-  Events12["PseudoStateForced"] = "PseudoStateForced";
-  Events12["StartingStylesStateForced"] = "StartingStylesStateForced";
-  Events12["StyleSheetAdded"] = "StyleSheetAdded";
-  Events12["StyleSheetChanged"] = "StyleSheetChanged";
-  Events12["StyleSheetRemoved"] = "StyleSheetRemoved";
-  Events12["ComputedStyleUpdated"] = "ComputedStyleUpdated";
-})(Events6 || (Events6 = {}));
+var Events12 = /* @__PURE__ */ ((Events35) => {
+  Events35["FontsUpdated"] = "FontsUpdated";
+  Events35["MediaQueryResultChanged"] = "MediaQueryResultChanged";
+  Events35["ModelWasEnabled"] = "ModelWasEnabled";
+  Events35["ModelDisposed"] = "ModelDisposed";
+  Events35["PseudoStateForced"] = "PseudoStateForced";
+  Events35["StartingStylesStateForced"] = "StartingStylesStateForced";
+  Events35["StyleSheetAdded"] = "StyleSheetAdded";
+  Events35["StyleSheetChanged"] = "StyleSheetChanged";
+  Events35["StyleSheetRemoved"] = "StyleSheetRemoved";
+  Events35["ComputedStyleUpdated"] = "ComputedStyleUpdated";
+  return Events35;
+})(Events12 || {});
 var PseudoStateMarker = "pseudo-state-marker";
 var Edit = class {
   styleSheetId;
@@ -22875,37 +26040,44 @@ var CSSPropertyTracker = class extends Common15.ObjectWrapper.ObjectWrapper {
   }
 };
 var StylePollingInterval = 1e3;
-SDKModel.register(CSSModel, { capabilities: 2, autostart: true });
+var CSSPropertyTrackerEvents = /* @__PURE__ */ ((CSSPropertyTrackerEvents2) => {
+  CSSPropertyTrackerEvents2["TRACKED_CSS_PROPERTIES_UPDATED"] = "TrackedCSSPropertiesUpdated";
+  return CSSPropertyTrackerEvents2;
+})(CSSPropertyTrackerEvents || {});
+SDKModel.register(CSSModel, { capabilities: 2 /* DOM */, autostart: true });
 
-// gen/front_end/core/sdk/OverlayModel.js
+// ../../front_end/core/sdk/OverlayModel.ts
 var OverlayModel_exports = {};
 __export(OverlayModel_exports, {
+  EmulatedOSType: () => EmulatedOSType,
+  Events: () => Events14,
   OverlayModel: () => OverlayModel,
   SourceOrderHighlighter: () => SourceOrderHighlighter,
   WindowControls: () => WindowControls
 });
-import * as Common18 from "./../common/common.js";
-import * as i18n11 from "./../i18n/i18n.js";
+import * as Common18 from "../common/common.js";
+import * as i18n11 from "../i18n/i18n.js";
 
-// gen/front_end/core/sdk/OverlayPersistentHighlighter.js
+// ../../front_end/core/sdk/OverlayPersistentHighlighter.ts
 var OverlayPersistentHighlighter_exports = {};
 __export(OverlayPersistentHighlighter_exports, {
+  HighlightType: () => HighlightType,
   OverlayPersistentHighlighter: () => OverlayPersistentHighlighter
 });
-import * as Common17 from "./../common/common.js";
-import * as Platform11 from "./../platform/platform.js";
+import * as Common17 from "../common/common.js";
+import * as Platform11 from "../platform/platform.js";
 
-// gen/front_end/core/sdk/OverlayColorGenerator.js
+// ../../front_end/core/sdk/OverlayColorGenerator.ts
 var OverlayColorGenerator_exports = {};
 __export(OverlayColorGenerator_exports, {
   OverlayColorGenerator: () => OverlayColorGenerator
 });
-import * as Common16 from "./../common/common.js";
+import * as Common16 from "../common/common.js";
 var OverlayColorGenerator = class {
   #colors;
   #index;
   constructor() {
-    const format = "rgba";
+    const format = Common16.Color.Format.RGBA;
     this.#colors = [
       // F59794
       new Common16.Color.Legacy([0.9607843137254902, 0.592156862745098, 0.5803921568627451, 1], format),
@@ -22941,7 +26113,15 @@ var OverlayColorGenerator = class {
   }
 };
 
-// gen/front_end/core/sdk/OverlayPersistentHighlighter.js
+// ../../front_end/core/sdk/OverlayPersistentHighlighter.ts
+var HighlightType = /* @__PURE__ */ ((HighlightType2) => {
+  HighlightType2["FLEX"] = "FLEX";
+  HighlightType2["GRID"] = "GRID";
+  HighlightType2["SCROLL_SNAP"] = "SCROLL_SNAP";
+  HighlightType2["CONTAINER_QUERY"] = "CONTAINER_QUERY";
+  HighlightType2["ISOLATED_ELEMENT"] = "ISOLATED_ELEMENT";
+  return HighlightType2;
+})(HighlightType || {});
 var OverlayPersistentHighlighter = class {
   #model;
   #colors = /* @__PURE__ */ new Map();
@@ -23010,21 +26190,9 @@ var OverlayPersistentHighlighter = class {
   buildFlexContainerHighlightConfig(nodeId) {
     const mainColor = this.colorOfFlex(nodeId).asLegacyColor();
     return {
-      containerBorder: {
-        color: mainColor.toProtocolRGBA(),
-        pattern: "dashed"
-        /* Protocol.Overlay.LineStylePattern.Dashed */
-      },
-      itemSeparator: {
-        color: mainColor.toProtocolRGBA(),
-        pattern: "dotted"
-        /* Protocol.Overlay.LineStylePattern.Dotted */
-      },
-      lineSeparator: {
-        color: mainColor.toProtocolRGBA(),
-        pattern: "dashed"
-        /* Protocol.Overlay.LineStylePattern.Dashed */
-      },
+      containerBorder: { color: mainColor.toProtocolRGBA(), pattern: Overlay.LineStylePattern.Dashed },
+      itemSeparator: { color: mainColor.toProtocolRGBA(), pattern: Overlay.LineStylePattern.Dotted },
+      lineSeparator: { color: mainColor.toProtocolRGBA(), pattern: Overlay.LineStylePattern.Dashed },
       mainDistributedSpace: { hatchColor: mainColor.toProtocolRGBA() },
       crossDistributedSpace: { hatchColor: mainColor.toProtocolRGBA() }
     };
@@ -23033,7 +26201,7 @@ var OverlayPersistentHighlighter = class {
     return {
       snapAreaBorder: {
         color: Common17.Color.PageHighlight.GridBorder.toProtocolRGBA(),
-        pattern: "dashed"
+        pattern: Overlay.LineStylePattern.Dashed
       },
       snapportBorder: { color: Common17.Color.PageHighlight.GridBorder.toProtocolRGBA() },
       scrollMarginColor: Common17.Color.PageHighlight.Margin.toProtocolRGBA(),
@@ -23134,11 +26302,11 @@ var OverlayPersistentHighlighter = class {
     return {
       containerBorder: {
         color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-        pattern: "dashed"
+        pattern: Overlay.LineStylePattern.Dashed
       },
       descendantBorder: {
         color: Common17.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-        pattern: "dashed"
+        pattern: Overlay.LineStylePattern.Dashed
       }
     };
   }
@@ -23276,23 +26444,23 @@ var OverlayPersistentHighlighter = class {
             return;
           }
           switch (persistentHighlight.type) {
-            case "GRID":
+            case "GRID" /* GRID */:
               this.#gridHighlights.set(node.id, this.buildGridHighlightConfig(node.id));
               this.#callbacks.onGridOverlayStateChanged({ nodeId: node.id, enabled: true });
               break;
-            case "FLEX":
+            case "FLEX" /* FLEX */:
               this.#flexHighlights.set(node.id, this.buildFlexContainerHighlightConfig(node.id));
               this.#callbacks.onFlexOverlayStateChanged({ nodeId: node.id, enabled: true });
               break;
-            case "CONTAINER_QUERY":
+            case "CONTAINER_QUERY" /* CONTAINER_QUERY */:
               this.#containerQueryHighlights.set(node.id, this.buildContainerQueryContainerHighlightConfig());
               this.#callbacks.onContainerQueryOverlayStateChanged({ nodeId: node.id, enabled: true });
               break;
-            case "SCROLL_SNAP":
+            case "SCROLL_SNAP" /* SCROLL_SNAP */:
               this.#scrollSnapHighlights.set(node.id, this.buildScrollSnapContainerHighlightConfig(node.id));
               this.#callbacks.onScrollSnapOverlayStateChanged({ nodeId: node.id, enabled: true });
               break;
-            case "ISOLATED_ELEMENT":
+            case "ISOLATED_ELEMENT" /* ISOLATED_ELEMENT */:
               this.#isolatedElementHighlights.set(node.id, this.buildIsolationModeHighlightConfig());
               break;
           }
@@ -23320,37 +26488,17 @@ var OverlayPersistentHighlighter = class {
     const highlightsInOtherDocuments = this.#persistentHighlightSetting.get().filter((persistentSetting) => persistentSetting.url !== currentURL);
     const persistentHighlights = [
       ...highlightsInOtherDocuments,
-      ...this.getPersistentHighlightSettingForOneType(
-        this.#gridHighlights,
-        "GRID"
-        /* HighlightType.GRID */
-      ),
-      ...this.getPersistentHighlightSettingForOneType(
-        this.#flexHighlights,
-        "FLEX"
-        /* HighlightType.FLEX */
-      ),
-      ...this.getPersistentHighlightSettingForOneType(
-        this.#containerQueryHighlights,
-        "CONTAINER_QUERY"
-        /* HighlightType.CONTAINER_QUERY */
-      ),
-      ...this.getPersistentHighlightSettingForOneType(
-        this.#scrollSnapHighlights,
-        "SCROLL_SNAP"
-        /* HighlightType.SCROLL_SNAP */
-      ),
-      ...this.getPersistentHighlightSettingForOneType(
-        this.#isolatedElementHighlights,
-        "ISOLATED_ELEMENT"
-        /* HighlightType.ISOLATED_ELEMENT */
-      )
+      ...this.getPersistentHighlightSettingForOneType(this.#gridHighlights, "GRID" /* GRID */),
+      ...this.getPersistentHighlightSettingForOneType(this.#flexHighlights, "FLEX" /* FLEX */),
+      ...this.getPersistentHighlightSettingForOneType(this.#containerQueryHighlights, "CONTAINER_QUERY" /* CONTAINER_QUERY */),
+      ...this.getPersistentHighlightSettingForOneType(this.#scrollSnapHighlights, "SCROLL_SNAP" /* SCROLL_SNAP */),
+      ...this.getPersistentHighlightSettingForOneType(this.#isolatedElementHighlights, "ISOLATED_ELEMENT" /* ISOLATED_ELEMENT */)
     ];
     this.#persistentHighlightSetting.set(persistentHighlights);
   }
 };
 
-// gen/front_end/core/sdk/OverlayModel.js
+// ../../front_end/core/sdk/OverlayModel.ts
 var UIStrings6 = {
   /**
    * @description Overlay message indicating that execution is paused in the debugger.
@@ -23359,6 +26507,12 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("core/sdk/OverlayModel.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var EmulatedOSType = /* @__PURE__ */ ((EmulatedOSType2) => {
+  EmulatedOSType2["WINDOWS"] = "Windows";
+  EmulatedOSType2["MAC"] = "Mac";
+  EmulatedOSType2["LINUX"] = "Linux";
+  return EmulatedOSType2;
+})(EmulatedOSType || {});
 var platformOverlayDimensions = {
   mac: { x: 85, y: 0, width: 185, height: 40 },
   linux: { x: 0, y: 0, width: 196, height: 34 },
@@ -23393,9 +26547,21 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     this.#debuggerModel = target.model(DebuggerModel);
     if (this.#debuggerModel) {
       settings.resolve(disablePausedStateOverlaySettingDescriptor).addChangeListener(this.updatePausedInDebuggerMessage, this);
-      this.#debuggerModel.addEventListener(Events.DebuggerPaused, this.updatePausedInDebuggerMessage, this);
-      this.#debuggerModel.addEventListener(Events.DebuggerResumed, this.updatePausedInDebuggerMessage, this);
-      this.#debuggerModel.addEventListener(Events.GlobalObjectCleared, this.updatePausedInDebuggerMessage, this);
+      this.#debuggerModel.addEventListener(
+        "DebuggerPaused" /* DebuggerPaused */,
+        this.updatePausedInDebuggerMessage,
+        this
+      );
+      this.#debuggerModel.addEventListener(
+        "DebuggerResumed" /* DebuggerResumed */,
+        this.updatePausedInDebuggerMessage,
+        this
+      );
+      this.#debuggerModel.addEventListener(
+        "GlobalObjectCleared" /* GlobalObjectCleared */,
+        this.updatePausedInDebuggerMessage,
+        this
+      );
     }
     this.#defaultHighlighter = new DefaultHighlighter(this);
     this.#highlighter = this.#defaultHighlighter;
@@ -23411,29 +26577,38 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     }
     this.#persistentHighlighter = new OverlayPersistentHighlighter(this, settings, {
       onGridOverlayStateChanged: ({ nodeId, enabled }) => {
-        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, { enabled });
-        this.dispatchEventToListeners("PersistentGridOverlayStateChanged", { nodeId, enabled });
+        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners("GridOverlayStateChanged" /* GRID_OVERLAY_STATE_CHANGED */, { enabled });
+        this.dispatchEventToListeners("PersistentGridOverlayStateChanged" /* PERSISTENT_GRID_OVERLAY_STATE_CHANGED */, { nodeId, enabled });
       },
       onFlexOverlayStateChanged: ({ nodeId, enabled }) => {
-        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, { enabled });
-        this.dispatchEventToListeners("PersistentFlexContainerOverlayStateChanged", { nodeId, enabled });
+        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(
+          "FlexContainerOverlayStateChanged" /* FLEX_CONTAINER_OVERLAY_STATE_CHANGED */,
+          { enabled }
+        );
+        this.dispatchEventToListeners("PersistentFlexContainerOverlayStateChanged" /* PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED */, { nodeId, enabled });
       },
       onContainerQueryOverlayStateChanged: ({ nodeId, enabled }) => {
-        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED, { enabled });
-        this.dispatchEventToListeners("PersistentContainerQueryOverlayStateChanged", { nodeId, enabled });
+        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(
+          "ContainerQueryOverlayStateChanged" /* CONTAINER_QUERY_OVERLAY_STATE_CHANGED */,
+          { enabled }
+        );
+        this.dispatchEventToListeners("PersistentContainerQueryOverlayStateChanged" /* PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED */, { nodeId, enabled });
       },
       onScrollSnapOverlayStateChanged: ({ nodeId, enabled }) => {
-        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, { enabled });
-        this.dispatchEventToListeners("PersistentScrollSnapOverlayStateChanged", { nodeId, enabled });
+        this.#domModel.nodeForId(nodeId)?.dispatchEventToListeners(
+          "ScrollSnapOverlayStateChanged" /* SCROLL_SNAP_OVERLAY_STATE_CHANGED */,
+          { enabled }
+        );
+        this.dispatchEventToListeners("PersistentScrollSnapOverlayStateChanged" /* PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED */, { nodeId, enabled });
       }
     });
-    this.#domModel.addEventListener(Events7.NodeRemoved, () => {
+    this.#domModel.addEventListener("NodeRemoved" /* NodeRemoved */, () => {
       if (!this.#persistentHighlighter) {
         return;
       }
       this.#persistentHighlighter.refreshHighlights();
     });
-    this.#domModel.addEventListener(Events7.DocumentUpdated, () => {
+    this.#domModel.addEventListener("DocumentUpdated" /* DocumentUpdated */, () => {
       if (!this.#persistentHighlighter) {
         return;
       }
@@ -23478,19 +26653,35 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   highlightRect({ x, y, width, height, color, outlineColor }) {
     const highlightColor = color || { r: 255, g: 0, b: 255, a: 0.3 };
     const highlightOutlineColor = outlineColor || { r: 255, g: 0, b: 255, a: 0.5 };
-    return this.overlayAgent.invoke_highlightRect({ x, y, width, height, color: highlightColor, outlineColor: highlightOutlineColor });
+    return this.overlayAgent.invoke_highlightRect(
+      { x, y, width, height, color: highlightColor, outlineColor: highlightOutlineColor }
+    );
   }
   clearHighlight() {
     return this.overlayAgent.invoke_hideHighlight();
   }
   async wireAgentToSettings() {
     this.#registeredListeners = [
-      this.#showPaintRectsSetting.addChangeListener(() => this.overlayAgent.invoke_setShowPaintRects({ result: this.#showPaintRectsSetting.get() })),
-      this.#showLayoutShiftRegionsSetting.addChangeListener(() => this.overlayAgent.invoke_setShowLayoutShiftRegions({ result: this.#showLayoutShiftRegionsSetting.get() })),
-      this.#showAdHighlightsSetting.addChangeListener(() => this.overlayAgent.invoke_setShowAdHighlights({ show: this.#showAdHighlightsSetting.get() })),
-      this.#showDebugBordersSetting.addChangeListener(() => this.overlayAgent.invoke_setShowDebugBorders({ show: this.#showDebugBordersSetting.get() })),
-      this.#showFPSCounterSetting.addChangeListener(() => this.overlayAgent.invoke_setShowFPSCounter({ show: this.#showFPSCounterSetting.get() })),
-      this.#showScrollBottleneckRectsSetting.addChangeListener(() => this.overlayAgent.invoke_setShowScrollBottleneckRects({ show: this.#showScrollBottleneckRectsSetting.get() }))
+      this.#showPaintRectsSetting.addChangeListener(
+        () => this.overlayAgent.invoke_setShowPaintRects({ result: this.#showPaintRectsSetting.get() })
+      ),
+      this.#showLayoutShiftRegionsSetting.addChangeListener(
+        () => this.overlayAgent.invoke_setShowLayoutShiftRegions({ result: this.#showLayoutShiftRegionsSetting.get() })
+      ),
+      this.#showAdHighlightsSetting.addChangeListener(
+        () => this.overlayAgent.invoke_setShowAdHighlights({ show: this.#showAdHighlightsSetting.get() })
+      ),
+      this.#showDebugBordersSetting.addChangeListener(
+        () => this.overlayAgent.invoke_setShowDebugBorders({ show: this.#showDebugBordersSetting.get() })
+      ),
+      this.#showFPSCounterSetting.addChangeListener(
+        () => this.overlayAgent.invoke_setShowFPSCounter({ show: this.#showFPSCounterSetting.get() })
+      ),
+      this.#showScrollBottleneckRectsSetting.addChangeListener(
+        () => this.overlayAgent.invoke_setShowScrollBottleneckRects(
+          { show: this.#showScrollBottleneckRectsSetting.get() }
+        )
+      )
     ];
     if (this.#showPaintRectsSetting.get()) {
       void this.overlayAgent.invoke_setShowPaintRects({ result: true });
@@ -23546,8 +26737,8 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   }
   async setInspectMode(mode, showDetailedTooltip = true) {
     await this.#domModel.requestDocument();
-    this.#inspectModeEnabled = mode !== "none";
-    this.dispatchEventToListeners("InspectModeWillBeToggled", this);
+    this.#inspectModeEnabled = mode !== Overlay.InspectMode.None;
+    this.dispatchEventToListeners("InspectModeWillBeToggled" /* INSPECT_MODE_WILL_BE_TOGGLED */, this);
     void this.#highlighter.setInspectMode(mode, this.buildHighlightConfig("all", showDetailedTooltip));
   }
   inspectModeEnabled() {
@@ -23652,10 +26843,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     if (!this.#persistentHighlighter) {
       return null;
     }
-    return this.#persistentHighlighter.colorOfGrid(nodeId).asString(
-      "hex"
-      /* Common.Color.Format.HEX */
-    );
+    return this.#persistentHighlighter.colorOfGrid(nodeId).asString(Common18.Color.Format.HEX);
   }
   setColorOfGridInPersistentOverlay(nodeId, colorStr) {
     if (!this.#persistentHighlighter) {
@@ -23672,10 +26860,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     if (!this.#persistentHighlighter) {
       return null;
     }
-    return this.#persistentHighlighter.colorOfFlex(nodeId).asString(
-      "hex"
-      /* Common.Color.Format.HEX */
-    );
+    return this.#persistentHighlighter.colorOfFlex(nodeId).asString(Common18.Color.Format.HEX);
   }
   setColorOfFlexInPersistentOverlay(nodeId, colorStr) {
     if (!this.#persistentHighlighter) {
@@ -23696,7 +26881,10 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   }
   delayedHideHighlight(delay) {
     if (this.#hideHighlightTimeout === void 0) {
-      this.#hideHighlightTimeout = globalThis.setTimeout(() => this.highlightInOverlay({ clear: true }), delay);
+      this.#hideHighlightTimeout = globalThis.setTimeout(
+        () => this.highlightInOverlay({ clear: true }),
+        delay
+      );
     }
   }
   highlightFrame(frameId) {
@@ -23722,12 +26910,12 @@ var OverlayModel = class _OverlayModel extends SDKModel {
         shape,
         contentColor
       };
-      if (shape === "pill") {
+      if (shape === Overlay.DisplayCutoutShape.Pill) {
         displayCutoutConfig.borderRadius = cutout.borderRadius;
-      } else if (shape === "notch") {
+      } else if (shape === Overlay.DisplayCutoutShape.Notch) {
         displayCutoutConfig.upperRadius = cutout.upperRadius;
         displayCutoutConfig.lowerRadius = cutout.lowerRadius;
-      } else if (shape === "circle") {
+      } else if (shape === Overlay.DisplayCutoutShape.Circle) {
         displayCutoutConfig.cx = cutout.cx;
         displayCutoutConfig.cy = cutout.cy;
         displayCutoutConfig.radius = cutout.radius;
@@ -23767,7 +26955,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       gridHighlightConfig: {},
       flexContainerHighlightConfig: {},
       flexItemHighlightConfig: {},
-      contrastAlgorithm: settings.resolve(apcaSettingDescriptor).get() ? "apca" : "aa"
+      contrastAlgorithm: settings.resolve(apcaSettingDescriptor).get() ? Overlay.ContrastAlgorithm.Apca : Overlay.ContrastAlgorithm.Aa
     };
     if (mode === "all" || mode === "content") {
       highlightConfig.contentColor = Common18.Color.PageHighlight.Content.toProtocolRGBA();
@@ -23798,15 +26986,15 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       highlightConfig.flexContainerHighlightConfig = {
         containerBorder: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-          pattern: "dashed"
+          pattern: Overlay.LineStylePattern.Dashed
         },
         itemSeparator: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-          pattern: "dotted"
+          pattern: Overlay.LineStylePattern.Dotted
         },
         lineSeparator: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-          pattern: "dashed"
+          pattern: Overlay.LineStylePattern.Dashed
         },
         mainDistributedSpace: {
           hatchColor: Common18.Color.PageHighlight.GapHatch.toProtocolRGBA(),
@@ -23831,7 +27019,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
         },
         baseSizeBorder: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-          pattern: "dotted"
+          pattern: Overlay.LineStylePattern.Dotted
         },
         flexibilityArrow: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA()
@@ -23856,7 +27044,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       highlightConfig.flexContainerHighlightConfig = {
         containerBorder: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-          pattern: "dashed"
+          pattern: Overlay.LineStylePattern.Dashed
         }
       };
       if (mode === "gap" || mode === "row-gap") {
@@ -23900,7 +27088,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       highlightConfig.flexContainerHighlightConfig = {
         containerBorder: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-          pattern: "dashed"
+          pattern: Overlay.LineStylePattern.Dashed
         },
         mainDistributedSpace: {
           hatchColor: Common18.Color.PageHighlight.GapHatch.toProtocolRGBA(),
@@ -23912,7 +27100,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       highlightConfig.flexContainerHighlightConfig = {
         containerBorder: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-          pattern: "dashed"
+          pattern: Overlay.LineStylePattern.Dashed
         },
         crossDistributedSpace: {
           hatchColor: Common18.Color.PageHighlight.GapHatch.toProtocolRGBA(),
@@ -23924,11 +27112,11 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       highlightConfig.flexContainerHighlightConfig = {
         containerBorder: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-          pattern: "dashed"
+          pattern: Overlay.LineStylePattern.Dashed
         },
         lineSeparator: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-          pattern: "dashed"
+          pattern: Overlay.LineStylePattern.Dashed
         },
         crossAlignment: { color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA() }
       };
@@ -23940,7 +27128,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
         },
         baseSizeBorder: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-          pattern: "dotted"
+          pattern: Overlay.LineStylePattern.Dotted
         },
         flexibilityArrow: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA()
@@ -23951,7 +27139,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
       highlightConfig.containerQueryContainerHighlightConfig = {
         containerBorder: {
           color: Common18.Color.PageHighlight.LayoutLine.toProtocolRGBA(),
-          pattern: "dashed"
+          pattern: Overlay.LineStylePattern.Dashed
         }
       };
     }
@@ -23960,7 +27148,7 @@ var OverlayModel = class _OverlayModel extends SDKModel {
   nodeHighlightRequested({ nodeId }) {
     const node = this.#domModel.nodeForId(nodeId);
     if (node) {
-      this.dispatchEventToListeners("HighlightNodeRequested", node);
+      this.dispatchEventToListeners("HighlightNodeRequested" /* HIGHLIGHT_NODE_REQUESTED */, node);
     }
   }
   static setInspectNodeHandler(handler) {
@@ -23977,23 +27165,14 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     } else {
       void Common18.Revealer.reveal(deferredNode);
     }
-    this.dispatchEventToListeners(
-      "InspectModeExited"
-      /* Events.EXITED_INSPECT_MODE */
-    );
+    this.dispatchEventToListeners("InspectModeExited" /* EXITED_INSPECT_MODE */);
   }
   screenshotRequested({ viewport }) {
-    this.dispatchEventToListeners("ScreenshotRequested", viewport);
-    this.dispatchEventToListeners(
-      "InspectModeExited"
-      /* Events.EXITED_INSPECT_MODE */
-    );
+    this.dispatchEventToListeners("ScreenshotRequested" /* SCREENSHOT_REQUESTED */, viewport);
+    this.dispatchEventToListeners("InspectModeExited" /* EXITED_INSPECT_MODE */);
   }
   inspectModeCanceled() {
-    this.dispatchEventToListeners(
-      "InspectModeExited"
-      /* Events.EXITED_INSPECT_MODE */
-    );
+    this.dispatchEventToListeners("InspectModeExited" /* EXITED_INSPECT_MODE */);
   }
   static inspectNodeHandler = null;
   getOverlayAgent() {
@@ -24003,10 +27182,10 @@ var OverlayModel = class _OverlayModel extends SDKModel {
     return await this.#windowControls.initializeStyleSheetText(url);
   }
   inspectPanelShowRequested({ backendNodeId }) {
-    this.dispatchEventToListeners("InspectPanelShowRequested", backendNodeId);
+    this.dispatchEventToListeners("InspectPanelShowRequested" /* INSPECT_PANEL_SHOW_REQUESTED */, backendNodeId);
   }
   inspectedElementWindowRestored({ backendNodeId }) {
-    this.dispatchEventToListeners("InspectedElementWindowRestored", backendNodeId);
+    this.dispatchEventToListeners("InspectedElementWindowRestored" /* INSPECTED_ELEMENT_WINDOW_RESTORED */, backendNodeId);
   }
 };
 var WindowControls = class _WindowControls {
@@ -24016,7 +27195,7 @@ var WindowControls = class _WindowControls {
   #currentUrl;
   #config = {
     showCSS: false,
-    selectedPlatform: "Windows",
+    selectedPlatform: "Windows" /* WINDOWS */,
     themeColor: "#ffffff"
   };
   constructor(cssModel) {
@@ -24062,7 +27241,10 @@ var WindowControls = class _WindowControls {
       return;
     }
     if (showOverlay) {
-      const styleSheetText = _WindowControls.#getStyleSheetForPlatform(this.#config.selectedPlatform.toLowerCase(), this.#originalStylesheetText);
+      const styleSheetText = _WindowControls.#getStyleSheetForPlatform(
+        this.#config.selectedPlatform.toLowerCase(),
+        this.#originalStylesheetText
+      );
       if (styleSheetText) {
         await this.#cssModel.setStyleSheetText(this.#stylesheetId, styleSheetText, false);
       }
@@ -24072,7 +27254,13 @@ var WindowControls = class _WindowControls {
   }
   static #getStyleSheetForPlatform(platform, originalStyleSheet) {
     const overlayDimensions = platformOverlayDimensions[platform];
-    return _WindowControls.#transformStyleSheet(overlayDimensions.x, overlayDimensions.y, overlayDimensions.width, overlayDimensions.height, originalStyleSheet);
+    return _WindowControls.#transformStyleSheet(
+      overlayDimensions.x,
+      overlayDimensions.y,
+      overlayDimensions.width,
+      overlayDimensions.height,
+      originalStyleSheet
+    );
   }
   #fetchCssSourceUrl(url) {
     const parentURL = Common18.ParsedURL.ParsedURL.extractOrigin(url);
@@ -24091,13 +27279,29 @@ var WindowControls = class _WindowControls {
       return void 0;
     }
     const stylesheetText = originalStyleSheet;
-    const updatedStylesheet = stylesheetText.replace(/: env\(titlebar-area-x(?:,[^)]*)?\);/g, `: env(titlebar-area-x, ${x}px);`).replace(/: env\(titlebar-area-y(?:,[^)]*)?\);/g, `: env(titlebar-area-y, ${y}px);`).replace(/: env\(titlebar-area-width(?:,[^)]*)?\);/g, `: env(titlebar-area-width, calc(100% - ${width}px));`).replace(/: env\(titlebar-area-height(?:,[^)]*)?\);/g, `: env(titlebar-area-height, ${height}px);`);
+    const updatedStylesheet = stylesheetText.replace(/: env\(titlebar-area-x(?:,[^)]*)?\);/g, `: env(titlebar-area-x, ${x}px);`).replace(/: env\(titlebar-area-y(?:,[^)]*)?\);/g, `: env(titlebar-area-y, ${y}px);`).replace(
+      /: env\(titlebar-area-width(?:,[^)]*)?\);/g,
+      `: env(titlebar-area-width, calc(100% - ${width}px));`
+    ).replace(/: env\(titlebar-area-height(?:,[^)]*)?\);/g, `: env(titlebar-area-height, ${height}px);`);
     return updatedStylesheet;
   }
   transformStyleSheetforTesting(x, y, width, height, originalStyleSheet) {
     return _WindowControls.#transformStyleSheet(x, y, width, height, originalStyleSheet);
   }
 };
+var Events14 = /* @__PURE__ */ ((Events35) => {
+  Events35["INSPECT_MODE_WILL_BE_TOGGLED"] = "InspectModeWillBeToggled";
+  Events35["EXITED_INSPECT_MODE"] = "InspectModeExited";
+  Events35["HIGHLIGHT_NODE_REQUESTED"] = "HighlightNodeRequested";
+  Events35["SCREENSHOT_REQUESTED"] = "ScreenshotRequested";
+  Events35["PERSISTENT_GRID_OVERLAY_STATE_CHANGED"] = "PersistentGridOverlayStateChanged";
+  Events35["PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED"] = "PersistentFlexContainerOverlayStateChanged";
+  Events35["PERSISTENT_SCROLL_SNAP_OVERLAY_STATE_CHANGED"] = "PersistentScrollSnapOverlayStateChanged";
+  Events35["PERSISTENT_CONTAINER_QUERY_OVERLAY_STATE_CHANGED"] = "PersistentContainerQueryOverlayStateChanged";
+  Events35["INSPECT_PANEL_SHOW_REQUESTED"] = "InspectPanelShowRequested";
+  Events35["INSPECTED_ELEMENT_WINDOW_RESTORED"] = "InspectedElementWindowRestored";
+  return Events35;
+})(Events14 || {});
 var DefaultHighlighter = class {
   #model;
   constructor(model) {
@@ -24109,7 +27313,9 @@ var DefaultHighlighter = class {
     const backendNodeId = deferredNode ? deferredNode.backendNodeId() : void 0;
     const objectId = object ? object.objectId : void 0;
     if (nodeId || backendNodeId || objectId) {
-      void this.#model.target().overlayAgent().invoke_highlightNode({ highlightConfig, nodeId, backendNodeId, objectId, selector: selectorList });
+      void this.#model.target().overlayAgent().invoke_highlightNode(
+        { highlightConfig, nodeId, backendNodeId, objectId, selector: selectorList }
+      );
     } else {
       void this.#model.target().overlayAgent().invoke_hideHighlight();
     }
@@ -24141,9 +27347,21 @@ var SourceOrderHighlighter = class {
     void this.#model.clearHighlight();
   }
 };
-SDKModel.register(OverlayModel, { capabilities: 2, autostart: true });
+SDKModel.register(OverlayModel, { capabilities: 2 /* DOM */, autostart: true });
 
-// gen/front_end/core/sdk/DOMModel.js
+// ../../front_end/core/sdk/DOMModel.ts
+var NodeType = /* @__PURE__ */ ((NodeType2) => {
+  NodeType2[NodeType2["ELEMENT_NODE"] = 1] = "ELEMENT_NODE";
+  NodeType2[NodeType2["ATTRIBUTE_NODE"] = 2] = "ATTRIBUTE_NODE";
+  NodeType2[NodeType2["TEXT_NODE"] = 3] = "TEXT_NODE";
+  NodeType2[NodeType2["CDATA_SECTION_NODE"] = 4] = "CDATA_SECTION_NODE";
+  NodeType2[NodeType2["PROCESSING_INSTRUCTION_NODE"] = 7] = "PROCESSING_INSTRUCTION_NODE";
+  NodeType2[NodeType2["COMMENT_NODE"] = 8] = "COMMENT_NODE";
+  NodeType2[NodeType2["DOCUMENT_NODE"] = 9] = "DOCUMENT_NODE";
+  NodeType2[NodeType2["DOCUMENT_TYPE_NODE"] = 10] = "DOCUMENT_TYPE_NODE";
+  NodeType2[NodeType2["DOCUMENT_FRAGMENT_NODE"] = 11] = "DOCUMENT_FRAGMENT_NODE";
+  return NodeType2;
+})(NodeType || {});
 var ARIA_ATTRIBUTES = /* @__PURE__ */ new Set([
   "role",
   "aria-activedescendant",
@@ -24200,8 +27418,7 @@ var ARIA_ATTRIBUTES = /* @__PURE__ */ new Set([
   "aria-valuenow",
   "aria-valuetext"
 ]);
-var DOMNodeEvents;
-(function(DOMNodeEvents2) {
+var DOMNodeEvents = /* @__PURE__ */ ((DOMNodeEvents2) => {
   DOMNodeEvents2["TOP_LAYER_INDEX_CHANGED"] = "TopLayerIndexChanged";
   DOMNodeEvents2["SCROLLABLE_FLAG_UPDATED"] = "ScrollableFlagUpdated";
   DOMNodeEvents2["AD_RELATED_STATE_UPDATED"] = "AdRelatedStateUpdated";
@@ -24209,7 +27426,8 @@ var DOMNodeEvents;
   DOMNodeEvents2["FLEX_CONTAINER_OVERLAY_STATE_CHANGED"] = "FlexContainerOverlayStateChanged";
   DOMNodeEvents2["SCROLL_SNAP_OVERLAY_STATE_CHANGED"] = "ScrollSnapOverlayStateChanged";
   DOMNodeEvents2["CONTAINER_QUERY_OVERLAY_STATE_CHANGED"] = "ContainerQueryOverlayStateChanged";
-})(DOMNodeEvents || (DOMNodeEvents = {}));
+  return DOMNodeEvents2;
+})(DOMNodeEvents || {});
 function cssEscape(value) {
   const length = value.length;
   let index = -1;
@@ -24385,18 +27603,18 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
     if (payload.adProvenance) {
       this.#adProvenance = payload.adProvenance;
     }
-    if (this.#nodeType === 1) {
+    if (this.#nodeType === 1 /* ELEMENT_NODE */) {
       if (this.ownerDocument && !this.ownerDocument.documentElement && this.#nodeName === "HTML") {
         this.ownerDocument.documentElement = this;
       }
       if (this.ownerDocument && !this.ownerDocument.body && this.#nodeName === "BODY") {
         this.ownerDocument.body = this;
       }
-    } else if (this.#nodeType === 10) {
+    } else if (this.#nodeType === 10 /* DOCUMENT_TYPE_NODE */) {
       this.publicId = payload.publicId;
       this.systemId = payload.systemId;
       this.internalSubset = payload.internalSubset;
-    } else if (this.#nodeType === 2) {
+    } else if (this.#nodeType === 2 /* ATTRIBUTE_NODE */) {
       this.name = payload.name;
       this.value = payload.value;
     }
@@ -24410,7 +27628,7 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
     const oldIndex = this.#topLayerIndex;
     this.#topLayerIndex = idx;
     if (oldIndex !== idx) {
-      this.dispatchEventToListeners(DOMNodeEvents.TOP_LAYER_INDEX_CHANGED);
+      this.dispatchEventToListeners("TopLayerIndexChanged" /* TOP_LAYER_INDEX_CHANGED */);
     }
   }
   topLayerIndex() {
@@ -24424,13 +27642,13 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
       return void 0;
     }
     const frame = this.#frameManager.getFrame(this.#frameOwnerFrameId);
-    if (frame && frame.adFrameType() !== "none") {
+    if (frame && frame.adFrameType() !== Page.AdFrameType.None) {
       return {};
     }
     return void 0;
   }
   isRootNode() {
-    if (this.nodeType() === 1 && this.nodeName() === "HTML") {
+    if (this.nodeType() === 1 /* ELEMENT_NODE */ && this.nodeName() === "HTML") {
       return true;
     }
     return false;
@@ -24452,12 +27670,12 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
       return false;
     }
     return [
-      "view-transition",
-      "view-transition-group",
-      "view-transition-group-children",
-      "view-transition-image-pair",
-      "view-transition-old",
-      "view-transition-new"
+      DOM.PseudoType.ViewTransition,
+      DOM.PseudoType.ViewTransitionGroup,
+      DOM.PseudoType.ViewTransitionGroupChildren,
+      DOM.PseudoType.ViewTransitionImagePair,
+      DOM.PseudoType.ViewTransitionOld,
+      DOM.PseudoType.ViewTransitionNew
     ].includes(this.#pseudoType);
   }
   creationStackTrace() {
@@ -24485,14 +27703,14 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
   }
   setIsScrollable(isScrollable) {
     this.#isScrollable = isScrollable;
-    this.dispatchEventToListeners(DOMNodeEvents.SCROLLABLE_FLAG_UPDATED);
+    this.dispatchEventToListeners("ScrollableFlagUpdated" /* SCROLLABLE_FLAG_UPDATED */);
     if (this.nodeName() === "#document") {
       this.ownerDocument?.documentElement?.setIsScrollable(isScrollable);
     }
   }
   setIsAdRelated(adProvenance) {
     this.#adProvenance = adProvenance;
-    this.dispatchEventToListeners(DOMNodeEvents.AD_RELATED_STATE_UPDATED);
+    this.dispatchEventToListeners("AdRelatedStateUpdated" /* AD_RELATED_STATE_UPDATED */);
   }
   setAffectedByStartingStyles(affectedByStartingStyles) {
     this.#affectedByStartingStyles = affectedByStartingStyles;
@@ -24543,93 +27761,42 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
     return this.#pseudoElements;
   }
   checkmarkPseudoElement() {
-    return this.#pseudoElements.get(
-      "checkmark"
-      /* Protocol.DOM.PseudoType.Checkmark */
-    )?.at(-1);
+    return this.#pseudoElements.get(DOM.PseudoType.Checkmark)?.at(-1);
   }
   beforePseudoElement() {
-    return this.#pseudoElements.get(
-      "before"
-      /* Protocol.DOM.PseudoType.Before */
-    )?.at(-1);
+    return this.#pseudoElements.get(DOM.PseudoType.Before)?.at(-1);
   }
   afterPseudoElement() {
-    return this.#pseudoElements.get(
-      "after"
-      /* Protocol.DOM.PseudoType.After */
-    )?.at(-1);
+    return this.#pseudoElements.get(DOM.PseudoType.After)?.at(-1);
   }
   pickerIconPseudoElement() {
-    return this.#pseudoElements.get(
-      "picker-icon"
-      /* Protocol.DOM.PseudoType.PickerIcon */
-    )?.at(-1);
+    return this.#pseudoElements.get(DOM.PseudoType.PickerIcon)?.at(-1);
   }
   interestButtonPseudoElement() {
-    return this.#pseudoElements.get(
-      "interest-button"
-      /* Protocol.DOM.PseudoType.InterestButton */
-    )?.at(-1);
+    return this.#pseudoElements.get(DOM.PseudoType.InterestButton)?.at(-1);
   }
   markerPseudoElement() {
-    return this.#pseudoElements.get(
-      "marker"
-      /* Protocol.DOM.PseudoType.Marker */
-    )?.at(-1);
+    return this.#pseudoElements.get(DOM.PseudoType.Marker)?.at(-1);
   }
   backdropPseudoElement() {
-    return this.#pseudoElements.get(
-      "backdrop"
-      /* Protocol.DOM.PseudoType.Backdrop */
-    )?.at(-1);
+    return this.#pseudoElements.get(DOM.PseudoType.Backdrop)?.at(-1);
   }
   viewTransitionPseudoElements() {
     return [
-      ...this.#pseudoElements.get(
-        "view-transition"
-        /* Protocol.DOM.PseudoType.ViewTransition */
-      ) || [],
-      ...this.#pseudoElements.get(
-        "view-transition-group"
-        /* Protocol.DOM.PseudoType.ViewTransitionGroup */
-      ) || [],
-      ...this.#pseudoElements.get(
-        "view-transition-group-children"
-        /* Protocol.DOM.PseudoType.ViewTransitionGroupChildren */
-      ) || [],
-      ...this.#pseudoElements.get(
-        "view-transition-image-pair"
-        /* Protocol.DOM.PseudoType.ViewTransitionImagePair */
-      ) || [],
-      ...this.#pseudoElements.get(
-        "view-transition-old"
-        /* Protocol.DOM.PseudoType.ViewTransitionOld */
-      ) || [],
-      ...this.#pseudoElements.get(
-        "view-transition-new"
-        /* Protocol.DOM.PseudoType.ViewTransitionNew */
-      ) || []
+      ...this.#pseudoElements.get(DOM.PseudoType.ViewTransition) || [],
+      ...this.#pseudoElements.get(DOM.PseudoType.ViewTransitionGroup) || [],
+      ...this.#pseudoElements.get(DOM.PseudoType.ViewTransitionGroupChildren) || [],
+      ...this.#pseudoElements.get(DOM.PseudoType.ViewTransitionImagePair) || [],
+      ...this.#pseudoElements.get(DOM.PseudoType.ViewTransitionOld) || [],
+      ...this.#pseudoElements.get(DOM.PseudoType.ViewTransitionNew) || []
     ];
   }
   carouselPseudoElements() {
     return [
-      ...this.#pseudoElements.get(
-        "scroll-button"
-        /* Protocol.DOM.PseudoType.ScrollButton */
-      ) || [],
-      ...this.#pseudoElements.get(
-        "column"
-        /* Protocol.DOM.PseudoType.Column */
-      ) || [],
-      ...this.#pseudoElements.get(
-        "scroll-marker"
-        /* Protocol.DOM.PseudoType.ScrollMarker */
-      ) || [],
-      ...this.#pseudoElements.get(
-        "scroll-marker-group"
-        /* Protocol.DOM.PseudoType.ScrollMarkerGroup */
-      ) || []
+      ...this.#pseudoElements.get(DOM.PseudoType.ScrollButton) || [],
+      ...this.#pseudoElements.get(DOM.PseudoType.Column) || [],
+      ...this.#pseudoElements.get(DOM.PseudoType.ScrollMarker) || [],
+      ...this.#pseudoElements.get(DOM.PseudoType.ScrollMarkerGroup) || []
     ];
   }
   hasAssignedSlot() {
@@ -24811,7 +27978,7 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
       if (node2.isShadowRoot()) {
         return node2.shadowRootType() === _DOMNode.ShadowRootTypes.UserAgent ? "u" : "a";
       }
-      if (node2.nodeType() === 9) {
+      if (node2.nodeType() === 9 /* DOCUMENT_NODE */) {
         return "d";
       }
       return null;
@@ -24908,7 +28075,7 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
     node.parentNode = null;
     this.#subtreeMarkerCount -= node.#subtreeMarkerCount;
     if (node.#subtreeMarkerCount) {
-      this.#domModel.dispatchEventToListeners(Events7.MarkersChanged, this);
+      this.#domModel.dispatchEventToListeners("MarkersChanged" /* MarkersChanged */, this);
     }
     this.renumber();
   }
@@ -24945,7 +28112,7 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
   }
   setAdoptedStyleSheets(ids) {
     this.#adoptedStyleSheets = this.toAdoptedStyleSheets(ids);
-    this.#domModel.dispatchEventToListeners(Events7.AdoptedStyleSheetsModified, this);
+    this.#domModel.dispatchEventToListeners("AdoptedStyleSheetsModified" /* AdoptedStyleSheetsModified */, this);
   }
   get adoptedStyleSheetsForNode() {
     return this.#adoptedStyleSheets;
@@ -24953,7 +28120,9 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
   setDistributedNodePayloads(payloads) {
     this.#distributedNodes = [];
     for (const payload of payloads) {
-      this.#distributedNodes.push(new DOMNodeShortcut(this.#domModel.target(), payload.backendNodeId, payload.nodeType, payload.nodeName));
+      this.#distributedNodes.push(
+        new DOMNodeShortcut(this.#domModel.target(), payload.backendNodeId, payload.nodeType, payload.nodeName)
+      );
     }
   }
   setAssignedSlot(payload) {
@@ -24995,7 +28164,9 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
     this.#attributes.delete(name);
   }
   copyTo(targetNode, anchorNode, callback) {
-    void this.#agent.invoke_copyTo({ nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : void 0 }).then((response) => {
+    void this.#agent.invoke_copyTo(
+      { nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : void 0 }
+    ).then((response) => {
       if (!response.getError()) {
         this.#domModel.markUndoableState();
       }
@@ -25011,7 +28182,9 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
     });
   }
   moveTo(targetNode, anchorNode, callback) {
-    void this.#agent.invoke_moveTo({ nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : void 0 }).then((response) => {
+    void this.#agent.invoke_moveTo(
+      { nodeId: this.id, targetNodeId: targetNode.id, insertBeforeNodeId: anchorNode ? anchorNode.id : void 0 }
+    ).then((response) => {
       if (!response.getError()) {
         this.#domModel.markUndoableState();
       }
@@ -25056,7 +28229,10 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
     if (!object) {
       return;
     }
-    await object.callFunction(toggleClassAndInjectStyleRule, [{ value: pseudoElementName }, { value: !hidden }]);
+    await object.callFunction(
+      toggleClassAndInjectStyleRule,
+      [{ value: pseudoElementName }, { value: !hidden }]
+    );
     object.release();
     this.setMarker("hidden-marker", hidden ? null : true);
     function toggleClassAndInjectStyleRule(pseudoElementName2, hidden2) {
@@ -25099,7 +28275,7 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
     return Boolean(this.#xmlVersion);
   }
   isCustomElement() {
-    if (this.nodeType() !== 1 || this.isXMLNode()) {
+    if (this.nodeType() !== 1 /* ELEMENT_NODE */ || this.isXMLNode()) {
       return false;
     }
     const localName = this.localName() || this.nodeName().toLowerCase();
@@ -25128,7 +28304,7 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
         --node.#subtreeMarkerCount;
       }
       for (let node = this; node; node = node.parentNode) {
-        this.#domModel.dispatchEventToListeners(Events7.MarkersChanged, node);
+        this.#domModel.dispatchEventToListeners("MarkersChanged" /* MarkersChanged */, node);
       }
       return;
     }
@@ -25139,7 +28315,7 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
     }
     this.#markers.set(name, value);
     for (let node = this; node; node = node.parentNode) {
-      this.#domModel.dispatchEventToListeners(Events7.MarkersChanged, node);
+      this.#domModel.dispatchEventToListeners("MarkersChanged" /* MarkersChanged */, node);
     }
   }
   marker(name) {
@@ -25200,16 +28376,16 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
     }
     if (this.#pseudoType) {
       return [
-        "before",
-        "after",
-        "marker",
-        "scroll-marker",
-        "backdrop",
-        "view-transition",
-        "view-transition-group",
-        "view-transition-image-pair",
-        "view-transition-old",
-        "view-transition-new"
+        DOM.PseudoType.Before,
+        DOM.PseudoType.After,
+        DOM.PseudoType.Marker,
+        DOM.PseudoType.ScrollMarker,
+        DOM.PseudoType.Backdrop,
+        DOM.PseudoType.ViewTransition,
+        DOM.PseudoType.ViewTransitionGroup,
+        DOM.PseudoType.ViewTransitionImagePair,
+        DOM.PseudoType.ViewTransitionOld,
+        DOM.PseudoType.ViewTransitionNew
       ].includes(this.#pseudoType);
     }
     return true;
@@ -25222,10 +28398,10 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
   }
   enclosingElementOrSelf() {
     let node = this;
-    if (node && node.nodeType() === 3 && node.parentNode) {
+    if (node && node.nodeType() === 3 /* TEXT_NODE */ && node.parentNode) {
       node = node.parentNode;
     }
-    if (node && node.nodeType() !== 1) {
+    if (node && node.nodeType() !== 1 /* ELEMENT_NODE */) {
       node = null;
     }
     return node;
@@ -25247,7 +28423,10 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
   async saveNodeToTempVariable() {
     const remoteObjectForConsole = await this.resolveToObject();
     const consoleModel = this.#domModel.target().model(ConsoleModel);
-    await consoleModel?.saveToTempVariable(remoteObjectForConsole?.runtimeModel().defaultExecutionContext() ?? null, remoteObjectForConsole);
+    await consoleModel?.saveToTempVariable(
+      remoteObjectForConsole?.runtimeModel().defaultExecutionContext() ?? null,
+      remoteObjectForConsole
+    );
   }
   async scrollIntoView() {
     const node = this.enclosingElementOrSelf();
@@ -25280,7 +28459,7 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
   }
   simpleSelector() {
     const lowerCaseName = this.localName() || this.nodeName().toLowerCase();
-    if (this.nodeType() !== 1) {
+    if (this.nodeType() !== 1 /* ELEMENT_NODE */) {
       return lowerCaseName;
     }
     const type = this.getAttribute("type");
@@ -25412,9 +28591,9 @@ var DOMNode = class _DOMNode extends Common19.ObjectWrapper.ObjectWrapper {
     return classes ? classes.split(/\s+/) : [];
   }
 };
-(function(DOMNode2) {
+((DOMNode2) => {
   let ShadowRootTypes;
-  (function(ShadowRootTypes2) {
+  ((ShadowRootTypes2) => {
     ShadowRootTypes2["UserAgent"] = "user-agent";
     ShadowRootTypes2["Open"] = "open";
     ShadowRootTypes2["Closed"] = "closed";
@@ -25473,8 +28652,6 @@ var DOMDocument = class extends DOMNode {
   }
 };
 var AdoptedStyleSheet = class {
-  id;
-  parent;
   constructor(id, parent) {
     this.id = id;
     this.parent = parent;
@@ -25504,7 +28681,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     target.registerDOMDispatcher(new DOMDispatcher(this));
     this.runtimeModelInternal = target.model(RuntimeModel);
     this.#resourceTreeModel = target.model(ResourceTreeModel);
-    this.#resourceTreeModel?.addEventListener(Events2.DocumentOpened, this.onDocumentOpened, this);
+    this.#resourceTreeModel?.addEventListener("DocumentOpened" /* DocumentOpened */, this.onDocumentOpened, this);
     if (!target.suspended()) {
       void this.agent.invoke_enable({});
     }
@@ -25524,16 +28701,16 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
   }
   scheduleMutationEvent(node) {
-    if (!this.hasEventListeners(Events7.DOMMutated)) {
+    if (!this.hasEventListeners("DOMMutated" /* DOMMutated */)) {
       return;
     }
     this.#lastMutationId = (this.#lastMutationId || 0) + 1;
     void Promise.resolve().then(callObserve.bind(this, node, this.#lastMutationId));
     function callObserve(node2, mutationId) {
-      if (!this.hasEventListeners(Events7.DOMMutated) || this.#lastMutationId !== mutationId) {
+      if (!this.hasEventListeners("DOMMutated" /* DOMMutated */) || this.#lastMutationId !== mutationId) {
         return;
       }
-      this.dispatchEventToListeners(Events7.DOMMutated, node2);
+      this.dispatchEventToListeners("DOMMutated" /* DOMMutated */, node2);
     }
   }
   onDocumentOpened(event) {
@@ -25544,7 +28721,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       if (contentDocument && contentDocument.documentURL !== frame.url) {
         contentDocument.documentURL = frame.url;
         contentDocument.baseURL = frame.url;
-        this.dispatchEventToListeners(Events7.DocumentURLChanged, contentDocument);
+        this.dispatchEventToListeners("DocumentURLChanged" /* DocumentURLChanged */, contentDocument);
       }
     }
   }
@@ -25595,9 +28772,9 @@ var DOMModel = class _DOMModel extends SDKModel {
       this.#frameOwnerNode.setChildren([]);
       if (this.#document) {
         this.#document.parentNode = this.#frameOwnerNode;
-        this.dispatchEventToListeners(Events7.NodeInserted, this.#document);
+        this.dispatchEventToListeners("NodeInserted" /* NodeInserted */, this.#document);
       } else if (oldDocument) {
-        this.dispatchEventToListeners(Events7.NodeRemoved, { node: oldDocument, parent: this.#frameOwnerNode });
+        this.dispatchEventToListeners("NodeRemoved" /* NodeRemoved */, { node: oldDocument, parent: this.#frameOwnerNode });
       }
     }
     return this.#document;
@@ -25634,7 +28811,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       return;
     }
     node.setAttributeInternal(name, value);
-    this.dispatchEventToListeners(Events7.AttrModified, { node, name });
+    this.dispatchEventToListeners("AttrModified" /* AttrModified */, { node, name });
     this.scheduleMutationEvent(node);
   }
   attributeRemoved(nodeId, name) {
@@ -25643,7 +28820,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       return;
     }
     node.removeAttributeInternal(name);
-    this.dispatchEventToListeners(Events7.AttrRemoved, { node, name });
+    this.dispatchEventToListeners("AttrRemoved" /* AttrRemoved */, { node, name });
     this.scheduleMutationEvent(node);
   }
   inlineStyleInvalidated(nodeIds) {
@@ -25664,7 +28841,7 @@ var DOMModel = class _DOMModel extends SDKModel {
           return;
         }
         if (node.setAttributesPayload(attributes)) {
-          this.dispatchEventToListeners(Events7.AttrModified, { node, name: "style" });
+          this.dispatchEventToListeners("AttrModified" /* AttrModified */, { node, name: "style" });
           this.scheduleMutationEvent(node);
         }
       });
@@ -25678,7 +28855,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       return;
     }
     node.setNodeValueInternal(newValue);
-    this.dispatchEventToListeners(Events7.CharacterDataModified, node);
+    this.dispatchEventToListeners("CharacterDataModified" /* CharacterDataModified */, node);
     this.scheduleMutationEvent(node);
   }
   nodeForId(nodeId) {
@@ -25701,7 +28878,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
     this.#undoStack().dispose(this);
     if (!this.parentModel()) {
-      this.dispatchEventToListeners(Events7.DocumentUpdated, this);
+      this.dispatchEventToListeners("DocumentUpdated" /* DocumentUpdated */, this);
     }
   }
   setDocumentForTest(document2) {
@@ -25729,7 +28906,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       return;
     }
     node.setChildNodeCount(newValue);
-    this.dispatchEventToListeners(Events7.ChildNodeCountUpdated, node);
+    this.dispatchEventToListeners("ChildNodeCountUpdated" /* ChildNodeCountUpdated */, node);
     this.scheduleMutationEvent(node);
   }
   childNodeInserted(parentId, prevId, payload) {
@@ -25741,7 +28918,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
     const node = parent.insertChild(prev, payload);
     this.idToDOMNode.set(node.id, node);
-    this.dispatchEventToListeners(Events7.NodeInserted, node);
+    this.dispatchEventToListeners("NodeInserted" /* NodeInserted */, node);
     this.scheduleMutationEvent(node);
   }
   childNodeRemoved(parentId, nodeId) {
@@ -25753,7 +28930,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
     parent.removeChild(node);
     this.unbind(node);
-    this.dispatchEventToListeners(Events7.NodeRemoved, { node, parent });
+    this.dispatchEventToListeners("NodeRemoved" /* NodeRemoved */, { node, parent });
     this.scheduleMutationEvent(node);
   }
   shadowRootPushed(hostId, root) {
@@ -25765,7 +28942,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     node.parentNode = host;
     this.idToDOMNode.set(node.id, node);
     host.shadowRootsInternal.unshift(node);
-    this.dispatchEventToListeners(Events7.NodeInserted, node);
+    this.dispatchEventToListeners("NodeInserted" /* NodeInserted */, node);
     this.scheduleMutationEvent(node);
   }
   shadowRootPopped(hostId, rootId) {
@@ -25779,7 +28956,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
     host.removeChild(root);
     this.unbind(root);
-    this.dispatchEventToListeners(Events7.NodeRemoved, { node: root, parent: host });
+    this.dispatchEventToListeners("NodeRemoved" /* NodeRemoved */, { node: root, parent: host });
     this.scheduleMutationEvent(root);
   }
   pseudoElementAdded(parentId, pseudoElement) {
@@ -25797,13 +28974,15 @@ var DOMModel = class _DOMModel extends SDKModel {
     const currentPseudoElements = parent.pseudoElements().get(pseudoType);
     if (currentPseudoElements && currentPseudoElements.length > 0) {
       if (!(pseudoType.startsWith("view-transition") || pseudoType.startsWith("scroll-") || pseudoType === "column")) {
-        throw new Error(`DOMModel.pseudoElementAdded expects parent to not already have this pseudo type added; only view-transition* and scrolling pseudo elements can coexist under the same parent. ${currentPseudoElements.length} elements of type ${pseudoType} already exist on parent.`);
+        throw new Error(
+          `DOMModel.pseudoElementAdded expects parent to not already have this pseudo type added; only view-transition* and scrolling pseudo elements can coexist under the same parent. ${currentPseudoElements.length} elements of type ${pseudoType} already exist on parent.`
+        );
       }
       currentPseudoElements.push(node);
     } else {
       parent.pseudoElements().set(pseudoType, [node]);
     }
-    this.dispatchEventToListeners(Events7.NodeInserted, node);
+    this.dispatchEventToListeners("NodeInserted" /* NodeInserted */, node);
     this.scheduleMutationEvent(node);
   }
   adoptedStyleSheetsModified(parentId, styleSheets) {
@@ -25833,7 +29012,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       return;
     }
     node.setAffectedByStartingStyles(affectedByStartingStyles);
-    this.dispatchEventToListeners(Events7.AffectedByStartingStylesFlagUpdated, { node });
+    this.dispatchEventToListeners("AffectedByStartingStylesFlagUpdated" /* AffectedByStartingStylesFlagUpdated */, { node });
   }
   pseudoElementRemoved(parentId, pseudoElementId) {
     const parent = this.idToDOMNode.get(parentId);
@@ -25846,7 +29025,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
     parent.removeChild(pseudoElement);
     this.unbind(pseudoElement);
-    this.dispatchEventToListeners(Events7.NodeRemoved, { node: pseudoElement, parent });
+    this.dispatchEventToListeners("NodeRemoved" /* NodeRemoved */, { node: pseudoElement, parent });
     this.scheduleMutationEvent(pseudoElement);
   }
   distributedNodesUpdated(insertionPointId, distributedNodes) {
@@ -25855,7 +29034,7 @@ var DOMModel = class _DOMModel extends SDKModel {
       return;
     }
     insertionPoint.setDistributedNodePayloads(distributedNodes);
-    this.dispatchEventToListeners(Events7.DistributedNodesChanged, insertionPoint);
+    this.dispatchEventToListeners("DistributedNodesChanged" /* DistributedNodesChanged */, insertionPoint);
     this.scheduleMutationEvent(insertionPoint);
   }
   unbind(node) {
@@ -25962,7 +29141,9 @@ var DOMModel = class _DOMModel extends SDKModel {
           const childShortcuts = [];
           const previousNode = result.nodeIds[idx - 1] ? this.idToDOMNode.get(result.nodeIds[idx - 1]) : null;
           if (previousNode && previousNode.nodeName() === "::backdrop") {
-            childShortcuts.push(new DOMNodeShortcut(this.target(), previousNode.backendNodeId(), 0, previousNode.nodeName()));
+            childShortcuts.push(
+              new DOMNodeShortcut(this.target(), previousNode.backendNodeId(), 0, previousNode.nodeName())
+            );
           }
           const shortcut = new DOMNodeShortcut(this.target(), node.backendNodeId(), 0, node.nodeName(), childShortcuts);
           node.setTopLayerIndex(topLayerIdx++);
@@ -25970,13 +29151,13 @@ var DOMModel = class _DOMModel extends SDKModel {
           documentShortcuts.push(shortcut);
           previousDocs.delete(document2);
         }
-        this.dispatchEventToListeners(Events7.TopLayerElementsChanged, {
+        this.dispatchEventToListeners("TopLayerElementsChanged" /* TopLayerElementsChanged */, {
           document: document2,
           documentShortcuts
         });
       }
       for (const document2 of previousDocs) {
-        this.dispatchEventToListeners(Events7.TopLayerElementsChanged, {
+        this.dispatchEventToListeners("TopLayerElementsChanged" /* TopLayerElementsChanged */, {
           document: document2,
           documentShortcuts: []
         });
@@ -26000,7 +29181,9 @@ var DOMModel = class _DOMModel extends SDKModel {
     return this.nodeForId(response.nodeId);
   }
   async getContainerForNode(nodeId, containerName, physicalAxes, logicalAxes, queriesScrollState, queriesAnchored) {
-    const { nodeId: containerNodeId } = await this.agent.invoke_getContainerForNode({ nodeId, containerName, physicalAxes, logicalAxes, queriesScrollState, queriesAnchored });
+    const { nodeId: containerNodeId } = await this.agent.invoke_getContainerForNode(
+      { nodeId, containerName, physicalAxes, logicalAxes, queriesScrollState, queriesAnchored }
+    );
     if (!containerNodeId) {
       return null;
     }
@@ -26016,7 +29199,7 @@ var DOMModel = class _DOMModel extends SDKModel {
     await this.agent.invoke_enable({});
   }
   dispose() {
-    this.#resourceTreeModel?.removeEventListener(Events2.DocumentOpened, this.onDocumentOpened, this);
+    this.#resourceTreeModel?.removeEventListener("DocumentOpened" /* DocumentOpened */, this.onDocumentOpened, this);
     this.#undoStack().dispose(this);
   }
   // TODO(crbug.com/493763857): Remove fallback once all unit tests use TestUniverse.
@@ -26042,23 +29225,23 @@ var DOMModel = class _DOMModel extends SDKModel {
     }
   }
 };
-var Events7;
-(function(Events12) {
-  Events12["AttrModified"] = "AttrModified";
-  Events12["AttrRemoved"] = "AttrRemoved";
-  Events12["CharacterDataModified"] = "CharacterDataModified";
-  Events12["DOMMutated"] = "DOMMutated";
-  Events12["DocumentURLChanged"] = "DocumentURLChanged";
-  Events12["NodeInserted"] = "NodeInserted";
-  Events12["NodeRemoved"] = "NodeRemoved";
-  Events12["DocumentUpdated"] = "DocumentUpdated";
-  Events12["ChildNodeCountUpdated"] = "ChildNodeCountUpdated";
-  Events12["DistributedNodesChanged"] = "DistributedNodesChanged";
-  Events12["MarkersChanged"] = "MarkersChanged";
-  Events12["TopLayerElementsChanged"] = "TopLayerElementsChanged";
-  Events12["AffectedByStartingStylesFlagUpdated"] = "AffectedByStartingStylesFlagUpdated";
-  Events12["AdoptedStyleSheetsModified"] = "AdoptedStyleSheetsModified";
-})(Events7 || (Events7 = {}));
+var Events13 = /* @__PURE__ */ ((Events35) => {
+  Events35["AttrModified"] = "AttrModified";
+  Events35["AttrRemoved"] = "AttrRemoved";
+  Events35["CharacterDataModified"] = "CharacterDataModified";
+  Events35["DOMMutated"] = "DOMMutated";
+  Events35["DocumentURLChanged"] = "DocumentURLChanged";
+  Events35["NodeInserted"] = "NodeInserted";
+  Events35["NodeRemoved"] = "NodeRemoved";
+  Events35["DocumentUpdated"] = "DocumentUpdated";
+  Events35["ChildNodeCountUpdated"] = "ChildNodeCountUpdated";
+  Events35["DistributedNodesChanged"] = "DistributedNodesChanged";
+  Events35["MarkersChanged"] = "MarkersChanged";
+  Events35["TopLayerElementsChanged"] = "TopLayerElementsChanged";
+  Events35["AffectedByStartingStylesFlagUpdated"] = "AffectedByStartingStylesFlagUpdated";
+  Events35["AdoptedStyleSheetsModified"] = "AdoptedStyleSheetsModified";
+  return Events35;
+})(Events13 || {});
 var DOMDispatcher = class {
   #domModel;
   constructor(domModel) {
@@ -26186,7 +29369,7 @@ var DOMModelUndoStack = class _DOMModelUndoStack {
     }
   }
 };
-SDKModel.register(DOMModel, { capabilities: 2, autostart: true });
+SDKModel.register(DOMModel, { capabilities: 2 /* DOM */, autostart: true });
 var DOMNodeSnapshot = class extends DOMNode {
   init(_doc, _isInShadowTree, _payload, _retainedNodes) {
   }
@@ -26252,14 +29435,14 @@ var DOMDocumentSnapshot = class extends DOMDocument {
   }
 };
 
-// gen/front_end/core/sdk/Resource.js
+// ../../front_end/core/sdk/Resource.ts
 var Resource_exports = {};
 __export(Resource_exports, {
   Resource: () => Resource
 });
-import * as Common20 from "./../common/common.js";
-import * as Platform13 from "./../platform/platform.js";
-import * as TextUtils17 from "./../text_utils/text_utils.js";
+import * as Common20 from "../common/common.js";
+import * as Platform13 from "../platform/platform.js";
+import * as TextUtils17 from "../text_utils/text_utils.js";
 var Resource = class {
   #resourceTreeModel;
   #request;
@@ -26385,7 +29568,9 @@ var Resource = class {
     if (this.request) {
       return await this.request.searchInContent(query, caseSensitive, isRegex);
     }
-    const result = await this.#resourceTreeModel.target().pageAgent().invoke_searchInResource({ frameId: this.frameId, url: this.url, query, caseSensitive, isRegex });
+    const result = await this.#resourceTreeModel.target().pageAgent().invoke_searchInResource(
+      { frameId: this.frameId, url: this.url, query, caseSensitive, isRegex }
+    );
     return TextUtils17.TextUtils.performSearchInSearchMatches(result.result || [], query, caseSensitive, isRegex);
   }
   async populateImageSource(image) {
@@ -26400,7 +29585,9 @@ var Resource = class {
     if (this.request) {
       return await this.request.requestContentData();
     }
-    const response = await this.#resourceTreeModel.target().pageAgent().invoke_getResourceContent({ frameId: this.frameId, url: this.url });
+    const response = await this.#resourceTreeModel.target().pageAgent().invoke_getResourceContent(
+      { frameId: this.frameId, url: this.url }
+    );
     const error = response.getError();
     if (error) {
       return { error };
@@ -26415,10 +29602,10 @@ var Resource = class {
   }
 };
 
-// gen/front_end/core/sdk/SecurityOriginManager.js
+// ../../front_end/core/sdk/SecurityOriginManager.ts
 var SecurityOriginManager_exports = {};
 __export(SecurityOriginManager_exports, {
-  Events: () => Events8,
+  Events: () => Events15,
   SecurityOriginManager: () => SecurityOriginManager
 });
 var SecurityOriginManager = class extends SDKModel {
@@ -26434,12 +29621,12 @@ var SecurityOriginManager = class extends SDKModel {
     this.#securityOrigins = securityOrigins;
     for (const origin of oldOrigins) {
       if (!this.#securityOrigins.has(origin)) {
-        this.dispatchEventToListeners(Events8.SecurityOriginRemoved, origin);
+        this.dispatchEventToListeners("SecurityOriginRemoved" /* SecurityOriginRemoved */, origin);
       }
     }
     for (const origin of this.#securityOrigins) {
       if (!oldOrigins.has(origin)) {
-        this.dispatchEventToListeners(Events8.SecurityOriginAdded, origin);
+        this.dispatchEventToListeners("SecurityOriginAdded" /* SecurityOriginAdded */, origin);
       }
     }
   }
@@ -26455,27 +29642,29 @@ var SecurityOriginManager = class extends SDKModel {
   setMainSecurityOrigin(securityOrigin, unreachableSecurityOrigin) {
     this.#mainSecurityOrigin = securityOrigin;
     this.#unreachableMainSecurityOrigin = unreachableSecurityOrigin || null;
-    this.dispatchEventToListeners(Events8.MainSecurityOriginChanged, {
+    this.dispatchEventToListeners("MainSecurityOriginChanged" /* MainSecurityOriginChanged */, {
       mainSecurityOrigin: this.#mainSecurityOrigin,
       unreachableMainSecurityOrigin: this.#unreachableMainSecurityOrigin
     });
   }
 };
-var Events8;
-(function(Events12) {
-  Events12["SecurityOriginAdded"] = "SecurityOriginAdded";
-  Events12["SecurityOriginRemoved"] = "SecurityOriginRemoved";
-  Events12["MainSecurityOriginChanged"] = "MainSecurityOriginChanged";
-})(Events8 || (Events8 = {}));
-SDKModel.register(SecurityOriginManager, { capabilities: 0, autostart: false });
+var Events15 = /* @__PURE__ */ ((Events35) => {
+  Events35["SecurityOriginAdded"] = "SecurityOriginAdded";
+  Events35["SecurityOriginRemoved"] = "SecurityOriginRemoved";
+  Events35["MainSecurityOriginChanged"] = "MainSecurityOriginChanged";
+  return Events35;
+})(Events15 || {});
+SDKModel.register(SecurityOriginManager, { capabilities: 0 /* NONE */, autostart: false });
 
-// gen/front_end/core/sdk/StorageKeyManager.js
+// ../../front_end/core/sdk/StorageKeyManager.ts
 var StorageKeyManager_exports = {};
 __export(StorageKeyManager_exports, {
+  Events: () => Events16,
+  StorageKeyComponent: () => StorageKeyComponent,
   StorageKeyManager: () => StorageKeyManager,
   parseStorageKey: () => parseStorageKey
 });
-import * as Common21 from "./../common/common.js";
+import * as Common21 from "../common/common.js";
 var StorageKeyManager = class extends SDKModel {
   #mainStorageKey;
   #storageKeys;
@@ -26489,12 +29678,12 @@ var StorageKeyManager = class extends SDKModel {
     this.#storageKeys = storageKeys;
     for (const storageKey of oldStorageKeys) {
       if (!this.#storageKeys.has(storageKey)) {
-        this.dispatchEventToListeners("StorageKeyRemoved", storageKey);
+        this.dispatchEventToListeners("StorageKeyRemoved" /* STORAGE_KEY_REMOVED */, storageKey);
       }
     }
     for (const storageKey of this.#storageKeys) {
       if (!oldStorageKeys.has(storageKey)) {
-        this.dispatchEventToListeners("StorageKeyAdded", storageKey);
+        this.dispatchEventToListeners("StorageKeyAdded" /* STORAGE_KEY_ADDED */, storageKey);
       }
     }
   }
@@ -26506,7 +29695,7 @@ var StorageKeyManager = class extends SDKModel {
   }
   setMainStorageKey(storageKey) {
     this.#mainStorageKey = storageKey;
-    this.dispatchEventToListeners("MainStorageKeyChanged", {
+    this.dispatchEventToListeners("MainStorageKeyChanged" /* MAIN_STORAGE_KEY_CHANGED */, {
       mainStorageKey: this.#mainStorageKey
     });
   }
@@ -26525,9 +29714,25 @@ function parseStorageKey(storageKeyString) {
   }
   return storageKey;
 }
-SDKModel.register(StorageKeyManager, { capabilities: 0, autostart: false });
+var StorageKeyComponent = /* @__PURE__ */ ((StorageKeyComponent2) => {
+  StorageKeyComponent2["TOP_LEVEL_SITE"] = "0";
+  StorageKeyComponent2["NONCE_HIGH"] = "1";
+  StorageKeyComponent2["NONCE_LOW"] = "2";
+  StorageKeyComponent2["ANCESTOR_CHAIN_BIT"] = "3";
+  StorageKeyComponent2["TOP_LEVEL_SITE_OPAQUE_NONCE_HIGH"] = "4";
+  StorageKeyComponent2["TOP_LEVEL_SITE_OPAQUE_NONCE_LOW"] = "5";
+  StorageKeyComponent2["TOP_LEVEL_SITE_OPAQUE_NONCE_PRECURSOR"] = "6";
+  return StorageKeyComponent2;
+})(StorageKeyComponent || {});
+var Events16 = /* @__PURE__ */ ((Events35) => {
+  Events35["STORAGE_KEY_ADDED"] = "StorageKeyAdded";
+  Events35["STORAGE_KEY_REMOVED"] = "StorageKeyRemoved";
+  Events35["MAIN_STORAGE_KEY_CHANGED"] = "MainStorageKeyChanged";
+  return Events35;
+})(Events16 || {});
+SDKModel.register(StorageKeyManager, { capabilities: 0 /* NONE */, autostart: false });
 
-// gen/front_end/core/sdk/ResourceTreeModel.js
+// ../../front_end/core/sdk/ResourceTreeModel.ts
 var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
   agent;
   storageAgent;
@@ -26546,8 +29751,8 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     this.#frameManager = target.targetManager().getFrameManager();
     const networkManager = target.model(NetworkManager);
     if (networkManager) {
-      networkManager.addEventListener(Events9.RequestFinished, this.onRequestFinished, this);
-      networkManager.addEventListener(Events9.RequestUpdateDropped, this.onRequestUpdateDropped, this);
+      networkManager.addEventListener("RequestFinished" /* RequestFinished */, this.onRequestFinished, this);
+      networkManager.addEventListener("RequestUpdateDropped" /* RequestUpdateDropped */, this.onRequestUpdateDropped, this);
     }
     this.agent = target.pageAgent();
     this.storageAgent = target.storageAgent();
@@ -26592,7 +29797,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
   }
   static reloadAllPages(targetManager, bypassCache, scriptToEvaluateOnLoad) {
     for (const resourceTreeModel of targetManager.models(_ResourceTreeModel)) {
-      if (resourceTreeModel.target().parentTarget()?.type() !== Type.FRAME) {
+      if (resourceTreeModel.target().parentTarget()?.type() !== "frame" /* FRAME */) {
         resourceTreeModel.reloadPage(bypassCache, scriptToEvaluateOnLoad);
       }
     }
@@ -26612,7 +29817,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
   }
   processCachedResources(mainFramePayload) {
     if (mainFramePayload && mainFramePayload.frame.url !== ":") {
-      this.dispatchEventToListeners(Events2.WillLoadCachedResources);
+      this.dispatchEventToListeners("WillLoadCachedResources" /* WillLoadCachedResources */);
       this.addFramesRecursively(null, mainFramePayload);
       this.target().setInspectedURL(mainFramePayload.frame.url);
     }
@@ -26622,7 +29827,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
       runtimeModel.setExecutionContextComparator(this.executionContextComparator.bind(this));
       runtimeModel.fireExecutionContextOrderChanged();
     }
-    this.dispatchEventToListeners(Events2.CachedResourcesLoaded, this);
+    this.dispatchEventToListeners("CachedResourcesLoaded" /* CachedResourcesLoaded */, this);
   }
   cachedResourcesLoaded() {
     return this.#cachedResourcesProcessed;
@@ -26632,7 +29837,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     if (frame.isMainFrame()) {
       this.mainFrame = frame;
     }
-    this.dispatchEventToListeners(Events2.FrameAdded, frame);
+    this.dispatchEventToListeners("FrameAdded" /* FrameAdded */, frame);
     this.updateSecurityOrigins();
     void this.updateStorageKeys();
   }
@@ -26667,25 +29872,21 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
         return;
       }
     }
-    this.dispatchEventToListeners(Events2.FrameWillNavigate, frame);
+    this.dispatchEventToListeners("FrameWillNavigate" /* FrameWillNavigate */, frame);
     frame.navigate(framePayload);
     if (type) {
-      frame.backForwardCacheDetails.restoredFromCache = type === "BackForwardCacheRestore";
+      frame.backForwardCacheDetails.restoredFromCache = type === Page.NavigationType.BackForwardCacheRestore;
     }
     if (frame.isMainFrame()) {
       this.target().setInspectedURL(frame.url);
     }
-    this.dispatchEventToListeners(Events2.FrameNavigated, frame);
+    this.dispatchEventToListeners("FrameNavigated" /* FrameNavigated */, frame);
     if (frame.isPrimaryFrame()) {
-      this.primaryPageChanged(
-        frame,
-        "Navigation"
-        /* PrimaryPageChangeType.NAVIGATION */
-      );
+      this.primaryPageChanged(frame, "Navigation" /* NAVIGATION */);
     }
     const resources = frame.resources();
     for (let i = 0; i < resources.length; ++i) {
-      this.dispatchEventToListeners(Events2.ResourceAdded, resources[i]);
+      this.dispatchEventToListeners("ResourceAdded" /* ResourceAdded */, resources[i]);
     }
     this.updateSecurityOrigins();
     void this.updateStorageKeys();
@@ -26697,7 +29898,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
   }
   primaryPageChanged(frame, type) {
     this.processPendingEvents(frame);
-    this.dispatchEventToListeners(Events2.PrimaryPageChanged, { frame, type });
+    this.dispatchEventToListeners("PrimaryPageChanged" /* PrimaryPageChanged */, { frame, type });
     const networkManager = this.target().model(NetworkManager);
     if (networkManager && frame.isOutermostFrame()) {
       networkManager.clearRequests();
@@ -26707,9 +29908,16 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     this.frameNavigated(framePayload, void 0);
     const frame = this.framesInternal.get(framePayload.id);
     if (frame) {
-      this.dispatchEventToListeners(Events2.DocumentOpened, frame);
+      this.dispatchEventToListeners("DocumentOpened" /* DocumentOpened */, frame);
       if (!frame.getResourcesMap().get(framePayload.url)) {
-        const frameResource = this.createResourceFromFramePayload(framePayload, framePayload.url, Common22.ResourceType.resourceTypes.Document, framePayload.mimeType, null, null);
+        const frameResource = this.createResourceFromFramePayload(
+          framePayload,
+          framePayload.url,
+          Common22.ResourceType.resourceTypes.Document,
+          framePayload.mimeType,
+          null,
+          null
+        );
         frameResource.isGenerated = true;
         frame.addResource(frameResource);
       }
@@ -26724,7 +29932,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     if (frame.isMainFrame()) {
       this.target().setInspectedURL(frame.url);
     }
-    this.dispatchEventToListeners(Events2.FrameNavigatedWithinDocument, frame);
+    this.dispatchEventToListeners("FrameNavigatedWithinDocument" /* FrameNavigatedWithinDocument */, frame);
   }
   frameDetached(frameId, isSwap) {
     if (!this.#cachedResourcesProcessed) {
@@ -26773,7 +29981,18 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     if (frame.getResourcesMap().get(url)) {
       return;
     }
-    const resource = new Resource(this, null, url, frame.url, frameId, data.loaderId, Common22.ResourceType.resourceTypes[data.resourceType], data.mimeType, data.lastModified, null);
+    const resource = new Resource(
+      this,
+      null,
+      url,
+      frame.url,
+      frameId,
+      data.loaderId,
+      Common22.ResourceType.resourceTypes[data.resourceType],
+      data.mimeType,
+      data.lastModified,
+      null
+    );
     frame.addResource(resource);
   }
   frameForId(frameId) {
@@ -26803,17 +30022,42 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     }
     for (let i = 0; i < frameTreePayload.resources.length; ++i) {
       const subresource = frameTreePayload.resources[i];
-      const resource = this.createResourceFromFramePayload(framePayload, subresource.url, Common22.ResourceType.resourceTypes[subresource.type], subresource.mimeType, subresource.lastModified || null, subresource.contentSize || null);
+      const resource = this.createResourceFromFramePayload(
+        framePayload,
+        subresource.url,
+        Common22.ResourceType.resourceTypes[subresource.type],
+        subresource.mimeType,
+        subresource.lastModified || null,
+        subresource.contentSize || null
+      );
       frame.addResource(resource);
     }
     if (!frame.getResourcesMap().get(framePayload.url)) {
-      const frameResource = this.createResourceFromFramePayload(framePayload, framePayload.url, Common22.ResourceType.resourceTypes.Document, framePayload.mimeType, null, null);
+      const frameResource = this.createResourceFromFramePayload(
+        framePayload,
+        framePayload.url,
+        Common22.ResourceType.resourceTypes.Document,
+        framePayload.mimeType,
+        null,
+        null
+      );
       frame.addResource(frameResource);
     }
   }
   createResourceFromFramePayload(frame, url, type, mimeType, lastModifiedTime, contentSize) {
     const lastModified = typeof lastModifiedTime === "number" ? new Date(lastModifiedTime * 1e3) : null;
-    return new Resource(this, null, url, frame.url, frame.id, frame.loaderId, type, mimeType, lastModified, contentSize);
+    return new Resource(
+      this,
+      null,
+      url,
+      frame.url,
+      frame.id,
+      frame.loaderId,
+      type,
+      mimeType,
+      lastModified,
+      contentSize
+    );
   }
   suspendReload() {
     this.#reloadSuspensionCount++;
@@ -26832,7 +30076,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
       return;
     }
     if (!this.#pendingReloadOptions) {
-      this.dispatchEventToListeners(Events2.PageReloadRequested, this);
+      this.dispatchEventToListeners("PageReloadRequested" /* PageReloadRequested */, this);
     }
     if (this.#reloadSuspensionCount) {
       this.#pendingReloadOptions = { ignoreCache, scriptToEvaluateOnLoad };
@@ -26843,7 +30087,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     if (networkManager) {
       networkManager.clearRequests();
     }
-    this.dispatchEventToListeners(Events2.WillReloadPage);
+    this.dispatchEventToListeners("WillReloadPage" /* WillReloadPage */);
     void this.agent.invoke_reload({ ignoreCache, scriptToEvaluateOnLoad, loaderId });
   }
   navigate(url) {
@@ -26938,13 +30182,15 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
   async getStorageKeyData() {
     const storageKeys = /* @__PURE__ */ new Set();
     let mainStorageKey = null;
-    for (const { isMainFrame, storageKey } of await Promise.all([...this.framesInternal.values()].map((f) => f.getStorageKey(
-      /* forceFetch */
-      false
-    ).then((k) => ({
-      isMainFrame: f.isMainFrame(),
-      storageKey: k
-    }))))) {
+    for (const { isMainFrame, storageKey } of await Promise.all([...this.framesInternal.values()].map(
+      (f) => f.getStorageKey(
+        /* forceFetch */
+        false
+      ).then((k) => ({
+        isMainFrame: f.isMainFrame(),
+        storageKey: k
+      }))
+    ))) {
       if (isMainFrame) {
         mainStorageKey = storageKey;
       }
@@ -26956,7 +30202,10 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
   }
   updateSecurityOrigins() {
     const data = this.getSecurityOriginData();
-    this.#securityOriginManager.setMainSecurityOrigin(data.mainSecurityOrigin || "", data.unreachableMainSecurityOrigin || "");
+    this.#securityOriginManager.setMainSecurityOrigin(
+      data.mainSecurityOrigin || "",
+      data.unreachableMainSecurityOrigin || ""
+    );
     this.#securityOriginManager.updateSecurityOrigins(data.securityOrigins);
   }
   async updateStorageKeys() {
@@ -26977,7 +30226,7 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
   onBackForwardCacheNotUsed(event) {
     if (this.mainFrame && this.mainFrame.id === event.frameId && this.mainFrame.loaderId === event.loaderId) {
       this.mainFrame.setBackForwardCacheDetails(event);
-      this.dispatchEventToListeners(Events2.BackForwardCacheDetailsUpdated, this.mainFrame);
+      this.dispatchEventToListeners("BackForwardCacheDetailsUpdated" /* BackForwardCacheDetailsUpdated */, this.mainFrame);
     } else {
       this.#pendingBackForwardCacheNotUsedEvents.add(event);
     }
@@ -26995,29 +30244,29 @@ var ResourceTreeModel = class _ResourceTreeModel extends SDKModel {
     }
   }
 };
-var Events2;
-(function(Events12) {
-  Events12["FrameAdded"] = "FrameAdded";
-  Events12["FrameNavigated"] = "FrameNavigated";
-  Events12["FrameNavigatedWithinDocument"] = "FrameNavigatedWithinDocument";
-  Events12["FrameDetached"] = "FrameDetached";
-  Events12["FrameResized"] = "FrameResized";
-  Events12["FrameWillNavigate"] = "FrameWillNavigate";
-  Events12["DocumentOpened"] = "DocumentOpened";
-  Events12["PrimaryPageChanged"] = "PrimaryPageChanged";
-  Events12["ResourceAdded"] = "ResourceAdded";
-  Events12["WillLoadCachedResources"] = "WillLoadCachedResources";
-  Events12["CachedResourcesLoaded"] = "CachedResourcesLoaded";
-  Events12["DOMContentLoaded"] = "DOMContentLoaded";
-  Events12["LifecycleEvent"] = "LifecycleEvent";
-  Events12["Load"] = "Load";
-  Events12["PageReloadRequested"] = "PageReloadRequested";
-  Events12["WillReloadPage"] = "WillReloadPage";
-  Events12["InterstitialShown"] = "InterstitialShown";
-  Events12["InterstitialHidden"] = "InterstitialHidden";
-  Events12["BackForwardCacheDetailsUpdated"] = "BackForwardCacheDetailsUpdated";
-  Events12["JavaScriptDialogOpening"] = "JavaScriptDialogOpening";
-})(Events2 || (Events2 = {}));
+var Events4 = /* @__PURE__ */ ((Events35) => {
+  Events35["FrameAdded"] = "FrameAdded";
+  Events35["FrameNavigated"] = "FrameNavigated";
+  Events35["FrameNavigatedWithinDocument"] = "FrameNavigatedWithinDocument";
+  Events35["FrameDetached"] = "FrameDetached";
+  Events35["FrameResized"] = "FrameResized";
+  Events35["FrameWillNavigate"] = "FrameWillNavigate";
+  Events35["DocumentOpened"] = "DocumentOpened";
+  Events35["PrimaryPageChanged"] = "PrimaryPageChanged";
+  Events35["ResourceAdded"] = "ResourceAdded";
+  Events35["WillLoadCachedResources"] = "WillLoadCachedResources";
+  Events35["CachedResourcesLoaded"] = "CachedResourcesLoaded";
+  Events35["DOMContentLoaded"] = "DOMContentLoaded";
+  Events35["LifecycleEvent"] = "LifecycleEvent";
+  Events35["Load"] = "Load";
+  Events35["PageReloadRequested"] = "PageReloadRequested";
+  Events35["WillReloadPage"] = "WillReloadPage";
+  Events35["InterstitialShown"] = "InterstitialShown";
+  Events35["InterstitialHidden"] = "InterstitialHidden";
+  Events35["BackForwardCacheDetailsUpdated"] = "BackForwardCacheDetailsUpdated";
+  Events35["JavaScriptDialogOpening"] = "JavaScriptDialogOpening";
+  return Events35;
+})(Events4 || {});
 var ResourceTreeFrame = class {
   #model;
   #sameTargetParentFrame;
@@ -27150,7 +30399,7 @@ var ResourceTreeFrame = class {
     return this.#loaderId;
   }
   adFrameType() {
-    return this.#adFrameStatus?.adFrameType || "none";
+    return this.#adFrameStatus?.adFrameType || Page.AdFrameType.None;
   }
   adFrameStatus() {
     return this.#adFrameStatus;
@@ -27172,7 +30421,7 @@ var ResourceTreeFrame = class {
       return null;
     }
     const parentTarget = this.#model.target().parentTarget();
-    if (parentTarget?.type() !== Type.FRAME) {
+    if (parentTarget?.type() !== "frame" /* FRAME */) {
       return null;
     }
     const parentModel = parentTarget.model(ResourceTreeModel);
@@ -27202,7 +30451,7 @@ var ResourceTreeFrame = class {
    * https://chromium.googlesource.com/chromium/src/+/HEAD/docs/frame_trees.md
    */
   isOutermostFrame() {
-    return this.#model.target().parentTarget()?.type() !== Type.FRAME && !this.#sameTargetParentFrame && !this.crossTargetParentFrameId;
+    return this.#model.target().parentTarget()?.type() !== "frame" /* FRAME */ && !this.#sameTargetParentFrame && !this.crossTargetParentFrameId;
   }
   /**
    * Returns true if this is the primary frame of the browser tab. There can only be one primary frame for each
@@ -27226,23 +30475,34 @@ var ResourceTreeFrame = class {
   remove(isSwap) {
     this.removeChildFrames();
     this.#model.framesInternal.delete(this.id);
-    this.#model.dispatchEventToListeners(Events2.FrameDetached, { frame: this, isSwap });
+    this.#model.dispatchEventToListeners("FrameDetached" /* FrameDetached */, { frame: this, isSwap });
   }
   addResource(resource) {
     if (this.resourcesMap.get(resource.url) === resource) {
       return;
     }
     this.resourcesMap.set(resource.url, resource);
-    this.#model.dispatchEventToListeners(Events2.ResourceAdded, resource);
+    this.#model.dispatchEventToListeners("ResourceAdded" /* ResourceAdded */, resource);
   }
   addRequest(request) {
     let resource = this.resourcesMap.get(request.url());
     if (resource?.request === request) {
       return;
     }
-    resource = new Resource(this.#model, request, request.url(), request.documentURL, request.frameId, request.loaderId, request.resourceType(), request.mimeType, null, null);
+    resource = new Resource(
+      this.#model,
+      request,
+      request.url(),
+      request.documentURL,
+      request.frameId,
+      request.loaderId,
+      request.resourceType(),
+      request.mimeType,
+      null,
+      null
+    );
     this.resourcesMap.set(resource.url, resource);
-    this.#model.dispatchEventToListeners(Events2.ResourceAdded, resource);
+    this.#model.dispatchEventToListeners("ResourceAdded" /* ResourceAdded */, resource);
   }
   resources() {
     return Array.from(this.resourcesMap.values());
@@ -27315,7 +30575,7 @@ var ResourceTreeFrame = class {
     if (parentFrame) {
       return await highlightFrameOwner(parentFrame.resourceTreeModel().domModel());
     }
-    if (parentTarget?.type() === Type.FRAME) {
+    if (parentTarget?.type() === "frame" /* FRAME */) {
       const domModel = parentTarget.model(DOMModel);
       if (domModel) {
         return await highlightFrameOwner(domModel);
@@ -27323,7 +30583,11 @@ var ResourceTreeFrame = class {
     }
     const document2 = await this.resourceTreeModel().domModel().requestDocument();
     if (document2) {
-      this.resourceTreeModel().domModel().overlayModel().highlightInOverlay({ node: document2, selectorList: "" }, "all", true);
+      this.resourceTreeModel().domModel().overlayModel().highlightInOverlay(
+        { node: document2, selectorList: "" },
+        "all",
+        true
+      );
     }
   }
   async getPermissionsPolicyState() {
@@ -27362,13 +30626,16 @@ var PageDispatcher = class {
     this.#resourceTreeModel.onBackForwardCacheNotUsed(params);
   }
   domContentEventFired({ timestamp }) {
-    this.#resourceTreeModel.dispatchEventToListeners(Events2.DOMContentLoaded, timestamp);
+    this.#resourceTreeModel.dispatchEventToListeners("DOMContentLoaded" /* DOMContentLoaded */, timestamp);
   }
   loadEventFired({ timestamp }) {
-    this.#resourceTreeModel.dispatchEventToListeners(Events2.Load, { resourceTreeModel: this.#resourceTreeModel, loadTime: timestamp });
+    this.#resourceTreeModel.dispatchEventToListeners(
+      "Load" /* Load */,
+      { resourceTreeModel: this.#resourceTreeModel, loadTime: timestamp }
+    );
   }
   lifecycleEvent({ frameId, name }) {
-    this.#resourceTreeModel.dispatchEventToListeners(Events2.LifecycleEvent, { frameId, name });
+    this.#resourceTreeModel.dispatchEventToListeners("LifecycleEvent" /* LifecycleEvent */, { frameId, name });
   }
   frameAttached({ frameId, parentFrameId, stack }) {
     this.#resourceTreeModel.frameAttached(frameId, parentFrameId, stack);
@@ -27380,11 +30647,7 @@ var PageDispatcher = class {
     this.#resourceTreeModel.documentOpened(frame);
   }
   frameDetached({ frameId, reason }) {
-    this.#resourceTreeModel.frameDetached(
-      frameId,
-      reason === "swap"
-      /* Protocol.Page.FrameDetachedEventReason.Swap */
-    );
+    this.#resourceTreeModel.frameDetached(frameId, reason === Page.FrameDetachedEventReason.Swap);
   }
   frameSubtreeWillBeDetached(_params) {
   }
@@ -27404,10 +30667,10 @@ var PageDispatcher = class {
     this.#resourceTreeModel.navigatedWithinDocument(frameId, url);
   }
   frameResized() {
-    this.#resourceTreeModel.dispatchEventToListeners(Events2.FrameResized);
+    this.#resourceTreeModel.dispatchEventToListeners("FrameResized" /* FrameResized */);
   }
   javascriptDialogOpening(event) {
-    this.#resourceTreeModel.dispatchEventToListeners(Events2.JavaScriptDialogOpening, event);
+    this.#resourceTreeModel.dispatchEventToListeners("JavaScriptDialogOpening" /* JavaScriptDialogOpening */, event);
     if (!event.hasBrowserHandler) {
       void this.#resourceTreeModel.agent.invoke_handleJavaScriptDialog({ accept: false });
     }
@@ -27420,11 +30683,11 @@ var PageDispatcher = class {
   }
   interstitialShown() {
     this.#resourceTreeModel.isInterstitialShowing = true;
-    this.#resourceTreeModel.dispatchEventToListeners(Events2.InterstitialShown);
+    this.#resourceTreeModel.dispatchEventToListeners("InterstitialShown" /* InterstitialShown */);
   }
   interstitialHidden() {
     this.#resourceTreeModel.isInterstitialShowing = false;
-    this.#resourceTreeModel.dispatchEventToListeners(Events2.InterstitialHidden);
+    this.#resourceTreeModel.dispatchEventToListeners("InterstitialHidden" /* InterstitialHidden */);
   }
   windowOpen({}) {
   }
@@ -27437,19 +30700,24 @@ var PageDispatcher = class {
   downloadProgress() {
   }
 };
-SDKModel.register(ResourceTreeModel, { capabilities: 2, autostart: true, early: true });
+SDKModel.register(ResourceTreeModel, { capabilities: 2 /* DOM */, autostart: true, early: true });
+var PrimaryPageChangeType = /* @__PURE__ */ ((PrimaryPageChangeType2) => {
+  PrimaryPageChangeType2["NAVIGATION"] = "Navigation";
+  PrimaryPageChangeType2["ACTIVATION"] = "Activation";
+  return PrimaryPageChangeType2;
+})(PrimaryPageChangeType || {});
 
-// gen/front_end/core/sdk/Script.js
+// ../../front_end/core/sdk/Script.ts
 var Script_exports = {};
 __export(Script_exports, {
   Script: () => Script,
   disassembleWasm: () => disassembleWasm,
   sourceURLRegex: () => sourceURLRegex
 });
-import * as Platform15 from "./../platform/platform.js";
-import * as Common23 from "./../common/common.js";
-import * as i18n15 from "./../i18n/i18n.js";
-import * as TextUtils19 from "./../text_utils/text_utils.js";
+import * as Platform15 from "../platform/platform.js";
+import * as Common23 from "../common/common.js";
+import * as i18n15 from "../i18n/i18n.js";
+import * as TextUtils19 from "../text_utils/text_utils.js";
 var UIStrings7 = {
   /**
    * @description Error message for when a script can't be loaded because it was removed or deleted.
@@ -27543,10 +30811,10 @@ var Script = class _Script {
     return this.#codeOffset;
   }
   isJavaScript() {
-    return this.#language === "JavaScript";
+    return this.#language === Debugger.ScriptLanguage.JavaScript;
   }
   isWasm() {
-    return this.#language === "WebAssembly";
+    return this.#language === Debugger.ScriptLanguage.WebAssembly;
   }
   scriptLanguage() {
     return this.#language;
@@ -27624,7 +30892,11 @@ var Script = class _Script {
     for (let i = 0; i < functionBodyOffsets.length; i += 2) {
       functionBodyRanges.push({ start: functionBodyOffsets[i], end: functionBodyOffsets[i + 1] });
     }
-    return new TextUtils19.WasmDisassembly.WasmDisassembly(lines.concat(...lineChunks), bytecodeOffsets.concat(...bytecodeOffsetChunks), functionBodyRanges);
+    return new TextUtils19.WasmDisassembly.WasmDisassembly(
+      lines.concat(...lineChunks),
+      bytecodeOffsets.concat(...bytecodeOffsetChunks),
+      functionBodyRanges
+    );
   }
   requestContentData() {
     if (!this.#contentPromise) {
@@ -27676,13 +30948,19 @@ var Script = class _Script {
     return await response.arrayBuffer();
   }
   originalContentProvider() {
-    return new TextUtils19.StaticContentProvider.StaticContentProvider(this.contentURL(), this.contentType(), () => this.requestContentData());
+    return new TextUtils19.StaticContentProvider.StaticContentProvider(
+      this.contentURL(),
+      this.contentType(),
+      () => this.requestContentData()
+    );
   }
   async searchInContent(query, caseSensitive, isRegex) {
     if (!this.scriptId) {
       return [];
     }
-    const matches = await this.debuggerModel.target().debuggerAgent().invoke_searchInContent({ scriptId: this.scriptId, query, caseSensitive, isRegex });
+    const matches = await this.debuggerModel.target().debuggerAgent().invoke_searchInContent(
+      { scriptId: this.scriptId, query, caseSensitive, isRegex }
+    );
     return TextUtils19.TextUtils.performSearchInSearchMatches(matches.result || [], query, caseSensitive, isRegex);
   }
   rawLocation(lineNumber, columnNumber) {
@@ -27699,7 +30977,9 @@ var Script = class _Script {
     return !this.sourceURL;
   }
   async setBlackboxedRanges(positions) {
-    const response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges({ scriptId: this.scriptId, positions });
+    const response = await this.debuggerModel.target().debuggerAgent().invoke_setBlackboxedRanges(
+      { scriptId: this.scriptId, positions }
+    );
     return !response.getError();
   }
   containsLocation(lineNumber, columnNumber) {
@@ -27767,7 +31047,9 @@ function frameIdForScript(script) {
 }
 var sourceURLRegex = /^[\x20\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
 async function disassembleWasm(content) {
-  const worker = Platform15.HostRuntime.HOST_RUNTIME.createWorker(new URL("../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js", import.meta.url).toString());
+  const worker = Platform15.HostRuntime.HOST_RUNTIME.createWorker(
+    new URL("../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js", import.meta.url).toString()
+  );
   const promise = new Promise((resolve, reject) => {
     worker.onmessage = ({ data }) => {
       if ("method" in data) {
@@ -27793,7 +31075,7 @@ async function disassembleWasm(content) {
   }
 }
 
-// gen/front_end/core/sdk/DebuggerModel.js
+// ../../front_end/core/sdk/DebuggerModel.ts
 var UIStrings8 = {
   /**
    * @description Title of a section in the debugger showing local JavaScript variables.
@@ -27891,14 +31173,20 @@ function sortAndMergeRanges(locationRanges) {
   merged.push(prev);
   return merged;
 }
+var StepMode = /* @__PURE__ */ ((StepMode2) => {
+  StepMode2["STEP_INTO"] = "StepInto";
+  StepMode2["STEP_OUT"] = "StepOut";
+  StepMode2["STEP_OVER"] = "StepOver";
+  return StepMode2;
+})(StepMode || {});
 var WASM_SYMBOLS_PRIORITY = [
-  "ExternalDWARF",
-  "EmbeddedDWARF",
-  "SourceMap"
+  Debugger.DebugSymbolsType.ExternalDWARF,
+  Debugger.DebugSymbolsType.EmbeddedDWARF,
+  Debugger.DebugSymbolsType.SourceMap
 ];
 var skipAllPausesSettingDescriptor = {
   name: "skip-all-pauses",
-  type: "boolean",
+  type: Common24.Settings.SettingType.BOOLEAN,
   defaultValue: false
 };
 var DebuggerModel = class _DebuggerModel extends SDKModel {
@@ -27937,7 +31225,16 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     target.registerDebuggerDispatcher(new DebuggerDispatcher(this));
     this.agent = target.debuggerAgent();
     this.#runtimeModel = target.model(RuntimeModel);
-    this.#sourceMapManager = new SourceMapManager(target, (compiledURL, sourceMappingURL, payload, script) => new SourceMap(compiledURL, sourceMappingURL, payload, target.targetManager().getConsole(), script));
+    this.#sourceMapManager = new SourceMapManager(
+      target,
+      (compiledURL, sourceMappingURL, payload, script) => new SourceMap(
+        compiledURL,
+        sourceMappingURL,
+        payload,
+        target.targetManager().getConsole(),
+        script
+      )
+    );
     const settings = this.target().targetManager().settings;
     this.#pauseOnExceptionEnabledSetting = settings.resolve(pauseOnExceptionEnabledSettingDescriptor);
     this.#pauseOnExceptionEnabledSetting.addChangeListener(this.pauseOnExceptionStateChanged, this);
@@ -27959,7 +31256,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     }
     const resourceTreeModel = target.model(ResourceTreeModel);
     if (resourceTreeModel) {
-      resourceTreeModel.addEventListener(Events2.FrameNavigated, this.onFrameNavigated, this);
+      resourceTreeModel.addEventListener("FrameNavigated" /* FrameNavigated */, this.onFrameNavigated, this);
     }
   }
   static selectSymbolSource(debugSymbols, devToolsConsole) {
@@ -27980,7 +31277,10 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
         break;
       }
     }
-    console.assert(debugSymbolsSource !== null, "Unknown symbol types. Front-end and back-end should be kept in sync regarding Protocol.Debugger.DebugSymbolTypes");
+    console.assert(
+      debugSymbolsSource !== null,
+      "Unknown symbol types. Front-end and back-end should be kept in sync regarding Protocol.Debugger.DebugSymbolTypes"
+    );
     if (debugSymbolsSource && debugSymbols.length > 1) {
       devToolsConsole.warn(`Multiple debug symbols for script were found. Using ${debugSymbolsSource.type}`);
     }
@@ -28013,7 +31313,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     let instrumentationPromise;
     if (Root7.Runtime.experiments.isEnabled(Root7.ExperimentNames.ExperimentName.INSTRUMENTATION_BREAKPOINTS)) {
       instrumentationPromise = this.agent.invoke_setInstrumentationBreakpoint({
-        instrumentation: "beforeScriptExecution"
+        instrumentation: Debugger.SetInstrumentationBreakpointRequestInstrumentation.BeforeScriptExecution
       });
     }
     this.pauseOnExceptionStateChanged();
@@ -28021,7 +31321,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     if (!this.#breakpointsActiveSetting.get()) {
       this.breakpointsActiveChanged();
     }
-    this.dispatchEventToListeners(Events.DebuggerWasEnabled, this);
+    this.dispatchEventToListeners("DebuggerWasEnabled" /* DebuggerWasEnabled */, this);
     const [enableResult] = await Promise.all([enablePromise, instrumentationPromise, skipAllPausesPromise]);
     this.registerDebugger(enableResult);
   }
@@ -28046,7 +31346,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     const { debuggerId } = response;
     debuggerIdToModel.set(debuggerId, this);
     this.#debuggerId = debuggerId;
-    this.dispatchEventToListeners(Events.DebuggerIsReadyToPause, this);
+    this.dispatchEventToListeners("DebuggerIsReadyToPause" /* DebuggerIsReadyToPause */, this);
   }
   isReadyToPause() {
     return Boolean(this.#debuggerId);
@@ -28075,7 +31375,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     await this.agent.invoke_disable();
     this.#isPausing = false;
     this.globalObjectCleared();
-    this.dispatchEventToListeners(Events.DebuggerWasDisabled, this);
+    this.dispatchEventToListeners("DebuggerWasDisabled" /* DebuggerWasDisabled */, this);
     if (typeof this.#debuggerId === "string") {
       debuggerIdToModel.delete(this.#debuggerId);
     }
@@ -28099,7 +31399,10 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     }
     clearTimeout(this.#skipAllPausesTimeout);
     void this.agent.invoke_setSkipAllPauses({ skip: true });
-    this.#skipAllPausesTimeout = globalThis.setTimeout(this.skipAllPauses.bind(this, false), timeout);
+    this.#skipAllPausesTimeout = globalThis.setTimeout(
+      this.skipAllPauses.bind(this, false),
+      timeout
+    );
   }
   jsSourceMapsStateChanged() {
     this.#sourceMapManager.setEnabled(this.#jsSourceMapsEnabledSetting.get());
@@ -28109,13 +31412,13 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     let state;
     const pauseOnUncaughtEnabled = this.#pauseOnUncaughtExceptionSetting.get();
     if (pauseOnCaughtEnabled && pauseOnUncaughtEnabled) {
-      state = "all";
+      state = Debugger.SetPauseOnExceptionsRequestState.All;
     } else if (pauseOnCaughtEnabled) {
-      state = "caught";
+      state = Debugger.SetPauseOnExceptionsRequestState.Caught;
     } else if (pauseOnUncaughtEnabled) {
-      state = "uncaught";
+      state = Debugger.SetPauseOnExceptionsRequestState.Uncaught;
     } else {
-      state = "none";
+      state = Debugger.SetPauseOnExceptionsRequestState.None;
     }
     void this.agent.invoke_setPauseOnExceptions({ state });
   }
@@ -28145,25 +31448,16 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     return sortAndMergeRanges(skipList);
   }
   async stepInto() {
-    const skipList = await this.computeAutoStepSkipList(
-      "StepInto"
-      /* StepMode.STEP_INTO */
-    );
+    const skipList = await this.computeAutoStepSkipList("StepInto" /* STEP_INTO */);
     void this.agent.invoke_stepInto({ breakOnAsyncCall: false, skipList });
   }
   async stepOver() {
     this.#autoSteppingContext = this.#debuggerPausedDetails?.callFrames[0]?.functionLocation() ?? null;
-    const skipList = await this.computeAutoStepSkipList(
-      "StepOver"
-      /* StepMode.STEP_OVER */
-    );
+    const skipList = await this.computeAutoStepSkipList("StepOver" /* STEP_OVER */);
     void this.agent.invoke_stepOver({ skipList });
   }
   async stepOut() {
-    const skipList = await this.computeAutoStepSkipList(
-      "StepOut"
-      /* StepMode.STEP_OUT */
-    );
+    const skipList = await this.computeAutoStepSkipList("StepOut" /* STEP_OUT */);
     if (skipList.length !== 0) {
       void this.agent.invoke_stepOver({ skipList });
     } else {
@@ -28171,10 +31465,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     }
   }
   scheduleStepIntoAsync() {
-    void this.computeAutoStepSkipList(
-      "StepInto"
-      /* StepMode.STEP_INTO */
-    ).then((skipList) => {
+    void this.computeAutoStepSkipList("StepInto" /* STEP_INTO */).then((skipList) => {
       void this.agent.invoke_stepInto({ breakOnAsyncCall: true, skipList });
     });
   }
@@ -28247,7 +31538,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
   globalObjectCleared() {
     this.resetDebuggerPausedDetails();
     this.reset();
-    this.dispatchEventToListeners(Events.GlobalObjectCleared, this);
+    this.dispatchEventToListeners("GlobalObjectCleared" /* GlobalObjectCleared */, this);
   }
   reset() {
     for (const script of this.#scripts.values()) {
@@ -28299,7 +31590,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       }
     }
     this.#autoSteppingContext = null;
-    this.dispatchEventToListeners(Events.DebuggerPaused, this);
+    this.dispatchEventToListeners("DebuggerPaused" /* DebuggerPaused */, this);
     this.setSelectedCallFrame(debuggerPausedDetails.callFrames[0]);
     return true;
   }
@@ -28318,7 +31609,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     this.#synchronizeBreakpointsCallback = callback;
   }
   async pausedScript(callFrames, reason, auxData, breakpointIds, asyncStackTrace, asyncStackTraceId) {
-    if (reason === "instrumentation") {
+    if (reason === Debugger.PausedEventReason.Instrumentation) {
       const script = this.scriptForId(auxData.scriptId);
       if (this.#synchronizeBreakpointsCallback && script) {
         await this.#synchronizeBreakpointsCallback(script);
@@ -28348,7 +31639,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
   }
   resumedScript() {
     this.resetDebuggerPausedDetails();
-    this.dispatchEventToListeners(Events.DebuggerResumed, this);
+    this.dispatchEventToListeners("DebuggerResumed" /* DebuggerResumed */, this);
   }
   parsedScriptSource(scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, sourceMapURL, hasSourceURLComment, hasSyntaxError, length, isModule, originStackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId) {
     const knownScript = this.#scripts.get(scriptId);
@@ -28360,10 +31651,31 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       isContentScript = !executionContextAuxData["isDefault"];
     }
     const selectedDebugSymbol = _DebuggerModel.selectSymbolSource(debugSymbols, this.target().targetManager().getConsole());
-    const script = new Script(this, scriptId, sourceURL, startLine, startColumn, endLine, endColumn, executionContextId, hash, isContentScript, sourceMapURL, hasSourceURLComment, length, isModule, originStackTrace, codeOffset, scriptLanguage, selectedDebugSymbol, embedderName, buildId);
+    const script = new Script(
+      this,
+      scriptId,
+      sourceURL,
+      startLine,
+      startColumn,
+      endLine,
+      endColumn,
+      executionContextId,
+      hash,
+      isContentScript,
+      sourceMapURL,
+      hasSourceURLComment,
+      length,
+      isModule,
+      originStackTrace,
+      codeOffset,
+      scriptLanguage,
+      selectedDebugSymbol,
+      embedderName,
+      buildId
+    );
     this.registerScript(script);
-    this.dispatchEventToListeners(Events.ParsedScriptSource, script);
-    if ((!selectedDebugSymbol || selectedDebugSymbol.type === "SourceMap") && script.sourceMapURL && !hasSyntaxError) {
+    this.dispatchEventToListeners("ParsedScriptSource" /* ParsedScriptSource */, script);
+    if ((!selectedDebugSymbol || selectedDebugSymbol.type === Debugger.DebugSymbolsType.SourceMap) && script.sourceMapURL && !hasSyntaxError) {
       this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
     }
     const isDiscardable = hasSyntaxError && script.isAnonymousScript();
@@ -28379,7 +31691,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     this.#sourceMapManager.attachSourceMap(script, script.sourceURL, script.sourceMapURL);
   }
   async setDebugInfoURL(script, _externalURL) {
-    this.dispatchEventToListeners(Events.DebugInfoAttached, script);
+    this.dispatchEventToListeners("DebugInfoAttached" /* DebugInfoAttached */, script);
   }
   executionContextDestroyed(executionContext) {
     for (const script of this.#scripts.values()) {
@@ -28411,7 +31723,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
     const scriptsToDiscard = this.#discardableScripts.splice(0, 100);
     for (const script of scriptsToDiscard) {
       this.unregisterScript(script);
-      this.dispatchEventToListeners(Events.DiscardedAnonymousScriptSource, script);
+      this.dispatchEventToListeners("DiscardedAnonymousScriptSource" /* DiscardedAnonymousScriptSource */, script);
     }
   }
   createRawLocation(script, lineNumber, columnNumber) {
@@ -28452,7 +31764,7 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       return;
     }
     this.#selectedCallFrame = callFrame;
-    this.dispatchEventToListeners(Events.CallFrameSelected, this);
+    this.dispatchEventToListeners("CallFrameSelected" /* CallFrameSelected */, this);
   }
   selectedCallFrame() {
     return this.#selectedCallFrame;
@@ -28492,7 +31804,11 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
       }
       let debuggerLocation = null;
       if (location) {
-        debuggerLocation = this.createRawLocationByScriptId(location.value.scriptId, location.value.lineNumber, location.value.columnNumber);
+        debuggerLocation = this.createRawLocationByScriptId(
+          location.value.scriptId,
+          location.value.lineNumber,
+          location.value.columnNumber
+        );
       }
       return { location: debuggerLocation, functionName: functionName ? functionName.value : "" };
     }
@@ -28577,26 +31893,26 @@ var DebuggerModel = class _DebuggerModel extends SDKModel {
   }
 };
 var debuggerIdToModel = /* @__PURE__ */ new Map();
-var PauseOnExceptionsState;
-(function(PauseOnExceptionsState2) {
+var PauseOnExceptionsState = /* @__PURE__ */ ((PauseOnExceptionsState2) => {
   PauseOnExceptionsState2["DontPauseOnExceptions"] = "none";
   PauseOnExceptionsState2["PauseOnAllExceptions"] = "all";
   PauseOnExceptionsState2["PauseOnCaughtExceptions"] = "caught";
   PauseOnExceptionsState2["PauseOnUncaughtExceptions"] = "uncaught";
-})(PauseOnExceptionsState || (PauseOnExceptionsState = {}));
-var Events;
-(function(Events12) {
-  Events12["DebuggerWasEnabled"] = "DebuggerWasEnabled";
-  Events12["DebuggerWasDisabled"] = "DebuggerWasDisabled";
-  Events12["DebuggerPaused"] = "DebuggerPaused";
-  Events12["DebuggerResumed"] = "DebuggerResumed";
-  Events12["DebugInfoAttached"] = "DebugInfoAttached";
-  Events12["ParsedScriptSource"] = "ParsedScriptSource";
-  Events12["DiscardedAnonymousScriptSource"] = "DiscardedAnonymousScriptSource";
-  Events12["GlobalObjectCleared"] = "GlobalObjectCleared";
-  Events12["CallFrameSelected"] = "CallFrameSelected";
-  Events12["DebuggerIsReadyToPause"] = "DebuggerIsReadyToPause";
-})(Events || (Events = {}));
+  return PauseOnExceptionsState2;
+})(PauseOnExceptionsState || {});
+var Events3 = /* @__PURE__ */ ((Events35) => {
+  Events35["DebuggerWasEnabled"] = "DebuggerWasEnabled";
+  Events35["DebuggerWasDisabled"] = "DebuggerWasDisabled";
+  Events35["DebuggerPaused"] = "DebuggerPaused";
+  Events35["DebuggerResumed"] = "DebuggerResumed";
+  Events35["DebugInfoAttached"] = "DebugInfoAttached";
+  Events35["ParsedScriptSource"] = "ParsedScriptSource";
+  Events35["DiscardedAnonymousScriptSource"] = "DiscardedAnonymousScriptSource";
+  Events35["GlobalObjectCleared"] = "GlobalObjectCleared";
+  Events35["CallFrameSelected"] = "CallFrameSelected";
+  Events35["DebuggerIsReadyToPause"] = "DebuggerIsReadyToPause";
+  return Events35;
+})(Events3 || {});
 var DebuggerDispatcher = class {
   #debuggerModel;
   constructor(debuggerModel) {
@@ -28606,7 +31922,14 @@ var DebuggerDispatcher = class {
     if (!this.#debuggerModel.debuggerEnabled()) {
       return;
     }
-    void this.#debuggerModel.pausedScript(callFrames, reason, data, hitBreakpoints || [], asyncStackTrace, asyncStackTraceId);
+    void this.#debuggerModel.pausedScript(
+      callFrames,
+      reason,
+      data,
+      hitBreakpoints || [],
+      asyncStackTrace,
+      asyncStackTraceId
+    );
   }
   resumed() {
     if (!this.#debuggerModel.debuggerEnabled()) {
@@ -28614,17 +31937,98 @@ var DebuggerDispatcher = class {
     }
     this.#debuggerModel.resumedScript();
   }
-  scriptParsed({ scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, sourceMapURL, hasSourceURL, length, isModule, stackTrace, codeOffset, scriptLanguage, debugSymbols, embedderName, buildId }) {
+  scriptParsed({
+    scriptId,
+    url,
+    startLine,
+    startColumn,
+    endLine,
+    endColumn,
+    executionContextId,
+    hash,
+    executionContextAuxData,
+    sourceMapURL,
+    hasSourceURL,
+    length,
+    isModule,
+    stackTrace,
+    codeOffset,
+    scriptLanguage,
+    debugSymbols,
+    embedderName,
+    buildId
+  }) {
     if (!this.#debuggerModel.debuggerEnabled()) {
       return;
     }
-    this.#debuggerModel.parsedScriptSource(scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, sourceMapURL, Boolean(hasSourceURL), false, length || 0, isModule || null, stackTrace || null, codeOffset || null, scriptLanguage || null, debugSymbols || null, embedderName || null, buildId || null);
+    this.#debuggerModel.parsedScriptSource(
+      scriptId,
+      url,
+      startLine,
+      startColumn,
+      endLine,
+      endColumn,
+      executionContextId,
+      hash,
+      executionContextAuxData,
+      sourceMapURL,
+      Boolean(hasSourceURL),
+      false,
+      length || 0,
+      isModule || null,
+      stackTrace || null,
+      codeOffset || null,
+      scriptLanguage || null,
+      debugSymbols || null,
+      embedderName || null,
+      buildId || null
+    );
   }
-  scriptFailedToParse({ scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, sourceMapURL, hasSourceURL, length, isModule, stackTrace, codeOffset, scriptLanguage, embedderName, buildId }) {
+  scriptFailedToParse({
+    scriptId,
+    url,
+    startLine,
+    startColumn,
+    endLine,
+    endColumn,
+    executionContextId,
+    hash,
+    executionContextAuxData,
+    sourceMapURL,
+    hasSourceURL,
+    length,
+    isModule,
+    stackTrace,
+    codeOffset,
+    scriptLanguage,
+    embedderName,
+    buildId
+  }) {
     if (!this.#debuggerModel.debuggerEnabled()) {
       return;
     }
-    this.#debuggerModel.parsedScriptSource(scriptId, url, startLine, startColumn, endLine, endColumn, executionContextId, hash, executionContextAuxData, sourceMapURL, Boolean(hasSourceURL), true, length || 0, isModule || null, stackTrace || null, codeOffset || null, scriptLanguage || null, null, embedderName || null, buildId || null);
+    this.#debuggerModel.parsedScriptSource(
+      scriptId,
+      url,
+      startLine,
+      startColumn,
+      endLine,
+      endColumn,
+      executionContextId,
+      hash,
+      executionContextAuxData,
+      sourceMapURL,
+      Boolean(hasSourceURL),
+      true,
+      length || 0,
+      isModule || null,
+      stackTrace || null,
+      codeOffset || null,
+      scriptLanguage || null,
+      null,
+      embedderName || null,
+      buildId || null
+    );
   }
   breakpointResolved({ breakpointId, location }) {
     if (!this.#debuggerModel.debuggerEnabled()) {
@@ -28661,7 +32065,7 @@ var Location = class _Location {
     }
     void this.debuggerModel.agent.invoke_continueToLocation({
       location: this.payload(),
-      targetCallFrames: "current"
+      targetCallFrames: Debugger.ContinueToLocationRequestTargetCallFrames.Current
     });
   }
   paused(pausedCallback, debuggerPausedDetails) {
@@ -28715,7 +32119,7 @@ var CallFrame = class _CallFrame {
     for (let i = 0; i < payload.scopeChain.length; ++i) {
       const scope = new Scope(this, i);
       this.#scopeChain.push(scope);
-      if (scope.type() === "local") {
+      if (scope.type() === Debugger.ScopeType.Local) {
         this.#localScope = scope;
       }
     }
@@ -28758,7 +32162,9 @@ var CallFrame = class _CallFrame {
     if (!this.#returnValue) {
       return null;
     }
-    const evaluateResponse = await this.debuggerModel.agent.invoke_evaluateOnCallFrame({ callFrameId: this.id, expression, silent: true, objectGroup: "backtrace" });
+    const evaluateResponse = await this.debuggerModel.agent.invoke_evaluateOnCallFrame(
+      { callFrameId: this.id, expression, silent: true, objectGroup: "backtrace" }
+    );
     if (evaluateResponse.getError() || evaluateResponse.exceptionDetails) {
       return null;
     }
@@ -28804,11 +32210,9 @@ var CallFrame = class _CallFrame {
   }
   async restart() {
     console.assert(this.canBeRestarted, "This frame can not be restarted.");
-    await this.debuggerModel.agent.invoke_restartFrame({
-      callFrameId: this.id,
-      mode: "StepInto"
-      /* Protocol.Debugger.RestartFrameRequestMode.StepInto */
-    });
+    await this.debuggerModel.agent.invoke_restartFrame(
+      { callFrameId: this.id, mode: Debugger.RestartFrameRequestMode.StepInto }
+    );
   }
   getPayload() {
     return this.payload;
@@ -28844,25 +32248,25 @@ var Scope = class {
   }
   typeName() {
     switch (this.#type) {
-      case "local":
+      case Debugger.ScopeType.Local:
         return i18nString8(UIStrings8.local);
-      case "closure":
+      case Debugger.ScopeType.Closure:
         return i18nString8(UIStrings8.closure);
-      case "catch":
+      case Debugger.ScopeType.Catch:
         return i18nString8(UIStrings8.catchBlock);
-      case "eval":
+      case Debugger.ScopeType.Eval:
         return i18n17.i18n.lockedString("Eval");
-      case "block":
+      case Debugger.ScopeType.Block:
         return i18nString8(UIStrings8.block);
-      case "script":
+      case Debugger.ScopeType.Script:
         return i18nString8(UIStrings8.script);
-      case "with":
+      case Debugger.ScopeType.With:
         return i18nString8(UIStrings8.withBlock);
-      case "global":
+      case Debugger.ScopeType.Global:
         return i18nString8(UIStrings8.global);
-      case "module":
+      case Debugger.ScopeType.Module:
         return i18nString8(UIStrings8.module);
-      case "wasm-expression-stack":
+      case Debugger.ScopeType.WasmExpressionStack:
         return i18nString8(UIStrings8.expression);
     }
     return "";
@@ -28878,7 +32282,7 @@ var Scope = class {
       return this.#object;
     }
     const runtimeModel = this.#callFrame.debuggerModel.runtimeModel();
-    const declarativeScope = this.#type !== "with" && this.#type !== "global";
+    const declarativeScope = this.#type !== Debugger.ScopeType.With && this.#type !== Debugger.ScopeType.Global;
     if (declarativeScope) {
       this.#object = runtimeModel.createScopeRemoteObject(this.#payload.object, new ScopeRef(this.#ordinal, this.#callFrame.id));
     } else {
@@ -28887,14 +32291,14 @@ var Scope = class {
     return this.#object;
   }
   description() {
-    const declarativeScope = this.#type !== "with" && this.#type !== "global";
+    const declarativeScope = this.#type !== Debugger.ScopeType.With && this.#type !== Debugger.ScopeType.Global;
     return declarativeScope ? "" : this.#payload.object.description || "";
   }
   icon() {
     return void 0;
   }
   extraProperties() {
-    if (this.#ordinal !== 0 || this.#type !== "local" || this.#callFrame.script.isWasm()) {
+    if (this.#ordinal !== 0 || this.#type !== Debugger.ScopeType.Local || this.#callFrame.script.isWasm()) {
       return [];
     }
     const extraProperties = [];
@@ -28951,7 +32355,7 @@ var DebuggerPausedDetails = class {
     this.callFrames = CallFrame.fromPayloadArray(debuggerModel, callFrames, this.exception());
   }
   exception() {
-    if (this.reason !== "exception" && this.reason !== "promiseRejection") {
+    if (this.reason !== Debugger.PausedEventReason.Exception && this.reason !== Debugger.PausedEventReason.PromiseRejection) {
       return null;
     }
     return this.debuggerModel.runtimeModel().createRemoteObject(this.auxData);
@@ -28970,13 +32374,20 @@ var DebuggerPausedDetails = class {
     return asyncStackTrace;
   }
 };
-SDKModel.register(DebuggerModel, { capabilities: 4, autostart: true });
+SDKModel.register(DebuggerModel, { capabilities: 4 /* JS */, autostart: true });
+var BreakpointType = /* @__PURE__ */ ((BreakpointType2) => {
+  BreakpointType2["LOGPOINT"] = "LOGPOINT";
+  BreakpointType2["CONDITIONAL_BREAKPOINT"] = "CONDITIONAL_BREAKPOINT";
+  BreakpointType2["REGULAR_BREAKPOINT"] = "REGULAR_BREAKPOINT";
+  return BreakpointType2;
+})(BreakpointType || {});
 var LOGPOINT_SOURCE_URL = "debugger://logpoint";
 var COND_BREAKPOINT_SOURCE_URL = "debugger://breakpoint";
 
-// gen/front_end/core/sdk/HeapProfilerModel.js
+// ../../front_end/core/sdk/HeapProfilerModel.ts
 var HeapProfilerModel_exports = {};
 __export(HeapProfilerModel_exports, {
+  Events: () => Events18,
   HeapProfilerModel: () => HeapProfilerModel
 });
 var HeapProfilerModel = class extends SDKModel {
@@ -29004,7 +32415,9 @@ var HeapProfilerModel = class extends SDKModel {
   }
   async startSampling(samplingRateInBytes) {
     const defaultSamplingIntervalInBytes = 16384;
-    const response = await this.#heapProfilerAgent.invoke_startSampling({ samplingInterval: samplingRateInBytes || defaultSamplingIntervalInBytes });
+    const response = await this.#heapProfilerAgent.invoke_startSampling(
+      { samplingInterval: samplingRateInBytes || defaultSamplingIntervalInBytes }
+    );
     return Boolean(response.getError());
   }
   async stopSampling() {
@@ -29033,7 +32446,9 @@ var HeapProfilerModel = class extends SDKModel {
     return response.heapSnapshotObjectId;
   }
   async objectForSnapshotObjectId(snapshotObjectId, objectGroupName) {
-    const result = await this.#heapProfilerAgent.invoke_getObjectByHeapObjectId({ objectId: snapshotObjectId, objectGroup: objectGroupName });
+    const result = await this.#heapProfilerAgent.invoke_getObjectByHeapObjectId(
+      { objectId: snapshotObjectId, objectGroup: objectGroupName }
+    );
     if (result.getError()) {
       return null;
     }
@@ -29060,21 +32475,29 @@ var HeapProfilerModel = class extends SDKModel {
     return Boolean(response.getError());
   }
   heapStatsUpdate(samples) {
-    this.dispatchEventToListeners("HeapStatsUpdate", samples);
+    this.dispatchEventToListeners("HeapStatsUpdate" /* HEAP_STATS_UPDATED */, samples);
   }
   lastSeenObjectId(lastSeenObjectId, timestamp) {
-    this.dispatchEventToListeners("LastSeenObjectId", { lastSeenObjectId, timestamp });
+    this.dispatchEventToListeners("LastSeenObjectId" /* LAST_SEEN_OBJECT_ID */, { lastSeenObjectId, timestamp });
   }
   addHeapSnapshotChunk(chunk) {
-    this.dispatchEventToListeners("AddHeapSnapshotChunk", chunk);
+    this.dispatchEventToListeners("AddHeapSnapshotChunk" /* ADD_HEAP_SNAPSHOT_CHUNK */, chunk);
   }
   reportHeapSnapshotProgress(done, total, finished) {
-    this.dispatchEventToListeners("ReportHeapSnapshotProgress", { done, total, finished });
+    this.dispatchEventToListeners("ReportHeapSnapshotProgress" /* REPORT_HEAP_SNAPSHOT_PROGRESS */, { done, total, finished });
   }
   resetProfiles() {
-    this.dispatchEventToListeners("ResetProfiles", this);
+    this.dispatchEventToListeners("ResetProfiles" /* RESET_PROFILES */, this);
   }
 };
+var Events18 = /* @__PURE__ */ ((Events35) => {
+  Events35["HEAP_STATS_UPDATED"] = "HeapStatsUpdate";
+  Events35["LAST_SEEN_OBJECT_ID"] = "LastSeenObjectId";
+  Events35["ADD_HEAP_SNAPSHOT_CHUNK"] = "AddHeapSnapshotChunk";
+  Events35["REPORT_HEAP_SNAPSHOT_PROGRESS"] = "ReportHeapSnapshotProgress";
+  Events35["RESET_PROFILES"] = "ResetProfiles";
+  return Events35;
+})(Events18 || {});
 var HeapProfilerDispatcher = class {
   #heapProfilerModel;
   constructor(model) {
@@ -29096,9 +32519,9 @@ var HeapProfilerDispatcher = class {
     this.#heapProfilerModel.resetProfiles();
   }
 };
-SDKModel.register(HeapProfilerModel, { capabilities: 4, autostart: false });
+SDKModel.register(HeapProfilerModel, { capabilities: 4 /* JS */, autostart: false });
 
-// gen/front_end/core/sdk/RuntimeModel.js
+// ../../front_end/core/sdk/RuntimeModel.ts
 var RuntimeModel = class extends SDKModel {
   agent;
   #executionContextById = /* @__PURE__ */ new Map();
@@ -29116,7 +32539,9 @@ var RuntimeModel = class extends SDKModel {
   }
   static isSideEffectFailure(response) {
     const exceptionDetails = "exceptionDetails" in response && response.exceptionDetails;
-    return Boolean(exceptionDetails && exceptionDetails.exception?.description?.startsWith("EvalError: Possible side-effect in debug-evaluate"));
+    return Boolean(
+      exceptionDetails && exceptionDetails.exception?.description?.startsWith("EvalError: Possible side-effect in debug-evaluate")
+    );
   }
   debuggerModel() {
     return this.target().model(DebuggerModel);
@@ -29149,9 +32574,17 @@ var RuntimeModel = class extends SDKModel {
   }
   executionContextCreated(context) {
     const data = context.auxData || { isDefault: true };
-    const executionContext = new ExecutionContext(this, context.id, context.uniqueId, context.name, context.origin, data["isDefault"], data["frameId"]);
+    const executionContext = new ExecutionContext(
+      this,
+      context.id,
+      context.uniqueId,
+      context.name,
+      context.origin,
+      data["isDefault"],
+      data["frameId"]
+    );
     this.#executionContextById.set(executionContext.id, executionContext);
-    this.dispatchEventToListeners(Events3.ExecutionContextCreated, executionContext);
+    this.dispatchEventToListeners("ExecutionContextCreated" /* ExecutionContextCreated */, executionContext);
   }
   executionContextDestroyed(executionContextId) {
     const executionContext = this.#executionContextById.get(executionContextId);
@@ -29160,25 +32593,46 @@ var RuntimeModel = class extends SDKModel {
     }
     this.debuggerModel().executionContextDestroyed(executionContext);
     this.#executionContextById.delete(executionContextId);
-    this.dispatchEventToListeners(Events3.ExecutionContextDestroyed, executionContext);
+    this.dispatchEventToListeners("ExecutionContextDestroyed" /* ExecutionContextDestroyed */, executionContext);
   }
   fireExecutionContextOrderChanged() {
-    this.dispatchEventToListeners(Events3.ExecutionContextOrderChanged, this);
+    this.dispatchEventToListeners("ExecutionContextOrderChanged" /* ExecutionContextOrderChanged */, this);
   }
   executionContextsCleared() {
     this.debuggerModel().globalObjectCleared();
     const contexts = this.executionContexts();
     this.#executionContextById.clear();
     for (let i = 0; i < contexts.length; ++i) {
-      this.dispatchEventToListeners(Events3.ExecutionContextDestroyed, contexts[i]);
+      this.dispatchEventToListeners("ExecutionContextDestroyed" /* ExecutionContextDestroyed */, contexts[i]);
     }
   }
   createRemoteObject(payload) {
     console.assert(typeof payload === "object", "Remote object payload should only be an object");
-    return new RemoteObjectImpl(this, payload.objectId, payload.type, payload.subtype, payload.value, payload.unserializableValue, payload.description, payload.preview, payload.customPreview, payload.className);
+    return new RemoteObjectImpl(
+      this,
+      payload.objectId,
+      payload.type,
+      payload.subtype,
+      payload.value,
+      payload.unserializableValue,
+      payload.description,
+      payload.preview,
+      payload.customPreview,
+      payload.className
+    );
   }
   createScopeRemoteObject(payload, scopeRef) {
-    return new ScopeRemoteObject(this, payload.objectId, scopeRef, payload.type, payload.subtype, payload.value, payload.unserializableValue, payload.description, payload.preview);
+    return new ScopeRemoteObject(
+      this,
+      payload.objectId,
+      scopeRef,
+      payload.type,
+      payload.subtype,
+      payload.value,
+      payload.unserializableValue,
+      payload.description,
+      payload.preview
+    );
   }
   createRemoteObjectFromPrimitiveValue(value) {
     const type = typeof value;
@@ -29308,11 +32762,13 @@ var RuntimeModel = class extends SDKModel {
     return await this.agent.invoke_removeBinding(request);
   }
   bindingCalled(event) {
-    this.dispatchEventToListeners(Events3.BindingCalled, event);
+    this.dispatchEventToListeners("BindingCalled" /* BindingCalled */, event);
   }
   copyRequested(object) {
     if (!object.objectId) {
-      Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(object.unserializableValue() || object.value);
+      Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(
+        object.unserializableValue() || object.value
+      );
       return;
     }
     const indent = this.target().targetManager().context.get(Common25.Settings.Settings).moduleSetting("text-editor-indent").get();
@@ -29321,7 +32777,9 @@ var RuntimeModel = class extends SDKModel {
         subtype: object.subtype,
         indent
       }
-    }]).then(Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host6.InspectorFrontendHost.InspectorFrontendHostInstance));
+    }]).then(Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
+      Host6.InspectorFrontendHost.InspectorFrontendHostInstance
+    ));
     function toStringForClipboard(data) {
       const subtype = data.subtype;
       const indent2 = data.indent;
@@ -29345,7 +32803,7 @@ var RuntimeModel = class extends SDKModel {
       this.target().targetManager().getConsole().error(result.error);
       return;
     }
-    this.dispatchEventToListeners(Events3.QueryObjectRequested, { objects: result.objects, executionContextId });
+    this.dispatchEventToListeners("QueryObjectRequested" /* QueryObjectRequested */, { objects: result.objects, executionContextId });
   }
   static simpleTextFromException(exceptionDetails) {
     let text = exceptionDetails.text;
@@ -29360,10 +32818,10 @@ var RuntimeModel = class extends SDKModel {
   }
   exceptionThrown(timestamp, exceptionDetails) {
     const exceptionWithTimestamp = { timestamp, details: exceptionDetails };
-    this.dispatchEventToListeners(Events3.ExceptionThrown, exceptionWithTimestamp);
+    this.dispatchEventToListeners("ExceptionThrown" /* ExceptionThrown */, exceptionWithTimestamp);
   }
   exceptionRevoked(exceptionId) {
-    this.dispatchEventToListeners(Events3.ExceptionRevoked, exceptionId);
+    this.dispatchEventToListeners("ExceptionRevoked" /* ExceptionRevoked */, exceptionId);
   }
   consoleAPICalled(type, args, executionContextId, timestamp, stackTrace, context) {
     const consoleAPICall = {
@@ -29374,7 +32832,7 @@ var RuntimeModel = class extends SDKModel {
       stackTrace,
       context
     };
-    this.dispatchEventToListeners(Events3.ConsoleAPICalled, consoleAPICall);
+    this.dispatchEventToListeners("ConsoleAPICalled" /* ConsoleAPICalled */, consoleAPICall);
   }
   executionContextIdForScriptId(scriptId) {
     const script = this.debuggerModel().scriptForId(scriptId);
@@ -29401,18 +32859,18 @@ var RuntimeModel = class extends SDKModel {
     return response.exceptionDetails;
   }
 };
-var Events3;
-(function(Events12) {
-  Events12["BindingCalled"] = "BindingCalled";
-  Events12["ExecutionContextCreated"] = "ExecutionContextCreated";
-  Events12["ExecutionContextDestroyed"] = "ExecutionContextDestroyed";
-  Events12["ExecutionContextChanged"] = "ExecutionContextChanged";
-  Events12["ExecutionContextOrderChanged"] = "ExecutionContextOrderChanged";
-  Events12["ExceptionThrown"] = "ExceptionThrown";
-  Events12["ExceptionRevoked"] = "ExceptionRevoked";
-  Events12["ConsoleAPICalled"] = "ConsoleAPICalled";
-  Events12["QueryObjectRequested"] = "QueryObjectRequested";
-})(Events3 || (Events3 = {}));
+var Events5 = /* @__PURE__ */ ((Events35) => {
+  Events35["BindingCalled"] = "BindingCalled";
+  Events35["ExecutionContextCreated"] = "ExecutionContextCreated";
+  Events35["ExecutionContextDestroyed"] = "ExecutionContextDestroyed";
+  Events35["ExecutionContextChanged"] = "ExecutionContextChanged";
+  Events35["ExecutionContextOrderChanged"] = "ExecutionContextOrderChanged";
+  Events35["ExceptionThrown"] = "ExceptionThrown";
+  Events35["ExceptionRevoked"] = "ExceptionRevoked";
+  Events35["ConsoleAPICalled"] = "ConsoleAPICalled";
+  Events35["QueryObjectRequested"] = "QueryObjectRequested";
+  return Events35;
+})(Events5 || {});
 var RuntimeDispatcher = class {
   #runtimeModel;
   constructor(runtimeModel) {
@@ -29470,16 +32928,16 @@ var ExecutionContext = class {
   }
   static comparator(a, b) {
     function targetWeight(target) {
-      if (target.parentTarget()?.type() !== Type.FRAME) {
+      if (target.parentTarget()?.type() !== "frame" /* FRAME */) {
         return 5;
       }
-      if (target.type() === Type.FRAME) {
+      if (target.type() === "frame" /* FRAME */) {
         return 4;
       }
-      if (target.type() === Type.ServiceWorker) {
+      if (target.type() === "service-worker" /* ServiceWorker */) {
         return 3;
       }
-      if (target.type() === Type.Worker || target.type() === Type.SHARED_WORKER) {
+      if (target.type() === "worker" /* Worker */ || target.type() === "shared-worker" /* SHARED_WORKER */) {
         return 2;
       }
       return 1;
@@ -29598,7 +33056,7 @@ var ExecutionContext = class {
   }
   setLabel(label) {
     this.#setLabel(label);
-    this.runtimeModel.dispatchEventToListeners(Events3.ExecutionContextChanged, this);
+    this.runtimeModel.dispatchEventToListeners("ExecutionContextChanged" /* ExecutionContextChanged */, this);
   }
   #setLabel(label) {
     if (label) {
@@ -29613,10 +33071,9 @@ var ExecutionContext = class {
     this.#label = parsedUrl ? parsedUrl.lastPathComponentWithFragment() : "";
   }
 };
-SDKModel.register(RuntimeModel, { capabilities: 4, autostart: true });
+SDKModel.register(RuntimeModel, { capabilities: 4 /* JS */, autostart: true });
 
-// gen/front_end/core/sdk/NetworkManager.js
-var _a2;
+// ../../front_end/core/sdk/NetworkManager.ts
 var UIStrings9 = {
   /**
    * @description Explanation why no content is shown for WebSocket connection.
@@ -29726,46 +33183,18 @@ var PARTIAL_FIDELITY_RESEND_TYPES = /* @__PURE__ */ new Set([
   Common26.ResourceType.resourceTypes.Ping
 ]);
 var CONNECTION_TYPES = /* @__PURE__ */ new Map([
-  [
-    "2g",
-    "cellular2g"
-    /* Protocol.Network.ConnectionType.Cellular2g */
-  ],
-  [
-    "3g",
-    "cellular3g"
-    /* Protocol.Network.ConnectionType.Cellular3g */
-  ],
-  [
-    "4g",
-    "cellular4g"
-    /* Protocol.Network.ConnectionType.Cellular4g */
-  ],
-  [
-    "bluetooth",
-    "bluetooth"
-    /* Protocol.Network.ConnectionType.Bluetooth */
-  ],
-  [
-    "wifi",
-    "wifi"
-    /* Protocol.Network.ConnectionType.Wifi */
-  ],
-  [
-    "wimax",
-    "wimax"
-    /* Protocol.Network.ConnectionType.Wimax */
-  ]
+  ["2g", Network.ConnectionType.Cellular2g],
+  ["3g", Network.ConnectionType.Cellular3g],
+  ["4g", Network.ConnectionType.Cellular4g],
+  ["bluetooth", Network.ConnectionType.Bluetooth],
+  ["wifi", Network.ConnectionType.Wifi],
+  ["wimax", Network.ConnectionType.Wimax]
 ]);
 function customUserNetworkConditionsSetting(settings) {
   return settings.moduleSetting("custom-network-conditions");
 }
 function activeNetworkThrottlingKeySetting(settings) {
-  return settings.createSetting(
-    "active-network-condition-key",
-    "NO_THROTTLING"
-    /* PredefinedThrottlingConditionKey.NO_THROTTLING */
-  );
+  return settings.createSetting("active-network-condition-key", "NO_THROTTLING" /* NO_THROTTLING */);
 }
 var NetworkManager = class _NetworkManager extends SDKModel {
   dispatcher;
@@ -29851,7 +33280,9 @@ var NetworkManager = class _NetworkManager extends SDKModel {
       return;
     }
     if (usesFallbackContext) {
-      runtimeModel.target().targetManager().getConsole().warn("Resend: original execution context unavailable, using top-level context.");
+      runtimeModel.target().targetManager().getConsole().warn(
+        "Resend: original execution context unavailable, using top-level context."
+      );
     }
     const method = request.requestMethod;
     const url = request.url();
@@ -29906,7 +33337,7 @@ var NetworkManager = class _NetworkManager extends SDKModel {
       if (Boolean(request.eventSourceMessages()?.length)) {
         return { error: i18nString9(UIStrings9.noContentForSSE) };
       }
-      await request.once(Events10.FINISHED_LOADING);
+      await request.once("FinishedLoading" /* FINISHED_LOADING */);
     }
     if (request.isRedirect()) {
       return { error: i18nString9(UIStrings9.noContentForRedirect) };
@@ -29927,7 +33358,12 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     if (error) {
       return { error };
     }
-    return new TextUtils21.ContentData.ContentData(response.body, response.base64Encoded, request.mimeType, request.charset() ?? void 0);
+    return new TextUtils21.ContentData.ContentData(
+      response.body,
+      response.base64Encoded,
+      request.mimeType,
+      request.charset() ?? void 0
+    );
   }
   /**
    * Returns the already received bytes for an in-flight request. After calling this method
@@ -30023,7 +33459,12 @@ var NetworkManager = class _NetworkManager extends SDKModel {
       const requestContentType = request.requestContentType() ?? "application/octet-stream";
       const { charset } = Platform16.MimeType.parseContentType(requestContentType);
       if (base64Encoded && postData) {
-        return await TextUtils21.ContentData.ContentData.fromCompressedBase64(postData, requestContentType, charset ?? void 0, request.requestContentEncoding());
+        return await TextUtils21.ContentData.ContentData.fromCompressedBase64(
+          postData,
+          requestContentType,
+          charset ?? void 0,
+          request.requestContentEncoding()
+        );
       }
       return new TextUtils21.ContentData.ContentData(postData, false, requestContentType, charset ?? void 0);
     } catch (e) {
@@ -30049,7 +33490,7 @@ var NetworkManager = class _NetworkManager extends SDKModel {
   }
   static connectionType(conditions) {
     if (!conditions.download && !conditions.upload) {
-      return "none";
+      return Network.ConnectionType.None;
     }
     try {
       const title = typeof conditions.title === "function" ? conditions.title().toLowerCase() : conditions.title.toLowerCase();
@@ -30059,9 +33500,9 @@ var NetworkManager = class _NetworkManager extends SDKModel {
         }
       }
     } catch {
-      return "none";
+      return Network.ConnectionType.None;
     }
-    return "other";
+    return Network.ConnectionType.Other;
   }
   static lowercaseHeaders(headers) {
     const newHeaders = {};
@@ -30129,29 +33570,29 @@ var NetworkManager = class _NetworkManager extends SDKModel {
     this.dispatcher.clearRequests();
   }
 };
-var Events9;
-(function(Events12) {
-  Events12["RequestStarted"] = "RequestStarted";
-  Events12["RequestUpdated"] = "RequestUpdated";
-  Events12["RequestFinished"] = "RequestFinished";
-  Events12["RequestUpdateDropped"] = "RequestUpdateDropped";
-  Events12["ResponseReceived"] = "ResponseReceived";
-  Events12["MessageGenerated"] = "MessageGenerated";
-  Events12["RequestRedirected"] = "RequestRedirected";
-  Events12["LoadingFinished"] = "LoadingFinished";
-  Events12["ReportingApiReportAdded"] = "ReportingApiReportAdded";
-  Events12["ReportingApiReportUpdated"] = "ReportingApiReportUpdated";
-  Events12["ReportingApiEndpointsChangedForOrigin"] = "ReportingApiEndpointsChangedForOrigin";
-  Events12["DeviceBoundSessionsAdded"] = "DeviceBoundSessionsAdded";
-  Events12["DeviceBoundSessionEventOccurred"] = "DeviceBoundSessionEventOccurred";
-})(Events9 || (Events9 = {}));
+var Events17 = /* @__PURE__ */ ((Events35) => {
+  Events35["RequestStarted"] = "RequestStarted";
+  Events35["RequestUpdated"] = "RequestUpdated";
+  Events35["RequestFinished"] = "RequestFinished";
+  Events35["RequestUpdateDropped"] = "RequestUpdateDropped";
+  Events35["ResponseReceived"] = "ResponseReceived";
+  Events35["MessageGenerated"] = "MessageGenerated";
+  Events35["RequestRedirected"] = "RequestRedirected";
+  Events35["LoadingFinished"] = "LoadingFinished";
+  Events35["ReportingApiReportAdded"] = "ReportingApiReportAdded";
+  Events35["ReportingApiReportUpdated"] = "ReportingApiReportUpdated";
+  Events35["ReportingApiEndpointsChangedForOrigin"] = "ReportingApiEndpointsChangedForOrigin";
+  Events35["DeviceBoundSessionsAdded"] = "DeviceBoundSessionsAdded";
+  Events35["DeviceBoundSessionEventOccurred"] = "DeviceBoundSessionEventOccurred";
+  return Events35;
+})(Events17 || {});
 var BlockingConditions = {
-  key: "BLOCKING",
+  key: "BLOCKING" /* BLOCKING */,
   block: true,
   title: i18nLazyString(UIStrings9.block)
 };
 var NoThrottlingConditions = {
-  key: "NO_THROTTLING",
+  key: "NO_THROTTLING" /* NO_THROTTLING */,
   title: i18nLazyString(UIStrings9.noThrottling),
   i18nTitleKey: UIStrings9.noThrottling,
   download: -1,
@@ -30159,7 +33600,7 @@ var NoThrottlingConditions = {
   latency: 0
 };
 var OfflineConditions = {
-  key: "OFFLINE",
+  key: "OFFLINE" /* OFFLINE */,
   title: i18nLazyString(UIStrings9.offline),
   i18nTitleKey: UIStrings9.offline,
   download: 0,
@@ -30168,7 +33609,7 @@ var OfflineConditions = {
 };
 var slow3GTargetLatency = 400;
 var Slow3GConditions = {
-  key: "SPEED_3G",
+  key: "SPEED_3G" /* SPEED_3G */,
   title: i18nLazyString(UIStrings9.slowG),
   i18nTitleKey: UIStrings9.slowG,
   // ~500Kbps down
@@ -30181,7 +33622,7 @@ var Slow3GConditions = {
 };
 var slow4GTargetLatency = 150;
 var Slow4GConditions = {
-  key: "SPEED_SLOW_4G",
+  key: "SPEED_SLOW_4G" /* SPEED_SLOW_4G */,
   title: i18nLazyString(UIStrings9.fastG),
   i18nTitleKey: UIStrings9.fastG,
   // ~1.6 Mbps down
@@ -30194,7 +33635,7 @@ var Slow4GConditions = {
 };
 var fast4GTargetLatency = 60;
 var Fast4GConditions = {
-  key: "SPEED_FAST_4G",
+  key: "SPEED_FAST_4G" /* SPEED_FAST_4G */,
   title: i18nLazyString(UIStrings9.fast4G),
   i18nTitleKey: UIStrings9.fast4G,
   // 9 Mbps down
@@ -30221,7 +33662,18 @@ var FetchDispatcher = class {
     if (networkRequest?.originalResponseHeaders.length === 0 && responseHeaders) {
       networkRequest.originalResponseHeaders = responseHeaders;
     }
-    void this.#multitargetNetworkManager.requestIntercepted(new InterceptedRequest(this.#multitargetNetworkManager, this.#fetchAgent, request, resourceType, requestId, networkRequest, responseStatusCode, responseHeaders));
+    void this.#multitargetNetworkManager.requestIntercepted(
+      new InterceptedRequest(
+        this.#multitargetNetworkManager,
+        this.#fetchAgent,
+        request,
+        resourceType,
+        requestId,
+        networkRequest,
+        responseStatusCode,
+        responseHeaders
+      )
+    );
   }
   authRequired({}) {
   }
@@ -30245,7 +33697,10 @@ var NetworkDispatcher = class {
   constructor(manager) {
     this.#manager = manager;
     this.#multitargetNetworkManager = this.#manager.target().targetManager().getNetworkManager();
-    this.#multitargetNetworkManager.addEventListener("RequestIntercepted", this.#markAsIntercepted.bind(this));
+    this.#multitargetNetworkManager.addEventListener(
+      MultitargetNetworkManager.Events.REQUEST_INTERCEPTED,
+      this.#markAsIntercepted.bind(this)
+    );
   }
   #markAsIntercepted(event) {
     const request = this.requestForId(event.data);
@@ -30269,7 +33724,7 @@ var NetworkDispatcher = class {
     const isCompressed = Boolean(networkRequest.requestContentEncoding());
     networkRequest.setRequestFormData(Boolean(request.hasPostData), isCompressed ? null : request.postData || null);
     networkRequest.setInitialPriority(request.initialPriority);
-    networkRequest.mixedContentType = request.mixedContentType || "none";
+    networkRequest.mixedContentType = request.mixedContentType || Security.MixedContentType.None;
     networkRequest.setReferrerPolicy(request.referrerPolicy);
     networkRequest.setIsSameSite(request.isSameSite || false);
     networkRequest.setIsAdRelated(request.isAdRelated || false);
@@ -30373,9 +33828,26 @@ var NetworkDispatcher = class {
     this.updateNetworkRequestWithResponse(networkRequest, info.outerResponse);
     this.updateNetworkRequest(networkRequest);
     this.getExtraInfoBuilder(requestId).addHasExtraInfo(info.hasExtraInfo);
-    this.#manager.dispatchEventToListeners(Events9.ResponseReceived, { request: networkRequest, response: info.outerResponse });
+    this.#manager.dispatchEventToListeners(
+      "ResponseReceived" /* ResponseReceived */,
+      { request: networkRequest, response: info.outerResponse }
+    );
   }
-  requestWillBeSent({ requestId, loaderId, documentURL, request, timestamp, wallTime, initiator, redirectHasExtraInfo, redirectResponse, type, frameId, hasUserGesture, renderBlockingBehavior }) {
+  requestWillBeSent({
+    requestId,
+    loaderId,
+    documentURL,
+    request,
+    timestamp,
+    wallTime,
+    initiator,
+    redirectHasExtraInfo,
+    redirectResponse,
+    type,
+    frameId,
+    hasUserGesture,
+    renderBlockingBehavior
+  }) {
     let networkRequest = this.#requestsById.get(requestId);
     if (networkRequest) {
       if (!redirectResponse) {
@@ -30386,16 +33858,25 @@ var NetworkDispatcher = class {
           requestId,
           loaderId,
           timestamp,
-          type: type || "Other",
+          type: type || Network.ResourceType.Other,
           response: redirectResponse,
           hasExtraInfo: redirectHasExtraInfo,
           frameId
         });
       }
       networkRequest = this.appendRedirect(requestId, timestamp, request.url);
-      this.#manager.dispatchEventToListeners(Events9.RequestRedirected, networkRequest);
+      this.#manager.dispatchEventToListeners("RequestRedirected" /* RequestRedirected */, networkRequest);
     } else {
-      networkRequest = NetworkRequest.create(requestId, request.url, documentURL, frameId ?? null, loaderId, initiator, hasUserGesture, this.#manager.target().targetManager().getConsole());
+      networkRequest = NetworkRequest.create(
+        requestId,
+        request.url,
+        documentURL,
+        frameId ?? null,
+        loaderId,
+        initiator,
+        hasUserGesture,
+        this.#manager.target().targetManager().getConsole()
+      );
       if (renderBlockingBehavior) {
         networkRequest.setRenderBlockingBehavior(renderBlockingBehavior);
       }
@@ -30404,7 +33885,9 @@ var NetworkDispatcher = class {
     networkRequest.hasNetworkData = true;
     this.updateNetworkRequestWithRequest(networkRequest, request);
     networkRequest.setIssueTime(timestamp, wallTime);
-    networkRequest.setResourceType(type ? Common26.ResourceType.resourceTypes[type] : Common26.ResourceType.resourceTypes.Other);
+    networkRequest.setResourceType(
+      type ? Common26.ResourceType.resourceTypes[type] : Common26.ResourceType.resourceTypes.Other
+    );
     if (request.trustTokenParams) {
       networkRequest.setTrustTokenParams(request.trustTokenParams);
     }
@@ -30436,7 +33919,7 @@ var NetworkDispatcher = class {
         mimeType: response.mimeType,
         lastModified: lastModifiedHeader ? new Date(lastModifiedHeader) : null
       };
-      this.#manager.dispatchEventToListeners(Events9.RequestUpdateDropped, eventData);
+      this.#manager.dispatchEventToListeners("RequestUpdateDropped" /* RequestUpdateDropped */, eventData);
       return;
     }
     networkRequest.responseReceivedTime = timestamp;
@@ -30444,7 +33927,7 @@ var NetworkDispatcher = class {
     this.updateNetworkRequestWithResponse(networkRequest, response);
     this.updateNetworkRequest(networkRequest);
     this.getExtraInfoBuilder(requestId).addHasExtraInfo(hasExtraInfo);
-    this.#manager.dispatchEventToListeners(Events9.ResponseReceived, { request: networkRequest, response });
+    this.#manager.dispatchEventToListeners("ResponseReceived" /* ResponseReceived */, { request: networkRequest, response });
   }
   dataReceived(event) {
     let networkRequest = this.#requestsById.get(event.requestId);
@@ -30467,9 +33950,17 @@ var NetworkDispatcher = class {
     }
     this.getExtraInfoBuilder(requestId).finished();
     this.finishNetworkRequest(networkRequest, finishTime, encodedDataLength);
-    this.#manager.dispatchEventToListeners(Events9.LoadingFinished, networkRequest);
+    this.#manager.dispatchEventToListeners("LoadingFinished" /* LoadingFinished */, networkRequest);
   }
-  loadingFailed({ requestId, timestamp: time, type: resourceType, errorText: localizedDescription, canceled, blockedReason, corsErrorStatus }) {
+  loadingFailed({
+    requestId,
+    timestamp: time,
+    type: resourceType,
+    errorText: localizedDescription,
+    canceled,
+    blockedReason,
+    corsErrorStatus
+  }) {
     const networkRequest = this.#requestsById.get(requestId);
     if (!networkRequest) {
       return;
@@ -30479,9 +33970,9 @@ var NetworkDispatcher = class {
     networkRequest.canceled = Boolean(canceled);
     if (blockedReason) {
       networkRequest.setBlockedReason(blockedReason);
-      if (blockedReason === "inspector") {
+      if (blockedReason === Network.BlockedReason.Inspector) {
         const message = i18nString9(UIStrings9.requestWasBlockedByDevtoolsS, { PH1: networkRequest.url() });
-        this.#manager.dispatchEventToListeners(Events9.MessageGenerated, { message, requestId, warning: true });
+        this.#manager.dispatchEventToListeners("MessageGenerated" /* MessageGenerated */, { message, requestId, warning: true });
       }
     }
     if (corsErrorStatus) {
@@ -30492,7 +33983,12 @@ var NetworkDispatcher = class {
     this.finishNetworkRequest(networkRequest, time, -1);
   }
   webSocketCreated({ requestId, url: requestURL, initiator }) {
-    const networkRequest = NetworkRequest.createForSocket(requestId, requestURL, initiator, this.#manager.target().targetManager().getConsole());
+    const networkRequest = NetworkRequest.createForSocket(
+      requestId,
+      requestURL,
+      initiator,
+      this.#manager.target().targetManager().getConsole()
+    );
     requestToManagerMap.set(networkRequest, this.#manager);
     networkRequest.setResourceType(Common26.ResourceType.resourceTypes.WebSocket);
     this.startNetworkRequest(networkRequest, null);
@@ -30567,7 +34063,16 @@ var NetworkDispatcher = class {
     }
     networkRequest.addEventSourceMessage(time, eventName, eventId, data);
   }
-  requestWillBeSentExtraInfo({ requestId, associatedCookies, headers, deviceBoundSessionUsages, clientSecurityState, connectTiming, siteHasCookieInOtherPartition, appliedNetworkConditionsId }) {
+  requestWillBeSentExtraInfo({
+    requestId,
+    associatedCookies,
+    headers,
+    deviceBoundSessionUsages,
+    clientSecurityState,
+    connectTiming,
+    siteHasCookieInOtherPartition,
+    appliedNetworkConditionsId
+  }) {
     const blockedRequestCookies = [];
     const includedRequestCookies = [];
     for (const { blockedReasons, exemptionReason, cookie } of associatedCookies) {
@@ -30594,10 +34099,23 @@ var NetworkDispatcher = class {
       this.updateNetworkRequest(networkRequest);
     }
   }
-  responseReceivedEarlyHints({ requestId, headers }) {
+  responseReceivedEarlyHints({
+    requestId,
+    headers
+  }) {
     this.getExtraInfoBuilder(requestId).setEarlyHintsHeaders(this.headersMapToHeadersArray(headers));
   }
-  responseReceivedExtraInfo({ requestId, blockedCookies, headers, headersText, resourceIPAddressSpace, statusCode, cookiePartitionKey, cookiePartitionKeyOpaque, exemptedCookies }) {
+  responseReceivedExtraInfo({
+    requestId,
+    blockedCookies,
+    headers,
+    headersText,
+    resourceIPAddressSpace,
+    statusCode,
+    cookiePartitionKey,
+    cookiePartitionKeyOpaque,
+    exemptedCookies
+  }) {
     const extraResponseInfo = {
       blockedResponseCookies: blockedCookies.map((blockedCookie) => ({
         blockedReasons: blockedCookie.blockedReasons,
@@ -30639,7 +34157,16 @@ var NetworkDispatcher = class {
     }
     originalNetworkRequest.markAsRedirect(redirectCount);
     this.finishNetworkRequest(originalNetworkRequest, time, -1);
-    const newNetworkRequest = NetworkRequest.create(requestId, redirectURL, originalNetworkRequest.documentURL, originalNetworkRequest.frameId, originalNetworkRequest.loaderId, originalNetworkRequest.initiator(), originalNetworkRequest.hasUserGesture() ?? void 0, this.#manager.target().targetManager().getConsole());
+    const newNetworkRequest = NetworkRequest.create(
+      requestId,
+      redirectURL,
+      originalNetworkRequest.documentURL,
+      originalNetworkRequest.frameId,
+      originalNetworkRequest.loaderId,
+      originalNetworkRequest.initiator(),
+      originalNetworkRequest.hasUserGesture() ?? void 0,
+      this.#manager.target().targetManager().getConsole()
+    );
     requestToManagerMap.set(newNetworkRequest, this.#manager);
     newNetworkRequest.setRedirectSource(originalNetworkRequest);
     originalNetworkRequest.setRedirectDestination(newNetworkRequest);
@@ -30680,10 +34207,10 @@ var NetworkDispatcher = class {
     if (networkRequest.loaderId === networkRequest.requestId() || networkRequest.loaderId === "") {
       this.#multitargetNetworkManager.inflightMainResourceRequests.set(networkRequest.requestId(), networkRequest);
     }
-    this.#manager.dispatchEventToListeners(Events9.RequestStarted, { request: networkRequest, originalRequest });
+    this.#manager.dispatchEventToListeners("RequestStarted" /* RequestStarted */, { request: networkRequest, originalRequest });
   }
   updateNetworkRequest(networkRequest) {
-    this.#manager.dispatchEventToListeners(Events9.RequestUpdated, networkRequest);
+    this.#manager.dispatchEventToListeners("RequestUpdated" /* RequestUpdated */, networkRequest);
   }
   finishNetworkRequest(networkRequest, finishTime, encodedDataLength) {
     networkRequest.endTime = finishTime;
@@ -30698,18 +34225,27 @@ var NetworkDispatcher = class {
         networkRequest.setTransferSize(encodedDataLength);
       }
     }
-    this.#manager.dispatchEventToListeners(Events9.RequestFinished, networkRequest);
+    this.#manager.dispatchEventToListeners("RequestFinished" /* RequestFinished */, networkRequest);
     this.#multitargetNetworkManager.inflightMainResourceRequests.delete(networkRequest.requestId());
     const settings = this.#manager.target().targetManager().settings;
     if (settings.resolve(monitoringXHREnabledSettingDescriptor).get() && networkRequest.resourceType().category() === Common26.ResourceType.resourceCategories.XHR) {
       let message;
       const failedToLoad = networkRequest.failed || networkRequest.hasErrorStatusCode();
       if (failedToLoad) {
-        message = i18nString9(UIStrings9.sFailedLoadingSS, { PH1: networkRequest.resourceType().title(), PH2: networkRequest.requestMethod, PH3: networkRequest.url() });
+        message = i18nString9(
+          UIStrings9.sFailedLoadingSS,
+          { PH1: networkRequest.resourceType().title(), PH2: networkRequest.requestMethod, PH3: networkRequest.url() }
+        );
       } else {
-        message = i18nString9(UIStrings9.sFinishedLoadingSS, { PH1: networkRequest.resourceType().title(), PH2: networkRequest.requestMethod, PH3: networkRequest.url() });
+        message = i18nString9(
+          UIStrings9.sFinishedLoadingSS,
+          { PH1: networkRequest.resourceType().title(), PH2: networkRequest.requestMethod, PH3: networkRequest.url() }
+        );
       }
-      this.#manager.dispatchEventToListeners(Events9.MessageGenerated, { message, requestId: networkRequest.requestId(), warning: false });
+      this.#manager.dispatchEventToListeners(
+        "MessageGenerated" /* MessageGenerated */,
+        { message, requestId: networkRequest.requestId(), warning: false }
+      );
     }
   }
   clearRequests() {
@@ -30735,7 +34271,12 @@ var NetworkDispatcher = class {
     }
   }
   webTransportCreated({ transportId, url: requestURL, timestamp: time, initiator }) {
-    const networkRequest = NetworkRequest.createForSocket(transportId, requestURL, initiator, this.#manager.target().targetManager().getConsole());
+    const networkRequest = NetworkRequest.createForSocket(
+      transportId,
+      requestURL,
+      initiator,
+      this.#manager.target().targetManager().getConsole()
+    );
     networkRequest.hasNetworkData = true;
     requestToManagerMap.set(networkRequest, this.#manager);
     networkRequest.setResourceType(Common26.ResourceType.resourceTypes.WebTransport);
@@ -30761,14 +34302,19 @@ var NetworkDispatcher = class {
   }
   directTCPSocketCreated(event) {
     const requestURL = this.concatHostPort(event.remoteAddr, event.remotePort);
-    const networkRequest = NetworkRequest.createForSocket(event.identifier, requestURL, event.initiator, this.#manager.target().targetManager().getConsole());
+    const networkRequest = NetworkRequest.createForSocket(
+      event.identifier,
+      requestURL,
+      event.initiator,
+      this.#manager.target().targetManager().getConsole()
+    );
     networkRequest.hasNetworkData = true;
     networkRequest.setRemoteAddress(event.remoteAddr, event.remotePort);
     networkRequest.protocol = i18n19.i18n.lockedString("tcp");
     networkRequest.statusText = i18nString9(UIStrings9.directSocketStatusOpening);
     networkRequest.directSocketInfo = {
-      type: DirectSocketType.TCP,
-      status: DirectSocketStatus.OPENING,
+      type: 1 /* TCP */,
+      status: 1 /* OPENING */,
       createOptions: {
         remoteAddr: event.remoteAddr,
         remotePort: event.remotePort,
@@ -30790,7 +34336,7 @@ var NetworkDispatcher = class {
       return;
     }
     networkRequest.responseReceivedTime = event.timestamp;
-    networkRequest.directSocketInfo.status = DirectSocketStatus.OPEN;
+    networkRequest.directSocketInfo.status = 2 /* OPEN */;
     networkRequest.statusText = i18nString9(UIStrings9.directSocketStatusOpen);
     networkRequest.directSocketInfo.openInfo = {
       remoteAddr: event.remoteAddr,
@@ -30809,7 +34355,7 @@ var NetworkDispatcher = class {
       return;
     }
     networkRequest.failed = true;
-    networkRequest.directSocketInfo.status = DirectSocketStatus.ABORTED;
+    networkRequest.directSocketInfo.status = 4 /* ABORTED */;
     networkRequest.statusText = i18nString9(UIStrings9.directSocketStatusAborted);
     networkRequest.directSocketInfo.errorMessage = event.errorMessage;
     this.finishNetworkRequest(networkRequest, event.timestamp, 0);
@@ -30820,7 +34366,7 @@ var NetworkDispatcher = class {
       return;
     }
     networkRequest.statusText = i18nString9(UIStrings9.directSocketStatusClosed);
-    networkRequest.directSocketInfo.status = DirectSocketStatus.CLOSED;
+    networkRequest.directSocketInfo.status = 3 /* CLOSED */;
     this.finishNetworkRequest(networkRequest, event.timestamp, 0);
   }
   directTCPSocketChunkSent(event) {
@@ -30830,7 +34376,7 @@ var NetworkDispatcher = class {
     }
     networkRequest.addDirectSocketChunk({
       data: event.data,
-      type: DirectSocketChunkType.SEND,
+      type: "send" /* SEND */,
       timestamp: event.timestamp
     });
     networkRequest.responseReceivedTime = event.timestamp;
@@ -30843,7 +34389,7 @@ var NetworkDispatcher = class {
     }
     networkRequest.addDirectSocketChunk({
       data: event.data,
-      type: DirectSocketChunkType.RECEIVE,
+      type: "receive" /* RECEIVE */,
       timestamp: event.timestamp
     });
     networkRequest.responseReceivedTime = event.timestamp;
@@ -30854,14 +34400,19 @@ var NetworkDispatcher = class {
     let type;
     if (event.options.remoteAddr && event.options.remotePort) {
       requestURL = this.concatHostPort(event.options.remoteAddr, event.options.remotePort);
-      type = DirectSocketType.UDP_CONNECTED;
+      type = 3 /* UDP_CONNECTED */;
     } else if (event.options.localAddr) {
       requestURL = this.concatHostPort(event.options.localAddr, event.options.localPort);
-      type = DirectSocketType.UDP_BOUND;
+      type = 2 /* UDP_BOUND */;
     } else {
       return;
     }
-    const networkRequest = NetworkRequest.createForSocket(event.identifier, requestURL, event.initiator, this.#manager.target().targetManager().getConsole());
+    const networkRequest = NetworkRequest.createForSocket(
+      event.identifier,
+      requestURL,
+      event.initiator,
+      this.#manager.target().targetManager().getConsole()
+    );
     networkRequest.hasNetworkData = true;
     if (event.options.remoteAddr && event.options.remotePort) {
       networkRequest.setRemoteAddress(event.options.remoteAddr, event.options.remotePort);
@@ -30870,7 +34421,7 @@ var NetworkDispatcher = class {
     networkRequest.statusText = i18nString9(UIStrings9.directSocketStatusOpening);
     networkRequest.directSocketInfo = {
       type,
-      status: DirectSocketStatus.OPENING,
+      status: 1 /* OPENING */,
       createOptions: {
         remoteAddr: event.options.remoteAddr,
         remotePort: event.options.remotePort,
@@ -30896,7 +34447,7 @@ var NetworkDispatcher = class {
       return;
     }
     let requestURL;
-    if (networkRequest.directSocketInfo.type === DirectSocketType.UDP_CONNECTED) {
+    if (networkRequest.directSocketInfo.type === 3 /* UDP_CONNECTED */) {
       if (!event.remoteAddr || !event.remotePort) {
         return;
       }
@@ -30907,7 +34458,7 @@ var NetworkDispatcher = class {
     }
     networkRequest.setUrl(requestURL);
     networkRequest.responseReceivedTime = event.timestamp;
-    networkRequest.directSocketInfo.status = DirectSocketStatus.OPEN;
+    networkRequest.directSocketInfo.status = 2 /* OPEN */;
     networkRequest.statusText = i18nString9(UIStrings9.directSocketStatusOpen);
     networkRequest.directSocketInfo.openInfo = {
       remoteAddr: event.remoteAddr,
@@ -30923,7 +34474,7 @@ var NetworkDispatcher = class {
       return;
     }
     networkRequest.failed = true;
-    networkRequest.directSocketInfo.status = DirectSocketStatus.ABORTED;
+    networkRequest.directSocketInfo.status = 4 /* ABORTED */;
     networkRequest.statusText = i18nString9(UIStrings9.directSocketStatusAborted);
     networkRequest.directSocketInfo.errorMessage = event.errorMessage;
     this.finishNetworkRequest(networkRequest, event.timestamp, 0);
@@ -30934,7 +34485,7 @@ var NetworkDispatcher = class {
       return;
     }
     networkRequest.statusText = i18nString9(UIStrings9.directSocketStatusClosed);
-    networkRequest.directSocketInfo.status = DirectSocketStatus.CLOSED;
+    networkRequest.directSocketInfo.status = 3 /* CLOSED */;
     this.finishNetworkRequest(networkRequest, event.timestamp, 0);
   }
   directUDPSocketChunkSent(event) {
@@ -30944,7 +34495,7 @@ var NetworkDispatcher = class {
     }
     networkRequest.addDirectSocketChunk({
       data: event.message.data,
-      type: DirectSocketChunkType.SEND,
+      type: "send" /* SEND */,
       timestamp: event.timestamp,
       remoteAddress: event.message.remoteAddr,
       remotePort: event.message.remotePort
@@ -30959,7 +34510,7 @@ var NetworkDispatcher = class {
     }
     networkRequest.addDirectSocketChunk({
       data: event.message.data,
-      type: DirectSocketChunkType.RECEIVE,
+      type: "receive" /* RECEIVE */,
       timestamp: event.timestamp,
       remoteAddress: event.message.remoteAddr,
       remotePort: event.message.remotePort
@@ -30998,19 +34549,19 @@ var NetworkDispatcher = class {
     request.setTrustTokenOperationDoneEvent(event);
   }
   reportingApiReportAdded(data) {
-    this.#manager.dispatchEventToListeners(Events9.ReportingApiReportAdded, data.report);
+    this.#manager.dispatchEventToListeners("ReportingApiReportAdded" /* ReportingApiReportAdded */, data.report);
   }
   reportingApiReportUpdated(data) {
-    this.#manager.dispatchEventToListeners(Events9.ReportingApiReportUpdated, data.report);
+    this.#manager.dispatchEventToListeners("ReportingApiReportUpdated" /* ReportingApiReportUpdated */, data.report);
   }
   reportingApiEndpointsChangedForOrigin(data) {
-    this.#manager.dispatchEventToListeners(Events9.ReportingApiEndpointsChangedForOrigin, data);
+    this.#manager.dispatchEventToListeners("ReportingApiEndpointsChangedForOrigin" /* ReportingApiEndpointsChangedForOrigin */, data);
   }
   deviceBoundSessionsAdded(_params) {
-    this.#manager.dispatchEventToListeners(Events9.DeviceBoundSessionsAdded, _params.sessions);
+    this.#manager.dispatchEventToListeners("DeviceBoundSessionsAdded" /* DeviceBoundSessionsAdded */, _params.sessions);
   }
   deviceBoundSessionEventOccurred(_params) {
-    this.#manager.dispatchEventToListeners(Events9.DeviceBoundSessionEventOccurred, _params);
+    this.#manager.dispatchEventToListeners("DeviceBoundSessionEventOccurred" /* DeviceBoundSessionEventOccurred */, _params);
   }
   policyUpdated() {
   }
@@ -31019,7 +34570,16 @@ var NetworkDispatcher = class {
    * This method is only kept for usage in a web test.
    */
   createNetworkRequest(requestId, frameId, loaderId, url, documentURL, initiator) {
-    const request = NetworkRequest.create(requestId, url, documentURL, frameId, loaderId, initiator, void 0, this.#manager.target().targetManager().getConsole());
+    const request = NetworkRequest.create(
+      requestId,
+      url,
+      documentURL,
+      frameId,
+      loaderId,
+      initiator,
+      void 0,
+      this.#manager.target().targetManager().getConsole()
+    );
     requestToManagerMap.set(request, this.#manager);
     return request;
   }
@@ -31030,9 +34590,13 @@ var NetworkDispatcher = class {
     return `${host}:${port}`;
   }
 };
+var RequestURLPatternValidity = /* @__PURE__ */ ((RequestURLPatternValidity2) => {
+  RequestURLPatternValidity2["VALID"] = "valid";
+  RequestURLPatternValidity2["FAILED_TO_PARSE"] = "failed-to-parse";
+  RequestURLPatternValidity2["HAS_REGEXP_GROUPS"] = "has-regexp-groups";
+  return RequestURLPatternValidity2;
+})(RequestURLPatternValidity || {});
 var RequestURLPattern = class _RequestURLPattern {
-  constructorString;
-  pattern;
   constructor(constructorString, pattern) {
     this.constructorString = constructorString;
     this.pattern = pattern;
@@ -31043,9 +34607,9 @@ var RequestURLPattern = class _RequestURLPattern {
   static isValidPattern(pattern) {
     try {
       const urlPattern = new URLPattern(pattern);
-      return urlPattern.hasRegExpGroups ? "has-regexp-groups" : "valid";
+      return urlPattern.hasRegExpGroups ? "has-regexp-groups" /* HAS_REGEXP_GROUPS */ : "valid" /* VALID */;
     } catch {
-      return "failed-to-parse";
+      return "failed-to-parse" /* FAILED_TO_PARSE */;
     }
   }
   static create(constructorString) {
@@ -31071,7 +34635,7 @@ var RequestURLPattern = class _RequestURLPattern {
     tryCreate(`*://${pattern}*`);
   }
 };
-var RequestCondition = class extends Common26.ObjectWrapper.ObjectWrapper {
+var RequestCondition = class _RequestCondition extends Common26.ObjectWrapper.ObjectWrapper {
   #pattern;
   #enabled;
   #conditions;
@@ -31122,20 +34686,14 @@ var RequestCondition = class extends Common26.ObjectWrapper.ObjectWrapper {
   }
   set pattern(pattern) {
     this.#pattern = pattern;
-    this.dispatchEventToListeners(
-      "request-condition-changed"
-      /* RequestCondition.Events.REQUEST_CONDITION_CHANGED */
-    );
+    this.dispatchEventToListeners(_RequestCondition.Events.REQUEST_CONDITION_CHANGED);
   }
   get enabled() {
     return this.#enabled;
   }
   set enabled(enabled) {
     this.#enabled = enabled;
-    this.dispatchEventToListeners(
-      "request-condition-changed"
-      /* RequestCondition.Events.REQUEST_CONDITION_CHANGED */
-    );
+    this.dispatchEventToListeners(_RequestCondition.Events.REQUEST_CONDITION_CHANGED);
   }
   get conditions() {
     return this.#conditions;
@@ -31143,10 +34701,7 @@ var RequestCondition = class extends Common26.ObjectWrapper.ObjectWrapper {
   set conditions(conditions) {
     this.#conditions = conditions;
     this.#ruleIds = /* @__PURE__ */ new Set();
-    this.dispatchEventToListeners(
-      "request-condition-changed"
-      /* RequestCondition.Events.REQUEST_CONDITION_CHANGED */
-    );
+    this.dispatchEventToListeners(_RequestCondition.Events.REQUEST_CONDITION_CHANGED);
   }
   toSetting() {
     const enabled = this.enabled;
@@ -31162,7 +34717,13 @@ var RequestCondition = class extends Common26.ObjectWrapper.ObjectWrapper {
     return this.#pattern instanceof RequestURLPattern ? this.#pattern.pattern : this.#pattern.upgradedPattern?.pattern;
   }
 };
-var RequestConditions = class extends Common26.ObjectWrapper.ObjectWrapper {
+((RequestCondition2) => {
+  let Events35;
+  ((Events36) => {
+    Events36["REQUEST_CONDITION_CHANGED"] = "request-condition-changed";
+  })(Events35 = RequestCondition2.Events || (RequestCondition2.Events = {}));
+})(RequestCondition || (RequestCondition = {}));
+var RequestConditions = class _RequestConditions extends Common26.ObjectWrapper.ObjectWrapper {
   #setting;
   #conditionsEnabledSetting;
   #conditions = [];
@@ -31180,12 +34741,11 @@ var RequestConditions = class extends Common26.ObjectWrapper.ObjectWrapper {
       }
     }
     for (const condition of this.#conditions) {
-      condition.addEventListener("request-condition-changed", this.#conditionsChanged, this);
+      condition.addEventListener("request-condition-changed" /* REQUEST_CONDITION_CHANGED */, this.#conditionsChanged, this);
     }
-    this.#conditionsEnabledSetting.addChangeListener(() => this.dispatchEventToListeners(
-      "request-conditions-changed"
-      /* RequestConditions.Events.REQUEST_CONDITIONS_CHANGED */
-    ));
+    this.#conditionsEnabledSetting.addChangeListener(
+      () => this.dispatchEventToListeners(_RequestConditions.Events.REQUEST_CONDITIONS_CHANGED)
+    );
   }
   get count() {
     return this.#conditions.length;
@@ -31208,7 +34768,7 @@ var RequestConditions = class extends Common26.ObjectWrapper.ObjectWrapper {
   add(...conditions) {
     this.#conditions.push(...conditions);
     for (const condition of conditions) {
-      condition.addEventListener("request-condition-changed", this.#conditionsChanged, this);
+      condition.addEventListener("request-condition-changed" /* REQUEST_CONDITION_CHANGED */, this.#conditionsChanged, this);
     }
     this.#conditionsChanged();
   }
@@ -31233,7 +34793,7 @@ var RequestConditions = class extends Common26.ObjectWrapper.ObjectWrapper {
     if (index < 0) {
       return;
     }
-    condition.removeEventListener("request-condition-changed", this.#conditionsChanged, this);
+    condition.removeEventListener("request-condition-changed" /* REQUEST_CONDITION_CHANGED */, this.#conditionsChanged, this);
     this.#conditions.splice(index, 1);
     this.#conditionsChanged();
   }
@@ -31241,15 +34801,12 @@ var RequestConditions = class extends Common26.ObjectWrapper.ObjectWrapper {
     this.#conditions.splice(0);
     this.#conditionsChanged();
     for (const condition of this.#conditions) {
-      condition.removeEventListener("request-condition-changed", this.#conditionsChanged, this);
+      condition.removeEventListener("request-condition-changed" /* REQUEST_CONDITION_CHANGED */, this.#conditionsChanged, this);
     }
   }
   #conditionsChanged() {
     this.#setting.set(this.#conditions.map((condition) => condition.toSetting()));
-    this.dispatchEventToListeners(
-      "request-conditions-changed"
-      /* RequestConditions.Events.REQUEST_CONDITIONS_CHANGED */
-    );
+    this.dispatchEventToListeners(_RequestConditions.Events.REQUEST_CONDITIONS_CHANGED);
   }
   get conditions() {
     return this.#conditions.values();
@@ -31284,17 +34841,19 @@ var RequestConditions = class extends Common26.ObjectWrapper.ObjectWrapper {
       promises.push(agent.invoke_emulateNetworkConditionsByRule({
         offline,
         emulateOfflineServiceWorker: offline,
-        matchedNetworkConditions: matchedNetworkConditions.map(({ urlPattern, conditions }) => ({
-          urlPattern: urlPattern ?? "",
-          latency: conditions.latency,
-          downloadThroughput: conditions.download < 0 ? 0 : conditions.download,
-          uploadThroughput: conditions.upload < 0 ? 0 : conditions.upload,
-          packetLoss: (conditions.packetLoss ?? 0) < 0 ? 0 : conditions.packetLoss,
-          packetQueueLength: conditions.packetQueueLength,
-          packetReordering: conditions.packetReordering,
-          connectionType: NetworkManager.connectionType(conditions),
-          offline
-        }))
+        matchedNetworkConditions: matchedNetworkConditions.map(
+          ({ urlPattern, conditions }) => ({
+            urlPattern: urlPattern ?? "",
+            latency: conditions.latency,
+            downloadThroughput: conditions.download < 0 ? 0 : conditions.download,
+            uploadThroughput: conditions.upload < 0 ? 0 : conditions.upload,
+            packetLoss: (conditions.packetLoss ?? 0) < 0 ? 0 : conditions.packetLoss,
+            packetQueueLength: conditions.packetQueueLength,
+            packetReordering: conditions.packetReordering,
+            connectionType: NetworkManager.connectionType(conditions),
+            offline
+          })
+        )
       }).then((response) => {
         if (!response.getError()) {
           for (let i = 0; i < response.ruleIds.length; ++i) {
@@ -31312,7 +34871,7 @@ var RequestConditions = class extends Common26.ObjectWrapper.ObjectWrapper {
         latency: globalConditions?.latency ?? 0,
         downloadThroughput: globalConditions?.download ?? -1,
         uploadThroughput: globalConditions?.upload ?? -1,
-        connectionType: globalConditions ? NetworkManager.connectionType(globalConditions) : "none"
+        connectionType: globalConditions ? NetworkManager.connectionType(globalConditions) : Network.ConnectionType.None
       }));
     }
     this.#conditionsAppliedForTestPromise = this.#conditionsAppliedForTestPromise.then(() => Promise.all(promises));
@@ -31330,11 +34889,13 @@ var RequestConditions = class extends Common26.ObjectWrapper.ObjectWrapper {
     return new AppliedNetworkConditions(conditions, appliedNetworkConditionsId, urlPattern);
   }
 };
-_a2 = RequestConditions;
+((RequestConditions2) => {
+  let Events35;
+  ((Events36) => {
+    Events36["REQUEST_CONDITIONS_CHANGED"] = "request-conditions-changed";
+  })(Events35 = RequestConditions2.Events || (RequestConditions2.Events = {}));
+})(RequestConditions || (RequestConditions = {}));
 var AppliedNetworkConditions = class {
-  conditions;
-  appliedNetworkConditionsId;
-  urlPattern;
   constructor(conditions, appliedNetworkConditionsId, urlPattern) {
     this.conditions = conditions;
     this.appliedNetworkConditionsId = appliedNetworkConditionsId;
@@ -31362,19 +34923,22 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
     this.#requestConditions = new RequestConditions(settings);
     const blockedPatternChanged = () => {
       this.updateBlockedPatterns();
-      this.dispatchEventToListeners(
-        "BlockedPatternsChanged"
-        /* MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED */
-      );
+      this.dispatchEventToListeners(_MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED);
     };
-    this.#requestConditions.addEventListener("request-conditions-changed", blockedPatternChanged);
+    this.#requestConditions.addEventListener(
+      "request-conditions-changed" /* REQUEST_CONDITIONS_CHANGED */,
+      blockedPatternChanged
+    );
     this.updateBlockedPatterns();
     this.#targetManager.observeModels(NetworkManager, this);
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew, targetManager } = opts;
     if (!Root8.DevToolsContext.globalInstance().has(_MultitargetNetworkManager) || forceNew) {
-      Root8.DevToolsContext.globalInstance().set(_MultitargetNetworkManager, new _MultitargetNetworkManager(targetManager ?? TargetManager.instance()));
+      Root8.DevToolsContext.globalInstance().set(
+        _MultitargetNetworkManager,
+        new _MultitargetNetworkManager(targetManager ?? TargetManager.instance())
+      );
     }
     return Root8.DevToolsContext.globalInstance().get(_MultitargetNetworkManager);
   }
@@ -31416,9 +34980,15 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
       void networkAgent.invoke_setExtraHTTPHeaders({ headers: this.#extraHeaders });
     }
     if (this.currentUserAgent()) {
-      void networkAgent.invoke_setUserAgentOverride({ userAgent: this.currentUserAgent(), userAgentMetadata: this.#userAgentMetadataOverride || void 0 });
+      void networkAgent.invoke_setUserAgentOverride(
+        { userAgent: this.currentUserAgent(), userAgentMetadata: this.#userAgentMetadataOverride || void 0 }
+      );
     }
-    this.#requestConditions.applyConditions(this.isOffline(), this.isThrottling() ? this.#networkConditions : null, networkAgent);
+    this.#requestConditions.applyConditions(
+      this.isOffline(),
+      this.isThrottling() ? this.#networkConditions : null,
+      networkAgent
+    );
     if (this.isIntercepting()) {
       void fetchAgent.invoke_enable({ patterns: this.#urlsForRequestInterceptor.valuesArray() });
     }
@@ -31444,11 +35014,12 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
   }
   setNetworkConditions(conditions) {
     this.#networkConditions = conditions;
-    this.#requestConditions.applyConditions(this.isOffline(), this.isThrottling() ? this.#networkConditions : null, ...this.#networkAgents);
-    this.dispatchEventToListeners(
-      "ConditionsChanged"
-      /* MultitargetNetworkManager.Events.CONDITIONS_CHANGED */
+    this.#requestConditions.applyConditions(
+      this.isOffline(),
+      this.isThrottling() ? this.#networkConditions : null,
+      ...this.#networkAgents
     );
+    this.dispatchEventToListeners(_MultitargetNetworkManager.Events.CONDITIONS_CHANGED);
   }
   networkConditions() {
     return this.#networkConditions;
@@ -31487,7 +35058,9 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
   updateUserAgentOverride() {
     const userAgent = this.currentUserAgent();
     for (const agent of this.#networkAgents) {
-      void agent.invoke_setUserAgentOverride({ userAgent, userAgentMetadata: this.#userAgentMetadataOverride || void 0 });
+      void agent.invoke_setUserAgentOverride(
+        { userAgent, userAgentMetadata: this.#userAgentMetadataOverride || void 0 }
+      );
     }
   }
   setUserAgentOverride(userAgent, userAgentMetadataOverride) {
@@ -31500,10 +35073,7 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
       this.#userAgentMetadataOverride = null;
     }
     if (uaChanged) {
-      this.dispatchEventToListeners(
-        "UserAgentChanged"
-        /* MultitargetNetworkManager.Events.USER_AGENT_CHANGED */
-      );
+      this.dispatchEventToListeners(_MultitargetNetworkManager.Events.USER_AGENT_CHANGED);
     }
   }
   setCustomUserAgentOverride(userAgent, userAgentMetadataOverride = null) {
@@ -31518,7 +35088,11 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
     return this.#isBlocking && this.requestConditions.conditionsEnabled;
   }
   updateBlockedPatterns() {
-    this.#isBlocking = this.#requestConditions.applyConditions(this.isOffline(), this.isThrottling() ? this.#networkConditions : null, ...this.#networkAgents);
+    this.#isBlocking = this.#requestConditions.applyConditions(
+      this.isOffline(),
+      this.isThrottling() ? this.#networkConditions : null,
+      ...this.#networkAgents
+    );
   }
   isIntercepting() {
     return Boolean(this.#urlsForRequestInterceptor.size);
@@ -31546,17 +35120,17 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
     for (const agent of this.#fetchAgents) {
       promises.push(agent.invoke_enable({ patterns: this.#urlsForRequestInterceptor.valuesArray() }));
     }
-    this.dispatchEventToListeners(
-      "InterceptorsChanged"
-      /* MultitargetNetworkManager.Events.INTERCEPTORS_CHANGED */
-    );
+    this.dispatchEventToListeners(_MultitargetNetworkManager.Events.INTERCEPTORS_CHANGED);
     await Promise.all(promises);
   }
   async requestIntercepted(interceptedRequest) {
     for (const requestInterceptor of this.#urlsForRequestInterceptor.keysArray()) {
       await requestInterceptor(interceptedRequest);
       if (interceptedRequest.hasResponded() && interceptedRequest.networkRequest) {
-        this.dispatchEventToListeners("RequestIntercepted", interceptedRequest.networkRequest.requestId());
+        this.dispatchEventToListeners(
+          _MultitargetNetworkManager.Events.REQUEST_INTERCEPTED,
+          interceptedRequest.networkRequest.requestId()
+        );
         return;
       }
     }
@@ -31592,6 +35166,17 @@ var MultitargetNetworkManager = class _MultitargetNetworkManager extends Common2
     return this.requestConditions.conditionsForId(requestInternal.appliedNetworkConditionsId);
   }
 };
+((MultitargetNetworkManager2) => {
+  let Events35;
+  ((Events36) => {
+    Events36["BLOCKED_PATTERNS_CHANGED"] = "BlockedPatternsChanged";
+    Events36["CONDITIONS_CHANGED"] = "ConditionsChanged";
+    Events36["USER_AGENT_CHANGED"] = "UserAgentChanged";
+    Events36["INTERCEPTORS_CHANGED"] = "InterceptorsChanged";
+    Events36["REQUEST_INTERCEPTED"] = "RequestIntercepted";
+    Events36["REQUEST_FULFILLED"] = "RequestFulfilled";
+  })(Events35 = MultitargetNetworkManager2.Events || (MultitargetNetworkManager2.Events = {}));
+})(MultitargetNetworkManager || (MultitargetNetworkManager = {}));
 var InterceptedRequest = class _InterceptedRequest {
   #multitargetNetworkManager;
   #fetchAgent;
@@ -31672,7 +35257,10 @@ var InterceptedRequest = class _InterceptedRequest {
       this.networkRequest.hasOverriddenContent = isBodyOverridden;
     }
     void this.#fetchAgent.invoke_fulfillRequest({ requestId: this.requestId, responseCode, body, responseHeaders });
-    this.#multitargetNetworkManager.dispatchEventToListeners("RequestFulfilled", this.request.url);
+    this.#multitargetNetworkManager.dispatchEventToListeners(
+      "RequestFulfilled" /* REQUEST_FULFILLED */,
+      this.request.url
+    );
   }
   continueRequestWithoutChange() {
     console.assert(!this.#hasResponded);
@@ -31686,7 +35274,12 @@ var InterceptedRequest = class _InterceptedRequest {
       return { error };
     }
     const { mimeType, charset } = this.getMimeTypeAndCharset();
-    return new TextUtils21.ContentData.ContentData(response.body, response.base64Encoded, mimeType ?? "application/octet-stream", charset ?? void 0);
+    return new TextUtils21.ContentData.ContentData(
+      response.body,
+      response.base64Encoded,
+      mimeType ?? "application/octet-stream",
+      charset ?? void 0
+    );
   }
   isRedirect() {
     return this.responseStatusCode !== void 0 && this.responseStatusCode >= 300 && this.responseStatusCode < 400;
@@ -31745,7 +35338,10 @@ var ExtraInfoBuilder = class {
       this.#responseExtraInfoFlag.push(true);
       this.sync(this.#responseExtraInfoFlag.length - 1);
     }
-    console.assert(this.#requests.length === this.#responseExtraInfoFlag.length, "request/response count mismatch when request finished");
+    console.assert(
+      this.#requests.length === this.#responseExtraInfoFlag.length,
+      "request/response count mismatch when request finished"
+    );
     this.updateFinalRequest();
   }
   isFinished() {
@@ -31787,7 +35383,7 @@ var ExtraInfoBuilder = class {
     finalRequest?.setEarlyHintsHeaders(this.#responseEarlyHintsHeaders);
   }
 };
-SDKModel.register(NetworkManager, { capabilities: 16, autostart: true });
+SDKModel.register(NetworkManager, { capabilities: 16 /* NETWORK */, autostart: true });
 function networkConditionsEqual(first, second) {
   if ("block" in first || "block" in second) {
     if ("block" in first && "block" in second) {
@@ -31801,12 +35397,21 @@ function networkConditionsEqual(first, second) {
   const secondTitle = second.i18nTitleKey || (typeof second.title === "function" ? second.title() : second.title);
   return second.download === first.download && second.upload === first.upload && second.latency === first.latency && first.packetLoss === second.packetLoss && first.packetQueueLength === second.packetQueueLength && first.packetReordering === second.packetReordering && secondTitle === firstTitle;
 }
+var PredefinedThrottlingConditionKey = /* @__PURE__ */ ((PredefinedThrottlingConditionKey2) => {
+  PredefinedThrottlingConditionKey2["BLOCKING"] = "BLOCKING";
+  PredefinedThrottlingConditionKey2["NO_THROTTLING"] = "NO_THROTTLING";
+  PredefinedThrottlingConditionKey2["OFFLINE"] = "OFFLINE";
+  PredefinedThrottlingConditionKey2["SPEED_3G"] = "SPEED_3G";
+  PredefinedThrottlingConditionKey2["SPEED_SLOW_4G"] = "SPEED_SLOW_4G";
+  PredefinedThrottlingConditionKey2["SPEED_FAST_4G"] = "SPEED_FAST_4G";
+  return PredefinedThrottlingConditionKey2;
+})(PredefinedThrottlingConditionKey || {});
 var THROTTLING_CONDITIONS_LOOKUP = /* @__PURE__ */ new Map([
-  ["NO_THROTTLING", NoThrottlingConditions],
-  ["OFFLINE", OfflineConditions],
-  ["SPEED_3G", Slow3GConditions],
-  ["SPEED_SLOW_4G", Slow4GConditions],
-  ["SPEED_FAST_4G", Fast4GConditions]
+  ["NO_THROTTLING" /* NO_THROTTLING */, NoThrottlingConditions],
+  ["OFFLINE" /* OFFLINE */, OfflineConditions],
+  ["SPEED_3G" /* SPEED_3G */, Slow3GConditions],
+  ["SPEED_SLOW_4G" /* SPEED_SLOW_4G */, Slow4GConditions],
+  ["SPEED_FAST_4G" /* SPEED_FAST_4G */, Fast4GConditions]
 ]);
 function keyIsPredefined(key) {
   return !key.startsWith("USER_CUSTOM_SETTING_");
@@ -31821,7 +35426,7 @@ function getPredefinedCondition(key) {
   return THROTTLING_CONDITIONS_LOOKUP.get(key) ?? null;
 }
 function getPredefinedOrBlockingCondition(key) {
-  return key === "BLOCKING" ? BlockingConditions : getPredefinedCondition(key);
+  return key === "BLOCKING" /* BLOCKING */ ? BlockingConditions : getPredefinedCondition(key);
 }
 function getRecommendedNetworkPreset(rtt) {
   const RTT_COMPARISON_THRESHOLD = 200;
@@ -31855,7 +35460,7 @@ function getRecommendedNetworkPreset(rtt) {
   return closestPreset;
 }
 
-// gen/front_end/core/sdk/CookieModel.js
+// ../../front_end/core/sdk/CookieModel.ts
 var CookieModel = class extends SDKModel {
   #blockedCookies = /* @__PURE__ */ new Map();
   #cookieToBlockedReasons = /* @__PURE__ */ new Map();
@@ -31863,9 +35468,9 @@ var CookieModel = class extends SDKModel {
   #cookies = /* @__PURE__ */ new Map();
   constructor(target) {
     super(target);
-    target.model(ResourceTreeModel)?.addEventListener(Events2.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
-    target.model(NetworkManager)?.addEventListener(Events9.ResponseReceived, this.#onResponseReceived, this);
-    target.model(NetworkManager)?.addEventListener(Events9.LoadingFinished, this.#onLoadingFinished, this);
+    target.model(ResourceTreeModel)?.addEventListener("PrimaryPageChanged" /* PrimaryPageChanged */, this.#onPrimaryPageChanged, this);
+    target.model(NetworkManager)?.addEventListener("ResponseReceived" /* ResponseReceived */, this.#onResponseReceived, this);
+    target.model(NetworkManager)?.addEventListener("LoadingFinished" /* LoadingFinished */, this.#onLoadingFinished, this);
   }
   addBlockedCookie(cookie, blockedReasons) {
     const key = cookie.key();
@@ -31893,14 +35498,13 @@ var CookieModel = class extends SDKModel {
   }
   async #getCookies(urls) {
     const networkAgent = this.target().networkAgent();
-    const newCookies = new Map(await Promise.all(urls.keysArray().map((domain) => networkAgent.invoke_getCookies({ urls: [...urls.get(domain).values()] }).then(({ cookies }) => [domain, cookies.map(Cookie.fromProtocolCookie)]))));
+    const newCookies = new Map(await Promise.all(urls.keysArray().map(
+      (domain) => networkAgent.invoke_getCookies({ urls: [...urls.get(domain).values()] }).then(({ cookies }) => [domain, cookies.map(Cookie.fromProtocolCookie)])
+    )));
     const updated = this.#isUpdated(newCookies);
     this.#cookies = newCookies;
     if (updated) {
-      this.dispatchEventToListeners(
-        "CookieListUpdated"
-        /* Events.COOKIE_LIST_UPDATED */
-      );
+      this.dispatchEventToListeners("CookieListUpdated" /* COOKIE_LIST_UPDATED */);
     }
   }
   async deleteCookie(cookie) {
@@ -31932,7 +35536,7 @@ var CookieModel = class extends SDKModel {
     }
     const schemeBindingEnabled = Boolean(Root9.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.schemeBindingEnabled);
     const portBindingEnabled = Boolean(Root9.Runtime.hostConfig.devToolsEnableOriginBoundCookies?.portBindingEnabled);
-    const preserveUnset = (scheme) => scheme === "Unset" ? scheme : void 0;
+    const preserveUnset = (scheme) => scheme === Network.CookieSourceScheme.Unset ? scheme : void 0;
     const protocolCookie = {
       name: cookie.name(),
       value: cookie.value(),
@@ -32039,9 +35643,13 @@ var CookieModel = class extends SDKModel {
     }
   }
 };
-SDKModel.register(CookieModel, { capabilities: 16, autostart: false });
+SDKModel.register(CookieModel, { capabilities: 16 /* NETWORK */, autostart: false });
+var Events20 = /* @__PURE__ */ ((Events35) => {
+  Events35["COOKIE_LIST_UPDATED"] = "CookieListUpdated";
+  return Events35;
+})(Events20 || {});
 
-// gen/front_end/core/sdk/CookieParser.js
+// ../../front_end/core/sdk/CookieParser.ts
 var CookieParser_exports = {};
 __export(CookieParser_exports, {
   CookieParser: () => CookieParser
@@ -32070,31 +35678,31 @@ var CookieParser = class _CookieParser {
     }
     switch (header.toLowerCase()) {
       case "domain":
-        return "domain";
+        return "domain" /* DOMAIN */;
       case "expires":
-        return "expires";
+        return "expires" /* EXPIRES */;
       case "max-age":
-        return "max-age";
+        return "max-age" /* MAX_AGE */;
       case "httponly":
-        return "http-only";
+        return "http-only" /* HTTP_ONLY */;
       case "name":
-        return "name";
+        return "name" /* NAME */;
       case "path":
-        return "path";
+        return "path" /* PATH */;
       case "samesite":
-        return "same-site";
+        return "same-site" /* SAME_SITE */;
       case "secure":
-        return "secure";
+        return "secure" /* SECURE */;
       case "value":
-        return "value";
+        return "value" /* VALUE */;
       case "priority":
-        return "priority";
+        return "priority" /* PRIORITY */;
       case "sourceport":
-        return "source-port";
+        return "source-port" /* SOURCE_PORT */;
       case "sourcescheme":
-        return "source-scheme";
+        return "source-scheme" /* SOURCE_SCHEME */;
       case "partitioned":
-        return "partitioned";
+        return "partitioned" /* PARTITIONED */;
       default:
         console.error("Failed getting cookie attribute: " + header);
         return null;
@@ -32111,11 +35719,7 @@ var CookieParser = class _CookieParser {
       if (this.#lastCookie) {
         this.#lastCookie.addAttribute(this.getCookieAttribute(kv.key), kv.value);
       } else {
-        this.addCookie(
-          kv,
-          1
-          /* Type.RESPONSE */
-        );
+        this.addCookie(kv, 1 /* RESPONSE */);
       }
       if (this.advanceAndCheckCookieDelimiter()) {
         this.flushCookie();
@@ -32137,7 +35741,9 @@ var CookieParser = class _CookieParser {
   }
   flushCookie() {
     if (this.#lastCookie) {
-      this.#lastCookie.setSize(this.#originalInputLength - this.#input.length - this.#lastCookiePosition);
+      this.#lastCookie.setSize(
+        this.#originalInputLength - this.#input.length - this.#lastCookiePosition
+      );
       this.#lastCookie.setCookieLine(this.#lastCookieLine.replace("\n", ""));
     }
     this.#lastCookie = null;
@@ -32152,7 +35758,11 @@ var CookieParser = class _CookieParser {
       console.error("Failed parsing cookie header before: " + this.#input);
       return null;
     }
-    const result = new KeyValue(keyValueMatch[1]?.trim(), keyValueMatch[2]?.trim(), this.#originalInputLength - this.#input.length);
+    const result = new KeyValue(
+      keyValueMatch[1]?.trim(),
+      keyValueMatch[2]?.trim(),
+      this.#originalInputLength - this.#input.length
+    );
     this.#lastCookieLine += keyValueMatch[0];
     this.#input = this.#input.slice(keyValueMatch[0].length);
     return result;
@@ -32175,7 +35785,7 @@ var CookieParser = class _CookieParser {
     }
     this.#lastCookie = typeof keyValue.value === "string" ? new Cookie(keyValue.key, keyValue.value, type) : new Cookie("", keyValue.key, type);
     if (this.#domain) {
-      this.#lastCookie.addAttribute("domain", this.#domain);
+      this.#lastCookie.addAttribute("domain" /* DOMAIN */, this.#domain);
     }
     this.#lastCookiePosition = keyValue.position;
     this.#cookies.push(this.#lastCookie);
@@ -32192,8 +35802,8 @@ var KeyValue = class {
   }
 };
 
-// gen/front_end/core/sdk/HttpReasonPhraseStrings.js
-import * as i18n21 from "./../i18n/i18n.js";
+// ../../front_end/core/sdk/HttpReasonPhraseStrings.ts
+import * as i18n21 from "../i18n/i18n.js";
 function getStatusText(statusCode) {
   const statusTextLookup = {
     100: "Continue",
@@ -32262,10 +35872,10 @@ function getStatusText(statusCode) {
   return i18n21.i18n.lockedString(statusTextLookup[statusCode] ?? "");
 }
 
-// gen/front_end/core/sdk/ServerSentEvents.js
-import * as TextUtils23 from "./../text_utils/text_utils.js";
+// ../../front_end/core/sdk/ServerSentEvents.ts
+import * as TextUtils23 from "../text_utils/text_utils.js";
 
-// gen/front_end/core/sdk/ServerSentEventsProtocol.js
+// ../../front_end/core/sdk/ServerSentEventsProtocol.ts
 var ServerSentEventsProtocol_exports = {};
 __export(ServerSentEventsProtocol_exports, {
   ServerSentEventsParser: () => ServerSentEventsParser
@@ -32359,7 +35969,7 @@ var Base64TextDecoder = class {
   }
 };
 
-// gen/front_end/core/sdk/ServerSentEvents.js
+// ../../front_end/core/sdk/ServerSentEvents.ts
 var ServerSentEvents = class {
   #request;
   #parser;
@@ -32375,10 +35985,13 @@ var ServerSentEvents = class {
       void this.#request.requestStreamingContent().then((streamingContentData) => {
         if (!TextUtils23.StreamingContentData.isError(streamingContentData)) {
           void this.#parser?.addBase64Chunk(streamingContentData.content().base64);
-          streamingContentData.addEventListener("ChunkAdded", ({ data: { chunk } }) => {
-            this.#lastDataReceivedTime = request.pseudoWallTime(request.endTime);
-            void this.#parser?.addBase64Chunk(chunk);
-          });
+          streamingContentData.addEventListener(
+            TextUtils23.StreamingContentData.Events.CHUNK_ADDED,
+            ({ data: { chunk } }) => {
+              this.#lastDataReceivedTime = request.pseudoWallTime(request.endTime);
+              void this.#parser?.addBase64Chunk(chunk);
+            }
+          );
         }
       });
     }
@@ -32405,19 +36018,19 @@ var ServerSentEvents = class {
   }
   #recordMessageAndDispatchEvent(message) {
     this.#eventSourceMessages.push(message);
-    this.#request.dispatchEventToListeners(Events10.EVENT_SOURCE_MESSAGE_ADDED, message);
+    this.#request.dispatchEventToListeners("EventSourceMessageAdded" /* EVENT_SOURCE_MESSAGE_ADDED */, message);
   }
 };
 
-// gen/front_end/core/sdk/ServerTiming.js
+// ../../front_end/core/sdk/ServerTiming.ts
 var ServerTiming_exports = {};
 __export(ServerTiming_exports, {
   ServerTiming: () => ServerTiming,
   cloudflarePrefix: () => cloudflarePrefix,
   cloudinaryPrefix: () => cloudinaryPrefix
 });
-import * as Common28 from "./../common/common.js";
-import * as i18n23 from "./../i18n/i18n.js";
+import * as Common28 from "../common/common.js";
+import * as i18n23 from "../i18n/i18n.js";
 var UIStrings10 = {
   /**
    * @description Warning message when deprecated Server-Timing header syntax is found.
@@ -32591,7 +36204,10 @@ var ServerTiming = class _ServerTiming {
           if (paramValue !== null) {
             const duration = parseFloat(paramValue);
             if (isNaN(duration)) {
-              _ServerTiming.#showWarning(i18nString10(UIStrings10.unableToParseSValueS, { PH1: paramName, PH2: paramValue }), devToolsConsole);
+              _ServerTiming.#showWarning(
+                i18nString10(UIStrings10.unableToParseSValueS, { PH1: paramName, PH2: paramValue }),
+                devToolsConsole
+              );
               return;
             }
             entry.dur = duration;
@@ -32615,7 +36231,7 @@ var ServerTiming = class _ServerTiming {
   }
 };
 
-// gen/front_end/core/sdk/NetworkRequest.js
+// ../../front_end/core/sdk/NetworkRequest.ts
 var UIStrings11 = {
   /**
    * @description Label for binary data format.
@@ -32775,7 +36391,7 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
   requestTime = 0;
   protocol = "";
   alternateProtocolUsage = void 0;
-  mixedContentType = "none";
+  mixedContentType = Security.MixedContentType.None;
   #initialPriority = null;
   #currentPriority = null;
   #signedExchangeInfo = null;
@@ -32793,9 +36409,9 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
   #requestHeaders = [];
   #requestHeaderValues = {};
   #remoteAddress = "";
-  #remoteAddressSpace = "Unknown";
+  #remoteAddressSpace = Network.IPAddressSpace.Unknown;
   #referrerPolicy = null;
-  #securityState = "unknown";
+  #securityState = Security.SecurityState.Unknown;
   #securityDetails = null;
   connectionId = "0";
   connectionReused = false;
@@ -32882,13 +36498,43 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     this.#console = console2;
   }
   static create(backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console2) {
-    return new _NetworkRequest(backendRequestId, backendRequestId, url, documentURL, frameId, loaderId, initiator, hasUserGesture, console2);
+    return new _NetworkRequest(
+      backendRequestId,
+      backendRequestId,
+      url,
+      documentURL,
+      frameId,
+      loaderId,
+      initiator,
+      hasUserGesture,
+      console2
+    );
   }
   static createForSocket(backendRequestId, requestURL, initiator, console2) {
-    return new _NetworkRequest(backendRequestId, backendRequestId, requestURL, Platform18.DevToolsPath.EmptyUrlString, null, null, initiator || null, void 0, console2);
+    return new _NetworkRequest(
+      backendRequestId,
+      backendRequestId,
+      requestURL,
+      Platform18.DevToolsPath.EmptyUrlString,
+      null,
+      null,
+      initiator || null,
+      void 0,
+      console2
+    );
   }
   static createWithoutBackendRequest(requestId, url, documentURL, initiator, console2) {
-    return new _NetworkRequest(requestId, void 0, url, documentURL, null, null, initiator, void 0, console2);
+    return new _NetworkRequest(
+      requestId,
+      void 0,
+      url,
+      documentURL,
+      null,
+      null,
+      initiator,
+      void 0,
+      console2
+    );
   }
   identityCompare(other) {
     const thisId = this.requestId();
@@ -32941,7 +36587,7 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
   }
   setRemoteAddress(ip, port) {
     this.#remoteAddress = ip + ":" + port;
-    this.dispatchEventToListeners(Events10.REMOTE_ADDRESS_CHANGED, this);
+    this.dispatchEventToListeners("RemoteAddressChanged" /* REMOTE_ADDRESS_CHANGED */, this);
   }
   remoteAddress() {
     return this.#remoteAddress;
@@ -33028,7 +36674,7 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
         this.#responseReceivedTime = x;
       }
     }
-    this.dispatchEventToListeners(Events10.TIMING_CHANGED, this);
+    this.dispatchEventToListeners("TimingChanged" /* TIMING_CHANGED */, this);
   }
   get duration() {
     if (this.#endTime === -1 || this.#startTime === -1) {
@@ -33066,7 +36712,7 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     }
     this.#finished = x;
     if (x) {
-      this.dispatchEventToListeners(Events10.FINISHED_LOADING, this);
+      this.dispatchEventToListeners("FinishedLoading" /* FINISHED_LOADING */, this);
     }
   }
   get failed() {
@@ -33167,7 +36813,7 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     if (!networkManager) {
       return false;
     }
-    return networkManager.target().type() === Type.ServiceWorker;
+    return networkManager.target().type() === "service-worker" /* ServiceWorker */;
   }
   get timing() {
     return this.#timing;
@@ -33185,20 +36831,23 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
       this.#responseReceivedTime = this.#startTime;
     }
     this.#timing = timingInfo;
-    this.dispatchEventToListeners(Events10.TIMING_CHANGED, this);
+    this.dispatchEventToListeners("TimingChanged" /* TIMING_CHANGED */, this);
   }
   setConnectTimingFromExtraInfo(connectTiming) {
     this.#startTime = connectTiming.requestTime;
-    this.dispatchEventToListeners(Events10.TIMING_CHANGED, this);
+    this.dispatchEventToListeners("TimingChanged" /* TIMING_CHANGED */, this);
   }
   get mimeType() {
     return this.#mimeType;
   }
   set mimeType(x) {
     this.#mimeType = x;
-    if (x === "text/event-stream" && !this.#serverSentEvents) {
+    if (x === Platform18.MimeType.MimeType.EVENTSTREAM && !this.#serverSentEvents) {
       const parseFromStreamedData = this.resourceType() !== Common29.ResourceType.resourceTypes.EventSource;
-      this.#serverSentEvents = new ServerSentEvents(this, parseFromStreamedData);
+      this.#serverSentEvents = new ServerSentEvents(
+        this,
+        parseFromStreamedData
+      );
     }
   }
   get displayName() {
@@ -33231,13 +36880,23 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     } else {
       this.#path = this.#parsedURL.host + this.#parsedURL.folderPathComponents;
       const networkManager = NetworkManager.forRequest(this);
-      const inspectedURL = networkManager ? Common29.ParsedURL.ParsedURL.fromString(networkManager.target().inspectedURL()) : null;
-      this.#path = Platform18.StringUtilities.trimURL(this.#path, inspectedURL ? inspectedURL.host : "");
+      const inspectedURL = networkManager ? Common29.ParsedURL.ParsedURL.fromString(
+        networkManager.target().inspectedURL()
+      ) : null;
+      this.#path = Platform18.StringUtilities.trimURL(
+        this.#path,
+        inspectedURL ? inspectedURL.host : ""
+      );
       if (this.#parsedURL.lastPathComponent || this.#parsedURL.queryParams) {
         this.#name = this.#parsedURL.lastPathComponent + (this.#parsedURL.queryParams ? "?" + this.#parsedURL.queryParams : "");
       } else if (this.#parsedURL.folderPathComponents) {
-        this.#name = this.#parsedURL.folderPathComponents.substring(this.#parsedURL.folderPathComponents.lastIndexOf("/") + 1) + "/";
-        this.#path = this.#path.substring(0, this.#path.lastIndexOf("/"));
+        this.#name = this.#parsedURL.folderPathComponents.substring(
+          this.#parsedURL.folderPathComponents.lastIndexOf("/") + 1
+        ) + "/";
+        this.#path = this.#path.substring(
+          0,
+          this.#path.lastIndexOf("/")
+        );
       } else {
         this.#name = this.#parsedURL.host;
         this.#path = "";
@@ -33290,10 +36949,10 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     this.#preflightInitiatorRequest = preflightInitiatorRequest;
   }
   isPreflightRequest() {
-    return this.#initiator !== null && this.#initiator !== void 0 && this.#initiator.type === "preflight";
+    return this.#initiator !== null && this.#initiator !== void 0 && this.#initiator.type === Network.InitiatorType.Preflight;
   }
   isPreloadRequest() {
-    return this.#initiator !== null && this.#initiator !== void 0 && this.#initiator.type === "preload";
+    return this.#initiator !== null && this.#initiator !== void 0 && this.#initiator.type === Network.InitiatorType.Preload;
   }
   redirectDestination() {
     return this.#redirectDestination;
@@ -33306,20 +36965,23 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
   }
   setRequestHeaders(headers) {
     this.#requestHeaders = headers;
-    this.dispatchEventToListeners(Events10.REQUEST_HEADERS_CHANGED);
+    this.dispatchEventToListeners("RequestHeadersChanged" /* REQUEST_HEADERS_CHANGED */);
   }
   requestHeadersText() {
     return this.#requestHeadersText;
   }
   setRequestHeadersText(text) {
     this.#requestHeadersText = text;
-    this.dispatchEventToListeners(Events10.REQUEST_HEADERS_CHANGED);
+    this.dispatchEventToListeners("RequestHeadersChanged" /* REQUEST_HEADERS_CHANGED */);
   }
   requestHeaderValue(headerName) {
     if (this.#requestHeaderValues[headerName]) {
       return this.#requestHeaderValues[headerName];
     }
-    this.#requestHeaderValues[headerName] = this.computeHeaderValue(this.requestHeaders(), headerName);
+    this.#requestHeaderValues[headerName] = this.computeHeaderValue(
+      this.requestHeaders(),
+      headerName
+    );
     return this.#requestHeaderValues[headerName];
   }
   requestFormData() {
@@ -33369,7 +37031,7 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     this.#serverTimings = void 0;
     this.#responseCookies = void 0;
     this.#responseHeaderValues = {};
-    this.dispatchEventToListeners(Events10.RESPONSE_HEADERS_CHANGED);
+    this.dispatchEventToListeners("ResponseHeadersChanged" /* RESPONSE_HEADERS_CHANGED */);
   }
   get earlyHintsHeaders() {
     return this.#earlyHintsHeaders || [];
@@ -33395,7 +37057,7 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
   }
   set responseHeadersText(x) {
     this.#responseHeadersText = x;
-    this.dispatchEventToListeners(Events10.RESPONSE_HEADERS_CHANGED);
+    this.dispatchEventToListeners("ResponseHeadersChanged" /* RESPONSE_HEADERS_CHANGED */);
   }
   get sortedResponseHeaders() {
     if (this.#sortedResponseHeaders !== void 0) {
@@ -33403,7 +37065,10 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     }
     this.#sortedResponseHeaders = this.responseHeaders.slice();
     return this.#sortedResponseHeaders.sort(function(a, b) {
-      return Platform18.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
+      return Platform18.StringUtilities.compare(
+        a.name.toLowerCase(),
+        b.name.toLowerCase()
+      );
     });
   }
   get sortedOriginalResponseHeaders() {
@@ -33412,7 +37077,10 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     }
     this.#sortedOriginalResponseHeaders = this.originalResponseHeaders.slice();
     return this.#sortedOriginalResponseHeaders.sort(function(a, b) {
-      return Platform18.StringUtilities.compare(a.name.toLowerCase(), b.name.toLowerCase());
+      return Platform18.StringUtilities.compare(
+        a.name.toLowerCase(),
+        b.name.toLowerCase()
+      );
     });
   }
   get overrideTypes() {
@@ -33446,8 +37114,12 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     if (!this.#originalResponseHeaders.length) {
       return false;
     }
-    const responseHeaders = this.#deduplicateHeaders(this.sortedResponseHeaders);
-    const originalResponseHeaders = this.#deduplicateHeaders(this.sortedOriginalResponseHeaders);
+    const responseHeaders = this.#deduplicateHeaders(
+      this.sortedResponseHeaders
+    );
+    const originalResponseHeaders = this.#deduplicateHeaders(
+      this.sortedOriginalResponseHeaders
+    );
     if (responseHeaders.length !== originalResponseHeaders.length) {
       return true;
     }
@@ -33465,7 +37137,10 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     if (headerName in this.#responseHeaderValues) {
       return this.#responseHeaderValues[headerName];
     }
-    this.#responseHeaderValues[headerName] = this.computeHeaderValue(this.responseHeaders, headerName);
+    this.#responseHeaderValues[headerName] = this.computeHeaderValue(
+      this.responseHeaders,
+      headerName
+    );
     return this.#responseHeaderValues[headerName];
   }
   wasIntercepted() {
@@ -33485,11 +37160,17 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
   }
   get responseCookies() {
     if (!this.#responseCookies) {
-      this.#responseCookies = CookieParser.parseSetCookie(this.responseHeaderValue("Set-Cookie"), this.domain) || [];
+      this.#responseCookies = CookieParser.parseSetCookie(
+        this.responseHeaderValue("Set-Cookie"),
+        this.domain
+      ) || [];
       if (this.#responseCookiesPartitionKey) {
         for (const cookie of this.#responseCookies) {
           if (cookie.partitioned()) {
-            cookie.setPartitionKey(this.#responseCookiesPartitionKey.topLevelSite, this.#responseCookiesPartitionKey.hasCrossSiteAncestor);
+            cookie.setPartitionKey(
+              this.#responseCookiesPartitionKey.topLevelSite,
+              this.#responseCookiesPartitionKey.hasCrossSiteAncestor
+            );
           }
         }
       } else if (this.#responseCookiesPartitionKeyOpaque) {
@@ -33508,15 +37189,24 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
   }
   allCookiesIncludingBlockedOnes() {
     return [
-      ...this.includedRequestCookies().map((includedRequestCookie) => includedRequestCookie.cookie),
+      ...this.includedRequestCookies().map(
+        (includedRequestCookie) => includedRequestCookie.cookie
+      ),
       ...this.responseCookies,
-      ...this.blockedRequestCookies().map((blockedRequestCookie) => blockedRequestCookie.cookie),
-      ...this.blockedResponseCookies().map((blockedResponseCookie) => blockedResponseCookie.cookie)
+      ...this.blockedRequestCookies().map(
+        (blockedRequestCookie) => blockedRequestCookie.cookie
+      ),
+      ...this.blockedResponseCookies().map(
+        (blockedResponseCookie) => blockedResponseCookie.cookie
+      )
     ].filter((v) => !!v);
   }
   get serverTimings() {
     if (typeof this.#serverTimings === "undefined") {
-      this.#serverTimings = ServerTiming.parseHeaders(this.responseHeaders.map((x) => ({ name: x.name, value: x.value })), this.#console);
+      this.#serverTimings = ServerTiming.parseHeaders(
+        this.responseHeaders.map((x) => ({ name: x.name, value: x.value })),
+        this.#console
+      );
     }
     return this.#serverTimings;
   }
@@ -33560,7 +37250,9 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
       }
       return this.parseParameters(formData2);
     }
-    const multipartDetails = requestContentType.match(/^multipart\/form-data\s*;\s*boundary\s*=\s*(\S+)\s*$/);
+    const multipartDetails = requestContentType.match(
+      /^multipart\/form-data\s*;\s*boundary\s*=\s*(\S+)\s*$/
+    );
     if (!multipartDetails) {
       return null;
     }
@@ -33626,7 +37318,9 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
       '^\\r\\ncontent-disposition\\s*:\\s*form-data\\s*;\\s*name="([^"]*)"(?:\\s*;\\s*filename="([^"]*)")?(?:\\r\\ncontent-type\\s*:\\s*([^\\r\\n]*))?\\r\\n\\r\\n(.*)\\r\\n$',
       "is"
     );
-    const fields = data.split(new RegExp(`--${sanitizedBoundary}(?:--s*$)?`, "g"));
+    const fields = data.split(
+      new RegExp(`--${sanitizedBoundary}(?:--s*$)?`, "g")
+    );
     return fields.reduce(parseMultipartField, []);
     function parseMultipartField(result, field) {
       const [match, name, filename, contentType, value] = field.match(keyValuePattern) || [];
@@ -33666,7 +37360,10 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     return this.#contentData;
   }
   setContentDataProvider(dataProvider) {
-    console.assert(!this.#contentData, "contentData can only be set once.");
+    console.assert(
+      !this.#contentData,
+      "contentData can only be set once."
+    );
     this.#contentDataProvider = dataProvider;
   }
   requestStreamingContent() {
@@ -33678,7 +37375,9 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
       if (TextUtils24.ContentData.ContentData.isError(contentData)) {
         return contentData;
       }
-      return TextUtils24.StreamingContentData.StreamingContentData.from(contentData);
+      return TextUtils24.StreamingContentData.StreamingContentData.from(
+        contentData
+      );
     });
     return this.#streamingContentData;
   }
@@ -33690,13 +37389,23 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
   }
   async searchInContent(query, caseSensitive, isRegex) {
     if (!this.#contentDataProvider) {
-      return await NetworkManager.searchInRequest(this, query, caseSensitive, isRegex);
+      return await NetworkManager.searchInRequest(
+        this,
+        query,
+        caseSensitive,
+        isRegex
+      );
     }
     const contentData = await this.requestContentData();
     if (TextUtils24.ContentData.ContentData.isError(contentData) || !contentData.isTextContent) {
       return [];
     }
-    return TextUtils24.TextUtils.performSearchInContentData(contentData, query, caseSensitive, isRegex);
+    return TextUtils24.TextUtils.performSearchInContentData(
+      contentData,
+      query,
+      caseSensitive,
+      isRegex
+    );
   }
   requestContentType() {
     return this.requestHeaderValue("Content-Type");
@@ -33744,7 +37453,7 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
   }
   addProtocolFrameError(errorMessage, time) {
     this.addFrame({
-      type: WebSocketFrameType.Error,
+      type: "error" /* Error */,
       text: errorMessage,
       time: this.pseudoWallTime(time),
       opCode: -1,
@@ -33752,7 +37461,7 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     });
   }
   addProtocolFrame(response, time, sent) {
-    const type = sent ? WebSocketFrameType.Send : WebSocketFrameType.Receive;
+    const type = sent ? "send" /* Send */ : "receive" /* Receive */;
     this.addFrame({
       type,
       text: response.payloadData,
@@ -33763,20 +37472,25 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
   }
   addFrame(frame) {
     this.#frames.push(frame);
-    this.dispatchEventToListeners(Events10.WEBSOCKET_FRAME_ADDED, frame);
+    this.dispatchEventToListeners("WebsocketFrameAdded" /* WEBSOCKET_FRAME_ADDED */, frame);
   }
   directSocketChunks() {
     return this.#directSocketChunks;
   }
   addDirectSocketChunk(chunk) {
     this.#directSocketChunks.push(chunk);
-    this.dispatchEventToListeners(Events10.DIRECTSOCKET_CHUNK_ADDED, chunk);
+    this.dispatchEventToListeners("DirectsocketChunkAdded" /* DIRECTSOCKET_CHUNK_ADDED */, chunk);
   }
   eventSourceMessages() {
     return this.#serverSentEvents?.eventSourceMessages ?? [];
   }
   addEventSourceMessage(time, eventName, eventId, data) {
-    this.#serverSentEvents?.onProtocolEventSourceMessageReceived(eventName, data, eventId, this.pseudoWallTime(time));
+    this.#serverSentEvents?.onProtocolEventSourceMessageReceived(
+      eventName,
+      data,
+      eventId,
+      this.pseudoWallTime(time)
+    );
   }
   markAsRedirect(redirectCount) {
     this.#isRedirect = true;
@@ -33808,10 +37522,11 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
       this.setConnectTimingFromExtraInfo(extraRequestInfo.connectTiming);
     }
     this.#siteHasCookieInOtherPartition = extraRequestInfo.siteHasCookieInOtherPartition ?? false;
-    this.#hasThirdPartyCookiePhaseoutIssue = this.#blockedRequestCookies.some((item) => item.blockedReasons.includes(
-      "ThirdPartyPhaseout"
-      /* Protocol.Network.CookieBlockedReason.ThirdPartyPhaseout */
-    ));
+    this.#hasThirdPartyCookiePhaseoutIssue = this.#blockedRequestCookies.some(
+      (item) => item.blockedReasons.includes(
+        Network.CookieBlockedReason.ThirdPartyPhaseout
+      )
+    );
   }
   setAppliedNetworkConditions(appliedNetworkConditionsId) {
     this.#appliedNetworkConditionsId = appliedNetworkConditionsId;
@@ -33851,7 +37566,9 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     this.#responseCookiesPartitionKey = extraResponseInfo.cookiePartitionKey ? extraResponseInfo.cookiePartitionKey : null;
     this.#responseCookiesPartitionKeyOpaque = extraResponseInfo.cookiePartitionKeyOpaque || null;
     this.responseHeaders = extraResponseInfo.responseHeaders;
-    this.originalResponseHeaders = extraResponseInfo.responseHeaders.map((headerEntry) => ({ ...headerEntry }));
+    this.originalResponseHeaders = extraResponseInfo.responseHeaders.map(
+      (headerEntry) => ({ ...headerEntry })
+    );
     if (extraResponseInfo.responseHeadersText) {
       this.responseHeadersText = extraResponseInfo.responseHeadersText;
       if (!this.requestHeadersText()) {
@@ -33866,7 +37583,9 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
         }
         this.setRequestHeadersText(requestHeadersText);
       }
-      this.statusText = _NetworkRequest.parseStatusTextFromResponseHeadersText(extraResponseInfo.responseHeadersText);
+      this.statusText = _NetworkRequest.parseStatusTextFromResponseHeadersText(
+        extraResponseInfo.responseHeadersText
+      );
     }
     this.#remoteAddressSpace = extraResponseInfo.resourceIPAddressSpace;
     if (extraResponseInfo.statusCode) {
@@ -33879,13 +37598,15 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     }
     for (const blockedCookie of this.#blockedResponseCookies) {
       if (blockedCookie.blockedReasons.includes(
-        "NameValuePairExceedsMaxSize"
-        /* Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize */
+        Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize
       )) {
         const message = i18nString11(UIStrings11.setcookieHeaderIsIgnoredIn, {
           PH1: this.url()
         });
-        networkManager.dispatchEventToListeners(Events9.MessageGenerated, { message, requestId: this.#requestId, warning: true });
+        networkManager.dispatchEventToListeners(
+          "MessageGenerated" /* MessageGenerated */,
+          { message, requestId: this.#requestId, warning: true }
+        );
       }
     }
     const cookieModel = networkManager.target().model(CookieModel);
@@ -33901,15 +37622,17 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
         continue;
       }
       if (blockedCookie.blockedReasons.includes(
-        "ThirdPartyPhaseout"
-        /* Protocol.Network.SetCookieBlockedReason.ThirdPartyPhaseout */
+        Network.SetCookieBlockedReason.ThirdPartyPhaseout
       )) {
         this.#hasThirdPartyCookiePhaseoutIssue = true;
       }
-      cookieModel.addBlockedCookie(cookie, blockedCookie.blockedReasons.map((blockedReason) => ({
-        attribute: setCookieBlockedReasonToAttribute(blockedReason),
-        uiString: setCookieBlockedReasonToUiString(blockedReason)
-      })));
+      cookieModel.addBlockedCookie(
+        cookie,
+        blockedCookie.blockedReasons.map((blockedReason) => ({
+          attribute: setCookieBlockedReasonToAttribute(blockedReason),
+          uiString: setCookieBlockedReasonToUiString(blockedReason)
+        }))
+      );
     }
   }
   hasExtraResponseInfo() {
@@ -33922,7 +37645,9 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     return this.#exemptedResponseCookies;
   }
   nonBlockedResponseCookies() {
-    const blockedCookieLines = this.blockedResponseCookies().map((blockedCookie) => blockedCookie.cookieLine);
+    const blockedCookieLines = this.blockedResponseCookies().map(
+      (blockedCookie) => blockedCookie.cookieLine
+    );
     const responseCookies = this.responseCookies.filter((cookie) => {
       const index = blockedCookieLines.indexOf(cookie.getCookieLine());
       if (index !== -1) {
@@ -33953,7 +37678,7 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
   }
   setTrustTokenOperationDoneEvent(doneEvent) {
     this.#trustTokenOperationDoneEvent = doneEvent;
-    this.dispatchEventToListeners(Events10.TRUST_TOKEN_RESULT_ADDED);
+    this.dispatchEventToListeners("TrustTokenResultAdded" /* TRUST_TOKEN_RESULT_ADDED */);
   }
   trustTokenOperationDoneEvent() {
     return this.#trustTokenOperationDoneEvent;
@@ -33988,7 +37713,12 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
   hasThirdPartyCookiePhaseoutIssue() {
     return this.#hasThirdPartyCookiePhaseoutIssue;
   }
-  addDataReceivedEvent({ timestamp, dataLength, encodedDataLength, data }) {
+  addDataReceivedEvent({
+    timestamp,
+    dataLength,
+    encodedDataLength,
+    data
+  }) {
     this.resourceSize += dataLength;
     if (encodedDataLength !== -1) {
       this.increaseTransferSize(encodedDataLength);
@@ -34012,179 +37742,200 @@ var NetworkRequest = class _NetworkRequest extends Common29.ObjectWrapper.Object
     return this.responseReceivedPromise;
   }
 };
-var Events10;
-(function(Events12) {
-  Events12["FINISHED_LOADING"] = "FinishedLoading";
-  Events12["TIMING_CHANGED"] = "TimingChanged";
-  Events12["REMOTE_ADDRESS_CHANGED"] = "RemoteAddressChanged";
-  Events12["REQUEST_HEADERS_CHANGED"] = "RequestHeadersChanged";
-  Events12["RESPONSE_HEADERS_CHANGED"] = "ResponseHeadersChanged";
-  Events12["WEBSOCKET_FRAME_ADDED"] = "WebsocketFrameAdded";
-  Events12["DIRECTSOCKET_CHUNK_ADDED"] = "DirectsocketChunkAdded";
-  Events12["EVENT_SOURCE_MESSAGE_ADDED"] = "EventSourceMessageAdded";
-  Events12["TRUST_TOKEN_RESULT_ADDED"] = "TrustTokenResultAdded";
-})(Events10 || (Events10 = {}));
-var WebSocketFrameType;
-(function(WebSocketFrameType2) {
+var Events19 = /* @__PURE__ */ ((Events35) => {
+  Events35["FINISHED_LOADING"] = "FinishedLoading";
+  Events35["TIMING_CHANGED"] = "TimingChanged";
+  Events35["REMOTE_ADDRESS_CHANGED"] = "RemoteAddressChanged";
+  Events35["REQUEST_HEADERS_CHANGED"] = "RequestHeadersChanged";
+  Events35["RESPONSE_HEADERS_CHANGED"] = "ResponseHeadersChanged";
+  Events35["WEBSOCKET_FRAME_ADDED"] = "WebsocketFrameAdded";
+  Events35["DIRECTSOCKET_CHUNK_ADDED"] = "DirectsocketChunkAdded";
+  Events35["EVENT_SOURCE_MESSAGE_ADDED"] = "EventSourceMessageAdded";
+  Events35["TRUST_TOKEN_RESULT_ADDED"] = "TrustTokenResultAdded";
+  return Events35;
+})(Events19 || {});
+var InitiatorType = /* @__PURE__ */ ((InitiatorType2) => {
+  InitiatorType2["OTHER"] = "other";
+  InitiatorType2["PARSER"] = "parser";
+  InitiatorType2["REDIRECT"] = "redirect";
+  InitiatorType2["SCRIPT"] = "script";
+  InitiatorType2["PRELOAD"] = "preload";
+  InitiatorType2["SIGNED_EXCHANGE"] = "signedExchange";
+  InitiatorType2["PREFLIGHT"] = "preflight";
+  return InitiatorType2;
+})(InitiatorType || {});
+var WebSocketFrameType = /* @__PURE__ */ ((WebSocketFrameType2) => {
   WebSocketFrameType2["Send"] = "send";
   WebSocketFrameType2["Receive"] = "receive";
   WebSocketFrameType2["Error"] = "error";
-})(WebSocketFrameType || (WebSocketFrameType = {}));
+  return WebSocketFrameType2;
+})(WebSocketFrameType || {});
 var cookieExemptionReasonToUiString = function(exemptionReason) {
   switch (exemptionReason) {
-    case "UserSetting":
+    case Network.CookieExemptionReason.UserSetting:
       return i18nString11(UIStrings11.exemptionReasonUserSetting);
-    case "EnterprisePolicy":
+    case Network.CookieExemptionReason.EnterprisePolicy:
       return i18nString11(UIStrings11.exemptionReasonEnterprisePolicy);
-    case "StorageAccess":
+    case Network.CookieExemptionReason.StorageAccess:
       return i18nString11(UIStrings11.exemptionReasonStorageAccessAPI);
-    case "TopLevelStorageAccess":
+    case Network.CookieExemptionReason.TopLevelStorageAccess:
       return i18nString11(UIStrings11.exemptionReasonTopLevelStorageAccessAPI);
-    case "Scheme":
+    case Network.CookieExemptionReason.Scheme:
       return i18nString11(UIStrings11.exemptionReasonScheme);
   }
   return "";
 };
 var cookieBlockedReasonToUiString = function(blockedReason) {
   switch (blockedReason) {
-    case "SecureOnly":
+    case Network.CookieBlockedReason.SecureOnly:
       return i18nString11(UIStrings11.secureOnly);
-    case "NotOnPath":
+    case Network.CookieBlockedReason.NotOnPath:
       return i18nString11(UIStrings11.notOnPath);
-    case "DomainMismatch":
+    case Network.CookieBlockedReason.DomainMismatch:
       return i18nString11(UIStrings11.domainMismatch);
-    case "SameSiteNoneInsecure":
+    case Network.CookieBlockedReason.SameSiteNoneInsecure:
       return i18nString11(UIStrings11.sameSiteNoneInsecure);
-    case "UserPreferences":
+    case Network.CookieBlockedReason.UserPreferences:
       return i18nString11(UIStrings11.userPreferences);
-    case "UnknownError":
+    case Network.CookieBlockedReason.UnknownError:
       return i18nString11(UIStrings11.unknownError);
-    case "SchemefulSameSiteStrict":
+    case Network.CookieBlockedReason.SchemefulSameSiteStrict:
       return i18nString11(UIStrings11.sameSiteStrict);
-    case "SchemefulSameSiteLax":
+    case Network.CookieBlockedReason.SchemefulSameSiteLax:
       return i18nString11(UIStrings11.sameSiteLax);
-    case "SchemefulSameSiteUnspecifiedTreatedAsLax":
+    case Network.CookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax:
       return i18nString11(UIStrings11.sameSiteUnspecifiedTreatedAsLax);
-    case "NameValuePairExceedsMaxSize":
+    case Network.CookieBlockedReason.NameValuePairExceedsMaxSize:
       return i18nString11(UIStrings11.nameValuePairExceedsMaxSize);
-    case "ThirdPartyPhaseout":
+    case Network.CookieBlockedReason.ThirdPartyPhaseout:
       return i18nString11(UIStrings11.thirdPartyPhaseout);
   }
   return "";
 };
 var setCookieBlockedReasonToUiString = function(blockedReason) {
   switch (blockedReason) {
-    case "SecureOnly":
+    case Network.SetCookieBlockedReason.SecureOnly:
       return i18nString11(UIStrings11.blockedReasonSecureOnly);
-    case "SameSiteNoneInsecure":
+    case Network.SetCookieBlockedReason.SameSiteNoneInsecure:
       return i18nString11(UIStrings11.blockedReasonSameSiteNoneInsecure);
-    case "UserPreferences":
+    case Network.SetCookieBlockedReason.UserPreferences:
       return i18nString11(UIStrings11.thisSetcookieWasBlockedDueToUser);
-    case "SyntaxError":
+    case Network.SetCookieBlockedReason.SyntaxError:
       return i18nString11(UIStrings11.thisSetcookieHadInvalidSyntax);
-    case "SchemeNotSupported":
+    case Network.SetCookieBlockedReason.SchemeNotSupported:
       return i18nString11(UIStrings11.theSchemeOfThisConnectionIsNot);
-    case "OverwriteSecure":
+    case Network.SetCookieBlockedReason.OverwriteSecure:
       return i18nString11(UIStrings11.blockedReasonOverwriteSecure);
-    case "InvalidDomain":
+    case Network.SetCookieBlockedReason.InvalidDomain:
       return i18nString11(UIStrings11.blockedReasonInvalidDomain);
-    case "InvalidPrefix":
+    case Network.SetCookieBlockedReason.InvalidPrefix:
       return i18nString11(UIStrings11.blockedReasonInvalidPrefix);
-    case "UnknownError":
+    case Network.SetCookieBlockedReason.UnknownError:
       return i18nString11(UIStrings11.anUnknownErrorWasEncounteredWhenTrying);
-    case "SchemefulSameSiteStrict":
+    case Network.SetCookieBlockedReason.SchemefulSameSiteStrict:
       return i18nString11(UIStrings11.blockedReasonSameSiteStrictLax, {
         PH1: "SameSite=Strict"
       });
-    case "SchemefulSameSiteLax":
+    case Network.SetCookieBlockedReason.SchemefulSameSiteLax:
       return i18nString11(UIStrings11.blockedReasonSameSiteStrictLax, {
         PH1: "SameSite=Lax"
       });
-    case "SchemefulSameSiteUnspecifiedTreatedAsLax":
+    case Network.SetCookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax:
       return i18nString11(UIStrings11.blockedReasonSameSiteUnspecifiedTreatedAsLax);
-    case "NameValuePairExceedsMaxSize":
-      return i18nString11(UIStrings11.thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize);
-    case "DisallowedCharacter":
+    case Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize:
+      return i18nString11(
+        UIStrings11.thisSetcookieWasBlockedBecauseTheNameValuePairExceedsMaxSize
+      );
+    case Network.SetCookieBlockedReason.DisallowedCharacter:
       return i18nString11(UIStrings11.thisSetcookieHadADisallowedCharacter);
-    case "ThirdPartyPhaseout":
+    case Network.SetCookieBlockedReason.ThirdPartyPhaseout:
       return i18nString11(UIStrings11.thisSetcookieWasBlockedDueThirdPartyPhaseout);
   }
   return "";
 };
 var cookieBlockedReasonToAttribute = function(blockedReason) {
   switch (blockedReason) {
-    case "SecureOnly":
-      return "secure";
-    case "NotOnPath":
-      return "path";
-    case "DomainMismatch":
-      return "domain";
-    case "SameSiteNoneInsecure":
-    case "SchemefulSameSiteStrict":
-    case "SchemefulSameSiteLax":
-    case "SchemefulSameSiteUnspecifiedTreatedAsLax":
-      return "same-site";
-    case "NameValuePairExceedsMaxSize":
-    case "UserPreferences":
-    case "ThirdPartyPhaseout":
-    case "UnknownError":
+    case Network.CookieBlockedReason.SecureOnly:
+      return "secure" /* SECURE */;
+    case Network.CookieBlockedReason.NotOnPath:
+      return "path" /* PATH */;
+    case Network.CookieBlockedReason.DomainMismatch:
+      return "domain" /* DOMAIN */;
+    case Network.CookieBlockedReason.SameSiteNoneInsecure:
+    case Network.CookieBlockedReason.SchemefulSameSiteStrict:
+    case Network.CookieBlockedReason.SchemefulSameSiteLax:
+    case Network.CookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax:
+      return "same-site" /* SAME_SITE */;
+    case Network.CookieBlockedReason.NameValuePairExceedsMaxSize:
+    case Network.CookieBlockedReason.UserPreferences:
+    case Network.CookieBlockedReason.ThirdPartyPhaseout:
+    case Network.CookieBlockedReason.UnknownError:
       return null;
   }
   return null;
 };
 var setCookieBlockedReasonToAttribute = function(blockedReason) {
   switch (blockedReason) {
-    case "SecureOnly":
-    case "OverwriteSecure":
-      return "secure";
-    case "SameSiteNoneInsecure":
-    case "SchemefulSameSiteStrict":
-    case "SchemefulSameSiteLax":
-    case "SchemefulSameSiteUnspecifiedTreatedAsLax":
-      return "same-site";
-    case "InvalidDomain":
-      return "domain";
-    case "InvalidPrefix":
-      return "name";
-    case "NameValuePairExceedsMaxSize":
-    case "UserPreferences":
-    case "ThirdPartyPhaseout":
-    case "SyntaxError":
-    case "SchemeNotSupported":
-    case "UnknownError":
-    case "DisallowedCharacter":
+    case Network.SetCookieBlockedReason.SecureOnly:
+    case Network.SetCookieBlockedReason.OverwriteSecure:
+      return "secure" /* SECURE */;
+    case Network.SetCookieBlockedReason.SameSiteNoneInsecure:
+    case Network.SetCookieBlockedReason.SchemefulSameSiteStrict:
+    case Network.SetCookieBlockedReason.SchemefulSameSiteLax:
+    case Network.SetCookieBlockedReason.SchemefulSameSiteUnspecifiedTreatedAsLax:
+      return "same-site" /* SAME_SITE */;
+    case Network.SetCookieBlockedReason.InvalidDomain:
+      return "domain" /* DOMAIN */;
+    case Network.SetCookieBlockedReason.InvalidPrefix:
+      return "name" /* NAME */;
+    case Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize:
+    case Network.SetCookieBlockedReason.UserPreferences:
+    case Network.SetCookieBlockedReason.ThirdPartyPhaseout:
+    case Network.SetCookieBlockedReason.SyntaxError:
+    case Network.SetCookieBlockedReason.SchemeNotSupported:
+    case Network.SetCookieBlockedReason.UnknownError:
+    case Network.SetCookieBlockedReason.DisallowedCharacter:
       return null;
   }
   return null;
 };
-var DirectSocketType;
-(function(DirectSocketType2) {
+var DirectSocketType = /* @__PURE__ */ ((DirectSocketType2) => {
   DirectSocketType2[DirectSocketType2["TCP"] = 1] = "TCP";
   DirectSocketType2[DirectSocketType2["UDP_BOUND"] = 2] = "UDP_BOUND";
   DirectSocketType2[DirectSocketType2["UDP_CONNECTED"] = 3] = "UDP_CONNECTED";
-})(DirectSocketType || (DirectSocketType = {}));
-var DirectSocketStatus;
-(function(DirectSocketStatus2) {
+  return DirectSocketType2;
+})(DirectSocketType || {});
+var DirectSocketStatus = /* @__PURE__ */ ((DirectSocketStatus2) => {
   DirectSocketStatus2[DirectSocketStatus2["OPENING"] = 1] = "OPENING";
   DirectSocketStatus2[DirectSocketStatus2["OPEN"] = 2] = "OPEN";
   DirectSocketStatus2[DirectSocketStatus2["CLOSED"] = 3] = "CLOSED";
   DirectSocketStatus2[DirectSocketStatus2["ABORTED"] = 4] = "ABORTED";
-})(DirectSocketStatus || (DirectSocketStatus = {}));
-var DirectSocketChunkType;
-(function(DirectSocketChunkType2) {
+  return DirectSocketStatus2;
+})(DirectSocketStatus || {});
+var DirectSocketChunkType = /* @__PURE__ */ ((DirectSocketChunkType2) => {
   DirectSocketChunkType2["SEND"] = "send";
   DirectSocketChunkType2["RECEIVE"] = "receive";
-})(DirectSocketChunkType || (DirectSocketChunkType = {}));
+  return DirectSocketChunkType2;
+})(DirectSocketChunkType || {});
 
-// gen/front_end/core/sdk/AccessibilityModel.js
+// ../../front_end/core/sdk/AccessibilityModel.ts
 var AccessibilityModel_exports = {};
 __export(AccessibilityModel_exports, {
   AccessibilityModel: () => AccessibilityModel,
   AccessibilityNode: () => AccessibilityNode,
+  CoreAxPropertyName: () => CoreAxPropertyName,
+  Events: () => Events21,
   getNodeAndAncestorsFromDOMNode: () => getNodeAndAncestorsFromDOMNode,
   getRootNode: () => getRootNode,
   isPrintableType: () => isPrintableType
 });
+var CoreAxPropertyName = /* @__PURE__ */ ((CoreAxPropertyName2) => {
+  CoreAxPropertyName2["NAME"] = "name";
+  CoreAxPropertyName2["DESCRIPTION"] = "description";
+  CoreAxPropertyName2["VALUE"] = "value";
+  CoreAxPropertyName2["ROLE"] = "role";
+  return CoreAxPropertyName2;
+})(CoreAxPropertyName || {});
 var AccessibilityNode = class {
   #accessibilityModel;
   #frameManager;
@@ -34250,13 +38001,13 @@ var AccessibilityNode = class {
   coreProperties() {
     const properties = [];
     if (this.#name) {
-      properties.push({ name: "name", value: this.#name });
+      properties.push({ name: "name" /* NAME */, value: this.#name });
     }
     if (this.#description) {
-      properties.push({ name: "description", value: this.#description });
+      properties.push({ name: "description" /* DESCRIPTION */, value: this.#description });
     }
     if (this.#value) {
-      properties.push({ name: "value", value: this.#value });
+      properties.push({ name: "value" /* VALUE */, value: this.#value });
     }
     return properties;
   }
@@ -34380,6 +38131,10 @@ var AccessibilityNode = class {
     return lines.join("");
   }
 };
+var Events21 = /* @__PURE__ */ ((Events35) => {
+  Events35["TREE_UPDATED"] = "TreeUpdated";
+  return Events35;
+})(Events21 || {});
 var AccessibilityModel = class extends SDKModel {
   agent;
   #axIdToAXNode = /* @__PURE__ */ new Map();
@@ -34394,13 +38149,13 @@ var AccessibilityModel = class extends SDKModel {
     void this.resumeModel();
     const domModel = target.model(DOMModel);
     if (domModel) {
-      domModel.addEventListener(Events7.NodeRemoved, () => {
+      domModel.addEventListener("NodeRemoved" /* NodeRemoved */, () => {
         this.clear();
-        this.dispatchEventToListeners("TreeUpdated", {});
+        this.dispatchEventToListeners("TreeUpdated" /* TREE_UPDATED */, {});
       });
-      domModel.addEventListener(Events7.NodeInserted, () => {
+      domModel.addEventListener("NodeInserted" /* NodeInserted */, () => {
         this.clear();
-        this.dispatchEventToListeners("TreeUpdated", {});
+        this.dispatchEventToListeners("TreeUpdated" /* TREE_UPDATED */, {});
       });
     }
   }
@@ -34429,11 +38184,11 @@ var AccessibilityModel = class extends SDKModel {
   loadComplete({ root }) {
     this.clear();
     this.#root = new AccessibilityNode(this, root);
-    this.dispatchEventToListeners("TreeUpdated", { root: this.#root });
+    this.dispatchEventToListeners("TreeUpdated" /* TREE_UPDATED */, { root: this.#root });
   }
   nodesUpdated({ nodes }) {
     this.createNodesFromPayload(nodes);
-    this.dispatchEventToListeners("TreeUpdated", {});
+    this.dispatchEventToListeners("TreeUpdated" /* TREE_UPDATED */, {});
     return;
   }
   createNodesFromPayload(payloadNodes) {
@@ -34518,7 +38273,7 @@ var AccessibilityModel = class extends SDKModel {
     return this.agent;
   }
 };
-SDKModel.register(AccessibilityModel, { capabilities: 2, autostart: false });
+SDKModel.register(AccessibilityModel, { capabilities: 2 /* DOM */, autostart: false });
 function getModel(frameId, frameManager) {
   const frame = frameManager.getFrame(frameId);
   const model = frame?.resourceTreeModel().target().model(AccessibilityModel);
@@ -34573,17 +38328,17 @@ async function getNodeAndAncestorsFromDOMNode(domNode) {
 }
 function isPrintableType(valueType) {
   switch (valueType) {
-    case "boolean":
-    case "booleanOrUndefined":
-    case "string":
-    case "number":
+    case Accessibility.AXValueType.Boolean:
+    case Accessibility.AXValueType.BooleanOrUndefined:
+    case Accessibility.AXValueType.String:
+    case Accessibility.AXValueType.Number:
       return true;
     default:
       return false;
   }
 }
 
-// gen/front_end/core/sdk/AnimationModel.js
+// ../../front_end/core/sdk/AnimationModel.ts
 var AnimationModel_exports = {};
 __export(AnimationModel_exports, {
   AnimationDOMNode: () => AnimationDOMNode,
@@ -34592,11 +38347,11 @@ __export(AnimationModel_exports, {
   AnimationGroup: () => AnimationGroup,
   AnimationImpl: () => AnimationImpl,
   AnimationModel: () => AnimationModel,
-  Events: () => Events11,
+  Events: () => Events22,
   KeyframeStyle: () => KeyframeStyle,
   KeyframesRule: () => KeyframesRule
 });
-import * as Common30 from "./../common/common.js";
+import * as Common30 from "../common/common.js";
 var DEVTOOLS_ANIMATIONS_WORLD_NAME = "devtools_animations";
 var REPORT_SCROLL_POSITION_BINDING_NAME = "__devtools_report_scroll_position__";
 var getScrollListenerNameInPage = (id) => `__devtools_scroll_listener_${id}__`;
@@ -34641,7 +38396,7 @@ var AnimationDOMNode = class _AnimationDOMNode {
       name: REPORT_SCROLL_POSITION_BINDING_NAME,
       executionContextName: DEVTOOLS_ANIMATIONS_WORLD_NAME
     });
-    runtimeModel.addEventListener(Events3.BindingCalled, this.#scrollBindingListener);
+    runtimeModel.addEventListener("BindingCalled" /* BindingCalled */, this.#scrollBindingListener);
   }
   async #removeReportScrollPositionBinding() {
     if (!this.#scrollBindingListener) {
@@ -34651,7 +38406,7 @@ var AnimationDOMNode = class _AnimationDOMNode {
     await runtimeModel.removeBinding({
       name: REPORT_SCROLL_POSITION_BINDING_NAME
     });
-    runtimeModel.removeEventListener(Events3.BindingCalled, this.#scrollBindingListener);
+    runtimeModel.removeEventListener("BindingCalled" /* BindingCalled */, this.#scrollBindingListener);
     this.#scrollBindingListener = void 0;
   }
   async addScrollEventListener(onScroll) {
@@ -34678,7 +38433,9 @@ var AnimationDOMNode = class _AnimationDOMNode {
       }
       const scrollingElement = "scrollingElement" in this ? this.scrollingElement : this;
       this[scrollListenerNameInPage] = () => {
-        globalThis[reportScrollPositionBindingName](JSON.stringify({ scrollTop: scrollingElement.scrollTop, scrollLeft: scrollingElement.scrollLeft, id: id2 }));
+        globalThis[reportScrollPositionBindingName](
+          JSON.stringify({ scrollTop: scrollingElement.scrollTop, scrollLeft: scrollingElement.scrollLeft, id: id2 })
+        );
       };
       this.addEventListener("scroll", this[scrollListenerNameInPage], true);
     }
@@ -34688,7 +38445,10 @@ var AnimationDOMNode = class _AnimationDOMNode {
     if (!object) {
       return;
     }
-    await object.callFunction(removeScrollListenerInPage, [getScrollListenerNameInPage(id)].map((arg) => RemoteObject.toCallArgument(arg)));
+    await object.callFunction(
+      removeScrollListenerInPage,
+      [getScrollListenerNameInPage(id)].map((arg) => RemoteObject.toCallArgument(arg))
+    );
     object.release();
     this.#scrollListenersById.delete(id);
     if (this.#scrollListenersById.size === 0) {
@@ -34778,7 +38538,9 @@ function shouldGroupAnimations(firstAnimation, anim) {
   const firstAnimationTimeline = firstAnimation.viewOrScrollTimeline();
   const animationTimeline = anim.viewOrScrollTimeline();
   if (firstAnimationTimeline) {
-    return Boolean(animationTimeline && firstAnimationTimeline.sourceNodeId === animationTimeline.sourceNodeId && firstAnimationTimeline.axis === animationTimeline.axis);
+    return Boolean(
+      animationTimeline && firstAnimationTimeline.sourceNodeId === animationTimeline.sourceNodeId && firstAnimationTimeline.axis === animationTimeline.axis
+    );
   }
   return !animationTimeline && firstAnimation.startTime() === anim.startTime();
 }
@@ -34799,7 +38561,7 @@ var AnimationModel = class extends SDKModel {
       void this.agent.invoke_enable();
     }
     const resourceTreeModel = target.model(ResourceTreeModel);
-    resourceTreeModel.addEventListener(Events2.PrimaryPageChanged, this.reset, this);
+    resourceTreeModel.addEventListener("PrimaryPageChanged" /* PrimaryPageChanged */, this.reset, this);
     this.#flushPendingAnimations = Common30.Debouncer.debounce(() => {
       while (this.#pendingAnimations.size) {
         this.matchExistingGroups(this.createGroupFromPendingAnimations());
@@ -34810,7 +38572,7 @@ var AnimationModel = class extends SDKModel {
     this.#animationsById.clear();
     this.animationGroups.clear();
     this.#pendingAnimations.clear();
-    this.dispatchEventToListeners(Events11.ModelReset);
+    this.dispatchEventToListeners("ModelReset" /* ModelReset */);
   }
   async devicePixelRatio() {
     const evaluateResult = await this.target().runtimeAgent().invoke_evaluate({ expression: "window.devicePixelRatio" });
@@ -34849,7 +38611,7 @@ var AnimationModel = class extends SDKModel {
       return;
     }
     await foundAnimation.setPayload(payload);
-    this.dispatchEventToListeners(Events11.AnimationGroupUpdated, foundAnimationGroup);
+    this.dispatchEventToListeners("AnimationGroupUpdated" /* AnimationGroupUpdated */, foundAnimationGroup);
   }
   async animationStarted(payload) {
     if (!payload.source?.backendNodeId) {
@@ -34881,9 +38643,9 @@ var AnimationModel = class extends SDKModel {
     }
     if (!matchedGroup) {
       this.animationGroups.set(incomingGroup.id(), incomingGroup);
-      this.dispatchEventToListeners(Events11.AnimationGroupStarted, incomingGroup);
+      this.dispatchEventToListeners("AnimationGroupStarted" /* AnimationGroupStarted */, incomingGroup);
     } else {
-      this.dispatchEventToListeners(Events11.AnimationGroupUpdated, matchedGroup);
+      this.dispatchEventToListeners("AnimationGroupUpdated" /* AnimationGroupUpdated */, matchedGroup);
     }
     return Boolean(matchedGroup);
   }
@@ -34923,12 +38685,12 @@ var AnimationModel = class extends SDKModel {
     await this.agent.invoke_enable();
   }
 };
-var Events11;
-(function(Events12) {
-  Events12["AnimationGroupStarted"] = "AnimationGroupStarted";
-  Events12["AnimationGroupUpdated"] = "AnimationGroupUpdated";
-  Events12["ModelReset"] = "ModelReset";
-})(Events11 || (Events11 = {}));
+var Events22 = /* @__PURE__ */ ((Events35) => {
+  Events35["AnimationGroupStarted"] = "AnimationGroupStarted";
+  Events35["AnimationGroupUpdated"] = "AnimationGroupUpdated";
+  Events35["ModelReset"] = "ModelReset";
+  return Events35;
+})(Events22 || {});
 var AnimationImpl = class _AnimationImpl {
   #animationModel;
   #payload;
@@ -34996,7 +38758,10 @@ var AnimationImpl = class _AnimationImpl {
   startTime() {
     const viewOrScrollTimeline = this.viewOrScrollTimeline();
     if (viewOrScrollTimeline) {
-      return this.percentageToPixels(this.playbackRate() > 0 ? this.#payload.startTime : 100 - this.#payload.startTime, viewOrScrollTimeline) + (this.viewOrScrollTimeline()?.startOffset ?? 0);
+      return this.percentageToPixels(
+        this.playbackRate() > 0 ? this.#payload.startTime : 100 - this.#payload.startTime,
+        viewOrScrollTimeline
+      ) + (this.viewOrScrollTimeline()?.startOffset ?? 0);
     }
     return this.#payload.startTime;
   }
@@ -35074,9 +38839,9 @@ var AnimationImpl = class _AnimationImpl {
   }
   updateNodeStyle(duration, delay, node) {
     let animationPrefix;
-    if (this.type() === "CSSTransition") {
+    if (this.type() === Animation.AnimationType.CSSTransition) {
       animationPrefix = "transition-";
-    } else if (this.type() === "CSSAnimation") {
+    } else if (this.type() === Animation.AnimationType.CSSAnimation) {
       animationPrefix = "animation-";
     } else {
       return;
@@ -35318,7 +39083,7 @@ var AnimationGroup = class {
   matches(group) {
     function extractId(anim) {
       const timelineId = (anim.viewOrScrollTimeline()?.sourceNodeId ?? "") + (anim.viewOrScrollTimeline()?.axis ?? "");
-      const regularId = anim.type() === "WebAnimation" ? anim.type() + anim.id() : anim.cssId();
+      const regularId = anim.type() === Animation.AnimationType.WebAnimation ? anim.type() + anim.id() : anim.cssId();
       return regularId + timelineId;
     }
     if (this.#animations.length !== group.#animations.length) {
@@ -35364,14 +39129,15 @@ var AnimationDispatcher = class {
     void this.#animationModel.animationUpdated(animation);
   }
 };
-SDKModel.register(AnimationModel, { capabilities: 2, autostart: true });
+SDKModel.register(AnimationModel, { capabilities: 2 /* DOM */, autostart: true });
 
-// gen/front_end/core/sdk/AutofillModel.js
+// ../../front_end/core/sdk/AutofillModel.ts
 var AutofillModel_exports = {};
 __export(AutofillModel_exports, {
-  AutofillModel: () => AutofillModel
+  AutofillModel: () => AutofillModel,
+  Events: () => Events23
 });
-import * as Host8 from "./../host/host.js";
+import * as Host8 from "../host/host.js";
 var AutofillModel = class extends SDKModel {
   agent;
   #enabled;
@@ -35390,114 +39156,116 @@ var AutofillModel = class extends SDKModel {
     super.dispose();
   }
   #setTestAddresses() {
-    void this.agent.invoke_setAddresses({
-      addresses: this.#showTestAddressesInAutofillMenu.get() ? [
-        {
-          fields: [
-            { name: "ADDRESS_HOME_COUNTRY", value: "US" },
-            { name: "NAME_FULL", value: "Jon Stewart Doe" },
-            { name: "NAME_FIRST", value: "Jon" },
-            { name: "NAME_MIDDLE", value: "Stewart" },
-            { name: "NAME_LAST", value: "Doe" },
-            { name: "COMPANY_NAME", value: "Fake Company" },
-            { name: "ADDRESS_HOME_LINE1", value: "1600 Fake Street" },
-            { name: "ADDRESS_HOME_LINE2", value: "Apartment 1" },
-            { name: "ADDRESS_HOME_ZIP", value: "94043" },
-            { name: "ADDRESS_HOME_CITY", value: "Mountain View" },
-            { name: "ADDRESS_HOME_STATE", value: "CA" },
-            { name: "EMAIL_ADDRESS", value: "test@example.us" },
-            { name: "PHONE_HOME_WHOLE_NUMBER", value: "+16019521325" }
-          ]
-        },
-        {
-          fields: [
-            { name: "ADDRESS_HOME_COUNTRY", value: "BR" },
-            { name: "NAME_FULL", value: "Jo\xE3o Souza Silva" },
-            { name: "NAME_FIRST", value: "Jo\xE3o" },
-            { name: "NAME_LAST", value: "Souza Silva" },
-            { name: "NAME_LAST_FIRST", value: "Souza" },
-            { name: "NAME_LAST_SECOND", value: "Silva" },
-            { name: "COMPANY_NAME", value: "Empresa Falsa" },
-            { name: "ADDRESS_HOME_STREET_ADDRESS", value: "Rua Inexistente, 2000\nAndar 2, Apartamento 1" },
-            { name: "ADDRESS_HOME_STREET_LOCATION", value: "Rua Inexistente, 2000" },
-            { name: "ADDRESS_HOME_STREET_NAME", value: "Rua Inexistente" },
-            { name: "ADDRESS_HOME_HOUSE_NUMBER", value: "2000" },
-            { name: "ADDRESS_HOME_SUBPREMISE", value: "Andar 2, Apartamento 1" },
-            { name: "ADDRESS_HOME_APT_NUM", value: "1" },
-            { name: "ADDRESS_HOME_FLOOR", value: "2" },
-            { name: "ADDRESS_HOME_APT", value: "Apartamento 1" },
-            { name: "ADDRESS_HOME_APT_TYPE", value: "Apartamento" },
-            { name: "ADDRESS_HOME_APT_NUM", value: "1" },
-            { name: "ADDRESS_HOME_DEPENDENT_LOCALITY", value: "Santa Efig\xEAnia" },
-            { name: "ADDRESS_HOME_LANDMARK", value: "Pr\xF3ximo \xE0 esta\xE7\xE3o Santa Efig\xEAnia" },
-            { name: "ADDRESS_HOME_OVERFLOW", value: "Andar 2, Apartamento 1" },
-            { name: "ADDRESS_HOME_ZIP", value: "30260-080" },
-            { name: "ADDRESS_HOME_CITY", value: "Belo Horizonte" },
-            { name: "ADDRESS_HOME_STATE", value: "MG" },
-            { name: "EMAIL_ADDRESS", value: "teste@exemplo.us" },
-            { name: "PHONE_HOME_WHOLE_NUMBER", value: "+553121286800" }
-          ]
-        },
-        {
-          fields: [
-            { name: "ADDRESS_HOME_COUNTRY", value: "MX" },
-            { name: "NAME_FULL", value: "Juan Francisco Garc\xEDa Flores" },
-            { name: "NAME_FIRST", value: "Juan Francisco" },
-            { name: "NAME_LAST", value: "Garc\xEDa Flores" },
-            { name: "NAME_LAST_FIRST", value: "Garc\xEDa" },
-            { name: "NAME_LAST_SECOND", value: "Flores" },
-            { name: "COMPANY_NAME", value: "Empresa Falsa" },
-            {
-              name: "ADDRESS_HOME_STREET_ADDRESS",
-              value: "C. Falsa 445\nPiso 2, Apartamento 1\nEntre calle Volc\xE1n y calle Montes Blancos, cerca de la estaci\xF3n de metro"
-            },
-            { name: "ADDRESS_HOME_STREET_LOCATION", value: "C. Falsa 445" },
-            { name: "ADDRESS_HOME_STREET_NAME", value: "C. Falsa" },
-            { name: "ADDRESS_HOME_HOUSE_NUMBER", value: "445" },
-            { name: "ADDRESS_HOME_SUBPREMISE", value: "Piso 2, Apartamento 1" },
-            { name: "ADDRESS_HOME_FLOOR", value: "2" },
-            { name: "ADDRESS_HOME_APT", value: "Apartamento 1" },
-            { name: "ADDRESS_HOME_APT_TYPE", value: "Apartamento" },
-            { name: "ADDRESS_HOME_APT_NUM", value: "1" },
-            { name: "ADDRESS_HOME_DEPENDENT_LOCALITY", value: "Lomas de Chapultepec" },
-            {
-              name: "ADDRESS_HOME_OVERFLOW",
-              value: "Entre calle Volc\xE1n y calle Montes Celestes, cerca de la estaci\xF3n de metro"
-            },
-            {
-              name: "ADDRESS_HOME_BETWEEN_STREETS_OR_LANDMARK",
-              value: "Entre calle Volc\xE1n y calle Montes Blancos, cerca de la estaci\xF3n de metro"
-            },
-            { name: "ADDRESS_HOME_LANDMARK", value: "Cerca de la estaci\xF3n de metro" },
-            { name: "ADDRESS_HOME_BETWEEN_STREETS", value: "Entre calle Volc\xE1n y calle Montes Blancos" },
-            { name: "ADDRESS_HOME_BETWEEN_STREETS_1", value: "calle Volc\xE1n" },
-            { name: "ADDRESS_HOME_BETWEEN_STREETS_2", value: "calle Montes Blancos" },
-            { name: "ADDRESS_HOME_ADMIN_LEVEL2", value: "Miguel Hidalgo" },
-            { name: "ADDRESS_HOME_ZIP", value: "11001" },
-            { name: "ADDRESS_HOME_CITY", value: "Ciudad de M\xE9xico" },
-            { name: "ADDRESS_HOME_STATE", value: "Distrito Federal" },
-            { name: "EMAIL_ADDRESS", value: "ejemplo@ejemplo.mx" },
-            { name: "PHONE_HOME_WHOLE_NUMBER", value: "+525553428400" }
-          ]
-        },
-        {
-          fields: [
-            { name: "ADDRESS_HOME_COUNTRY", value: "DE" },
-            { name: "NAME_FULL", value: "Gottfried Wilhelm Leibniz" },
-            { name: "NAME_FIRST", value: "Gottfried" },
-            { name: "NAME_MIDDLE", value: "Wilhelm" },
-            { name: "NAME_LAST", value: "Leibniz" },
-            { name: "COMPANY_NAME", value: "Erfundenes Unternehmen" },
-            { name: "ADDRESS_HOME_LINE1", value: "Erfundene Stra\xDFe 33" },
-            { name: "ADDRESS_HOME_LINE2", value: "Wohnung 1" },
-            { name: "ADDRESS_HOME_ZIP", value: "80732" },
-            { name: "ADDRESS_HOME_CITY", value: "M\xFCnchen" },
-            { name: "EMAIL_ADDRESS", value: "test@beispiel.de" },
-            { name: "PHONE_HOME_WHOLE_NUMBER", value: "+4930303986300" }
-          ]
-        }
-      ] : []
-    });
+    void this.agent.invoke_setAddresses(
+      {
+        addresses: this.#showTestAddressesInAutofillMenu.get() ? [
+          {
+            fields: [
+              { name: "ADDRESS_HOME_COUNTRY", value: "US" },
+              { name: "NAME_FULL", value: "Jon Stewart Doe" },
+              { name: "NAME_FIRST", value: "Jon" },
+              { name: "NAME_MIDDLE", value: "Stewart" },
+              { name: "NAME_LAST", value: "Doe" },
+              { name: "COMPANY_NAME", value: "Fake Company" },
+              { name: "ADDRESS_HOME_LINE1", value: "1600 Fake Street" },
+              { name: "ADDRESS_HOME_LINE2", value: "Apartment 1" },
+              { name: "ADDRESS_HOME_ZIP", value: "94043" },
+              { name: "ADDRESS_HOME_CITY", value: "Mountain View" },
+              { name: "ADDRESS_HOME_STATE", value: "CA" },
+              { name: "EMAIL_ADDRESS", value: "test@example.us" },
+              { name: "PHONE_HOME_WHOLE_NUMBER", value: "+16019521325" }
+            ]
+          },
+          {
+            fields: [
+              { name: "ADDRESS_HOME_COUNTRY", value: "BR" },
+              { name: "NAME_FULL", value: "Jo\xE3o Souza Silva" },
+              { name: "NAME_FIRST", value: "Jo\xE3o" },
+              { name: "NAME_LAST", value: "Souza Silva" },
+              { name: "NAME_LAST_FIRST", value: "Souza" },
+              { name: "NAME_LAST_SECOND", value: "Silva" },
+              { name: "COMPANY_NAME", value: "Empresa Falsa" },
+              { name: "ADDRESS_HOME_STREET_ADDRESS", value: "Rua Inexistente, 2000\nAndar 2, Apartamento 1" },
+              { name: "ADDRESS_HOME_STREET_LOCATION", value: "Rua Inexistente, 2000" },
+              { name: "ADDRESS_HOME_STREET_NAME", value: "Rua Inexistente" },
+              { name: "ADDRESS_HOME_HOUSE_NUMBER", value: "2000" },
+              { name: "ADDRESS_HOME_SUBPREMISE", value: "Andar 2, Apartamento 1" },
+              { name: "ADDRESS_HOME_APT_NUM", value: "1" },
+              { name: "ADDRESS_HOME_FLOOR", value: "2" },
+              { name: "ADDRESS_HOME_APT", value: "Apartamento 1" },
+              { name: "ADDRESS_HOME_APT_TYPE", value: "Apartamento" },
+              { name: "ADDRESS_HOME_APT_NUM", value: "1" },
+              { name: "ADDRESS_HOME_DEPENDENT_LOCALITY", value: "Santa Efig\xEAnia" },
+              { name: "ADDRESS_HOME_LANDMARK", value: "Pr\xF3ximo \xE0 esta\xE7\xE3o Santa Efig\xEAnia" },
+              { name: "ADDRESS_HOME_OVERFLOW", value: "Andar 2, Apartamento 1" },
+              { name: "ADDRESS_HOME_ZIP", value: "30260-080" },
+              { name: "ADDRESS_HOME_CITY", value: "Belo Horizonte" },
+              { name: "ADDRESS_HOME_STATE", value: "MG" },
+              { name: "EMAIL_ADDRESS", value: "teste@exemplo.us" },
+              { name: "PHONE_HOME_WHOLE_NUMBER", value: "+553121286800" }
+            ]
+          },
+          {
+            fields: [
+              { name: "ADDRESS_HOME_COUNTRY", value: "MX" },
+              { name: "NAME_FULL", value: "Juan Francisco Garc\xEDa Flores" },
+              { name: "NAME_FIRST", value: "Juan Francisco" },
+              { name: "NAME_LAST", value: "Garc\xEDa Flores" },
+              { name: "NAME_LAST_FIRST", value: "Garc\xEDa" },
+              { name: "NAME_LAST_SECOND", value: "Flores" },
+              { name: "COMPANY_NAME", value: "Empresa Falsa" },
+              {
+                name: "ADDRESS_HOME_STREET_ADDRESS",
+                value: "C. Falsa 445\nPiso 2, Apartamento 1\nEntre calle Volc\xE1n y calle Montes Blancos, cerca de la estaci\xF3n de metro"
+              },
+              { name: "ADDRESS_HOME_STREET_LOCATION", value: "C. Falsa 445" },
+              { name: "ADDRESS_HOME_STREET_NAME", value: "C. Falsa" },
+              { name: "ADDRESS_HOME_HOUSE_NUMBER", value: "445" },
+              { name: "ADDRESS_HOME_SUBPREMISE", value: "Piso 2, Apartamento 1" },
+              { name: "ADDRESS_HOME_FLOOR", value: "2" },
+              { name: "ADDRESS_HOME_APT", value: "Apartamento 1" },
+              { name: "ADDRESS_HOME_APT_TYPE", value: "Apartamento" },
+              { name: "ADDRESS_HOME_APT_NUM", value: "1" },
+              { name: "ADDRESS_HOME_DEPENDENT_LOCALITY", value: "Lomas de Chapultepec" },
+              {
+                name: "ADDRESS_HOME_OVERFLOW",
+                value: "Entre calle Volc\xE1n y calle Montes Celestes, cerca de la estaci\xF3n de metro"
+              },
+              {
+                name: "ADDRESS_HOME_BETWEEN_STREETS_OR_LANDMARK",
+                value: "Entre calle Volc\xE1n y calle Montes Blancos, cerca de la estaci\xF3n de metro"
+              },
+              { name: "ADDRESS_HOME_LANDMARK", value: "Cerca de la estaci\xF3n de metro" },
+              { name: "ADDRESS_HOME_BETWEEN_STREETS", value: "Entre calle Volc\xE1n y calle Montes Blancos" },
+              { name: "ADDRESS_HOME_BETWEEN_STREETS_1", value: "calle Volc\xE1n" },
+              { name: "ADDRESS_HOME_BETWEEN_STREETS_2", value: "calle Montes Blancos" },
+              { name: "ADDRESS_HOME_ADMIN_LEVEL2", value: "Miguel Hidalgo" },
+              { name: "ADDRESS_HOME_ZIP", value: "11001" },
+              { name: "ADDRESS_HOME_CITY", value: "Ciudad de M\xE9xico" },
+              { name: "ADDRESS_HOME_STATE", value: "Distrito Federal" },
+              { name: "EMAIL_ADDRESS", value: "ejemplo@ejemplo.mx" },
+              { name: "PHONE_HOME_WHOLE_NUMBER", value: "+525553428400" }
+            ]
+          },
+          {
+            fields: [
+              { name: "ADDRESS_HOME_COUNTRY", value: "DE" },
+              { name: "NAME_FULL", value: "Gottfried Wilhelm Leibniz" },
+              { name: "NAME_FIRST", value: "Gottfried" },
+              { name: "NAME_MIDDLE", value: "Wilhelm" },
+              { name: "NAME_LAST", value: "Leibniz" },
+              { name: "COMPANY_NAME", value: "Erfundenes Unternehmen" },
+              { name: "ADDRESS_HOME_LINE1", value: "Erfundene Stra\xDFe 33" },
+              { name: "ADDRESS_HOME_LINE2", value: "Wohnung 1" },
+              { name: "ADDRESS_HOME_ZIP", value: "80732" },
+              { name: "ADDRESS_HOME_CITY", value: "M\xFCnchen" },
+              { name: "EMAIL_ADDRESS", value: "test@beispiel.de" },
+              { name: "PHONE_HOME_WHOLE_NUMBER", value: "+4930303986300" }
+            ]
+          }
+        ] : []
+      }
+    );
   }
   enable() {
     if (this.#enabled || Host8.InspectorFrontendHost.isUnderTest()) {
@@ -35515,16 +39283,49 @@ var AutofillModel = class extends SDKModel {
     void this.agent.invoke_disable();
   }
   addressFormFilled(addressFormFilledEvent) {
-    this.dispatchEventToListeners("AddressFormFilled", { autofillModel: this, event: addressFormFilledEvent });
+    this.dispatchEventToListeners("AddressFormFilled" /* ADDRESS_FORM_FILLED */, { autofillModel: this, event: addressFormFilledEvent });
   }
 };
-SDKModel.register(AutofillModel, { capabilities: 2, autostart: true });
+SDKModel.register(AutofillModel, { capabilities: 2 /* DOM */, autostart: true });
+var Events23 = /* @__PURE__ */ ((Events35) => {
+  Events35["ADDRESS_FORM_FILLED"] = "AddressFormFilled";
+  return Events35;
+})(Events23 || {});
 
-// gen/front_end/core/sdk/CategorizedBreakpoint.js
+// ../../front_end/core/sdk/CategorizedBreakpoint.ts
 var CategorizedBreakpoint_exports = {};
 __export(CategorizedBreakpoint_exports, {
-  CategorizedBreakpoint: () => CategorizedBreakpoint
+  CategorizedBreakpoint: () => CategorizedBreakpoint,
+  Category: () => Category
 });
+var Category = /* @__PURE__ */ ((Category2) => {
+  Category2["ANIMATION"] = "animation";
+  Category2["AUCTION_WORKLET"] = "auction-worklet";
+  Category2["CANVAS"] = "canvas";
+  Category2["CLIPBOARD"] = "clipboard";
+  Category2["CONTROL"] = "control";
+  Category2["DEVICE"] = "device";
+  Category2["DOM_MUTATION"] = "dom-mutation";
+  Category2["DRAG_DROP"] = "drag-drop";
+  Category2["GEOLOCATION"] = "geolocation";
+  Category2["KEYBOARD"] = "keyboard";
+  Category2["LOAD"] = "load";
+  Category2["MEDIA"] = "media";
+  Category2["MOUSE"] = "mouse";
+  Category2["NOTIFICATION"] = "notification";
+  Category2["PARSE"] = "parse";
+  Category2["PICTURE_IN_PICTURE"] = "picture-in-picture";
+  Category2["POINTER"] = "pointer";
+  Category2["SCRIPT"] = "script";
+  Category2["TIMER"] = "timer";
+  Category2["TOUCH"] = "touch";
+  Category2["TRUSTED_TYPE_VIOLATION"] = "trusted-type-violation";
+  Category2["WEB_AUDIO"] = "web-audio";
+  Category2["WINDOW"] = "window";
+  Category2["WORKER"] = "worker";
+  Category2["XHR"] = "xhr";
+  return Category2;
+})(Category || {});
 var CategorizedBreakpoint = class {
   /**
    * The name of this breakpoint as passed to 'setInstrumentationBreakpoint',
@@ -35552,14 +39353,15 @@ var CategorizedBreakpoint = class {
   }
 };
 
-// gen/front_end/core/sdk/ChildTargetManager.js
+// ../../front_end/core/sdk/ChildTargetManager.ts
 var ChildTargetManager_exports = {};
 __export(ChildTargetManager_exports, {
-  ChildTargetManager: () => ChildTargetManager
+  ChildTargetManager: () => ChildTargetManager,
+  Events: () => Events24
 });
-import * as i18n27 from "./../i18n/i18n.js";
-import * as Common31 from "./../common/common.js";
-import * as Host9 from "./../host/host.js";
+import * as i18n27 from "../i18n/i18n.js";
+import * as Common31 from "../common/common.js";
+import * as Host9 from "../host/host.js";
 var UIStrings12 = {
   /**
    * @description Text that refers to the main target. The main target is the primary webpage that
@@ -35588,21 +39390,23 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
     const browserTarget = this.#targetManager.browserTarget();
     if (browserTarget) {
       if (browserTarget !== parentTarget) {
-        void browserTarget.targetAgent().invoke_autoAttachRelated({ targetId: parentTarget.id(), waitForDebuggerOnStart: true });
+        void browserTarget.targetAgent().invoke_autoAttachRelated(
+          { targetId: parentTarget.id(), waitForDebuggerOnStart: true }
+        );
       }
-    } else if (parentTarget.type() === Type.NODE) {
+    } else if (parentTarget.type() === "node" /* NODE */) {
       void this.#targetAgent.invoke_setAutoAttach({ autoAttach: true, waitForDebuggerOnStart: true, flatten: false });
     } else {
       void this.#targetAgent.invoke_setAutoAttach({ autoAttach: true, waitForDebuggerOnStart: true, flatten: true });
     }
-    if (parentTarget.parentTarget()?.type() !== Type.FRAME && !Host9.InspectorFrontendHost.isUnderTest()) {
+    if (parentTarget.parentTarget()?.type() !== "frame" /* FRAME */ && !Host9.InspectorFrontendHost.isUnderTest()) {
       void this.#targetAgent.invoke_setDiscoverTargets({ discover: true });
       void this.#targetAgent.invoke_setRemoteLocations({ locations: [{ host: "localhost", port: 9229 }] });
     }
   }
   static install(attachCallback) {
     _ChildTargetManager.attachCallback = attachCallback;
-    SDKModel.register(_ChildTargetManager, { capabilities: 32, autostart: true });
+    SDKModel.register(_ChildTargetManager, { capabilities: 32 /* TARGET */, autostart: true });
   }
   childTargets() {
     return Array.from(this.#childTargetsBySessionId.values());
@@ -35621,7 +39425,7 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
   targetCreated({ targetInfo }) {
     this.#targetInfos.set(targetInfo.targetId, targetInfo);
     this.fireAvailableTargetsChanged();
-    this.dispatchEventToListeners("TargetCreated", targetInfo);
+    this.dispatchEventToListeners("TargetCreated" /* TARGET_CREATED */, targetInfo);
   }
   targetInfoChanged({ targetInfo }) {
     this.#targetInfos.set(targetInfo.targetId, targetInfo);
@@ -35632,11 +39436,7 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
         const resourceTreeModel = target.model(ResourceTreeModel);
         target.updateTargetInfo(targetInfo);
         if (resourceTreeModel?.mainFrame) {
-          resourceTreeModel.primaryPageChanged(
-            resourceTreeModel.mainFrame,
-            "Activation"
-            /* PrimaryPageChangeType.ACTIVATION */
-          );
+          resourceTreeModel.primaryPageChanged(resourceTreeModel.mainFrame, "Activation" /* ACTIVATION */);
         }
         target.setName(i18nString12(UIStrings12.main));
       } else {
@@ -35644,12 +39444,12 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
       }
     }
     this.fireAvailableTargetsChanged();
-    this.dispatchEventToListeners("TargetInfoChanged", targetInfo);
+    this.dispatchEventToListeners("TargetInfoChanged" /* TARGET_INFO_CHANGED */, targetInfo);
   }
   targetDestroyed({ targetId }) {
     this.#targetInfos.delete(targetId);
     this.fireAvailableTargetsChanged();
-    this.dispatchEventToListeners("TargetDestroyed", targetId);
+    this.dispatchEventToListeners("TargetDestroyed" /* TARGET_DESTROYED */, targetId);
   }
   targetCrashed({ targetId }) {
     const target = this.#childTargetsById.get(targetId);
@@ -35658,7 +39458,10 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
     }
   }
   fireAvailableTargetsChanged() {
-    this.#targetManager.dispatchEventToListeners("AvailableTargetsChanged", [...this.#targetInfos.values()]);
+    this.#targetManager.dispatchEventToListeners(
+      "AvailableTargetsChanged" /* AVAILABLE_TARGETS_CHANGED */,
+      [...this.#targetInfos.values()]
+    );
   }
   async getParentTargetId() {
     if (!this.#parentTargetId) {
@@ -35673,7 +39476,7 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
     if (this.#parentTargetId === targetInfo.targetId) {
       return;
     }
-    let type = Type.BROWSER;
+    let type = "browser" /* BROWSER */;
     let targetName = "";
     if (targetInfo.type === "worker" && targetInfo.title && targetInfo.title !== targetInfo.url) {
       targetName = targetInfo.title;
@@ -35687,34 +39490,43 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
         "^devtools://"
       ];
       if (KNOWN_FRAME_PATTERNS.some((p) => targetInfo.url.match(p))) {
-        type = Type.FRAME;
+        type = "frame" /* FRAME */;
       } else {
         const parsedURL = Common31.ParsedURL.ParsedURL.fromString(targetInfo.url);
         targetName = parsedURL ? parsedURL.lastPathComponentWithFragment() : "#" + ++_ChildTargetManager.lastAnonymousTargetId;
       }
     }
     if (targetInfo.type === "iframe" || targetInfo.type === "webview") {
-      type = Type.FRAME;
+      type = "frame" /* FRAME */;
     } else if (targetInfo.type === "background_page" || targetInfo.type === "app" || targetInfo.type === "popup_page") {
-      type = Type.FRAME;
+      type = "frame" /* FRAME */;
     } else if (targetInfo.type === "page") {
-      type = Type.FRAME;
+      type = "frame" /* FRAME */;
     } else if (targetInfo.type === "browser_ui") {
-      type = Type.FRAME;
+      type = "frame" /* FRAME */;
     } else if (targetInfo.type === "worker") {
-      type = Type.Worker;
+      type = "worker" /* Worker */;
     } else if (targetInfo.type === "worklet") {
-      type = Type.WORKLET;
+      type = "worklet" /* WORKLET */;
     } else if (targetInfo.type === "shared_worker") {
-      type = Type.SHARED_WORKER;
+      type = "shared-worker" /* SHARED_WORKER */;
     } else if (targetInfo.type === "service_worker") {
-      type = Type.ServiceWorker;
+      type = "service-worker" /* ServiceWorker */;
     } else if (targetInfo.type === "auction_worklet") {
-      type = Type.AUCTION_WORKLET;
+      type = "auction-worklet" /* AUCTION_WORKLET */;
     } else if (targetInfo.type === "node_worker") {
-      type = Type.NODE_WORKER;
+      type = "node-worker" /* NODE_WORKER */;
     }
-    const target = this.#targetManager.createTarget(targetInfo.targetId, targetName, type, this.#parentTarget, sessionId, void 0, void 0, targetInfo);
+    const target = this.#targetManager.createTarget(
+      targetInfo.targetId,
+      targetName,
+      type,
+      this.#parentTarget,
+      sessionId,
+      void 0,
+      void 0,
+      targetInfo
+    );
     this.#childTargetsBySessionId.set(sessionId, target);
     this.#childTargetsById.set(target.id(), target);
     if (_ChildTargetManager.attachCallback) {
@@ -35723,10 +39535,7 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
     if (waitingForDebugger) {
       void target.runtimeAgent().invoke_runIfWaitingForDebugger();
     }
-    if (type !== Type.FRAME && target.hasAllCapabilities(
-      8192
-      /* Capability.STORAGE */
-    )) {
+    if (type !== "frame" /* FRAME */ && target.hasAllCapabilities(8192 /* STORAGE */)) {
       await this.initializeStorage(target);
     }
   }
@@ -35766,14 +39575,20 @@ var ChildTargetManager = class _ChildTargetManager extends SDKModel {
   static lastAnonymousTargetId = 0;
   static attachCallback;
 };
+var Events24 = /* @__PURE__ */ ((Events35) => {
+  Events35["TARGET_CREATED"] = "TargetCreated";
+  Events35["TARGET_DESTROYED"] = "TargetDestroyed";
+  Events35["TARGET_INFO_CHANGED"] = "TargetInfoChanged";
+  return Events35;
+})(Events24 || {});
 
-// gen/front_end/core/sdk/CompilerSourceMappingContentProvider.js
+// ../../front_end/core/sdk/CompilerSourceMappingContentProvider.ts
 var CompilerSourceMappingContentProvider_exports = {};
 __export(CompilerSourceMappingContentProvider_exports, {
   CompilerSourceMappingContentProvider: () => CompilerSourceMappingContentProvider
 });
-import * as i18n29 from "./../i18n/i18n.js";
-import * as TextUtils26 from "./../text_utils/text_utils.js";
+import * as i18n29 from "../i18n/i18n.js";
+import * as TextUtils26 from "../text_utils/text_utils.js";
 var UIStrings13 = {
   /**
    * @description Error message when failing to fetch a resource referenced in a source map.
@@ -35822,7 +39637,7 @@ var CompilerSourceMappingContentProvider = class {
   }
 };
 
-// gen/front_end/core/sdk/Connections.js
+// ../../front_end/core/sdk/Connections.ts
 var Connections_exports = {};
 __export(Connections_exports, {
   MainConnection: () => MainConnection,
@@ -35830,31 +39645,32 @@ __export(Connections_exports, {
   WebSocketTransport: () => WebSocketTransport,
   initMainConnection: () => initMainConnection
 });
-import * as i18n33 from "./../i18n/i18n.js";
-import * as Common35 from "./../common/common.js";
-import * as Host10 from "./../host/host.js";
-import * as ProtocolClient3 from "./../protocol_client/protocol_client.js";
-import * as Root11 from "./../root/root.js";
+import * as i18n33 from "../i18n/i18n.js";
+import * as Common35 from "../common/common.js";
+import * as Host10 from "../host/host.js";
+import * as ProtocolClient3 from "../protocol_client/protocol_client.js";
+import * as Root11 from "../root/root.js";
 
-// gen/front_end/core/sdk/RehydratingConnection.js
+// ../../front_end/core/sdk/RehydratingConnection.ts
 var RehydratingConnection_exports = {};
 __export(RehydratingConnection_exports, {
+  RehydratingConnectionState: () => RehydratingConnectionState,
   RehydratingConnectionTransport: () => RehydratingConnectionTransport,
   RehydratingSession: () => RehydratingSession,
   isTraceUrlAllowed: () => isTraceUrlAllowed
 });
-import * as Common34 from "./../common/common.js";
-import * as i18n31 from "./../i18n/i18n.js";
-import * as ProtocolClient2 from "./../protocol_client/protocol_client.js";
-import * as Root10 from "./../root/root.js";
+import * as Common34 from "../common/common.js";
+import * as i18n31 from "../i18n/i18n.js";
+import * as ProtocolClient2 from "../protocol_client/protocol_client.js";
+import * as Root10 from "../root/root.js";
 
-// gen/front_end/core/sdk/EnhancedTracesParser.js
+// ../../front_end/core/sdk/EnhancedTracesParser.ts
 var EnhancedTracesParser_exports = {};
 __export(EnhancedTracesParser_exports, {
   EnhancedTracesParser: () => EnhancedTracesParser
 });
-import * as Common32 from "./../common/common.js";
-import { UserVisibleError } from "./../platform/platform.js";
+import * as Common32 from "../common/common.js";
+import { UserVisibleError } from "../platform/platform.js";
 var EnhancedTracesParser = class {
   #trace;
   #scriptRundownEvents = [];
@@ -35935,7 +39751,9 @@ var EnhancedTracesParser = class {
       } else if (this.isRundownScript(event)) {
         this.#scriptRundownEvents.push(event);
         const data = event.args.data;
-        if (!this.#scripts.find((script) => script.scriptId === String(data.scriptId) && script.isolate === String(data.isolate))) {
+        if (!this.#scripts.find(
+          (script) => script.scriptId === String(data.scriptId) && script.isolate === String(data.isolate)
+        )) {
           this.#scripts.push({
             scriptId: String(data.scriptId),
             isolate: String(data.isolate),
@@ -36005,7 +39823,9 @@ var EnhancedTracesParser = class {
           script.length = script.sourceText.length;
         }
       }
-      const linkedExecutionContext = this.#executionContexts.find((context) => context.id === script.executionContextId && context.isolate === script.isolate);
+      const linkedExecutionContext = this.#executionContexts.find(
+        (context) => context.id === script.executionContextId && context.isolate === script.isolate
+      );
       if (linkedExecutionContext) {
         script.executionContextAuxData = linkedExecutionContext.auxData;
         if (script.executionContextAuxData?.frameId) {
@@ -36017,7 +39837,12 @@ var EnhancedTracesParser = class {
       this.resolveSourceMap(script);
     }
     this.#resources = this.#trace.metadata.resources ?? [];
-    return this.groupContextsAndScriptsUnderTarget(this.#targets, this.#executionContexts, this.#scripts, this.#resources);
+    return this.groupContextsAndScriptsUnderTarget(
+      this.#targets,
+      this.#executionContexts,
+      this.#scripts,
+      this.#resources
+    );
   }
   resolveSourceMap(script) {
     if (script.sourceMapURL?.startsWith("data:")) {
@@ -36097,7 +39922,10 @@ var EnhancedTracesParser = class {
       const frameId = executionContext.auxData?.frameId;
       if (frameId && targetIds.has(frameId)) {
         targetToExecutionContexts.get(frameId)?.push(executionContext);
-        executionContextIsolateToTarget.set(this.getExecutionContextIsolateId(executionContext.isolate, executionContext.id), frameId);
+        executionContextIsolateToTarget.set(
+          this.getExecutionContextIsolateId(executionContext.isolate, executionContext.id),
+          frameId
+        );
       } else {
         console.error("Execution context can't be linked to a target", executionContext);
       }
@@ -36167,14 +39995,14 @@ var EnhancedTracesParser = class {
   }
 };
 
-// gen/front_end/core/sdk/TraceObject.js
+// ../../front_end/core/sdk/TraceObject.ts
 var TraceObject_exports = {};
 __export(TraceObject_exports, {
   RevealableEvent: () => RevealableEvent,
   RevealableNetworkRequest: () => RevealableNetworkRequest,
   TraceObject: () => TraceObject
 });
-import * as Common33 from "./../common/common.js";
+import * as Common33 from "../common/common.js";
 var TraceObject = class {
   traceEvents;
   metadata;
@@ -36189,7 +40017,6 @@ var TraceObject = class {
   }
 };
 var RevealableEvent = class {
-  event;
   // Only Trace.Types.Events.Event are passed in, but we can't depend on that type from SDK
   /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   constructor(event) {
@@ -36197,7 +40024,6 @@ var RevealableEvent = class {
   }
 };
 var RevealableNetworkRequest = class _RevealableNetworkRequest {
-  networkRequest;
   constructor(networkRequest) {
     this.networkRequest = networkRequest;
   }
@@ -36212,7 +40038,7 @@ var RevealableNetworkRequest = class _RevealableNetworkRequest {
   }
 };
 
-// gen/front_end/core/sdk/RehydratingConnection.js
+// ../../front_end/core/sdk/RehydratingConnection.ts
 var UIStrings14 = {
   /**
    * @description Text that appears when no source text is available for the given script.
@@ -36248,8 +40074,14 @@ function isTraceUrlAllowed(traceUrl) {
   }
   return false;
 }
+var RehydratingConnectionState = /* @__PURE__ */ ((RehydratingConnectionState2) => {
+  RehydratingConnectionState2[RehydratingConnectionState2["UNINITIALIZED"] = 1] = "UNINITIALIZED";
+  RehydratingConnectionState2[RehydratingConnectionState2["INITIALIZED"] = 2] = "INITIALIZED";
+  RehydratingConnectionState2[RehydratingConnectionState2["REHYDRATED"] = 3] = "REHYDRATED";
+  return RehydratingConnectionState2;
+})(RehydratingConnectionState || {});
 var RehydratingConnectionTransport = class {
-  rehydratingConnectionState = 1;
+  rehydratingConnectionState = 1 /* UNINITIALIZED */;
   onDisconnect = null;
   onMessage = null;
   trace = null;
@@ -36322,7 +40154,7 @@ var RehydratingConnectionTransport = class {
     this.#rehydratingWindow.removeEventListener("message", this.#onReceiveHostWindowPayloadBound);
   }
   async startHydration(trace) {
-    if (!this.onMessage || this.rehydratingConnectionState !== 2) {
+    if (!this.onMessage || this.rehydratingConnectionState !== 2 /* INITIALIZED */) {
       return false;
     }
     if (!("traceEvents" in trace)) {
@@ -36364,12 +40196,12 @@ var RehydratingConnectionTransport = class {
     if (!this.trace) {
       return;
     }
-    this.rehydratingConnectionState = 3;
+    this.rehydratingConnectionState = 3 /* REHYDRATED */;
     await Common34.Revealer.reveal(this.trace);
   }
   setOnMessage(onMessage) {
     this.onMessage = onMessage;
-    this.rehydratingConnectionState = 2;
+    this.rehydratingConnectionState = 2 /* INITIALIZED */;
   }
   setOnDisconnect(onDisconnect) {
     this.onDisconnect = onDisconnect;
@@ -36633,7 +40465,7 @@ var RehydratingSession = class extends RehydratingSessionBase {
   }
 };
 
-// gen/front_end/core/sdk/Connections.js
+// ../../front_end/core/sdk/Connections.ts
 var UIStrings15 = {
   /**
    * @description Text on the remote debugging window to indicate the connection is lost.
@@ -36650,8 +40482,16 @@ var MainConnection = class {
   #eventListeners;
   constructor() {
     this.#eventListeners = [
-      Host10.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host10.InspectorFrontendHostAPI.Events.DispatchMessage, this.dispatchMessage, this),
-      Host10.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host10.InspectorFrontendHostAPI.Events.DispatchMessageChunk, this.dispatchMessageChunk, this)
+      Host10.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+        Host10.InspectorFrontendHostAPI.Events.DispatchMessage,
+        this.dispatchMessage,
+        this
+      ),
+      Host10.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+        Host10.InspectorFrontendHostAPI.Events.DispatchMessageChunk,
+        this.dispatchMessageChunk,
+        this
+      )
     ];
   }
   setOnMessage(onMessage) {
@@ -36828,21 +40668,34 @@ function createMainTransport(onConnectionLost) {
   return new MainConnection();
 }
 
-// gen/front_end/core/sdk/CPUThrottlingManager.js
+// ../../front_end/core/sdk/CPUThrottlingManager.ts
 var CPUThrottlingManager_exports = {};
 __export(CPUThrottlingManager_exports, {
-  CPUThrottlingManager: () => CPUThrottlingManager
+  CPUPerformanceTier: () => CPUPerformanceTier,
+  CPUThrottlingManager: () => CPUThrottlingManager,
+  CalibrationError: () => CalibrationError,
+  Events: () => Events25,
+  numberToTier: () => numberToTier,
+  tierToNumber: () => tierToNumber
 });
-import * as Common36 from "./../common/common.js";
-import * as Root12 from "./../root/root.js";
+import * as Common36 from "../common/common.js";
+import * as Root12 from "../root/root.js";
 
-// gen/front_end/core/sdk/EmulationModel.js
+// ../../front_end/core/sdk/EmulationModel.ts
 var EmulationModel_exports = {};
 __export(EmulationModel_exports, {
+  DataSaverOverride: () => DataSaverOverride,
   DeviceOrientation: () => DeviceOrientation,
   EmulationModel: () => EmulationModel,
+  EmulationModelEvents: () => EmulationModelEvents,
   Location: () => Location2
 });
+var DataSaverOverride = /* @__PURE__ */ ((DataSaverOverride2) => {
+  DataSaverOverride2["UNSET"] = "unset";
+  DataSaverOverride2["ENABLED"] = "enabled";
+  DataSaverOverride2["DISABLED"] = "disabled";
+  return DataSaverOverride2;
+})(DataSaverOverride || {});
 var EmulationModel = class extends SDKModel {
   #multitargetNetworkManager;
   #emulationAgent;
@@ -36868,13 +40721,15 @@ var EmulationModel = class extends SDKModel {
     this.#cssModel = target.model(CSSModel);
     this.#overlayModel = target.model(OverlayModel);
     if (this.#overlayModel) {
-      this.#overlayModel.addEventListener("InspectModeWillBeToggled", () => {
+      this.#overlayModel.addEventListener("InspectModeWillBeToggled" /* INSPECT_MODE_WILL_BE_TOGGLED */, () => {
         void this.updateTouch();
       }, this);
     }
     const settings = this.target().targetManager().settings;
     const disableJavascriptSetting = settings.resolve(javaScriptDisabledSettingDescriptor);
-    disableJavascriptSetting.addChangeListener(async () => await this.#emulationAgent.invoke_setScriptExecutionDisabled({ value: disableJavascriptSetting.get() }));
+    disableJavascriptSetting.addChangeListener(
+      async () => await this.#emulationAgent.invoke_setScriptExecutionDisabled({ value: disableJavascriptSetting.get() })
+    );
     if (disableJavascriptSetting.get()) {
       void this.#emulationAgent.invoke_setScriptExecutionDisabled({ value: true });
     }
@@ -36991,22 +40846,13 @@ var EmulationModel = class extends SDKModel {
     const updateDisabledImageFormats = () => {
       const types = [];
       if (avifFormatDisabledSetting.get()) {
-        types.push(
-          "avif"
-          /* Protocol.Emulation.DisabledImageType.Avif */
-        );
+        types.push(Emulation.DisabledImageType.Avif);
       }
       if (jpegXlFormatDisabledSetting.get()) {
-        types.push(
-          "jxl"
-          /* Protocol.Emulation.DisabledImageType.Jxl */
-        );
+        types.push(Emulation.DisabledImageType.Jxl);
       }
       if (webpFormatDisabledSetting.get()) {
-        types.push(
-          "webp"
-          /* Protocol.Emulation.DisabledImageType.Webp */
-        );
+        types.push(Emulation.DisabledImageType.Webp);
       }
       this.setDisabledImageTypes(types);
     };
@@ -37023,7 +40869,7 @@ var EmulationModel = class extends SDKModel {
     this.#customTouchEnabled = false;
     this.#touchConfiguration = {
       enabled: false,
-      configuration: "mobile"
+      configuration: Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Mobile
     };
     target.registerEmulationDispatcher(this);
   }
@@ -37031,10 +40877,7 @@ var EmulationModel = class extends SDKModel {
     this.#touchEmulationAllowed = touchEmulationAllowed;
   }
   supportsDeviceEmulation() {
-    return this.target().hasAllCapabilities(
-      4096
-      /* Capability.DEVICE_EMULATION */
-    );
+    return this.target().hasAllCapabilities(4096 /* DEVICE_EMULATION */);
   }
   async resetPageScaleFactor() {
     await this.#emulationAgent.invoke_resetPageScaleFactor();
@@ -37053,11 +40896,13 @@ var EmulationModel = class extends SDKModel {
     return this.#overlayModel;
   }
   async setPressureSourceOverrideEnabled(enabled) {
-    await this.#emulationAgent.invoke_setPressureSourceOverrideEnabled({ source: "cpu", enabled });
+    await this.#emulationAgent.invoke_setPressureSourceOverrideEnabled(
+      { source: Emulation.PressureSource.Cpu, enabled }
+    );
   }
   async setPressureStateOverride(pressureState) {
     await this.#emulationAgent.invoke_setPressureStateOverride({
-      source: "cpu",
+      source: Emulation.PressureSource.Cpu,
       state: pressureState
     });
   }
@@ -37067,14 +40912,18 @@ var EmulationModel = class extends SDKModel {
         this.#emulationAgent.invoke_clearGeolocationOverride(),
         this.#emulationAgent.invoke_setTimezoneOverride({ timezoneId: "" }),
         this.#emulationAgent.invoke_setLocaleOverride({ locale: "" }),
-        this.#emulationAgent.invoke_setUserAgentOverride({ userAgent: this.#multitargetNetworkManager.currentUserAgent() })
+        this.#emulationAgent.invoke_setUserAgentOverride(
+          { userAgent: this.#multitargetNetworkManager.currentUserAgent() }
+        )
       ]);
     } else if (location.unavailable) {
       await Promise.all([
         this.#emulationAgent.invoke_setGeolocationOverride({}),
         this.#emulationAgent.invoke_setTimezoneOverride({ timezoneId: "" }),
         this.#emulationAgent.invoke_setLocaleOverride({ locale: "" }),
-        this.#emulationAgent.invoke_setUserAgentOverride({ userAgent: this.#multitargetNetworkManager.currentUserAgent() })
+        this.#emulationAgent.invoke_setUserAgentOverride(
+          { userAgent: this.#multitargetNetworkManager.currentUserAgent() }
+        )
       ]);
     } else {
       let processEmulationResult = function(errorType, result) {
@@ -37108,7 +40957,9 @@ var EmulationModel = class extends SDKModel {
   }
   async emulateDeviceOrientation(deviceOrientation) {
     if (deviceOrientation) {
-      await this.#deviceOrientationAgent.invoke_setDeviceOrientationOverride({ alpha: deviceOrientation.alpha, beta: deviceOrientation.beta, gamma: deviceOrientation.gamma });
+      await this.#deviceOrientationAgent.invoke_setDeviceOrientationOverride(
+        { alpha: deviceOrientation.alpha, beta: deviceOrientation.beta, gamma: deviceOrientation.gamma }
+      );
     } else {
       await this.#deviceOrientationAgent.invoke_clearDeviceOrientationOverride();
     }
@@ -37148,7 +40999,7 @@ var EmulationModel = class extends SDKModel {
     void this.#emulationAgent.invoke_setDisabledImageTypes({ imageTypes });
   }
   async setDataSaverOverride(dataSaverOverride) {
-    const dataSaverEnabled = dataSaverOverride === "unset" ? void 0 : dataSaverOverride === "enabled" ? true : false;
+    const dataSaverEnabled = dataSaverOverride === "unset" /* UNSET */ ? void 0 : dataSaverOverride === "enabled" /* ENABLED */ ? true : false;
     await this.#emulationAgent.invoke_setDataSaverOverride({ dataSaverEnabled });
   }
   async setCPUThrottlingRate(rate) {
@@ -37159,6 +41010,9 @@ var EmulationModel = class extends SDKModel {
       throw new Error("hardwareConcurrency must be a positive value");
     }
     await this.#emulationAgent.invoke_setHardwareConcurrencyOverride({ hardwareConcurrency });
+  }
+  async setCPUPerformanceOverride(performanceTier) {
+    await this.#emulationAgent.invoke_setCPUPerformanceOverride({ performanceTier });
   }
   async emulateTouch(enabled, mobile) {
     this.#touchEnabled = enabled && this.#touchEmulationAllowed;
@@ -37172,18 +41026,18 @@ var EmulationModel = class extends SDKModel {
   async updateTouch() {
     let configuration = {
       enabled: this.#touchEnabled,
-      configuration: this.#touchMobile ? "mobile" : "desktop"
+      configuration: this.#touchMobile ? Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Mobile : Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Desktop
     };
     if (this.#customTouchEnabled) {
       configuration = {
         enabled: true,
-        configuration: "mobile"
+        configuration: Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Mobile
       };
     }
     if (this.#overlayModel && this.#overlayModel.inspectModeEnabled()) {
       configuration = {
         enabled: false,
-        configuration: "mobile"
+        configuration: Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Mobile
       };
     }
     if (!this.#touchConfiguration.enabled && !configuration.enabled) {
@@ -37194,7 +41048,9 @@ var EmulationModel = class extends SDKModel {
     }
     this.#touchConfiguration = configuration;
     await this.#emulationAgent.invoke_setTouchEmulationEnabled({ enabled: configuration.enabled, maxTouchPoints: 1 });
-    await this.#emulationAgent.invoke_setEmitTouchEventsForMouse({ enabled: configuration.enabled, configuration: configuration.configuration });
+    await this.#emulationAgent.invoke_setEmitTouchEventsForMouse(
+      { enabled: configuration.enabled, configuration: configuration.configuration }
+    );
   }
   async updateCssMedia() {
     const type = this.#mediaConfiguration.get("type") ?? "";
@@ -37236,7 +41092,10 @@ var EmulationModel = class extends SDKModel {
   screenOrientationLockChanged(event) {
     this.#screenOrientationLocked = event.locked;
     this.#lockedOrientation = event.orientation ?? null;
-    this.dispatchEventToListeners("ScreenOrientationLockChanged", { locked: event.locked, orientation: event.orientation ?? null });
+    this.dispatchEventToListeners(
+      "ScreenOrientationLockChanged" /* SCREEN_ORIENTATION_LOCK_CHANGED */,
+      { locked: event.locked, orientation: event.orientation ?? null }
+    );
   }
   isScreenOrientationLocked() {
     return this.#screenOrientationLocked;
@@ -37245,6 +41104,10 @@ var EmulationModel = class extends SDKModel {
     return this.#lockedOrientation;
   }
 };
+var EmulationModelEvents = /* @__PURE__ */ ((EmulationModelEvents2) => {
+  EmulationModelEvents2["SCREEN_ORIENTATION_LOCK_CHANGED"] = "ScreenOrientationLockChanged";
+  return EmulationModelEvents2;
+})(EmulationModelEvents || {});
 var Location2 = class _Location {
   static DEFAULT_ACCURACY = 150;
   latitude;
@@ -37266,7 +41129,14 @@ var Location2 = class _Location {
       const [position, timezoneId, locale, unavailable, ...maybeAccuracy] = value.split(":");
       const accuracy = maybeAccuracy.length ? Number(maybeAccuracy[0]) : _Location.DEFAULT_ACCURACY;
       const [latitude, longitude] = position.split("@");
-      return new _Location(parseFloat(latitude), parseFloat(longitude), timezoneId, locale, accuracy, Boolean(unavailable));
+      return new _Location(
+        parseFloat(latitude),
+        parseFloat(longitude),
+        timezoneId,
+        locale,
+        accuracy,
+        Boolean(unavailable)
+      );
     }
     return new _Location(0, 0, "", "", _Location.DEFAULT_ACCURACY, false);
   }
@@ -37359,26 +41229,74 @@ var DeviceOrientation = class _DeviceOrientation {
     return JSON.stringify(this);
   }
 };
-SDKModel.register(EmulationModel, { capabilities: 256, autostart: true });
+SDKModel.register(EmulationModel, { capabilities: 256 /* EMULATION */, autostart: true });
 
-// gen/front_end/core/sdk/CPUThrottlingManager.js
+// ../../front_end/core/sdk/CPUThrottlingManager.ts
+var CalibrationError = /* @__PURE__ */ ((CalibrationError2) => {
+  CalibrationError2["DEVICE_TOO_WEAK"] = "DEVICE_TOO_WEAK";
+  return CalibrationError2;
+})(CalibrationError || {});
+var CPUPerformanceTier = Emulation.SetCPUPerformanceOverrideRequestPerformanceTier;
+function numberToTier(value) {
+  switch (value) {
+    case 1:
+      return CPUPerformanceTier.Low;
+    case 2:
+      return CPUPerformanceTier.Mid;
+    case 3:
+      return CPUPerformanceTier.High;
+    case 4:
+      return CPUPerformanceTier.Ultra;
+    default:
+      return CPUPerformanceTier.Unknown;
+  }
+}
+function tierToNumber(tier) {
+  switch (tier) {
+    case CPUPerformanceTier.Unknown:
+      return 0;
+    case CPUPerformanceTier.Low:
+      return 1;
+    case CPUPerformanceTier.Mid:
+      return 2;
+    case CPUPerformanceTier.High:
+      return 3;
+    case CPUPerformanceTier.Ultra:
+      return 4;
+  }
+}
 var CPUThrottlingManager = class _CPUThrottlingManager extends Common36.ObjectWrapper.ObjectWrapper {
+  #calibratedCpuThrottlingSetting;
+  #cpuPerformanceSetting;
   #targetManager;
   #cpuThrottlingRate;
   #hardwareConcurrency;
+  #hostDefaultCPUPerformanceTier;
+  #manualCPUPerformanceOverride;
   #pendingMainTargetPromise;
   constructor(settings, targetManager) {
     super();
     this.#targetManager = targetManager;
     this.#cpuThrottlingRate = 1;
+    this.#calibratedCpuThrottlingSetting = settings.createSetting(
+      "calibrated-cpu-throttling",
+      {},
+      Common36.Settings.SettingStorageType.GLOBAL
+    );
+    this.#cpuPerformanceSetting = settings.resolve(cpuPerformanceSettingDescriptor);
   }
   initialize() {
     this.#targetManager.observeModels(EmulationModel, this);
+    this.#cpuPerformanceSetting.addChangeListener(this.#onCPUPerformanceSettingChanged, this);
+    this.#onCPUPerformanceSettingChanged();
   }
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
     if (!Root12.DevToolsContext.globalInstance().has(_CPUThrottlingManager) || forceNew) {
-      const manager = new _CPUThrottlingManager(opts.settings ?? Common36.Settings.Settings.instance(), opts.targetManager ?? TargetManager.instance());
+      const manager = new _CPUThrottlingManager(
+        opts.settings ?? Common36.Settings.Settings.instance(),
+        opts.targetManager ?? TargetManager.instance()
+      );
       manager.initialize();
       Root12.DevToolsContext.globalInstance().set(_CPUThrottlingManager, manager);
     }
@@ -37390,6 +41308,89 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common36.ObjectWr
   cpuThrottlingRate() {
     return this.#cpuThrottlingRate;
   }
+  calculatedCPUPerformanceTier() {
+    const NOMINAL_SCORES = {
+      LOW: 264,
+      MID: 1e3,
+      HIGH: 2350,
+      ULTRA: 3e3
+    };
+    const calibratedSetting = this.#calibratedCpuThrottlingSetting.get();
+    const isCalibrated = typeof calibratedSetting.actualScore === "number" && calibratedSetting.actualScore > 0;
+    let rLow;
+    let rMid;
+    let rHigh;
+    let rUltra;
+    if (isCalibrated) {
+      const sHost = calibratedSetting.actualScore;
+      rLow = typeof calibratedSetting.low === "number" ? calibratedSetting.low : 1;
+      rMid = typeof calibratedSetting.mid === "number" ? calibratedSetting.mid : 1;
+      rHigh = Math.min(rMid, Math.max(sHost / NOMINAL_SCORES.HIGH, 1));
+      rUltra = Math.min(rHigh, Math.max(sHost / NOMINAL_SCORES.ULTRA, 1));
+    } else {
+      const hostTier = this.#hostDefaultCPUPerformanceTier;
+      if (!hostTier || hostTier === CPUPerformanceTier.Unknown) {
+        return hostTier;
+      }
+      let sHost;
+      switch (hostTier) {
+        case CPUPerformanceTier.Low:
+          sHost = NOMINAL_SCORES.LOW;
+          break;
+        case CPUPerformanceTier.Mid:
+          sHost = NOMINAL_SCORES.MID;
+          break;
+        case CPUPerformanceTier.High:
+          sHost = NOMINAL_SCORES.HIGH;
+          break;
+        default:
+          sHost = NOMINAL_SCORES.ULTRA;
+          break;
+      }
+      rLow = Math.max(sHost / NOMINAL_SCORES.LOW, 1);
+      rMid = Math.max(sHost / NOMINAL_SCORES.MID, 1);
+      rHigh = Math.max(sHost / NOMINAL_SCORES.HIGH, 1);
+      rUltra = Math.max(sHost / NOMINAL_SCORES.ULTRA, 1);
+    }
+    const thetaLow = Math.sqrt(rLow * rMid);
+    const thetaMid = Math.sqrt(rMid * rHigh);
+    const thetaHigh = Math.sqrt(rHigh * rUltra);
+    if (this.#cpuThrottlingRate >= thetaLow) {
+      return CPUPerformanceTier.Low;
+    }
+    if (this.#cpuThrottlingRate >= thetaMid) {
+      return CPUPerformanceTier.Mid;
+    }
+    if (this.#cpuThrottlingRate >= thetaHigh) {
+      return CPUPerformanceTier.High;
+    }
+    return CPUPerformanceTier.Ultra;
+  }
+  effectiveCPUPerformanceTier() {
+    if (this.#manualCPUPerformanceOverride !== void 0) {
+      return this.#manualCPUPerformanceOverride;
+    }
+    return this.calculatedCPUPerformanceTier();
+  }
+  #onCPUPerformanceSettingChanged() {
+    const val = this.#cpuPerformanceSetting.get();
+    this.#manualCPUPerformanceOverride = val === "no-override" ? void 0 : val;
+    this.#syncCPUPerformanceTier();
+    if (this.#hostDefaultCPUPerformanceTier === void 0) {
+      void this.updateHostDefaultCPUPerformanceTier();
+    }
+  }
+  #isCPUPerformanceOverrideActive() {
+    return this.#manualCPUPerformanceOverride !== void 0 || this.#cpuThrottlingRate !== 1;
+  }
+  #syncCPUPerformanceTier() {
+    const effectiveTier = this.effectiveCPUPerformanceTier();
+    const activeOverride = this.#isCPUPerformanceOverrideActive() ? effectiveTier : void 0;
+    for (const emulationModel of this.#targetManager.models(EmulationModel)) {
+      void emulationModel.setCPUPerformanceOverride(activeOverride);
+    }
+    this.dispatchEventToListeners("CpuPerformanceTierChanged" /* CPU_PERFORMANCE_TIER_CHANGED */, effectiveTier);
+  }
   setCPUThrottlingRate(rate) {
     if (rate === this.#cpuThrottlingRate) {
       return;
@@ -37398,14 +41399,23 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common36.ObjectWr
     for (const emulationModel of this.#targetManager.models(EmulationModel)) {
       void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingRate);
     }
-    this.dispatchEventToListeners("RateChanged", this.#cpuThrottlingRate);
+    this.dispatchEventToListeners("RateChanged" /* RATE_CHANGED */, this.#cpuThrottlingRate);
+    if (this.#manualCPUPerformanceOverride === void 0) {
+      this.#syncCPUPerformanceTier();
+      if (this.#hostDefaultCPUPerformanceTier === void 0) {
+        void this.updateHostDefaultCPUPerformanceTier();
+      }
+    }
   }
   setHardwareConcurrency(concurrency) {
     this.#hardwareConcurrency = concurrency;
     for (const emulationModel of this.#targetManager.models(EmulationModel)) {
       void emulationModel.setHardwareConcurrency(concurrency);
     }
-    this.dispatchEventToListeners("HardwareConcurrencyChanged", this.#hardwareConcurrency);
+    this.dispatchEventToListeners("HardwareConcurrencyChanged" /* HARDWARE_CONCURRENCY_CHANGED */, this.#hardwareConcurrency);
+  }
+  setCPUPerformanceTier(tier) {
+    this.#cpuPerformanceSetting.set(tier ?? "no-override");
   }
   hasPrimaryPageTargetSet() {
     try {
@@ -37430,7 +41440,9 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common36.ObjectWr
         this.#pendingMainTargetPromise = r;
       });
     }
-    const evalResult = await target.runtimeAgent().invoke_evaluate({ expression: "navigator.hardwareConcurrency", returnByValue: true, silent: true, throwOnSideEffect: true });
+    const evalResult = await target.runtimeAgent().invoke_evaluate(
+      { expression: "navigator.hardwareConcurrency", returnByValue: true, silent: true, throwOnSideEffect: true }
+    );
     const error = evalResult.getError();
     if (error) {
       throw new Error(error);
@@ -37441,12 +41453,39 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common36.ObjectWr
     }
     return result.value;
   }
+  async updateHostDefaultCPUPerformanceTier() {
+    if (this.#manualCPUPerformanceOverride !== void 0) {
+      return;
+    }
+    const target = this.#targetManager.primaryPageTarget();
+    if (!target) {
+      return;
+    }
+    const evalResult = await target.runtimeAgent().invoke_evaluate(
+      { expression: "navigator.cpuPerformance", returnByValue: true, silent: true, throwOnSideEffect: true }
+    );
+    if (evalResult.getError()) {
+      return;
+    }
+    const { result, exceptionDetails } = evalResult;
+    if (exceptionDetails || typeof result.value !== "number") {
+      return;
+    }
+    const detectedTier = numberToTier(result.value);
+    if (this.#hostDefaultCPUPerformanceTier !== detectedTier) {
+      this.#hostDefaultCPUPerformanceTier = detectedTier;
+      this.#syncCPUPerformanceTier();
+    }
+  }
   modelAdded(emulationModel) {
     if (this.#cpuThrottlingRate !== 1) {
       void emulationModel.setCPUThrottlingRate(this.#cpuThrottlingRate);
     }
     if (this.#hardwareConcurrency !== void 0) {
       void emulationModel.setHardwareConcurrency(this.#hardwareConcurrency);
+    }
+    if (this.#isCPUPerformanceOverrideActive()) {
+      void emulationModel.setCPUPerformanceOverride(this.effectiveCPUPerformanceTier());
     }
     if (this.#pendingMainTargetPromise) {
       const existingCallback = this.#pendingMainTargetPromise;
@@ -37457,8 +41496,14 @@ var CPUThrottlingManager = class _CPUThrottlingManager extends Common36.ObjectWr
   modelRemoved(_emulationModel) {
   }
 };
+var Events25 = /* @__PURE__ */ ((Events35) => {
+  Events35["RATE_CHANGED"] = "RateChanged";
+  Events35["HARDWARE_CONCURRENCY_CHANGED"] = "HardwareConcurrencyChanged";
+  Events35["CPU_PERFORMANCE_TIER_CHANGED"] = "CpuPerformanceTierChanged";
+  return Events35;
+})(Events25 || {});
 
-// gen/front_end/core/sdk/CrashReportContextModel.js
+// ../../front_end/core/sdk/CrashReportContextModel.ts
 var CrashReportContextModel_exports = {};
 __export(CrashReportContextModel_exports, {
   CrashReportContextModel: () => CrashReportContextModel
@@ -37477,9 +41522,9 @@ var CrashReportContextModel = class extends SDKModel {
     return response.entries;
   }
 };
-SDKModel.register(CrashReportContextModel, { capabilities: 4, autostart: false });
+SDKModel.register(CrashReportContextModel, { capabilities: 4 /* JS */, autostart: false });
 
-// gen/front_end/core/sdk/DOMDebuggerModel.js
+// ../../front_end/core/sdk/DOMDebuggerModel.ts
 var DOMDebuggerModel_exports = {};
 __export(DOMDebuggerModel_exports, {
   CSPViolationBreakpoint: () => CSPViolationBreakpoint,
@@ -37487,10 +41532,11 @@ __export(DOMDebuggerModel_exports, {
   DOMDebuggerManager: () => DOMDebuggerManager,
   DOMDebuggerModel: () => DOMDebuggerModel,
   DOMEventListenerBreakpoint: () => DOMEventListenerBreakpoint,
-  EventListener: () => EventListener
+  EventListener: () => EventListener,
+  Events: () => Events26
 });
-import * as Platform19 from "./../platform/platform.js";
-import * as Root13 from "./../root/root.js";
+import * as Platform19 from "../platform/platform.js";
+import * as Root13 from "../root/root.js";
 var DOMDebuggerModel = class extends SDKModel {
   agent;
   #runtimeModel;
@@ -37503,8 +41549,8 @@ var DOMDebuggerModel = class extends SDKModel {
     this.agent = target.domdebuggerAgent();
     this.#runtimeModel = target.model(RuntimeModel);
     this.#domModel = target.model(DOMModel);
-    this.#domModel.addEventListener(Events7.DocumentUpdated, this.documentUpdated, this);
-    this.#domModel.addEventListener(Events7.NodeRemoved, this.nodeRemoved, this);
+    this.#domModel.addEventListener("DocumentUpdated" /* DocumentUpdated */, this.documentUpdated, this);
+    this.#domModel.addEventListener("NodeRemoved" /* NodeRemoved */, this.nodeRemoved, this);
     this.#domBreakpoints = [];
     this.#domBreakpointsSetting = this.target().targetManager().settings.createLocalSetting("dom-breakpoints", []);
     if (this.#domModel.existingDocument()) {
@@ -37528,11 +41574,26 @@ var DOMDebuggerModel = class extends SDKModel {
     const listeners = await this.agent.invoke_getEventListeners({ objectId: remoteObject.objectId });
     const eventListeners = [];
     for (const payload of listeners.listeners || []) {
-      const location = this.#runtimeModel.debuggerModel().createRawLocationByScriptId(payload.scriptId, payload.lineNumber, payload.columnNumber);
+      const location = this.#runtimeModel.debuggerModel().createRawLocationByScriptId(
+        payload.scriptId,
+        payload.lineNumber,
+        payload.columnNumber
+      );
       if (!location) {
         continue;
       }
-      eventListeners.push(new EventListener(this, remoteObject, payload.type, payload.useCapture, payload.passive, payload.once, payload.handler ? this.#runtimeModel.createRemoteObject(payload.handler) : null, payload.originalHandler ? this.#runtimeModel.createRemoteObject(payload.originalHandler) : null, location, null));
+      eventListeners.push(new EventListener(
+        this,
+        remoteObject,
+        payload.type,
+        payload.useCapture,
+        payload.passive,
+        payload.once,
+        payload.handler ? this.#runtimeModel.createRemoteObject(payload.handler) : null,
+        payload.originalHandler ? this.#runtimeModel.createRemoteObject(payload.originalHandler) : null,
+        location,
+        null
+      ));
     }
     return eventListeners;
   }
@@ -37556,7 +41617,7 @@ var DOMDebuggerModel = class extends SDKModel {
     this.#domBreakpoints.push(breakpoint);
     this.enableDOMBreakpoint(breakpoint);
     this.saveDOMBreakpoints();
-    this.dispatchEventToListeners("DOMBreakpointAdded", breakpoint);
+    this.dispatchEventToListeners("DOMBreakpointAdded" /* DOM_BREAKPOINT_ADDED */, breakpoint);
     return breakpoint;
   }
   removeDOMBreakpoint(node, type) {
@@ -37576,7 +41637,7 @@ var DOMDebuggerModel = class extends SDKModel {
       this.disableDOMBreakpoint(breakpoint);
     }
     this.saveDOMBreakpoints();
-    this.dispatchEventToListeners("DOMBreakpointToggled", breakpoint);
+    this.dispatchEventToListeners("DOMBreakpointToggled" /* DOM_BREAKPOINT_TOGGLED */, breakpoint);
   }
   enableDOMBreakpoint(breakpoint) {
     if (breakpoint.node.id) {
@@ -37606,7 +41667,7 @@ var DOMDebuggerModel = class extends SDKModel {
     }
     let targetNode = null;
     let insertion = false;
-    if (type === "subtree-modified") {
+    if (type === DOMDebugger.DOMBreakpointType.SubtreeModified) {
       insertion = auxData["insertion"] || false;
       targetNode = this.#domModel.nodeForId(auxData["targetNodeId"]);
     }
@@ -37622,7 +41683,7 @@ var DOMDebuggerModel = class extends SDKModel {
     }
     const removed = this.#domBreakpoints;
     this.#domBreakpoints = [];
-    this.dispatchEventToListeners("DOMBreakpointsRemoved", removed);
+    this.dispatchEventToListeners("DOMBreakpointsRemoved" /* DOM_BREAKPOINTS_REMOVED */, removed);
     const document2 = await this.#domModel.requestDocument();
     const currentURL = document2 ? document2.documentURL : Platform19.DevToolsPath.EmptyUrlString;
     for (const breakpoint of this.#domBreakpointsSetting.get()) {
@@ -37645,7 +41706,7 @@ var DOMDebuggerModel = class extends SDKModel {
       if (breakpoint.enabled) {
         this.enableDOMBreakpoint(domBreakpoint);
       }
-      this.dispatchEventToListeners("DOMBreakpointAdded", domBreakpoint);
+      this.dispatchEventToListeners("DOMBreakpointAdded" /* DOM_BREAKPOINT_ADDED */, domBreakpoint);
     }
   }
   removeDOMBreakpoints(filter) {
@@ -37667,7 +41728,7 @@ var DOMDebuggerModel = class extends SDKModel {
     }
     this.#domBreakpoints = left;
     this.saveDOMBreakpoints();
-    this.dispatchEventToListeners("DOMBreakpointsRemoved", removed);
+    this.dispatchEventToListeners("DOMBreakpointsRemoved" /* DOM_BREAKPOINTS_REMOVED */, removed);
   }
   nodeRemoved(event) {
     if (this.suspended) {
@@ -37681,11 +41742,19 @@ var DOMDebuggerModel = class extends SDKModel {
     const currentURL = this.currentURL();
     const breakpoints = this.#domBreakpointsSetting.get().filter((breakpoint) => breakpoint.url !== currentURL);
     for (const breakpoint of this.#domBreakpoints) {
-      breakpoints.push({ url: currentURL, path: breakpoint.node.path(), type: breakpoint.type, enabled: breakpoint.enabled });
+      breakpoints.push(
+        { url: currentURL, path: breakpoint.node.path(), type: breakpoint.type, enabled: breakpoint.enabled }
+      );
     }
     this.#domBreakpointsSetting.set(breakpoints);
   }
 };
+var Events26 = /* @__PURE__ */ ((Events35) => {
+  Events35["DOM_BREAKPOINT_ADDED"] = "DOMBreakpointAdded";
+  Events35["DOM_BREAKPOINT_TOGGLED"] = "DOMBreakpointToggled";
+  Events35["DOM_BREAKPOINTS_REMOVED"] = "DOMBreakpointsRemoved";
+  return Events35;
+})(Events26 || {});
 var Marker = "breakpoint-marker";
 var DOMBreakpoint = class {
   domDebuggerModel;
@@ -37699,7 +41768,7 @@ var DOMBreakpoint = class {
     this.enabled = enabled;
   }
 };
-var EventListener = class {
+var EventListener = class _EventListener {
   #domDebuggerModel;
   #eventTarget;
   #type;
@@ -37725,7 +41794,7 @@ var EventListener = class {
     const script = location.script();
     this.#sourceURL = script ? script.contentURL() : Platform19.DevToolsPath.EmptyUrlString;
     this.#customRemoveFunction = customRemoveFunction;
-    this.#origin = origin || "Raw";
+    this.#origin = origin || _EventListener.Origin.RAW;
   }
   domDebuggerModel() {
     return this.#domDebuggerModel;
@@ -37755,48 +41824,57 @@ var EventListener = class {
     return this.#originalHandler;
   }
   canRemove() {
-    return Boolean(this.#customRemoveFunction) || this.#origin !== "FrameworkUser";
+    return Boolean(this.#customRemoveFunction) || this.#origin !== _EventListener.Origin.FRAMEWORK_USER;
   }
   remove() {
     if (!this.canRemove()) {
       return Promise.resolve(void 0);
     }
-    if (this.#origin !== "FrameworkUser") {
+    if (this.#origin !== _EventListener.Origin.FRAMEWORK_USER) {
       let removeListener = function(type, listener, useCapture) {
         this.removeEventListener(type, listener, useCapture);
         if (this["on" + type]) {
           this["on" + type] = void 0;
         }
       };
-      return this.#eventTarget.callFunction(removeListener, [
-        RemoteObject.toCallArgument(this.#type),
-        RemoteObject.toCallArgument(this.#originalHandler),
-        RemoteObject.toCallArgument(this.#useCapture)
-      ]).then(() => void 0);
+      return this.#eventTarget.callFunction(
+        removeListener,
+        [
+          RemoteObject.toCallArgument(this.#type),
+          RemoteObject.toCallArgument(this.#originalHandler),
+          RemoteObject.toCallArgument(this.#useCapture)
+        ]
+      ).then(() => void 0);
     }
     if (this.#customRemoveFunction) {
       let callCustomRemove = function(type, listener, useCapture, passive) {
         this.call(null, type, listener, useCapture, passive);
       };
-      return this.#customRemoveFunction.callFunction(callCustomRemove, [
-        RemoteObject.toCallArgument(this.#type),
-        RemoteObject.toCallArgument(this.#originalHandler),
-        RemoteObject.toCallArgument(this.#useCapture),
-        RemoteObject.toCallArgument(this.#passive)
-      ]).then(() => void 0);
+      return this.#customRemoveFunction.callFunction(
+        callCustomRemove,
+        [
+          RemoteObject.toCallArgument(this.#type),
+          RemoteObject.toCallArgument(this.#originalHandler),
+          RemoteObject.toCallArgument(this.#useCapture),
+          RemoteObject.toCallArgument(this.#passive)
+        ]
+      ).then(() => void 0);
     }
     return Promise.resolve(void 0);
   }
   canTogglePassive() {
-    return this.#origin !== "FrameworkUser";
+    return this.#origin !== _EventListener.Origin.FRAMEWORK_USER;
   }
   togglePassive() {
-    return this.#eventTarget.callFunction(callTogglePassive, [
-      RemoteObject.toCallArgument(this.#type),
-      RemoteObject.toCallArgument(this.#originalHandler),
-      RemoteObject.toCallArgument(this.#useCapture),
-      RemoteObject.toCallArgument(this.#passive)
-    ]).then(() => void 0);
+    return this.#eventTarget.callFunction(
+      callTogglePassive,
+      [
+        RemoteObject.toCallArgument(this.#type),
+        RemoteObject.toCallArgument(this.#originalHandler),
+        RemoteObject.toCallArgument(this.#useCapture),
+        RemoteObject.toCallArgument(this.#passive)
+      ]
+    ).then(() => void 0);
     function callTogglePassive(type, listener, useCapture, passive) {
       this.removeEventListener(type, listener, { capture: useCapture });
       this.addEventListener(type, listener, { capture: useCapture, passive: !passive });
@@ -37806,12 +41884,20 @@ var EventListener = class {
     return this.#origin;
   }
   markAsFramework() {
-    this.#origin = "Framework";
+    this.#origin = _EventListener.Origin.FRAMEWORK;
   }
   isScrollBlockingType() {
     return this.#type === "touchstart" || this.#type === "touchmove" || this.#type === "mousewheel" || this.#type === "wheel";
   }
 };
+((EventListener2) => {
+  let Origin;
+  ((Origin2) => {
+    Origin2["RAW"] = "Raw";
+    Origin2["FRAMEWORK"] = "Framework";
+    Origin2["FRAMEWORK_USER"] = "FrameworkUser";
+  })(Origin = EventListener2.Origin || (EventListener2.Origin = {}));
+})(EventListener || (EventListener = {}));
 var CSPViolationBreakpoint = class extends CategorizedBreakpoint {
   #type;
   constructor(category, type) {
@@ -37864,121 +41950,159 @@ var DOMDebuggerManager = class _DOMDebuggerManager {
       this.#xhrBreakpoints.set(breakpoint.url, breakpoint.enabled);
     }
     this.#cspViolationsToBreakOn.push(new CSPViolationBreakpoint(
-      "trusted-type-violation",
-      "trustedtype-sink-violation"
-      /* Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation */
+      "trusted-type-violation" /* TRUSTED_TYPE_VIOLATION */,
+      DOMDebugger.CSPViolationType.TrustedtypeSinkViolation
     ));
     this.#cspViolationsToBreakOn.push(new CSPViolationBreakpoint(
-      "trusted-type-violation",
-      "trustedtype-policy-violation"
-      /* Protocol.DOMDebugger.CSPViolationType.TrustedtypePolicyViolation */
+      "trusted-type-violation" /* TRUSTED_TYPE_VIOLATION */,
+      DOMDebugger.CSPViolationType.TrustedtypePolicyViolation
     ));
-    this.createEventListenerBreakpoints("media", [
-      "play",
-      "pause",
-      "playing",
-      "canplay",
-      "canplaythrough",
-      "seeking",
-      "seeked",
-      "timeupdate",
-      "ended",
-      "ratechange",
-      "durationchange",
-      "volumechange",
-      "loadstart",
-      "progress",
-      "suspend",
-      "abort",
-      "error",
-      "emptied",
-      "stalled",
-      "loadedmetadata",
-      "loadeddata",
-      "waiting"
-    ], ["audio", "video"]);
-    this.createEventListenerBreakpoints("picture-in-picture", ["enterpictureinpicture", "leavepictureinpicture"], ["video"]);
-    this.createEventListenerBreakpoints("picture-in-picture", ["resize"], ["PictureInPictureWindow"]);
-    this.createEventListenerBreakpoints("picture-in-picture", ["enter"], ["documentPictureInPicture"]);
-    this.createEventListenerBreakpoints("clipboard", ["copy", "cut", "paste", "beforecopy", "beforecut", "beforepaste"], ["*"]);
-    this.createEventListenerBreakpoints("control", [
-      "resize",
-      "scroll",
-      "scrollend",
-      "scrollsnapchange",
-      "scrollsnapchanging",
-      "zoom",
-      "focus",
-      "blur",
-      "select",
-      "change",
-      "submit",
-      "reset"
-    ], ["*"]);
-    this.createEventListenerBreakpoints("device", ["deviceorientation", "devicemotion"], ["*"]);
-    this.createEventListenerBreakpoints("dom-mutation", [
-      "DOMActivate",
-      "DOMFocusIn",
-      "DOMFocusOut",
-      "DOMAttrModified",
-      "DOMCharacterDataModified",
-      "DOMNodeInserted",
-      "DOMNodeInsertedIntoDocument",
-      "DOMNodeRemoved",
-      "DOMNodeRemovedFromDocument",
-      "DOMSubtreeModified",
-      "DOMContentLoaded"
-    ], ["*"]);
-    this.createEventListenerBreakpoints("drag-drop", ["drag", "dragstart", "dragend", "dragenter", "dragover", "dragleave", "drop"], ["*"]);
-    this.createEventListenerBreakpoints("keyboard", ["keydown", "keyup", "keypress", "input"], ["*"]);
-    this.createEventListenerBreakpoints("load", [
-      "load",
-      "beforeunload",
-      "unload",
-      "abort",
-      "error",
-      "hashchange",
-      "popstate",
-      "navigate",
-      "navigatesuccess",
-      "navigateerror",
-      "currentchange",
-      "navigateto",
-      "navigatefrom",
-      "finish",
-      "dispose"
-    ], ["*"]);
-    this.createEventListenerBreakpoints("mouse", [
-      "auxclick",
-      "click",
-      "dblclick",
-      "mousedown",
-      "mouseup",
-      "mouseover",
-      "mousemove",
-      "mouseout",
-      "mouseenter",
-      "mouseleave",
-      "mousewheel",
-      "wheel",
-      "contextmenu"
-    ], ["*"]);
-    this.createEventListenerBreakpoints("pointer", [
-      "pointerover",
-      "pointerout",
-      "pointerenter",
-      "pointerleave",
-      "pointerdown",
-      "pointerup",
-      "pointermove",
-      "pointercancel",
-      "gotpointercapture",
-      "lostpointercapture",
-      "pointerrawupdate"
-    ], ["*"]);
-    this.createEventListenerBreakpoints("touch", ["touchstart", "touchmove", "touchend", "touchcancel"], ["*"]);
-    this.createEventListenerBreakpoints("worker", ["message", "messageerror"], ["*"]);
-    this.createEventListenerBreakpoints("xhr", ["readystatechange", "load", "loadstart", "loadend", "abort", "error", "progress", "timeout"], ["xmlhttprequest", "xmlhttprequestupload"]);
+    this.createEventListenerBreakpoints(
+      "media" /* MEDIA */,
+      [
+        "play",
+        "pause",
+        "playing",
+        "canplay",
+        "canplaythrough",
+        "seeking",
+        "seeked",
+        "timeupdate",
+        "ended",
+        "ratechange",
+        "durationchange",
+        "volumechange",
+        "loadstart",
+        "progress",
+        "suspend",
+        "abort",
+        "error",
+        "emptied",
+        "stalled",
+        "loadedmetadata",
+        "loadeddata",
+        "waiting"
+      ],
+      ["audio", "video"]
+    );
+    this.createEventListenerBreakpoints(
+      "picture-in-picture" /* PICTURE_IN_PICTURE */,
+      ["enterpictureinpicture", "leavepictureinpicture"],
+      ["video"]
+    );
+    this.createEventListenerBreakpoints("picture-in-picture" /* PICTURE_IN_PICTURE */, ["resize"], ["PictureInPictureWindow"]);
+    this.createEventListenerBreakpoints("picture-in-picture" /* PICTURE_IN_PICTURE */, ["enter"], ["documentPictureInPicture"]);
+    this.createEventListenerBreakpoints(
+      "clipboard" /* CLIPBOARD */,
+      ["copy", "cut", "paste", "beforecopy", "beforecut", "beforepaste"],
+      ["*"]
+    );
+    this.createEventListenerBreakpoints(
+      "control" /* CONTROL */,
+      [
+        "resize",
+        "scroll",
+        "scrollend",
+        "scrollsnapchange",
+        "scrollsnapchanging",
+        "zoom",
+        "focus",
+        "blur",
+        "select",
+        "change",
+        "submit",
+        "reset"
+      ],
+      ["*"]
+    );
+    this.createEventListenerBreakpoints("device" /* DEVICE */, ["deviceorientation", "devicemotion"], ["*"]);
+    this.createEventListenerBreakpoints(
+      "dom-mutation" /* DOM_MUTATION */,
+      [
+        "DOMActivate",
+        "DOMFocusIn",
+        "DOMFocusOut",
+        "DOMAttrModified",
+        "DOMCharacterDataModified",
+        "DOMNodeInserted",
+        "DOMNodeInsertedIntoDocument",
+        "DOMNodeRemoved",
+        "DOMNodeRemovedFromDocument",
+        "DOMSubtreeModified",
+        "DOMContentLoaded"
+      ],
+      ["*"]
+    );
+    this.createEventListenerBreakpoints(
+      "drag-drop" /* DRAG_DROP */,
+      ["drag", "dragstart", "dragend", "dragenter", "dragover", "dragleave", "drop"],
+      ["*"]
+    );
+    this.createEventListenerBreakpoints("keyboard" /* KEYBOARD */, ["keydown", "keyup", "keypress", "input"], ["*"]);
+    this.createEventListenerBreakpoints(
+      "load" /* LOAD */,
+      [
+        "load",
+        "beforeunload",
+        "unload",
+        "abort",
+        "error",
+        "hashchange",
+        "popstate",
+        "navigate",
+        "navigatesuccess",
+        "navigateerror",
+        "currentchange",
+        "navigateto",
+        "navigatefrom",
+        "finish",
+        "dispose"
+      ],
+      ["*"]
+    );
+    this.createEventListenerBreakpoints(
+      "mouse" /* MOUSE */,
+      [
+        "auxclick",
+        "click",
+        "dblclick",
+        "mousedown",
+        "mouseup",
+        "mouseover",
+        "mousemove",
+        "mouseout",
+        "mouseenter",
+        "mouseleave",
+        "mousewheel",
+        "wheel",
+        "contextmenu"
+      ],
+      ["*"]
+    );
+    this.createEventListenerBreakpoints(
+      "pointer" /* POINTER */,
+      [
+        "pointerover",
+        "pointerout",
+        "pointerenter",
+        "pointerleave",
+        "pointerdown",
+        "pointerup",
+        "pointermove",
+        "pointercancel",
+        "gotpointercapture",
+        "lostpointercapture",
+        "pointerrawupdate"
+      ],
+      ["*"]
+    );
+    this.createEventListenerBreakpoints("touch" /* TOUCH */, ["touchstart", "touchmove", "touchend", "touchcancel"], ["*"]);
+    this.createEventListenerBreakpoints("worker" /* WORKER */, ["message", "messageerror"], ["*"]);
+    this.createEventListenerBreakpoints(
+      "xhr" /* XHR */,
+      ["readystatechange", "load", "loadstart", "loadend", "abort", "error", "progress", "timeout"],
+      ["xmlhttprequest", "xmlhttprequestupload"]
+    );
   }
   initialize() {
     this.#targetManager.observeModels(DOMDebuggerModel, this);
@@ -37988,7 +42112,10 @@ var DOMDebuggerManager = class _DOMDebuggerManager {
     if (!Root13.DevToolsContext.globalInstance().has(_DOMDebuggerManager) || forceNew) {
       const manager = new _DOMDebuggerManager(targetManager ?? TargetManager.instance());
       manager.initialize();
-      Root13.DevToolsContext.globalInstance().set(_DOMDebuggerManager, manager);
+      Root13.DevToolsContext.globalInstance().set(
+        _DOMDebuggerManager,
+        manager
+      );
     }
     return Root13.DevToolsContext.globalInstance().get(_DOMDebuggerManager);
   }
@@ -38000,7 +42127,9 @@ var DOMDebuggerManager = class _DOMDebuggerManager {
   }
   createEventListenerBreakpoints(category, eventNames, eventTargetNames) {
     for (const eventName of eventNames) {
-      this.#eventListenerBreakpoints.push(new DOMEventListenerBreakpoint(eventName, eventTargetNames, category, this.#targetManager));
+      this.#eventListenerBreakpoints.push(
+        new DOMEventListenerBreakpoint(eventName, eventTargetNames, category, this.#targetManager)
+      );
     }
   }
   resolveEventListenerBreakpoint({ eventName, targetName }) {
@@ -38091,16 +42220,17 @@ var DOMDebuggerManager = class _DOMDebuggerManager {
   modelRemoved(_domDebuggerModel) {
   }
 };
-SDKModel.register(DOMDebuggerModel, { capabilities: 2, autostart: false });
+SDKModel.register(DOMDebuggerModel, { capabilities: 2 /* DOM */, autostart: false });
 
-// gen/front_end/core/sdk/DOMStorageModel.js
+// ../../front_end/core/sdk/DOMStorageModel.ts
 var DOMStorageModel_exports = {};
 __export(DOMStorageModel_exports, {
   DOMStorage: () => DOMStorage,
   DOMStorageDispatcher: () => DOMStorageDispatcher,
-  DOMStorageModel: () => DOMStorageModel
+  DOMStorageModel: () => DOMStorageModel,
+  Events: () => Events27
 });
-import * as Common37 from "./../common/common.js";
+import * as Common37 from "../common/common.js";
 var DOMStorage = class _DOMStorage extends Common37.ObjectWrapper.ObjectWrapper {
   model;
   #storageKey;
@@ -38136,6 +42266,15 @@ var DOMStorage = class _DOMStorage extends Common37.ObjectWrapper.ObjectWrapper 
     void this.model.agent.invoke_clear({ storageId: this.id });
   }
 };
+((DOMStorage2) => {
+  let Events35;
+  ((Events36) => {
+    Events36["DOM_STORAGE_ITEMS_CLEARED"] = "DOMStorageItemsCleared";
+    Events36["DOM_STORAGE_ITEM_REMOVED"] = "DOMStorageItemRemoved";
+    Events36["DOM_STORAGE_ITEM_ADDED"] = "DOMStorageItemAdded";
+    Events36["DOM_STORAGE_ITEM_UPDATED"] = "DOMStorageItemUpdated";
+  })(Events35 = DOMStorage2.Events || (DOMStorage2.Events = {}));
+})(DOMStorage || (DOMStorage = {}));
 var DOMStorageModel = class extends SDKModel {
   #storageKeyManager;
   #storages;
@@ -38153,8 +42292,12 @@ var DOMStorageModel = class extends SDKModel {
     }
     this.target().registerDOMStorageDispatcher(new DOMStorageDispatcher(this));
     if (this.#storageKeyManager) {
-      this.#storageKeyManager.addEventListener("StorageKeyAdded", this.storageKeyAdded, this);
-      this.#storageKeyManager.addEventListener("StorageKeyRemoved", this.storageKeyRemoved, this);
+      this.#storageKeyManager.addEventListener("StorageKeyAdded" /* STORAGE_KEY_ADDED */, this.storageKeyAdded, this);
+      this.#storageKeyManager.addEventListener(
+        "StorageKeyRemoved" /* STORAGE_KEY_REMOVED */,
+        this.storageKeyRemoved,
+        this
+      );
       for (const storageKey of this.#storageKeyManager.storageKeys()) {
         this.addStorageKey(storageKey);
       }
@@ -38186,7 +42329,7 @@ var DOMStorageModel = class extends SDKModel {
       console.assert(!this.#storages[key]);
       const storage = new DOMStorage(this, storageKey, isLocal);
       this.#storages[key] = storage;
-      this.dispatchEventToListeners("DOMStorageAdded", storage);
+      this.dispatchEventToListeners("DOMStorageAdded" /* DOM_STORAGE_ADDED */, storage);
     }
   }
   storageKeyRemoved(event) {
@@ -38200,7 +42343,7 @@ var DOMStorageModel = class extends SDKModel {
         continue;
       }
       delete this.#storages[key];
-      this.dispatchEventToListeners("DOMStorageRemoved", storage);
+      this.dispatchEventToListeners("DOMStorageRemoved" /* DOM_STORAGE_REMOVED */, storage);
     }
   }
   storageKey(storageKey, isLocalStorage) {
@@ -38211,10 +42354,7 @@ var DOMStorageModel = class extends SDKModel {
     if (!domStorage) {
       return;
     }
-    domStorage.dispatchEventToListeners(
-      "DOMStorageItemsCleared"
-      /* DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED */
-    );
+    domStorage.dispatchEventToListeners("DOMStorageItemsCleared" /* DOM_STORAGE_ITEMS_CLEARED */);
   }
   domStorageItemRemoved(storageId, key) {
     const domStorage = this.storageForId(storageId);
@@ -38222,7 +42362,7 @@ var DOMStorageModel = class extends SDKModel {
       return;
     }
     const eventData = { key };
-    domStorage.dispatchEventToListeners("DOMStorageItemRemoved", eventData);
+    domStorage.dispatchEventToListeners("DOMStorageItemRemoved" /* DOM_STORAGE_ITEM_REMOVED */, eventData);
   }
   domStorageItemAdded(storageId, key, value) {
     const domStorage = this.storageForId(storageId);
@@ -38230,7 +42370,7 @@ var DOMStorageModel = class extends SDKModel {
       return;
     }
     const eventData = { key, value };
-    domStorage.dispatchEventToListeners("DOMStorageItemAdded", eventData);
+    domStorage.dispatchEventToListeners("DOMStorageItemAdded" /* DOM_STORAGE_ITEM_ADDED */, eventData);
   }
   domStorageItemUpdated(storageId, key, oldValue, value) {
     const domStorage = this.storageForId(storageId);
@@ -38238,7 +42378,7 @@ var DOMStorageModel = class extends SDKModel {
       return;
     }
     const eventData = { key, oldValue, value };
-    domStorage.dispatchEventToListeners("DOMStorageItemUpdated", eventData);
+    domStorage.dispatchEventToListeners("DOMStorageItemUpdated" /* DOM_STORAGE_ITEM_UPDATED */, eventData);
   }
   storageForId(storageId) {
     console.assert(Boolean(storageId.storageKey));
@@ -38252,7 +42392,12 @@ var DOMStorageModel = class extends SDKModel {
     return result;
   }
 };
-SDKModel.register(DOMStorageModel, { capabilities: 1048576, autostart: false });
+SDKModel.register(DOMStorageModel, { capabilities: 1048576 /* DOM_STORAGE */, autostart: false });
+var Events27 = /* @__PURE__ */ ((Events35) => {
+  Events35["DOM_STORAGE_ADDED"] = "DOMStorageAdded";
+  Events35["DOM_STORAGE_REMOVED"] = "DOMStorageRemoved";
+  return Events35;
+})(Events27 || {});
 var DOMStorageDispatcher = class {
   model;
   constructor(model) {
@@ -38272,13 +42417,45 @@ var DOMStorageDispatcher = class {
   }
 };
 
-// gen/front_end/core/sdk/EventBreakpointsModel.js
+// ../../front_end/core/sdk/EventBreakpointsModel.ts
 var EventBreakpointsModel_exports = {};
 __export(EventBreakpointsModel_exports, {
   EventBreakpointsManager: () => EventBreakpointsManager,
-  EventBreakpointsModel: () => EventBreakpointsModel
+  EventBreakpointsModel: () => EventBreakpointsModel,
+  InstrumentationNames: () => InstrumentationNames
 });
-import * as Root14 from "./../root/root.js";
+import * as Root14 from "../root/root.js";
+var InstrumentationNames = /* @__PURE__ */ ((InstrumentationNames2) => {
+  InstrumentationNames2["BEFORE_BIDDER_WORKLET_BIDDING_START"] = "beforeBidderWorkletBiddingStart";
+  InstrumentationNames2["BEFORE_BIDDER_WORKLET_REPORTING_START"] = "beforeBidderWorkletReportingStart";
+  InstrumentationNames2["BEFORE_SELLER_WORKLET_SCORING_START"] = "beforeSellerWorkletScoringStart";
+  InstrumentationNames2["BEFORE_SELLER_WORKLET_REPORTING_START"] = "beforeSellerWorkletReportingStart";
+  InstrumentationNames2["SET_TIMEOUT"] = "setTimeout";
+  InstrumentationNames2["CLEAR_TIMEOUT"] = "clearTimeout";
+  InstrumentationNames2["SET_TIMEOUT_CALLBACK"] = "setTimeout.callback";
+  InstrumentationNames2["SET_INTERVAL"] = "setInterval";
+  InstrumentationNames2["CLEAR_INTERVAL"] = "clearInterval";
+  InstrumentationNames2["SET_INTERVAL_CALLBACK"] = "setInterval.callback";
+  InstrumentationNames2["SCRIPT_FIRST_STATEMENT"] = "scriptFirstStatement";
+  InstrumentationNames2["SCRIPT_BLOCKED_BY_CSP"] = "scriptBlockedByCSP";
+  InstrumentationNames2["REQUEST_ANIMATION_FRAME"] = "requestAnimationFrame";
+  InstrumentationNames2["CANCEL_ANIMATION_FRAME"] = "cancelAnimationFrame";
+  InstrumentationNames2["REQUEST_ANIMATION_FRAME_CALLBACK"] = "requestAnimationFrame.callback";
+  InstrumentationNames2["WEBGL_ERROR_FIRED"] = "webglErrorFired";
+  InstrumentationNames2["WEBGL_WARNING_FIRED"] = "webglWarningFired";
+  InstrumentationNames2["ELEMENT_SET_INNER_HTML"] = "Element.setInnerHTML";
+  InstrumentationNames2["CANVAS_CONTEXT_CREATED"] = "canvasContextCreated";
+  InstrumentationNames2["GEOLOCATION_GET_CURRENT_POSITION"] = "Geolocation.getCurrentPosition";
+  InstrumentationNames2["GEOLOCATION_WATCH_POSITION"] = "Geolocation.watchPosition";
+  InstrumentationNames2["NOTIFICATION_REQUEST_PERMISSION"] = "Notification.requestPermission";
+  InstrumentationNames2["DOM_WINDOW_CLOSE"] = "DOMWindow.close";
+  InstrumentationNames2["DOCUMENT_WRITE"] = "Document.write";
+  InstrumentationNames2["AUDIO_CONTEXT_CREATED"] = "audioContextCreated";
+  InstrumentationNames2["AUDIO_CONTEXT_CLOSED"] = "audioContextClosed";
+  InstrumentationNames2["AUDIO_CONTEXT_RESUMED"] = "audioContextResumed";
+  InstrumentationNames2["AUDIO_CONTEXT_SUSPENDED"] = "audioContextSuspended";
+  return InstrumentationNames2;
+})(InstrumentationNames || {});
 var EventBreakpointsModel = class extends SDKModel {
   agent;
   constructor(target) {
@@ -38316,53 +42493,53 @@ var EventBreakpointsManager = class _EventBreakpointsManager {
   // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
   constructor(targetManager = TargetManager.instance()) {
     this.#targetManager = targetManager;
-    this.createInstrumentationBreakpoints("auction-worklet", [
-      "beforeBidderWorkletBiddingStart",
-      "beforeBidderWorkletReportingStart",
-      "beforeSellerWorkletScoringStart",
-      "beforeSellerWorkletReportingStart"
+    this.createInstrumentationBreakpoints("auction-worklet" /* AUCTION_WORKLET */, [
+      "beforeBidderWorkletBiddingStart" /* BEFORE_BIDDER_WORKLET_BIDDING_START */,
+      "beforeBidderWorkletReportingStart" /* BEFORE_BIDDER_WORKLET_REPORTING_START */,
+      "beforeSellerWorkletScoringStart" /* BEFORE_SELLER_WORKLET_SCORING_START */,
+      "beforeSellerWorkletReportingStart" /* BEFORE_SELLER_WORKLET_REPORTING_START */
     ]);
-    this.createInstrumentationBreakpoints("animation", [
-      "requestAnimationFrame",
-      "cancelAnimationFrame",
-      "requestAnimationFrame.callback"
+    this.createInstrumentationBreakpoints("animation" /* ANIMATION */, [
+      "requestAnimationFrame" /* REQUEST_ANIMATION_FRAME */,
+      "cancelAnimationFrame" /* CANCEL_ANIMATION_FRAME */,
+      "requestAnimationFrame.callback" /* REQUEST_ANIMATION_FRAME_CALLBACK */
     ]);
-    this.createInstrumentationBreakpoints("canvas", [
-      "canvasContextCreated",
-      "webglErrorFired",
-      "webglWarningFired"
+    this.createInstrumentationBreakpoints("canvas" /* CANVAS */, [
+      "canvasContextCreated" /* CANVAS_CONTEXT_CREATED */,
+      "webglErrorFired" /* WEBGL_ERROR_FIRED */,
+      "webglWarningFired" /* WEBGL_WARNING_FIRED */
     ]);
-    this.createInstrumentationBreakpoints("geolocation", [
-      "Geolocation.getCurrentPosition",
-      "Geolocation.watchPosition"
+    this.createInstrumentationBreakpoints("geolocation" /* GEOLOCATION */, [
+      "Geolocation.getCurrentPosition" /* GEOLOCATION_GET_CURRENT_POSITION */,
+      "Geolocation.watchPosition" /* GEOLOCATION_WATCH_POSITION */
     ]);
-    this.createInstrumentationBreakpoints("notification", [
-      "Notification.requestPermission"
+    this.createInstrumentationBreakpoints("notification" /* NOTIFICATION */, [
+      "Notification.requestPermission" /* NOTIFICATION_REQUEST_PERMISSION */
     ]);
-    this.createInstrumentationBreakpoints("parse", [
-      "Element.setInnerHTML",
-      "Document.write"
+    this.createInstrumentationBreakpoints("parse" /* PARSE */, [
+      "Element.setInnerHTML" /* ELEMENT_SET_INNER_HTML */,
+      "Document.write" /* DOCUMENT_WRITE */
     ]);
-    this.createInstrumentationBreakpoints("script", [
-      "scriptFirstStatement",
-      "scriptBlockedByCSP"
+    this.createInstrumentationBreakpoints("script" /* SCRIPT */, [
+      "scriptFirstStatement" /* SCRIPT_FIRST_STATEMENT */,
+      "scriptBlockedByCSP" /* SCRIPT_BLOCKED_BY_CSP */
     ]);
-    this.createInstrumentationBreakpoints("timer", [
-      "setTimeout",
-      "clearTimeout",
-      "setTimeout.callback",
-      "setInterval",
-      "clearInterval",
-      "setInterval.callback"
+    this.createInstrumentationBreakpoints("timer" /* TIMER */, [
+      "setTimeout" /* SET_TIMEOUT */,
+      "clearTimeout" /* CLEAR_TIMEOUT */,
+      "setTimeout.callback" /* SET_TIMEOUT_CALLBACK */,
+      "setInterval" /* SET_INTERVAL */,
+      "clearInterval" /* CLEAR_INTERVAL */,
+      "setInterval.callback" /* SET_INTERVAL_CALLBACK */
     ]);
-    this.createInstrumentationBreakpoints("window", [
-      "DOMWindow.close"
+    this.createInstrumentationBreakpoints("window" /* WINDOW */, [
+      "DOMWindow.close" /* DOM_WINDOW_CLOSE */
     ]);
-    this.createInstrumentationBreakpoints("web-audio", [
-      "audioContextCreated",
-      "audioContextClosed",
-      "audioContextResumed",
-      "audioContextSuspended"
+    this.createInstrumentationBreakpoints("web-audio" /* WEB_AUDIO */, [
+      "audioContextCreated" /* AUDIO_CONTEXT_CREATED */,
+      "audioContextClosed" /* AUDIO_CONTEXT_CLOSED */,
+      "audioContextResumed" /* AUDIO_CONTEXT_RESUMED */,
+      "audioContextSuspended" /* AUDIO_CONTEXT_SUSPENDED */
     ]);
     this.#targetManager.observeModels(EventBreakpointsModel, this);
   }
@@ -38382,7 +42559,9 @@ var EventBreakpointsManager = class _EventBreakpointsManager {
   }
   createInstrumentationBreakpoints(category, instrumentationNames) {
     for (const instrumentationName of instrumentationNames) {
-      this.#eventListenerBreakpoints.push(new EventListenerBreakpoint(category, instrumentationName, this.#targetManager));
+      this.#eventListenerBreakpoints.push(
+        new EventListenerBreakpoint(category, instrumentationName, this.#targetManager)
+      );
     }
   }
   eventListenerBreakpoints() {
@@ -38405,21 +42584,22 @@ var EventBreakpointsManager = class _EventBreakpointsManager {
   modelRemoved(_eventBreakpointModel) {
   }
 };
-SDKModel.register(EventBreakpointsModel, { capabilities: 524288, autostart: false });
+SDKModel.register(EventBreakpointsModel, { capabilities: 524288 /* EVENT_BREAKPOINTS */, autostart: false });
 
-// gen/front_end/core/sdk/FrameAssociated.js
+// ../../front_end/core/sdk/FrameAssociated.ts
 var FrameAssociated_exports = {};
 
-// gen/front_end/core/sdk/IsolateManager.js
+// ../../front_end/core/sdk/IsolateManager.ts
 var IsolateManager_exports = {};
 __export(IsolateManager_exports, {
+  Events: () => Events28,
   Isolate: () => Isolate,
   IsolateManager: () => IsolateManager,
   MemoryTrend: () => MemoryTrend,
   MemoryTrendWindowMs: () => MemoryTrendWindowMs
 });
-import * as Common38 from "./../common/common.js";
-import * as Root15 from "./../root/root.js";
+import * as Common38 from "../common/common.js";
+import * as Root15 from "../root/root.js";
 var IsolateManager = class _IsolateManager extends Common38.ObjectWrapper.ObjectWrapper {
   #isolates = /* @__PURE__ */ new Map();
   /**
@@ -38520,6 +42700,10 @@ var IsolateManager = class _IsolateManager extends Common38.ObjectWrapper.Object
     }
   }
 };
+var Events28 = /* @__PURE__ */ ((Events35) => {
+  Events35["MEMORY_CHANGED"] = "MemoryChanged";
+  return Events35;
+})(Events28 || {});
 var MemoryTrendWindowMs = 12e4;
 var PollIntervalMs = 2e3;
 var Isolate = class {
@@ -38557,7 +42741,7 @@ var Isolate = class {
     }
     this.#usedHeapSize = usage.usedSize + (usage.embedderHeapUsedSize ?? 0) + (usage.backingStorageSize ?? 0);
     this.#memoryTrend.add(this.#usedHeapSize);
-    this.#manager.dispatchEventToListeners("MemoryChanged", this);
+    this.#manager.dispatchEventToListeners("MemoryChanged" /* MEMORY_CHANGED */, this);
   }
   samplesCount() {
     return this.#memoryTrend.count();
@@ -38624,9 +42808,10 @@ var MemoryTrend = class {
   }
 };
 
-// gen/front_end/core/sdk/IssuesModel.js
+// ../../front_end/core/sdk/IssuesModel.ts
 var IssuesModel_exports = {};
 __export(IssuesModel_exports, {
+  Events: () => Events29,
   IssuesModel: () => IssuesModel
 });
 var IssuesModel = class extends SDKModel {
@@ -38646,7 +42831,7 @@ var IssuesModel = class extends SDKModel {
     await auditsAgent.invoke_enable();
   }
   issueAdded(issueAddedEvent) {
-    this.dispatchEventToListeners("IssueAdded", { issuesModel: this, inspectorIssue: issueAddedEvent.issue });
+    this.dispatchEventToListeners("IssueAdded" /* ISSUE_ADDED */, { issuesModel: this, inspectorIssue: issueAddedEvent.issue });
   }
   dispose() {
     super.dispose();
@@ -38659,14 +42844,30 @@ var IssuesModel = class extends SDKModel {
     return null;
   }
 };
-SDKModel.register(IssuesModel, { capabilities: 32768, autostart: true });
+var Events29 = /* @__PURE__ */ ((Events35) => {
+  Events35["ISSUE_ADDED"] = "IssueAdded";
+  return Events35;
+})(Events29 || {});
+SDKModel.register(IssuesModel, { capabilities: 32768 /* AUDITS */, autostart: true });
 
-// gen/front_end/core/sdk/LayerTreeBase.js
+// ../../front_end/core/sdk/LayerTreeBase.ts
 var LayerTreeBase_exports = {};
 __export(LayerTreeBase_exports, {
+  Layer: () => Layer,
   LayerTreeBase: () => LayerTreeBase,
   StickyPositionConstraint: () => StickyPositionConstraint
 });
+var Layer;
+((Layer2) => {
+  let ScrollRectType;
+  ((ScrollRectType2) => {
+    ScrollRectType2["NON_FAST_SCROLLABLE"] = "NonFastScrollable";
+    ScrollRectType2["TOUCH_EVENT_HANDLER"] = "TouchEventHandler";
+    ScrollRectType2["WHEEL_EVENT_HANDLER"] = "WheelEventHandler";
+    ScrollRectType2["REPAINTS_ON_SCROLL"] = "RepaintsOnScroll";
+    ScrollRectType2["MAIN_THREAD_SCROLL_REASON"] = "MainThreadScrollingReason";
+  })(ScrollRectType = Layer2.ScrollRectType || (Layer2.ScrollRectType = {}));
+})(Layer || (Layer = {}));
 var StickyPositionConstraint = class {
   #stickyBoxRect;
   #containingBlockRect;
@@ -38759,7 +42960,7 @@ var LayerTreeBase = class {
   }
 };
 
-// gen/front_end/core/sdk/PageLoad.js
+// ../../front_end/core/sdk/PageLoad.ts
 var PageLoad_exports = {};
 __export(PageLoad_exports, {
   PageLoad: () => PageLoad
@@ -38787,7 +42988,7 @@ var PageLoad = class _PageLoad {
 };
 var pageLoadForRequest = /* @__PURE__ */ new WeakMap();
 
-// gen/front_end/core/sdk/PaintProfiler.js
+// ../../front_end/core/sdk/PaintProfiler.ts
 var PaintProfiler_exports = {};
 __export(PaintProfiler_exports, {
   PaintProfilerLogItem: () => PaintProfilerLogItem,
@@ -38833,11 +43034,15 @@ var PaintProfilerSnapshot = class {
     console.assert(this.#refCount > 0, "Referencing a dead object");
   }
   async replay(scale, fromStep, toStep) {
-    const response = await this.#paintProfilerModel.layerTreeAgent.invoke_replaySnapshot({ snapshotId: this.#id, fromStep, toStep, scale: scale || 1 });
+    const response = await this.#paintProfilerModel.layerTreeAgent.invoke_replaySnapshot(
+      { snapshotId: this.#id, fromStep, toStep, scale: scale || 1 }
+    );
     return response.dataURL;
   }
   async profile(clipRect) {
-    const response = await this.#paintProfilerModel.layerTreeAgent.invoke_profileSnapshot({ snapshotId: this.#id, minRepeatCount: 5, minDuration: 1, clipRect: clipRect || void 0 });
+    const response = await this.#paintProfilerModel.layerTreeAgent.invoke_profileSnapshot(
+      { snapshotId: this.#id, minRepeatCount: 5, minDuration: 1, clipRect: clipRect || void 0 }
+    );
     return response.timings;
   }
   async commandLog() {
@@ -38855,47 +43060,23 @@ var PaintProfilerLogItem = class {
     this.commandIndex = commandIndex;
   }
 };
-SDKModel.register(PaintProfilerModel, { capabilities: 2, autostart: false });
+SDKModel.register(PaintProfilerModel, { capabilities: 2 /* DOM */, autostart: false });
 
-// gen/front_end/core/sdk/PerformanceMetricsModel.js
+// ../../front_end/core/sdk/PerformanceMetricsModel.ts
 var PerformanceMetricsModel_exports = {};
 __export(PerformanceMetricsModel_exports, {
   PerformanceMetricsModel: () => PerformanceMetricsModel
 });
-import * as Platform20 from "./../platform/platform.js";
+import * as Platform20 from "../platform/platform.js";
 var PerformanceMetricsModel = class extends SDKModel {
   #agent;
   #metricModes = /* @__PURE__ */ new Map([
-    [
-      "TaskDuration",
-      "CumulativeTime"
-      /* MetricMode.CUMULATIVE_TIME */
-    ],
-    [
-      "ScriptDuration",
-      "CumulativeTime"
-      /* MetricMode.CUMULATIVE_TIME */
-    ],
-    [
-      "LayoutDuration",
-      "CumulativeTime"
-      /* MetricMode.CUMULATIVE_TIME */
-    ],
-    [
-      "RecalcStyleDuration",
-      "CumulativeTime"
-      /* MetricMode.CUMULATIVE_TIME */
-    ],
-    [
-      "LayoutCount",
-      "CumulativeCount"
-      /* MetricMode.CUMULATIVE_COUNT */
-    ],
-    [
-      "RecalcStyleCount",
-      "CumulativeCount"
-      /* MetricMode.CUMULATIVE_COUNT */
-    ]
+    ["TaskDuration", "CumulativeTime" /* CUMULATIVE_TIME */],
+    ["ScriptDuration", "CumulativeTime" /* CUMULATIVE_TIME */],
+    ["LayoutDuration", "CumulativeTime" /* CUMULATIVE_TIME */],
+    ["RecalcStyleDuration", "CumulativeTime" /* CUMULATIVE_TIME */],
+    ["LayoutCount", "CumulativeCount" /* CUMULATIVE_COUNT */],
+    ["RecalcStyleCount", "CumulativeCount" /* CUMULATIVE_COUNT */]
   ]);
   #metricData = /* @__PURE__ */ new Map();
   constructor(target) {
@@ -38920,12 +43101,16 @@ var PerformanceMetricsModel = class extends SDKModel {
       }
       let value;
       switch (this.#metricModes.get(metric.name)) {
-        case "CumulativeTime":
-          value = data.lastTimestamp && data.lastValue ? Platform20.NumberUtilities.clamp((metric.value - data.lastValue) * 1e3 / (timestamp - data.lastTimestamp), 0, 1) : 0;
+        case "CumulativeTime" /* CUMULATIVE_TIME */:
+          value = data.lastTimestamp && data.lastValue ? Platform20.NumberUtilities.clamp(
+            (metric.value - data.lastValue) * 1e3 / (timestamp - data.lastTimestamp),
+            0,
+            1
+          ) : 0;
           data.lastValue = metric.value;
           data.lastTimestamp = timestamp;
           break;
-        case "CumulativeCount":
+        case "CumulativeCount" /* CUMULATIVE_COUNT */:
           value = data.lastTimestamp && data.lastValue ? Math.max(0, (metric.value - data.lastValue) * 1e3 / (timestamp - data.lastTimestamp)) : 0;
           data.lastValue = metric.value;
           data.lastTimestamp = timestamp;
@@ -38939,16 +43124,18 @@ var PerformanceMetricsModel = class extends SDKModel {
     return { metrics, timestamp };
   }
 };
-SDKModel.register(PerformanceMetricsModel, { capabilities: 2, autostart: false });
+SDKModel.register(PerformanceMetricsModel, { capabilities: 2 /* DOM */, autostart: false });
 
-// gen/front_end/core/sdk/PreloadingModel.js
+// ../../front_end/core/sdk/PreloadingModel.ts
 var PreloadingModel_exports = {};
 __export(PreloadingModel_exports, {
+  Events: () => Events30,
   PreloadPipeline: () => PreloadPipeline,
-  PreloadingModel: () => PreloadingModel
+  PreloadingModel: () => PreloadingModel,
+  PreloadingStatus: () => PreloadingStatus
 });
-import * as Common39 from "./../common/common.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined3 } from "./../platform/platform.js";
+import * as Common39 from "../common/common.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined3 } from "../platform/platform.js";
 var PreloadingModel = class _PreloadingModel extends SDKModel {
   agent;
   loaderIds = [];
@@ -38964,21 +43151,28 @@ var PreloadingModel = class _PreloadingModel extends SDKModel {
     if (targetInfo?.subtype === "prerender") {
       this.lastPrimaryPageModel = target.targetManager().primaryPageTarget()?.model(_PreloadingModel) || null;
     }
-    target.targetManager().addModelListener(ResourceTreeModel, Events2.PrimaryPageChanged, this.onPrimaryPageChanged, this);
+    target.targetManager().addModelListener(
+      ResourceTreeModel,
+      "PrimaryPageChanged" /* PrimaryPageChanged */,
+      this.onPrimaryPageChanged,
+      this
+    );
   }
   dispose() {
     super.dispose();
-    this.target().targetManager().removeModelListener(ResourceTreeModel, Events2.PrimaryPageChanged, this.onPrimaryPageChanged, this);
+    this.target().targetManager().removeModelListener(
+      ResourceTreeModel,
+      "PrimaryPageChanged" /* PrimaryPageChanged */,
+      this.onPrimaryPageChanged,
+      this
+    );
     void this.agent.invoke_disable();
   }
   reset() {
     this.documents.clear();
     this.loaderIds = [];
     this.targetJustAttached = true;
-    this.dispatchEventToListeners(
-      "ModelUpdated"
-      /* Events.MODEL_UPDATED */
-    );
+    this.dispatchEventToListeners("ModelUpdated" /* MODEL_UPDATED */);
   }
   maybeInferLoaderId(loaderId) {
     if (this.currentLoaderId() === null) {
@@ -39094,13 +43288,13 @@ var PreloadingModel = class _PreloadingModel extends SDKModel {
   }
   onPrimaryPageChanged(event) {
     const { frame, type } = event.data;
-    if (this.lastPrimaryPageModel === null && type === "Activation") {
+    if (this.lastPrimaryPageModel === null && type === "Activation" /* ACTIVATION */) {
       return;
     }
-    if (this.lastPrimaryPageModel !== null && type !== "Activation") {
+    if (this.lastPrimaryPageModel !== null && type !== "Activation" /* ACTIVATION */) {
       return;
     }
-    if (this.lastPrimaryPageModel !== null && type === "Activation") {
+    if (this.lastPrimaryPageModel !== null && type === "Activation" /* ACTIVATION */) {
       this.loaderIds = this.lastPrimaryPageModel.loaderIds;
       for (const [loaderId, prev] of this.lastPrimaryPageModel.documents.entries()) {
         this.ensureDocumentPreloadingData(loaderId);
@@ -39117,10 +43311,7 @@ var PreloadingModel = class _PreloadingModel extends SDKModel {
         this.documents.delete(loaderId);
       }
     }
-    this.dispatchEventToListeners(
-      "ModelUpdated"
-      /* Events.MODEL_UPDATED */
-    );
+    this.dispatchEventToListeners("ModelUpdated" /* MODEL_UPDATED */);
   }
   onRuleSetUpdated(event) {
     const ruleSet = event.ruleSet;
@@ -39128,20 +43319,14 @@ var PreloadingModel = class _PreloadingModel extends SDKModel {
     this.maybeInferLoaderId(loaderId);
     this.ensureDocumentPreloadingData(loaderId);
     this.documents.get(loaderId)?.ruleSets.upsert(ruleSet);
-    this.dispatchEventToListeners(
-      "ModelUpdated"
-      /* Events.MODEL_UPDATED */
-    );
+    this.dispatchEventToListeners("ModelUpdated" /* MODEL_UPDATED */);
   }
   onRuleSetRemoved(event) {
     const id = event.id;
     for (const document2 of this.documents.values()) {
       document2.ruleSets.delete(id);
     }
-    this.dispatchEventToListeners(
-      "ModelUpdated"
-      /* Events.MODEL_UPDATED */
-    );
+    this.dispatchEventToListeners("ModelUpdated" /* MODEL_UPDATED */);
   }
   onPreloadingAttemptSourcesUpdated(event) {
     const loaderId = event.loaderId;
@@ -39153,19 +43338,16 @@ var PreloadingModel = class _PreloadingModel extends SDKModel {
     document2.sources.update(event.preloadingAttemptSources);
     document2.preloadingAttempts.maybeRegisterNotTriggered(document2.sources);
     document2.preloadingAttempts.cleanUpRemovedAttempts(document2.sources);
-    this.dispatchEventToListeners(
-      "ModelUpdated"
-      /* Events.MODEL_UPDATED */
-    );
+    this.dispatchEventToListeners("ModelUpdated" /* MODEL_UPDATED */);
   }
   onPrefetchStatusUpdated(event) {
-    if (event.prefetchStatus === "PrefetchEvictedAfterCandidateRemoved") {
+    if (event.prefetchStatus === Preload.PrefetchStatus.PrefetchEvictedAfterCandidateRemoved) {
       return;
     }
     const loaderId = event.key.loaderId;
     this.ensureDocumentPreloadingData(loaderId);
     const attempt = {
-      action: "Prefetch",
+      action: Preload.SpeculationAction.Prefetch,
       key: event.key,
       pipelineId: event.pipelineId,
       status: convertPreloadingStatus(event.status),
@@ -39173,17 +43355,14 @@ var PreloadingModel = class _PreloadingModel extends SDKModel {
       requestId: event.requestId
     };
     this.documents.get(loaderId)?.preloadingAttempts.upsert(attempt);
-    this.dispatchEventToListeners(
-      "ModelUpdated"
-      /* Events.MODEL_UPDATED */
-    );
+    this.dispatchEventToListeners("ModelUpdated" /* MODEL_UPDATED */);
   }
   onPrerenderStatusUpdated(event) {
     const loaderId = event.key.loaderId;
     this.ensureDocumentPreloadingData(loaderId);
     let attempt;
     switch (event.key.action) {
-      case "Prerender":
+      case Preload.SpeculationAction.Prerender:
         attempt = {
           action: event.key.action,
           key: event.key,
@@ -39194,7 +43373,7 @@ var PreloadingModel = class _PreloadingModel extends SDKModel {
           mismatchedHeaders: event.mismatchedHeaders || null
         };
         break;
-      case "PrerenderUntilScript":
+      case Preload.SpeculationAction.PrerenderUntilScript:
         attempt = {
           action: event.key.action,
           key: event.key,
@@ -39209,16 +43388,18 @@ var PreloadingModel = class _PreloadingModel extends SDKModel {
         throw new Error(`unreachable: event.key.action: ${event.key.action}`);
     }
     this.documents.get(loaderId)?.preloadingAttempts.upsert(attempt);
-    this.dispatchEventToListeners(
-      "ModelUpdated"
-      /* Events.MODEL_UPDATED */
-    );
+    this.dispatchEventToListeners("ModelUpdated" /* MODEL_UPDATED */);
   }
   onPreloadEnabledStateUpdated(event) {
-    this.dispatchEventToListeners("WarningsUpdated", event);
+    this.dispatchEventToListeners("WarningsUpdated" /* WARNINGS_UPDATED */, event);
   }
 };
-SDKModel.register(PreloadingModel, { capabilities: 2, autostart: false });
+SDKModel.register(PreloadingModel, { capabilities: 2 /* DOM */, autostart: false });
+var Events30 = /* @__PURE__ */ ((Events35) => {
+  Events35["MODEL_UPDATED"] = "ModelUpdated";
+  Events35["WARNINGS_UPDATED"] = "WarningsUpdated";
+  return Events35;
+})(Events30 || {});
 var PreloadDispatcher = class {
   model;
   constructor(model) {
@@ -39278,33 +43459,43 @@ var RuleSetRegistry = class {
     this.map.delete(id);
   }
 };
+var PreloadingStatus = /* @__PURE__ */ ((PreloadingStatus2) => {
+  PreloadingStatus2["NOT_TRIGGERED"] = "NotTriggered";
+  PreloadingStatus2["PENDING"] = "Pending";
+  PreloadingStatus2["RUNNING"] = "Running";
+  PreloadingStatus2["READY"] = "Ready";
+  PreloadingStatus2["SUCCESS"] = "Success";
+  PreloadingStatus2["FAILURE"] = "Failure";
+  PreloadingStatus2["NOT_SUPPORTED"] = "NotSupported";
+  return PreloadingStatus2;
+})(PreloadingStatus || {});
 function convertPreloadingStatus(status) {
   switch (status) {
-    case "Pending":
-      return "Pending";
-    case "Running":
-      return "Running";
-    case "Ready":
-      return "Ready";
-    case "Success":
-      return "Success";
-    case "Failure":
-      return "Failure";
-    case "NotSupported":
-      return "NotSupported";
+    case Preload.PreloadingStatus.Pending:
+      return "Pending" /* PENDING */;
+    case Preload.PreloadingStatus.Running:
+      return "Running" /* RUNNING */;
+    case Preload.PreloadingStatus.Ready:
+      return "Ready" /* READY */;
+    case Preload.PreloadingStatus.Success:
+      return "Success" /* SUCCESS */;
+    case Preload.PreloadingStatus.Failure:
+      return "Failure" /* FAILURE */;
+    case Preload.PreloadingStatus.NotSupported:
+      return "NotSupported" /* NOT_SUPPORTED */;
   }
   throw new Error("unreachable");
 }
 function makePreloadingAttemptId(key) {
   let action;
   switch (key.action) {
-    case "Prefetch":
+    case Preload.SpeculationAction.Prefetch:
       action = "Prefetch";
       break;
-    case "Prerender":
+    case Preload.SpeculationAction.Prerender:
       action = "Prerender";
       break;
-    case "PrerenderUntilScript":
+    case Preload.SpeculationAction.PrerenderUntilScript:
       action = "PrerenderUntilScript";
       break;
   }
@@ -39313,10 +43504,10 @@ function makePreloadingAttemptId(key) {
     case void 0:
       targetHint = "undefined";
       break;
-    case "Blank":
+    case Preload.SpeculationTargetHint.Blank:
       targetHint = "Blank";
       break;
-    case "Self":
+    case Preload.SpeculationTargetHint.Self:
       targetHint = "Self";
       break;
   }
@@ -39343,22 +43534,13 @@ var PreloadPipeline = class _PreloadPipeline {
     return attempt;
   }
   getPrefetch() {
-    return this.inner.get(
-      "Prefetch"
-      /* Protocol.Preload.SpeculationAction.Prefetch */
-    ) || null;
+    return this.inner.get(Preload.SpeculationAction.Prefetch) || null;
   }
   getPrerender() {
-    return this.inner.get(
-      "Prerender"
-      /* Protocol.Preload.SpeculationAction.Prerender */
-    ) || null;
+    return this.inner.get(Preload.SpeculationAction.Prerender) || null;
   }
   getPrerenderUntilScript() {
-    return this.inner.get(
-      "PrerenderUntilScript"
-      /* Protocol.Preload.SpeculationAction.PrerenderUntilScript */
-    ) || null;
+    return this.inner.get(Preload.SpeculationAction.PrerenderUntilScript) || null;
   }
   // Returns attempts in the order: prefetch < prerender_until_script < prerender.
   // Currently unused.
@@ -39411,11 +43593,11 @@ var PreloadingAttemptRegistry = class {
   isAttemptRepresentative(attempt) {
     function getSortKey(action) {
       switch (action) {
-        case "Prefetch":
+        case Preload.SpeculationAction.Prefetch:
           return 0;
-        case "PrerenderUntilScript":
+        case Preload.SpeculationAction.PrerenderUntilScript:
           return 1;
-        case "Prerender":
+        case Preload.SpeculationAction.Prerender:
           return 2;
       }
     }
@@ -39427,7 +43609,9 @@ var PreloadingAttemptRegistry = class {
     if (pipeline.size === 0) {
       throw new Error("unreachable");
     }
-    return [...pipeline.keys()].every((action) => getSortKey(action) <= getSortKey(attempt.action));
+    return [...pipeline.keys()].every(
+      (action) => getSortKey(action) <= getSortKey(attempt.action)
+    );
   }
   // Returns reference. Don't save returned values.
   // Returned values may or may not be updated as the time grows.
@@ -39458,11 +43642,13 @@ var PreloadingAttemptRegistry = class {
     for (const [id, attempt] of this.map.entries()) {
       map[id] = attempt;
     }
-    return new Map(pipeline.entries().map(([action, id]) => {
-      const attempt = this.getById(id, sources);
-      assertNotNullOrUndefined3(attempt);
-      return [action, attempt];
-    }));
+    return new Map(
+      pipeline.entries().map(([action, id]) => {
+        const attempt = this.getById(id, sources);
+        assertNotNullOrUndefined3(attempt);
+        return [action, attempt];
+      })
+    );
   }
   upsert(attempt) {
     const id = makePreloadingAttemptId(attempt.key);
@@ -39477,7 +43663,10 @@ var PreloadingAttemptRegistry = class {
       if (attempt.pipelineId === null) {
         continue;
       }
-      const pipeline = this.pipelines.getOrInsertComputed(attempt.pipelineId, () => /* @__PURE__ */ new Map());
+      const pipeline = this.pipelines.getOrInsertComputed(
+        attempt.pipelineId,
+        () => /* @__PURE__ */ new Map()
+      );
       pipeline.set(attempt.action, id);
     }
   }
@@ -39494,34 +43683,34 @@ var PreloadingAttemptRegistry = class {
       }
       let attempt;
       switch (key.action) {
-        case "Prefetch":
+        case Preload.SpeculationAction.Prefetch:
           attempt = {
-            action: "Prefetch",
+            action: Preload.SpeculationAction.Prefetch,
             key,
             pipelineId: null,
-            status: "NotTriggered",
+            status: "NotTriggered" /* NOT_TRIGGERED */,
             prefetchStatus: null,
             // Fill invalid request id.
             requestId: ""
           };
           break;
-        case "Prerender":
+        case Preload.SpeculationAction.Prerender:
           attempt = {
-            action: "Prerender",
+            action: Preload.SpeculationAction.Prerender,
             key,
             pipelineId: null,
-            status: "NotTriggered",
+            status: "NotTriggered" /* NOT_TRIGGERED */,
             prerenderStatus: null,
             disallowedMojoInterface: null,
             mismatchedHeaders: null
           };
           break;
-        case "PrerenderUntilScript":
+        case Preload.SpeculationAction.PrerenderUntilScript:
           attempt = {
-            action: "PrerenderUntilScript",
+            action: Preload.SpeculationAction.PrerenderUntilScript,
             key,
             pipelineId: null,
-            status: "NotTriggered",
+            status: "NotTriggered" /* NOT_TRIGGERED */,
             prerenderStatus: null,
             disallowedMojoInterface: null,
             mismatchedHeaders: null
@@ -39534,7 +43723,9 @@ var PreloadingAttemptRegistry = class {
   // Removes keys in `this.map` that are not in `sources`. This is used to
   // remove attempts that no longer have a matching speculation rule.
   cleanUpRemovedAttempts(sources) {
-    const keysToRemove = Array.from(this.map.keys()).filter((key) => !sources.getById(key));
+    const keysToRemove = Array.from(this.map.keys()).filter(
+      (key) => !sources.getById(key)
+    );
     for (const key of keysToRemove) {
       this.map.delete(key);
     }
@@ -39564,14 +43755,21 @@ var SourceRegistry = class {
   }
 };
 
-// gen/front_end/core/sdk/RehydratingObject.js
+// ../../front_end/core/sdk/RehydratingObject.ts
 var RehydratingObject_exports = {};
 
-// gen/front_end/core/sdk/ScreenCaptureModel.js
+// ../../front_end/core/sdk/ScreenCaptureModel.ts
 var ScreenCaptureModel_exports = {};
 __export(ScreenCaptureModel_exports, {
-  ScreenCaptureModel: () => ScreenCaptureModel
+  ScreenCaptureModel: () => ScreenCaptureModel,
+  ScreenshotMode: () => ScreenshotMode
 });
+var ScreenshotMode = /* @__PURE__ */ ((ScreenshotMode2) => {
+  ScreenshotMode2["FROM_VIEWPORT"] = "fromViewport";
+  ScreenshotMode2["FROM_CLIP"] = "fromClip";
+  ScreenshotMode2["FULLPAGE"] = "fullpage";
+  return ScreenshotMode2;
+})(ScreenshotMode || {});
 var ScreenCaptureModel = class extends SDKModel {
   #agent;
   #nextScreencastOperationId = 1;
@@ -39631,14 +43829,14 @@ var ScreenCaptureModel = class extends SDKModel {
       fromSurface: true
     };
     switch (mode) {
-      case "fromClip":
+      case "fromClip" /* FROM_CLIP */:
         properties.captureBeyondViewport = true;
         properties.clip = clip;
         break;
-      case "fullpage":
+      case "fullpage" /* FULLPAGE */:
         properties.captureBeyondViewport = true;
         break;
-      case "fromViewport":
+      case "fromViewport" /* FROM_VIEWPORT */:
         properties.captureBeyondViewport = false;
         break;
       default:
@@ -39719,20 +43917,22 @@ var ScreenCaptureModel = class extends SDKModel {
   prerenderStatusUpdated(_params) {
   }
 };
-SDKModel.register(ScreenCaptureModel, { capabilities: 64, autostart: false });
+SDKModel.register(ScreenCaptureModel, { capabilities: 64 /* SCREEN_CAPTURE */, autostart: false });
 
-// gen/front_end/core/sdk/ServiceWorkerCacheModel.js
+// ../../front_end/core/sdk/ServiceWorkerCacheModel.ts
 var ServiceWorkerCacheModel_exports = {};
 __export(ServiceWorkerCacheModel_exports, {
   Cache: () => Cache,
+  Events: () => Events32,
   ServiceWorkerCacheModel: () => ServiceWorkerCacheModel
 });
-import * as Common40 from "./../common/common.js";
-import * as i18n35 from "./../i18n/i18n.js";
+import * as Common40 from "../common/common.js";
+import * as i18n35 from "../i18n/i18n.js";
 
-// gen/front_end/core/sdk/StorageBucketsModel.js
+// ../../front_end/core/sdk/StorageBucketsModel.ts
 var StorageBucketsModel_exports = {};
 __export(StorageBucketsModel_exports, {
+  Events: () => Events31,
   StorageBucketsModel: () => StorageBucketsModel
 });
 var StorageBucketsModel = class extends SDKModel {
@@ -39776,8 +43976,12 @@ var StorageBucketsModel = class extends SDKModel {
       return;
     }
     if (this.storageKeyManager) {
-      this.storageKeyManager.addEventListener("StorageKeyAdded", this.storageKeyAdded, this);
-      this.storageKeyManager.addEventListener("StorageKeyRemoved", this.storageKeyRemoved, this);
+      this.storageKeyManager.addEventListener("StorageKeyAdded" /* STORAGE_KEY_ADDED */, this.storageKeyAdded, this);
+      this.storageKeyManager.addEventListener(
+        "StorageKeyRemoved" /* STORAGE_KEY_REMOVED */,
+        this.storageKeyRemoved,
+        this
+      );
       for (const storageKey of this.storageKeyManager.storageKeys()) {
         this.addStorageKey(storageKey);
       }
@@ -39810,14 +44014,14 @@ var StorageBucketsModel = class extends SDKModel {
   }
   bucketAdded(bucketInfo) {
     this.bucketsById.set(bucketInfo.id, bucketInfo);
-    this.dispatchEventToListeners("BucketAdded", { model: this, bucketInfo });
+    this.dispatchEventToListeners("BucketAdded" /* BUCKET_ADDED */, { model: this, bucketInfo });
   }
   bucketRemoved(bucketInfo) {
     this.bucketsById.delete(bucketInfo.id);
-    this.dispatchEventToListeners("BucketRemoved", { model: this, bucketInfo });
+    this.dispatchEventToListeners("BucketRemoved" /* BUCKET_REMOVED */, { model: this, bucketInfo });
   }
   bucketChanged(bucketInfo) {
-    this.dispatchEventToListeners("BucketChanged", { model: this, bucketInfo });
+    this.dispatchEventToListeners("BucketChanged" /* BUCKET_CHANGED */, { model: this, bucketInfo });
   }
   bucketInfosAreEqual(bucketInfo1, bucketInfo2) {
     return bucketInfo1.bucket.storageKey === bucketInfo2.bucket.storageKey && bucketInfo1.id === bucketInfo2.id && bucketInfo1.bucket.name === bucketInfo2.bucket.name && bucketInfo1.expiration === bucketInfo2.expiration && bucketInfo1.quota === bucketInfo2.quota && bucketInfo1.persistent === bucketInfo2.persistent && bucketInfo1.durability === bucketInfo2.durability;
@@ -39837,7 +44041,9 @@ var StorageBucketsModel = class extends SDKModel {
     if (curBucket) {
       this.bucketRemoved(curBucket);
     } else {
-      throw new Error(`Received an event that Storage Bucket '${bucketId}' was deleted, but it wasn't in the StorageBucketsModel.`);
+      throw new Error(
+        `Received an event that Storage Bucket '${bucketId}' was deleted, but it wasn't in the StorageBucketsModel.`
+      );
     }
   }
   indexedDBListUpdated(_event) {
@@ -39849,9 +44055,15 @@ var StorageBucketsModel = class extends SDKModel {
   cacheStorageContentUpdated(_event) {
   }
 };
-SDKModel.register(StorageBucketsModel, { capabilities: 8192, autostart: false });
+SDKModel.register(StorageBucketsModel, { capabilities: 8192 /* STORAGE */, autostart: false });
+var Events31 = /* @__PURE__ */ ((Events35) => {
+  Events35["BUCKET_ADDED"] = "BucketAdded";
+  Events35["BUCKET_REMOVED"] = "BucketRemoved";
+  Events35["BUCKET_CHANGED"] = "BucketChanged";
+  return Events35;
+})(Events31 || {});
 
-// gen/front_end/core/sdk/ServiceWorkerCacheModel.js
+// ../../front_end/core/sdk/ServiceWorkerCacheModel.ts
 var UIStrings16 = {
   /**
    * @description Error message when failing to delete a cache entry in ServiceWorkerCacheAgent.
@@ -39889,8 +44101,12 @@ var ServiceWorkerCacheModel = class extends SDKModel {
     if (this.#enabled) {
       return;
     }
-    this.#storageBucketModel.addEventListener("BucketAdded", this.storageBucketAdded, this);
-    this.#storageBucketModel.addEventListener("BucketRemoved", this.storageBucketRemoved, this);
+    this.#storageBucketModel.addEventListener("BucketAdded" /* BUCKET_ADDED */, this.storageBucketAdded, this);
+    this.#storageBucketModel.addEventListener(
+      "BucketRemoved" /* BUCKET_REMOVED */,
+      this.storageBucketRemoved,
+      this
+    );
     for (const storageBucket of this.#storageBucketModel.getBuckets()) {
       this.addStorageBucket(storageBucket.bucket);
     }
@@ -39929,7 +44145,10 @@ var ServiceWorkerCacheModel = class extends SDKModel {
   async deleteCacheEntry(cache, request) {
     const response = await this.cacheAgent.invoke_deleteEntry({ cacheId: cache.cacheId, request });
     if (response.getError()) {
-      this.#console.error(i18nString16(UIStrings16.serviceworkercacheagentError, { PH1: cache.toString(), PH2: String(response.getError()) }));
+      this.#console.error(i18nString16(
+        UIStrings16.serviceworkercacheagentError,
+        { PH1: cache.toString(), PH2: String(response.getError()) }
+      ));
       return;
     }
   }
@@ -39948,8 +44167,16 @@ var ServiceWorkerCacheModel = class extends SDKModel {
     }
     this.#caches.clear();
     if (this.#enabled) {
-      this.#storageBucketModel.removeEventListener("BucketAdded", this.storageBucketAdded, this);
-      this.#storageBucketModel.removeEventListener("BucketRemoved", this.storageBucketRemoved, this);
+      this.#storageBucketModel.removeEventListener(
+        "BucketAdded" /* BUCKET_ADDED */,
+        this.storageBucketAdded,
+        this
+      );
+      this.#storageBucketModel.removeEventListener(
+        "BucketRemoved" /* BUCKET_REMOVED */,
+        this.storageBucketRemoved,
+        this
+      );
     }
   }
   addStorageBucket(storageBucket) {
@@ -40017,10 +44244,10 @@ var ServiceWorkerCacheModel = class extends SDKModel {
     this.removeStorageBucket(bucket);
   }
   cacheAdded(cache) {
-    this.dispatchEventToListeners("CacheAdded", { model: this, cache });
+    this.dispatchEventToListeners("CacheAdded" /* CACHE_ADDED */, { model: this, cache });
   }
   cacheRemoved(cache) {
-    this.dispatchEventToListeners("CacheRemoved", { model: this, cache });
+    this.dispatchEventToListeners("CacheRemoved" /* CACHE_REMOVED */, { model: this, cache });
   }
   async requestEntries(cache, skipCount, pageSize, pathFilter, callback) {
     const response = await this.cacheAgent.invoke_requestEntries({ cacheId: cache.cacheId, skipCount, pageSize, pathFilter });
@@ -40048,15 +44275,14 @@ var ServiceWorkerCacheModel = class extends SDKModel {
           this.#storageBucketsUpdated.clear();
           return Promise.all(promises);
         },
-        this.#scheduleAsSoonAsPossible ? "AsSoonAsPossible" : "Default"
-        /* Common.Throttler.Scheduling.DEFAULT */
+        this.#scheduleAsSoonAsPossible ? Common40.Throttler.Scheduling.AS_SOON_AS_POSSIBLE : Common40.Throttler.Scheduling.DEFAULT
       );
     }
   }
   cacheStorageContentUpdated({ bucketId, cacheName }) {
     const storageBucket = this.#storageBucketModel.getBucketById(bucketId)?.bucket;
     if (storageBucket) {
-      this.dispatchEventToListeners("CacheStorageContentUpdated", { storageBucket, cacheName });
+      this.dispatchEventToListeners("CacheStorageContentUpdated" /* CACHE_STORAGE_CONTENT_UPDATED */, { storageBucket, cacheName });
     }
   }
   indexedDBListUpdated(_event) {
@@ -40071,6 +44297,12 @@ var ServiceWorkerCacheModel = class extends SDKModel {
     this.#scheduleAsSoonAsPossible = true;
   }
 };
+var Events32 = /* @__PURE__ */ ((Events35) => {
+  Events35["CACHE_ADDED"] = "CacheAdded";
+  Events35["CACHE_REMOVED"] = "CacheRemoved";
+  Events35["CACHE_STORAGE_CONTENT_UPDATED"] = "CacheStorageContentUpdated";
+  return Events35;
+})(Events32 || {});
 var Cache = class {
   #model;
   storageKey;
@@ -40094,26 +44326,29 @@ var Cache = class {
     return this.storageKey + this.cacheName;
   }
   async requestCachedResponse(url, requestHeaders) {
-    const response = await this.#model.cacheAgent.invoke_requestCachedResponse({ cacheId: this.cacheId, requestURL: url, requestHeaders });
+    const response = await this.#model.cacheAgent.invoke_requestCachedResponse(
+      { cacheId: this.cacheId, requestURL: url, requestHeaders }
+    );
     if (response.getError()) {
       return null;
     }
     return response.response;
   }
 };
-SDKModel.register(ServiceWorkerCacheModel, { capabilities: 8192, autostart: false });
+SDKModel.register(ServiceWorkerCacheModel, { capabilities: 8192 /* STORAGE */, autostart: false });
 
-// gen/front_end/core/sdk/ServiceWorkerManager.js
+// ../../front_end/core/sdk/ServiceWorkerManager.ts
 var ServiceWorkerManager_exports = {};
 __export(ServiceWorkerManager_exports, {
+  Events: () => Events33,
   ServiceWorkerManager: () => ServiceWorkerManager,
   ServiceWorkerRegistration: () => ServiceWorkerRegistration,
   ServiceWorkerRouterRule: () => ServiceWorkerRouterRule,
   ServiceWorkerVersion: () => ServiceWorkerVersion,
   ServiceWorkerVersionState: () => ServiceWorkerVersionState
 });
-import * as Common41 from "./../common/common.js";
-import * as i18n37 from "./../i18n/i18n.js";
+import * as Common41 from "../common/common.js";
+import * as i18n37 from "../i18n/i18n.js";
 var UIStrings17 = {
   /**
    * @description Service worker running status displayed in the Service Workers view in the Application panel.
@@ -40183,11 +44418,19 @@ var ServiceWorkerManager = class extends SDKModel {
       this.forceUpdateSettingChanged();
     }
     this.#forceUpdateSetting.addChangeListener(this.forceUpdateSettingChanged, this);
-    this.#networkManager.addEventListener("ConditionsChanged", this.forceUpdateSettingChanged, this);
+    this.#networkManager.addEventListener(
+      MultitargetNetworkManager.Events.CONDITIONS_CHANGED,
+      this.forceUpdateSettingChanged,
+      this
+    );
     new ServiceWorkerContextNamer(target, this);
   }
   dispose() {
-    this.#networkManager.removeEventListener("ConditionsChanged", this.forceUpdateSettingChanged, this);
+    this.#networkManager.removeEventListener(
+      MultitargetNetworkManager.Events.CONDITIONS_CHANGED,
+      this.forceUpdateSettingChanged,
+      this
+    );
     super.dispose();
   }
   async enable() {
@@ -40224,7 +44467,7 @@ var ServiceWorkerManager = class extends SDKModel {
     }
     if (registration.isRedundant()) {
       this.#registrations.delete(registrationId);
-      this.dispatchEventToListeners("RegistrationDeleted", registration);
+      this.dispatchEventToListeners("RegistrationDeleted" /* REGISTRATION_DELETED */, registration);
       return;
     }
     registration.deleting = true;
@@ -40282,15 +44525,15 @@ var ServiceWorkerManager = class extends SDKModel {
       if (!registration) {
         registration = new ServiceWorkerRegistration(payload);
         this.#registrations.set(payload.registrationId, registration);
-        this.dispatchEventToListeners("RegistrationUpdated", registration);
+        this.dispatchEventToListeners("RegistrationUpdated" /* REGISTRATION_UPDATED */, registration);
         continue;
       }
       registration.update(payload);
       if (registration.shouldBeRemoved()) {
         this.#registrations.delete(registration.id);
-        this.dispatchEventToListeners("RegistrationDeleted", registration);
+        this.dispatchEventToListeners("RegistrationDeleted" /* REGISTRATION_DELETED */, registration);
       } else {
-        this.dispatchEventToListeners("RegistrationUpdated", registration);
+        this.dispatchEventToListeners("RegistrationUpdated" /* REGISTRATION_UPDATED */, registration);
       }
     }
   }
@@ -40307,9 +44550,9 @@ var ServiceWorkerManager = class extends SDKModel {
     for (const registration of registrations) {
       if (registration.shouldBeRemoved()) {
         this.#registrations.delete(registration.id);
-        this.dispatchEventToListeners("RegistrationDeleted", registration);
+        this.dispatchEventToListeners("RegistrationDeleted" /* REGISTRATION_DELETED */, registration);
       } else {
-        this.dispatchEventToListeners("RegistrationUpdated", registration);
+        this.dispatchEventToListeners("RegistrationUpdated" /* REGISTRATION_UPDATED */, registration);
       }
     }
   }
@@ -40319,13 +44562,19 @@ var ServiceWorkerManager = class extends SDKModel {
       return;
     }
     registration.errors.push(payload);
-    this.dispatchEventToListeners("RegistrationErrorAdded", { registration, error: payload });
+    this.dispatchEventToListeners("RegistrationErrorAdded" /* REGISTRATION_ERROR_ADDED */, { registration, error: payload });
   }
   forceUpdateSettingChanged() {
     const forceUpdateOnPageLoad = this.#forceUpdateSetting.get() && !this.#networkManager.isOffline();
     void this.#agent.invoke_setForceUpdateOnPageLoad({ forceUpdateOnPageLoad });
   }
 };
+var Events33 = /* @__PURE__ */ ((Events35) => {
+  Events35["REGISTRATION_UPDATED"] = "RegistrationUpdated";
+  Events35["REGISTRATION_ERROR_ADDED"] = "RegistrationErrorAdded";
+  Events35["REGISTRATION_DELETED"] = "RegistrationDeleted";
+  return Events35;
+})(Events33 || {});
 var ServiceWorkerDispatcher = class {
   #manager;
   constructor(manager) {
@@ -40363,7 +44612,7 @@ var ServiceWorkerRouterRule = class {
     this.id = id;
   }
 };
-var ServiceWorkerVersion = class {
+var ServiceWorkerVersion = class _ServiceWorkerVersion {
   id;
   scriptURL;
   parsedURL;
@@ -40394,7 +44643,9 @@ var ServiceWorkerVersion = class {
     }
     this.targetId = payload.targetId || null;
     this.routerRules = null;
-    if (payload.routerRules) {
+    if (payload.typedRouterRules) {
+      this.routerRules = this.parseTypedRules(payload.typedRouterRules);
+    } else if (payload.routerRules) {
       this.routerRules = this.parseJSONRules(payload.routerRules);
     }
   }
@@ -40402,37 +44653,37 @@ var ServiceWorkerVersion = class {
     return !this.registration.isDeleted && this.isActivated() && this.isStopped();
   }
   isStoppedAndRedundant() {
-    return this.runningStatus === "stopped" && this.status === "redundant";
+    return this.runningStatus === ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped && this.status === ServiceWorker.ServiceWorkerVersionStatus.Redundant;
   }
   isStopped() {
-    return this.runningStatus === "stopped";
+    return this.runningStatus === ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped;
   }
   isStarting() {
-    return this.runningStatus === "starting";
+    return this.runningStatus === ServiceWorker.ServiceWorkerVersionRunningStatus.Starting;
   }
   isRunning() {
-    return this.runningStatus === "running";
+    return this.runningStatus === ServiceWorker.ServiceWorkerVersionRunningStatus.Running;
   }
   isStopping() {
-    return this.runningStatus === "stopping";
+    return this.runningStatus === ServiceWorker.ServiceWorkerVersionRunningStatus.Stopping;
   }
   isNew() {
-    return this.status === "new";
+    return this.status === ServiceWorker.ServiceWorkerVersionStatus.New;
   }
   isInstalling() {
-    return this.status === "installing";
+    return this.status === ServiceWorker.ServiceWorkerVersionStatus.Installing;
   }
   isInstalled() {
-    return this.status === "installed";
+    return this.status === ServiceWorker.ServiceWorkerVersionStatus.Installed;
   }
   isActivating() {
-    return this.status === "activating";
+    return this.status === ServiceWorker.ServiceWorkerVersionStatus.Activating;
   }
   isActivated() {
-    return this.status === "activated";
+    return this.status === ServiceWorker.ServiceWorkerVersionStatus.Activated;
   }
   isRedundant() {
-    return this.status === "redundant";
+    return this.status === ServiceWorker.ServiceWorkerVersionStatus.Redundant;
   }
   get status() {
     return this.currentState.status;
@@ -40442,15 +44693,15 @@ var ServiceWorkerVersion = class {
   }
   mode() {
     if (this.isNew() || this.isInstalling()) {
-      return "installing";
+      return _ServiceWorkerVersion.Modes.INSTALLING;
     }
     if (this.isInstalled()) {
-      return "waiting";
+      return _ServiceWorkerVersion.Modes.WAITING;
     }
     if (this.isActivating() || this.isActivated()) {
-      return "active";
+      return _ServiceWorkerVersion.Modes.ACTIVE;
     }
-    return "redundant";
+    return _ServiceWorkerVersion.Modes.REDUNDANT;
   }
   parseJSONRules(input) {
     try {
@@ -40474,52 +44725,75 @@ var ServiceWorkerVersion = class {
       return null;
     }
   }
+  /**
+   * `urlPattern` can be either plain text (e.g. '/foo/*') or a JSON-serialized URLPattern/URLPatternInit object.
+   * Parses it to an object if valid JSON, otherwise falls back to the original string.
+   */
+  parseURLPatternCondition(urlPattern) {
+    try {
+      const parsed = JSON.parse(urlPattern);
+      if (typeof parsed === "object" && parsed !== null && !Array.isArray(parsed)) {
+        return parsed;
+      }
+      if (typeof parsed !== "string") {
+        return null;
+      }
+    } catch {
+    }
+    return urlPattern;
+  }
+  parseTypedRules(rules) {
+    const routerRules = [];
+    for (const rule of rules) {
+      const condition = { ...rule.condition };
+      if (rule.condition.urlPattern) {
+        condition.urlPattern = this.parseURLPatternCondition(rule.condition.urlPattern);
+        if (condition.urlPattern === null) {
+          console.error('Parse error: Invalid "urlPattern" condition in `typedRouterRules` in ServiceWorkerVersion');
+          return null;
+        }
+      }
+      let source;
+      if (rule.source.type === ServiceWorker.ServiceWorkerRouterSourceType.SourceDict) {
+        if (!rule.source.sourceDict) {
+          console.error("Parse error: `sourceDict` is missing in `typedRouterRules` source");
+          return null;
+        }
+        source = rule.source.sourceDict;
+      } else {
+        if (rule.source.sourceDict !== void 0) {
+          console.error("Parse error: Unexpected `sourceDict` in `typedRouterRules` source");
+          return null;
+        }
+        source = rule.source.type;
+      }
+      routerRules.push(new ServiceWorkerRouterRule(JSON.stringify(condition), JSON.stringify(source), rule.id));
+    }
+    return routerRules;
+  }
 };
-(function(ServiceWorkerVersion2) {
+((ServiceWorkerVersion2) => {
   ServiceWorkerVersion2.RunningStatus = {
-    [
-      "running"
-      /* Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running */
-    ]: i18nLazyString2(UIStrings17.running),
-    [
-      "starting"
-      /* Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Starting */
-    ]: i18nLazyString2(UIStrings17.starting),
-    [
-      "stopped"
-      /* Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped */
-    ]: i18nLazyString2(UIStrings17.stopped),
-    [
-      "stopping"
-      /* Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopping */
-    ]: i18nLazyString2(UIStrings17.stopping)
+    [ServiceWorker.ServiceWorkerVersionRunningStatus.Running]: i18nLazyString2(UIStrings17.running),
+    [ServiceWorker.ServiceWorkerVersionRunningStatus.Starting]: i18nLazyString2(UIStrings17.starting),
+    [ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped]: i18nLazyString2(UIStrings17.stopped),
+    [ServiceWorker.ServiceWorkerVersionRunningStatus.Stopping]: i18nLazyString2(UIStrings17.stopping)
   };
   ServiceWorkerVersion2.Status = {
-    [
-      "activated"
-      /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated */
-    ]: i18nLazyString2(UIStrings17.activated),
-    [
-      "activating"
-      /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating */
-    ]: i18nLazyString2(UIStrings17.activating),
-    [
-      "installed"
-      /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed */
-    ]: i18nLazyString2(UIStrings17.installed),
-    [
-      "installing"
-      /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing */
-    ]: i18nLazyString2(UIStrings17.installing),
-    [
-      "new"
-      /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.New */
-    ]: i18nLazyString2(UIStrings17.new),
-    [
-      "redundant"
-      /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant */
-    ]: i18nLazyString2(UIStrings17.redundant)
+    [ServiceWorker.ServiceWorkerVersionStatus.Activated]: i18nLazyString2(UIStrings17.activated),
+    [ServiceWorker.ServiceWorkerVersionStatus.Activating]: i18nLazyString2(UIStrings17.activating),
+    [ServiceWorker.ServiceWorkerVersionStatus.Installed]: i18nLazyString2(UIStrings17.installed),
+    [ServiceWorker.ServiceWorkerVersionStatus.Installing]: i18nLazyString2(UIStrings17.installing),
+    [ServiceWorker.ServiceWorkerVersionStatus.New]: i18nLazyString2(UIStrings17.new),
+    [ServiceWorker.ServiceWorkerVersionStatus.Redundant]: i18nLazyString2(UIStrings17.redundant)
   };
+  let Modes;
+  ((Modes2) => {
+    Modes2["INSTALLING"] = "installing";
+    Modes2["WAITING"] = "waiting";
+    Modes2["ACTIVE"] = "active";
+    Modes2["REDUNDANT"] = "redundant";
+  })(Modes = ServiceWorkerVersion2.Modes || (ServiceWorkerVersion2.Modes = {}));
 })(ServiceWorkerVersion || (ServiceWorkerVersion = {}));
 var ServiceWorkerRegistration = class {
   #fingerprint;
@@ -40584,9 +44858,14 @@ var ServiceWorkerContextNamer = class {
   constructor(target, serviceWorkerManager) {
     this.#target = target;
     this.#serviceWorkerManager = serviceWorkerManager;
-    serviceWorkerManager.addEventListener("RegistrationUpdated", this.registrationsUpdated, this);
-    serviceWorkerManager.addEventListener("RegistrationDeleted", this.registrationsUpdated, this);
-    this.#target.targetManager().addModelListener(RuntimeModel, Events3.ExecutionContextCreated, this.executionContextCreated, this);
+    serviceWorkerManager.addEventListener("RegistrationUpdated" /* REGISTRATION_UPDATED */, this.registrationsUpdated, this);
+    serviceWorkerManager.addEventListener("RegistrationDeleted" /* REGISTRATION_DELETED */, this.registrationsUpdated, this);
+    this.#target.targetManager().addModelListener(
+      RuntimeModel,
+      "ExecutionContextCreated" /* ExecutionContextCreated */,
+      this.executionContextCreated,
+      this
+    );
   }
   registrationsUpdated() {
     this.#versionByTargetId.clear();
@@ -40609,7 +44888,7 @@ var ServiceWorkerContextNamer = class {
     this.updateContextLabel(executionContext, this.#versionByTargetId.get(serviceWorkerTargetId) || null);
   }
   serviceWorkerTargetId(target) {
-    if (target.parentTarget() !== this.#target || target.type() !== Type.ServiceWorker) {
+    if (target.parentTarget() !== this.#target || target.type() !== "service-worker" /* ServiceWorker */) {
       return null;
     }
     return target.id();
@@ -40639,13 +44918,21 @@ var ServiceWorkerContextNamer = class {
     context.setLabel(i18nString17(UIStrings17.sSS, { PH1: label, PH2: version.id, PH3: localizedStatus() }));
   }
 };
-SDKModel.register(ServiceWorkerManager, { capabilities: 16384, autostart: true });
+SDKModel.register(ServiceWorkerManager, { capabilities: 16384 /* SERVICE_WORKER */, autostart: true });
 
-// gen/front_end/core/sdk/WebAuthnModel.js
+// ../../front_end/core/sdk/WebAuthnModel.ts
 var WebAuthnModel_exports = {};
 __export(WebAuthnModel_exports, {
+  Events: () => Events34,
   WebAuthnModel: () => WebAuthnModel
 });
+var Events34 = /* @__PURE__ */ ((Events35) => {
+  Events35["CREDENTIAL_ADDED"] = "CredentialAdded";
+  Events35["CREDENTIAL_ASSERTED"] = "CredentialAsserted";
+  Events35["CREDENTIAL_DELETED"] = "CredentialDeleted";
+  Events35["CREDENTIAL_UPDATED"] = "CredentialUpdated";
+  return Events35;
+})(Events34 || {});
 var WebAuthnModel = class extends SDKModel {
   #agent;
   constructor(target) {
@@ -40677,16 +44964,16 @@ var WebAuthnModel = class extends SDKModel {
     await this.#agent.invoke_removeCredential({ authenticatorId, credentialId });
   }
   credentialAdded(params) {
-    this.dispatchEventToListeners("CredentialAdded", params);
+    this.dispatchEventToListeners("CredentialAdded" /* CREDENTIAL_ADDED */, params);
   }
   credentialAsserted(params) {
-    this.dispatchEventToListeners("CredentialAsserted", params);
+    this.dispatchEventToListeners("CredentialAsserted" /* CREDENTIAL_ASSERTED */, params);
   }
   credentialDeleted(params) {
-    this.dispatchEventToListeners("CredentialDeleted", params);
+    this.dispatchEventToListeners("CredentialDeleted" /* CREDENTIAL_DELETED */, params);
   }
   credentialUpdated(params) {
-    this.dispatchEventToListeners("CredentialUpdated", params);
+    this.dispatchEventToListeners("CredentialUpdated" /* CREDENTIAL_UPDATED */, params);
   }
 };
 var WebAuthnDispatcher = class {
@@ -40707,7 +44994,7 @@ var WebAuthnDispatcher = class {
     this.#model.credentialUpdated(params);
   }
 };
-SDKModel.register(WebAuthnModel, { capabilities: 65536, autostart: false });
+SDKModel.register(WebAuthnModel, { capabilities: 65536 /* WEB_AUTHN */, autostart: false });
 export {
   AccessibilityModel_exports as AccessibilityModel,
   AnimationModel_exports as AnimationModel,

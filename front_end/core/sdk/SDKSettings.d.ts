@@ -24,6 +24,7 @@ export declare const showScrollBottleneckRectsSettingDescriptor: Common.Settings
 export declare const emulatePageFocusSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const emulatedCSSMediaSettingDescriptor: Common.Settings.SettingDescriptor<string>;
 export declare const cpuPressureSettingDescriptor: Common.Settings.SettingDescriptor<string>;
+export declare const cpuPerformanceSettingDescriptor: Common.Settings.SettingDescriptor<string>;
 export declare const touchSettingDescriptor: Common.Settings.SettingDescriptor<string>;
 export declare const idleDetectionSettingDescriptor: Common.Settings.SettingDescriptor<string>;
 export declare const emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor: Common.Settings.SettingDescriptor<string>;

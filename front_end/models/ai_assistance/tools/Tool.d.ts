@@ -5,6 +5,7 @@ import type * as Trace from '../../trace/trace.js';
 import type { AiWidget, ConversationContext, FunctionHandlerOptions } from '../agents/AiAgent.js';
 import type { executeJsCode } from '../agents/ExecuteJavascript.js';
 import type { ChangeManager } from '../ChangeManager.js';
+import type { PerformanceTraceContext } from '../contexts/PerformanceTraceContext.js';
 /**
  * Result indicating an error occurred during tool execution.
  */
@@ -115,6 +116,12 @@ export interface LighthouseRecordingCapability {
     runLighthouse(overrides?: LHModel.RunTypes.RunOverrides): Promise<LHModel.ReporterTypes.ReportJSON | null>;
 }
 /**
+ * Capability for tools that need access to the active performance trace context.
+ */
+export interface PerformanceTraceCapability {
+    getPerformanceTraceContext(): PerformanceTraceContext | null;
+}
+/**
  * Capability for tools that need to record performance traces.
  */
 export interface PerformanceRecordingCapability {
@@ -124,7 +131,7 @@ export interface PerformanceRecordingCapability {
  * Unified context interface providing all capabilities available in the project.
  * Used by the agent to pass a complete context to any tool type-safely.
  */
-export type AllToolsCapabilities = BaseToolCapability & PageExecutionCapability & StyleMutationCapability & TargetCapability & OriginLockCapability & LighthouseReportCapability & LighthouseRecordingCapability & PerformanceRecordingCapability & ServerLoggingCapability;
+export type AllToolsCapabilities = BaseToolCapability & PageExecutionCapability & StyleMutationCapability & TargetCapability & OriginLockCapability & LighthouseReportCapability & LighthouseRecordingCapability & PerformanceRecordingCapability & PerformanceTraceCapability & ServerLoggingCapability;
 /**
  * Base argument type for AI Tools.
  */
@@ -142,6 +149,7 @@ export declare const enum ToolName {
     LIST_PAGE_ORIGINS = "listPageOrigins",
     LIST_STORAGE_KEYS = "listStorageKeys",
     GET_STORAGE_VALUES = "getStorageValues",
+    LIST_COOKIES = "listCookies",
     GET_TRACE_EVENT_BY_KEY = "getTraceEventByKey",
     SELECT_TRACE_EVENT_BY_KEY = "selectTraceEventByKey",
     LIST_SOURCES = "listSources",

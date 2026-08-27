@@ -19,7 +19,7 @@
       "path": "./cookie_table-tsconfig.ref.json"
     },
     {
-      "path": "../../../../../../tsc/front_end/ui/legacy/components/cookie_table/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     }
   ]
 }

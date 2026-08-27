@@ -13,10 +13,11 @@ __export(ConsoleSettings_exports, {
   consoleHistoryAutocompleteSettingDescriptor: () => consoleHistoryAutocompleteSettingDescriptor,
   consoleShowsCorsErrorsSettingDescriptor: () => consoleShowsCorsErrorsSettingDescriptor,
   consoleTimestampsEnabledSettingDescriptor: () => consoleTimestampsEnabledSettingDescriptor,
+  consoleTraceExpandSettingDescriptor: () => consoleTraceExpandSettingDescriptor,
   networkMessagesSettingDescriptor: () => networkMessagesSettingDescriptor,
   selectedContextFilterEnabledSettingDescriptor: () => selectedContextFilterEnabledSettingDescriptor
 });
-import * as Common from "./../../core/common/common.js";
+import * as Common from "../../core/common/common.js";
 var networkMessagesSettingDescriptor = {
   name: "network-messages",
   type: "boolean",
@@ -63,6 +64,12 @@ var consoleEagerEvalSettingDescriptor = {
   defaultValue: true,
   storageType: "Synced"
 };
+var consoleTraceExpandSettingDescriptor = {
+  name: "console-trace-expand",
+  type: "boolean",
+  defaultValue: true,
+  storageType: "Synced"
+};
 
 // gen/front_end/ui/settings/InspectorMainSettings.js
 var InspectorMainSettings_exports = {};
@@ -70,7 +77,7 @@ __export(InspectorMainSettings_exports, {
   adBlockingEnabledSettingDescriptor: () => adBlockingEnabledSettingDescriptor,
   autoAttachToCreatedPagesSettingDescriptor: () => autoAttachToCreatedPagesSettingDescriptor
 });
-import * as Common2 from "./../../core/common/common.js";
+import * as Common2 from "../../core/common/common.js";
 var adBlockingEnabledSettingDescriptor = {
   name: "network.ad-blocking-enabled",
   type: "boolean",
@@ -98,7 +105,7 @@ __export(MainSettings_exports, {
   uiThemeSettingDescriptor: () => uiThemeSettingDescriptor,
   userShortcutsSettingDescriptor: () => userShortcutsSettingDescriptor
 });
-import * as Common3 from "./../../core/common/common.js";
+import * as Common3 from "../../core/common/common.js";
 var uiThemeSettingDescriptor = {
   name: "ui-theme",
   type: "enum",
@@ -168,7 +175,7 @@ __export(SettingUIRegistration_exports, {
   resetSettings: () => resetSettings,
   resolve: () => resolve
 });
-import * as Common4 from "./../../core/common/common.js";
+import * as Common4 from "../../core/common/common.js";
 var registeredSettings = /* @__PURE__ */ new Map();
 function register(settingDescriptor, settingUIDescriptor) {
   const settingName = settingDescriptor.name;

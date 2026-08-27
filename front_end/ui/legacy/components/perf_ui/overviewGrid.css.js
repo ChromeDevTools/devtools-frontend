@@ -25,7 +25,7 @@ export default `/*
   width: 10px;
   margin-left: -5px; /* half width (incl the border) */
   background-color: var(--sys-color-tonal-container);
-  border: 1px solid var(--sys-color-tonal-outline);
+  border: var(--sys-size-1) solid var(--sys-color-tonal-outline);
   z-index: 500;
   border-radius: 3px;
 }
@@ -34,13 +34,13 @@ export default `/*
 .overview-grid-window-resizer::before,
 .overview-grid-window-resizer::after {
   content: "";
-  width: 1px;
+  width: var(--sys-size-1);
   background: var(--sys-color-primary);
   height: 7px;
   position: absolute;
-  left: 2px;
+  left: var(--sys-size-2);
   top: 5px;
-  border-radius: 1px;
+  border-radius: var(--sys-size-1);
 }
 
 .overview-grid-window-resizer::after {
@@ -53,7 +53,7 @@ export default `/*
 
 .overview-grid-cursor-area {
   position: absolute;
-  inset: 20px 0 0;
+  inset: var(--sys-size-9) 0 0;
   z-index: 500;
   cursor: text;
 }
@@ -62,7 +62,7 @@ export default `/*
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 2px;
+  width: var(--sys-size-2);
   background-color: var(--sys-color-primary);
   z-index: 500;
   pointer-events: none;
@@ -78,7 +78,7 @@ export default `/*
   height: 100%;
   z-index: 300;
   pointer-events: none;
-  border: 2px none var(--sys-color-tonal-outline);
+  border: var(--sys-size-2) none var(--sys-color-tonal-outline);
 }
 
 .window-curtain-left {
@@ -112,7 +112,7 @@ export default `/*
 .create-breadcrumb-button-container.with-screenshots {
   /* We have more room when screenshots are enabled,
    * so push the button down slightly */
-  top: 20px;
+  top: var(--sys-size-9);
 }
 
 .create-breadcrumb-button {
@@ -121,9 +121,9 @@ export default `/*
   align-items: center;
   background: var(--sys-color-cdt-base-container);
   box-shadow: var(--drop-shadow-depth-3);
-  border-radius: 50px;
-  padding: 1px 6px;
-  gap: 2px;
+  border-radius: var(--sys-shape-corner-full);
+  padding: var(--sys-size-1) var(--sys-size-4);
+  gap: var(--sys-size-2);
 }
 
 .create-breadcrumb-button:active {

@@ -132,6 +132,15 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsPanel.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+/**
+ * These strings need to match the `SidebarPaneCodes` in UserMetrics.ts. DevTools
+ * collects usage metrics for the different sidebar tabs.
+ */
+export var SidebarPaneTabId;
+(function (SidebarPaneTabId) {
+    SidebarPaneTabId["COMPUTED"] = "computed";
+    SidebarPaneTabId["STYLES"] = "styles";
+})(SidebarPaneTabId || (SidebarPaneTabId = {}));
 let elementsPanelInstance;
 export const DEFAULT_COMPUTED_STYLES_DEBOUNCE_MS = 100;
 export class ElementsPanel extends UI.Panel.Panel {
@@ -1079,6 +1088,11 @@ export class ElementsPanel extends UI.Panel.Panel {
 globalThis.Elements = globalThis.Elements || {};
 // @ts-expect-error exported for Tests.js
 globalThis.Elements.ElementsPanel = ElementsPanel;
+var SplitMode;
+(function (SplitMode) {
+    SplitMode["VERTICAL"] = "Vertical";
+    SplitMode["HORIZONTAL"] = "Horizontal";
+})(SplitMode || (SplitMode = {}));
 const TrackedCSSProperties = [
     {
         name: 'display',

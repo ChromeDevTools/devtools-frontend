@@ -8,8 +8,19 @@ var __export = (target, all) => {
 var StackTrace_exports = {};
 __export(StackTrace_exports, {
   DebuggableFrameFlavor: () => DebuggableFrameFlavor,
+  Events: () => Events,
+  MissingDebugInfoType: () => MissingDebugInfoType,
   isConsoleOriginated: () => isConsoleOriginated
 });
+var MissingDebugInfoType;
+(function(MissingDebugInfoType2) {
+  MissingDebugInfoType2["NO_INFO"] = "NO_INFO";
+  MissingDebugInfoType2["PARTIAL_INFO"] = "PARTIAL_INFO";
+})(MissingDebugInfoType || (MissingDebugInfoType = {}));
+var Events;
+(function(Events2) {
+  Events2["UPDATED"] = "UPDATED";
+})(Events || (Events = {}));
 var DebuggableFrameFlavor = class _DebuggableFrameFlavor {
   static #last;
   frame;

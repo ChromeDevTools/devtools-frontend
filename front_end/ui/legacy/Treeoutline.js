@@ -365,6 +365,11 @@ export class TreeOutline extends Common.ObjectWrapper.ObjectWrapper {
     onStartedEditingTitle(_treeElement) {
     }
 }
+export var TreeVariant;
+(function (TreeVariant) {
+    TreeVariant["NAVIGATION_TREE"] = "NavigationTree";
+    TreeVariant["OTHER"] = "Other";
+})(TreeVariant || (TreeVariant = {}));
 export class TreeOutlineInShadow extends TreeOutline {
     element;
     shadowRoot;
@@ -1340,6 +1345,12 @@ export class TreeSearch extends Common.ObjectWrapper.ObjectWrapper {
         return this.#matches.length;
     }
 }
+(function (TreeSearch) {
+    let Events;
+    (function (Events) {
+        Events["SEARCH_CHANGED"] = "SearchChanged";
+    })(Events = TreeSearch.Events || (TreeSearch.Events = {}));
+})(TreeSearch || (TreeSearch = {}));
 class TreeViewTreeElement extends TreeElement {
     static CLONED_ATTRIBUTES = SDK.DOMModel.ARIA_ATTRIBUTES.union(new Set(['jslog']));
     #clonedAttributes = new Set();

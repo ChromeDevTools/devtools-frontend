@@ -315,4 +315,10 @@ export class ServiceWorkerUpdateCycleView extends UI.Widget.Widget {
         event.preventDefault();
     }
 }
+export var ServiceWorkerUpdateNames;
+(function (ServiceWorkerUpdateNames) {
+    ServiceWorkerUpdateNames["INSTALL"] = "Install";
+    ServiceWorkerUpdateNames["WAIT"] = "Wait";
+    ServiceWorkerUpdateNames["ACTIVATE"] = "Activate";
+})(ServiceWorkerUpdateNames || (ServiceWorkerUpdateNames = {}));
 //# sourceMappingURL=ServiceWorkerUpdateCycleView.js.map

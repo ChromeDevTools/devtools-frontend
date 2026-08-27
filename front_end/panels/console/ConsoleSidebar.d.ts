@@ -32,15 +32,7 @@ export declare class ConsoleFilterGroup {
     onMessage(viewMessage: ConsoleViewMessage): void;
     clear(): void;
 }
-declare const ConsoleSidebar_base: (new (...args: any[]) => {
-    __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
-    addEventListener<T extends Events.FILTER_SELECTED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
-    once<T extends Events.FILTER_SELECTED>(eventType: T): Promise<EventTypes[T]>;
-    removeEventListener<T extends Events.FILTER_SELECTED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
-    hasEventListeners(eventType: Events.FILTER_SELECTED): boolean;
-    dispatchEventToListeners<T extends Events.FILTER_SELECTED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
-    dispatchDOMEvent?(event: Event): void;
-}) & typeof UI.Widget.VBox<ShadowRoot>;
+declare const ConsoleSidebar_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.VBox<ShadowRoot>;
 export declare class ConsoleSidebar extends ConsoleSidebar_base {
     #private;
     constructor(element?: HTMLElement, view?: View);

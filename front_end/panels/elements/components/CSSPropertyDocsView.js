@@ -70,7 +70,24 @@ const getBaselineIconPath = (baseline) => {
     }
     return new URL(relativePath, import.meta.url).toString();
 };
+var BrowserId;
+(function (BrowserId) {
+    BrowserId["C"] = "C";
+    BrowserId["CA"] = "CA";
+    BrowserId["E"] = "E";
+    BrowserId["FF"] = "FF";
+    BrowserId["FFA"] = "FFA";
+    BrowserId["S"] = "S";
+    BrowserId["SM"] = "SM";
+})(BrowserId || (BrowserId = {}));
 const allBrowserIds = new Set(["C" /* BrowserId.C */, "CA" /* BrowserId.CA */, "E" /* BrowserId.E */, "FF" /* BrowserId.FF */, "FFA" /* BrowserId.FFA */, "S" /* BrowserId.S */, "SM" /* BrowserId.SM */]);
+var BrowserPlatform;
+(function (BrowserPlatform) {
+    BrowserPlatform["DESKTOP"] = "desktop";
+    BrowserPlatform["ANDROID"] = "Android";
+    BrowserPlatform["MACOS"] = "macOS";
+    BrowserPlatform["IOS"] = "iOS";
+})(BrowserPlatform || (BrowserPlatform = {}));
 const browserIdToNameAndPlatform = new Map([
     ["C" /* BrowserId.C */, { name: 'Chrome', platform: "desktop" /* BrowserPlatform.DESKTOP */ }],
     ["CA" /* BrowserId.CA */, { name: 'Chrome', platform: "Android" /* BrowserPlatform.ANDROID */ }],
@@ -126,6 +143,12 @@ const getBaselineText = (baseline, browsers) => {
     }
     return i18nString(UIStrings.widelyAvailableSince, { PH1: formatBaselineDate(baseline.baseline_high_date) });
 };
+export var BaselineStatus;
+(function (BaselineStatus) {
+    BaselineStatus["LIMITED"] = "false";
+    BaselineStatus["LOW"] = "low";
+    BaselineStatus["HIGH"] = "high";
+})(BaselineStatus || (BaselineStatus = {}));
 export class CSSPropertyDocsView extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
     #cssProperty;

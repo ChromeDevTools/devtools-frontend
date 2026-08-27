@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/panels/common",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -54,7 +55,7 @@
   ],
   "references": [
     {
-      "path": "../../../../tsc/extension-api/extension-api-tsconfig.ref.json"
+      "path": "../../../extension-api/extension-api-tsconfig.ref.json"
     },
     {
       "path": "../../core/common/bundle-tsconfig.ref.json"

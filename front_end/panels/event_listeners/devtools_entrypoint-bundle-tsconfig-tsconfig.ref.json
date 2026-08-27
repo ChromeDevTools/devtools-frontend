@@ -16,13 +16,13 @@
   ],
   "references": [
     {
-      "path": "../../../../tsc/front_end/panels/event_listeners/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./event_listeners-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/ui/legacy/components/object_ui/css_files-tsconfig.ref.json"
+      "path": "../../ui/legacy/components/object_ui/css_files-tsconfig.ref.json"
     }
   ]
 }

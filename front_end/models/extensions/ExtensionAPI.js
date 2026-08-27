@@ -1,6 +1,106 @@
 // Copyright 2012 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+/* eslint-disable @typescript-eslint/naming-convention */
+export var PrivateAPI;
+(function (PrivateAPI) {
+    let Panels;
+    (function (Panels) {
+        let SearchAction;
+        (function (SearchAction) {
+            SearchAction["CancelSearch"] = "cancelSearch";
+            SearchAction["PerformSearch"] = "performSearch";
+            SearchAction["NextSearchResult"] = "nextSearchResult";
+            SearchAction["PreviousSearchResult"] = "previousSearchResult";
+        })(SearchAction = Panels.SearchAction || (Panels.SearchAction = {}));
+    })(Panels = PrivateAPI.Panels || (PrivateAPI.Panels = {}));
+    let Events;
+    (function (Events) {
+        Events["ButtonClicked"] = "button-clicked-";
+        Events["PanelObjectSelected"] = "panel-objectSelected-";
+        Events["InspectedURLChanged"] = "inspected-url-changed";
+        Events["NetworkRequestFinished"] = "network-request-finished";
+        Events["OpenResource"] = "open-resource";
+        Events["PanelSearch"] = "panel-search-";
+        Events["ProfilingStarted"] = "profiling-started-";
+        Events["ProfilingStopped"] = "profiling-stopped-";
+        Events["ResourceAdded"] = "resource-added";
+        Events["ResourceContentCommitted"] = "resource-content-committed";
+        Events["ViewShown"] = "view-shown-";
+        Events["ViewHidden"] = "view-hidden,";
+        Events["ThemeChange"] = "host-theme-change";
+    })(Events = PrivateAPI.Events || (PrivateAPI.Events = {}));
+    let Commands;
+    (function (Commands) {
+        Commands["AddRequestHeaders"] = "addRequestHeaders";
+        Commands["CreatePanel"] = "createPanel";
+        Commands["CreateSidebarPane"] = "createSidebarPane";
+        Commands["CreateToolbarButton"] = "createToolbarButton";
+        Commands["EvaluateOnInspectedPage"] = "evaluateOnInspectedPage";
+        Commands["ForwardKeyboardEvent"] = "_forwardKeyboardEvent";
+        Commands["GetHAR"] = "getHAR";
+        Commands["GetPageResources"] = "getPageResources";
+        Commands["GetRequestContent"] = "getRequestContent";
+        Commands["GetResourceContent"] = "getResourceContent";
+        Commands["OpenResource"] = "openResource";
+        Commands["Reload"] = "Reload";
+        Commands["Subscribe"] = "subscribe";
+        Commands["SetOpenResourceHandler"] = "setOpenResourceHandler";
+        Commands["SetThemeChangeHandler"] = "setThemeChangeHandler";
+        Commands["SetResourceContent"] = "setResourceContent";
+        Commands["SetSidebarContent"] = "setSidebarContent";
+        Commands["SetSidebarHeight"] = "setSidebarHeight";
+        Commands["SetSidebarPage"] = "setSidebarPage";
+        Commands["ShowPanel"] = "showPanel";
+        Commands["Unsubscribe"] = "unsubscribe";
+        Commands["UpdateButton"] = "updateButton";
+        Commands["AttachSourceMapToResource"] = "attachSourceMapToResource";
+        Commands["RegisterLanguageExtensionPlugin"] = "registerLanguageExtensionPlugin";
+        Commands["GetWasmLinearMemory"] = "getWasmLinearMemory";
+        Commands["GetWasmLocal"] = "getWasmLocal";
+        Commands["GetWasmGlobal"] = "getWasmGlobal";
+        Commands["GetWasmOp"] = "getWasmOp";
+        Commands["RegisterRecorderExtensionPlugin"] = "registerRecorderExtensionPlugin";
+        Commands["CreateRecorderView"] = "createRecorderView";
+        Commands["ShowRecorderView"] = "showRecorderView";
+        Commands["ShowNetworkPanel"] = "showNetworkPanel";
+        Commands["ReportResourceLoad"] = "reportResourceLoad";
+        Commands["SetFunctionRangesForScript"] = "setFunctionRangesForScript";
+    })(Commands = PrivateAPI.Commands || (PrivateAPI.Commands = {}));
+    let LanguageExtensionPluginCommands;
+    (function (LanguageExtensionPluginCommands) {
+        LanguageExtensionPluginCommands["AddRawModule"] = "addRawModule";
+        LanguageExtensionPluginCommands["RemoveRawModule"] = "removeRawModule";
+        LanguageExtensionPluginCommands["SourceLocationToRawLocation"] = "sourceLocationToRawLocation";
+        LanguageExtensionPluginCommands["RawLocationToSourceLocation"] = "rawLocationToSourceLocation";
+        LanguageExtensionPluginCommands["GetScopeInfo"] = "getScopeInfo";
+        LanguageExtensionPluginCommands["ListVariablesInScope"] = "listVariablesInScope";
+        LanguageExtensionPluginCommands["GetTypeInfo"] = "getTypeInfo";
+        LanguageExtensionPluginCommands["GetFormatter"] = "getFormatter";
+        LanguageExtensionPluginCommands["GetInspectableAddress"] = "getInspectableAddress";
+        LanguageExtensionPluginCommands["GetFunctionInfo"] = "getFunctionInfo";
+        LanguageExtensionPluginCommands["GetInlinedFunctionRanges"] = "getInlinedFunctionRanges";
+        LanguageExtensionPluginCommands["GetInlinedCalleesRanges"] = "getInlinedCalleesRanges";
+        LanguageExtensionPluginCommands["GetMappedLines"] = "getMappedLines";
+        LanguageExtensionPluginCommands["FormatValue"] = "formatValue";
+        LanguageExtensionPluginCommands["GetProperties"] = "getProperties";
+        LanguageExtensionPluginCommands["ReleaseObject"] = "releaseObject";
+    })(LanguageExtensionPluginCommands = PrivateAPI.LanguageExtensionPluginCommands || (PrivateAPI.LanguageExtensionPluginCommands = {}));
+    let LanguageExtensionPluginEvents;
+    (function (LanguageExtensionPluginEvents) {
+        LanguageExtensionPluginEvents["UnregisteredLanguageExtensionPlugin"] = "unregisteredLanguageExtensionPlugin";
+    })(LanguageExtensionPluginEvents = PrivateAPI.LanguageExtensionPluginEvents || (PrivateAPI.LanguageExtensionPluginEvents = {}));
+    let RecorderExtensionPluginCommands;
+    (function (RecorderExtensionPluginCommands) {
+        RecorderExtensionPluginCommands["Stringify"] = "stringify";
+        RecorderExtensionPluginCommands["StringifyStep"] = "stringifyStep";
+        RecorderExtensionPluginCommands["Replay"] = "replay";
+    })(RecorderExtensionPluginCommands = PrivateAPI.RecorderExtensionPluginCommands || (PrivateAPI.RecorderExtensionPluginCommands = {}));
+    let RecorderExtensionPluginEvents;
+    (function (RecorderExtensionPluginEvents) {
+        RecorderExtensionPluginEvents["UnregisteredRecorderExtensionPlugin"] = "unregisteredRecorderExtensionPlugin";
+    })(RecorderExtensionPluginEvents = PrivateAPI.RecorderExtensionPluginEvents || (PrivateAPI.RecorderExtensionPluginEvents = {}));
+})(PrivateAPI || (PrivateAPI = {}));
 self.injectedExtensionAPI = function (extensionInfo, inspectedTabId, themeName, keysToForward, testHook, injectedScriptId, targetWindowForTest) {
     const keysToForwardSet = new Set(keysToForward);
     const chrome = window.chrome || {};
@@ -948,5 +1048,4 @@ self.buildExtensionAPIInjectedScript = function (extensionInfo, inspectedTabId, 
         '(' + self.injectedExtensionAPI.toString() + ')(' + argumentsJSON + ',' + testHook + ', injectedScriptId);' +
         '})';
 };
-export {};
 //# sourceMappingURL=ExtensionAPI.js.map

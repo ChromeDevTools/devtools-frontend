@@ -1,8 +1,8 @@
 // gen/front_end/ui/legacy/theme_support/ThemeSupport.js
-import * as Common from "./../../../core/common/common.js";
-import * as Host from "./../../../core/host/host.js";
-import * as Root from "./../../../core/root/root.js";
-import * as SettingsUI from "./../../settings/settings.js";
+import * as Common from "../../../core/common/common.js";
+import * as Host from "../../../core/host/host.js";
+import * as Root from "../../../core/root/root.js";
+import * as SettingsUI from "../../settings/settings.js";
 var themeSupportInstance;
 var themeValueByTargetByName = /* @__PURE__ */ new Map();
 var ThemeSupport = class _ThemeSupport extends EventTarget {

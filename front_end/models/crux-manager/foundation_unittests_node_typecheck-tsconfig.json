@@ -1,0 +1,68 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": true,
+    "composite": false,
+    "declaration": false,
+    "disableSourceOfProjectReferenceRedirect": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "inlineSources": true,
+    "lib": [
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "outDir": ".",
+    "preserveConstEnums": true,
+    "rootDir": "../../../../../../front_end/models/crux-manager",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2023",
+    "typeRoots": [
+      "../../../../../../node_modules/@types",
+      "../../../../../../node_modules"
+    ],
+    "types": [
+      "mocha",
+      "node",
+      "undici-types"
+    ],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../front_end/models/crux-manager/CrUXManager.test.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../emulation/bundle-tsconfig.ref.json"
+    }
+  ]
+}

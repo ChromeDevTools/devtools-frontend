@@ -412,4 +412,8 @@ export class ConsolePrompt extends Common.ObjectWrapper.eventMixin(UI.Widget.Wid
     editorSetForTest() {
     }
 }
+export var Events;
+(function (Events) {
+    Events["TEXT_CHANGED"] = "TextChanged";
+})(Events || (Events = {}));
 //# sourceMappingURL=ConsolePrompt.js.map

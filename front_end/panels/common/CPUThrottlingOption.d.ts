@@ -1,3 +1,7 @@
+import * as SDK from '../../core/sdk/sdk.js';
+export type CalibratedCPUThrottling = SDK.CPUThrottlingManager.CalibratedCPUThrottling;
+export import CalibrationError = SDK.CPUThrottlingManager.CalibrationError;
+export import CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
 export declare enum CPUThrottlingRates {
     NO_THROTTLING = 1,
     MID_TIER_MOBILE = 4,
@@ -19,14 +23,6 @@ export declare const LowTierThrottlingOption: CPUThrottlingOption;
 export declare const ExtraSlowThrottlingOption: CPUThrottlingOption;
 export declare const CalibratedLowTierMobileThrottlingOption: CPUThrottlingOption;
 export declare const CalibratedMidTierMobileThrottlingOption: CPUThrottlingOption;
-export interface CalibratedCPUThrottling {
-    /** Either the CPU multiplier, or an error code for why it could not be determined. */
-    low?: number | CalibrationError;
-    mid?: number | CalibrationError;
-}
-export declare enum CalibrationError {
-    DEVICE_TOO_WEAK = "DEVICE_TOO_WEAK"
-}
 export declare function calibrationErrorToString(error: CalibrationError): string;
 export declare const cpuThrottlingPresets: CPUThrottlingOption[];
 export declare function determineOptionFromRate(rate: number, currentOption?: CPUThrottlingOption): CPUThrottlingOption;

@@ -25,7 +25,7 @@ export default `/*
 
 .preloading-toolbar {
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
   button.toolbar-has-dropdown {
     margin: var(--sys-size-2) 0;

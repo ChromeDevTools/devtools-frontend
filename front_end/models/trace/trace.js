@@ -563,9 +563,10 @@ var ModelImpl_exports = {};
 __export(ModelImpl_exports, {
   Model: () => Model,
   ModelUpdateEvent: () => ModelUpdateEvent,
+  ModelUpdateType: () => ModelUpdateType,
   isModelUpdateDataComplete: () => isModelUpdateDataComplete
 });
-import * as Platform from "./../../core/platform/platform.js";
+import * as Platform from "../../core/platform/platform.js";
 import * as Handlers4 from "./handlers/handlers.js";
 import * as Helpers5 from "./helpers/helpers.js";
 
@@ -582,6 +583,13 @@ import * as Insights from "./insights/insights.js";
 import * as Lantern2 from "./lantern/lantern.js";
 import * as Types3 from "./types/types.js";
 var _a;
+var Status;
+(function(Status2) {
+  Status2["IDLE"] = "IDLE";
+  Status2["PARSING"] = "PARSING";
+  Status2["FINISHED_PARSING"] = "FINISHED_PARSING";
+  Status2["ERRORED_WHILE_PARSING"] = "ERRORED_WHILE_PARSING";
+})(Status || (Status = {}));
 var TraceParseProgressEvent = class _TraceParseProgressEvent extends Event {
   data;
   static eventName = "traceparseprogress";
@@ -590,6 +598,12 @@ var TraceParseProgressEvent = class _TraceParseProgressEvent extends Event {
     this.data = data;
   }
 };
+var ProgressPhase;
+(function(ProgressPhase2) {
+  ProgressPhase2[ProgressPhase2["HANDLE_EVENT"] = 0.2] = "HANDLE_EVENT";
+  ProgressPhase2[ProgressPhase2["FINALIZE"] = 0.8] = "FINALIZE";
+  ProgressPhase2[ProgressPhase2["CLONE"] = 1] = "CLONE";
+})(ProgressPhase || (ProgressPhase = {}));
 function calculateProgress(value, phase) {
   if (phase === 0.8) {
     return value * (0.8 - 0.2) + 0.2;
@@ -1223,6 +1237,11 @@ var Model = class _Model extends EventTarget {
     this.#processor.reset();
   }
 };
+var ModelUpdateType;
+(function(ModelUpdateType2) {
+  ModelUpdateType2["COMPLETE"] = "COMPLETE";
+  ModelUpdateType2["PROGRESS_UPDATE"] = "PROGRESS_UPDATE";
+})(ModelUpdateType || (ModelUpdateType = {}));
 var ModelUpdateEvent = class _ModelUpdateEvent extends Event {
   data;
   static eventName = "modelupdate";
@@ -1240,8 +1259,8 @@ var Name_exports = {};
 __export(Name_exports, {
   forEntry: () => forEntry
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
+import * as Common2 from "../../core/common/common.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
 import * as Handlers6 from "./handlers/handlers.js";
 
 // gen/front_end/models/trace/Styles.js
@@ -1261,7 +1280,7 @@ __export(Styles_exports, {
   stringIsEventCategory: () => stringIsEventCategory,
   visibleTypes: () => visibleTypes
 });
-import * as i18n from "./../../core/i18n/i18n.js";
+import * as i18n from "../../core/i18n/i18n.js";
 import * as Handlers5 from "./handlers/handlers.js";
 import * as Helpers6 from "./helpers/helpers.js";
 import * as Types5 from "./types/types.js";

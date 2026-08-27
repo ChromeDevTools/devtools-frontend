@@ -10,15 +10,15 @@ export default `/*
  */
 
 :host {
-  padding: 2px 1px 2px 2px;
+  padding: var(--sys-size-2) var(--sys-size-1) var(--sys-size-2) var(--sys-size-2);
 }
 
 .title {
-  padding-left: 8px;
+  padding-left: var(--sys-size-5);
 }
 
 .subtitle {
-  padding-left: 8px;
+  padding-left: var(--sys-size-5);
 }
 
 /*# sourceURL=${import.meta.resolve('./preloading/preloadingViewDropDown.css')} */`;

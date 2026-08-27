@@ -2,6 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as SDK from '../../core/sdk/sdk.js';
+export var Category;
+(function (Category) {
+    Category["LAYOUT"] = "Layout";
+    Category["TEXT"] = "Text";
+    Category["APPEARANCE"] = "Appearance";
+    Category["ANIMATION"] = "Animation";
+    Category["GRID"] = "Grid";
+    Category["FLEX"] = "Flex";
+    Category["TABLE"] = "Table";
+    Category["CSS_VARIABLES"] = "CSS Variables";
+    Category["GENERATED_CONTENT"] = "Generated Content";
+    Category["OTHER"] = "Other";
+})(Category || (Category = {}));
 export const DefaultCategoryOrder = [
     "Layout" /* Category.LAYOUT */,
     "Text" /* Category.TEXT */,

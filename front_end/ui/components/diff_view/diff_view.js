@@ -8,13 +8,14 @@ var __export = (target, all) => {
 var DiffView_exports = {};
 __export(DiffView_exports, {
   DiffView: () => DiffView,
+  RowType: () => RowType,
   buildDiffRows: () => buildDiffRows
 });
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as Diff from "./../../../third_party/diff/diff.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
-import * as Lit from "./../../lit/lit.js";
-import * as CodeHighlighter from "./../code_highlighter/code_highlighter.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as Diff from "../../../third_party/diff/diff.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
+import * as Lit from "../../lit/lit.js";
+import * as CodeHighlighter from "../code_highlighter/code_highlighter.js";
 
 // gen/front_end/ui/components/diff_view/diffView.css.js
 var diffView_css_default = `/*
@@ -42,13 +43,13 @@ var diffView_css_default = `/*
 
 .diff-line-marker {
   user-select: none;
-  border-right: 1px solid var(--sys-color-divider);
-  width: 20px;
+  border-right: var(--sys-size-1) solid var(--sys-color-divider);
+  width: var(--sys-size-9);
   text-align: center;
 }
 
 .diff-line-content {
-  padding: 0 4px;
+  padding: 0 var(--sys-size-3);
 }
 
 .diff-line-marker-addition,
@@ -130,6 +131,13 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("ui/components/diff_view/DiffView.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
+var RowType;
+(function(RowType2) {
+  RowType2["DELETION"] = "deletion";
+  RowType2["ADDITION"] = "addition";
+  RowType2["EQUAL"] = "equal";
+  RowType2["SPACER"] = "spacer";
+})(RowType || (RowType = {}));
 function buildDiffRows(diff) {
   let currentLineNumber = 0;
   let originalLineNumber = 0;

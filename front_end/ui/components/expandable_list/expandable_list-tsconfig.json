@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../../front_end/ui/components/expandable_list",
     "skipLibCheck": true,
     "sourceMap": true,

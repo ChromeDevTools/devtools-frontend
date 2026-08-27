@@ -19,7 +19,7 @@
       "path": "./coverage-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/panels/coverage/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     }
   ]
 }

@@ -19,7 +19,7 @@
       "path": "./common-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/panels/common/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     }
   ]
 }

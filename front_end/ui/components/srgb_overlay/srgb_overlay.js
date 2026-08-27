@@ -9,9 +9,9 @@ var SrgbOverlay_exports = {};
 __export(SrgbOverlay_exports, {
   SrgbOverlay: () => SrgbOverlay
 });
-import * as Common from "./../../../core/common/common.js";
-import * as RenderCoordinator from "./../render_coordinator/render_coordinator.js";
-import { html, render } from "./../../lit/lit.js";
+import * as Common from "../../../core/common/common.js";
+import * as RenderCoordinator from "../render_coordinator/render_coordinator.js";
+import { html, render } from "../../lit/lit.js";
 
 // gen/front_end/ui/components/srgb_overlay/srgbOverlay.css.js
 var srgbOverlay_css_default = `/*

@@ -19,7 +19,7 @@
       "path": "./color_picker-tsconfig.ref.json"
     },
     {
-      "path": "../../../../../../tsc/front_end/ui/legacy/components/color_picker/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     }
   ]
 }

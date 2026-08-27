@@ -120,7 +120,7 @@ __export(CodeHighlighter_exports, {
   highlightStyle: () => highlightStyle,
   languageFromMIME: () => languageFromMIME
 });
-import * as CodeMirror from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror from "../../../third_party/codemirror.next/codemirror.next.js";
 var t = CodeMirror.tags;
 var highlightStyle = CodeMirror.HighlightStyle.define([
   { tag: t.variableName, class: "token-variable" },

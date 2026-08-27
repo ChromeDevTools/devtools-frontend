@@ -411,6 +411,10 @@ export class PaintProfilerView extends Common.ObjectWrapper.eventMixin(UI.Widget
         this.isProfiling = false;
     }
 }
+export var Events;
+(function (Events) {
+    Events["WINDOW_CHANGED"] = "WindowChanged";
+})(Events || (Events = {}));
 function paramToString(param, name) {
     if (typeof param !== 'object') {
         return typeof param === 'string' && param.length > 100 ? name : JSON.stringify(param);

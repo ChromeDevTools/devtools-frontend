@@ -35,6 +35,25 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/ViewRegistration.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export var ViewPersistence;
+(function (ViewPersistence) {
+    ViewPersistence["CLOSEABLE"] = "closeable";
+    ViewPersistence["PERMANENT"] = "permanent";
+    ViewPersistence["TRANSIENT"] = "transient";
+})(ViewPersistence || (ViewPersistence = {}));
+export var ViewLocationValues;
+(function (ViewLocationValues) {
+    ViewLocationValues["PANEL"] = "panel";
+    ViewLocationValues["SETTINGS_VIEW"] = "settings-view";
+    ViewLocationValues["ELEMENTS_SIDEBAR"] = "elements-sidebar";
+    ViewLocationValues["SOURCES_SIDEBAR_BOTTOM"] = "sources.sidebar-bottom";
+    ViewLocationValues["NAVIGATOR_VIEW"] = "navigator-view";
+    ViewLocationValues["DRAWER_VIEW"] = "drawer-view";
+    ViewLocationValues["DRAWER_SIDEBAR"] = "drawer-sidebar";
+    ViewLocationValues["NETWORK_SIDEBAR"] = "network-sidebar";
+    ViewLocationValues["SOURCES_SIDEBAR_TOP"] = "sources.sidebar-top";
+    ViewLocationValues["SOURCES_SIDEBAR_TABS"] = "sources.sidebar-tabs";
+})(ViewLocationValues || (ViewLocationValues = {}));
 const registeredViewExtensions = new Map();
 export function registerViewExtension(registration) {
     const viewId = registration.id;
@@ -69,6 +88,17 @@ export function resetViewRegistration() {
     registeredLocationResolvers.length = 0;
     viewLocationNameSet.clear();
 }
+export var ViewLocationCategory;
+(function (ViewLocationCategory) {
+    ViewLocationCategory["NONE"] = "";
+    ViewLocationCategory["ELEMENTS"] = "ELEMENTS";
+    ViewLocationCategory["DRAWER"] = "DRAWER";
+    ViewLocationCategory["DRAWER_SIDEBAR"] = "DRAWER_SIDEBAR";
+    ViewLocationCategory["PANEL"] = "PANEL";
+    ViewLocationCategory["NETWORK"] = "NETWORK";
+    ViewLocationCategory["SETTINGS"] = "SETTINGS";
+    ViewLocationCategory["SOURCES"] = "SOURCES";
+})(ViewLocationCategory || (ViewLocationCategory = {}));
 export function getLocalizedViewLocationCategory(category) {
     switch (category) {
         case "ELEMENTS" /* ViewLocationCategory.ELEMENTS */:

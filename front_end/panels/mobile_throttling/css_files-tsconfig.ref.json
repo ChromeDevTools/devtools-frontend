@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "throttlingSettingsTab.css.js"
+  ]
+}

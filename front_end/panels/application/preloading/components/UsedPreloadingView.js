@@ -125,6 +125,15 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/UsedPreloadingView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { widget } = UI.Widget;
+export var UsedKind;
+(function (UsedKind) {
+    UsedKind["DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED"] = "DowngradedPrerenderToPrefetchAndUsed";
+    UsedKind["PREFETCH_USED"] = "PrefetchUsed";
+    UsedKind["PRERENDER_USED"] = "PrerenderUsed";
+    UsedKind["PREFETCH_FAILED"] = "PrefetchFailed";
+    UsedKind["PRERENDER_FAILED"] = "PrerenderFailed";
+    UsedKind["NO_PRELOADS"] = "NoPreloads";
+})(UsedKind || (UsedKind = {}));
 function renderSpeculativeLoadingStatusForThisPageSections({ kind, prefetch, prerenderLike, mismatchedData, attemptWithMismatchedHeaders }) {
     let badge;
     let basicMessage;

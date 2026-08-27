@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/services/trace_bounds",
     "skipLibCheck": true,
     "sourceMap": true,

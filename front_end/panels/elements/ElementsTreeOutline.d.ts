@@ -39,6 +39,7 @@ interface ViewInput {
     onExpand?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
     onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
     onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => void;
+    onKeyDown?: (event: KeyboardEvent) => void;
     isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
     onDuplicateNode?: (node: SDK.DOMModel.DOMNode) => void;
     isNodeExpanded?: (node: SDK.DOMModel.DOMNode) => boolean;
@@ -130,9 +131,12 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     highlightMatch(node: SDK.DOMModel.DOMNode, query?: string): void;
     hideMatchHighlights(node: SDK.DOMModel.DOMNode): void;
     toggleHideElement(node: SDK.DOMModel.DOMNode): void;
+    removeNode(node: SDK.DOMModel.DOMNode): Promise<void>;
     isToggledToHidden(node: SDK.DOMModel.DOMNode): boolean;
     toggleEditAsHTML(node: SDK.DOMModel.DOMNode): void;
     duplicateNode(node: SDK.DOMModel.DOMNode): void;
+    selectNodeAfterEdit(wasExpanded: boolean, error: string | null, newNode: SDK.DOMModel.DOMNode | null): void;
+    onKeyDown(event: KeyboardEvent): boolean;
     copyStyles(node: SDK.DOMModel.DOMNode): void;
     /**
      * FIXME: used to determine focus state, probably we can have a better
@@ -145,15 +149,7 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     detach(overrideHideOnDetach?: boolean): void;
     show(parentElement: Element, insertBefore?: Node | null, suppressOrphanWidgetError?: boolean): void;
 }
-declare const ElementsTreeOutline_base: (new (...args: any[]) => {
-    __events: Common.ObjectWrapper.ObjectWrapper<ElementsTreeOutline.EventTypes>;
-    addEventListener<T extends keyof ElementsTreeOutline.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<ElementsTreeOutline.EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<ElementsTreeOutline.EventTypes, T>;
-    once<T extends keyof ElementsTreeOutline.EventTypes>(eventType: T): Promise<ElementsTreeOutline.EventTypes[T]>;
-    removeEventListener<T extends keyof ElementsTreeOutline.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<ElementsTreeOutline.EventTypes[T], any>) => void, thisObject?: Object): void;
-    hasEventListeners(eventType: keyof ElementsTreeOutline.EventTypes): boolean;
-    dispatchEventToListeners<T extends keyof ElementsTreeOutline.EventTypes>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<ElementsTreeOutline.EventTypes, T>): void;
-    dispatchDOMEvent?(event: Event): void;
-}) & typeof UI.TreeOutline.TreeOutline;
+declare const ElementsTreeOutline_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<ElementsTreeOutline.EventTypes>, any[]> & typeof UI.TreeOutline.TreeOutline;
 export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     #private;
     treeElementByNode: WeakMap<SDK.DOMModel.DOMNode, ElementsTreeElement>;
@@ -233,7 +229,6 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     private clearDragOverTreeElementMarker;
     showContextMenu: (treeElement: ElementsTreeElement, event: Event) => void;
     runPendingUpdates(): void;
-    private onKeyDown;
     toggleEditAsHTML(node: SDK.DOMModel.DOMNode, startEditing?: boolean, callback?: (() => void)): void;
     selectNodeAfterEdit(wasExpanded: boolean, error: string | null, newNode: SDK.DOMModel.DOMNode | null): ElementsTreeElement | null;
     toggleHideElement(node: SDK.DOMModel.DOMNode): Promise<void>;

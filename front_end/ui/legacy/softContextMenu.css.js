@@ -11,10 +11,10 @@ export default `/*
 
 .soft-context-menu {
   overflow-y: auto;
-  min-width: 160px !important; /* stylelint-disable-line declaration-no-important */
+  min-width: var(--sys-size-23) !important; /* stylelint-disable-line declaration-no-important */
   /* NOTE: Keep padding in sync with padding adjustment in SoftContextMenu.ts */
   padding: var(--sys-size-5) 0;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-small);
   background-color: var(--app-color-menu-background);
   box-shadow: var(--sys-elevation-level3);
@@ -29,13 +29,13 @@ export default `/*
 }
 
 .dockside-title + devtools-toolbar {
-  margin-right: -8px;
+  margin-right: calc(-1 * var(--sys-size-5));
 }
 
 .soft-context-menu-item {
   display: flex;
   width: 100%;
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   height: var(--sys-size-11);
   padding: 0 var(--sys-size-8);
   white-space: nowrap;

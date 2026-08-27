@@ -13,7 +13,7 @@ export default `/*
   display: flex;
   flex-wrap: wrap;
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   flex: 0 0 auto;
   justify-content: space-between;
 }

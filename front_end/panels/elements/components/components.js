@@ -9,12 +9,12 @@ var AccessibilityTreeNode_exports = {};
 __export(AccessibilityTreeNode_exports, {
   AccessibilityTreeNode: () => AccessibilityTreeNode
 });
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as Platform from "./../../../core/platform/platform.js";
-import * as SDK from "./../../../core/sdk/sdk.js";
-import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI from "./../../../ui/legacy/legacy.js";
-import { html, nothing, render } from "./../../../ui/lit/lit.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as Platform from "../../../core/platform/platform.js";
+import * as SDK from "../../../core/sdk/sdk.js";
+import * as RenderCoordinator from "../../../ui/components/render_coordinator/render_coordinator.js";
+import * as UI from "../../../ui/legacy/legacy.js";
+import { html, nothing, render } from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/components/accessibilityTreeNode.css.js
 var accessibilityTreeNode_css_default = `/*
@@ -174,8 +174,8 @@ __export(ComputedStyleProperty_exports, {
   ComputedStyleProperty: () => ComputedStyleProperty,
   NavigateToSourceEvent: () => NavigateToSourceEvent
 });
-import { html as html2, render as render2 } from "./../../../ui/lit/lit.js";
-import * as VisualLogging from "./../../../ui/visual_logging/visual_logging.js";
+import { html as html2, render as render2 } from "../../../ui/lit/lit.js";
+import * as VisualLogging from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/computedStyleProperty.css.js
 var computedStyleProperty_css_default = `/*
@@ -358,9 +358,9 @@ var ComputedStyleTrace_exports = {};
 __export(ComputedStyleTrace_exports, {
   ComputedStyleTrace: () => ComputedStyleTrace
 });
-import * as Buttons from "./../../../ui/components/buttons/buttons.js";
-import * as UI2 from "./../../../ui/legacy/legacy.js";
-import { html as html3, render as render3 } from "./../../../ui/lit/lit.js";
+import * as Buttons from "../../../ui/components/buttons/buttons.js";
+import * as UI2 from "../../../ui/legacy/legacy.js";
+import { html as html3, render as render3 } from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/components/computedStyleTrace.css.js
 var computedStyleTrace_css_default = `/*
@@ -496,10 +496,10 @@ var CSSHintDetailsView_exports = {};
 __export(CSSHintDetailsView_exports, {
   CSSHintDetailsView: () => CSSHintDetailsView
 });
-import "./../../../ui/kit/kit.js";
-import "./../../../ui/legacy/legacy.js";
-import * as i18n3 from "./../../../core/i18n/i18n.js";
-import { html as html4, render as render4 } from "./../../../ui/lit/lit.js";
+import "../../../ui/kit/kit.js";
+import "../../../ui/legacy/legacy.js";
+import * as i18n3 from "../../../core/i18n/i18n.js";
+import { html as html4, render as render4 } from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/components/cssHintDetailsView.css.js
 var cssHintDetailsView_css_default = `/*
@@ -587,14 +587,15 @@ customElements.define("devtools-css-hint-details-view", CSSHintDetailsView);
 // gen/front_end/panels/elements/components/CSSPropertyDocsView.js
 var CSSPropertyDocsView_exports = {};
 __export(CSSPropertyDocsView_exports, {
+  BaselineStatus: () => BaselineStatus,
   CSSPropertyDocsView: () => CSSPropertyDocsView
 });
-import "./../../../ui/kit/kit.js";
-import "./../../../ui/legacy/legacy.js";
-import * as Common from "./../../../core/common/common.js";
-import * as i18n5 from "./../../../core/i18n/i18n.js";
-import { html as html5, nothing as nothing2, render as render5 } from "./../../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import "../../../ui/legacy/legacy.js";
+import * as Common from "../../../core/common/common.js";
+import * as i18n5 from "../../../core/i18n/i18n.js";
+import { html as html5, nothing as nothing2, render as render5 } from "../../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/cssPropertyDocsView.css.js
 var cssPropertyDocsView_css_default = `/*
@@ -705,6 +706,16 @@ var getBaselineIconPath = (baseline) => {
   }
   return new URL(relativePath, import.meta.url).toString();
 };
+var BrowserId;
+(function(BrowserId2) {
+  BrowserId2["C"] = "C";
+  BrowserId2["CA"] = "CA";
+  BrowserId2["E"] = "E";
+  BrowserId2["FF"] = "FF";
+  BrowserId2["FFA"] = "FFA";
+  BrowserId2["S"] = "S";
+  BrowserId2["SM"] = "SM";
+})(BrowserId || (BrowserId = {}));
 var allBrowserIds = /* @__PURE__ */ new Set([
   "C",
   "CA",
@@ -715,6 +726,13 @@ var allBrowserIds = /* @__PURE__ */ new Set([
   "SM"
   /* BrowserId.SM */
 ]);
+var BrowserPlatform;
+(function(BrowserPlatform2) {
+  BrowserPlatform2["DESKTOP"] = "desktop";
+  BrowserPlatform2["ANDROID"] = "Android";
+  BrowserPlatform2["MACOS"] = "macOS";
+  BrowserPlatform2["IOS"] = "iOS";
+})(BrowserPlatform || (BrowserPlatform = {}));
 var browserIdToNameAndPlatform = /* @__PURE__ */ new Map([
   ["C", {
     name: "Chrome",
@@ -796,6 +814,12 @@ var getBaselineText = (baseline, browsers) => {
   }
   return i18nString3(UIStrings3.widelyAvailableSince, { PH1: formatBaselineDate(baseline.baseline_high_date) });
 };
+var BaselineStatus;
+(function(BaselineStatus2) {
+  BaselineStatus2["LIMITED"] = "false";
+  BaselineStatus2["LOW"] = "low";
+  BaselineStatus2["HIGH"] = "high";
+})(BaselineStatus || (BaselineStatus = {}));
 var CSSPropertyDocsView = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #cssProperty;
@@ -858,6 +882,7 @@ customElements.define("devtools-css-property-docs-view", CSSPropertyDocsView);
 // gen/front_end/panels/elements/components/CSSPropertyIconResolver.js
 var CSSPropertyIconResolver_exports = {};
 __export(CSSPropertyIconResolver_exports, {
+  PhysicalDirection: () => PhysicalDirection,
   findFlexContainerIcon: () => findFlexContainerIcon,
   findFlexItemIcon: () => findFlexItemIcon,
   findGridContainerIcon: () => findGridContainerIcon,
@@ -879,6 +904,13 @@ var writingModesAffectingFlexDirection = /* @__PURE__ */ new Set([
   "vertical-lr",
   "vertical-rl"
 ]);
+var PhysicalDirection;
+(function(PhysicalDirection2) {
+  PhysicalDirection2["LEFT_TO_RIGHT"] = "left-to-right";
+  PhysicalDirection2["RIGHT_TO_LEFT"] = "right-to-left";
+  PhysicalDirection2["BOTTOM_TO_TOP"] = "bottom-to-top";
+  PhysicalDirection2["TOP_TO_BOTTOM"] = "top-to-bottom";
+})(PhysicalDirection || (PhysicalDirection = {}));
 function reverseDirection(direction) {
   if (direction === "left-to-right") {
     return "right-to-left";
@@ -1295,12 +1327,12 @@ var CSSQuery_exports = {};
 __export(CSSQuery_exports, {
   CSSQuery: () => CSSQuery
 });
-import "./../../../ui/components/tooltips/tooltips.js";
-import "./../../../ui/legacy/components/inline_editor/inline_editor.js";
-import * as SDK2 from "./../../../core/sdk/sdk.js";
-import * as UI3 from "./../../../ui/legacy/legacy.js";
-import * as Lit from "./../../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/components/tooltips/tooltips.js";
+import "../../../ui/legacy/components/inline_editor/inline_editor.js";
+import * as SDK2 from "../../../core/sdk/sdk.js";
+import * as UI3 from "../../../ui/legacy/legacy.js";
+import * as Lit from "../../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/cssQuery.css.js
 var cssQuery_css_default = `/*
@@ -1455,8 +1487,8 @@ __export(CSSVariableValueView_exports, {
   CSSVariableParserError: () => CSSVariableParserError,
   CSSVariableValueView: () => CSSVariableValueView
 });
-import * as i18n7 from "./../../../core/i18n/i18n.js";
-import * as Lit2 from "./../../../ui/lit/lit.js";
+import * as i18n7 from "../../../core/i18n/i18n.js";
+import * as Lit2 from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/components/cssVariableValueView.css.js
 var cssVariableValueView_css_default = `/*
@@ -1607,14 +1639,14 @@ __export(ElementsBreadcrumbs_exports, {
   ElementsBreadcrumbs: () => ElementsBreadcrumbs,
   NodeSelectedEvent: () => NodeSelectedEvent
 });
-import "./../../../ui/kit/kit.js";
-import "./../../../ui/components/node_text/node_text.js";
-import * as i18n11 from "./../../../core/i18n/i18n.js";
-import * as SDK3 from "./../../../core/sdk/sdk.js";
-import * as ComponentHelpers from "./../../../ui/components/helpers/helpers.js";
-import * as RenderCoordinator2 from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as Lit3 from "./../../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import "../../../ui/components/node_text/node_text.js";
+import * as i18n11 from "../../../core/i18n/i18n.js";
+import * as SDK3 from "../../../core/sdk/sdk.js";
+import * as ComponentHelpers from "../../../ui/components/helpers/helpers.js";
+import * as RenderCoordinator2 from "../../../ui/components/render_coordinator/render_coordinator.js";
+import * as Lit3 from "../../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/elementsBreadcrumbs.css.js
 var elementsBreadcrumbs_css_default = `/*
@@ -1719,7 +1751,7 @@ __export(ElementsBreadcrumbsUtils_exports, {
   crumbsToRender: () => crumbsToRender,
   determineElementTitle: () => determineElementTitle
 });
-import * as i18n9 from "./../../../core/i18n/i18n.js";
+import * as i18n9 from "../../../core/i18n/i18n.js";
 var UIStrings5 = {
   /**
    * @description Text in elements breadcrumbs of the Elements panel. Indicates that an HTML element
@@ -2042,10 +2074,10 @@ var ElementsTreeExpandButton_exports = {};
 __export(ElementsTreeExpandButton_exports, {
   ElementsTreeExpandButton: () => ElementsTreeExpandButton
 });
-import "./../../../ui/kit/kit.js";
-import * as i18n13 from "./../../../core/i18n/i18n.js";
-import { html as html9, render as render9 } from "./../../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import * as i18n13 from "../../../core/i18n/i18n.js";
+import { html as html9, render as render9 } from "../../../ui/lit/lit.js";
+import * as VisualLogging5 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/elementsTreeExpandButton.css.js
 var elementsTreeExpandButton_css_default = `/*
@@ -2144,11 +2176,11 @@ __export(QueryContainer_exports, {
   QueriedSizeRequestedEvent: () => QueriedSizeRequestedEvent,
   QueryContainer: () => QueryContainer
 });
-import "./../../../ui/kit/kit.js";
-import "./../../../ui/components/node_text/node_text.js";
-import * as SDK4 from "./../../../core/sdk/sdk.js";
-import * as Lit4 from "./../../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import "../../../ui/components/node_text/node_text.js";
+import * as SDK4 from "../../../core/sdk/sdk.js";
+import * as Lit4 from "../../../ui/lit/lit.js";
+import * as VisualLogging6 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/queryContainer.css.js
 var queryContainer_css_default = `/*
@@ -2291,12 +2323,12 @@ __export(StylePropertyEditor_exports, {
   PropertySelectedEvent: () => PropertySelectedEvent,
   StylePropertyEditor: () => StylePropertyEditor
 });
-import "./../../../ui/kit/kit.js";
-import "./../../../ui/legacy/legacy.js";
-import * as i18n15 from "./../../../core/i18n/i18n.js";
-import * as Input from "./../../../ui/components/input/input.js";
-import * as Lit5 from "./../../../ui/lit/lit.js";
-import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import "../../../ui/legacy/legacy.js";
+import * as i18n15 from "../../../core/i18n/i18n.js";
+import * as Input from "../../../ui/components/input/input.js";
+import * as Lit5 from "../../../ui/lit/lit.js";
+import * as VisualLogging7 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/components/stylePropertyEditor.css.js
 var stylePropertyEditor_css_default = `/*
@@ -2312,7 +2344,7 @@ var stylePropertyEditor_css_default = `/*
 .row {
   padding: 0;
   color: var(--sys-color-on-surface);
-  padding-bottom: 16px;
+  padding-bottom: var(--sys-size-8);
 }
 
 .row:last-child {
@@ -2320,7 +2352,7 @@ var stylePropertyEditor_css_default = `/*
 }
 
 .property {
-  padding-bottom: 4px;
+  padding-bottom: var(--sys-size-3);
   white-space: nowrap;
 }
 
@@ -2350,12 +2382,12 @@ var stylePropertyEditor_css_default = `/*
 }
 
 .button {
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   background-color: var(--sys-color-cdt-base-container);
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
-  min-height: 24px;
+  width: var(--sys-size-11);
+  height: var(--sys-size-11);
+  min-width: var(--sys-size-11);
+  min-height: var(--sys-size-11);
   padding: 0;
   margin: 0;
   display: flex;

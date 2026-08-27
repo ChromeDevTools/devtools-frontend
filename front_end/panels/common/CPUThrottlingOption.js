@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
+export var CalibrationError = SDK.CPUThrottlingManager.CalibrationError;
+export var CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
 const UIStrings = {
     /**
      * @description Text label for a menu item indicating that no throttling is applied.
@@ -86,10 +89,6 @@ function makeCalibratedThrottlingOption(calibratedDeviceType) {
 }
 export const CalibratedLowTierMobileThrottlingOption = makeCalibratedThrottlingOption('low-tier-mobile');
 export const CalibratedMidTierMobileThrottlingOption = makeCalibratedThrottlingOption('mid-tier-mobile');
-export var CalibrationError;
-(function (CalibrationError) {
-    CalibrationError["DEVICE_TOO_WEAK"] = "DEVICE_TOO_WEAK";
-})(CalibrationError || (CalibrationError = {}));
 export function calibrationErrorToString(error) {
     if (error === CalibrationError.DEVICE_TOO_WEAK) {
         return i18nString(UIStrings.calibrationErrorDeviceTooWeak);

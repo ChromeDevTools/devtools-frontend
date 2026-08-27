@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": ".",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -45,7 +46,7 @@
   ],
   "references": [
     {
-      "path": "../../../../../tsc/front_end/ui/components/text_editor/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./text_editor-tsconfig.ref.json"

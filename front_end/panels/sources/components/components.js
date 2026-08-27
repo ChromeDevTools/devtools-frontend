@@ -10,16 +10,16 @@ __export(HeadersView_exports, {
   HeadersView: () => HeadersView,
   HeadersViewComponent: () => HeadersViewComponent
 });
-import * as Host from "./../../../core/host/host.js";
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as TextUtils from "./../../../core/text_utils/text_utils.js";
-import * as Persistence from "./../../../models/persistence/persistence.js";
-import * as Workspace from "./../../../models/workspace/workspace.js";
-import * as Buttons from "./../../../ui/components/buttons/buttons.js";
-import * as ComponentHelpers from "./../../../ui/components/helpers/helpers.js";
-import * as UI from "./../../../ui/legacy/legacy.js";
-import * as Lit from "./../../../ui/lit/lit.js";
-import * as VisualLogging from "./../../../ui/visual_logging/visual_logging.js";
+import * as Host from "../../../core/host/host.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as TextUtils from "../../../core/text_utils/text_utils.js";
+import * as Persistence from "../../../models/persistence/persistence.js";
+import * as Workspace from "../../../models/workspace/workspace.js";
+import * as Buttons from "../../../ui/components/buttons/buttons.js";
+import * as ComponentHelpers from "../../../ui/components/helpers/helpers.js";
+import * as UI from "../../../ui/legacy/legacy.js";
+import * as Lit from "../../../ui/lit/lit.js";
+import * as VisualLogging from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/sources/components/HeadersView.css.js
 var HeadersView_css_default = `/*

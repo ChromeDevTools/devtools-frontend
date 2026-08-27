@@ -7,6 +7,7 @@ var __export = (target, all) => {
 // gen/front_end/ui/legacy/components/data_grid/DataGrid.js
 var DataGrid_exports = {};
 __export(DataGrid_exports, {
+  Align: () => Align,
   CenterResizerOverBorderAdjustment: () => CenterResizerOverBorderAdjustment,
   ColumnResizePadding: () => ColumnResizePadding,
   CornerWidth: () => CornerWidth,
@@ -14,15 +15,18 @@ __export(DataGrid_exports, {
   DataGridImpl: () => DataGridImpl,
   DataGridNode: () => DataGridNode,
   DataGridWidget: () => DataGridWidget,
+  DataType: () => DataType,
+  Events: () => Events,
   Order: () => Order,
+  ResizeMethod: () => ResizeMethod,
   dataGridStyles: () => dataGrid_css_default
 });
-import * as Common from "./../../../../core/common/common.js";
-import * as Host from "./../../../../core/host/host.js";
-import * as i18n from "./../../../../core/i18n/i18n.js";
-import * as Platform2 from "./../../../../core/platform/platform.js";
-import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
-import * as UI from "./../../legacy.js";
+import * as Common from "../../../../core/common/common.js";
+import * as Host from "../../../../core/host/host.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
+import * as Platform2 from "../../../../core/platform/platform.js";
+import * as VisualLogging from "../../../visual_logging/visual_logging.js";
+import * as UI from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/data_grid/dataGrid.css.js
 var dataGrid_css_default = `/*
@@ -1799,13 +1803,40 @@ var DataGridImpl = class _DataGridImpl extends Common.ObjectWrapper.ObjectWrappe
   }
 };
 var CornerWidth = 14;
+var Events;
+(function(Events3) {
+  Events3["SELECTED_NODE"] = "SelectedNode";
+  Events3["DESELECTED_NODE"] = "DeselectedNode";
+  Events3["OPENED_NODE"] = "OpenedNode";
+  Events3["SORTING_CHANGED"] = "SortingChanged";
+  Events3["PADDING_CHANGED"] = "PaddingChanged";
+  Events3["EXPANDED_NODE"] = "ExpandedNode";
+  Events3["COLLAPSED_NODE"] = "CollapsedNode";
+})(Events || (Events = {}));
 var Order;
 (function(Order2) {
   Order2["Ascending"] = "sort-ascending";
   Order2["Descending"] = "sort-descending";
 })(Order || (Order = {}));
+var Align;
+(function(Align2) {
+  Align2["CENTER"] = "center";
+  Align2["RIGHT"] = "right";
+})(Align || (Align = {}));
+var DataType;
+(function(DataType2) {
+  DataType2["STRING"] = "String";
+  DataType2["BOOLEAN"] = "Boolean";
+  DataType2["NUMBER"] = "Number";
+})(DataType || (DataType = {}));
 var ColumnResizePadding = 30;
 var CenterResizerOverBorderAdjustment = 3;
+var ResizeMethod;
+(function(ResizeMethod2) {
+  ResizeMethod2["NEAREST"] = "nearest";
+  ResizeMethod2["FIRST"] = "first";
+  ResizeMethod2["LAST"] = "last";
+})(ResizeMethod || (ResizeMethod = {}));
 var DataGridNode = class {
   elementInternal = null;
   expandedInternal = false;
@@ -2490,12 +2521,13 @@ var DataGridWidget = class extends UI.Widget.VBox {
 // gen/front_end/ui/legacy/components/data_grid/ViewportDataGrid.js
 var ViewportDataGrid_exports = {};
 __export(ViewportDataGrid_exports, {
+  Events: () => Events2,
   ViewportDataGrid: () => ViewportDataGrid,
   ViewportDataGridNode: () => ViewportDataGridNode
 });
-import * as Common2 from "./../../../../core/common/common.js";
-import * as Platform3 from "./../../../../core/platform/platform.js";
-import * as RenderCoordinator from "./../../../components/render_coordinator/render_coordinator.js";
+import * as Common2 from "../../../../core/common/common.js";
+import * as Platform3 from "../../../../core/platform/platform.js";
+import * as RenderCoordinator from "../../../components/render_coordinator/render_coordinator.js";
 var nextId = 0;
 var ViewportDataGrid = class extends Common2.ObjectWrapper.eventMixin(DataGridImpl) {
   onScrollBound;
@@ -2746,6 +2778,10 @@ var ViewportDataGrid = class extends Common2.ObjectWrapper.eventMixin(DataGridIm
     return this.rootNode().flatChildren().filter(this.testNodeWithFilters.bind(this));
   }
 };
+var Events2;
+(function(Events3) {
+  Events3["VIEWPORT_CALCULATED"] = "ViewportCalculated";
+})(Events2 || (Events2 = {}));
 var ViewportDataGridNode = class extends DataGridNode {
   stale;
   flatNodes;
@@ -2943,7 +2979,7 @@ __export(SortableDataGrid_exports, {
   SortableDataGrid: () => SortableDataGrid,
   SortableDataGridNode: () => SortableDataGridNode
 });
-import * as Platform4 from "./../../../../core/platform/platform.js";
+import * as Platform4 from "../../../../core/platform/platform.js";
 var SortableDataGrid = class _SortableDataGrid extends ViewportDataGrid {
   sortingFunction;
   constructor(dataGridParameters) {
@@ -3111,8 +3147,8 @@ var ShowMoreDataGridNode_exports = {};
 __export(ShowMoreDataGridNode_exports, {
   ShowMoreDataGridNode: () => ShowMoreDataGridNode
 });
-import * as i18n3 from "./../../../../core/i18n/i18n.js";
-import * as UI2 from "./../../legacy.js";
+import * as i18n3 from "../../../../core/i18n/i18n.js";
+import * as UI2 from "../../legacy.js";
 var UIStrings2 = {
   /**
    * @description Shown in a table when there are too many results to show directly. The user can
@@ -3215,8 +3251,8 @@ var ShowMoreDataGridNode = class extends DataGridNode {
 };
 
 // gen/front_end/ui/legacy/components/data_grid/DataGridElement.js
-import * as Lit from "./../../../lit/lit.js";
-import * as UI3 from "./../../legacy.js";
+import * as Lit from "../../../lit/lit.js";
+import * as UI3 from "../../legacy.js";
 var DUMMY_COLUMN_ID = "dummy";
 var elementToNode = /* @__PURE__ */ new WeakMap();
 var DataGridElement = class extends UI3.UIUtils.HTMLElementWithLightDOMTemplate {

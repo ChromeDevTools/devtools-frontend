@@ -9,7 +9,7 @@ export default `/**
  * found in the LICENSE file.
  */
 .metrics {
-  padding: 8px;
+  padding: var(--sys-size-5);
   font-size: 10px;
   text-align: center;
   white-space: nowrap;
@@ -47,14 +47,14 @@ export default `/**
 .metrics .label {
   position: absolute;
   font-size: 10px;
-  left: 4px;
+  left: var(--sys-size-3);
 }
 
 .metrics .position {
   /* This border is different from the ones displayed between the box-model
   regions because it is displayed against the pane background, so needs to be
   visible in both light and dark theme. We therefore use a theme variable. */
-  border: 1px var(--sys-color-token-subtle) dotted;
+  border: var(--sys-size-1) var(--sys-color-token-subtle) dotted;
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
@@ -64,34 +64,34 @@ export default `/**
 }
 
 .metrics .margin {
-  border: 1px dashed var(--override-box-model-separator-color);
+  border: var(--sys-size-1) dashed var(--override-box-model-separator-color);
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px 6px;
+  padding: 3px var(--sys-size-4);
   margin: 3px;
   position: relative;
 }
 
 .metrics .border {
-  border: 1px solid var(--override-box-model-separator-color);
+  border: var(--sys-size-1) solid var(--override-box-model-separator-color);
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px 6px;
+  padding: 3px var(--sys-size-4);
   margin: 3px;
   position: relative;
 }
 
 .metrics .padding {
-  border: 1px dashed var(--override-box-model-separator-color);
+  border: var(--sys-size-1) dashed var(--override-box-model-separator-color);
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px 6px;
+  padding: 3px var(--sys-size-4);
   margin: 3px;
   position: relative;
   min-width: 120px;
@@ -99,14 +99,14 @@ export default `/**
 
 .metrics .content {
   position: static;
-  border: 1px solid var(--override-box-model-separator-color);
+  border: var(--sys-size-1) solid var(--override-box-model-separator-color);
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
   vertical-align: middle;
   padding: 3px;
   margin: 3px;
-  min-width: 80px;
+  min-width: var(--sys-size-19);
   overflow: visible;
 }
 

@@ -4,6 +4,10 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
+export var Events;
+(function (Events) {
+    Events["CHANGED"] = "Changed";
+})(Events || (Events = {}));
 /**
  * Wrapper around a plain {@link Common.Settings.Setting} for AI features whose availability
  * can change dynamically over the lifetime of a DevTools session (e.g., due to changes in

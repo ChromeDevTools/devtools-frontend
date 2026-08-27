@@ -171,6 +171,11 @@ export class ComputedStyleModel extends Common.ObjectWrapper.ObjectWrapper {
         return result;
     }
 }
+export var Events;
+(function (Events) {
+    Events["CSS_MODEL_CHANGED"] = "CSSModelChanged";
+    Events["COMPUTED_STYLE_CHANGED"] = "ComputedStyleChanged";
+})(Events || (Events = {}));
 export class ComputedStyle {
     node;
     computedStyle;

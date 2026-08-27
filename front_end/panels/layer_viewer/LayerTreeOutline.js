@@ -236,4 +236,8 @@ export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Widget.
         this.layerViewHost.showContextMenu(contextMenu, selection);
     }
 }
+export var Events;
+(function (Events) {
+    Events["PAINT_PROFILER_REQUESTED"] = "PaintProfilerRequested";
+})(Events || (Events = {}));
 //# sourceMappingURL=LayerTreeOutline.js.map

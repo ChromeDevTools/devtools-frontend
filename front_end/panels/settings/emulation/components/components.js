@@ -12,15 +12,15 @@ __export(UserAgentClientHintsForm_exports, {
   ClientHintsSubmitEvent: () => ClientHintsSubmitEvent,
   UserAgentClientHintsForm: () => UserAgentClientHintsForm
 });
-import "./../../../../ui/kit/kit.js";
-import "./../../../../ui/legacy/legacy.js";
-import * as i18n from "./../../../../core/i18n/i18n.js";
-import * as Platform from "./../../../../core/platform/platform.js";
-import * as Buttons from "./../../../../ui/components/buttons/buttons.js";
-import * as Input from "./../../../../ui/components/input/input.js";
-import * as Lit from "./../../../../ui/lit/lit.js";
-import * as VisualLogging from "./../../../../ui/visual_logging/visual_logging.js";
-import * as EmulationUtils from "./../utils/utils.js";
+import "../../../../ui/kit/kit.js";
+import "../../../../ui/legacy/legacy.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
+import * as Platform from "../../../../core/platform/platform.js";
+import * as Buttons from "../../../../ui/components/buttons/buttons.js";
+import * as Input from "../../../../ui/components/input/input.js";
+import * as Lit from "../../../../ui/lit/lit.js";
+import * as VisualLogging from "../../../../ui/visual_logging/visual_logging.js";
+import * as EmulationUtils from "../utils/utils.js";
 
 // gen/front_end/panels/settings/emulation/components/userAgentClientHintsForm.css.js
 var userAgentClientHintsForm_css_default = `/*

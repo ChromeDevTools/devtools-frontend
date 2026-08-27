@@ -42,7 +42,7 @@ ul {
 }
 
 .devtools-link.link-margin, .devtools-link.link-margin:hover {
-  margin: 8px;
+  margin: var(--sys-size-5);
   display: inline-block;
 }
 

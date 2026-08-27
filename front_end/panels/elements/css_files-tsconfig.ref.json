@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "accessibilityTreeView.css.js",
+    "classesPaneWidget.css.js",
+    "computedStyleWidget.css.js",
+    "cssValueTraceView.css.js",
+    "elementStatePaneWidget.css.js",
+    "elementsPanel.css.js",
+    "elementsTreeOutline.css.js",
+    "layersWidget.css.js",
+    "layoutPane.css.js",
+    "metricsSidebarPane.css.js",
+    "platformFontsWidget.css.js",
+    "propertiesWidget.css.js",
+    "stylePropertiesTreeOutline.css.js",
+    "stylesSidebarPane.css.js"
+  ]
+}

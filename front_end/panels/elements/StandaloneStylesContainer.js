@@ -24,6 +24,10 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     </div>
   `, target);
 };
+export var Events;
+(function (Events) {
+    Events["STYLES_UPDATE_COMPLETED"] = "StylesUpdateCompleted";
+})(Events || (Events = {}));
 export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
     activeCSSAngle = null;
     isEditingStyle = false;

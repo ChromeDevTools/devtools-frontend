@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "outDir": ".",
+    "rootDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "package/addon/runmode/runmode-standalone.d.mts",
+    "package/mode/css/css.d.mts",
+    "package/mode/javascript/javascript.d.mts",
+    "package/mode/xml/xml.d.mts"
+  ],
+  "references": [
+
+  ]
+}

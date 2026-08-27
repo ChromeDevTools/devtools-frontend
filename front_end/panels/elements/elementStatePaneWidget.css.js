@@ -11,22 +11,22 @@ export default `/**
 @scope to (devtools-widget > *) {
   .styles-element-state-pane {
     overflow: hidden;
-    padding-left: 2px;
+    padding-left: var(--sys-size-2);
     background-color: var(--sys-color-cdt-base-container);
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     margin-top: 0;
-    padding-bottom: 2px;
+    padding-bottom: var(--sys-size-2);
   }
 
   .styles-element-state-pane > .page-state-checkbox {
-    margin-block: 6px;
+    margin-block: var(--sys-size-4);
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: var(--sys-size-2);
   }
 
   .styles-element-state-pane .section-header {
-    margin: 8px 4px 6px;
+    margin: var(--sys-size-5) var(--sys-size-3) var(--sys-size-4);
     color: var(--color-text-secondary);
   }
 
@@ -41,14 +41,14 @@ export default `/**
 
   .pseudo-states-container {
     display: grid;
-    column-gap: 12px;
+    column-gap: var(--sys-size-6);
     grid-template-columns: repeat(2, 1fr);
     grid-auto-flow: row;
   }
 
   .pseudo-states-container.specific-pseudo-states {
     grid-template-columns: repeat(2, 1fr);
-    margin-bottom: 4px;
+    margin-bottom: var(--sys-size-3);
   }
 
   .force-specific-element-header:focus {

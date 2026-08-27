@@ -7,14 +7,15 @@ var __export = (target, all) => {
 // gen/front_end/ui/legacy/components/utils/ImagePreview.js
 var ImagePreview_exports = {};
 __export(ImagePreview_exports, {
+  Align: () => Align,
   ImagePreview: () => ImagePreview,
   loadPrecomputedFeatures: () => loadPrecomputedFeatures
 });
-import * as Common from "./../../../../core/common/common.js";
-import * as Host from "./../../../../core/host/host.js";
-import * as i18n from "./../../../../core/i18n/i18n.js";
-import * as Platform from "./../../../../core/platform/platform.js";
-import * as SDK from "./../../../../core/sdk/sdk.js";
+import * as Common from "../../../../core/common/common.js";
+import * as Host from "../../../../core/host/host.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
+import * as Platform from "../../../../core/platform/platform.js";
+import * as SDK from "../../../../core/sdk/sdk.js";
 
 // gen/front_end/ui/legacy/components/utils/imagePreview.css.js
 var imagePreview_css_default = `/*
@@ -30,7 +31,7 @@ var imagePreview_css_default = `/*
 }
 
 .image-preview-container img {
-  margin: 6px 0;
+  margin: var(--sys-size-4) 0;
   width: auto;
   max-height: 100px;
   background-image: var(--image-file-checker);
@@ -131,6 +132,11 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/utils/ImagePreview.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
+var Align;
+(function(Align2) {
+  Align2["START"] = "start";
+  Align2["CENTER"] = "center";
+})(Align || (Align = {}));
 function isImageResource(resource) {
   return resource !== null && resource.resourceType() === Common.ResourceType.resourceTypes.Image;
 }
@@ -249,14 +255,14 @@ __export(JSPresentationUtils_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
   StackTracePreviewContent: () => StackTracePreviewContent
 });
-import * as i18n5 from "./../../../../core/i18n/i18n.js";
-import * as Root from "./../../../../core/root/root.js";
-import * as SDK3 from "./../../../../core/sdk/sdk.js";
-import * as StackTrace from "./../../../../models/stack_trace/stack_trace.js";
-import * as Workspace3 from "./../../../../models/workspace/workspace.js";
-import { Directives as Directives2, html as html2, nothing, render as render2 } from "./../../../lit/lit.js";
-import * as VisualLogging2 from "./../../../visual_logging/visual_logging.js";
-import * as UI2 from "./../../legacy.js";
+import * as i18n5 from "../../../../core/i18n/i18n.js";
+import * as Root from "../../../../core/root/root.js";
+import * as SDK3 from "../../../../core/sdk/sdk.js";
+import * as StackTrace from "../../../../models/stack_trace/stack_trace.js";
+import * as Workspace3 from "../../../../models/workspace/workspace.js";
+import { Directives as Directives2, html as html2, nothing, render as render2 } from "../../../lit/lit.js";
+import * as VisualLogging2 from "../../../visual_logging/visual_logging.js";
+import * as UI2 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/utils/jsUtils.css.js
 var jsUtils_css_default = `/*
@@ -266,7 +272,7 @@ var jsUtils_css_default = `/*
  */
 
 .stack-preview-async-description {
-  padding: 3px 0 1px;
+  padding: 3px 0 var(--sys-size-1);
   font-weight: bold;
 }
 
@@ -286,8 +292,8 @@ var jsUtils_css_default = `/*
     display: var(--override-display-stack-preview-tbody, table-row-group);
 
     & > tr {
-      height: 16px;
-      line-height: 16px;
+      height: var(--sys-size-8);
+      line-height: var(--sys-size-8);
 
       &:has(td.link > .ignore-list-link) {
         opacity: 60%;
@@ -320,7 +326,7 @@ var jsUtils_css_default = `/*
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding-inline: 2px;
+    padding-inline: var(--sys-size-2);
 
     &.link {
       overflow: visible;
@@ -357,20 +363,20 @@ var jsUtils_css_default = `/*
 
   .arrow-icon-button {
     cursor: pointer;
-    padding: 1px 0;
+    padding: var(--sys-size-1) 0;
     border: none;
     background: none;
-    margin-left: -4px;
-    margin-right: -2px;
+    margin-left: calc(-1 * var(--sys-size-3));
+    margin-right: calc(-1 * var(--sys-size-2));
   }
 
   .arrow-icon {
     display: inline-block;
     mask-image: var(--image-file-triangle-right);
     background-color: var(--icon-default);
-    margin-top: 2px;
-    height: 14px;
-    width: 14px;
+    margin-top: var(--sys-size-2);
+    height: var(--sys-size-7);
+    width: var(--sys-size-7);
     transition: transform 200ms;
   }
 
@@ -398,24 +404,26 @@ insert their text through css rather than put the text in the DOM. */
 var Linkifier_exports = {};
 __export(Linkifier_exports, {
   ContentProviderContextMenuProvider: () => ContentProviderContextMenuProvider,
+  Events: () => Events,
   LinkContextMenuProvider: () => LinkContextMenuProvider,
+  LinkDecorator: () => LinkDecorator,
   LinkHandlerSettingUI: () => LinkHandlerSettingUI,
   Linkifier: () => Linkifier,
   ScriptLocationLink: () => ScriptLocationLink
 });
-import * as Common2 from "./../../../../core/common/common.js";
-import * as Host2 from "./../../../../core/host/host.js";
-import * as i18n3 from "./../../../../core/i18n/i18n.js";
-import * as Platform2 from "./../../../../core/platform/platform.js";
-import * as SDK2 from "./../../../../core/sdk/sdk.js";
-import * as TextUtils from "./../../../../core/text_utils/text_utils.js";
-import * as Bindings from "./../../../../models/bindings/bindings.js";
-import * as Breakpoints from "./../../../../models/breakpoints/breakpoints.js";
-import * as Workspace from "./../../../../models/workspace/workspace.js";
-import * as UIHelpers from "./../../../helpers/helpers.js";
-import { Directives, html, render } from "./../../../lit/lit.js";
-import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
-import * as UI from "./../../legacy.js";
+import * as Common2 from "../../../../core/common/common.js";
+import * as Host2 from "../../../../core/host/host.js";
+import * as i18n3 from "../../../../core/i18n/i18n.js";
+import * as Platform2 from "../../../../core/platform/platform.js";
+import * as SDK2 from "../../../../core/sdk/sdk.js";
+import * as TextUtils from "../../../../core/text_utils/text_utils.js";
+import * as Bindings from "../../../../models/bindings/bindings.js";
+import * as Breakpoints from "../../../../models/breakpoints/breakpoints.js";
+import * as Workspace from "../../../../models/workspace/workspace.js";
+import * as UIHelpers from "../../../helpers/helpers.js";
+import { Directives, html, render } from "../../../lit/lit.js";
+import * as VisualLogging from "../../../visual_logging/visual_logging.js";
+import * as UI from "../../legacy.js";
 var { ref, ifDefined, classMap } = Directives;
 var UIStrings2 = {
   /**
@@ -1215,6 +1223,13 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     return result;
   }
 };
+var LinkDecorator;
+(function(LinkDecorator2) {
+  let Events2;
+  (function(Events3) {
+    Events3["LINK_ICON_CHANGED"] = "LinkIconChanged";
+  })(Events2 = LinkDecorator2.Events || (LinkDecorator2.Events = {}));
+})(LinkDecorator || (LinkDecorator = {}));
 var LinkContextMenuProvider = class {
   appendApplicableItems(_event, contextMenu, target) {
     let targetNode = target;
@@ -1318,6 +1333,10 @@ var ContentProviderContextMenuProvider = class {
     }
   }
 };
+var Events;
+(function(Events2) {
+  Events2["LIVE_LOCATION_UPDATED"] = "liveLocationUpdated";
+})(Events || (Events = {}));
 var DEFAULT_SCRIPT_LOCATION_VIEW = (input, _output, target) => {
   render(html`${input.linkifier.linkifyScriptLocation(input.target ?? null, input.scriptId ?? null, input.sourceURL, input.lineNumber, input.options)}`, target);
 };
@@ -1561,8 +1580,8 @@ var Reload_exports = {};
 __export(Reload_exports, {
   reload: () => reload
 });
-import * as Host3 from "./../../../../core/host/host.js";
-import * as UI3 from "./../../legacy.js";
+import * as Host3 from "../../../../core/host/host.js";
+import * as UI3 from "../../legacy.js";
 function reload() {
   if (UI3.DockController.DockController.instance().canDock() && UI3.DockController.DockController.instance().dockSide() === "undocked") {
     Host3.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {
@@ -1576,8 +1595,8 @@ var TargetDetachedDialog_exports = {};
 __export(TargetDetachedDialog_exports, {
   TargetDetachedDialog: () => TargetDetachedDialog
 });
-import * as SDK4 from "./../../../../core/sdk/sdk.js";
-import * as UI4 from "./../../legacy.js";
+import * as SDK4 from "../../../../core/sdk/sdk.js";
+import * as UI4 from "../../legacy.js";
 var TargetDetachedDialog = class _TargetDetachedDialog extends SDK4.SDKModel.SDKModel {
   static hideCrashedDialog;
   constructor(target) {

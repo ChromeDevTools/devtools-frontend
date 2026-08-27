@@ -14,6 +14,11 @@ var WorkItem = class {
     this.handler = handler;
   }
 };
+var ACTION;
+(function(ACTION2) {
+  ACTION2["READ"] = "read";
+  ACTION2["WRITE"] = "write";
+})(ACTION || (ACTION = {}));
 var RenderCoordinatorQueueEmptyEvent = class _RenderCoordinatorQueueEmptyEvent extends Event {
   static eventName = "renderqueueempty";
   constructor() {

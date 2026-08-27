@@ -205,6 +205,16 @@ export class Dialog extends Common.ObjectWrapper.eventMixin(GlassPane) {
     }
     static dialogs = [];
 }
+export var Events;
+(function (Events) {
+    Events["HIDDEN"] = "hidden";
+})(Events || (Events = {}));
+export var OutsideTabIndexBehavior;
+(function (OutsideTabIndexBehavior) {
+    OutsideTabIndexBehavior["DISABLE_ALL_OUTSIDE_TAB_INDEX"] = "DisableAllTabIndex";
+    OutsideTabIndexBehavior["PRESERVE_MAIN_VIEW_TAB_INDEX"] = "PreserveMainViewTabIndex";
+    OutsideTabIndexBehavior["PRESERVE_TAB_INDEX"] = "PreserveTabIndex";
+})(OutsideTabIndexBehavior || (OutsideTabIndexBehavior = {}));
 export class DialogWidget extends Common.ObjectWrapper.eventMixin(Widget) {
     #open = false;
     #jslogContext = '';

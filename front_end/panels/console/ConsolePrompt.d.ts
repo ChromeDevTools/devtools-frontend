@@ -1,15 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
-declare const ConsolePrompt_base: (new (...args: any[]) => {
-    __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
-    addEventListener<T extends Events.TEXT_CHANGED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
-    once<T extends Events.TEXT_CHANGED>(eventType: T): Promise<EventTypes[T]>;
-    removeEventListener<T extends Events.TEXT_CHANGED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
-    hasEventListeners(eventType: Events.TEXT_CHANGED): boolean;
-    dispatchEventToListeners<T extends Events.TEXT_CHANGED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
-    dispatchDOMEvent?(event: Event): void;
-}) & typeof UI.Widget.Widget;
+declare const ConsolePrompt_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.Widget;
 export declare class ConsolePrompt extends ConsolePrompt_base {
     #private;
     private addCompletionsFromHistory;

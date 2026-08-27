@@ -391,6 +391,10 @@ export class ContrastDetails extends Common.ObjectWrapper.ObjectWrapper {
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
     }
 }
+export var Events;
+(function (Events) {
+    Events["BACKGROUND_COLOR_PICKER_WILL_BE_TOGGLED"] = "BackgroundColorPickerWillBeToggled";
+})(Events || (Events = {}));
 export class Swatch {
     swatchElement;
     swatchInnerElement;

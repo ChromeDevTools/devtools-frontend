@@ -15,14 +15,14 @@ export default `/*
 
 .tree-outline > ol {
   padding-bottom: 5px;
-  border-bottom: solid 1px var(--sys-color-divider);
+  border-bottom: solid var(--sys-size-1) var(--sys-color-divider);
 }
 
 .tree-outline > .parent {
   user-select: none;
   font-weight: bold;
   color: var(--sys-color-on-surface);
-  margin-top: -1px;
+  margin-top: calc(-1 * var(--sys-size-1));
   display: flex;
   align-items: center;
   height: 26px;
@@ -30,7 +30,7 @@ export default `/*
 
 .tree-outline li {
   padding-left: 5px;
-  line-height: 20px;
+  line-height: var(--sys-size-9);
 }
 
 .tree-outline li:not(.parent) {
@@ -60,7 +60,7 @@ export default `/*
   margin-right: 1em;
   white-space: pre-wrap;
   word-break: break-all;
-  margin-top: 1px;
+  margin-top: var(--sys-size-1);
 }
 
 .tree-outline .header-toggle {
@@ -88,7 +88,7 @@ export default `/*
   display: block;
   word-break: normal;
   overflow-wrap: anywhere;
-  margin-left: 20px;
+  margin-left: var(--sys-size-9);
 }
 
 .tree-outline .error-field {
@@ -96,7 +96,7 @@ export default `/*
 }
 
 .prompt-icon {
-  margin-top: 2px;
+  margin-top: var(--sys-size-2);
 }
 
 /*# sourceURL=${import.meta.resolve('./signedExchangeInfoTree.css')} */`;

@@ -2664,6 +2664,15 @@ export class TimelinePanel extends Common.ObjectWrapper.eventMixin(UI.Panel.Pane
         return trace;
     }
 }
+export var State;
+(function (State) {
+    State["IDLE"] = "Idle";
+    State["START_PENDING"] = "StartPending";
+    State["RECORDING"] = "Recording";
+    State["STOP_PENDING"] = "StopPending";
+    State["LOADING"] = "Loading";
+    State["RECORDING_FAILED"] = "RecordingFailed";
+})(State || (State = {}));
 /** Define row and header height, should be in sync with styles for timeline graphs. **/
 export const rowHeight = 18;
 export const headerHeight = 20;
@@ -2785,6 +2794,11 @@ export class SelectedInsight {
         this.insight = insight;
     }
 }
+export var Events;
+(function (Events) {
+    Events["IS_VIEWING_TRACE"] = "IsViewingTrace";
+    Events["RECORDING_COMPLETED"] = "RecordingCompleted";
+})(Events || (Events = {}));
 /**
  * Calculates the window to auto-zoom into when a trace is loaded.
  * We only auto-zoom to the main thread activity if there is no active breadcrumb,

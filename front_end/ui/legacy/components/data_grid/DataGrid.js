@@ -1488,6 +1488,16 @@ export class DataGridImpl extends Common.ObjectWrapper.ObjectWrapper {
 }
 /** Keep in sync with .data-grid col.corner style rule. **/
 export const CornerWidth = 14;
+export var Events;
+(function (Events) {
+    Events["SELECTED_NODE"] = "SelectedNode";
+    Events["DESELECTED_NODE"] = "DeselectedNode";
+    Events["OPENED_NODE"] = "OpenedNode";
+    Events["SORTING_CHANGED"] = "SortingChanged";
+    Events["PADDING_CHANGED"] = "PaddingChanged";
+    Events["EXPANDED_NODE"] = "ExpandedNode";
+    Events["COLLAPSED_NODE"] = "CollapsedNode";
+})(Events || (Events = {}));
 export var Order;
 (function (Order) {
     /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
@@ -1495,8 +1505,25 @@ export var Order;
     Order["Descending"] = "sort-descending";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(Order || (Order = {}));
+export var Align;
+(function (Align) {
+    Align["CENTER"] = "center";
+    Align["RIGHT"] = "right";
+})(Align || (Align = {}));
+export var DataType;
+(function (DataType) {
+    DataType["STRING"] = "String";
+    DataType["BOOLEAN"] = "Boolean";
+    DataType["NUMBER"] = "Number";
+})(DataType || (DataType = {}));
 export const ColumnResizePadding = 30;
 export const CenterResizerOverBorderAdjustment = 3;
+export var ResizeMethod;
+(function (ResizeMethod) {
+    ResizeMethod["NEAREST"] = "nearest";
+    ResizeMethod["FIRST"] = "first";
+    ResizeMethod["LAST"] = "last";
+})(ResizeMethod || (ResizeMethod = {}));
 export class DataGridNode {
     elementInternal = null;
     expandedInternal = false;

@@ -497,6 +497,10 @@ export class ToolbarItem extends Common.ObjectWrapper.ObjectWrapper {
         this.element.style.minWidth = width + 'px';
     }
 }
+export var ToolbarItemWithCompactLayoutEvents;
+(function (ToolbarItemWithCompactLayoutEvents) {
+    ToolbarItemWithCompactLayoutEvents["COMPACT_LAYOUT_UPDATED"] = "CompactLayoutUpdated";
+})(ToolbarItemWithCompactLayoutEvents || (ToolbarItemWithCompactLayoutEvents = {}));
 export class ToolbarItemWithCompactLayout extends ToolbarItem {
     setCompactLayout(enable) {
         this.dispatchEventToListeners("CompactLayoutUpdated" /* ToolbarItemWithCompactLayoutEvents.COMPACT_LAYOUT_UPDATED */, enable);
@@ -613,6 +617,12 @@ export class ToolbarButton extends ToolbarItem {
         event.consume();
     }
 }
+(function (ToolbarButton) {
+    let Events;
+    (function (Events) {
+        Events["CLICK"] = "Click";
+    })(Events = ToolbarButton.Events || (ToolbarButton.Events = {}));
+})(ToolbarButton || (ToolbarButton = {}));
 export class ToolbarInput extends ToolbarItem {
     prompt;
     proxyElement;
@@ -834,6 +844,13 @@ export class ToolbarInputElement extends HTMLElement {
     }
 }
 customElements.define('devtools-toolbar-input', ToolbarInputElement);
+(function (ToolbarInput) {
+    let Event;
+    (function (Event) {
+        Event["TEXT_CHANGED"] = "TextChanged";
+        Event["ENTER_PRESSED"] = "EnterPressed";
+    })(Event = ToolbarInput.Event || (ToolbarInput.Event = {}));
+})(ToolbarInput || (ToolbarInput = {}));
 export class ToolbarToggle extends ToolbarButton {
     toggledGlyph;
     constructor(title, glyph, toggledGlyph, jslogContext, toggleOnClick) {
@@ -1202,4 +1219,11 @@ export function registerToolbarItem(registration) {
 function getRegisteredToolbarItems() {
     return registeredToolbarItems.filter(item => Root.Runtime.Runtime.isDescriptorEnabled({ experiment: item.experiment, condition: item.condition }));
 }
+export var ToolbarItemLocation;
+(function (ToolbarItemLocation) {
+    ToolbarItemLocation["FILES_NAVIGATION_TOOLBAR"] = "files-navigator-toolbar";
+    ToolbarItemLocation["MAIN_TOOLBAR_RIGHT"] = "main-toolbar-right";
+    ToolbarItemLocation["MAIN_TOOLBAR_LEFT"] = "main-toolbar-left";
+    ToolbarItemLocation["STYLES_SIDEBARPANE_TOOLBAR"] = "styles-sidebarpane-toolbar";
+})(ToolbarItemLocation || (ToolbarItemLocation = {}));
 //# sourceMappingURL=Toolbar.js.map

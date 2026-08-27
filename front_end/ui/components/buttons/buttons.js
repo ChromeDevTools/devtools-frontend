@@ -7,11 +7,14 @@ var __export = (target, all) => {
 // gen/front_end/ui/components/buttons/Button.js
 var Button_exports = {};
 __export(Button_exports, {
-  Button: () => Button
+  Button: () => Button,
+  Size: () => Size,
+  ToggleType: () => ToggleType,
+  Variant: () => Variant
 });
-import "./../../kit/kit.js";
-import * as Lit from "./../../lit/lit.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
+import "../../kit/kit.js";
+import * as Lit from "../../lit/lit.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/buttons/button.css.js
 var button_css_default = `/*
@@ -379,6 +382,29 @@ button {
 
 // gen/front_end/ui/components/buttons/Button.js
 var { html, Directives: { ifDefined, ref, classMap } } = Lit;
+var Variant;
+(function(Variant2) {
+  Variant2["PRIMARY"] = "primary";
+  Variant2["TONAL"] = "tonal";
+  Variant2["OUTLINED"] = "outlined";
+  Variant2["TEXT"] = "text";
+  Variant2["TOOLBAR"] = "toolbar";
+  Variant2["PRIMARY_TOOLBAR"] = "primary_toolbar";
+  Variant2["ICON"] = "icon";
+  Variant2["ICON_TOGGLE"] = "icon_toggle";
+  Variant2["ADORNER_ICON"] = "adorner_icon";
+})(Variant || (Variant = {}));
+var Size;
+(function(Size2) {
+  Size2["MICRO"] = "MICRO";
+  Size2["SMALL"] = "SMALL";
+  Size2["REGULAR"] = "REGULAR";
+})(Size || (Size = {}));
+var ToggleType;
+(function(ToggleType2) {
+  ToggleType2["PRIMARY"] = "primary-toggle";
+  ToggleType2["RED"] = "red-toggle";
+})(ToggleType || (ToggleType = {}));
 var Button = class extends HTMLElement {
   static formAssociated = true;
   #shadow = this.attachShadow({ mode: "open", delegatesFocus: true });
@@ -686,9 +712,9 @@ __export(FloatingButton_exports, {
   FloatingButton: () => FloatingButton,
   create: () => create
 });
-import "./../../kit/kit.js";
-import * as VisualLogging2 from "./../../visual_logging/visual_logging.js";
-import * as Lit2 from "./../../lit/lit.js";
+import "../../kit/kit.js";
+import * as VisualLogging2 from "../../visual_logging/visual_logging.js";
+import * as Lit2 from "../../lit/lit.js";
 
 // gen/front_end/ui/components/buttons/floatingButton.css.js
 var floatingButton_css_default = `/*

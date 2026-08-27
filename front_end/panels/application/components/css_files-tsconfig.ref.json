@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "adsView.css.js",
+    "backForwardCacheView.css.js",
+    "bounceTrackingMitigationsView.css.js",
+    "endpointsGrid.css.js",
+    "permissionsPolicySection.css.js",
+    "protocolHandlersView.css.js",
+    "reportsGrid.css.js",
+    "serviceWorkerRouterView.css.js",
+    "storageMetadataView.css.js",
+    "trustTokensView.css.js"
+  ]
+}

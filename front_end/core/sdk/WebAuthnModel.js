@@ -2,6 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { SDKModel } from './SDKModel.js';
+export var Events;
+(function (Events) {
+    Events["CREDENTIAL_ADDED"] = "CredentialAdded";
+    Events["CREDENTIAL_ASSERTED"] = "CredentialAsserted";
+    Events["CREDENTIAL_DELETED"] = "CredentialDeleted";
+    Events["CREDENTIAL_UPDATED"] = "CredentialUpdated";
+})(Events || (Events = {}));
 export class WebAuthnModel extends SDKModel {
     #agent;
     constructor(target) {

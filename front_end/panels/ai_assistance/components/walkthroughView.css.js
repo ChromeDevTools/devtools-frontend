@@ -24,14 +24,14 @@ export default `/*
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 8px;
+    padding: 0 var(--sys-size-5);
     height: 35px;
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     flex-shrink: 0;
   }
 
   .walkthrough-title {
-    font-size: 11px;
+    font-size: var(--sys-typescale-body5-size);
     font-weight: 500;
     color: var(--sys-color-on-surface);
   }
@@ -88,7 +88,7 @@ export default `/*
 
   .step-content {
     flex: 1;
-    font-size: 11px;
+    font-size: var(--sys-typescale-body5-size);
     color: var(--sys-color-on-surface);
     line-height: 1.4;
   }
@@ -99,7 +99,7 @@ export default `/*
     justify-content: center;
     flex: 1;
     color: var(--sys-color-on-surface-subtle);
-    font-size: 11px;
+    font-size: var(--sys-typescale-body5-size);
   }
 
   .inline-wrapper {
@@ -204,7 +204,7 @@ export default `/*
 
   .walkthrough-inline .steps-container {
     padding: var(--sys-size-6);
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
     background-color: transparent;
   }
 

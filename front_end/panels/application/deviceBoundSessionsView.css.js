@@ -9,7 +9,7 @@ export default `/*
  * found in the LICENSE file.
  */
 .device-bound-session-grid-wrapper {
-  margin: 0 20px 5px;
+  margin: 0 var(--sys-size-9) 5px;
 }
 
 .device-bound-session-grid-wrapper devtools-data-grid {
@@ -19,11 +19,11 @@ export default `/*
 .device-bound-session-view-wrapper, .device-bound-session-sidebar {
   overflow-y: auto;
   scroll-behavior: smooth;
-  padding-bottom: 20px;
+  padding-bottom: var(--sys-size-9);
 }
 
 .device-bound-session-no-events-wrapper, .device-bound-session-no-event-details {
-  padding: 0 20px;
+  padding: 0 var(--sys-size-9);
 }
 
 .device-bound-sessions-toolbar {

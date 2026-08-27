@@ -4,7 +4,7 @@ import type * as CodeMirror from '../../third_party/codemirror.next/codemirror.n
 import type { CSSMatchedStyles, CSSValueSource, CSSVariableValue } from './CSSMatchedStyles.js';
 import { type CSSWideKeyword } from './CSSMetadata.js';
 import type { CSSProperty } from './CSSProperty.js';
-import { type BottomUpTreeMatching, type Match } from './CSSPropertyParser.js';
+import { type BottomUpTreeMatching, type Match, type MatcherClass } from './CSSPropertyParser.js';
 import type { CSSStyleDeclaration } from './CSSStyleDeclaration.js';
 export declare class BaseVariableMatch implements Match {
     readonly text: string;
@@ -17,14 +17,8 @@ export declare class BaseVariableMatch implements Match {
     computedText(): string | null;
     fallbackValue(): string | null;
 }
-declare const BaseVariableMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<BaseVariableMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): BaseVariableMatch | null;
-    };
-};
-export declare class BaseVariableMatcher extends BaseVariableMatcher_base {
+declare const BaseVariableMatcherBase: MatcherClass<BaseVariableMatch>;
+export declare class BaseVariableMatcher extends BaseVariableMatcherBase {
     #private;
     constructor(computedTextCallback: (match: BaseVariableMatch, matching: BottomUpTreeMatching) => string | null);
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): BaseVariableMatch | null;
@@ -35,14 +29,8 @@ export declare class VariableMatch extends BaseVariableMatch {
     constructor(text: string, node: CodeMirror.SyntaxNode, name: string, fallback: CodeMirror.SyntaxNode[] | undefined, matching: BottomUpTreeMatching, matchedStyles: CSSMatchedStyles, style: CSSStyleDeclaration);
     resolveVariable(): CSSVariableValue | null;
 }
-declare const VariableMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<VariableMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): VariableMatch | null;
-    };
-};
-export declare class VariableMatcher extends VariableMatcher_base {
+declare const VariableMatcherBase: MatcherClass<VariableMatch>;
+export declare class VariableMatcher extends VariableMatcherBase {
     readonly matchedStyles: CSSMatchedStyles;
     readonly style: CSSStyleDeclaration;
     constructor(matchedStyles: CSSMatchedStyles, style: CSSStyleDeclaration);
@@ -56,14 +44,8 @@ export declare class VariableNameMatch implements Match {
     constructor(node: CodeMirror.SyntaxNode, text: string, matchedStyles: CSSMatchedStyles, style: CSSStyleDeclaration);
     resolveVariable(): CSSVariableValue | null;
 }
-declare const VariableNameMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<VariableNameMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): VariableNameMatch | null;
-    };
-};
-export declare class VariableNameMatcher extends VariableNameMatcher_base {
+declare const VariableNameMatcherBase: MatcherClass<VariableNameMatch>;
+export declare class VariableNameMatcher extends VariableNameMatcherBase {
     readonly matchedStyles: CSSMatchedStyles;
     readonly style: CSSStyleDeclaration;
     constructor(matchedStyles: CSSMatchedStyles, style: CSSStyleDeclaration);
@@ -107,14 +89,8 @@ export declare function localEvalCSS(value: string, type: string): string | null
 export declare function isValidCSSType(type: string): boolean;
 export declare function defaultValueForCSSType(type: string | null): string | null;
 export declare const RAW_STRING_TYPE = "raw-string";
-declare const AttributeMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<AttributeMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): AttributeMatch | null;
-    };
-};
-export declare class AttributeMatcher extends AttributeMatcher_base {
+declare const AttributeMatcherBase: MatcherClass<AttributeMatch>;
+export declare class AttributeMatcher extends AttributeMatcherBase {
     private readonly matchedStyles;
     private readonly style;
     private readonly computedTextCallback?;
@@ -126,14 +102,8 @@ export declare class BinOpMatch implements Match {
     readonly node: CodeMirror.SyntaxNode;
     constructor(text: string, node: CodeMirror.SyntaxNode);
 }
-declare const BinOpMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<BinOpMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): BinOpMatch | null;
-    };
-};
-export declare class BinOpMatcher extends BinOpMatcher_base {
+declare const BinOpMatcherBase: MatcherClass<BinOpMatch>;
+export declare class BinOpMatcher extends BinOpMatcherBase {
     accepts(): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): BinOpMatch | null;
 }
@@ -144,14 +114,8 @@ export declare class TextMatch implements Match {
     constructor(text: string, node: CodeMirror.SyntaxNode);
     render(): Node[];
 }
-declare const TextMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<TextMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): TextMatch | null;
-    };
-};
-export declare class TextMatcher extends TextMatcher_base {
+declare const TextMatcherBase: MatcherClass<TextMatch>;
+export declare class TextMatcher extends TextMatcherBase {
     accepts(): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): TextMatch | null;
 }
@@ -161,14 +125,8 @@ export declare class AngleMatch implements Match {
     constructor(text: string, node: CodeMirror.SyntaxNode);
     computedText(): string;
 }
-declare const AngleMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<AngleMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): AngleMatch | null;
-    };
-};
-export declare class AngleMatcher extends AngleMatcher_base {
+declare const AngleMatcherBase: MatcherClass<AngleMatch>;
+export declare class AngleMatcher extends AngleMatcherBase {
     accepts(propertyName: string): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): AngleMatch | null;
 }
@@ -180,14 +138,8 @@ export declare class ColorMixMatch implements Match {
     readonly color2: CodeMirror.SyntaxNode[];
     constructor(text: string, node: CodeMirror.SyntaxNode, space: CodeMirror.SyntaxNode[], color1: CodeMirror.SyntaxNode[], color2: CodeMirror.SyntaxNode[]);
 }
-declare const ColorMixMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<ColorMixMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): ColorMixMatch | null;
-    };
-};
-export declare class ColorMixMatcher extends ColorMixMatcher_base {
+declare const ColorMixMatcherBase: MatcherClass<ColorMixMatch>;
+export declare class ColorMixMatcher extends ColorMixMatcherBase {
     accepts(propertyName: string): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): ColorMixMatch | null;
 }
@@ -197,14 +149,8 @@ export declare class ContrastColorMatch implements Match {
     readonly color: CodeMirror.SyntaxNode[];
     constructor(text: string, node: CodeMirror.SyntaxNode, color: CodeMirror.SyntaxNode[]);
 }
-declare const ContrastColorMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<ContrastColorMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): ContrastColorMatch | null;
-    };
-};
-export declare class ContrastColorMatcher extends ContrastColorMatcher_base {
+declare const ContrastColorMatcherBase: MatcherClass<ContrastColorMatch>;
+export declare class ContrastColorMatcher extends ContrastColorMatcherBase {
     accepts(propertyName: string): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): ContrastColorMatch | null;
 }
@@ -214,14 +160,8 @@ export declare class URLMatch implements Match {
     readonly node: CodeMirror.SyntaxNode;
     constructor(url: Platform.DevToolsPath.UrlString, text: string, node: CodeMirror.SyntaxNode);
 }
-declare const URLMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<URLMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): URLMatch | null;
-    };
-};
-export declare class URLMatcher extends URLMatcher_base {
+declare const URLMatcherBase: MatcherClass<URLMatch>;
+export declare class URLMatcher extends URLMatcherBase {
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): URLMatch | null;
 }
 export declare class LinearGradientMatch implements Match {
@@ -229,14 +169,8 @@ export declare class LinearGradientMatch implements Match {
     readonly node: CodeMirror.SyntaxNode;
     constructor(text: string, node: CodeMirror.SyntaxNode);
 }
-declare const LinearGradientMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<LinearGradientMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): LinearGradientMatch | null;
-    };
-};
-export declare class LinearGradientMatcher extends LinearGradientMatcher_base {
+declare const LinearGradientMatcherBase: MatcherClass<LinearGradientMatch>;
+export declare class LinearGradientMatcher extends LinearGradientMatcherBase {
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match | null;
     accepts(propertyName: string): boolean;
 }
@@ -252,14 +186,8 @@ export declare class ColorMatch implements Match {
     computedText: (() => string | null) | undefined;
     constructor(text: string, node: CodeMirror.SyntaxNode, currentColorCallback?: (() => string | null) | undefined, relativeColor?: RelativeColor | undefined);
 }
-declare const ColorMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<ColorMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): ColorMatch | null;
-    };
-};
-export declare class ColorMatcher extends ColorMatcher_base {
+declare const ColorMatcherBase: MatcherClass<ColorMatch>;
+export declare class ColorMatcher extends ColorMatcherBase {
     private readonly currentColorCallback?;
     constructor(currentColorCallback?: (() => string | null) | undefined);
     accepts(propertyName: string): boolean;
@@ -272,14 +200,8 @@ export declare class RelativeColorChannelMatch implements Match {
     getColorChannelValue(relativeColor: RelativeColor): number | null;
     computedText(): string;
 }
-declare const RelativeColorChannelMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<RelativeColorChannelMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): RelativeColorChannelMatch | null;
-    };
-};
-export declare class RelativeColorChannelMatcher extends RelativeColorChannelMatcher_base {
+declare const RelativeColorChannelMatcherBase: MatcherClass<RelativeColorChannelMatch>;
+export declare class RelativeColorChannelMatcher extends RelativeColorChannelMatcherBase {
     accepts(propertyName: string): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): RelativeColorChannelMatch | null;
 }
@@ -291,14 +213,8 @@ export declare class LightDarkColorMatch implements Match {
     readonly style: CSSStyleDeclaration;
     constructor(text: string, node: CodeMirror.SyntaxNode, light: CodeMirror.SyntaxNode[], dark: CodeMirror.SyntaxNode[], style: CSSStyleDeclaration);
 }
-declare const LightDarkColorMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<LightDarkColorMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): LightDarkColorMatch | null;
-    };
-};
-export declare class LightDarkColorMatcher extends LightDarkColorMatcher_base {
+declare const LightDarkColorMatcherBase: MatcherClass<LightDarkColorMatch>;
+export declare class LightDarkColorMatcher extends LightDarkColorMatcherBase {
     readonly style: CSSStyleDeclaration;
     constructor(style: CSSStyleDeclaration);
     accepts(propertyName: string): boolean;
@@ -311,14 +227,8 @@ export declare class AutoBaseMatch implements Match {
     readonly base: CodeMirror.SyntaxNode[];
     constructor(text: string, node: CodeMirror.SyntaxNode, auto: CodeMirror.SyntaxNode[], base: CodeMirror.SyntaxNode[]);
 }
-declare const AutoBaseMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<AutoBaseMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): AutoBaseMatch | null;
-    };
-};
-export declare class AutoBaseMatcher extends AutoBaseMatcher_base {
+declare const AutoBaseMatcherBase: MatcherClass<AutoBaseMatch>;
+export declare class AutoBaseMatcher extends AutoBaseMatcherBase {
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): AutoBaseMatch | null;
 }
 export declare const enum LinkableNameProperties {
@@ -343,14 +253,8 @@ export declare class LinkableNameMatch implements Match {
     readonly propertyName: LinkableNameProperties;
     constructor(text: string, node: CodeMirror.SyntaxNode, propertyName: LinkableNameProperties);
 }
-declare const LinkableNameMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<LinkableNameMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): LinkableNameMatch | null;
-    };
-};
-export declare class LinkableNameMatcher extends LinkableNameMatcher_base {
+declare const LinkableNameMatcherBase: MatcherClass<LinkableNameMatch>;
+export declare class LinkableNameMatcher extends LinkableNameMatcherBase {
     private static isLinkableNameProperty;
     static readonly identifierAnimationLonghandMap: Map<string, AnimationLonghandPart>;
     private matchAnimationNameInShorthand;
@@ -361,14 +265,8 @@ export declare class BezierMatch implements Match {
     readonly node: CodeMirror.SyntaxNode;
     constructor(text: string, node: CodeMirror.SyntaxNode);
 }
-declare const BezierMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<BezierMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): BezierMatch | null;
-    };
-};
-export declare class BezierMatcher extends BezierMatcher_base {
+declare const BezierMatcherBase: MatcherClass<BezierMatch>;
+export declare class BezierMatcher extends BezierMatcherBase {
     accepts(propertyName: string): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match | null;
 }
@@ -377,14 +275,8 @@ export declare class StringMatch implements Match {
     readonly node: CodeMirror.SyntaxNode;
     constructor(text: string, node: CodeMirror.SyntaxNode);
 }
-declare const StringMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<StringMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): StringMatch | null;
-    };
-};
-export declare class StringMatcher extends StringMatcher_base {
+declare const StringMatcherBase: MatcherClass<StringMatch>;
+export declare class StringMatcher extends StringMatcherBase {
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match | null;
 }
 export declare const enum ShadowType {
@@ -397,14 +289,8 @@ export declare class ShadowMatch implements Match {
     readonly shadowType: ShadowType;
     constructor(text: string, node: CodeMirror.SyntaxNode, shadowType: ShadowType);
 }
-declare const ShadowMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<ShadowMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): ShadowMatch | null;
-    };
-};
-export declare class ShadowMatcher extends ShadowMatcher_base {
+declare const ShadowMatcherBase: MatcherClass<ShadowMatch>;
+export declare class ShadowMatcher extends ShadowMatcherBase {
     accepts(propertyName: string): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): ShadowMatch | null;
 }
@@ -414,14 +300,8 @@ export declare class LengthMatch implements Match {
     readonly unit: string;
     constructor(text: string, node: CodeMirror.SyntaxNode, unit: string);
 }
-declare const LengthMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<LengthMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): LengthMatch | null;
-    };
-};
-export declare class LengthMatcher extends LengthMatcher_base {
+declare const LengthMatcherBase: MatcherClass<LengthMatch>;
+export declare class LengthMatcher extends LengthMatcherBase {
     static readonly LENGTH_UNITS: Set<string>;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): LengthMatch | null;
 }
@@ -449,27 +329,15 @@ export declare class BaseFunctionMatch<T extends string> implements Match {
 export declare class MathFunctionMatch extends BaseFunctionMatch<MathFunction> {
     isArithmeticFunctionCall(): boolean;
 }
-declare const MathFunctionMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<MathFunctionMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): MathFunctionMatch | null;
-    };
-};
-export declare class MathFunctionMatcher extends MathFunctionMatcher_base {
+declare const MathFunctionMatcherBase: MatcherClass<MathFunctionMatch>;
+export declare class MathFunctionMatcher extends MathFunctionMatcherBase {
     private static getFunctionType;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): MathFunctionMatch | null;
 }
 export declare class CustomFunctionMatch extends BaseFunctionMatch<string> {
 }
-declare const CustomFunctionMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<CustomFunctionMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): CustomFunctionMatch | null;
-    };
-};
-export declare class CustomFunctionMatcher extends CustomFunctionMatcher_base {
+declare const CustomFunctionMatcherBase: MatcherClass<CustomFunctionMatch>;
+export declare class CustomFunctionMatcher extends CustomFunctionMatcherBase {
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): CustomFunctionMatch | null;
 }
 export declare const enum LayoutType {
@@ -483,14 +351,8 @@ export declare class FlexGridGridLanesMatch implements Match {
     readonly layoutType: LayoutType;
     constructor(text: string, node: CodeMirror.SyntaxNode, layoutType: LayoutType);
 }
-declare const FlexGridGridLanesMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<FlexGridGridLanesMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): FlexGridGridLanesMatch | null;
-    };
-};
-export declare class FlexGridGridLanesMatcher extends FlexGridGridLanesMatcher_base {
+declare const FlexGridGridLanesMatcherBase: MatcherClass<FlexGridGridLanesMatch>;
+export declare class FlexGridGridLanesMatcher extends FlexGridGridLanesMatcherBase {
     static readonly FLEX: string[];
     static readonly GRID: string[];
     static readonly GRID_LANES: string[];
@@ -503,14 +365,8 @@ export declare class GridTemplateMatch implements Match {
     readonly lines: CodeMirror.SyntaxNode[][];
     constructor(text: string, node: CodeMirror.SyntaxNode, lines: CodeMirror.SyntaxNode[][]);
 }
-declare const GridTemplateMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<GridTemplateMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): GridTemplateMatch | null;
-    };
-};
-export declare class GridTemplateMatcher extends GridTemplateMatcher_base {
+declare const GridTemplateMatcherBase: MatcherClass<GridTemplateMatch>;
+export declare class GridTemplateMatcher extends GridTemplateMatcherBase {
     accepts(propertyName: string): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): GridTemplateMatch | null;
 }
@@ -520,14 +376,8 @@ export declare class AnchorFunctionMatch implements Match {
     readonly functionName: string | null;
     constructor(text: string, node: CodeMirror.SyntaxNode, functionName: string | null);
 }
-declare const AnchorFunctionMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<AnchorFunctionMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): AnchorFunctionMatch | null;
-    };
-};
-export declare class AnchorFunctionMatcher extends AnchorFunctionMatcher_base {
+declare const AnchorFunctionMatcherBase: MatcherClass<AnchorFunctionMatch>;
+export declare class AnchorFunctionMatcher extends AnchorFunctionMatcherBase {
     anchorFunction(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): string | null;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): AnchorFunctionMatch | null;
 }
@@ -538,14 +388,8 @@ export declare class PositionAnchorMatch implements Match {
     readonly node: CodeMirror.SyntaxNode;
     constructor(text: string, matching: BottomUpTreeMatching, node: CodeMirror.SyntaxNode);
 }
-declare const PositionAnchorMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<PositionAnchorMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): PositionAnchorMatch | null;
-    };
-};
-export declare class PositionAnchorMatcher extends PositionAnchorMatcher_base {
+declare const PositionAnchorMatcherBase: MatcherClass<PositionAnchorMatch>;
+export declare class PositionAnchorMatcher extends PositionAnchorMatcherBase {
     accepts(propertyName: string): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): PositionAnchorMatch | null;
 }
@@ -558,14 +402,8 @@ export declare class CSSWideKeywordMatch implements Match {
     resolveProperty(): CSSValueSource | null;
     computedText?(): string | null;
 }
-declare const CSSWideKeywordMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<CSSWideKeywordMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): CSSWideKeywordMatch | null;
-    };
-};
-export declare class CSSWideKeywordMatcher extends CSSWideKeywordMatcher_base {
+declare const CSSWideKeywordMatcherBase: MatcherClass<CSSWideKeywordMatch>;
+export declare class CSSWideKeywordMatcher extends CSSWideKeywordMatcherBase {
     readonly property: CSSProperty;
     readonly matchedStyles: CSSMatchedStyles;
     constructor(property: CSSProperty, matchedStyles: CSSMatchedStyles);
@@ -578,14 +416,8 @@ export declare class PositionTryMatch implements Match {
     readonly fallbacks: CodeMirror.SyntaxNode[][];
     constructor(text: string, node: CodeMirror.SyntaxNode, preamble: CodeMirror.SyntaxNode[], fallbacks: CodeMirror.SyntaxNode[][]);
 }
-declare const PositionTryMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<PositionTryMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): PositionTryMatch | null;
-    };
-};
-export declare class PositionTryMatcher extends PositionTryMatcher_base {
+declare const PositionTryMatcherBase: MatcherClass<PositionTryMatch>;
+export declare class PositionTryMatcher extends PositionTryMatcherBase {
     accepts(propertyName: string): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): PositionTryMatch | null;
 }
@@ -598,14 +430,8 @@ export declare class EnvFunctionMatch implements Match {
     constructor(text: string, node: CodeMirror.SyntaxNode, varName: string, value: string | null, varNameIsValid: boolean);
     computedText(): string | null;
 }
-declare const EnvFunctionMatcher_base: {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<EnvFunctionMatch>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): EnvFunctionMatch | null;
-    };
-};
-export declare class EnvFunctionMatcher extends EnvFunctionMatcher_base {
+declare const EnvFunctionMatcherBase: MatcherClass<EnvFunctionMatch>;
+export declare class EnvFunctionMatcher extends EnvFunctionMatcherBase {
     readonly matchedStyles: CSSMatchedStyles;
     constructor(matchedStyles: CSSMatchedStyles);
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): EnvFunctionMatch | null;

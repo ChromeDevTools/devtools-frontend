@@ -17,6 +17,12 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/ValueInterpreterSettings.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+var ValueTypeGroup;
+(function (ValueTypeGroup) {
+    ValueTypeGroup["INTEGER"] = "Integer";
+    ValueTypeGroup["FLOAT"] = "Floating point";
+    ValueTypeGroup["OTHER"] = "Other";
+})(ValueTypeGroup || (ValueTypeGroup = {}));
 const GROUP_TO_TYPES = new Map([
     ["Integer" /* ValueTypeGroup.INTEGER */, ["Integer 8-bit" /* ValueType.INT8 */, "Integer 16-bit" /* ValueType.INT16 */, "Integer 32-bit" /* ValueType.INT32 */, "Integer 64-bit" /* ValueType.INT64 */]],
     ["Floating point" /* ValueTypeGroup.FLOAT */, ["Float 32-bit" /* ValueType.FLOAT32 */, "Float 64-bit" /* ValueType.FLOAT64 */]],

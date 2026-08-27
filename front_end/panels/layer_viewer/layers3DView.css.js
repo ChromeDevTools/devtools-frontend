@@ -22,7 +22,7 @@ export default `/*
 
 devtools-toolbar {
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 canvas {

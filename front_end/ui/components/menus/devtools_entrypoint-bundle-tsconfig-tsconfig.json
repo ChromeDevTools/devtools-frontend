@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": ".",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -45,7 +46,7 @@
   ],
   "references": [
     {
-      "path": "../../../../../tsc/front_end/ui/components/menus/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./menus-tsconfig.ref.json"

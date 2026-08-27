@@ -4,13 +4,12 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/core/protocol_client/CDPConnection.js
+// ../../front_end/core/protocol_client/CDPConnection.ts
 var CDPConnection_exports = {};
 __export(CDPConnection_exports, {
   CDPErrorStatus: () => CDPErrorStatus
 });
-var CDPErrorStatus;
-(function(CDPErrorStatus2) {
+var CDPErrorStatus = /* @__PURE__ */ ((CDPErrorStatus2) => {
   CDPErrorStatus2[CDPErrorStatus2["PARSE_ERROR"] = -32700] = "PARSE_ERROR";
   CDPErrorStatus2[CDPErrorStatus2["INVALID_REQUEST"] = -32600] = "INVALID_REQUEST";
   CDPErrorStatus2[CDPErrorStatus2["METHOD_NOT_FOUND"] = -32601] = "METHOD_NOT_FOUND";
@@ -20,9 +19,10 @@ var CDPErrorStatus;
   CDPErrorStatus2[CDPErrorStatus2["SESSION_NOT_FOUND"] = -32001] = "SESSION_NOT_FOUND";
   CDPErrorStatus2[CDPErrorStatus2["DEVTOOLS_STUB_ERROR"] = -32015] = "DEVTOOLS_STUB_ERROR";
   CDPErrorStatus2[CDPErrorStatus2["DEVTOOLS_REHYDRATION_ERROR"] = -32016] = "DEVTOOLS_REHYDRATION_ERROR";
-})(CDPErrorStatus || (CDPErrorStatus = {}));
+  return CDPErrorStatus2;
+})(CDPErrorStatus || {});
 
-// gen/front_end/core/protocol_client/ConnectionTransport.js
+// ../../front_end/core/protocol_client/ConnectionTransport.ts
 var ConnectionTransport_exports = {};
 __export(ConnectionTransport_exports, {
   ConnectionTransport: () => ConnectionTransport
@@ -37,15 +37,16 @@ var ConnectionTransport = class {
   }
 };
 
-// gen/front_end/core/protocol_client/DevToolsCDPConnection.js
+// ../../front_end/core/protocol_client/DevToolsCDPConnection.ts
 var DevToolsCDPConnection_exports = {};
 __export(DevToolsCDPConnection_exports, {
   DevToolsCDPConnection: () => DevToolsCDPConnection
 });
 
-// gen/front_end/core/protocol_client/InspectorBackend.js
+// ../../front_end/core/protocol_client/InspectorBackend.ts
 var InspectorBackend_exports = {};
 __export(InspectorBackend_exports, {
+  AgentPrototype: () => AgentPrototype,
   InspectorBackend: () => InspectorBackend,
   SessionRouter: () => SessionRouter,
   TargetBase: () => TargetBase,
@@ -55,7 +56,7 @@ __export(InspectorBackend_exports, {
   test: () => test
 });
 
-// gen/front_end/generated/InspectorBackendCommands.js
+// ../../front_end/generated/InspectorBackendCommands.ts
 function registerCommands(inspectorBackend2) {
   inspectorBackend2.registerEnum("Accessibility.AXValueType", { Boolean: "boolean", Tristate: "tristate", BooleanOrUndefined: "booleanOrUndefined", Idref: "idref", IdrefList: "idrefList", Integer: "integer", Node: "node", NodeList: "nodeList", Number: "number", String: "string", ComputedString: "computedString", Token: "token", TokenList: "tokenList", DomRelation: "domRelation", Role: "role", InternalRole: "internalRole", ValueUndefined: "valueUndefined" });
   inspectorBackend2.registerEnum("Accessibility.AXValueSourceType", { Attribute: "attribute", Implicit: "implicit", Style: "style", Contents: "contents", Placeholder: "placeholder", RelatedElement: "relatedElement" });
@@ -1579,7 +1580,7 @@ function registerCommands(inspectorBackend2) {
   inspectorBackend2.registerType("Schema.Domain", [{ "name": "name", "type": "string", "optional": false, "description": "Domain name.", "typeRef": null }, { "name": "version", "type": "string", "optional": false, "description": "Domain version.", "typeRef": null }]);
 }
 
-// gen/front_end/core/protocol_client/InspectorBackend.js
+// ../../front_end/core/protocol_client/InspectorBackend.ts
 var splitQualifiedName = (string) => {
   const [domain, eventName] = string.split(".");
   return [domain, eventName];
@@ -1742,7 +1743,10 @@ var TargetBase = class {
     const [domainName, method] = splitQualifiedName(eventMessage.method);
     const dispatcher = this.#dispatchers.get(domainName);
     if (!dispatcher) {
-      InspectorBackend.reportProtocolError(`Protocol Error: the message ${eventMessage.method} is for non-existing domain '${domainName}'`, eventMessage);
+      InspectorBackend.reportProtocolError(
+        `Protocol Error: the message ${eventMessage.method} is for non-existing domain '${domainName}'`,
+        eventMessage
+      );
       return;
     }
     dispatcher.dispatch(method, eventMessage);
@@ -2025,10 +2029,10 @@ var TargetBase = class {
   }
 };
 var IGNORED_ERRORS = /* @__PURE__ */ new Set([
-  CDPErrorStatus.DEVTOOLS_REHYDRATION_ERROR,
-  CDPErrorStatus.DEVTOOLS_STUB_ERROR,
-  CDPErrorStatus.SERVER_ERROR,
-  CDPErrorStatus.SESSION_NOT_FOUND
+  -32016 /* DEVTOOLS_REHYDRATION_ERROR */,
+  -32015 /* DEVTOOLS_STUB_ERROR */,
+  -32e3 /* SERVER_ERROR */,
+  -32001 /* SESSION_NOT_FOUND */
 ]);
 var AgentPrototype = class {
   description = "";
@@ -2050,7 +2054,9 @@ var AgentPrototype = class {
   invoke(method, request) {
     const connection = this.target.router()?.connection;
     if (!connection) {
-      return Promise.resolve({ result: null, getError: () => `Connection is closed, can't dispatch pending call to ${method}` });
+      return Promise.resolve(
+        { result: null, getError: () => `Connection is closed, can't dispatch pending call to ${method}` }
+      );
     }
     return connection.send(method, request, this.target.sessionId).then((response) => {
       if ("error" in response && response.error) {
@@ -2089,7 +2095,10 @@ var DispatcherManager = class {
       return;
     }
     if (!this.#eventArgs.has(messageObject.method)) {
-      InspectorBackend.reportProtocolWarning(`Protocol Warning: Attempted to dispatch an unspecified event '${messageObject.method}'`, messageObject);
+      InspectorBackend.reportProtocolWarning(
+        `Protocol Warning: Attempted to dispatch an unspecified event '${messageObject.method}'`,
+        messageObject
+      );
       return;
     }
     for (let index = 0; index < this.#dispatchers.length; ++index) {
@@ -2103,7 +2112,7 @@ var DispatcherManager = class {
 };
 var inspectorBackend = new InspectorBackend();
 
-// gen/front_end/core/protocol_client/DevToolsCDPConnection.js
+// ../../front_end/core/protocol_client/DevToolsCDPConnection.ts
 var LongPollingMethods = /* @__PURE__ */ new Set(["CSS.takeComputedStyleUpdates"]);
 var DevToolsCDPConnection = class {
   #transport;
@@ -2165,7 +2174,7 @@ var DevToolsCDPConnection = class {
       resolve({
         error: {
           message: `Session is unregistering, can't dispatch pending call to ${method}`,
-          code: CDPErrorStatus.SESSION_NOT_FOUND
+          code: -32001 /* SESSION_NOT_FOUND */
         }
       });
     }

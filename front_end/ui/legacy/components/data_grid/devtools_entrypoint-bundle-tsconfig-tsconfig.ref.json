@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "../../../../../../tsc/front_end/ui/legacy/components/data_grid/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./data_grid-tsconfig.ref.json"

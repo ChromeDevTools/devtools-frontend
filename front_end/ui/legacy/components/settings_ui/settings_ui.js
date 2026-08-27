@@ -12,14 +12,14 @@ __export(SettingsUI_exports, {
   renderControlForSetting: () => renderControlForSetting,
   renderSettingSelect: () => renderSettingSelect
 });
-import "./../../../components/settings/settings.js";
-import * as Common from "./../../../../core/common/common.js";
-import * as i18n from "./../../../../core/i18n/i18n.js";
-import * as Platform from "./../../../../core/platform/platform.js";
-import { Directives, html, nothing, render } from "./../../../lit/lit.js";
-import * as SettingUIRegistration from "./../../../settings/settings.js";
-import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
-import * as UI from "./../../legacy.js";
+import "../../../components/settings/settings.js";
+import * as Common from "../../../../core/common/common.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
+import * as Platform from "../../../../core/platform/platform.js";
+import { Directives, html, nothing, render } from "../../../lit/lit.js";
+import * as SettingUIRegistration from "../../../settings/settings.js";
+import * as VisualLogging from "../../../visual_logging/visual_logging.js";
+import * as UI from "../../legacy.js";
 var { createRef, ref } = Directives;
 var UIStrings = {
   /**

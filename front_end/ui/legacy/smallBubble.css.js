@@ -11,13 +11,13 @@ export default `/*
 
 div {
   display: inline-flex;
-  height: 14px;
+  height: var(--sys-size-7);
   align-items: center;
   vertical-align: middle;
   white-space: nowrap;
-  padding: 1px 4px;
+  padding: var(--sys-size-1) var(--sys-size-3);
   text-align: left;
-  font-size: 11px;
+  font-size: var(--sys-typescale-body5-size);
   line-height: normal;
   font-weight: bold;
   text-shadow: none;

@@ -131,6 +131,11 @@ const srgbGamutFormats = [
     "hsl" /* Common.Color.Format.HSL */,
     "hwb" /* Common.Color.Format.HWB */,
 ];
+var SpectrumGamut;
+(function (SpectrumGamut) {
+    SpectrumGamut["SRGB"] = "srgb";
+    SpectrumGamut["DISPLAY_P3"] = "display-p3";
+})(SpectrumGamut || (SpectrumGamut = {}));
 const IS_NATIVE_EYE_DROPPER_AVAILABLE = 'EyeDropper' in window;
 function doesFormatSupportDisplayP3(format) {
     return !srgbGamutFormats.includes(format);
@@ -1288,6 +1293,11 @@ export const ChangeSource = {
     Model: 'Model',
     Other: 'Other',
 };
+export var Events;
+(function (Events) {
+    Events["COLOR_CHANGED"] = "ColorChanged";
+    Events["SIZE_CHANGED"] = "SizeChanged";
+})(Events || (Events = {}));
 const COLOR_CHIP_SIZE = 24;
 const ITEMS_PER_PALETTE_ROW = 8;
 const GeneratedPaletteTitle = 'Page colors';

@@ -12,9 +12,9 @@ __export(Tooltip_exports, {
   proposedRectForRichTooltip: () => proposedRectForRichTooltip,
   proposedRectForSimpleTooltip: () => proposedRectForSimpleTooltip
 });
-import * as UI from "./../../legacy/legacy.js";
-import * as Lit from "./../../lit/lit.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
+import * as UI from "../../legacy/legacy.js";
+import * as Lit from "../../lit/lit.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/tooltips/tooltip.css.js
 var tooltip_css_default = `/*

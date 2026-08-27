@@ -9,7 +9,7 @@ export default `/*
  * found in the LICENSE file.
  */
 .request-device-bound-sessions-view {
-  margin: 20px;
+  margin: var(--sys-size-9);
   overflow-y: auto;
   scroll-behavior: smooth;
 }

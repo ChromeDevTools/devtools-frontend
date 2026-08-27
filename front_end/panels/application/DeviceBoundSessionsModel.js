@@ -158,4 +158,12 @@ export class DeviceBoundSessionsModel extends Common.ObjectWrapper.ObjectWrapper
         this.dispatchEventToListeners("EVENT_OCCURRED" /* DeviceBoundSessionModelEvents.EVENT_OCCURRED */, { site: eventWithTimestamp.event.site, sessionId: eventWithTimestamp.event.sessionId });
     }
 }
+export var DeviceBoundSessionModelEvents;
+(function (DeviceBoundSessionModelEvents) {
+    DeviceBoundSessionModelEvents["INITIALIZE_SESSIONS"] = "INITIALIZE_SESSIONS";
+    DeviceBoundSessionModelEvents["ADD_VISIBLE_SITE"] = "ADD_VISIBLE_SITE";
+    DeviceBoundSessionModelEvents["CLEAR_VISIBLE_SITES"] = "CLEAR_VISIBLE_SITES";
+    DeviceBoundSessionModelEvents["EVENT_OCCURRED"] = "EVENT_OCCURRED";
+    DeviceBoundSessionModelEvents["CLEAR_EVENTS"] = "CLEAR_EVENTS";
+})(DeviceBoundSessionModelEvents || (DeviceBoundSessionModelEvents = {}));
 //# sourceMappingURL=DeviceBoundSessionsModel.js.map

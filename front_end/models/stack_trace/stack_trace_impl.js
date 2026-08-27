@@ -12,7 +12,7 @@ __export(DetailedErrorStackParser_exports, {
   parseMessage: () => parseMessage,
   parseRawFramesFromErrorStack: () => parseRawFramesFromErrorStack
 });
-import * as Common from "./../../core/common/common.js";
+import * as Common from "../../core/common/common.js";
 var CALL_FRAME_REGEX = /^\s*at\s+/;
 function parseRawFramesFromErrorStack(stack, resolveURL) {
   const lines = stack.split("\n");
@@ -198,7 +198,7 @@ __export(StackTraceImpl_exports, {
   ParsedErrorStackFrameImpl: () => ParsedErrorStackFrameImpl,
   StackTraceImpl: () => StackTraceImpl
 });
-import * as Common2 from "./../../core/common/common.js";
+import * as Common2 from "../../core/common/common.js";
 var StackTraceImpl = class extends Common2.ObjectWrapper.ObjectWrapper {
   syncFragment;
   asyncFragments;
@@ -431,8 +431,8 @@ var StackTraceModel_exports = {};
 __export(StackTraceModel_exports, {
   StackTraceModel: () => StackTraceModel
 });
-import * as Common3 from "./../../core/common/common.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as Common3 from "../../core/common/common.js";
+import * as SDK from "../../core/sdk/sdk.js";
 import * as StackTrace from "./stack_trace.js";
 
 // gen/front_end/models/stack_trace/Trie.js

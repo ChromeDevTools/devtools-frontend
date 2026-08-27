@@ -3,15 +3,22 @@
 // found in the LICENSE file.
 import sinon from 'sinon';
 import * as Common from '../core/common/common.js';
-function createSettingValue(category, settingName, defaultValue, settingType = "boolean" /* Common.Settings.SettingType.BOOLEAN */, title) {
+function createSettingValue(category, settingName, defaultValue, settingType = "boolean" /* Common.Settings.SettingType.BOOLEAN */, title, options) {
     return {
         category,
         settingName,
         defaultValue,
         settingType,
         title: typeof title === 'string' ? () => title : title,
+        options,
     };
 }
+const rawOption = (value, title) => ({
+    value,
+    title: () => title,
+    text: title,
+    raw: true,
+});
 export function stubNoopSettings() {
     const createDummySetting = (name) => {
         const settingName = typeof name === 'string' ? name : name.name;
@@ -65,6 +72,7 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'show-ua-shadow-dom', false),
     createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'css-animations-only-when-animations-tab-open', true),
     createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'collapse-non-contributing-css-rules', false),
+    createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'show-inactive-css-rules', false),
     createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'show-metrics-rulers', false),
     createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'apca', false),
     createSettingValue("ELEMENTS" /* Common.Settings.SettingCategory.ELEMENTS */, 'show-frameowkr-listeners', true),
@@ -139,6 +147,14 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST = [
     createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.touch', '', "enum" /* Common.Settings.SettingType.ENUM */),
     createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.idle-detection', '', "enum" /* Common.Settings.SettingType.ENUM */),
     createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.cpu-pressure', '', "enum" /* Common.Settings.SettingType.ENUM */),
+    createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.cpu-performance', 'no-override', "enum" /* Common.Settings.SettingType.ENUM */, undefined, [
+        rawOption('no-override', 'No override'),
+        rawOption('unknown', 'Tier 0: UNKNOWN'),
+        rawOption('low', 'Tier 1: LOW'),
+        rawOption('mid', 'Tier 2: MID'),
+        rawOption('high', 'Tier 3: HIGH'),
+        rawOption('ultra', 'Tier 4: ULTRA'),
+    ]),
     createSettingValue("EMULATION" /* Common.Settings.SettingCategory.EMULATION */, 'emulation.locations', [], "array" /* Common.Settings.SettingType.ARRAY */),
     createSettingValue("MOBILE" /* Common.Settings.SettingCategory.MOBILE */, 'emulation.show-rulers', false),
     createSettingValue("MOBILE" /* Common.Settings.SettingCategory.MOBILE */, 'show-media-query-inspector', false),

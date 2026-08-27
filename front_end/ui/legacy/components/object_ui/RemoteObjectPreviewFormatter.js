@@ -237,6 +237,14 @@ export class RemoteObjectPreviewFormatter {
         return fragment;
     }
 }
+var InternalName;
+(function (InternalName) {
+    InternalName["GENERATOR_STATE"] = "[[GeneratorState]]";
+    InternalName["PRIMITIVE_VALUE"] = "[[PrimitiveValue]]";
+    InternalName["PROMISE_STATE"] = "[[PromiseState]]";
+    InternalName["PROMISE_RESULT"] = "[[PromiseResult]]";
+    InternalName["WEAK_REF_TARGET"] = "[[WeakRefTarget]]";
+})(InternalName || (InternalName = {}));
 export function renderNodeTitle(nodeTitle) {
     const match = nodeTitle.match(/([^#.]+)(#[^.]+)?(\..*)?/);
     if (!match) {

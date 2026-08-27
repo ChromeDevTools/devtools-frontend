@@ -10,12 +10,12 @@ __export(Automapping_exports, {
   Automapping: () => Automapping,
   AutomappingStatus: () => AutomappingStatus
 });
-import * as Common6 from "./../../core/common/common.js";
-import * as Host5 from "./../../core/host/host.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
-import * as Bindings2 from "./../bindings/bindings.js";
-import * as Workspace5 from "./../workspace/workspace.js";
+import * as Common6 from "../../core/common/common.js";
+import * as Host5 from "../../core/host/host.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as TextUtils5 from "../../core/text_utils/text_utils.js";
+import * as Bindings2 from "../bindings/bindings.js";
+import * as Workspace5 from "../workspace/workspace.js";
 
 // gen/front_end/models/persistence/FileSystemWorkspaceBinding.js
 var FileSystemWorkspaceBinding_exports = {};
@@ -23,23 +23,23 @@ __export(FileSystemWorkspaceBinding_exports, {
   FileSystem: () => FileSystem,
   FileSystemWorkspaceBinding: () => FileSystemWorkspaceBinding
 });
-import * as Common4 from "./../../core/common/common.js";
-import * as Host3 from "./../../core/host/host.js";
-import * as Platform5 from "./../../core/platform/platform.js";
-import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
-import * as Workspace from "./../workspace/workspace.js";
+import * as Common4 from "../../core/common/common.js";
+import * as Host3 from "../../core/host/host.js";
+import * as Platform5 from "../../core/platform/platform.js";
+import * as TextUtils2 from "../../core/text_utils/text_utils.js";
+import * as Workspace from "../workspace/workspace.js";
 
 // gen/front_end/models/persistence/IsolatedFileSystemManager.js
 var IsolatedFileSystemManager_exports = {};
 __export(IsolatedFileSystemManager_exports, {
-  Events: () => Events,
+  Events: () => Events2,
   IsolatedFileSystemManager: () => IsolatedFileSystemManager
 });
-import * as Common3 from "./../../core/common/common.js";
-import * as Host2 from "./../../core/host/host.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
+import * as Common3 from "../../core/common/common.js";
+import * as Host2 from "../../core/host/host.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
+import * as Platform4 from "../../core/platform/platform.js";
+import * as Root from "../../core/root/root.js";
 
 // gen/front_end/models/persistence/IsolatedFileSystem.js
 var IsolatedFileSystem_exports = {};
@@ -47,20 +47,21 @@ __export(IsolatedFileSystem_exports, {
   BinaryExtensions: () => BinaryExtensions,
   IsolatedFileSystem: () => IsolatedFileSystem
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Platform2 from "./../../core/platform/platform.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
+import * as Common2 from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as Platform2 from "../../core/platform/platform.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
 
 // gen/front_end/models/persistence/PlatformFileSystem.js
 var PlatformFileSystem_exports = {};
 __export(PlatformFileSystem_exports, {
+  Events: () => Events,
   PlatformFileSystem: () => PlatformFileSystem,
   PlatformFileSystemType: () => PlatformFileSystemType
 });
-import * as Common from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
+import * as Common from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
 var UIStrings = {
   /**
    * @description Assertion error message when failing to load a file.
@@ -75,6 +76,10 @@ var PlatformFileSystemType;
   PlatformFileSystemType2["OVERRIDES"] = "overrides";
   PlatformFileSystemType2["WORKSPACE_PROJECT"] = "workspace-project";
 })(PlatformFileSystemType || (PlatformFileSystemType = {}));
+var Events;
+(function(Events6) {
+  Events6["FILE_SYSTEM_ERROR"] = "file-system-error";
+})(Events || (Events = {}));
 var PlatformFileSystem = class extends Common.ObjectWrapper.ObjectWrapper {
   #path;
   #type;
@@ -536,12 +541,12 @@ var IsolatedFileSystem = class extends PlatformFileSystem {
   addExcludedFolder(path) {
     this.#excludedFolders.add(path);
     this.saveExcludedFolders();
-    this.manager.dispatchEventToListeners(Events.ExcludedFolderAdded, path);
+    this.manager.dispatchEventToListeners(Events2.ExcludedFolderAdded, path);
   }
   removeExcludedFolder(path) {
     this.#excludedFolders.delete(path);
     this.saveExcludedFolders();
-    this.manager.dispatchEventToListeners(Events.ExcludedFolderRemoved, path);
+    this.manager.dispatchEventToListeners(Events2.ExcludedFolderRemoved, path);
   }
   fileSystemRemoved() {
     const settingValue = this.excludedFoldersSetting.get();
@@ -841,7 +846,7 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
       this.#fileSystems.set(fileSystemURL, fileSystem2);
       fileSystem2.addEventListener("file-system-error", this.#onFileSystemError, this);
       if (dispatchEvent) {
-        this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem2);
+        this.dispatchEventToListeners(Events2.FileSystemAdded, fileSystem2);
       }
       return fileSystem2;
     }
@@ -849,7 +854,7 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
   addPlatformFileSystem(fileSystemURL, fileSystem) {
     this.#fileSystems.set(fileSystemURL, fileSystem);
     fileSystem.addEventListener("file-system-error", this.#onFileSystemError, this);
-    this.dispatchEventToListeners(Events.FileSystemAdded, fileSystem);
+    this.dispatchEventToListeners(Events2.FileSystemAdded, fileSystem);
   }
   onFileSystemAdded(event) {
     const { errorMessage, fileSystem } = event.data;
@@ -872,7 +877,7 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
     }
   }
   #onFileSystemError(event) {
-    this.dispatchEventToListeners(Events.FileSystemError, event.data);
+    this.dispatchEventToListeners(Events2.FileSystemError, event.data);
   }
   onFileSystemRemoved(event) {
     const embedderPath = event.data;
@@ -884,7 +889,7 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
     this.#fileSystems.delete(fileSystemPath);
     isolatedFileSystem.removeEventListener("file-system-error", this.#onFileSystemError, this);
     isolatedFileSystem.fileSystemRemoved();
-    this.dispatchEventToListeners(Events.FileSystemRemoved, isolatedFileSystem);
+    this.dispatchEventToListeners(Events2.FileSystemRemoved, isolatedFileSystem);
   }
   onFileSystemFilesChanged(event) {
     const urlPaths = {
@@ -892,7 +897,7 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
       added: groupFilePathsIntoFileSystemPaths.call(this, event.data.added),
       removed: groupFilePathsIntoFileSystemPaths.call(this, event.data.removed)
     };
-    this.dispatchEventToListeners(Events.FileSystemFilesChanged, urlPaths);
+    this.dispatchEventToListeners(Events2.FileSystemFilesChanged, urlPaths);
     function groupFilePathsIntoFileSystemPaths(embedderPaths) {
       const paths = new Platform4.MapUtilities.Multimap();
       for (const embedderPath of embedderPaths) {
@@ -970,15 +975,15 @@ var IsolatedFileSystemManager = class _IsolatedFileSystemManager extends Common3
     this.callbacks.delete(requestId);
   }
 };
-var Events;
-(function(Events3) {
-  Events3["FileSystemAdded"] = "FileSystemAdded";
-  Events3["FileSystemRemoved"] = "FileSystemRemoved";
-  Events3["FileSystemFilesChanged"] = "FileSystemFilesChanged";
-  Events3["ExcludedFolderAdded"] = "ExcludedFolderAdded";
-  Events3["ExcludedFolderRemoved"] = "ExcludedFolderRemoved";
-  Events3["FileSystemError"] = "FileSystemError";
-})(Events || (Events = {}));
+var Events2;
+(function(Events6) {
+  Events6["FileSystemAdded"] = "FileSystemAdded";
+  Events6["FileSystemRemoved"] = "FileSystemRemoved";
+  Events6["FileSystemFilesChanged"] = "FileSystemFilesChanged";
+  Events6["ExcludedFolderAdded"] = "ExcludedFolderAdded";
+  Events6["ExcludedFolderRemoved"] = "ExcludedFolderRemoved";
+  Events6["FileSystemError"] = "FileSystemError";
+})(Events2 || (Events2 = {}));
 var lastRequestId = 0;
 function hostFileSystemTypeToPlatformFileSystemType(type) {
   switch (type) {
@@ -1001,9 +1006,9 @@ var FileSystemWorkspaceBinding = class {
     this.isolatedFileSystemManager = isolatedFileSystemManager;
     this.#workspace = workspace;
     this.#eventListeners = [
-      this.isolatedFileSystemManager.addEventListener(Events.FileSystemAdded, this.onFileSystemAdded, this),
-      this.isolatedFileSystemManager.addEventListener(Events.FileSystemRemoved, this.onFileSystemRemoved, this),
-      this.isolatedFileSystemManager.addEventListener(Events.FileSystemFilesChanged, this.fileSystemFilesChanged, this)
+      this.isolatedFileSystemManager.addEventListener(Events2.FileSystemAdded, this.onFileSystemAdded, this),
+      this.isolatedFileSystemManager.addEventListener(Events2.FileSystemRemoved, this.onFileSystemRemoved, this),
+      this.isolatedFileSystemManager.addEventListener(Events2.FileSystemFilesChanged, this.fileSystemFilesChanged, this)
     ];
     void this.isolatedFileSystemManager.waitForFileSystems().then(this.onFileSystemsLoaded.bind(this));
   }
@@ -1318,22 +1323,22 @@ var sourceCodeToMetadataMap = /* @__PURE__ */ new WeakMap();
 // gen/front_end/models/persistence/PersistenceImpl.js
 var PersistenceImpl_exports = {};
 __export(PersistenceImpl_exports, {
-  Events: () => Events2,
+  Events: () => Events3,
   NodePrefix: () => NodePrefix,
   NodeShebang: () => NodeShebang,
   NodeSuffix: () => NodeSuffix,
   PersistenceBinding: () => PersistenceBinding,
   PersistenceImpl: () => PersistenceImpl
 });
-import * as Common5 from "./../../core/common/common.js";
-import * as Host4 from "./../../core/host/host.js";
-import * as Platform7 from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as TextUtils4 from "./../../core/text_utils/text_utils.js";
-import * as Bindings from "./../bindings/bindings.js";
-import * as BreakpointManager from "./../breakpoints/breakpoints.js";
-import * as Workspace3 from "./../workspace/workspace.js";
+import * as Common5 from "../../core/common/common.js";
+import * as Host4 from "../../core/host/host.js";
+import * as Platform7 from "../../core/platform/platform.js";
+import * as Root2 from "../../core/root/root.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as TextUtils4 from "../../core/text_utils/text_utils.js";
+import * as Bindings from "../bindings/bindings.js";
+import * as BreakpointManager from "../breakpoints/breakpoints.js";
+import * as Workspace3 from "../workspace/workspace.js";
 var PersistenceImpl = class _PersistenceImpl extends Common5.ObjectWrapper.ObjectWrapper {
   #workspace;
   #breakpointManager;
@@ -1402,7 +1407,7 @@ var PersistenceImpl = class _PersistenceImpl extends Common5.ObjectWrapper.Objec
     }
     this.notifyBindingEvent(binding.network);
     this.notifyBindingEvent(binding.fileSystem);
-    this.dispatchEventToListeners(Events2.BindingCreated, binding);
+    this.dispatchEventToListeners(Events3.BindingCreated, binding);
   }
   async #removeBinding(binding) {
     if (bindings.get(binding.network) !== binding) {
@@ -1419,7 +1424,7 @@ var PersistenceImpl = class _PersistenceImpl extends Common5.ObjectWrapper.Objec
     await this.#breakpointManager.copyBreakpoints(binding.network, binding.fileSystem);
     this.notifyBindingEvent(binding.network);
     this.notifyBindingEvent(binding.fileSystem);
-    this.dispatchEventToListeners(Events2.BindingRemoved, binding);
+    this.dispatchEventToListeners(Events3.BindingRemoved, binding);
   }
   onStatusAdded(status) {
     const binding = new PersistenceBinding(status.network, status.fileSystem);
@@ -1629,11 +1634,11 @@ var mutedWorkingCopies = /* @__PURE__ */ new WeakSet();
 var NodePrefix = "(function (exports, require, module, __filename, __dirname) { ";
 var NodeSuffix = "\n});";
 var NodeShebang = "#!/usr/bin/env node";
-var Events2;
-(function(Events3) {
-  Events3["BindingCreated"] = "BindingCreated";
-  Events3["BindingRemoved"] = "BindingRemoved";
-})(Events2 || (Events2 = {}));
+var Events3;
+(function(Events6) {
+  Events6["BindingCreated"] = "BindingCreated";
+  Events6["BindingRemoved"] = "BindingRemoved";
+})(Events3 || (Events3 = {}));
 var PersistenceBinding = class {
   network;
   fileSystem;
@@ -2020,12 +2025,13 @@ var AutomappingStatus = class {
 // gen/front_end/models/persistence/AutomaticFileSystemManager.js
 var AutomaticFileSystemManager_exports = {};
 __export(AutomaticFileSystemManager_exports, {
-  AutomaticFileSystemManager: () => AutomaticFileSystemManager
+  AutomaticFileSystemManager: () => AutomaticFileSystemManager,
+  Events: () => Events4
 });
-import * as Common7 from "./../../core/common/common.js";
-import * as Host6 from "./../../core/host/host.js";
-import * as Root3 from "./../../core/root/root.js";
-import * as ProjectSettings from "./../project_settings/project_settings.js";
+import * as Common7 from "../../core/common/common.js";
+import * as Host6 from "../../core/host/host.js";
+import * as Root3 from "../../core/root/root.js";
+import * as ProjectSettings from "../project_settings/project_settings.js";
 var AutomaticFileSystemManager = class _AutomaticFileSystemManager extends Common7.ObjectWrapper.ObjectWrapper {
   #automaticFileSystem;
   #availability = "unavailable";
@@ -2175,6 +2181,11 @@ var AutomaticFileSystemManager = class _AutomaticFileSystemManager extends Commo
     }
   }
 };
+var Events4;
+(function(Events6) {
+  Events6["AUTOMATIC_FILE_SYSTEM_CHANGED"] = "AutomaticFileSystemChanged";
+  Events6["AVAILABILITY_CHANGED"] = "AvailabilityChanged";
+})(Events4 || (Events4 = {}));
 
 // gen/front_end/models/persistence/AutomaticFileSystemWorkspaceBinding.js
 var AutomaticFileSystemWorkspaceBinding_exports = {};
@@ -2182,10 +2193,10 @@ __export(AutomaticFileSystemWorkspaceBinding_exports, {
   AutomaticFileSystemWorkspaceBinding: () => AutomaticFileSystemWorkspaceBinding,
   FileSystem: () => FileSystem2
 });
-import * as Common8 from "./../../core/common/common.js";
-import * as Host7 from "./../../core/host/host.js";
-import * as Root4 from "./../../core/root/root.js";
-import * as Workspace7 from "./../workspace/workspace.js";
+import * as Common8 from "../../core/common/common.js";
+import * as Host7 from "../../core/host/host.js";
+import * as Root4 from "../../core/root/root.js";
+import * as Workspace7 from "../workspace/workspace.js";
 var FileSystem2 = class {
   automaticFileSystem;
   automaticFileSystemManager;
@@ -2295,8 +2306,8 @@ var AutomaticFileSystemWorkspaceBinding = class _AutomaticFileSystemWorkspaceBin
     this.#isolatedFileSystemManager = isolatedFileSystemManager;
     this.#workspace = workspace;
     this.#automaticFileSystemManager.addEventListener("AutomaticFileSystemChanged", this.#update, this);
-    this.#isolatedFileSystemManager.addEventListener(Events.FileSystemAdded, this.#update, this);
-    this.#isolatedFileSystemManager.addEventListener(Events.FileSystemRemoved, this.#update, this);
+    this.#isolatedFileSystemManager.addEventListener(Events2.FileSystemAdded, this.#update, this);
+    this.#isolatedFileSystemManager.addEventListener(Events2.FileSystemRemoved, this.#update, this);
     this.#update();
   }
   /**
@@ -2334,8 +2345,8 @@ var AutomaticFileSystemWorkspaceBinding = class _AutomaticFileSystemWorkspaceBin
       this.#workspace.removeProject(this.#fileSystem);
     }
     this.#automaticFileSystemManager.removeEventListener("AutomaticFileSystemChanged", this.#update, this);
-    this.#isolatedFileSystemManager.removeEventListener(Events.FileSystemAdded, this.#update, this);
-    this.#isolatedFileSystemManager.removeEventListener(Events.FileSystemRemoved, this.#update, this);
+    this.#isolatedFileSystemManager.removeEventListener(Events2.FileSystemAdded, this.#update, this);
+    this.#isolatedFileSystemManager.removeEventListener(Events2.FileSystemRemoved, this.#update, this);
   }
   #update() {
     const automaticFileSystem = this.#automaticFileSystemManager.automaticFileSystem;
@@ -2359,6 +2370,7 @@ var AutomaticFileSystemWorkspaceBinding = class _AutomaticFileSystemWorkspaceBin
 // gen/front_end/models/persistence/NetworkPersistenceManager.js
 var NetworkPersistenceManager_exports = {};
 __export(NetworkPersistenceManager_exports, {
+  Events: () => Events5,
   HEADERS_FILENAME: () => HEADERS_FILENAME,
   NetworkPersistenceManager: () => NetworkPersistenceManager,
   escapeRegex: () => escapeRegex,
@@ -2366,14 +2378,14 @@ __export(NetworkPersistenceManager_exports, {
   isHeaderOverride: () => isHeaderOverride,
   persistenceNetworkOverridesEnabledSettingDescriptor: () => persistenceNetworkOverridesEnabledSettingDescriptor
 });
-import * as Common9 from "./../../core/common/common.js";
-import * as Host8 from "./../../core/host/host.js";
-import * as Platform11 from "./../../core/platform/platform.js";
-import * as Root5 from "./../../core/root/root.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
-import * as Breakpoints from "./../breakpoints/breakpoints.js";
-import * as Workspace9 from "./../workspace/workspace.js";
+import * as Common9 from "../../core/common/common.js";
+import * as Host8 from "../../core/host/host.js";
+import * as Platform11 from "../../core/platform/platform.js";
+import * as Root5 from "../../core/root/root.js";
+import * as SDK3 from "../../core/sdk/sdk.js";
+import * as TextUtils6 from "../../core/text_utils/text_utils.js";
+import * as Breakpoints from "../breakpoints/breakpoints.js";
+import * as Workspace9 from "../workspace/workspace.js";
 var forbiddenUrls = ["chromewebstore.google.com", "chrome.google.com"];
 var persistenceNetworkOverridesEnabledSettingDescriptor = {
   name: "persistence-network-overrides-enabled",
@@ -3195,6 +3207,13 @@ var RESERVED_FILENAMES = /* @__PURE__ */ new Set([
   "lpt9"
 ]);
 var HEADERS_FILENAME = ".headers";
+var Events5;
+(function(Events6) {
+  Events6["PROJECT_CHANGED"] = "ProjectChanged";
+  Events6["REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED"] = "RequestsForHeaderOverridesFileChanged";
+  Events6["LOCAL_OVERRIDES_PROJECT_UPDATED"] = "LocalOverridesProjectUpdated";
+  Events6["LOCAL_OVERRIDES_REQUESTED"] = "LocalOverridesRequested";
+})(Events5 || (Events5 = {}));
 function isHeaderOverride(arg) {
   if (!(arg && typeof arg.applyTo === "string" && arg.headers?.length && Array.isArray(arg.headers))) {
     return false;

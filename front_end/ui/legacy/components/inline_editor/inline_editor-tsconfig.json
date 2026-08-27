@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../../../front_end/ui/legacy/components/inline_editor",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -72,7 +73,7 @@
       "path": "../../../../models/geometry/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../../../../tsc/front_end/third_party/codemirror.next/bundle-tsconfig.ref.json"
+      "path": "../../../../third_party/codemirror.next/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../../components/buttons/bundle-tsconfig.ref.json"

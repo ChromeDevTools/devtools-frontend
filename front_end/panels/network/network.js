@@ -10,15 +10,15 @@ __export(BinaryResourceView_exports, {
   BinaryResourceView: () => BinaryResourceView,
   BinaryViewObject: () => BinaryViewObject
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as SourceFrame from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import { html, nothing, render } from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/legacy.js";
+import * as Common from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
+import * as SourceFrame from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI from "../../ui/legacy/legacy.js";
+import { html, nothing, render } from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/binaryResourceView.css.js
 var binaryResourceView_css_default = `/*
@@ -29,7 +29,7 @@ var binaryResourceView_css_default = `/*
 
 @scope to (devtools-widget > *) {
   .panel.network devtools-toolbar.binary-view-toolbar {
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
     border-bottom: 0;
     padding-left: 5px;
     flex: none;
@@ -270,21 +270,21 @@ __export(RequestConditionsDrawer_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
   RequestConditionsDrawer: () => RequestConditionsDrawer
 });
-import "./../../ui/components/lists/lists.js";
-import "./../../ui/components/tooltips/tooltips.js";
-import "./../../ui/legacy/legacy.js";
-import * as Common2 from "./../../core/common/common.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as Logs from "./../../models/logs/logs.js";
-import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
-import * as uiI18n from "./../../ui/i18n/i18n.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html2, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
-import * as MobileThrottling from "./../mobile_throttling/mobile_throttling.js";
-import * as PanelUtils from "./../utils/utils.js";
+import "../../ui/components/lists/lists.js";
+import "../../ui/components/tooltips/tooltips.js";
+import "../../ui/legacy/legacy.js";
+import * as Common2 from "../../core/common/common.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as Logs from "../../models/logs/logs.js";
+import * as Buttons2 from "../../ui/components/buttons/buttons.js";
+import * as uiI18n from "../../ui/i18n/i18n.js";
+import * as UI2 from "../../ui/legacy/legacy.js";
+import { Directives, html as html2, nothing as nothing2, render as render2 } from "../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
+import * as MobileThrottling from "../mobile_throttling/mobile_throttling.js";
+import * as PanelUtils from "../utils/utils.js";
 
 // gen/front_end/panels/network/requestConditionsDrawer.css.js
 var requestConditionsDrawer_css_default = `/*
@@ -295,7 +295,7 @@ var requestConditionsDrawer_css_default = `/*
 
 .list {
   border: none !important; /* stylelint-disable-line declaration-no-important */
-  border-top: 1px solid var(--sys-color-divider) !important; /* stylelint-disable-line declaration-no-important */
+  border-top: var(--sys-size-1) solid var(--sys-color-divider) !important; /* stylelint-disable-line declaration-no-important */
   display: flex;
   height: 100%;
 }
@@ -305,7 +305,7 @@ var requestConditionsDrawer_css_default = `/*
 }
 
 .editor-container {
-  padding: 0 4px;
+  padding: 0 var(--sys-size-3);
 }
 
 .blocked-urls {
@@ -333,7 +333,7 @@ var requestConditionsDrawer_css_default = `/*
 }
 
 .blocked-url-checkbox {
-  margin-left: 8px;
+  margin-left: var(--sys-size-5);
   flex: none;
 }
 
@@ -368,7 +368,7 @@ var requestConditionsDrawer_css_default = `/*
 .blocked-url-edit-row input {
   width: 100%;
   text-align: inherit;
-  height: 22px;
+  height: var(--sys-size-10);
 }
 
 .conditions-selector {
@@ -944,12 +944,12 @@ __export(RequestDeviceBoundSessionsView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
   RequestDeviceBoundSessionsView: () => RequestDeviceBoundSessionsView
 });
-import "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
-import { html as html3, nothing as nothing3, render as render3 } from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/components/data_grid/data_grid.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as UI3 from "../../ui/legacy/legacy.js";
+import { html as html3, nothing as nothing3, render as render3 } from "../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestDeviceBoundSessionsView.css.js
 var requestDeviceBoundSessionsView_css_default = `/*
@@ -958,7 +958,7 @@ var requestDeviceBoundSessionsView_css_default = `/*
  * found in the LICENSE file.
  */
 .request-device-bound-sessions-view {
-  margin: 20px;
+  margin: var(--sys-size-9);
   overflow-y: auto;
   scroll-behavior: smooth;
 }
@@ -1102,15 +1102,15 @@ __export(EventSourceMessagesView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   EventSourceMessagesView: () => EventSourceMessagesView
 });
-import "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as Common3 from "./../../core/common/common.js";
-import * as Host2 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html4, render as render4 } from "./../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/components/data_grid/data_grid.js";
+import * as Common3 from "../../core/common/common.js";
+import * as Host2 from "../../core/host/host.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
+import * as SDK3 from "../../core/sdk/sdk.js";
+import * as Buttons3 from "../../ui/components/buttons/buttons.js";
+import * as UI4 from "../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html4, render as render4 } from "../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/eventSourceMessagesView.css.js
 var eventSourceMessagesView_css_default = `/*
@@ -1305,15 +1305,15 @@ __export(NetworkConfigView_exports, {
   NetworkConfigView: () => NetworkConfigView,
   userAgentGroups: () => userAgentGroups
 });
-import * as Common4 from "./../../core/common/common.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Platform2 from "./../../core/platform/platform.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
-import * as SettingsUI from "./../../ui/legacy/components/settings_ui/settings_ui.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
-import * as MobileThrottling2 from "./../mobile_throttling/mobile_throttling.js";
-import * as EmulationComponents from "./../settings/emulation/components/components.js";
+import * as Common4 from "../../core/common/common.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
+import * as Platform2 from "../../core/platform/platform.js";
+import * as SDK4 from "../../core/sdk/sdk.js";
+import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.js";
+import * as UI5 from "../../ui/legacy/legacy.js";
+import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
+import * as MobileThrottling2 from "../mobile_throttling/mobile_throttling.js";
+import * as EmulationComponents from "../settings/emulation/components/components.js";
 
 // gen/front_end/panels/network/networkConfigView.css.js
 var networkConfigView_css_default = `/*
@@ -1323,7 +1323,7 @@ var networkConfigView_css_default = `/*
  */
 
 .network-config {
-  padding: 12px;
+  padding: var(--sys-size-6);
   display: block;
 }
 
@@ -1336,7 +1336,7 @@ var networkConfigView_css_default = `/*
 }
 
 .network-config-title {
-  margin-right: 16px;
+  margin-right: var(--sys-size-8);
   width: 130px;
 }
 
@@ -1349,14 +1349,14 @@ var networkConfigView_css_default = `/*
 }
 
 .panel-section-separator {
-  height: 1px;
+  height: var(--sys-size-1);
   margin-bottom: 10px;
   background: var(--sys-color-divider);
 }
 /* Disable cache */
 
 .network-config-disable-cache {
-  line-height: 28px;
+  line-height: var(--sys-size-12);
   border-top: none;
   padding-top: 0;
 }
@@ -1383,32 +1383,32 @@ var networkConfigView_css_default = `/*
   }
 
   & > .network-config-title {
-    line-height: 24px;
+    line-height: var(--sys-size-11);
   }
 }
 /* User agent */
 
 .network-config-ua > .network-config-title {
-  line-height: 20px;
+  line-height: var(--sys-size-9);
 }
 
 .network-config-ua input {
   display: block;
-  width: calc(100% - 20px);
+  width: calc(100% - var(--sys-size-9));
 }
 
 .network-config-ua input[type="text"],
 .network-config-ua select {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .network-config-ua select {
-  width: calc(100% - 20px);
+  width: calc(100% - var(--sys-size-9));
   max-width: 250px;
 }
 
 .network-config-ua-custom {
-  padding-bottom: 8px;
+  padding-bottom: var(--sys-size-5);
 
   input,
   devtools-user-agent-client-hints-form {
@@ -1425,7 +1425,7 @@ var networkConfigView_css_default = `/*
 
 devtools-user-agent-client-hints-form {
   display: block;
-  margin-top: 14px;
+  margin-top: var(--sys-size-7);
   width: min(100%, 400px);
 }
 
@@ -2117,29 +2117,31 @@ var userAgentGroups = [
 // gen/front_end/panels/network/NetworkDataGridNode.js
 var NetworkDataGridNode_exports = {};
 __export(NetworkDataGridNode_exports, {
+  Events: () => Events,
   NetworkGroupNode: () => NetworkGroupNode,
   NetworkNode: () => NetworkNode,
   NetworkRequestNode: () => NetworkRequestNode,
+  RequestPanelBehavior: () => RequestPanelBehavior,
   _backgroundColors: () => _backgroundColors
 });
-import * as Common5 from "./../../core/common/common.js";
-import * as Host3 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Platform3 from "./../../core/platform/platform.js";
-import * as SDK5 from "./../../core/sdk/sdk.js";
-import * as AiAssistance from "./../../models/ai_assistance/ai_assistance.js";
-import * as Bindings from "./../../models/bindings/bindings.js";
-import * as Logs2 from "./../../models/logs/logs.js";
-import * as StackTrace from "./../../models/stack_trace/stack_trace.js";
+import * as Common5 from "../../core/common/common.js";
+import * as Host3 from "../../core/host/host.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
+import * as Platform3 from "../../core/platform/platform.js";
+import * as SDK5 from "../../core/sdk/sdk.js";
+import * as AiAssistance from "../../models/ai_assistance/ai_assistance.js";
+import * as Bindings from "../../models/bindings/bindings.js";
+import * as Logs2 from "../../models/logs/logs.js";
+import * as StackTrace from "../../models/stack_trace/stack_trace.js";
 import * as NetworkForward from "./forward/forward.js";
-import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
-import { createIcon } from "./../../ui/kit/kit.js";
-import * as DataGrid from "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as Components from "./../../ui/legacy/components/utils/utils.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
-import { render as render5 } from "./../../ui/lit/lit.js";
-import { PanelUtils as PanelUtils3 } from "./../utils/utils.js";
+import * as Buttons4 from "../../ui/components/buttons/buttons.js";
+import { createIcon } from "../../ui/kit/kit.js";
+import * as DataGrid from "../../ui/legacy/components/data_grid/data_grid.js";
+import * as PerfUI from "../../ui/legacy/components/perf_ui/perf_ui.js";
+import * as Components from "../../ui/legacy/components/utils/utils.js";
+import * as UI6 from "../../ui/legacy/legacy.js";
+import { render as render5 } from "../../ui/lit/lit.js";
+import { PanelUtils as PanelUtils3 } from "../utils/utils.js";
 var UIStrings6 = {
   /**
    * @description Text in Network Data Grid Node of the Network panel
@@ -2430,6 +2432,17 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/network/NetworkDataGridNode.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var Events;
+(function(Events2) {
+  Events2["RequestSelected"] = "RequestSelected";
+  Events2["RequestActivated"] = "RequestActivated";
+})(Events || (Events = {}));
+var RequestPanelBehavior;
+(function(RequestPanelBehavior2) {
+  RequestPanelBehavior2["ShowPanel"] = "ShowPanel";
+  RequestPanelBehavior2["HidePanel"] = "HidePanel";
+  RequestPanelBehavior2["Unchanged"] = "Unchanged";
+})(RequestPanelBehavior || (RequestPanelBehavior = {}));
 var NetworkNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
   parentViewInternal;
   isHovered;
@@ -3657,14 +3670,14 @@ var NetworkItemView_exports = {};
 __export(NetworkItemView_exports, {
   NetworkItemView: () => NetworkItemView
 });
-import * as Common14 from "./../../core/common/common.js";
-import * as i18n37 from "./../../core/i18n/i18n.js";
-import * as Platform10 from "./../../core/platform/platform.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
+import * as Common14 from "../../core/common/common.js";
+import * as i18n37 from "../../core/i18n/i18n.js";
+import * as Platform10 from "../../core/platform/platform.js";
+import * as SDK13 from "../../core/sdk/sdk.js";
 import * as NetworkForward3 from "./forward/forward.js";
-import { Icon as Icon2 } from "./../../ui/kit/kit.js";
-import * as UI18 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
+import { Icon as Icon2 } from "../../ui/kit/kit.js";
+import * as UI18 from "../../ui/legacy/legacy.js";
+import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 import * as NetworkComponents2 from "./components/components.js";
 
 // gen/front_end/panels/network/RequestCookiesView.js
@@ -3673,14 +3686,14 @@ __export(RequestCookiesView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW4,
   RequestCookiesView: () => RequestCookiesView
 });
-import * as Common6 from "./../../core/common/common.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as uiI18n2 from "./../../ui/i18n/i18n.js";
-import * as CookieTable from "./../../ui/legacy/components/cookie_table/cookie_table.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
-import * as Lit from "./../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common6 from "../../core/common/common.js";
+import * as i18n13 from "../../core/i18n/i18n.js";
+import * as SDK6 from "../../core/sdk/sdk.js";
+import * as uiI18n2 from "../../ui/i18n/i18n.js";
+import * as CookieTable from "../../ui/legacy/components/cookie_table/cookie_table.js";
+import * as UI7 from "../../ui/legacy/legacy.js";
+import * as Lit from "../../ui/lit/lit.js";
+import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestCookiesView.css.js
 var requestCookiesView_css_default = `/*
@@ -3692,26 +3705,26 @@ var requestCookiesView_css_default = `/*
 @scope to (devtools-widget > *) {
   .request-cookies-view {
     overflow: auto;
-    padding: 12px;
+    padding: var(--sys-size-6);
     height: 100%;
     background-color: var(--sys-color-cdt-base-container);
   }
 
   .request-cookies-view .request-cookies-title {
-    font-size: 12px;
+    font-size: var(--sys-typescale-body4-size);
     font-weight: bold;
     margin-right: 30px;
     color: var(--sys-color-on-surface);
   }
 
   .request-cookies-view .cookie-line {
-    margin-top: 6px;
+    margin-top: var(--sys-size-4);
     display: flex;
   }
 
   .request-cookies-view .cookies-panel-item {
-    margin-top: 6px;
-    margin-bottom: 16px;
+    margin-top: var(--sys-size-4);
+    margin-bottom: var(--sys-size-8);
     flex: none;
   }
 }
@@ -3987,20 +4000,20 @@ __export(RequestHeadersView_exports, {
   renderGeneralRows: () => renderGeneralRows,
   renderGeneralSection: () => renderGeneralSection
 });
-import "./../../ui/kit/kit.js";
-import * as Common7 from "./../../core/common/common.js";
-import * as Host4 from "./../../core/host/host.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Platform4 from "./../../core/platform/platform.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
-import * as Persistence from "./../../models/persistence/persistence.js";
-import * as Workspace from "./../../models/workspace/workspace.js";
+import "../../ui/kit/kit.js";
+import * as Common7 from "../../core/common/common.js";
+import * as Host4 from "../../core/host/host.js";
+import * as i18n17 from "../../core/i18n/i18n.js";
+import * as Platform4 from "../../core/platform/platform.js";
+import * as SDK7 from "../../core/sdk/sdk.js";
+import * as Persistence from "../../models/persistence/persistence.js";
+import * as Workspace from "../../models/workspace/workspace.js";
 import * as NetworkForward2 from "./forward/forward.js";
-import * as Input from "./../../ui/components/input/input.js";
-import * as UI9 from "./../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
-import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
-import * as Sources from "./../sources/sources.js";
+import * as Input from "../../ui/components/input/input.js";
+import * as UI9 from "../../ui/legacy/legacy.js";
+import * as Lit3 from "../../ui/lit/lit.js";
+import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
+import * as Sources from "../sources/sources.js";
 import * as NetworkComponents from "./components/components.js";
 
 // gen/front_end/panels/network/ShowMoreDetailsWidget.js
@@ -4009,10 +4022,10 @@ __export(ShowMoreDetailsWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW5,
   ShowMoreDetailsWidget: () => ShowMoreDetailsWidget
 });
-import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
+import * as i18n15 from "../../core/i18n/i18n.js";
+import * as Buttons5 from "../../ui/components/buttons/buttons.js";
+import * as UI8 from "../../ui/legacy/legacy.js";
+import * as Lit2 from "../../ui/lit/lit.js";
 var UIStrings8 = {
   /**
    * @description Text to show more content
@@ -4479,14 +4492,14 @@ __export(RequestInitiatorView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW7,
   RequestInitiatorView: () => RequestInitiatorView
 });
-import * as i18n19 from "./../../core/i18n/i18n.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
-import * as Bindings2 from "./../../models/bindings/bindings.js";
-import * as Logs3 from "./../../models/logs/logs.js";
-import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI10 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html8, nothing as nothing7, render as render9 } from "./../../ui/lit/lit.js";
-import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
+import * as i18n19 from "../../core/i18n/i18n.js";
+import * as SDK8 from "../../core/sdk/sdk.js";
+import * as Bindings2 from "../../models/bindings/bindings.js";
+import * as Logs3 from "../../models/logs/logs.js";
+import * as Components2 from "../../ui/legacy/components/utils/utils.js";
+import * as UI10 from "../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html8, nothing as nothing7, render as render9 } from "../../ui/lit/lit.js";
+import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestInitiatorView.css.js
 var requestInitiatorView_css_default = `/*
@@ -4497,7 +4510,7 @@ var requestInitiatorView_css_default = `/*
 
 .request-initiator-view {
   display: flex;
-  margin: 6px;
+  margin: var(--sys-size-4);
 }
 
 /*# sourceURL=${import.meta.resolve("./requestInitiatorView.css")} */`;
@@ -4513,18 +4526,18 @@ var requestInitiatorViewTree_css_default = `/*
   user-select: text;
 
   & .fill {
-    right: -6px; /* Same as the margin in .request-initiator-view but negative. */
+    right: calc(-1 * var(--sys-size-4)); /* Same as the margin in .request-initiator-view but negative. */
   }
 }
 
 .request-initiator-view-section-title {
   font-weight: bold;
-  padding: 4px;
+  padding: var(--sys-size-3);
 }
 
 .console-origin-label {
   color: var(--sys-color-token-subtle);
-  padding: 2px 4px 2px 20px;
+  padding: var(--sys-size-2) var(--sys-size-3) var(--sys-size-2) var(--sys-size-9);
 }
 
 .request-initiator-view-section-title:focus-visible {
@@ -4748,14 +4761,14 @@ __export(RequestPayloadView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW8,
   RequestPayloadView: () => RequestPayloadView
 });
-import * as Common8 from "./../../core/common/common.js";
-import * as Host5 from "./../../core/host/host.js";
-import * as i18n21 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
-import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
+import * as Common8 from "../../core/common/common.js";
+import * as Host5 from "../../core/host/host.js";
+import * as i18n21 from "../../core/i18n/i18n.js";
+import * as Platform5 from "../../core/platform/platform.js";
+import * as SDK9 from "../../core/sdk/sdk.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as Buttons6 from "../../ui/components/buttons/buttons.js";
+import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 
 // gen/front_end/ui/legacy/components/object_ui/objectPropertiesSection.css.js
 var objectPropertiesSection_css_default = `/*
@@ -4787,14 +4800,14 @@ li.object-properties-section  {
 
   &::before {
     flex-shrink: 0;
-    margin-right: 2px;
+    margin-right: var(--sys-size-2);
     align-self: flex-start;
   }
 }
 
 .object-properties-section li.editing-sub-part {
-  padding: 3px 12px 8px 6px;
-  margin: -1px -6px -8px;
+  padding: 3px var(--sys-size-6) var(--sys-size-5) var(--sys-size-4);
+  margin: calc(-1 * var(--sys-size-1)) calc(-1 * var(--sys-size-4)) calc(-1 * var(--sys-size-5));
   text-overflow: clip;
 }
 
@@ -4829,7 +4842,7 @@ li.object-properties-section  {
 }
 
 .name-and-value {
-  line-height: 16px;
+  line-height: var(--sys-size-8);
   display: flex;
   white-space: nowrap;
 }
@@ -4845,7 +4858,7 @@ li.object-properties-section  {
 }
 
 .property-prompt {
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
 }
 
 .tree-outline.hide-selection-when-blurred .selected:focus-visible {
@@ -4857,7 +4870,7 @@ li.object-properties-section  {
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value,
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .gray-info-message {
   background: var(--sys-color-state-focus-highlight);
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
 }
 
 @media (forced-colors: active) {
@@ -5002,9 +5015,9 @@ var objectValue_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./objectValue.css")} */`;
 
 // gen/front_end/panels/network/RequestPayloadView.js
-import * as UI11 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives4, html as html9, nothing as nothing8, render as render10 } from "./../../ui/lit/lit.js";
-import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
+import * as UI11 from "../../ui/legacy/legacy.js";
+import { Directives as Directives4, html as html9, nothing as nothing8, render as render10 } from "../../ui/lit/lit.js";
+import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/requestPayloadTree.css.js
 var requestPayloadTree_css_default = `/*
@@ -5019,14 +5032,14 @@ var requestPayloadTree_css_default = `/*
 
 .tree-outline > ol {
   padding-bottom: 5px;
-  border-bottom: solid 1px var(--sys-color-divider);
+  border-bottom: solid var(--sys-size-1) var(--sys-color-divider);
 }
 
 .tree-outline > .parent {
   user-select: none;
   font-weight: bold;
   color: var(--sys-color-on-surface);
-  margin-top: -1px;
+  margin-top: calc(-1 * var(--sys-size-1));
   display: flex;
   align-items: center;
   height: var(--sys-size-13);
@@ -5034,7 +5047,7 @@ var requestPayloadTree_css_default = `/*
 
 .tree-outline li {
   padding-left: 5px;
-  line-height: 20px;
+  line-height: var(--sys-size-9);
 }
 
 .tree-outline li:not(.parent) {
@@ -5071,7 +5084,7 @@ var requestPayloadTree_css_default = `/*
 }
 
 .tree-outline li.expanded .payload-toggle:focus-visible {
-  border: 2px solid var(--sys-color-state-focus-ring);
+  border: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   border-radius: 5px;
 }
 
@@ -5101,7 +5114,7 @@ var requestPayloadTree_css_default = `/*
 }
 
 .request-payload-show-more-button {
-  margin: 0 4px;
+  margin: 0 var(--sys-size-3);
 }
 
 @media (forced-colors: active) {
@@ -5149,7 +5162,7 @@ var requestPayloadView_css_default = `/*
   min-height: 200px;
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .request-payload-tree {
@@ -5534,13 +5547,13 @@ var RequestPreviewView_exports = {};
 __export(RequestPreviewView_exports, {
   RequestPreviewView: () => RequestPreviewView
 });
-import "./../../ui/legacy/legacy.js";
-import * as i18n25 from "./../../core/i18n/i18n.js";
-import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
-import * as SourceFrame2 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI14 from "./../../ui/legacy/legacy.js";
-import { render as render12 } from "./../../ui/lit/lit.js";
-import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/legacy.js";
+import * as i18n25 from "../../core/i18n/i18n.js";
+import * as TextUtils2 from "../../core/text_utils/text_utils.js";
+import * as SourceFrame2 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI14 from "../../ui/legacy/legacy.js";
+import { render as render12 } from "../../ui/lit/lit.js";
+import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/RequestHTMLView.js
 var RequestHTMLView_exports = {};
@@ -5548,8 +5561,8 @@ __export(RequestHTMLView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW9,
   RequestHTMLView: () => RequestHTMLView
 });
-import * as UI12 from "./../../ui/legacy/legacy.js";
-import { html as html10, nothing as nothing9, render as render11 } from "./../../ui/lit/lit.js";
+import * as UI12 from "../../ui/legacy/legacy.js";
+import { html as html10, nothing as nothing9, render as render11 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/network/requestHTMLView.css.js
 var requestHTMLView_css_default = `/*
@@ -5564,7 +5577,7 @@ var requestHTMLView_css_default = `/*
     background: var(--ref-palette-neutral100);
     color-scheme: light;
     flex-grow: 1;
-    margin: 20px;
+    margin: var(--sys-size-9);
   }
 }
 
@@ -5613,11 +5626,11 @@ __export(SignedExchangeInfoView_exports, {
   Category: () => Category,
   SignedExchangeInfoView: () => SignedExchangeInfoView
 });
-import * as Host6 from "./../../core/host/host.js";
-import * as i18n23 from "./../../core/i18n/i18n.js";
-import { Icon, Link } from "./../../ui/kit/kit.js";
-import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI13 from "./../../ui/legacy/legacy.js";
+import * as Host6 from "../../core/host/host.js";
+import * as i18n23 from "../../core/i18n/i18n.js";
+import { Icon, Link } from "../../ui/kit/kit.js";
+import * as Components3 from "../../ui/legacy/components/utils/utils.js";
+import * as UI13 from "../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/network/signedExchangeInfoTree.css.js
 var signedExchangeInfoTree_css_default = `/*
@@ -5632,14 +5645,14 @@ var signedExchangeInfoTree_css_default = `/*
 
 .tree-outline > ol {
   padding-bottom: 5px;
-  border-bottom: solid 1px var(--sys-color-divider);
+  border-bottom: solid var(--sys-size-1) var(--sys-color-divider);
 }
 
 .tree-outline > .parent {
   user-select: none;
   font-weight: bold;
   color: var(--sys-color-on-surface);
-  margin-top: -1px;
+  margin-top: calc(-1 * var(--sys-size-1));
   display: flex;
   align-items: center;
   height: 26px;
@@ -5647,7 +5660,7 @@ var signedExchangeInfoTree_css_default = `/*
 
 .tree-outline li {
   padding-left: 5px;
-  line-height: 20px;
+  line-height: var(--sys-size-9);
 }
 
 .tree-outline li:not(.parent) {
@@ -5677,7 +5690,7 @@ var signedExchangeInfoTree_css_default = `/*
   margin-right: 1em;
   white-space: pre-wrap;
   word-break: break-all;
-  margin-top: 1px;
+  margin-top: var(--sys-size-1);
 }
 
 .tree-outline .header-toggle {
@@ -5705,7 +5718,7 @@ var signedExchangeInfoTree_css_default = `/*
   display: block;
   word-break: normal;
   overflow-wrap: anywhere;
-  margin-left: 20px;
+  margin-left: var(--sys-size-9);
 }
 
 .tree-outline .error-field {
@@ -5713,7 +5726,7 @@ var signedExchangeInfoTree_css_default = `/*
 }
 
 .prompt-icon {
-  margin-top: 2px;
+  margin-top: var(--sys-size-2);
 }
 
 /*# sourceURL=${import.meta.resolve("./signedExchangeInfoTree.css")} */`;
@@ -6073,13 +6086,13 @@ __export(RequestResponseView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW10,
   RequestResponseView: () => RequestResponseView
 });
-import * as Common9 from "./../../core/common/common.js";
-import * as Host7 from "./../../core/host/host.js";
-import * as i18n27 from "./../../core/i18n/i18n.js";
-import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
-import * as SourceFrame3 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI15 from "./../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../ui/lit/lit.js";
+import * as Common9 from "../../core/common/common.js";
+import * as Host7 from "../../core/host/host.js";
+import * as i18n27 from "../../core/i18n/i18n.js";
+import * as TextUtils3 from "../../core/text_utils/text_utils.js";
+import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI15 from "../../ui/legacy/legacy.js";
+import * as Lit4 from "../../ui/lit/lit.js";
 var { html: html11, render: render13 } = Lit4;
 var UIStrings14 = {
   /**
@@ -6166,19 +6179,19 @@ __export(RequestTimingView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW11,
   RequestTimingView: () => RequestTimingView
 });
-import "./../../ui/kit/kit.js";
-import * as Common10 from "./../../core/common/common.js";
-import * as Host8 from "./../../core/host/host.js";
-import * as i18n29 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
-import * as SDK10 from "./../../core/sdk/sdk.js";
-import * as Logs4 from "./../../models/logs/logs.js";
-import * as NetworkTimeCalculator from "./../../models/network_time_calculator/network_time_calculator.js";
-import * as uiI18n3 from "./../../ui/i18n/i18n.js";
-import * as ObjectUI2 from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as UI16 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives5, html as html12, nothing as nothing10, render as render14 } from "./../../ui/lit/lit.js";
-import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/kit/kit.js";
+import * as Common10 from "../../core/common/common.js";
+import * as Host8 from "../../core/host/host.js";
+import * as i18n29 from "../../core/i18n/i18n.js";
+import * as Platform6 from "../../core/platform/platform.js";
+import * as SDK10 from "../../core/sdk/sdk.js";
+import * as Logs4 from "../../models/logs/logs.js";
+import * as NetworkTimeCalculator from "../../models/network_time_calculator/network_time_calculator.js";
+import * as uiI18n3 from "../../ui/i18n/i18n.js";
+import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
+import * as UI16 from "../../ui/legacy/legacy.js";
+import { Directives as Directives5, html as html12, nothing as nothing10, render as render14 } from "../../ui/lit/lit.js";
+import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/networkTimingTable.css.js
 var networkTimingTable_css_default = `/*
@@ -6201,8 +6214,8 @@ var networkTimingTable_css_default = `/*
 }
 
 .network-timing-start th span.network-timing-hidden-header {
-  height: 1px;
-  width: 1px;
+  height: var(--sys-size-1);
+  width: var(--sys-size-1);
   position: absolute;
   overflow: hidden;
 }
@@ -6217,7 +6230,7 @@ var networkTimingTable_css_default = `/*
 }
 
 .network-timing-table td {
-  padding: 4px 0;
+  padding: var(--sys-size-3) 0;
 }
 
 .network-timing-table-header td:last-child {
@@ -6230,7 +6243,7 @@ var networkTimingTable_css_default = `/*
 }
 
 table.network-timing-table > tr:not(.network-timing-table-header, .network-timing-footer) > td:first-child {
-  padding-left: 12px;
+  padding-left: var(--sys-size-6);
 }
 
 .network-timing-table col.labels {
@@ -6238,19 +6251,19 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 }
 
 .network-timing-table col.duration {
-  width: 80px;
+  width: var(--sys-size-19);
 }
 
 .network-timing-table td.caution {
   font-weight: bold;
   color: var(--issue-color-yellow);
-  padding: 2px 0;
+  padding: var(--sys-size-2) 0;
 }
 
 .network-timing-table hr.break {
   background-color: var(--sys-color-divider);
   border: none;
-  height: 1px;
+  height: var(--sys-size-1);
 }
 
 .network-timing-row {
@@ -6260,7 +6273,7 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 
 .network-timing-bar {
   position: absolute;
-  min-width: 1px;
+  min-width: var(--sys-size-1);
   inset: 0 attr(data-right %) 0 attr(data-left %);
 }
 
@@ -6272,7 +6285,7 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 
 .network-timing-bar.queueing,
 .network-timing-bar.total {
-  border: 1px solid var(--sys-color-token-subtle);
+  border: var(--sys-size-1) solid var(--sys-color-token-subtle);
 }
 
 .network-timing-bar.blocking,
@@ -6313,9 +6326,9 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
   user-select: none;
   mask-image: var(--image-file-triangle-right);
   float: left;
-  width: 14px;
-  height: 14px;
-  margin-right: 2px;
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
+  margin-right: var(--sys-size-2);
   content: "";
   position: relative;
   background-color: var(--icon-default);
@@ -6324,7 +6337,7 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 
 .network-fetch-timing-bar-clickable {
   position: relative;
-  left: -12px;
+  left: calc(-1 * var(--sys-size-6));
 }
 
 tr:has([aria-expanded="false"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,
@@ -7073,27 +7086,27 @@ var ResourceDirectSocketChunkView_exports = {};
 __export(ResourceDirectSocketChunkView_exports, {
   ResourceDirectSocketChunkView: () => ResourceDirectSocketChunkView
 });
-import * as Common12 from "./../../core/common/common.js";
-import * as i18n33 from "./../../core/i18n/i18n.js";
-import * as Platform8 from "./../../core/platform/platform.js";
-import * as SDK11 from "./../../core/sdk/sdk.js";
-import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
-import * as DataGrid3 from "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as Lit6 from "./../../ui/lit/lit.js";
-import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common12 from "../../core/common/common.js";
+import * as i18n33 from "../../core/i18n/i18n.js";
+import * as Platform8 from "../../core/platform/platform.js";
+import * as SDK11 from "../../core/sdk/sdk.js";
+import * as TextUtils6 from "../../core/text_utils/text_utils.js";
+import * as DataGrid3 from "../../ui/legacy/components/data_grid/data_grid.js";
+import * as Lit6 from "../../ui/lit/lit.js";
+import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/ResourceChunkView.js
-import * as Common11 from "./../../core/common/common.js";
-import * as Host9 from "./../../core/host/host.js";
-import * as i18n31 from "./../../core/i18n/i18n.js";
-import * as Platform7 from "./../../core/platform/platform.js";
-import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
-import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
-import * as DataGrid2 from "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as SourceFrame4 from "./../../ui/legacy/components/source_frame/source_frame.js";
-import * as UI17 from "./../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../ui/lit/lit.js";
-import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common11 from "../../core/common/common.js";
+import * as Host9 from "../../core/host/host.js";
+import * as i18n31 from "../../core/i18n/i18n.js";
+import * as Platform7 from "../../core/platform/platform.js";
+import * as TextUtils5 from "../../core/text_utils/text_utils.js";
+import * as Buttons7 from "../../ui/components/buttons/buttons.js";
+import * as DataGrid2 from "../../ui/legacy/components/data_grid/data_grid.js";
+import * as SourceFrame4 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as UI17 from "../../ui/legacy/legacy.js";
+import * as Lit5 from "../../ui/lit/lit.js";
+import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/resourceChunkView.css.js
 var resourceChunkView_css_default = `/*
@@ -7124,19 +7137,19 @@ var resourceChunkView_css_default = `/*
   .data-grid .data-container table.data {
     tr.data-grid-data-grid-node {
       td.resource-chunk-view-td {
-        border-bottom: 1px solid var(--sys-color-divider);
+        border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
       }
 
       &.resource-chunk-view-row-send td:first-child::before {
         content: "\\2B06";
         color: var(--sys-color-tertiary);
-        padding-right: 4px;
+        padding-right: var(--sys-size-3);
       }
 
       &.resource-chunk-view-row-receive td:first-child::before {
         content: "\\2B07";
         color: var(--sys-color-error);
-        padding-right: 4px;
+        padding-right: var(--sys-size-3);
       }
 
       &.resource-chunk-view-row-send {
@@ -7669,12 +7682,12 @@ var ResourceWebSocketFrameView_exports = {};
 __export(ResourceWebSocketFrameView_exports, {
   ResourceWebSocketFrameView: () => ResourceWebSocketFrameView
 });
-import * as Common13 from "./../../core/common/common.js";
-import * as i18n35 from "./../../core/i18n/i18n.js";
-import * as Platform9 from "./../../core/platform/platform.js";
-import * as SDK12 from "./../../core/sdk/sdk.js";
-import * as TextUtils7 from "./../../core/text_utils/text_utils.js";
-import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common13 from "../../core/common/common.js";
+import * as i18n35 from "../../core/i18n/i18n.js";
+import * as Platform9 from "../../core/platform/platform.js";
+import * as SDK12 from "../../core/sdk/sdk.js";
+import * as TextUtils7 from "../../core/text_utils/text_utils.js";
+import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 var UIStrings18 = {
   /**
    * @description Text in Resource Web Socket Frame View of the Network panel. Displays which Opcode
@@ -7769,6 +7782,15 @@ var ResourceWebSocketFrameView = class extends ResourceChunkView {
     return i18nString18(UIStrings18.sOpcodeS, { PH1: localizedDescription(), PH2: opCode });
   }
 };
+var OpCodes;
+(function(OpCodes2) {
+  OpCodes2[OpCodes2["CONTINUATION_FRAME"] = 0] = "CONTINUATION_FRAME";
+  OpCodes2[OpCodes2["TEXT_FRAME"] = 1] = "TEXT_FRAME";
+  OpCodes2[OpCodes2["BINARY_FRAME"] = 2] = "BINARY_FRAME";
+  OpCodes2[OpCodes2["CONNECTION_CLOSE_FRAME"] = 8] = "CONNECTION_CLOSE_FRAME";
+  OpCodes2[OpCodes2["PING_FRAME"] = 9] = "PING_FRAME";
+  OpCodes2[OpCodes2["PONG_FRAME"] = 10] = "PONG_FRAME";
+})(OpCodes || (OpCodes = {}));
 var opCodeDescriptions = function() {
   const map = [];
   map[
@@ -8163,7 +8185,7 @@ var NetworkItemView = class extends UI18.TabbedPane.TabbedPane {
 };
 
 // gen/front_end/panels/network/network.prebundle.js
-import "./../../models/network_time_calculator/network_time_calculator.js";
+import "../../models/network_time_calculator/network_time_calculator.js";
 
 // gen/front_end/panels/network/NetworkLogView.js
 var NetworkLogView_exports = {};
@@ -8175,25 +8197,25 @@ __export(NetworkLogView_exports, {
   isRequestFilteredOut: () => isRequestFilteredOut,
   overrideFilter: () => overrideFilter
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common19 from "./../../core/common/common.js";
-import * as Host10 from "./../../core/host/host.js";
-import * as i18n45 from "./../../core/i18n/i18n.js";
-import * as Platform12 from "./../../core/platform/platform.js";
-import * as SDK16 from "./../../core/sdk/sdk.js";
-import * as TextUtils8 from "./../../core/text_utils/text_utils.js";
-import * as Bindings3 from "./../../models/bindings/bindings.js";
-import * as HAR from "./../../models/har/har.js";
-import * as Logs5 from "./../../models/logs/logs.js";
-import * as NetworkTimeCalculator4 from "./../../models/network_time_calculator/network_time_calculator.js";
-import * as Persistence2 from "./../../models/persistence/persistence.js";
-import * as Workspace3 from "./../../models/workspace/workspace.js";
+import "../../ui/legacy/legacy.js";
+import * as Common19 from "../../core/common/common.js";
+import * as Host10 from "../../core/host/host.js";
+import * as i18n45 from "../../core/i18n/i18n.js";
+import * as Platform12 from "../../core/platform/platform.js";
+import * as SDK16 from "../../core/sdk/sdk.js";
+import * as TextUtils8 from "../../core/text_utils/text_utils.js";
+import * as Bindings3 from "../../models/bindings/bindings.js";
+import * as HAR from "../../models/har/har.js";
+import * as Logs5 from "../../models/logs/logs.js";
+import * as NetworkTimeCalculator4 from "../../models/network_time_calculator/network_time_calculator.js";
+import * as Persistence2 from "../../models/persistence/persistence.js";
+import * as Workspace3 from "../../models/workspace/workspace.js";
 import * as NetworkForward4 from "./forward/forward.js";
-import * as Sources2 from "./../sources/sources.js";
-import * as Adorners from "./../../ui/components/adorners/adorners.js";
-import * as Buttons8 from "./../../ui/components/buttons/buttons.js";
-import * as RenderCoordinator3 from "./../../ui/components/render_coordinator/render_coordinator.js";
-import * as DataGrid6 from "./../../ui/legacy/components/data_grid/data_grid.js";
+import * as Sources2 from "../sources/sources.js";
+import * as Adorners from "../../ui/components/adorners/adorners.js";
+import * as Buttons8 from "../../ui/components/buttons/buttons.js";
+import * as RenderCoordinator3 from "../../ui/components/render_coordinator/render_coordinator.js";
+import * as DataGrid6 from "../../ui/legacy/components/data_grid/data_grid.js";
 
 // gen/front_end/ui/legacy/components/data_grid/dataGridAiButton.css.js
 var dataGridAiButton_css_default = `/*
@@ -8220,10 +8242,10 @@ var dataGridAiButton_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./dataGridAiButton.css")} */`;
 
 // gen/front_end/panels/network/NetworkLogView.js
-import * as PerfUI4 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI23 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
+import * as PerfUI4 from "../../ui/legacy/components/perf_ui/perf_ui.js";
+import * as Components5 from "../../ui/legacy/components/utils/utils.js";
+import * as UI23 from "../../ui/legacy/legacy.js";
+import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/FetchHeaderCommenting.js
 var FetchHeaderCommenting_exports = {};
@@ -8232,7 +8254,7 @@ __export(FetchHeaderCommenting_exports, {
   commentForbiddenHeaders: () => commentForbiddenHeaders,
   isForbiddenHeader: () => isForbiddenHeader
 });
-import * as i18n39 from "./../../core/i18n/i18n.js";
+import * as i18n39 from "../../core/i18n/i18n.js";
 var UIStrings20 = {
   /**
    * @description Comment in a generated fetch command explaining why sec-* request headers are commented out.
@@ -8384,6 +8406,12 @@ var BLOCK_CLOSE_RE = /^\s*\},?\s*$/;
 function commentForbiddenHeaders(serializedOptions, rules = FORBIDDEN_HEADER_RULES) {
   const lines = serializedOptions.split("\n");
   const result = [];
+  let Mode;
+  (function(Mode2) {
+    Mode2[Mode2["BEFORE_HEADERS"] = 1] = "BEFORE_HEADERS";
+    Mode2[Mode2["INSIDE_HEADERS"] = 2] = "INSIDE_HEADERS";
+    Mode2[Mode2["AFTER_HEADERS"] = 3] = "AFTER_HEADERS";
+  })(Mode || (Mode = {}));
   let mode = 1;
   let pendingPrefixRule = null;
   function resetPrefixState() {
@@ -8446,7 +8474,7 @@ __export(LinkPreloadGenerator_exports, {
   canPreloadRequest: () => canPreloadRequest,
   generatePreloadLink: () => generatePreloadLink
 });
-import * as Common15 from "./../../core/common/common.js";
+import * as Common15 from "../../core/common/common.js";
 var resourceTypeToAsAttribute = /* @__PURE__ */ new Map([
   [Common15.ResourceType.resourceTypes.Document, "document"],
   [Common15.ResourceType.resourceTypes.Stylesheet, "style"],
@@ -8512,10 +8540,10 @@ __export(NetworkFrameGrouper_exports, {
   FrameGroupNode: () => FrameGroupNode,
   NetworkFrameGrouper: () => NetworkFrameGrouper
 });
-import * as Common16 from "./../../core/common/common.js";
-import * as SDK14 from "./../../core/sdk/sdk.js";
-import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
-import * as UI19 from "./../../ui/legacy/legacy.js";
+import * as Common16 from "../../core/common/common.js";
+import * as SDK14 from "../../core/sdk/sdk.js";
+import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
+import * as UI19 from "../../ui/legacy/legacy.js";
 var NetworkFrameGrouper = class {
   parentView;
   activeGroups;
@@ -9042,23 +9070,23 @@ var NetworkLogViewColumns_exports = {};
 __export(NetworkLogViewColumns_exports, {
   NetworkLogViewColumns: () => NetworkLogViewColumns
 });
-import * as Common18 from "./../../core/common/common.js";
-import * as i18n43 from "./../../core/i18n/i18n.js";
-import * as StackTrace3 from "./../../models/stack_trace/stack_trace.js";
-import { Icon as Icon3 } from "./../../ui/kit/kit.js";
-import * as DataGrid4 from "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI22 from "./../../ui/legacy/legacy.js";
-import * as ThemeSupport5 from "./../../ui/legacy/theme_support/theme_support.js";
-import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common18 from "../../core/common/common.js";
+import * as i18n43 from "../../core/i18n/i18n.js";
+import * as StackTrace3 from "../../models/stack_trace/stack_trace.js";
+import { Icon as Icon3 } from "../../ui/kit/kit.js";
+import * as DataGrid4 from "../../ui/legacy/components/data_grid/data_grid.js";
+import * as Components4 from "../../ui/legacy/components/utils/utils.js";
+import * as UI22 from "../../ui/legacy/legacy.js";
+import * as ThemeSupport5 from "../../ui/legacy/theme_support/theme_support.js";
+import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/NetworkManageCustomHeadersView.js
 var NetworkManageCustomHeadersView_exports = {};
 __export(NetworkManageCustomHeadersView_exports, {
   NetworkManageCustomHeadersView: () => NetworkManageCustomHeadersView
 });
-import * as i18n41 from "./../../core/i18n/i18n.js";
-import * as UI20 from "./../../ui/legacy/legacy.js";
+import * as i18n41 from "../../core/i18n/i18n.js";
+import * as UI20 from "../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/network/networkManageCustomHeadersView.css.js
 var networkManageCustomHeadersView_css_default = `/*
@@ -9081,7 +9109,7 @@ var networkManageCustomHeadersView_css_default = `/*
 }
 
 .custom-headers-header {
-  padding: 2px;
+  padding: var(--sys-size-2);
 }
 
 .custom-headers-list-item {
@@ -9225,12 +9253,12 @@ var NetworkWaterfallColumn_exports = {};
 __export(NetworkWaterfallColumn_exports, {
   NetworkWaterfallColumn: () => NetworkWaterfallColumn
 });
-import * as Common17 from "./../../core/common/common.js";
-import * as NetworkTimeCalculator3 from "./../../models/network_time_calculator/network_time_calculator.js";
-import * as RenderCoordinator2 from "./../../ui/components/render_coordinator/render_coordinator.js";
-import * as PerfUI3 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as UI21 from "./../../ui/legacy/legacy.js";
-import * as ThemeSupport3 from "./../../ui/legacy/theme_support/theme_support.js";
+import * as Common17 from "../../core/common/common.js";
+import * as NetworkTimeCalculator3 from "../../models/network_time_calculator/network_time_calculator.js";
+import * as RenderCoordinator2 from "../../ui/components/render_coordinator/render_coordinator.js";
+import * as PerfUI3 from "../../ui/legacy/components/perf_ui/perf_ui.js";
+import * as UI21 from "../../ui/legacy/legacy.js";
+import * as ThemeSupport3 from "../../ui/legacy/theme_support/theme_support.js";
 
 // gen/front_end/panels/network/NetworkOverview.js
 var NetworkOverview_exports = {};
@@ -9238,12 +9266,12 @@ __export(NetworkOverview_exports, {
   NetworkOverview: () => NetworkOverview,
   RequestTimeRangeNameToColor: () => RequestTimeRangeNameToColor
 });
-import * as SDK15 from "./../../core/sdk/sdk.js";
-import * as NetworkTimeCalculator2 from "./../../models/network_time_calculator/network_time_calculator.js";
-import * as Trace from "./../../models/trace/trace.js";
-import * as RenderCoordinator from "./../../ui/components/render_coordinator/render_coordinator.js";
-import * as PerfUI2 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as ThemeSupport from "./../../ui/legacy/theme_support/theme_support.js";
+import * as SDK15 from "../../core/sdk/sdk.js";
+import * as NetworkTimeCalculator2 from "../../models/network_time_calculator/network_time_calculator.js";
+import * as Trace from "../../models/trace/trace.js";
+import * as RenderCoordinator from "../../ui/components/render_coordinator/render_coordinator.js";
+import * as PerfUI2 from "../../ui/legacy/components/perf_ui/perf_ui.js";
+import * as ThemeSupport from "../../ui/legacy/theme_support/theme_support.js";
 var NetworkOverview = class extends PerfUI2.TimelineOverviewPane.TimelineOverviewBase {
   selectedFilmStripTime;
   numBands;
@@ -10996,6 +11024,11 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
   }
 };
 var INITIAL_SORT_COLUMN = "waterfall";
+var CalculatorTypes;
+(function(CalculatorTypes2) {
+  CalculatorTypes2["DURATION"] = "Duration";
+  CalculatorTypes2["TIME"] = "Time";
+})(CalculatorTypes || (CalculatorTypes = {}));
 var DEFAULT_COLUMN_CONFIG = {
   subtitle: null,
   visible: false,
@@ -11756,6 +11789,11 @@ var UIStrings23 = {
 };
 var str_23 = i18n45.i18n.registerUIStrings("panels/network/NetworkLogView.ts", UIStrings23);
 var i18nString22 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
+var FetchStyle;
+(function(FetchStyle2) {
+  FetchStyle2[FetchStyle2["BROWSER"] = 0] = "BROWSER";
+  FetchStyle2[FetchStyle2["NODE_JS"] = 1] = "NODE_JS";
+})(FetchStyle || (FetchStyle = {}));
 var NetworkLogView = class _NetworkLogView extends Common19.ObjectWrapper.eventMixin(UI23.Widget.VBox) {
   networkInvertFilterSetting;
   networkHideDataURLSetting;
@@ -13649,9 +13687,9 @@ __export(NetworkSearchScope_exports, {
   NetworkSearchResult: () => NetworkSearchResult,
   NetworkSearchScope: () => NetworkSearchScope
 });
-import * as i18n47 from "./../../core/i18n/i18n.js";
-import * as Platform13 from "./../../core/platform/platform.js";
-import * as TextUtils10 from "./../../core/text_utils/text_utils.js";
+import * as i18n47 from "../../core/i18n/i18n.js";
+import * as Platform13 from "../../core/platform/platform.js";
+import * as TextUtils10 from "../../core/text_utils/text_utils.js";
 import * as NetworkForward5 from "./forward/forward.js";
 var UIStrings24 = {
   /**
@@ -13818,24 +13856,24 @@ __export(NetworkPanel_exports, {
   RequestRevealer: () => RequestRevealer,
   SearchNetworkView: () => SearchNetworkView
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common20 from "./../../core/common/common.js";
-import * as Host11 from "./../../core/host/host.js";
-import * as i18n49 from "./../../core/i18n/i18n.js";
-import * as Platform14 from "./../../core/platform/platform.js";
-import * as SDK17 from "./../../core/sdk/sdk.js";
-import * as Logs6 from "./../../models/logs/logs.js";
-import * as NetworkTimeCalculator5 from "./../../models/network_time_calculator/network_time_calculator.js";
-import * as Trace2 from "./../../models/trace/trace.js";
-import * as Workspace4 from "./../../models/workspace/workspace.js";
+import "../../ui/legacy/legacy.js";
+import * as Common20 from "../../core/common/common.js";
+import * as Host11 from "../../core/host/host.js";
+import * as i18n49 from "../../core/i18n/i18n.js";
+import * as Platform14 from "../../core/platform/platform.js";
+import * as SDK17 from "../../core/sdk/sdk.js";
+import * as Logs6 from "../../models/logs/logs.js";
+import * as NetworkTimeCalculator5 from "../../models/network_time_calculator/network_time_calculator.js";
+import * as Trace2 from "../../models/trace/trace.js";
+import * as Workspace4 from "../../models/workspace/workspace.js";
 import * as NetworkForward6 from "./forward/forward.js";
-import * as Tracing from "./../../services/tracing/tracing.js";
-import * as PerfUI5 from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as SettingsUI3 from "./../../ui/legacy/components/settings_ui/settings_ui.js";
-import * as UI24 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
-import * as MobileThrottling3 from "./../mobile_throttling/mobile_throttling.js";
-import * as Search from "./../search/search.js";
+import * as Tracing from "../../services/tracing/tracing.js";
+import * as PerfUI5 from "../../ui/legacy/components/perf_ui/perf_ui.js";
+import * as SettingsUI3 from "../../ui/legacy/components/settings_ui/settings_ui.js";
+import * as UI24 from "../../ui/legacy/legacy.js";
+import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
+import * as MobileThrottling3 from "../mobile_throttling/mobile_throttling.js";
+import * as Search from "../search/search.js";
 
 // gen/front_end/panels/network/networkPanel.css.js
 var networkPanel_css_default = `/*
@@ -13905,7 +13943,7 @@ var networkPanel_css_default = `/*
 }
 
 .network-details-view-tall-header {
-  border-top: 4px solid var(--app-color-toolbar-background);
+  border-top: var(--sys-size-3) solid var(--app-color-toolbar-background);
 }
 
 .network-item-view {
@@ -13914,13 +13952,13 @@ var networkPanel_css_default = `/*
 }
 
 .network-item-preview-toolbar {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   background-color: var(--sys-color-surface1);
 }
 
 .resource-timing-view {
   display: block;
-  margin: 6px;
+  margin: var(--sys-size-4);
   color: var(--sys-color-on-surface);
   overflow: auto;
   background-color: var(--sys-color-cdt-base-container);
@@ -13941,7 +13979,7 @@ var networkPanel_css_default = `/*
   display: flex;
   flex-direction: column;
   position: relative;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 #network-overview-container canvas {
@@ -13976,7 +14014,7 @@ var networkPanel_css_default = `/*
 }
 
 .network-film-strip {
-  border-bottom: solid 1px var(--sys-color-divider);
+  border-bottom: solid var(--sys-size-1) var(--sys-color-divider);
   flex: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
@@ -13993,7 +14031,7 @@ var networkPanel_css_default = `/*
   grid-template-columns: 50% 50%;
   flex: none;
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .network-toolbar-container {
@@ -14001,7 +14039,7 @@ var networkPanel_css_default = `/*
   align-items: flex-start;
   flex: none;
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
   & > :first-child {
     flex: 1 1 auto;

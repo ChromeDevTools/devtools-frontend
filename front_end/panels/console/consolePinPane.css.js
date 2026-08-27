@@ -24,18 +24,18 @@ export default `/*
 }
 
 .console-pins:not(:empty) {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .console-pin {
   position: relative;
   user-select: text;
   flex: none;
-  padding: 2px 0 6px 24px;
+  padding: var(--sys-size-2) 0 var(--sys-size-4) var(--sys-size-11);
 }
 
 .console-pin:not(:last-child) {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .console-pin.error-level:not(:focus-within) {
@@ -44,14 +44,14 @@ export default `/*
 }
 
 .console-pin:not(:last-child).error-level:not(:focus-within) {
-  border-top: 1px solid var(--sys-color-error-outline);
-  border-bottom: 1px solid var(--sys-color-error-outline);
-  margin-top: -1px;
+  border-top: var(--sys-size-1) solid var(--sys-color-error-outline);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-error-outline);
+  margin-top: calc(-1 * var(--sys-size-1));
 }
 
 .console-pin-name {
   margin-left: -5px;
-  margin-bottom: 1px;
+  margin-bottom: var(--sys-size-1);
   height: auto;
 }
 
@@ -69,8 +69,8 @@ export default `/*
 
 .console-pin-name:focus-within {
   background: var(--sys-color-cdt-base-container);
-  border-radius: 4px;
-  border: 1px solid var(--sys-color-state-focus-ring);
+  border-radius: var(--sys-shape-corner-extra-small);
+  border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
 }
 
 .console-pin:focus-within .console-pin-preview,

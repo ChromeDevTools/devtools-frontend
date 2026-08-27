@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../../../front_end/models/trace/lantern/types",
     "skipLibCheck": true,
     "sourceMap": true,

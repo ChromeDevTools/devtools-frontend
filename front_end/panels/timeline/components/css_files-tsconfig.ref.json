@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "breadcrumbsUI.css.js",
+    "cwvMetrics.css.js",
+    "exportTraceOptions.css.js",
+    "fieldSettingsDialog.css.js",
+    "ignoreListSetting.css.js",
+    "interactionBreakdown.css.js",
+    "layoutShiftDetails.css.js",
+    "liveMetricsView.css.js",
+    "metricCard.css.js",
+    "metricValueStyles.css.js",
+    "networkRequestDetails.css.js",
+    "networkRequestTooltip.css.js",
+    "networkTrackWidget.css.js",
+    "originMap.css.js",
+    "relatedInsightChips.css.js",
+    "sidebarAnnotationsTab.css.js",
+    "sidebarInsightsTab.css.js",
+    "sidebarSingleInsightSet.css.js",
+    "timelineRangeSummaryView.css.js",
+    "timelineSummary.css.js"
+  ]
+}

@@ -564,6 +564,12 @@ export class Window extends Common.ObjectWrapper.ObjectWrapper {
         this.setWindowRatio(leftRatio, rightRatio);
     }
 }
+export var Events;
+(function (Events) {
+    Events["WINDOW_CHANGED"] = "WindowChanged";
+    Events["WINDOW_CHANGED_WITH_POSITION"] = "WindowChangedWithPosition";
+    Events["BREADCRUMB_ADDED"] = "BreadcrumbAdded";
+})(Events || (Events = {}));
 export class WindowSelector {
     startPosition;
     width;

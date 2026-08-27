@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": ".",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -45,7 +46,7 @@
   ],
   "references": [
     {
-      "path": "../../../../tsc/front_end/panels/mobile_throttling/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./mobile_throttling-tsconfig.ref.json"

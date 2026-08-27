@@ -634,7 +634,9 @@ export class ConsoleViewMessage {
         };
         clickableElement.addEventListener('click', toggleStackTrace, false);
         if (this.message.type === "trace" /* Protocol.Runtime.ConsoleAPICalledEventType.Trace */ &&
-            Common.Settings.Settings.instance().moduleSetting('console-trace-expand').get()) {
+            Common.Settings.Settings.instance()
+                .resolve(Settings.ConsoleSettings.consoleTraceExpandSettingDescriptor)
+                .get()) {
             this.expandTrace(true);
         }
         this.hasStackTrace = true;

@@ -320,6 +320,14 @@ export const Keys = {
     // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
     CtrlOrMeta: Host.Platform.isMac() ? metaKey : ctrlKey,
 };
+export var Type;
+(function (Type) {
+    Type["USER_SHORTCUT"] = "UserShortcut";
+    Type["DEFAULT_SHORTCUT"] = "DefaultShortcut";
+    Type["DISABLED_DEFAULT"] = "DisabledDefault";
+    Type["UNSET_SHORTCUT"] = "UnsetShortcut";
+    Type["KEYBIND_SET_SHORTCUT"] = "KeybindSetShortcut";
+})(Type || (Type = {}));
 export const KeyBindings = {};
 (function () {
     for (const key in Keys) {

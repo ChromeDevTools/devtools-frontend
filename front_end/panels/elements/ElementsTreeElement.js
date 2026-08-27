@@ -228,6 +228,11 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+var TagType;
+(function (TagType) {
+    TagType["OPENING"] = "OPENING_TAG";
+    TagType["CLOSING"] = "CLOSING_TAG";
+})(TagType || (TagType = {}));
 export function isOpeningTag(context) {
     return context.tagType === "OPENING_TAG" /* TagType.OPENING */;
 }
@@ -526,6 +531,12 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
         }
     }
     const nodeName = node ? node.nodeName().toLowerCase() : '';
+    let ValueType;
+    (function (ValueType) {
+        ValueType[ValueType["UNKNOWN"] = 0] = "UNKNOWN";
+        ValueType[ValueType["SRC"] = 1] = "SRC";
+        ValueType[ValueType["SRCSET"] = 2] = "SRCSET";
+    })(ValueType || (ValueType = {}));
     let valueType = 0 /* ValueType.UNKNOWN */;
     if (nodeName && (name === 'src' || name === 'href') && value) {
         valueType = 1 /* ValueType.SRC */;
@@ -1121,7 +1132,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             decorations: this.#decorations,
             descendantDecorations: this.#expanded ? [] : this.#descendantDecorations,
             decorationsTooltip: this.#decorationsTooltip,
-            indent: this.computeLeftIndent ? this.computeLeftIndent() : 0,
+            indent: this.#getLeftIndent(),
             showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !isClosingTag,
             scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
             showSlotAdorner: Boolean(this.node.assignedSlot) && !isClosingTag,
@@ -1897,7 +1908,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         this.#editorRef?.focus();
         function resize() {
             if (this.visibleWidth) {
-                this.#editorWidth = this.visibleWidth() - (this.computeLeftIndent ? this.computeLeftIndent() : 0) - 30;
+                this.#editorWidth = this.visibleWidth() - this.#getLeftIndent() - 30;
                 this.requestUpdate();
             }
         }
@@ -2083,10 +2094,16 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         this.updateDecorations();
         this.#highlightSearchResults();
     }
+    #getLeftIndent() {
+        if (typeof this.computeLeftIndent === 'function') {
+            return this.computeLeftIndent();
+        }
+        return this.computeLeftIndent ?? 0;
+    }
     updateDecorations() {
         // Important to keep the entire tree node row as a clickable area for that
         // node.
-        this.element.style.setProperty('--indent', (this.computeLeftIndent ? this.computeLeftIndent() : 0) + 'px');
+        this.element.style.setProperty('--indent', this.#getLeftIndent() + 'px');
         if (this.isClosingTag) {
             return;
         }

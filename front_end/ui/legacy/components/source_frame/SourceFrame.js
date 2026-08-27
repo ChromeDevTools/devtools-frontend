@@ -85,6 +85,11 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/source_frame/SourceFrame.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export var Events;
+(function (Events) {
+    Events["EDITOR_UPDATE"] = "EditorUpdate";
+    Events["EDITOR_SCROLL"] = "EditorScroll";
+})(Events || (Events = {}));
 export const LINE_NUMBER_FORMATTER = CodeMirror.Facet.define({
     combine(value) {
         if (value.length === 0) {

@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/core/root/DevToolsContext.js
+// ../../front_end/core/root/DevToolsContext.ts
 var DevToolsContext_exports = {};
 __export(DevToolsContext_exports, {
   WritableDevToolsContext: () => WritableDevToolsContext,
@@ -46,22 +46,22 @@ function setGlobalInstance(context) {
   gInstance = context;
 }
 
-// gen/front_end/core/root/ExperimentNames.js
+// ../../front_end/core/root/ExperimentNames.ts
 var ExperimentNames_exports = {};
 __export(ExperimentNames_exports, {
   ExperimentName: () => ExperimentName
 });
-var ExperimentName;
-(function(ExperimentName2) {
+var ExperimentName = /* @__PURE__ */ ((ExperimentName2) => {
   ExperimentName2["ALL"] = "*";
   ExperimentName2["PROTOCOL_MONITOR"] = "protocol-monitor";
   ExperimentName2["INSTRUMENTATION_BREAKPOINTS"] = "instrumentation-breakpoints";
   ExperimentName2["DURABLE_MESSAGES"] = "durable-messages";
   ExperimentName2["JPEG_XL"] = "jpeg-xl";
   ExperimentName2["PLUS_BUTTON"] = "plus-button";
-})(ExperimentName || (ExperimentName = {}));
+  return ExperimentName2;
+})(ExperimentName || {});
 
-// gen/front_end/core/root/Runtime.js
+// ../../front_end/core/root/Runtime.ts
 var Runtime_exports = {};
 __export(Runtime_exports, {
   Experiment: () => Experiment,
@@ -78,7 +78,7 @@ __export(Runtime_exports, {
   hostConfig: () => hostConfig,
   isNodeEntry: () => isNodeEntry
 });
-import * as Platform from "./../platform/platform.js";
+import * as Platform from "../platform/platform.js";
 var runtimePlatform = "";
 var runtimeInstance;
 var isNode;
@@ -301,24 +301,24 @@ var Experiment = class {
   }
 };
 var experiments = new ExperimentsSupport();
-var GenAiEnterprisePolicyValue;
-(function(GenAiEnterprisePolicyValue2) {
+var GenAiEnterprisePolicyValue = /* @__PURE__ */ ((GenAiEnterprisePolicyValue2) => {
   GenAiEnterprisePolicyValue2[GenAiEnterprisePolicyValue2["ALLOW"] = 0] = "ALLOW";
   GenAiEnterprisePolicyValue2[GenAiEnterprisePolicyValue2["ALLOW_WITHOUT_LOGGING"] = 1] = "ALLOW_WITHOUT_LOGGING";
   GenAiEnterprisePolicyValue2[GenAiEnterprisePolicyValue2["DISABLE"] = 2] = "DISABLE";
-})(GenAiEnterprisePolicyValue || (GenAiEnterprisePolicyValue = {}));
-var HostConfigFreestylerExecutionMode;
-(function(HostConfigFreestylerExecutionMode2) {
+  return GenAiEnterprisePolicyValue2;
+})(GenAiEnterprisePolicyValue || {});
+var HostConfigFreestylerExecutionMode = /* @__PURE__ */ ((HostConfigFreestylerExecutionMode2) => {
   HostConfigFreestylerExecutionMode2["ALL_SCRIPTS"] = "ALL_SCRIPTS";
   HostConfigFreestylerExecutionMode2["SIDE_EFFECT_FREE_SCRIPTS_ONLY"] = "SIDE_EFFECT_FREE_SCRIPTS_ONLY";
   HostConfigFreestylerExecutionMode2["NO_SCRIPTS"] = "NO_SCRIPTS";
-})(HostConfigFreestylerExecutionMode || (HostConfigFreestylerExecutionMode = {}));
-var GdpProfilesEnterprisePolicyValue;
-(function(GdpProfilesEnterprisePolicyValue2) {
+  return HostConfigFreestylerExecutionMode2;
+})(HostConfigFreestylerExecutionMode || {});
+var GdpProfilesEnterprisePolicyValue = /* @__PURE__ */ ((GdpProfilesEnterprisePolicyValue2) => {
   GdpProfilesEnterprisePolicyValue2[GdpProfilesEnterprisePolicyValue2["ENABLED"] = 0] = "ENABLED";
   GdpProfilesEnterprisePolicyValue2[GdpProfilesEnterprisePolicyValue2["ENABLED_WITHOUT_BADGES"] = 1] = "ENABLED_WITHOUT_BADGES";
   GdpProfilesEnterprisePolicyValue2[GdpProfilesEnterprisePolicyValue2["DISABLED"] = 2] = "DISABLED";
-})(GdpProfilesEnterprisePolicyValue || (GdpProfilesEnterprisePolicyValue = {}));
+  return GdpProfilesEnterprisePolicyValue2;
+})(GdpProfilesEnterprisePolicyValue || {});
 var hostConfig = /* @__PURE__ */ Object.create(null);
 var conditions = {
   canDock: () => Boolean(Runtime.queryParam("can_dock"))

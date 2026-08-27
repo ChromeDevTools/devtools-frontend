@@ -33,7 +33,7 @@ export default `/*
 
 .pie-chart-total {
   margin: auto;
-  padding: 2px 5px;
+  padding: var(--sys-size-2) 5px;
   pointer-events: auto;
 }
 
@@ -58,7 +58,7 @@ export default `/*
 }
 
 .pie-chart-legend-row {
-  margin: 5px 2px 5px auto;
+  margin: 5px var(--sys-size-2) 5px auto;
   padding-right: 25px;
 }
 
@@ -67,17 +67,17 @@ export default `/*
 }
 
 .pie-chart-legend-row:focus-visible {
-  box-shadow: 0 0 0 2px var(--sys-color-state-focus-ring) !important; /* stylelint-disable-line declaration-no-important */
+  box-shadow: 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring) !important; /* stylelint-disable-line declaration-no-important */
 }
 
 .pie-chart-swatch {
   display: inline-block;
   width: 11px;
   height: 11px;
-  margin: 0 6px;
-  top: 1px;
+  margin: 0 var(--sys-size-4);
+  top: var(--sys-size-1);
   position: relative;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
 }
 
 .pie-chart-name {

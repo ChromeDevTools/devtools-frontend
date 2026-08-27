@@ -1,8 +1,8 @@
 // gen/front_end/models/trace_source_maps_resolver/SourceMapsResolver.js
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as Bindings from "./../bindings/bindings.js";
-import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
-import * as Trace from "./../trace/trace.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as Bindings from "../bindings/bindings.js";
+import * as SourceMapScopes from "../source_map_scopes/source_map_scopes.js";
+import * as Trace from "../trace/trace.js";
 var _a;
 var SourceMappingsUpdated = class _SourceMappingsUpdated extends Event {
   static eventName = "sourcemappingsupdated";

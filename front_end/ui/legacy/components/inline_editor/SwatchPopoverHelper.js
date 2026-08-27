@@ -128,4 +128,8 @@ export class SwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
 }
+export var Events;
+(function (Events) {
+    Events["WILL_SHOW_POPOVER"] = "WillShowPopover";
+})(Events || (Events = {}));
 //# sourceMappingURL=SwatchPopoverHelper.js.map

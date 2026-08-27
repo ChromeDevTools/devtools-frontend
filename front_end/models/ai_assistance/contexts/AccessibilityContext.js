@@ -1,7 +1,7 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import { ConversationContext } from '../agents/AiAgent.js';
+import { ConversationContext, } from '../agents/AiAgent.js';
 import { LighthouseFormatter } from '../data_formatters/LighthouseFormatter.js';
 export class AccessibilityContext extends ConversationContext {
     #lh;
@@ -47,6 +47,16 @@ export class AccessibilityContext extends ConversationContext {
             {
                 title: 'Lighthouse report',
                 text: this.#getInitialPayload(),
+            },
+        ];
+    }
+    async getWidgets() {
+        return [
+            {
+                name: 'LIGHTHOUSE_REPORT',
+                data: {
+                    report: this.#lh,
+                },
             },
         ];
     }

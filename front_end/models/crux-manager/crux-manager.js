@@ -1,9 +1,9 @@
 // gen/front_end/models/crux-manager/CrUXManager.js
-import * as Common from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Root from "./../../core/root/root.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as EmulationModel from "./../emulation/emulation.js";
+import * as Common from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Root from "../../core/root/root.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as EmulationModel from "../emulation/emulation.js";
 var UIStrings = {
   /**
    * @description Warning message indicating that the user will see real user data for a URL which is different from the URL they are currently looking at.
@@ -265,8 +265,13 @@ var CrUXManager = class _CrUXManager extends Common.ObjectWrapper.ObjectWrapper 
     this.#endpoint = endpoint;
   }
 };
+var Events;
+(function(Events2) {
+  Events2["FIELD_DATA_CHANGED"] = "field-data-changed";
+})(Events || (Events = {}));
 export {
   CrUXManager,
-  DEVICE_SCOPE_LIST
+  DEVICE_SCOPE_LIST,
+  Events
 };
 //# sourceMappingURL=crux-manager.js.map

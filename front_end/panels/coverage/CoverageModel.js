@@ -6,6 +6,18 @@ import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Workspace from '../../models/workspace/workspace.js';
+export var CoverageType;
+(function (CoverageType) {
+    CoverageType[CoverageType["CSS"] = 1] = "CSS";
+    CoverageType[CoverageType["JAVA_SCRIPT"] = 2] = "JAVA_SCRIPT";
+    CoverageType[CoverageType["JAVA_SCRIPT_PER_FUNCTION"] = 4] = "JAVA_SCRIPT_PER_FUNCTION";
+})(CoverageType || (CoverageType = {}));
+export var SuspensionState;
+(function (SuspensionState) {
+    SuspensionState["ACTIVE"] = "Active";
+    SuspensionState["SUSPENDING"] = "Suspending";
+    SuspensionState["SUSPENDED"] = "Suspended";
+})(SuspensionState || (SuspensionState = {}));
 export var Events;
 (function (Events) {
     /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */

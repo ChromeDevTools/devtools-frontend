@@ -1484,6 +1484,12 @@ export class NetworkDispatcher {
         return `${host}:${port}`;
     }
 }
+export var RequestURLPatternValidity;
+(function (RequestURLPatternValidity) {
+    RequestURLPatternValidity["VALID"] = "valid";
+    RequestURLPatternValidity["FAILED_TO_PARSE"] = "failed-to-parse";
+    RequestURLPatternValidity["HAS_REGEXP_GROUPS"] = "has-regexp-groups";
+})(RequestURLPatternValidity || (RequestURLPatternValidity = {}));
 export class RequestURLPattern {
     constructorString;
     pattern;
@@ -1612,6 +1618,12 @@ export class RequestCondition extends Common.ObjectWrapper.ObjectWrapper {
         return this.#pattern instanceof RequestURLPattern ? this.#pattern.pattern : this.#pattern.upgradedPattern?.pattern;
     }
 }
+(function (RequestCondition) {
+    let Events;
+    (function (Events) {
+        Events["REQUEST_CONDITION_CHANGED"] = "request-condition-changed";
+    })(Events = RequestCondition.Events || (RequestCondition.Events = {}));
+})(RequestCondition || (RequestCondition = {}));
 export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper {
     #setting;
     #conditionsEnabledSetting;
@@ -1779,6 +1791,12 @@ export class RequestConditions extends Common.ObjectWrapper.ObjectWrapper {
     }
 }
 _a = RequestConditions;
+(function (RequestConditions) {
+    let Events;
+    (function (Events) {
+        Events["REQUEST_CONDITIONS_CHANGED"] = "request-conditions-changed";
+    })(Events = RequestConditions.Events || (RequestConditions.Events = {}));
+})(RequestConditions || (RequestConditions = {}));
 export class AppliedNetworkConditions {
     conditions;
     appliedNetworkConditionsId;
@@ -2041,6 +2059,17 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
         return this.requestConditions.conditionsForId(requestInternal.appliedNetworkConditionsId);
     }
 }
+(function (MultitargetNetworkManager) {
+    let Events;
+    (function (Events) {
+        Events["BLOCKED_PATTERNS_CHANGED"] = "BlockedPatternsChanged";
+        Events["CONDITIONS_CHANGED"] = "ConditionsChanged";
+        Events["USER_AGENT_CHANGED"] = "UserAgentChanged";
+        Events["INTERCEPTORS_CHANGED"] = "InterceptorsChanged";
+        Events["REQUEST_INTERCEPTED"] = "RequestIntercepted";
+        Events["REQUEST_FULFILLED"] = "RequestFulfilled";
+    })(Events = MultitargetNetworkManager.Events || (MultitargetNetworkManager.Events = {}));
+})(MultitargetNetworkManager || (MultitargetNetworkManager = {}));
 export class InterceptedRequest {
     #multitargetNetworkManager;
     #fetchAgent;
@@ -2288,6 +2317,27 @@ export function networkConditionsEqual(first, second) {
         first.packetLoss === second.packetLoss && first.packetQueueLength === second.packetQueueLength &&
         first.packetReordering === second.packetReordering && secondTitle === firstTitle;
 }
+/**
+ * IMPORTANT: this key is used as the value that is persisted so we remember
+ * the user's throttling settings
+ *
+ * This means that it is very important that;
+ * 1. Each Conditions that is defined must have a unique key.
+ * 2. The keys & values DO NOT CHANGE for a particular condition, else we might break
+ *    DevTools when restoring a user's persisted setting.
+ *
+ * If you do want to change them, you need to handle that in a migration, but
+ * please talk to jacktfranklin@ first.
+ */
+export var PredefinedThrottlingConditionKey;
+(function (PredefinedThrottlingConditionKey) {
+    PredefinedThrottlingConditionKey["BLOCKING"] = "BLOCKING";
+    PredefinedThrottlingConditionKey["NO_THROTTLING"] = "NO_THROTTLING";
+    PredefinedThrottlingConditionKey["OFFLINE"] = "OFFLINE";
+    PredefinedThrottlingConditionKey["SPEED_3G"] = "SPEED_3G";
+    PredefinedThrottlingConditionKey["SPEED_SLOW_4G"] = "SPEED_SLOW_4G";
+    PredefinedThrottlingConditionKey["SPEED_FAST_4G"] = "SPEED_FAST_4G";
+})(PredefinedThrottlingConditionKey || (PredefinedThrottlingConditionKey = {}));
 export const THROTTLING_CONDITIONS_LOOKUP = new Map([
     ["NO_THROTTLING" /* PredefinedThrottlingConditionKey.NO_THROTTLING */, NoThrottlingConditions],
     ["OFFLINE" /* PredefinedThrottlingConditionKey.OFFLINE */, OfflineConditions],

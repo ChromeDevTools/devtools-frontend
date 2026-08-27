@@ -11,9 +11,9 @@ __export(List_exports, {
   ItemRemoveEvent: () => ItemRemoveEvent,
   List: () => List
 });
-import * as i18n from "./../../../core/i18n/i18n.js";
-import { Directives, html, nothing, render } from "./../../lit/lit.js";
-import * as Buttons from "./../buttons/buttons.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import { Directives, html, nothing, render } from "../../lit/lit.js";
+import * as Buttons from "../buttons/buttons.js";
 
 // gen/front_end/ui/components/lists/list.css.js
 var list_css_default = `/*

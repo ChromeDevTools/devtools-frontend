@@ -7,7 +7,6 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import { canResourceContentsBeReadForTrace } from '../AiOrigins.js';
-import { PerformanceTraceContext } from '../contexts/PerformanceTraceContext.js';
 const UIStringsNotTranslate = {
     lookingAtResourceContent: 'Looking at resource content',
 };
@@ -35,18 +34,18 @@ export class GetResourceContentTool {
         };
     }
     async handler(params, capabilities) {
-        const conversationContext = capabilities.conversationContext;
-        if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+        const performanceTraceContext = capabilities.getPerformanceTraceContext();
+        if (!performanceTraceContext) {
             return { error: 'Performance trace context is not available.' };
         }
-        if (conversationContext.getOrigin().startsWith('imported-trace://')) {
+        if (performanceTraceContext.getOrigin().startsWith('imported-trace://')) {
             return { error: 'Cannot use this tool on an imported file.' };
         }
-        const allowedOrigin = conversationContext.getOrigin();
+        const allowedOrigin = performanceTraceContext.getOrigin();
         if (!canResourceContentsBeReadForTrace(params.url, allowedOrigin)) {
             return { error: 'Resource not found' };
         }
-        const focus = conversationContext.getItem();
+        const focus = performanceTraceContext.getItem();
         const { parsedTrace } = focus;
         let content;
         const url = params.url;

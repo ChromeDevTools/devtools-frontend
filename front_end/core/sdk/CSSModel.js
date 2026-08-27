@@ -18,6 +18,11 @@ import { Events as ResourceTreeModelEvents, ResourceTreeModel, } from './Resourc
 import { SDKModel } from './SDKModel.js';
 import { cssSourceMapsEnabledSettingDescriptor } from './SDKSettings.js';
 import { SourceMapManager } from './SourceMapManager.js';
+export var ColorScheme;
+(function (ColorScheme) {
+    ColorScheme["LIGHT"] = "light";
+    ColorScheme["DARK"] = "dark";
+})(ColorScheme || (ColorScheme = {}));
 export class CSSModel extends SDKModel {
     agent;
     #domModel;
@@ -959,5 +964,9 @@ export class CSSPropertyTracker extends Common.ObjectWrapper.ObjectWrapper {
     }
 }
 const StylePollingInterval = 1000; // throttling interval for style polling, in milliseconds
+export var CSSPropertyTrackerEvents;
+(function (CSSPropertyTrackerEvents) {
+    CSSPropertyTrackerEvents["TRACKED_CSS_PROPERTIES_UPDATED"] = "TrackedCSSPropertiesUpdated";
+})(CSSPropertyTrackerEvents || (CSSPropertyTrackerEvents = {}));
 SDKModel.register(CSSModel, { capabilities: 2 /* Capability.DOM */, autostart: true });
 //# sourceMappingURL=CSSModel.js.map

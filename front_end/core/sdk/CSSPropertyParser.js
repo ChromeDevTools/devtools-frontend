@@ -146,7 +146,6 @@ export class TreeWalker {
     leave(_node) {
     }
 }
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function matcherBase(matchT) {
     class MatcherBase {
         matchType = matchT;

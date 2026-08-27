@@ -8,15 +8,16 @@ var __export = (target, all) => {
 var LayerDetailsView_exports = {};
 __export(LayerDetailsView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
+  Events: () => Events,
   LayerDetailsView: () => LayerDetailsView,
   slowScrollRectNames: () => slowScrollRectNames
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import * as Lit from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import * as Common2 from "../../core/common/common.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as UI from "../../ui/legacy/legacy.js";
+import * as Lit from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/layer_viewer/layerDetailsView.css.js
 var layerDetailsView_css_default = `/*
@@ -58,7 +59,7 @@ ul {
 }
 
 .devtools-link.link-margin, .devtools-link.link-margin:hover {
-  margin: 8px;
+  margin: var(--sys-size-5);
   display: inline-block;
 }
 
@@ -72,11 +73,12 @@ __export(LayerViewHost_exports, {
   LayerViewHost: () => LayerViewHost,
   ScrollRectSelection: () => ScrollRectSelection,
   Selection: () => Selection,
-  SnapshotSelection: () => SnapshotSelection
+  SnapshotSelection: () => SnapshotSelection,
+  Type: () => Type
 });
-import * as Common from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as Common from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as SDK from "../../core/sdk/sdk.js";
 var UIStrings = {
   /**
    * @description Text in layer view host of the Layers panel.
@@ -107,6 +109,12 @@ var Selection = class {
     return false;
   }
 };
+var Type;
+(function(Type2) {
+  Type2["LAYER"] = "Layer";
+  Type2["SCROLL_RECT"] = "ScrollRect";
+  Type2["SNAPSHOT"] = "Snapshot";
+})(Type || (Type = {}));
 var LayerSelection = class extends Selection {
   constructor(layer) {
     console.assert(Boolean(layer), "LayerSelection with empty layer");
@@ -519,6 +527,10 @@ var LayerDetailsView = class extends Common2.ObjectWrapper.eventMixin(UI.Widget.
     }, void 0, this.contentElement);
   }
 };
+var Events;
+(function(Events6) {
+  Events6["PAINT_PROFILER_REQUESTED"] = "PaintProfilerRequested";
+})(Events || (Events = {}));
 var slowScrollRectNames = /* @__PURE__ */ new Map([
   ["NonFastScrollable", i18nLazyString(UIStrings2.nonFastScrollable)],
   ["TouchEventHandler", i18nLazyString(UIStrings2.touchEventHandler)],
@@ -534,13 +546,14 @@ var slowScrollRectNames = /* @__PURE__ */ new Map([
 var LayerTreeOutline_exports = {};
 __export(LayerTreeOutline_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  Events: () => Events2,
   LayerTreeOutline: () => LayerTreeOutline
 });
-import * as Common3 from "./../../core/common/common.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html2, nothing as nothing2, render as render2 } from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common3 from "../../core/common/common.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
+import * as UI2 from "../../ui/legacy/legacy.js";
+import { Directives, html as html2, nothing as nothing2, render as render2 } from "../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/layer_viewer/layerTreeOutline.css.js
 var layerTreeOutline_css_default = `/*
@@ -551,9 +564,9 @@ var layerTreeOutline_css_default = `/*
 
 @scope to (devtools-widget > *) {
   .layer-summary {
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
     justify-content: space-between;
-    padding: 4px 10px;
+    padding: var(--sys-size-3) 10px;
     flex-shrink: 0;
   }
 
@@ -796,13 +809,19 @@ var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.Widget
     this.layerViewHost.showContextMenu(contextMenu, selection);
   }
 };
+var Events2;
+(function(Events6) {
+  Events6["PAINT_PROFILER_REQUESTED"] = "PaintProfilerRequested";
+})(Events2 || (Events2 = {}));
 
 // gen/front_end/panels/layer_viewer/Layers3DView.js
 var Layers3DView_exports = {};
 __export(Layers3DView_exports, {
   BorderColor: () => BorderColor,
   BorderWidth: () => BorderWidth,
+  ChromeTexture: () => ChromeTexture,
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  Events: () => Events4,
   FragmentShader: () => FragmentShader,
   HoveredBorderColor: () => HoveredBorderColor,
   HoveredImageMaskColor: () => HoveredImageMaskColor,
@@ -820,15 +839,15 @@ __export(Layers3DView_exports, {
   ViewportBorderColor: () => ViewportBorderColor,
   ViewportBorderWidth: () => ViewportBorderWidth
 });
-import * as Common5 from "./../../core/common/common.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Platform2 from "./../../core/platform/platform.js";
-import * as Geometry from "./../../models/geometry/geometry.js";
-import * as uiI18n from "./../../ui/i18n/i18n.js";
-import { Link } from "./../../ui/kit/kit.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common5 from "../../core/common/common.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
+import * as Platform2 from "../../core/platform/platform.js";
+import * as Geometry from "../../models/geometry/geometry.js";
+import * as uiI18n from "../../ui/i18n/i18n.js";
+import { Link } from "../../ui/kit/kit.js";
+import * as UI4 from "../../ui/legacy/legacy.js";
+import * as Lit2 from "../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/layer_viewer/layers3DView.css.js
 var layers3DView_css_default = `/*
@@ -850,7 +869,7 @@ var layers3DView_css_default = `/*
 
 devtools-toolbar {
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 canvas {
@@ -866,14 +885,16 @@ canvas {
 // gen/front_end/panels/layer_viewer/TransformController.js
 var TransformController_exports = {};
 __export(TransformController_exports, {
+  Events: () => Events3,
+  Modes: () => Modes,
   TransformController: () => TransformController
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common4 from "./../../core/common/common.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/legacy.js";
+import * as Common4 from "../../core/common/common.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as UI3 from "../../ui/legacy/legacy.js";
+import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 var UIStrings4 = {
   /**
    * @description Tooltip text that appears when hovering over largeicon pan button in transform controller of the Layers panel.
@@ -1131,6 +1152,15 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
     this.oldRotateY = 0;
   }
 };
+var Events3;
+(function(Events6) {
+  Events6["TRANSFORM_CHANGED"] = "TransformChanged";
+})(Events3 || (Events3 = {}));
+var Modes;
+(function(Modes2) {
+  Modes2["PAN"] = "Pan";
+  Modes2["ROTATE"] = "Rotate";
+})(Modes || (Modes = {}));
 
 // gen/front_end/panels/layer_viewer/Layers3DView.js
 var { html: html3, render: render3, Directives: { ref: ref2 } } = Lit2;
@@ -1187,15 +1217,14 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     header: i18nString5(UIStrings5.noLayerInformation),
     text: i18nString5(UIStrings5.layerExplanation)
   })}</div>` : Lit2.nothing}
-    ${input.error === "webgl-disabled" ? html3`<div>${widget2(UI4.EmptyWidget.EmptyWidget, {
+    ${input.error === "webgl-disabled" ? html3`<div><devtools-widget ${widget2(UI4.EmptyWidget.EmptyWidget, {
     header: i18nString5(UIStrings5.cantDisplayLayers),
-    text: i18nString5(UIStrings5.webglSupportIsDisabledInYour),
-    extraElements: [
-      uiI18n.getFormatLocalizedString(str_5, UIStrings5.checkSForPossibleReasons, {
-        PH1: Link.create("chrome://gpu", void 0, void 0, "about-gpu", 0, true)
-      })
-    ]
-  })}</div>` : Lit2.nothing}
+    text: i18nString5(UIStrings5.webglSupportIsDisabledInYour)
+  })}>
+      ${uiI18n.getFormatLocalizedString(str_5, UIStrings5.checkSForPossibleReasons, {
+    PH1: Link.create("chrome://gpu", void 0, void 0, "about-gpu", 0, true)
+  })}
+    </devtools-widget></div>` : Lit2.nothing}
     <canvas
       tabindex="0"
       jslog=${VisualLogging4.canvas("layers").track({
@@ -1885,6 +1914,17 @@ var OutlineType;
   OutlineType2["Hovered"] = "hovered";
   OutlineType2["Selected"] = "selected";
 })(OutlineType || (OutlineType = {}));
+var Events4;
+(function(Events6) {
+  Events6["PAINT_PROFILER_REQUESTED"] = "PaintProfilerRequested";
+  Events6["SCALE_CHANGED"] = "ScaleChanged";
+})(Events4 || (Events4 = {}));
+var ChromeTexture;
+(function(ChromeTexture2) {
+  ChromeTexture2[ChromeTexture2["LEFT"] = 0] = "LEFT";
+  ChromeTexture2[ChromeTexture2["MIDDLE"] = 1] = "MIDDLE";
+  ChromeTexture2[ChromeTexture2["RIGHT"] = 2] = "RIGHT";
+})(ChromeTexture || (ChromeTexture = {}));
 var FragmentShader = "precision mediump float;\nvarying vec4 vColor;\nvarying vec2 vTextureCoord;\nuniform sampler2D uSampler;\nvoid main(void)\n{\n    gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * vColor;\n}";
 var VertexShader = "attribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aVertexColor;\nuniform mat4 uPMatrix;\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvoid main(void)\n{\ngl_Position = uPMatrix * vec4(aVertexPosition, 1.0);\nvColor = aVertexColor;\nvTextureCoord = aTextureCoord;\n}";
 var HoveredBorderColor = [0, 0, 255, 1];
@@ -2170,16 +2210,17 @@ var Tile = class {
 var PaintProfilerView_exports = {};
 __export(PaintProfilerView_exports, {
   COMMAND_LOG_DEFAULT_VIEW: () => COMMAND_LOG_DEFAULT_VIEW,
+  Events: () => Events5,
   PaintProfilerCategory: () => PaintProfilerCategory,
   PaintProfilerCommandLogView: () => PaintProfilerCommandLogView,
   PaintProfilerView: () => PaintProfilerView
 });
-import * as Common6 from "./../../core/common/common.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Platform3 from "./../../core/platform/platform.js";
-import * as PerfUI from "./../../ui/legacy/components/perf_ui/perf_ui.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
+import * as Common6 from "../../core/common/common.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
+import * as Platform3 from "../../core/platform/platform.js";
+import * as PerfUI from "../../ui/legacy/components/perf_ui/perf_ui.js";
+import * as UI5 from "../../ui/legacy/legacy.js";
+import * as Lit3 from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/layer_viewer/paintProfiler.css.js
 var paintProfiler_css_default = `/*
@@ -2203,7 +2244,7 @@ var paintProfiler_css_default = `/*
   .paint-profiler-pie-chart {
     width: 60px !important; /* stylelint-disable-line declaration-no-important */
     height: 60px !important; /* stylelint-disable-line declaration-no-important */
-    padding: 2px;
+    padding: var(--sys-size-2);
     overflow: hidden;
     font-size: 10px;
   }
@@ -2626,6 +2667,10 @@ var PaintProfilerView = class _PaintProfilerView extends Common6.ObjectWrapper.e
     this.isProfiling = false;
   }
 };
+var Events5;
+(function(Events6) {
+  Events6["WINDOW_CHANGED"] = "WindowChanged";
+})(Events5 || (Events5 = {}));
 function paramToString(param, name) {
   if (typeof param !== "object") {
     return typeof param === "string" && param.length > 100 ? name : JSON.stringify(param);

@@ -1,5 +1,5 @@
 // gen/front_end/ui/kit/cards/Card.js
-import { html, nothing, render } from "./../lit/lit.js";
+import { html, nothing, render } from "../lit/lit.js";
 
 // gen/front_end/ui/kit/cards/card.css.js
 var card_css_default = `/*
@@ -113,7 +113,7 @@ var Card = class extends HTMLElement {
 customElements.define("devtools-card", Card);
 
 // gen/front_end/ui/kit/icons/Icon.js
-import "./../../Images/Images.js";
+import "../../Images/Images.js";
 
 // gen/front_end/ui/kit/icons/icon.css.js
 var icon_css_default = `/*
@@ -333,10 +333,10 @@ var createIcon = (name, className) => {
 customElements.define("devtools-icon", Icon);
 
 // gen/front_end/ui/kit/link/Link.js
-import * as Platform from "./../../core/platform/platform.js";
-import * as UIHelpers from "./../helpers/helpers.js";
-import { html as html2, render as render2 } from "./../lit/lit.js";
-import * as VisualLogging from "./../visual_logging/visual_logging.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as UIHelpers from "../helpers/helpers.js";
+import { html as html2, render as render2 } from "../lit/lit.js";
+import * as VisualLogging from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/kit/link/link.css.js
 var link_css_default = `/*

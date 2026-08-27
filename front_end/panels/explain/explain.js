@@ -1,19 +1,19 @@
 // gen/front_end/panels/explain/components/ConsoleInsight.js
-import "./../../ui/components/spinners/spinners.js";
-import "./../../ui/kit/kit.js";
-import * as Common from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Root from "./../../core/root/root.js";
-import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
-import * as Marked from "./../../third_party/marked/marked.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as Input from "./../../ui/components/input/input.js";
-import * as MarkdownView from "./../../ui/components/markdown_view/markdown_view.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import * as Lit from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
-import * as Console from "./../console/console.js";
+import "../../ui/components/spinners/spinners.js";
+import "../../ui/kit/kit.js";
+import * as Common from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Root from "../../core/root/root.js";
+import * as AiAssistanceModel from "../../models/ai_assistance/ai_assistance.js";
+import * as Marked from "../../third_party/marked/marked.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
+import * as Input from "../../ui/components/input/input.js";
+import * as MarkdownView from "../../ui/components/markdown_view/markdown_view.js";
+import * as UI from "../../ui/legacy/legacy.js";
+import * as Lit from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
+import * as Console from "../console/console.js";
 
 // gen/front_end/panels/explain/components/consoleInsight.css.js
 var consoleInsight_css_default = `/*
@@ -614,6 +614,17 @@ var CODE_SNIPPET_WARNING_URL = "https://support.google.com/legal/answer/13505487
 var LEARN_MORE_URL = "https://goo.gle/devtools-console-messages-ai";
 var REPORT_URL = "https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504";
 var SIGN_IN_URL = "https://accounts.google.com";
+var State;
+(function(State2) {
+  State2["INSIGHT"] = "insight";
+  State2["LOADING"] = "loading";
+  State2["ERROR"] = "error";
+  State2["SETTING_IS_NOT_TRUE"] = "setting-is-not-true";
+  State2["CONSENT_REMINDER"] = "consent-reminder";
+  State2["NOT_LOGGED_IN"] = "not-logged-in";
+  State2["SYNC_IS_PAUSED"] = "sync-is-paused";
+  State2["OFFLINE"] = "offline";
+})(State || (State = {}));
 var markedExtension = {
   name: "citation",
   level: "inline",
@@ -1445,8 +1456,8 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
 };
 
 // gen/front_end/panels/explain/ActionDelegate.js
-import * as Host2 from "./../../core/host/host.js";
-import * as Console2 from "./../console/console.js";
+import * as Host2 from "../../core/host/host.js";
+import * as Console2 from "../console/console.js";
 var ActionDelegate = class {
   handleAction(context, actionId) {
     switch (actionId) {
@@ -1482,6 +1493,7 @@ export {
   ActionDelegate,
   CloseEvent,
   ConsoleInsight,
-  DEFAULT_VIEW
+  DEFAULT_VIEW,
+  State
 };
 //# sourceMappingURL=explain.js.map

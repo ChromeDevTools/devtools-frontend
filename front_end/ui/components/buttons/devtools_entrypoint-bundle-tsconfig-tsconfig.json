@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": ".",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -48,7 +49,7 @@
       "path": "./button-tsconfig.ref.json"
     },
     {
-      "path": "../../../../../tsc/front_end/ui/components/buttons/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     }
   ]
 }

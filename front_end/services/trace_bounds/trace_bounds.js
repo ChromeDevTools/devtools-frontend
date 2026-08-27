@@ -12,7 +12,7 @@ __export(TraceBounds_exports, {
   onChange: () => onChange,
   removeListener: () => removeListener
 });
-import * as Trace from "./../../models/trace/trace.js";
+import * as Trace from "../../models/trace/trace.js";
 var instance = null;
 var StateChangedEvent = class _StateChangedEvent extends Event {
   state;

@@ -12,13 +12,13 @@ export default `/*
 @scope to (devtools-widget > *) {
   .resource-service-worker-update-view {
     display: block;
-    margin: 6px;
+    margin: var(--sys-size-4);
     color: var(--sys-color-on-surface-subtle);
     overflow: auto;
   }
 
   .service-worker-update-timing-table {
-    border: 1px solid var(--sys-color-divider);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     border-spacing: 0;
     padding-left: 10px;
     padding-right: 10px;
@@ -29,14 +29,14 @@ export default `/*
 
   .service-worker-update-timing-row {
     position: relative;
-    height: 20px;
+    height: var(--sys-size-9);
     overflow: hidden;
-    min-width: 80px;
+    min-width: var(--sys-size-19);
   }
 
   .service-worker-update-timing-bar {
     position: absolute;
-    min-width: 1px;
+    min-width: var(--sys-size-1);
     top: 0;
     bottom: 0;
   }
@@ -45,9 +45,9 @@ export default `/*
     user-select: none;
     mask-image: var(--image-file-triangle-right);
     float: left;
-    width: 14px;
-    height: 14px;
-    margin-right: 2px;
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
+    margin-right: var(--sys-size-2);
     content: "";
     position: relative;
     background-color: var(--icon-default);
@@ -56,7 +56,7 @@ export default `/*
 
   .service-worker-update-timing-bar-clickable {
     position: relative;
-    left: -12px;
+    left: calc(-1 * var(--sys-size-6));
   }
 
   .service-worker-update-timing-bar-clickable:focus-visible {
@@ -98,7 +98,7 @@ export default `/*
   }
 
   .service-worker-update-timing-table > tbody > tr > td {
-    padding: 4px 0;
+    padding: var(--sys-size-3) 0;
     padding-right: 10px;
   }
 
@@ -108,11 +108,11 @@ export default `/*
   }
 
   table.service-worker-update-timing-table > tbody > tr.service-worker-update-timing-bar-details > td:first-child {
-    padding-left: 12px;
+    padding-left: var(--sys-size-6);
   }
 
   table.service-worker-update-timing-table > tbody > tr.service-worker-update-timeline > td:first-child {
-    padding-left: 12px;
+    padding-left: var(--sys-size-6);
   }
 }
 

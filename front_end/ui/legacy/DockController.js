@@ -130,7 +130,23 @@ export class DockController extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
 }
+export var DockState;
+(function (DockState) {
+    DockState["BOTTOM"] = "bottom";
+    DockState["RIGHT"] = "right";
+    DockState["LEFT"] = "left";
+    DockState["UNDOCKED"] = "undocked";
+})(DockState || (DockState = {}));
 const states = ["right" /* DockState.RIGHT */, "bottom" /* DockState.BOTTOM */, "left" /* DockState.LEFT */, "undocked" /* DockState.UNDOCKED */];
+// Use BeforeDockSideChanged to do something before all the UI bits are updated,
+// DockSideChanged to update UI, and AfterDockSideChanged to perform actions
+// after frontend is docked/undocked in the browser.
+export var Events;
+(function (Events) {
+    Events["BEFORE_DOCK_SIDE_CHANGED"] = "BeforeDockSideChanged";
+    Events["DOCK_SIDE_CHANGED"] = "DockSideChanged";
+    Events["AFTER_DOCK_SIDE_CHANGED"] = "AfterDockSideChanged";
+})(Events || (Events = {}));
 export class ToggleDockActionDelegate {
     handleAction(_context, _actionId) {
         DockController.instance().toggleDockSide();

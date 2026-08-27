@@ -35,6 +35,7 @@ export declare class EmulationModel extends SDKModel<EmulationModelEventTypes> i
     setDataSaverOverride(dataSaverOverride: DataSaverOverride): Promise<void>;
     setCPUThrottlingRate(rate: number): Promise<void>;
     setHardwareConcurrency(hardwareConcurrency: number): Promise<void>;
+    setCPUPerformanceOverride(performanceTier?: Protocol.Emulation.SetCPUPerformanceOverrideRequestPerformanceTier): Promise<void>;
     emulateTouch(enabled: boolean, mobile: boolean): Promise<void>;
     overrideEmulateTouch(enabled: boolean): Promise<void>;
     private updateTouch;

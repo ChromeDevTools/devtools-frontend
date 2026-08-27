@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../../front_end/ui/components/diff_view",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -45,7 +46,7 @@
   ],
   "references": [
     {
-      "path": "../../../../../tsc/front_end/ui/components/diff_view/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "../../../core/i18n/bundle-tsconfig.ref.json"

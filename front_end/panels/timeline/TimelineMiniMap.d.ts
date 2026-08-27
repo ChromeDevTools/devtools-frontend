@@ -12,15 +12,7 @@ export interface OverviewData {
         showMemory: boolean;
     };
 }
-declare const TimelineMiniMap_base: (new (...args: any[]) => {
-    __events: Common.ObjectWrapper.ObjectWrapper<PerfUI.TimelineOverviewPane.EventTypes>;
-    addEventListener<T extends keyof PerfUI.TimelineOverviewPane.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<PerfUI.TimelineOverviewPane.EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<PerfUI.TimelineOverviewPane.EventTypes, T>;
-    once<T extends keyof PerfUI.TimelineOverviewPane.EventTypes>(eventType: T): Promise<PerfUI.TimelineOverviewPane.EventTypes[T]>;
-    removeEventListener<T extends keyof PerfUI.TimelineOverviewPane.EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<PerfUI.TimelineOverviewPane.EventTypes[T], any>) => void, thisObject?: Object): void;
-    hasEventListeners(eventType: keyof PerfUI.TimelineOverviewPane.EventTypes): boolean;
-    dispatchEventToListeners<T extends keyof PerfUI.TimelineOverviewPane.EventTypes>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<PerfUI.TimelineOverviewPane.EventTypes, T>): void;
-    dispatchDOMEvent?(event: Event): void;
-}) & typeof UI.Widget.VBox;
+declare const TimelineMiniMap_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<PerfUI.TimelineOverviewPane.EventTypes>, any[]> & typeof UI.Widget.VBox;
 /**
  * This component wraps the generic PerfUI Overview component and configures it
  * specifically for the Performance Panel, including injecting the CSS we use

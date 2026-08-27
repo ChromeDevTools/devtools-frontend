@@ -4,13 +4,15 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/core/host/AidaClient.js
+// ../../front_end/core/host/AidaClient.ts
 var AidaClient_exports = {};
 __export(AidaClient_exports, {
   AidaAbortError: () => AidaAbortError,
+  AidaAccessPreconditions: () => AidaAccessPreconditions,
   AidaBlockError: () => AidaBlockError,
   AidaClient: () => AidaClient,
   AidaClientError: () => AidaClientError,
+  AidaInferenceLanguage: () => AidaInferenceLanguage,
   AidaInvalidJsonResponseError: () => AidaInvalidJsonResponseError,
   AidaPayloadTooLargeError: () => AidaPayloadTooLargeError,
   AidaPermissionDeniedError: () => AidaPermissionDeniedError,
@@ -21,8 +23,11 @@ __export(AidaClient_exports, {
   CitationSourceType: () => CitationSourceType,
   ClientFeature: () => ClientFeature,
   EditType: () => EditType,
+  Events: () => Events2,
   FunctionalityType: () => FunctionalityType,
   HostConfigTracker: () => HostConfigTracker,
+  ParametersTypes: () => ParametersTypes,
+  Rating: () => Rating,
   Reason: () => Reason,
   RecitationAction: () => RecitationAction,
   Role: () => Role,
@@ -36,27 +41,41 @@ __export(AidaClient_exports, {
   isQuotaError: () => isQuotaError,
   mapError: () => mapError
 });
-import * as Common4 from "./../common/common.js";
-import * as Platform4 from "./../platform/platform.js";
-import * as Root3 from "./../root/root.js";
+import * as Common4 from "../common/common.js";
+import * as Platform4 from "../platform/platform.js";
+import * as Root3 from "../root/root.js";
 
-// gen/front_end/core/host/AidaClientTypes.js
-import * as Platform from "./../platform/platform.js";
-var Role;
-(function(Role2) {
+// ../../front_end/core/host/AidaClientTypes.ts
+import * as Platform from "../platform/platform.js";
+var Role = /* @__PURE__ */ ((Role2) => {
   Role2[Role2["ROLE_UNSPECIFIED"] = 0] = "ROLE_UNSPECIFIED";
   Role2[Role2["USER"] = 1] = "USER";
   Role2[Role2["MODEL"] = 2] = "MODEL";
-})(Role || (Role = {}));
-var FunctionalityType;
-(function(FunctionalityType2) {
+  return Role2;
+})(Role || {});
+var Rating = /* @__PURE__ */ ((Rating2) => {
+  Rating2["SENTIMENT_UNSPECIFIED"] = "SENTIMENT_UNSPECIFIED";
+  Rating2["POSITIVE"] = "POSITIVE";
+  Rating2["NEGATIVE"] = "NEGATIVE";
+  return Rating2;
+})(Rating || {});
+var ParametersTypes = /* @__PURE__ */ ((ParametersTypes2) => {
+  ParametersTypes2[ParametersTypes2["STRING"] = 1] = "STRING";
+  ParametersTypes2[ParametersTypes2["NUMBER"] = 2] = "NUMBER";
+  ParametersTypes2[ParametersTypes2["INTEGER"] = 3] = "INTEGER";
+  ParametersTypes2[ParametersTypes2["BOOLEAN"] = 4] = "BOOLEAN";
+  ParametersTypes2[ParametersTypes2["ARRAY"] = 5] = "ARRAY";
+  ParametersTypes2[ParametersTypes2["OBJECT"] = 6] = "OBJECT";
+  return ParametersTypes2;
+})(ParametersTypes || {});
+var FunctionalityType = /* @__PURE__ */ ((FunctionalityType2) => {
   FunctionalityType2[FunctionalityType2["FUNCTIONALITY_TYPE_UNSPECIFIED"] = 0] = "FUNCTIONALITY_TYPE_UNSPECIFIED";
   FunctionalityType2[FunctionalityType2["CHAT"] = 1] = "CHAT";
   FunctionalityType2[FunctionalityType2["EXPLAIN_ERROR"] = 2] = "EXPLAIN_ERROR";
   FunctionalityType2[FunctionalityType2["AGENTIC_CHAT"] = 5] = "AGENTIC_CHAT";
-})(FunctionalityType || (FunctionalityType = {}));
-var ClientFeature;
-(function(ClientFeature2) {
+  return FunctionalityType2;
+})(FunctionalityType || {});
+var ClientFeature = /* @__PURE__ */ ((ClientFeature2) => {
   ClientFeature2[ClientFeature2["CLIENT_FEATURE_UNSPECIFIED"] = 0] = "CLIENT_FEATURE_UNSPECIFIED";
   ClientFeature2[ClientFeature2["CHROME_CONSOLE_INSIGHTS"] = 1] = "CHROME_CONSOLE_INSIGHTS";
   ClientFeature2[ClientFeature2["CHROME_STYLING_AGENT"] = 2] = "CHROME_STYLING_AGENT";
@@ -70,16 +89,16 @@ var ClientFeature;
   ClientFeature2[ClientFeature2["CHROME_CONVERSATION_SUMMARY_AGENT"] = 27] = "CHROME_CONVERSATION_SUMMARY_AGENT";
   ClientFeature2[ClientFeature2["CHROME_STORAGE_AGENT"] = 28] = "CHROME_STORAGE_AGENT";
   ClientFeature2[ClientFeature2["CHROME_DEVTOOLS_V2_AGENT"] = 29] = "CHROME_DEVTOOLS_V2_AGENT";
-})(ClientFeature || (ClientFeature = {}));
-var UserTier;
-(function(UserTier2) {
+  return ClientFeature2;
+})(ClientFeature || {});
+var UserTier = /* @__PURE__ */ ((UserTier2) => {
   UserTier2[UserTier2["USER_TIER_UNSPECIFIED"] = 0] = "USER_TIER_UNSPECIFIED";
   UserTier2[UserTier2["TESTERS"] = 1] = "TESTERS";
   UserTier2[UserTier2["BETA"] = 2] = "BETA";
   UserTier2[UserTier2["PUBLIC"] = 3] = "PUBLIC";
-})(UserTier || (UserTier = {}));
-var EditType;
-(function(EditType2) {
+  return UserTier2;
+})(UserTier || {});
+var EditType = /* @__PURE__ */ ((EditType2) => {
   EditType2[EditType2["EDIT_TYPE_UNSPECIFIED"] = 0] = "EDIT_TYPE_UNSPECIFIED";
   EditType2[EditType2["ADD"] = 1] = "ADD";
   EditType2[EditType2["DELETE"] = 2] = "DELETE";
@@ -87,38 +106,65 @@ var EditType;
   EditType2[EditType2["UNDO"] = 4] = "UNDO";
   EditType2[EditType2["REDO"] = 5] = "REDO";
   EditType2[EditType2["ACCEPT_COMPLETION"] = 6] = "ACCEPT_COMPLETION";
-})(EditType || (EditType = {}));
-var Reason;
-(function(Reason2) {
+  return EditType2;
+})(EditType || {});
+var Reason = /* @__PURE__ */ ((Reason2) => {
   Reason2[Reason2["UNKNOWN"] = 0] = "UNKNOWN";
   Reason2[Reason2["CURRENTLY_OPEN"] = 1] = "CURRENTLY_OPEN";
   Reason2[Reason2["RECENTLY_OPENED"] = 2] = "RECENTLY_OPENED";
   Reason2[Reason2["RECENTLY_EDITED"] = 3] = "RECENTLY_EDITED";
   Reason2[Reason2["COLOCATED"] = 4] = "COLOCATED";
   Reason2[Reason2["RELATED_FILE"] = 5] = "RELATED_FILE";
-})(Reason || (Reason = {}));
-var UseCase;
-(function(UseCase2) {
+  return Reason2;
+})(Reason || {});
+var UseCase = /* @__PURE__ */ ((UseCase2) => {
   UseCase2[UseCase2["USE_CASE_UNSPECIFIED"] = 0] = "USE_CASE_UNSPECIFIED";
   UseCase2[UseCase2["CODE_GENERATION"] = 1] = "CODE_GENERATION";
   UseCase2[UseCase2["CODE_TRANSFORMATION"] = 2] = "CODE_TRANSFORMATION";
-})(UseCase || (UseCase = {}));
-var RecitationAction;
-(function(RecitationAction2) {
+  return UseCase2;
+})(UseCase || {});
+var RecitationAction = /* @__PURE__ */ ((RecitationAction2) => {
   RecitationAction2["ACTION_UNSPECIFIED"] = "ACTION_UNSPECIFIED";
   RecitationAction2["CITE"] = "CITE";
   RecitationAction2["BLOCK"] = "BLOCK";
   RecitationAction2["NO_ACTION"] = "NO_ACTION";
   RecitationAction2["EXEMPT_FOUND_IN_PROMPT"] = "EXEMPT_FOUND_IN_PROMPT";
-})(RecitationAction || (RecitationAction = {}));
-var CitationSourceType;
-(function(CitationSourceType2) {
+  return RecitationAction2;
+})(RecitationAction || {});
+var CitationSourceType = /* @__PURE__ */ ((CitationSourceType2) => {
   CitationSourceType2["CITATION_SOURCE_TYPE_UNSPECIFIED"] = "CITATION_SOURCE_TYPE_UNSPECIFIED";
   CitationSourceType2["TRAINING_DATA"] = "TRAINING_DATA";
   CitationSourceType2["WORLD_FACTS"] = "WORLD_FACTS";
   CitationSourceType2["LOCAL_FACTS"] = "LOCAL_FACTS";
   CitationSourceType2["INDIRECT"] = "INDIRECT";
-})(CitationSourceType || (CitationSourceType = {}));
+  return CitationSourceType2;
+})(CitationSourceType || {});
+var AidaAccessPreconditions = /* @__PURE__ */ ((AidaAccessPreconditions2) => {
+  AidaAccessPreconditions2["AVAILABLE"] = "available";
+  AidaAccessPreconditions2["NO_ACCOUNT_EMAIL"] = "no-account-email";
+  AidaAccessPreconditions2["NO_INTERNET"] = "no-internet";
+  AidaAccessPreconditions2["SYNC_IS_PAUSED"] = "sync-is-paused";
+  return AidaAccessPreconditions2;
+})(AidaAccessPreconditions || {});
+var AidaInferenceLanguage = /* @__PURE__ */ ((AidaInferenceLanguage2) => {
+  AidaInferenceLanguage2["CPP"] = "CPP";
+  AidaInferenceLanguage2["PYTHON"] = "PYTHON";
+  AidaInferenceLanguage2["KOTLIN"] = "KOTLIN";
+  AidaInferenceLanguage2["JAVA"] = "JAVA";
+  AidaInferenceLanguage2["JAVASCRIPT"] = "JAVASCRIPT";
+  AidaInferenceLanguage2["GO"] = "GO";
+  AidaInferenceLanguage2["TYPESCRIPT"] = "TYPESCRIPT";
+  AidaInferenceLanguage2["HTML"] = "HTML";
+  AidaInferenceLanguage2["BASH"] = "BASH";
+  AidaInferenceLanguage2["CSS"] = "CSS";
+  AidaInferenceLanguage2["DART"] = "DART";
+  AidaInferenceLanguage2["JSON"] = "JSON";
+  AidaInferenceLanguage2["MARKDOWN"] = "MARKDOWN";
+  AidaInferenceLanguage2["VUE"] = "VUE";
+  AidaInferenceLanguage2["XML"] = "XML";
+  AidaInferenceLanguage2["UNKNOWN"] = "UNKNOWN";
+  return AidaInferenceLanguage2;
+})(AidaInferenceLanguage || {});
 function debugLog(...log) {
   if (!Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("debugAiServicesEnabled"))) {
     return;
@@ -126,7 +172,7 @@ function debugLog(...log) {
   console.log(...log);
 }
 
-// gen/front_end/core/host/AidaGcaTranslation.js
+// ../../front_end/core/host/AidaGcaTranslation.ts
 var AidaGcaTranslation_exports = {};
 __export(AidaGcaTranslation_exports, {
   aidaCompletionRequestToGcaRequest: () => aidaCompletionRequestToGcaRequest,
@@ -139,7 +185,7 @@ __export(AidaGcaTranslation_exports, {
   gcaResponseToAidaGenerateCodeResponse: () => gcaResponseToAidaGenerateCodeResponse
 });
 
-// gen/front_end/core/host/GcaTypes.js
+// ../../front_end/core/host/GcaTypes.ts
 var GcaTypes_exports = {};
 __export(GcaTypes_exports, {
   BlockReason: () => BlockReason,
@@ -157,8 +203,7 @@ __export(GcaTypes_exports, {
   SuggestionStatus: () => SuggestionStatus,
   Type: () => Type
 });
-var Type;
-(function(Type2) {
+var Type = /* @__PURE__ */ ((Type2) => {
   Type2[Type2["TYPE_UNSPECIFIED"] = 0] = "TYPE_UNSPECIFIED";
   Type2[Type2["STRING"] = 1] = "STRING";
   Type2[Type2["NUMBER"] = 2] = "NUMBER";
@@ -167,40 +212,40 @@ var Type;
   Type2[Type2["ARRAY"] = 5] = "ARRAY";
   Type2[Type2["OBJECT"] = 6] = "OBJECT";
   Type2[Type2["NULL"] = 7] = "NULL";
-})(Type || (Type = {}));
-var HarmCategory;
-(function(HarmCategory2) {
+  return Type2;
+})(Type || {});
+var HarmCategory = /* @__PURE__ */ ((HarmCategory2) => {
   HarmCategory2[HarmCategory2["HARM_CATEGORY_UNSPECIFIED"] = 0] = "HARM_CATEGORY_UNSPECIFIED";
   HarmCategory2[HarmCategory2["HARM_CATEGORY_HARASSMENT"] = 7] = "HARM_CATEGORY_HARASSMENT";
   HarmCategory2[HarmCategory2["HARM_CATEGORY_HATE_SPEECH"] = 8] = "HARM_CATEGORY_HATE_SPEECH";
   HarmCategory2[HarmCategory2["HARM_CATEGORY_SEXUALLY_EXPLICIT"] = 9] = "HARM_CATEGORY_SEXUALLY_EXPLICIT";
   HarmCategory2[HarmCategory2["HARM_CATEGORY_DANGEROUS_CONTENT"] = 10] = "HARM_CATEGORY_DANGEROUS_CONTENT";
-})(HarmCategory || (HarmCategory = {}));
-var HarmProbability;
-(function(HarmProbability2) {
+  return HarmCategory2;
+})(HarmCategory || {});
+var HarmProbability = /* @__PURE__ */ ((HarmProbability2) => {
   HarmProbability2[HarmProbability2["HARM_PROBABILITY_UNSPECIFIED"] = 0] = "HARM_PROBABILITY_UNSPECIFIED";
   HarmProbability2[HarmProbability2["NEGLIGIBLE"] = 1] = "NEGLIGIBLE";
   HarmProbability2[HarmProbability2["LOW"] = 2] = "LOW";
   HarmProbability2[HarmProbability2["MEDIUM"] = 3] = "MEDIUM";
   HarmProbability2[HarmProbability2["HIGH"] = 4] = "HIGH";
-})(HarmProbability || (HarmProbability = {}));
-var HarmBlockThreshold;
-(function(HarmBlockThreshold2) {
+  return HarmProbability2;
+})(HarmProbability || {});
+var HarmBlockThreshold = /* @__PURE__ */ ((HarmBlockThreshold2) => {
   HarmBlockThreshold2[HarmBlockThreshold2["HARM_BLOCK_THRESHOLD_UNSPECIFIED"] = 0] = "HARM_BLOCK_THRESHOLD_UNSPECIFIED";
   HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_LOW_AND_ABOVE"] = 1] = "BLOCK_LOW_AND_ABOVE";
   HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_MEDIUM_AND_ABOVE"] = 2] = "BLOCK_MEDIUM_AND_ABOVE";
   HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_ONLY_HIGH"] = 3] = "BLOCK_ONLY_HIGH";
   HarmBlockThreshold2[HarmBlockThreshold2["BLOCK_NONE"] = 4] = "BLOCK_NONE";
   HarmBlockThreshold2[HarmBlockThreshold2["OFF"] = 5] = "OFF";
-})(HarmBlockThreshold || (HarmBlockThreshold = {}));
-var HarmBlockMethod;
-(function(HarmBlockMethod2) {
+  return HarmBlockThreshold2;
+})(HarmBlockThreshold || {});
+var HarmBlockMethod = /* @__PURE__ */ ((HarmBlockMethod2) => {
   HarmBlockMethod2[HarmBlockMethod2["HARM_BLOCK_METHOD_UNSPECIFIED"] = 0] = "HARM_BLOCK_METHOD_UNSPECIFIED";
   HarmBlockMethod2[HarmBlockMethod2["SEVERITY"] = 1] = "SEVERITY";
   HarmBlockMethod2[HarmBlockMethod2["PROBABILITY"] = 2] = "PROBABILITY";
-})(HarmBlockMethod || (HarmBlockMethod = {}));
-var FinishReason;
-(function(FinishReason2) {
+  return HarmBlockMethod2;
+})(HarmBlockMethod || {});
+var FinishReason = /* @__PURE__ */ ((FinishReason2) => {
   FinishReason2[FinishReason2["FINISH_REASON_UNSPECIFIED"] = 0] = "FINISH_REASON_UNSPECIFIED";
   FinishReason2[FinishReason2["STOP"] = 1] = "STOP";
   FinishReason2[FinishReason2["MAX_TOKENS"] = 2] = "MAX_TOKENS";
@@ -217,25 +262,25 @@ var FinishReason;
   FinishReason2[FinishReason2["IMAGE_OTHER"] = 13] = "IMAGE_OTHER";
   FinishReason2[FinishReason2["UNEXPECTED_TOOL_CALL"] = 14] = "UNEXPECTED_TOOL_CALL";
   FinishReason2[FinishReason2["NO_IMAGE"] = 15] = "NO_IMAGE";
-})(FinishReason || (FinishReason = {}));
-var Method;
-(function(Method2) {
+  return FinishReason2;
+})(FinishReason || {});
+var Method = /* @__PURE__ */ ((Method2) => {
   Method2[Method2["METHOD_UNSPECIFIED"] = 0] = "METHOD_UNSPECIFIED";
   Method2[Method2["GENERATE_CODE"] = 1] = "GENERATE_CODE";
   Method2[Method2["COMPLETE_CODE"] = 2] = "COMPLETE_CODE";
   Method2[Method2["TRANSFORM_CODE"] = 3] = "TRANSFORM_CODE";
   Method2[Method2["CHAT"] = 4] = "CHAT";
-})(Method || (Method = {}));
-var SuggestionStatus;
-(function(SuggestionStatus2) {
+  return Method2;
+})(Method || {});
+var SuggestionStatus = /* @__PURE__ */ ((SuggestionStatus2) => {
   SuggestionStatus2[SuggestionStatus2["STATUS_UNSPECIFIED"] = 0] = "STATUS_UNSPECIFIED";
   SuggestionStatus2[SuggestionStatus2["NO_ERROR"] = 1] = "NO_ERROR";
   SuggestionStatus2[SuggestionStatus2["ERROR"] = 2] = "ERROR";
   SuggestionStatus2[SuggestionStatus2["CANCELLED"] = 3] = "CANCELLED";
   SuggestionStatus2[SuggestionStatus2["EMPTY"] = 4] = "EMPTY";
-})(SuggestionStatus || (SuggestionStatus = {}));
-var InteractionType;
-(function(InteractionType2) {
+  return SuggestionStatus2;
+})(SuggestionStatus || {});
+var InteractionType = /* @__PURE__ */ ((InteractionType2) => {
   InteractionType2[InteractionType2["INTERACTION_TYPE_UNSPECIFIED"] = 0] = "INTERACTION_TYPE_UNSPECIFIED";
   InteractionType2[InteractionType2["THUMBS_UP"] = 1] = "THUMBS_UP";
   InteractionType2[InteractionType2["THUMBS_DOWN"] = 2] = "THUMBS_DOWN";
@@ -243,9 +288,9 @@ var InteractionType;
   InteractionType2[InteractionType2["ACCEPT_PARTIALLY"] = 4] = "ACCEPT_PARTIALLY";
   InteractionType2[InteractionType2["REJECT"] = 5] = "REJECT";
   InteractionType2[InteractionType2["COPY"] = 6] = "COPY";
-})(InteractionType || (InteractionType = {}));
-var InclusionReason;
-(function(InclusionReason2) {
+  return InteractionType2;
+})(InteractionType || {});
+var InclusionReason = /* @__PURE__ */ ((InclusionReason2) => {
   InclusionReason2[InclusionReason2["INCLUSION_REASON_UNSPECIFIED"] = 0] = "INCLUSION_REASON_UNSPECIFIED";
   InclusionReason2[InclusionReason2["ACTIVE"] = 1] = "ACTIVE";
   InclusionReason2[InclusionReason2["OPEN"] = 2] = "OPEN";
@@ -254,37 +299,38 @@ var InclusionReason;
   InclusionReason2[InclusionReason2["COLOCATED"] = 5] = "COLOCATED";
   InclusionReason2[InclusionReason2["RELATED"] = 6] = "RELATED";
   InclusionReason2[InclusionReason2["USER_SELECTED"] = 7] = "USER_SELECTED";
-})(InclusionReason || (InclusionReason = {}));
-var BlockReason;
-(function(BlockReason2) {
+  return InclusionReason2;
+})(InclusionReason || {});
+var BlockReason = /* @__PURE__ */ ((BlockReason2) => {
   BlockReason2[BlockReason2["BLOCKED_REASON_UNSPECIFIED"] = 0] = "BLOCKED_REASON_UNSPECIFIED";
   BlockReason2[BlockReason2["SAFETY"] = 1] = "SAFETY";
   BlockReason2[BlockReason2["OTHER"] = 2] = "OTHER";
   BlockReason2[BlockReason2["BLOCKLIST"] = 3] = "BLOCKLIST";
   BlockReason2[BlockReason2["PROHIBITED_CONTENT"] = 4] = "PROHIBITED_CONTENT";
   BlockReason2[BlockReason2["IMAGE_SAFETY"] = 5] = "IMAGE_SAFETY";
-})(BlockReason || (BlockReason = {}));
-var Language;
-(function(Language4) {
+  return BlockReason2;
+})(BlockReason || {});
+var Language = /* @__PURE__ */ ((Language4) => {
   Language4[Language4["LANGUAGE_UNSPECIFIED"] = 0] = "LANGUAGE_UNSPECIFIED";
   Language4[Language4["PYTHON"] = 1] = "PYTHON";
-})(Language || (Language = {}));
-var Outcome;
-(function(Outcome2) {
+  return Language4;
+})(Language || {});
+var Outcome = /* @__PURE__ */ ((Outcome2) => {
   Outcome2[Outcome2["OUTCOME_UNSPECIFIED"] = 0] = "OUTCOME_UNSPECIFIED";
   Outcome2[Outcome2["OUTCOME_OK"] = 1] = "OUTCOME_OK";
   Outcome2[Outcome2["OUTCOME_FAILED"] = 2] = "OUTCOME_FAILED";
   Outcome2[Outcome2["OUTCOME_DEADLINE_EXCEEDED"] = 3] = "OUTCOME_DEADLINE_EXCEEDED";
-})(Outcome || (Outcome = {}));
-var Mode;
-(function(Mode2) {
+  return Outcome2;
+})(Outcome || {});
+var Mode = /* @__PURE__ */ ((Mode2) => {
   Mode2[Mode2["MODE_UNSPECIFIED"] = 0] = "MODE_UNSPECIFIED";
   Mode2[Mode2["AUTO"] = 1] = "AUTO";
   Mode2[Mode2["ANY"] = 2] = "ANY";
   Mode2[Mode2["NONE"] = 3] = "NONE";
-})(Mode || (Mode = {}));
+  return Mode2;
+})(Mode || {});
 
-// gen/front_end/core/host/AidaGcaTranslation.js
+// ../../front_end/core/host/AidaGcaTranslation.ts
 function createBaseGcaRequest(request, contents, experience) {
   const gcaRequest = { contents, aicode: { experience } };
   mapCommonAidaRequestFields(request, gcaRequest);
@@ -374,11 +420,11 @@ function aidaEventToGcaTelemetryRequest(clientEvent) {
     if (clientEvent.do_conversation_client_event) {
       const feedback = clientEvent.do_conversation_client_event.user_feedback;
       if (feedback.sentiment) {
-        let interaction = InteractionType.INTERACTION_TYPE_UNSPECIFIED;
-        if (feedback.sentiment === "POSITIVE") {
-          interaction = InteractionType.THUMBS_UP;
-        } else if (feedback.sentiment === "NEGATIVE") {
-          interaction = InteractionType.THUMBS_DOWN;
+        let interaction = 0 /* INTERACTION_TYPE_UNSPECIFIED */;
+        if (feedback.sentiment === "POSITIVE" /* POSITIVE */) {
+          interaction = 1 /* THUMBS_UP */;
+        } else if (feedback.sentiment === "NEGATIVE" /* NEGATIVE */) {
+          interaction = 2 /* THUMBS_DOWN */;
         }
         feedbackMetrics.push({
           eventTime,
@@ -387,8 +433,18 @@ function aidaEventToGcaTelemetryRequest(clientEvent) {
         });
       }
     }
-    feedbackMetrics.push(...convertCodeTelemetry(clientEvent.complete_code_client_event, Method.COMPLETE_CODE, responseId, eventTime));
-    feedbackMetrics.push(...convertCodeTelemetry(clientEvent.generate_code_client_event, Method.GENERATE_CODE, responseId, eventTime));
+    feedbackMetrics.push(...convertCodeTelemetry(
+      clientEvent.complete_code_client_event,
+      2 /* COMPLETE_CODE */,
+      responseId,
+      eventTime
+    ));
+    feedbackMetrics.push(...convertCodeTelemetry(
+      clientEvent.generate_code_client_event,
+      1 /* GENERATE_CODE */,
+      responseId,
+      eventTime
+    ));
     const gcaTelemetryRequest = {
       feedbackMetrics
     };
@@ -410,7 +466,7 @@ function convertCodeTelemetry(event, method, responseId, eventTime) {
       responseId,
       suggestionOffered: {
         method,
-        status: SuggestionStatus.NO_ERROR,
+        status: 1 /* NO_ERROR */,
         responseLatency: `${impression.latency.duration.seconds + impression.latency.duration.nanos / 1e9}s`
       }
     }];
@@ -421,7 +477,7 @@ function convertCodeTelemetry(event, method, responseId, eventTime) {
       eventTime,
       responseId,
       suggestionInteraction: {
-        interaction: InteractionType.ACCEPT,
+        interaction: 3 /* ACCEPT */,
         candidateIndex: acceptance.sample.sample_id
       }
     }];
@@ -456,7 +512,7 @@ function aidaCompletionRequestToGcaRequest(request) {
 }
 function inFileEditRequestToSourceFile(request) {
   const sourceFile = {
-    inclusionReason: [InclusionReason.ACTIVE],
+    inclusionReason: [1 /* ACTIVE */],
     fileUri: "devtools-code-completion",
     segments: [
       {
@@ -523,14 +579,14 @@ function buildLabels(request, gcaRequest) {
   }
 }
 var AidaReasonToGcaInclusionReason = {
-  [Reason.UNKNOWN]: InclusionReason.INCLUSION_REASON_UNSPECIFIED,
-  [Reason.CURRENTLY_OPEN]: InclusionReason.OPEN,
+  [0 /* UNKNOWN */]: 0 /* INCLUSION_REASON_UNSPECIFIED */,
+  [1 /* CURRENTLY_OPEN */]: 2 /* OPEN */,
   // Intentional mapping due to type mismatch
   // TODO(liviurau): find a way to validate this mapping
-  [Reason.RECENTLY_OPENED]: InclusionReason.RECENTLY_CLOSED,
-  [Reason.RECENTLY_EDITED]: InclusionReason.RECENTLY_EDITED,
-  [Reason.COLOCATED]: InclusionReason.COLOCATED,
-  [Reason.RELATED_FILE]: InclusionReason.RELATED
+  [2 /* RECENTLY_OPENED */]: 3 /* RECENTLY_CLOSED */,
+  [3 /* RECENTLY_EDITED */]: 4 /* RECENTLY_EDITED */,
+  [4 /* COLOCATED */]: 5 /* COLOCATED */,
+  [5 /* RELATED_FILE */]: 6 /* RELATED */
 };
 function gcaResponseToAidaCompletionResponse(response) {
   try {
@@ -588,7 +644,7 @@ function gcaCandidateToAidaGenerationSample(candidate) {
   };
   if (candidate.citationMetadata) {
     generationSample.attributionMetadata = {
-      attributionAction: RecitationAction.CITE,
+      attributionAction: "CITE" /* CITE */,
       citations: (candidate.citationMetadata.citations ?? []).map((c) => ({
         startIndex: c.startIndex,
         endIndex: c.endIndex,
@@ -608,7 +664,7 @@ function convertAidaFactsToGcaContent(facts) {
 }
 function convertAidaContentToGcaContent(content) {
   let role = "user";
-  if (content.role === Role.MODEL) {
+  if (content.role === 2 /* MODEL */) {
     role = "model";
   }
   return {
@@ -669,9 +725,9 @@ function convertAidaParamToGcaSchema(param) {
   if (param.nullable) {
     schema.nullable = param.nullable;
   }
-  if (param.type === 5 && param.items) {
+  if (param.type === 5 /* ARRAY */ && param.items) {
     schema.items = convertAidaParamToGcaSchema(param.items);
-  } else if (param.type === 6 && param.properties) {
+  } else if (param.type === 6 /* OBJECT */ && param.properties) {
     schema.properties = {};
     for (const [key, value] of Object.entries(param.properties)) {
       schema.properties[key] = convertAidaParamToGcaSchema(value);
@@ -693,7 +749,7 @@ function gcaChunkResponseToAidaChunkResponse(response) {
     };
     if (candidate?.citationMetadata?.citations) {
       metadata.attributionMetadata = {
-        attributionAction: RecitationAction.CITE,
+        attributionAction: "CITE" /* CITE */,
         citations: candidate.citationMetadata.citations.map((c) => ({
           startIndex: c.startIndex,
           endIndex: c.endIndex,
@@ -722,7 +778,7 @@ function gcaChunkResponseToAidaChunkResponse(response) {
       if (part.executableCode) {
         aidaChunkResponse.codeChunk = {
           code: part.executableCode.code,
-          inferenceLanguage: part.executableCode.language ? "PYTHON" : "UNKNOWN"
+          inferenceLanguage: part.executableCode.language ? "PYTHON" /* PYTHON */ : "UNKNOWN" /* UNKNOWN */
         };
       }
       return aidaChunkResponse;
@@ -735,16 +791,16 @@ function gcaChunkResponseToAidaChunkResponse(response) {
   }
 }
 
-// gen/front_end/core/host/DispatchHttpRequestClient.js
+// ../../front_end/core/host/DispatchHttpRequestClient.ts
 var DispatchHttpRequestClient_exports = {};
 __export(DispatchHttpRequestClient_exports, {
   DispatchHttpRequestError: () => DispatchHttpRequestError,
   ErrorType: () => ErrorType,
   makeHttpRequest: () => makeHttpRequest
 });
-import * as Platform3 from "./../platform/platform.js";
+import * as Platform3 from "../platform/platform.js";
 
-// gen/front_end/core/host/InspectorFrontendHost.js
+// ../../front_end/core/host/InspectorFrontendHost.ts
 var InspectorFrontendHost_exports = {};
 __export(InspectorFrontendHost_exports, {
   InspectorFrontendHostInstance: () => InspectorFrontendHostInstance,
@@ -752,83 +808,116 @@ __export(InspectorFrontendHost_exports, {
   installInspectorFrontendHost: () => installInspectorFrontendHost,
   isUnderTest: () => isUnderTest
 });
-import * as Common3 from "./../common/common.js";
-import * as Root from "./../root/root.js";
+import * as Common3 from "../common/common.js";
+import * as Root from "../root/root.js";
 
-// gen/front_end/core/host/InspectorFrontendHostAPI.js
+// ../../front_end/core/host/InspectorFrontendHostAPI.ts
 var InspectorFrontendHostAPI_exports = {};
 __export(InspectorFrontendHostAPI_exports, {
+  EnumeratedHistogram: () => EnumeratedHistogram,
   EventDescriptors: () => EventDescriptors,
   Events: () => Events
 });
-var Events;
-(function(Events2) {
-  Events2["AppendedToURL"] = "appendedToURL";
-  Events2["CanceledSaveURL"] = "canceledSaveURL";
-  Events2["ColorThemeChanged"] = "colorThemeChanged";
-  Events2["ContextMenuCleared"] = "contextMenuCleared";
-  Events2["ContextMenuItemSelected"] = "contextMenuItemSelected";
-  Events2["DeviceCountUpdated"] = "deviceCountUpdated";
-  Events2["DevicesDiscoveryConfigChanged"] = "devicesDiscoveryConfigChanged";
-  Events2["DevicesPortForwardingStatusChanged"] = "devicesPortForwardingStatusChanged";
-  Events2["DevicesUpdated"] = "devicesUpdated";
-  Events2["DispatchMessage"] = "dispatchMessage";
-  Events2["DispatchMessageChunk"] = "dispatchMessageChunk";
-  Events2["EnterInspectElementMode"] = "enterInspectElementMode";
-  Events2["EyeDropperPickedColor"] = "eyeDropperPickedColor";
-  Events2["FileSystemsLoaded"] = "fileSystemsLoaded";
-  Events2["FileSystemRemoved"] = "fileSystemRemoved";
-  Events2["FileSystemAdded"] = "fileSystemAdded";
-  Events2["FileSystemFilesChangedAddedRemoved"] = "fileSystemFilesChangedAddedRemoved";
-  Events2["IndexingTotalWorkCalculated"] = "indexingTotalWorkCalculated";
-  Events2["IndexingWorked"] = "indexingWorked";
-  Events2["IndexingDone"] = "indexingDone";
-  Events2["KeyEventUnhandled"] = "keyEventUnhandled";
-  Events2["ReloadInspectedPage"] = "reloadInspectedPage";
-  Events2["RevealSourceLine"] = "revealSourceLine";
-  Events2["SavedURL"] = "savedURL";
-  Events2["SearchCompleted"] = "searchCompleted";
-  Events2["SetInspectedTabId"] = "setInspectedTabId";
-  Events2["SetUseSoftMenu"] = "setUseSoftMenu";
-  Events2["ShowPanel"] = "showPanel";
-})(Events || (Events = {}));
+var Events = /* @__PURE__ */ ((Events3) => {
+  Events3["AppendedToURL"] = "appendedToURL";
+  Events3["CanceledSaveURL"] = "canceledSaveURL";
+  Events3["ColorThemeChanged"] = "colorThemeChanged";
+  Events3["ContextMenuCleared"] = "contextMenuCleared";
+  Events3["ContextMenuItemSelected"] = "contextMenuItemSelected";
+  Events3["DeviceCountUpdated"] = "deviceCountUpdated";
+  Events3["DevicesDiscoveryConfigChanged"] = "devicesDiscoveryConfigChanged";
+  Events3["DevicesPortForwardingStatusChanged"] = "devicesPortForwardingStatusChanged";
+  Events3["DevicesUpdated"] = "devicesUpdated";
+  Events3["DispatchMessage"] = "dispatchMessage";
+  Events3["DispatchMessageChunk"] = "dispatchMessageChunk";
+  Events3["EnterInspectElementMode"] = "enterInspectElementMode";
+  Events3["EyeDropperPickedColor"] = "eyeDropperPickedColor";
+  Events3["FileSystemsLoaded"] = "fileSystemsLoaded";
+  Events3["FileSystemRemoved"] = "fileSystemRemoved";
+  Events3["FileSystemAdded"] = "fileSystemAdded";
+  Events3["FileSystemFilesChangedAddedRemoved"] = "fileSystemFilesChangedAddedRemoved";
+  Events3["IndexingTotalWorkCalculated"] = "indexingTotalWorkCalculated";
+  Events3["IndexingWorked"] = "indexingWorked";
+  Events3["IndexingDone"] = "indexingDone";
+  Events3["KeyEventUnhandled"] = "keyEventUnhandled";
+  Events3["ReloadInspectedPage"] = "reloadInspectedPage";
+  Events3["RevealSourceLine"] = "revealSourceLine";
+  Events3["SavedURL"] = "savedURL";
+  Events3["SearchCompleted"] = "searchCompleted";
+  Events3["SetInspectedTabId"] = "setInspectedTabId";
+  Events3["SetUseSoftMenu"] = "setUseSoftMenu";
+  Events3["ShowPanel"] = "showPanel";
+  return Events3;
+})(Events || {});
 var EventDescriptors = [
-  [Events.AppendedToURL, ["url"]],
-  [Events.CanceledSaveURL, ["url"]],
-  [Events.ColorThemeChanged, []],
-  [Events.ContextMenuCleared, []],
-  [Events.ContextMenuItemSelected, ["id"]],
-  [Events.DeviceCountUpdated, ["count"]],
-  [Events.DevicesDiscoveryConfigChanged, ["config"]],
-  [Events.DevicesPortForwardingStatusChanged, ["status"]],
-  [Events.DevicesUpdated, ["devices"]],
-  [Events.DispatchMessage, ["messageObject"]],
-  [Events.DispatchMessageChunk, ["messageChunk", "messageSize"]],
-  [Events.EnterInspectElementMode, []],
-  [Events.EyeDropperPickedColor, ["color"]],
-  [Events.FileSystemsLoaded, ["fileSystems"]],
-  [Events.FileSystemRemoved, ["fileSystemPath"]],
-  [Events.FileSystemAdded, ["errorMessage", "fileSystem"]],
-  [Events.FileSystemFilesChangedAddedRemoved, ["changed", "added", "removed"]],
-  [Events.IndexingTotalWorkCalculated, , ["requestId", "fileSystemPath", "totalWork"]],
-  [Events.IndexingWorked, ["requestId", "fileSystemPath", "worked"]],
-  [Events.IndexingDone, ["requestId", "fileSystemPath"]],
-  [Events.KeyEventUnhandled, ["event"]],
-  [Events.ReloadInspectedPage, ["hard"]],
-  [Events.RevealSourceLine, ["url", "lineNumber", "columnNumber"]],
-  [Events.SavedURL, ["url", "fileSystemPath"]],
-  [Events.SearchCompleted, ["requestId", "fileSystemPath", "files"]],
-  [Events.SetInspectedTabId, ["tabId"]],
-  [Events.SetUseSoftMenu, ["useSoftMenu"]],
-  [Events.ShowPanel, ["panelName"]]
+  ["appendedToURL" /* AppendedToURL */, ["url"]],
+  ["canceledSaveURL" /* CanceledSaveURL */, ["url"]],
+  ["colorThemeChanged" /* ColorThemeChanged */, []],
+  ["contextMenuCleared" /* ContextMenuCleared */, []],
+  ["contextMenuItemSelected" /* ContextMenuItemSelected */, ["id"]],
+  ["deviceCountUpdated" /* DeviceCountUpdated */, ["count"]],
+  ["devicesDiscoveryConfigChanged" /* DevicesDiscoveryConfigChanged */, ["config"]],
+  ["devicesPortForwardingStatusChanged" /* DevicesPortForwardingStatusChanged */, ["status"]],
+  ["devicesUpdated" /* DevicesUpdated */, ["devices"]],
+  ["dispatchMessage" /* DispatchMessage */, ["messageObject"]],
+  ["dispatchMessageChunk" /* DispatchMessageChunk */, ["messageChunk", "messageSize"]],
+  ["enterInspectElementMode" /* EnterInspectElementMode */, []],
+  ["eyeDropperPickedColor" /* EyeDropperPickedColor */, ["color"]],
+  ["fileSystemsLoaded" /* FileSystemsLoaded */, ["fileSystems"]],
+  ["fileSystemRemoved" /* FileSystemRemoved */, ["fileSystemPath"]],
+  ["fileSystemAdded" /* FileSystemAdded */, ["errorMessage", "fileSystem"]],
+  ["fileSystemFilesChangedAddedRemoved" /* FileSystemFilesChangedAddedRemoved */, ["changed", "added", "removed"]],
+  ["indexingTotalWorkCalculated" /* IndexingTotalWorkCalculated */, ["requestId", "fileSystemPath", "totalWork"]],
+  ["indexingWorked" /* IndexingWorked */, ["requestId", "fileSystemPath", "worked"]],
+  ["indexingDone" /* IndexingDone */, ["requestId", "fileSystemPath"]],
+  ["keyEventUnhandled" /* KeyEventUnhandled */, ["event"]],
+  ["reloadInspectedPage" /* ReloadInspectedPage */, ["hard"]],
+  ["revealSourceLine" /* RevealSourceLine */, ["url", "lineNumber", "columnNumber"]],
+  ["savedURL" /* SavedURL */, ["url", "fileSystemPath"]],
+  ["searchCompleted" /* SearchCompleted */, ["requestId", "fileSystemPath", "files"]],
+  ["setInspectedTabId" /* SetInspectedTabId */, ["tabId"]],
+  ["setUseSoftMenu" /* SetUseSoftMenu */, ["useSoftMenu"]],
+  ["showPanel" /* ShowPanel */, ["panelName"]]
 ];
+var EnumeratedHistogram = /* @__PURE__ */ ((EnumeratedHistogram2) => {
+  EnumeratedHistogram2["ActionTaken"] = "DevTools.ActionTaken";
+  EnumeratedHistogram2["PanelShown"] = "DevTools.PanelShown";
+  EnumeratedHistogram2["KeyboardShortcutFired"] = "DevTools.KeyboardShortcutFired";
+  EnumeratedHistogram2["IssueCreated"] = "DevTools.IssueCreated";
+  EnumeratedHistogram2["IssuesPanelIssueExpanded"] = "DevTools.IssuesPanelIssueExpanded";
+  EnumeratedHistogram2["IssuesPanelOpenedFrom"] = "DevTools.IssuesPanelOpenedFrom";
+  EnumeratedHistogram2["IssuesPanelResourceOpened"] = "DevTools.IssuesPanelResourceOpened";
+  EnumeratedHistogram2["KeybindSetSettingChanged"] = "DevTools.KeybindSetSettingChanged";
+  EnumeratedHistogram2["ExperimentEnabledAtLaunch"] = "DevTools.ExperimentEnabledAtLaunch";
+  EnumeratedHistogram2["ExperimentDisabledAtLaunch"] = "DevTools.ExperimentDisabledAtLaunch";
+  EnumeratedHistogram2["ExperimentEnabled"] = "DevTools.ExperimentEnabled";
+  EnumeratedHistogram2["ExperimentDisabled"] = "DevTools.ExperimentDisabled";
+  EnumeratedHistogram2["DeveloperResourceLoaded"] = "DevTools.DeveloperResourceLoaded";
+  EnumeratedHistogram2["DeveloperResourceScheme"] = "DevTools.DeveloperResourceScheme";
+  EnumeratedHistogram2["Language"] = "DevTools.Language";
+  EnumeratedHistogram2["SyncSetting"] = "DevTools.SyncSetting";
+  EnumeratedHistogram2["RecordingReplayFinished"] = "DevTools.RecordingReplayFinished";
+  EnumeratedHistogram2["RecordingReplayStarted"] = "DevTools.RecordingReplayStarted";
+  EnumeratedHistogram2["RecordingToggled"] = "DevTools.RecordingToggled";
+  EnumeratedHistogram2["SourcesPanelFileDebugged"] = "DevTools.SourcesPanelFileDebugged";
+  EnumeratedHistogram2["SourcesPanelFileOpened"] = "DevTools.SourcesPanelFileOpened";
+  EnumeratedHistogram2["NetworkPanelResponsePreviewOpened"] = "DevTools.NetworkPanelResponsePreviewOpened";
+  EnumeratedHistogram2["TimelineNavigationSettingState"] = "DevTools.TimelineNavigationSettingState";
+  EnumeratedHistogram2["LighthouseModeRun"] = "DevTools.LighthouseModeRun";
+  EnumeratedHistogram2["LighthouseCategoryUsed"] = "DevTools.LighthouseCategoryUsed";
+  EnumeratedHistogram2["SwatchActivated"] = "DevTools.SwatchActivated";
+  EnumeratedHistogram2["BuiltInAiAvailability"] = "DevTools.BuiltInAiAvailability";
+  EnumeratedHistogram2["ResendRequest"] = "DevTools.ResendRequest";
+  EnumeratedHistogram2["EditResendRequest"] = "DevTools.EditResendRequest";
+  return EnumeratedHistogram2;
+})(EnumeratedHistogram || {});
 
-// gen/front_end/core/host/InspectorFrontendHostStub.js
-import * as Common2 from "./../common/common.js";
-import * as i18n3 from "./../i18n/i18n.js";
-import * as Platform2 from "./../platform/platform.js";
+// ../../front_end/core/host/InspectorFrontendHostStub.ts
+import * as Common2 from "../common/common.js";
+import * as i18n3 from "../i18n/i18n.js";
+import * as Platform2 from "../platform/platform.js";
 
-// gen/front_end/core/host/ResourceLoader.js
+// ../../front_end/core/host/ResourceLoader.ts
 var ResourceLoader_exports = {};
 __export(ResourceLoader_exports, {
   ResourceLoader: () => ResourceLoader,
@@ -839,8 +928,8 @@ __export(ResourceLoader_exports, {
   netErrorToMessage: () => netErrorToMessage,
   streamWrite: () => streamWrite
 });
-import * as Common from "./../common/common.js";
-import * as i18n from "./../i18n/i18n.js";
+import * as Common from "../common/common.js";
+import * as i18n from "../i18n/i18n.js";
 var UIStrings = {
   /**
    * @description Name of an error category used in error messages.
@@ -1057,7 +1146,7 @@ var loadAsStream = function(url, headers, stream, callback, allowRemoteFilePaths
   }
 };
 
-// gen/front_end/core/host/InspectorFrontendHostStub.js
+// ../../front_end/core/host/InspectorFrontendHostStub.ts
 var UIStrings2 = {
   /**
    * @description Document title in Inspector Frontend Host of the DevTools window.
@@ -1142,10 +1231,14 @@ var InspectorFrontendHostStub = class {
     window.open(url, "_blank");
   }
   openSearchResultsInNewTab(_query) {
-    Common2.Console.Console.instance().error("Search is not enabled in hosted mode. Please inspect using chrome://inspect");
+    Common2.Console.Console.instance().error(
+      "Search is not enabled in hosted mode. Please inspect using chrome://inspect"
+    );
   }
   showItemInFolder(_fileSystemPath) {
-    Common2.Console.Console.instance().error("Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect");
+    Common2.Console.Console.instance().error(
+      "Show item in folder is not enabled in hosted mode. Please inspect using chrome://inspect"
+    );
   }
   // Reminder: the methods in this class belong to InspectorFrontendHostStub and are typically not executed.
   // InspectorFrontendHostStub is ONLY used in the uncommon case of devtools not being embedded. For example: trace.cafe or http://localhost:9222/devtools/inspector.html?ws=localhost:9222/devtools/page/xTARGET_IDx
@@ -1156,13 +1249,13 @@ var InspectorFrontendHostStub = class {
       this.#urlsBeingSaved.set(url, { isBase64, buffer });
     }
     buffer.push(content);
-    this.events.dispatchEventToListeners(Events.SavedURL, { url, fileSystemPath: url });
+    this.events.dispatchEventToListeners("savedURL" /* SavedURL */, { url, fileSystemPath: url });
   }
   append(url, content) {
     const buffer = this.#urlsBeingSaved.get(url)?.buffer;
     if (buffer) {
       buffer.push(content);
-      this.events.dispatchEventToListeners(Events.AppendedToURL, url);
+      this.events.dispatchEventToListeners("appendedToURL" /* AppendedToURL */, url);
     }
   }
   close(url) {
@@ -1227,7 +1320,7 @@ var InspectorFrontendHostStub = class {
   disconnectAutomaticFileSystem(_fileSystemPath) {
   }
   requestFileSystems() {
-    this.events.dispatchEventToListeners(Events.FileSystemsLoaded, []);
+    this.events.dispatchEventToListeners("fileSystemsLoaded" /* FileSystemsLoaded */, []);
   }
   addFileSystem(_type) {
     const onFileSystem = (fs) => {
@@ -1238,7 +1331,7 @@ var InspectorFrontendHostStub = class {
         rootURL: "filesystem:devtools://devtools/isolated/",
         type: "overrides"
       };
-      this.events.dispatchEventToListeners(Events.FileSystemAdded, { fileSystem });
+      this.events.dispatchEventToListeners("fileSystemAdded" /* FileSystemAdded */, { fileSystem });
     };
     window.webkitRequestFileSystem(window.TEMPORARY, 1024 * 1024, onFileSystem);
   }
@@ -1258,7 +1351,7 @@ var InspectorFrontendHostStub = class {
       this.#fileSystem.root.createReader().readEntries(removalCallback);
     }
     this.#fileSystem = null;
-    this.events.dispatchEventToListeners(Events.FileSystemRemoved, OVERRIDES_FILE_SYSTEM_PATH);
+    this.events.dispatchEventToListeners("fileSystemRemoved" /* FileSystemRemoved */, OVERRIDES_FILE_SYSTEM_PATH);
   }
   isolatedFileSystem(_fileSystemId, _registeredName) {
     return this.#fileSystem;
@@ -1445,7 +1538,7 @@ var InspectorFrontendHostStub = class {
   }
 };
 
-// gen/front_end/core/host/InspectorFrontendHost.js
+// ../../front_end/core/host/InspectorFrontendHost.ts
 var InspectorFrontendHostInstance;
 var InspectorFrontendAPIImpl = class {
   constructor() {
@@ -1506,16 +1599,14 @@ function isUnderTest(prefs) {
   Common3.Settings.Settings.instance().createSetting("isUnderTest", false).get();
 }
 
-// gen/front_end/core/host/DispatchHttpRequestClient.js
-var ErrorType;
-(function(ErrorType2) {
+// ../../front_end/core/host/DispatchHttpRequestClient.ts
+var ErrorType = /* @__PURE__ */ ((ErrorType2) => {
   ErrorType2["HTTP_RESPONSE_UNAVAILABLE"] = "HTTP_RESPONSE_UNAVAILABLE";
   ErrorType2["NOT_FOUND"] = "NOT_FOUND";
   ErrorType2["ABORT"] = "ABORT";
-})(ErrorType || (ErrorType = {}));
+  return ErrorType2;
+})(ErrorType || {});
 var DispatchHttpRequestError = class extends Error {
-  type;
-  response;
   constructor(type, response, options) {
     super(void 0, options);
     this.type = type;
@@ -1525,11 +1616,11 @@ var DispatchHttpRequestError = class extends Error {
 async function makeHttpRequest(request, options) {
   const signal = options?.signal;
   if (signal?.aborted) {
-    throw new DispatchHttpRequestError(ErrorType.ABORT);
+    throw new DispatchHttpRequestError("ABORT" /* ABORT */);
   }
   const response = await new Promise((resolve, reject) => {
     const onAbort = () => {
-      reject(new DispatchHttpRequestError(ErrorType.ABORT));
+      reject(new DispatchHttpRequestError("ABORT" /* ABORT */));
     };
     signal?.addEventListener("abort", onAbort, { once: true });
     InspectorFrontendHostInstance.dispatchHttpRequest(request, (result) => {
@@ -1539,7 +1630,7 @@ async function makeHttpRequest(request, options) {
   });
   debugLog2({ request, response });
   if (response.statusCode === 404) {
-    throw new DispatchHttpRequestError(ErrorType.NOT_FOUND, response);
+    throw new DispatchHttpRequestError("NOT_FOUND" /* NOT_FOUND */, response);
   }
   if ("response" in response && response.statusCode === 200) {
     if (request.streamId && !response.response) {
@@ -1548,10 +1639,10 @@ async function makeHttpRequest(request, options) {
     try {
       return JSON.parse(response.response);
     } catch (err) {
-      throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE, response, { cause: err });
+      throw new DispatchHttpRequestError("HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */, response, { cause: err });
     }
   }
-  throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE, response);
+  throw new DispatchHttpRequestError("HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */, response);
 }
 function isDebugMode() {
   return Boolean(Platform3.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("debugDispatchHttpRequestEnabled"));
@@ -1572,12 +1663,12 @@ function setDebugDispatchHttpRequestEnabled(enabled) {
 }
 globalThis.setDebugDispatchHttpRequestEnabled = setDebugDispatchHttpRequestEnabled;
 
-// gen/front_end/core/host/GcaClient.js
+// ../../front_end/core/host/GcaClient.ts
 var GcaClient_exports = {};
 __export(GcaClient_exports, {
   GcaClient: () => GcaClient
 });
-import * as Root2 from "./../root/root.js";
+import * as Root2 from "../root/root.js";
 var SERVICE_NAME = "gcaService";
 var ENDPOINTS = {
   CONTENT: "/v1beta:generateContent",
@@ -1591,13 +1682,16 @@ var GcaClient = class {
   async conversationRequest(request, streamId, options) {
     try {
       const gcaRequest = aidaDoConversationRequestToGcaRequest(request);
-      const response = await makeHttpRequest({
-        service: SERVICE_NAME,
-        path: ENDPOINTS.STREAM_CONTENT,
-        method: "POST",
-        body: JSON.stringify(gcaRequest),
-        streamId
-      }, options);
+      const response = await makeHttpRequest(
+        {
+          service: SERVICE_NAME,
+          path: ENDPOINTS.STREAM_CONTENT,
+          method: "POST",
+          body: JSON.stringify(gcaRequest),
+          streamId
+        },
+        options
+      );
       debugLog("GCA conversation request succeeded:", JSON.stringify(request), JSON.stringify(response));
     } catch (err) {
       debugLog("GCA request failed:", JSON.stringify(request), err);
@@ -1612,13 +1706,16 @@ var GcaClient = class {
       method: "POST",
       body: JSON.stringify(gcaEvent)
     });
-    return response.then((result) => {
-      debugLog("GCA register event succeeded:", JSON.stringify(gcaEvent), JSON.stringify(result));
-      return {};
-    }, (err) => {
-      debugLog("GCA register event failed:", JSON.stringify(gcaEvent), err);
-      return { error: JSON.stringify(err) };
-    });
+    return response.then(
+      (result) => {
+        debugLog("GCA register event succeeded:", JSON.stringify(gcaEvent), JSON.stringify(result));
+        return {};
+      },
+      (err) => {
+        debugLog("GCA register event failed:", JSON.stringify(gcaEvent), err);
+        return { error: JSON.stringify(err) };
+      }
+    );
   }
   async completeCode(request) {
     const gcaRequest = aidaCompletionRequestToGcaRequest(request);
@@ -1632,12 +1729,15 @@ var GcaClient = class {
   }
   async #requestContent(request, options) {
     try {
-      const response = await makeHttpRequest({
-        service: SERVICE_NAME,
-        path: ENDPOINTS.CONTENT,
-        method: "POST",
-        body: JSON.stringify(request)
-      }, options);
+      const response = await makeHttpRequest(
+        {
+          service: SERVICE_NAME,
+          path: ENDPOINTS.CONTENT,
+          method: "POST",
+          body: JSON.stringify(request)
+        },
+        options
+      );
       debugLog("GCA request succeeded:", JSON.stringify(request), JSON.stringify(response));
       return response;
     } catch (err) {
@@ -1647,75 +1747,27 @@ var GcaClient = class {
   }
 };
 
-// gen/front_end/core/host/AidaClient.js
+// ../../front_end/core/host/AidaClient.ts
 var CLIENT_NAME = "CHROME_DEVTOOLS";
 var SERVICE_NAME2 = "aidaService";
 var CODE_CHUNK_SEPARATOR = (lang = "") => "\n`````" + lang + "\n";
 var AidaLanguageToMarkdown = {
-  [
-    "CPP"
-    /* AidaInferenceLanguage.CPP */
-  ]: "cpp",
-  [
-    "PYTHON"
-    /* AidaInferenceLanguage.PYTHON */
-  ]: "py",
-  [
-    "KOTLIN"
-    /* AidaInferenceLanguage.KOTLIN */
-  ]: "kt",
-  [
-    "JAVA"
-    /* AidaInferenceLanguage.JAVA */
-  ]: "java",
-  [
-    "JAVASCRIPT"
-    /* AidaInferenceLanguage.JAVASCRIPT */
-  ]: "js",
-  [
-    "GO"
-    /* AidaInferenceLanguage.GO */
-  ]: "go",
-  [
-    "TYPESCRIPT"
-    /* AidaInferenceLanguage.TYPESCRIPT */
-  ]: "ts",
-  [
-    "HTML"
-    /* AidaInferenceLanguage.HTML */
-  ]: "html",
-  [
-    "BASH"
-    /* AidaInferenceLanguage.BASH */
-  ]: "sh",
-  [
-    "CSS"
-    /* AidaInferenceLanguage.CSS */
-  ]: "css",
-  [
-    "DART"
-    /* AidaInferenceLanguage.DART */
-  ]: "dart",
-  [
-    "JSON"
-    /* AidaInferenceLanguage.JSON */
-  ]: "json",
-  [
-    "MARKDOWN"
-    /* AidaInferenceLanguage.MARKDOWN */
-  ]: "md",
-  [
-    "VUE"
-    /* AidaInferenceLanguage.VUE */
-  ]: "vue",
-  [
-    "XML"
-    /* AidaInferenceLanguage.XML */
-  ]: "xml",
-  [
-    "UNKNOWN"
-    /* AidaInferenceLanguage.UNKNOWN */
-  ]: "unknown"
+  ["CPP" /* CPP */]: "cpp",
+  ["PYTHON" /* PYTHON */]: "py",
+  ["KOTLIN" /* KOTLIN */]: "kt",
+  ["JAVA" /* JAVA */]: "java",
+  ["JAVASCRIPT" /* JAVASCRIPT */]: "js",
+  ["GO" /* GO */]: "go",
+  ["TYPESCRIPT" /* TYPESCRIPT */]: "ts",
+  ["HTML" /* HTML */]: "html",
+  ["BASH" /* BASH */]: "sh",
+  ["CSS" /* CSS */]: "css",
+  ["DART" /* DART */]: "dart",
+  ["JSON" /* JSON */]: "json",
+  ["MARKDOWN" /* MARKDOWN */]: "md",
+  ["VUE" /* VUE */]: "vue",
+  ["XML" /* XML */]: "xml",
+  ["UNKNOWN" /* UNKNOWN */]: "unknown"
 };
 var AidaClientError = class extends Error {
   name = "AidaClientError";
@@ -1754,10 +1806,10 @@ var AidaClient = class {
       throw new Error("Cannot determine Chrome version");
     }
     const request = {
-      current_message: { parts: [{ text: input }], role: Role.USER },
+      current_message: { parts: [{ text: input }], role: 1 /* USER */ },
       client: CLIENT_NAME,
-      functionality_type: FunctionalityType.EXPLAIN_ERROR,
-      client_feature: ClientFeature.CHROME_CONSOLE_INSIGHTS,
+      functionality_type: 2 /* EXPLAIN_ERROR */,
+      client_feature: 1 /* CHROME_CONSOLE_INSIGHTS */,
       metadata: {
         disable_user_content_logging: disallowLogging,
         client_version: chromeVersion
@@ -1781,16 +1833,18 @@ var AidaClient = class {
   }
   static async checkAccessPreconditions() {
     if (!Platform4.HostRuntime.HOST_RUNTIME.getOnLine()) {
-      return "no-internet";
+      return "no-internet" /* NO_INTERNET */;
     }
-    const syncInfo = await new Promise((resolve) => InspectorFrontendHostInstance.getSyncInformation((syncInfo2) => resolve(syncInfo2)));
+    const syncInfo = await new Promise(
+      (resolve) => InspectorFrontendHostInstance.getSyncInformation((syncInfo2) => resolve(syncInfo2))
+    );
     if (!syncInfo.accountEmail) {
-      return "no-account-email";
+      return "no-account-email" /* NO_ACCOUNT_EMAIL */;
     }
     if (syncInfo.isSyncPaused) {
-      return "sync-is-paused";
+      return "sync-is-paused" /* SYNC_IS_PAUSED */;
     }
-    return "available";
+    return "available" /* AVAILABLE */;
   }
   async *doConversation(request, options) {
     if (!InspectorFrontendHostInstance.dispatchHttpRequest) {
@@ -1834,20 +1888,26 @@ var AidaClient = class {
       if (this.#gcaClient.enabled()) {
         response = this.#gcaClient.conversationRequest(request, streamId, options);
       } else {
-        response = makeHttpRequest({
-          service: SERVICE_NAME2,
-          path: "/v1/aida:doConversation",
-          method: "POST",
-          body: JSON.stringify(request),
-          streamId
-        }, options);
+        response = makeHttpRequest(
+          {
+            service: SERVICE_NAME2,
+            path: "/v1/aida:doConversation",
+            method: "POST",
+            body: JSON.stringify(request),
+            streamId
+          },
+          options
+        );
       }
-      response.then(() => {
-        void stream.close();
-      }, (err) => {
-        debugLog("doConversation failed with error:", JSON.stringify(err));
-        stream.fail(mapError(err));
-      });
+      response.then(
+        () => {
+          void stream.close();
+        },
+        (err) => {
+          debugLog("doConversation failed with error:", JSON.stringify(err));
+          stream.fail(mapError(err));
+        }
+      );
       yield* this.#handleResponseStream(stream);
     } finally {
       if (options?.signal && abortListener) {
@@ -1871,7 +1931,7 @@ var AidaClient = class {
       for (const result of results) {
         if (result.metadata) {
           metadata = result.metadata;
-          if (metadata?.attributionMetadata?.attributionAction === RecitationAction.BLOCK) {
+          if (metadata?.attributionMetadata?.attributionAction === "BLOCK" /* BLOCK */) {
             throw new AidaBlockError();
           }
         }
@@ -1952,11 +2012,14 @@ var AidaClient = class {
       return this.#gcaClient.registerClientEvent(clientEvent);
     }
     const { promise, resolve } = Promise.withResolvers();
-    InspectorFrontendHostInstance.registerAidaClientEvent(JSON.stringify({
-      client: CLIENT_NAME,
-      event_time: (/* @__PURE__ */ new Date()).toISOString(),
-      ...clientEvent
-    }), resolve);
+    InspectorFrontendHostInstance.registerAidaClientEvent(
+      JSON.stringify({
+        client: CLIENT_NAME,
+        event_time: (/* @__PURE__ */ new Date()).toISOString(),
+        ...clientEvent
+      }),
+      resolve
+    );
     return promise;
   }
   async completeCode(request) {
@@ -2023,12 +2086,15 @@ var AidaClient = class {
       }
     }
     try {
-      const response = await makeHttpRequest({
-        service: SERVICE_NAME2,
-        path: "/v1/aida:generateCode",
-        method: "POST",
-        body: JSON.stringify(request)
-      }, options);
+      const response = await makeHttpRequest(
+        {
+          service: SERVICE_NAME2,
+          path: "/v1/aida:generateCode",
+          method: "POST",
+          body: JSON.stringify(request)
+        },
+        options
+      );
       return response;
     } catch (err) {
       throw mapError(err);
@@ -2039,14 +2105,14 @@ function convertToUserTierEnum(userTier) {
   if (userTier) {
     switch (userTier) {
       case "TESTERS":
-        return UserTier.TESTERS;
+        return 1 /* TESTERS */;
       case "BETA":
-        return UserTier.BETA;
+        return 2 /* BETA */;
       case "PUBLIC":
-        return UserTier.PUBLIC;
+        return 3 /* PUBLIC */;
     }
   }
-  return UserTier.PUBLIC;
+  return 3 /* PUBLIC */;
 }
 function getClientFeatureName(feature) {
   const name = ClientFeature[feature];
@@ -2063,7 +2129,10 @@ var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.O
   }
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root3.DevToolsContext.globalInstance().has(_HostConfigTracker) || forceNew) {
-      Root3.DevToolsContext.globalInstance().set(_HostConfigTracker, new _HostConfigTracker());
+      Root3.DevToolsContext.globalInstance().set(
+        _HostConfigTracker,
+        new _HostConfigTracker()
+      );
     }
     return Root3.DevToolsContext.globalInstance().get(_HostConfigTracker);
   }
@@ -2099,10 +2168,14 @@ var HostConfigTracker = class _HostConfigTracker extends Common4.ObjectWrapper.O
       this.#aidaAvailability = currentAidaAvailability;
       const config = await new Promise((resolve) => InspectorFrontendHostInstance.getHostConfig(resolve));
       Object.assign(Root3.Runtime.hostConfig, config);
-      this.dispatchEventToListeners("aidaAvailabilityChanged", currentAidaAvailability);
+      this.dispatchEventToListeners("aidaAvailabilityChanged" /* AIDA_AVAILABILITY_CHANGED */, currentAidaAvailability);
     }
   }
 };
+var Events2 = /* @__PURE__ */ ((Events3) => {
+  Events3["AIDA_AVAILABILITY_CHANGED"] = "aidaAvailabilityChanged";
+  return Events3;
+})(Events2 || {});
 function isQuotaError(...inputs) {
   return inputs.some((input) => input?.toLowerCase().includes("quota"));
 }
@@ -2114,7 +2187,7 @@ function mapError(err, detail) {
     return err;
   }
   if (err instanceof DispatchHttpRequestError) {
-    if (err.type === ErrorType.ABORT) {
+    if (err.type === "ABORT" /* ABORT */) {
       return new AidaAbortError();
     }
     const response = err.response;
@@ -2131,7 +2204,7 @@ function mapError(err, detail) {
       if ("error" in response && response.error) {
         return mapError(response.error, response.detail);
       }
-      if (response.statusCode === 200 && err.type === ErrorType.HTTP_RESPONSE_UNAVAILABLE) {
+      if (response.statusCode === 200 && err.type === "HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */) {
         return new AidaInvalidJsonResponseError("Server responded with invalid JSON", { cause: err });
       }
       if (response.statusCode !== 200) {
@@ -2154,7 +2227,7 @@ function mapError(err, detail) {
   return new AidaUnknownError(String(err));
 }
 
-// gen/front_end/core/host/GdpClient.js
+// ../../front_end/core/host/GdpClient.ts
 var GdpClient_exports = {};
 __export(GdpClient_exports, {
   EligibilityStatus: () => EligibilityStatus,
@@ -2168,33 +2241,33 @@ __export(GdpClient_exports, {
   isGdpProfilesAvailable: () => isGdpProfilesAvailable,
   isStarterBadgeEnabled: () => isStarterBadgeEnabled
 });
-import * as Root4 from "./../root/root.js";
-var SubscriptionStatus;
-(function(SubscriptionStatus2) {
+import * as Root4 from "../root/root.js";
+var SubscriptionStatus = /* @__PURE__ */ ((SubscriptionStatus2) => {
   SubscriptionStatus2["ENABLED"] = "SUBSCRIPTION_STATE_ENABLED";
   SubscriptionStatus2["PENDING"] = "SUBSCRIPTION_STATE_PENDING";
   SubscriptionStatus2["CANCELED"] = "SUBSCRIPTION_STATE_CANCELED";
   SubscriptionStatus2["REFUNDED"] = "SUBSCRIPTION_STATE_REFUNDED";
   SubscriptionStatus2["AWAITING_FIX"] = "SUBSCRIPTION_STATE_AWAITING_FIX";
   SubscriptionStatus2["ON_HOLD"] = "SUBSCRIPTION_STATE_ACCOUNT_ON_HOLD";
-})(SubscriptionStatus || (SubscriptionStatus = {}));
-var SubscriptionTier;
-(function(SubscriptionTier2) {
+  return SubscriptionStatus2;
+})(SubscriptionStatus || {});
+var SubscriptionTier = /* @__PURE__ */ ((SubscriptionTier2) => {
   SubscriptionTier2["PREMIUM_ANNUAL"] = "SUBSCRIPTION_TIER_PREMIUM_ANNUAL";
   SubscriptionTier2["PREMIUM_MONTHLY"] = "SUBSCRIPTION_TIER_PREMIUM_MONTHLY";
   SubscriptionTier2["PRO_ANNUAL"] = "SUBSCRIPTION_TIER_PRO_ANNUAL";
   SubscriptionTier2["PRO_MONTHLY"] = "SUBSCRIPTION_TIER_PRO_MONTHLY";
-})(SubscriptionTier || (SubscriptionTier = {}));
-var EligibilityStatus;
-(function(EligibilityStatus2) {
+  return SubscriptionTier2;
+})(SubscriptionTier || {});
+var EligibilityStatus = /* @__PURE__ */ ((EligibilityStatus2) => {
   EligibilityStatus2["ELIGIBLE"] = "ELIGIBLE";
   EligibilityStatus2["NOT_ELIGIBLE"] = "NOT_ELIGIBLE";
-})(EligibilityStatus || (EligibilityStatus = {}));
-var EmailPreference;
-(function(EmailPreference2) {
+  return EligibilityStatus2;
+})(EligibilityStatus || {});
+var EmailPreference = /* @__PURE__ */ ((EmailPreference2) => {
   EmailPreference2["ENABLED"] = "ENABLED";
   EmailPreference2["DISABLED"] = "DISABLED";
-})(EmailPreference || (EmailPreference = {}));
+  return EmailPreference2;
+})(EmailPreference || {});
 function normalizeBadgeName(name) {
   return name.replace(/profiles\/[^/]+\/awards\//, "profiles/me/awards/");
 }
@@ -2202,7 +2275,9 @@ var GOOGLE_DEVELOPER_PROGRAM_PROFILE_LINK = "https://developers.google.com/profi
 var ORIGIN_APPLICATION_NAME = "APPLICATION_CHROME_DEVTOOLS";
 async function makeHttpRequest2(request) {
   if (!isGdpProfilesAvailable()) {
-    throw new DispatchHttpRequestError(ErrorType.HTTP_RESPONSE_UNAVAILABLE);
+    throw new DispatchHttpRequestError(
+      "HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */
+    );
   }
   const response = await makeHttpRequest(request);
   return response;
@@ -2213,7 +2288,10 @@ var GdpClient = class _GdpClient {
   #cachedEligibilityPromise;
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root4.DevToolsContext.globalInstance().has(_GdpClient) || forceNew) {
-      Root4.DevToolsContext.globalInstance().set(_GdpClient, new _GdpClient());
+      Root4.DevToolsContext.globalInstance().set(
+        _GdpClient,
+        new _GdpClient()
+      );
     }
     return Root4.DevToolsContext.globalInstance().get(_GdpClient);
   }
@@ -2238,7 +2316,7 @@ var GdpClient = class _GdpClient {
         isEligible: true
       };
     } catch (err) {
-      if (err instanceof DispatchHttpRequestError && err.type === ErrorType.HTTP_RESPONSE_UNAVAILABLE) {
+      if (err instanceof DispatchHttpRequestError && err.type === "HTTP_RESPONSE_UNAVAILABLE" /* HTTP_RESPONSE_UNAVAILABLE */) {
         return null;
       }
     }
@@ -2246,7 +2324,7 @@ var GdpClient = class _GdpClient {
       const checkEligibilityResponse = await this.#checkEligibility();
       return {
         profile: null,
-        isEligible: checkEligibilityResponse.createProfile === EligibilityStatus.ELIGIBLE
+        isEligible: checkEligibilityResponse.createProfile === "ELIGIBLE" /* ELIGIBLE */
       };
     } catch {
       return null;
@@ -2261,7 +2339,7 @@ var GdpClient = class _GdpClient {
       path: "/v1beta1/profile:get",
       method: "GET"
     }).then((profile) => {
-      this.#cachedEligibilityPromise = Promise.resolve({ createProfile: EligibilityStatus.ELIGIBLE });
+      this.#cachedEligibilityPromise = Promise.resolve({ createProfile: "ELIGIBLE" /* ELIGIBLE */ });
       return profile;
     });
     return await this.#cachedProfilePromise;
@@ -2352,7 +2430,7 @@ function isStarterBadgeEnabled() {
   return Boolean(Root4.Runtime.hostConfig.devToolsGdpProfiles?.starterBadgeEnabled);
 }
 
-// gen/front_end/core/host/Platform.js
+// ../../front_end/core/host/Platform.ts
 var Platform_exports = {};
 __export(Platform_exports, {
   fontFamily: () => fontFamily,
@@ -2410,7 +2488,7 @@ function setFontFamilyForTests(family) {
   _fontFamily = family;
 }
 
-// gen/front_end/core/host/UserMetrics.js
+// ../../front_end/core/host/UserMetrics.ts
 var UserMetrics_exports = {};
 __export(UserMetrics_exports, {
   Action: () => Action2,
@@ -2448,11 +2526,10 @@ __export(UserMetrics_exports, {
   UserMetrics: () => UserMetrics,
   resendRequestType: () => resendRequestType
 });
-import * as Common5 from "./../common/common.js";
+import * as Common5 from "../common/common.js";
 
-// gen/front_end/core/host/UserMetricsEnums.js
-var Action;
-(function(Action3) {
+// ../../front_end/core/host/UserMetricsEnums.ts
+var Action = /* @__PURE__ */ ((Action3) => {
   Action3[Action3["WindowDocked"] = 1] = "WindowDocked";
   Action3[Action3["WindowUndocked"] = 2] = "WindowUndocked";
   Action3[Action3["ScriptsBreakpointSet"] = 3] = "ScriptsBreakpointSet";
@@ -2658,9 +2735,9 @@ var Action;
   Action3[Action3["AiAssistanceOpenedFromApplicationPanelFloatingButton"] = 208] = "AiAssistanceOpenedFromApplicationPanelFloatingButton";
   Action3[Action3["AiAssistanceOpenedFromApplicationPanel"] = 209] = "AiAssistanceOpenedFromApplicationPanel";
   Action3[Action3["MAX_VALUE"] = 210] = "MAX_VALUE";
-})(Action || (Action = {}));
-var PanelCodes;
-(function(PanelCodes3) {
+  return Action3;
+})(Action || {});
+var PanelCodes = /* @__PURE__ */ ((PanelCodes3) => {
   PanelCodes3[PanelCodes3["elements"] = 1] = "elements";
   PanelCodes3[PanelCodes3["resources"] = 2] = "resources";
   PanelCodes3[PanelCodes3["network"] = 3] = "network";
@@ -2729,9 +2806,9 @@ var PanelCodes;
   PanelCodes3[PanelCodes3["freestyler"] = 68] = "freestyler";
   PanelCodes3[PanelCodes3["ads"] = 69] = "ads";
   PanelCodes3[PanelCodes3["MAX_VALUE"] = 70] = "MAX_VALUE";
-})(PanelCodes || (PanelCodes = {}));
-var MediaTypes;
-(function(MediaTypes3) {
+  return PanelCodes3;
+})(PanelCodes || {});
+var MediaTypes = /* @__PURE__ */ ((MediaTypes3) => {
   MediaTypes3[MediaTypes3["Unknown"] = 0] = "Unknown";
   MediaTypes3[MediaTypes3["text/css"] = 2] = "text/css";
   MediaTypes3[MediaTypes3["text/html"] = 3] = "text/html";
@@ -2770,15 +2847,15 @@ var MediaTypes;
   MediaTypes3[MediaTypes3["text/javascript+snippet"] = 36] = "text/javascript+snippet";
   MediaTypes3[MediaTypes3["text/javascript+eval"] = 37] = "text/javascript+eval";
   MediaTypes3[MediaTypes3["MAX_VALUE"] = 38] = "MAX_VALUE";
-})(MediaTypes || (MediaTypes = {}));
-var KeybindSetSettings;
-(function(KeybindSetSettings3) {
+  return MediaTypes3;
+})(MediaTypes || {});
+var KeybindSetSettings = /* @__PURE__ */ ((KeybindSetSettings3) => {
   KeybindSetSettings3[KeybindSetSettings3["devToolsDefault"] = 0] = "devToolsDefault";
   KeybindSetSettings3[KeybindSetSettings3["vsCode"] = 1] = "vsCode";
   KeybindSetSettings3[KeybindSetSettings3["MAX_VALUE"] = 2] = "MAX_VALUE";
-})(KeybindSetSettings || (KeybindSetSettings = {}));
-var KeyboardShortcutAction;
-(function(KeyboardShortcutAction3) {
+  return KeybindSetSettings3;
+})(KeybindSetSettings || {});
+var KeyboardShortcutAction = /* @__PURE__ */ ((KeyboardShortcutAction3) => {
   KeyboardShortcutAction3[KeyboardShortcutAction3["OtherShortcut"] = 0] = "OtherShortcut";
   KeyboardShortcutAction3[KeyboardShortcutAction3["quick-open.show-command-menu"] = 1] = "quick-open.show-command-menu";
   KeyboardShortcutAction3[KeyboardShortcutAction3["console.clear"] = 2] = "console.clear";
@@ -2896,9 +2973,9 @@ var KeyboardShortcutAction;
   KeyboardShortcutAction3[KeyboardShortcutAction3["timeline.dim-third-parties"] = 118] = "timeline.dim-third-parties";
   KeyboardShortcutAction3[KeyboardShortcutAction3["main.toggle-drawer-orientation"] = 119] = "main.toggle-drawer-orientation";
   KeyboardShortcutAction3[KeyboardShortcutAction3["MAX_VALUE"] = 120] = "MAX_VALUE";
-})(KeyboardShortcutAction || (KeyboardShortcutAction = {}));
-var IssueOpener;
-(function(IssueOpener3) {
+  return KeyboardShortcutAction3;
+})(KeyboardShortcutAction || {});
+var IssueOpener = /* @__PURE__ */ ((IssueOpener3) => {
   IssueOpener3[IssueOpener3["CONSOLE_INFO_BAR"] = 0] = "CONSOLE_INFO_BAR";
   IssueOpener3[IssueOpener3["LEARN_MORE_LINK_COEP"] = 1] = "LEARN_MORE_LINK_COEP";
   IssueOpener3[IssueOpener3["STATUS_BAR_ISSUES_COUNTER"] = 2] = "STATUS_BAR_ISSUES_COUNTER";
@@ -2907,18 +2984,18 @@ var IssueOpener;
   IssueOpener3[IssueOpener3["COMMAND_MENU"] = 5] = "COMMAND_MENU";
   IssueOpener3[IssueOpener3["MORE_TOOLS_MENU"] = 6] = "MORE_TOOLS_MENU";
   IssueOpener3[IssueOpener3["MAX_VALUE"] = 7] = "MAX_VALUE";
-})(IssueOpener || (IssueOpener = {}));
-var DevtoolsExperiments;
-(function(DevtoolsExperiments3) {
+  return IssueOpener3;
+})(IssueOpener || {});
+var DevtoolsExperiments = /* @__PURE__ */ ((DevtoolsExperiments3) => {
   DevtoolsExperiments3[DevtoolsExperiments3["protocol-monitor"] = 13] = "protocol-monitor";
   DevtoolsExperiments3[DevtoolsExperiments3["instrumentation-breakpoints"] = 61] = "instrumentation-breakpoints";
   DevtoolsExperiments3[DevtoolsExperiments3["durable-messages"] = 110] = "durable-messages";
   DevtoolsExperiments3[DevtoolsExperiments3["jpeg-xl"] = 111] = "jpeg-xl";
   DevtoolsExperiments3[DevtoolsExperiments3["plus-button"] = 112] = "plus-button";
   DevtoolsExperiments3[DevtoolsExperiments3["MAX_VALUE"] = 113] = "MAX_VALUE";
-})(DevtoolsExperiments || (DevtoolsExperiments = {}));
-var IssueExpanded;
-(function(IssueExpanded3) {
+  return DevtoolsExperiments3;
+})(DevtoolsExperiments || {});
+var IssueExpanded = /* @__PURE__ */ ((IssueExpanded3) => {
   IssueExpanded3[IssueExpanded3["CrossOriginEmbedderPolicy"] = 0] = "CrossOriginEmbedderPolicy";
   IssueExpanded3[IssueExpanded3["MixedContent"] = 1] = "MixedContent";
   IssueExpanded3[IssueExpanded3["SameSiteCookie"] = 2] = "SameSiteCookie";
@@ -2929,9 +3006,9 @@ var IssueExpanded;
   IssueExpanded3[IssueExpanded3["ThirdPartyPhaseoutCookie"] = 7] = "ThirdPartyPhaseoutCookie";
   IssueExpanded3[IssueExpanded3["GenericCookie"] = 8] = "GenericCookie";
   IssueExpanded3[IssueExpanded3["MAX_VALUE"] = 9] = "MAX_VALUE";
-})(IssueExpanded || (IssueExpanded = {}));
-var IssueResourceOpened;
-(function(IssueResourceOpened3) {
+  return IssueExpanded3;
+})(IssueExpanded || {});
+var IssueResourceOpened = /* @__PURE__ */ ((IssueResourceOpened3) => {
   IssueResourceOpened3[IssueResourceOpened3["CrossOriginEmbedderPolicyRequest"] = 0] = "CrossOriginEmbedderPolicyRequest";
   IssueResourceOpened3[IssueResourceOpened3["CrossOriginEmbedderPolicyElement"] = 1] = "CrossOriginEmbedderPolicyElement";
   IssueResourceOpened3[IssueResourceOpened3["MixedContentRequest"] = 2] = "MixedContentRequest";
@@ -2941,9 +3018,9 @@ var IssueResourceOpened;
   IssueResourceOpened3[IssueResourceOpened3["ContentSecurityPolicyDirective"] = 6] = "ContentSecurityPolicyDirective";
   IssueResourceOpened3[IssueResourceOpened3["ContentSecurityPolicyElement"] = 7] = "ContentSecurityPolicyElement";
   IssueResourceOpened3[IssueResourceOpened3["MAX_VALUE"] = 13] = "MAX_VALUE";
-})(IssueResourceOpened || (IssueResourceOpened = {}));
-var IssueCreated;
-(function(IssueCreated3) {
+  return IssueResourceOpened3;
+})(IssueResourceOpened || {});
+var IssueCreated = /* @__PURE__ */ ((IssueCreated3) => {
   IssueCreated3[IssueCreated3["MixedContentIssue"] = 0] = "MixedContentIssue";
   IssueCreated3[IssueCreated3["ContentSecurityPolicyIssue::kInlineViolation"] = 1] = "ContentSecurityPolicyIssue::kInlineViolation";
   IssueCreated3[IssueCreated3["ContentSecurityPolicyIssue::kEvalViolation"] = 2] = "ContentSecurityPolicyIssue::kEvalViolation";
@@ -3037,9 +3114,9 @@ var IssueCreated;
   IssueCreated3[IssueCreated3["ElementAccessibilityIssue::InteractiveContentSummaryDescendant"] = 113] = "ElementAccessibilityIssue::InteractiveContentSummaryDescendant";
   IssueCreated3[IssueCreated3["CorsIssue::InvalidLocalNetworkAccess"] = 114] = "CorsIssue::InvalidLocalNetworkAccess";
   IssueCreated3[IssueCreated3["MAX_VALUE"] = 115] = "MAX_VALUE";
-})(IssueCreated || (IssueCreated = {}));
-var DeveloperResourceLoaded;
-(function(DeveloperResourceLoaded3) {
+  return IssueCreated3;
+})(IssueCreated || {});
+var DeveloperResourceLoaded = /* @__PURE__ */ ((DeveloperResourceLoaded3) => {
   DeveloperResourceLoaded3[DeveloperResourceLoaded3["LOAD_THROUGH_PAGE_VIA_TARGET"] = 0] = "LOAD_THROUGH_PAGE_VIA_TARGET";
   DeveloperResourceLoaded3[DeveloperResourceLoaded3["LOAD_THROUGH_PAGE_FAILURE"] = 2] = "LOAD_THROUGH_PAGE_FAILURE";
   DeveloperResourceLoaded3[DeveloperResourceLoaded3["LOAD_THROUGH_PAGE_FALLBACK"] = 3] = "LOAD_THROUGH_PAGE_FALLBACK";
@@ -3048,9 +3125,9 @@ var DeveloperResourceLoaded;
   DeveloperResourceLoaded3[DeveloperResourceLoaded3["FALLBACK_PER_PROTOCOL"] = 6] = "FALLBACK_PER_PROTOCOL";
   DeveloperResourceLoaded3[DeveloperResourceLoaded3["FALLBACK_FAILURE"] = 7] = "FALLBACK_FAILURE";
   DeveloperResourceLoaded3[DeveloperResourceLoaded3["MAX_VALUE"] = 8] = "MAX_VALUE";
-})(DeveloperResourceLoaded || (DeveloperResourceLoaded = {}));
-var DeveloperResourceScheme;
-(function(DeveloperResourceScheme3) {
+  return DeveloperResourceLoaded3;
+})(DeveloperResourceLoaded || {});
+var DeveloperResourceScheme = /* @__PURE__ */ ((DeveloperResourceScheme3) => {
   DeveloperResourceScheme3[DeveloperResourceScheme3["OTHER"] = 0] = "OTHER";
   DeveloperResourceScheme3[DeveloperResourceScheme3["UKNOWN"] = 1] = "UKNOWN";
   DeveloperResourceScheme3[DeveloperResourceScheme3["HTTP"] = 2] = "HTTP";
@@ -3061,9 +3138,9 @@ var DeveloperResourceScheme;
   DeveloperResourceScheme3[DeveloperResourceScheme3["FILE"] = 7] = "FILE";
   DeveloperResourceScheme3[DeveloperResourceScheme3["BLOB"] = 8] = "BLOB";
   DeveloperResourceScheme3[DeveloperResourceScheme3["MAX_VALUE"] = 9] = "MAX_VALUE";
-})(DeveloperResourceScheme || (DeveloperResourceScheme = {}));
-var Language2;
-(function(Language4) {
+  return DeveloperResourceScheme3;
+})(DeveloperResourceScheme || {});
+var Language2 = /* @__PURE__ */ ((Language4) => {
   Language4[Language4["af"] = 1] = "af";
   Language4[Language4["am"] = 2] = "am";
   Language4[Language4["ar"] = 3] = "ar";
@@ -3147,53 +3224,53 @@ var Language2;
   Language4[Language4["zh-TW"] = 81] = "zh-TW";
   Language4[Language4["zu"] = 82] = "zu";
   Language4[Language4["MAX_VALUE"] = 83] = "MAX_VALUE";
-})(Language2 || (Language2 = {}));
-var SyncSetting;
-(function(SyncSetting3) {
+  return Language4;
+})(Language2 || {});
+var SyncSetting = /* @__PURE__ */ ((SyncSetting3) => {
   SyncSetting3[SyncSetting3["CHROME_SYNC_DISABLED"] = 1] = "CHROME_SYNC_DISABLED";
   SyncSetting3[SyncSetting3["CHROME_SYNC_SETTINGS_DISABLED"] = 2] = "CHROME_SYNC_SETTINGS_DISABLED";
   SyncSetting3[SyncSetting3["DEVTOOLS_SYNC_SETTING_DISABLED"] = 3] = "DEVTOOLS_SYNC_SETTING_DISABLED";
   SyncSetting3[SyncSetting3["DEVTOOLS_SYNC_SETTING_ENABLED"] = 4] = "DEVTOOLS_SYNC_SETTING_ENABLED";
   SyncSetting3[SyncSetting3["MAX_VALUE"] = 5] = "MAX_VALUE";
-})(SyncSetting || (SyncSetting = {}));
-var RecordingToggled;
-(function(RecordingToggled3) {
+  return SyncSetting3;
+})(SyncSetting || {});
+var RecordingToggled = /* @__PURE__ */ ((RecordingToggled3) => {
   RecordingToggled3[RecordingToggled3["RECORDING_STARTED"] = 1] = "RECORDING_STARTED";
   RecordingToggled3[RecordingToggled3["RECORDING_FINISHED"] = 2] = "RECORDING_FINISHED";
   RecordingToggled3[RecordingToggled3["MAX_VALUE"] = 3] = "MAX_VALUE";
-})(RecordingToggled || (RecordingToggled = {}));
-var RecordingAssertion;
-(function(RecordingAssertion3) {
+  return RecordingToggled3;
+})(RecordingToggled || {});
+var RecordingAssertion = /* @__PURE__ */ ((RecordingAssertion3) => {
   RecordingAssertion3[RecordingAssertion3["ASSERTION_ADDED"] = 1] = "ASSERTION_ADDED";
   RecordingAssertion3[RecordingAssertion3["PROPERTY_ASSERTION_EDITED"] = 2] = "PROPERTY_ASSERTION_EDITED";
   RecordingAssertion3[RecordingAssertion3["ATTRIBUTE_ASSERTION_EDITED"] = 3] = "ATTRIBUTE_ASSERTION_EDITED";
   RecordingAssertion3[RecordingAssertion3["MAX_VALUE"] = 4] = "MAX_VALUE";
-})(RecordingAssertion || (RecordingAssertion = {}));
-var RecordingReplayFinished;
-(function(RecordingReplayFinished3) {
+  return RecordingAssertion3;
+})(RecordingAssertion || {});
+var RecordingReplayFinished = /* @__PURE__ */ ((RecordingReplayFinished3) => {
   RecordingReplayFinished3[RecordingReplayFinished3["SUCCESS"] = 1] = "SUCCESS";
   RecordingReplayFinished3[RecordingReplayFinished3["TIMEOUT_ERROR_SELECTORS"] = 2] = "TIMEOUT_ERROR_SELECTORS";
   RecordingReplayFinished3[RecordingReplayFinished3["TIMEOUT_ERROR_TARGET"] = 3] = "TIMEOUT_ERROR_TARGET";
   RecordingReplayFinished3[RecordingReplayFinished3["OTHER_ERROR"] = 4] = "OTHER_ERROR";
   RecordingReplayFinished3[RecordingReplayFinished3["MAX_VALUE"] = 5] = "MAX_VALUE";
-})(RecordingReplayFinished || (RecordingReplayFinished = {}));
-var RecordingReplaySpeed;
-(function(RecordingReplaySpeed3) {
+  return RecordingReplayFinished3;
+})(RecordingReplayFinished || {});
+var RecordingReplaySpeed = /* @__PURE__ */ ((RecordingReplaySpeed3) => {
   RecordingReplaySpeed3[RecordingReplaySpeed3["NORMAL"] = 1] = "NORMAL";
   RecordingReplaySpeed3[RecordingReplaySpeed3["SLOW"] = 2] = "SLOW";
   RecordingReplaySpeed3[RecordingReplaySpeed3["VERY_SLOW"] = 3] = "VERY_SLOW";
   RecordingReplaySpeed3[RecordingReplaySpeed3["EXTREMELY_SLOW"] = 4] = "EXTREMELY_SLOW";
   RecordingReplaySpeed3[RecordingReplaySpeed3["MAX_VALUE"] = 5] = "MAX_VALUE";
-})(RecordingReplaySpeed || (RecordingReplaySpeed = {}));
-var RecordingReplayStarted;
-(function(RecordingReplayStarted3) {
+  return RecordingReplaySpeed3;
+})(RecordingReplaySpeed || {});
+var RecordingReplayStarted = /* @__PURE__ */ ((RecordingReplayStarted3) => {
   RecordingReplayStarted3[RecordingReplayStarted3["REPLAY_ONLY"] = 1] = "REPLAY_ONLY";
   RecordingReplayStarted3[RecordingReplayStarted3["REPLAY_WITH_PERFORMANCE_TRACING"] = 2] = "REPLAY_WITH_PERFORMANCE_TRACING";
   RecordingReplayStarted3[RecordingReplayStarted3["REPLAY_VIA_EXTENSION"] = 3] = "REPLAY_VIA_EXTENSION";
   RecordingReplayStarted3[RecordingReplayStarted3["MAX_VALUE"] = 4] = "MAX_VALUE";
-})(RecordingReplayStarted || (RecordingReplayStarted = {}));
-var RecordingEdited;
-(function(RecordingEdited3) {
+  return RecordingReplayStarted3;
+})(RecordingReplayStarted || {});
+var RecordingEdited = /* @__PURE__ */ ((RecordingEdited3) => {
   RecordingEdited3[RecordingEdited3["SELECTOR_PICKER_USED"] = 1] = "SELECTOR_PICKER_USED";
   RecordingEdited3[RecordingEdited3["STEP_ADDED"] = 2] = "STEP_ADDED";
   RecordingEdited3[RecordingEdited3["STEP_REMOVED"] = 3] = "STEP_REMOVED";
@@ -3205,24 +3282,24 @@ var RecordingEdited;
   RecordingEdited3[RecordingEdited3["TYPE_CHANGED"] = 9] = "TYPE_CHANGED";
   RecordingEdited3[RecordingEdited3["OTHER_EDITING"] = 10] = "OTHER_EDITING";
   RecordingEdited3[RecordingEdited3["MAX_VALUE"] = 11] = "MAX_VALUE";
-})(RecordingEdited || (RecordingEdited = {}));
-var RecordingExported;
-(function(RecordingExported3) {
+  return RecordingEdited3;
+})(RecordingEdited || {});
+var RecordingExported = /* @__PURE__ */ ((RecordingExported3) => {
   RecordingExported3[RecordingExported3["TO_PUPPETEER"] = 1] = "TO_PUPPETEER";
   RecordingExported3[RecordingExported3["TO_JSON"] = 2] = "TO_JSON";
   RecordingExported3[RecordingExported3["TO_PUPPETEER_REPLAY"] = 3] = "TO_PUPPETEER_REPLAY";
   RecordingExported3[RecordingExported3["TO_EXTENSION"] = 4] = "TO_EXTENSION";
   RecordingExported3[RecordingExported3["TO_LIGHTHOUSE"] = 5] = "TO_LIGHTHOUSE";
   RecordingExported3[RecordingExported3["MAX_VALUE"] = 6] = "MAX_VALUE";
-})(RecordingExported || (RecordingExported = {}));
-var RecordingCodeToggled;
-(function(RecordingCodeToggled3) {
+  return RecordingExported3;
+})(RecordingExported || {});
+var RecordingCodeToggled = /* @__PURE__ */ ((RecordingCodeToggled3) => {
   RecordingCodeToggled3[RecordingCodeToggled3["CODE_SHOWN"] = 1] = "CODE_SHOWN";
   RecordingCodeToggled3[RecordingCodeToggled3["CODE_HIDDEN"] = 2] = "CODE_HIDDEN";
   RecordingCodeToggled3[RecordingCodeToggled3["MAX_VALUE"] = 3] = "MAX_VALUE";
-})(RecordingCodeToggled || (RecordingCodeToggled = {}));
-var RecordingCopiedToClipboard;
-(function(RecordingCopiedToClipboard3) {
+  return RecordingCodeToggled3;
+})(RecordingCodeToggled || {});
+var RecordingCopiedToClipboard = /* @__PURE__ */ ((RecordingCopiedToClipboard3) => {
   RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_RECORDING_WITH_PUPPETEER"] = 1] = "COPIED_RECORDING_WITH_PUPPETEER";
   RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_RECORDING_WITH_JSON"] = 2] = "COPIED_RECORDING_WITH_JSON";
   RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_RECORDING_WITH_REPLAY"] = 3] = "COPIED_RECORDING_WITH_REPLAY";
@@ -3232,9 +3309,9 @@ var RecordingCopiedToClipboard;
   RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_STEP_WITH_REPLAY"] = 7] = "COPIED_STEP_WITH_REPLAY";
   RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["COPIED_STEP_WITH_EXTENSION"] = 8] = "COPIED_STEP_WITH_EXTENSION";
   RecordingCopiedToClipboard3[RecordingCopiedToClipboard3["MAX_VALUE"] = 9] = "MAX_VALUE";
-})(RecordingCopiedToClipboard || (RecordingCopiedToClipboard = {}));
-var ManifestSectionCodes;
-(function(ManifestSectionCodes3) {
+  return RecordingCopiedToClipboard3;
+})(RecordingCopiedToClipboard || {});
+var ManifestSectionCodes = /* @__PURE__ */ ((ManifestSectionCodes3) => {
   ManifestSectionCodes3[ManifestSectionCodes3["OtherSection"] = 0] = "OtherSection";
   ManifestSectionCodes3[ManifestSectionCodes3["Identity"] = 1] = "Identity";
   ManifestSectionCodes3[ManifestSectionCodes3["Presentation"] = 2] = "Presentation";
@@ -3242,17 +3319,17 @@ var ManifestSectionCodes;
   ManifestSectionCodes3[ManifestSectionCodes3["Icons"] = 4] = "Icons";
   ManifestSectionCodes3[ManifestSectionCodes3["Window Controls Overlay"] = 5] = "Window Controls Overlay";
   ManifestSectionCodes3[ManifestSectionCodes3["MAX_VALUE"] = 6] = "MAX_VALUE";
-})(ManifestSectionCodes || (ManifestSectionCodes = {}));
-var LighthouseModeRun;
-(function(LighthouseModeRun3) {
+  return ManifestSectionCodes3;
+})(ManifestSectionCodes || {});
+var LighthouseModeRun = /* @__PURE__ */ ((LighthouseModeRun3) => {
   LighthouseModeRun3[LighthouseModeRun3["NAVIGATION"] = 0] = "NAVIGATION";
   LighthouseModeRun3[LighthouseModeRun3["TIMESPAN"] = 1] = "TIMESPAN";
   LighthouseModeRun3[LighthouseModeRun3["SNAPSHOT"] = 2] = "SNAPSHOT";
   LighthouseModeRun3[LighthouseModeRun3["LEGACY_NAVIGATION"] = 3] = "LEGACY_NAVIGATION";
   LighthouseModeRun3[LighthouseModeRun3["MAX_VALUE"] = 4] = "MAX_VALUE";
-})(LighthouseModeRun || (LighthouseModeRun = {}));
-var LighthouseCategoryUsed;
-(function(LighthouseCategoryUsed3) {
+  return LighthouseModeRun3;
+})(LighthouseModeRun || {});
+var LighthouseCategoryUsed = /* @__PURE__ */ ((LighthouseCategoryUsed3) => {
   LighthouseCategoryUsed3[LighthouseCategoryUsed3["PERFORMANCE"] = 0] = "PERFORMANCE";
   LighthouseCategoryUsed3[LighthouseCategoryUsed3["ACCESSIBILITY"] = 1] = "ACCESSIBILITY";
   LighthouseCategoryUsed3[LighthouseCategoryUsed3["BEST_PRACTICES"] = 2] = "BEST_PRACTICES";
@@ -3261,9 +3338,9 @@ var LighthouseCategoryUsed;
   LighthouseCategoryUsed3[LighthouseCategoryUsed3["PUB_ADS"] = 5] = "PUB_ADS";
   LighthouseCategoryUsed3[LighthouseCategoryUsed3["AGENTIC_BROWSING"] = 6] = "AGENTIC_BROWSING";
   LighthouseCategoryUsed3[LighthouseCategoryUsed3["MAX_VALUE"] = 7] = "MAX_VALUE";
-})(LighthouseCategoryUsed || (LighthouseCategoryUsed = {}));
-var SwatchType;
-(function(SwatchType3) {
+  return LighthouseCategoryUsed3;
+})(LighthouseCategoryUsed || {});
+var SwatchType = /* @__PURE__ */ ((SwatchType3) => {
   SwatchType3[SwatchType3["VAR_LINK"] = 0] = "VAR_LINK";
   SwatchType3[SwatchType3["ANIMATION_NAME_LINK"] = 1] = "ANIMATION_NAME_LINK";
   SwatchType3[SwatchType3["COLOR"] = 2] = "COLOR";
@@ -3277,9 +3354,9 @@ var SwatchType;
   SwatchType3[SwatchType3["ATTR_LINK"] = 11] = "ATTR_LINK";
   SwatchType3[SwatchType3["GRID_LANES"] = 12] = "GRID_LANES";
   SwatchType3[SwatchType3["MAX_VALUE"] = 13] = "MAX_VALUE";
-})(SwatchType || (SwatchType = {}));
-var BadgeType;
-(function(BadgeType3) {
+  return SwatchType3;
+})(SwatchType || {});
+var BadgeType = /* @__PURE__ */ ((BadgeType3) => {
   BadgeType3[BadgeType3["GRID"] = 0] = "GRID";
   BadgeType3[BadgeType3["SUBGRID"] = 1] = "SUBGRID";
   BadgeType3[BadgeType3["FLEX"] = 2] = "FLEX";
@@ -3290,25 +3367,25 @@ var BadgeType;
   BadgeType3[BadgeType3["TOP_LAYER"] = 7] = "TOP_LAYER";
   BadgeType3[BadgeType3["REVEAL"] = 8] = "REVEAL";
   BadgeType3[BadgeType3["MAX_VALUE"] = 9] = "MAX_VALUE";
-})(BadgeType || (BadgeType = {}));
-var AnimationsPlaybackRate;
-(function(AnimationsPlaybackRate3) {
+  return BadgeType3;
+})(BadgeType || {});
+var AnimationsPlaybackRate = /* @__PURE__ */ ((AnimationsPlaybackRate3) => {
   AnimationsPlaybackRate3[AnimationsPlaybackRate3["PERCENT_100"] = 0] = "PERCENT_100";
   AnimationsPlaybackRate3[AnimationsPlaybackRate3["PERCENT_25"] = 1] = "PERCENT_25";
   AnimationsPlaybackRate3[AnimationsPlaybackRate3["PERCENT_10"] = 2] = "PERCENT_10";
   AnimationsPlaybackRate3[AnimationsPlaybackRate3["OTHER"] = 3] = "OTHER";
   AnimationsPlaybackRate3[AnimationsPlaybackRate3["MAX_VALUE"] = 4] = "MAX_VALUE";
-})(AnimationsPlaybackRate || (AnimationsPlaybackRate = {}));
-var TimelineNavigationSetting;
-(function(TimelineNavigationSetting3) {
+  return AnimationsPlaybackRate3;
+})(AnimationsPlaybackRate || {});
+var TimelineNavigationSetting = /* @__PURE__ */ ((TimelineNavigationSetting3) => {
   TimelineNavigationSetting3[TimelineNavigationSetting3["CLASSIC_AT_SESSION_FIRST_TRACE"] = 0] = "CLASSIC_AT_SESSION_FIRST_TRACE";
   TimelineNavigationSetting3[TimelineNavigationSetting3["MODERN_AT_SESSION_FIRST_TRACE"] = 1] = "MODERN_AT_SESSION_FIRST_TRACE";
   TimelineNavigationSetting3[TimelineNavigationSetting3["SWITCHED_TO_CLASSIC"] = 2] = "SWITCHED_TO_CLASSIC";
   TimelineNavigationSetting3[TimelineNavigationSetting3["SWITCHED_TO_MODERN"] = 3] = "SWITCHED_TO_MODERN";
   TimelineNavigationSetting3[TimelineNavigationSetting3["MAX_VALUE"] = 4] = "MAX_VALUE";
-})(TimelineNavigationSetting || (TimelineNavigationSetting = {}));
-var BuiltInAiAvailability;
-(function(BuiltInAiAvailability3) {
+  return TimelineNavigationSetting3;
+})(TimelineNavigationSetting || {});
+var BuiltInAiAvailability = /* @__PURE__ */ ((BuiltInAiAvailability3) => {
   BuiltInAiAvailability3[BuiltInAiAvailability3["UNAVAILABLE_HAS_GPU"] = 0] = "UNAVAILABLE_HAS_GPU";
   BuiltInAiAvailability3[BuiltInAiAvailability3["DOWNLOADABLE_HAS_GPU"] = 1] = "DOWNLOADABLE_HAS_GPU";
   BuiltInAiAvailability3[BuiltInAiAvailability3["DOWNLOADING_HAS_GPU"] = 2] = "DOWNLOADING_HAS_GPU";
@@ -3320,9 +3397,9 @@ var BuiltInAiAvailability;
   BuiltInAiAvailability3[BuiltInAiAvailability3["AVAILABLE_NO_GPU"] = 8] = "AVAILABLE_NO_GPU";
   BuiltInAiAvailability3[BuiltInAiAvailability3["DISABLED_NO_GPU"] = 9] = "DISABLED_NO_GPU";
   BuiltInAiAvailability3[BuiltInAiAvailability3["MAX_VALUE"] = 10] = "MAX_VALUE";
-})(BuiltInAiAvailability || (BuiltInAiAvailability = {}));
-var ResendRequestType;
-(function(ResendRequestType3) {
+  return BuiltInAiAvailability3;
+})(BuiltInAiAvailability || {});
+var ResendRequestType = /* @__PURE__ */ ((ResendRequestType3) => {
   ResendRequestType3[ResendRequestType3["XHR"] = 0] = "XHR";
   ResendRequestType3[ResendRequestType3["FETCH"] = 1] = "FETCH";
   ResendRequestType3[ResendRequestType3["SCRIPT"] = 2] = "SCRIPT";
@@ -3340,41 +3417,74 @@ var ResendRequestType;
   ResendRequestType3[ResendRequestType3["PING"] = 14] = "PING";
   ResendRequestType3[ResendRequestType3["OTHER"] = 15] = "OTHER";
   ResendRequestType3[ResendRequestType3["MAX_VALUE"] = 16] = "MAX_VALUE";
-})(ResendRequestType || (ResendRequestType = {}));
+  return ResendRequestType3;
+})(ResendRequestType || {});
 
-// gen/front_end/core/host/UserMetrics.js
+// ../../front_end/core/host/UserMetrics.ts
 var UserMetrics = class {
   sourcesPanelFileDebugged(mediaType) {
     const code = mediaType && MediaTypes2[mediaType] || MediaTypes2.Unknown;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.SourcesPanelFileDebugged", code, MediaTypes2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.SourcesPanelFileDebugged" /* SourcesPanelFileDebugged */,
+      code,
+      MediaTypes2.MAX_VALUE
+    );
   }
   sourcesPanelFileOpened(mediaType) {
     const code = mediaType && MediaTypes2[mediaType] || MediaTypes2.Unknown;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.SourcesPanelFileOpened", code, MediaTypes2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.SourcesPanelFileOpened" /* SourcesPanelFileOpened */,
+      code,
+      MediaTypes2.MAX_VALUE
+    );
   }
   networkPanelResponsePreviewOpened(mediaType) {
     const code = mediaType && MediaTypes2[mediaType] || MediaTypes2.Unknown;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.NetworkPanelResponsePreviewOpened", code, MediaTypes2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.NetworkPanelResponsePreviewOpened" /* NetworkPanelResponsePreviewOpened */,
+      code,
+      MediaTypes2.MAX_VALUE
+    );
   }
   actionTaken(action) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ActionTaken", action, Action2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ActionTaken" /* ActionTaken */, action, Action2.MAX_VALUE);
   }
   resendRequest(resourceType) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ResendRequest", resourceType, ResendRequestType2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.ResendRequest" /* ResendRequest */,
+      resourceType,
+      ResendRequestType2.MAX_VALUE
+    );
   }
   editResendRequest(type) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.EditResendRequest", type, ResendRequestType2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.EditResendRequest" /* EditResendRequest */,
+      type,
+      ResendRequestType2.MAX_VALUE
+    );
   }
   keybindSetSettingChanged(keybindSet) {
     const value = KeybindSetSettings2[keybindSet] || 0;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.KeybindSetSettingChanged", value, KeybindSetSettings2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.KeybindSetSettingChanged" /* KeybindSetSettingChanged */,
+      value,
+      KeybindSetSettings2.MAX_VALUE
+    );
   }
   keyboardShortcutFired(actionId) {
     const action = KeyboardShortcutAction2[actionId] || KeyboardShortcutAction2.OtherShortcut;
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.KeyboardShortcutFired", action, KeyboardShortcutAction2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.KeyboardShortcutFired" /* KeyboardShortcutFired */,
+      action,
+      KeyboardShortcutAction2.MAX_VALUE
+    );
   }
   issuesPanelOpenedFrom(issueOpener) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.IssuesPanelOpenedFrom", issueOpener, IssueOpener2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.IssuesPanelOpenedFrom" /* IssuesPanelOpenedFrom */,
+      issueOpener,
+      IssueOpener2.MAX_VALUE
+    );
   }
   issuesPanelIssueExpanded(issueExpandedCategory) {
     if (issueExpandedCategory === void 0) {
@@ -3384,7 +3494,11 @@ var UserMetrics = class {
     if (issueExpanded === void 0) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.IssuesPanelIssueExpanded", issueExpanded, IssueExpanded2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.IssuesPanelIssueExpanded" /* IssuesPanelIssueExpanded */,
+      issueExpanded,
+      IssueExpanded2.MAX_VALUE
+    );
   }
   issuesPanelResourceOpened(issueCategory, type) {
     const key = issueCategory + type;
@@ -3392,58 +3506,90 @@ var UserMetrics = class {
     if (value === void 0) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.IssuesPanelResourceOpened", value, IssueResourceOpened2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.IssuesPanelResourceOpened" /* IssuesPanelResourceOpened */,
+      value,
+      IssueResourceOpened2.MAX_VALUE
+    );
   }
   issueCreated(code) {
     const issueCreated = IssueCreated2[code];
     if (issueCreated === void 0) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.IssueCreated", issueCreated, IssueCreated2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.IssueCreated" /* IssueCreated */,
+      issueCreated,
+      IssueCreated2.MAX_VALUE
+    );
   }
   experimentEnabledAtLaunch(experimentId) {
     const experiment = DevtoolsExperiments2[experimentId];
     if (experiment === void 0) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ExperimentEnabledAtLaunch", experiment, DevtoolsExperiments2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.ExperimentEnabledAtLaunch" /* ExperimentEnabledAtLaunch */,
+      experiment,
+      DevtoolsExperiments2.MAX_VALUE
+    );
   }
   navigationSettingAtFirstTimelineLoad(state) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.TimelineNavigationSettingState", state, TimelineNavigationSetting2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.TimelineNavigationSettingState" /* TimelineNavigationSettingState */,
+      state,
+      TimelineNavigationSetting2.MAX_VALUE
+    );
   }
   experimentDisabledAtLaunch(experimentId) {
     const experiment = DevtoolsExperiments2[experimentId];
     if (experiment === void 0) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.ExperimentDisabledAtLaunch", experiment, DevtoolsExperiments2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.ExperimentDisabledAtLaunch" /* ExperimentDisabledAtLaunch */,
+      experiment,
+      DevtoolsExperiments2.MAX_VALUE
+    );
   }
   experimentChanged(experimentId, isEnabled) {
     const experiment = DevtoolsExperiments2[experimentId];
     if (experiment === void 0) {
       return;
     }
-    const actionName = isEnabled ? "DevTools.ExperimentEnabled" : "DevTools.ExperimentDisabled";
+    const actionName = isEnabled ? "DevTools.ExperimentEnabled" /* ExperimentEnabled */ : "DevTools.ExperimentDisabled" /* ExperimentDisabled */;
     InspectorFrontendHostInstance.recordEnumeratedHistogram(actionName, experiment, DevtoolsExperiments2.MAX_VALUE);
   }
   developerResourceLoaded(developerResourceLoaded) {
     if (developerResourceLoaded >= DeveloperResourceLoaded2.MAX_VALUE) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.DeveloperResourceLoaded", developerResourceLoaded, DeveloperResourceLoaded2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.DeveloperResourceLoaded" /* DeveloperResourceLoaded */,
+      developerResourceLoaded,
+      DeveloperResourceLoaded2.MAX_VALUE
+    );
   }
   developerResourceScheme(developerResourceScheme) {
     if (developerResourceScheme >= DeveloperResourceScheme2.MAX_VALUE) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.DeveloperResourceScheme", developerResourceScheme, DeveloperResourceScheme2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.DeveloperResourceScheme" /* DeveloperResourceScheme */,
+      developerResourceScheme,
+      DeveloperResourceScheme2.MAX_VALUE
+    );
   }
   language(language) {
     const languageCode = Language3[language];
     if (languageCode === void 0) {
       return;
     }
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.Language", languageCode, Language3.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.Language" /* Language */,
+      languageCode,
+      Language3.MAX_VALUE
+    );
   }
   syncSetting(devtoolsSyncSettingEnabled) {
     InspectorFrontendHostInstance.getSyncInformation((syncInfo) => {
@@ -3453,68 +3599,139 @@ var UserMetrics = class {
       } else if (syncInfo.isSyncActive && syncInfo.arePreferencesSynced) {
         settingValue = devtoolsSyncSettingEnabled ? SyncSetting2.DEVTOOLS_SYNC_SETTING_ENABLED : SyncSetting2.DEVTOOLS_SYNC_SETTING_DISABLED;
       }
-      InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.SyncSetting", settingValue, SyncSetting2.MAX_VALUE);
+      InspectorFrontendHostInstance.recordEnumeratedHistogram(
+        "DevTools.SyncSetting" /* SyncSetting */,
+        settingValue,
+        SyncSetting2.MAX_VALUE
+      );
     });
   }
   recordingToggled(value) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.RecordingToggled", value, RecordingToggled2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.RecordingToggled" /* RecordingToggled */,
+      value,
+      RecordingToggled2.MAX_VALUE
+    );
   }
   recordingReplayFinished(value) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.RecordingReplayFinished", value, RecordingReplayFinished2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.RecordingReplayFinished" /* RecordingReplayFinished */,
+      value,
+      RecordingReplayFinished2.MAX_VALUE
+    );
   }
   recordingReplayStarted(value) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.RecordingReplayStarted", value, RecordingReplayStarted2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.RecordingReplayStarted" /* RecordingReplayStarted */,
+      value,
+      RecordingReplayStarted2.MAX_VALUE
+    );
   }
   lighthouseModeRun(type) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.LighthouseModeRun", type, LighthouseModeRun2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.LighthouseModeRun" /* LighthouseModeRun */,
+      type,
+      LighthouseModeRun2.MAX_VALUE
+    );
   }
   lighthouseCategoryUsed(type) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.LighthouseCategoryUsed", type, LighthouseCategoryUsed2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.LighthouseCategoryUsed" /* LighthouseCategoryUsed */,
+      type,
+      LighthouseCategoryUsed2.MAX_VALUE
+    );
   }
   swatchActivated(swatch) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.SwatchActivated", swatch, SwatchType2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.SwatchActivated" /* SwatchActivated */,
+      swatch,
+      SwatchType2.MAX_VALUE
+    );
   }
   workspacesPopulated(wallClockTimeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Workspaces.PopulateWallClocktime", wallClockTimeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+      "DevTools.Workspaces.PopulateWallClocktime",
+      wallClockTimeInMilliseconds
+    );
   }
   visualLoggingProcessingDone(timeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.VisualLogging.ProcessingTime", timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+      "DevTools.VisualLogging.ProcessingTime",
+      timeInMilliseconds
+    );
   }
   freestylerQueryLength(numberOfCharacters) {
-    InspectorFrontendHostInstance.recordCountHistogram("DevTools.Freestyler.QueryLength", numberOfCharacters, 0, 1e5, 100);
+    InspectorFrontendHostInstance.recordCountHistogram(
+      "DevTools.Freestyler.QueryLength",
+      numberOfCharacters,
+      0,
+      1e5,
+      100
+    );
   }
   freestylerEvalResponseSize(bytes) {
     InspectorFrontendHostInstance.recordCountHistogram("DevTools.Freestyler.EvalResponseSize", bytes, 0, 1e5, 100);
   }
   builtInAiAvailability(availability) {
-    InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.BuiltInAiAvailability", availability, BuiltInAiAvailability2.MAX_VALUE);
+    InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      "DevTools.BuiltInAiAvailability" /* BuiltInAiAvailability */,
+      availability,
+      BuiltInAiAvailability2.MAX_VALUE
+    );
   }
   consoleInsightTeaserGenerated(timeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.TeaserGenerationTime", timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+      "DevTools.Insights.TeaserGenerationTime",
+      timeInMilliseconds
+    );
   }
   consoleInsightTeaserGeneratedMedium(timeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogramMedium("DevTools.Insights.TeaserGenerationTimeMedium", timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogramMedium(
+      "DevTools.Insights.TeaserGenerationTimeMedium",
+      timeInMilliseconds
+    );
   }
   consoleInsightTeaserFirstChunkGenerated(timeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.TeaserFirstChunkGenerationTime", timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+      "DevTools.Insights.TeaserFirstChunkGenerationTime",
+      timeInMilliseconds
+    );
   }
   consoleInsightTeaserFirstChunkGeneratedMedium(timeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogramMedium("DevTools.Insights.TeaserFirstChunkGenerationTimeMedium", timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogramMedium(
+      "DevTools.Insights.TeaserFirstChunkGenerationTimeMedium",
+      timeInMilliseconds
+    );
   }
   consoleInsightTeaserChunkToEndMedium(timeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogramMedium("DevTools.Insights.TeaserChunkToEndMedium", timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogramMedium(
+      "DevTools.Insights.TeaserChunkToEndMedium",
+      timeInMilliseconds
+    );
   }
   consoleInsightTeaserAbortedAfterFirstCharacter(timeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.TeaserAfterFirstCharacterAbortionTime", timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+      "DevTools.Insights.TeaserAfterFirstCharacterAbortionTime",
+      timeInMilliseconds
+    );
   }
   consoleInsightTeaserAbortedBeforeFirstCharacter(timeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.TeaserBeforeFirstCharacterAbortionTime", timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+      "DevTools.Insights.TeaserBeforeFirstCharacterAbortionTime",
+      timeInMilliseconds
+    );
   }
   consoleInsightLongTeaserGenerated(timeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.LongTeaserGenerationTime", timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+      "DevTools.Insights.LongTeaserGenerationTime",
+      timeInMilliseconds
+    );
   }
   consoleInsightShortTeaserGenerated(timeInMilliseconds) {
-    InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.Insights.ShortTeaserGenerationTime", timeInMilliseconds);
+    InspectorFrontendHostInstance.recordPerformanceHistogram(
+      "DevTools.Insights.ShortTeaserGenerationTime",
+      timeInMilliseconds
+    );
   }
 };
 function createDynamicEnumProxy(enumName, fallbackEnum) {
@@ -3586,26 +3803,41 @@ var DevtoolsExperiments2 = createDynamicEnumProxy("DevtoolsExperiments", Devtool
 var IssueExpanded2 = createDynamicEnumProxy("IssueExpanded", IssueExpanded);
 var IssueResourceOpened2 = createDynamicEnumProxy("IssueResourceOpened", IssueResourceOpened);
 var IssueCreated2 = createDynamicEnumProxy("IssueCreated", IssueCreated);
-var DeveloperResourceLoaded2 = createDynamicEnumProxy("DeveloperResourceLoaded", DeveloperResourceLoaded);
-var DeveloperResourceScheme2 = createDynamicEnumProxy("DeveloperResourceScheme", DeveloperResourceScheme);
+var DeveloperResourceLoaded2 = createDynamicEnumProxy(
+  "DeveloperResourceLoaded",
+  DeveloperResourceLoaded
+);
+var DeveloperResourceScheme2 = createDynamicEnumProxy(
+  "DeveloperResourceScheme",
+  DeveloperResourceScheme
+);
 var Language3 = createDynamicEnumProxy("Language", Language2);
 var SyncSetting2 = createDynamicEnumProxy("SyncSetting", SyncSetting);
 var RecordingToggled2 = createDynamicEnumProxy("RecordingToggled", RecordingToggled);
 var RecordingAssertion2 = createDynamicEnumProxy("RecordingAssertion", RecordingAssertion);
-var RecordingReplayFinished2 = createDynamicEnumProxy("RecordingReplayFinished", RecordingReplayFinished);
+var RecordingReplayFinished2 = createDynamicEnumProxy(
+  "RecordingReplayFinished",
+  RecordingReplayFinished
+);
 var RecordingReplaySpeed2 = createDynamicEnumProxy("RecordingReplaySpeed", RecordingReplaySpeed);
 var RecordingReplayStarted2 = createDynamicEnumProxy("RecordingReplayStarted", RecordingReplayStarted);
 var RecordingEdited2 = createDynamicEnumProxy("RecordingEdited", RecordingEdited);
 var RecordingExported2 = createDynamicEnumProxy("RecordingExported", RecordingExported);
 var RecordingCodeToggled2 = createDynamicEnumProxy("RecordingCodeToggled", RecordingCodeToggled);
-var RecordingCopiedToClipboard2 = createDynamicEnumProxy("RecordingCopiedToClipboard", RecordingCopiedToClipboard);
+var RecordingCopiedToClipboard2 = createDynamicEnumProxy(
+  "RecordingCopiedToClipboard",
+  RecordingCopiedToClipboard
+);
 var ManifestSectionCodes2 = createDynamicEnumProxy("ManifestSectionCodes", ManifestSectionCodes);
 var LighthouseModeRun2 = createDynamicEnumProxy("LighthouseModeRun", LighthouseModeRun);
 var LighthouseCategoryUsed2 = createDynamicEnumProxy("LighthouseCategoryUsed", LighthouseCategoryUsed);
 var SwatchType2 = createDynamicEnumProxy("SwatchType", SwatchType);
 var BadgeType2 = createDynamicEnumProxy("BadgeType", BadgeType);
 var AnimationsPlaybackRate2 = createDynamicEnumProxy("AnimationsPlaybackRate", AnimationsPlaybackRate);
-var TimelineNavigationSetting2 = createDynamicEnumProxy("TimelineNavigationSetting", TimelineNavigationSetting);
+var TimelineNavigationSetting2 = createDynamicEnumProxy(
+  "TimelineNavigationSetting",
+  TimelineNavigationSetting
+);
 var BuiltInAiAvailability2 = createDynamicEnumProxy("BuiltInAiAvailability", BuiltInAiAvailability);
 var ResendRequestType2 = createDynamicEnumProxy("ResendRequestType", ResendRequestType);
 var resendRequestTypeMap = /* @__PURE__ */ new Map([
@@ -3630,7 +3862,7 @@ function resendRequestType(resourceType) {
   return (key ? ResendRequestType2[key] : void 0) ?? ResendRequestType2.OTHER;
 }
 
-// gen/front_end/core/host/host.prebundle.js
+// ../../front_end/core/host/host.ts
 var userMetrics = new UserMetrics();
 export {
   AidaClient_exports as AidaClient,

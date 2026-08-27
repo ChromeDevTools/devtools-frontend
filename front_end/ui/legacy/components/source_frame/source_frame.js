@@ -9,7 +9,7 @@ var BinaryResourceViewFactory_exports = {};
 __export(BinaryResourceViewFactory_exports, {
   BinaryResourceViewFactory: () => BinaryResourceViewFactory
 });
-import * as TextUtils5 from "./../../../../core/text_utils/text_utils.js";
+import * as TextUtils5 from "../../../../core/text_utils/text_utils.js";
 
 // gen/front_end/ui/legacy/components/source_frame/ResourceSourceFrame.js
 var ResourceSourceFrame_exports = {};
@@ -17,10 +17,10 @@ __export(ResourceSourceFrame_exports, {
   ResourceSourceFrame: () => ResourceSourceFrame,
   SearchableContainer: () => SearchableContainer
 });
-import "./../../legacy.js";
-import * as Common2 from "./../../../../core/common/common.js";
-import * as i18n3 from "./../../../../core/i18n/i18n.js";
-import * as TextUtils3 from "./../../../../core/text_utils/text_utils.js";
+import "../../legacy.js";
+import * as Common2 from "../../../../core/common/common.js";
+import * as i18n3 from "../../../../core/i18n/i18n.js";
+import * as TextUtils3 from "../../../../core/text_utils/text_utils.js";
 
 // gen/front_end/entrypoints/formatter_worker/FormatterActions.js
 var FORMATTABLE_MEDIA_TYPES = [
@@ -30,11 +30,12 @@ var FORMATTABLE_MEDIA_TYPES = [
   "text/css",
   "text/html",
   "text/javascript"
+  /* TEXT_JAVASCRIPT */
 ];
 
 // gen/front_end/ui/legacy/components/source_frame/ResourceSourceFrame.js
-import { render } from "./../../../lit/lit.js";
-import * as UI2 from "./../../legacy.js";
+import { render } from "../../../lit/lit.js";
+import * as UI2 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/source_frame/resourceSourceFrame.css.js
 var resourceSourceFrame_css_default = `/*
@@ -49,7 +50,7 @@ var resourceSourceFrame_css_default = `/*
 
 devtools-toolbar {
   background-color: var(--sys-color-cdt-base-container);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve("./resourceSourceFrame.css")} */`;
@@ -57,6 +58,7 @@ devtools-toolbar {
 // gen/front_end/ui/legacy/components/source_frame/SourceFrame.js
 var SourceFrame_exports = {};
 __export(SourceFrame_exports, {
+  Events: () => Events,
   LINE_NUMBER_FORMATTER: () => LINE_NUMBER_FORMATTER,
   SourceFrameImpl: () => SourceFrameImpl,
   addNonBreakableLines: () => addNonBreakableLines,
@@ -64,20 +66,20 @@ __export(SourceFrame_exports, {
   isBreakableLine: () => isBreakableLine,
   removeSourceFrameInfobar: () => removeSourceFrameInfobar
 });
-import * as Common from "./../../../../core/common/common.js";
-import * as Host from "./../../../../core/host/host.js";
-import * as i18n from "./../../../../core/i18n/i18n.js";
-import * as Platform from "./../../../../core/platform/platform.js";
-import * as Root from "./../../../../core/root/root.js";
-import * as SDK from "./../../../../core/sdk/sdk.js";
-import * as TextUtils from "./../../../../core/text_utils/text_utils.js";
-import * as Formatter from "./../../../../models/formatter/formatter.js";
-import * as CodeMirror from "./../../../../third_party/codemirror.next/codemirror.next.js";
-import * as CodeHighlighter from "./../../../components/code_highlighter/code_highlighter.js";
-import * as Dialogs from "./../../../components/dialogs/dialogs.js";
-import * as TextEditor from "./../../../components/text_editor/text_editor.js";
-import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
-import * as UI from "./../../legacy.js";
+import * as Common from "../../../../core/common/common.js";
+import * as Host from "../../../../core/host/host.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
+import * as Platform from "../../../../core/platform/platform.js";
+import * as Root from "../../../../core/root/root.js";
+import * as SDK from "../../../../core/sdk/sdk.js";
+import * as TextUtils from "../../../../core/text_utils/text_utils.js";
+import * as Formatter from "../../../../models/formatter/formatter.js";
+import * as CodeMirror from "../../../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeHighlighter from "../../../components/code_highlighter/code_highlighter.js";
+import * as Dialogs from "../../../components/dialogs/dialogs.js";
+import * as TextEditor from "../../../components/text_editor/text_editor.js";
+import * as VisualLogging from "../../../visual_logging/visual_logging.js";
+import * as UI from "../../legacy.js";
 var UIStrings = {
   /**
    * @description Title of the source frame view tab.
@@ -147,6 +149,11 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/source_frame/SourceFrame.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
+var Events;
+(function(Events2) {
+  Events2["EDITOR_UPDATE"] = "EditorUpdate";
+  Events2["EDITOR_SCROLL"] = "EditorScroll";
+})(Events || (Events = {}));
 var LINE_NUMBER_FORMATTER = CodeMirror.Facet.define({
   combine(value) {
     if (value.length === 0) {
@@ -1177,9 +1184,9 @@ var StreamingContentHexView_exports = {};
 __export(StreamingContentHexView_exports, {
   StreamingContentHexView: () => StreamingContentHexView
 });
-import * as TextUtils4 from "./../../../../core/text_utils/text_utils.js";
-import * as LinearMemoryInspectorComponents from "./../../../../panels/linear_memory_inspector/components/components.js";
-import * as UI3 from "./../../legacy.js";
+import * as TextUtils4 from "../../../../core/text_utils/text_utils.js";
+import * as LinearMemoryInspectorComponents from "../../../../panels/linear_memory_inspector/components/components.js";
+import * as UI3 from "../../legacy.js";
 var MEMORY_TRANSFER_MIN_CHUNK_SIZE = 1e3;
 var LinearMemoryInspectorView = class extends UI3.Widget.VBox {
   #memory = new Uint8Array([0]);
@@ -1344,11 +1351,11 @@ __export(FontView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
   FontView: () => FontView
 });
-import * as i18n5 from "./../../../../core/i18n/i18n.js";
-import * as TextUtils6 from "./../../../../core/text_utils/text_utils.js";
-import { Directives, html, render as render2 } from "./../../../lit/lit.js";
-import * as VisualLogging2 from "./../../../visual_logging/visual_logging.js";
-import * as UI4 from "./../../legacy.js";
+import * as i18n5 from "../../../../core/i18n/i18n.js";
+import * as TextUtils6 from "../../../../core/text_utils/text_utils.js";
+import { Directives, html, render as render2 } from "../../../lit/lit.js";
+import * as VisualLogging2 from "../../../visual_logging/visual_logging.js";
+import * as UI4 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/source_frame/fontView.css.js
 var fontView_css_default = `/*
@@ -1504,15 +1511,15 @@ var ImageView_exports = {};
 __export(ImageView_exports, {
   ImageView: () => ImageView
 });
-import * as Common3 from "./../../../../core/common/common.js";
-import * as Host2 from "./../../../../core/host/host.js";
-import * as i18n7 from "./../../../../core/i18n/i18n.js";
-import * as Platform2 from "./../../../../core/platform/platform.js";
-import * as TextUtils7 from "./../../../../core/text_utils/text_utils.js";
-import * as Workspace from "./../../../../models/workspace/workspace.js";
-import { createIcon } from "./../../../kit/kit.js";
-import * as VisualLogging3 from "./../../../visual_logging/visual_logging.js";
-import * as UI5 from "./../../legacy.js";
+import * as Common3 from "../../../../core/common/common.js";
+import * as Host2 from "../../../../core/host/host.js";
+import * as i18n7 from "../../../../core/i18n/i18n.js";
+import * as Platform2 from "../../../../core/platform/platform.js";
+import * as TextUtils7 from "../../../../core/text_utils/text_utils.js";
+import * as Workspace from "../../../../models/workspace/workspace.js";
+import { createIcon } from "../../../kit/kit.js";
+import * as VisualLogging3 from "../../../visual_logging/visual_logging.js";
+import * as UI5 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/source_frame/imageView.css.js
 var imageView_css_default = `/*
@@ -1526,7 +1533,7 @@ var imageView_css_default = `/*
 }
 
 .image-view > .image {
-  padding: 20px 20px 10px;
+  padding: var(--sys-size-9) var(--sys-size-9) 10px;
   text-align: center;
 }
 
@@ -1796,12 +1803,12 @@ __export(JSONView_exports, {
   ParsedJSON: () => ParsedJSON,
   SearchableJsonView: () => SearchableJsonView
 });
-import * as i18n9 from "./../../../../core/i18n/i18n.js";
-import * as SDK2 from "./../../../../core/sdk/sdk.js";
-import { html as html2, render as render3 } from "./../../../lit/lit.js";
-import * as VisualLogging4 from "./../../../visual_logging/visual_logging.js";
-import * as UI6 from "./../../legacy.js";
-import * as ObjectUI from "./../object_ui/object_ui.js";
+import * as i18n9 from "../../../../core/i18n/i18n.js";
+import * as SDK2 from "../../../../core/sdk/sdk.js";
+import { html as html2, render as render3 } from "../../../lit/lit.js";
+import * as VisualLogging4 from "../../../visual_logging/visual_logging.js";
+import * as UI6 from "../../legacy.js";
+import * as ObjectUI from "../object_ui/object_ui.js";
 
 // gen/front_end/ui/legacy/components/source_frame/jsonView.css.js
 var jsonView_css_default = `/*
@@ -1811,7 +1818,7 @@ var jsonView_css_default = `/*
  */
 
 .json-view {
-  padding: 2px 6px;
+  padding: var(--sys-size-2) var(--sys-size-4);
   overflow: auto;
 }
 
@@ -2065,10 +2072,10 @@ var PreviewFactory_exports = {};
 __export(PreviewFactory_exports, {
   PreviewFactory: () => PreviewFactory
 });
-import * as Common4 from "./../../../../core/common/common.js";
-import * as i18n13 from "./../../../../core/i18n/i18n.js";
-import * as TextUtils9 from "./../../../../core/text_utils/text_utils.js";
-import * as UI8 from "./../../legacy.js";
+import * as Common4 from "../../../../core/common/common.js";
+import * as i18n13 from "../../../../core/i18n/i18n.js";
+import * as TextUtils9 from "../../../../core/text_utils/text_utils.js";
+import * as UI8 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/source_frame/XMLView.js
 var XMLView_exports = {};
@@ -2078,12 +2085,12 @@ __export(XMLView_exports, {
   XMLTreeViewNode: () => XMLTreeViewNode,
   XMLView: () => XMLView
 });
-import "./../../../components/highlighting/highlighting.js";
-import * as i18n11 from "./../../../../core/i18n/i18n.js";
-import * as TextUtils8 from "./../../../../core/text_utils/text_utils.js";
-import * as Lit from "./../../../lit/lit.js";
-import * as VisualLogging5 from "./../../../visual_logging/visual_logging.js";
-import * as UI7 from "./../../legacy.js";
+import "../../../components/highlighting/highlighting.js";
+import * as i18n11 from "../../../../core/i18n/i18n.js";
+import * as TextUtils8 from "../../../../core/text_utils/text_utils.js";
+import * as Lit from "../../../lit/lit.js";
+import * as VisualLogging5 from "../../../visual_logging/visual_logging.js";
+import * as UI7 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/source_frame/xmlTree.css.js
 var xmlTree_css_default = `/*
@@ -2097,7 +2104,7 @@ var xmlTree_css_default = `/*
   list-style: none;
   padding: 0;
   margin: 0;
-  padding-inline-start: 16px;
+  padding-inline-start: var(--sys-size-8);
 }
 
 ol.tree-outline {
@@ -2105,11 +2112,11 @@ ol.tree-outline {
 }
 
 .tree-outline li {
-  min-height: 12px;
+  min-height: var(--sys-size-6);
 }
 
 ::part(shadow-xml-view-close-tag) {
-  margin-left: -16px;
+  margin-left: calc(-1 * var(--sys-size-8));
 }
 
 ::part(shadow-xml-view-close-tag),::part(shadow-xml-view-tag) {

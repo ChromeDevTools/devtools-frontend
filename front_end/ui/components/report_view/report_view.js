@@ -14,9 +14,9 @@ __export(ReportView_exports, {
   ReportSectionHeader: () => ReportSectionHeader,
   ReportValue: () => ReportValue
 });
-import * as Platform from "./../../../core/platform/platform.js";
-import * as Components from "./../../legacy/components/utils/utils.js";
-import { html, nothing, render } from "./../../lit/lit.js";
+import * as Platform from "../../../core/platform/platform.js";
+import * as Components from "../../legacy/components/utils/utils.js";
+import { html, nothing, render } from "../../lit/lit.js";
 
 // gen/front_end/ui/components/report_view/report.css.js
 var report_css_default = `/*
@@ -38,7 +38,7 @@ var report_css_default = `/*
 }
 
 .report-header-wrapper {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .report-title {
@@ -54,7 +54,7 @@ var report_css_default = `/*
 
 .report-url {
   background: none;
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
   border: none;
   color: var(--text-link);
   cursor: pointer;
@@ -62,7 +62,7 @@ var report_css_default = `/*
   font: var(--sys-typescale-body4-regular);
   height: unset;
   margin: 0;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
   outline: none;
   padding: 0 !important; /* stylelint-disable-line declaration-no-important */
   text-decoration: underline;
@@ -135,7 +135,7 @@ var reportSectionDivider_css_default = `/*
 
 .section-divider {
   margin: var(--sys-size-5) 0;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve("./reportSectionDivider.css")} */`;
@@ -182,7 +182,7 @@ var reportValue_css_default = `/*
   font: var(--sys-typescale-body4-regular);
   color: var(--sys-color-on-surface);
   margin-inline-start: 0;
-  padding: 0 6px;
+  padding: 0 var(--sys-size-4);
   overflow-wrap: break-word;
   line-height: 18px;
 }

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import { PerformanceTraceContext } from '../contexts/PerformanceTraceContext.js';
 import { MAX_FUNCTION_RESULT_BYTE_LENGTH, } from './Tool.js';
 const UIStringsNotTranslate = {
     networkActivitySummary: 'Network activity summary',
@@ -44,16 +43,16 @@ export class GetTraceNetworkSummaryTool {
         };
     }
     async handler(params, capabilities) {
-        const conversationContext = capabilities.conversationContext;
-        if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+        const performanceTraceContext = capabilities.getPerformanceTraceContext();
+        if (!performanceTraceContext) {
             return { error: 'Performance trace context is not available.' };
         }
-        const focus = conversationContext.getItem();
-        const bounds = conversationContext.createBounds(params.min, params.max);
+        const focus = performanceTraceContext.getItem();
+        const bounds = performanceTraceContext.createBounds(params.min, params.max);
         if (!bounds) {
             return { error: 'Invalid bounds.' };
         }
-        const formatter = conversationContext.createFormatter();
+        const formatter = performanceTraceContext.createFormatter();
         const summary = formatter.formatNetworkTrackSummary(bounds);
         if (summary.length > MAX_FUNCTION_RESULT_BYTE_LENGTH) {
             return {

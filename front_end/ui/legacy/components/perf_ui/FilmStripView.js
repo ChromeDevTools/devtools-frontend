@@ -113,6 +113,12 @@ export class FilmStripView extends Common.ObjectWrapper.eventMixin(UI.Widget.HBo
         this.statusLabel.textContent = text;
     }
 }
+export var Events;
+(function (Events) {
+    Events["FRAME_SELECTED"] = "FrameSelected";
+    Events["FRAME_ENTER"] = "FrameEnter";
+    Events["FRAME_EXIT"] = "FrameExit";
+})(Events || (Events = {}));
 export class Dialog {
     widget;
     index;

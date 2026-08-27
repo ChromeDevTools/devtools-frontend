@@ -7,11 +7,12 @@ var __export = (target, all) => {
 // gen/front_end/models/workspace/FileManager.js
 var FileManager_exports = {};
 __export(FileManager_exports, {
+  Events: () => Events,
   FileManager: () => FileManager
 });
-import * as Common from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as Root from "./../../core/root/root.js";
+import * as Common from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as Root from "../../core/root/root.js";
 var FileManager = class _FileManager extends Common.ObjectWrapper.ObjectWrapper {
   #saveCallbacks = /* @__PURE__ */ new Map();
   #eventDescriptors;
@@ -78,10 +79,15 @@ var FileManager = class _FileManager extends Common.ObjectWrapper.ObjectWrapper 
     this.dispatchEventToListeners("AppendedToURL", url);
   }
 };
+var Events;
+(function(Events5) {
+  Events5["APPENDED_TO_URL"] = "AppendedToURL";
+})(Events || (Events = {}));
 
 // gen/front_end/models/workspace/IgnoreListManager.js
 var IgnoreListManager_exports = {};
 __export(IgnoreListManager_exports, {
+  Events: () => Events4,
   IgnoreListManager: () => IgnoreListManager,
   automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor: () => automaticallyIgnoreListKnownThirdPartyScriptsSettingDescriptor,
   enableIgnoreListingSettingDescriptor: () => enableIgnoreListingSettingDescriptor,
@@ -89,27 +95,28 @@ __export(IgnoreListManager_exports, {
   skipContentScriptsSettingDescriptor: () => skipContentScriptsSettingDescriptor,
   skipStackFramesPatternSettingDescriptor: () => skipStackFramesPatternSettingDescriptor
 });
-import * as Common4 from "./../../core/common/common.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Platform2 from "./../../core/platform/platform.js";
-import * as Root3 from "./../../core/root/root.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as Common4 from "../../core/common/common.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as Platform2 from "../../core/platform/platform.js";
+import * as Root3 from "../../core/root/root.js";
+import * as SDK from "../../core/sdk/sdk.js";
 
 // gen/front_end/models/workspace/WorkspaceImpl.js
 var WorkspaceImpl_exports = {};
 __export(WorkspaceImpl_exports, {
-  Events: () => Events,
+  Events: () => Events2,
   ProjectStore: () => ProjectStore,
   WorkspaceImpl: () => WorkspaceImpl,
   projectTypes: () => projectTypes
 });
-import * as Common3 from "./../../core/common/common.js";
-import * as Root2 from "./../../core/root/root.js";
+import * as Common3 from "../../core/common/common.js";
+import * as Root2 from "../../core/root/root.js";
 
 // gen/front_end/models/workspace/UISourceCode.js
 var UISourceCode_exports = {};
 __export(UISourceCode_exports, {
-  Events: () => Events2,
+  DecoratorType: () => DecoratorType,
+  Events: () => Events3,
   Message: () => Message,
   UIFunctionBounds: () => UIFunctionBounds,
   UILocation: () => UILocation,
@@ -118,10 +125,10 @@ __export(UISourceCode_exports, {
   UISourceCodeMetadata: () => UISourceCodeMetadata,
   createMappedProfileData: () => createMappedProfileData
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
+import * as Common2 from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
 var UIStrings = {
   /**
    * @description Text for the index of something.
@@ -241,8 +248,8 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
     if (contentType) {
       this.#contentType = contentType;
     }
-    this.dispatchEventToListeners(Events2.TitleChanged, this);
-    this.project().workspace().dispatchEventToListeners(Events.UISourceCodeRenamed, { oldURL, uiSourceCode: this });
+    this.dispatchEventToListeners(Events3.TitleChanged, this);
+    this.project().workspace().dispatchEventToListeners(Events2.UISourceCodeRenamed, { oldURL, uiSourceCode: this });
   }
   contentURL() {
     return this.url();
@@ -345,10 +352,10 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
     this.#hasCommits = true;
     this.#resetWorkingCopy();
     const data = { uiSourceCode: this, content, encoded: this.#contentEncoded };
-    this.dispatchEventToListeners(Events2.WorkingCopyCommitted, data);
-    this.#project.workspace().dispatchEventToListeners(Events.WorkingCopyCommitted, data);
+    this.dispatchEventToListeners(Events3.WorkingCopyCommitted, data);
+    this.#project.workspace().dispatchEventToListeners(Events2.WorkingCopyCommitted, data);
     if (committedByUser) {
-      this.#project.workspace().dispatchEventToListeners(Events.WorkingCopyCommittedByUser, data);
+      this.#project.workspace().dispatchEventToListeners(Events2.WorkingCopyCommittedByUser, data);
     }
   }
   addRevision(content) {
@@ -405,8 +412,8 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
   }
   #workingCopyChanged() {
     this.#removeAllMessages();
-    this.dispatchEventToListeners(Events2.WorkingCopyChanged, this);
-    this.#project.workspace().dispatchEventToListeners(Events.WorkingCopyChanged, { uiSourceCode: this });
+    this.dispatchEventToListeners(Events3.WorkingCopyChanged, this);
+    this.#project.workspace().dispatchEventToListeners(Events2.WorkingCopyChanged, { uiSourceCode: this });
   }
   removeWorkingCopyGetter() {
     if (!this.#workingCopyGetter) {
@@ -483,11 +490,11 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
       this.#messages = /* @__PURE__ */ new Set();
     }
     this.#messages.add(message);
-    this.dispatchEventToListeners(Events2.MessageAdded, message);
+    this.dispatchEventToListeners(Events3.MessageAdded, message);
   }
   removeMessage(message) {
     if (this.#messages?.delete(message)) {
-      this.dispatchEventToListeners(Events2.MessageRemoved, message);
+      this.dispatchEventToListeners(Events3.MessageRemoved, message);
     }
   }
   #removeAllMessages() {
@@ -495,14 +502,14 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
       return;
     }
     for (const message of this.#messages) {
-      this.dispatchEventToListeners(Events2.MessageRemoved, message);
+      this.dispatchEventToListeners(Events3.MessageRemoved, message);
     }
     this.#messages = null;
   }
   setDecorationData(type, data) {
     if (data !== this.#decorations.get(type)) {
       this.#decorations.set(type, data);
-      this.dispatchEventToListeners(Events2.DecorationChanged, type);
+      this.dispatchEventToListeners(Events3.DecorationChanged, type);
     }
   }
   getDecorationData(type) {
@@ -519,15 +526,15 @@ var UISourceCode = class extends Common2.ObjectWrapper.ObjectWrapper {
     return ignoreListManager.isUserOrSourceMapIgnoreListedUISourceCode(this);
   }
 };
-var Events2;
-(function(Events3) {
-  Events3["WorkingCopyChanged"] = "WorkingCopyChanged";
-  Events3["WorkingCopyCommitted"] = "WorkingCopyCommitted";
-  Events3["TitleChanged"] = "TitleChanged";
-  Events3["MessageAdded"] = "MessageAdded";
-  Events3["MessageRemoved"] = "MessageRemoved";
-  Events3["DecorationChanged"] = "DecorationChanged";
-})(Events2 || (Events2 = {}));
+var Events3;
+(function(Events5) {
+  Events5["WorkingCopyChanged"] = "WorkingCopyChanged";
+  Events5["WorkingCopyCommitted"] = "WorkingCopyCommitted";
+  Events5["TitleChanged"] = "TitleChanged";
+  Events5["MessageAdded"] = "MessageAdded";
+  Events5["MessageRemoved"] = "MessageRemoved";
+  Events5["DecorationChanged"] = "DecorationChanged";
+})(Events3 || (Events3 = {}));
 var UILocation = class {
   uiSourceCode;
   lineNumber;
@@ -643,6 +650,14 @@ var Message = class {
     return this.text() === another.text() && this.level() === another.level() && this.range.equal(another.range);
   }
 };
+(function(Message2) {
+  let Level;
+  (function(Level2) {
+    Level2["ERROR"] = "Error";
+    Level2["ISSUE"] = "Issue";
+    Level2["WARNING"] = "Warning";
+  })(Level = Message2.Level || (Message2.Level = {}));
+})(Message || (Message = {}));
 var UISourceCodeMetadata = class {
   modificationTime;
   contentSize;
@@ -651,6 +666,11 @@ var UISourceCodeMetadata = class {
     this.contentSize = contentSize;
   }
 };
+var DecoratorType;
+(function(DecoratorType2) {
+  DecoratorType2["PERFORMANCE"] = "performance";
+  DecoratorType2["COVERAGE"] = "coverage";
+})(DecoratorType || (DecoratorType = {}));
 function createMappedProfileData(profileData, originalToMappedLocation) {
   const mappedProfileData = /* @__PURE__ */ new Map();
   for (const [lineNumber, columnData] of profileData) {
@@ -716,7 +736,7 @@ var ProjectStore = class {
       return false;
     }
     this.#uiSourceCodes.set(url, uiSourceCode);
-    this.#workspace.dispatchEventToListeners(Events.UISourceCodeAdded, uiSourceCode);
+    this.#workspace.dispatchEventToListeners(Events2.UISourceCodeAdded, uiSourceCode);
     return true;
   }
   removeUISourceCode(url) {
@@ -725,7 +745,7 @@ var ProjectStore = class {
       return;
     }
     this.#uiSourceCodes.delete(url);
-    this.#workspace.dispatchEventToListeners(Events.UISourceCodeRemoved, uiSourceCode);
+    this.#workspace.dispatchEventToListeners(Events2.UISourceCodeRemoved, uiSourceCode);
   }
   removeProject() {
     this.#workspace.removeProject(this);
@@ -813,11 +833,11 @@ var WorkspaceImpl = class _WorkspaceImpl extends Common3.ObjectWrapper.ObjectWra
   addProject(project) {
     console.assert(!this.#projects.has(project.id()), `A project with id ${project.id()} already exists!`);
     this.#projects.set(project.id(), project);
-    this.dispatchEventToListeners(Events.ProjectAdded, project);
+    this.dispatchEventToListeners(Events2.ProjectAdded, project);
   }
   removeProject(project) {
     this.#projects.delete(project.id());
-    this.dispatchEventToListeners(Events.ProjectRemoved, project);
+    this.dispatchEventToListeners(Events2.ProjectRemoved, project);
   }
   project(projectId) {
     return this.#projects.get(projectId) || null;
@@ -851,17 +871,17 @@ var WorkspaceImpl = class _WorkspaceImpl extends Common3.ObjectWrapper.ObjectWra
     return this.#hasResourceContentTrackingExtensions;
   }
 };
-var Events;
-(function(Events3) {
-  Events3["UISourceCodeAdded"] = "UISourceCodeAdded";
-  Events3["UISourceCodeRemoved"] = "UISourceCodeRemoved";
-  Events3["UISourceCodeRenamed"] = "UISourceCodeRenamed";
-  Events3["WorkingCopyChanged"] = "WorkingCopyChanged";
-  Events3["WorkingCopyCommitted"] = "WorkingCopyCommitted";
-  Events3["WorkingCopyCommittedByUser"] = "WorkingCopyCommittedByUser";
-  Events3["ProjectAdded"] = "ProjectAdded";
-  Events3["ProjectRemoved"] = "ProjectRemoved";
-})(Events || (Events = {}));
+var Events2;
+(function(Events5) {
+  Events5["UISourceCodeAdded"] = "UISourceCodeAdded";
+  Events5["UISourceCodeRemoved"] = "UISourceCodeRemoved";
+  Events5["UISourceCodeRenamed"] = "UISourceCodeRenamed";
+  Events5["WorkingCopyChanged"] = "WorkingCopyChanged";
+  Events5["WorkingCopyCommitted"] = "WorkingCopyCommitted";
+  Events5["WorkingCopyCommittedByUser"] = "WorkingCopyCommittedByUser";
+  Events5["ProjectAdded"] = "ProjectAdded";
+  Events5["ProjectRemoved"] = "ProjectRemoved";
+})(Events2 || (Events2 = {}));
 
 // gen/front_end/models/workspace/IgnoreListManager.js
 var UIStrings2 = {
@@ -1378,13 +1398,17 @@ var IgnoreListManager = class _IgnoreListManager extends Common4.ObjectWrapper.O
   }
 };
 var scriptToRange = /* @__PURE__ */ new WeakMap();
+var Events4;
+(function(Events5) {
+  Events5["IGNORED_SCRIPT_RANGES_UPDATED"] = "IGNORED_SCRIPT_RANGES_UPDATED";
+})(Events4 || (Events4 = {}));
 
 // gen/front_end/models/workspace/SearchConfig.js
 var SearchConfig_exports = {};
 __export(SearchConfig_exports, {
   SearchConfig: () => SearchConfig
 });
-import * as Platform3 from "./../../core/platform/platform.js";
+import * as Platform3 from "../../core/platform/platform.js";
 var SearchConfig = class _SearchConfig {
   #query;
   #ignoreCase;

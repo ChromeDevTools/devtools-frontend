@@ -171,6 +171,17 @@ const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/135054
 const LEARN_MORE_URL = 'https://goo.gle/devtools-console-messages-ai';
 const REPORT_URL = 'https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504';
 const SIGN_IN_URL = 'https://accounts.google.com';
+export var State;
+(function (State) {
+    State["INSIGHT"] = "insight";
+    State["LOADING"] = "loading";
+    State["ERROR"] = "error";
+    State["SETTING_IS_NOT_TRUE"] = "setting-is-not-true";
+    State["CONSENT_REMINDER"] = "consent-reminder";
+    State["NOT_LOGGED_IN"] = "not-logged-in";
+    State["SYNC_IS_PAUSED"] = "sync-is-paused";
+    State["OFFLINE"] = "offline";
+})(State || (State = {}));
 const markedExtension = {
     name: 'citation',
     level: 'inline',

@@ -1,6 +1,33 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+// This provides parsing and serialization for HTTP structured headers as specified in:
+// https://tools.ietf.org/html/draft-ietf-httpbis-header-structure-19
+// (the ABNF fragments are quoted from the spec, unless otherwise specified,
+//  and the code pretty much just follows the algorithms given there).
+//
+// parseList, parseItem, serializeList, and serializeItem are the main entry points.
+//
+// Currently dictionary handling is not implemented (but would likely be easy
+// to add).  Serialization of decimals and byte sequences is also not
+// implemented.
+export var ResultKind;
+(function (ResultKind) {
+    ResultKind[ResultKind["ERROR"] = 0] = "ERROR";
+    ResultKind[ResultKind["PARAM_NAME"] = 1] = "PARAM_NAME";
+    ResultKind[ResultKind["PARAMETER"] = 2] = "PARAMETER";
+    ResultKind[ResultKind["PARAMETERS"] = 3] = "PARAMETERS";
+    ResultKind[ResultKind["ITEM"] = 4] = "ITEM";
+    ResultKind[ResultKind["INTEGER"] = 5] = "INTEGER";
+    ResultKind[ResultKind["DECIMAL"] = 6] = "DECIMAL";
+    ResultKind[ResultKind["STRING"] = 7] = "STRING";
+    ResultKind[ResultKind["TOKEN"] = 8] = "TOKEN";
+    ResultKind[ResultKind["BINARY"] = 9] = "BINARY";
+    ResultKind[ResultKind["BOOLEAN"] = 10] = "BOOLEAN";
+    ResultKind[ResultKind["LIST"] = 11] = "LIST";
+    ResultKind[ResultKind["INNER_LIST"] = 12] = "INNER_LIST";
+    ResultKind[ResultKind["SERIALIZATION_RESULT"] = 13] = "SERIALIZATION_RESULT";
+})(ResultKind || (ResultKind = {}));
 const CHAR_MINUS = '-'.charCodeAt(0);
 const CHAR_0 = '0'.charCodeAt(0);
 const CHAR_9 = '9'.charCodeAt(0);

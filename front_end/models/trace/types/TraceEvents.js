@@ -1,6 +1,43 @@
 // Copyright 2022 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+/** Trace Events. **/
+export var Phase;
+(function (Phase) {
+    // Standard
+    Phase["BEGIN"] = "B";
+    Phase["END"] = "E";
+    Phase["COMPLETE"] = "X";
+    Phase["INSTANT"] = "I";
+    Phase["COUNTER"] = "C";
+    // Async
+    Phase["ASYNC_NESTABLE_START"] = "b";
+    Phase["ASYNC_NESTABLE_INSTANT"] = "n";
+    Phase["ASYNC_NESTABLE_END"] = "e";
+    Phase["ASYNC_STEP_INTO"] = "T";
+    Phase["ASYNC_BEGIN"] = "S";
+    Phase["ASYNC_END"] = "F";
+    Phase["ASYNC_STEP_PAST"] = "p";
+    // Flow
+    Phase["FLOW_START"] = "s";
+    Phase["FLOW_STEP"] = "t";
+    Phase["FLOW_END"] = "f";
+    // Sample
+    Phase["SAMPLE"] = "P";
+    // Object
+    Phase["OBJECT_CREATED"] = "N";
+    Phase["OBJECT_SNAPSHOT"] = "O";
+    Phase["OBJECT_DESTROYED"] = "D";
+    // Metadata
+    Phase["METADATA"] = "M";
+    // Memory Dump
+    Phase["MEMORY_DUMP_GLOBAL"] = "V";
+    Phase["MEMORY_DUMP_PROCESS"] = "v";
+    // Mark
+    Phase["MARK"] = "R";
+    // Clock sync
+    Phase["CLOCK_SYNC"] = "c";
+})(Phase || (Phase = {}));
 export function isNestableAsyncPhase(phase) {
     return phase === "b" /* Phase.ASYNC_NESTABLE_START */ || phase === "e" /* Phase.ASYNC_NESTABLE_END */ ||
         phase === "n" /* Phase.ASYNC_NESTABLE_INSTANT */;
@@ -12,6 +49,12 @@ export function isPhaseAsync(phase) {
 export function isFlowPhase(phase) {
     return phase === "s" /* Phase.FLOW_START */ || phase === "t" /* Phase.FLOW_STEP */ || phase === "f" /* Phase.FLOW_END */;
 }
+export var Scope;
+(function (Scope) {
+    Scope["THREAD"] = "t";
+    Scope["PROCESS"] = "p";
+    Scope["GLOBAL"] = "g";
+})(Scope || (Scope = {}));
 export function objectIsEvent(obj) {
     return 'cat' in obj && 'name' in obj && 'ts' in obj;
 }
@@ -26,6 +69,14 @@ export const VALID_PROFILE_SOURCES = ['Inspector', 'SelfProfiling', 'Internal'];
 export function isRunTask(event) {
     return event.name === "RunTask" /* Name.RUN_TASK */ && event.ph === "X" /* Phase.COMPLETE */;
 }
+export var AuctionWorkletType;
+(function (AuctionWorkletType) {
+    AuctionWorkletType["BIDDER"] = "bidder";
+    AuctionWorkletType["SELLER"] = "seller";
+    // Not expected to be used, but here as a fallback in case new types get
+    // added and we have yet to update the trace engine.
+    AuctionWorkletType["UNKNOWN"] = "unknown";
+})(AuctionWorkletType || (AuctionWorkletType = {}));
 export function isAuctionWorkletRunningInProcess(event) {
     return event.name === 'AuctionWorkletRunningInProcess';
 }
@@ -84,9 +135,25 @@ export function isTracingSessionIdForWorker(event) {
     return event.name === 'TracingSessionIdForWorker';
 }
 export const NO_NAVIGATION = 'NO_NAVIGATION';
+export var LayoutInvalidationReason;
+(function (LayoutInvalidationReason) {
+    LayoutInvalidationReason["SIZE_CHANGED"] = "Size changed";
+    LayoutInvalidationReason["ATTRIBUTE"] = "Attribute";
+    LayoutInvalidationReason["ADDED_TO_LAYOUT"] = "Added to layout";
+    LayoutInvalidationReason["SCROLLBAR_CHANGED"] = "Scrollbar changed";
+    LayoutInvalidationReason["REMOVED_FROM_LAYOUT"] = "Removed from layout";
+    LayoutInvalidationReason["STYLE_CHANGED"] = "Style changed";
+    LayoutInvalidationReason["FONTS_CHANGED"] = "Fonts changed";
+    LayoutInvalidationReason["UNKNOWN"] = "Unknown";
+})(LayoutInvalidationReason || (LayoutInvalidationReason = {}));
 export function isScheduleStyleInvalidationTracking(event) {
     return event.name === "ScheduleStyleInvalidationTracking" /* Name.SCHEDULE_STYLE_INVALIDATION_TRACKING */;
 }
+export var StyleRecalcInvalidationReason;
+(function (StyleRecalcInvalidationReason) {
+    StyleRecalcInvalidationReason["ANIMATION"] = "Animation";
+    StyleRecalcInvalidationReason["RELATED_STYLE_RULE"] = "Related style rule";
+})(StyleRecalcInvalidationReason || (StyleRecalcInvalidationReason = {}));
 export function isStyleRecalcInvalidationTracking(event) {
     return event.name === "StyleRecalcInvalidationTracking" /* Name.STYLE_RECALC_INVALIDATION_TRACKING */;
 }
@@ -132,6 +199,62 @@ export function isAnimationFrameAsyncEnd(data) {
 export function isAnimationFramePresentation(data) {
     return data.name === "AnimationFrame::Presentation" /* Name.ANIMATION_FRAME_PRESENTATION */;
 }
+var State;
+(function (State) {
+    /** The frame did not have any updates to present. **/
+    State["STATE_NO_UPDATE_DESIRED"] = "STATE_NO_UPDATE_DESIRED";
+    /**
+     * The frame presented all the desired updates (i.e. any updates requested
+     * from both the compositor thread and main-threads were handled). *
+     */
+    State["STATE_PRESENTED_ALL"] = "STATE_PRESENTED_ALL";
+    /**
+     *  The frame was presented with some updates, but also missed some updates
+     * (e.g. missed updates from the main-thread, but included updates from the
+     * compositor thread). *
+     */
+    State["STATE_PRESENTED_PARTIAL"] = "STATE_PRESENTED_PARTIAL";
+    /**
+     * The frame was dropped, i.e. some updates were desired for the frame, but
+     * was not presented. *
+     */
+    State["STATE_DROPPED"] = "STATE_DROPPED";
+})(State || (State = {}));
+var FrameDropReason;
+(function (FrameDropReason) {
+    FrameDropReason["REASON_UNSPECIFIED"] = "REASON_UNSPECIFIED";
+    /**
+     *  Frame was dropped by the display-compositor.
+     * The display-compositor may drop a frame some times (e.g. the frame missed
+     * the deadline, or was blocked on surface-sync, etc.) *
+     */
+    FrameDropReason["REASON_DISPLAY_COMPOSITOR"] = "REASON_DISPLAY_COMPOSITOR";
+    /**
+     *  Frame was dropped because of the main-thread.
+     * The main-thread may cause a frame to be dropped, e.g. if the main-thread
+     * is running expensive javascript, or doing a lot of layout updates, etc. *
+     */
+    FrameDropReason["REASON_MAIN_THREAD"] = "REASON_MAIN_THREAD";
+    /**
+     *  Frame was dropped by the client compositor.
+     * The client compositor can drop some frames too (e.g. attempting to
+     * recover latency, missing the deadline, etc.). *
+     */
+    FrameDropReason["REASON_CLIENT_COMPOSITOR"] = "REASON_CLIENT_COMPOSITOR";
+})(FrameDropReason || (FrameDropReason = {}));
+var ScrollState;
+(function (ScrollState) {
+    ScrollState["SCROLL_NONE"] = "SCROLL_NONE";
+    ScrollState["SCROLL_MAIN_THREAD"] = "SCROLL_MAIN_THREAD";
+    ScrollState["SCROLL_COMPOSITOR_THREAD"] = "SCROLL_COMPOSITOR_THREAD";
+    /** Used when it can't be determined whether a scroll is in progress or not. */
+    ScrollState["SCROLL_UNKNOWN"] = "SCROLL_UNKNOWN";
+})(ScrollState || (ScrollState = {}));
+var FrameType;
+(function (FrameType) {
+    FrameType["FORKED"] = "FORKED";
+    FrameType["BACKFILL"] = "BACKFILL";
+})(FrameType || (FrameType = {}));
 export function isPipelineReporter(event) {
     return event.name === "PipelineReporter" /* Name.PIPELINE_REPORTER */;
 }
@@ -191,6 +314,11 @@ export function isDecodeLazyPixelRef(event) {
 export function isDecodeImage(event) {
     return event.name === "Decode Image" /* Name.DECODE_IMAGE */;
 }
+export var InvalidationEventType;
+(function (InvalidationEventType) {
+    InvalidationEventType["StyleInvalidatorInvalidationTracking"] = "StyleInvalidatorInvalidationTracking";
+    InvalidationEventType["StyleRecalcInvalidationTracking"] = "StyleRecalcInvalidationTracking";
+})(InvalidationEventType || (InvalidationEventType = {}));
 export var SelectorTimingsKey;
 (function (SelectorTimingsKey) {
     SelectorTimingsKey["Elapsed"] = "elapsed (us)";
@@ -580,6 +708,215 @@ export function isFlowPhaseEvent(event) {
 export function isParseAuthorStyleSheetEvent(event) {
     return event.name === "ParseAuthorStyleSheet" /* Name.PARSE_AUTHOR_STYLE_SHEET */ && event.ph === "X" /* Phase.COMPLETE */;
 }
+/**
+ * This is an exhaustive list of events we track in the Performance
+ * panel. Note not all of them are necessarliry shown in the flame
+ * chart, some of them we only use for parsing.
+ * TODO(crbug.com/1428024): Complete this enum.
+ */
+export var Name;
+(function (Name) {
+    /* Metadata */
+    Name["THREAD_NAME"] = "thread_name";
+    /* Task */
+    Name["PROGRAM"] = "Program";
+    Name["RUN_TASK"] = "RunTask";
+    Name["ASYNC_TASK"] = "AsyncTask";
+    Name["RUN_MICROTASKS"] = "RunMicrotasks";
+    /* Load */
+    Name["XHR_LOAD"] = "XHRLoad";
+    Name["XHR_READY_STATE_CHANGED"] = "XHRReadyStateChange";
+    /* Parse */
+    Name["PARSE_HTML"] = "ParseHTML";
+    Name["PARSE_CSS"] = "ParseAuthorStyleSheet";
+    /* V8 */
+    Name["COMPILE_CODE"] = "V8.CompileCode";
+    Name["COMPILE_MODULE"] = "V8.CompileModule";
+    // Although V8 emits the V8.CompileScript event, the event that actually
+    // contains the useful information about the script (URL, etc), is contained
+    // in the v8.compile event.
+    // Yes, it is all lowercase compared to all the rest of the V8... events,
+    // that is not a typo :)
+    Name["COMPILE"] = "v8.compile";
+    Name["COMPILE_SCRIPT"] = "V8.CompileScript";
+    Name["OPTIMIZE"] = "V8.OptimizeCode";
+    Name["WASM_STREAM_FROM_RESPONSE_CALLBACK"] = "v8.wasm.streamFromResponseCallback";
+    Name["WASM_COMPILED_MODULE"] = "v8.wasm.compiledModule";
+    Name["WASM_CACHED_MODULE"] = "v8.wasm.cachedModule";
+    Name["WASM_MODULE_CACHE_HIT"] = "v8.wasm.moduleCacheHit";
+    Name["WASM_MODULE_CACHE_INVALID"] = "v8.wasm.moduleCacheInvalid";
+    /* Js */
+    Name["PROFILE_CALL"] = "ProfileCall";
+    Name["EVALUATE_SCRIPT"] = "EvaluateScript";
+    Name["FUNCTION_CALL"] = "FunctionCall";
+    Name["EVENT_DISPATCH"] = "EventDispatch";
+    Name["EVALUATE_MODULE"] = "v8.evaluateModule";
+    Name["REQUEST_MAIN_THREAD_FRAME"] = "RequestMainThreadFrame";
+    Name["REQUEST_ANIMATION_FRAME"] = "RequestAnimationFrame";
+    Name["CANCEL_ANIMATION_FRAME"] = "CancelAnimationFrame";
+    Name["FIRE_ANIMATION_FRAME"] = "FireAnimationFrame";
+    Name["REQUEST_IDLE_CALLBACK"] = "RequestIdleCallback";
+    Name["CANCEL_IDLE_CALLBACK"] = "CancelIdleCallback";
+    Name["FIRE_IDLE_CALLBACK"] = "FireIdleCallback";
+    Name["TIMER_INSTALL"] = "TimerInstall";
+    Name["TIMER_REMOVE"] = "TimerRemove";
+    Name["TIMER_FIRE"] = "TimerFire";
+    Name["WEB_SOCKET_CREATE"] = "WebSocketCreate";
+    Name["WEB_SOCKET_SEND_HANDSHAKE"] = "WebSocketSendHandshakeRequest";
+    Name["WEB_SOCKET_RECEIVE_HANDSHAKE"] = "WebSocketReceiveHandshakeResponse";
+    Name["WEB_SOCKET_DESTROY"] = "WebSocketDestroy";
+    Name["WEB_SOCKET_SEND"] = "WebSocketSend";
+    Name["WEB_SOCKET_RECEIVE"] = "WebSocketReceive";
+    Name["CRYPTO_DO_ENCRYPT"] = "DoEncrypt";
+    Name["CRYPTO_DO_ENCRYPT_REPLY"] = "DoEncryptReply";
+    Name["CRYPTO_DO_DECRYPT"] = "DoDecrypt";
+    Name["CRYPTO_DO_DECRYPT_REPLY"] = "DoDecryptReply";
+    Name["CRYPTO_DO_DIGEST"] = "DoDigest";
+    Name["CRYPTO_DO_DIGEST_REPLY"] = "DoDigestReply";
+    Name["CRYPTO_DO_SIGN"] = "DoSign";
+    Name["CRYPTO_DO_SIGN_REPLY"] = "DoSignReply";
+    Name["CRYPTO_DO_VERIFY"] = "DoVerify";
+    Name["CRYPTO_DO_VERIFY_REPLY"] = "DoVerifyReply";
+    Name["V8_EXECUTE"] = "V8.Execute";
+    Name["V8_CONSOLE_RUN_TASK"] = "V8Console::runTask";
+    Name["SCHEDULE_POST_TASK_CALLBACK"] = "SchedulePostTaskCallback";
+    Name["RUN_POST_TASK_CALLBACK"] = "RunPostTaskCallback";
+    Name["ABORT_POST_TASK_CALLBACK"] = "AbortPostTaskCallback";
+    Name["DEBUGGER_ASYNC_TASK_RUN"] = "v8::Debugger::AsyncTaskRun";
+    Name["DEBUGGER_ASYNC_TASK_SCHEDULED"] = "v8::Debugger::AsyncTaskScheduled";
+    /* Gc */
+    Name["GC"] = "GCEvent";
+    Name["DOMGC"] = "BlinkGC.AtomicPhase";
+    Name["MAJOR_GC"] = "MajorGC";
+    Name["MINOR_GC"] = "MinorGC";
+    Name["GC_COLLECT_GARBARGE"] = "BlinkGC.AtomicPhase";
+    Name["CPPGC_SWEEP"] = "CppGC.IncrementalSweep";
+    /* Layout */
+    Name["SCHEDULE_STYLE_RECALCULATION"] = "ScheduleStyleRecalculation";
+    Name["LAYOUT"] = "Layout";
+    /** The real trace event is called 'UpdateLayoutTree' but we've aliased it for convenience. */
+    Name["RECALC_STYLE"] = "UpdateLayoutTree";
+    Name["INVALIDATE_LAYOUT"] = "InvalidateLayout";
+    Name["LAYOUT_INVALIDATION_TRACKING"] = "LayoutInvalidationTracking";
+    Name["COMPUTE_INTERSECTION"] = "ComputeIntersections";
+    Name["HIT_TEST"] = "HitTest";
+    Name["PRE_PAINT"] = "PrePaint";
+    Name["LAYERIZE"] = "Layerize";
+    Name["LAYOUT_SHIFT"] = "LayoutShift";
+    Name["SYNTHETIC_LAYOUT_SHIFT"] = "SyntheticLayoutShift";
+    Name["SYNTHETIC_LAYOUT_SHIFT_CLUSTER"] = "SyntheticLayoutShiftCluster";
+    Name["UPDATE_LAYER_TREE"] = "UpdateLayerTree";
+    Name["SCHEDULE_STYLE_INVALIDATION_TRACKING"] = "ScheduleStyleInvalidationTracking";
+    Name["STYLE_RECALC_INVALIDATION_TRACKING"] = "StyleRecalcInvalidationTracking";
+    Name["STYLE_INVALIDATOR_INVALIDATION_TRACKING"] = "StyleInvalidatorInvalidationTracking";
+    Name["SELECTOR_STATS"] = "SelectorStats";
+    Name["BEGIN_COMMIT_COMPOSITOR_FRAME"] = "BeginCommitCompositorFrame";
+    Name["PARSE_META_VIEWPORT"] = "ParseMetaViewport";
+    Name["META_CHARSET_CHECK"] = "MetaCharsetCheck";
+    /* Paint */
+    Name["SCROLL_LAYER"] = "ScrollLayer";
+    Name["UPDATE_LAYER"] = "UpdateLayer";
+    Name["PAINT_SETUP"] = "PaintSetup";
+    Name["PAINT"] = "Paint";
+    Name["PAINT_IMAGE"] = "PaintImage";
+    Name["COMMIT"] = "Commit";
+    Name["COMPOSITE_LAYERS"] = "CompositeLayers";
+    Name["RASTER_TASK"] = "RasterTask";
+    Name["IMAGE_DECODE_TASK"] = "ImageDecodeTask";
+    Name["IMAGE_UPLOAD_TASK"] = "ImageUploadTask";
+    Name["DECODE_IMAGE"] = "Decode Image";
+    Name["DRAW_LAZY_PIXEL_REF"] = "Draw LazyPixelRef";
+    Name["DECODE_LAZY_PIXEL_REF"] = "Decode LazyPixelRef";
+    Name["GPU_TASK"] = "GPUTask";
+    Name["RASTERIZE"] = "Rasterize";
+    Name["EVENT_TIMING"] = "EventTiming";
+    /* Compile */
+    Name["OPTIMIZE_CODE"] = "V8.OptimizeCode";
+    Name["CACHE_SCRIPT"] = "v8.produceCache";
+    Name["CACHE_MODULE"] = "v8.produceModuleCache";
+    // V8Sample events are coming from tracing and contain raw stacks with function addresses.
+    // After being processed with help of JitCodeAdded and JitCodeMoved events they
+    // get translated into function infos and stored as stacks in JSSample events.
+    Name["V8_SAMPLE"] = "V8Sample";
+    Name["JIT_CODE_ADDED"] = "JitCodeAdded";
+    Name["JIT_CODE_MOVED"] = "JitCodeMoved";
+    Name["STREAMING_COMPILE_SCRIPT"] = "v8.parseOnBackground";
+    Name["STREAMING_COMPILE_SCRIPT_WAITING"] = "v8.parseOnBackgroundWaiting";
+    Name["STREAMING_COMPILE_SCRIPT_PARSING"] = "v8.parseOnBackgroundParsing";
+    Name["BACKGROUND_DESERIALIZE"] = "v8.deserializeOnBackground";
+    Name["FINALIZE_DESERIALIZATION"] = "V8.FinalizeDeserialization";
+    /* Markers */
+    Name["COMMIT_LOAD"] = "CommitLoad";
+    Name["MARK_LOAD"] = "MarkLoad";
+    Name["MARK_DOM_CONTENT"] = "MarkDOMContent";
+    Name["MARK_FIRST_PAINT"] = "firstPaint";
+    Name["MARK_FCP"] = "firstContentfulPaint";
+    Name["MARK_SOFT_FCP"] = "SyntheticSoftFirstContentfulPaint";
+    Name["MARK_LCP_CANDIDATE"] = "largestContentfulPaint::Candidate";
+    Name["MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION"] = "largestContentfulPaint::CandidateForSoftNavigation";
+    Name["MARK_LCP_INVALIDATE"] = "largestContentfulPaint::Invalidate";
+    Name["NAVIGATION_START"] = "navigationStart";
+    Name["SOFT_NAVIGATION_START"] = "SoftNavigationStart";
+    Name["CONSOLE_TIME"] = "ConsoleTime";
+    Name["USER_TIMING"] = "UserTiming";
+    Name["INTERACTIVE_TIME"] = "InteractiveTime";
+    Name["TIME_STAMP"] = "TimeStamp";
+    /* Frames */
+    Name["BEGIN_FRAME"] = "BeginFrame";
+    Name["NEEDS_BEGIN_FRAME_CHANGED"] = "NeedsBeginFrameChanged";
+    Name["BEGIN_MAIN_THREAD_FRAME"] = "BeginMainThreadFrame";
+    Name["ACTIVATE_LAYER_TREE"] = "ActivateLayerTree";
+    Name["DRAW_FRAME"] = "DrawFrame";
+    Name["DROPPED_FRAME"] = "DroppedFrame";
+    Name["FRAME_STARTED_LOADING"] = "FrameStartedLoading";
+    Name["PIPELINE_REPORTER"] = "PipelineReporter";
+    Name["SCREENSHOT"] = "Screenshot";
+    /* Network request events */
+    Name["RESOURCE_WILL_SEND_REQUEST"] = "ResourceWillSendRequest";
+    Name["RESOURCE_SEND_REQUEST"] = "ResourceSendRequest";
+    Name["RESOURCE_RECEIVE_RESPONSE"] = "ResourceReceiveResponse";
+    Name["RESOURCE_RECEIVE_DATA"] = "ResourceReceivedData";
+    Name["RESOURCE_FINISH"] = "ResourceFinish";
+    Name["RESOURCE_MARK_AS_CACHED"] = "ResourceMarkAsCached";
+    /* Web sockets */
+    Name["WEB_SOCKET_SEND_HANDSHAKE_REQUEST"] = "WebSocketSendHandshakeRequest";
+    Name["WEB_SOCKET_RECEIVE_HANDSHAKE_REQUEST"] = "WebSocketReceiveHandshakeResponse";
+    /* CPU Profiling */
+    Name["CPU_PROFILE"] = "CpuProfile";
+    Name["PROFILE"] = "Profile";
+    Name["START_PROFILING"] = "CpuProfiler::StartProfiling";
+    Name["PROFILE_CHUNK"] = "ProfileChunk";
+    Name["UPDATE_COUNTERS"] = "UpdateCounters";
+    Name["JS_SAMPLE"] = "JSSample";
+    /* Other */
+    Name["ANIMATION"] = "Animation";
+    Name["PARSE_AUTHOR_STYLE_SHEET"] = "ParseAuthorStyleSheet";
+    Name["EMBEDDER_CALLBACK"] = "EmbedderCallback";
+    Name["SET_LAYER_TREE_ID"] = "SetLayerTreeId";
+    Name["TRACING_STARTED_IN_PAGE"] = "TracingStartedInPage";
+    Name["TRACING_STARTED_IN_BROWSER"] = "TracingStartedInBrowser";
+    Name["TRACING_SESSION_ID_FOR_WORKER"] = "TracingSessionIdForWorker";
+    Name["LAZY_PIXEL_REF"] = "LazyPixelRef";
+    Name["LAYER_TREE_HOST_IMPL_SNAPSHOT"] = "cc::LayerTreeHostImpl";
+    Name["PICTURE_SNAPSHOT"] = "cc::Picture";
+    Name["DISPLAY_ITEM_LIST_SNAPSHOT"] = "cc::DisplayItemList";
+    Name["INPUT_LATENCY_MOUSE_MOVE"] = "InputLatency::MouseMove";
+    Name["INPUT_LATENCY_MOUSE_WHEEL"] = "InputLatency::MouseWheel";
+    Name["IMPL_SIDE_FLING"] = "InputHandlerProxy::HandleGestureFling::started";
+    Name["SCHEDULE_POST_MESSAGE"] = "SchedulePostMessage";
+    Name["HANDLE_POST_MESSAGE"] = "HandlePostMessage";
+    Name["RENDER_FRAME_IMPL_CREATE_CHILD_FRAME"] = "RenderFrameImpl::createChildFrame";
+    Name["LAYOUT_IMAGE_UNSIZED"] = "LayoutImageUnsized";
+    Name["DOM_LOADING"] = "domLoading";
+    Name["BEGIN_REMOTE_FONT_LOAD"] = "BeginRemoteFontLoad";
+    Name["REMOTE_FONT_LOADED"] = "RemoteFontLoaded";
+    Name["ANIMATION_FRAME"] = "AnimationFrame";
+    Name["ANIMATION_FRAME_PRESENTATION"] = "AnimationFrame::Presentation";
+    Name["SYNTHETIC_NETWORK_REQUEST"] = "SyntheticNetworkRequest";
+    Name["USER_TIMING_MEASURE"] = "UserTiming::Measure";
+    Name["LINK_PRECONNECT"] = "LinkPreconnect";
+    Name["PRELOAD_RENDER_BLOCKING_STATUS_CHANGE"] = "PreloadRenderBlockingStatusChange";
+})(Name || (Name = {}));
 /**
  * NOT AN EXHAUSTIVE LIST: just some categories we use and refer
  * to in multiple places.

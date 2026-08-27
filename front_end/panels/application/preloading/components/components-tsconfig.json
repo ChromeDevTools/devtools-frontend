@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../../../front_end/panels/application/preloading/components",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -79,7 +80,7 @@
       "path": "../../../network/forward/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../../../../tsc/front_end/third_party/codemirror.next/bundle-tsconfig.ref.json"
+      "path": "../../../../third_party/codemirror.next/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../../../third_party/diff/bundle-tsconfig.ref.json"

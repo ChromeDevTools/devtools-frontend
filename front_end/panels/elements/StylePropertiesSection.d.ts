@@ -23,7 +23,7 @@ export declare class StylePropertiesSection {
     #private;
     protected stylesContainer: StylesContainer;
     styleInternal: SDK.CSSStyleDeclaration.CSSStyleDeclaration;
-    readonly matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
+    matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles;
     private computedStyles;
     private parentsComputedStyles;
     private computedStyleExtraFields;
@@ -56,6 +56,10 @@ export declare class StylePropertiesSection {
     updateAuthoringHint(): void;
     setSectionIdx(sectionIdx: number): void;
     getSectionIdx(): number;
+    setInactive(inactive: boolean): void;
+    isInactive(): boolean;
+    rebuildWithPayload(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, style: SDK.CSSStyleDeclaration.CSSStyleDeclaration, computedStyles: Map<string, string> | null, parentsComputedStyles: Map<string, string> | null, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): void;
+    inheritedNode(): SDK.DOMModel.DOMNode | null;
     treeScopeDistance(): number;
     static createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): LitTemplate;
     protected createRuleOriginNode(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, linkifier: Components.Linkifier.Linkifier, rule: SDK.CSSRule.CSSRule | null): LitTemplate;

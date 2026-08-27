@@ -24,13 +24,13 @@ export default `/*
 #console-prompt .console-prompt-icon {
   position: absolute;
   left: -9px;
-  top: 4px;
+  top: var(--sys-size-3);
   user-select: none;
 }
 
 .console-eager-preview {
-  padding-bottom: 2px;
-  margin-left: 4px;
+  padding-bottom: var(--sys-size-2);
+  margin-left: var(--sys-size-3);
   opacity: 60%;
   position: relative;
 }
@@ -38,7 +38,7 @@ export default `/*
 .console-eager-inner-preview {
   text-overflow: ellipsis;
   overflow: hidden;
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
   height: 100%;
   white-space: nowrap;
 }
@@ -46,7 +46,7 @@ export default `/*
 .preview-result-icon {
   position: absolute;
   left: -13px;
-  top: -1px;
+  top: calc(-1 * var(--sys-size-1));
 }
 
 .console-eager-inner-preview:empty,

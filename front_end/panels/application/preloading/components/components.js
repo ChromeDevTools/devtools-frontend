@@ -11,12 +11,12 @@ __export(MismatchedPreloadingGrid_exports, {
   MismatchedPreloadingGrid: () => MismatchedPreloadingGrid,
   i18nString: () => i18nString2
 });
-import "./../../../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n3 from "./../../../../core/i18n/i18n.js";
-import * as SDK2 from "./../../../../core/sdk/sdk.js";
-import * as Diff from "./../../../../third_party/diff/diff.js";
-import * as UI from "./../../../../ui/legacy/legacy.js";
-import * as Lit from "./../../../../ui/lit/lit.js";
+import "../../../../ui/legacy/components/data_grid/data_grid.js";
+import * as i18n3 from "../../../../core/i18n/i18n.js";
+import * as SDK2 from "../../../../core/sdk/sdk.js";
+import * as Diff from "../../../../third_party/diff/diff.js";
+import * as UI from "../../../../ui/legacy/legacy.js";
+import * as Lit from "../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/preloading/components/PreloadingString.js
 var PreloadingString_exports = {};
@@ -31,11 +31,11 @@ __export(PreloadingString_exports, {
   sortOrder: () => sortOrder,
   status: () => status
 });
-import * as i18n from "./../../../../core/i18n/i18n.js";
-import * as Platform from "./../../../../core/platform/platform.js";
-import { assertNotNullOrUndefined } from "./../../../../core/platform/platform.js";
-import * as SDK from "./../../../../core/sdk/sdk.js";
-import * as Bindings from "./../../../../models/bindings/bindings.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
+import * as Platform from "../../../../core/platform/platform.js";
+import { assertNotNullOrUndefined } from "../../../../core/platform/platform.js";
+import * as SDK from "../../../../core/sdk/sdk.js";
+import * as Bindings from "../../../../models/bindings/bindings.js";
 var UIStrings = {
   /**
    * @description  Description text for Prefetch status PrefetchFailedIneligibleRedirect.
@@ -904,18 +904,18 @@ var PreloadingDetailsReportView_exports = {};
 __export(PreloadingDetailsReportView_exports, {
   PreloadingDetailsReportView: () => PreloadingDetailsReportView
 });
-import "./../../../../ui/components/report_view/report_view.js";
-import "./../../../../ui/components/request_link_icon/request_link_icon.js";
-import * as Common from "./../../../../core/common/common.js";
-import * as i18n5 from "./../../../../core/i18n/i18n.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../../../../core/platform/platform.js";
-import * as SDK3 from "./../../../../core/sdk/sdk.js";
-import * as Logs from "./../../../../models/logs/logs.js";
-import * as Buttons from "./../../../../ui/components/buttons/buttons.js";
-import * as UI2 from "./../../../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../../../ui/lit/lit.js";
-import * as VisualLogging from "./../../../../ui/visual_logging/visual_logging.js";
-import * as PreloadingHelper from "./../helper/helper.js";
+import "../../../../ui/components/report_view/report_view.js";
+import "../../../../ui/components/request_link_icon/request_link_icon.js";
+import * as Common from "../../../../core/common/common.js";
+import * as i18n5 from "../../../../core/i18n/i18n.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "../../../../core/platform/platform.js";
+import * as SDK3 from "../../../../core/sdk/sdk.js";
+import * as Logs from "../../../../models/logs/logs.js";
+import * as Buttons from "../../../../ui/components/buttons/buttons.js";
+import * as UI2 from "../../../../ui/legacy/legacy.js";
+import * as Lit2 from "../../../../ui/lit/lit.js";
+import * as VisualLogging from "../../../../ui/visual_logging/visual_logging.js";
+import * as PreloadingHelper from "../helper/helper.js";
 
 // gen/front_end/panels/application/preloading/components/preloadingDetailsReportView.css.js
 var preloadingDetailsReportView_css_default = `/*
@@ -936,7 +936,7 @@ var preloadingDetailsReportView_css_default = `/*
       background: none;
       font-family: inherit;
       font-size: inherit;
-      height: 16px;
+      height: var(--sys-size-8);
     }
 
     button.link devtools-icon {
@@ -1330,15 +1330,15 @@ __export(PreloadingDisabledInfobar_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   PreloadingDisabledInfobar: () => PreloadingDisabledInfobar
 });
-import "./../../../../ui/components/report_view/report_view.js";
-import "./../../../../ui/kit/kit.js";
-import * as i18n7 from "./../../../../core/i18n/i18n.js";
-import * as Platform2 from "./../../../../core/platform/platform.js";
-import * as Buttons2 from "./../../../../ui/components/buttons/buttons.js";
-import * as Dialogs from "./../../../../ui/components/dialogs/dialogs.js";
-import * as UI3 from "./../../../../ui/legacy/legacy.js";
-import { html as html3, i18nTemplate, nothing as nothing2, render as render3 } from "./../../../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../../../ui/visual_logging/visual_logging.js";
+import "../../../../ui/components/report_view/report_view.js";
+import "../../../../ui/kit/kit.js";
+import * as i18n7 from "../../../../core/i18n/i18n.js";
+import * as Platform2 from "../../../../core/platform/platform.js";
+import * as Buttons2 from "../../../../ui/components/buttons/buttons.js";
+import * as Dialogs from "../../../../ui/components/dialogs/dialogs.js";
+import * as UI3 from "../../../../ui/legacy/legacy.js";
+import { html as html3, i18nTemplate, nothing as nothing2, render as render3 } from "../../../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/preloading/components/preloadingDisabledInfobar.css.js
 var preloadingDisabledInfobar_css_default = `/*
@@ -1348,8 +1348,8 @@ var preloadingDisabledInfobar_css_default = `/*
  */
 
 #container {
-  padding: 6px 12px;
-  border-bottom: 1px solid var(--sys-color-divider);
+  padding: var(--sys-size-4) var(--sys-size-6);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   align-items: center;
   display: flex;
 }
@@ -1616,13 +1616,13 @@ __export(PreloadingGrid_exports, {
   PreloadingGrid: () => PreloadingGrid,
   i18nString: () => i18nString5
 });
-import "./../../../../ui/legacy/components/data_grid/data_grid.js";
-import "./../../../../ui/kit/kit.js";
-import * as Common2 from "./../../../../core/common/common.js";
-import * as i18n9 from "./../../../../core/i18n/i18n.js";
-import * as SDK4 from "./../../../../core/sdk/sdk.js";
-import * as UI4 from "./../../../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../../../ui/lit/lit.js";
+import "../../../../ui/legacy/components/data_grid/data_grid.js";
+import "../../../../ui/kit/kit.js";
+import * as Common2 from "../../../../core/common/common.js";
+import * as i18n9 from "../../../../core/i18n/i18n.js";
+import * as SDK4 from "../../../../core/sdk/sdk.js";
+import * as UI4 from "../../../../ui/legacy/legacy.js";
+import * as Lit3 from "../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/preloading/components/preloadingGrid.css.js
 var preloadingGrid_css_default = `/*
@@ -1649,7 +1649,7 @@ var preloadingGrid_css_default = `/*
   .preloading-header {
     font-size: 15px;
     background-color: var(--sys-color-cdt-base-container);
-    padding: 1px 4px;
+    padding: var(--sys-size-1) var(--sys-size-3);
   }
 
   .preloading-placeholder {
@@ -1657,7 +1657,7 @@ var preloadingGrid_css_default = `/*
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: var(--sys-typescale-body3-size);
     color: var(--sys-color-token-subtle);
   }
 }
@@ -1777,14 +1777,14 @@ __export(RuleSetDetailsView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW4,
   RuleSetDetailsView: () => RuleSetDetailsView
 });
-import * as i18n11 from "./../../../../core/i18n/i18n.js";
-import * as SDK5 from "./../../../../core/sdk/sdk.js";
-import * as Formatter from "./../../../../models/formatter/formatter.js";
-import * as CodeMirror from "./../../../../third_party/codemirror.next/codemirror.next.js";
-import * as CodeHighlighter from "./../../../../ui/components/code_highlighter/code_highlighter.js";
-import * as TextEditor from "./../../../../ui/components/text_editor/text_editor.js";
-import * as UI5 from "./../../../../ui/legacy/legacy.js";
-import { html as html5, nothing as nothing4, render as render5 } from "./../../../../ui/lit/lit.js";
+import * as i18n11 from "../../../../core/i18n/i18n.js";
+import * as SDK5 from "../../../../core/sdk/sdk.js";
+import * as Formatter from "../../../../models/formatter/formatter.js";
+import * as CodeMirror from "../../../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeHighlighter from "../../../../ui/components/code_highlighter/code_highlighter.js";
+import * as TextEditor from "../../../../ui/components/text_editor/text_editor.js";
+import * as UI5 from "../../../../ui/legacy/legacy.js";
+import { html as html5, nothing as nothing4, render as render5 } from "../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/preloading/components/RuleSetDetailsView.css.js
 var RuleSetDetailsView_css_default = `/*
@@ -1807,11 +1807,11 @@ var RuleSetDetailsView_css_default = `/*
 }
 
 .ruleset-header {
-  padding: 4px 8px;
+  padding: var(--sys-size-3) var(--sys-size-5);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .ruleset-header devtools-icon {
@@ -1924,20 +1924,21 @@ var RuleSetDetailsView = class extends UI5.Widget.VBox {
 var RuleSetGrid_exports = {};
 __export(RuleSetGrid_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW5,
+  Events: () => Events,
   RuleSetGrid: () => RuleSetGrid,
   i18nString: () => i18nString7
 });
-import "./../../../../ui/legacy/components/data_grid/data_grid.js";
-import "./../../../../ui/kit/kit.js";
-import * as Common3 from "./../../../../core/common/common.js";
-import * as i18n13 from "./../../../../core/i18n/i18n.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined3 } from "./../../../../core/platform/platform.js";
-import * as SDK6 from "./../../../../core/sdk/sdk.js";
-import * as UI6 from "./../../../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html6, nothing as nothing5, render as render6 } from "./../../../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../../../ui/visual_logging/visual_logging.js";
-import * as NetworkForward from "./../../../network/forward/forward.js";
-import * as PreloadingHelper2 from "./../helper/helper.js";
+import "../../../../ui/legacy/components/data_grid/data_grid.js";
+import "../../../../ui/kit/kit.js";
+import * as Common3 from "../../../../core/common/common.js";
+import * as i18n13 from "../../../../core/i18n/i18n.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined3 } from "../../../../core/platform/platform.js";
+import * as SDK6 from "../../../../core/sdk/sdk.js";
+import * as UI6 from "../../../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html6, nothing as nothing5, render as render6 } from "../../../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../../../ui/visual_logging/visual_logging.js";
+import * as NetworkForward from "../../../network/forward/forward.js";
+import * as PreloadingHelper2 from "../helper/helper.js";
 
 // gen/front_end/panels/application/preloading/components/ruleSetGrid.css.js
 var ruleSetGrid_css_default = `/*
@@ -2131,22 +2132,27 @@ var RuleSetGrid = class extends Common3.ObjectWrapper.eventMixin(UI6.Widget.VBox
     void Common3.Revealer.reveal(new PreloadingHelper2.PreloadingForward.AttemptViewWithFilter(ruleSet.id));
   }
 };
+var Events;
+(function(Events2) {
+  Events2["SELECT"] = "select";
+})(Events || (Events = {}));
 
 // gen/front_end/panels/application/preloading/components/UsedPreloadingView.js
 var UsedPreloadingView_exports = {};
 __export(UsedPreloadingView_exports, {
+  UsedKind: () => UsedKind,
   UsedPreloadingView: () => UsedPreloadingView
 });
-import "./../../../../ui/kit/kit.js";
-import "./../../../../ui/components/report_view/report_view.js";
-import * as Common4 from "./../../../../core/common/common.js";
-import * as i18n15 from "./../../../../core/i18n/i18n.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined4 } from "./../../../../core/platform/platform.js";
-import * as SDK7 from "./../../../../core/sdk/sdk.js";
-import * as UI7 from "./../../../../ui/legacy/legacy.js";
-import { html as html7, nothing as nothing6, render as render7 } from "./../../../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../../../ui/visual_logging/visual_logging.js";
-import * as PreloadingHelper3 from "./../helper/helper.js";
+import "../../../../ui/kit/kit.js";
+import "../../../../ui/components/report_view/report_view.js";
+import * as Common4 from "../../../../core/common/common.js";
+import * as i18n15 from "../../../../core/i18n/i18n.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined4 } from "../../../../core/platform/platform.js";
+import * as SDK7 from "../../../../core/sdk/sdk.js";
+import * as UI7 from "../../../../ui/legacy/legacy.js";
+import { html as html7, nothing as nothing6, render as render7 } from "../../../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../../../ui/visual_logging/visual_logging.js";
+import * as PreloadingHelper3 from "../helper/helper.js";
 
 // gen/front_end/panels/application/preloading/components/usedPreloadingView.css.js
 var usedPreloadingView_css_default = `/*
@@ -2191,26 +2197,26 @@ devtools-report-divider {
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
   padding: 0;
 }
 
 .status-badge-container {
   white-space: nowrap;
-  margin: 8px 0 24px;
+  margin: var(--sys-size-5) 0 var(--sys-size-11);
 }
 
 .status-badge-container span {
-  margin-right: 2px;
+  margin-right: var(--sys-size-2);
 }
 
 .status-badge {
-  border-radius: 4px;
-  padding: 4px;
+  border-radius: var(--sys-shape-corner-extra-small);
+  padding: var(--sys-size-3);
 
   devtools-icon {
-    width: 16px;
-    height: 16px;
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
   }
 }
 
@@ -2338,6 +2344,15 @@ var UIStrings8 = {
 var str_8 = i18n15.i18n.registerUIStrings("panels/application/preloading/components/UsedPreloadingView.ts", UIStrings8);
 var i18nString8 = i18n15.i18n.getLocalizedString.bind(void 0, str_8);
 var { widget } = UI7.Widget;
+var UsedKind;
+(function(UsedKind2) {
+  UsedKind2["DOWNGRADED_PRERENDER_TO_PREFETCH_AND_USED"] = "DowngradedPrerenderToPrefetchAndUsed";
+  UsedKind2["PREFETCH_USED"] = "PrefetchUsed";
+  UsedKind2["PRERENDER_USED"] = "PrerenderUsed";
+  UsedKind2["PREFETCH_FAILED"] = "PrefetchFailed";
+  UsedKind2["PRERENDER_FAILED"] = "PrerenderFailed";
+  UsedKind2["NO_PRELOADS"] = "NoPreloads";
+})(UsedKind || (UsedKind = {}));
 function renderSpeculativeLoadingStatusForThisPageSections({ kind, prefetch, prerenderLike, mismatchedData, attemptWithMismatchedHeaders }) {
   let badge;
   let basicMessage;

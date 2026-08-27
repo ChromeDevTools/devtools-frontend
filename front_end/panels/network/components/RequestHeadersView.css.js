@@ -11,14 +11,14 @@ export default `/*
 
 .header {
   background-color: var(--sys-color-surface1);
-  border-bottom: 1px solid var(--sys-color-divider);
-  border-top: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   line-height: 25px;
   padding: 0 5px;
 }
 
 .header::marker {
-  font-size: 11px;
+  font-size: var(--sys-typescale-body5-size);
   line-height: 1;
 }
 
@@ -45,7 +45,7 @@ details summary input {
 .row {
   display: flex;
   line-height: 18px;
-  padding-left: 8px;
+  padding-left: var(--sys-size-5);
   gap: var(--sys-size-6);
   user-select: text;
   margin: var(--sys-size-3) 0;
@@ -67,8 +67,8 @@ div.raw-headers-row {
   color: var(--sys-color-on-surface-subtle);
   font: var(--sys-typescale-body5-medium);
   width: 30%;
-  min-width: 160px;
-  max-width: 240px;
+  min-width: var(--sys-size-23);
+  max-width: var(--sys-size-28);
   flex-shrink: 0;
   text-transform: capitalize;
 }
@@ -77,7 +77,7 @@ div.raw-headers-row {
   word-break: break-all;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--sys-size-2);
   font: var(--sys-typescale-body4-regular);
 }
 
@@ -94,11 +94,11 @@ div.raw-headers-row {
 .yellow-circle::before {
   content: '';
   display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 6px;
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
+  border-radius: var(--sys-size-4);
   vertical-align: text-top;
-  margin-right: 2px;
+  margin-right: var(--sys-size-2);
 }
 
 .green-circle::before {
@@ -129,7 +129,7 @@ div.raw-headers-row {
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 }
 
 .inline-icon {
@@ -139,7 +139,7 @@ div.raw-headers-row {
 .header-grid-container {
   display: inline-grid;
   grid-template-columns: 156px 50px 1fr;
-  gap: 4px;
+  gap: var(--sys-size-3);
   /* Make this fit into the same line as the summary marker */
   width: calc(100% - 15px);
 }
@@ -164,10 +164,10 @@ devtools-link .inline-icon {
 .purple.dot::before {
   background-color: var(--sys-color-purple-bright);
   content: var(--image-file-empty);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  outline: 1px solid var(--icon-gap-toolbar);
+  width: var(--sys-size-4);
+  height: var(--sys-size-4);
+  border-radius: var(--sys-shape-corner-full);
+  outline: var(--sys-size-1) solid var(--icon-gap-toolbar);
   left: 9px;
   position: absolute;
   top: 11px;
@@ -182,7 +182,7 @@ summary label {
 }
 
 summary devtools-checkbox {
-  margin-top: 1px;
+  margin-top: var(--sys-size-1);
 }
 
 /*# sourceURL=${import.meta.resolve('./RequestHeadersView.css')} */`;

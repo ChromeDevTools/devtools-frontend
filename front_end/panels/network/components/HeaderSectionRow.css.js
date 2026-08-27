@@ -16,7 +16,7 @@ export default `/*
 .row {
   display: flex;
   line-height: 18px;
-  padding-left: 8px;
+  padding-left: var(--sys-size-5);
   gap: var(--sys-size-6);
   user-select: text;
   margin: var(--sys-size-3) 0;
@@ -30,8 +30,8 @@ export default `/*
   font: var(--sys-typescale-body5-medium);
   color: var(--sys-color-on-surface-subtle);
   width: 30%;
-  min-width: 160px;
-  max-width: 240px;
+  min-width: var(--sys-size-23);
+  max-width: var(--sys-size-28);
   flex-shrink: 0;
   text-transform: capitalize;
   overflow-wrap: break-word;
@@ -60,7 +60,7 @@ export default `/*
 .header-value {
   display: flex;
   overflow-wrap: anywhere;
-  margin-inline-end: 14px;
+  margin-inline-end: var(--sys-size-7);
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
 }
@@ -78,25 +78,25 @@ export default `/*
   background-color: var(--sys-color-error);
   color: var(--sys-color-on-error);
   border-radius: 100vh;
-  padding-left: 6px;
-  padding-right: 6px;
+  padding-left: var(--sys-size-4);
+  padding-right: var(--sys-size-4);
 }
 
 .call-to-action {
   background-color: var(--sys-color-neutral-container);
-  padding: 8px;
+  padding: var(--sys-size-5);
   border-radius: 5px;
-  margin: 4px;
+  margin: var(--sys-size-3);
 }
 
 .call-to-action-body {
   display: flex;
   gap: var(--sys-size-4);
-  padding: 6px 0;
+  padding: var(--sys-size-4) 0;
   margin-left: var(--sys-size-1);
-  border-left: 2px solid var(--issue-color-yellow);
+  border-left: var(--sys-size-2) solid var(--issue-color-yellow);
   padding-left: 11px;
-  line-height: 20px;
+  line-height: var(--sys-typescale-body3-line-height);
 }
 
 .call-to-action .explanation {
@@ -116,7 +116,7 @@ export default `/*
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 }
 
 .explanation .link {
@@ -128,7 +128,7 @@ export default `/*
 }
 
 .row-flex-icon {
-  margin: 2px 5px 0;
+  margin: var(--sys-size-2) 5px 0;
 }
 
 .header-value code {
@@ -177,7 +177,7 @@ devtools-link .inline-icon {
   opacity: 0%;
   visibility: hidden;
   transition: opacity 200ms;
-  padding-left: 2px;
+  padding-left: var(--sys-size-2);
 }
 
 .row.header-overridden:focus-within .inline-button,

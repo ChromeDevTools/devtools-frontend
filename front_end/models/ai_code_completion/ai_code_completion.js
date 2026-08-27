@@ -5,7 +5,7 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/models/ai_code_completion/debug.js
-import * as Platform from "./../../core/platform/platform.js";
+import * as Platform from "../../core/platform/platform.js";
 function isDebugMode() {
   return Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("debugAiCodeCompletionEnabled"));
 }
@@ -31,8 +31,8 @@ __export(AiCodeCompletion_exports, {
   AiCodeCompletion: () => AiCodeCompletion,
   consoleAdditionalContextFileContent: () => consoleAdditionalContextFileContent
 });
-import * as Host from "./../../core/host/host.js";
-import * as Root from "./../../core/root/root.js";
+import * as Host from "../../core/host/host.js";
+import * as Root from "../../core/root/root.js";
 var consoleAdditionalContextFileContent = `/**
  * This file describes the execution environment of the Chrome DevTools Console.
  * The code is JavaScript, but with special global functions and variables.

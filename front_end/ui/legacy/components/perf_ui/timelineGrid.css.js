@@ -31,7 +31,7 @@ export default `/*
   left: 0;
   right: 0;
   background-clip: padding-box;
-  height: 20px;
+  height: var(--sys-size-9);
   z-index: 200;
   pointer-events: none;
   overflow: hidden;
@@ -39,7 +39,7 @@ export default `/*
 
 .resources-divider {
   position: absolute;
-  width: 1px;
+  width: var(--sys-size-1);
   top: 0;
   bottom: 0;
   background-color: var(--sys-color-divider);
@@ -47,7 +47,7 @@ export default `/*
 
 .resources-event-divider {
   position: absolute;
-  width: 1px;
+  width: var(--sys-size-1);
   top: 0;
   bottom: 0;
   z-index: 300;
@@ -55,7 +55,7 @@ export default `/*
 
 .resources-divider-label {
   position: absolute;
-  top: 4px;
+  top: var(--sys-size-3);
   right: 3px;
   font-size: 80%;
   white-space: nowrap;
@@ -63,7 +63,7 @@ export default `/*
 }
 
 .timeline-grid-header {
-  height: 20px;
+  height: var(--sys-size-9);
   pointer-events: none;
 }
 

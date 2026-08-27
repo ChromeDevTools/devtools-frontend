@@ -7,6 +7,35 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import { areOriginsEquivalent, extractContextOrigin, isOpaqueOrigin } from '../AiOrigins.js';
 import { debugLog, isStructuredLogEnabled } from '../debug.js';
 const MAX_SUGGESTION_LENGTH = 200;
+export var ResponseType;
+(function (ResponseType) {
+    ResponseType["CONTEXT"] = "context";
+    ResponseType["TITLE"] = "title";
+    ResponseType["THOUGHT"] = "thought";
+    ResponseType["ACTION"] = "action";
+    ResponseType["SIDE_EFFECT"] = "side-effect";
+    ResponseType["SUGGESTIONS"] = "suggestions";
+    ResponseType["ANSWER"] = "answer";
+    ResponseType["ERROR"] = "error";
+    ResponseType["QUERYING"] = "querying";
+    ResponseType["USER_QUERY"] = "user-query";
+    ResponseType["CONTEXT_CHANGE"] = "context-change";
+})(ResponseType || (ResponseType = {}));
+export var ErrorType;
+(function (ErrorType) {
+    ErrorType["UNKNOWN"] = "unknown";
+    ErrorType["ABORT"] = "abort";
+    ErrorType["MAX_STEPS"] = "max-steps";
+    ErrorType["BLOCK"] = "block";
+    ErrorType["CROSS_ORIGIN"] = "cross-origin";
+    ErrorType["QUOTA"] = "quota";
+    ErrorType["PAYLOAD_TOO_LARGE"] = "payload-too-large";
+})(ErrorType || (ErrorType = {}));
+export var MultimodalInputType;
+(function (MultimodalInputType) {
+    MultimodalInputType["SCREENSHOT"] = "screenshot";
+    MultimodalInputType["UPLOADED_IMAGE"] = "uploaded-image";
+})(MultimodalInputType || (MultimodalInputType = {}));
 export const MAX_STEPS = 10;
 export class ConversationContext {
     /**

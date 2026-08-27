@@ -2,6 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { assert } from 'chai';
+export var MutationType;
+(function (MutationType) {
+    MutationType["ADD"] = "ADD";
+    MutationType["REMOVE"] = "REMOVE";
+    MutationType["TEXT_UPDATE"] = "TEXT_UPDATE";
+})(MutationType || (MutationType = {}));
 export const TEXT_NODE = 'TEXT_NODE';
 const nodeShouldBeIgnored = (node) => {
     const isCommentNode = node.nodeType === Node.COMMENT_NODE;

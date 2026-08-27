@@ -3,10 +3,24 @@
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
 import * as Root from '../../core/root/root.js';
+export var ConversationType;
+(function (ConversationType) {
+    ConversationType["NONE"] = "none";
+    ConversationType["STYLING"] = "freestyler";
+    ConversationType["FILE"] = "drjones-file";
+    ConversationType["NETWORK"] = "drjones-network-request";
+    ConversationType["PERFORMANCE"] = "drjones-performance-full";
+    ConversationType["ACCESSIBILITY"] = "accessibility";
+    ConversationType["STORAGE"] = "storage";
+})(ConversationType || (ConversationType = {}));
 const DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
 export const MAX_RECENT_PROMPTS_COUNT = 20;
 export const MAX_CONVERSATIONS_COUNT = 50;
 export const RECENT_PROMPTS_SIZE_LIMIT = 100 * 1024;
+export var Events;
+(function (Events) {
+    Events["HISTORY_DELETED"] = "AiHistoryDeleted";
+})(Events || (Events = {}));
 export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper {
     #historySetting;
     #imageHistorySettings;

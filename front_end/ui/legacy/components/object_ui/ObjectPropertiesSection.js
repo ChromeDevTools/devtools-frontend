@@ -556,6 +556,15 @@ export class ObjectTreeNodeBase extends Common.ObjectWrapper.ObjectWrapper {
         return gettersAndSetters;
     }
 }
+(function (ObjectTreeNodeBase) {
+    let Events;
+    (function (Events) {
+        Events["VALUE_CHANGED"] = "value-changed";
+        Events["CHILDREN_CHANGED"] = "children-changed";
+        Events["FILTER_CHANGED"] = "filter-changed";
+        Events["EXPANDED_CHANGED"] = "expanded-changed";
+    })(Events = ObjectTreeNodeBase.Events || (ObjectTreeNodeBase.Events = {}));
+})(ObjectTreeNodeBase || (ObjectTreeNodeBase = {}));
 export class ObjectTree extends ObjectTreeNodeBase {
     #object;
     constructor(object, options) {
@@ -1041,6 +1050,11 @@ export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutl
         this.contentElement.classList.add('object-properties-section');
     }
 }
+export var ObjectPropertiesMode;
+(function (ObjectPropertiesMode) {
+    ObjectPropertiesMode[ObjectPropertiesMode["ALL"] = 0] = "ALL";
+    ObjectPropertiesMode[ObjectPropertiesMode["OWN_AND_INTERNAL_AND_INHERITED"] = 1] = "OWN_AND_INTERNAL_AND_INHERITED";
+})(ObjectPropertiesMode || (ObjectPropertiesMode = {}));
 export function populateObjectTreeContextMenu(contextMenu, object, expandRecursively, collapseChildren, sortPropertiesAlphabetically, onShowAllToggled) {
     contextMenu.appendApplicableItems(object.object);
     if (object.object instanceof SDK.RemoteObject.LocalJSONObject) {

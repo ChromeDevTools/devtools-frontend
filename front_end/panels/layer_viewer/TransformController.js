@@ -230,4 +230,13 @@ export class TransformController extends Common.ObjectWrapper.ObjectWrapper {
         this.oldRotateY = 0;
     }
 }
+export var Events;
+(function (Events) {
+    Events["TRANSFORM_CHANGED"] = "TransformChanged";
+})(Events || (Events = {}));
+export var Modes;
+(function (Modes) {
+    Modes["PAN"] = "Pan";
+    Modes["ROTATE"] = "Rotate";
+})(Modes || (Modes = {}));
 //# sourceMappingURL=TransformController.js.map

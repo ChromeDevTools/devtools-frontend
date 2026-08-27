@@ -96,10 +96,10 @@ export default `/*
 }
 
 .conditions-list-separator {
-  flex: 0 0 1px;
+  flex: 0 0 var(--sys-size-1);
   background-color: var(--sys-color-divider);
   height: 30px;
-  margin: 0 4px;
+  margin: 0 var(--sys-size-3);
 }
 
 .conditions-list-separator-invisible {
@@ -123,7 +123,7 @@ export default `/*
 }
 
 .cpu-preset-section {
-  padding: 14px;
+  padding: var(--sys-size-7);
   display: flex;
   justify-content: space-between;
 }
@@ -134,7 +134,7 @@ export default `/*
 
 .cpu-preset-calibrate {
   flex-direction: column;
-  gap: 14px;
+  gap: var(--sys-size-7);
 }
 
 .cpu-preset-calibrate .button-container {
@@ -156,7 +156,7 @@ export default `/*
 
 .conditions-list-header {
   font-weight: bold;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve('./throttlingSettingsTab.css')} */`;

@@ -10,7 +10,7 @@ export default `/*
  */
 
 .stack-preview-async-description {
-  padding: 3px 0 1px;
+  padding: 3px 0 var(--sys-size-1);
   font-weight: bold;
 }
 
@@ -30,8 +30,8 @@ export default `/*
     display: var(--override-display-stack-preview-tbody, table-row-group);
 
     & > tr {
-      height: 16px;
-      line-height: 16px;
+      height: var(--sys-size-8);
+      line-height: var(--sys-size-8);
 
       &:has(td.link > .ignore-list-link) {
         opacity: 60%;
@@ -64,7 +64,7 @@ export default `/*
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    padding-inline: 2px;
+    padding-inline: var(--sys-size-2);
 
     &.link {
       overflow: visible;
@@ -101,20 +101,20 @@ export default `/*
 
   .arrow-icon-button {
     cursor: pointer;
-    padding: 1px 0;
+    padding: var(--sys-size-1) 0;
     border: none;
     background: none;
-    margin-left: -4px;
-    margin-right: -2px;
+    margin-left: calc(-1 * var(--sys-size-3));
+    margin-right: calc(-1 * var(--sys-size-2));
   }
 
   .arrow-icon {
     display: inline-block;
     mask-image: var(--image-file-triangle-right);
     background-color: var(--icon-default);
-    margin-top: 2px;
-    height: 14px;
-    width: 14px;
+    margin-top: var(--sys-size-2);
+    height: var(--sys-size-7);
+    width: var(--sys-size-7);
     transition: transform 200ms;
   }
 

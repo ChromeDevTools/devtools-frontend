@@ -7,11 +7,12 @@ var __export = (target, all) => {
 // gen/front_end/models/autofill_manager/AutofillManager.js
 var AutofillManager_exports = {};
 __export(AutofillManager_exports, {
-  AutofillManager: () => AutofillManager
+  AutofillManager: () => AutofillManager,
+  Events: () => Events
 });
-import * as Common from "./../../core/common/common.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as Common from "../../core/common/common.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as SDK from "../../core/sdk/sdk.js";
 var AutofillManager = class extends Common.ObjectWrapper.ObjectWrapper {
   #targetManager;
   #address = "";
@@ -79,6 +80,10 @@ var AutofillManager = class extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 };
+var Events;
+(function(Events2) {
+  Events2["ADDRESS_FORM_FILLED"] = "AddressFormFilled";
+})(Events || (Events = {}));
 export {
   AutofillManager_exports as AutofillManager
 };

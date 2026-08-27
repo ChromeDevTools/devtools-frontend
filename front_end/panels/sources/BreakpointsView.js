@@ -104,6 +104,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/BreakpointsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const MAX_SNIPPET_LENGTH = 200;
+export var BreakpointStatus;
+(function (BreakpointStatus) {
+    BreakpointStatus["ENABLED"] = "ENABLED";
+    BreakpointStatus["DISABLED"] = "DISABLED";
+    BreakpointStatus["INDETERMINATE"] = "INDETERMINATE";
+})(BreakpointStatus || (BreakpointStatus = {}));
 let breakpointsViewInstance = null;
 let breakpointsViewControllerInstance;
 export class BreakpointsSidebarController {

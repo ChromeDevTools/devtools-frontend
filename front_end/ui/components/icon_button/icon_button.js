@@ -9,8 +9,8 @@ var FileSourceIcon_exports = {};
 __export(FileSourceIcon_exports, {
   FileSourceIcon: () => FileSourceIcon
 });
-import "./../../kit/kit.js";
-import { Directives, html, render } from "./../../lit/lit.js";
+import "../../kit/kit.js";
+import { Directives, html, render } from "../../lit/lit.js";
 
 // gen/front_end/ui/components/icon_button/fileSourceIcon.css.js
 var fileSourceIcon_css_default = `/*
@@ -116,8 +116,8 @@ var IconButton_exports = {};
 __export(IconButton_exports, {
   IconButton: () => IconButton
 });
-import "./../../kit/kit.js";
-import * as Lit from "./../../lit/lit.js";
+import "../../kit/kit.js";
+import * as Lit from "../../lit/lit.js";
 
 // gen/front_end/ui/components/icon_button/iconButton.css.js
 var iconButton_css_default = `/*
@@ -135,8 +135,8 @@ var iconButton_css_default = `/*
 
 .icon-button {
   border: none;
-  margin-right: 2px;
-  margin-top: 4px;
+  margin-right: var(--sys-size-2);
+  margin-top: var(--sys-size-3);
   display: inline-flex;
   align-items: center;
   color: inherit;

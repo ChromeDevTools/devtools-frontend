@@ -24,7 +24,7 @@ export default `/*
   .paint-profiler-pie-chart {
     width: 60px !important; /* stylelint-disable-line declaration-no-important */
     height: 60px !important; /* stylelint-disable-line declaration-no-important */
-    padding: 2px;
+    padding: var(--sys-size-2);
     overflow: hidden;
     font-size: 10px;
   }

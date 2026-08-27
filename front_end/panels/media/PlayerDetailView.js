@@ -43,6 +43,13 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerDetailView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export var PlayerDetailViewTabs;
+(function (PlayerDetailViewTabs) {
+    PlayerDetailViewTabs["EVENTS"] = "events";
+    PlayerDetailViewTabs["PROPERTIES"] = "properties";
+    PlayerDetailViewTabs["MESSAGES"] = "messages";
+    PlayerDetailViewTabs["TIMELINE"] = "timeline";
+})(PlayerDetailViewTabs || (PlayerDetailViewTabs = {}));
 export class PlayerDetailView extends UI.TabbedPane.TabbedPane {
     eventView;
     propertyView;

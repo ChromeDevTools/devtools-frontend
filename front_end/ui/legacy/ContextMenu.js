@@ -1014,4 +1014,18 @@ export function maybeRemoveItem(registration) {
 function getRegisteredItems() {
     return registeredItemsProviders;
 }
+/**
+ * Defines specific locations within the DevTools UI where context menu items can be registered.
+ */
+export var ItemLocation;
+(function (ItemLocation) {
+    ItemLocation["DEVICE_MODE_MENU_SAVE"] = "deviceModeMenu/save";
+    ItemLocation["MAIN_MENU"] = "mainMenu";
+    ItemLocation["MAIN_MENU_DEFAULT"] = "mainMenu/default";
+    ItemLocation["MAIN_MENU_FOOTER"] = "mainMenu/footer";
+    ItemLocation["MAIN_MENU_HELP_DEFAULT"] = "mainMenuHelp/default";
+    ItemLocation["NAVIGATOR_MENU_DEFAULT"] = "navigatorMenu/default";
+    ItemLocation["PROFILER_MENU_DEFAULT"] = "profilerMenu/default";
+    ItemLocation["TIMELINE_MENU_OPEN"] = "timelineMenu/open";
+})(ItemLocation || (ItemLocation = {}));
 //# sourceMappingURL=ContextMenu.js.map

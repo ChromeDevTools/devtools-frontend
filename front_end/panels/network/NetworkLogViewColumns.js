@@ -801,6 +801,11 @@ export class NetworkLogViewColumns {
     }
 }
 const INITIAL_SORT_COLUMN = 'waterfall';
+var CalculatorTypes;
+(function (CalculatorTypes) {
+    CalculatorTypes["DURATION"] = "Duration";
+    CalculatorTypes["TIME"] = "Time";
+})(CalculatorTypes || (CalculatorTypes = {}));
 const DEFAULT_COLUMN_CONFIG = {
     subtitle: null,
     visible: false,

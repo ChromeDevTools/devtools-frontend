@@ -15,14 +15,14 @@ export default `/*
 
 .tree-outline > ol {
   padding-bottom: 5px;
-  border-bottom: solid 1px var(--sys-color-divider);
+  border-bottom: solid var(--sys-size-1) var(--sys-color-divider);
 }
 
 .tree-outline > .parent {
   user-select: none;
   font-weight: bold;
   color: var(--sys-color-on-surface);
-  margin-top: -1px;
+  margin-top: calc(-1 * var(--sys-size-1));
   display: flex;
   align-items: center;
   height: 26px;
@@ -31,7 +31,7 @@ export default `/*
 .tree-outline li {
   display: block;
   padding-left: 5px;
-  line-height: 20px;
+  line-height: var(--sys-size-9);
 }
 
 .tree-outline li:not(.parent) {
@@ -43,7 +43,7 @@ export default `/*
 }
 
 .tree-outline .caution {
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
   display: inline-block;
   font-weight: bold;
 }
@@ -108,8 +108,8 @@ export default `/*
   background-color: var(--sys-color-error);
   color: var(--sys-color-on-error);
   border-radius: 100vh;
-  padding-left: 6px;
-  padding-right: 6px;
+  padding-left: var(--sys-size-4);
+  padding-right: var(--sys-size-4);
 }
 
 .tree-outline .header-value {
@@ -117,27 +117,27 @@ export default `/*
   margin-right: 1em;
   white-space: pre-wrap;
   word-break: break-all;
-  margin-top: 1px;
+  margin-top: var(--sys-size-1);
 }
 
 .tree-outline .call-to-action {
   background-color: var(--sys-color-neutral-container);
-  padding: 8px;
+  padding: var(--sys-size-5);
   border-radius: 5px;
-  margin: 4px;
+  margin: var(--sys-size-3);
 }
 
 .tree-outline .selected .call-to-action {
   background-color: transparent;
-  padding: 8px;
+  padding: var(--sys-size-5);
   border-radius: 5px;
-  margin: 4px;
+  margin: var(--sys-size-3);
 }
 
 .tree-outline .call-to-action-body {
-  padding: 6px 0;
+  padding: var(--sys-size-4) 0;
   margin-left: 9.5px;
-  border-left: 2px solid var(--sys-color-yellow-bright);
+  border-left: var(--sys-size-2) solid var(--sys-color-yellow-bright);
   padding-left: 18px;
 }
 
@@ -161,18 +161,18 @@ export default `/*
   border: none;
   border-radius: 3px;
   display: inline-block;
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   font-family: sans-serif;
   cursor: pointer;
-  margin: 0 4px;
-  padding: 2px 4px;
+  margin: 0 var(--sys-size-3);
+  padding: var(--sys-size-2) var(--sys-size-3);
 }
 
 .request-headers-caution {
   display: flex;
-  gap: 6px;
-  margin-right: 20px;
-  padding: 8px;
+  gap: var(--sys-size-4);
+  margin-right: var(--sys-size-9);
+  padding: var(--sys-size-5);
   background-color: var(--sys-color-neutral-container);
   border-radius: 5px;
 }

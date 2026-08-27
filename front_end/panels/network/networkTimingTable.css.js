@@ -23,8 +23,8 @@ export default `/*
 }
 
 .network-timing-start th span.network-timing-hidden-header {
-  height: 1px;
-  width: 1px;
+  height: var(--sys-size-1);
+  width: var(--sys-size-1);
   position: absolute;
   overflow: hidden;
 }
@@ -39,7 +39,7 @@ export default `/*
 }
 
 .network-timing-table td {
-  padding: 4px 0;
+  padding: var(--sys-size-3) 0;
 }
 
 .network-timing-table-header td:last-child {
@@ -52,7 +52,7 @@ export default `/*
 }
 
 table.network-timing-table > tr:not(.network-timing-table-header, .network-timing-footer) > td:first-child {
-  padding-left: 12px;
+  padding-left: var(--sys-size-6);
 }
 
 .network-timing-table col.labels {
@@ -60,19 +60,19 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 }
 
 .network-timing-table col.duration {
-  width: 80px;
+  width: var(--sys-size-19);
 }
 
 .network-timing-table td.caution {
   font-weight: bold;
   color: var(--issue-color-yellow);
-  padding: 2px 0;
+  padding: var(--sys-size-2) 0;
 }
 
 .network-timing-table hr.break {
   background-color: var(--sys-color-divider);
   border: none;
-  height: 1px;
+  height: var(--sys-size-1);
 }
 
 .network-timing-row {
@@ -82,7 +82,7 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 
 .network-timing-bar {
   position: absolute;
-  min-width: 1px;
+  min-width: var(--sys-size-1);
   inset: 0 attr(data-right %) 0 attr(data-left %);
 }
 
@@ -94,7 +94,7 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 
 .network-timing-bar.queueing,
 .network-timing-bar.total {
-  border: 1px solid var(--sys-color-token-subtle);
+  border: var(--sys-size-1) solid var(--sys-color-token-subtle);
 }
 
 .network-timing-bar.blocking,
@@ -135,9 +135,9 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
   user-select: none;
   mask-image: var(--image-file-triangle-right);
   float: left;
-  width: 14px;
-  height: 14px;
-  margin-right: 2px;
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
+  margin-right: var(--sys-size-2);
   content: "";
   position: relative;
   background-color: var(--icon-default);
@@ -146,7 +146,7 @@ table.network-timing-table > tr:not(.network-timing-table-header, .network-timin
 
 .network-fetch-timing-bar-clickable {
   position: relative;
-  left: -12px;
+  left: calc(-1 * var(--sys-size-6));
 }
 
 tr:has([aria-expanded="false"].network-fetch-timing-bar-clickable) ~ .router-evaluation-timing-bar-details,

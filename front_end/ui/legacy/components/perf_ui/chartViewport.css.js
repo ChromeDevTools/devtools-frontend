@@ -16,7 +16,7 @@ export default `/*
   bottom: 0;
   overflow-x: hidden;
   z-index: 200;
-  padding-left: 1px;
+  padding-left: var(--sys-size-1);
 }
 
 .chart-viewport-v-scroll.always-show-scrollbar {
@@ -25,13 +25,13 @@ export default `/*
 /* force non overlay scrollbars for Mac */
 
 :host-context(.platform-mac) .chart-viewport-v-scroll {
-  right: 2px;
+  right: var(--sys-size-2);
   top: 3px;
   bottom: 3px;
 }
 
 :host-context(.platform-mac) ::-webkit-scrollbar {
-  width: 8px;
+  width: var(--sys-size-5);
 }
 
 :host-context(.platform-mac) ::-webkit-scrollbar-thumb {
@@ -61,7 +61,7 @@ export default `/*
   z-index: 100;
   background-color: var(--sys-color-state-ripple-primary);
   border-color: var(--sys-color-primary);
-  border-width: 0 1px;
+  border-width: 0 var(--sys-size-1);
   border-style: solid;
   pointer-events: none;
   top: 0;

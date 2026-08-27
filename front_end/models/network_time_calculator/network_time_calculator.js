@@ -1,6 +1,6 @@
 // gen/front_end/models/network_time_calculator/NetworkTimeCalculator.js
-import * as Common from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
+import * as Common from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
 var UIStrings = {
   /**
    * @description Latency download total format in Network Time Calculator of the Network panel.
@@ -197,6 +197,10 @@ var NetworkTimeCalculator = class extends Common.ObjectWrapper.ObjectWrapper {
   }
 };
 var MINIMUM_SPREAD = 0.1;
+var Events;
+(function(Events2) {
+  Events2["BOUNDARIES_CHANGED"] = "BoundariesChanged";
+})(Events || (Events = {}));
 var NetworkTransferTimeCalculator = class extends NetworkTimeCalculator {
   constructor() {
     super(false);
@@ -224,6 +228,26 @@ var NetworkTransferDurationCalculator = class extends NetworkTimeCalculator {
 };
 
 // gen/front_end/models/network_time_calculator/RequestTimeRanges.js
+var RequestTimeRangeNames;
+(function(RequestTimeRangeNames2) {
+  RequestTimeRangeNames2["PUSH"] = "push";
+  RequestTimeRangeNames2["QUEUEING"] = "queueing";
+  RequestTimeRangeNames2["BLOCKING"] = "blocking";
+  RequestTimeRangeNames2["CONNECTING"] = "connecting";
+  RequestTimeRangeNames2["DNS"] = "dns";
+  RequestTimeRangeNames2["PROXY"] = "proxy";
+  RequestTimeRangeNames2["RECEIVING"] = "receiving";
+  RequestTimeRangeNames2["RECEIVING_PUSH"] = "receiving-push";
+  RequestTimeRangeNames2["SENDING"] = "sending";
+  RequestTimeRangeNames2["SERVICE_WORKER"] = "serviceworker";
+  RequestTimeRangeNames2["SERVICE_WORKER_PREPARATION"] = "serviceworker-preparation";
+  RequestTimeRangeNames2["SERVICE_WORKER_RESPOND_WITH"] = "serviceworker-respondwith";
+  RequestTimeRangeNames2["SERVICE_WORKER_ROUTER_EVALUATION"] = "serviceworker-routerevaluation";
+  RequestTimeRangeNames2["SERVICE_WORKER_CACHE_LOOKUP"] = "serviceworker-cachelookup";
+  RequestTimeRangeNames2["SSL"] = "ssl";
+  RequestTimeRangeNames2["TOTAL"] = "total";
+  RequestTimeRangeNames2["WAITING"] = "waiting";
+})(RequestTimeRangeNames || (RequestTimeRangeNames = {}));
 var ServiceWorkerRangeNames = /* @__PURE__ */ new Set([
   "serviceworker",
   "serviceworker-preparation",
@@ -330,10 +354,12 @@ function calculateRequestTimeRanges(request, navigationStart) {
 }
 export {
   ConnectionSetupRangeNames,
+  Events,
   NetworkTimeBoundary,
   NetworkTimeCalculator,
   NetworkTransferDurationCalculator,
   NetworkTransferTimeCalculator,
+  RequestTimeRangeNames,
   ServiceWorkerRangeNames,
   calculateRequestTimeRanges
 };

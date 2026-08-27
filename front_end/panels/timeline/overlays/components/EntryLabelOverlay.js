@@ -100,6 +100,14 @@ const UIStringsNotTranslate = {
      */
     learnMoreButton: 'Learn more',
 };
+var AIButtonState;
+(function (AIButtonState) {
+    AIButtonState["ENABLED"] = "enabled";
+    AIButtonState["DISABLED"] = "disabled";
+    AIButtonState["HIDDEN"] = "hidden";
+    AIButtonState["GENERATION_FAILED"] = "generation_failed";
+    AIButtonState["GENERATING_LABEL"] = "generating_label";
+})(AIButtonState || (AIButtonState = {}));
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/overlays/components/EntryLabelOverlay.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const lockedString = i18n.i18n.lockedString;

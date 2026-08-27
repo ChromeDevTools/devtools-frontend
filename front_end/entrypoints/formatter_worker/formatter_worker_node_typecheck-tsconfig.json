@@ -1,0 +1,78 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": true,
+    "composite": false,
+    "declaration": false,
+    "disableSourceOfProjectReferenceRedirect": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "inlineSources": true,
+    "lib": [
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "outDir": ".",
+    "preserveConstEnums": true,
+    "rootDir": "../../../../../../front_end/entrypoints/formatter_worker",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2023",
+    "typeRoots": [
+      "../../../../../../node_modules/@types",
+      "../../../../../../node_modules"
+    ],
+    "types": [
+      "node",
+      "undici-types"
+    ],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../front_end/entrypoints/formatter_worker/AcornTokenizer.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/CSSFormatter.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/CSSRuleParser.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/ESTreeWalker.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/FormattedContentBuilder.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/FormatterWorker.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/HTMLFormatter.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/IdentityFormatter.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/JSONFormatter.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/JavaScriptFormatter.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/ScopeParser.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/Substitute.ts"
+  ],
+  "references": [
+    {
+      "path": "formatter_actions-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/root/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/text_utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/acorn/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/codemirror/codemirror-legacy-types-tsconfig.ref.json"
+    }
+  ]
+}

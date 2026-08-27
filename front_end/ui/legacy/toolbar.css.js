@@ -10,7 +10,7 @@ export default `/*
  */
 
 :host {
-  padding: 0 2px;
+  padding: 0 var(--sys-size-2);
   position: relative;
   white-space: nowrap;
   overflow: hidden;
@@ -26,9 +26,9 @@ export default `/*
   flex-direction: column;
   inset: 0;
   background-color: var(--sys-color-cdt-base-container);
-  border: 1px solid var(--sys-color-divider);
-  margin-top: -1px;
-  width: 28px;
+  border: var(--sys-size-1) solid var(--sys-color-divider);
+  margin-top: calc(-1 * var(--sys-size-1));
+  width: var(--sys-size-12);
 }
 
 :host([hidden]) {

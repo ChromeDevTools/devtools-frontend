@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "../../../../tsc/front_end/panels/network/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./network-tsconfig.ref.json"
@@ -25,10 +25,10 @@
       "path": "../../models/network_time_calculator/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/ui/legacy/components/data_grid/css_files-tsconfig.ref.json"
+      "path": "../../ui/legacy/components/data_grid/css_files-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/ui/legacy/components/object_ui/css_files-tsconfig.ref.json"
+      "path": "../../ui/legacy/components/object_ui/css_files-tsconfig.ref.json"
     }
   ]
 }

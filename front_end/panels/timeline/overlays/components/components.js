@@ -10,12 +10,12 @@ __export(EntriesLinkOverlay_exports, {
   EntriesLinkOverlay: () => EntriesLinkOverlay,
   EntryLinkStartCreating: () => EntryLinkStartCreating
 });
-import "./../../../../ui/kit/kit.js";
-import * as i18n from "./../../../../core/i18n/i18n.js";
-import * as Trace from "./../../../../models/trace/trace.js";
-import * as ThemeSupport from "./../../../../ui/legacy/theme_support/theme_support.js";
-import { html, render } from "./../../../../ui/lit/lit.js";
-import * as VisualLogging from "./../../../../ui/visual_logging/visual_logging.js";
+import "../../../../ui/kit/kit.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
+import * as Trace from "../../../../models/trace/trace.js";
+import * as ThemeSupport from "../../../../ui/legacy/theme_support/theme_support.js";
+import { html, render } from "../../../../ui/lit/lit.js";
+import * as VisualLogging from "../../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/overlays/components/entriesLinkOverlay.css.js
 var entriesLinkOverlay_css_default = `/*
@@ -396,23 +396,23 @@ __export(EntryLabelOverlay_exports, {
   EntryLabelRemoveEvent: () => EntryLabelRemoveEvent,
   LabelAnnotationsConsentDialogVisibilityChange: () => LabelAnnotationsConsentDialogVisibilityChange
 });
-import "./../../../../ui/kit/kit.js";
-import "./../../../../ui/components/tooltips/tooltips.js";
-import "./../../../../ui/components/spinners/spinners.js";
-import * as Common from "./../../../../core/common/common.js";
-import * as Host from "./../../../../core/host/host.js";
-import * as i18n3 from "./../../../../core/i18n/i18n.js";
-import * as Platform from "./../../../../core/platform/platform.js";
-import * as Root from "./../../../../core/root/root.js";
-import * as AiAssistanceModels from "./../../../../models/ai_assistance/ai_assistance.js";
-import * as Buttons from "./../../../../ui/components/buttons/buttons.js";
-import * as Dialogs from "./../../../../ui/components/dialogs/dialogs.js";
-import * as ComponentHelpers from "./../../../../ui/components/helpers/helpers.js";
-import * as UIHelpers from "./../../../../ui/helpers/helpers.js";
-import * as UI from "./../../../../ui/legacy/legacy.js";
-import * as ThemeSupport3 from "./../../../../ui/legacy/theme_support/theme_support.js";
-import * as Lit from "./../../../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../../../ui/visual_logging/visual_logging.js";
+import "../../../../ui/kit/kit.js";
+import "../../../../ui/components/tooltips/tooltips.js";
+import "../../../../ui/components/spinners/spinners.js";
+import * as Common from "../../../../core/common/common.js";
+import * as Host from "../../../../core/host/host.js";
+import * as i18n3 from "../../../../core/i18n/i18n.js";
+import * as Platform from "../../../../core/platform/platform.js";
+import * as Root from "../../../../core/root/root.js";
+import * as AiAssistanceModels from "../../../../models/ai_assistance/ai_assistance.js";
+import * as Buttons from "../../../../ui/components/buttons/buttons.js";
+import * as Dialogs from "../../../../ui/components/dialogs/dialogs.js";
+import * as ComponentHelpers from "../../../../ui/components/helpers/helpers.js";
+import * as UIHelpers from "../../../../ui/helpers/helpers.js";
+import * as UI from "../../../../ui/legacy/legacy.js";
+import * as ThemeSupport3 from "../../../../ui/legacy/theme_support/theme_support.js";
+import * as Lit from "../../../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/overlays/components/entryLabelOverlay.css.js
 var entryLabelOverlay_css_default = `/*
@@ -675,6 +675,14 @@ var UIStringsNotTranslate = {
    */
   learnMoreButton: "Learn more"
 };
+var AIButtonState;
+(function(AIButtonState2) {
+  AIButtonState2["ENABLED"] = "enabled";
+  AIButtonState2["DISABLED"] = "disabled";
+  AIButtonState2["HIDDEN"] = "hidden";
+  AIButtonState2["GENERATION_FAILED"] = "generation_failed";
+  AIButtonState2["GENERATING_LABEL"] = "generating_label";
+})(AIButtonState || (AIButtonState = {}));
 var str_2 = i18n3.i18n.registerUIStrings("panels/timeline/overlays/components/EntryLabelOverlay.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var lockedString = i18n3.i18n.lockedString;
@@ -1232,10 +1240,10 @@ __export(TimeRangeOverlay_exports, {
   TimeRangeOverlay: () => TimeRangeOverlay,
   TimeRangeRemoveEvent: () => TimeRangeRemoveEvent
 });
-import * as i18n5 from "./../../../../core/i18n/i18n.js";
-import * as Platform2 from "./../../../../core/platform/platform.js";
-import { html as html3, render as render3 } from "./../../../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../../../ui/visual_logging/visual_logging.js";
+import * as i18n5 from "../../../../core/i18n/i18n.js";
+import * as Platform2 from "../../../../core/platform/platform.js";
+import { html as html3, render as render3 } from "../../../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/timeline/overlays/components/timeRangeOverlay.css.js
 var timeRangeOverlay_css_default = `/*
@@ -1528,9 +1536,9 @@ __export(TimespanBreakdownOverlay_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
   TimespanBreakdownOverlay: () => TimespanBreakdownOverlay
 });
-import * as i18n7 from "./../../../../core/i18n/i18n.js";
-import * as UI2 from "./../../../../ui/legacy/legacy.js";
-import { Directives as Directives3, html as html4, nothing as nothing2, render as render4 } from "./../../../../ui/lit/lit.js";
+import * as i18n7 from "../../../../core/i18n/i18n.js";
+import * as UI2 from "../../../../ui/legacy/legacy.js";
+import { Directives as Directives3, html as html4, nothing as nothing2, render as render4 } from "../../../../ui/lit/lit.js";
 
 // gen/front_end/panels/timeline/overlays/components/timespanBreakdownOverlay.css.js
 var timespanBreakdownOverlay_css_default = `/*

@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "../../../../../tsc/front_end/ui/components/icon_button/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./icon_button-tsconfig.ref.json"

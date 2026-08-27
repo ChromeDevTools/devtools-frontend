@@ -10,37 +10,39 @@ __export(CommandMenu_exports, {
   Command: () => Command,
   CommandMenu: () => CommandMenu,
   CommandMenuProvider: () => CommandMenuProvider,
+  PanelOrDrawer: () => PanelOrDrawer,
   ShowActionDelegate: () => ShowActionDelegate2
 });
-import "./../../../kit/kit.js";
-import "./../../../components/highlighting/highlighting.js";
-import * as Common2 from "./../../../../core/common/common.js";
-import * as Host from "./../../../../core/host/host.js";
-import * as i18n5 from "./../../../../core/i18n/i18n.js";
-import * as Platform2 from "./../../../../core/platform/platform.js";
-import * as Diff3 from "./../../../../third_party/diff/diff.js";
-import { html, nothing as nothing2 } from "./../../../lit/lit.js";
-import * as SettingsUI from "./../../../settings/settings.js";
-import * as UI2 from "./../../legacy.js";
+import "../../../kit/kit.js";
+import "../../../components/highlighting/highlighting.js";
+import * as Common2 from "../../../../core/common/common.js";
+import * as Host from "../../../../core/host/host.js";
+import * as i18n5 from "../../../../core/i18n/i18n.js";
+import * as Platform2 from "../../../../core/platform/platform.js";
+import * as Diff3 from "../../../../third_party/diff/diff.js";
+import { html, nothing as nothing2 } from "../../../lit/lit.js";
+import * as SettingsUI from "../../../settings/settings.js";
+import * as UI2 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/quick_open/FilteredListWidget.js
 var FilteredListWidget_exports = {};
 __export(FilteredListWidget_exports, {
+  Events: () => Events,
   FilteredListWidget: () => FilteredListWidget,
   Provider: () => Provider,
   getRegisteredProviders: () => getRegisteredProviders,
   registerProvider: () => registerProvider
 });
-import * as Common from "./../../../../core/common/common.js";
-import * as i18n from "./../../../../core/i18n/i18n.js";
-import * as Platform from "./../../../../core/platform/platform.js";
-import * as TextUtils from "./../../../../core/text_utils/text_utils.js";
-import * as Geometry from "./../../../../models/geometry/geometry.js";
-import * as Diff from "./../../../../third_party/diff/diff.js";
-import * as TextPrompt from "./../../../components/text_prompt/text_prompt.js";
-import { nothing, render } from "./../../../lit/lit.js";
-import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
-import * as UI from "./../../legacy.js";
+import * as Common from "../../../../core/common/common.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
+import * as Platform from "../../../../core/platform/platform.js";
+import * as TextUtils from "../../../../core/text_utils/text_utils.js";
+import * as Geometry from "../../../../models/geometry/geometry.js";
+import * as Diff from "../../../../third_party/diff/diff.js";
+import * as TextPrompt from "../../../components/text_prompt/text_prompt.js";
+import { nothing, render } from "../../../lit/lit.js";
+import * as VisualLogging from "../../../visual_logging/visual_logging.js";
+import * as UI from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/quick_open/filteredListWidget.css.js
 var filteredListWidget_css_default = `/*
@@ -53,7 +55,7 @@ var filteredListWidget_css_default = `/*
   display: flex;
   flex-direction: column;
   flex: auto;
-  border: 1px solid transparent;
+  border: var(--sys-size-1) solid transparent;
 }
 
 .hbox {
@@ -155,14 +157,14 @@ devtools-text-prompt {
 }
 
 .filtered-list-widget-item .deprecated-tag {
-  font-size: 11px;
+  font-size: var(--sys-typescale-body5-size);
   color: var(--sys-color-token-subtle);
 }
 
 .not-found-text {
   height: 34px;
   line-height: 34px;
-  padding-left: 8px;
+  padding-left: var(--sys-size-5);
   font-style: italic;
   color: var(--sys-color-state-disabled);
   background: var(--sys-color-state-disabled-container);
@@ -688,6 +690,10 @@ var FilteredListWidget = class extends Common.ObjectWrapper.eventMixin(UI.Widget
     }
   }
 };
+var Events;
+(function(Events2) {
+  Events2["HIDDEN"] = "hidden";
+})(Events || (Events = {}));
 var Provider = class {
   refreshCallback;
   jslogContext = "";
@@ -744,7 +750,7 @@ __export(QuickOpen_exports, {
   ShowActionDelegate: () => ShowActionDelegate,
   history: () => history
 });
-import * as i18n3 from "./../../../../core/i18n/i18n.js";
+import * as i18n3 from "../../../../core/i18n/i18n.js";
 var UIStrings2 = {
   /**
    * @description Hint text displayed below the quick open input prompt.
@@ -1013,6 +1019,11 @@ var CommandMenu = class _CommandMenu {
     return this.#commands;
   }
 };
+var PanelOrDrawer;
+(function(PanelOrDrawer2) {
+  PanelOrDrawer2["PANEL"] = "PANEL";
+  PanelOrDrawer2["DRAWER"] = "DRAWER";
+})(PanelOrDrawer || (PanelOrDrawer = {}));
 var CommandMenuProvider = class extends Provider {
   commands;
   constructor(commandsForTest = []) {
@@ -1168,8 +1179,8 @@ var HelpQuickOpen_exports = {};
 __export(HelpQuickOpen_exports, {
   HelpQuickOpen: () => HelpQuickOpen
 });
-import "./../../../kit/kit.js";
-import { html as html2 } from "./../../../lit/lit.js";
+import "../../../kit/kit.js";
+import { html as html2 } from "../../../lit/lit.js";
 var HelpQuickOpen = class extends Provider {
   providers;
   constructor() {

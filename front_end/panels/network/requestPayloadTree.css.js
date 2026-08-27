@@ -15,14 +15,14 @@ export default `/*
 
 .tree-outline > ol {
   padding-bottom: 5px;
-  border-bottom: solid 1px var(--sys-color-divider);
+  border-bottom: solid var(--sys-size-1) var(--sys-color-divider);
 }
 
 .tree-outline > .parent {
   user-select: none;
   font-weight: bold;
   color: var(--sys-color-on-surface);
-  margin-top: -1px;
+  margin-top: calc(-1 * var(--sys-size-1));
   display: flex;
   align-items: center;
   height: var(--sys-size-13);
@@ -30,7 +30,7 @@ export default `/*
 
 .tree-outline li {
   padding-left: 5px;
-  line-height: 20px;
+  line-height: var(--sys-size-9);
 }
 
 .tree-outline li:not(.parent) {
@@ -67,7 +67,7 @@ export default `/*
 }
 
 .tree-outline li.expanded .payload-toggle:focus-visible {
-  border: 2px solid var(--sys-color-state-focus-ring);
+  border: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   border-radius: 5px;
 }
 
@@ -97,7 +97,7 @@ export default `/*
 }
 
 .request-payload-show-more-button {
-  margin: 0 4px;
+  margin: 0 var(--sys-size-3);
 }
 
 @media (forced-colors: active) {

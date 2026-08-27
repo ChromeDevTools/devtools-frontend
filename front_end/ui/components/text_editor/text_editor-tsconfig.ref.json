@@ -68,7 +68,7 @@
       "path": "../../../models/source_map_scopes/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../../../tsc/front_end/third_party/codemirror.next/bundle-tsconfig.ref.json"
+      "path": "../../../third_party/codemirror.next/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../kit/bundle-tsconfig.ref.json"

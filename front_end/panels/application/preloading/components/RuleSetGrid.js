@@ -189,4 +189,8 @@ export class RuleSetGrid extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox)
         void Common.Revealer.reveal(new PreloadingHelper.PreloadingForward.AttemptViewWithFilter(ruleSet.id));
     }
 }
+export var Events;
+(function (Events) {
+    Events["SELECT"] = "select";
+})(Events || (Events = {}));
 //# sourceMappingURL=RuleSetGrid.js.map

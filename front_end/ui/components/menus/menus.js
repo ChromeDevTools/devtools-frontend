@@ -13,12 +13,12 @@ __export(Menu_exports, {
   MenuItem: () => MenuItem,
   MenuItemSelectedEvent: () => MenuItemSelectedEvent
 });
-import * as Platform from "./../../../core/platform/platform.js";
-import * as ComponentHelpers from "./../helpers/helpers.js";
-import * as RenderCoordinator from "./../render_coordinator/render_coordinator.js";
-import * as Lit from "./../../lit/lit.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
-import * as Dialogs from "./../dialogs/dialogs.js";
+import * as Platform from "../../../core/platform/platform.js";
+import * as ComponentHelpers from "../helpers/helpers.js";
+import * as RenderCoordinator from "../render_coordinator/render_coordinator.js";
+import * as Lit from "../../lit/lit.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
+import * as Dialogs from "../dialogs/dialogs.js";
 
 // gen/front_end/ui/components/menus/menu.css.js
 var menu_css_default = `/*
@@ -77,8 +77,8 @@ var menuGroup_css_default = `/*
  */
 
 .menu-group-label {
-  font-size: 12px;
-  line-height: 16px;
+  font-size: var(--sys-typescale-body4-size);
+  line-height: var(--sys-typescale-body4-line-height);
   position: relative;
   color: var(--sys-color-token-subtle);
   display: block;
@@ -95,8 +95,8 @@ var menuItem_css_default = `/*
 
 .menu-item {
   padding: var(--sys-size-3) 0 var(--sys-size-3) var(--sys-size-9);
-  font-size: 12px;
-  line-height: 16px;
+  font-size: var(--sys-typescale-body4-size);
+  line-height: var(--sys-typescale-body4-line-height);
   position: relative;
   display: block;
   color: var(--sys-color-on-surface);
@@ -571,12 +571,12 @@ __export(SelectMenu_exports, {
   SelectMenuItemSelectedEvent: () => SelectMenuItemSelectedEvent,
   SelectMenuSideButtonClickEvent: () => SelectMenuSideButtonClickEvent
 });
-import * as Platform2 from "./../../../core/platform/platform.js";
-import * as ComponentHelpers2 from "./../helpers/helpers.js";
-import * as RenderCoordinator2 from "./../render_coordinator/render_coordinator.js";
-import * as Lit2 from "./../../lit/lit.js";
-import * as VisualLogging2 from "./../../visual_logging/visual_logging.js";
-import * as Dialogs2 from "./../dialogs/dialogs.js";
+import * as Platform2 from "../../../core/platform/platform.js";
+import * as ComponentHelpers2 from "../helpers/helpers.js";
+import * as RenderCoordinator2 from "../render_coordinator/render_coordinator.js";
+import * as Lit2 from "../../lit/lit.js";
+import * as VisualLogging2 from "../../visual_logging/visual_logging.js";
+import * as Dialogs2 from "../dialogs/dialogs.js";
 
 // gen/front_end/ui/components/menus/selectMenu.css.js
 var selectMenu_css_default = `/*
@@ -586,7 +586,7 @@ var selectMenu_css_default = `/*
  */
 
 :host {
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-extra-small);
   width: fit-content;
   display: flex;
@@ -610,7 +610,7 @@ button {
 }
 
 #side-button {
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: 3px 0 0 3px;
   border-right: none;
   height: 100%;
@@ -655,7 +655,7 @@ var selectMenuButton_css_default = `/*
 
 .show {
   display: block;
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   color: var(--sys-color-on-surface);
   height: 100%;
   width: 100%;
@@ -679,7 +679,7 @@ var selectMenuButton_css_default = `/*
 
   &:focus-visible {
     outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-    outline-offset: -1px;
+    outline-offset: calc(-1 * var(--sys-size-1));
   }
 }
 
@@ -714,9 +714,9 @@ var selectMenuButton_css_default = `/*
   mask-image: var(--deploy-menu-arrow);
   -webkit-mask-position-y: center;
   margin-left: 5px;
-  width: 14px;
+  width: var(--sys-size-7);
   flex-shrink: 0;
-  height: 14px;
+  height: var(--sys-size-7);
   display: inline-block;
   mask-repeat: no-repeat;
   background-color: var(--sys-color-on-surface-subtle);

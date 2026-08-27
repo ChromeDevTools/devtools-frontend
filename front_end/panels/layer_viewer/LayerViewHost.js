@@ -34,6 +34,12 @@ export class Selection {
         return false;
     }
 }
+export var Type;
+(function (Type) {
+    Type["LAYER"] = "Layer";
+    Type["SCROLL_RECT"] = "ScrollRect";
+    Type["SNAPSHOT"] = "Snapshot";
+})(Type || (Type = {}));
 export class LayerSelection extends Selection {
     constructor(layer) {
         console.assert(Boolean(layer), 'LayerSelection with empty layer');

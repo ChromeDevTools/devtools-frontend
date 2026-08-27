@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "heapDetachedElementsDataGrid.css.js",
+    "heapProfiler.css.js",
+    "profileLauncherView.css.js",
+    "profilesPanel.css.js",
+    "profilesSidebarTree.css.js"
+  ]
+}

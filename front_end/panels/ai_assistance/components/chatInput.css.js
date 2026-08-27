@@ -48,11 +48,11 @@ export default `/*
   display: flex;
   position: relative;
   flex-direction: column;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-small);
 
   &:focus-within {
-    outline: 1px solid var(--sys-color-primary);
+    outline: var(--sys-size-1) solid var(--sys-color-primary);
     border-color: var(--sys-color-primary);
   }
 
@@ -93,14 +93,14 @@ export default `/*
       top: calc(-1 * var(--sys-size-2));
       right: calc(-1 * var(--sys-size-3));
       border-radius: var(--sys-shape-corner-full);
-      border: 1px solid var(--sys-color-neutral-outline);
+      border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
       background-color: var(--sys-color-cdt-base-container);
     }
 
     img {
       max-height: var(--sys-size-18);
       max-width: 100%;
-      border: 1px solid var(--sys-color-neutral-outline);
+      border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
       border-radius: var(--sys-shape-corner-small);
     }
 
@@ -113,7 +113,7 @@ export default `/*
       width: var(--sys-size-19);
       background-color: var(--sys-color-surface3);
       border-radius: var(--sys-shape-corner-small);
-      border: 1px solid var(--sys-color-neutral-outline);
+      border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
 
       devtools-spinner {
         color: var(--sys-color-state-disabled);
@@ -133,8 +133,8 @@ export default `/*
     justify-content: center;
     align-items: center;
     font: var(--sys-typescale-body5-regular);
-    border-right: 1px solid var(--sys-color-divider);
-    padding-right: 8px;
+    border-right: var(--sys-size-1) solid var(--sys-color-divider);
+    padding-right: var(--sys-size-5);
 
     &.hide-divider {
       border-right: none;
@@ -257,7 +257,7 @@ export default `/*
     }
 
     &:focus-visible {
-      outline: 2px solid var(--sys-color-state-focus-ring);
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
     }
 
     devtools-icon,
@@ -363,7 +363,7 @@ button.link {
   li {
     background: var(--sys-color-surface3);
     border-radius: var(--sys-shape-corner-small);
-    border: 1px solid var(--sys-color-neutral-outline);
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
     padding: var(--sys-size-2) var(--sys-size-3);
     display: flex;
     flex-direction: row;
@@ -384,7 +384,7 @@ button.link {
     border: none;
 
     /* To align with other chips */
-    margin-bottom: 1px;
+    margin-bottom: var(--sys-size-1);
   }
 }
 
@@ -393,7 +393,7 @@ button.link {
   justify-content: center;
   padding-block: var(--sys-size-3);
   font: var(--sys-typescale-body5-regular);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   text-wrap: balance;
   text-align: center;
   width: 100%;

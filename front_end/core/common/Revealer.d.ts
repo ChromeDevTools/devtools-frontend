@@ -62,19 +62,5 @@ export interface RevealerRegistration<T> {
     loadRevealer: () => Promise<Revealer<T>>;
     destination?: RevealerDestination;
 }
-export declare const RevealerDestination: {
-    DEVELOPER_RESOURCES_PANEL: () => Platform.UIString.LocalizedString;
-    ELEMENTS_PANEL: () => Platform.UIString.LocalizedString;
-    STYLES_SIDEBAR: () => Platform.UIString.LocalizedString;
-    CHANGES_DRAWER: () => Platform.UIString.LocalizedString;
-    ISSUES_VIEW: () => Platform.UIString.LocalizedString;
-    NETWORK_PANEL: () => Platform.UIString.LocalizedString;
-    REQUEST_CONDITIONS_DRAWER: () => Platform.UIString.LocalizedString;
-    TIMELINE_PANEL: () => Platform.UIString.LocalizedString;
-    APPLICATION_PANEL: () => Platform.UIString.LocalizedString;
-    SOURCES_PANEL: () => Platform.UIString.LocalizedString;
-    MEMORY_INSPECTOR_PANEL: () => Platform.UIString.LocalizedString;
-    ANIMATIONS_PANEL: () => Platform.UIString.LocalizedString;
-    LIGHTHOUSE_PANEL: () => Platform.UIString.LocalizedString;
-};
+export declare const RevealerDestination: Record<string, RevealerDestination>;
 export type RevealerDestination = () => Platform.UIString.LocalizedString;

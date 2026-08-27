@@ -1,5 +1,5 @@
 // gen/front_end/models/geometry/GeometryImpl.js
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as SDK from "../../core/sdk/sdk.js";
 var EPS = 1e-5;
 var Vector = class {
   x;

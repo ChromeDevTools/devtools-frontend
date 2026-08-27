@@ -8,16 +8,21 @@ var __export = (target, all) => {
 var ActionRegistration_exports = {};
 __export(ActionRegistration_exports, {
   Action: () => Action,
+  ActionCategory: () => ActionCategory,
+  Events: () => Events2,
+  IconClass: () => IconClass,
+  KeybindSet: () => KeybindSet,
+  Platforms: () => Platforms,
   getLocalizedActionCategory: () => getLocalizedActionCategory,
   getRegisteredActionExtensions: () => getRegisteredActionExtensions,
   maybeRemoveActionExtension: () => maybeRemoveActionExtension,
   registerActionExtension: () => registerActionExtension,
   reset: () => reset
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
+import * as Common2 from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as Root from "../../core/root/root.js";
 
 // gen/front_end/ui/legacy/Context.js
 var Context_exports = {};
@@ -25,7 +30,7 @@ __export(Context_exports, {
   Context: () => Context,
   registerListener: () => registerListener
 });
-import * as Common from "./../../core/common/common.js";
+import * as Common from "../../core/common/common.js";
 var contextInstance;
 var Context = class _Context {
   #flavors = /* @__PURE__ */ new Map();
@@ -94,6 +99,10 @@ var Context = class _Context {
     return new Set(this.#flavors.keys());
   }
 };
+var Events;
+(function(Events13) {
+  Events13["FLAVOR_CHANGED"] = "FlavorChanged";
+})(Events || (Events = {}));
 var registeredListeners = [];
 function registerListener(registration) {
   registeredListeners.push(registration);
@@ -336,6 +345,44 @@ function getRegisteredActionExtensions() {
 function maybeRemoveActionExtension(actionId) {
   return registeredActions.delete(actionId);
 }
+var Platforms;
+(function(Platforms2) {
+  Platforms2["ALL"] = "All platforms";
+  Platforms2["MAC"] = "mac";
+  Platforms2["WINDOWS_LINUX"] = "windows,linux";
+  Platforms2["ANDROID"] = "Android";
+  Platforms2["WINDOWS"] = "windows";
+})(Platforms || (Platforms = {}));
+var Events2;
+(function(Events13) {
+  Events13["ENABLED"] = "Enabled";
+  Events13["TOGGLED"] = "Toggled";
+})(Events2 || (Events2 = {}));
+var ActionCategory;
+(function(ActionCategory2) {
+  ActionCategory2["NONE"] = "";
+  ActionCategory2["ELEMENTS"] = "ELEMENTS";
+  ActionCategory2["SCREENSHOT"] = "SCREENSHOT";
+  ActionCategory2["NETWORK"] = "NETWORK";
+  ActionCategory2["MEMORY"] = "MEMORY";
+  ActionCategory2["JAVASCRIPT_PROFILER"] = "JAVASCRIPT_PROFILER";
+  ActionCategory2["CONSOLE"] = "CONSOLE";
+  ActionCategory2["PERFORMANCE"] = "PERFORMANCE";
+  ActionCategory2["MOBILE"] = "MOBILE";
+  ActionCategory2["HELP"] = "HELP";
+  ActionCategory2["LAYERS"] = "LAYERS";
+  ActionCategory2["NAVIGATION"] = "NAVIGATION";
+  ActionCategory2["DRAWER"] = "DRAWER";
+  ActionCategory2["GLOBAL"] = "GLOBAL";
+  ActionCategory2["RESOURCES"] = "RESOURCES";
+  ActionCategory2["BACKGROUND_SERVICES"] = "BACKGROUND_SERVICES";
+  ActionCategory2["SETTINGS"] = "SETTINGS";
+  ActionCategory2["DEBUGGER"] = "DEBUGGER";
+  ActionCategory2["SOURCES"] = "SOURCES";
+  ActionCategory2["RENDERING"] = "RENDERING";
+  ActionCategory2["RECORDER"] = "RECORDER";
+  ActionCategory2["CHANGES"] = "CHANGES";
+})(ActionCategory || (ActionCategory = {}));
 function getLocalizedActionCategory(category) {
   switch (category) {
     case "ELEMENTS":
@@ -385,6 +432,39 @@ function getLocalizedActionCategory(category) {
   }
   return i18n.i18n.lockedString(category);
 }
+var IconClass;
+(function(IconClass2) {
+  IconClass2["LARGEICON_NODE_SEARCH"] = "select-element";
+  IconClass2["START_RECORDING"] = "record-start";
+  IconClass2["STOP_RECORDING"] = "record-stop";
+  IconClass2["REFRESH"] = "refresh";
+  IconClass2["CLEAR"] = "clear";
+  IconClass2["EYE"] = "eye";
+  IconClass2["LARGEICON_PHONE"] = "devices";
+  IconClass2["PLAY"] = "play";
+  IconClass2["DOWNLOAD"] = "download";
+  IconClass2["LARGEICON_PAUSE"] = "pause";
+  IconClass2["LARGEICON_RESUME"] = "resume";
+  IconClass2["MOP"] = "mop";
+  IconClass2["BIN"] = "bin";
+  IconClass2["LARGEICON_SETTINGS_GEAR"] = "gear";
+  IconClass2["LARGEICON_STEP_OVER"] = "step-over";
+  IconClass2["LARGE_ICON_STEP_INTO"] = "step-into";
+  IconClass2["LARGE_ICON_STEP"] = "step";
+  IconClass2["LARGE_ICON_STEP_OUT"] = "step-out";
+  IconClass2["BREAKPOINT_CROSSED_FILLED"] = "breakpoint-crossed-filled";
+  IconClass2["BREAKPOINT_CROSSED"] = "breakpoint-crossed";
+  IconClass2["PLUS"] = "plus";
+  IconClass2["UNDO"] = "undo";
+  IconClass2["COPY"] = "copy";
+  IconClass2["IMPORT"] = "import";
+  IconClass2["COMMENT_MODE"] = "comment-mode";
+})(IconClass || (IconClass = {}));
+var KeybindSet;
+(function(KeybindSet2) {
+  KeybindSet2["DEVTOOLS_DEFAULT"] = "devToolsDefault";
+  KeybindSet2["VS_CODE"] = "vsCode";
+})(KeybindSet || (KeybindSet = {}));
 
 // gen/front_end/ui/legacy/ActionRegistry.js
 var ActionRegistry_exports = {};
@@ -473,7 +553,7 @@ __export(AppProvider_exports, {
   getRegisteredAppProviders: () => getRegisteredAppProviders,
   registerAppProvider: () => registerAppProvider
 });
-import * as Root2 from "./../../core/root/root.js";
+import * as Root2 from "../../core/root/root.js";
 var registeredAppProvider = [];
 function registerAppProvider(registration) {
   registeredAppProvider.push(registration);
@@ -489,7 +569,10 @@ function getRegisteredAppProviders() {
 // gen/front_end/ui/legacy/ARIAUtils.js
 var ARIAUtils_exports = {};
 __export(ARIAUtils_exports, {
+  AnnouncerRole: () => AnnouncerRole,
+  AutocompleteInteractionModel: () => AutocompleteInteractionModel,
   LiveAnnouncer: () => LiveAnnouncer,
+  PopupRole: () => PopupRole,
   bindLabelToControl: () => bindLabelToControl,
   clearAutocomplete: () => clearAutocomplete,
   clearSelected: () => clearSelected,
@@ -557,19 +640,21 @@ __export(ARIAUtils_exports, {
   setValueText: () => setValueText,
   unsetExpandable: () => unsetExpandable
 });
-import * as Platform16 from "./../../core/platform/platform.js";
+import * as Platform16 from "../../core/platform/platform.js";
 
 // gen/front_end/ui/legacy/Dialog.js
 var Dialog_exports = {};
 __export(Dialog_exports, {
   Dialog: () => Dialog,
-  DialogWidget: () => DialogWidget
+  DialogWidget: () => DialogWidget,
+  Events: () => Events11,
+  OutsideTabIndexBehavior: () => OutsideTabIndexBehavior
 });
-import * as Common16 from "./../../core/common/common.js";
-import * as i18n27 from "./../../core/i18n/i18n.js";
-import { nothing as nothing4, render as render7 } from "./../lit/lit.js";
-import * as Buttons7 from "./../components/buttons/buttons.js";
-import * as VisualLogging17 from "./../visual_logging/visual_logging.js";
+import * as Common16 from "../../core/common/common.js";
+import * as i18n27 from "../../core/i18n/i18n.js";
+import { nothing as nothing4, render as render7 } from "../lit/lit.js";
+import * as Buttons7 from "../components/buttons/buttons.js";
+import * as VisualLogging17 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/dialog.css.js
 var dialog_css_default = `/*
@@ -600,8 +685,12 @@ var dialog_css_default = `/*
 // gen/front_end/ui/legacy/GlassPane.js
 var GlassPane_exports = {};
 __export(GlassPane_exports, {
+  AnchorBehavior: () => AnchorBehavior,
   GlassPane: () => GlassPane,
-  GlassPanePanes: () => GlassPanePanes
+  GlassPanePanes: () => GlassPanePanes,
+  MarginBehavior: () => MarginBehavior,
+  PointerEventsBehavior: () => PointerEventsBehavior,
+  SizeBehavior: () => SizeBehavior
 });
 
 // gen/front_end/ui/legacy/glassPane.css.js
@@ -732,7 +821,9 @@ __export(Toolbar_exports, {
   ToolbarInput: () => ToolbarInput,
   ToolbarInputElement: () => ToolbarInputElement,
   ToolbarItem: () => ToolbarItem,
+  ToolbarItemLocation: () => ToolbarItemLocation,
   ToolbarItemWithCompactLayout: () => ToolbarItemWithCompactLayout,
+  ToolbarItemWithCompactLayoutEvents: () => ToolbarItemWithCompactLayoutEvents,
   ToolbarMenuButton: () => ToolbarMenuButton,
   ToolbarSeparator: () => ToolbarSeparator,
   ToolbarSettingCheckbox: () => ToolbarSettingCheckbox,
@@ -742,21 +833,22 @@ __export(Toolbar_exports, {
   ToolbarToggle: () => ToolbarToggle,
   registerToolbarItem: () => registerToolbarItem
 });
-import * as Common14 from "./../../core/common/common.js";
-import * as i18n23 from "./../../core/i18n/i18n.js";
-import * as Platform13 from "./../../core/platform/platform.js";
-import * as Root8 from "./../../core/root/root.js";
-import * as Buttons5 from "./../components/buttons/buttons.js";
-import * as VisualLogging15 from "./../visual_logging/visual_logging.js";
-import { createIcon as createIcon7 } from "./../kit/kit.js";
-import { nothing as nothing2, render as render5 } from "./../lit/lit.js";
-import * as SettingUIRegistration from "./../settings/settings.js";
+import * as Common14 from "../../core/common/common.js";
+import * as i18n23 from "../../core/i18n/i18n.js";
+import * as Platform13 from "../../core/platform/platform.js";
+import * as Root8 from "../../core/root/root.js";
+import * as Buttons5 from "../components/buttons/buttons.js";
+import * as VisualLogging15 from "../visual_logging/visual_logging.js";
+import { createIcon as createIcon7 } from "../kit/kit.js";
+import { nothing as nothing2, render as render5 } from "../lit/lit.js";
+import * as SettingUIRegistration from "../settings/settings.js";
 
 // gen/front_end/ui/legacy/ContextMenu.js
 var ContextMenu_exports = {};
 __export(ContextMenu_exports, {
   ContextMenu: () => ContextMenu,
   Item: () => Item,
+  ItemLocation: () => ItemLocation,
   MenuButton: () => MenuButton,
   Section: () => Section,
   SubMenu: () => SubMenu,
@@ -764,11 +856,11 @@ __export(ContextMenu_exports, {
   registerItem: () => registerItem,
   registerProvider: () => registerProvider
 });
-import * as Host8 from "./../../core/host/host.js";
-import * as Root7 from "./../../core/root/root.js";
-import * as Buttons4 from "./../components/buttons/buttons.js";
-import { html as html3, render as render4 } from "./../lit/lit.js";
-import * as VisualLogging11 from "./../visual_logging/visual_logging.js";
+import * as Host8 from "../../core/host/host.js";
+import * as Root7 from "../../core/root/root.js";
+import * as Buttons4 from "../components/buttons/buttons.js";
+import { html as html3, render as render4 } from "../lit/lit.js";
+import * as VisualLogging11 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/ShortcutRegistry.js
 var ShortcutRegistry_exports = {};
@@ -780,11 +872,11 @@ __export(ShortcutRegistry_exports, {
   ShortcutRegistry: () => ShortcutRegistry,
   ShortcutTreeNode: () => ShortcutTreeNode
 });
-import * as Common3 from "./../../core/common/common.js";
-import * as Host2 from "./../../core/host/host.js";
-import * as Platform4 from "./../../core/platform/platform.js";
-import * as VisualLogging from "./../visual_logging/visual_logging.js";
-import * as Settings3 from "./../settings/settings.js";
+import * as Common3 from "../../core/common/common.js";
+import * as Host2 from "../../core/host/host.js";
+import * as Platform4 from "../../core/platform/platform.js";
+import * as VisualLogging from "../visual_logging/visual_logging.js";
+import * as Settings3 from "../settings/settings.js";
 
 // gen/front_end/ui/legacy/KeyboardShortcut.js
 var KeyboardShortcut_exports = {};
@@ -792,9 +884,10 @@ __export(KeyboardShortcut_exports, {
   KeyBindings: () => KeyBindings,
   KeyboardShortcut: () => KeyboardShortcut,
   Keys: () => Keys,
-  Modifiers: () => Modifiers
+  Modifiers: () => Modifiers,
+  Type: () => Type
 });
-import * as Host from "./../../core/host/host.js";
+import * as Host from "../../core/host/host.js";
 var KeyboardShortcut = class _KeyboardShortcut {
   descriptors;
   action;
@@ -1086,6 +1179,14 @@ var Keys = {
   // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
   CtrlOrMeta: Host.Platform.isMac() ? metaKey : ctrlKey
 };
+var Type;
+(function(Type4) {
+  Type4["USER_SHORTCUT"] = "UserShortcut";
+  Type4["DEFAULT_SHORTCUT"] = "DefaultShortcut";
+  Type4["DISABLED_DEFAULT"] = "DisabledDefault";
+  Type4["UNSET_SHORTCUT"] = "UnsetShortcut";
+  Type4["KEYBIND_SET_SHORTCUT"] = "KeybindSetShortcut";
+})(Type || (Type = {}));
 var KeyBindings = {};
 (function() {
   for (const key in Keys) {
@@ -1531,9 +1632,9 @@ var SoftContextMenu_exports = {};
 __export(SoftContextMenu_exports, {
   SoftContextMenu: () => SoftContextMenu
 });
-import * as i18n19 from "./../../core/i18n/i18n.js";
-import { createIcon as createIcon6 } from "./../kit/kit.js";
-import * as VisualLogging10 from "./../visual_logging/visual_logging.js";
+import * as i18n19 from "../../core/i18n/i18n.js";
+import { createIcon as createIcon6 } from "../kit/kit.js";
+import * as VisualLogging10 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/InspectorView.js
 var InspectorView_exports = {};
@@ -1544,28 +1645,30 @@ __export(InspectorView_exports, {
   InspectorView: () => InspectorView,
   InspectorViewTabDelegate: () => InspectorViewTabDelegate
 });
-import * as Common11 from "./../../core/common/common.js";
-import * as Host7 from "./../../core/host/host.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Root6 from "./../../core/root/root.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as Buttons3 from "./../components/buttons/buttons.js";
-import { createIcon as createIcon5 } from "./../kit/kit.js";
-import * as SettingsUI2 from "./../settings/settings.js";
-import * as VisualLogging9 from "./../visual_logging/visual_logging.js";
+import * as Common11 from "../../core/common/common.js";
+import * as Host7 from "../../core/host/host.js";
+import * as i18n17 from "../../core/i18n/i18n.js";
+import * as Root6 from "../../core/root/root.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as Buttons3 from "../components/buttons/buttons.js";
+import { createIcon as createIcon5 } from "../kit/kit.js";
+import * as SettingsUI2 from "../settings/settings.js";
+import * as VisualLogging9 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/DockController.js
 var DockController_exports = {};
 __export(DockController_exports, {
   CloseButtonProvider: () => CloseButtonProvider,
   DockController: () => DockController,
+  DockState: () => DockState,
+  Events: () => Events3,
   ToggleDockActionDelegate: () => ToggleDockActionDelegate
 });
-import * as Common4 from "./../../core/common/common.js";
-import * as Host3 from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as VisualLogging2 from "./../visual_logging/visual_logging.js";
-import * as SettingsUI from "./../settings/settings.js";
+import * as Common4 from "../../core/common/common.js";
+import * as Host3 from "../../core/host/host.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as VisualLogging2 from "../visual_logging/visual_logging.js";
+import * as SettingsUI from "../settings/settings.js";
 var UIStrings2 = {
   /**
    * @description Tooltip text for the close DevTools button in the main toolbar.
@@ -1698,6 +1801,13 @@ var DockController = class _DockController extends Common4.ObjectWrapper.ObjectW
     }
   }
 };
+var DockState;
+(function(DockState2) {
+  DockState2["BOTTOM"] = "bottom";
+  DockState2["RIGHT"] = "right";
+  DockState2["LEFT"] = "left";
+  DockState2["UNDOCKED"] = "undocked";
+})(DockState || (DockState = {}));
 var states = [
   "right",
   "bottom",
@@ -1705,6 +1815,12 @@ var states = [
   "undocked"
   /* DockState.UNDOCKED */
 ];
+var Events3;
+(function(Events13) {
+  Events13["BEFORE_DOCK_SIDE_CHANGED"] = "BeforeDockSideChanged";
+  Events13["DOCK_SIDE_CHANGED"] = "DockSideChanged";
+  Events13["AFTER_DOCK_SIDE_CHANGED"] = "AfterDockSideChanged";
+})(Events3 || (Events3 = {}));
 var ToggleDockActionDelegate = class {
   handleAction(_context, _actionId) {
     DockController.instance().toggleDockSide();
@@ -1728,12 +1844,13 @@ var CloseButtonProvider = class _CloseButtonProvider {
 // gen/front_end/ui/legacy/Infobar.js
 var Infobar_exports = {};
 __export(Infobar_exports, {
-  Infobar: () => Infobar
+  Infobar: () => Infobar,
+  Type: () => Type2
 });
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Buttons from "./../components/buttons/buttons.js";
-import * as VisualLogging3 from "./../visual_logging/visual_logging.js";
-import { createIcon } from "./../kit/kit.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
+import * as Buttons from "../components/buttons/buttons.js";
+import * as VisualLogging3 from "../visual_logging/visual_logging.js";
+import { createIcon } from "../kit/kit.js";
 
 // gen/front_end/ui/legacy/infobar.css.js
 var infobar_css_default = `/*
@@ -2064,6 +2181,13 @@ var Infobar = class _Infobar {
     return detailsRowMessage;
   }
 };
+var Type2;
+(function(Type4) {
+  Type4["WARNING"] = "warning";
+  Type4["INFO"] = "info";
+  Type4["ISSUE"] = "issue";
+  Type4["ERROR"] = "error";
+})(Type2 || (Type2 = {}));
 var TYPE_TO_ICON = {
   [
     "warning"
@@ -2084,10 +2208,10 @@ var TYPE_TO_ICON = {
 };
 
 // gen/front_end/ui/legacy/InspectorDrawerView.js
-import * as Common8 from "./../../core/common/common.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Root5 from "./../../core/root/root.js";
-import * as VisualLogging7 from "./../visual_logging/visual_logging.js";
+import * as Common8 from "../../core/common/common.js";
+import * as i18n15 from "../../core/i18n/i18n.js";
+import * as Root5 from "../../core/root/root.js";
+import * as VisualLogging7 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/inspectorDrawerTabbedPane.css.js
 var inspectorDrawerTabbedPane_css_default = `/*
@@ -2138,7 +2262,7 @@ devtools-toolbar.collapsed-vertical-drawer-toolbar-content {
 devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-button {
   margin: 0 auto;
   padding: 0;
-  padding-right: 1px;
+  padding-right: var(--sys-size-1);
   width: 27px;
   height: 26px;
   display: flex;
@@ -2155,19 +2279,19 @@ devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-spacer {
 // gen/front_end/ui/legacy/TabbedPane.js
 var TabbedPane_exports = {};
 __export(TabbedPane_exports, {
-  Events: () => Events,
+  Events: () => Events5,
   TabbedPane: () => TabbedPane,
   TabbedPaneElement: () => TabbedPaneElement,
   TabbedPaneTab: () => TabbedPaneTab
 });
-import * as Common6 from "./../../core/common/common.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
-import * as Geometry2 from "./../../models/geometry/geometry.js";
-import * as Buttons2 from "./../components/buttons/buttons.js";
-import { render } from "./../lit/lit.js";
-import * as VisualLogging4 from "./../visual_logging/visual_logging.js";
-import { createIcon as createIcon2, Icon } from "./../kit/kit.js";
+import * as Common6 from "../../core/common/common.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
+import * as Platform6 from "../../core/platform/platform.js";
+import * as Geometry2 from "../../models/geometry/geometry.js";
+import * as Buttons2 from "../components/buttons/buttons.js";
+import { render } from "../lit/lit.js";
+import * as VisualLogging4 from "../visual_logging/visual_logging.js";
+import { createIcon as createIcon2, Icon } from "../kit/kit.js";
 
 // gen/front_end/ui/legacy/tabbedPane.css.js
 var tabbedPane_css_default = `/*
@@ -2740,10 +2864,10 @@ __export(Widget_exports, {
   widgetConfigs: () => widgetConfigs,
   widgetRef: () => widgetRef
 });
-import "./../dom_extension/dom_extension.js";
-import * as Platform5 from "./../../core/platform/platform.js";
-import * as Geometry from "./../../models/geometry/geometry.js";
-import * as Lit from "./../lit/lit.js";
+import "../dom_extension/dom_extension.js";
+import * as Platform5 from "../../core/platform/platform.js";
+import * as Geometry from "../../models/geometry/geometry.js";
+import * as Lit from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/DOMUtilities.js
 var DOMUtilities_exports = {};
@@ -3250,6 +3374,12 @@ function decrementWidgetCounter(parentElement, childElement) {
   }
 }
 var UPDATE_COMPLETE = Promise.resolve();
+var UpdateState;
+(function(UpdateState2) {
+  UpdateState2["NORMAL"] = "NORMAL";
+  UpdateState2["INTERRUPTED"] = "INTERRUPTED";
+  UpdateState2["SHIELDED"] = "SHIELDED";
+})(UpdateState || (UpdateState = {}));
 var Widget = class _Widget {
   element;
   #contentElement;
@@ -3969,9 +4099,10 @@ Node.prototype.removeChildren = function() {
 // gen/front_end/ui/legacy/ZoomManager.js
 var ZoomManager_exports = {};
 __export(ZoomManager_exports, {
+  Events: () => Events4,
   ZoomManager: () => ZoomManager
 });
-import * as Common5 from "./../../core/common/common.js";
+import * as Common5 from "../../core/common/common.js";
 var zoomManagerInstance;
 var ZoomManager = class _ZoomManager extends Common5.ObjectWrapper.ObjectWrapper {
   frontendHost;
@@ -4012,6 +4143,10 @@ var ZoomManager = class _ZoomManager extends Common5.ObjectWrapper.ObjectWrapper
     }
   }
 };
+var Events4;
+(function(Events13) {
+  Events13["ZOOM_CHANGED"] = "ZoomChanged";
+})(Events4 || (Events4 = {}));
 
 // gen/front_end/ui/legacy/TabbedPane.js
 var UIStrings4 = {
@@ -4258,7 +4393,7 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
       this.hideTabElement(tab);
     }
     const eventData = { tabId: id2, view: tab.view, isUserGesture: userGesture };
-    this.dispatchEventToListeners(Events.TabClosed, eventData);
+    this.dispatchEventToListeners(Events5.TabClosed, eventData);
     return true;
   }
   hasTab(tabId) {
@@ -4311,7 +4446,7 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
       view: tab.view,
       isUserGesture: userGesture
     };
-    this.dispatchEventToListeners(Events.TabInvoked, eventData);
+    this.dispatchEventToListeners(Events5.TabInvoked, eventData);
     if (this.currentTab?.id === id2) {
       return true;
     }
@@ -4326,7 +4461,7 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     if (focused || forceFocus) {
       this.focus();
     }
-    this.dispatchEventToListeners(Events.TabSelected, eventData);
+    this.dispatchEventToListeners(Events5.TabSelected, eventData);
     return true;
   }
   selectNextTab() {
@@ -4523,10 +4658,10 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
       this.selectTab(effectiveTab.id);
     }
     this.requestUpdate();
-    this.dispatchEventToListeners(Events.PaneVisibilityChanged, { isVisible: true });
+    this.dispatchEventToListeners(Events5.PaneVisibilityChanged, { isVisible: true });
   }
   wasHidden() {
-    this.dispatchEventToListeners(Events.PaneVisibilityChanged, { isVisible: false });
+    this.dispatchEventToListeners(Events5.PaneVisibilityChanged, { isVisible: false });
   }
   makeTabSlider() {
     if (this.verticalTabLayout) {
@@ -4778,7 +4913,7 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     this.#tabs.splice(oldIndex, 1);
     this.#tabs.splice(targetIndex, 0, tab);
     const eventData = { tabId: tab.id, view: tab.view };
-    this.dispatchEventToListeners(Events.TabOrderChanged, eventData);
+    this.dispatchEventToListeners(Events5.TabOrderChanged, eventData);
     this.requestUpdate();
   }
   measureDropDownButton() {
@@ -4938,7 +5073,7 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     }
     this.#tabs.splice(index, 0, tab);
     const eventData = { tabId: tab.id, view: tab.view };
-    this.dispatchEventToListeners(Events.TabOrderChanged, eventData);
+    this.dispatchEventToListeners(Events5.TabOrderChanged, eventData);
   }
   leftToolbar() {
     if (!this.#leftToolbar) {
@@ -5006,14 +5141,14 @@ var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
     nextTabElement.focus();
   }
 };
-var Events;
-(function(Events3) {
-  Events3["TabInvoked"] = "TabInvoked";
-  Events3["TabSelected"] = "TabSelected";
-  Events3["TabClosed"] = "TabClosed";
-  Events3["TabOrderChanged"] = "TabOrderChanged";
-  Events3["PaneVisibilityChanged"] = "PaneVisibilityChanged";
-})(Events || (Events = {}));
+var Events5;
+(function(Events13) {
+  Events13["TabInvoked"] = "TabInvoked";
+  Events13["TabSelected"] = "TabSelected";
+  Events13["TabClosed"] = "TabClosed";
+  Events13["TabOrderChanged"] = "TabOrderChanged";
+  Events13["PaneVisibilityChanged"] = "PaneVisibilityChanged";
+})(Events5 || (Events5 = {}));
 var TabbedPaneTab = class {
   closeable;
   previewFeature = false;
@@ -5397,7 +5532,7 @@ var TabbedPaneElement = class extends WidgetElement {
       if (slot) {
         slot.addEventListener("slotchange", () => this.#syncTabs());
       }
-      widget2.addEventListener(Events.TabSelected, () => {
+      widget2.addEventListener(Events5.TabSelected, () => {
         const slot2 = widget2.contentElement.querySelector("slot:not([name])");
         const nodes = slot2 ? slot2.assignedElements() : [];
         for (const child of nodes) {
@@ -5409,10 +5544,10 @@ var TabbedPaneElement = class extends WidgetElement {
         }
         this.dispatchEvent(new CustomEvent("select", { detail: { tabId: widget2.selectedTabId } }));
       });
-      widget2.addEventListener(Events.TabClosed, (event) => {
+      widget2.addEventListener(Events5.TabClosed, (event) => {
         this.dispatchEvent(new CustomEvent("close", { detail: { tabId: event.data.tabId } }));
       });
-      widget2.addEventListener(Events.TabOrderChanged, (event) => {
+      widget2.addEventListener(Events5.TabOrderChanged, (event) => {
         this.dispatchEvent(new CustomEvent("taborderchanged", { detail: { tabId: event.data.tabId, tabIds: widget2.tabIds() } }));
       });
       this.#syncTabs(widget2);
@@ -5482,9 +5617,13 @@ customElements.define("devtools-tabbed-pane", TabbedPaneElement);
 var ViewManager_exports = {};
 __export(ViewManager_exports, {
   ContainerWidget: () => ContainerWidget,
+  Events: () => Events6,
   PreRegisteredView: () => PreRegisteredView,
   StackLocation: () => StackLocation,
+  ViewLocationCategory: () => ViewLocationCategory,
+  ViewLocationValues: () => ViewLocationValues,
   ViewManager: () => ViewManager,
+  ViewPersistence: () => ViewPersistence,
   defaultOptionsForTabs: () => defaultOptionsForTabs,
   getLocalizedViewLocationCategory: () => getLocalizedViewLocationCategory,
   getRegisteredLocationResolvers: () => getRegisteredLocationResolvers,
@@ -5493,14 +5632,14 @@ __export(ViewManager_exports, {
   registerViewExtension: () => registerViewExtension,
   resetViewRegistration: () => resetViewRegistration
 });
-import * as Common7 from "./../../core/common/common.js";
-import * as Host5 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Platform7 from "./../../core/platform/platform.js";
-import * as Root4 from "./../../core/root/root.js";
-import { createIcon as createIcon4 } from "./../kit/kit.js";
-import { render as render3 } from "./../lit/lit.js";
-import * as VisualLogging6 from "./../visual_logging/visual_logging.js";
+import * as Common7 from "../../core/common/common.js";
+import * as Host5 from "../../core/host/host.js";
+import * as i18n13 from "../../core/i18n/i18n.js";
+import * as Platform7 from "../../core/platform/platform.js";
+import * as Root4 from "../../core/root/root.js";
+import { createIcon as createIcon4 } from "../kit/kit.js";
+import { render as render3 } from "../lit/lit.js";
+import * as VisualLogging6 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/PlusButton.js
 var PlusButton_exports = {};
@@ -5511,9 +5650,9 @@ __export(PlusButton_exports, {
   populatePlusButtonMenu: () => populatePlusButtonMenu,
   revealOverflowTab: () => revealOverflowTab
 });
-import * as Host4 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
-import { Directives as Directives2, html as html2, render as render2 } from "./../lit/lit.js";
+import * as Host4 from "../../core/host/host.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
+import { Directives as Directives2, html as html2, render as render2 } from "../lit/lit.js";
 var UIStrings5 = {
   /**
    * @description Default tooltip and accessible name for the plus button shown in a tab strip.
@@ -5637,8 +5776,8 @@ __export(StackedPane_exports, {
   ExpandableContainerWidget: () => ExpandableContainerWidget,
   StackedPane: () => StackedPane
 });
-import { createIcon as createIcon3 } from "./../kit/kit.js";
-import * as VisualLogging5 from "./../visual_logging/visual_logging.js";
+import { createIcon as createIcon3 } from "../kit/kit.js";
+import * as VisualLogging5 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/viewContainers.css.js
 var viewContainers_css_default = `/* Copyright 2025 The Chromium Authors
@@ -5678,17 +5817,17 @@ found in the LICENSE file. */
   display: flex;
   align-items: center;
   background-color: var(--sys-color-surface2);
-  height: 22px;
+  height: var(--sys-size-10);
   padding: 0 5px;
   white-space: nowrap;
   overflow: hidden;
   position: relative;
-  border-bottom: 1px solid transparent;
+  border-bottom: var(--sys-size-1) solid transparent;
 }
 
 .expandable-view-title.expanded,
 .expandable-view-title:last-child {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .expandable-view-title devtools-toolbar {
@@ -5706,8 +5845,8 @@ found in the LICENSE file. */
 }
 
 .title-expand-icon {
-  margin-right: 2px;
-  margin-bottom: -2px;
+  margin-right: var(--sys-size-2);
+  margin-bottom: calc(-1 * var(--sys-size-2));
 }
 
 .expandable-view-title:focus-visible {
@@ -5723,7 +5862,7 @@ found in the LICENSE file. */
     forced-color-adjust: none;
     color: HighlightText;
     background-color: Highlight;
-    box-shadow: 0 0 0 2px Highlight inset;
+    box-shadow: 0 0 0 var(--sys-size-2) Highlight inset;
   }
 
   .expandable-view-title:focus-visible .title-expand-icon {
@@ -5926,8 +6065,8 @@ var StackedPane = class extends VBox {
 };
 
 // gen/front_end/ui/legacy/ViewRegistration.js
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Root3 from "./../../core/root/root.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
+import * as Root3 from "../../core/root/root.js";
 var UIStrings6 = {
   /**
    * @description Badge label for an entry in the command menu that opens the Elements panel.
@@ -5960,6 +6099,25 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/ViewRegistration.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var ViewPersistence;
+(function(ViewPersistence2) {
+  ViewPersistence2["CLOSEABLE"] = "closeable";
+  ViewPersistence2["PERMANENT"] = "permanent";
+  ViewPersistence2["TRANSIENT"] = "transient";
+})(ViewPersistence || (ViewPersistence = {}));
+var ViewLocationValues;
+(function(ViewLocationValues2) {
+  ViewLocationValues2["PANEL"] = "panel";
+  ViewLocationValues2["SETTINGS_VIEW"] = "settings-view";
+  ViewLocationValues2["ELEMENTS_SIDEBAR"] = "elements-sidebar";
+  ViewLocationValues2["SOURCES_SIDEBAR_BOTTOM"] = "sources.sidebar-bottom";
+  ViewLocationValues2["NAVIGATOR_VIEW"] = "navigator-view";
+  ViewLocationValues2["DRAWER_VIEW"] = "drawer-view";
+  ViewLocationValues2["DRAWER_SIDEBAR"] = "drawer-sidebar";
+  ViewLocationValues2["NETWORK_SIDEBAR"] = "network-sidebar";
+  ViewLocationValues2["SOURCES_SIDEBAR_TOP"] = "sources.sidebar-top";
+  ViewLocationValues2["SOURCES_SIDEBAR_TABS"] = "sources.sidebar-tabs";
+})(ViewLocationValues || (ViewLocationValues = {}));
 var registeredViewExtensions = /* @__PURE__ */ new Map();
 function registerViewExtension(registration) {
   const viewId = registration.id;
@@ -5992,6 +6150,17 @@ function resetViewRegistration() {
   registeredLocationResolvers.length = 0;
   viewLocationNameSet.clear();
 }
+var ViewLocationCategory;
+(function(ViewLocationCategory2) {
+  ViewLocationCategory2["NONE"] = "";
+  ViewLocationCategory2["ELEMENTS"] = "ELEMENTS";
+  ViewLocationCategory2["DRAWER"] = "DRAWER";
+  ViewLocationCategory2["DRAWER_SIDEBAR"] = "DRAWER_SIDEBAR";
+  ViewLocationCategory2["PANEL"] = "PANEL";
+  ViewLocationCategory2["NETWORK"] = "NETWORK";
+  ViewLocationCategory2["SETTINGS"] = "SETTINGS";
+  ViewLocationCategory2["SOURCES"] = "SOURCES";
+})(ViewLocationCategory || (ViewLocationCategory = {}));
 function getLocalizedViewLocationCategory(category) {
   switch (category) {
     case "ELEMENTS":
@@ -6109,6 +6278,10 @@ var PreRegisteredView = class {
   }
 };
 var viewManagerInstance;
+var Events6;
+(function(Events13) {
+  Events13["VIEW_VISIBILITY_CHANGED"] = "ViewVisibilityChanged";
+})(Events6 || (Events6 = {}));
 var ViewManager = class _ViewManager extends Common7.ObjectWrapper.ObjectWrapper {
   views = /* @__PURE__ */ new Map();
   locationNameByViewId = /* @__PURE__ */ new Map();
@@ -6414,13 +6587,13 @@ var TabbedLocation = class _TabbedLocation extends Location {
     this.location = location;
     this.#tabbedPane = tabbedPane;
     this.allowReorder = allowReorder;
-    this.#tabbedPane.addEventListener(Events.TabSelected, this.tabSelected, this);
-    this.#tabbedPane.addEventListener(Events.TabClosed, this.tabClosed, this);
-    this.#tabbedPane.addEventListener(Events.PaneVisibilityChanged, this.tabbedPaneVisibilityChanged, this);
+    this.#tabbedPane.addEventListener(Events5.TabSelected, this.tabSelected, this);
+    this.#tabbedPane.addEventListener(Events5.TabClosed, this.tabClosed, this);
+    this.#tabbedPane.addEventListener(Events5.PaneVisibilityChanged, this.tabbedPaneVisibilityChanged, this);
     this.closeableTabSetting = Common7.Settings.Settings.instance().createSetting("closeable-tabs", {});
     this.setOrUpdateCloseableTabsSetting();
     this.tabOrderSetting = Common7.Settings.Settings.instance().createSetting(location + "-tab-order", {});
-    this.#tabbedPane.addEventListener(Events.TabOrderChanged, this.persistTabOrder, this);
+    this.#tabbedPane.addEventListener(Events5.TabOrderChanged, this.persistTabOrder, this);
     if (restoreSelection) {
       this.lastSelectedTabSetting = Common7.Settings.Settings.instance().createSetting(location + "-selected-tab", "");
     }
@@ -6826,8 +6999,8 @@ var InspectorDrawerView = class {
     }
     this.tabbedPane.rightToolbar().appendToolbarItem(this.#minimizeExpandButton);
     this.tabbedPane.rightToolbar().appendToolbarItem(this.#closeDrawerButton);
-    this.tabbedPane.addEventListener(Events.TabInvoked, this.#drawerTabInvoked, this);
-    this.tabbedPane.addEventListener(Events.TabSelected, this.#drawerTabSelected, this);
+    this.tabbedPane.addEventListener(Events5.TabInvoked, this.#drawerTabInvoked, this);
+    this.tabbedPane.addEventListener(Events5.TabSelected, this.#drawerTabSelected, this);
     this.tabbedPane.setTabDelegate(options.tabDelegate);
     const selectedDrawerTab = this.tabbedPane.selectedTabId;
     if (this.#splitWidget.showMode() !== "OnlyMain" && selectedDrawerTab) {
@@ -6983,7 +7156,7 @@ var InspectorDrawerView = class {
     if (wasDrawerVisible === isDrawerVisible) {
       return;
     }
-    this.tabbedPane.dispatchEventToListeners(Events.PaneVisibilityChanged, { isVisible: isDrawerVisible });
+    this.tabbedPane.dispatchEventToListeners(Events5.PaneVisibilityChanged, { isVisible: isDrawerVisible });
   }
   #drawerTabSelected(event) {
     const { tabId, prevTabId, isUserGesture } = event.data;
@@ -7012,21 +7185,24 @@ var InspectorDrawerView = class {
 // gen/front_end/ui/legacy/SplitWidget.js
 var SplitWidget_exports = {};
 __export(SplitWidget_exports, {
+  Events: () => Events8,
+  ShowMode: () => ShowMode,
   SplitWidget: () => SplitWidget,
   SplitWidgetElement: () => SplitWidgetElement
 });
-import * as Common10 from "./../../core/common/common.js";
-import * as Platform8 from "./../../core/platform/platform.js";
-import * as Geometry3 from "./../../models/geometry/geometry.js";
-import * as VisualLogging8 from "./../visual_logging/visual_logging.js";
+import * as Common10 from "../../core/common/common.js";
+import * as Platform8 from "../../core/platform/platform.js";
+import * as Geometry3 from "../../models/geometry/geometry.js";
+import * as VisualLogging8 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/ResizerWidget.js
 var ResizerWidget_exports = {};
 __export(ResizerWidget_exports, {
+  Events: () => Events7,
   ResizerWidget: () => ResizerWidget,
   SimpleResizerWidget: () => SimpleResizerWidget
 });
-import * as Common9 from "./../../core/common/common.js";
+import * as Common9 from "../../core/common/common.js";
 var ResizerWidget = class extends Common9.ObjectWrapper.ObjectWrapper {
   #isEnabled = true;
   #elements = /* @__PURE__ */ new Set();
@@ -7124,6 +7300,13 @@ var ResizerWidget = class extends Common9.ObjectWrapper.ObjectWrapper {
     this.#startY = void 0;
   }
 };
+var Events7;
+(function(Events13) {
+  Events13["RESIZE_START"] = "ResizeStart";
+  Events13["RESIZE_UPDATE_XY"] = "ResizeUpdateXY";
+  Events13["RESIZE_UPDATE_POSITION"] = "ResizeUpdatePosition";
+  Events13["RESIZE_END"] = "ResizeEnd";
+})(Events7 || (Events7 = {}));
 var SimpleResizerWidget = class extends ResizerWidget {
   #isVertical = true;
   isVertical() {
@@ -7154,31 +7337,9 @@ var SimpleResizerWidget = class extends ResizerWidget {
 
 // gen/front_end/ui/legacy/splitWidget.css.js
 var splitWidget_css_default = `/*
- * Copyright (C) 2011 Google Inc. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
- *
- * 1. Redistributions of source code must retain the above copyright
- * notice, this list of conditions and the following disclaimer.
- *
- * 2. Redistributions in binary form must reproduce the above
- * copyright notice, this list of conditions and the following disclaimer
- * in the documentation and/or other materials provided with the
- * distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY GOOGLE INC. AND ITS CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
- * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL GOOGLE INC.
- * OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
- * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
  */
 
 .shadow-split-widget {
@@ -7206,7 +7367,7 @@ var splitWidget_css_default = `/*
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 6px;
+  width: var(--sys-size-4);
   z-index: 4000;
 }
 
@@ -7214,7 +7375,7 @@ var splitWidget_css_default = `/*
   position: absolute;
   left: 0;
   right: 0;
-  height: 6px;
+  height: var(--sys-size-4);
   z-index: 4000;
 }
 
@@ -7224,22 +7385,22 @@ var splitWidget_css_default = `/*
 
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
   border: 0;
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .shadow-split-widget.hbox > .shadow-split-widget-sidebar:not(.maximized) {
   border: 0;
-  border-left: 1px solid var(--sys-color-divider);
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .shadow-split-widget.vbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
   border: 0;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .shadow-split-widget.hbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
   border: 0;
-  border-right: 1px solid var(--sys-color-divider);
+  border-right: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 :host-context(.disable-resizer-for-elements-hack) .shadow-split-widget-resizer {
@@ -8011,6 +8172,17 @@ var SplitWidgetElement = class extends WidgetElement {
   }
 };
 customElements.define("devtools-split-view", SplitWidgetElement);
+var ShowMode;
+(function(ShowMode2) {
+  ShowMode2["BOTH"] = "Both";
+  ShowMode2["ONLY_MAIN"] = "OnlyMain";
+  ShowMode2["ONLY_SIDEBAR"] = "OnlySidebar";
+})(ShowMode || (ShowMode = {}));
+var Events8;
+(function(Events13) {
+  Events13["SIDEBAR_SIZE_CHANGED"] = "SidebarSizeChanged";
+  Events13["SHOW_MODE_CHANGED"] = "ShowModeChanged";
+})(Events8 || (Events8 = {}));
 var MinPadding = 20;
 var suppressUnused = function(_value) {
 };
@@ -8020,7 +8192,7 @@ var UIUserMetrics_exports = {};
 __export(UIUserMetrics_exports, {
   UIUserMetrics: () => UIUserMetrics
 });
-import * as Host6 from "./../../core/host/host.js";
+import * as Host6 from "../../core/host/host.js";
 var UIUserMetrics = class _UIUserMetrics {
   #panelChangedSinceLaunch = false;
   #firedLaunchHistogram = false;
@@ -8238,7 +8410,7 @@ var InspectorView = class _InspectorView extends VBox {
     this.tabbedPane.element.classList.add("main-tabbed-pane");
     const allocatedSpace = Root6.Runtime.conditions.canDock() ? "69px" : "41px";
     this.tabbedPane.leftToolbar().style.minWidth = allocatedSpace;
-    this.tabbedPane.addEventListener(Events.TabSelected, (event) => this.tabSelected(event.data.tabId), this);
+    this.tabbedPane.addEventListener(Events5.TabSelected, (event) => this.tabSelected(event.data.tabId), this);
     const selectedTab = this.tabbedPane.selectedTabId;
     if (selectedTab) {
       UIUserMetrics.instance().panelShown(selectedTab, true);
@@ -8845,10 +9017,10 @@ var softContextMenu_css_default = `/*
 
 .soft-context-menu {
   overflow-y: auto;
-  min-width: 160px !important; /* stylelint-disable-line declaration-no-important */
+  min-width: var(--sys-size-23) !important; /* stylelint-disable-line declaration-no-important */
   /* NOTE: Keep padding in sync with padding adjustment in SoftContextMenu.ts */
   padding: var(--sys-size-5) 0;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-small);
   background-color: var(--app-color-menu-background);
   box-shadow: var(--sys-elevation-level3);
@@ -8863,13 +9035,13 @@ var softContextMenu_css_default = `/*
 }
 
 .dockside-title + devtools-toolbar {
-  margin-right: -8px;
+  margin-right: calc(-1 * var(--sys-size-5));
 }
 
 .soft-context-menu-item {
   display: flex;
   width: 100%;
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   height: var(--sys-size-11);
   padding: 0 var(--sys-size-8);
   white-space: nowrap;
@@ -10413,27 +10585,39 @@ function maybeRemoveItem(registration) {
 function getRegisteredItems() {
   return registeredItemsProviders;
 }
+var ItemLocation;
+(function(ItemLocation2) {
+  ItemLocation2["DEVICE_MODE_MENU_SAVE"] = "deviceModeMenu/save";
+  ItemLocation2["MAIN_MENU"] = "mainMenu";
+  ItemLocation2["MAIN_MENU_DEFAULT"] = "mainMenu/default";
+  ItemLocation2["MAIN_MENU_FOOTER"] = "mainMenu/footer";
+  ItemLocation2["MAIN_MENU_HELP_DEFAULT"] = "mainMenuHelp/default";
+  ItemLocation2["NAVIGATOR_MENU_DEFAULT"] = "navigatorMenu/default";
+  ItemLocation2["PROFILER_MENU_DEFAULT"] = "profilerMenu/default";
+  ItemLocation2["TIMELINE_MENU_OPEN"] = "timelineMenu/open";
+})(ItemLocation || (ItemLocation = {}));
 
 // gen/front_end/ui/legacy/TextPrompt.js
 var TextPrompt_exports = {};
 __export(TextPrompt_exports, {
+  Events: () => Events10,
   TextPrompt: () => TextPrompt,
   TextPromptElement: () => TextPromptElement
 });
-import * as Common13 from "./../../core/common/common.js";
-import * as Platform12 from "./../../core/platform/platform.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as VisualLogging14 from "./../visual_logging/visual_logging.js";
+import * as Common13 from "../../core/common/common.js";
+import * as Platform12 from "../../core/platform/platform.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as VisualLogging14 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/SuggestBox.js
 var SuggestBox_exports = {};
 __export(SuggestBox_exports, {
   SuggestBox: () => SuggestBox
 });
-import * as i18n21 from "./../../core/i18n/i18n.js";
-import * as Platform11 from "./../../core/platform/platform.js";
-import * as Geometry4 from "./../../models/geometry/geometry.js";
-import * as VisualLogging13 from "./../visual_logging/visual_logging.js";
+import * as i18n21 from "../../core/i18n/i18n.js";
+import * as Platform11 from "../../core/platform/platform.js";
+import * as Geometry4 from "../../models/geometry/geometry.js";
+import * as VisualLogging13 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/ListControl.js
 var ListControl_exports = {};
@@ -10441,8 +10625,8 @@ __export(ListControl_exports, {
   ListControl: () => ListControl,
   ListMode: () => ListMode
 });
-import * as Platform9 from "./../../core/platform/platform.js";
-import * as VisualLogging12 from "./../visual_logging/visual_logging.js";
+import * as Platform9 from "../../core/platform/platform.js";
+import * as VisualLogging12 from "../visual_logging/visual_logging.js";
 var ListMode;
 (function(ListMode2) {
   ListMode2["NonViewport"] = "UI.ListMode.NonViewport";
@@ -11003,10 +11187,11 @@ var ListControl = class {
 // gen/front_end/ui/legacy/ListModel.js
 var ListModel_exports = {};
 __export(ListModel_exports, {
+  Events: () => Events9,
   ListModel: () => ListModel
 });
-import * as Common12 from "./../../core/common/common.js";
-import * as Platform10 from "./../../core/platform/platform.js";
+import * as Common12 from "../../core/common/common.js";
+import * as Platform10 from "../../core/platform/platform.js";
 var ListModel = class extends Common12.ObjectWrapper.ObjectWrapper {
   items;
   constructor(items) {
@@ -11088,6 +11273,10 @@ var ListModel = class extends Common12.ObjectWrapper.ObjectWrapper {
     this.dispatchEventToListeners("ItemsReplaced", { index, removed, inserted, keepSelectedIndex });
   }
 };
+var Events9;
+(function(Events13) {
+  Events13["ITEMS_REPLACED"] = "ItemsReplaced";
+})(Events9 || (Events9 = {}));
 
 // gen/front_end/ui/legacy/suggestBox.css.js
 var suggestBox_css_default = `/*
@@ -11111,9 +11300,9 @@ var suggestBox_css_default = `/*
 }
 
 .suggest-box-content-item {
-  padding: 1px 0 1px 1px;
+  padding: var(--sys-size-1) 0 var(--sys-size-1) var(--sys-size-1);
   margin: 0;
-  border: 1px solid transparent;
+  border: var(--sys-size-1) solid transparent;
   white-space: nowrap;
   display: flex;
   align-items: center;
@@ -11145,7 +11334,7 @@ var suggestBox_css_default = `/*
 
 .suggest-box-content-item devtools-icon {
   color: var(--sys-color-on-surface-subtle);
-  margin-right: 1px;
+  margin-right: var(--sys-size-1);
 }
 
 .suggest-box-content-item .query {
@@ -11154,7 +11343,7 @@ var suggestBox_css_default = `/*
 
 .suggest-box-content-item .spacer {
   display: inline-block;
-  width: 20px;
+  width: var(--sys-size-9);
 }
 
 .suggest-box-content-item.selected {
@@ -11448,8 +11637,8 @@ var textPrompt_css_default = `/*
   box-shadow: var(--drop-shadow);
   background-color: var(--sys-color-cdt-base-container);
   text-overflow: clip !important; /* stylelint-disable-line declaration-no-important */
-  margin: 0 -2px -1px;
-  padding: 0 2px 1px;
+  margin: 0 calc(-1 * var(--sys-size-2)) calc(-1 * var(--sys-size-1));
+  padding: 0 var(--sys-size-2) var(--sys-size-1);
   opacity: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 
@@ -12434,6 +12623,10 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   }
 };
 var DefaultAutocompletionTimeout = 250;
+var Events10;
+(function(Events13) {
+  Events13["TEXT_CHANGED"] = "TextChanged";
+})(Events10 || (Events10 = {}));
 
 // gen/front_end/ui/legacy/toolbar.css.js
 var toolbar_css_default = `/*
@@ -12443,7 +12636,7 @@ var toolbar_css_default = `/*
  */
 
 :host {
-  padding: 0 2px;
+  padding: 0 var(--sys-size-2);
   position: relative;
   white-space: nowrap;
   overflow: hidden;
@@ -12459,9 +12652,9 @@ var toolbar_css_default = `/*
   flex-direction: column;
   inset: 0;
   background-color: var(--sys-color-cdt-base-container);
-  border: 1px solid var(--sys-color-divider);
-  margin-top: -1px;
-  width: 28px;
+  border: var(--sys-size-1) solid var(--sys-color-divider);
+  margin-top: calc(-1 * var(--sys-size-1));
+  width: var(--sys-size-12);
 }
 
 :host([hidden]) {
@@ -12931,6 +13124,10 @@ var ToolbarItem = class extends Common14.ObjectWrapper.ObjectWrapper {
     this.element.style.minWidth = width + "px";
   }
 };
+var ToolbarItemWithCompactLayoutEvents;
+(function(ToolbarItemWithCompactLayoutEvents2) {
+  ToolbarItemWithCompactLayoutEvents2["COMPACT_LAYOUT_UPDATED"] = "CompactLayoutUpdated";
+})(ToolbarItemWithCompactLayoutEvents || (ToolbarItemWithCompactLayoutEvents = {}));
 var ToolbarItemWithCompactLayout = class extends ToolbarItem {
   setCompactLayout(enable) {
     this.dispatchEventToListeners("CompactLayoutUpdated", enable);
@@ -13045,6 +13242,12 @@ var ToolbarButton = class extends ToolbarItem {
     event.consume();
   }
 };
+(function(ToolbarButton2) {
+  let Events13;
+  (function(Events14) {
+    Events14["CLICK"] = "Click";
+  })(Events13 = ToolbarButton2.Events || (ToolbarButton2.Events = {}));
+})(ToolbarButton || (ToolbarButton = {}));
 var ToolbarInput = class extends ToolbarItem {
   prompt;
   proxyElement;
@@ -13284,6 +13487,13 @@ var ToolbarInputElement = class extends HTMLElement {
   }
 };
 customElements.define("devtools-toolbar-input", ToolbarInputElement);
+(function(ToolbarInput2) {
+  let Event2;
+  (function(Event3) {
+    Event3["TEXT_CHANGED"] = "TextChanged";
+    Event3["ENTER_PRESSED"] = "EnterPressed";
+  })(Event2 = ToolbarInput2.Event || (ToolbarInput2.Event = {}));
+})(ToolbarInput || (ToolbarInput = {}));
 var ToolbarToggle = class extends ToolbarButton {
   toggledGlyph;
   constructor(title, glyph, toggledGlyph, jslogContext, toggleOnClick) {
@@ -13650,17 +13860,24 @@ function registerToolbarItem(registration) {
 function getRegisteredToolbarItems() {
   return registeredToolbarItems.filter((item8) => Root8.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition }));
 }
+var ToolbarItemLocation;
+(function(ToolbarItemLocation2) {
+  ToolbarItemLocation2["FILES_NAVIGATION_TOOLBAR"] = "files-navigator-toolbar";
+  ToolbarItemLocation2["MAIN_TOOLBAR_RIGHT"] = "main-toolbar-right";
+  ToolbarItemLocation2["MAIN_TOOLBAR_LEFT"] = "main-toolbar-left";
+  ToolbarItemLocation2["STYLES_SIDEBARPANE_TOOLBAR"] = "styles-sidebarpane-toolbar";
+})(ToolbarItemLocation || (ToolbarItemLocation = {}));
 
 // gen/front_end/ui/legacy/UIUtils.js
-import * as Common15 from "./../../core/common/common.js";
-import * as Host9 from "./../../core/host/host.js";
-import * as i18n25 from "./../../core/i18n/i18n.js";
-import * as Platform15 from "./../../core/platform/platform.js";
-import * as Geometry5 from "./../../models/geometry/geometry.js";
-import * as Buttons6 from "./../components/buttons/buttons.js";
-import { Icon as Icon2 } from "./../kit/kit.js";
-import * as Lit2 from "./../lit/lit.js";
-import * as VisualLogging16 from "./../visual_logging/visual_logging.js";
+import * as Common15 from "../../core/common/common.js";
+import * as Host9 from "../../core/host/host.js";
+import * as i18n25 from "../../core/i18n/i18n.js";
+import * as Platform15 from "../../core/platform/platform.js";
+import * as Geometry5 from "../../models/geometry/geometry.js";
+import * as Buttons6 from "../components/buttons/buttons.js";
+import { Icon as Icon2 } from "../kit/kit.js";
+import * as Lit2 from "../lit/lit.js";
+import * as VisualLogging16 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/checkboxTextLabel.css.js
 var checkboxTextLabel_css_default = `/*
@@ -13840,7 +14057,7 @@ body {
   margin: 0;
   cursor: default;
   font-family: var(--default-font-family);
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   tab-size: 4;
   user-select: none;
   color: var(--sys-color-on-surface);
@@ -13920,7 +14137,7 @@ iframe.fill {
 }
 
 .view-container > devtools-toolbar {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .flex-auto {
@@ -13956,17 +14173,17 @@ iframe.widget {
 
 .highlighted-search-result,
 :host::highlight(highlighted-search-result) {
-  border-radius: 1px;
+  border-radius: var(--sys-size-1);
   background-color: var(--sys-color-yellow-container);
   color: var(--sys-color-on-yellow-container);
-  outline: 1px solid var(--sys-color-yellow-container);
+  outline: var(--sys-size-1) solid var(--sys-color-yellow-container);
 }
 
 .link {
   cursor: pointer;
   text-decoration: underline;
   color: var(--text-link);
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 }
 
 button,
@@ -13990,8 +14207,8 @@ input {
     &:hover::after,
     &:active::before {
       content: '';
-      height: 24px;
-      width: 24px;
+      height: var(--sys-size-11);
+      width: var(--sys-size-11);
       border-radius: var(--sys-shape-corner-full);
       position: absolute;
     }
@@ -14015,14 +14232,14 @@ input {
       width: 15px;
       border-radius: 5px;
       position: absolute;
-      border: 2px solid var(--sys-color-state-focus-ring);
+      border: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
     }
 
     &.small:hover::after,
     &.small:active::before {
-      height: 12px;
-      width: 12px;
-      border-radius: 2px;
+      height: var(--sys-size-6);
+      width: var(--sys-size-6);
+      border-radius: var(--sys-size-2);
     }
   }
 }
@@ -14041,10 +14258,10 @@ input::placeholder {
 .harmony-input:not([type]),
 .harmony-input[type='number'],
 .harmony-input[type='text'] {
-  padding: 3px 6px;
-  height: 24px;
-  border: 1px solid var(--sys-color-neutral-outline);
-  border-radius: 4px;
+  padding: 3px var(--sys-size-4);
+  height: var(--sys-size-11);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  border-radius: var(--sys-shape-corner-extra-small);
 
   &.error-input,
   &:invalid {
@@ -14065,7 +14282,7 @@ input[type='radio'] {
   height: 17px;
   width: 17px;
   min-width: 17px;
-  border-radius: 8px;
+  border-radius: var(--sys-shape-corner-small);
   vertical-align: sub;
   margin: 0 5px 5px 0;
   accent-color: var(--sys-color-primary-bright);
@@ -14105,8 +14322,8 @@ input[type='range']::-webkit-slider-thumb,
   margin: 0;
   padding: 0;
   border: 0;
-  width: 12px;
-  height: 12px;
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
   margin-top: -5px;
   border-radius: 50%;
   background-color: var(--sys-color-primary);
@@ -14117,12 +14334,12 @@ input[type='range']::-webkit-slider-runnable-track {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 2px;
+  height: var(--sys-size-2);
   background-color: var(--sys-color-surface-variant);
 }
 
 input[type='range']:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 0 2px var(--sys-color-inverse-primary);
+  box-shadow: 0 0 0 var(--sys-size-2) var(--sys-color-inverse-primary);
 }
 
 input[type='range']:disabled::-webkit-slider-thumb {
@@ -14140,10 +14357,10 @@ input[type='range']:disabled::-webkit-slider-thumb {
   /* Note: this value is used in light & dark mode */
   --override-current-search-result-background-color: rgb(255 127 0 / 80%);
 
-  outline: 1px solid var(--sys-color-yellow-container);
-  border-radius: 1px;
-  padding: 1px;
-  margin: -1px;
+  outline: var(--sys-size-1) solid var(--sys-color-yellow-container);
+  border-radius: var(--sys-size-1);
+  padding: var(--sys-size-1);
+  margin: calc(-1 * var(--sys-size-1));
   background-color: var(--override-current-search-result-background-color);
   color: var(--sys-color-on-surface);
 }
@@ -14156,12 +14373,12 @@ input[type='range']:disabled::-webkit-slider-thumb {
   box-shadow: var(--drop-shadow);
   background-color: var(--sys-color-cdt-base-container);
   text-overflow: clip !important; /* stylelint-disable-line declaration-no-important */
-  padding-left: 2px;
-  margin-left: -2px;
-  padding-right: 2px;
-  margin-right: -2px;
-  margin-bottom: -1px;
-  padding-bottom: 1px;
+  padding-left: var(--sys-size-2);
+  margin-left: calc(-1 * var(--sys-size-2));
+  padding-right: var(--sys-size-2);
+  margin-right: calc(-1 * var(--sys-size-2));
+  margin-bottom: calc(-1 * var(--sys-size-1));
+  padding-bottom: var(--sys-size-1);
   opacity: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 
@@ -14225,7 +14442,7 @@ select {
 
     &:focus {
       outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-      outline-offset: -1px;
+      outline-offset: calc(-1 * var(--sys-size-1));
     }
   }
 }
@@ -14275,7 +14492,7 @@ select option {
 .gray-info-message {
   text-align: center;
   font-style: italic;
-  padding: 6px;
+  padding: var(--sys-size-4);
   color: var(--sys-color-token-subtle);
   white-space: nowrap;
 }
@@ -14322,10 +14539,10 @@ dt-icon-label {
 
 .dot::before {
   content: var(--image-file-empty);
-  width: 6px;
-  height: 6px;
+  width: var(--sys-size-4);
+  height: var(--sys-size-4);
   border-radius: 50%;
-  outline: 1px solid var(--icon-gap-default);
+  outline: var(--sys-size-1) solid var(--icon-gap-default);
   left: 9px;
   position: absolute;
   top: 9px;
@@ -14368,9 +14585,9 @@ dt-icon-label {
 .undisplayable-text,
 .expandable-inline-button {
   border: none;
-  padding: 1px 3px;
-  margin: 0 2px;
-  font-size: 11px;
+  padding: var(--sys-size-1) 3px;
+  margin: 0 var(--sys-size-2);
+  font-size: var(--sys-typescale-body5-size);
   font-family: inherit;
   white-space: nowrap;
   display: inline-block;
@@ -14407,8 +14624,8 @@ button.link {
 }
 
 button.link:focus-visible {
-  outline: 2px solid var(--sys-color-state-focus-ring);
-  outline-offset: 2px;
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: var(--sys-size-2);
   border-radius: var(--sys-shape-corner-full);
 }
 
@@ -14427,19 +14644,19 @@ button.link:focus-visible {
   .harmony-input:not([type]),
   .harmony-input[type='number'],
   .harmony-input[type='text'] {
-    border: 1px solid ButtonText;
+    border: var(--sys-size-1) solid ButtonText;
   }
 
   .harmony-input:not([type]):focus,
   .harmony-input[type='number']:focus,
   .harmony-input[type='text']:focus {
-    border: 1px solid Highlight;
+    border: var(--sys-size-1) solid Highlight;
   }
 }
 /* search input with customized styling */
 input.custom-search-input::-webkit-search-cancel-button {
   appearance: none;
-  width: 16px;
+  width: var(--sys-size-8);
   height: 15px;
   margin-right: 0;
   opacity: 70%;
@@ -14456,11 +14673,11 @@ input.custom-search-input::-webkit-search-cancel-button:hover {
 /* loading spinner */
 .spinner::before {
   display: block;
-  width: var(--dimension, 24px);
-  height: var(--dimension, 24px);
+  width: var(--dimension, var(--sys-size-11));
+  height: var(--dimension, var(--sys-size-11));
   border: var(--override-spinner-size, 3px) solid
     var(--override-spinner-color, var(--sys-color-token-subtle));
-  border-radius: 12px;
+  border-radius: var(--sys-shape-corner-medium-small);
   clip-path: rect(0, var(--clip-size, 15px), var(--clip-size, 15px), 0);
   content: '';
   position: absolute;
@@ -14575,8 +14792,8 @@ devtools-toolbar {
   }
 
   & > devtools-issue-counter {
-    margin-top: -4px;
-    padding: 0 1px;
+    margin-top: calc(-1 * var(--sys-size-3));
+    padding: 0 var(--sys-size-1);
   }
 
   devtools-adorner.fix-perf-icon {
@@ -14586,8 +14803,8 @@ devtools-toolbar {
   }
 
   devtools-issue-counter.main-toolbar {
-    margin-left: 1px;
-    margin-right: 1px;
+    margin-left: var(--sys-size-1);
+    margin-right: var(--sys-size-1);
   }
 
   .toolbar-dropdown-arrow {
@@ -14605,7 +14822,7 @@ devtools-toolbar {
   .toolbar-button {
     white-space: nowrap;
     overflow: hidden;
-    min-width: 28px;
+    min-width: var(--sys-size-12);
     background: transparent;
     border-radius: 0;
 
@@ -14684,9 +14901,9 @@ devtools-toolbar {
 
   .toolbar-button:not(.toolbar-has-dropdown):focus-visible::before {
     position: absolute;
-    inset: 2px;
+    inset: var(--sys-size-2);
     background-color: var(--sys-color-state-focus-highlight);
-    border-radius: 2px;
+    border-radius: var(--sys-size-2);
     content: '';
     /* This ::before rule serves as a background for an element.
     Setting z-index to make sure it's always below the content. */
@@ -14711,7 +14928,7 @@ devtools-toolbar {
     background: var(--sys-color-cdt-base-container);
     animation: 2s fade-out;
     font-weight: normal;
-    border: 1px solid var(--sys-color-divider);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     border-radius: 3px;
   }
 
@@ -14722,11 +14939,11 @@ devtools-toolbar {
   .toolbar-state-on.toolbar-toggle-with-dot .toolbar-text::after {
     content: '';
     position: absolute;
-    bottom: 2px;
+    bottom: var(--sys-size-2);
     background-color: var(--sys-color-primary-bright);
     width: 4.5px;
     height: 4.5px;
-    border: 2px solid
+    border: var(--sys-size-2) solid
       var(--override-toolbar-background-color, --sys-color-cdt-base-container);
     border-radius: 50%;
     right: 0;
@@ -14796,18 +15013,18 @@ devtools-toolbar {
   /* Input */
 
   .toolbar-input {
-    box-shadow: inset 0 0 0 2px transparent;
+    box-shadow: inset 0 0 0 var(--sys-size-2) transparent;
     box-sizing: border-box;
     width: 120px;
     height: var(--sys-size-9);
     padding: 0 var(--sys-size-2) 0 var(--sys-size-5);
-    margin: 1px 3px;
-    border-radius: 100px;
+    margin: var(--sys-size-1) 3px;
+    border-radius: var(--sys-shape-corner-full);
     min-width: 35px;
     position: relative;
 
     &.focused {
-      box-shadow: inset 0 0 0 2px var(--sys-color-state-focus-ring);
+      box-shadow: inset 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring);
     }
 
     &:not(:has(devtools-button:hover), .disabled):hover {
@@ -14860,9 +15077,9 @@ devtools-toolbar {
 
   .toolbar-divider {
     background-color: var(--sys-color-divider);
-    width: 1px;
-    margin: 5px 4px;
-    height: 16px;
+    width: var(--sys-size-1);
+    margin: 5px var(--sys-size-3);
+    height: var(--sys-size-8);
   }
 
   .toolbar-spacer {
@@ -14880,14 +15097,14 @@ devtools-toolbar {
 
   &:not([floating]) > .toolbar-button:last-child:not(:first-child, select) {
     justify-content: left;
-    margin-right: 2px;
+    margin-right: var(--sys-size-2);
   }
 
   & > .highlight::before {
     content: '';
     position: absolute;
-    inset: 2px;
-    border-radius: 2px;
+    inset: var(--sys-size-2);
+    border-radius: var(--sys-size-2);
     background: var(--sys-color-neutral-container);
     z-index: -1;
   }
@@ -15072,7 +15289,7 @@ devtools-toolbar {
 .devtools-link {
   color: var(--text-link);
   text-decoration: underline;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 
   .elements-disclosure & {
     color: var(--text-link);
@@ -15126,13 +15343,13 @@ var smallBubble_css_default = `/*
 
 div {
   display: inline-flex;
-  height: 14px;
+  height: var(--sys-size-7);
   align-items: center;
   vertical-align: middle;
   white-space: nowrap;
-  padding: 1px 4px;
+  padding: var(--sys-size-1) var(--sys-size-3);
   text-align: left;
-  font-size: 11px;
+  font-size: var(--sys-typescale-body5-size);
   line-height: normal;
   font-weight: bold;
   text-shadow: none;
@@ -16710,15 +16927,62 @@ var cloneCustomElement = (element, deep) => {
   return clone;
 };
 var UIUtilsWidgetDirective = class extends WidgetDirective {
+  #renderedElement;
+  #lastWidgetClass;
+  #lastKey;
   update(part, args) {
-    const result = super.update(part, args);
+    const [widgetClass, widgetParams] = args;
     if (part.type === Lit2.Directive.PartType.ELEMENT) {
-      const lightNode = part.element;
-      for (const clone of HTMLElementWithLightDOMTemplate.getClones(lightNode)) {
-        super.update({ type: Lit2.Directive.PartType.ELEMENT, element: clone }, args);
-      }
+      const element = part.element;
+      this.#updateElementAndClones(element, widgetClass, widgetParams);
+      return Lit2.nothing;
     }
-    return result;
+    if (part.type === Lit2.Directive.PartType.CHILD) {
+      let classChanged = false;
+      if (this.#lastWidgetClass !== widgetClass) {
+        this.#lastWidgetClass = widgetClass;
+        const newKey = (
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          Widget.isPrototypeOf(widgetClass) ? widgetClass : widgetClass.toString()
+        );
+        if (this.#lastKey !== newKey) {
+          this.#lastKey = newKey;
+          classChanged = true;
+        }
+      }
+      if (!this.#renderedElement || classChanged) {
+        this.#renderedElement = document.createElement("devtools-widget");
+        this.#updateElementAndClones(this.#renderedElement, widgetClass, widgetParams);
+        return this.#renderedElement;
+      }
+      this.#updateElementAndClones(this.#renderedElement, widgetClass, widgetParams);
+      return Lit2.noChange;
+    }
+    return super.update(part, args);
+  }
+  #updateElementAndClones(element, widgetClass, widgetParams) {
+    const update = (el) => {
+      const config = widgetConfig(widgetClass, widgetParams);
+      const oldConfig = widgetConfigs.get(el);
+      const widget2 = Widget.get(el);
+      if (widget2 && config.widgetParams) {
+        let needsUpdate = false;
+        for (const key in config.widgetParams) {
+          if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) && config.widgetParams[key] !== oldConfig?.widgetParams?.[key]) {
+            widget2[key] = config.widgetParams[key];
+            needsUpdate = true;
+          }
+        }
+        if (needsUpdate) {
+          widget2.requestUpdate();
+        }
+      }
+      registerWidgetConfig(el, config);
+    };
+    update(element);
+    for (const clone of HTMLElementWithLightDOMTemplate.getClones(element)) {
+      update(clone);
+    }
   }
 };
 var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate extends HTMLElement {
@@ -17288,6 +17552,30 @@ var GlassPane = class _GlassPane {
     }
   }
 };
+var PointerEventsBehavior;
+(function(PointerEventsBehavior2) {
+  PointerEventsBehavior2["BLOCKED_BY_GLASS_PANE"] = "BlockedByGlassPane";
+  PointerEventsBehavior2["PIERCE_GLASS_PANE"] = "PierceGlassPane";
+  PointerEventsBehavior2["PIERCE_CONTENTS"] = "PierceContents";
+})(PointerEventsBehavior || (PointerEventsBehavior = {}));
+var AnchorBehavior;
+(function(AnchorBehavior2) {
+  AnchorBehavior2["PREFER_TOP"] = "PreferTop";
+  AnchorBehavior2["PREFER_BOTTOM"] = "PreferBottom";
+  AnchorBehavior2["PREFER_LEFT"] = "PreferLeft";
+  AnchorBehavior2["PREFER_RIGHT"] = "PreferRight";
+})(AnchorBehavior || (AnchorBehavior = {}));
+var SizeBehavior;
+(function(SizeBehavior2) {
+  SizeBehavior2["SET_EXACT_SIZE"] = "SetExactSize";
+  SizeBehavior2["SET_EXACT_WIDTH_MAX_HEIGHT"] = "SetExactWidthMaxHeight";
+  SizeBehavior2["MEASURE_CONTENT"] = "MeasureContent";
+})(SizeBehavior || (SizeBehavior = {}));
+var MarginBehavior;
+(function(MarginBehavior2) {
+  MarginBehavior2["DEFAULT_MARGIN"] = "DefaultMargin";
+  MarginBehavior2["NO_MARGIN"] = "NoMargin";
+})(MarginBehavior || (MarginBehavior = {}));
 var containers = /* @__PURE__ */ new Map();
 var panes = /* @__PURE__ */ new Set();
 var GlassPanePanes = panes;
@@ -17487,6 +17775,16 @@ var Dialog = class _Dialog extends Common16.ObjectWrapper.eventMixin(GlassPane) 
   }
   static dialogs = [];
 };
+var Events11;
+(function(Events13) {
+  Events13["HIDDEN"] = "hidden";
+})(Events11 || (Events11 = {}));
+var OutsideTabIndexBehavior;
+(function(OutsideTabIndexBehavior2) {
+  OutsideTabIndexBehavior2["DISABLE_ALL_OUTSIDE_TAB_INDEX"] = "DisableAllTabIndex";
+  OutsideTabIndexBehavior2["PRESERVE_MAIN_VIEW_TAB_INDEX"] = "PreserveMainViewTabIndex";
+  OutsideTabIndexBehavior2["PRESERVE_TAB_INDEX"] = "PreserveTabIndex";
+})(OutsideTabIndexBehavior || (OutsideTabIndexBehavior = {}));
 var DialogWidget = class extends Common16.ObjectWrapper.eventMixin(Widget) {
   #open = false;
   #jslogContext = "";
@@ -17751,12 +18049,29 @@ function setHidden(element, value) {
 function setLevel(element, level) {
   element.setAttribute("aria-level", level.toString());
 }
+var AutocompleteInteractionModel;
+(function(AutocompleteInteractionModel2) {
+  AutocompleteInteractionModel2["INLINE"] = "inline";
+  AutocompleteInteractionModel2["LIST"] = "list";
+  AutocompleteInteractionModel2["BOTH"] = "both";
+  AutocompleteInteractionModel2["NONE"] = "none";
+})(AutocompleteInteractionModel || (AutocompleteInteractionModel = {}));
 function setAutocomplete(element, interactionModel = "none") {
   element.setAttribute("aria-autocomplete", interactionModel);
 }
 function clearAutocomplete(element) {
   element.removeAttribute("aria-autocomplete");
 }
+var PopupRole;
+(function(PopupRole2) {
+  PopupRole2["FALSE"] = "false";
+  PopupRole2["TRUE"] = "true";
+  PopupRole2["MENU"] = "menu";
+  PopupRole2["LIST_BOX"] = "listbox";
+  PopupRole2["TREE"] = "tree";
+  PopupRole2["GRID"] = "grid";
+  PopupRole2["DIALOG"] = "dialog";
+})(PopupRole || (PopupRole = {}));
 function setHasPopup(element, value = "false") {
   if (value !== "false") {
     element.setAttribute("aria-haspopup", value);
@@ -17815,6 +18130,11 @@ function setSetSize(element, size) {
 function setPositionInSet(element, position) {
   element.setAttribute("aria-posinset", position.toString());
 }
+var AnnouncerRole;
+(function(AnnouncerRole2) {
+  AnnouncerRole2["ALERT"] = "alert";
+  AnnouncerRole2["STATUS"] = "status";
+})(AnnouncerRole || (AnnouncerRole = {}));
 var LiveAnnouncer = class _LiveAnnouncer {
   static #announcerElementsByRole = {
     [
@@ -17921,7 +18241,7 @@ var ContextFlavorListener_exports = {};
 var DropTarget_exports = {};
 __export(DropTarget_exports, {
   DropTarget: () => DropTarget,
-  Type: () => Type
+  Type: () => Type3
 });
 
 // gen/front_end/ui/legacy/dropTarget.css.js
@@ -17946,8 +18266,8 @@ var dropTarget_css_default = `/*
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px;
-  border: 4px dashed var(--sys-color-neutral-outline);
+  margin: var(--sys-size-9);
+  border: var(--sys-size-3) dashed var(--sys-color-neutral-outline);
   pointer-events: none;
 }
 
@@ -18028,7 +18348,7 @@ var DropTarget = class {
     }
   }
 };
-var Type = {
+var Type3 = {
   URI: { kind: "string", type: /text\/uri-list/ },
   Folder: { kind: "file", type: /$^/ },
   File: { kind: "file", type: /.*/ },
@@ -18041,10 +18361,10 @@ var EmptyWidget_exports = {};
 __export(EmptyWidget_exports, {
   EmptyWidget: () => EmptyWidget
 });
-import "./../kit/kit.js";
-import * as i18n29 from "./../../core/i18n/i18n.js";
-import { Directives as Directives4, html as html4, render as render8 } from "./../lit/lit.js";
-import * as VisualLogging18 from "./../visual_logging/visual_logging.js";
+import "../kit/kit.js";
+import * as i18n29 from "../../core/i18n/i18n.js";
+import { html as html4, render as render8 } from "../lit/lit.js";
+import * as VisualLogging18 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
 var emptyWidget_css_default = `/*
@@ -18052,6 +18372,12 @@ var emptyWidget_css_default = `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+}
 
 .empty-view-scroller {
   overflow: auto;
@@ -18068,21 +18394,17 @@ var UIStrings15 = {
 };
 var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings15);
 var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
-var { ref } = Directives4;
-var DEFAULT_VIEW = (input, output, target) => {
+var DEFAULT_VIEW = (input, _output, target) => {
   render8(html4`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
-    <div class="empty-state" jslog=${VisualLogging18.section("empty-view")}
-         ${ref((e) => {
-    output.contentElement = e;
-  })}>
+    <div class="empty-state" jslog=${VisualLogging18.section("empty-view")}>
       <div class="empty-state-header">${input.header}</div>
       <div class="empty-state-description">
         <span>${input.text}</span>
         ${input.link ? html4`<devtools-link href=${input.link} jslogContext=${"learn-more"}>${i18nString15(UIStrings15.learnMore)}</devtools-link>` : ""}
       </div>
-      ${input.extraElements}
+      <slot></slot>
     </div>`, target, { container: { classes: ["empty-view-scroller"] } });
 };
 var EmptyWidget = class extends VBox {
@@ -18090,14 +18412,12 @@ var EmptyWidget = class extends VBox {
   #text;
   #link;
   #view;
-  #firstUpdate = true;
-  #extraElements = [];
   constructor(headerOrElement, text = "", element, view = DEFAULT_VIEW) {
     const header = typeof headerOrElement === "string" ? headerOrElement : "";
     if (!element && headerOrElement instanceof HTMLElement) {
       element = headerOrElement;
     }
-    super(element);
+    super(element, { useShadowDom: true, classes: ["empty-widget-container"] });
     this.#header = header;
     this.#text = text;
     this.#link = void 0;
@@ -18116,21 +18436,8 @@ var EmptyWidget = class extends VBox {
     this.#header = header;
     this.performUpdate();
   }
-  set extraElements(elements) {
-    this.#extraElements = elements;
-    this.#firstUpdate = false;
-    this.requestUpdate();
-  }
   performUpdate() {
-    if (this.#firstUpdate) {
-      this.#extraElements = [...this.element.children];
-      this.#firstUpdate = false;
-    }
-    const output = {};
-    this.#view({ header: this.#header, text: this.#text, link: this.#link, extraElements: this.#extraElements }, output, this.element);
-    if (output.contentElement) {
-      this.contentElement = output.contentElement;
-    }
+    this.#view({ header: this.#header, text: this.#text, link: this.#link }, void 0, this.contentElement);
   }
 };
 
@@ -18139,16 +18446,18 @@ var FilterBar_exports = {};
 __export(FilterBar_exports, {
   CheckboxFilterUI: () => CheckboxFilterUI,
   FilterBar: () => FilterBar,
+  FilterBarEvents: () => FilterBarEvents,
+  FilterUIEvents: () => FilterUIEvents,
   NamedBitSetFilterUI: () => NamedBitSetFilterUI,
   NamedBitSetFilterUIElement: () => NamedBitSetFilterUIElement,
   TextFilterUI: () => TextFilterUI,
   filterStyles: () => filter_css_default
 });
-import * as Common17 from "./../../core/common/common.js";
-import * as Host10 from "./../../core/host/host.js";
-import * as i18n31 from "./../../core/i18n/i18n.js";
-import * as Platform18 from "./../../core/platform/platform.js";
-import * as VisualLogging19 from "./../visual_logging/visual_logging.js";
+import * as Common17 from "../../core/common/common.js";
+import * as Host10 from "../../core/host/host.js";
+import * as i18n31 from "../../core/i18n/i18n.js";
+import * as Platform18 from "../../core/platform/platform.js";
+import * as VisualLogging19 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/filter.css.js
 var filter_css_default = `/*
@@ -18193,7 +18502,7 @@ var filter_css_default = `/*
   display: inline-block;
   flex: none;
   margin: auto var(--sys-size-2);
-  padding: 3px 6px;
+  padding: 3px var(--sys-size-4);
   background: transparent;
   border-radius: var(--sys-size-4);
   overflow: hidden;
@@ -18257,7 +18566,7 @@ var filter_css_default = `/*
 .filter-divider {
   background-color: var(--sys-color-divider);
   width: var(--sys-size-1);
-  margin: 5px 4px;
+  margin: 5px var(--sys-size-3);
   height: var(--sys-size-8);
 }
 
@@ -18452,6 +18761,14 @@ var FilterBar = class extends Common17.ObjectWrapper.eventMixin(HBox) {
     return this.alwaysShowFilters || this.stateSetting.get() && this.enabled;
   }
 };
+var FilterBarEvents;
+(function(FilterBarEvents2) {
+  FilterBarEvents2["CHANGED"] = "Changed";
+})(FilterBarEvents || (FilterBarEvents = {}));
+var FilterUIEvents;
+(function(FilterUIEvents2) {
+  FilterUIEvents2["FILTER_CHANGED"] = "FilterChanged";
+})(FilterUIEvents || (FilterUIEvents = {}));
 var TextFilterUI = class extends Common17.ObjectWrapper.ObjectWrapper {
   filterElement;
   #filter;
@@ -18755,7 +19072,7 @@ var FilterSuggestionBuilder_exports = {};
 __export(FilterSuggestionBuilder_exports, {
   FilterSuggestionBuilder: () => FilterSuggestionBuilder
 });
-import * as Platform19 from "./../../core/platform/platform.js";
+import * as Platform19 from "../../core/platform/platform.js";
 var FilterSuggestionBuilder = class {
   keys;
   valueSorter;
@@ -18817,7 +19134,7 @@ var ForwardedInputEventHandler_exports = {};
 __export(ForwardedInputEventHandler_exports, {
   ForwardedInputEventHandler: () => ForwardedInputEventHandler
 });
-import * as Host11 from "./../../core/host/host.js";
+import * as Host11 from "../../core/host/host.js";
 var ForwardedInputEventHandler = class {
   constructor() {
     Host11.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host11.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.onKeyEventUnhandled, this);
@@ -18842,7 +19159,7 @@ __export(InplaceEditor_exports, {
   Config: () => Config,
   InplaceEditor: () => InplaceEditor
 });
-import * as Platform20 from "./../../core/platform/platform.js";
+import * as Platform20 from "../../core/platform/platform.js";
 var inplaceEditorInstance = null;
 var InplaceEditor = class _InplaceEditor {
   focusRestorer;
@@ -19015,9 +19332,9 @@ var LinkContextMenuProvider_exports = {};
 __export(LinkContextMenuProvider_exports, {
   LinkContextMenuProvider: () => LinkContextMenuProvider
 });
-import * as Host12 from "./../../core/host/host.js";
-import * as UIHelpers from "./../helpers/helpers.js";
-import { Link } from "./../kit/kit.js";
+import * as Host12 from "../../core/host/host.js";
+import * as UIHelpers from "../helpers/helpers.js";
+import { Link } from "../kit/kit.js";
 var LinkContextMenuProvider = class {
   appendApplicableItems(_event, contextMenu, target) {
     let targetNode = target;
@@ -19047,11 +19364,11 @@ __export(ListWidget_exports, {
   Editor: () => Editor,
   ListWidget: () => ListWidget
 });
-import * as i18n33 from "./../../core/i18n/i18n.js";
-import * as Platform21 from "./../../core/platform/platform.js";
-import * as Buttons8 from "./../components/buttons/buttons.js";
-import { html as html5, nothing as nothing5, render as render9 } from "./../lit/lit.js";
-import * as VisualLogging20 from "./../visual_logging/visual_logging.js";
+import * as i18n33 from "../../core/i18n/i18n.js";
+import * as Platform21 from "../../core/platform/platform.js";
+import * as Buttons8 from "../components/buttons/buttons.js";
+import { html as html5, nothing as nothing5, render as render9 } from "../lit/lit.js";
+import * as VisualLogging20 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
 var listWidget_css_default = `/*
@@ -19079,7 +19396,7 @@ var listWidget_css_default = `/*
 
 .list-separator {
   background: var(--sys-color-divider);
-  height: 1px;
+  height: var(--sys-size-1);
 }
 
 .list-item {
@@ -19179,16 +19496,16 @@ var listWidget_css_default = `/*
 }
 
 .text-prompt-container {
-  padding: 3px 6px;
-  height: 24px;
+  padding: 3px var(--sys-size-4);
+  height: var(--sys-size-11);
   border: none;
   box-shadow: var(--legacy-focus-ring-inactive-shadow);
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
   width: 100%;
   background-color: var(--sys-color-cdt-base-container);
 
   &:focus {
-    border: 1px solid var(--sys-color-state-focus-ring);
+    border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
   }
 
   & .text-prompt {
@@ -19662,7 +19979,7 @@ __export(Panel_exports, {
   Panel: () => Panel,
   PanelWithSidebar: () => PanelWithSidebar
 });
-import * as VisualLogging21 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging21 from "../visual_logging/visual_logging.js";
 var Panel = class extends VBox {
   panelName;
   constructor(name, useShadowDom) {
@@ -19718,7 +20035,7 @@ var PopoverHelper_exports = {};
 __export(PopoverHelper_exports, {
   PopoverHelper: () => PopoverHelper
 });
-import * as VisualLogging22 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging22 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/popover.css.js
 var popover_css_default = `/*
@@ -19997,8 +20314,8 @@ var progressIndicator_css_default = `/*
   background-color: var(--sys-color-error-bright);
   border: 0;
   width: 10px;
-  height: 12px;
-  border-radius: 2px;
+  height: var(--sys-size-6);
+  border-radius: var(--sys-size-2);
 }
 
 .progress-indicator-shadow-container {
@@ -20011,13 +20328,13 @@ var progressIndicator_css_default = `/*
   text-overflow: ellipsis;
   overflow: hidden;
   max-width: 150px;
-  margin-right: 2px;
+  margin-right: var(--sys-size-2);
   color: var(--sys-color-token-subtle);
 }
 
 .progress-indicator-shadow-container progress {
   flex: auto;
-  margin: 0 2px;
+  margin: 0 var(--sys-size-2);
   width: 100px;
 }
 
@@ -20096,9 +20413,9 @@ __export(RemoteDebuggingTerminatedScreen_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
   RemoteDebuggingTerminatedScreen: () => RemoteDebuggingTerminatedScreen
 });
-import * as i18n35 from "./../../core/i18n/i18n.js";
-import * as Buttons9 from "./../components/buttons/buttons.js";
-import { html as html6, render as render10 } from "./../lit/lit.js";
+import * as i18n35 from "../../core/i18n/i18n.js";
+import * as Buttons9 from "../components/buttons/buttons.js";
+import { html as html6, render as render10 } from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
 var remoteDebuggingTerminatedScreen_css_default = `/*
@@ -20207,7 +20524,7 @@ __export(ReportView_exports, {
   ReportView: () => ReportView,
   Section: () => Section2
 });
-import * as VisualLogging23 from "./../visual_logging/visual_logging.js";
+import * as VisualLogging23 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/reportView.css.js
 var reportView_css_default = `/*
@@ -20230,14 +20547,14 @@ var reportView_css_default = `/*
 }
 
 .report-header {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   padding: var(--sys-size-7) var(--sys-size-9);
 }
 
 .report-header devtools-toolbar {
-  margin-bottom: -8px;
+  margin-bottom: calc(-1 * var(--sys-size-5));
   margin-top: 5px;
-  margin-left: -8px;
+  margin-left: calc(-1 * var(--sys-size-5));
 }
 
 .report-title {
@@ -20256,7 +20573,7 @@ var reportView_css_default = `/*
 .report-section {
   display: flex;
   padding: var(--sys-size-7) var(--sys-size-9) 11px var(--sys-size-9);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   flex-direction: column;
 }
 
@@ -20280,7 +20597,7 @@ var reportView_css_default = `/*
   flex: 1 1 auto;
   text-overflow: ellipsis;
   overflow: hidden;
-  line-height: 16px;
+  line-height: var(--sys-size-8);
   color: var(--sys-color-on-surface);
   min-width: var(--sys-size-21);
   white-space: nowrap;
@@ -20308,7 +20625,7 @@ var reportView_css_default = `/*
 .report-field-name {
   font: var(--sys-typescale-body5-medium);
   color: var(--sys-color-on-surface-subtle);
-  flex: 0 0 128px;
+  flex: 0 0 var(--sys-size-21);
   text-align: left;
   white-space: pre-wrap;
 }
@@ -20328,7 +20645,7 @@ var reportView_css_default = `/*
 
 .report-field-value-subtitle {
   color: var(--sys-color-state-disabled);
-  line-height: 14px;
+  line-height: var(--sys-size-7);
 }
 
 .report-row-selectable {
@@ -20601,13 +20918,13 @@ __export(SearchableView_exports, {
   SearchConfig: () => SearchConfig,
   SearchableView: () => SearchableView
 });
-import * as Common18 from "./../../core/common/common.js";
-import * as i18n37 from "./../../core/i18n/i18n.js";
-import * as Platform22 from "./../../core/platform/platform.js";
-import * as VisualLogging24 from "./../visual_logging/visual_logging.js";
-import * as Buttons10 from "./../components/buttons/buttons.js";
-import { createIcon as createIcon8 } from "./../kit/kit.js";
-import * as Settings12 from "./../settings/settings.js";
+import * as Common18 from "../../core/common/common.js";
+import * as i18n37 from "../../core/i18n/i18n.js";
+import * as Platform22 from "../../core/platform/platform.js";
+import * as VisualLogging24 from "../visual_logging/visual_logging.js";
+import * as Buttons10 from "../components/buttons/buttons.js";
+import { createIcon as createIcon8 } from "../kit/kit.js";
+import * as Settings12 from "../settings/settings.js";
 
 // gen/front_end/ui/legacy/searchableView.css.js
 var searchableView_css_default = `/*
@@ -20618,7 +20935,7 @@ var searchableView_css_default = `/*
 
 .search-bar {
   flex: 0 0 33px;
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 
   devtools-icon[name="search"] {
     width: var(--sys-size-8);
@@ -20695,7 +21012,7 @@ var searchableView_css_default = `/*
     grid-column: 1/3;
     display: inline-flex;
     padding: 0 var(--sys-size-2) 0 var(--sys-size-5);
-    border-radius: 100px;
+    border-radius: var(--sys-shape-corner-full);
     height: var(--sys-size-10);
     position: relative;
 
@@ -20712,7 +21029,7 @@ var searchableView_css_default = `/*
       left: 0;
       background: var(--sys-color-cdt-base);
       z-index: -10;
-      border-radius: 100px;
+      border-radius: var(--sys-shape-corner-full);
       padding: var(--sys-size-2);
     }
 
@@ -20761,11 +21078,11 @@ var searchableView_css_default = `/*
   }
 
   .replace-element:has(input:focus) {
-    box-shadow: inset 0 0 0 2px var(--sys-color-state-focus-ring);
+    box-shadow: inset 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring);
   }
 
   .search-inputs:has(input[type="search"]:focus) .search-input-background {
-    box-shadow: inset 0 0 0 2px var(--sys-color-state-focus-ring);
+    box-shadow: inset 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring);
   }
 }
 
@@ -21374,10 +21691,10 @@ var SoftDropDown_exports = {};
 __export(SoftDropDown_exports, {
   SoftDropDown: () => SoftDropDown
 });
-import * as i18n39 from "./../../core/i18n/i18n.js";
-import * as Geometry6 from "./../../models/geometry/geometry.js";
-import { createIcon as createIcon9 } from "./../kit/kit.js";
-import * as VisualLogging25 from "./../visual_logging/visual_logging.js";
+import * as i18n39 from "../../core/i18n/i18n.js";
+import * as Geometry6 from "../../models/geometry/geometry.js";
+import { createIcon as createIcon9 } from "../kit/kit.js";
+import * as VisualLogging25 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/softDropDown.css.js
 var softDropDown_css_default = `/*
@@ -21467,7 +21784,7 @@ button.soft-dropdown:hover:not(:active) > .title {
 
 @media (forced-colors: active) {
   button.soft-dropdown {
-    border: 1px solid ButtonText;
+    border: var(--sys-size-1) solid ButtonText;
     background: ButtonFace;
     color: ButtonText;
   }
@@ -21754,8 +22071,8 @@ __export(TargetCrashedScreen_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   TargetCrashedScreen: () => TargetCrashedScreen
 });
-import * as i18n41 from "./../../core/i18n/i18n.js";
-import { html as html7, render as render11 } from "./../lit/lit.js";
+import * as i18n41 from "../../core/i18n/i18n.js";
+import { html as html7, render as render11 } from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
 var targetCrashedScreen_css_default = `/*
@@ -21812,24 +22129,25 @@ var TargetCrashedScreen = class extends VBox {
 // gen/front_end/ui/legacy/Treeoutline.js
 var Treeoutline_exports = {};
 __export(Treeoutline_exports, {
-  Events: () => Events2,
+  Events: () => Events12,
   TreeElement: () => TreeElement,
   TreeElementWrapper: () => TreeElementWrapper,
   TreeOutline: () => TreeOutline,
   TreeOutlineInShadow: () => TreeOutlineInShadow,
   TreeSearch: () => TreeSearch,
+  TreeVariant: () => TreeVariant,
   TreeViewElement: () => TreeViewElement,
   ifExpanded: () => ifExpanded,
   treeElementBylistItemNode: () => treeElementBylistItemNode
 });
-import * as Common19 from "./../../core/common/common.js";
-import * as Host13 from "./../../core/host/host.js";
-import * as i18n43 from "./../../core/i18n/i18n.js";
-import * as Platform24 from "./../../core/platform/platform.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as Highlighting from "./../components/highlighting/highlighting.js";
-import * as Lit3 from "./../lit/lit.js";
-import * as VisualLogging26 from "./../visual_logging/visual_logging.js";
+import * as Common19 from "../../core/common/common.js";
+import * as Host13 from "../../core/host/host.js";
+import * as i18n43 from "../../core/i18n/i18n.js";
+import * as Platform24 from "../../core/platform/platform.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as Highlighting from "../components/highlighting/highlighting.js";
+import * as Lit3 from "../lit/lit.js";
+import * as VisualLogging26 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/treeoutline.css.js
 var treeoutline_css_default = `/*
@@ -22173,14 +22491,14 @@ var str_22 = i18n43.i18n.registerUIStrings("ui/legacy/Treeoutline.ts", UIStrings
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var nodeToParentTreeElementMap = /* @__PURE__ */ new WeakMap();
 var { render: render12 } = Lit3;
-var Events2;
-(function(Events3) {
-  Events3["ElementAttached"] = "ElementAttached";
-  Events3["ElementsDetached"] = "ElementsDetached";
-  Events3["ElementExpanded"] = "ElementExpanded";
-  Events3["ElementCollapsed"] = "ElementCollapsed";
-  Events3["ElementSelected"] = "ElementSelected";
-})(Events2 || (Events2 = {}));
+var Events12;
+(function(Events13) {
+  Events13["ElementAttached"] = "ElementAttached";
+  Events13["ElementsDetached"] = "ElementsDetached";
+  Events13["ElementExpanded"] = "ElementExpanded";
+  Events13["ElementCollapsed"] = "ElementCollapsed";
+  Events13["ElementSelected"] = "ElementSelected";
+})(Events12 || (Events12 = {}));
 var TreeOutline = class extends Common19.ObjectWrapper.ObjectWrapper {
   rootElementInternal;
   renderSelection;
@@ -22448,6 +22766,11 @@ var TreeOutline = class extends Common19.ObjectWrapper.ObjectWrapper {
   onStartedEditingTitle(_treeElement) {
   }
 };
+var TreeVariant;
+(function(TreeVariant2) {
+  TreeVariant2["NAVIGATION_TREE"] = "NavigationTree";
+  TreeVariant2["OTHER"] = "Other";
+})(TreeVariant || (TreeVariant = {}));
 var TreeOutlineInShadow = class extends TreeOutline {
   element;
   shadowRoot;
@@ -22660,7 +22983,7 @@ var TreeElement = class {
     child.onattach();
     child.ensureSelection();
     if (this.treeOutline) {
-      this.treeOutline.dispatchEventToListeners(Events2.ElementAttached, child);
+      this.treeOutline.dispatchEventToListeners(Events12.ElementAttached, child);
     }
     const nextSibling = child.nextSibling ? child.nextSibling.listItemNode : null;
     this.childrenListNode.insertBefore(child.listItemNode, nextSibling);
@@ -22703,7 +23026,7 @@ var TreeElement = class {
     }
     child.detach();
     if (this.treeOutline) {
-      this.treeOutline.dispatchEventToListeners(Events2.ElementsDetached);
+      this.treeOutline.dispatchEventToListeners(Events12.ElementsDetached);
     }
   }
   removeChild(child) {
@@ -22739,7 +23062,7 @@ var TreeElement = class {
     }
     this.childrenInternal = [];
     if (this.treeOutline) {
-      this.treeOutline.dispatchEventToListeners(Events2.ElementsDetached);
+      this.treeOutline.dispatchEventToListeners(Events12.ElementsDetached);
     }
   }
   get selectable() {
@@ -22981,7 +23304,7 @@ var TreeElement = class {
     this.expanded = false;
     this.oncollapse();
     if (this.treeOutline) {
-      this.treeOutline.dispatchEventToListeners(Events2.ElementCollapsed, this);
+      this.treeOutline.dispatchEventToListeners(Events12.ElementCollapsed, this);
     }
     const selectedTreeElement = this.treeOutline?.selectedTreeElement;
     if (selectedTreeElement?.hasAncestor(this)) {
@@ -23021,7 +23344,7 @@ var TreeElement = class {
     setExpanded(this.listItemNode, true);
     if (this.treeOutline) {
       this.onexpand();
-      this.treeOutline.dispatchEventToListeners(Events2.ElementExpanded, this);
+      this.treeOutline.dispatchEventToListeners(Events12.ElementExpanded, this);
     }
   }
   async expandRecursively(maxDepth) {
@@ -23140,7 +23463,7 @@ var TreeElement = class {
     }
     this.listItemNode.classList.add("selected");
     setSelected(this.listItemNode, true);
-    this.treeOutline.dispatchEventToListeners(Events2.ElementSelected, this);
+    this.treeOutline.dispatchEventToListeners(Events12.ElementSelected, this);
     if (lastSelected) {
       lastSelected.deselect();
     }
@@ -23417,6 +23740,12 @@ var TreeSearch = class extends Common19.ObjectWrapper.ObjectWrapper {
     return this.#matches.length;
   }
 };
+(function(TreeSearch2) {
+  let Events13;
+  (function(Events14) {
+    Events14["SEARCH_CHANGED"] = "SearchChanged";
+  })(Events13 = TreeSearch2.Events || (TreeSearch2.Events = {}));
+})(TreeSearch || (TreeSearch = {}));
 var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
   static CLONED_ATTRIBUTES = SDK2.DOMModel.ARIA_ATTRIBUTES.union(/* @__PURE__ */ new Set(["jslog"]));
   #clonedAttributes = /* @__PURE__ */ new Set();
@@ -23575,18 +23904,18 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
         );
       }
     });
-    this.#treeOutline.addEventListener(Events2.ElementSelected, (event) => {
+    this.#treeOutline.addEventListener(Events12.ElementSelected, (event) => {
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new _TreeViewElement.SelectEvent());
       }
     });
-    this.#treeOutline.addEventListener(Events2.ElementExpanded, (event) => {
+    this.#treeOutline.addEventListener(Events12.ElementExpanded, (event) => {
       this.dispatchEvent(new _TreeViewElement.TreeElementExpandEvent(event.data, true));
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new _TreeViewElement.ExpandEvent({ expanded: true }));
       }
     });
-    this.#treeOutline.addEventListener(Events2.ElementCollapsed, (event) => {
+    this.#treeOutline.addEventListener(Events12.ElementCollapsed, (event) => {
       this.dispatchEvent(new _TreeViewElement.TreeElementExpandEvent(event.data, false));
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new _TreeViewElement.ExpandEvent({ expanded: false }));
@@ -23853,7 +24182,7 @@ var View_exports = {};
 __export(View_exports, {
   SimpleView: () => SimpleView
 });
-import * as Platform25 from "./../../core/platform/platform.js";
+import * as Platform25 from "../../core/platform/platform.js";
 var SimpleView = class extends VBox {
   #title;
   #viewId;

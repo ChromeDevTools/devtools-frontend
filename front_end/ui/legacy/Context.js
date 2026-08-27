@@ -68,6 +68,10 @@ export class Context {
         return new Set(this.#flavors.keys());
     }
 }
+var Events;
+(function (Events) {
+    Events["FLAVOR_CHANGED"] = "FlavorChanged";
+})(Events || (Events = {}));
 const registeredListeners = [];
 export function registerListener(registration) {
     registeredListeners.push(registration);

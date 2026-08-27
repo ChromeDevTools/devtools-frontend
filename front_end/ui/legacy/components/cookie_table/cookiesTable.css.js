@@ -14,7 +14,7 @@ export default `/*
 }
 
 .cookies-table devtools-icon {
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 }
 
 /*# sourceURL=${import.meta.resolve('./cookiesTable.css')} */`;

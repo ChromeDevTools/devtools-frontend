@@ -5,7 +5,6 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import { PerformanceTraceContext } from '../contexts/PerformanceTraceContext.js';
 const UIStringsNotTranslate = {
     selectingTraceEvent: 'Selecting trace event',
 };
@@ -33,11 +32,11 @@ export class SelectTraceEventByKeyTool {
         };
     }
     async handler(params, capabilities) {
-        const conversationContext = capabilities.conversationContext;
-        if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+        const performanceTraceContext = capabilities.getPerformanceTraceContext();
+        if (!performanceTraceContext) {
             return { error: 'Performance trace context is not available.' };
         }
-        const focus = conversationContext.getItem();
+        const focus = performanceTraceContext.getItem();
         const event = focus.lookupEvent(params.eventKey);
         if (!event) {
             return { error: `Could not find event with key "${params.eventKey}".` };

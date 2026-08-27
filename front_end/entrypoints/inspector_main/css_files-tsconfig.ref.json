@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "nodeIcon.css.js",
+    "outermostTargetSelector.css.js",
+    "renderingOptions.css.js"
+  ]
+}

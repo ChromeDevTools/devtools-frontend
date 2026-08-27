@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "../../../../../tsc/front_end/third_party/chromium/client-variations/client-variations-tsconfig.ref.json"
+      "path": "./client-variations-tsconfig.ref.json"
     }
   ]
 }

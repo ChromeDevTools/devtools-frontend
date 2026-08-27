@@ -5,14 +5,14 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/ui/lit/lit.prebundle.js
-import { AsyncDirective, Decorators, Directive as Directive2, Directives, LitElement, noChange, nothing as nothing2, StaticHtml as StaticHtml2, svg } from "./../../third_party/lit/lit.js";
+import { AsyncDirective, Decorators, Directive as Directive2, Directives, LitElement, noChange, nothing as nothing2, StaticHtml as StaticHtml2, svg } from "../../third_party/lit/lit.js";
 
 // gen/front_end/ui/lit/Directives.js
 var Directives_exports = {};
 __export(Directives_exports, {
   InterceptBindingDirective: () => InterceptBindingDirective
 });
-import * as Lit from "./../../third_party/lit/lit.js";
+import * as Lit from "../../third_party/lit/lit.js";
 var InterceptBindingDirective = class _InterceptBindingDirective extends Lit.Directive.Directive {
   static #interceptedBindings = /* @__PURE__ */ new WeakMap();
   static #attachedBindings = /* @__PURE__ */ new WeakMap();
@@ -77,8 +77,8 @@ var InterceptBindingDirective = class _InterceptBindingDirective extends Lit.Dir
 };
 
 // gen/front_end/ui/lit/i18n-template.js
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Lit2 from "./../../third_party/lit/lit.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Lit2 from "../../third_party/lit/lit.js";
 var { html } = Lit2.StaticHtml;
 function i18nTemplate(registeredStrings, stringId, placeholders) {
   const formatter = registeredStrings.getLocalizedStringSetFor(i18n.DevToolsLocale.DevToolsLocale.instance().locale).getMessageFormatterFor(stringId);
@@ -98,7 +98,7 @@ function i18nTemplate(registeredStrings, stringId, placeholders) {
 }
 
 // gen/front_end/ui/lit/render.js
-import * as Lit3 from "./../../third_party/lit/lit.js";
+import * as Lit3 from "../../third_party/lit/lit.js";
 var renderOptions = /* @__PURE__ */ new WeakMap();
 var containerListeners = /* @__PURE__ */ new WeakMap();
 function render2(template, container, options) {
@@ -192,8 +192,8 @@ function render2(template, container, options) {
 }
 
 // gen/front_end/ui/lit/strip-whitespace.js
-import * as Platform from "./../../core/platform/platform.js";
-import * as Lit4 from "./../../third_party/lit/lit.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as Lit4 from "../../third_party/lit/lit.js";
 var templates = /* @__PURE__ */ new WeakMap();
 function isLitDirective(value) {
   return Boolean(typeof value === "object" && value && "_$litDirective$" in value && "values" in value);

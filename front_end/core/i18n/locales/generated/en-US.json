@@ -2547,7 +2547,7 @@
     "message": "Show Accessibility"
   },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveRecording": {
-    "message": "A11y Announcements recording"
+    "message": "Announcements recording"
   },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "Accessibility node not exposed"
@@ -3701,6 +3701,12 @@
   "panels/application/components/AdsView.ts | adIframesTitle": {
     "message": "Ad iframes (total {PH1})"
   },
+  "panels/application/components/AdsView.ts | adScripts": {
+    "message": "Ad scripts"
+  },
+  "panels/application/components/AdsView.ts | adScriptsTitle": {
+    "message": "Ad scripts (total {PH1})"
+  },
   "panels/application/components/AdsView.ts | average": {
     "message": "(Average: {PH1})"
   },
@@ -3742,6 +3748,9 @@
   },
   "panels/application/components/AdsView.ts | unnamed": {
     "message": "<unnamed>"
+  },
+  "panels/application/components/AdsView.ts | url": {
+    "message": "URL"
   },
   "panels/application/components/AdsView.ts | viewportAdCount": {
     "message": "Viewport ad count"
@@ -7880,6 +7889,9 @@
   "panels/elements/elements-meta.ts | showHtmlComments": {
     "message": "Show HTML comments"
   },
+  "panels/elements/elements-meta.ts | showInactiveCSSRules": {
+    "message": "Show inactive CSS rules"
+  },
   "panels/elements/elements-meta.ts | showLayout": {
     "message": "Show Layout"
   },
@@ -8242,6 +8254,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
     "message": "Insert style rule below"
+  },
+  "panels/elements/StylePropertiesSection.ts | notMatching": {
+    "message": "This rule doesn’t currently match the selected element"
   },
   "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
     "message": "{PH1}[Attributes Style]"

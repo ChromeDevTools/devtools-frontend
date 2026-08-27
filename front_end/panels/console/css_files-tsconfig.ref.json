@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "consoleContextSelector.css.js",
+    "consoleInsightTeaser.css.js",
+    "consolePinPane.css.js",
+    "consolePrompt.css.js",
+    "consoleSidebar.css.js",
+    "consoleView.css.js",
+    "symbolizedErrorWidget.css.js"
+  ]
+}

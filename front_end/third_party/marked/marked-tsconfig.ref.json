@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "outDir": ".",
+    "rootDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "package/lib/marked.esm.d.ts"
+  ],
+  "references": [
+
+  ]
+}

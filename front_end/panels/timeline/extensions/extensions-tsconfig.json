@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../../front_end/panels/timeline/extensions",
     "skipLibCheck": true,
     "sourceMap": true,

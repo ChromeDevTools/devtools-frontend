@@ -9,17 +9,17 @@ var CookiesTable_exports = {};
 __export(CookiesTable_exports, {
   CookiesTable: () => CookiesTable
 });
-import "./../data_grid/data_grid.js";
-import "./../../../components/buttons/buttons.js";
-import * as Common from "./../../../../core/common/common.js";
-import * as i18n from "./../../../../core/i18n/i18n.js";
-import * as Root from "./../../../../core/root/root.js";
-import * as SDK from "./../../../../core/sdk/sdk.js";
-import * as IssuesManager from "./../../../../models/issues_manager/issues_manager.js";
-import * as NetworkForward from "./../../../../panels/network/forward/forward.js";
-import { Icon } from "./../../../kit/kit.js";
-import { Directives, html, nothing, render } from "./../../../lit/lit.js";
-import * as UI from "./../../legacy.js";
+import "../data_grid/data_grid.js";
+import "../../../components/buttons/buttons.js";
+import * as Common from "../../../../core/common/common.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
+import * as Root from "../../../../core/root/root.js";
+import * as SDK from "../../../../core/sdk/sdk.js";
+import * as IssuesManager from "../../../../models/issues_manager/issues_manager.js";
+import * as NetworkForward from "../../../../panels/network/forward/forward.js";
+import { Icon } from "../../../kit/kit.js";
+import { Directives, html, nothing, render } from "../../../lit/lit.js";
+import * as UI from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/data_grid/dataGridAiButton.css.js
 var dataGridAiButton_css_default = `/*
@@ -57,7 +57,7 @@ var cookiesTable_css_default = `/*
 }
 
 .cookies-table devtools-icon {
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 }
 
 /*# sourceURL=${import.meta.resolve("./cookiesTable.css")} */`;

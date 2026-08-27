@@ -341,6 +341,18 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkDataGridNode.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export var Events;
+(function (Events) {
+    // RequestSelected might fire twice for the same "activation"
+    Events["RequestSelected"] = "RequestSelected";
+    Events["RequestActivated"] = "RequestActivated";
+})(Events || (Events = {}));
+export var RequestPanelBehavior;
+(function (RequestPanelBehavior) {
+    RequestPanelBehavior["ShowPanel"] = "ShowPanel";
+    RequestPanelBehavior["HidePanel"] = "HidePanel";
+    RequestPanelBehavior["Unchanged"] = "Unchanged";
+})(RequestPanelBehavior || (RequestPanelBehavior = {}));
 export class NetworkNode extends DataGrid.SortableDataGrid.SortableDataGridNode {
     parentViewInternal;
     isHovered;

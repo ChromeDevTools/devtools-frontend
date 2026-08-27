@@ -99,6 +99,13 @@ export class ResizerWidget extends Common.ObjectWrapper.ObjectWrapper {
         this.#startY = undefined;
     }
 }
+export var Events;
+(function (Events) {
+    Events["RESIZE_START"] = "ResizeStart";
+    Events["RESIZE_UPDATE_XY"] = "ResizeUpdateXY";
+    Events["RESIZE_UPDATE_POSITION"] = "ResizeUpdatePosition";
+    Events["RESIZE_END"] = "ResizeEnd";
+})(Events || (Events = {}));
 export class SimpleResizerWidget extends ResizerWidget {
     #isVertical = true;
     isVertical() {

@@ -4,7 +4,6 @@
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import { canResourceContentsBeReadForTrace } from '../AiOrigins.js';
-import { PerformanceTraceContext } from '../contexts/PerformanceTraceContext.js';
 const UIStringsNotTranslate = {
     lookingUpFunctionCode: 'Looking up function code',
 };
@@ -42,17 +41,17 @@ export class GetFunctionCodeTool {
         };
     }
     async handler(params, capabilities) {
-        const conversationContext = capabilities.conversationContext;
-        if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+        const performanceTraceContext = capabilities.getPerformanceTraceContext();
+        if (!performanceTraceContext) {
             return { error: 'Performance trace context is not available.' };
         }
-        if (conversationContext.getOrigin().startsWith('imported-trace://')) {
+        if (performanceTraceContext.getOrigin().startsWith('imported-trace://')) {
             return { error: 'Cannot use this tool on an imported file.' };
         }
         if (!params.scriptUrl) {
             return { error: 'Missing arg: scriptUrl' };
         }
-        const allowedOrigin = conversationContext.getOrigin();
+        const allowedOrigin = performanceTraceContext.getOrigin();
         if (!canResourceContentsBeReadForTrace(params.scriptUrl, allowedOrigin)) {
             return { error: 'Script not found' };
         }
@@ -62,7 +61,7 @@ export class GetFunctionCodeTool {
         if (params.column === undefined) {
             return { error: 'Missing arg: column' };
         }
-        const formatter = conversationContext.createFormatter();
+        const formatter = performanceTraceContext.createFormatter();
         const url = params.scriptUrl;
         const code = await formatter.resolveFunctionCodeAtLocation(url, params.line, params.column);
         if (!code) {

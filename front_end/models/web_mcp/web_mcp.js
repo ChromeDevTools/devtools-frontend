@@ -7,12 +7,20 @@ var __export = (target, all) => {
 // gen/front_end/models/web_mcp/WebMCPModel.js
 var WebMCPModel_exports = {};
 __export(WebMCPModel_exports, {
+  Events: () => Events,
   Result: () => Result,
   Tool: () => Tool,
   WebMCPModel: () => WebMCPModel
 });
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as Bindings from "./../bindings/bindings.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as Bindings from "../bindings/bindings.js";
+var Events;
+(function(Events2) {
+  Events2["TOOLS_ADDED"] = "ToolsAdded";
+  Events2["TOOLS_REMOVED"] = "ToolsRemoved";
+  Events2["TOOL_INVOKED"] = "ToolInvoked";
+  Events2["TOOL_RESPONDED"] = "ToolResponded";
+})(Events || (Events = {}));
 var Result = class {
   status;
   output;

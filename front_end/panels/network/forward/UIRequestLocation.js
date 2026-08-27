@@ -1,6 +1,29 @@
 // Copyright 2021 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+export var UIHeaderSection;
+(function (UIHeaderSection) {
+    UIHeaderSection["GENERAL"] = "General";
+    UIHeaderSection["REQUEST"] = "Request";
+    UIHeaderSection["RESPONSE"] = "Response";
+    UIHeaderSection["EARLY_HINTS"] = "EarlyHints";
+})(UIHeaderSection || (UIHeaderSection = {}));
+export var UIRequestTabs;
+(function (UIRequestTabs) {
+    UIRequestTabs["COOKIES"] = "cookies";
+    UIRequestTabs["DEVICE_BOUND_SESSIONS"] = "device-bound-sessions";
+    UIRequestTabs["EVENT_SOURCE"] = "eventSource";
+    UIRequestTabs["HEADERS_COMPONENT"] = "headers-component";
+    UIRequestTabs["PAYLOAD"] = "payload";
+    UIRequestTabs["INITIATOR"] = "initiator";
+    UIRequestTabs["PREVIEW"] = "preview";
+    UIRequestTabs["RESPONSE"] = "response";
+    UIRequestTabs["TIMING"] = "timing";
+    UIRequestTabs["TRUST_TOKENS"] = "trust-tokens";
+    UIRequestTabs["WS_FRAMES"] = "web-socket-frames";
+    UIRequestTabs["DIRECT_SOCKET_CONNECTION"] = "direct-socket-connection";
+    UIRequestTabs["DIRECT_SOCKET_CHUNKS"] = "direct-socket-chunks";
+})(UIRequestTabs || (UIRequestTabs = {}));
 export class UIRequestLocation {
     request;
     header;

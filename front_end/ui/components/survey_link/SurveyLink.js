@@ -23,6 +23,15 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/components/survey_link/SurveyLink.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+var State;
+(function (State) {
+    State["CHECKING"] = "Checking";
+    State["SHOW_LINK"] = "ShowLink";
+    State["SENDING"] = "Sending";
+    State["SURVEY_SHOWN"] = "SurveyShown";
+    State["FAILED"] = "Failed";
+    State["DONT_SHOW_LINK"] = "DontShowLink";
+})(State || (State = {}));
 /**
  * A link to a survey. The link is rendered asynchronously because we need to first check if
  * canShowSurvey succeeds.

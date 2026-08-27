@@ -61,6 +61,36 @@ export const TrackNames = [
     'Extension',
     'ServerTimings',
 ];
+/**
+ * Used as the context when a track (aka group) is selected and we log
+ * something to the VE Logging framework.
+ * This enum broadly corresponds with the list of TrackNames, but can be more
+ * specific in some situations such as when we want to identify the thread type
+ * rather than log "thread" - it is useful to know if the thread is the main
+ * thread or not.
+ * VE context needs to be kebab-case, and not contain any PII, which is why we
+ * log this set list rather than full track names, which in the case of threads
+ * can contain URLswhich we do not want to log.
+ */
+export var VisualLoggingTrackName;
+(function (VisualLoggingTrackName) {
+    VisualLoggingTrackName["ANIMATIONS"] = "animations";
+    VisualLoggingTrackName["TIMINGS"] = "timings";
+    VisualLoggingTrackName["INTERACTIONS"] = "interactions";
+    VisualLoggingTrackName["GPU"] = "gpu";
+    VisualLoggingTrackName["LAYOUT_SHIFTS"] = "layout-shifts";
+    VisualLoggingTrackName["SERVER_TIMINGS"] = "server.timings";
+    VisualLoggingTrackName["THREAD_CPU_PROFILE"] = "thread.cpu-profile";
+    VisualLoggingTrackName["THREAD_MAIN"] = "thread.main";
+    VisualLoggingTrackName["THREAD_FRAME"] = "thread.frame";
+    VisualLoggingTrackName["THREAD_WORKER"] = "thread.worker";
+    VisualLoggingTrackName["THREAD_RASTERIZER"] = "thread.rasterizer";
+    VisualLoggingTrackName["THREAD_POOL"] = "thread.pool";
+    VisualLoggingTrackName["THREAD_OTHER"] = "thread.other";
+    VisualLoggingTrackName["EXTENSION"] = "extension";
+    VisualLoggingTrackName["ANGULAR_TRACK"] = "angular-track";
+    VisualLoggingTrackName["NETWORK"] = "network";
+})(VisualLoggingTrackName || (VisualLoggingTrackName = {}));
 export class CompatibilityTracksAppender {
     #trackForLevel = new Map();
     #trackForGroup = new Map();

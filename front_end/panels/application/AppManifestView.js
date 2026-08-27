@@ -1395,4 +1395,8 @@ export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.V
         };
     }
 }
+export var Events;
+(function (Events) {
+    Events["MANIFEST_DETECTED"] = "ManifestDetected";
+})(Events || (Events = {}));
 //# sourceMappingURL=AppManifestView.js.map

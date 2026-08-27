@@ -86,7 +86,7 @@ button.link {
 }
 
 .select-an-element-text {
-  margin-left: 2px;
+  margin-left: var(--sys-size-2);
 }
 
 main {
@@ -384,7 +384,7 @@ main {
   The \\'box-shadow\\' is a workaround to hide the content appearing between the \\'.input-form\\'
   and the footer in some resolutions even though the \\'.input-form\\' has \\'bottom: 0\\'.
   */
-  box-shadow: 0 1px var(--sys-color-cdt-base-container);
+  box-shadow: 0 var(--sys-size-1) var(--sys-color-cdt-base-container);
 
   /* Prevents the input form from jumping when the scrollbar is shown */
   /* 688px is the max width of the input form + left and right paddings: var(--sys-size-36) + 2 * var(--sys-size-5)  */

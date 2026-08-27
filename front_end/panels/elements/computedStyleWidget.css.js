@@ -11,7 +11,7 @@ export default `/*
 
 @scope to (devtools-widget > *) {
   .styles-sidebar-pane-toolbar {
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     flex-shrink: 0;
   }
 

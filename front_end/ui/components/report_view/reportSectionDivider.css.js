@@ -19,7 +19,7 @@ export default `/*
 
 .section-divider {
   margin: var(--sys-size-5) 0;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve('./reportSectionDivider.css')} */`;

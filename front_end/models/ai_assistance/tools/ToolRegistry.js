@@ -15,6 +15,7 @@ import { GetStylesTool } from './GetStyles.js';
 import { GetTraceEventByKeyTool } from './GetTraceEventByKey.js';
 import { GetTraceMainThreadSummaryTool } from './GetTraceMainThreadSummary.js';
 import { GetTraceNetworkSummaryTool } from './GetTraceNetworkSummary.js';
+import { ListCookiesTool } from './ListCookies.js';
 import { ListNetworkRequestsTool } from './ListNetworkRequests.js';
 import { ListPageOriginsTool } from './ListPageOrigins.js';
 import { ListSourcesTool } from './ListSources.js';
@@ -43,6 +44,7 @@ export const TOOLS = {
     ["listPageOrigins" /* ToolName.LIST_PAGE_ORIGINS */]: new ListPageOriginsTool(),
     ["listStorageKeys" /* ToolName.LIST_STORAGE_KEYS */]: new ListStorageKeysTool(),
     ["getStorageValues" /* ToolName.GET_STORAGE_VALUES */]: new GetStorageValuesTool(),
+    ["listCookies" /* ToolName.LIST_COOKIES */]: new ListCookiesTool(),
     ["getTraceEventByKey" /* ToolName.GET_TRACE_EVENT_BY_KEY */]: new GetTraceEventByKeyTool(),
     ["selectTraceEventByKey" /* ToolName.SELECT_TRACE_EVENT_BY_KEY */]: new SelectTraceEventByKeyTool(),
     ["listSources" /* ToolName.LIST_SOURCES */]: new ListSourcesTool(),

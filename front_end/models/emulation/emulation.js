@@ -8,6 +8,7 @@ var __export = (target, all) => {
 var DeviceModeModel_exports = {};
 __export(DeviceModeModel_exports, {
   DeviceModeModel: () => DeviceModeModel,
+  Events: () => Events2,
   Insets: () => Insets,
   MaxDeviceNameLength: () => MaxDeviceNameLength,
   MaxDeviceScaleFactor: () => MaxDeviceScaleFactor,
@@ -16,24 +17,29 @@ __export(DeviceModeModel_exports, {
   MinDeviceSize: () => MinDeviceSize,
   Rect: () => Rect,
   Type: () => Type2,
+  UA: () => UA,
   defaultMobileScaleFactor: () => defaultMobileScaleFactor
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as Geometry from "./../geometry/geometry.js";
-import * as Workspace from "./../workspace/workspace.js";
+import * as Common2 from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as Root2 from "../../core/root/root.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as Geometry from "../geometry/geometry.js";
+import * as Workspace from "../workspace/workspace.js";
 
 // gen/front_end/models/emulation/EmulatedDevices.js
 var EmulatedDevices_exports = {};
 __export(EmulatedDevices_exports, {
   CATEGORY_ORDER: () => CATEGORY_ORDER,
+  Capability: () => Capability,
+  Category: () => Category,
+  CutoutShape: () => CutoutShape,
   EmulatedDevice: () => EmulatedDevice,
   EmulatedDevicesList: () => EmulatedDevicesList,
+  Events: () => Events,
   Horizontal: () => Horizontal,
   HorizontalSpanned: () => HorizontalSpanned,
   Type: () => Type,
@@ -42,10 +48,10 @@ __export(EmulatedDevices_exports, {
   deviceCategory: () => deviceCategory,
   getCategoryTitle: () => getCategoryTitle
 });
-import * as Common from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Root from "./../../core/root/root.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as Common from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Root from "../../core/root/root.js";
+import * as SDK from "../../core/sdk/sdk.js";
 var UIStrings = {
   /**
    * @description Title of the Laptop with touch device.
@@ -475,6 +481,13 @@ var Type;
   Type3["SmartDisplay"] = "smart-display";
   Type3["Unknown"] = "unknown";
 })(Type || (Type = {}));
+var Category;
+(function(Category2) {
+  Category2["MOBILE"] = "mobile";
+  Category2["FOLDABLE"] = "foldable";
+  Category2["TABLET_DESKTOP"] = "tablet_desktop";
+  Category2["SMART_DISPLAY"] = "smart_display";
+})(Category || (Category = {}));
 function deviceCategory(device) {
   if (device.type === Type.Foldable || device.isFoldableScreen || device.isDualScreen) {
     return "foldable";
@@ -505,6 +518,11 @@ function getCategoryTitle(category) {
       return i18nString(UIStrings.smartDisplaysGroup);
   }
 }
+var Capability;
+(function(Capability2) {
+  Capability2["TOUCH"] = "touch";
+  Capability2["MOBILE"] = "mobile";
+})(Capability || (Capability = {}));
 var Show;
 (function(Show2) {
   Show2["Always"] = "Always";
@@ -626,6 +644,18 @@ var EmulatedDevicesList = class _EmulatedDevicesList extends Common.ObjectWrappe
     }
   }
 };
+var Events;
+(function(Events3) {
+  Events3["CUSTOM_DEVICES_UPDATED"] = "CustomDevicesUpdated";
+  Events3["STANDARD_DEVICES_UPDATED"] = "StandardDevicesUpdated";
+})(Events || (Events = {}));
+var CutoutShape;
+(function(CutoutShape2) {
+  CutoutShape2["PILL"] = "pill";
+  CutoutShape2["NOTCH"] = "notch";
+  CutoutShape2["CIRCLE"] = "circle";
+  CutoutShape2["RECTANGLE"] = "rectangle";
+})(CutoutShape || (CutoutShape = {}));
 var emulatedDevices = [
   // This is used by a python script to keep this list up-to-date with
   // chromedriver native code.
@@ -2982,12 +3012,23 @@ var Rect = class _Rect {
     return new _Rect(this.left + origin.left, this.top + origin.top, this.width, this.height);
   }
 };
+var Events2;
+(function(Events3) {
+  Events3["UPDATED"] = "Updated";
+})(Events2 || (Events2 = {}));
 var Type2;
 (function(Type3) {
   Type3["None"] = "None";
   Type3["Responsive"] = "Responsive";
   Type3["Device"] = "Device";
 })(Type2 || (Type2 = {}));
+var UA;
+(function(UA2) {
+  UA2["MOBILE"] = "Mobile";
+  UA2["MOBILE_NO_TOUCH"] = "Mobile (no touch)";
+  UA2["DESKTOP"] = "Desktop";
+  UA2["DESKTOP_TOUCH"] = "Desktop (touch)";
+})(UA || (UA = {}));
 var MinDeviceSize = 50;
 var MaxDeviceSize = 9999;
 var MinDeviceScaleFactor = 0;

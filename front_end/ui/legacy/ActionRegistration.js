@@ -247,6 +247,44 @@ export function getRegisteredActionExtensions() {
 export function maybeRemoveActionExtension(actionId) {
     return registeredActions.delete(actionId);
 }
+export var Platforms;
+(function (Platforms) {
+    Platforms["ALL"] = "All platforms";
+    Platforms["MAC"] = "mac";
+    Platforms["WINDOWS_LINUX"] = "windows,linux";
+    Platforms["ANDROID"] = "Android";
+    Platforms["WINDOWS"] = "windows";
+})(Platforms || (Platforms = {}));
+export var Events;
+(function (Events) {
+    Events["ENABLED"] = "Enabled";
+    Events["TOGGLED"] = "Toggled";
+})(Events || (Events = {}));
+export var ActionCategory;
+(function (ActionCategory) {
+    ActionCategory["NONE"] = "";
+    ActionCategory["ELEMENTS"] = "ELEMENTS";
+    ActionCategory["SCREENSHOT"] = "SCREENSHOT";
+    ActionCategory["NETWORK"] = "NETWORK";
+    ActionCategory["MEMORY"] = "MEMORY";
+    ActionCategory["JAVASCRIPT_PROFILER"] = "JAVASCRIPT_PROFILER";
+    ActionCategory["CONSOLE"] = "CONSOLE";
+    ActionCategory["PERFORMANCE"] = "PERFORMANCE";
+    ActionCategory["MOBILE"] = "MOBILE";
+    ActionCategory["HELP"] = "HELP";
+    ActionCategory["LAYERS"] = "LAYERS";
+    ActionCategory["NAVIGATION"] = "NAVIGATION";
+    ActionCategory["DRAWER"] = "DRAWER";
+    ActionCategory["GLOBAL"] = "GLOBAL";
+    ActionCategory["RESOURCES"] = "RESOURCES";
+    ActionCategory["BACKGROUND_SERVICES"] = "BACKGROUND_SERVICES";
+    ActionCategory["SETTINGS"] = "SETTINGS";
+    ActionCategory["DEBUGGER"] = "DEBUGGER";
+    ActionCategory["SOURCES"] = "SOURCES";
+    ActionCategory["RENDERING"] = "RENDERING";
+    ActionCategory["RECORDER"] = "RECORDER";
+    ActionCategory["CHANGES"] = "CHANGES";
+})(ActionCategory || (ActionCategory = {}));
 export function getLocalizedActionCategory(category) {
     switch (category) {
         case "ELEMENTS" /* ActionCategory.ELEMENTS */:
@@ -297,4 +335,37 @@ export function getLocalizedActionCategory(category) {
     // Not all categories are cleanly typed yet. Return the category as-is in this case.
     return i18n.i18n.lockedString(category);
 }
+export var IconClass;
+(function (IconClass) {
+    IconClass["LARGEICON_NODE_SEARCH"] = "select-element";
+    IconClass["START_RECORDING"] = "record-start";
+    IconClass["STOP_RECORDING"] = "record-stop";
+    IconClass["REFRESH"] = "refresh";
+    IconClass["CLEAR"] = "clear";
+    IconClass["EYE"] = "eye";
+    IconClass["LARGEICON_PHONE"] = "devices";
+    IconClass["PLAY"] = "play";
+    IconClass["DOWNLOAD"] = "download";
+    IconClass["LARGEICON_PAUSE"] = "pause";
+    IconClass["LARGEICON_RESUME"] = "resume";
+    IconClass["MOP"] = "mop";
+    IconClass["BIN"] = "bin";
+    IconClass["LARGEICON_SETTINGS_GEAR"] = "gear";
+    IconClass["LARGEICON_STEP_OVER"] = "step-over";
+    IconClass["LARGE_ICON_STEP_INTO"] = "step-into";
+    IconClass["LARGE_ICON_STEP"] = "step";
+    IconClass["LARGE_ICON_STEP_OUT"] = "step-out";
+    IconClass["BREAKPOINT_CROSSED_FILLED"] = "breakpoint-crossed-filled";
+    IconClass["BREAKPOINT_CROSSED"] = "breakpoint-crossed";
+    IconClass["PLUS"] = "plus";
+    IconClass["UNDO"] = "undo";
+    IconClass["COPY"] = "copy";
+    IconClass["IMPORT"] = "import";
+    IconClass["COMMENT_MODE"] = "comment-mode";
+})(IconClass || (IconClass = {}));
+export var KeybindSet;
+(function (KeybindSet) {
+    KeybindSet["DEVTOOLS_DEFAULT"] = "devToolsDefault";
+    KeybindSet["VS_CODE"] = "vsCode";
+})(KeybindSet || (KeybindSet = {}));
 //# sourceMappingURL=ActionRegistration.js.map

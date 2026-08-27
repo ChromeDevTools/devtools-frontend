@@ -42,4 +42,8 @@ export class ZoomManager extends Common.ObjectWrapper.ObjectWrapper {
         }
     }
 }
+export var Events;
+(function (Events) {
+    Events["ZOOM_CHANGED"] = "ZoomChanged";
+})(Events || (Events = {}));
 //# sourceMappingURL=ZoomManager.js.map

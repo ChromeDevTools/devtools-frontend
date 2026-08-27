@@ -1,5 +1,5 @@
 // gen/front_end/models/trace/lantern/simulation/ConnectionPool.js
-import * as Core from "./../core/core.js";
+import * as Core from "../core/core.js";
 
 // gen/front_end/models/trace/lantern/simulation/TCPConnection.js
 var INITIAL_CONGESTION_WINDOW = 10;
@@ -332,8 +332,8 @@ var DNSCache = class _DNSCache {
 };
 
 // gen/front_end/models/trace/lantern/simulation/SimulationTimingMap.js
-import * as Core2 from "./../core/core.js";
-import * as Graph from "./../graph/graph.js";
+import * as Core2 from "../core/core.js";
+import * as Graph from "../graph/graph.js";
 var SimulatorTimingMap = class {
   nodeTimings;
   constructor() {
@@ -456,8 +456,8 @@ var SimulatorTimingMap = class {
 };
 
 // gen/front_end/models/trace/lantern/simulation/Simulator.js
-import * as Core3 from "./../core/core.js";
-import * as Graph2 from "./../graph/graph.js";
+import * as Core3 from "../core/core.js";
+import * as Graph2 from "../graph/graph.js";
 var defaultThrottling = Constants.throttling.mobileSlow4G;
 var DEFAULT_MAXIMUM_CONCURRENT_REQUESTS = 10;
 var DEFAULT_LAYOUT_TASK_MULTIPLIER = 0.5;

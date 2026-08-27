@@ -17,10 +17,10 @@ type MapConstructors<T> = {
 export type WidgetDependencies<T> = MapConstructors<InjectReturn<T>>;
 export declare function lookupUniverseForElement(element: HTMLElement): Foundation.Universe.Universe | undefined;
 export type AnyWidget = Widget<HTMLElement | DocumentFragment>;
-type WidgetConstructor<WidgetT extends AnyWidget> = new (element: HTMLElement, ...args: any[]) => WidgetT;
-type WidgetProducer<WidgetT extends AnyWidget> = (element: HTMLElement, universe?: Foundation.Universe.Universe) => WidgetT;
-type WidgetFactory<WidgetT extends AnyWidget> = WidgetConstructor<WidgetT> | WidgetProducer<WidgetT>;
-type InferWidgetTFromFactory<F> = F extends WidgetFactory<infer WidgetT> ? WidgetT : never;
+export type WidgetConstructor<WidgetT extends AnyWidget> = new (element: HTMLElement, ...args: any[]) => WidgetT;
+export type WidgetProducer<WidgetT extends AnyWidget> = (element: HTMLElement, universe?: Foundation.Universe.Universe) => WidgetT;
+export type WidgetFactory<WidgetT extends AnyWidget> = WidgetConstructor<WidgetT> | WidgetProducer<WidgetT>;
+export type InferWidgetTFromFactory<F> = F extends WidgetFactory<infer WidgetT> ? WidgetT : never;
 export declare class WidgetConfig<WidgetT extends AnyWidget> {
     readonly widgetClass: WidgetFactory<WidgetT>;
     readonly widgetParams?: Partial<WidgetT> | undefined;

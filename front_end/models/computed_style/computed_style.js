@@ -8,10 +8,11 @@ var __export = (target, all) => {
 var ComputedStyleModel_exports = {};
 __export(ComputedStyleModel_exports, {
   ComputedStyle: () => ComputedStyle,
-  ComputedStyleModel: () => ComputedStyleModel
+  ComputedStyleModel: () => ComputedStyleModel,
+  Events: () => Events
 });
-import * as Common from "./../../core/common/common.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as Common from "../../core/common/common.js";
+import * as SDK from "../../core/sdk/sdk.js";
 var ComputedStyleModel = class extends Common.ObjectWrapper.ObjectWrapper {
   #node = null;
   #cssModel = null;
@@ -172,6 +173,11 @@ var ComputedStyleModel = class extends Common.ObjectWrapper.ObjectWrapper {
     return result;
   }
 };
+var Events;
+(function(Events2) {
+  Events2["CSS_MODEL_CHANGED"] = "CSSModelChanged";
+  Events2["COMPUTED_STYLE_CHANGED"] = "ComputedStyleChanged";
+})(Events || (Events = {}));
 var ComputedStyle = class {
   node;
   computedStyle;

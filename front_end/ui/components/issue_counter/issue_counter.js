@@ -7,15 +7,16 @@ var __export = (target, all) => {
 // gen/front_end/ui/components/issue_counter/IssueCounter.js
 var IssueCounter_exports = {};
 __export(IssueCounter_exports, {
+  DisplayMode: () => DisplayMode,
   IssueCounter: () => IssueCounter,
   getIssueCountsEnumeration: () => getIssueCountsEnumeration,
   getIssueKindIconName: () => getIssueKindIconName
 });
-import "./../icon_button/icon_button.js";
-import * as Common from "./../../../core/common/common.js";
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as IssuesManager from "./../../../models/issues_manager/issues_manager.js";
-import { html, render } from "./../../lit/lit.js";
+import "../icon_button/icon_button.js";
+import * as Common from "../../../core/common/common.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as IssuesManager from "../../../models/issues_manager/issues_manager.js";
+import { html, render } from "../../lit/lit.js";
 
 // gen/front_end/ui/components/issue_counter/issueCounter.css.js
 var issueCounter_css_default = `/*
@@ -64,6 +65,12 @@ function toIconGroup(iconName, sizeOverride) {
   }
   return { iconName };
 }
+var DisplayMode;
+(function(DisplayMode2) {
+  DisplayMode2["OMIT_EMPTY"] = "OmitEmpty";
+  DisplayMode2["SHOW_ALWAYS"] = "ShowAlways";
+  DisplayMode2["ONLY_MOST_IMPORTANT"] = "OnlyMostImportant";
+})(DisplayMode || (DisplayMode = {}));
 var listFormatter = /* @__PURE__ */ function defineFormatter() {
   let intlListFormat;
   return {
@@ -233,13 +240,13 @@ __export(IssueLinkIcon_exports, {
   IssueLinkIcon: () => IssueLinkIcon,
   extractShortPath: () => extractShortPath
 });
-import "./../../kit/kit.js";
-import * as Common2 from "./../../../core/common/common.js";
-import * as i18n3 from "./../../../core/i18n/i18n.js";
-import * as IssuesManager2 from "./../../../models/issues_manager/issues_manager.js";
-import * as RenderCoordinator from "./../render_coordinator/render_coordinator.js";
-import * as Lit from "./../../lit/lit.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
+import "../../kit/kit.js";
+import * as Common2 from "../../../core/common/common.js";
+import * as i18n3 from "../../../core/i18n/i18n.js";
+import * as IssuesManager2 from "../../../models/issues_manager/issues_manager.js";
+import * as RenderCoordinator from "../render_coordinator/render_coordinator.js";
+import * as Lit from "../../lit/lit.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/issue_counter/issueLinkIcon.css.js
 var issueLinkIcon_css_default = `/*
@@ -276,8 +283,8 @@ button {
 }
 
 devtools-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
   vertical-align: middle;
 
   &[name="issue-cross-filled"] {

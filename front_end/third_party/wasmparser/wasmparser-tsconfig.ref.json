@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "outDir": ".",
+    "rootDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "package/dist/esm/WasmDis.d.ts",
+    "package/dist/esm/WasmParser.d.ts"
+  ],
+  "references": [
+
+  ]
+}

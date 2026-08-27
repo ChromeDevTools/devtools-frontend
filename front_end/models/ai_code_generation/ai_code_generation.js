@@ -5,7 +5,7 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/models/ai_code_generation/debug.js
-import * as Platform from "./../../core/platform/platform.js";
+import * as Platform from "../../core/platform/platform.js";
 function isDebugMode() {
   return Boolean(Platform.HostRuntime.HOST_RUNTIME.getLocalStorage()?.getItem("debugAiCodeGenerationEnabled"));
 }
@@ -32,8 +32,8 @@ __export(AiCodeGeneration_exports, {
   additionalContextForConsole: () => additionalContextForConsole,
   basePreamble: () => basePreamble
 });
-import * as Host from "./../../core/host/host.js";
-import * as Root from "./../../core/root/root.js";
+import * as Host from "../../core/host/host.js";
+import * as Root from "../../core/root/root.js";
 var basePreamble = `You are a highly skilled senior software engineer with deep expertise across multiple web technologies and programming languages, including JavaScript, TypeScript, HTML, and CSS.
 Your role is to act as an expert pair programmer within the Chrome DevTools environment.
 

@@ -4,12 +4,12 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/core/text_utils/CodeMirrorUtils.js
+// ../../front_end/core/text_utils/CodeMirrorUtils.ts
 var CodeMirrorUtils_exports = {};
 __export(CodeMirrorUtils_exports, {
   createCssTokenizer: () => createCssTokenizer
 });
-import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror from "../../third_party/codemirror.next/codemirror.next.js";
 function createCssTokenizer() {
   async function tokenize(line, callback) {
     const streamParser = await CodeMirror.cssStreamParser();
@@ -30,16 +30,16 @@ function createCssTokenizer() {
   return tokenize;
 }
 
-// gen/front_end/core/text_utils/ContentData.js
+// ../../front_end/core/text_utils/ContentData.ts
 var ContentData_exports = {};
 __export(ContentData_exports, {
   ContentData: () => ContentData,
   EMPTY_TEXT_CONTENT_DATA: () => EMPTY_TEXT_CONTENT_DATA
 });
-import * as Common from "./../common/common.js";
-import * as Platform4 from "./../platform/platform.js";
+import * as Common from "../common/common.js";
+import * as Platform4 from "../platform/platform.js";
 
-// gen/front_end/core/text_utils/ContentProvider.js
+// ../../front_end/core/text_utils/ContentProvider.ts
 var ContentProvider_exports = {};
 __export(ContentProvider_exports, {
   SearchMatch: () => SearchMatch,
@@ -47,10 +47,6 @@ __export(ContentProvider_exports, {
   isStreamingContentProvider: () => isStreamingContentProvider
 });
 var SearchMatch = class {
-  lineNumber;
-  lineContent;
-  columnNumber;
-  matchLength;
   constructor(lineNumber, lineContent, columnNumber, matchLength) {
     this.lineNumber = lineNumber;
     this.lineContent = lineContent;
@@ -73,19 +69,19 @@ var isStreamingContentProvider = function(provider) {
   return "requestStreamingContent" in provider;
 };
 
-// gen/front_end/core/text_utils/Text.js
+// ../../front_end/core/text_utils/Text.ts
 var Text_exports = {};
 __export(Text_exports, {
   Text: () => Text
 });
-import * as Platform3 from "./../platform/platform.js";
+import * as Platform3 from "../platform/platform.js";
 
-// gen/front_end/core/text_utils/TextCursor.js
+// ../../front_end/core/text_utils/TextCursor.ts
 var TextCursor_exports = {};
 __export(TextCursor_exports, {
   TextCursor: () => TextCursor
 });
-import * as Platform from "./../platform/platform.js";
+import * as Platform from "../platform/platform.js";
 var TextCursor = class {
   #lineEndings;
   #offset = 0;
@@ -117,19 +113,15 @@ var TextCursor = class {
   }
 };
 
-// gen/front_end/core/text_utils/TextRange.js
+// ../../front_end/core/text_utils/TextRange.ts
 var TextRange_exports = {};
 __export(TextRange_exports, {
   SourceRange: () => SourceRange,
   TextRange: () => TextRange
 });
-import * as Platform2 from "./../platform/platform.js";
+import * as Platform2 from "../platform/platform.js";
 var MAX_SAFE_INT32 = 2 ** 31 - 1;
 var TextRange = class _TextRange {
-  startLine;
-  startColumn;
-  endLine;
-  endColumn;
   constructor(startLine, startColumn, endLine, endColumn) {
     this.startLine = startLine;
     this.startColumn = startColumn;
@@ -143,7 +135,12 @@ var TextRange = class _TextRange {
     return new _TextRange(line, column, MAX_SAFE_INT32, MAX_SAFE_INT32);
   }
   static fromObject(serializedTextRange) {
-    return new _TextRange(serializedTextRange.startLine, serializedTextRange.startColumn, serializedTextRange.endLine, serializedTextRange.endColumn);
+    return new _TextRange(
+      serializedTextRange.startLine,
+      serializedTextRange.startColumn,
+      serializedTextRange.endLine,
+      serializedTextRange.endColumn
+    );
   }
   static comparator(range1, range2) {
     return range1.compareTo(range2);
@@ -341,8 +338,6 @@ var TextRange = class _TextRange {
   }
 };
 var SourceRange = class {
-  offset;
-  length;
   constructor(offset, length) {
     this.offset = offset;
     this.length = length;
@@ -352,7 +347,7 @@ var SourceRange = class {
   }
 };
 
-// gen/front_end/core/text_utils/Text.js
+// ../../front_end/core/text_utils/Text.ts
 var Text = class {
   #value;
   #lineEndings;
@@ -416,7 +411,7 @@ var Text = class {
   }
 };
 
-// gen/front_end/core/text_utils/ContentData.js
+// ../../front_end/core/text_utils/ContentData.ts
 var objectUrlRegistry = new FinalizationRegistry((url) => {
   URL.revokeObjectURL(url);
 });
@@ -636,13 +631,13 @@ var EMPTY_TEXT_CONTENT_DATA = new ContentData(
   "text/plain"
 );
 
-// gen/front_end/core/text_utils/StaticContentProvider.js
+// ../../front_end/core/text_utils/StaticContentProvider.ts
 var StaticContentProvider_exports = {};
 __export(StaticContentProvider_exports, {
   StaticContentProvider: () => StaticContentProvider
 });
 
-// gen/front_end/core/text_utils/TextUtils.js
+// ../../front_end/core/text_utils/TextUtils.ts
 var TextUtils_exports = {};
 __export(TextUtils_exports, {
   BalancedJSONTokenizer: () => BalancedJSONTokenizer,
@@ -655,7 +650,7 @@ __export(TextUtils_exports, {
   performSearchInContentData: () => performSearchInContentData,
   performSearchInSearchMatches: () => performSearchInSearchMatches
 });
-import * as Platform5 from "./../platform/platform.js";
+import * as Platform5 from "../platform/platform.js";
 var KEY_VALUE_FILTER_REGEXP = /(?:^|\s)(\-)?([\w\-]+):([^\s]+)/;
 var REGEXP_FILTER_REGEXP = /(?:^|\s)(\-)?\/([^\/\\]+(\\.[^\/]*)*)\//;
 var TEXT_FILTER_REGEXP = /(?:^|\s)(\-)?([^\s]+)/;
@@ -929,7 +924,7 @@ var getOverlap = function(s1, s2) {
   return null;
 };
 
-// gen/front_end/core/text_utils/StaticContentProvider.js
+// ../../front_end/core/text_utils/StaticContentProvider.ts
 var StaticContentProvider = class _StaticContentProvider {
   #contentURL;
   #contentType;
@@ -963,15 +958,16 @@ var StaticContentProvider = class _StaticContentProvider {
   }
 };
 
-// gen/front_end/core/text_utils/StreamingContentData.js
+// ../../front_end/core/text_utils/StreamingContentData.ts
 var StreamingContentData_exports = {};
 __export(StreamingContentData_exports, {
+  Events: () => Events,
   StreamingContentData: () => StreamingContentData,
   asContentDataOrError: () => asContentDataOrError,
   isError: () => isError
 });
-import * as Common2 from "./../common/common.js";
-import * as Platform6 from "./../platform/platform.js";
+import * as Common2 from "../common/common.js";
+import * as Platform6 from "../platform/platform.js";
 var StreamingContentData = class _StreamingContentData extends Common2.ObjectWrapper.ObjectWrapper {
   mimeType;
   #charset;
@@ -1014,7 +1010,7 @@ var StreamingContentData = class _StreamingContentData extends Common2.ObjectWra
       throw new Error("Cannot add base64 data to a text-only ContentData.");
     }
     this.#chunks.push(chunk);
-    this.dispatchEventToListeners("ChunkAdded", { content: this, chunk });
+    this.dispatchEventToListeners("ChunkAdded" /* CHUNK_ADDED */, { content: this, chunk });
   }
   /** @returns An immutable ContentData with all the bytes received so far */
   content() {
@@ -1043,13 +1039,17 @@ var asContentDataOrError = function(contentDataOrError) {
   }
   return contentDataOrError.content();
 };
+var Events = /* @__PURE__ */ ((Events2) => {
+  Events2["CHUNK_ADDED"] = "ChunkAdded";
+  return Events2;
+})(Events || {});
 
-// gen/front_end/core/text_utils/WasmDisassembly.js
+// ../../front_end/core/text_utils/WasmDisassembly.ts
 var WasmDisassembly_exports = {};
 __export(WasmDisassembly_exports, {
   WasmDisassembly: () => WasmDisassembly
 });
-import * as Platform7 from "./../platform/platform.js";
+import * as Platform7 from "../platform/platform.js";
 var WasmDisassembly = class extends ContentData {
   lines;
   #offsets;
@@ -1084,7 +1084,11 @@ var WasmDisassembly = class extends ContentData {
     return this.#offsets.length;
   }
   bytecodeOffsetToLineNumber(bytecodeOffset) {
-    return Platform7.ArrayUtilities.upperBound(this.#offsets, bytecodeOffset, Platform7.ArrayUtilities.DEFAULT_COMPARATOR) - 1;
+    return Platform7.ArrayUtilities.upperBound(
+      this.#offsets,
+      bytecodeOffset,
+      Platform7.ArrayUtilities.DEFAULT_COMPARATOR
+    ) - 1;
   }
   lineNumberToBytecodeOffset(lineNumber) {
     return this.#offsets[lineNumber];

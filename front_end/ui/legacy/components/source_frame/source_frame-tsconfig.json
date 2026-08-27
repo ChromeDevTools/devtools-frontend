@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../../../front_end/ui/legacy/components/source_frame",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -86,7 +87,7 @@
       "path": "../../../../panels/linear_memory_inspector/components/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../../../../tsc/front_end/third_party/codemirror.next/bundle-tsconfig.ref.json"
+      "path": "../../../../third_party/codemirror.next/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../../components/highlighting/bundle-tsconfig.ref.json"

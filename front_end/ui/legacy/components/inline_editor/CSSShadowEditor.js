@@ -434,4 +434,8 @@ export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin(UI.Widget.V
         return this.constrainPoint(new Geometry.Point(x, y), this.innerCanvasSize);
     }
 }
+export var Events;
+(function (Events) {
+    Events["SHADOW_CHANGED"] = "ShadowChanged";
+})(Events || (Events = {}));
 //# sourceMappingURL=CSSShadowEditor.js.map

@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../../front_end/ui/components/highlighting",
     "skipLibCheck": true,
     "sourceMap": true,

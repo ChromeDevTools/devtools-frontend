@@ -129,6 +129,32 @@ const moveDownIconPath = 'M9.25 3V14.125L7.062 11.938L6 13L10 17L14 13L12.938 11
 const hideIconPath = 'M13.2708 11.1459L11.9792 9.85419C12.0347 9.32641 11.875 8.87155 11.5 8.4896C11.125 8.10766 10.6736 7.94446 10.1458 8.00002L8.85417 6.70835C9.03472 6.63891 9.22222 6.58683 9.41667 6.5521C9.61111 6.51738 9.80556 6.50002 10 6.50002C10.9722 6.50002 11.7986 6.8403 12.4792 7.52085C13.1597 8.20141 13.5 9.0278 13.5 10C13.5 10.1945 13.4826 10.3889 13.4479 10.5834C13.4132 10.7778 13.3542 10.9653 13.2708 11.1459ZM16.0417 13.9167L14.9583 12.8334C15.4583 12.4445 15.9132 12.0174 16.3229 11.5521C16.7326 11.0868 17.0764 10.5695 17.3542 10C16.6736 8.59724 15.6701 7.49655 14.3438 6.69794C13.0174 5.89933 11.5694 5.50002 10 5.50002C9.63889 5.50002 9.28472 5.52085 8.9375 5.56252C8.59028 5.60419 8.25 5.67363 7.91667 5.77085L6.70833 4.56252C7.23611 4.35419 7.77431 4.20835 8.32292 4.12502C8.87153 4.04169 9.43056 4.00002 10 4.00002C11.9861 4.00002 13.8021 4.53821 15.4479 5.6146C17.0938 6.69099 18.2778 8.1528 19 10C18.6944 10.7917 18.2882 11.5104 17.7813 12.1563C17.2743 12.8021 16.6944 13.3889 16.0417 13.9167ZM16 18.125L13.2917 15.4167C12.7639 15.6111 12.2257 15.757 11.6771 15.8542C11.1285 15.9514 10.5694 16 10 16C8.01389 16 6.19792 15.4618 4.55208 14.3854C2.90625 13.309 1.72222 11.8472 1 10C1.30556 9.20835 1.70833 8.48613 2.20833 7.83335C2.70833 7.18058 3.29167 6.5903 3.95833 6.06252L1.875 3.97919L2.9375 2.91669L17.0625 17.0625L16 18.125ZM5.02083 7.14585C4.53472 7.53474 4.08333 7.96183 3.66667 8.4271C3.25 8.89238 2.90972 9.41669 2.64583 10C3.32639 11.4028 4.32986 12.5035 5.65625 13.3021C6.98264 14.1007 8.43056 14.5 10 14.5C10.3611 14.5 10.7153 14.4757 11.0625 14.4271C11.4097 14.3785 11.7569 14.3125 12.1042 14.2292L11.1667 13.2917C10.9722 13.3611 10.7778 13.4132 10.5833 13.4479C10.3889 13.4827 10.1944 13.5 10 13.5C9.02778 13.5 8.20139 13.1597 7.52083 12.4792C6.84028 11.7986 6.5 10.9722 6.5 10C6.5 9.80558 6.52431 9.61113 6.57292 9.41669C6.62153 9.22224 6.66667 9.0278 6.70833 8.83335L5.02083 7.14585Z';
 // eye.svg
 const showIconPath = 'M10 13.5C10.972 13.5 11.7983 13.1597 12.479 12.479C13.1597 11.7983 13.5 10.972 13.5 10C13.5 9.028 13.1597 8.20167 12.479 7.521C11.7983 6.84033 10.972 6.5 10 6.5C9.028 6.5 8.20167 6.84033 7.521 7.521C6.84033 8.20167 6.5 9.028 6.5 10C6.5 10.972 6.84033 11.7983 7.521 12.479C8.20167 13.1597 9.028 13.5 10 13.5ZM10 12C9.44467 12 8.97233 11.8057 8.583 11.417C8.19433 11.0277 8 10.5553 8 10C8 9.44467 8.19433 8.97233 8.583 8.583C8.97233 8.19433 9.44467 8 10 8C10.5553 8 11.0277 8.19433 11.417 8.583C11.8057 8.97233 12 9.44467 12 10C12 10.5553 11.8057 11.0277 11.417 11.417C11.0277 11.8057 10.5553 12 10 12ZM10 16C8.014 16 6.20833 15.455 4.583 14.365C2.95833 13.2743 1.764 11.8193 1 10C1.764 8.18067 2.95833 6.72567 4.583 5.635C6.20833 4.545 8.014 4 10 4C11.986 4 13.7917 4.545 15.417 5.635C17.0417 6.72567 18.236 8.18067 19 10C18.236 11.8193 17.0417 13.2743 15.417 14.365C13.7917 15.455 11.986 16 10 16ZM10 14.5C11.5553 14.5 12.9927 14.0973 14.312 13.292C15.632 12.486 16.646 11.3887 17.354 10C16.646 8.61133 15.632 7.514 14.312 6.708C12.9927 5.90267 11.5553 5.5 10 5.5C8.44467 5.5 7.00733 5.90267 5.688 6.708C4.368 7.514 3.354 8.61133 2.646 10C3.354 11.3887 4.368 12.486 5.688 13.292C7.00733 14.0973 8.44467 14.5 10 14.5Z';
+/** export for test. **/
+export var HoverType;
+(function (HoverType) {
+    HoverType["TRACK_CONFIG_UP_BUTTON"] = "TRACK_CONFIG_UP_BUTTON";
+    HoverType["TRACK_CONFIG_DOWN_BUTTON"] = "TRACK_CONFIG_DOWN_BUTTON";
+    HoverType["TRACK_CONFIG_HIDE_BUTTON"] = "TRACK_CONFIG_HIDE_BUTTON";
+    HoverType["TRACK_CONFIG_SHOW_BUTTON"] = "TRACK_CONFIG_SHOW_BUTTON";
+    HoverType["INSIDE_TRACK_HEADER"] = "INSIDE_TRACK_HEADER";
+    HoverType["INSIDE_TRACK"] = "INSIDE_TRACK";
+    HoverType["OUTSIDE_TRACKS"] = "OUTSIDE_TRACKS";
+    HoverType["ERROR"] = "ERROR";
+})(HoverType || (HoverType = {}));
+export var GroupCollapsibleState;
+(function (GroupCollapsibleState) {
+    GroupCollapsibleState[GroupCollapsibleState["ALWAYS"] = 0] = "ALWAYS";
+    GroupCollapsibleState[GroupCollapsibleState["NEVER"] = 1] = "NEVER";
+    GroupCollapsibleState[GroupCollapsibleState["IF_MULTI_ROW"] = 2] = "IF_MULTI_ROW";
+})(GroupCollapsibleState || (GroupCollapsibleState = {}));
+export var FilterAction;
+(function (FilterAction) {
+    FilterAction["MERGE_FUNCTION"] = "MERGE_FUNCTION";
+    FilterAction["COLLAPSE_FUNCTION"] = "COLLAPSE_FUNCTION";
+    FilterAction["COLLAPSE_REPEATING_DESCENDANTS"] = "COLLAPSE_REPEATING_DESCENDANTS";
+    FilterAction["RESET_CHILDREN"] = "RESET_CHILDREN";
+    FilterAction["UNDO_ALL_ACTIONS"] = "UNDO_ALL_ACTIONS";
+})(FilterAction || (FilterAction = {}));
 export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
     flameChartDelegate;
     chartViewport;
@@ -3615,6 +3641,12 @@ export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) 
 }
 export const RulerHeight = 15;
 export const MinimalTimeWindowMs = 0.5;
+export var FlameChartDecorationType;
+(function (FlameChartDecorationType) {
+    FlameChartDecorationType["CANDY"] = "CANDY";
+    FlameChartDecorationType["WARNING_TRIANGLE"] = "WARNING_TRIANGLE";
+    FlameChartDecorationType["HIDDEN_DESCENDANTS_ARROW"] = "HIDDEN_DESCENDANTS_ARROW";
+})(FlameChartDecorationType || (FlameChartDecorationType = {}));
 // We have to ensure we draw the decorations in a particular order; warning
 // triangles always go on top of any candy stripes.
 const decorationDrawOrder = {
@@ -3680,6 +3712,51 @@ export class FlameChartTimelineData {
         this.initiatorsData = [];
     }
 }
+export var Events;
+(function (Events) {
+    /**
+     * Emitted when the <canvas> element of the FlameChart is focused by the user.
+     **/
+    Events["CANVAS_FOCUSED"] = "CanvasFocused";
+    /**
+     * Emitted when an event is selected by either mouse click, or hitting
+     * <enter> on the keyboard - e.g. the same actions that would invoke a
+     * <button> element.
+     *
+     * Will be emitted with a number which is the index of the entry that has
+     * been selected, or -1 if no entry is selected (e.g the user has clicked
+     * away from any events)
+     */
+    Events["ENTRY_INVOKED"] = "EntryInvoked";
+    // Emitted when entry label annotation is added through a shortcut or a context menu.
+    Events["ENTRY_LABEL_ANNOTATION_ADDED"] = "EntryLabelAnnotationAdded";
+    // Emitted when entries link annotation is added through a shortcut or a context menu.
+    Events["ENTRIES_LINK_ANNOTATION_CREATED"] = "EntriesLinkAnnotationCreated";
+    /**
+     * Emitted when the user enters or exits 'reorder tracks' view.
+     * If the event value is 'true', the 'reorder tracks' state was entered,
+     * if it's false, the reorder state was exited.
+     */
+    Events["TRACKS_REORDER_STATE_CHANGED"] = "TracksReorderStateChange";
+    /**
+     * Emitted when an event is selected via keyboard navigation using the arrow
+     * keys.
+     *
+     * Will be emitted with a number which is the index of the entry that has
+     * been selected, or -1 if no entry is selected.
+     */
+    Events["ENTRY_SELECTED"] = "EntrySelected";
+    /**
+     * Emitted when an event is hovered over with the mouse.
+     *
+     * Will be emitted with a number which is the index of the entry that has
+     * been hovered on, or -1 if no entry is selected (the user has moved their
+     * mouse off the event)
+     */
+    Events["ENTRY_HOVERED"] = "EntryHovered";
+    Events["LATEST_DRAW_DIMENSIONS"] = "LatestDrawDimensions";
+    Events["MOUSE_MOVE"] = "MouseMove";
+})(Events || (Events = {}));
 /**
  * Calculates the positioning coordinates (x, y) for a popover window relative to the mouse.
  *

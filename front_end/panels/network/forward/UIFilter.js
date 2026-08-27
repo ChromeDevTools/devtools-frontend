@@ -28,6 +28,21 @@ export var FilterType;
     FilterType["Url"] = "url";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(FilterType || (FilterType = {}));
+export var IsFilterType;
+(function (IsFilterType) {
+    IsFilterType["RUNNING"] = "running";
+    IsFilterType["FROM_CACHE"] = "from-cache";
+    IsFilterType["SERVICE_WORKER_INTERCEPTED"] = "service-worker-intercepted";
+    IsFilterType["SERVICE_WORKER_INITIATED"] = "service-worker-initiated";
+    IsFilterType["PRELOAD"] = "preloaded";
+})(IsFilterType || (IsFilterType = {}));
+export var MixedContentFilterValues;
+(function (MixedContentFilterValues) {
+    MixedContentFilterValues["ALL"] = "all";
+    MixedContentFilterValues["DISPLAYED"] = "displayed";
+    MixedContentFilterValues["BLOCKED"] = "blocked";
+    MixedContentFilterValues["BLOCK_OVERRIDDEN"] = "block-overridden";
+})(MixedContentFilterValues || (MixedContentFilterValues = {}));
 export class UIRequestFilter {
     filters;
     constructor(filters) {

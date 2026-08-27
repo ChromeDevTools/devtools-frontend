@@ -505,6 +505,10 @@ function getIconDataForMessage(message) {
     }
     return getIconDataForLevel(message.level());
 }
+export var Events;
+(function (Events) {
+    Events["TOOLBAR_ITEMS_CHANGED"] = "ToolbarItemsChanged";
+})(Events || (Events = {}));
 const pluginCompartment = new CodeMirror.Compartment();
 // Row message management and display logic. The frame manages a
 // collection of messages, organized by line (row), as a wavy

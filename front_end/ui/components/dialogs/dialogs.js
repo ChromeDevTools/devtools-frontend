@@ -9,8 +9,8 @@ var ButtonDialog_exports = {};
 __export(ButtonDialog_exports, {
   ButtonDialog: () => ButtonDialog
 });
-import * as ComponentHelpers from "./../helpers/helpers.js";
-import { Directives, html, render } from "./../../lit/lit.js";
+import * as ComponentHelpers from "../helpers/helpers.js";
+import { Directives, html, render } from "../../lit/lit.js";
 
 // gen/front_end/ui/components/dialogs/buttonDialog.css.js
 var buttonDialog_css_default = `/*
@@ -130,18 +130,21 @@ __export(Dialog_exports, {
   DIALOG_SIDE_PADDING: () => DIALOG_SIDE_PADDING,
   DIALOG_VERTICAL_PADDING: () => DIALOG_VERTICAL_PADDING,
   Dialog: () => Dialog,
+  DialogHorizontalAlignment: () => DialogHorizontalAlignment,
+  DialogState: () => DialogState,
+  DialogVerticalPosition: () => DialogVerticalPosition,
   ForcedDialogClose: () => ForcedDialogClose,
   MODAL: () => MODAL,
   PointerLeftDialogEvent: () => PointerLeftDialogEvent
 });
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as Platform from "./../../../core/platform/platform.js";
-import * as ComponentHelpers2 from "./../helpers/helpers.js";
-import * as RenderCoordinator from "./../render_coordinator/render_coordinator.js";
-import * as Lit from "./../../lit/lit.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
-import * as UI from "./../../legacy/legacy.js";
-import * as Buttons from "./../buttons/buttons.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as Platform from "../../../core/platform/platform.js";
+import * as ComponentHelpers2 from "../helpers/helpers.js";
+import * as RenderCoordinator from "../render_coordinator/render_coordinator.js";
+import * as Lit from "../../lit/lit.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
+import * as UI from "../../legacy/legacy.js";
+import * as Buttons from "../buttons/buttons.js";
 
 // gen/front_end/ui/components/dialogs/dialog.css.js
 var dialog_css_default = `/*
@@ -749,16 +752,35 @@ var ForcedDialogClose = class _ForcedDialogClose extends Event {
     super(_ForcedDialogClose.eventName, { bubbles: true, composed: true });
   }
 };
+var DialogVerticalPosition;
+(function(DialogVerticalPosition2) {
+  DialogVerticalPosition2["TOP"] = "top";
+  DialogVerticalPosition2["BOTTOM"] = "bottom";
+  DialogVerticalPosition2["AUTO"] = "auto";
+})(DialogVerticalPosition || (DialogVerticalPosition = {}));
+var DialogState;
+(function(DialogState2) {
+  DialogState2["EXPANDED"] = "expanded";
+  DialogState2["COLLAPSED"] = "collapsed";
+  DialogState2["DISABLED"] = "disabled";
+})(DialogState || (DialogState = {}));
+var DialogHorizontalAlignment;
+(function(DialogHorizontalAlignment2) {
+  DialogHorizontalAlignment2["LEFT"] = "left";
+  DialogHorizontalAlignment2["RIGHT"] = "right";
+  DialogHorizontalAlignment2["CENTER"] = "center";
+  DialogHorizontalAlignment2["AUTO"] = "auto";
+})(DialogHorizontalAlignment || (DialogHorizontalAlignment = {}));
 
 // gen/front_end/ui/components/dialogs/FreDialog.js
 var FreDialog_exports = {};
 __export(FreDialog_exports, {
   FreDialog: () => FreDialog
 });
-import * as i18n3 from "./../../../core/i18n/i18n.js";
-import * as UI2 from "./../../legacy/legacy.js";
-import * as Lit2 from "./../../lit/lit.js";
-import * as Buttons2 from "./../buttons/buttons.js";
+import * as i18n3 from "../../../core/i18n/i18n.js";
+import * as UI2 from "../../legacy/legacy.js";
+import * as Lit2 from "../../lit/lit.js";
+import * as Buttons2 from "../buttons/buttons.js";
 
 // gen/front_end/ui/components/dialogs/freDialog.css.js
 var freDialog_css_default = `/*
@@ -962,10 +984,10 @@ var ShortcutDialog_exports = {};
 __export(ShortcutDialog_exports, {
   ShortcutDialog: () => ShortcutDialog
 });
-import * as i18n5 from "./../../../core/i18n/i18n.js";
-import * as Buttons3 from "./../buttons/buttons.js";
-import * as ComponentHelpers3 from "./../helpers/helpers.js";
-import { html as html4, nothing as nothing2, render as render4 } from "./../../lit/lit.js";
+import * as i18n5 from "../../../core/i18n/i18n.js";
+import * as Buttons3 from "../buttons/buttons.js";
+import * as ComponentHelpers3 from "../helpers/helpers.js";
+import { html as html4, nothing as nothing2, render as render4 } from "../../lit/lit.js";
 
 // gen/front_end/ui/components/dialogs/shortcutDialog.css.js
 var shortcutDialog_css_default = `/*
@@ -1156,11 +1178,11 @@ var TypeToAllowDialog_exports = {};
 __export(TypeToAllowDialog_exports, {
   TypeToAllowDialog: () => TypeToAllowDialog
 });
-import * as Host from "./../../../core/host/host.js";
-import * as i18n7 from "./../../../core/i18n/i18n.js";
-import * as Geometry from "./../../../models/geometry/geometry.js";
-import * as Buttons4 from "./../buttons/buttons.js";
-import * as UI3 from "./../../legacy/legacy.js";
+import * as Host from "../../../core/host/host.js";
+import * as i18n7 from "../../../core/i18n/i18n.js";
+import * as Geometry from "../../../models/geometry/geometry.js";
+import * as Buttons4 from "../buttons/buttons.js";
+import * as UI3 from "../../legacy/legacy.js";
 
 // gen/front_end/ui/components/dialogs/typeToAllowDialog.css.js
 var typeToAllowDialog_css_default = `/*

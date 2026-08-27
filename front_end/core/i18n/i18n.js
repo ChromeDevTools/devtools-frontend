@@ -4,20 +4,20 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/core/i18n/ByteUtilities.js
+// ../../front_end/core/i18n/ByteUtilities.ts
 var ByteUtilities_exports = {};
 __export(ByteUtilities_exports, {
   bytesToString: () => bytesToString,
   formatBytesToKb: () => formatBytesToKb
 });
 
-// gen/front_end/core/i18n/NumberFormatter.js
+// ../../front_end/core/i18n/NumberFormatter.ts
 var NumberFormatter_exports = {};
 __export(NumberFormatter_exports, {
   defineFormatter: () => defineFormatter
 });
 
-// gen/front_end/core/i18n/DevToolsLocale.js
+// ../../front_end/core/i18n/DevToolsLocale.ts
 var DevToolsLocale_exports = {};
 __export(DevToolsLocale_exports, {
   DevToolsLocale: () => DevToolsLocale,
@@ -66,7 +66,7 @@ function localeLanguagesMatch(localeString1, localeString2) {
   return locale1.language === locale2.language;
 }
 
-// gen/front_end/core/i18n/NumberFormatter.js
+// ../../front_end/core/i18n/NumberFormatter.ts
 function defineFormatter(options) {
   let intlNumberFormat;
   return {
@@ -110,7 +110,7 @@ function formatAndEnsureSpace(formatter, value, separator = "\xA0") {
   return parts.slice(0, unitIndex).map((part) => part.value).join("") + separator + parts.slice(unitIndex).map((part) => part.value).join("");
 }
 
-// gen/front_end/core/i18n/ByteUtilities.js
+// ../../front_end/core/i18n/ByteUtilities.ts
 var narrowBytes = defineFormatter({
   style: "unit",
   unit: "byte",
@@ -171,7 +171,7 @@ var formatBytesToKb = (bytes) => {
   return narrowKilobytesInteger.format(kilobytes);
 };
 
-// gen/front_end/core/i18n/i18nImpl.js
+// ../../front_end/core/i18n/i18nImpl.ts
 var i18nImpl_exports = {};
 __export(i18nImpl_exports, {
   deserializeUIString: () => deserializeUIString,
@@ -189,8 +189,8 @@ __export(i18nImpl_exports, {
   resetLocaleDataForTest: () => resetLocaleDataForTest,
   serializeUIString: () => serializeUIString
 });
-import * as I18n from "./../../third_party/i18n/i18n.js";
-import * as Root from "./../root/root.js";
+import * as I18n from "../../third_party/i18n/i18n.js";
+import * as Root from "../root/root.js";
 
 // gen/front_end/core/i18n/locales.js
 var LOCALES = [
@@ -285,7 +285,7 @@ var DEFAULT_LOCALE = "en-US";
 var REMOTE_FETCH_PATTERN = "@HOST@/remote/serve_file/@VERSION@/core/i18n/locales/@LOCALE@.json";
 var LOCAL_FETCH_PATTERN = "./locales/@LOCALE@.json";
 
-// gen/front_end/core/i18n/i18nImpl.js
+// ../../front_end/core/i18n/i18nImpl.ts
 var i18nInstance = new I18n.I18n.I18n(LOCALES, DEFAULT_LOCALE);
 var BUNDLED_LOCALES2 = /* @__PURE__ */ new Set([...BUNDLED_LOCALES]);
 function lookupClosestSupportedDevToolsLocale(locale) {
@@ -304,7 +304,9 @@ function getLocaleFetchUrl(locale, location) {
 }
 async function fetchAndRegisterLocaleData(locale, location = globalThis.location?.toString() ?? "") {
   const localeDataTextPromise = fetch(getLocaleFetchUrl(locale, location)).then((result) => result.json());
-  const timeoutPromise = new Promise((_, reject) => globalThis.setTimeout(() => reject(new Error("timed out fetching locale")), 5e3));
+  const timeoutPromise = new Promise(
+    (_, reject) => globalThis.setTimeout(() => reject(new Error("timed out fetching locale")), 5e3)
+  );
   const localeData = await Promise.race([timeoutPromise, localeDataTextPromise]);
   i18nInstance.registerLocaleData(locale, localeData);
 }
@@ -360,7 +362,7 @@ function getLocalizedLanguageRegion(localeString, devtoolsLocale) {
   return `${languageInCurrentLocale}${wrappedRegionInCurrentLocale} - ${languageInTargetLocale}${wrappedRegionInTargetLocale}`;
 }
 
-// gen/front_end/core/i18n/time-utilities.js
+// ../../front_end/core/i18n/time-utilities.ts
 var time_utilities_exports = {};
 __export(time_utilities_exports, {
   formatMicroSecondsAsMillisFixed: () => formatMicroSecondsAsMillisFixed,
@@ -372,7 +374,7 @@ __export(time_utilities_exports, {
   preciseSecondsToString: () => preciseSecondsToString,
   secondsToString: () => secondsToString
 });
-import * as Platform from "./../platform/platform.js";
+import * as Platform from "../platform/platform.js";
 var narrowMillisecondsInteger = defineFormatter({
   style: "unit",
   unit: "millisecond",

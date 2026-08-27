@@ -37,7 +37,7 @@ export default `/*
   align-items: flex-start;
   flex: none;
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
   & > :first-child {
     flex: 1 1 auto;
@@ -51,7 +51,7 @@ export default `/*
   row-gap: var(--sys-size-3);
   flex: none;
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
   & > div {
     margin-left: 5px;
@@ -64,7 +64,7 @@ export default `/*
 #timeline-overview-panel {
   flex: none;
   position: relative;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 #timeline-overview-grid {
@@ -72,16 +72,16 @@ export default `/*
 }
 
 #timeline-overview-grid .timeline-grid-header {
-  height: 12px;
+  height: var(--sys-size-6);
 }
 
 #timeline-overview-grid .resources-dividers-label-bar {
   pointer-events: auto;
-  height: 12px;
+  height: var(--sys-size-6);
 }
 
 #timeline-overview-grid .resources-divider-label {
-  top: 1px;
+  top: var(--sys-size-1);
 }
 
 .timeline-details-split {
@@ -146,13 +146,13 @@ export default `/*
   width: 5px;
   height: 5px;
   margin-left: -3px;
-  margin-top: -2px;
+  margin-top: calc(-1 * var(--sys-size-2));
 }
 
 #memory-graphs-container .timeline-memory-header {
   flex: 0 0 26px;
   background-color: var(--sys-color-surface2);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   justify-content: space-between;
 }
 
@@ -161,12 +161,12 @@ export default `/*
 }
 
 .memory-counter-value {
-  margin: 8px;
+  margin: var(--sys-size-5);
 }
 
 #counter-values-bar {
-  flex: 0 0 20px;
-  border-top: solid 1px var(--sys-color-divider);
+  flex: 0 0 var(--sys-size-9);
+  border-top: solid var(--sys-size-1) var(--sys-color-divider);
   width: 100%;
   overflow: hidden;
   line-height: 18px;
@@ -195,7 +195,7 @@ export default `/*
   position: absolute;
   right: 15px;
   top: 15px;
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   cursor: pointer;
 }
 
@@ -256,15 +256,15 @@ export default `/*
 }
 
 .timeline-layers-view-properties td {
-  border: 1px solid var(--sys-color-divider);
-  line-height: 22px;
+  border: var(--sys-size-1) solid var(--sys-color-divider);
+  line-height: var(--sys-size-10);
 }
 
 .timeline-filmstrip-preview > img {
   max-width: 500px;
   max-height: 300px;
   cursor: pointer;
-  border: 1px solid var(--sys-color-divider);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .timeline-details .filter-input-field {
@@ -274,10 +274,10 @@ export default `/*
 .timeline-stack-view-header {
   height: 27px;
   background-color: var(--sys-color-cdt-base-container);
-  padding: 6px 10px;
+  padding: var(--sys-size-4) 10px;
   color: var(--sys-color-on-surface);
   white-space: nowrap;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .timeline-landing-page {
@@ -289,7 +289,7 @@ export default `/*
   justify-content: center;
   align-items: center;
   overflow: auto;
-  font-size: 13px;
+  font-size: var(--sys-typescale-body3-size);
   color: var(--sys-color-on-surface-subtle);
 }
 
@@ -365,8 +365,8 @@ devtools-toolbar {
         float: right;
         user-select: none;
         mask-image: var(--image-file-triangle-down);
-        width: 14px;
-        height: 14px;
+        width: var(--sys-size-7);
+        height: var(--sys-size-7);
         content: "";
         position: absolute;
         background-color: var(--icon-default);

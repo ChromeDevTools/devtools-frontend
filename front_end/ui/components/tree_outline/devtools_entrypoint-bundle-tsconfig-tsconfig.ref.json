@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "../../../../../tsc/front_end/ui/components/tree_outline/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./tree_outline-tsconfig.ref.json"

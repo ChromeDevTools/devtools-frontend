@@ -1,9 +1,9 @@
 // gen/front_end/ui/visual_logging/Debugging.js
-import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
+import { assertNotNullOrUndefined } from "../../core/platform/platform.js";
 
 // gen/front_end/ui/visual_logging/LoggingConfig.js
-import * as Host from "./../../core/host/host.js";
-import * as Root from "./../../core/root/root.js";
+import * as Host from "../../core/host/host.js";
+import * as Root from "../../core/root/root.js";
 
 // gen/front_end/ui/visual_logging/KnownContextValues.js
 var knownContextValues = /* @__PURE__ */ new Set([
@@ -3834,6 +3834,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "show-grid-track-sizes-true",
   "show-html-comments",
   "show-html-comments-false",
+  "show-inactive-css-rules",
   "show-inherited-computed-style-properties",
   "show-issue-associated-with-this",
   "show-layout-shift-regions",
@@ -5202,6 +5203,12 @@ function maybeLogDebugEvent(entry) {
     console.info("VE Debug:", entry);
   }
 }
+var DebugLoggingFormat;
+(function(DebugLoggingFormat2) {
+  DebugLoggingFormat2["INTUITIVE"] = "Intuitive";
+  DebugLoggingFormat2["TEST"] = "Test";
+  DebugLoggingFormat2["AD_HOC_ANALYSIS"] = "AdHocAnalysis";
+})(DebugLoggingFormat || (DebugLoggingFormat = {}));
 function setVeDebugLoggingEnabled(enabled, format = "Intuitive") {
   if (enabled) {
     localStorage.setItem("veDebugLoggingEnabled", format);
@@ -5542,9 +5549,9 @@ globalThis.buildStateFlow = buildStateFlow;
 globalThis.expectVeEvents = expectVeEvents;
 
 // gen/front_end/ui/visual_logging/LoggingDriver.js
-import * as Common2 from "./../../core/common/common.js";
-import * as Host3 from "./../../core/host/host.js";
-import * as RenderCoordinator from "./../components/render_coordinator/render_coordinator.js";
+import * as Common2 from "../../core/common/common.js";
+import * as Host3 from "../../core/host/host.js";
+import * as RenderCoordinator from "../components/render_coordinator/render_coordinator.js";
 
 // gen/front_end/ui/visual_logging/DomState.js
 function getDomState(documents2) {
@@ -5610,9 +5617,9 @@ function intersection(a, b) {
 }
 
 // gen/front_end/ui/visual_logging/LoggingEvents.js
-import * as Common from "./../../core/common/common.js";
-import * as Host2 from "./../../core/host/host.js";
-import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "./../../core/platform/platform.js";
+import * as Common from "../../core/common/common.js";
+import * as Host2 from "../../core/host/host.js";
+import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "../../core/platform/platform.js";
 async function logImpressions(loggables) {
   const impressions = await Promise.all(loggables.map(async (loggable) => {
     const loggingState = getLoggingState(loggable);
@@ -6269,6 +6276,7 @@ var tree = makeConfigStringBuilder.bind(null, "Tree");
 var treeItem = makeConfigStringBuilder.bind(null, "TreeItem");
 var value = makeConfigStringBuilder.bind(null, "Value");
 export {
+  DebugLoggingFormat,
   VisualElements,
   action,
   addDocument,

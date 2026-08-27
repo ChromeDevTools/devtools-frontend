@@ -32,7 +32,7 @@ body {
   margin: 0;
   cursor: default;
   font-family: var(--default-font-family);
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   tab-size: 4;
   user-select: none;
   color: var(--sys-color-on-surface);
@@ -112,7 +112,7 @@ iframe.fill {
 }
 
 .view-container > devtools-toolbar {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .flex-auto {
@@ -148,17 +148,17 @@ iframe.widget {
 
 .highlighted-search-result,
 :host::highlight(highlighted-search-result) {
-  border-radius: 1px;
+  border-radius: var(--sys-size-1);
   background-color: var(--sys-color-yellow-container);
   color: var(--sys-color-on-yellow-container);
-  outline: 1px solid var(--sys-color-yellow-container);
+  outline: var(--sys-size-1) solid var(--sys-color-yellow-container);
 }
 
 .link {
   cursor: pointer;
   text-decoration: underline;
   color: var(--text-link);
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 }
 
 button,
@@ -182,8 +182,8 @@ input {
     &:hover::after,
     &:active::before {
       content: '';
-      height: 24px;
-      width: 24px;
+      height: var(--sys-size-11);
+      width: var(--sys-size-11);
       border-radius: var(--sys-shape-corner-full);
       position: absolute;
     }
@@ -207,14 +207,14 @@ input {
       width: 15px;
       border-radius: 5px;
       position: absolute;
-      border: 2px solid var(--sys-color-state-focus-ring);
+      border: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
     }
 
     &.small:hover::after,
     &.small:active::before {
-      height: 12px;
-      width: 12px;
-      border-radius: 2px;
+      height: var(--sys-size-6);
+      width: var(--sys-size-6);
+      border-radius: var(--sys-size-2);
     }
   }
 }
@@ -233,10 +233,10 @@ input::placeholder {
 .harmony-input:not([type]),
 .harmony-input[type='number'],
 .harmony-input[type='text'] {
-  padding: 3px 6px;
-  height: 24px;
-  border: 1px solid var(--sys-color-neutral-outline);
-  border-radius: 4px;
+  padding: 3px var(--sys-size-4);
+  height: var(--sys-size-11);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  border-radius: var(--sys-shape-corner-extra-small);
 
   &.error-input,
   &:invalid {
@@ -257,7 +257,7 @@ input[type='radio'] {
   height: 17px;
   width: 17px;
   min-width: 17px;
-  border-radius: 8px;
+  border-radius: var(--sys-shape-corner-small);
   vertical-align: sub;
   margin: 0 5px 5px 0;
   accent-color: var(--sys-color-primary-bright);
@@ -297,8 +297,8 @@ input[type='range']::-webkit-slider-thumb,
   margin: 0;
   padding: 0;
   border: 0;
-  width: 12px;
-  height: 12px;
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
   margin-top: -5px;
   border-radius: 50%;
   background-color: var(--sys-color-primary);
@@ -309,12 +309,12 @@ input[type='range']::-webkit-slider-runnable-track {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 2px;
+  height: var(--sys-size-2);
   background-color: var(--sys-color-surface-variant);
 }
 
 input[type='range']:focus::-webkit-slider-thumb {
-  box-shadow: 0 0 0 2px var(--sys-color-inverse-primary);
+  box-shadow: 0 0 0 var(--sys-size-2) var(--sys-color-inverse-primary);
 }
 
 input[type='range']:disabled::-webkit-slider-thumb {
@@ -332,10 +332,10 @@ input[type='range']:disabled::-webkit-slider-thumb {
   /* Note: this value is used in light & dark mode */
   --override-current-search-result-background-color: rgb(255 127 0 / 80%);
 
-  outline: 1px solid var(--sys-color-yellow-container);
-  border-radius: 1px;
-  padding: 1px;
-  margin: -1px;
+  outline: var(--sys-size-1) solid var(--sys-color-yellow-container);
+  border-radius: var(--sys-size-1);
+  padding: var(--sys-size-1);
+  margin: calc(-1 * var(--sys-size-1));
   background-color: var(--override-current-search-result-background-color);
   color: var(--sys-color-on-surface);
 }
@@ -348,12 +348,12 @@ input[type='range']:disabled::-webkit-slider-thumb {
   box-shadow: var(--drop-shadow);
   background-color: var(--sys-color-cdt-base-container);
   text-overflow: clip !important; /* stylelint-disable-line declaration-no-important */
-  padding-left: 2px;
-  margin-left: -2px;
-  padding-right: 2px;
-  margin-right: -2px;
-  margin-bottom: -1px;
-  padding-bottom: 1px;
+  padding-left: var(--sys-size-2);
+  margin-left: calc(-1 * var(--sys-size-2));
+  padding-right: var(--sys-size-2);
+  margin-right: calc(-1 * var(--sys-size-2));
+  margin-bottom: calc(-1 * var(--sys-size-1));
+  padding-bottom: var(--sys-size-1);
   opacity: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 
@@ -417,7 +417,7 @@ select {
 
     &:focus {
       outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-      outline-offset: -1px;
+      outline-offset: calc(-1 * var(--sys-size-1));
     }
   }
 }
@@ -467,7 +467,7 @@ select option {
 .gray-info-message {
   text-align: center;
   font-style: italic;
-  padding: 6px;
+  padding: var(--sys-size-4);
   color: var(--sys-color-token-subtle);
   white-space: nowrap;
 }
@@ -514,10 +514,10 @@ dt-icon-label {
 
 .dot::before {
   content: var(--image-file-empty);
-  width: 6px;
-  height: 6px;
+  width: var(--sys-size-4);
+  height: var(--sys-size-4);
   border-radius: 50%;
-  outline: 1px solid var(--icon-gap-default);
+  outline: var(--sys-size-1) solid var(--icon-gap-default);
   left: 9px;
   position: absolute;
   top: 9px;
@@ -560,9 +560,9 @@ dt-icon-label {
 .undisplayable-text,
 .expandable-inline-button {
   border: none;
-  padding: 1px 3px;
-  margin: 0 2px;
-  font-size: 11px;
+  padding: var(--sys-size-1) 3px;
+  margin: 0 var(--sys-size-2);
+  font-size: var(--sys-typescale-body5-size);
   font-family: inherit;
   white-space: nowrap;
   display: inline-block;
@@ -599,8 +599,8 @@ button.link {
 }
 
 button.link:focus-visible {
-  outline: 2px solid var(--sys-color-state-focus-ring);
-  outline-offset: 2px;
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: var(--sys-size-2);
   border-radius: var(--sys-shape-corner-full);
 }
 
@@ -619,19 +619,19 @@ button.link:focus-visible {
   .harmony-input:not([type]),
   .harmony-input[type='number'],
   .harmony-input[type='text'] {
-    border: 1px solid ButtonText;
+    border: var(--sys-size-1) solid ButtonText;
   }
 
   .harmony-input:not([type]):focus,
   .harmony-input[type='number']:focus,
   .harmony-input[type='text']:focus {
-    border: 1px solid Highlight;
+    border: var(--sys-size-1) solid Highlight;
   }
 }
 /* search input with customized styling */
 input.custom-search-input::-webkit-search-cancel-button {
   appearance: none;
-  width: 16px;
+  width: var(--sys-size-8);
   height: 15px;
   margin-right: 0;
   opacity: 70%;
@@ -648,11 +648,11 @@ input.custom-search-input::-webkit-search-cancel-button:hover {
 /* loading spinner */
 .spinner::before {
   display: block;
-  width: var(--dimension, 24px);
-  height: var(--dimension, 24px);
+  width: var(--dimension, var(--sys-size-11));
+  height: var(--dimension, var(--sys-size-11));
   border: var(--override-spinner-size, 3px) solid
     var(--override-spinner-color, var(--sys-color-token-subtle));
-  border-radius: 12px;
+  border-radius: var(--sys-shape-corner-medium-small);
   clip-path: rect(0, var(--clip-size, 15px), var(--clip-size, 15px), 0);
   content: '';
   position: absolute;
@@ -767,8 +767,8 @@ devtools-toolbar {
   }
 
   & > devtools-issue-counter {
-    margin-top: -4px;
-    padding: 0 1px;
+    margin-top: calc(-1 * var(--sys-size-3));
+    padding: 0 var(--sys-size-1);
   }
 
   devtools-adorner.fix-perf-icon {
@@ -778,8 +778,8 @@ devtools-toolbar {
   }
 
   devtools-issue-counter.main-toolbar {
-    margin-left: 1px;
-    margin-right: 1px;
+    margin-left: var(--sys-size-1);
+    margin-right: var(--sys-size-1);
   }
 
   .toolbar-dropdown-arrow {
@@ -797,7 +797,7 @@ devtools-toolbar {
   .toolbar-button {
     white-space: nowrap;
     overflow: hidden;
-    min-width: 28px;
+    min-width: var(--sys-size-12);
     background: transparent;
     border-radius: 0;
 
@@ -876,9 +876,9 @@ devtools-toolbar {
 
   .toolbar-button:not(.toolbar-has-dropdown):focus-visible::before {
     position: absolute;
-    inset: 2px;
+    inset: var(--sys-size-2);
     background-color: var(--sys-color-state-focus-highlight);
-    border-radius: 2px;
+    border-radius: var(--sys-size-2);
     content: '';
     /* This ::before rule serves as a background for an element.
     Setting z-index to make sure it's always below the content. */
@@ -903,7 +903,7 @@ devtools-toolbar {
     background: var(--sys-color-cdt-base-container);
     animation: 2s fade-out;
     font-weight: normal;
-    border: 1px solid var(--sys-color-divider);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     border-radius: 3px;
   }
 
@@ -914,11 +914,11 @@ devtools-toolbar {
   .toolbar-state-on.toolbar-toggle-with-dot .toolbar-text::after {
     content: '';
     position: absolute;
-    bottom: 2px;
+    bottom: var(--sys-size-2);
     background-color: var(--sys-color-primary-bright);
     width: 4.5px;
     height: 4.5px;
-    border: 2px solid
+    border: var(--sys-size-2) solid
       var(--override-toolbar-background-color, --sys-color-cdt-base-container);
     border-radius: 50%;
     right: 0;
@@ -988,18 +988,18 @@ devtools-toolbar {
   /* Input */
 
   .toolbar-input {
-    box-shadow: inset 0 0 0 2px transparent;
+    box-shadow: inset 0 0 0 var(--sys-size-2) transparent;
     box-sizing: border-box;
     width: 120px;
     height: var(--sys-size-9);
     padding: 0 var(--sys-size-2) 0 var(--sys-size-5);
-    margin: 1px 3px;
-    border-radius: 100px;
+    margin: var(--sys-size-1) 3px;
+    border-radius: var(--sys-shape-corner-full);
     min-width: 35px;
     position: relative;
 
     &.focused {
-      box-shadow: inset 0 0 0 2px var(--sys-color-state-focus-ring);
+      box-shadow: inset 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring);
     }
 
     &:not(:has(devtools-button:hover), .disabled):hover {
@@ -1052,9 +1052,9 @@ devtools-toolbar {
 
   .toolbar-divider {
     background-color: var(--sys-color-divider);
-    width: 1px;
-    margin: 5px 4px;
-    height: 16px;
+    width: var(--sys-size-1);
+    margin: 5px var(--sys-size-3);
+    height: var(--sys-size-8);
   }
 
   .toolbar-spacer {
@@ -1072,14 +1072,14 @@ devtools-toolbar {
 
   &:not([floating]) > .toolbar-button:last-child:not(:first-child, select) {
     justify-content: left;
-    margin-right: 2px;
+    margin-right: var(--sys-size-2);
   }
 
   & > .highlight::before {
     content: '';
     position: absolute;
-    inset: 2px;
-    border-radius: 2px;
+    inset: var(--sys-size-2);
+    border-radius: var(--sys-size-2);
     background: var(--sys-color-neutral-container);
     z-index: -1;
   }
@@ -1264,7 +1264,7 @@ devtools-toolbar {
 .devtools-link {
   color: var(--text-link);
   text-decoration: underline;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 
   .elements-disclosure & {
     color: var(--text-link);

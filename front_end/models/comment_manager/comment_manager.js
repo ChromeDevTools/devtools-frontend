@@ -7,9 +7,15 @@ var __export = (target, all) => {
 // gen/front_end/models/comment_manager/CommentManager.js
 var CommentManager_exports = {};
 __export(CommentManager_exports, {
-  CommentManager: () => CommentManager
+  CommentManager: () => CommentManager,
+  Events: () => Events
 });
-import * as Common from "./../../core/common/common.js";
+import * as Common from "../../core/common/common.js";
+var Events;
+(function(Events2) {
+  Events2["COMMENT_THREADS_CHANGED"] = "CommentThreadsChanged";
+  Events2["COMMENT_MODE_CHANGED"] = "CommentModeChanged";
+})(Events || (Events = {}));
 var CommentManager = class extends Common.ObjectWrapper.ObjectWrapper {
   #commentThreads = /* @__PURE__ */ new Map();
   #commentMode = false;

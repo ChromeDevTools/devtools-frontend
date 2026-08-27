@@ -1131,6 +1131,15 @@ export class AutoBaseRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         return [content];
     }
 }
+export var ShadowPropertyType;
+(function (ShadowPropertyType) {
+    ShadowPropertyType["X"] = "x";
+    ShadowPropertyType["Y"] = "y";
+    ShadowPropertyType["SPREAD"] = "spread";
+    ShadowPropertyType["BLUR"] = "blur";
+    ShadowPropertyType["INSET"] = "inset";
+    ShadowPropertyType["COLOR"] = "color";
+})(ShadowPropertyType || (ShadowPropertyType = {}));
 /**
  * The shadow model is an abstraction over the various shadow properties on the one hand and the order they were defined
  * in on the other, so that modifications through the shadow editor can retain the property order in the authored text.

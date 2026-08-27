@@ -1014,6 +1014,10 @@ export class Rect {
         return new Rect(this.left + origin.left, this.top + origin.top, this.width, this.height);
     }
 }
+export var Events;
+(function (Events) {
+    Events["UPDATED"] = "Updated";
+})(Events || (Events = {}));
 export var Type;
 (function (Type) {
     /* eslint-disable @typescript-eslint/naming-convention -- Used by web_tests. */
@@ -1022,6 +1026,15 @@ export var Type;
     Type["Device"] = "Device";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(Type || (Type = {}));
+export var UA;
+(function (UA) {
+    // TODO(crbug.com/1136655): This enum is used for both display and code functionality.
+    // we should refactor this so localization of these strings only happens for user display.
+    UA["MOBILE"] = "Mobile";
+    UA["MOBILE_NO_TOUCH"] = "Mobile (no touch)";
+    UA["DESKTOP"] = "Desktop";
+    UA["DESKTOP_TOUCH"] = "Desktop (touch)";
+})(UA || (UA = {}));
 export const MinDeviceSize = 50;
 export const MaxDeviceSize = 9999;
 export const MinDeviceScaleFactor = 0;

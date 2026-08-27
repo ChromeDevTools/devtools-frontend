@@ -12,26 +12,26 @@ export default `/*
 @scope to (devtools-widget > *) {
   .request-cookies-view {
     overflow: auto;
-    padding: 12px;
+    padding: var(--sys-size-6);
     height: 100%;
     background-color: var(--sys-color-cdt-base-container);
   }
 
   .request-cookies-view .request-cookies-title {
-    font-size: 12px;
+    font-size: var(--sys-typescale-body4-size);
     font-weight: bold;
     margin-right: 30px;
     color: var(--sys-color-on-surface);
   }
 
   .request-cookies-view .cookie-line {
-    margin-top: 6px;
+    margin-top: var(--sys-size-4);
     display: flex;
   }
 
   .request-cookies-view .cookies-panel-item {
-    margin-top: 6px;
-    margin-bottom: 16px;
+    margin-top: var(--sys-size-4);
+    margin-bottom: var(--sys-size-8);
     flex: none;
   }
 }

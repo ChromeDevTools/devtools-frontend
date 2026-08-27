@@ -13,14 +13,14 @@ __export(ScriptSnippetFileSystem_exports, {
   isSnippetsProject: () => isSnippetsProject,
   isSnippetsUISourceCode: () => isSnippetsUISourceCode
 });
-import * as Common from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as Persistence from "./../../models/persistence/persistence.js";
-import * as Workspace from "./../../models/workspace/workspace.js";
-import * as UI from "./../../ui/legacy/legacy.js";
+import * as Common from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as Persistence from "../../models/persistence/persistence.js";
+import * as Workspace from "../../models/workspace/workspace.js";
+import * as UI from "../../ui/legacy/legacy.js";
 var UIStrings = {
   /**
    * @description Default snippet name when a new snippet is created in the Sources panel.
@@ -202,11 +202,11 @@ var SnippetsQuickOpen_exports = {};
 __export(SnippetsQuickOpen_exports, {
   SnippetsQuickOpen: () => SnippetsQuickOpen
 });
-import "./../../ui/kit/kit.js";
-import "./../../ui/components/highlighting/highlighting.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as QuickOpen from "./../../ui/legacy/components/quick_open/quick_open.js";
-import { html } from "./../../ui/lit/lit.js";
+import "../../ui/kit/kit.js";
+import "../../ui/components/highlighting/highlighting.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as QuickOpen from "../../ui/legacy/components/quick_open/quick_open.js";
+import { html } from "../../ui/lit/lit.js";
 var UIStrings2 = {
   /**
    * @description Text in Snippets Quick Open of the Sources panel when opening snippets.

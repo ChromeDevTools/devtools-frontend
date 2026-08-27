@@ -1,4 +1,4 @@
-// gen/front_end/core/platform/api/HostRuntime.js
+// ../../front_end/core/platform/api/HostRuntime.ts
 var HostRuntime_exports = {};
 export {
   HostRuntime_exports as HostRuntime

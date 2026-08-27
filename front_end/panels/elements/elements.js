@@ -10,11 +10,11 @@ __export(InspectElementModeController_exports, {
   InspectElementModeController: () => InspectElementModeController,
   ToggleSearchActionDelegate: () => ToggleSearchActionDelegate
 });
-import * as Common16 from "./../../core/common/common.js";
-import * as Root6 from "./../../core/root/root.js";
-import * as SDK20 from "./../../core/sdk/sdk.js";
-import * as UI24 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging14 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common16 from "../../core/common/common.js";
+import * as Root6 from "../../core/root/root.js";
+import * as SDK20 from "../../core/sdk/sdk.js";
+import * as UI24 from "../../ui/legacy/legacy.js";
+import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/ElementsPanel.js
 var ElementsPanel_exports = {};
@@ -26,19 +26,20 @@ __export(ElementsPanel_exports, {
   ElementsActionDelegate: () => ElementsActionDelegate,
   ElementsPanel: () => ElementsPanel,
   NodeComputedStyles: () => NodeComputedStyles,
-  PseudoStateMarkerDecorator: () => PseudoStateMarkerDecorator
+  PseudoStateMarkerDecorator: () => PseudoStateMarkerDecorator,
+  SidebarPaneTabId: () => SidebarPaneTabId
 });
-import * as Common15 from "./../../core/common/common.js";
-import * as Host6 from "./../../core/host/host.js";
-import * as i18n40 from "./../../core/i18n/i18n.js";
-import * as Platform10 from "./../../core/platform/platform.js";
-import * as Root5 from "./../../core/root/root.js";
-import * as SDK19 from "./../../core/sdk/sdk.js";
-import * as ComputedStyle3 from "./../../models/computed_style/computed_style.js";
-import * as PanelCommon from "./../common/common.js";
-import * as UI23 from "./../../ui/legacy/legacy.js";
-import * as SettingsUI from "./../../ui/settings/settings.js";
-import * as VisualLogging13 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common15 from "../../core/common/common.js";
+import * as Host6 from "../../core/host/host.js";
+import * as i18n40 from "../../core/i18n/i18n.js";
+import * as Platform10 from "../../core/platform/platform.js";
+import * as Root5 from "../../core/root/root.js";
+import * as SDK19 from "../../core/sdk/sdk.js";
+import * as ComputedStyle3 from "../../models/computed_style/computed_style.js";
+import * as PanelCommon from "../common/common.js";
+import * as UI23 from "../../ui/legacy/legacy.js";
+import * as SettingsUI from "../../ui/settings/settings.js";
+import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/AccessibilityTreeView.js
 var AccessibilityTreeView_exports = {};
@@ -46,12 +47,12 @@ __export(AccessibilityTreeView_exports, {
   AccessibilityTreeView: () => AccessibilityTreeView,
   DEFAULT_VIEW: () => DEFAULT_VIEW
 });
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as TreeOutline from "./../../ui/components/tree_outline/tree_outline.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as TreeOutline from "../../ui/components/tree_outline/tree_outline.js";
+import * as UI from "../../ui/legacy/legacy.js";
+import * as Lit2 from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/AccessibilityTreeUtils.js
 var AccessibilityTreeUtils_exports = {};
@@ -60,7 +61,7 @@ __export(AccessibilityTreeUtils_exports, {
   sdkNodeToAXTreeNodes: () => sdkNodeToAXTreeNodes
 });
 import "./components/components.js";
-import * as Lit from "./../../ui/lit/lit.js";
+import * as Lit from "../../ui/lit/lit.js";
 var { html } = Lit;
 async function sdkNodeToAXTreeNodes(sdkNode) {
   const treeNodeData = sdkNode;
@@ -346,15 +347,17 @@ var ColorSwatchPopoverIcon_exports = {};
 __export(ColorSwatchPopoverIcon_exports, {
   BezierPopoverIcon: () => BezierPopoverIcon,
   ColorSwatchPopoverIcon: () => ColorSwatchPopoverIcon,
+  ColorSwatchPopoverIconEvents: () => ColorSwatchPopoverIconEvents,
+  ShadowEvents: () => ShadowEvents,
   ShadowSwatchPopoverHelper: () => ShadowSwatchPopoverHelper
 });
-import * as Common from "./../../core/common/common.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as Bindings from "./../../models/bindings/bindings.js";
-import * as ColorPicker from "./../../ui/legacy/components/color_picker/color_picker.js";
-import * as InlineEditor from "./../../ui/legacy/components/inline_editor/inline_editor.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
+import * as Common from "../../core/common/common.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as Bindings from "../../models/bindings/bindings.js";
+import * as ColorPicker from "../../ui/legacy/components/color_picker/color_picker.js";
+import * as InlineEditor from "../../ui/legacy/components/inline_editor/inline_editor.js";
+import * as UI2 from "../../ui/legacy/legacy.js";
 var UIStrings2 = {
   /**
    * @description Tooltip text for an icon that opens the cubic bezier editor, which is a tool that
@@ -444,6 +447,10 @@ var BezierPopoverIcon = class {
     delete this.originalPropertyText;
   }
 };
+var ColorSwatchPopoverIconEvents;
+(function(ColorSwatchPopoverIconEvents2) {
+  ColorSwatchPopoverIconEvents2["COLOR_CHANGED"] = "colorchanged";
+})(ColorSwatchPopoverIconEvents || (ColorSwatchPopoverIconEvents = {}));
 var ColorSwatchPopoverIcon = class _ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper {
   treeElement;
   swatchPopoverHelper;
@@ -650,6 +657,10 @@ var ColorSwatchPopoverIcon = class _ColorSwatchPopoverIcon extends Common.Object
     UI2.Context.Context.instance().setFlavor(_ColorSwatchPopoverIcon, null);
   }
 };
+var ShadowEvents;
+(function(ShadowEvents2) {
+  ShadowEvents2["SHADOW_CHANGED"] = "shadowChanged";
+})(ShadowEvents || (ShadowEvents = {}));
 var ShadowSwatchPopoverHelper = class extends Common.ObjectWrapper.ObjectWrapper {
   treeElement;
   swatchPopoverHelper;
@@ -742,16 +753,16 @@ __export(ComputedStyleWidget_exports, {
   ComputedStyleWidget: () => ComputedStyleWidget,
   DEFAULT_VIEW: () => DEFAULT_VIEW3
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common7 from "./../../core/common/common.js";
-import * as i18n20 from "./../../core/i18n/i18n.js";
-import * as Platform6 from "./../../core/platform/platform.js";
-import * as SDK9 from "./../../core/sdk/sdk.js";
-import * as TreeOutline6 from "./../../ui/components/tree_outline/tree_outline.js";
-import * as InlineEditor4 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
-import * as Components4 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI12 from "./../../ui/legacy/legacy.js";
-import * as Lit6 from "./../../ui/lit/lit.js";
+import "../../ui/legacy/legacy.js";
+import * as Common7 from "../../core/common/common.js";
+import * as i18n20 from "../../core/i18n/i18n.js";
+import * as Platform6 from "../../core/platform/platform.js";
+import * as SDK9 from "../../core/sdk/sdk.js";
+import * as TreeOutline6 from "../../ui/components/tree_outline/tree_outline.js";
+import * as InlineEditor4 from "../../ui/legacy/components/inline_editor/inline_editor.js";
+import * as Components4 from "../../ui/legacy/components/utils/utils.js";
+import * as UI12 from "../../ui/legacy/legacy.js";
+import * as Lit6 from "../../ui/lit/lit.js";
 import * as ElementsComponents4 from "./components/components.js";
 
 // gen/front_end/panels/elements/computedStyleWidget.css.js
@@ -763,7 +774,7 @@ var computedStyleWidget_css_default = `/*
 
 @scope to (devtools-widget > *) {
   .styles-sidebar-pane-toolbar {
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     flex-shrink: 0;
   }
 
@@ -788,8 +799,8 @@ var ImagePreviewPopover_exports = {};
 __export(ImagePreviewPopover_exports, {
   ImagePreviewPopover: () => ImagePreviewPopover
 });
-import * as Components from "./../../ui/legacy/components/utils/utils.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
+import * as Components from "../../ui/legacy/components/utils/utils.js";
+import * as UI3 from "../../ui/legacy/legacy.js";
 var ImagePreviewPopover = class {
   getLinkElement;
   popover;
@@ -838,7 +849,20 @@ var ImagePreviewPopover = class {
 var elementToURLMap = /* @__PURE__ */ new WeakMap();
 
 // gen/front_end/panels/elements/PropertyNameCategories.js
-import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+var Category;
+(function(Category2) {
+  Category2["LAYOUT"] = "Layout";
+  Category2["TEXT"] = "Text";
+  Category2["APPEARANCE"] = "Appearance";
+  Category2["ANIMATION"] = "Animation";
+  Category2["GRID"] = "Grid";
+  Category2["FLEX"] = "Flex";
+  Category2["TABLE"] = "Table";
+  Category2["CSS_VARIABLES"] = "CSS Variables";
+  Category2["GENERATED_CONTENT"] = "Generated Content";
+  Category2["OTHER"] = "Other";
+})(Category || (Category = {}));
 var DefaultCategoryOrder = [
   "Layout",
   "Text",
@@ -1067,12 +1091,12 @@ __export(PropertyRenderer_exports, {
   URLRenderer: () => URLRenderer,
   rendererBase: () => rendererBase
 });
-import * as Common6 from "./../../core/common/common.js";
-import * as i18n18 from "./../../core/i18n/i18n.js";
-import * as SDK8 from "./../../core/sdk/sdk.js";
-import * as Components3 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI11 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common6 from "../../core/common/common.js";
+import * as i18n18 from "../../core/i18n/i18n.js";
+import * as SDK8 from "../../core/sdk/sdk.js";
+import * as Components3 from "../../ui/legacy/components/utils/utils.js";
+import * as UI11 from "../../ui/legacy/legacy.js";
+import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/StylesSidebarPane.js
 var StylesSidebarPane_exports = {};
@@ -1080,35 +1104,37 @@ __export(StylesSidebarPane_exports, {
   ActionDelegate: () => ActionDelegate,
   ButtonProvider: () => ButtonProvider2,
   CSSPropertyPrompt: () => CSSPropertyPrompt,
+  Events: () => Events,
   FUNCTION_SECTION_NAME: () => FUNCTION_SECTION_NAME,
   IdleCallbackManager: () => IdleCallbackManager,
   REGISTERED_PROPERTY_SECTION_NAME: () => REGISTERED_PROPERTY_SECTION_NAME,
   SectionBlock: () => SectionBlock,
   StylesSidebarPane: () => StylesSidebarPane,
   escapeUrlAsCssComment: () => escapeUrlAsCssComment,
+  mergeOrderedItems: () => mergeOrderedItems,
   quoteFamilyName: () => quoteFamilyName,
   unescapeCssString: () => unescapeCssString
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common5 from "./../../core/common/common.js";
-import * as Host4 from "./../../core/host/host.js";
-import * as i18n16 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
-import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
-import * as Root3 from "./../../core/root/root.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
-import * as TextUtils5 from "./../../core/text_utils/text_utils.js";
-import * as AiCodeCompletion3 from "./../../models/ai_code_completion/ai_code_completion.js";
-import * as Bindings4 from "./../../models/bindings/bindings.js";
-import * as CodeMirror from "./../../third_party/codemirror.next/codemirror.next.js";
-import * as TextEditor2 from "./../../ui/components/text_editor/text_editor.js";
-import { createIcon as createIcon4, Icon as Icon2 } from "./../../ui/kit/kit.js";
-import * as InlineEditor3 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
-import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI10 from "./../../ui/legacy/legacy.js";
-import { render as render6 } from "./../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon2 from "./../common/common.js";
+import "../../ui/legacy/legacy.js";
+import * as Common5 from "../../core/common/common.js";
+import * as Host4 from "../../core/host/host.js";
+import * as i18n16 from "../../core/i18n/i18n.js";
+import * as Platform5 from "../../core/platform/platform.js";
+import { assertNotNullOrUndefined } from "../../core/platform/platform.js";
+import * as Root3 from "../../core/root/root.js";
+import * as SDK7 from "../../core/sdk/sdk.js";
+import * as TextUtils5 from "../../core/text_utils/text_utils.js";
+import * as AiCodeCompletion3 from "../../models/ai_code_completion/ai_code_completion.js";
+import * as Bindings4 from "../../models/bindings/bindings.js";
+import * as CodeMirror from "../../third_party/codemirror.next/codemirror.next.js";
+import * as TextEditor2 from "../../ui/components/text_editor/text_editor.js";
+import { createIcon as createIcon4, Icon as Icon2 } from "../../ui/kit/kit.js";
+import * as InlineEditor3 from "../../ui/legacy/components/inline_editor/inline_editor.js";
+import * as Components2 from "../../ui/legacy/components/utils/utils.js";
+import * as UI10 from "../../ui/legacy/legacy.js";
+import { render as render6 } from "../../ui/lit/lit.js";
+import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon2 from "../common/common.js";
 import * as ElementsComponents3 from "./components/components.js";
 
 // gen/front_end/panels/elements/ElementsSidebarPane.js
@@ -1116,8 +1142,8 @@ var ElementsSidebarPane_exports = {};
 __export(ElementsSidebarPane_exports, {
   ElementsSidebarPane: () => ElementsSidebarPane
 });
-import * as ComputedStyle from "./../../models/computed_style/computed_style.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
+import * as ComputedStyle from "../../models/computed_style/computed_style.js";
+import * as UI4 from "../../ui/legacy/legacy.js";
 var ElementsSidebarPane = class extends UI4.Widget.VBox {
   computedStyleModelInternal;
   constructor(computedStyleModel, options) {
@@ -1150,12 +1176,12 @@ __export(LayersWidget_exports, {
   ButtonProvider: () => ButtonProvider,
   LayersWidget: () => LayersWidget
 });
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as TreeOutline2 from "./../../ui/components/tree_outline/tree_outline.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
+import * as SDK3 from "../../core/sdk/sdk.js";
+import * as TreeOutline2 from "../../ui/components/tree_outline/tree_outline.js";
+import * as UI5 from "../../ui/legacy/legacy.js";
+import * as Lit3 from "../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/layersWidget.css.js
 var layersWidget_css_default = `/**
@@ -1166,16 +1192,16 @@ var layersWidget_css_default = `/**
 
 .layers-widget {
   overflow: hidden;
-  padding-left: 2px;
+  padding-left: var(--sys-size-2);
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   margin-top: 0;
-  padding-bottom: 2px;
+  padding-bottom: var(--sys-size-2);
 }
 
 .layers-widget > .layers-widget-title {
   font-weight: bold;
-  margin: 8px 4px 6px;
+  margin: var(--sys-size-5) var(--sys-size-3) var(--sys-size-4);
 }
 
 /*# sourceURL=${import.meta.resolve("./layersWidget.css")} */`;
@@ -1328,8 +1354,8 @@ var StyleEditorWidget_exports = {};
 __export(StyleEditorWidget_exports, {
   StyleEditorWidget: () => StyleEditorWidget
 });
-import { createIcon as createIcon2 } from "./../../ui/kit/kit.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
+import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
+import * as UI8 from "../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/elements/StylePropertyTreeElement.js
 var StylePropertyTreeElement_exports = {};
@@ -1359,6 +1385,7 @@ __export(StylePropertyTreeElement_exports, {
   RelativeColorChannelRenderer: () => RelativeColorChannelRenderer,
   SHORTHANDS_FOR_PERCENTAGES: () => SHORTHANDS_FOR_PERCENTAGES,
   ShadowModel: () => ShadowModel,
+  ShadowPropertyType: () => ShadowPropertyType,
   ShadowRenderer: () => ShadowRenderer,
   StylePropertyTreeElement: () => StylePropertyTreeElement,
   VariableNameRenderer: () => VariableNameRenderer,
@@ -1366,21 +1393,21 @@ __export(StylePropertyTreeElement_exports, {
   getPropertyRenderers: () => getPropertyRenderers,
   handleVarDefinitionActivate: () => handleVarDefinitionActivate
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Platform2 from "./../../core/platform/platform.js";
-import * as SDK5 from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as Badges from "./../../models/badges/badges.js";
-import * as Bindings2 from "./../../models/bindings/bindings.js";
-import * as Tooltips from "./../../ui/components/tooltips/tooltips.js";
-import { createIcon, Icon } from "./../../ui/kit/kit.js";
-import * as ColorPicker2 from "./../../ui/legacy/components/color_picker/color_picker.js";
-import * as InlineEditor2 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common2 from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
+import * as Platform2 from "../../core/platform/platform.js";
+import * as SDK5 from "../../core/sdk/sdk.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as Badges from "../../models/badges/badges.js";
+import * as Bindings2 from "../../models/bindings/bindings.js";
+import * as Tooltips from "../../ui/components/tooltips/tooltips.js";
+import { createIcon, Icon } from "../../ui/kit/kit.js";
+import * as ColorPicker2 from "../../ui/legacy/components/color_picker/color_picker.js";
+import * as InlineEditor2 from "../../ui/legacy/components/inline_editor/inline_editor.js";
+import * as UI7 from "../../ui/legacy/legacy.js";
+import * as Lit5 from "../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents from "./components/components.js";
 
 // gen/front_end/panels/elements/CSSRuleValidator.js
@@ -1396,6 +1423,7 @@ __export(CSSRuleValidator_exports, {
   GridContainerValidator: () => GridContainerValidator,
   GridItemValidator: () => GridItemValidator,
   Hint: () => Hint,
+  HintType: () => HintType,
   MulticolFlexGridValidator: () => MulticolFlexGridValidator,
   PaddingValidator: () => PaddingValidator,
   PositionAnchorValidator: () => PositionAnchorValidator,
@@ -1404,13 +1432,13 @@ __export(CSSRuleValidator_exports, {
   ZIndexValidator: () => ZIndexValidator,
   cssRuleValidatorsMap: () => cssRuleValidatorsMap
 });
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
-import * as uiI18n from "./../../ui/i18n/i18n.js";
-import { html as html5 } from "./../../ui/lit/lit.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
+import * as SDK4 from "../../core/sdk/sdk.js";
+import * as uiI18n from "../../ui/i18n/i18n.js";
+import { html as html5 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/CSSRuleValidatorHelper.js
-import { html as html4 } from "./../../ui/lit/lit.js";
+import { html as html4 } from "../../ui/lit/lit.js";
 var buildPropertyDefinitionText = (property, value5) => {
   if (value5 === void 0) {
     return buildPropertyName(property);
@@ -1579,6 +1607,11 @@ var UIStrings4 = {
 var str_4 = i18n7.i18n.registerUIStrings("panels/elements/CSSRuleValidator.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var i18nLazyStringTemplate = uiI18n.getFormatLocalizedStringTemplate.bind(void 0, str_4);
+var HintType;
+(function(HintType2) {
+  HintType2["INACTIVE_PROPERTY"] = "ruleValidation";
+  HintType2["DEPRECATED_PROPERTY"] = "deprecatedProperty";
+})(HintType || (HintType = {}));
 var Hint = class {
   #hintMessage;
   #possibleFixMessage;
@@ -2054,8 +2087,8 @@ var CSSValueTraceView_exports = {};
 __export(CSSValueTraceView_exports, {
   CSSValueTraceView: () => CSSValueTraceView
 });
-import * as UI6 from "./../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../ui/lit/lit.js";
+import * as UI6 from "../../ui/legacy/legacy.js";
+import * as Lit4 from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/cssValueTraceView.css.js
 var cssValueTraceView_css_default = `/*
@@ -3734,6 +3767,15 @@ var AutoBaseRenderer = class extends rendererBase(SDK5.CSSPropertyParserMatchers
     return [content];
   }
 };
+var ShadowPropertyType;
+(function(ShadowPropertyType2) {
+  ShadowPropertyType2["X"] = "x";
+  ShadowPropertyType2["Y"] = "y";
+  ShadowPropertyType2["SPREAD"] = "spread";
+  ShadowPropertyType2["BLUR"] = "blur";
+  ShadowPropertyType2["INSET"] = "inset";
+  ShadowPropertyType2["COLOR"] = "color";
+})(ShadowPropertyType || (ShadowPropertyType = {}));
 var ShadowModel = class {
   #properties;
   #shadowType;
@@ -5849,22 +5891,22 @@ __export(StylePropertiesSection_exports, {
   StylePropertiesSection: () => StylePropertiesSection,
   constructResolvedSelector: () => constructResolvedSelector
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common3 from "./../../core/common/common.js";
-import * as Host2 from "./../../core/host/host.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Platform3 from "./../../core/platform/platform.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
-import * as Badges2 from "./../../models/badges/badges.js";
-import * as Bindings3 from "./../../models/bindings/bindings.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as Tooltips2 from "./../../ui/components/tooltips/tooltips.js";
-import { createIcon as createIcon3 } from "./../../ui/kit/kit.js";
-import * as UI9 from "./../../ui/legacy/legacy.js";
-import { html as html8, nothing as nothing2, render as render5 } from "./../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon from "./../common/common.js";
+import "../../ui/legacy/legacy.js";
+import * as Common3 from "../../core/common/common.js";
+import * as Host2 from "../../core/host/host.js";
+import * as i18n13 from "../../core/i18n/i18n.js";
+import * as Platform3 from "../../core/platform/platform.js";
+import * as SDK6 from "../../core/sdk/sdk.js";
+import * as TextUtils3 from "../../core/text_utils/text_utils.js";
+import * as Badges2 from "../../models/badges/badges.js";
+import * as Bindings3 from "../../models/bindings/bindings.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
+import * as Tooltips2 from "../../ui/components/tooltips/tooltips.js";
+import { createIcon as createIcon3 } from "../../ui/kit/kit.js";
+import * as UI9 from "../../ui/legacy/legacy.js";
+import { html as html8, nothing as nothing2, render as render5 } from "../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon from "../common/common.js";
 import * as ElementsComponents2 from "./components/components.js";
 
 // gen/front_end/panels/elements/CSSSpecificityBreakdown.js
@@ -5875,7 +5917,7 @@ __export(CSSSpecificityBreakdown_exports, {
   getSpecificityBreakdown: () => getSpecificityBreakdown,
   getSpecificityBreakdownLines: () => getSpecificityBreakdownLines
 });
-import * as i18n11 from "./../../core/i18n/i18n.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
 var UIStrings6 = {
   /**
    * @description Summary line in a tooltip explaining CSS selector specificity.
@@ -6009,7 +6051,11 @@ var UIStrings7 = {
   /**
    * @description Accessibility label for the button that collapses an expanded CSS rule in the Styles tab.
    */
-  collapseExpandedRule: "Collapse expanded rule"
+  collapseExpandedRule: "Collapse expanded rule",
+  /**
+   * @description Text displayed next to a CSS rule that was previously matched but no longer is.
+   */
+  notMatching: "This rule doesn\u2019t currently match the selected element"
 };
 var str_7 = i18n13.i18n.registerUIStrings("panels/elements/StylePropertiesSection.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
@@ -6057,12 +6103,17 @@ var StylePropertiesSection = class _StylePropertiesSection {
   sectionTooltipIdPrefix = _StylePropertiesSection.#nextSectionTooltipIdPrefix++;
   ghostStyleTreeElements = [];
   #activeAiSuggestion;
+  #isInactive = false;
+  #manuallyCollapsed = false;
+  #statusElement;
+  #lastInheritedNode = null;
   constructor(stylesContainer, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields, customHeaderText) {
     this.#customHeaderText = customHeaderText;
     this.stylesContainer = stylesContainer;
     this.sectionIdx = sectionIdx;
     this.styleInternal = style;
     this.matchedStyles = matchedStyles;
+    this.#lastInheritedNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
     this.computedStyles = computedStyles;
     this.parentsComputedStyles = parentsComputedStyles;
     this.computedStyleExtraFields = computedStyleExtraFields;
@@ -6133,6 +6184,8 @@ var StylePropertiesSection = class _StylePropertiesSection {
     }, false);
     this.selectorElement.addEventListener("mouseleave", this.onMouseOutSelector.bind(this), false);
     this.#specificityTooltips = selectorContainer.createChild("span");
+    this.#statusElement = createIcon3("warning", "styles-section-status hidden medium");
+    selectorContainer.appendChild(this.#statusElement);
     if (headerText.length > 0 || !(rule instanceof SDK6.CSSRule.CSSStyleRule)) {
       const openBrace = selectorContainer.createChild("span", "sidebar-pane-open-brace");
       openBrace.textContent = headerText.length > 0 ? " {" : "{";
@@ -6216,6 +6269,35 @@ var StylePropertiesSection = class _StylePropertiesSection {
   }
   getSectionIdx() {
     return this.sectionIdx;
+  }
+  setInactive(inactive) {
+    const wasInactive = this.#isInactive;
+    this.#isInactive = inactive;
+    this.element.classList.toggle("styles-section-inactive", inactive);
+    this.propertiesTreeOutline.element.classList.toggle("styles-section-inactive", inactive);
+    if (this.#statusElement) {
+      this.#statusElement.classList.toggle("hidden", !inactive);
+      this.#statusElement.title = inactive ? i18nString7(UIStrings7.notMatching) : "";
+    }
+    this.markSelectorMatches();
+    if (wasInactive !== inactive) {
+      this.updateCollapsedState();
+    }
+  }
+  isInactive() {
+    return this.#isInactive;
+  }
+  rebuildWithPayload(matchedStyles, style, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
+    this.matchedStyles = matchedStyles;
+    this.styleInternal = style;
+    this.computedStyles = computedStyles;
+    this.parentsComputedStyles = parentsComputedStyles;
+    this.computedStyleExtraFields = computedStyleExtraFields;
+    this.#lastInheritedNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
+    this.update(true);
+  }
+  inheritedNode() {
+    return this.#lastInheritedNode;
   }
   treeScopeDistance() {
     const treeScope = this.styleInternal.parentRule?.treeScope;
@@ -7051,6 +7133,9 @@ var StylePropertiesSection = class _StylePropertiesSection {
     if (!Common3.Settings.Settings.instance().moduleSetting("collapse-non-contributing-css-rules").get()) {
       return false;
     }
+    if (this.#isInactive) {
+      return true;
+    }
     const style = this.styleInternal;
     const properties = style.leadingProperties();
     if (style.type === SDK6.CSSStyleDeclaration.Type.Inline) {
@@ -7070,8 +7155,11 @@ var StylePropertiesSection = class _StylePropertiesSection {
     return allOverloaded;
   }
   updateCollapsedState() {
+    if (this.#manuallyCollapsed) {
+      return;
+    }
     const shouldCollapse = this.#shouldCollapse();
-    this.element.classList.toggle("collapsible", shouldCollapse);
+    this.element.classList.toggle("collapsible", shouldCollapse || this.#isInactive);
     this.#setCollapsed(shouldCollapse);
   }
   #setCollapsed(collapsed) {
@@ -7085,6 +7173,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     }
   }
   #toggleCollapsed() {
+    this.#manuallyCollapsed = true;
     this.#setCollapsed(!this.#isCollapsed);
   }
   /**
@@ -7766,7 +7855,7 @@ var StylePropertyHighlighter_exports = {};
 __export(StylePropertyHighlighter_exports, {
   StylePropertyHighlighter: () => StylePropertyHighlighter
 });
-import { PanelUtils } from "./../utils/utils.js";
+import { PanelUtils } from "../utils/utils.js";
 var StylePropertyHighlighter = class {
   styleSidebarPane;
   constructor(ssp) {
@@ -7862,13 +7951,13 @@ var StylesAiCodeCompletionProvider_exports = {};
 __export(StylesAiCodeCompletionProvider_exports, {
   StylesAiCodeCompletionProvider: () => StylesAiCodeCompletionProvider
 });
-import * as Common4 from "./../../core/common/common.js";
-import * as Host3 from "./../../core/host/host.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Root from "./../../core/root/root.js";
-import * as TextUtils4 from "./../../core/text_utils/text_utils.js";
-import * as AiCodeCompletion from "./../../models/ai_code_completion/ai_code_completion.js";
-import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
+import * as Common4 from "../../core/common/common.js";
+import * as Host3 from "../../core/host/host.js";
+import * as i18n15 from "../../core/i18n/i18n.js";
+import * as Root from "../../core/root/root.js";
+import * as TextUtils4 from "../../core/text_utils/text_utils.js";
+import * as AiCodeCompletion from "../../models/ai_code_completion/ai_code_completion.js";
+import * as TextEditor from "../../ui/components/text_editor/text_editor.js";
 var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
   #aidaClient = new Host3.AidaClient.AidaClient();
   #aiCodeCompletionSetting = Common4.Settings.Settings.instance().createSetting("ai-code-completion-enabled", false);
@@ -8079,10 +8168,10 @@ var stylesSidebarPane_css_default = `/**
   min-height: 18px;
   white-space: nowrap;
   user-select: text;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   position: relative;
   overflow: hidden;
-  padding: 2px 2px 4px 4px;
+  padding: var(--sys-size-2) var(--sys-size-2) var(--sys-size-3) var(--sys-size-3);
 
   &:last-child {
     border-bottom: none;
@@ -8095,6 +8184,23 @@ var stylesSidebarPane_css_default = `/**
   &.read-only {
     background-color: var(--sys-color-cdt-base-container);
     font-style: italic;
+  }
+
+  &.styles-section-inactive {
+    opacity: 70%;
+
+    .selector,
+    .style-properties {
+      font-style: italic;
+    }
+
+    .selector {
+      text-decoration: line-through;
+    }
+  }
+
+  devtools-icon[name="warning"] {
+    color: var(--icon-warning);
   }
 
   &:focus-visible,
@@ -8112,7 +8218,7 @@ var stylesSidebarPane_css_default = `/**
   }
 
   .styles-section-subtitle devtools-icon {
-    margin-bottom: -4px;
+    margin-bottom: calc(-1 * var(--sys-size-3));
   }
 
   .styles-section-subtitle .devtools-link {
@@ -8145,7 +8251,7 @@ var stylesSidebarPane_css_default = `/**
 
   .style-properties {
     margin: 0;
-    padding: 2px 4px 0 0;
+    padding: var(--sys-size-2) var(--sys-size-3) 0 0;
     list-style: none;
     clear: both;
     display: flex;
@@ -8167,10 +8273,10 @@ var stylesSidebarPane_css_default = `/**
   }
 
   & .section-collapse-icon {
-    width: 12px;
-    height: 12px;
-    margin-right: 2px;
-    margin-left: -2px;
+    width: var(--sys-size-6);
+    height: var(--sys-size-6);
+    margin-right: var(--sys-size-2);
+    margin-left: calc(-1 * var(--sys-size-2));
     vertical-align: middle;
     cursor: pointer;
     display: none;
@@ -8211,7 +8317,7 @@ var stylesSidebarPane_css_default = `/**
   padding: var(--sys-size-2) var(--sys-size-2) 0 var(--sys-size-8);
   max-width: 100%;
   height: 15px;
-  margin-bottom: -1px;
+  margin-bottom: calc(-1 * var(--sys-size-1));
 }
 
 .styles-section-subtitle * {
@@ -8281,7 +8387,7 @@ var stylesSidebarPane_css_default = `/**
 }
 
 .styles-sidebar-pane-toolbar {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .styles-pane-toolbar {
@@ -8291,12 +8397,12 @@ var stylesSidebarPane_css_default = `/**
 .sidebar-separator {
   background-color: var(--sys-color-surface2);
   padding: 0 5px;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   color: var(--sys-color-on-surface-subtle);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  line-height: 22px;
+  line-height: var(--sys-size-10);
 
   > span.monospace {
     max-width: 180px;
@@ -8304,7 +8410,7 @@ var stylesSidebarPane_css_default = `/**
     overflow: hidden;
     text-overflow: ellipsis;
     vertical-align: middle;
-    margin-left: 2px;
+    margin-left: var(--sys-size-2);
   }
 
   &.layer-separator {
@@ -8320,14 +8426,14 @@ var stylesSidebarPane_css_default = `/**
 .sidebar-pane-section-toolbar {
   position: absolute;
   right: 0;
-  bottom: -1px;
+  bottom: calc(-1 * var(--sys-size-1));
   z-index: 0;
 
   &.new-rule-toolbar {
     visibility: hidden;
     margin-bottom: 5px;
 
-    --toolbar-height: 16px;
+    --toolbar-height: var(--sys-size-8);
   }
 }
 
@@ -8338,8 +8444,8 @@ var stylesSidebarPane_css_default = `/**
 }
 
 .styles-show-all {
-  padding: 4px;
-  margin-left: 16px;
+  padding: var(--sys-size-3);
+  margin-left: var(--sys-size-8);
   text-overflow: ellipsis;
   overflow: hidden;
   max-width: -webkit-fill-available;
@@ -8348,7 +8454,7 @@ var stylesSidebarPane_css_default = `/**
 @media (forced-colors: active) {
   .sidebar-pane-section-toolbar {
     forced-color-adjust: none;
-    border: 1px solid ButtonText;
+    border: var(--sys-size-1) solid ButtonText;
     background-color: ButtonFace;
   }
 
@@ -8388,14 +8494,14 @@ var stylesSidebarPane_css_default = `/**
 }
 
 .spinner::before {
-  --dimension: 24px;
+  --dimension: var(--sys-size-11);
 
   margin-top: 2em;
   left: calc(50% - var(--dimension) / 2);
 }
 
 .section-block-expand-icon {
-  margin-bottom: -4px;
+  margin-bottom: calc(-1 * var(--sys-size-3));
 }
 
 .selector-specificity-tooltip-summary {
@@ -8439,7 +8545,7 @@ var WebCustomData_exports = {};
 __export(WebCustomData_exports, {
   WebCustomData: () => WebCustomData
 });
-import * as Root2 from "./../../core/root/root.js";
+import * as Root2 from "../../core/root/root.js";
 var WebCustomData = class _WebCustomData {
   #data = /* @__PURE__ */ new Map();
   /** The test actually needs to wait for the result */
@@ -8592,6 +8698,8 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   initialUpdateCompleted = false;
   hasMatchedStyles = false;
   sectionBlocks = [];
+  #allKnownBlocks = /* @__PURE__ */ new Map();
+  #lastNode = null;
   idleCallbackManager = null;
   needsForceUpdate = false;
   isSuppressingResets = false;
@@ -8621,6 +8729,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     this.registerRequiredCSS(stylesSidebarPane_css_default);
     Common5.Settings.Settings.instance().moduleSetting("text-editor-indent").addChangeListener(this.requestUpdate, this);
     Common5.Settings.Settings.instance().moduleSetting("collapse-non-contributing-css-rules").addChangeListener(this.updateCollapsedSectionsSetting, this);
+    Common5.Settings.Settings.instance().moduleSetting("show-inactive-css-rules").addChangeListener(this.requestUpdate, this);
     this.toolbarPaneElement = this.createStylesSidebarToolbar();
     this.noMatchesElement = this.contentElement.createChild("div", "gray-info-message hidden");
     this.noMatchesElement.textContent = i18nString8(UIStrings8.noMatchingSelectorOrStyle);
@@ -9209,8 +9318,12 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     const focusedIndex = this.focusedSectionIndex();
     this.#elementsForSyncViewportCheck = [];
     this.linkifier.reset();
-    const prevSections = this.sectionBlocks.map((block) => block.sections).flat();
     const node = this.node();
+    if (this.#lastNode !== node) {
+      this.#allKnownBlocks.clear();
+      this.#lastNode = node;
+    }
+    const prevSections = this.sectionBlocks.map((block) => block.sections).flat();
     this.hasMatchedStyles = matchedStyles !== null && node !== null;
     if (!this.hasMatchedStyles) {
       this.sectionBlocks = [];
@@ -9278,6 +9391,34 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
   setMatchedStylesForTest(matchedStyles) {
     this.matchedStyles = matchedStyles;
   }
+  setNodeForTest(node) {
+    if (this.#lastNode !== node) {
+      this.#allKnownBlocks.clear();
+      this.#lastNode = node;
+    }
+  }
+  getStyleId(style) {
+    if (style.range) {
+      return `${style.styleSheetId || ""}:${style.range.toString()}`;
+    }
+    if (style.type === SDK7.CSSStyleDeclaration.Type.Inline || style.type === SDK7.CSSStyleDeclaration.Type.Attributes) {
+      return style.type;
+    }
+    if (style.type === SDK7.CSSStyleDeclaration.Type.Animation) {
+      return `${style.type}:${style.animationName() || ""}:${style.cssText}`;
+    }
+    const parentRule = style.parentRule;
+    if (parentRule instanceof SDK7.CSSRule.CSSStyleRule) {
+      return `${style.type}:${parentRule.selectorText()}`;
+    }
+    if (parentRule instanceof SDK7.CSSRule.CSSKeyframeRule) {
+      return `${style.type}:${parentRule.parentRuleName()}:${parentRule.key().text}`;
+    }
+    if (parentRule instanceof SDK7.CSSRule.CSSPropertyRule) {
+      return `${style.type}:${parentRule.propertyName().text}`;
+    }
+    return `${style.type}:${style.cssText}`;
+  }
   rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
     return this.rebuildSectionsForMatchedStyleRules(void 0, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
   }
@@ -9289,7 +9430,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     const blocks = [new SectionBlock(null)];
     let sectionIdx = 0;
     let lastParentNode = null;
-    let lastLayerParent;
+    let lastLayerParent = blocks[0];
     let lastLayers = null;
     let sawLayers = false;
     const addLayerSeparator = (style) => {
@@ -9313,11 +9454,12 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       totalProperties += style.leadingProperties().length;
     }
     this.#shouldRenderLazily = !Host4.InspectorFrontendHost.isUnderTest() && totalProperties > LAZY_RENDER_THRESHOLD;
-    for (const style of matchedStyles.nodeStyles()) {
+    const activeStyles = matchedStyles.nodeStyles().filter((style) => {
       const isTransitionOrAnimationStyle = style.type === SDK7.CSSStyleDeclaration.Type.Transition || style.type === SDK7.CSSStyleDeclaration.Type.Animation;
-      if (isTransitionOrAnimationStyle && cssAnimationsOnlyWhenAnimationsTabOpen && !animationsPanelVisible) {
-        continue;
-      }
+      return !isTransitionOrAnimationStyle || animationsPanelVisible || !cssAnimationsOnlyWhenAnimationsTabOpen;
+    });
+    for (const style of activeStyles) {
+      const isTransitionOrAnimationStyle = style.type === SDK7.CSSStyleDeclaration.Type.Transition || style.type === SDK7.CSSStyleDeclaration.Type.Animation;
       const parentNode = matchedStyles.isInherited(style) ? matchedStyles.nodeForStyle(style) : null;
       if (parentNode && parentNode !== lastParentNode) {
         lastParentNode = parentNode;
@@ -9467,7 +9609,42 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       ElementsPanel.instance().showToolbarPane(null, ButtonProvider.instance().item());
     }
     await this.idleCallbackManager.awaitDone();
-    return blocks;
+    const showInactiveCSSRules = Common5.Settings.Settings.instance().moduleSetting("show-inactive-css-rules").get();
+    if (!showInactiveCSSRules) {
+      return blocks;
+    }
+    return this.mergeInactiveStyles(blocks);
+  }
+  computeBlockIds(blocks) {
+    let nullBlockCounter = 0;
+    const blockIds = /* @__PURE__ */ new Map();
+    for (const block of blocks) {
+      blockIds.set(block, block.titleElement()?.textContent || `MAIN_BLOCK_NULL_${nullBlockCounter++}`);
+    }
+    return blockIds;
+  }
+  mergeInactiveStyles(blocks) {
+    const blockIds = this.computeBlockIds(blocks);
+    for (const [id, block] of this.#allKnownBlocks) {
+      if (!blockIds.has(block)) {
+        blockIds.set(block, id);
+      }
+    }
+    const getBlockId = (block) => blockIds.get(block) || "UNKNOWN_BLOCK";
+    for (const block of blocks) {
+      const bid = getBlockId(block);
+      const knownBlock = this.#allKnownBlocks.get(bid);
+      if (knownBlock) {
+        block.sections = mergeOrderedItems(knownBlock.sections, block.sections, (section5) => this.getStyleId(section5.styleInternal), (section5) => section5.setInactive(true));
+      }
+    }
+    const oldBlocks = Array.from(this.#allKnownBlocks.values());
+    const finalBlocks = mergeOrderedItems(oldBlocks, blocks, getBlockId, (block) => block.sections.forEach((section5) => section5.setInactive(true)));
+    this.#allKnownBlocks.clear();
+    for (const block of finalBlocks) {
+      this.#allKnownBlocks.set(getBlockId(block), block);
+    }
+    return finalBlocks;
   }
   async createNewRuleInViaInspectorStyleSheet() {
     const cssModel = this.cssModel();
@@ -9799,6 +9976,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
     this.#lazyRenderCallbacks.delete(element);
   }
 };
+var Events;
+(function(Events3) {
+  Events3["INITIAL_UPDATE_COMPLETED"] = "InitialUpdateCompleted";
+  Events3["STYLES_UPDATE_COMPLETED"] = "StylesUpdateCompleted";
+})(Events || (Events = {}));
 var MAX_LINK_LENGTH = 23;
 var SectionBlock = class _SectionBlock {
   #titleElement;
@@ -10506,6 +10688,30 @@ function escapeUrlAsCssComment(urlText) {
     return `${url.origin}${url.pathname}${url.search.replaceAll("*/", "*%2F")}${url.hash}`;
   }
   return url.toString();
+}
+function mergeOrderedItems(oldItems, newItems, getId, markInactive) {
+  const newIds = new Set(newItems.map(getId));
+  const merged = [];
+  let newIdx = 0;
+  for (const oldItem of oldItems) {
+    const oldId = getId(oldItem);
+    if (newIds.has(oldId)) {
+      while (newIdx < newItems.length) {
+        const newItem = newItems[newIdx++];
+        merged.push(newItem);
+        if (getId(newItem) === oldId) {
+          break;
+        }
+      }
+    } else {
+      markInactive(oldItem);
+      merged.push(oldItem);
+    }
+  }
+  while (newIdx < newItems.length) {
+    merged.push(newItems[newIdx++]);
+  }
+  return merged;
 }
 var ActionDelegate = class {
   handleAction(_context, actionId) {
@@ -11637,7 +11843,7 @@ var elementsPanel_css_default = `/* Copyright 2026 The Chromium Authors
 
 #elements-content {
   overflow: auto;
-  padding: 2px 0 0;
+  padding: var(--sys-size-2) 0 0;
   height: 100%;
 }
 
@@ -11647,7 +11853,7 @@ var elementsPanel_css_default = `/* Copyright 2026 The Chromium Authors
 }
 
 .style-panes-wrapper:not(.computed-styles-pane-wrapper) > div:not(:last-child) {
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .style-panes-wrapper > div:has(+ .ai-code-completion-summary-toolbar-container) {
@@ -11671,14 +11877,14 @@ var elementsPanel_css_default = `/* Copyright 2026 The Chromium Authors
 
 #elements-crumbs {
   background-color: var(--sys-color-cdt-base-container);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
   width: 100%;
 }
 
 devtools-adorner-settings-pane {
   margin-bottom: 10px;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: auto;
 }
 
@@ -11702,18 +11908,18 @@ __export(ElementsTreeOutline_exports, {
   MappedCharToEntity: () => MappedCharToEntity,
   elementsTreeOutlineStyles: () => elementsTreeOutline_css_default
 });
-import * as Common12 from "./../../core/common/common.js";
-import * as i18n34 from "./../../core/i18n/i18n.js";
-import * as SDK16 from "./../../core/sdk/sdk.js";
-import * as Badges4 from "./../../models/badges/badges.js";
-import * as Elements from "./../../models/elements/elements.js";
-import * as CodeHighlighter5 from "./../../ui/components/code_highlighter/code_highlighter.js";
-import * as Highlighting3 from "./../../ui/components/highlighting/highlighting.js";
-import * as IssueCounter from "./../../ui/components/issue_counter/issue_counter.js";
-import * as UIComponentUtils from "./../../ui/legacy/components/utils/utils.js";
-import * as UI19 from "./../../ui/legacy/legacy.js";
-import * as Lit9 from "./../../ui/lit/lit.js";
-import * as VisualLogging10 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common12 from "../../core/common/common.js";
+import * as i18n34 from "../../core/i18n/i18n.js";
+import * as SDK16 from "../../core/sdk/sdk.js";
+import * as Badges4 from "../../models/badges/badges.js";
+import * as Elements from "../../models/elements/elements.js";
+import * as CodeHighlighter5 from "../../ui/components/code_highlighter/code_highlighter.js";
+import * as Highlighting3 from "../../ui/components/highlighting/highlighting.js";
+import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.js";
+import * as UIComponentUtils from "../../ui/legacy/components/utils/utils.js";
+import * as UI19 from "../../ui/legacy/legacy.js";
+import * as Lit9 from "../../ui/lit/lit.js";
+import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/AdoptedStyleSheetTreeElement.js
 var AdoptedStyleSheetTreeElement_exports = {};
@@ -11722,13 +11928,13 @@ __export(AdoptedStyleSheetTreeElement_exports, {
   AdoptedStyleSheetSetTreeElement: () => AdoptedStyleSheetSetTreeElement,
   AdoptedStyleSheetTreeElement: () => AdoptedStyleSheetTreeElement
 });
-import * as SDK10 from "./../../core/sdk/sdk.js";
-import * as TextUtils6 from "./../../core/text_utils/text_utils.js";
-import * as CodeHighlighter from "./../../ui/components/code_highlighter/code_highlighter.js";
-import * as Components5 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI13 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
-import { PanelUtils as PanelUtils2 } from "./../utils/utils.js";
+import * as SDK10 from "../../core/sdk/sdk.js";
+import * as TextUtils6 from "../../core/text_utils/text_utils.js";
+import * as CodeHighlighter from "../../ui/components/code_highlighter/code_highlighter.js";
+import * as Components5 from "../../ui/legacy/components/utils/utils.js";
+import * as UI13 from "../../ui/legacy/legacy.js";
+import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
+import { PanelUtils as PanelUtils2 } from "../utils/utils.js";
 var AdoptedStyleSheetSetTreeElement = class extends UI13.TreeOutline.TreeElement {
   adoptedStyleSheets;
   constructor(adoptedStyleSheets) {
@@ -11876,11 +12082,11 @@ __export(DOMTreeContextMenu_exports, {
   populateNodeContextMenu: () => populateNodeContextMenu,
   showContextMenu: () => showContextMenu
 });
-import * as Common10 from "./../../core/common/common.js";
-import * as i18n30 from "./../../core/i18n/i18n.js";
-import * as SDK14 from "./../../core/sdk/sdk.js";
-import * as UI16 from "./../../ui/legacy/legacy.js";
-import * as Emulation from "./../emulation/emulation.js";
+import * as Common10 from "../../core/common/common.js";
+import * as i18n30 from "../../core/i18n/i18n.js";
+import * as SDK14 from "../../core/sdk/sdk.js";
+import * as UI16 from "../../ui/legacy/legacy.js";
+import * as Emulation from "../emulation/emulation.js";
 
 // gen/front_end/panels/elements/DOMPath.js
 var DOMPath_exports = {};
@@ -11892,7 +12098,7 @@ __export(DOMPath_exports, {
   jsPath: () => jsPath,
   xPath: () => xPath
 });
-import * as SDK11 from "./../../core/sdk/sdk.js";
+import * as SDK11 from "../../core/sdk/sdk.js";
 var fullQualifiedSelector = function(node, justSelector) {
   if (node.nodeType() !== Node.ELEMENT_NODE) {
     return node.localName() || node.nodeName().toLowerCase();
@@ -12163,35 +12369,35 @@ __export(ElementsTreeElement_exports, {
   convertUnicodeCharsToHTMLEntities: () => convertUnicodeCharsToHTMLEntities,
   isOpeningTag: () => isOpeningTag
 });
-import "./../../ui/components/adorners/adorners.js";
-import "./../../ui/components/buttons/buttons.js";
-import * as Common9 from "./../../core/common/common.js";
-import * as Host5 from "./../../core/host/host.js";
-import * as i18n28 from "./../../core/i18n/i18n.js";
-import * as Platform7 from "./../../core/platform/platform.js";
-import * as Root4 from "./../../core/root/root.js";
-import * as SDK13 from "./../../core/sdk/sdk.js";
-import * as TextUtils7 from "./../../core/text_utils/text_utils.js";
-import * as AIAssistance from "./../../models/ai_assistance/ai_assistance.js";
-import * as Badges3 from "./../../models/badges/badges.js";
-import * as Bindings5 from "./../../models/bindings/bindings.js";
-import * as IssuesManager2 from "./../../models/issues_manager/issues_manager.js";
-import * as Workspace from "./../../models/workspace/workspace.js";
-import * as CodeMirror2 from "./../../third_party/codemirror.next/codemirror.next.js";
-import * as CodeHighlighter3 from "./../../ui/components/code_highlighter/code_highlighter.js";
-import * as Highlighting2 from "./../../ui/components/highlighting/highlighting.js";
-import * as TextEditor3 from "./../../ui/components/text_editor/text_editor.js";
-import * as Components6 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI15 from "./../../ui/legacy/legacy.js";
-import * as Lit7 from "./../../ui/lit/lit.js";
-import * as VisualLogging9 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon3 from "./../common/common.js";
-import * as Media from "./../media/media.js";
+import "../../ui/components/adorners/adorners.js";
+import "../../ui/components/buttons/buttons.js";
+import * as Common9 from "../../core/common/common.js";
+import * as Host5 from "../../core/host/host.js";
+import * as i18n28 from "../../core/i18n/i18n.js";
+import * as Platform7 from "../../core/platform/platform.js";
+import * as Root4 from "../../core/root/root.js";
+import * as SDK13 from "../../core/sdk/sdk.js";
+import * as TextUtils7 from "../../core/text_utils/text_utils.js";
+import * as AIAssistance from "../../models/ai_assistance/ai_assistance.js";
+import * as Badges3 from "../../models/badges/badges.js";
+import * as Bindings5 from "../../models/bindings/bindings.js";
+import * as IssuesManager2 from "../../models/issues_manager/issues_manager.js";
+import * as Workspace from "../../models/workspace/workspace.js";
+import * as CodeMirror2 from "../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeHighlighter3 from "../../ui/components/code_highlighter/code_highlighter.js";
+import * as Highlighting2 from "../../ui/components/highlighting/highlighting.js";
+import * as TextEditor3 from "../../ui/components/text_editor/text_editor.js";
+import * as Components6 from "../../ui/legacy/components/utils/utils.js";
+import * as UI15 from "../../ui/legacy/legacy.js";
+import * as Lit7 from "../../ui/lit/lit.js";
+import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon3 from "../common/common.js";
+import * as Media from "../media/media.js";
 import * as ElementsComponents5 from "./components/components.js";
 
 // gen/front_end/panels/elements/ElementIssueUtils.js
-import * as i18n22 from "./../../core/i18n/i18n.js";
-import * as IssuesManager from "./../../models/issues_manager/issues_manager.js";
+import * as i18n22 from "../../core/i18n/i18n.js";
+import * as IssuesManager from "../../models/issues_manager/issues_manager.js";
 var UIStrings11 = {
   /**
    * @description Tooltip text shown in the Elements panel when a label element has an incorrect for attribute.
@@ -12348,14 +12554,14 @@ __export(ElementStatePaneWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW4,
   ElementStatePaneWidget: () => ElementStatePaneWidget
 });
-import * as Common8 from "./../../core/common/common.js";
-import * as i18n24 from "./../../core/i18n/i18n.js";
-import * as SDK12 from "./../../core/sdk/sdk.js";
-import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
-import * as UIHelpers from "./../../ui/helpers/helpers.js";
-import * as UI14 from "./../../ui/legacy/legacy.js";
-import { html as html10, render as render8 } from "./../../ui/lit/lit.js";
-import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common8 from "../../core/common/common.js";
+import * as i18n24 from "../../core/i18n/i18n.js";
+import * as SDK12 from "../../core/sdk/sdk.js";
+import * as Buttons2 from "../../ui/components/buttons/buttons.js";
+import * as UIHelpers from "../../ui/helpers/helpers.js";
+import * as UI14 from "../../ui/legacy/legacy.js";
+import { html as html10, render as render8 } from "../../ui/lit/lit.js";
+import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/elementStatePaneWidget.css.js
 var elementStatePaneWidget_css_default = `/**
@@ -12366,22 +12572,22 @@ var elementStatePaneWidget_css_default = `/**
 @scope to (devtools-widget > *) {
   .styles-element-state-pane {
     overflow: hidden;
-    padding-left: 2px;
+    padding-left: var(--sys-size-2);
     background-color: var(--sys-color-cdt-base-container);
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     margin-top: 0;
-    padding-bottom: 2px;
+    padding-bottom: var(--sys-size-2);
   }
 
   .styles-element-state-pane > .page-state-checkbox {
-    margin-block: 6px;
+    margin-block: var(--sys-size-4);
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: var(--sys-size-2);
   }
 
   .styles-element-state-pane .section-header {
-    margin: 8px 4px 6px;
+    margin: var(--sys-size-5) var(--sys-size-3) var(--sys-size-4);
     color: var(--color-text-secondary);
   }
 
@@ -12396,14 +12602,14 @@ var elementStatePaneWidget_css_default = `/**
 
   .pseudo-states-container {
     display: grid;
-    column-gap: 12px;
+    column-gap: var(--sys-size-6);
     grid-template-columns: repeat(2, 1fr);
     grid-auto-flow: row;
   }
 
   .pseudo-states-container.specific-pseudo-states {
     grid-template-columns: repeat(2, 1fr);
-    margin-bottom: 4px;
+    margin-bottom: var(--sys-size-3);
   }
 
   .force-specific-element-header:focus {
@@ -12781,7 +12987,7 @@ __export(MarkerDecorator_exports, {
   GenericDecorator: () => GenericDecorator,
   getRegisteredDecorators: () => getRegisteredDecorators
 });
-import * as i18n26 from "./../../core/i18n/i18n.js";
+import * as i18n26 from "../../core/i18n/i18n.js";
 var UIStrings13 = {
   /**
    * @description Title of a marker decorator in the Elements panel.
@@ -13000,6 +13206,11 @@ var UIStrings14 = {
 };
 var str_14 = i18n28.i18n.registerUIStrings("panels/elements/ElementsTreeElement.ts", UIStrings14);
 var i18nString13 = i18n28.i18n.getLocalizedString.bind(void 0, str_14);
+var TagType;
+(function(TagType2) {
+  TagType2["OPENING"] = "OPENING_TAG";
+  TagType2["CLOSING"] = "CLOSING_TAG";
+})(TagType || (TagType = {}));
 function isOpeningTag(context) {
   return context.tagType === "OPENING_TAG";
 }
@@ -13291,6 +13502,12 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
     }
   }
   const nodeName = node ? node.nodeName().toLowerCase() : "";
+  let ValueType;
+  (function(ValueType2) {
+    ValueType2[ValueType2["UNKNOWN"] = 0] = "UNKNOWN";
+    ValueType2[ValueType2["SRC"] = 1] = "SRC";
+    ValueType2[ValueType2["SRCSET"] = 2] = "SRCSET";
+  })(ValueType || (ValueType = {}));
   let valueType = 0;
   if (nodeName && (name === "src" || name === "href") && value5) {
     valueType = 1;
@@ -13862,7 +14079,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       decorations: this.#decorations,
       descendantDecorations: this.#expanded ? [] : this.#descendantDecorations,
       decorationsTooltip: this.#decorationsTooltip,
-      indent: this.computeLeftIndent ? this.computeLeftIndent() : 0,
+      indent: this.#getLeftIndent(),
       showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !isClosingTag,
       scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
       showSlotAdorner: Boolean(this.node.assignedSlot) && !isClosingTag,
@@ -14628,7 +14845,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     this.#editorRef?.focus();
     function resize() {
       if (this.visibleWidth) {
-        this.#editorWidth = this.visibleWidth() - (this.computeLeftIndent ? this.computeLeftIndent() : 0) - 30;
+        this.#editorWidth = this.visibleWidth() - this.#getLeftIndent() - 30;
         this.requestUpdate();
       }
     }
@@ -14792,8 +15009,14 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     this.updateDecorations();
     this.#highlightSearchResults();
   }
+  #getLeftIndent() {
+    if (typeof this.computeLeftIndent === "function") {
+      return this.computeLeftIndent();
+    }
+    return this.computeLeftIndent ?? 0;
+  }
   updateDecorations() {
-    this.element.style.setProperty("--indent", (this.computeLeftIndent ? this.computeLeftIndent() : 0) + "px");
+    this.element.style.setProperty("--indent", this.#getLeftIndent() + "px");
     if (this.isClosingTag) {
       return;
     }
@@ -16313,7 +16536,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 
 .tree-outline-disclosure li.parent {
   display: flex;
-  align-items: normal;
+  align-items: center;
 }
 
 .tree-outline-disclosure li.parent:not(.always-parent) {
@@ -16329,7 +16552,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   content: "\\A0\\A0";
   color: transparent;
   text-shadow: none;
-  margin: -3px var(--sys-size-2) 0 -3px;
+  margin: 0 var(--sys-size-2) 0 -3px;
   background-color: var(--icon-default);
 }
 
@@ -16457,11 +16680,11 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 /*# sourceURL=${import.meta.resolve("./elementsTreeOutline.css")} */`;
 
 // gen/front_end/panels/elements/ShortcutTreeElement.js
-import * as Common11 from "./../../core/common/common.js";
-import * as i18n32 from "./../../core/i18n/i18n.js";
-import * as UI17 from "./../../ui/legacy/legacy.js";
-import * as Lit8 from "./../../ui/lit/lit.js";
-import * as VisualElements from "./../../ui/visual_logging/visual_logging.js";
+import * as Common11 from "../../core/common/common.js";
+import * as i18n32 from "../../core/i18n/i18n.js";
+import * as UI17 from "../../ui/legacy/legacy.js";
+import * as Lit8 from "../../ui/lit/lit.js";
+import * as VisualElements from "../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents6 from "./components/components.js";
 var { html: html13, render: render11 } = Lit8;
 var UIStrings16 = {
@@ -16565,8 +16788,8 @@ var TopLayerContainer_exports = {};
 __export(TopLayerContainer_exports, {
   TopLayerContainer: () => TopLayerContainer
 });
-import * as SDK15 from "./../../core/sdk/sdk.js";
-import * as UI18 from "./../../ui/legacy/legacy.js";
+import * as SDK15 from "../../core/sdk/sdk.js";
+import * as UI18 from "../../ui/legacy/legacy.js";
 var TopLayerContainer = class extends UI18.TreeOutline.TreeElement {
   tree;
   document;
@@ -16650,6 +16873,9 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       if (treeElement instanceof ElementsTreeElement) {
         output.elementsTreeOutline?.showContextMenu(treeElement, event);
       }
+    }, false);
+    elementsTreeOutline.elementInternal.addEventListener("keydown", (event) => {
+      input.onKeyDown?.(event);
     }, false);
     output.imagePreviewPopover = new ImagePreviewPopover(elementsTreeOutline.contentElement, (event) => {
       let link2 = event.target;
@@ -16870,6 +17096,19 @@ function getVisibleChildren(node, showComments = true) {
   }
   return children;
 }
+function isAncestorOf(ancestor, descendant) {
+  let current = descendant.parentNode;
+  while (current) {
+    if (current === ancestor) {
+      return true;
+    }
+    current = current.parentNode;
+  }
+  return false;
+}
+function computeLeftIndent(depth, isExpandable) {
+  return 12 * (depth - 1) + (isExpandable ? 1 : 12);
+}
 var DECLARATIVE_VIEW = (input, _output, target) => {
   let rootNodes = [];
   const rootDOMNode = input.rootDOMNode;
@@ -16880,9 +17119,10 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       rootNodes = [rootDOMNode];
     }
   }
-  const renderNode = (node) => {
+  const renderNode = (node, depth = 0) => {
     const isSelected = input.selectedNode === node;
-    const isExpanded = input.isNodeExpanded ? input.isNodeExpanded(node) : Boolean(input.expandRoot && (node === input.rootDOMNode || input.omitRootDOMNode && node.parentNode === input.rootDOMNode));
+    const isHovered = input.currentHighlightedNode === node;
+    const isExpanded = Boolean(input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode) || (input.isNodeExpanded ? input.isNodeExpanded(node) : input.expandRoot && (node === input.rootDOMNode || input.omitRootDOMNode && node.parentNode === input.rootDOMNode)));
     const hasChildren = nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
     const children = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
     const tagName = node.nodeName().toLowerCase();
@@ -16900,6 +17140,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
     return html14`
       <li role="treeitem"
           ?selected=${isSelected}
+          class=${isHovered ? "hovered" : ""}
           ?open=${isExpanded}
           @select=${onSelect}
           @expand=${onExpand2}
@@ -16916,6 +17157,8 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       isExpandable: hasChildren,
       selected: isSelected,
       isDOMNodeSelected: isSelected,
+      hovered: isHovered,
+      computeLeftIndent: computeLeftIndent(depth, hasChildren),
       disableEdits: input.disableEdits ?? false,
       showAIButton: input.showAIButton ?? true,
       selectDOMNode: (n, selectedByUser) => input.onSelect?.(n, selectedByUser),
@@ -16934,7 +17177,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
         ${hasChildren ? html14`
           <ul role="group">
             ${UI19.TreeOutline.ifExpanded(html14`
-              ${children.map((child) => renderNode(child))}
+              ${children.map((child) => renderNode(child, depth + 1))}
               ${needsClosingTag ? html14`
                 <li role="treeitem" jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline")}>
                   ${UI19.Widget.widget(ElementsTreeWidget, {
@@ -16944,6 +17187,8 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       isExpandable: false,
       selected: false,
       isDOMNodeSelected: false,
+      hovered: false,
+      computeLeftIndent: computeLeftIndent(depth, false),
       disableEdits: input.disableEdits ?? false,
       showAIButton: false
     })}
@@ -16964,6 +17209,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
         aria-label=${i18nString16(UIStrings17.pageDom)}
         jslog=${VisualLogging10.tree("elements")}
         ?show-selection-on-keyboard-focus=${input.showSelectionOnKeyboardFocus}
+        @keydown=${input.onKeyDown}
         .template=${html14`
           <style>${elementsTreeOutline_css_default}</style>
           <style>${CodeHighlighter5.codeHighlighterStyles}</style>
@@ -17208,7 +17454,9 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
         this.#expandedNodes.delete(node);
         this.onElementCollapsed();
       }
-      this.#clearHighlightedNode();
+      if (!this.#currentHighlightedNode || !isAncestorOf(node, this.#currentHighlightedNode)) {
+        this.#clearHighlightedNode();
+      }
       this.performUpdate();
       return;
     }
@@ -17291,6 +17539,9 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       },
       onToggleHideElement: (node) => {
         this.toggleHideElement(node);
+      },
+      onKeyDown: (event) => {
+        this.onKeyDown(event);
       },
       isToggledToHidden: (node) => {
         return this.isToggledToHidden(node);
@@ -17414,6 +17665,18 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   toggleHideElement(node) {
     void node.toggleHideElement();
   }
+  async removeNode(node) {
+    if (this.isToggledToHidden(node)) {
+      this.toggleHideElement(node);
+    }
+    if (node.pseudoType()) {
+      return;
+    }
+    if (!node.parentNode || node.parentNode.nodeType() === Node.DOCUMENT_NODE) {
+      return;
+    }
+    void node.removeNode();
+  }
   isToggledToHidden(node) {
     return node.isToggledToHidden();
   }
@@ -17422,6 +17685,52 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   }
   duplicateNode(node) {
     node.duplicate();
+  }
+  selectNodeAfterEdit(wasExpanded, error, newNode) {
+    if (error || !newNode) {
+      return;
+    }
+    this.selectDOMNode(
+      newNode,
+      /* selectedByUser= */
+      true
+    );
+    if (wasExpanded) {
+      this.setNodeExpanded(newNode, true);
+    }
+  }
+  onKeyDown(event) {
+    if (UI19.UIUtils.isEditing()) {
+      return false;
+    }
+    const node = this.selectedDOMNode();
+    if (!node) {
+      return false;
+    }
+    if (UI19.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) && node.parentNode) {
+      const wasExpanded = this.isNodeExpanded(node);
+      if (event.key === "ArrowUp" && node.previousSibling) {
+        node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, wasExpanded));
+        event.consume(true);
+        return true;
+      }
+      if (event.key === "ArrowDown" && node.nextSibling) {
+        node.moveTo(node.parentNode, node.nextSibling.nextSibling, this.selectNodeAfterEdit.bind(this, wasExpanded));
+        event.consume(true);
+        return true;
+      }
+    }
+    if (event.key === "Delete" || event.key === "Backspace") {
+      void this.removeNode(node);
+      event.consume(true);
+      return true;
+    }
+    if (event.key === "h" || event.key === "H") {
+      this.toggleHideElement(node);
+      event.consume(true);
+      return true;
+    }
+    return false;
   }
   copyStyles(node) {
     void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.copyStyles();
@@ -17534,7 +17843,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     this.elementInternal.addEventListener("mousedown", this.onmousedown.bind(this), false);
     this.elementInternal.addEventListener("mousemove", this.onmousemove.bind(this), false);
     this.elementInternal.addEventListener("mouseleave", this.onmouseleave.bind(this), false);
-    this.elementInternal.addEventListener("keydown", this.onKeyDown.bind(this), false);
     if (!this.disableEdits) {
       this.elementInternal.addEventListener("dragstart", this.ondragstart.bind(this), false);
       this.elementInternal.addEventListener("dragover", this.ondragover.bind(this), false);
@@ -18090,32 +18398,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
   runPendingUpdates() {
     this.updateModifiedNodes();
   }
-  onKeyDown(event) {
-    const keyboardEvent = event;
-    if (UI19.UIUtils.isEditing()) {
-      return;
-    }
-    const node = this.selectedDOMNode();
-    if (!node) {
-      return;
-    }
-    const treeElement = this.treeElementByNode.get(node);
-    if (!treeElement) {
-      return;
-    }
-    if (UI19.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent) && node.parentNode) {
-      if (keyboardEvent.key === "ArrowUp" && node.previousSibling) {
-        node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, treeElement.expanded));
-        keyboardEvent.consume(true);
-        return;
-      }
-      if (keyboardEvent.key === "ArrowDown" && node.nextSibling) {
-        node.moveTo(node.parentNode, node.nextSibling.nextSibling, this.selectNodeAfterEdit.bind(this, treeElement.expanded));
-        keyboardEvent.consume(true);
-        return;
-      }
-    }
-  }
   toggleEditAsHTML(node, startEditing, callback) {
     const treeElement = this.treeElementByNode.get(node);
     if (!treeElement?.hasEditableNode()) {
@@ -18640,12 +18922,12 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
   }
 };
 (function(ElementsTreeOutline2) {
-  let Events;
-  (function(Events2) {
-    Events2["SelectedNodeChanged"] = "SelectedNodeChanged";
-    Events2["ElementsTreeUpdated"] = "ElementsTreeUpdated";
-    Events2["ShowAllRows"] = "ShowAllRows";
-  })(Events = ElementsTreeOutline2.Events || (ElementsTreeOutline2.Events = {}));
+  let Events3;
+  (function(Events4) {
+    Events4["SelectedNodeChanged"] = "SelectedNodeChanged";
+    Events4["ElementsTreeUpdated"] = "ElementsTreeUpdated";
+    Events4["ShowAllRows"] = "ShowAllRows";
+  })(Events3 = ElementsTreeOutline2.Events || (ElementsTreeOutline2.Events = {}));
 })(ElementsTreeOutline || (ElementsTreeOutline = {}));
 var MappedCharToEntity = /* @__PURE__ */ new Map([
   ["\xA0", "nbsp"],
@@ -18673,16 +18955,16 @@ var LayoutPane_exports = {};
 __export(LayoutPane_exports, {
   LayoutPane: () => LayoutPane
 });
-import "./../../ui/components/node_text/node_text.js";
-import * as Common13 from "./../../core/common/common.js";
-import * as i18n36 from "./../../core/i18n/i18n.js";
-import * as Platform8 from "./../../core/platform/platform.js";
-import * as SDK17 from "./../../core/sdk/sdk.js";
-import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
-import * as UI20 from "./../../ui/legacy/legacy.js";
-import * as Lit10 from "./../../ui/lit/lit.js";
-import * as SettingUIRegistration from "./../../ui/settings/settings.js";
-import * as VisualLogging11 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/components/node_text/node_text.js";
+import * as Common13 from "../../core/common/common.js";
+import * as i18n36 from "../../core/i18n/i18n.js";
+import * as Platform8 from "../../core/platform/platform.js";
+import * as SDK17 from "../../core/sdk/sdk.js";
+import * as Buttons3 from "../../ui/components/buttons/buttons.js";
+import * as UI20 from "../../ui/legacy/legacy.js";
+import * as Lit10 from "../../ui/lit/lit.js";
+import * as SettingUIRegistration from "../../ui/settings/settings.js";
+import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/layoutPane.css.js
 var layoutPane_css_default = `/*
@@ -18694,12 +18976,12 @@ var layoutPane_css_default = `/*
 @scope to (devtools-widget > *) {
   * {
     box-sizing: border-box;
-    font-size: 12px;
+    font-size: var(--sys-typescale-body4-size);
   }
 
   .header {
     background-color: var(--sys-color-surface2);
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     line-height: 1.6;
     overflow: hidden;
     padding: 0 5px;
@@ -18708,7 +18990,7 @@ var layoutPane_css_default = `/*
 
   .header::marker {
     color: var(--sys-color-on-surface-subtle);
-    font-size: 11px;
+    font-size: var(--sys-typescale-body5-size);
     line-height: 1;
   }
 
@@ -18717,13 +18999,13 @@ var layoutPane_css_default = `/*
   }
 
   .content-section {
-    padding: 16px;
-    border-bottom: 1px solid var(--sys-color-divider);
+    padding: var(--sys-size-8);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     overflow-x: hidden;
   }
 
   .content-section-title {
-    font-size: 12px;
+    font-size: var(--sys-typescale-body4-size);
     font-weight: 500;
     line-height: 1.1;
     margin: 0;
@@ -18744,12 +19026,12 @@ var layoutPane_css_default = `/*
   devtools-checkbox {
     /* Allows label text to get ellipsed */
     flex-shrink: unset;
-    margin: 0 6px 0 0;
+    margin: 0 var(--sys-size-4) 0 0;
     padding: 0;
   }
 
   .select-settings {
-    margin-top: 16px;
+    margin-top: var(--sys-size-8);
     width: fit-content;
   }
 
@@ -18759,22 +19041,22 @@ var layoutPane_css_default = `/*
   }
 
   .select-label span {
-    margin-bottom: 4px;
+    margin-bottom: var(--sys-size-3);
   }
 
   .elements {
-    margin-top: 12px;
+    margin-top: var(--sys-size-6);
     color: var(--sys-color-token-tag);
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
-    gap: 8px;
+    gap: var(--sys-size-5);
   }
 
   .element {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 8px;
+    gap: var(--sys-size-5);
   }
 
   .show-element {
@@ -18791,7 +19073,7 @@ var layoutPane_css_default = `/*
   }
 
   .color-picker-label {
-    border: 1px solid var(--sys-color-neutral-outline);
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
     cursor: default;
     display: inline-block;
     flex: none;
@@ -18800,9 +19082,9 @@ var layoutPane_css_default = `/*
     position: relative;
 
     &:focus-within {
-      outline: 2px solid var(--sys-color-state-focus-ring);
-      outline-offset: 2px;
-      border-radius: 2px;
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+      outline-offset: var(--sys-size-2);
+      border-radius: var(--sys-size-2);
     }
   }
   /* We set dimensions for the invisible input to support quick highlight a11y feature
@@ -18815,12 +19097,12 @@ var layoutPane_css_default = `/*
 
   .color-picker-label:hover,
   .color-picker-label:focus {
-    border: 1px solid var(--sys-color-outline);
+    border: var(--sys-size-1) solid var(--sys-color-outline);
     transform: scale(1.2);
   }
 
   .node-text-container {
-    line-height: 16px;
+    line-height: var(--sys-typescale-body4-line-height);
     padding: 0 0.5ex;
     border-radius: 5px;
   }
@@ -19293,12 +19575,12 @@ var MetricsSidebarPane_exports = {};
 __export(MetricsSidebarPane_exports, {
   MetricsSidebarPane: () => MetricsSidebarPane
 });
-import * as Common14 from "./../../core/common/common.js";
-import * as Platform9 from "./../../core/platform/platform.js";
-import * as SDK18 from "./../../core/sdk/sdk.js";
-import * as UI21 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html16, nothing as nothing7, render as render14 } from "./../../ui/lit/lit.js";
-import * as VisualLogging12 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common14 from "../../core/common/common.js";
+import * as Platform9 from "../../core/platform/platform.js";
+import * as SDK18 from "../../core/sdk/sdk.js";
+import * as UI21 from "../../ui/legacy/legacy.js";
+import { Directives, html as html16, nothing as nothing7, render as render14 } from "../../ui/lit/lit.js";
+import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
 var metricsSidebarPane_css_default = `/**
@@ -19307,7 +19589,7 @@ var metricsSidebarPane_css_default = `/**
  * found in the LICENSE file.
  */
 .metrics {
-  padding: 8px;
+  padding: var(--sys-size-5);
   font-size: 10px;
   text-align: center;
   white-space: nowrap;
@@ -19345,14 +19627,14 @@ var metricsSidebarPane_css_default = `/**
 .metrics .label {
   position: absolute;
   font-size: 10px;
-  left: 4px;
+  left: var(--sys-size-3);
 }
 
 .metrics .position {
   /* This border is different from the ones displayed between the box-model
   regions because it is displayed against the pane background, so needs to be
   visible in both light and dark theme. We therefore use a theme variable. */
-  border: 1px var(--sys-color-token-subtle) dotted;
+  border: var(--sys-size-1) var(--sys-color-token-subtle) dotted;
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
@@ -19362,34 +19644,34 @@ var metricsSidebarPane_css_default = `/**
 }
 
 .metrics .margin {
-  border: 1px dashed var(--override-box-model-separator-color);
+  border: var(--sys-size-1) dashed var(--override-box-model-separator-color);
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px 6px;
+  padding: 3px var(--sys-size-4);
   margin: 3px;
   position: relative;
 }
 
 .metrics .border {
-  border: 1px solid var(--override-box-model-separator-color);
+  border: var(--sys-size-1) solid var(--override-box-model-separator-color);
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px 6px;
+  padding: 3px var(--sys-size-4);
   margin: 3px;
   position: relative;
 }
 
 .metrics .padding {
-  border: 1px dashed var(--override-box-model-separator-color);
+  border: var(--sys-size-1) dashed var(--override-box-model-separator-color);
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
   vertical-align: middle;
-  padding: 3px 6px;
+  padding: 3px var(--sys-size-4);
   margin: 3px;
   position: relative;
   min-width: 120px;
@@ -19397,14 +19679,14 @@ var metricsSidebarPane_css_default = `/**
 
 .metrics .content {
   position: static;
-  border: 1px solid var(--override-box-model-separator-color);
+  border: var(--sys-size-1) solid var(--override-box-model-separator-color);
   background-color: var(--sys-color-cdt-base-container);
   display: inline-block;
   text-align: center;
   vertical-align: middle;
   padding: 3px;
   margin: 3px;
-  min-width: 80px;
+  min-width: var(--sys-size-19);
   overflow: visible;
 }
 
@@ -19895,10 +20177,10 @@ __export(PlatformFontsWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW10,
   PlatformFontsWidget: () => PlatformFontsWidget
 });
-import * as i18n38 from "./../../core/i18n/i18n.js";
-import * as ComputedStyle2 from "./../../models/computed_style/computed_style.js";
-import * as UI22 from "./../../ui/legacy/legacy.js";
-import { html as html17, render as render15 } from "./../../ui/lit/lit.js";
+import * as i18n38 from "../../core/i18n/i18n.js";
+import * as ComputedStyle2 from "../../models/computed_style/computed_style.js";
+import * as UI22 from "../../ui/legacy/legacy.js";
+import { html as html17, render as render15 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/platformFontsWidget.css.js
 var platformFontsWidget_css_default = `/**
@@ -19922,13 +20204,13 @@ var platformFontsWidget_css_default = `/**
 
   .title {
     padding: 0 5px;
-    border-top: 1px solid;
-    border-bottom: 1px solid;
+    border-top: var(--sys-size-1) solid;
+    border-bottom: var(--sys-size-1) solid;
     border-color: var(--sys-color-divider);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    height: 24px;
+    height: var(--sys-size-11);
     background-color: var(--sys-color-surface2);
     display: flex;
     align-items: center;
@@ -19938,11 +20220,11 @@ var platformFontsWidget_css_default = `/**
     padding: 5px 1em;
 
     div {
-      margin-bottom: 2px;
+      margin-bottom: var(--sys-size-2);
     }
 
     &:not(:last-child) {
-      border-bottom: 1px solid var(--sys-color-divider);
+      border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     }
   }
 }
@@ -20120,6 +20402,11 @@ var UIStrings20 = {
 };
 var str_20 = i18n40.i18n.registerUIStrings("panels/elements/ElementsPanel.ts", UIStrings20);
 var i18nString19 = i18n40.i18n.getLocalizedString.bind(void 0, str_20);
+var SidebarPaneTabId;
+(function(SidebarPaneTabId2) {
+  SidebarPaneTabId2["COMPUTED"] = "computed";
+  SidebarPaneTabId2["STYLES"] = "styles";
+})(SidebarPaneTabId || (SidebarPaneTabId = {}));
 var elementsPanelInstance;
 var DEFAULT_COMPUTED_STYLES_DEBOUNCE_MS = 100;
 var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
@@ -21025,6 +21312,11 @@ ${node.simpleSelector()} {}`, false);
 };
 globalThis.Elements = globalThis.Elements || {};
 globalThis.Elements.ElementsPanel = ElementsPanel;
+var SplitMode;
+(function(SplitMode2) {
+  SplitMode2["VERTICAL"] = "Vertical";
+  SplitMode2["HORIZONTAL"] = "Horizontal";
+})(SplitMode || (SplitMode = {}));
 var TrackedCSSProperties = [
   {
     name: "display",
@@ -21353,13 +21645,13 @@ __export(EventListenersWidget_exports, {
   DispatchFilterBy: () => DispatchFilterBy,
   EventListenersWidget: () => EventListenersWidget
 });
-import * as Common17 from "./../../core/common/common.js";
-import * as i18n42 from "./../../core/i18n/i18n.js";
-import * as SDK21 from "./../../core/sdk/sdk.js";
-import * as UI25 from "./../../ui/legacy/legacy.js";
-import { html as html18, render as render16 } from "./../../ui/lit/lit.js";
-import * as VisualLogging15 from "./../../ui/visual_logging/visual_logging.js";
-import * as EventListeners from "./../event_listeners/event_listeners.js";
+import * as Common17 from "../../core/common/common.js";
+import * as i18n42 from "../../core/i18n/i18n.js";
+import * as SDK21 from "../../core/sdk/sdk.js";
+import * as UI25 from "../../ui/legacy/legacy.js";
+import { html as html18, render as render16 } from "../../ui/lit/lit.js";
+import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
+import * as EventListeners from "../event_listeners/event_listeners.js";
 var { bindToAction, bindToSetting: bindToSetting3 } = UI25.UIUtils;
 var UIStrings21 = {
   /**
@@ -21565,16 +21857,16 @@ __export(PropertiesWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW12,
   PropertiesWidget: () => PropertiesWidget
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common18 from "./../../core/common/common.js";
-import * as Host7 from "./../../core/host/host.js";
-import * as i18n44 from "./../../core/i18n/i18n.js";
-import * as Platform11 from "./../../core/platform/platform.js";
-import * as SDK22 from "./../../core/sdk/sdk.js";
-import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as UI26 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html19, nothing as nothing8, render as render17 } from "./../../ui/lit/lit.js";
-import * as VisualLogging16 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/legacy.js";
+import * as Common18 from "../../core/common/common.js";
+import * as Host7 from "../../core/host/host.js";
+import * as i18n44 from "../../core/i18n/i18n.js";
+import * as Platform11 from "../../core/platform/platform.js";
+import * as SDK22 from "../../core/sdk/sdk.js";
+import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
+import * as UI26 from "../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html19, nothing as nothing8, render as render17 } from "../../ui/lit/lit.js";
+import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
 var propertiesWidget_css_default = `/*
@@ -21584,12 +21876,12 @@ var propertiesWidget_css_default = `/*
  */
 
 .properties-widget-section {
-  padding: 2px 0 2px 5px;
+  padding: var(--sys-size-2) 0 var(--sys-size-2) 5px;
   flex: none;
 }
 
 .properties-widget-toolbar {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   flex-shrink: 0;
 }
 
@@ -21781,12 +22073,12 @@ __export(ClassesPaneWidget_exports, {
   ClassNamePrompt: () => ClassNamePrompt,
   ClassesPaneWidget: () => ClassesPaneWidget
 });
-import * as Common19 from "./../../core/common/common.js";
-import * as i18n46 from "./../../core/i18n/i18n.js";
-import * as Platform12 from "./../../core/platform/platform.js";
-import * as SDK23 from "./../../core/sdk/sdk.js";
-import * as UI27 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging17 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common19 from "../../core/common/common.js";
+import * as i18n46 from "../../core/i18n/i18n.js";
+import * as Platform12 from "../../core/platform/platform.js";
+import * as SDK23 from "../../core/sdk/sdk.js";
+import * as UI27 from "../../ui/legacy/legacy.js";
+import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/classesPaneWidget.css.js
 var classesPaneWidget_css_default = `/**
@@ -21797,8 +22089,8 @@ var classesPaneWidget_css_default = `/**
 
 .styles-element-classes-pane {
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
-  padding: 6px 2px 2px;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  padding: var(--sys-size-4) var(--sys-size-2) var(--sys-size-2);
 }
 
 .styles-element-classes-container {
@@ -21812,15 +22104,15 @@ var classesPaneWidget_css_default = `/**
 }
 
 .styles-element-classes-pane .title-container {
-  padding-bottom: 2px;
+  padding-bottom: var(--sys-size-2);
 }
 
 .styles-element-classes-pane .new-class-input {
   padding-left: 3px;
   padding-right: 3px;
   overflow: hidden;
-  border: 1px solid var(--sys-color-neutral-outline);
-  border-radius: 4px;
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  border-radius: var(--sys-shape-corner-extra-small);
   line-height: 15px;
   margin-left: 3px;
   width: calc(100% - 7px);
@@ -21828,7 +22120,7 @@ var classesPaneWidget_css_default = `/**
   cursor: text;
 
   &:hover {
-    box-shadow: 0 0 0 1px var(--ref-palette-neutral90);
+    box-shadow: 0 0 0 var(--sys-size-1) var(--ref-palette-neutral90);
   }
 }
 
@@ -22148,15 +22440,16 @@ var ClassNamePrompt = class extends UI27.TextPrompt.TextPrompt {
 var StandaloneStylesContainer_exports = {};
 __export(StandaloneStylesContainer_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW13,
+  Events: () => Events2,
   StandaloneStylesContainer: () => StandaloneStylesContainer
 });
-import * as Common20 from "./../../core/common/common.js";
-import * as ComputedStyle4 from "./../../models/computed_style/computed_style.js";
-import * as InlineEditor5 from "./../../ui/legacy/components/inline_editor/inline_editor.js";
-import * as Components7 from "./../../ui/legacy/components/utils/utils.js";
-import * as UI28 from "./../../ui/legacy/legacy.js";
-import { html as html20, render as render18 } from "./../../ui/lit/lit.js";
-import * as VisualLogging18 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common20 from "../../core/common/common.js";
+import * as ComputedStyle4 from "../../models/computed_style/computed_style.js";
+import * as InlineEditor5 from "../../ui/legacy/components/inline_editor/inline_editor.js";
+import * as Components7 from "../../ui/legacy/components/utils/utils.js";
+import * as UI28 from "../../ui/legacy/legacy.js";
+import { html as html20, render as render18 } from "../../ui/lit/lit.js";
+import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents8 from "./components/components.js";
 var DEFAULT_VIEW13 = (input, _output, target) => {
   render18(html20`
@@ -22170,6 +22463,10 @@ var DEFAULT_VIEW13 = (input, _output, target) => {
     </div>
   `, target);
 };
+var Events2;
+(function(Events3) {
+  Events3["STYLES_UPDATE_COMPLETED"] = "StylesUpdateCompleted";
+})(Events2 || (Events2 = {}));
 var StandaloneStylesContainer = class extends Common20.ObjectWrapper.eventMixin(UI28.Widget.VBox) {
   activeCSSAngle = null;
   isEditingStyle = false;

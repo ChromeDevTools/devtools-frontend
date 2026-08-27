@@ -1,14 +1,14 @@
 {
-  "checkJs": true,
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "checkJs": true,
-    "composite": true,
-    "declaration": true,
+    "composite": false,
+    "declaration": false,
     "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
+    "incremental": false,
     "inlineSources": true,
     "lib": [
       "ES2023",
@@ -18,19 +18,18 @@
       "ESNext.Array"
     ],
     "module": "esnext",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../../front_end/core/platform/node",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "es2023",
-    "tsBuildInfoFile": "node-tsconfig.json.tsbuildinfo",
     "typeRoots": [
       "../../../../../../../node_modules/@types",
       "../../../../../../../node_modules"

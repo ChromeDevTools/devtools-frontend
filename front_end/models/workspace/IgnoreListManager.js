@@ -536,4 +536,8 @@ export class IgnoreListManager extends Common.ObjectWrapper.ObjectWrapper {
     }
 }
 const scriptToRange = new WeakMap();
+export var Events;
+(function (Events) {
+    Events["IGNORED_SCRIPT_RANGES_UPDATED"] = "IGNORED_SCRIPT_RANGES_UPDATED";
+})(Events || (Events = {}));
 //# sourceMappingURL=IgnoreListManager.js.map

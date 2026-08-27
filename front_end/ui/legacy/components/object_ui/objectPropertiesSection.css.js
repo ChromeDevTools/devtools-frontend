@@ -32,14 +32,14 @@ li.object-properties-section  {
 
   &::before {
     flex-shrink: 0;
-    margin-right: 2px;
+    margin-right: var(--sys-size-2);
     align-self: flex-start;
   }
 }
 
 .object-properties-section li.editing-sub-part {
-  padding: 3px 12px 8px 6px;
-  margin: -1px -6px -8px;
+  padding: 3px var(--sys-size-6) var(--sys-size-5) var(--sys-size-4);
+  margin: calc(-1 * var(--sys-size-1)) calc(-1 * var(--sys-size-4)) calc(-1 * var(--sys-size-5));
   text-overflow: clip;
 }
 
@@ -74,7 +74,7 @@ li.object-properties-section  {
 }
 
 .name-and-value {
-  line-height: 16px;
+  line-height: var(--sys-size-8);
   display: flex;
   white-space: nowrap;
 }
@@ -90,7 +90,7 @@ li.object-properties-section  {
 }
 
 .property-prompt {
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
 }
 
 .tree-outline.hide-selection-when-blurred .selected:focus-visible {
@@ -102,7 +102,7 @@ li.object-properties-section  {
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value,
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .gray-info-message {
   background: var(--sys-color-state-focus-highlight);
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
 }
 
 @media (forced-colors: active) {

@@ -8,6 +8,7 @@ import { executeJsCode } from './agents/ExecuteJavascript.js';
 import { ChangeManager } from './ChangeManager.js';
 import { AccessibilityContext } from './contexts/AccessibilityContext.js';
 import { DOMNodeContext } from './contexts/DOMNodeContext.js';
+import { PerformanceTraceContext } from './contexts/PerformanceTraceContext.js';
 import { debugLog } from './debug.js';
 import { ExtensionScope } from './ExtensionScope.js';
 import { SKILLS } from './skills/SkillRegistry.js';
@@ -244,6 +245,7 @@ User query: ${enhancedQuery}`;
                     getEstablishedOrigin: () => this.#getConversationOrigin(),
                     getLighthouseReport: () => (this.context instanceof AccessibilityContext ? this.context.getItem() : null),
                     runLighthouse: async (overrides) => await (this.#lighthouseRecording?.(overrides) ?? null),
+                    getPerformanceTraceContext: () => (this.context instanceof PerformanceTraceContext ? this.context : null),
                     performanceRecordAndReload: this.#performanceRecordAndReload,
                     disableLogging: () => {
                         this.disableServerSideLogging();

@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/core/i18n",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/core/i18n/ByteUtilities.test.ts",
+    "../../../../../../front_end/core/i18n/DevToolsLocale.test.ts",
+    "../../../../../../front_end/core/i18n/NumberFormatter.test.ts",
+    "../../../../../../front_end/core/i18n/i18n.test.ts",
+    "../../../../../../front_end/core/i18n/i18nImpl.test.ts",
+    "../../../../../../front_end/core/i18n/time-utilities.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/i18n/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../platform/bundle-tsconfig.ref.json"
+    }
+  ]
+}

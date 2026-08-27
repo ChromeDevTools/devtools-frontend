@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/core/platform/ArrayUtilities.js
+// ../../front_end/core/platform/ArrayUtilities.ts
 var ArrayUtilities_exports = {};
 __export(ArrayUtilities_exports, {
   DEFAULT_COMPARATOR: () => DEFAULT_COMPARATOR,
@@ -149,7 +149,7 @@ function upperBound(array, needle, comparator, left, right) {
   return r;
 }
 function nearestIndex(arr, predicate, searchStart) {
-  const searchFromEnd = searchStart === "END";
+  const searchFromEnd = searchStart === "END" /* END */;
   if (arr.length === 0) {
     return null;
   }
@@ -176,20 +176,10 @@ function nearestIndex(arr, predicate, searchStart) {
   return left;
 }
 function nearestIndexFromBeginning(arr, predicate) {
-  return nearestIndex(
-    arr,
-    predicate,
-    "BEGINNING"
-    /* NearestSearchStart.BEGINNING */
-  );
+  return nearestIndex(arr, predicate, "BEGINNING" /* BEGINNING */);
 }
 function nearestIndexFromEnd(arr, predicate) {
-  return nearestIndex(
-    arr,
-    predicate,
-    "END"
-    /* NearestSearchStart.END */
-  );
+  return nearestIndex(arr, predicate, "END" /* END */);
 }
 function arrayDoesNotContainNullOrUndefined(arr) {
   return !arr.includes(null) && !arr.includes(void 0);
@@ -205,13 +195,13 @@ function assertArrayIsSorted(arr, compareFn) {
   }
 }
 
-// gen/front_end/core/platform/Brand.js
+// ../../front_end/core/platform/Brand.ts
 var Brand_exports = {};
 
-// gen/front_end/core/platform/Constructor.js
+// ../../front_end/core/platform/Constructor.ts
 var Constructor_exports = {};
 
-// gen/front_end/core/platform/DateUtilities.js
+// ../../front_end/core/platform/DateUtilities.ts
 var DateUtilities_exports = {};
 __export(DateUtilities_exports, {
   isValid: () => isValid,
@@ -227,7 +217,7 @@ var toISO8601Compact = (date) => {
   return date.getFullYear() + leadZero(date.getMonth() + 1) + leadZero(date.getDate()) + "T" + leadZero(date.getHours()) + leadZero(date.getMinutes()) + leadZero(date.getSeconds());
 };
 
-// gen/front_end/core/platform/DevToolsPath.js
+// ../../front_end/core/platform/DevToolsPath.ts
 var DevToolsPath_exports = {};
 __export(DevToolsPath_exports, {
   EmptyEncodedPathString: () => EmptyEncodedPathString,
@@ -240,7 +230,7 @@ var urlString = (strings, ...values) => String.raw({ raw: strings }, ...values);
 var EmptyRawPathString = "";
 var EmptyEncodedPathString = "";
 
-// gen/front_end/core/platform/HostRuntime.js
+// ../../front_end/core/platform/HostRuntime.ts
 var HostRuntime_exports = {};
 __export(HostRuntime_exports, {
   HOST_RUNTIME: () => HOST_RUNTIME,
@@ -263,25 +253,39 @@ var HOST_RUNTIME = await (async () => {
   throw new Error("Unknown runtime!");
 })();
 
-// gen/front_end/core/platform/KeyboardUtilities.js
+// ../../front_end/core/platform/KeyboardUtilities.ts
 var KeyboardUtilities_exports = {};
 __export(KeyboardUtilities_exports, {
   ARROW_KEYS: () => ARROW_KEYS,
+  ArrowKey: () => ArrowKey,
   ENTER_KEY: () => ENTER_KEY,
   ESCAPE_KEY: () => ESCAPE_KEY,
+  PageKey: () => PageKey,
   TAB_KEY: () => TAB_KEY,
   isEnterOrSpaceKey: () => isEnterOrSpaceKey,
   isEscKey: () => isEscKey,
   keyIsArrowKey: () => keyIsArrowKey
 });
+var ArrowKey = /* @__PURE__ */ ((ArrowKey2) => {
+  ArrowKey2["UP"] = "ArrowUp";
+  ArrowKey2["DOWN"] = "ArrowDown";
+  ArrowKey2["LEFT"] = "ArrowLeft";
+  ArrowKey2["RIGHT"] = "ArrowRight";
+  return ArrowKey2;
+})(ArrowKey || {});
+var PageKey = /* @__PURE__ */ ((PageKey2) => {
+  PageKey2["UP"] = "PageUp";
+  PageKey2["DOWN"] = "PageDown";
+  return PageKey2;
+})(PageKey || {});
 var ENTER_KEY = "Enter";
 var ESCAPE_KEY = "Escape";
 var TAB_KEY = "Tab";
 var ARROW_KEYS = /* @__PURE__ */ new Set([
-  "ArrowUp",
-  "ArrowDown",
-  "ArrowLeft",
-  "ArrowRight"
+  "ArrowUp" /* UP */,
+  "ArrowDown" /* DOWN */,
+  "ArrowLeft" /* LEFT */,
+  "ArrowRight" /* RIGHT */
 ]);
 function keyIsArrowKey(key) {
   return ARROW_KEYS.has(key);
@@ -293,7 +297,7 @@ function isEnterOrSpaceKey(event) {
   return event.key === "Enter" || event.key === " ";
 }
 
-// gen/front_end/core/platform/MapUtilities.js
+// ../../front_end/core/platform/MapUtilities.ts
 var MapUtilities_exports = {};
 __export(MapUtilities_exports, {
   Multimap: () => Multimap,
@@ -373,12 +377,26 @@ function getWithDefault(map, key, defaultValueFactory) {
   return value;
 }
 
-// gen/front_end/core/platform/MimeType.js
+// ../../front_end/core/platform/MimeType.ts
 var MimeType_exports = {};
 __export(MimeType_exports, {
+  MimeType: () => MimeType,
   isTextType: () => isTextType,
   parseContentType: () => parseContentType
 });
+var MimeType = /* @__PURE__ */ ((MimeType2) => {
+  MimeType2["HTML"] = "text/html";
+  MimeType2["XML"] = "text/xml";
+  MimeType2["PLAIN"] = "text/plain";
+  MimeType2["XHTML"] = "application/xhtml+xml";
+  MimeType2["SVG"] = "image/svg+xml";
+  MimeType2["CSS"] = "text/css";
+  MimeType2["XSL"] = "text/xsl";
+  MimeType2["VTT"] = "text/vtt";
+  MimeType2["PDF"] = "application/pdf";
+  MimeType2["EVENTSTREAM"] = "text/event-stream";
+  return MimeType2;
+})(MimeType || {});
 var ADDITIONAL_TEXT_MIME_TYPES = /* @__PURE__ */ new Set([
   "application/ecmascript",
   "application/javascript",
@@ -476,7 +494,7 @@ function findFirstIndexNotOf(searchString, characters, pos = 0) {
   return -1;
 }
 
-// gen/front_end/core/platform/NumberUtilities.js
+// ../../front_end/core/platform/NumberUtilities.ts
 var NumberUtilities_exports = {};
 __export(NumberUtilities_exports, {
   aspectRatio: () => aspectRatio,
@@ -545,7 +563,7 @@ var withThousandsSeparator = function(num) {
   return str;
 };
 
-// gen/front_end/core/platform/StringUtilities.js
+// ../../front_end/core/platform/StringUtilities.ts
 var StringUtilities_exports = {};
 __export(StringUtilities_exports, {
   DOUBLE_QUOTE: () => DOUBLE_QUOTE,
@@ -749,7 +767,12 @@ var toBase64 = (inputString) => {
     shift = i % 3;
     v |= data[i] << (16 >>> shift & 24);
     if (shift === 2) {
-      encoded += String.fromCharCode(encodeBits(v >>> 18 & 63), encodeBits(v >>> 12 & 63), encodeBits(v >>> 6 & 63), encodeBits(v & 63));
+      encoded += String.fromCharCode(
+        encodeBits(v >>> 18 & 63),
+        encodeBits(v >>> 12 & 63),
+        encodeBits(v >>> 6 & 63),
+        encodeBits(v & 63)
+      );
       v = 0;
     }
   }
@@ -1123,7 +1146,7 @@ var concatBase64 = function(lhs, rhs) {
   return lhsLeaveAsIs + globalThis.btoa(globalThis.atob(lhsToDecode) + globalThis.atob(rhs));
 };
 
-// gen/front_end/core/platform/Timing.js
+// ../../front_end/core/platform/Timing.ts
 var Timing_exports = {};
 __export(Timing_exports, {
   microSecondsToMilliSeconds: () => microSecondsToMilliSeconds,
@@ -1136,7 +1159,7 @@ function microSecondsToMilliSeconds(x) {
   return x / 1e3;
 }
 
-// gen/front_end/core/platform/TypedArrayUtilities.js
+// ../../front_end/core/platform/TypedArrayUtilities.ts
 var TypedArrayUtilities_exports = {};
 __export(TypedArrayUtilities_exports, {
   createBitVector: () => createBitVector,
@@ -1274,7 +1297,7 @@ var BitVectorImpl = class extends Uint8Array {
   }
 };
 
-// gen/front_end/core/platform/TypescriptUtilities.js
+// ../../front_end/core/platform/TypescriptUtilities.ts
 var TypescriptUtilities_exports = {};
 __export(TypescriptUtilities_exports, {
   assertNever: () => assertNever,
@@ -1290,14 +1313,14 @@ function assertNever(_type, message) {
   throw new Error(message);
 }
 
-// gen/front_end/core/platform/UIString.js
+// ../../front_end/core/platform/UIString.ts
 var UIString_exports = {};
 __export(UIString_exports, {
   LocalizedEmptyString: () => LocalizedEmptyString
 });
 var LocalizedEmptyString = "";
 
-// gen/front_end/core/platform/UserVisibleError.js
+// ../../front_end/core/platform/UserVisibleError.ts
 var UserVisibleError_exports = {};
 __export(UserVisibleError_exports, {
   UserVisibleError: () => UserVisibleError,

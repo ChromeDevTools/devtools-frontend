@@ -9,8 +9,8 @@ var EventListenersUtils_exports = {};
 __export(EventListenersUtils_exports, {
   frameworkEventListeners: () => frameworkEventListeners
 });
-import * as Common from "./../../core/common/common.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as Common from "../../core/common/common.js";
+import * as SDK from "../../core/sdk/sdk.js";
 async function frameworkEventListeners(object) {
   const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel.DOMDebuggerModel);
   if (!domDebuggerModel) {
@@ -360,11 +360,11 @@ __export(EventListenersView_exports, {
   EventListenersView: () => EventListenersView,
   ObjectEventListenerBar: () => ObjectEventListenerBar
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
+import * as Common2 from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
+import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 
 // gen/front_end/ui/legacy/components/object_ui/objectValue.css.js
 var objectValue_css_default = `/*
@@ -476,10 +476,10 @@ var objectValue_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./objectValue.css")} */`;
 
 // gen/front_end/panels/event_listeners/EventListenersView.js
-import * as Components from "./../../ui/legacy/components/utils/utils.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import { render } from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import * as Components from "../../ui/legacy/components/utils/utils.js";
+import * as UI from "../../ui/legacy/legacy.js";
+import { render } from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/event_listeners/eventListenersView.css.js
 var eventListenersView_css_default = `/*
@@ -562,7 +562,7 @@ var eventListenersView_css_default = `/*
   justify-content: center;
 }
 
-.sources.panel .empty-view-scroller {
+.sources.panel .placeholder > .empty-widget-container {
   display: none;
 }
 

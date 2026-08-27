@@ -16,7 +16,7 @@ export default `/*
 .row {
   padding: 0;
   color: var(--sys-color-on-surface);
-  padding-bottom: 16px;
+  padding-bottom: var(--sys-size-8);
 }
 
 .row:last-child {
@@ -24,7 +24,7 @@ export default `/*
 }
 
 .property {
-  padding-bottom: 4px;
+  padding-bottom: var(--sys-size-3);
   white-space: nowrap;
 }
 
@@ -54,12 +54,12 @@ export default `/*
 }
 
 .button {
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   background-color: var(--sys-color-cdt-base-container);
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
-  min-height: 24px;
+  width: var(--sys-size-11);
+  height: var(--sys-size-11);
+  min-width: var(--sys-size-11);
+  min-height: var(--sys-size-11);
   padding: 0;
   margin: 0;
   display: flex;

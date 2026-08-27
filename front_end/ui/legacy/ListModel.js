@@ -86,4 +86,8 @@ export class ListModel extends Common.ObjectWrapper.ObjectWrapper {
         this.dispatchEventToListeners("ItemsReplaced" /* Events.ITEMS_REPLACED */, { index, removed, inserted, keepSelectedIndex });
     }
 }
+export var Events;
+(function (Events) {
+    Events["ITEMS_REPLACED"] = "ItemsReplaced";
+})(Events || (Events = {}));
 //# sourceMappingURL=ListModel.js.map

@@ -82,4 +82,8 @@ export default `/*
   margin-bottom: 6px;
 }
 
+.start-recording-button {
+  margin-top: var(--sys-size-7);
+}
+
 /*# sourceURL=${import.meta.resolve('./backgroundServiceView.css')} */`;

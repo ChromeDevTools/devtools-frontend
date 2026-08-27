@@ -16,7 +16,7 @@ export default `/*
   min-width: 150px;
 
   .search-container {
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     display: flex;
     align-items: center;
     flex-grow: 1;
@@ -24,19 +24,19 @@ export default `/*
 
   .toolbar-item-search {
     flex-grow: 1;
-    box-shadow: inset 0 0 0 2px transparent;
+    box-shadow: inset 0 0 0 var(--sys-size-2) transparent;
     box-sizing: border-box;
     height: var(--sys-size-9);
     margin-left: var(--sys-size-3);
     padding: 0 var(--sys-size-2) 0 var(--sys-size-5);
-    border-radius: 100px;
+    border-radius: var(--sys-shape-corner-full);
     position: relative;
     display: flex;
     align-items: center;
     background-color: var(--sys-color-cdt-base);
 
     &:has(input:focus) {
-      box-shadow: inset 0 0 0 2px var(--sys-color-state-focus-ring);
+      box-shadow: inset 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring);
     }
 
     &:has(input:hover)::before {
@@ -45,7 +45,7 @@ export default `/*
       height: 100%;
       width: 100%;
       position: absolute;
-      border-radius: 100px;
+      border-radius: var(--sys-shape-corner-full);
       left: 0;
       background-color: var(--sys-color-state-hover-on-subtle);
     }
@@ -86,24 +86,24 @@ export default `/*
 
 .search-toolbar {
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .search-toolbar-summary {
   background-color: var(--sys-color-cdt-base-container);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   padding-left: 5px;
   flex: 0 0 19px;
   display: flex;
   padding-right: 5px;
 }
 
-.search-results:has(.empty-state) + .search-toolbar-summary {
+.search-results:has(.empty-widget-container) + .search-toolbar-summary {
   display: none;
 }
 
 .search-toolbar-summary .search-message {
-  padding-top: 2px;
+  padding-top: var(--sys-size-2);
   padding-left: 1ex;
   text-overflow: ellipsis;
   white-space: nowrap;

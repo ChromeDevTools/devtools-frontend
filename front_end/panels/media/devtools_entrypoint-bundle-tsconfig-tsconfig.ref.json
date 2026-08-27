@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "../../../../tsc/front_end/panels/media/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./media-tsconfig.ref.json"

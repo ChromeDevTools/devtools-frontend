@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "../../../../../tsc/front_end/ui/components/srgb_overlay/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./srgb_overlay-tsconfig.ref.json"

@@ -191,12 +191,29 @@ export function setHidden(element, value) {
 export function setLevel(element, level) {
     element.setAttribute('aria-level', level.toString());
 }
+export var AutocompleteInteractionModel;
+(function (AutocompleteInteractionModel) {
+    AutocompleteInteractionModel["INLINE"] = "inline";
+    AutocompleteInteractionModel["LIST"] = "list";
+    AutocompleteInteractionModel["BOTH"] = "both";
+    AutocompleteInteractionModel["NONE"] = "none";
+})(AutocompleteInteractionModel || (AutocompleteInteractionModel = {}));
 export function setAutocomplete(element, interactionModel = "none" /* AutocompleteInteractionModel.NONE */) {
     element.setAttribute('aria-autocomplete', interactionModel);
 }
 export function clearAutocomplete(element) {
     element.removeAttribute('aria-autocomplete');
 }
+export var PopupRole;
+(function (PopupRole) {
+    PopupRole["FALSE"] = "false";
+    PopupRole["TRUE"] = "true";
+    PopupRole["MENU"] = "menu";
+    PopupRole["LIST_BOX"] = "listbox";
+    PopupRole["TREE"] = "tree";
+    PopupRole["GRID"] = "grid";
+    PopupRole["DIALOG"] = "dialog";
+})(PopupRole || (PopupRole = {}));
 export function setHasPopup(element, value = "false" /* PopupRole.FALSE */) {
     if (value !== "false" /* PopupRole.FALSE */) {
         element.setAttribute('aria-haspopup', value);
@@ -274,6 +291,11 @@ export function setSetSize(element, size) {
 export function setPositionInSet(element, position) {
     element.setAttribute('aria-posinset', position.toString());
 }
+export var AnnouncerRole;
+(function (AnnouncerRole) {
+    AnnouncerRole["ALERT"] = "alert";
+    AnnouncerRole["STATUS"] = "status";
+})(AnnouncerRole || (AnnouncerRole = {}));
 export class LiveAnnouncer {
     static #announcerElementsByRole = {
         ["alert" /* AnnouncerRole.ALERT */]: new WeakMap(),

@@ -2,6 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
+export var Events;
+(function (Events) {
+    Events["COMMENT_THREADS_CHANGED"] = "CommentThreadsChanged";
+    Events["COMMENT_MODE_CHANGED"] = "CommentModeChanged";
+})(Events || (Events = {}));
 /**
  * Headless model managing comment thread data, CRUD operations, and comment mode.
  */

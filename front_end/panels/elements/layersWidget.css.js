@@ -11,16 +11,16 @@ export default `/**
 
 .layers-widget {
   overflow: hidden;
-  padding-left: 2px;
+  padding-left: var(--sys-size-2);
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   margin-top: 0;
-  padding-bottom: 2px;
+  padding-bottom: var(--sys-size-2);
 }
 
 .layers-widget > .layers-widget-title {
   font-weight: bold;
-  margin: 8px 4px 6px;
+  margin: var(--sys-size-5) var(--sys-size-3) var(--sys-size-4);
 }
 
 /*# sourceURL=${import.meta.resolve('./layersWidget.css')} */`;

@@ -9,20 +9,22 @@ var ClientHintIssue_exports = {};
 __export(ClientHintIssue_exports, {
   ClientHintIssue: () => ClientHintIssue
 });
-import * as i18n3 from "./../../core/i18n/i18n.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
 
 // gen/front_end/models/issues_manager/Issue.js
 var Issue_exports = {};
 __export(Issue_exports, {
   Issue: () => Issue,
+  IssueCategory: () => IssueCategory,
+  IssueKind: () => IssueKind,
   getIssueKindDescription: () => getIssueKindDescription,
   getIssueKindName: () => getIssueKindName,
   getShowThirdPartyIssuesSetting: () => getShowThirdPartyIssuesSetting,
   toZeroBasedLocation: () => toZeroBasedLocation,
   unionIssueKind: () => unionIssueKind
 });
-import * as Host from "./../../core/host/host.js";
-import * as i18n from "./../../core/i18n/i18n.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n from "../../core/i18n/i18n.js";
 var UIStrings = {
   /**
    * @description The kind of an issue (plural, issues are categorized into kinds).
@@ -51,6 +53,27 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("models/issues_manager/Issue.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
+var IssueCategory;
+(function(IssueCategory2) {
+  IssueCategory2["CROSS_ORIGIN_EMBEDDER_POLICY"] = "CrossOriginEmbedderPolicy";
+  IssueCategory2["GENERIC"] = "Generic";
+  IssueCategory2["MIXED_CONTENT"] = "MixedContent";
+  IssueCategory2["COOKIE"] = "Cookie";
+  IssueCategory2["HEAVY_AD"] = "HeavyAd";
+  IssueCategory2["CONTENT_SECURITY_POLICY"] = "ContentSecurityPolicy";
+  IssueCategory2["LOW_TEXT_CONTRAST"] = "LowTextContrast";
+  IssueCategory2["CORS"] = "Cors";
+  IssueCategory2["QUIRKS_MODE"] = "QuirksMode";
+  IssueCategory2["PERMISSION_ELEMENT"] = "PermissionElement";
+  IssueCategory2["SELECTIVE_PERMISSIONS_INTERVENTION"] = "SelectivePermissionsIntervention";
+  IssueCategory2["OTHER"] = "Other";
+})(IssueCategory || (IssueCategory = {}));
+var IssueKind;
+(function(IssueKind2) {
+  IssueKind2["PAGE_ERROR"] = "PageError";
+  IssueKind2["BREAKING_CHANGE"] = "BreakingChange";
+  IssueKind2["IMPROVEMENT"] = "Improvement";
+})(IssueKind || (IssueKind = {}));
 function getIssueKindName(issueKind) {
   switch (issueKind) {
     case "BreakingChange":
@@ -178,7 +201,7 @@ __export(MarkdownIssueDescription_exports, {
   resolveLazyDescription: () => resolveLazyDescription,
   substitutePlaceholders: () => substitutePlaceholders
 });
-import * as Marked from "./../../third_party/marked/marked.js";
+import * as Marked from "../../third_party/marked/marked.js";
 function resolveLazyDescription(lazyDescription) {
   function linksMap(currentLink) {
     return { link: currentLink.link, linkTitle: currentLink.linkTitle() };
@@ -330,7 +353,7 @@ var ConnectionAllowlistIssue_exports = {};
 __export(ConnectionAllowlistIssue_exports, {
   ConnectionAllowlistIssue: () => ConnectionAllowlistIssue
 });
-import * as i18n5 from "./../../core/i18n/i18n.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
 var UIStrings3 = {
   /**
    * @description Title for Connection-Allowlist specification URL.
@@ -390,7 +413,7 @@ __export(ContentSecurityPolicyIssue_exports, {
   trustedTypesSinkViolationCode: () => trustedTypesSinkViolationCode,
   urlViolationCode: () => urlViolationCode
 });
-import * as i18n7 from "./../../core/i18n/i18n.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
 var UIStrings4 = {
   /**
    * @description Title for CSP URL link.
@@ -526,7 +549,7 @@ var CookieDeprecationMetadataIssue_exports = {};
 __export(CookieDeprecationMetadataIssue_exports, {
   CookieDeprecationMetadataIssue: () => CookieDeprecationMetadataIssue
 });
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
 var UIStrings5 = {
   /**
    * @description Label for a link for third-party cookie issues.
@@ -582,11 +605,13 @@ var CookieDeprecationMetadataIssue = class _CookieDeprecationMetadataIssue exten
 var CookieIssue_exports = {};
 __export(CookieIssue_exports, {
   CookieIssue: () => CookieIssue,
+  CookieIssueSubCategory: () => CookieIssueSubCategory,
+  CookieStatus: () => CookieStatus,
   isCausedByThirdParty: () => isCausedByThirdParty
 });
-import * as Common from "./../../core/common/common.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as Common from "../../core/common/common.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
+import * as SDK from "../../core/sdk/sdk.js";
 var UIStrings6 = {
   /**
    * @description Label for the link for SameSite cookie issues.
@@ -603,6 +628,18 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("models/issues_manager/CookieIssue.ts", UIStrings6);
 var i18nLazyString4 = i18n11.i18n.getLazilyComputedLocalizedString.bind(void 0, str_6);
+var CookieIssueSubCategory;
+(function(CookieIssueSubCategory2) {
+  CookieIssueSubCategory2["GENERIC_COOKIE"] = "GenericCookie";
+  CookieIssueSubCategory2["SAME_SITE_COOKIE"] = "SameSiteCookie";
+})(CookieIssueSubCategory || (CookieIssueSubCategory = {}));
+var CookieStatus;
+(function(CookieStatus2) {
+  CookieStatus2[CookieStatus2["BLOCKED"] = 0] = "BLOCKED";
+  CookieStatus2[CookieStatus2["ALLOWED"] = 1] = "ALLOWED";
+  CookieStatus2[CookieStatus2["ALLOWED_BY_GRACE_PERIOD"] = 2] = "ALLOWED_BY_GRACE_PERIOD";
+  CookieStatus2[CookieStatus2["ALLOWED_BY_HEURISTICS"] = 3] = "ALLOWED_BY_HEURISTICS";
+})(CookieStatus || (CookieStatus = {}));
 var CookieIssue = class _CookieIssue extends Issue {
   #frameManager;
   constructor(code, issueDetails, issuesModel, issueId, frameManager) {
@@ -939,9 +976,10 @@ var issueDescriptions3 = /* @__PURE__ */ new Map([
 // gen/front_end/models/issues_manager/CorsIssue.js
 var CorsIssue_exports = {};
 __export(CorsIssue_exports, {
-  CorsIssue: () => CorsIssue
+  CorsIssue: () => CorsIssue,
+  IssueCode: () => IssueCode
 });
-import * as i18n13 from "./../../core/i18n/i18n.js";
+import * as i18n13 from "../../core/i18n/i18n.js";
 var UIStrings7 = {
   /**
    * @description Label for the link for CORS Local Network Access issues.
@@ -954,6 +992,25 @@ var UIStrings7 = {
 };
 var str_7 = i18n13.i18n.registerUIStrings("models/issues_manager/CorsIssue.ts", UIStrings7);
 var i18nString3 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var IssueCode;
+(function(IssueCode3) {
+  IssueCode3["INSECURE_LOCAL_NETWORK"] = "CorsIssue::InsecureLocalNetwork";
+  IssueCode3["INVALID_HEADER_VALUES"] = "CorsIssue::InvalidHeaders";
+  IssueCode3["WILDCARD_ORIGN_NOT_ALLOWED"] = "CorsIssue::WildcardOriginWithCredentials";
+  IssueCode3["PREFLIGHT_RESPONSE_INVALID"] = "CorsIssue::PreflightResponseInvalid";
+  IssueCode3["ORIGIN_MISMATCH"] = "CorsIssue::OriginMismatch";
+  IssueCode3["ALLOW_CREDENTIALS_REQUIRED"] = "CorsIssue::AllowCredentialsRequired";
+  IssueCode3["METHOD_DISALLOWED_BY_PREFLIGHT_RESPONSE"] = "CorsIssue::MethodDisallowedByPreflightResponse";
+  IssueCode3["HEADER_DISALLOWED_BY_PREFLIGHT_RESPONSE"] = "CorsIssue::HeaderDisallowedByPreflightResponse";
+  IssueCode3["REDIRECT_CONTAINS_CREDENTIALS"] = "CorsIssue::RedirectContainsCredentials";
+  IssueCode3["DISALLOWED_BY_MODE"] = "CorsIssue::DisallowedByMode";
+  IssueCode3["CORS_DISABLED_SCHEME"] = "CorsIssue::CorsDisabledScheme";
+  IssueCode3["PREFLIGHT_MISSING_ALLOW_EXTERNAL"] = "CorsIssue::PreflightMissingAllowExternal";
+  IssueCode3["PREFLIGHT_INVALID_ALLOW_EXTERNAL"] = "CorsIssue::PreflightInvalidAllowExternal";
+  IssueCode3["NO_CORS_REDIRECT_MODE_NOT_FOLLOW"] = "CorsIssue::NoCorsRedirectModeNotFollow";
+  IssueCode3["INVALID_LOCAL_NETWORK_ACCESS"] = "CorsIssue::InvalidLocalNetworkAccess";
+  IssueCode3["LOCAL_NETWORK_ACCESS_PERMISSION_DENIED"] = "CorsIssue::LocalNetworkAccessPermissionDenied";
+})(IssueCode || (IssueCode = {}));
 function getIssueCode(details) {
   switch (details.corsErrorStatus.corsError) {
     case "InvalidAllowMethodsPreflightResponse":
@@ -1139,7 +1196,7 @@ __export(CrossOriginEmbedderPolicyIssue_exports, {
   CrossOriginEmbedderPolicyIssue: () => CrossOriginEmbedderPolicyIssue,
   isCrossOriginEmbedderPolicyIssue: () => isCrossOriginEmbedderPolicyIssue
 });
-import * as i18n15 from "./../../core/i18n/i18n.js";
+import * as i18n15 from "../../core/i18n/i18n.js";
 var UIStrings8 = {
   /**
    * @description Link text for a link to external documentation.
@@ -1250,7 +1307,7 @@ var DeprecationIssue_exports = {};
 __export(DeprecationIssue_exports, {
   DeprecationIssue: () => DeprecationIssue
 });
-import * as i18n17 from "./../../core/i18n/i18n.js";
+import * as i18n17 from "../../core/i18n/i18n.js";
 
 // gen/front_end/generated/Deprecation.js
 var UIStrings9 = {
@@ -1801,11 +1858,17 @@ var DeprecationIssue = class _DeprecationIssue extends Issue {
 // gen/front_end/models/issues_manager/DOMIssuesManager.js
 var DOMIssuesManager_exports = {};
 __export(DOMIssuesManager_exports, {
-  DOMIssuesManager: () => DOMIssuesManager
+  DOMIssuesManager: () => DOMIssuesManager,
+  Events: () => Events
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
+import * as Common2 from "../../core/common/common.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+var Events;
+(function(Events4) {
+  Events4["DOM_ISSUE_ADDED"] = "DOMIssueAdded";
+  Events4["DOM_ISSUE_REMOVED"] = "DOMIssueRemoved";
+})(Events || (Events = {}));
 var DOMIssuesManager = class extends Common2.ObjectWrapper.ObjectWrapper {
   #issuesManager;
   #targetManager;
@@ -2021,7 +2084,7 @@ var EmailVerificationRequestIssue_exports = {};
 __export(EmailVerificationRequestIssue_exports, {
   EmailVerificationRequestIssue: () => EmailVerificationRequestIssue
 });
-import * as i18n19 from "./../../core/i18n/i18n.js";
+import * as i18n19 from "../../core/i18n/i18n.js";
 var UIStrings11 = {
   /**
    * @description Title for Email Verification Protocol specification URL link.
@@ -2633,7 +2696,7 @@ var FederatedAuthRequestIssue_exports = {};
 __export(FederatedAuthRequestIssue_exports, {
   FederatedAuthRequestIssue: () => FederatedAuthRequestIssue
 });
-import * as i18n21 from "./../../core/i18n/i18n.js";
+import * as i18n21 from "../../core/i18n/i18n.js";
 var UIStrings12 = {
   /**
    * @description Title for Federated Credential Management API specification URL link.
@@ -2883,7 +2946,7 @@ var FederatedAuthUserInfoRequestIssue_exports = {};
 __export(FederatedAuthUserInfoRequestIssue_exports, {
   FederatedAuthUserInfoRequestIssue: () => FederatedAuthUserInfoRequestIssue
 });
-import * as i18n23 from "./../../core/i18n/i18n.js";
+import * as i18n23 from "../../core/i18n/i18n.js";
 var UIStrings13 = {
   /**
    * @description Title for Federated Credential Management User Info API specification URL link.
@@ -3043,7 +3106,7 @@ __export(GenericIssue_exports, {
   genericNavigationEntryMarkedSkippable: () => genericNavigationEntryMarkedSkippable,
   genericResponseWasBlockedbyORB: () => genericResponseWasBlockedbyORB
 });
-import * as i18n25 from "./../../core/i18n/i18n.js";
+import * as i18n25 from "../../core/i18n/i18n.js";
 var UIStrings14 = {
   /**
    * @description Title for autofill documentation page.
@@ -3383,7 +3446,7 @@ var HeavyAdIssue_exports = {};
 __export(HeavyAdIssue_exports, {
   HeavyAdIssue: () => HeavyAdIssue
 });
-import * as i18n27 from "./../../core/i18n/i18n.js";
+import * as i18n27 from "../../core/i18n/i18n.js";
 var UIStrings15 = {
   /**
    * @description Title for a learn more link in heavy ads issue description.
@@ -3436,16 +3499,17 @@ var HeavyAdIssue = class _HeavyAdIssue extends Issue {
 var IssueAggregator_exports = {};
 __export(IssueAggregator_exports, {
   AggregatedIssue: () => AggregatedIssue,
+  Events: () => Events2,
   IssueAggregator: () => IssueAggregator
 });
-import * as Common3 from "./../../core/common/common.js";
+import * as Common3 from "../../core/common/common.js";
 
 // gen/front_end/models/issues_manager/LazyLoadImageIssue.js
 var LazyLoadImageIssue_exports = {};
 __export(LazyLoadImageIssue_exports, {
   LazyLoadImageIssue: () => LazyLoadImageIssue
 });
-import * as i18n29 from "./../../core/i18n/i18n.js";
+import * as i18n29 from "../../core/i18n/i18n.js";
 var UIStrings16 = {
   /**
    * @description Link title for the lazy-loaded image with zero size issue in the Issues panel.
@@ -3508,7 +3572,7 @@ var MixedContentIssue_exports = {};
 __export(MixedContentIssue_exports, {
   MixedContentIssue: () => MixedContentIssue
 });
-import * as i18n31 from "./../../core/i18n/i18n.js";
+import * as i18n31 from "../../core/i18n/i18n.js";
 var UIStrings17 = {
   /**
    * @description Label for the link for mixed content issues.
@@ -3565,7 +3629,7 @@ var PartitioningBlobURLIssue_exports = {};
 __export(PartitioningBlobURLIssue_exports, {
   PartitioningBlobURLIssue: () => PartitioningBlobURLIssue
 });
-import * as i18n33 from "./../../core/i18n/i18n.js";
+import * as i18n33 from "../../core/i18n/i18n.js";
 var UIStrings18 = {
   /**
    * @description Title for Partitioning BlobURL explainer URL link.
@@ -3867,7 +3931,7 @@ var QuirksModeIssue_exports = {};
 __export(QuirksModeIssue_exports, {
   QuirksModeIssue: () => QuirksModeIssue
 });
-import * as i18n35 from "./../../core/i18n/i18n.js";
+import * as i18n35 from "../../core/i18n/i18n.js";
 var UIStrings19 = {
   /**
    * @description Link title for the Quirks Mode issue in the Issues panel.
@@ -3917,7 +3981,7 @@ var SelectivePermissionsInterventionIssue_exports = {};
 __export(SelectivePermissionsInterventionIssue_exports, {
   SelectivePermissionsInterventionIssue: () => SelectivePermissionsInterventionIssue
 });
-import * as i18n37 from "./../../core/i18n/i18n.js";
+import * as i18n37 from "../../core/i18n/i18n.js";
 var UIStrings20 = {
   /**
    * @description Title for a learn more link in selective permissions intervention issue description.
@@ -3965,7 +4029,7 @@ var SharedArrayBufferIssue_exports = {};
 __export(SharedArrayBufferIssue_exports, {
   SharedArrayBufferIssue: () => SharedArrayBufferIssue
 });
-import * as i18n39 from "./../../core/i18n/i18n.js";
+import * as i18n39 from "../../core/i18n/i18n.js";
 var UIStrings21 = {
   /**
    * @description Label for the link for SharedArrayBuffer issues. The full text reads "Enabling SharedArrayBuffer"
@@ -4311,13 +4375,18 @@ var IssueAggregator = class extends Common3.ObjectWrapper.ObjectWrapper {
     return issue.code();
   }
 };
+var Events2;
+(function(Events4) {
+  Events4["AGGREGATED_ISSUE_UPDATED"] = "AggregatedIssueUpdated";
+  Events4["FULL_UPDATE_REQUIRED"] = "FullUpdateRequired";
+})(Events2 || (Events2 = {}));
 
 // gen/front_end/models/issues_manager/IssueResolver.js
 var IssueResolver_exports = {};
 __export(IssueResolver_exports, {
   IssueResolver: () => IssueResolver
 });
-import * as Common4 from "./../../core/common/common.js";
+import * as Common4 from "../../core/common/common.js";
 var IssueResolver = class extends Common4.ResolverBase.ResolverBase {
   #issuesListener = null;
   #issuesManager;
@@ -4353,20 +4422,22 @@ var IssueResolver = class extends Common4.ResolverBase.ResolverBase {
 // gen/front_end/models/issues_manager/IssuesManager.js
 var IssuesManager_exports = {};
 __export(IssuesManager_exports, {
+  Events: () => Events3,
+  IssueStatus: () => IssueStatus,
   IssuesManager: () => IssuesManager,
   createIssuesFromProtocolIssue: () => createIssuesFromProtocolIssue,
   defaultHideIssueByCodeSetting: () => defaultHideIssueByCodeSetting,
   getHideIssueByCodeSetting: () => getHideIssueByCodeSetting,
   isIssueCodeSupported: () => isIssueCodeSupported
 });
-import * as Common6 from "./../../core/common/common.js";
-import * as Root from "./../../core/root/root.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as Bindings2 from "./../bindings/bindings.js";
-import * as Workspace2 from "./../workspace/workspace.js";
+import * as Common6 from "../../core/common/common.js";
+import * as Root from "../../core/root/root.js";
+import * as SDK3 from "../../core/sdk/sdk.js";
+import * as Bindings2 from "../bindings/bindings.js";
+import * as Workspace2 from "../workspace/workspace.js";
 
 // gen/front_end/models/issues_manager/BounceTrackingIssue.js
-import * as i18n41 from "./../../core/i18n/i18n.js";
+import * as i18n41 from "../../core/i18n/i18n.js";
 var UIStrings22 = {
   /**
    * @description Title for Bounce Tracking Mitigation explainer URL link.
@@ -4475,9 +4546,10 @@ var PropertyRuleIssue = class _PropertyRuleIssue extends Issue {
 // gen/front_end/models/issues_manager/SharedDictionaryIssue.js
 var SharedDictionaryIssue_exports = {};
 __export(SharedDictionaryIssue_exports, {
+  IssueCode: () => IssueCode2,
   SharedDictionaryIssue: () => SharedDictionaryIssue
 });
-import * as i18n43 from "./../../core/i18n/i18n.js";
+import * as i18n43 from "../../core/i18n/i18n.js";
 var UIStrings23 = {
   /**
    * @description Title for Compression Dictionary Transport specification URL link.
@@ -4486,6 +4558,35 @@ var UIStrings23 = {
 };
 var str_22 = i18n43.i18n.registerUIStrings("models/issues_manager/SharedDictionaryIssue.ts", UIStrings23);
 var i18nLazyString11 = i18n43.i18n.getLazilyComputedLocalizedString.bind(void 0, str_22);
+var IssueCode2;
+(function(IssueCode3) {
+  IssueCode3["USE_ERROR_CROSS_ORIGIN_NO_CORS_REQUEST"] = "SharedDictionaryIssue::UseErrorCrossOriginNoCorsRequest";
+  IssueCode3["USE_ERROR_DICTIONARY_LOAD_FAILURE"] = "SharedDictionaryIssue::UseErrorDictionaryLoadFailure";
+  IssueCode3["USE_ERROR_MATCHING_DICTIONARY_NOT_USED"] = "SharedDictionaryIssue::UseErrorMatchingDictionaryNotUsed";
+  IssueCode3["USE_ERROR_UNEXPECTED_CONTENT_DICTIONARY_HEADER"] = "SharedDictionaryIssue::UseErrorUnexpectedContentDictionaryHeader";
+  IssueCode3["WRITE_ERROR_CROSS_ORIGIN_NO_CORS_REQUEST"] = "SharedDictionaryIssue::WriteErrorCossOriginNoCorsRequest";
+  IssueCode3["WRITE_ERROR_DISALLOWED_BY_SETTINGS"] = "SharedDictionaryIssue::WriteErrorDisallowedBySettings";
+  IssueCode3["WRITE_ERROR_EXPIRED_RESPONSE"] = "SharedDictionaryIssue::WriteErrorExpiredResponse";
+  IssueCode3["WRITE_ERROR_FEATURE_DISABLED"] = "SharedDictionaryIssue::WriteErrorFeatureDisabled";
+  IssueCode3["WRITE_ERROR_INSUFFICIENT_RESOURCES"] = "SharedDictionaryIssue::WriteErrorInsufficientResources";
+  IssueCode3["WRITE_ERROR_INVALID_MATCH_FIELD"] = "SharedDictionaryIssue::WriteErrorInvalidMatchField";
+  IssueCode3["WRITE_ERROR_INVALID_STRUCTURED_HEADER"] = "SharedDictionaryIssue::WriteErrorInvalidStructuredHeader";
+  IssueCode3["WRITE_ERROR_INVALID_TTL_FIELD"] = "SharedDictionaryIssue::WriteErrorInvalidTTLField";
+  IssueCode3["WRITE_ERROR_NAVIGATION_REQUEST"] = "SharedDictionaryIssue::WriteErrorNavigationRequest";
+  IssueCode3["WRITE_ERROR_NO_MATCH_FIELD"] = "SharedDictionaryIssue::WriteErrorNoMatchField";
+  IssueCode3["WRITE_ERROR_NON_INTEGER_TTL_FIELD"] = "SharedDictionaryIssue::WriteErrorNonIntegerTTLField";
+  IssueCode3["WRITE_ERROR_NON_LIST_MATCH_DEST_FIELD"] = "SharedDictionaryIssue::WriteErrorNonListMatchDestField";
+  IssueCode3["WRITE_ERROR_NON_SECURE_CONTEXT"] = "SharedDictionaryIssue::WriteErrorNonSecureContext";
+  IssueCode3["WRITE_ERROR_NON_STRING_ID_FIELD"] = "SharedDictionaryIssue::WriteErrorNonStringIdField";
+  IssueCode3["WRITE_ERROR_NON_STRING_IN_MATCH_DEST_LIST"] = "SharedDictionaryIssue::WriteErrorNonStringInMatchDestList";
+  IssueCode3["WRITE_ERROR_NON_STRING_MATCH_FIELD"] = "SharedDictionaryIssue::WriteErrorNonStringMatchField";
+  IssueCode3["WRITE_ERROR_NON_TOKEN_TYPE_FIELD"] = "SharedDictionaryIssue::WriteErrorNonTokenTypeField";
+  IssueCode3["WRITE_ERROR_REQUEST_ABORTED"] = "SharedDictionaryIssue::WriteErrorRequestAborted";
+  IssueCode3["WRITE_ERROR_SHUTTING_DOWN"] = "SharedDictionaryIssue::WriteErrorShuttingDown";
+  IssueCode3["WRITE_ERROR_TOO_LONG_ID_FIELD"] = "SharedDictionaryIssue::WriteErrorTooLongIdField";
+  IssueCode3["WRITE_ERROR_UNSUPPORTED_TYPE"] = "SharedDictionaryIssue::WriteErrorUnsupportedType";
+  IssueCode3["UNKNOWN"] = "SharedDictionaryIssue::WriteErrorUnknown";
+})(IssueCode2 || (IssueCode2 = {}));
 function getIssueCode2(details) {
   switch (details.sharedDictionaryError) {
     case "UseErrorCrossOriginNoCorsRequest":
@@ -4771,9 +4872,9 @@ __export(SourceFrameIssuesManager_exports, {
   IssueMessage: () => IssueMessage,
   SourceFrameIssuesManager: () => SourceFrameIssuesManager
 });
-import * as Common5 from "./../../core/common/common.js";
-import * as Bindings from "./../bindings/bindings.js";
-import * as Workspace from "./../workspace/workspace.js";
+import * as Common5 from "../../core/common/common.js";
+import * as Bindings from "../bindings/bindings.js";
+import * as Workspace from "../workspace/workspace.js";
 
 // gen/front_end/models/issues_manager/StylesheetLoadingIssue.js
 var StylesheetLoadingIssue_exports = {};
@@ -4915,7 +5016,7 @@ var SRIMessageSignatureIssue_exports = {};
 __export(SRIMessageSignatureIssue_exports, {
   SRIMessageSignatureIssue: () => SRIMessageSignatureIssue
 });
-import * as i18n45 from "./../../core/i18n/i18n.js";
+import * as i18n45 from "../../core/i18n/i18n.js";
 var UIStrings24 = {
   /**
    * @description Title for HTTP Message Signatures specification URL.
@@ -5000,7 +5101,7 @@ var UnencodedDigestIssue_exports = {};
 __export(UnencodedDigestIssue_exports, {
   UnencodedDigestIssue: () => UnencodedDigestIssue
 });
-import * as i18n47 from "./../../core/i18n/i18n.js";
+import * as i18n47 from "../../core/i18n/i18n.js";
 var UIStrings25 = {
   /**
    * @description Title for HTTP Unencoded Digest specification URL.
@@ -5057,6 +5158,15 @@ var UnencodedDigestIssue = class _UnencodedDigestIssue extends Issue {
     return [new _UnencodedDigestIssue(details, issuesModel)];
   }
 };
+
+// gen/front_end/models/issues_manager/IssuesManagerEvents.js
+var Events3;
+(function(Events4) {
+  Events4["ISSUES_COUNT_UPDATED"] = "IssuesCountUpdated";
+  Events4["ISSUE_ADDED"] = "IssueAdded";
+  Events4["FULL_UPDATE_REQUIRED"] = "FullUpdateRequired";
+  Events4["ISSUE_HIDDEN_STATUS_UPDATED"] = "IssueHiddenStatusUpdated";
+})(Events3 || (Events3 = {}));
 
 // gen/front_end/models/issues_manager/IssuesManager.js
 function createIssuesForBlockedByResponseIssue(issuesModel, inspectorIssue) {
@@ -5184,6 +5294,11 @@ function createIssuesFromProtocolIssue(issuesModel, inspectorIssue, frameManager
   console.warn(`No handler registered for issue code ${inspectorIssue.code}`);
   return [];
 }
+var IssueStatus;
+(function(IssueStatus2) {
+  IssueStatus2["HIDDEN"] = "Hidden";
+  IssueStatus2["UNHIDDEN"] = "Unhidden";
+})(IssueStatus || (IssueStatus = {}));
 function defaultHideIssueByCodeSetting() {
   const setting = {};
   return setting;
@@ -5441,8 +5556,8 @@ __export(RelatedIssue_exports, {
   issuesAssociatedWith: () => issuesAssociatedWith,
   reveal: () => reveal
 });
-import * as Common7 from "./../../core/common/common.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
+import * as Common7 from "../../core/common/common.js";
+import * as SDK4 from "../../core/sdk/sdk.js";
 function issuesAssociatedWithNetworkRequest(issues, request) {
   return issues.filter((issue) => {
     for (const affectedRequest of issue.requests()) {

@@ -10,7 +10,7 @@ __export(LegacyWrapper_exports, {
   WrappableComponent: () => WrappableComponent,
   legacyWrapper: () => legacyWrapper
 });
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
 var WrappableComponent = class extends HTMLElement {
   wrapper = null;
   async render() {

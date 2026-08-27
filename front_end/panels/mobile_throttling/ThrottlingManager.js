@@ -365,6 +365,12 @@ export class SaveDataOverrideSelect extends Common.ObjectWrapper.eventMixin(UI.W
         }, undefined, this.contentElement);
     }
 }
+(function (ThrottlingManager) {
+    let Events;
+    (function (Events) {
+        Events["SAVE_DATA_OVERRIDE_CHANGED"] = "SaveDataOverrideChanged";
+    })(Events = ThrottlingManager.Events || (ThrottlingManager.Events = {}));
+})(ThrottlingManager || (ThrottlingManager = {}));
 export class ActionDelegate {
     handleAction(_context, actionId) {
         if (actionId === 'network-conditions.network-online') {

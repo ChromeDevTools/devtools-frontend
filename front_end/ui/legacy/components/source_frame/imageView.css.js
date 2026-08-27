@@ -14,7 +14,7 @@ export default `/*
 }
 
 .image-view > .image {
-  padding: 20px 20px 10px;
+  padding: var(--sys-size-9) var(--sys-size-9) 10px;
   text-align: center;
 }
 

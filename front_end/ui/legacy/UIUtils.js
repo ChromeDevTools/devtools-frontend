@@ -1697,15 +1697,65 @@ export const cloneCustomElement = (element, deep) => {
     return clone;
 };
 class UIUtilsWidgetDirective extends WidgetUtils.WidgetDirective {
+    #renderedElement;
+    #lastWidgetClass;
+    #lastKey;
     update(part, args) {
-        const result = super.update(part, args);
+        const [widgetClass, widgetParams] = args;
         if (part.type === Lit.Directive.PartType.ELEMENT) {
-            const lightNode = part.element;
-            for (const clone of HTMLElementWithLightDOMTemplate.getClones(lightNode)) {
-                super.update({ type: Lit.Directive.PartType.ELEMENT, element: clone }, args);
-            }
+            const element = part.element;
+            this.#updateElementAndClones(element, widgetClass, widgetParams);
+            return Lit.nothing;
         }
-        return result;
+        if (part.type === Lit.Directive.PartType.CHILD) {
+            let classChanged = false;
+            if (this.#lastWidgetClass !== widgetClass) {
+                this.#lastWidgetClass = widgetClass;
+                const newKey = 
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                WidgetUtils.Widget.isPrototypeOf(widgetClass) ? widgetClass : widgetClass.toString();
+                if (this.#lastKey !== newKey) {
+                    this.#lastKey = newKey;
+                    classChanged = true;
+                }
+            }
+            if (!this.#renderedElement || classChanged) {
+                // Initial render or class changed: cache the element
+                this.#renderedElement = document.createElement('devtools-widget');
+                this.#updateElementAndClones(this.#renderedElement, widgetClass, widgetParams);
+                return this.#renderedElement;
+            }
+            // Subsequent updates: mutate cached element and its clones
+            this.#updateElementAndClones(this.#renderedElement, widgetClass, widgetParams);
+            return Lit.noChange; // Prevent Lit from recreating the DOM node
+        }
+        return super.update(part, args);
+    }
+    #updateElementAndClones(element, widgetClass, widgetParams) {
+        const update = (el) => {
+            const config = WidgetUtils.widgetConfig(widgetClass, widgetParams);
+            const oldConfig = WidgetUtils.widgetConfigs.get(el);
+            const widget = WidgetUtils.Widget.get(el);
+            if (widget && config.widgetParams) {
+                let needsUpdate = false;
+                for (const key in config.widgetParams) {
+                    if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) &&
+                        config.widgetParams[key] !== oldConfig?.widgetParams?.[key]) {
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        widget[key] = config.widgetParams[key];
+                        needsUpdate = true;
+                    }
+                }
+                if (needsUpdate) {
+                    widget.requestUpdate();
+                }
+            }
+            WidgetUtils.registerWidgetConfig(el, config);
+        };
+        update(element);
+        for (const clone of HTMLElementWithLightDOMTemplate.getClones(element)) {
+            update(clone);
+        }
     }
 }
 export class HTMLElementWithLightDOMTemplate extends HTMLElement {

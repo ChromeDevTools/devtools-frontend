@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "../../../../../tsc/front_end/ui/components/survey_link/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./survey_link-tsconfig.ref.json"

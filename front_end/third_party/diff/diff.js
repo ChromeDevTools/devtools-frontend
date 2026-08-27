@@ -10,7 +10,7 @@ __export(DiffWrapper_exports, {
   DiffWrapper: () => DiffWrapper,
   Operation: () => Operation
 });
-import * as Common from "./../../core/common/common.js";
+import * as Common from "../../core/common/common.js";
 var DiffWrapper = {
   charDiff: function(text1, text2, cleanup) {
     const differ = new diff_match_patch();

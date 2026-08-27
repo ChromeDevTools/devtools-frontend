@@ -18,8 +18,8 @@ export default `/*
 
 .icon-button {
   border: none;
-  margin-right: 2px;
-  margin-top: 4px;
+  margin-right: var(--sys-size-2);
+  margin-top: var(--sys-size-3);
   display: inline-flex;
   align-items: center;
   color: inherit;

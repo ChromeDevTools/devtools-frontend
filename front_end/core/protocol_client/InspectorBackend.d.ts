@@ -37,8 +37,8 @@ type ReadonlyEventParameterNames = ReadonlyMap<QualifiedName, string[]>;
 type CommandParameter = InspectorBackendCommands.CommandParameter;
 export declare class InspectorBackend implements InspectorBackendCommands.InspectorBackendAPI {
     #private;
-    readonly agentPrototypes: Map<keyof ProtocolProxyApi.ProtocolApi, AgentPrototype>;
-    readonly typeMap: Map<QualifiedName, InspectorBackendCommands.CommandParameter[]>;
+    readonly agentPrototypes: Map<ProtocolDomainName, AgentPrototype>;
+    readonly typeMap: Map<QualifiedName, CommandParameter[]>;
     readonly enumMap: Map<QualifiedName, Record<string, string>>;
     constructor();
     private getOrCreateEventParameterNamesForDomain;
@@ -206,7 +206,7 @@ export declare class TargetBase {
  * The reasons this is done is so that on the prototypes we can install the implementations
  * of the invoke_enable, etc. methods that the front-end uses.
  */
-declare class AgentPrototype {
+export declare class AgentPrototype {
     description: string;
     metadata: Record<string, {
         parameters: CommandParameter[];

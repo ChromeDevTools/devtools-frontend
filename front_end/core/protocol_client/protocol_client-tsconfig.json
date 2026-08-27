@@ -1,14 +1,14 @@
 {
-  "checkJs": true,
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "checkJs": true,
-    "composite": true,
-    "declaration": true,
+    "composite": false,
+    "declaration": false,
     "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
+    "incremental": false,
     "inlineSources": true,
     "lib": [
       "dom",
@@ -20,21 +20,24 @@
       "ESNext.Array"
     ],
     "module": "esnext",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/core/protocol_client",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "es2023",
-    "tsBuildInfoFile": "protocol_client-tsconfig.json.tsbuildinfo",
-    "typeRoots": [],
-    "types": [],
+    "typeRoots": [
+
+    ],
+    "types": [
+
+    ],
     "useUnknownInCatchVariables": false
   },
   "files": [
@@ -51,7 +54,7 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/generated/protocol-tsconfig.ref.json"
+      "path": "../../generated/protocol-tsconfig.ref.json"
     },
     {
       "path": "../platform/bundle-tsconfig.ref.json"

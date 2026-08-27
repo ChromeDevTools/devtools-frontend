@@ -120,6 +120,15 @@ export class ResourceWebSocketFrameView extends ResourceChunkView {
         return i18nString(UIStrings.sOpcodeS, { PH1: localizedDescription(), PH2: opCode });
     }
 }
+var OpCodes;
+(function (OpCodes) {
+    OpCodes[OpCodes["CONTINUATION_FRAME"] = 0] = "CONTINUATION_FRAME";
+    OpCodes[OpCodes["TEXT_FRAME"] = 1] = "TEXT_FRAME";
+    OpCodes[OpCodes["BINARY_FRAME"] = 2] = "BINARY_FRAME";
+    OpCodes[OpCodes["CONNECTION_CLOSE_FRAME"] = 8] = "CONNECTION_CLOSE_FRAME";
+    OpCodes[OpCodes["PING_FRAME"] = 9] = "PING_FRAME";
+    OpCodes[OpCodes["PONG_FRAME"] = 10] = "PONG_FRAME";
+})(OpCodes || (OpCodes = {}));
 const opCodeDescriptions = (function () {
     const map = [];
     map[0 /* OpCodes.CONTINUATION_FRAME */] = i18nLazyString(UIStrings.continuationFrame);

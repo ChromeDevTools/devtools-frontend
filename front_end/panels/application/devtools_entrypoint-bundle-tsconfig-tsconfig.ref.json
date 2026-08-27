@@ -19,13 +19,13 @@
       "path": "./application-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/panels/application/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/ui/legacy/css_files-tsconfig.ref.json"
+      "path": "../../ui/legacy/css_files-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/ui/legacy/components/data_grid/css_files-tsconfig.ref.json"
+      "path": "../../ui/legacy/components/data_grid/css_files-tsconfig.ref.json"
     },
     {
       "path": "components/bundle-tsconfig.ref.json"

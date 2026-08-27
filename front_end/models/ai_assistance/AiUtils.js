@@ -6,6 +6,13 @@ import * as Host from '../../core/host/host.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import * as Root from '../../core/root/root.js';
 import { debugLog } from './debug.js';
+export var DisabledReason;
+(function (DisabledReason) {
+    DisabledReason["GEO_RESTRICTED"] = "geo-restricted";
+    DisabledReason["POLICY_RESTRICTED"] = "policy-restricted";
+    DisabledReason["WRONG_LOCALE"] = "wrong-locale";
+    DisabledReason["NOT_SUPPORTED"] = "not-supported";
+})(DisabledReason || (DisabledReason = {}));
 function isLocaleRestricted() {
     try {
         const devtoolsLocale = i18n.DevToolsLocale.DevToolsLocale.instance();
@@ -117,6 +124,16 @@ export function isContextSelectionEnabled() {
     return Boolean(Root.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) ||
         Boolean(Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
 }
+/**
+ * Preconditions determined entirely on the DevTools frontend side (e.g. Incognito
+ * mode or age restrictions) that prevent AI assistance features from running.
+ * These are evaluated independently of AIDA service-level availability.
+ */
+export var FrontendAccessPrecondition;
+(function (FrontendAccessPrecondition) {
+    FrontendAccessPrecondition["IS_OFF_THE_RECORD"] = "is-off-the-record";
+    FrontendAccessPrecondition["AGE_RESTRICTED"] = "age-restricted";
+})(FrontendAccessPrecondition || (FrontendAccessPrecondition = {}));
 /**
  * Returns the list of active preconditions currently preventing AI assistance from being enabled.
  * Checks local frontend constraints (e.g. incognito, age check) and combines them with the

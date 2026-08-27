@@ -277,6 +277,30 @@ export class GlassPane {
         }
     }
 }
+export var PointerEventsBehavior;
+(function (PointerEventsBehavior) {
+    PointerEventsBehavior["BLOCKED_BY_GLASS_PANE"] = "BlockedByGlassPane";
+    PointerEventsBehavior["PIERCE_GLASS_PANE"] = "PierceGlassPane";
+    PointerEventsBehavior["PIERCE_CONTENTS"] = "PierceContents";
+})(PointerEventsBehavior || (PointerEventsBehavior = {}));
+export var AnchorBehavior;
+(function (AnchorBehavior) {
+    AnchorBehavior["PREFER_TOP"] = "PreferTop";
+    AnchorBehavior["PREFER_BOTTOM"] = "PreferBottom";
+    AnchorBehavior["PREFER_LEFT"] = "PreferLeft";
+    AnchorBehavior["PREFER_RIGHT"] = "PreferRight";
+})(AnchorBehavior || (AnchorBehavior = {}));
+export var SizeBehavior;
+(function (SizeBehavior) {
+    SizeBehavior["SET_EXACT_SIZE"] = "SetExactSize";
+    SizeBehavior["SET_EXACT_WIDTH_MAX_HEIGHT"] = "SetExactWidthMaxHeight";
+    SizeBehavior["MEASURE_CONTENT"] = "MeasureContent";
+})(SizeBehavior || (SizeBehavior = {}));
+export var MarginBehavior;
+(function (MarginBehavior) {
+    MarginBehavior["DEFAULT_MARGIN"] = "DefaultMargin";
+    MarginBehavior["NO_MARGIN"] = "NoMargin";
+})(MarginBehavior || (MarginBehavior = {}));
 const containers = new Map();
 const panes = new Set();
 /** Exported for layout tests. **/

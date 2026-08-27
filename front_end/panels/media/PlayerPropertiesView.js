@@ -130,6 +130,38 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/media/PlayerPropertiesView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+/** Keep this enum in sync with panels/media/base/media_log_properties.h **/
+export var PlayerPropertyKeys;
+(function (PlayerPropertyKeys) {
+    PlayerPropertyKeys["RESOLUTION"] = "kResolution";
+    PlayerPropertyKeys["TOTAL_BYTES"] = "kTotalBytes";
+    PlayerPropertyKeys["BITRATE"] = "kBitrate";
+    PlayerPropertyKeys["MAX_DURATION"] = "kMaxDuration";
+    PlayerPropertyKeys["START_TIME"] = "kStartTime";
+    // Not observed
+    // IS_CDM_ATTACHED = 'kIsCdmAttached',
+    PlayerPropertyKeys["IS_STREAMING"] = "kIsStreaming";
+    PlayerPropertyKeys["FRAME_URL"] = "kFrameUrl";
+    PlayerPropertyKeys["FRAME_TITLE"] = "kFrameTitle";
+    PlayerPropertyKeys["IS_SINGLE_ORIGIN"] = "kIsSingleOrigin";
+    PlayerPropertyKeys["IS_RANGE_HEADER_SUPPORTED"] = "kIsRangeHeaderSupported";
+    PlayerPropertyKeys["RENDERER_NAME"] = "kRendererName";
+    PlayerPropertyKeys["VIDEO_DECODER_NAME"] = "kVideoDecoderName";
+    PlayerPropertyKeys["AUDIO_DECODER_NAME"] = "kAudioDecoderName";
+    PlayerPropertyKeys["IS_PLATFORM_VIDEO_DECODER"] = "kIsPlatformVideoDecoder";
+    PlayerPropertyKeys["IS_PLATFORM_AUDIO_DECODER"] = "kIsPlatformAudioDecoder";
+    PlayerPropertyKeys["VIDEO_ENCODER_NAME"] = "kVideoEncoderName";
+    PlayerPropertyKeys["IS_PLATFORM_VIDEO_ENCODER"] = "kIsPlatformVideoEncoder";
+    PlayerPropertyKeys["IS_VIDEO_DECRYPTION_DEMUXER_STREAM"] = "kIsVideoDecryptingDemuxerStream";
+    PlayerPropertyKeys["IS_AUDIO_DECRYPTING_DEMUXER_STREAM"] = "kIsAudioDecryptingDemuxerStream";
+    PlayerPropertyKeys["AUDIO_TRACKS"] = "kAudioTracks";
+    PlayerPropertyKeys["TEXT_TRACKS"] = "kTextTracks";
+    PlayerPropertyKeys["VIDEO_TRACKS"] = "kVideoTracks";
+    PlayerPropertyKeys["FRAMERATE"] = "kFramerate";
+    PlayerPropertyKeys["VIDEO_PLAYBACK_ROUGHNESS"] = "kVideoPlaybackRoughness";
+    PlayerPropertyKeys["VIDEO_PLAYBACK_FREEZING"] = "kVideoPlaybackFreezing";
+    PlayerPropertyKeys["HLS_BUFFERED_RANGES"] = "kHlsBufferedRanges";
+})(PlayerPropertyKeys || (PlayerPropertyKeys = {}));
 class Property {
     type;
     dataInternal = null;

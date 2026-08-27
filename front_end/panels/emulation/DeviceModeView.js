@@ -508,6 +508,10 @@ export const DEFAULT_RULER_VIEW = (input, output, target) => {
         },
     });
 };
+export var RulerEvents;
+(function (RulerEvents) {
+    RulerEvents["MARKER_SELECTED"] = "MarkerSelected";
+})(RulerEvents || (RulerEvents = {}));
 export class Ruler extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
     #view;
     #horizontal = true;

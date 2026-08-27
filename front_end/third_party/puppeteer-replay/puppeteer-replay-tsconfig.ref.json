@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "outDir": ".",
+    "rootDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "package/lib/main.d.ts"
+  ],
+  "references": [
+
+  ]
+}

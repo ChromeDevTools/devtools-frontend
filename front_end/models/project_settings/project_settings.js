@@ -7,11 +7,12 @@ var __export = (target, all) => {
 // gen/front_end/models/project_settings/ProjectSettingsModel.js
 var ProjectSettingsModel_exports = {};
 __export(ProjectSettingsModel_exports, {
+  Events: () => Events,
   ProjectSettingsModel: () => ProjectSettingsModel
 });
-import * as Common from "./../../core/common/common.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as Common from "../../core/common/common.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as SDK from "../../core/sdk/sdk.js";
 var DEVTOOLS_SECURITY_ORIGIN = "devtools://devtools";
 var WELL_KNOWN_DEVTOOLS_JSON_PATH = "/.well-known/appspecific/com.chrome.devtools.json";
 function isDevToolsBundledURL(url) {
@@ -126,6 +127,11 @@ var ProjectSettingsModel = class extends Common.ObjectWrapper.ObjectWrapper {
     return Object.freeze(devtoolsJSON);
   }
 };
+var Events;
+(function(Events2) {
+  Events2["AVAILABILITY_CHANGED"] = "AvailabilityChanged";
+  Events2["PROJECT_SETTINGS_CHANGED"] = "ProjectSettingsChanged";
+})(Events || (Events = {}));
 export {
   ProjectSettingsModel_exports as ProjectSettingsModel
 };

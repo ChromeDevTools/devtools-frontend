@@ -23,11 +23,11 @@ export default `/*
 }
 
 .ruleset-header {
-  padding: 4px 8px;
+  padding: var(--sys-size-3) var(--sys-size-5);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .ruleset-header devtools-icon {

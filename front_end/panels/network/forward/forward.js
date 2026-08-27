@@ -22,6 +22,8 @@ var NetworkRequestId = class {
 var UIFilter_exports = {};
 __export(UIFilter_exports, {
   FilterType: () => FilterType,
+  IsFilterType: () => IsFilterType,
+  MixedContentFilterValues: () => MixedContentFilterValues,
   UIRequestFilter: () => UIRequestFilter
 });
 var FilterType;
@@ -49,6 +51,21 @@ var FilterType;
   FilterType2["StatusCode"] = "status-code";
   FilterType2["Url"] = "url";
 })(FilterType || (FilterType = {}));
+var IsFilterType;
+(function(IsFilterType2) {
+  IsFilterType2["RUNNING"] = "running";
+  IsFilterType2["FROM_CACHE"] = "from-cache";
+  IsFilterType2["SERVICE_WORKER_INTERCEPTED"] = "service-worker-intercepted";
+  IsFilterType2["SERVICE_WORKER_INITIATED"] = "service-worker-initiated";
+  IsFilterType2["PRELOAD"] = "preloaded";
+})(IsFilterType || (IsFilterType = {}));
+var MixedContentFilterValues;
+(function(MixedContentFilterValues2) {
+  MixedContentFilterValues2["ALL"] = "all";
+  MixedContentFilterValues2["DISPLAYED"] = "displayed";
+  MixedContentFilterValues2["BLOCKED"] = "blocked";
+  MixedContentFilterValues2["BLOCK_OVERRIDDEN"] = "block-overridden";
+})(MixedContentFilterValues || (MixedContentFilterValues = {}));
 var UIRequestFilter = class _UIRequestFilter {
   filters;
   constructor(filters) {
@@ -62,8 +79,33 @@ var UIRequestFilter = class _UIRequestFilter {
 // gen/front_end/panels/network/forward/UIRequestLocation.js
 var UIRequestLocation_exports = {};
 __export(UIRequestLocation_exports, {
-  UIRequestLocation: () => UIRequestLocation
+  UIHeaderSection: () => UIHeaderSection,
+  UIRequestLocation: () => UIRequestLocation,
+  UIRequestTabs: () => UIRequestTabs
 });
+var UIHeaderSection;
+(function(UIHeaderSection2) {
+  UIHeaderSection2["GENERAL"] = "General";
+  UIHeaderSection2["REQUEST"] = "Request";
+  UIHeaderSection2["RESPONSE"] = "Response";
+  UIHeaderSection2["EARLY_HINTS"] = "EarlyHints";
+})(UIHeaderSection || (UIHeaderSection = {}));
+var UIRequestTabs;
+(function(UIRequestTabs2) {
+  UIRequestTabs2["COOKIES"] = "cookies";
+  UIRequestTabs2["DEVICE_BOUND_SESSIONS"] = "device-bound-sessions";
+  UIRequestTabs2["EVENT_SOURCE"] = "eventSource";
+  UIRequestTabs2["HEADERS_COMPONENT"] = "headers-component";
+  UIRequestTabs2["PAYLOAD"] = "payload";
+  UIRequestTabs2["INITIATOR"] = "initiator";
+  UIRequestTabs2["PREVIEW"] = "preview";
+  UIRequestTabs2["RESPONSE"] = "response";
+  UIRequestTabs2["TIMING"] = "timing";
+  UIRequestTabs2["TRUST_TOKENS"] = "trust-tokens";
+  UIRequestTabs2["WS_FRAMES"] = "web-socket-frames";
+  UIRequestTabs2["DIRECT_SOCKET_CONNECTION"] = "direct-socket-connection";
+  UIRequestTabs2["DIRECT_SOCKET_CHUNKS"] = "direct-socket-chunks";
+})(UIRequestTabs || (UIRequestTabs = {}));
 var UIRequestLocation = class _UIRequestLocation {
   request;
   header;

@@ -45,6 +45,17 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/utils/ImagePreview.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export var Align;
+(function (Align) {
+    // 'start' means the table content will be start-aligned. For example:
+    // title1       Description1
+    // title22222   Description2222222222222
+    Align["START"] = "start";
+    // 'center' means the table content will be center-aligned. For example:
+    //       title1 Description1
+    //   title22222 Description2222222222222
+    Align["CENTER"] = "center";
+})(Align || (Align = {}));
 function isImageResource(resource) {
     return resource !== null && resource.resourceType() === Common.ResourceType.resourceTypes.Image;
 }

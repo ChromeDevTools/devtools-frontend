@@ -37,6 +37,17 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/LinearMemoryNavigator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { render, html, Directives: { ifDefined } } = Lit;
+export var Navigation;
+(function (Navigation) {
+    Navigation["BACKWARD"] = "Backward";
+    Navigation["FORWARD"] = "Forward";
+})(Navigation || (Navigation = {}));
+export var Mode;
+(function (Mode) {
+    Mode["EDIT"] = "Edit";
+    Mode["SUBMITTED"] = "Submitted";
+    Mode["INVALID_SUBMIT"] = "InvalidSubmit";
+})(Mode || (Mode = {}));
 export const DEFAULT_VIEW = (input, _output, target) => {
     // Disabled until https://crbug.com/1079231 is fixed.
     // clang-format off

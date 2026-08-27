@@ -1,8 +1,8 @@
 // gen/front_end/models/badges/AiExplorerBadge.js
-import * as Common2 from "./../../core/common/common.js";
+import * as Common2 from "../../core/common/common.js";
 
 // gen/front_end/models/badges/Badge.js
-import * as Common from "./../../core/common/common.js";
+import * as Common from "../../core/common/common.js";
 var BadgeAction;
 (function(BadgeAction2) {
   BadgeAction2["GDP_SIGN_UP_COMPLETE"] = "gdp-sign-up-complete";
@@ -130,9 +130,9 @@ var StarterBadge = class extends Badge {
 };
 
 // gen/front_end/models/badges/UserBadges.js
-import * as Common3 from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as Root from "./../../core/root/root.js";
+import * as Common3 from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as Root from "../../core/root/root.js";
 
 // gen/front_end/models/badges/CodeWhispererBadge.js
 var CODE_WHISPERER_BADGE_IMAGE_URI = new URL("../../Images/code-whisperer-badge.svg", import.meta.url).toString();
@@ -169,6 +169,16 @@ var receiveGdpBadgesSettingDescriptor = {
   defaultValue: false,
   storageType: "Synced"
 };
+var BadgeTriggerReason;
+(function(BadgeTriggerReason2) {
+  BadgeTriggerReason2["AWARD"] = "Award";
+  BadgeTriggerReason2["STARTER_BADGE_SETTINGS_NUDGE"] = "StarterBadgeSettingsNudge";
+  BadgeTriggerReason2["STARTER_BADGE_PROFILE_NUDGE"] = "StarterBadgeProfileNudge";
+})(BadgeTriggerReason || (BadgeTriggerReason = {}));
+var Events;
+(function(Events2) {
+  Events2["BADGE_TRIGGERED"] = "BadgeTriggered";
+})(Events || (Events = {}));
 var SNOOZE_TIME_MS = 24 * 60 * 60 * 1e3;
 var MAX_SNOOZE_COUNT = 3;
 var DELAY_BEFORE_TRIGGER = 1500;
@@ -357,6 +367,8 @@ export {
   AiExplorerBadge,
   Badge,
   BadgeAction,
+  BadgeTriggerReason,
+  Events,
   SpeedsterBadge,
   StarterBadge,
   UserBadges,

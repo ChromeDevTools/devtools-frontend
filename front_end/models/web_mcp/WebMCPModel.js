@@ -3,6 +3,13 @@
 // found in the LICENSE file.
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../bindings/bindings.js';
+export var Events;
+(function (Events) {
+    Events["TOOLS_ADDED"] = "ToolsAdded";
+    Events["TOOLS_REMOVED"] = "ToolsRemoved";
+    Events["TOOL_INVOKED"] = "ToolInvoked";
+    Events["TOOL_RESPONDED"] = "ToolResponded";
+})(Events || (Events = {}));
 export class Result {
     status;
     output;

@@ -1,14 +1,6 @@
 import * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
-declare const InspectedPagePlaceholder_base: (new (...args: any[]) => {
-    __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
-    addEventListener<T extends Events.UPDATE>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
-    once<T extends Events.UPDATE>(eventType: T): Promise<EventTypes[T]>;
-    removeEventListener<T extends Events.UPDATE>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
-    hasEventListeners(eventType: Events.UPDATE): boolean;
-    dispatchEventToListeners<T extends Events.UPDATE>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
-    dispatchDOMEvent?(event: Event): void;
-}) & typeof UI.Widget.Widget;
+declare const InspectedPagePlaceholder_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.Widget;
 export declare class InspectedPagePlaceholder extends InspectedPagePlaceholder_base {
     constructor();
     static instance(opts?: {

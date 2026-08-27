@@ -35,6 +35,13 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/components/diff_view/DiffView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export var RowType;
+(function (RowType) {
+    RowType["DELETION"] = "deletion";
+    RowType["ADDITION"] = "addition";
+    RowType["EQUAL"] = "equal";
+    RowType["SPACER"] = "spacer";
+})(RowType || (RowType = {}));
 export function buildDiffRows(diff) {
     let currentLineNumber = 0;
     let originalLineNumber = 0;

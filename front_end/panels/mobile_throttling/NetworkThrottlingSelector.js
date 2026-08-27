@@ -128,6 +128,10 @@ export const DEFAULT_VIEW = (input, output, target) => {
         },
     });
 };
+export var Events;
+(function (Events) {
+    Events["CONDITIONS_CHANGED"] = "ConditionsChanged";
+})(Events || (Events = {}));
 /**
  * Computes the recommended network throttling preset based on CrUX RTT field
  * metric data. Returns null if no RTT data is available or no preset matches.
@@ -291,4 +295,11 @@ export class NetworkThrottlingSelect extends Common.ObjectWrapper.eventMixin(UI.
         this.#view(viewInput, {}, this.contentElement);
     }
 }
+(function (NetworkThrottlingSelect) {
+    let Variant;
+    (function (Variant) {
+        Variant["GLOBAL_CONDITIONS"] = "global-conditions";
+        Variant["INDIVIDUAL_REQUEST_CONDITIONS"] = "individual-request-conditions";
+    })(Variant = NetworkThrottlingSelect.Variant || (NetworkThrottlingSelect.Variant = {}));
+})(NetworkThrottlingSelect || (NetworkThrottlingSelect = {}));
 //# sourceMappingURL=NetworkThrottlingSelector.js.map

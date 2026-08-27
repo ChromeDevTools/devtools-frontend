@@ -19,15 +19,15 @@ export default `/*
 .device-mode-toolbar {
   flex: none;
   background-color: var(--app-color-toolbar-background);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   display: flex;
   flex-direction: row;
   align-items: stretch;
 }
 
 .device-mode-x {
-  margin: 0 1px;
-  font-size: 16px;
+  margin: 0 var(--sys-size-1);
+  font-size: var(--sys-typescale-body1-size);
 }
 
 .device-mode-size-input {
@@ -37,11 +37,11 @@ export default `/*
    * 2 pixels padding between the characters and the
    * step-buttons.
    */
-  width: calc(4ch + 2ch + 2px);
+  width: calc(4ch + 2ch + var(--sys-size-2));
   max-height: 18px;
   border: var(--sys-color-neutral-outline);
-  border-radius: 4px;
-  margin: 0 2px;
+  border-radius: var(--sys-shape-corner-extra-small);
+  margin: 0 var(--sys-size-2);
   text-align: center;
   font-size: inherit;
   font-family: inherit;
@@ -85,15 +85,15 @@ devtools-toolbar.device-mode-toolbar-options {
 .device-mode-media-container {
   flex: none;
   overflow: hidden;
-  box-shadow: inset 0 -1px var(--sys-color-divider);
+  box-shadow: inset 0 calc(-1 * var(--sys-size-1)) var(--sys-color-divider);
 }
 
 .device-mode-content-clip .device-mode-media-container {
-  margin-bottom: 20px;
+  margin-bottom: var(--sys-size-9);
 }
 
 .device-mode-presets-container {
-  flex: 0 0 20px;
+  flex: 0 0 var(--sys-size-9);
   display: flex;
 }
 
@@ -102,7 +102,7 @@ devtools-toolbar.device-mode-toolbar-options {
   justify-content: center;
   position: relative;
   background-color: var(--sys-color-surface1);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .device-mode-presets-container:hover {
@@ -118,8 +118,8 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-preset-bar {
-  border-left: 2px solid var(--sys-color-divider);
-  border-right: 2px solid var(--sys-color-divider);
+  border-left: var(--sys-size-2) solid var(--sys-color-divider);
+  border-right: var(--sys-size-2) solid var(--sys-color-divider);
   pointer-events: auto;
   text-align: center;
   flex: none;
@@ -128,7 +128,7 @@ devtools-toolbar.device-mode-toolbar-options {
   align-items: center;
   justify-content: center;
   white-space: nowrap;
-  margin-bottom: 1px;
+  margin-bottom: var(--sys-size-1);
 }
 
 .device-mode-preset-bar:hover {
@@ -163,14 +163,14 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-content-clip .device-mode-screen-area {
-  --override-screen-area-box-shadow: hsl(240deg 3% 84%) 0 0 0 0.5px, hsl(0deg 0% 80% / 40%) 0 0 20px;
+  --override-screen-area-box-shadow: hsl(240deg 3% 84%) 0 0 0 0.5px, hsl(0deg 0% 80% / 40%) 0 0 var(--sys-size-9);
 
   box-shadow: var(--override-screen-area-box-shadow);
 }
 
 .theme-with-dark-background .device-mode-content-clip .device-mode-screen-area,
 :host-context(.theme-with-dark-background) .device-mode-content-clip .device-mode-screen-area {
-  --override-screen-area-box-shadow: rgb(40 40 42) 0 0 0 0.5px, rgb(51 51 51 / 40%) 0 0 20px;
+  --override-screen-area-box-shadow: rgb(40 40 42) 0 0 0 0.5px, rgb(51 51 51 / 40%) 0 0 var(--sys-size-9);
 }
 
 .device-mode-resizer {
@@ -193,56 +193,56 @@ devtools-toolbar.device-mode-toolbar-options {
 
 .device-mode-right-resizer {
   top: 0;
-  bottom: -1px;
-  right: -20px;
-  width: 20px;
+  bottom: calc(-1 * var(--sys-size-1));
+  right: calc(-1 * var(--sys-size-9));
+  width: var(--sys-size-9);
 }
 
 .device-mode-left-resizer {
   top: 0;
-  bottom: -1px;
-  left: -20px;
-  width: 20px;
+  bottom: calc(-1 * var(--sys-size-1));
+  left: calc(-1 * var(--sys-size-9));
+  width: var(--sys-size-9);
   opacity: 0%;
 }
 
 .device-mode-bottom-resizer {
   left: 0;
-  right: -1px;
-  bottom: -20px;
-  height: 20px;
+  right: calc(-1 * var(--sys-size-1));
+  bottom: calc(-1 * var(--sys-size-9));
+  height: var(--sys-size-9);
 }
 
 .device-mode-bottom-right-resizer {
-  inset: 0 -20px -20px 0;
+  inset: 0 calc(-1 * var(--sys-size-9)) calc(-1 * var(--sys-size-9)) 0;
   background-color: var(--sys-color-surface1);
 }
 
 .device-mode-bottom-left-resizer {
-  inset: 0 0 -20px -20px;
+  inset: 0 0 calc(-1 * var(--sys-size-9)) calc(-1 * var(--sys-size-9));
   opacity: 0%;
 }
 
 .device-mode-right-resizer > div {
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeHorizontal);
-  width: 6px;
+  width: var(--sys-size-4);
   height: 26px;
 }
 
 .device-mode-left-resizer > div {
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeHorizontal);
-  width: 6px;
+  width: var(--sys-size-4);
   height: 26px;
 }
 
 .device-mode-bottom-resizer > div {
   /* stylelint-disable-next-line custom-property-pattern */
   content: var(--image-file-resizeVertical);
-  margin-bottom: -2px;
+  margin-bottom: calc(-1 * var(--sys-size-2));
   width: 26px;
-  height: 6px;
+  height: var(--sys-size-4);
 }
 
 .device-mode-bottom-right-resizer > div {
@@ -283,33 +283,33 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-ruler-top {
-  height: 20px;
+  height: var(--sys-size-9);
   right: 0;
 }
 
 .device-mode-ruler-left {
-  width: 20px;
+  width: var(--sys-size-9);
   bottom: 0;
 }
 
 .device-mode-ruler-content {
   pointer-events: none;
   position: absolute;
-  left: -20px;
-  top: -20px;
+  left: calc(-1 * var(--sys-size-9));
+  top: calc(-1 * var(--sys-size-9));
 }
 
 .device-mode-ruler-top .device-mode-ruler-content {
-  border-top: 1px solid transparent;
+  border-top: var(--sys-size-1) solid transparent;
   right: 0;
-  bottom: 20px;
+  bottom: var(--sys-size-9);
   background-color: var(--sys-color-cdt-base-container);
 }
 
 .device-mode-ruler-left .device-mode-ruler-content {
-  border-left: 1px solid transparent;
-  border-top: 1px solid transparent;
-  right: 20px;
+  border-left: var(--sys-size-1) solid transparent;
+  border-top: var(--sys-size-1) solid transparent;
+  right: var(--sys-size-9);
   bottom: 0;
 }
 
@@ -318,13 +318,13 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-ruler-top .device-mode-ruler-inner {
-  inset: 0 0 0 20px;
-  border-bottom: 1px solid var(--sys-color-token-subtle);
+  inset: 0 0 0 var(--sys-size-9);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-token-subtle);
 }
 
 .device-mode-ruler-left .device-mode-ruler-inner {
   inset: 19px 0 0;
-  border-right: 1px solid var(--sys-color-token-subtle);
+  border-right: var(--sys-size-1) solid var(--sys-color-token-subtle);
   background-color: var(--sys-color-cdt-base-container);
 }
 
@@ -336,8 +336,8 @@ devtools-toolbar.device-mode-toolbar-options {
   width: 0;
   height: 5px;
   bottom: 0;
-  border-right: 1px solid var(--sys-color-token-subtle);
-  margin-right: -1px;
+  border-right: var(--sys-size-1) solid var(--sys-color-token-subtle);
+  margin-right: calc(-1 * var(--sys-size-1));
 }
 
 .device-mode-ruler-top .device-mode-ruler-marker.device-mode-ruler-marker-medium {
@@ -352,8 +352,8 @@ devtools-toolbar.device-mode-toolbar-options {
   height: 0;
   width: 5px;
   right: 0;
-  border-bottom: 1px solid var(--sys-color-token-subtle);
-  margin-bottom: -1px;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-token-subtle);
+  margin-bottom: calc(-1 * var(--sys-size-1));
 }
 
 .device-mode-ruler-left .device-mode-ruler-marker.device-mode-ruler-marker-medium {
@@ -375,12 +375,12 @@ devtools-toolbar.device-mode-toolbar-options {
 }
 
 .device-mode-ruler-top .device-mode-ruler-text {
-  left: 2px;
-  top: -2px;
+  left: var(--sys-size-2);
+  top: calc(-1 * var(--sys-size-2));
 }
 
 .device-mode-ruler-left .device-mode-ruler-text {
-  left: -4px;
+  left: calc(-1 * var(--sys-size-3));
   top: -15px;
   transform: rotate(270deg);
 }

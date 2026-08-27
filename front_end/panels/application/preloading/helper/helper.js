@@ -11,8 +11,8 @@ __export(PreloadingForward_exports, {
   RuleSetView: () => RuleSetView,
   preloadStatusCode: () => preloadStatusCode
 });
-import * as SDK from "./../../../../core/sdk/sdk.js";
-import * as Logs from "./../../../../models/logs/logs.js";
+import * as SDK from "../../../../core/sdk/sdk.js";
+import * as Logs from "../../../../models/logs/logs.js";
 var RuleSetView = class {
   ruleSetId;
   constructor(ruleSetId) {

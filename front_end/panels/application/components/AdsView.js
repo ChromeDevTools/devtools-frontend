@@ -6,11 +6,13 @@ import '../../../ui/kit/kit.js';
 import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
+import * as Components from '../../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import adsViewStyles from './adsView.css.js';
 const { html } = Lit;
+const { repeat } = Lit.Directives;
 const { bindToSetting } = UI.UIUtils;
 const UIStrings = {
     /**
@@ -71,6 +73,19 @@ const UIStrings = {
      * @description Accessible name for the ad iframes table.
      */
     adIframes: 'Ad iframes',
+    /**
+     * @description Title for the ad scripts table.
+     * @example {3} PH1
+     */
+    adScriptsTitle: 'Ad scripts (total {PH1})',
+    /**
+     * @description Title for the URL column in the ad scripts table.
+     */
+    url: 'URL',
+    /**
+     * @description Accessible name for the ad scripts table.
+     */
+    adScripts: 'Ad scripts',
     /**
      * @description Title for the settings section.
      */
@@ -209,6 +224,24 @@ const DEFAULT_VIEW = (input, output, target) => {
         </devtools-data-grid>
       </div>
       <hr class="divider">
+      <div class="ad-scripts-title">${i18nString(UIStrings.adScriptsTitle, { PH1: input.adScripts.length })}</div>
+      <div class="ad-scripts-container">
+        <devtools-data-grid striped resize="last" class="ad-scripts-data-grid" name=${i18nString(UIStrings.adScripts)}>
+          <table>
+            <tr>
+              <th id="url" weight="1" sortable>${i18nString(UIStrings.url)}</th>
+            </tr>
+            ${repeat(input.adScripts, script => script.url, script => html `
+              <tr>
+                <td title=${script.url}>
+                  ${Components.Linkifier.Linkifier.renderLinkifiedUrl(script.url, { text: script.url })}
+                </td>
+              </tr>
+            `)}
+          </table>
+        </devtools-data-grid>
+      </div>
+      <hr class="divider">
       <div class="settings-title">${i18nString(UIStrings.settings)}</div>
       <devtools-checkbox class="setting-container small"
           ${bindToSetting(Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showAdHighlightsSettingDescriptor))}>
@@ -242,6 +275,9 @@ export class AdsView extends UI.Widget.Widget {
     #adFrames = new Map();
     #adIframeElementIds = new Map();
     #fetchingElementIds = new Set();
+    #unresolvedScriptIds = new Set();
+    #adScriptNodeData = [];
+    #seenUrls = new Set();
     constructor(view = DEFAULT_VIEW) {
         super({ useShadowDom: true });
         this.#view = view;
@@ -290,13 +326,24 @@ export class AdsView extends UI.Widget.Widget {
         if (target) {
             const adsAgent = target.adsAgent();
             if (adsAgent) {
-                const response = await adsAgent.invoke_getAdMetrics();
+                const [metricsResponse, scriptsResponse] = await Promise.all([
+                    adsAgent.invoke_getAdMetrics(),
+                    adsAgent.invoke_getAdScripts(),
+                ]);
                 if (!this.#isPolling || this.#pollSessionId !== sessionId) {
                     return;
                 }
-                if (!response.getError()) {
-                    this.#currentMetrics = response.metrics;
-                    this.#processAdFrames(response.metrics);
+                let needsUpdate = false;
+                if (!metricsResponse.getError()) {
+                    this.#currentMetrics = metricsResponse.metrics;
+                    this.#processAdFrames(metricsResponse.metrics);
+                    needsUpdate = true;
+                }
+                if (!scriptsResponse.getError()) {
+                    this.#processAdScripts(scriptsResponse.newScripts || []);
+                    needsUpdate = true;
+                }
+                if (needsUpdate) {
                     this.requestUpdate();
                 }
             }
@@ -343,6 +390,11 @@ export class AdsView extends UI.Widget.Widget {
             }
         }
     }
+    #processAdScripts(newScripts) {
+        for (const script of newScripts) {
+            this.#unresolvedScriptIds.add(script.scriptId);
+        }
+    }
     async #fetchIframeElementId(frameId) {
         const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
         if (!frame) {
@@ -369,9 +421,14 @@ export class AdsView extends UI.Widget.Widget {
         this.#adFrames.clear();
         this.#adIframeElementIds.clear();
         this.#fetchingElementIds.clear();
+        this.#unresolvedScriptIds.clear();
+        this.#adScriptNodeData.length = 0;
+        this.#seenUrls.clear();
         this.requestUpdate();
     }
     performUpdate() {
+        const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+        const debuggerModel = target?.model(SDK.DebuggerModel.DebuggerModel);
         const adFramesArray = [];
         for (const [frameId, frame] of this.#adFrames) {
             // The table displays the resolved ID, or an <unnamed> placeholder if the
@@ -397,9 +454,34 @@ export class AdsView extends UI.Widget.Widget {
                 revealFrame,
             });
         }
+        for (const scriptId of this.#unresolvedScriptIds) {
+            const sdkScript = debuggerModel?.scriptForId(scriptId);
+            // Filter out inline <script> tags and anonymous eval/dynamic scripts.
+            // We only want to display named external resources or explicitly named
+            // scripts to reduce noise in the UI.
+            if (!sdkScript) {
+                continue;
+            }
+            this.#unresolvedScriptIds.delete(scriptId);
+            if (sdkScript.isInlineScript() || sdkScript.isContentScript() || !sdkScript.sourceURL) {
+                continue;
+            }
+            const url = sdkScript.sourceURL;
+            // De-duplicate scripts by URL. V8 frequently generates multiple
+            // ScriptIds for the same URL (e.g., when the same external script
+            // is loaded into multiple iframes).
+            if (this.#seenUrls.has(url)) {
+                continue;
+            }
+            this.#seenUrls.add(url);
+            this.#adScriptNodeData.push({
+                url,
+            });
+        }
         const viewInput = {
             metrics: this.#currentMetrics,
             adFrames: adFramesArray,
+            adScripts: this.#adScriptNodeData,
         };
         this.#view(viewInput, undefined, this.contentElement);
     }

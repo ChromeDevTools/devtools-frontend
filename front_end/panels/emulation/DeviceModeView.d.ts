@@ -80,15 +80,7 @@ export declare const enum RulerEvents {
 export interface RulerEventTypes {
     [RulerEvents.MARKER_SELECTED]: number;
 }
-declare const Ruler_base: (new (...args: any[]) => {
-    __events: Common.ObjectWrapper.ObjectWrapper<RulerEventTypes>;
-    addEventListener<T extends RulerEvents.MARKER_SELECTED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<RulerEventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<RulerEventTypes, T>;
-    once<T extends RulerEvents.MARKER_SELECTED>(eventType: T): Promise<RulerEventTypes[T]>;
-    removeEventListener<T extends RulerEvents.MARKER_SELECTED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<RulerEventTypes[T], any>) => void, thisObject?: Object): void;
-    hasEventListeners(eventType: RulerEvents.MARKER_SELECTED): boolean;
-    dispatchEventToListeners<T extends RulerEvents.MARKER_SELECTED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<RulerEventTypes, T>): void;
-    dispatchDOMEvent?(event: Event): void;
-}) & typeof UI.Widget.Widget;
+declare const Ruler_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<RulerEventTypes>, any[]> & typeof UI.Widget.Widget;
 export declare class Ruler extends Ruler_base {
     #private;
     constructor(element?: HTMLElement, view?: RulerView);

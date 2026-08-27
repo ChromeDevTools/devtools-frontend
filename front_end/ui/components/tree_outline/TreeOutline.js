@@ -52,6 +52,19 @@ export class ItemMouseOutEvent extends Event {
         this.data = { node };
     }
 }
+/**
+ *
+ * The tree can be filtered by providing a custom filter function.
+ * The filter is applied on every node when constructing the tree
+ * and proceeds as follows:
+ * - If the filter return SHOW for a node, the node is included in the tree.
+ * - If the filter returns FLATTEN, the node is ignored but its subtree is included.
+ */
+export var FilterOption;
+(function (FilterOption) {
+    FilterOption["SHOW"] = "SHOW";
+    FilterOption["FLATTEN"] = "FLATTEN";
+})(FilterOption || (FilterOption = {}));
 export class TreeOutline extends HTMLElement {
     #shadow = this.attachShadow({ mode: 'open' });
     #treeData = [];

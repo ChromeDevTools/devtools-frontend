@@ -52,6 +52,15 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/protocol_monitor/JSONEditor.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export var ParameterType;
+(function (ParameterType) {
+    ParameterType["STRING"] = "string";
+    ParameterType["NUMBER"] = "number";
+    ParameterType["BOOLEAN"] = "boolean";
+    ParameterType["ARRAY"] = "array";
+    ParameterType["OBJECT"] = "object";
+    ParameterType["UNKNOWN"] = "unknown";
+})(ParameterType || (ParameterType = {}));
 const splitDescription = (description) => {
     // If the description is too long we make the UI a bit better by highlighting the first sentence
     // which contains the most information.
@@ -75,6 +84,10 @@ const EMPTY_STRING = '<empty_string>';
 export function suggestionFilter(option, query) {
     return option.toLowerCase().includes(query.toLowerCase());
 }
+export var Events;
+(function (Events) {
+    Events["SUBMIT_EDITOR"] = "submiteditor";
+})(Events || (Events = {}));
 export class JSONEditor extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
     #metadataByCommand = new Map();
     #typesByName = new Map();

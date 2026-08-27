@@ -11,14 +11,14 @@ export default `/*
 
 @scope to (devtools-widget > *) {
   .cookie-preview-widget {
-    padding: 2px 6px;
+    padding: var(--sys-size-2) var(--sys-size-4);
   }
 
   .cookie-preview-widget-header {
     font-weight: bold;
     user-select: none;
     white-space: nowrap;
-    margin-bottom: 4px;
+    margin-bottom: var(--sys-size-3);
     flex: 0 0 18px;
     display: flex;
     align-items: center;
@@ -37,7 +37,7 @@ export default `/*
   }
 
   .cookie-preview-widget-toggle {
-    margin-left: 12px;
+    margin-left: var(--sys-size-6);
     font-weight: normal;
     flex-shrink: 1;
   }

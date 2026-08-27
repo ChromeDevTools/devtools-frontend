@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": ".",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -45,7 +46,7 @@
   ],
   "references": [
     {
-      "path": "../../../../../tsc/front_end/third_party/lighthouse/report/bundle-tsconfig.ref.json"
+      "path": "./bundle-tsconfig.ref.json"
     }
   ]
 }

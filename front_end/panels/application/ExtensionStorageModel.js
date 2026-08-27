@@ -180,4 +180,9 @@ export class ExtensionStorageModel extends SDK.SDKModel.SDKModel {
     }
 }
 SDK.SDKModel.SDKModel.register(ExtensionStorageModel, { capabilities: 4 /* SDK.Target.Capability.JS */, autostart: false });
+export var Events;
+(function (Events) {
+    Events["EXTENSION_STORAGE_ADDED"] = "ExtensionStorageAdded";
+    Events["EXTENSION_STORAGE_REMOVED"] = "ExtensionStorageRemoved";
+})(Events || (Events = {}));
 //# sourceMappingURL=ExtensionStorageModel.js.map

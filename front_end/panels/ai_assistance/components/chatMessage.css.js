@@ -29,8 +29,8 @@ export default `/*
     }
 
     .vertical-separator {
-      height: 16px;
-      width: 1px;
+      height: var(--sys-size-8);
+      width: var(--sys-size-1);
       vertical-align: top;
       margin: 0 var(--sys-size-2);
       background: var(--sys-color-divider);
@@ -141,7 +141,7 @@ export default `/*
     gap: var(--sys-size-5);
     width: 100%;
     padding: var(--sys-size-7) var(--sys-size-5);
-    font-size: 12px;
+    font-size: var(--sys-typescale-body4-size);
     word-break: normal;
     overflow-wrap: anywhere;
 
@@ -212,7 +212,7 @@ export default `/*
         max-height: var(--sys-size-20);
         max-width: 100%;
         border-radius: var(--sys-shape-corner-small);
-        border: 1px solid var(--sys-color-neutral-outline);
+        border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
         width: fit-content;
         vertical-align: bottom;
       }
@@ -227,7 +227,7 @@ export default `/*
       width: var(--sys-size-18);
       background-color: var(--sys-color-surface3);
       border-radius: var(--sys-shape-corner-small);
-      border: 1px solid var(--sys-color-neutral-outline);
+      border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
 
       devtools-icon {
         color: var(--sys-color-state-disabled);
@@ -280,14 +280,14 @@ export default `/*
 
   .context-details {
     devtools-code-block {
-      --code-block-max-code-height: 80px;
+      --code-block-max-code-height: var(--sys-size-19);
     }
   }
 
   .step {
     width: fit-content;
     background-color: var(--sys-color-surface3);
-    border-radius: 16px;
+    border-radius: var(--sys-shape-corner-medium);
     position: relative;
 
     &.empty {
@@ -363,7 +363,7 @@ export default `/*
     }
 
     summary {
-      border-radius: 16px;
+      border-radius: var(--sys-shape-corner-medium);
 
       &:focus-visible {
         outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
@@ -539,7 +539,7 @@ export default `/*
     gap: var(--sys-size-4);
     margin-bottom: var(--sys-size-5);
     padding-bottom: var(--sys-size-5);
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
     .network-request-header {
       display: flex;
@@ -547,14 +547,14 @@ export default `/*
       gap: var(--sys-size-5);
 
       .network-request-icon {
-        width: 32px;
-        height: 32px;
+        width: var(--sys-size-13);
+        height: var(--sys-size-13);
         display: flex;
         align-items: center;
         justify-content: center;
         background-color: var(--sys-color-surface1);
         border-radius: var(--sys-shape-corner-small);
-        border: 1px solid var(--sys-color-divider);
+        border: var(--sys-size-1) solid var(--sys-color-divider);
         overflow: hidden;
 
         img {
@@ -564,8 +564,8 @@ export default `/*
         }
 
         devtools-icon {
-          width: 20px;
-          height: 20px;
+          width: var(--sys-size-9);
+          height: var(--sys-size-9);
         }
       }
 
@@ -596,8 +596,8 @@ export default `/*
     summary {
       list-style: none;
       cursor: pointer;
-      padding: 4px 12px;
-      border: 1px solid var(--sys-color-neutral-outline);
+      padding: var(--sys-size-3) var(--sys-size-6);
+      border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
       border-radius: var(--sys-shape-corner-small);
       color: var(--sys-color-primary);
       width: fit-content;

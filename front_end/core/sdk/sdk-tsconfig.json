@@ -1,14 +1,14 @@
 {
-  "checkJs": true,
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "checkJs": true,
-    "composite": true,
-    "declaration": true,
+    "composite": false,
+    "declaration": false,
     "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
+    "incremental": false,
     "inlineSources": true,
     "lib": [
       "dom",
@@ -20,21 +20,24 @@
       "ESNext.Array"
     ],
     "module": "esnext",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/core/sdk",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
     "target": "ES2023",
-    "tsBuildInfoFile": "sdk-tsconfig.json.tsbuildinfo",
-    "typeRoots": [],
-    "types": [],
+    "typeRoots": [
+
+    ],
+    "types": [
+
+    ],
     "useUnknownInCatchVariables": false
   },
   "files": [
@@ -156,13 +159,13 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/generated/protocol-tsconfig.ref.json"
+      "path": "../../generated/protocol-tsconfig.ref.json"
     },
     {
       "path": "../../models/formatter/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/third_party/codemirror.next/bundle-tsconfig.ref.json"
+      "path": "../../third_party/codemirror.next/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../third_party/source-map-scopes-codec/bundle-tsconfig.ref.json"

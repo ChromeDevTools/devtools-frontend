@@ -40,6 +40,12 @@ function toIconGroup(iconName, sizeOverride) {
     }
     return { iconName };
 }
+export var DisplayMode;
+(function (DisplayMode) {
+    DisplayMode["OMIT_EMPTY"] = "OmitEmpty";
+    DisplayMode["SHOW_ALWAYS"] = "ShowAlways";
+    DisplayMode["ONLY_MOST_IMPORTANT"] = "OnlyMostImportant";
+})(DisplayMode || (DisplayMode = {}));
 // Lazily instantiate the formatter as the constructor takes 50ms+
 // TODO: move me and others like me to i18n module
 const listFormatter = (function defineFormatter() {

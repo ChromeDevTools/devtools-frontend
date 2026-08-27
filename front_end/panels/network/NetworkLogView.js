@@ -531,6 +531,11 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/NetworkLogView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+var FetchStyle;
+(function (FetchStyle) {
+    FetchStyle[FetchStyle["BROWSER"] = 0] = "BROWSER";
+    FetchStyle[FetchStyle["NODE_JS"] = 1] = "NODE_JS";
+})(FetchStyle || (FetchStyle = {}));
 export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
     networkInvertFilterSetting;
     networkHideDataURLSetting;

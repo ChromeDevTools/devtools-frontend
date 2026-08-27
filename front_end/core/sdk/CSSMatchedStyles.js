@@ -1488,4 +1488,9 @@ class DOMInheritanceCascade {
         }
     }
 }
+export var PropertyState;
+(function (PropertyState) {
+    PropertyState["ACTIVE"] = "Active";
+    PropertyState["OVERLOADED"] = "Overloaded";
+})(PropertyState || (PropertyState = {}));
 //# sourceMappingURL=CSSMatchedStyles.js.map

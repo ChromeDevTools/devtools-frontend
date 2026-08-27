@@ -442,4 +442,10 @@ export class HeaderSectionRow extends HTMLElement {
     }
 }
 customElements.define('devtools-header-section-row', HeaderSectionRow);
+export var EditingAllowedStatus;
+(function (EditingAllowedStatus) {
+    EditingAllowedStatus[EditingAllowedStatus["DISABLED"] = 0] = "DISABLED";
+    EditingAllowedStatus[EditingAllowedStatus["ENABLED"] = 1] = "ENABLED";
+    EditingAllowedStatus[EditingAllowedStatus["FORBIDDEN"] = 2] = "FORBIDDEN";
+})(EditingAllowedStatus || (EditingAllowedStatus = {}));
 //# sourceMappingURL=HeaderSectionRow.js.map

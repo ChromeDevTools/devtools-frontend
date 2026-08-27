@@ -10,7 +10,7 @@ __export(AccessiblePlaceholder_exports, {
   AccessiblePlaceholder: () => AccessiblePlaceholder,
   flattenRect: () => flattenRect
 });
-import * as CM from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as CM from "../../../third_party/codemirror.next/codemirror.next.js";
 function flattenRect(rect, left) {
   const x = left ? rect.left : rect.right;
   return { left: x, right: x, top: rect.top, bottom: rect.bottom };
@@ -65,14 +65,14 @@ __export(AiCodeCompletionDisclaimer_exports, {
   AiCodeCompletionDisclaimer: () => AiCodeCompletionDisclaimer,
   DEFAULT_SUMMARY_TOOLBAR_VIEW: () => DEFAULT_SUMMARY_TOOLBAR_VIEW
 });
-import "./../spinners/spinners.js";
-import "./../tooltips/tooltips.js";
-import * as Host from "./../../../core/host/host.js";
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as Root from "./../../../core/root/root.js";
-import * as UI from "./../../legacy/legacy.js";
-import { Directives, html, nothing, render } from "./../../lit/lit.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
+import "../spinners/spinners.js";
+import "../tooltips/tooltips.js";
+import * as Host from "../../../core/host/host.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as Root from "../../../core/root/root.js";
+import * as UI from "../../legacy/legacy.js";
+import { Directives, html, nothing, render } from "../../lit/lit.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/text_editor/aiCodeCompletionDisclaimer.css.js
 var aiCodeCompletionDisclaimer_css_default = `/*
@@ -384,15 +384,15 @@ __export(AiCodeCompletionProvider_exports, {
   aiCodeCompletionTeaserModeState: () => aiCodeCompletionTeaserModeState,
   setAiCodeCompletionTeaserMode: () => setAiCodeCompletionTeaserMode
 });
-import * as Common5 from "./../../../core/common/common.js";
-import * as Host6 from "./../../../core/host/host.js";
-import * as i18n12 from "./../../../core/i18n/i18n.js";
-import * as Root5 from "./../../../core/root/root.js";
-import * as AiCodeCompletion from "./../../../models/ai_code_completion/ai_code_completion.js";
-import * as AiCodeGeneration5 from "./../../../models/ai_code_generation/ai_code_generation.js";
-import * as CodeMirror3 from "./../../../third_party/codemirror.next/codemirror.next.js";
-import * as UI7 from "./../../legacy/legacy.js";
-import * as VisualLogging6 from "./../../visual_logging/visual_logging.js";
+import * as Common5 from "../../../core/common/common.js";
+import * as Host6 from "../../../core/host/host.js";
+import * as i18n12 from "../../../core/i18n/i18n.js";
+import * as Root5 from "../../../core/root/root.js";
+import * as AiCodeCompletion from "../../../models/ai_code_completion/ai_code_completion.js";
+import * as AiCodeGeneration5 from "../../../models/ai_code_generation/ai_code_generation.js";
+import * as CodeMirror3 from "../../../third_party/codemirror.next/codemirror.next.js";
+import * as UI7 from "../../legacy/legacy.js";
+import * as VisualLogging6 from "../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/text_editor/AiCodeCompletionTeaser.js
 var AiCodeCompletionTeaser_exports = {};
@@ -400,18 +400,18 @@ __export(AiCodeCompletionTeaser_exports, {
   AiCodeCompletionTeaser: () => AiCodeCompletionTeaser,
   DEFAULT_VIEW: () => DEFAULT_VIEW
 });
-import "./../../kit/kit.js";
-import * as Common from "./../../../core/common/common.js";
-import * as Host2 from "./../../../core/host/host.js";
-import * as i18n3 from "./../../../core/i18n/i18n.js";
-import * as Root2 from "./../../../core/root/root.js";
-import * as AIAssistance from "./../../../models/ai_assistance/ai_assistance.js";
-import * as AiCodeGeneration from "./../../../models/ai_code_generation/ai_code_generation.js";
-import * as UI2 from "./../../legacy/legacy.js";
-import { html as html2, nothing as nothing2, render as render2 } from "./../../lit/lit.js";
-import * as VisualLogging2 from "./../../visual_logging/visual_logging.js";
-import * as Dialogs from "./../dialogs/dialogs.js";
-import * as Snackbars from "./../snackbars/snackbars.js";
+import "../../kit/kit.js";
+import * as Common from "../../../core/common/common.js";
+import * as Host2 from "../../../core/host/host.js";
+import * as i18n3 from "../../../core/i18n/i18n.js";
+import * as Root2 from "../../../core/root/root.js";
+import * as AIAssistance from "../../../models/ai_assistance/ai_assistance.js";
+import * as AiCodeGeneration from "../../../models/ai_code_generation/ai_code_generation.js";
+import * as UI2 from "../../legacy/legacy.js";
+import { html as html2, nothing as nothing2, render as render2 } from "../../lit/lit.js";
+import * as VisualLogging2 from "../../visual_logging/visual_logging.js";
+import * as Dialogs from "../dialogs/dialogs.js";
+import * as Snackbars from "../snackbars/snackbars.js";
 
 // gen/front_end/ui/components/text_editor/aiCodeCompletionTeaser.css.js
 var aiCodeCompletionTeaser_css_default = `/*
@@ -735,21 +735,21 @@ __export(AiCodeGenerationProvider_exports, {
   AiCodeGenerationTeaserMode: () => AiCodeGenerationTeaserMode,
   setAiCodeGenerationTeaserMode: () => setAiCodeGenerationTeaserMode
 });
-import * as Common4 from "./../../../core/common/common.js";
-import * as Host5 from "./../../../core/host/host.js";
-import * as i18n11 from "./../../../core/i18n/i18n.js";
-import * as Root4 from "./../../../core/root/root.js";
-import * as AiCodeGeneration3 from "./../../../models/ai_code_generation/ai_code_generation.js";
-import * as CodeMirror2 from "./../../../third_party/codemirror.next/codemirror.next.js";
-import * as UI6 from "./../../legacy/legacy.js";
-import * as VisualLogging5 from "./../../visual_logging/visual_logging.js";
+import * as Common4 from "../../../core/common/common.js";
+import * as Host5 from "../../../core/host/host.js";
+import * as i18n11 from "../../../core/i18n/i18n.js";
+import * as Root4 from "../../../core/root/root.js";
+import * as AiCodeGeneration3 from "../../../models/ai_code_generation/ai_code_generation.js";
+import * as CodeMirror2 from "../../../third_party/codemirror.next/codemirror.next.js";
+import * as UI6 from "../../legacy/legacy.js";
+import * as VisualLogging5 from "../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/text_editor/AiCodeGenerationParser.js
 var AiCodeGenerationParser_exports = {};
 __export(AiCodeGenerationParser_exports, {
   AiCodeGenerationParser: () => AiCodeGenerationParser
 });
-import * as CodeMirror from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror from "../../../third_party/codemirror.next/codemirror.next.js";
 var LINE_COMMENT_PATTERN = /^(?:\/\/|#)\s*/gm;
 var BLOCK_COMMENT_START_PATTERN = /^\/\*+\s*/;
 var BLOCK_COMMENT_END_PATTERN = /\s*\*+\/$/;
@@ -846,15 +846,15 @@ __export(AiCodeGenerationTeaser_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
   PROMOTION_ID: () => PROMOTION_ID2
 });
-import "./../tooltips/tooltips.js";
-import * as Common2 from "./../../../core/common/common.js";
-import * as Host3 from "./../../../core/host/host.js";
-import * as i18n5 from "./../../../core/i18n/i18n.js";
-import * as Root3 from "./../../../core/root/root.js";
-import * as UI3 from "./../../legacy/legacy.js";
-import { Directives as Directives2, html as html3, nothing as nothing3, render as render3 } from "./../../lit/lit.js";
-import * as VisualLogging3 from "./../../visual_logging/visual_logging.js";
-import * as Buttons from "./../buttons/buttons.js";
+import "../tooltips/tooltips.js";
+import * as Common2 from "../../../core/common/common.js";
+import * as Host3 from "../../../core/host/host.js";
+import * as i18n5 from "../../../core/i18n/i18n.js";
+import * as Root3 from "../../../core/root/root.js";
+import * as UI3 from "../../legacy/legacy.js";
+import { Directives as Directives2, html as html3, nothing as nothing3, render as render3 } from "../../lit/lit.js";
+import * as VisualLogging3 from "../../visual_logging/visual_logging.js";
+import * as Buttons from "../buttons/buttons.js";
 
 // gen/front_end/ui/components/text_editor/aiCodeGenerationTeaser.css.js
 var aiCodeGenerationTeaser_css_default = `/*
@@ -1313,11 +1313,11 @@ var AiCodeGenerationUpgradeDialog_exports = {};
 __export(AiCodeGenerationUpgradeDialog_exports, {
   AiCodeGenerationUpgradeDialog: () => AiCodeGenerationUpgradeDialog
 });
-import * as Host4 from "./../../../core/host/host.js";
-import * as i18n7 from "./../../../core/i18n/i18n.js";
-import * as UI4 from "./../../legacy/legacy.js";
-import * as Lit from "./../../lit/lit.js";
-import * as Buttons2 from "./../buttons/buttons.js";
+import * as Host4 from "../../../core/host/host.js";
+import * as i18n7 from "../../../core/i18n/i18n.js";
+import * as UI4 from "../../legacy/legacy.js";
+import * as Lit from "../../lit/lit.js";
+import * as Buttons2 from "../buttons/buttons.js";
 
 // gen/front_end/ui/components/text_editor/aiCodeGenerationUpgradeDialog.css.js
 var aiCodeGenerationUpgradeDialog_css_default = `/*
@@ -1519,6 +1519,7 @@ var AiCodeGenerationUpgradeDialog = class {
 // gen/front_end/ui/components/text_editor/config.js
 var config_exports = {};
 __export(config_exports, {
+  AiSuggestionSource: () => AiSuggestionSource,
   DynamicSetting: () => DynamicSetting,
   acceptAiAutoCompleteSuggestion: () => acceptAiAutoCompleteSuggestion,
   aiAutoCompleteSuggestion: () => aiAutoCompleteSuggestion,
@@ -1546,18 +1547,18 @@ __export(config_exports, {
   theme: () => theme,
   themeSelection: () => themeSelection
 });
-import * as Common3 from "./../../../core/common/common.js";
-import * as i18n9 from "./../../../core/i18n/i18n.js";
-import * as TextUtils from "./../../../core/text_utils/text_utils.js";
-import * as CM3 from "./../../../third_party/codemirror.next/codemirror.next.js";
-import { Icon } from "./../../kit/kit.js";
-import * as UI5 from "./../../legacy/legacy.js";
-import * as SettingsUI from "./../../settings/settings.js";
-import * as VisualLogging4 from "./../../visual_logging/visual_logging.js";
-import * as CodeHighlighter from "./../code_highlighter/code_highlighter.js";
+import * as Common3 from "../../../core/common/common.js";
+import * as i18n9 from "../../../core/i18n/i18n.js";
+import * as TextUtils from "../../../core/text_utils/text_utils.js";
+import * as CM3 from "../../../third_party/codemirror.next/codemirror.next.js";
+import { Icon } from "../../kit/kit.js";
+import * as UI5 from "../../legacy/legacy.js";
+import * as SettingsUI from "../../settings/settings.js";
+import * as VisualLogging4 from "../../visual_logging/visual_logging.js";
+import * as CodeHighlighter from "../code_highlighter/code_highlighter.js";
 
 // gen/front_end/ui/components/text_editor/theme.js
-import * as CM2 from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as CM2 from "../../../third_party/codemirror.next/codemirror.next.js";
 var editorTheme = CM2.EditorView.theme({
   "&.cm-editor": {
     color: "color: var(--sys-color-on-subtle)",
@@ -2135,6 +2136,11 @@ function contentIncludingHint(view) {
   return content;
 }
 var setAiAutoCompleteSuggestion = CM3.StateEffect.define();
+var AiSuggestionSource;
+(function(AiSuggestionSource2) {
+  AiSuggestionSource2["COMPLETION"] = "completion";
+  AiSuggestionSource2["GENERATION"] = "generation";
+})(AiSuggestionSource || (AiSuggestionSource = {}));
 var aiAutoCompleteSuggestionState = CM3.StateField.define({
   create: () => null,
   update(value, tr) {
@@ -3309,7 +3315,7 @@ __export(ExecutionPositionHighlighter_exports, {
   positionHighlighter: () => positionHighlighter,
   setHighlightedPosition: () => setHighlightedPosition
 });
-import * as CodeMirror4 from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror4 from "../../../third_party/codemirror.next/codemirror.next.js";
 var setHighlightedPosition = CodeMirror4.StateEffect.define();
 var clearHighlightedPosition = CodeMirror4.StateEffect.define();
 function positionHighlighter(executionLineClassName, executionTokenClassName) {
@@ -3382,6 +3388,7 @@ function positionHighlighter(executionLineClassName, executionTokenClassName) {
 // gen/front_end/ui/components/text_editor/javascript.js
 var javascript_exports = {};
 __export(javascript_exports, {
+  QueryType: () => QueryType,
   argumentHints: () => argumentHints,
   argumentsList: () => argumentsList,
   closeArgumentsHintsTooltip: () => closeArgumentsHintsTooltip,
@@ -3391,15 +3398,15 @@ __export(javascript_exports, {
   isExpressionComplete: () => isExpressionComplete,
   javascriptCompletionSource: () => javascriptCompletionSource
 });
-import * as SDK from "./../../../core/sdk/sdk.js";
-import * as Bindings from "./../../../models/bindings/bindings.js";
-import * as JavaScriptMetaData from "./../../../models/javascript_metadata/javascript_metadata.js";
-import * as SourceMapScopes from "./../../../models/source_map_scopes/source_map_scopes.js";
-import * as CodeMirror6 from "./../../../third_party/codemirror.next/codemirror.next.js";
-import * as UI8 from "./../../legacy/legacy.js";
+import * as SDK from "../../../core/sdk/sdk.js";
+import * as Bindings from "../../../models/bindings/bindings.js";
+import * as JavaScriptMetaData from "../../../models/javascript_metadata/javascript_metadata.js";
+import * as SourceMapScopes from "../../../models/source_map_scopes/source_map_scopes.js";
+import * as CodeMirror6 from "../../../third_party/codemirror.next/codemirror.next.js";
+import * as UI8 from "../../legacy/legacy.js";
 
 // gen/front_end/ui/components/text_editor/cursor_tooltip.js
-import * as CodeMirror5 from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror5 from "../../../third_party/codemirror.next/codemirror.next.js";
 var closeTooltip = CodeMirror5.StateEffect.define();
 function cursorTooltip(source) {
   const openTooltip = CodeMirror5.StateEffect.define();
@@ -3582,6 +3589,13 @@ var dontCompleteIn = /* @__PURE__ */ new Set([
   "PropertyDefinition",
   "TypeName"
 ]);
+var QueryType;
+(function(QueryType2) {
+  QueryType2[QueryType2["EXPRESSION"] = 0] = "EXPRESSION";
+  QueryType2[QueryType2["PROPERTY_NAME"] = 1] = "PROPERTY_NAME";
+  QueryType2[QueryType2["PROPERTY_EXPRESSION"] = 2] = "PROPERTY_EXPRESSION";
+  QueryType2[QueryType2["POTENTIALLY_RETRIEVING_FROM_MAP"] = 3] = "POTENTIALLY_RETRIEVING_FROM_MAP";
+})(QueryType || (QueryType = {}));
 function getQueryType(tree, pos, doc) {
   let node = tree.resolveInner(pos, -1);
   const parent = node.parent;
@@ -4161,11 +4175,11 @@ var TextEditor_exports = {};
 __export(TextEditor_exports, {
   TextEditor: () => TextEditor
 });
-import * as Common6 from "./../../../core/common/common.js";
-import * as CodeMirror7 from "./../../../third_party/codemirror.next/codemirror.next.js";
-import * as UI9 from "./../../legacy/legacy.js";
-import * as ThemeSupport from "./../../legacy/theme_support/theme_support.js";
-import * as CodeHighlighter3 from "./../code_highlighter/code_highlighter.js";
+import * as Common6 from "../../../core/common/common.js";
+import * as CodeMirror7 from "../../../third_party/codemirror.next/codemirror.next.js";
+import * as UI9 from "../../legacy/legacy.js";
+import * as ThemeSupport from "../../legacy/theme_support/theme_support.js";
+import * as CodeHighlighter3 from "../code_highlighter/code_highlighter.js";
 var TextEditor = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #activeEditor = void 0;
@@ -4390,9 +4404,15 @@ var CODE_MIRROR_USER_EVENT_TO_INPUT_EVENT_TYPE = /* @__PURE__ */ new Map([
 // gen/front_end/ui/components/text_editor/TextEditorHistory.js
 var TextEditorHistory_exports = {};
 __export(TextEditorHistory_exports, {
+  Direction: () => Direction,
   TextEditorHistory: () => TextEditorHistory
 });
-import * as CodeMirror8 from "./../../../third_party/codemirror.next/codemirror.next.js";
+import * as CodeMirror8 from "../../../third_party/codemirror.next/codemirror.next.js";
+var Direction;
+(function(Direction2) {
+  Direction2[Direction2["FORWARD"] = 1] = "FORWARD";
+  Direction2[Direction2["BACKWARD"] = -1] = "BACKWARD";
+})(Direction || (Direction = {}));
 var TextEditorHistory = class {
   #editor;
   #history;

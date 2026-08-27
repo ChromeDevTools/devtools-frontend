@@ -9,7 +9,7 @@ var component_server_setup_exports = {};
 __export(component_server_setup_exports, {
   setup: () => setup
 });
-import * as ThemeSupport from "./../../legacy/theme_support/theme_support.js";
+import * as ThemeSupport from "../../legacy/theme_support/theme_support.js";
 async function setup() {
   const setting = {
     get() {
@@ -40,7 +40,7 @@ __export(scheduled_render_exports, {
   isScheduledRender: () => isScheduledRender,
   scheduleRender: () => scheduleRender
 });
-import * as RenderCoordinator from "./../render_coordinator/render_coordinator.js";
+import * as RenderCoordinator from "../render_coordinator/render_coordinator.js";
 var requests = /* @__PURE__ */ new Map();
 var active = /* @__PURE__ */ new Set();
 function scheduleRender(component, callback) {

@@ -2,6 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as SDK from '../../core/sdk/sdk.js';
+export var Events;
+(function (Events) {
+    Events["PLAYER_PROPERTIES_CHANGED"] = "PlayerPropertiesChanged";
+    Events["PLAYER_EVENTS_ADDED"] = "PlayerEventsAdded";
+    Events["PLAYER_MESSAGES_LOGGED"] = "PlayerMessagesLogged";
+    Events["PLAYER_ERRORS_RAISED"] = "PlayerErrorsRaised";
+    Events["PLAYER_CREATED"] = "PlayerCreated";
+})(Events || (Events = {}));
 export class MediaModel extends SDK.SDKModel.SDKModel {
     enabled;
     agent;

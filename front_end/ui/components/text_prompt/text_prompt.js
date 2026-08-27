@@ -10,8 +10,8 @@ __export(TextPrompt_exports, {
   PromptInputEvent: () => PromptInputEvent,
   TextPrompt: () => TextPrompt
 });
-import * as Platform from "./../../../core/platform/platform.js";
-import { html, render } from "./../../lit/lit.js";
+import * as Platform from "../../../core/platform/platform.js";
+import { html, render } from "../../lit/lit.js";
 
 // gen/front_end/ui/components/text_prompt/textPrompt.css.js
 var textPrompt_css_default = `/*

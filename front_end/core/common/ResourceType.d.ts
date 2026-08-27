@@ -40,50 +40,13 @@ export declare class ResourceCategory {
     shortTitle: () => Platform.UIString.LocalizedString;
     constructor(name: string, title: () => Platform.UIString.LocalizedString, shortTitle: () => Platform.UIString.LocalizedString);
 }
-export declare const resourceCategories: {
-    XHR: ResourceCategory;
-    Document: ResourceCategory;
-    Stylesheet: ResourceCategory;
-    Script: ResourceCategory;
-    Font: ResourceCategory;
-    Image: ResourceCategory;
-    Media: ResourceCategory;
-    Manifest: ResourceCategory;
-    Socket: ResourceCategory;
-    Wasm: ResourceCategory;
-    Other: ResourceCategory;
-};
+export declare const resourceCategories: Record<string, ResourceCategory>;
 /**
  * This enum is a superset of all types defined in WebCore::InspectorPageAgent::resourceTypeJson
  * For DevTools-only types that are based on MIME-types that are backed by other request types
  * (for example Wasm that is based on Fetch), additional types are added here.
  * For these types, make sure to update `fromMimeTypeOverride` to implement the custom logic.
  */
-export declare const resourceTypes: {
-    readonly Document: ResourceType;
-    readonly Stylesheet: ResourceType;
-    readonly Image: ResourceType;
-    readonly Media: ResourceType;
-    readonly Font: ResourceType;
-    readonly Script: ResourceType;
-    readonly TextTrack: ResourceType;
-    readonly XHR: ResourceType;
-    readonly Fetch: ResourceType;
-    readonly Prefetch: ResourceType;
-    readonly EventSource: ResourceType;
-    readonly WebSocket: ResourceType;
-    readonly WebTransport: ResourceType;
-    readonly DirectSocket: ResourceType;
-    readonly Wasm: ResourceType;
-    readonly Manifest: ResourceType;
-    readonly SignedExchange: ResourceType;
-    readonly Ping: ResourceType;
-    readonly CSPViolationReport: ResourceType;
-    readonly Other: ResourceType;
-    readonly Preflight: ResourceType;
-    readonly SourceMapScript: ResourceType;
-    readonly SourceMapStyleSheet: ResourceType;
-    readonly FedCM: ResourceType;
-};
+export declare const resourceTypes: Record<string, ResourceType>;
 export declare const resourceTypeByExtension: Map<string, ResourceType>;
 export declare const mimeTypeByExtension: Map<string, string>;

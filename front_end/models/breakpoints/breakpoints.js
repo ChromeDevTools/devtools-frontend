@@ -10,19 +10,21 @@ __export(BreakpointManager_exports, {
   Breakpoint: () => Breakpoint,
   BreakpointLocation: () => BreakpointLocation,
   BreakpointManager: () => BreakpointManager,
+  BreakpointOrigin: () => BreakpointOrigin,
+  DebuggerUpdateResult: () => DebuggerUpdateResult,
   EMPTY_BREAKPOINT_CONDITION: () => EMPTY_BREAKPOINT_CONDITION,
   Events: () => Events,
   ModelBreakpoint: () => ModelBreakpoint,
   NEVER_PAUSE_HERE_CONDITION: () => NEVER_PAUSE_HERE_CONDITION
 });
-import * as Common from "./../../core/common/common.js";
-import { assertNotNullOrUndefined } from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as Bindings from "./../bindings/bindings.js";
-import * as Formatter from "./../formatter/formatter.js";
-import * as SourceMapScopes from "./../source_map_scopes/source_map_scopes.js";
-import * as Workspace from "./../workspace/workspace.js";
+import * as Common from "../../core/common/common.js";
+import { assertNotNullOrUndefined } from "../../core/platform/platform.js";
+import * as Root from "../../core/root/root.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as Bindings from "../bindings/bindings.js";
+import * as Formatter from "../formatter/formatter.js";
+import * as SourceMapScopes from "../source_map_scopes/source_map_scopes.js";
+import * as Workspace from "../workspace/workspace.js";
 var _a;
 var INITIAL_RESTORE_BREAKPOINT_COUNT = 100;
 var BreakpointManager = class extends Common.ObjectWrapper.ObjectWrapper {
@@ -404,6 +406,18 @@ var Events;
   Events2["BreakpointAdded"] = "breakpoint-added";
   Events2["BreakpointRemoved"] = "breakpoint-removed";
 })(Events || (Events = {}));
+var DebuggerUpdateResult;
+(function(DebuggerUpdateResult2) {
+  DebuggerUpdateResult2["OK"] = "OK";
+  DebuggerUpdateResult2["ERROR_BREAKPOINT_CLASH"] = "ERROR_BREAKPOINT_CLASH";
+  DebuggerUpdateResult2["ERROR_BACKEND"] = "ERROR_BACKEND";
+  DebuggerUpdateResult2["PENDING"] = "PENDING";
+})(DebuggerUpdateResult || (DebuggerUpdateResult = {}));
+var ResolveLocationResult;
+(function(ResolveLocationResult2) {
+  ResolveLocationResult2["OK"] = "OK";
+  ResolveLocationResult2["ERROR"] = "ERROR";
+})(ResolveLocationResult || (ResolveLocationResult = {}));
 var Breakpoint = class {
   breakpointManager;
   /** Bound locations */
@@ -943,6 +957,11 @@ var ModelBreakpoint = class {
     }
   }
 };
+var BreakpointOrigin;
+(function(BreakpointOrigin2) {
+  BreakpointOrigin2["USER_ACTION"] = "USER_ACTION";
+  BreakpointOrigin2["OTHER"] = "RESTORED";
+})(BreakpointOrigin || (BreakpointOrigin = {}));
 (function(Breakpoint2) {
   let State;
   (function(State2) {

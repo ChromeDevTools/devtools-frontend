@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "aiCodeCompletionDisclaimer.css.js",
+    "aiCodeCompletionTeaser.css.js",
+    "aiCodeGenerationTeaser.css.js",
+    "aiCodeGenerationUpgradeDialog.css.js"
+  ]
+}

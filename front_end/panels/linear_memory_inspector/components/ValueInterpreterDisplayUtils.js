@@ -14,6 +14,29 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export const VALUE_INTEPRETER_MAX_NUM_BYTES = 8;
+export var ValueType;
+(function (ValueType) {
+    ValueType["INT8"] = "Integer 8-bit";
+    ValueType["INT16"] = "Integer 16-bit";
+    ValueType["INT32"] = "Integer 32-bit";
+    ValueType["INT64"] = "Integer 64-bit";
+    ValueType["FLOAT32"] = "Float 32-bit";
+    ValueType["FLOAT64"] = "Float 64-bit";
+    ValueType["POINTER32"] = "Pointer 32-bit";
+    ValueType["POINTER64"] = "Pointer 64-bit";
+})(ValueType || (ValueType = {}));
+export var Endianness;
+(function (Endianness) {
+    Endianness["LITTLE"] = "Little Endian";
+    Endianness["BIG"] = "Big Endian";
+})(Endianness || (Endianness = {}));
+export var ValueTypeMode;
+(function (ValueTypeMode) {
+    ValueTypeMode["DECIMAL"] = "dec";
+    ValueTypeMode["HEXADECIMAL"] = "hex";
+    ValueTypeMode["OCTAL"] = "oct";
+    ValueTypeMode["SCIENTIFIC"] = "sci";
+})(ValueTypeMode || (ValueTypeMode = {}));
 export function getDefaultValueTypeMapping() {
     return new Map(DEFAULT_MODE_MAPPING);
 }

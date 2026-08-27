@@ -21,18 +21,18 @@ export default `/*
   min-width: 0.5em;
   background: transparent;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--sys-shape-corner-extra-small);
   outline: none;
   display: inline-block;
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
 
   &:hover {
-    border: 1px solid var(--sys-color-neutral-outline);
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   }
 
   &:focus {
-    border: 1px solid var(--sys-color-state-focus-ring);
+    border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
   }
 }
 

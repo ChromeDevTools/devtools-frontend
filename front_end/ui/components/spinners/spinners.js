@@ -9,7 +9,7 @@ var Spinner_exports = {};
 __export(Spinner_exports, {
   Spinner: () => Spinner
 });
-import { Directives, html, render } from "./../../lit/lit.js";
+import { Directives, html, render } from "../../lit/lit.js";
 
 // gen/front_end/ui/components/spinners/spinner.css.js
 var spinner_css_default = `/*

@@ -1,9 +1,9 @@
 // gen/front_end/ui/helpers/OpenInNewTab.js
-import * as Common from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as Root from "./../../core/root/root.js";
-import * as SDK from "./../../core/sdk/sdk.js";
+import * as Common from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as Root from "../../core/root/root.js";
+import * as SDK from "../../core/sdk/sdk.js";
 function openInNewTab(url, allowPrivileged) {
   url = new URL(url);
   if (Common.ParsedURL.schemeIs(url, "javascript:")) {

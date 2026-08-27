@@ -23,14 +23,14 @@ export default `/*
 }
 
 .report-header {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   padding: var(--sys-size-7) var(--sys-size-9);
 }
 
 .report-header devtools-toolbar {
-  margin-bottom: -8px;
+  margin-bottom: calc(-1 * var(--sys-size-5));
   margin-top: 5px;
-  margin-left: -8px;
+  margin-left: calc(-1 * var(--sys-size-5));
 }
 
 .report-title {
@@ -49,7 +49,7 @@ export default `/*
 .report-section {
   display: flex;
   padding: var(--sys-size-7) var(--sys-size-9) 11px var(--sys-size-9);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   flex-direction: column;
 }
 
@@ -73,7 +73,7 @@ export default `/*
   flex: 1 1 auto;
   text-overflow: ellipsis;
   overflow: hidden;
-  line-height: 16px;
+  line-height: var(--sys-size-8);
   color: var(--sys-color-on-surface);
   min-width: var(--sys-size-21);
   white-space: nowrap;
@@ -101,7 +101,7 @@ export default `/*
 .report-field-name {
   font: var(--sys-typescale-body5-medium);
   color: var(--sys-color-on-surface-subtle);
-  flex: 0 0 128px;
+  flex: 0 0 var(--sys-size-21);
   text-align: left;
   white-space: pre-wrap;
 }
@@ -121,7 +121,7 @@ export default `/*
 
 .report-field-value-subtitle {
   color: var(--sys-color-state-disabled);
-  line-height: 14px;
+  line-height: var(--sys-size-7);
 }
 
 .report-row-selectable {

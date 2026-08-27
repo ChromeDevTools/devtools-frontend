@@ -192,6 +192,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/application/WebMCPView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { widget } = UI.Widget;
+export var TabId;
+(function (TabId) {
+    TabId["DETAILS"] = "webmcp.tool-details";
+    TabId["INPUT"] = "webmcp.call-inputs";
+    TabId["OUTPUT"] = "webmcp.call-outputs";
+})(TabId || (TabId = {}));
 export function filterToolCalls(toolCalls, filterState) {
     let filtered = [...toolCalls];
     const statusTypes = filterState.statusTypes;

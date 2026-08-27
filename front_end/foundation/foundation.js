@@ -9,26 +9,26 @@ var Universe_exports = {};
 __export(Universe_exports, {
   Universe: () => Universe
 });
-import * as Common from "./../core/common/common.js";
-import * as Host from "./../core/host/host.js";
-import * as Root from "./../core/root/root.js";
-import * as SDK from "./../core/sdk/sdk.js";
-import * as AiAssistance from "./../models/ai_assistance/ai_assistance.js";
-import * as AutofillManager from "./../models/autofill_manager/autofill_manager.js";
-import * as Badges from "./../models/badges/badges.js";
-import * as Bindings from "./../models/bindings/bindings.js";
-import * as Breakpoints from "./../models/breakpoints/breakpoints.js";
-import * as CommentManager from "./../models/comment_manager/comment_manager.js";
-import * as CrUXManager from "./../models/crux-manager/crux-manager.js";
-import * as Emulation from "./../models/emulation/emulation.js";
-import * as IssuesManager from "./../models/issues_manager/issues_manager.js";
-import * as JavaScriptMetadata from "./../models/javascript_metadata/javascript_metadata.js";
-import * as LiveMetrics from "./../models/live-metrics/live-metrics.js";
-import * as Logs from "./../models/logs/logs.js";
-import * as Persistence from "./../models/persistence/persistence.js";
-import * as ProjectSettings from "./../models/project_settings/project_settings.js";
-import * as Workspace from "./../models/workspace/workspace.js";
-import * as WorkspaceDiff from "./../models/workspace_diff/workspace_diff.js";
+import * as Common from "../core/common/common.js";
+import * as Host from "../core/host/host.js";
+import * as Root from "../core/root/root.js";
+import * as SDK from "../core/sdk/sdk.js";
+import * as AiAssistance from "../models/ai_assistance/ai_assistance.js";
+import * as AutofillManager from "../models/autofill_manager/autofill_manager.js";
+import * as Badges from "../models/badges/badges.js";
+import * as Bindings from "../models/bindings/bindings.js";
+import * as Breakpoints from "../models/breakpoints/breakpoints.js";
+import * as CommentManager from "../models/comment_manager/comment_manager.js";
+import * as CrUXManager from "../models/crux-manager/crux-manager.js";
+import * as Emulation from "../models/emulation/emulation.js";
+import * as IssuesManager from "../models/issues_manager/issues_manager.js";
+import * as JavaScriptMetadata from "../models/javascript_metadata/javascript_metadata.js";
+import * as LiveMetrics from "../models/live-metrics/live-metrics.js";
+import * as Logs from "../models/logs/logs.js";
+import * as Persistence from "../models/persistence/persistence.js";
+import * as ProjectSettings from "../models/project_settings/project_settings.js";
+import * as Workspace from "../models/workspace/workspace.js";
+import * as WorkspaceDiff from "../models/workspace_diff/workspace_diff.js";
 var Universe = class {
   // TODO(crbug.com/493763857): Once a singleton is no longer a singleton (i.e. it has no 'instance')
   //                            static method, we can move it out of the `DevToolsContext` and store it

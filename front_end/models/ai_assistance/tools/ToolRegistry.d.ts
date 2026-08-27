@@ -12,6 +12,7 @@ import { GetStylesTool } from './GetStyles.js';
 import { GetTraceEventByKeyTool } from './GetTraceEventByKey.js';
 import { GetTraceMainThreadSummaryTool } from './GetTraceMainThreadSummary.js';
 import { GetTraceNetworkSummaryTool } from './GetTraceNetworkSummary.js';
+import { ListCookiesTool } from './ListCookies.js';
 import { ListNetworkRequestsTool } from './ListNetworkRequests.js';
 import { ListPageOriginsTool } from './ListPageOrigins.js';
 import { ListSourcesTool } from './ListSources.js';
@@ -41,6 +42,7 @@ export declare const TOOLS: {
     listPageOrigins: ListPageOriginsTool;
     listStorageKeys: ListStorageKeysTool;
     getStorageValues: GetStorageValuesTool;
+    listCookies: ListCookiesTool;
     getTraceEventByKey: GetTraceEventByKeyTool;
     selectTraceEventByKey: SelectTraceEventByKeyTool;
     listSources: ListSourcesTool;

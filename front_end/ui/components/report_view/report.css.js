@@ -22,7 +22,7 @@ export default `/*
 }
 
 .report-header-wrapper {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .report-title {
@@ -38,7 +38,7 @@ export default `/*
 
 .report-url {
   background: none;
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
   border: none;
   color: var(--text-link);
   cursor: pointer;
@@ -46,7 +46,7 @@ export default `/*
   font: var(--sys-typescale-body4-regular);
   height: unset;
   margin: 0;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
   outline: none;
   padding: 0 !important; /* stylelint-disable-line declaration-no-important */
   text-decoration: underline;

@@ -9,8 +9,8 @@ var Adorner_exports = {};
 __export(Adorner_exports, {
   Adorner: () => Adorner
 });
-import { html, render } from "./../../lit/lit.js";
-import * as UI from "./../../legacy/legacy.js";
+import { html, render } from "../../lit/lit.js";
+import * as UI from "../../legacy/legacy.js";
 
 // gen/front_end/ui/components/adorners/adorner.css.js
 var adorner_css_default = `/*

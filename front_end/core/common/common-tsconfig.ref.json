@@ -45,7 +45,7 @@
   ],
   "references": [
     {
-      "path": "./ColorUtils-tsconfig.ref.json"
+      "path": "ColorUtils-tsconfig.ref.json"
     },
     {
       "path": "../i18n/bundle-tsconfig.ref.json"

@@ -10,7 +10,7 @@ __export(CPUProfileDataModel_exports, {
   CPUProfileDataModel: () => CPUProfileDataModel,
   CPUProfileNode: () => CPUProfileNode
 });
-import * as Platform from "./../../core/platform/platform.js";
+import * as Platform from "../../core/platform/platform.js";
 
 // gen/front_end/models/cpu_profile/ProfileTreeModel.js
 var ProfileTreeModel_exports = {};

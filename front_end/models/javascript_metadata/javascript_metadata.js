@@ -9657,7 +9657,7 @@ var JavaScriptMetadata_exports = {};
 __export(JavaScriptMetadata_exports, {
   JavaScriptMetadataImpl: () => JavaScriptMetadataImpl
 });
-import * as Root from "./../../core/root/root.js";
+import * as Root from "../../core/root/root.js";
 var JavaScriptMetadataImpl = class _JavaScriptMetadataImpl {
   uniqueFunctions;
   receiverMethods;

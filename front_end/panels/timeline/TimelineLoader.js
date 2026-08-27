@@ -229,4 +229,10 @@ export class TimelineLoader {
         this.#collectedEvents = this.#collectedEvents.concat(events);
     }
 }
+export var LoadingState;
+(function (LoadingState) {
+    LoadingState["SUCCESS"] = "SUCCESS";
+    LoadingState["CANCELLED"] = "CANCELLED";
+    LoadingState["ERROR"] = "ERROR";
+})(LoadingState || (LoadingState = {}));
 //# sourceMappingURL=TimelineLoader.js.map

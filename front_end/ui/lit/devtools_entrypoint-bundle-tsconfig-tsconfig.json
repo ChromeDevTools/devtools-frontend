@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": ".",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -48,7 +49,7 @@
       "path": "./lit-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/third_party/lit/lit-tsconfig.ref.json"
+      "path": "../../third_party/lit/lit-tsconfig.ref.json"
     },
     {
       "path": "../../third_party/lit/bundle-tsconfig.ref.json"

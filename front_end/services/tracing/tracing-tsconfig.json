@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/services/tracing",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -53,7 +54,7 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/generated/protocol-tsconfig.ref.json"
+      "path": "../../generated/protocol-tsconfig.ref.json"
     },
     {
       "path": "../../models/trace/bundle-tsconfig.ref.json"

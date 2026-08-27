@@ -15,8 +15,8 @@ export default `/*
 }
 
 .media-inspector-marker-container {
-  height: 14px;
-  margin: 2px 0;
+  height: var(--sys-size-7);
+  margin: var(--sys-size-2) 0;
   position: relative;
 }
 
@@ -32,7 +32,7 @@ export default `/*
 .media-inspector-marker {
   flex: none;
   pointer-events: auto;
-  margin: 1px 0;
+  margin: var(--sys-size-1) 0;
   white-space: nowrap;
   z-index: auto;
   position: relative;
@@ -43,15 +43,15 @@ export default `/*
 }
 
 .media-inspector-marker:hover {
-  margin: -1px 0;
+  margin: calc(-1 * var(--sys-size-1)) 0;
   opacity: 100%;
 }
 
 .media-inspector-marker-min-width {
   flex: auto;
   background-color: var(--sys-color-yellow-container);
-  border-right: 2px solid var(--sys-color-yellow-bright);
-  border-left: 2px solid var(--sys-color-yellow-bright);
+  border-right: var(--sys-size-2) solid var(--sys-color-yellow-bright);
+  border-left: var(--sys-size-2) solid var(--sys-color-yellow-bright);
 
   &:hover {
     background-color: color-mix(in srgb, var(--sys-color-yellow-container), var(--sys-color-yellow-bright) 30%);
@@ -59,17 +59,17 @@ export default `/*
 }
 
 .media-inspector-marker-min-width-right {
-  border-left: 2px solid var(--sys-color-yellow-bright);
+  border-left: var(--sys-size-2) solid var(--sys-color-yellow-bright);
 }
 
 .media-inspector-marker-min-width-left {
-  border-right: 2px solid var(--sys-color-yellow-bright);
+  border-right: var(--sys-size-2) solid var(--sys-color-yellow-bright);
 }
 
 .media-inspector-marker-min-max-width {
   background-color: var(--sys-color-tertiary-container);
-  border-left: 2px solid var(--sys-color-tertiary);
-  border-right: 2px solid var(--sys-color-tertiary);
+  border-left: var(--sys-size-2) solid var(--sys-color-tertiary);
+  border-right: var(--sys-size-2) solid var(--sys-color-tertiary);
 }
 
 .media-inspector-marker-min-max-width:hover {
@@ -78,8 +78,8 @@ export default `/*
 
 .media-inspector-marker-max-width {
   background-color: var(--sys-color-inverse-primary);
-  border-right: 2px solid var(--sys-color-primary-bright);
-  border-left: 2px solid var(--sys-color-primary-bright);
+  border-right: var(--sys-size-2) solid var(--sys-color-primary-bright);
+  border-left: var(--sys-size-2) solid var(--sys-color-primary-bright);
 }
 
 /* Clear background colors when query is not active and not hovering */
@@ -108,28 +108,28 @@ export default `/*
 }
 
 .media-inspector-marker-label-container-left {
-  left: -2px;
+  left: calc(-1 * var(--sys-size-2));
 }
 
 .media-inspector-marker-label-container-right {
-  right: -2px;
+  right: calc(-1 * var(--sys-size-2));
 }
 
 .media-inspector-marker-label {
   color: var(--sys-color-on-surface);
   position: absolute;
-  top: 1px;
+  top: var(--sys-size-1);
   bottom: 0;
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   pointer-events: none;
 }
 
 .media-inspector-label-right {
-  right: 4px;
+  right: var(--sys-size-3);
 }
 
 .media-inspector-label-left {
-  left: 4px;
+  left: var(--sys-size-3);
 }
 
 /*# sourceURL=${import.meta.resolve('./mediaQueryInspector.css')} */`;

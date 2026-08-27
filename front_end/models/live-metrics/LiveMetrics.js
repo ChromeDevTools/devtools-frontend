@@ -580,4 +580,8 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
         this.#isCollectingMetrics = false;
     }
 }
+export var Events;
+(function (Events) {
+    Events["STATUS"] = "status";
+})(Events || (Events = {}));
 //# sourceMappingURL=LiveMetrics.js.map

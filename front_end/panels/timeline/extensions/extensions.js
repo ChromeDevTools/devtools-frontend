@@ -9,7 +9,7 @@ var ExtensionUI_exports = {};
 __export(ExtensionUI_exports, {
   extensionEntryColor: () => extensionEntryColor
 });
-import * as ThemeSupport from "./../../../ui/legacy/theme_support/theme_support.js";
+import * as ThemeSupport from "../../../ui/legacy/theme_support/theme_support.js";
 function extensionEntryColor(event) {
   const color = event.devtoolsObj.color;
   let themeColor = "--ref-palette-blue70";

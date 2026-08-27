@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../../../front_end/ui/legacy/components/cookie_table",
     "skipLibCheck": true,
     "sourceMap": true,

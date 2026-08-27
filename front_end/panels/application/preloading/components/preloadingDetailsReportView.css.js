@@ -21,7 +21,7 @@ export default `/*
       background: none;
       font-family: inherit;
       font-size: inherit;
-      height: 16px;
+      height: var(--sys-size-8);
     }
 
     button.link devtools-icon {

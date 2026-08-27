@@ -722,6 +722,14 @@ export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.
         return true;
     }
 }
+(function (TimelineTreeView) {
+    let Events;
+    (function (Events) {
+        Events["TREE_ROW_HOVERED"] = "TreeRowHovered";
+        Events["BOTTOM_UP_BUTTON_CLICKED"] = "BottomUpButtonClicked";
+        Events["TREE_ROW_CLICKED"] = "TreeRowClicked";
+    })(Events = TimelineTreeView.Events || (TimelineTreeView.Events = {}));
+})(TimelineTreeView || (TimelineTreeView = {}));
 /**
  * GridNodes are 1:1 with `TraceTree.Node`s but represent them within the DataGrid. It handles the representation as a row.
  * `TreeGridNode` extends this to maintain relationship to the tree, and handles populate().
@@ -1275,4 +1283,11 @@ export class TimelineStackView extends Common.ObjectWrapper.eventMixin(UI.Widget
         this.dispatchEventToListeners("SelectionChanged" /* TimelineStackView.Events.SELECTION_CHANGED */);
     }
 }
+(function (TimelineStackView) {
+    let Events;
+    (function (Events) {
+        Events["SELECTION_CHANGED"] = "SelectionChanged";
+        Events["TREE_ROW_HOVERED"] = "TreeRowHovered";
+    })(Events = TimelineStackView.Events || (TimelineStackView.Events = {}));
+})(TimelineStackView || (TimelineStackView = {}));
 //# sourceMappingURL=TimelineTreeView.js.map

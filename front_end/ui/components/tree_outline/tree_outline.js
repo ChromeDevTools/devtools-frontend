@@ -7,6 +7,7 @@ var __export = (target, all) => {
 // gen/front_end/ui/components/tree_outline/TreeOutline.js
 var TreeOutline_exports = {};
 __export(TreeOutline_exports, {
+  FilterOption: () => FilterOption,
   ItemContextMenuEvent: () => ItemContextMenuEvent,
   ItemMouseOutEvent: () => ItemMouseOutEvent,
   ItemMouseOverEvent: () => ItemMouseOverEvent,
@@ -14,13 +15,13 @@ __export(TreeOutline_exports, {
   TreeOutline: () => TreeOutline,
   defaultRenderer: () => defaultRenderer
 });
-import * as Platform2 from "./../../../core/platform/platform.js";
-import * as UI from "./../../legacy/legacy.js";
-import * as Lit2 from "./../../lit/lit.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
-import * as Buttons from "./../buttons/buttons.js";
-import * as CodeHighlighter from "./../code_highlighter/code_highlighter.js";
-import * as RenderCoordinator from "./../render_coordinator/render_coordinator.js";
+import * as Platform2 from "../../../core/platform/platform.js";
+import * as UI from "../../legacy/legacy.js";
+import * as Lit2 from "../../lit/lit.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
+import * as Buttons from "../buttons/buttons.js";
+import * as CodeHighlighter from "../code_highlighter/code_highlighter.js";
+import * as RenderCoordinator from "../render_coordinator/render_coordinator.js";
 
 // gen/front_end/ui/components/tree_outline/treeOutline.css.js
 var treeOutline_css_default = `/*
@@ -169,8 +170,8 @@ __export(TreeOutlineUtils_exports, {
   isExpandableNode: () => isExpandableNode,
   trackDOMNodeToTreeNode: () => trackDOMNodeToTreeNode
 });
-import * as Platform from "./../../../core/platform/platform.js";
-import * as Lit from "./../../lit/lit.js";
+import * as Platform from "../../../core/platform/platform.js";
+import * as Lit from "../../lit/lit.js";
 function isExpandableNode(node) {
   return "children" in node;
 }
@@ -392,6 +393,11 @@ var ItemMouseOutEvent = class _ItemMouseOutEvent extends Event {
     this.data = { node };
   }
 };
+var FilterOption;
+(function(FilterOption2) {
+  FilterOption2["SHOW"] = "SHOW";
+  FilterOption2["FLATTEN"] = "FLATTEN";
+})(FilterOption || (FilterOption = {}));
 var TreeOutline = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #treeData = [];

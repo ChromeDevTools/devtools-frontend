@@ -141,6 +141,11 @@ export const cpuPressureSettingDescriptor = {
     type: "enum" /* Common.Settings.SettingType.ENUM */,
     defaultValue: 'none',
 };
+export const cpuPerformanceSettingDescriptor = {
+    name: 'emulation.cpu-performance',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: 'no-override',
+};
 export const touchSettingDescriptor = {
     name: 'emulation.touch',
     type: "enum" /* Common.Settings.SettingType.ENUM */,

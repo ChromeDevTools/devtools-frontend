@@ -446,4 +446,11 @@ export function scoreClassificationForLayoutShift(score) {
     }
     return state;
 }
+/** Based on https://web.dev/cls/ **/
+export var LayoutShiftsThreshold;
+(function (LayoutShiftsThreshold) {
+    LayoutShiftsThreshold[LayoutShiftsThreshold["GOOD"] = 0] = "GOOD";
+    LayoutShiftsThreshold[LayoutShiftsThreshold["NEEDS_IMPROVEMENT"] = 0.1] = "NEEDS_IMPROVEMENT";
+    LayoutShiftsThreshold[LayoutShiftsThreshold["BAD"] = 0.25] = "BAD";
+})(LayoutShiftsThreshold || (LayoutShiftsThreshold = {}));
 //# sourceMappingURL=LayoutShiftsHandler.js.map

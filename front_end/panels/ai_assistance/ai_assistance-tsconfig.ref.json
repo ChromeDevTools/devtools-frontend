@@ -33,7 +33,7 @@
   ],
   "references": [
     {
-      "path": "../../../../tsc/front_end/panels/ai_assistance/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "../../core/common/bundle-tsconfig.ref.json"

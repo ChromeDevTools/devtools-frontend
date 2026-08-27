@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../../../front_end/ui/legacy/components/quick_open",
     "skipLibCheck": true,
     "sourceMap": true,

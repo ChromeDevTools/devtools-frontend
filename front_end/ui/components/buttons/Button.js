@@ -7,6 +7,30 @@ import * as Lit from '../../lit/lit.js';
 import * as VisualLogging from '../../visual_logging/visual_logging.js';
 import buttonStyles from './button.css.js';
 const { html, Directives: { ifDefined, ref, classMap } } = Lit;
+export var Variant;
+(function (Variant) {
+    Variant["PRIMARY"] = "primary";
+    Variant["TONAL"] = "tonal";
+    Variant["OUTLINED"] = "outlined";
+    Variant["TEXT"] = "text";
+    Variant["TOOLBAR"] = "toolbar";
+    // Just like toolbar but has a style similar to a primary button.
+    Variant["PRIMARY_TOOLBAR"] = "primary_toolbar";
+    Variant["ICON"] = "icon";
+    Variant["ICON_TOGGLE"] = "icon_toggle";
+    Variant["ADORNER_ICON"] = "adorner_icon";
+})(Variant || (Variant = {}));
+export var Size;
+(function (Size) {
+    Size["MICRO"] = "MICRO";
+    Size["SMALL"] = "SMALL";
+    Size["REGULAR"] = "REGULAR";
+})(Size || (Size = {}));
+export var ToggleType;
+(function (ToggleType) {
+    ToggleType["PRIMARY"] = "primary-toggle";
+    ToggleType["RED"] = "red-toggle";
+})(ToggleType || (ToggleType = {}));
 export class Button extends HTMLElement {
     static formAssociated = true;
     #shadow = this.attachShadow({ mode: 'open', delegatesFocus: true });

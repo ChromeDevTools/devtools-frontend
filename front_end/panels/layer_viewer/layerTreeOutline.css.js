@@ -11,9 +11,9 @@ export default `/*
 
 @scope to (devtools-widget > *) {
   .layer-summary {
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
     justify-content: space-between;
-    padding: 4px 10px;
+    padding: var(--sys-size-3) 10px;
     flex-shrink: 0;
   }
 

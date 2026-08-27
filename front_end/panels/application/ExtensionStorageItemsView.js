@@ -47,6 +47,14 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/application/ExtensionStorageItemsView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export var ExtensionStorageItemsDispatcher;
+(function (ExtensionStorageItemsDispatcher) {
+    let Events;
+    (function (Events) {
+        Events["ITEM_EDITED"] = "ItemEdited";
+        Events["ITEMS_REFRESHED"] = "ItemsRefreshed";
+    })(Events = ExtensionStorageItemsDispatcher.Events || (ExtensionStorageItemsDispatcher.Events = {}));
+})(ExtensionStorageItemsDispatcher || (ExtensionStorageItemsDispatcher = {}));
 export class ExtensionStorageItemsView extends KeyValueStorageItemsView {
     #extensionStorage;
     extensionStorageItemsDispatcher;

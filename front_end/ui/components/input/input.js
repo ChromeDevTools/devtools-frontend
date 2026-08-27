@@ -6,8 +6,8 @@ var checkbox_css_default = `/*
  */
 
 input[type="checkbox"] {
-  width: 12px;
-  height: 12px;
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
   accent-color: var(--sys-color-primary-bright);
   color: var(--sys-color-on-primary);
   position: relative;
@@ -19,8 +19,8 @@ input[type="checkbox"] {
   &:hover::after,
   &:active::before {
     content: "";
-    height: 24px;
-    width: 24px;
+    height: var(--sys-size-11);
+    width: var(--sys-size-11);
     border-radius: var(--sys-shape-corner-full);
     position: absolute;
   }
@@ -39,14 +39,14 @@ input[type="checkbox"] {
     width: 15px;
     border-radius: 5px;
     position: absolute;
-    border: 2px solid var(--sys-color-state-focus-ring);
+    border: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
   }
 
   &.small:hover::after,
   &.small:active::before {
-    height: 12px;
-    width: 12px;
-    border-radius: 2px;
+    height: var(--sys-size-6);
+    width: var(--sys-size-6);
+    border-radius: var(--sys-size-2);
   }
 }
 
@@ -60,12 +60,12 @@ var textInput_css_default = `/*
  */
 
 .devtools-text-input {
-  height: 32px;
+  height: var(--sys-size-13);
   width: 100%;
-  padding: 8px 11px;
+  padding: var(--sys-size-5) 11px;
   line-height: 1.16;
   letter-spacing: 0.015em;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   color: var(--sys-color-on-surface);
   border-radius: 3px;
   background-color: var(--sys-color-cdt-base-container);

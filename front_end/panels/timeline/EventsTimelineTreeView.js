@@ -159,4 +159,8 @@ export class Filters extends Common.ObjectWrapper.ObjectWrapper {
     }
     static durationFilterPresetsMs = [0, 1, 15];
 }
+var Events;
+(function (Events) {
+    Events["FILTER_CHANGED"] = "FilterChanged";
+})(Events || (Events = {}));
 //# sourceMappingURL=EventsTimelineTreeView.js.map

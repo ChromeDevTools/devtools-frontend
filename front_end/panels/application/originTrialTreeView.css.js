@@ -11,8 +11,8 @@ export default `/*
 
 :host {
   .status-badge {
-    border-radius: 4px;
-    padding: 4px;
+    border-radius: var(--sys-shape-corner-extra-small);
+    padding: var(--sys-size-3);
     background: var(--sys-color-neutral-container);
 
     & > devtools-icon {
@@ -48,4 +48,5 @@ export default `/*
     display: inline-flex;
   }
 }
+
 /*# sourceURL=${import.meta.resolve('./originTrialTreeView.css')} */`;

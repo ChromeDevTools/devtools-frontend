@@ -8,6 +8,10 @@ import * as TextUtils from '../text_utils/text_utils.js';
 import { cssMetadata, GridAreaRowRegex } from './CSSMetadata.js';
 import { matchDeclaration, stripComments, } from './CSSPropertyParser.js';
 import { CSSWideKeywordMatcher } from './CSSPropertyParserMatchers.js';
+export var Events;
+(function (Events) {
+    Events["LOCAL_VALUE_UPDATED"] = "localValueUpdated";
+})(Events || (Events = {}));
 export class CSSProperty extends Common.ObjectWrapper.ObjectWrapper {
     ownerStyle;
     index;

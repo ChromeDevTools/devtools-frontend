@@ -220,6 +220,12 @@ export class ServiceWorkerManager extends SDKModel {
         void this.#agent.invoke_setForceUpdateOnPageLoad({ forceUpdateOnPageLoad });
     }
 }
+export var Events;
+(function (Events) {
+    Events["REGISTRATION_UPDATED"] = "RegistrationUpdated";
+    Events["REGISTRATION_ERROR_ADDED"] = "RegistrationErrorAdded";
+    Events["REGISTRATION_DELETED"] = "RegistrationDeleted";
+})(Events || (Events = {}));
 class ServiceWorkerDispatcher {
     #manager;
     constructor(manager) {
@@ -296,7 +302,10 @@ export class ServiceWorkerVersion {
         }
         this.targetId = payload.targetId || null;
         this.routerRules = null;
-        if (payload.routerRules) {
+        if (payload.typedRouterRules) {
+            this.routerRules = this.parseTypedRules(payload.typedRouterRules);
+        }
+        else if (payload.routerRules) {
             this.routerRules = this.parseJSONRules(payload.routerRules);
         }
     }
@@ -378,6 +387,59 @@ export class ServiceWorkerVersion {
             return null;
         }
     }
+    /**
+     * `urlPattern` can be either plain text (e.g. '/foo/*') or a JSON-serialized URLPattern/URLPatternInit object.
+     * Parses it to an object if valid JSON, otherwise falls back to the original string.
+     */
+    parseURLPatternCondition(urlPattern) {
+        try {
+            const parsed = JSON.parse(urlPattern);
+            if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
+                // URLPattern or URLPatternInit
+                return parsed;
+            }
+            if (typeof parsed !== 'string') {
+                return null;
+            }
+        }
+        catch {
+            // fallthrough
+        }
+        return urlPattern;
+    }
+    parseTypedRules(rules) {
+        const routerRules = [];
+        for (const rule of rules) {
+            const condition = { ...rule.condition };
+            // "urlPattern" condition can have structural URLPatternInit encoded into a JSON string.
+            // If `condition` is directly stringified, such JSON strings are double-escaped (`"abc"` -> `\"abc\""`).
+            // Expand "urlPattern" condition to native object and stringify whole conditions in such cases to avoid this.
+            if (rule.condition.urlPattern) {
+                condition.urlPattern = this.parseURLPatternCondition(rule.condition.urlPattern);
+                if (condition.urlPattern === null) {
+                    console.error('Parse error: Invalid "urlPattern" condition in `typedRouterRules` in ServiceWorkerVersion');
+                    return null;
+                }
+            }
+            let source;
+            if (rule.source.type === "sourceDict" /* Protocol.ServiceWorker.ServiceWorkerRouterSourceType.SourceDict */) {
+                if (!rule.source.sourceDict) {
+                    console.error('Parse error: `sourceDict` is missing in `typedRouterRules` source');
+                    return null;
+                }
+                source = rule.source.sourceDict;
+            }
+            else {
+                if (rule.source.sourceDict !== undefined) {
+                    console.error('Parse error: Unexpected `sourceDict` in `typedRouterRules` source');
+                    return null;
+                }
+                source = rule.source.type;
+            }
+            routerRules.push(new ServiceWorkerRouterRule(JSON.stringify(condition), JSON.stringify(source), rule.id));
+        }
+        return routerRules;
+    }
 }
 (function (ServiceWorkerVersion) {
     ServiceWorkerVersion.RunningStatus = {
@@ -394,6 +456,13 @@ export class ServiceWorkerVersion {
         ["new" /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.New */]: i18nLazyString(UIStrings.new),
         ["redundant" /* Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant */]: i18nLazyString(UIStrings.redundant),
     };
+    let Modes;
+    (function (Modes) {
+        Modes["INSTALLING"] = "installing";
+        Modes["WAITING"] = "waiting";
+        Modes["ACTIVE"] = "active";
+        Modes["REDUNDANT"] = "redundant";
+    })(Modes = ServiceWorkerVersion.Modes || (ServiceWorkerVersion.Modes = {}));
 })(ServiceWorkerVersion || (ServiceWorkerVersion = {}));
 export class ServiceWorkerRegistration {
     #fingerprint;

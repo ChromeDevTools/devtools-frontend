@@ -13,12 +13,12 @@ __export(SearchResultsPane_exports, {
   matchesExpandedByDefault: () => matchesExpandedByDefault,
   matchesShownAtOnce: () => matchesShownAtOnce
 });
-import * as Common from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import { html, render } from "./../../ui/lit/lit.js";
+import * as Common from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as UI from "../../ui/legacy/legacy.js";
+import { html, render } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/search/searchResultsPane.css.js
 var searchResultsPane_css_default = `/*
@@ -42,14 +42,14 @@ var searchResultsPane_css_default = `/*
 }
 
 .tree-outline li {
-  height: 16px;
+  height: var(--sys-size-8);
 }
 
 li.search-result {
   cursor: pointer;
-  font-size: 12px;
-  margin-top: 8px;
-  padding: 2px 0 2px 4px;
+  font-size: var(--sys-typescale-body4-size);
+  margin-top: var(--sys-size-5);
+  padding: var(--sys-size-2) 0 var(--sys-size-2) var(--sys-size-3);
   overflow-wrap: normal;
   white-space: pre;
 }
@@ -73,7 +73,7 @@ li.search-result .search-result-file-name {
 
 li.search-result .search-result-matches-count {
   color: var(--sys-color-token-subtle);
-  margin: 0 8px;
+  margin: 0 var(--sys-size-5);
 }
 
 li.search-result.expanded .search-result-matches-count {
@@ -83,7 +83,7 @@ li.search-result.expanded .search-result-matches-count {
 li.show-more-matches {
   color: var(--sys-color-on-surface);
   cursor: pointer;
-  margin: 8px 0 0 -4px;
+  margin: var(--sys-size-5) 0 0 calc(-1 * var(--sys-size-3));
 }
 
 li.show-more-matches:hover {
@@ -91,7 +91,7 @@ li.show-more-matches:hover {
 }
 
 li.search-match {
-  margin: 2px 0;
+  margin: var(--sys-size-2) 0;
   overflow-wrap: normal;
   white-space: pre;
 }
@@ -113,7 +113,7 @@ li.search-match .search-match-line-number {
   text-align: right;
   vertical-align: top;
   word-break: normal;
-  padding: 2px 4px 2px 6px;
+  padding: var(--sys-size-2) var(--sys-size-3) var(--sys-size-2) var(--sys-size-4);
   margin-right: 5px;
 }
 
@@ -128,7 +128,7 @@ li.search-match .search-match-content {
 }
 
 ol.children.expanded {
-  padding-bottom: 4px;
+  padding-bottom: var(--sys-size-3);
 }
 
 li.search-match .link-style.search-match-link {
@@ -144,7 +144,7 @@ li.search-match .link-style.search-match-link {
 
 .search-result-dash {
   color: var(--sys-color-surface-variant);
-  margin: 0 4px;
+  margin: 0 var(--sys-size-3);
 }
 
 /*# sourceURL=${import.meta.resolve("./searchResultsPane.css")} */`;
@@ -417,16 +417,16 @@ __export(SearchView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
   SearchView: () => SearchView
 });
-import "./../../ui/legacy/legacy.js";
-import "./../../ui/kit/kit.js";
-import * as Common2 from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Workspace from "./../../models/workspace/workspace.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html2, render as render2 } from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/legacy.js";
+import "../../ui/kit/kit.js";
+import * as Common2 from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as Workspace from "../../models/workspace/workspace.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
+import * as UI2 from "../../ui/legacy/legacy.js";
+import { Directives, html as html2, render as render2 } from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/search/searchView.css.js
 var searchView_css_default = `/*
@@ -442,7 +442,7 @@ var searchView_css_default = `/*
   min-width: 150px;
 
   .search-container {
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     display: flex;
     align-items: center;
     flex-grow: 1;
@@ -450,19 +450,19 @@ var searchView_css_default = `/*
 
   .toolbar-item-search {
     flex-grow: 1;
-    box-shadow: inset 0 0 0 2px transparent;
+    box-shadow: inset 0 0 0 var(--sys-size-2) transparent;
     box-sizing: border-box;
     height: var(--sys-size-9);
     margin-left: var(--sys-size-3);
     padding: 0 var(--sys-size-2) 0 var(--sys-size-5);
-    border-radius: 100px;
+    border-radius: var(--sys-shape-corner-full);
     position: relative;
     display: flex;
     align-items: center;
     background-color: var(--sys-color-cdt-base);
 
     &:has(input:focus) {
-      box-shadow: inset 0 0 0 2px var(--sys-color-state-focus-ring);
+      box-shadow: inset 0 0 0 var(--sys-size-2) var(--sys-color-state-focus-ring);
     }
 
     &:has(input:hover)::before {
@@ -471,7 +471,7 @@ var searchView_css_default = `/*
       height: 100%;
       width: 100%;
       position: absolute;
-      border-radius: 100px;
+      border-radius: var(--sys-shape-corner-full);
       left: 0;
       background-color: var(--sys-color-state-hover-on-subtle);
     }
@@ -512,24 +512,24 @@ var searchView_css_default = `/*
 
 .search-toolbar {
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .search-toolbar-summary {
   background-color: var(--sys-color-cdt-base-container);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   padding-left: 5px;
   flex: 0 0 19px;
   display: flex;
   padding-right: 5px;
 }
 
-.search-results:has(.empty-state) + .search-toolbar-summary {
+.search-results:has(.empty-widget-container) + .search-toolbar-summary {
   display: none;
 }
 
 .search-toolbar-summary .search-message {
-  padding-top: 2px;
+  padding-top: var(--sys-size-2);
   padding-left: 1ex;
   text-overflow: ellipsis;
   white-space: nowrap;

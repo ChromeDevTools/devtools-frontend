@@ -9,8 +9,8 @@ var ColorFormatSpec_exports = {};
 __export(ColorFormatSpec_exports, {
   colorFormatSpec: () => colorFormatSpec
 });
-import * as Common from "./../../../../core/common/common.js";
-import * as Platform from "./../../../../core/platform/platform.js";
+import * as Common from "../../../../core/common/common.js";
+import * as Platform from "../../../../core/platform/platform.js";
 var roundAndStringify = (arr) => arr.map((el) => Platform.StringUtilities.stringifyWithPrecision(el, 2));
 var functionParamsText = (values) => {
   return `${values[0]} ${values[1]} ${values[2]} / ${values[3]}`;
@@ -281,17 +281,18 @@ var colorFormatSpec = {
 var ContrastDetails_exports = {};
 __export(ContrastDetails_exports, {
   ContrastDetails: () => ContrastDetails,
+  Events: () => Events,
   Swatch: () => Swatch
 });
-import "./../../legacy.js";
-import * as Common2 from "./../../../../core/common/common.js";
-import * as Host from "./../../../../core/host/host.js";
-import * as i18n from "./../../../../core/i18n/i18n.js";
-import * as Platform2 from "./../../../../core/platform/platform.js";
-import * as SDK from "./../../../../core/sdk/sdk.js";
-import { createIcon, Icon } from "./../../../kit/kit.js";
-import * as UIHelpers from "./../../../helpers/helpers.js";
-import * as UI from "./../../legacy.js";
+import "../../legacy.js";
+import * as Common2 from "../../../../core/common/common.js";
+import * as Host from "../../../../core/host/host.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
+import * as Platform2 from "../../../../core/platform/platform.js";
+import * as SDK from "../../../../core/sdk/sdk.js";
+import { createIcon, Icon } from "../../../kit/kit.js";
+import * as UIHelpers from "../../../helpers/helpers.js";
+import * as UI from "../../legacy.js";
 var UIStrings = {
   /**
    * @description Text displayed when no contrast information is available in the color picker.
@@ -657,6 +658,10 @@ var ContrastDetails = class _ContrastDetails extends Common2.ObjectWrapper.Objec
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront();
   }
 };
+var Events;
+(function(Events4) {
+  Events4["BACKGROUND_COLOR_PICKER_WILL_BE_TOGGLED"] = "BackgroundColorPickerWillBeToggled";
+})(Events || (Events = {}));
 var Swatch = class {
   swatchElement;
   swatchInnerElement;
@@ -701,9 +706,10 @@ function createIconNo() {
 // gen/front_end/ui/legacy/components/color_picker/ContrastInfo.js
 var ContrastInfo_exports = {};
 __export(ContrastInfo_exports, {
-  ContrastInfo: () => ContrastInfo
+  ContrastInfo: () => ContrastInfo,
+  Events: () => Events2
 });
-import * as Common3 from "./../../../../core/common/common.js";
+import * as Common3 from "../../../../core/common/common.js";
 var ContrastInfo = class extends Common3.ObjectWrapper.ObjectWrapper {
   #isNull;
   #contrastRatio;
@@ -808,6 +814,10 @@ var ContrastInfo = class extends Common3.ObjectWrapper.ObjectWrapper {
     return this.contrastRatioThresholds[level];
   }
 };
+var Events2;
+(function(Events4) {
+  Events4["CONTRAST_INFO_UPDATED"] = "ContrastInfoUpdated";
+})(Events2 || (Events2 = {}));
 
 // gen/front_end/ui/legacy/components/color_picker/ContrastOverlay.js
 var ContrastOverlay_exports = {};
@@ -815,9 +825,9 @@ __export(ContrastOverlay_exports, {
   ContrastOverlay: () => ContrastOverlay,
   ContrastRatioLineBuilder: () => ContrastRatioLineBuilder
 });
-import * as Common4 from "./../../../../core/common/common.js";
-import * as SDK2 from "./../../../../core/sdk/sdk.js";
-import * as UI2 from "./../../legacy.js";
+import * as Common4 from "../../../../core/common/common.js";
+import * as SDK2 from "../../../../core/sdk/sdk.js";
+import * as UI2 from "../../legacy.js";
 var ContrastOverlay = class {
   contrastInfo;
   visible;
@@ -963,9 +973,9 @@ var FormatPickerContextMenu_exports = {};
 __export(FormatPickerContextMenu_exports, {
   FormatPickerContextMenu: () => FormatPickerContextMenu
 });
-import * as Common5 from "./../../../../core/common/common.js";
-import * as i18n3 from "./../../../../core/i18n/i18n.js";
-import * as UI3 from "./../../legacy.js";
+import * as Common5 from "../../../../core/common/common.js";
+import * as i18n3 from "../../../../core/i18n/i18n.js";
+import * as UI3 from "../../legacy.js";
 var UIStrings2 = {
   /**
    * @description Warning item in the color format picker context menu indicating that converting to a narrower gamut will cause color shifts.
@@ -1064,22 +1074,23 @@ var FormatPickerContextMenu = class {
 var Spectrum_exports = {};
 __export(Spectrum_exports, {
   ChangeSource: () => ChangeSource,
+  Events: () => Events3,
   MaterialPalette: () => MaterialPalette,
   PaletteGenerator: () => PaletteGenerator,
   Spectrum: () => Spectrum,
   Swatch: () => Swatch2
 });
-import "./../../legacy.js";
-import * as Common6 from "./../../../../core/common/common.js";
-import * as Host2 from "./../../../../core/host/host.js";
-import * as i18n5 from "./../../../../core/i18n/i18n.js";
-import * as Platform3 from "./../../../../core/platform/platform.js";
-import * as SDK3 from "./../../../../core/sdk/sdk.js";
-import * as TextUtils from "./../../../../core/text_utils/text_utils.js";
-import * as SrgbOverlay from "./../../../components/srgb_overlay/srgb_overlay.js";
-import { createIcon as createIcon2, Icon as Icon2 } from "./../../../kit/kit.js";
-import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
-import * as UI4 from "./../../legacy.js";
+import "../../legacy.js";
+import * as Common6 from "../../../../core/common/common.js";
+import * as Host2 from "../../../../core/host/host.js";
+import * as i18n5 from "../../../../core/i18n/i18n.js";
+import * as Platform3 from "../../../../core/platform/platform.js";
+import * as SDK3 from "../../../../core/sdk/sdk.js";
+import * as TextUtils from "../../../../core/text_utils/text_utils.js";
+import * as SrgbOverlay from "../../../components/srgb_overlay/srgb_overlay.js";
+import { createIcon as createIcon2, Icon as Icon2 } from "../../../kit/kit.js";
+import * as VisualLogging from "../../../visual_logging/visual_logging.js";
+import * as UI4 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/color_picker/spectrum.css.js
 var spectrum_css_default = `/*
@@ -1107,7 +1118,7 @@ var spectrum_css_default = `/*
   position: relative;
   width: 232px;
   height: 127px;
-  border-radius: 2px 2px 0 0;
+  border-radius: var(--sys-size-2) var(--sys-size-2) 0 0;
   overflow: hidden;
   flex: none;
   touch-action: none;
@@ -1119,10 +1130,10 @@ var spectrum_css_default = `/*
 }
 
 .spectrum-dragger {
-  border-radius: 12px;
-  height: 12px;
-  width: 12px;
-  border: 1px solid var(--sys-color-surface);
+  border-radius: var(--sys-shape-corner-medium-small);
+  height: var(--sys-size-6);
+  width: var(--sys-size-6);
+  border: var(--sys-size-1) solid var(--sys-color-surface);
   cursor: move;
   z-index: 1;
   position: absolute;
@@ -1134,7 +1145,7 @@ var spectrum_css_default = `/*
 
 .spectrum-slider {
   position: absolute;
-  top: -1px;
+  top: calc(-1 * var(--sys-size-1));
   cursor: ew-resize;
   width: 13px;
   height: 13px;
@@ -1144,7 +1155,7 @@ var spectrum_css_default = `/*
 }
 
 .spectrum-color:focus .spectrum-dragger {
-  border: 1px solid var(--sys-color-state-focus-ring);
+  border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
 }
 
 .spectrum-tools {
@@ -1155,7 +1166,7 @@ var spectrum_css_default = `/*
 }
 
 .spectrum-hue {
-  top: 16px;
+  top: var(--sys-size-8);
   /* stylelint-disable-next-line plugin/use_theme_colors */
   background: linear-gradient(to left in hsl longer hue, #f00 0 100%);
 }
@@ -1175,7 +1186,7 @@ var spectrum_css_default = `/*
 
 .spectrum-alpha-background {
   height: 100%;
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
 }
 
 .spectrum-hue,
@@ -1184,16 +1195,16 @@ var spectrum_css_default = `/*
   left: 86px;
   width: 130px;
   height: 11px;
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
   touch-action: none;
 }
 
 .spectrum-hue:focus-visible .spectrum-slider,
 .spectrum-alpha:focus-visible .spectrum-slider {
-  border: 1px solid var(--sys-color-state-focus-ring);
-  width: 14px;
-  height: 14px;
-  border-radius: 14px;
+  border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
+  border-radius: var(--sys-size-7);
 }
 
 .spectrum-sat,
@@ -1214,9 +1225,9 @@ var spectrum_css_default = `/*
   width: 100%;
   height: 83px;
   top: 0;
-  font-size: 13px;
+  font-size: var(--sys-typescale-body3-size);
   color: var(--sys-color-on-surface);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   line-height: initial;
   overflow: hidden;
   flex: none;
@@ -1229,8 +1240,8 @@ var spectrum_css_default = `/*
 
 .spectrum-contrast-details devtools-toolbar.expand {
   position: absolute;
-  right: 6px;
-  top: 6px;
+  right: var(--sys-size-4);
+  top: var(--sys-size-4);
   margin: 0;
 }
 
@@ -1244,7 +1255,7 @@ var spectrum_css_default = `/*
 
 .spectrum-contrast-details .expanded-details {
   display: flex;
-  margin: 12px 12px 0 4px;
+  margin: var(--sys-size-6) var(--sys-size-6) 0 var(--sys-size-3);
 }
 
 .spectrum-contrast-details.collapsed .expanded-details {
@@ -1273,13 +1284,13 @@ var spectrum_css_default = `/*
 
 .contrast-fix-button {
   cursor: pointer;
-  font-size: 13px;
+  font-size: var(--sys-typescale-body3-size);
   padding: 0;
   margin: 0 0 0 10px;
   background: 0;
-  width: 12px;
-  height: 12px;
-  border: 1px solid var(--sys-color-neutral-outline);
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   display: inline-block;
   position: relative;
 }
@@ -1294,12 +1305,12 @@ var spectrum_css_default = `/*
   left: 5.5px;
   top: 3.5px;
   background-color: var(--sys-color-cdt-base-container);
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
 }
 
 .contrast-fix-button:hover,
 .contrast-fix-button:focus {
-  border: 1px solid var(--sys-color-state-focus-ring);
+  border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
   transform: scale(1.2);
 }
 
@@ -1314,20 +1325,20 @@ var spectrum_css_default = `/*
 .spectrum-contrast-details .background-color {
   position: absolute;
   flex: none;
-  right: 12px;
+  right: var(--sys-size-6);
 }
 
 .spectrum-eye-dropper {
-  width: 32px;
-  height: 24px;
+  width: var(--sys-size-13);
+  height: var(--sys-size-11);
   position: relative;
-  left: 8px;
+  left: var(--sys-size-5);
   top: 17px;
   cursor: pointer;
 }
 
 .spectrum-contrast-details .spectrum-eye-dropper {
-  top: 2px;
+  top: var(--sys-size-2);
   right: 34px;
   position: absolute;
   left: auto;
@@ -1384,14 +1395,14 @@ devtools-icon.check-double {
 }
 
 .swatch {
-  width: 32px;
-  height: 32px;
+  width: var(--sys-size-13);
+  height: var(--sys-size-13);
   margin: 0;
   position: absolute;
   top: 15px;
-  left: 44px;
+  left: var(--sys-size-15);
   background-image: var(--image-file-checker);
-  border-radius: 16px;
+  border-radius: var(--sys-shape-corner-medium);
 }
 
 .swatch-inner,
@@ -1400,17 +1411,17 @@ devtools-icon.check-double {
   width: 100%;
   height: 100%;
   display: inline-block;
-  border-radius: 16px;
+  border-radius: var(--sys-shape-corner-medium);
 }
 
 .swatch-inner-white {
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
 }
 
 .swatch-overlay {
   cursor: pointer;
   opacity: 0%;
-  padding: 4px;
+  padding: var(--sys-size-3);
 }
 
 .swatch-overlay:hover,
@@ -1425,35 +1436,35 @@ devtools-icon.check-double {
 
 devtools-icon.copy-color-icon {
   color: var(--sys-color-cdt-base-container);
-  margin-top: 2px;
-  margin-left: 2px;
+  margin-top: var(--sys-size-2);
+  margin-left: var(--sys-size-2);
 }
 
 .spectrum-text {
   position: absolute;
   top: 60px;
-  left: 16px;
+  left: var(--sys-size-8);
 }
 
 .spectrum-text-value {
   display: inline-block;
-  width: 40px;
+  width: var(--sys-size-14);
   overflow: hidden;
   text-align: center;
-  margin-right: 6px;
-  line-height: 20px;
+  margin-right: var(--sys-size-4);
+  line-height: var(--sys-size-9);
   padding: 0;
   color: var(--sys-color-on-surface);
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   white-space: nowrap;
 }
 
 .spectrum-text-label {
   letter-spacing: 39.5px;
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
   display: block;
   color: var(--sys-color-state-disabled);
-  margin-left: 16px;
+  margin-left: var(--sys-size-8);
   width: 174px;
 }
 
@@ -1468,10 +1479,10 @@ devtools-icon.copy-color-icon {
 }
 
 .spectrum-switcher {
-  border-radius: 2px;
-  height: 20px;
-  width: 20px;
-  padding: 2px;
+  border-radius: var(--sys-size-2);
+  height: var(--sys-size-9);
+  width: var(--sys-size-9);
+  padding: var(--sys-size-2);
   border: none;
   background: none;
   margin: 0;
@@ -1492,10 +1503,10 @@ devtools-icon.copy-color-icon {
 }
 
 .spectrum-palette-container {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   position: relative;
   width: 100%;
-  padding: 6px 24px 6px 6px;
+  padding: var(--sys-size-4) var(--sys-size-11) var(--sys-size-4) var(--sys-size-4);
   display: flex;
   flex-wrap: wrap;
 }
@@ -1507,15 +1518,15 @@ devtools-icon.copy-color-icon {
 }
 
 .spectrum-palette-color {
-  width: 12px;
-  height: 12px;
-  flex: 0 0 12px;
-  border-radius: 2px;
-  margin: 6px;
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
+  flex: 0 0 var(--sys-size-6);
+  border-radius: var(--sys-size-2);
+  margin: var(--sys-size-4);
   cursor: pointer;
   position: relative;
-  border: 1px solid var(--sys-color-divider);
-  background-position: -1px !important; /* stylelint-disable-line declaration-no-important */
+  border: var(--sys-size-1) solid var(--sys-color-divider);
+  background-position: calc(-1 * var(--sys-size-1)) !important; /* stylelint-disable-line declaration-no-important */
   z-index: 14;
 }
 
@@ -1526,7 +1537,7 @@ devtools-icon.copy-color-icon {
   top: -5px;
   left: 3px;
   border: 0;
-  border-radius: 1px;
+  border-radius: var(--sys-size-1);
   width: 11px;
   height: 11px;
 }
@@ -1544,20 +1555,20 @@ devtools-icon.copy-color-icon {
   > .spectrum-palette-color-shadow:first-child {
   opacity: 60%;
   top: -3px;
-  left: 1px;
+  left: var(--sys-size-1);
 }
 
 .palette-color-shades {
   position: absolute;
   background-color: var(--sys-color-cdt-base-container);
   height: 228px;
-  width: 28px;
+  width: var(--sys-size-12);
   box-shadow: var(--drop-shadow);
   z-index: 14;
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
   transform-origin: 0 228px;
-  margin-top: 16px;
-  margin-left: -8px;
+  margin-top: var(--sys-size-8);
+  margin-left: calc(-1 * var(--sys-size-5));
 }
 
 .spectrum-palette > .spectrum-palette-color.spectrum-shades-shown {
@@ -1565,9 +1576,9 @@ devtools-icon.copy-color-icon {
 }
 
 .palette-color-shades > .spectrum-palette-color {
-  margin: 8px 0 0;
-  margin-left: 8px;
-  width: 12px;
+  margin: var(--sys-size-5) 0 0;
+  margin-left: var(--sys-size-5);
+  width: var(--sys-size-6);
 }
 
 .spectrum-palette > .spectrum-palette-color {
@@ -1577,7 +1588,7 @@ devtools-icon.copy-color-icon {
 }
 
 .palette-preview > .spectrum-palette-color {
-  margin-top: 1px;
+  margin-top: var(--sys-size-1);
 }
 
 .spectrum-palette > .spectrum-palette-color.empty-color {
@@ -1585,7 +1596,7 @@ devtools-icon.copy-color-icon {
 }
 
 .spectrum-palette-color:not(.has-material-shades):focus {
-  border: 1px solid var(--sys-color-state-focus-ring);
+  border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
   transform: scale(1.4);
 }
 
@@ -1597,7 +1608,7 @@ devtools-icon.copy-color-icon {
 
 .add-color-toolbar {
   margin-left: -3px;
-  margin-top: -1px;
+  margin-top: calc(-1 * var(--sys-size-1));
 }
 
 .spectrum-palette-switcher {
@@ -1616,7 +1627,7 @@ devtools-icon.copy-color-icon {
   background-color: var(--sys-color-cdt-base-container);
   z-index: 14;
   transition: transform 200ms cubic-bezier(0, 0, 0.2, 1), visibility 0s 200ms;
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   visibility: hidden;
 }
 
@@ -1628,23 +1639,23 @@ devtools-icon.copy-color-icon {
 
 .palette-panel > devtools-toolbar {
   position: absolute;
-  right: 6px;
-  top: 6px;
+  right: var(--sys-size-4);
+  top: var(--sys-size-4);
 }
 
 .palette-panel > div {
   flex: 0 0 38px;
-  border-bottom: 1px solid var(--sys-color-divider);
-  padding: 12px;
-  line-height: 14px;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  padding: var(--sys-size-6);
+  line-height: var(--sys-size-7);
   color: var(--sys-color-on-surface);
 }
 
 .palette-panel > div.palette-title {
-  font-size: 14px;
-  line-height: 16px;
+  font-size: var(--sys-typescale-body2-size);
+  line-height: var(--sys-size-8);
   color: var(--sys-color-on-surface);
-  flex-basis: 40px;
+  flex-basis: var(--sys-size-14);
 }
 
 div.palette-preview {
@@ -1700,9 +1711,9 @@ div.palette-preview {
   width: 36px;
   display: flex;
   align-items: center;
-  padding-left: 4px;
-  bottom: 2px;
-  border-bottom-right-radius: 2px;
+  padding-left: var(--sys-size-3);
+  bottom: var(--sys-size-2);
+  border-bottom-right-radius: var(--sys-size-2);
 }
 
 @keyframes showDeleteToolbar {
@@ -1745,17 +1756,17 @@ div.palette-preview {
 
 .background-color .text-preview {
   color: var(--sys-color-inverse-surface);
-  font-size: 16px;
+  font-size: var(--sys-typescale-body1-size);
   position: relative;
-  padding-bottom: 2px;
+  padding-bottom: var(--sys-size-2);
 }
 
 .swatch.contrast devtools-icon {
-  margin: -2px;
+  margin: calc(-1 * var(--sys-size-2));
 }
 
 .no-contrast-info-available {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   position: relative;
   width: 100%;
   padding: 10px;
@@ -1766,7 +1777,7 @@ div.palette-preview {
 
 @media (forced-colors: active) {
   :host {
-    border: 1px solid canvastext !important; /* stylelint-disable-line declaration-no-important */
+    border: var(--sys-size-1) solid canvastext !important; /* stylelint-disable-line declaration-no-important */
   }
 
   .spectrum-color {
@@ -1795,7 +1806,7 @@ div.palette-preview {
   .swatch-inner,
   .swatch-overlay,
   .swatch-inner-white {
-    border: 1px solid ButtonText;
+    border: var(--sys-size-1) solid ButtonText;
   }
 
   .swatch-overlay:hover,
@@ -1806,7 +1817,7 @@ div.palette-preview {
   .spectrum-slider {
     forced-color-adjust: none;
     background-color: ButtonText !important; /* stylelint-disable-line declaration-no-important */
-    box-shadow: 0 1px 4px 0 ButtonFace !important; /* stylelint-disable-line declaration-no-important */
+    box-shadow: 0 var(--sys-size-1) var(--sys-size-3) 0 ButtonFace !important; /* stylelint-disable-line declaration-no-important */
   }
 }
 
@@ -1899,6 +1910,11 @@ var srgbGamutFormats = [
   "hsl",
   "hwb"
 ];
+var SpectrumGamut;
+(function(SpectrumGamut2) {
+  SpectrumGamut2["SRGB"] = "srgb";
+  SpectrumGamut2["DISPLAY_P3"] = "display-p3";
+})(SpectrumGamut || (SpectrumGamut = {}));
 var IS_NATIVE_EYE_DROPPER_AVAILABLE = "EyeDropper" in window;
 function doesFormatSupportDisplayP3(format) {
   return !srgbGamutFormats.includes(format);
@@ -2991,6 +3007,11 @@ var ChangeSource = {
   Model: "Model",
   Other: "Other"
 };
+var Events3;
+(function(Events4) {
+  Events4["COLOR_CHANGED"] = "ColorChanged";
+  Events4["SIZE_CHANGED"] = "SizeChanged";
+})(Events3 || (Events3 = {}));
 var COLOR_CHIP_SIZE = 24;
 var ITEMS_PER_PALETTE_ROW = 8;
 var GeneratedPaletteTitle = "Page colors";

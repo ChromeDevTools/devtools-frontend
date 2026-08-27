@@ -571,4 +571,8 @@ export class ConsolePin extends Common.ObjectWrapper.ObjectWrapper {
         this.dispatchEventToListeners("EVALUATE_RESULT_READY" /* ConsolePinEvent.EVALUATE_RESULT_READY */, this);
     }
 }
+export var ConsolePinEvent;
+(function (ConsolePinEvent) {
+    ConsolePinEvent["EVALUATE_RESULT_READY"] = "EVALUATE_RESULT_READY";
+})(ConsolePinEvent || (ConsolePinEvent = {}));
 //# sourceMappingURL=ConsolePinPane.js.map

@@ -85,7 +85,7 @@
       "path": "../../models/workspace/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/third_party/codemirror.next/bundle-tsconfig.ref.json"
+      "path": "../../third_party/codemirror.next/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/components/buttons/bundle-tsconfig.ref.json"
@@ -124,7 +124,7 @@
       "path": "../../ui/legacy/components/object_ui/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/ui/legacy/components/object_ui/css_files-tsconfig.ref.json"
+      "path": "../../ui/legacy/components/object_ui/css_files-tsconfig.ref.json"
     },
     {
       "path": "../../ui/legacy/components/settings_ui/bundle-tsconfig.ref.json"

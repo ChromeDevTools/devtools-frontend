@@ -43,7 +43,7 @@ button.soft-dropdown:hover:not(:active) > .title {
 
 @media (forced-colors: active) {
   button.soft-dropdown {
-    border: 1px solid ButtonText;
+    border: var(--sys-size-1) solid ButtonText;
     background: ButtonFace;
     color: ButtonText;
   }

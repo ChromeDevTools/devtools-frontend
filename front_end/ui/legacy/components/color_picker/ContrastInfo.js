@@ -101,4 +101,8 @@ export class ContrastInfo extends Common.ObjectWrapper.ObjectWrapper {
         return this.contrastRatioThresholds[level];
     }
 }
+export var Events;
+(function (Events) {
+    Events["CONTRAST_INFO_UPDATED"] = "ContrastInfoUpdated";
+})(Events || (Events = {}));
 //# sourceMappingURL=ContrastInfo.js.map

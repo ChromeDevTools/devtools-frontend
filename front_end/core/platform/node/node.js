@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/core/platform/node/HostRuntime.js
+// ../../front_end/core/platform/node/HostRuntime.ts
 var HostRuntime_exports = {};
 __export(HostRuntime_exports, {
   HOST_RUNTIME: () => HOST_RUNTIME

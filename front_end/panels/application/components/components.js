@@ -9,14 +9,15 @@ var AdsView_exports = {};
 __export(AdsView_exports, {
   AdsView: () => AdsView
 });
-import "./../../../ui/legacy/components/data_grid/data_grid.js";
-import "./../../../ui/kit/kit.js";
-import * as Common from "./../../../core/common/common.js";
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as SDK from "./../../../core/sdk/sdk.js";
-import * as UI from "./../../../ui/legacy/legacy.js";
-import * as Lit from "./../../../ui/lit/lit.js";
-import * as VisualLogging from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/legacy/components/data_grid/data_grid.js";
+import "../../../ui/kit/kit.js";
+import * as Common from "../../../core/common/common.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as SDK from "../../../core/sdk/sdk.js";
+import * as Components from "../../../ui/legacy/components/utils/utils.js";
+import * as UI from "../../../ui/legacy/legacy.js";
+import * as Lit from "../../../ui/lit/lit.js";
+import * as VisualLogging from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/adsView.css.js
 var adsView_css_default = `/*
@@ -82,6 +83,7 @@ var adsView_css_default = `/*
 
 .metrics-title,
 .ad-frames-title,
+.ad-scripts-title,
 .settings-title {
   color: var(--sys-color-on-surface);
   flex: 0 0 auto;
@@ -89,11 +91,13 @@ var adsView_css_default = `/*
   margin-bottom: var(--sys-size-5);
 }
 
-.ad-frames-data-grid {
+.ad-frames-data-grid,
+.ad-scripts-data-grid {
   flex: auto;
 }
 
-.ad-frames-container {
+.ad-frames-container,
+.ad-scripts-container {
   border: 1px solid var(--sys-color-divider);
   display: flex;
   flex: 1; /* Takes up remaining space */
@@ -135,6 +139,7 @@ var adsView_css_default = `/*
 
 // gen/front_end/panels/application/components/AdsView.js
 var { html } = Lit;
+var { repeat } = Lit.Directives;
 var { bindToSetting } = UI.UIUtils;
 var UIStrings = {
   /**
@@ -195,6 +200,19 @@ var UIStrings = {
    * @description Accessible name for the ad iframes table.
    */
   adIframes: "Ad iframes",
+  /**
+   * @description Title for the ad scripts table.
+   * @example {3} PH1
+   */
+  adScriptsTitle: "Ad scripts (total {PH1})",
+  /**
+   * @description Title for the URL column in the ad scripts table.
+   */
+  url: "URL",
+  /**
+   * @description Accessible name for the ad scripts table.
+   */
+  adScripts: "Ad scripts",
   /**
    * @description Title for the settings section.
    */
@@ -324,6 +342,24 @@ var DEFAULT_VIEW = (input, output, target) => {
         </devtools-data-grid>
       </div>
       <hr class="divider">
+      <div class="ad-scripts-title">${i18nString(UIStrings.adScriptsTitle, { PH1: input.adScripts.length })}</div>
+      <div class="ad-scripts-container">
+        <devtools-data-grid striped resize="last" class="ad-scripts-data-grid" name=${i18nString(UIStrings.adScripts)}>
+          <table>
+            <tr>
+              <th id="url" weight="1" sortable>${i18nString(UIStrings.url)}</th>
+            </tr>
+            ${repeat(input.adScripts, (script) => script.url, (script) => html`
+              <tr>
+                <td title=${script.url}>
+                  ${Components.Linkifier.Linkifier.renderLinkifiedUrl(script.url, { text: script.url })}
+                </td>
+              </tr>
+            `)}
+          </table>
+        </devtools-data-grid>
+      </div>
+      <hr class="divider">
       <div class="settings-title">${i18nString(UIStrings.settings)}</div>
       <devtools-checkbox class="setting-container small"
           ${bindToSetting(Common.Settings.Settings.instance().resolve(SDK.SDKSettings.showAdHighlightsSettingDescriptor))}>
@@ -356,6 +392,9 @@ var AdsView = class extends UI.Widget.Widget {
   #adFrames = /* @__PURE__ */ new Map();
   #adIframeElementIds = /* @__PURE__ */ new Map();
   #fetchingElementIds = /* @__PURE__ */ new Set();
+  #unresolvedScriptIds = /* @__PURE__ */ new Set();
+  #adScriptNodeData = [];
+  #seenUrls = /* @__PURE__ */ new Set();
   constructor(view = DEFAULT_VIEW) {
     super({ useShadowDom: true });
     this.#view = view;
@@ -404,13 +443,24 @@ var AdsView = class extends UI.Widget.Widget {
     if (target) {
       const adsAgent = target.adsAgent();
       if (adsAgent) {
-        const response = await adsAgent.invoke_getAdMetrics();
+        const [metricsResponse, scriptsResponse] = await Promise.all([
+          adsAgent.invoke_getAdMetrics(),
+          adsAgent.invoke_getAdScripts()
+        ]);
         if (!this.#isPolling || this.#pollSessionId !== sessionId) {
           return;
         }
-        if (!response.getError()) {
-          this.#currentMetrics = response.metrics;
-          this.#processAdFrames(response.metrics);
+        let needsUpdate = false;
+        if (!metricsResponse.getError()) {
+          this.#currentMetrics = metricsResponse.metrics;
+          this.#processAdFrames(metricsResponse.metrics);
+          needsUpdate = true;
+        }
+        if (!scriptsResponse.getError()) {
+          this.#processAdScripts(scriptsResponse.newScripts || []);
+          needsUpdate = true;
+        }
+        if (needsUpdate) {
           this.requestUpdate();
         }
       }
@@ -445,6 +495,11 @@ var AdsView = class extends UI.Widget.Widget {
       }
     }
   }
+  #processAdScripts(newScripts) {
+    for (const script of newScripts) {
+      this.#unresolvedScriptIds.add(script.scriptId);
+    }
+  }
   async #fetchIframeElementId(frameId) {
     const frame = SDK.FrameManager.FrameManager.instance().getFrame(frameId);
     if (!frame) {
@@ -471,9 +526,14 @@ var AdsView = class extends UI.Widget.Widget {
     this.#adFrames.clear();
     this.#adIframeElementIds.clear();
     this.#fetchingElementIds.clear();
+    this.#unresolvedScriptIds.clear();
+    this.#adScriptNodeData.length = 0;
+    this.#seenUrls.clear();
     this.requestUpdate();
   }
   performUpdate() {
+    const target = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
+    const debuggerModel = target?.model(SDK.DebuggerModel.DebuggerModel);
     const adFramesArray = [];
     for (const [frameId, frame] of this.#adFrames) {
       const elementIdText = this.#adIframeElementIds.has(frameId) ? this.#adIframeElementIds.get(frameId) || i18nString(UIStrings.unnamed) : "";
@@ -495,9 +555,28 @@ var AdsView = class extends UI.Widget.Widget {
         revealFrame
       });
     }
+    for (const scriptId of this.#unresolvedScriptIds) {
+      const sdkScript = debuggerModel?.scriptForId(scriptId);
+      if (!sdkScript) {
+        continue;
+      }
+      this.#unresolvedScriptIds.delete(scriptId);
+      if (sdkScript.isInlineScript() || sdkScript.isContentScript() || !sdkScript.sourceURL) {
+        continue;
+      }
+      const url = sdkScript.sourceURL;
+      if (this.#seenUrls.has(url)) {
+        continue;
+      }
+      this.#seenUrls.add(url);
+      this.#adScriptNodeData.push({
+        url
+      });
+    }
     const viewInput = {
       metrics: this.#currentMetrics,
-      adFrames: adFramesArray
+      adFrames: adFramesArray,
+      adScripts: this.#adScriptNodeData
     };
     this.#view(viewInput, void 0, this.contentElement);
   }
@@ -508,21 +587,21 @@ var BackForwardCacheView_exports = {};
 __export(BackForwardCacheView_exports, {
   BackForwardCacheView: () => BackForwardCacheView
 });
-import "./../../../ui/components/expandable_list/expandable_list.js";
-import "./../../../ui/components/report_view/report_view.js";
-import "./../../../ui/legacy/legacy.js";
-import "./../../../ui/kit/kit.js";
-import * as Common2 from "./../../../core/common/common.js";
-import * as i18n5 from "./../../../core/i18n/i18n.js";
-import * as SDK2 from "./../../../core/sdk/sdk.js";
-import * as Buttons from "./../../../ui/components/buttons/buttons.js";
-import * as Components from "./../../../ui/legacy/components/utils/utils.js";
-import * as UI2 from "./../../../ui/legacy/legacy.js";
-import { html as html2, nothing as nothing2, render as render2 } from "./../../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/components/expandable_list/expandable_list.js";
+import "../../../ui/components/report_view/report_view.js";
+import "../../../ui/legacy/legacy.js";
+import "../../../ui/kit/kit.js";
+import * as Common2 from "../../../core/common/common.js";
+import * as i18n5 from "../../../core/i18n/i18n.js";
+import * as SDK2 from "../../../core/sdk/sdk.js";
+import * as Buttons from "../../../ui/components/buttons/buttons.js";
+import * as Components2 from "../../../ui/legacy/components/utils/utils.js";
+import * as UI2 from "../../../ui/legacy/legacy.js";
+import { html as html2, nothing as nothing2, render as render2 } from "../../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/BackForwardCacheStrings.js
-import * as i18n3 from "./../../../core/i18n/i18n.js";
+import * as i18n3 from "../../../core/i18n/i18n.js";
 var UIStrings2 = {
   /**
    * @description Description text for not restored reason NotMainFrame.
@@ -1392,6 +1471,11 @@ var UIStrings3 = {
 var str_3 = i18n5.i18n.registerUIStrings("panels/application/components/BackForwardCacheView.ts", UIStrings3);
 var i18nString2 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var { widget } = UI2.Widget;
+var ScreenStatusType;
+(function(ScreenStatusType3) {
+  ScreenStatusType3["RUNNING"] = "Running";
+  ScreenStatusType3["RESULT"] = "Result";
+})(ScreenStatusType || (ScreenStatusType = {}));
 function renderMainFrameInformation(frame, frameTreeData, reasonToFramesMap, screenStatus, navigateAwayAndBack) {
   if (!frame) {
     return html2`
@@ -1579,7 +1663,7 @@ function maybeRenderJavaScriptDetails(details) {
   const maxLengthForDisplayedURLs = 50;
   const rows = [html2`<div>${i18nString2(UIStrings3.filesPerIssue, { n: details.length })}</div>`];
   rows.push(...details.map((detail) => html2`
-          ${widget(Components.Linkifier.ScriptLocationLink, {
+          ${widget(Components2.Linkifier.ScriptLocationLink, {
     sourceURL: detail.url,
     lineNumber: detail.lineNumber,
     options: {
@@ -1773,17 +1857,18 @@ var BounceTrackingMitigationsView_exports = {};
 __export(BounceTrackingMitigationsView_exports, {
   BounceTrackingMitigationsView: () => BounceTrackingMitigationsView,
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
+  ScreenStatusType: () => ScreenStatusType2,
   i18nString: () => i18nString3
 });
-import "./../../../ui/components/report_view/report_view.js";
-import "./../../../ui/legacy/components/data_grid/data_grid.js";
-import "./../../../ui/kit/kit.js";
-import * as i18n7 from "./../../../core/i18n/i18n.js";
-import * as SDK3 from "./../../../core/sdk/sdk.js";
-import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
-import * as UI3 from "./../../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/components/report_view/report_view.js";
+import "../../../ui/legacy/components/data_grid/data_grid.js";
+import "../../../ui/kit/kit.js";
+import * as i18n7 from "../../../core/i18n/i18n.js";
+import * as SDK3 from "../../../core/sdk/sdk.js";
+import * as Buttons2 from "../../../ui/components/buttons/buttons.js";
+import * as UI3 from "../../../ui/legacy/legacy.js";
+import * as Lit2 from "../../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/bounceTrackingMitigationsView.css.js
 var bounceTrackingMitigationsView_css_default = `/*
@@ -1853,6 +1938,13 @@ var UIStrings4 = {
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/application/components/BounceTrackingMitigationsView.ts", UIStrings4);
 var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var ScreenStatusType2;
+(function(ScreenStatusType3) {
+  ScreenStatusType3["INITIALIZING"] = "Initializing";
+  ScreenStatusType3["RUNNING"] = "Running";
+  ScreenStatusType3["RESULT"] = "Result";
+  ScreenStatusType3["DISABLED"] = "Disabled";
+})(ScreenStatusType2 || (ScreenStatusType2 = {}));
 var renderForceRunButton = (input) => {
   const isMitigationRunning = input.screenStatus === "Running";
   return html3`
@@ -1994,11 +2086,11 @@ __export(CrashReportContextGrid_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW4,
   i18nString: () => i18nString4
 });
-import "./../../../ui/legacy/components/data_grid/data_grid.js";
-import * as Host from "./../../../core/host/host.js";
-import * as i18n9 from "./../../../core/i18n/i18n.js";
-import * as UI4 from "./../../../ui/legacy/legacy.js";
-import { html as html4, render as render4 } from "./../../../ui/lit/lit.js";
+import "../../../ui/legacy/components/data_grid/data_grid.js";
+import * as Host from "../../../core/host/host.js";
+import * as i18n9 from "../../../core/i18n/i18n.js";
+import * as UI4 from "../../../ui/legacy/legacy.js";
+import { html as html4, render as render4 } from "../../../ui/lit/lit.js";
 var UIStrings5 = {
   /**
    * @description Text in Crash Report Context Items View of the Application panel
@@ -2121,11 +2213,11 @@ __export(EndpointsGrid_exports, {
   EndpointsGrid: () => EndpointsGrid,
   i18nString: () => i18nString5
 });
-import "./../../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n11 from "./../../../core/i18n/i18n.js";
-import * as UI5 from "./../../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/legacy/components/data_grid/data_grid.js";
+import * as i18n11 from "../../../core/i18n/i18n.js";
+import * as UI5 from "../../../ui/legacy/legacy.js";
+import * as Lit3 from "../../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/endpointsGrid.css.js
 var endpointsGrid_css_default = `/*
@@ -2228,16 +2320,16 @@ __export(PermissionsPolicySection_exports, {
   PermissionsPolicySection: () => PermissionsPolicySection,
   renderIconLink: () => renderIconLink
 });
-import "./../../../ui/kit/kit.js";
-import "./../../../ui/components/report_view/report_view.js";
-import * as Common3 from "./../../../core/common/common.js";
-import * as i18n13 from "./../../../core/i18n/i18n.js";
-import * as SDK4 from "./../../../core/sdk/sdk.js";
-import * as NetworkForward from "./../../network/forward/forward.js";
-import * as Buttons3 from "./../../../ui/components/buttons/buttons.js";
-import * as UI6 from "./../../../ui/legacy/legacy.js";
-import { html as html6, nothing as nothing4, render as render6 } from "./../../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import "../../../ui/components/report_view/report_view.js";
+import * as Common3 from "../../../core/common/common.js";
+import * as i18n13 from "../../../core/i18n/i18n.js";
+import * as SDK4 from "../../../core/sdk/sdk.js";
+import * as NetworkForward from "../../network/forward/forward.js";
+import * as Buttons3 from "../../../ui/components/buttons/buttons.js";
+import * as UI6 from "../../../ui/legacy/legacy.js";
+import { html as html6, nothing as nothing4, render as render6 } from "../../../ui/lit/lit.js";
+import * as VisualLogging5 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/permissionsPolicySection.css.js
 var permissionsPolicySection_css_default = `/*
@@ -2503,16 +2595,16 @@ var ProtocolHandlersView_exports = {};
 __export(ProtocolHandlersView_exports, {
   ProtocolHandlersView: () => ProtocolHandlersView
 });
-import "./../../../ui/kit/kit.js";
-import * as Host2 from "./../../../core/host/host.js";
-import * as i18n15 from "./../../../core/i18n/i18n.js";
-import * as Platform from "./../../../core/platform/platform.js";
-import * as Buttons4 from "./../../../ui/components/buttons/buttons.js";
-import * as Input from "./../../../ui/components/input/input.js";
-import * as uiI18n from "./../../../ui/i18n/i18n.js";
-import * as UI7 from "./../../../ui/legacy/legacy.js";
-import { html as html7, i18nTemplate as unboundI18nTemplate, nothing as nothing5, render as render7 } from "./../../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import * as Host2 from "../../../core/host/host.js";
+import * as i18n15 from "../../../core/i18n/i18n.js";
+import * as Platform from "../../../core/platform/platform.js";
+import * as Buttons4 from "../../../ui/components/buttons/buttons.js";
+import * as Input from "../../../ui/components/input/input.js";
+import * as uiI18n from "../../../ui/i18n/i18n.js";
+import * as UI7 from "../../../ui/legacy/legacy.js";
+import { html as html7, i18nTemplate as unboundI18nTemplate, nothing as nothing5, render as render7 } from "../../../ui/lit/lit.js";
+import * as VisualLogging6 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/protocolHandlersView.css.js
 var protocolHandlersView_css_default = `/*
@@ -2729,13 +2821,13 @@ __export(ReportsGrid_exports, {
   ReportsGrid: () => ReportsGrid,
   i18nString: () => i18nString8
 });
-import "./../../../ui/kit/kit.js";
-import "./../../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n17 from "./../../../core/i18n/i18n.js";
-import * as Root from "./../../../core/root/root.js";
-import * as UI8 from "./../../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../../ui/lit/lit.js";
-import * as VisualLogging7 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import "../../../ui/legacy/components/data_grid/data_grid.js";
+import * as i18n17 from "../../../core/i18n/i18n.js";
+import * as Root from "../../../core/root/root.js";
+import * as UI8 from "../../../ui/legacy/legacy.js";
+import * as Lit4 from "../../../ui/lit/lit.js";
+import * as VisualLogging7 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/reportsGrid.css.js
 var reportsGrid_css_default = `/*
@@ -2895,8 +2987,8 @@ var ServiceWorkerRouterView_exports = {};
 __export(ServiceWorkerRouterView_exports, {
   ServiceWorkerRouterView: () => ServiceWorkerRouterView
 });
-import * as UI9 from "./../../../ui/legacy/legacy.js";
-import { html as html9, render as render9 } from "./../../../ui/lit/lit.js";
+import * as UI9 from "../../../ui/legacy/legacy.js";
+import { html as html9, render as render9 } from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/application/components/serviceWorkerRouterView.css.js
 var serviceWorkerRouterView_css_default = `/*
@@ -2911,19 +3003,19 @@ var serviceWorkerRouterView_css_default = `/*
 }
 
 .router-rules {
-  border: 1px solid var(--sys-color-divider);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
   border-spacing: 0;
   padding-left: 10px;
   padding-right: 10px;
   line-height: initial;
   margin-top: 0;
-  padding-bottom: 12px;
+  padding-bottom: var(--sys-size-6);
   text-wrap: balance;
 }
 
 .router-rule {
   display: flex;
-  margin-top: 12px;
+  margin-top: var(--sys-size-6);
   flex-direction: column;
 }
 
@@ -2941,7 +3033,7 @@ var serviceWorkerRouterView_css_default = `/*
 .source {
   list-style: none;
   display: flex;
-  margin-top: 4px;
+  margin-top: var(--sys-size-3);
   flex-direction: row;
 }
 
@@ -3008,17 +3100,17 @@ __export(StorageMetadataView_exports, {
   StorageBucketRevealInfo: () => StorageBucketRevealInfo,
   StorageMetadataView: () => StorageMetadataView
 });
-import "./../../../ui/components/report_view/report_view.js";
-import "./../../../ui/kit/kit.js";
-import * as Common4 from "./../../../core/common/common.js";
-import * as i18n19 from "./../../../core/i18n/i18n.js";
-import * as SDK5 from "./../../../core/sdk/sdk.js";
-import * as Buttons5 from "./../../../ui/components/buttons/buttons.js";
-import * as LegacyWrapper from "./../../../ui/components/legacy_wrapper/legacy_wrapper.js";
-import * as RenderCoordinator from "./../../../ui/components/render_coordinator/render_coordinator.js";
-import * as UI10 from "./../../../ui/legacy/legacy.js";
-import { html as html10, nothing as nothing6, render as render10 } from "./../../../ui/lit/lit.js";
-import * as VisualLogging8 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/components/report_view/report_view.js";
+import "../../../ui/kit/kit.js";
+import * as Common4 from "../../../core/common/common.js";
+import * as i18n19 from "../../../core/i18n/i18n.js";
+import * as SDK5 from "../../../core/sdk/sdk.js";
+import * as Buttons5 from "../../../ui/components/buttons/buttons.js";
+import * as LegacyWrapper from "../../../ui/components/legacy_wrapper/legacy_wrapper.js";
+import * as RenderCoordinator from "../../../ui/components/render_coordinator/render_coordinator.js";
+import * as UI10 from "../../../ui/legacy/legacy.js";
+import { html as html10, nothing as nothing6, render as render10 } from "../../../ui/lit/lit.js";
+import * as VisualLogging8 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/storageMetadataView.css.js
 var storageMetadataView_css_default = `/*
@@ -3301,14 +3393,14 @@ __export(TrustTokensView_exports, {
   TrustTokensView: () => TrustTokensView,
   i18nString: () => i18nString10
 });
-import "./../../../ui/kit/kit.js";
-import "./../../../ui/legacy/components/data_grid/data_grid.js";
-import * as i18n21 from "./../../../core/i18n/i18n.js";
-import * as SDK6 from "./../../../core/sdk/sdk.js";
-import * as Buttons6 from "./../../../ui/components/buttons/buttons.js";
-import * as UI11 from "./../../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../../ui/lit/lit.js";
-import * as VisualLogging9 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import "../../../ui/legacy/components/data_grid/data_grid.js";
+import * as i18n21 from "../../../core/i18n/i18n.js";
+import * as SDK6 from "../../../core/sdk/sdk.js";
+import * as Buttons6 from "../../../ui/components/buttons/buttons.js";
+import * as UI11 from "../../../ui/legacy/legacy.js";
+import * as Lit5 from "../../../ui/lit/lit.js";
+import * as VisualLogging9 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/application/components/trustTokensView.css.js
 var trustTokensView_css_default = `/*
@@ -3318,7 +3410,7 @@ var trustTokensView_css_default = `/*
  */
 
 :host {
-  padding: 20px;
+  padding: var(--sys-size-9);
   height: 100%;
   display: flex;
 }
@@ -3328,21 +3420,21 @@ var trustTokensView_css_default = `/*
 }
 
 devtools-data-grid {
-  margin-top: 20px;
+  margin-top: var(--sys-size-9);
 
   & devtools-button {
-    width: 14px;
-    height: 14px;
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
   }
 }
 
 devtools-icon {
-  width: 14px;
-  height: 14px;
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
 }
 
 .no-tt-message {
-  margin-top: 20px;
+  margin-top: var(--sys-size-9);
 }
 
 /*# sourceURL=${import.meta.resolve("./trustTokensView.css")} */`;

@@ -290,6 +290,12 @@ function getMarkdownRenderer(conversation) {
     }
     return new MarkdownRendererWithCodeBlock();
 }
+export var ViewState;
+(function (ViewState) {
+    ViewState["DISABLED_VIEW"] = "disabled-view";
+    ViewState["CHAT_VIEW"] = "chat-view";
+    ViewState["EXPLORE_VIEW"] = "explore-view";
+})(ViewState || (ViewState = {}));
 function toolbarView(input) {
     // clang-format off
     return html `

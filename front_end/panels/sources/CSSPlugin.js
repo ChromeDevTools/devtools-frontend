@@ -205,6 +205,11 @@ class CurveSwatchWidget extends CodeMirror.WidgetType {
         return true;
     }
 }
+var TooltipType;
+(function (TooltipType) {
+    TooltipType[TooltipType["COLOR"] = 0] = "COLOR";
+    TooltipType[TooltipType["CURVE"] = 1] = "CURVE";
+})(TooltipType || (TooltipType = {}));
 function createCSSTooltip(active) {
     return {
         pos: active.pos,

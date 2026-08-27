@@ -7,6 +7,13 @@ const writingModesAffectingFlexDirection = new Set([
     'vertical-lr',
     'vertical-rl',
 ]);
+export var PhysicalDirection;
+(function (PhysicalDirection) {
+    PhysicalDirection["LEFT_TO_RIGHT"] = "left-to-right";
+    PhysicalDirection["RIGHT_TO_LEFT"] = "right-to-left";
+    PhysicalDirection["BOTTOM_TO_TOP"] = "bottom-to-top";
+    PhysicalDirection["TOP_TO_BOTTOM"] = "top-to-bottom";
+})(PhysicalDirection || (PhysicalDirection = {}));
 export function reverseDirection(direction) {
     if (direction === "left-to-right" /* PhysicalDirection.LEFT_TO_RIGHT */) {
         return "right-to-left" /* PhysicalDirection.RIGHT_TO_LEFT */;

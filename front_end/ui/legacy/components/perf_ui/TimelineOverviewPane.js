@@ -361,6 +361,13 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin(UI.Wid
         this.#dimHighlightSVG.classList.add('hidden');
     }
 }
+export var Events;
+(function (Events) {
+    Events["OVERVIEW_PANE_WINDOW_CHANGED"] = "OverviewPaneWindowChanged";
+    Events["OVERVIEW_PANE_BREADCRUMB_ADDED"] = "OverviewPaneBreadcrumbAdded";
+    Events["OVERVIEW_PANE_MOUSE_MOVE"] = "OverviewPaneMouseMove";
+    Events["OVERVIEW_PANE_MOUSE_LEAVE"] = "OverviewPaneMouseLeave";
+})(Events || (Events = {}));
 export class TimelineOverviewBase extends UI.Widget.VBox {
     #calculator;
     canvas;

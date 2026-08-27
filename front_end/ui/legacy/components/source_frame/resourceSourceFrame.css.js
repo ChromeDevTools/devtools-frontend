@@ -15,7 +15,7 @@ export default `/*
 
 devtools-toolbar {
   background-color: var(--sys-color-cdt-base-container);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve('./resourceSourceFrame.css')} */`;

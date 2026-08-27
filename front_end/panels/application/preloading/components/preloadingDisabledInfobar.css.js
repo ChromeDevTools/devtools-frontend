@@ -10,8 +10,8 @@ export default `/*
  */
 
 #container {
-  padding: 6px 12px;
-  border-bottom: 1px solid var(--sys-color-divider);
+  padding: var(--sys-size-4) var(--sys-size-6);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   align-items: center;
   display: flex;
 }

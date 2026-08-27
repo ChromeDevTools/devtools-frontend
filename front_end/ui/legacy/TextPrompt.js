@@ -966,4 +966,8 @@ export class TextPrompt extends Common.ObjectWrapper.ObjectWrapper {
     }
 }
 const DefaultAutocompletionTimeout = 250;
+export var Events;
+(function (Events) {
+    Events["TEXT_CHANGED"] = "TextChanged";
+})(Events || (Events = {}));
 //# sourceMappingURL=TextPrompt.js.map

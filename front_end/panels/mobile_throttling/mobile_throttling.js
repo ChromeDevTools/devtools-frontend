@@ -10,14 +10,14 @@ __export(CPUThrottlingSelector_exports, {
   CPUThrottlingSelector: () => CPUThrottlingSelector,
   DEFAULT_VIEW: () => DEFAULT_VIEW
 });
-import * as Common2 from "./../../core/common/common.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as CrUXManager from "./../../models/crux-manager/crux-manager.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import * as Lit from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon3 from "./../common/common.js";
+import * as Common2 from "../../core/common/common.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
+import * as SDK3 from "../../core/sdk/sdk.js";
+import * as CrUXManager from "../../models/crux-manager/crux-manager.js";
+import * as UI2 from "../../ui/legacy/legacy.js";
+import * as Lit from "../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon3 from "../common/common.js";
 
 // gen/front_end/panels/mobile_throttling/ThrottlingManager.js
 var ThrottlingManager_exports = {};
@@ -28,24 +28,24 @@ __export(ThrottlingManager_exports, {
   ThrottlingManager: () => ThrottlingManager,
   throttlingManager: () => throttlingManager
 });
-import * as Common from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import { Icon } from "./../../ui/kit/kit.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import { html, render } from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon2 from "./../common/common.js";
+import * as Common from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import { Icon } from "../../ui/kit/kit.js";
+import * as UI from "../../ui/legacy/legacy.js";
+import { html, render } from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon2 from "../common/common.js";
 
 // gen/front_end/panels/mobile_throttling/ThrottlingPresets.js
 var ThrottlingPresets_exports = {};
 __export(ThrottlingPresets_exports, {
   ThrottlingPresets: () => ThrottlingPresets
 });
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as PanelsCommon from "./../common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as PanelsCommon from "../common/common.js";
 var UIStrings = {
   /**
    * @description Text for no network throttling.
@@ -512,6 +512,12 @@ var SaveDataOverrideSelect = class extends Common.ObjectWrapper.eventMixin(UI.Wi
     }, void 0, this.contentElement);
   }
 };
+(function(ThrottlingManager2) {
+  let Events2;
+  (function(Events3) {
+    Events3["SAVE_DATA_OVERRIDE_CHANGED"] = "SaveDataOverrideChanged";
+  })(Events2 = ThrottlingManager2.Events || (ThrottlingManager2.Events = {}));
+})(ThrottlingManager || (ThrottlingManager = {}));
 var ActionDelegate = class {
   handleAction(_context, actionId) {
     if (actionId === "network-conditions.network-online") {
@@ -748,10 +754,10 @@ var NetworkPanelIndicator_exports = {};
 __export(NetworkPanelIndicator_exports, {
   NetworkPanelIndicator: () => NetworkPanelIndicator
 });
-import * as Common3 from "./../../core/common/common.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
+import * as Common3 from "../../core/common/common.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
+import * as SDK4 from "../../core/sdk/sdk.js";
+import * as UI3 from "../../ui/legacy/legacy.js";
 var UIStrings4 = {
   /**
    * @description Icon title for warning indicator in the Network panel title.
@@ -799,17 +805,18 @@ var NetworkPanelIndicator = class {
 var NetworkThrottlingSelector_exports = {};
 __export(NetworkThrottlingSelector_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
+  Events: () => Events,
   NetworkThrottlingSelect: () => NetworkThrottlingSelect,
   getRecommendedNetworkConditions: () => getRecommendedNetworkConditions
 });
-import * as Common4 from "./../../core/common/common.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as SDK5 from "./../../core/sdk/sdk.js";
-import * as CrUXManager3 from "./../../models/crux-manager/crux-manager.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common4 from "../../core/common/common.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as SDK5 from "../../core/sdk/sdk.js";
+import * as CrUXManager3 from "../../models/crux-manager/crux-manager.js";
+import * as UI4 from "../../ui/legacy/legacy.js";
+import * as Lit2 from "../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 var { render: render3, html: html3, Directives: Directives2 } = Lit2;
 var UIStrings5 = {
   /**
@@ -921,6 +928,10 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     }
   );
 };
+var Events;
+(function(Events2) {
+  Events2["CONDITIONS_CHANGED"] = "ConditionsChanged";
+})(Events || (Events = {}));
 function getRecommendedNetworkConditions(roundTripTimeMetricData) {
   if (roundTripTimeMetricData?.percentiles) {
     const rtt = Number(roundTripTimeMetricData.percentiles.p75);
@@ -1082,6 +1093,13 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends Common4.Obj
     this.#view(viewInput, {}, this.contentElement);
   }
 };
+(function(NetworkThrottlingSelect2) {
+  let Variant;
+  (function(Variant2) {
+    Variant2["GLOBAL_CONDITIONS"] = "global-conditions";
+    Variant2["INDIVIDUAL_REQUEST_CONDITIONS"] = "individual-request-conditions";
+  })(Variant = NetworkThrottlingSelect2.Variant || (NetworkThrottlingSelect2.Variant = {}));
+})(NetworkThrottlingSelect || (NetworkThrottlingSelect = {}));
 
 // gen/front_end/panels/mobile_throttling/ThrottlingSettingsTab.js
 var ThrottlingSettingsTab_exports = {};
@@ -1089,20 +1107,20 @@ __export(ThrottlingSettingsTab_exports, {
   CPUThrottlingCard: () => CPUThrottlingCard,
   ThrottlingSettingsTab: () => ThrottlingSettingsTab
 });
-import "./../../ui/kit/kit.js";
-import * as Common5 from "./../../core/common/common.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import { createIcon } from "./../../ui/kit/kit.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
-import * as PanelsCommon5 from "./../common/common.js";
+import "../../ui/kit/kit.js";
+import * as Common5 from "../../core/common/common.js";
+import * as i18n13 from "../../core/i18n/i18n.js";
+import * as SDK7 from "../../core/sdk/sdk.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
+import { createIcon } from "../../ui/kit/kit.js";
+import * as UI5 from "../../ui/legacy/legacy.js";
+import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
+import * as PanelsCommon5 from "../common/common.js";
 
 // gen/front_end/panels/mobile_throttling/CalibrationController.js
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as PanelsCommon4 from "./../common/common.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
+import * as SDK6 from "../../core/sdk/sdk.js";
+import * as PanelsCommon4 from "../common/common.js";
 var UIStrings6 = {
   /**
    * @description Text to display to user while a calibration process is running.
@@ -1430,10 +1448,10 @@ var throttlingSettingsTab_css_default = `/*
 }
 
 .conditions-list-separator {
-  flex: 0 0 1px;
+  flex: 0 0 var(--sys-size-1);
   background-color: var(--sys-color-divider);
   height: 30px;
-  margin: 0 4px;
+  margin: 0 var(--sys-size-3);
 }
 
 .conditions-list-separator-invisible {
@@ -1457,7 +1475,7 @@ var throttlingSettingsTab_css_default = `/*
 }
 
 .cpu-preset-section {
-  padding: 14px;
+  padding: var(--sys-size-7);
   display: flex;
   justify-content: space-between;
 }
@@ -1468,7 +1486,7 @@ var throttlingSettingsTab_css_default = `/*
 
 .cpu-preset-calibrate {
   flex-direction: column;
-  gap: 14px;
+  gap: var(--sys-size-7);
 }
 
 .cpu-preset-calibrate .button-container {
@@ -1490,7 +1508,7 @@ var throttlingSettingsTab_css_default = `/*
 
 .conditions-list-header {
   font-weight: bold;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve("./throttlingSettingsTab.css")} */`;

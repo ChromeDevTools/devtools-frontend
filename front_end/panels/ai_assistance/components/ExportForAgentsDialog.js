@@ -47,6 +47,11 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/ai_assistance/components/ExportForAgentsDialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export var StateType;
+(function (StateType) {
+    StateType["PROMPT"] = "prompt";
+    StateType["CONVERSATION"] = "conversation";
+})(StateType || (StateType = {}));
 const DEFAULT_STATE_TYPE = "prompt" /* StateType.PROMPT */;
 export const DEFAULT_VIEW = (input, _output, target) => {
     const isPrompt = input.state.activeType === "prompt" /* StateType.PROMPT */;

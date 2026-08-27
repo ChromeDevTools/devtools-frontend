@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/models/web_mcp",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -54,7 +55,7 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/generated/protocol-tsconfig.ref.json"
+      "path": "../../generated/protocol-tsconfig.ref.json"
     },
     {
       "path": "../bindings/bundle-tsconfig.ref.json"

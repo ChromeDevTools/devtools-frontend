@@ -9,16 +9,30 @@ var CoverageModel_exports = {};
 __export(CoverageModel_exports, {
   CoverageInfo: () => CoverageInfo,
   CoverageModel: () => CoverageModel,
+  CoverageType: () => CoverageType,
   Events: () => Events,
   SourceURLCoverageInfo: () => SourceURLCoverageInfo,
+  SuspensionState: () => SuspensionState,
   URLCoverageInfo: () => URLCoverageInfo,
   mergeSegments: () => mergeSegments
 });
-import * as Common from "./../../core/common/common.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as Workspace from "./../../models/workspace/workspace.js";
+import * as Common from "../../core/common/common.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as Workspace from "../../models/workspace/workspace.js";
+var CoverageType;
+(function(CoverageType2) {
+  CoverageType2[CoverageType2["CSS"] = 1] = "CSS";
+  CoverageType2[CoverageType2["JAVA_SCRIPT"] = 2] = "JAVA_SCRIPT";
+  CoverageType2[CoverageType2["JAVA_SCRIPT_PER_FUNCTION"] = 4] = "JAVA_SCRIPT_PER_FUNCTION";
+})(CoverageType || (CoverageType = {}));
+var SuspensionState;
+(function(SuspensionState2) {
+  SuspensionState2["ACTIVE"] = "Active";
+  SuspensionState2["SUSPENDING"] = "Suspending";
+  SuspensionState2["SUSPENDED"] = "Suspended";
+})(SuspensionState || (SuspensionState = {}));
 var Events;
 (function(Events2) {
   Events2["CoverageUpdated"] = "CoverageUpdated";
@@ -882,13 +896,13 @@ __export(CoverageListView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
   coverageTypeToString: () => coverageTypeToString
 });
-import "./../../ui/components/highlighting/highlighting.js";
-import * as Common2 from "./../../core/common/common.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Workspace3 from "./../../models/workspace/workspace.js";
-import * as DataGrid from "./../../ui/legacy/components/data_grid/data_grid.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import { Directives, html, nothing, render } from "./../../ui/lit/lit.js";
+import "../../ui/components/highlighting/highlighting.js";
+import * as Common2 from "../../core/common/common.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Workspace3 from "../../models/workspace/workspace.js";
+import * as DataGrid from "../../ui/legacy/components/data_grid/data_grid.js";
+import * as UI from "../../ui/legacy/legacy.js";
+import { Directives, html, nothing, render } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/coverage/coverageListView.css.js
 var coverageListView_css_default = `/*
@@ -923,8 +937,8 @@ var coverageListView_css_default = `/*
 
   .data-grid td .bar {
     display: inline-block;
-    height: 8px;
-    border: 1px solid transparent;
+    height: var(--sys-size-5);
+    border: var(--sys-size-1) solid transparent;
   }
 
   .data-grid td .bar-unused-size {
@@ -1255,18 +1269,18 @@ __export(CoverageView_exports, {
   CoverageView: () => CoverageView,
   DEFAULT_VIEW: () => DEFAULT_VIEW2
 });
-import "./../../ui/legacy/legacy.js";
-import * as Common3 from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Platform3 from "./../../core/platform/platform.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as Bindings from "./../../models/bindings/bindings.js";
-import * as Workspace7 from "./../../models/workspace/workspace.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html2, i18nTemplate as unboundI18nTemplate, render as render2 } from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/legacy/legacy.js";
+import * as Common3 from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as Platform3 from "../../core/platform/platform.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as Bindings from "../../models/bindings/bindings.js";
+import * as Workspace7 from "../../models/workspace/workspace.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
+import * as UI2 from "../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html2, i18nTemplate as unboundI18nTemplate, render as render2 } from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/coverage/CoverageDecorationManager.js
 var CoverageDecorationManager_exports = {};
@@ -1274,9 +1288,9 @@ __export(CoverageDecorationManager_exports, {
   CoverageDecorationManager: () => CoverageDecorationManager,
   decoratorType: () => decoratorType
 });
-import * as Platform2 from "./../../core/platform/platform.js";
-import * as TextUtils2 from "./../../core/text_utils/text_utils.js";
-import * as Workspace5 from "./../../models/workspace/workspace.js";
+import * as Platform2 from "../../core/platform/platform.js";
+import * as TextUtils2 from "../../core/text_utils/text_utils.js";
+import * as Workspace5 from "../../models/workspace/workspace.js";
 var decoratorType = "coverage";
 var CoverageDecorationManager = class _CoverageDecorationManager {
   coverageModel;

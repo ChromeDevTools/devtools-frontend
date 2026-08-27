@@ -16,7 +16,7 @@ export default `/*
 
 .key {
   color: var(--sys-color-token-subtle);
-  padding: 0 6px;
+  padding: 0 var(--sys-size-4);
   text-align: right;
   white-space: pre;
 }
@@ -24,7 +24,7 @@ export default `/*
 .value {
   color: var(--sys-color-token-subtle);
   margin-inline-start: 0;
-  padding: 0 6px;
+  padding: 0 var(--sys-size-4);
 }
 
 .error-text {

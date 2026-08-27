@@ -45,6 +45,15 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsoleSidebar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const { render, html, nothing } = Lit;
+export var GroupName;
+(function (GroupName) {
+    GroupName["CONSOLE_API"] = "user message";
+    GroupName["ALL"] = "message";
+    GroupName["ERROR"] = "error";
+    GroupName["WARNING"] = "warning";
+    GroupName["INFO"] = "info";
+    GroupName["VERBOSE"] = "verbose";
+})(GroupName || (GroupName = {}));
 const GROUP_ICONS = {
     ["message" /* GroupName.ALL */]: { icon: 'list', label: UIStrings.dMessages },
     ["user message" /* GroupName.CONSOLE_API */]: { icon: 'profile', label: UIStrings.dUserMessages },
@@ -184,4 +193,8 @@ export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
         return this.#selectedFilter?.shouldBeVisible(viewMessage) ?? true;
     }
 }
+export var Events;
+(function (Events) {
+    Events["FILTER_SELECTED"] = "FilterSelected";
+})(Events || (Events = {}));
 //# sourceMappingURL=ConsoleSidebar.js.map

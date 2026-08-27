@@ -5,19 +5,19 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/panels/common/GdpSignUpDialog.js
-import "./../../ui/components/switch/switch.js";
-import "./../../ui/kit/kit.js";
-import * as Common from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as Badges from "./../../models/badges/badges.js";
-import * as Geometry from "./../../models/geometry/geometry.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
-import * as UIHelpers from "./../../ui/helpers/helpers.js";
-import * as uiI18n from "./../../ui/i18n/i18n.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import { html, render } from "./../../ui/lit/lit.js";
+import "../../ui/components/switch/switch.js";
+import "../../ui/kit/kit.js";
+import * as Common from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as Badges from "../../models/badges/badges.js";
+import * as Geometry from "../../models/geometry/geometry.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
+import * as Snackbars from "../../ui/components/snackbars/snackbars.js";
+import * as UIHelpers from "../../ui/helpers/helpers.js";
+import * as uiI18n from "../../ui/i18n/i18n.js";
+import * as UI from "../../ui/legacy/legacy.js";
+import { html, render } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/common/gdpSignUpDialog.css.js
 var gdpSignUpDialog_css_default = `/*
@@ -336,17 +336,17 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI.Widget.VBox {
 };
 
 // gen/front_end/panels/common/GeminiRebrandPromoDialog.js
-import "./../../ui/components/switch/switch.js";
-import "./../../ui/kit/kit.js";
-import * as Common2 from "./../../core/common/common.js";
-import * as Host2 from "./../../core/host/host.js";
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as Root from "./../../core/root/root.js";
-import * as Geometry2 from "./../../models/geometry/geometry.js";
-import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import { html as html2, render as render2 } from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/components/switch/switch.js";
+import "../../ui/kit/kit.js";
+import * as Common2 from "../../core/common/common.js";
+import * as Host2 from "../../core/host/host.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as Root from "../../core/root/root.js";
+import * as Geometry2 from "../../models/geometry/geometry.js";
+import * as Buttons2 from "../../ui/components/buttons/buttons.js";
+import * as UI2 from "../../ui/legacy/legacy.js";
+import { html as html2, render as render2 } from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/geminiRebrandPromoDialog.css.js
 var geminiRebrandPromoDialog_css_default = `/*
@@ -554,14 +554,14 @@ __export(AiCodeCompletionSummaryToolbar_exports, {
   AiCodeCompletionSummaryToolbar: () => AiCodeCompletionSummaryToolbar,
   DEFAULT_SUMMARY_TOOLBAR_VIEW: () => DEFAULT_SUMMARY_TOOLBAR_VIEW
 });
-import "./../../ui/components/spinners/spinners.js";
-import "./../../ui/components/tooltips/tooltips.js";
-import "./../../ui/kit/kit.js";
-import * as Host3 from "./../../core/host/host.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as TextEditor from "./../../ui/components/text_editor/text_editor.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
-import { Directives, html as html3, nothing, render as render3 } from "./../../ui/lit/lit.js";
+import "../../ui/components/spinners/spinners.js";
+import "../../ui/components/tooltips/tooltips.js";
+import "../../ui/kit/kit.js";
+import * as Host3 from "../../core/host/host.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
+import * as TextEditor from "../../ui/components/text_editor/text_editor.js";
+import * as UI3 from "../../ui/legacy/legacy.js";
+import { Directives, html as html3, nothing, render as render3 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/common/aiCodeCompletionSummaryToolbar.css.js
 var aiCodeCompletionSummaryToolbar_css_default = `/*
@@ -796,18 +796,18 @@ var AiCodeCompletionSummaryToolbar = class extends UI3.Widget.Widget {
 };
 
 // gen/front_end/panels/common/BadgeNotification.js
-import "./../../ui/kit/kit.js";
-import * as Common3 from "./../../core/common/common.js";
-import * as Host4 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as Badges2 from "./../../models/badges/badges.js";
-import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
-import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
-import * as uiI18n2 from "./../../ui/i18n/i18n.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
-import * as Lit from "./../../ui/lit/lit.js";
-import { nothing as nothing2 } from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/kit/kit.js";
+import * as Common3 from "../../core/common/common.js";
+import * as Host4 from "../../core/host/host.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
+import * as Badges2 from "../../models/badges/badges.js";
+import * as Buttons3 from "../../ui/components/buttons/buttons.js";
+import * as UIHelpers2 from "../../ui/helpers/helpers.js";
+import * as uiI18n2 from "../../ui/i18n/i18n.js";
+import * as UI4 from "../../ui/legacy/legacy.js";
+import * as Lit from "../../ui/lit/lit.js";
+import { nothing as nothing2 } from "../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/badgeNotification.css.js
 var badgeNotification_css_default = `/*
@@ -1165,6 +1165,7 @@ var BadgeNotification = class extends UI4.Widget.Widget {
 // gen/front_end/panels/common/CPUThrottlingOption.js
 var CPUThrottlingOption_exports = {};
 __export(CPUThrottlingOption_exports, {
+  CPUPerformanceTier: () => CPUPerformanceTier,
   CPUThrottlingRates: () => CPUThrottlingRates,
   CalibratedLowTierMobileThrottlingOption: () => CalibratedLowTierMobileThrottlingOption,
   CalibratedMidTierMobileThrottlingOption: () => CalibratedMidTierMobileThrottlingOption,
@@ -1177,8 +1178,11 @@ __export(CPUThrottlingOption_exports, {
   cpuThrottlingPresets: () => cpuThrottlingPresets,
   determineOptionFromRate: () => determineOptionFromRate
 });
-import * as Common4 from "./../../core/common/common.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
+import * as Common4 from "../../core/common/common.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
+import * as SDK from "../../core/sdk/sdk.js";
+var CalibrationError = SDK.CPUThrottlingManager.CalibrationError;
+var CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
 var UIStrings4 = {
   /**
    * @description Text label for a menu item indicating that no throttling is applied.
@@ -1264,10 +1268,6 @@ function makeCalibratedThrottlingOption(calibratedDeviceType) {
 }
 var CalibratedLowTierMobileThrottlingOption = makeCalibratedThrottlingOption("low-tier-mobile");
 var CalibratedMidTierMobileThrottlingOption = makeCalibratedThrottlingOption("mid-tier-mobile");
-var CalibrationError;
-(function(CalibrationError2) {
-  CalibrationError2["DEVICE_TOO_WEAK"] = "DEVICE_TOO_WEAK";
-})(CalibrationError || (CalibrationError = {}));
 function calibrationErrorToString(error) {
   if (error === CalibrationError.DEVICE_TOO_WEAK) {
     return i18nString4(UIStrings4.calibrationErrorDeviceTooWeak);
@@ -1296,11 +1296,11 @@ __export(ExtensionPanel_exports, {
   ExtensionPanel: () => ExtensionPanel,
   ExtensionSidebarPane: () => ExtensionSidebarPane
 });
-import * as Platform from "./../../core/platform/platform.js";
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as Extensions from "./../../models/extensions/extensions.js";
-import * as ObjectUI from "./../../ui/legacy/components/object_ui/object_ui.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as Extensions from "../../models/extensions/extensions.js";
+import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
+import * as UI6 from "../../ui/legacy/legacy.js";
 
 // gen/front_end/panels/common/ExtensionView.js
 var ExtensionView_exports = {};
@@ -1309,8 +1309,8 @@ __export(ExtensionView_exports, {
   ExtensionNotifierView: () => ExtensionNotifierView,
   ExtensionView: () => ExtensionView
 });
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
+import * as UI5 from "../../ui/legacy/legacy.js";
+import * as Lit2 from "../../ui/lit/lit.js";
 var { render: render5, html: html5, Directives: { ref } } = Lit2;
 var DEFAULT_VIEW4 = (input, output, target) => {
   render5(html5`<iframe
@@ -1539,7 +1539,7 @@ var ExtensionSidebarPane = class extends UI6.View.SimpleView {
   }
   setObject(object, title, callback) {
     this.createObjectPropertiesView();
-    this.#setObject(SDK.RemoteObject.RemoteObject.fromLocalObject(object), title, callback);
+    this.#setObject(SDK2.RemoteObject.RemoteObject.fromLocalObject(object), title, callback);
   }
   setExpression(expression, title, evaluateOptions, securityOrigin, callback) {
     this.createObjectPropertiesView();
@@ -1608,26 +1608,27 @@ var ExtensionSidebarPane = class extends UI6.View.SimpleView {
 // gen/front_end/panels/common/ExtensionServer.js
 var ExtensionServer_exports = {};
 __export(ExtensionServer_exports, {
+  Events: () => Events,
   ExtensionServer: () => ExtensionServer,
   ExtensionStatus: () => ExtensionStatus,
   HostsPolicy: () => HostsPolicy,
   RevealableNetworkRequestFilter: () => RevealableNetworkRequestFilter
 });
-import * as Common5 from "./../../core/common/common.js";
-import * as Host5 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Platform2 from "./../../core/platform/platform.js";
-import * as Root2 from "./../../core/root/root.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as Bindings from "./../../models/bindings/bindings.js";
-import * as Extensions2 from "./../../models/extensions/extensions.js";
-import * as HAR from "./../../models/har/har.js";
-import * as Logs from "./../../models/logs/logs.js";
-import * as Workspace from "./../../models/workspace/workspace.js";
-import * as Components from "./../../ui/legacy/components/utils/utils.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
-import * as ThemeSupport from "./../../ui/legacy/theme_support/theme_support.js";
+import * as Common5 from "../../core/common/common.js";
+import * as Host5 from "../../core/host/host.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
+import * as Platform2 from "../../core/platform/platform.js";
+import * as Root2 from "../../core/root/root.js";
+import * as SDK3 from "../../core/sdk/sdk.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as Bindings from "../../models/bindings/bindings.js";
+import * as Extensions2 from "../../models/extensions/extensions.js";
+import * as HAR from "../../models/har/har.js";
+import * as Logs from "../../models/logs/logs.js";
+import * as Workspace from "../../models/workspace/workspace.js";
+import * as Components from "../../ui/legacy/components/utils/utils.js";
+import * as UI7 from "../../ui/legacy/legacy.js";
+import * as ThemeSupport from "../../ui/legacy/theme_support/theme_support.js";
 var extensionOrigins = /* @__PURE__ */ new WeakMap();
 var kForbiddenSchemes = [
   "chrome:",
@@ -1688,7 +1689,7 @@ var RegisteredExtension = class {
   }
   isAllowedOnTarget(inspectedURL) {
     if (!inspectedURL) {
-      inspectedURL = SDK2.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL();
+      inspectedURL = SDK3.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL();
     }
     if (!inspectedURL) {
       return false;
@@ -1807,7 +1808,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
   }
   dispose() {
     ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
-    SDK2.TargetManager.TargetManager.instance().removeEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
+    SDK3.TargetManager.TargetManager.instance().removeEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
     Host5.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host5.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
     window.removeEventListener("message", this.onWindowMessage, false);
   }
@@ -1969,7 +1970,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       size: status.size ?? null,
       duration: null
     };
-    SDK2.PageResourceLoader.PageResourceLoader.instance().resourceLoadedThroughExtension(pageResource);
+    SDK3.PageResourceLoader.PageResourceLoader.instance().resourceLoadedThroughExtension(pageResource);
     return this.status.OK();
   }
   onSetFunctionRangesForScript(message, port) {
@@ -2047,7 +2048,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       this.disableExtensions();
       return;
     }
-    if (event.data !== SDK2.TargetManager.TargetManager.instance().primaryPageTarget()) {
+    if (event.data !== SDK3.TargetManager.TargetManager.instance().primaryPageTarget()) {
       return;
     }
     this.requests = /* @__PURE__ */ new Map();
@@ -2409,9 +2410,9 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       return false;
     }
     let target;
-    if (contentProvider instanceof SDK2.NetworkRequest.NetworkRequest) {
-      target = SDK2.NetworkManager.NetworkManager.forRequest(contentProvider)?.target();
-    } else if (contentProvider instanceof SDK2.Resource.Resource) {
+    if (contentProvider instanceof SDK3.NetworkRequest.NetworkRequest) {
+      target = SDK3.NetworkManager.NetworkManager.forRequest(contentProvider)?.target();
+    } else if (contentProvider instanceof SDK3.Resource.Resource) {
       target = contentProvider.frame()?.resourceTreeModel().target();
     } else if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
       target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(contentProvider) ?? void 0;
@@ -2450,15 +2451,15 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (options.injectedScript) {
       injectedScript = "(function(){" + options.injectedScript + "})()";
     }
-    const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
+    const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
     if (!target) {
       return this.status.OK();
     }
-    const resourceTreeModel = target.model(SDK2.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK3.ResourceTreeModel.ResourceTreeModel);
     if (!this.extensionAllowedOnTarget(target, port)) {
       return this.status.E_FAILED("Permission denied");
     }
-    SDK2.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(typeof options.userAgent === "string" ? options.userAgent : "", null);
+    SDK3.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(typeof options.userAgent === "string" ? options.userAgent : "", null);
     resourceTreeModel?.reloadPage(Boolean(options.ignoreCache), injectedScript);
     return this.status.OK();
   }
@@ -2562,7 +2563,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     let uiSourceCodes = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodesForProjectType(Workspace.Workspace.projectTypes.Network);
     uiSourceCodes = uiSourceCodes.concat(Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodesForProjectType(Workspace.Workspace.projectTypes.ContentScripts));
     uiSourceCodes.forEach(pushResourceData.bind(this));
-    for (const resourceTreeModel of SDK2.TargetManager.TargetManager.instance().models(SDK2.ResourceTreeModel.ResourceTreeModel)) {
+    for (const resourceTreeModel of SDK3.TargetManager.TargetManager.instance().models(SDK3.ResourceTreeModel.ResourceTreeModel)) {
       if (this.extensionAllowedOnTarget(resourceTreeModel.target(), port)) {
         resourceTreeModel.forAllResources(pushResourceData.bind(this));
       }
@@ -2642,7 +2643,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
     const { uiSourceCode } = resource;
     if (!uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet()) {
-      const resource2 = SDK2.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK2.TargetManager.TargetManager.instance(), url);
+      const resource2 = SDK3.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK3.TargetManager.TargetManager.instance(), url);
       if (!resource2) {
         return this.status.E_NOTFOUND(url);
       }
@@ -2760,16 +2761,16 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
   }
   initExtensions() {
     this.registerAutosubscriptionHandler("resource-added", Workspace.Workspace.WorkspaceImpl.instance(), Workspace.Workspace.Events.UISourceCodeAdded, this.notifyResourceAdded);
-    this.registerAutosubscriptionTargetManagerHandler("network-request-finished", SDK2.NetworkManager.NetworkManager, SDK2.NetworkManager.Events.RequestFinished, this.notifyRequestFinished);
+    this.registerAutosubscriptionTargetManagerHandler("network-request-finished", SDK3.NetworkManager.NetworkManager, SDK3.NetworkManager.Events.RequestFinished, this.notifyRequestFinished);
     function onElementsSubscriptionStarted() {
-      UI7.Context.Context.instance().addFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
+      UI7.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
     }
     function onElementsSubscriptionStopped() {
-      UI7.Context.Context.instance().removeFlavorChangeListener(SDK2.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
+      UI7.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
     }
     this.registerSubscriptionHandler("panel-objectSelected-elements", onElementsSubscriptionStarted.bind(this), onElementsSubscriptionStopped.bind(this));
     this.registerResourceContentCommittedHandler(this.notifyUISourceCodeContentCommitted);
-    SDK2.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
+    SDK3.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
   }
   notifyResourceAdded(event) {
     const uiSourceCode = event.data;
@@ -2795,7 +2796,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
     const request = event.data;
     const entry = await HAR.Log.Entry.build(request, { sanitize: false });
-    const networkManager = SDK2.NetworkManager.NetworkManager.forRequest(request);
+    const networkManager = SDK3.NetworkManager.NetworkManager.forRequest(request);
     const targetUrl = networkManager?.target()?.inspectedURL();
     this.postNotification("network-request-finished", [this.requestId(request), entry], (extension) => extension.isAllowedOnTarget(entry.request.url) && (!targetUrl || extension.isAllowedOnTarget(targetUrl)) && !this.harEntryReferencesBlockedURL(entry, extension));
   }
@@ -2827,7 +2828,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
   }
   addExtension(extensionInfo) {
     const startPage = extensionInfo.startPage;
-    const inspectedURL = SDK2.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL() ?? "";
+    const inspectedURL = SDK3.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL() ?? "";
     if (inspectedURL === "") {
       this.#pendingExtensions.push(extensionInfo);
       return;
@@ -2926,7 +2927,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     this.registerSubscriptionHandler(eventTopic, () => eventTarget.addEventListener(frontendEventType, handler, this), () => eventTarget.removeEventListener(frontendEventType, handler, this));
   }
   registerAutosubscriptionTargetManagerHandler(eventTopic, modelClass, frontendEventType, handler) {
-    this.registerSubscriptionHandler(eventTopic, () => SDK2.TargetManager.TargetManager.instance().addModelListener(modelClass, frontendEventType, handler, this, { scoped: true }), () => SDK2.TargetManager.TargetManager.instance().removeModelListener(modelClass, frontendEventType, handler, this));
+    this.registerSubscriptionHandler(eventTopic, () => SDK3.TargetManager.TargetManager.instance().addModelListener(modelClass, frontendEventType, handler, this, { scoped: true }), () => SDK3.TargetManager.TargetManager.instance().removeModelListener(modelClass, frontendEventType, handler, this));
   }
   registerResourceContentCommittedHandler(handler) {
     function addFirstEventListener() {
@@ -2955,7 +2956,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
         found = frame2.url === url ? frame2 : null;
         return found;
       }
-      SDK2.ResourceTreeModel.ResourceTreeModel.frames(SDK2.TargetManager.TargetManager.instance()).some(hasMatchingURL);
+      SDK3.ResourceTreeModel.ResourceTreeModel.frames(SDK3.TargetManager.TargetManager.instance()).some(hasMatchingURL);
       return found;
     }
     options = options || {};
@@ -2963,8 +2964,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (options.frameURL) {
       frame = resolveURLToFrame(options.frameURL);
     } else {
-      const target = SDK2.TargetManager.TargetManager.instance().primaryPageTarget();
-      const resourceTreeModel = target?.model(SDK2.ResourceTreeModel.ResourceTreeModel);
+      const target = SDK3.TargetManager.TargetManager.instance().primaryPageTarget();
+      const resourceTreeModel = target?.model(SDK3.ResourceTreeModel.ResourceTreeModel);
       frame = resourceTreeModel?.mainFrame;
     }
     if (!frame) {
@@ -2985,7 +2986,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     } else if (options.scriptExecutionContext) {
       contextSecurityOrigin = options.scriptExecutionContext;
     }
-    const runtimeModel = frame.resourceTreeModel().target().model(SDK2.RuntimeModel.RuntimeModel);
+    const runtimeModel = frame.resourceTreeModel().target().model(SDK3.RuntimeModel.RuntimeModel);
     const executionContexts = runtimeModel ? runtimeModel.executionContexts() : [];
     if (contextSecurityOrigin) {
       for (let i = 0; i < executionContexts.length; ++i) {
@@ -3118,9 +3119,13 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
         }
       }
     }
-    SDK2.NetworkManager.MultitargetNetworkManager.instance().setExtraHTTPHeaders(allHeaders);
+    SDK3.NetworkManager.MultitargetNetworkManager.instance().setExtraHTTPHeaders(allHeaders);
   }
 };
+var Events;
+(function(Events2) {
+  Events2["SidebarPaneAdded"] = "SidebarPaneAdded";
+})(Events || (Events = {}));
 var ExtensionServerPanelView = class extends UI7.View.SimpleView {
   name;
   panel;
@@ -3173,14 +3178,14 @@ __export(PersistenceUtils_exports, {
   LinkDecorator: () => LinkDecorator,
   PersistenceUtils: () => PersistenceUtils
 });
-import "./../../ui/kit/kit.js";
-import * as Common6 from "./../../core/common/common.js";
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Platform3 from "./../../core/platform/platform.js";
-import * as Persistence from "./../../models/persistence/persistence.js";
-import * as Workspace3 from "./../../models/workspace/workspace.js";
-import * as Components2 from "./../../ui/legacy/components/utils/utils.js";
-import { html as html6 } from "./../../ui/lit/lit.js";
+import "../../ui/kit/kit.js";
+import * as Common6 from "../../core/common/common.js";
+import * as i18n13 from "../../core/i18n/i18n.js";
+import * as Platform3 from "../../core/platform/platform.js";
+import * as Persistence from "../../models/persistence/persistence.js";
+import * as Workspace3 from "../../models/workspace/workspace.js";
+import * as Components2 from "../../ui/legacy/components/utils/utils.js";
+import { html as html6 } from "../../ui/lit/lit.js";
 var UIStrings5 = {
   /**
    * @description Tooltip text indicating that a file is linked to a source map.
@@ -3253,12 +3258,12 @@ __export(DOMLinkifier_exports, {
   DeferredDOMNodeLink: () => DeferredDOMNodeLink,
   Linkifier: () => Linkifier2
 });
-import * as Common7 from "./../../core/common/common.js";
-import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html7, nothing as nothing3, render as render6 } from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
+import * as Common7 from "../../core/common/common.js";
+import * as i18n15 from "../../core/i18n/i18n.js";
+import * as SDK4 from "../../core/sdk/sdk.js";
+import * as UI8 from "../../ui/legacy/legacy.js";
+import { Directives as Directives2, html as html7, nothing as nothing3, render as render6 } from "../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/common/domLinkifier.css.js
 var domLinkifier_css_default = `/*
@@ -3402,7 +3407,7 @@ var DOMNodeLink = class extends UI8.Widget.Widget {
         this.#node?.highlight?.();
       },
       onMouseLeave: () => {
-        SDK3.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK3.TargetManager.TargetManager.instance());
+        SDK4.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK4.TargetManager.TargetManager.instance());
       },
       ariaDescription: options.ariaDescription
     };
@@ -3512,10 +3517,10 @@ var Linkifier2 = class _Linkifier {
     return linkifierInstance;
   }
   linkify(node, options) {
-    if (node instanceof SDK3.DOMModel.DOMNode) {
+    if (node instanceof SDK4.DOMModel.DOMNode) {
       return html7`<devtools-widget ${widget2((e) => new DOMNodeLink(e, node, options))}>${options?.textContent ? html7`${options.textContent}` : nothing3}</devtools-widget>`;
     }
-    if (node instanceof SDK3.DOMModel.DeferredDOMNode) {
+    if (node instanceof SDK4.DOMModel.DeferredDOMNode) {
       return html7`<devtools-widget ${widget2((e) => new DeferredDOMNodeLink(e, node, options))}>${options?.textContent ? html7`${options.textContent}` : nothing3}</devtools-widget>`;
     }
     throw new Error("Can't linkify non-node");

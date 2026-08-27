@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "menu.css.js",
+    "menuGroup.css.js",
+    "menuItem.css.js",
+    "selectMenu.css.js",
+    "selectMenuButton.css.js"
+  ]
+}

@@ -90,6 +90,10 @@ export class BezierPopoverIcon {
         delete this.originalPropertyText;
     }
 }
+export var ColorSwatchPopoverIconEvents;
+(function (ColorSwatchPopoverIconEvents) {
+    ColorSwatchPopoverIconEvents["COLOR_CHANGED"] = "colorchanged";
+})(ColorSwatchPopoverIconEvents || (ColorSwatchPopoverIconEvents = {}));
 export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper {
     treeElement;
     swatchPopoverHelper;
@@ -236,6 +240,10 @@ export class ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper {
         UI.Context.Context.instance().setFlavor(ColorSwatchPopoverIcon, null);
     }
 }
+export var ShadowEvents;
+(function (ShadowEvents) {
+    ShadowEvents["SHADOW_CHANGED"] = "shadowChanged";
+})(ShadowEvents || (ShadowEvents = {}));
 export class ShadowSwatchPopoverHelper extends Common.ObjectWrapper.ObjectWrapper {
     treeElement;
     swatchPopoverHelper;

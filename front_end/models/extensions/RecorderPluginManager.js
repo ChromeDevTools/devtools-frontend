@@ -44,4 +44,11 @@ export class RecorderPluginManager extends Common.ObjectWrapper.ObjectWrapper {
         this.dispatchEventToListeners("showViewRequested" /* Events.SHOW_VIEW_REQUESTED */, descriptor);
     }
 }
+export var Events;
+(function (Events) {
+    Events["PLUGIN_ADDED"] = "pluginAdded";
+    Events["PLUGIN_REMOVED"] = "pluginRemoved";
+    Events["VIEW_REGISTERED"] = "viewRegistered";
+    Events["SHOW_VIEW_REQUESTED"] = "showViewRequested";
+})(Events || (Events = {}));
 //# sourceMappingURL=RecorderPluginManager.js.map

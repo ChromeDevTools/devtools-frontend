@@ -160,6 +160,11 @@ export class Model extends EventTarget {
         this.#processor.reset();
     }
 }
+export var ModelUpdateType;
+(function (ModelUpdateType) {
+    ModelUpdateType["COMPLETE"] = "COMPLETE";
+    ModelUpdateType["PROGRESS_UPDATE"] = "PROGRESS_UPDATE";
+})(ModelUpdateType || (ModelUpdateType = {}));
 export class ModelUpdateEvent extends Event {
     data;
     static eventName = 'modelupdate';

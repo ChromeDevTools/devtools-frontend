@@ -20,15 +20,7 @@ import { WebCustomData } from './WebCustomData.js';
 export declare const REGISTERED_PROPERTY_SECTION_NAME = "@property";
 /** Title of the function section **/
 export declare const FUNCTION_SECTION_NAME = "@function";
-declare const StylesSidebarPane_base: (new (...args: any[]) => {
-    __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
-    addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
-    once<T extends keyof EventTypes>(eventType: T): Promise<EventTypes[T]>;
-    removeEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
-    hasEventListeners(eventType: keyof EventTypes): boolean;
-    dispatchEventToListeners<T extends keyof EventTypes>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
-    dispatchDOMEvent?(event: Event): void;
-}) & typeof ElementsSidebarPane;
+declare const StylesSidebarPane_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof ElementsSidebarPane;
 export declare class StylesSidebarPane extends StylesSidebarPane_base implements StylesContainer {
     #private;
     private matchedStyles;
@@ -51,7 +43,7 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     private isActivePropertyHighlighted;
     private initialUpdateCompleted;
     hasMatchedStyles: boolean;
-    private sectionBlocks;
+    sectionBlocks: SectionBlock[];
     private idleCallbackManager;
     private needsForceUpdate;
     private isSuppressingResets;
@@ -107,8 +99,12 @@ export declare class StylesSidebarPane extends StylesSidebarPane_base implements
     private innerRebuildUpdate;
     private nodeStylesUpdatedForTest;
     setMatchedStylesForTest(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles): void;
+    setNodeForTest(node: SDK.DOMModel.DOMNode): void;
+    private getStyleId;
     rebuildSectionsForMatchedStyleRulesForTest(matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles, computedStyles: Map<string, string> | null, parentsComputedStyles: Map<string, string> | null, computedStyleExtraFields: Protocol.CSS.ComputedStyleExtraFields | null): Promise<SectionBlock[]>;
     private rebuildSectionsForMatchedStyleRules;
+    private computeBlockIds;
+    private mergeInactiveStyles;
     createNewRuleInViaInspectorStyleSheet(): Promise<void>;
     private createNewRuleInStyleSheet;
     addBlankSection(insertAfterSection: StylePropertiesSection, styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader, ruleLocation: TextUtils.TextRange.TextRange): void;
@@ -204,6 +200,11 @@ export declare class CSSPropertyPrompt extends UI.TextPrompt.TextPrompt {
 }
 export declare function unescapeCssString(input: string): string;
 export declare function escapeUrlAsCssComment(urlText: string): string;
+/**
+ * Merges a newly active list of items with an existing (previously known) list of items,
+ * preserving the relative order of inactive items while updating and inserting active items.
+ */
+export declare function mergeOrderedItems<T>(oldItems: T[], newItems: T[], getId: (item: T) => string, markInactive: (item: T) => void): T[];
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(_context: UI.Context.Context, actionId: string): boolean;
 }

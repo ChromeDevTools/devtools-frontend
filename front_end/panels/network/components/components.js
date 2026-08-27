@@ -13,13 +13,13 @@ __export(DirectSocketConnectionView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
   DirectSocketConnectionView: () => DirectSocketConnectionView
 });
-import * as Common from "./../../../core/common/common.js";
-import * as Host from "./../../../core/host/host.js";
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as SDK from "./../../../core/sdk/sdk.js";
-import * as UI from "./../../../ui/legacy/legacy.js";
-import * as Lit from "./../../../ui/lit/lit.js";
-import * as VisualLogging from "./../../../ui/visual_logging/visual_logging.js";
+import * as Common from "../../../core/common/common.js";
+import * as Host from "../../../core/host/host.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as SDK from "../../../core/sdk/sdk.js";
+import * as UI from "../../../ui/legacy/legacy.js";
+import * as Lit from "../../../ui/lit/lit.js";
+import * as VisualLogging from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/components/RequestHeadersView.css.js
 var RequestHeadersView_css_default = `/*
@@ -30,14 +30,14 @@ var RequestHeadersView_css_default = `/*
 
 .header {
   background-color: var(--sys-color-surface1);
-  border-bottom: 1px solid var(--sys-color-divider);
-  border-top: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   line-height: 25px;
   padding: 0 5px;
 }
 
 .header::marker {
-  font-size: 11px;
+  font-size: var(--sys-typescale-body5-size);
   line-height: 1;
 }
 
@@ -64,7 +64,7 @@ details summary input {
 .row {
   display: flex;
   line-height: 18px;
-  padding-left: 8px;
+  padding-left: var(--sys-size-5);
   gap: var(--sys-size-6);
   user-select: text;
   margin: var(--sys-size-3) 0;
@@ -86,8 +86,8 @@ div.raw-headers-row {
   color: var(--sys-color-on-surface-subtle);
   font: var(--sys-typescale-body5-medium);
   width: 30%;
-  min-width: 160px;
-  max-width: 240px;
+  min-width: var(--sys-size-23);
+  max-width: var(--sys-size-28);
   flex-shrink: 0;
   text-transform: capitalize;
 }
@@ -96,7 +96,7 @@ div.raw-headers-row {
   word-break: break-all;
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: var(--sys-size-2);
   font: var(--sys-typescale-body4-regular);
 }
 
@@ -113,11 +113,11 @@ div.raw-headers-row {
 .yellow-circle::before {
   content: '';
   display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 6px;
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
+  border-radius: var(--sys-size-4);
   vertical-align: text-top;
-  margin-right: 2px;
+  margin-right: var(--sys-size-2);
 }
 
 .green-circle::before {
@@ -148,7 +148,7 @@ div.raw-headers-row {
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 }
 
 .inline-icon {
@@ -158,7 +158,7 @@ div.raw-headers-row {
 .header-grid-container {
   display: inline-grid;
   grid-template-columns: 156px 50px 1fr;
-  gap: 4px;
+  gap: var(--sys-size-3);
   /* Make this fit into the same line as the summary marker */
   width: calc(100% - 15px);
 }
@@ -183,10 +183,10 @@ devtools-link .inline-icon {
 .purple.dot::before {
   background-color: var(--sys-color-purple-bright);
   content: var(--image-file-empty);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  outline: 1px solid var(--icon-gap-toolbar);
+  width: var(--sys-size-4);
+  height: var(--sys-size-4);
+  border-radius: var(--sys-shape-corner-full);
+  outline: var(--sys-size-1) solid var(--icon-gap-toolbar);
   left: 9px;
   position: absolute;
   top: 11px;
@@ -201,7 +201,7 @@ summary label {
 }
 
 summary devtools-checkbox {
-  margin-top: 1px;
+  margin-top: var(--sys-size-1);
 }
 
 /*# sourceURL=${import.meta.resolve("./RequestHeadersView.css")} */`;
@@ -458,9 +458,9 @@ var EditableSpan_exports = {};
 __export(EditableSpan_exports, {
   EditableSpan: () => EditableSpan
 });
-import * as ComponentHelpers from "./../../../ui/components/helpers/helpers.js";
-import { html as html2, render as render2 } from "./../../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../../ui/visual_logging/visual_logging.js";
+import * as ComponentHelpers from "../../../ui/components/helpers/helpers.js";
+import { html as html2, render as render2 } from "../../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/components/EditableSpan.css.js
 var EditableSpan_css_default = `/*
@@ -481,18 +481,18 @@ var EditableSpan_css_default = `/*
   min-width: 0.5em;
   background: transparent;
   border: none;
-  border-radius: 4px;
+  border-radius: var(--sys-shape-corner-extra-small);
   outline: none;
   display: inline-block;
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
 
   &:hover {
-    border: 1px solid var(--sys-color-neutral-outline);
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   }
 
   &:focus {
-    border: 1px solid var(--sys-color-state-focus-ring);
+    border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
   }
 }
 
@@ -569,6 +569,7 @@ customElements.define("devtools-editable-span", EditableSpan);
 // gen/front_end/panels/network/components/HeaderSectionRow.js
 var HeaderSectionRow_exports = {};
 __export(HeaderSectionRow_exports, {
+  EditingAllowedStatus: () => EditingAllowedStatus,
   EnableHeaderEditingEvent: () => EnableHeaderEditingEvent,
   HeaderEditedEvent: () => HeaderEditedEvent,
   HeaderRemovedEvent: () => HeaderRemovedEvent,
@@ -576,17 +577,17 @@ __export(HeaderSectionRow_exports, {
   compareHeaders: () => compareHeaders,
   isValidHeaderName: () => isValidHeaderName
 });
-import "./../../../ui/kit/kit.js";
-import * as Host2 from "./../../../core/host/host.js";
-import * as i18n3 from "./../../../core/i18n/i18n.js";
-import * as Platform from "./../../../core/platform/platform.js";
-import * as SDK2 from "./../../../core/sdk/sdk.js";
-import * as ClientVariations from "./../../../third_party/chromium/client-variations/client-variations.js";
-import * as Buttons from "./../../../ui/components/buttons/buttons.js";
-import * as ComponentHelpers2 from "./../../../ui/components/helpers/helpers.js";
-import * as UI2 from "./../../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import * as Host2 from "../../../core/host/host.js";
+import * as i18n3 from "../../../core/i18n/i18n.js";
+import * as Platform from "../../../core/platform/platform.js";
+import * as SDK2 from "../../../core/sdk/sdk.js";
+import * as ClientVariations from "../../../third_party/chromium/client-variations/client-variations.js";
+import * as Buttons from "../../../ui/components/buttons/buttons.js";
+import * as ComponentHelpers2 from "../../../ui/components/helpers/helpers.js";
+import * as UI2 from "../../../ui/legacy/legacy.js";
+import * as Lit2 from "../../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/components/HeaderSectionRow.css.js
 var HeaderSectionRow_css_default = `/*
@@ -602,7 +603,7 @@ var HeaderSectionRow_css_default = `/*
 .row {
   display: flex;
   line-height: 18px;
-  padding-left: 8px;
+  padding-left: var(--sys-size-5);
   gap: var(--sys-size-6);
   user-select: text;
   margin: var(--sys-size-3) 0;
@@ -616,8 +617,8 @@ var HeaderSectionRow_css_default = `/*
   font: var(--sys-typescale-body5-medium);
   color: var(--sys-color-on-surface-subtle);
   width: 30%;
-  min-width: 160px;
-  max-width: 240px;
+  min-width: var(--sys-size-23);
+  max-width: var(--sys-size-28);
   flex-shrink: 0;
   text-transform: capitalize;
   overflow-wrap: break-word;
@@ -646,7 +647,7 @@ var HeaderSectionRow_css_default = `/*
 .header-value {
   display: flex;
   overflow-wrap: anywhere;
-  margin-inline-end: 14px;
+  margin-inline-end: var(--sys-size-7);
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
 }
@@ -664,25 +665,25 @@ var HeaderSectionRow_css_default = `/*
   background-color: var(--sys-color-error);
   color: var(--sys-color-on-error);
   border-radius: 100vh;
-  padding-left: 6px;
-  padding-right: 6px;
+  padding-left: var(--sys-size-4);
+  padding-right: var(--sys-size-4);
 }
 
 .call-to-action {
   background-color: var(--sys-color-neutral-container);
-  padding: 8px;
+  padding: var(--sys-size-5);
   border-radius: 5px;
-  margin: 4px;
+  margin: var(--sys-size-3);
 }
 
 .call-to-action-body {
   display: flex;
   gap: var(--sys-size-4);
-  padding: 6px 0;
+  padding: var(--sys-size-4) 0;
   margin-left: var(--sys-size-1);
-  border-left: 2px solid var(--issue-color-yellow);
+  border-left: var(--sys-size-2) solid var(--issue-color-yellow);
   padding-left: 11px;
-  line-height: 20px;
+  line-height: var(--sys-typescale-body3-line-height);
 }
 
 .call-to-action .explanation {
@@ -702,7 +703,7 @@ var HeaderSectionRow_css_default = `/*
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 }
 
 .explanation .link {
@@ -714,7 +715,7 @@ var HeaderSectionRow_css_default = `/*
 }
 
 .row-flex-icon {
-  margin: 2px 5px 0;
+  margin: var(--sys-size-2) 5px 0;
 }
 
 .header-value code {
@@ -763,7 +764,7 @@ devtools-link .inline-icon {
   opacity: 0%;
   visibility: hidden;
   transition: opacity 200ms;
-  padding-left: 2px;
+  padding-left: var(--sys-size-2);
 }
 
 .row.header-overridden:focus-within .inline-button,
@@ -1167,6 +1168,12 @@ var HeaderSectionRow = class extends HTMLElement {
   }
 };
 customElements.define("devtools-header-section-row", HeaderSectionRow);
+var EditingAllowedStatus;
+(function(EditingAllowedStatus2) {
+  EditingAllowedStatus2[EditingAllowedStatus2["DISABLED"] = 0] = "DISABLED";
+  EditingAllowedStatus2[EditingAllowedStatus2["ENABLED"] = 1] = "ENABLED";
+  EditingAllowedStatus2[EditingAllowedStatus2["FORBIDDEN"] = 2] = "FORBIDDEN";
+})(EditingAllowedStatus || (EditingAllowedStatus = {}));
 
 // gen/front_end/panels/network/components/RequestHeaderSection.js
 var RequestHeaderSection_exports = {};
@@ -1175,13 +1182,13 @@ __export(RequestHeaderSection_exports, {
   RequestHeaderSection: () => RequestHeaderSection,
   requestHeadersViewStyles: () => RequestHeadersView_css_default
 });
-import "./../../../ui/kit/kit.js";
-import * as i18n5 from "./../../../core/i18n/i18n.js";
-import * as Platform2 from "./../../../core/platform/platform.js";
-import * as UI3 from "./../../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
-import * as NetworkForward from "./../forward/forward.js";
+import "../../../ui/kit/kit.js";
+import * as i18n5 from "../../../core/i18n/i18n.js";
+import * as Platform2 from "../../../core/platform/platform.js";
+import * as UI3 from "../../../ui/legacy/legacy.js";
+import * as Lit3 from "../../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../../ui/visual_logging/visual_logging.js";
+import * as NetworkForward from "../forward/forward.js";
 
 // gen/front_end/panels/network/components/RequestHeaderSection.css.js
 var RequestHeaderSection_css_default = `/*
@@ -1199,24 +1206,24 @@ var RequestHeaderSection_css_default = `/*
   }
 
   devtools-header-section-row:first-of-type {
-    margin-top: 2px;
+    margin-top: var(--sys-size-2);
   }
 
   .call-to-action {
     background-color: var(--sys-color-neutral-container);
-    padding: 8px;
+    padding: var(--sys-size-5);
     border-radius: 5px;
-    margin: 4px;
+    margin: var(--sys-size-3);
   }
 
   .call-to-action-body {
     display: flex;
     gap: var(--sys-size-4);
-    padding: 6px 0;
+    padding: var(--sys-size-4) 0;
     margin-left: var(--sys-size-1);
-    border-left: 2px solid var(--issue-color-yellow);
+    border-left: var(--sys-size-2) solid var(--issue-color-yellow);
     padding-left: 11px;
-    line-height: 20px;
+    line-height: var(--sys-size-9);
   }
 
   .call-to-action .explanation {
@@ -1236,7 +1243,7 @@ var RequestHeaderSection_css_default = `/*
     color: var(--sys-color-primary);
     text-decoration: underline;
     cursor: pointer;
-    outline-offset: 2px;
+    outline-offset: var(--sys-size-2);
   }
 
   .explanation .link {
@@ -1361,13 +1368,13 @@ __export(RequestTrustTokensView_exports, {
   RequestTrustTokensView: () => RequestTrustTokensView,
   statusConsideredSuccess: () => statusConsideredSuccess
 });
-import "./../../../ui/components/report_view/report_view.js";
-import "./../../../ui/kit/kit.js";
-import * as i18n7 from "./../../../core/i18n/i18n.js";
-import * as SDK3 from "./../../../core/sdk/sdk.js";
-import * as UI4 from "./../../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/components/report_view/report_view.js";
+import "../../../ui/kit/kit.js";
+import * as i18n7 from "../../../core/i18n/i18n.js";
+import * as SDK3 from "../../../core/sdk/sdk.js";
+import * as UI4 from "../../../ui/legacy/legacy.js";
+import * as Lit4 from "../../../ui/lit/lit.js";
+import * as VisualLogging5 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/components/RequestTrustTokensView.css.js
 var RequestTrustTokensView_css_default = `/*
@@ -1390,7 +1397,7 @@ var RequestTrustTokensView_css_default = `/*
   }
 
   .status-icon {
-    margin: 0 0.3em 2px 0;
+    margin: 0 0.3em var(--sys-size-2) 0;
     vertical-align: middle;
 
     &.failure {
@@ -1654,19 +1661,19 @@ __export(ResponseHeaderSection_exports, {
   RESPONSE_HEADER_SECTION_DATA_KEY: () => RESPONSE_HEADER_SECTION_DATA_KEY,
   ResponseHeaderSection: () => ResponseHeaderSection
 });
-import * as Common2 from "./../../../core/common/common.js";
-import * as Host3 from "./../../../core/host/host.js";
-import * as i18n9 from "./../../../core/i18n/i18n.js";
-import * as Platform3 from "./../../../core/platform/platform.js";
-import * as TextUtils from "./../../../core/text_utils/text_utils.js";
-import * as IssuesManager from "./../../../models/issues_manager/issues_manager.js";
-import * as Persistence from "./../../../models/persistence/persistence.js";
-import * as NetworkForward2 from "./../forward/forward.js";
-import * as Sources from "./../../sources/sources.js";
-import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
-import * as UI5 from "./../../../ui/legacy/legacy.js";
-import { html as html6, nothing as nothing5, render as render6 } from "./../../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
+import * as Common2 from "../../../core/common/common.js";
+import * as Host3 from "../../../core/host/host.js";
+import * as i18n9 from "../../../core/i18n/i18n.js";
+import * as Platform3 from "../../../core/platform/platform.js";
+import * as TextUtils from "../../../core/text_utils/text_utils.js";
+import * as IssuesManager from "../../../models/issues_manager/issues_manager.js";
+import * as Persistence from "../../../models/persistence/persistence.js";
+import * as NetworkForward2 from "../forward/forward.js";
+import * as Sources from "../../sources/sources.js";
+import * as Buttons2 from "../../../ui/components/buttons/buttons.js";
+import * as UI5 from "../../../ui/legacy/legacy.js";
+import { html as html6, nothing as nothing5, render as render6 } from "../../../ui/lit/lit.js";
+import * as VisualLogging6 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/network/components/ResponseHeaderSection.css.js
 var ResponseHeaderSection_css_default = `/*

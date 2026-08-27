@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/core/common/Base64.js
+// ../../front_end/core/common/Base64.ts
 var Base64_exports = {};
 __export(Base64_exports, {
   BASE64_CHARS: () => BASE64_CHARS,
@@ -59,7 +59,7 @@ async function encode(input) {
   });
 }
 
-// gen/front_end/core/common/CharacterIdMap.js
+// ../../front_end/core/common/CharacterIdMap.ts
 var CharacterIdMap_exports = {};
 __export(CharacterIdMap_exports, {
   CharacterIdMap: () => CharacterIdMap
@@ -89,10 +89,12 @@ var CharacterIdMap = class {
   }
 };
 
-// gen/front_end/core/common/Color.js
+// ../../front_end/core/common/Color.ts
 var Color_exports = {};
 __export(Color_exports, {
+  ColorChannel: () => ColorChannel,
   ColorFunction: () => ColorFunction,
+  Format: () => Format,
   Generator: () => Generator,
   HSL: () => HSL,
   HWB: () => HWB,
@@ -118,9 +120,9 @@ __export(Color_exports, {
   parseHueNumeric: () => parseHueNumeric,
   rgb2hsv: () => rgb2hsv
 });
-import * as Platform from "./../platform/platform.js";
+import * as Platform from "../platform/platform.js";
 
-// gen/front_end/core/common/ColorConverter.js
+// ../../front_end/core/common/ColorConverter.ts
 var ColorConverter_exports = {};
 __export(ColorConverter_exports, {
   ColorConverter: () => ColorConverter
@@ -356,7 +358,12 @@ var ColorConverter = class _ColorConverter {
   static xyzd50ToDisplayP3(x, y, z) {
     const xyzInput = new Vector3([x, y, z]);
     const rgbOutput = NAMED_GAMUTS.displayP3_INVERSE.multiply(xyzInput);
-    return applyTransferFns(NAMED_TRANSFER_FN.sRGB_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
+    return applyTransferFns(
+      NAMED_TRANSFER_FN.sRGB_INVERSE,
+      rgbOutput.values[0],
+      rgbOutput.values[1],
+      rgbOutput.values[2]
+    );
   }
   static proPhotoToXyzd50(r, g, b) {
     const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.proPhotoRGB, r, g, b);
@@ -367,7 +374,12 @@ var ColorConverter = class _ColorConverter {
   static xyzd50ToProPhoto(x, y, z) {
     const xyzInput = new Vector3([x, y, z]);
     const rgbOutput = XYZD50_TO_PRO_PHOTO_MATRIX.multiply(xyzInput);
-    return applyTransferFns(NAMED_TRANSFER_FN.proPhotoRGB_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
+    return applyTransferFns(
+      NAMED_TRANSFER_FN.proPhotoRGB_INVERSE,
+      rgbOutput.values[0],
+      rgbOutput.values[1],
+      rgbOutput.values[2]
+    );
   }
   static adobeRGBToXyzd50(r, g, b) {
     const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.k2Dot2, r, g, b);
@@ -378,7 +390,12 @@ var ColorConverter = class _ColorConverter {
   static xyzd50ToAdobeRGB(x, y, z) {
     const xyzInput = new Vector3([x, y, z]);
     const rgbOutput = NAMED_GAMUTS.adobeRGB_INVERSE.multiply(xyzInput);
-    return applyTransferFns(NAMED_TRANSFER_FN.k2Dot2_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
+    return applyTransferFns(
+      NAMED_TRANSFER_FN.k2Dot2_INVERSE,
+      rgbOutput.values[0],
+      rgbOutput.values[1],
+      rgbOutput.values[2]
+    );
   }
   static rec2020ToXyzd50(r, g, b) {
     const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.rec2020, r, g, b);
@@ -389,7 +406,12 @@ var ColorConverter = class _ColorConverter {
   static xyzd50ToRec2020(x, y, z) {
     const xyzInput = new Vector3([x, y, z]);
     const rgbOutput = NAMED_GAMUTS.rec2020_INVERSE.multiply(xyzInput);
-    return applyTransferFns(NAMED_TRANSFER_FN.rec2020_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
+    return applyTransferFns(
+      NAMED_TRANSFER_FN.rec2020_INVERSE,
+      rgbOutput.values[0],
+      rgbOutput.values[1],
+      rgbOutput.values[2]
+    );
   }
   static xyzd50ToD65(x, y, z) {
     const xyzInput = new Vector3([x, y, z]);
@@ -420,7 +442,12 @@ var ColorConverter = class _ColorConverter {
   static xyzd50ToSrgb(x, y, z) {
     const xyzInput = new Vector3([x, y, z]);
     const rgbOutput = NAMED_GAMUTS.sRGB_INVERSE.multiply(xyzInput);
-    return applyTransferFns(NAMED_TRANSFER_FN.sRGB_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
+    return applyTransferFns(
+      NAMED_TRANSFER_FN.sRGB_INVERSE,
+      rgbOutput.values[0],
+      rgbOutput.values[1],
+      rgbOutput.values[2]
+    );
   }
   static oklchToXyzd50(lInput, c, h) {
     const [l, a, b] = _ColorConverter.lchToLab(lInput, c, h);
@@ -434,7 +461,7 @@ var ColorConverter = class _ColorConverter {
   }
 };
 
-// gen/front_end/core/common/ColorUtils.js
+// ../../front_end/core/common/ColorUtils.ts
 var ColorUtils_exports = {};
 __export(ColorUtils_exports, {
   blendColors: () => blendColors,
@@ -633,7 +660,7 @@ function getContrastThreshold(fontSize, fontWeight) {
   return contrastThresholds.normalFont;
 }
 
-// gen/front_end/core/common/Color.js
+// ../../front_end/core/common/Color.ts
 function normalizeHue(hue) {
   return (hue % 360 + 360) % 360;
 }
@@ -656,56 +683,72 @@ function parseAngle(angleText) {
 }
 function getFormat(formatText) {
   switch (formatText) {
-    case "hex":
-      return "hex";
-    case "hexa":
-      return "hexa";
-    case "rgb":
-      return "rgb";
-    case "rgba":
-      return "rgba";
-    case "hsl":
-      return "hsl";
-    case "hsla":
-      return "hsla";
-    case "hwb":
-      return "hwb";
-    case "hwba":
-      return "hwba";
-    case "lch":
-      return "lch";
-    case "oklch":
-      return "oklch";
-    case "lab":
-      return "lab";
-    case "oklab":
-      return "oklab";
+    case "hex" /* HEX */:
+      return "hex" /* HEX */;
+    case "hexa" /* HEXA */:
+      return "hexa" /* HEXA */;
+    case "rgb" /* RGB */:
+      return "rgb" /* RGB */;
+    case "rgba" /* RGBA */:
+      return "rgba" /* RGBA */;
+    case "hsl" /* HSL */:
+      return "hsl" /* HSL */;
+    case "hsla" /* HSLA */:
+      return "hsla" /* HSLA */;
+    case "hwb" /* HWB */:
+      return "hwb" /* HWB */;
+    case "hwba" /* HWBA */:
+      return "hwba" /* HWBA */;
+    case "lch" /* LCH */:
+      return "lch" /* LCH */;
+    case "oklch" /* OKLCH */:
+      return "oklch" /* OKLCH */;
+    case "lab" /* LAB */:
+      return "lab" /* LAB */;
+    case "oklab" /* OKLAB */:
+      return "oklab" /* OKLAB */;
   }
   return getColorSpace(formatText);
 }
 function getColorSpace(colorSpaceText) {
   switch (colorSpaceText) {
-    case "srgb":
-      return "srgb";
-    case "srgb-linear":
-      return "srgb-linear";
-    case "display-p3":
-      return "display-p3";
-    case "a98-rgb":
-      return "a98-rgb";
-    case "prophoto-rgb":
-      return "prophoto-rgb";
-    case "rec2020":
-      return "rec2020";
-    case "xyz":
-      return "xyz";
-    case "xyz-d50":
-      return "xyz-d50";
-    case "xyz-d65":
-      return "xyz-d65";
+    case "srgb" /* SRGB */:
+      return "srgb" /* SRGB */;
+    case "srgb-linear" /* SRGB_LINEAR */:
+      return "srgb-linear" /* SRGB_LINEAR */;
+    case "display-p3" /* DISPLAY_P3 */:
+      return "display-p3" /* DISPLAY_P3 */;
+    case "a98-rgb" /* A98_RGB */:
+      return "a98-rgb" /* A98_RGB */;
+    case "prophoto-rgb" /* PROPHOTO_RGB */:
+      return "prophoto-rgb" /* PROPHOTO_RGB */;
+    case "rec2020" /* REC_2020 */:
+      return "rec2020" /* REC_2020 */;
+    case "xyz" /* XYZ */:
+      return "xyz" /* XYZ */;
+    case "xyz-d50" /* XYZ_D50 */:
+      return "xyz-d50" /* XYZ_D50 */;
+    case "xyz-d65" /* XYZ_D65 */:
+      return "xyz-d65" /* XYZ_D65 */;
   }
   return null;
 }
+var ColorChannel = /* @__PURE__ */ ((ColorChannel2) => {
+  ColorChannel2["A"] = "a";
+  ColorChannel2["ALPHA"] = "alpha";
+  ColorChannel2["B"] = "b";
+  ColorChannel2["C"] = "c";
+  ColorChannel2["G"] = "g";
+  ColorChannel2["H"] = "h";
+  ColorChannel2["L"] = "l";
+  ColorChannel2["R"] = "r";
+  ColorChannel2["S"] = "s";
+  ColorChannel2["W"] = "w";
+  ColorChannel2["X"] = "x";
+  ColorChannel2["Y"] = "y";
+  ColorChannel2["Z"] = "z";
+  return ColorChannel2;
+})(ColorChannel || {});
 function mapPercentToRange(percent, range) {
   const sign = Math.sign(percent);
   const absPercent = Math.abs(percent);
@@ -990,10 +1033,7 @@ function approachColorValue(candidateHSVA, index, desiredLuminance2, candidateLu
   return null;
 }
 function findFgColorForContrast(fgColor, bgColor, requiredContrast) {
-  const candidateHSVA = fgColor.as(
-    "hsl"
-    /* Format.HSL */
-  ).hsva();
+  const candidateHSVA = fgColor.as("hsl" /* HSL */).hsva();
   const bgRGBA = bgColor.rgba();
   const candidateLuminance = (candidateHSVA2) => {
     return luminance(blendColors(Legacy.fromHSVA(candidateHSVA2).rgba(), bgRGBA));
@@ -1014,10 +1054,7 @@ function findFgColorForContrast(fgColor, bgColor, requiredContrast) {
   return null;
 }
 function findFgColorForContrastAPCA(fgColor, bgColor, requiredContrast) {
-  const candidateHSVA = fgColor.as(
-    "hsl"
-    /* Format.HSL */
-  ).hsva();
+  const candidateHSVA = fgColor.as("hsl" /* HSL */).hsva();
   const candidateLuminance = (candidateHSVA2) => {
     return luminanceAPCA(Legacy.fromHSVA(candidateHSVA2).rgba());
   };
@@ -1068,6 +1105,30 @@ function equals(a, b, accuracy = EPSILON) {
 function lessOrEquals(a, b, accuracy = EPSILON) {
   return a - b <= accuracy;
 }
+var Format = /* @__PURE__ */ ((Format2) => {
+  Format2["HEX"] = "hex";
+  Format2["HEXA"] = "hexa";
+  Format2["RGB"] = "rgb";
+  Format2["RGBA"] = "rgba";
+  Format2["HSL"] = "hsl";
+  Format2["HSLA"] = "hsla";
+  Format2["HWB"] = "hwb";
+  Format2["HWBA"] = "hwba";
+  Format2["LCH"] = "lch";
+  Format2["OKLCH"] = "oklch";
+  Format2["LAB"] = "lab";
+  Format2["OKLAB"] = "oklab";
+  Format2["SRGB"] = "srgb";
+  Format2["SRGB_LINEAR"] = "srgb-linear";
+  Format2["DISPLAY_P3"] = "display-p3";
+  Format2["A98_RGB"] = "a98-rgb";
+  Format2["PROPHOTO_RGB"] = "prophoto-rgb";
+  Format2["REC_2020"] = "rec2020";
+  Format2["XYZ"] = "xyz";
+  Format2["XYZ_D50"] = "xyz-d50";
+  Format2["XYZ_D65"] = "xyz-d65";
+  return Format2;
+})(Format || {});
 var Lab = class _Lab {
   l;
   a;
@@ -1075,138 +1136,53 @@ var Lab = class _Lab {
   alpha;
   #authoredText;
   #rawParams;
-  channels = [
-    "l",
-    "a",
-    "b",
-    "alpha"
-    /* ColorChannel.ALPHA */
-  ];
+  channels = ["l" /* L */, "a" /* A */, "b" /* B */, "alpha" /* ALPHA */];
   static #conversions = {
-    [
-      "hex"
-      /* Format.HEX */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "hex"
-      /* Format.HEX */
-    ),
-    [
-      "hexa"
-      /* Format.HEXA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "hexa"
-      /* Format.HEXA */
-    ),
-    [
-      "rgb"
-      /* Format.RGB */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "rgb"
-      /* Format.RGB */
-    ),
-    [
-      "rgba"
-      /* Format.RGBA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "rgba"
-      /* Format.RGBA */
-    ),
-    [
-      "hsl"
-      /* Format.HSL */
-    ]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
+    ["hex" /* HEX */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "hex" /* HEX */),
+    ["hexa" /* HEXA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "hexa" /* HEXA */),
+    ["rgb" /* RGB */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "rgb" /* RGB */),
+    ["rgba" /* RGBA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "rgba" /* RGBA */),
+    ["hsl" /* HSL */]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hsla"
-      /* Format.HSLA */
-    ]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
+    ["hsla" /* HSLA */]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hwb"
-      /* Format.HWB */
-    ]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
+    ["hwb" /* HWB */]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hwba"
-      /* Format.HWBA */
-    ]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
+    ["hwba" /* HWBA */]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "lch"
-      /* Format.LCH */
-    ]: (self) => new LCH(...ColorConverter.labToLch(self.l, self.a, self.b), self.alpha),
-    [
-      "oklch"
-      /* Format.OKLCH */
-    ]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
-    [
-      "lab"
-      /* Format.LAB */
-    ]: (self) => self,
-    [
-      "oklab"
-      /* Format.OKLAB */
-    ]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
-    [
-      "srgb"
-      /* Format.SRGB */
-    ]: (self) => new ColorFunction("srgb", ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
-    [
-      "srgb-linear"
-      /* Format.SRGB_LINEAR */
-    ]: (self) => new ColorFunction("srgb-linear", ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
-    [
-      "display-p3"
-      /* Format.DISPLAY_P3 */
-    ]: (self) => new ColorFunction("display-p3", ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
-    [
-      "a98-rgb"
-      /* Format.A98_RGB */
-    ]: (self) => new ColorFunction("a98-rgb", ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
-    [
-      "prophoto-rgb"
-      /* Format.PROPHOTO_RGB */
-    ]: (self) => new ColorFunction("prophoto-rgb", ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
-    [
-      "rec2020"
-      /* Format.REC_2020 */
-    ]: (self) => new ColorFunction("rec2020", ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz"
-      /* Format.XYZ */
-    ]: (self) => new ColorFunction("xyz", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz-d50"
-      /* Format.XYZ_D50 */
-    ]: (self) => new ColorFunction("xyz-d50", ...self.#toXyzd50(), self.alpha),
-    [
-      "xyz-d65"
-      /* Format.XYZ_D65 */
-    ]: (self) => new ColorFunction("xyz-d65", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
+    ["lch" /* LCH */]: (self) => new LCH(...ColorConverter.labToLch(self.l, self.a, self.b), self.alpha),
+    ["oklch" /* OKLCH */]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
+    ["lab" /* LAB */]: (self) => self,
+    ["oklab" /* OKLAB */]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
+    ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
+    ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
+    ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
+    ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
+    ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
+    ["xyz" /* XYZ */]: (self) => new ColorFunction("xyz" /* XYZ */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
+    ["xyz-d50" /* XYZ_D50 */]: (self) => new ColorFunction("xyz-d50" /* XYZ_D50 */, ...self.#toXyzd50(), self.alpha),
+    ["xyz-d65" /* XYZ_D65 */]: (self) => new ColorFunction("xyz-d65" /* XYZ_D65 */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
   };
   #toXyzd50() {
     return ColorConverter.labToXyzd50(this.l, this.a, this.b);
@@ -1236,20 +1212,14 @@ var Lab = class _Lab {
     return _Lab.#conversions[format](this);
   }
   asLegacyColor() {
-    return this.as(
-      "rgba"
-      /* Format.RGBA */
-    );
+    return this.as("rgba" /* RGBA */);
   }
   equal(color) {
-    const lab = color.as(
-      "lab"
-      /* Format.LAB */
-    );
+    const lab = color.as("lab" /* LAB */);
     return equals(lab.l, this.l, WIDE_RANGE_EPSILON) && equals(lab.a, this.a) && equals(lab.b, this.b) && equals(lab.alpha, this.alpha);
   }
   format() {
-    return "lab";
+    return "lab" /* LAB */;
   }
   setAlpha(alpha) {
     return new _Lab(this.l, this.a, this.b, alpha, void 0);
@@ -1262,7 +1232,9 @@ var Lab = class _Lab {
   }
   #stringify(l, a, b) {
     const alpha = this.alpha === null || equals(this.alpha, 1) ? "" : ` / ${Platform.StringUtilities.stringifyWithPrecision(this.alpha)}`;
-    return `lab(${Platform.StringUtilities.stringifyWithPrecision(l, 0)} ${Platform.StringUtilities.stringifyWithPrecision(a)} ${Platform.StringUtilities.stringifyWithPrecision(b)}${alpha})`;
+    return `lab(${Platform.StringUtilities.stringifyWithPrecision(l, 0)} ${Platform.StringUtilities.stringifyWithPrecision(
+      a
+    )} ${Platform.StringUtilities.stringifyWithPrecision(b)}${alpha})`;
   }
   getAuthoredText() {
     return this.#authoredText ?? null;
@@ -1303,138 +1275,53 @@ var LCH = class _LCH {
   h;
   alpha;
   #authoredText;
-  channels = [
-    "l",
-    "c",
-    "h",
-    "alpha"
-    /* ColorChannel.ALPHA */
-  ];
+  channels = ["l" /* L */, "c" /* C */, "h" /* H */, "alpha" /* ALPHA */];
   static #conversions = {
-    [
-      "hex"
-      /* Format.HEX */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "hex"
-      /* Format.HEX */
-    ),
-    [
-      "hexa"
-      /* Format.HEXA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "hexa"
-      /* Format.HEXA */
-    ),
-    [
-      "rgb"
-      /* Format.RGB */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "rgb"
-      /* Format.RGB */
-    ),
-    [
-      "rgba"
-      /* Format.RGBA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "rgba"
-      /* Format.RGBA */
-    ),
-    [
-      "hsl"
-      /* Format.HSL */
-    ]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
+    ["hex" /* HEX */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "hex" /* HEX */),
+    ["hexa" /* HEXA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "hexa" /* HEXA */),
+    ["rgb" /* RGB */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "rgb" /* RGB */),
+    ["rgba" /* RGBA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "rgba" /* RGBA */),
+    ["hsl" /* HSL */]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hsla"
-      /* Format.HSLA */
-    ]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
+    ["hsla" /* HSLA */]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hwb"
-      /* Format.HWB */
-    ]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
+    ["hwb" /* HWB */]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hwba"
-      /* Format.HWBA */
-    ]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
+    ["hwba" /* HWBA */]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "lch"
-      /* Format.LCH */
-    ]: (self) => self,
-    [
-      "oklch"
-      /* Format.OKLCH */
-    ]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
-    [
-      "lab"
-      /* Format.LAB */
-    ]: (self) => new Lab(...ColorConverter.lchToLab(self.l, self.c, self.h), self.alpha),
-    [
-      "oklab"
-      /* Format.OKLAB */
-    ]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
-    [
-      "srgb"
-      /* Format.SRGB */
-    ]: (self) => new ColorFunction("srgb", ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
-    [
-      "srgb-linear"
-      /* Format.SRGB_LINEAR */
-    ]: (self) => new ColorFunction("srgb-linear", ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
-    [
-      "display-p3"
-      /* Format.DISPLAY_P3 */
-    ]: (self) => new ColorFunction("display-p3", ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
-    [
-      "a98-rgb"
-      /* Format.A98_RGB */
-    ]: (self) => new ColorFunction("a98-rgb", ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
-    [
-      "prophoto-rgb"
-      /* Format.PROPHOTO_RGB */
-    ]: (self) => new ColorFunction("prophoto-rgb", ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
-    [
-      "rec2020"
-      /* Format.REC_2020 */
-    ]: (self) => new ColorFunction("rec2020", ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz"
-      /* Format.XYZ */
-    ]: (self) => new ColorFunction("xyz", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz-d50"
-      /* Format.XYZ_D50 */
-    ]: (self) => new ColorFunction("xyz-d50", ...self.#toXyzd50(), self.alpha),
-    [
-      "xyz-d65"
-      /* Format.XYZ_D65 */
-    ]: (self) => new ColorFunction("xyz-d65", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
+    ["lch" /* LCH */]: (self) => self,
+    ["oklch" /* OKLCH */]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
+    ["lab" /* LAB */]: (self) => new Lab(...ColorConverter.lchToLab(self.l, self.c, self.h), self.alpha),
+    ["oklab" /* OKLAB */]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
+    ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
+    ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
+    ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
+    ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
+    ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
+    ["xyz" /* XYZ */]: (self) => new ColorFunction("xyz" /* XYZ */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
+    ["xyz-d50" /* XYZ_D50 */]: (self) => new ColorFunction("xyz-d50" /* XYZ_D50 */, ...self.#toXyzd50(), self.alpha),
+    ["xyz-d65" /* XYZ_D65 */]: (self) => new ColorFunction("xyz-d65" /* XYZ_D65 */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
   };
   #toXyzd50() {
     return ColorConverter.labToXyzd50(...ColorConverter.lchToLab(this.l, this.c, this.h));
@@ -1457,10 +1344,7 @@ var LCH = class _LCH {
     this.#authoredText = authoredText;
   }
   asLegacyColor() {
-    return this.as(
-      "rgba"
-      /* Format.RGBA */
-    );
+    return this.as("rgba" /* RGBA */);
   }
   is(format) {
     return format === this.format();
@@ -1469,14 +1353,11 @@ var LCH = class _LCH {
     return _LCH.#conversions[format](this);
   }
   equal(color) {
-    const lch = color.as(
-      "lch"
-      /* Format.LCH */
-    );
+    const lch = color.as("lch" /* LCH */);
     return equals(lch.l, this.l, WIDE_RANGE_EPSILON) && equals(lch.c, this.c) && equals(lch.h, this.h) && equals(lch.alpha, this.alpha);
   }
   format() {
-    return "lch";
+    return "lch" /* LCH */;
   }
   setAlpha(alpha) {
     return new _LCH(this.l, this.c, this.h, alpha);
@@ -1489,7 +1370,9 @@ var LCH = class _LCH {
   }
   #stringify(l, c, h) {
     const alpha = this.alpha === null || equals(this.alpha, 1) ? "" : ` / ${Platform.StringUtilities.stringifyWithPrecision(this.alpha)}`;
-    return `lch(${Platform.StringUtilities.stringifyWithPrecision(l, 0)} ${Platform.StringUtilities.stringifyWithPrecision(c)} ${Platform.StringUtilities.stringifyWithPrecision(h)}${alpha})`;
+    return `lch(${Platform.StringUtilities.stringifyWithPrecision(l, 0)} ${Platform.StringUtilities.stringifyWithPrecision(
+      c
+    )} ${Platform.StringUtilities.stringifyWithPrecision(h)}${alpha})`;
   }
   getAuthoredText() {
     return this.#authoredText ?? null;
@@ -1535,138 +1418,53 @@ var Oklab = class _Oklab {
   b;
   alpha;
   #authoredText;
-  channels = [
-    "l",
-    "a",
-    "b",
-    "alpha"
-    /* ColorChannel.ALPHA */
-  ];
+  channels = ["l" /* L */, "a" /* A */, "b" /* B */, "alpha" /* ALPHA */];
   static #conversions = {
-    [
-      "hex"
-      /* Format.HEX */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "hex"
-      /* Format.HEX */
-    ),
-    [
-      "hexa"
-      /* Format.HEXA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "hexa"
-      /* Format.HEXA */
-    ),
-    [
-      "rgb"
-      /* Format.RGB */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "rgb"
-      /* Format.RGB */
-    ),
-    [
-      "rgba"
-      /* Format.RGBA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "rgba"
-      /* Format.RGBA */
-    ),
-    [
-      "hsl"
-      /* Format.HSL */
-    ]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
+    ["hex" /* HEX */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "hex" /* HEX */),
+    ["hexa" /* HEXA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "hexa" /* HEXA */),
+    ["rgb" /* RGB */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "rgb" /* RGB */),
+    ["rgba" /* RGBA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "rgba" /* RGBA */),
+    ["hsl" /* HSL */]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hsla"
-      /* Format.HSLA */
-    ]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
+    ["hsla" /* HSLA */]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hwb"
-      /* Format.HWB */
-    ]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
+    ["hwb" /* HWB */]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hwba"
-      /* Format.HWBA */
-    ]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
+    ["hwba" /* HWBA */]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "lch"
-      /* Format.LCH */
-    ]: (self) => new LCH(...ColorConverter.labToLch(...ColorConverter.xyzd50ToLab(...self.#toXyzd50())), self.alpha),
-    [
-      "oklch"
-      /* Format.OKLCH */
-    ]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
-    [
-      "lab"
-      /* Format.LAB */
-    ]: (self) => new Lab(...ColorConverter.xyzd50ToLab(...self.#toXyzd50()), self.alpha),
-    [
-      "oklab"
-      /* Format.OKLAB */
-    ]: (self) => self,
-    [
-      "srgb"
-      /* Format.SRGB */
-    ]: (self) => new ColorFunction("srgb", ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
-    [
-      "srgb-linear"
-      /* Format.SRGB_LINEAR */
-    ]: (self) => new ColorFunction("srgb-linear", ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
-    [
-      "display-p3"
-      /* Format.DISPLAY_P3 */
-    ]: (self) => new ColorFunction("display-p3", ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
-    [
-      "a98-rgb"
-      /* Format.A98_RGB */
-    ]: (self) => new ColorFunction("a98-rgb", ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
-    [
-      "prophoto-rgb"
-      /* Format.PROPHOTO_RGB */
-    ]: (self) => new ColorFunction("prophoto-rgb", ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
-    [
-      "rec2020"
-      /* Format.REC_2020 */
-    ]: (self) => new ColorFunction("rec2020", ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz"
-      /* Format.XYZ */
-    ]: (self) => new ColorFunction("xyz", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz-d50"
-      /* Format.XYZ_D50 */
-    ]: (self) => new ColorFunction("xyz-d50", ...self.#toXyzd50(), self.alpha),
-    [
-      "xyz-d65"
-      /* Format.XYZ_D65 */
-    ]: (self) => new ColorFunction("xyz-d65", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
+    ["lch" /* LCH */]: (self) => new LCH(...ColorConverter.labToLch(...ColorConverter.xyzd50ToLab(...self.#toXyzd50())), self.alpha),
+    ["oklch" /* OKLCH */]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
+    ["lab" /* LAB */]: (self) => new Lab(...ColorConverter.xyzd50ToLab(...self.#toXyzd50()), self.alpha),
+    ["oklab" /* OKLAB */]: (self) => self,
+    ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
+    ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
+    ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
+    ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
+    ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
+    ["xyz" /* XYZ */]: (self) => new ColorFunction("xyz" /* XYZ */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
+    ["xyz-d50" /* XYZ_D50 */]: (self) => new ColorFunction("xyz-d50" /* XYZ_D50 */, ...self.#toXyzd50(), self.alpha),
+    ["xyz-d65" /* XYZ_D65 */]: (self) => new ColorFunction("xyz-d65" /* XYZ_D65 */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
   };
   #toXyzd50() {
     return ColorConverter.xyzd65ToD50(...ColorConverter.oklabToXyzd65(this.l, this.a, this.b));
@@ -1690,10 +1488,7 @@ var Oklab = class _Oklab {
     this.#authoredText = authoredText;
   }
   asLegacyColor() {
-    return this.as(
-      "rgba"
-      /* Format.RGBA */
-    );
+    return this.as("rgba" /* RGBA */);
   }
   is(format) {
     return format === this.format();
@@ -1702,14 +1497,11 @@ var Oklab = class _Oklab {
     return _Oklab.#conversions[format](this);
   }
   equal(color) {
-    const oklab = color.as(
-      "oklab"
-      /* Format.OKLAB */
-    );
+    const oklab = color.as("oklab" /* OKLAB */);
     return equals(oklab.l, this.l) && equals(oklab.a, this.a) && equals(oklab.b, this.b) && equals(oklab.alpha, this.alpha);
   }
   format() {
-    return "oklab";
+    return "oklab" /* OKLAB */;
   }
   setAlpha(alpha) {
     return new _Oklab(this.l, this.a, this.b, alpha);
@@ -1722,7 +1514,9 @@ var Oklab = class _Oklab {
   }
   #stringify(l, a, b) {
     const alpha = this.alpha === null || equals(this.alpha, 1) ? "" : ` / ${Platform.StringUtilities.stringifyWithPrecision(this.alpha)}`;
-    return `oklab(${Platform.StringUtilities.stringifyWithPrecision(l)} ${Platform.StringUtilities.stringifyWithPrecision(a)} ${Platform.StringUtilities.stringifyWithPrecision(b)}${alpha})`;
+    return `oklab(${Platform.StringUtilities.stringifyWithPrecision(l)} ${Platform.StringUtilities.stringifyWithPrecision(
+      a
+    )} ${Platform.StringUtilities.stringifyWithPrecision(b)}${alpha})`;
   }
   getAuthoredText() {
     return this.#authoredText ?? null;
@@ -1763,138 +1557,53 @@ var Oklch = class _Oklch {
   h;
   alpha;
   #authoredText;
-  channels = [
-    "l",
-    "c",
-    "h",
-    "alpha"
-    /* ColorChannel.ALPHA */
-  ];
+  channels = ["l" /* L */, "c" /* C */, "h" /* H */, "alpha" /* ALPHA */];
   static #conversions = {
-    [
-      "hex"
-      /* Format.HEX */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "hex"
-      /* Format.HEX */
-    ),
-    [
-      "hexa"
-      /* Format.HEXA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "hexa"
-      /* Format.HEXA */
-    ),
-    [
-      "rgb"
-      /* Format.RGB */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "rgb"
-      /* Format.RGB */
-    ),
-    [
-      "rgba"
-      /* Format.RGBA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "rgba"
-      /* Format.RGBA */
-    ),
-    [
-      "hsl"
-      /* Format.HSL */
-    ]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
+    ["hex" /* HEX */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "hex" /* HEX */),
+    ["hexa" /* HEXA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "hexa" /* HEXA */),
+    ["rgb" /* RGB */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "rgb" /* RGB */),
+    ["rgba" /* RGBA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "rgba" /* RGBA */),
+    ["hsl" /* HSL */]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hsla"
-      /* Format.HSLA */
-    ]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
+    ["hsla" /* HSLA */]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hwb"
-      /* Format.HWB */
-    ]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
+    ["hwb" /* HWB */]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hwba"
-      /* Format.HWBA */
-    ]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
+    ["hwba" /* HWBA */]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "lch"
-      /* Format.LCH */
-    ]: (self) => new LCH(...ColorConverter.labToLch(...ColorConverter.xyzd50ToLab(...self.#toXyzd50())), self.alpha),
-    [
-      "oklch"
-      /* Format.OKLCH */
-    ]: (self) => self,
-    [
-      "lab"
-      /* Format.LAB */
-    ]: (self) => new Lab(...ColorConverter.xyzd50ToLab(...self.#toXyzd50()), self.alpha),
-    [
-      "oklab"
-      /* Format.OKLAB */
-    ]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
-    [
-      "srgb"
-      /* Format.SRGB */
-    ]: (self) => new ColorFunction("srgb", ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
-    [
-      "srgb-linear"
-      /* Format.SRGB_LINEAR */
-    ]: (self) => new ColorFunction("srgb-linear", ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
-    [
-      "display-p3"
-      /* Format.DISPLAY_P3 */
-    ]: (self) => new ColorFunction("display-p3", ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
-    [
-      "a98-rgb"
-      /* Format.A98_RGB */
-    ]: (self) => new ColorFunction("a98-rgb", ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
-    [
-      "prophoto-rgb"
-      /* Format.PROPHOTO_RGB */
-    ]: (self) => new ColorFunction("prophoto-rgb", ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
-    [
-      "rec2020"
-      /* Format.REC_2020 */
-    ]: (self) => new ColorFunction("rec2020", ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz"
-      /* Format.XYZ */
-    ]: (self) => new ColorFunction("xyz", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz-d50"
-      /* Format.XYZ_D50 */
-    ]: (self) => new ColorFunction("xyz-d50", ...self.#toXyzd50(), self.alpha),
-    [
-      "xyz-d65"
-      /* Format.XYZ_D65 */
-    ]: (self) => new ColorFunction("xyz-d65", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
+    ["lch" /* LCH */]: (self) => new LCH(...ColorConverter.labToLch(...ColorConverter.xyzd50ToLab(...self.#toXyzd50())), self.alpha),
+    ["oklch" /* OKLCH */]: (self) => self,
+    ["lab" /* LAB */]: (self) => new Lab(...ColorConverter.xyzd50ToLab(...self.#toXyzd50()), self.alpha),
+    ["oklab" /* OKLAB */]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
+    ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
+    ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
+    ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
+    ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
+    ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
+    ["xyz" /* XYZ */]: (self) => new ColorFunction("xyz" /* XYZ */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
+    ["xyz-d50" /* XYZ_D50 */]: (self) => new ColorFunction("xyz-d50" /* XYZ_D50 */, ...self.#toXyzd50(), self.alpha),
+    ["xyz-d65" /* XYZ_D65 */]: (self) => new ColorFunction("xyz-d65" /* XYZ_D65 */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
   };
   #toXyzd50() {
     return ColorConverter.oklchToXyzd50(this.l, this.c, this.h);
@@ -1917,10 +1626,7 @@ var Oklch = class _Oklch {
     this.#authoredText = authoredText;
   }
   asLegacyColor() {
-    return this.as(
-      "rgba"
-      /* Format.RGBA */
-    );
+    return this.as("rgba" /* RGBA */);
   }
   is(format) {
     return format === this.format();
@@ -1929,14 +1635,11 @@ var Oklch = class _Oklch {
     return _Oklch.#conversions[format](this);
   }
   equal(color) {
-    const oklch = color.as(
-      "oklch"
-      /* Format.OKLCH */
-    );
+    const oklch = color.as("oklch" /* OKLCH */);
     return equals(oklch.l, this.l) && equals(oklch.c, this.c) && equals(oklch.h, this.h) && equals(oklch.alpha, this.alpha);
   }
   format() {
-    return "oklch";
+    return "oklch" /* OKLCH */;
   }
   setAlpha(alpha) {
     return new _Oklch(this.l, this.c, this.h, alpha);
@@ -1949,7 +1652,9 @@ var Oklch = class _Oklch {
   }
   #stringify(l, c, h) {
     const alpha = this.alpha === null || equals(this.alpha, 1) ? "" : ` / ${Platform.StringUtilities.stringifyWithPrecision(this.alpha)}`;
-    return `oklch(${Platform.StringUtilities.stringifyWithPrecision(l)} ${Platform.StringUtilities.stringifyWithPrecision(c)} ${Platform.StringUtilities.stringifyWithPrecision(h)}${alpha})`;
+    return `oklch(${Platform.StringUtilities.stringifyWithPrecision(l)} ${Platform.StringUtilities.stringifyWithPrecision(
+      c
+    )} ${Platform.StringUtilities.stringifyWithPrecision(h)}${alpha})`;
   }
   getAuthoredText() {
     return this.#authoredText ?? null;
@@ -1992,172 +1697,81 @@ var ColorFunction = class _ColorFunction {
   colorSpace;
   #authoredText;
   get channels() {
-    return this.isXYZ() ? [
-      "x",
-      "y",
-      "z",
-      "alpha"
-      /* ColorChannel.ALPHA */
-    ] : [
-      "r",
-      "g",
-      "b",
-      "alpha"
-      /* ColorChannel.ALPHA */
-    ];
+    return this.isXYZ() ? ["x" /* X */, "y" /* Y */, "z" /* Z */, "alpha" /* ALPHA */] : ["r" /* R */, "g" /* G */, "b" /* B */, "alpha" /* ALPHA */];
   }
   static #conversions = {
-    [
-      "hex"
-      /* Format.HEX */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "hex"
-      /* Format.HEX */
-    ),
-    [
-      "hexa"
-      /* Format.HEXA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "hexa"
-      /* Format.HEXA */
-    ),
-    [
-      "rgb"
-      /* Format.RGB */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "rgb"
-      /* Format.RGB */
-    ),
-    [
-      "rgba"
-      /* Format.RGBA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "rgba"
-      /* Format.RGBA */
-    ),
-    [
-      "hsl"
-      /* Format.HSL */
-    ]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
+    ["hex" /* HEX */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "hex" /* HEX */),
+    ["hexa" /* HEXA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "hexa" /* HEXA */),
+    ["rgb" /* RGB */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "rgb" /* RGB */),
+    ["rgba" /* RGBA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "rgba" /* RGBA */),
+    ["hsl" /* HSL */]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hsla"
-      /* Format.HSLA */
-    ]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
+    ["hsla" /* HSLA */]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hwb"
-      /* Format.HWB */
-    ]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
+    ["hwb" /* HWB */]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hwba"
-      /* Format.HWBA */
-    ]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
+    ["hwba" /* HWBA */]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "lch"
-      /* Format.LCH */
-    ]: (self) => new LCH(...ColorConverter.labToLch(...ColorConverter.xyzd50ToLab(...self.#toXyzd50())), self.alpha),
-    [
-      "oklch"
-      /* Format.OKLCH */
-    ]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
-    [
-      "lab"
-      /* Format.LAB */
-    ]: (self) => new Lab(...ColorConverter.xyzd50ToLab(...self.#toXyzd50()), self.alpha),
-    [
-      "oklab"
-      /* Format.OKLAB */
-    ]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
-    [
-      "srgb"
-      /* Format.SRGB */
-    ]: (self) => new _ColorFunction("srgb", ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
-    [
-      "srgb-linear"
-      /* Format.SRGB_LINEAR */
-    ]: (self) => new _ColorFunction("srgb-linear", ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
-    [
-      "display-p3"
-      /* Format.DISPLAY_P3 */
-    ]: (self) => new _ColorFunction("display-p3", ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
-    [
-      "a98-rgb"
-      /* Format.A98_RGB */
-    ]: (self) => new _ColorFunction("a98-rgb", ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
-    [
-      "prophoto-rgb"
-      /* Format.PROPHOTO_RGB */
-    ]: (self) => new _ColorFunction("prophoto-rgb", ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
-    [
-      "rec2020"
-      /* Format.REC_2020 */
-    ]: (self) => new _ColorFunction("rec2020", ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz"
-      /* Format.XYZ */
-    ]: (self) => new _ColorFunction("xyz", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz-d50"
-      /* Format.XYZ_D50 */
-    ]: (self) => new _ColorFunction("xyz-d50", ...self.#toXyzd50(), self.alpha),
-    [
-      "xyz-d65"
-      /* Format.XYZ_D65 */
-    ]: (self) => new _ColorFunction("xyz-d65", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
+    ["lch" /* LCH */]: (self) => new LCH(...ColorConverter.labToLch(...ColorConverter.xyzd50ToLab(...self.#toXyzd50())), self.alpha),
+    ["oklch" /* OKLCH */]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
+    ["lab" /* LAB */]: (self) => new Lab(...ColorConverter.xyzd50ToLab(...self.#toXyzd50()), self.alpha),
+    ["oklab" /* OKLAB */]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
+    ["srgb" /* SRGB */]: (self) => new _ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
+    ["srgb-linear" /* SRGB_LINEAR */]: (self) => new _ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
+    ["display-p3" /* DISPLAY_P3 */]: (self) => new _ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["a98-rgb" /* A98_RGB */]: (self) => new _ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
+    ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new _ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
+    ["rec2020" /* REC_2020 */]: (self) => new _ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
+    ["xyz" /* XYZ */]: (self) => new _ColorFunction("xyz" /* XYZ */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
+    ["xyz-d50" /* XYZ_D50 */]: (self) => new _ColorFunction("xyz-d50" /* XYZ_D50 */, ...self.#toXyzd50(), self.alpha),
+    ["xyz-d65" /* XYZ_D65 */]: (self) => new _ColorFunction("xyz-d65" /* XYZ_D65 */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
   };
   #toXyzd50() {
     const [p0, p1, p2] = this.#rawParams;
     switch (this.colorSpace) {
-      case "srgb":
+      case "srgb" /* SRGB */:
         return ColorConverter.srgbToXyzd50(p0, p1, p2);
-      case "srgb-linear":
+      case "srgb-linear" /* SRGB_LINEAR */:
         return ColorConverter.srgbLinearToXyzd50(p0, p1, p2);
-      case "display-p3":
+      case "display-p3" /* DISPLAY_P3 */:
         return ColorConverter.displayP3ToXyzd50(p0, p1, p2);
-      case "a98-rgb":
+      case "a98-rgb" /* A98_RGB */:
         return ColorConverter.adobeRGBToXyzd50(p0, p1, p2);
-      case "prophoto-rgb":
+      case "prophoto-rgb" /* PROPHOTO_RGB */:
         return ColorConverter.proPhotoToXyzd50(p0, p1, p2);
-      case "rec2020":
+      case "rec2020" /* REC_2020 */:
         return ColorConverter.rec2020ToXyzd50(p0, p1, p2);
-      case "xyz-d50":
+      case "xyz-d50" /* XYZ_D50 */:
         return [p0, p1, p2];
-      case "xyz":
-      case "xyz-d65":
+      case "xyz" /* XYZ */:
+      case "xyz-d65" /* XYZ_D65 */:
         return ColorConverter.xyzd65ToD50(p0, p1, p2);
     }
     throw new Error("Invalid color space");
   }
   #getRGBArray(withAlpha = true) {
     const [p0, p1, p2] = this.#rawParams;
-    const params = this.colorSpace === "srgb" ? [p0, p1, p2] : [...ColorConverter.xyzd50ToSrgb(...this.#toXyzd50())];
+    const params = this.colorSpace === "srgb" /* SRGB */ ? [p0, p1, p2] : [...ColorConverter.xyzd50ToSrgb(...this.#toXyzd50())];
     if (withAlpha) {
       return [...params, this.alpha ?? void 0];
     }
@@ -2167,7 +1781,7 @@ var ColorFunction = class _ColorFunction {
     this.#rawParams = [p0, p1, p2];
     this.colorSpace = colorSpace;
     this.#authoredText = authoredText;
-    if (this.colorSpace !== "xyz-d50" && this.colorSpace !== "xyz-d65" && this.colorSpace !== "xyz") {
+    if (this.colorSpace !== "xyz-d50" /* XYZ_D50 */ && this.colorSpace !== "xyz-d65" /* XYZ_D65 */ && this.colorSpace !== "xyz" /* XYZ */) {
       p0 = clamp(p0, { min: 0, max: 1 });
       p1 = clamp(p1, { min: 0, max: 1 });
       p2 = clamp(p2, { min: 0, max: 1 });
@@ -2178,10 +1792,7 @@ var ColorFunction = class _ColorFunction {
     this.alpha = clamp(alpha, { min: 0, max: 1 });
   }
   asLegacyColor() {
-    return this.as(
-      "rgba"
-      /* Format.RGBA */
-    );
+    return this.as("rgba" /* RGBA */);
   }
   is(format) {
     return format === this.format();
@@ -2210,7 +1821,9 @@ var ColorFunction = class _ColorFunction {
   }
   #stringify(p0, p1, p2) {
     const alpha = this.alpha === null || equals(this.alpha, 1) ? "" : ` / ${Platform.StringUtilities.stringifyWithPrecision(this.alpha)}`;
-    return `color(${this.colorSpace} ${Platform.StringUtilities.stringifyWithPrecision(p0)} ${Platform.StringUtilities.stringifyWithPrecision(p1)} ${Platform.StringUtilities.stringifyWithPrecision(p2)}${alpha})`;
+    return `color(${this.colorSpace} ${Platform.StringUtilities.stringifyWithPrecision(p0)} ${Platform.StringUtilities.stringifyWithPrecision(
+      p1
+    )} ${Platform.StringUtilities.stringifyWithPrecision(p2)}${alpha})`;
   }
   getAuthoredText() {
     return this.#authoredText ?? null;
@@ -2225,16 +1838,16 @@ var ColorFunction = class _ColorFunction {
     return this.#stringify(...this.#rawParams);
   }
   isGamutClipped() {
-    if (this.colorSpace !== "xyz-d50" && this.colorSpace !== "xyz-d65" && this.colorSpace !== "xyz") {
+    if (this.colorSpace !== "xyz-d50" /* XYZ_D50 */ && this.colorSpace !== "xyz-d65" /* XYZ_D65 */ && this.colorSpace !== "xyz" /* XYZ */) {
       return !equals(this.#rawParams, [this.p0, this.p1, this.p2]);
     }
     return false;
   }
   isXYZ() {
     switch (this.colorSpace) {
-      case "xyz":
-      case "xyz-d50":
-      case "xyz-d65":
+      case "xyz" /* XYZ */:
+      case "xyz-d50" /* XYZ_D50 */:
+      case "xyz-d65" /* XYZ_D65 */:
         return true;
     }
     return false;
@@ -2291,132 +1904,47 @@ var HSL = class _HSL {
   alpha;
   #rawParams;
   #authoredText;
-  channels = [
-    "h",
-    "s",
-    "l",
-    "alpha"
-    /* ColorChannel.ALPHA */
-  ];
+  channels = ["h" /* H */, "s" /* S */, "l" /* L */, "alpha" /* ALPHA */];
   static #conversions = {
-    [
-      "hex"
-      /* Format.HEX */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "hex"
-      /* Format.HEX */
-    ),
-    [
-      "hexa"
-      /* Format.HEXA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "hexa"
-      /* Format.HEXA */
-    ),
-    [
-      "rgb"
-      /* Format.RGB */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "rgb"
-      /* Format.RGB */
-    ),
-    [
-      "rgba"
-      /* Format.RGBA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "rgba"
-      /* Format.RGBA */
-    ),
-    [
-      "hsl"
-      /* Format.HSL */
-    ]: (self) => self,
-    [
-      "hsla"
-      /* Format.HSLA */
-    ]: (self) => self,
-    [
-      "hwb"
-      /* Format.HWB */
-    ]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
+    ["hex" /* HEX */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "hex" /* HEX */),
+    ["hexa" /* HEXA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "hexa" /* HEXA */),
+    ["rgb" /* RGB */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "rgb" /* RGB */),
+    ["rgba" /* RGBA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "rgba" /* RGBA */),
+    ["hsl" /* HSL */]: (self) => self,
+    ["hsla" /* HSLA */]: (self) => self,
+    ["hwb" /* HWB */]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hwba"
-      /* Format.HWBA */
-    ]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
+    ["hwba" /* HWBA */]: (self) => new HWB(...rgbToHwb(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "lch"
-      /* Format.LCH */
-    ]: (self) => new LCH(...ColorConverter.labToLch(...ColorConverter.xyzd50ToLab(...self.#toXyzd50())), self.alpha),
-    [
-      "oklch"
-      /* Format.OKLCH */
-    ]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
-    [
-      "lab"
-      /* Format.LAB */
-    ]: (self) => new Lab(...ColorConverter.xyzd50ToLab(...self.#toXyzd50()), self.alpha),
-    [
-      "oklab"
-      /* Format.OKLAB */
-    ]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
-    [
-      "srgb"
-      /* Format.SRGB */
-    ]: (self) => new ColorFunction("srgb", ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
-    [
-      "srgb-linear"
-      /* Format.SRGB_LINEAR */
-    ]: (self) => new ColorFunction("srgb-linear", ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
-    [
-      "display-p3"
-      /* Format.DISPLAY_P3 */
-    ]: (self) => new ColorFunction("display-p3", ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
-    [
-      "a98-rgb"
-      /* Format.A98_RGB */
-    ]: (self) => new ColorFunction("a98-rgb", ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
-    [
-      "prophoto-rgb"
-      /* Format.PROPHOTO_RGB */
-    ]: (self) => new ColorFunction("prophoto-rgb", ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
-    [
-      "rec2020"
-      /* Format.REC_2020 */
-    ]: (self) => new ColorFunction("rec2020", ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz"
-      /* Format.XYZ */
-    ]: (self) => new ColorFunction("xyz", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz-d50"
-      /* Format.XYZ_D50 */
-    ]: (self) => new ColorFunction("xyz-d50", ...self.#toXyzd50(), self.alpha),
-    [
-      "xyz-d65"
-      /* Format.XYZ_D65 */
-    ]: (self) => new ColorFunction("xyz-d65", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
+    ["lch" /* LCH */]: (self) => new LCH(...ColorConverter.labToLch(...ColorConverter.xyzd50ToLab(...self.#toXyzd50())), self.alpha),
+    ["oklch" /* OKLCH */]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
+    ["lab" /* LAB */]: (self) => new Lab(...ColorConverter.xyzd50ToLab(...self.#toXyzd50()), self.alpha),
+    ["oklab" /* OKLAB */]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
+    ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
+    ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
+    ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
+    ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
+    ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
+    ["xyz" /* XYZ */]: (self) => new ColorFunction("xyz" /* XYZ */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
+    ["xyz-d50" /* XYZ_D50 */]: (self) => new ColorFunction("xyz-d50" /* XYZ_D50 */, ...self.#toXyzd50(), self.alpha),
+    ["xyz-d65" /* XYZ_D65 */]: (self) => new ColorFunction("xyz-d65" /* XYZ_D65 */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
   };
   #getRGBArray(withAlpha = true) {
     const rgb = hsl2rgb([this.h, this.s, this.l, 0]);
@@ -2440,10 +1968,7 @@ var HSL = class _HSL {
     this.#authoredText = authoredText;
   }
   equal(color) {
-    const hsl = color.as(
-      "hsl"
-      /* Format.HSL */
-    );
+    const hsl = color.as("hsl" /* HSL */);
     return equals(this.h, hsl.h) && equals(this.s, hsl.s) && equals(this.l, hsl.l) && equals(this.alpha, hsl.alpha);
   }
   asString(format) {
@@ -2453,9 +1978,17 @@ var HSL = class _HSL {
     return this.#stringify(this.h, this.s, this.l);
   }
   #stringify(h, s, l) {
-    const start = Platform.StringUtilities.sprintf("hsl(%sdeg %s% %s%", Platform.StringUtilities.stringifyWithPrecision(h * 360), Platform.StringUtilities.stringifyWithPrecision(s * 100), Platform.StringUtilities.stringifyWithPrecision(l * 100));
+    const start = Platform.StringUtilities.sprintf(
+      "hsl(%sdeg %s% %s%",
+      Platform.StringUtilities.stringifyWithPrecision(h * 360),
+      Platform.StringUtilities.stringifyWithPrecision(s * 100),
+      Platform.StringUtilities.stringifyWithPrecision(l * 100)
+    );
     if (this.alpha !== null && this.alpha !== 1) {
-      return start + Platform.StringUtilities.sprintf(" / %s%)", Platform.StringUtilities.stringifyWithPrecision(this.alpha * 100));
+      return start + Platform.StringUtilities.sprintf(
+        " / %s%)",
+        Platform.StringUtilities.stringifyWithPrecision(this.alpha * 100)
+      );
     }
     return start + ")";
   }
@@ -2463,7 +1996,7 @@ var HSL = class _HSL {
     return new _HSL(this.h, this.s, this.l, alpha);
   }
   format() {
-    return this.alpha === null || this.alpha === 1 ? "hsl" : "hsla";
+    return this.alpha === null || this.alpha === 1 ? "hsl" /* HSL */ : "hsla" /* HSLA */;
   }
   is(format) {
     return format === this.format();
@@ -2475,10 +2008,7 @@ var HSL = class _HSL {
     return _HSL.#conversions[format](this);
   }
   asLegacyColor() {
-    return this.as(
-      "rgba"
-      /* Format.RGBA */
-    );
+    return this.as("rgba" /* RGBA */);
   }
   getAuthoredText() {
     return this.#authoredText ?? null;
@@ -2526,132 +2056,47 @@ var HWB = class _HWB {
   alpha;
   #rawParams;
   #authoredText;
-  channels = [
-    "h",
-    "w",
-    "b",
-    "alpha"
-    /* ColorChannel.ALPHA */
-  ];
+  channels = ["h" /* H */, "w" /* W */, "b" /* B */, "alpha" /* ALPHA */];
   static #conversions = {
-    [
-      "hex"
-      /* Format.HEX */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "hex"
-      /* Format.HEX */
-    ),
-    [
-      "hexa"
-      /* Format.HEXA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "hexa"
-      /* Format.HEXA */
-    ),
-    [
-      "rgb"
-      /* Format.RGB */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        false
-      ),
-      "rgb"
-      /* Format.RGB */
-    ),
-    [
-      "rgba"
-      /* Format.RGBA */
-    ]: (self) => new Legacy(
-      self.#getRGBArray(
-        /* withAlpha= */
-        true
-      ),
-      "rgba"
-      /* Format.RGBA */
-    ),
-    [
-      "hsl"
-      /* Format.HSL */
-    ]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
+    ["hex" /* HEX */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "hex" /* HEX */),
+    ["hexa" /* HEXA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "hexa" /* HEXA */),
+    ["rgb" /* RGB */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      false
+    ), "rgb" /* RGB */),
+    ["rgba" /* RGBA */]: (self) => new Legacy(self.#getRGBArray(
+      /* withAlpha= */
+      true
+    ), "rgba" /* RGBA */),
+    ["hsl" /* HSL */]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hsla"
-      /* Format.HSLA */
-    ]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
+    ["hsla" /* HSLA */]: (self) => new HSL(...rgbToHsl(self.#getRGBArray(
       /* withAlpha= */
       false
     )), self.alpha),
-    [
-      "hwb"
-      /* Format.HWB */
-    ]: (self) => self,
-    [
-      "hwba"
-      /* Format.HWBA */
-    ]: (self) => self,
-    [
-      "lch"
-      /* Format.LCH */
-    ]: (self) => new LCH(...ColorConverter.labToLch(...ColorConverter.xyzd50ToLab(...self.#toXyzd50())), self.alpha),
-    [
-      "oklch"
-      /* Format.OKLCH */
-    ]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
-    [
-      "lab"
-      /* Format.LAB */
-    ]: (self) => new Lab(...ColorConverter.xyzd50ToLab(...self.#toXyzd50()), self.alpha),
-    [
-      "oklab"
-      /* Format.OKLAB */
-    ]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
-    [
-      "srgb"
-      /* Format.SRGB */
-    ]: (self) => new ColorFunction("srgb", ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
-    [
-      "srgb-linear"
-      /* Format.SRGB_LINEAR */
-    ]: (self) => new ColorFunction("srgb-linear", ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
-    [
-      "display-p3"
-      /* Format.DISPLAY_P3 */
-    ]: (self) => new ColorFunction("display-p3", ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
-    [
-      "a98-rgb"
-      /* Format.A98_RGB */
-    ]: (self) => new ColorFunction("a98-rgb", ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
-    [
-      "prophoto-rgb"
-      /* Format.PROPHOTO_RGB */
-    ]: (self) => new ColorFunction("prophoto-rgb", ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
-    [
-      "rec2020"
-      /* Format.REC_2020 */
-    ]: (self) => new ColorFunction("rec2020", ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz"
-      /* Format.XYZ */
-    ]: (self) => new ColorFunction("xyz", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz-d50"
-      /* Format.XYZ_D50 */
-    ]: (self) => new ColorFunction("xyz-d50", ...self.#toXyzd50(), self.alpha),
-    [
-      "xyz-d65"
-      /* Format.XYZ_D65 */
-    ]: (self) => new ColorFunction("xyz-d65", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
+    ["hwb" /* HWB */]: (self) => self,
+    ["hwba" /* HWBA */]: (self) => self,
+    ["lch" /* LCH */]: (self) => new LCH(...ColorConverter.labToLch(...ColorConverter.xyzd50ToLab(...self.#toXyzd50())), self.alpha),
+    ["oklch" /* OKLCH */]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
+    ["lab" /* LAB */]: (self) => new Lab(...ColorConverter.xyzd50ToLab(...self.#toXyzd50()), self.alpha),
+    ["oklab" /* OKLAB */]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
+    ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
+    ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
+    ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
+    ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
+    ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
+    ["xyz" /* XYZ */]: (self) => new ColorFunction("xyz" /* XYZ */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
+    ["xyz-d50" /* XYZ_D50 */]: (self) => new ColorFunction("xyz-d50" /* XYZ_D50 */, ...self.#toXyzd50(), self.alpha),
+    ["xyz-d65" /* XYZ_D65 */]: (self) => new ColorFunction("xyz-d65" /* XYZ_D65 */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
   };
   #getRGBArray(withAlpha = true) {
     const rgb = hwb2rgb([this.h, this.w, this.b, 0]);
@@ -2679,10 +2124,7 @@ var HWB = class _HWB {
     this.#authoredText = authoredText;
   }
   equal(color) {
-    const hwb = color.as(
-      "hwb"
-      /* Format.HWB */
-    );
+    const hwb = color.as("hwb" /* HWB */);
     return equals(this.h, hwb.h) && equals(this.w, hwb.w) && equals(this.b, hwb.b) && equals(this.alpha, hwb.alpha);
   }
   asString(format) {
@@ -2692,9 +2134,17 @@ var HWB = class _HWB {
     return this.#stringify(this.h, this.w, this.b);
   }
   #stringify(h, w, b) {
-    const start = Platform.StringUtilities.sprintf("hwb(%sdeg %s% %s%", Platform.StringUtilities.stringifyWithPrecision(h * 360), Platform.StringUtilities.stringifyWithPrecision(w * 100), Platform.StringUtilities.stringifyWithPrecision(b * 100));
+    const start = Platform.StringUtilities.sprintf(
+      "hwb(%sdeg %s% %s%",
+      Platform.StringUtilities.stringifyWithPrecision(h * 360),
+      Platform.StringUtilities.stringifyWithPrecision(w * 100),
+      Platform.StringUtilities.stringifyWithPrecision(b * 100)
+    );
     if (this.alpha !== null && this.alpha !== 1) {
-      return start + Platform.StringUtilities.sprintf(" / %s%)", Platform.StringUtilities.stringifyWithPrecision(this.alpha * 100));
+      return start + Platform.StringUtilities.sprintf(
+        " / %s%)",
+        Platform.StringUtilities.stringifyWithPrecision(this.alpha * 100)
+      );
     }
     return start + ")";
   }
@@ -2702,7 +2152,7 @@ var HWB = class _HWB {
     return new _HWB(this.h, this.w, this.b, alpha, this.#authoredText);
   }
   format() {
-    return this.alpha !== null && !equals(this.alpha, 1) ? "hwba" : "hwb";
+    return this.alpha !== null && !equals(this.alpha, 1) ? "hwba" /* HWBA */ : "hwb" /* HWB */;
   }
   is(format) {
     return format === this.format();
@@ -2714,10 +2164,7 @@ var HWB = class _HWB {
     return _HWB.#conversions[format](this);
   }
   asLegacyColor() {
-    return this.as(
-      "rgba"
-      /* Format.RGBA */
-    );
+    return this.as("rgba" /* RGBA */);
   }
   getAuthoredText() {
     return this.#authoredText ?? null;
@@ -2764,13 +2211,7 @@ function toRgbValue(value) {
 }
 var ShortFormatColorBase = class {
   color;
-  channels = [
-    "r",
-    "g",
-    "b",
-    "alpha"
-    /* ColorChannel.ALPHA */
-  ];
+  channels = ["r" /* R */, "g" /* G */, "b" /* B */, "alpha" /* ALPHA */];
   constructor(color) {
     this.color = color;
   }
@@ -2787,7 +2228,7 @@ var ShortFormatColorBase = class {
     return this.color.setAlpha(alpha);
   }
   format() {
-    return (this.alpha ?? 1) !== 1 ? "hexa" : "hex";
+    return (this.alpha ?? 1) !== 1 ? "hexa" /* HEXA */ : "hex" /* HEX */;
   }
   as(format) {
     return this.color.as(format);
@@ -2834,7 +2275,13 @@ var ShortHex = class _ShortHex extends ShortFormatColorBase {
       return (Math.round(value * 255) / 17).toString(16);
     }
     if (this.color.hasAlpha()) {
-      return Platform.StringUtilities.sprintf("#%s%s%s%s", toShortHexValue(r), toShortHexValue(g), toShortHexValue(b), toShortHexValue(this.alpha ?? 1)).toLowerCase();
+      return Platform.StringUtilities.sprintf(
+        "#%s%s%s%s",
+        toShortHexValue(r),
+        toShortHexValue(g),
+        toShortHexValue(b),
+        toShortHexValue(this.alpha ?? 1)
+      ).toLowerCase();
     }
     return Platform.StringUtilities.sprintf("#%s%s%s", toShortHexValue(r), toShortHexValue(g), toShortHexValue(b)).toLowerCase();
   }
@@ -2865,114 +2312,29 @@ var Legacy = class _Legacy {
   #rgba;
   #authoredText;
   #format;
-  channels = [
-    "r",
-    "g",
-    "b",
-    "alpha"
-    /* ColorChannel.ALPHA */
-  ];
+  channels = ["r" /* R */, "g" /* G */, "b" /* B */, "alpha" /* ALPHA */];
   static #conversions = {
-    [
-      "hex"
-      /* Format.HEX */
-    ]: (self) => new _Legacy(
-      self.#rgba,
-      "hex"
-      /* Format.HEX */
-    ),
-    [
-      "hexa"
-      /* Format.HEXA */
-    ]: (self) => new _Legacy(
-      self.#rgba,
-      "hexa"
-      /* Format.HEXA */
-    ),
-    [
-      "rgb"
-      /* Format.RGB */
-    ]: (self) => new _Legacy(
-      self.#rgba,
-      "rgb"
-      /* Format.RGB */
-    ),
-    [
-      "rgba"
-      /* Format.RGBA */
-    ]: (self) => new _Legacy(
-      self.#rgba,
-      "rgba"
-      /* Format.RGBA */
-    ),
-    [
-      "hsl"
-      /* Format.HSL */
-    ]: (self) => new HSL(...rgbToHsl([self.#rgba[0], self.#rgba[1], self.#rgba[2]]), self.alpha),
-    [
-      "hsla"
-      /* Format.HSLA */
-    ]: (self) => new HSL(...rgbToHsl([self.#rgba[0], self.#rgba[1], self.#rgba[2]]), self.alpha),
-    [
-      "hwb"
-      /* Format.HWB */
-    ]: (self) => new HWB(...rgbToHwb([self.#rgba[0], self.#rgba[1], self.#rgba[2]]), self.alpha),
-    [
-      "hwba"
-      /* Format.HWBA */
-    ]: (self) => new HWB(...rgbToHwb([self.#rgba[0], self.#rgba[1], self.#rgba[2]]), self.alpha),
-    [
-      "lch"
-      /* Format.LCH */
-    ]: (self) => new LCH(...ColorConverter.labToLch(...ColorConverter.xyzd50ToLab(...self.#toXyzd50())), self.alpha),
-    [
-      "oklch"
-      /* Format.OKLCH */
-    ]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
-    [
-      "lab"
-      /* Format.LAB */
-    ]: (self) => new Lab(...ColorConverter.xyzd50ToLab(...self.#toXyzd50()), self.alpha),
-    [
-      "oklab"
-      /* Format.OKLAB */
-    ]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
-    [
-      "srgb"
-      /* Format.SRGB */
-    ]: (self) => new ColorFunction("srgb", ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
-    [
-      "srgb-linear"
-      /* Format.SRGB_LINEAR */
-    ]: (self) => new ColorFunction("srgb-linear", ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
-    [
-      "display-p3"
-      /* Format.DISPLAY_P3 */
-    ]: (self) => new ColorFunction("display-p3", ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
-    [
-      "a98-rgb"
-      /* Format.A98_RGB */
-    ]: (self) => new ColorFunction("a98-rgb", ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
-    [
-      "prophoto-rgb"
-      /* Format.PROPHOTO_RGB */
-    ]: (self) => new ColorFunction("prophoto-rgb", ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
-    [
-      "rec2020"
-      /* Format.REC_2020 */
-    ]: (self) => new ColorFunction("rec2020", ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz"
-      /* Format.XYZ */
-    ]: (self) => new ColorFunction("xyz", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
-    [
-      "xyz-d50"
-      /* Format.XYZ_D50 */
-    ]: (self) => new ColorFunction("xyz-d50", ...self.#toXyzd50(), self.alpha),
-    [
-      "xyz-d65"
-      /* Format.XYZ_D65 */
-    ]: (self) => new ColorFunction("xyz-d65", ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
+    ["hex" /* HEX */]: (self) => new _Legacy(self.#rgba, "hex" /* HEX */),
+    ["hexa" /* HEXA */]: (self) => new _Legacy(self.#rgba, "hexa" /* HEXA */),
+    ["rgb" /* RGB */]: (self) => new _Legacy(self.#rgba, "rgb" /* RGB */),
+    ["rgba" /* RGBA */]: (self) => new _Legacy(self.#rgba, "rgba" /* RGBA */),
+    ["hsl" /* HSL */]: (self) => new HSL(...rgbToHsl([self.#rgba[0], self.#rgba[1], self.#rgba[2]]), self.alpha),
+    ["hsla" /* HSLA */]: (self) => new HSL(...rgbToHsl([self.#rgba[0], self.#rgba[1], self.#rgba[2]]), self.alpha),
+    ["hwb" /* HWB */]: (self) => new HWB(...rgbToHwb([self.#rgba[0], self.#rgba[1], self.#rgba[2]]), self.alpha),
+    ["hwba" /* HWBA */]: (self) => new HWB(...rgbToHwb([self.#rgba[0], self.#rgba[1], self.#rgba[2]]), self.alpha),
+    ["lch" /* LCH */]: (self) => new LCH(...ColorConverter.labToLch(...ColorConverter.xyzd50ToLab(...self.#toXyzd50())), self.alpha),
+    ["oklch" /* OKLCH */]: (self) => new Oklch(...ColorConverter.xyzd50ToOklch(...self.#toXyzd50()), self.alpha),
+    ["lab" /* LAB */]: (self) => new Lab(...ColorConverter.xyzd50ToLab(...self.#toXyzd50()), self.alpha),
+    ["oklab" /* OKLAB */]: (self) => new Oklab(...ColorConverter.xyzd65ToOklab(...ColorConverter.xyzd50ToD65(...self.#toXyzd50())), self.alpha),
+    ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
+    ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
+    ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
+    ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
+    ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
+    ["xyz" /* XYZ */]: (self) => new ColorFunction("xyz" /* XYZ */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha),
+    ["xyz-d50" /* XYZ_D50 */]: (self) => new ColorFunction("xyz-d50" /* XYZ_D50 */, ...self.#toXyzd50(), self.alpha),
+    ["xyz-d65" /* XYZ_D65 */]: (self) => new ColorFunction("xyz-d65" /* XYZ_D65 */, ...ColorConverter.xyzd50ToD65(...self.#toXyzd50()), self.alpha)
   };
   #toXyzd50() {
     const [r, g, b] = this.#rgba;
@@ -2980,8 +2342,8 @@ var Legacy = class _Legacy {
   }
   get alpha() {
     switch (this.format()) {
-      case "hexa":
-      case "rgba":
+      case "hexa" /* HEXA */:
+      case "rgba" /* RGBA */:
         return this.#rgba[3];
       default:
         return null;
@@ -3017,7 +2379,7 @@ var Legacy = class _Legacy {
   static fromHex(hex, text) {
     hex = hex.toLowerCase();
     const hasAlpha = hex.length === 4 || hex.length === 8;
-    const format = hasAlpha ? "hexa" : "hex";
+    const format = hasAlpha ? "hexa" /* HEXA */ : "hex" /* HEX */;
     const isShort = hex.length <= 4;
     if (isShort) {
       hex = hex.charAt(0) + hex.charAt(0) + hex.charAt(1) + hex.charAt(1) + hex.charAt(2) + hex.charAt(2) + hex.charAt(3) + hex.charAt(3);
@@ -3042,18 +2404,14 @@ var Legacy = class _Legacy {
     if (!Platform.ArrayUtilities.arrayDoesNotContainNullOrUndefined(rgba)) {
       return null;
     }
-    return new _Legacy(rgba, alpha ? "rgba" : "rgb", text);
+    return new _Legacy(rgba, alpha ? "rgba" /* RGBA */ : "rgb" /* RGB */, text);
   }
   static fromRGBA(rgba, authoredText) {
-    return new _Legacy([rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]], "rgba", authoredText);
+    return new _Legacy([rgba[0] / 255, rgba[1] / 255, rgba[2] / 255, rgba[3]], "rgba" /* RGBA */, authoredText);
   }
   static fromHSVA(hsva) {
     const rgba = hsva2rgba(hsva);
-    return new _Legacy(
-      rgba,
-      "rgba"
-      /* Format.RGBA */
-    );
+    return new _Legacy(rgba, "rgba" /* RGBA */);
   }
   is(format) {
     return format === this.format();
@@ -3072,7 +2430,7 @@ var Legacy = class _Legacy {
   }
   detectHEXFormat() {
     const hasAlpha = this.hasAlpha();
-    return hasAlpha ? "hexa" : "hex";
+    return hasAlpha ? "hexa" /* HEXA */ : "hex" /* HEX */;
   }
   asString(format) {
     if (format) {
@@ -3089,16 +2447,16 @@ var Legacy = class _Legacy {
       return hex.length === 1 ? "0" + hex : hex;
     }
     switch (format) {
-      case "rgb":
-      case "rgba": {
+      case "rgb" /* RGB */:
+      case "rgba" /* RGBA */: {
         const start = Platform.StringUtilities.sprintf("rgb(%d %d %d", toRgbValue(r), toRgbValue(g), toRgbValue(b));
         if (this.hasAlpha()) {
           return start + Platform.StringUtilities.sprintf(" / %d%)", Math.round(this.#rgba[3] * 100));
         }
         return start + ")";
       }
-      case "hex":
-      case "hexa": {
+      case "hex" /* HEX */:
+      case "hexa" /* HEXA */: {
         if (this.hasAlpha()) {
           return Platform.StringUtilities.sprintf("#%s%s%s%s", toHexValue(r), toHexValue(g), toHexValue(b), toHexValue(this.#rgba[3])).toLowerCase();
         }
@@ -3119,7 +2477,11 @@ var Legacy = class _Legacy {
     return this.#stringify(format, ...this.#rawParams);
   }
   isGamutClipped() {
-    return !equals(this.#rawParams.map(toRgbValue), [this.#rgba[0], this.#rgba[1], this.#rgba[2]].map(toRgbValue), WIDE_RANGE_EPSILON);
+    return !equals(
+      this.#rawParams.map(toRgbValue),
+      [this.#rgba[0], this.#rgba[1], this.#rgba[2]].map(toRgbValue),
+      WIDE_RANGE_EPSILON
+    );
   }
   rgba() {
     return [...this.#rgba];
@@ -3146,11 +2508,7 @@ var Legacy = class _Legacy {
     rgba[1] = 1 - this.#rgba[1];
     rgba[2] = 1 - this.#rgba[2];
     rgba[3] = this.#rgba[3];
-    return new _Legacy(
-      rgba,
-      "rgba"
-      /* Format.RGBA */
-    );
+    return new _Legacy(rgba, "rgba" /* RGBA */);
   }
   /**
    * Returns a new color using the NTSC formula for making a RGB color grayscale.
@@ -3159,37 +2517,21 @@ var Legacy = class _Legacy {
   grayscale() {
     const [r, g, b] = this.#rgba;
     const gray = r * 0.299 + g * 0.587 + b * 0.114;
-    return new _Legacy(
-      [gray, gray, gray, 0.5],
-      "rgba"
-      /* Format.RGBA */
-    );
+    return new _Legacy([gray, gray, gray, 0.5], "rgba" /* RGBA */);
   }
   setAlpha(alpha) {
     const rgba = [...this.#rgba];
     rgba[3] = alpha;
-    return new _Legacy(
-      rgba,
-      "rgba"
-      /* Format.RGBA */
-    );
+    return new _Legacy(rgba, "rgba" /* RGBA */);
   }
   blendWith(fgColor) {
     const rgba = blendColors(fgColor.#rgba, this.#rgba);
-    return new _Legacy(
-      rgba,
-      "rgba"
-      /* Format.RGBA */
-    );
+    return new _Legacy(rgba, "rgba" /* RGBA */);
   }
   blendWithAlpha(alpha) {
     const rgba = [...this.#rgba];
     rgba[3] *= alpha;
-    return new _Legacy(
-      rgba,
-      "rgba"
-      /* Format.RGBA */
-    );
+    return new _Legacy(rgba, "rgba" /* RGBA */);
   }
   setFormat(format) {
     this.#format = format;
@@ -3350,7 +2692,10 @@ var COLOR_TO_RGBA_ENTRIES = [
   ["yellowgreen", [154, 205, 50]],
   ["transparent", [0, 0, 0, 0]]
 ];
-console.assert(COLOR_TO_RGBA_ENTRIES.every(([nickname]) => nickname.toLowerCase() === nickname), "All color nicknames must be lowercase.");
+console.assert(
+  COLOR_TO_RGBA_ENTRIES.every(([nickname]) => nickname.toLowerCase() === nickname),
+  "All color nicknames must be lowercase."
+);
 var Nicknames = new Map(COLOR_TO_RGBA_ENTRIES);
 var RGBAToNickname = new Map(
   // Default opacity to 1 if the color only specified 3 channels
@@ -3434,16 +2779,18 @@ var Generator = class {
   }
 };
 
-// gen/front_end/core/common/Console.js
+// ../../front_end/core/common/Console.ts
 var Console_exports = {};
 __export(Console_exports, {
   Console: () => Console,
+  Events: () => Events,
   FrontendMessageSource: () => FrontendMessageSource,
-  Message: () => Message
+  Message: () => Message,
+  MessageLevel: () => MessageLevel
 });
-import * as Root from "./../root/root.js";
+import * as Root from "../root/root.js";
 
-// gen/front_end/core/common/Object.js
+// ../../front_end/core/common/Object.ts
 var Object_exports = {};
 __export(Object_exports, {
   ObjectWrapper: () => ObjectWrapper,
@@ -3535,7 +2882,7 @@ function eventMixin(base) {
   };
 }
 
-// gen/front_end/core/common/Revealer.js
+// ../../front_end/core/common/Revealer.ts
 var Revealer_exports = {};
 __export(Revealer_exports, {
   RevealerDestination: () => RevealerDestination,
@@ -3544,7 +2891,7 @@ __export(Revealer_exports, {
   reveal: () => reveal,
   revealDestination: () => revealDestination
 });
-import * as i18n from "./../i18n/i18n.js";
+import * as i18n from "../i18n/i18n.js";
 var UIStrings = {
   /**
    * @description The UI destination when right-clicking an item that can be revealed.
@@ -3636,7 +2983,9 @@ var RevealerRegistry = class _RevealerRegistry {
    * @param omitFocus whether to omit focusing on the presentation of `revealable` afterwards.
    */
   async reveal(revealable, omitFocus) {
-    const revealers = await Promise.all(this.getApplicableRegisteredRevealers(revealable).map((registration) => registration.loadRevealer()));
+    const revealers = await Promise.all(
+      this.getApplicableRegisteredRevealers(revealable).map((registration) => registration.loadRevealer())
+    );
     if (revealers.length < 1) {
       throw new Error(`No revealers found for ${revealable}`);
     }
@@ -3687,7 +3036,7 @@ var RevealerDestination = {
   LIGHTHOUSE_PANEL: i18nLazyString(UIStrings.lighthousePanel)
 };
 
-// gen/front_end/core/common/Console.js
+// ../../front_end/core/common/Console.ts
 var Console = class _Console extends ObjectWrapper {
   #messages = [];
   static instance(opts) {
@@ -3707,20 +3056,16 @@ var Console = class _Console extends ObjectWrapper {
    * @param show whether to show the Console panel (if it's not already shown).
    * @param source the message source.
    */
-  addMessage(text, level = "info", show = false, source) {
+  addMessage(text, level = "info" /* INFO */, show = false, source) {
     const message = new Message(text, level, Date.now(), show, source);
     this.#messages.push(message);
-    this.dispatchEventToListeners("messageAdded", message);
+    this.dispatchEventToListeners("messageAdded" /* MESSAGE_ADDED */, message);
   }
   log(text) {
-    this.addMessage(
-      text,
-      "info"
-      /* MessageLevel.INFO */
-    );
+    this.addMessage(text, "info" /* INFO */);
   }
   warn(text, source) {
-    this.addMessage(text, "warning", void 0, source);
+    this.addMessage(text, "warning" /* WARNING */, void 0, source);
   }
   /**
    * Adds an error message to the Console panel.
@@ -3729,7 +3074,7 @@ var Console = class _Console extends ObjectWrapper {
    * @param show whether to show the Console panel (if it's not already shown).
    */
   error(text, show = true) {
-    this.addMessage(text, "error", show);
+    this.addMessage(text, "error" /* ERROR */, show);
   }
   messages() {
     return this.#messages;
@@ -3741,13 +3086,23 @@ var Console = class _Console extends ObjectWrapper {
     return reveal(this);
   }
 };
-var FrontendMessageSource;
-(function(FrontendMessageSource2) {
+var Events = /* @__PURE__ */ ((Events2) => {
+  Events2["MESSAGE_ADDED"] = "messageAdded";
+  return Events2;
+})(Events || {});
+var MessageLevel = /* @__PURE__ */ ((MessageLevel2) => {
+  MessageLevel2["INFO"] = "info";
+  MessageLevel2["WARNING"] = "warning";
+  MessageLevel2["ERROR"] = "error";
+  return MessageLevel2;
+})(MessageLevel || {});
+var FrontendMessageSource = /* @__PURE__ */ ((FrontendMessageSource2) => {
   FrontendMessageSource2["CSS"] = "css";
   FrontendMessageSource2["ConsoleAPI"] = "console-api";
   FrontendMessageSource2["ISSUE_PANEL"] = "issue-panel";
   FrontendMessageSource2["SELF_XSS"] = "self-xss";
-})(FrontendMessageSource || (FrontendMessageSource = {}));
+  return FrontendMessageSource2;
+})(FrontendMessageSource || {});
 var Message = class {
   text;
   level;
@@ -3765,7 +3120,7 @@ var Message = class {
   }
 };
 
-// gen/front_end/core/common/Debouncer.js
+// ../../front_end/core/common/Debouncer.ts
 var Debouncer_exports = {};
 __export(Debouncer_exports, {
   debounce: () => debounce,
@@ -3791,7 +3146,7 @@ function disableTestOverride() {
   testDebounceOverride = false;
 }
 
-// gen/front_end/core/common/EventTarget.js
+// ../../front_end/core/common/EventTarget.ts
 var EventTarget_exports = {};
 __export(EventTarget_exports, {
   removeEventListeners: () => removeEventListeners
@@ -3803,7 +3158,7 @@ function removeEventListeners(eventList) {
   eventList.splice(0);
 }
 
-// gen/front_end/core/common/Gzip.js
+// ../../front_end/core/common/Gzip.ts
 var Gzip_exports = {};
 __export(Gzip_exports, {
   arrayBufferToString: () => arrayBufferToString,
@@ -3895,10 +3250,10 @@ function createMonitoredStream(stream, onProgress) {
   return stream.pipeThrough(progressTransformer);
 }
 
-// gen/front_end/core/common/JavaScriptMetaData.js
+// ../../front_end/core/common/JavaScriptMetaData.ts
 var JavaScriptMetaData_exports = {};
 
-// gen/front_end/core/common/Lazy.js
+// ../../front_end/core/common/Lazy.ts
 var Lazy_exports = {};
 __export(Lazy_exports, {
   lazy: () => lazy
@@ -3925,7 +3280,7 @@ function lazy(producer) {
   };
 }
 
-// gen/front_end/core/common/MapWithDefault.js
+// ../../front_end/core/common/MapWithDefault.ts
 var MapWithDefault_exports = {};
 __export(MapWithDefault_exports, {
   MapWithDefault: () => MapWithDefault
@@ -3945,7 +3300,7 @@ var MapWithDefault = class extends Map {
   }
 };
 
-// gen/front_end/core/common/Mutex.js
+// ../../front_end/core/common/Mutex.ts
 var Mutex_exports = {};
 __export(Mutex_exports, {
   Mutex: () => Mutex
@@ -3987,14 +3342,14 @@ var Mutex = class {
   }
 };
 
-// gen/front_end/core/common/ParsedURL.js
+// ../../front_end/core/common/ParsedURL.ts
 var ParsedURL_exports = {};
 __export(ParsedURL_exports, {
   ParsedURL: () => ParsedURL,
   normalizePath: () => normalizePath,
   schemeIs: () => schemeIs
 });
-import * as Platform2 from "./../platform/platform.js";
+import * as Platform2 from "../platform/platform.js";
 function normalizePath(path) {
   if (path.indexOf("..") === -1 && path.indexOf(".") === -1) {
     return path;
@@ -4122,7 +3477,9 @@ var ParsedURL = class _ParsedURL {
     return decodeURIComponent(encPath);
   }
   static rawPathToUrlString(fileSystemPath) {
-    let preEncodedPath = _ParsedURL.preEncodeSpecialCharactersInPath(fileSystemPath.replace(/\\/g, "/"));
+    let preEncodedPath = _ParsedURL.preEncodeSpecialCharactersInPath(
+      fileSystemPath.replace(/\\/g, "/")
+    );
     preEncodedPath = preEncodedPath.replace(/\\/g, "/");
     if (!preEncodedPath.startsWith("file://")) {
       if (preEncodedPath.startsWith("/")) {
@@ -4134,7 +3491,9 @@ var ParsedURL = class _ParsedURL {
     return new URL(preEncodedPath).toString();
   }
   static relativePathToUrlString(relativePath, baseURL) {
-    const preEncodedPath = _ParsedURL.preEncodeSpecialCharactersInPath(relativePath.replace(/\\/g, "/"));
+    const preEncodedPath = _ParsedURL.preEncodeSpecialCharactersInPath(
+      relativePath.replace(/\\/g, "/")
+    );
     return new URL(preEncodedPath, baseURL).toString();
   }
   static urlToRawPathString(fileURL, isWindows) {
@@ -4196,7 +3555,9 @@ var ParsedURL = class _ParsedURL {
     const pathRegex = /(\/[^#?]*)?/;
     const queryRegex = /(?:\?([^#]*))?/;
     const fragmentRegex = /(?:#(.*))?/;
-    _ParsedURL.urlRegexInstance = new RegExp("^(" + schemeRegex.source + userRegex.source + hostRegex.source + portRegex.source + ")" + pathRegex.source + queryRegex.source + fragmentRegex.source + "$");
+    _ParsedURL.urlRegexInstance = new RegExp(
+      "^(" + schemeRegex.source + userRegex.source + hostRegex.source + portRegex.source + ")" + pathRegex.source + queryRegex.source + fragmentRegex.source + "$"
+    );
     return _ParsedURL.urlRegexInstance;
   }
   static extractPath(url) {
@@ -4414,7 +3775,7 @@ var ParsedURL = class _ParsedURL {
   static urlRegexInstance = null;
 };
 
-// gen/front_end/core/common/Progress.js
+// ../../front_end/core/common/Progress.ts
 var Progress_exports = {};
 __export(Progress_exports, {
   CompositeProgress: () => CompositeProgress,
@@ -4564,7 +3925,7 @@ var ProgressProxy = class {
   }
 };
 
-// gen/front_end/core/common/ResolverBase.js
+// ../../front_end/core/common/ResolverBase.ts
 var ResolverBase_exports = {};
 __export(ResolverBase_exports, {
   ResolverBase: () => ResolverBase
@@ -4630,7 +3991,7 @@ var ResolverBase = class {
   }
 };
 
-// gen/front_end/core/common/ResourceType.js
+// ../../front_end/core/common/ResourceType.ts
 var ResourceType_exports = {};
 __export(ResourceType_exports, {
   ResourceCategory: () => ResourceCategory,
@@ -4640,7 +4001,7 @@ __export(ResourceType_exports, {
   resourceTypeByExtension: () => resourceTypeByExtension,
   resourceTypes: () => resourceTypes
 });
-import * as i18n3 from "./../i18n/i18n.js";
+import * as i18n3 from "../i18n/i18n.js";
 var UIStrings2 = {
   /**
    * @description Text that appears in a tooltip for the Fetch and XHR resource types filter.
@@ -4933,7 +4294,11 @@ var ResourceCategory = class {
   }
 };
 var resourceCategories = {
-  XHR: new ResourceCategory("Fetch and XHR", i18nLazyString2(UIStrings2.fetchAndXHR), i18n3.i18n.lockedLazyString("Fetch/XHR")),
+  XHR: new ResourceCategory(
+    "Fetch and XHR",
+    i18nLazyString2(UIStrings2.fetchAndXHR),
+    i18n3.i18n.lockedLazyString("Fetch/XHR")
+  ),
   Document: new ResourceCategory(UIStrings2.document, i18nLazyString2(UIStrings2.document), i18nLazyString2(UIStrings2.doc)),
   Stylesheet: new ResourceCategory(UIStrings2.css, i18nLazyString2(UIStrings2.css), i18nLazyString2(UIStrings2.css)),
   Script: new ResourceCategory(UIStrings2.javascript, i18nLazyString2(UIStrings2.javascript), i18nLazyString2(UIStrings2.js)),
@@ -4941,8 +4306,16 @@ var resourceCategories = {
   Image: new ResourceCategory(UIStrings2.image, i18nLazyString2(UIStrings2.image), i18nLazyString2(UIStrings2.img)),
   Media: new ResourceCategory(UIStrings2.media, i18nLazyString2(UIStrings2.media), i18nLazyString2(UIStrings2.media)),
   Manifest: new ResourceCategory(UIStrings2.manifest, i18nLazyString2(UIStrings2.manifest), i18nLazyString2(UIStrings2.manifest)),
-  Socket: new ResourceCategory("Socket", i18n3.i18n.lockedLazyString("WebSocket | WebTransport | DirectSocket"), i18nLazyString2(UIStrings2.socketShort)),
-  Wasm: new ResourceCategory(UIStrings2.webassembly, i18nLazyString2(UIStrings2.webassembly), i18nLazyString2(UIStrings2.wasm)),
+  Socket: new ResourceCategory(
+    "Socket",
+    i18n3.i18n.lockedLazyString("WebSocket | WebTransport | DirectSocket"),
+    i18nLazyString2(UIStrings2.socketShort)
+  ),
+  Wasm: new ResourceCategory(
+    UIStrings2.webassembly,
+    i18nLazyString2(UIStrings2.webassembly),
+    i18nLazyString2(UIStrings2.wasm)
+  ),
   Other: new ResourceCategory(UIStrings2.other, i18nLazyString2(UIStrings2.other), i18nLazyString2(UIStrings2.other))
 };
 var resourceTypes = {
@@ -4964,7 +4337,12 @@ var resourceTypes = {
   Manifest: new ResourceType("manifest", i18nLazyString2(UIStrings2.manifest), resourceCategories.Manifest, true),
   SignedExchange: new ResourceType("signed-exchange", i18nLazyString2(UIStrings2.signedexchange), resourceCategories.Other, false),
   Ping: new ResourceType("ping", i18nLazyString2(UIStrings2.ping), resourceCategories.Other, false),
-  CSPViolationReport: new ResourceType("csp-violation-report", i18nLazyString2(UIStrings2.cspviolationreport), resourceCategories.Other, false),
+  CSPViolationReport: new ResourceType(
+    "csp-violation-report",
+    i18nLazyString2(UIStrings2.cspviolationreport),
+    resourceCategories.Other,
+    false
+  ),
   Other: new ResourceType("other", i18nLazyString2(UIStrings2.other), resourceCategories.Other, false),
   Preflight: new ResourceType("preflight", i18nLazyString2(UIStrings2.preflight), resourceCategories.Other, true),
   SourceMapScript: new ResourceType("sm-script", i18nLazyString2(UIStrings2.script), resourceCategories.Script, true),
@@ -5100,7 +4478,7 @@ var mimeTypeByExtension = /* @__PURE__ */ new Map([
   ["vue", "text/x.vue"]
 ]);
 
-// gen/front_end/core/common/ReturnToPanel.js
+// ../../front_end/core/common/ReturnToPanel.ts
 var ReturnToPanel_exports = {};
 __export(ReturnToPanel_exports, {
   ReturnToPanelFlavor: () => ReturnToPanelFlavor
@@ -5112,7 +4490,7 @@ var ReturnToPanelFlavor = class {
   }
 };
 
-// gen/front_end/core/common/Runnable.js
+// ../../front_end/core/common/Runnable.ts
 var Runnable_exports = {};
 __export(Runnable_exports, {
   earlyInitializationRunnables: () => earlyInitializationRunnables,
@@ -5143,13 +4521,13 @@ function earlyInitializationRunnables() {
   return registeredEarlyInitializationRunnables;
 }
 
-// gen/front_end/core/common/SegmentedRange.js
+// ../../front_end/core/common/SegmentedRange.ts
 var SegmentedRange_exports = {};
 __export(SegmentedRange_exports, {
   Segment: () => Segment,
   SegmentedRange: () => SegmentedRange
 });
-import * as Platform3 from "./../platform/platform.js";
+import * as Platform3 from "../platform/platform.js";
 var Segment = class {
   begin;
   end;
@@ -5184,7 +4562,11 @@ var SegmentedRange = class {
         newSegment = merged;
       } else if (this.#segments[startIndex - 1].end >= newSegment.begin) {
         if (newSegment.end < precedingSegment.end) {
-          this.#segments.splice(startIndex, 0, new Segment(newSegment.end, precedingSegment.end, precedingSegment.data));
+          this.#segments.splice(
+            startIndex,
+            0,
+            new Segment(newSegment.end, precedingSegment.end, precedingSegment.data)
+          );
         }
         precedingSegment.end = newSegment.begin;
       }
@@ -5217,9 +4599,11 @@ var SegmentedRange = class {
   }
 };
 
-// gen/front_end/core/common/SettingRegistration.js
+// ../../front_end/core/common/SettingRegistration.ts
 var SettingRegistration_exports = {};
 __export(SettingRegistration_exports, {
+  SettingCategory: () => SettingCategory,
+  SettingType: () => SettingType,
   getLocalizedSettingsCategory: () => getLocalizedSettingsCategory,
   getRegisteredSettings: () => getRegisteredSettings,
   maybeRemoveSettingExtension: () => maybeRemoveSettingExtension,
@@ -5229,7 +4613,7 @@ __export(SettingRegistration_exports, {
   removeCategoryOrder: () => removeCategoryOrder,
   resetSettings: () => resetSettings
 });
-import * as i18n5 from "./../i18n/i18n.js";
+import * as i18n5 from "../i18n/i18n.js";
 var UIStrings3 = {
   /**
    * @description Title of the Elements panel.
@@ -5360,55 +4744,88 @@ function maybeRemoveSettingExtension(settingName) {
   removeCategoryOrder(removed.category, removed.order);
   return true;
 }
+var SettingCategory = /* @__PURE__ */ ((SettingCategory2) => {
+  SettingCategory2["NONE"] = "";
+  SettingCategory2["ELEMENTS"] = "ELEMENTS";
+  SettingCategory2["AI"] = "AI";
+  SettingCategory2["APPEARANCE"] = "APPEARANCE";
+  SettingCategory2["SOURCES"] = "SOURCES";
+  SettingCategory2["NETWORK"] = "NETWORK";
+  SettingCategory2["PERFORMANCE"] = "PERFORMANCE";
+  SettingCategory2["CONSOLE"] = "CONSOLE";
+  SettingCategory2["PERSISTENCE"] = "PERSISTENCE";
+  SettingCategory2["DEBUGGER"] = "DEBUGGER";
+  SettingCategory2["GLOBAL"] = "GLOBAL";
+  SettingCategory2["RENDERING"] = "RENDERING";
+  SettingCategory2["GRID"] = "GRID";
+  SettingCategory2["MOBILE"] = "MOBILE";
+  SettingCategory2["EMULATION"] = "EMULATION";
+  SettingCategory2["MEMORY"] = "MEMORY";
+  SettingCategory2["EXTENSIONS"] = "EXTENSIONS";
+  SettingCategory2["ADORNER"] = "ADORNER";
+  SettingCategory2["ACCOUNT"] = "ACCOUNT";
+  return SettingCategory2;
+})(SettingCategory || {});
 function getLocalizedSettingsCategory(category) {
   switch (category) {
-    case "ELEMENTS":
+    case "ELEMENTS" /* ELEMENTS */:
       return i18nString(UIStrings3.elements);
-    case "AI":
+    case "AI" /* AI */:
       return i18nString(UIStrings3.ai);
-    case "APPEARANCE":
+    case "APPEARANCE" /* APPEARANCE */:
       return i18nString(UIStrings3.appearance);
-    case "SOURCES":
+    case "SOURCES" /* SOURCES */:
       return i18nString(UIStrings3.sources);
-    case "NETWORK":
+    case "NETWORK" /* NETWORK */:
       return i18nString(UIStrings3.network);
-    case "PERFORMANCE":
+    case "PERFORMANCE" /* PERFORMANCE */:
       return i18nString(UIStrings3.performance);
-    case "CONSOLE":
+    case "CONSOLE" /* CONSOLE */:
       return i18nString(UIStrings3.console);
-    case "PERSISTENCE":
+    case "PERSISTENCE" /* PERSISTENCE */:
       return i18nString(UIStrings3.persistence);
-    case "DEBUGGER":
+    case "DEBUGGER" /* DEBUGGER */:
       return i18nString(UIStrings3.debugger);
-    case "GLOBAL":
+    case "GLOBAL" /* GLOBAL */:
       return i18nString(UIStrings3.global);
-    case "RENDERING":
+    case "RENDERING" /* RENDERING */:
       return i18nString(UIStrings3.rendering);
-    case "GRID":
+    case "GRID" /* GRID */:
       return i18nString(UIStrings3.grid);
-    case "MOBILE":
+    case "MOBILE" /* MOBILE */:
       return i18nString(UIStrings3.mobile);
-    case "EMULATION":
+    case "EMULATION" /* EMULATION */:
       return i18nString(UIStrings3.console);
-    case "MEMORY":
+    case "MEMORY" /* MEMORY */:
       return i18nString(UIStrings3.memory);
-    case "EXTENSIONS":
+    case "EXTENSIONS" /* EXTENSIONS */:
       return i18nString(UIStrings3.extension);
-    case "ADORNER":
+    case "ADORNER" /* ADORNER */:
       return i18nString(UIStrings3.adorner);
-    case "":
+    case "" /* NONE */:
       return i18n5.i18n.lockedString("");
-    case "ACCOUNT":
+    case "ACCOUNT" /* ACCOUNT */:
       return i18nString(UIStrings3.account);
   }
 }
+var SettingType = /* @__PURE__ */ ((SettingType2) => {
+  SettingType2["ARRAY"] = "array";
+  SettingType2["REGEX"] = "regex";
+  SettingType2["ENUM"] = "enum";
+  SettingType2["BOOLEAN"] = "boolean";
+  return SettingType2;
+})(SettingType || {});
 
-// gen/front_end/core/common/Settings.js
+// ../../front_end/core/common/Settings.ts
 var Settings_exports = {};
 __export(Settings_exports, {
   InMemoryStorage: () => InMemoryStorage,
   RegExpSetting: () => RegExpSetting,
   Setting: () => Setting,
+  SettingAvailability: () => SettingAvailability,
+  SettingCategory: () => SettingCategory,
+  SettingStorageType: () => SettingStorageType,
+  SettingType: () => SettingType,
   Settings: () => Settings,
   SettingsStorage: () => SettingsStorage,
   getLocalizedSettingsCategory: () => getLocalizedSettingsCategory,
@@ -5417,16 +4834,16 @@ __export(Settings_exports, {
   registerSettingsForTest: () => registerSettingsForTest,
   resetSettings: () => resetSettings
 });
-import * as Platform5 from "./../platform/platform.js";
-import * as Root3 from "./../root/root.js";
+import * as Platform5 from "../platform/platform.js";
+import * as Root3 from "../root/root.js";
 
-// gen/front_end/core/common/VersionController.js
+// ../../front_end/core/common/VersionController.ts
 var VersionController_exports = {};
 __export(VersionController_exports, {
   VersionController: () => VersionController
 });
-import * as Platform4 from "./../platform/platform.js";
-import * as Root2 from "./../root/root.js";
+import * as Platform4 from "../platform/platform.js";
+import * as Root2 from "../root/root.js";
 var VersionController = class _VersionController {
   static GLOBAL_VERSION_SETTING_NAME = "inspectorVersion";
   static SYNCED_VERSION_SETTING_NAME = "syncedInspectorVersion";
@@ -5441,20 +4858,17 @@ var VersionController = class _VersionController {
     this.#globalVersionSetting = this.#settings.createSetting(
       _VersionController.GLOBAL_VERSION_SETTING_NAME,
       _VersionController.CURRENT_VERSION,
-      "Global"
-      /* SettingStorageType.GLOBAL */
+      "Global" /* GLOBAL */
     );
     this.#syncedVersionSetting = this.#settings.createSetting(
       _VersionController.SYNCED_VERSION_SETTING_NAME,
       _VersionController.CURRENT_VERSION,
-      "Synced"
-      /* SettingStorageType.SYNCED */
+      "Synced" /* SYNCED */
     );
     this.#localVersionSetting = this.#settings.createSetting(
       _VersionController.LOCAL_VERSION_SETTING_NAME,
       _VersionController.CURRENT_VERSION,
-      "Local"
-      /* SettingStorageType.LOCAL */
+      "Local" /* LOCAL */
     );
   }
   /**
@@ -6036,37 +5450,17 @@ var VersionController = class _VersionController {
   // (from "Hide X" to "X") and flipped the default values to true.
   updateVersionFrom40To41() {
     if (this.#settings.syncedStorage.has("hide-network-messages")) {
-      const oldNetworkSetting = this.#settings.createSetting(
-        "hide-network-messages",
-        false,
-        "Synced"
-        /* SettingStorageType.SYNCED */
-      );
+      const oldNetworkSetting = this.#settings.createSetting("hide-network-messages", false, "Synced" /* SYNCED */);
       if (!this.#settings.syncedStorage.has("network-messages")) {
-        const newNetworkSetting = this.#settings.createSetting(
-          "network-messages",
-          true,
-          "Synced"
-          /* SettingStorageType.SYNCED */
-        );
+        const newNetworkSetting = this.#settings.createSetting("network-messages", true, "Synced" /* SYNCED */);
         newNetworkSetting.set(!oldNetworkSetting.get());
       }
       this.#removeSetting(oldNetworkSetting);
     }
     if (this.#settings.syncedStorage.has("frame-viewer-hide-chrome-window")) {
-      const oldChromeFrameSetting = this.#settings.createSetting(
-        "frame-viewer-hide-chrome-window",
-        false,
-        "Synced"
-        /* SettingStorageType.SYNCED */
-      );
+      const oldChromeFrameSetting = this.#settings.createSetting("frame-viewer-hide-chrome-window", false, "Synced" /* SYNCED */);
       if (!this.#settings.syncedStorage.has("frame-viewer-chrome-window")) {
-        const newChromeFrameSetting = this.#settings.createSetting(
-          "frame-viewer-chrome-window",
-          true,
-          "Synced"
-          /* SettingStorageType.SYNCED */
-        );
+        const newChromeFrameSetting = this.#settings.createSetting("frame-viewer-chrome-window", true, "Synced" /* SYNCED */);
         newChromeFrameSetting.set(!oldChromeFrameSetting.get());
       }
       this.#removeSetting(oldChromeFrameSetting);
@@ -6078,7 +5472,10 @@ var VersionController = class _VersionController {
    * Similar to https://crbug.com/40918380
    */
   updateVersionFrom41To42() {
-    const recordingsSetting = this.#settings.createSetting("recorder-recordings-ng", []);
+    const recordingsSetting = this.#settings.createSetting(
+      "recorder-recordings-ng",
+      []
+    );
     const recordings = recordingsSetting.get();
     if (recordings.length === 0) {
       return;
@@ -6129,7 +5526,9 @@ var VersionController = class _VersionController {
     }
   }
   updateVersionFrom45To46() {
-    const timelineInvalidationTrackingExperimentEnabled = Root2.Runtime.experiments.getValueFromStorage("timeline-invalidation-tracking");
+    const timelineInvalidationTrackingExperimentEnabled = Root2.Runtime.experiments.getValueFromStorage(
+      "timeline-invalidation-tracking"
+    );
     if (timelineInvalidationTrackingExperimentEnabled !== void 0) {
       if (this.#settings.syncedStorage.has("timeline-invalidation-tracking")) {
         return;
@@ -6183,7 +5582,13 @@ var VersionController = class _VersionController {
   }
 };
 
-// gen/front_end/core/common/Settings.js
+// ../../front_end/core/common/Settings.ts
+var SettingAvailability = /* @__PURE__ */ ((SettingAvailability2) => {
+  SettingAvailability2[SettingAvailability2["AVAILABLE"] = 1] = "AVAILABLE";
+  SettingAvailability2[SettingAvailability2["UNAVAILABLE"] = 2] = "UNAVAILABLE";
+  SettingAvailability2[SettingAvailability2["DISABLED"] = 3] = "DISABLED";
+  return SettingAvailability2;
+})(SettingAvailability || {});
 var Settings = class _Settings {
   syncedStorage;
   globalStorage;
@@ -6196,7 +5601,15 @@ var Settings = class _Settings {
   moduleSettings = /* @__PURE__ */ new Map();
   #logSettingAccess;
   #console;
-  constructor({ syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console: console2 }) {
+  constructor({
+    syncedStorage,
+    globalStorage,
+    localStorage,
+    settingRegistrations,
+    logSettingAccess,
+    runSettingsMigration,
+    console: console2
+  }) {
     this.#console = console2;
     this.syncedStorage = syncedStorage;
     this.globalStorage = globalStorage;
@@ -6205,7 +5618,7 @@ var Settings = class _Settings {
     this.#logSettingAccess = logSettingAccess;
     for (const registration of this.#settingRegistrations) {
       const { settingName, defaultValue, storageType } = registration;
-      const isRegex = registration.settingType === "regex";
+      const isRegex = registration.settingType === "regex" /* REGEX */;
       const evaluatedDefaultValue = typeof defaultValue === "function" ? defaultValue(Root3.Runtime.hostConfig) : defaultValue;
       const setting = isRegex && typeof evaluatedDefaultValue === "string" ? this.createRegExpSetting(settingName, evaluatedDefaultValue, void 0, storageType) : this.createSetting(settingName, evaluatedDefaultValue, storageType);
       setting.setRegistration(registration);
@@ -6229,7 +5642,16 @@ var Settings = class _Settings {
     settingRegistrations: null,
     console: null
   }) {
-    const { forceNew, syncedStorage, globalStorage, localStorage, settingRegistrations, logSettingAccess, runSettingsMigration, console: console2 } = opts;
+    const {
+      forceNew,
+      syncedStorage,
+      globalStorage,
+      localStorage,
+      settingRegistrations,
+      logSettingAccess,
+      runSettingsMigration,
+      console: console2
+    } = opts;
     if (!Root3.DevToolsContext.globalInstance().has(_Settings) || forceNew) {
       if (!syncedStorage || !globalStorage || !localStorage || !settingRegistrations || !console2) {
         throw new Error(`Unable to create settings: global and local storage must be provided: ${new Error().stack}`);
@@ -6308,16 +5730,22 @@ var Settings = class _Settings {
     return setting;
   }
   createLocalSetting(key, defaultValue) {
-    return this.createSetting(
-      key,
-      defaultValue,
-      "Local"
-      /* SettingStorageType.LOCAL */
-    );
+    return this.createSetting(key, defaultValue, "Local" /* LOCAL */);
   }
   createRegExpSetting(key, defaultValue, regexFlags, storageType) {
     if (!this.#registry.get(key)) {
-      this.#registry.set(key, new RegExpSetting(key, defaultValue, this.#eventSupport, this.storageFromType(storageType), this.#console, regexFlags, this.#logSettingAccess));
+      this.#registry.set(
+        key,
+        new RegExpSetting(
+          key,
+          defaultValue,
+          this.#eventSupport,
+          this.storageFromType(storageType),
+          this.#console,
+          regexFlags,
+          this.#logSettingAccess
+        )
+      );
     }
     return this.#registry.get(key);
   }
@@ -6329,13 +5757,13 @@ var Settings = class _Settings {
   }
   storageFromType(storageType) {
     switch (storageType) {
-      case "Local":
+      case "Local" /* LOCAL */:
         return this.localStorage;
-      case "Session":
+      case "Session" /* SESSION */:
         return this.#sessionStorage;
-      case "Global":
+      case "Global" /* GLOBAL */:
         return this.globalStorage;
-      case "Synced":
+      case "Synced" /* SYNCED */:
         return this.syncedStorage;
     }
     return this.globalStorage;
@@ -6365,7 +5793,7 @@ var Settings = class _Settings {
       return setting;
     }
     const { name, type, defaultValue, storageType } = descriptor;
-    const isRegex = type === "regex";
+    const isRegex = type === "regex" /* REGEX */;
     const isGetter = (value) => typeof value === "function";
     const evaluatedDefaultValue = isGetter(defaultValue) ? defaultValue(Root3.Runtime.hostConfig) : defaultValue;
     setting = isRegex && typeof evaluatedDefaultValue === "string" ? this.createRegExpSetting(name, evaluatedDefaultValue, void 0, storageType) : this.createSetting(name, evaluatedDefaultValue, storageType);
@@ -6386,7 +5814,7 @@ var Settings = class _Settings {
    */
   maybeResolve(descriptor) {
     const available = descriptor.isAvailable(Root3.Runtime.hostConfig);
-    if (available.status === 1) {
+    if (available.status === 1 /* AVAILABLE */) {
       return { setting: this.#resolve(descriptor) };
     }
     return available;
@@ -6410,9 +5838,6 @@ var InMemoryStorage = class {
   }
 };
 var SettingsStorage = class {
-  object;
-  backingStore;
-  storagePrefix;
   constructor(object, backingStore = new InMemoryStorage(), storagePrefix = "") {
     this.object = object;
     this.backingStore = backingStore;
@@ -6474,18 +5899,6 @@ var SettingsStorage = class {
   }
 };
 var Setting = class {
-  name;
-  defaultValue;
-  eventSupport;
-  storage;
-  #registration = null;
-  #type = null;
-  #requiresUserAction;
-  #value;
-  #hadUserAction;
-  #loggedInitialAccess = false;
-  #logSettingAccess;
-  #console;
   constructor(name, defaultValue, eventSupport, storage, console2, logSettingAccess) {
     this.name = name;
     this.defaultValue = defaultValue;
@@ -6495,10 +5908,18 @@ var Setting = class {
     this.#console = console2;
     this.#logSettingAccess = logSettingAccess;
   }
+  #registration = null;
+  #type = null;
+  #requiresUserAction;
+  #value;
+  #hadUserAction;
+  #loggedInitialAccess = false;
+  #logSettingAccess;
+  #console;
   descriptor() {
     return {
       name: this.name,
-      type: this.type() ?? "boolean",
+      type: this.type() ?? "boolean" /* BOOLEAN */,
       defaultValue: this.defaultValue,
       storageType: this.#registration?.storageType
     };
@@ -6643,8 +6064,15 @@ var RegExpSetting = class extends Setting {
     return this.#regex;
   }
 };
+var SettingStorageType = /* @__PURE__ */ ((SettingStorageType2) => {
+  SettingStorageType2["SYNCED"] = "Synced";
+  SettingStorageType2["GLOBAL"] = "Global";
+  SettingStorageType2["LOCAL"] = "Local";
+  SettingStorageType2["SESSION"] = "Session";
+  return SettingStorageType2;
+})(SettingStorageType || {});
 
-// gen/front_end/core/common/SimpleHistoryManager.js
+// ../../front_end/core/common/SimpleHistoryManager.ts
 var SimpleHistoryManager_exports = {};
 __export(SimpleHistoryManager_exports, {
   SimpleHistoryManager: () => SimpleHistoryManager
@@ -6741,21 +6169,23 @@ var SimpleHistoryManager = class {
   }
 };
 
-// gen/front_end/core/common/Srcset.js
+// ../../front_end/core/common/Srcset.ts
 var Srcset_exports = {};
 __export(Srcset_exports, {
+  TokenType: () => TokenType,
   parseSrcset: () => parseSrcset
 });
+var TokenType = /* @__PURE__ */ ((TokenType2) => {
+  TokenType2[TokenType2["LITERAL"] = 0] = "LITERAL";
+  TokenType2[TokenType2["URL"] = 1] = "URL";
+  return TokenType2;
+})(TokenType || {});
 function parseSrcset(value) {
   const result = [];
   let i = 0;
   while (value.length) {
     if (i++ > 0) {
-      result.push({
-        value: " ",
-        type: 0
-        /* TokenType.LITERAL */
-      });
+      result.push({ value: " ", type: 0 /* LITERAL */ });
     }
     value = value.trim();
     let url = "";
@@ -6776,29 +6206,21 @@ function parseSrcset(value) {
     }
     if (url) {
       if (url.endsWith(",")) {
-        result.push({
-          value: url.substring(0, url.length - 1),
-          type: 1
-          /* TokenType.URL */
-        });
-        result.push({ type: 0, value: "," });
+        result.push({ value: url.substring(0, url.length - 1), type: 1 /* URL */ });
+        result.push({ type: 0 /* LITERAL */, value: "," });
       } else {
-        result.push({
-          value: url,
-          type: 1
-          /* TokenType.URL */
-        });
+        result.push({ value: url, type: 1 /* URL */ });
       }
     }
     if (descriptor) {
-      result.push({ type: 0, value: descriptor });
+      result.push({ type: 0 /* LITERAL */, value: descriptor });
     }
     value = value.substring(url.length + descriptor.length);
   }
   return result;
 }
 
-// gen/front_end/core/common/StringOutputStream.js
+// ../../front_end/core/common/StringOutputStream.ts
 var StringOutputStream_exports = {};
 __export(StringOutputStream_exports, {
   StringOutputStream: () => StringOutputStream
@@ -6815,13 +6237,13 @@ var StringOutputStream = class {
   }
 };
 
-// gen/front_end/core/common/TextDictionary.js
+// ../../front_end/core/common/TextDictionary.ts
 var TextDictionary_exports = {};
 __export(TextDictionary_exports, {
   TextDictionary: () => TextDictionary
 });
 
-// gen/front_end/core/common/Trie.js
+// ../../front_end/core/common/Trie.ts
 var Trie_exports = {};
 __export(Trie_exports, {
   Trie: () => Trie
@@ -6950,7 +6372,7 @@ var Trie = class _Trie {
   }
 };
 
-// gen/front_end/core/common/TextDictionary.js
+// ../../front_end/core/common/TextDictionary.ts
 var TextDictionary = class {
   words = /* @__PURE__ */ new Map();
   index = Trie.newStringTrie();
@@ -6988,9 +6410,10 @@ var TextDictionary = class {
   }
 };
 
-// gen/front_end/core/common/Throttler.js
+// ../../front_end/core/common/Throttler.ts
 var Throttler_exports = {};
 __export(Throttler_exports, {
+  Scheduling: () => Scheduling,
   Throttler: () => Throttler
 });
 var Throttler = class {
@@ -7029,11 +6452,11 @@ var Throttler = class {
     this.#scheduler = Promise.withResolvers();
     this.#process = null;
   }
-  async schedule(process, scheduling = "Default") {
+  async schedule(process, scheduling = "Default" /* DEFAULT */) {
     this.#process = process;
     const hasScheduledTasks = Boolean(this.#processTimeout) || this.#isRunningProcess;
     const okToFire = this.#getTime() - this.#lastCompleteTime > this.#timeout;
-    const asSoonAsPossible = scheduling === "AsSoonAsPossible" || scheduling === "Default" && !hasScheduledTasks && okToFire;
+    const asSoonAsPossible = scheduling === "AsSoonAsPossible" /* AS_SOON_AS_POSSIBLE */ || scheduling === "Default" /* DEFAULT */ && !hasScheduledTasks && okToFire;
     const forceTimerUpdate = asSoonAsPossible && !this.#asSoonAsPossible;
     this.#asSoonAsPossible = this.#asSoonAsPossible || asSoonAsPossible;
     this.#schedule(forceTimerUpdate);
@@ -7054,9 +6477,15 @@ var Throttler = class {
     return performance.now();
   }
 };
+var Scheduling = /* @__PURE__ */ ((Scheduling2) => {
+  Scheduling2["DEFAULT"] = "Default";
+  Scheduling2["AS_SOON_AS_POSSIBLE"] = "AsSoonAsPossible";
+  Scheduling2["DELAYED"] = "Delayed";
+  return Scheduling2;
+})(Scheduling || {});
 
-// gen/front_end/core/common/common.prebundle.js
-import { UIString } from "./../platform/platform.js";
+// ../../front_end/core/common/common.ts
+import { UIString } from "../platform/platform.js";
 export {
   Base64_exports as Base64,
   CharacterIdMap_exports as CharacterIdMap,

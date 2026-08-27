@@ -19,10 +19,10 @@
       "path": "./console-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/panels/console/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/ui/legacy/components/object_ui/css_files-tsconfig.ref.json"
+      "path": "../../ui/legacy/components/object_ui/css_files-tsconfig.ref.json"
     }
   ]
 }

@@ -179,6 +179,12 @@ const BLOCK_CLOSE_RE = /^\s*\},?\s*$/;
 export function commentForbiddenHeaders(serializedOptions, rules = FORBIDDEN_HEADER_RULES) {
     const lines = serializedOptions.split('\n');
     const result = [];
+    let Mode;
+    (function (Mode) {
+        Mode[Mode["BEFORE_HEADERS"] = 1] = "BEFORE_HEADERS";
+        Mode[Mode["INSIDE_HEADERS"] = 2] = "INSIDE_HEADERS";
+        Mode[Mode["AFTER_HEADERS"] = 3] = "AFTER_HEADERS";
+    })(Mode || (Mode = {}));
     let mode = 1 /* Mode.BEFORE_HEADERS */;
     // For grouping consecutive matches with the same 'prefix' rule.
     let pendingPrefixRule = null;

@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "outDir": ".",
+    "rootDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "package/dist/acorn.d.mts",
+    "package/dist/acorn.d.ts",
+    "package/dist/acorn.mjs.d.ts"
+  ],
+  "references": [
+
+  ]
+}

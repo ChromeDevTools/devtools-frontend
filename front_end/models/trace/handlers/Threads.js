@@ -1,3 +1,12 @@
+export var ThreadType;
+(function (ThreadType) {
+    ThreadType["MAIN_THREAD"] = "MAIN_THREAD";
+    ThreadType["WORKER"] = "WORKER";
+    ThreadType["RASTERIZER"] = "RASTERIZER";
+    ThreadType["OTHER"] = "OTHER";
+    ThreadType["CPU_PROFILE"] = "CPU_PROFILE";
+    ThreadType["THREAD_POOL"] = "THREAD_POOL";
+})(ThreadType || (ThreadType = {}));
 function getThreadTypeForRendererThread(pid, thread) {
     let threadType = "OTHER" /* ThreadType.OTHER */;
     if (thread.name === 'CrRendererMain') {

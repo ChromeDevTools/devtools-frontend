@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "customPreviewComponent.css.js",
+    "objectPopover.css.js",
+    "objectPropertiesSection.css.js",
+    "objectValue.css.js"
+  ]
+}

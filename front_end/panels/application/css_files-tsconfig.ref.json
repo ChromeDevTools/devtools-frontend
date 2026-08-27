@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "appManifestView.css.js",
+    "backgroundServiceView.css.js",
+    "cookieItemsView.css.js",
+    "deviceBoundSessionsView.css.js",
+    "frameDetailsReportView.css.js",
+    "indexedDBViews.css.js",
+    "openedWindowDetailsView.css.js",
+    "originTrialTokenRows.css.js",
+    "originTrialTreeView.css.js",
+    "preloading/preloadingView.css.js",
+    "preloading/preloadingViewDropDown.css.js",
+    "resourcesPanel.css.js",
+    "resourcesSidebar.css.js",
+    "serviceWorkerCacheViews.css.js",
+    "serviceWorkerUpdateCycleView.css.js",
+    "serviceWorkersView.css.js",
+    "storageView.css.js",
+    "webMCPView.css.js"
+  ]
+}

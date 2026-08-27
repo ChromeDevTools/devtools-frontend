@@ -1673,6 +1673,10 @@ export class TimelineFlameChartMarker {
         context.restore();
     }
 }
+export var ColorBy;
+(function (ColorBy) {
+    ColorBy["URL"] = "URL";
+})(ColorBy || (ColorBy = {}));
 /**
  * Find the Group that contains the provided level, or `null` if no group is
  * found.
@@ -1685,4 +1689,8 @@ export function groupForLevel(groups, level) {
     });
     return groupForLevel ?? null;
 }
+export var Events;
+(function (Events) {
+    Events["ENTRY_LABEL_ANNOTATION_CLICKED"] = "EntryLabelAnnotationClicked";
+})(Events || (Events = {}));
 //# sourceMappingURL=TimelineFlameChartView.js.map

@@ -61,6 +61,34 @@ export const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/CLSCulprits.ts', UIStrings);
 export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export var AnimationFailureReasons;
+(function (AnimationFailureReasons) {
+    AnimationFailureReasons["ACCELERATED_ANIMATIONS_DISABLED"] = "ACCELERATED_ANIMATIONS_DISABLED";
+    AnimationFailureReasons["EFFECT_SUPPRESSED_BY_DEVTOOLS"] = "EFFECT_SUPPRESSED_BY_DEVTOOLS";
+    AnimationFailureReasons["INVALID_ANIMATION_OR_EFFECT"] = "INVALID_ANIMATION_OR_EFFECT";
+    AnimationFailureReasons["EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS"] = "EFFECT_HAS_UNSUPPORTED_TIMING_PARAMS";
+    AnimationFailureReasons["EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE"] = "EFFECT_HAS_NON_REPLACE_COMPOSITE_MODE";
+    AnimationFailureReasons["TARGET_HAS_INVALID_COMPOSITING_STATE"] = "TARGET_HAS_INVALID_COMPOSITING_STATE";
+    AnimationFailureReasons["TARGET_HAS_INCOMPATIBLE_ANIMATIONS"] = "TARGET_HAS_INCOMPATIBLE_ANIMATIONS";
+    AnimationFailureReasons["TARGET_HAS_CSS_OFFSET"] = "TARGET_HAS_CSS_OFFSET";
+    AnimationFailureReasons["ANIMATION_AFFECTS_NON_CSS_PROPERTIES"] = "ANIMATION_AFFECTS_NON_CSS_PROPERTIES";
+    AnimationFailureReasons["TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET"] = "TRANSFORM_RELATED_PROPERTY_CANNOT_BE_ACCELERATED_ON_TARGET";
+    AnimationFailureReasons["TRANSFROM_BOX_SIZE_DEPENDENT"] = "TRANSFROM_BOX_SIZE_DEPENDENT";
+    AnimationFailureReasons["FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS"] = "FILTER_RELATED_PROPERTY_MAY_MOVE_PIXELS";
+    AnimationFailureReasons["UNSUPPORTED_CSS_PROPERTY"] = "UNSUPPORTED_CSS_PROPERTY";
+    AnimationFailureReasons["MIXED_KEYFRAME_VALUE_TYPES"] = "MIXED_KEYFRAME_VALUE_TYPES";
+    AnimationFailureReasons["TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE"] = "TIMELINE_SOURCE_HAS_INVALID_COMPOSITING_STATE";
+    AnimationFailureReasons["ANIMATION_HAS_NO_VISIBLE_CHANGE"] = "ANIMATION_HAS_NO_VISIBLE_CHANGE";
+    AnimationFailureReasons["AFFECTS_IMPORTANT_PROPERTY"] = "AFFECTS_IMPORTANT_PROPERTY";
+    AnimationFailureReasons["SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY"] = "SVG_TARGET_HAS_INDEPENDENT_TRANSFORM_PROPERTY";
+})(AnimationFailureReasons || (AnimationFailureReasons = {}));
+export var LayoutShiftType;
+(function (LayoutShiftType) {
+    LayoutShiftType[LayoutShiftType["WEB_FONT"] = 0] = "WEB_FONT";
+    LayoutShiftType[LayoutShiftType["IFRAMES"] = 1] = "IFRAMES";
+    LayoutShiftType[LayoutShiftType["ANIMATIONS"] = 2] = "ANIMATIONS";
+    LayoutShiftType[LayoutShiftType["UNSIZED_IMAGE"] = 3] = "UNSIZED_IMAGE";
+})(LayoutShiftType || (LayoutShiftType = {}));
 /**
  * Each failure reason is represented by a bit flag. The bit shift operator '<<' is used to define
  * which bit corresponds to each failure reason.

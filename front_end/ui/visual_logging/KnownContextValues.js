@@ -3839,6 +3839,7 @@ export const knownContextValues = new Set([
     'show-grid-track-sizes-true',
     'show-html-comments',
     'show-html-comments-false',
+    'show-inactive-css-rules',
     'show-inherited-computed-style-properties',
     'show-issue-associated-with-this',
     'show-layout-shift-regions',

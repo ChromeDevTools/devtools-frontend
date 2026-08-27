@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/panels/media",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -72,7 +73,7 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../../../tsc/front_end/generated/protocol-tsconfig.ref.json"
+      "path": "../../generated/protocol-tsconfig.ref.json"
     },
     {
       "path": "../../ui/kit/bundle-tsconfig.ref.json"

@@ -195,6 +195,11 @@ export class CommandMenu {
         return this.#commands;
     }
 }
+export var PanelOrDrawer;
+(function (PanelOrDrawer) {
+    PanelOrDrawer["PANEL"] = "PANEL";
+    PanelOrDrawer["DRAWER"] = "DRAWER";
+})(PanelOrDrawer || (PanelOrDrawer = {}));
 export class CommandMenuProvider extends Provider {
     commands;
     constructor(commandsForTest = []) {

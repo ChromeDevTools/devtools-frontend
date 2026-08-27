@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "layerDetailsView.css.js",
+    "layerTreeOutline.css.js",
+    "layers3DView.css.js",
+    "paintProfiler.css.js"
+  ]
+}

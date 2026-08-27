@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "fontView.css.js",
+    "imageView.css.js",
+    "jsonView.css.js",
+    "resourceSourceFrame.css.js",
+    "xmlTree.css.js",
+    "xmlView.css.js"
+  ]
+}

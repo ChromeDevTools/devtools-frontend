@@ -101,6 +101,9 @@ export const DEFAULT_VIEW = (input, output, target) => {
                 output.elementsTreeOutline?.showContextMenu(treeElement, event);
             }
         }, false);
+        elementsTreeOutline.elementInternal.addEventListener('keydown', (event) => {
+            input.onKeyDown?.(event);
+        }, false);
         output.imagePreviewPopover = new ImagePreviewPopover(elementsTreeOutline.contentElement, event => {
             let link = event.target;
             while (link && !ImagePreviewPopover.getImageURL(link)) {
@@ -329,6 +332,19 @@ function getVisibleChildren(node, showComments = true) {
     }
     return children;
 }
+function isAncestorOf(ancestor, descendant) {
+    let current = descendant.parentNode;
+    while (current) {
+        if (current === ancestor) {
+            return true;
+        }
+        current = current.parentNode;
+    }
+    return false;
+}
+function computeLeftIndent(depth, isExpandable) {
+    return 12 * (depth - 1) + (isExpandable ? 1 : 12);
+}
 export const DECLARATIVE_VIEW = (input, _output, target) => {
     let rootNodes = [];
     const rootDOMNode = input.rootDOMNode;
@@ -340,12 +356,14 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
             rootNodes = [rootDOMNode];
         }
     }
-    const renderNode = (node) => {
+    const renderNode = (node, depth = 0) => {
         const isSelected = input.selectedNode === node;
-        const isExpanded = input.isNodeExpanded ?
-            input.isNodeExpanded(node) :
-            Boolean(input.expandRoot &&
-                (node === input.rootDOMNode || (input.omitRootDOMNode && node.parentNode === input.rootDOMNode)));
+        const isHovered = input.currentHighlightedNode === node;
+        const isExpanded = Boolean((input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode)) ||
+            (input.isNodeExpanded ?
+                input.isNodeExpanded(node) :
+                (input.expandRoot &&
+                    (node === input.rootDOMNode || (input.omitRootDOMNode && node.parentNode === input.rootDOMNode)))));
         const hasChildren = nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
         const children = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
         const tagName = node.nodeName().toLowerCase();
@@ -363,7 +381,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         // TODO: Move AdoptedStyleSheet rendering (AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement) into dedicated declarative widgets.
         // TODO: Move tree node pagination ("Show all nodes" button and expandedChildrenLimit) to a declarative tree slice model.
         // TODO: Move ImagePreviewPopover and issue tooltip helpers into declarative Lit directives or tooltip components.
-        // TODO: Move keyboard shortcuts (F2 for edit, Delete/Backspace for node deletion, 'h' for toggle hide, Enter for attribute edit) into DOMTreeWidget.
+        // TODO: Move in-place keyboard shortcuts (F2 for edit, Enter for attribute edit) into DOMTreeWidget.
         // TODO: Move DOMModel event subscription and reactive state synchronization (updateRecords, DOM update animations) directly into DOMTreeWidget.
         const onSelect = () => {
             input.onSelect?.(node, /* selectedByUser= */ true);
@@ -375,6 +393,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         return html `
       <li role="treeitem"
           ?selected=${isSelected}
+          class=${isHovered ? 'hovered' : ''}
           ?open=${isExpanded}
           @select=${onSelect}
           @expand=${onExpand}
@@ -391,6 +410,8 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
             isExpandable: hasChildren,
             selected: isSelected,
             isDOMNodeSelected: isSelected,
+            hovered: isHovered,
+            computeLeftIndent: computeLeftIndent(depth, hasChildren),
             disableEdits: input.disableEdits ?? false,
             showAIButton: input.showAIButton ?? true,
             selectDOMNode: (n, selectedByUser) => input.onSelect?.(n, selectedByUser),
@@ -409,7 +430,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         ${hasChildren ? html `
           <ul role="group">
             ${UI.TreeOutline.ifExpanded(html `
-              ${children.map(child => renderNode(child))}
+              ${children.map(child => renderNode(child, depth + 1))}
               ${needsClosingTag ? html `
                 <li role="treeitem" jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
                   ${UI.Widget.widget(ElementsTreeWidget, {
@@ -419,6 +440,8 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
             isExpandable: false,
             selected: false,
             isDOMNodeSelected: false,
+            hovered: false,
+            computeLeftIndent: computeLeftIndent(depth, false),
             disableEdits: input.disableEdits ?? false,
             showAIButton: false,
         })}
@@ -441,6 +464,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         aria-label=${i18nString(UIStrings.pageDom)}
         jslog=${VisualLogging.tree('elements')}
         ?show-selection-on-keyboard-focus=${input.showSelectionOnKeyboardFocus}
+        @keydown=${input.onKeyDown}
         .template=${html `
           <style>${elementsTreeOutlineStyles}</style>
           <style>${CodeHighlighter.codeHighlighterStyles}</style>
@@ -692,7 +716,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
                 this.#expandedNodes.delete(node);
                 this.onElementCollapsed();
             }
-            this.#clearHighlightedNode();
+            if (!this.#currentHighlightedNode || !isAncestorOf(node, this.#currentHighlightedNode)) {
+                this.#clearHighlightedNode();
+            }
             this.performUpdate();
             return;
         }
@@ -776,6 +802,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             },
             onToggleHideElement: (node) => {
                 this.toggleHideElement(node);
+            },
+            onKeyDown: (event) => {
+                this.onKeyDown(event);
             },
             isToggledToHidden: (node) => {
                 return this.isToggledToHidden(node);
@@ -898,6 +927,19 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     toggleHideElement(node) {
         void node.toggleHideElement();
     }
+    async removeNode(node) {
+        if (this.isToggledToHidden(node)) {
+            // Unhide the node before removing. This avoids inconsistent state if the node is restored via undo.
+            this.toggleHideElement(node);
+        }
+        if (node.pseudoType()) {
+            return;
+        }
+        if (!node.parentNode || node.parentNode.nodeType() === Node.DOCUMENT_NODE) {
+            return;
+        }
+        void node.removeNode();
+    }
     isToggledToHidden(node) {
         return node.isToggledToHidden();
     }
@@ -906,6 +948,48 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     duplicateNode(node) {
         node.duplicate();
+    }
+    selectNodeAfterEdit(wasExpanded, error, newNode) {
+        if (error || !newNode) {
+            return;
+        }
+        this.selectDOMNode(newNode, /* selectedByUser= */ true);
+        if (wasExpanded) {
+            this.setNodeExpanded(newNode, true);
+        }
+    }
+    onKeyDown(event) {
+        if (UI.UIUtils.isEditing()) {
+            return false;
+        }
+        const node = this.selectedDOMNode();
+        if (!node) {
+            return false;
+        }
+        if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) && node.parentNode) {
+            const wasExpanded = this.isNodeExpanded(node);
+            if (event.key === 'ArrowUp' && node.previousSibling) {
+                node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, wasExpanded));
+                event.consume(true);
+                return true;
+            }
+            if (event.key === 'ArrowDown' && node.nextSibling) {
+                node.moveTo(node.parentNode, node.nextSibling.nextSibling, this.selectNodeAfterEdit.bind(this, wasExpanded));
+                event.consume(true);
+                return true;
+            }
+        }
+        if (event.key === 'Delete' || event.key === 'Backspace') {
+            void this.removeNode(node);
+            event.consume(true);
+            return true;
+        }
+        if (event.key === 'h' || event.key === 'H') {
+            this.toggleHideElement(node);
+            event.consume(true);
+            return true;
+        }
+        return false;
     }
     copyStyles(node) {
         void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.copyStyles();
@@ -1020,7 +1104,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         this.elementInternal.addEventListener('mousedown', this.onmousedown.bind(this), false);
         this.elementInternal.addEventListener('mousemove', this.onmousemove.bind(this), false);
         this.elementInternal.addEventListener('mouseleave', this.onmouseleave.bind(this), false);
-        this.elementInternal.addEventListener('keydown', this.onKeyDown.bind(this), false);
         if (!this.disableEdits) {
             this.elementInternal.addEventListener('dragstart', this.ondragstart.bind(this), false);
             this.elementInternal.addEventListener('dragover', this.ondragover.bind(this), false);
@@ -1601,32 +1684,6 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     showContextMenu = () => { };
     runPendingUpdates() {
         this.updateModifiedNodes();
-    }
-    onKeyDown(event) {
-        const keyboardEvent = event;
-        if (UI.UIUtils.isEditing()) {
-            return;
-        }
-        const node = this.selectedDOMNode();
-        if (!node) {
-            return;
-        }
-        const treeElement = this.treeElementByNode.get(node);
-        if (!treeElement) {
-            return;
-        }
-        if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(keyboardEvent) && node.parentNode) {
-            if (keyboardEvent.key === 'ArrowUp' && node.previousSibling) {
-                node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, treeElement.expanded));
-                keyboardEvent.consume(true);
-                return;
-            }
-            if (keyboardEvent.key === 'ArrowDown' && node.nextSibling) {
-                node.moveTo(node.parentNode, node.nextSibling.nextSibling, this.selectNodeAfterEdit.bind(this, treeElement.expanded));
-                keyboardEvent.consume(true);
-                return;
-            }
-        }
     }
     toggleEditAsHTML(node, startEditing, callback) {
         const treeElement = this.treeElementByNode.get(node);

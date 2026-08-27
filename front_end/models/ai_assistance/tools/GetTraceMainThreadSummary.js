@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import { PerformanceTraceContext, } from '../contexts/PerformanceTraceContext.js';
 import { MAX_FUNCTION_RESULT_BYTE_LENGTH, } from './Tool.js';
 const UIStringsNotTranslate = {
     mainThreadActivity: 'Main thread activity',
@@ -32,16 +31,16 @@ export class GetTraceMainThreadSummaryTool {
         };
     }
     async handler(params, capabilities) {
-        const conversationContext = capabilities.conversationContext;
-        if (!conversationContext || !(conversationContext instanceof PerformanceTraceContext)) {
+        const performanceTraceContext = capabilities.getPerformanceTraceContext();
+        if (!performanceTraceContext) {
             return { error: 'Performance trace context is not available.' };
         }
-        const focus = conversationContext.getItem();
-        const bounds = conversationContext.getBoundsForLabel(params.label);
+        const focus = performanceTraceContext.getItem();
+        const bounds = performanceTraceContext.getBoundsForLabel(params.label);
         if (!bounds) {
             return { error: `Invalid label: ${params.label}` };
         }
-        const formatter = conversationContext.createFormatter();
+        const formatter = performanceTraceContext.createFormatter();
         const summary = await formatter.formatMainThreadTrackSummary(bounds);
         if (summary.length > MAX_FUNCTION_RESULT_BYTE_LENGTH) {
             return {

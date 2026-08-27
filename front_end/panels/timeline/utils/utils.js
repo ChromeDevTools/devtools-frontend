@@ -11,8 +11,8 @@ __export(EntryNodes_exports, {
   nodeIdsForEvent: () => nodeIdsForEvent,
   relatedDOMNodesForEvent: () => relatedDOMNodesForEvent
 });
-import * as SDK from "./../../../core/sdk/sdk.js";
-import * as Trace from "./../../../models/trace/trace.js";
+import * as SDK from "../../../core/sdk/sdk.js";
+import * as Trace from "../../../models/trace/trace.js";
 var nodeIdsForEventCache = /* @__PURE__ */ new WeakMap();
 var domNodesForEventCache = /* @__PURE__ */ new WeakMap();
 function nodeIdsForEvent(parsedTrace, event) {
@@ -89,7 +89,7 @@ __export(Helpers_exports, {
   formatOriginWithEntity: () => formatOriginWithEntity,
   shortenUrl: () => shortenUrl
 });
-import * as Platform from "./../../../core/platform/platform.js";
+import * as Platform from "../../../core/platform/platform.js";
 var MAX_ORIGIN_LENGTH = 60;
 function createTrimmedUrlSearch(url) {
   const maxSearchValueLength = 8;
@@ -193,10 +193,10 @@ __export(IgnoreList_exports, {
   getIgnoredReasonString: () => getIgnoredReasonString,
   isIgnoreListedEntry: () => isIgnoreListedEntry
 });
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as Trace2 from "./../../../models/trace/trace.js";
-import * as SourceMapsResolver from "./../../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
-import * as Workspace from "./../../../models/workspace/workspace.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as Trace2 from "../../../models/trace/trace.js";
+import * as SourceMapsResolver from "../../../models/trace_source_maps_resolver/trace_source_maps_resolver.js";
+import * as Workspace from "../../../models/workspace/workspace.js";
 var UIStrings = {
   /**
    * @description Refers to when skipping content scripts is enabled and the current script is ignored because it's a content script.
@@ -271,7 +271,7 @@ __export(ImageCache_exports, {
   loadImageForTesting: () => loadImageForTesting,
   preload: () => preload
 });
-import * as Trace3 from "./../../../models/trace/trace.js";
+import * as Trace3 from "../../../models/trace/trace.js";
 var imageCache = /* @__PURE__ */ new WeakMap();
 var emitter = new EventTarget();
 function getOrQueue(screenshot) {
@@ -317,9 +317,9 @@ __export(Treemap_exports, {
   makeScriptNode: () => makeScriptNode,
   openTreemap: () => openTreemap
 });
-import * as Common from "./../../../core/common/common.js";
-import * as i18n3 from "./../../../core/i18n/i18n.js";
-import * as Trace4 from "./../../../models/trace/trace.js";
+import * as Common from "../../../core/common/common.js";
+import * as i18n3 from "../../../core/i18n/i18n.js";
+import * as Trace4 from "../../../models/trace/trace.js";
 async function toCompressedBase64(string) {
   const compAb = await Common.Gzip.compress(string);
   const strb64 = await Common.Base64.encode(compAb);

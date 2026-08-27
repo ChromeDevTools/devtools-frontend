@@ -10,8 +10,8 @@ __export(SwitchImpl_exports, {
   Switch: () => Switch,
   SwitchChangeEvent: () => SwitchChangeEvent
 });
-import { html, nothing, render } from "./../../lit/lit.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
+import { html, nothing, render } from "../../lit/lit.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/switch/switch.css.js
 var switch_css_default = `/*

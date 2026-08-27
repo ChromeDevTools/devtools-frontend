@@ -10,7 +10,7 @@ __export(CSSStyleSanitizer_exports, {
   cssEscapeRegex: () => cssEscapeRegex,
   sanitizeStyle: () => sanitizeStyle
 });
-import * as Common from "./../../../../core/common/common.js";
+import * as Common from "../../../../core/common/common.js";
 function cssEscapeRegex(cssString) {
   return [...cssString].map((char) => {
     const charCodes = new Set([char.toLowerCase(), char.toUpperCase()].map((c) => c.charCodeAt(0).toString(16)));
@@ -52,11 +52,11 @@ __export(CustomPreviewComponent_exports, {
   CustomPreviewComponent: () => CustomPreviewComponent,
   CustomPreviewSection: () => CustomPreviewSection
 });
-import * as Common3 from "./../../../../core/common/common.js";
-import * as i18n5 from "./../../../../core/i18n/i18n.js";
-import { createIcon } from "./../../../kit/kit.js";
-import { render as render3 } from "./../../../lit/lit.js";
-import * as UI3 from "./../../legacy.js";
+import * as Common3 from "../../../../core/common/common.js";
+import * as i18n5 from "../../../../core/i18n/i18n.js";
+import { createIcon } from "../../../kit/kit.js";
+import { render as render3 } from "../../../lit/lit.js";
+import * as UI3 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/object_ui/customPreviewComponent.css.js
 var customPreviewComponent_css_default = `/*
@@ -98,6 +98,7 @@ __export(ObjectPropertiesSection_exports, {
   OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: () => OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW,
   OBJECT_PROPERTY_DEFAULT_VIEW: () => OBJECT_PROPERTY_DEFAULT_VIEW,
   OBJECT_TREE_DEFAULT_VIEW: () => OBJECT_TREE_DEFAULT_VIEW,
+  ObjectPropertiesMode: () => ObjectPropertiesMode,
   ObjectPropertiesSectionWidget: () => ObjectPropertiesSectionWidget,
   ObjectPropertiesSectionsTreeOutline: () => ObjectPropertiesSectionsTreeOutline,
   ObjectPropertyTreeElement: () => ObjectPropertyTreeElement,
@@ -120,30 +121,30 @@ __export(ObjectPropertiesSection_exports, {
   renderPropertyValue: () => renderPropertyValue,
   valueElementForFunctionDescription: () => valueElementForFunctionDescription
 });
-import * as Common2 from "./../../../../core/common/common.js";
-import * as Host from "./../../../../core/host/host.js";
-import * as i18n3 from "./../../../../core/i18n/i18n.js";
-import * as Platform2 from "./../../../../core/platform/platform.js";
-import * as SDK3 from "./../../../../core/sdk/sdk.js";
-import * as TextUtils from "./../../../../core/text_utils/text_utils.js";
-import * as uiI18n from "./../../../i18n/i18n.js";
-import * as Highlighting from "./../../../components/highlighting/highlighting.js";
-import * as TextEditor from "./../../../components/text_editor/text_editor.js";
-import { Directives as Directives2, html as html2, nothing as nothing2, render as render2 } from "./../../../lit/lit.js";
-import * as VisualLogging from "./../../../visual_logging/visual_logging.js";
-import * as UI2 from "./../../legacy.js";
+import * as Common2 from "../../../../core/common/common.js";
+import * as Host from "../../../../core/host/host.js";
+import * as i18n3 from "../../../../core/i18n/i18n.js";
+import * as Platform2 from "../../../../core/platform/platform.js";
+import * as SDK3 from "../../../../core/sdk/sdk.js";
+import * as TextUtils from "../../../../core/text_utils/text_utils.js";
+import * as uiI18n from "../../../i18n/i18n.js";
+import * as Highlighting from "../../../components/highlighting/highlighting.js";
+import * as TextEditor from "../../../components/text_editor/text_editor.js";
+import { Directives as Directives2, html as html2, nothing as nothing2, render as render2 } from "../../../lit/lit.js";
+import * as VisualLogging from "../../../visual_logging/visual_logging.js";
+import * as UI2 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/object_ui/JavaScriptREPL.js
 var JavaScriptREPL_exports = {};
 __export(JavaScriptREPL_exports, {
   JavaScriptREPL: () => JavaScriptREPL
 });
-import * as SDK2 from "./../../../../core/sdk/sdk.js";
-import * as Bindings from "./../../../../models/bindings/bindings.js";
-import * as Formatter from "./../../../../models/formatter/formatter.js";
-import * as SourceMapScopes from "./../../../../models/source_map_scopes/source_map_scopes.js";
-import * as Acorn from "./../../../../third_party/acorn/acorn.js";
-import * as UI from "./../../legacy.js";
+import * as SDK2 from "../../../../core/sdk/sdk.js";
+import * as Bindings from "../../../../models/bindings/bindings.js";
+import * as Formatter from "../../../../models/formatter/formatter.js";
+import * as SourceMapScopes from "../../../../models/source_map_scopes/source_map_scopes.js";
+import * as Acorn from "../../../../third_party/acorn/acorn.js";
+import * as UI from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.js
 var RemoteObjectPreviewFormatter_exports = {};
@@ -152,10 +153,10 @@ __export(RemoteObjectPreviewFormatter_exports, {
   renderNodeTitle: () => renderNodeTitle,
   renderTrustedType: () => renderTrustedType
 });
-import * as i18n from "./../../../../core/i18n/i18n.js";
-import * as Platform from "./../../../../core/platform/platform.js";
-import * as SDK from "./../../../../core/sdk/sdk.js";
-import { Directives, html, nothing, render } from "./../../../lit/lit.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
+import * as Platform from "../../../../core/platform/platform.js";
+import * as SDK from "../../../../core/sdk/sdk.js";
+import { Directives, html, nothing, render } from "../../../lit/lit.js";
 var { ifDefined, repeat } = Directives;
 var UIStrings = {
   /**
@@ -351,6 +352,14 @@ var RemoteObjectPreviewFormatter = class _RemoteObjectPreviewFormatter {
     return fragment;
   }
 };
+var InternalName;
+(function(InternalName2) {
+  InternalName2["GENERATOR_STATE"] = "[[GeneratorState]]";
+  InternalName2["PRIMITIVE_VALUE"] = "[[PrimitiveValue]]";
+  InternalName2["PROMISE_STATE"] = "[[PromiseState]]";
+  InternalName2["PROMISE_RESULT"] = "[[PromiseResult]]";
+  InternalName2["WEAK_REF_TARGET"] = "[[WeakRefTarget]]";
+})(InternalName || (InternalName = {}));
 function renderNodeTitle(nodeTitle) {
   const match = nodeTitle.match(/([^#.]+)(#[^.]+)?(\..*)?/);
   if (!match) {
@@ -462,14 +471,14 @@ li.object-properties-section  {
 
   &::before {
     flex-shrink: 0;
-    margin-right: 2px;
+    margin-right: var(--sys-size-2);
     align-self: flex-start;
   }
 }
 
 .object-properties-section li.editing-sub-part {
-  padding: 3px 12px 8px 6px;
-  margin: -1px -6px -8px;
+  padding: 3px var(--sys-size-6) var(--sys-size-5) var(--sys-size-4);
+  margin: calc(-1 * var(--sys-size-1)) calc(-1 * var(--sys-size-4)) calc(-1 * var(--sys-size-5));
   text-overflow: clip;
 }
 
@@ -504,7 +513,7 @@ li.object-properties-section  {
 }
 
 .name-and-value {
-  line-height: 16px;
+  line-height: var(--sys-size-8);
   display: flex;
   white-space: nowrap;
 }
@@ -520,7 +529,7 @@ li.object-properties-section  {
 }
 
 .property-prompt {
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
 }
 
 .tree-outline.hide-selection-when-blurred .selected:focus-visible {
@@ -532,7 +541,7 @@ li.object-properties-section  {
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .name-and-value,
 .tree-outline.hide-selection-when-blurred .selected:focus-visible .gray-info-message {
   background: var(--sys-color-state-focus-highlight);
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
 }
 
 @media (forced-colors: active) {
@@ -1197,6 +1206,15 @@ var ObjectTreeNodeBase = class _ObjectTreeNodeBase extends Common2.ObjectWrapper
     return gettersAndSetters;
   }
 };
+(function(ObjectTreeNodeBase2) {
+  let Events;
+  (function(Events2) {
+    Events2["VALUE_CHANGED"] = "value-changed";
+    Events2["CHILDREN_CHANGED"] = "children-changed";
+    Events2["FILTER_CHANGED"] = "filter-changed";
+    Events2["EXPANDED_CHANGED"] = "expanded-changed";
+  })(Events = ObjectTreeNodeBase2.Events || (ObjectTreeNodeBase2.Events = {}));
+})(ObjectTreeNodeBase || (ObjectTreeNodeBase = {}));
 var ObjectTree = class extends ObjectTreeNodeBase {
   #object;
   constructor(object, options) {
@@ -1670,6 +1688,11 @@ var ObjectPropertiesSectionsTreeOutline = class extends UI2.TreeOutline.TreeOutl
     this.contentElement.classList.add("object-properties-section");
   }
 };
+var ObjectPropertiesMode;
+(function(ObjectPropertiesMode2) {
+  ObjectPropertiesMode2[ObjectPropertiesMode2["ALL"] = 0] = "ALL";
+  ObjectPropertiesMode2[ObjectPropertiesMode2["OWN_AND_INTERNAL_AND_INHERITED"] = 1] = "OWN_AND_INTERNAL_AND_INHERITED";
+})(ObjectPropertiesMode || (ObjectPropertiesMode = {}));
 function populateObjectTreeContextMenu(contextMenu, object, expandRecursively, collapseChildren, sortPropertiesAlphabetically, onShowAllToggled) {
   contextMenu.appendApplicableItems(object.object);
   if (object.object instanceof SDK3.RemoteObject.LocalJSONObject) {
@@ -2916,14 +2939,14 @@ var ObjectPopoverHelper_exports = {};
 __export(ObjectPopoverHelper_exports, {
   ObjectPopoverHelper: () => ObjectPopoverHelper
 });
-import * as i18n7 from "./../../../../core/i18n/i18n.js";
-import * as Platform3 from "./../../../../core/platform/platform.js";
-import * as SDK4 from "./../../../../core/sdk/sdk.js";
-import * as Geometry from "./../../../../models/geometry/geometry.js";
-import { Link } from "./../../../kit/kit.js";
-import { render as render4 } from "./../../../lit/lit.js";
-import * as UI4 from "./../../legacy.js";
-import * as Components from "./../utils/utils.js";
+import * as i18n7 from "../../../../core/i18n/i18n.js";
+import * as Platform3 from "../../../../core/platform/platform.js";
+import * as SDK4 from "../../../../core/sdk/sdk.js";
+import * as Geometry from "../../../../models/geometry/geometry.js";
+import { Link } from "../../../kit/kit.js";
+import { render as render4 } from "../../../lit/lit.js";
+import * as UI4 from "../../legacy.js";
+import * as Components from "../utils/utils.js";
 
 // gen/front_end/ui/legacy/components/object_ui/objectPopover.css.js
 var objectPopover_css_default = `/*

@@ -21,15 +21,7 @@ export declare const enum Events {
 export interface EventTypes {
     [Events.STYLES_UPDATE_COMPLETED]: void;
 }
-declare const StandaloneStylesContainer_base: (new (...args: any[]) => {
-    __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
-    addEventListener<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
-    once<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: T): Promise<EventTypes[T]>;
-    removeEventListener<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
-    hasEventListeners(eventType: Events.STYLES_UPDATE_COMPLETED): boolean;
-    dispatchEventToListeners<T extends Events.STYLES_UPDATE_COMPLETED>(eventType: import("../../core/platform/TypescriptUtilities.js").NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
-    dispatchDOMEvent?(event: Event): void;
-}) & typeof UI.Widget.VBox;
+declare const StandaloneStylesContainer_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.VBox;
 export declare class StandaloneStylesContainer extends StandaloneStylesContainer_base implements StylesContainer {
     #private;
     activeCSSAngle: InlineEditor.CSSAngle.CSSAngle | null;

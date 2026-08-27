@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/core/platform",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/core/platform/ArrayUtilities.test.ts",
+    "../../../../../../front_end/core/platform/DateUtilities.test.ts",
+    "../../../../../../front_end/core/platform/DevToolsPath.test.ts",
+    "../../../../../../front_end/core/platform/KeyboardUtilities.test.ts",
+    "../../../../../../front_end/core/platform/MapUtilities.test.ts",
+    "../../../../../../front_end/core/platform/MimeType.test.ts",
+    "../../../../../../front_end/core/platform/NumberUtilities.test.ts",
+    "../../../../../../front_end/core/platform/StringUtilities.test.ts",
+    "../../../../../../front_end/core/platform/TypedArrayUtilities.test.ts",
+    "../../../../../../front_end/core/platform/TypescriptUtilities.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    }
+  ]
+}

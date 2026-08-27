@@ -9,11 +9,11 @@ var LinearMemoryHighlightChipList_exports = {};
 __export(LinearMemoryHighlightChipList_exports, {
   LinearMemoryHighlightChipList: () => LinearMemoryHighlightChipList
 });
-import "./../../../ui/kit/kit.js";
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as UI from "./../../../ui/legacy/legacy.js";
-import { Directives, html, render } from "./../../../ui/lit/lit.js";
-import * as VisualLogging from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as UI from "../../../ui/legacy/legacy.js";
+import { Directives, html, render } from "../../../ui/lit/lit.js";
+import * as VisualLogging from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/linear_memory_inspector/components/linearMemoryHighlightChipList.css.js
 var linearMemoryHighlightChipList_css_default = `/*
@@ -252,6 +252,7 @@ var LinearMemoryHighlightChipList = class extends UI.Widget.Widget {
 var LinearMemoryInspector_exports = {};
 __export(LinearMemoryInspector_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW6,
+  Events: () => Events,
   LinearMemoryInspector: () => LinearMemoryInspector
 });
 
@@ -262,8 +263,8 @@ __export(LinearMemoryViewer_exports, {
   LinearMemoryViewer: () => LinearMemoryViewer,
   ResizeEvent: () => ResizeEvent
 });
-import * as Lit from "./../../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../../ui/visual_logging/visual_logging.js";
+import * as Lit from "../../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspectorUtils.js
 var LinearMemoryInspectorUtils_exports = {};
@@ -610,10 +611,10 @@ var LinearMemoryViewer = class extends HTMLElement {
 customElements.define("devtools-linear-memory-inspector-viewer", LinearMemoryViewer);
 
 // gen/front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.js
-import * as Common from "./../../../core/common/common.js";
-import * as i18n13 from "./../../../core/i18n/i18n.js";
-import * as UI6 from "./../../../ui/legacy/legacy.js";
-import { html as html7, nothing as nothing2, render as render7 } from "./../../../ui/lit/lit.js";
+import * as Common from "../../../core/common/common.js";
+import * as i18n13 from "../../../core/i18n/i18n.js";
+import * as UI6 from "../../../ui/legacy/legacy.js";
+import { html as html7, nothing as nothing2, render as render7 } from "../../../ui/lit/lit.js";
 
 // gen/front_end/panels/linear_memory_inspector/components/linearMemoryInspector.css.js
 var linearMemoryInspector_css_default = `/*
@@ -662,14 +663,16 @@ var linearMemoryInspector_css_default = `/*
 var LinearMemoryNavigator_exports = {};
 __export(LinearMemoryNavigator_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
-  LinearMemoryNavigator: () => LinearMemoryNavigator
+  LinearMemoryNavigator: () => LinearMemoryNavigator,
+  Mode: () => Mode,
+  Navigation: () => Navigation
 });
-import "./../../../ui/kit/kit.js";
-import * as i18n3 from "./../../../core/i18n/i18n.js";
-import * as Buttons from "./../../../ui/components/buttons/buttons.js";
-import * as UI2 from "./../../../ui/legacy/legacy.js";
-import * as Lit2 from "./../../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import * as i18n3 from "../../../core/i18n/i18n.js";
+import * as Buttons from "../../../ui/components/buttons/buttons.js";
+import * as UI2 from "../../../ui/legacy/legacy.js";
+import * as Lit2 from "../../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/linear_memory_inspector/components/linearMemoryNavigator.css.js
 var linearMemoryNavigator_css_default = `/*
@@ -767,6 +770,17 @@ var UIStrings2 = {
 var str_2 = i18n3.i18n.registerUIStrings("panels/linear_memory_inspector/components/LinearMemoryNavigator.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var { render: render3, html: html3, Directives: { ifDefined } } = Lit2;
+var Navigation;
+(function(Navigation2) {
+  Navigation2["BACKWARD"] = "Backward";
+  Navigation2["FORWARD"] = "Forward";
+})(Navigation || (Navigation = {}));
+var Mode;
+(function(Mode2) {
+  Mode2["EDIT"] = "Edit";
+  Mode2["SUBMITTED"] = "Submitted";
+  Mode2["INVALID_SUBMIT"] = "InvalidSubmit";
+})(Mode || (Mode = {}));
 var DEFAULT_VIEW2 = (input, _output, target) => {
   const result = html3`
     <style>${linearMemoryNavigator_css_default}</style>
@@ -991,13 +1005,13 @@ __export(LinearMemoryValueInterpreter_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW5,
   LinearMemoryValueInterpreter: () => LinearMemoryValueInterpreter
 });
-import "./../../../ui/kit/kit.js";
-import * as i18n11 from "./../../../core/i18n/i18n.js";
-import * as Platform3 from "./../../../core/platform/platform.js";
-import * as Buttons3 from "./../../../ui/components/buttons/buttons.js";
-import * as UI5 from "./../../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import * as i18n11 from "../../../core/i18n/i18n.js";
+import * as Platform3 from "../../../core/platform/platform.js";
+import * as Buttons3 from "../../../ui/components/buttons/buttons.js";
+import * as UI5 from "../../../ui/legacy/legacy.js";
+import * as Lit5 from "../../../ui/lit/lit.js";
+import * as VisualLogging6 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/linear_memory_inspector/components/linearMemoryValueInterpreter.css.js
 var linearMemoryValueInterpreter_css_default = `/*
@@ -1058,12 +1072,12 @@ __export(ValueInterpreterDisplay_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   ValueInterpreterDisplay: () => ValueInterpreterDisplay
 });
-import "./../../../ui/kit/kit.js";
-import * as i18n7 from "./../../../core/i18n/i18n.js";
-import * as Buttons2 from "./../../../ui/components/buttons/buttons.js";
-import * as UI3 from "./../../../ui/legacy/legacy.js";
-import * as Lit3 from "./../../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../../ui/visual_logging/visual_logging.js";
+import "../../../ui/kit/kit.js";
+import * as i18n7 from "../../../core/i18n/i18n.js";
+import * as Buttons2 from "../../../ui/components/buttons/buttons.js";
+import * as UI3 from "../../../ui/legacy/legacy.js";
+import * as Lit3 from "../../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/linear_memory_inspector/components/valueInterpreterDisplay.css.js
 var valueInterpreterDisplay_css_default = `/*
@@ -1128,8 +1142,11 @@ var valueInterpreterDisplay_css_default = `/*
 // gen/front_end/panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.js
 var ValueInterpreterDisplayUtils_exports = {};
 __export(ValueInterpreterDisplayUtils_exports, {
+  Endianness: () => Endianness,
   VALUE_INTEPRETER_MAX_NUM_BYTES: () => VALUE_INTEPRETER_MAX_NUM_BYTES,
   VALUE_TYPE_MODE_LIST: () => VALUE_TYPE_MODE_LIST,
+  ValueType: () => ValueType,
+  ValueTypeMode: () => ValueTypeMode,
   format: () => format,
   formatFloat: () => formatFloat,
   formatInteger: () => formatInteger,
@@ -1140,8 +1157,8 @@ __export(ValueInterpreterDisplayUtils_exports, {
   isValidMode: () => isValidMode,
   valueTypeToLocalizedString: () => valueTypeToLocalizedString
 });
-import * as i18n5 from "./../../../core/i18n/i18n.js";
-import * as Platform from "./../../../core/platform/platform.js";
+import * as i18n5 from "../../../core/i18n/i18n.js";
+import * as Platform from "../../../core/platform/platform.js";
 var UIStrings3 = {
   /**
    * @description Text that is shown in the Memory inspector panel if a value cannot be correctly formatted
@@ -1153,6 +1170,29 @@ var UIStrings3 = {
 var str_3 = i18n5.i18n.registerUIStrings("panels/linear_memory_inspector/components/ValueInterpreterDisplayUtils.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var VALUE_INTEPRETER_MAX_NUM_BYTES = 8;
+var ValueType;
+(function(ValueType2) {
+  ValueType2["INT8"] = "Integer 8-bit";
+  ValueType2["INT16"] = "Integer 16-bit";
+  ValueType2["INT32"] = "Integer 32-bit";
+  ValueType2["INT64"] = "Integer 64-bit";
+  ValueType2["FLOAT32"] = "Float 32-bit";
+  ValueType2["FLOAT64"] = "Float 64-bit";
+  ValueType2["POINTER32"] = "Pointer 32-bit";
+  ValueType2["POINTER64"] = "Pointer 64-bit";
+})(ValueType || (ValueType = {}));
+var Endianness;
+(function(Endianness2) {
+  Endianness2["LITTLE"] = "Little Endian";
+  Endianness2["BIG"] = "Big Endian";
+})(Endianness || (Endianness = {}));
+var ValueTypeMode;
+(function(ValueTypeMode2) {
+  ValueTypeMode2["DECIMAL"] = "dec";
+  ValueTypeMode2["HEXADECIMAL"] = "hex";
+  ValueTypeMode2["OCTAL"] = "oct";
+  ValueTypeMode2["SCIENTIFIC"] = "sci";
+})(ValueTypeMode || (ValueTypeMode = {}));
 function getDefaultValueTypeMapping() {
   return new Map(DEFAULT_MODE_MAPPING);
 }
@@ -1526,11 +1566,11 @@ __export(ValueInterpreterSettings_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW4,
   ValueInterpreterSettings: () => ValueInterpreterSettings
 });
-import * as i18n9 from "./../../../core/i18n/i18n.js";
-import * as Platform2 from "./../../../core/platform/platform.js";
-import * as UI4 from "./../../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../../ui/visual_logging/visual_logging.js";
+import * as i18n9 from "../../../core/i18n/i18n.js";
+import * as Platform2 from "../../../core/platform/platform.js";
+import * as UI4 from "../../../ui/legacy/legacy.js";
+import * as Lit4 from "../../../ui/lit/lit.js";
+import * as VisualLogging5 from "../../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/linear_memory_inspector/components/valueInterpreterSettings.css.js
 var valueInterpreterSettings_css_default = `/*
@@ -1576,6 +1616,12 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/linear_memory_inspector/components/ValueInterpreterSettings.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var ValueTypeGroup;
+(function(ValueTypeGroup2) {
+  ValueTypeGroup2["INTEGER"] = "Integer";
+  ValueTypeGroup2["FLOAT"] = "Floating point";
+  ValueTypeGroup2["OTHER"] = "Other";
+})(ValueTypeGroup || (ValueTypeGroup = {}));
 var GROUP_TO_TYPES = /* @__PURE__ */ new Map([
   ["Integer", [
     "Integer 8-bit",
@@ -1846,6 +1892,13 @@ var UIStrings7 = {
 var str_7 = i18n13.i18n.registerUIStrings("panels/linear_memory_inspector/components/LinearMemoryInspector.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 var { widget: widget2 } = UI6.Widget;
+var Events;
+(function(Events2) {
+  Events2["MEMORY_REQUEST"] = "MemoryRequest";
+  Events2["ADDRESS_CHANGED"] = "AddressChanged";
+  Events2["SETTINGS_CHANGED"] = "SettingsChanged";
+  Events2["DELETE_MEMORY_HIGHLIGHT"] = "DeleteMemoryHighlight";
+})(Events || (Events = {}));
 var AddressHistoryEntry = class {
   #address = 0;
   #callback;

@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/panels/explain",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -46,7 +47,7 @@
   ],
   "references": [
     {
-      "path": "../../../../tsc/front_end/panels/explain/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "../../core/common/bundle-tsconfig.ref.json"

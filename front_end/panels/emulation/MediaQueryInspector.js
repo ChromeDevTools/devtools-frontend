@@ -333,6 +333,12 @@ export class MediaQueryInspector extends UI.Widget.Widget {
         }, {}, this.contentElement);
     }
 }
+export var Section;
+(function (Section) {
+    Section[Section["MAX"] = 0] = "MAX";
+    Section[Section["MIN_MAX"] = 1] = "MIN_MAX";
+    Section[Section["MIN"] = 2] = "MIN";
+})(Section || (Section = {}));
 export class MediaQueryUIModel {
     cssMedia;
     #minWidthExpression;

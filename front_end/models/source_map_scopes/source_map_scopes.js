@@ -10,11 +10,11 @@ __export(FunctionCodeResolver_exports, {
   getFunctionCodeFromLocation: () => getFunctionCodeFromLocation,
   getFunctionCodeFromRawLocation: () => getFunctionCodeFromRawLocation
 });
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as Bindings from "./../bindings/bindings.js";
-import * as Formatter from "./../formatter/formatter.js";
-import * as Workspace from "./../workspace/workspace.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as Bindings from "../bindings/bindings.js";
+import * as Formatter from "../formatter/formatter.js";
+import * as Workspace from "../workspace/workspace.js";
 var inputCache = /* @__PURE__ */ new WeakMap();
 async function prepareInput(uiSourceCode, content, settings) {
   const formattedContent = await format(uiSourceCode, content, settings);
@@ -205,9 +205,9 @@ __export(NamesResolver_exports, {
   scopeIdentifiers: () => scopeIdentifiers,
   setScopeResolvedForTest: () => setScopeResolvedForTest
 });
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
-import * as Formatter2 from "./../formatter/formatter.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as TextUtils3 from "../../core/text_utils/text_utils.js";
+import * as Formatter2 from "../formatter/formatter.js";
 var scopeToCachedIdentifiersMap = /* @__PURE__ */ new WeakMap();
 var cachedMapByCallFrame = /* @__PURE__ */ new WeakMap();
 async function getTextFor(contentProvider) {
@@ -326,6 +326,14 @@ var scopeIdentifiers = async function(script, scope, ancestorScopes) {
   return { boundVariables, freeVariables };
 };
 var identifierAndPunctuationRegExp = /^\s*([A-Za-z_$][A-Za-z_$0-9]*)\s*([.;,=]?)\s*$/;
+var Punctuation;
+(function(Punctuation2) {
+  Punctuation2["NONE"] = "none";
+  Punctuation2["COMMA"] = "comma";
+  Punctuation2["DOT"] = "dot";
+  Punctuation2["SEMICOLON"] = "semicolon";
+  Punctuation2["EQUALS"] = "equals";
+})(Punctuation || (Punctuation = {}));
 var resolveDebuggerScope = async (scope, debuggerWorkspaceBinding) => {
   if (!scope.callFrame().debuggerModel.target().targetManager().settings.resolve(SDK2.SDKSettings.jsSourceMapsEnabledSettingDescriptor).get()) {
     return { variableMapping: /* @__PURE__ */ new Map(), thisMapping: null };
@@ -775,11 +783,12 @@ var setScopeResolvedForTest = (scope) => {
 // gen/front_end/models/source_map_scopes/ScopeChainModel.js
 var ScopeChainModel_exports = {};
 __export(ScopeChainModel_exports, {
+  Events: () => Events,
   ScopeChain: () => ScopeChain,
   ScopeChainModel: () => ScopeChainModel
 });
-import * as Common from "./../../core/common/common.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
+import * as Common from "../../core/common/common.js";
+import * as SDK3 from "../../core/sdk/sdk.js";
 var ScopeChainModel = class extends Common.ObjectWrapper.ObjectWrapper {
   #callFrame;
   #debuggerWorkspaceBinding;
@@ -814,6 +823,10 @@ var ScopeChainModel = class extends Common.ObjectWrapper.ObjectWrapper {
     }
   }
 };
+var Events;
+(function(Events2) {
+  Events2["SCOPE_CHAIN_UPDATED"] = "ScopeChainUpdated";
+})(Events || (Events = {}));
 var ScopeChain = class {
   scopeChain;
   constructor(scopeChain) {

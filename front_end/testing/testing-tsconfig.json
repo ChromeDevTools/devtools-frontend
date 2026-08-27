@@ -27,6 +27,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "outDir": ".",
+    "preserveConstEnums": true,
     "rootDir": "../../../../../front_end/testing",
     "skipLibCheck": true,
     "sourceMap": true,
@@ -98,7 +99,7 @@
   ],
   "references": [
     {
-      "path": "../../../tsc/extension-api/extension-api-tsconfig.ref.json"
+      "path": "../../extension-api/extension-api-tsconfig.ref.json"
     },
     {
       "path": "../core/common/bundle-tsconfig.ref.json"
@@ -131,7 +132,7 @@
       "path": "../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../../tsc/front_end/generated/protocol-tsconfig.ref.json"
+      "path": "../generated/protocol-tsconfig.ref.json"
     },
     {
       "path": "../models/ai_assistance/bundle-tsconfig.ref.json"
@@ -227,7 +228,7 @@
       "path": "../third_party/chromium/ahem/ahem-tsconfig.ref.json"
     },
     {
-      "path": "../../../tsc/front_end/third_party/codemirror.next/bundle-tsconfig.ref.json"
+      "path": "../third_party/codemirror.next/bundle-tsconfig.ref.json"
     },
     {
       "path": "../ui/components/buttons/bundle-tsconfig.ref.json"

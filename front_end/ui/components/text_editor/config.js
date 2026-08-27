@@ -428,6 +428,11 @@ export function contentIncludingHint(view) {
     return content;
 }
 export const setAiAutoCompleteSuggestion = CM.StateEffect.define();
+export var AiSuggestionSource;
+(function (AiSuggestionSource) {
+    AiSuggestionSource["COMPLETION"] = "completion";
+    AiSuggestionSource["GENERATION"] = "generation";
+})(AiSuggestionSource || (AiSuggestionSource = {}));
 export const aiAutoCompleteSuggestionState = CM.StateField.define({
     create: () => null,
     update(value, tr) {

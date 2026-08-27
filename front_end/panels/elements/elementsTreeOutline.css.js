@@ -472,7 +472,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 
 .tree-outline-disclosure li.parent {
   display: flex;
-  align-items: normal;
+  align-items: center;
 }
 
 .tree-outline-disclosure li.parent:not(.always-parent) {
@@ -488,7 +488,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   content: "\\A0\\A0";
   color: transparent;
   text-shadow: none;
-  margin: -3px var(--sys-size-2) 0 -3px;
+  margin: 0 var(--sys-size-2) 0 -3px;
   background-color: var(--icon-default);
 }
 

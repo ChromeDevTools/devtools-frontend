@@ -81,6 +81,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/CSSRuleValidator.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const i18nLazyStringTemplate = uiI18n.getFormatLocalizedStringTemplate.bind(undefined, str_);
+export var HintType;
+(function (HintType) {
+    HintType["INACTIVE_PROPERTY"] = "ruleValidation";
+    HintType["DEPRECATED_PROPERTY"] = "deprecatedProperty";
+})(HintType || (HintType = {}));
 export class Hint {
     #hintMessage;
     #possibleFixMessage;

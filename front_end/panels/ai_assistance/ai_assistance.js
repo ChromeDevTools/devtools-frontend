@@ -5,26 +5,26 @@ var __export = (target, all) => {
 };
 
 // gen/front_end/panels/ai_assistance/AiAssistancePanel.js
-import "./../../ui/kit/kit.js";
-import * as Common5 from "./../../core/common/common.js";
-import * as Host5 from "./../../core/host/host.js";
-import * as i18n17 from "./../../core/i18n/i18n.js";
-import * as Platform5 from "./../../core/platform/platform.js";
-import * as Root4 from "./../../core/root/root.js";
-import * as SDK6 from "./../../core/sdk/sdk.js";
-import * as AiAssistanceModel8 from "./../../models/ai_assistance/ai_assistance.js";
-import * as Badges from "./../../models/badges/badges.js";
-import * as Workspace4 from "./../../models/workspace/workspace.js";
-import * as Buttons7 from "./../../ui/components/buttons/buttons.js";
-import * as Snackbars4 from "./../../ui/components/snackbars/snackbars.js";
-import * as UIHelpers2 from "./../../ui/helpers/helpers.js";
-import * as UI9 from "./../../ui/legacy/legacy.js";
-import * as Lit10 from "./../../ui/lit/lit.js";
-import * as VisualLogging8 from "./../../ui/visual_logging/visual_logging.js";
-import * as LighthousePanel2 from "./../lighthouse/lighthouse.js";
-import * as NetworkForward2 from "./../network/forward/forward.js";
-import * as NetworkPanel from "./../network/network.js";
-import * as TimelinePanel2 from "./../timeline/timeline.js";
+import "../../ui/kit/kit.js";
+import * as Common5 from "../../core/common/common.js";
+import * as Host5 from "../../core/host/host.js";
+import * as i18n17 from "../../core/i18n/i18n.js";
+import * as Platform5 from "../../core/platform/platform.js";
+import * as Root4 from "../../core/root/root.js";
+import * as SDK6 from "../../core/sdk/sdk.js";
+import * as AiAssistanceModel8 from "../../models/ai_assistance/ai_assistance.js";
+import * as Badges from "../../models/badges/badges.js";
+import * as Workspace4 from "../../models/workspace/workspace.js";
+import * as Buttons7 from "../../ui/components/buttons/buttons.js";
+import * as Snackbars4 from "../../ui/components/snackbars/snackbars.js";
+import * as UIHelpers2 from "../../ui/helpers/helpers.js";
+import * as UI9 from "../../ui/legacy/legacy.js";
+import * as Lit10 from "../../ui/lit/lit.js";
+import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
+import * as LighthousePanel2 from "../lighthouse/lighthouse.js";
+import * as NetworkForward2 from "../network/forward/forward.js";
+import * as NetworkPanel from "../network/network.js";
+import * as TimelinePanel2 from "../timeline/timeline.js";
 
 // gen/front_end/panels/ai_assistance/aiAssistancePanel.css.js
 var aiAssistancePanel_css_default = `/*
@@ -37,7 +37,7 @@ var aiAssistancePanel_css_default = `/*
   display: flex;
   flex-wrap: wrap;
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   flex: 0 0 auto;
   justify-content: space-between;
 }
@@ -75,18 +75,18 @@ var aiAssistancePanel_css_default = `/*
 /*# sourceURL=${import.meta.resolve("././aiAssistancePanel.css")} */`;
 
 // gen/front_end/panels/ai_assistance/components/AccessibilityAgentMarkdownRenderer.js
-import * as SDK from "./../../core/sdk/sdk.js";
-import * as AiAssistanceModel2 from "./../../models/ai_assistance/ai_assistance.js";
-import * as Lit2 from "./../../ui/lit/lit.js";
-import * as PanelsCommon from "./../common/common.js";
+import * as SDK from "../../core/sdk/sdk.js";
+import * as AiAssistanceModel2 from "../../models/ai_assistance/ai_assistance.js";
+import * as Lit2 from "../../ui/lit/lit.js";
+import * as PanelsCommon from "../common/common.js";
 
 // gen/front_end/panels/ai_assistance/components/MarkdownRendererWithCodeBlock.js
-import * as Common from "./../../core/common/common.js";
-import * as Platform from "./../../core/platform/platform.js";
-import * as AiAssistanceModel from "./../../models/ai_assistance/ai_assistance.js";
-import * as Logs from "./../../models/logs/logs.js";
-import * as MarkdownView from "./../../ui/components/markdown_view/markdown_view.js";
-import * as Lit from "./../../ui/lit/lit.js";
+import * as Common from "../../core/common/common.js";
+import * as Platform from "../../core/platform/platform.js";
+import * as AiAssistanceModel from "../../models/ai_assistance/ai_assistance.js";
+import * as Logs from "../../models/logs/logs.js";
+import * as MarkdownView from "../../ui/components/markdown_view/markdown_view.js";
+import * as Lit from "../../ui/lit/lit.js";
 var { html } = Lit;
 var MarkdownRendererWithCodeBlock = class extends MarkdownView.MarkdownView.MarkdownInsightRenderer {
   #revealableLink(revealable, label) {
@@ -241,15 +241,15 @@ var AccessibilityAgentMarkdownRenderer = class extends MarkdownRendererWithCodeB
 };
 
 // gen/front_end/panels/ai_assistance/components/AIv2MarkdownRenderer.js
-import * as Common2 from "./../../core/common/common.js";
-import * as Platform2 from "./../../core/platform/platform.js";
-import * as SDK2 from "./../../core/sdk/sdk.js";
-import * as AiAssistanceModel3 from "./../../models/ai_assistance/ai_assistance.js";
-import * as Logs2 from "./../../models/logs/logs.js";
-import * as Trace from "./../../models/trace/trace.js";
-import * as MarkdownView3 from "./../../ui/components/markdown_view/markdown_view.js";
-import * as Lit3 from "./../../ui/lit/lit.js";
-import * as PanelsCommon2 from "./../common/common.js";
+import * as Common2 from "../../core/common/common.js";
+import * as Platform2 from "../../core/platform/platform.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as AiAssistanceModel3 from "../../models/ai_assistance/ai_assistance.js";
+import * as Logs2 from "../../models/logs/logs.js";
+import * as Trace from "../../models/trace/trace.js";
+import * as MarkdownView3 from "../../ui/components/markdown_view/markdown_view.js";
+import * as Lit3 from "../../ui/lit/lit.js";
+import * as PanelsCommon2 from "../common/common.js";
 var { html: html3 } = Lit3.StaticHtml;
 var { until: until2 } = Lit3.Directives;
 var AIv2MarkdownRenderer = class extends MarkdownView3.MarkdownView.MarkdownInsightRenderer {
@@ -408,13 +408,13 @@ var AIv2MarkdownRenderer = class extends MarkdownView3.MarkdownView.MarkdownInsi
 };
 
 // gen/front_end/panels/ai_assistance/components/ChatView.js
-import "./../../ui/components/spinners/spinners.js";
-import * as Host3 from "./../../core/host/host.js";
-import * as i18n9 from "./../../core/i18n/i18n.js";
-import * as AiAssistanceModel7 from "./../../models/ai_assistance/ai_assistance.js";
-import * as Buttons5 from "./../../ui/components/buttons/buttons.js";
-import * as UI5 from "./../../ui/legacy/legacy.js";
-import { Directives as Directives6, html as html8, render as render5 } from "./../../ui/lit/lit.js";
+import "../../ui/components/spinners/spinners.js";
+import * as Host3 from "../../core/host/host.js";
+import * as i18n9 from "../../core/i18n/i18n.js";
+import * as AiAssistanceModel7 from "../../models/ai_assistance/ai_assistance.js";
+import * as Buttons5 from "../../ui/components/buttons/buttons.js";
+import * as UI5 from "../../ui/legacy/legacy.js";
+import { Directives as Directives6, html as html8, render as render5 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/ai_assistance/components/ChatInput.js
 var ChatInput_exports = {};
@@ -423,18 +423,18 @@ __export(ChatInput_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
   MAX_IMAGE_FILE_SIZE_BYTES: () => MAX_IMAGE_FILE_SIZE_BYTES
 });
-import "./../../ui/components/tooltips/tooltips.js";
-import * as i18n from "./../../core/i18n/i18n.js";
-import * as SDK3 from "./../../core/sdk/sdk.js";
-import * as AiAssistanceModel4 from "./../../models/ai_assistance/ai_assistance.js";
-import * as PanelsCommon3 from "./../common/common.js";
-import * as PanelUtils from "./../utils/utils.js";
-import * as Buttons from "./../../ui/components/buttons/buttons.js";
-import * as Input from "./../../ui/components/input/input.js";
-import * as Snackbars from "./../../ui/components/snackbars/snackbars.js";
-import * as UI from "./../../ui/legacy/legacy.js";
-import * as Lit4 from "./../../ui/lit/lit.js";
-import * as VisualLogging from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/components/tooltips/tooltips.js";
+import * as i18n from "../../core/i18n/i18n.js";
+import * as SDK3 from "../../core/sdk/sdk.js";
+import * as AiAssistanceModel4 from "../../models/ai_assistance/ai_assistance.js";
+import * as PanelsCommon3 from "../common/common.js";
+import * as PanelUtils from "../utils/utils.js";
+import * as Buttons from "../../ui/components/buttons/buttons.js";
+import * as Input from "../../ui/components/input/input.js";
+import * as Snackbars from "../../ui/components/snackbars/snackbars.js";
+import * as UI from "../../ui/legacy/legacy.js";
+import * as Lit4 from "../../ui/lit/lit.js";
+import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/chatInput.css.js
 var chatInput_css_default = `/*
@@ -482,11 +482,11 @@ var chatInput_css_default = `/*
   display: flex;
   position: relative;
   flex-direction: column;
-  border: 1px solid var(--sys-color-neutral-outline);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   border-radius: var(--sys-shape-corner-small);
 
   &:focus-within {
-    outline: 1px solid var(--sys-color-primary);
+    outline: var(--sys-size-1) solid var(--sys-color-primary);
     border-color: var(--sys-color-primary);
   }
 
@@ -527,14 +527,14 @@ var chatInput_css_default = `/*
       top: calc(-1 * var(--sys-size-2));
       right: calc(-1 * var(--sys-size-3));
       border-radius: var(--sys-shape-corner-full);
-      border: 1px solid var(--sys-color-neutral-outline);
+      border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
       background-color: var(--sys-color-cdt-base-container);
     }
 
     img {
       max-height: var(--sys-size-18);
       max-width: 100%;
-      border: 1px solid var(--sys-color-neutral-outline);
+      border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
       border-radius: var(--sys-shape-corner-small);
     }
 
@@ -547,7 +547,7 @@ var chatInput_css_default = `/*
       width: var(--sys-size-19);
       background-color: var(--sys-color-surface3);
       border-radius: var(--sys-shape-corner-small);
-      border: 1px solid var(--sys-color-neutral-outline);
+      border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
 
       devtools-spinner {
         color: var(--sys-color-state-disabled);
@@ -567,8 +567,8 @@ var chatInput_css_default = `/*
     justify-content: center;
     align-items: center;
     font: var(--sys-typescale-body5-regular);
-    border-right: 1px solid var(--sys-color-divider);
-    padding-right: 8px;
+    border-right: var(--sys-size-1) solid var(--sys-color-divider);
+    padding-right: var(--sys-size-5);
 
     &.hide-divider {
       border-right: none;
@@ -691,7 +691,7 @@ var chatInput_css_default = `/*
     }
 
     &:focus-visible {
-      outline: 2px solid var(--sys-color-state-focus-ring);
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
     }
 
     devtools-icon,
@@ -797,7 +797,7 @@ button.link {
   li {
     background: var(--sys-color-surface3);
     border-radius: var(--sys-shape-corner-small);
-    border: 1px solid var(--sys-color-neutral-outline);
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
     padding: var(--sys-size-2) var(--sys-size-3);
     display: flex;
     flex-direction: row;
@@ -818,7 +818,7 @@ button.link {
     border: none;
 
     /* To align with other chips */
-    margin-bottom: 1px;
+    margin-bottom: var(--sys-size-1);
   }
 }
 
@@ -827,7 +827,7 @@ button.link {
   justify-content: center;
   padding-block: var(--sys-size-3);
   font: var(--sys-typescale-body5-regular);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   text-wrap: balance;
   text-align: center;
   width: 100%;
@@ -1595,45 +1595,46 @@ var ChatInput = class extends UI.Widget.Widget {
 var ChatMessage_exports = {};
 __export(ChatMessage_exports, {
   ChatMessage: () => ChatMessage,
+  ChatMessageEntity: () => ChatMessageEntity,
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   getDeduplicatedWidgetsMessage: () => getDeduplicatedWidgetsMessage,
   getWidgetSignature: () => getWidgetSignature,
   renderStep: () => renderStep,
   titleForStep: () => titleForStep
 });
-import "./../../ui/components/markdown_view/markdown_view.js";
-import "./../../ui/kit/kit.js";
-import * as Common3 from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as i18n5 from "./../../core/i18n/i18n.js";
-import * as Platform3 from "./../../core/platform/platform.js";
-import * as SDK4 from "./../../core/sdk/sdk.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as AiAssistanceModel6 from "./../../models/ai_assistance/ai_assistance.js";
-import * as ComputedStyle from "./../../models/computed_style/computed_style.js";
-import * as Formatter from "./../../models/formatter/formatter.js";
-import * as Trace2 from "./../../models/trace/trace.js";
-import * as Workspace from "./../../models/workspace/workspace.js";
-import * as PanelsCommon4 from "./../common/common.js";
-import * as TraceBounds from "./../../services/trace_bounds/trace_bounds.js";
-import * as Marked from "./../../third_party/marked/marked.js";
-import * as Buttons3 from "./../../ui/components/buttons/buttons.js";
-import * as Input3 from "./../../ui/components/input/input.js";
-import * as Snackbars2 from "./../../ui/components/snackbars/snackbars.js";
-import * as UIHelpers from "./../../ui/helpers/helpers.js";
-import * as UI3 from "./../../ui/legacy/legacy.js";
-import * as Lit6 from "./../../ui/lit/lit.js";
-import * as VisualLogging3 from "./../../ui/visual_logging/visual_logging.js";
-import * as Application from "./../application/application.js";
-import * as Elements from "./../elements/elements.js";
-import * as Lighthouse from "./../lighthouse/lighthouse.js";
-import * as NetworkForward from "./../network/forward/forward.js";
-import * as Network from "./../network/network.js";
-import * as TimelineComponents from "./../timeline/components/components.js";
-import * as TimelineInsights from "./../timeline/components/insights/insights.js";
-import * as Timeline from "./../timeline/timeline.js";
-import * as TimelineUtils from "./../timeline/utils/utils.js";
-import { PanelUtils as PanelUtils3 } from "./../utils/utils.js";
+import "../../ui/components/markdown_view/markdown_view.js";
+import "../../ui/kit/kit.js";
+import * as Common3 from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as i18n5 from "../../core/i18n/i18n.js";
+import * as Platform3 from "../../core/platform/platform.js";
+import * as SDK4 from "../../core/sdk/sdk.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as AiAssistanceModel6 from "../../models/ai_assistance/ai_assistance.js";
+import * as ComputedStyle from "../../models/computed_style/computed_style.js";
+import * as Formatter from "../../models/formatter/formatter.js";
+import * as Trace2 from "../../models/trace/trace.js";
+import * as Workspace from "../../models/workspace/workspace.js";
+import * as PanelsCommon4 from "../common/common.js";
+import * as TraceBounds from "../../services/trace_bounds/trace_bounds.js";
+import * as Marked from "../../third_party/marked/marked.js";
+import * as Buttons3 from "../../ui/components/buttons/buttons.js";
+import * as Input3 from "../../ui/components/input/input.js";
+import * as Snackbars2 from "../../ui/components/snackbars/snackbars.js";
+import * as UIHelpers from "../../ui/helpers/helpers.js";
+import * as UI3 from "../../ui/legacy/legacy.js";
+import * as Lit6 from "../../ui/lit/lit.js";
+import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
+import * as Application from "../application/application.js";
+import * as Elements from "../elements/elements.js";
+import * as Lighthouse from "../lighthouse/lighthouse.js";
+import * as NetworkForward from "../network/forward/forward.js";
+import * as Network from "../network/network.js";
+import * as TimelineComponents from "../timeline/components/components.js";
+import * as TimelineInsights from "../timeline/components/insights/insights.js";
+import * as Timeline from "../timeline/timeline.js";
+import * as TimelineUtils from "../timeline/utils/utils.js";
+import { PanelUtils as PanelUtils3 } from "../utils/utils.js";
 
 // gen/front_end/panels/ai_assistance/components/chatMessage.css.js
 var chatMessage_css_default = `/*
@@ -1662,8 +1663,8 @@ var chatMessage_css_default = `/*
     }
 
     .vertical-separator {
-      height: 16px;
-      width: 1px;
+      height: var(--sys-size-8);
+      width: var(--sys-size-1);
       vertical-align: top;
       margin: 0 var(--sys-size-2);
       background: var(--sys-color-divider);
@@ -1774,7 +1775,7 @@ var chatMessage_css_default = `/*
     gap: var(--sys-size-5);
     width: 100%;
     padding: var(--sys-size-7) var(--sys-size-5);
-    font-size: 12px;
+    font-size: var(--sys-typescale-body4-size);
     word-break: normal;
     overflow-wrap: anywhere;
 
@@ -1845,7 +1846,7 @@ var chatMessage_css_default = `/*
         max-height: var(--sys-size-20);
         max-width: 100%;
         border-radius: var(--sys-shape-corner-small);
-        border: 1px solid var(--sys-color-neutral-outline);
+        border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
         width: fit-content;
         vertical-align: bottom;
       }
@@ -1860,7 +1861,7 @@ var chatMessage_css_default = `/*
       width: var(--sys-size-18);
       background-color: var(--sys-color-surface3);
       border-radius: var(--sys-shape-corner-small);
-      border: 1px solid var(--sys-color-neutral-outline);
+      border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
 
       devtools-icon {
         color: var(--sys-color-state-disabled);
@@ -1913,14 +1914,14 @@ var chatMessage_css_default = `/*
 
   .context-details {
     devtools-code-block {
-      --code-block-max-code-height: 80px;
+      --code-block-max-code-height: var(--sys-size-19);
     }
   }
 
   .step {
     width: fit-content;
     background-color: var(--sys-color-surface3);
-    border-radius: 16px;
+    border-radius: var(--sys-shape-corner-medium);
     position: relative;
 
     &.empty {
@@ -1996,7 +1997,7 @@ var chatMessage_css_default = `/*
     }
 
     summary {
-      border-radius: 16px;
+      border-radius: var(--sys-shape-corner-medium);
 
       &:focus-visible {
         outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
@@ -2172,7 +2173,7 @@ var chatMessage_css_default = `/*
     gap: var(--sys-size-4);
     margin-bottom: var(--sys-size-5);
     padding-bottom: var(--sys-size-5);
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
     .network-request-header {
       display: flex;
@@ -2180,14 +2181,14 @@ var chatMessage_css_default = `/*
       gap: var(--sys-size-5);
 
       .network-request-icon {
-        width: 32px;
-        height: 32px;
+        width: var(--sys-size-13);
+        height: var(--sys-size-13);
         display: flex;
         align-items: center;
         justify-content: center;
         background-color: var(--sys-color-surface1);
         border-radius: var(--sys-shape-corner-small);
-        border: 1px solid var(--sys-color-divider);
+        border: var(--sys-size-1) solid var(--sys-color-divider);
         overflow: hidden;
 
         img {
@@ -2197,8 +2198,8 @@ var chatMessage_css_default = `/*
         }
 
         devtools-icon {
-          width: 20px;
-          height: 20px;
+          width: var(--sys-size-9);
+          height: var(--sys-size-9);
         }
       }
 
@@ -2229,8 +2230,8 @@ var chatMessage_css_default = `/*
     summary {
       list-style: none;
       cursor: pointer;
-      padding: 4px 12px;
-      border: 1px solid var(--sys-color-neutral-outline);
+      padding: var(--sys-size-3) var(--sys-size-6);
+      border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
       border-radius: var(--sys-shape-corner-small);
       color: var(--sys-color-primary);
       width: fit-content;
@@ -2317,13 +2318,13 @@ __export(WalkthroughView_exports, {
   walkthroughCloseTitle: () => walkthroughCloseTitle,
   walkthroughTitle: () => walkthroughTitle
 });
-import * as i18n3 from "./../../core/i18n/i18n.js";
-import * as AiAssistanceModel5 from "./../../models/ai_assistance/ai_assistance.js";
-import * as Buttons2 from "./../../ui/components/buttons/buttons.js";
-import * as Input2 from "./../../ui/components/input/input.js";
-import * as UI2 from "./../../ui/legacy/legacy.js";
-import * as Lit5 from "./../../ui/lit/lit.js";
-import * as VisualLogging2 from "./../../ui/visual_logging/visual_logging.js";
+import * as i18n3 from "../../core/i18n/i18n.js";
+import * as AiAssistanceModel5 from "../../models/ai_assistance/ai_assistance.js";
+import * as Buttons2 from "../../ui/components/buttons/buttons.js";
+import * as Input2 from "../../ui/components/input/input.js";
+import * as UI2 from "../../ui/legacy/legacy.js";
+import * as Lit5 from "../../ui/lit/lit.js";
+import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/walkthroughView.css.js
 var walkthroughView_css_default = `/*
@@ -2347,14 +2348,14 @@ var walkthroughView_css_default = `/*
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 8px;
+    padding: 0 var(--sys-size-5);
     height: 35px;
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     flex-shrink: 0;
   }
 
   .walkthrough-title {
-    font-size: 11px;
+    font-size: var(--sys-typescale-body5-size);
     font-weight: 500;
     color: var(--sys-color-on-surface);
   }
@@ -2411,7 +2412,7 @@ var walkthroughView_css_default = `/*
 
   .step-content {
     flex: 1;
-    font-size: 11px;
+    font-size: var(--sys-typescale-body5-size);
     color: var(--sys-color-on-surface);
     line-height: 1.4;
   }
@@ -2422,7 +2423,7 @@ var walkthroughView_css_default = `/*
     justify-content: center;
     flex: 1;
     color: var(--sys-color-on-surface-subtle);
-    font-size: 11px;
+    font-size: var(--sys-typescale-body5-size);
   }
 
   .inline-wrapper {
@@ -2527,7 +2528,7 @@ var walkthroughView_css_default = `/*
 
   .walkthrough-inline .steps-container {
     padding: var(--sys-size-6);
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
     background-color: transparent;
   }
 
@@ -3229,6 +3230,11 @@ var UIStringsNotTranslate2 = {
    */
   revealStorageBreakdown: "Reveal storage breakdown in Application panel"
 };
+var ChatMessageEntity;
+(function(ChatMessageEntity2) {
+  ChatMessageEntity2["MODEL"] = "model";
+  ChatMessageEntity2["USER"] = "user";
+})(ChatMessageEntity || (ChatMessageEntity = {}));
 var DEFAULT_VIEW3 = (input, output, target) => {
   const message = input.message;
   if (message.entity === "user") {
@@ -4816,7 +4822,7 @@ button.link {
 }
 
 .select-an-element-text {
-  margin-left: 2px;
+  margin-left: var(--sys-size-2);
 }
 
 main {
@@ -5114,7 +5120,7 @@ main {
   The \\'box-shadow\\' is a workaround to hide the content appearing between the \\'.input-form\\'
   and the footer in some resolutions even though the \\'.input-form\\' has \\'bottom: 0\\'.
   */
-  box-shadow: 0 1px var(--sys-color-cdt-base-container);
+  box-shadow: 0 var(--sys-size-1) var(--sys-color-cdt-base-container);
 
   /* Prevents the input form from jumping when the scrollbar is shown */
   /* 688px is the max width of the input form + left and right paddings: var(--sys-size-36) + 2 * var(--sys-size-5)  */
@@ -5151,16 +5157,17 @@ main {
 var ExportForAgentsDialog_exports = {};
 __export(ExportForAgentsDialog_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW4,
-  ExportForAgentsDialog: () => ExportForAgentsDialog
+  ExportForAgentsDialog: () => ExportForAgentsDialog,
+  StateType: () => StateType
 });
-import "./../../ui/components/spinners/spinners.js";
-import * as Host2 from "./../../core/host/host.js";
-import * as i18n7 from "./../../core/i18n/i18n.js";
-import * as Buttons4 from "./../../ui/components/buttons/buttons.js";
-import * as Snackbars3 from "./../../ui/components/snackbars/snackbars.js";
-import * as UI4 from "./../../ui/legacy/legacy.js";
-import * as Lit7 from "./../../ui/lit/lit.js";
-import * as VisualLogging4 from "./../../ui/visual_logging/visual_logging.js";
+import "../../ui/components/spinners/spinners.js";
+import * as Host2 from "../../core/host/host.js";
+import * as i18n7 from "../../core/i18n/i18n.js";
+import * as Buttons4 from "../../ui/components/buttons/buttons.js";
+import * as Snackbars3 from "../../ui/components/snackbars/snackbars.js";
+import * as UI4 from "../../ui/legacy/legacy.js";
+import * as Lit7 from "../../ui/lit/lit.js";
+import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/exportForAgentsDialog.css.js
 var exportForAgentsDialog_css_default = `/*
@@ -5299,6 +5306,11 @@ var UIStrings3 = {
 };
 var str_3 = i18n7.i18n.registerUIStrings("panels/ai_assistance/components/ExportForAgentsDialog.ts", UIStrings3);
 var i18nString3 = i18n7.i18n.getLocalizedString.bind(void 0, str_3);
+var StateType;
+(function(StateType2) {
+  StateType2["PROMPT"] = "prompt";
+  StateType2["CONVERSATION"] = "conversation";
+})(StateType || (StateType = {}));
 var DEFAULT_STATE_TYPE = "prompt";
 var DEFAULT_VIEW4 = (input, _output, target) => {
   const isPrompt = input.state.activeType === "prompt";
@@ -5724,13 +5736,13 @@ __export(DisabledWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW6,
   DisabledWidget: () => DisabledWidget
 });
-import * as Host4 from "./../../core/host/host.js";
-import * as i18n11 from "./../../core/i18n/i18n.js";
-import * as Root from "./../../core/root/root.js";
-import * as uiI18n from "./../../ui/i18n/i18n.js";
-import * as UI6 from "./../../ui/legacy/legacy.js";
-import { html as html9, render as render6 } from "./../../ui/lit/lit.js";
-import * as VisualLogging5 from "./../../ui/visual_logging/visual_logging.js";
+import * as Host4 from "../../core/host/host.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
+import * as Root from "../../core/root/root.js";
+import * as uiI18n from "../../ui/i18n/i18n.js";
+import * as UI6 from "../../ui/legacy/legacy.js";
+import { html as html9, render as render6 } from "../../ui/lit/lit.js";
+import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/disabledWidget.css.js
 var disabledWidget_css_default = `/*
@@ -5898,11 +5910,11 @@ __export(ExploreWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW7,
   ExploreWidget: () => ExploreWidget
 });
-import * as i18n13 from "./../../core/i18n/i18n.js";
-import * as Root2 from "./../../core/root/root.js";
-import * as UI7 from "./../../ui/legacy/legacy.js";
-import { html as html10, render as render7 } from "./../../ui/lit/lit.js";
-import * as VisualLogging6 from "./../../ui/visual_logging/visual_logging.js";
+import * as i18n13 from "../../core/i18n/i18n.js";
+import * as Root2 from "../../core/root/root.js";
+import * as UI7 from "../../ui/legacy/legacy.js";
+import { html as html10, render as render7 } from "../../ui/lit/lit.js";
+import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/exploreWidget.css.js
 var exploreWidget_css_default = `/*
@@ -6030,7 +6042,7 @@ var exploreWidget_css_default = `/*
     align-items: center;
     padding-block: var(--sys-size-3);
     font: var(--sys-typescale-body5-regular);
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
     text-wrap: balance;
     text-align: center;
 
@@ -6181,12 +6193,12 @@ __export(OptInChangeDialog_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW8,
   OptInChangeDialog: () => OptInChangeDialog
 });
-import * as i18n15 from "./../../core/i18n/i18n.js";
-import * as Root3 from "./../../core/root/root.js";
-import * as Buttons6 from "./../../ui/components/buttons/buttons.js";
-import * as UI8 from "./../../ui/legacy/legacy.js";
-import * as Lit8 from "./../../ui/lit/lit.js";
-import * as VisualLogging7 from "./../../ui/visual_logging/visual_logging.js";
+import * as i18n15 from "../../core/i18n/i18n.js";
+import * as Root3 from "../../core/root/root.js";
+import * as Buttons6 from "../../ui/components/buttons/buttons.js";
+import * as UI8 from "../../ui/legacy/legacy.js";
+import * as Lit8 from "../../ui/lit/lit.js";
+import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/optInChangeDialog.css.js
 var optInChangeDialog_css_default = `/*
@@ -6422,11 +6434,11 @@ var OptInChangeDialog = class _OptInChangeDialog extends UI8.Widget.VBox {
 };
 
 // gen/front_end/panels/ai_assistance/components/PerformanceAgentMarkdownRenderer.js
-import * as Common4 from "./../../core/common/common.js";
-import * as SDK5 from "./../../core/sdk/sdk.js";
-import * as Trace3 from "./../../models/trace/trace.js";
-import * as Lit9 from "./../../ui/lit/lit.js";
-import * as PanelsCommon5 from "./../common/common.js";
+import * as Common4 from "../../core/common/common.js";
+import * as SDK5 from "../../core/sdk/sdk.js";
+import * as Trace3 from "../../models/trace/trace.js";
+import * as Lit9 from "../../ui/lit/lit.js";
+import * as PanelsCommon5 from "../common/common.js";
 var { html: html12 } = Lit9.StaticHtml;
 var { until: until3 } = Lit9.Directives;
 var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlock {
@@ -6491,9 +6503,9 @@ var ExportConversation_exports = {};
 __export(ExportConversation_exports, {
   saveToDisk: () => saveToDisk
 });
-import * as Platform4 from "./../../core/platform/platform.js";
-import * as TextUtils3 from "./../../core/text_utils/text_utils.js";
-import * as Workspace3 from "./../../models/workspace/workspace.js";
+import * as Platform4 from "../../core/platform/platform.js";
+import * as TextUtils3 from "../../core/text_utils/text_utils.js";
+import * as Workspace3 from "../../models/workspace/workspace.js";
 async function saveToDisk(conversation) {
   const markdownContent = conversation.getConversationMarkdown();
   const contentData = new TextUtils3.ContentData.ContentData(markdownContent, false, "text/markdown");
@@ -6760,6 +6772,12 @@ function getMarkdownRenderer(conversation) {
   }
   return new MarkdownRendererWithCodeBlock();
 }
+var ViewState;
+(function(ViewState2) {
+  ViewState2["DISABLED_VIEW"] = "disabled-view";
+  ViewState2["CHAT_VIEW"] = "chat-view";
+  ViewState2["EXPLORE_VIEW"] = "explore-view";
+})(ViewState || (ViewState = {}));
 function toolbarView(input) {
   return html13`
     <div class="toolbar-container" role="toolbar" jslog=${VisualLogging8.toolbar()}>
@@ -8062,13 +8080,14 @@ function isAiAssistanceServerSideLoggingEnabled() {
 // gen/front_end/panels/ai_assistance/ExternalHandler.js
 var ExternalHandler_exports = {};
 __export(ExternalHandler_exports, {
+  getMatchingFlavorContext: () => getMatchingFlavorContext,
   handleExternalAIRequest: () => handleExternalAIRequest
 });
-import * as Host6 from "./../../core/host/host.js";
-import * as SDK7 from "./../../core/sdk/sdk.js";
-import * as AiAssistanceModel9 from "./../../models/ai_assistance/ai_assistance.js";
-import * as NetworkTimeCalculator from "./../../models/network_time_calculator/network_time_calculator.js";
-import * as UI10 from "./../../ui/legacy/legacy.js";
+import * as Host6 from "../../core/host/host.js";
+import * as SDK7 from "../../core/sdk/sdk.js";
+import * as AiAssistanceModel9 from "../../models/ai_assistance/ai_assistance.js";
+import * as NetworkTimeCalculator from "../../models/network_time_calculator/network_time_calculator.js";
+import * as UI10 from "../../ui/legacy/legacy.js";
 function resolveConversationType(contextType) {
   switch (contextType) {
     case "NETWORK_REQUEST":
@@ -8130,6 +8149,7 @@ export {
   ImageResize_exports as ImageResize,
   MarkdownRendererWithCodeBlock,
   OptInChangeDialog_exports as OptInChangeDialog,
+  ViewState,
   WalkthroughUtils_exports as WalkthroughUtils,
   WalkthroughView_exports as WalkthroughView,
   getResponseMarkdown

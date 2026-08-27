@@ -9,7 +9,7 @@ var NodeText_exports = {};
 __export(NodeText_exports, {
   NodeText: () => NodeText
 });
-import * as Lit from "./../../lit/lit.js";
+import * as Lit from "../../lit/lit.js";
 
 // gen/front_end/ui/components/node_text/nodeText.css.js
 var nodeText_css_default = `/*

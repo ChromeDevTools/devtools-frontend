@@ -83,7 +83,7 @@ export default `/*
   justify-content: center;
 }
 
-.sources.panel .empty-view-scroller {
+.sources.panel .placeholder > .empty-widget-container {
   display: none;
 }
 

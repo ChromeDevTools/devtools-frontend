@@ -57,13 +57,8 @@ export interface Matcher<MatchT extends Match> {
     accepts(propertyName: string): boolean;
     matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): MatchT | null;
 }
-export declare function matcherBase<MatchT extends Match>(matchT: Platform.Constructor.ConstructorOrAbstract<MatchT>): {
-    new (): {
-        matchType: Platform.Constructor.ConstructorOrAbstract<MatchT>;
-        accepts(_propertyName: string): boolean;
-        matches(_node: CodeMirror.SyntaxNode, _matching: BottomUpTreeMatching): MatchT | null;
-    };
-};
+export type MatcherClass<MatchT extends Match> = Platform.Constructor.Constructor<Matcher<MatchT>>;
+export declare function matcherBase<MatchT extends Match>(matchT: Platform.Constructor.ConstructorOrAbstract<MatchT>): MatcherClass<MatchT>;
 export declare class BottomUpTreeMatching extends TreeWalker {
     #private;
     readonly computedText: ComputedText;
@@ -107,13 +102,7 @@ export declare class ComputedText {
  **/
 export declare function requiresSpace(a: string, b: string): boolean;
 export declare function requiresSpace(a: Node[], b: Node[]): boolean;
-export declare const CSSControlMap: {
-    new (entries?: readonly (readonly [string, HTMLElement[]])[] | null | undefined): Map<string, HTMLElement[]>;
-    new (iterable?: Iterable<readonly [string, HTMLElement[]]> | null | undefined): Map<string, HTMLElement[]>;
-    readonly prototype: Map<any, any>;
-    readonly [Symbol.species]: MapConstructor;
-    groupBy<K, T>(items: Iterable<T>, keySelector: (item: T, index: number) => K): Map<K, T[]>;
-};
+export declare const CSSControlMap: MapConstructor;
 export type CSSControlMap = Map<string, HTMLElement[]>;
 export declare namespace ASTUtils {
     function siblings(node: CodeMirror.SyntaxNode | null): CodeMirror.SyntaxNode[];

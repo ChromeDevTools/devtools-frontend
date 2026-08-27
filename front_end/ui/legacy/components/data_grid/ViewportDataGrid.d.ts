@@ -2,15 +2,7 @@ import * as Common from '../../../../core/common/common.js';
 import * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import { type DataGridData, DataGridImpl, DataGridNode, type Parameters } from './DataGrid.js';
-declare const ViewportDataGrid_base: (new (...args: any[]) => {
-    __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
-    addEventListener<T_1 extends Events.VIEWPORT_CALCULATED>(eventType: T_1, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T_1], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T_1>;
-    once<T_1 extends Events.VIEWPORT_CALCULATED>(eventType: T_1): Promise<EventTypes[T_1]>;
-    removeEventListener<T_1 extends Events.VIEWPORT_CALCULATED>(eventType: T_1, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T_1], any>) => void, thisObject?: Object): void;
-    hasEventListeners(eventType: Events.VIEWPORT_CALCULATED): boolean;
-    dispatchEventToListeners<T_1 extends Events.VIEWPORT_CALCULATED>(eventType: Platform.TypeScriptUtilities.NoUnion<T_1>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T_1>): void;
-    dispatchDOMEvent?(event: Event): void;
-}) & typeof DataGridImpl;
+declare const ViewportDataGrid_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof DataGridImpl;
 export declare class ViewportDataGrid<T> extends ViewportDataGrid_base<ViewportDataGridNode<T>> {
     private readonly onScrollBound;
     private visibleNodes;

@@ -10,10 +10,8 @@ import * as Bindings from '../../models/bindings/bindings.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
-// eslint-disable-next-line @devtools/es-modules-import
-import emptyWidgetStyles from '../../ui/legacy/emptyWidget.css.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { html, render } from '../../ui/lit/lit.js';
+import { html, nothing, render } from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { Events } from './BackgroundServiceModel.js';
 import backgroundServiceViewStyles from './backgroundServiceView.css.js';
@@ -176,7 +174,7 @@ export class BackgroundServiceView extends UI.Widget.VBox {
             jslog: `${VisualLogging.pane().context(Platform.StringUtilities.toKebabCase(serviceName))}`,
             useShadowDom: true,
         });
-        this.registerRequiredCSS(emptyWidgetStyles, backgroundServiceViewStyles);
+        this.registerRequiredCSS(backgroundServiceViewStyles);
         this.serviceName = serviceName;
         this.model = model;
         this.model.addEventListener(Events.RecordingStateChanged, this.onRecordingStateChanged, this);
@@ -414,34 +412,55 @@ export class BackgroundServiceView extends UI.Widget.VBox {
     #updatePreview() {
         if (this.preview) {
             this.preview.detach();
+            this.preview = null;
         }
         if (this.#selectedEventNode) {
+            // Clear lit-html rendering before appending legacy widget
+            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+            render(nothing, this.previewPanel.contentElement, { host: this });
             this.preview = this.#selectedEventNode.createPreview();
             this.preview.show(this.previewPanel.contentElement);
             return;
         }
-        let emptyWidget;
+        let header = '';
+        let text = '';
+        let link;
+        let showButton = false;
         if (this.dataGrid.rootNode().children.length) {
-            emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noEventSelected), i18nString(UIStrings.selectAnEventToViewMetadata));
+            header = i18nString(UIStrings.noEventSelected);
+            text = i18nString(UIStrings.selectAnEventToViewMetadata);
         }
         else if (this.#isRecording) {
             // Inform users that we are recording/waiting for events.
             const featureName = BackgroundServiceView.getUIString(this.serviceName).toLowerCase();
-            emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.recordingSActivity, { PH1: featureName }), i18nString(UIStrings.devtoolsWillRecordAllSActivity, { PH1: featureName }));
+            header = i18nString(UIStrings.recordingSActivity, { PH1: featureName });
+            text = i18nString(UIStrings.devtoolsWillRecordAllSActivity, { PH1: featureName });
         }
         else {
             const recordShortcuts = UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutsForAction('background-service.toggle-recording')[0];
-            emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noRecording), i18nString(UIStrings.startRecordingToDebug, {
+            header = i18nString(UIStrings.noRecording);
+            text = i18nString(UIStrings.startRecordingToDebug, {
                 PH1: i18nString(UIStrings.startRecordingEvents),
                 PH2: recordShortcuts ? recordShortcuts.title() : '',
-            }));
-            emptyWidget.link = this.createLearnMoreLink();
-            const button = UI.UIUtils.createTextButton(i18nString(UIStrings.startRecordingEvents), () => this.toggleRecording(), { jslogContext: 'start-recording', variant: "tonal" /* Buttons.Button.Variant.TONAL */ });
-            emptyWidget.contentElement.appendChild(button);
+            });
+            link = this.createLearnMoreLink();
+            showButton = true;
         }
-        emptyWidget.setDefaultFocusedElement(emptyWidget.contentElement);
-        this.preview = emptyWidget;
-        this.preview.show(this.previewPanel.contentElement);
+        // clang-format off
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        render(html `
+      <devtools-widget ${UI.Widget.widget(UI.EmptyWidget.EmptyWidget, { header, text, link })}>
+        ${showButton ? html `
+          <devtools-button
+            class="start-recording-button"
+            .variant=${"tonal" /* Buttons.Button.Variant.TONAL */}
+            .jslogContext=${'start-recording'}
+            @click=${() => this.toggleRecording()}>
+            ${i18nString(UIStrings.startRecordingEvents)}
+          </devtools-button>
+        ` : nothing}
+      </devtools-widget>`, this.previewPanel.contentElement, { host: this });
+        // clang-format on
     }
     /**
      * Saves all currently displayed events in a file (JSON format).

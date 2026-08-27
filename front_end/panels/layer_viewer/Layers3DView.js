@@ -68,15 +68,14 @@ export const DEFAULT_VIEW = (input, output, target) => {
         header: i18nString(UIStrings.noLayerInformation),
         text: i18nString(UIStrings.layerExplanation),
     })}</div>` : Lit.nothing}
-    ${input.error === 'webgl-disabled' ? html `<div>${widget(UI.EmptyWidget.EmptyWidget, {
+    ${input.error === 'webgl-disabled' ? html `<div><devtools-widget ${widget(UI.EmptyWidget.EmptyWidget, {
         header: i18nString(UIStrings.cantDisplayLayers),
         text: i18nString(UIStrings.webglSupportIsDisabledInYour),
-        extraElements: [
-            uiI18n.getFormatLocalizedString(str_, UIStrings.checkSForPossibleReasons, {
-                PH1: Link.create('chrome://gpu', undefined, undefined, 'about-gpu', 0, true),
-            }),
-        ],
-    })}</div>` : Lit.nothing}
+    })}>
+      ${uiI18n.getFormatLocalizedString(str_, UIStrings.checkSForPossibleReasons, {
+        PH1: Link.create('chrome://gpu', undefined, undefined, 'about-gpu', 0, true),
+    })}
+    </devtools-widget></div>` : Lit.nothing}
     <canvas
       tabindex="0"
       jslog=${VisualLogging.canvas('layers').track({
@@ -797,6 +796,17 @@ export var OutlineType;
     OutlineType["Selected"] = "selected";
     /* eslint-enable @typescript-eslint/naming-convention */
 })(OutlineType || (OutlineType = {}));
+export var Events;
+(function (Events) {
+    Events["PAINT_PROFILER_REQUESTED"] = "PaintProfilerRequested";
+    Events["SCALE_CHANGED"] = "ScaleChanged";
+})(Events || (Events = {}));
+export var ChromeTexture;
+(function (ChromeTexture) {
+    ChromeTexture[ChromeTexture["LEFT"] = 0] = "LEFT";
+    ChromeTexture[ChromeTexture["MIDDLE"] = 1] = "MIDDLE";
+    ChromeTexture[ChromeTexture["RIGHT"] = 2] = "RIGHT";
+})(ChromeTexture || (ChromeTexture = {}));
 export const FragmentShader = '' +
     'precision mediump float;\n' +
     'varying vec4 vColor;\n' +

@@ -1,5 +1,5 @@
 // gen/front_end/models/trace/lantern/graph/BaseNode.js
-import * as Core from "./../core/core.js";
+import * as Core from "../core/core.js";
 var BaseNode = class _BaseNode {
   static types = {
     NETWORK: "network",
@@ -374,7 +374,7 @@ var NetworkNode = class _NetworkNode extends BaseNode {
 };
 
 // gen/front_end/models/trace/lantern/graph/PageDependencyGraph.js
-import * as Core2 from "./../core/core.js";
+import * as Core2 from "../core/core.js";
 var SCHEDULABLE_TASK_TITLE_LH = "RunTask";
 var SCHEDULABLE_TASK_TITLE_ALT1 = "ThreadControllerImpl::RunTask";
 var SCHEDULABLE_TASK_TITLE_ALT2 = "ThreadControllerImpl::DoWork";

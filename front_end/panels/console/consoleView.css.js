@@ -64,7 +64,7 @@ export default `/* Copyright 2021 The Chromium Authors
 
 .console-toolbar-container > devtools-toolbar {
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .console-view-fix-select-all {
@@ -77,7 +77,7 @@ export default `/* Copyright 2021 The Chromium Authors
   grid-template-columns: 50% 50%;
   flex: none;
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 #console-messages {
@@ -93,21 +93,21 @@ export default `/* Copyright 2021 The Chromium Authors
 #console-prompt {
   clear: right;
   position: relative;
-  margin: 0 22px 0 20px;
+  margin: 0 var(--sys-size-10) 0 var(--sys-size-9);
 }
 
 .console-prompt-editor-container {
   min-height: 21px;
-  padding-left: 2px;
-  padding-top: 1px;
+  padding-left: var(--sys-size-2);
+  padding-top: var(--sys-size-1);
 }
 
 .console-message,
 .console-user-command {
   clear: right;
   position: relative;
-  padding: 1px 22px 1px 0;
-  margin-left: 24px;
+  padding: var(--sys-size-1) var(--sys-size-10) var(--sys-size-1) 0;
+  margin-left: var(--sys-size-11);
   min-height: 18px;
   flex: auto;
   display: flex;
@@ -129,7 +129,7 @@ export default `/* Copyright 2021 The Chromium Authors
 .command-result-icon {
   position: absolute;
   left: -17px;
-  top: 2px;
+  top: var(--sys-size-2);
   user-select: none;
 }
 
@@ -139,7 +139,7 @@ export default `/* Copyright 2021 The Chromium Authors
 }
 
 .repeated-message {
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
 }
 
 .repeated-message .message-level-icon {
@@ -150,7 +150,7 @@ export default `/* Copyright 2021 The Chromium Authors
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  margin-top: -1px;
+  margin-top: calc(-1 * var(--sys-size-1));
 }
 
 .console-error-level .repeated-message,
@@ -163,11 +163,11 @@ export default `/* Copyright 2021 The Chromium Authors
 .console-info {
   color: var(--sys-color-token-subtle);
   font-style: italic;
-  padding-bottom: 2px;
+  padding-bottom: var(--sys-size-2);
 }
 
 .console-group .console-group > .console-group-messages {
-  margin-left: 16px;
+  margin-left: var(--sys-size-8);
 }
 
 .console-group-title.console-from-api {
@@ -175,16 +175,16 @@ export default `/* Copyright 2021 The Chromium Authors
 }
 
 .console-group-title .console-message {
-  margin-left: 12px;
+  margin-left: var(--sys-size-6);
 }
 
 .expand-group-icon {
   user-select: none;
   flex: none;
   position: relative;
-  left: 8px;
+  left: var(--sys-size-5);
   top: 3px;
-  margin-right: 2px;
+  margin-right: var(--sys-size-2);
 }
 
 .console-group-title .message-level-icon {
@@ -194,7 +194,7 @@ export default `/* Copyright 2021 The Chromium Authors
 .console-message-repeat-count .expand-group-icon {
   position: static;
   color: var(--sys-color-cdt-base-container);
-  margin-left: -1px;
+  margin-left: calc(-1 * var(--sys-size-1));
 }
 
 .console-group {
@@ -204,7 +204,7 @@ export default `/* Copyright 2021 The Chromium Authors
 .console-message-wrapper {
   display: flex;
   flex-direction: column;
-  margin: 4px;
+  margin: var(--sys-size-3);
   border-radius: 5px;
 
   /* Console ANSI color */
@@ -268,8 +268,8 @@ export default `/* Copyright 2021 The Chromium Authors
     content: "";
     display: block;
     position: absolute;
-    top: -2px;
-    border-top: 1px solid var(--sys-color-divider);
+    top: calc(-1 * var(--sys-size-2));
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   &:first-of-type .console-message::before,
@@ -287,12 +287,12 @@ export default `/* Copyright 2021 The Chromium Authors
 }
 
 .console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level, .console-warning-level):focus {
-  border-top-width: 1px;
+  border-top-width: var(--sys-size-1);
 }
 
 .console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level, .console-warning-level):focus .console-message {
-  padding-top: 2px;
-  min-height: 16px;
+  padding-top: var(--sys-size-2);
+  min-height: var(--sys-size-8);
 }
 
 .console-message-wrapper.console-adjacent-user-command-result:not(.console-error-level, .console-warning-level):focus .command-result-icon {
@@ -300,11 +300,11 @@ export default `/* Copyright 2021 The Chromium Authors
 }
 
 .console-message-wrapper .nesting-level-marker {
-  width: 14px;
+  width: var(--sys-size-7);
   flex: 0 0 auto;
   position: relative;
-  margin-bottom: -1px;
-  margin-top: -1px;
+  margin-bottom: calc(-1 * var(--sys-size-1));
+  margin-top: calc(-1 * var(--sys-size-1));
   background-color: var(--sys-color-cdt-base-container);
 }
 
@@ -312,7 +312,7 @@ export default `/* Copyright 2021 The Chromium Authors
   position: absolute;
   left: -30px;
   top: 0;
-  width: 6px;
+  width: var(--sys-size-4);
   height: 100%;
   box-sizing: border-box;
   background-color: var(--sys-color-surface-yellow);
@@ -386,8 +386,8 @@ export default `/* Copyright 2021 The Chromium Authors
 }
 
 #console-messages .resource-links {
-  margin-top: -1px;
-  margin-bottom: -2px;
+  margin-top: calc(-1 * var(--sys-size-1));
+  margin-bottom: calc(-1 * var(--sys-size-2));
 }
 
 .console-object-preview,
@@ -495,7 +495,7 @@ export default `/* Copyright 2021 The Chromium Authors
   float: right;
   text-align: right;
   max-width: 100%;
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
 }
 
 .console-message-nowrap-below,
@@ -512,7 +512,7 @@ export default `/* Copyright 2021 The Chromium Authors
   text-align: center;
   border-radius: 3px;
   line-height: 13px;
-  margin: 0 6px;
+  margin: 0 var(--sys-size-4);
   font-size: 9px;
 }
 
@@ -526,7 +526,7 @@ export default `/* Copyright 2021 The Chromium Authors
 }
 
 .console-message-expand-icon {
-  margin-bottom: -4px;
+  margin-bottom: calc(-1 * var(--sys-size-3));
 }
 
 .console-searchable-view {
@@ -546,11 +546,11 @@ export default `/* Copyright 2021 The Chromium Authors
 }
 
 .devtools-console-insight {
-  margin: 9px 22px 11px 24px;
+  margin: 9px var(--sys-size-10) 11px var(--sys-size-11);
 }
 
 .hover-button {
-  --width: 24px;
+  --width: var(--sys-size-11);
 
   align-items: center;
   border-radius: 50%;
@@ -571,13 +571,13 @@ export default `/* Copyright 2021 The Chromium Authors
   overflow: hidden;
   padding: var(--sys-size-3) var(--sys-size-4);
   position: absolute;
-  right: 6px;
+  right: var(--sys-size-4);
   display: none;
   width: var(--width);
   z-index: 1;
 
   .theme-with-dark-background & {
-    border: 1px solid var(--sys-color-neutral-outline);
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
     background-color: var(--sys-color-primary);
     color: var(--sys-color-on-primary);
   }
@@ -600,7 +600,7 @@ export default `/* Copyright 2021 The Chromium Authors
 
 .hover-button:focus,
 .hover-button:hover {
-  border-radius: 4px;
+  border-radius: var(--sys-shape-corner-extra-small);
   max-width: 200px;
   transition:
     max-width var(--sys-motion-duration-short4) var(--sys-motion-easing-emphasized),
@@ -610,8 +610,8 @@ export default `/* Copyright 2021 The Chromium Authors
 }
 
 .hover-button:focus-visible {
-  outline: 2px solid var(--sys-color-primary);
-  outline-offset: 2px;
+  outline: var(--sys-size-2) solid var(--sys-color-primary);
+  outline-offset: var(--sys-size-2);
 }
 
 .button-label {
@@ -621,7 +621,7 @@ export default `/* Copyright 2021 The Chromium Authors
 
   & div {
     display: inline-block;
-    vertical-align: -1px;
+    vertical-align: calc(-1 * var(--sys-size-1));
 
     &::after {
       content: attr(data-text);

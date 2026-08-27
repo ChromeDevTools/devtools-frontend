@@ -19,7 +19,7 @@
       "path": "./theme_support-tsconfig.ref.json"
     },
     {
-      "path": "../../../../../tsc/front_end/ui/legacy/css_files-tsconfig.ref.json"
+      "path": "../css_files-tsconfig.ref.json"
     }
   ]
 }

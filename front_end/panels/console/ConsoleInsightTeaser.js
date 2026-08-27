@@ -114,6 +114,16 @@ const CODE_SNIPPET_WARNING_URL = 'https://support.google.com/legal/answer/135054
 const DATA_USAGE_URL = 'https://developer.chrome.com/docs/devtools/ai-assistance/get-started#data-use';
 const EXPLAIN_TEASER_ACTION_ID = 'explain.console-message.teaser';
 const SLOW_GENERATION_CUTOFF_MILLISECONDS = 3500;
+var State;
+(function (State) {
+    State["NO_MODEL"] = "no-model";
+    State["DOWNLOADING"] = "downloading";
+    State["READY"] = "ready";
+    State["GENERATING"] = "generating";
+    State["PARTIAL_TEASER"] = "partial-teaser";
+    State["TEASER"] = "teaser";
+    State["ERROR"] = "error";
+})(State || (State = {}));
 function renderNoModel(input) {
     // clang-format off
     return html `

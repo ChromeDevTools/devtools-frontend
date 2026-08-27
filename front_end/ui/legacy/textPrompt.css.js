@@ -18,8 +18,8 @@ export default `/*
   box-shadow: var(--drop-shadow);
   background-color: var(--sys-color-cdt-base-container);
   text-overflow: clip !important; /* stylelint-disable-line declaration-no-important */
-  margin: 0 -2px -1px;
-  padding: 0 2px 1px;
+  margin: 0 calc(-1 * var(--sys-size-2)) calc(-1 * var(--sys-size-1));
+  padding: 0 var(--sys-size-2) var(--sys-size-1);
   opacity: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 

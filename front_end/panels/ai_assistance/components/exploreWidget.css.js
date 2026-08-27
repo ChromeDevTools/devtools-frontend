@@ -128,7 +128,7 @@ export default `/*
     align-items: center;
     padding-block: var(--sys-size-3);
     font: var(--sys-typescale-body5-regular);
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
     text-wrap: balance;
     text-align: center;
 

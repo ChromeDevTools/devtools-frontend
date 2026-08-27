@@ -24,13 +24,13 @@ export default `/**
 
   .title {
     padding: 0 5px;
-    border-top: 1px solid;
-    border-bottom: 1px solid;
+    border-top: var(--sys-size-1) solid;
+    border-bottom: var(--sys-size-1) solid;
     border-color: var(--sys-color-divider);
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    height: 24px;
+    height: var(--sys-size-11);
     background-color: var(--sys-color-surface2);
     display: flex;
     align-items: center;
@@ -40,11 +40,11 @@ export default `/**
     padding: 5px 1em;
 
     div {
-      margin-bottom: 2px;
+      margin-bottom: var(--sys-size-2);
     }
 
     &:not(:last-child) {
-      border-bottom: 1px solid var(--sys-color-divider);
+      border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
     }
   }
 }

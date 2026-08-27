@@ -70,7 +70,7 @@ export default `/*
 }
 
 .network-details-view-tall-header {
-  border-top: 4px solid var(--app-color-toolbar-background);
+  border-top: var(--sys-size-3) solid var(--app-color-toolbar-background);
 }
 
 .network-item-view {
@@ -79,13 +79,13 @@ export default `/*
 }
 
 .network-item-preview-toolbar {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   background-color: var(--sys-color-surface1);
 }
 
 .resource-timing-view {
   display: block;
-  margin: 6px;
+  margin: var(--sys-size-4);
   color: var(--sys-color-on-surface);
   overflow: auto;
   background-color: var(--sys-color-cdt-base-container);
@@ -106,7 +106,7 @@ export default `/*
   display: flex;
   flex-direction: column;
   position: relative;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 #network-overview-container canvas {
@@ -141,7 +141,7 @@ export default `/*
 }
 
 .network-film-strip {
-  border-bottom: solid 1px var(--sys-color-divider);
+  border-bottom: solid var(--sys-size-1) var(--sys-color-divider);
   flex: none !important; /* stylelint-disable-line declaration-no-important */
 }
 
@@ -158,7 +158,7 @@ export default `/*
   grid-template-columns: 50% 50%;
   flex: none;
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .network-toolbar-container {
@@ -166,7 +166,7 @@ export default `/*
   align-items: flex-start;
   flex: none;
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
   & > :first-child {
     flex: 1 1 auto;

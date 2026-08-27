@@ -10,15 +10,7 @@ import { type Client } from './TimelineController.js';
 import { TimelineFlameChartView } from './TimelineFlameChartView.js';
 import { type TimelineSelection } from './TimelineSelection.js';
 import type * as Utils from './utils/utils.js';
-declare const TimelinePanel_base: (new (...args: any[]) => {
-    __events: Common.ObjectWrapper.ObjectWrapper<EventTypes>;
-    addEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): Common.EventTarget.EventDescriptor<EventTypes, T>;
-    once<T extends keyof EventTypes>(eventType: T): Promise<EventTypes[T]>;
-    removeEventListener<T extends keyof EventTypes>(eventType: T, listener: (arg0: Common.EventTarget.EventTargetEvent<EventTypes[T], any>) => void, thisObject?: Object): void;
-    hasEventListeners(eventType: keyof EventTypes): boolean;
-    dispatchEventToListeners<T extends keyof EventTypes>(eventType: Platform.TypeScriptUtilities.NoUnion<T>, ...eventData: Common.EventTarget.EventPayloadToRestParameters<EventTypes, T>): void;
-    dispatchDOMEvent?(event: Event): void;
-}) & typeof UI.Panel.Panel;
+declare const TimelinePanel_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Panel.Panel;
 export declare class TimelinePanel extends TimelinePanel_base implements Client, TimelineModeViewDelegate {
     #private;
     private readonly dropTarget;

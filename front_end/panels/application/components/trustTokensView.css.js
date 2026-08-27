@@ -10,7 +10,7 @@ export default `/*
  */
 
 :host {
-  padding: 20px;
+  padding: var(--sys-size-9);
   height: 100%;
   display: flex;
 }
@@ -20,21 +20,21 @@ export default `/*
 }
 
 devtools-data-grid {
-  margin-top: 20px;
+  margin-top: var(--sys-size-9);
 
   & devtools-button {
-    width: 14px;
-    height: 14px;
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
   }
 }
 
 devtools-icon {
-  width: 14px;
-  height: 14px;
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
 }
 
 .no-tt-message {
-  margin-top: 20px;
+  margin-top: var(--sys-size-9);
 }
 
 /*# sourceURL=${import.meta.resolve('./trustTokensView.css')} */`;

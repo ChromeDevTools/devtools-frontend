@@ -16,7 +16,7 @@
   ],
   "references": [
     {
-      "path": "../../../../../../tsc/front_end/ui/legacy/components/quick_open/css_files-tsconfig.ref.json"
+      "path": "./css_files-tsconfig.ref.json"
     },
     {
       "path": "./quick_open-tsconfig.ref.json"

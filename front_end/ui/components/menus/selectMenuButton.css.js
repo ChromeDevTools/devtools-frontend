@@ -21,7 +21,7 @@ export default `/*
 
 .show {
   display: block;
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   color: var(--sys-color-on-surface);
   height: 100%;
   width: 100%;
@@ -45,7 +45,7 @@ export default `/*
 
   &:focus-visible {
     outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-    outline-offset: -1px;
+    outline-offset: calc(-1 * var(--sys-size-1));
   }
 }
 
@@ -80,9 +80,9 @@ export default `/*
   mask-image: var(--deploy-menu-arrow);
   -webkit-mask-position-y: center;
   margin-left: 5px;
-  width: 14px;
+  width: var(--sys-size-7);
   flex-shrink: 0;
-  height: 14px;
+  height: var(--sys-size-7);
   display: inline-block;
   mask-repeat: no-repeat;
   background-color: var(--sys-color-on-surface-subtle);

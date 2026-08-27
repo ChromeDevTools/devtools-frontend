@@ -9,15 +9,15 @@ var SettingCheckbox_exports = {};
 __export(SettingCheckbox_exports, {
   SettingCheckbox: () => SettingCheckbox
 });
-import "./../tooltips/tooltips.js";
-import "./../../kit/kit.js";
-import * as Host from "./../../../core/host/host.js";
-import * as i18n from "./../../../core/i18n/i18n.js";
-import * as Lit from "./../../lit/lit.js";
-import * as SettingUIRegistration from "./../../settings/settings.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
-import * as Buttons from "./../buttons/buttons.js";
-import * as Input from "./../input/input.js";
+import "../tooltips/tooltips.js";
+import "../../kit/kit.js";
+import * as Host from "../../../core/host/host.js";
+import * as i18n from "../../../core/i18n/i18n.js";
+import * as Lit from "../../lit/lit.js";
+import * as SettingUIRegistration from "../../settings/settings.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
+import * as Buttons from "../buttons/buttons.js";
+import * as Input from "../input/input.js";
 
 // gen/front_end/ui/components/settings/settingCheckbox.css.js
 var settingCheckbox_css_default = `/*
@@ -32,11 +32,11 @@ var settingCheckbox_css_default = `/*
 }
 
 input {
-  height: 12px;
-  width: 12px;
-  min-height: 12px;
-  min-width: 12px;
-  margin: 6px;
+  height: var(--sys-size-6);
+  width: var(--sys-size-6);
+  min-height: var(--sys-size-6);
+  min-width: var(--sys-size-6);
+  margin: var(--sys-size-4);
 }
 
 label {
@@ -47,7 +47,7 @@ label {
 }
 
 p {
-  margin: 6px 0;
+  margin: var(--sys-size-4) 0;
 }
 
 .info-icon {

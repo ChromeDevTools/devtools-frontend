@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "skipLibCheck": true
+  },
+  "files": [
+    "baseInsightComponent.css.js",
+    "checklist.css.js",
+    "networkDependencyTreeInsight.css.js",
+    "table.css.js"
+  ]
+}

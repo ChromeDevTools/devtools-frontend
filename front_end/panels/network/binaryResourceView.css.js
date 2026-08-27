@@ -11,7 +11,7 @@ export default `/*
 
 @scope to (devtools-widget > *) {
   .panel.network devtools-toolbar.binary-view-toolbar {
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
     border-bottom: 0;
     padding-left: 5px;
     flex: none;

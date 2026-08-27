@@ -28,7 +28,7 @@ export default `/*
 
 .list-separator {
   background: var(--sys-color-divider);
-  height: 1px;
+  height: var(--sys-size-1);
 }
 
 .list-item {
@@ -128,16 +128,16 @@ export default `/*
 }
 
 .text-prompt-container {
-  padding: 3px 6px;
-  height: 24px;
+  padding: 3px var(--sys-size-4);
+  height: var(--sys-size-11);
   border: none;
   box-shadow: var(--legacy-focus-ring-inactive-shadow);
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
   width: 100%;
   background-color: var(--sys-color-cdt-base-container);
 
   &:focus {
-    border: 1px solid var(--sys-color-state-focus-ring);
+    border: var(--sys-size-1) solid var(--sys-color-state-focus-ring);
   }
 
   & .text-prompt {

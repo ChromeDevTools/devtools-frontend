@@ -4,6 +4,14 @@
 import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Root from '../../core/root/root.js';
+export var LanguageModelAvailability;
+(function (LanguageModelAvailability) {
+    LanguageModelAvailability["UNAVAILABLE"] = "unavailable";
+    LanguageModelAvailability["DOWNLOADABLE"] = "downloadable";
+    LanguageModelAvailability["DOWNLOADING"] = "downloading";
+    LanguageModelAvailability["AVAILABLE"] = "available";
+    LanguageModelAvailability["DISABLED"] = "disabled";
+})(LanguageModelAvailability || (LanguageModelAvailability = {}));
 export class BuiltInAi extends Common.ObjectWrapper.ObjectWrapper {
     #availability = null;
     #hasGpu;
@@ -235,4 +243,9 @@ Your instructions are as follows:
         }
     }
 }
+export var Events;
+(function (Events) {
+    Events["DOWNLOAD_PROGRESS_CHANGED"] = "downloadProgressChanged";
+    Events["DOWNLOADED_AND_SESSION_CREATED"] = "downloadedAndSessionCreated";
+})(Events || (Events = {}));
 //# sourceMappingURL=BuiltInAi.js.map

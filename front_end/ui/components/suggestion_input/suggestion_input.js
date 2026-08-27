@@ -9,7 +9,7 @@ var SuggestionInput_exports = {};
 __export(SuggestionInput_exports, {
   SuggestionInput: () => SuggestionInput
 });
-import * as CodeHighlighter from "./../code_highlighter/code_highlighter.js";
+import * as CodeHighlighter from "../code_highlighter/code_highlighter.js";
 
 // gen/front_end/ui/components/code_highlighter/codeHighlighter.css.js
 var codeHighlighter_css_default = `/*
@@ -119,8 +119,8 @@ var codeHighlighter_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./codeHighlighter.css")} */`;
 
 // gen/front_end/ui/components/suggestion_input/SuggestionInput.js
-import * as Lit from "./../../lit/lit.js";
-import * as VisualLogging from "./../../visual_logging/visual_logging.js";
+import * as Lit from "../../lit/lit.js";
+import * as VisualLogging from "../../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/components/suggestion_input/suggestionInput.css.js
 var suggestionInput_css_default = `/*

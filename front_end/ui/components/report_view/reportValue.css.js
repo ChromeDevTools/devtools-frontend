@@ -18,7 +18,7 @@ export default `/*
   font: var(--sys-typescale-body4-regular);
   color: var(--sys-color-on-surface);
   margin-inline-start: 0;
-  padding: 0 6px;
+  padding: 0 var(--sys-size-4);
   overflow-wrap: break-word;
   line-height: 18px;
 }

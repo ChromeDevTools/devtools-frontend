@@ -1194,4 +1194,25 @@ export class TimelineFlameChartDataProvider extends Common.ObjectWrapper.ObjectW
     }
 }
 export const InstantEventVisibleDurationMs = Trace.Types.Timing.Milli(0.001);
+export var Events;
+(function (Events) {
+    Events["DATA_CHANGED"] = "DataChanged";
+    Events["FLAME_CHART_ITEM_HOVERED"] = "FlameChartItemHovered";
+    Events["ENTRY_LABEL_ANNOTATION_ADDED"] = "EntryLabelAnnotationAdded";
+})(Events || (Events = {}));
+/**
+ * an entry is a trace event, they are classified into "entry types"
+ * because some events are rendered differently. For example, screenshot
+ * events are rendered as images. Checks for entry types allow to have
+ * different styles, names, etc. for events that look differently.
+ * In the future we won't have this checks: instead we will forward
+ * the event to the corresponding "track appender" and it will determine
+ * how the event shall be rendered.
+ **/
+export var EntryType;
+(function (EntryType) {
+    EntryType["FRAME"] = "Frame";
+    EntryType["TRACK_APPENDER"] = "TrackAppender";
+    EntryType["SCREENSHOT"] = "Screenshot";
+})(EntryType || (EntryType = {}));
 //# sourceMappingURL=TimelineFlameChartDataProvider.js.map

@@ -445,6 +445,13 @@ export class TargetManager extends Common.ObjectWrapper.ObjectWrapper {
         return this.#scopeTarget;
     }
 }
+export var Events;
+(function (Events) {
+    Events["AVAILABLE_TARGETS_CHANGED"] = "AvailableTargetsChanged";
+    Events["INSPECTED_URL_CHANGED"] = "InspectedURLChanged";
+    Events["NAME_CHANGED"] = "NameChanged";
+    Events["SUSPEND_STATE_CHANGED"] = "SuspendStateChanged";
+})(Events || (Events = {}));
 export class Observer {
     targetAdded(_target) {
     }

@@ -91,6 +91,13 @@ const dontCompleteIn = new Set([
     'PropertyDefinition',
     'TypeName',
 ]);
+export var QueryType;
+(function (QueryType) {
+    QueryType[QueryType["EXPRESSION"] = 0] = "EXPRESSION";
+    QueryType[QueryType["PROPERTY_NAME"] = 1] = "PROPERTY_NAME";
+    QueryType[QueryType["PROPERTY_EXPRESSION"] = 2] = "PROPERTY_EXPRESSION";
+    QueryType[QueryType["POTENTIALLY_RETRIEVING_FROM_MAP"] = 3] = "POTENTIALLY_RETRIEVING_FROM_MAP";
+})(QueryType || (QueryType = {}));
 export function getQueryType(tree, pos, doc) {
     let node = tree.resolveInner(pos, -1);
     const parent = node.parent;

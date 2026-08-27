@@ -1,6 +1,6 @@
 // gen/front_end/ui/i18n/i18n.prebundle.js
-import * as I18n from "./../../core/i18n/i18n.js";
-import { Directives, html, nothing } from "./../lit/lit.js";
+import * as I18n from "../../core/i18n/i18n.js";
+import { Directives, html, nothing } from "../lit/lit.js";
 var { repeat } = Directives;
 function getFormatLocalizedString(registeredStrings, stringId, placeholders) {
   const formatter = registeredStrings.getLocalizedStringSetFor(I18n.DevToolsLocale.DevToolsLocale.instance().locale).getMessageFormatterFor(stringId);

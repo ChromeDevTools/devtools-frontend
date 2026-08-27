@@ -336,35 +336,9 @@ export declare class Legacy implements Color {
     equal(other: Color): boolean;
 }
 export declare const Nicknames: Map<string, number[]>;
-export declare const PageHighlight: {
-    Content: Legacy;
-    ContentLight: Legacy;
-    ContentOutline: Legacy;
-    Padding: Legacy;
-    PaddingLight: Legacy;
-    Border: Legacy;
-    BorderLight: Legacy;
-    Margin: Legacy;
-    MarginLight: Legacy;
-    EventTarget: Legacy;
-    Shape: Legacy;
-    ShapeMargin: Legacy;
-    CssGrid: Legacy;
-    LayoutLine: Legacy;
-    GridBorder: Legacy;
-    GapBackground: Legacy;
-    GapHatch: Legacy;
-    GridAreaBorder: Legacy;
-};
-export declare const SourceOrderHighlight: {
-    ParentOutline: Legacy;
-    ChildOutline: Legacy;
-};
-export declare const IsolationModeHighlight: {
-    Resizer: Legacy;
-    ResizerHandle: Legacy;
-    Mask: Legacy;
-};
+export declare const PageHighlight: Record<string, Legacy>;
+export declare const SourceOrderHighlight: Record<string, Legacy>;
+export declare const IsolationModeHighlight: Record<string, Legacy>;
 type Space = number | {
     min: number;
     max: number;

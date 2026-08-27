@@ -10,7 +10,7 @@ export default `/*
  */
 
 .json-view {
-  padding: 2px 6px;
+  padding: var(--sys-size-2) var(--sys-size-4);
   overflow: auto;
 }
 

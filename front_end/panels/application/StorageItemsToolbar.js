@@ -154,4 +154,13 @@ export class StorageItemsToolbar extends Common.ObjectWrapper.eventMixin(UI.Widg
         this.requestUpdate();
     }
 }
+(function (StorageItemsToolbar) {
+    let Events;
+    (function (Events) {
+        Events["REFRESH"] = "Refresh";
+        Events["FILTER_CHANGED"] = "FilterChanged";
+        Events["DELETE_ALL"] = "DeleteAll";
+        Events["DELETE_SELECTED"] = "DeleteSelected";
+    })(Events = StorageItemsToolbar.Events || (StorageItemsToolbar.Events = {}));
+})(StorageItemsToolbar || (StorageItemsToolbar = {}));
 //# sourceMappingURL=StorageItemsToolbar.js.map

@@ -7,3 +7,4 @@ export declare const consoleAutocompleteOnEnterSettingDescriptor: Common.Setting
 export declare const consoleGroupSimilarSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const consoleShowsCorsErrorsSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
 export declare const consoleEagerEvalSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;
+export declare const consoleTraceExpandSettingDescriptor: Common.Settings.SettingDescriptor<boolean>;

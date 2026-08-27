@@ -13,10 +13,10 @@ export default `/**
   min-height: 18px;
   white-space: nowrap;
   user-select: text;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   position: relative;
   overflow: hidden;
-  padding: 2px 2px 4px 4px;
+  padding: var(--sys-size-2) var(--sys-size-2) var(--sys-size-3) var(--sys-size-3);
 
   &:last-child {
     border-bottom: none;
@@ -29,6 +29,23 @@ export default `/**
   &.read-only {
     background-color: var(--sys-color-cdt-base-container);
     font-style: italic;
+  }
+
+  &.styles-section-inactive {
+    opacity: 70%;
+
+    .selector,
+    .style-properties {
+      font-style: italic;
+    }
+
+    .selector {
+      text-decoration: line-through;
+    }
+  }
+
+  devtools-icon[name="warning"] {
+    color: var(--icon-warning);
   }
 
   &:focus-visible,
@@ -46,7 +63,7 @@ export default `/**
   }
 
   .styles-section-subtitle devtools-icon {
-    margin-bottom: -4px;
+    margin-bottom: calc(-1 * var(--sys-size-3));
   }
 
   .styles-section-subtitle .devtools-link {
@@ -79,7 +96,7 @@ export default `/**
 
   .style-properties {
     margin: 0;
-    padding: 2px 4px 0 0;
+    padding: var(--sys-size-2) var(--sys-size-3) 0 0;
     list-style: none;
     clear: both;
     display: flex;
@@ -101,10 +118,10 @@ export default `/**
   }
 
   & .section-collapse-icon {
-    width: 12px;
-    height: 12px;
-    margin-right: 2px;
-    margin-left: -2px;
+    width: var(--sys-size-6);
+    height: var(--sys-size-6);
+    margin-right: var(--sys-size-2);
+    margin-left: calc(-1 * var(--sys-size-2));
     vertical-align: middle;
     cursor: pointer;
     display: none;
@@ -145,7 +162,7 @@ export default `/**
   padding: var(--sys-size-2) var(--sys-size-2) 0 var(--sys-size-8);
   max-width: 100%;
   height: 15px;
-  margin-bottom: -1px;
+  margin-bottom: calc(-1 * var(--sys-size-1));
 }
 
 .styles-section-subtitle * {
@@ -215,7 +232,7 @@ export default `/**
 }
 
 .styles-sidebar-pane-toolbar {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .styles-pane-toolbar {
@@ -225,12 +242,12 @@ export default `/**
 .sidebar-separator {
   background-color: var(--sys-color-surface2);
   padding: 0 5px;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   color: var(--sys-color-on-surface-subtle);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  line-height: 22px;
+  line-height: var(--sys-size-10);
 
   > span.monospace {
     max-width: 180px;
@@ -238,7 +255,7 @@ export default `/**
     overflow: hidden;
     text-overflow: ellipsis;
     vertical-align: middle;
-    margin-left: 2px;
+    margin-left: var(--sys-size-2);
   }
 
   &.layer-separator {
@@ -254,14 +271,14 @@ export default `/**
 .sidebar-pane-section-toolbar {
   position: absolute;
   right: 0;
-  bottom: -1px;
+  bottom: calc(-1 * var(--sys-size-1));
   z-index: 0;
 
   &.new-rule-toolbar {
     visibility: hidden;
     margin-bottom: 5px;
 
-    --toolbar-height: 16px;
+    --toolbar-height: var(--sys-size-8);
   }
 }
 
@@ -272,8 +289,8 @@ export default `/**
 }
 
 .styles-show-all {
-  padding: 4px;
-  margin-left: 16px;
+  padding: var(--sys-size-3);
+  margin-left: var(--sys-size-8);
   text-overflow: ellipsis;
   overflow: hidden;
   max-width: -webkit-fill-available;
@@ -282,7 +299,7 @@ export default `/**
 @media (forced-colors: active) {
   .sidebar-pane-section-toolbar {
     forced-color-adjust: none;
-    border: 1px solid ButtonText;
+    border: var(--sys-size-1) solid ButtonText;
     background-color: ButtonFace;
   }
 
@@ -322,14 +339,14 @@ export default `/**
 }
 
 .spinner::before {
-  --dimension: 24px;
+  --dimension: var(--sys-size-11);
 
   margin-top: 2em;
   left: calc(50% - var(--dimension) / 2);
 }
 
 .section-block-expand-icon {
-  margin-bottom: -4px;
+  margin-bottom: calc(-1 * var(--sys-size-3));
 }
 
 .selector-specificity-tooltip-summary {

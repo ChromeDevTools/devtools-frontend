@@ -10,12 +10,12 @@ export default `/*
  */
 
 .properties-widget-section {
-  padding: 2px 0 2px 5px;
+  padding: var(--sys-size-2) 0 var(--sys-size-2) 5px;
   flex: none;
 }
 
 .properties-widget-toolbar {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   flex-shrink: 0;
 }
 

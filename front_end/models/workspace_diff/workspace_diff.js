@@ -7,18 +7,20 @@ var __export = (target, all) => {
 // gen/front_end/models/workspace_diff/WorkspaceDiff.js
 var WorkspaceDiff_exports = {};
 __export(WorkspaceDiff_exports, {
+  Events: () => Events,
   UISourceCodeDiff: () => UISourceCodeDiff,
+  UISourceCodeDiffEvents: () => UISourceCodeDiffEvents,
   WorkspaceDiffImpl: () => WorkspaceDiffImpl,
   workspaceDiff: () => workspaceDiff
 });
-import * as Common from "./../../core/common/common.js";
-import * as Host from "./../../core/host/host.js";
-import * as Root from "./../../core/root/root.js";
-import * as TextUtils from "./../../core/text_utils/text_utils.js";
-import * as Diff from "./../../third_party/diff/diff.js";
-import * as FormatterModule from "./../formatter/formatter.js";
-import * as Persistence from "./../persistence/persistence.js";
-import * as Workspace from "./../workspace/workspace.js";
+import * as Common from "../../core/common/common.js";
+import * as Host from "../../core/host/host.js";
+import * as Root from "../../core/root/root.js";
+import * as TextUtils from "../../core/text_utils/text_utils.js";
+import * as Diff from "../../third_party/diff/diff.js";
+import * as FormatterModule from "../formatter/formatter.js";
+import * as Persistence from "../persistence/persistence.js";
+import * as Workspace from "../workspace/workspace.js";
 var WorkspaceDiffImpl = class extends Common.ObjectWrapper.ObjectWrapper {
   #persistence;
   #networkPersistenceManager;
@@ -155,6 +157,10 @@ var WorkspaceDiffImpl = class extends Common.ObjectWrapper.ObjectWrapper {
     return this.requestOriginalContentForUISourceCode(uiSourceCode).then(callback);
   }
 };
+var Events;
+(function(Events2) {
+  Events2["MODIFIED_STATUS_CHANGED"] = "ModifiedStatusChanged";
+})(Events || (Events = {}));
 var UISourceCodeDiff = class extends Common.ObjectWrapper.ObjectWrapper {
   #uiSourceCode;
   #networkPersistenceManager;
@@ -245,6 +251,10 @@ var UISourceCodeDiff = class extends Common.ObjectWrapper.ObjectWrapper {
     };
   }
 };
+var UISourceCodeDiffEvents;
+(function(UISourceCodeDiffEvents2) {
+  UISourceCodeDiffEvents2["DIFF_CHANGED"] = "DiffChanged";
+})(UISourceCodeDiffEvents || (UISourceCodeDiffEvents = {}));
 function workspaceDiff({ forceNew } = {}) {
   if (!Root.DevToolsContext.globalInstance().has(WorkspaceDiffImpl) || forceNew) {
     Root.DevToolsContext.globalInstance().set(WorkspaceDiffImpl, new WorkspaceDiffImpl(

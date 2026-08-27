@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 
 import {
+  ACTIVE_GRID_ADORNER_SELECTOR,
   ACTIVE_STARTING_STYLE_ADORNER_SELECTOR,
   editCSSProperty,
   expandSelectedNodeRecursively,
@@ -209,6 +210,7 @@ describe('Adornment in the Elements Tab', function() {
 
     // Toggle both grid adorners on and try to select them with the active selector
     await devToolsPage.click(INACTIVE_GRID_ADORNER_SELECTOR);
+    await devToolsPage.waitFor(ACTIVE_GRID_ADORNER_SELECTOR);
     await devToolsPage.click(INACTIVE_GRID_ADORNER_SELECTOR);
 
     await waitForAdorners(devToolsPage, [

@@ -103,21 +103,22 @@ export const waitForAdorners =
       return false;
     }
 
+    const remainingExpected = [...expectedAdorners];
     for (let i = 0; i < actualAdornersStates.length; i++) {
-      const index = expectedAdorners.findIndex(expected => {
+      const index = remainingExpected.findIndex(expected => {
         const actual = actualAdornersStates[i];
         return expected.textContent === actual.textContent && expected.isActive === actual.isActive;
       });
       if (index !== -1) {
-        expectedAdorners.splice(index, 1);
+        remainingExpected.splice(index, 1);
       }
     }
 
-    return expectedAdorners.length === 0;
+    return remainingExpected.length === 0;
   });
 
-  if (expectedAdorners.length) {
-    await expectVeEvents(devToolsPage, [veImpressionsUnder('Panel: elements >  Tree: elements > TreeItem',
+  if (expectedAdorners.some(a => a.textContent === 'grid')) {
+    await expectVeEvents(devToolsPage, [veImpressionsUnder('Panel: elements > Tree: elements > TreeItem',
                                                            [veImpression('Adorner', 'grid')])],
                          undefined);
   }

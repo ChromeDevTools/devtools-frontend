@@ -13,6 +13,7 @@ import yargs from 'yargs/yargs';
 import {convertRawOutputToEval, type RawOutput, slug} from '../suite/to_eval_output.ts';
 import type {ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId} from '../types.js';
 
+import {generateRunId, uploadEvalToGCS} from './gcs-upload.ts';
 import {createTargetExecutor} from './targets/factory.ts';
 import type {TargetExecutor, TargetPreparationResult} from './targets/interface.ts';
 import {TraceDownloader} from './trace-downloader.ts';
@@ -70,6 +71,11 @@ const userArgsBuilder = yargs(hideBin(process.argv))
                             })
                             .option('grade', {
                               describe: 'Automatically grade the result',
+                              boolean: true,
+                              default: false,
+                            })
+                            .option('upload', {
+                              describe: 'Upload resulting eval trajectory.json files to GCS',
                               boolean: true,
                               default: false,
                             })
@@ -375,6 +381,8 @@ function loadRecipes(target: string): Array<{url: string, label: string}> {
 // Run if this file invoked as a CLI directly
 async function main() {
   const userArgs: UserArgs = userArgsBuilder.parseSync();
+  const runId = generateRunId();
+  console.info(`\n[Info]: Run ID for this evaluation: ${runId}`);
 
   const pairsToRun: Array<{url: string, label: string}> = [];
   const isRecipeMode = !userArgs.exampleUrls || userArgs.exampleUrls.length === 0;
@@ -474,7 +482,7 @@ async function main() {
       metadata: data.metadata,
       examples: data.results,
     };
-    writeOutput(output, {...userArgs, label});
+    writeOutput(output, {...userArgs, label}, runId);
   }
 
   // Run grader once at the end if --grade is set
@@ -509,6 +517,7 @@ interface Output {
 function writeOutput(
     output: Output,
     userArgs: UserArgs,
+    runId: string,
 ) {
   const OUTPUT_DIR = path.resolve(import.meta.dirname, 'data');
   const dateSuffix = new Date().toISOString().slice(0, 19);
@@ -523,7 +532,7 @@ function writeOutput(
   fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
   console.info(`\n[Info]: Finished exporting results to ${outputPath}, it took ${formatElapsedTime()}`);
 
-  if (userArgs.eval || userArgs.grade) {
+  if (userArgs.eval || userArgs.grade || userArgs.upload) {
     const trajectories = convertRawOutputToEval({
       inputFromAutoRun: output as RawOutput,
       label: userArgs.label,
@@ -546,6 +555,14 @@ function writeOutput(
         const copiedFilePath = path.resolve(targetDir, copiedFileName);
         fs.copyFileSync(evalOutputPath, copiedFilePath);
         console.info(`\n[Info]: Copied eval output to ${copiedFilePath}`);
+      }
+
+      if (userArgs.upload) {
+        uploadEvalToGCS({
+          runId,
+          taskId: trajectory.metadata.autoRunExampleId,
+          localJsonPath: evalOutputPath,
+        });
       }
     }
   }

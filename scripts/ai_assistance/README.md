@@ -47,6 +47,8 @@ Tip: You can add a `--eval` flag to the run to generate a secondary file named `
 
 Tip: You can add a `--grade` flag to the run to automatically grade the results. This flag generates the `.eval.json` file, copies it to the correct subfolder in `suite/outputs/outputs/` (renaming it to use only the label, e.g., `network-test.json`), and then executes the corresponding grader script (e.g., `suite/network.eval.ts`) to calculate scores using the LLM judge.
 
+Tip: You can add an `--upload` flag to automatically upload resulting `trajectory.json` files to the GCS bucket (`gs://gleam-eval-cd4h-nonprod/ai_evals/runs/<run_id>/tasks/<task_id>/output/trajectory.json`).
+
 ## `--test-target` values
 
 * `elements`: tests the entrypoint via right clicking on an element in the Elements panel.

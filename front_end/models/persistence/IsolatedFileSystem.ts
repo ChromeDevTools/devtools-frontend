@@ -595,7 +595,7 @@ const SCRIPT_EXTENSIONS = new Set<string>([
 
 const IMAGE_EXTENSIONS = new Set<string>(['jpeg', 'jpg', 'svg', 'gif', 'webp', 'png', 'ico', 'tiff', 'tif', 'bmp']);
 
-export const BinaryExtensions = new Set<string>([
+export const BinaryExtensions: Set<string> = new Set<string>([
   // Executable extensions, roughly taken from https://en.wikipedia.org/wiki/Comparison_of_executable_file_formats
   'cmd',
   'com',

@@ -398,7 +398,6 @@ template("ts_library_split") {
     }
 
     if (!_no_js_emit && !devtools_bundle) {
-      public_deps += [ ":$_js_target" ]
       metadata.grd_files = filter_include(_js_outputs, [ "*.js" ])
     }
 

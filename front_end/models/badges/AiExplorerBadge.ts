@@ -15,12 +15,12 @@ export class AiExplorerBadge extends Badge {
       'profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Factivity%2Fchrome-devtools%2Fai-explorer';
   override readonly title = 'AI Explorer';
   override readonly jslogContext = 'ai-explorer';
-  override readonly imageUri = AI_EXPLORER_BADGE_URI;
+  override readonly imageUri: string = AI_EXPLORER_BADGE_URI;
   readonly #aiConversationCountSetting: Common.Settings.Setting<number>;
 
-  override readonly interestedActions = [
+  override readonly interestedActions: readonly BadgeAction[] = [
     BadgeAction.STARTED_AI_CONVERSATION,
-  ] as const;
+  ];
 
   constructor(badgeContext: BadgeContext) {
     super(badgeContext);

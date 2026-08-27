@@ -50,7 +50,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class EmulatedDevice {
   title = '';
-  type = Type.Unknown;
+  type: Type = Type.Unknown;
   order!: number;
   vertical: Orientation = {width: 0, height: 0, hinge: null};
   horizontal: Orientation = {width: 0, height: 0, hinge: null};
@@ -630,7 +630,7 @@ export class EmulatedDevicesList extends Common.ObjectWrapper.ObjectWrapper<Even
     return success;
   }
 
-  static rawEmulatedDevicesForTest(): typeof emulatedDevices {
+  static rawEmulatedDevicesForTest(): ReadonlyArray<{'user-agent': string}&Record<string, any>> {
     return emulatedDevices;
   }
 

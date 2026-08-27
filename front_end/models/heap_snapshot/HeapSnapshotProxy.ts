@@ -14,8 +14,9 @@ export class HeapSnapshotWorkerProxy extends Common.ObjectWrapper.ObjectWrapper<
   #console: Common.Console.Console;
   nextObjectId = 1;
   nextCallId = 1;
-  callbacks = new Map<number, (error?: string, result?: unknown) => void>();
-  readonly previousCallbacks = new Set<number>();
+  callbacks: Map<number, (error?: string, result?: unknown) => void> =
+      new Map<number, (error?: string, result?: unknown) => void>();
+  readonly previousCallbacks: Set<number> = new Set<number>();
   readonly worker: PlatformApi.HostRuntime.Worker;
   interval?: ReturnType<typeof setInterval>;
   readonly workerUrl?: string;

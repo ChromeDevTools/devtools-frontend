@@ -25,7 +25,7 @@ export const enum RequestTimeRangeNames {
   WAITING = 'waiting',
 }
 
-export const ServiceWorkerRangeNames = new Set<RequestTimeRangeNames>([
+export const ServiceWorkerRangeNames: Set<RequestTimeRangeNames> = new Set<RequestTimeRangeNames>([
   RequestTimeRangeNames.SERVICE_WORKER,
   RequestTimeRangeNames.SERVICE_WORKER_PREPARATION,
   RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH,
@@ -33,7 +33,7 @@ export const ServiceWorkerRangeNames = new Set<RequestTimeRangeNames>([
   RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP,
 ]);
 
-export const ConnectionSetupRangeNames = new Set<RequestTimeRangeNames>([
+export const ConnectionSetupRangeNames: Set<RequestTimeRangeNames> = new Set<RequestTimeRangeNames>([
   RequestTimeRangeNames.QUEUEING,
   RequestTimeRangeNames.BLOCKING,
   RequestTimeRangeNames.CONNECTING,

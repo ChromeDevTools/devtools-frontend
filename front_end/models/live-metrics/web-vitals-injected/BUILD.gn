@@ -13,7 +13,7 @@ web_vitals_injected_sources = [
 devtools_module("web-vitals-injected") {
   sources = web_vitals_injected_sources
 
-  deps = [
+  ts_deps = [
     "../../../third_party/web-vitals:bundle",
     "../../trace:bundle",
     "./spec:bundle",

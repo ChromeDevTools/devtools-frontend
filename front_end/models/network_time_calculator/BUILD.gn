@@ -6,13 +6,14 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("network_time_calculator") {
+  split_compilation = true
   sources = [
     "Calculator.ts",
     "NetworkTimeCalculator.ts",
     "RequestTimeRanges.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
@@ -21,9 +22,10 @@ devtools_module("network_time_calculator") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "network_time_calculator.ts"
 
-  deps = [ ":network_time_calculator" ]
+  ts_deps = [ ":network_time_calculator" ]
 
   visibility = [
     ":*",

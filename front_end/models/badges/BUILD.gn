@@ -8,6 +8,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("badges") {
+  split_compilation = true
   sources = [
     "AiExplorerBadge.ts",
     "Badge.ts",
@@ -18,7 +19,7 @@ devtools_module("badges") {
     "UserBadges.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/root:bundle",
@@ -26,9 +27,10 @@ devtools_module("badges") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "badges.ts"
 
-  deps = [ ":badges" ]
+  ts_deps = [ ":badges" ]
 
   visibility = [
     ":*",
@@ -42,6 +44,7 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -50,7 +53,7 @@ ts_library("unittests") {
     "UserBadges.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",

@@ -206,11 +206,16 @@ export function postProcess(dryRun = false) {
       }
     }
   }
-  const output = `export const NativeFunctions = [\n${
+  const output = `export interface NativeFunctionValue {
+  name: string;
+  signatures: string[][];
+  receivers?: string[];
+}
+
+export const NativeFunctions: readonly NativeFunctionValue[] = [\n${
       functions
-          .map(
-              entry =>
-                  `  {\n${Object.entries(entry).map(kv => `    ${kv[0]}: ${JSON.stringify(kv[1])}`).join(',\n')}\n  }`)
+          .map(entry =>
+                   `  {\n${Object.entries(entry).map(kv => `    ${kv[0]}: ${JSON.stringify(kv[1])}`).join(',\n')}\n  }`)
           .join(',\n')}\n];`;
 
   if (dryRun) {
@@ -218,7 +223,7 @@ export function postProcess(dryRun = false) {
   }
 
   fs.writeFileSync(
-      (new URL('../../front_end/models/javascript_metadata/NativeFunctions.js', import.meta.url)).pathname,
+      (new URL('../../front_end/models/javascript_metadata/NativeFunctions.ts', import.meta.url)).pathname,
       `// Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.

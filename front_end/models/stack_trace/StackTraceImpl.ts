@@ -35,10 +35,10 @@ export class StackTraceImpl<SyncFragmentT extends FragmentImpl|DebuggableFragmen
 }
 
 export class FragmentImpl implements StackTrace.StackTrace.Fragment {
-  static readonly EMPTY_FRAGMENT = new FragmentImpl();
+  static readonly EMPTY_FRAGMENT: FragmentImpl = new FragmentImpl();
 
   readonly node?: FrameNode;
-  readonly stackTraces = new Set<AnyStackTraceImpl>();
+  readonly stackTraces: Set<AnyStackTraceImpl> = new Set<AnyStackTraceImpl>();
 
   /**
    * Fragments are deduplicated based on the node.

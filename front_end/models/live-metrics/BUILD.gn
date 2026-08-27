@@ -7,9 +7,10 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_module("live-metrics") {
+  split_compilation = true
   sources = [ "LiveMetrics.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -29,9 +30,10 @@ devtools_module("live-metrics") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "live-metrics.ts"
 
-  deps = [ ":live-metrics" ]
+  ts_deps = [ ":live-metrics" ]
 
   visibility = [
     ":*",
@@ -43,11 +45,12 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "LiveMetrics.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/sdk:bundle",
     "../../generated",

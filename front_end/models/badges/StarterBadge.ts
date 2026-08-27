@@ -6,15 +6,15 @@ import {Badge, BadgeAction} from './Badge.js';
 
 const STARTER_BADGE_IMAGE_URI = new URL('../../Images/devtools-user-badge.svg', import.meta.url).toString();
 export class StarterBadge extends Badge {
-  override readonly isStarterBadge = true;
+  override readonly isStarterBadge: boolean = true;
   override readonly name =
       'profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Factivity%2Fchrome-devtools%2Fchrome-devtools-user';
   override readonly title = 'Chrome DevTools User';
   override readonly jslogContext = 'chrome-devtools-user';
-  override readonly imageUri = STARTER_BADGE_IMAGE_URI;
+  override readonly imageUri: string = STARTER_BADGE_IMAGE_URI;
 
   // TODO(ergunsh): Add remaining non-trivial event definitions
-  override readonly interestedActions = [
+  override readonly interestedActions: readonly BadgeAction[] = [
     BadgeAction.GDP_SIGN_UP_COMPLETE,
     BadgeAction.RECEIVE_BADGES_SETTING_ENABLED,
     BadgeAction.CSS_RULE_MODIFIED,
@@ -24,7 +24,7 @@ export class StarterBadge extends Badge {
     BadgeAction.PERFORMANCE_RECORDING_STARTED,
     BadgeAction.NETWORK_SPEED_THROTTLED,
     BadgeAction.RECORDER_RECORDING_STARTED,
-  ] as const;
+  ];
 
   handleAction(action: BadgeAction): void {
     this.trigger({immediate: action === BadgeAction.GDP_SIGN_UP_COMPLETE});

@@ -8,7 +8,7 @@ export const HeapSnapshotProgressEvent = {
 };
 
 export const baseSystemDistance = 100000000;
-export const baseUnreachableDistance = baseSystemDistance * 2;
+export const baseUnreachableDistance: number = baseSystemDistance * 2;
 
 export class AllocationNodeCallers {
   nodesWithSingleCaller: SerializedAllocationNode[];

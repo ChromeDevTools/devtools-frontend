@@ -8,12 +8,13 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_foundation_module("ai_code_generation") {
+  split_compilation = true
   sources = [
     "AiCodeGeneration.ts",
     "debug.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/host:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
@@ -21,9 +22,10 @@ devtools_foundation_module("ai_code_generation") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "ai_code_generation.ts"
 
-  deps = [ ":ai_code_generation" ]
+  ts_deps = [ ":ai_code_generation" ]
 
   visibility = [
     ":*",
@@ -38,11 +40,12 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_foundation_module("foundation_unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "AiCodeGeneration.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/host:bundle",
     "../../testing",

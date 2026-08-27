@@ -8,9 +8,10 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("project_settings") {
+  split_compilation = true
   sources = [ "ProjectSettingsModel.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
@@ -18,9 +19,10 @@ devtools_module("project_settings") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "project_settings.ts"
 
-  deps = [ ":project_settings" ]
+  ts_deps = [ ":project_settings" ]
 
   visibility = [
     ":*",
@@ -35,10 +37,11 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
   sources = [ "ProjectSettingsModel.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",

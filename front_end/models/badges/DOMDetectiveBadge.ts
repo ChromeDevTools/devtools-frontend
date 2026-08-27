@@ -10,11 +10,11 @@ export class DOMDetectiveBadge extends Badge {
       'profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Factivity%2Fchrome-devtools%2Fdom-detective';
   override readonly title = 'DOM Detective';
   override readonly jslogContext = 'dom-detective';
-  override readonly imageUri = DOM_DETECTIVE_BADGE_IMAGE_URI;
+  override readonly imageUri: string = DOM_DETECTIVE_BADGE_IMAGE_URI;
 
-  override readonly interestedActions = [
+  override readonly interestedActions: readonly BadgeAction[] = [
     BadgeAction.MODERN_DOM_BADGE_CLICKED,
-  ] as const;
+  ];
 
   handleAction(_action: BadgeAction): void {
     this.trigger();

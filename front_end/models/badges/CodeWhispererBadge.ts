@@ -10,9 +10,9 @@ export class CodeWhispererBadge extends Badge {
       'profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Factivity%2Fchrome-devtools%2Fcode-whisperer';
   override readonly title = 'Code Whisperer';
   override readonly jslogContext = 'code-whisperer';
-  override readonly imageUri = CODE_WHISPERER_BADGE_IMAGE_URI;
+  override readonly imageUri: string = CODE_WHISPERER_BADGE_IMAGE_URI;
 
-  override readonly interestedActions = [BadgeAction.DEBUGGER_PAUSED] as const;
+  override readonly interestedActions: readonly BadgeAction[] = [BadgeAction.DEBUGGER_PAUSED];
 
   handleAction(_action: BadgeAction): void {
     this.trigger();

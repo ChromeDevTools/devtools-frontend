@@ -23,7 +23,23 @@ export class SecurityOrigin {
     if (this.#opaqueUuid || other.#opaqueUuid) {
       return this.#opaqueUuid === other.#opaqueUuid;
     }
+    if (this.isOpaque() || other.isOpaque()) {
+      return false;
+    }
     return this.#urlOrigin === other.#urlOrigin && this.#urlOrigin !== undefined;
+  }
+
+  isOpaque(): boolean {
+    if (this.#opaqueUuid !== undefined) {
+      return true;
+    }
+    if (this.#urlOrigin) {
+      const lower = this.#urlOrigin.toLowerCase();
+      return lower === '' || lower === 'null' || lower === 'data:' || lower.startsWith('about') ||
+          lower.startsWith('blob:about') || lower.startsWith('blob:data') || lower.startsWith('blob:null') ||
+          lower.startsWith('detached') || lower.startsWith('undefined');
+    }
+    return false;
   }
 
   siteId(): string {

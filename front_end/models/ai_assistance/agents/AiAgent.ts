@@ -205,7 +205,7 @@ export abstract class ConversationContext<T> {
     return true;
   }
 
-  getOrigin(): string {
+  getOrigin(): string|SDK.SecurityOrigin.SecurityOrigin {
     return extractContextOrigin(this.getURL());
   }
 
@@ -221,15 +221,31 @@ export abstract class ConversationContext<T> {
    * @param establishedOrigin The origin that the current conversation is locked to.
    * If undefined, the conversation has not yet been locked to an origin.
    */
-  isOriginAllowed(establishedOrigin: string|undefined): boolean {
+  isOriginAllowed(establishedOrigin: string|SDK.SecurityOrigin.SecurityOrigin|undefined): boolean {
     const origin = this.getOrigin();
+
+    if (origin instanceof SDK.SecurityOrigin.SecurityOrigin) {
+      if (origin.isOpaque()) {
+        return false;
+      }
+      if (!establishedOrigin) {
+        return true;
+      }
+      const established = establishedOrigin instanceof SDK.SecurityOrigin.SecurityOrigin ?
+          establishedOrigin :
+          SDK.SecurityOrigin.SecurityOrigin.create(establishedOrigin);
+      return origin.isSameOriginWith(established);
+    }
+
     // If no origin is established yet, this context will be the one to lock the conversation.
     // Opaque origins are never allowed to be used as context.
     if (!establishedOrigin) {
       return !isOpaqueOrigin(origin);
     }
     // Only allow data that matches the origin the conversation is already locked to.
-    return areOriginsEquivalent(origin, establishedOrigin);
+    const establishedString =
+        establishedOrigin instanceof SDK.SecurityOrigin.SecurityOrigin ? establishedOrigin.siteId() : establishedOrigin;
+    return areOriginsEquivalent(origin, establishedString);
   }
 
   /**

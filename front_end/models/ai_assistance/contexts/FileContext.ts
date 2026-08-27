@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as Bindings from '../../bindings/bindings.js';
 import type * as Workspace from '../../workspace/workspace.js';
 import {type ContextDetail, ConversationContext} from '../agents/AiAgent.js';
@@ -16,6 +17,11 @@ export class FileContext extends ConversationContext<Workspace.UISourceCode.UISo
     super();
     this.#file = file;
     this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
+  }
+
+  override getOrigin(): string|SDK.SecurityOrigin.SecurityOrigin {
+    const fallbackOrigin = super.getOrigin();
+    return this.#file.project()?.securityOrigin?.() ?? fallbackOrigin;
   }
 
   override getURL(): string {

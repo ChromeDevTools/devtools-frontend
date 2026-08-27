@@ -107,7 +107,7 @@ export class AiConversation {
 
   #aidaClient: Host.AidaClient.AidaClient;
   #changeManager: ChangeManager|undefined;
-  #origin?: string;
+  #origin?: string|SDK.SecurityOrigin.SecurityOrigin;
   #navigationOccurredDuringRun = false;
 
   #contexts: Array<ConversationContext<unknown>> = [];
@@ -181,7 +181,7 @@ export class AiConversation {
     return this.history.length === 0;
   }
 
-  #setOriginIfEmpty(newOrigin: string|undefined): void {
+  #setOriginIfEmpty(newOrigin: string|SDK.SecurityOrigin.SecurityOrigin|undefined): void {
     if (!this.#origin) {
       this.#origin = newOrigin;
     }
@@ -544,7 +544,7 @@ export class AiConversation {
   }
 
   get origin(): string|undefined {
-    return this.#origin;
+    return this.#origin instanceof SDK.SecurityOrigin.SecurityOrigin ? this.#origin.siteId() : this.#origin;
   }
 
   get type(): ConversationType {
@@ -556,11 +556,11 @@ export class AiConversation {
       return {blocked: true};
     }
     if (this.#origin) {
-      return {origin: this.#origin};
+      return {origin: this.origin};
     }
     this.#origin = getPrimaryPageOrigin(this.#targetManager);
 
-    return {origin: this.#origin};
+    return {origin: this.origin};
   };
 }
 

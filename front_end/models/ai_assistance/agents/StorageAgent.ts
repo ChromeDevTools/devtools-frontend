@@ -79,7 +79,9 @@ const MAX_TARGET_ORIGINS = 100;
 
 function resolveTargetOrigins(context?: ConversationContext<StorageItem>, origins?: string[]): string[] {
   const primaryOrigin = context?.getOrigin();
-  const rawList = (origins && origins.length > 0) ? origins : (primaryOrigin ? [primaryOrigin] : []);
+  const primaryString =
+      primaryOrigin instanceof SDK.SecurityOrigin.SecurityOrigin ? primaryOrigin.siteId() : primaryOrigin;
+  const rawList = (origins && origins.length > 0) ? origins : (primaryString ? [primaryString] : []);
   const uniqueOrigins = Array.from(new Set(rawList));
   return uniqueOrigins.slice(0, MAX_TARGET_ORIGINS);
 }
@@ -660,8 +662,8 @@ export class StorageAgent extends AiAgent<StorageItem> {
  * @param storageKey Optional. If specified, resolves only the partition exactly matching this unique key, bypassing origin comparison.
  */
 
-export async function getCookiesForDomain(
-    target: SDK.Target.Target, origin: string): Promise<SDK.Cookie.Cookie[]|null> {
+export async function getCookiesForDomain(target: SDK.Target.Target,
+                                          origin: string): Promise<SDK.Cookie.Cookie[]|null> {
   const cookieModel = target.model(SDK.CookieModel.CookieModel);
   if (!cookieModel) {
     return null;

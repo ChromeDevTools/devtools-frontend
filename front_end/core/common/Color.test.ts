@@ -604,6 +604,7 @@ describe('Color', () => {
       [Common.Color.Format.SRGB]: 'color(srgb 0 1 0)',
       [Common.Color.Format.SRGB_LINEAR]: 'color(srgb-linear 0 1 0)',
       [Common.Color.Format.DISPLAY_P3]: 'color(display-p3 0.46 0.99 0.3)',
+      [Common.Color.Format.DISPLAY_P3_LINEAR]: 'color(display-p3-linear 0.18 0.97 0.07)',
       [Common.Color.Format.A98_RGB]: 'color(a98-rgb 0.57 1 0.23)',
       [Common.Color.Format.PROPHOTO_RGB]: 'color(prophoto-rgb 0.54 0.93 0.3)',
       [Common.Color.Format.REC_2020]: 'color(rec2020 0.57 0.96 0.27)',
@@ -637,6 +638,7 @@ describe('Color', () => {
       {format: Common.Color.Format.SRGB, spec: 'color(srgb 0 1 0)'},
       {format: Common.Color.Format.SRGB_LINEAR, spec: 'color(srgb-linear 0 1 0)'},
       {format: Common.Color.Format.DISPLAY_P3, spec: 'color(display-p3 0.46 0.99 0.3)'},
+      {format: Common.Color.Format.DISPLAY_P3_LINEAR, spec: 'color(display-p3-linear 0.18 0.97 0.07)'},
       {format: Common.Color.Format.A98_RGB, spec: 'color(a98-rgb 0.57 1 0.23)'},
       {format: Common.Color.Format.PROPHOTO_RGB, spec: 'color(prophoto-rgb 0.54 0.93 0.3)'},
       {format: Common.Color.Format.REC_2020, spec: 'color(rec2020 0.57 0.96 0.27)'},
@@ -686,6 +688,7 @@ describe('Color', () => {
       OKLAB = 0.5,
       SRGB_LINEAR = 0.6,
       DISPLAY_P3 = 0.7,
+      DISPLAY_P3_LINEAR = 0.75,
       A98_RGB = 0.8,
       PROPHOTO_RGB = 0.9,
       REC_2020 = 0.91,
@@ -693,6 +696,7 @@ describe('Color', () => {
     }
 
     stub('adobeRGBToXyzd50', Code.A98_RGB, Code.XYZ_D50);
+    stub('displayP3LinearToXyzd50', Code.DISPLAY_P3_LINEAR, Code.XYZ_D50);
     stub('displayP3ToXyzd50', Code.DISPLAY_P3, Code.XYZ_D50);
     stub('labToLch', Code.LAB, Code.LCH);
     stub('labToXyzd50', Code.LAB, Code.XYZ_D50);
@@ -706,6 +710,7 @@ describe('Color', () => {
     stub('xyzd50ToAdobeRGB', Code.XYZ_D50, Code.A98_RGB);
     stub('xyzd50ToD65', Code.XYZ_D50, Code.XYZ_D65);
     stub('xyzd50ToDisplayP3', Code.XYZ_D50, Code.DISPLAY_P3);
+    stub('xyzd50ToDisplayP3Linear', Code.XYZ_D50, Code.DISPLAY_P3_LINEAR);
     stub('xyzd50ToLab', Code.XYZ_D50, Code.LAB);
     stub('xyzd50ToOklch', Code.XYZ_D50, Code.OKLCH);
     stub('xyzd50ToProPhoto', Code.XYZ_D50, Code.PROPHOTO_RGB);
@@ -742,6 +747,8 @@ describe('Color', () => {
     colors.set(Common.Color.Format.SRGB, Common.Color.parse(`color(srgb ${Code.SRGB} 0 0)`));
     colors.set(Common.Color.Format.SRGB_LINEAR, Common.Color.parse(`color(srgb-linear ${Code.SRGB_LINEAR} 0 0)`));
     colors.set(Common.Color.Format.DISPLAY_P3, Common.Color.parse(`color(display-p3 ${Code.DISPLAY_P3} 0 0)`));
+    colors.set(Common.Color.Format.DISPLAY_P3_LINEAR,
+               Common.Color.parse(`color(display-p3-linear ${Code.DISPLAY_P3_LINEAR} 0 0)`));
     colors.set(Common.Color.Format.A98_RGB, Common.Color.parse(`color(a98-rgb ${Code.A98_RGB} 0 0)`));
     colors.set(Common.Color.Format.PROPHOTO_RGB, Common.Color.parse(`color(prophoto-rgb ${Code.PROPHOTO_RGB} 0 0)`));
     colors.set(Common.Color.Format.REC_2020, Common.Color.parse(`color(rec2020 ${Code.REC_2020} 0 0)`));
@@ -784,6 +791,8 @@ describe('Color', () => {
     assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.SRGB), 'color(srgb 1 0.83 0.62)');
     assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.SRGB_LINEAR), 'color(srgb-linear 1 0.65 0.34)');
     assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.DISPLAY_P3), 'color(display-p3 1 0.86 0.66)');
+    assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.DISPLAY_P3_LINEAR),
+                       'color(display-p3-linear 1 0.7 0.39)');
     assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.A98_RGB), 'color(a98-rgb 1 0.82 0.62)');
     assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.PROPHOTO_RGB), 'color(prophoto-rgb 1 0.88 0.61)');
     assert.strictEqual(nonSRGBColor!.asString(Common.Color.Format.REC_2020), 'color(rec2020 1 0.87 0.63)');

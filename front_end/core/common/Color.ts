@@ -127,8 +127,8 @@ export function getFormat(formatText: string): Format|null {
 }
 
 // Returns the `ColorSpace` equivalent from the color space text
-type ColorSpace = Format.SRGB|Format.SRGB_LINEAR|Format.DISPLAY_P3|Format.A98_RGB|Format.PROPHOTO_RGB|
-                  Format.REC_2020|Format.XYZ|Format.XYZ_D50|Format.XYZ_D65;
+type ColorSpace = Format.SRGB|Format.SRGB_LINEAR|Format.DISPLAY_P3|Format.DISPLAY_P3_LINEAR|Format.A98_RGB|
+                  Format.PROPHOTO_RGB|Format.REC_2020|Format.XYZ|Format.XYZ_D50|Format.XYZ_D65;
 function getColorSpace(colorSpaceText: string): ColorSpace|null {
   switch (colorSpaceText) {
     case Format.SRGB:
@@ -137,6 +137,8 @@ function getColorSpace(colorSpaceText: string): ColorSpace|null {
       return Format.SRGB_LINEAR;
     case Format.DISPLAY_P3:
       return Format.DISPLAY_P3;
+    case Format.DISPLAY_P3_LINEAR:
+      return Format.DISPLAY_P3_LINEAR;
     case Format.A98_RGB:
       return Format.A98_RGB;
     case Format.PROPHOTO_RGB:
@@ -651,6 +653,7 @@ interface ColorConversions<T = void> {
   [Format.SRGB](self: T): ColorFunction;
   [Format.SRGB_LINEAR](self: T): ColorFunction;
   [Format.DISPLAY_P3](self: T): ColorFunction;
+  [Format.DISPLAY_P3_LINEAR](self: T): ColorFunction;
   [Format.A98_RGB](self: T): ColorFunction;
   [Format.PROPHOTO_RGB](self: T): ColorFunction;
   [Format.REC_2020](self: T): ColorFunction;
@@ -727,6 +730,7 @@ export const enum Format {
   SRGB = 'srgb',
   SRGB_LINEAR = 'srgb-linear',
   DISPLAY_P3 = 'display-p3',
+  DISPLAY_P3_LINEAR = 'display-p3-linear',
   A98_RGB = 'a98-rgb',
   PROPHOTO_RGB = 'prophoto-rgb',
   REC_2020 = 'rec2020',
@@ -766,6 +770,8 @@ export class Lab implements Color {
         new ColorFunction(Format.SRGB_LINEAR, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     [Format.DISPLAY_P3]: (self: Lab) =>
         new ColorFunction(Format.DISPLAY_P3, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    [Format.DISPLAY_P3_LINEAR]: (self: Lab) => new ColorFunction(
+        Format.DISPLAY_P3_LINEAR, ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()), self.alpha),
     [Format.A98_RGB]: (self: Lab) =>
         new ColorFunction(Format.A98_RGB, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     [Format.PROPHOTO_RGB]: (self: Lab) =>
@@ -905,6 +911,8 @@ export class LCH implements Color {
         new ColorFunction(Format.SRGB_LINEAR, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     [Format.DISPLAY_P3]: (self: LCH) =>
         new ColorFunction(Format.DISPLAY_P3, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    [Format.DISPLAY_P3_LINEAR]: (self: LCH) => new ColorFunction(
+        Format.DISPLAY_P3_LINEAR, ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()), self.alpha),
     [Format.A98_RGB]: (self: LCH) =>
         new ColorFunction(Format.A98_RGB, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     [Format.PROPHOTO_RGB]: (self: LCH) =>
@@ -1047,6 +1055,8 @@ export class Oklab implements Color {
         new ColorFunction(Format.SRGB_LINEAR, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     [Format.DISPLAY_P3]: (self: Oklab) =>
         new ColorFunction(Format.DISPLAY_P3, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    [Format.DISPLAY_P3_LINEAR]: (self: Oklab) => new ColorFunction(
+        Format.DISPLAY_P3_LINEAR, ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()), self.alpha),
     [Format.A98_RGB]: (self: Oklab) =>
         new ColorFunction(Format.A98_RGB, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     [Format.PROPHOTO_RGB]: (self: Oklab) =>
@@ -1186,6 +1196,8 @@ export class Oklch implements Color {
         new ColorFunction(Format.SRGB_LINEAR, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     [Format.DISPLAY_P3]: (self: Oklch) =>
         new ColorFunction(Format.DISPLAY_P3, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    [Format.DISPLAY_P3_LINEAR]: (self: Oklch) => new ColorFunction(
+        Format.DISPLAY_P3_LINEAR, ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()), self.alpha),
     [Format.A98_RGB]: (self: Oklch) =>
         new ColorFunction(Format.A98_RGB, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     [Format.PROPHOTO_RGB]: (self: Oklch) =>
@@ -1329,6 +1341,8 @@ export class ColorFunction implements Color {
         new ColorFunction(Format.SRGB_LINEAR, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     [Format.DISPLAY_P3]: (self: ColorFunction) =>
         new ColorFunction(Format.DISPLAY_P3, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    [Format.DISPLAY_P3_LINEAR]: (self: ColorFunction) => new ColorFunction(
+        Format.DISPLAY_P3_LINEAR, ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()), self.alpha),
     [Format.A98_RGB]: (self: ColorFunction) =>
         new ColorFunction(Format.A98_RGB, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     [Format.PROPHOTO_RGB]: (self: ColorFunction) =>
@@ -1352,6 +1366,8 @@ export class ColorFunction implements Color {
         return ColorConverter.srgbLinearToXyzd50(p0, p1, p2);
       case Format.DISPLAY_P3:
         return ColorConverter.displayP3ToXyzd50(p0, p1, p2);
+      case Format.DISPLAY_P3_LINEAR:
+        return ColorConverter.displayP3LinearToXyzd50(p0, p1, p2);
       case Format.A98_RGB:
         return ColorConverter.adobeRGBToXyzd50(p0, p1, p2);
       case Format.PROPHOTO_RGB:
@@ -1560,6 +1576,8 @@ export class HSL implements Color {
         new ColorFunction(Format.SRGB_LINEAR, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     [Format.DISPLAY_P3]: (self: HSL) =>
         new ColorFunction(Format.DISPLAY_P3, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    [Format.DISPLAY_P3_LINEAR]: (self: HSL) => new ColorFunction(
+        Format.DISPLAY_P3_LINEAR, ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()), self.alpha),
     [Format.A98_RGB]: (self: HSL) =>
         new ColorFunction(Format.A98_RGB, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     [Format.PROPHOTO_RGB]: (self: HSL) =>
@@ -1714,6 +1732,8 @@ export class HWB implements Color {
         new ColorFunction(Format.SRGB_LINEAR, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     [Format.DISPLAY_P3]: (self: HWB) =>
         new ColorFunction(Format.DISPLAY_P3, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    [Format.DISPLAY_P3_LINEAR]: (self: HWB) => new ColorFunction(
+        Format.DISPLAY_P3_LINEAR, ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()), self.alpha),
     [Format.A98_RGB]: (self: HWB) =>
         new ColorFunction(Format.A98_RGB, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     [Format.PROPHOTO_RGB]: (self: HWB) =>
@@ -1983,6 +2003,8 @@ export class Legacy implements Color {
         new ColorFunction(Format.SRGB_LINEAR, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     [Format.DISPLAY_P3]: (self: Legacy) =>
         new ColorFunction(Format.DISPLAY_P3, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    [Format.DISPLAY_P3_LINEAR]: (self: Legacy) => new ColorFunction(
+        Format.DISPLAY_P3_LINEAR, ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()), self.alpha),
     [Format.A98_RGB]: (self: Legacy) =>
         new ColorFunction(Format.A98_RGB, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     [Format.PROPHOTO_RGB]: (self: Legacy) =>

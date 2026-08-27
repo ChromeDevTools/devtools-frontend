@@ -165,6 +165,22 @@ export const colorFormatSpec: Record<Exclude<SpectrumColorFormat, Common.Color.F
           return Common.Color.parse(`color(${Common.Color.Format.DISPLAY_P3} ${functionParamsText(values)})`);
         },
   },
+  [Common.Color.Format.DISPLAY_P3_LINEAR]: {
+    label: 'RGBA',
+    toValues: function(color: Common.Color.Color): [string, string, string, string] {
+      const displayP3LinearColor = color.as(Common.Color.Format.DISPLAY_P3_LINEAR);
+      return roundAndStringify([
+        displayP3LinearColor.p0,
+        displayP3LinearColor.p1,
+        displayP3LinearColor.p2,
+        displayP3LinearColor.alpha ?? 1,
+      ] as CanonicalParameters);
+    },
+    fromValues: function(values: [string, string, string, string]): Common.Color.Color |
+        null {
+          return Common.Color.parse(`color(${Common.Color.Format.DISPLAY_P3_LINEAR} ${functionParamsText(values)})`);
+        },
+  },
   [Common.Color.Format.A98_RGB]: {
     label: 'RGBA',
     toValues: function(color: Common.Color.Color): [string, string, string, string] {

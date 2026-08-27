@@ -177,8 +177,8 @@ describe('ColorFormatSpec for inputs', () => {
     it('should return values', () => {
       for (const colorSpace
                of [Common.Color.Format.SRGB, Common.Color.Format.SRGB_LINEAR, Common.Color.Format.DISPLAY_P3,
-                   Common.Color.Format.A98_RGB, Common.Color.Format.PROPHOTO_RGB, Common.Color.Format.REC_2020] as
-           const) {
+                   Common.Color.Format.DISPLAY_P3_LINEAR, Common.Color.Format.A98_RGB, Common.Color.Format.PROPHOTO_RGB,
+                   Common.Color.Format.REC_2020] as const) {
         const color = Common.Color.parse(`color(${colorSpace} 0.12 0.47 -0.03)`);
         assert.exists(color);
 
@@ -203,8 +203,9 @@ describe('ColorFormatSpec for inputs', () => {
     it('should create the color from the input values', () => {
       for (const colorSpace
                of [Common.Color.Format.SRGB, Common.Color.Format.SRGB_LINEAR, Common.Color.Format.DISPLAY_P3,
-                   Common.Color.Format.A98_RGB, Common.Color.Format.PROPHOTO_RGB, Common.Color.Format.REC_2020,
-                   Common.Color.Format.XYZ, Common.Color.Format.XYZ_D50, Common.Color.Format.XYZ_D65] as const) {
+                   Common.Color.Format.DISPLAY_P3_LINEAR, Common.Color.Format.A98_RGB, Common.Color.Format.PROPHOTO_RGB,
+                   Common.Color.Format.REC_2020, Common.Color.Format.XYZ, Common.Color.Format.XYZ_D50,
+                   Common.Color.Format.XYZ_D65] as const) {
         const spec = ColorPicker.ColorFormatSpec.colorFormatSpec[colorSpace];
 
         const color = spec.fromValues(['0.12', '0.47', '0.1', '1']);

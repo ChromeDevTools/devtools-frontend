@@ -273,6 +273,19 @@ describe('ColorConverter', () => {
       assertAlmostEqual(Common.ColorConverter.ColorConverter.displayP3ToXyzd50(input[0], input[1], input[2]), expected);
     }
   });
+
+  it('DisplayP3LinearToXyzd50', () => {
+    const colorCases = [
+      [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],                                               // black
+      [[1.0, 1.0, 1.0], [0.9642956660812443, 1.0000000361162846, 0.8251045485672053]],  // white
+    ];
+
+    for (const [input, expected] of colorCases) {
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.displayP3LinearToXyzd50(input[0], input[1], input[2]),
+                        expected);
+    }
+  });
+
   it('XYZD50ToDisplayP3', () => {
     const colorCases = [
       [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],  // black
@@ -300,6 +313,18 @@ describe('ColorConverter', () => {
 
     for (const [input, expected] of colorCases) {
       assertAlmostEqual(Common.ColorConverter.ColorConverter.xyzd50ToDisplayP3(input[0], input[1], input[2]), expected);
+    }
+  });
+
+  it('XYZD50ToDisplayP3Linear', () => {
+    const colorCases = [
+      [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]],                                               // black
+      [[0.9642956660812443, 1.0000000361162846, 0.8251045485672053], [1.0, 1.0, 1.0]],  // white
+    ];
+
+    for (const [input, expected] of colorCases) {
+      assertAlmostEqual(Common.ColorConverter.ColorConverter.xyzd50ToDisplayP3Linear(input[0], input[1], input[2]),
+                        expected);
     }
   });
   it('ProPhotoToXyzd50', () => {

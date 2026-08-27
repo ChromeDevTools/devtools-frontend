@@ -5,13 +5,17 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, stubNoopSettings} from '../../testing/EnvironmentHelpers.js';
+import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 
 import * as Accessibility from './accessibility.js';
 
 describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
   const {
+    BINDING_NAME,
     validateAndSanitizeAnnouncement,
     checkForBlockedPayload,
     injectedScript,
@@ -20,6 +24,39 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
     TEARDOWN_SCRIPT_SOURCE,
     AnnouncementApi,
   } = Accessibility.AccessibilityAnnouncementRecordingView;
+
+  let target: SDK.Target.Target;
+  let view: Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView|undefined;
+
+  beforeEach(() => {
+    stubNoopSettings();
+    const connection = new MockCDPConnection();
+    connection.setSuccessHandler('Page.addScriptToEvaluateOnNewDocument',
+                                 () => ({
+                                   identifier: 'mock-script-id-123' as Protocol.Page.ScriptIdentifier,
+                                 }));
+    connection.setSuccessHandler('Page.removeScriptToEvaluateOnNewDocument', () => ({}));
+    connection.setSuccessHandler('Runtime.addBinding', () => ({}));
+    connection.setSuccessHandler('Runtime.removeBinding', () => ({}));
+    connection.setSuccessHandler('Runtime.evaluate', () => ({
+                                                       result: {type: 'undefined'} as Protocol.Runtime.RemoteObject,
+                                                     }));
+    target = createTarget({connection});
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+  });
+
+  afterEach(async () => {
+    if (view) {
+      if (view.isRecordingForTest()) {
+        await view.stopRecording();
+      }
+      if (view.isShowing()) {
+        view.detach();
+      }
+    }
+    view = undefined;
+    SDK.TargetManager.TargetManager.instance().setScopeTarget(null);
+  });
 
   function setupMockBinding(recorded: Array<Record<string, unknown>>): void {
     window.__announcementsRecorderBinding = (payload: string) => {
@@ -185,6 +222,289 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
       assert.isNull(checkForBlockedPayload(null));
       assert.isNull(checkForBlockedPayload(undefined));
       assert.isNull(checkForBlockedPayload('{invalid json'));
+    });
+  });
+
+  describe('Target Lifecycle and CDP Binding Manager', () => {
+    it('enables target with binding and script on new document with runImmediately: true', async () => {
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+      renderElementIntoDOM(view);
+
+      assert.isFalse(view.isRecordingForTest());
+
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+      const addBindingSpy = sinon.spy(runtimeModel, 'addBinding');
+
+      const pageAgent = target.pageAgent();
+      const runtimeAgent = target.runtimeAgent();
+      const addScriptSpy = sinon.spy(pageAgent, 'invoke_addScriptToEvaluateOnNewDocument');
+      const evaluateSpy = sinon.spy(runtimeAgent, 'invoke_evaluate');
+
+      await view.startRecording();
+
+      assert.isTrue(view.isRecordingForTest());
+      assert.isTrue(addBindingSpy.calledOnceWith({name: BINDING_NAME}));
+      sinon.assert.calledOnce(addScriptSpy);
+      const addScriptArgs = addScriptSpy.firstCall.args[0];
+      assert.isTrue(addScriptArgs.runImmediately);
+      assert.strictEqual(addScriptArgs.source, INJECTED_SCRIPT_SOURCE);
+      sinon.assert.notCalled(evaluateSpy);
+    });
+
+    it('disables target with removeBinding, removeScriptToEvaluateOnNewDocument, and evaluates teardown script',
+       async () => {
+         view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+         renderElementIntoDOM(view);
+
+         const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+         assert.exists(runtimeModel);
+         const removeBindingSpy = sinon.spy(runtimeModel, 'removeBinding');
+
+         const pageAgent = target.pageAgent();
+         const runtimeAgent = target.runtimeAgent();
+         const removeScriptSpy = sinon.spy(pageAgent, 'invoke_removeScriptToEvaluateOnNewDocument');
+         const evaluateSpy = sinon.spy(runtimeAgent, 'invoke_evaluate');
+
+         await view.startRecording();
+         await view.stopRecording();
+
+         assert.isFalse(view.isRecordingForTest());
+         assert.isTrue(removeBindingSpy.calledOnceWith({name: BINDING_NAME}));
+         assert.isTrue(
+             removeScriptSpy.calledOnceWith({identifier: 'mock-script-id-123' as Protocol.Page.ScriptIdentifier}));
+         sinon.assert.calledOnce(evaluateSpy);
+         assert.strictEqual(evaluateSpy.firstCall.args[0].expression, TEARDOWN_SCRIPT_SOURCE);
+       });
+
+    it('cleans up script if target is disabled while addScriptToEvaluateOnNewDocument is in flight', async () => {
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+      renderElementIntoDOM(view);
+
+      const pageAgent = target.pageAgent();
+      const removeScriptSpy = sinon.spy(pageAgent, 'invoke_removeScriptToEvaluateOnNewDocument');
+
+      const startPromise = view.startRecording();
+      await view.stopRecording();
+      await startPromise;
+
+      assert.isFalse(view.isRecordingForTest());
+      sinon.assert.called(removeScriptSpy);
+    });
+
+    it('receives binding events, associates target, and clears announcements', async () => {
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+      renderElementIntoDOM(view);
+
+      await view.startRecording();
+
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+
+      const announcementPayload = {
+        api: 'aria-live',
+        message: 'Notification arrived',
+        politeness: 'polite',
+        element: '<div aria-live="polite">Notification arrived</div>',
+        time: Date.now(),
+      };
+
+      runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.BindingCalled, {
+        name: BINDING_NAME,
+        payload: JSON.stringify(announcementPayload),
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+      });
+
+      const announcements = view.announcementsForTest();
+      assert.lengthOf(announcements, 1);
+      assert.strictEqual(announcements[0].message, 'Notification arrived');
+      assert.strictEqual(announcements[0].politeness, 'polite');
+      assert.strictEqual(announcements[0].target, target);
+
+      view.clearAnnouncements();
+      assert.lengthOf(view.announcementsForTest(), 0);
+    });
+
+    it('deduplicates rapid duplicate announcements received within 50ms', async () => {
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+      renderElementIntoDOM(view);
+
+      await view.startRecording();
+
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+
+      const now = Date.now();
+      const announcementPayload = {
+        api: 'aria-live',
+        message: 'Duplicate text',
+        politeness: 'polite',
+        element: '<div aria-live="polite">Duplicate text</div>',
+        time: now,
+      };
+
+      runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.BindingCalled, {
+        name: BINDING_NAME,
+        payload: JSON.stringify(announcementPayload),
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+      });
+
+      runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.BindingCalled, {
+        name: BINDING_NAME,
+        payload: JSON.stringify({...announcementPayload, time: now + 10}),
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+      });
+
+      const announcements = view.announcementsForTest();
+      assert.lengthOf(announcements, 1);
+    });
+
+    it('preserves rapid announcements with differing politeness received within 50ms', async () => {
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+      renderElementIntoDOM(view);
+
+      await view.startRecording();
+
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+
+      const now = Date.now();
+      const announcementPayload = {
+        api: 'aria-live',
+        message: 'Politeness changed',
+        politeness: 'polite',
+        element: '<div>Politeness changed</div>',
+        time: now,
+      };
+
+      // 1. First announcement with politeness: polite
+      runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.BindingCalled, {
+        name: BINDING_NAME,
+        payload: JSON.stringify(announcementPayload),
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+      });
+
+      // 2. Second announcement within 10ms with politeness: assertive (must NOT be deduplicated)
+      runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.BindingCalled, {
+        name: BINDING_NAME,
+        payload: JSON.stringify({...announcementPayload, politeness: 'assertive', time: now + 10}),
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+      });
+
+      // 3. Third announcement within 20ms with politeness: assertive (must be deduplicated)
+      runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.BindingCalled, {
+        name: BINDING_NAME,
+        payload: JSON.stringify({...announcementPayload, politeness: 'assertive', time: now + 20}),
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+      });
+
+      const announcements = view.announcementsForTest();
+      assert.lengthOf(announcements, 2);
+      assert.strictEqual(announcements[0].politeness, 'polite');
+      assert.strictEqual(announcements[1].politeness, 'assertive');
+    });
+
+    it('handles blocked payload by recording per-target blocked reason while keeping recording active', async () => {
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+      renderElementIntoDOM(view);
+
+      await view.startRecording();
+
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+
+      const blockedPayload = {
+        api: 'blocked',
+        reason: 'Prototype mutation blocked by security policy',
+      };
+
+      runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.BindingCalled, {
+        name: BINDING_NAME,
+        payload: JSON.stringify(blockedPayload),
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+      });
+
+      // Recording should remain active globally
+      assert.isTrue(view.isRecordingForTest());
+      assert.strictEqual(view.blockedReasonForTargetForTest(target), 'Prototype mutation blocked by security policy');
+      assert.strictEqual(view.blockedTargetsForTest().get(target), 'Prototype mutation blocked by security policy');
+
+      // Live regions still record
+      const livePayload = {
+        api: 'aria-live',
+        message: 'Live region still works',
+        politeness: 'polite',
+        element: '<div>Live region still works</div>',
+        time: Date.now(),
+      };
+      runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.BindingCalled, {
+        name: BINDING_NAME,
+        payload: JSON.stringify(livePayload),
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+      });
+
+      assert.lengthOf(view.announcementsForTest(), 1);
+      assert.strictEqual(view.announcementsForTest()[0].message, 'Live region still works');
+    });
+
+    it('continues recording across view detach and re-attach (background recording)', async () => {
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+      renderElementIntoDOM(view);
+
+      await view.startRecording();
+      assert.isTrue(view.isRecordingForTest());
+
+      // Detach view (simulating tab hide when user selects Sources or Styles)
+      view.detach();
+      assert.isFalse(view.isShowing());
+
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+
+      const backgroundPayload = {
+        api: 'aria-live',
+        message: 'Captured while hidden',
+        politeness: 'polite',
+        element: '<div>Captured while hidden</div>',
+        time: Date.now(),
+      };
+
+      runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.BindingCalled, {
+        name: BINDING_NAME,
+        payload: JSON.stringify(backgroundPayload),
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+      });
+
+      // Verify announcement is captured in background
+      assert.lengthOf(view.announcementsForTest(), 1);
+      assert.strictEqual(view.announcementsForTest()[0].message, 'Captured while hidden');
+
+      // Re-attach view (simulating wasShown)
+      renderElementIntoDOM(view);
+      assert.isTrue(view.isShowing());
+      assert.isTrue(view.isRecordingForTest());
+    });
+
+    it('ignores binding calls when recording is not active', async () => {
+      view = new Accessibility.AccessibilityAnnouncementRecordingView.AccessibilityAnnouncementRecordingView();
+      renderElementIntoDOM(view);
+
+      const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+      assert.exists(runtimeModel);
+
+      runtimeModel.dispatchEventToListeners(SDK.RuntimeModel.Events.BindingCalled, {
+        name: BINDING_NAME,
+        payload: JSON.stringify({
+          api: 'aria-live',
+          message: 'Ignored',
+          politeness: 'polite',
+          element: '<div></div>',
+          time: Date.now(),
+        }),
+        executionContextId: 1 as Protocol.Runtime.ExecutionContextId,
+      });
+
+      assert.lengthOf(view.announcementsForTest(), 0);
     });
   });
 

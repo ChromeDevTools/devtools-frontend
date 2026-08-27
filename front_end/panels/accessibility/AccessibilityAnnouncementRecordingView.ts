@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Protocol from '../../generated/protocol.js';
 
 import {AccessibilitySubPane} from './AccessibilitySubPane.js';
 
@@ -40,6 +43,7 @@ export interface A11yAnnouncement {
   element: string;
   elementId?: string;
   stack?: string;
+  target?: SDK.Target.Target;
   time: number;
 }
 
@@ -198,6 +202,7 @@ export function injectedScript(ariaLiveApi: string, jsTriggeredApi: string): voi
 
   let lastRecordedId: string|null = null;
   let lastRecordedText: string|null = null;
+  let lastRecordedPoliteness: string|null = null;
   let lastRecordedTime = 0;
 
   // Emits an announcement payload for an active live region node via the CDP binding.
@@ -226,11 +231,13 @@ export function injectedScript(ariaLiveApi: string, jsTriggeredApi: string): voi
     const elementId = getOrCreateRecordId(element);
     const now = Date.now();
     // Debounce duplicate announcements on the same element within 50ms.
-    if (lastRecordedId === elementId && lastRecordedText === text && (now - lastRecordedTime) < 50) {
+    if (lastRecordedId === elementId && lastRecordedText === text && lastRecordedPoliteness === politeness &&
+        (now - lastRecordedTime) < 50) {
       return;
     }
     lastRecordedId = elementId;
     lastRecordedText = text;
+    lastRecordedPoliteness = politeness;
     lastRecordedTime = now;
 
     const bindingFn = window.__announcementsRecorderBinding;
@@ -507,11 +514,196 @@ export function validateAndSanitizeAnnouncement(payload: unknown): A11yAnnouncem
   };
 }
 
-export class AccessibilityAnnouncementRecordingView extends AccessibilitySubPane {
+export class AccessibilityAnnouncementRecordingView extends AccessibilitySubPane implements SDK.TargetManager.Observer {
+  #announcements: A11yAnnouncement[] = [];
+  #isRecording = false;
+  #blockedTargets = new Map<SDK.Target.Target, string>();
+  #scriptIdentifiers = new Map<SDK.Target.Target, Protocol.Page.ScriptIdentifier>();
+  #targets = new Set<SDK.Target.Target>();
+  #enabledTargets = new Set<SDK.Target.Target>();
+
   constructor() {
     super({
       title: i18nString(UIStrings.ariaLiveRecording),
       viewId: 'aria-live-recording',
     });
+    SDK.TargetManager.TargetManager.instance().observeTargets(this, {scoped: true});
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  async targetAdded(target: SDK.Target.Target): Promise<void> {
+    if (target.type() !== SDK.Target.Type.FRAME || this.#targets.has(target)) {
+      return;
+    }
+    this.#targets.add(target);
+    if (this.#isRecording) {
+      await this.#enableTarget(target);
+    }
+  }
+
+  async targetRemoved(target: SDK.Target.Target): Promise<void> {
+    this.#targets.delete(target);
+    this.#blockedTargets.delete(target);
+    await this.#disableTarget(target);
+  }
+
+  async #enableTarget(target: SDK.Target.Target): Promise<void> {
+    if (this.#enabledTargets.has(target)) {
+      return;
+    }
+    this.#enabledTargets.add(target);
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    if (!runtimeModel) {
+      this.#enabledTargets.delete(target);
+      return;
+    }
+    runtimeModel.addEventListener(SDK.RuntimeModel.Events.BindingCalled, this.#onBindingCalled, this);
+
+    try {
+      await runtimeModel.addBinding({
+        name: BINDING_NAME,
+      });
+
+      const pageAgent = target.pageAgent();
+      const {identifier} = await pageAgent.invoke_addScriptToEvaluateOnNewDocument({
+        source: INJECTED_SCRIPT_SOURCE,
+        runImmediately: true,
+      });
+
+      if (!this.#enabledTargets.has(target)) {
+        try {
+          await pageAgent.invoke_removeScriptToEvaluateOnNewDocument({identifier});
+        } catch {
+        }
+        return;
+      }
+      this.#scriptIdentifiers.set(target, identifier);
+    } catch {
+      await this.#disableTarget(target);
+    }
+  }
+
+  #handleRecordingBlocked(target: SDK.Target.Target|null, blockedReason: string): void {
+    if (target) {
+      this.#blockedTargets.set(target, blockedReason);
+    }
+    this.requestUpdate();
+  }
+
+  async #disableTarget(target: SDK.Target.Target): Promise<void> {
+    if (!this.#enabledTargets.has(target)) {
+      return;
+    }
+    this.#enabledTargets.delete(target);
+    const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
+    if (runtimeModel) {
+      runtimeModel.removeEventListener(SDK.RuntimeModel.Events.BindingCalled, this.#onBindingCalled, this);
+      try {
+        await runtimeModel.removeBinding({
+          name: BINDING_NAME,
+        });
+      } catch {
+      }
+    }
+    const identifier = this.#scriptIdentifiers.get(target);
+    if (identifier) {
+      try {
+        await target.pageAgent().invoke_removeScriptToEvaluateOnNewDocument({
+          identifier,
+        });
+      } catch {
+      }
+      this.#scriptIdentifiers.delete(target);
+    }
+    try {
+      const runtimeAgent = target.runtimeAgent();
+      await runtimeAgent.invoke_evaluate({
+        expression: TEARDOWN_SCRIPT_SOURCE,
+        userGesture: false,
+        awaitPromise: false,
+      });
+    } catch {
+    }
+  }
+
+  #onBindingCalled(event: Common.EventTarget
+                       .EventTargetEvent<SDK.RuntimeModel.EventTypes[SDK.RuntimeModel.Events.BindingCalled]>): void {
+    const {name, payload} = event.data;
+    if (!this.#isRecording) {
+      return;
+    }
+    if (name !== BINDING_NAME) {
+      return;
+    }
+    const runtimeModel = event.source instanceof SDK.RuntimeModel.RuntimeModel ? event.source : null;
+    const target = runtimeModel?.target() ?? null;
+    const blockedReason = checkForBlockedPayload(payload);
+    if (blockedReason !== null) {
+      this.#handleRecordingBlocked(target, blockedReason);
+      return;
+    }
+    const announcement = validateAndSanitizeAnnouncement(payload);
+    if (!announcement) {
+      return;
+    }
+    if (target) {
+      announcement.target = target;
+    }
+    const last = this.#announcements[this.#announcements.length - 1];
+    if (last && last.api === announcement.api && last.message === announcement.message &&
+        last.politeness === announcement.politeness && last.element === announcement.element &&
+        Math.abs(announcement.time - last.time) < 50) {
+      return;
+    }
+    this.#announcements.push(announcement);
+    this.requestUpdate();
+  }
+
+  async startRecording(): Promise<void> {
+    if (this.#isRecording) {
+      return;
+    }
+    this.#isRecording = true;
+    this.#blockedTargets.clear();
+    for (const target of this.#targets) {
+      await this.#enableTarget(target);
+    }
+    this.requestUpdate();
+  }
+
+  async stopRecording(): Promise<void> {
+    if (!this.#isRecording) {
+      return;
+    }
+    this.#isRecording = false;
+    for (const target of this.#targets) {
+      await this.#disableTarget(target);
+    }
+    this.requestUpdate();
+  }
+
+  clearAnnouncements(): void {
+    this.#announcements = [];
+    this.requestUpdate();
+  }
+
+  announcementsForTest(): A11yAnnouncement[] {
+    return [...this.#announcements];
+  }
+
+  blockedReasonForTargetForTest(target: SDK.Target.Target): string|undefined {
+    return this.#blockedTargets.get(target);
+  }
+
+  blockedTargetsForTest(): Map<SDK.Target.Target, string> {
+    return new Map(this.#blockedTargets);
+  }
+
+  isRecordingForTest(): boolean {
+    return this.#isRecording;
   }
 }

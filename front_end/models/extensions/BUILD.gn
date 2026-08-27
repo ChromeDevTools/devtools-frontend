@@ -8,6 +8,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("extensions") {
+  split_compilation = true
   sources = [
     "ExtensionAPI.ts",
     "ExtensionEndpoint.ts",
@@ -17,7 +18,7 @@ devtools_module("extensions") {
     "RecorderPluginManager.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../extension-api",
     "../../core/common:bundle",
     "../../core/platform:bundle",
@@ -29,9 +30,10 @@ devtools_module("extensions") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "extensions.ts"
 
-  deps = [ ":extensions" ]
+  ts_deps = [ ":extensions" ]
 
   visibility = [
     ":*",
@@ -48,6 +50,7 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -56,7 +59,7 @@ ts_library("unittests") {
     "RecorderPluginManager.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",

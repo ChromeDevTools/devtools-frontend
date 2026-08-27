@@ -39,7 +39,7 @@ dialog:focus-visible {
 #content {
   min-width: var(--content-min-width);
   background: var(--color-background-elevation-dark-only);
-  border-radius: var(--sys-size-5);
+  border-radius: var(--sys-shape-corner-small);
   max-height: var(--dialog-max-height);
   max-width: var(--dialog-max-width);
   overflow: auto;

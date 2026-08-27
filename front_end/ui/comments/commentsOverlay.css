@@ -21,8 +21,8 @@
     position: absolute;
     pointer-events: auto;
     cursor: pointer;
-    font-size: 24px;
-    line-height: 24px;
+    font-size: var(--sys-typescale-headline1-size);
+    line-height: var(--sys-typescale-body1-line-height);
     filter: drop-shadow(0 2px 5px rgb(0 0 0 / 35%));
     user-select: none;
     transition: transform 0.1s ease;
@@ -35,7 +35,7 @@
   .comment-anchor-highlight {
     position: absolute;
     pointer-events: none;
-    border: 2px dashed var(--sys-color-primary);
+    border: var(--sys-size-2) dashed var(--sys-color-primary);
     background-color: color-mix(in srgb, var(--sys-color-primary), transparent 90%);
     box-sizing: border-box;
   }
@@ -43,7 +43,7 @@
   .comment-hover-highlight {
     position: absolute;
     pointer-events: none;
-    border: 2px solid var(--sys-color-primary);
+    border: var(--sys-size-2) solid var(--sys-color-primary);
     background-color: color-mix(in srgb, var(--sys-color-primary), transparent 85%);
     box-sizing: border-box;
   }

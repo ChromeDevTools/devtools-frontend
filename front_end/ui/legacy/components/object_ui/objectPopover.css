@@ -23,13 +23,13 @@
   white-space: nowrap;
   font-weight: bold;
   padding-left: 18px;
-  padding-bottom: 2px;
+  padding-bottom: var(--sys-size-2);
   padding-top: var(--sys-size-3);
   flex-shrink: 0;
 }
 
 .object-popover-tree {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: auto;
   width: 100%;
   height: calc(100% - 13px);
@@ -40,11 +40,11 @@
 }
 
 .object-popover-description-box {
-  padding: 6px;
+  padding: var(--sys-size-4);
   max-width: 350px;
   line-height: 1.4;
 }
 
 .object-popover-footer {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }

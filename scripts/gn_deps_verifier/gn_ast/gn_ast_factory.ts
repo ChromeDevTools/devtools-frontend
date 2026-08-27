@@ -55,7 +55,7 @@ export const createAstNode = {
   assignment: (
       variable: string,
       rhs: GnAstNode,
-      op: '='|'+=' = '=',
+      op: '='|'+='|'-=' = '=',
       ): GnAstNode => ({
     type: 'BINARY',
     value: op,

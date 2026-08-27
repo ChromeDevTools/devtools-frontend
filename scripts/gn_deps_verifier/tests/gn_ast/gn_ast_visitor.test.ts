@@ -4,13 +4,14 @@
 
 import {assert} from 'chai';
 import * as path from 'node:path';
-import {fileURLToPath} from 'node:url';
 
 import {GnBuildFile} from '../../gn_ast/gn_ast.ts';
 import {createAstNode} from '../../gn_ast/gn_ast_factory.ts';
 import type {GnAstNode} from '../../gn_ast/gn_ast_types.ts';
 import {
+  applyAssignment,
   extractStringValues,
+  extractTargetFromFunctionNode,
   findAssignments,
   findFirstListNode,
   findFirstNode,
@@ -19,11 +20,9 @@ import {
   walkStatements,
 } from '../../gn_ast/gn_ast_visitor.ts';
 
-const dirPath = path.dirname(fileURLToPath(import.meta.url));
-
 describe('gn_ast_visitor', () => {
-  const rootDir = path.resolve(dirPath, '../../../../');
-  const fixturePath = path.resolve(dirPath, '../fixtures/BUILD.gn');
+  const rootDir = path.resolve(import.meta.dirname, '../../../../');
+  const fixturePath = path.resolve(import.meta.dirname, '../fixtures/BUILD.gn');
   let gnBuild: GnBuildFile;
 
   before(async () => {
@@ -51,8 +50,10 @@ describe('gn_ast_visitor', () => {
   describe('walkStatements & findAssignments', () => {
     it('walks statements and extracts assignments from real AST target blocks', () => {
       const animationNode = findTargetNode(gnBuild.ast, 'animation');
-      const block = animationNode?.child?.[1];
-      assert.isDefined(block?.child);
+      assert.isDefined(animationNode);
+      assert.isDefined(animationNode.child);
+      const block = animationNode.child[1];
+      assert.isDefined(block.child);
 
       const visited: GnAstNode[] = [];
       walkStatements(block.child, stmt => visited.push(stmt));
@@ -67,16 +68,32 @@ describe('gn_ast_visitor', () => {
       assert.strictEqual(depsAssigns.length, 1);
       assert.strictEqual(depsAssigns[0].type, 'BINARY');
       assert.strictEqual(depsAssigns[0].value, '=');
+
+      const stmtsWithMinus: GnAstNode[] = [
+        createAstNode.assignment('deps', createAstNode.list(), '='),
+        createAstNode.assignment('deps', createAstNode.list(), '+='),
+        createAstNode.assignment('deps', createAstNode.list(), '-='),
+        createAstNode.assignment('sources', createAstNode.list(), '='),
+      ];
+      const foundDepsAssigns = findAssignments(stmtsWithMinus, 'deps');
+      assert.strictEqual(foundDepsAssigns.length, 3);
+      assert.deepEqual(
+          foundDepsAssigns.map(s => s.value),
+          ['=', '+=', '-='],
+      );
     });
   });
 
   describe('extractStringValues', () => {
     it('extracts string values from literal lists in real AST', () => {
       const animationNode = findTargetNode(gnBuild.ast, 'animation');
-      const block = animationNode?.child?.[1];
-      assert.isDefined(block?.child);
+      assert.isDefined(animationNode);
+      assert.isDefined(animationNode.child);
+      const block = animationNode.child[1];
+      assert.isDefined(block.child);
       const sourcesAssign = findAssignments(block.child, 'sources')[0];
-      assert.isDefined(sourcesAssign?.child?.[1]);
+      assert.isDefined(sourcesAssign);
+      assert.isDefined(sourcesAssign.child);
       const rhs = sourcesAssign.child[1];
       const sources = extractStringValues(rhs);
       assert.includeMembers(sources, [
@@ -88,20 +105,26 @@ describe('gn_ast_visitor', () => {
 
     it('extracts values from binary +/- expressions and identifier variable references', () => {
       const helpersNode = findTargetNode(gnBuild.ast, 'helpers');
-      const helpersBlock = helpersNode?.child?.[1];
-      assert.isDefined(helpersBlock?.child);
+      assert.isDefined(helpersNode);
+      assert.isDefined(helpersNode.child);
+      const helpersBlock = helpersNode.child[1];
+      assert.isDefined(helpersBlock.child);
       const helpersAssign = findAssignments(helpersBlock.child, 'sources')[0];
-      assert.isDefined(helpersAssign?.child?.[1]);
+      assert.isDefined(helpersAssign);
+      assert.isDefined(helpersAssign.child);
       const helpersRhs = helpersAssign.child[1];
       const variables = new Map<string, string[]>([['_helper_sources', ['Helper.ts']]]);
       const helperSources = extractStringValues(helpersRhs, variables);
       assert.deepEqual(helperSources, ['Helper.ts', 'Extra.ts']);
 
       const filteredNode = findTargetNode(gnBuild.ast, 'filtered');
-      const filteredBlock = filteredNode?.child?.[1];
-      assert.isDefined(filteredBlock?.child);
+      assert.isDefined(filteredNode);
+      assert.isDefined(filteredNode.child);
+      const filteredBlock = filteredNode.child[1];
+      assert.isDefined(filteredBlock.child);
       const filteredAssign = findAssignments(filteredBlock.child, 'sources')[0];
-      assert.isDefined(filteredAssign?.child?.[1]);
+      assert.isDefined(filteredAssign);
+      assert.isDefined(filteredAssign.child);
       const filteredRhs = filteredAssign.child[1];
       const filteredSources = extractStringValues(filteredRhs, variables);
       assert.deepEqual(filteredSources, ['Helper.ts']);
@@ -136,10 +159,13 @@ describe('gn_ast_visitor', () => {
   describe('walkListNodes & findFirstListNode', () => {
     it('walks list nodes inside real assignment expressions', () => {
       const animationNode = findTargetNode(gnBuild.ast, 'animation');
-      const block = animationNode?.child?.[1];
-      assert.isDefined(block?.child);
+      assert.isDefined(animationNode);
+      assert.isDefined(animationNode.child);
+      const block = animationNode.child[1];
+      assert.isDefined(block.child);
       const depsAssign = findAssignments(block.child, 'deps')[0];
-      assert.isDefined(depsAssign?.child?.[1]);
+      assert.isDefined(depsAssign);
+      assert.isDefined(depsAssign.child);
       const rhs = depsAssign.child[1];
 
       const foundLists: GnAstNode[] = [];
@@ -192,7 +218,292 @@ describe('gn_ast_visitor', () => {
     });
   });
 
-  describe('visitAst', () => {
+  describe('extractTargetFromFunctionNode', () => {
+    it('returns null for non-FUNCTION node', () => {
+      const nonFnNode: GnAstNode = {type: 'BLOCK'};
+      assert.isNull(
+          extractTargetFromFunctionNode(
+              nonFnNode,
+              '//base',
+              'BUILD.gn',
+              new Map(),
+              ),
+      );
+    });
+
+    it('returns null when target name is missing or not LITERAL', () => {
+      const fnWithoutArgs: GnAstNode = {
+        type: 'FUNCTION',
+        value: 'devtools_ui_module',
+        child: [
+          {type: 'LIST', child: []},
+          {type: 'BLOCK', child: []},
+        ],
+      };
+      assert.isNull(
+          extractTargetFromFunctionNode(
+              fnWithoutArgs,
+              '//base',
+              'BUILD.gn',
+              new Map(),
+              ),
+      );
+
+      const fnWithNonLiteralArg: GnAstNode = {
+        type: 'FUNCTION',
+        value: 'devtools_ui_module',
+        child: [
+          {type: 'LIST', child: [{type: 'IDENTIFIER', value: 'target_name'}]},
+          {type: 'BLOCK', child: []},
+        ],
+      };
+      assert.isNull(
+          extractTargetFromFunctionNode(
+              fnWithNonLiteralArg,
+              '//base',
+              'BUILD.gn',
+              new Map(),
+              ),
+      );
+    });
+
+    it('returns null when block is missing or not a BLOCK', () => {
+      const importNode = findFirstNode(
+          gnBuild.ast,
+          node => node.type === 'FUNCTION' && node.value === 'import' ? node : undefined,
+      );
+      assert.isDefined(importNode);
+      assert.isNull(
+          extractTargetFromFunctionNode(
+              importNode,
+              '//base',
+              fixturePath,
+              new Map(),
+              ),
+      );
+    });
+
+    it('extracts metadata, sources, and deps from real AST function node', () => {
+      const animationNode = findTargetNode(gnBuild.ast, 'animation');
+      assert.isDefined(animationNode);
+
+      const targetInfo = extractTargetFromFunctionNode(
+          animationNode,
+          '//front_end/panels/animation',
+          fixturePath,
+          new Map(),
+      );
+      assert.isNotNull(targetInfo);
+      assert.strictEqual(
+          targetInfo.label,
+          '//front_end/panels/animation:animation',
+      );
+      assert.strictEqual(targetInfo.templateName, 'devtools_ui_module');
+      assert.strictEqual(targetInfo.buildFile, fixturePath);
+      assert.includeMembers(targetInfo.sources, [
+        'AnimationGroupPreviewUI.ts',
+        'AnimationTimeline.ts',
+        'AnimationUI.ts',
+      ]);
+      assert.includeMembers(targetInfo.deps, [
+        '../../core/common:bundle',
+        '../../core/sdk:bundle',
+      ]);
+    });
+
+    it('handles +=, -=, inputs, and entrypoint assignments with local variable resolution', () => {
+      const complexNode = findTargetNode(gnBuild.ast, 'complex_assignments');
+      assert.isDefined(complexNode);
+
+      const targetInfo = extractTargetFromFunctionNode(
+          complexNode,
+          '//front_end/panels/animation',
+          fixturePath,
+          new Map(),
+      );
+      assert.isNotNull(targetInfo);
+      assert.strictEqual(
+          targetInfo.label,
+          '//front_end/panels/animation:complex_assignments',
+      );
+      assert.strictEqual(targetInfo.templateName, 'custom_target');
+      assert.includeMembers(targetInfo.sources, [
+        'local1.ts',
+        'local2.ts',
+        'input1.json',
+        'main.ts',
+      ]);
+      assert.notInclude(targetInfo.sources, 'excluded.ts');
+      assert.deepEqual(targetInfo.deps, [':dep1', ':dep2']);
+    });
+
+    it('extracts ts_deps into deps', () => {
+      const platformNode = findTargetNode(gnBuild.ast, 'platform');
+      assert.isDefined(platformNode);
+
+      const targetInfo = extractTargetFromFunctionNode(
+          platformNode,
+          '//front_end/core/platform',
+          fixturePath,
+          new Map(),
+      );
+      assert.isNotNull(targetInfo);
+      assert.strictEqual(
+          targetInfo.label,
+          '//front_end/core/platform:platform',
+      );
+      assert.strictEqual(targetInfo.templateName, 'devtools_foundation_module');
+      assert.deepEqual(targetInfo.sources, ['HostRuntime.ts']);
+      assert.includeMembers(targetInfo.deps, ['./api:bundle']);
+    });
+  });
+
+  describe('applyAssignment', () => {
+    it('handles = assignment operator and sets values in variables map', () => {
+      const variables = new Map<string, string[]>();
+      const node = createAstNode.assignment(
+          'sources',
+          createAstNode.list([
+            createAstNode.stringLiteral('a.ts'),
+            createAstNode.stringLiteral('b.ts'),
+          ]),
+          '=',
+      );
+
+      const handled = applyAssignment(variables, node);
+      assert.isTrue(handled);
+      assert.deepEqual(variables.get('sources'), ['a.ts', 'b.ts']);
+
+      // Overwriting existing variable
+      const overwriteNode = createAstNode.assignment(
+          'sources',
+          createAstNode.list([createAstNode.stringLiteral('c.ts')]),
+          '=',
+      );
+      assert.isTrue(applyAssignment(variables, overwriteNode));
+      assert.deepEqual(variables.get('sources'), ['c.ts']);
+    });
+
+    it('handles += assignment operator and appends values to variables map', () => {
+      const variables = new Map<string, string[]>([['deps', [':dep1']]]);
+      const node = createAstNode.assignment(
+          'deps',
+          createAstNode.list([createAstNode.stringLiteral(':dep2')]),
+          '+=',
+      );
+
+      const handled = applyAssignment(variables, node);
+      assert.isTrue(handled);
+      assert.deepEqual(variables.get('deps'), [':dep1', ':dep2']);
+
+      // Appending when variable was not previously set
+      const newVarNode = createAstNode.assignment(
+          'inputs',
+          createAstNode.list([createAstNode.stringLiteral('input.json')]),
+          '+=',
+      );
+      assert.isTrue(applyAssignment(variables, newVarNode));
+      assert.deepEqual(variables.get('inputs'), ['input.json']);
+    });
+
+    it('handles -= assignment operator and filters values from variables map', () => {
+      const variables = new Map<string, string[]>([
+        ['sources', ['a.ts', 'b.ts', 'c.ts']],
+      ]);
+      const node = createAstNode.assignment(
+          'sources',
+          createAstNode.list([createAstNode.stringLiteral('b.ts')]),
+          '-=',
+      );
+
+      const handled = applyAssignment(variables, node);
+      assert.isTrue(handled);
+      assert.deepEqual(variables.get('sources'), ['a.ts', 'c.ts']);
+
+      // Subtracting when variable was not previously set
+      const unsetNode = createAstNode.assignment(
+          'unknown',
+          createAstNode.list([createAstNode.stringLiteral('x.ts')]),
+          '-=',
+      );
+      assert.isTrue(applyAssignment(variables, unsetNode));
+      assert.deepEqual(variables.get('unknown'), []);
+    });
+
+    it('resolves RHS variable references using existing variables in the map', () => {
+      const variables = new Map<string, string[]>([
+        ['_shared_sources', ['util.ts', 'common.ts']],
+      ]);
+      const node = createAstNode.assignment(
+          'sources',
+          createAstNode.identifier('_shared_sources'),
+          '=',
+      );
+
+      assert.isTrue(applyAssignment(variables, node));
+      assert.deepEqual(variables.get('sources'), ['util.ts', 'common.ts']);
+    });
+
+    it('returns false for non-binary nodes', () => {
+      const variables = new Map<string, string[]>();
+      assert.isFalse(
+          applyAssignment(variables, createAstNode.identifier('sources')),
+      );
+      assert.isFalse(applyAssignment(variables, {type: 'BLOCK'}));
+      assert.isFalse(
+          applyAssignment(variables, {type: 'FUNCTION', value: 'my_target'}),
+      );
+    });
+
+    it('returns false for binary nodes with non-assignment operators', () => {
+      const variables = new Map<string, string[]>();
+      const node = createAstNode.binary(
+          '==',
+          createAstNode.identifier('a'),
+          createAstNode.identifier('b'),
+      );
+      assert.isFalse(applyAssignment(variables, node));
+
+      const minusNode = createAstNode.binary(
+          '-',
+          createAstNode.identifier('a'),
+          createAstNode.identifier('b'),
+      );
+      assert.isFalse(applyAssignment(variables, minusNode));
+    });
+
+    it('returns false for malformed assignment nodes missing LHS or RHS', () => {
+      const variables = new Map<string, string[]>();
+      const missingLhs: GnAstNode = {
+        type: 'BINARY',
+        value: '=',
+        child: [undefined as unknown as GnAstNode, createAstNode.list()],
+      };
+      assert.isFalse(applyAssignment(variables, missingLhs));
+
+      const nonIdentifierLhs: GnAstNode = {
+        type: 'BINARY',
+        value: '=',
+        child: [createAstNode.list(), createAstNode.list()],
+      };
+      assert.isFalse(applyAssignment(variables, nonIdentifierLhs));
+
+      const missingRhs: GnAstNode = {
+        type: 'BINARY',
+        value: '=',
+        child: [createAstNode.identifier('sources')],
+      };
+      assert.isFalse(applyAssignment(variables, missingRhs));
+
+      const noChildren: GnAstNode = {
+        type: 'BINARY',
+        value: '=',
+      };
+      assert.isFalse(applyAssignment(variables, noChildren));
+    });
+  });
+
+  describe('findFirstNode', () => {
     it('traverses the real AST tree and finds matching nodes', () => {
       const foundTemplates: string[] = [];
       findFirstNode(gnBuild.ast, node => {

@@ -92,3 +92,25 @@ devtools_ui_module("unittests") {
     "../../testing",
   ]
 }
+
+devtools_foundation_module("platform") {
+  sources = [ "HostRuntime.ts" ]
+
+  ts_deps = [ "./api:bundle" ]
+
+  public_deps = [ ":typecheck" ]
+}
+
+custom_target("complex_assignments") {
+  _local_files = [
+    "local1.ts",
+    "local2.ts",
+    "excluded.ts",
+  ]
+  sources = _local_files
+  sources -= [ "excluded.ts" ]
+  inputs = [ "input1.json" ]
+  entrypoint = "main.ts"
+  deps = [ ":dep1" ]
+  deps += [ ":dep2" ]
+}

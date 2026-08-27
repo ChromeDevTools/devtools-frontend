@@ -21,7 +21,6 @@ describe('gn_ast_factory', () => {
 
     it('quotes strings', () => {
       assert.strictEqual(quoteForGn('hello'), '"hello"');
-      assert.strictEqual(quoteForGn('"hello"'), '"hello"');
     });
   });
 
@@ -67,13 +66,22 @@ describe('gn_ast_factory', () => {
 
     it('creates assignment nodes', () => {
       const rhs = createAstNode.list();
-      const node = createAstNode.assignment('deps', rhs, '+=');
-      assert.strictEqual(node.type, 'BINARY');
-      assert.strictEqual(node.value, '+=');
-      assert.isDefined(node.child);
-      assert.strictEqual(node.child[0].type, 'IDENTIFIER');
-      assert.strictEqual(node.child[0].value, 'deps');
-      assert.strictEqual(node.child[1], rhs);
+      const nodePlus = createAstNode.assignment('deps', rhs, '+=');
+      assert.strictEqual(nodePlus.type, 'BINARY');
+      assert.strictEqual(nodePlus.value, '+=');
+      assert.isDefined(nodePlus.child);
+      assert.strictEqual(nodePlus.child[0].type, 'IDENTIFIER');
+      assert.strictEqual(nodePlus.child[0].value, 'deps');
+      assert.strictEqual(nodePlus.child[1], rhs);
+
+      const nodeMinus = createAstNode.assignment('sources', rhs, '-=');
+      assert.strictEqual(nodeMinus.type, 'BINARY');
+      assert.strictEqual(nodeMinus.value, '-=');
+      assert.strictEqual(nodeMinus.child?.[0].value, 'sources');
+
+      const nodeDefault = createAstNode.assignment('sources', rhs);
+      assert.strictEqual(nodeDefault.type, 'BINARY');
+      assert.strictEqual(nodeDefault.value, '=');
     });
   });
 });

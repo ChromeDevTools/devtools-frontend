@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {unquoteFromGn} from './gn_ast_factory.ts';
-import type {GnAstNode} from './gn_ast_types.ts';
+import type {AstTargetInfo, GnAstNode} from './gn_ast_types.ts';
 
 /**
  * Depth-first AST visitor.
@@ -73,7 +73,7 @@ export function walkStatements(
 }
 
 /**
- * Finds assignment nodes (`=` or `+=`), filtered by LHS variable name.
+ * Finds assignment nodes (`=`, `+=`, or `-=`), filtered by LHS variable name.
  */
 export function findAssignments(
     statements: GnAstNode[],
@@ -81,7 +81,8 @@ export function findAssignments(
     ): GnAstNode[] {
   const assignments: GnAstNode[] = [];
   walkStatements(statements, statement => {
-    if (statement.type === 'BINARY' && (statement.value === '=' || statement.value === '+=')) {
+    if (statement.type === 'BINARY' &&
+        (statement.value === '=' || statement.value === '+=' || statement.value === '-=')) {
       const lhs = statement.child?.[0]?.value;
       if (lhs === variableName) {
         assignments.push(statement);
@@ -152,4 +153,102 @@ export function findTargetNode(
     }
     return undefined;
   });
+}
+
+/**
+ * Applies a binary assignment (`=`, `+=`, or `-=`) node to a variables map.
+ * Returns true if the node was an assignment and was applied, false otherwise.
+ */
+export function applyAssignment(
+    variables: Map<string, string[]>,
+    node: GnAstNode,
+    ): boolean {
+  if (node.type !== 'BINARY' || (node.value !== '=' && node.value !== '+=' && node.value !== '-=')) {
+    return false;
+  }
+
+  const lhs = node.child?.[0];
+  const rhs = node.child?.[1];
+  if (!lhs || lhs.type !== 'IDENTIFIER' || !lhs.value || !rhs) {
+    return false;
+  }
+
+  const varName = lhs.value;
+  if (node.value === '=') {
+    variables.set(varName, [...extractStringValues(rhs, variables)]);
+    return true;
+  }
+
+  if (node.value === '+=') {
+    const vals = extractStringValues(rhs, variables);
+    const existing = variables.get(varName) || [];
+    variables.set(varName, [...existing, ...vals]);
+    return true;
+  }
+
+  if (node.value === '-=') {
+    const vals = extractStringValues(rhs, variables);
+    const existing = variables.get(varName) || [];
+    variables.set(
+        varName,
+        existing.filter(val => !vals.includes(val)),
+    );
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Extracts target metadata from a FUNCTION node.
+ */
+export function extractTargetFromFunctionNode(
+    node: GnAstNode,
+    baseLabel: string,
+    buildFilePath: string,
+    variables: Map<string, string[]>,
+    ): AstTargetInfo|null {
+  if (node.type !== 'FUNCTION') {
+    return null;
+  }
+
+  const args = node.child?.[0]?.child;
+  const targetNameNode = args?.[0];
+  if (!targetNameNode || targetNameNode.type !== 'LITERAL') {
+    return null;
+  }
+
+  const block = node.child?.[1];
+  if (!block || block.type !== 'BLOCK' || !block.child) {
+    return null;
+  }
+
+  const templateName = node.value || '';
+  const targetName = unquoteFromGn(targetNameNode.value);
+  const label = `${baseLabel}:${targetName}`;
+
+  const scopedVariables = new Map(variables);
+  walkStatements(block.child, statement => {
+    applyAssignment(scopedVariables, statement);
+  });
+
+  const sources = [
+    ...(scopedVariables.get('sources') || []),
+    ...(scopedVariables.get('inputs') || []),
+    ...(scopedVariables.get('entrypoint') || []),
+  ];
+  const deps = [
+    ...(scopedVariables.get('deps') || []),
+    ...(scopedVariables.get('ts_deps') || []),
+    // TODO: Investigate if we need to add public_deps
+    // ...(scopedVariables.get('public_deps') || []),
+  ];
+
+  return {
+    label,
+    templateName,
+    buildFile: buildFilePath,
+    sources: Array.from(new Set(sources)),
+    deps: Array.from(new Set(deps)),
+  };
 }

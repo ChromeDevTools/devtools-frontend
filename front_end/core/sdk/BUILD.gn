@@ -130,6 +130,7 @@ devtools_entrypoint("bundle") {
 
 ts_library("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [
     "CSSMatchedStyles.test.ts",
@@ -172,7 +173,7 @@ ts_library("unittests") {
     "TraceObject.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../entrypoints/formatter_worker:bundle",
     "../../generated",
@@ -192,6 +193,7 @@ ts_library("unittests") {
 
 devtools_foundation_module("foundation_unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [
     "AccessibilityModel.test.ts",
@@ -213,7 +215,7 @@ devtools_foundation_module("foundation_unittests") {
     "TargetManager.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../generated",
     "../../generated:protocol",
@@ -231,6 +233,7 @@ devtools_foundation_module("foundation_unittests") {
 }
 
 devtools_api_test_module("api_tests") {
+  split_compilation = true
   sources = [
     "CSSModel.test.api.ts",
     "DOMModel.test.api.ts",
@@ -238,7 +241,7 @@ devtools_api_test_module("api_tests") {
     "TargetManager.test.api.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../testing",
     "../common:bundle",

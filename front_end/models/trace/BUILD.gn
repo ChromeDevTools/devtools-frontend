@@ -49,6 +49,7 @@ devtools_entrypoint("bundle") {
     "../../../mcp/*",
     "../../../test/interactions/*",
     "../../core/sdk:unittests",
+    "../../core/sdk:unittests_checked",
     "../../legacy_test_runner/*",
     "../../models/lighthouse/*",
     "../../panels/ai_assistance/*",

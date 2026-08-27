@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
 import {
   clickNthChildOfSelectedElementNode,
   focusElementsTree,
@@ -38,7 +36,9 @@ describe('Grid Editor', function() {
     // Wait for the button's title to be updated so that we know the change
     // was made.
     await devToolsPage.waitFor('[title="Add align-items: start"]');
-    const property = await getCSSPropertyInRule(devToolsPage, '#target', 'align-items', undefined);
-    assert.isUndefined(property);
+    await devToolsPage.waitForFunction(async () => {
+      const property = await getCSSPropertyInRule(devToolsPage, '#target', 'align-items', undefined);
+      return property === undefined;
+    });
   });
 });

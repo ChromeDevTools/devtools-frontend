@@ -10,12 +10,9 @@ import {
   getStructuredConsoleMessages,
   STACK_PREVIEW_CONTAINER,
 } from '../helpers/console-helpers.js';
-import {openSettingsTab} from '../helpers/settings-helpers.js';
+import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
 
 const CONSOLE_MESSAGE_WRAPPER = '.console-message-stack-trace-wrapper';
-const ADD_FILENAME_PATTERN_BUTTON = 'devtools-button[aria-label="Add a regular expression rule for the script’s URL"]';
-const ADD_BUTTON = '.editor-buttons devtools-button:nth-of-type(2)';
-const CLOSE_SETTINGS_BUTTON = 'button[aria-label="Close"]';
 const SHOW_MORE_LINK = '.show-all-link .link';
 const SHOW_LESS_LINK = '.show-less-link .link';
 
@@ -27,7 +24,7 @@ describe('The Console Tab', () => {
 
     await devToolsPage.waitFor(CONSOLE_MESSAGE_WRAPPER);
     await devToolsPage.click(CONSOLE_MESSAGE_WRAPPER);
-    const stack = await devToolsPage.$(STACK_PREVIEW_CONTAINER);
+    const stack = await devToolsPage.waitFor(STACK_PREVIEW_CONTAINER);
 
     const expected = [
       {text: '\nshown3 @ showMe.js:10', visible: true},
@@ -54,18 +51,15 @@ describe('The Console Tab', () => {
   });
 
   it('shows messages with stack traces containing ignore-listed frames', async ({devToolsPage, inspectedPage}) => {
-    await openSettingsTab(devToolsPage, 'Ignore list');
-    await devToolsPage.click(ADD_FILENAME_PATTERN_BUTTON);
-    await devToolsPage.typeText('ignoreMe.js');
-    await devToolsPage.click(ADD_BUTTON);
-    await devToolsPage.click(CLOSE_SETTINGS_BUTTON);
+    await setIgnoreListPattern(devToolsPage, 'ignoreMe.js');
 
-    await inspectedPage.goToResource('console/stack-trace.html');
     await devToolsPage.click(CONSOLE_TAB_SELECTOR);
+    await focusConsolePrompt(devToolsPage);
+    await inspectedPage.goToResource('console/stack-trace.html');
 
     await devToolsPage.waitFor(CONSOLE_MESSAGE_WRAPPER);
     await devToolsPage.click(CONSOLE_MESSAGE_WRAPPER);
-    const stack = await devToolsPage.$(STACK_PREVIEW_CONTAINER);
+    const stack = await devToolsPage.waitFor(STACK_PREVIEW_CONTAINER);
 
     const expected = [
       {text: '\nshown3 @ showMe.js:10', visible: true},
@@ -91,12 +85,13 @@ describe('The Console Tab', () => {
     });
 
     // assert that hidden rows are not shown initially
-    let showHidden = stack ? await stack.evaluate(x => x.classList.contains('show-hidden-rows')) : null;
+    let showHidden = await stack.evaluate(x => x.classList.contains('show-hidden-rows'));
     assert.isFalse(showHidden);
 
     // assert that after clicking 'show all'-button, hidden rows are shown
     await devToolsPage.click(SHOW_MORE_LINK);
-    showHidden = stack ? await stack.evaluate(x => x.classList.contains('show-hidden-rows')) : null;
+    await devToolsPage.waitFor(`${STACK_PREVIEW_CONTAINER}.show-hidden-rows`);
+    showHidden = await stack.evaluate(x => x.classList.contains('show-hidden-rows'));
     assert.isTrue(showHidden);
 
     const expectedUnhidden = [
@@ -124,7 +119,8 @@ describe('The Console Tab', () => {
 
     // assert that after clicking 'show less'-button, hidden rows are hidden again
     await devToolsPage.click(SHOW_LESS_LINK);
-    showHidden = stack ? await stack.evaluate(x => x.classList.contains('show-hidden-rows')) : null;
+    await devToolsPage.waitFor(`${STACK_PREVIEW_CONTAINER}:not(.show-hidden-rows)`);
+    showHidden = await stack.evaluate(x => x.classList.contains('show-hidden-rows'));
     assert.isFalse(showHidden);
   });
 

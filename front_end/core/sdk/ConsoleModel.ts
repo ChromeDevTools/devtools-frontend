@@ -797,7 +797,7 @@ export type MessageSource = Protocol.Log.LogEntrySource|Common.Console.FrontendM
 export type MessageLevel = Protocol.Log.LogEntryLevel;
 export type MessageType = Protocol.Runtime.ConsoleAPICalledEventType|FrontendMessageType;
 
-export const MessageSourceDisplayName = new Map<MessageSource, string>(([
+export const MessageSourceDisplayName: Map<MessageSource, string> = new Map<MessageSource, string>(([
   [Protocol.Log.LogEntrySource.XML, 'xml'],
   [Protocol.Log.LogEntrySource.Javascript, 'javascript'],
   [Protocol.Log.LogEntrySource.Network, 'network'],

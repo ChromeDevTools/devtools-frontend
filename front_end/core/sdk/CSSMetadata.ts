@@ -392,7 +392,7 @@ export class CSSMetadata {
   }
 }
 
-export const CubicBezierKeywordValues = new Map([
+export const CubicBezierKeywordValues: Map<string, string> = new Map([
   ['linear', 'cubic-bezier(0, 0, 1, 1)'],
   ['ease', 'cubic-bezier(0.25, 0.1, 0.25, 1)'],
   ['ease-in', 'cubic-bezier(0.42, 0, 1, 1)'],
@@ -440,10 +440,14 @@ export const PositionTryOrderKeywords: PositionTryOrderKeyword[] = [
   PositionTryOrderKeyword.MOST_INLINE_SIZE,
 ];
 
-export const VariableNameRegex = /(\s*--.*?)/gs;
-export const VariableRegex = /(var\(\s*--.*?\))/gs;
-export const CustomVariableRegex = /(var\(*--[\w\d]+-([\w]+-[\w]+)\))/g;
-export const URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const VariableNameRegex: RegExp = /(\s*--.*?)/gs;
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const VariableRegex: RegExp = /(var\(\s*--.*?\))/gs;
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const CustomVariableRegex: RegExp = /(var\(*--[\w\d]+-([\w]+-[\w]+)\))/g;
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const URLRegex: RegExp = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
 
 /**
  * Matches an instance of a grid area 'row' definition.
@@ -453,7 +457,8 @@ export const URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
  * 'grid', 'grid-template', e.g.
  *    [track-#name] "a a ." minmax(50px, auto) [track-#name]
  */
-export const GridAreaRowRegex = /((?:\[[\w\- ]+\]\s*)*(?:"[^"]+"|'[^']+'))[^'"\[]*\[?[^'"\[]*/;
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const GridAreaRowRegex: RegExp = /((?:\[[\w\- ]+\]\s*)*(?:"[^"]+"|'[^']+'))[^'"\[]*\[?[^'"\[]*/;
 
 let cssMetadataInstance: CSSMetadata|null = null;
 

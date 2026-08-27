@@ -569,9 +569,8 @@ export class SourceMap {
       this.#scopesInfo = new SourceMapScopesInfo(this, {scopes: [], ranges: []});
     }
     if (map.scopes) {
-      const {scopes, ranges} = ScopesCodec.decode(
-          map as ScopesCodec.SourceMapJson,
-          {mode: ScopesCodec.DecodeMode.LAX, generatedOffset: {line: baseLineNumber, column: baseColumnNumber}});
+      const {scopes, ranges} = ScopesCodec.decode(map as ScopesCodec.SourceMapJson,
+                                                  {generatedOffset: {line: baseLineNumber, column: baseColumnNumber}});
       this.#scopesInfo.addOriginalScopes(scopes);
       this.#scopesInfo.addGeneratedRanges(ranges);
     } else if (map.x_com_bloomberg_sourcesFunctionMappings) {

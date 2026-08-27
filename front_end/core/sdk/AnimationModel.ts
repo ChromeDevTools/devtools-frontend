@@ -287,7 +287,7 @@ export class AnimationModel extends SDKModel<EventTypes> {
   readonly runtimeModel: RuntimeModel;
   readonly agent: ProtocolProxyApi.AnimationApi;
   #animationsById = new Map<string, AnimationImpl>();
-  readonly animationGroups = new Map<string, AnimationGroup>();
+  readonly animationGroups: Map<string, AnimationGroup> = new Map<string, AnimationGroup>();
   #pendingAnimations = new Set<string>();
   playbackRate = 1;
   #flushPendingAnimations: () => void;

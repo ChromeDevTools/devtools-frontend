@@ -21,6 +21,7 @@ import {
   type Match,
   matchDeclaration,
   matcherBase,
+  type MatcherClass,
   type SyntaxTree,
   tokenizeDeclaration,
 } from './CSSPropertyParser.js';
@@ -56,12 +57,13 @@ export class BaseVariableMatch implements Match {
   }
 }
 
+const BaseVariableMatcherBase: MatcherClass<BaseVariableMatch> = matcherBase(BaseVariableMatch);
 // This matcher provides matching for var() functions and basic computedText support. Computed text is resolved by a
 // callback. This matcher is intended to be used directly only in environments where CSSMatchedStyles is not available.
 // A more ergonomic version of this matcher exists in VariableMatcher, which uses CSSMatchedStyles to correctly resolve
 // variable references automatically.
 // clang-format off
-export class BaseVariableMatcher extends matcherBase(BaseVariableMatch) {
+export class BaseVariableMatcher extends BaseVariableMatcherBase {
   // clang-format on
   readonly #computedTextCallback: (match: BaseVariableMatch, matching: BottomUpTreeMatching) => string | null;
   constructor(computedTextCallback: (match: BaseVariableMatch, matching: BottomUpTreeMatching) => string | null) {
@@ -114,8 +116,9 @@ export class VariableMatch extends BaseVariableMatch {
   }
 }
 
+const VariableMatcherBase: MatcherClass<VariableMatch> = matcherBase(VariableMatch);
 // clang-format off
-export class VariableMatcher extends matcherBase(VariableMatch) {
+export class VariableMatcher extends VariableMatcherBase {
   // clang-format on
   constructor(readonly matchedStyles: CSSMatchedStyles, readonly style: CSSStyleDeclaration) {
     super();
@@ -144,8 +147,9 @@ export class VariableNameMatch implements Match {
   }
 }
 
+const VariableNameMatcherBase: MatcherClass<VariableNameMatch> = matcherBase(VariableNameMatch);
 // clang-format off
-export class VariableNameMatcher extends matcherBase(VariableNameMatch) {
+export class VariableNameMatcher extends VariableNameMatcherBase {
   // clang-format on
   constructor(readonly matchedStyles: CSSMatchedStyles, readonly style: CSSStyleDeclaration) {
     super();
@@ -270,10 +274,11 @@ export function defaultValueForCSSType(type: string|null): string|null {
 
 export const RAW_STRING_TYPE = 'raw-string';
 
+const AttributeMatcherBase: MatcherClass<AttributeMatch> = matcherBase(AttributeMatch);
 // This matcher provides matching for attr() functions and basic computedText support. Computed text is resolved by a
 // callback.
 // clang-format off
-export class AttributeMatcher extends matcherBase(AttributeMatch) {
+export class AttributeMatcher extends AttributeMatcherBase {
   // clang-format on
   constructor(
       private readonly matchedStyles: CSSMatchedStyles,
@@ -347,8 +352,9 @@ export class BinOpMatch implements Match {
   }
 }
 
+const BinOpMatcherBase: MatcherClass<BinOpMatch> = matcherBase(BinOpMatch);
 // clang-format off
-export class BinOpMatcher extends matcherBase(BinOpMatch) {
+export class BinOpMatcher extends BinOpMatcherBase {
   // clang-format on
   override accepts(): boolean {
     return true;
@@ -372,8 +378,9 @@ export class TextMatch implements Match {
   }
 }
 
+const TextMatcherBase: MatcherClass<TextMatch> = matcherBase(TextMatch);
 // clang-format off
-export class TextMatcher extends matcherBase(TextMatch) {
+export class TextMatcher extends TextMatcherBase {
   // clang-format on
   override accepts(): boolean {
     return true;
@@ -399,8 +406,9 @@ export class AngleMatch implements Match {
   }
 }
 
+const AngleMatcherBase: MatcherClass<AngleMatch> = matcherBase(AngleMatch);
 // clang-format off
-export class AngleMatcher extends matcherBase(AngleMatch) {
+export class AngleMatcher extends AngleMatcherBase {
   // clang-format on
   override accepts(propertyName: string): boolean {
     return cssMetadata().isAngleAwareProperty(propertyName);
@@ -435,8 +443,9 @@ export class ColorMixMatch implements Match {
   }
 }
 
+const ColorMixMatcherBase: MatcherClass<ColorMixMatch> = matcherBase(ColorMixMatch);
 // clang-format off
-export class ColorMixMatcher extends matcherBase(ColorMixMatch) {
+export class ColorMixMatcher extends ColorMixMatcherBase {
   // clang-format on
   override accepts(propertyName: string): boolean {
     return cssMetadata().isColorAwareProperty(propertyName);
@@ -497,8 +506,9 @@ export class ContrastColorMatch implements Match {
   }
 }
 
+const ContrastColorMatcherBase: MatcherClass<ContrastColorMatch> = matcherBase(ContrastColorMatch);
 // clang-format off
-export class ContrastColorMatcher extends matcherBase(ContrastColorMatch) {
+export class ContrastColorMatcher extends ContrastColorMatcherBase {
   // clang-format on
   override accepts(propertyName: string): boolean {
     return cssMetadata().isColorAwareProperty(propertyName);
@@ -527,8 +537,9 @@ export class URLMatch implements Match {
   }
 }
 
+const URLMatcherBase: MatcherClass<URLMatch> = matcherBase(URLMatch);
 // clang-format off
-export class URLMatcher extends matcherBase(URLMatch) {
+export class URLMatcher extends URLMatcherBase {
   // clang-format on
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): URLMatch|null {
     if (node.name !== 'CallLiteral') {
@@ -557,8 +568,9 @@ export class LinearGradientMatch implements Match {
   }
 }
 
+const LinearGradientMatcherBase: MatcherClass<LinearGradientMatch> = matcherBase(LinearGradientMatch);
 // clang-format off
-export class LinearGradientMatcher extends matcherBase(LinearGradientMatch) {
+export class LinearGradientMatcher extends LinearGradientMatcherBase {
   // clang-format on
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     const text = matching.ast.text(node);
@@ -579,15 +591,16 @@ interface RelativeColor {
 
 export class ColorMatch implements Match {
   computedText: (() => string | null)|undefined;
-  constructor(
-      readonly text: string, readonly node: CodeMirror.SyntaxNode,
-      private readonly currentColorCallback?: () => string | null, readonly relativeColor?: RelativeColor) {
+  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode,
+              private readonly currentColorCallback?: () => string | null,
+              readonly relativeColor?: RelativeColor|undefined) {
     this.computedText = currentColorCallback;
   }
 }
 
+const ColorMatcherBase: MatcherClass<ColorMatch> = matcherBase(ColorMatch);
 // clang-format off
-export class ColorMatcher extends matcherBase(ColorMatch) {
+export class ColorMatcher extends ColorMatcherBase {
   constructor(private readonly currentColorCallback?: () => string|null) {
       super();
   }
@@ -724,8 +737,9 @@ export class RelativeColorChannelMatch implements Match {
   }
 }
 
+const RelativeColorChannelMatcherBase: MatcherClass<RelativeColorChannelMatch> = matcherBase(RelativeColorChannelMatch);
 // clang-format off
-export class RelativeColorChannelMatcher extends matcherBase(RelativeColorChannelMatch) {
+export class RelativeColorChannelMatcher extends RelativeColorChannelMatcherBase {
   // clang-format on
   override accepts(propertyName: string): boolean {
     return cssMetadata().isColorAwareProperty(propertyName);
@@ -747,8 +761,9 @@ export class LightDarkColorMatch implements Match {
   }
 }
 
+const LightDarkColorMatcherBase: MatcherClass<LightDarkColorMatch> = matcherBase(LightDarkColorMatch);
 // clang-format off
-export class LightDarkColorMatcher extends matcherBase(LightDarkColorMatch) {
+export class LightDarkColorMatcher extends LightDarkColorMatcherBase {
   // clang-format on
   constructor(readonly style: CSSStyleDeclaration) {
     super();
@@ -776,8 +791,9 @@ export class AutoBaseMatch implements Match {
   }
 }
 
+const AutoBaseMatcherBase: MatcherClass<AutoBaseMatch> = matcherBase(AutoBaseMatch);
 // clang-format off
-export class AutoBaseMatcher extends matcherBase(AutoBaseMatch) {
+export class AutoBaseMatcher extends AutoBaseMatcherBase {
   // clang-format on
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): AutoBaseMatch|null {
     if (node.name !== 'CallExpression' || matching.ast.text(node.getChild('Callee')) !== '-internal-auto-base') {
@@ -817,8 +833,9 @@ export class LinkableNameMatch implements Match {
   }
 }
 
+const LinkableNameMatcherBase: MatcherClass<LinkableNameMatch> = matcherBase(LinkableNameMatch);
 // clang-format off
-export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
+export class LinkableNameMatcher extends LinkableNameMatcherBase {
   // clang-format on
   private static isLinkableNameProperty(propertyName: string): propertyName is LinkableNameProperties {
     const names: string[] = [
@@ -833,29 +850,30 @@ export class LinkableNameMatcher extends matcherBase(LinkableNameMatch) {
     return names.includes(propertyName);
   }
 
-  static readonly identifierAnimationLonghandMap = new Map<string, AnimationLonghandPart>(
-      Object.entries({
-        normal: AnimationLonghandPart.DIRECTION,
-        alternate: AnimationLonghandPart.DIRECTION,
-        reverse: AnimationLonghandPart.DIRECTION,
-        'alternate-reverse': AnimationLonghandPart.DIRECTION,
-        none: AnimationLonghandPart.FILL_MODE,
-        forwards: AnimationLonghandPart.FILL_MODE,
-        backwards: AnimationLonghandPart.FILL_MODE,
-        both: AnimationLonghandPart.FILL_MODE,
-        running: AnimationLonghandPart.PLAY_STATE,
-        paused: AnimationLonghandPart.PLAY_STATE,
-        infinite: AnimationLonghandPart.ITERATION_COUNT,
-        linear: AnimationLonghandPart.EASING_FUNCTION,
-        ease: AnimationLonghandPart.EASING_FUNCTION,
-        'ease-in': AnimationLonghandPart.EASING_FUNCTION,
-        'ease-out': AnimationLonghandPart.EASING_FUNCTION,
-        'ease-in-out': AnimationLonghandPart.EASING_FUNCTION,
-        steps: AnimationLonghandPart.EASING_FUNCTION,
-        'step-start': AnimationLonghandPart.EASING_FUNCTION,
-        'step-end': AnimationLonghandPart.EASING_FUNCTION,
-      }),
-  );
+  static readonly identifierAnimationLonghandMap: Map<string, AnimationLonghandPart> =
+      new Map<string, AnimationLonghandPart>(
+          Object.entries({
+            normal: AnimationLonghandPart.DIRECTION,
+            alternate: AnimationLonghandPart.DIRECTION,
+            reverse: AnimationLonghandPart.DIRECTION,
+            'alternate-reverse': AnimationLonghandPart.DIRECTION,
+            none: AnimationLonghandPart.FILL_MODE,
+            forwards: AnimationLonghandPart.FILL_MODE,
+            backwards: AnimationLonghandPart.FILL_MODE,
+            both: AnimationLonghandPart.FILL_MODE,
+            running: AnimationLonghandPart.PLAY_STATE,
+            paused: AnimationLonghandPart.PLAY_STATE,
+            infinite: AnimationLonghandPart.ITERATION_COUNT,
+            linear: AnimationLonghandPart.EASING_FUNCTION,
+            ease: AnimationLonghandPart.EASING_FUNCTION,
+            'ease-in': AnimationLonghandPart.EASING_FUNCTION,
+            'ease-out': AnimationLonghandPart.EASING_FUNCTION,
+            'ease-in-out': AnimationLonghandPart.EASING_FUNCTION,
+            steps: AnimationLonghandPart.EASING_FUNCTION,
+            'step-start': AnimationLonghandPart.EASING_FUNCTION,
+            'step-end': AnimationLonghandPart.EASING_FUNCTION,
+          }),
+      );
 
   private matchAnimationNameInShorthand(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): LinkableNameMatch|
       null {
@@ -949,8 +967,9 @@ export class BezierMatch implements Match {
   }
 }
 
+const BezierMatcherBase: MatcherClass<BezierMatch> = matcherBase(BezierMatch);
 // clang-format off
-export class BezierMatcher extends matcherBase(BezierMatch) {
+export class BezierMatcher extends BezierMatcherBase {
   // clang-format on
   override accepts(propertyName: string): boolean {
     return cssMetadata().isBezierAwareProperty(propertyName);
@@ -975,8 +994,9 @@ export class StringMatch implements Match {
   }
 }
 
+const StringMatcherBase: MatcherClass<StringMatch> = matcherBase(StringMatch);
 // clang-format off
-export class StringMatcher extends matcherBase(StringMatch) {
+export class StringMatcher extends StringMatcherBase {
   // clang-format on
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): Match|null {
     return node.name === 'StringLiteral' ? new StringMatch(matching.ast.text(node), node) : null;
@@ -992,8 +1012,9 @@ export class ShadowMatch implements Match {
   }
 }
 
+const ShadowMatcherBase: MatcherClass<ShadowMatch> = matcherBase(ShadowMatch);
 // clang-format off
-export class ShadowMatcher extends matcherBase(ShadowMatch) {
+export class ShadowMatcher extends ShadowMatcherBase {
   // clang-format on
   override accepts(propertyName: string): boolean {
     return cssMetadata().isShadowProperty(propertyName);
@@ -1017,10 +1038,11 @@ export class LengthMatch implements Match {
   }
 }
 
+const LengthMatcherBase: MatcherClass<LengthMatch> = matcherBase(LengthMatch);
 // clang-format off
-export class LengthMatcher extends matcherBase(LengthMatch) {
+export class LengthMatcher extends LengthMatcherBase {
   // clang-format on
-  static readonly LENGTH_UNITS = new Set([
+  static readonly LENGTH_UNITS: Set<string> = new Set([
     'em',    'ex',    'ch',  'cap', 'ic',    'lh',    'rem',   'rex',   'rch',  'rlh',  'ric', 'rcap', 'pt',    'pc',
     'in',    'cm',    'mm',  'Q',   'vw',    'vh',    'vi',    'vb',    'vmin', 'vmax', 'dvw', 'dvh',  'dvi',   'dvb',
     'dvmin', 'dvmax', 'svw', 'svh', 'svi',   'svb',   'svmin', 'svmax', 'lvw',  'lvh',  'lvi', 'lvb',  'lvmin', 'lvmax',
@@ -1079,8 +1101,9 @@ export class MathFunctionMatch extends BaseFunctionMatch<MathFunction> {
   }
 }
 
+const MathFunctionMatcherBase: MatcherClass<MathFunctionMatch> = matcherBase(MathFunctionMatch);
 // clang-format off
-export class MathFunctionMatcher extends matcherBase(MathFunctionMatch) {
+export class MathFunctionMatcher extends MathFunctionMatcherBase {
   // clang-format on
   private static getFunctionType(callee: string|null): MathFunction|null {
     const maybeFunc = callee as MathFunction | null;
@@ -1125,8 +1148,9 @@ export class MathFunctionMatcher extends matcherBase(MathFunctionMatch) {
 
 export class CustomFunctionMatch extends BaseFunctionMatch<string> {}
 
+const CustomFunctionMatcherBase: MatcherClass<CustomFunctionMatch> = matcherBase(CustomFunctionMatch);
 // clang-format off
-export class CustomFunctionMatcher extends matcherBase(CustomFunctionMatch) {
+export class CustomFunctionMatcher extends CustomFunctionMatcherBase {
   // clang-format on
 
   override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): CustomFunctionMatch|null {
@@ -1157,12 +1181,13 @@ export class FlexGridGridLanesMatch implements Match {
   }
 }
 
+const FlexGridGridLanesMatcherBase: MatcherClass<FlexGridGridLanesMatch> = matcherBase(FlexGridGridLanesMatch);
 // clang-format off
-export class FlexGridGridLanesMatcher extends matcherBase(FlexGridGridLanesMatch) {
+export class FlexGridGridLanesMatcher extends FlexGridGridLanesMatcherBase {
   // clang-format on
-  static readonly FLEX = ['flex', 'inline-flex', 'block flex', 'inline flex'];
-  static readonly GRID = ['grid', 'inline-grid', 'block grid', 'inline grid'];
-  static readonly GRID_LANES = ['grid-lanes', 'inline-grid-lanes', 'block grid-lanes', 'inline grid-lanes'];
+  static readonly FLEX: string[] = ['flex', 'inline-flex', 'block flex', 'inline flex'];
+  static readonly GRID: string[] = ['grid', 'inline-grid', 'block grid', 'inline grid'];
+  static readonly GRID_LANES: string[] = ['grid-lanes', 'inline-grid-lanes', 'block grid-lanes', 'inline grid-lanes'];
   override accepts(propertyName: string): boolean {
     return propertyName === 'display';
   }
@@ -1197,8 +1222,9 @@ export class GridTemplateMatch implements Match {
   }
 }
 
+const GridTemplateMatcherBase: MatcherClass<GridTemplateMatch> = matcherBase(GridTemplateMatch);
 // clang-format off
-export class GridTemplateMatcher extends matcherBase(GridTemplateMatch) {
+export class GridTemplateMatcher extends GridTemplateMatcherBase {
   // clang-format on
   override accepts(propertyName: string): boolean {
     return cssMetadata().isGridAreaDefiningProperty(propertyName);
@@ -1293,8 +1319,9 @@ export class AnchorFunctionMatch implements Match {
   }
 }
 
+const AnchorFunctionMatcherBase: MatcherClass<AnchorFunctionMatch> = matcherBase(AnchorFunctionMatch);
 // clang-format off
-export class AnchorFunctionMatcher extends matcherBase(AnchorFunctionMatch) {
+export class AnchorFunctionMatcher extends AnchorFunctionMatcherBase {
   // clang-format on
   anchorFunction(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): string|null {
     if (node.name !== 'CallExpression') {
@@ -1343,8 +1370,9 @@ export class PositionAnchorMatch implements Match {
   }
 }
 
+const PositionAnchorMatcherBase: MatcherClass<PositionAnchorMatch> = matcherBase(PositionAnchorMatch);
 // clang-format off
-export class PositionAnchorMatcher extends matcherBase(PositionAnchorMatch) {
+export class PositionAnchorMatcher extends PositionAnchorMatcherBase {
   // clang-format on
   override accepts(propertyName: string): boolean {
     return propertyName === 'position-anchor';
@@ -1373,8 +1401,9 @@ export class CSSWideKeywordMatch implements Match {
   }
 }
 
+const CSSWideKeywordMatcherBase: MatcherClass<CSSWideKeywordMatch> = matcherBase(CSSWideKeywordMatch);
 // clang-format off
-export class CSSWideKeywordMatcher extends matcherBase(CSSWideKeywordMatch) {
+export class CSSWideKeywordMatcher extends CSSWideKeywordMatcherBase {
   // clang-format on
   constructor(readonly property: CSSProperty, readonly matchedStyles: CSSMatchedStyles) {
     super();
@@ -1407,8 +1436,9 @@ export class PositionTryMatch implements Match {
   }
 }
 
+const PositionTryMatcherBase: MatcherClass<PositionTryMatch> = matcherBase(PositionTryMatch);
 // clang-format off
-export class PositionTryMatcher extends matcherBase(PositionTryMatch) {
+export class PositionTryMatcher extends PositionTryMatcherBase {
   // clang-format on
   override accepts(propertyName: string): boolean {
     return propertyName === LinkableNameProperties.POSITION_TRY ||
@@ -1452,8 +1482,9 @@ export class EnvFunctionMatch implements Match {
   }
 }
 
+const EnvFunctionMatcherBase: MatcherClass<EnvFunctionMatch> = matcherBase(EnvFunctionMatch);
 // clang-format off
-export class EnvFunctionMatcher extends matcherBase(EnvFunctionMatch) {
+export class EnvFunctionMatcher extends EnvFunctionMatcherBase {
   // clang-format on
   constructor(readonly matchedStyles: CSSMatchedStyles) {
     super();

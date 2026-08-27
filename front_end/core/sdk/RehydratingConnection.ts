@@ -97,7 +97,7 @@ export class RehydratingConnectionTransport implements ProtocolClient.Connection
   onDisconnect: ((arg0: string) => void)|null = null;
   onMessage: ((arg0: Object) => void)|null = null;
   trace: TraceObject|null = null;
-  sessions = new Map<number, RehydratingSessionBase>();
+  sessions: Map<number, RehydratingSessionBase> = new Map<number, RehydratingSessionBase>();
   /**
    * Set to the in-flight `traceURL` fetch (including its hydration/error handling) so tests can await
    * the load deterministically. Stays `undefined` when loading via message passing, or when a

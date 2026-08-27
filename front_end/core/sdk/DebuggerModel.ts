@@ -134,7 +134,7 @@ export const enum StepMode {
   STEP_OVER = 'StepOver',
 }
 
-export const WASM_SYMBOLS_PRIORITY = [
+export const WASM_SYMBOLS_PRIORITY: Protocol.Debugger.DebugSymbolsType[] = [
   Protocol.Debugger.DebugSymbolsType.ExternalDWARF,
   Protocol.Debugger.DebugSymbolsType.EmbeddedDWARF,
   Protocol.Debugger.DebugSymbolsType.SourceMap,

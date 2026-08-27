@@ -86,7 +86,7 @@ export class StickyPositionConstraint {
 export class LayerTreeBase {
   readonly #target: Target|null;
   #domModel: DOMModel|null;
-  layersById = new Map<string|number, Layer>();
+  layersById: Map<string|number, Layer> = new Map<string|number, Layer>();
   #root: Layer|null = null;
   #contentRoot: Layer|null = null;
   readonly #backendNodeIdToNode = new Map<Protocol.DOM.BackendNodeId, DOMNode|null>();

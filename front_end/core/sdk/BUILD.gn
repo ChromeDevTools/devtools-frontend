@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_module("sdk") {
+  split_compilation = true
   sources = [
     "AccessibilityModel.ts",
     "AnimationModel.ts",
@@ -98,7 +99,7 @@ devtools_module("sdk") {
     "WebAuthnModel.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -115,9 +116,10 @@ devtools_module("sdk") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "sdk.ts"
 
-  deps = [
+  ts_deps = [
     ":sdk",
     "../../generated",
   ]

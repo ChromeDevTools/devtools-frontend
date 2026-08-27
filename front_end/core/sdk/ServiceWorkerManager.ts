@@ -514,21 +514,23 @@ export class ServiceWorkerVersion {
 }
 
 export namespace ServiceWorkerVersion {
-  export const RunningStatus = {
-    [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running]: i18nLazyString(UIStrings.running),
-    [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Starting]: i18nLazyString(UIStrings.starting),
-    [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped]: i18nLazyString(UIStrings.stopped),
-    [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopping]: i18nLazyString(UIStrings.stopping),
-  };
+  export const RunningStatus:
+      Record<Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus, () => Platform.UIString.LocalizedString> = {
+        [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Running]: i18nLazyString(UIStrings.running),
+        [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Starting]: i18nLazyString(UIStrings.starting),
+        [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopped]: i18nLazyString(UIStrings.stopped),
+        [Protocol.ServiceWorker.ServiceWorkerVersionRunningStatus.Stopping]: i18nLazyString(UIStrings.stopping),
+      };
 
-  export const Status = {
-    [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated]: i18nLazyString(UIStrings.activated),
-    [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating]: i18nLazyString(UIStrings.activating),
-    [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed]: i18nLazyString(UIStrings.installed),
-    [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing]: i18nLazyString(UIStrings.installing),
-    [Protocol.ServiceWorker.ServiceWorkerVersionStatus.New]: i18nLazyString(UIStrings.new),
-    [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant]: i18nLazyString(UIStrings.redundant),
-  };
+  export const Status:
+      Record<Protocol.ServiceWorker.ServiceWorkerVersionStatus, () => Platform.UIString.LocalizedString> = {
+        [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activated]: i18nLazyString(UIStrings.activated),
+        [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Activating]: i18nLazyString(UIStrings.activating),
+        [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installed]: i18nLazyString(UIStrings.installed),
+        [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Installing]: i18nLazyString(UIStrings.installing),
+        [Protocol.ServiceWorker.ServiceWorkerVersionStatus.New]: i18nLazyString(UIStrings.new),
+        [Protocol.ServiceWorker.ServiceWorkerVersionStatus.Redundant]: i18nLazyString(UIStrings.redundant),
+      };
 
   export const enum Modes {
     INSTALLING = 'installing',
@@ -544,7 +546,7 @@ export class ServiceWorkerRegistration {
   scopeURL!: Platform.DevToolsPath.UrlString;
   securityOrigin!: Platform.DevToolsPath.UrlString;
   isDeleted!: boolean;
-  versions = new Map<string, ServiceWorkerVersion>();
+  versions: Map<string, ServiceWorkerVersion> = new Map<string, ServiceWorkerVersion>();
   deleting = false;
   errors: Protocol.ServiceWorker.ServiceWorkerErrorMessage[] = [];
 

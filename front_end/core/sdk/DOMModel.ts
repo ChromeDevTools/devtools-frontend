@@ -64,7 +64,7 @@ export const enum NodeType {
 }
 
 /** Keep this list in sync with https://w3c.github.io/aria/#state_prop_def **/
-export const ARIA_ATTRIBUTES = new Set<string>([
+export const ARIA_ATTRIBUTES: Set<string> = new Set<string>([
   'role',
   'aria-activedescendant',
   'aria-atomic',
@@ -1623,8 +1623,8 @@ export class AdoptedStyleSheet {
 
 export class DOMModel extends SDKModel<EventTypes> {
   agent: ProtocolProxyApi.DOMApi;
-  idToDOMNode = new Map<Protocol.DOM.NodeId, DOMNode>();
-  frameIdToOwnerNode = new Map<Protocol.Page.FrameId, DOMNode>();
+  idToDOMNode: Map<Protocol.DOM.NodeId, DOMNode> = new Map<Protocol.DOM.NodeId, DOMNode>();
+  frameIdToOwnerNode: Map<Protocol.Page.FrameId, DOMNode> = new Map<Protocol.Page.FrameId, DOMNode>();
   #document: DOMDocument|null = null;
   readonly #attributeLoadNodeIds = new Set<Protocol.DOM.NodeId>();
   readonly runtimeModelInternal: RuntimeModel;

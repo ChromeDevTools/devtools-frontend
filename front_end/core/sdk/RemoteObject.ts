@@ -956,7 +956,7 @@ export class RemoteArrayBuffer {
     return this.#object.arrayBufferByteLength();
   }
 
-  async bytes(start = 0, end = this.byteLength()): Promise<number[]|null> {
+  async bytes(start = 0, end: number = this.byteLength()): Promise<number[]|null> {
     if (start < 0 || start >= this.byteLength()) {
       throw new RangeError('start is out of range');
     }

@@ -26,7 +26,7 @@ export class ResourceTreeModel extends SDKModel<EventTypes> {
   readonly #securityOriginManager: SecurityOriginManager;
   readonly #storageKeyManager: StorageKeyManager;
   readonly #frameManager: FrameManager;
-  readonly framesInternal = new Map<string, ResourceTreeFrame>();
+  readonly framesInternal: Map<string, ResourceTreeFrame> = new Map<string, ResourceTreeFrame>();
   #cachedResourcesProcessed = false;
   #pendingReloadOptions: {
     ignoreCache: (boolean|undefined),
@@ -660,7 +660,7 @@ export class ResourceTreeFrame {
   #creationStackTrace: Protocol.Runtime.StackTrace|null;
   #creationStackTraceTarget: Target|null = null;
   #childFrames = new Set<ResourceTreeFrame>();
-  resourcesMap = new Map<Platform.DevToolsPath.UrlString, Resource>();
+  resourcesMap: Map<Platform.DevToolsPath.UrlString, Resource> = new Map<Platform.DevToolsPath.UrlString, Resource>();
   backForwardCacheDetails: {
     explanations: Protocol.Page.BackForwardCacheNotRestoredExplanation[],
     restoredFromCache?: boolean,

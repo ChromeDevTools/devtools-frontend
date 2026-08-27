@@ -2202,7 +2202,7 @@ export class MultitargetNetworkManager extends Common.ObjectWrapper.ObjectWrappe
   #userAgentMetadataOverride: Protocol.Emulation.UserAgentMetadata|null = null;
   readonly #networkAgents = new Set<ProtocolProxyApi.NetworkApi>();
   readonly #fetchAgents = new Set<ProtocolProxyApi.FetchApi>();
-  readonly inflightMainResourceRequests = new Map<string, NetworkRequest>();
+  readonly inflightMainResourceRequests: Map<string, NetworkRequest> = new Map<string, NetworkRequest>();
   #networkConditions: Conditions = NoThrottlingConditions;
   #updatingInterceptionPatternsPromise: Promise<void>|null = null;
   readonly #requestConditions: RequestConditions;

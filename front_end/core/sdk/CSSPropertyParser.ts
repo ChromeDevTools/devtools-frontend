@@ -189,8 +189,10 @@ export interface Matcher<MatchT extends Match> {
   matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): MatchT|null;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function matcherBase<MatchT extends Match>(matchT: Platform.Constructor.ConstructorOrAbstract<MatchT>) {
+export type MatcherClass<MatchT extends Match> = Platform.Constructor.Constructor<Matcher<MatchT>>;
+
+export function matcherBase<MatchT extends Match>(matchT: Platform.Constructor.ConstructorOrAbstract<MatchT>):
+    MatcherClass<MatchT> {
   class MatcherBase implements Matcher<MatchT> {
     matchType = matchT;
     accepts(_propertyName: string): boolean {
@@ -508,7 +510,7 @@ export function requiresSpace(a: Node[]|string|undefined, b: Node[]|string|undef
       !noSpaceBefore.includes(leadingChar);
 }
 
-export const CSSControlMap = Map<string, HTMLElement[]>;
+export const CSSControlMap: MapConstructor = Map;
 export type CSSControlMap = Map<string, HTMLElement[]>;
 export namespace ASTUtils {
   export function siblings(node: CodeMirror.SyntaxNode|null): CodeMirror.SyntaxNode[] {

@@ -14,7 +14,7 @@ export interface RegistrationInfo {
 
 export type SDKModelConstructor<T extends SDKModel = SDKModel> = new (target: Target) => T;
 
-const registeredModels = new Map<SDKModelConstructor, RegistrationInfo>();
+const registeredModels: Map<SDKModelConstructor, RegistrationInfo> = new Map<SDKModelConstructor, RegistrationInfo>();
 
 // TODO(crbug.com/1228674) Remove defaults for generic type parameters once
 //                         all event emitters and sinks have been migrated.

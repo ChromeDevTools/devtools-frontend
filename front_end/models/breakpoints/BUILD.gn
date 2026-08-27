@@ -8,9 +8,10 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("breakpoints") {
+  split_compilation = true
   sources = [ "BreakpointManager.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/root:bundle",
@@ -25,9 +26,10 @@ devtools_module("breakpoints") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "breakpoints.ts"
 
-  deps = [ ":breakpoints" ]
+  ts_deps = [ ":breakpoints" ]
 
   visibility = [
     ":*",
@@ -50,10 +52,11 @@ devtools_entrypoint("bundle") {
 
 ts_library("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [ "BreakpointManager.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../extension-api",
     "../../core/common:bundle",

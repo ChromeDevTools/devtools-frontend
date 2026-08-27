@@ -510,7 +510,7 @@ export class Breakpoint implements SDK.TargetManager.SDKModelObserver<SDK.Debugg
   /** Bound locations */
   readonly #uiLocations = new Set<Workspace.UISourceCode.UILocation>();
   /** All known UISourceCodes with this url. This also includes UISourceCodes for the inline scripts embedded in a resource with this URL. */
-  readonly uiSourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
+  readonly uiSourceCodes: Set<Workspace.UISourceCode.UISourceCode> = new Set<Workspace.UISourceCode.UISourceCode>();
   #storageState!: BreakpointStorageState;
   #origin: BreakpointOrigin;
   isRemoved = false;

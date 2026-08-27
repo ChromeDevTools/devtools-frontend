@@ -20,6 +20,7 @@
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
 
+    "preserveConstEnums": true,
     "composite": true,
     "declaration": true,
 

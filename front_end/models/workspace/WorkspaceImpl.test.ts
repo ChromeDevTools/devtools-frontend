@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -36,6 +37,42 @@ describe('WorkspaceImpl', () => {
     sut.uiSourceCodeForURL(exampleUrl);
 
     assert.isTrue(projectStub.uiSourceCodeForURL.calledOnceWith(exampleUrl));
+  });
+
+  it('can return the UI source code from a URL matching security origin', async () => {
+    const sut = new Workspace.Workspace.WorkspaceImpl();
+    const exampleUrl = urlString`https://example.com/`;
+    const uiSourceCodeStub = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
+
+    const trustedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://trust.example.com');
+    const projectStub = sinon.createStubInstance(Bindings.ContentProviderBasedProject.ContentProviderBasedProject);
+    projectStub.id.returns('test-project');
+    projectStub.securityOrigin.returns(trustedOrigin);
+    projectStub.uiSourceCodeForURL.withArgs(exampleUrl).returns(uiSourceCodeStub);
+    sut.addProject(projectStub);
+
+    const result =
+        sut.uiSourceCodeForURL(exampleUrl, SDK.SecurityOrigin.SecurityOrigin.create('https://trust.example.com'));
+
+    assert.strictEqual(result, uiSourceCodeStub);
+  });
+
+  it('skips UI source codes from a URL if security origin does not match', async () => {
+    const sut = new Workspace.Workspace.WorkspaceImpl();
+    const exampleUrl = urlString`https://example.com/`;
+    const uiSourceCodeStub = sinon.createStubInstance(Workspace.UISourceCode.UISourceCode);
+
+    const evilOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://evil.example.com');
+    const projectStub1 = sinon.createStubInstance(Bindings.ContentProviderBasedProject.ContentProviderBasedProject);
+    projectStub1.id.returns('evil-project');
+    projectStub1.securityOrigin.returns(evilOrigin);
+    projectStub1.uiSourceCodeForURL.withArgs(exampleUrl).returns(uiSourceCodeStub);
+    sut.addProject(projectStub1);
+
+    const result =
+        sut.uiSourceCodeForURL(exampleUrl, SDK.SecurityOrigin.SecurityOrigin.create('https://trust.example.com'));
+
+    assert.isNull(result);
   });
 
   it('can return the UI source code from project type', async () => {

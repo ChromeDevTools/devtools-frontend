@@ -6,6 +6,7 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 
@@ -56,6 +57,10 @@ export class FileSystem implements Workspace.Workspace.Project {
 
   isServiceProject(): boolean {
     return false;
+  }
+
+  securityOrigin(): SDK.SecurityOrigin.SecurityOrigin|null {
+    return null;
   }
 
   displayName(): string {

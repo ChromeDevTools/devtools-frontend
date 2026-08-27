@@ -79,6 +79,7 @@ devtools_module("sdk") {
     "ScopeTreeCache.ts",
     "ScreenCaptureModel.ts",
     "Script.ts",
+    "SecurityOrigin.ts",
     "SecurityOriginManager.ts",
     "ServerSentEvents.ts",
     "ServerSentEventsProtocol.ts",

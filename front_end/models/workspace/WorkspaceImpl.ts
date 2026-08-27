@@ -5,6 +5,7 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../../core/text_utils/text_utils.js';
 
 import type {SearchConfig} from './SearchConfig.js';
@@ -15,6 +16,7 @@ export interface Project {
   id(): string;
   type(): projectTypes;
   isServiceProject(): boolean;
+  securityOrigin(): SDK.SecurityOrigin.SecurityOrigin|null;
   displayName(): string;
   requestMetadata(uiSourceCode: UISourceCode): Promise<UISourceCodeMetadata|null>;
   requestFileContent(uiSourceCode: UISourceCode): Promise<TextUtils.ContentData.ContentDataOrError>;
@@ -73,13 +75,16 @@ export abstract class ProjectStore implements Project {
   readonly #id: string;
   readonly #type: projectTypes;
   readonly #displayName: string;
+  readonly #securityOrigin: SDK.SecurityOrigin.SecurityOrigin|null;
   readonly #uiSourceCodes = new Map<Platform.DevToolsPath.UrlString, UISourceCode>();
 
-  constructor(workspace: WorkspaceImpl, id: string, type: projectTypes, displayName: string) {
+  constructor(workspace: WorkspaceImpl, id: string, type: projectTypes, displayName: string,
+              securityOrigin?: SDK.SecurityOrigin.SecurityOrigin) {
     this.#workspace = workspace;
     this.#id = id;
     this.#type = type;
     this.#displayName = displayName;
+    this.#securityOrigin = securityOrigin ?? null;
   }
 
   id(): string {
@@ -92,6 +97,10 @@ export abstract class ProjectStore implements Project {
 
   displayName(): string {
     return this.#displayName;
+  }
+
+  securityOrigin(): SDK.SecurityOrigin.SecurityOrigin|null {
+    return this.#securityOrigin;
   }
 
   workspace(): WorkspaceImpl {
@@ -206,8 +215,15 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<EventTypes
     return project ? project.uiSourceCodeForURL(url) : null;
   }
 
-  uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString): UISourceCode|null {
+  uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString,
+                     targetOrigin?: SDK.SecurityOrigin.SecurityOrigin): UISourceCode|null {
     for (const project of this.#projects.values()) {
+      if (targetOrigin !== undefined) {
+        const projectOrigin = project.securityOrigin();
+        if (projectOrigin === null || !projectOrigin.isSameOriginWith(targetOrigin)) {
+          continue;
+        }
+      }
       const uiSourceCode = project.uiSourceCodeForURL(url);
       if (uiSourceCode) {
         return uiSourceCode;

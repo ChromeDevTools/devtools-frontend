@@ -49,7 +49,7 @@ template("devtools_entrypoint_split") {
     bundle(_bundle_target) {
       entrypoint = invoker.entrypoint
       output_file_location = "$target_gen_dir/$_file_name.js"
-      deps = [ ":$_ts_target" ]
+      deps = []
       forward_variables_from(invoker, [ "testonly" ])
       if (defined(invoker.deps)) {
         deps += invoker.deps

@@ -117,7 +117,6 @@ def _CheckWithNodeScript(input_api,
                          output_api,
                          script_path,
                          script_arguments=None,
-                         allow_typescript=False,
                          message=None):
     original_sys_path = sys.path
     try:
@@ -256,7 +255,6 @@ def CheckDevToolsLint(input_api, output_api):
                              output_api,
                              lint_path,
                              script_arguments=files_to_lint,
-                             allow_typescript=True,
                              message="Lint"))
 
     results.extend(_CheckFormat(input_api, output_api))

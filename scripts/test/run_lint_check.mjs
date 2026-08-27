@@ -2,14 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import { ESLint } from 'eslint';
+import {ESLint} from 'eslint';
 import {globbySync} from 'globby';
-import { spawn } from 'node:child_process';
-import { readFileSync } from 'node:fs';
-import { extname, join, resolve, relative } from 'node:path';
+import {spawn} from 'node:child_process';
+import {readFileSync} from 'node:fs';
+import {extname, join, resolve, relative} from 'node:path';
 import stylelint from 'stylelint';
 import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
+import {hideBin} from 'yargs/helpers';
 
 import {
   devtoolsRootPath,
@@ -68,7 +68,7 @@ if (flags.debug) {
   console.log('[lint]: Cache disabled, linting may take longer.');
 }
 const linterFixer = flags.fix && !flags.lintOnly;
-const cacheLinters = !flags.debug || flags.lintOnly;
+const cacheLinters = !flags.debug && !flags.lintOnly;
 
 const LIT_ANALYZER_EXCLUDED_FOLDERS = [
   'front_end/core',
@@ -91,7 +91,7 @@ function debugLogging(messages, ...args) {
 
 async function runESLint(scriptFiles) {
   if (scriptFiles.length === 0) {
-    return { status: true, output: '' };
+    return {status: true, output: ''};
   }
   const messages = [];
   debugLogging(messages, '[lint]: Running EsLint...');
@@ -122,7 +122,7 @@ async function runESLint(scriptFiles) {
     // This can happen only if we pass things that will
     // be ignored by the above filter
     // https://github.com/eslint/eslint/pull/17644
-    return { status: true, output: messages.join('\n') };
+    return {status: true, output: messages.join('\n')};
   }
 
   const results = await cli.lintFiles(files);
@@ -132,7 +132,7 @@ async function runESLint(scriptFiles) {
   );
   if (usedDeprecatedRules.length) {
     messages.push('Used deprecated rules:');
-    for (const { ruleId, replacedBy } of usedDeprecatedRules) {
+    for (const {ruleId, replacedBy} of usedDeprecatedRules) {
       messages.push(
         ` Rule ${ruleId} can be replaced with ${replacedBy.join(',') ?? 'none'}`,
       );
@@ -168,11 +168,11 @@ async function runESLint(scriptFiles) {
 
 async function runStylelint(files) {
   if (files.length === 0) {
-    return { status: true, output: '' };
+    return {status: true, output: ''};
   }
   const messages = [];
   debugLogging(messages, '[lint]: Running StyleLint...');
-  const { report, errored } = await stylelint.lint({
+  const {report, errored} = await stylelint.lint({
     configFile: join(import.meta.dirname, '..', '..', '.stylelintrc.json'),
     ignorePath: join(import.meta.dirname, '..', '..', '.stylelintignore'),
     fix: linterFixer,
@@ -186,7 +186,7 @@ async function runStylelint(files) {
     messages.push(report);
   }
 
-  return { status: !errored, output: messages.join('\n') };
+  return {status: !errored, output: messages.join('\n')};
 }
 
 /**
@@ -199,16 +199,16 @@ async function runStylelint(files) {
  */
 async function runLitAnalyzer(files) {
   if (files.length === 0) {
-    return { status: true, output: '' };
+    return {status: true, output: ''};
   }
   const messages = [];
   debugLogging(messages, '[lint]: Running LitAnalyzer...');
 
   const readLitAnalyzerConfigFromCompilerOptions = () => {
-    const { compilerOptions } = JSON.parse(
+    const {compilerOptions} = JSON.parse(
       readFileSync(tsconfigJsonPath(), 'utf-8'),
     );
-    const { plugins } = compilerOptions;
+    const {plugins} = compilerOptions;
     const tsLitPluginOptions = plugins.find(
       plugin => plugin.name === 'ts-lit-plugin',
     );
@@ -220,7 +220,7 @@ async function runLitAnalyzer(files) {
     return tsLitPluginOptions;
   };
 
-  const { rules } = readLitAnalyzerConfigFromCompilerOptions();
+  const {rules} = readLitAnalyzerConfigFromCompilerOptions();
   const getLitAnalyzerResult = async subsetFiles => {
     const args = [
       litAnalyzerExecutablePath(),
@@ -296,7 +296,7 @@ async function runLitAnalyzer(files) {
     }
   }
 
-  return { status: results.every(r => r.status), output: messages.join('\n') };
+  return {status: results.every(r => r.status), output: messages.join('\n')};
 }
 
 const DEVTOOLS_ROOT_DIR = resolve(import.meta.dirname, '..', '..');
@@ -439,7 +439,7 @@ async function run() {
       succeed = false;
       continue;
     }
-    const { status, output } = result.value;
+    const {status, output} = result.value;
     succeed &&= status;
     if (output) {
       console.log(output);

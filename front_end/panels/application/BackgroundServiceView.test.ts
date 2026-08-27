@@ -20,6 +20,7 @@ describeWithEnvironment('BackgroundServiceView', () => {
   let target: SDK.Target.Target;
   let backgroundServiceModel: Resources.BackgroundServiceModel.BackgroundServiceModel|null;
   let manager: SDK.StorageKeyManager.StorageKeyManager|null|undefined;
+  let securityOriginManager: SDK.SecurityOriginManager.SecurityOriginManager|null|undefined;
   let view: Resources.BackgroundServiceView.BackgroundServiceView;
 
   const BACKGROUND_SERVICE_EVENT = {
@@ -37,6 +38,7 @@ describeWithEnvironment('BackgroundServiceView', () => {
     target = createTarget();
     backgroundServiceModel = target.model(Resources.BackgroundServiceModel.BackgroundServiceModel);
     manager = target.model(SDK.StorageKeyManager.StorageKeyManager);
+    securityOriginManager = target.model(SDK.SecurityOriginManager.SecurityOriginManager);
     registerActions([{
       actionId: 'background-service.toggle-recording',
       category: UI.ActionRegistration.ActionCategory.BACKGROUND_SERVICES,
@@ -172,5 +174,134 @@ describeWithEnvironment('BackgroundServiceView', () => {
     view.getDataGrid().asWidget().dataGrid.element.focus();
 
     await assertScreenshot('application/background_service_view.png');
+  });
+
+  it('shows events in the grid and filters by service and origin', async () => {
+    assert.exists(backgroundServiceModel);
+    assert.exists(securityOriginManager);
+
+    backgroundServiceModel.enable(Protocol.BackgroundService.ServiceName.BackgroundSync);
+    securityOriginManager.updateSecurityOrigins(new Set(['http://127.0.0.1:8000']));
+
+    // Initially grid is empty.
+    let dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    assert.lengthOf(dataRows, 0);
+
+    // Event for BackgroundFetch from matching origin.
+    const event1: Protocol.BackgroundService.BackgroundServiceEvent = {
+      timestamp: 1556889085,  // 2019-05-03 14:11:25.000.
+      origin: 'http://127.0.0.1:8000/',
+      serviceWorkerRegistrationId: '42' as Protocol.ServiceWorker.RegistrationID,
+      service: Protocol.BackgroundService.ServiceName.BackgroundFetch,
+      eventName: 'Event1',
+      instanceId: 'Instance1',
+      eventMetadata: [],
+      storageKey: 'testKey',
+    };
+    backgroundServiceModel.backgroundServiceEventReceived({backgroundServiceEvent: event1});
+    await view.updateComplete;
+
+    dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    assert.lengthOf(dataRows, 1);
+    const getRowValues = (row: Element) =>
+        Array.from(row.querySelectorAll('td:not(.corner)')).map(td => td.textContent);
+    assert.deepEqual(getRowValues(dataRows[0]), [
+      '1',
+      UI.UIUtils.formatTimestamp(1556889085 * 1000, true),
+      'Event1',
+      'http://127.0.0.1:8000/',
+      'testKey',
+      '',
+      'Instance1',
+    ]);
+
+    // Event from a different service is ignored.
+    const eventDifferentService: Protocol.BackgroundService.BackgroundServiceEvent = {
+      timestamp: 1556889085,
+      origin: 'http://127.0.0.1:8000/',
+      serviceWorkerRegistrationId: '42' as Protocol.ServiceWorker.RegistrationID,
+      service: Protocol.BackgroundService.ServiceName.BackgroundSync,
+      eventName: 'Event1',
+      instanceId: 'Instance2',
+      eventMetadata: [],
+      storageKey: 'testKey',
+    };
+    backgroundServiceModel.backgroundServiceEventReceived({backgroundServiceEvent: eventDifferentService});
+    await view.updateComplete;
+
+    dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    assert.lengthOf(dataRows, 1);
+
+    // Event from a different origin is ignored by default.
+    const eventDifferentOrigin: Protocol.BackgroundService.BackgroundServiceEvent = {
+      timestamp: 1556889085,
+      origin: 'http://127.0.0.1:8080/',
+      serviceWorkerRegistrationId: '42' as Protocol.ServiceWorker.RegistrationID,
+      service: Protocol.BackgroundService.ServiceName.BackgroundFetch,
+      eventName: 'Event2',
+      instanceId: 'Instance1',
+      eventMetadata: [],
+      storageKey: 'testKey',
+    };
+    backgroundServiceModel.backgroundServiceEventReceived({backgroundServiceEvent: eventDifferentOrigin});
+    await view.updateComplete;
+
+    dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    assert.lengthOf(dataRows, 1);
+
+    // The event from a different origin should show up when the origin checkbox is checked.
+    const originCheckbox = view.contentElement.querySelectorAll<UI.UIUtils.CheckboxLabel>('devtools-checkbox')[0];
+    assert.exists(originCheckbox);
+    originCheckbox.checked = true;
+    dispatchClickEvent(originCheckbox);
+    await view.updateComplete;
+
+    dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    assert.lengthOf(dataRows, 2);
+    assert.deepEqual(getRowValues(dataRows[0]), [
+      '1',
+      UI.UIUtils.formatTimestamp(1556889085 * 1000, true),
+      'Event1',
+      'http://127.0.0.1:8000/',
+      'testKey',
+      '',
+      'Instance1',
+    ]);
+    assert.deepEqual(getRowValues(dataRows[1]), [
+      '2',
+      UI.UIUtils.formatTimestamp(1556889085 * 1000, true),
+      'Event2',
+      'http://127.0.0.1:8080/',
+      'testKey',
+      '',
+      'Instance1',
+    ]);
+
+    // Unchecking the origin checkbox removes it again.
+    originCheckbox.checked = false;
+    dispatchClickEvent(originCheckbox);
+    await view.updateComplete;
+
+    dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    assert.lengthOf(dataRows, 1);
+    assert.deepEqual(getRowValues(dataRows[0]), [
+      '1',
+      UI.UIUtils.formatTimestamp(1556889085 * 1000, true),
+      'Event1',
+      'http://127.0.0.1:8000/',
+      'testKey',
+      '',
+      'Instance1',
+    ]);
+
+    // Clicking the clear button clears events.
+    const clearButton = view.contentElement.querySelector('devtools-button[aria-label="Clear"]');
+    assert.exists(clearButton);
+    dispatchClickEvent(clearButton);
+    await view.updateComplete;
+
+    dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    assert.lengthOf(dataRows, 0);
+    assertEmptyState('No recording yet');
   });
 });

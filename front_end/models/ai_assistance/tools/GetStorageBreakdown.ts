@@ -74,11 +74,11 @@ export class GetStorageBreakdownTool implements
     const sessionStorages =
         resolveDOMStorages(pageOrigin, 'sessionStorage', targetManager, primaryPageTarget, mainStorageKey);
 
-    const [response, localStorageBytes, sessionStorageBytes, cookies] = await Promise.all([
+    const [response, localStorageBytes, sessionStorageBytes, cookieResult] = await Promise.all([
       primaryPageTarget.storageAgent().invoke_getUsageAndQuota({origin: pageOrigin}),
       calculateDOMStoragesUsage(localStorages),
       calculateDOMStoragesUsage(sessionStorages),
-      getCookiesForOrigin(primaryPageTarget, pageOrigin),
+      getCookiesForOrigin(pageOrigin, targetManager, primaryPageTarget),
     ]);
 
     if (response.getError()) {
@@ -86,8 +86,8 @@ export class GetStorageBreakdownTool implements
     }
 
     let cookieBytes = 0;
-    if (cookies) {
-      for (const cookie of cookies) {
+    if ('cookies' in cookieResult) {
+      for (const cookie of cookieResult.cookies) {
         cookieBytes += cookie.size();
       }
     }

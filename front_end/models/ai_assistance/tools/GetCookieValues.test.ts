@@ -274,7 +274,7 @@ describe('GetCookieValuesTool', () => {
     assertIsResult(response);
     assert.deepEqual(response.result.cookiesByOrigin, {
       'https://example.com': {
-        error: 'Frame not found or origin disallowed',
+        error: 'Frame not found or origin disallowed for https://example.com',
       },
     });
   });
@@ -309,7 +309,7 @@ describe('GetCookieValuesTool', () => {
     assertIsResult(response);
     assert.deepEqual(response.result.cookiesByOrigin, {
       'https://example.com': {
-        error: 'Frame not found or origin disallowed',
+        error: 'Frame not found or origin disallowed for https://example.com',
       },
     });
   });
@@ -455,7 +455,7 @@ describe('GetCookieValuesTool', () => {
     assertIsResult(response);
     assert.deepEqual(response.result.cookiesByOrigin, {
       'https://example.com': {
-        cookies: [],
+        error: 'Cookie model not found for https://example.com',
       },
     });
   });
@@ -476,7 +476,7 @@ describe('GetCookieValuesTool', () => {
     assertIsResult(response);
     assert.deepEqual(response.result.cookiesByOrigin, {
       'https://example.com': {
-        cookies: [],
+        error: 'Failed to fetch cookies for https://example.com',
       },
     });
   });

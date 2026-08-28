@@ -45,6 +45,16 @@ describe('GetStorageBreakdownTool', () => {
     };
   }
 
+  function createMockFrame(
+      origin: string,
+      resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel,
+      ): sinon.SinonStubbedInstance<SDK.ResourceTreeModel.ResourceTreeFrame> {
+    const mockFrame = sinon.createStubInstance(SDK.ResourceTreeModel.ResourceTreeFrame);
+    sinon.stub(mockFrame, 'securityOrigin').get(() => origin);
+    mockFrame.resourceTreeModel.returns(resourceTreeModel);
+    return mockFrame;
+  }
+
   function setupPrimaryTarget(options?: {
     origin?: string,
     cdpBreakdown?: Protocol.Storage.UsageForType[],
@@ -74,6 +84,11 @@ describe('GetStorageBreakdownTool', () => {
     const primaryTarget = universe.createTarget({url: urlString`${origin}/`, connection: cdpConnection});
     primaryTarget.setInspectedURL(urlString`${origin}/`);
     sinon.stub(universe.targetManager, 'primaryPageTarget').returns(primaryTarget);
+
+    const resourceTreeModel = primaryTarget.model(SDK.ResourceTreeModel.ResourceTreeModel);
+    assert.exists(resourceTreeModel);
+    const mainFrame = createMockFrame(origin, resourceTreeModel);
+    sinon.stub(SDK.ResourceTreeModel.ResourceTreeModel, 'frames').returns([mainFrame]);
 
     const domStorageModel = primaryTarget.model(SDK.DOMStorageModel.DOMStorageModel);
     assert.exists(domStorageModel);

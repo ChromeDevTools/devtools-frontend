@@ -6,7 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 
-import {findFrameForOrigin, getCookiesForOrigin, resolveAllowedTargetOrigins} from './CookieUtils.js';
+import {getCookiesForOrigin, resolveAllowedTargetOrigins} from './CookieUtils.js';
 import {
   type BaseToolCapability,
   type DataHandlerResult,
@@ -78,15 +78,13 @@ export class ListCookiesTool implements
     const cookieNamesByOrigin: ListCookiesResult['cookieNamesByOrigin'] = {};
 
     await Promise.all(targetOrigins.map(async origin => {
-      const frame = findFrameForOrigin(origin, targetManager, primaryPageTarget);
-      if (!frame) {
-        cookieNamesByOrigin[origin] = {error: 'Frame not found or origin disallowed'};
+      const result = await getCookiesForOrigin(origin, targetManager, primaryPageTarget);
+      if ('error' in result) {
+        cookieNamesByOrigin[origin] = {error: result.error};
         return;
       }
 
-      const target = frame.resourceTreeModel().target();
-      const cookies = await getCookiesForOrigin(target, origin);
-      const uniqueNames = cookies ? Array.from(new Set(cookies.map(c => c.name()))) : [];
+      const uniqueNames = Array.from(new Set(result.cookies.map(c => c.name())));
       cookieNamesByOrigin[origin] = {cookies: uniqueNames};
     }));
 

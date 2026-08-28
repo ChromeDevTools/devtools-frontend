@@ -9,7 +9,6 @@ import type {FunctionHandlerOptions} from '../agents/AiAgent.js';
 
 import {
   type CookieDetails,
-  findFrameForOrigin,
   getCookiesForOrigin,
   resolveAllowedTargetOrigins,
 } from './CookieUtils.js';
@@ -111,20 +110,13 @@ export class GetCookieValuesTool implements DataTool<GetCookieValuesArgs, GetCoo
     const cookiesByOrigin: GetCookieValuesResult['cookiesByOrigin'] = {};
 
     await Promise.all(targetOrigins.map(async origin => {
-      const frame = findFrameForOrigin(origin, targetManager, primaryPageTarget);
-      if (!frame) {
-        cookiesByOrigin[origin] = {error: 'Frame not found or origin disallowed'};
+      const result = await getCookiesForOrigin(origin, targetManager, primaryPageTarget);
+      if ('error' in result) {
+        cookiesByOrigin[origin] = {error: result.error};
         return;
       }
 
-      const target = frame.resourceTreeModel().target();
-      const cookies = await getCookiesForOrigin(target, origin);
-      if (!cookies) {
-        cookiesByOrigin[origin] = {cookies: []};
-        return;
-      }
-
-      const matchingCookies = cookies.filter(c => args.cookieNames.includes(c.name()));
+      const matchingCookies = result.cookies.filter(c => args.cookieNames.includes(c.name()));
       const cookieData: CookieDetails[] = matchingCookies.map(cookie => {
         const value = cookie.value();
         const truncatedValue =

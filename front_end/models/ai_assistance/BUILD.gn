@@ -173,6 +173,7 @@ ts_library("unittests") {
     "performance/AICallTree.test.ts",
     "performance/AIContext.test.ts",
     "performance/AIQueries.test.ts",
+    "tools/CookieUtils.test.ts",
     "tools/ExecuteJavaScript.test.ts",
     "tools/GetCookieValues.test.ts",
     "tools/GetDetailedCallTree.test.ts",

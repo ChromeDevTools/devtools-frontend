@@ -65,6 +65,12 @@ export function resolveAllowedTargetOrigins(
   return {targetOrigins, primaryPageTarget};
 }
 
+export type GetCookiesForOriginResult = {
+  cookies: SDK.Cookie.Cookie[],
+}|{
+  error: string,
+};
+
 /**
  * Finds the resource tree frame matching the target origin within the primary page's outermost target tree.
  */
@@ -87,19 +93,28 @@ export function findFrameForOrigin(
 
 /**
  * Retrieves all cookies accessible to the target origin, strictly excluding HttpOnly cookies.
+ * Locates the matching frame within the primary page target tree, queries its CookieModel,
+ * and filters cookies by security origin.
  */
 export async function getCookiesForOrigin(
-    target: SDK.Target.Target,
     origin: string,
-    ): Promise<SDK.Cookie.Cookie[]|null> {
+    targetManager: SDK.TargetManager.TargetManager,
+    primaryPageTarget: SDK.Target.Target,
+    ): Promise<GetCookiesForOriginResult> {
+  const frame = findFrameForOrigin(origin, targetManager, primaryPageTarget);
+  if (!frame) {
+    return {error: `Frame not found or origin disallowed for ${origin}`};
+  }
+
+  const target = frame.resourceTreeModel().target();
   const cookieModel = target.model(SDK.CookieModel.CookieModel);
   if (!cookieModel) {
-    return null;
+    return {error: `Cookie model not found for ${origin}`};
   }
 
   const allCookies = await cookieModel.getCookiesForDomain(origin, true).catch(() => null);
   if (!allCookies) {
-    return null;
+    return {error: `Failed to fetch cookies for ${origin}`};
   }
-  return allCookies.filter(cookie => !cookie.httpOnly() && cookie.matchesSecurityOrigin(origin));
+  return {cookies: allCookies.filter(cookie => !cookie.httpOnly() && cookie.matchesSecurityOrigin(origin))};
 }

@@ -1,0 +1,1 @@
+gen/front_end/ui/components/highlighting/highlighting.js: gen/front_end/ui/components/highlighting/HighlightManager.js gen/front_end/ui/components/highlighting/MarkupHighlight.js gen/front_end/ui/components/highlighting/HighlightElement.js gen/front_end/ui/components/highlighting/highlighting.prebundle.js

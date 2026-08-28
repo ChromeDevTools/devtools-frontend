@@ -56,6 +56,7 @@ function freestylerBindingFunc(bindingName) {
         global.freestyler = freestyler;
     }
 }
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const freestylerBinding = `(${String(freestylerBindingFunc)})('${FREESTYLER_BINDING_NAME}')`;
 export const PAGE_EXPOSED_FUNCTIONS = ['setElementStyles'];
 /**
@@ -134,5 +135,6 @@ const setupSetElementStyles = `function setupSetElementStyles(prefix) {
 
   global.setElementStyles = setElementStyles;
 }`;
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const injectedFunctions = `(${setupSetElementStyles})('${AI_ASSISTANCE_CSS_CLASS_NAME}')`;
 //# sourceMappingURL=injected.js.map

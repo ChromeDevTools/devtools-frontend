@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/trace/types/Configuration.js
+// ../../front_end/models/trace/types/Configuration.ts
 var Configuration_exports = {};
 __export(Configuration_exports, {
   configToCacheKey: () => configToCacheKey,
@@ -21,7 +21,7 @@ function configToCacheKey(config) {
   return JSON.stringify(config);
 }
 
-// gen/front_end/models/trace/types/Extensions.js
+// ../../front_end/models/trace/types/Extensions.ts
 var Extensions_exports = {};
 __export(Extensions_exports, {
   extensionPalette: () => extensionPalette,
@@ -62,7 +62,7 @@ function isSyntheticExtensionEntry(entry) {
   return entry.cat === "devtools.extension";
 }
 
-// gen/front_end/models/trace/types/File.js
+// ../../front_end/models/trace/types/File.ts
 var File_exports = {};
 __export(File_exports, {
   DataOrigin: () => DataOrigin,
@@ -73,24 +73,24 @@ __export(File_exports, {
   isTimeRangeAnnotation: () => isTimeRangeAnnotation,
   traceEventKeyToValues: () => traceEventKeyToValues
 });
-var DataOrigin;
-(function(DataOrigin2) {
+var DataOrigin = /* @__PURE__ */ ((DataOrigin2) => {
   DataOrigin2["CPU_PROFILE"] = "CPUProfile";
   DataOrigin2["TRACE_EVENTS"] = "TraceEvents";
-})(DataOrigin || (DataOrigin = {}));
-var EntriesLinkState;
-(function(EntriesLinkState2) {
+  return DataOrigin2;
+})(DataOrigin || {});
+var EntriesLinkState = /* @__PURE__ */ ((EntriesLinkState2) => {
   EntriesLinkState2["CREATION_NOT_STARTED"] = "creation_not_started";
   EntriesLinkState2["PENDING_TO_EVENT"] = "pending_to_event";
   EntriesLinkState2["CONNECTED"] = "connected";
-})(EntriesLinkState || (EntriesLinkState = {}));
-var EventKeyType;
-(function(EventKeyType2) {
+  return EntriesLinkState2;
+})(EntriesLinkState || {});
+var EventKeyType = /* @__PURE__ */ ((EventKeyType2) => {
   EventKeyType2["RAW_EVENT"] = "r";
   EventKeyType2["SYNTHETIC_EVENT"] = "s";
   EventKeyType2["PROFILE_CALL"] = "p";
   EventKeyType2["LEGACY_TIMELINE_FRAME"] = "l";
-})(EventKeyType || (EventKeyType = {}));
+  return EventKeyType2;
+})(EventKeyType || {});
 function isTimeRangeAnnotation(annotation) {
   return annotation.type === "TIME_RANGE";
 }
@@ -104,7 +104,7 @@ function traceEventKeyToValues(key) {
   const parts = key.split("-");
   const type = parts[0];
   switch (type) {
-    case "p":
+    case "p" /* PROFILE_CALL */:
       if (parts.length !== 5 || !parts.every((part, i) => i === 0 || typeof part === "number" || !isNaN(parseInt(part, 10)))) {
         throw new Error(`Invalid ProfileCallKey: ${key}`);
       }
@@ -115,7 +115,7 @@ function traceEventKeyToValues(key) {
         sampleIndex: parseInt(parts[3], 10),
         protocol: parseInt(parts[4], 10)
       };
-    case "r":
+    case "r" /* RAW_EVENT */:
       if (parts.length !== 2 || !(typeof parts[1] === "number" || !isNaN(parseInt(parts[1], 10)))) {
         throw new Error(`Invalid RawEvent Key: ${key}`);
       }
@@ -123,7 +123,7 @@ function traceEventKeyToValues(key) {
         type: parts[0],
         rawIndex: parseInt(parts[1], 10)
       };
-    case "s":
+    case "s" /* SYNTHETIC_EVENT */:
       if (parts.length !== 2 || !(typeof parts[1] === "number" || !isNaN(parseInt(parts[1], 10)))) {
         throw new Error(`Invalid SyntheticEvent Key: ${key}`);
       }
@@ -131,7 +131,7 @@ function traceEventKeyToValues(key) {
         type: parts[0],
         rawIndex: parseInt(parts[1], 10)
       };
-    case "l": {
+    case "l" /* LEGACY_TIMELINE_FRAME */: {
       if (parts.length !== 2 || Number.isNaN(parseInt(parts[1], 10))) {
         throw new Error(`Invalid LegacyTimelineFrame Key: ${key}`);
       }
@@ -145,10 +145,10 @@ function traceEventKeyToValues(key) {
   }
 }
 
-// gen/front_end/models/trace/types/Overlays.js
+// ../../front_end/models/trace/types/Overlays.ts
 var Overlays_exports = {};
 
-// gen/front_end/models/trace/types/Timing.js
+// ../../front_end/models/trace/types/Timing.ts
 var Timing_exports = {};
 __export(Timing_exports, {
   Micro: () => Micro,
@@ -165,7 +165,7 @@ function Seconds(value) {
   return value;
 }
 
-// gen/front_end/models/trace/types/TraceEvents.js
+// ../../front_end/models/trace/types/TraceEvents.ts
 var TraceEvents_exports = {};
 __export(TraceEvents_exports, {
   AuctionWorkletType: () => AuctionWorkletType,
@@ -348,8 +348,7 @@ __export(TraceEvents_exports, {
   objectIsCallFrame: () => objectIsCallFrame,
   objectIsEvent: () => objectIsEvent
 });
-var Phase;
-(function(Phase2) {
+var Phase = /* @__PURE__ */ ((Phase2) => {
   Phase2["BEGIN"] = "B";
   Phase2["END"] = "E";
   Phase2["COMPLETE"] = "X";
@@ -374,22 +373,23 @@ var Phase;
   Phase2["MEMORY_DUMP_PROCESS"] = "v";
   Phase2["MARK"] = "R";
   Phase2["CLOCK_SYNC"] = "c";
-})(Phase || (Phase = {}));
+  return Phase2;
+})(Phase || {});
 function isNestableAsyncPhase(phase) {
-  return phase === "b" || phase === "e" || phase === "n";
+  return phase === "b" /* ASYNC_NESTABLE_START */ || phase === "e" /* ASYNC_NESTABLE_END */ || phase === "n" /* ASYNC_NESTABLE_INSTANT */;
 }
 function isPhaseAsync(phase) {
-  return isNestableAsyncPhase(phase) || phase === "S" || phase === "T" || phase === "F" || phase === "p";
+  return isNestableAsyncPhase(phase) || phase === "S" /* ASYNC_BEGIN */ || phase === "T" /* ASYNC_STEP_INTO */ || phase === "F" /* ASYNC_END */ || phase === "p" /* ASYNC_STEP_PAST */;
 }
 function isFlowPhase(phase) {
-  return phase === "s" || phase === "t" || phase === "f";
+  return phase === "s" /* FLOW_START */ || phase === "t" /* FLOW_STEP */ || phase === "f" /* FLOW_END */;
 }
-var Scope;
-(function(Scope2) {
+var Scope = /* @__PURE__ */ ((Scope2) => {
   Scope2["THREAD"] = "t";
   Scope2["PROCESS"] = "p";
   Scope2["GLOBAL"] = "g";
-})(Scope || (Scope = {}));
+  return Scope2;
+})(Scope || {});
 function objectIsEvent(obj) {
   return "cat" in obj && "name" in obj && "ts" in obj;
 }
@@ -398,14 +398,14 @@ function objectIsCallFrame(object) {
 }
 var VALID_PROFILE_SOURCES = ["Inspector", "SelfProfiling", "Internal"];
 function isRunTask(event) {
-  return event.name === "RunTask" && event.ph === "X";
+  return event.name === "RunTask" /* RUN_TASK */ && event.ph === "X" /* COMPLETE */;
 }
-var AuctionWorkletType;
-(function(AuctionWorkletType2) {
+var AuctionWorkletType = /* @__PURE__ */ ((AuctionWorkletType2) => {
   AuctionWorkletType2["BIDDER"] = "bidder";
   AuctionWorkletType2["SELLER"] = "seller";
   AuctionWorkletType2["UNKNOWN"] = "unknown";
-})(AuctionWorkletType || (AuctionWorkletType = {}));
+  return AuctionWorkletType2;
+})(AuctionWorkletType || {});
 function isAuctionWorkletRunningInProcess(event) {
   return event.name === "AuctionWorkletRunningInProcess";
 }
@@ -413,16 +413,16 @@ function isAuctionWorkletDoneWithProcess(event) {
   return event.name === "AuctionWorkletDoneWithProcess";
 }
 function isLegacyScreenshot(event) {
-  return event.name === "Screenshot" && "id" in event;
+  return event.name === "Screenshot" /* SCREENSHOT */ && "id" in event;
 }
 function isLegacySyntheticScreenshot(event) {
-  return event.name === "Screenshot" && "dataUri" in (event.args ?? {});
+  return event.name === "Screenshot" /* SCREENSHOT */ && "dataUri" in (event.args ?? {});
 }
 function isScreenshot(event) {
-  return event.name === "Screenshot" && "source_id" in (event.args ?? {});
+  return event.name === "Screenshot" /* SCREENSHOT */ && "source_id" in (event.args ?? {});
 }
 function isSoftNavigationStart(event) {
-  return event.name === "SoftNavigationStart";
+  return event.name === "SoftNavigationStart" /* SOFT_NAVIGATION_START */;
 }
 var markerTypeGuards = [
   isMarkDOMContent,
@@ -434,18 +434,18 @@ var markerTypeGuards = [
   isSoftNavigationStart
 ];
 var MarkerName = [
-  "MarkDOMContent",
-  "MarkLoad",
-  "firstPaint",
-  "firstContentfulPaint",
-  "SyntheticSoftFirstContentfulPaint",
-  "largestContentfulPaint::Candidate",
-  "largestContentfulPaint::CandidateForSoftNavigation",
-  "navigationStart",
-  "SoftNavigationStart"
+  "MarkDOMContent" /* MARK_DOM_CONTENT */,
+  "MarkLoad" /* MARK_LOAD */,
+  "firstPaint" /* MARK_FIRST_PAINT */,
+  "firstContentfulPaint" /* MARK_FCP */,
+  "SyntheticSoftFirstContentfulPaint" /* MARK_SOFT_FCP */,
+  "largestContentfulPaint::Candidate" /* MARK_LCP_CANDIDATE */,
+  "largestContentfulPaint::CandidateForSoftNavigation" /* MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */,
+  "navigationStart" /* NAVIGATION_START */,
+  "SoftNavigationStart" /* SOFT_NAVIGATION_START */
 ];
 function isMarkerEvent(event) {
-  if (event.ph === "I" || "n") {
+  if (event.ph === "I" /* INSTANT */ || "n" /* ASYNC_NESTABLE_INSTANT */) {
     return markerTypeGuards.some((fn) => fn(event));
   }
   return false;
@@ -455,7 +455,7 @@ var pageLoadEventTypeGuards = [
   isInteractiveTime
 ];
 function eventIsPageLoadEvent(event) {
-  if (event.ph === "I" || "n") {
+  if (event.ph === "I" /* INSTANT */ || "n" /* ASYNC_NESTABLE_INSTANT */) {
     return pageLoadEventTypeGuards.some((fn) => fn(event));
   }
   return false;
@@ -464,8 +464,7 @@ function isTracingSessionIdForWorker(event) {
   return event.name === "TracingSessionIdForWorker";
 }
 var NO_NAVIGATION = "NO_NAVIGATION";
-var LayoutInvalidationReason;
-(function(LayoutInvalidationReason2) {
+var LayoutInvalidationReason = /* @__PURE__ */ ((LayoutInvalidationReason2) => {
   LayoutInvalidationReason2["SIZE_CHANGED"] = "Size changed";
   LayoutInvalidationReason2["ATTRIBUTE"] = "Attribute";
   LayoutInvalidationReason2["ADDED_TO_LAYOUT"] = "Added to layout";
@@ -474,147 +473,123 @@ var LayoutInvalidationReason;
   LayoutInvalidationReason2["STYLE_CHANGED"] = "Style changed";
   LayoutInvalidationReason2["FONTS_CHANGED"] = "Fonts changed";
   LayoutInvalidationReason2["UNKNOWN"] = "Unknown";
-})(LayoutInvalidationReason || (LayoutInvalidationReason = {}));
+  return LayoutInvalidationReason2;
+})(LayoutInvalidationReason || {});
 function isScheduleStyleInvalidationTracking(event) {
-  return event.name === "ScheduleStyleInvalidationTracking";
+  return event.name === "ScheduleStyleInvalidationTracking" /* SCHEDULE_STYLE_INVALIDATION_TRACKING */;
 }
-var StyleRecalcInvalidationReason;
-(function(StyleRecalcInvalidationReason2) {
+var StyleRecalcInvalidationReason = /* @__PURE__ */ ((StyleRecalcInvalidationReason2) => {
   StyleRecalcInvalidationReason2["ANIMATION"] = "Animation";
   StyleRecalcInvalidationReason2["RELATED_STYLE_RULE"] = "Related style rule";
-})(StyleRecalcInvalidationReason || (StyleRecalcInvalidationReason = {}));
+  return StyleRecalcInvalidationReason2;
+})(StyleRecalcInvalidationReason || {});
 function isStyleRecalcInvalidationTracking(event) {
-  return event.name === "StyleRecalcInvalidationTracking";
+  return event.name === "StyleRecalcInvalidationTracking" /* STYLE_RECALC_INVALIDATION_TRACKING */;
 }
 function isStyleInvalidatorInvalidationTracking(event) {
-  return event.name === "StyleInvalidatorInvalidationTracking";
+  return event.name === "StyleInvalidatorInvalidationTracking" /* STYLE_INVALIDATOR_INVALIDATION_TRACKING */;
 }
 function isBeginCommitCompositorFrame(event) {
-  return event.name === "BeginCommitCompositorFrame";
+  return event.name === "BeginCommitCompositorFrame" /* BEGIN_COMMIT_COMPOSITOR_FRAME */;
 }
 function isParseMetaViewport(event) {
-  return event.name === "ParseMetaViewport";
+  return event.name === "ParseMetaViewport" /* PARSE_META_VIEWPORT */;
 }
 function isMetaCharsetCheck(event) {
-  return event.name === "MetaCharsetCheck";
+  return event.name === "MetaCharsetCheck" /* META_CHARSET_CHECK */;
 }
 function isLinkPreconnect(event) {
-  return event.name === "LinkPreconnect";
+  return event.name === "LinkPreconnect" /* LINK_PRECONNECT */;
 }
 function isScheduleStyleRecalculation(event) {
-  return event.name === "ScheduleStyleRecalculation";
+  return event.name === "ScheduleStyleRecalculation" /* SCHEDULE_STYLE_RECALCULATION */;
 }
 function isRenderFrameImplCreateChildFrame(event) {
-  return event.name === "RenderFrameImpl::createChildFrame";
+  return event.name === "RenderFrameImpl::createChildFrame" /* RENDER_FRAME_IMPL_CREATE_CHILD_FRAME */;
 }
 function isLayoutImageUnsized(event) {
-  return event.name === "LayoutImageUnsized";
+  return event.name === "LayoutImageUnsized" /* LAYOUT_IMAGE_UNSIZED */;
 }
 function isPairableAsyncBegin(e) {
-  return e.ph === "b";
+  return e.ph === "b" /* ASYNC_NESTABLE_START */;
 }
 function isPairableAsyncEnd(e) {
-  return e.ph === "e";
+  return e.ph === "e" /* ASYNC_NESTABLE_END */;
 }
 function isPairableAsyncInstant(e) {
-  return e.ph === "n";
+  return e.ph === "n" /* ASYNC_NESTABLE_INSTANT */;
 }
 function isAnimationFrameAsyncStart(data) {
-  return data.name === "AnimationFrame" && data.ph === "b";
+  return data.name === "AnimationFrame" /* ANIMATION_FRAME */ && data.ph === "b" /* ASYNC_NESTABLE_START */;
 }
 function isAnimationFrameAsyncEnd(data) {
-  return data.name === "AnimationFrame" && data.ph === "e";
+  return data.name === "AnimationFrame" /* ANIMATION_FRAME */ && data.ph === "e" /* ASYNC_NESTABLE_END */;
 }
 function isAnimationFramePresentation(data) {
-  return data.name === "AnimationFrame::Presentation";
+  return data.name === "AnimationFrame::Presentation" /* ANIMATION_FRAME_PRESENTATION */;
 }
-var State;
-(function(State2) {
-  State2["STATE_NO_UPDATE_DESIRED"] = "STATE_NO_UPDATE_DESIRED";
-  State2["STATE_PRESENTED_ALL"] = "STATE_PRESENTED_ALL";
-  State2["STATE_PRESENTED_PARTIAL"] = "STATE_PRESENTED_PARTIAL";
-  State2["STATE_DROPPED"] = "STATE_DROPPED";
-})(State || (State = {}));
-var FrameDropReason;
-(function(FrameDropReason2) {
-  FrameDropReason2["REASON_UNSPECIFIED"] = "REASON_UNSPECIFIED";
-  FrameDropReason2["REASON_DISPLAY_COMPOSITOR"] = "REASON_DISPLAY_COMPOSITOR";
-  FrameDropReason2["REASON_MAIN_THREAD"] = "REASON_MAIN_THREAD";
-  FrameDropReason2["REASON_CLIENT_COMPOSITOR"] = "REASON_CLIENT_COMPOSITOR";
-})(FrameDropReason || (FrameDropReason = {}));
-var ScrollState;
-(function(ScrollState2) {
-  ScrollState2["SCROLL_NONE"] = "SCROLL_NONE";
-  ScrollState2["SCROLL_MAIN_THREAD"] = "SCROLL_MAIN_THREAD";
-  ScrollState2["SCROLL_COMPOSITOR_THREAD"] = "SCROLL_COMPOSITOR_THREAD";
-  ScrollState2["SCROLL_UNKNOWN"] = "SCROLL_UNKNOWN";
-})(ScrollState || (ScrollState = {}));
-var FrameType;
-(function(FrameType2) {
-  FrameType2["FORKED"] = "FORKED";
-  FrameType2["BACKFILL"] = "BACKFILL";
-})(FrameType || (FrameType = {}));
 function isPipelineReporter(event) {
-  return event.name === "PipelineReporter";
+  return event.name === "PipelineReporter" /* PIPELINE_REPORTER */;
 }
 function isSyntheticBased(event) {
   return "rawSourceEvent" in event;
 }
 function isJSSample(event) {
-  return event.name === "JSSample";
+  return event.name === "JSSample" /* JS_SAMPLE */;
 }
 function isSyntheticInteraction(event) {
-  return Boolean("interactionId" in event && event.args?.data && "beginEvent" in event.args.data && "endEvent" in event.args.data);
+  return Boolean(
+    "interactionId" in event && event.args?.data && "beginEvent" in event.args.data && "endEvent" in event.args.data
+  );
 }
 function isDrawFrame(event) {
-  return event.name === "DrawFrame" && event.ph === "I";
+  return event.name === "DrawFrame" /* DRAW_FRAME */ && event.ph === "I" /* INSTANT */;
 }
 function isBeginFrame(event) {
-  return Boolean(event.name === "BeginFrame" && event.args && "frameSeqId" in event.args);
+  return Boolean(event.name === "BeginFrame" /* BEGIN_FRAME */ && event.args && "frameSeqId" in event.args);
 }
 function isDroppedFrame(event) {
-  return Boolean(event.name === "DroppedFrame" && event.args && "frameSeqId" in event.args);
+  return Boolean(event.name === "DroppedFrame" /* DROPPED_FRAME */ && event.args && "frameSeqId" in event.args);
 }
 function isRequestMainThreadFrame(event) {
-  return event.name === "RequestMainThreadFrame";
+  return event.name === "RequestMainThreadFrame" /* REQUEST_MAIN_THREAD_FRAME */;
 }
 function isBeginMainThreadFrame(event) {
-  return event.name === "BeginMainThreadFrame";
+  return event.name === "BeginMainThreadFrame" /* BEGIN_MAIN_THREAD_FRAME */;
 }
 function isNeedsBeginFrameChanged(event) {
-  return event.name === "NeedsBeginFrameChanged";
+  return event.name === "NeedsBeginFrameChanged" /* NEEDS_BEGIN_FRAME_CHANGED */;
 }
 function isCommit(event) {
-  return Boolean(event.name === "Commit" && event.args && "frameSeqId" in event.args);
+  return Boolean(event.name === "Commit" /* COMMIT */ && event.args && "frameSeqId" in event.args);
 }
 function isRasterTask(event) {
-  return event.name === "RasterTask";
+  return event.name === "RasterTask" /* RASTER_TASK */;
 }
 function isCompositeLayers(event) {
-  return event.name === "CompositeLayers";
+  return event.name === "CompositeLayers" /* COMPOSITE_LAYERS */;
 }
 function isActivateLayerTree(event) {
-  return event.name === "ActivateLayerTree";
+  return event.name === "ActivateLayerTree" /* ACTIVATE_LAYER_TREE */;
 }
 function isInvalidationTracking(event) {
   return isScheduleStyleInvalidationTracking(event) || isStyleRecalcInvalidationTracking(event) || isStyleInvalidatorInvalidationTracking(event) || isLayoutInvalidationTracking(event);
 }
 function isDrawLazyPixelRef(event) {
-  return event.name === "Draw LazyPixelRef";
+  return event.name === "Draw LazyPixelRef" /* DRAW_LAZY_PIXEL_REF */;
 }
 function isDecodeLazyPixelRef(event) {
-  return event.name === "Decode LazyPixelRef";
+  return event.name === "Decode LazyPixelRef" /* DECODE_LAZY_PIXEL_REF */;
 }
 function isDecodeImage(event) {
-  return event.name === "Decode Image";
+  return event.name === "Decode Image" /* DECODE_IMAGE */;
 }
-var InvalidationEventType;
-(function(InvalidationEventType2) {
+var InvalidationEventType = /* @__PURE__ */ ((InvalidationEventType2) => {
   InvalidationEventType2["StyleInvalidatorInvalidationTracking"] = "StyleInvalidatorInvalidationTracking";
   InvalidationEventType2["StyleRecalcInvalidationTracking"] = "StyleRecalcInvalidationTracking";
-})(InvalidationEventType || (InvalidationEventType = {}));
-var SelectorTimingsKey;
-(function(SelectorTimingsKey2) {
+  return InvalidationEventType2;
+})(InvalidationEventType || {});
+var SelectorTimingsKey = /* @__PURE__ */ ((SelectorTimingsKey2) => {
   SelectorTimingsKey2["Elapsed"] = "elapsed (us)";
   SelectorTimingsKey2["RejectPercentage"] = "reject_percentage";
   SelectorTimingsKey2["FastRejectCount"] = "fast_reject_count";
@@ -623,24 +598,25 @@ var SelectorTimingsKey;
   SelectorTimingsKey2["Selector"] = "selector";
   SelectorTimingsKey2["StyleSheetId"] = "style_sheet_id";
   SelectorTimingsKey2["InvalidationCount"] = "invalidation_count";
-})(SelectorTimingsKey || (SelectorTimingsKey = {}));
+  return SelectorTimingsKey2;
+})(SelectorTimingsKey || {});
 function isSelectorStats(event) {
-  return event.name === "SelectorStats";
+  return event.name === "SelectorStats" /* SELECTOR_STATS */;
 }
 function isRecalcStyle(event) {
-  return event.name === "UpdateLayoutTree";
+  return event.name === "UpdateLayoutTree" /* RECALC_STYLE */;
 }
 function isLayout(event) {
-  return event.name === "Layout" && Boolean(event.args && "beginData" in event.args);
+  return event.name === "Layout" /* LAYOUT */ && Boolean(event.args && "beginData" in event.args);
 }
 function isInvalidateLayout(event) {
-  return event.name === "InvalidateLayout";
+  return event.name === "InvalidateLayout" /* INVALIDATE_LAYOUT */;
 }
 function isDebuggerAsyncTaskScheduled(event) {
-  return event.name === "v8::Debugger::AsyncTaskScheduled";
+  return event.name === "v8::Debugger::AsyncTaskScheduled" /* DEBUGGER_ASYNC_TASK_SCHEDULED */;
 }
 function isDebuggerAsyncTaskRun(event) {
-  return event.name === "v8::Debugger::AsyncTaskRun";
+  return event.name === "v8::Debugger::AsyncTaskRun" /* DEBUGGER_ASYNC_TASK_RUN */;
 }
 function ProfileID(value) {
   return value;
@@ -661,31 +637,31 @@ function WorkerId(value) {
   return value;
 }
 function isComplete(event) {
-  return event.ph === "X";
+  return event.ph === "X" /* COMPLETE */;
 }
 function isBegin(event) {
-  return event.ph === "B";
+  return event.ph === "B" /* BEGIN */;
 }
 function isEnd(event) {
-  return event.ph === "E";
+  return event.ph === "E" /* END */;
 }
 function isDispatch(event) {
-  return event.name === "EventDispatch" && event.ph === "X";
+  return event.name === "EventDispatch" && event.ph === "X" /* COMPLETE */;
 }
 function isInstant(event) {
-  return event.ph === "I";
+  return event.ph === "I" /* INSTANT */;
 }
 function isRendererEvent(event) {
   return isInstant(event) || isComplete(event);
 }
 function isFireIdleCallback(event) {
-  return event.name === "FireIdleCallback" && event.ph === "X";
+  return event.name === "FireIdleCallback" && event.ph === "X" /* COMPLETE */;
 }
 function isSchedulePostMessage(event) {
-  return event.name === "SchedulePostMessage";
+  return event.name === "SchedulePostMessage" /* SCHEDULE_POST_MESSAGE */;
 }
 function isHandlePostMessage(event) {
-  return event.name === "HandlePostMessage" && event.ph === "X";
+  return event.name === "HandlePostMessage" /* HANDLE_POST_MESSAGE */ && event.ph === "X" /* COMPLETE */;
 }
 function isUpdateCounters(event) {
   return event.name === "UpdateCounters";
@@ -694,13 +670,13 @@ function isDOMStats(event) {
   return event.name === "DOMStats";
 }
 function isThreadName(event) {
-  return event.name === "thread_name";
+  return event.name === "thread_name" /* THREAD_NAME */;
 }
 function isProcessName(event) {
   return event.name === "process_name";
 }
 function isTracingStartedInBrowser(event) {
-  return event.name === "TracingStartedInBrowser";
+  return event.name === "TracingStartedInBrowser" /* TRACING_STARTED_IN_BROWSER */;
 }
 function isFrameCommittedInBrowser(event) {
   return event.name === "FrameCommittedInBrowser";
@@ -722,25 +698,25 @@ function isSyntheticAnimation(event) {
   return "beginEvent" in data && "endEvent" in data;
 }
 function isLayoutShift(event) {
-  return event.name === "LayoutShift";
+  return event.name === "LayoutShift" /* LAYOUT_SHIFT */;
 }
 function isLayoutInvalidationTracking(event) {
-  return event.name === "LayoutInvalidationTracking";
+  return event.name === "LayoutInvalidationTracking" /* LAYOUT_INVALIDATION_TRACKING */;
 }
 function isFirstContentfulPaint(event) {
-  return event.name === "firstContentfulPaint";
+  return event.name === "firstContentfulPaint" /* MARK_FCP */;
 }
 function isSoftFirstContentfulPaint(event) {
-  return event.name === "SyntheticSoftFirstContentfulPaint";
+  return event.name === "SyntheticSoftFirstContentfulPaint" /* MARK_SOFT_FCP */;
 }
 function isAnyFirstContentfulPaint(event) {
-  return event.name === "firstContentfulPaint" || event.name === "SyntheticSoftFirstContentfulPaint";
+  return event.name === "firstContentfulPaint" /* MARK_FCP */ || event.name === "SyntheticSoftFirstContentfulPaint" /* MARK_SOFT_FCP */;
 }
 function isAnyLargestContentfulPaintCandidate(event) {
-  return event.name === "largestContentfulPaint::Candidate" || event.name === "largestContentfulPaint::CandidateForSoftNavigation";
+  return event.name === "largestContentfulPaint::Candidate" /* MARK_LCP_CANDIDATE */ || event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */;
 }
 function isSoftLargestContentfulPaintCandidate(event) {
-  return event.name === "largestContentfulPaint::CandidateForSoftNavigation";
+  return event.name === "largestContentfulPaint::CandidateForSoftNavigation" /* MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION */;
 }
 function isLargestImagePaintCandidate(event) {
   return event.name === "LargestImagePaint::Candidate";
@@ -749,37 +725,37 @@ function isLargestTextPaintCandidate(event) {
   return event.name === "LargestTextPaint::Candidate";
 }
 function isMarkLoad(event) {
-  return event.name === "MarkLoad";
+  return event.name === "MarkLoad" /* MARK_LOAD */;
 }
 function isFirstPaint(event) {
-  return event.name === "firstPaint";
+  return event.name === "firstPaint" /* MARK_FIRST_PAINT */;
 }
 function isMarkDOMContent(event) {
-  return event.name === "MarkDOMContent";
+  return event.name === "MarkDOMContent" /* MARK_DOM_CONTENT */;
 }
 function isInteractiveTime(event) {
   return event.name === "InteractiveTime";
 }
 function isEventTiming(event) {
-  return event.name === "EventTiming";
+  return event.name === "EventTiming" /* EVENT_TIMING */;
 }
 function isEventTimingEnd(event) {
-  return isEventTiming(event) && event.ph === "e";
+  return isEventTiming(event) && event.ph === "e" /* ASYNC_NESTABLE_END */;
 }
 function isEventTimingStart(event) {
-  return isEventTiming(event) && event.ph === "b";
+  return isEventTiming(event) && event.ph === "b" /* ASYNC_NESTABLE_START */;
 }
 function isGPUTask(event) {
   return event.name === "GPUTask";
 }
 function isProfile(event) {
-  return event.name === "Profile";
+  return event.name === "Profile" /* PROFILE */;
 }
 function isSyntheticCpuProfile(event) {
-  return event.name === "CpuProfile" && event.ph === "X";
+  return event.name === "CpuProfile" /* CPU_PROFILE */ && event.ph === "X" /* COMPLETE */;
 }
 function isProfileChunk(event) {
-  return event.name === "ProfileChunk";
+  return event.name === "ProfileChunk" /* PROFILE_CHUNK */;
 }
 function isResourceChangePriority(event) {
   return event.name === "ResourceChangePriority";
@@ -806,7 +782,7 @@ function isReceivedDataEvent(event) {
   return event.name === "ResourceReceivedData" || event.name === "ResourceFinish" || event.name === "ResourceReceiveResponse";
 }
 function isSyntheticNetworkRequest(event) {
-  return event.name === "SyntheticNetworkRequest";
+  return event.name === "SyntheticNetworkRequest" /* SYNTHETIC_NETWORK_REQUEST */;
 }
 function isSyntheticWebSocketConnection(event) {
   return event.name === "SyntheticWebSocketConnection";
@@ -818,10 +794,10 @@ function isPrePaint(event) {
   return event.name === "PrePaint";
 }
 function isNavigationStart(event) {
-  return event.name === "navigationStart" && event.args?.data?.documentLoaderURL !== "";
+  return event.name === "navigationStart" /* NAVIGATION_START */ && event.args?.data?.documentLoaderURL !== "";
 }
 function isDidCommitSameDocumentNavigation(event) {
-  return event.name === "RenderFrameHostImpl::DidCommitSameDocumentNavigation" && event.ph === "X";
+  return event.name === "RenderFrameHostImpl::DidCommitSameDocumentNavigation" && event.ph === "X" /* COMPLETE */;
 }
 function isMainFrameViewport(event) {
   return event.name === "PaintTimingVisualizer::Viewport";
@@ -850,94 +826,94 @@ function isUserTiming(event) {
   return event.cat === "blink.user_timing";
 }
 function isDomLoading(event) {
-  return event.name === "domLoading";
+  return event.name === "domLoading" /* DOM_LOADING */;
 }
 function isBeginRemoteFontLoad(event) {
-  return event.name === "BeginRemoteFontLoad";
+  return event.name === "BeginRemoteFontLoad" /* BEGIN_REMOTE_FONT_LOAD */;
 }
 function isRemoteFontLoaded(event) {
-  return event.name === "RemoteFontLoaded";
+  return event.name === "RemoteFontLoaded" /* REMOTE_FONT_LOADED */;
 }
 function isPerformanceMeasure(event) {
   return isUserTiming(event) && isPhaseAsync(event.ph);
 }
 function isPerformanceMeasureBegin(event) {
-  return isPerformanceMeasure(event) && event.ph === "b";
+  return isPerformanceMeasure(event) && event.ph === "b" /* ASYNC_NESTABLE_START */;
 }
 function isPerformanceMark(event) {
-  return isUserTiming(event) && (event.ph === "R" || event.ph === "I");
+  return isUserTiming(event) && (event.ph === "R" /* MARK */ || event.ph === "I" /* INSTANT */);
 }
 function isConsoleTime(event) {
   return event.cat === "blink.console" && isPhaseAsync(event.ph);
 }
 function isConsoleTimeStamp(event) {
-  return event.ph === "I" && event.name === "TimeStamp";
+  return event.ph === "I" /* INSTANT */ && event.name === "TimeStamp" /* TIME_STAMP */;
 }
 function isUserTimingMeasure(event) {
-  return event.name === "UserTiming::Measure";
+  return event.name === "UserTiming::Measure" /* USER_TIMING_MEASURE */;
 }
 function isParseHTML(event) {
   return event.name === "ParseHTML";
 }
 function isSyntheticLayoutShift(event) {
-  return event.name === "SyntheticLayoutShift";
+  return event.name === "SyntheticLayoutShift" /* SYNTHETIC_LAYOUT_SHIFT */;
 }
 function isSyntheticLayoutShiftCluster(event) {
-  return event.name === "SyntheticLayoutShiftCluster";
+  return event.name === "SyntheticLayoutShiftCluster" /* SYNTHETIC_LAYOUT_SHIFT_CLUSTER */;
 }
 function isProfileCall(event) {
   return "callFrame" in event;
 }
 function isPaint(event) {
-  return event.name === "Paint";
+  return event.name === "Paint" /* PAINT */;
 }
 function isPaintImage(event) {
-  return event.name === "PaintImage" && event.ph === "X";
+  return event.name === "PaintImage" /* PAINT_IMAGE */ && event.ph === "X" /* COMPLETE */;
 }
 function isScrollLayer(event) {
-  return event.name === "ScrollLayer" && event.ph === "X";
+  return event.name === "ScrollLayer" /* SCROLL_LAYER */ && event.ph === "X" /* COMPLETE */;
 }
 function isSetLayerId(event) {
-  return event.name === "SetLayerTreeId";
+  return event.name === "SetLayerTreeId" /* SET_LAYER_TREE_ID */;
 }
 function isUpdateLayer(event) {
-  return event.name === "UpdateLayer";
+  return event.name === "UpdateLayer" /* UPDATE_LAYER */;
 }
 function isDisplayListItemListSnapshot(event) {
-  return event.name === "cc::DisplayItemList";
+  return event.name === "cc::DisplayItemList" /* DISPLAY_ITEM_LIST_SNAPSHOT */;
 }
 function isLayerTreeHostImplSnapshot(event) {
-  return event.name === "cc::LayerTreeHostImpl";
+  return event.name === "cc::LayerTreeHostImpl" /* LAYER_TREE_HOST_IMPL_SNAPSHOT */;
 }
 function isFireAnimationFrame(event) {
-  return event.name === "FireAnimationFrame" && event.ph === "X";
+  return event.name === "FireAnimationFrame" /* FIRE_ANIMATION_FRAME */ && event.ph === "X" /* COMPLETE */;
 }
 function isTimerInstall(event) {
-  return event.name === "TimerInstall";
+  return event.name === "TimerInstall" /* TIMER_INSTALL */;
 }
 function isTimerFire(event) {
-  return event.name === "TimerFire" && event.ph === "X";
+  return event.name === "TimerFire" /* TIMER_FIRE */ && event.ph === "X" /* COMPLETE */;
 }
 function isRequestIdleCallback(event) {
-  return event.name === "RequestIdleCallback";
+  return event.name === "RequestIdleCallback" /* REQUEST_IDLE_CALLBACK */;
 }
 function isWebSocketCreate(event) {
-  return event.name === "WebSocketCreate";
+  return event.name === "WebSocketCreate" /* WEB_SOCKET_CREATE */;
 }
 function isWebSocketInfo(event) {
-  return event.name === "WebSocketSendHandshakeRequest" || event.name === "WebSocketReceiveHandshakeResponse" || event.name === "WebSocketDestroy";
+  return event.name === "WebSocketSendHandshakeRequest" /* WEB_SOCKET_SEND_HANDSHAKE_REQUEST */ || event.name === "WebSocketReceiveHandshakeResponse" /* WEB_SOCKET_RECEIVE_HANDSHAKE_REQUEST */ || event.name === "WebSocketDestroy" /* WEB_SOCKET_DESTROY */;
 }
 function isWebSocketTransfer(event) {
-  return event.name === "WebSocketSend" || event.name === "WebSocketReceive";
+  return event.name === "WebSocketSend" /* WEB_SOCKET_SEND */ || event.name === "WebSocketReceive" /* WEB_SOCKET_RECEIVE */;
 }
 function isWebSocketSendHandshakeRequest(event) {
-  return event.name === "WebSocketSendHandshakeRequest";
+  return event.name === "WebSocketSendHandshakeRequest" /* WEB_SOCKET_SEND_HANDSHAKE_REQUEST */;
 }
 function isWebSocketReceiveHandshakeResponse(event) {
-  return event.name === "WebSocketReceiveHandshakeResponse";
+  return event.name === "WebSocketReceiveHandshakeResponse" /* WEB_SOCKET_RECEIVE_HANDSHAKE_REQUEST */;
 }
 function isWebSocketDestroy(event) {
-  return event.name === "WebSocketDestroy";
+  return event.name === "WebSocketDestroy" /* WEB_SOCKET_DESTROY */;
 }
 function isWebSocketTraceEvent(event) {
   return isWebSocketCreate(event) || isWebSocketInfo(event) || isWebSocketTransfer(event);
@@ -946,30 +922,30 @@ function isWebSocketEvent(event) {
   return isWebSocketTraceEvent(event) || isSyntheticWebSocketConnection(event);
 }
 function isV8Compile(event) {
-  return event.name === "v8.compile" && event.ph === "X";
+  return event.name === "v8.compile" /* COMPILE */ && event.ph === "X" /* COMPLETE */;
 }
 function isFunctionCall(event) {
-  return event.name === "FunctionCall" && event.ph === "X";
+  return event.name === "FunctionCall" /* FUNCTION_CALL */ && event.ph === "X" /* COMPLETE */;
 }
 function isSchedulePostTaskCallback(event) {
-  return event.name === "SchedulePostTaskCallback";
+  return event.name === "SchedulePostTaskCallback" /* SCHEDULE_POST_TASK_CALLBACK */;
 }
 function isRunPostTaskCallback(event) {
-  return event.name === "RunPostTaskCallback" && event.ph === "X";
+  return event.name === "RunPostTaskCallback" /* RUN_POST_TASK_CALLBACK */ && event.ph === "X" /* COMPLETE */;
 }
 function isAbortPostTaskCallback(event) {
-  return event.name === "AbortPostTaskCallback" && event.ph === "X";
+  return event.name === "AbortPostTaskCallback" /* ABORT_POST_TASK_CALLBACK */ && event.ph === "X" /* COMPLETE */;
 }
 function isJSInvocationEvent(event) {
   switch (event.name) {
-    case "RunMicrotasks":
-    case "FunctionCall":
+    case "RunMicrotasks" /* RUN_MICROTASKS */:
+    case "FunctionCall" /* FUNCTION_CALL */:
     // TODO(paulirish): Define types for these Evaluate* events
-    case "EvaluateScript":
-    case "v8.evaluateModule":
-    case "EventDispatch":
-    case "V8.Execute":
-    case "V8Console::runTask":
+    case "EvaluateScript" /* EVALUATE_SCRIPT */:
+    case "v8.evaluateModule" /* EVALUATE_MODULE */:
+    case "EventDispatch" /* EVENT_DISPATCH */:
+    case "V8.Execute" /* V8_EXECUTE */:
+    case "V8Console::runTask" /* V8_CONSOLE_RUN_TASK */:
       return true;
   }
   if (event.name.startsWith("v8") || event.name.startsWith("V8")) {
@@ -981,16 +957,15 @@ function isJSInvocationEvent(event) {
   return false;
 }
 function isConsoleRunTask(event) {
-  return event.name === "V8Console::runTask";
+  return event.name === "V8Console::runTask" /* V8_CONSOLE_RUN_TASK */;
 }
 function isFlowPhaseEvent(event) {
-  return event.ph === "s" || event.ph === "t" || event.ph === "f";
+  return event.ph === "s" /* FLOW_START */ || event.ph === "t" /* FLOW_STEP */ || event.ph === "f" /* FLOW_END */;
 }
 function isParseAuthorStyleSheetEvent(event) {
-  return event.name === "ParseAuthorStyleSheet" && event.ph === "X";
+  return event.name === "ParseAuthorStyleSheet" /* PARSE_AUTHOR_STYLE_SHEET */ && event.ph === "X" /* COMPLETE */;
 }
-var Name;
-(function(Name2) {
+var Name = /* @__PURE__ */ ((Name2) => {
   Name2["THREAD_NAME"] = "thread_name";
   Name2["PROGRAM"] = "Program";
   Name2["RUN_TASK"] = "RunTask";
@@ -1166,7 +1141,8 @@ var Name;
   Name2["USER_TIMING_MEASURE"] = "UserTiming::Measure";
   Name2["LINK_PRECONNECT"] = "LinkPreconnect";
   Name2["PRELOAD_RENDER_BLOCKING_STATUS_CHANGE"] = "PreloadRenderBlockingStatusChange";
-})(Name || (Name = {}));
+  return Name2;
+})(Name || {});
 var Categories = {
   Console: "blink.console",
   UserTiming: "blink.user_timing",
@@ -1225,7 +1201,7 @@ function isAnyScriptSourceEvent(event) {
   return event.cat === "disabled-by-default-devtools.v8-source-rundown-sources";
 }
 function isPreloadRenderBlockingStatusChangeEvent(event) {
-  return event.name === "PreloadRenderBlockingStatusChange";
+  return event.name === "PreloadRenderBlockingStatusChange" /* PRELOAD_RENDER_BLOCKING_STATUS_CHANGE */;
 }
 export {
   Configuration_exports as Configuration,

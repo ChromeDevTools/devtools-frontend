@@ -126,8 +126,8 @@ var icon_css_default = `/*
   flex-grow: 0;
   flex-shrink: 0;
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: var(--sys-size-9);
+  height: var(--sys-size-9);
   color: var(--icon-default);
   vertical-align: sub;
   position: relative;
@@ -214,8 +214,8 @@ var icon_css_default = `/*
 :host([name="triangle-down"]),
 :host([name="triangle-left"]),
 :host([name="triangle-right"]) {
-  width: 14px;
-  height: 14px;
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
   vertical-align: baseline;
 }
 
@@ -361,7 +361,7 @@ var link_css_default = `/*
 
 :host(:focus-visible) {
   outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
   /* stylelint-disable-next-line declaration-no-important */
   outline-style: solid !important;
   border-radius: var(--sys-shape-corner-extra-small);

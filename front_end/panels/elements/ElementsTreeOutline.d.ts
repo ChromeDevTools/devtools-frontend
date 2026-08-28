@@ -1,7 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { ElementsTreeElement } from './ElementsTreeElement.js';
+import { ElementsTreeElement, ElementsTreeWidget } from './ElementsTreeElement.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import type { MarkerDecoratorRegistration } from './MarkerDecorator.js';
@@ -9,6 +9,7 @@ import { TopLayerContainer } from './TopLayerContainer.js';
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export { elementsTreeOutlineStyles };
 interface ViewInput {
+    domTreeWidget?: DOMTreeWidget;
     rootDOMNode: SDK.DOMModel.DOMNode | null;
     omitRootDOMNode: boolean;
     selectEnabled: boolean;
@@ -27,6 +28,9 @@ interface ViewInput {
     preventTabOrder: boolean;
     deindentSingleNode: boolean;
     currentHighlightedNode: SDK.DOMModel.DOMNode | null;
+    hoveredNode?: SDK.DOMModel.DOMNode | null;
+    searchMatchNode?: SDK.DOMModel.DOMNode | null;
+    searchMatchQuery?: string | null;
     selectedNode: SDK.DOMModel.DOMNode | null;
     onSelectedNodeChanged: (event: Common.EventTarget.EventTargetEvent<{
         node: SDK.DOMModel.DOMNode | null;
@@ -37,17 +41,24 @@ interface ViewInput {
     onElementExpanded: () => void;
     onSelect?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;
     onExpand?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
-    onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
+    onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent, widget?: ElementsTreeWidget) => void;
+    onHoverNode?: (node: SDK.DOMModel.DOMNode, showInfo?: boolean) => void;
+    onLeave?: () => void;
     onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => void;
     onKeyDown?: (event: KeyboardEvent) => void;
     isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
     onDuplicateNode?: (node: SDK.DOMModel.DOMNode) => void;
     isNodeExpanded?: (node: SDK.DOMModel.DOMNode) => boolean;
+    isNodeInClipboard?: (node: SDK.DOMModel.DOMNode) => boolean;
+    onCopyOrCut?: (isCut: boolean, event: Event) => void;
+    onPaste?: (event: Event) => void;
 }
 interface ViewOutput {
     elementsTreeOutline?: ElementsTreeOutline;
     imagePreviewPopover?: ImagePreviewPopover;
     highlightedTreeElement: ElementsTreeElement | null;
+    searchMatchTreeElement?: ElementsTreeElement | null;
+    searchMatchQuery?: string;
     isUpdatingHighlights: boolean;
     alreadyExpandedParentTreeElement: ElementsTreeElement | null;
 }
@@ -102,6 +113,9 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     selectedDOMNode(): SDK.DOMModel.DOMNode | null;
     setNodeExpanded(node: SDK.DOMModel.DOMNode, expanded: boolean): void;
     isNodeExpanded(node: SDK.DOMModel.DOMNode): boolean;
+    expandRecursively(node: SDK.DOMModel.DOMNode, maxDepth?: number): Promise<void>;
+    collapseChildren(node: SDK.DOMModel.DOMNode): void;
+    showContextMenu(node: SDK.DOMModel.DOMNode, event: MouseEvent, widget?: ElementsTreeWidget): Promise<UI.ContextMenu.ContextMenu | undefined>;
     /**
      * FIXME: this is called to re-render everything from scratch, for
      * example, if global settings changed. Instead, the setting values
@@ -113,6 +127,10 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
      */
     getTreeOutlineForTesting(): ElementsTreeOutline | undefined;
     treeElementForNode(node: SDK.DOMModel.DOMNode): ElementsTreeElement | null;
+    hoveredDOMNode(): SDK.DOMModel.DOMNode | null;
+    searchMatchNode(): SDK.DOMModel.DOMNode | null;
+    searchMatchQuery(): string | null;
+    setHoveredNode(node: SDK.DOMModel.DOMNode | null, showInfo?: boolean): void;
     performUpdate(): void;
     modelAdded(domModel: SDK.DOMModel.DOMModel): void;
     modelRemoved(domModel: SDK.DOMModel.DOMModel): void;
@@ -137,7 +155,21 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     duplicateNode(node: SDK.DOMModel.DOMNode): void;
     selectNodeAfterEdit(wasExpanded: boolean, error: string | null, newNode: SDK.DOMModel.DOMNode | null): void;
     onKeyDown(event: KeyboardEvent): boolean;
-    copyStyles(node: SDK.DOMModel.DOMNode): void;
+    clipboardData(): ClipboardData | null;
+    setClipboardData(data: ClipboardData | null): void;
+    resetClipboardIfNeeded(removedNode: SDK.DOMModel.DOMNode): void;
+    isNodeInClipboard(node: SDK.DOMModel.DOMNode): boolean;
+    copyOuterHTML(node: SDK.DOMModel.DOMNode, includeShadowRoots?: boolean): Promise<void>;
+    copyCSSPath(node: SDK.DOMModel.DOMNode): void;
+    copyJSPath(node: SDK.DOMModel.DOMNode): void;
+    copyXPath(node: SDK.DOMModel.DOMNode, optimized?: boolean): void;
+    copyFullXPath(node: SDK.DOMModel.DOMNode): void;
+    copyStyles(node: SDK.DOMModel.DOMNode): Promise<void>;
+    performCopyOrCut(isCut: boolean, node: SDK.DOMModel.DOMNode | null, includeShadowRoots?: boolean): void;
+    canPaste(targetNode: SDK.DOMModel.DOMNode): boolean;
+    pasteNode(targetNode: SDK.DOMModel.DOMNode): void;
+    onCopyOrCut(isCut: boolean, event: Event): void;
+    onPaste(event: Event): void;
     /**
      * FIXME: used to determine focus state, probably we can have a better
      * way to do it.
@@ -165,7 +197,6 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     decoratorExtensions: MarkerDecoratorRegistration[] | null;
     private multilineEditing?;
     private visibleWidthInternal?;
-    private clipboardNodeData?;
     private isXMLMimeTypeInternal?;
     suppressRevealAndSelect: boolean;
     private previousHoveredElement?;
@@ -178,23 +209,21 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     showAIButton: boolean;
     disableEdits: boolean;
     expandRoot: boolean;
-    constructor(omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean, maxTreeDepth?: number, enableContextMenu?: boolean, showComments?: boolean, showAIButton?: boolean, disableEdits?: boolean, expandRoot?: boolean);
+    domTreeWidget: DOMTreeWidget | null;
+    get hoveredTreeElement(): UI.TreeOutline.TreeElement | null;
+    constructor(omitRootDOMNode?: boolean, selectEnabled?: boolean, hideGutter?: boolean, maxTreeDepth?: number, enableContextMenu?: boolean, showComments?: boolean, showAIButton?: boolean, disableEdits?: boolean, expandRoot?: boolean, domTreeWidget?: DOMTreeWidget | null);
     static forDOMModel(domModel: SDK.DOMModel.DOMModel): ElementsTreeOutline | null;
     deindentSingleNode(): void;
     setWordWrap(wrap: boolean): void;
     setMultilineEditing(multilineEditing: MultilineEditorController | null): void;
     visibleWidth(): number;
     setVisibleWidth(width: number): void;
-    private setClipboardData;
+    setClipboardData(data: ClipboardData | null): void;
     resetClipboardIfNeeded(removedNode: SDK.DOMModel.DOMNode): void;
-    private onBeforeCopy;
-    private onCopyOrCut;
     performCopyOrCut(isCut: boolean, node: SDK.DOMModel.DOMNode | null, includeShadowRoots?: boolean): void;
     canPaste(targetNode: SDK.DOMModel.DOMNode): boolean;
     pasteNode(targetNode: SDK.DOMModel.DOMNode): void;
     duplicateNode(targetNode: SDK.DOMModel.DOMNode): void;
-    private onPaste;
-    private performPaste;
     setVisible(visible: boolean): void;
     get rootDOMNode(): SDK.DOMModel.DOMNode | null;
     set rootDOMNode(x: SDK.DOMModel.DOMNode | null);

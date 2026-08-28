@@ -1,0 +1,1 @@
+gen/front_end/models/logs/logs.js: ../../front_end/generated/protocol.ts ../../front_end/models/logs/NetworkLog.ts ../../front_end/models/logs/LogManager.ts ../../front_end/models/logs/RequestResolver.ts ../../front_end/models/logs/logs.ts

@@ -10,7 +10,7 @@ export default `/*
  */
 
 .border-container {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   flex-shrink: 0;
 }
 

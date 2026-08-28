@@ -1079,7 +1079,7 @@ export class ElementsPanel extends UI.Panel.Panel {
         this.#domTreeWidget.duplicateNode(node);
     }
     copyStyles(node) {
-        this.#domTreeWidget.copyStyles(node);
+        void this.#domTreeWidget.copyStyles(node);
     }
     static firstInspectElementCompletedForTest = function () { };
     static firstInspectElementNodeNameForTest = '';

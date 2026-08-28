@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/computed_style/ComputedStyleModel.js
+// ../../front_end/models/computed_style/ComputedStyleModel.ts
 var ComputedStyleModel_exports = {};
 __export(ComputedStyleModel_exports, {
   ComputedStyle: () => ComputedStyle,
@@ -74,17 +74,14 @@ var ComputedStyleModel = class extends Common.ObjectWrapper.ObjectWrapper {
   }
   onCSSModelChanged(event) {
     delete this.computedStylePromise;
-    this.dispatchEventToListeners("CSSModelChanged", event?.data ?? null);
+    this.dispatchEventToListeners("CSSModelChanged" /* CSS_MODEL_CHANGED */, event?.data ?? null);
   }
   onComputedStyleChanged(event) {
     delete this.computedStylePromise;
     if (event?.data && "nodeId" in event.data && event.data.nodeId !== this.#node?.id) {
       return;
     }
-    this.dispatchEventToListeners(
-      "ComputedStyleChanged"
-      /* Events.COMPUTED_STYLE_CHANGED */
-    );
+    this.dispatchEventToListeners("ComputedStyleChanged" /* COMPUTED_STYLE_CHANGED */);
   }
   onDOMModelChanged(event) {
     const node = event.data;
@@ -173,11 +170,11 @@ var ComputedStyleModel = class extends Common.ObjectWrapper.ObjectWrapper {
     return result;
   }
 };
-var Events;
-(function(Events2) {
+var Events = /* @__PURE__ */ ((Events2) => {
   Events2["CSS_MODEL_CHANGED"] = "CSSModelChanged";
   Events2["COMPUTED_STYLE_CHANGED"] = "ComputedStyleChanged";
-})(Events || (Events = {}));
+  return Events2;
+})(Events || {});
 var ComputedStyle = class {
   node;
   computedStyle;

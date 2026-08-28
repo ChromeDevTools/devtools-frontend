@@ -111,6 +111,7 @@
     "../../../../../../front_end/core/sdk/ScopeTreeCache.ts",
     "../../../../../../front_end/core/sdk/ScreenCaptureModel.ts",
     "../../../../../../front_end/core/sdk/Script.ts",
+    "../../../../../../front_end/core/sdk/SecurityOrigin.ts",
     "../../../../../../front_end/core/sdk/SecurityOriginManager.ts",
     "../../../../../../front_end/core/sdk/ServerSentEvents.ts",
     "../../../../../../front_end/core/sdk/ServerSentEventsProtocol.ts",

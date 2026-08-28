@@ -1,5 +1,6 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../../core/text_utils/text_utils.js';
 import type { SearchConfig } from './SearchConfig.js';
 import { UISourceCode, type UISourceCodeMetadata } from './UISourceCode.js';
@@ -8,6 +9,7 @@ export interface Project {
     id(): string;
     type(): projectTypes;
     isServiceProject(): boolean;
+    securityOrigin(): SDK.SecurityOrigin.SecurityOrigin | null;
     displayName(): string;
     requestMetadata(uiSourceCode: UISourceCode): Promise<UISourceCodeMetadata | null>;
     requestFileContent(uiSourceCode: UISourceCode): Promise<TextUtils.ContentData.ContentDataOrError>;
@@ -50,10 +52,11 @@ export declare enum projectTypes {
 }
 export declare abstract class ProjectStore implements Project {
     #private;
-    constructor(workspace: WorkspaceImpl, id: string, type: projectTypes, displayName: string);
+    constructor(workspace: WorkspaceImpl, id: string, type: projectTypes, displayName: string, securityOrigin?: SDK.SecurityOrigin.SecurityOrigin);
     id(): string;
     type(): projectTypes;
     displayName(): string;
+    securityOrigin(): SDK.SecurityOrigin.SecurityOrigin | null;
     workspace(): WorkspaceImpl;
     createUISourceCode(url: Platform.DevToolsPath.UrlString, contentType: Common.ResourceType.ResourceType): UISourceCode;
     addUISourceCode(uiSourceCode: UISourceCode): boolean;
@@ -89,7 +92,7 @@ export declare class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper<Ev
     }): WorkspaceImpl;
     static removeInstance(): void;
     uiSourceCode(projectId: string, url: Platform.DevToolsPath.UrlString): UISourceCode | null;
-    uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString): UISourceCode | null;
+    uiSourceCodeForURL(url: Platform.DevToolsPath.UrlString, targetOrigin?: SDK.SecurityOrigin.SecurityOrigin): UISourceCode | null;
     findCompatibleUISourceCodes(uiSourceCode: UISourceCode): UISourceCode[];
     uiSourceCodesForProjectType(type: projectTypes): UISourceCode[];
     addProject(project: Project): void;

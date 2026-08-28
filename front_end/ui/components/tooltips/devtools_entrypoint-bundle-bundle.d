@@ -1,0 +1,1 @@
+gen/front_end/ui/components/tooltips/tooltips.js: gen/front_end/ui/components/tooltips/tooltip.css.js gen/front_end/ui/components/tooltips/Tooltip.js gen/front_end/ui/components/tooltips/tooltips.prebundle.js

@@ -16,7 +16,7 @@ export declare const UIStrings: {
      */
     readonly mobileTapDelayLabel: 'Mobile tap delay';
 };
-export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => Platform.UIString.LocalizedString;
+export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
 export type ViewportInsightModel = InsightModel<typeof UIStrings, {
     mobileOptimized: boolean | null;
     viewportEvent?: Types.Events.ParseMetaViewport;

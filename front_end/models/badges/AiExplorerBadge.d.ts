@@ -5,7 +5,7 @@ export declare class AiExplorerBadge extends Badge {
     readonly title = "AI Explorer";
     readonly jslogContext = "ai-explorer";
     readonly imageUri: string;
-    readonly interestedActions: readonly [BadgeAction.STARTED_AI_CONVERSATION];
+    readonly interestedActions: readonly BadgeAction[];
     constructor(badgeContext: BadgeContext);
     handleAction(_action: BadgeAction): void;
 }

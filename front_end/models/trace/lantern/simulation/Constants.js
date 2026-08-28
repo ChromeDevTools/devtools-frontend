@@ -38,6 +38,8 @@ const throttling = {
         uploadThroughputKbps: 0,
     },
 };
-const Constants = { throttling };
+const Constants = {
+    throttling,
+};
 export { Constants };
 //# sourceMappingURL=Constants.js.map

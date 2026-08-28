@@ -24,7 +24,7 @@ export declare const UIStrings: {
      */
     readonly noFonts: 'No fonts with suboptimal font-display found';
 };
-export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => Platform.UIString.LocalizedString;
+export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
 export interface RemoteFont {
     name?: string;
     request: Types.Events.SyntheticNetworkRequest;

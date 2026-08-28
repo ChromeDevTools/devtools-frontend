@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/models/issues_manager",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/models/issues_manager/ConnectionAllowlistIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/DeprecationIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/ElementAccessibilityIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/FederatedAuthRequestIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/FederatedAuthUserInfoRequestIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/GenericIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/Issue.test.ts",
+    "../../../../../../front_end/models/issues_manager/IssueAggregator.test.ts",
+    "../../../../../../front_end/models/issues_manager/IssueResolver.test.ts",
+    "../../../../../../front_end/models/issues_manager/LazyLoadImageIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/MarkdownIssueDescription.test.ts",
+    "../../../../../../front_end/models/issues_manager/PermissionElementIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/PropertyRuleIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/RelatedIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/SRIMessageSignatureIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/SharedDictionaryIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/StylesheetLoadingIssue.test.ts",
+    "../../../../../../front_end/models/issues_manager/UnencodedDigestIssue.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    }
+  ]
+}

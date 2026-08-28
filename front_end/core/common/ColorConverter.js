@@ -255,6 +255,16 @@ export class ColorConverter {
         const rgbOutput = NAMED_GAMUTS.displayP3_INVERSE.multiply(xyzInput);
         return applyTransferFns(NAMED_TRANSFER_FN.sRGB_INVERSE, rgbOutput.values[0], rgbOutput.values[1], rgbOutput.values[2]);
     }
+    static displayP3LinearToXyzd50(r, g, b) {
+        const rgbInput = new Vector3([r, g, b]);
+        const xyzOutput = NAMED_GAMUTS.displayP3.multiply(rgbInput);
+        return xyzOutput.values;
+    }
+    static xyzd50ToDisplayP3Linear(x, y, z) {
+        const xyzInput = new Vector3([x, y, z]);
+        const rgbResult = NAMED_GAMUTS.displayP3_INVERSE.multiply(xyzInput);
+        return rgbResult.values;
+    }
     static proPhotoToXyzd50(r, g, b) {
         const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.proPhotoRGB, r, g, b);
         const rgbInput = new Vector3([mappedR, mappedG, mappedB]);

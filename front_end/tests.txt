@@ -465,6 +465,7 @@ panels/elements/ClassesPaneWidget.test.js
 panels/elements/ColorSwatchPopoverIcon.test.js
 panels/elements/ComputedStyleWidget.test.js
 panels/elements/DOMPath.test.js
+panels/elements/DOMTreeContextMenu.test.js
 panels/elements/DOMTreeWidget.test.js
 panels/elements/ElementStatePaneWidget.test.js
 panels/elements/ElementsPanel.test.js

@@ -1,7 +1,7 @@
 import { type Color3D, type Color4D, type Color4DOr3D } from './ColorUtils.js';
 /** Returns the `Format` equivalent from the format text **/
 export declare function getFormat(formatText: string): Format | null;
-type ColorSpace = Format.SRGB | Format.SRGB_LINEAR | Format.DISPLAY_P3 | Format.A98_RGB | Format.PROPHOTO_RGB | Format.REC_2020 | Format.XYZ | Format.XYZ_D50 | Format.XYZ_D65;
+type ColorSpace = Format.SRGB | Format.SRGB_LINEAR | Format.DISPLAY_P3 | Format.DISPLAY_P3_LINEAR | Format.A98_RGB | Format.PROPHOTO_RGB | Format.REC_2020 | Format.XYZ | Format.XYZ_D50 | Format.XYZ_D65;
 export declare const enum ColorChannel {
     A = "a",
     ALPHA = "alpha",
@@ -51,6 +51,7 @@ interface ColorConversions<T = void> {
     [Format.SRGB](self: T): ColorFunction;
     [Format.SRGB_LINEAR](self: T): ColorFunction;
     [Format.DISPLAY_P3](self: T): ColorFunction;
+    [Format.DISPLAY_P3_LINEAR](self: T): ColorFunction;
     [Format.A98_RGB](self: T): ColorFunction;
     [Format.PROPHOTO_RGB](self: T): ColorFunction;
     [Format.REC_2020](self: T): ColorFunction;
@@ -89,6 +90,7 @@ export declare const enum Format {
     SRGB = "srgb",
     SRGB_LINEAR = "srgb-linear",
     DISPLAY_P3 = "display-p3",
+    DISPLAY_P3_LINEAR = "display-p3-linear",
     A98_RGB = "a98-rgb",
     PROPHOTO_RGB = "prophoto-rgb",
     REC_2020 = "rec2020",

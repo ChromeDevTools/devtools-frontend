@@ -1,0 +1,1 @@
+gen/front_end/ui/components/adorners/adorners.js: gen/front_end/ui/components/adorners/adorner.css.js gen/front_end/ui/components/adorners/Adorner.js gen/front_end/ui/components/adorners/adorners.prebundle.js

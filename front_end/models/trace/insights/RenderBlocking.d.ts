@@ -1,3 +1,4 @@
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Handlers from '../handlers/handlers.js';
 import type * as Types from '../types/types.js';
 import { type InsightModel, type InsightSetContext } from './types.js';
@@ -9,7 +10,7 @@ export declare const UIStrings: {
     /**
      * @description Text to describe that there are requests blocking rendering, which may affect LCP.
      */
-    readonly description: string;
+    readonly description: `Requests are blocking the page’s initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.`;
     /**
      * @description Label to describe a network request (that happens to be render-blocking).
      */
@@ -23,7 +24,7 @@ export declare const UIStrings: {
      */
     readonly noRenderBlocking: 'No render-blocking requests for this navigation';
 };
-export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => import("../../../core/platform/UIString.js").LocalizedString;
+export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
 export declare function isRenderBlockingInsight(insight: InsightModel): insight is RenderBlockingInsightModel;
 export type RenderBlockingInsightModel = InsightModel<typeof UIStrings, {
     renderBlockingRequests: Types.Events.SyntheticNetworkRequest[];

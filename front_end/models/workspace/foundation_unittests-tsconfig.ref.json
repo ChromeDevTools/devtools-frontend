@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/models/workspace",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/models/workspace/IgnoreListManager.test.ts",
+    "../../../../../../front_end/models/workspace/SearchConfig.test.ts",
+    "../../../../../../front_end/models/workspace/UISourceCode.test.ts",
+    "../../../../../../front_end/models/workspace/WorkspaceImpl.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/text_utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../bindings/bundle-tsconfig.ref.json"
+    }
+  ]
+}

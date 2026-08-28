@@ -161,7 +161,7 @@ export declare abstract class ConversationContext<T> {
      * Currently only used for AI v2.
      */
     isLoggingEnabled(): boolean;
-    getOrigin(): string;
+    getOrigin(): string | SDK.SecurityOrigin.SecurityOrigin;
     /**
      * Returns true if this data context (e.g., a DOM node or Network Request) is
      * allowed to be included in a conversation that is locked to the provided
@@ -174,7 +174,7 @@ export declare abstract class ConversationContext<T> {
      * @param establishedOrigin The origin that the current conversation is locked to.
      * If undefined, the conversation has not yet been locked to an origin.
      */
-    isOriginAllowed(establishedOrigin: string | undefined): boolean;
+    isOriginAllowed(establishedOrigin: string | SDK.SecurityOrigin.SecurityOrigin | undefined): boolean;
     /**
      * This method is called at the start of `AiAgent.run`.
      * It will be overridden in subclasses to fetch data related to the context item.

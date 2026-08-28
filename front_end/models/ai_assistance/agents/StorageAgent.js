@@ -62,7 +62,8 @@ export function isSamePageOrigin(target, context) {
 const MAX_TARGET_ORIGINS = 100;
 function resolveTargetOrigins(context, origins) {
     const primaryOrigin = context?.getOrigin();
-    const rawList = (origins && origins.length > 0) ? origins : (primaryOrigin ? [primaryOrigin] : []);
+    const primaryString = primaryOrigin instanceof SDK.SecurityOrigin.SecurityOrigin ? primaryOrigin.siteId() : primaryOrigin;
+    const rawList = (origins && origins.length > 0) ? origins : (primaryString ? [primaryString] : []);
     const uniqueOrigins = Array.from(new Set(rawList));
     return uniqueOrigins.slice(0, MAX_TARGET_ORIGINS);
 }

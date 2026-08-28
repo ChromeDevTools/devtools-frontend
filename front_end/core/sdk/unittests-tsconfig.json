@@ -1,0 +1,131 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": true,
+    "composite": false,
+    "declaration": false,
+    "disableSourceOfProjectReferenceRedirect": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "inlineSources": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "outDir": ".",
+    "preserveConstEnums": true,
+    "rootDir": "../../../../../../front_end/core/sdk",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2023",
+    "typeRoots": [
+      "../../../../../../node_modules/@types",
+      "../../../../../../node_modules"
+    ],
+    "types": [
+      "mocha"
+    ],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../front_end/core/sdk/CSSMatchedStyles.test.ts",
+    "../../../../../../front_end/core/sdk/CSSMetadata.test.ts",
+    "../../../../../../front_end/core/sdk/CSSProperty.test.ts",
+    "../../../../../../front_end/core/sdk/CSSPropertyParser.test.ts",
+    "../../../../../../front_end/core/sdk/CSSPropertyParserMatchers.test.ts",
+    "../../../../../../front_end/core/sdk/CSSStyleDeclaration.test.ts",
+    "../../../../../../front_end/core/sdk/CSSStyleSheetHeader.test.ts",
+    "../../../../../../front_end/core/sdk/ChildTargetManager.test.ts",
+    "../../../../../../front_end/core/sdk/ConsoleModel.test.ts",
+    "../../../../../../front_end/core/sdk/Cookie.test.ts",
+    "../../../../../../front_end/core/sdk/CookieModel.test.ts",
+    "../../../../../../front_end/core/sdk/CookieParser.test.ts",
+    "../../../../../../front_end/core/sdk/CrashReportContextModel.test.ts",
+    "../../../../../../front_end/core/sdk/DOMStorageModel.test.ts",
+    "../../../../../../front_end/core/sdk/EmulationModel.test.ts",
+    "../../../../../../front_end/core/sdk/EnhancedTracesParser.test.ts",
+    "../../../../../../front_end/core/sdk/NetworkRequest.test.ts",
+    "../../../../../../front_end/core/sdk/OverlayColorGenerator.test.ts",
+    "../../../../../../front_end/core/sdk/OverlayModel.test.ts",
+    "../../../../../../front_end/core/sdk/PreloadingModel.test.ts",
+    "../../../../../../front_end/core/sdk/RehydratingConnection.test.ts",
+    "../../../../../../front_end/core/sdk/RemoteObject.test.ts",
+    "../../../../../../front_end/core/sdk/Resource.test.ts",
+    "../../../../../../front_end/core/sdk/ResourceTreeModel.test.ts",
+    "../../../../../../front_end/core/sdk/ScopeTreeCache.test.ts",
+    "../../../../../../front_end/core/sdk/ScreenCaptureModel.test.ts",
+    "../../../../../../front_end/core/sdk/Script.test.ts",
+    "../../../../../../front_end/core/sdk/ServerTiming.test.ts",
+    "../../../../../../front_end/core/sdk/ServiceWorkerCacheModel.test.ts",
+    "../../../../../../front_end/core/sdk/ServiceWorkerManager.test.ts",
+    "../../../../../../front_end/core/sdk/SourceMap.test.ts",
+    "../../../../../../front_end/core/sdk/SourceMapCache.test.ts",
+    "../../../../../../front_end/core/sdk/SourceMapFunctionRanges.test.ts",
+    "../../../../../../front_end/core/sdk/SourceMapScopeChainEntry.test.ts",
+    "../../../../../../front_end/core/sdk/SourceMapScopesInfo.test.ts",
+    "../../../../../../front_end/core/sdk/StorageBucketsModel.test.ts",
+    "../../../../../../front_end/core/sdk/StorageKeyManager.test.ts",
+    "../../../../../../front_end/core/sdk/TraceObject.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../entrypoints/formatter_worker/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/protocol-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/formatter/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/trace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/codemirror.next/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/source-map-scopes-codec/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../protocol_client/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../root/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../text_utils/bundle-tsconfig.ref.json"
+    }
+  ]
+}

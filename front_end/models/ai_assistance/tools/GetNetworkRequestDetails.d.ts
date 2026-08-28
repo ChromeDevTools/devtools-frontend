@@ -10,8 +10,8 @@ export interface GetNetworkRequestDetailsArgs extends ToolArgs {
  */
 export declare class GetNetworkRequestDetailsTool implements DataTool<GetNetworkRequestDetailsArgs, unknown, BaseToolCapability & OriginLockCapability> {
     #private;
-    readonly name = ToolName.GET_NETWORK_REQUEST_DETAILS;
-    readonly description = "Retrieves the full headers, timing, status, and body details of a specific network request by ID.";
+    readonly name: ToolName;
+    readonly description: string;
     constructor(networkLog?: Logs.NetworkLog.NetworkLog);
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetNetworkRequestDetailsArgs>;
     displayInfoFromArgs(args: GetNetworkRequestDetailsArgs): {

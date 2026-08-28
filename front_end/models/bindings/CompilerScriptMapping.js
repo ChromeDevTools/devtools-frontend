@@ -379,13 +379,22 @@ export class CompilerScriptMapping {
         const scripts = new Set([script]);
         this.removeStubUISourceCode(script);
         const target = script.target();
-        const projectId = `jsSourceMaps:${script.isContentScript() ? 'extensions' : ''}:${target.id()}`;
+        const embedderName = script.embedderName();
+        let securityOrigin;
+        if (embedderName) {
+            const extractedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(embedderName);
+            if (extractedOrigin && extractedOrigin !== 'null') {
+                securityOrigin = SDK.SecurityOrigin.SecurityOrigin.create(extractedOrigin);
+            }
+        }
+        const parsedOrigin = securityOrigin ? `:${securityOrigin.siteId()}` : '';
+        const projectId = `jsSourceMaps:${script.isContentScript() ? 'extensions' : ''}:${target.id()}${parsedOrigin}`;
         let project = this.#projects.get(projectId);
         if (!project) {
             const projectType = script.isContentScript() ? Workspace.Workspace.projectTypes.ContentScripts :
                 Workspace.Workspace.projectTypes.Network;
             project = new ContentProviderBasedProject(this.#stubProject.workspace(), projectId, projectType, 
-            /* displayName */ '', /* isServiceProject */ false);
+            /* displayName */ '', /* isServiceProject */ false, securityOrigin);
             NetworkProject.setTargetForProject(project, target);
             this.#projects.set(projectId, project);
         }

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import { ChangeManager } from '../ChangeManager.js';
 import { ExtensionScope } from '../ExtensionScope.js';
 import { AI_ASSISTANCE_CSS_CLASS_NAME } from '../injected.js';
@@ -70,6 +71,7 @@ const MULTIMODAL_ENHANCEMENT_PROMPTS = {
     ["screenshot" /* MultimodalInputType.SCREENSHOT */]: promptForScreenshot + considerationsForMultimodalInputEvaluation,
     ["uploaded-image" /* MultimodalInputType.UPLOADED_IMAGE */]: promptForUploadedImage + considerationsForMultimodalInputEvaluation,
 };
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
 /**
  * One agent instance handles one conversation. Create a new agent
@@ -122,7 +124,10 @@ export class StylingAgent extends AiAgent {
                 return await getStylesTool.handler(args, {
                     conversationContext: context,
                     getTarget: () => this.targetManager.primaryPageTarget() ?? context.getItem().domModel().target(),
-                    getEstablishedOrigin: () => context.getOrigin(),
+                    getEstablishedOrigin: () => {
+                        const origin = context.getOrigin();
+                        return origin instanceof SDK.SecurityOrigin.SecurityOrigin ? origin.siteId() : origin;
+                    },
                 });
             },
         });

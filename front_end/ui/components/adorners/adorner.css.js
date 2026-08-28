@@ -20,13 +20,13 @@ export default `/*
 slot {
   display: inline-flex;
   box-sizing: border-box;
-  height: 14px;
+  height: var(--sys-size-7);
   line-height: 13px;
-  padding: 0 6px;
+  padding: 0 var(--sys-size-4);
   font-size: var(--override-adorner-font-size, 8.5px);
   color: var(--override-adorner-text-color, var(--sys-color-primary));
   background-color: var(--override-adorner-background-color, var(--sys-color-cdt-base-container));
-  border: 1px solid var(--override-adorner-border-color, var(--sys-color-tonal-outline));
+  border: var(--sys-size-1) solid var(--override-adorner-border-color, var(--sys-color-tonal-outline));
   border-radius: 10px;
   position: relative;
 
@@ -51,15 +51,15 @@ slot {
 }
 
 :host(:focus-visible) slot {
-  outline: 2px solid var(--sys-color-state-focus-ring);
-  outline-offset: 2px;
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: var(--sys-size-2);
   z-index: 999;
 }
 
 :host([aria-pressed="true"]) slot {
   color: var(--override-adorner-active-text-color, var(--sys-color-on-primary));
   background-color: var(--override-adorner-active-background-color, var(--sys-color-primary));
-  border: 1px solid var(--override-adorner-active-background-color, var(--sys-color-primary));
+  border: var(--sys-size-1) solid var(--override-adorner-active-background-color, var(--sys-color-primary));
 
   &:hover::after {
     background-color: var(--sys-color-state-hover-on-prominent);

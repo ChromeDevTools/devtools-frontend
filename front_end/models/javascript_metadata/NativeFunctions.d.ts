@@ -1,9 +1,6 @@
-export declare const NativeFunctions: ({
+export interface NativeFunctionValue {
     name: string;
     signatures: string[][];
-    receivers?: undefined;
-} | {
-    name: string;
-    signatures: string[][];
-    receivers: string[];
-})[];
+    receivers?: string[];
+}
+export declare const NativeFunctions: readonly NativeFunctionValue[];

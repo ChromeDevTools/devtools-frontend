@@ -596,9 +596,10 @@ export interface FirstPaint extends Mark {
     };
 }
 export type PageLoadEvent = AnyFirstContentfulPaint | MarkDOMContent | InteractiveTime | AnyLargestContentfulPaintCandidate | LayoutShift | FirstPaint | MarkLoad | NavigationStart | SoftNavigationStart;
-export declare const MarkerName: readonly [Name.MARK_DOM_CONTENT, Name.MARK_LOAD, Name.MARK_FIRST_PAINT, Name.MARK_FCP, Name.MARK_SOFT_FCP, Name.MARK_LCP_CANDIDATE, Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION, Name.NAVIGATION_START, Name.SOFT_NAVIGATION_START];
+export type MarkerEventName = Name.MARK_DOM_CONTENT | Name.MARK_LOAD | Name.MARK_FIRST_PAINT | Name.MARK_FCP | Name.MARK_SOFT_FCP | Name.MARK_LCP_CANDIDATE | Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION | Name.NAVIGATION_START | Name.SOFT_NAVIGATION_START;
+export declare const MarkerName: readonly MarkerEventName[];
 export interface MarkerEvent extends Event {
-    name: typeof MarkerName[number];
+    name: MarkerEventName;
 }
 export declare function isMarkerEvent(event: Event): event is MarkerEvent;
 export declare function eventIsPageLoadEvent(event: Event): event is PageLoadEvent;

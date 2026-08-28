@@ -1,0 +1,1 @@
+gen/front_end/models/javascript_metadata/javascript_metadata.js: ../../front_end/models/javascript_metadata/NativeFunctions.ts ../../front_end/models/javascript_metadata/JavaScriptMetadata.ts ../../front_end/models/javascript_metadata/javascript_metadata.ts

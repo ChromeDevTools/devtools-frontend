@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/lighthouse/LighthouseReporterTypes.js
+// ../../front_end/models/lighthouse/LighthouseReporterTypes.ts
 var LighthouseReporterTypes_exports = {};
 __export(LighthouseReporterTypes_exports, {
   LighthouseReportGenerator: () => LighthouseReportGenerator
@@ -15,7 +15,7 @@ var LighthouseReportGenerator = class {
   }
 };
 
-// gen/front_end/models/lighthouse/RunTypes.js
+// ../../front_end/models/lighthouse/RunTypes.ts
 var RunTypes_exports = {};
 export {
   LighthouseReporterTypes_exports as ReporterTypes,

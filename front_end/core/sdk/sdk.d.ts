@@ -72,6 +72,7 @@ import * as ScreenCaptureModel from './ScreenCaptureModel.js';
 import * as Script from './Script.js';
 import * as SDKModel from './SDKModel.js';
 import * as SDKSettings from './SDKSettings.js';
+import * as SecurityOrigin from './SecurityOrigin.js';
 import * as SecurityOriginManager from './SecurityOriginManager.js';
 import * as ServerSentEventProtocol from './ServerSentEventsProtocol.js';
 import * as ServerTiming from './ServerTiming.js';
@@ -90,4 +91,4 @@ import * as TargetManager from './TargetManager.js';
 import * as TraceObject from './TraceObject.js';
 import * as WebAuthnModel from './WebAuthnModel.js';
 export { AccessibilityModel, AnimationModel, AutofillModel, CategorizedBreakpoint, ChildTargetManager, CompilerSourceMappingContentProvider, Connections, ConsoleModel, Cookie, CookieModel, CookieParser, CPUProfilerModel, CPUThrottlingManager, CrashReportContextModel, CSSContainerQuery, CSSFontFace, CSSLayer, CSSMatchedStyles, CSSMedia, CSSMetadata, CSSModel, CSSNavigation, CSSProperty, CSSPropertyParser, CSSPropertyParserMatchers, CSSQuery, CSSRule, CSSScope, CSSStartingStyle, CSSStyleDeclaration, CSSStyleSheetHeader, CSSSupports, DebuggerModel, DOMDebuggerModel, DOMModel, DOMStorageModel, EmulationModel, EnhancedTracesParser, EventBreakpointsModel, FrameAssociated, FrameManager, HeapProfilerModel, IOModel, IsolateManager, IssuesModel, LayerTreeBase, LogModel, NetworkManager, NetworkRequest, OverlayColorGenerator, OverlayModel, OverlayPersistentHighlighter, PageLoad, PageResourceLoader, PaintProfiler, PerformanceMetricsModel, PreloadingModel, RehydratingConnection, // TODO(crbug.com/444191656): Exported for tests.
-RehydratingObject, RemoteObject, Resource, ResourceTreeModel, RuntimeModel, ScopeTreeCache, ScreenCaptureModel, Script, SDKModel, SDKSettings, SecurityOriginManager, ServerSentEventProtocol, ServerTiming, ServiceWorkerCacheModel, ServiceWorkerManager, SourceMap, SourceMapCache, SourceMapFunctionRanges, SourceMapManager, SourceMapScopeChainEntry, SourceMapScopesInfo, StorageBucketsModel, StorageKeyManager, Target, TargetManager, TraceObject, WebAuthnModel, };
+RehydratingObject, RemoteObject, Resource, ResourceTreeModel, RuntimeModel, ScopeTreeCache, ScreenCaptureModel, Script, SDKModel, SDKSettings, SecurityOrigin, SecurityOriginManager, ServerSentEventProtocol, ServerTiming, ServiceWorkerCacheModel, ServiceWorkerManager, SourceMap, SourceMapCache, SourceMapFunctionRanges, SourceMapManager, SourceMapScopeChainEntry, SourceMapScopesInfo, StorageBucketsModel, StorageKeyManager, Target, TargetManager, TraceObject, WebAuthnModel, };

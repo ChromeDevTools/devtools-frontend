@@ -22,7 +22,7 @@ export default `/*
   flex: 0 0 auto;
   min-height: 27px;
   background-color: var(--sys-color-cdt-base-container);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
   z-index: 0;
   align-items: flex-end;

@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/foundation/Universe.js
+// ../../front_end/foundation/Universe.ts
 var Universe_exports = {};
 __export(Universe_exports, {
   Universe: () => Universe
@@ -70,7 +70,12 @@ var Universe = class {
     this.supportsEmulation = options.supportsEmulation;
     let deviceModeModel = null;
     if (options.supportsEmulation) {
-      deviceModeModel = new Emulation.DeviceModeModel.DeviceModeModel(targetManager, settings, multitargetNetworkManager, fileManager);
+      deviceModeModel = new Emulation.DeviceModeModel.DeviceModeModel(
+        targetManager,
+        settings,
+        multitargetNetworkManager,
+        fileManager
+      );
       context.set(Emulation.DeviceModeModel.DeviceModeModel, deviceModeModel);
     }
     const pageResourceLoader = new SDK.PageResourceLoader.PageResourceLoader(targetManager, settings, multitargetNetworkManager, null);
@@ -79,9 +84,15 @@ var Universe = class {
     let automaticFileSystemManager = null;
     let projectSettingsModel = null;
     if (this.initAutomaticFilesystem) {
-      projectSettingsModel = new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(pageResourceLoader, targetManager);
+      projectSettingsModel = new ProjectSettings.ProjectSettingsModel.ProjectSettingsModel(
+        pageResourceLoader,
+        targetManager
+      );
       context.set(ProjectSettings.ProjectSettingsModel.ProjectSettingsModel, projectSettingsModel);
-      automaticFileSystemManager = new Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager(options.inspectorFrontendHost, projectSettingsModel);
+      automaticFileSystemManager = new Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager(
+        options.inspectorFrontendHost,
+        projectSettingsModel
+      );
       context.set(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager, automaticFileSystemManager);
     }
     const cpuThrottlingManager = new SDK.CPUThrottlingManager.CPUThrottlingManager(settings, targetManager);
@@ -97,8 +108,15 @@ var Universe = class {
     const domModelUndoStack = new SDK.DOMModel.DOMModelUndoStack();
     context.set(SDK.DOMModel.DOMModelUndoStack, domModelUndoStack);
     if (automaticFileSystemManager) {
-      const automaticFileSystemWorkspaceBinding = new Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding(automaticFileSystemManager, isolatedFileSystemManager, workspace);
-      context.set(Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding, automaticFileSystemWorkspaceBinding);
+      const automaticFileSystemWorkspaceBinding = new Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding(
+        automaticFileSystemManager,
+        isolatedFileSystemManager,
+        workspace
+      );
+      context.set(
+        Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding,
+        automaticFileSystemWorkspaceBinding
+      );
     }
     this.fileSystemWorkspaceBinding = new Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding(isolatedFileSystemManager, workspace);
     context.set(Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding, this.fileSystemWorkspaceBinding);
@@ -107,25 +125,64 @@ var Universe = class {
     const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
     const cssWorkspaceBinding = new Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding(resourceMapping, targetManager);
     context.set(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, cssWorkspaceBinding);
-    const debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(resourceMapping, targetManager, ignoreListManager, workspace);
+    const debuggerWorkspaceBinding = new Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding(
+      resourceMapping,
+      targetManager,
+      ignoreListManager,
+      workspace
+    );
     context.set(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, debuggerWorkspaceBinding);
-    const presentationConsoleMessageManager = new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager(targetManager, workspace, debuggerWorkspaceBinding, cssWorkspaceBinding);
-    context.set(Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager, presentationConsoleMessageManager);
+    const presentationConsoleMessageManager = new Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager(
+      targetManager,
+      workspace,
+      debuggerWorkspaceBinding,
+      cssWorkspaceBinding
+    );
+    context.set(
+      Bindings.PresentationConsoleMessageHelper.PresentationConsoleMessageManager,
+      presentationConsoleMessageManager
+    );
     const networkProjectManager = new Bindings.NetworkProject.NetworkProjectManager();
     context.set(Bindings.NetworkProject.NetworkProjectManager, networkProjectManager);
-    const breakpointManager = new Breakpoints.BreakpointManager.BreakpointManager(targetManager, workspace, debuggerWorkspaceBinding, settings);
+    const breakpointManager = new Breakpoints.BreakpointManager.BreakpointManager(
+      targetManager,
+      workspace,
+      debuggerWorkspaceBinding,
+      settings
+    );
     context.set(Breakpoints.BreakpointManager.BreakpointManager, breakpointManager);
     const persistence = new Persistence.Persistence.PersistenceImpl(workspace, breakpointManager);
     context.set(Persistence.Persistence.PersistenceImpl, persistence);
-    const networkPersistenceManager = new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(workspace, persistence, breakpointManager, targetManager, settings, isolatedFileSystemManager, multitargetNetworkManager);
+    const networkPersistenceManager = new Persistence.NetworkPersistenceManager.NetworkPersistenceManager(
+      workspace,
+      persistence,
+      breakpointManager,
+      targetManager,
+      settings,
+      isolatedFileSystemManager,
+      multitargetNetworkManager
+    );
     context.set(Persistence.NetworkPersistenceManager.NetworkPersistenceManager, networkPersistenceManager);
-    const workspaceDiff = new WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl(workspace, persistence, networkPersistenceManager, settings);
+    const workspaceDiff = new WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl(
+      workspace,
+      persistence,
+      networkPersistenceManager,
+      settings
+    );
     context.set(WorkspaceDiff.WorkspaceDiff.WorkspaceDiffImpl, workspaceDiff);
     const networkLog = new Logs.NetworkLog.NetworkLog(targetManager, settings);
     context.set(Logs.NetworkLog.NetworkLog, networkLog);
     const logManager = new Logs.LogManager.LogManager(targetManager, networkLog);
     context.set(Logs.LogManager.LogManager, logManager);
-    const issuesManager = new IssuesManager.IssuesManager.IssuesManager(IssuesManager.Issue.getShowThirdPartyIssuesSetting(settings), IssuesManager.IssuesManager.getHideIssueByCodeSetting(settings), frameManager, targetManager, workspace, debuggerWorkspaceBinding, cssWorkspaceBinding);
+    const issuesManager = new IssuesManager.IssuesManager.IssuesManager(
+      IssuesManager.Issue.getShowThirdPartyIssuesSetting(settings),
+      IssuesManager.IssuesManager.getHideIssueByCodeSetting(settings),
+      frameManager,
+      targetManager,
+      workspace,
+      debuggerWorkspaceBinding,
+      cssWorkspaceBinding
+    );
     context.set(IssuesManager.IssuesManager.IssuesManager, issuesManager);
     const domIssuesManager = new IssuesManager.DOMIssuesManager.DOMIssuesManager(issuesManager, targetManager);
     context.set(IssuesManager.DOMIssuesManager.DOMIssuesManager, domIssuesManager);

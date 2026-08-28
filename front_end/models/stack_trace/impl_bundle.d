@@ -1,0 +1,1 @@
+gen/front_end/models/stack_trace/stack_trace_impl.js: ../../front_end/models/stack_trace/DetailedErrorStackParser.ts ../../front_end/models/stack_trace/StackTraceImpl.ts ../../front_end/models/stack_trace/Trie.ts ../../front_end/models/stack_trace/StackTraceModel.ts ../../front_end/models/stack_trace/stack_trace_impl.ts

@@ -16,8 +16,7 @@ export const UIStrings = {
      * @description Description of a DevTools insight that identifies the code on the page that the user doesn't control.
      * This is displayed after a user expands the section to see more. No character length limits.
      */
-    description: '3rd party code can significantly impact load performance. ' +
-        '[Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page’s content.',
+    description: `3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page’s content.`,
     /**
      * @description Label for a table column that displays the name of a third-party provider.
      */

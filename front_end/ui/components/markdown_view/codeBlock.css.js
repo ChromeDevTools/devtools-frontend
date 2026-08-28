@@ -84,8 +84,8 @@ export default `/*
     cursor: pointer;
     outline-offset: var(--sys-size-2);
     border: none;
-    padding-bottom: 2px;
-    font-size: 11px;
+    padding-bottom: var(--sys-size-2);
+    font-size: var(--sys-typescale-body5-size);
     font-family: var(--default-font-family);
   }
 }

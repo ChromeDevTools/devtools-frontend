@@ -1,4 +1,4 @@
-// gen/front_end/models/geometry/GeometryImpl.js
+// ../../front_end/models/geometry/GeometryImpl.ts
 import * as SDK from "../../core/sdk/sdk.js";
 var EPS = 1e-5;
 var Vector = class {

@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/stack_trace/StackTrace.js
+// ../../front_end/models/stack_trace/StackTrace.ts
 var StackTrace_exports = {};
 __export(StackTrace_exports, {
   DebuggableFrameFlavor: () => DebuggableFrameFlavor,
@@ -12,15 +12,15 @@ __export(StackTrace_exports, {
   MissingDebugInfoType: () => MissingDebugInfoType,
   isConsoleOriginated: () => isConsoleOriginated
 });
-var MissingDebugInfoType;
-(function(MissingDebugInfoType2) {
+var MissingDebugInfoType = /* @__PURE__ */ ((MissingDebugInfoType2) => {
   MissingDebugInfoType2["NO_INFO"] = "NO_INFO";
   MissingDebugInfoType2["PARTIAL_INFO"] = "PARTIAL_INFO";
-})(MissingDebugInfoType || (MissingDebugInfoType = {}));
-var Events;
-(function(Events2) {
+  return MissingDebugInfoType2;
+})(MissingDebugInfoType || {});
+var Events = /* @__PURE__ */ ((Events2) => {
   Events2["UPDATED"] = "UPDATED";
-})(Events || (Events = {}));
+  return Events2;
+})(Events || {});
 var DebuggableFrameFlavor = class _DebuggableFrameFlavor {
   static #last;
   frame;

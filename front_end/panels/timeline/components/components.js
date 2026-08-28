@@ -1499,11 +1499,11 @@ devtools-dialog {
 }
 
 .privacy-disclosure {
-  margin: 8px 0;
+  margin: var(--sys-size-5) 0;
 }
 
 .url-override {
-  margin: 8px 0;
+  margin: var(--sys-size-5) 0;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -1528,12 +1528,12 @@ details > summary {
 }
 
 .origin-mapping-grid {
-  border: 1px solid var(--sys-color-divider);
-  margin-top: 8px;
+  border: var(--sys-size-1) solid var(--sys-color-divider);
+  margin-top: var(--sys-size-5);
 }
 
 .origin-mapping-description {
-  margin-bottom: 8px;
+  margin-bottom: var(--sys-size-5);
 }
 
 .origin-mapping-button-section {
@@ -1548,7 +1548,7 @@ details > summary {
 }
 
 .advanced-section-contents {
-  margin: 4px 0 14px;
+  margin: var(--sys-size-3) 0 var(--sys-size-7);
 }
 
 .buttons-section {
@@ -1563,11 +1563,11 @@ details > summary {
 }
 
 input[type="checkbox"] {
-  height: 12px;
-  width: 12px;
-  min-height: 12px;
-  min-width: 12px;
-  margin: 6px;
+  height: var(--sys-size-6);
+  width: var(--sys-size-6);
+  min-height: var(--sys-size-6);
+  min-width: var(--sys-size-6);
+  margin: var(--sys-size-4);
 }
 
 input[type="text"][disabled] {
@@ -1575,7 +1575,7 @@ input[type="text"][disabled] {
 }
 
 .warning {
-  margin: 2px 8px;
+  margin: var(--sys-size-2) var(--sys-size-5);
   color: var(--color-error-text);
 }
 
@@ -1587,7 +1587,7 @@ devtools-link {
 .divider {
   margin: 10px 0;
   border: none;
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve("./fieldSettingsDialog.css")} */`;
@@ -1615,9 +1615,9 @@ var originMap_css_default = `/*
  */
 
 .origin-warning-icon {
-  width: 16px;
-  height: 16px;
-  margin-right: 4px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
+  margin-right: var(--sys-size-3);
   color: var(--icon-warning);
 }
 
@@ -1628,7 +1628,7 @@ var originMap_css_default = `/*
 
 .error-message {
   color: var(--sys-color-error);
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
   font-weight: var(--ref-typeface-weight-medium);
   white-space: pre-wrap;
 }
@@ -3114,7 +3114,7 @@ var metricCard_css_default = `/*
 
 .metric-card {
   border-radius: var(--sys-shape-corner-small);
-  padding: 14px 16px;
+  padding: var(--sys-size-7) var(--sys-size-8);
   background-color: var(--sys-color-surface3);
   height: 100%;
   box-sizing: border-box;
@@ -3127,23 +3127,23 @@ var metricCard_css_default = `/*
   line-height: var(--sys-typescale-headline5-line-height);
   font-weight: var(--ref-typeface-weight-medium);
   margin: 0;
-  margin-bottom: 6px;
+  margin-bottom: var(--sys-size-4);
 }
 
 .title-help {
   height: var(--sys-typescale-headline5-line-height);
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
 }
 
 .metric-values-section {
   position: relative;
   display: flex;
-  column-gap: 8px;
-  margin-bottom: 8px;
+  column-gap: var(--sys-size-5);
+  margin-bottom: var(--sys-size-5);
 }
 
 .metric-values-section:focus-visible {
-  outline: 2px solid -webkit-focus-ring-color;
+  outline: var(--sys-size-2) solid -webkit-focus-ring-color;
 }
 
 .metric-source-block {
@@ -3151,7 +3151,7 @@ var metricCard_css_default = `/*
 }
 
 .metric-source-value {
-  font-size: 32px;
+  font-size: var(--sys-size-13);
   line-height: 36px;
   font-weight: var(--ref-typeface-weight-regular);
 }
@@ -3161,7 +3161,7 @@ var metricCard_css_default = `/*
 }
 
 .warning {
-  margin-top: 4px;
+  margin-top: var(--sys-size-3);
   color: var(--sys-color-error);
   font-size: var(--sys-typescale-body4-size);
   line-height: var(--sys-typescale-body4-line-height);
@@ -3174,7 +3174,7 @@ var metricCard_css_default = `/*
     mask-size: var(--sys-typescale-body4-line-height);
     mask-image: var(--image-file-warning);
     background-color: var(--sys-color-error);
-    margin-right: 4px;
+    margin-right: var(--sys-size-3);
     flex-shrink: 0;
   }
 }
@@ -3194,17 +3194,17 @@ var metricCard_css_default = `/*
 .divider {
   width: 100%;
   border: 0;
-  border-bottom: 1px solid var(--sys-color-divider);
-  margin: 8px 0;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  margin: var(--sys-size-5) 0;
   box-sizing: border-box;
 }
 
 .compare-text {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .environment-recs-intro {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .environment-recs {
@@ -3213,7 +3213,7 @@ var metricCard_css_default = `/*
 
 .environment-recs > summary {
   font-weight: var(--ref-typeface-weight-medium);
-  margin-bottom: 4px;
+  margin-bottom: var(--sys-size-3);
   font-size: var(--sys-typescale-body4-size);
   line-height: var(--sys-typescale-body4-line-height);
   display: flex;
@@ -3225,7 +3225,7 @@ var metricCard_css_default = `/*
     mask-size: var(--sys-typescale-body4-line-height);
     mask-image: var(--image-file-triangle-right);
     background-color: var(--icon-default);
-    margin-right: 4px;
+    margin-right: var(--sys-size-3);
     flex-shrink: 0;
   }
 }
@@ -3239,19 +3239,19 @@ details.environment-recs[open] > summary::before {
 }
 
 .detailed-compare-text {
-  margin-bottom: 8px;
+  margin-bottom: var(--sys-size-5);
 }
 
 .bucket-summaries {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
   white-space: nowrap;
 }
 
 .bucket-summaries.histogram {
   display: grid;
-  grid-template-columns: minmax(min-content, auto) minmax(40px, 60px) max-content;
+  grid-template-columns: minmax(min-content, auto) minmax(var(--sys-size-14), 60px) max-content;
   grid-auto-rows: 1fr;
-  column-gap: 8px;
+  column-gap: var(--sys-size-5);
   place-items: center flex-end;
 }
 
@@ -3270,7 +3270,7 @@ details.environment-recs[open] > summary::before {
 }
 
 .histogram-bar {
-  height: 6px;
+  height: var(--sys-size-4);
 }
 
 .histogram-percent {
@@ -4151,7 +4151,7 @@ var liveMetricsView_css_default = `/*
 
 .live-metrics,
 .next-steps {
-  padding: 16px;
+  padding: var(--sys-size-8);
   height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
@@ -4171,7 +4171,7 @@ var liveMetricsView_css_default = `/*
   flex: 0 0 336px;
   box-sizing: border-box;
   border: none;
-  border-left: 1px solid var(--sys-color-divider);
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 @container (max-width: 650px) {
@@ -4182,13 +4182,13 @@ var liveMetricsView_css_default = `/*
   .next-steps {
     flex-basis: 40%;
     border: none;
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
   }
 }
 
 .metric-cards {
   display: grid;
-  gap: 16px;
+  gap: var(--sys-size-8);
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   width: 100%;
 }
@@ -4203,16 +4203,16 @@ var liveMetricsView_css_default = `/*
 
 .settings-card {
   border-radius: var(--sys-shape-corner-small);
-  padding: 14px 16px 16px;
+  padding: var(--sys-size-7) var(--sys-size-8) var(--sys-size-8);
   background-color: var(--sys-color-surface3);
-  margin-bottom: 16px;
+  margin-bottom: var(--sys-size-8);
 }
 
 .record-action-card {
   border-radius: var(--sys-shape-corner-small);
-  padding: 12px 16px 12px 12px;
+  padding: var(--sys-size-6) var(--sys-size-8) var(--sys-size-6) var(--sys-size-6);
   background-color: var(--sys-color-surface3);
-  margin-bottom: 16px;
+  margin-bottom: var(--sys-size-8);
 }
 
 .card-title {
@@ -4223,11 +4223,11 @@ var liveMetricsView_css_default = `/*
 }
 
 .settings-card .card-title {
-  margin-bottom: 4px;
+  margin-bottom: var(--sys-size-3);
 }
 
 .device-toolbar-description {
-  margin-bottom: 12px;
+  margin-bottom: var(--sys-size-6);
   display: flex;
 }
 
@@ -4242,30 +4242,30 @@ var liveMetricsView_css_default = `/*
 
 .related-info {
   text-wrap: nowrap;
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
   display: flex;
 }
 
 .related-info-label {
   font-weight: var(--ref-typeface-weight-medium);
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 }
 
 .related-info-link {
   background-color: var(--sys-color-cdt-base-container);
-  border-radius: 2px;
-  padding: 0 2px;
+  border-radius: var(--sys-size-2);
+  padding: 0 var(--sys-size-2);
   min-width: 0;
 }
 
 .local-field-link {
   display: inline-block;
   width: fit-content;
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .logs-section {
-  margin-top: 24px;
+  margin-top: var(--sys-size-11);
   display: flex;
   flex-direction: column;
   flex: 1 0 300px;
@@ -4281,7 +4281,7 @@ var liveMetricsView_css_default = `/*
 }
 
 .interactions-clear {
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
   vertical-align: sub;
 }
 
@@ -4293,7 +4293,7 @@ var liveMetricsView_css_default = `/*
 
 .log-item {
   border: none;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
   &.highlight {
     animation: highlight-fadeout 2s;
@@ -4307,11 +4307,11 @@ var liveMetricsView_css_default = `/*
   summary {
     display: flex;
     align-items: center;
-    padding: 7px 4px;
+    padding: 7px var(--sys-size-3);
 
     &::before {
       content: " ";
-      height: 14px;
+      height: var(--sys-size-7);
       width: var(--details-indicator-width);
       mask-image: var(--image-file-triangle-right);
       background-color: var(--icon-default);
@@ -4333,19 +4333,19 @@ var liveMetricsView_css_default = `/*
 .interaction-inp-chip {
   background-color: var(--sys-color-yellow-container);
   color: var(--sys-color-on-yellow-container);
-  padding: 0 2px;
+  padding: 0 var(--sys-size-2);
 }
 
 .interaction-node {
   flex-grow: 1;
-  margin-right: 32px;
+  margin-right: var(--sys-size-13);
   min-width: 0;
 }
 
 .interaction-info {
   width: var(--sys-typescale-body4-line-height);
   height: var(--sys-typescale-body4-line-height);
-  margin-right: 6px;
+  margin-right: var(--sys-size-4);
 }
 
 .interaction-duration {
@@ -4361,7 +4361,7 @@ var liveMetricsView_css_default = `/*
 }
 
 .layout-shift-score {
-  margin-right: 16px;
+  margin-right: var(--sys-size-8);
   padding: 7px 0;
   width: 150px;
   box-sizing: border-box;
@@ -4373,7 +4373,7 @@ var liveMetricsView_css_default = `/*
 }
 
 .layout-shift-node {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   padding: 7px 0;
 
   &:last-child {
@@ -4386,7 +4386,7 @@ var liveMetricsView_css_default = `/*
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--sys-size-5);
 }
 
 .shortcut-label {
@@ -4395,20 +4395,20 @@ var liveMetricsView_css_default = `/*
 }
 
 .field-data-option {
-  margin: 8px 0;
+  margin: var(--sys-size-5) 0;
   max-width: 100%;
 }
 
 .field-setup-buttons {
-  margin-top: 14px;
+  margin-top: var(--sys-size-7);
 }
 
 .field-data-message {
-  margin-bottom: 12px;
+  margin-bottom: var(--sys-size-6);
 }
 
 .field-data-warning {
-  margin-top: 4px;
+  margin-top: var(--sys-size-3);
   color: var(--sys-color-error);
   font-size: var(--sys-typescale-body4-size);
   line-height: var(--sys-typescale-body4-line-height);
@@ -4421,7 +4421,7 @@ var liveMetricsView_css_default = `/*
     mask-size: var(--sys-typescale-body4-line-height);
     mask-image: var(--image-file-warning);
     background-color: var(--sys-color-error);
-    margin-right: 4px;
+    margin-right: var(--sys-size-3);
     flex-shrink: 0;
   }
 }
@@ -4438,7 +4438,7 @@ devtools-link {
 .environment-option {
   display: flex;
   align-items: center;
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
   gap: var(--sys-size-2);
 }
 
@@ -4450,7 +4450,7 @@ devtools-link {
 
 .environment-recs-list {
   margin: 0;
-  padding-left: 20px;
+  padding-left: var(--sys-size-9);
 }
 
 .environment-rec {
@@ -4478,8 +4478,8 @@ devtools-link {
 }
 
 .subpart-table {
-  border-top: 1px solid var(--sys-color-divider);
-  padding: 7px 4px;
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  padding: 7px var(--sys-size-3);
   margin-left: var(--subpart-table-margin);
 }
 
@@ -4490,7 +4490,7 @@ devtools-link {
 
 .subpart-table-header-row {
   font-weight: var(--ref-typeface-weight-medium);
-  margin-bottom: 4px;
+  margin-bottom: var(--sys-size-3);
 }
 
 .log-extra-details-button {
@@ -4519,19 +4519,19 @@ devtools-link {
     text-align: center;
 
     .section-title {
-      margin-bottom: 4px;
+      margin-bottom: var(--sys-size-3);
     }
   }
 }
 
 .node-description {
-  margin-bottom: 12px;
+  margin-bottom: var(--sys-size-6);
 }
 
 .section-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sys-size-5);
   margin-bottom: 10px;
 }
 
@@ -5679,23 +5679,23 @@ var networkRequestDetails_css_default = `/*
 
 @scope to (devtools-widget > *) {
   .network-request-details-title {
-    font-size: 13px;
-    padding: 8px;
+    font-size: var(--sys-typescale-body3-size);
+    padding: var(--sys-size-5);
     display: flex;
     align-items: center;
   }
 
   .network-request-details-title > div {
     box-sizing: border-box;
-    width: 14px;
-    height: 14px;
-    border: 1px solid var(--sys-color-divider);
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     display: inline-block;
-    margin-right: 4px;
+    margin-right: var(--sys-size-3);
   }
 
   .network-request-details-content {
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .network-request-details-cols {
@@ -5713,7 +5713,7 @@ var networkRequestDetails_css_default = `/*
   }
 
   .column-divider {
-    border-left: 1px solid var(--sys-color-divider);
+    border-left: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .network-request-details-col.server-timings {
@@ -5765,7 +5765,7 @@ var networkRequestDetails_css_default = `/*
   .timeline-link {
     color: var(--text-link);
     text-decoration: underline;
-    outline-offset: 2px;
+    outline-offset: var(--sys-size-2);
     padding: 0;
     text-align: left;
 
@@ -6563,8 +6563,8 @@ var networkTrackWidget_css_default = `/* Copyright 2026 The Chromium Authors
   width: 100%;
   height: 150px;
   background-color: var(--sys-color-cdt-base-container);
-  border-radius: 8px;
-  border: 1px solid var(--sys-color-divider);
+  border-radius: var(--sys-shape-corner-small);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .container canvas {
@@ -7422,7 +7422,7 @@ var sidebarSingleInsightSet_css_default = `/*
 
 :host {
   display: block;
-  padding: 5px 8px;
+  padding: 5px var(--sys-size-5);
 }
 
 .passed-insights-section {
@@ -8061,7 +8061,7 @@ var timelineSummary_css_default = `/*
     padding: 0 var(--sys-size-6) var(--sys-size-4) var(--sys-size-8) ;
     /* The category summary can't be more narrow than this, so we'll force a horizontal scrollbar
     */
-    min-width: 192px;
+    min-width: var(--sys-size-25);
 
     &.is-in-ai-widget {
       padding: 0;
@@ -8071,7 +8071,7 @@ var timelineSummary_css_default = `/*
   .summary-range {
     font-weight: var(--ref-typeface-weight-medium);
     height: 24.5px;
-    line-height: 22px;
+    line-height: var(--sys-size-10);
   }
 
   .category-summary {
@@ -8081,8 +8081,8 @@ var timelineSummary_css_default = `/*
   }
 
   .category-row {
-    min-height: 16px;
-    line-height: 16px;
+    min-height: var(--sys-size-8);
+    line-height: var(--sys-size-8);
   }
 
   .category-swatch {

@@ -55,7 +55,7 @@ export declare const UIStrings: {
      */
     readonly noCulprits: 'Could not detect any layout shift culprits';
 };
-export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => Platform.UIString.LocalizedString;
+export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
 export type CLSCulpritsInsightModel = InsightModel<typeof UIStrings, {
     animationFailures: readonly NoncompositedAnimationFailure[];
     shifts: Map<Types.Events.SyntheticLayoutShift, LayoutShiftRootCausesData>;

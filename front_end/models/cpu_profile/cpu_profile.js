@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/cpu_profile/CPUProfileDataModel.js
+// ../../front_end/models/cpu_profile/CPUProfileDataModel.ts
 var CPUProfileDataModel_exports = {};
 __export(CPUProfileDataModel_exports, {
   CPUProfileDataModel: () => CPUProfileDataModel,
@@ -12,7 +12,7 @@ __export(CPUProfileDataModel_exports, {
 });
 import * as Platform from "../../core/platform/platform.js";
 
-// gen/front_end/models/cpu_profile/ProfileTreeModel.js
+// ../../front_end/models/cpu_profile/ProfileTreeModel.ts
 var ProfileTreeModel_exports = {};
 __export(ProfileTreeModel_exports, {
   ProfileNode: () => ProfileNode,
@@ -105,7 +105,7 @@ var ProfileTreeModel = class {
   }
 };
 
-// gen/front_end/models/cpu_profile/CPUProfileDataModel.js
+// ../../front_end/models/cpu_profile/CPUProfileDataModel.ts
 var CPUProfileNode = class extends ProfileNode {
   id;
   self;
@@ -483,7 +483,14 @@ var CPUProfileDataModel = class extends ProfileTreeModel {
         const start = stackStartTimes[stackTop];
         const duration = sampleTime - start;
         stackChildrenDuration[stackTop - 1] += duration;
-        closeFrameCallback(gcParentNode.depth + 1, gcNode, sampleIndex, start, duration, duration - stackChildrenDuration[stackTop]);
+        closeFrameCallback(
+          gcParentNode.depth + 1,
+          gcNode,
+          sampleIndex,
+          start,
+          duration,
+          duration - stackChildrenDuration[stackTop]
+        );
         --stackTop;
         prevNode = gcParentNode;
         prevId = prevNode.id;
@@ -497,7 +504,14 @@ var CPUProfileDataModel = class extends ProfileTreeModel {
         const start = stackStartTimes[stackTop];
         const duration = sampleTime - start;
         stackChildrenDuration[stackTop - 1] += duration;
-        closeFrameCallback(prevNode.depth, prevNode, sampleIndex, start, duration, duration - stackChildrenDuration[stackTop]);
+        closeFrameCallback(
+          prevNode.depth,
+          prevNode,
+          sampleIndex,
+          start,
+          duration,
+          duration - stackChildrenDuration[stackTop]
+        );
         --stackTop;
         if (node && node.depth === prevNode.depth) {
           stackNodes.push(node);
@@ -522,7 +536,14 @@ var CPUProfileDataModel = class extends ProfileTreeModel {
       const start = stackStartTimes[stackTop];
       const duration = sampleTime - start;
       stackChildrenDuration[stackTop - 1] += duration;
-      closeFrameCallback(gcParentNode.depth + 1, node, sampleIndex, start, duration, duration - stackChildrenDuration[stackTop]);
+      closeFrameCallback(
+        gcParentNode.depth + 1,
+        node,
+        sampleIndex,
+        start,
+        duration,
+        duration - stackChildrenDuration[stackTop]
+      );
       --stackTop;
       prevId = gcParentNode.id;
     }

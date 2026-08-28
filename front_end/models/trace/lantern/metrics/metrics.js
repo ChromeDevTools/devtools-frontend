@@ -4,10 +4,10 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/trace/lantern/metrics/FirstContentfulPaint.js
+// ../../front_end/models/trace/lantern/metrics/FirstContentfulPaint.ts
 import * as Graph2 from "../graph/graph.js";
 
-// gen/front_end/models/trace/lantern/metrics/Metric.js
+// ../../front_end/models/trace/lantern/metrics/Metric.ts
 import * as Core from "../core/core.js";
 import * as Graph from "../graph/graph.js";
 var Metric = class {
@@ -56,8 +56,14 @@ var Metric = class {
     const optimisticSimulation = simulator.simulate(optimisticGraph, simulateOptions);
     simulateOptions = { label: `pessimistic${metricName}` };
     const pessimisticSimulation = simulator.simulate(pessimisticGraph, simulateOptions);
-    const optimisticEstimate = this.getEstimateFromSimulation(optimisticSimulation, { ...extras, optimistic: true });
-    const pessimisticEstimate = this.getEstimateFromSimulation(pessimisticSimulation, { ...extras, optimistic: false });
+    const optimisticEstimate = this.getEstimateFromSimulation(
+      optimisticSimulation,
+      { ...extras, optimistic: true }
+    );
+    const pessimisticEstimate = this.getEstimateFromSimulation(
+      pessimisticSimulation,
+      { ...extras, optimistic: false }
+    );
     const coefficients = this.getScaledCoefficients(simulator.rtt);
     const interceptMultiplier = coefficients.intercept > 0 ? Math.min(1, optimisticEstimate.timeInMs / 1e3) : 1;
     const timing = coefficients.intercept * interceptMultiplier + coefficients.optimistic * optimisticEstimate.timeInMs + coefficients.pessimistic * pessimisticEstimate.timeInMs;
@@ -71,7 +77,7 @@ var Metric = class {
   }
 };
 
-// gen/front_end/models/trace/lantern/metrics/FirstContentfulPaint.js
+// ../../front_end/models/trace/lantern/metrics/FirstContentfulPaint.ts
 var FirstContentfulPaint = class extends Metric {
   static get coefficients() {
     return {
@@ -180,7 +186,7 @@ var FirstContentfulPaint = class extends Metric {
   }
 };
 
-// gen/front_end/models/trace/lantern/metrics/Interactive.js
+// ../../front_end/models/trace/lantern/metrics/Interactive.ts
 import * as Core2 from "../core/core.js";
 import * as Graph3 from "../graph/graph.js";
 var CRITICAL_LONG_TASK_THRESHOLD = 20;
@@ -236,7 +242,7 @@ var Interactive = class _Interactive extends Metric {
   }
 };
 
-// gen/front_end/models/trace/lantern/metrics/LargestContentfulPaint.js
+// ../../front_end/models/trace/lantern/metrics/LargestContentfulPaint.ts
 import * as Core3 from "../core/core.js";
 var LargestContentfulPaint = class _LargestContentfulPaint extends Metric {
   static get coefficients() {
@@ -298,7 +304,7 @@ var LargestContentfulPaint = class _LargestContentfulPaint extends Metric {
   }
 };
 
-// gen/front_end/models/trace/lantern/metrics/MaxPotentialFID.js
+// ../../front_end/models/trace/lantern/metrics/MaxPotentialFID.ts
 import * as Core4 from "../core/core.js";
 import * as Graph4 from "../graph/graph.js";
 var MaxPotentialFID = class _MaxPotentialFID extends Metric {
@@ -320,7 +326,10 @@ var MaxPotentialFID = class _MaxPotentialFID extends Metric {
       throw new Core4.LanternError("missing fcpResult");
     }
     const fcpTimeInMs = extras.optimistic ? extras.fcpResult.pessimisticEstimate.timeInMs : extras.fcpResult.optimisticEstimate.timeInMs;
-    const timings = _MaxPotentialFID.getTimingsAfterFCP(simulation.nodeTimings, fcpTimeInMs);
+    const timings = _MaxPotentialFID.getTimingsAfterFCP(
+      simulation.nodeTimings,
+      fcpTimeInMs
+    );
     return {
       timeInMs: Math.max(...timings.map((timing) => timing.duration), 16),
       nodeTimings: simulation.nodeTimings
@@ -338,7 +347,7 @@ var MaxPotentialFID = class _MaxPotentialFID extends Metric {
   }
 };
 
-// gen/front_end/models/trace/lantern/metrics/SpeedIndex.js
+// ../../front_end/models/trace/lantern/metrics/SpeedIndex.ts
 import * as Core5 from "../core/core.js";
 import * as Graph5 from "../graph/graph.js";
 var mobileSlow4GRtt = 150;
@@ -423,11 +432,11 @@ var SpeedIndex = class _SpeedIndex extends Metric {
   }
 };
 
-// gen/front_end/models/trace/lantern/metrics/TotalBlockingTime.js
+// ../../front_end/models/trace/lantern/metrics/TotalBlockingTime.ts
 import * as Core6 from "../core/core.js";
 import * as Graph6 from "../graph/graph.js";
 
-// gen/front_end/models/trace/lantern/metrics/TBTUtils.js
+// ../../front_end/models/trace/lantern/metrics/TBTUtils.ts
 var TBTUtils_exports = {};
 __export(TBTUtils_exports, {
   BLOCKING_TIME_THRESHOLD: () => BLOCKING_TIME_THRESHOLD,
@@ -468,7 +477,7 @@ function calculateSumOfBlockingTime(topLevelEvents, startTimeMs, endTimeMs) {
   return sumBlockingTime;
 }
 
-// gen/front_end/models/trace/lantern/metrics/TotalBlockingTime.js
+// ../../front_end/models/trace/lantern/metrics/TotalBlockingTime.ts
 var TotalBlockingTime = class _TotalBlockingTime extends Metric {
   static get coefficients() {
     return {
@@ -493,9 +502,16 @@ var TotalBlockingTime = class _TotalBlockingTime extends Metric {
     const fcpTimeInMs = extras.optimistic ? extras.fcpResult.pessimisticEstimate.timeInMs : extras.fcpResult.optimisticEstimate.timeInMs;
     const interactiveTimeMs = extras.optimistic ? extras.interactiveResult.optimisticEstimate.timeInMs : extras.interactiveResult.pessimisticEstimate.timeInMs;
     const minDurationMs = BLOCKING_TIME_THRESHOLD;
-    const events = _TotalBlockingTime.getTopLevelEvents(simulation.nodeTimings, minDurationMs);
+    const events = _TotalBlockingTime.getTopLevelEvents(
+      simulation.nodeTimings,
+      minDurationMs
+    );
     return {
-      timeInMs: calculateSumOfBlockingTime(events, fcpTimeInMs, interactiveTimeMs),
+      timeInMs: calculateSumOfBlockingTime(
+        events,
+        fcpTimeInMs,
+        interactiveTimeMs
+      ),
       nodeTimings: simulation.nodeTimings
     };
   }

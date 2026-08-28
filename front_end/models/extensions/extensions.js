@@ -4,17 +4,17 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/extensions/ExtensionAPI.js
+// ../../front_end/models/extensions/ExtensionAPI.ts
 var ExtensionAPI_exports = {};
 __export(ExtensionAPI_exports, {
   PrivateAPI: () => PrivateAPI
 });
 var PrivateAPI;
-(function(PrivateAPI2) {
+((PrivateAPI2) => {
   let Panels;
-  (function(Panels2) {
+  ((Panels2) => {
     let SearchAction;
-    (function(SearchAction2) {
+    ((SearchAction2) => {
       SearchAction2["CancelSearch"] = "cancelSearch";
       SearchAction2["PerformSearch"] = "performSearch";
       SearchAction2["NextSearchResult"] = "nextSearchResult";
@@ -22,7 +22,7 @@ var PrivateAPI;
     })(SearchAction = Panels2.SearchAction || (Panels2.SearchAction = {}));
   })(Panels = PrivateAPI2.Panels || (PrivateAPI2.Panels = {}));
   let Events2;
-  (function(Events3) {
+  ((Events3) => {
     Events3["ButtonClicked"] = "button-clicked-";
     Events3["PanelObjectSelected"] = "panel-objectSelected-";
     Events3["InspectedURLChanged"] = "inspected-url-changed";
@@ -38,7 +38,7 @@ var PrivateAPI;
     Events3["ThemeChange"] = "host-theme-change";
   })(Events2 = PrivateAPI2.Events || (PrivateAPI2.Events = {}));
   let Commands;
-  (function(Commands2) {
+  ((Commands2) => {
     Commands2["AddRequestHeaders"] = "addRequestHeaders";
     Commands2["CreatePanel"] = "createPanel";
     Commands2["CreateSidebarPane"] = "createSidebarPane";
@@ -75,7 +75,7 @@ var PrivateAPI;
     Commands2["SetFunctionRangesForScript"] = "setFunctionRangesForScript";
   })(Commands = PrivateAPI2.Commands || (PrivateAPI2.Commands = {}));
   let LanguageExtensionPluginCommands;
-  (function(LanguageExtensionPluginCommands2) {
+  ((LanguageExtensionPluginCommands2) => {
     LanguageExtensionPluginCommands2["AddRawModule"] = "addRawModule";
     LanguageExtensionPluginCommands2["RemoveRawModule"] = "removeRawModule";
     LanguageExtensionPluginCommands2["SourceLocationToRawLocation"] = "sourceLocationToRawLocation";
@@ -94,17 +94,17 @@ var PrivateAPI;
     LanguageExtensionPluginCommands2["ReleaseObject"] = "releaseObject";
   })(LanguageExtensionPluginCommands = PrivateAPI2.LanguageExtensionPluginCommands || (PrivateAPI2.LanguageExtensionPluginCommands = {}));
   let LanguageExtensionPluginEvents;
-  (function(LanguageExtensionPluginEvents2) {
+  ((LanguageExtensionPluginEvents2) => {
     LanguageExtensionPluginEvents2["UnregisteredLanguageExtensionPlugin"] = "unregisteredLanguageExtensionPlugin";
   })(LanguageExtensionPluginEvents = PrivateAPI2.LanguageExtensionPluginEvents || (PrivateAPI2.LanguageExtensionPluginEvents = {}));
   let RecorderExtensionPluginCommands;
-  (function(RecorderExtensionPluginCommands2) {
+  ((RecorderExtensionPluginCommands2) => {
     RecorderExtensionPluginCommands2["Stringify"] = "stringify";
     RecorderExtensionPluginCommands2["StringifyStep"] = "stringifyStep";
     RecorderExtensionPluginCommands2["Replay"] = "replay";
   })(RecorderExtensionPluginCommands = PrivateAPI2.RecorderExtensionPluginCommands || (PrivateAPI2.RecorderExtensionPluginCommands = {}));
   let RecorderExtensionPluginEvents;
-  (function(RecorderExtensionPluginEvents2) {
+  ((RecorderExtensionPluginEvents2) => {
     RecorderExtensionPluginEvents2["UnregisteredRecorderExtensionPlugin"] = "unregisteredRecorderExtensionPlugin";
   })(RecorderExtensionPluginEvents = PrivateAPI2.RecorderExtensionPluginEvents || (PrivateAPI2.RecorderExtensionPluginEvents = {}));
 })(PrivateAPI || (PrivateAPI = {}));
@@ -128,7 +128,7 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         throw new Error("addListener: callback is not a function");
       }
       if (this._listeners.length === 0) {
-        extensionServer.sendRequest({ command: "subscribe", type: this._type });
+        extensionServer.sendRequest({ command: "subscribe" /* Subscribe */, type: this._type });
       }
       this._listeners.push(callback);
       extensionServer.registerHandler("notify-" + this._type, this._dispatch.bind(this));
@@ -142,7 +142,7 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         }
       }
       if (this._listeners.length === 0) {
-        extensionServer.sendRequest({ command: "unsubscribe", type: this._type });
+        extensionServer.sendRequest({ command: "unsubscribe" /* Unsubscribe */, type: this._type });
       }
     },
     _fire: function(..._vararg) {
@@ -177,12 +177,9 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
       request.__proto__ = new (Constructor(Request))(message.arguments[0]);
       this._fire(request);
     }
-    this.onRequestFinished = new (Constructor(EventSink))("network-request-finished", dispatchRequestEvent);
+    this.onRequestFinished = new (Constructor(EventSink))("network-request-finished" /* NetworkRequestFinished */, dispatchRequestEvent);
     defineDeprecatedProperty(this, "network", "onFinished", "onRequestFinished");
-    this.onNavigated = new (Constructor(EventSink))(
-      "inspected-url-changed"
-      /* PrivateAPI.Events.InspectedURLChanged */
-    );
+    this.onNavigated = new (Constructor(EventSink))("inspected-url-changed" /* InspectedURLChanged */);
   }
   Network.prototype = {
     getHAR: function(_callback) {
@@ -200,14 +197,13 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         resolve?.(result);
         callbackArg?.(result);
       }
-      extensionServer.sendRequest({
-        command: "getHAR"
-        /* PrivateAPI.Commands.GetHAR */
-      }, callbackWrapper);
+      extensionServer.sendRequest({ command: "getHAR" /* GetHAR */ }, callbackWrapper);
       return promise;
     },
     addRequestHeaders: function(headers) {
-      extensionServer.sendRequest({ command: "addRequestHeaders", headers, extensionId: window.location.hostname });
+      extensionServer.sendRequest(
+        { command: "addRequestHeaders" /* AddRequestHeaders */, headers, extensionId: window.location.hostname }
+      );
     }
   };
   function RequestImpl(id) {
@@ -224,7 +220,7 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         resolve?.({ content, encoding });
         callbackArg?.(content, encoding);
       }
-      extensionServer.sendRequest({ command: "getRequestContent", id: this._id }, callbackWrapper);
+      extensionServer.sendRequest({ command: "getRequestContent" /* GetRequestContent */, id: this._id }, callbackWrapper);
       return promise;
     }
   };
@@ -253,14 +249,14 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         resolve?.(panel);
         callbackArg?.call(this, panel);
       };
-      extensionServer.sendRequest({ command: "createPanel", id, title, page: pagePath }, callbackWrapper);
+      extensionServer.sendRequest(
+        { command: "createPanel" /* CreatePanel */, id, title, page: pagePath },
+        callbackWrapper
+      );
       return promise;
     },
     setOpenResourceHandler: function(callback, urlScheme) {
-      const hadHandler = extensionServer.hasHandler(
-        "open-resource"
-        /* PrivateAPI.Events.OpenResource */
-      );
+      const hadHandler = extensionServer.hasHandler("open-resource" /* OpenResource */);
       function callbackWrapper(message) {
         userAction = true;
         try {
@@ -271,37 +267,32 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         }
       }
       if (!callback) {
-        extensionServer.unregisterHandler(
-          "open-resource"
-          /* PrivateAPI.Events.OpenResource */
-        );
+        extensionServer.unregisterHandler("open-resource" /* OpenResource */);
       } else {
-        extensionServer.registerHandler("open-resource", callbackWrapper);
+        extensionServer.registerHandler("open-resource" /* OpenResource */, callbackWrapper);
       }
       if (hadHandler === !callback) {
-        extensionServer.sendRequest({ command: "setOpenResourceHandler", handlerPresent: Boolean(callback), urlScheme });
+        extensionServer.sendRequest(
+          { command: "setOpenResourceHandler" /* SetOpenResourceHandler */, handlerPresent: Boolean(callback), urlScheme }
+        );
       }
     },
     setThemeChangeHandler: function(callback) {
-      const hadHandler = extensionServer.hasHandler(
-        "host-theme-change"
-        /* PrivateAPI.Events.ThemeChange */
-      );
+      const hadHandler = extensionServer.hasHandler("host-theme-change" /* ThemeChange */);
       function callbackWrapper(message) {
         const { themeName: themeName2 } = message;
         chrome.devtools.panels.themeName = themeName2;
         callback.call(null, themeName2);
       }
       if (!callback) {
-        extensionServer.unregisterHandler(
-          "host-theme-change"
-          /* PrivateAPI.Events.ThemeChange */
-        );
+        extensionServer.unregisterHandler("host-theme-change" /* ThemeChange */);
       } else {
-        extensionServer.registerHandler("host-theme-change", callbackWrapper);
+        extensionServer.registerHandler("host-theme-change" /* ThemeChange */, callbackWrapper);
       }
       if (hadHandler === !callback) {
-        extensionServer.sendRequest({ command: "setThemeChangeHandler", handlerPresent: Boolean(callback) });
+        extensionServer.sendRequest(
+          { command: "setThemeChangeHandler" /* SetThemeChangeHandler */, handlerPresent: Boolean(callback) }
+        );
       }
     },
     openResource: function(url, lineNumber, columnNumber, _callback) {
@@ -314,15 +305,18 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         resolve?.(response);
         callbackArg?.call(this, response);
       };
-      extensionServer.sendRequest({ command: "openResource", url, lineNumber, columnNumber: columnNumberArg }, callbackWrapper);
+      extensionServer.sendRequest(
+        { command: "openResource" /* OpenResource */, url, lineNumber, columnNumber: columnNumberArg },
+        callbackWrapper
+      );
       return promise;
     },
     get SearchAction() {
       return {
-        CancelSearch: "cancelSearch",
-        PerformSearch: "performSearch",
-        NextSearchResult: "nextSearchResult",
-        PreviousSearchResult: "previousSearchResult"
+        CancelSearch: "cancelSearch" /* CancelSearch */,
+        PerformSearch: "performSearch" /* PerformSearch */,
+        NextSearchResult: "nextSearchResult" /* NextSearchResult */,
+        PreviousSearchResult: "previousSearchResult" /* PreviousSearchResult */
       };
     }
   };
@@ -337,14 +331,14 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
       }
     }
     if (id) {
-      this.onShown = new (Constructor(EventSink))("view-shown-" + id, dispatchShowEvent);
-      this.onHidden = new (Constructor(EventSink))("view-hidden," + id);
+      this.onShown = new (Constructor(EventSink))("view-shown-" /* ViewShown */ + id, dispatchShowEvent);
+      this.onHidden = new (Constructor(EventSink))("view-hidden," /* ViewHidden */ + id);
     }
   }
   function PanelWithSidebarImpl(hostPanelName) {
     ExtensionViewImpl.call(this, null);
     this._hostPanelName = hostPanelName;
-    this.onSelectionChanged = new (Constructor(EventSink))("panel-objectSelected-" + hostPanelName);
+    this.onSelectionChanged = new (Constructor(EventSink))("panel-objectSelected-" /* PanelObjectSelected */ + hostPanelName);
   }
   PanelWithSidebarImpl.prototype = {
     createSidebarPane: function(title, _callback) {
@@ -358,7 +352,10 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         resolve?.(pane);
         callbackArg?.call(this, pane);
       };
-      extensionServer.sendRequest({ command: "createSidebarPane", panel: this._hostPanelName, id, title }, callbackWrapper);
+      extensionServer.sendRequest(
+        { command: "createSidebarPane" /* CreateSidebarPane */, panel: this._hostPanelName, id, title },
+        callbackWrapper
+      );
       return promise;
     },
     __proto__: ExtensionViewImpl.prototype
@@ -379,11 +376,11 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
     };
     async function dispatchMethodCall(request) {
       switch (request.method) {
-        case "stringify":
+        case "stringify" /* Stringify */:
           return await plugin.stringify(request.parameters.recording);
-        case "stringifyStep":
+        case "stringifyStep" /* StringifyStep */:
           return await plugin.stringifyStep(request.parameters.step);
-        case "replay":
+        case "replay" /* Replay */:
           try {
             userAction = true;
             userRecorderAction = true;
@@ -404,13 +401,17 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
       capabilities.push("replay");
     }
     await new Promise((resolve) => {
-      extensionServer.sendRequest({
-        command: "registerRecorderExtensionPlugin",
-        pluginName,
-        mediaType,
-        capabilities,
-        port: channel.port2
-      }, () => resolve(), [channel.port2]);
+      extensionServer.sendRequest(
+        {
+          command: "registerRecorderExtensionPlugin" /* RegisterRecorderExtensionPlugin */,
+          pluginName,
+          mediaType,
+          capabilities,
+          port: channel.port2
+        },
+        () => resolve(),
+        [channel.port2]
+      );
     });
   }
   RecorderServicesAPIImpl.prototype = {
@@ -421,16 +422,16 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         throw new Error("Tried to unregister a plugin that was not previously registered");
       }
       this._plugins.delete(plugin);
-      port.postMessage({
-        event: "unregisteredRecorderExtensionPlugin"
-        /* PrivateAPI.RecorderExtensionPluginEvents.UnregisteredRecorderExtensionPlugin */
-      });
+      port.postMessage({ event: "unregisteredRecorderExtensionPlugin" /* UnregisteredRecorderExtensionPlugin */ });
       port.close();
     },
     createView: async function(title, pagePath) {
       const id = "recorder-extension-view-" + extensionServer.nextObjectId();
       await new Promise((resolve) => {
-        extensionServer.sendRequest({ command: "createRecorderView", id, title, pagePath }, resolve);
+        extensionServer.sendRequest(
+          { command: "createRecorderView" /* CreateRecorderView */, id, title, pagePath },
+          resolve
+        );
       });
       return new (Constructor(RecorderView))(id);
     }
@@ -453,35 +454,43 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
       };
       function dispatchMethodCall(request) {
         switch (request.method) {
-          case "addRawModule":
-            return plugin.addRawModule(request.parameters.rawModuleId, request.parameters.symbolsURL, request.parameters.rawModule);
-          case "removeRawModule":
+          case "addRawModule" /* AddRawModule */:
+            return plugin.addRawModule(
+              request.parameters.rawModuleId,
+              request.parameters.symbolsURL,
+              request.parameters.rawModule
+            );
+          case "removeRawModule" /* RemoveRawModule */:
             return plugin.removeRawModule(request.parameters.rawModuleId);
-          case "sourceLocationToRawLocation":
+          case "sourceLocationToRawLocation" /* SourceLocationToRawLocation */:
             return plugin.sourceLocationToRawLocation(request.parameters.sourceLocation);
-          case "rawLocationToSourceLocation":
+          case "rawLocationToSourceLocation" /* RawLocationToSourceLocation */:
             return plugin.rawLocationToSourceLocation(request.parameters.rawLocation);
-          case "getScopeInfo":
+          case "getScopeInfo" /* GetScopeInfo */:
             return plugin.getScopeInfo(request.parameters.type);
-          case "listVariablesInScope":
+          case "listVariablesInScope" /* ListVariablesInScope */:
             return plugin.listVariablesInScope(request.parameters.rawLocation);
-          case "getFunctionInfo":
+          case "getFunctionInfo" /* GetFunctionInfo */:
             return plugin.getFunctionInfo(request.parameters.rawLocation);
-          case "getInlinedFunctionRanges":
+          case "getInlinedFunctionRanges" /* GetInlinedFunctionRanges */:
             return plugin.getInlinedFunctionRanges(request.parameters.rawLocation);
-          case "getInlinedCalleesRanges":
+          case "getInlinedCalleesRanges" /* GetInlinedCalleesRanges */:
             return plugin.getInlinedCalleesRanges(request.parameters.rawLocation);
-          case "getMappedLines":
+          case "getMappedLines" /* GetMappedLines */:
             if ("getMappedLines" in plugin) {
               return plugin.getMappedLines(request.parameters.rawModuleId, request.parameters.sourceFileURL);
             }
             return Promise.resolve(void 0);
-          case "formatValue":
+          case "formatValue" /* FormatValue */:
             if ("evaluate" in plugin && plugin.evaluate) {
-              return plugin.evaluate(request.parameters.expression, request.parameters.context, request.parameters.stopId);
+              return plugin.evaluate(
+                request.parameters.expression,
+                request.parameters.context,
+                request.parameters.stopId
+              );
             }
             return Promise.resolve(void 0);
-          case "getProperties":
+          case "getProperties" /* GetProperties */:
             if ("getProperties" in plugin && plugin.getProperties) {
               return plugin.getProperties(request.parameters.objectId);
             }
@@ -489,7 +498,7 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
               return Promise.resolve(void 0);
             }
             break;
-          case "releaseObject":
+          case "releaseObject" /* ReleaseObject */:
             if ("releaseObject" in plugin && plugin.releaseObject) {
               return plugin.releaseObject(request.parameters.objectId);
             }
@@ -498,12 +507,16 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         throw new Error(`Unknown language plugin method ${request.method}`);
       }
       await new Promise((resolve) => {
-        extensionServer.sendRequest({
-          command: "registerLanguageExtensionPlugin",
-          pluginName,
-          port: channel.port2,
-          supportedScriptTypes
-        }, () => resolve(), [channel.port2]);
+        extensionServer.sendRequest(
+          {
+            command: "registerLanguageExtensionPlugin" /* RegisterLanguageExtensionPlugin */,
+            pluginName,
+            port: channel.port2,
+            supportedScriptTypes
+          },
+          () => resolve(),
+          [channel.port2]
+        );
       });
     },
     unregisterLanguageExtensionPlugin: async function(plugin) {
@@ -512,42 +525,60 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         throw new Error("Tried to unregister a plugin that was not previously registered");
       }
       this._plugins.delete(plugin);
-      port.postMessage({
-        event: "unregisteredLanguageExtensionPlugin"
-        /* PrivateAPI.LanguageExtensionPluginEvents.UnregisteredLanguageExtensionPlugin */
-      });
+      port.postMessage({ event: "unregisteredLanguageExtensionPlugin" /* UnregisteredLanguageExtensionPlugin */ });
       port.close();
     },
     getWasmLinearMemory: async function(offset, length, stopId) {
-      const result = await new Promise((resolve) => extensionServer.sendRequest({ command: "getWasmLinearMemory", offset, length, stopId }, resolve));
+      const result = await new Promise(
+        (resolve) => extensionServer.sendRequest(
+          { command: "getWasmLinearMemory" /* GetWasmLinearMemory */, offset, length, stopId },
+          resolve
+        )
+      );
       if (Array.isArray(result)) {
         return new Uint8Array(result).buffer;
       }
       return new ArrayBuffer(0);
     },
     getWasmLocal: async function(local, stopId) {
-      return await new Promise((resolve) => extensionServer.sendRequest({ command: "getWasmLocal", local, stopId }, resolve));
+      return await new Promise(
+        (resolve) => extensionServer.sendRequest({ command: "getWasmLocal" /* GetWasmLocal */, local, stopId }, resolve)
+      );
     },
     getWasmGlobal: async function(global, stopId) {
-      return await new Promise((resolve) => extensionServer.sendRequest({ command: "getWasmGlobal", global, stopId }, resolve));
+      return await new Promise(
+        (resolve) => extensionServer.sendRequest({ command: "getWasmGlobal" /* GetWasmGlobal */, global, stopId }, resolve)
+      );
     },
     getWasmOp: async function(op, stopId) {
-      return await new Promise((resolve) => extensionServer.sendRequest({ command: "getWasmOp", op, stopId }, resolve));
+      return await new Promise(
+        (resolve) => extensionServer.sendRequest({ command: "getWasmOp" /* GetWasmOp */, op, stopId }, resolve)
+      );
     },
     reportResourceLoad: function(resourceUrl, status) {
-      return new Promise((resolve) => extensionServer.sendRequest({
-        command: "reportResourceLoad",
-        extensionId: window.location.origin,
-        resourceUrl,
-        status
-      }, resolve));
+      return new Promise(
+        (resolve) => extensionServer.sendRequest(
+          {
+            command: "reportResourceLoad" /* ReportResourceLoad */,
+            extensionId: window.location.origin,
+            resourceUrl,
+            status
+          },
+          resolve
+        )
+      );
     }
   };
   function NetworkPanelImpl() {
   }
   NetworkPanelImpl.prototype = {
     show: function(options) {
-      return new Promise((resolve) => extensionServer.sendRequest({ command: "showNetworkPanel", filter: options?.filter }, () => resolve()));
+      return new Promise(
+        (resolve) => extensionServer.sendRequest(
+          { command: "showNetworkPanel" /* ShowNetworkPanel */, filter: options?.filter },
+          () => resolve()
+        )
+      );
     }
   };
   function PerformanceImpl() {
@@ -557,8 +588,8 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
     function dispatchProfilingStoppedEvent() {
       this._fire();
     }
-    this.onProfilingStarted = new (Constructor(EventSink))("profiling-started-", dispatchProfilingStartedEvent);
-    this.onProfilingStopped = new (Constructor(EventSink))("profiling-stopped-", dispatchProfilingStoppedEvent);
+    this.onProfilingStarted = new (Constructor(EventSink))("profiling-started-" /* ProfilingStarted */, dispatchProfilingStartedEvent);
+    this.onProfilingStopped = new (Constructor(EventSink))("profiling-stopped-" /* ProfilingStopped */, dispatchProfilingStoppedEvent);
   }
   function declareInterfaceClass(implConstructor) {
     return function(...args) {
@@ -622,13 +653,13 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
   }
   function ExtensionPanelImpl(id) {
     ExtensionViewImpl.call(this, id);
-    this.onSearch = new (Constructor(EventSink))("panel-search-" + id);
+    this.onSearch = new (Constructor(EventSink))("panel-search-" /* PanelSearch */ + id);
   }
   ExtensionPanelImpl.prototype = {
     createStatusBarButton: function(iconPath, tooltipText, disabled) {
       const id = "button-" + extensionServer.nextObjectId();
       extensionServer.sendRequest({
-        command: "createToolbarButton",
+        command: "createToolbarButton" /* CreateToolbarButton */,
         panel: this._id,
         id,
         icon: iconPath,
@@ -641,7 +672,7 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
       if (!userAction) {
         return;
       }
-      extensionServer.sendRequest({ command: "showPanel", id: this._id });
+      extensionServer.sendRequest({ command: "showPanel" /* ShowPanel */, id: this._id });
     },
     __proto__: ExtensionViewImpl.prototype
   };
@@ -653,7 +684,7 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
       if (!userAction || !userRecorderAction) {
         return;
       }
-      extensionServer.sendRequest({ command: "showRecorderView", id: this._id });
+      extensionServer.sendRequest({ command: "showRecorderView" /* ShowRecorderView */, id: this._id });
     },
     __proto__: ExtensionViewImpl.prototype
   };
@@ -662,7 +693,7 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
   }
   ExtensionSidebarPaneImpl.prototype = {
     setHeight: function(height) {
-      extensionServer.sendRequest({ command: "setSidebarHeight", id: this._id, height });
+      extensionServer.sendRequest({ command: "setSidebarHeight" /* SetSidebarHeight */, id: this._id, height });
     },
     setExpression: function(expression, rootTitle, evaluateOptions, _callback) {
       const { callback: callbackArg, promise, resolve, reject } = callbackOrPromise(arguments);
@@ -673,14 +704,17 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         resolve?.();
         callbackArg?.call(this);
       };
-      extensionServer.sendRequest({
-        command: "setSidebarContent",
-        id: this._id,
-        expression,
-        rootTitle,
-        evaluateOnPage: true,
-        evaluateOptions: typeof evaluateOptions === "object" ? evaluateOptions : {}
-      }, callbackWrapper);
+      extensionServer.sendRequest(
+        {
+          command: "setSidebarContent" /* SetSidebarContent */,
+          id: this._id,
+          expression,
+          rootTitle,
+          evaluateOnPage: true,
+          evaluateOptions: typeof evaluateOptions === "object" ? evaluateOptions : {}
+        },
+        callbackWrapper
+      );
       return promise;
     },
     setObject: function(jsonObject, rootTitle, _callback) {
@@ -692,27 +726,30 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         resolve?.();
         callbackArg?.call(this);
       };
-      extensionServer.sendRequest({
-        command: "setSidebarContent",
-        id: this._id,
-        expression: jsonObject,
-        rootTitle
-      }, callbackWrapper);
+      extensionServer.sendRequest(
+        {
+          command: "setSidebarContent" /* SetSidebarContent */,
+          id: this._id,
+          expression: jsonObject,
+          rootTitle
+        },
+        callbackWrapper
+      );
       return promise;
     },
     setPage: function(page) {
-      extensionServer.sendRequest({ command: "setSidebarPage", id: this._id, page });
+      extensionServer.sendRequest({ command: "setSidebarPage" /* SetSidebarPage */, id: this._id, page });
     },
     __proto__: ExtensionViewImpl.prototype
   };
   function ButtonImpl(id) {
     this._id = id;
-    this.onClicked = new (Constructor(EventSink))("button-clicked-" + id);
+    this.onClicked = new (Constructor(EventSink))("button-clicked-" /* ButtonClicked */ + id);
   }
   ButtonImpl.prototype = {
     update: function(iconPath, tooltipText, disabled) {
       extensionServer.sendRequest({
-        command: "updateButton",
+        command: "updateButton" /* UpdateButton */,
         id: this._id,
         icon: iconPath,
         tooltip: tooltipText,
@@ -729,8 +766,8 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
       const resourceData = message.arguments[0];
       this._fire(new (Constructor(Resource))(resourceData), message.arguments[1]);
     }
-    this.onResourceAdded = new (Constructor(EventSink))("resource-added", dispatchResourceEvent);
-    this.onResourceContentCommitted = new (Constructor(EventSink))("resource-content-committed", dispatchResourceContentEvent);
+    this.onResourceAdded = new (Constructor(EventSink))("resource-added" /* ResourceAdded */, dispatchResourceEvent);
+    this.onResourceContentCommitted = new (Constructor(EventSink))("resource-content-committed" /* ResourceContentCommitted */, dispatchResourceContentEvent);
   }
   InspectedWindow.prototype = {
     reload: function(optionsOrUserAgent) {
@@ -739,9 +776,11 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         options = optionsOrUserAgent;
       } else if (typeof optionsOrUserAgent === "string") {
         options = { userAgent: optionsOrUserAgent };
-        console.warn("Passing userAgent as string parameter to inspectedWindow.reload() is deprecated. Use inspectedWindow.reload({ userAgent: value}) instead.");
+        console.warn(
+          "Passing userAgent as string parameter to inspectedWindow.reload() is deprecated. Use inspectedWindow.reload({ userAgent: value}) instead."
+        );
       }
-      extensionServer.sendRequest({ command: "Reload", options });
+      extensionServer.sendRequest({ command: "Reload" /* Reload */, options });
     },
     eval: function(expression, optionsOrCallback, _callback) {
       const options = typeof optionsOrCallback === "object" && optionsOrCallback !== null ? optionsOrCallback : void 0;
@@ -762,7 +801,10 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
           callbackArg?.(res.value);
         }
       }
-      extensionServer.sendRequest({ command: "evaluateOnInspectedPage", expression, evaluateOptions: options }, callbackWrapper);
+      extensionServer.sendRequest(
+        { command: "evaluateOnInspectedPage" /* EvaluateOnInspectedPage */, expression, evaluateOptions: options },
+        callbackWrapper
+      );
       return promise;
     },
     getResources: function(_callback) {
@@ -775,10 +817,7 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         resolve?.(wrappedResources);
         callbackArg?.(wrappedResources);
       }
-      extensionServer.sendRequest({
-        command: "getPageResources"
-        /* PrivateAPI.Commands.GetPageResources */
-      }, callbackWrapper);
+      extensionServer.sendRequest({ command: "getPageResources" /* GetPageResources */ }, callbackWrapper);
       return promise;
     }
   };
@@ -807,7 +846,10 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         resolve?.({ content, encoding });
         callbackArg?.(content, encoding);
       }
-      extensionServer.sendRequest({ command: "getResourceContent", url: this._url }, callbackWrapper);
+      extensionServer.sendRequest(
+        { command: "getResourceContent" /* GetResourceContent */, url: this._url },
+        callbackWrapper
+      );
       return promise;
     },
     setContent: function(content, commit, _callback) {
@@ -819,32 +861,45 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
         resolve?.();
         callbackArg?.(response);
       }
-      extensionServer.sendRequest({ command: "setResourceContent", url: this._url, content, commit }, callbackWrapper);
+      extensionServer.sendRequest(
+        { command: "setResourceContent" /* SetResourceContent */, url: this._url, content, commit },
+        callbackWrapper
+      );
       return promise;
     },
     setFunctionRangesForScript: function(ranges) {
-      return new Promise((resolve, reject) => extensionServer.sendRequest({
-        command: "setFunctionRangesForScript",
-        scriptUrl: this._url,
-        ranges
-      }, (response) => {
-        const result = response;
-        if (result.isError) {
-          reject(result);
-        } else {
-          resolve();
-        }
-      }));
+      return new Promise(
+        (resolve, reject) => extensionServer.sendRequest(
+          {
+            command: "setFunctionRangesForScript" /* SetFunctionRangesForScript */,
+            scriptUrl: this._url,
+            ranges
+          },
+          (response) => {
+            const result = response;
+            if (result.isError) {
+              reject(result);
+            } else {
+              resolve();
+            }
+          }
+        )
+      );
     },
     attachSourceMapURL: function(sourceMapURL) {
-      return new Promise((resolve, reject) => extensionServer.sendRequest({ command: "attachSourceMapToResource", contentUrl: this._url, sourceMapURL }, (response) => {
-        const result = response;
-        if (result.isError) {
-          reject(new Error(result.description));
-        } else {
-          resolve();
-        }
-      }));
+      return new Promise(
+        (resolve, reject) => extensionServer.sendRequest(
+          { command: "attachSourceMapToResource" /* AttachSourceMapToResource */, contentUrl: this._url, sourceMapURL },
+          (response) => {
+            const result = response;
+            if (result.isError) {
+              reject(new Error(result.description));
+            } else {
+              resolve();
+            }
+          }
+        )
+      );
     }
   };
   function getTabId() {
@@ -897,7 +952,9 @@ self.injectedExtensionAPI = function(extensionInfo, inspectedTabId, themeName, k
   }
   function forwardEventQueue() {
     forwardTimer = void 0;
-    extensionServer.sendRequest({ command: "_forwardKeyboardEvent", entries: keyboardEventRequestQueue });
+    extensionServer.sendRequest(
+      { command: "_forwardKeyboardEvent" /* ForwardKeyboardEvent */, entries: keyboardEventRequestQueue }
+    );
     keyboardEventRequestQueue = [];
   }
   (targetWindowForTest?.document ?? document).addEventListener("keydown", forwardKeyboardEvent, false);
@@ -1011,7 +1068,7 @@ self.buildExtensionAPIInjectedScript = function(extensionInfo, inspectedTabId, t
   return "(function(injectedScriptId){ (" + self.injectedExtensionAPI.toString() + ")(" + argumentsJSON + "," + testHook + ", injectedScriptId);})";
 };
 
-// gen/front_end/models/extensions/ExtensionEndpoint.js
+// ../../front_end/models/extensions/ExtensionEndpoint.ts
 var ExtensionEndpoint_exports = {};
 __export(ExtensionEndpoint_exports, {
   ExtensionEndpoint: () => ExtensionEndpoint
@@ -1062,7 +1119,7 @@ var ExtensionEndpoint = class {
   }
 };
 
-// gen/front_end/models/extensions/HostUrlPattern.js
+// ../../front_end/models/extensions/HostUrlPattern.ts
 var HostUrlPattern_exports = {};
 __export(HostUrlPattern_exports, {
   HostUrlPattern: () => HostUrlPattern
@@ -1119,7 +1176,9 @@ function parseHostAndPort(pattern, scheme) {
   const SUBDOMAIN_WILDCARD = "*.";
   let asUrl;
   try {
-    asUrl = new URL(pattern.startsWith(SUBDOMAIN_WILDCARD) ? `http://${pattern.substr(SUBDOMAIN_WILDCARD.length)}` : `http://${pattern}`);
+    asUrl = new URL(
+      pattern.startsWith(SUBDOMAIN_WILDCARD) ? `http://${pattern.substr(SUBDOMAIN_WILDCARD.length)}` : `http://${pattern}`
+    );
   } catch {
     return void 0;
   }
@@ -1148,7 +1207,9 @@ function parseHostAndPort(pattern, scheme) {
   };
 }
 var HostUrlPattern = class _HostUrlPattern {
-  pattern;
+  constructor(pattern) {
+    this.pattern = pattern;
+  }
   static parse(pattern) {
     if (pattern === "<all_urls>") {
       return new _HostUrlPattern({ matchesAll: true });
@@ -1164,9 +1225,6 @@ var HostUrlPattern = class _HostUrlPattern {
     }
     const { host, port } = parsedHost;
     return new _HostUrlPattern({ scheme, host, port, matchesAll: false });
-  }
-  constructor(pattern) {
-    this.pattern = pattern;
   }
   get scheme() {
     return this.pattern.matchesAll ? "*" : this.pattern.scheme;
@@ -1227,7 +1285,7 @@ var HostUrlPattern = class _HostUrlPattern {
   }
 };
 
-// gen/front_end/models/extensions/LanguageExtensionEndpoint.js
+// ../../front_end/models/extensions/LanguageExtensionEndpoint.ts
 var LanguageExtensionEndpoint_exports = {};
 __export(LanguageExtensionEndpoint_exports, {
   LanguageExtensionEndpoint: () => LanguageExtensionEndpoint
@@ -1242,7 +1300,7 @@ var LanguageExtensionEndpointImpl = class extends ExtensionEndpoint {
   }
   handleEvent({ event }) {
     switch (event) {
-      case "unregisteredLanguageExtensionPlugin": {
+      case PrivateAPI.LanguageExtensionPluginEvents.UnregisteredLanguageExtensionPlugin: {
         this.disconnect();
         this.#pluginManager.removePlugin(this.plugin);
         break;
@@ -1296,70 +1354,88 @@ var LanguageExtensionEndpoint = class {
     if (!this.canAccessURL(symbolsURL) || !this.canAccessURL(rawModule.url)) {
       return Promise.resolve([]);
     }
-    return this.endpoint.sendRequest("addRawModule", { rawModuleId, symbolsURL, rawModule });
+    return this.endpoint.sendRequest(
+      PrivateAPI.LanguageExtensionPluginCommands.AddRawModule,
+      { rawModuleId, symbolsURL, rawModule }
+    );
   }
   /**
    * Notifies the plugin that a script is removed.
    */
   removeRawModule(rawModuleId) {
-    return this.endpoint.sendRequest("removeRawModule", { rawModuleId });
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.RemoveRawModule, { rawModuleId });
   }
   /**
    * Find locations in raw modules from a location in a source file
    */
   sourceLocationToRawLocation(sourceLocation) {
-    return this.endpoint.sendRequest("sourceLocationToRawLocation", { sourceLocation });
+    return this.endpoint.sendRequest(
+      PrivateAPI.LanguageExtensionPluginCommands.SourceLocationToRawLocation,
+      { sourceLocation }
+    );
   }
   /**
    * Find locations in source files from a location in a raw module
    */
   rawLocationToSourceLocation(rawLocation) {
-    return this.endpoint.sendRequest("rawLocationToSourceLocation", { rawLocation });
+    return this.endpoint.sendRequest(
+      PrivateAPI.LanguageExtensionPluginCommands.RawLocationToSourceLocation,
+      { rawLocation }
+    );
   }
   getScopeInfo(type) {
-    return this.endpoint.sendRequest("getScopeInfo", { type });
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetScopeInfo, { type });
   }
   /**
    * List all variables in lexical scope at a given location in a raw module
    */
   listVariablesInScope(rawLocation) {
-    return this.endpoint.sendRequest("listVariablesInScope", { rawLocation });
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.ListVariablesInScope, { rawLocation });
   }
   /**
    * List all function names (including inlined frames) at location
    */
   getFunctionInfo(rawLocation) {
-    return this.endpoint.sendRequest("getFunctionInfo", { rawLocation });
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetFunctionInfo, { rawLocation });
   }
   /**
    * Find locations in raw modules corresponding to the inline function
    *  that rawLocation is in.
    */
   getInlinedFunctionRanges(rawLocation) {
-    return this.endpoint.sendRequest("getInlinedFunctionRanges", { rawLocation });
+    return this.endpoint.sendRequest(
+      PrivateAPI.LanguageExtensionPluginCommands.GetInlinedFunctionRanges,
+      { rawLocation }
+    );
   }
   /**
    * Find locations in raw modules corresponding to inline functions
    *  called by the function or inline frame that rawLocation is in.
    */
   getInlinedCalleesRanges(rawLocation) {
-    return this.endpoint.sendRequest("getInlinedCalleesRanges", { rawLocation });
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetInlinedCalleesRanges, { rawLocation });
   }
   async getMappedLines(rawModuleId, sourceFileURL) {
-    return await this.endpoint.sendRequest("getMappedLines", { rawModuleId, sourceFileURL });
+    return await this.endpoint.sendRequest(
+      PrivateAPI.LanguageExtensionPluginCommands.GetMappedLines,
+      { rawModuleId, sourceFileURL }
+    );
   }
   async evaluate(expression, context, stopId) {
-    return await this.endpoint.sendRequest("formatValue", { expression, context, stopId });
+    return await this.endpoint.sendRequest(
+      PrivateAPI.LanguageExtensionPluginCommands.FormatValue,
+      { expression, context, stopId }
+    );
   }
   getProperties(objectId) {
-    return this.endpoint.sendRequest("getProperties", { objectId });
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.GetProperties, { objectId });
   }
   releaseObject(objectId) {
-    return this.endpoint.sendRequest("releaseObject", { objectId });
+    return this.endpoint.sendRequest(PrivateAPI.LanguageExtensionPluginCommands.ReleaseObject, { objectId });
   }
 };
 
-// gen/front_end/models/extensions/RecorderExtensionEndpoint.js
+// ../../front_end/models/extensions/RecorderExtensionEndpoint.ts
 var RecorderExtensionEndpoint_exports = {};
 __export(RecorderExtensionEndpoint_exports, {
   RecorderExtensionEndpoint: () => RecorderExtensionEndpoint
@@ -1392,7 +1468,7 @@ var RecorderExtensionEndpoint = class extends ExtensionEndpoint {
   }
   handleEvent({ event }) {
     switch (event) {
-      case "unregisteredRecorderExtensionPlugin": {
+      case PrivateAPI.RecorderExtensionPluginEvents.UnregisteredRecorderExtensionPlugin: {
         this.disconnect();
         this.#recorderPluginManager.removePlugin(this);
         break;
@@ -1409,7 +1485,7 @@ var RecorderExtensionEndpoint = class extends ExtensionEndpoint {
    * [1]: https://github.com/puppeteer/replay/blob/main/src/Schema.ts#L245
    */
   stringify(recording) {
-    return this.sendRequest("stringify", { recording });
+    return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.Stringify, { recording });
   }
   /**
    * In practice, `step` is a Step[1], but we avoid defining this type on the
@@ -1419,7 +1495,7 @@ var RecorderExtensionEndpoint = class extends ExtensionEndpoint {
    * [1]: https://github.com/puppeteer/replay/blob/main/src/Schema.ts#L243
    */
   stringifyStep(step) {
-    return this.sendRequest("stringifyStep", { step });
+    return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.StringifyStep, { step });
   }
   /**
    * In practice, `recording` is a UserFlow[1], but we avoid defining this type on the
@@ -1429,11 +1505,11 @@ var RecorderExtensionEndpoint = class extends ExtensionEndpoint {
    * [1]: https://github.com/puppeteer/replay/blob/main/src/Schema.ts#L245
    */
   replay(recording) {
-    return this.sendRequest("replay", { recording });
+    return this.sendRequest(PrivateAPI.RecorderExtensionPluginCommands.Replay, { recording });
   }
 };
 
-// gen/front_end/models/extensions/RecorderPluginManager.js
+// ../../front_end/models/extensions/RecorderPluginManager.ts
 var RecorderPluginManager_exports = {};
 __export(RecorderPluginManager_exports, {
   Events: () => Events,
@@ -1455,18 +1531,18 @@ var RecorderPluginManager = class _RecorderPluginManager extends Common.ObjectWr
   }
   addPlugin(plugin) {
     this.#plugins.add(plugin);
-    this.dispatchEventToListeners("pluginAdded", plugin);
+    this.dispatchEventToListeners("pluginAdded" /* PLUGIN_ADDED */, plugin);
   }
   removePlugin(plugin) {
     this.#plugins.delete(plugin);
-    this.dispatchEventToListeners("pluginRemoved", plugin);
+    this.dispatchEventToListeners("pluginRemoved" /* PLUGIN_REMOVED */, plugin);
   }
   plugins() {
     return Array.from(this.#plugins.values());
   }
   registerView(descriptor) {
     this.#views.set(descriptor.id, descriptor);
-    this.dispatchEventToListeners("viewRegistered", descriptor);
+    this.dispatchEventToListeners("viewRegistered" /* VIEW_REGISTERED */, descriptor);
   }
   views() {
     return Array.from(this.#views.values());
@@ -1479,16 +1555,16 @@ var RecorderPluginManager = class _RecorderPluginManager extends Common.ObjectWr
     if (!descriptor) {
       throw new Error(`View with id ${id} is not found.`);
     }
-    this.dispatchEventToListeners("showViewRequested", descriptor);
+    this.dispatchEventToListeners("showViewRequested" /* SHOW_VIEW_REQUESTED */, descriptor);
   }
 };
-var Events;
-(function(Events2) {
+var Events = /* @__PURE__ */ ((Events2) => {
   Events2["PLUGIN_ADDED"] = "pluginAdded";
   Events2["PLUGIN_REMOVED"] = "pluginRemoved";
   Events2["VIEW_REGISTERED"] = "viewRegistered";
   Events2["SHOW_VIEW_REQUESTED"] = "showViewRequested";
-})(Events || (Events = {}));
+  return Events2;
+})(Events || {});
 export {
   ExtensionAPI_exports as ExtensionAPI,
   ExtensionEndpoint_exports as ExtensionEndpoint,

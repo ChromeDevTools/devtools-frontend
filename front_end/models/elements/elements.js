@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/elements/ElementUpdateRecord.js
+// ../../front_end/models/elements/ElementUpdateRecord.ts
 var ElementUpdateRecord_exports = {};
 __export(ElementUpdateRecord_exports, {
   ElementUpdateRecord: () => ElementUpdateRecord

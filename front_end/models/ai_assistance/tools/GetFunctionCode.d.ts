@@ -6,8 +6,8 @@ export interface GetFunctionCodeArgs extends ToolArgs {
     column: number;
 }
 export declare class GetFunctionCodeTool implements DataTool<GetFunctionCodeArgs, string, BaseToolCapability & PerformanceTraceCapability> {
-    readonly name = ToolName.GET_FUNCTION_CODE;
-    readonly description = "Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.";
+    readonly name: ToolName;
+    readonly description: string;
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetFunctionCodeArgs>;
     displayInfoFromArgs(params: GetFunctionCodeArgs): {
         title: string;

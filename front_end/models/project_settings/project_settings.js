@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/project_settings/ProjectSettingsModel.js
+// ../../front_end/models/project_settings/ProjectSettingsModel.ts
 var ProjectSettingsModel_exports = {};
 __export(ProjectSettingsModel_exports, {
   Events: () => Events,
@@ -63,14 +63,22 @@ var ProjectSettingsModel = class extends Common.ObjectWrapper.ObjectWrapper {
     super();
     this.#pageResourceLoader = pageResourceLoader;
     this.#targetManager = targetManager;
-    this.#targetManager.addEventListener("InspectedURLChanged", this.#inspectedURLChanged, this);
+    this.#targetManager.addEventListener(
+      SDK.TargetManager.Events.INSPECTED_URL_CHANGED,
+      this.#inspectedURLChanged,
+      this
+    );
     const target = this.#targetManager.primaryPageTarget();
     if (target !== null) {
       this.#inspectedURLChanged({ data: target });
     }
   }
   disposeForTest() {
-    this.#targetManager.removeEventListener("InspectedURLChanged", this.#inspectedURLChanged, this);
+    this.#targetManager.removeEventListener(
+      SDK.TargetManager.Events.INSPECTED_URL_CHANGED,
+      this.#inspectedURLChanged,
+      this
+    );
   }
   #inspectedURLChanged(event) {
     const target = event.data;
@@ -84,7 +92,7 @@ var ProjectSettingsModel = class extends Common.ObjectWrapper.ObjectWrapper {
       if (this.#promise === promise) {
         if (this.#projectSettings !== projectSettings) {
           this.#projectSettings = projectSettings;
-          this.dispatchEventToListeners("ProjectSettingsChanged", projectSettings);
+          this.dispatchEventToListeners("ProjectSettingsChanged" /* PROJECT_SETTINGS_CHANGED */, projectSettings);
         }
         this.#promise = IDLE_PROMISE;
       }
@@ -95,13 +103,13 @@ var ProjectSettingsModel = class extends Common.ObjectWrapper.ObjectWrapper {
     if (!isLocalFrame(frame)) {
       if (this.#availability !== "unavailable") {
         this.#availability = "unavailable";
-        this.dispatchEventToListeners("AvailabilityChanged", this.#availability);
+        this.dispatchEventToListeners("AvailabilityChanged" /* AVAILABILITY_CHANGED */, this.#availability);
       }
       return EMPTY_PROJECT_SETTINGS;
     }
     if (this.#availability !== "available") {
       this.#availability = "available";
-      this.dispatchEventToListeners("AvailabilityChanged", this.#availability);
+      this.dispatchEventToListeners("AvailabilityChanged" /* AVAILABILITY_CHANGED */, this.#availability);
     }
     const initiatorUrl = frame.url;
     const frameId = frame.id;
@@ -110,7 +118,10 @@ var ProjectSettingsModel = class extends Common.ObjectWrapper.ObjectWrapper {
       url = "/bundled" + url;
     }
     url = new URL(url, initiatorUrl).toString();
-    const { content } = await this.#pageResourceLoader.loadResource(Platform.DevToolsPath.urlString`${url}`, { target, frameId, initiatorUrl });
+    const { content } = await this.#pageResourceLoader.loadResource(
+      Platform.DevToolsPath.urlString`${url}`,
+      { target, frameId, initiatorUrl }
+    );
     const devtoolsJSON = JSON.parse(content);
     if (typeof devtoolsJSON.workspace !== "undefined") {
       const { workspace } = devtoolsJSON;
@@ -127,11 +138,11 @@ var ProjectSettingsModel = class extends Common.ObjectWrapper.ObjectWrapper {
     return Object.freeze(devtoolsJSON);
   }
 };
-var Events;
-(function(Events2) {
+var Events = /* @__PURE__ */ ((Events2) => {
   Events2["AVAILABILITY_CHANGED"] = "AvailabilityChanged";
   Events2["PROJECT_SETTINGS_CHANGED"] = "ProjectSettingsChanged";
-})(Events || (Events = {}));
+  return Events2;
+})(Events || {});
 export {
   ProjectSettingsModel_exports as ProjectSettingsModel
 };

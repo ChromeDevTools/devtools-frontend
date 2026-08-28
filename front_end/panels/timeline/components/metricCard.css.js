@@ -11,7 +11,7 @@ export default `/*
 
 .metric-card {
   border-radius: var(--sys-shape-corner-small);
-  padding: 14px 16px;
+  padding: var(--sys-size-7) var(--sys-size-8);
   background-color: var(--sys-color-surface3);
   height: 100%;
   box-sizing: border-box;
@@ -24,23 +24,23 @@ export default `/*
   line-height: var(--sys-typescale-headline5-line-height);
   font-weight: var(--ref-typeface-weight-medium);
   margin: 0;
-  margin-bottom: 6px;
+  margin-bottom: var(--sys-size-4);
 }
 
 .title-help {
   height: var(--sys-typescale-headline5-line-height);
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
 }
 
 .metric-values-section {
   position: relative;
   display: flex;
-  column-gap: 8px;
-  margin-bottom: 8px;
+  column-gap: var(--sys-size-5);
+  margin-bottom: var(--sys-size-5);
 }
 
 .metric-values-section:focus-visible {
-  outline: 2px solid -webkit-focus-ring-color;
+  outline: var(--sys-size-2) solid -webkit-focus-ring-color;
 }
 
 .metric-source-block {
@@ -48,7 +48,7 @@ export default `/*
 }
 
 .metric-source-value {
-  font-size: 32px;
+  font-size: var(--sys-size-13);
   line-height: 36px;
   font-weight: var(--ref-typeface-weight-regular);
 }
@@ -58,7 +58,7 @@ export default `/*
 }
 
 .warning {
-  margin-top: 4px;
+  margin-top: var(--sys-size-3);
   color: var(--sys-color-error);
   font-size: var(--sys-typescale-body4-size);
   line-height: var(--sys-typescale-body4-line-height);
@@ -71,7 +71,7 @@ export default `/*
     mask-size: var(--sys-typescale-body4-line-height);
     mask-image: var(--image-file-warning);
     background-color: var(--sys-color-error);
-    margin-right: 4px;
+    margin-right: var(--sys-size-3);
     flex-shrink: 0;
   }
 }
@@ -91,17 +91,17 @@ export default `/*
 .divider {
   width: 100%;
   border: 0;
-  border-bottom: 1px solid var(--sys-color-divider);
-  margin: 8px 0;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  margin: var(--sys-size-5) 0;
   box-sizing: border-box;
 }
 
 .compare-text {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .environment-recs-intro {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .environment-recs {
@@ -110,7 +110,7 @@ export default `/*
 
 .environment-recs > summary {
   font-weight: var(--ref-typeface-weight-medium);
-  margin-bottom: 4px;
+  margin-bottom: var(--sys-size-3);
   font-size: var(--sys-typescale-body4-size);
   line-height: var(--sys-typescale-body4-line-height);
   display: flex;
@@ -122,7 +122,7 @@ export default `/*
     mask-size: var(--sys-typescale-body4-line-height);
     mask-image: var(--image-file-triangle-right);
     background-color: var(--icon-default);
-    margin-right: 4px;
+    margin-right: var(--sys-size-3);
     flex-shrink: 0;
   }
 }
@@ -136,19 +136,19 @@ details.environment-recs[open] > summary::before {
 }
 
 .detailed-compare-text {
-  margin-bottom: 8px;
+  margin-bottom: var(--sys-size-5);
 }
 
 .bucket-summaries {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
   white-space: nowrap;
 }
 
 .bucket-summaries.histogram {
   display: grid;
-  grid-template-columns: minmax(min-content, auto) minmax(40px, 60px) max-content;
+  grid-template-columns: minmax(min-content, auto) minmax(var(--sys-size-14), 60px) max-content;
   grid-auto-rows: 1fr;
-  column-gap: 8px;
+  column-gap: var(--sys-size-5);
   place-items: center flex-end;
 }
 
@@ -167,7 +167,7 @@ details.environment-recs[open] > summary::before {
 }
 
 .histogram-bar {
-  height: 6px;
+  height: var(--sys-size-4);
 }
 
 .histogram-percent {

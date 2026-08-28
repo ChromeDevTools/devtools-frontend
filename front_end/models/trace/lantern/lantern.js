@@ -1,4 +1,4 @@
-// gen/front_end/models/trace/lantern/lantern.prebundle.js
+// ../../front_end/models/trace/lantern/lantern.ts
 import * as Core from "./core/core.js";
 import * as Graph from "./graph/graph.js";
 import * as Metrics from "./metrics/metrics.js";

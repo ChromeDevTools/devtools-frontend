@@ -23,7 +23,7 @@ export default `/*
 
   .wrapper {
     background-color: var(--sys-color-cdt-base-container);
-    border-radius: 16px;
+    border-radius: var(--sys-shape-corner-medium);
     container-type: inline-size;
     display: grid;
     animation: expand var(--sys-motion-duration-medium2) var(--sys-motion-easing-emphasized) forwards;
@@ -61,20 +61,20 @@ export default `/*
   }
 
   .wrapper.top {
-    border-radius: 16px 16px 4px 4px;
+    border-radius: var(--sys-shape-corner-medium) var(--sys-shape-corner-medium) var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small);
   }
 
   .wrapper.bottom {
     margin-top: 5px;
-    border-radius: 4px 4px 16px 16px;
+    border-radius: var(--sys-shape-corner-extra-small) var(--sys-shape-corner-extra-small) var(--sys-shape-corner-medium) var(--sys-shape-corner-medium);
   }
 
   header {
     display: flex;
     flex-direction: row;
-    gap: 6px;
+    gap: var(--sys-size-4);
     color: var(--sys-color-on-surface);
-    font-size: 13px;
+    font-size: var(--sys-typescale-body3-size);
     font-style: normal;
     font-weight: 500;
     margin-bottom: var(--sys-size-6);
@@ -117,10 +117,10 @@ export default `/*
     --override-markdown-view-message-color: var(--sys-color-on-surface);
 
     color: var(--sys-color-on-surface);
-    font-size: 12px;
+    font-size: var(--sys-typescale-body4-size);
     font-style: normal;
     font-weight: 400;
-    line-height: 20px;
+    line-height: var(--sys-size-9);
 
     p {
       margin-block: 1em;
@@ -139,7 +139,7 @@ export default `/*
       }
 
       li::marker {
-        font-size: 11px;
+        font-size: var(--sys-typescale-body5-size);
         line-height: 1;
       }
     }
@@ -166,7 +166,7 @@ export default `/*
   }
 
   devtools-markdown-view {
-    margin-bottom: 12px;
+    margin-bottom: var(--sys-size-6);
   }
 
   footer {
@@ -177,13 +177,13 @@ export default `/*
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    margin-top: 14px;
-    gap: 32px;
+    margin-top: var(--sys-size-7);
+    gap: var(--sys-size-13);
   }
 
   @container (max-width: 600px) {
     footer {
-      gap: 8px;
+      gap: var(--sys-size-5);
     }
   }
 
@@ -194,14 +194,14 @@ export default `/*
   footer .rating {
     display: flex;
     flex-direction: row;
-    gap: 8px;
+    gap: var(--sys-size-5);
   }
 
   textarea {
     height: 84px;
     padding: 10px;
-    border-radius: 8px;
-    border: 1px solid var(--sys-color-neutral-outline);
+    border-radius: var(--sys-shape-corner-small);
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
     width: 100%;
     font-family: var(--default-font-family);
     font-size: inherit;
@@ -219,14 +219,14 @@ export default `/*
   }
 
   main .buttons {
-    margin-top: 12px;
+    margin-top: var(--sys-size-6);
   }
 
   .disclaimer {
     display: flex;
-    gap: 2px;
+    gap: var(--sys-size-2);
     color: var(--sys-color-on-surface-subtle);
-    font-size: 11px;
+    font-size: var(--sys-typescale-body5-size);
     align-items: flex-start;
     flex-direction: column;
   }
@@ -237,8 +237,8 @@ export default `/*
 
     devtools-icon {
       color: var(--sys-color-primary);
-      width: 14px;
-      height: 14px;
+      width: var(--sys-size-7);
+      height: var(--sys-size-7);
     }
   }
 
@@ -271,10 +271,10 @@ export default `/*
   }
 
   summary {
-    font-size: 12px;
+    font-size: var(--sys-typescale-body4-size);
     font-style: normal;
     font-weight: 400;
-    line-height: 20px;
+    line-height: var(--sys-size-9);
   }
 
   details {
@@ -317,8 +317,8 @@ export default `/*
   }
 
   .info {
-    width: 20px;
-    height: 20px;
+    width: var(--sys-size-9);
+    height: var(--sys-size-9);
   }
 
   .badge {
@@ -409,11 +409,11 @@ export default `/*
 
     ul {
       color: var(--sys-color-primary);
-      font-size: 12px;
+      font-size: var(--sys-typescale-body4-size);
       font-style: normal;
       font-weight: 400;
       line-height: 18px;
-      margin-top: 8px;
+      margin-top: var(--sys-size-5);
       padding-left: var(--sys-size-6);
     }
 
@@ -425,13 +425,13 @@ export default `/*
       color: var(--sys-color-primary);
       display: inline-flex !important; /* stylelint-disable-line declaration-no-important */
       align-items: center;
-      gap: 4px;
+      gap: var(--sys-size-3);
       text-decoration-line: underline;
     }
 
     devtools-icon {
-      height: 16px;
-      width: 16px;
+      height: var(--sys-size-8);
+      width: var(--sys-size-8);
       margin-right: var(--sys-size-1);
     }
 

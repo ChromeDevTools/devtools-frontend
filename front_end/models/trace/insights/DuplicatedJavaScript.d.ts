@@ -1,3 +1,4 @@
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Extras from '../extras/extras.js';
 import type * as Handlers from '../handlers/handlers.js';
 import type * as Types from '../types/types.js';
@@ -24,7 +25,7 @@ export declare const UIStrings: {
      */
     readonly noDuplicatedJavaScript: 'No duplicated JavaScript found';
 };
-export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => import("../../../core/platform/UIString.js").LocalizedString;
+export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
 export type DuplicatedJavaScriptInsightModel = InsightModel<typeof UIStrings, {
     duplication: Extras.ScriptDuplication.ScriptDuplication;
     duplicationGroupedByNodeModules: Extras.ScriptDuplication.ScriptDuplication;

@@ -10,8 +10,8 @@ export default `/*
  */
 
 .navigator-toolbar {
-  border-bottom: 1px solid var(--sys-color-divider);
-  padding-left: 8px;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  padding-left: var(--sys-size-5);
 }
 
 /*# sourceURL=${import.meta.resolve('./navigatorView.css')} */`;

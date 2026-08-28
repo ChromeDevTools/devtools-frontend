@@ -1,4 +1,4 @@
-// gen/front_end/models/live-metrics/LiveMetrics.js
+// ../../front_end/models/live-metrics/LiveMetrics.ts
 import * as Common from "../../core/common/common.js";
 import * as Host from "../../core/host/host.js";
 import * as i18n from "../../core/i18n/i18n.js";
@@ -10,8 +10,8 @@ import * as CrUXManager from "../crux-manager/crux-manager.js";
 import * as Spec from "./web-vitals-injected/spec/spec.js";
 var timelineEnableSoftNavigationsSettingDescriptor = {
   name: "timeline-enable-soft-navigations",
-  type: "boolean",
-  storageType: "Synced",
+  type: Common.Settings.SettingType.BOOLEAN,
+  storageType: Common.Settings.SettingStorageType.SYNCED,
   defaultValue: true
 };
 var UIStrings = {
@@ -62,7 +62,12 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
     this.#settings = settings;
     this.#deviceModeModel = deviceModeModel;
     this.#targetManager.observeTargets(this, { scoped: true });
-    this.#targetManager.addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
+    this.#targetManager.addModelListener(
+      SDK.ResourceTreeModel.ResourceTreeModel,
+      SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+      this.#onPrimaryPageChanged,
+      this
+    );
     this.#settings.resolve(timelineEnableSoftNavigationsSettingDescriptor).addChangeListener(this.#onSettingChanged, this);
   }
   #onPrimaryPageChanged(event) {
@@ -70,7 +75,7 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
     if (!primaryTarget) {
       return;
     }
-    if (primaryTarget !== this.#target || event.data.type === "Activation") {
+    if (primaryTarget !== this.#target || event.data.type === SDK.ResourceTreeModel.PrimaryPageChangeType.ACTIVATION) {
       this.#clearMetrics();
       this.#sendStatusUpdate();
       void this.#switchToTarget(primaryTarget);
@@ -89,7 +94,11 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
       Root.DevToolsContext.globalInstance().set(
         _LiveMetrics,
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        new _LiveMetrics(SDK.TargetManager.TargetManager.instance(), Common.Settings.Settings.instance(), EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance())
+        new _LiveMetrics(
+          SDK.TargetManager.TargetManager.instance(),
+          Common.Settings.Settings.instance(),
+          EmulationModel.DeviceModeModel.DeviceModeModel.tryInstance()
+        )
       );
     }
     return Root.DevToolsContext.globalInstance().get(_LiveMetrics);
@@ -210,7 +219,7 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
     }
   }
   #sendStatusUpdate() {
-    this.dispatchEventToListeners("status", {
+    this.dispatchEventToListeners("status" /* STATUS */, {
       lcp: this.#lcpValue,
       cls: this.#clsValue,
       inp: this.#inpValue,
@@ -501,7 +510,11 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
       executionContextName: LIVE_METRICS_WORLD_NAME
     });
     await this.#injectScript();
-    this.#deviceModeModel?.addEventListener("Updated", this.#onEmulationChanged, this);
+    this.#deviceModeModel?.addEventListener(
+      EmulationModel.DeviceModeModel.Events.UPDATED,
+      this.#onEmulationChanged,
+      this
+    );
     this.#isCollectingMetrics = true;
   }
   async #stopCollectingMetrics() {
@@ -527,14 +540,18 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
       });
     }
     this.#scriptIdentifier = void 0;
-    this.#deviceModeModel?.removeEventListener("Updated", this.#onEmulationChanged, this);
+    this.#deviceModeModel?.removeEventListener(
+      EmulationModel.DeviceModeModel.Events.UPDATED,
+      this.#onEmulationChanged,
+      this
+    );
     this.#isCollectingMetrics = false;
   }
 };
-var Events;
-(function(Events2) {
+var Events = /* @__PURE__ */ ((Events2) => {
   Events2["STATUS"] = "status";
-})(Events || (Events = {}));
+  return Events2;
+})(Events || {});
 export {
   Events,
   LiveMetrics,

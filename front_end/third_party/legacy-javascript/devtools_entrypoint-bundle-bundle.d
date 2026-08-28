@@ -1,0 +1,1 @@
+gen/front_end/third_party/legacy-javascript/legacy-javascript.js: gen/front_end/third_party/legacy-javascript/lib/legacy-javascript.js gen/front_end/third_party/legacy-javascript/legacy-javascript.prebundle.js

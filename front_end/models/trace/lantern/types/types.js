@@ -1,4 +1,4 @@
-// gen/front_end/models/trace/lantern/types/Lantern.js
+// ../../front_end/models/trace/lantern/types/Lantern.ts
 var NetworkRequestTypes = {
   XHR: "XHR",
   Fetch: "Fetch",

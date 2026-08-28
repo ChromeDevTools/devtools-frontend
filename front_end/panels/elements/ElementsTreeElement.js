@@ -57,7 +57,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import * as PanelsCommon from '../common/common.js';
 import * as Media from '../media/media.js';
 import * as ElementsComponents from './components/components.js';
-import { cssPath, jsPath, xPath } from './DOMPath.js';
 import { getElementIssueDetails } from './ElementIssueUtils.js';
 import { ElementsPanel } from './ElementsPanel.js';
 import * as ElementStatePaneWidget from './ElementStatePaneWidget.js';
@@ -927,10 +926,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     revealInTopLayer;
     showContextMenu;
     populateTreeElement;
-    performCopyOrCut;
-    duplicateNode;
-    pasteNode;
-    canPaste;
     toggleHideElement;
     isToggledToHidden;
     selectNodeAfterEdit;
@@ -939,10 +934,10 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     setMultilineEditing;
     visibleWidth;
     #view;
-    searchQuery;
+    #searchQuery = null;
     #expandedChildrenLimit;
     decorationsThrottler;
-    inClipboard;
+    inClipboard = false;
     #hovered;
     editing;
     #editorRef;
@@ -998,6 +993,16 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         this.#selected = selected;
         this.requestUpdate();
     }
+    get searchQuery() {
+        return this.#searchQuery;
+    }
+    set searchQuery(query) {
+        if (this.#searchQuery === query) {
+            return;
+        }
+        this.#searchQuery = query;
+        this.requestUpdate();
+    }
     get tagTypeContext() {
         if (this.isClosingTag) {
             return { tagType: "CLOSING_TAG" /* TagType.CLOSING */ };
@@ -1025,7 +1030,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         super(element);
         this.#domIssuesManager = domIssuesManager;
         this.#view = view;
-        this.searchQuery = null;
         this.#expandedChildrenLimit = InitialChildrenLimit;
         this.decorationsThrottler = new Common.Throttler.Throttler(100);
         this.inClipboard = false;
@@ -1188,6 +1192,12 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         this.#editorRef = output.editorRef;
         if (this.#updateRecord) {
             this.#updateRecord = null;
+        }
+        if (this.#searchQuery && !this.editing) {
+            this.#highlightSearchResults();
+        }
+        else if (!this.#searchQuery && this.#highlights.length) {
+            this.hideSearchHighlights();
         }
     }
     async #onCustomElementAdornerClick(event) {
@@ -2199,46 +2209,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         const node = this.node;
         void node.getOuterHTML().then(this.startEditingAsHTML.bind(this, commitChange, disposeCallback));
     }
-    copyCSSPath() {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssPath(this.node, true));
-    }
-    copyJSPath() {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(jsPath(this.node, true));
-    }
-    copyXPath() {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(this.node, true));
-    }
-    copyFullXPath() {
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(this.node, false));
-    }
-    async copyStyles() {
-        const node = this.node;
-        const cssModel = node.domModel().cssModel();
-        const cascade = await cssModel.cachedMatchedCascadeForNode(node);
-        if (!cascade) {
-            return;
-        }
-        const indent = Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
-        const lines = [];
-        for (const style of cascade.nodeStyles().reverse()) {
-            for (const property of style.leadingProperties()) {
-                if (!property.parsedOk || property.disabled || !property.activeInStyle() || property.implicit) {
-                    continue;
-                }
-                if (cascade.isInherited(style) && !SDK.CSSMetadata.cssMetadata().isPropertyInherited(property.name)) {
-                    continue;
-                }
-                if (style.parentRule?.isUserAgent()) {
-                    continue;
-                }
-                if (cascade.propertyState(property) !== "Active" /* SDK.CSSMatchedStyles.PropertyState.ACTIVE */) {
-                    continue;
-                }
-                lines.push(`${indent}${property.name}: ${property.value};`);
-            }
-        }
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(lines.join('\n'));
-    }
     #highlightSearchResults() {
         this.hideSearchHighlights();
         if (!this.searchQuery) {
@@ -2424,7 +2394,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         this.widget.hideSearchHighlights();
     }
     copyStyles() {
-        return this.widget.copyStyles();
+        const outline = this.treeOutline;
+        return outline?.domTreeWidget?.copyStyles(this.nodeInternal) ?? Promise.resolve();
     }
     setInClipboard(inClipboard) {
         this.widget.setInClipboard(inClipboard);
@@ -2454,16 +2425,20 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
         this.widget.editAsHTML();
     }
     copyCSSPath() {
-        this.widget.copyCSSPath();
+        const outline = this.treeOutline;
+        outline?.domTreeWidget?.copyCSSPath(this.nodeInternal);
     }
     copyJSPath() {
-        this.widget.copyJSPath();
+        const outline = this.treeOutline;
+        outline?.domTreeWidget?.copyJSPath(this.nodeInternal);
     }
     copyXPath() {
-        this.widget.copyXPath();
+        const outline = this.treeOutline;
+        outline?.domTreeWidget?.copyXPath(this.nodeInternal);
     }
     copyFullXPath() {
-        this.widget.copyFullXPath();
+        const outline = this.treeOutline;
+        outline?.domTreeWidget?.copyFullXPath(this.nodeInternal);
     }
     hasEditableNode() {
         return this.widget.hasEditableNode();
@@ -2504,10 +2479,6 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             this.widget.revealInTopLayer = node => outline.revealInTopLayer(node);
             this.widget.showContextMenu = event => void outline.showContextMenu(this, event);
             this.widget.populateTreeElement = async () => await outline.populateTreeElement(this);
-            this.widget.performCopyOrCut = (isCut, node, isElement) => outline.performCopyOrCut(isCut, node, isElement);
-            this.widget.duplicateNode = node => outline.duplicateNode(node);
-            this.widget.pasteNode = node => outline.pasteNode(node);
-            this.widget.canPaste = node => outline.canPaste(node);
             this.widget.toggleHideElement = node => outline.toggleHideElement(node);
             this.widget.isToggledToHidden = node => outline.isToggledToHidden(node);
             this.widget.selectNodeAfterEdit = (wasExpanded, error, newNode) => {

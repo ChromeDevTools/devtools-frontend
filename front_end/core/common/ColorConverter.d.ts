@@ -7,6 +7,8 @@ export declare class ColorConverter {
     static labToLch(l: number, a: number, b: number): [number, number, number];
     static displayP3ToXyzd50(r: number, g: number, b: number): [number, number, number];
     static xyzd50ToDisplayP3(x: number, y: number, z: number): [number, number, number];
+    static displayP3LinearToXyzd50(r: number, g: number, b: number): [number, number, number];
+    static xyzd50ToDisplayP3Linear(x: number, y: number, z: number): [number, number, number];
     static proPhotoToXyzd50(r: number, g: number, b: number): [number, number, number];
     static xyzd50ToProPhoto(x: number, y: number, z: number): [number, number, number];
     static adobeRGBToXyzd50(r: number, g: number, b: number): [number, number, number];

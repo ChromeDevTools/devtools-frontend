@@ -1,7 +1,7 @@
-// gen/front_end/models/trace/lantern/simulation/ConnectionPool.js
+// ../../front_end/models/trace/lantern/simulation/ConnectionPool.ts
 import * as Core from "../core/core.js";
 
-// gen/front_end/models/trace/lantern/simulation/TCPConnection.js
+// ../../front_end/models/trace/lantern/simulation/TCPConnection.ts
 var INITIAL_CONGESTION_WINDOW = 10;
 var TCP_SEGMENT_SIZE = 1460;
 var TCPConnection = class _TCPConnection {
@@ -144,7 +144,7 @@ var TCPConnection = class _TCPConnection {
   }
 };
 
-// gen/front_end/models/trace/lantern/simulation/ConnectionPool.js
+// ../../front_end/models/trace/lantern/simulation/ConnectionPool.ts
 var DEFAULT_SERVER_RESPONSE_TIME = 30;
 var TLS_SCHEMES = ["https", "wss"];
 var CONNECTIONS_PER_ORIGIN = 6;
@@ -184,7 +184,13 @@ var ConnectionPool = class {
         }
         const isTLS = TLS_SCHEMES.includes(request.parsedURL.scheme);
         const isH2 = request.protocol === "h2";
-        const connection = new TCPConnection(this.options.rtt + additionalRtt, this.options.throughput, responseTime, isTLS, isH2);
+        const connection = new TCPConnection(
+          this.options.rtt + additionalRtt,
+          this.options.throughput,
+          responseTime,
+          isTLS,
+          isH2
+        );
         connections.push(connection);
       }
       if (!connections.length) {
@@ -250,7 +256,7 @@ var ConnectionPool = class {
   }
 };
 
-// gen/front_end/models/trace/lantern/simulation/Constants.js
+// ../../front_end/models/trace/lantern/simulation/Constants.ts
 var DEVTOOLS_RTT_ADJUSTMENT_FACTOR = 3.75;
 var DEVTOOLS_THROUGHPUT_ADJUSTMENT_FACTOR = 0.9;
 var throttling = {
@@ -289,9 +295,11 @@ var throttling = {
     uploadThroughputKbps: 0
   }
 };
-var Constants = { throttling };
+var Constants = {
+  throttling
+};
 
-// gen/front_end/models/trace/lantern/simulation/DNSCache.js
+// ../../front_end/models/trace/lantern/simulation/DNSCache.ts
 var DNS_RESOLUTION_RTT_MULTIPLIER = 2;
 var DNSCache = class _DNSCache {
   static rttMultiplier = DNS_RESOLUTION_RTT_MULTIPLIER;
@@ -331,7 +339,7 @@ var DNSCache = class _DNSCache {
   }
 };
 
-// gen/front_end/models/trace/lantern/simulation/SimulationTimingMap.js
+// ../../front_end/models/trace/lantern/simulation/SimulationTimingMap.ts
 import * as Core2 from "../core/core.js";
 import * as Graph from "../graph/graph.js";
 var SimulatorTimingMap = class {
@@ -351,7 +359,10 @@ var SimulatorTimingMap = class {
       startTime: values.startTime,
       timeElapsed: 0
     };
-    this.nodeTimings.set(node, node.type === Graph.BaseNode.types.NETWORK ? { ...nodeTiming, timeElapsedOvershoot: 0, bytesDownloaded: 0 } : nodeTiming);
+    this.nodeTimings.set(
+      node,
+      node.type === Graph.BaseNode.types.NETWORK ? { ...nodeTiming, timeElapsedOvershoot: 0, bytesDownloaded: 0 } : nodeTiming
+    );
   }
   setCompleted(node, values) {
     const nodeTiming = {
@@ -455,7 +466,7 @@ var SimulatorTimingMap = class {
   }
 };
 
-// gen/front_end/models/trace/lantern/simulation/Simulator.js
+// ../../front_end/models/trace/lantern/simulation/Simulator.ts
 import * as Core3 from "../core/core.js";
 import * as Graph2 from "../graph/graph.js";
 var defaultThrottling = Constants.throttling.mobileSlow4G;
@@ -528,18 +539,27 @@ var Simulator = class _Simulator {
   dns;
   connectionPool;
   constructor(options) {
-    this.options = Object.assign({
-      rtt: defaultThrottling.rttMs,
-      throughput: defaultThrottling.throughputKbps * 1024,
-      maximumConcurrentRequests: DEFAULT_MAXIMUM_CONCURRENT_REQUESTS,
-      cpuSlowdownMultiplier: defaultThrottling.cpuSlowdownMultiplier,
-      layoutTaskMultiplier: DEFAULT_LAYOUT_TASK_MULTIPLIER,
-      additionalRttByOrigin: /* @__PURE__ */ new Map(),
-      serverResponseTimeByOrigin: /* @__PURE__ */ new Map()
-    }, options);
+    this.options = Object.assign(
+      {
+        rtt: defaultThrottling.rttMs,
+        throughput: defaultThrottling.throughputKbps * 1024,
+        maximumConcurrentRequests: DEFAULT_MAXIMUM_CONCURRENT_REQUESTS,
+        cpuSlowdownMultiplier: defaultThrottling.cpuSlowdownMultiplier,
+        layoutTaskMultiplier: DEFAULT_LAYOUT_TASK_MULTIPLIER,
+        additionalRttByOrigin: /* @__PURE__ */ new Map(),
+        serverResponseTimeByOrigin: /* @__PURE__ */ new Map()
+      },
+      options
+    );
     this._rtt = this.options.rtt;
     this.throughput = this.options.throughput;
-    this.maximumConcurrentRequests = Math.max(Math.min(TCPConnection.maximumSaturatedConnections(this._rtt, this.throughput), this.options.maximumConcurrentRequests), 1);
+    this.maximumConcurrentRequests = Math.max(
+      Math.min(
+        TCPConnection.maximumSaturatedConnections(this._rtt, this.throughput),
+        this.options.maximumConcurrentRequests
+      ),
+      1
+    );
     this.cpuSlowdownMultiplier = this.options.cpuSlowdownMultiplier;
     this.layoutTaskMultiplier = this.cpuSlowdownMultiplier * this.options.layoutTaskMultiplier;
     this.cachedNodeListByStartPosition = [];
@@ -584,7 +604,9 @@ var Simulator = class _Simulator {
   }
   markNodeAsReadyToStart(node, queuedTime) {
     const nodeStartPosition = _Simulator.computeNodeStartPosition(node);
-    const firstNodeIndexWithGreaterStartPosition = this.cachedNodeListByStartPosition.findIndex((candidate) => _Simulator.computeNodeStartPosition(candidate) > nodeStartPosition);
+    const firstNodeIndexWithGreaterStartPosition = this.cachedNodeListByStartPosition.findIndex(
+      (candidate) => _Simulator.computeNodeStartPosition(candidate) > nodeStartPosition
+    );
     const insertionIndex = firstNodeIndexWithGreaterStartPosition === -1 ? this.cachedNodeListByStartPosition.length : firstNodeIndexWithGreaterStartPosition;
     this.cachedNodeListByStartPosition.splice(insertionIndex, 0, node);
     this.nodes[NodeState.ReadyToStart].add(node);
@@ -668,7 +690,10 @@ var Simulator = class _Simulator {
   estimateCPUTimeRemaining(cpuNode) {
     const timingData = this.nodeTimings.getCpuStarted(cpuNode);
     const multiplier = cpuNode.didPerformLayout() ? this.layoutTaskMultiplier : this.cpuSlowdownMultiplier;
-    const totalDuration = Math.min(Math.round(cpuNode.duration / 1e3 * multiplier), DEFAULT_MAXIMUM_CPU_TASK_DURATION);
+    const totalDuration = Math.min(
+      Math.round(cpuNode.duration / 1e3 * multiplier),
+      DEFAULT_MAXIMUM_CPU_TASK_DURATION
+    );
     const estimatedTimeElapsed = totalDuration - timingData.timeElapsed;
     this.nodeTimings.setCpuEstimated(cpuNode, { estimatedTimeElapsed });
     return estimatedTimeElapsed;
@@ -690,7 +715,10 @@ var Simulator = class _Simulator {
         shouldUpdateCache: true
       });
       const timeAlreadyElapsed = timingData.timeElapsed;
-      const calculation = connection.simulateDownloadUntil(request.transferSize - timingData.bytesDownloaded, { timeAlreadyElapsed, dnsResolutionTime, maximumTimeToElapse: Infinity });
+      const calculation = connection.simulateDownloadUntil(
+        request.transferSize - timingData.bytesDownloaded,
+        { timeAlreadyElapsed, dnsResolutionTime, maximumTimeToElapse: Infinity }
+      );
       timeElapsed = calculation.timeElapsed;
     }
     const estimatedTimeElapsed = timeElapsed + timingData.timeElapsedOvershoot;
@@ -733,11 +761,14 @@ var Simulator = class _Simulator {
       requestedAt: timingData.startTime,
       shouldUpdateCache: true
     });
-    const calculation = connection.simulateDownloadUntil(request.transferSize - timingData.bytesDownloaded, {
-      dnsResolutionTime,
-      timeAlreadyElapsed: timingData.timeElapsed,
-      maximumTimeToElapse: timePeriodLength - timingData.timeElapsedOvershoot
-    });
+    const calculation = connection.simulateDownloadUntil(
+      request.transferSize - timingData.bytesDownloaded,
+      {
+        dnsResolutionTime,
+        timeAlreadyElapsed: timingData.timeElapsed,
+        maximumTimeToElapse: timePeriodLength - timingData.timeElapsedOvershoot
+      }
+    );
     connection.setCongestionWindow(calculation.congestionWindow);
     connection.setH2OverflowBytesDownloaded(calculation.extraBytesDownloaded);
     if (isFinished) {
@@ -786,9 +817,12 @@ var Simulator = class _Simulator {
     if (Graph2.BaseNode.findCycle(graph)) {
       throw new Core3.LanternError("Cannot simulate graph with cycle");
     }
-    options = Object.assign({
-      label: void 0
-    }, options);
+    options = Object.assign(
+      {
+        label: void 0
+      },
+      options
+    );
     this.dns = new DNSCache({ rtt: this._rtt });
     this.initializeConnectionPool(graph);
     this.initializeAuxiliaryData();

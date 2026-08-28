@@ -21,12 +21,14 @@ export class ProjectStore {
     #id;
     #type;
     #displayName;
+    #securityOrigin;
     #uiSourceCodes = new Map();
-    constructor(workspace, id, type, displayName) {
+    constructor(workspace, id, type, displayName, securityOrigin) {
         this.#workspace = workspace;
         this.#id = id;
         this.#type = type;
         this.#displayName = displayName;
+        this.#securityOrigin = securityOrigin ?? null;
     }
     id() {
         return this.#id;
@@ -36,6 +38,9 @@ export class ProjectStore {
     }
     displayName() {
         return this.#displayName;
+    }
+    securityOrigin() {
+        return this.#securityOrigin;
     }
     workspace() {
         return this.#workspace;
@@ -110,8 +115,14 @@ export class WorkspaceImpl extends Common.ObjectWrapper.ObjectWrapper {
         const project = this.#projects.get(projectId);
         return project ? project.uiSourceCodeForURL(url) : null;
     }
-    uiSourceCodeForURL(url) {
+    uiSourceCodeForURL(url, targetOrigin) {
         for (const project of this.#projects.values()) {
+            if (targetOrigin !== undefined) {
+                const projectOrigin = project.securityOrigin();
+                if (projectOrigin === null || !projectOrigin.isSameOriginWith(targetOrigin)) {
+                    continue;
+                }
+            }
             const uiSourceCode = project.uiSourceCodeForURL(url);
             if (uiSourceCode) {
                 return uiSourceCode;

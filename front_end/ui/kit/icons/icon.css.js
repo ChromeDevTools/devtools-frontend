@@ -13,8 +13,8 @@ export default `/*
   flex-grow: 0;
   flex-shrink: 0;
   display: inline-block;
-  width: 20px;
-  height: 20px;
+  width: var(--sys-size-9);
+  height: var(--sys-size-9);
   color: var(--icon-default);
   vertical-align: sub;
   position: relative;
@@ -101,8 +101,8 @@ export default `/*
 :host([name="triangle-down"]),
 :host([name="triangle-left"]),
 :host([name="triangle-right"]) {
-  width: 14px;
-  height: 14px;
+  width: var(--sys-size-7);
+  height: var(--sys-size-7);
   vertical-align: baseline;
 }
 

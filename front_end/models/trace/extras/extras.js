@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/trace/extras/FilmStrip.js
+// ../../front_end/models/trace/extras/FilmStrip.ts
 var FilmStrip_exports = {};
 __export(FilmStrip_exports, {
   frameClosestToTimestamp: () => frameClosestToTimestamp,
@@ -41,20 +41,23 @@ function fromHandlerData(data, customZeroTime) {
   return result;
 }
 function frameClosestToTimestamp(filmStrip, searchTimestamp) {
-  const closestFrameIndexBeforeTimestamp = Platform.ArrayUtilities.nearestIndexFromEnd(filmStrip.frames, (frame) => frame.screenshotEvent.ts < searchTimestamp);
+  const closestFrameIndexBeforeTimestamp = Platform.ArrayUtilities.nearestIndexFromEnd(
+    filmStrip.frames,
+    (frame) => frame.screenshotEvent.ts < searchTimestamp
+  );
   if (closestFrameIndexBeforeTimestamp === null) {
     return null;
   }
   return filmStrip.frames[closestFrameIndexBeforeTimestamp];
 }
 
-// gen/front_end/models/trace/extras/Initiators.js
+// ../../front_end/models/trace/extras/Initiators.ts
 var Initiators_exports = {};
 __export(Initiators_exports, {
   getNetworkInitiator: () => getNetworkInitiator
 });
 
-// gen/front_end/models/trace/extras/StackTraceForEvent.js
+// ../../front_end/models/trace/extras/StackTraceForEvent.ts
 var StackTraceForEvent_exports = {};
 __export(StackTraceForEvent_exports, {
   clearCacheForTrace: () => clearCacheForTrace,
@@ -181,7 +184,7 @@ function getTraceEventPayloadStackAsProtocolCallFrame(event) {
   return callFrames;
 }
 
-// gen/front_end/models/trace/extras/Initiators.js
+// ../../front_end/models/trace/extras/Initiators.ts
 function getNetworkInitiator(data, event) {
   const networkHandlerInitiator = data.NetworkRequests.incompleteInitiator.get(event);
   if (networkHandlerInitiator?.args.data.mimeType === "text/css") {
@@ -197,7 +200,7 @@ function getNetworkInitiator(data, event) {
   return matchingRequests.at(-1);
 }
 
-// gen/front_end/models/trace/extras/MainThreadActivity.js
+// ../../front_end/models/trace/extras/MainThreadActivity.ts
 var MainThreadActivity_exports = {};
 __export(MainThreadActivity_exports, {
   calculateWindow: () => calculateWindow
@@ -263,7 +266,7 @@ function calculateWindow(traceBounds, mainThreadEntries) {
   };
 }
 
-// gen/front_end/models/trace/extras/ScriptDuplication.js
+// ../../front_end/models/trace/extras/ScriptDuplication.ts
 var ScriptDuplication_exports = {};
 __export(ScriptDuplication_exports, {
   computeScriptDuplication: () => computeScriptDuplication,
@@ -406,7 +409,7 @@ function computeScriptDuplication(scriptsData, compressionRatios) {
   };
 }
 
-// gen/front_end/models/trace/extras/ThirdParties.js
+// ../../front_end/models/trace/extras/ThirdParties.ts
 var ThirdParties_exports = {};
 __export(ThirdParties_exports, {
   summarizeByThirdParty: () => summarizeByThirdParty,
@@ -416,7 +419,7 @@ import * as Handlers2 from "../handlers/handlers.js";
 import * as Helpers5 from "../helpers/helpers.js";
 import * as Types5 from "../types/types.js";
 
-// gen/front_end/models/trace/extras/TraceFilter.js
+// ../../front_end/models/trace/extras/TraceFilter.ts
 var TraceFilter_exports = {};
 __export(TraceFilter_exports, {
   ExclusiveNameFilter: () => ExclusiveNameFilter,
@@ -441,10 +444,10 @@ var VisibleEventsFilter = class _VisibleEventsFilter extends TraceFilter {
   }
   static eventType(event) {
     if (event.cat.includes("blink.console")) {
-      return "ConsoleTime";
+      return Types3.Events.Name.CONSOLE_TIME;
     }
     if (event.cat.includes("blink.user_timing")) {
-      return "UserTiming";
+      return Types3.Events.Name.USER_TIMING;
     }
     return event.name;
   }
@@ -470,7 +473,7 @@ var ExclusiveNameFilter = class extends TraceFilter {
   }
 };
 
-// gen/front_end/models/trace/extras/TraceTree.js
+// ../../front_end/models/trace/extras/TraceTree.ts
 var TraceTree_exports = {};
 __export(TraceTree_exports, {
   BottomUpNode: () => BottomUpNode,
@@ -583,15 +586,18 @@ var TopDownNode = class _TopDownNode extends Node {
     let depth = 0;
     let matchedDepth = 0;
     let currentDirectChild = null;
-    Helpers3.Trace.forEachEvent(root.events, {
-      onStartEvent,
-      onEndEvent,
-      onInstantEvent: instantEventCallback,
-      startTime: Helpers3.Timing.milliToMicro(startTime),
-      endTime: Helpers3.Timing.milliToMicro(endTime),
-      eventFilter: root.filter,
-      ignoreAsyncEvents: false
-    });
+    Helpers3.Trace.forEachEvent(
+      root.events,
+      {
+        onStartEvent,
+        onEndEvent,
+        onInstantEvent: instantEventCallback,
+        startTime: Helpers3.Timing.milliToMicro(startTime),
+        endTime: Helpers3.Timing.milliToMicro(endTime),
+        eventFilter: root.filter,
+        ignoreAsyncEvents: false
+      }
+    );
     function onStartEvent(e) {
       const { startTime: currentStartTime, endTime: currentEndTime } = Helpers3.Timing.eventTimingsMilliSeconds(e);
       ++depth;
@@ -751,7 +757,15 @@ var BottomUpRootNode = class extends Node {
   eventGroupIdCallback;
   calculateTransferSize;
   forceGroupIdCallback;
-  constructor(events, { textFilter, filters, startTime, endTime, eventGroupIdCallback, calculateTransferSize, forceGroupIdCallback }) {
+  constructor(events, {
+    textFilter,
+    filters,
+    startTime,
+    endTime,
+    eventGroupIdCallback,
+    calculateTransferSize,
+    forceGroupIdCallback
+  }) {
     super("", events[0]);
     this.childrenInternal = null;
     this.events = events;
@@ -831,15 +845,18 @@ var BottomUpRootNode = class extends Node {
         }
       }
     };
-    Helpers3.Trace.forEachEvent(this.events, {
-      onStartEvent,
-      onEndEvent,
-      onInstantEvent: this.calculateTransferSize ? sumTransferSizeOfInstantEvent : void 0,
-      startTime: Helpers3.Timing.milliToMicro(this.startTime),
-      endTime: Helpers3.Timing.milliToMicro(this.endTime),
-      eventFilter: this.filter,
-      ignoreAsyncEvents: false
-    });
+    Helpers3.Trace.forEachEvent(
+      this.events,
+      {
+        onStartEvent,
+        onEndEvent,
+        onInstantEvent: this.calculateTransferSize ? sumTransferSizeOfInstantEvent : void 0,
+        startTime: Helpers3.Timing.milliToMicro(this.startTime),
+        endTime: Helpers3.Timing.milliToMicro(this.endTime),
+        eventFilter: this.filter,
+        ignoreAsyncEvents: false
+      }
+    );
     function onStartEvent(e) {
       const { startTime: currentStartTime, endTime: currentEndTime } = Helpers3.Timing.eventTimingsMilliSeconds(e);
       const actualEndTime = currentEndTime !== void 0 ? Math.min(currentEndTime, endTime) : endTime;
@@ -965,14 +982,17 @@ var BottomUpNode = class _BottomUpNode extends Node {
     const endTime = this.root.endTime;
     let lastTimeMarker = startTime;
     const self = this;
-    Helpers3.Trace.forEachEvent(this.root.events, {
-      onStartEvent,
-      onEndEvent,
-      startTime: Helpers3.Timing.milliToMicro(startTime),
-      endTime: Helpers3.Timing.milliToMicro(endTime),
-      eventFilter: this.root.filter,
-      ignoreAsyncEvents: false
-    });
+    Helpers3.Trace.forEachEvent(
+      this.root.events,
+      {
+        onStartEvent,
+        onEndEvent,
+        startTime: Helpers3.Timing.milliToMicro(startTime),
+        endTime: Helpers3.Timing.milliToMicro(endTime),
+        eventFilter: this.root.filter,
+        ignoreAsyncEvents: false
+      }
+    );
     function onStartEvent(e) {
       const { startTime: currentStartTime, endTime: currentEndTime } = Helpers3.Timing.eventTimingsMilliSeconds(e);
       const actualEndTime = currentEndTime !== void 0 ? Math.min(currentEndTime, endTime) : endTime;
@@ -1052,7 +1072,7 @@ function generateEventID(event) {
   return event.name;
 }
 
-// gen/front_end/models/trace/extras/ThirdParties.js
+// ../../front_end/models/trace/extras/ThirdParties.ts
 function collectMainThreadActivity(data) {
   const mainFrameMainThread = data.Renderer.processes.values().find((p) => {
     const url = p.url ?? "";
@@ -1130,10 +1150,7 @@ function summarizeBottomUpByURL(root, data) {
 }
 function getBottomUpTree(mainThreadEvents, tracebounds, groupingFunction) {
   const visibleEvents = Helpers5.Trace.VISIBLE_TRACE_EVENT_TYPES.values().toArray();
-  const filter = new VisibleEventsFilter(visibleEvents.concat([
-    "SyntheticNetworkRequest"
-    /* Types.Events.Name.SYNTHETIC_NETWORK_REQUEST */
-  ]));
+  const filter = new VisibleEventsFilter(visibleEvents.concat([Types5.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
   const startTime = Helpers5.Timing.microToMilli(tracebounds.min);
   const endTime = Helpers5.Timing.microToMilli(tracebounds.max);
   return new BottomUpRootNode(mainThreadEvents, {

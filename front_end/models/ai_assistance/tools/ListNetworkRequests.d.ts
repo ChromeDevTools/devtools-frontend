@@ -7,8 +7,8 @@ import { type BaseToolCapability, type DataHandlerResult, type DataTool, type Or
  */
 export declare class ListNetworkRequestsTool implements DataTool<Record<string, never>, unknown, BaseToolCapability & OriginLockCapability> {
     #private;
-    readonly name = ToolName.LIST_NETWORK_REQUESTS;
-    readonly description = "Gives a list of network requests including URL, status code, and duration.";
+    readonly name: ToolName;
+    readonly description: string;
     constructor(networkLog?: Logs.NetworkLog.NetworkLog);
     readonly parameters: Host.AidaClient.FunctionObjectParam<never>;
     displayInfoFromArgs(): {

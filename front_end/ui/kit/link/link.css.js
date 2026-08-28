@@ -25,7 +25,7 @@ export default `/*
 
 :host(:focus-visible) {
   outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
   /* stylelint-disable-next-line declaration-no-important */
   outline-style: solid !important;
   border-radius: var(--sys-shape-corner-extra-small);

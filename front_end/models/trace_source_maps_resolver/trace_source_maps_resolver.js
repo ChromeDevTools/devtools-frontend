@@ -1,9 +1,8 @@
-// gen/front_end/models/trace_source_maps_resolver/SourceMapsResolver.js
+// ../../front_end/models/trace_source_maps_resolver/SourceMapsResolver.ts
 import * as SDK from "../../core/sdk/sdk.js";
 import * as Bindings from "../bindings/bindings.js";
 import * as SourceMapScopes from "../source_map_scopes/source_map_scopes.js";
 import * as Trace from "../trace/trace.js";
-var _a;
 var SourceMappingsUpdated = class _SourceMappingsUpdated extends Event {
   static eventName = "sourcemappingsupdated";
   constructor() {
@@ -11,7 +10,7 @@ var SourceMappingsUpdated = class _SourceMappingsUpdated extends Event {
   }
 };
 var resolvedCodeLocationDataNames = /* @__PURE__ */ new Map();
-var SourceMapsResolver = class extends EventTarget {
+var SourceMapsResolver = class _SourceMapsResolver extends EventTarget {
   #debuggerWorkspaceBinding;
   #targetManager;
   executionContextNamesByOrigin = /* @__PURE__ */ new Map();
@@ -68,10 +67,10 @@ var SourceMapsResolver = class extends EventTarget {
       }
       callFrame = topCallFrame;
     }
-    return _a.resolvedCodeLocationForCallFrame(callFrame);
+    return _SourceMapsResolver.resolvedCodeLocationForCallFrame(callFrame);
   }
   static resolvedURLForEntry(parsedTrace, entry, workspace) {
-    const resolvedCallFrameURL = _a.resolvedCodeLocationForEntry(entry)?.devtoolsLocation?.uiSourceCode.url();
+    const resolvedCallFrameURL = _SourceMapsResolver.resolvedCodeLocationForEntry(entry)?.devtoolsLocation?.uiSourceCode.url();
     if (resolvedCallFrameURL) {
       return resolvedCallFrameURL;
     }
@@ -82,7 +81,7 @@ var SourceMapsResolver = class extends EventTarget {
     return null;
   }
   static codeLocationForEntry(parsedTrace, entry, workspace) {
-    const uiLocation = _a.resolvedCodeLocationForEntry(entry)?.devtoolsLocation;
+    const uiLocation = _SourceMapsResolver.resolvedCodeLocationForEntry(entry)?.devtoolsLocation;
     if (uiLocation) {
       return { url: uiLocation.uiSourceCode.url(), line: uiLocation.lineNumber, column: uiLocation.columnNumber };
     }
@@ -128,7 +127,11 @@ var SourceMapsResolver = class extends EventTarget {
       }
     }
     for (const debuggerModel of this.#debuggerModelsToListen) {
-      debuggerModel.sourceMapManager().addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.#onAttachedSourceMap, this);
+      debuggerModel.sourceMapManager().addEventListener(
+        SDK.SourceMapManager.Events.SourceMapAttached,
+        this.#onAttachedSourceMap,
+        this
+      );
     }
     this.#updateExtensionNames();
     await this.#resolveMappingsForProfileNodes();
@@ -140,7 +143,11 @@ var SourceMapsResolver = class extends EventTarget {
    */
   uninstall() {
     for (const debuggerModel of this.#debuggerModelsToListen) {
-      debuggerModel.sourceMapManager().removeEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.#onAttachedSourceMap, this);
+      debuggerModel.sourceMapManager().removeEventListener(
+        SDK.SourceMapManager.Events.SourceMapAttached,
+        this.#onAttachedSourceMap,
+        this
+      );
     }
     this.#debuggerModelsToListen.clear();
   }
@@ -154,18 +161,30 @@ var SourceMapsResolver = class extends EventTarget {
           continue;
         }
         for (const node of nodes) {
-          const resolvedFunctionName = await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(node.callFrame, target, this.#debuggerWorkspaceBinding);
+          const resolvedFunctionName = await SourceMapScopes.NamesResolver.resolveProfileFrameFunctionName(
+            node.callFrame,
+            target,
+            this.#debuggerWorkspaceBinding
+          );
           updatedMappings ||= Boolean(resolvedFunctionName);
           node.setOriginalFunctionName(resolvedFunctionName);
           const debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
           const script = debuggerModel?.scriptForId(node.scriptId) || null;
-          const location = debuggerModel && new SDK.DebuggerModel.Location(debuggerModel, node.callFrame.scriptId, node.callFrame.lineNumber, node.callFrame.columnNumber);
+          const location = debuggerModel && new SDK.DebuggerModel.Location(
+            debuggerModel,
+            node.callFrame.scriptId,
+            node.callFrame.lineNumber,
+            node.callFrame.columnNumber
+          );
           const uiLocation = location && await this.#debuggerWorkspaceBinding.rawLocationToUILocation(location);
           updatedMappings ||= Boolean(uiLocation);
           if (uiLocation?.uiSourceCode.url() && this.#entityMapper) {
             this.#entityMapper.updateSourceMapEntities(node.callFrame, uiLocation.uiSourceCode.url());
           }
-          _a.storeResolvedCodeDataForCallFrame(node.callFrame, { name: resolvedFunctionName, devtoolsLocation: uiLocation, script });
+          _SourceMapsResolver.storeResolvedCodeDataForCallFrame(
+            node.callFrame,
+            { name: resolvedFunctionName, devtoolsLocation: uiLocation, script }
+          );
         }
       }
     }
@@ -202,7 +221,6 @@ var SourceMapsResolver = class extends EventTarget {
     this.#entityMapper?.updateExtensionEntitiesWithName(this.executionContextNamesByOrigin);
   }
 };
-_a = SourceMapsResolver;
 export {
   SourceMappingsUpdated,
   SourceMapsResolver,

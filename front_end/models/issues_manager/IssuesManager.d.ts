@@ -42,7 +42,7 @@ export declare class IssuesManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     #private;
     private readonly showThirdPartyIssuesSetting?;
     private readonly hideIssueSetting?;
-    constructor(showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean> | undefined, hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting> | undefined, frameManager?: SDK.FrameManager.FrameManager, targetManager?: SDK.TargetManager.TargetManager, workspace?: Workspace.Workspace.WorkspaceImpl, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, cssWorkspaceBinding?: Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding);
+    constructor(showThirdPartyIssuesSetting?: Common.Settings.Setting<boolean>, hideIssueSetting?: Common.Settings.Setting<HideIssueMenuSetting>, frameManager?: SDK.FrameManager.FrameManager, targetManager?: SDK.TargetManager.TargetManager, workspace?: Workspace.Workspace.WorkspaceImpl, debuggerWorkspaceBinding?: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, cssWorkspaceBinding?: Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding);
     static instance(opts?: IssuesManagerCreationOptions): IssuesManager;
     static removeInstance(): void;
     modelAdded(issuesModel: SDK.IssuesModel.IssuesModel): void;

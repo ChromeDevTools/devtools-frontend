@@ -10,9 +10,9 @@ export default `/*
  */
 
 .origin-warning-icon {
-  width: 16px;
-  height: 16px;
-  margin-right: 4px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
+  margin-right: var(--sys-size-3);
   color: var(--icon-warning);
 }
 
@@ -23,7 +23,7 @@ export default `/*
 
 .error-message {
   color: var(--sys-color-error);
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
   font-weight: var(--ref-typeface-weight-medium);
   white-space: pre-wrap;
 }

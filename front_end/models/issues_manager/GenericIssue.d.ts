@@ -1,7 +1,7 @@
 import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import { type AffectedElement, Issue, IssueCategory, IssueKind } from './Issue.js';
-import { type MarkdownIssueDescription } from './MarkdownIssueDescription.js';
+import { type LazyMarkdownIssueDescription, type MarkdownIssueDescription } from './MarkdownIssueDescription.js';
 export declare class GenericIssue extends Issue<Protocol.Audits.GenericIssueDetails> {
     constructor(issueDetails: Protocol.Audits.GenericIssueDetails, issuesModel: SDK.IssuesModel.IssuesModel | null, issueId?: Protocol.Audits.IssueId);
     requests(): Iterable<Protocol.Audits.AffectedRequest>;
@@ -12,108 +12,21 @@ export declare class GenericIssue extends Issue<Protocol.Audits.GenericIssueDeta
     getKind(): IssueKind;
     static fromInspectorIssue(issuesModel: SDK.IssuesModel.IssuesModel | null, inspectorIssue: Protocol.Audits.InspectorIssue): GenericIssue[];
 }
-export declare const genericFormLabelForNameError: {
-    file: string;
-    links: {
-        link: string;
-        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
-    }[];
-};
-export declare const genericFormInputWithNoLabelError: {
-    file: string;
-    links: never[];
-};
-export declare const genericFormAutocompleteAttributeEmptyError: {
-    file: string;
-    links: never[];
-};
-export declare const genericFormDuplicateIdForInputError: {
-    file: string;
-    links: {
-        link: string;
-        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
-    }[];
-};
-export declare const genericFormAriaLabelledByToNonExistingIdError: {
-    file: string;
-    links: {
-        link: string;
-        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
-    }[];
-};
-export declare const genericFormEmptyIdAndNameAttributesForInputError: {
-    file: string;
-    links: {
-        link: string;
-        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
-    }[];
-};
-export declare const genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError: {
-    file: string;
-    links: {
-        link: string;
-        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
-    }[];
-};
-export declare const genericFormInputHasWrongButWellIntendedAutocompleteValue: {
-    file: string;
-    links: {
-        link: string;
-        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
-    }[];
-};
-export declare const genericFormLabelForMatchesNonExistingIdError: {
-    file: string;
-    links: {
-        link: string;
-        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
-    }[];
-};
-export declare const genericFormLabelHasNeitherForNorNestedInputError: {
-    file: string;
-    links: {
-        link: string;
-        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
-    }[];
-};
-export declare const genericResponseWasBlockedbyORB: {
-    file: string;
-    links: {
-        link: string;
-        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
-    }[];
-};
-export declare const genericNavigationEntryMarkedSkippable: {
-    file: string;
-    links: {
-        link: string;
-        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
-    }[];
-};
-export declare const genericBackUINavigationWouldSkipAd: {
-    file: string;
-    links: {
-        link: string;
-        linkTitle: () => import("../../core/platform/UIString.js").LocalizedString;
-    }[];
-};
-export declare const genericFormModelContextMissingToolName: {
-    file: string;
-    links: never[];
-};
-export declare const genericFormModelContextMissingToolDescription: {
-    file: string;
-    links: never[];
-};
-export declare const genericFormModelContextParameterMissingTitleAndDescription: {
-    file: string;
-    links: never[];
-};
-export declare const genericFormModelContextRequiredParameterMissingName: {
-    file: string;
-    links: never[];
-};
-export declare const genericFormModelContextParameterMissingName: {
-    file: string;
-    links: never[];
-};
+export declare const genericFormLabelForNameError: LazyMarkdownIssueDescription;
+export declare const genericFormInputWithNoLabelError: LazyMarkdownIssueDescription;
+export declare const genericFormAutocompleteAttributeEmptyError: LazyMarkdownIssueDescription;
+export declare const genericFormDuplicateIdForInputError: LazyMarkdownIssueDescription;
+export declare const genericFormAriaLabelledByToNonExistingIdError: LazyMarkdownIssueDescription;
+export declare const genericFormEmptyIdAndNameAttributesForInputError: LazyMarkdownIssueDescription;
+export declare const genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError: LazyMarkdownIssueDescription;
+export declare const genericFormInputHasWrongButWellIntendedAutocompleteValue: LazyMarkdownIssueDescription;
+export declare const genericFormLabelForMatchesNonExistingIdError: LazyMarkdownIssueDescription;
+export declare const genericFormLabelHasNeitherForNorNestedInputError: LazyMarkdownIssueDescription;
+export declare const genericResponseWasBlockedbyORB: LazyMarkdownIssueDescription;
+export declare const genericNavigationEntryMarkedSkippable: LazyMarkdownIssueDescription;
+export declare const genericBackUINavigationWouldSkipAd: LazyMarkdownIssueDescription;
+export declare const genericFormModelContextMissingToolName: LazyMarkdownIssueDescription;
+export declare const genericFormModelContextMissingToolDescription: LazyMarkdownIssueDescription;
+export declare const genericFormModelContextParameterMissingTitleAndDescription: LazyMarkdownIssueDescription;
+export declare const genericFormModelContextRequiredParameterMissingName: LazyMarkdownIssueDescription;
+export declare const genericFormModelContextParameterMissingName: LazyMarkdownIssueDescription;

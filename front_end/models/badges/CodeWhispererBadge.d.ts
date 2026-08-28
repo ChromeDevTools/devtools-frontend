@@ -4,6 +4,6 @@ export declare class CodeWhispererBadge extends Badge {
     readonly title = "Code Whisperer";
     readonly jslogContext = "code-whisperer";
     readonly imageUri: string;
-    readonly interestedActions: readonly [BadgeAction.DEBUGGER_PAUSED];
+    readonly interestedActions: readonly BadgeAction[];
     handleAction(_action: BadgeAction): void;
 }

@@ -1,0 +1,1 @@
+gen/front_end/models/emulation/emulation.js: ../../front_end/generated/protocol.ts ../../front_end/models/emulation/EmulatedDevices.ts ../../front_end/models/emulation/DeviceModeModel.ts ../../front_end/models/emulation/emulation.ts

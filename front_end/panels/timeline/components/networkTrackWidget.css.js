@@ -16,8 +16,8 @@ export default `/* Copyright 2026 The Chromium Authors
   width: 100%;
   height: 150px;
   background-color: var(--sys-color-cdt-base-container);
-  border-radius: 8px;
-  border: 1px solid var(--sys-color-divider);
+  border-radius: var(--sys-shape-corner-small);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .container canvas {

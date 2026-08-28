@@ -13,9 +13,7 @@ export const UIStrings = {
     /**
      * @description Text to describe that there are requests blocking rendering, which may affect LCP.
      */
-    description: 'Requests are blocking the page’s initial render, which may delay LCP. ' +
-        '[Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) ' +
-        'can move these network requests out of the critical path.',
+    description: `Requests are blocking the page’s initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.`,
     /**
      * @description Label to describe a network request (that happens to be render-blocking).
      */

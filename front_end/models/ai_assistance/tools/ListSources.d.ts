@@ -12,8 +12,8 @@ interface SourceSummary {
 export declare class ListSourcesTool implements DataTool<Record<string, never>, {
     files: SourceSummary[];
 }, BaseToolCapability & OriginLockCapability> {
-    readonly name = ToolName.LIST_SOURCES;
-    readonly description = "Lists all source files in the workspace with their name and a unique ID.";
+    readonly name: ToolName;
+    readonly description: string;
     static lastSourceId: number;
     static uiSourceCodeId: WeakMap<Workspace.UISourceCode.UISourceCode, number>;
     static reset(): void;

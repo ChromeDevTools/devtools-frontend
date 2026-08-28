@@ -26,11 +26,6 @@ import { RunLighthouseTool } from './RunLighthouse.js';
 import { SelectTraceEventByKeyTool } from './SelectTraceEventByKey.js';
 /**
  * Plain object registry containing concrete instantiated tools.
- *
- * This object is deliberately declared as a plain object without an explicit type annotation
- * (like `Record<ToolName, Tool>`) to preserve the exact concrete type of each registered tool.
- * This is required to support compile-time type safety and inference in the overloaded
- * `ToolRegistry.get()` method, which maps a literal `ToolName` key to its specific class type.
  */
 export const TOOLS = {
     ["executeJavaScript" /* ToolName.EXECUTE_JAVASCRIPT */]: new ExecuteJavaScriptTool(),

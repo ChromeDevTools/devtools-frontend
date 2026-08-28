@@ -365,6 +365,16 @@ var ColorConverter = class _ColorConverter {
       rgbOutput.values[2]
     );
   }
+  static displayP3LinearToXyzd50(r, g, b) {
+    const rgbInput = new Vector3([r, g, b]);
+    const xyzOutput = NAMED_GAMUTS.displayP3.multiply(rgbInput);
+    return xyzOutput.values;
+  }
+  static xyzd50ToDisplayP3Linear(x, y, z) {
+    const xyzInput = new Vector3([x, y, z]);
+    const rgbResult = NAMED_GAMUTS.displayP3_INVERSE.multiply(xyzInput);
+    return rgbResult.values;
+  }
   static proPhotoToXyzd50(r, g, b) {
     const [mappedR, mappedG, mappedB] = applyTransferFns(NAMED_TRANSFER_FN.proPhotoRGB, r, g, b);
     const rgbInput = new Vector3([mappedR, mappedG, mappedB]);
@@ -718,6 +728,8 @@ function getColorSpace(colorSpaceText) {
       return "srgb-linear" /* SRGB_LINEAR */;
     case "display-p3" /* DISPLAY_P3 */:
       return "display-p3" /* DISPLAY_P3 */;
+    case "display-p3-linear" /* DISPLAY_P3_LINEAR */:
+      return "display-p3-linear" /* DISPLAY_P3_LINEAR */;
     case "a98-rgb" /* A98_RGB */:
       return "a98-rgb" /* A98_RGB */;
     case "prophoto-rgb" /* PROPHOTO_RGB */:
@@ -1121,6 +1133,7 @@ var Format = /* @__PURE__ */ ((Format2) => {
   Format2["SRGB"] = "srgb";
   Format2["SRGB_LINEAR"] = "srgb-linear";
   Format2["DISPLAY_P3"] = "display-p3";
+  Format2["DISPLAY_P3_LINEAR"] = "display-p3-linear";
   Format2["A98_RGB"] = "a98-rgb";
   Format2["PROPHOTO_RGB"] = "prophoto-rgb";
   Format2["REC_2020"] = "rec2020";
@@ -1177,6 +1190,11 @@ var Lab = class _Lab {
     ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
     ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["display-p3-linear" /* DISPLAY_P3_LINEAR */]: (self) => new ColorFunction(
+      "display-p3-linear" /* DISPLAY_P3_LINEAR */,
+      ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()),
+      self.alpha
+    ),
     ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
     ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
@@ -1316,6 +1334,11 @@ var LCH = class _LCH {
     ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
     ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["display-p3-linear" /* DISPLAY_P3_LINEAR */]: (self) => new ColorFunction(
+      "display-p3-linear" /* DISPLAY_P3_LINEAR */,
+      ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()),
+      self.alpha
+    ),
     ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
     ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
@@ -1459,6 +1482,11 @@ var Oklab = class _Oklab {
     ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
     ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["display-p3-linear" /* DISPLAY_P3_LINEAR */]: (self) => new ColorFunction(
+      "display-p3-linear" /* DISPLAY_P3_LINEAR */,
+      ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()),
+      self.alpha
+    ),
     ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
     ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
@@ -1598,6 +1626,11 @@ var Oklch = class _Oklch {
     ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
     ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["display-p3-linear" /* DISPLAY_P3_LINEAR */]: (self) => new ColorFunction(
+      "display-p3-linear" /* DISPLAY_P3_LINEAR */,
+      ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()),
+      self.alpha
+    ),
     ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
     ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
@@ -1739,6 +1772,11 @@ var ColorFunction = class _ColorFunction {
     ["srgb" /* SRGB */]: (self) => new _ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
     ["srgb-linear" /* SRGB_LINEAR */]: (self) => new _ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     ["display-p3" /* DISPLAY_P3 */]: (self) => new _ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["display-p3-linear" /* DISPLAY_P3_LINEAR */]: (self) => new _ColorFunction(
+      "display-p3-linear" /* DISPLAY_P3_LINEAR */,
+      ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()),
+      self.alpha
+    ),
     ["a98-rgb" /* A98_RGB */]: (self) => new _ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new _ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
     ["rec2020" /* REC_2020 */]: (self) => new _ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
@@ -1755,6 +1793,8 @@ var ColorFunction = class _ColorFunction {
         return ColorConverter.srgbLinearToXyzd50(p0, p1, p2);
       case "display-p3" /* DISPLAY_P3 */:
         return ColorConverter.displayP3ToXyzd50(p0, p1, p2);
+      case "display-p3-linear" /* DISPLAY_P3_LINEAR */:
+        return ColorConverter.displayP3LinearToXyzd50(p0, p1, p2);
       case "a98-rgb" /* A98_RGB */:
         return ColorConverter.adobeRGBToXyzd50(p0, p1, p2);
       case "prophoto-rgb" /* PROPHOTO_RGB */:
@@ -1939,6 +1979,11 @@ var HSL = class _HSL {
     ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
     ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["display-p3-linear" /* DISPLAY_P3_LINEAR */]: (self) => new ColorFunction(
+      "display-p3-linear" /* DISPLAY_P3_LINEAR */,
+      ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()),
+      self.alpha
+    ),
     ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
     ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
@@ -2091,6 +2136,11 @@ var HWB = class _HWB {
     ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
     ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["display-p3-linear" /* DISPLAY_P3_LINEAR */]: (self) => new ColorFunction(
+      "display-p3-linear" /* DISPLAY_P3_LINEAR */,
+      ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()),
+      self.alpha
+    ),
     ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
     ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),
@@ -2329,6 +2379,11 @@ var Legacy = class _Legacy {
     ["srgb" /* SRGB */]: (self) => new ColorFunction("srgb" /* SRGB */, ...ColorConverter.xyzd50ToSrgb(...self.#toXyzd50()), self.alpha),
     ["srgb-linear" /* SRGB_LINEAR */]: (self) => new ColorFunction("srgb-linear" /* SRGB_LINEAR */, ...ColorConverter.xyzd50TosRGBLinear(...self.#toXyzd50()), self.alpha),
     ["display-p3" /* DISPLAY_P3 */]: (self) => new ColorFunction("display-p3" /* DISPLAY_P3 */, ...ColorConverter.xyzd50ToDisplayP3(...self.#toXyzd50()), self.alpha),
+    ["display-p3-linear" /* DISPLAY_P3_LINEAR */]: (self) => new ColorFunction(
+      "display-p3-linear" /* DISPLAY_P3_LINEAR */,
+      ...ColorConverter.xyzd50ToDisplayP3Linear(...self.#toXyzd50()),
+      self.alpha
+    ),
     ["a98-rgb" /* A98_RGB */]: (self) => new ColorFunction("a98-rgb" /* A98_RGB */, ...ColorConverter.xyzd50ToAdobeRGB(...self.#toXyzd50()), self.alpha),
     ["prophoto-rgb" /* PROPHOTO_RGB */]: (self) => new ColorFunction("prophoto-rgb" /* PROPHOTO_RGB */, ...ColorConverter.xyzd50ToProPhoto(...self.#toXyzd50()), self.alpha),
     ["rec2020" /* REC_2020 */]: (self) => new ColorFunction("rec2020" /* REC_2020 */, ...ColorConverter.xyzd50ToRec2020(...self.#toXyzd50()), self.alpha),

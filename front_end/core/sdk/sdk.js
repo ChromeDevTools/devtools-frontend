@@ -43919,6 +43919,48 @@ var ScreenCaptureModel = class extends SDKModel {
 };
 SDKModel.register(ScreenCaptureModel, { capabilities: 64 /* SCREEN_CAPTURE */, autostart: false });
 
+// ../../front_end/core/sdk/SecurityOrigin.ts
+var SecurityOrigin_exports = {};
+__export(SecurityOrigin_exports, {
+  SecurityOrigin: () => SecurityOrigin
+});
+var SecurityOrigin = class _SecurityOrigin {
+  #urlOrigin;
+  #opaqueUuid;
+  constructor(urlOrigin, opaqueUuid) {
+    this.#urlOrigin = urlOrigin;
+    this.#opaqueUuid = opaqueUuid;
+  }
+  static create(urlOrigin) {
+    return new _SecurityOrigin(urlOrigin, void 0);
+  }
+  static createUniqueOpaque() {
+    return new _SecurityOrigin(void 0, crypto.randomUUID());
+  }
+  isSameOriginWith(other) {
+    if (this.#opaqueUuid || other.#opaqueUuid) {
+      return this.#opaqueUuid === other.#opaqueUuid;
+    }
+    if (this.isOpaque() || other.isOpaque()) {
+      return false;
+    }
+    return this.#urlOrigin === other.#urlOrigin && this.#urlOrigin !== void 0;
+  }
+  isOpaque() {
+    if (this.#opaqueUuid !== void 0) {
+      return true;
+    }
+    if (this.#urlOrigin) {
+      const lower = this.#urlOrigin.toLowerCase();
+      return lower === "" || lower === "null" || lower === "data:" || lower.startsWith("about") || lower.startsWith("blob:about") || lower.startsWith("blob:data") || lower.startsWith("blob:null") || lower.startsWith("detached") || lower.startsWith("undefined");
+    }
+    return false;
+  }
+  siteId() {
+    return this.#opaqueUuid ?? (this.#urlOrigin ?? "unknown-origin");
+  }
+};
+
 // ../../front_end/core/sdk/ServiceWorkerCacheModel.ts
 var ServiceWorkerCacheModel_exports = {};
 __export(ServiceWorkerCacheModel_exports, {
@@ -45064,6 +45106,7 @@ export {
   ScopeTreeCache_exports as ScopeTreeCache,
   ScreenCaptureModel_exports as ScreenCaptureModel,
   Script_exports as Script,
+  SecurityOrigin_exports as SecurityOrigin,
   SecurityOriginManager_exports as SecurityOriginManager,
   ServerSentEventsProtocol_exports as ServerSentEventProtocol,
   ServerTiming_exports as ServerTiming,

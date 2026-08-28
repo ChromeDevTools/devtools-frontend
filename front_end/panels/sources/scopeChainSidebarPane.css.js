@@ -41,7 +41,7 @@ export default `/*
 }
 
 .scope-chain-sidebar-pane-section {
-  padding: 2px 4px;
+  padding: var(--sys-size-2) var(--sys-size-3);
   flex: none;
 }
 

@@ -11,6 +11,10 @@ export class FileContext extends ConversationContext {
         this.#file = file;
         this.#debuggerWorkspaceBinding = debuggerWorkspaceBinding;
     }
+    getOrigin() {
+        const fallbackOrigin = super.getOrigin();
+        return this.#file.project()?.securityOrigin?.() ?? fallbackOrigin;
+    }
     getURL() {
         return this.#file.url();
     }

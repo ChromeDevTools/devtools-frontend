@@ -1,0 +1,1 @@
+gen/front_end/models/source_map_scopes/source_map_scopes.js: ../../front_end/models/source_map_scopes/FunctionCodeResolver.ts ../../front_end/generated/protocol.ts ../../front_end/models/source_map_scopes/NamesResolver.ts ../../front_end/models/source_map_scopes/ScopeChainModel.ts ../../front_end/models/source_map_scopes/source_map_scopes.ts

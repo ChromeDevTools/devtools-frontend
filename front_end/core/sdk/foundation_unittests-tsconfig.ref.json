@@ -1,0 +1,74 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/core/sdk",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/core/sdk/AccessibilityModel.test.ts",
+    "../../../../../../front_end/core/sdk/AnimationModel.test.ts",
+    "../../../../../../front_end/core/sdk/AutofillModel.test.ts",
+    "../../../../../../front_end/core/sdk/CPUThrottlingManager.test.ts",
+    "../../../../../../front_end/core/sdk/CSSContainerQuery.test.ts",
+    "../../../../../../front_end/core/sdk/CSSModel.test.ts",
+    "../../../../../../front_end/core/sdk/DOMModel.test.ts",
+    "../../../../../../front_end/core/sdk/DebuggerModel.test.ts",
+    "../../../../../../front_end/core/sdk/FrameManager.test.ts",
+    "../../../../../../front_end/core/sdk/NetworkManager.test.ts",
+    "../../../../../../front_end/core/sdk/OverlayPersistentHighlighter.test.ts",
+    "../../../../../../front_end/core/sdk/PageResourceLoader.test.ts",
+    "../../../../../../front_end/core/sdk/RuntimeModel.test.ts",
+    "../../../../../../front_end/core/sdk/ServerSentEventsProtocol.test.ts",
+    "../../../../../../front_end/core/sdk/SourceMapManager.test.ts",
+    "../../../../../../front_end/core/sdk/Target.test.ts",
+    "../../../../../../front_end/core/sdk/TargetManager.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/protocol-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/bindings/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/persistence/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/workspace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../host/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../protocol_client/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../root/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../text_utils/bundle-tsconfig.ref.json"
+    }
+  ]
+}

@@ -120,10 +120,6 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     revealInTopLayer?: (node: SDK.DOMModel.DOMNode) => void;
     showContextMenu?: (event: Event) => void;
     populateTreeElement?: () => Promise<void>;
-    performCopyOrCut?: (isCut: boolean, node: SDK.DOMModel.DOMNode, isElement?: boolean) => void;
-    duplicateNode?: (node: SDK.DOMModel.DOMNode) => void;
-    pasteNode?: (node: SDK.DOMModel.DOMNode) => void;
-    canPaste?: (node: SDK.DOMModel.DOMNode) => boolean;
     toggleHideElement?: (node: SDK.DOMModel.DOMNode) => Promise<void>;
     isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
     selectNodeAfterEdit?: (wasExpanded: boolean, error: string | null, newNode: SDK.DOMModel.DOMNode | null) => ElementsTreeWidget | null;
@@ -131,9 +127,8 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     focusOutline?: () => void;
     setMultilineEditing?: (multilineEditing: EditorHandles | null) => void;
     visibleWidth?: () => number;
-    private searchQuery;
     private readonly decorationsThrottler;
-    private inClipboard;
+    inClipboard: boolean;
     editing: EditorHandles | null;
     expandAllButtonElement: UI.TreeOutline.TreeElement | null;
     get node(): SDK.DOMModel.DOMNode;
@@ -144,6 +139,8 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     set isExpandable(isExpandable: boolean);
     get selected(): boolean;
     set selected(selected: boolean);
+    get searchQuery(): string | null;
+    set searchQuery(query: string | null);
     get tagTypeContext(): TagTypeContext;
     get issues(): IssuesManager.Issue.Issue[];
     constructor(element?: HTMLElement, [domIssuesManager]?: UI.Widget.WidgetDependencies<typeof ElementsTreeWidget> | [undefined], view?: View);
@@ -196,11 +193,6 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     updateDecorations(): void;
     remove(): Promise<void>;
     toggleEditAsHTML(callback?: ((arg0: boolean) => void), startEditing?: boolean): void;
-    copyCSSPath(): void;
-    copyJSPath(): void;
-    copyXPath(): void;
-    copyFullXPath(): void;
-    copyStyles(): Promise<void>;
     editAsHTML(): void;
     updateAdorners(): void;
 }

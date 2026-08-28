@@ -1,10 +1,9 @@
-// gen/front_end/models/badges/AiExplorerBadge.js
+// ../../front_end/models/badges/AiExplorerBadge.ts
 import * as Common2 from "../../core/common/common.js";
 
-// gen/front_end/models/badges/Badge.js
+// ../../front_end/models/badges/Badge.ts
 import * as Common from "../../core/common/common.js";
-var BadgeAction;
-(function(BadgeAction2) {
+var BadgeAction = /* @__PURE__ */ ((BadgeAction2) => {
   BadgeAction2["GDP_SIGN_UP_COMPLETE"] = "gdp-sign-up-complete";
   BadgeAction2["RECEIVE_BADGES_SETTING_ENABLED"] = "receive-badges-setting-enabled";
   BadgeAction2["CSS_RULE_MODIFIED"] = "css-rule-modified";
@@ -18,7 +17,8 @@ var BadgeAction;
   BadgeAction2["PERFORMANCE_RECORDING_STARTED"] = "performance-recording-started";
   BadgeAction2["NETWORK_SPEED_THROTTLED"] = "network-speed-throttled";
   BadgeAction2["RECORDER_RECORDING_STARTED"] = "recorder-recording-started";
-})(BadgeAction || (BadgeAction = {}));
+  return BadgeAction2;
+})(BadgeAction || {});
 var Badge = class {
   #onTriggerBadge;
   #badgeActionEventTarget;
@@ -55,7 +55,7 @@ var Badge = class {
   }
 };
 
-// gen/front_end/models/badges/AiExplorerBadge.js
+// ../../front_end/models/badges/AiExplorerBadge.ts
 var AI_EXPLORER_BADGE_URI = new URL("../../Images/ai-explorer-badge.svg", import.meta.url).toString();
 var AI_CONVERSATION_COUNT_SETTING_NAME = "gdp.ai-conversation-count";
 var AI_CONVERSATION_COUNT_LIMIT = 5;
@@ -66,15 +66,14 @@ var AiExplorerBadge = class extends Badge {
   imageUri = AI_EXPLORER_BADGE_URI;
   #aiConversationCountSetting;
   interestedActions = [
-    BadgeAction.STARTED_AI_CONVERSATION
+    "started-ai-conversation" /* STARTED_AI_CONVERSATION */
   ];
   constructor(badgeContext) {
     super(badgeContext);
     this.#aiConversationCountSetting = badgeContext.settings.createSetting(
       AI_CONVERSATION_COUNT_SETTING_NAME,
       0,
-      "Synced"
-      /* Common.Settings.SettingStorageType.SYNCED */
+      Common2.Settings.SettingStorageType.SYNCED
     );
   }
   handleAction(_action) {
@@ -89,14 +88,14 @@ var AiExplorerBadge = class extends Badge {
   }
 };
 
-// gen/front_end/models/badges/SpeedsterBadge.js
+// ../../front_end/models/badges/SpeedsterBadge.ts
 var SPEEDSTER_BADGE_URI = new URL("../../Images/speedster-badge.svg", import.meta.url).toString();
 var SpeedsterBadge = class extends Badge {
   name = "profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Factivity%2Fchrome-devtools%2Fspeedster";
   title = "Speedster";
   jslogContext = "speedster";
   interestedActions = [
-    BadgeAction.PERFORMANCE_INSIGHT_CLICKED
+    "performance-insight-clicked" /* PERFORMANCE_INSIGHT_CLICKED */
   ];
   imageUri = SPEEDSTER_BADGE_URI;
   handleAction(_action) {
@@ -104,7 +103,7 @@ var SpeedsterBadge = class extends Badge {
   }
 };
 
-// gen/front_end/models/badges/StarterBadge.js
+// ../../front_end/models/badges/StarterBadge.ts
 var STARTER_BADGE_IMAGE_URI = new URL("../../Images/devtools-user-badge.svg", import.meta.url).toString();
 var StarterBadge = class extends Badge {
   isStarterBadge = true;
@@ -114,40 +113,40 @@ var StarterBadge = class extends Badge {
   imageUri = STARTER_BADGE_IMAGE_URI;
   // TODO(ergunsh): Add remaining non-trivial event definitions
   interestedActions = [
-    BadgeAction.GDP_SIGN_UP_COMPLETE,
-    BadgeAction.RECEIVE_BADGES_SETTING_ENABLED,
-    BadgeAction.CSS_RULE_MODIFIED,
-    BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED,
-    BadgeAction.BREAKPOINT_ADDED,
-    BadgeAction.CONSOLE_PROMPT_EXECUTED,
-    BadgeAction.PERFORMANCE_RECORDING_STARTED,
-    BadgeAction.NETWORK_SPEED_THROTTLED,
-    BadgeAction.RECORDER_RECORDING_STARTED
+    "gdp-sign-up-complete" /* GDP_SIGN_UP_COMPLETE */,
+    "receive-badges-setting-enabled" /* RECEIVE_BADGES_SETTING_ENABLED */,
+    "css-rule-modified" /* CSS_RULE_MODIFIED */,
+    "dom-element-or-attribute-edited" /* DOM_ELEMENT_OR_ATTRIBUTE_EDITED */,
+    "breakpoint-added" /* BREAKPOINT_ADDED */,
+    "console-prompt-executed" /* CONSOLE_PROMPT_EXECUTED */,
+    "performance-recording-started" /* PERFORMANCE_RECORDING_STARTED */,
+    "network-speed-throttled" /* NETWORK_SPEED_THROTTLED */,
+    "recorder-recording-started" /* RECORDER_RECORDING_STARTED */
   ];
   handleAction(action) {
-    this.trigger({ immediate: action === BadgeAction.GDP_SIGN_UP_COMPLETE });
+    this.trigger({ immediate: action === "gdp-sign-up-complete" /* GDP_SIGN_UP_COMPLETE */ });
   }
 };
 
-// gen/front_end/models/badges/UserBadges.js
+// ../../front_end/models/badges/UserBadges.ts
 import * as Common3 from "../../core/common/common.js";
 import * as Host from "../../core/host/host.js";
 import * as Root from "../../core/root/root.js";
 
-// gen/front_end/models/badges/CodeWhispererBadge.js
+// ../../front_end/models/badges/CodeWhispererBadge.ts
 var CODE_WHISPERER_BADGE_IMAGE_URI = new URL("../../Images/code-whisperer-badge.svg", import.meta.url).toString();
 var CodeWhispererBadge = class extends Badge {
   name = "profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Factivity%2Fchrome-devtools%2Fcode-whisperer";
   title = "Code Whisperer";
   jslogContext = "code-whisperer";
   imageUri = CODE_WHISPERER_BADGE_IMAGE_URI;
-  interestedActions = [BadgeAction.DEBUGGER_PAUSED];
+  interestedActions = ["debugger-paused" /* DEBUGGER_PAUSED */];
   handleAction(_action) {
     this.trigger();
   }
 };
 
-// gen/front_end/models/badges/DOMDetectiveBadge.js
+// ../../front_end/models/badges/DOMDetectiveBadge.ts
 var DOM_DETECTIVE_BADGE_IMAGE_URI = new URL("../../Images/dom-detective-badge.svg", import.meta.url).toString();
 var DOMDetectiveBadge = class extends Badge {
   name = "profiles/me/awards/developers.google.com%2Fprofile%2Fbadges%2Factivity%2Fchrome-devtools%2Fdom-detective";
@@ -155,30 +154,30 @@ var DOMDetectiveBadge = class extends Badge {
   jslogContext = "dom-detective";
   imageUri = DOM_DETECTIVE_BADGE_IMAGE_URI;
   interestedActions = [
-    BadgeAction.MODERN_DOM_BADGE_CLICKED
+    "modern-dom-badge-clicked" /* MODERN_DOM_BADGE_CLICKED */
   ];
   handleAction(_action) {
     this.trigger();
   }
 };
 
-// gen/front_end/models/badges/UserBadges.js
+// ../../front_end/models/badges/UserBadges.ts
 var receiveGdpBadgesSettingDescriptor = {
   name: "receive-gdp-badges",
-  type: "boolean",
+  type: Common3.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: "Synced"
+  storageType: Common3.Settings.SettingStorageType.SYNCED
 };
-var BadgeTriggerReason;
-(function(BadgeTriggerReason2) {
+var BadgeTriggerReason = /* @__PURE__ */ ((BadgeTriggerReason2) => {
   BadgeTriggerReason2["AWARD"] = "Award";
   BadgeTriggerReason2["STARTER_BADGE_SETTINGS_NUDGE"] = "StarterBadgeSettingsNudge";
   BadgeTriggerReason2["STARTER_BADGE_PROFILE_NUDGE"] = "StarterBadgeProfileNudge";
-})(BadgeTriggerReason || (BadgeTriggerReason = {}));
-var Events;
-(function(Events2) {
+  return BadgeTriggerReason2;
+})(BadgeTriggerReason || {});
+var Events = /* @__PURE__ */ ((Events2) => {
   Events2["BADGE_TRIGGERED"] = "BadgeTriggered";
-})(Events || (Events = {}));
+  return Events2;
+})(Events || {});
 var SNOOZE_TIME_MS = 24 * 60 * 60 * 1e3;
 var MAX_SNOOZE_COUNT = 3;
 var DELAY_BEFORE_TRIGGER = 1500;
@@ -209,24 +208,13 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
       this.#receiveBadgesSetting.set(false);
     }
     this.#receiveBadgesSetting.addChangeListener(this.#reconcileBadges, this);
-    this.#starterBadgeSnoozeCount = this.#settings.createSetting(
-      "starter-badge-snooze-count",
-      0,
-      "Synced"
-      /* Common.Settings.SettingStorageType.SYNCED */
-    );
+    this.#starterBadgeSnoozeCount = this.#settings.createSetting("starter-badge-snooze-count", 0, Common3.Settings.SettingStorageType.SYNCED);
     this.#starterBadgeLastSnoozedTimestamp = this.#settings.createSetting(
       "starter-badge-last-snoozed-timestamp",
       0,
-      "Synced"
-      /* Common.Settings.SettingStorageType.SYNCED */
+      Common3.Settings.SettingStorageType.SYNCED
     );
-    this.#starterBadgeDismissed = this.#settings.createSetting(
-      "starter-badge-dismissed",
-      false,
-      "Synced"
-      /* Common.Settings.SettingStorageType.SYNCED */
-    );
+    this.#starterBadgeDismissed = this.#settings.createSetting("starter-badge-dismissed", false, Common3.Settings.SettingStorageType.SYNCED);
     const badgeContext = {
       onTriggerBadge: this.#onTriggerBadge.bind(this),
       badgeActionEventTarget: this.#badgeActionEventTarget,
@@ -236,13 +224,16 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
   }
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root.DevToolsContext.globalInstance().has(_UserBadges) || forceNew) {
-      Root.DevToolsContext.globalInstance().set(_UserBadges, new _UserBadges(
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        Common3.Settings.Settings.instance(),
-        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-        Host.GdpClient.GdpClient.instance(),
-        Host.InspectorFrontendHost.InspectorFrontendHostInstance
-      ));
+      Root.DevToolsContext.globalInstance().set(
+        _UserBadges,
+        new _UserBadges(
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+          Common3.Settings.Settings.instance(),
+          // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+          Host.GdpClient.GdpClient.instance(),
+          Host.InspectorFrontendHost.InspectorFrontendHostInstance
+        )
+      );
     }
     return Root.DevToolsContext.globalInstance().get(_UserBadges);
   }
@@ -261,7 +252,7 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
   }
   async #resolveBadgeTriggerReason(badge) {
     if (!badge.isStarterBadge) {
-      return "Award";
+      return "Award" /* AWARD */;
     }
     const getProfileResponse = await this.#gdpClient.getProfile();
     if (!getProfileResponse) {
@@ -270,15 +261,15 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
     const hasGdpProfile = Boolean(getProfileResponse.profile);
     const receiveBadgesSettingEnabled = Boolean(this.#receiveBadgesSetting.get());
     if (hasGdpProfile && receiveBadgesSettingEnabled) {
-      return "Award";
+      return "Award" /* AWARD */;
     }
     if (this.#isStarterBadgeDismissed() || this.#isStarterBadgeSnoozed()) {
       return;
     }
     if (hasGdpProfile && !receiveBadgesSettingEnabled) {
-      return "StarterBadgeSettingsNudge";
+      return "StarterBadgeSettingsNudge" /* STARTER_BADGE_SETTINGS_NUDGE */;
     }
-    return "StarterBadgeProfileNudge";
+    return "StarterBadgeProfileNudge" /* STARTER_BADGE_PROFILE_NUDGE */;
   }
   async #onTriggerBadge(badge, opts) {
     const triggerTime = Date.now();
@@ -286,7 +277,7 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
     if (!reason) {
       return;
     }
-    if (reason === "Award") {
+    if (reason === "Award" /* AWARD */) {
       const result = await this.#gdpClient.createAward({ name: badge.name });
       if (!result) {
         return;
@@ -295,7 +286,7 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
     const timeElapsedAfterTriggerCall = Date.now() - triggerTime;
     const delay = opts?.immediate ? 0 : Math.max(DELAY_BEFORE_TRIGGER - timeElapsedAfterTriggerCall, 0);
     setTimeout(() => {
-      this.dispatchEventToListeners("BadgeTriggered", { badge, reason });
+      this.dispatchEventToListeners("BadgeTriggered" /* BADGE_TRIGGERED */, { badge, reason });
     }, delay);
   }
   #deactivateAllBadges() {
@@ -313,7 +304,9 @@ var UserBadges = class _UserBadges extends Common3.ObjectWrapper.ObjectWrapper {
     return snoozeCount >= MAX_SNOOZE_COUNT || snoozedRecently;
   }
   async #reconcileBadges() {
-    const syncInfo = await new Promise((resolve) => this.#inspectorFrontendHost.getSyncInformation(resolve));
+    const syncInfo = await new Promise(
+      (resolve) => this.#inspectorFrontendHost.getSyncInformation(resolve)
+    );
     if (!syncInfo.accountEmail) {
       this.#deactivateAllBadges();
       return;

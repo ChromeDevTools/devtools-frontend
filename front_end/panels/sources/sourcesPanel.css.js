@@ -42,7 +42,7 @@ export default `/*
   top: 0;
   width: 100%;
   background-color: var(--app-color-toolbar-background);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
   z-index: 1;
 }
@@ -64,7 +64,7 @@ export default `/*
 .scripts-debug-toolbar-drawer > devtools-checkbox {
   display: none;
   padding-left: 3px;
-  height: 28px;
+  height: var(--sys-size-12);
 }
 
 .scripts-debug-toolbar-drawer.expanded > devtools-checkbox {

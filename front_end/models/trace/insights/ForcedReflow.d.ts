@@ -33,7 +33,7 @@ export declare const UIStrings: {
      */
     readonly anonymous: '(anonymous)';
 };
-export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => Platform.UIString.LocalizedString;
+export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
 export type ForcedReflowInsightModel = InsightModel<typeof UIStrings, {
     topLevelFunctionCallData: ForcedReflowAggregatedData | undefined;
     aggregatedBottomUpData: BottomUpCallStack[];

@@ -1,0 +1,1 @@
+gen/front_end/core/i18n/i18n.js: ../../front_end/core/i18n/DevToolsLocale.ts ../../front_end/core/i18n/NumberFormatter.ts ../../front_end/core/i18n/ByteUtilities.ts gen/front_end/core/i18n/locales.js ../../front_end/core/i18n/i18nImpl.ts ../../front_end/core/i18n/time-utilities.ts ../../front_end/core/i18n/i18n.ts

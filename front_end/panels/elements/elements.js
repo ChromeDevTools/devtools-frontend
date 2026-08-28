@@ -30,7 +30,7 @@ __export(ElementsPanel_exports, {
   SidebarPaneTabId: () => SidebarPaneTabId
 });
 import * as Common15 from "../../core/common/common.js";
-import * as Host6 from "../../core/host/host.js";
+import * as Host7 from "../../core/host/host.js";
 import * as i18n40 from "../../core/i18n/i18n.js";
 import * as Platform10 from "../../core/platform/platform.js";
 import * as Root5 from "../../core/root/root.js";
@@ -609,6 +609,9 @@ var ColorSwatchPopoverIcon = class _ColorSwatchPopoverIcon extends Common.Object
       ) || color2.is(
         "display-p3"
         /* Common.Color.Format.DISPLAY_P3 */
+      ) || color2.is(
+        "display-p3-linear"
+        /* Common.Color.Format.DISPLAY_P3_LINEAR */
       ) || color2.is(
         "a98-rgb"
         /* Common.Color.Format.A98_RGB */
@@ -11909,6 +11912,7 @@ __export(ElementsTreeOutline_exports, {
   elementsTreeOutlineStyles: () => elementsTreeOutline_css_default
 });
 import * as Common12 from "../../core/common/common.js";
+import * as Host6 from "../../core/host/host.js";
 import * as i18n34 from "../../core/i18n/i18n.js";
 import * as SDK16 from "../../core/sdk/sdk.js";
 import * as Badges4 from "../../models/badges/badges.js";
@@ -12075,18 +12079,6 @@ var AdoptedStyleSheetContentsTreeElement = class extends UI13.TreeOutline.TreeEl
     return this.editing !== null;
   }
 };
-
-// gen/front_end/panels/elements/DOMTreeContextMenu.js
-var DOMTreeContextMenu_exports = {};
-__export(DOMTreeContextMenu_exports, {
-  populateNodeContextMenu: () => populateNodeContextMenu,
-  showContextMenu: () => showContextMenu
-});
-import * as Common10 from "../../core/common/common.js";
-import * as i18n30 from "../../core/i18n/i18n.js";
-import * as SDK14 from "../../core/sdk/sdk.js";
-import * as UI16 from "../../ui/legacy/legacy.js";
-import * as Emulation from "../emulation/emulation.js";
 
 // gen/front_end/panels/elements/DOMPath.js
 var DOMPath_exports = {};
@@ -12355,6 +12347,18 @@ var Step = class {
     return this.value;
   }
 };
+
+// gen/front_end/panels/elements/DOMTreeContextMenu.js
+var DOMTreeContextMenu_exports = {};
+__export(DOMTreeContextMenu_exports, {
+  populateNodeContextMenu: () => populateNodeContextMenu,
+  showContextMenu: () => showContextMenu
+});
+import * as Common10 from "../../core/common/common.js";
+import * as i18n30 from "../../core/i18n/i18n.js";
+import * as SDK14 from "../../core/sdk/sdk.js";
+import * as UI16 from "../../ui/legacy/legacy.js";
+import * as Emulation from "../emulation/emulation.js";
 
 // gen/front_end/panels/elements/ElementsTreeElement.js
 var ElementsTreeElement_exports = {};
@@ -13885,10 +13889,6 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   revealInTopLayer;
   showContextMenu;
   populateTreeElement;
-  performCopyOrCut;
-  duplicateNode;
-  pasteNode;
-  canPaste;
   toggleHideElement;
   isToggledToHidden;
   selectNodeAfterEdit;
@@ -13897,10 +13897,10 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   setMultilineEditing;
   visibleWidth;
   #view;
-  searchQuery;
+  #searchQuery = null;
   #expandedChildrenLimit;
   decorationsThrottler;
-  inClipboard;
+  inClipboard = false;
   #hovered;
   editing;
   #editorRef;
@@ -13956,6 +13956,16 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     this.#selected = selected;
     this.requestUpdate();
   }
+  get searchQuery() {
+    return this.#searchQuery;
+  }
+  set searchQuery(query) {
+    if (this.#searchQuery === query) {
+      return;
+    }
+    this.#searchQuery = query;
+    this.requestUpdate();
+  }
   get tagTypeContext() {
     if (this.isClosingTag) {
       return {
@@ -13984,7 +13994,6 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     super(element);
     this.#domIssuesManager = domIssuesManager;
     this.#view = view;
-    this.searchQuery = null;
     this.#expandedChildrenLimit = InitialChildrenLimit;
     this.decorationsThrottler = new Common9.Throttler.Throttler(100);
     this.inClipboard = false;
@@ -14141,6 +14150,11 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     this.#editorRef = output.editorRef;
     if (this.#updateRecord) {
       this.#updateRecord = null;
+    }
+    if (this.#searchQuery && !this.editing) {
+      this.#highlightSearchResults();
+    } else if (!this.#searchQuery && this.#highlights.length) {
+      this.hideSearchHighlights();
     }
   }
   async #onCustomElementAdornerClick(event) {
@@ -15111,46 +15125,6 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     const node = this.node;
     void node.getOuterHTML().then(this.startEditingAsHTML.bind(this, commitChange, disposeCallback));
   }
-  copyCSSPath() {
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssPath(this.node, true));
-  }
-  copyJSPath() {
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(jsPath(this.node, true));
-  }
-  copyXPath() {
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(this.node, true));
-  }
-  copyFullXPath() {
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(this.node, false));
-  }
-  async copyStyles() {
-    const node = this.node;
-    const cssModel = node.domModel().cssModel();
-    const cascade = await cssModel.cachedMatchedCascadeForNode(node);
-    if (!cascade) {
-      return;
-    }
-    const indent = Common9.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
-    const lines = [];
-    for (const style of cascade.nodeStyles().reverse()) {
-      for (const property of style.leadingProperties()) {
-        if (!property.parsedOk || property.disabled || !property.activeInStyle() || property.implicit) {
-          continue;
-        }
-        if (cascade.isInherited(style) && !SDK13.CSSMetadata.cssMetadata().isPropertyInherited(property.name)) {
-          continue;
-        }
-        if (style.parentRule?.isUserAgent()) {
-          continue;
-        }
-        if (cascade.propertyState(property) !== "Active") {
-          continue;
-        }
-        lines.push(`${indent}${property.name}: ${property.value};`);
-      }
-    }
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(lines.join("\n"));
-  }
   #highlightSearchResults() {
     this.hideSearchHighlights();
     if (!this.searchQuery) {
@@ -15332,7 +15306,8 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
     this.widget.hideSearchHighlights();
   }
   copyStyles() {
-    return this.widget.copyStyles();
+    const outline = this.treeOutline;
+    return outline?.domTreeWidget?.copyStyles(this.nodeInternal) ?? Promise.resolve();
   }
   setInClipboard(inClipboard) {
     this.widget.setInClipboard(inClipboard);
@@ -15362,16 +15337,20 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
     this.widget.editAsHTML();
   }
   copyCSSPath() {
-    this.widget.copyCSSPath();
+    const outline = this.treeOutline;
+    outline?.domTreeWidget?.copyCSSPath(this.nodeInternal);
   }
   copyJSPath() {
-    this.widget.copyJSPath();
+    const outline = this.treeOutline;
+    outline?.domTreeWidget?.copyJSPath(this.nodeInternal);
   }
   copyXPath() {
-    this.widget.copyXPath();
+    const outline = this.treeOutline;
+    outline?.domTreeWidget?.copyXPath(this.nodeInternal);
   }
   copyFullXPath() {
-    this.widget.copyFullXPath();
+    const outline = this.treeOutline;
+    outline?.domTreeWidget?.copyFullXPath(this.nodeInternal);
   }
   hasEditableNode() {
     return this.widget.hasEditableNode();
@@ -15412,10 +15391,6 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
       this.widget.revealInTopLayer = (node) => outline.revealInTopLayer(node);
       this.widget.showContextMenu = (event) => void outline.showContextMenu(this, event);
       this.widget.populateTreeElement = async () => await outline.populateTreeElement(this);
-      this.widget.performCopyOrCut = (isCut, node, isElement) => outline.performCopyOrCut(isCut, node, isElement);
-      this.widget.duplicateNode = (node) => outline.duplicateNode(node);
-      this.widget.pasteNode = (node) => outline.pasteNode(node);
-      this.widget.canPaste = (node) => outline.canPaste(node);
       this.widget.toggleHideElement = (node) => outline.toggleHideElement(node);
       this.widget.isToggledToHidden = (node) => outline.isToggledToHidden(node);
       this.widget.selectNodeAfterEdit = (wasExpanded, error, newNode) => {
@@ -15799,11 +15774,10 @@ var UIStrings15 = {
 };
 var str_15 = i18n30.i18n.registerUIStrings("panels/elements/DOMTreeContextMenu.ts", UIStrings15);
 var i18nString14 = i18n30.i18n.getLocalizedString.bind(void 0, str_15);
-async function populateNodeContextMenu(contextMenu, treeElement) {
-  const domNode = treeElement.node();
-  const isEditable = treeElement.hasEditableNode();
-  if (isEditable && !treeElement.isEditing) {
-    contextMenu.editSection().appendItem(i18nString14(UIStrings15.editAsHtml), () => treeElement.editAsHTML(), { jslogContext: "elements.edit-as-html" });
+async function populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget) {
+  const isEditable = !domNode.isShadowRoot() && !domNode.ancestorUserAgentShadowRoot();
+  if (isEditable && !targetWidget?.isEditing) {
+    contextMenu.editSection().appendItem(i18nString14(UIStrings15.editAsHtml), () => domTreeWidget.toggleEditAsHTML(domNode), { jslogContext: "elements.edit-as-html" });
   }
   const isShadowRoot = domNode.isShadowRoot();
   const createShortcut = UI16.KeyboardShortcut.KeyboardShortcut.shortcutToString.bind(null);
@@ -15947,45 +15921,44 @@ async function populateNodeContextMenu(contextMenu, treeElement) {
       }
     }
   }
-  const outline = treeElement.treeOutline;
-  menuItem = contextMenu.clipboardSection().appendItem(i18nString14(UIStrings15.cut), () => outline?.performCopyOrCut(true, domNode), { disabled: !treeElement.hasEditableNode(), jslogContext: "cut" });
+  menuItem = contextMenu.clipboardSection().appendItem(i18nString14(UIStrings15.cut), () => domTreeWidget.performCopyOrCut(true, domNode), { disabled: !isEditable, jslogContext: "cut" });
   menuItem.setShortcut(createShortcut("X", modifier));
   const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString14(UIStrings15.copy), false, "copy");
   const section5 = copyMenu.section();
   if (!isShadowRoot) {
-    menuItem = section5.appendItem(i18nString14(UIStrings15.copyOuterhtml), () => outline?.performCopyOrCut(false, domNode), { jslogContext: "copy-outer-html" });
+    menuItem = section5.appendItem(i18nString14(UIStrings15.copyOuterhtml), () => domTreeWidget.performCopyOrCut(false, domNode), { jslogContext: "copy-outer-html" });
     menuItem.setShortcut(createShortcut("V", modifier));
   }
   if (domNode.nodeType() === Node.ELEMENT_NODE) {
-    section5.appendItem(i18nString14(UIStrings15.copySelector), () => treeElement.copyCSSPath(), { jslogContext: "copy-selector" });
-    section5.appendItem(i18nString14(UIStrings15.copyJsPath), () => treeElement.copyJSPath(), { disabled: !canGetJSPath(domNode), jslogContext: "copy-js-path" });
-    section5.appendItem(i18nString14(UIStrings15.copyStyles), () => void treeElement.copyStyles(), { jslogContext: "elements.copy-styles" });
+    section5.appendItem(i18nString14(UIStrings15.copySelector), () => domTreeWidget.copyCSSPath(domNode), { jslogContext: "copy-selector" });
+    section5.appendItem(i18nString14(UIStrings15.copyJsPath), () => domTreeWidget.copyJSPath(domNode), { disabled: !canGetJSPath(domNode), jslogContext: "copy-js-path" });
+    section5.appendItem(i18nString14(UIStrings15.copyStyles), () => void domTreeWidget.copyStyles(domNode), { jslogContext: "elements.copy-styles" });
   }
   if (!isShadowRoot) {
-    section5.appendItem(i18nString14(UIStrings15.copyXpath), () => treeElement.copyXPath(), { jslogContext: "copy-xpath" });
-    section5.appendItem(i18nString14(UIStrings15.copyFullXpath), () => treeElement.copyFullXPath(), { jslogContext: "copy-full-xpath" });
+    section5.appendItem(i18nString14(UIStrings15.copyXpath), () => domTreeWidget.copyXPath(domNode), { jslogContext: "copy-xpath" });
+    section5.appendItem(i18nString14(UIStrings15.copyFullXpath), () => domTreeWidget.copyFullXPath(domNode), { jslogContext: "copy-full-xpath" });
   }
-  menuItem = copyMenu.clipboardSection().appendItem(i18nString14(UIStrings15.copyElement), () => outline?.performCopyOrCut(false, domNode, true), { jslogContext: "copy-element" });
+  menuItem = copyMenu.clipboardSection().appendItem(i18nString14(UIStrings15.copyElement), () => domTreeWidget.performCopyOrCut(false, domNode, true), { jslogContext: "copy-element" });
   menuItem.setShortcut(createShortcut("C", modifier));
   if (!isShadowRoot) {
     const isRootElement = !domNode.parentNode || domNode.parentNode.nodeName() === "#document";
-    menuItem = contextMenu.editSection().appendItem(i18nString14(UIStrings15.duplicateElement), () => outline?.duplicateNode(domNode), {
+    menuItem = contextMenu.editSection().appendItem(i18nString14(UIStrings15.duplicateElement), () => domTreeWidget.duplicateNode(domNode), {
       disabled: domNode.isInShadowTree() || isRootElement,
       jslogContext: "elements.duplicate-element"
     });
   }
-  menuItem = contextMenu.clipboardSection().appendItem(i18nString14(UIStrings15.paste), () => outline?.pasteNode(domNode), { disabled: !outline?.canPaste(domNode), jslogContext: "paste" });
+  menuItem = contextMenu.clipboardSection().appendItem(i18nString14(UIStrings15.paste), () => domTreeWidget.pasteNode(domNode), { disabled: !domTreeWidget.canPaste(domNode), jslogContext: "paste" });
   menuItem.setShortcut(createShortcut("V", modifier));
-  menuItem = contextMenu.debugSection().appendCheckboxItem(i18nString14(UIStrings15.hideElement), () => outline?.toggleHideElement(domNode), {
-    checked: Boolean(outline?.isToggledToHidden(domNode)),
+  menuItem = contextMenu.debugSection().appendCheckboxItem(i18nString14(UIStrings15.hideElement), () => domTreeWidget.toggleHideElement(domNode), {
+    checked: Boolean(domTreeWidget.isToggledToHidden(domNode)),
     jslogContext: "elements.hide-element"
   });
   menuItem.setShortcut(UI16.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction("elements.hide-element") || "");
   if (isEditable) {
-    contextMenu.editSection().appendItem(i18nString14(UIStrings15.deleteElement), () => void treeElement.remove(), { jslogContext: "delete-element" });
+    contextMenu.editSection().appendItem(i18nString14(UIStrings15.deleteElement), () => void domTreeWidget.removeNode(domNode), { jslogContext: "delete-element" });
   }
-  contextMenu.viewSection().appendItem(i18nString14(UIStrings15.expandRecursively), () => void treeElement.expandRecursively(), { jslogContext: "expand-recursively" });
-  contextMenu.viewSection().appendItem(i18nString14(UIStrings15.collapseChildren), () => treeElement.collapseChildren(), { jslogContext: "collapse-children" });
+  contextMenu.viewSection().appendItem(i18nString14(UIStrings15.expandRecursively), () => void domTreeWidget.expandRecursively(domNode), { jslogContext: "expand-recursively" });
+  contextMenu.viewSection().appendItem(i18nString14(UIStrings15.collapseChildren), () => domTreeWidget.collapseChildren(domNode), { jslogContext: "collapse-children" });
   contextMenu.viewSection().appendItem(i18nString14(UIStrings15.switchToAccessibilityTree), () => ElementsPanel.instance().toggleAccessibilityTree(), { jslogContext: "switch-to-accessibility-tree" });
   const deviceModeWrapperAction = new Emulation.DeviceModeView.ActionDelegate();
   contextMenu.viewSection().appendItem(i18nString14(UIStrings15.captureNodeScreenshot), deviceModeWrapperAction.handleAction.bind(null, UI16.Context.Context.instance(), "emulation.capture-node-screenshot"), { jslogContext: "emulation.capture-node-screenshot" });
@@ -15999,12 +15972,11 @@ async function populateNodeContextMenu(contextMenu, treeElement) {
     }, { jslogContext: "show-frame-details" });
   }
 }
-async function showContextMenu(treeElement, event) {
+async function showContextMenu(domTreeWidget, domNode, event, targetWidget) {
   if (UI16.UIUtils.isEditing()) {
     return;
   }
-  const outline = treeElement.treeOutline;
-  if (outline && !outline.enableContextMenu) {
+  if (!domTreeWidget.enableContextMenu) {
     return;
   }
   const node = event.target;
@@ -16014,7 +15986,6 @@ async function showContextMenu(treeElement, event) {
   event.stopPropagation();
   event.preventDefault();
   const contextMenu = new UI16.ContextMenu.ContextMenu(event);
-  const domNode = treeElement.node();
   const isPseudoElement = Boolean(domNode.pseudoType());
   const isTag = domNode.nodeType() === Node.ELEMENT_NODE && !isPseudoElement;
   let textNode = node.enclosingNodeOrSelfWithClass?.("webkit-html-text-node");
@@ -16024,41 +15995,41 @@ async function showContextMenu(treeElement, event) {
   const commentNode = node.enclosingNodeOrSelfWithClass?.("webkit-html-comment");
   contextMenu.saveSection().appendItem(i18nString14(UIStrings15.storeAsGlobalVariable), () => void domNode.saveNodeToTempVariable(), { jslogContext: "store-as-global-variable" });
   if (textNode) {
-    if (!treeElement.isEditing) {
-      contextMenu.editSection().appendItem(i18nString14(UIStrings15.editText), () => treeElement.startEditingTextNode(textNode), { jslogContext: "edit-text" });
+    if (!targetWidget?.isEditing) {
+      contextMenu.editSection().appendItem(i18nString14(UIStrings15.editText), () => targetWidget?.startEditingTextNode(textNode), { jslogContext: "edit-text" });
     }
-    await populateNodeContextMenu(contextMenu, treeElement);
+    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget);
   } else if (isTag) {
-    const targetWidget = treeElement.isClosingTag() ? treeElement.treeOutline?.findTreeElement(domNode) : treeElement;
-    if (targetWidget) {
-      contextMenu.editSection().appendItem(i18nString14(UIStrings15.addAttribute), () => targetWidget.addNewAttribute(), { jslogContext: "add-attribute" });
+    const startTagWidget = targetWidget?.isClosingTag ? targetWidget.findStartTagWidget?.() ?? targetWidget : targetWidget;
+    if (startTagWidget) {
+      contextMenu.editSection().appendItem(i18nString14(UIStrings15.addAttribute), () => startTagWidget.addNewAttribute(), { jslogContext: "add-attribute" });
     }
     const target = event.composedPath()[0] || event.target;
     const attribute = target.enclosingNodeOrSelfWithClass?.("webkit-html-attribute");
     const newAttribute = target.enclosingNodeOrSelfWithClass?.("add-attribute");
     if (attribute && !newAttribute) {
-      contextMenu.editSection().appendItem(i18nString14(UIStrings15.editAttribute), () => treeElement.startEditingAttribute(attribute, target), { jslogContext: "edit-attribute" });
+      contextMenu.editSection().appendItem(i18nString14(UIStrings15.editAttribute), () => startTagWidget?.startEditingAttribute(attribute, target), { jslogContext: "edit-attribute" });
     }
-    await populateNodeContextMenu(contextMenu, treeElement);
+    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, startTagWidget);
     ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, domNode);
     contextMenu.viewSection().appendItem(i18nString14(UIStrings15.scrollIntoView), () => domNode.scrollIntoView(), { jslogContext: "scroll-into-view" });
     contextMenu.viewSection().appendItem(i18nString14(UIStrings15.focus), async () => {
       await domNode.focus();
     }, { jslogContext: "focus" });
   } else if (commentNode) {
-    await populateNodeContextMenu(contextMenu, treeElement);
+    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget);
   } else if (isPseudoElement) {
-    if (treeElement.childCount() !== 0) {
-      contextMenu.viewSection().appendItem(i18nString14(UIStrings15.expandRecursively), () => void treeElement.expandRecursively(), { jslogContext: "expand-recursively" });
+    if (domNode.childNodeCount() !== 0 || domNode.hasPseudoElements()) {
+      contextMenu.viewSection().appendItem(i18nString14(UIStrings15.expandRecursively), () => void domTreeWidget.expandRecursively(domNode), { jslogContext: "expand-recursively" });
     }
     contextMenu.viewSection().appendItem(i18nString14(UIStrings15.scrollIntoView), () => domNode.scrollIntoView(), { jslogContext: "scroll-into-view" });
   } else if (domNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-    contextMenu.editSection().appendItem(i18nString14(UIStrings15.editData), () => treeElement.startEditingProcessingInstructionValue(), { jslogContext: "elements.edit-data" });
-    contextMenu.editSection().appendItem(i18nString14(UIStrings15.duplicateElement), () => treeElement.treeOutline?.duplicateNode(domNode), {
+    contextMenu.editSection().appendItem(i18nString14(UIStrings15.editData), () => targetWidget?.startEditingProcessingInstructionValue(), { jslogContext: "elements.edit-data" });
+    contextMenu.editSection().appendItem(i18nString14(UIStrings15.duplicateElement), () => domTreeWidget.duplicateNode(domNode), {
       disabled: domNode.isInShadowTree(),
       jslogContext: "elements.duplicate-element"
     });
-    contextMenu.editSection().appendItem(i18nString14(UIStrings15.deleteElement), () => void treeElement.remove(), { jslogContext: "delete-element" });
+    contextMenu.editSection().appendItem(i18nString14(UIStrings15.deleteElement), () => void domTreeWidget.removeNode(domNode), { jslogContext: "delete-element" });
   }
   ElementsPanel.instance().populateAdornerSettingsContextMenu(contextMenu);
   contextMenu.appendApplicableItems(domNode);
@@ -16830,7 +16801,7 @@ var TopLayerContainer = class extends UI18.TreeOutline.TreeElement {
 };
 
 // gen/front_end/panels/elements/ElementsTreeOutline.js
-var { html: html14, nothing: nothing6, render: render12 } = Lit9;
+var { html: html14, nothing: nothing6, render: render12, Directives: { classMap: classMap4 } } = Lit9;
 var UIStrings17 = {
   /**
    * @description ARIA accessible name in the DOM tree outline of the Elements panel.
@@ -16857,7 +16828,7 @@ var elementsTreeOutlineByDOMModel = /* @__PURE__ */ new WeakMap();
 var populatedTreeElements = /* @__PURE__ */ new WeakSet();
 var DEFAULT_VIEW7 = (input, output, target) => {
   if (!output.elementsTreeOutline) {
-    const elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter, input.maxTreeDepth, input.enableContextMenu, input.showComments, input.showAIButton, input.disableEdits, input.expandRoot);
+    const elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter, input.maxTreeDepth, input.enableContextMenu, input.showComments, input.showAIButton, input.disableEdits, input.expandRoot, input.domTreeWidget);
     output.elementsTreeOutline = elementsTreeOutline;
     elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged, void 0);
     elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ElementsTreeUpdated, input.onElementsTreeUpdated, void 0);
@@ -16871,11 +16842,20 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     elementsTreeOutline.elementInternal.addEventListener("contextmenu", (event) => {
       const treeElement = elementsTreeOutline.treeElementFromEventInternal(event);
       if (treeElement instanceof ElementsTreeElement) {
-        output.elementsTreeOutline?.showContextMenu(treeElement, event);
+        input.onContextMenu?.(treeElement.node(), event, treeElement.widget);
       }
     }, false);
     elementsTreeOutline.elementInternal.addEventListener("keydown", (event) => {
       input.onKeyDown?.(event);
+    }, false);
+    elementsTreeOutline.elementInternal.addEventListener("clipboard-copy", (event) => {
+      input.onCopyOrCut?.(false, event);
+    }, false);
+    elementsTreeOutline.elementInternal.addEventListener("clipboard-cut", (event) => {
+      input.onCopyOrCut?.(true, event);
+    }, false);
+    elementsTreeOutline.elementInternal.addEventListener("clipboard-paste", (event) => {
+      input.onPaste?.(event);
     }, false);
     output.imagePreviewPopover = new ImagePreviewPopover(elementsTreeOutline.contentElement, (event) => {
       let link2 = event.target;
@@ -16949,7 +16929,9 @@ var DEFAULT_VIEW7 = (input, output, target) => {
   output.elementsTreeOutline.maxTreeDepth = input.maxTreeDepth;
   output.elementsTreeOutline.enableContextMenu = input.enableContextMenu ?? true;
   output.elementsTreeOutline.showContextMenu = (treeElement, event) => {
-    void showContextMenu(treeElement, event);
+    if (event instanceof MouseEvent) {
+      input.onContextMenu?.(treeElement.node(), event, treeElement.widget);
+    }
   };
   let needsUpdate = false;
   const showComments = input.showComments ?? true;
@@ -17014,6 +16996,28 @@ var DEFAULT_VIEW7 = (input, output, target) => {
     output.elementsTreeOutline.setHoverEffect(treeElement);
     treeElement?.reveal(true);
     output.isUpdatingHighlights = false;
+  }
+  const previousSearchMatchNode = output.searchMatchTreeElement?.node() ?? null;
+  if (previousSearchMatchNode !== input.searchMatchNode || output.searchMatchQuery !== input.searchMatchQuery) {
+    if (output.searchMatchTreeElement) {
+      output.searchMatchTreeElement.hideSearchHighlights();
+      output.searchMatchTreeElement = null;
+    }
+    output.searchMatchQuery = input.searchMatchQuery ?? void 0;
+    if (input.searchMatchNode) {
+      const treeElement = output.elementsTreeOutline.findTreeElement(input.searchMatchNode);
+      if (treeElement) {
+        output.searchMatchTreeElement = treeElement;
+        if (input.searchMatchQuery) {
+          treeElement.highlightSearchResults(input.searchMatchQuery);
+        }
+        treeElement.reveal();
+        const matches = treeElement.listItemElement.getElementsByClassName(Highlighting3.highlightedSearchResultClassName);
+        if (matches.length) {
+          matches[0].scrollIntoViewIfNeeded(false);
+        }
+      }
+    }
   }
 };
 function isMaxDepthReached(node, rootDOMNode, maxTreeDepth, omitRootDOMNode) {
@@ -17121,7 +17125,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
   }
   const renderNode = (node, depth = 0) => {
     const isSelected = input.selectedNode === node;
-    const isHovered = input.currentHighlightedNode === node;
+    const isHovered = input.currentHighlightedNode === node || input.hoveredNode === node;
     const isExpanded = Boolean(input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode) || (input.isNodeExpanded ? input.isNodeExpanded(node) : input.expandRoot && (node === input.rootDOMNode || input.omitRootDOMNode && node.parentNode === input.rootDOMNode)));
     const hasChildren = nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
     const children = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
@@ -17137,13 +17141,23 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
     const onExpand2 = (event) => {
       input.onExpand?.(node, event.detail.expanded);
     };
+    const classes = classMap4({
+      hovered: isHovered,
+      "in-clipboard": Boolean(input.isNodeInClipboard?.(node))
+    });
+    const onMouseMove = (event) => {
+      event.stopPropagation();
+      const showInfo = !UI19.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
+      input.onHoverNode?.(node, showInfo);
+    };
     return html14`
       <li role="treeitem"
           ?selected=${isSelected}
-          class=${isHovered ? "hovered" : ""}
+          class=${classes}
           ?open=${isExpanded}
           @select=${onSelect}
           @expand=${onExpand2}
+          @mousemove=${onMouseMove}
           jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline").track({
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End",
       resize: true,
@@ -17158,6 +17172,8 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       selected: isSelected,
       isDOMNodeSelected: isSelected,
       hovered: isHovered,
+      searchQuery: input.searchMatchNode === node ? input.searchMatchQuery ?? null : null,
+      inClipboard: input.isNodeInClipboard?.(node) ?? false,
       computeLeftIndent: computeLeftIndent(depth, hasChildren),
       disableEdits: input.disableEdits ?? false,
       showAIButton: input.showAIButton ?? true,
@@ -17167,7 +17183,6 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
         return Promise.resolve();
       },
       isToggledToHidden: (n) => input.isToggledToHidden?.(n) ?? false,
-      duplicateNode: (n) => input.onDuplicateNode?.(n),
       showContextMenu: (event) => {
         if (event instanceof MouseEvent) {
           input.onContextMenu?.(node, event);
@@ -17179,7 +17194,10 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
             ${UI19.TreeOutline.ifExpanded(html14`
               ${children.map((child) => renderNode(child, depth + 1))}
               ${needsClosingTag ? html14`
-                <li role="treeitem" jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline")}>
+                <li role="treeitem"
+                    class=${classMap4({ hovered: isHovered })}
+                    jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline")}
+                    @mousemove=${onMouseMove}>
                   ${UI19.Widget.widget(ElementsTreeWidget, {
       node,
       isClosingTag: true,
@@ -17187,7 +17205,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       isExpandable: false,
       selected: false,
       isDOMNodeSelected: false,
-      hovered: false,
+      hovered: isHovered,
       computeLeftIndent: computeLeftIndent(depth, false),
       disableEdits: input.disableEdits ?? false,
       showAIButton: false
@@ -17210,6 +17228,10 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
         jslog=${VisualLogging10.tree("elements")}
         ?show-selection-on-keyboard-focus=${input.showSelectionOnKeyboardFocus}
         @keydown=${input.onKeyDown}
+        @clipboard-copy=${(event) => input.onCopyOrCut?.(false, event)}
+        @clipboard-cut=${(event) => input.onCopyOrCut?.(true, event)}
+        @clipboard-paste=${(event) => input.onPaste?.(event)}
+        @mouseleave=${input.onLeave}
         .template=${html14`
           <style>${elementsTreeOutline_css_default}</style>
           <style>${CodeHighlighter5.codeHighlighterStyles}</style>
@@ -17473,6 +17495,58 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     }
     return Boolean(this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.expanded);
   }
+  async expandRecursively(node, maxDepth = Number.MAX_VALUE) {
+    if (this.#view === DECLARATIVE_VIEW) {
+      await node.getSubtree(100, true);
+      const expand2 = async (n, depth) => {
+        if (depth > maxDepth) {
+          return;
+        }
+        this.#expandedNodes.add(n);
+        let children = n.children();
+        if (!children && n.childNodeCount()) {
+          children = await new Promise((resolve) => {
+            void n.getChildNodes(() => resolve(n.children() ?? []));
+          });
+        }
+        const pseudoElements = Array.from(n.pseudoElements().values()).flat();
+        const allChildren = [...children ?? [], ...pseudoElements];
+        if (allChildren.length) {
+          await Promise.all(allChildren.map((child) => expand2(child, depth + 1)));
+        }
+      };
+      await expand2(node, 0);
+      this.performUpdate();
+      return;
+    }
+    const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
+    if (treeElement) {
+      await treeElement.expandRecursively();
+    }
+  }
+  collapseChildren(node) {
+    if (this.#view === DECLARATIVE_VIEW) {
+      const collapse = (n) => {
+        const pseudoElements = Array.from(n.pseudoElements().values()).flat();
+        const allChildren = [...n.children() ?? [], ...pseudoElements];
+        for (const child of allChildren) {
+          this.#expandedNodes.delete(child);
+          collapse(child);
+        }
+      };
+      collapse(node);
+      this.performUpdate();
+      return;
+    }
+    const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
+    treeElement?.collapseChildren();
+  }
+  showContextMenu(node, event, widget4) {
+    if (!this.#enableContextMenu) {
+      return Promise.resolve(void 0);
+    }
+    return showContextMenu(this, node, event, widget4);
+  }
   /**
    * FIXME: this is called to re-render everything from scratch, for
    * example, if global settings changed. Instead, the setting values
@@ -17490,9 +17564,48 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   treeElementForNode(node) {
     return this.#viewOutput.elementsTreeOutline?.findTreeElement(node) || null;
   }
+  #hoveredDOMNode = null;
+  #searchMatchNode = null;
+  #searchMatchQuery = null;
+  hoveredDOMNode() {
+    if (this.#view === DECLARATIVE_VIEW) {
+      return this.#hoveredDOMNode;
+    }
+    const hoveredElement = this.#viewOutput.elementsTreeOutline?.hoveredTreeElement;
+    if (hoveredElement instanceof ElementsTreeElement) {
+      return hoveredElement.node();
+    }
+    return null;
+  }
+  searchMatchNode() {
+    return this.#searchMatchNode;
+  }
+  searchMatchQuery() {
+    return this.#searchMatchQuery;
+  }
+  setHoveredNode(node, showInfo = true) {
+    if (this.#hoveredDOMNode === node) {
+      return;
+    }
+    this.#hoveredDOMNode = node;
+    if (node) {
+      const treeElement = this.treeElementForNode(node);
+      const selectorList = treeElement?.isDisplayContents() ? "*" : void 0;
+      node.domModel().overlayModel().highlightInOverlay({ node, selectorList }, "all", showInfo);
+    } else {
+      SDK16.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK16.TargetManager.TargetManager.instance());
+    }
+    if (this.#view === DECLARATIVE_VIEW) {
+      this.performUpdate();
+    } else {
+      const treeElement = node ? this.treeElementForNode(node) : null;
+      this.#viewOutput.elementsTreeOutline?.setHoverEffect(treeElement);
+    }
+  }
   performUpdate() {
     const firstRender = !this.#viewOutput.elementsTreeOutline;
     this.#view({
+      domTreeWidget: this,
       rootDOMNode: this.#rootDOMNode,
       omitRootDOMNode: this.omitRootDOMNode,
       selectEnabled: this.selectEnabled,
@@ -17511,6 +17624,9 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       preventTabOrder: this.preventTabOrder,
       deindentSingleNode: this.deindentSingleNode,
       currentHighlightedNode: this.#currentHighlightedNode,
+      hoveredNode: this.#hoveredDOMNode,
+      searchMatchNode: this.#searchMatchNode,
+      searchMatchQuery: this.#searchMatchQuery,
       selectedNode: this.selectedDOMNode(),
       onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
       onSelectedNodeChanged: (event) => {
@@ -17523,19 +17639,20 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       onElementExpanded: () => {
         this.#clearHighlightedNode();
       },
+      onHoverNode: (node, showInfo) => {
+        this.setHoveredNode(node, showInfo);
+      },
+      onLeave: () => {
+        this.setHoveredNode(null);
+      },
       onSelect: (node, selectedByUser) => {
         this.selectDOMNode(node, selectedByUser);
       },
       onExpand: (node, expanded) => {
         this.setNodeExpanded(node, expanded);
       },
-      onContextMenu: (node, event) => {
-        if (this.#viewOutput.elementsTreeOutline) {
-          const treeElement = this.#viewOutput.elementsTreeOutline.findTreeElement(node);
-          if (treeElement) {
-            void showContextMenu(treeElement, event);
-          }
-        }
+      onContextMenu: (node, event, widget4) => {
+        void this.showContextMenu(node, event, widget4);
       },
       onToggleHideElement: (node) => {
         this.toggleHideElement(node);
@@ -17551,8 +17668,20 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       },
       isNodeExpanded: (node) => {
         return this.isNodeExpanded(node);
+      },
+      isNodeInClipboard: (node) => {
+        return this.isNodeInClipboard(node);
+      },
+      onCopyOrCut: (isCut, event) => {
+        this.onCopyOrCut(isCut, event);
+      },
+      onPaste: (event) => {
+        this.onPaste(event);
       }
     }, this.#viewOutput, this.contentElement);
+    if (this.#viewOutput.elementsTreeOutline) {
+      this.#viewOutput.elementsTreeOutline.domTreeWidget = this;
+    }
     if (firstRender && this.#viewOutput.elementsTreeOutline) {
       this.#viewOutput.elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
         this.maxRows = void 0;
@@ -17638,29 +17767,24 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     void element?.updateAdorners();
   }
   highlightMatch(node, query) {
-    const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
-    if (!treeElement) {
-      return;
+    this.#searchMatchNode = node;
+    this.#searchMatchQuery = query ?? null;
+    if (this.selectedDOMNode() !== node) {
+      this.selectDOMNode(
+        node,
+        /* focus= */
+        false
+      );
+    } else {
+      this.performUpdate();
     }
-    if (query) {
-      treeElement.highlightSearchResults(query);
-    }
-    treeElement.reveal();
-    const matches = treeElement.listItemElement.getElementsByClassName(Highlighting3.highlightedSearchResultClassName);
-    if (matches.length) {
-      matches[0].scrollIntoViewIfNeeded(false);
-    }
-    treeElement.select(
-      /* omitFocus */
-      true
-    );
   }
   hideMatchHighlights(node) {
-    const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
-    if (!treeElement) {
-      return;
+    if (this.#searchMatchNode === node) {
+      this.#searchMatchNode = null;
+      this.#searchMatchQuery = null;
+      this.performUpdate();
     }
-    treeElement.hideSearchHighlights();
   }
   toggleHideElement(node) {
     void node.toggleHideElement();
@@ -17732,8 +17856,150 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     }
     return false;
   }
-  copyStyles(node) {
-    void this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.copyStyles();
+  #clipboardData = null;
+  clipboardData() {
+    return this.#clipboardData;
+  }
+  setClipboardData(data) {
+    if (this.#clipboardData) {
+      const prevTreeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(this.#clipboardData.node);
+      if (prevTreeElement) {
+        prevTreeElement.setInClipboard(false);
+      }
+      this.#clipboardData = null;
+    }
+    if (data) {
+      const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(data.node);
+      if (treeElement) {
+        treeElement.setInClipboard(true);
+      }
+      this.#clipboardData = data;
+    }
+    this.requestUpdate();
+  }
+  resetClipboardIfNeeded(removedNode) {
+    if (this.#clipboardData?.node === removedNode) {
+      this.setClipboardData(null);
+    }
+  }
+  isNodeInClipboard(node) {
+    return Boolean(this.#clipboardData?.isCut && this.#clipboardData?.node === node);
+  }
+  async copyOuterHTML(node, includeShadowRoots = false) {
+    const outerHTML = await node.getOuterHTML(includeShadowRoots);
+    if (outerHTML !== null) {
+      UI19.UIUtils.copyTextToClipboard(outerHTML);
+    }
+  }
+  copyCSSPath(node) {
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(cssPath(node, true));
+  }
+  copyJSPath(node) {
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(jsPath(node, true));
+  }
+  copyXPath(node, optimized = true) {
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(node, optimized));
+  }
+  copyFullXPath(node) {
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(xPath(node, false));
+  }
+  async copyStyles(node) {
+    const cssModel = node.domModel().cssModel();
+    const cascade = await cssModel.cachedMatchedCascadeForNode(node);
+    if (!cascade) {
+      return;
+    }
+    const indent = Common12.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
+    const lines = [];
+    for (const style of cascade.nodeStyles().reverse()) {
+      for (const property of style.leadingProperties()) {
+        if (!property.parsedOk || property.disabled || !property.activeInStyle() || property.implicit) {
+          continue;
+        }
+        if (cascade.isInherited(style) && !SDK16.CSSMetadata.cssMetadata().isPropertyInherited(property.name)) {
+          continue;
+        }
+        if (style.parentRule?.isUserAgent()) {
+          continue;
+        }
+        if (cascade.propertyState(property) !== "Active") {
+          continue;
+        }
+        lines.push(`${indent}${property.name}: ${property.value};`);
+      }
+    }
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(lines.join("\n"));
+  }
+  performCopyOrCut(isCut, node, includeShadowRoots = false) {
+    if (!node) {
+      return;
+    }
+    if (isCut && (node.isShadowRoot() || node.ancestorUserAgentShadowRoot())) {
+      return;
+    }
+    void this.copyOuterHTML(node, includeShadowRoots);
+    this.setClipboardData({ node, isCut });
+  }
+  canPaste(targetNode) {
+    if (targetNode.isShadowRoot() || targetNode.ancestorUserAgentShadowRoot()) {
+      return false;
+    }
+    if (!this.#clipboardData) {
+      return false;
+    }
+    const node = this.#clipboardData.node;
+    if (this.#clipboardData.isCut && (node === targetNode || node.isAncestor(targetNode))) {
+      return false;
+    }
+    if (targetNode.domModel() !== node.domModel()) {
+      return false;
+    }
+    return true;
+  }
+  pasteNode(targetNode) {
+    if (!this.canPaste(targetNode) || !this.#clipboardData) {
+      return;
+    }
+    const wasExpanded = this.isNodeExpanded(this.#clipboardData.node);
+    if (this.#clipboardData.isCut) {
+      this.#clipboardData.node.moveTo(targetNode, null, this.selectNodeAfterEdit.bind(this, wasExpanded));
+      this.setClipboardData(null);
+    } else {
+      this.#clipboardData.node.copyTo(targetNode, null, this.selectNodeAfterEdit.bind(this, wasExpanded));
+    }
+  }
+  onCopyOrCut(isCut, event) {
+    this.setClipboardData(null);
+    const originalEvent = event["original"] || event;
+    if (!originalEvent?.target) {
+      return;
+    }
+    if (originalEvent.target instanceof Node && originalEvent.target.hasSelection?.()) {
+      return;
+    }
+    if (UI19.UIUtils.isEditing()) {
+      return;
+    }
+    const targetNode = this.selectedDOMNode();
+    if (!targetNode) {
+      return;
+    }
+    if (originalEvent.clipboardData) {
+      originalEvent.clipboardData.clearData();
+    }
+    event.handled = true;
+    this.performCopyOrCut(isCut, targetNode);
+  }
+  onPaste(event) {
+    if (UI19.UIUtils.isEditing()) {
+      return;
+    }
+    const targetNode = this.selectedDOMNode();
+    if (!targetNode || !this.canPaste(targetNode)) {
+      return;
+    }
+    event.handled = true;
+    this.pasteNode(targetNode);
   }
   /**
    * FIXME: used to determine focus state, probably we can have a better
@@ -17807,7 +18073,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
   decoratorExtensions;
   multilineEditing;
   visibleWidthInternal;
-  clipboardNodeData;
   isXMLMimeTypeInternal;
   suppressRevealAndSelect = false;
   previousHoveredElement;
@@ -17823,8 +18088,13 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
   expandRoot;
   #maxRowsShown;
   #showAllButton;
-  constructor(omitRootDOMNode, selectEnabled, hideGutter, maxTreeDepth, enableContextMenu, showComments, showAIButton, disableEdits, expandRoot) {
+  domTreeWidget = null;
+  get hoveredTreeElement() {
+    return this.previousHoveredElement ?? null;
+  }
+  constructor(omitRootDOMNode, selectEnabled, hideGutter, maxTreeDepth, enableContextMenu, showComments, showAIButton, disableEdits, expandRoot, domTreeWidget) {
     super();
+    this.domTreeWidget = domTreeWidget ?? null;
     this.treeElementByNode = /* @__PURE__ */ new WeakMap();
     const shadowContainer = document.createElement("div");
     this.shadowRoot = UI19.UIUtils.createShadowRootWithCoreStyles(shadowContainer, { cssFile: [elementsTreeOutline_css_default, CodeHighlighter5.codeHighlighterStyles] });
@@ -17849,10 +18119,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
       this.elementInternal.addEventListener("dragleave", this.ondragleave.bind(this), false);
       this.elementInternal.addEventListener("drop", this.ondrop.bind(this), false);
       this.elementInternal.addEventListener("dragend", this.ondragend.bind(this), false);
-      this.elementInternal.addEventListener("clipboard-beforecopy", this.onBeforeCopy.bind(this), false);
-      this.elementInternal.addEventListener("clipboard-copy", this.onCopyOrCut.bind(this, false), false);
-      this.elementInternal.addEventListener("clipboard-cut", this.onCopyOrCut.bind(this, true), false);
-      this.elementInternal.addEventListener("clipboard-paste", this.onPaste.bind(this), false);
     }
     outlineDisclosureElement.appendChild(this.elementInternal);
     this.element = shadowContainer;
@@ -17892,117 +18158,22 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     }
   }
   setClipboardData(data) {
-    if (this.clipboardNodeData) {
-      const treeElement = this.findTreeElement(this.clipboardNodeData.node);
-      if (treeElement) {
-        treeElement.setInClipboard(false);
-      }
-      delete this.clipboardNodeData;
-    }
-    if (data) {
-      const treeElement = this.findTreeElement(data.node);
-      if (treeElement) {
-        treeElement.setInClipboard(true);
-      }
-      this.clipboardNodeData = data;
-    }
+    this.domTreeWidget?.setClipboardData(data);
   }
   resetClipboardIfNeeded(removedNode) {
-    if (this.clipboardNodeData?.node === removedNode) {
-      this.setClipboardData(null);
-    }
-  }
-  onBeforeCopy(event) {
-    event.handled = true;
-  }
-  onCopyOrCut(isCut, event) {
-    this.setClipboardData(null);
-    const originalEvent = event["original"];
-    if (!originalEvent?.target) {
-      return;
-    }
-    if (originalEvent.target instanceof Node && originalEvent.target.hasSelection()) {
-      return;
-    }
-    if (UI19.UIUtils.isEditing()) {
-      return;
-    }
-    const targetNode = this.selectedDOMNode();
-    if (!targetNode) {
-      return;
-    }
-    if (!originalEvent.clipboardData) {
-      return;
-    }
-    originalEvent.clipboardData.clearData();
-    event.handled = true;
-    this.performCopyOrCut(isCut, targetNode);
+    this.domTreeWidget?.resetClipboardIfNeeded(removedNode);
   }
   performCopyOrCut(isCut, node, includeShadowRoots = false) {
-    if (!node) {
-      return;
-    }
-    if (isCut && (node.isShadowRoot() || node.ancestorUserAgentShadowRoot())) {
-      return;
-    }
-    void node.getOuterHTML(includeShadowRoots).then((outerHTML) => {
-      if (outerHTML !== null) {
-        UI19.UIUtils.copyTextToClipboard(outerHTML);
-      }
-    });
-    this.setClipboardData({ node, isCut });
+    this.domTreeWidget?.performCopyOrCut(isCut, node, includeShadowRoots);
   }
   canPaste(targetNode) {
-    if (targetNode.isShadowRoot() || targetNode.ancestorUserAgentShadowRoot()) {
-      return false;
-    }
-    if (!this.clipboardNodeData) {
-      return false;
-    }
-    const node = this.clipboardNodeData.node;
-    if (this.clipboardNodeData.isCut && (node === targetNode || node.isAncestor(targetNode))) {
-      return false;
-    }
-    if (targetNode.domModel() !== node.domModel()) {
-      return false;
-    }
-    return true;
+    return this.domTreeWidget?.canPaste(targetNode) ?? false;
   }
   pasteNode(targetNode) {
-    if (this.canPaste(targetNode)) {
-      this.performPaste(targetNode);
-    }
+    this.domTreeWidget?.pasteNode(targetNode);
   }
   duplicateNode(targetNode) {
-    targetNode.duplicate();
-  }
-  onPaste(event) {
-    if (UI19.UIUtils.isEditing()) {
-      return;
-    }
-    const targetNode = this.selectedDOMNode();
-    if (!targetNode || !this.canPaste(targetNode)) {
-      return;
-    }
-    event.handled = true;
-    this.performPaste(targetNode);
-  }
-  performPaste(targetNode) {
-    if (!this.clipboardNodeData) {
-      return;
-    }
-    if (this.clipboardNodeData.isCut) {
-      this.clipboardNodeData.node.moveTo(targetNode, null, expandCallback.bind(this));
-      this.setClipboardData(null);
-    } else {
-      this.clipboardNodeData.node.copyTo(targetNode, null, expandCallback.bind(this));
-    }
-    function expandCallback(error, pastedNode) {
-      if (error || !pastedNode) {
-        return;
-      }
-      this.selectDOMNode(pastedNode);
-    }
+    this.domTreeWidget?.duplicateNode(targetNode);
   }
   setVisible(visible) {
     if (visible === this.visible) {
@@ -18271,8 +18442,14 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     if (element && this.previousHoveredElement === element) {
       return;
     }
+    const showInfo = !UI19.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
+    if (this.domTreeWidget && element instanceof ElementsTreeElement) {
+      this.domTreeWidget.setHoveredNode(element.node(), showInfo);
+      return;
+    }
+    this.domTreeWidget?.setHoveredNode(null);
     this.setHoverEffect(element);
-    this.highlightTreeElement(element, !UI19.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event));
+    this.highlightTreeElement(element, showInfo);
   }
   highlightTreeElement(element, showInfo) {
     if (element instanceof ElementsTreeElement) {
@@ -18285,6 +18462,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     }
   }
   onmouseleave(_event) {
+    this.domTreeWidget?.setHoveredNode(null);
     this.setHoverEffect(null);
     SDK16.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK16.TargetManager.TargetManager.instance());
   }
@@ -18462,7 +18640,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
   reset() {
     this.rootDOMNode = null;
     this.selectDOMNode(null, false);
-    delete this.clipboardNodeData;
+    this.setClipboardData(null);
     SDK16.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK16.TargetManager.TargetManager.instance());
     this.updateRecords.clear();
   }
@@ -21026,7 +21204,7 @@ ${node.simpleSelector()} {}`, false);
     if (!this.notFirstInspectElement) {
       _ElementsPanel.firstInspectElementNodeNameForTest = node.nodeName();
       _ElementsPanel.firstInspectElementCompletedForTest();
-      Host6.InspectorFrontendHost.InspectorFrontendHostInstance.inspectElementCompleted();
+      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.inspectElementCompleted();
     }
     this.notFirstInspectElement = true;
   }
@@ -21304,7 +21482,7 @@ ${node.simpleSelector()} {}`, false);
     this.#domTreeWidget.duplicateNode(node);
   }
   copyStyles(node) {
-    this.#domTreeWidget.copyStyles(node);
+    void this.#domTreeWidget.copyStyles(node);
   }
   static firstInspectElementCompletedForTest = function() {
   };
@@ -21859,7 +22037,7 @@ __export(PropertiesWidget_exports, {
 });
 import "../../ui/legacy/legacy.js";
 import * as Common18 from "../../core/common/common.js";
-import * as Host7 from "../../core/host/host.js";
+import * as Host8 from "../../core/host/host.js";
 import * as i18n44 from "../../core/i18n/i18n.js";
 import * as Platform11 from "../../core/platform/platform.js";
 import * as SDK22 from "../../core/sdk/sdk.js";
@@ -21958,7 +22136,7 @@ var getShowAllPropertiesSetting = () => Common18.Settings.Settings.instance().cr
 function onExpand(event) {
   const expanded = event.detail.expanded;
   if (expanded) {
-    Host7.userMetrics.actionTaken(Host7.UserMetrics.Action.DOMPropertiesExpanded);
+    Host8.userMetrics.actionTaken(Host8.UserMetrics.Action.DOMPropertiesExpanded);
   }
 }
 var PropertiesWidget = class extends UI26.Widget.VBox {

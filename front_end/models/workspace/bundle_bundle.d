@@ -1,0 +1,1 @@
+gen/front_end/models/workspace/workspace.js: ../../front_end/models/workspace/FileManager.ts ../../front_end/models/workspace/UISourceCode.ts ../../front_end/models/workspace/WorkspaceImpl.ts ../../front_end/models/workspace/IgnoreListManager.ts ../../front_end/models/workspace/SearchConfig.ts ../../front_end/models/workspace/workspace.ts

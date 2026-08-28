@@ -1,3 +1,4 @@
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Extras from '../extras/extras.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Types from '../types/types.js';
@@ -11,7 +12,7 @@ export declare const UIStrings: {
      * @description Description of a DevTools insight that identifies the code on the page that the user doesn't control.
      * This is displayed after a user expands the section to see more. No character length limits.
      */
-    readonly description: string;
+    readonly description: `3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page’s content.`;
     /**
      * @description Label for a table column that displays the name of a third-party provider.
      */
@@ -29,7 +30,7 @@ export declare const UIStrings: {
      */
     readonly noThirdParties: 'No third parties found';
 };
-export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => import("../../../core/platform/UIString.js").LocalizedString;
+export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
 export type ThirdPartiesInsightModel = InsightModel<typeof UIStrings, {
     /** The entity for this navigation's URL. Any other entity is from a third party. */
     entitySummaries: Extras.ThirdParties.EntitySummary[];

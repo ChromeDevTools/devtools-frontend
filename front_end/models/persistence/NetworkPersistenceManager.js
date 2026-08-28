@@ -174,6 +174,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         if ((!this.#active && !ignoreInactive) || !this.#project) {
             return Platform.DevToolsPath.EmptyRawPathString;
         }
+        if (NetworkPersistenceManager.isForbiddenNetworkUrl(url)) {
+            return Platform.DevToolsPath.EmptyRawPathString;
+        }
         let initialEncodedPath = Common.ParsedURL.ParsedURL.urlWithoutHash(url.replace(/^https?:\/\//, ''));
         if (initialEncodedPath.endsWith('/') && initialEncodedPath.indexOf('?') === -1) {
             initialEncodedPath = Common.ParsedURL.ParsedURL.concatenate(initialEncodedPath, 'index.html');
@@ -203,6 +206,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
             }
             // encodeURI() escapes all the unsafe filename characters except '/' and '*'
             let encodedName = encodeURI(pathPart).replace(/[\/\*]/g, match => '%' + match[0].charCodeAt(0).toString(16).toUpperCase());
+            if (encodedName === '..') {
+                encodedName = '%2E%2E';
+            }
             if (Host.Platform.isWin()) {
                 // Windows does not allow ':' and '?' in filenames
                 encodedName = encodedName.replace(/[:\?]/g, match => '%' + match[0].charCodeAt(0).toString(16).toUpperCase());
@@ -238,10 +244,17 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         if (!this.#project) {
             return Platform.DevToolsPath.EmptyUrlString;
         }
-        return Common.ParsedURL.ParsedURL.concatenate(this.#project.fileSystemPath(), '/', this.encodedPathFromUrl(url, ignoreInactive));
+        const encodedPath = this.encodedPathFromUrl(url, ignoreInactive);
+        if (!encodedPath) {
+            return Platform.DevToolsPath.EmptyUrlString;
+        }
+        return Common.ParsedURL.ParsedURL.concatenate(this.#project.fileSystemPath(), '/', encodedPath);
     }
     getHeadersUISourceCodeFromUrl(url) {
         const fileUrlFromRequest = this.fileUrlFromNetworkUrl(url, /* ignoreNoActive */ true);
+        if (!fileUrlFromRequest) {
+            return null;
+        }
         const folderUrlFromRequest = Common.ParsedURL.ParsedURL.substring(fileUrlFromRequest, 0, fileUrlFromRequest.lastIndexOf('/'));
         const headersFileUrl = Common.ParsedURL.ParsedURL.concatenate(folderUrlFromRequest, '/', HEADERS_FILENAME);
         return this.#workspace.uiSourceCodeForURL(headersFileUrl);
@@ -250,6 +263,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         let uiSourceCode = this.getHeadersUISourceCodeFromUrl(url);
         if (!uiSourceCode && this.#project) {
             const encodedFilePath = this.encodedPathFromUrl(url, /* ignoreNoActive */ true);
+            if (!encodedFilePath) {
+                return null;
+            }
             const encodedPath = Common.ParsedURL.ParsedURL.substring(encodedFilePath, 0, encodedFilePath.lastIndexOf('/'));
             uiSourceCode = await this.#project.createFile(encodedPath, HEADERS_FILENAME, '');
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.HeaderOverrideFileCreated);
@@ -348,6 +364,9 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
             !this.#isUISourceCodeAlreadyOverridden(uiSourceCode);
     }
     async setupAndStartLocalOverrides(uiSourceCode) {
+        if (!this.isUISourceCodeOverridable(uiSourceCode)) {
+            return false;
+        }
         // No overrides folder, set it up
         if (this.#shouldPromptSaveForOverridesDialog(uiSourceCode)) {
             Host.userMetrics.actionTaken(Host.UserMetrics.Action.OverrideContentContextMenuSetup);
@@ -381,6 +400,10 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
         }
         this.#savingForOverrides.add(uiSourceCode);
         let encodedPath = this.encodedPathFromUrl(uiSourceCode.url());
+        if (!encodedPath) {
+            this.#savingForOverrides.delete(uiSourceCode);
+            return;
+        }
         const contentDataOrError = await uiSourceCode.requestContentData();
         const { content, isEncoded } = TextUtils.ContentData.ContentData.asDeferredContent(contentDataOrError);
         const lastIndexOfSlash = encodedPath.lastIndexOf('/');
@@ -422,22 +445,29 @@ export class NetworkPersistenceManager extends Common.ObjectWrapper.ObjectWrappe
     isForbiddenFileUrl(uiSourceCode) {
         const relativePathParts = FileSystemWorkspaceBinding.relativePath(uiSourceCode);
         // Decode twice to handle paths generated on Windows OS.
-        const host = this.decodeLocalPathToUrlPath(this.decodeLocalPathToUrlPath(relativePathParts[0] || ''));
-        return host === 'chrome:' || forbiddenUrls.includes(host);
+        const host = this.decodeLocalPathToUrlPath(this.decodeLocalPathToUrlPath(relativePathParts[0] || '')).toLowerCase();
+        return ['chrome:', 'data:', 'blob:', 'javascript:', 'about:', 'mailto:', 'vbscript:'].includes(host) ||
+            forbiddenUrls.includes(host);
     }
     static isForbiddenNetworkUrl(urlString) {
+        const trimmedUrl = urlString.trim().toLowerCase();
+        if (trimmedUrl.startsWith('data:') || trimmedUrl.startsWith('blob:') || trimmedUrl.startsWith('javascript:') ||
+            trimmedUrl.startsWith('about:') || trimmedUrl.startsWith('mailto:') || trimmedUrl.startsWith('vbscript:')) {
+            return true;
+        }
         const url = Common.ParsedURL.ParsedURL.fromString(urlString);
         if (!url) {
             return false;
         }
-        return url.scheme === 'chrome' || forbiddenUrls.includes(url.host);
+        return !['http', 'https', 'file'].includes(url.scheme) || forbiddenUrls.includes(url.host);
     }
     async onUISourceCodeAdded(uiSourceCode) {
         await this.networkUISourceCodeAdded(uiSourceCode);
         await this.filesystemUISourceCodeAdded(uiSourceCode);
     }
     canHandleNetworkUISourceCode(uiSourceCode) {
-        return this.#active && !Common.ParsedURL.schemeIs(uiSourceCode.url(), 'snippet:');
+        return this.#active && !Common.ParsedURL.schemeIs(uiSourceCode.url(), 'snippet:') &&
+            !NetworkPersistenceManager.isForbiddenNetworkUrl(uiSourceCode.url());
     }
     async networkUISourceCodeAdded(uiSourceCode) {
         if (uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Network ||

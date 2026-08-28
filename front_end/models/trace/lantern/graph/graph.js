@@ -1,4 +1,4 @@
-// gen/front_end/models/trace/lantern/graph/BaseNode.js
+// ../../front_end/models/trace/lantern/graph/BaseNode.ts
 import * as Core from "../core/core.js";
 var BaseNode = class _BaseNode {
   static types = {
@@ -95,17 +95,20 @@ var BaseNode = class _BaseNode {
    */
   isDependentOn(node) {
     let isDependentOnNode = false;
-    this.traverse((currentNode) => {
-      if (isDependentOnNode) {
-        return;
+    this.traverse(
+      (currentNode) => {
+        if (isDependentOnNode) {
+          return;
+        }
+        isDependentOnNode = currentNode === node;
+      },
+      (currentNode) => {
+        if (isDependentOnNode) {
+          return [];
+        }
+        return currentNode.getDependencies();
       }
-      isDependentOnNode = currentNode === node;
-    }, (currentNode) => {
-      if (isDependentOnNode) {
-        return [];
-      }
-      return currentNode.getDependencies();
-    });
+    );
     return isDependentOnNode;
   }
   /**
@@ -242,7 +245,7 @@ var BaseNode = class _BaseNode {
   }
 };
 
-// gen/front_end/models/trace/lantern/graph/CPUNode.js
+// ../../front_end/models/trace/lantern/graph/CPUNode.ts
 var CPUNode = class _CPUNode extends BaseNode {
   _event;
   _childEvents;
@@ -302,7 +305,7 @@ var CPUNode = class _CPUNode extends BaseNode {
   }
 };
 
-// gen/front_end/models/trace/lantern/graph/NetworkNode.js
+// ../../front_end/models/trace/lantern/graph/NetworkNode.ts
 var NON_NETWORK_SCHEMES = [
   "blob",
   // @see https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
@@ -373,7 +376,7 @@ var NetworkNode = class _NetworkNode extends BaseNode {
   }
 };
 
-// gen/front_end/models/trace/lantern/graph/PageDependencyGraph.js
+// ../../front_end/models/trace/lantern/graph/PageDependencyGraph.ts
 import * as Core2 from "../core/core.js";
 var SCHEDULABLE_TASK_TITLE_LH = "RunTask";
 var SCHEDULABLE_TASK_TITLE_ALT1 = "ThreadControllerImpl::RunTask";

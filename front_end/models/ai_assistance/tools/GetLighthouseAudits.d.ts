@@ -7,8 +7,8 @@ export interface GetLighthouseAuditsArgs extends ToolArgs {
 export declare class GetLighthouseAuditsTool implements DataTool<GetLighthouseAuditsArgs, {
     audits: string;
 }, BaseToolCapability & LighthouseReportCapability> {
-    readonly name = ToolName.GET_LIGHTHOUSE_AUDITS;
-    readonly description = "Returns the audits for a specific Lighthouse category.";
+    readonly name: ToolName;
+    readonly description: string;
     readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetLighthouseAuditsArgs>;
     displayInfoFromArgs(params: GetLighthouseAuditsArgs): {
         title: string;

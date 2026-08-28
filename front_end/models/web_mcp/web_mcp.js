@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/web_mcp/WebMCPModel.js
+// ../../front_end/models/web_mcp/WebMCPModel.ts
 var WebMCPModel_exports = {};
 __export(WebMCPModel_exports, {
   Events: () => Events,
@@ -14,13 +14,13 @@ __export(WebMCPModel_exports, {
 });
 import * as SDK from "../../core/sdk/sdk.js";
 import * as Bindings from "../bindings/bindings.js";
-var Events;
-(function(Events2) {
+var Events = /* @__PURE__ */ ((Events2) => {
   Events2["TOOLS_ADDED"] = "ToolsAdded";
   Events2["TOOLS_REMOVED"] = "ToolsRemoved";
   Events2["TOOL_INVOKED"] = "ToolInvoked";
   Events2["TOOL_RESPONDED"] = "ToolResponded";
-})(Events || (Events = {}));
+  return Events2;
+})(Events || {});
 var Result = class {
   status;
   output;
@@ -120,7 +120,11 @@ var WebMCPModel = class extends SDK.SDKModel.SDKModel {
     target.registerWebMCPDispatcher(this);
     const runtimeModel = target.model(SDK.RuntimeModel.RuntimeModel);
     if (runtimeModel) {
-      runtimeModel.addEventListener(SDK.RuntimeModel.Events.ExecutionContextDestroyed, this.#executionContextDestroyed, this);
+      runtimeModel.addEventListener(
+        SDK.RuntimeModel.Events.ExecutionContextDestroyed,
+        this.#executionContextDestroyed,
+        this
+      );
     }
     void this.enable();
   }
@@ -150,7 +154,7 @@ var WebMCPModel = class extends SDK.SDKModel.SDKModel {
       if (frameTools) {
         const toolsToRemove = [...frameTools.values()];
         this.#tools.delete(executionContext.frameId);
-        this.dispatchEventToListeners("ToolsRemoved", toolsToRemove);
+        this.dispatchEventToListeners("ToolsRemoved" /* TOOLS_REMOVED */, toolsToRemove);
       }
     }
   }
@@ -163,7 +167,7 @@ var WebMCPModel = class extends SDK.SDKModel.SDKModel {
         deletedTools.push(tool);
       }
     }
-    this.dispatchEventToListeners("ToolsRemoved", deletedTools);
+    this.dispatchEventToListeners("ToolsRemoved" /* TOOLS_REMOVED */, deletedTools);
   }
   toolsAdded(params) {
     const addedTools = [];
@@ -176,7 +180,7 @@ var WebMCPModel = class extends SDK.SDKModel.SDKModel {
       frameTools.set(tool.name, tool);
       addedTools.push(tool);
     }
-    this.dispatchEventToListeners("ToolsAdded", addedTools);
+    this.dispatchEventToListeners("ToolsAdded" /* TOOLS_ADDED */, addedTools);
   }
   toolInvoked(params) {
     const tool = this.#tools.get(params.frameId)?.get(params.toolName);
@@ -194,7 +198,7 @@ var WebMCPModel = class extends SDK.SDKModel.SDKModel {
       }
     };
     this.#calls.set(params.invocationId, call);
-    this.dispatchEventToListeners("ToolInvoked", call);
+    this.dispatchEventToListeners("ToolInvoked" /* TOOL_INVOKED */, call);
   }
   toolResponded(params) {
     const call = this.#calls.get(params.invocationId);
@@ -203,10 +207,10 @@ var WebMCPModel = class extends SDK.SDKModel.SDKModel {
     }
     const exception = params.exception && this.target().model(SDK.RuntimeModel.RuntimeModel)?.createRemoteObject(params.exception);
     call.result = new Result(params.status, params.output, params.errorText, exception);
-    this.dispatchEventToListeners("ToolResponded", call);
+    this.dispatchEventToListeners("ToolResponded" /* TOOL_RESPONDED */, call);
   }
 };
-SDK.SDKModel.SDKModel.register(WebMCPModel, { capabilities: 2097152, autostart: true });
+SDK.SDKModel.SDKModel.register(WebMCPModel, { capabilities: SDK.Target.Capability.WEB_MCP, autostart: true });
 export {
   WebMCPModel_exports as WebMCPModel
 };

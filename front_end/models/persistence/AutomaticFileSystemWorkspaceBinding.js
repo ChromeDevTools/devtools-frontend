@@ -34,6 +34,9 @@ export class FileSystem {
     isServiceProject() {
         return false;
     }
+    securityOrigin() {
+        return null;
+    }
     displayName() {
         const { root } = this.automaticFileSystem;
         let slash = root.lastIndexOf('/');

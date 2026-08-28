@@ -1,5 +1,6 @@
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import type * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Workspace from '../workspace/workspace.js';
 import { type AutomaticFileSystem, type AutomaticFileSystemManager } from './AutomaticFileSystemManager.js';
@@ -22,6 +23,7 @@ export declare class FileSystem implements Workspace.Workspace.Project {
     id(): string;
     type(): Workspace.Workspace.projectTypes;
     isServiceProject(): boolean;
+    securityOrigin(): SDK.SecurityOrigin.SecurityOrigin | null;
     displayName(): string;
     requestMetadata(_uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<Workspace.UISourceCode.UISourceCodeMetadata | null>;
     requestFileContent(_uiSourceCode: Workspace.UISourceCode.UISourceCode): Promise<ContentDataOrError>;

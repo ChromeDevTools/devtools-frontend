@@ -11,7 +11,7 @@ export default `/*
 
 :host {
   display: block;
-  padding: 5px 8px;
+  padding: 5px var(--sys-size-5);
 }
 
 .passed-insights-section {

@@ -11,23 +11,23 @@ export default `/*
 
 @scope to (devtools-widget > *) {
   .network-request-details-title {
-    font-size: 13px;
-    padding: 8px;
+    font-size: var(--sys-typescale-body3-size);
+    padding: var(--sys-size-5);
     display: flex;
     align-items: center;
   }
 
   .network-request-details-title > div {
     box-sizing: border-box;
-    width: 14px;
-    height: 14px;
-    border: 1px solid var(--sys-color-divider);
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     display: inline-block;
-    margin-right: 4px;
+    margin-right: var(--sys-size-3);
   }
 
   .network-request-details-content {
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .network-request-details-cols {
@@ -45,7 +45,7 @@ export default `/*
   }
 
   .column-divider {
-    border-left: 1px solid var(--sys-color-divider);
+    border-left: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .network-request-details-col.server-timings {
@@ -97,7 +97,7 @@ export default `/*
   .timeline-link {
     color: var(--text-link);
     text-decoration: underline;
-    outline-offset: 2px;
+    outline-offset: var(--sys-size-2);
     padding: 0;
     text-align: left;
 

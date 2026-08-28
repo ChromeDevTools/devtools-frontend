@@ -433,7 +433,7 @@ export class AiConversation {
         return !this.#contexts.every(context => context.isOriginAllowed(this.#origin));
     }
     get origin() {
-        return this.#origin;
+        return this.#origin instanceof SDK.SecurityOrigin.SecurityOrigin ? this.#origin.siteId() : this.#origin;
     }
     get type() {
         return this.#type;
@@ -443,10 +443,10 @@ export class AiConversation {
             return { blocked: true };
         }
         if (this.#origin) {
-            return { origin: this.#origin };
+            return { origin: this.origin };
         }
         this.#origin = getPrimaryPageOrigin(this.#targetManager);
-        return { origin: this.#origin };
+        return { origin: this.origin };
     };
 }
 /**

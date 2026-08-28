@@ -88,6 +88,10 @@ export class HighlightManager {
         return highlightManagerInstance;
     }
     static removeInstance() {
+        if (typeof CSS !== 'undefined' && CSS.highlights) {
+            CSS.highlights.delete(HIGHLIGHT_REGISTRY);
+            CSS.highlights.delete(CURRENT_HIGHLIGHT_REGISTRY);
+        }
         highlightManagerInstance = null;
     }
     addHighlights(ranges) {

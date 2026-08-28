@@ -30,7 +30,7 @@ export default `/*
 
 .live-metrics,
 .next-steps {
-  padding: 16px;
+  padding: var(--sys-size-8);
   height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
@@ -50,7 +50,7 @@ export default `/*
   flex: 0 0 336px;
   box-sizing: border-box;
   border: none;
-  border-left: 1px solid var(--sys-color-divider);
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 @container (max-width: 650px) {
@@ -61,13 +61,13 @@ export default `/*
   .next-steps {
     flex-basis: 40%;
     border: none;
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
   }
 }
 
 .metric-cards {
   display: grid;
-  gap: 16px;
+  gap: var(--sys-size-8);
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   width: 100%;
 }
@@ -82,16 +82,16 @@ export default `/*
 
 .settings-card {
   border-radius: var(--sys-shape-corner-small);
-  padding: 14px 16px 16px;
+  padding: var(--sys-size-7) var(--sys-size-8) var(--sys-size-8);
   background-color: var(--sys-color-surface3);
-  margin-bottom: 16px;
+  margin-bottom: var(--sys-size-8);
 }
 
 .record-action-card {
   border-radius: var(--sys-shape-corner-small);
-  padding: 12px 16px 12px 12px;
+  padding: var(--sys-size-6) var(--sys-size-8) var(--sys-size-6) var(--sys-size-6);
   background-color: var(--sys-color-surface3);
-  margin-bottom: 16px;
+  margin-bottom: var(--sys-size-8);
 }
 
 .card-title {
@@ -102,11 +102,11 @@ export default `/*
 }
 
 .settings-card .card-title {
-  margin-bottom: 4px;
+  margin-bottom: var(--sys-size-3);
 }
 
 .device-toolbar-description {
-  margin-bottom: 12px;
+  margin-bottom: var(--sys-size-6);
   display: flex;
 }
 
@@ -121,30 +121,30 @@ export default `/*
 
 .related-info {
   text-wrap: nowrap;
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
   display: flex;
 }
 
 .related-info-label {
   font-weight: var(--ref-typeface-weight-medium);
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 }
 
 .related-info-link {
   background-color: var(--sys-color-cdt-base-container);
-  border-radius: 2px;
-  padding: 0 2px;
+  border-radius: var(--sys-size-2);
+  padding: 0 var(--sys-size-2);
   min-width: 0;
 }
 
 .local-field-link {
   display: inline-block;
   width: fit-content;
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 .logs-section {
-  margin-top: 24px;
+  margin-top: var(--sys-size-11);
   display: flex;
   flex-direction: column;
   flex: 1 0 300px;
@@ -160,7 +160,7 @@ export default `/*
 }
 
 .interactions-clear {
-  margin-left: 4px;
+  margin-left: var(--sys-size-3);
   vertical-align: sub;
 }
 
@@ -172,7 +172,7 @@ export default `/*
 
 .log-item {
   border: none;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
   &.highlight {
     animation: highlight-fadeout 2s;
@@ -186,11 +186,11 @@ export default `/*
   summary {
     display: flex;
     align-items: center;
-    padding: 7px 4px;
+    padding: 7px var(--sys-size-3);
 
     &::before {
       content: " ";
-      height: 14px;
+      height: var(--sys-size-7);
       width: var(--details-indicator-width);
       mask-image: var(--image-file-triangle-right);
       background-color: var(--icon-default);
@@ -212,19 +212,19 @@ export default `/*
 .interaction-inp-chip {
   background-color: var(--sys-color-yellow-container);
   color: var(--sys-color-on-yellow-container);
-  padding: 0 2px;
+  padding: 0 var(--sys-size-2);
 }
 
 .interaction-node {
   flex-grow: 1;
-  margin-right: 32px;
+  margin-right: var(--sys-size-13);
   min-width: 0;
 }
 
 .interaction-info {
   width: var(--sys-typescale-body4-line-height);
   height: var(--sys-typescale-body4-line-height);
-  margin-right: 6px;
+  margin-right: var(--sys-size-4);
 }
 
 .interaction-duration {
@@ -240,7 +240,7 @@ export default `/*
 }
 
 .layout-shift-score {
-  margin-right: 16px;
+  margin-right: var(--sys-size-8);
   padding: 7px 0;
   width: 150px;
   box-sizing: border-box;
@@ -252,7 +252,7 @@ export default `/*
 }
 
 .layout-shift-node {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   padding: 7px 0;
 
   &:last-child {
@@ -265,7 +265,7 @@ export default `/*
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: var(--sys-size-5);
 }
 
 .shortcut-label {
@@ -274,20 +274,20 @@ export default `/*
 }
 
 .field-data-option {
-  margin: 8px 0;
+  margin: var(--sys-size-5) 0;
   max-width: 100%;
 }
 
 .field-setup-buttons {
-  margin-top: 14px;
+  margin-top: var(--sys-size-7);
 }
 
 .field-data-message {
-  margin-bottom: 12px;
+  margin-bottom: var(--sys-size-6);
 }
 
 .field-data-warning {
-  margin-top: 4px;
+  margin-top: var(--sys-size-3);
   color: var(--sys-color-error);
   font-size: var(--sys-typescale-body4-size);
   line-height: var(--sys-typescale-body4-line-height);
@@ -300,7 +300,7 @@ export default `/*
     mask-size: var(--sys-typescale-body4-line-height);
     mask-image: var(--image-file-warning);
     background-color: var(--sys-color-error);
-    margin-right: 4px;
+    margin-right: var(--sys-size-3);
     flex-shrink: 0;
   }
 }
@@ -317,7 +317,7 @@ devtools-link {
 .environment-option {
   display: flex;
   align-items: center;
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
   gap: var(--sys-size-2);
 }
 
@@ -329,7 +329,7 @@ devtools-link {
 
 .environment-recs-list {
   margin: 0;
-  padding-left: 20px;
+  padding-left: var(--sys-size-9);
 }
 
 .environment-rec {
@@ -357,8 +357,8 @@ devtools-link {
 }
 
 .subpart-table {
-  border-top: 1px solid var(--sys-color-divider);
-  padding: 7px 4px;
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  padding: 7px var(--sys-size-3);
   margin-left: var(--subpart-table-margin);
 }
 
@@ -369,7 +369,7 @@ devtools-link {
 
 .subpart-table-header-row {
   font-weight: var(--ref-typeface-weight-medium);
-  margin-bottom: 4px;
+  margin-bottom: var(--sys-size-3);
 }
 
 .log-extra-details-button {
@@ -398,19 +398,19 @@ devtools-link {
     text-align: center;
 
     .section-title {
-      margin-bottom: 4px;
+      margin-bottom: var(--sys-size-3);
     }
   }
 }
 
 .node-description {
-  margin-bottom: 12px;
+  margin-bottom: var(--sys-size-6);
 }
 
 .section-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--sys-size-5);
   margin-bottom: 10px;
 }
 

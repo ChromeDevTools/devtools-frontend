@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/models/stack_trace/DetailedErrorStackParser.js
+// ../../front_end/models/stack_trace/DetailedErrorStackParser.ts
 var DetailedErrorStackParser_exports = {};
 __export(DetailedErrorStackParser_exports, {
   augmentRawFramesWithScriptIds: () => augmentRawFramesWithScriptIds,
@@ -186,7 +186,7 @@ function concatErrorDescriptionAndIssueSummary(description, issueSummary) {
   return description;
 }
 
-// gen/front_end/models/stack_trace/StackTraceImpl.js
+// ../../front_end/models/stack_trace/StackTraceImpl.ts
 var StackTraceImpl_exports = {};
 __export(StackTraceImpl_exports, {
   AsyncFragmentImpl: () => AsyncFragmentImpl,
@@ -241,8 +241,6 @@ var FragmentImpl = class _FragmentImpl {
   }
 };
 var AsyncFragmentImpl = class {
-  description;
-  fragment;
   constructor(description, fragment) {
     this.description = description;
     this.fragment = fragment;
@@ -278,11 +276,13 @@ function createParsedErrorStackFrameImplFromEvalOrigin(evalOrigin, parsedFrameIn
     return void 0;
   }
   const frame = evalOrigin.frames[0];
-  const nestedOrigin = createParsedErrorStackFrameImplFromEvalOrigin(evalOrigin.evalOrigin, parsedFrameInfo?.evalOrigin?.parsedFrameInfo);
+  const nestedOrigin = createParsedErrorStackFrameImplFromEvalOrigin(
+    evalOrigin.evalOrigin,
+    parsedFrameInfo?.evalOrigin?.parsedFrameInfo
+  );
   return new ParsedErrorStackFrameImpl(frame, parsedFrameInfo?.evalOrigin?.parsedFrameInfo, nestedOrigin);
 }
 var ParsedErrorStackFragmentImpl = class {
-  fragment;
   constructor(fragment) {
     this.fragment = fragment;
   }
@@ -365,8 +365,6 @@ var ParsedErrorStackFrameImpl = class {
   }
 };
 var DebuggableFragmentImpl = class {
-  fragment;
-  callFrames;
   constructor(fragment, callFrames) {
     this.fragment = fragment;
     this.callFrames = callFrames;
@@ -426,7 +424,7 @@ var DebuggableFrameImpl = class {
   }
 };
 
-// gen/front_end/models/stack_trace/StackTraceModel.js
+// ../../front_end/models/stack_trace/StackTraceModel.ts
 var StackTraceModel_exports = {};
 __export(StackTraceModel_exports, {
   StackTraceModel: () => StackTraceModel
@@ -435,7 +433,7 @@ import * as Common3 from "../../core/common/common.js";
 import * as SDK from "../../core/sdk/sdk.js";
 import * as StackTrace from "./stack_trace.js";
 
-// gen/front_end/models/stack_trace/Trie.js
+// ../../front_end/models/stack_trace/Trie.ts
 var Trie_exports = {};
 __export(Trie_exports, {
   EvalOrigin: () => EvalOrigin,
@@ -563,14 +561,13 @@ function compareRawFrames(a, b) {
   return a.columnNumber - b.columnNumber;
 }
 
-// gen/front_end/models/stack_trace/StackTraceModel.js
-var _a;
-var StackTraceModel = class extends SDK.SDKModel.SDKModel {
+// ../../front_end/models/stack_trace/StackTraceModel.ts
+var StackTraceModel = class _StackTraceModel extends SDK.SDKModel.SDKModel {
   #trie = new Trie();
   #mutex = new Common3.Mutex.Mutex();
   /** @returns the {@link StackTraceModel} for the target. Throws if the target or its model cannot be found. */
   static #modelForTarget(target) {
-    const model = target?.model(_a);
+    const model = target?.model(_StackTraceModel);
     if (!model) {
       throw new Error("Unable to find StackTraceModel");
     }
@@ -632,24 +629,24 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
       }
       await Promise.all(translatePromises);
       for (const stackTrace of stackTracesToUpdate) {
-        stackTrace.dispatchEventToListeners(
-          "UPDATED"
-          /* StackTrace.StackTrace.Events.UPDATED */
-        );
+        stackTrace.dispatchEventToListeners(StackTrace.StackTrace.Events.UPDATED);
       }
     } finally {
       release();
     }
   }
   async #createDebuggableFragment(pausedDetails, rawFramesToUIFrames) {
-    const fragment = await this.#createFragment(pausedDetails.callFrames.map((frame) => ({
-      scriptId: frame.script.scriptId,
-      url: frame.script.sourceURL,
-      functionName: frame.functionName,
-      lineNumber: frame.location().lineNumber,
-      columnNumber: frame.location().columnNumber,
-      isWasm: frame.script.isWasm()
-    })), rawFramesToUIFrames);
+    const fragment = await this.#createFragment(
+      pausedDetails.callFrames.map((frame) => ({
+        scriptId: frame.script.scriptId,
+        url: frame.script.sourceURL,
+        functionName: frame.functionName,
+        lineNumber: frame.location().lineNumber,
+        columnNumber: frame.location().columnNumber,
+        isWasm: frame.script.isWasm()
+      })),
+      rawFramesToUIFrames
+    );
     return new DebuggableFragmentImpl(fragment, pausedDetails.callFrames);
   }
   async #createAsyncFragments(stackTraceOrPausedEvent, rawFramesToUIFrames) {
@@ -660,7 +657,7 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
         if (asyncStackTrace.callFrames.length === 0) {
           continue;
         }
-        const model = _a.#modelForTarget(target ?? this.target().targetManager().primaryPageTarget());
+        const model = _StackTraceModel.#modelForTarget(target ?? this.target().targetManager().primaryPageTarget());
         const targetDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
         const asyncFrames = asyncStackTrace.callFrames.map((frame) => {
           const isWasm = targetDebuggerModel?.isWasm(frame.scriptId) ?? false;
@@ -699,7 +696,9 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     const evalOriginPromises = [];
     for (const node of fragment.node.getCallStack()) {
       if (node.parsedFrameInfo?.evalOrigin) {
-        evalOriginPromises.push(translateEvalOrigin(node.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, this.target()));
+        evalOriginPromises.push(
+          translateEvalOrigin(node.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, this.target())
+        );
       }
     }
     const evalOrigins = await Promise.all(evalOriginPromises);
@@ -707,7 +706,17 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     let evalI = 0;
     for (const node of fragment.node.getCallStack()) {
       const group = uiFrames[i++];
-      node.frames = group.map((frame, index) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, node.rawFrame.functionName, node.rawFrame.isWasm, index < group.length - 1));
+      node.frames = group.map((frame, index) => new FrameImpl(
+        frame.url,
+        frame.uiSourceCode,
+        frame.name,
+        frame.line,
+        frame.column,
+        frame.missingDebugInfo,
+        node.rawFrame.functionName,
+        node.rawFrame.isWasm,
+        index < group.length - 1
+      ));
       if (node.parsedFrameInfo?.evalOrigin) {
         node.evalOrigin = evalOrigins[evalI++];
       }
@@ -734,11 +743,20 @@ var StackTraceModel = class extends SDK.SDKModel.SDKModel {
     return fragments;
   }
 };
-_a = StackTraceModel;
 async function translateEvalOrigin(rawFrame, rawFramesToUIFrames, target) {
   const uiFrames = await rawFramesToUIFrames([rawFrame], target);
   const group = uiFrames[0];
-  const frames = group.map((frame, index) => new FrameImpl(frame.url, frame.uiSourceCode, frame.name, frame.line, frame.column, frame.missingDebugInfo, rawFrame.functionName, rawFrame.isWasm, index < group.length - 1));
+  const frames = group.map((frame, index) => new FrameImpl(
+    frame.url,
+    frame.uiSourceCode,
+    frame.name,
+    frame.line,
+    frame.column,
+    frame.missingDebugInfo,
+    rawFrame.functionName,
+    rawFrame.isWasm,
+    index < group.length - 1
+  ));
   let parentEvalOrigin;
   if (rawFrame.parsedFrameInfo?.evalOrigin) {
     parentEvalOrigin = await translateEvalOrigin(rawFrame.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, target);
@@ -764,7 +782,7 @@ function parseOrScriptMatch(debuggerModel, url) {
   }
   return null;
 }
-SDK.SDKModel.SDKModel.register(StackTraceModel, { capabilities: 0, autostart: false });
+SDK.SDKModel.SDKModel.register(StackTraceModel, { capabilities: SDK.Target.Capability.NONE, autostart: false });
 export {
   DetailedErrorStackParser_exports as DetailedErrorStackParser,
   StackTraceImpl_exports as StackTraceImpl,

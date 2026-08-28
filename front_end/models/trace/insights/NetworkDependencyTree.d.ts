@@ -1,4 +1,3 @@
-import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as Protocol from '../../../generated/protocol.js';
 import type * as Handlers from '../handlers/handlers.js';
@@ -83,7 +82,7 @@ export declare const UIStrings: {
      */
     readonly columnWastedMs: 'Est LCP savings';
 };
-export declare const i18nString: (id: string, values?: import("../../../core/i18n/i18nTypes.js").Values | undefined) => Common.UIString.LocalizedString;
+export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
 export declare const TOO_MANY_PRECONNECTS_THRESHOLD = 4;
 export interface CriticalRequestNode {
     request: Types.Events.SyntheticNetworkRequest;

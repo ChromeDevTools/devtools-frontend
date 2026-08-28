@@ -1,0 +1,74 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/models/bindings",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/models/bindings/CSSWorkspaceBinding.test.ts",
+    "../../../../../../front_end/models/bindings/CompilerScriptMapping.test.ts",
+    "../../../../../../front_end/models/bindings/ContentProviderBasedProject.test.ts",
+    "../../../../../../front_end/models/bindings/DebuggerLanguagePlugins.test.ts",
+    "../../../../../../front_end/models/bindings/DebuggerWorkspaceBinding.test.ts",
+    "../../../../../../front_end/models/bindings/DefaultScriptMapping.test.ts",
+    "../../../../../../front_end/models/bindings/FileUtils.test.ts",
+    "../../../../../../front_end/models/bindings/LiveLocation.test.ts",
+    "../../../../../../front_end/models/bindings/PresentationConsoleMessageHelper.test.ts",
+    "../../../../../../front_end/models/bindings/ResourceMapping.test.ts",
+    "../../../../../../front_end/models/bindings/ResourceScriptMapping.test.ts",
+    "../../../../../../front_end/models/bindings/ResourceUtils.test.ts",
+    "../../../../../../front_end/models/bindings/StylesSourceMapping.test.ts",
+    "../../../../../../front_end/models/bindings/SymbolizedError.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../extension-api/extension-api-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/protocol_client/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/text_utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/source-map-scopes-codec/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../persistence/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../stack_trace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../stack_trace/impl-tsconfig.ref.json"
+    },
+    {
+      "path": "../workspace/bundle-tsconfig.ref.json"
+    }
+  ]
+}

@@ -1,1 +1,22 @@
-{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/models/stack_trace","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/models/stack_trace/stack_trace_impl.ts"],"references":[{"path":"./stack_trace_impl-tsconfig.ref.json"}]}
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/models/stack_trace",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/models/stack_trace/stack_trace_impl.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "stack_trace_impl-tsconfig.ref.json"
+    }
+  ]
+}

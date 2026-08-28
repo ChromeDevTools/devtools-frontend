@@ -1,0 +1,1 @@
+gen/front_end/ui/lit/lit.js: gen/front_end/ui/lit/Directives.js gen/front_end/ui/lit/i18n-template.js gen/front_end/ui/lit/render.js gen/front_end/ui/lit/strip-whitespace.js gen/front_end/ui/lit/lit.prebundle.js

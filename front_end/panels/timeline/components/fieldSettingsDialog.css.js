@@ -29,11 +29,11 @@ devtools-dialog {
 }
 
 .privacy-disclosure {
-  margin: 8px 0;
+  margin: var(--sys-size-5) 0;
 }
 
 .url-override {
-  margin: 8px 0;
+  margin: var(--sys-size-5) 0;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -58,12 +58,12 @@ details > summary {
 }
 
 .origin-mapping-grid {
-  border: 1px solid var(--sys-color-divider);
-  margin-top: 8px;
+  border: var(--sys-size-1) solid var(--sys-color-divider);
+  margin-top: var(--sys-size-5);
 }
 
 .origin-mapping-description {
-  margin-bottom: 8px;
+  margin-bottom: var(--sys-size-5);
 }
 
 .origin-mapping-button-section {
@@ -78,7 +78,7 @@ details > summary {
 }
 
 .advanced-section-contents {
-  margin: 4px 0 14px;
+  margin: var(--sys-size-3) 0 var(--sys-size-7);
 }
 
 .buttons-section {
@@ -93,11 +93,11 @@ details > summary {
 }
 
 input[type="checkbox"] {
-  height: 12px;
-  width: 12px;
-  min-height: 12px;
-  min-width: 12px;
-  margin: 6px;
+  height: var(--sys-size-6);
+  width: var(--sys-size-6);
+  min-height: var(--sys-size-6);
+  min-width: var(--sys-size-6);
+  margin: var(--sys-size-4);
 }
 
 input[type="text"][disabled] {
@@ -105,7 +105,7 @@ input[type="text"][disabled] {
 }
 
 .warning {
-  margin: 2px 8px;
+  margin: var(--sys-size-2) var(--sys-size-5);
   color: var(--color-error-text);
 }
 
@@ -117,7 +117,7 @@ devtools-link {
 .divider {
   margin: 10px 0;
   border: none;
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve('./fieldSettingsDialog.css')} */`;

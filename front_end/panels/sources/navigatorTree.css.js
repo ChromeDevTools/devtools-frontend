@@ -40,7 +40,7 @@ export default `/*
 }
 
 .tree-outline li {
-  min-height: 20px;
+  min-height: var(--sys-size-9);
 }
 
 .tree-outline li:hover:not(.selected) .selection {
@@ -81,7 +81,7 @@ export default `/*
 .navigator-file-tree-item devtools-icon.dot::before {
   width: 7px;
   height: 7px;
-  top: 12px;
+  top: var(--sys-size-6);
   left: 11px;
 }
 

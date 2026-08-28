@@ -8064,7 +8064,7 @@ var serviceWorkersView_css_default = `/*
   height: 10px;
   z-index: 10;
   margin-right: 5px;
-  border-radius: 50%;
+  border-radius: var(--sys-shape-corner-full);
   border: var(--sys-size-1) solid var(--sys-color-token-subtle);
   align-self: center;
   /* The circle should not shrink, to avoid risking becoming invisible. */
@@ -8089,7 +8089,7 @@ var serviceWorkersView_css_default = `/*
 
 .service-worker-subtitle {
   padding-left: var(--sys-size-7);
-  line-height: var(--sys-size-7);
+  line-height: 14px;
   color: var(--sys-color-state-disabled);
 }
 
@@ -8153,7 +8153,7 @@ var serviceWorkersView_css_default = `/*
 }
 
 .devtools-link {
-  line-height: var(--sys-size-7);
+  line-height: 14px;
   align-self: center;
   padding: var(--sys-size-1);
 }

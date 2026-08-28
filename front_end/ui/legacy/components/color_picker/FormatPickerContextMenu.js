@@ -35,6 +35,7 @@ export class FormatPickerContextMenu {
             "srgb" /* Common.Color.Format.SRGB */,
             "srgb-linear" /* Common.Color.Format.SRGB_LINEAR */,
             "display-p3" /* Common.Color.Format.DISPLAY_P3 */,
+            "display-p3-linear" /* Common.Color.Format.DISPLAY_P3_LINEAR */,
             "a98-rgb" /* Common.Color.Format.A98_RGB */,
             "prophoto-rgb" /* Common.Color.Format.PROPHOTO_RGB */,
             "rec2020" /* Common.Color.Format.REC_2020 */,

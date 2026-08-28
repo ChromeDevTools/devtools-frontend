@@ -4,6 +4,6 @@ export declare class DOMDetectiveBadge extends Badge {
     readonly title = "DOM Detective";
     readonly jslogContext = "dom-detective";
     readonly imageUri: string;
-    readonly interestedActions: readonly [BadgeAction.MODERN_DOM_BADGE_CLICKED];
+    readonly interestedActions: readonly BadgeAction[];
     handleAction(_action: BadgeAction): void;
 }

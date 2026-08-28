@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/models/ai_assistance/data_formatters",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../front_end/models/ai_assistance/data_formatters/FileFormatter.test.ts",
+    "../../../../../../../front_end/models/ai_assistance/data_formatters/UnitFormatters.test.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../bindings/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../workspace/bundle-tsconfig.ref.json"
+    }
+  ]
+}

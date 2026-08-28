@@ -1,0 +1,1 @@
+gen/front_end/ui/settings/settings.js: gen/front_end/ui/settings/ConsoleSettings.js gen/front_end/ui/settings/InspectorMainSettings.js gen/front_end/ui/settings/MainSettings.js gen/front_end/ui/settings/SettingUIRegistration.js gen/front_end/ui/settings/settings.prebundle.js

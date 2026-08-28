@@ -2929,7 +2929,7 @@ var navigatorTree_css_default = `/*
 }
 
 .tree-outline li {
-  min-height: 20px;
+  min-height: var(--sys-size-9);
 }
 
 .tree-outline li:hover:not(.selected) .selection {
@@ -2970,7 +2970,7 @@ var navigatorTree_css_default = `/*
 .navigator-file-tree-item devtools-icon.dot::before {
   width: 7px;
   height: 7px;
-  top: 12px;
+  top: var(--sys-size-6);
   left: 11px;
 }
 
@@ -3064,8 +3064,8 @@ var navigatorView_css_default = `/*
  */
 
 .navigator-toolbar {
-  border-bottom: 1px solid var(--sys-color-divider);
-  padding-left: 8px;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+  padding-left: var(--sys-size-5);
 }
 
 /*# sourceURL=${import.meta.resolve("./navigatorView.css")} */`;
@@ -5113,7 +5113,7 @@ var sourcesPanel_css_default = `/*
   top: 0;
   width: 100%;
   background-color: var(--app-color-toolbar-background);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
   z-index: 1;
 }
@@ -5135,7 +5135,7 @@ var sourcesPanel_css_default = `/*
 .scripts-debug-toolbar-drawer > devtools-checkbox {
   display: none;
   padding-left: 3px;
-  height: 28px;
+  height: var(--sys-size-12);
 }
 
 .scripts-debug-toolbar-drawer.expanded > devtools-checkbox {
@@ -5305,7 +5305,7 @@ var sourcesView_css_default = `/*
   flex: 0 0 auto;
   min-height: 27px;
   background-color: var(--sys-color-cdt-base-container);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: hidden;
   z-index: 0;
   align-items: flex-end;
@@ -13543,7 +13543,7 @@ var scopeChainSidebarPane_css_default = `/*
 }
 
 .scope-chain-sidebar-pane-section {
-  padding: 2px 4px;
+  padding: var(--sys-size-2) var(--sys-size-3);
   flex: none;
 }
 
@@ -13800,7 +13800,7 @@ var sourcesNavigator_css_default = `/*
  */
 
 .border-container {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   flex-shrink: 0;
 }
 

@@ -180,6 +180,27 @@ var colorFormatSpec = {
     }
   },
   [
+    "display-p3-linear"
+    /* Common.Color.Format.DISPLAY_P3_LINEAR */
+  ]: {
+    label: "RGBA",
+    toValues: function(color) {
+      const displayP3LinearColor = color.as(
+        "display-p3-linear"
+        /* Common.Color.Format.DISPLAY_P3_LINEAR */
+      );
+      return roundAndStringify([
+        displayP3LinearColor.p0,
+        displayP3LinearColor.p1,
+        displayP3LinearColor.p2,
+        displayP3LinearColor.alpha ?? 1
+      ]);
+    },
+    fromValues: function(values) {
+      return Common.Color.parse(`color(${"display-p3-linear"} ${functionParamsText(values)})`);
+    }
+  },
+  [
     "a98-rgb"
     /* Common.Color.Format.A98_RGB */
   ]: {
@@ -1007,6 +1028,7 @@ var FormatPickerContextMenu = class {
       "srgb",
       "srgb-linear",
       "display-p3",
+      "display-p3-linear",
       "a98-rgb",
       "prophoto-rgb",
       "rec2020",

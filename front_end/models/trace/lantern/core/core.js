@@ -1,8 +1,8 @@
-// gen/front_end/models/trace/lantern/core/LanternError.js
+// ../../front_end/models/trace/lantern/core/LanternError.ts
 var LanternError = class extends Error {
 };
 
-// gen/front_end/models/trace/lantern/core/NetworkAnalyzer.js
+// ../../front_end/models/trace/lantern/core/NetworkAnalyzer.ts
 var UrlUtils = class {
   /**
    * There is fancy URL rewriting logic for the chrome://settings page that we need to work around.
@@ -259,7 +259,10 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
     for (const originRecords of groupedByOrigin.values()) {
       const earliestReusePossible = originRecords.map((request) => request.networkEndTime).reduce((a, b) => Math.min(a, b), Infinity);
       for (const request of originRecords) {
-        connectionWasReused.set(request.requestId, request.networkRequestTime >= earliestReusePossible || request.protocol === "h2");
+        connectionWasReused.set(
+          request.requestId,
+          request.networkRequestTime >= earliestReusePossible || request.protocol === "h2"
+        );
       }
       const firstRecord = originRecords.reduce((a, b) => {
         return a.networkRequestTime > b.networkRequestTime ? b : a;
@@ -350,16 +353,19 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
    */
   static estimateThroughput(records) {
     let totalBytes = 0;
-    const timeBoundaries = records.reduce((boundaries, request) => {
-      const scheme = request.parsedURL?.scheme;
-      if (scheme === "data" || request.failed || !request.finished || request.statusCode > 300 || !request.transferSize) {
+    const timeBoundaries = records.reduce(
+      (boundaries, request) => {
+        const scheme = request.parsedURL?.scheme;
+        if (scheme === "data" || request.failed || !request.finished || request.statusCode > 300 || !request.transferSize) {
+          return boundaries;
+        }
+        totalBytes += request.transferSize;
+        boundaries.push({ time: request.responseHeadersEndTime / 1e3, isStart: true });
+        boundaries.push({ time: request.networkEndTime / 1e3, isStart: false });
         return boundaries;
-      }
-      totalBytes += request.transferSize;
-      boundaries.push({ time: request.responseHeadersEndTime / 1e3, isStart: true });
-      boundaries.push({ time: request.networkEndTime / 1e3, isStart: false });
-      return boundaries;
-    }, []).sort((a, b) => a.time - b.time);
+      },
+      []
+    ).sort((a, b) => a.time - b.time);
     if (!timeBoundaries.length) {
       return null;
     }
@@ -411,11 +417,15 @@ var NetworkAnalyzer = class _NetworkAnalyzer {
     };
   }
   static findResourceForUrl(records, resourceUrl) {
-    return records.find((request) => resourceUrl.startsWith(request.url) && UrlUtils.equalWithExcludedFragments(request.url, resourceUrl));
+    return records.find(
+      (request) => resourceUrl.startsWith(request.url) && UrlUtils.equalWithExcludedFragments(request.url, resourceUrl)
+    );
   }
   static findLastDocumentForUrl(records, resourceUrl) {
-    const matchingRequests = records.filter((request) => request.resourceType === "Document" && !request.failed && // Note: `request.url` should never have a fragment, else this optimization gives wrong results.
-    resourceUrl.startsWith(request.url) && UrlUtils.equalWithExcludedFragments(request.url, resourceUrl));
+    const matchingRequests = records.filter(
+      (request) => request.resourceType === "Document" && !request.failed && // Note: `request.url` should never have a fragment, else this optimization gives wrong results.
+      resourceUrl.startsWith(request.url) && UrlUtils.equalWithExcludedFragments(request.url, resourceUrl)
+    );
     return matchingRequests[matchingRequests.length - 1];
   }
   /**

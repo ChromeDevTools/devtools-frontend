@@ -1,0 +1,1 @@
+gen/front_end/models/lighthouse/lighthouse.js: ../../front_end/models/lighthouse/LighthouseReporterTypes.ts ../../front_end/models/lighthouse/RunTypes.ts ../../front_end/models/lighthouse/lighthouse.ts

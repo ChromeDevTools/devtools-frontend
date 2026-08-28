@@ -1,0 +1,1 @@
+gen/front_end/models/cpu_profile/cpu_profile.js: ../../front_end/models/cpu_profile/ProfileTreeModel.ts ../../front_end/models/cpu_profile/CPUProfileDataModel.ts ../../front_end/models/cpu_profile/cpu_profile.ts

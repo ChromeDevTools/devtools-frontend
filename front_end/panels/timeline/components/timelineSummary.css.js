@@ -18,7 +18,7 @@ export default `/*
     padding: 0 var(--sys-size-6) var(--sys-size-4) var(--sys-size-8) ;
     /* The category summary can't be more narrow than this, so we'll force a horizontal scrollbar
     */
-    min-width: 192px;
+    min-width: var(--sys-size-25);
 
     &.is-in-ai-widget {
       padding: 0;
@@ -28,7 +28,7 @@ export default `/*
   .summary-range {
     font-weight: var(--ref-typeface-weight-medium);
     height: 24.5px;
-    line-height: 22px;
+    line-height: var(--sys-size-10);
   }
 
   .category-summary {
@@ -38,8 +38,8 @@ export default `/*
   }
 
   .category-row {
-    min-height: 16px;
-    line-height: 16px;
+    min-height: var(--sys-size-8);
+    line-height: var(--sys-size-8);
   }
 
   .category-swatch {

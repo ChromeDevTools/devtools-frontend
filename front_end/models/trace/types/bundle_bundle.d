@@ -1,0 +1,1 @@
+gen/front_end/models/trace/types/types.js: ../../front_end/models/trace/types/Configuration.ts ../../front_end/models/trace/types/Extensions.ts ../../front_end/models/trace/types/File.ts ../../front_end/models/trace/types/Overlays.ts ../../front_end/models/trace/types/Timing.ts ../../front_end/models/trace/types/TraceEvents.ts ../../front_end/models/trace/types/types.ts

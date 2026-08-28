@@ -1258,7 +1258,7 @@
     onEachLayoutShift: onEachLayoutShift$1
   });
 
-  // gen/front_end/models/live-metrics/web-vitals-injected/spec/spec.prebundle.js
+  // ../../front_end/models/live-metrics/web-vitals-injected/spec/spec.ts
   var EVENT_BINDING_NAME = "__chromium_devtools_metrics_reporter";
   var INTERNAL_KILL_SWITCH = "__chromium_devtools_kill_live_metrics";
   var SCRIPTS_PER_LOAF_LIMIT = 10;

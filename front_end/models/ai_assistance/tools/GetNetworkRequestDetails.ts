@@ -34,8 +34,8 @@ export interface GetNetworkRequestDetailsArgs extends ToolArgs {
  */
 export class GetNetworkRequestDetailsTool implements
     DataTool<GetNetworkRequestDetailsArgs, unknown, BaseToolCapability&OriginLockCapability> {
-  readonly name = ToolName.GET_NETWORK_REQUEST_DETAILS;
-  readonly description =
+  readonly name: ToolName = ToolName.GET_NETWORK_REQUEST_DETAILS;
+  readonly description: string =
       'Retrieves the full headers, timing, status, and body details of a specific network request by ID.';
 
   readonly #networkLog?: Logs.NetworkLog.NetworkLog;

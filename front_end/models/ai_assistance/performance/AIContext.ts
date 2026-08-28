@@ -77,7 +77,7 @@ export class AgentFocus {
 
   #data: AgentFocusData;
   #primaryInsightSet: Trace.Insights.Types.InsightSet|null;
-  readonly eventsSerializer = new Trace.EventsSerializer.EventsSerializer();
+  readonly eventsSerializer: Trace.EventsSerializer.EventsSerializer = new Trace.EventsSerializer.EventsSerializer();
 
   constructor(data: AgentFocusData) {
     if (!data.parsedTrace.insights) {

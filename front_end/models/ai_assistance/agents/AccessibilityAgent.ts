@@ -85,8 +85,8 @@ If the user asks a question that requires an investigation of a problem, use thi
  * instance for a new conversation.
  */
 export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON> {
-  readonly preamble = preamble;
-  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
+  readonly preamble: string = preamble;
+  readonly clientFeature: Host.AidaClient.ClientFeature = Host.AidaClient.ClientFeature.CHROME_ACCESSIBILITY_AGENT;
   readonly #lighthouseRecording?:
       (overrides?: LHModel.RunTypes.RunOverrides) => Promise<LHModel.ReporterTypes.ReportJSON|null>;
 

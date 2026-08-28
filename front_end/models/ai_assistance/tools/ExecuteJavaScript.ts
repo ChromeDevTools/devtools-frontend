@@ -31,9 +31,9 @@ export interface ExecuteJavaScriptArgs extends ToolArgs {
 
 export class ExecuteJavaScriptTool implements
     DataTool<ExecuteJavaScriptArgs, unknown, BaseToolCapability&PageExecutionCapability&StyleMutationCapability> {
-  readonly name = ToolName.EXECUTE_JAVASCRIPT;
+  readonly name: ToolName = ToolName.EXECUTE_JAVASCRIPT;
 
-  readonly description =
+  readonly description: string =
       'This function allows you to run JavaScript code on the inspected page to access the element styles and page content.\nCall this function to gather additional information or modify the page state. Call this function enough times to investigate the user request. Note: You cannot make network requests using this function.';
 
   static async validateAndFormatCode(code: string): Promise<{formattedCode?: string, error?: string}> {

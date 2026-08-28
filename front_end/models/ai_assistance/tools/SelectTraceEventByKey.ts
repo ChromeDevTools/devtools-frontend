@@ -28,8 +28,8 @@ export interface SelectTraceEventByKeyArgs extends ToolArgs {
 
 export class SelectTraceEventByKeyTool implements
     DataTool<SelectTraceEventByKeyArgs, string, BaseToolCapability&PerformanceTraceCapability> {
-  readonly name = ToolName.SELECT_TRACE_EVENT_BY_KEY;
-  readonly description = 'Selects and reveals a specific event by its key in the Performance panel Flamechart.';
+  readonly name: ToolName = ToolName.SELECT_TRACE_EVENT_BY_KEY;
+  readonly description: string = 'Selects and reveals a specific event by its key in the Performance panel Flamechart.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof SelectTraceEventByKeyArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

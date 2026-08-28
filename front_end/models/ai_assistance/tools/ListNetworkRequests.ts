@@ -38,8 +38,8 @@ interface NetworkRequestSummary {
  */
 export class ListNetworkRequestsTool implements
     DataTool<Record<string, never>, unknown, BaseToolCapability&OriginLockCapability> {
-  readonly name = ToolName.LIST_NETWORK_REQUESTS;
-  readonly description = 'Gives a list of network requests including URL, status code, and duration.';
+  readonly name: ToolName = ToolName.LIST_NETWORK_REQUESTS;
+  readonly description: string = 'Gives a list of network requests including URL, status code, and duration.';
 
   readonly #networkLog?: Logs.NetworkLog.NetworkLog;
 

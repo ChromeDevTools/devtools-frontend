@@ -33,10 +33,10 @@ export interface ListCookiesResult {
 
 export class ListCookiesTool implements
     DataTool<ListCookiesArgs, ListCookiesResult, BaseToolCapability&OriginLockCapability&ServerLoggingCapability> {
-  readonly name = ToolName.LIST_COOKIES;
-  readonly description = 'Lists all cookies for requested origins, strictly excluding their values.';
+  readonly name: ToolName = ToolName.LIST_COOKIES;
+  readonly description: string = 'Lists all cookies for requested origins, strictly excluding their values.';
 
-  readonly annotations = [ToolAnnotation.REDACT_FROM_HISTORY];
+  readonly annotations: ToolAnnotation[] = [ToolAnnotation.REDACT_FROM_HISTORY];
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ListCookiesArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

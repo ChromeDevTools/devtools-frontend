@@ -27,8 +27,8 @@ export interface GetTraceEventByKeyArgs extends ToolArgs {
 
 export class GetTraceEventByKeyTool implements
     DataTool<GetTraceEventByKeyArgs, string, BaseToolCapability&PerformanceTraceCapability> {
-  readonly name = ToolName.GET_TRACE_EVENT_BY_KEY;
-  readonly description = 'Get details for a specific trace event by its event key.';
+  readonly name: ToolName = ToolName.GET_TRACE_EVENT_BY_KEY;
+  readonly description: string = 'Get details for a specific trace event by its event key.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetTraceEventByKeyArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

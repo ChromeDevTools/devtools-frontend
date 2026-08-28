@@ -78,8 +78,8 @@ MDN Web Docs: JavaScript Functions: https://developer.mozilla.org/en-US/docs/Web
  * instance for a new conversation.
  */
 export class FileAgent extends AiAgent<Workspace.UISourceCode.UISourceCode> {
-  readonly preamble = preamble;
-  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_FILE_AGENT;
+  readonly preamble: string = preamble;
+  readonly clientFeature: Host.AidaClient.ClientFeature = Host.AidaClient.ClientFeature.CHROME_FILE_AGENT;
   get userTier(): string|undefined {
     return Root.Runtime.hostConfig.devToolsAiAssistanceFileAgent?.userTier;
   }

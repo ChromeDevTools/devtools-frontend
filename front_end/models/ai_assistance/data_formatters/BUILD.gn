@@ -6,6 +6,7 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -13,7 +14,7 @@ ts_library("unittests") {
     "UnitFormatters.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../:bundle",
     "../../../core/common:bundle",
     "../../../core/platform:bundle",
@@ -25,6 +26,7 @@ ts_library("unittests") {
 }
 
 devtools_foundation_module("foundation_unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -34,7 +36,7 @@ devtools_foundation_module("foundation_unittests") {
     "PerformanceTraceFormatter.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "..:bundle",
     "../../../core/common:bundle",
     "../../../core/platform:bundle",

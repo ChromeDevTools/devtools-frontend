@@ -32,8 +32,8 @@ export interface GetResourceContentArgs extends ToolArgs {
 
 export class GetResourceContentTool implements DataTool<
     GetResourceContentArgs, {content: string}, BaseToolCapability&TargetCapability&PerformanceTraceCapability> {
-  readonly name = ToolName.GET_RESOURCE_CONTENT;
-  readonly description =
+  readonly name: ToolName = ToolName.GET_RESOURCE_CONTENT;
+  readonly description: string =
       'Returns the content of the resource with the given url. Only use this for text resource types.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetResourceContentArgs> = {

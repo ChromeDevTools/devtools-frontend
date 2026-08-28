@@ -28,8 +28,8 @@ export interface GetTraceNetworkSummaryArgs extends ToolArgs {
 
 export class GetTraceNetworkSummaryTool implements
     DataTool<GetTraceNetworkSummaryArgs, string, BaseToolCapability&PerformanceTraceCapability> {
-  readonly name = ToolName.GET_TRACE_NETWORK_SUMMARY;
-  readonly description = 'Returns a summary of the network requests for the given bounds.';
+  readonly name: ToolName = ToolName.GET_TRACE_NETWORK_SUMMARY;
+  readonly description: string = 'Returns a summary of the network requests for the given bounds.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetTraceNetworkSummaryArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

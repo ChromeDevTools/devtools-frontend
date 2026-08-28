@@ -104,8 +104,8 @@ interface CookieDetails {
 }
 
 export class StorageAgent extends AiAgent<StorageItem> {
-  readonly preamble = preamble;
-  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
+  readonly preamble: string = preamble;
+  readonly clientFeature: Host.AidaClient.ClientFeature = Host.AidaClient.ClientFeature.CHROME_STORAGE_AGENT;
 
   get userTier(): string|undefined {
     return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;

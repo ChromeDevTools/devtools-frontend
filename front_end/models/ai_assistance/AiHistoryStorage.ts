@@ -37,7 +37,7 @@ export interface SerializedImage {
 const DEFAULT_MAX_STORAGE_SIZE = 50 * 1024 * 1024;
 export const MAX_RECENT_PROMPTS_COUNT = 20;
 export const MAX_CONVERSATIONS_COUNT = 50;
-export const RECENT_PROMPTS_SIZE_LIMIT = 100 * 1024;
+export const RECENT_PROMPTS_SIZE_LIMIT: number = 100 * 1024;
 
 export const enum Events {
   HISTORY_DELETED = 'AiHistoryDeleted',
@@ -57,7 +57,7 @@ export class AiHistoryStorage extends Common.ObjectWrapper.ObjectWrapper<EventTy
   constructor(
       // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       settings: Common.Settings.Settings = Common.Settings.Settings.instance(),
-      maxStorageSize = DEFAULT_MAX_STORAGE_SIZE,
+      maxStorageSize: number = DEFAULT_MAX_STORAGE_SIZE,
   ) {
     super();
     this.#historySetting = settings.createSetting('ai-assistance-history-entries', []);

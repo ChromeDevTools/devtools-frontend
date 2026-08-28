@@ -88,8 +88,8 @@ export interface ContextSelectionAgentOptions extends AgentOptions {
  * instance for a new conversation.
  */
 export class ContextSelectionAgent extends AiAgent<never> {
-  readonly preamble = preamble;
-  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
+  readonly preamble: string = preamble;
+  readonly clientFeature: Host.AidaClient.ClientFeature = Host.AidaClient.ClientFeature.CHROME_CONTEXT_SELECTION_AGENT;
   get userTier(): string|undefined {
     // TODO: Make this depend on variable.
     return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;
@@ -550,7 +550,8 @@ export class ContextSelectionAgent extends AiAgent<never> {
   }
 
   static lastSourceId = 0;
-  static uiSourceCodeId = new WeakMap<Workspace.UISourceCode.UISourceCode, number>();
+  static uiSourceCodeId: WeakMap<Workspace.UISourceCode.UISourceCode, number> =
+      new WeakMap<Workspace.UISourceCode.UISourceCode, number>();
   /**
    * This is a heuristic algorithm that gets all the source files coming from the
    * network and assigns unique ids to be linked from the LLM Markdown response.

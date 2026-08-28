@@ -39,11 +39,11 @@ export interface ListStorageKeysResult {
 
 export class ListStorageKeysTool implements DataTool<ListStorageKeysArgs, ListStorageKeysResult,
                                                      BaseToolCapability&OriginLockCapability&ServerLoggingCapability> {
-  readonly name = ToolName.LIST_STORAGE_KEYS;
-  readonly description =
+  readonly name: ToolName = ToolName.LIST_STORAGE_KEYS;
+  readonly description: string =
       'Lists all keys for a given storage type for requested origins. Returns keys grouped by storage partition under their origin.';
 
-  readonly annotations = [ToolAnnotation.REDACT_FROM_HISTORY];
+  readonly annotations: ToolAnnotation[] = [ToolAnnotation.REDACT_FROM_HISTORY];
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ListStorageKeysArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

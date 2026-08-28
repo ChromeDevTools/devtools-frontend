@@ -33,11 +33,12 @@ interface SourceSummary {
  */
 export class ListSourcesTool implements
     DataTool<Record<string, never>, {files: SourceSummary[]}, BaseToolCapability&OriginLockCapability> {
-  readonly name = ToolName.LIST_SOURCES;
-  readonly description = 'Lists all source files in the workspace with their name and a unique ID.';
+  readonly name: ToolName = ToolName.LIST_SOURCES;
+  readonly description: string = 'Lists all source files in the workspace with their name and a unique ID.';
 
   static lastSourceId = 0;
-  static uiSourceCodeId = new WeakMap<Workspace.UISourceCode.UISourceCode, number>();
+  static uiSourceCodeId: WeakMap<Workspace.UISourceCode.UISourceCode, number> =
+      new WeakMap<Workspace.UISourceCode.UISourceCode, number>();
 
   static reset(): void {
     ListSourcesTool.lastSourceId = 0;

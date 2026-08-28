@@ -76,9 +76,9 @@ export interface AiAgent2Options extends ExecuteJsAgentOptions {
 
 export class AiAgent2 extends AiAgent<unknown> {
   // TODO: The static preamble is a placeholder and will eventually live server-side.
-  readonly preamble = preamble;
-  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
-  readonly userTier = 'TESTERS';
+  readonly preamble: string = preamble;
+  readonly clientFeature: Host.AidaClient.ClientFeature = Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
+  readonly userTier: string = 'TESTERS';
 
   #changes: ChangeManager;
   #execJs: typeof executeJsCode;

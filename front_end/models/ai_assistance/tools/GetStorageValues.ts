@@ -45,10 +45,11 @@ export interface GetStorageValuesResult {
 
 export class GetStorageValuesTool implements DataTool<GetStorageValuesArgs, GetStorageValuesResult,
                                                       BaseToolCapability&OriginLockCapability&ServerLoggingCapability> {
-  readonly name = ToolName.GET_STORAGE_VALUES;
-  readonly description = 'Retrieve specific string values from storage partitions for requested keys across origins.';
+  readonly name: ToolName = ToolName.GET_STORAGE_VALUES;
+  readonly description: string =
+      'Retrieve specific string values from storage partitions for requested keys across origins.';
 
-  readonly annotations = [ToolAnnotation.REDACT_FROM_HISTORY];
+  readonly annotations: ToolAnnotation[] = [ToolAnnotation.REDACT_FROM_HISTORY];
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetStorageValuesArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

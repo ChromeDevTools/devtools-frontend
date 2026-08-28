@@ -166,7 +166,7 @@ export type ToolArgs = Record<string, unknown>;
 // The maximum size (in bytes) of a function execution result.
 // Approximately 16k tokens at ~4 characters per token, designed to limit
 // result sizes to prevent overloading the LLM's context window.
-export const MAX_FUNCTION_RESULT_BYTE_LENGTH = 16384 * 4;
+export const MAX_FUNCTION_RESULT_BYTE_LENGTH: number = 16384 * 4;
 
 export const enum ToolName {
   EXECUTE_JAVASCRIPT = 'executeJavaScript',

@@ -55,8 +55,8 @@ export interface GetInsightDetailsArgs extends ToolArgs {
 
 export class GetInsightDetailsTool implements
     DataTool<GetInsightDetailsArgs, string, BaseToolCapability&TargetCapability&PerformanceTraceCapability> {
-  readonly name = ToolName.GET_INSIGHT_DETAILS;
-  readonly description =
+  readonly name: ToolName = ToolName.GET_INSIGHT_DETAILS;
+  readonly description: string =
       'Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetInsightDetailsArgs> = {

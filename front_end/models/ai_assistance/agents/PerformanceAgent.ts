@@ -209,7 +209,7 @@ export interface PerformanceAgentOptions extends AgentOptions {
  * instance for a new conversation.
  */
 export class PerformanceAgent extends AiAgent<AgentFocus> {
-  readonly preamble = preamble;
+  readonly preamble: string = preamble;
   readonly #tracker: Tracing.FreshRecording.Tracker;
   readonly #networkLog: Logs.NetworkLog.NetworkLog;
 

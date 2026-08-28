@@ -28,8 +28,9 @@ export interface GetTraceMainThreadSummaryArgs extends ToolArgs {
 
 export class GetTraceMainThreadSummaryTool implements
     DataTool<GetTraceMainThreadSummaryArgs, string, BaseToolCapability&PerformanceTraceCapability> {
-  readonly name = ToolName.GET_TRACE_MAIN_THREAD_SUMMARY;
-  readonly description = 'Returns a focused, detailed summary of the main thread for a predefined labeled period.';
+  readonly name: ToolName = ToolName.GET_TRACE_MAIN_THREAD_SUMMARY;
+  readonly description: string =
+      'Returns a focused, detailed summary of the main thread for a predefined labeled period.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetTraceMainThreadSummaryArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

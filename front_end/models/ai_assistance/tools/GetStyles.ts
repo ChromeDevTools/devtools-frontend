@@ -26,8 +26,8 @@ export interface GetStylesArgs extends ToolArgs {
 
 export class GetStylesTool implements
     DataTool<GetStylesArgs, unknown, BaseToolCapability&TargetCapability&OriginLockCapability> {
-  readonly name = ToolName.GET_STYLES;
-  readonly description =
+  readonly name: ToolName = ToolName.GET_STYLES;
+  readonly description: string =
       `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
 
 **CRITICAL** An element uid is a number, not a selector.

@@ -35,8 +35,8 @@ export interface GetElementAccessibilityDetailsArgs extends ToolArgs {
  */
 export class GetElementAccessibilityDetailsTool implements
     DataTool<GetElementAccessibilityDetailsArgs, string, BaseToolCapability&TargetCapability&OriginLockCapability> {
-  readonly name = ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS;
-  readonly description =
+  readonly name: ToolName = ToolName.GET_ELEMENT_ACCESSIBILITY_DETAILS;
+  readonly description: string =
       'Get detailed accessibility information for an element on the inspected page by its backend node ID.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetElementAccessibilityDetailsArgs> = {

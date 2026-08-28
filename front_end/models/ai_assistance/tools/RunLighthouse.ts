@@ -23,8 +23,8 @@ export interface RunLighthouseArgs extends ToolArgs {
 
 export class RunLighthouseTool implements
     DataTool<RunLighthouseArgs, {audits: string}, BaseToolCapability&LighthouseRecordingCapability> {
-  readonly name = ToolName.RUN_LIGHTHOUSE;
-  readonly description =
+  readonly name: ToolName = ToolName.RUN_LIGHTHOUSE;
+  readonly description: string =
       'Runs Lighthouse audits on the active page. Supports "navigation" (for full initial page load audits), "snapshot" (for inspecting live in-page modifications without reload), and "timespan" (for interactions).';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof RunLighthouseArgs> = {

@@ -28,8 +28,8 @@ export interface GetDetailedCallTreeArgs extends ToolArgs {
 
 export class GetDetailedCallTreeTool implements
     DataTool<GetDetailedCallTreeArgs, string, BaseToolCapability&PerformanceTraceCapability> {
-  readonly name = ToolName.GET_DETAILED_CALL_TREE;
-  readonly description = 'Returns a detailed call tree for the given main thread event.';
+  readonly name: ToolName = ToolName.GET_DETAILED_CALL_TREE;
+  readonly description: string = 'Returns a detailed call tree for the given main thread event.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetDetailedCallTreeArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

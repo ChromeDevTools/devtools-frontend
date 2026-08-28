@@ -94,15 +94,16 @@ const MULTIMODAL_ENHANCEMENT_PROMPTS: Record<MultimodalInputType, string> = {
   [MultimodalInputType.UPLOADED_IMAGE]: promptForUploadedImage + considerationsForMultimodalInputEvaluation,
 };
 
-export const AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const AI_ASSISTANCE_FILTER_REGEX: string = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
 
 /**
  * One agent instance handles one conversation. Create a new agent
  * instance for a new conversation.
  */
 export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
-  readonly preamble = preamble;
-  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
+  readonly preamble: string = preamble;
+  readonly clientFeature: Host.AidaClient.ClientFeature = Host.AidaClient.ClientFeature.CHROME_STYLING_AGENT;
   get userTier(): string|undefined {
     return Root.Runtime.hostConfig.devToolsFreestyler?.userTier;
   }

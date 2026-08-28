@@ -71,8 +71,8 @@ This request aims to retrieve a list of products matching the search query "lapt
  * instance for a new conversation.
  */
 export class NetworkAgent extends AiAgent<SDK.NetworkRequest.NetworkRequest> {
-  readonly preamble = preamble;
-  readonly clientFeature = Host.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
+  readonly preamble: string = preamble;
+  readonly clientFeature: Host.AidaClient.ClientFeature = Host.AidaClient.ClientFeature.CHROME_NETWORK_AGENT;
   get userTier(): string|undefined {
     return Root.Runtime.hostConfig.devToolsAiAssistanceNetworkAgent?.userTier;
   }

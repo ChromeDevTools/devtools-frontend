@@ -38,8 +38,8 @@ export interface ResolveDevtoolsNodePathArgs extends ToolArgs {
  */
 export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNodePathArgs, {backendNodeId: number},
                                                              BaseToolCapability&TargetCapability&OriginLockCapability> {
-  readonly name = ToolName.RESOLVE_DEVTOOLS_NODE_PATH;
-  readonly description = 'Resolves a DevTools node path to a backend node ID.';
+  readonly name: ToolName = ToolName.RESOLVE_DEVTOOLS_NODE_PATH;
+  readonly description: string = 'Resolves a DevTools node path to a backend node ID.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ResolveDevtoolsNodePathArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

@@ -48,6 +48,7 @@ describe('The Classes pane', () => {
 
     await typeInClassesPaneInput(devToolsPage, 'foo');
     await typeInClassesPaneInput(devToolsPage, 'bar', 'Escape', false);
+    await assertSelectedNodeClasses(devToolsPage, ['foo']);
     await typeInClassesPaneInput(devToolsPage, 'baz');
 
     await assertSelectedNodeClasses(devToolsPage, ['foo', 'baz']);

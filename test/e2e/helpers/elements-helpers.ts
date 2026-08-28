@@ -1005,6 +1005,9 @@ export const toggleClassesPaneCheckbox = async (devToolsPage: DevToolsPage, chec
   const initialValue = await getContentOfSelectedNode(devToolsPage);
 
   const classesPane = await devToolsPage.waitFor(CLS_PANE_SELECTOR);
+  await expectVeEvents(devToolsPage, [veImpressionsUnder('Panel: elements > Pane: styles > Pane: elements-classes',
+                                                         [veImpression('Toggle', 'element-class')])],
+                       undefined);
   await devToolsPage.click(`[title="${checkboxLabel}"]`, {root: classesPane});
 
   const nodeChange = waitForSelectedNodeChange(devToolsPage, initialValue);
@@ -1015,17 +1018,23 @@ export const toggleClassesPaneCheckbox = async (devToolsPage: DevToolsPage, chec
 };
 
 export const assertSelectedNodeClasses = async (devToolsPage: DevToolsPage, expectedClasses: string[]) => {
-  const nodeText = await getContentOfSelectedNode(devToolsPage);
-  const match = nodeText.match(/class=\u200B"([^"]*)/);
-  const classText = match ? match[1] : '';
-  const classes = classText.split(/[\s]/).map(className => className.trim()).filter(className => className.length);
+  await devToolsPage.waitForFunction(async () => {
+    const nodeText = await getContentOfSelectedNode(devToolsPage);
+    const match = nodeText.match(/class=\u200B"([^"]*)/);
+    const classText = match ? match[1] : '';
+    const classes = classText.split(/[\s]/).map(className => className.trim()).filter(className => className.length);
 
-  assert.strictEqual(
-      classes.length, expectedClasses.length, 'Did not find the expected number of classes on the element');
+    if (classes.length !== expectedClasses.length) {
+      return false;
+    }
 
-  for (const expectedClass of expectedClasses) {
-    assert.include(classes, expectedClass, `Could not find class ${expectedClass} on the element`);
-  }
+    for (const expectedClass of expectedClasses) {
+      if (!classes.includes(expectedClass)) {
+        return false;
+      }
+    }
+    return true;
+  });
 };
 
 export const toggleAccessibilityPane = async (devToolsPage: DevToolsPage) => {

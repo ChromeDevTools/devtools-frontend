@@ -1024,6 +1024,9 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
 
   initialize(model: BackgroundServiceModel|null): void {
     this.model = model;
+    if (this.view && model) {
+      this.view.model = model;
+    }
     // Show the view if the model was initialized after selection.
     if (this.#selected && !this.view) {
       this.onselect(false);
@@ -1050,7 +1053,9 @@ export class BackgroundServiceTreeElement extends ApplicationPanelTreeElement {
     }
 
     if (!this.view) {
-      this.view = new BackgroundServiceView(this.serviceName, this.model);
+      this.view = new BackgroundServiceView();
+      this.view.serviceName = this.serviceName;
+      this.view.model = this.model;
     }
     this.showView(this.view);
     UI.Context.Context.instance().setFlavor(BackgroundServiceView, this.view);

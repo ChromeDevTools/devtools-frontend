@@ -57,7 +57,9 @@ describeWithEnvironment('BackgroundServiceView', () => {
           [{key: UI.KeyboardShortcut.Keys.Ctrl.code, name: 'Ctrl'}], '', UI.KeyboardShortcut.Type.DEFAULT_SHORTCUT)],
     } as unknown as UI.ShortcutRegistry.ShortcutRegistry);
     assert.exists(backgroundServiceModel);
-    view = new Resources.BackgroundServiceView.BackgroundServiceView(serviceName, backgroundServiceModel);
+    view = new Resources.BackgroundServiceView.BackgroundServiceView();
+    view.serviceName = serviceName;
+    view.model = backgroundServiceModel;
     renderElementIntoDOM(view, {width: 1100, height: 800, includeCommonStyles: true});
   });
 
@@ -75,54 +77,62 @@ describeWithEnvironment('BackgroundServiceView', () => {
     return shadowRoot;
   }
 
-  it('updates event list when main storage key changes', () => {
+  it('updates event list when main storage key changes', async () => {
     assert.exists(backgroundServiceModel);
     assert.exists(manager);
     backgroundServiceModel.backgroundServiceEventReceived({backgroundServiceEvent: BACKGROUND_SERVICE_EVENT});
     manager.updateStorageKeys(new Set([testKey]));
     manager.setMainStorageKey(testKey);
 
-    const dataRow = view.getDataGrid().dataTableBody.getElementsByClassName('data-grid-data-grid-node')[0];
+    await view.updateComplete;
+    const dataRow = view.contentElement.querySelector('devtools-data-grid table tr:nth-of-type(2)');
+    assert.exists(dataRow);
+    const tds = dataRow.querySelectorAll('td');
+
     const expectedData = ['Event1', testKey, 'Instance1'];
     const actualData = [
-      dataRow.getElementsByClassName('event-name-column')[0].textContent,
-      dataRow.getElementsByClassName('storage-key-column')[0].textContent,
-      dataRow.getElementsByClassName('instance-id-column')[0].textContent,
+      tds[2].textContent,
+      tds[4].textContent,
+      tds[6].textContent,
     ];
     assert.deepEqual(actualData, expectedData);
   });
 
-  it('shows placeholder text to select a value if events have been captured', () => {
+  it('shows placeholder text to select a value if events have been captured', async () => {
     assert.exists(backgroundServiceModel);
     assert.exists(manager);
     backgroundServiceModel.backgroundServiceEventReceived({backgroundServiceEvent: BACKGROUND_SERVICE_EVENT});
     manager.updateStorageKeys(new Set([testKey]));
     manager.setMainStorageKey(testKey);
 
+    await view.updateComplete;
     assertEmptyState('No event selected', 'Select an event to view its metadata');
   });
 
-  it('shows placeholder text', () => {
+  it('shows placeholder text', async () => {
+    await view.updateComplete;
     assertEmptyState(
         'No recording yet',
         'Start to debug background services by using the "Start recording events" button or by pressing Ctrl.Learn more');
   });
 
-  it('Triggers record on button click', () => {
+  it('Triggers record on button click', async () => {
+    await view.updateComplete;
     assertEmptyState('No recording yet');
     const recordButton = view.contentElement.querySelector('devtools-button.start-recording-button');
     assert.exists(recordButton);
-    assert.deepEqual(recordButton.textContent, 'Start recording events');
+    assert.deepEqual(recordButton.textContent?.trim(), 'Start recording events');
 
     const recordingSpy = sinon.spy(view, 'toggleRecording');
     dispatchClickEvent(recordButton);
     sinon.assert.calledOnce(recordingSpy);
   });
 
-  it('informs developer about current recording', () => {
+  it('informs developer about current recording', async () => {
     backgroundServiceModel?.recordingStateChanged(
         {isRecording: true, service: Protocol.BackgroundService.ServiceName.BackgroundFetch});
 
+    await view.updateComplete;
     assertEmptyState('Recording background fetch activity…',
                      'DevTools will record all background fetch activity for up to 3 days, even when closed.');
   });
@@ -133,16 +143,20 @@ describeWithEnvironment('BackgroundServiceView', () => {
     manager?.setMainStorageKey(testKey);
 
     await view.updateComplete;
-    view.getDataGrid().asWidget().dataGrid.rootNode().children[0].select();
+    const dataRow = view.contentElement.querySelector('devtools-data-grid table tr:nth-of-type(2)');
+    assert.exists(dataRow);
+    dataRow.dispatchEvent(new Event('select'));
+    await view.updateComplete;
 
     // Metadata is shown.
     assert.isNull(view.contentElement.querySelector('.empty-widget-container'));
 
     const toolbar = view.contentElement.querySelector('devtools-toolbar');
     assert.exists(toolbar);
-    const clearButton = toolbar.querySelector('[aria-label="Clear"]');
+    const clearButton = toolbar.querySelector('[title="Clear"]');
     assert.exists(clearButton);
     dispatchClickEvent(clearButton);
+    await view.updateComplete;
 
     // Preview is cleared, showing general empty state text.
     assertEmptyState('No recording yet');
@@ -162,16 +176,24 @@ describeWithEnvironment('BackgroundServiceView', () => {
     manager?.setMainStorageKey(testKey);
 
     await view.updateComplete;
-    view.getDataGrid().asWidget().dataGrid.rootNode().children[0].select();
-    let metadata = view.contentElement.querySelector('.background-service-metadata-entry');
-    assert.deepEqual(metadata?.textContent, 'No metadata for this event');
+    const rows = view.contentElement.querySelectorAll('devtools-data-grid table tr');
 
-    view.getDataGrid().asWidget().dataGrid.rootNode().children[1].select();
+    rows[1].dispatchEvent(new Event('select'));
+    await view.updateComplete;
+
+    let metadata = view.contentElement.querySelector('.background-service-metadata-entry');
+    assert.deepEqual(metadata?.textContent?.trim(), 'No metadata for this event');
+
+    rows[2].dispatchEvent(new Event('select'));
+    await view.updateComplete;
     metadata = view.contentElement.querySelector('.background-service-metadata-entry');
-    assert.deepEqual(metadata?.textContent, 'key: value');
+    assert.deepEqual(metadata?.textContent?.trim().replace(/\s+/g, ' '), 'key: value');
 
     // Focus the datagrid to ensure consistent focused styling across test runs
-    view.getDataGrid().asWidget().dataGrid.element.focus();
+    const dataGrid = view.contentElement.querySelector('devtools-data-grid');
+    if (dataGrid) {
+      (dataGrid as HTMLElement).focus();
+    }
 
     await assertScreenshot('application/background_service_view.png');
   });
@@ -184,7 +206,7 @@ describeWithEnvironment('BackgroundServiceView', () => {
     securityOriginManager.updateSecurityOrigins(new Set(['http://127.0.0.1:8000']));
 
     // Initially grid is empty.
-    let dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    let dataRows = view.contentElement.querySelectorAll('devtools-data-grid table tr:not(:first-child)');
     assert.lengthOf(dataRows, 0);
 
     // Event for BackgroundFetch from matching origin.
@@ -201,10 +223,9 @@ describeWithEnvironment('BackgroundServiceView', () => {
     backgroundServiceModel.backgroundServiceEventReceived({backgroundServiceEvent: event1});
     await view.updateComplete;
 
-    dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    dataRows = view.contentElement.querySelectorAll('devtools-data-grid table tr:not(:first-child)');
     assert.lengthOf(dataRows, 1);
-    const getRowValues = (row: Element) =>
-        Array.from(row.querySelectorAll('td:not(.corner)')).map(td => td.textContent);
+    const getRowValues = (row: Element) => Array.from(row.querySelectorAll('td')).map(td => td.textContent);
     assert.deepEqual(getRowValues(dataRows[0]), [
       '1',
       UI.UIUtils.formatTimestamp(1556889085 * 1000, true),
@@ -229,7 +250,7 @@ describeWithEnvironment('BackgroundServiceView', () => {
     backgroundServiceModel.backgroundServiceEventReceived({backgroundServiceEvent: eventDifferentService});
     await view.updateComplete;
 
-    dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    dataRows = view.contentElement.querySelectorAll('devtools-data-grid table tr:not(:first-child)');
     assert.lengthOf(dataRows, 1);
 
     // Event from a different origin is ignored by default.
@@ -246,17 +267,18 @@ describeWithEnvironment('BackgroundServiceView', () => {
     backgroundServiceModel.backgroundServiceEventReceived({backgroundServiceEvent: eventDifferentOrigin});
     await view.updateComplete;
 
-    dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    dataRows = view.contentElement.querySelectorAll('devtools-data-grid table tr:not(:first-child)');
     assert.lengthOf(dataRows, 1);
 
     // The event from a different origin should show up when the origin checkbox is checked.
-    const originCheckbox = view.contentElement.querySelectorAll<UI.UIUtils.CheckboxLabel>('devtools-checkbox')[0];
+    const originCheckbox =
+        view.contentElement.querySelector<HTMLInputElement>('label.checkbox-label input[type="checkbox"]');
     assert.exists(originCheckbox);
     originCheckbox.checked = true;
-    dispatchClickEvent(originCheckbox);
+    originCheckbox.dispatchEvent(new Event('change'));
     await view.updateComplete;
 
-    dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    dataRows = view.contentElement.querySelectorAll('devtools-data-grid table tr:not(:first-child)');
     assert.lengthOf(dataRows, 2);
     assert.deepEqual(getRowValues(dataRows[0]), [
       '1',
@@ -279,10 +301,10 @@ describeWithEnvironment('BackgroundServiceView', () => {
 
     // Unchecking the origin checkbox removes it again.
     originCheckbox.checked = false;
-    dispatchClickEvent(originCheckbox);
+    originCheckbox.dispatchEvent(new Event('change'));
     await view.updateComplete;
 
-    dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    dataRows = view.contentElement.querySelectorAll('devtools-data-grid table tr:not(:first-child)');
     assert.lengthOf(dataRows, 1);
     assert.deepEqual(getRowValues(dataRows[0]), [
       '1',
@@ -295,12 +317,12 @@ describeWithEnvironment('BackgroundServiceView', () => {
     ]);
 
     // Clicking the clear button clears events.
-    const clearButton = view.contentElement.querySelector('devtools-button[aria-label="Clear"]');
+    const clearButton = view.contentElement.querySelector('devtools-button[title="Clear"]');
     assert.exists(clearButton);
     dispatchClickEvent(clearButton);
     await view.updateComplete;
 
-    dataRows = view.getDataGrid().dataTableBody.querySelectorAll('tr.data-grid-data-grid-node');
+    dataRows = view.contentElement.querySelectorAll('devtools-data-grid table tr:not(:first-child)');
     assert.lengthOf(dataRows, 0);
     assertEmptyState('No recording yet');
   });

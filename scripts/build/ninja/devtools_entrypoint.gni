@@ -21,6 +21,8 @@ template("legacy_devtools_entrypoint") {
   assert(defined(invoker.entrypoint),
          "You must define the 'entrypoint' for a bundle target")
 
+  not_needed(invoker, [ "testonly" ])
+
   _entrypoint_target_name = "devtools_entrypoint-" + target_name
 
   _entrypoint_output_file_name = get_path_info(invoker.entrypoint, "name")

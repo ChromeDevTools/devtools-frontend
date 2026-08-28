@@ -8,17 +8,19 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 import("../../../visibility.gni")
 
 devtools_module("core") {
+  split_compilation = true
   sources = [
     "LanternError.ts",
     "NetworkAnalyzer.ts",
   ]
 
-  deps = [ "../types:bundle" ]
+  ts_deps = [ "../types:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "core.ts"
-  deps = [ ":core" ]
+  ts_deps = [ ":core" ]
   visibility = [
     ":*",
     "../*",
@@ -28,11 +30,12 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "NetworkAnalyzer.test.ts" ]
 
-  deps = [
+  ts_deps = [
     "../:bundle",  # Lantern bundle
     "../../:bundle",  # Trace engine bundle
     "../../../../testing",

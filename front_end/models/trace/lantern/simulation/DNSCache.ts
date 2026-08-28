@@ -12,7 +12,7 @@ import type * as Lantern from '../types/types.js';
 const DNS_RESOLUTION_RTT_MULTIPLIER = 2;
 
 class DNSCache {
-  static rttMultiplier = DNS_RESOLUTION_RTT_MULTIPLIER;
+  static rttMultiplier: number = DNS_RESOLUTION_RTT_MULTIPLIER;
 
   rtt: number;
   resolvedDomainNames: Map<string, {resolvedAt: number}>;

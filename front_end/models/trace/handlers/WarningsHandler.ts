@@ -42,9 +42,9 @@ let taskReflowEvents: Types.Events.Event[] = [];
  */
 let longTaskEvents: Types.Events.Event[] = [];
 
-export const FORCED_REFLOW_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.Milli(30));
+export const FORCED_REFLOW_THRESHOLD: Types.Timing.Micro = Helpers.Timing.milliToMicro(Types.Timing.Milli(30));
 
-export const LONG_MAIN_THREAD_TASK_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.Milli(50));
+export const LONG_MAIN_THREAD_TASK_THRESHOLD: Types.Timing.Micro = Helpers.Timing.milliToMicro(Types.Timing.Milli(50));
 
 export function reset(): void {
   warningsPerEvent = new Map();

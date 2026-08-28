@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
@@ -28,9 +29,8 @@ export const UIStrings = {
   /**
    * @description Text to describe that there are requests blocking rendering, which may affect LCP.
    */
-  description: 'Requests are blocking the page’s initial render, which may delay LCP. ' +
-      '[Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) ' +
-      'can move these network requests out of the critical path.',
+  description:
+      `Requests are blocking the page’s initial render, which may delay LCP. [Deferring or inlining](https://developer.chrome.com/docs/performance/insights/render-blocking) can move these network requests out of the critical path.`,
   /**
    * @description Label to describe a network request (that happens to be render-blocking).
    */
@@ -46,7 +46,8 @@ export const UIStrings = {
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/RenderBlocking.ts', UIStrings);
-export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString: (id: string, values?: Record<string, string|number|boolean>) =>
+    Platform.UIString.LocalizedString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export function isRenderBlockingInsight(insight: InsightModel): insight is RenderBlockingInsightModel {
   return insight.insightKey === 'RenderBlocking';

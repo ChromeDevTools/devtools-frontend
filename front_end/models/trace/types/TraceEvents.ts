@@ -770,7 +770,12 @@ const markerTypeGuards = [
   isSoftNavigationStart,
 ];
 
-export const MarkerName = [
+export type MarkerEventName = Name.MARK_DOM_CONTENT|Name.MARK_LOAD|Name.MARK_FIRST_PAINT|Name.MARK_FCP|
+                              Name.MARK_SOFT_FCP|Name.MARK_LCP_CANDIDATE|
+                              Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION|Name.NAVIGATION_START|
+                              Name.SOFT_NAVIGATION_START;
+
+export const MarkerName: readonly MarkerEventName[] = [
   Name.MARK_DOM_CONTENT,
   Name.MARK_LOAD,
   Name.MARK_FIRST_PAINT,
@@ -780,10 +785,10 @@ export const MarkerName = [
   Name.MARK_LCP_CANDIDATE_FOR_SOFT_NAVIGATION,
   Name.NAVIGATION_START,
   Name.SOFT_NAVIGATION_START,
-] as const;
+];
 
 export interface MarkerEvent extends Event {
-  name: typeof MarkerName[number];
+  name: MarkerEventName;
 }
 
 export function isMarkerEvent(event: Event): event is MarkerEvent {

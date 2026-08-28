@@ -8,14 +8,16 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 import("../../../visibility.gni")
 
 devtools_module("types") {
+  split_compilation = true
   sources = [ "Lantern.ts" ]
 
-  deps = [ "../../../../generated" ]
+  ts_deps = [ "../../../../generated" ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "types.ts"
-  deps = [ ":types" ]
+  ts_deps = [ ":types" ]
   visibility = [
     ":*",
     "../*",

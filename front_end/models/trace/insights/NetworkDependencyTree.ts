@@ -108,7 +108,8 @@ export const UIStrings = {
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/NetworkDependencyTree.ts', UIStrings);
-export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString: (id: string, values?: Record<string, string|number|boolean>) =>
+    Platform.UIString.LocalizedString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // XHRs are fetched at High priority, but we exclude them, as they are unlikely to be critical
 // Images are also non-critical.

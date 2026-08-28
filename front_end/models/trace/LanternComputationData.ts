@@ -269,9 +269,8 @@ function linkInitiators(lanternRequests: NetworkRequest[]): void {
   }
 }
 
-function createNetworkRequests(
-    trace: Lantern.Types.Trace, data: Handlers.Types.HandlerData, startTime = 0,
-    endTime = Number.POSITIVE_INFINITY): NetworkRequest[] {
+function createNetworkRequests(trace: Lantern.Types.Trace, data: Handlers.Types.HandlerData, startTime = 0,
+                               endTime: number = Number.POSITIVE_INFINITY): NetworkRequest[] {
   const workerThreads = findWorkerThreads(trace);
 
   const lanternRequestsNoRedirects: NetworkRequest[] = [];

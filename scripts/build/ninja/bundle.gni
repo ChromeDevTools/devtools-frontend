@@ -17,6 +17,7 @@ template("bundle") {
                              "visibility",
                              "deps",
                              "public_deps",
+                             "testonly",
                            ])
 
     inputs = [

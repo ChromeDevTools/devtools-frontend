@@ -16,7 +16,7 @@ import type {HandlerName} from './types.js';
 let beginCommitCompositorFrameEvents: Types.Events.BeginCommitCompositorFrame[] = [];
 let parseMetaViewportEvents: Types.Events.ParseMetaViewport[] = [];
 
-export const LONG_INTERACTION_THRESHOLD = Helpers.Timing.milliToMicro(Types.Timing.Milli(200));
+export const LONG_INTERACTION_THRESHOLD: Types.Timing.Micro = Helpers.Timing.milliToMicro(Types.Timing.Milli(200));
 
 const INP_GOOD_TIMING = LONG_INTERACTION_THRESHOLD;
 const INP_MEDIUM_TIMING = Helpers.Timing.milliToMicro(Types.Timing.Milli(500));

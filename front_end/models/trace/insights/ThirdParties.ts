@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as Platform from '../../../core/platform/platform.js';
 import * as ThirdPartyWeb from '../../../third_party/third-party-web/third-party-web.js';
 import * as Extras from '../extras/extras.js';
 import * as Handlers from '../handlers/handlers.js';
@@ -25,8 +26,8 @@ export const UIStrings = {
    * @description Description of a DevTools insight that identifies the code on the page that the user doesn't control.
    * This is displayed after a user expands the section to see more. No character length limits.
    */
-  description: '3rd party code can significantly impact load performance. ' +
-      '[Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page’s content.',
+  description:
+      `3rd party code can significantly impact load performance. [Reduce and defer loading of 3rd party code](https://developer.chrome.com/docs/performance/insights/third-parties) to prioritize your page’s content.`,
   /**
    * @description Label for a table column that displays the name of a third-party provider.
    */
@@ -46,7 +47,8 @@ export const UIStrings = {
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ThirdParties.ts', UIStrings);
-export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString: (id: string, values?: Record<string, string|number|boolean>) =>
+    Platform.UIString.LocalizedString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type ThirdPartiesInsightModel = InsightModel<typeof UIStrings, {
   /** The entity for this navigation's URL. Any other entity is from a third party. */

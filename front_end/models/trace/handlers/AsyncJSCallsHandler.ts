@@ -8,13 +8,16 @@ import * as Types from '../types/types.js';
 import {data as flowsHandlerData} from './FlowsHandler.js';
 import {data as rendererHandlerData} from './RendererHandler.js';
 
-let schedulerToRunEntryPoints = new Map<Types.Events.Event, Types.Events.Event[]>();
+let schedulerToRunEntryPoints: Map<Types.Events.Event, Types.Events.Event[]> =
+    new Map<Types.Events.Event, Types.Events.Event[]>();
 
-let taskScheduleForTaskRunEvent = new Map<Types.Events.DebuggerAsyncTaskRun, Types.Events.DebuggerAsyncTaskScheduled>();
-let asyncCallToScheduler =
+let taskScheduleForTaskRunEvent: Map<Types.Events.DebuggerAsyncTaskRun, Types.Events.DebuggerAsyncTaskScheduled> =
+    new Map<Types.Events.DebuggerAsyncTaskRun, Types.Events.DebuggerAsyncTaskScheduled>();
+let asyncCallToScheduler: Map<Types.Events.SyntheticProfileCall, {taskName: string, scheduler: Types.Events.Event}> =
     new Map<Types.Events.SyntheticProfileCall, {taskName: string, scheduler: Types.Events.Event}>();
 
-let runEntryPointToScheduler = new Map<Types.Events.Event, {taskName: string, scheduler: Types.Events.Event}>();
+let runEntryPointToScheduler: Map<Types.Events.Event, {taskName: string, scheduler: Types.Events.Event}> =
+    new Map<Types.Events.Event, {taskName: string, scheduler: Types.Events.Event}>();
 
 export function reset(): void {
   schedulerToRunEntryPoints = new Map();

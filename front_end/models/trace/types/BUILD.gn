@@ -8,6 +8,7 @@ import("../../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_module("types") {
+  split_compilation = true
   sources = [
     "Configuration.ts",
     "Extensions.ts",
@@ -17,7 +18,7 @@ devtools_module("types") {
     "TraceEvents.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
@@ -27,8 +28,9 @@ devtools_module("types") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "types.ts"
-  deps = [ ":types" ]
+  ts_deps = [ ":types" ]
   visibility = [
     ":*",
     "../*",
@@ -39,6 +41,7 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -46,7 +49,7 @@ ts_library("unittests") {
     "TraceEvents.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../generated",
     "../../../models/trace:bundle",
     "../../../testing",

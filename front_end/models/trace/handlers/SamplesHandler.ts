@@ -8,8 +8,10 @@ import * as CPUProfile from '../../cpu_profile/cpu_profile.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
 
-let profilesInProcess = new Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, ProfileData>>();
-let entryToNode = new Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>();
+let profilesInProcess: Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, ProfileData>> =
+    new Map<Types.Events.ProcessID, Map<Types.Events.ThreadID, ProfileData>>();
+let entryToNode: Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode> =
+    new Map<Types.Events.Event, Helpers.TreeHelpers.TraceEntryNode>();
 
 // The profile head, containing its metadata like its start
 // time, comes in a "Profile" event. The sample data comes in

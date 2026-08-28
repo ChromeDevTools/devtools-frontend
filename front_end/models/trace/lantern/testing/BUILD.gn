@@ -7,19 +7,22 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 import("../../../visibility.gni")
 
 ts_library("testing") {
+  split_compilation = true
   sources = [ "MetricTestUtils.ts" ]
 
   testonly = true
 
-  deps = [
+  ts_deps = [
     "../:bundle",
     "../../:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
+  testonly = true
   entrypoint = "testing.ts"
-  deps = [ ":testing" ]
+  ts_deps = [ ":testing" ]
   visibility = [
     ":*",
     "../*",

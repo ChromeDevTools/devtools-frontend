@@ -11,7 +11,14 @@ function toLanternTrace(traceEvents: readonly Trace.Types.Events.Event[]): Lante
   };
 }
 
-async function runTraceProcessor(_context: Mocha.Suite|Mocha.Context, trace: Lantern.Types.Trace) {
+export interface ComputationData {
+  simulator: Lantern.Simulation.Simulator<unknown>;
+  graph: Lantern.Graph.Node<Trace.Types.Events.SyntheticNetworkRequest>;
+  processedNavigation: Lantern.Types.Simulation.ProcessedNavigation;
+}
+
+async function runTraceProcessor(_context: Mocha.Suite|Mocha.Context, trace: Lantern.Types.Trace):
+    Promise<Trace.Handlers.Types.EnabledHandlerDataWithMeta<typeof Trace.Handlers.ModelHandlers>> {
   const processor = Trace.Processor.TraceProcessor.createWithAllHandlers();
   await processor.parse(trace.traceEvents as Trace.Types.Events.Event[], {isCPUProfile: false, isFreshRecording: true});
   if (!processor.data) {
@@ -24,7 +31,7 @@ async function getComputationDataFromFixture(context: Mocha.Suite|Mocha.Context,
   trace: Lantern.Types.Trace,
   settings?: Lantern.Types.Simulation.Settings,
   url?: Lantern.Types.Simulation.URL,
-}) {
+}): Promise<ComputationData> {
   settings = settings ?? {} as Lantern.Types.Simulation.Settings;
   if (!settings.throttlingMethod) {
     settings.throttlingMethod = 'simulate';
@@ -42,10 +49,17 @@ async function getComputationDataFromFixture(context: Mocha.Suite|Mocha.Context,
     throw new Error('no navigation found');
   }
 
+  const simulator: Lantern.Simulation.Simulator<unknown> =
+      Lantern.Simulation.Simulator.createSimulator({...settings, networkAnalysis});
+  const graph: Lantern.Graph.Node<Trace.Types.Events.SyntheticNetworkRequest> =
+      Trace.LanternComputationData.createGraph(requests, trace, data, url);
+  const processedNavigation: Lantern.Types.Simulation.ProcessedNavigation =
+      Trace.LanternComputationData.createProcessedNavigation(data, frameId, navigation);
+
   return {
-    simulator: Lantern.Simulation.Simulator.createSimulator({...settings, networkAnalysis}),
-    graph: Trace.LanternComputationData.createGraph(requests, trace, data, url),
-    processedNavigation: Trace.LanternComputationData.createProcessedNavigation(data, frameId, navigation),
+    simulator,
+    graph,
+    processedNavigation,
   };
 }
 

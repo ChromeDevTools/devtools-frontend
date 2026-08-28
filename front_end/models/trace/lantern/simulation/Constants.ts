@@ -5,7 +5,37 @@
 const DEVTOOLS_RTT_ADJUSTMENT_FACTOR = 3.75;
 const DEVTOOLS_THROUGHPUT_ADJUSTMENT_FACTOR = 0.9;
 
-const throttling = {
+/* eslint-disable @typescript-eslint/naming-convention */
+export interface ThrottlingSettings {
+  DEVTOOLS_RTT_ADJUSTMENT_FACTOR: number;
+  DEVTOOLS_THROUGHPUT_ADJUSTMENT_FACTOR: number;
+  mobileSlow4G: {
+    rttMs: number,
+    throughputKbps: number,
+    requestLatencyMs: number,
+    downloadThroughputKbps: number,
+    uploadThroughputKbps: number,
+    cpuSlowdownMultiplier: number,
+  };
+  mobileRegular3G: {
+    rttMs: number,
+    throughputKbps: number,
+    requestLatencyMs: number,
+    downloadThroughputKbps: number,
+    uploadThroughputKbps: number,
+    cpuSlowdownMultiplier: number,
+  };
+  desktopDense4G: {
+    rttMs: number,
+    throughputKbps: number,
+    cpuSlowdownMultiplier: number,
+    requestLatencyMs: number,
+    downloadThroughputKbps: number,
+    uploadThroughputKbps: number,
+  };
+}
+
+const throttling: ThrottlingSettings = {
   DEVTOOLS_RTT_ADJUSTMENT_FACTOR,
   DEVTOOLS_THROUGHPUT_ADJUSTMENT_FACTOR,
   // These values align with WebPageTest's definition of "Fast 3G"
@@ -41,6 +71,8 @@ const throttling = {
   },
 };
 
-const Constants = {throttling};
+const Constants: {throttling: ThrottlingSettings} = {
+  throttling,
+};
 
 export {Constants};

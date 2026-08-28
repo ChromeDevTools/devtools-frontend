@@ -8,6 +8,7 @@ import("../../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_module("helpers") {
+  split_compilation = true
   sources = [
     "Extensions.ts",
     "Network.ts",
@@ -18,7 +19,7 @@ devtools_module("helpers") {
     "TreeHelpers.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../core/common:bundle",
     "../../../core/platform:bundle",
     "../../../generated",
@@ -28,8 +29,9 @@ devtools_module("helpers") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "helpers.ts"
-  deps = [ ":helpers" ]
+  ts_deps = [ ":helpers" ]
   visibility = [
     ":*",
     "../*",
@@ -41,6 +43,7 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -51,7 +54,7 @@ ts_library("unittests") {
     "TreeHelpers.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../generated",
     "../../../models/trace:bundle",
     "../../../testing",

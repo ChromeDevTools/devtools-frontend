@@ -390,10 +390,10 @@ class TimelineFrame implements Types.Events.LegacyTimelineFrame {
   // Types.Events.Event.
   cat = 'devtools.legacy_frame';
   name = 'frame';
-  ph = Types.Events.Phase.COMPLETE;
+  ph: Types.Events.Phase = Types.Events.Phase.COMPLETE;
   ts: Types.Timing.Micro;
-  pid = Types.Events.ProcessID(-1);
-  tid = Types.Events.ThreadID(-1);
+  pid: Types.Events.ProcessID = Types.Events.ProcessID(-1);
+  tid: Types.Events.ThreadID = Types.Events.ThreadID(-1);
 
   index = -1;
   startTime: Types.Timing.Micro;

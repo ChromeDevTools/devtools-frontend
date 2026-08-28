@@ -341,4 +341,53 @@ describe('ListStorageKeysTool', () => {
       },
     });
   });
+
+  it('deduplicates identical storageKey partitions across subtargets', async () => {
+    const primaryTarget = universe.createTarget({url: urlString`https://example.com/`});
+    primaryTarget.setInspectedURL(urlString`https://example.com/`);
+    sinon.stub(universe.targetManager, 'primaryPageTarget').returns(primaryTarget);
+
+    const subTarget =
+        universe.createTarget({url: urlString`https://example.com/sub.html`, parentTarget: primaryTarget});
+    subTarget.setInspectedURL(urlString`https://example.com/sub.html`);
+
+    const mockStorage1 = sinon.createStubInstance(SDK.DOMStorageModel.DOMStorage);
+    sinon.stub(mockStorage1, 'storageKey').get(() => 'https://example.com/');
+    sinon.stub(mockStorage1, 'isLocalStorage').get(() => true);
+    mockStorage1.getItems.resolves([['k1', 'v1']]);
+
+    const mockStorage2 = sinon.createStubInstance(SDK.DOMStorageModel.DOMStorage);
+    sinon.stub(mockStorage2, 'storageKey').get(() => 'https://example.com/');
+    sinon.stub(mockStorage2, 'isLocalStorage').get(() => true);
+    mockStorage2.getItems.resolves([['k1', 'v1']]);
+
+    const model1 = primaryTarget.model(SDK.DOMStorageModel.DOMStorageModel);
+    assert.exists(model1);
+    sinon.stub(model1, 'storages').callsFake(() => [mockStorage1]);
+
+    const model2 = subTarget.model(SDK.DOMStorageModel.DOMStorageModel);
+    assert.exists(model2);
+    sinon.stub(model2, 'storages').callsFake(() => [mockStorage2]);
+
+    const context = {
+      conversationContext: null,
+      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      disableLogging: sinon.stub(),
+    };
+
+    const tool = new AiAssistance.ListStorageKeys.ListStorageKeysTool();
+    const response = await tool.handler({type: 'localStorage', origins: ['https://example.com']}, context);
+
+    assertIsResult(response);
+    assert.deepEqual(response.result.storageKeysByOrigin, {
+      'https://example.com': {
+        partitions: [
+          {
+            storageKey: 'https://example.com/',
+            keys: ['k1'],
+          },
+        ],
+      },
+    });
+  });
 });

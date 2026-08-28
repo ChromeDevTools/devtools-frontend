@@ -108,7 +108,7 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestPayloadView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-interface ViewInput {
+export interface ViewInput {
   decodeQueryParameters: boolean;
   setDecodeQueryParameters(value: boolean): void;
   decodeFormParameters: boolean;
@@ -125,13 +125,16 @@ interface ViewInput {
   formParameters: SDK.NetworkRequest.NameValue[]|undefined;
   queryString: string|null;
   queryParameters: SDK.NetworkRequest.NameValue[]|null;
+  objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree|null;
+  onPayloadContextMenu(contextMenu: UI.ContextMenu.ContextMenu): void;
+  onPayloadToggle(expanded: boolean): void;
 
   /** Raw binary content data for the request body (when base64-encoded by backend). */
   binaryPayloadContentData: TextUtils.ContentData.ContentData|null;
   requestUrl: Platform.DevToolsPath.UrlString;
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
   const createViewSourceToggle = (viewSource: boolean, callback: (value: boolean) => void): LitTemplate =>
       html`<devtools-button
@@ -182,30 +185,22 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     // clang-format on
   });
 
-  const parsedFormData = (() => {
-    if (input.formData && !input.formParameters) {
-      try {
-        return JSON.parse(input.formData);
-      } catch {
-      }
-    }
-    return undefined;
-  })();
+  const createPayload = (objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree): LitTemplate => {
+    const onPayloadContextMenu = (event: Event): void => {
+      event.consume(true);
+      const contextMenu = new UI.ContextMenu.ContextMenu(event);
+      input.onPayloadContextMenu(contextMenu);
+      void contextMenu.show();
+    };
 
-  const createPayload = (parsedFormData: unknown): LitTemplate => {
-    if (!parsedFormData) {
-      return nothing;
-    }
-    const object = new SDK.RemoteObject.LocalJSONObject(parsedFormData);
-    const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
-      readOnly: true,
-      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
-    });
-    objectTree.expanded = true;
     return html`
-      <li role=treeitem class="source-code object-properties-section-root-element object-properties-section" toggle-on-click open>
-        ${object.description}
-        ${object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing}
+      <li role=treeitem class="source-code object-properties-section-root-element object-properties-section"
+          toggle-on-click
+          ?open=${objectTree.expanded}
+          @expand=${(e: UI.TreeOutline.TreeViewElement.ExpandEvent) => input.onPayloadToggle(e.detail.expanded)}
+          @contextmenu=${onPayloadContextMenu}>
+        ${objectTree.object.description}
+        ${objectTree.object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing}
       </li>
     `;
   };
@@ -327,8 +322,8 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
         <div class="selection fill"></div>${i18nString(UIStrings.requestPayload)}${
             createViewSourceToggle(input.viewJSONPayloadSource, input.setViewJSONPayloadSource)}
         <ul role=group>
-          ${ifExpanded(!parsedFormData || input.viewJSONPayloadSource ? createSourceText(input.formData ?? '')
-                                                                      : createPayload(parsedFormData))}
+          ${ifExpanded(!input.objectTree || input.viewJSONPayloadSource ? createSourceText(input.formData ?? '')
+                                                                        : createPayload(input.objectTree))}
         </ul>
       </li>
      </ul>
@@ -362,6 +357,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
   #decodeFormParameters = true;
   #formData?: string;
   #formParameters?: SDK.NetworkRequest.NameValue[];
+  #objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree|null = null;
   #binaryPayloadContentData: TextUtils.ContentData.ContentData|null = null;
   #view: View;
   #viewJSONPayloadSource = false;
@@ -468,6 +464,38 @@ export class RequestPayloadView extends UI.Widget.VBox {
         Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
         Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(value);
       },
+      objectTree: this.#objectTree,
+      onPayloadContextMenu: (contextMenu: UI.ContextMenu.ContextMenu): void => {
+        if (!this.#objectTree) {
+          return;
+        }
+        const objectTree = this.#objectTree;
+        ObjectUI.ObjectPropertiesSection.populateObjectTreeContextMenu(
+            contextMenu,
+            objectTree,
+            async () => {
+              await objectTree.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
+              this.requestUpdate();
+            },
+            () => {
+              objectTree.collapseRecursively();
+              this.requestUpdate();
+            },
+            () => {
+              objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
+              this.requestUpdate();
+            },
+            () => {
+              objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
+              this.requestUpdate();
+            },
+        );
+      },
+      onPayloadToggle: (expanded: boolean): void => {
+        if (this.#objectTree) {
+          this.#objectTree.expanded = expanded;
+        }
+      },
       binaryPayloadContentData: this.#binaryPayloadContentData,
       requestUrl: this.request?.url() ?? Platform.DevToolsPath.EmptyUrlString,
     };
@@ -482,6 +510,30 @@ export class RequestPayloadView extends UI.Widget.VBox {
     this.#formData = await this.request?.requestFormData() ?? undefined;
     if (this.#formData) {
       this.#formParameters = await this.request?.formParameters() ?? undefined;
+    }
+
+    if (this.#objectTree) {
+      this.#objectTree.removeEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED,
+                                           this.requestUpdate, this);
+      this.#objectTree.removeEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED,
+                                           this.requestUpdate, this);
+      this.#objectTree = null;
+    }
+    if (this.#formData && !this.#formParameters) {
+      try {
+        const parsedFormData = JSON.parse(this.#formData);
+        const object = new SDK.RemoteObject.LocalJSONObject(parsedFormData);
+        this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+          readOnly: true,
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+        });
+        this.#objectTree.expanded = true;
+        this.#objectTree.addEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED,
+                                          this.requestUpdate, this);
+        this.#objectTree.addEventListener(ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED,
+                                          this.requestUpdate, this);
+      } catch {
+      }
     }
 
     // Fetch raw binary content data for the request body when the backend

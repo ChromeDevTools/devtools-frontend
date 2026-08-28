@@ -459,8 +459,7 @@ const LOCK_ICON_NAME = 'lock';
 const WARNING_ICON_NAME = 'warning';
 const UNKNOWN_ICON_NAME = 'indeterminate-question-box';
 
-export function getSecurityStateIconForDetailedView(
-    securityState: Protocol.Security.SecurityState, className: string): Icon {
+function getSecurityStateIconNameForDetailedView(securityState: Protocol.Security.SecurityState): string {
   let iconName: string;
 
   switch (securityState) {
@@ -478,7 +477,12 @@ export function getSecurityStateIconForDetailedView(
       break;
   }
 
-  return createIcon(iconName, className);
+  return iconName;
+}
+
+export function getSecurityStateIconForDetailedView(securityState: Protocol.Security.SecurityState,
+                                                    className: string): Icon {
+  return createIcon(getSecurityStateIconNameForDetailedView(securityState), className);
 }
 
 export function getSecurityStateIconForOverview(
@@ -1426,9 +1430,30 @@ function renderConnectionSection(securityDetails: Protocol.Network.SecurityDetai
   // clang-format on
 }
 
+function renderTitleSection(origin: Platform.DevToolsPath.UrlString, securityState: Protocol.Security.SecurityState,
+                            onRevealInNetwork: (event: Event) => void): TemplateResult {
+  // clang-format off
+  return html`
+    <div class="title-section-header" role="heading" aria-level="1">${i18nString(UIStrings.origin)}</div>
+    <div class="origin-display">
+      <devtools-icon
+          name=${getSecurityStateIconNameForDetailedView(securityState)}
+          class=${`security-property security-property-${securityState}`}>
+      </devtools-icon>
+      ${renderHighlightedUrl(origin, securityState)}
+    </div>
+    <div class="view-network-button">
+      <devtools-button
+          .variant=${Buttons.Button.Variant.OUTLINED}
+          .jslogContext=${'reveal-in-network'}
+          @click=${onRevealInNetwork}>${i18nString(UIStrings.viewRequestsInNetworkPanel)}</devtools-button>
+    </div>`;
+  // clang-format on
+}
+
 export class SecurityOriginView extends UI.Widget.VBox {
   readonly #origin: Platform.DevToolsPath.UrlString;
-  readonly #originDisplay: HTMLElement;
+  readonly #titleSection: HTMLElement;
 
   constructor(origin: Platform.DevToolsPath.UrlString, originState: OriginState) {
     super({jslog: `${VisualLogging.pane('security.origin-view')}`});
@@ -1438,25 +1463,8 @@ export class SecurityOriginView extends UI.Widget.VBox {
 
     this.element.classList.add('security-origin-view');
 
-    const titleSection = this.element.createChild('div', 'title-section');
-    const titleDiv = titleSection.createChild('div', 'title-section-header');
-    titleDiv.textContent = i18nString(UIStrings.origin);
-    UI.ARIAUtils.markAsHeading(titleDiv, 1);
-
-    this.#originDisplay = titleSection.createChild('div', 'origin-display');
-    this.#renderOriginDisplay(originState.securityState);
-
-    const originNetworkDiv = titleSection.createChild('div', 'view-network-button');
-    const originNetworkButton = UI.UIUtils.createTextButton(i18nString(UIStrings.viewRequestsInNetworkPanel), event => {
-      event.consume();
-      const parsedURL = new Common.ParsedURL.ParsedURL(origin);
-      void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
-        {filterType: NetworkForward.UIFilter.FilterType.Domain, filterValue: parsedURL.host},
-        {filterType: NetworkForward.UIFilter.FilterType.Scheme, filterValue: parsedURL.scheme},
-      ]));
-    }, {jslogContext: 'reveal-in-network'});
-    originNetworkDiv.appendChild(originNetworkButton);
-    UI.ARIAUtils.markAsLink(originNetworkButton);
+    this.#titleSection = this.element.createChild('div', 'title-section');
+    this.#renderTitleSection(originState.securityState);
 
     if (originState.securityDetails) {
       const connectionSection = this.element.createChild('div', 'origin-view-section connection-section');
@@ -1612,21 +1620,22 @@ export class SecurityOriginView extends UI.Widget.VBox {
   }
 
   setSecurityState(newSecurityState: Protocol.Security.SecurityState): void {
-    this.#renderOriginDisplay(newSecurityState);
+    this.#renderTitleSection(newSecurityState);
   }
 
-  #renderOriginDisplay(securityState: Protocol.Security.SecurityState): void {
-    const icon =
-        getSecurityStateIconForDetailedView(securityState, `security-property security-property-${securityState}`);
-
-    // clang-format off
+  #renderTitleSection(securityState: Protocol.Security.SecurityState): void {
     // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(html`
-      ${icon}
-      ${renderHighlightedUrl(this.#origin, securityState)}
-    `, this.#originDisplay);
-    // clang-format on
+    render(renderTitleSection(this.#origin, securityState, this.#revealInNetwork), this.#titleSection);
   }
+
+  #revealInNetwork = (event: Event): void => {
+    event.consume();
+    const parsedURL = new Common.ParsedURL.ParsedURL(this.#origin);
+    void Common.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+      {filterType: NetworkForward.UIFilter.FilterType.Domain, filterValue: parsedURL.host},
+      {filterType: NetworkForward.UIFilter.FilterType.Scheme, filterValue: parsedURL.scheme},
+    ]));
+  };
 }
 
 export class SecurityDetailsTable {

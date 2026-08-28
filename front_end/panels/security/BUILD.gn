@@ -78,9 +78,11 @@ devtools_ui_module("unittests") {
 
   ts_deps = [
     ":bundle",
+    "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
+    "../../panels/network/forward:bundle",
     "../../testing",
   ]
 }

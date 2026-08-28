@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
@@ -12,6 +13,7 @@ import {doubleRaf, querySelectorErrorOnMissing, renderElementIntoDOM} from '../.
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {getMainFrame, navigate} from '../../testing/ResourceTreeHelpers.js';
+import * as NetworkForward from '../network/forward/forward.js';
 
 import * as Security from './security.js';
 
@@ -188,6 +190,77 @@ describeWithEnvironment('SecurityOriginView', () => {
         const rowNames = getConnectionDetailsRows({encryptedClientHello: false}).map(([key]) => key);
         assert.notInclude(rowNames, 'Encrypted ClientHello');
       });
+    });
+  });
+
+  describe('title section', () => {
+    it('renders the title, origin, and Network panel button', () => {
+      const origin = urlString`https://foo.bar`;
+      const view = new Security.SecurityPanel.SecurityOriginView(origin, createOriginState());
+
+      assert.isTrue(view.element.classList.contains('security-origin-view'));
+
+      const titleSection = view.element.querySelector('.title-section');
+      assert.instanceOf(titleSection, HTMLElement);
+
+      const title = titleSection.querySelector('.title-section-header');
+      assert.instanceOf(title, HTMLElement);
+      assert.strictEqual(title.textContent, 'Origin');
+      assert.strictEqual(title.getAttribute('role'), 'heading');
+      assert.strictEqual(title.getAttribute('aria-level'), '1');
+
+      const originDisplay = titleSection.querySelector('.origin-display');
+      assert.instanceOf(originDisplay, HTMLElement);
+      assert.strictEqual(originDisplay.textContent, origin);
+
+      const networkButton = titleSection.querySelector('.view-network-button devtools-button');
+      assert.instanceOf(networkButton, HTMLElement);
+      assert.strictEqual(networkButton.textContent, 'View requests in Network panel');
+    });
+
+    it('updates the origin display when the security state changes', () => {
+      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
+
+      const initialOriginDisplay = view.element.querySelector('.origin-display');
+      assert.instanceOf(initialOriginDisplay, HTMLElement);
+
+      const initialIcon = initialOriginDisplay.querySelector('devtools-icon');
+      assert.instanceOf(initialIcon, HTMLElement);
+      assert.strictEqual(initialIcon.getAttribute('name'), 'lock');
+      assert.isTrue(initialIcon.classList.contains('security-property-secure'));
+
+      assert.exists(initialOriginDisplay.querySelector('.url-scheme-secure'));
+
+      view.setSecurityState(Protocol.Security.SecurityState.Insecure);
+
+      const updatedOriginDisplay = view.element.querySelector('.origin-display');
+      assert.instanceOf(updatedOriginDisplay, HTMLElement);
+
+      const updatedIcon = updatedOriginDisplay.querySelector('devtools-icon');
+      assert.instanceOf(updatedIcon, HTMLElement);
+      assert.strictEqual(updatedIcon.getAttribute('name'), 'warning');
+      assert.isTrue(updatedIcon.classList.contains('security-property-insecure'));
+      assert.isFalse(updatedIcon.classList.contains('security-property-secure'));
+
+      assert.exists(updatedOriginDisplay.querySelector('.url-scheme-insecure'));
+      assert.notExists(updatedOriginDisplay.querySelector('.url-scheme-secure'));
+    });
+
+    it('reveals requests in the Network panel', () => {
+      const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+      const view = new Security.SecurityPanel.SecurityOriginView(urlString`https://foo.bar`, createOriginState());
+
+      const networkButton = view.element.querySelector('.view-network-button devtools-button');
+      assert.instanceOf(networkButton, HTMLElement);
+      networkButton.click();
+
+      sinon.assert.calledOnce(revealStub);
+      const [requestFilter] = revealStub.firstCall.args;
+      assert.instanceOf(requestFilter, NetworkForward.UIFilter.UIRequestFilter);
+      assert.deepEqual(requestFilter.filters, [
+        {filterType: NetworkForward.UIFilter.FilterType.Domain, filterValue: 'foo.bar'},
+        {filterType: NetworkForward.UIFilter.FilterType.Scheme, filterValue: 'https'},
+      ]);
     });
   });
 

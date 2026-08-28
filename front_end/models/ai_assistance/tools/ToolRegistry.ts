@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {ExecuteJavaScriptTool} from './ExecuteJavaScript.js';
+import {GetCookieValuesTool} from './GetCookieValues.js';
 import {GetDetailedCallTreeTool} from './GetDetailedCallTree.js';
 import {GetElementAccessibilityDetailsTool} from './GetElementAccessibilityDetails.js';
 import {GetFunctionCodeTool} from './GetFunctionCode.js';
@@ -40,6 +41,7 @@ export interface BaseToolsRegistryMap {
   [ToolName.LIST_STORAGE_KEYS]: ListStorageKeysTool;
   [ToolName.GET_STORAGE_VALUES]: GetStorageValuesTool;
   [ToolName.LIST_COOKIES]: ListCookiesTool;
+  [ToolName.GET_COOKIE_VALUES]: GetCookieValuesTool;
   [ToolName.GET_TRACE_EVENT_BY_KEY]: GetTraceEventByKeyTool;
   [ToolName.SELECT_TRACE_EVENT_BY_KEY]: SelectTraceEventByKeyTool;
   [ToolName.LIST_SOURCES]: ListSourcesTool;
@@ -73,6 +75,7 @@ export const TOOLS: BaseToolsRegistryMap = {
   [ToolName.LIST_STORAGE_KEYS]: new ListStorageKeysTool(),
   [ToolName.GET_STORAGE_VALUES]: new GetStorageValuesTool(),
   [ToolName.LIST_COOKIES]: new ListCookiesTool(),
+  [ToolName.GET_COOKIE_VALUES]: new GetCookieValuesTool(),
   [ToolName.GET_TRACE_EVENT_BY_KEY]: new GetTraceEventByKeyTool(),
   [ToolName.SELECT_TRACE_EVENT_BY_KEY]: new SelectTraceEventByKeyTool(),
   [ToolName.LIST_SOURCES]: new ListSourcesTool(),

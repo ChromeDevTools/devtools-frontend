@@ -627,7 +627,7 @@ describeWithEnvironment('AiAgent2', () => {
     assert.exists(scope);
   });
 
-  it('can learn storage skill and declare listStorageKeys and getStorageValues', async () => {
+  it('can learn storage skill and declare storage and cookie tools', async () => {
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
@@ -649,6 +649,7 @@ describeWithEnvironment('AiAgent2', () => {
     assert.include(declaredNames, 'listStorageKeys');
     assert.include(declaredNames, 'getStorageValues');
     assert.include(declaredNames, 'listCookies');
+    assert.include(declaredNames, 'getCookieValues');
   });
 
   it('disables server logging when calling storage tools in AiAgent2', async () => {
@@ -680,6 +681,56 @@ describeWithEnvironment('AiAgent2', () => {
     sinon.assert.callCount(aidaClient.doConversation, 3);
     const thirdCallArgs = aidaClient.doConversation.getCall(2).args[0];
     assert.isTrue(thirdCallArgs.metadata?.disable_user_content_logging);
+  });
+
+  it('handles getCookieValues approval flow in AiAgent2', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['storage']}}],
+      }],
+      [{
+        explanation: 'Getting cookie values',
+        functionCalls: [{
+          name: 'getCookieValues',
+          args: {cookieNames: ['session'], origins: ['https://example.com']},
+        }],
+      }],
+      [{
+        explanation: 'Cookie values retrieved.',
+      }],
+    ]);
+
+    const sideEffectPromise = Promise.withResolvers<boolean>();
+    const agent = new AiAssistance.AiAgent2.AiAgent2({
+      aidaClient,
+      confirmSideEffectForTest: sinon.stub().returns(sideEffectPromise),
+    });
+
+    const getCookieValuesTool = AiAssistance.ToolRegistry.ToolRegistry.get('getCookieValues');
+    assert.exists(getCookieValuesTool);
+    const handlerStub = sinon.stub(getCookieValuesTool, 'handler').callsFake(async (_args, context, options) => {
+      context.disableLogging();
+      if (options?.approved !== true) {
+        return {
+          requiresApproval: true,
+          description: 'The AI wants to access cookie session on https://example.com.',
+        };
+      }
+      return {result: {cookiesByOrigin: {'https://example.com': {cookies: []}}}};
+    });
+
+    sideEffectPromise.resolve(true);
+    const responses = await Array.fromAsync(agent.run('get cookie session', {selected: null}));
+
+    sinon.assert.calledTwice(handlerStub);
+    const actionResponses = responses.filter((r): r is AiAssistance.AiAgent.ActionResponse => r.type === 'action');
+    assert.lengthOf(actionResponses, 3);
+    assert.strictEqual(actionResponses[0].code, 'learnSkills(\'storage\')');
+    assert.strictEqual(actionResponses[1].code, 'getCookieValues(["session"], ["https://example.com"])');
+    assert.isUndefined(actionResponses[1].output);
+    assert.strictEqual(actionResponses[2].code, 'getCookieValues(["session"], ["https://example.com"])');
+    assert.exists(actionResponses[2].output);
   });
 
   it('provides getLighthouseReport capability to GetLighthouseAuditsTool', async () => {

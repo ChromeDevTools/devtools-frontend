@@ -181,6 +181,7 @@ export const enum ToolName {
   LIST_STORAGE_KEYS = 'listStorageKeys',
   GET_STORAGE_VALUES = 'getStorageValues',
   LIST_COOKIES = 'listCookies',
+  GET_COOKIE_VALUES = 'getCookieValues',
   GET_TRACE_EVENT_BY_KEY = 'getTraceEventByKey',
   SELECT_TRACE_EVENT_BY_KEY = 'selectTraceEventByKey',
   LIST_SOURCES = 'listSources',

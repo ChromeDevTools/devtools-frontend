@@ -215,15 +215,23 @@ describe('ListCookiesTool', () => {
     assert.strictEqual(response.error, 'No valid origins found.');
   });
 
-  it('rejects empty origins array input', async () => {
+  it('defaults to allowed origin when origins array is empty', async () => {
     setupPrimaryTarget('https://example.com');
+    const cookie = new SDK.Cookie.Cookie('cookie1', 'val1');
+    cookie.addAttribute(SDK.Cookie.Attribute.DOMAIN, 'example.com');
+    cookie.addAttribute(SDK.Cookie.Attribute.PATH, '/');
+    activeCookies = [cookie];
 
     const context = createMockContext();
     const tool = new AiAssistance.ListCookies.ListCookiesTool();
     const response = await tool.handler({origins: []}, context);
 
-    assertIsError(response);
-    assert.strictEqual(response.error, 'No valid origins found.');
+    assertIsResult(response);
+    assert.deepEqual(response.result.cookieNamesByOrigin, {
+      'https://example.com': {
+        cookies: ['cookie1'],
+      },
+    });
   });
 
   it('rejects opaque established origin', async () => {
@@ -256,7 +264,7 @@ describe('ListCookiesTool', () => {
     const response = await tool.handler({origins: ['https://example.com']}, context);
 
     assertIsError(response);
-    assert.strictEqual(response.error, 'No origin available or not allowed.');
+    assert.strictEqual(response.error, 'Primary page target not found.');
   });
 
   it('rejects when inspectedURL origin does not match allowedOrigin', async () => {
@@ -269,7 +277,7 @@ describe('ListCookiesTool', () => {
     const response = await tool.handler({origins: ['https://example.com']}, context);
 
     assertIsError(response);
-    assert.strictEqual(response.error, 'No origin available or not allowed.');
+    assert.strictEqual(response.error, 'Page origin does not match allowed origin.');
   });
 
   it('handles missing cookie model gracefully', async () => {
@@ -304,11 +312,40 @@ describe('ListCookiesTool', () => {
     });
   });
 
+  it('defaults to allowed origin when origins is omitted', async () => {
+    setupPrimaryTarget('https://example.com');
+    const cookie = new SDK.Cookie.Cookie('default-cookie', 'val');
+    cookie.addAttribute(SDK.Cookie.Attribute.DOMAIN, 'example.com');
+    cookie.addAttribute(SDK.Cookie.Attribute.PATH, '/');
+    activeCookies = [cookie];
+
+    const context = {
+      conversationContext: null,
+      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      disableLogging: sinon.stub(),
+    };
+
+    const tool = new AiAssistance.ListCookies.ListCookiesTool();
+    const response = await tool.handler({}, context);
+
+    assertIsResult(response);
+    assert.deepEqual(response.result.cookieNamesByOrigin, {
+      'https://example.com': {
+        cookies: ['default-cookie'],
+      },
+    });
+  });
+
   it('formats displayInfoFromArgs correctly', () => {
     const tool = new AiAssistance.ListCookies.ListCookiesTool();
     const displayInfo = tool.displayInfoFromArgs({origins: ['https://example.com']});
 
     assert.strictEqual(displayInfo.title, 'Reading cookies');
     assert.strictEqual(displayInfo.action, 'listCookies(["https://example.com"])');
+  });
+
+  it('has REDACT_FROM_HISTORY annotation', () => {
+    const tool = new AiAssistance.ListCookies.ListCookiesTool();
+    assert.deepEqual(tool.annotations, [AiAssistance.Tool.ToolAnnotation.REDACT_FROM_HISTORY]);
   });
 });

@@ -1134,6 +1134,7 @@ grd_files_unbundled_sources = [
   "front_end/models/ai_assistance/tools/CookieUtils.js",
   "front_end/models/ai_assistance/tools/DOMStorageUtils.js",
   "front_end/models/ai_assistance/tools/ExecuteJavaScript.js",
+  "front_end/models/ai_assistance/tools/GetCookieValues.js",
   "front_end/models/ai_assistance/tools/GetDetailedCallTree.js",
   "front_end/models/ai_assistance/tools/GetElementAccessibilityDetails.js",
   "front_end/models/ai_assistance/tools/GetFunctionCode.js",

@@ -2,14 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import {areOriginsEquivalent, extractContextOrigin, isOpaqueOrigin} from '../AiOrigins.js';
 
-import {findFrameForOrigin, getCookiesForOrigin} from './CookieUtils.js';
-import {MAX_TARGET_ORIGINS} from './DOMStorageUtils.js';
+import {findFrameForOrigin, getCookiesForOrigin, resolveAllowedTargetOrigins} from './CookieUtils.js';
 import {
   type BaseToolCapability,
   type DataHandlerResult,
@@ -24,7 +21,7 @@ import {
 const lockedString = i18n.i18n.lockedString;
 
 export interface ListCookiesArgs extends ToolArgs {
-  origins: string[];
+  origins?: string[];
 }
 
 export interface ListCookiesResult {
@@ -34,7 +31,8 @@ export interface ListCookiesResult {
 export class ListCookiesTool implements
     DataTool<ListCookiesArgs, ListCookiesResult, BaseToolCapability&OriginLockCapability&ServerLoggingCapability> {
   readonly name: ToolName = ToolName.LIST_COOKIES;
-  readonly description: string = 'Lists all cookies for requested origins, strictly excluding their values.';
+  readonly description: string =
+      'Lists all cookie names for requested origins (or the current page origin if omitted), strictly excluding their values.';
 
   readonly annotations: ToolAnnotation[] = [ToolAnnotation.REDACT_FROM_HISTORY];
 
@@ -45,12 +43,12 @@ export class ListCookiesTool implements
     properties: {
       origins: {
         type: Host.AidaClient.ParametersTypes.ARRAY,
-        description: 'List of origins to list cookies for.',
+        description: 'Optional list of origins to list cookies for. Defaults to the current page origin if omitted.',
         items: {type: Host.AidaClient.ParametersTypes.STRING, description: 'An origin URL.'},
-        nullable: false,
+        nullable: true,
       },
     },
-    required: ['origins'],
+    required: [],
   };
 
   displayInfoFromArgs(args: ListCookiesArgs): {
@@ -59,7 +57,7 @@ export class ListCookiesTool implements
   } {
     return {
       title: lockedString('Reading cookies'),
-      action: `listCookies(${JSON.stringify(args.origins)})`,
+      action: `listCookies(${JSON.stringify(args?.origins ?? [])})`,
     };
   }
 
@@ -71,28 +69,11 @@ export class ListCookiesTool implements
 
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const targetManager = SDK.TargetManager.TargetManager.instance();
-    const primaryPageTarget = targetManager.primaryPageTarget();
-
-    const allowedOrigin = context.getEstablishedOrigin();
-    if (!allowedOrigin || isOpaqueOrigin(allowedOrigin)) {
-      return {error: 'No origin available or not allowed.'};
+    const targetOriginsResult = resolveAllowedTargetOrigins(args?.origins, context, targetManager);
+    if ('error' in targetOriginsResult) {
+      return {error: targetOriginsResult.error};
     }
-
-    if (!primaryPageTarget) {
-      return {error: 'No origin available or not allowed.'};
-    }
-
-    const pageOrigin = Common.ParsedURL.ParsedURL.extractOrigin(primaryPageTarget.inspectedURL());
-    if (!pageOrigin || !areOriginsEquivalent(pageOrigin, allowedOrigin)) {
-      return {error: 'No origin available or not allowed.'};
-    }
-
-    const validOrigins = args.origins.map(origin => extractContextOrigin(origin))
-                             .filter(origin => areOriginsEquivalent(origin, allowedOrigin));
-    const targetOrigins = Array.from(new Set(validOrigins)).slice(0, MAX_TARGET_ORIGINS);
-    if (targetOrigins.length === 0) {
-      return {error: 'No valid origins found.'};
-    }
+    const {targetOrigins, primaryPageTarget} = targetOriginsResult;
 
     const cookieNamesByOrigin: ListCookiesResult['cookieNamesByOrigin'] = {};
 

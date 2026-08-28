@@ -44,6 +44,7 @@ import * as StorageItem from './StorageItem.js';
 import * as CookieUtils from './tools/CookieUtils.js';
 import * as DOMStorageUtils from './tools/DOMStorageUtils.js';
 import * as ExecuteJavaScript from './tools/ExecuteJavaScript.js';
+import * as GetCookieValues from './tools/GetCookieValues.js';
 import * as GetDetailedCallTree from './tools/GetDetailedCallTree.js';
 import * as GetElementAccessibilityDetails from './tools/GetElementAccessibilityDetails.js';
 import * as GetFunctionCode from './tools/GetFunctionCode.js';
@@ -96,6 +97,7 @@ export {
   FileAgent,
   FileContext,
   FileFormatter,
+  GetCookieValues,
   GetDetailedCallTree,
   GetElementAccessibilityDetails,
   GetFunctionCode,

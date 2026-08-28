@@ -162,7 +162,13 @@ describe('The Application Tab', () => {
 
     await navigateToCookiesForTopDomain(devToolsPage, inspectedPage);
 
-    const dataGridRowValues1 = await getStorageItemsData(devToolsPage, ['name'], 4);
+    const dataGridRowValues1 = await devToolsPage.waitForFunction(async () => {
+      const values = await getStorageItemsData(devToolsPage, ['name'], 4);
+      if (values.length === 4 && values.every(item => Boolean(item.name))) {
+        return values;
+      }
+      return undefined;
+    });
     assert.deepEqual(dataGridRowValues1, [
       {
         name: '__Host-foo3',
@@ -184,6 +190,10 @@ describe('The Application Tab', () => {
       return values.length === 1;
     });
     await clearStorageItems(devToolsPage);
+    await devToolsPage.waitForFunction(async () => {
+      const values = await getDataGridData(devToolsPage, '.storage-view table', ['name']);
+      return values.length === 0;
+    });
     await clearStorageItemsFilter(devToolsPage);
 
     const dataGridRowValues2 = await devToolsPage.waitForFunction(async () => {

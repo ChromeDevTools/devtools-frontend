@@ -21,6 +21,7 @@ import {dispatchEvent} from '../../testing/MockConnection.js';
 import {MockIssuesModel} from '../../testing/MockIssuesModel.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import type * as Adorners from '../../ui/components/adorners/adorners.js';
+import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import {html} from '../../ui/lit/lit.js';
@@ -431,13 +432,10 @@ describeWithEnvironment('ElementsTreeElement', () => {
     sinon.stub(node, 'nodeType').returns(Node.ELEMENT_NODE);
     sinon.stub(node, 'nodeNameInCorrectCase').returns('div');
     sinon.stub(node, 'nodeName').returns('DIV');
-    const treeOutline = new Elements.ElementsTreeOutline.ElementsTreeOutline();
-    const treeElement = new Elements.ElementsTreeElement.ElementsTreeElement(node);
-    treeElement.treeOutline = treeOutline;
-
+    const domTreeWidget = new Elements.ElementsTreeOutline.DOMTreeWidget();
     const event = new Event('contextmenu');
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    await Elements.DOMTreeContextMenu.populateNodeContextMenu(contextMenu, treeElement);
+    await Elements.DOMTreeContextMenu.populateNodeContextMenu(contextMenu, domTreeWidget, node);
     return contextMenu;
   }
 
@@ -992,9 +990,12 @@ describeWithEnvironment('ElementsTreeElement highlighting', () => {
     containerTreeElement.expand();
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    attrTestTreeElement?.hideSearchHighlights();
     treeOutline.removeChildren();
     treeOutline.setVisible(false);
+    await UI.Widget.Widget.allUpdatesComplete;
+    Highlighting.HighlightManager.HighlightManager.removeInstance();
   });
 
   let stub: sinon.SinonStub<[], void>|undefined;
@@ -1279,8 +1280,9 @@ describeWithEnvironment('ElementsTreeElement highlighting', () => {
     sinon.assert.calledWith(setNodeValueSpy, 'New Text');
   });
 
-  it('highlights search results in ordered text ranges', () => {
+  it('highlights search results in ordered text ranges', async () => {
     attrTestTreeElement.highlightSearchResults('foo');
+    await attrTestTreeElement.widget.updateComplete;
     const highlight = CSS.highlights.get('highlighted-search-result');
     assert.exists(highlight);
     assert.deepEqual(Array.from(highlight).map(range => range.toString()), ['Foo', 'foo']);

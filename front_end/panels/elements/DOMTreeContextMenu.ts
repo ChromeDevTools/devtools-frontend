@@ -10,8 +10,8 @@ import * as Emulation from '../emulation/emulation.js';
 
 import {canGetJSPath} from './DOMPath.js';
 import {ElementsPanel} from './ElementsPanel.js';
-import {ElementsTreeElement} from './ElementsTreeElement.js';
-import type {ElementsTreeOutline} from './ElementsTreeOutline.js';
+import {ElementsTreeElement, type ElementsTreeWidget} from './ElementsTreeElement.js';
+import type {DOMTreeWidget} from './ElementsTreeOutline.js';
 
 const UIStrings = {
   /**
@@ -194,12 +194,16 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/DOMTreeContextMenu.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export async function populateNodeContextMenu(contextMenu: UI.ContextMenu.ContextMenu,
-                                              treeElement: ElementsTreeElement): Promise<void> {
-  const domNode = treeElement.node();
-  const isEditable = treeElement.hasEditableNode();
-  if (isEditable && !treeElement.isEditing) {
-    contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml), () => treeElement.editAsHTML(),
+export async function populateNodeContextMenu(
+    contextMenu: UI.ContextMenu.ContextMenu,
+    domTreeWidget: DOMTreeWidget,
+    domNode: SDK.DOMModel.DOMNode,
+    targetWidget?: ElementsTreeWidget,
+    ): Promise<void> {
+  const isEditable = !domNode.isShadowRoot() && !domNode.ancestorUserAgentShadowRoot();
+  if (isEditable && !targetWidget?.isEditing) {
+    contextMenu.editSection().appendItem(i18nString(UIStrings.editAsHtml),
+                                         () => domTreeWidget.toggleEditAsHTML(domNode),
                                          {jslogContext: 'elements.edit-as-html'});
   }
   const isShadowRoot = domNode.isShadowRoot();
@@ -352,37 +356,37 @@ export async function populateNodeContextMenu(contextMenu: UI.ContextMenu.Contex
     }
   }
 
-  const outline = treeElement.treeOutline as ElementsTreeOutline | null;
-
   menuItem = contextMenu.clipboardSection().appendItem(i18nString(UIStrings.cut),
-                                                       () => outline?.performCopyOrCut(true, domNode),
-                                                       {disabled: !treeElement.hasEditableNode(), jslogContext: 'cut'});
+                                                       () => domTreeWidget.performCopyOrCut(true, domNode),
+                                                       {disabled: !isEditable, jslogContext: 'cut'});
   menuItem.setShortcut(createShortcut('X', modifier));
 
   // Place it here so that all "Copy"-ing items stick together.
   const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString(UIStrings.copy), false, 'copy');
   const section = copyMenu.section();
   if (!isShadowRoot) {
-    menuItem = section.appendItem(i18nString(UIStrings.copyOuterhtml), () => outline?.performCopyOrCut(false, domNode),
-                                  {jslogContext: 'copy-outer-html'});
+    menuItem =
+        section.appendItem(i18nString(UIStrings.copyOuterhtml), () => domTreeWidget.performCopyOrCut(false, domNode),
+                           {jslogContext: 'copy-outer-html'});
     menuItem.setShortcut(createShortcut('V', modifier));
   }
   if (domNode.nodeType() === Node.ELEMENT_NODE) {
-    section.appendItem(i18nString(UIStrings.copySelector), () => treeElement.copyCSSPath(),
+    section.appendItem(i18nString(UIStrings.copySelector), () => domTreeWidget.copyCSSPath(domNode),
                        {jslogContext: 'copy-selector'});
-    section.appendItem(i18nString(UIStrings.copyJsPath), () => treeElement.copyJSPath(),
+    section.appendItem(i18nString(UIStrings.copyJsPath), () => domTreeWidget.copyJSPath(domNode),
                        {disabled: !canGetJSPath(domNode), jslogContext: 'copy-js-path'});
-    section.appendItem(i18nString(UIStrings.copyStyles), () => void treeElement.copyStyles(),
+    section.appendItem(i18nString(UIStrings.copyStyles), () => void domTreeWidget.copyStyles(domNode),
                        {jslogContext: 'elements.copy-styles'});
   }
   if (!isShadowRoot) {
-    section.appendItem(i18nString(UIStrings.copyXpath), () => treeElement.copyXPath(), {jslogContext: 'copy-xpath'});
-    section.appendItem(i18nString(UIStrings.copyFullXpath), () => treeElement.copyFullXPath(),
+    section.appendItem(i18nString(UIStrings.copyXpath), () => domTreeWidget.copyXPath(domNode),
+                       {jslogContext: 'copy-xpath'});
+    section.appendItem(i18nString(UIStrings.copyFullXpath), () => domTreeWidget.copyFullXPath(domNode),
                        {jslogContext: 'copy-full-xpath'});
   }
 
   menuItem = copyMenu.clipboardSection().appendItem(i18nString(UIStrings.copyElement),
-                                                    () => outline?.performCopyOrCut(false, domNode, true),
+                                                    () => domTreeWidget.performCopyOrCut(false, domNode, true),
                                                     {jslogContext: 'copy-element'});
   menuItem.setShortcut(createShortcut('C', modifier));
 
@@ -390,33 +394,36 @@ export async function populateNodeContextMenu(contextMenu: UI.ContextMenu.Contex
     // Duplicate element, disabled on root element and ShadowDOM.
     const isRootElement = !domNode.parentNode || domNode.parentNode.nodeName() === '#document';
     menuItem = contextMenu.editSection().appendItem(i18nString(UIStrings.duplicateElement),
-                                                    () => outline?.duplicateNode(domNode), {
+                                                    () => domTreeWidget.duplicateNode(domNode), {
                                                       disabled: (domNode.isInShadowTree() || isRootElement),
                                                       jslogContext: 'elements.duplicate-element',
                                                     });
   }
 
-  menuItem = contextMenu.clipboardSection().appendItem(i18nString(UIStrings.paste), () => outline?.pasteNode(domNode),
-                                                       {disabled: !outline?.canPaste(domNode), jslogContext: 'paste'});
+  menuItem =
+      contextMenu.clipboardSection().appendItem(i18nString(UIStrings.paste), () => domTreeWidget.pasteNode(domNode),
+                                                {disabled: !domTreeWidget.canPaste(domNode), jslogContext: 'paste'});
   menuItem.setShortcut(createShortcut('V', modifier));
 
   menuItem = contextMenu.debugSection().appendCheckboxItem(i18nString(UIStrings.hideElement),
-                                                           () => outline?.toggleHideElement(domNode), {
-                                                             checked: Boolean(outline?.isToggledToHidden(domNode)),
+                                                           () => domTreeWidget.toggleHideElement(domNode), {
+                                                             checked: Boolean(domTreeWidget.isToggledToHidden(domNode)),
                                                              jslogContext: 'elements.hide-element',
                                                            });
   menuItem.setShortcut(
       UI.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction('elements.hide-element') || '');
 
   if (isEditable) {
-    contextMenu.editSection().appendItem(i18nString(UIStrings.deleteElement), () => void treeElement.remove(),
+    contextMenu.editSection().appendItem(i18nString(UIStrings.deleteElement),
+                                         () => void domTreeWidget.removeNode(domNode),
                                          {jslogContext: 'delete-element'});
   }
 
   contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively),
-                                       () => void treeElement.expandRecursively(),
+                                       () => void domTreeWidget.expandRecursively(domNode),
                                        {jslogContext: 'expand-recursively'});
-  contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren), () => treeElement.collapseChildren(),
+  contextMenu.viewSection().appendItem(i18nString(UIStrings.collapseChildren),
+                                       () => domTreeWidget.collapseChildren(domNode),
                                        {jslogContext: 'collapse-children'});
   contextMenu.viewSection().appendItem(i18nString(UIStrings.switchToAccessibilityTree),
                                        () => ElementsPanel.instance().toggleAccessibilityTree(),
@@ -438,15 +445,16 @@ export async function populateNodeContextMenu(contextMenu: UI.ContextMenu.Contex
 }
 
 export async function showContextMenu(
-    treeElement: ElementsTreeElement,
+    domTreeWidget: DOMTreeWidget,
+    domNode: SDK.DOMModel.DOMNode,
     event: Event,
+    targetWidget?: ElementsTreeWidget,
     ): Promise<UI.ContextMenu.ContextMenu|undefined> {
   if (UI.UIUtils.isEditing()) {
     return;
   }
 
-  const outline = treeElement.treeOutline as ElementsTreeOutline | null;
-  if (outline && !outline.enableContextMenu) {
+  if (!domTreeWidget.enableContextMenu) {
     return;
   }
 
@@ -462,7 +470,6 @@ export async function showContextMenu(
   event.preventDefault();
 
   const contextMenu = new UI.ContextMenu.ContextMenu(event);
-  const domNode = treeElement.node();
   const isPseudoElement = Boolean(domNode.pseudoType());
   const isTag = domNode.nodeType() === Node.ELEMENT_NODE && !isPseudoElement;
 
@@ -475,19 +482,17 @@ export async function showContextMenu(
                                        () => void domNode.saveNodeToTempVariable(),
                                        {jslogContext: 'store-as-global-variable'});
   if (textNode) {
-    if (!treeElement.isEditing) {
+    if (!targetWidget?.isEditing) {
       contextMenu.editSection().appendItem(i18nString(UIStrings.editText),
-                                           () => treeElement.startEditingTextNode(textNode as Element),
+                                           () => targetWidget?.startEditingTextNode(textNode as Element),
                                            {jslogContext: 'edit-text'});
     }
-    await populateNodeContextMenu(contextMenu, treeElement);
+    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget);
   } else if (isTag) {
-    const targetWidget = treeElement.isClosingTag() ?
-        ((treeElement.treeOutline as ElementsTreeOutline | null)?.findTreeElement(domNode) as ElementsTreeElement |
-         null) :
-        treeElement;
-    if (targetWidget) {
-      contextMenu.editSection().appendItem(i18nString(UIStrings.addAttribute), () => targetWidget.addNewAttribute(),
+    const startTagWidget =
+        targetWidget?.isClosingTag ? (targetWidget.findStartTagWidget?.() ?? targetWidget) : targetWidget;
+    if (startTagWidget) {
+      contextMenu.editSection().appendItem(i18nString(UIStrings.addAttribute), () => startTagWidget.addNewAttribute(),
                                            {jslogContext: 'add-attribute'});
     }
 
@@ -496,10 +501,10 @@ export async function showContextMenu(
     const newAttribute = target.enclosingNodeOrSelfWithClass?.('add-attribute');
     if (attribute && !newAttribute) {
       contextMenu.editSection().appendItem(i18nString(UIStrings.editAttribute),
-                                           () => treeElement.startEditingAttribute(attribute, target),
+                                           () => startTagWidget?.startEditingAttribute(attribute, target),
                                            {jslogContext: 'edit-attribute'});
     }
-    await populateNodeContextMenu(contextMenu, treeElement);
+    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, startTagWidget);
     ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, domNode);
     contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => domNode.scrollIntoView(),
                                          {jslogContext: 'scroll-into-view'});
@@ -507,26 +512,26 @@ export async function showContextMenu(
       await domNode.focus();
     }, {jslogContext: 'focus'});
   } else if (commentNode) {
-    await populateNodeContextMenu(contextMenu, treeElement);
+    await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget);
   } else if (isPseudoElement) {
-    if (treeElement.childCount() !== 0) {
+    if (domNode.childNodeCount() !== 0 || domNode.hasPseudoElements()) {
       contextMenu.viewSection().appendItem(i18nString(UIStrings.expandRecursively),
-                                           () => void treeElement.expandRecursively(),
+                                           () => void domTreeWidget.expandRecursively(domNode),
                                            {jslogContext: 'expand-recursively'});
     }
     contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => domNode.scrollIntoView(),
                                          {jslogContext: 'scroll-into-view'});
   } else if (domNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
     contextMenu.editSection().appendItem(i18nString(UIStrings.editData),
-                                         () => treeElement.startEditingProcessingInstructionValue(),
+                                         () => targetWidget?.startEditingProcessingInstructionValue(),
                                          {jslogContext: 'elements.edit-data'});
-    contextMenu.editSection().appendItem(
-        i18nString(UIStrings.duplicateElement),
-        () => (treeElement.treeOutline as ElementsTreeOutline | null)?.duplicateNode(domNode), {
-          disabled: domNode.isInShadowTree(),
-          jslogContext: 'elements.duplicate-element',
-        });
-    contextMenu.editSection().appendItem(i18nString(UIStrings.deleteElement), () => void treeElement.remove(),
+    contextMenu.editSection().appendItem(i18nString(UIStrings.duplicateElement),
+                                         () => domTreeWidget.duplicateNode(domNode), {
+                                           disabled: domNode.isInShadowTree(),
+                                           jslogContext: 'elements.duplicate-element',
+                                         });
+    contextMenu.editSection().appendItem(i18nString(UIStrings.deleteElement),
+                                         () => void domTreeWidget.removeNode(domNode),
                                          {jslogContext: 'delete-element'});
   }
 

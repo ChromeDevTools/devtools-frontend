@@ -182,6 +182,7 @@ devtools_ui_module("unittests") {
     "ColorSwatchPopoverIcon.test.ts",
     "ComputedStyleWidget.test.ts",
     "DOMPath.test.ts",
+    "DOMTreeContextMenu.test.ts",
     "DOMTreeWidget.test.ts",
     "ElementStatePaneWidget.test.ts",
     "ElementsPanel.test.ts",

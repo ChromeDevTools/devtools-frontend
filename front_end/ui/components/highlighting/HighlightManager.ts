@@ -112,6 +112,10 @@ export class HighlightManager {
   }
 
   static removeInstance(): void {
+    if (typeof CSS !== 'undefined' && CSS.highlights) {
+      CSS.highlights.delete(HIGHLIGHT_REGISTRY);
+      CSS.highlights.delete(CURRENT_HIGHLIGHT_REGISTRY);
+    }
     highlightManagerInstance = null;
   }
 

@@ -130,7 +130,7 @@ interface ViewInput {
 
   onSelect?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;
   onExpand?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
-  onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => void;
+  onContextMenu?: (node: SDK.DOMModel.DOMNode, event: MouseEvent, widget?: ElementsTreeWidget) => void;
   onHoverNode?: (node: SDK.DOMModel.DOMNode, showInfo?: boolean) => void;
   onLeave?: () => void;
   onToggleHideElement?: (node: SDK.DOMModel.DOMNode) => void;
@@ -177,7 +177,7 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     elementsTreeOutline.elementInternal.addEventListener('contextmenu', (event: MouseEvent) => {
       const treeElement = elementsTreeOutline.treeElementFromEventInternal(event);
       if (treeElement instanceof ElementsTreeElement) {
-        output.elementsTreeOutline?.showContextMenu(treeElement, event);
+        input.onContextMenu?.(treeElement.node(), event, treeElement.widget);
       }
     }, false);
     elementsTreeOutline.elementInternal.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -276,7 +276,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
   output.elementsTreeOutline.maxTreeDepth = input.maxTreeDepth;
   output.elementsTreeOutline.enableContextMenu = input.enableContextMenu ?? true;
   output.elementsTreeOutline.showContextMenu = (treeElement, event) => {
-    void showContextMenu(treeElement, event);
+    if (event instanceof MouseEvent) {
+      input.onContextMenu?.(treeElement.node(), event, treeElement.widget);
+    }
   };
   let needsUpdate = false;
   const showComments = input.showComments ?? true;
@@ -522,7 +524,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     // TODO: Move in-place editing (startEditingAttribute, startEditingTextNode, InplaceEditor) out of ElementsTreeElement into ElementsTreeWidget and DOMTreeWidget.
     // TODO: Move multiline/HTML editing (toggleEditAsHTML, MultilineEditorController) from ElementsTreeOutline into DOMTreeWidget.
     // TODO: Move Drag and Drop reordering support (ondragstart, ondragover, ondrop, insertion markers) out of ElementsTreeOutline into a declarative drag-and-drop controller for <devtools-tree>.
-    // TODO: Move context menu building (DOMTreeContextMenu, showContextMenu) out of ElementsTreeElement / ElementsTreeOutline to operate directly on SDK.DOMModel.DOMNode and DOMTreeWidget.
     // TODO: Move marker decorators and descendant gutter decorations (MarkerDecoratorRegistration, updateDecorations) into declarative state passed to ElementsTreeWidget.
     // TODO: Move TopLayerContainer rendering for top layer elements into a declarative tree element item.
     // TODO: Move AdoptedStyleSheet rendering (AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement) into dedicated declarative widgets.
@@ -952,6 +953,62 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     return Boolean(this.#viewOutput.elementsTreeOutline?.findTreeElement(node)?.expanded);
   }
 
+  async expandRecursively(node: SDK.DOMModel.DOMNode, maxDepth = Number.MAX_VALUE): Promise<void> {
+    if (this.#view === DECLARATIVE_VIEW) {
+      await node.getSubtree(100, true);
+      const expand = async(n: SDK.DOMModel.DOMNode, depth: number): Promise<void> => {
+        if (depth > maxDepth) {
+          return;
+        }
+        this.#expandedNodes.add(n);
+        let children = n.children();
+        if (!children && n.childNodeCount()) {
+          children = await new Promise<SDK.DOMModel.DOMNode[]>(resolve => {
+            void n.getChildNodes(() => resolve(n.children() ?? []));
+          });
+        }
+        const pseudoElements = Array.from(n.pseudoElements().values()).flat();
+        const allChildren = [...(children ?? []), ...pseudoElements];
+        if (allChildren.length) {
+          await Promise.all(allChildren.map(child => expand(child, depth + 1)));
+        }
+      };
+      await expand(node, 0);
+      this.performUpdate();
+      return;
+    }
+    const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
+    if (treeElement) {
+      await treeElement.expandRecursively();
+    }
+  }
+
+  collapseChildren(node: SDK.DOMModel.DOMNode): void {
+    if (this.#view === DECLARATIVE_VIEW) {
+      const collapse = (n: SDK.DOMModel.DOMNode): void => {
+        const pseudoElements = Array.from(n.pseudoElements().values()).flat();
+        const allChildren = [...(n.children() ?? []), ...pseudoElements];
+        for (const child of allChildren) {
+          this.#expandedNodes.delete(child);
+          collapse(child);
+        }
+      };
+      collapse(node);
+      this.performUpdate();
+      return;
+    }
+    const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
+    treeElement?.collapseChildren();
+  }
+
+  showContextMenu(node: SDK.DOMModel.DOMNode, event: MouseEvent,
+                  widget?: ElementsTreeWidget): Promise<UI.ContextMenu.ContextMenu|undefined> {
+    if (!this.#enableContextMenu) {
+      return Promise.resolve(undefined);
+    }
+    return showContextMenu(this, node, event, widget);
+  }
+
   /**
    * FIXME: this is called to re-render everything from scratch, for
    * example, if global settings changed. Instead, the setting values
@@ -1065,13 +1122,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       onExpand: (node: SDK.DOMModel.DOMNode, expanded: boolean) => {
         this.setNodeExpanded(node, expanded);
       },
-      onContextMenu: (node: SDK.DOMModel.DOMNode, event: MouseEvent) => {
-        if (this.#viewOutput.elementsTreeOutline) {
-          const treeElement = this.#viewOutput.elementsTreeOutline.findTreeElement(node);
-          if (treeElement) {
-            void showContextMenu(treeElement, event);
-          }
-        }
+      onContextMenu: (node: SDK.DOMModel.DOMNode, event: MouseEvent, widget?: ElementsTreeWidget) => {
+        void this.showContextMenu(node, event, widget);
       },
       onToggleHideElement: (node: SDK.DOMModel.DOMNode) => {
         this.toggleHideElement(node);

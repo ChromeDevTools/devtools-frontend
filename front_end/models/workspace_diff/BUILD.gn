@@ -8,9 +8,10 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("workspace_diff") {
+  split_compilation = true
   sources = [ "WorkspaceDiff.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/root:bundle",
@@ -23,9 +24,10 @@ devtools_module("workspace_diff") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "workspace_diff.ts"
 
-  deps = [ ":workspace_diff" ]
+  ts_deps = [ ":workspace_diff" ]
 
   visibility = [
     ":*",
@@ -42,11 +44,12 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "WorkspaceDiff.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/platform:bundle",
     "../../testing",

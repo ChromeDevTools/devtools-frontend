@@ -6,9 +6,10 @@ import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_foundation_module("foundation") {
+  split_compilation = true
   sources = [ "Universe.ts" ]
 
-  deps = [
+  ts_deps = [
     "../core/common:bundle",
     "../core/host:bundle",
     "../core/root:bundle",
@@ -33,9 +34,10 @@ devtools_foundation_module("foundation") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "foundation.ts"
 
-  deps = [ ":foundation" ]
+  ts_deps = [ ":foundation" ]
 
   # IMPORTANT: core/ or models/ must not be added here.
   visibility = [
@@ -50,9 +52,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_api_test_module("api_tests") {
+  split_compilation = true
   sources = [ "Universe.test.api.ts" ]
 
-  deps = [
+  ts_deps = [
     "../core/root:bundle",
     "../core/sdk:bundle",
     "../testing",
@@ -60,11 +63,12 @@ devtools_api_test_module("api_tests") {
 }
 
 devtools_foundation_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "Universe.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../core/common:bundle",
     "../core/host:bundle",

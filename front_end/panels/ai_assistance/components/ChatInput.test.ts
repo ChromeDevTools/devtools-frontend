@@ -8,7 +8,6 @@ import sinon from 'sinon';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
-import {createDummyImageFile} from '../../../testing/AiAssistanceHelpers.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {
   createTarget,
@@ -89,8 +88,11 @@ describeWithEnvironment('ChatInput', () => {
         value: [file],
         writable: false,
       });
+      const nextInput = view.nextInput;
       mockInput.dispatchEvent(new Event('change'));
-      await new Promise(resolve => setTimeout(resolve, 0));
+      if (file.size <= 10 * 1024 * 1024) {
+        await nextInput;
+      }
     }
 
     beforeEach(() => {
@@ -115,10 +117,11 @@ describeWithEnvironment('ChatInput', () => {
       const [view] = createComponent();
 
       // Simulate screenshot button click
+      const nextInput = view.nextInput;
       view.input.onTakeScreenshot();
 
       // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await nextInput;
 
       sinon.assert.calledOnce(captureScreenshotStub);
       assert.deepEqual(view.input.imageInput, {
@@ -131,7 +134,7 @@ describeWithEnvironment('ChatInput', () => {
 
     it('handles image upload', async () => {
       const [view] = createComponent();
-      const file = await createDummyImageFile(10, 10);
+      const file = new File(['dummy'], 'dummy.jpg', {type: 'image/jpeg'});
 
       await triggerImageUpload(view, file);
 
@@ -144,7 +147,7 @@ describeWithEnvironment('ChatInput', () => {
 
     it('removes image input', async () => {
       const [view] = createComponent();
-      const file = await createDummyImageFile(10, 10);
+      const file = new File(['dummy'], 'dummy.jpg', {type: 'image/jpeg'});
 
       await triggerImageUpload(view, file);
       assert.isDefined(view.input.imageInput);
@@ -155,7 +158,7 @@ describeWithEnvironment('ChatInput', () => {
 
     it('clears image input on submit', async () => {
       const [view, component] = createComponent();
-      const file = await createDummyImageFile(10, 10);
+      const file = new File(['dummy'], 'dummy.jpg', {type: 'image/jpeg'});
 
       await triggerImageUpload(view, file);
       component.setInputValue('test');
@@ -170,15 +173,16 @@ describeWithEnvironment('ChatInput', () => {
       const [view, component] = createComponent();
       component.conversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
 
-      const file = await createDummyImageFile(10, 10);
+      const file = new File(['dummy'], 'dummy.jpg', {type: 'image/jpeg'});
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
       const clipboardEvent = new ClipboardEvent('paste', {
         clipboardData: dataTransfer,
       });
 
+      const nextInput = view.nextInput;
       view.input.onImagePaste(clipboardEvent);
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await nextInput;
 
       assert.exists(view.input.imageInput);
       assert.isFalse(view.input.imageInput.isLoading);
@@ -190,7 +194,7 @@ describeWithEnvironment('ChatInput', () => {
     it('handles drag-and-drop image upload', async () => {
       const [view] = createComponent();
 
-      const file = await createDummyImageFile(10, 10);
+      const file = new File(['dummy'], 'dummy.jpg', {type: 'image/jpeg'});
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(file);
       const dragOverEvent = new DragEvent('dragover', {
@@ -202,9 +206,10 @@ describeWithEnvironment('ChatInput', () => {
 
       view.input.onImageDragOver(dragOverEvent);
       dragOverEvent.preventDefault();
+      const nextInput = view.nextInput;
       view.input.onImageDrop(dropEvent);
       dropEvent.preventDefault();
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await nextInput;
 
       assert.exists(view.input.imageInput);
       assert.isFalse(view.input.imageInput.isLoading);
@@ -218,7 +223,7 @@ describeWithEnvironment('ChatInput', () => {
       const [view] = createComponent();
 
       // Set up initial state with an image and non-empty conversation
-      const file = await createDummyImageFile(10, 10);
+      const file = new File(['dummy'], 'dummy.jpg', {type: 'image/jpeg'});
 
       await triggerImageUpload(view, file);
 

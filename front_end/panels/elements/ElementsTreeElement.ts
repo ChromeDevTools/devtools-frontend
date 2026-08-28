@@ -360,7 +360,7 @@ export interface Decoration {
 
 const DOM_UPDATE_ANIMATION_CLASS_NAME = 'dom-update-highlight';
 
-function handleAdornerKeydown(cb: (event: Event) => void): (event: KeyboardEvent) => void {
+export function handleAdornerKeydown(cb: (event: Event) => void): (event: KeyboardEvent) => void {
   return (event: KeyboardEvent) => {
     if (event.code === 'Enter' || event.code === 'Space') {
       cb(event);
@@ -881,10 +881,14 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       ${hasAdorners ? html`<div class="adorner-container ${(input.editorState) ? 'hidden' : ''}">
         ${maybeRenderAdAdorner(input)}
         ${input.showViewSourceAdorner ? html`<devtools-adorner
+          class="clickable"
+          role=button
+          tabindex=0
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.VIEW_SOURCE}
-          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.VIEW_SOURCE)}
+          jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.VIEW_SOURCE).track({ click: true })}
           aria-label=${i18nString(UIStrings.viewSourceCode)}
           @click=${input.onViewSourceAdornerClick}
+          @keydown=${handleAdornerKeydown(input.onViewSourceAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents.AdornerManager.RegisteredAdorners.VIEW_SOURCE}</span>
         </devtools-adorner>` : nothing}
@@ -1016,7 +1020,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           </span>
         </devtools-adorner>`: nothing}
         ${input.showStartingStyleAdorner ? html`<devtools-adorner
-          class="starting-style"
+          class="starting-style clickable"
+          role=button
+          tabindex=0
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE}
           jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.STARTING_STYLE).track({ click: true })}
           active=${input.startingStyleAdornerActive}
@@ -1050,7 +1056,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
           </span>
         </devtools-adorner>`: nothing}
         ${input.showScrollSnapAdorner ? html`<devtools-adorner
-          class="scroll-snap"
+          class="scroll-snap clickable"
+          role=button
+          tabindex=0
           .name=${ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP}
           jslog=${VisualLogging.adorner(ElementsComponents.AdornerManager.RegisteredAdorners.SCROLL_SNAP).track({ click: true })}
           active=${input.scrollSnapAdornerActive}

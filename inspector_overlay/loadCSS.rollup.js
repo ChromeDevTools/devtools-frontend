@@ -5,7 +5,6 @@
 // WARNING: don't use this rollup plugin outside of inspector_overlay.
 // See README for special constraints the overlay has.
 
-// eslint-disable-next-line import/no-default-export
 export default function loadCSS() {
   return {
     name: 'loadCSS',

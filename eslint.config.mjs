@@ -62,6 +62,7 @@ export default defineConfig([
     'test/**/fixtures/',
     'test/e2e/**/*.js',
     'test/shared/**/*.js',
+    'extensions/cxx_debugging/tests/inputs/',
   ]),
   {
     name: 'JavaScript files',
@@ -260,7 +261,13 @@ export default defineConfig([
       // Sort imports first
       'import/first': 'error',
       // Closure does not properly typecheck default exports
-      'import/no-default-export': 'error',
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'ExportDefaultDeclaration',
+          message: 'Default exports are not allowed. Use named exports instead.',
+        },
+      ],
       /**
        * Catch duplicate import paths. For example this would catch the following example:
        * import {Foo} from './foo.js'
@@ -603,7 +610,7 @@ export default defineConfig([
     rules: {
       'no-console': 'off',
       '@devtools/es-modules-import': 'off',
-      'import/no-default-export': 'off',
+      'no-restricted-syntax': 'off',
     },
   },
   {
@@ -926,16 +933,20 @@ export default defineConfig([
     rules: {
       // Not a useful rule for .d.ts files where we are
       // representing an existing module.
-      'import/no-default-export': 'off',
+      'no-restricted-syntax': 'off',
     },
   },
   {
     name: 'Config files',
-    files: ['eslint.config.mjs', '**/*/rollup.config.mjs'],
+    files: [
+      'eslint.config.mjs',
+      '**/*/rollup.config.mjs',
+      '**/*.rollup.js',
+    ],
     rules: {
       // The config operate on the default export
       // So allow it for them
-      'import/no-default-export': 'off',
+      'no-restricted-syntax': 'off',
     },
   },
 ]);

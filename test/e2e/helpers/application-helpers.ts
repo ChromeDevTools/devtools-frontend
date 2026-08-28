@@ -14,8 +14,6 @@ export async function navigateToApplicationTab(
     inspectedPage: InspectedPage,
     testName: string,
 ) {
-  await inspectedPage.bringToFront();
-  await inspectedPage.goToResource(`application/${testName}.html`);
   await devToolsPage.bringToFront();
   await openCommandMenu(devToolsPage);
   await devToolsPage.typeText('Application');
@@ -24,6 +22,9 @@ export async function navigateToApplicationTab(
   // Make sure the application navigation list is shown
   await devToolsPage.waitFor('.storage-group-list-item');
   await expectVeEvents(devToolsPage, [veImpressionForApplicationPanel()], undefined);
+
+  await inspectedPage.bringToFront();
+  await inspectedPage.goToResource(`application/${testName}.html`);
 }
 
 export async function navigateToServiceWorkers(devToolsPage: DevToolsPage) {

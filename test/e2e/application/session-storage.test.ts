@@ -20,7 +20,14 @@ describe('The Application Tab', () => {
   it('shows Session Storage keys and values', async ({devToolsPage, inspectedPage}) => {
     await navigateToApplicationTab(devToolsPage, inspectedPage, 'session-storage');
     await navigateToSessionStorageForTopDomain(devToolsPage, inspectedPage);
-    const dataGridRowValues = await getStorageItemsData(devToolsPage, ['key', 'value'], 2);
+    const dataGridRowValues = await devToolsPage.waitForFunction(async () => {
+      const values = await getStorageItemsData(devToolsPage, ['key', 'value'], 2);
+      if (values.length >= 2 && values.every(item => Boolean(item.key && item.value))) {
+        return values;
+      }
+      return undefined;
+    });
+    dataGridRowValues.sort((a, b) => (a.key || '').localeCompare(b.key || ''));
     assert.deepEqual(dataGridRowValues, [
       {
         key: 'firstKey',

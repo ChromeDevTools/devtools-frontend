@@ -1129,5 +1129,44 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.detach();
       }
     });
+
+    it('highlights search match when node is already selected in default (imperative) view', async () => {
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'P', attributes: ['id', 'already-selected']},
+          ],
+        });
+        domTree.omitRootDOMNode = true;
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const pNode = rootNode.children()![0];
+        domTree.selectDOMNode(pNode);
+        assert.strictEqual(domTree.selectedDOMNode(), pNode);
+
+        // Highlight search match on the already selected node
+        domTree.highlightMatch(pNode, 'already-selected');
+        assert.strictEqual(domTree.searchMatchNode(), pNode);
+        assert.strictEqual(domTree.searchMatchQuery(), 'already-selected');
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const highlights = CSS.highlights.get(Highlighting.HighlightManager.HIGHLIGHT_REGISTRY);
+        assert.exists(highlights);
+        assert.isAbove(highlights.size, 0);
+        assert.isTrue(Array.from(highlights).some(range => range.toString() === 'already-selected'));
+      } finally {
+        domTree.detach();
+      }
+    });
   });
 });

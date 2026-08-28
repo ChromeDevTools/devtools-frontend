@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import {assert} from 'chai';
-
 import {
   ACTIVE_GRID_ADORNER_SELECTOR,
   ACTIVE_STARTING_STYLE_ADORNER_SELECTOR,
@@ -75,9 +73,9 @@ describe('Adornment in the Elements Tab', function() {
                           ],
                           ACTIVE_STARTING_STYLE_ADORNER_SELECTOR);
 
-    const backgroundColorComputedStyle =
-        await getComputedStylesForDomNode(inspectedPage, '.with-inner-starting-style', 'backgroundColor');
-    assert.strictEqual(backgroundColorComputedStyle, 'rgb(0, 128, 0)');
+    await inspectedPage.waitForStrictEqual(
+        'rgb(0, 128, 0)',
+        () => getComputedStylesForDomNode(inspectedPage, '.with-inner-starting-style', 'backgroundColor'));
   });
 
   it('displays grid and flex adorners', async ({devToolsPage, inspectedPage}) => {

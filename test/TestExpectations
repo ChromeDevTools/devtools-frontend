@@ -17,7 +17,6 @@
 # crbug.com/1234567 [ mac ] front_end/panels/elements/ElementsPanel.test.ts [ Failure ]
 
 
-crbug.com/538426484 [ linux ] test/e2e/elements/adopted-stylesheets.test.ts:the_elements_tab:shows_link_to_imported_stylesheet [ Failure Pass ]
 crbug.com/538395855 [ linux ] front_end/panels/application/ReportingApiView.test.ts:reportingapiview:view:updates_report_details [ Failure Pass ]
 crbug.com/538175758 [ linux ] front_end/panels/emulation/DeviceModeView.test.ts:devicemodeview:devicemodeview_tests:renders_the_view [ Failure Pass ]
 crbug.com/538275618 [ linux ] front_end/panels/explain/components/ConsoleInsight.test.ts:consoleinsight:with_logging:renders_the_insight [ Failure Pass ]

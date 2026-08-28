@@ -85,12 +85,17 @@ describe('The Elements tab', function() {
     await devToolsPage.pressKey('ArrowRight');
     await waitForChildrenOfSelectedElementNode(devToolsPage);
     await devToolsPage.pressKey('ArrowRight');
-    await waitForPartialContentOfSelectedElementsNode(devToolsPage, '#adopted-style-sheet \(');
+
+    // Wait until the link to the imported stylesheet is present and populated.
+    const stylesheetLinkRegex =
+        /#adopted-style-sheet \(https?:\/\/.*\/test\/e2e\/resources\/elements\/adopted-style.css\)/;
+    await devToolsPage.waitForFunction(async () => {
+      const content = await getContentOfSelectedNode(devToolsPage);
+      return stylesheetLinkRegex.test(content);
+    });
 
     // Check that the link to the imported stylesheet is present.
-    assert.match(
-        await getContentOfSelectedNode(devToolsPage),
-        /#adopted-style-sheet \(https?:\/\/.*\/test\/e2e\/resources\/elements\/adopted-style.css\)/);
+    assert.match(await getContentOfSelectedNode(devToolsPage), stylesheetLinkRegex);
   });
 
   it('reveals adopted stylesheets in document root when clicking link from styles pane',

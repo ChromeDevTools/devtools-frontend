@@ -5,6 +5,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import {areOriginsEquivalent, extractContextOrigin, isOpaqueOrigin} from '../AiOrigins.js';
 
@@ -74,8 +75,19 @@ export class ListStorageKeysTool implements DataTool<ListStorageKeysArgs, ListSt
     title: string,
     action: string,
   } {
+    let title: string;
+    switch (args.type) {
+      case 'localStorage':
+        title = lockedString('Reading local storage keys');
+        break;
+      case 'sessionStorage':
+        title = lockedString('Reading session storage keys');
+        break;
+      default:
+        Platform.TypeScriptUtilities.assertNever(args.type, `Unknown storage type: ${args.type}`);
+    }
     return {
-      title: lockedString('Reading storage keys'),
+      title,
       action: `listStorageKeys('${args.type}', ${JSON.stringify(args.origins)})`,
     };
   }

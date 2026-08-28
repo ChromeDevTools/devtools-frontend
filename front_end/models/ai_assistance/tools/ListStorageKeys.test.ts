@@ -276,11 +276,18 @@ describe('ListStorageKeysTool', () => {
     assert.strictEqual(response.error, 'No valid origins found.');
   });
 
-  it('returns correct displayInfoFromArgs', () => {
+  it('returns correct displayInfoFromArgs for localStorage', () => {
     const tool = new AiAssistance.ListStorageKeys.ListStorageKeysTool();
     const info = tool.displayInfoFromArgs({type: 'localStorage', origins: ['https://example.com']});
-    assert.strictEqual(info.title, 'Reading storage keys');
+    assert.strictEqual(info.title, 'Reading local storage keys');
     assert.strictEqual(info.action, 'listStorageKeys(\'localStorage\', ["https://example.com"])');
+  });
+
+  it('returns correct displayInfoFromArgs for sessionStorage', () => {
+    const tool = new AiAssistance.ListStorageKeys.ListStorageKeysTool();
+    const info = tool.displayInfoFromArgs({type: 'sessionStorage', origins: ['https://example.com']});
+    assert.strictEqual(info.title, 'Reading session storage keys');
+    assert.strictEqual(info.action, 'listStorageKeys(\'sessionStorage\', ["https://example.com"])');
   });
 
   it('normalizes origins with trailing slashes', async () => {

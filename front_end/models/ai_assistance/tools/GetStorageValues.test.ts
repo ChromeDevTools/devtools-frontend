@@ -305,11 +305,18 @@ describe('GetStorageValuesTool', () => {
     assert.strictEqual(response.error, 'No valid origins found.');
   });
 
-  it('returns correct displayInfoFromArgs', () => {
+  it('returns correct displayInfoFromArgs for localStorage', () => {
     const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
     const info = tool.displayInfoFromArgs({type: 'localStorage', keys: ['key1'], origins: ['https://example.com']});
-    assert.strictEqual(info.title, 'Reading storage values');
+    assert.strictEqual(info.title, 'Reading local storage values');
     assert.strictEqual(info.action, 'getStorageValues(\'localStorage\', ["key1"], ["https://example.com"])');
+  });
+
+  it('returns correct displayInfoFromArgs for sessionStorage', () => {
+    const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
+    const info = tool.displayInfoFromArgs({type: 'sessionStorage', keys: ['key1'], origins: ['https://example.com']});
+    assert.strictEqual(info.title, 'Reading session storage values');
+    assert.strictEqual(info.action, 'getStorageValues(\'sessionStorage\', ["key1"], ["https://example.com"])');
   });
 
   it('omits non-existent keys from returned values', async () => {

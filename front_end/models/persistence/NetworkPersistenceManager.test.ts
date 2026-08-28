@@ -27,7 +27,13 @@ const setUpEnvironmentWithUISourceCode =
       const {workspace, networkPersistenceManager} = setUpEnvironment();
 
       if (!project) {
-        project = {id: () => url, type: () => Workspace.Workspace.projectTypes.Network} as Workspace.Workspace.Project;
+        project = {
+          id: () => url,
+          type: () => Workspace.Workspace.projectTypes.Network,
+          workspace: () => workspace,
+          canSetFileContent: () => false,
+          mimeType: () => 'text/javascript',
+        } as unknown as Workspace.Workspace.Project;
       }
 
       const uiSourceCode = new Workspace.UISourceCode.UISourceCode(project, urlString`${url}`, resourceType);
@@ -82,6 +88,63 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
     assert.isTrue(saveSpy.calledOnce, 'should override content once');
     assert.isTrue(actual, 'should complete override successfully');
   });
+
+  it('does not allow overrides for data URLs with path traversal', async () => {
+    const url = 'data:/../victim.com/script.js';
+    const resourceType = Common.ResourceType.resourceTypes.Script;
+
+    const {uiSourceCode} = setUpEnvironmentWithUISourceCode(url, resourceType);
+    const networkPersistenceManager = await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
+
+    assert.isFalse(networkPersistenceManager.isUISourceCodeOverridable(uiSourceCode));
+
+    const saveSpy = sinon.spy(networkPersistenceManager, 'saveUISourceCodeForOverrides');
+    const actual = await networkPersistenceManager.setupAndStartLocalOverrides(uiSourceCode);
+
+    saveSpy.restore();
+
+    assert.isFalse(actual, 'should not allow override');
+    assert.isTrue(saveSpy.notCalled, 'should not attempt to save override');
+  });
+
+  it('does not save override on working copy committed for data URLs', async () => {
+    const url = 'data:/../victim.com/script.js';
+    const resourceType = Common.ResourceType.resourceTypes.Script;
+
+    const {uiSourceCode} = setUpEnvironmentWithUISourceCode(url, resourceType);
+    const networkPersistenceManager = await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
+
+    const project = networkPersistenceManager.project();
+    assert.isNotNull(project);
+    const createFileSpy = sinon.spy(project, 'createFile');
+
+    uiSourceCode.setWorkingCopy('console.log("attacker payload");');
+    uiSourceCode.commitWorkingCopy();
+
+    assert.isTrue(createFileSpy.notCalled, 'should not create file in overrides');
+  });
+
+  it('does not bind data URLs to existing filesystem overrides', async () => {
+    const networkPersistenceManager = await createWorkspaceProject(urlString`file:///path/to/overrides`, [
+      {name: 'script.js', path: 'victim.com/', content: 'console.log("original");'},
+    ]);
+    const {workspace} = setUpEnvironment();
+    const networkProject = {
+      id: () => 'networkProject',
+      type: () => Workspace.Workspace.projectTypes.Network,
+    } as Workspace.Workspace.Project;
+
+    const uiSourceCode = new Workspace.UISourceCode.UISourceCode(
+        networkProject, urlString`data:/../victim.com/script.js`, Common.ResourceType.resourceTypes.Script);
+    networkProject.uiSourceCodes = () => [uiSourceCode];
+
+    workspace.dispatchEventToListeners(Workspace.Workspace.Events.UISourceCodeAdded, uiSourceCode);
+
+    assert.strictEqual(networkPersistenceManager.fileUrlFromNetworkUrl(uiSourceCode.url()),
+                       Platform.DevToolsPath.EmptyUrlString);
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    assert.isNull(Persistence.Persistence.PersistenceImpl.instance().fileSystem(uiSourceCode));
+  });
 });
 
 describeWithEnvironment('NetworkPersistenceManager', () => {
@@ -121,8 +184,51 @@ describeWithEnvironment('NetworkPersistenceManager', () => {
         urlString`https://chromewebstore.google.com/index.html`));
     assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
         urlString`https://chrome.google.com/script.js`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`data:/../victim.com/script.js`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`data:text/javascript,console.log(1)`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`blob:https://example.com/uuid`));
+    assert.isTrue(
+        Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(urlString`about:blank`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`javascript:void(0)`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`mailto:test@example.com`));
+    assert.isTrue(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`vbscript:alert(1)`));
     assert.isFalse(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
         urlString`https://www.example.com/script.js`));
+    assert.isFalse(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`http://www.example.com/script.js`));
+    assert.isFalse(Persistence.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(
+        urlString`file:///path/to/script.js`));
+  });
+
+  it('returns empty path for forbidden data URLs', async () => {
+    const networkPersistenceManager = await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
+    const dataUrl = urlString`data:/../victim.com/script.js`;
+    assert.strictEqual(networkPersistenceManager.rawPathFromUrl(dataUrl), Platform.DevToolsPath.EmptyRawPathString);
+    assert.strictEqual(networkPersistenceManager.encodedPathFromUrl(dataUrl),
+                       Platform.DevToolsPath.EmptyEncodedPathString);
+    assert.strictEqual(networkPersistenceManager.fileUrlFromNetworkUrl(dataUrl), Platform.DevToolsPath.EmptyUrlString);
+    assert.isNull(networkPersistenceManager.getHeadersUISourceCodeFromUrl(dataUrl));
+
+    const invalidUrl = urlString`vbscript:alert(1)`;
+    assert.strictEqual(networkPersistenceManager.rawPathFromUrl(invalidUrl), Platform.DevToolsPath.EmptyRawPathString);
+    assert.strictEqual(networkPersistenceManager.encodedPathFromUrl(invalidUrl),
+                       Platform.DevToolsPath.EmptyEncodedPathString);
+    assert.strictEqual(networkPersistenceManager.fileUrlFromNetworkUrl(invalidUrl),
+                       Platform.DevToolsPath.EmptyUrlString);
+    assert.isNull(networkPersistenceManager.getHeadersUISourceCodeFromUrl(invalidUrl));
+  });
+
+  it('encodes path traversal components in local path parts', () => {
+    const parts = Persistence.NetworkPersistenceManager.NetworkPersistenceManager.encodeEncodedPathToLocalPathParts(
+        'data:/../victim.com/script.js' as Platform.DevToolsPath.EncodedPathString);
+    assert.isFalse(parts.includes('..'));
+    assert.isTrue(parts.includes('%2E%2E'));
   });
 });
 

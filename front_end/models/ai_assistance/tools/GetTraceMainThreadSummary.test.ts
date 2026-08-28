@@ -41,7 +41,6 @@ describe('GetTraceMainThreadSummaryTool', () => {
 
   it('returns error when PerformanceTraceContext is not available', async () => {
     const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => null,
     };
 
@@ -64,7 +63,6 @@ describe('GetTraceMainThreadSummaryTool', () => {
     sinon.stub(traceContext, 'getBoundsForLabel').returns(null);
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 
@@ -92,7 +90,6 @@ describe('GetTraceMainThreadSummaryTool', () => {
     });
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 

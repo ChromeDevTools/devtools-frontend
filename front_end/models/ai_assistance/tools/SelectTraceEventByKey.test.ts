@@ -44,7 +44,6 @@ describe('SelectTraceEventByKeyTool', () => {
 
   it('returns error when PerformanceTraceContext is not available', async () => {
     const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => null,
     };
 
@@ -68,7 +67,6 @@ describe('SelectTraceEventByKeyTool', () => {
     sinon.stub(focus, 'lookupEvent').returns(null);
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 
@@ -97,7 +95,6 @@ describe('SelectTraceEventByKeyTool', () => {
     sinon.stub(focus, 'lookupEvent').withArgs('valid-key').returns(mockEvent);
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 

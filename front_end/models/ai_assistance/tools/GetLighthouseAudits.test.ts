@@ -31,7 +31,6 @@ describe('GetLighthouseAuditsTool', () => {
 
   const tool = new AiAssistance.GetLighthouseAudits.GetLighthouseAuditsTool();
   const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseReportCapability = {
-    conversationContext: null,
     getLighthouseReport: () => mockReport,
   };
 
@@ -46,7 +45,6 @@ describe('GetLighthouseAuditsTool', () => {
 
   it('returns error when Lighthouse report is not available', async () => {
     const invalidContext: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseReportCapability = {
-      conversationContext: null,
       getLighthouseReport: () => null,
     };
     const result = await tool.handler({categoryId: 'accessibility'}, invalidContext);

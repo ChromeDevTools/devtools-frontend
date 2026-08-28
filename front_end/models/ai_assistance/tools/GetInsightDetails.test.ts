@@ -60,7 +60,6 @@ describe('GetInsightDetailsTool', () => {
         universe.debuggerWorkspaceBinding,
     );
     return {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
       getTarget: () => options.target ?? universe.targetManager.primaryPageTarget(),
     };
@@ -76,7 +75,6 @@ describe('GetInsightDetailsTool', () => {
   it('returns error when PerformanceTraceContext is not available', async () => {
     const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.TargetCapability&
         AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => null,
       getTarget: () => universe.targetManager.primaryPageTarget(),
     };

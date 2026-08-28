@@ -44,7 +44,6 @@ describe('GetFunctionCodeTool', () => {
 
   it('returns error when PerformanceTraceContext is not available', async () => {
     const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => null,
     };
 
@@ -68,7 +67,6 @@ describe('GetFunctionCodeTool', () => {
     );
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 
@@ -92,7 +90,6 @@ describe('GetFunctionCodeTool', () => {
     );
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 
@@ -117,7 +114,6 @@ describe('GetFunctionCodeTool', () => {
     );
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 
@@ -141,7 +137,6 @@ describe('GetFunctionCodeTool', () => {
     );
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 
@@ -166,7 +161,6 @@ describe('GetFunctionCodeTool', () => {
     );
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 
@@ -195,7 +189,6 @@ describe('GetFunctionCodeTool', () => {
     });
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 
@@ -232,7 +225,6 @@ describe('GetFunctionCodeTool', () => {
     });
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 

@@ -154,7 +154,6 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
           return {error: 'Error: Could not find the currently selected element.'};
         }
         return await getStylesTool.handler(args, {
-          conversationContext: context,
           getTarget: () => this.targetManager.primaryPageTarget() ?? context.getItem().domModel().target(),
           getEstablishedOrigin: () => {
             const origin = context.getOrigin();
@@ -175,7 +174,6 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
       handler: (args, options) => executeJsTool.handler(
           args,
           {
-            conversationContext: this.context ?? null,
             changeManager: this.#changes,
             createExtensionScope: this.#createExtensionScope.bind(this),
             execJs: this.#execJs,

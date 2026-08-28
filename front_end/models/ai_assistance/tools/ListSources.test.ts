@@ -55,7 +55,6 @@ describe('ListSourcesTool', () => {
     });
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: () => 'https://example.com',
     };
 
@@ -88,7 +87,6 @@ describe('ListSourcesTool', () => {
     sinon.stub(uiSourceCodes[1], 'isIgnoreListed').returns(true);
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: () => 'https://example.com',
     };
 
@@ -126,7 +124,6 @@ describe('ListSourcesTool', () => {
     });
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: () => 'https://example.com',
     };
 
@@ -143,7 +140,6 @@ describe('ListSourcesTool', () => {
 
   it('returns error for opaque origins', async () => {
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: () => 'about:blank',
     };
 

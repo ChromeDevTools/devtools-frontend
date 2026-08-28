@@ -94,11 +94,7 @@ describe('AiConversation', () => {
 
     const listNetworkRequestsTool = AiAssistance.ToolRegistry.ToolRegistry.get('listNetworkRequests');
     assert.exists(listNetworkRequestsTool);
-    const capturedContexts: Array<AiAssistance.AiAgent.ConversationContext<unknown>|null> = [];
-    sinon.stub(listNetworkRequestsTool, 'handler').callsFake(async (_args, context) => {
-      capturedContexts.push(context.conversationContext);
-      return {result: {requests: []}};
-    });
+    const stub = sinon.stub(listNetworkRequestsTool, 'handler').resolves({result: {requests: []}});
 
     const aidaClient = mockAidaClient([
       // Turn 1: Model loads network skill and executes listNetworkRequests.
@@ -137,17 +133,19 @@ describe('AiConversation', () => {
     const requestContext = new AiAssistance.RequestContext.RequestContext(
         networkRequest, new NetworkTimeCalculator.NetworkTransferTimeCalculator());
 
-    // Turn 1: Query with active RequestContext. Tool receives RequestContext.
+    // Turn 1: Query with active RequestContext.
     conversation.setContext(requestContext);
     await Array.fromAsync(conversation.run('turn 1'));
-    assert.lengthOf(capturedContexts, 1);
-    assert.strictEqual(capturedContexts[0], requestContext);
+    assert.strictEqual(conversation.selectedContext, requestContext);
+    assert.strictEqual(conversation.type, AiAssistance.AiHistoryStorage.ConversationType.NETWORK);
+    sinon.assert.calledOnce(stub);
 
-    // Turn 2: Query with cleared context. Tool receives null context.
+    // Turn 2: Query with cleared context.
     conversation.setContext(null);
     await Array.fromAsync(conversation.run('turn 2'));
-    assert.lengthOf(capturedContexts, 2);
-    assert.isNull(capturedContexts[1]);
+    assert.isUndefined(conversation.selectedContext);
+    assert.strictEqual(conversation.type, AiAssistance.AiHistoryStorage.ConversationType.NONE);
+    sinon.assert.calledTwice(stub);
   });
 
   it('preserves activeSkills across context changes when devToolsAiV2Architecture is enabled', async () => {

@@ -91,7 +91,6 @@ describe('GetElementAccessibilityDetailsTool', () => {
 
     return {
       context: {
-        conversationContext: null,
         getTarget: () => mockTarget as unknown as SDK.Target.Target,
         getEstablishedOrigin: () => establishedOrigin,
       },

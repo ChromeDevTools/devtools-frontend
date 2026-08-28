@@ -44,7 +44,6 @@ describe('ResolveDevtoolsNodePathTool', () => {
     } :
                                    null;
     return {
-      conversationContext: null,
       getTarget: () => mockTarget as unknown as SDK.Target.Target,
       getEstablishedOrigin: () => establishedOrigin,
     };

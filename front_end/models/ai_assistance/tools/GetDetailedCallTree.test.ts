@@ -41,7 +41,6 @@ describe('GetDetailedCallTreeTool', () => {
 
   it('returns error when PerformanceTraceContext is not available', async () => {
     const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => null,
     };
 
@@ -65,7 +64,6 @@ describe('GetDetailedCallTreeTool', () => {
     );
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 
@@ -89,7 +87,6 @@ describe('GetDetailedCallTreeTool', () => {
     sinon.stub(focus, 'lookupEvent').returns(null);
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 
@@ -120,7 +117,6 @@ describe('GetDetailedCallTreeTool', () => {
     sinon.stub(AiAssistance.AICallTree.AICallTree, 'fromEvent').returns(null);
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 
@@ -156,7 +152,6 @@ describe('GetDetailedCallTreeTool', () => {
     });
 
     const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
     };
 

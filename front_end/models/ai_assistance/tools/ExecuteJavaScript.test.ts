@@ -50,7 +50,6 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
     };
 
     const context = {
-      conversationContext: null,
       getExecutionContextNode: () => element,
       execJs: mockExecJs,
       changeManager: new AiAssistance.ChangeManager.ChangeManager(),
@@ -72,7 +71,6 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
   it('returns error when execution context node is missing', async () => {
     const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
     const context = {
-      conversationContext: null,
       getExecutionContextNode: () => null,
       execJs: sinon.stub(),
       changeManager: new AiAssistance.ChangeManager.ChangeManager(),
@@ -93,7 +91,6 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
   it('returns error when user denies execution', async () => {
     const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
     const context = {
-      conversationContext: null,
       getExecutionContextNode: () => element,
       execJs: sinon.stub(),
       changeManager: new AiAssistance.ChangeManager.ChangeManager(),
@@ -123,7 +120,6 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
 
     const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
     const context = {
-      conversationContext: null,
       getExecutionContextNode: () => element,
       execJs: sinon.stub(),
       changeManager: new AiAssistance.ChangeManager.ChangeManager(),
@@ -159,7 +155,6 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
          uninstall: sinon.stub().resolves(),
        };
        const context = {
-         conversationContext: null,
          getExecutionContextNode: () => element,
          execJs: mockExecJs,
          changeManager: new AiAssistance.ChangeManager.ChangeManager(),
@@ -185,7 +180,6 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
       uninstall: sinon.stub().resolves(),
     };
     const context = {
-      conversationContext: null,
       getExecutionContextNode: () => element,
       execJs: mockExecJs,
       changeManager: new AiAssistance.ChangeManager.ChangeManager(),
@@ -222,7 +216,6 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
       };
 
       const context = {
-        conversationContext: null,
         getExecutionContextNode: () => element,
         execJs: mockExecJs,
         changeManager: new AiAssistance.ChangeManager.ChangeManager(),
@@ -249,7 +242,6 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
       };
 
       const context = {
-        conversationContext: null,
         getExecutionContextNode: () => element,
         execJs: mockExecJs,
         changeManager: new AiAssistance.ChangeManager.ChangeManager(),
@@ -280,7 +272,6 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
       };
 
       const context = {
-        conversationContext: null,
         getExecutionContextNode: () => element,
         execJs: mockExecJs,
         changeManager: new AiAssistance.ChangeManager.ChangeManager(),
@@ -365,7 +356,6 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
         uninstall: sinon.stub().resolves(),
       };
       const context = {
-        conversationContext: null,
         getExecutionContextNode: () => element,
         execJs: sinon.stub().resolves('undefined'),
         changeManager: new AiAssistance.ChangeManager.ChangeManager(),
@@ -397,7 +387,6 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
         uninstall: sinon.stub().resolves(),
       };
       const context = {
-        conversationContext: null,
         getExecutionContextNode: () => element,
         execJs: sinon.stub().resolves('undefined'),
         changeManager: new AiAssistance.ChangeManager.ChangeManager(),

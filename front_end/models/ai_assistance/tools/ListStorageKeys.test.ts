@@ -58,7 +58,6 @@ describe('ListStorageKeysTool', () => {
 
     const disableLoggingStub = sinon.stub();
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
       disableLogging: disableLoggingStub,
     };
@@ -90,7 +89,6 @@ describe('ListStorageKeysTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
       disableLogging: sinon.stub(),
     };
@@ -127,7 +125,6 @@ describe('ListStorageKeysTool', () => {
     activeStorages = [mockStorage1, mockStorage2];
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
       disableLogging: sinon.stub(),
     };
@@ -155,7 +152,6 @@ describe('ListStorageKeysTool', () => {
     setupPrimaryTarget('https://example.com');
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns(''),
       disableLogging: sinon.stub(),
     };
@@ -171,7 +167,6 @@ describe('ListStorageKeysTool', () => {
     setupPrimaryTarget('https://other-domain.com');
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
       disableLogging: sinon.stub(),
     };
@@ -193,7 +188,6 @@ describe('ListStorageKeysTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
       disableLogging: sinon.stub(),
     };
@@ -239,7 +233,6 @@ describe('ListStorageKeysTool', () => {
     activeStorages = [primaryStorage];
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
       disableLogging: sinon.stub(),
     };
@@ -264,7 +257,6 @@ describe('ListStorageKeysTool', () => {
     setupPrimaryTarget('https://example.com');
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
       disableLogging: sinon.stub(),
     };
@@ -300,7 +292,6 @@ describe('ListStorageKeysTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
       disableLogging: sinon.stub(),
     };
@@ -331,7 +322,6 @@ describe('ListStorageKeysTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns('https://example.com'),
       disableLogging: sinon.stub(),
     };

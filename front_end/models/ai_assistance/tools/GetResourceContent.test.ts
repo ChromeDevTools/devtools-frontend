@@ -44,7 +44,6 @@ describe('GetResourceContentTool', () => {
       ): AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.TargetCapability&
       AiAssistance.Tool.PerformanceTraceCapability {
     return {
-      conversationContext: null,
       getPerformanceTraceContext: () => traceContext,
       getTarget: () => target,
     };

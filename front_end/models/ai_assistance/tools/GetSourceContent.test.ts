@@ -60,7 +60,6 @@ describe('GetSourceContentTool', () => {
     const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: () => 'https://example.com',
     };
 
@@ -72,7 +71,6 @@ describe('GetSourceContentTool', () => {
 
   it('returns error when file is not found', async () => {
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: () => 'https://example.com',
     };
 
@@ -99,7 +97,6 @@ describe('GetSourceContentTool', () => {
     const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: () => 'https://example.com',
     };
 
@@ -129,7 +126,6 @@ describe('GetSourceContentTool', () => {
     const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
 
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: () => 'https://example.com',
     };
 

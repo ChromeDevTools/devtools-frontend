@@ -257,9 +257,8 @@ describeWithEnvironment('AiAgent2', () => {
 
     // Verify that handler was called
     sinon.assert.calledOnce(handlerStub);
-    const [args, context] = handlerStub.getCall(0).args;
+    const [args] = handlerStub.getCall(0).args;
     assert.deepEqual(args, {elements: [1], styleProperties: ['color'], explanation: 'testing'});
-    assert.isNull(context.conversationContext);
 
     // Verify AIDA response included tool output
     const hasTitle = responses.some(

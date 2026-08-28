@@ -40,7 +40,6 @@ describe('GetStorageBreakdownTool', () => {
   function createMockContext(options?: {origin?: string}) {
     const origin = options && 'origin' in options ? options.origin : 'https://example.com';
     return {
-      conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns(origin),
     };
   }

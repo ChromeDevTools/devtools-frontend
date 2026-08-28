@@ -64,7 +64,6 @@ describe('GetCookieValuesTool', () => {
   function createMockContext(options?: {origin?: string, disableLoggingStub?: sinon.SinonStub}) {
     const origin = options && 'origin' in options ? options.origin : 'https://example.com';
     return {
-      conversationContext: null,
       getEstablishedOrigin: sinon.stub().returns(origin),
       disableLogging: options?.disableLoggingStub ?? sinon.stub(),
     };

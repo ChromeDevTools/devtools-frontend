@@ -33,7 +33,6 @@ describeWithEnvironment('RecordPerformanceTraceTool', () => {
     } as unknown as Trace.TraceModel.ParsedTrace;
     const callback = sinon.stub().resolves(mockTrace);
     const context = {
-      conversationContext: null,
       performanceRecordAndReload: callback,
     };
 
@@ -49,7 +48,6 @@ describeWithEnvironment('RecordPerformanceTraceTool', () => {
 
   it('returns error when performanceRecordAndReload is not available', async () => {
     const context = {
-      conversationContext: null,
     };
 
     const tool = new RecordPerformanceTraceTool();
@@ -62,7 +60,6 @@ describeWithEnvironment('RecordPerformanceTraceTool', () => {
   it('returns error when performanceRecordAndReload throws an exception', async () => {
     const callback = sinon.stub().rejects(new Error('Recording failed'));
     const context = {
-      conversationContext: null,
       performanceRecordAndReload: callback,
     };
 

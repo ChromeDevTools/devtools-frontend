@@ -253,7 +253,6 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
         return await executeJsTool.handler(
             args,
             {
-              conversationContext: this.context ?? null,
               changeManager: this.#changes,
               createExtensionScope: this.#createExtensionScope.bind(this),
               execJs: this.#execJs,

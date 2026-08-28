@@ -42,7 +42,6 @@ describe('ListNetworkRequestsTool', () => {
 
     const tool = new AiAssistance.ListNetworkRequests.ListNetworkRequestsTool(networkLog);
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: () => 'https://example.com',
     };
 
@@ -88,7 +87,6 @@ describe('ListNetworkRequestsTool', () => {
 
     const tool = new AiAssistance.ListNetworkRequests.ListNetworkRequestsTool(networkLog);
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: () => 'https://example.com',
     };
 
@@ -110,7 +108,6 @@ describe('ListNetworkRequestsTool', () => {
   it('returns error for opaque origins', async () => {
     const tool = new AiAssistance.ListNetworkRequests.ListNetworkRequestsTool(networkLog);
     const context = {
-      conversationContext: null,
       getEstablishedOrigin: () => 'null',
     };
 

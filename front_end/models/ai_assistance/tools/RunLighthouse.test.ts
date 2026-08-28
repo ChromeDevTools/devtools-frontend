@@ -63,7 +63,6 @@ describe('RunLighthouseTool', () => {
     it('runs dynamic audits for a specified category and mode', async () => {
       const recordingStub = sinon.stub().resolves(mockReport);
       const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
-        conversationContext: null,
         runLighthouse: recordingStub,
       };
 
@@ -84,7 +83,6 @@ describe('RunLighthouseTool', () => {
     it('defaults to snapshot mode when mode is omitted', async () => {
       const recordingStub = sinon.stub().resolves(mockReport);
       const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
-        conversationContext: null,
         runLighthouse: recordingStub,
       };
 
@@ -101,7 +99,6 @@ describe('RunLighthouseTool', () => {
     it('sets snapshotReport to false when running in navigation mode', async () => {
       const recordingStub = sinon.stub().resolves(mockReport);
       const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
-        conversationContext: null,
         runLighthouse: recordingStub,
       };
 
@@ -120,7 +117,6 @@ describe('RunLighthouseTool', () => {
     it('returns error when runLighthouse returns null', async () => {
       const recordingStub = sinon.stub().resolves(null);
       const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
-        conversationContext: null,
         runLighthouse: recordingStub,
       };
       const result = await tool.handler({explanation: 're-audit', category: 'accessibility'}, context);
@@ -131,7 +127,6 @@ describe('RunLighthouseTool', () => {
     it('returns error when runLighthouse rejects', async () => {
       const recordingStub = sinon.stub().rejects(new Error('Navigation timed out'));
       const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
-        conversationContext: null,
         runLighthouse: recordingStub,
       };
       const result = await tool.handler({explanation: 're-audit', category: 'accessibility'}, context);

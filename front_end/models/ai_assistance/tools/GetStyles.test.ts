@@ -61,7 +61,6 @@ describeWithEnvironment('GetStylesTool', () => {
 
     const tool = new AiAssistance.GetStyles.GetStylesTool();
     const context = {
-      conversationContext: null,
       getTarget: () => target,
       getEstablishedOrigin: () => 'https://example.com',
     };
@@ -90,7 +89,6 @@ describeWithEnvironment('GetStylesTool', () => {
   it('returns error when target is missing', async () => {
     const tool = new AiAssistance.GetStyles.GetStylesTool();
     const context = {
-      conversationContext: null,
       getTarget: () => null,
       getEstablishedOrigin: () => undefined,
     };
@@ -118,7 +116,6 @@ describeWithEnvironment('GetStylesTool', () => {
 
     const tool = new AiAssistance.GetStyles.GetStylesTool();
     const context = {
-      conversationContext: null,
       getTarget: () => target,
       getEstablishedOrigin: () => 'https://example.com',
     };

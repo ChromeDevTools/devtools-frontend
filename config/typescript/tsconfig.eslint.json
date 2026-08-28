@@ -23,5 +23,14 @@
     "../../test/**/*.ts",
     "../../extensions/**/*.ts",
     "../../extension-api/**/*.ts"
+  ],
+  "exclude": [
+    "../../front_end/third_party/**",
+    "../../extensions/cxx_debugging/third_party/**",
+    "../../node_modules/**",
+    "../../out/**",
+    "../../build/**",
+    "../../buildtools/**",
+    "../../release/**"
   ]
 }

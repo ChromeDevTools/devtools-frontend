@@ -99,6 +99,10 @@ export async function setSearchFilter(devToolsPage: DevToolsPage, text: string) 
   const SEARCH_QUERY = '[aria-label="Find"]';
   const inputElement = await devToolsPage.waitFor(SEARCH_QUERY);
   assert.isOk(inputElement, 'Unable to find search input field');
+  await inputElement.evaluate(el => {
+    (el as HTMLInputElement).value = '';
+    el.dispatchEvent(new Event('input', {bubbles: true}));
+  });
   await inputElement.focus();
   await inputElement.type(text);
 }
@@ -107,7 +111,7 @@ export async function waitForSearchResultNumber(devToolsPage: DevToolsPage, resu
   const findMatch = async () => {
     const currentMatch = await devToolsPage.waitFor('.search-results-matches');
     const currentTextContent = currentMatch && await currentMatch.evaluate(el => el.textContent);
-    if (currentTextContent.endsWith(` ${results}`)) {
+    if (currentTextContent?.endsWith(` ${results}`)) {
       return currentMatch;
     }
     return undefined;

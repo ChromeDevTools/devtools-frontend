@@ -1143,6 +1143,7 @@ grd_files_unbundled_sources = [
   "front_end/models/ai_assistance/tools/GetNetworkRequestDetails.js",
   "front_end/models/ai_assistance/tools/GetResourceContent.js",
   "front_end/models/ai_assistance/tools/GetSourceContent.js",
+  "front_end/models/ai_assistance/tools/GetStorageBreakdown.js",
   "front_end/models/ai_assistance/tools/GetStorageValues.js",
   "front_end/models/ai_assistance/tools/GetStyles.js",
   "front_end/models/ai_assistance/tools/GetTraceEventByKey.js",

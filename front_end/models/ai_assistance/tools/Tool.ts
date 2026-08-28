@@ -193,6 +193,7 @@ export const enum ToolName {
   GET_FUNCTION_CODE = 'getFunctionCode',
   GET_RESOURCE_CONTENT = 'getResourceContent',
   GET_INSIGHT_DETAILS = 'getInsightDetails',
+  GET_STORAGE_BREAKDOWN = 'getStorageBreakdown',
 }
 
 /**

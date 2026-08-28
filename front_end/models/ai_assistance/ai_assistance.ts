@@ -53,6 +53,7 @@ import * as GetLighthouseAudits from './tools/GetLighthouseAudits.js';
 import * as GetNetworkRequestDetails from './tools/GetNetworkRequestDetails.js';
 import * as GetResourceContent from './tools/GetResourceContent.js';
 import * as GetSourceContent from './tools/GetSourceContent.js';
+import * as GetStorageBreakdown from './tools/GetStorageBreakdown.js';
 import * as GetStorageValues from './tools/GetStorageValues.js';
 import * as GetStyles from './tools/GetStyles.js';
 import * as GetTraceEventByKey from './tools/GetTraceEventByKey.js';
@@ -106,6 +107,7 @@ export {
   GetNetworkRequestDetails,
   GetResourceContent,
   GetSourceContent,
+  GetStorageBreakdown,
   GetStorageValues,
   GetStyles,
   GetTraceEventByKey,

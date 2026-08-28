@@ -12,6 +12,7 @@ import {GetLighthouseAuditsTool} from './GetLighthouseAudits.js';
 import {GetNetworkRequestDetailsTool} from './GetNetworkRequestDetails.js';
 import {GetResourceContentTool} from './GetResourceContent.js';
 import {GetSourceContentTool} from './GetSourceContent.js';
+import {GetStorageBreakdownTool} from './GetStorageBreakdown.js';
 import {GetStorageValuesTool} from './GetStorageValues.js';
 import {GetStylesTool} from './GetStyles.js';
 import {GetTraceEventByKeyTool} from './GetTraceEventByKey.js';
@@ -53,6 +54,7 @@ export interface BaseToolsRegistryMap {
   [ToolName.GET_FUNCTION_CODE]: GetFunctionCodeTool;
   [ToolName.GET_RESOURCE_CONTENT]: GetResourceContentTool;
   [ToolName.GET_INSIGHT_DETAILS]: GetInsightDetailsTool;
+  [ToolName.GET_STORAGE_BREAKDOWN]: GetStorageBreakdownTool;
 }
 
 export type ToolsRegistryMap = BaseToolsRegistryMap&{
@@ -87,6 +89,7 @@ export const TOOLS: BaseToolsRegistryMap = {
   [ToolName.GET_FUNCTION_CODE]: new GetFunctionCodeTool(),
   [ToolName.GET_RESOURCE_CONTENT]: new GetResourceContentTool(),
   [ToolName.GET_INSIGHT_DETAILS]: new GetInsightDetailsTool(),
+  [ToolName.GET_STORAGE_BREAKDOWN]: new GetStorageBreakdownTool(),
 };
 
 /**

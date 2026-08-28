@@ -407,6 +407,34 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       const anchorEl3 = Comments.CommentAnchorResolver.resolveCommentAnchorElement(classTab);
       assert.isNull(anchorEl3);
     });
+
+    it('excludes top-level Panel from commenting', () => {
+      const panel = document.createElement('div');
+      panel.setAttribute('jslog', 'Panel; context: sources');
+      panel.textContent = 'Sources Panel Content';
+      container.appendChild(panel);
+
+      const anchorEl = Comments.CommentAnchorResolver.resolveCommentAnchorElement(panel);
+      assert.isNull(anchorEl);
+    });
+
+    it('returns null when clicking an unanchored child element or background within a Panel', () => {
+      const panel = document.createElement('div');
+      panel.setAttribute('jslog', 'Panel; context: network');
+
+      const bgWrapper = document.createElement('div');
+      bgWrapper.classList.add('vbox', 'flex-auto');
+      const unanchoredElement = document.createElement('div');
+      unanchoredElement.classList.add('panel-background');
+      unanchoredElement.textContent = 'Some nested background text';
+
+      bgWrapper.appendChild(unanchoredElement);
+      panel.appendChild(bgWrapper);
+      container.appendChild(panel);
+
+      const anchorEl = Comments.CommentAnchorResolver.resolveCommentAnchorElement(unanchoredElement);
+      assert.isNull(anchorEl);
+    });
   });
 
   describe('resolveCommentAnchor', () => {

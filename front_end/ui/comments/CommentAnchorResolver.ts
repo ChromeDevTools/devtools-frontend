@@ -10,7 +10,16 @@ export type EditorAnchorSignature = CommentManager.CommentManager.EditorAnchorSi
 export type CommentAnchorSignature = CommentManager.CommentManager.CommentAnchorSignature;
 export type CommentThread = CommentManager.CommentManager.CommentThread;
 
-const IGNORED_MINOR_CONTROLS = new Set<number>([
+const DISALLOWED_COMMENT_TARGETS = new Set<number>([
+  // Top-level containers & layout structures
+  VisualLogging.VisualElements.Panel,
+  VisualLogging.VisualElements.Drawer,
+  VisualLogging.VisualElements.Pane,
+  VisualLogging.VisualElements.Tree,
+  VisualLogging.VisualElements.PanelTabHeader,
+  VisualLogging.VisualElements.Resizer,
+  VisualLogging.VisualElements.Menu,
+  // Minor controls and toolbars
   VisualLogging.VisualElements.Action,
   VisualLogging.VisualElements.Toggle,
   VisualLogging.VisualElements.Close,
@@ -158,7 +167,8 @@ function resolveCodeMirrorLineInfo(element: Element): CodeMirrorLineInfo|null {
  * 3. Checks for domain IDs (`data-network-request-id` or `data-backend-node-id`) across shadow boundaries,
  *    returning the owning domain element.
  * 4. Escalates minor controls / sub-elements up to semantic containers (e.g., TableRow, TreeItem).
- * 5. Falls back to the nearest visual logging element if no semantic container is found.
+ * 5. Falls back to the nearest visual logging element if no semantic container is found,
+ *    excluding top-level containers and minor controls.
  *
  * @param element The source DOM element to resolve.
  * @returns The resolved semantic anchor Element, or null if unresolvable/empty/excluded.
@@ -193,7 +203,7 @@ export function resolveCommentAnchorElement(element: Element): Element|null {
             config.ve === VisualLogging.VisualElements.TreeItem) {
           return isNonEmptyItem(target) ? target : null;
         }
-        if (!fallbackCandidate && !IGNORED_MINOR_CONTROLS.has(config.ve)) {
+        if (!fallbackCandidate && !DISALLOWED_COMMENT_TARGETS.has(config.ve)) {
           fallbackCandidate = target;
         }
       } catch {

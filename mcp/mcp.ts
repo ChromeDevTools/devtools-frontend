@@ -20,6 +20,7 @@ export {DebuggerModel, skipAllPausesSettingDescriptor} from '../front_end/core/s
 export * as DOMModel from '../front_end/core/sdk/DOMModel.js';
 export * as NetworkManager from '../front_end/core/sdk/NetworkManager.js';
 export {RuntimeModel} from '../front_end/core/sdk/RuntimeModel.js';
+export * as SDKSettings from '../front_end/core/sdk/SDKSettings.js';
 export * as SourceMapManager from '../front_end/core/sdk/SourceMapManager.js';
 export {Target} from '../front_end/core/sdk/Target.js';
 export {TargetManager} from '../front_end/core/sdk/TargetManager.js';

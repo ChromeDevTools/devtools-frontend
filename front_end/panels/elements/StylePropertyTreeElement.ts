@@ -3125,6 +3125,12 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
       return;
     }
 
+    if (this.#lazyRender) {
+      this.#stylesContainer.untrackForLazyRendering(this.listItemElement);
+      this.#lazyRender = false;
+      this.updateTitle();
+    }
+
     const selectedElement = context.isEditingName ? this.nameElement : this.valueElement;
     if (!selectedElement) {
       return;

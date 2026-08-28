@@ -2780,6 +2780,31 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     sinon.assert.calledOnce(trackForLazyRenderingSpy);
   });
 
+  it('untracks and eagerly renders when starting editing on a lazily rendered property', () => {
+    sinon.stub(stylesSidebarPane, 'shouldRenderLazily').returns(true);
+    const untrackForLazyRenderingSpy = sinon.spy(stylesSidebarPane, 'untrackForLazyRendering');
+
+    const property = addProperty('color', 'red');
+    const section = new Elements.StylePropertiesSection.StylePropertiesSection(
+        stylesSidebarPane, matchedStyles, property.ownerStyle, 0, null, null, null);
+    const stylePropertyTreeElement = new Elements.StylePropertyTreeElement.StylePropertyTreeElement({
+      stylesContainer: stylesSidebarPane,
+      section,
+      matchedStyles,
+      property,
+      isShorthand: false,
+      inherited: false,
+      overloaded: false,
+      newProperty: false,
+    });
+    section.propertiesTreeOutline.appendChild(stylePropertyTreeElement);
+    renderElementIntoDOM(section.element);
+
+    stylePropertyTreeElement.startEditingName();
+
+    sinon.assert.calledOnce(untrackForLazyRenderingSpy);
+  });
+
   it('applies overflow-wrap: break-word to tree outline list items for long values', () => {
     // Create a very long value without spaces that would otherwise overflow.
     const longValue = '9'.repeat(500) + 'px';

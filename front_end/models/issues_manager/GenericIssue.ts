@@ -118,7 +118,7 @@ export class GenericIssue extends Issue<Protocol.Audits.GenericIssueDetails> {
   }
 }
 
-export const genericFormLabelForNameError = {
+export const genericFormLabelForNameError: LazyMarkdownIssueDescription = {
   file: 'genericFormLabelForNameError.md',
   links: [{
     link: 'https://html.spec.whatwg.org/multipage/forms.html#attr-label-for',
@@ -128,17 +128,17 @@ export const genericFormLabelForNameError = {
   }],
 };
 
-export const genericFormInputWithNoLabelError = {
+export const genericFormInputWithNoLabelError: LazyMarkdownIssueDescription = {
   file: 'genericFormInputWithNoLabelError.md',
   links: [],
 };
 
-export const genericFormAutocompleteAttributeEmptyError = {
+export const genericFormAutocompleteAttributeEmptyError: LazyMarkdownIssueDescription = {
   file: 'genericFormAutocompleteAttributeEmptyError.md',
   links: [],
 };
 
-export const genericFormDuplicateIdForInputError = {
+export const genericFormDuplicateIdForInputError: LazyMarkdownIssueDescription = {
   file: 'genericFormDuplicateIdForInputError.md',
   links: [{
     link: 'https://web.dev/learn/forms/autofill/#how-does-autofill-work',
@@ -146,7 +146,7 @@ export const genericFormDuplicateIdForInputError = {
   }],
 };
 
-export const genericFormAriaLabelledByToNonExistingIdError = {
+export const genericFormAriaLabelledByToNonExistingIdError: LazyMarkdownIssueDescription = {
   file: 'genericFormAriaLabelledByToNonExistingIdError.md',
   links: [{
     link: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label',
@@ -154,7 +154,7 @@ export const genericFormAriaLabelledByToNonExistingIdError = {
   }],
 };
 
-export const genericFormEmptyIdAndNameAttributesForInputError = {
+export const genericFormEmptyIdAndNameAttributesForInputError: LazyMarkdownIssueDescription = {
   file: 'genericFormEmptyIdAndNameAttributesForInputError.md',
   links: [{
     link: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input',
@@ -162,7 +162,7 @@ export const genericFormEmptyIdAndNameAttributesForInputError = {
   }],
 };
 
-export const genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError = {
+export const genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError: LazyMarkdownIssueDescription = {
   file: 'genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError.md',
   links: [{
     link: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values',
@@ -170,7 +170,7 @@ export const genericFormInputAssignedAutocompleteValueToIdOrNameAttributeError =
   }],
 };
 
-export const genericFormInputHasWrongButWellIntendedAutocompleteValue = {
+export const genericFormInputHasWrongButWellIntendedAutocompleteValue: LazyMarkdownIssueDescription = {
   file: 'genericFormInputHasWrongButWellIntendedAutocompleteValueError.md',
   links: [{
     link: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete#values',
@@ -178,7 +178,7 @@ export const genericFormInputHasWrongButWellIntendedAutocompleteValue = {
   }],
 };
 
-export const genericFormLabelForMatchesNonExistingIdError = {
+export const genericFormLabelForMatchesNonExistingIdError: LazyMarkdownIssueDescription = {
   file: 'genericFormLabelForMatchesNonExistingIdError.md',
   links: [{
     link: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label',
@@ -186,7 +186,7 @@ export const genericFormLabelForMatchesNonExistingIdError = {
   }],
 };
 
-export const genericFormLabelHasNeitherForNorNestedInputError = {
+export const genericFormLabelHasNeitherForNorNestedInputError: LazyMarkdownIssueDescription = {
   file: 'genericFormLabelHasNeitherForNorNestedInputError.md',
   links: [{
     link: 'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/label',
@@ -194,7 +194,7 @@ export const genericFormLabelHasNeitherForNorNestedInputError = {
   }],
 };
 
-export const genericResponseWasBlockedbyORB = {
+export const genericResponseWasBlockedbyORB: LazyMarkdownIssueDescription = {
   file: 'genericResponseWasBlockedByORB.md',
   links: [{
     link: 'https://www.chromium.org/Home/chromium-security/corb-for-developers/',
@@ -202,7 +202,7 @@ export const genericResponseWasBlockedbyORB = {
   }],
 };
 
-export const genericNavigationEntryMarkedSkippable = {
+export const genericNavigationEntryMarkedSkippable: LazyMarkdownIssueDescription = {
   file: 'genericNavigationEntryMarkedSkippable.md',
   links: [{
     link: 'https://chromium.googlesource.com/chromium/src/+/main/docs/history_manipulation_intervention.md',
@@ -210,7 +210,7 @@ export const genericNavigationEntryMarkedSkippable = {
   }],
 };
 
-export const genericBackUINavigationWouldSkipAd = {
+export const genericBackUINavigationWouldSkipAd: LazyMarkdownIssueDescription = {
   file: 'genericBackUINavigationWouldSkipAd.md',
   links: [{
     link: 'https://chromium.googlesource.com/chromium/src/+/main/docs/history_manipulation_intervention.md',
@@ -218,27 +218,27 @@ export const genericBackUINavigationWouldSkipAd = {
   }],
 };
 
-export const genericFormModelContextMissingToolName = {
+export const genericFormModelContextMissingToolName: LazyMarkdownIssueDescription = {
   file: 'genericFormModelContextMissingToolName.md',
   links: [],
 };
 
-export const genericFormModelContextMissingToolDescription = {
+export const genericFormModelContextMissingToolDescription: LazyMarkdownIssueDescription = {
   file: 'genericFormModelContextMissingToolDescription.md',
   links: [],
 };
 
-export const genericFormModelContextParameterMissingTitleAndDescription = {
+export const genericFormModelContextParameterMissingTitleAndDescription: LazyMarkdownIssueDescription = {
   file: 'genericFormModelContextParameterMissingTitleAndDescription.md',
   links: [],
 };
 
-export const genericFormModelContextRequiredParameterMissingName = {
+export const genericFormModelContextRequiredParameterMissingName: LazyMarkdownIssueDescription = {
   file: 'genericFormModelContextRequiredParameterMissingName.md',
   links: [],
 };
 
-export const genericFormModelContextParameterMissingName = {
+export const genericFormModelContextParameterMissingName: LazyMarkdownIssueDescription = {
   file: 'genericFormModelContextParameterMissingName.md',
   links: [],
 };

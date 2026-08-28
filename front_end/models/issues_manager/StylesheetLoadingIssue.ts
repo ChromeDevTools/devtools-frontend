@@ -8,7 +8,7 @@ import * as Protocol from '../../generated/protocol.js';
 import {Issue, IssueCategory, IssueKind} from './Issue.js';
 import type {MarkdownIssueDescription} from './MarkdownIssueDescription.js';
 
-export const lateImportStylesheetLoadingCode = [
+export const lateImportStylesheetLoadingCode: string = [
   Protocol.Audits.InspectorIssueCode.StylesheetLoadingIssue,
   Protocol.Audits.StyleSheetLoadingIssueReason.LateImportRule,
 ].join('::');

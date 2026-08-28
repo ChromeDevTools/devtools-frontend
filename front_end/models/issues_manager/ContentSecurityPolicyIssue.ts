@@ -131,27 +131,27 @@ const cspTrustedTypesPolicyViolation = {
   links: [{link: 'https://web.dev/trusted-types/', linkTitle: i18nLazyString(UIStrings.trustedTypesPolicyViolation)}],
 };
 
-export const urlViolationCode = [
+export const urlViolationCode: string = [
   Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
   Protocol.Audits.ContentSecurityPolicyViolationType.KURLViolation,
 ].join('::');
 
-export const inlineViolationCode = [
+export const inlineViolationCode: string = [
   Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
   Protocol.Audits.ContentSecurityPolicyViolationType.KInlineViolation,
 ].join('::');
 
-export const evalViolationCode = [
+export const evalViolationCode: string = [
   Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
   Protocol.Audits.ContentSecurityPolicyViolationType.KEvalViolation,
 ].join('::');
 
-export const trustedTypesSinkViolationCode = [
+export const trustedTypesSinkViolationCode: string = [
   Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
   Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesSinkViolation,
 ].join('::');
 
-export const trustedTypesPolicyViolationCode = [
+export const trustedTypesPolicyViolationCode: string = [
   Protocol.Audits.InspectorIssueCode.ContentSecurityPolicyIssue,
   Protocol.Audits.ContentSecurityPolicyViolationType.KTrustedTypesPolicyViolation,
 ].join('::');

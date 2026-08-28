@@ -15,6 +15,7 @@ import {assertScreenshot, renderElementIntoDOM, setTestUniverseForWidgets} from 
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as Highlighting from '../../ui/components/highlighting/highlighting.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
@@ -989,5 +990,144 @@ describeWithEnvironment('DOMTreeWidget', () => {
            domTree.detach();
          }
        });
+
+    it('highlights search match and clears match highlights in declarative view', async () => {
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'P', attributes: ['id', 'test-paragraph']},
+          ],
+        });
+        domTree.omitRootDOMNode = true;
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const pNode = rootNode.children()![0];
+
+        // 1. Highlight search match
+        domTree.highlightMatch(pNode, 'test-paragraph');
+        assert.strictEqual(domTree.searchMatchNode(), pNode);
+        assert.strictEqual(domTree.searchMatchQuery(), 'test-paragraph');
+        assert.strictEqual(domTree.selectedDOMNode(), pNode);
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const highlights = CSS.highlights.get(Highlighting.HighlightManager.HIGHLIGHT_REGISTRY);
+        assert.exists(highlights);
+        assert.isAbove(highlights.size, 0);
+        assert.isTrue(Array.from(highlights).some(range => range.toString() === 'test-paragraph'));
+
+        // 2. Hide match highlights
+        domTree.hideMatchHighlights(pNode);
+        assert.isNull(domTree.searchMatchNode());
+        assert.isNull(domTree.searchMatchQuery());
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        assert.strictEqual(highlights.size, 0);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('expands ancestors and selects node when highlightMatch is called on a nested node in declarative view',
+       async () => {
+         SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+         const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+         sinon.stub(domModel, 'requestDocument').resolves(null);
+         const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+         try {
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: 'DIV',
+             children: [
+               {
+                 nodeId: 2,
+                 nodeName: 'SECTION',
+                 children: [
+                   {nodeId: 3, nodeName: 'SPAN', attributes: ['class', 'highlight-me']},
+                 ],
+               },
+             ],
+           });
+           domTree.rootDOMNode = rootNode;
+           domTree.performUpdate();
+
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           const sectionNode = rootNode.children()![0];
+           const spanNode = sectionNode.children()![0];
+
+           assert.isFalse(domTree.isNodeExpanded(sectionNode));
+
+           domTree.highlightMatch(spanNode, 'highlight-me');
+
+           assert.isTrue(domTree.isNodeExpanded(sectionNode));
+           assert.strictEqual(domTree.selectedDOMNode(), spanNode);
+
+           await UI.Widget.Widget.allUpdatesComplete;
+
+           const highlights = CSS.highlights.get(Highlighting.HighlightManager.HIGHLIGHT_REGISTRY);
+           assert.exists(highlights);
+           assert.isAbove(highlights.size, 0);
+           assert.isTrue(Array.from(highlights).some(range => range.toString() === 'highlight-me'));
+         } finally {
+           domTree.detach();
+         }
+       });
+
+    it('highlights search match and clears match highlights in default (imperative) view', async () => {
+      SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'P', attributes: ['id', 'test-default-view']},
+          ],
+        });
+        domTree.omitRootDOMNode = true;
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const pNode = rootNode.children()![0];
+
+        // 1. Highlight search match
+        domTree.highlightMatch(pNode, 'test-default-view');
+        assert.strictEqual(domTree.searchMatchNode(), pNode);
+        assert.strictEqual(domTree.searchMatchQuery(), 'test-default-view');
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const highlights = CSS.highlights.get(Highlighting.HighlightManager.HIGHLIGHT_REGISTRY);
+        assert.exists(highlights);
+        assert.isAbove(highlights.size, 0);
+        assert.isTrue(Array.from(highlights).some(range => range.toString() === 'test-default-view'));
+
+        // 2. Hide match highlights
+        domTree.hideMatchHighlights(pNode);
+        assert.isNull(domTree.searchMatchNode());
+        assert.isNull(domTree.searchMatchQuery());
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        assert.strictEqual(highlights.size, 0);
+      } finally {
+        domTree.detach();
+      }
+    });
   });
 });

@@ -1133,7 +1133,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
   #view: View;
 
-  private searchQuery: string|null;
+  #searchQuery: string|null = null;
   #expandedChildrenLimit: number;
   private readonly decorationsThrottler: Common.Throttler.Throttler;
   inClipboard = false;
@@ -1206,6 +1206,18 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     this.requestUpdate();
   }
 
+  get searchQuery(): string|null {
+    return this.#searchQuery;
+  }
+
+  set searchQuery(query: string|null) {
+    if (this.#searchQuery === query) {
+      return;
+    }
+    this.#searchQuery = query;
+    this.requestUpdate();
+  }
+
   get tagTypeContext(): TagTypeContext {
     if (this.isClosingTag) {
       return {tagType: TagType.CLOSING};
@@ -1240,7 +1252,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     this.#domIssuesManager = domIssuesManager;
     this.#view = view;
 
-    this.searchQuery = null;
     this.#expandedChildrenLimit = InitialChildrenLimit;
     this.decorationsThrottler = new Common.Throttler.Throttler(100);
 
@@ -1420,6 +1431,11 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     this.#editorRef = output.editorRef;
     if (this.#updateRecord) {
       this.#updateRecord = null;
+    }
+    if (this.#searchQuery && !this.editing) {
+      this.#highlightSearchResults();
+    } else if (!this.#searchQuery && this.#highlights.length) {
+      this.hideSearchHighlights();
     }
   }
 

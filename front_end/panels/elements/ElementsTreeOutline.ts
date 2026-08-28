@@ -117,6 +117,8 @@ interface ViewInput {
   deindentSingleNode: boolean;
   currentHighlightedNode: SDK.DOMModel.DOMNode|null;
   hoveredNode?: SDK.DOMModel.DOMNode|null;
+  searchMatchNode?: SDK.DOMModel.DOMNode|null;
+  searchMatchQuery?: string|null;
 
   selectedNode: SDK.DOMModel.DOMNode|null;
 
@@ -145,6 +147,8 @@ interface ViewOutput {
   elementsTreeOutline?: ElementsTreeOutline;
   imagePreviewPopover?: ImagePreviewPopover;
   highlightedTreeElement: ElementsTreeElement|null;
+  searchMatchTreeElement?: ElementsTreeElement|null;
+  searchMatchQuery?: string;
   isUpdatingHighlights: boolean;
   alreadyExpandedParentTreeElement: ElementsTreeElement|null;
 }
@@ -348,6 +352,30 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     treeElement?.reveal(true);
     output.isUpdatingHighlights = false;
   }
+
+  const previousSearchMatchNode = output.searchMatchTreeElement?.node() ?? null;
+  if (previousSearchMatchNode !== input.searchMatchNode || output.searchMatchQuery !== input.searchMatchQuery) {
+    if (output.searchMatchTreeElement) {
+      output.searchMatchTreeElement.hideSearchHighlights();
+      output.searchMatchTreeElement = null;
+    }
+    output.searchMatchQuery = input.searchMatchQuery ?? undefined;
+    if (input.searchMatchNode) {
+      const treeElement = output.elementsTreeOutline.findTreeElement(input.searchMatchNode);
+      if (treeElement) {
+        output.searchMatchTreeElement = treeElement;
+        if (input.searchMatchQuery) {
+          treeElement.highlightSearchResults(input.searchMatchQuery);
+        }
+        treeElement.reveal();
+        const matches =
+            treeElement.listItemElement.getElementsByClassName(Highlighting.highlightedSearchResultClassName);
+        if (matches.length) {
+          matches[0].scrollIntoViewIfNeeded(false);
+        }
+      }
+    }
+  }
 };
 
 function isMaxDepthReached(node: SDK.DOMModel.DOMNode, rootDOMNode: SDK.DOMModel.DOMNode|null, maxTreeDepth?: number,
@@ -495,7 +523,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     // TODO: Move multiline/HTML editing (toggleEditAsHTML, MultilineEditorController) from ElementsTreeOutline into DOMTreeWidget.
     // TODO: Move Drag and Drop reordering support (ondragstart, ondragover, ondrop, insertion markers) out of ElementsTreeOutline into a declarative drag-and-drop controller for <devtools-tree>.
     // TODO: Move context menu building (DOMTreeContextMenu, showContextMenu) out of ElementsTreeElement / ElementsTreeOutline to operate directly on SDK.DOMModel.DOMNode and DOMTreeWidget.
-    // TODO: Move search match highlighting (highlightSearchResults, hideSearchHighlights) and navigation (highlightMatch, scrollIntoViewIfNeeded) into DOMTreeWidget search state.
     // TODO: Move marker decorators and descendant gutter decorations (MarkerDecoratorRegistration, updateDecorations) into declarative state passed to ElementsTreeWidget.
     // TODO: Move TopLayerContainer rendering for top layer elements into a declarative tree element item.
     // TODO: Move AdoptedStyleSheet rendering (AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement) into dedicated declarative widgets.
@@ -546,6 +573,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           selected: isSelected,
           isDOMNodeSelected: isSelected,
           hovered: isHovered,
+          searchQuery: input.searchMatchNode === node ? (input.searchMatchQuery ?? null) : null,
           inClipboard: input.isNodeInClipboard?.(node) ?? false,
           computeLeftIndent: computeLeftIndent(depth, hasChildren),
           disableEdits: input.disableEdits ?? false,
@@ -945,6 +973,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   #hoveredDOMNode: SDK.DOMModel.DOMNode|null = null;
+  #searchMatchNode: SDK.DOMModel.DOMNode|null = null;
+  #searchMatchQuery: string|null = null;
 
   hoveredDOMNode(): SDK.DOMModel.DOMNode|null {
     if (this.#view === DECLARATIVE_VIEW) {
@@ -955,6 +985,14 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       return hoveredElement.node();
     }
     return null;
+  }
+
+  searchMatchNode(): SDK.DOMModel.DOMNode|null {
+    return this.#searchMatchNode;
+  }
+
+  searchMatchQuery(): string|null {
+    return this.#searchMatchQuery;
   }
 
   setHoveredNode(node: SDK.DOMModel.DOMNode|null, showInfo = true): void {
@@ -1001,6 +1039,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
       currentHighlightedNode: this.#currentHighlightedNode,
       hoveredNode: this.#hoveredDOMNode,
+      searchMatchNode: this.#searchMatchNode,
+      searchMatchQuery: this.#searchMatchQuery,
       selectedNode: this.selectedDOMNode(),
       onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
       onSelectedNodeChanged: event => {
@@ -1154,27 +1194,21 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   highlightMatch(node: SDK.DOMModel.DOMNode, query?: string): void {
-    const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
-    if (!treeElement) {
-      return;
+    this.#searchMatchNode = node;
+    this.#searchMatchQuery = query ?? null;
+    if (this.#selectedDOMNode !== node) {
+      this.selectDOMNode(node, /* focus= */ false);
+    } else {
+      this.performUpdate();
     }
-    if (query) {
-      treeElement.highlightSearchResults(query);
-    }
-    treeElement.reveal();
-    const matches = treeElement.listItemElement.getElementsByClassName(Highlighting.highlightedSearchResultClassName);
-    if (matches.length) {
-      matches[0].scrollIntoViewIfNeeded(false);
-    }
-    treeElement.select(/* omitFocus */ true);
   }
 
   hideMatchHighlights(node: SDK.DOMModel.DOMNode): void {
-    const treeElement = this.#viewOutput.elementsTreeOutline?.findTreeElement(node);
-    if (!treeElement) {
-      return;
+    if (this.#searchMatchNode === node) {
+      this.#searchMatchNode = null;
+      this.#searchMatchQuery = null;
+      this.performUpdate();
     }
-    treeElement.hideSearchHighlights();
   }
 
   toggleHideElement(node: SDK.DOMModel.DOMNode): void {

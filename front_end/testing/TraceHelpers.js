@@ -45,7 +45,8 @@ export async function renderFlameChartIntoDOM(context, options) {
         parsedTrace = options.fileNameOrParsedTrace;
     }
     if (options.preloadScreenshots) {
-        await Timeline.Utils.ImageCache.preload(parsedTrace?.data.Screenshots.screenshots ?? []);
+        const screenshots = parsedTrace?.data.Screenshots.screenshots ?? parsedTrace?.data.Screenshots.legacySyntheticScreenshots ?? [];
+        await Timeline.Utils.ImageCache.preload(screenshots);
     }
     const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
     const dataProvider = options.dataProvider === 'MAIN' ?

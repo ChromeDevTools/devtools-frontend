@@ -376,13 +376,14 @@ export const DEFAULT_VIEW = (input, output, target) => {
     render(html `
     <style>${webMCPViewStyles}</style>
     <style>${UI.FilterBar.filterStyles}</style>
-    <devtools-split-view class="webmcp-view" direction="row" sidebar-position="second" name="webmcp-split-view">
-      <div slot="main" class="call-log">
+    <devtools-split-view class="webmcp-view" direction="row" sidebar-position="second" name="webmcp-split-view" jslog=${VisualLogging.pane('webmcp-view')}>
+      <div slot="main" class="call-log" jslog=${VisualLogging.section('call-log')}>
         <div class="webmcp-toolbar-container" role="toolbar" jslog=${VisualLogging.toolbar()}>
           <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
             <devtools-button title=${i18nString(UIStrings.clearLog)}
                              .iconName=${'clear'}
                              .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
+                             .jslogContext=${'clear'}
                              @click=${input.onClearLogClick}></devtools-button>
             <div class="toolbar-divider"></div>
             <devtools-toolbar-input type="filter"
@@ -398,6 +399,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             <devtools-button title=${i18nString(UIStrings.clearFilters)}
                              .iconName=${'filter-clear'}
                              .variant=${"toolbar" /* Buttons.Button.Variant.TOOLBAR */}
+                             .jslogContext=${'clear-filter'}
                              @click=${() => input.onFilterChange({ text: '' })}
                              ?hidden=${!isFilterActive}></devtools-button>
           </devtools-toolbar>
@@ -426,7 +428,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         'status-error': call.result?.status === "Error" /* Protocol.WebMCP.InvocationStatus.Error */,
         'status-cancelled': call.result?.status === "Canceled" /* Protocol.WebMCP.InvocationStatus.Canceled */,
         selected: call === input.selectedCall,
-    })} @click=${() => input.onCallSelect(call)}
+    })} jslog=${VisualLogging.tableRow().track({ click: true })} @click=${() => input.onCallSelect(call)}
                         @contextmenu=${(e) => {
         const contextMenu = e.detail;
         const isUnregistered = !input.tools.includes(call.tool);
@@ -452,6 +454,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                           <button class="run-tool-action-button"
                                   title=${i18nString(UIStrings.editAndRun)}
                                   aria-label=${i18nString(UIStrings.editAndRun)}
+                                  jslog=${VisualLogging.action('edit-and-run').track({ click: true })}
                                   @click=${(e) => {
         e.stopPropagation();
         const payload = parsePayload(call.input);
@@ -496,6 +499,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                   .iconName=${'cross'}
                   .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
                   .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+                  .jslogContext=${'close'}
                   title=${i18nString(UIStrings.close)}
                   @click=${() => input.onCallSelect(null)}
                 ></devtools-button>
@@ -524,7 +528,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
               </devtools-tabbed-pane>
             </div>
           </devtools-split-view>
-          <div class="webmcp-toolbar-container" role="toolbar">
+          <div class="webmcp-toolbar-container" role="toolbar" jslog=${VisualLogging.toolbar('summary')}>
             <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
               <span class="toolbar-text">${i18nString(UIStrings.totalCalls, { PH1: input.toolCalls.length })}</span>
               <div class="toolbar-divider"></div>
@@ -545,7 +549,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                            sidebar-position="second"
                            name="webmcp-details-split-view"
                            sidebar-visibility=${input.selectedTool ? 'show' : 'hidden'}>
-        <div slot="main" class="tool-list">
+        <div slot="main" class="tool-list" jslog=${VisualLogging.section('tool-list')}>
           <div class="section-title">${i18nString(UIStrings.toolRegistry)}</div>
           ${tools.length === 0 ? html `
           ${UI.Widget.widget(UI.EmptyWidget.EmptyWidget, { header: i18nString(UIStrings.noToolsPlaceholderTitle),
@@ -554,6 +558,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             <devtools-list class="square-corners">
               ${tools.map(tool => html `
                     <div class=${Directives.classMap({ 'tool-item': true, selected: tool === input.selectedTool?.tool })}
+                         jslog=${VisualLogging.item().track({ click: true }).context('tool')}
                          @click=${() => input.onToolSelect(tool)}
                          @contextmenu=${(e) => onToolContextMenu(e, tool)}>
                     <div class="tool-name-container">
@@ -566,6 +571,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
         compact: false,
         clickHandler: () => onIconClick(tool.name, group.status),
     }}
+                          jslog=${VisualLogging.action('filter-by-status').track({ click: true })}
                           @click=${(e) => e.stopPropagation()}></icon-button>`)}
                     </div>
                     </div>
@@ -574,12 +580,13 @@ export const DEFAULT_VIEW = (input, output, target) => {
             </devtools-list>
           `}
         </div>
-        <div slot="sidebar" class="tool-details">
+        <div slot="sidebar" class="tool-details" jslog=${VisualLogging.section('tool-details')}>
           <div class="section-title">
             <devtools-button
               .iconName=${'cross'}
               .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
               .variant=${"icon" /* Buttons.Button.Variant.ICON */}
+              .jslogContext=${'close'}
               title=${i18nString(UIStrings.close)}
               @click=${() => input.onToolSelect(null)}
             ></devtools-button>
@@ -596,6 +603,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
                 .iconName=${'import'}
                 .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
                 .variant=${"text" /* Buttons.Button.Variant.TEXT */}
+                .jslogContext=${'paste'}
                 title=${i18nString(UIStrings.paste)}
                 @click=${input.onPaste}
               >${i18nString(UIStrings.paste)}</devtools-button>
@@ -619,7 +627,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
               class="webmcp-run-tool-button"
               .variant=${"outlined" /* Buttons.Button.Variant.OUTLINED */}
               .size=${"SMALL" /* Buttons.Button.Size.SMALL */}
-              jslogContext="webmcp.run-tool"
+              .jslogContext=${'run-tool'}
               @click=${() => {
         if (editorWidget && input.selectedTool) {
             const params = editorWidget.getParameters();

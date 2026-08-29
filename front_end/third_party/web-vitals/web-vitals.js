@@ -46,7 +46,7 @@ var bindReporter = (callback, metric, thresholds, reportAllChanges) => {
 
 // gen/front_end/third_party/web-vitals/package/dist/modules/lib/doubleRAF.js
 var doubleRAF = (cb) => {
-  requestAnimationFrame(() => requestAnimationFrame(cb));
+  requestAnimationFrame(() => requestAnimationFrame(() => cb()));
 };
 
 // gen/front_end/third_party/web-vitals/package/dist/modules/lib/getNavigationEntry.js
@@ -212,10 +212,13 @@ var observe = (types, callback, opts = {}) => {
 
 // gen/front_end/third_party/web-vitals/package/dist/modules/lib/softNavs.js
 var checkSoftNavsEnabled = (opts) => {
-  return PerformanceObserver.supportedEntryTypes.includes("soft-navigation") && // Older implementations expose the value as an attribute rather than the
-  // method. We only support the newer method as that was what was launched
-  // to stable unflagged.
-  typeof globalThis.PerformanceSoftNavigation?.prototype?.getLargestInteractionContentfulPaint === "function" && opts && opts.reportSoftNavs;
+  return (
+    // Firefox has a preference to disable this, which some people use so add a guard
+    globalThis.PerformanceObserver?.supportedEntryTypes?.includes("soft-navigation") && // Older implementations expose the value as an attribute rather than the
+    // method. We only support the newer method as that was what was launched
+    // to stable unflagged.
+    typeof globalThis.PerformanceSoftNavigation?.prototype?.getLargestInteractionContentfulPaint === "function" && opts && opts.reportSoftNavs
+  );
 };
 var storeSoftNavEntry = (map, entry) => {
   map.set(entry.navigationId, entry);
@@ -384,11 +387,16 @@ var initInteractionCountPolyfill = () => {
 
 // gen/front_end/third_party/web-vitals/package/dist/modules/lib/InteractionManager.js
 var MAX_INTERACTIONS_TO_CONSIDER = 10;
-var prevInteractionCount = 0;
-var getInteractionCountForNavigation = () => {
-  return getInteractionCount() - prevInteractionCount;
-};
 var InteractionManager = class {
+  /**
+   * The interaction count at the start of the current navigation, so p98
+   * interaction latencies only consider interactions since then.
+   *
+   * This is per-instance rather than module state: `initUnique()` gives every
+   * `onINP()` call its own manager, and a shared counter would let whichever
+   * instance resets first hide the interactions from all the others.
+   */
+  _prevInteractionCount = 0;
   /**
    * A list of longest interactions on the page (by latency) sorted so the
    * longest one is first. The list is at most MAX_INTERACTIONS_TO_CONSIDER
@@ -402,8 +410,15 @@ var InteractionManager = class {
   _longestInteractionMap = /* @__PURE__ */ new Map();
   _onBeforeProcessingEntry;
   _onAfterProcessingINPCandidate;
+  /**
+   * Returns the interaction count since the start of the current navigation
+   * (or the full page lifecycle if there were no soft navs / bfcache restores).
+   */
+  _getInteractionCountForNavigation() {
+    return getInteractionCount() - this._prevInteractionCount;
+  }
   _resetInteractions() {
-    prevInteractionCount = getInteractionCount();
+    this._prevInteractionCount = getInteractionCount();
     this._longestInteractionList.length = 0;
     this._longestInteractionMap.clear();
   }
@@ -412,7 +427,7 @@ var InteractionManager = class {
    * interaction candidates and the interaction count for the current page.
    */
   _estimateP98LongestInteraction(navigationType) {
-    const interactionCountForNavigation = getInteractionCountForNavigation();
+    const interactionCountForNavigation = this._getInteractionCountForNavigation();
     const candidateInteractionIndex = Math.min(this._longestInteractionList.length - 1, Math.floor(interactionCountForNavigation / 50));
     if (interactionCountForNavigation && candidateInteractionIndex === -1 && (navigationType === "soft-navigation" || navigationType === "back-forward-cache")) {
       return {
@@ -431,7 +446,7 @@ var InteractionManager = class {
    */
   _processEntry(entry) {
     this._onBeforeProcessingEntry?.(entry);
-    if (!(entry.interactionId || entry.entryType === "first-input"))
+    if (!entry.interactionId)
       return;
     const minLongestInteraction = this._longestInteractionList.at(-1);
     let interaction = this._longestInteractionMap.get(entry.interactionId);
@@ -932,7 +947,7 @@ var onINP2 = (onReport, opts = {}) => {
       };
       pendingEntriesGroups.push(group);
     }
-    if (entry.interactionId || entry.entryType === "first-input") {
+    if (entry.interactionId) {
       entryToEntriesGroupMap.set(entry, group);
     }
     queueCleanup();
@@ -1068,7 +1083,7 @@ var onINP2 = (onReport, opts = {}) => {
     }
     const firstEntry = metric.entries[0];
     const group = entryToEntriesGroupMap.get(firstEntry);
-    const processingStart = group.processingStart;
+    const processingStart = Math.max(group.processingStart, firstEntry.startTime);
     const nextPaintTime = Math.max(firstEntry.startTime + firstEntry.duration, processingStart);
     const processingEnd = Math.min(group.processingEnd, nextPaintTime);
     const processedEventEntries = group.entries.sort((a, b) => {
@@ -1106,8 +1121,22 @@ var onINP2 = (onReport, opts = {}) => {
 };
 
 // gen/front_end/third_party/web-vitals/package/dist/modules/attribution/onLCP.js
+var DEFAULT_RESOURCE_BUFFER_SIZE = 50;
+var resourceBufferSizeLimit = DEFAULT_RESOURCE_BUFFER_SIZE;
+var resourceBuffer = [];
+observe(["resource"], (entries) => {
+  for (const entry of entries) {
+    resourceBuffer.push(entry);
+    if (resourceBuffer.length > resourceBufferSizeLimit) {
+      resourceBuffer.shift();
+    }
+  }
+});
 var onLCP2 = (onReport, opts = {}) => {
   opts = Object.assign({}, opts);
+  if (opts.resourceBufferSize != void 0) {
+    resourceBufferSizeLimit = opts.resourceBufferSize;
+  }
   const lcpEntryManager = initUnique(opts, LCPEntryManager);
   const lcpTargetMap = /* @__PURE__ */ new WeakMap();
   if (checkSoftNavsEnabled(opts)) {
@@ -1131,7 +1160,7 @@ var onLCP2 = (onReport, opts = {}) => {
     };
     if (metric.entries.length) {
       const lcpEntry = metric.entries.at(-1);
-      const lcpResourceEntry = lcpEntry.url && performance.getEntriesByType("resource").find((e) => e.name === lcpEntry.url);
+      const lcpResourceEntry = lcpEntry.url && (resourceBuffer.findLast((e) => e.name === lcpEntry.url) || performance.getEntriesByType("resource").findLast((e) => e.name === lcpEntry.url));
       attribution.target = lcpTargetMap.get(lcpEntry);
       attribution.lcpEntry = lcpEntry;
       if (lcpEntry.url) {

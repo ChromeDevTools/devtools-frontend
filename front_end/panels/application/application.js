@@ -104,22 +104,22 @@ var ApplicationPanelTreeElement = class _ApplicationPanelTreeElement extends UI.
     if (!actionRegistry.hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID2)) {
       return;
     }
-    const action6 = actionRegistry.getAction(STORAGE_FLOATING_BUTTON_ACTION_ID2);
+    const action7 = actionRegistry.getAction(STORAGE_FLOATING_BUTTON_ACTION_ID2);
     if (!this.aiButtonContainer) {
       this.aiButtonContainer = this.listItemElement.createChild("span", "ai-button-container");
       const icon = AiAssistance.AiUtils.getIconName();
       const onClick = (ev) => {
         ev.stopPropagation();
-        const item3 = storageItemProvider();
-        if (item3) {
-          UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item3);
-          void action6.execute();
+        const item4 = storageItemProvider();
+        if (item4) {
+          UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item4);
+          void action7.execute();
         }
       };
       Lit.render(html`
             <devtools-floating-button
               icon-name=${icon}
-              title=${action6.title()}
+              title=${action7.title()}
               jslogcontext="ask-ai"
               @click=${onClick}
               @mousedown=${(ev) => ev.stopPropagation()}>
@@ -175,8 +175,8 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.updateCategoryView();
-    const item3 = this.createGenericStorageAiContext();
-    UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item3);
+    const item4 = this.createGenericStorageAiContext();
+    UI.Context.Context.instance().setFlavor(AiAssistance.StorageItem.StorageItem, item4);
     return false;
   }
   updateCategoryView() {
@@ -856,10 +856,10 @@ function renderImage(imageSrc, imageUrl, naturalWidth) {
           width=${naturalWidth}>
     </div>`;
 }
-function setFocusOnSection(section8, output) {
+function setFocusOnSection(section9, output) {
   return (e) => {
     if (e instanceof HTMLElement) {
-      output.focusOnSection.set(section8, () => e.focus());
+      output.focusOnSection.set(section9, () => e.focus());
     }
   };
 }
@@ -6224,7 +6224,7 @@ function applyFilterText(filterText, rows) {
   return rows.filter((row) => {
     const attempt = row.pipeline.getOriginallyTriggered();
     const url = attempt.key.url.toLowerCase();
-    const action6 = PreloadingComponents.PreloadingString.capitalizedAction(attempt.action).toLowerCase();
+    const action7 = PreloadingComponents.PreloadingString.capitalizedAction(attempt.action).toLowerCase();
     const status = PreloadingUIUtils.status(attempt.status).toLowerCase();
     return query.every((term) => {
       if (term.text === void 0 || term.text === null || term.text === "") {
@@ -6236,13 +6236,13 @@ function applyFilterText(filterText, rows) {
         case "url":
           return url.includes(searchText);
         case "action":
-          return action6.includes(searchText);
+          return action7.includes(searchText);
         case "status": {
           const statusValues = searchText.split(",");
           return statusValues.some((v) => status.includes(v));
         }
         case void 0:
-          return url.includes(searchText) || action6.includes(searchText) || status.includes(searchText);
+          return url.includes(searchText) || action7.includes(searchText) || status.includes(searchText);
         default:
           return false;
       }
@@ -8880,7 +8880,7 @@ function renderOriginReport(input) {
   return html11`<div class="service-workers-this-origin" jslog=${VisualLogging10.section("this-origin")}>
     <devtools-report .data=${{ reportTitle: i18n35.i18n.lockedString("Service workers") }}>
       <div class="service-worker-toolbar" slot="toolbar">${renderToolbar2()}</div>
-      ${sortedSections.map((section8) => html11`<devtools-widget class="service-worker-section-container" ${widget7(Section, { section: section8 })}></devtools-widget>`)}
+      ${sortedSections.map((section9) => html11`<devtools-widget class="service-worker-section-container" ${widget7(Section, { section: section9 })}></devtools-widget>`)}
     </devtools-report>
   </div>`;
 }
@@ -9747,7 +9747,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
     })}
                          .iconName=${"cross"}
                          .variant=${"toolbar"}></devtools-button>
-        ${input.mainToolbarItems.map((item3) => item3.element)}
+        ${input.mainToolbarItems.map((item4) => item4.element)}
       </devtools-toolbar>
       ${input.metadataView}`,
     // clang-format on
@@ -9818,8 +9818,8 @@ var StorageItemsToolbar = class extends Common11.ObjectWrapper.eventMixin(UI20.W
     this.#deleteAllButtonIconName = glyph;
     this.requestUpdate();
   }
-  appendToolbarItem(item3) {
-    this.#mainToolbarItems.push(item3);
+  appendToolbarItem(item4) {
+    this.#mainToolbarItems.push(item4);
     this.requestUpdate();
   }
   setStorageKey(storageKey) {
@@ -10154,7 +10154,7 @@ var CookieItemsView = class extends UI21.Widget.VBox {
       }
       return false;
     };
-    return items.filter((item3) => this.#toolbar?.filterRegex?.test(keyFunction(item3)) ?? true).filter(predicate);
+    return items.filter((item4) => this.#toolbar?.filterRegex?.test(keyFunction(item4)) ?? true).filter(predicate);
   }
   /**
    * This will only delete the currently visible cookies.
@@ -10185,10 +10185,10 @@ var CookieItemsView = class extends UI21.Widget.VBox {
     if (this.isAiButtonEnabled() && UI21.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
       this.#updateAiAssistanceContext(cookie);
       if (UI21.Context.Context.instance().flavor(AiAssistanceModel.StorageItem.StorageItem)) {
-        const action6 = UI21.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action6.title(), false, openAiAssistanceId);
+        const action7 = UI21.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action7.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString21(UIStrings21.startAChat));
-        submenu.defaultSection().appendItem(i18nString21(UIStrings21.explainCookie), () => action6.execute({ prompt: "What is the purpose of this cookie?" }), { disabled: !action6.enabled(), jslogContext: openAiAssistanceId + ".cookies" });
+        submenu.defaultSection().appendItem(i18nString21(UIStrings21.explainCookie), () => action7.execute({ prompt: "What is the purpose of this cookie?" }), { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".cookies" });
       }
     }
   }
@@ -11444,23 +11444,23 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
                         ${i18nString23(UIStrings23.value)}
                       </th>
                     </tr>
-                    ${repeat2(input.items, (item3) => item3.key, (item3) => html15`
-                      <tr data-key=${item3.key} data-value=${item3.value}
-                          @select=${() => input.onSelect(item3)}
-                          @edit=${(e) => input.onEdit(item3.key, item3.value, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
-                          @delete=${() => input.onDelete(item3.key)}
-                          @contextmenu=${(e) => input.onContextMenu?.(item3, e.detail)}
-                          selected=${input.selectedKey === item3.key || nothing9}>
+                    ${repeat2(input.items, (item4) => item4.key, (item4) => html15`
+                      <tr data-key=${item4.key} data-value=${item4.value}
+                          @select=${() => input.onSelect(item4)}
+                          @edit=${(e) => input.onEdit(item4.key, item4.value, e.detail.columnId, e.detail.valueBeforeEditing, e.detail.newText)}
+                          @delete=${() => input.onDelete(item4.key)}
+                          @contextmenu=${(e) => input.onContextMenu?.(item4, e.detail)}
+                          selected=${input.selectedKey === item4.key || nothing9}>
                         <td>${input.showAiButton ? html15`
                             <span class="ai-button-container">
                               <devtools-floating-button
                                 icon-name=${AIAssistance.AiUtils.getIconName()}
                                 title=${ifDefined(input.aiButtonTitle)}
-                                @click=${(e) => input.onAiButtonClick?.(item3, e)}
+                                @click=${(e) => input.onAiButtonClick?.(item4, e)}
                               ></devtools-floating-button>
                             </span>
-                          ` : nothing9}${item3.key}</td>
-                        <td>${item3.value.substr(0, MAX_VALUE_LENGTH)}</td>
+                          ` : nothing9}${item4.key}</td>
+                        <td>${item4.value.substr(0, MAX_VALUE_LENGTH)}</td>
                       </tr>`)}
                       <tr placeholder></tr>
                   </table>
@@ -11510,16 +11510,16 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
       classes: this.#classes,
       showAiButton: this.isAiButtonEnabled(),
       aiButtonTitle: this.isAiButtonEnabled() && UI23.ActionRegistry.ActionRegistry.instance().hasAction(STORAGE_FLOATING_BUTTON_ACTION_ID) ? UI23.ActionRegistry.ActionRegistry.instance().getAction(STORAGE_FLOATING_BUTTON_ACTION_ID).title() : void 0,
-      onSelect: (item3) => {
-        this.#toolbar?.setCanDeleteSelected(Boolean(item3));
-        void this.#previewEntry(item3);
-        this.selectedItemChanged(item3);
+      onSelect: (item4) => {
+        this.#toolbar?.setCanDeleteSelected(Boolean(item4));
+        void this.#previewEntry(item4);
+        this.selectedItemChanged(item4);
       },
-      onAiButtonClick: this.isAiButtonEnabled() ? (item3, event) => {
-        this.onAiButtonClick(item3, event);
+      onAiButtonClick: this.isAiButtonEnabled() ? (item4, event) => {
+        this.onAiButtonClick(item4, event);
       } : void 0,
-      onContextMenu: (item3, contextMenu) => {
-        this.populateContextMenu(item3, contextMenu);
+      onContextMenu: (item4, contextMenu) => {
+        this.populateContextMenu(item4, contextMenu);
       },
       onSort: (ascending) => {
         this.#isSortOrderAscending = ascending;
@@ -11566,7 +11566,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
     this.#toolbar?.setCanDeleteSelected(false);
   }
   itemRemoved(key) {
-    const index = this.#items.findIndex((item3) => item3.key === key);
+    const index = this.#items.findIndex((item4) => item4.key === key);
     if (index === -1) {
       return;
     }
@@ -11575,21 +11575,21 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
     this.#toolbar?.setCanDeleteSelected(this.#items.length > 1);
   }
   itemAdded(key, value) {
-    if (this.#items.some((item3) => item3.key === key)) {
+    if (this.#items.some((item4) => item4.key === key)) {
       return;
     }
     this.#items.push({ key, value });
     this.performUpdate();
   }
   itemUpdated(key, value) {
-    const item3 = this.#items.find((item4) => item4.key === key);
-    if (!item3) {
+    const item4 = this.#items.find((item5) => item5.key === key);
+    if (!item4) {
       return;
     }
-    if (item3.value === value) {
+    if (item4.value === value) {
       return;
     }
-    item3.value = value;
+    item4.value = value;
     this.performUpdate();
     if (this.#selectedKey !== key) {
       return;
@@ -11602,7 +11602,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
   showItems(items) {
     const sortDirection = this.#isSortOrderAscending ? 1 : -1;
     this.#items = [...items].sort((item1, item22) => sortDirection * (item1.key > item22.key ? 1 : -1));
-    const selectedItem = this.#items.find((item3) => item3.key === this.#selectedKey);
+    const selectedItem = this.#items.find((item4) => item4.key === this.#selectedKey);
     if (!selectedItem) {
       this.#selectedKey = null;
     } else {
@@ -11694,7 +11694,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
     this.performUpdate();
   }
   keys() {
-    return this.#items.map((item3) => item3.key);
+    return this.#items.map((item4) => item4.key);
   }
   selectedItemChanged(_item) {
   }
@@ -11813,10 +11813,10 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
       return;
     }
     const { filterRegex } = this.toolbar;
-    const filteredItems = items.map((item3) => ({ key: item3[0], value: item3[1] })).filter((item3) => filterRegex?.test(`${item3.key} ${item3.value}`) ?? true);
+    const filteredItems = items.map((item4) => ({ key: item4[0], value: item4[1] })).filter((item4) => filterRegex?.test(`${item4.key} ${item4.value}`) ?? true);
     this.showItems(filteredItems);
   }
-  #setAiStorageContext(item3) {
+  #setAiStorageContext(item4) {
     const storageKey = this.domStorage.storageKey;
     if (!storageKey) {
       return;
@@ -11830,32 +11830,32 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
       UI24.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, null);
       return;
     }
-    const storageItem = new AiAssistanceModel2.StorageItem.DOMStorageItem(mainPageOrigin, origin, storageKey, storageType, item3 ? item3.key : void 0);
+    const storageItem = new AiAssistanceModel2.StorageItem.DOMStorageItem(mainPageOrigin, origin, storageKey, storageType, item4 ? item4.key : void 0);
     UI24.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, storageItem);
   }
   deleteAllItems() {
     this.domStorage.clear();
     this.domStorageItemsCleared();
   }
-  selectedItemChanged(item3) {
-    this.#setAiStorageContext(item3);
+  selectedItemChanged(item4) {
+    this.#setAiStorageContext(item4);
   }
   isAiButtonEnabled() {
     return UI24.ActionRegistry.ActionRegistry.instance().hasAction("ai-assistance.storage-floating-button");
   }
-  populateContextMenu(item3, contextMenu) {
+  populateContextMenu(item4, contextMenu) {
     const openAiAssistanceId = "ai-assistance.application-panel-context";
     const actionRegistry = UI24.ActionRegistry.ActionRegistry.instance();
     if (actionRegistry.hasAction(openAiAssistanceId)) {
-      this.#setAiStorageContext(item3);
-      const action6 = actionRegistry.getAction(openAiAssistanceId);
-      const submenu = contextMenu.footerSection().appendSubMenuItem(action6.title(), false, openAiAssistanceId);
+      this.#setAiStorageContext(item4);
+      const action7 = actionRegistry.getAction(openAiAssistanceId);
+      const submenu = contextMenu.footerSection().appendSubMenuItem(action7.title(), false, openAiAssistanceId);
       submenu.defaultSection().appendAction(openAiAssistanceId, i18nString24(UIStrings24.startAChat));
-      submenu.defaultSection().appendItem(i18nString24(UIStrings24.explainItem), () => action6.execute({ prompt: "Explain this storage item." }), { disabled: !action6.enabled(), jslogContext: openAiAssistanceId + ".storage" });
+      submenu.defaultSection().appendItem(i18nString24(UIStrings24.explainItem), () => action7.execute({ prompt: "Explain this storage item." }), { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".storage" });
     }
   }
-  onAiButtonClick(item3, _event) {
-    this.#setAiStorageContext(item3);
+  onAiButtonClick(item4, _event) {
+    this.#setAiStorageContext(item4);
     const aiFloatingActionId = "ai-assistance.storage-floating-button";
     const actionRegistry = UI24.ActionRegistry.ActionRegistry.instance();
     if (actionRegistry.hasAction(aiFloatingActionId)) {
@@ -11971,7 +11971,7 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
     if (!items || !this.toolbar) {
       return;
     }
-    const filteredItems = Object.entries(items).map(([key, value]) => ({ key, value: typeof value === "string" ? value : JSON.stringify(value) })).filter((item3) => this.toolbar?.filterRegex?.test(`${item3.key} ${item3.value}`) ?? true);
+    const filteredItems = Object.entries(items).map(([key, value]) => ({ key, value: typeof value === "string" ? value : JSON.stringify(value) })).filter((item4) => this.toolbar?.filterRegex?.test(`${item4.key} ${item4.value}`) ?? true);
     this.showItems(filteredItems);
     this.extensionStorageItemsDispatcher.dispatchEventToListeners(
       "ItemsRefreshed"
@@ -12227,7 +12227,7 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     if (view instanceof UI26.View.SimpleView) {
       void view.toolbarItems().then((items) => {
         if (Array.isArray(items)) {
-          items.map((item3) => this.storageViewToolbar.appendToolbarItem(item3));
+          items.map((item4) => this.storageViewToolbar.appendToolbarItem(item4));
           this.storageViewToolbar.classList.toggle("hidden", !items.length);
         } else {
           render16(items, this.storageViewToolbar);
@@ -13909,13 +13909,14 @@ var DEFAULT_VIEW11 = (input, output, target) => {
   render17(html16`
     <style>${webMCPView_css_default}</style>
     <style>${UI29.FilterBar.filterStyles}</style>
-    <devtools-split-view class="webmcp-view" direction="row" sidebar-position="second" name="webmcp-split-view">
-      <div slot="main" class="call-log">
+    <devtools-split-view class="webmcp-view" direction="row" sidebar-position="second" name="webmcp-split-view" jslog=${VisualLogging19.pane("webmcp-view")}>
+      <div slot="main" class="call-log" jslog=${VisualLogging19.section("call-log")}>
         <div class="webmcp-toolbar-container" role="toolbar" jslog=${VisualLogging19.toolbar()}>
           <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
             <devtools-button title=${i18nString28(UIStrings28.clearLog)}
                              .iconName=${"clear"}
                              .variant=${"toolbar"}
+                             .jslogContext=${"clear"}
                              @click=${input.onClearLogClick}></devtools-button>
             <div class="toolbar-divider"></div>
             <devtools-toolbar-input type="filter"
@@ -13931,6 +13932,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
             <devtools-button title=${i18nString28(UIStrings28.clearFilters)}
                              .iconName=${"filter-clear"}
                              .variant=${"toolbar"}
+                             .jslogContext=${"clear-filter"}
                              @click=${() => input.onFilterChange({ text: "" })}
                              ?hidden=${!isFilterActive}></devtools-button>
           </devtools-toolbar>
@@ -13959,7 +13961,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
     "status-error": call.result?.status === "Error",
     "status-cancelled": call.result?.status === "Canceled",
     selected: call === input.selectedCall
-  })} @click=${() => input.onCallSelect(call)}
+  })} jslog=${VisualLogging19.tableRow().track({ click: true })} @click=${() => input.onCallSelect(call)}
                         @contextmenu=${(e) => {
     const contextMenu = e.detail;
     const isUnregistered = !input.tools.includes(call.tool);
@@ -13989,6 +13991,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
                           <button class="run-tool-action-button"
                                   title=${i18nString28(UIStrings28.editAndRun)}
                                   aria-label=${i18nString28(UIStrings28.editAndRun)}
+                                  jslog=${VisualLogging19.action("edit-and-run").track({ click: true })}
                                   @click=${(e) => {
     e.stopPropagation();
     const payload = parsePayload(call.input);
@@ -14043,6 +14046,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
                   .iconName=${"cross"}
                   .size=${"SMALL"}
                   .variant=${"icon"}
+                  .jslogContext=${"close"}
                   title=${i18nString28(UIStrings28.close)}
                   @click=${() => input.onCallSelect(null)}
                 ></devtools-button>
@@ -14080,7 +14084,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
               </devtools-tabbed-pane>
             </div>
           </devtools-split-view>
-          <div class="webmcp-toolbar-container" role="toolbar">
+          <div class="webmcp-toolbar-container" role="toolbar" jslog=${VisualLogging19.toolbar("summary")}>
             <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
               <span class="toolbar-text">${i18nString28(UIStrings28.totalCalls, { PH1: input.toolCalls.length })}</span>
               <div class="toolbar-divider"></div>
@@ -14109,7 +14113,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
                            sidebar-position="second"
                            name="webmcp-details-split-view"
                            sidebar-visibility=${input.selectedTool ? "show" : "hidden"}>
-        <div slot="main" class="tool-list">
+        <div slot="main" class="tool-list" jslog=${VisualLogging19.section("tool-list")}>
           <div class="section-title">${i18nString28(UIStrings28.toolRegistry)}</div>
           ${tools.length === 0 ? html16`
           ${UI29.Widget.widget(UI29.EmptyWidget.EmptyWidget, {
@@ -14120,6 +14124,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
             <devtools-list class="square-corners">
               ${tools.map((tool) => html16`
                     <div class=${Directives7.classMap({ "tool-item": true, selected: tool === input.selectedTool?.tool })}
+                         jslog=${VisualLogging19.item().track({ click: true }).context("tool")}
                          @click=${() => input.onToolSelect(tool)}
                          @contextmenu=${(e) => onToolContextMenu(e, tool)}>
                     <div class="tool-name-container">
@@ -14132,6 +14137,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
     compact: false,
     clickHandler: () => onIconClick(tool.name, group.status)
   }}
+                          jslog=${VisualLogging19.action("filter-by-status").track({ click: true })}
                           @click=${(e) => e.stopPropagation()}></icon-button>`)}
                     </div>
                     </div>
@@ -14140,12 +14146,13 @@ var DEFAULT_VIEW11 = (input, output, target) => {
             </devtools-list>
           `}
         </div>
-        <div slot="sidebar" class="tool-details">
+        <div slot="sidebar" class="tool-details" jslog=${VisualLogging19.section("tool-details")}>
           <div class="section-title">
             <devtools-button
               .iconName=${"cross"}
               .size=${"SMALL"}
               .variant=${"icon"}
+              .jslogContext=${"close"}
               title=${i18nString28(UIStrings28.close)}
               @click=${() => input.onToolSelect(null)}
             ></devtools-button>
@@ -14162,6 +14169,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
                 .iconName=${"import"}
                 .size=${"SMALL"}
                 .variant=${"text"}
+                .jslogContext=${"paste"}
                 title=${i18nString28(UIStrings28.paste)}
                 @click=${input.onPaste}
               >${i18nString28(UIStrings28.paste)}</devtools-button>
@@ -14187,7 +14195,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
               class="webmcp-run-tool-button"
               .variant=${"outlined"}
               .size=${"SMALL"}
-              jslogContext="webmcp.run-tool"
+              .jslogContext=${"run-tool"}
               @click=${() => {
     if (editorWidget && input.selectedTool) {
       const params = editorWidget.getParameters();
@@ -15454,9 +15462,9 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
       this.reset();
       const selectedElement = this.sidebarTree.selectedTreeElement;
       if (selectedElement instanceof ExpandableApplicationPanelTreeElement) {
-        const item3 = selectedElement.createGenericStorageAiContext();
-        if (item3) {
-          UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, item3);
+        const item4 = selectedElement.createGenericStorageAiContext();
+        if (item4) {
+          UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, item4);
         }
       }
     }
@@ -15754,9 +15762,9 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
   }
   generateChildren() {
     const staticSections = this.view.getStaticSections();
-    for (const section8 of staticSections) {
-      const childTitle = section8.title;
-      const child = new ApplicationPanelTreeElement(this.resourcesPanel, childTitle, false, section8.jslogContext || "");
+    for (const section9 of staticSections) {
+      const childTitle = section9.title;
+      const child = new ApplicationPanelTreeElement(this.resourcesPanel, childTitle, false, section9.jslogContext || "");
       child.onselect = (selectedByUser) => {
         if (selectedByUser) {
           this.showView(this.view);
@@ -16234,10 +16242,10 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
       const openAiAssistanceId = "ai-assistance.application-panel-context";
       if (UI31.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
         UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
-        const action6 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action6.title(), false, openAiAssistanceId);
+        const action7 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action7.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString29(UIStrings29.startAChat));
-        submenu.defaultSection().appendItem(i18nString29(UIStrings29.explainStorage), () => action6.execute({ prompt: "What is the purpose of this storage bucket?" }), { disabled: !action6.enabled(), jslogContext: openAiAssistanceId + ".storage" });
+        submenu.defaultSection().appendItem(i18nString29(UIStrings29.explainStorage), () => action7.execute({ prompt: "What is the purpose of this storage bucket?" }), { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".storage" });
       }
     }
     void contextMenu.show();
@@ -16330,10 +16338,10 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
       const openAiAssistanceId = "ai-assistance.application-panel-context";
       if (UI31.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
         UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
-        const action6 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
-        const submenu = contextMenu.footerSection().appendSubMenuItem(action6.title(), false, openAiAssistanceId);
+        const action7 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
+        const submenu = contextMenu.footerSection().appendSubMenuItem(action7.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString29(UIStrings29.startAChat));
-        submenu.defaultSection().appendItem(i18nString29(UIStrings29.explainCookies), () => action6.execute({ prompt: "What is the purpose of these cookies?" }), { disabled: !action6.enabled(), jslogContext: openAiAssistanceId + ".cookies" });
+        submenu.defaultSection().appendItem(i18nString29(UIStrings29.explainCookies), () => action7.execute({ prompt: "What is the purpose of these cookies?" }), { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".cookies" });
       }
     }
     void contextMenu.show();
@@ -16563,9 +16571,9 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
   treeElementForWindow;
   treeElementForWorker;
   view;
-  constructor(section8, frame) {
-    super(section8.panel, "", false, "frame");
-    this.section = section8;
+  constructor(section9, frame) {
+    super(section9.panel, "", false, "frame");
+    this.section = section9;
     this.frame = frame;
     this.categoryElements = /* @__PURE__ */ new Map();
     this.treeElementForResource = /* @__PURE__ */ new Map();

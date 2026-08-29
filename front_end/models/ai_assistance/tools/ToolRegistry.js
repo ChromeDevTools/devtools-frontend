@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
+import { GetCookieValuesTool } from './GetCookieValues.js';
 import { GetDetailedCallTreeTool } from './GetDetailedCallTree.js';
 import { GetElementAccessibilityDetailsTool } from './GetElementAccessibilityDetails.js';
 import { GetFunctionCodeTool } from './GetFunctionCode.js';
@@ -10,6 +11,7 @@ import { GetLighthouseAuditsTool } from './GetLighthouseAudits.js';
 import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
 import { GetResourceContentTool } from './GetResourceContent.js';
 import { GetSourceContentTool } from './GetSourceContent.js';
+import { GetStorageBreakdownTool } from './GetStorageBreakdown.js';
 import { GetStorageValuesTool } from './GetStorageValues.js';
 import { GetStylesTool } from './GetStyles.js';
 import { GetTraceEventByKeyTool } from './GetTraceEventByKey.js';
@@ -40,6 +42,7 @@ export const TOOLS = {
     ["listStorageKeys" /* ToolName.LIST_STORAGE_KEYS */]: new ListStorageKeysTool(),
     ["getStorageValues" /* ToolName.GET_STORAGE_VALUES */]: new GetStorageValuesTool(),
     ["listCookies" /* ToolName.LIST_COOKIES */]: new ListCookiesTool(),
+    ["getCookieValues" /* ToolName.GET_COOKIE_VALUES */]: new GetCookieValuesTool(),
     ["getTraceEventByKey" /* ToolName.GET_TRACE_EVENT_BY_KEY */]: new GetTraceEventByKeyTool(),
     ["selectTraceEventByKey" /* ToolName.SELECT_TRACE_EVENT_BY_KEY */]: new SelectTraceEventByKeyTool(),
     ["listSources" /* ToolName.LIST_SOURCES */]: new ListSourcesTool(),
@@ -51,6 +54,7 @@ export const TOOLS = {
     ["getFunctionCode" /* ToolName.GET_FUNCTION_CODE */]: new GetFunctionCodeTool(),
     ["getResourceContent" /* ToolName.GET_RESOURCE_CONTENT */]: new GetResourceContentTool(),
     ["getInsightDetails" /* ToolName.GET_INSIGHT_DETAILS */]: new GetInsightDetailsTool(),
+    ["getStorageBreakdown" /* ToolName.GET_STORAGE_BREAKDOWN */]: new GetStorageBreakdownTool(),
 };
 /**
  * Registry class for registering and querying AI Assistance Tools.

@@ -5263,29 +5263,21 @@ var DEFAULT_VIEW8 = (input, output, target) => {
         </li>
       `;
   });
-  const parsedFormData = (() => {
-    if (input.formData && !input.formParameters) {
-      try {
-        return JSON.parse(input.formData);
-      } catch {
-      }
-    }
-    return void 0;
-  })();
-  const createPayload = (parsedFormData2) => {
-    if (!parsedFormData2) {
-      return nothing8;
-    }
-    const object = new SDK9.RemoteObject.LocalJSONObject(parsedFormData2);
-    const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
-      readOnly: true,
-      propertiesMode: 1
-    });
-    objectTree.expanded = true;
+  const createPayload = (objectTree) => {
+    const onPayloadContextMenu = (event) => {
+      event.consume(true);
+      const contextMenu = new UI11.ContextMenu.ContextMenu(event);
+      input.onPayloadContextMenu(contextMenu);
+      void contextMenu.show();
+    };
     return html9`
-      <li role=treeitem class="source-code object-properties-section-root-element object-properties-section" toggle-on-click open>
-        ${object.description}
-        ${object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing8}
+      <li role=treeitem class="source-code object-properties-section-root-element object-properties-section"
+          toggle-on-click
+          ?open=${objectTree.expanded}
+          @expand=${(e) => input.onPayloadToggle(e.detail.expanded)}
+          @contextmenu=${onPayloadContextMenu}>
+        ${objectTree.object.description}
+        ${objectTree.object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing8}
       </li>
     `;
   };
@@ -5381,7 +5373,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
         >
         <div class="selection fill"></div>${i18nString11(UIStrings11.requestPayload)}${createViewSourceToggle(input.viewJSONPayloadSource, input.setViewJSONPayloadSource)}
         <ul role=group>
-          ${ifExpanded(!parsedFormData || input.viewJSONPayloadSource ? createSourceText(input.formData ?? "") : createPayload(parsedFormData))}
+          ${ifExpanded(!input.objectTree || input.viewJSONPayloadSource ? createSourceText(input.formData ?? "") : createPayload(input.objectTree))}
         </ul>
       </li>
      </ul>
@@ -5409,6 +5401,7 @@ var RequestPayloadView = class extends UI11.Widget.VBox {
   #decodeFormParameters = true;
   #formData;
   #formParameters;
+  #objectTree = null;
   #binaryPayloadContentData = null;
   #view;
   #viewJSONPayloadSource = false;
@@ -5501,6 +5494,31 @@ var RequestPayloadView = class extends UI11.Widget.VBox {
         Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.NetworkPanelCopyValue);
         Host5.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(value);
       },
+      objectTree: this.#objectTree,
+      onPayloadContextMenu: (contextMenu) => {
+        if (!this.#objectTree) {
+          return;
+        }
+        const objectTree = this.#objectTree;
+        ObjectUI.ObjectPropertiesSection.populateObjectTreeContextMenu(contextMenu, objectTree, async () => {
+          await objectTree.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
+          this.requestUpdate();
+        }, () => {
+          objectTree.collapseRecursively();
+          this.requestUpdate();
+        }, () => {
+          objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
+          this.requestUpdate();
+        }, () => {
+          objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
+          this.requestUpdate();
+        });
+      },
+      onPayloadToggle: (expanded) => {
+        if (this.#objectTree) {
+          this.#objectTree.expanded = expanded;
+        }
+      },
       binaryPayloadContentData: this.#binaryPayloadContentData,
       requestUrl: this.request?.url() ?? Platform5.DevToolsPath.EmptyUrlString
     };
@@ -5513,6 +5531,25 @@ var RequestPayloadView = class extends UI11.Widget.VBox {
     this.#formData = await this.request?.requestFormData() ?? void 0;
     if (this.#formData) {
       this.#formParameters = await this.request?.formParameters() ?? void 0;
+    }
+    if (this.#objectTree) {
+      this.#objectTree.removeEventListener("children-changed", this.requestUpdate, this);
+      this.#objectTree.removeEventListener("expanded-changed", this.requestUpdate, this);
+      this.#objectTree = null;
+    }
+    if (this.#formData && !this.#formParameters) {
+      try {
+        const parsedFormData = JSON.parse(this.#formData);
+        const object = new SDK9.RemoteObject.LocalJSONObject(parsedFormData);
+        this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+          readOnly: true,
+          propertiesMode: 1
+        });
+        this.#objectTree.expanded = true;
+        this.#objectTree.addEventListener("children-changed", this.requestUpdate, this);
+        this.#objectTree.addEventListener("expanded-changed", this.requestUpdate, this);
+      } catch {
+      }
     }
     this.#binaryPayloadContentData = null;
     if (this.request && !this.#formParameters) {

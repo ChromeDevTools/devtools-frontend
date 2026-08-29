@@ -150,6 +150,7 @@ export declare const enum ToolName {
     LIST_STORAGE_KEYS = "listStorageKeys",
     GET_STORAGE_VALUES = "getStorageValues",
     LIST_COOKIES = "listCookies",
+    GET_COOKIE_VALUES = "getCookieValues",
     GET_TRACE_EVENT_BY_KEY = "getTraceEventByKey",
     SELECT_TRACE_EVENT_BY_KEY = "selectTraceEventByKey",
     LIST_SOURCES = "listSources",
@@ -160,7 +161,8 @@ export declare const enum ToolName {
     GET_DETAILED_CALL_TREE = "getDetailedCallTree",
     GET_FUNCTION_CODE = "getFunctionCode",
     GET_RESOURCE_CONTENT = "getResourceContent",
-    GET_INSIGHT_DETAILS = "getInsightDetails"
+    GET_INSIGHT_DETAILS = "getInsightDetails",
+    GET_STORAGE_BREAKDOWN = "getStorageBreakdown"
 }
 /**
  * Base metadata interface for a Tool.

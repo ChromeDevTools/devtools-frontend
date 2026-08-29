@@ -10,3 +10,8 @@ export declare const MAX_TARGET_ORIGINS = 100;
  * @param storageKey Optional. If specified, resolves only the partition matching this unique key and the target origin.
  */
 export declare function resolveDOMStorages(origin: string, type: 'localStorage' | 'sessionStorage', targetManager: SDK.TargetManager.TargetManager, primaryPageTarget: SDK.Target.Target, storageKey?: string): SDK.DOMStorageModel.DOMStorage[];
+/**
+ * Calculates the total size in bytes of key-value string pairs across provided DOMStorage partitions.
+ * Uses 2 bytes per character for UTF-16 representation.
+ */
+export declare function calculateDOMStoragesUsage(storages: SDK.DOMStorageModel.DOMStorage[]): Promise<number>;

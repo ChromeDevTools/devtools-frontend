@@ -1,4 +1,5 @@
 import { ExecuteJavaScriptTool } from './ExecuteJavaScript.js';
+import { GetCookieValuesTool } from './GetCookieValues.js';
 import { GetDetailedCallTreeTool } from './GetDetailedCallTree.js';
 import { GetElementAccessibilityDetailsTool } from './GetElementAccessibilityDetails.js';
 import { GetFunctionCodeTool } from './GetFunctionCode.js';
@@ -7,6 +8,7 @@ import { GetLighthouseAuditsTool } from './GetLighthouseAudits.js';
 import { GetNetworkRequestDetailsTool } from './GetNetworkRequestDetails.js';
 import { GetResourceContentTool } from './GetResourceContent.js';
 import { GetSourceContentTool } from './GetSourceContent.js';
+import { GetStorageBreakdownTool } from './GetStorageBreakdown.js';
 import { GetStorageValuesTool } from './GetStorageValues.js';
 import { GetStylesTool } from './GetStyles.js';
 import { GetTraceEventByKeyTool } from './GetTraceEventByKey.js';
@@ -35,6 +37,7 @@ export interface BaseToolsRegistryMap {
     [ToolName.LIST_STORAGE_KEYS]: ListStorageKeysTool;
     [ToolName.GET_STORAGE_VALUES]: GetStorageValuesTool;
     [ToolName.LIST_COOKIES]: ListCookiesTool;
+    [ToolName.GET_COOKIE_VALUES]: GetCookieValuesTool;
     [ToolName.GET_TRACE_EVENT_BY_KEY]: GetTraceEventByKeyTool;
     [ToolName.SELECT_TRACE_EVENT_BY_KEY]: SelectTraceEventByKeyTool;
     [ToolName.LIST_SOURCES]: ListSourcesTool;
@@ -46,6 +49,7 @@ export interface BaseToolsRegistryMap {
     [ToolName.GET_FUNCTION_CODE]: GetFunctionCodeTool;
     [ToolName.GET_RESOURCE_CONTENT]: GetResourceContentTool;
     [ToolName.GET_INSIGHT_DETAILS]: GetInsightDetailsTool;
+    [ToolName.GET_STORAGE_BREAKDOWN]: GetStorageBreakdownTool;
 }
 export type ToolsRegistryMap = BaseToolsRegistryMap & {
     [K in ToolName as `${K}`]: BaseToolsRegistryMap[K];

@@ -19,6 +19,7 @@ export var ToolName;
     ToolName["LIST_STORAGE_KEYS"] = "listStorageKeys";
     ToolName["GET_STORAGE_VALUES"] = "getStorageValues";
     ToolName["LIST_COOKIES"] = "listCookies";
+    ToolName["GET_COOKIE_VALUES"] = "getCookieValues";
     ToolName["GET_TRACE_EVENT_BY_KEY"] = "getTraceEventByKey";
     ToolName["SELECT_TRACE_EVENT_BY_KEY"] = "selectTraceEventByKey";
     ToolName["LIST_SOURCES"] = "listSources";
@@ -30,6 +31,7 @@ export var ToolName;
     ToolName["GET_FUNCTION_CODE"] = "getFunctionCode";
     ToolName["GET_RESOURCE_CONTENT"] = "getResourceContent";
     ToolName["GET_INSIGHT_DETAILS"] = "getInsightDetails";
+    ToolName["GET_STORAGE_BREAKDOWN"] = "getStorageBreakdown";
 })(ToolName || (ToolName = {}));
 export var ToolAnnotation;
 (function (ToolAnnotation) {

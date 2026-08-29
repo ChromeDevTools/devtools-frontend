@@ -202,7 +202,9 @@ models/ai_assistance/contexts/RequestContext.test.js
 models/ai_assistance/performance/AICallTree.test.js
 models/ai_assistance/performance/AIContext.test.js
 models/ai_assistance/performance/AIQueries.test.js
+models/ai_assistance/tools/CookieUtils.test.js
 models/ai_assistance/tools/ExecuteJavaScript.test.js
+models/ai_assistance/tools/GetCookieValues.test.js
 models/ai_assistance/tools/GetDetailedCallTree.test.js
 models/ai_assistance/tools/GetElementAccessibilityDetails.test.js
 models/ai_assistance/tools/GetFunctionCode.test.js
@@ -211,6 +213,7 @@ models/ai_assistance/tools/GetLighthouseAudits.test.js
 models/ai_assistance/tools/GetNetworkRequestDetails.test.js
 models/ai_assistance/tools/GetResourceContent.test.js
 models/ai_assistance/tools/GetSourceContent.test.js
+models/ai_assistance/tools/GetStorageBreakdown.test.js
 models/ai_assistance/tools/GetStorageValues.test.js
 models/ai_assistance/tools/GetStyles.test.js
 models/ai_assistance/tools/GetTraceEventByKey.test.js

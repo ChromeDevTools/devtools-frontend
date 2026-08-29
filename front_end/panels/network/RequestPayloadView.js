@@ -139,30 +139,21 @@ export const DEFAULT_VIEW = (input, output, target) => {
       `;
         // clang-format on
     });
-    const parsedFormData = (() => {
-        if (input.formData && !input.formParameters) {
-            try {
-                return JSON.parse(input.formData);
-            }
-            catch {
-            }
-        }
-        return undefined;
-    })();
-    const createPayload = (parsedFormData) => {
-        if (!parsedFormData) {
-            return nothing;
-        }
-        const object = new SDK.RemoteObject.LocalJSONObject(parsedFormData);
-        const objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
-            readOnly: true,
-            propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
-        });
-        objectTree.expanded = true;
+    const createPayload = (objectTree) => {
+        const onPayloadContextMenu = (event) => {
+            event.consume(true);
+            const contextMenu = new UI.ContextMenu.ContextMenu(event);
+            input.onPayloadContextMenu(contextMenu);
+            void contextMenu.show();
+        };
         return html `
-      <li role=treeitem class="source-code object-properties-section-root-element object-properties-section" toggle-on-click open>
-        ${object.description}
-        ${object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing}
+      <li role=treeitem class="source-code object-properties-section-root-element object-properties-section"
+          toggle-on-click
+          ?open=${objectTree.expanded}
+          @expand=${(e) => input.onPayloadToggle(e.detail.expanded)}
+          @contextmenu=${onPayloadContextMenu}>
+        ${objectTree.object.description}
+        ${objectTree.object.hasChildren ? ObjectUI.ObjectPropertiesSection.renderObjectTree(objectTree) : nothing}
       </li>
     `;
     };
@@ -256,8 +247,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
         >
         <div class="selection fill"></div>${i18nString(UIStrings.requestPayload)}${createViewSourceToggle(input.viewJSONPayloadSource, input.setViewJSONPayloadSource)}
         <ul role=group>
-          ${ifExpanded(!parsedFormData || input.viewJSONPayloadSource ? createSourceText(input.formData ?? '')
-        : createPayload(parsedFormData))}
+          ${ifExpanded(!input.objectTree || input.viewJSONPayloadSource ? createSourceText(input.formData ?? '')
+        : createPayload(input.objectTree))}
         </ul>
       </li>
      </ul>
@@ -286,6 +277,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
     #decodeFormParameters = true;
     #formData;
     #formParameters;
+    #objectTree = null;
     #binaryPayloadContentData = null;
     #view;
     #viewJSONPayloadSource = false;
@@ -378,6 +370,31 @@ export class RequestPayloadView extends UI.Widget.VBox {
                 Host.userMetrics.actionTaken(Host.UserMetrics.Action.NetworkPanelCopyValue);
                 Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(value);
             },
+            objectTree: this.#objectTree,
+            onPayloadContextMenu: (contextMenu) => {
+                if (!this.#objectTree) {
+                    return;
+                }
+                const objectTree = this.#objectTree;
+                ObjectUI.ObjectPropertiesSection.populateObjectTreeContextMenu(contextMenu, objectTree, async () => {
+                    await objectTree.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
+                    this.requestUpdate();
+                }, () => {
+                    objectTree.collapseRecursively();
+                    this.requestUpdate();
+                }, () => {
+                    objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
+                    this.requestUpdate();
+                }, () => {
+                    objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
+                    this.requestUpdate();
+                });
+            },
+            onPayloadToggle: (expanded) => {
+                if (this.#objectTree) {
+                    this.#objectTree.expanded = expanded;
+                }
+            },
             binaryPayloadContentData: this.#binaryPayloadContentData,
             requestUrl: this.request?.url() ?? Platform.DevToolsPath.EmptyUrlString,
         };
@@ -390,6 +407,26 @@ export class RequestPayloadView extends UI.Widget.VBox {
         this.#formData = await this.request?.requestFormData() ?? undefined;
         if (this.#formData) {
             this.#formParameters = await this.request?.formParameters() ?? undefined;
+        }
+        if (this.#objectTree) {
+            this.#objectTree.removeEventListener("children-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+            this.#objectTree.removeEventListener("expanded-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
+            this.#objectTree = null;
+        }
+        if (this.#formData && !this.#formParameters) {
+            try {
+                const parsedFormData = JSON.parse(this.#formData);
+                const object = new SDK.RemoteObject.LocalJSONObject(parsedFormData);
+                this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
+                    readOnly: true,
+                    propertiesMode: 1 /* ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
+                });
+                this.#objectTree.expanded = true;
+                this.#objectTree.addEventListener("children-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED */, this.requestUpdate, this);
+                this.#objectTree.addEventListener("expanded-changed" /* ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED */, this.requestUpdate, this);
+            }
+            catch {
+            }
         }
         // Fetch raw binary content data for the request body when the backend
         // returns base64-encoded data. This enables the binary viewer (hex,

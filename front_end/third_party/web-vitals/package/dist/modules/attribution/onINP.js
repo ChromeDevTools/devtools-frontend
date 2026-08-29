@@ -157,7 +157,7 @@ export const onINP = (onReport, opts = {}) => {
             pendingEntriesGroups.push(group);
         }
         // Store the grouped render time for this entry for reference later.
-        if (entry.interactionId || entry.entryType === 'first-input') {
+        if (entry.interactionId) {
             entryToEntriesGroupMap.set(entry, group);
         }
         queueCleanup();
@@ -355,7 +355,11 @@ export const onINP = (onReport, opts = {}) => {
         }
         const firstEntry = metric.entries[0];
         const group = entryToEntriesGroupMap.get(firstEntry);
-        const processingStart = group.processingStart;
+        // `group.processingStart` is the earliest processing start across *all*
+        // events presented in this frame, which can predate this interaction's
+        // `startTime` (e.g. a long `pointerover` handler that was still running
+        // when the user clicked). Clamp so `inputDelay` is never negative.
+        const processingStart = Math.max(group.processingStart, firstEntry.startTime);
         // Due to the fact that durations can be rounded down to the nearest 8ms,
         // we have to clamp `nextPaintTime` so it doesn't appear to occur before
         // processing starts. Note: we can't use `processingEnd` since processing

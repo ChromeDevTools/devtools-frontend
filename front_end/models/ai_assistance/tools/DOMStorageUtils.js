@@ -46,4 +46,21 @@ export function resolveDOMStorages(origin, type, targetManager, primaryPageTarge
     }
     return resolvedStorages;
 }
+/**
+ * Calculates the total size in bytes of key-value string pairs across provided DOMStorage partitions.
+ * Uses 2 bytes per character for UTF-16 representation.
+ */
+export async function calculateDOMStoragesUsage(storages) {
+    const itemBatches = await Promise.all(storages.map(storage => storage.getItems().catch(() => null)));
+    let totalBytes = 0;
+    for (const items of itemBatches) {
+        if (items) {
+            for (const [key, value] of items) {
+                // UTF-16 encoded strings use 2 bytes per character.
+                totalBytes += (key.length + value.length) * 2;
+            }
+        }
+    }
+    return totalBytes;
+}
 //# sourceMappingURL=DOMStorageUtils.js.map

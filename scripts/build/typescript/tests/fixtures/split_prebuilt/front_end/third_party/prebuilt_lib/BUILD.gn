@@ -18,5 +18,5 @@ devtools_pre_built("prebuilt_lib") {
 devtools_entrypoint_split("bundle") {
   entrypoint = "prebuilt_lib.ts"
 
-  deps = [ ":prebuilt_lib" ]
+  ts_deps = [ ":prebuilt_lib" ]
 }

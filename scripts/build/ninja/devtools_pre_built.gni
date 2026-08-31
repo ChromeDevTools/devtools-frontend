@@ -113,6 +113,31 @@ template("devtools_pre_built") {
       visibility = invoker.visibility
     }
   }
+
+  # Expose ${target_name}_sources group so ts_deps in devtools_entrypoint_split
+  # can resolve source dependencies for bundling.
+  _sources = []
+  if (!invoker.sources_are_release) {
+    _sources = invoker.sources
+  }
+
+  group("${target_name}_sources") {
+    public_inputs = _sources
+    if (defined(invoker.inputs)) {
+      public_inputs += invoker.inputs
+    }
+    public_deps = [ ":$_gen_target_name" ]
+    if (defined(invoker.public_deps)) {
+      public_deps += invoker.public_deps
+    }
+    public_deps += _prebuilt_public_deps
+    if (defined(invoker.visibility)) {
+      visibility = invoker.visibility
+    }
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
+  }
 }
 
 set_defaults("devtools_pre_built") {

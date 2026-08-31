@@ -9,6 +9,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_foundation_module("formatter_worker") {
+  split_compilation = true
   sources = [
     "AcornTokenizer.ts",
     "CSSFormatter.ts",
@@ -24,7 +25,7 @@ devtools_foundation_module("formatter_worker") {
     "Substitute.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/text_utils:bundle",
@@ -35,9 +36,10 @@ devtools_foundation_module("formatter_worker") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "formatter_worker.ts"
 
-  deps = [
+  ts_deps = [
     ":formatter_worker",
     "../../third_party/codemirror",
   ]
@@ -53,11 +55,12 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("worker_entrypoint") {
+  split_compilation = true
   entrypoint = "formatter_worker-entrypoint.ts"
 
   forward_variables_from(devtools_worker_config, "*")
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/platform:bundle",
     "../formatter_actions:bundle",
@@ -72,6 +75,7 @@ devtools_entrypoint("worker_entrypoint") {
 }
 
 devtools_foundation_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -85,7 +89,7 @@ devtools_foundation_module("unittests") {
     "Substitute.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../formatter_actions:bundle",
   ]

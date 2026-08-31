@@ -32,7 +32,7 @@ export interface VariableUses {
 }
 
 export class Scope {
-  readonly variables = new Map<string, VariableUses>();
+  readonly variables: Map<string, VariableUses> = new Map();
   readonly parent: Scope|null;
   readonly start: number;
   readonly end: number;

@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import type {FormatMapping} from '../formatter_actions/formatter_actions.js';
+
 export class FormattedContentBuilder {
   #lastOriginalPosition = 0;
   #formattedContent: string[] = [];
@@ -15,7 +17,7 @@ export class FormattedContentBuilder {
   #cachedIndents = new Map<number, string>();
   #canBeIdentifierOrNumber = /[$\u200C\u200D\p{ID_Continue}]/u;
 
-  mapping = {original: [0], formatted: [0]};
+  mapping: FormatMapping = {original: [0], formatted: [0]};
 
   constructor(private indentString: string) {
   }

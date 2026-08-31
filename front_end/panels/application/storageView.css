@@ -49,15 +49,15 @@
 }
 
 .quota-override-notification-editor {
-  border: solid 1px var(--sys-color-neutral-outline);
-  border-radius: 4px;
+  border: solid var(--sys-size-1) var(--sys-color-neutral-outline);
+  border-radius: var(--sys-shape-corner-extra-small);
   display: flex;
   flex: auto;
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
   max-width: 200px;
   min-width: 50px;
   min-height: 19px;
-  padding-left: 4px;
+  padding-left: var(--sys-size-3);
 
   &:focus {
     border-color: var(--sys-color-state-focus-ring);
@@ -84,7 +84,7 @@
 .clear-storage-header {
   min-width: 400px;
   /* Keep in sync with ui/legacy/checkboxTextLabel.css (12px input, 6px margins). */
-  --nested-checkbox-indent: 24px;
+  --nested-checkbox-indent: var(--sys-size-11);
 }
 
 .report-content-box {

@@ -144,7 +144,7 @@ async function runESLint(scriptFiles) {
   if (files.length === 1) {
     debugLogging(messages, '[lint]: EsLint suppressed the following errors:');
     for (const result of results) {
-      debugLogging(messages, result.suppressedMessages);
+      debugLogging(messages, JSON.stringify(result.suppressedMessages));
     }
   }
 
@@ -503,11 +503,6 @@ async function run() {
     gitignore: true,
     ignore: [
       '**/node_modules/**',
-      '**/third_party/**',
-      '**/out/**',
-      '**/build/**',
-      '**/buildtools/**',
-      '**/release/**',
     ],
   });
   for (const path of matchedPaths) {

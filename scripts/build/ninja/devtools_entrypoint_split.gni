@@ -52,11 +52,10 @@ template("devtools_entrypoint_split") {
     _sources_target = "${target_name}_sources"
     group(_sources_target) {
       public_inputs = [ invoker.entrypoint ]
-      forward_variables_from(invoker,
-                             [
-                               "testonly",
-                               "visibility",
-                             ])
+      forward_variables_from(invoker, [ "testonly" ])
+      if (defined(invoker.visibility)) {
+        visibility = [ ":*" ] + invoker.visibility
+      }
     }
 
     _bundle_deps = [ ":$_sources_target" ]

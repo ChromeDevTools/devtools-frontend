@@ -300,7 +300,7 @@ template("legacy_ts_library") {
       public_inputs += invoker.inputs
     }
     if (defined(invoker.visibility)) {
-      visibility = invoker.visibility
+      visibility = [ ":*" ] + invoker.visibility
     }
   }
 }

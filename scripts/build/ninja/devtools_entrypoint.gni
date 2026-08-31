@@ -247,7 +247,7 @@ template("legacy_devtools_entrypoint") {
       testonly = invoker.testonly
     }
     if (defined(invoker.visibility)) {
-      visibility = invoker.visibility
+      visibility = [ ":*" ] + invoker.visibility
     }
   }
 }

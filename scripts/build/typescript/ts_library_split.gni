@@ -263,7 +263,7 @@ template("ts_library_split") {
     args = [ "@{{response_file_name}}" ]
 
     if (defined(invoker.visibility)) {
-      visibility = invoker.visibility
+      visibility = [ ":*" ] + invoker.visibility
     }
   }
 
@@ -304,7 +304,7 @@ template("ts_library_split") {
     }
     public_deps = _non_ts_deps
     if (defined(invoker.visibility)) {
-      visibility = invoker.visibility
+      visibility = [ ":*" ] + invoker.visibility
     }
   }
 

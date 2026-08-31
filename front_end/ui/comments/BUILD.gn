@@ -12,13 +12,14 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("comments") {
+  split_compilation = true
   sources = [
     "CommentAnchorResolver.ts",
     "CommentOverlayManager.ts",
     "CommentsOverlayWidget.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/root:bundle",
     "../../models/comment_manager:bundle",
@@ -30,12 +31,12 @@ devtools_ui_module("comments") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "comments.ts"
 
-  deps = [
-    ":comments",
-    ":css_files",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":comments" ]
 
   visibility = [
     ":*",
@@ -50,9 +51,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "comments-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/i18n:bundle",
     "../../core/root:bundle",
@@ -63,6 +65,7 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -71,7 +74,7 @@ devtools_ui_module("unittests") {
     "CommentsOverlayWidget.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../models/comment_manager:bundle",
     "../../testing",

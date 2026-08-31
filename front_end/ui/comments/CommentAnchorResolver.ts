@@ -379,7 +379,8 @@ export function resolveCommentAnchor(
  * @param limit Maximum number of matching elements to return (defaults to Infinity).
  * @returns Array of matching Elements in document order.
  */
-export function deepQuerySelectorAll(root: Document|Element, selector: string, limit = Infinity): Element[] {
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export function deepQuerySelectorAll(root: Document|Element, selector: string, limit: number = Infinity): Element[] {
   const results: Element[] = [];
   if (limit <= 0 || Number.isNaN(limit)) {
     return results;

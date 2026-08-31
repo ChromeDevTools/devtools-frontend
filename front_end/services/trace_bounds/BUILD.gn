@@ -7,25 +7,28 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_module("trace_bounds") {
+  split_compilation = true
   sources = [ "TraceBounds.ts" ]
 
-  deps = [ "../../models/trace:bundle" ]
+  ts_deps = [ "../../models/trace:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "trace_bounds.ts"
 
-  deps = [ ":trace_bounds" ]
+  ts_deps = [ ":trace_bounds" ]
 
   visibility = [ "*" ]
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "TraceBounds.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../models/trace:bundle",
   ]

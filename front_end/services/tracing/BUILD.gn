@@ -6,13 +6,14 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("tracing") {
+  split_compilation = true
   sources = [
     "FreshRecording.ts",
     "PerformanceTracing.ts",
     "TracingManager.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/sdk:bundle",
     "../../generated",
     "../../generated:protocol",
@@ -21,14 +22,16 @@ devtools_module("tracing") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "tracing.ts"
 
-  deps = [ ":tracing" ]
+  ts_deps = [ ":tracing" ]
 
   visibility = [ "*" ]
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -36,7 +39,7 @@ ts_library("unittests") {
     "TracingManager.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../generated",
     "../../models/trace:bundle",

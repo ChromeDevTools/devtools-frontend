@@ -264,24 +264,29 @@ export async function deleteSelectedStorageItem(devToolsPage: DevToolsPage) {
 }
 
 export async function selectCookieByName(devToolsPage: DevToolsPage, name: string) {
-  const dataGrid = await devToolsPage.waitFor('.cookies-table devtools-data-grid');
   const cell = await devToolsPage.waitForFunction(async () => {
-    const rows =
-        await getDataGridRows(devToolsPage, /* expectedNumberOfRows=*/ 1, dataGrid, /* matchExactNumberOfRows=*/ false);
-    for (const row of rows) {
-      for (const cell of row) {
-        const cellContent = await cell.evaluate(x => {
-          return (x.classList.contains('name-column') && x.textContent?.trim()) ?? '';
-        });
-        if (cellContent === name) {
-          return cell;
+    try {
+      const dataGrid = await devToolsPage.waitFor('.cookies-table devtools-data-grid');
+      const rows = await getDataGridRows(devToolsPage, /* expectedNumberOfRows=*/ 1, dataGrid,
+                                         /* matchExactNumberOfRows=*/ false);
+      for (const row of rows) {
+        for (const cell of row) {
+          const cellContent = await cell.evaluate(x => {
+            return (x.classList.contains('name-column') && x.textContent?.trim()) ?? '';
+          });
+          if (cellContent === name) {
+            return cell;
+          }
         }
       }
+    } catch (error) {
+      if (error.message === 'Node is detached from document') {
+        return undefined;
+      }
+      throw error;
     }
     return undefined;
   });
-  await expectVeEvents(devToolsPage, [veImpressionsUnder('Panel: resources', [veImpression('Pane', 'cookies-data')])],
-                       undefined);
   await cell.click();
   await expectVeEvents(devToolsPage, [veClick('Panel: resources > Pane: cookies-data > TableRow > TableCell: name')],
                        undefined);

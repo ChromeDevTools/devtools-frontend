@@ -134,6 +134,14 @@ describe('The Application Tab', () => {
 
        await navigateToCookiesForTopDomain(devToolsPage, inspectedPage);
 
+       await devToolsPage.waitForFunction(async () => {
+         const values = await getStorageItemsData(devToolsPage, ['name'], 4);
+         if (values.length === 4 && values.every(item => Boolean(item.name))) {
+           return values;
+         }
+         return undefined;
+       });
+
        await selectCookieByName(devToolsPage, 'foo');
 
        // Select a cookie first
@@ -151,6 +159,10 @@ describe('The Application Tab', () => {
          const previewValue2 = await previewValueNode2.evaluate(e => e.textContent as string);
 
          return previewValue2.match(/Select a cookie to preview its value/);
+       });
+       await devToolsPage.waitForFunction(async () => {
+         const values = await getDataGridData(devToolsPage, '.storage-view table', ['name']);
+         return values.length === 0;
        });
        await deleteCookies(browser);
      });

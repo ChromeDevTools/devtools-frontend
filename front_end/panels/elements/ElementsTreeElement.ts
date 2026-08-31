@@ -1104,6 +1104,8 @@ export interface InitialEditState {
   attributeName?: string;
   isNewAttribute?: boolean;
   isProcessingInstruction?: boolean;
+  isEditAsHTML?: boolean;
+  editAsHTMLCallback?: (success: boolean) => void;
 }
 
 export class ElementsTreeWidget extends UI.Widget.Widget {
@@ -1457,7 +1459,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       const edit = this.initialEdit;
       this.initialEdit = null;
       this.onInitialEditCompleted?.();
-      if (edit.isProcessingInstruction) {
+      if (edit.isEditAsHTML) {
+        this.toggleEditAsHTML(edit.editAsHTMLCallback);
+      } else if (edit.isProcessingInstruction) {
         this.startEditingProcessingInstructionValue();
       } else if (edit.isNewAttribute) {
         this.addNewAttribute();
@@ -2324,7 +2328,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
 
     function dispose(this: ElementsTreeWidget): void {
-      if (!this.#editorRef) {
+      if (!this.editing && !this.#editorState) {
         return;
       }
       this.editing = null;
@@ -2970,8 +2974,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       };
       this.widget.runPendingUpdates = () => outline.runPendingUpdates();
       this.widget.focusOutline = () => outline.focus();
-      this.widget.setMultilineEditing = multilineEditing => outline.setMultilineEditing(multilineEditing);
-      this.widget.visibleWidth = () => outline.visibleWidth();
+      this.widget.setMultilineEditing = multilineEditing => {
+        outline.domTreeWidget?.setMultilineEditing(multilineEditing);
+      };
+      this.widget.visibleWidth = () => outline.domTreeWidget?.visibleWidth ?? outline.visibleWidth();
     }
   }
 

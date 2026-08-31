@@ -389,7 +389,9 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     if (treeElement) {
       const edit = input.nodeToEdit;
       input.onInitialEditCompleted?.();
-      if (edit.isProcessingInstruction) {
+      if (edit.isEditAsHTML) {
+        treeElement.widget.toggleEditAsHTML(edit.editAsHTMLCallback);
+      } else if (edit.isProcessingInstruction) {
         treeElement.widget.startEditingProcessingInstructionValue();
       } else if (edit.isNewAttribute) {
         treeElement.widget.addNewAttribute();
@@ -541,7 +543,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) &&
         !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
 
-    // TODO: Move multiline/HTML editing (toggleEditAsHTML, MultilineEditorController) from ElementsTreeOutline into DOMTreeWidget.
     // TODO: Move Drag and Drop reordering support (ondragstart, ondragover, ondrop, insertion markers) out of ElementsTreeOutline into a declarative drag-and-drop controller for <devtools-tree>.
     // TODO: Move marker decorators and descendant gutter decorations (MarkerDecoratorRegistration, updateDecorations) into declarative state passed to ElementsTreeWidget.
     // TODO: Move TopLayerContainer rendering for top layer elements into a declarative tree element item.
@@ -605,6 +606,8 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           showAIButton: input.showAIButton ?? true,
           initialEdit: input.nodeToEdit?.node === node ? input.nodeToEdit : null,
           onInitialEditCompleted: input.onInitialEditCompleted,
+          setMultilineEditing: multilineEditing => input.domTreeWidget?.setMultilineEditing(multilineEditing),
+          visibleWidth: () => input.domTreeWidget?.visibleWidth ?? 0,
           selectDOMNode: (n: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => input.onSelect?.(n, selectedByUser),
           selectNodeAfterEdit: (wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null, moveDirection?: string) => {
             input.onSelectNodeAfterEdit?.(wasExpanded, error, newNode, moveDirection);
@@ -726,6 +729,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   get maxRows(): number|undefined {
     return this.#maxRows;
+  }
+
+  get visibleWidth(): number {
+    return this.#visibleWidth ?? this.contentElement.offsetWidth;
   }
 
   set visibleWidth(width: number) {
@@ -1328,8 +1335,87 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     return node.isToggledToHidden();
   }
 
-  toggleEditAsHTML(node: SDK.DOMModel.DOMNode): void {
-    this.#viewOutput.elementsTreeOutline?.toggleEditAsHTML(node);
+  #multilineEditing: MultilineEditorController|null = null;
+
+  setMultilineEditing(multilineEditing: MultilineEditorController|null): void {
+    this.#multilineEditing = multilineEditing;
+  }
+
+  multilineEditing(): MultilineEditorController|null {
+    return this.#multilineEditing;
+  }
+
+  runPendingUpdates(): void {
+    this.#viewOutput.elementsTreeOutline?.runPendingUpdates();
+    this.performUpdate();
+  }
+
+  override onResize(): void {
+    super.onResize();
+    if (this.#multilineEditing) {
+      this.#multilineEditing.resize();
+    }
+  }
+
+  override willHide(): void {
+    super.willHide();
+    if (this.#multilineEditing) {
+      this.#multilineEditing.cancel();
+    }
+  }
+
+  toggleEditAsHTML(node: SDK.DOMModel.DOMNode, startEditing?: boolean, callback?: (() => void)): void {
+    if (node.pseudoType() || node.isShadowRoot() || node.nodeType() === Node.DOCUMENT_NODE) {
+      return;
+    }
+    const parentNode = node.parentNode;
+    const index = node.index;
+    const wasExpanded = this.isNodeExpanded(node);
+
+    const editingFinished = (success: boolean): void => {
+      if (callback) {
+        callback();
+      }
+      if (!success) {
+        return;
+      }
+
+      Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
+
+      this.runPendingUpdates();
+
+      if (index === undefined) {
+        return;
+      }
+
+      const children = parentNode?.children();
+      const newNode = children ? children[index] || parentNode : parentNode;
+      if (!newNode) {
+        return;
+      }
+
+      this.selectDOMNode(newNode, true);
+
+      if (wasExpanded) {
+        this.setNodeExpanded(newNode, true);
+      }
+    };
+
+    if (this.#multilineEditing) {
+      this.#multilineEditing.commit();
+      return;
+    }
+
+    if (startEditing === false) {
+      return;
+    }
+
+    this.#nodeToEdit = {
+      node,
+      isEditAsHTML: true,
+      editAsHTMLCallback: editingFinished,
+    };
+    this.performUpdate();
   }
 
   duplicateNode(node: SDK.DOMModel.DOMNode): void {
@@ -1661,7 +1747,6 @@ export class ElementsTreeOutline extends
   private updateRecords: Map<SDK.DOMModel.DOMNode, Elements.ElementUpdateRecord.ElementUpdateRecord>;
   private treeElementsBeingUpdated: Set<ElementsTreeElement>;
   decoratorExtensions: MarkerDecoratorRegistration[]|null;
-  private multilineEditing?: MultilineEditorController|null;
   private visibleWidthInternal?: number;
   private isXMLMimeTypeInternal?: boolean|null;
   suppressRevealAndSelect = false;
@@ -1753,18 +1838,15 @@ export class ElementsTreeOutline extends
   }
 
   setMultilineEditing(multilineEditing: MultilineEditorController|null): void {
-    this.multilineEditing = multilineEditing;
+    this.domTreeWidget?.setMultilineEditing(multilineEditing);
   }
 
   visibleWidth(): number {
-    return this.visibleWidthInternal || 0;
+    return this.domTreeWidget?.visibleWidth ?? this.visibleWidthInternal ?? 0;
   }
 
   setVisibleWidth(width: number): void {
     this.visibleWidthInternal = width;
-    if (this.multilineEditing) {
-      this.multilineEditing.resize();
-    }
   }
 
   setClipboardData(data: ClipboardData|null): void {
@@ -1797,9 +1879,7 @@ export class ElementsTreeOutline extends
     }
     this.visible = visible;
     if (!this.visible) {
-      if (this.multilineEditing) {
-        this.multilineEditing.cancel();
-      }
+      this.domTreeWidget?.multilineEditing()?.cancel();
       return;
     }
 
@@ -2294,53 +2374,7 @@ export class ElementsTreeOutline extends
   }
 
   toggleEditAsHTML(node: SDK.DOMModel.DOMNode, startEditing?: boolean, callback?: (() => void)): void {
-    const treeElement = this.treeElementByNode.get(node);
-    if (!treeElement?.hasEditableNode()) {
-      return;
-    }
-
-    if (node.pseudoType()) {
-      return;
-    }
-
-    const parentNode = node.parentNode;
-    const index = node.index;
-    const wasExpanded = treeElement.expanded;
-
-    treeElement.toggleEditAsHTML(editingFinished.bind(this), startEditing);
-
-    function editingFinished(this: ElementsTreeOutline, success: boolean): void {
-      if (callback) {
-        callback();
-      }
-      if (!success) {
-        return;
-      }
-
-      Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-
-      // Select it and expand if necessary. We force tree update so that it processes dom events and is up to date.
-      this.runPendingUpdates();
-
-      if (!index) {
-        return;
-      }
-
-      const children = parentNode?.children();
-      const newNode = children ? children[index] || parentNode : parentNode;
-      if (!newNode) {
-        return;
-      }
-
-      this.selectDOMNode(newNode, true);
-
-      if (wasExpanded) {
-        const newTreeItem = this.findTreeElement(newNode);
-        if (newTreeItem) {
-          newTreeItem.expand();
-        }
-      }
-    }
+    this.domTreeWidget?.toggleEditAsHTML(node, startEditing, callback);
   }
 
   selectNodeAfterEdit(wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null): ElementsTreeElement

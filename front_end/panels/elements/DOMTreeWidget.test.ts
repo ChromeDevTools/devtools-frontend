@@ -817,6 +817,50 @@ describeWithEnvironment('DOMTreeWidget', () => {
          }
        });
 
+    it('supports toggleEditAsHTML and multiline editing in DEFAULT_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['id', 'test-div'],
+          children: [
+            {nodeId: 2, nodeName: 'P', attributes: ['class', 'intro']},
+          ],
+        });
+        const pNode = rootNode.children()![0];
+        sinon.stub(pNode, 'getOuterHTML').resolves('<p class="intro"></p>');
+
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        // Start Edit as HTML on pNode
+        domTree.toggleEditAsHTML(pNode);
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        const multiline = domTree.multilineEditing();
+        assert.exists(multiline);
+
+        const treeElement = domTree.treeElementForNode(pNode);
+        assert.exists(treeElement);
+        assert.isTrue(treeElement.widget.isEditing);
+
+        // Cancel editing
+        multiline.cancel();
+        assert.isNull(domTree.multilineEditing());
+        assert.isFalse(treeElement.widget.isEditing);
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('handles clipboard operations (cut, copy, paste, .in-clipboard styling, and events) in declarative view',
        async () => {
          SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
@@ -1304,5 +1348,55 @@ describeWithEnvironment('DOMTreeWidget', () => {
            domTree.detach();
          }
        });
+
+    it('supports toggleEditAsHTML and multiline editing in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['id', 'test-div'],
+          children: [
+            {nodeId: 2, nodeName: 'P', attributes: ['class', 'intro']},
+          ],
+        });
+        const pNode = rootNode.children()![0];
+        sinon.stub(pNode, 'getOuterHTML').resolves('<p class="intro"></p>');
+
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        // Start Edit as HTML on pNode
+        domTree.toggleEditAsHTML(pNode);
+
+        await waitForTreeUpdates();
+
+        const multiline = domTree.multilineEditing();
+        assert.exists(multiline);
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElements = internalTree.rootElement().children();
+        const pTreeElement = rootTreeElements[0].children()[0];
+        const pWidgetElement = pTreeElement.listItemElement.querySelector('devtools-widget');
+        const pWidget = UI.Widget.Widget.get(pWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(pWidget);
+        assert.isTrue(pWidget.isEditing);
+
+        // Cancel editing
+        multiline.cancel();
+        assert.isNull(domTree.multilineEditing());
+        assert.isFalse(pWidget.isEditing);
+      } finally {
+        domTree.detach();
+      }
+    });
   });
 });

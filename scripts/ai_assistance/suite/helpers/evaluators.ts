@@ -121,14 +121,17 @@ function parseScoringInstructions(instructions: string): {scoringPrompt: string,
 
 export class FunctionCalled extends Evaluator {
   static nameOnly(example: Trajectory, funcName: string): boolean {
-    return example.data.some(turn => {
+    return (example.data ?? []).some(turn => {
       return turn.role === 'gemini' && turn.tool_calls?.some(call => call.name === funcName);
     });
   }
 
   static nameAndArguments(example: Trajectory, funcName: string, argCheck: Record<string, unknown>): boolean {
-    return example.data.some(turn => {
-      return turn.role === 'gemini' && turn.tool_calls?.some(call => {
+    return (example.data ?? []).some(turn => {
+      if (turn.role !== 'gemini' || !turn.tool_calls) {
+        return false;
+      }
+      return turn.tool_calls.some(call => {
         if (call.name !== funcName) {
           return false;
         }
@@ -155,7 +158,7 @@ export class LLMComparison extends Evaluator {
 
 ## Conversation to score:
 ${exampleAsMarkdown}`,
-        'gemini-2.5-flash', {
+        process.env.GEMINI_MODEL || 'gemini-3.6-flash', {
           type: 'object',
           properties: {
             rubricScores: {
@@ -355,7 +358,7 @@ export async function itEval(config: ItEval): Promise<void> {
   let goldenText = '';
   if ('rouge' in config) {
     const golden = await getGolden(state.store.type, state.store.label);
-    goldenText = golden?.data.filter(t => t.role === 'gemini').at(-1)?.content.join('\n') ?? '';
+    goldenText = (golden?.data ?? []).filter(t => t.role === 'gemini').at(-1)?.content?.join('\n') ?? '';
   }
 
   for (const [date, outputs] of Object.entries(state.outputsByDate)) {
@@ -395,7 +398,8 @@ export async function itEval(config: ItEval): Promise<void> {
       });
     } else if ('rouge' in config) {
       const details = conversations.map(conversation => {
-        const candidateText = conversation.data.filter(t => t.role === 'gemini').at(-1)?.content.join('\n') ?? '';
+        const candidateText =
+            (conversation.data ?? []).filter(t => t.role === 'gemini').at(-1)?.content?.join('\n') ?? '';
         return {
           conversation,
           score: ROUGE.score(candidateText, goldenText),
@@ -567,12 +571,12 @@ function calculateJudgeStats(result: Extract<Result, {type: 'JUDGE'}>): JudgeSta
   const statsByRubric: Record<string, RubricStats> = {};
   assert.ok(result.details.length > 0, 'A judge result must have at least one conversation');
 
-  const allRubrics = result.details[0].rubricScores.map(s => s.rubric).sort();
+  const rubricsSet = new Set<string>();
+  Object.keys(result.rubricWeights).forEach(r => rubricsSet.add(r));
   for (const detail of result.details) {
-    const currentRubrics = detail.rubricScores.map(s => s.rubric).sort();
-    assert.deepStrictEqual(
-        currentRubrics, allRubrics, 'All conversations in a judge result must have the same rubrics');
+    detail.rubricScores.forEach(s => rubricsSet.add(s.rubric));
   }
+  const allRubrics = Array.from(rubricsSet).sort();
 
   for (const rubric of allRubrics) {
     const scores = result.details.flatMap(d => d.rubricScores.filter(s => s.rubric === rubric).map(s => s.score));

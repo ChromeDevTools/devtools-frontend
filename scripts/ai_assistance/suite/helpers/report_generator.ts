@@ -122,17 +122,17 @@ function renderConversationCard(conversation: Trajectory, headerLabel: string, s
  * Renders the transcript of a conversation.
  */
 function renderConversationTranscript(conversation: Trajectory): string {
-  return conversation.data
+  return (conversation.data ?? [])
       .map(turn => {
         let html = '';
         if (turn.role === 'user') {
           html += '<div class="transcript-header">Request</div>';
-          if (turn.content.length) {
+          if (turn.content?.length) {
             html += `<pre><strong>Query:</strong>\n${turn.content.join('\n')}</pre>`;
           }
         } else {
           html += '<div class="transcript-header">Response</div>';
-          if (turn.content.length) {
+          if (turn.content?.length) {
             html += `<pre><strong>Explanation:</strong>\n${turn.content.join('\n')}</pre>`;
           }
           if (turn.tool_calls?.length) {

@@ -83,8 +83,9 @@ function buildGeminiRequestBody(promptText: string, jsonSchema?: object): Genera
  * @param modelName The name of the Gemini model to use (e.g., 'gemini-pro', 'gemini-1.5-flash').
  * @returns A Promise that resolves to the generated text. Will throw if there is an error.
  */
-export async function generateGeminiContent(
-    promptText: string, modelName = 'gemini-2.5-flash', jsonSchema?: object): Promise<string> {
+export async function generateGeminiContent(promptText: string,
+                                            modelName = process.env.GEMINI_MODEL || 'gemini-3.6-flash',
+                                            jsonSchema?: object): Promise<string> {
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
@@ -92,25 +93,38 @@ export async function generateGeminiContent(
   }
 
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`;
-
   const requestBody = buildGeminiRequestBody(promptText, jsonSchema);
 
-  const response = await fetch(apiUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-goog-api-key': apiKey,
-    },
-    body: JSON.stringify(requestBody),
-  });
+  const maxRetries = 3;
+  let delayMs = 1000;
 
-  if (!response.ok) {
-    const errorData = await response.json();
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const response = await fetch(apiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': apiKey,
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (response.ok) {
+      const data: GenerateContentResponse = await response.json();
+      return (data.candidates?.[0]?.content?.parts?.[0]?.text ||
+              'No content generated or content not in expected format.');
+    }
+
+    const errorData = await response.json().catch(() => ({}));
+    const isTransient = response.status === 429 || response.status === 500 || response.status === 503;
+
+    if (isTransient && attempt < maxRetries) {
+      console.warn(`[Gemini API] Received ${response.status}. Retrying in ${delayMs}ms (attempt ${attempt + 1}/${
+          maxRetries})...`);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+      delayMs *= 2;
+      continue;
+    }
+
     throw new Error(`API error: ${response.status} ${response.statusText} - ${JSON.stringify(errorData)}`);
   }
-
-  const data: GenerateContentResponse = await response.json();
-
-  // Safely access the generated content
-  return (data.candidates?.[0]?.content?.parts?.[0]?.text || 'No content generated or content not in expected format.');
 }

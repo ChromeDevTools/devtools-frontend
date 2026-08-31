@@ -12,15 +12,15 @@ const BASE_DIR = path.join(path.dirname(import.meta.filename), '..', 'outputs', 
 
 export function getMarkdownConversation(example: Trajectory): string {
   let markdown = '';
-  for (const turn of example.data) {
+  for (const turn of example.data ?? []) {
     if (turn.role === 'user') {
       markdown += '## REQUEST FROM CLIENT:\n';
-      if (turn.content.length) {
+      if (turn.content?.length) {
         markdown += `### QUERY:\n${turn.content.join('\n')}\n`;
       }
     } else {
       markdown += '## RESPONSE FROM SERVER:\n';
-      if (turn.content.length) {
+      if (turn.content?.length) {
         markdown += `### EXPLANATION:\n${turn.content.join('\n')}\n`;
       }
       if (turn.tool_calls?.length) {
@@ -82,7 +82,7 @@ export async function getGolden(type: string, label: string): Promise<Trajectory
  * Example: if `baseDirPath` contains `folder1/fileA.txt` and `folder2/fileB.js`,
  * and `folder1` contains `fileA.txt`, `folder2` contains `fileB.js`,
  * the result would be `['folder1/fileA.txt', 'folder2/fileB.js']`.
- * Files directly in `baseDirPath` are ignored.
+ * Files directly in `baseDirPath` and in 'golden' directory are ignored.
  *
  * @param baseDirPath The path to the base directory to search within.
  * @returns A promise that resolves to an array of file paths in 'foldername/filename' format.
@@ -97,6 +97,9 @@ export async function findNestedFiles(
     for (const entry of entries) {
       // If the entry is a directory, it's a "nested folder"
       if (entry.isDirectory()) {
+        if (entry.name === 'golden') {
+          continue;
+        }
         const nestedFolderPath = path.join(baseDirPath, entry.name);
         try {
           // Read entries in the nested folder

@@ -13,27 +13,29 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("code_highlighter") {
+  split_compilation = true
   sources = [ "CodeHighlighter.ts" ]
 
-  deps = [ "../../../third_party/codemirror.next:bundle" ]
+  ts_deps = [ "../../../third_party/codemirror.next:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "code_highlighter.ts"
 
-  deps = [
-    ":code_highlighter",
-    ":css_files",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":code_highlighter" ]
 
   visibility = [ "../../../legacy_test_runner/*" ]
   visibility += default_components_visibility
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "CodeHighlighter.test.ts" ]
 
-  deps = [ ":bundle" ]
+  ts_deps = [ ":bundle" ]
 }

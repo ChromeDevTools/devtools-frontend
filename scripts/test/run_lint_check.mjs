@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import {ESLint} from 'eslint';
-import {globbySync} from 'globby';
+import {globby} from 'globby';
 import {spawn} from 'node:child_process';
-import {readFileSync} from 'node:fs';
+import {readFile, stat, writeFile} from 'node:fs/promises';
 import {extname, join, resolve, relative} from 'node:path';
 import stylelint from 'stylelint';
 import yargs from 'yargs';
@@ -189,6 +189,102 @@ async function runStylelint(files) {
   return {status: !errored, output: messages.join('\n')};
 }
 
+class LitAnalyzerCache {
+  #cachePath = join(devtoolsRootPath(), '.litanalyzercache');
+  #cache = {config: '', files: {}};
+  #enabled = false;
+
+  constructor(enabled, config, cacheData = null) {
+    this.#enabled = enabled;
+    if (cacheData) {
+      this.#cache = cacheData;
+    } else {
+      this.#cache = {config, files: {}};
+    }
+  }
+
+  static async create(enabled, config) {
+    if (!enabled) {
+      return new LitAnalyzerCache(enabled, config);
+    }
+    const cachePath = join(devtoolsRootPath(), '.litanalyzercache');
+    try {
+      const data = JSON.parse(await readFile(cachePath, 'utf-8'));
+      if (
+        data &&
+        data.config === config &&
+        data.files &&
+        typeof data.files === 'object' &&
+        !Array.isArray(data.files)
+      ) {
+        return new LitAnalyzerCache(enabled, config, data);
+      }
+    } catch {
+      // Fall through to empty cache
+    }
+    return new LitAnalyzerCache(enabled, config);
+  }
+
+  async filterFiles(files) {
+    if (!this.#enabled) {
+      return files;
+    }
+    const results = await Promise.all(
+      files.map(async file => {
+        try {
+          const fileStat = await stat(file);
+          if (this.#cache.files[file] !== fileStat.mtimeMs) {
+            return file;
+          }
+          return null;
+        } catch {
+          return file;
+        }
+      }),
+    );
+    return results.filter(file => file !== null);
+  }
+
+  async update(files) {
+    if (!this.#enabled) {
+      return;
+    }
+    const filesToUpdate = new Set(files);
+    await Promise.all(
+      files.map(async file => {
+        try {
+          const fileStat = await stat(file);
+          this.#cache.files[file] = fileStat.mtimeMs;
+        } catch {
+          delete this.#cache.files[file];
+        }
+      }),
+    );
+    // Prune entries for files that no longer exist on disk.
+    await Promise.all(
+      Object.keys(this.#cache.files).map(async file => {
+        if (filesToUpdate.has(file)) {
+          return;
+        }
+        try {
+          await stat(file);
+        } catch {
+          delete this.#cache.files[file];
+        }
+      }),
+    );
+    try {
+      await writeFile(
+        this.#cachePath,
+        JSON.stringify(this.#cache, null, 2),
+        'utf-8',
+      );
+    } catch {
+      // Ignore cache write errors
+    }
+  }
+}
+
 /**
  * Runs the `lit-analyzer` on the `files`.
  *
@@ -204,10 +300,9 @@ async function runLitAnalyzer(files) {
   const messages = [];
   debugLogging(messages, '[lint]: Running LitAnalyzer...');
 
-  const readLitAnalyzerConfigFromCompilerOptions = () => {
-    const {compilerOptions} = JSON.parse(
-      readFileSync(tsconfigJsonPath(), 'utf-8'),
-    );
+  const readLitAnalyzerConfigFromCompilerOptions = async () => {
+    const configData = await readFile(tsconfigJsonPath(), 'utf-8');
+    const {compilerOptions} = JSON.parse(configData);
     const {plugins} = compilerOptions;
     const tsLitPluginOptions = plugins.find(
       plugin => plugin.name === 'ts-lit-plugin',
@@ -217,10 +312,19 @@ async function runLitAnalyzer(files) {
         `Failed to find ts-lit-plugin options in ${tsconfigJsonPath()}`,
       );
     }
-    return tsLitPluginOptions;
+    return {rules: tsLitPluginOptions.rules, configData};
   };
 
-  const {rules} = readLitAnalyzerConfigFromCompilerOptions();
+  const {rules, configData} = await readLitAnalyzerConfigFromCompilerOptions();
+  const litAnalyzerCache = await LitAnalyzerCache.create(
+    cacheLinters,
+    configData,
+  );
+  const filesToAnalyze = await litAnalyzerCache.filterFiles(files);
+  if (filesToAnalyze.length === 0) {
+    return {status: true, output: ''};
+  }
+
   const getLitAnalyzerResult = async subsetFiles => {
     const args = [
       litAnalyzerExecutablePath(),
@@ -281,7 +385,7 @@ async function runLitAnalyzer(files) {
   };
 
   const results = await Promise.all(
-    getSplitFiles(files).map(filesBatch => {
+    getSplitFiles(filesToAnalyze).map(filesBatch => {
       return getLitAnalyzerResult(filesBatch);
     }),
   );
@@ -296,7 +400,12 @@ async function runLitAnalyzer(files) {
     }
   }
 
-  return {status: results.every(r => r.status), output: messages.join('\n')};
+  const success = results.every(r => r.status);
+  if (success) {
+    await litAnalyzerCache.update(filesToAnalyze);
+  }
+
+  return {status: success, output: messages.join('\n')};
 }
 
 const DEVTOOLS_ROOT_DIR = resolve(import.meta.dirname, '..', '..');
@@ -389,10 +498,19 @@ async function run() {
   const files = getFilesToLint();
   const scripts = [];
   const styles = [];
-  for (const path of globbySync(files, {
+  const matchedPaths = await globby(files, {
     expandDirectories: {extensions: ['css', 'mjs', 'js', 'ts']},
     gitignore: true,
-  })) {
+    ignore: [
+      '**/node_modules/**',
+      '**/third_party/**',
+      '**/out/**',
+      '**/build/**',
+      '**/buildtools/**',
+      '**/release/**',
+    ],
+  });
+  for (const path of matchedPaths) {
     if (shouldIgnoreFile(path)) {
       continue;
     }

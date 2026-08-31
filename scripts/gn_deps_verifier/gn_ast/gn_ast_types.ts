@@ -35,6 +35,4 @@ export interface AstTargetInfo {
 export interface UpdateTargetDepsOptions {
   unusedDeps: string[];
   missingDeps: string[];
-  currentDir: string;
-  rootDir: string;
 }

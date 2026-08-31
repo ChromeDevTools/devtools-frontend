@@ -58,37 +58,48 @@ export function extractStringValues(
 }
 
 /**
- * Recursively walks statements in blocks, condition bodies, and function bodies.
+ * Walks statements in blocks, condition bodies, and function bodies.
+ * Set recursive to false to only walk top-level statements.
  */
 export function walkStatements(
     nodes: GnAstNode[],
     callback: (statement: GnAstNode) => void,
+    recursive = true,
     ): void {
   for (const node of nodes) {
     callback(node);
+    if (!recursive) {
+      continue;
+    }
     if ((node.type === 'BLOCK' || node.type === 'CONDITION' || node.type === 'FUNCTION') && node.child) {
-      walkStatements(node.child, callback);
+      walkStatements(node.child, callback, recursive);
     }
   }
 }
 
 /**
  * Finds assignment nodes (`=`, `+=`, or `-=`), filtered by LHS variable name.
+ * Set recursive to false to only find top-level assignments.
  */
 export function findAssignments(
     statements: GnAstNode[],
     variableName: string,
+    recursive = true,
     ): GnAstNode[] {
   const assignments: GnAstNode[] = [];
-  walkStatements(statements, statement => {
-    if (statement.type === 'BINARY' &&
-        (statement.value === '=' || statement.value === '+=' || statement.value === '-=')) {
-      const lhs = statement.child?.[0]?.value;
-      if (lhs === variableName) {
-        assignments.push(statement);
-      }
-    }
-  });
+  walkStatements(
+      statements,
+      statement => {
+        if (statement.type === 'BINARY' &&
+            (statement.value === '=' || statement.value === '+=' || statement.value === '-=')) {
+          const lhs = statement.child?.[0]?.value;
+          if (lhs === variableName) {
+            assignments.push(statement);
+          }
+        }
+      },
+      recursive,
+  );
   return assignments;
 }
 

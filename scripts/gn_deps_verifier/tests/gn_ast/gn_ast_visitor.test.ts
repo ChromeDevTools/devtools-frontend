@@ -82,6 +82,24 @@ describe('gn_ast_visitor', () => {
           ['=', '+=', '-='],
       );
     });
+
+    it('respects recursive = false and only visits top-level statements', () => {
+      const topLevelAssign = createAstNode.assignment('deps', createAstNode.list(), '=');
+      const nestedAssign = createAstNode.assignment('deps', createAstNode.list(), '+=');
+      const conditionBlock: GnAstNode = {
+        type: 'CONDITION',
+        child: [createAstNode.identifier('is_chromeos'), {type: 'BLOCK', child: [nestedAssign]}],
+      };
+
+      const stmts: GnAstNode[] = [topLevelAssign, conditionBlock];
+
+      const allAssigns = findAssignments(stmts, 'deps', true);
+      assert.strictEqual(allAssigns.length, 2);
+
+      const topLevelOnly = findAssignments(stmts, 'deps', false);
+      assert.strictEqual(topLevelOnly.length, 1);
+      assert.strictEqual(topLevelOnly[0], topLevelAssign);
+    });
   });
 
   describe('extractStringValues', () => {
@@ -355,6 +373,48 @@ describe('gn_ast_visitor', () => {
       assert.strictEqual(targetInfo.templateName, 'devtools_foundation_module');
       assert.deepEqual(targetInfo.sources, ['HostRuntime.ts']);
       assert.includeMembers(targetInfo.deps, ['./api:bundle']);
+    });
+
+    it('handles negative assignment on variables defined in outer/parent scope without local = declaration', () => {
+      const parentVariables = new Map<string, string[]>([
+        ['configs', ['//build/config:default', '//build/config/compiler:MyWarningFlags']],
+        ['sources', ['main.cc', 'extra.cc']],
+      ]);
+
+      const functionNode: GnAstNode = {
+        type: 'FUNCTION',
+        value: 'executable',
+        child: [
+          createAstNode.list([createAstNode.stringLiteral('MyCustomBinary')]),
+          {
+            type: 'BLOCK',
+            child: [
+              createAstNode.assignment(
+                  'configs',
+                  createAstNode.list([createAstNode.stringLiteral('//build/config/compiler:MyWarningFlags')]),
+                  '-=',
+                  ),
+            ],
+          },
+        ],
+      };
+
+      const targetInfo = extractTargetFromFunctionNode(
+          functionNode,
+          '//build',
+          fixturePath,
+          parentVariables,
+      );
+
+      assert.isNotNull(targetInfo);
+      assert.strictEqual(targetInfo.label, '//build:MyCustomBinary');
+      assert.strictEqual(targetInfo.templateName, 'executable');
+      assert.deepEqual(targetInfo.sources, ['main.cc', 'extra.cc']);
+      // Verify parent scope variables were not mutated
+      assert.deepEqual(parentVariables.get('configs'), [
+        '//build/config:default',
+        '//build/config/compiler:MyWarningFlags',
+      ]);
     });
   });
 

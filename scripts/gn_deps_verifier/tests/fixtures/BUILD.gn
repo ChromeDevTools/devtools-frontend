@@ -114,3 +114,47 @@ custom_target("complex_assignments") {
   deps = [ ":dep1" ]
   deps += [ ":dep2" ]
 }
+
+devtools_ui_module("subtraction_target") {
+  sources = [ "sub.ts" ]
+  deps = [
+    ":keep_dep",
+    ":sub_dep",
+  ]
+  deps -= [ ":sub_dep" ]
+}
+
+devtools_ui_module("only_subtraction") {
+  sources = [ "only_sub.ts" ]
+  deps -= [ ":excluded_dep" ]
+}
+
+devtools_ui_module("conditional_deps") {
+  sources = [ "cond.ts" ]
+  deps = [ ":base_dep" ]
+
+  if (is_chromeos) {
+    deps += [ ":cros_dep" ]
+  }
+}
+
+devtools_ui_module("only_conditional_deps") {
+  sources = [ "only_cond.ts" ]
+
+  if (is_chromeos) {
+    deps = [ ":cros_dep" ]
+  }
+}
+
+_shared_deps = [ ":shared_dep" ]
+
+devtools_ui_module("variable_deps") {
+  sources = [ "var.ts" ]
+  deps = _shared_deps
+}
+
+devtools_ui_module("variable_plus_assign_deps") {
+  sources = [ "var_plus.ts" ]
+  deps = _shared_deps
+  deps += [ ":explicit_dep" ]
+}

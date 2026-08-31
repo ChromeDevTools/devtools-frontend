@@ -5,9 +5,10 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../visibility.gni")
 
 devtools_entrypoint("entrypoint") {
+  split_compilation = true
   entrypoint = "devtools_app.ts"
 
-  deps = [
+  ts_deps = [
     "../../core/root:bundle",
     "../../entrypoints/inspector_main:meta",
     "../../panels/accessibility:meta",

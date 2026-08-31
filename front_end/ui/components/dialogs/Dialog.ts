@@ -51,7 +51,7 @@ export const DIALOG_VERTICAL_PADDING = 3;
  * remain clearly visible. This constant accounts for the padding of the dialog's
  * content (20 px) and a 5px gap left on each extreme of the dialog from the viewport.
  **/
-export const DIALOG_PADDING_FROM_WINDOW = 3 * CONNECTOR_HEIGHT;
+export const DIALOG_PADDING_FROM_WINDOW: number = 3 * CONNECTOR_HEIGHT;
 interface DialogData {
   /**
    * Position or point the dialog is shown relative to.

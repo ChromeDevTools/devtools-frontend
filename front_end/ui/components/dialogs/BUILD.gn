@@ -18,6 +18,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("dialogs") {
+  split_compilation = true
   sources = [
     "ButtonDialog.ts",
     "Dialog.ts",
@@ -25,7 +26,7 @@ devtools_ui_module("dialogs") {
     "ShortcutDialog.ts",
     "TypeToAllowDialog.ts",
   ]
-  deps = [
+  ts_deps = [
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
@@ -40,17 +41,18 @@ devtools_ui_module("dialogs") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "dialogs.ts"
 
-  deps = [
-    ":css_files",
-    ":dialogs",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":dialogs" ]
 
   visibility = [ "*" ]
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -59,7 +61,7 @@ devtools_ui_module("unittests") {
     "ShortcutDialog.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../core/platform:bundle",
     "../../../testing",

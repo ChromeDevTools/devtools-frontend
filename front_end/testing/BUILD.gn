@@ -75,7 +75,6 @@ ts_library("testing") {
     "../core/text_utils:bundle",
     "../foundation:bundle",
     "../generated",
-    "../generated:protocol",
     "../models/ai_assistance:bundle",
     "../models/autofill_manager:bundle",
     "../models/badges:bundle",

@@ -16,7 +16,6 @@ devtools_module("tracing") {
   ts_deps = [
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/trace:bundle",
   ]
 }

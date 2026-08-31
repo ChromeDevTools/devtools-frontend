@@ -30,7 +30,6 @@ devtools_ui_module("recorder") {
     "../../../core/platform:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
-    "../../../generated:protocol",
     "../../../services/puppeteer:bundle",
     "../../../third_party/puppeteer:bundle",
     "../../../third_party/puppeteer-replay:bundle",

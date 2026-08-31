@@ -3,38 +3,20 @@
 # found in the LICENSE file.
 
 import("../../scripts/build/ninja/devtools_module.gni")
-import("../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_module("generated") {
+  split_compilation = true
   sources = [
     "ARIAProperties.ts",
     "Deprecation.ts",
     "InspectorBackendCommands.ts",
     "SupportedCSSProperties.ts",
+    "protocol-mapping.d.ts",
+    "protocol-proxy-api.d.ts",
     "protocol.ts",
   ]
 
   deps = []
 
-  visibility = [
-    "../../test/e2e/network:*",
-    "../core/protocol_client:*",
-    "../core/sdk:*",
-    "../models/cpu_profile:*",
-    "../models/trace:*",
-    "../models/trace/*",
-    "../panels/accessibility:*",
-    "../panels/elements:*",
-    "../panels/greendev:*",
-  ]
-}
-
-devtools_pre_built("protocol") {
-  sources_are_release = false
-
-  sources = [
-    "protocol-mapping.d.ts",
-    "protocol-proxy-api.d.ts",
-    "protocol-tsconfig.json",
-  ]
+  visibility = [ "*" ]
 }

@@ -33,7 +33,6 @@ devtools_ui_module("utils") {
     "../../../../core/sdk:bundle",
     "../../../../core/text_utils:bundle",
     "../../../../generated",
-    "../../../../generated:protocol",
     "../../../../models/bindings:bundle",
     "../../../../models/breakpoints:bundle",
     "../../../../models/stack_trace:bundle",

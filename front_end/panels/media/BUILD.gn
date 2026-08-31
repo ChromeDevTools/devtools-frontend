@@ -38,7 +38,6 @@ devtools_ui_module("media") {
     "../../core/platform:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../ui/kit:bundle",
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",

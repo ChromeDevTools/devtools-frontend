@@ -17,7 +17,6 @@ devtools_foundation_module("protocol_client") {
 
   ts_deps = [
     "../../generated",
-    "../../generated:protocol",
     "../platform:bundle",
   ]
 }
@@ -55,7 +54,7 @@ devtools_foundation_module("unittests") {
   ts_deps = [
     ":bundle",
     ":puppeteer_devtools_connection",
-    "../../generated:protocol",
+    "../../generated",
     "../../testing",
     "../../third_party/puppeteer:bundle",
   ]

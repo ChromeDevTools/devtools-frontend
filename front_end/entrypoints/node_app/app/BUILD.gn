@@ -25,7 +25,6 @@ devtools_module("app") {
     "../../../core/protocol_client:bundle",
     "../../../core/sdk:bundle",
     "../../../generated",
-    "../../../generated:protocol",
     "../../../ui/components/buttons:bundle",
     "../../../ui/i18n:bundle",
     "../../../ui/kit:bundle",

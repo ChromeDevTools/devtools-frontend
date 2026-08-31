@@ -109,7 +109,6 @@ devtools_module("sdk") {
     "../../core/root:bundle",
     "../../core/text_utils:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/formatter:bundle",
     "../../third_party/codemirror.next:bundle",
     "../../third_party/source-map-scopes-codec:bundle",
@@ -177,7 +176,6 @@ ts_library("unittests") {
     ":bundle",
     "../../entrypoints/formatter_worker:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/formatter:bundle",
     "../../models/trace:bundle",
     "../../testing",
@@ -218,7 +216,6 @@ devtools_foundation_module("foundation_unittests") {
   ts_deps = [
     ":bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/bindings:bundle",
     "../../models/persistence:bundle",
     "../../models/workspace:bundle",

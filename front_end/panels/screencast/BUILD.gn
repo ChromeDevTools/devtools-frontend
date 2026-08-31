@@ -27,7 +27,6 @@ devtools_ui_module("screencast") {
     "../../core/sdk:bundle",
     "../../foundation:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../ui/components/buttons:bundle",
     "../../ui/legacy:bundle",
     "../../ui/lit:bundle",

@@ -15,7 +15,6 @@ devtools_module("web_mcp") {
     "../../core/common:bundle",
     "../../core/sdk:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../bindings:bundle",
     "../stack_trace:bundle",
   ]

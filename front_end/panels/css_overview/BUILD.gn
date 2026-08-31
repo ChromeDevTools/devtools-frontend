@@ -37,7 +37,6 @@ devtools_ui_module("css_overview") {
     "../../core/sdk:bundle",
     "../../core/text_utils:bundle",
     "../../generated",
-    "../../generated:protocol",
     "../../models/geometry:bundle",
     "../../ui/components/buttons:bundle",
     "../../ui/components/panel_feedback:bundle",

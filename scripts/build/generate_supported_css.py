@@ -127,12 +127,29 @@ with open(GENERATED_LOCATION, "w+", newline='\n') as f:
     f.write('// found in the LICENSE file.\n')
     f.write('\n')
     f.write(
-        '/* eslint-disable @stylistic/quotes, @stylistic/quote-props, @stylistic/comma-dangle */\n'
+        '/* eslint-disable @stylistic/quotes, @stylistic/quote-props, @stylistic/comma-dangle, @typescript-eslint/naming-convention */\n'
     )
-    f.write("export const generatedProperties = %s;\n" %
+    f.write('export interface CSSProperty {\n')
+    f.write('  name: string;\n')
+    f.write('  longhands?: string[];\n')
+    f.write('  inherited?: boolean;\n')
+    f.write('  svg?: boolean;\n')
+    f.write('  keywords?: string[];\n')
+    f.write('  devtools_keywords?: string[];\n')
+    f.write('  is_property?: boolean;\n')
+    f.write('  is_descriptor?: boolean;\n')
+    f.write('  runtime_flag?: string;\n')
+    f.write('  runtime_flag_status?: string | null;\n')
+    f.write('}\n\n')
+    f.write('export interface CSSPropertyValue {\n')
+    f.write('  values: string[];\n')
+    f.write('}\n\n')
+    f.write("export const generatedProperties: CSSProperty[] = %s;\n" %
             json.dumps(properties, sort_keys=True, indent=1))
     # sort keys to ensure entries are generated in a deterministic way to avoid inconsistencies across different OS
-    f.write("export const generatedPropertyValues = %s;\n" %
-            json.dumps(property_values, sort_keys=True, indent=1))
-    f.write("export const generatedAliasesFor = new Map(%s);\n" %
-            json.dumps(aliases_for, sort_keys=True, indent=1))
+    f.write(
+        "export const generatedPropertyValues: Record<string, CSSPropertyValue> = %s;\n"
+        % json.dumps(property_values, sort_keys=True, indent=1))
+    f.write(
+        "export const generatedAliasesFor: Map<string, string> = new Map(%s);\n"
+        % json.dumps(aliases_for, sort_keys=True, indent=1))

@@ -2,8 +2,25 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/* eslint-disable @stylistic/quotes, @stylistic/quote-props, @stylistic/comma-dangle */
-export const generatedProperties = [
+/* eslint-disable @stylistic/quotes, @stylistic/quote-props, @stylistic/comma-dangle, @typescript-eslint/naming-convention */
+export interface CSSProperty {
+  name: string;
+  longhands?: string[];
+  inherited?: boolean;
+  svg?: boolean;
+  keywords?: string[];
+  devtools_keywords?: string[];
+  is_property?: boolean;
+  is_descriptor?: boolean;
+  runtime_flag?: string;
+  runtime_flag_status?: string | null;
+}
+
+export interface CSSPropertyValue {
+  values: string[];
+}
+
+export const generatedProperties: CSSProperty[] = [
  {
   "longhands": [
    "max-lines",
@@ -6091,7 +6108,7 @@ export const generatedProperties = [
   "name": "zoom"
  }
 ];
-export const generatedPropertyValues = {
+export const generatedPropertyValues: Record<string, CSSPropertyValue> = {
  "-alternative-webkit-line-clamp-longhand": {
   "values": [
    "none"
@@ -9234,7 +9251,7 @@ export const generatedPropertyValues = {
   ]
  }
 };
-export const generatedAliasesFor = new Map([
+export const generatedAliasesFor: Map<string, string> = new Map([
  [
   "-epub-caption-side",
   "caption-side"

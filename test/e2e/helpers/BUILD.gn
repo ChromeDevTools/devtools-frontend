@@ -6,6 +6,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("helpers") {
   sources = [
+    "ai-assistance-helpers.ts",
     "animations-helpers.ts",
     "application-helpers.ts",
     "changes-helpers.ts",

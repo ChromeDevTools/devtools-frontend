@@ -44,7 +44,7 @@ npm run test -- test/ai_evals/ --ota-username your_ota_account@gmail.com
 Harness tests:
 
 ```bash
-python3 scripts/test_harness.py DevToolsTestHarness.test_ai_evals_auth_helper
+vpython3 scripts/test_harness.py DevToolsTestHarness.test_ai_evals_auth_helper
 ```
 
 Protip: You can add `--debug` to the harness test command line, to see the output.

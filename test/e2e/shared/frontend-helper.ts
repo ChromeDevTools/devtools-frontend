@@ -450,6 +450,18 @@ export class DevToolsPage extends PageWrapper {
     await session.detach();
     console.warn(`Heap snapshot saved to: ${filePath}`);
   }
+
+  async setAiAssistanceStructuredLogEnabled(): Promise<void> {
+    await this.evaluate(() => localStorage.removeItem('aiAssistanceStructuredLog'));
+
+    await this.waitForFunction(async () => {
+      return await this.evaluate(() => 'setAiAssistanceStructuredLogEnabled' in window);
+    });
+    await this.evaluate(() => {
+      // @ts-expect-error different context
+      setAiAssistanceStructuredLogEnabled(true);
+    });
+  }
 }
 
 export interface DevtoolsSettings {

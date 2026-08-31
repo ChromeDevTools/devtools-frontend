@@ -57,6 +57,7 @@ import {
   ElementsTreeWidget,
   ForbiddenClosingTagElements,
   InitialChildrenLimit,
+  type InitialEditState,
   isOpeningTag,
 } from './ElementsTreeElement.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
@@ -141,6 +142,10 @@ interface ViewInput {
   isNodeInClipboard?: (node: SDK.DOMModel.DOMNode) => boolean;
   onCopyOrCut?: (isCut: boolean, event: Event) => void;
   onPaste?: (event: Event) => void;
+  onSelectNodeAfterEdit?: (wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null,
+                           moveDirection?: string) => void;
+  nodeToEdit?: ({node: SDK.DOMModel.DOMNode}&InitialEditState)|null;
+  onInitialEditCompleted?: () => void;
 }
 
 interface ViewOutput {
@@ -378,6 +383,21 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
       }
     }
   }
+
+  if (input.nodeToEdit) {
+    const treeElement = output.elementsTreeOutline.findTreeElement(input.nodeToEdit.node);
+    if (treeElement) {
+      const edit = input.nodeToEdit;
+      input.onInitialEditCompleted?.();
+      if (edit.isProcessingInstruction) {
+        treeElement.widget.startEditingProcessingInstructionValue();
+      } else if (edit.isNewAttribute) {
+        treeElement.widget.addNewAttribute();
+      } else if (edit.attributeName) {
+        treeElement.widget.triggerEditAttribute(edit.attributeName);
+      }
+    }
+  }
 };
 
 function isMaxDepthReached(node: SDK.DOMModel.DOMNode, rootDOMNode: SDK.DOMModel.DOMNode|null, maxTreeDepth?: number,
@@ -521,7 +541,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) &&
         !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
 
-    // TODO: Move in-place editing (startEditingAttribute, startEditingTextNode, InplaceEditor) out of ElementsTreeElement into ElementsTreeWidget and DOMTreeWidget.
     // TODO: Move multiline/HTML editing (toggleEditAsHTML, MultilineEditorController) from ElementsTreeOutline into DOMTreeWidget.
     // TODO: Move Drag and Drop reordering support (ondragstart, ondragover, ondrop, insertion markers) out of ElementsTreeOutline into a declarative drag-and-drop controller for <devtools-tree>.
     // TODO: Move marker decorators and descendant gutter decorations (MarkerDecoratorRegistration, updateDecorations) into declarative state passed to ElementsTreeWidget.
@@ -551,6 +570,10 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
       input.onHoverNode?.(node, showInfo);
     };
 
+    const onContextMenu = (event: MouseEvent): void => {
+      input.onContextMenu?.(node, event);
+    };
+
     /* clang-format off */
     return html`
       <li role="treeitem"
@@ -560,6 +583,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           @select=${onSelect}
           @expand=${onExpand}
           @mousemove=${onMouseMove}
+          @contextmenu=${onContextMenu}
           jslog=${VisualLogging.treeItem().parent('elementsTreeOutline').track({
             keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
             resize: true,
@@ -579,15 +603,20 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           computeLeftIndent: computeLeftIndent(depth, hasChildren),
           disableEdits: input.disableEdits ?? false,
           showAIButton: input.showAIButton ?? true,
+          initialEdit: input.nodeToEdit?.node === node ? input.nodeToEdit : null,
+          onInitialEditCompleted: input.onInitialEditCompleted,
           selectDOMNode: (n: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => input.onSelect?.(n, selectedByUser),
+          selectNodeAfterEdit: (wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null, moveDirection?: string) => {
+            input.onSelectNodeAfterEdit?.(wasExpanded, error, newNode, moveDirection);
+          },
           toggleHideElement: (n: SDK.DOMModel.DOMNode) => {
             input.onToggleHideElement?.(n);
             return Promise.resolve();
           },
           isToggledToHidden: (n: SDK.DOMModel.DOMNode) => input.isToggledToHidden?.(n) ?? false,
-          showContextMenu: (event: Event) => {
+          showContextMenu: (event: Event, widget?: ElementsTreeWidget) => {
             if (event instanceof MouseEvent) {
-              input.onContextMenu?.(node, event);
+              input.onContextMenu?.(node, event, widget);
             }
           },
         })}
@@ -611,6 +640,11 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
                     computeLeftIndent: computeLeftIndent(depth, false),
                     disableEdits: input.disableEdits ?? false,
                     showAIButton: false,
+                    showContextMenu: (event: Event, widget?: ElementsTreeWidget) => {
+                      if (event instanceof MouseEvent) {
+                        input.onContextMenu?.(node, event, widget);
+                      }
+                    },
                   })}
                 </li>
               ` : nothing}
@@ -1032,6 +1066,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   #hoveredDOMNode: SDK.DOMModel.DOMNode|null = null;
   #searchMatchNode: SDK.DOMModel.DOMNode|null = null;
   #searchMatchQuery: string|null = null;
+  #nodeToEdit: ({node: SDK.DOMModel.DOMNode}&InitialEditState)|null = null;
 
   hoveredDOMNode(): SDK.DOMModel.DOMNode|null {
     if (this.#view === DECLARATIVE_VIEW) {
@@ -1148,6 +1183,14 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       },
       onPaste: (event: Event) => {
         this.onPaste(event);
+      },
+      onSelectNodeAfterEdit:
+          (wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null, moveDirection?: string) => {
+            this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
+          },
+      nodeToEdit: this.#nodeToEdit,
+      onInitialEditCompleted: () => {
+        this.#nodeToEdit = null;
       },
     },
                this.#viewOutput, this.contentElement);
@@ -1293,13 +1336,29 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     node.duplicate();
   }
 
-  selectNodeAfterEdit(wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null): void {
+  selectNodeAfterEdit(wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null,
+                      moveDirection?: string): void {
     if (error || !newNode) {
       return;
     }
     this.selectDOMNode(newNode, /* selectedByUser= */ true);
     if (wasExpanded) {
       this.setNodeExpanded(newNode, true);
+    }
+    if (moveDirection) {
+      if (newNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
+        this.#nodeToEdit = {node: newNode, isProcessingInstruction: true};
+      } else if (moveDirection !== 'forward') {
+        this.#nodeToEdit = {node: newNode, isNewAttribute: true};
+      } else {
+        const attributes = newNode.attributes();
+        if (attributes.length > 0) {
+          this.#nodeToEdit = {node: newNode, attributeName: attributes[0].name};
+        } else {
+          this.#nodeToEdit = {node: newNode, isNewAttribute: true};
+        }
+      }
+      this.performUpdate();
     }
   }
 
@@ -1315,12 +1374,16 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) && node.parentNode) {
       const wasExpanded = this.isNodeExpanded(node);
       if (event.key === 'ArrowUp' && node.previousSibling) {
-        node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, wasExpanded));
+        node.moveTo(node.parentNode, node.previousSibling, (error, newNode) => {
+          this.selectNodeAfterEdit(wasExpanded, error, newNode);
+        });
         event.consume(true);
         return true;
       }
       if (event.key === 'ArrowDown' && node.nextSibling) {
-        node.moveTo(node.parentNode, node.nextSibling.nextSibling, this.selectNodeAfterEdit.bind(this, wasExpanded));
+        node.moveTo(node.parentNode, node.nextSibling.nextSibling, (error, newNode) => {
+          this.selectNodeAfterEdit(wasExpanded, error, newNode);
+        });
         event.consume(true);
         return true;
       }

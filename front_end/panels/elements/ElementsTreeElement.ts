@@ -1092,6 +1092,12 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
 
 type View = typeof DEFAULT_VIEW;
 
+export interface InitialEditState {
+  attributeName?: string;
+  isNewAttribute?: boolean;
+  isProcessingInstruction?: boolean;
+}
+
 export class ElementsTreeWidget extends UI.Widget.Widget {
   static override readonly INJECT = [IssuesManager.DOMIssuesManager.DOMIssuesManager] as const;
   #domIssuesManager?: IssuesManager.DOMIssuesManager.DOMIssuesManager;
@@ -1105,6 +1111,8 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   disableEdits = false;
   showAIButton = false;
   isDOMNodeSelected = false;
+  initialEdit?: InitialEditState|null;
+  onInitialEditCompleted?: () => void;
 
   expand?: () => void;
   collapse?: () => void;
@@ -1120,12 +1128,12 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
   findStartTagWidget?: () => ElementsTreeWidget | null;
   selectDOMNode?: (node: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => void;
   revealInTopLayer?: (node: SDK.DOMModel.DOMNode) => void;
-  showContextMenu?: (event: Event) => void;
+  showContextMenu?: (event: Event, widget?: ElementsTreeWidget) => void;
   populateTreeElement?: () => Promise<void>;
   toggleHideElement?: (node: SDK.DOMModel.DOMNode) => Promise<void>;
   isToggledToHidden?: (node: SDK.DOMModel.DOMNode) => boolean;
-  selectNodeAfterEdit?: (wasExpanded: boolean, error: string|null,
-                         newNode: SDK.DOMModel.DOMNode|null) => ElementsTreeWidget | null;
+  selectNodeAfterEdit?: (wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null,
+                         moveDirection?: string) => void;
   runPendingUpdates?: () => void;
   focusOutline?: () => void;
   setMultilineEditing?: (multilineEditing: EditorHandles|null) => void;
@@ -1394,7 +1402,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
           },
       topLayerIndex: this.node.topLayerIndex(),
       onViewSourceAdornerClick: this.disableEdits ? () => {} : this.revealHTMLInSources.bind(this),
-      onGutterClick: this.showContextMenu ? (event: Event) => this.showContextMenu?.(event) : () => {},
+      onGutterClick: this.showContextMenu ? (event: Event) => this.showContextMenu?.(event, this) : () => {},
       onContainerAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onContainerAdornerClick(event),
       onFlexAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onFlexAdornerClick(event),
       onGridAdornerClick: this.disableEdits ? () => {} : (event: Event) => this.#onGridAdornerClick(event),
@@ -1436,6 +1444,18 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       this.#highlightSearchResults();
     } else if (!this.#searchQuery && this.#highlights.length) {
       this.hideSearchHighlights();
+    }
+    if (this.initialEdit) {
+      const edit = this.initialEdit;
+      this.initialEdit = null;
+      this.onInitialEditCompleted?.();
+      if (edit.isProcessingInstruction) {
+        this.startEditingProcessingInstructionValue();
+      } else if (edit.isNewAttribute) {
+        this.addNewAttribute();
+      } else if (edit.attributeName) {
+        this.triggerEditAttribute(edit.attributeName);
+      }
     }
   }
 
@@ -1924,7 +1944,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     return UI.ActionRegistry.ActionRegistry.instance().hasAction('freestyler.elements-floating-button');
   }
 
-  private startEditing(): boolean|undefined {
+  startEditing(): boolean|undefined {
     if (!this.isDOMNodeSelected) {
       return;
     }
@@ -2322,6 +2342,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       moveDirection: string,
       ): void {
     this.editing = null;
+    this.#clearDOMNextUpdate = true;
 
     function moveToNextAttributeIfNeeded(this: ElementsTreeWidget, error?: string|null): void {
       if (error) {
@@ -2443,10 +2464,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       }
 
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-      const newWidget = this.selectNodeAfterEdit(wasExpanded, error, newNode);
-      if (newWidget) {
-        moveToNextAttributeIfNeeded.call(newWidget);
-      }
+      this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
     });
   }
 
@@ -2866,6 +2884,9 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
   highlightAttribute(name: string): void {
     this.widget.highlightAttribute(name);
   }
+  startEditing(): boolean|undefined {
+    return this.widget.startEditing();
+  }
   startEditingAttribute(attribute: Element, elementForSelection: Element): boolean {
     return this.widget.startEditingAttribute(attribute, elementForSelection);
   }
@@ -2936,9 +2957,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       this.widget.populateTreeElement = async () => await outline.populateTreeElement(this);
       this.widget.toggleHideElement = node => outline.toggleHideElement(node);
       this.widget.isToggledToHidden = node => outline.isToggledToHidden(node);
-      this.widget.selectNodeAfterEdit = (wasExpanded, error, newNode) => {
-        const newTreeItem = outline.selectNodeAfterEdit(wasExpanded, error, newNode);
-        return newTreeItem?.widget ?? null;
+      this.widget.selectNodeAfterEdit = (wasExpanded, error, newNode, moveDirection) => {
+        outline.domTreeWidget?.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
       };
       this.widget.runPendingUpdates = () => outline.runPendingUpdates();
       this.widget.focusOutline = () => outline.focus();

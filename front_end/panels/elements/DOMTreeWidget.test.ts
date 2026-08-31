@@ -1168,5 +1168,141 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.detach();
       }
     });
+
+    // In DECLARATIVE_VIEW, updating DOMTreeWidget renders the outer devtools-tree element.
+    // When devtools-tree connects the child devtools-widget elements, their internal
+    // ElementsTreeWidgets schedule their render updates in a subsequent microtask/tick.
+    // We wait for DOMTreeWidget, yield a tick to allow child widgets to mount, and then
+    // await all child widget updates.
+    async function waitForTreeUpdates(): Promise<void> {
+      await UI.Widget.Widget.allUpdatesComplete;
+      await new Promise(resolve => setTimeout(resolve, 0));
+      await UI.Widget.Widget.allUpdatesComplete;
+    }
+
+    it('updates rendered attributes on AttrModified and AttrRemoved in DECLARATIVE_VIEW without duplicates',
+       async () => {
+         const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+         sinon.stub(domModel, 'requestDocument').resolves(null);
+         const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+         try {
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: 'DIV',
+             attributes: ['id', 'test-div'],
+             children: [
+               {nodeId: 2, nodeName: 'P', attributes: ['class', 'intro']},
+             ],
+           });
+           const pNode = rootNode.children()![0];
+           domTree.rootDOMNode = rootNode;
+           domTree.setNodeExpanded(rootNode, true);
+           domTree.performUpdate();
+
+           await waitForTreeUpdates();
+
+           const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+           assert.exists(tree);
+           const internalTree = tree.getInternalTreeOutlineForTest();
+           const rootTreeElements = internalTree.rootElement().children();
+           assert.lengthOf(rootTreeElements, 1);
+
+           const getText = (el: Element): string => el.textContent?.replace(/\u200B/g, '') ?? '';
+
+           const rootWidgetElement = rootTreeElements[0].listItemElement.querySelector('devtools-widget');
+           const rootWidget =
+               UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+           assert.exists(rootWidget);
+           const rootAttrs = rootWidget.contentElement.querySelectorAll('.webkit-html-attribute');
+           assert.lengthOf(rootAttrs, 1);
+           assert.strictEqual(getText(rootAttrs[0]), 'id="test-div"');
+
+           const pTreeElement = rootTreeElements[0].children()[0];
+           const pWidgetElement = pTreeElement.listItemElement.querySelector('devtools-widget');
+           const pWidget = UI.Widget.Widget.get(pWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+           assert.exists(pWidget);
+           let pAttrs = pWidget.contentElement.querySelectorAll('.webkit-html-attribute');
+           assert.lengthOf(pAttrs, 1);
+           assert.strictEqual(getText(pAttrs[0]), 'class="intro"');
+
+           // 1. Add a new attribute via domModel.attributeModified
+           domModel.attributeModified(pNode.id, 'data-test', '123');
+           await waitForTreeUpdates();
+
+           // Verify attributes on pWidget are updated without duplicates
+           pAttrs = pWidget.contentElement.querySelectorAll('.webkit-html-attribute');
+           assert.lengthOf(pAttrs, 2);
+           assert.strictEqual(getText(pAttrs[0]), 'class="intro"');
+           assert.strictEqual(getText(pAttrs[1]), 'data-test="123"');
+
+           // 2. Remove attribute via domModel.attributeRemoved
+           domModel.attributeRemoved(pNode.id, 'class');
+           await waitForTreeUpdates();
+
+           // Verify only remaining attribute is rendered
+           pAttrs = pWidget.contentElement.querySelectorAll('.webkit-html-attribute');
+           assert.lengthOf(pAttrs, 1);
+           assert.strictEqual(getText(pAttrs[0]), 'data-test="123"');
+         } finally {
+           domTree.detach();
+         }
+       });
+
+    it('starts editing attribute or new attribute on selectNodeAfterEdit with moveDirection in DECLARATIVE_VIEW',
+       async () => {
+         const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+         sinon.stub(domModel, 'requestDocument').resolves(null);
+         const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+         try {
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: 'DIV',
+             attributes: ['id', 'test-div', 'class', 'main'],
+             children: [
+               {nodeId: 2, nodeName: 'SPAN', attributes: []},
+             ],
+           });
+           const spanNode = rootNode.children()![0];
+           domTree.rootDOMNode = rootNode;
+           domTree.setNodeExpanded(rootNode, true);
+           domTree.performUpdate();
+
+           await waitForTreeUpdates();
+
+           // 1. selectNodeAfterEdit on rootNode with forward moveDirection -> starts editing first attribute ('id')
+           domTree.selectNodeAfterEdit(true, null, rootNode, 'forward');
+
+           await waitForTreeUpdates();
+
+           const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+           assert.exists(tree);
+           const internalTree = tree.getInternalTreeOutlineForTest();
+           const rootTreeElements = internalTree.rootElement().children();
+           const rootWidgetElement = rootTreeElements[0].listItemElement.querySelector('devtools-widget');
+           const rootWidget =
+               UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+           assert.exists(rootWidget);
+           assert.isTrue(rootWidget.isEditing);
+           rootWidget.editing?.cancel();
+           assert.isFalse(rootWidget.isEditing);
+
+           // 2. selectNodeAfterEdit on spanNode (no attributes) with forward moveDirection -> starts adding new attribute
+           domTree.selectNodeAfterEdit(false, null, spanNode, 'forward');
+
+           await waitForTreeUpdates();
+
+           const spanTreeElement = rootTreeElements[0].children()[0];
+           const spanWidgetElement = spanTreeElement.listItemElement.querySelector('devtools-widget');
+           const spanWidget =
+               UI.Widget.Widget.get(spanWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+           assert.exists(spanWidget);
+           assert.isTrue(spanWidget.isEditing);
+           spanWidget.editing?.cancel();
+           assert.isFalse(spanWidget.isEditing);
+         } finally {
+           domTree.detach();
+         }
+       });
   });
 });

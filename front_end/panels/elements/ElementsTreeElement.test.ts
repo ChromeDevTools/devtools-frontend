@@ -1807,4 +1807,108 @@ describeWithEnvironment('ElementsTreeElement issue management', () => {
     const tagElement = testTreeElement.widget.contentElement.querySelectorAll('.webkit-html-tag-name')[0];
     assert.isFalse(tagElement.classList.contains('violating-element'));
   });
+
+  describe('in-place editing', () => {
+    it('supports starting in-place editing, adding attributes, and cancelling in ElementsTreeWidget', async () => {
+      const widget = testTreeElement.widget;
+      widget.isDOMNodeSelected = true;
+
+      const startEditingSpy = sinon.spy(widget, 'startEditing');
+      const addNewAttributeSpy = sinon.spy(widget, 'addNewAttribute');
+
+      // 1. Trigger startEditing
+      assert.isFalse(widget.isEditing);
+      widget.startEditing();
+      sinon.assert.calledOnce(startEditingSpy);
+      assert.isTrue(widget.isEditing);
+      widget.editing?.cancel();
+      assert.isFalse(widget.isEditing);
+
+      // 2. Trigger addNewAttribute
+      widget.addNewAttribute();
+      sinon.assert.calledOnce(addNewAttributeSpy);
+      assert.isTrue(widget.isEditing);
+      widget.editing?.cancel();
+      assert.isFalse(widget.isEditing);
+    });
+
+    it('supports editing tag name and starting attribute editing on an existing attribute', async () => {
+      const widget = testTreeElement.widget;
+      widget.isDOMNodeSelected = true;
+
+      // 1. Start editing tag name
+      assert.isFalse(widget.isEditing);
+      const tagEditingResult = widget.startEditingTagName();
+      assert.isTrue(tagEditingResult);
+      assert.isTrue(widget.isEditing);
+      widget.editing?.cancel();
+      assert.isFalse(widget.isEditing);
+
+      // 2. Start editing an existing attribute
+      const attrElement = widget.contentElement.querySelector('.webkit-html-attribute');
+      assert.exists(attrElement);
+      const attrEditingResult = widget.startEditingAttribute(attrElement, attrElement);
+      assert.isTrue(attrEditingResult);
+      assert.isTrue(widget.isEditing);
+      widget.editing?.cancel();
+      assert.isFalse(widget.isEditing);
+    });
+
+    it('supports double click on tag name or attribute to initiate editing', async () => {
+      const widget = testTreeElement.widget;
+      widget.isDOMNodeSelected = true;
+
+      // Double click on tag name
+      const tagNameElement = widget.contentElement.querySelector('.webkit-html-tag-name');
+      assert.exists(tagNameElement);
+      const tagDblClickEvent = new MouseEvent('dblclick', {bubbles: true});
+      Object.defineProperty(tagDblClickEvent, 'target', {value: tagNameElement});
+      widget.ondblclick(tagDblClickEvent);
+      assert.isTrue(widget.isEditing);
+      widget.editing?.cancel();
+      assert.isFalse(widget.isEditing);
+
+      // Double click on attribute
+      const attrElement = widget.contentElement.querySelector('.webkit-html-attribute');
+      assert.exists(attrElement);
+      const attrDblClickEvent = new MouseEvent('dblclick', {bubbles: true});
+      Object.defineProperty(attrDblClickEvent, 'target', {value: attrElement});
+      widget.ondblclick(attrDblClickEvent);
+      assert.isTrue(widget.isEditing);
+      widget.editing?.cancel();
+      assert.isFalse(widget.isEditing);
+    });
+
+    it('adds and commits a new attribute without duplicating attribute elements', async () => {
+      const widget = testTreeElement.widget;
+      widget.isDOMNodeSelected = true;
+
+      // Check initial attribute count
+      const initialAttrs = widget.contentElement.querySelectorAll('.webkit-html-attribute');
+      assert.lengthOf(initialAttrs, 1);
+
+      // Start adding new attribute
+      const added = widget.addNewAttribute();
+      assert.isTrue(added);
+      assert.isTrue(widget.isEditing);
+
+      // Verify temporary attribute is present
+      let attrs = widget.contentElement.querySelectorAll('.webkit-html-attribute');
+      assert.lengthOf(attrs, 2);
+
+      // Commit the new attribute
+      sinon.stub(testDomModel.agent, 'invoke_setAttributesAsText').resolves({getError: () => undefined} as never);
+      testDomModel.attributeModified(labelNode.id, 'data-new', 'value123');
+      widget.editing?.commit();
+
+      await UI.Widget.Widget.allUpdatesComplete;
+
+      // Verify no duplicate attributes exist after commit and update
+      attrs = widget.contentElement.querySelectorAll('.webkit-html-attribute');
+      assert.lengthOf(attrs, 2);
+      const getText = (el: Element): string => el.textContent?.replace(/\u200B/g, '') ?? '';
+      assert.strictEqual(getText(attrs[0]), 'for="input-id"');
+      assert.strictEqual(getText(attrs[1]), 'data-new="value123"');
+    });
+  });
 });

@@ -199,6 +199,21 @@ template("ts_library_split") {
   }
   _compiler_options.lib = _es_libs + default_ts_base_libs
 
+  _handwritten_dts = filter_include(invoker.sources,
+                                    [
+                                      "*.d.ts",
+                                      "*.d.mts",
+                                      "*.d.cts",
+                                    ])
+  if (defined(invoker.additional_type_definitions)) {
+    _handwritten_dts += filter_include(invoker.additional_type_definitions,
+                                       [
+                                         "*.d.ts",
+                                         "*.d.mts",
+                                         "*.d.cts",
+                                       ])
+  }
+
   # Compute output file paths (tsc does not emit for .d.ts inputs)
   _dts_outputs = []
   if (!_no_js_emit) {
@@ -381,8 +396,8 @@ template("ts_library_split") {
                     ":$_dts_target",
                     ":$_tsconfig_ref_target",
                   ] + _ts_deps
-    public_inputs =
-        filter_include(_dts_outputs, [ "*.d.ts" ]) + [ _tsconfig_ref_file ]
+    public_inputs = filter_include(_dts_outputs, [ "*.d.ts" ]) +
+                    _handwritten_dts + [ _tsconfig_ref_file ]
     if (defined(invoker.public_deps)) {
       public_deps += invoker.public_deps
     }

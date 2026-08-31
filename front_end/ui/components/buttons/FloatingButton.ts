@@ -38,7 +38,7 @@ const {html, Directives: {classMap}} = Lit;
  *                      provided context.
  */
 export class FloatingButton extends HTMLElement {
-  static readonly observedAttributes = ['icon-name', 'jslogcontext', 'disabled'];
+  static readonly observedAttributes: string[] = ['icon-name', 'jslogcontext', 'disabled'];
 
   readonly #shadow = this.attachShadow({mode: 'open'});
 

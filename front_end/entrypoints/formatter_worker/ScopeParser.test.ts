@@ -4,8 +4,9 @@
 
 import {assert} from 'chai';
 
+import * as FormatterAction from '../formatter_actions/formatter_actions.js';
+
 import * as FormatterWorker from './formatter_worker.js';
-import * as FormatterAction from './FormatterActions.js';  // eslint-disable-line @devtools/es-modules-import
 
 describe('ScopeParser', () => {
   describe('parseScopes', () => {

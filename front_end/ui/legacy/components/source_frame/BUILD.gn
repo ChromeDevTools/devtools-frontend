@@ -40,7 +40,7 @@ devtools_ui_module("source_frame") {
     "../../../../core/root:bundle",
     "../../../../core/sdk:bundle",
     "../../../../core/text_utils:bundle",
-    "../../../../entrypoints/formatter_worker:formatter_actions",
+    "../../../../entrypoints/formatter_actions:bundle",
     "../../../../models/formatter:bundle",
     "../../../../models/workspace:bundle",
     "../../../../panels/linear_memory_inspector/components:bundle",

@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as Acorn from '../../third_party/acorn/acorn.js';
+import {DefinitionKind} from '../formatter_actions/formatter_actions.js';
 
 import {ECMA_VERSION} from './AcornTokenizer.js';
-import {DefinitionKind} from './FormatterActions.js';
 import {ScopeVariableAnalysis} from './ScopeParser.js';
 
 export function substituteExpression(expression: string, nameMap: Map<string, string|null>): string {

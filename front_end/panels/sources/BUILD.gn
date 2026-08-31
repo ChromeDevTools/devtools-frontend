@@ -72,7 +72,7 @@ devtools_ui_module("sources") {
     "../../core/root:bundle",
     "../../core/sdk:bundle",
     "../../core/text_utils:bundle",
-    "../../entrypoints/formatter_worker:formatter_actions",
+    "../../entrypoints/formatter_actions:bundle",
     "../../generated",
     "../../models/ai_assistance:bundle",
     "../../models/ai_code_completion:bundle",

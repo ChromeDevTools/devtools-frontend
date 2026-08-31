@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as Platform from '../../core/platform/platform.js';
+import {FormatterActions} from '../formatter_actions/formatter_actions.js';
 
 import * as FormatterWorker from './formatter_worker.js';
-import {FormatterActions} from './FormatterActions.js';
 
 Platform.HostRuntime.HOST_RUNTIME.workerScope.onmessage = function(event): void {
   const method: FormatterActions = event.data.method;

@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import * as Acorn from '../../third_party/acorn/acorn.js';
+import {DefinitionKind, ScopeKind, type ScopeTreeNode} from '../formatter_actions/formatter_actions.js';
 
 import {ECMA_VERSION} from './AcornTokenizer.js';
-import {DefinitionKind, ScopeKind, type ScopeTreeNode} from './FormatterActions.js';
 
 export function parseScopes(expression: string, sourceType: 'module'|'script' = 'script'): Scope|null {
   // Parse the expression and find variables and scopes.

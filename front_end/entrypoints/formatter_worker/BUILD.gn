@@ -25,12 +25,12 @@ devtools_foundation_module("formatter_worker") {
   ]
 
   deps = [
-    ":formatter_actions",
     "../../core/platform:bundle",
     "../../core/root:bundle",
     "../../core/text_utils:bundle",
     "../../third_party/acorn:bundle",
     "../../third_party/codemirror:codemirror-legacy-types",
+    "../formatter_actions:bundle",
   ]
 }
 
@@ -52,22 +52,6 @@ devtools_entrypoint("bundle") {
   visibility += devtools_entrypoints_visibility
 }
 
-devtools_entrypoint("formatter_actions") {
-  split_compilation = true
-  entrypoint = "FormatterActions.ts"
-
-  ts_deps = []
-
-  visibility = [
-    ":*",
-    "../../models/formatter/*",
-    "../../panels/sources/*",
-    "../../ui/legacy/components/source_frame/*",
-  ]
-
-  visibility += devtools_entrypoints_visibility
-}
-
 devtools_entrypoint("worker_entrypoint") {
   entrypoint = "formatter_worker-entrypoint.ts"
 
@@ -75,8 +59,8 @@ devtools_entrypoint("worker_entrypoint") {
 
   deps = [
     ":bundle",
-    ":formatter_actions",
     "../../core/platform:bundle",
+    "../formatter_actions:bundle",
   ]
 
   visibility = [
@@ -103,6 +87,6 @@ devtools_foundation_module("unittests") {
 
   deps = [
     ":bundle",
-    ":formatter_actions",
+    "../formatter_actions:bundle",
   ]
 }

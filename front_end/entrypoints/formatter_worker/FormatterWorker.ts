@@ -8,10 +8,10 @@ import * as Root from '../../core/root/root.js';
 // is not used.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars, @devtools/es-modules-import
 import type * as CodeMirrorModule from '../../third_party/codemirror/codemirror-legacy.js';
+import {type FormatResult, FormattableMediaTypes} from '../formatter_actions/formatter_actions.js';
 
 import {CSSFormatter} from './CSSFormatter.js';
 import {FormattedContentBuilder} from './FormattedContentBuilder.js';
-import {type FormatResult, FormattableMediaTypes} from './FormatterActions.js';
 import {HTMLFormatter} from './HTMLFormatter.js';
 import {IdentityFormatter} from './IdentityFormatter.js';
 import {JavaScriptFormatter} from './JavaScriptFormatter.js';

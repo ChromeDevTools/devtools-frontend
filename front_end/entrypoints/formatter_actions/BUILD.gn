@@ -1,0 +1,23 @@
+# Copyright 2026 The Chromium Authors
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("../../../scripts/build/ninja/devtools_entrypoint.gni")
+import("../visibility.gni")
+
+devtools_entrypoint("bundle") {
+  split_compilation = true
+  entrypoint = "formatter_actions.ts"
+
+  ts_deps = []
+
+  visibility = [
+    ":*",
+    "../../entrypoints/formatter_worker/*",
+    "../../models/formatter/*",
+    "../../panels/sources/*",
+    "../../ui/legacy/components/source_frame/*",
+  ]
+
+  visibility += devtools_entrypoints_visibility
+}

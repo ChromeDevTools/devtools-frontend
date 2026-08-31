@@ -4,8 +4,7 @@
 
 import type * as Common from '../../core/common/common.js';
 import * as Platform from '../../core/platform/platform.js';
-// eslint-disable-next-line @devtools/es-modules-import
-import type * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';
+import type * as FormatterActions from '../../entrypoints/formatter_actions/formatter_actions.js';
 
 import {formatterWorkerPool} from './FormatterWorkerPool.js';
 

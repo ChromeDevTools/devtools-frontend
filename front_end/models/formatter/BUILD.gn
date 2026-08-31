@@ -18,7 +18,7 @@ devtools_foundation_module("formatter") {
     "../../core/common:bundle",
     "../../core/platform:bundle",
     "../../core/platform/api:bundle",
-    "../../entrypoints/formatter_worker:formatter_actions",
+    "../../entrypoints/formatter_actions:bundle",
   ]
 }
 

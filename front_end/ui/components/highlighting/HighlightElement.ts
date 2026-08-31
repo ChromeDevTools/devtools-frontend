@@ -9,7 +9,7 @@ import {HighlightManager} from './HighlightManager.js';
 import {type HighlightChange, highlightRangesWithStyleClass, revertDomChanges} from './MarkupHighlight.js';
 
 export class HighlightElement extends HTMLElement {
-  static readonly observedAttributes = ['ranges', 'current-range', 'type'];
+  static readonly observedAttributes: string[] = ['ranges', 'current-range', 'type'];
   #ranges: TextUtils.TextRange.SourceRange[] = [];
   #currentRange: TextUtils.TextRange.SourceRange|undefined;
   #type = 'css';

@@ -118,6 +118,9 @@ export class DevToolsPage extends PageWrapper {
     await this.waitForFunction(async () => {
       try {
         const result = await this.page.evaluate(async function() {
+          if (window.location.origin === 'null') {
+            return false;
+          }
           // @ts-expect-error Executed in DevTools realm
           const Main = await import('./entrypoints/main/main.js');
           return Main.MainImpl.MainImpl.instanceForTest !== null;

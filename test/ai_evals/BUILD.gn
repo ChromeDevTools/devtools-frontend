@@ -7,19 +7,23 @@ import("../../scripts/build/typescript/typescript.gni")
 
 group("ai_evals") {
   deps = [
+    ":eval_tests",
     ":test_inputs",
-    ":tests",
   ]
 }
 
-ts_e2e_library("tests") {
+ts_e2e_library("eval_tests") {
+  sources = [ "ai_smoke.test.ts" ]
+  deps = [ ":harness_library" ]
+}
+
+ts_e2e_library("harness_library") {
   sources = [
-    "ai_smoke.test.ts",
+    "ai-eval-state-provider.ts",
     "mocha-interface.ts",
     "mocha_hooks.ts",
     "run-mocha.ts",
   ]
-
   deps = [
     "../../front_end/core/sdk:bundle",
     "../../front_end/panels/ai_assistance:bundle",
@@ -36,5 +40,5 @@ generated_file("test_inputs") {
   data_keys = [ "tests" ]
   rebase = target_gen_dir
 
-  deps = [ ":tests" ]
+  deps = [ ":eval_tests" ]
 }

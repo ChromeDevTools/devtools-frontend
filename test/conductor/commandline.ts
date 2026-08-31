@@ -171,5 +171,9 @@ export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T
         type: 'boolean',
         default: false,
         desc: 'Force running screenshot tests on non-Linux platforms',
+      })
+      .option('ota-username', {
+        type: 'string',
+        desc: 'Test account username used for Ai authentication logic in testing.',
       });
 }

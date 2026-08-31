@@ -810,6 +810,15 @@ class DevToolsTestHarness(unittest.TestCase):
             "npm run test -- test/harness/e2e/errors.test.ts:block_2:run_3",
             stdout)
 
+    def test_ai_evals_auth_helper(self):
+        abs_test_file = self._resolve_test_file(
+            "test/harness/e2e/auth-helper.test.ts")
+        stdout, stderr, exit_code = self.run_test_with_output([
+            os.path.join(self.gen_dir, "test/harness/run-mocha.js"),
+            abs_test_file
+        ])
+        self.assertEqual(exit_code, 0)
+        self.assertIn("passing", stdout)
 
 
 if __name__ == '__main__':

@@ -10,6 +10,7 @@ ts_e2e_library("shared") {
     "../../conductor:implementation",
   ]
   sources = [
+    "auth-helper.ts",
     "browser-helper.ts",
     "frontend-helper.ts",
     "page-wrapper.ts",

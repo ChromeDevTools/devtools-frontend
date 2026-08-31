@@ -51,6 +51,7 @@ interface Config {
   expectationsFile?: string;
   bail: boolean;
   forceScreenshots: boolean;
+  otaUsername?: string;
 }
 
 function sliceArrayFromElement(array: string[], element: string) {
@@ -183,6 +184,7 @@ export const TestConfig: Config = {
   expectationsFile: options['expectations-file'],
   bail: options['bail'],
   forceScreenshots: Boolean(options['force-screenshots']),
+  otaUsername: options['ota-username'],
 };
 
 export function loadTests(testDirectory: string, filename = 'tests.txt') {

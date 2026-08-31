@@ -3,9 +3,14 @@
 // found in the LICENSE file.
 
 import {stopServer} from '../conductor/test_server.js';
-import {StateProvider} from '../e2e/conductor/state-provider.js';
+
+import {AiEvalStateProvider} from './ai-eval-state-provider.js';
+
+export async function mochaGlobalSetup() {
+  await AiEvalStateProvider.instance.resolveBrowser();
+}
 
 export async function mochaGlobalTeardown() {
-  await StateProvider.instance.closeBrowsers();
+  await AiEvalStateProvider.instance.closeBrowsers();
   stopServer();
 }

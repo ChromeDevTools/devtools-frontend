@@ -239,6 +239,17 @@ template("legacy_devtools_entrypoint") {
       visibility = [ ":*" ]
     }
   }
+
+  _sources_target = "${target_name}_sources"
+  group(_sources_target) {
+    public_inputs = [ invoker.entrypoint ]
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
+    if (defined(invoker.visibility)) {
+      visibility = invoker.visibility
+    }
+  }
 }
 
 template("devtools_entrypoint") {

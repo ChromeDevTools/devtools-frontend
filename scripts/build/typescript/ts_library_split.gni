@@ -291,6 +291,23 @@ template("ts_library_split") {
     }
   }
 
+  # Sub-target: Expose implementation .ts files as public_inputs for bundling
+  # without triggering recompilation of downstream type-checking targets.
+  _sources_export_target = "${target_name}_sources"
+  group(_sources_export_target) {
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
+    public_inputs = filter_include(_all_sources, [ "*.ts" ])
+    if (defined(invoker.inputs)) {
+      public_inputs += invoker.inputs
+    }
+    public_deps = _non_ts_deps
+    if (defined(invoker.visibility)) {
+      visibility = invoker.visibility
+    }
+  }
+
   # Sub-target 3: Generate tsconfig.json used by sub-target 4 for
   # actual type-checking and JS transpilation.
   generated_file(_tsconfig_target) {
@@ -364,6 +381,8 @@ template("ts_library_split") {
                     ":$_dts_target",
                     ":$_tsconfig_ref_target",
                   ] + _ts_deps
+    public_inputs =
+        filter_include(_dts_outputs, [ "*.d.ts" ]) + [ _tsconfig_ref_file ]
     if (defined(invoker.public_deps)) {
       public_deps += invoker.public_deps
     }

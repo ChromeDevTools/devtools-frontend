@@ -45,18 +45,38 @@ template("devtools_entrypoint_split") {
       visibility = [ ":*" ]
     }
 
+    # Sub-target: Expose the entrypoint's single TypeScript file as
+    # public_inputs. Because cross-module entrypoints are marked external by
+    # esbuild, bundling will not traverse further into dependencies when
+    # consuming this entrypoint.
+    _sources_target = "${target_name}_sources"
+    group(_sources_target) {
+      public_inputs = [ invoker.entrypoint ]
+      forward_variables_from(invoker,
+                             [
+                               "testonly",
+                               "visibility",
+                             ])
+    }
+
+    _bundle_deps = [ ":$_sources_target" ]
+    if (defined(invoker.deps)) {
+      _bundle_deps += invoker.deps
+    }
+    if (defined(invoker.ts_deps)) {
+      foreach(dep, invoker.ts_deps) {
+        _dep_dir = get_label_info(dep, "dir")
+        _dep_name = get_label_info(dep, "name")
+        _bundle_deps += [ "$_dep_dir:${_dep_name}_sources" ]
+      }
+    }
+
     # 2. Bundle from the source TS file to out/<config>/gen.
     bundle(_bundle_target) {
       entrypoint = invoker.entrypoint
       output_file_location = "$target_gen_dir/$_file_name.js"
-      deps = []
+      deps = _bundle_deps
       forward_variables_from(invoker, [ "testonly" ])
-      if (defined(invoker.deps)) {
-        deps += invoker.deps
-      }
-      if (defined(invoker.ts_deps)) {
-        deps += invoker.ts_deps
-      }
       visibility = [ ":*" ]
     }
 

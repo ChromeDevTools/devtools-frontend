@@ -286,6 +286,23 @@ template("legacy_ts_library") {
       metadata.grd_files = _javascript_implementation_files
     }
   }
+
+  _sources_export_target = "${target_name}_sources"
+  group(_sources_export_target) {
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
+    public_inputs = []
+    if (defined(invoker.sources)) {
+      public_inputs += filter_include(invoker.sources, [ "*.ts" ])
+    }
+    if (defined(invoker.inputs)) {
+      public_inputs += invoker.inputs
+    }
+    if (defined(invoker.visibility)) {
+      visibility = invoker.visibility
+    }
+  }
 }
 
 template("ts_library") {

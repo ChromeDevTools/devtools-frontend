@@ -40,8 +40,8 @@ export function getReleaseNote(): ReleaseNote {
 }
 
 let releaseNote: ReleaseNote = {
-  version: 152,
-  header: 'What’s new in DevTools 152',
+  version: 153,
+  header: 'New in DevTools (September 2026)',
   markdownLinks: [
     {
       key: 'devtools-for-agents',

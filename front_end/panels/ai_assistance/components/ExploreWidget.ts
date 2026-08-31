@@ -112,7 +112,7 @@ export type View = typeof DEFAULT_VIEW;
 
 export class ExploreWidget extends UI.Widget.Widget {
   #view: View;
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
   }

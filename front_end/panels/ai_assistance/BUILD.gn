@@ -23,6 +23,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("ai_assistance") {
+  split_compilation = true
   sources = [
     "AiAssistancePanel.ts",
     "ExportConversation.ts",
@@ -44,8 +45,9 @@ devtools_ui_module("ai_assistance") {
     "components/WalkthroughView.ts",
   ]
 
-  deps = [
-    ":css_files",
+  deps = [ ":css_files" ]
+
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -93,9 +95,10 @@ devtools_ui_module("ai_assistance") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "ai_assistance.ts"
 
-  deps = [ ":ai_assistance" ]
+  ts_deps = [ ":ai_assistance" ]
 
   visibility = [
     ":*",
@@ -111,9 +114,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "ai_assistance-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
@@ -127,6 +131,7 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -148,7 +153,7 @@ devtools_ui_module("unittests") {
     "components/WalkthroughView.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",

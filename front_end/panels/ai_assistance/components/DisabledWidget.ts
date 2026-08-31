@@ -145,7 +145,7 @@ export class DisabledWidget extends UI.Widget.Widget {
   aidaAvailability: Host.AidaClient.AidaAccessPreconditions = Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL;
 
   #view: View;
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
   }

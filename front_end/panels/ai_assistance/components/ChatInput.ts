@@ -129,7 +129,7 @@ const SHOW_LOADING_STATE_TIMEOUT = 100;
 /**
  * Maximum allowed size for raw images uploaded by the user to prevent browser tab out-of-memory crashes.
  */
-export const MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024;  // 10MB
+export const MAX_IMAGE_FILE_SIZE_BYTES: number = 10 * 1024 * 1024;  // 10MB
 
 const RELEVANT_DATA_LINK_CHAT_ID = 'relevant-data-link-chat';
 const RELEVANT_DATA_LINK_FOOTER_ID = 'relevant-data-link-footer';
@@ -521,7 +521,8 @@ export class ChatInput extends UI.Widget.Widget implements SDK.TargetManager.Obs
   isContextSelected = false;
   inspectElementToggled = false;
   disclaimerText = '';
-  conversationType = AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
+  conversationType: AiAssistanceModel.AiHistoryStorage.ConversationType =
+      AiAssistanceModel.AiHistoryStorage.ConversationType.STYLING;
   multimodalInputEnabled = false;
   uploadImageInputEnabled = false;
   isReadOnly = false;

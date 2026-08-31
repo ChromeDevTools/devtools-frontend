@@ -258,7 +258,7 @@ export class ChatView extends HTMLElement {
   #view: View;
   #cachedSummary: {markdown: string, summary: string}|null = null;
 
-  constructor(props: Props, view = DEFAULT_VIEW) {
+  constructor(props: Props, view: View = DEFAULT_VIEW) {
     super();
     this.#props = props;
     this.#view = view;

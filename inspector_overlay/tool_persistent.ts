@@ -68,25 +68,25 @@ export class PersistentOverlay extends Overlay {
   private dragHandler?: DragResizeHandler;
   private greenDevAnchorsOverlay?: GreenDevAnchorsOverlay;
 
-  setGreenDevAnchorsOverlay(greenDevAnchorsOverlay: GreenDevAnchorsOverlay) {
+  setGreenDevAnchorsOverlay(greenDevAnchorsOverlay: GreenDevAnchorsOverlay): void {
     this.greenDevAnchorsOverlay = greenDevAnchorsOverlay;
   }
 
-  override reset(data: ResetData) {
+  override reset(data: ResetData): void {
     super.reset(data);
     this.gridLabelState.gridLayerCounter = 0;
     this.gridLabels.innerHTML = '';
     this.greenDevAnchorsOverlay?.reset(data);
   }
 
-  renderGridMarkup() {
+  renderGridMarkup(): void {
     const gridLabels = this.document.createElement('div');
     gridLabels.id = 'grid-label-container';
     this.document.body.append(gridLabels);
     this.gridLabels = gridLabels;
   }
 
-  override install() {
+  override install(): void {
     this.document.body.classList.add('fill');
 
     const canvas = this.document.createElement('canvas');
@@ -102,7 +102,7 @@ export class PersistentOverlay extends Overlay {
     this.dragHandler?.install();
   }
 
-  override uninstall() {
+  override uninstall(): void {
     this.document.body.classList.remove('fill');
     this.document.body.innerHTML = '';
     this.draggableBorders = new Map();
@@ -110,7 +110,7 @@ export class PersistentOverlay extends Overlay {
     this.dragHandler?.uninstall();
   }
 
-  drawGridHighlight(highlight: GridHighlight) {
+  drawGridHighlight(highlight: GridHighlight): void {
     this.context.save();
     drawLayoutGridHighlight(
         highlight, this.context, this.deviceScaleFactor, this.canvasWidth, this.canvasHeight, this.emulationScaleFactor,
@@ -118,32 +118,32 @@ export class PersistentOverlay extends Overlay {
     this.context.restore();
   }
 
-  drawFlexContainerHighlight(highlight: FlexContainerHighlight) {
+  drawFlexContainerHighlight(highlight: FlexContainerHighlight): void {
     this.context.save();
     drawLayoutFlexContainerHighlight(highlight, this.context, this.emulationScaleFactor);
     this.context.restore();
   }
 
-  drawScrollSnapHighlight(highlight: ScrollSnapHighlight) {
+  drawScrollSnapHighlight(highlight: ScrollSnapHighlight): void {
     this.context.save();
     drawScrollSnapHighlight(highlight, this.context, this.emulationScaleFactor);
     this.context.restore();
   }
 
-  drawContainerQueryHighlight(highlight: ContainerQueryHighlight) {
+  drawContainerQueryHighlight(highlight: ContainerQueryHighlight): void {
     this.context.save();
     drawContainerQueryHighlight(highlight, this.context, this.emulationScaleFactor);
     this.context.restore();
   }
 
-  drawGreenDevFloatyAnchors(highlights: GreenDevAnchorsHighlight[]) {
+  drawGreenDevFloatyAnchors(highlights: GreenDevAnchorsHighlight[]): void {
     if (this.greenDevAnchorsOverlay && !this.greenDevAnchorsOverlay.installed) {
       this.greenDevAnchorsOverlay.install();
     }
     this.greenDevAnchorsOverlay?.drawGreenDevAnchors(highlights);
   }
 
-  drawIsolatedElementHighlight(highlight: IsolatedElementHighlight) {
+  drawIsolatedElementHighlight(highlight: IsolatedElementHighlight): void {
     if (!this.dragHandler) {
       this.dragHandler = new DragResizeHandler(this.document, makeDraggableDelegate(this));
       this.dragHandler.install();

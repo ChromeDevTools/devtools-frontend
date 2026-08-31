@@ -42,7 +42,7 @@ export class GreenDevAnchorsOverlay extends Overlay {
   #anchorsContainer!: HTMLElement;
   #anchorsByNodeId = new Map<number, HTMLElement>();
 
-  override install() {
+  override install(): void {
     consoleLog('GreenDevAnchorsOverlay.install() called');
 
     this.document.body.classList.add('fill');
@@ -62,7 +62,7 @@ export class GreenDevAnchorsOverlay extends Overlay {
     super.install();
   }
 
-  override uninstall() {
+  override uninstall(): void {
     consoleLog('GreenDevAnchorsOverlay.uninstall() called');
 
     this.document.body.classList.remove('fill');
@@ -74,7 +74,7 @@ export class GreenDevAnchorsOverlay extends Overlay {
     super.uninstall();
   }
 
-  drawGreenDevAnchors(highlights: GreenDevAnchorsHighlight[]) {
+  drawGreenDevAnchors(highlights: GreenDevAnchorsHighlight[]): void {
     if (this.#anchorsContainer && !this.#anchorsContainer.isConnected) {
       // The container was removed from the DOM (likely by PersistentOverlay.uninstall cleaning up),
       // but this overlay still thinks it's installed. We need to re-install to restore the DOM.

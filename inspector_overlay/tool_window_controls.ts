@@ -23,7 +23,7 @@ export class WindowControlsOverlay extends Overlay {
     super(window, style);
   }
 
-  override install() {
+  override install(): void {
     const windowLinuxToolbarIcons = ['chevron', 'ellipsis', 'minimize', 'maximize', 'close'];
     const macLeftToolbarIcons = ['mac-close', 'mac-minimize', 'mac-maximize'];
     const macRightToolbarIcons = ['mac-chevron', 'mac-ellipsis'];
@@ -37,7 +37,7 @@ export class WindowControlsOverlay extends Overlay {
     super.install();
   }
 
-  override uninstall() {
+  override uninstall(): void {
     this.windowsToolBar.remove();
     this.linuxToolBar.remove();
     this.macToolbarRight.remove();
@@ -45,7 +45,7 @@ export class WindowControlsOverlay extends Overlay {
     super.uninstall();
   }
 
-  drawWindowControlsOverlay(config: WindowControlsOverlayConfig) {
+  drawWindowControlsOverlay(config: WindowControlsOverlayConfig): void {
     // Clear all overlays
     this.clearOverlays();
 
@@ -64,7 +64,7 @@ export class WindowControlsOverlay extends Overlay {
     this.document.documentElement.style.setProperty('--wco-icon-color', generateLegibleTextColor(config.themeColor));
   }
 
-  clearOverlays() {
+  clearOverlays(): void {
     hideElement(this.linuxToolBar);
     hideElement(this.windowsToolBar);
     hideElement(this.macToolbarLeft);

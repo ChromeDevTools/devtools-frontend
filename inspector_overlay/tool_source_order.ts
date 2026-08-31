@@ -19,12 +19,12 @@ interface SourceOrderHighlight {
 export class SourceOrderOverlay extends Overlay {
   private sourceOrderContainer!: HTMLElement;
 
-  override reset(resetData: ResetData) {
+  override reset(resetData: ResetData): void {
     super.reset(resetData);
     this.sourceOrderContainer.textContent = '';
   }
 
-  override install() {
+  override install(): void {
     this.document.body.classList.add('fill');
 
     const canvas = this.document.createElement('canvas');
@@ -42,13 +42,13 @@ export class SourceOrderOverlay extends Overlay {
     super.install();
   }
 
-  override uninstall() {
+  override uninstall(): void {
     this.document.body.classList.remove('fill');
     this.document.body.innerHTML = '';
     super.uninstall();
   }
 
-  drawSourceOrder(highlight: SourceOrderHighlight) {
+  drawSourceOrder(highlight: SourceOrderHighlight): {bounds: PathBounds} {
     const sourceOrder = highlight.sourceOrder || 0;
     const path = highlight.paths.slice().pop();
 

@@ -17,8 +17,8 @@ export interface ContainerQueryHighlight {
   };
 }
 
-export function drawContainerQueryHighlight(
-    highlight: ContainerQueryHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number) {
+export function drawContainerQueryHighlight(highlight: ContainerQueryHighlight, context: CanvasRenderingContext2D,
+                                            emulationScaleFactor: number): void {
   const config = highlight.containerQueryContainerHighlightConfig;
   const bounds = emptyBounds();
   const borderPath = buildPath(highlight.containerBorder, bounds, emulationScaleFactor);

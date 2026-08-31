@@ -67,9 +67,8 @@ const ALIGNMENT_ARROW_DISTANCE_FROM_LINE = 2;
 const FLEXIBILITY_ARROW_THICKNESS = 1;
 const FLEXIBILITY_ARROW_TIP_SIZE = 5;
 
-export function drawLayoutFlexItemHighlight(
-    highlight: FlexItemHighlight, itemPath: PathCommands, context: CanvasRenderingContext2D,
-    emulationScaleFactor: number) {
+export function drawLayoutFlexItemHighlight(highlight: FlexItemHighlight, itemPath: PathCommands,
+                                            context: CanvasRenderingContext2D, emulationScaleFactor: number): void {
   const {baseSize, isHorizontalFlow} = highlight;
 
   const itemQuad = rectPathToQuad(itemPath);
@@ -178,7 +177,7 @@ export function drawLayoutFlexContainerHighlight(
     highlight: FlexContainerHighlight,
     context: CanvasRenderingContext2D,
     emulationScaleFactor: number,
-) {
+    ): void {
   const config = highlight.flexContainerHighlightConfig;
   const bounds = emptyBounds();
   const borderPath = buildPath(highlight.containerBorder, bounds, emulationScaleFactor);
@@ -649,8 +648,8 @@ export function getGapQuads(
  * quad2)
  * @param isReverse whether the direction is reversed (quad1 below quad2 or quad1 right of quad2)
  */
-export function getGapQuadBetweenQuads(
-    quad1: Quad, quad2: Quad, size: number, vertically: boolean, isReverse?: boolean) {
+export function getGapQuadBetweenQuads(quad1: Quad, quad2: Quad, size: number, vertically: boolean,
+                                       isReverse?: boolean): Quad {
   if (isReverse) {
     [quad1, quad2] = [quad2, quad1];
   }
@@ -880,7 +879,7 @@ export function segmentContains([p1, p2]: Position[], point: Position): boolean 
   return (point.y - p1.y) * (p2.x - p1.x) === (p2.y - p1.y) * (point.x - p1.x);
 }
 
-export function distance(p1: Position, p2: Position) {
+export function distance(p1: Position, p2: Position): number {
   return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 

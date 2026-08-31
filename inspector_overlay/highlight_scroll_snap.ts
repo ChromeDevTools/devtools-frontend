@@ -156,8 +156,8 @@ function drawSnapportBorder(
       emulationScaleFactor);
 }
 
-export function drawScrollSnapHighlight(
-    highlight: ScrollSnapHighlight, context: CanvasRenderingContext2D, emulationScaleFactor: number) {
+export function drawScrollSnapHighlight(highlight: ScrollSnapHighlight, context: CanvasRenderingContext2D,
+                                        emulationScaleFactor: number): void {
   // The order of the following draw calls is important, change it carefully.
   drawScrollPadding(highlight, context, emulationScaleFactor);
   const areaBounds = drawSnapAreas(highlight, context, emulationScaleFactor);

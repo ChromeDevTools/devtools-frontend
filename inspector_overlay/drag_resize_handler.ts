@@ -45,12 +45,12 @@ export class DragResizeHandler {
     this.boundMousedown = this.onMousedown.bind(this);
   }
 
-  install() {
+  install(): void {
     this.document.body.addEventListener('mousemove', this.boundMousemove);
     this.document.body.addEventListener('mousedown', this.boundMousedown);
   }
 
-  uninstall() {
+  uninstall(): void {
     this.document.body.removeEventListener('mousemove', this.boundMousemove);
     this.document.body.removeEventListener('mousedown', this.boundMousedown);
   }

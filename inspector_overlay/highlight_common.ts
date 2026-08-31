@@ -33,8 +33,8 @@ export const enum LinePattern {
   DASHED = 'dashed',
 }
 
-export function drawPathWithLineStyle(
-    context: CanvasRenderingContext2D, path: Path2D, lineStyle?: LineStyle, lineWidth = 1) {
+export function drawPathWithLineStyle(context: CanvasRenderingContext2D, path: Path2D, lineStyle?: LineStyle,
+                                      lineWidth = 1): void {
   if (lineStyle?.color) {
     context.save();
     context.translate(0.5, 0.5);
@@ -51,8 +51,8 @@ export function drawPathWithLineStyle(
   }
 }
 
-export function fillPathWithBoxStyle(
-    context: CanvasRenderingContext2D, path: Path2D, bounds: PathBounds, angle: number, boxStyle?: BoxStyle) {
+export function fillPathWithBoxStyle(context: CanvasRenderingContext2D, path: Path2D, bounds: PathBounds, angle: number,
+                                     boxStyle?: BoxStyle): void {
   if (!boxStyle) {
     return;
   }
@@ -157,9 +157,8 @@ let hatchLineColor = '';
  *   |\  \  \ |
  *   **********
  */
-export function hatchFillPath(
-    context: CanvasRenderingContext2D, path: Path2D, bounds: Bounds, delta: number, color: string,
-    rotationAngle: number, flipDirection: boolean|undefined) {
+export function hatchFillPath(context: CanvasRenderingContext2D, path: Path2D, bounds: Bounds, delta: number,
+                              color: string, rotationAngle: number, flipDirection: boolean|undefined): void {
   // Make the bounds be at most the canvas size if it is bigger in any direction.
   // Making the bounds bigger than the canvas is useless as what's drawn there won't be visible.
   if (context.canvas.width < bounds.maxX - bounds.minX || context.canvas.height < bounds.maxY - bounds.minY) {
@@ -204,8 +203,8 @@ export function hatchFillPath(
  * Given a quad, create the corresponding path object. This also accepts a list of quads to clip from the resulting
  * path.
  */
-export function createPathForQuad(
-    outerQuad: Quad, quadsToClip: Quad[], bounds: PathBounds, emulationScaleFactor: number) {
+export function createPathForQuad(outerQuad: Quad, quadsToClip: Quad[], bounds: PathBounds,
+                                  emulationScaleFactor: number): Path2D {
   let commands = [
     'M',
     outerQuad.p1.x,
@@ -274,10 +273,9 @@ export function formatColor(hexa: string, colorFormat: string): string {
   return hexa;
 }
 
-export function drawPath(
-    context: CanvasRenderingContext2D, commands: PathCommands, fillColor: string|undefined,
-    outlineColor: string|undefined, outlinePattern: LinePattern|undefined, bounds: PathBounds,
-    emulationScaleFactor: number) {
+export function drawPath(context: CanvasRenderingContext2D, commands: PathCommands, fillColor: string|undefined,
+                         outlineColor: string|undefined, outlinePattern: LinePattern|undefined, bounds: PathBounds,
+                         emulationScaleFactor: number): Path2D {
   context.save();
   const path = buildPath(commands, bounds, emulationScaleFactor);
   if (fillColor) {

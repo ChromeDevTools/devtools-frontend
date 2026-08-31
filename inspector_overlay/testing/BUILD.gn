@@ -5,9 +5,10 @@
 import("../../scripts/build/typescript/typescript.gni")
 
 ts_library("testing") {
+  split_compilation = true
   testonly = true
 
   sources = [ "InspectorOverlayHelpers.ts" ]
 
-  deps = [ "..:inspector_overlay" ]
+  ts_deps = [ "..:inspector_overlay" ]
 }

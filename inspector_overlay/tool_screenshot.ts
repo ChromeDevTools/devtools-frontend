@@ -25,7 +25,7 @@ export class ScreenshotOverlay extends Overlay {
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
-  override install() {
+  override install(): void {
     const root = this.document.documentElement;
     root.addEventListener('mousedown', this.onMouseDown, true);
     root.addEventListener('mouseup', this.onMouseUp, true);
@@ -41,7 +41,7 @@ export class ScreenshotOverlay extends Overlay {
     super.install();
   }
 
-  override uninstall() {
+  override uninstall(): void {
     this.document.body.innerHTML = '';
     const root = this.document.documentElement;
     root.removeEventListener('mousedown', this.onMouseDown, true);
@@ -51,7 +51,7 @@ export class ScreenshotOverlay extends Overlay {
     super.uninstall();
   }
 
-  onMouseDown(event: MouseEvent) {
+  onMouseDown(event: MouseEvent): void {
     anchor = {x: event.pageX, y: event.pageY};
     position = anchor;
     this.updateZone();
@@ -59,7 +59,7 @@ export class ScreenshotOverlay extends Overlay {
     event.preventDefault();
   }
 
-  onMouseUp(event: MouseEvent) {
+  onMouseUp(event: MouseEvent): void {
     if (anchor && position) {
       const rect = currentRect();
       if (rect.width >= 5 && rect.height >= 5) {
@@ -72,7 +72,7 @@ export class ScreenshotOverlay extends Overlay {
     event.preventDefault();
   }
 
-  onMouseMove(event: MouseEvent) {
+  onMouseMove(event: MouseEvent): void {
     if (anchor && event.buttons === 1) {
       position = {x: event.pageX, y: event.pageY};
     } else {
@@ -83,7 +83,7 @@ export class ScreenshotOverlay extends Overlay {
     event.preventDefault();
   }
 
-  onKeyDown(event: KeyboardEvent) {
+  onKeyDown(event: KeyboardEvent): void {
     if (anchor && event.key === 'Escape') {
       cancel();
       this.updateZone();
@@ -92,7 +92,7 @@ export class ScreenshotOverlay extends Overlay {
     }
   }
 
-  updateZone() {
+  updateZone(): void {
     const zone = this.zone;
     if (!position || !anchor) {
       zone.style.display = 'none';

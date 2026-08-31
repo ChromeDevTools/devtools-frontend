@@ -12,7 +12,7 @@ function formatNumber(n: number): string {
 }
 
 export class ViewportSizeOverlay extends Overlay {
-  override install() {
+  override install(): void {
     this.document.body.classList.add('fill');
     const canvas = this.document.createElement('canvas');
     canvas.id = 'canvas';
@@ -22,13 +22,13 @@ export class ViewportSizeOverlay extends Overlay {
     super.install();
   }
 
-  override uninstall() {
+  override uninstall(): void {
     this.document.body.classList.remove('fill');
     this.document.body.innerHTML = '';
     super.uninstall();
   }
 
-  drawViewSize() {
+  drawViewSize(): void {
     const viewportSize = this.viewportSizeForMediaQueries || this.viewportSize;
     const text = `${formatNumber(viewportSize.width)}px \xD7 ${formatNumber(viewportSize.height)}px`;
     const canvasWidth = this.canvasWidth || 0;

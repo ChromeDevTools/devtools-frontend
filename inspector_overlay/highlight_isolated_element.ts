@@ -21,9 +21,18 @@ export interface IsolatedElementHighlight {
   };
 }
 
-export function drawIsolatedElementHighlight(
-    highlight: IsolatedElementHighlight, context: CanvasRenderingContext2D, canvasWidth: number, canvasHeight: number,
-    emulationScaleFactor: number) {
+export interface IsolatedElementPaths {
+  widthPath: Path2D;
+  heightPath: Path2D;
+  bidirectionPath: Path2D;
+  currentWidth: number;
+  currentHeight: number;
+  highlightIndex: number;
+}
+
+export function drawIsolatedElementHighlight(highlight: IsolatedElementHighlight, context: CanvasRenderingContext2D,
+                                             canvasWidth: number, canvasHeight: number,
+                                             emulationScaleFactor: number): IsolatedElementPaths {
   const {currentX, currentY, currentWidth, currentHeight, highlightIndex} = highlight;
   // Draw a mask covering other area of the canvas.
   context.save();

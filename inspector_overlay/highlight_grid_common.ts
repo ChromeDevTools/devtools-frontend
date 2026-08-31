@@ -215,9 +215,9 @@ export interface GridHighlight {
   };
 }
 
-export function drawLayoutGridHighlight(
-    highlight: GridHighlight, context: CanvasRenderingContext2D, deviceScaleFactor: number, canvasWidth: number,
-    canvasHeight: number, emulationScaleFactor: number, labelState: GridLabelState) {
+export function drawLayoutGridHighlight(highlight: GridHighlight, context: CanvasRenderingContext2D,
+                                        deviceScaleFactor: number, canvasWidth: number, canvasHeight: number,
+                                        emulationScaleFactor: number, labelState: GridLabelState): void {
   const gridBounds = emptyBounds();
   const gridPath = buildPath(highlight.gridBorder, gridBounds, emulationScaleFactor);
 

@@ -84,26 +84,26 @@ export class Overlay {
     this.style = style;
   }
 
-  setCanvas(canvas: HTMLCanvasElement) {
+  setCanvas(canvas: HTMLCanvasElement): void {
     this.canvas = canvas;
     this._context = canvas.getContext('2d');
   }
 
-  install() {
+  install(): void {
     for (const style of this.style) {
       adoptStyleSheet(style);
     }
     this._installed = true;
   }
 
-  uninstall() {
+  uninstall(): void {
     for (const style of this.style) {
       document.adoptedStyleSheets = document.adoptedStyleSheets.filter(s => s !== style);
     }
     this._installed = false;
   }
 
-  reset(resetData?: ResetData) {
+  reset(resetData?: ResetData): void {
     if (resetData) {
       this.viewportSize = resetData.viewportSize;
       this.viewportSizeForMediaQueries = resetData.viewportSizeForMediaQueries;
@@ -117,7 +117,7 @@ export class Overlay {
     this.resetCanvas();
   }
 
-  resetCanvas() {
+  resetCanvas(): void {
     if (!this.canvas || !this._context) {
       return;
     }
@@ -133,7 +133,7 @@ export class Overlay {
     this.canvasHeight = this.viewportSize.height;
   }
 
-  setPlatform(platform: string) {
+  setPlatform(platform: string): void {
     this.platform = platform;
     this.document.body.classList.add('platform-' + platform);
     if (!this._installed) {
@@ -141,13 +141,13 @@ export class Overlay {
     }
   }
 
-  dispatch(message: unknown[]) {
+  dispatch(message: unknown[]): void {
     const functionName = message.shift() as string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this as any)[functionName].apply(this, message);
   }
 
-  eventHasCtrlOrMeta(event: KeyboardEvent) {
+  eventHasCtrlOrMeta(event: KeyboardEvent): boolean {
     return this.platform === 'mac' ? (event.metaKey && !event.ctrlKey) : (event.ctrlKey && !event.metaKey);
   }
 
@@ -177,7 +177,7 @@ export class Overlay {
   }
 }
 
-export function log(text: string) {
+export function log(text: string): void {
   let element = document.getElementById('log');
   if (!element) {
     element = createChild(document.body, 'div');
@@ -201,7 +201,7 @@ export function createTextChild(parent: HTMLElement, text: string): Text {
   return element;
 }
 
-export function createElement(tagName: string, className?: string) {
+export function createElement(tagName: string, className?: string): HTMLElement {
   const element = document.createElement(tagName);
   if (className) {
     element.className = className;
@@ -209,7 +209,7 @@ export function createElement(tagName: string, className?: string) {
   return element;
 }
 
-export function ellipsify(str: string, maxLength: number) {
+export function ellipsify(str: string, maxLength: number): string {
   if (str.length <= maxLength) {
     return String(str);
   }
@@ -231,6 +231,6 @@ declare global {
   }
 }
 
-export function adoptStyleSheet(styleSheet: CSSStyleSheet) {
+export function adoptStyleSheet(styleSheet: CSSStyleSheet): void {
   document.adoptedStyleSheets = [...document.adoptedStyleSheets, styleSheet];
 }

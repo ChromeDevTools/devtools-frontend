@@ -145,10 +145,9 @@ export interface GridLabelState {
  * Places all of the required grid labels on the overlay. This includes row and
  * column line number labels, and area labels.
  */
-export function drawGridLabels(
-    config: GridHighlightConfig, gridBounds: Bounds, areaBounds: AreaBounds[], canvasSize: CanvasSize,
-    labelState: GridLabelState, emulationScaleFactor: number,
-    writingModeMatrix: DOMMatrix|undefined = new DOMMatrix()) {
+export function drawGridLabels(config: GridHighlightConfig, gridBounds: Bounds, areaBounds: AreaBounds[],
+                               canvasSize: CanvasSize, labelState: GridLabelState, emulationScaleFactor: number,
+                               writingModeMatrix: DOMMatrix|undefined = new DOMMatrix()): void {
   // Find and clear the layer for the node specified in the config, or the default layer:
   // Each node has a layer for grid labels in order to draw multiple grid highlights
   // at once.
@@ -382,7 +381,7 @@ export function normalizePositionData(config: NormalizePositionDataConfig, bound
  */
 export function drawGridLineNumbers(
     container: HTMLElement, data: GridPositionNormalizedData, canvasSize: CanvasSize, emulationScaleFactor: number,
-    writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(), writingMode: string|undefined = 'horizontal-tb') {
+    writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(), writingMode: string|undefined = 'horizontal-tb'): void {
   if (!data.columns.positive.names) {
     for (const [i, pos] of positionIterator(data.columns.positive.positions, 'x')) {
       const element = createLabelElement(container, (i + 1).toString(), 'column');
@@ -418,10 +417,10 @@ export function drawGridLineNumbers(
 /**
  * Places the grid track size labels on the overlay.
  */
-export function drawGridTrackSizes(
-    container: HTMLElement, trackSizes: TrackSize[], direction: 'row'|'column', canvasSize: CanvasSize,
-    emulationScaleFactor: number, writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(),
-    writingMode: string|undefined = 'horizontal-tb') {
+export function drawGridTrackSizes(container: HTMLElement, trackSizes: TrackSize[], direction: 'row'|'column',
+                                   canvasSize: CanvasSize, emulationScaleFactor: number,
+                                   writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(),
+                                   writingMode: string|undefined = 'horizontal-tb'): void {
   const {main, cross} = getAxes(writingMode);
   const {crossSize} = getCanvasSizes(writingMode, canvasSize);
 
@@ -451,10 +450,10 @@ export function drawGridTrackSizes(
 /**
  * Places the grid row and column name labels on the overlay.
  */
-export function drawGridLineNames(
-    container: HTMLElement, data: GridPositionNormalizedDataWithNames, canvasSize: CanvasSize,
-    emulationScaleFactor: number, writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(),
-    writingMode: string|undefined = 'horizontal-tb') {
+export function drawGridLineNames(container: HTMLElement, data: GridPositionNormalizedDataWithNames,
+                                  canvasSize: CanvasSize, emulationScaleFactor: number,
+                                  writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(),
+                                  writingMode: string|undefined = 'horizontal-tb'): void {
   for (const [i, pos] of data.columns.positive.positions.entries()) {
     const names = data.columns.positive.names[i];
     const element = createLabelElement(container, makeLineNameLabelContent(names), 'column');
@@ -487,9 +486,9 @@ function makeLineNameLabelContent(names: string[]): HTMLElement {
 /**
  * Places the grid area name labels on the overlay.
  */
-export function drawGridAreaNames(
-    container: HTMLElement, areaBounds: AreaBounds[], writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(),
-    writingMode: string|undefined = 'horizontal-tb') {
+export function drawGridAreaNames(container: HTMLElement, areaBounds: AreaBounds[],
+                                  writingModeMatrix: DOMMatrix|undefined = new DOMMatrix(),
+                                  writingMode: string|undefined = 'horizontal-tb'): void {
   for (const {name, bounds} of areaBounds) {
     const element = createLabelElement(container, name, 'row');
     const {width, height} = getLabelSize(element, writingMode);
@@ -982,7 +981,7 @@ function getLabelPositionByArrowType(
  * This is also made to generate the defaultLabelTextColor for all of the default label colors that the
  * OverlayColorGenerator produces.
  */
-export function generateLegibleTextColor(backgroundColor: string) {
+export function generateLegibleTextColor(backgroundColor: string): '#121212'|'white'|null {
   let rgb: number[] = [];
 
   // Try to parse it as a #rrggbbaa string first

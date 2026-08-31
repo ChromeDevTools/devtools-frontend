@@ -58,20 +58,20 @@ function assertElements<T extends Element>(
 /**
  * This does the same as initFrame but also prepares the DOM for testing grid labels.
  */
-export function initFrameForGridLabels() {
+export function initFrameForGridLabels(): void {
   const styleTag = document.createElement('style');
   styleTag.textContent = gridStyle;
   document.head.append(styleTag);
   createGridLabelContainer();
 }
 
-export function initFrameForMultipleGridLabels(numGrids: number) {
+export function initFrameForMultipleGridLabels(numGrids: number): void {
   for (let i = 1; i <= numGrids; i++) {
     createGridLabelContainer(i);
   }
 }
 
-export function createGridLabelContainer(layerId?: number) {
+export function createGridLabelContainer(layerId?: number): void {
   // Ensure main layer is created first
   let el = document.getElementById(GRID_LABEL_CONTAINER_ID);
   if (!el) {
@@ -156,9 +156,9 @@ interface ExpectedAreaNameLabel {
   top?: string;
 }
 
-export function drawGridLineNumbersAndAssertLabels(
-    config: NormalizePositionDataConfig&{writingMode?: string}, bounds: Bounds, canvasSize: CanvasSize, layerId: number,
-    expectedLabels: ExpectedLineNumberLabel[]) {
+export function drawGridLineNumbersAndAssertLabels(config: NormalizePositionDataConfig&{writingMode?: string},
+                                                   bounds: Bounds, canvasSize: CanvasSize, layerId: number,
+                                                   expectedLabels: ExpectedLineNumberLabel[]): void {
   const el = getGridLineNumberLabelContainer(layerId);
   const data = normalizePositionData(config, bounds);
 
@@ -178,9 +178,9 @@ export function drawGridLineNumbersAndAssertLabels(
       'The right total number of line number labels were displayed');
 }
 
-export function drawGridLineNamesAndAssertLabels(
-    config: NormalizePositionDataConfig, bounds: Bounds, canvasSize: CanvasSize, layerId: number,
-    deviceEmulationFactor: number, expectedLabels: ExpectedLineNameLabel[]) {
+export function drawGridLineNamesAndAssertLabels(config: NormalizePositionDataConfig, bounds: Bounds,
+                                                 canvasSize: CanvasSize, layerId: number, deviceEmulationFactor: number,
+                                                 expectedLabels: ExpectedLineNameLabel[]): void {
   const el = getGridLineNameLabelContainer(layerId);
   const data = normalizePositionData(config, bounds);
   drawGridLineNames(el, data as GridPositionNormalizedDataWithNames, canvasSize, deviceEmulationFactor);
@@ -234,9 +234,9 @@ export function drawGridLineNamesAndAssertLabels(
   }
 }
 
-export function drawGridAreaNamesAndAssertLabels(
-    areaNames: AreaBounds[], writingModeMatrix: DOMMatrix|undefined, writingMode: string|undefined,
-    expectedLabels: ExpectedAreaNameLabel[]) {
+export function drawGridAreaNamesAndAssertLabels(areaNames: AreaBounds[], writingModeMatrix: DOMMatrix|undefined,
+                                                 writingMode: string|undefined,
+                                                 expectedLabels: ExpectedAreaNameLabel[]): void {
   const el = getGridAreaNameLabelContainer();
   drawGridAreaNames(el, areaNames, writingModeMatrix, writingMode);
 
@@ -271,7 +271,7 @@ export function drawGridAreaNamesAndAssertLabels(
 
 export function drawMultipleGridLineNumbersAndAssertLabels(
     configs: Array<{config: NormalizePositionDataConfig, layerId: number}>, bounds: Bounds, canvasSize: CanvasSize,
-    expectedLabelList: ExpectedLayerLabel[]) {
+    expectedLabelList: ExpectedLayerLabel[]): void {
   for (const item of configs) {
     const el = getGridLineNumberLabelContainer(item.layerId);
     const data = normalizePositionData(item.config, bounds);

@@ -14,7 +14,7 @@ export class PausedOverlay extends Overlay {
     this.onKeyDown = this.onKeyDown.bind(this);
   }
 
-  onKeyDown(event: KeyboardEvent) {
+  onKeyDown(event: KeyboardEvent): void {
     if (event.key === 'F8' || this.eventHasCtrlOrMeta(event) && event.key === '\\') {
       this.window.InspectorOverlayHost.send('resume');
     } else if (event.key === 'F10' || this.eventHasCtrlOrMeta(event) && event.key === '\'') {
@@ -22,7 +22,7 @@ export class PausedOverlay extends Overlay {
     }
   }
 
-  override install() {
+  override install(): void {
     const controlsLine = this.document.createElement('div');
     controlsLine.classList.add('controls-line');
 
@@ -62,13 +62,13 @@ export class PausedOverlay extends Overlay {
     super.install();
   }
 
-  override uninstall() {
+  override uninstall(): void {
     this.document.body.innerHTML = '';
     this.document.removeEventListener('keydown', this.onKeyDown);
     super.uninstall();
   }
 
-  drawPausedInDebuggerMessage(message: string) {
+  drawPausedInDebuggerMessage(message: string): void {
     this.container.textContent = message;
   }
 }

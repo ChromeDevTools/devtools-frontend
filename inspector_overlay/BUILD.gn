@@ -57,8 +57,13 @@ action("build_inspector_overlay") {
   public_deps = [
     ":copy_css_to_gen",
     ":copy_resources",
-    ":inspector_overlay",
   ]
+
+  if (!devtools_skip_typecheck) {
+    public_deps += [ ":inspector_overlay_checked" ]
+  } else {
+    public_deps += [ ":inspector_overlay" ]
+  }
 }
 
 copy("copy_resources") {
@@ -81,6 +86,7 @@ copy("copy_css_to_gen") {
 }
 
 ts_library("inspector_overlay") {
+  split_compilation = true
   sources = [
     "common.ts",
     "css_grid_label_helpers.ts",
@@ -102,10 +108,11 @@ ts_library("inspector_overlay") {
     "tool_window_controls.ts",
   ]
 
-  deps = [ "../front_end/core/common:ColorUtils" ]
+  ts_deps = [ "../front_end/core/common:ColorUtils" ]
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -119,7 +126,7 @@ ts_library("unittests") {
     "tool_window_controls.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":inspector_overlay",
     "./testing",
   ]

@@ -216,7 +216,7 @@ def CheckESBuildVersion(input_api, output_api):
 
 def CheckDevToolsLint(input_api, output_api):
     lint_path = input_api.os_path.join(input_api.PresubmitLocalPath(),
-                                       'scripts', 'test', 'run_lint_check.mjs')
+                                       'scripts', 'lint', 'run_lint_check.mjs')
 
     lint_related_paths = [
         input_api.os_path.join(input_api.PresubmitLocalPath(),
@@ -229,7 +229,7 @@ def CheckDevToolsLint(input_api, output_api):
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'front_end',
                                'tsconfig.json'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'scripts',
-                               'test', 'run_lint_check.mjs'),
+                               'lint'),
         input_api.os_path.join(input_api.PresubmitLocalPath(), 'node_modules'),
     ]
 

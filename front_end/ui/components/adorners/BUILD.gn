@@ -13,31 +13,33 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("adorners") {
+  split_compilation = true
   sources = [ "Adorner.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../../ui/legacy:bundle",
     "../../../ui/lit:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "adorners.ts"
 
-  deps = [
-    ":adorners",
-    ":css_files",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":adorners" ]
 
   visibility = default_components_visibility + [ "../../legacy/*" ]
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "Adorner.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../core/platform:bundle",
   ]

@@ -39,7 +39,7 @@ export class Adorner extends HTMLElement {
     this.#render();
   }
 
-  static readonly observedAttributes = ['active', 'toggleable'];
+  static readonly observedAttributes: string[] = ['active', 'toggleable'];
   attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
     if (oldValue === newValue) {
       return;

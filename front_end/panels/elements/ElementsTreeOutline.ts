@@ -146,6 +146,13 @@ interface ViewInput {
                            moveDirection?: string) => void;
   nodeToEdit?: ({node: SDK.DOMModel.DOMNode}&InitialEditState)|null;
   onInitialEditCompleted?: () => void;
+  dragOverNode?: {node: SDK.DOMModel.DOMNode, isClosingTag: boolean}|null;
+  isValidDragSource?: (node: SDK.DOMModel.DOMNode) => boolean;
+  onDragStart?: (node: SDK.DOMModel.DOMNode, event: DragEvent, textContent?: string) => boolean;
+  onDragOver?: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) => boolean;
+  onDragLeave?: (event: DragEvent) => void;
+  onDrop?: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) => void;
+  onDragEnd?: (event: DragEvent) => void;
 }
 
 interface ViewOutput {
@@ -543,7 +550,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) &&
         !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
 
-    // TODO: Move Drag and Drop reordering support (ondragstart, ondragover, ondrop, insertion markers) out of ElementsTreeOutline into a declarative drag-and-drop controller for <devtools-tree>.
     // TODO: Move marker decorators and descendant gutter decorations (MarkerDecoratorRegistration, updateDecorations) into declarative state passed to ElementsTreeWidget.
     // TODO: Move TopLayerContainer rendering for top layer elements into a declarative tree element item.
     // TODO: Move AdoptedStyleSheet rendering (AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement) into dedicated declarative widgets.
@@ -551,6 +557,8 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     // TODO: Move ImagePreviewPopover and issue tooltip helpers into declarative Lit directives or tooltip components.
     // TODO: Move in-place keyboard shortcuts (F2 for edit, Enter for attribute edit) into DOMTreeWidget.
     // TODO: Move DOMModel event subscription and reactive state synchronization (updateRecords, DOM update animations) directly into DOMTreeWidget.
+
+    const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
 
     const onSelect = (): void => {
       input.onSelect?.(node, /* selectedByUser= */ true);
@@ -560,9 +568,14 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
       input.onExpand?.(node, event.detail.expanded);
     };
 
+    const isDragOver = input.dragOverNode?.node === node && !input.dragOverNode.isClosingTag;
+    const isClosingTagDragOver = input.dragOverNode?.node === node && Boolean(input.dragOverNode.isClosingTag);
+    const isDraggable = !input.disableEdits && Boolean(input.isValidDragSource?.(node));
+
     const classes = classMap({
       hovered: isHovered,
       'in-clipboard': Boolean(input.isNodeInClipboard?.(node)),
+      'elements-drag-over': isDragOver,
     });
 
     const onMouseMove = (event: MouseEvent): void => {
@@ -572,7 +585,45 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     };
 
     const onContextMenu = (event: MouseEvent): void => {
+      event.stopPropagation();
       input.onContextMenu?.(node, event);
+    };
+
+    const onDragStart = (event: DragEvent): void => {
+      event.stopPropagation();
+      const currentTarget = event.currentTarget as HTMLElement | null;
+      const textContent = currentTarget?.firstElementChild?.textContent ?? currentTarget?.textContent ?? undefined;
+      input.onDragStart?.(node, event, textContent);
+    };
+
+    const onDragOver = (event: DragEvent): void => {
+      event.stopPropagation();
+      input.onDragOver?.(node, /* isClosingTag= */ false, event);
+    };
+
+    const onClosingTagDragOver = (event: DragEvent): void => {
+      event.stopPropagation();
+      input.onDragOver?.(node, /* isClosingTag= */ true, event);
+    };
+
+    const onDragLeave = (event: DragEvent): void => {
+      event.stopPropagation();
+      input.onDragLeave?.(event);
+    };
+
+    const onDrop = (event: DragEvent): void => {
+      event.stopPropagation();
+      input.onDrop?.(node, /* isClosingTag= */ false, event);
+    };
+
+    const onClosingTagDrop = (event: DragEvent): void => {
+      event.stopPropagation();
+      input.onDrop?.(node, /* isClosingTag= */ true, event);
+    };
+
+    const onDragEnd = (event: DragEvent): void => {
+      event.stopPropagation();
+      input.onDragEnd?.(event);
     };
 
     /* clang-format off */
@@ -581,10 +632,16 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           ?selected=${isSelected}
           class=${classes}
           ?open=${isExpanded}
+          draggable=${isDraggable ? 'true' : 'false'}
           @select=${onSelect}
           @expand=${onExpand}
-          @mousemove=${onMouseMove}
-          @contextmenu=${onContextMenu}
+          @mousemove=${on(onMouseMove)}
+          @contextmenu=${on(onContextMenu)}
+          @dragstart=${on(onDragStart)}
+          @dragover=${on(onDragOver)}
+          @dragleave=${on(onDragLeave)}
+          @drop=${on(onDrop)}
+          @dragend=${on(onDragEnd)}
           jslog=${VisualLogging.treeItem().parent('elementsTreeOutline').track({
             keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
             resize: true,
@@ -629,9 +686,12 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
               ${children.map(child => renderNode(child, depth + 1))}
               ${needsClosingTag ? html`
                 <li role="treeitem"
-                    class=${classMap({hovered: isHovered})}
+                    class=${classMap({hovered: isHovered, 'elements-drag-over': isClosingTagDragOver})}
                     jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}
-                    @mousemove=${onMouseMove}>
+                    @mousemove=${on(onMouseMove)}
+                    @dragover=${on(onClosingTagDragOver)}
+                    @dragleave=${on(onDragLeave)}
+                    @drop=${on(onClosingTagDrop)}>
                   ${UI.Widget.widget(ElementsTreeWidget, {
                     node,
                     isClosingTag: true,
@@ -1074,6 +1134,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   #searchMatchNode: SDK.DOMModel.DOMNode|null = null;
   #searchMatchQuery: string|null = null;
   #nodeToEdit: ({node: SDK.DOMModel.DOMNode}&InitialEditState)|null = null;
+  #draggedNode: SDK.DOMModel.DOMNode|null = null;
+  #draggedNodeWasExpanded = false;
+  #dragOverNode: {node: SDK.DOMModel.DOMNode, isClosingTag: boolean}|null = null;
 
   hoveredDOMNode(): SDK.DOMModel.DOMNode|null {
     if (this.#view === DECLARATIVE_VIEW) {
@@ -1199,6 +1262,16 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       onInitialEditCompleted: () => {
         this.#nodeToEdit = null;
       },
+      dragOverNode: this.#dragOverNode,
+      isValidDragSource: (node: SDK.DOMModel.DOMNode) => this.isValidDragSource(node),
+      onDragStart: (node: SDK.DOMModel.DOMNode, event: DragEvent, textContent?: string) =>
+          this.onDragStart(node, event, textContent),
+      onDragOver: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) =>
+          this.onDragOver(node, isClosingTag, event),
+      onDragLeave: (event: DragEvent) => this.onDragLeave(event),
+      onDrop: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) =>
+          this.onDrop(node, isClosingTag, event),
+      onDragEnd: (event: DragEvent) => this.onDragEnd(event),
     },
                this.#viewOutput, this.contentElement);
     if (this.#viewOutput.elementsTreeOutline) {
@@ -1420,6 +1493,145 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   duplicateNode(node: SDK.DOMModel.DOMNode): void {
     node.duplicate();
+  }
+
+  nodeBeingDragged(): SDK.DOMModel.DOMNode|null {
+    return this.#draggedNode;
+  }
+
+  dragOverNode(): {node: SDK.DOMModel.DOMNode, isClosingTag: boolean}|null {
+    return this.#dragOverNode;
+  }
+
+  isValidDragSource(node: SDK.DOMModel.DOMNode): boolean {
+    if (this.disableEdits) {
+      return false;
+    }
+    if (!node.parentNode || node.parentNode.nodeType() !== Node.ELEMENT_NODE) {
+      return false;
+    }
+    const nodeName = node.nodeName();
+    if (nodeName === 'BODY' || nodeName === 'HEAD') {
+      return false;
+    }
+    return true;
+  }
+
+  isValidDragTarget(targetNode: SDK.DOMModel.DOMNode): boolean {
+    if (!this.#draggedNode) {
+      return false;
+    }
+    if (!targetNode.parentNode || targetNode.parentNode.nodeType() !== Node.ELEMENT_NODE) {
+      return false;
+    }
+    let current: SDK.DOMModel.DOMNode|null = targetNode;
+    while (current) {
+      if (current === this.#draggedNode) {
+        return false;
+      }
+      current = current.parentNode;
+    }
+    return true;
+  }
+
+  onDragStart(node: SDK.DOMModel.DOMNode, event: DragEvent, textContent?: string): boolean {
+    const target = (event.target as Node | null);
+    if (!target) {
+      return false;
+    }
+    const selection = target.getComponentSelection();
+    if (selection && selection.type === 'Range' && !selection.isCollapsed && selection.toString().length > 0 &&
+        target.hasSelection()) {
+      return false;
+    }
+    if (target.nodeName === 'A') {
+      return false;
+    }
+    if (!this.isValidDragSource(node)) {
+      return false;
+    }
+    this.#draggedNode = node;
+    this.#draggedNodeWasExpanded = this.isNodeExpanded(node);
+
+    if (event.dataTransfer) {
+      const text = textContent ?? node.nodeName().toLowerCase();
+      event.dataTransfer.setData('text/plain', text.replace(/\u200b/g, ''));
+      event.dataTransfer.effectAllowed = 'copyMove';
+    }
+
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
+    return true;
+  }
+
+  onDragOver(node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent): boolean {
+    if (!this.#draggedNode) {
+      return false;
+    }
+    if (!this.isValidDragTarget(node)) {
+      return false;
+    }
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+    if (this.#dragOverNode?.node !== node || this.#dragOverNode?.isClosingTag !== isClosingTag) {
+      this.#dragOverNode = {node, isClosingTag};
+      if (this.#view === DECLARATIVE_VIEW) {
+        this.performUpdate();
+      }
+    }
+    return true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    if (this.#dragOverNode) {
+      this.#dragOverNode = null;
+      if (this.#view === DECLARATIVE_VIEW) {
+        this.performUpdate();
+      }
+    }
+  }
+
+  onDrop(node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent): void {
+    event.preventDefault();
+    if (!this.#draggedNode) {
+      return;
+    }
+    this.moveNode(this.#draggedNode, node, isClosingTag);
+    this.#draggedNode = null;
+    this.#dragOverNode = null;
+    if (this.#view === DECLARATIVE_VIEW) {
+      this.performUpdate();
+    }
+  }
+
+  onDragEnd(event: DragEvent): void {
+    event.preventDefault();
+    this.#draggedNode = null;
+    this.#dragOverNode = null;
+    if (this.#view === DECLARATIVE_VIEW) {
+      this.performUpdate();
+    }
+  }
+
+  moveNode(draggedNode: SDK.DOMModel.DOMNode, targetNode: SDK.DOMModel.DOMNode, isClosingTag: boolean): void {
+    let parentNode: SDK.DOMModel.DOMNode|null;
+    let anchorNode: SDK.DOMModel.DOMNode|null;
+    if (isClosingTag) {
+      // Drop onto closing tag -> insert as last child.
+      parentNode = targetNode;
+      anchorNode = null;
+    } else {
+      parentNode = targetNode.parentNode;
+      anchorNode = targetNode;
+    }
+    if (!parentNode) {
+      return;
+    }
+    const wasExpanded = this.#draggedNodeWasExpanded;
+    draggedNode.moveTo(parentNode, anchorNode,
+                       (error, newNode) => this.selectNodeAfterEdit(wasExpanded, error, newNode));
   }
 
   selectNodeAfterEdit(wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null,
@@ -1751,7 +1963,6 @@ export class ElementsTreeOutline extends
   private isXMLMimeTypeInternal?: boolean|null;
   suppressRevealAndSelect = false;
   private previousHoveredElement?: UI.TreeOutline.TreeElement;
-  private treeElementBeingDragged?: ElementsTreeElement;
   private dragOverTreeElement?: ElementsTreeElement;
   private updateModifiedNodesTimeout?: number;
   #topLayerContainerByDocument = new WeakMap<SDK.DOMModel.DOMDocument, TopLayerContainer>();
@@ -2248,140 +2459,55 @@ export class ElementsTreeOutline extends
   }
 
   private ondragstart(event: DragEvent): boolean|undefined {
-    const node = (event.target as Node | null);
-    if (!node) {
+    const treeElement = this.treeElementFromEventInternal(event);
+    if (!(treeElement instanceof ElementsTreeElement)) {
       return false;
     }
-    const selection = node.getComponentSelection();
-    if (selection && selection.type === 'Range' && !selection.isCollapsed && selection.toString().length > 0 &&
-        node.hasSelection()) {
-      return false;
-    }
-    if (node.nodeName === 'A') {
-      return false;
-    }
-
-    const treeElement = this.validDragSourceOrTarget(this.treeElementFromEventInternal(event));
-    if (!treeElement) {
-      return false;
-    }
-
-    if (treeElement.node().nodeName() === 'BODY' || treeElement.node().nodeName() === 'HEAD') {
-      return false;
-    }
-
     const textContent = treeElement.widget.contentElement.textContent || treeElement.listItemElement.textContent ||
         treeElement.node().nodeName().toLowerCase();
-    if (!event.dataTransfer || !textContent) {
-      return false;
-    }
-    event.dataTransfer.setData('text/plain', textContent.replace(/\u200b/g, ''));
-    event.dataTransfer.effectAllowed = 'copyMove';
-    this.treeElementBeingDragged = treeElement;
-
-    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
-
-    return true;
+    const success = this.domTreeWidget?.onDragStart(treeElement.node(), event, textContent);
+    return success;
   }
 
   private ondragover(event: DragEvent): boolean {
-    if (!this.treeElementBeingDragged) {
+    const treeElement = this.treeElementFromEventInternal(event);
+    if (!(treeElement instanceof ElementsTreeElement)) {
       this.clearDragOverTreeElementMarker();
       return false;
     }
-
-    const treeElement = this.validDragSourceOrTarget(this.treeElementFromEventInternal(event));
-    if (!treeElement) {
-      this.clearDragOverTreeElementMarker();
-      return false;
-    }
-
-    let node: (SDK.DOMModel.DOMNode|null) = (treeElement.node() as SDK.DOMModel.DOMNode | null);
-    while (node) {
-      if (node === this.treeElementBeingDragged.nodeInternal) {
+    const success = this.domTreeWidget?.onDragOver(treeElement.node(), treeElement.isClosingTag(), event);
+    if (success) {
+      if (this.dragOverTreeElement !== treeElement) {
         this.clearDragOverTreeElementMarker();
-        return false;
+        treeElement.listItemElement.classList.add('elements-drag-over');
+        this.dragOverTreeElement = treeElement;
       }
-      node = node.parentNode;
-    }
-
-    if (this.dragOverTreeElement !== treeElement) {
+    } else {
       this.clearDragOverTreeElementMarker();
-      treeElement.listItemElement.classList.add('elements-drag-over');
-      this.dragOverTreeElement = treeElement;
     }
-    event.preventDefault();
-    if (event.dataTransfer) {
-      event.dataTransfer.dropEffect = 'move';
-    }
-    return false;
+    return !success;
   }
 
   private ondragleave(event: DragEvent): boolean {
     this.clearDragOverTreeElementMarker();
+    this.domTreeWidget?.onDragLeave(event);
     event.preventDefault();
     return false;
-  }
-
-  private validDragSourceOrTarget(treeElement: UI.TreeOutline.TreeElement|null): ElementsTreeElement|null {
-    if (!treeElement) {
-      return null;
-    }
-
-    if (!(treeElement instanceof ElementsTreeElement)) {
-      return null;
-    }
-    const elementsTreeElement = (treeElement);
-
-    const node = elementsTreeElement.node();
-    if (!node.parentNode || node.parentNode.nodeType() !== Node.ELEMENT_NODE) {
-      return null;
-    }
-
-    return elementsTreeElement;
   }
 
   private ondrop(event: DragEvent): void {
     event.preventDefault();
     const treeElement = this.treeElementFromEventInternal(event);
     if (treeElement instanceof ElementsTreeElement) {
-      this.doMove(treeElement);
+      this.domTreeWidget?.onDrop(treeElement.node(), treeElement.isClosingTag(), event);
     }
     this.clearDragOverTreeElementMarker();
-  }
-
-  private doMove(treeElement: ElementsTreeElement): void {
-    if (!this.treeElementBeingDragged) {
-      return;
-    }
-
-    let parentNode;
-    let anchorNode;
-
-    if (treeElement.isClosingTag()) {
-      // Drop onto closing tag -> insert as last child.
-      parentNode = treeElement.node();
-      anchorNode = null;
-    } else {
-      const dragTargetNode = treeElement.node();
-      parentNode = dragTargetNode.parentNode;
-      anchorNode = dragTargetNode;
-    }
-
-    if (!parentNode) {
-      return;
-    }
-    const wasExpanded = this.treeElementBeingDragged.expanded;
-    this.treeElementBeingDragged.nodeInternal.moveTo(
-        parentNode, anchorNode, this.selectNodeAfterEdit.bind(this, wasExpanded));
-
-    delete this.treeElementBeingDragged;
   }
 
   private ondragend(event: DragEvent): void {
     event.preventDefault();
     this.clearDragOverTreeElementMarker();
-    delete this.treeElementBeingDragged;
+    this.domTreeWidget?.onDragEnd(event);
   }
 
   private clearDragOverTreeElementMarker(): void {

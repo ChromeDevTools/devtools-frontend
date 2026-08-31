@@ -861,6 +861,60 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    it('handles drag and drop reordering in DEFAULT_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'P'},
+            {nodeId: 3, nodeName: 'SPAN'},
+          ],
+        });
+        const pNode = rootNode.children()![0];
+        const spanNode = rootNode.children()![1];
+        const moveToStub = sinon.stub(pNode, 'moveTo');
+
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await UI.Widget.Widget.allUpdatesComplete;
+
+        assert.isTrue(domTree.isValidDragSource(pNode));
+        assert.isFalse(domTree.isValidDragSource(rootNode));
+
+        // 1. Drag start on pNode
+        const dataTransfer = new DataTransfer();
+        const dragStartEvent = new DragEvent('dragstart', {dataTransfer});
+        Object.defineProperty(dragStartEvent, 'target', {value: document.createElement('div')});
+        const started = domTree.onDragStart(pNode, dragStartEvent);
+        assert.isTrue(started);
+        assert.strictEqual(domTree.nodeBeingDragged(), pNode);
+
+        // 2. Drag over spanNode
+        assert.isTrue(domTree.isValidDragTarget(spanNode));
+        assert.isFalse(domTree.isValidDragTarget(pNode));
+
+        const dragOverEvent = new DragEvent('dragover', {dataTransfer});
+        domTree.onDragOver(spanNode, /* isClosingTag= */ false, dragOverEvent);
+        assert.deepEqual(domTree.dragOverNode(), {node: spanNode, isClosingTag: false});
+
+        // 3. Drop onto spanNode
+        const dropEvent = new DragEvent('drop', {dataTransfer});
+        domTree.onDrop(spanNode, /* isClosingTag= */ false, dropEvent);
+        assert.isNull(domTree.nodeBeingDragged());
+        assert.isNull(domTree.dragOverNode());
+        sinon.assert.calledWith(moveToStub, rootNode, spanNode);
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('handles clipboard operations (cut, copy, paste, .in-clipboard styling, and events) in declarative view',
        async () => {
          SDK.TargetManager.TargetManager.instance().setScopeTarget(target);
@@ -1394,6 +1448,74 @@ describeWithEnvironment('DOMTreeWidget', () => {
         multiline.cancel();
         assert.isNull(domTree.multilineEditing());
         assert.isFalse(pWidget.isEditing);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('handles drag and drop reordering and class styling in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'P'},
+            {nodeId: 3, nodeName: 'SPAN'},
+          ],
+        });
+        const pNode = rootNode.children()![0];
+        const spanNode = rootNode.children()![1];
+        const moveToStub = sinon.stub(pNode, 'moveTo');
+
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElements = internalTree.rootElement().children();
+        const pTreeElement = rootTreeElements[0].children()[0];
+        const spanTreeElement = rootTreeElements[0].children()[1];
+
+        assert.isTrue(pTreeElement.listItemElement.draggable);
+
+        // 1. Drag start on pNode via DOM event dispatch (verifying bubbling is stopped)
+        const dataTransfer = new DataTransfer();
+        const dragStartEvent = new DragEvent('dragstart', {dataTransfer, bubbles: true, cancelable: true});
+        pTreeElement.listItemElement.dispatchEvent(dragStartEvent);
+        assert.strictEqual(domTree.nodeBeingDragged(), pNode);
+
+        // 2. Drag over spanNode -> verify elements-drag-over class in DOM
+        const dragOverEvent = new DragEvent('dragover', {dataTransfer, bubbles: true, cancelable: true});
+        spanTreeElement.listItemElement.dispatchEvent(dragOverEvent);
+
+        await waitForTreeUpdates();
+        assert.isTrue(spanTreeElement.listItemElement.classList.contains('elements-drag-over'));
+
+        // 3. Drag leave
+        const dragLeaveEvent = new DragEvent('dragleave', {dataTransfer, bubbles: true, cancelable: true});
+        spanTreeElement.listItemElement.dispatchEvent(dragLeaveEvent);
+
+        await waitForTreeUpdates();
+        assert.isFalse(spanTreeElement.listItemElement.classList.contains('elements-drag-over'));
+
+        // 4. Drop onto spanNode
+        spanTreeElement.listItemElement.dispatchEvent(dragOverEvent);
+        const dropEvent = new DragEvent('drop', {dataTransfer, bubbles: true, cancelable: true});
+        spanTreeElement.listItemElement.dispatchEvent(dropEvent);
+
+        await waitForTreeUpdates();
+        assert.isNull(domTree.nodeBeingDragged());
+        assert.isNull(domTree.dragOverNode());
+        assert.isFalse(spanTreeElement.listItemElement.classList.contains('elements-drag-over'));
+        sinon.assert.calledWith(moveToStub, rootNode, spanNode);
       } finally {
         domTree.detach();
       }

@@ -1240,6 +1240,7 @@ describeWithEnvironment('ElementsTreeOutline', () => {
       childNode1 = parentNode.children()![0];
       childNode2 = parentNode.children()![1];
 
+      treeOutline.domTreeWidget = new Elements.ElementsTreeOutline.DOMTreeWidget();
       treeOutline.rootDOMNode = parentNode;
       renderElementIntoDOM(treeOutline.element);
       await doubleRaf();

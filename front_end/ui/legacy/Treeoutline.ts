@@ -1591,7 +1591,7 @@ export namespace TreeSearch {
 }
 
 class TreeViewTreeElement extends TreeElement {
-  static readonly CLONED_ATTRIBUTES = SDK.DOMModel.ARIA_ATTRIBUTES.union(new Set(['jslog']));
+  static readonly CLONED_ATTRIBUTES = SDK.DOMModel.ARIA_ATTRIBUTES.union(new Set(['jslog', 'draggable']));
   #clonedAttributes = new Set<string>();
   #clonedClasses = new Set<string>();
   #userExpanded = false;

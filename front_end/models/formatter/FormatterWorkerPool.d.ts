@@ -1,5 +1,5 @@
-import * as FormatterActions from '../../entrypoints/formatter_worker/FormatterActions.js';
-export { DefinitionKind, ScopeKind, type ScopeTreeNode } from '../../entrypoints/formatter_worker/FormatterActions.js';
+import * as FormatterActions from '../../entrypoints/formatter_actions/formatter_actions.js';
+export { DefinitionKind, ScopeKind, type ScopeTreeNode } from '../../entrypoints/formatter_actions/formatter_actions.js';
 export declare class FormatterWorkerPool {
     private taskQueue;
     private workerTasks;

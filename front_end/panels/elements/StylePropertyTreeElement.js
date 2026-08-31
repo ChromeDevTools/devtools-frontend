@@ -2613,6 +2613,11 @@ export class StylePropertyTreeElement extends UI.TreeOutline.TreeElement {
         if (this.parent instanceof StylePropertyTreeElement && this.parent.isShorthand) {
             return;
         }
+        if (this.#lazyRender) {
+            this.#stylesContainer.untrackForLazyRendering(this.listItemElement);
+            this.#lazyRender = false;
+            this.updateTitle();
+        }
         const selectedElement = context.isEditingName ? this.nameElement : this.valueElement;
         if (!selectedElement) {
             return;

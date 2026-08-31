@@ -479,6 +479,7 @@ export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsS
             }
             section.update(section === editedSection);
         }
+        this.#performSyncViewportCheck();
         if (this.#filterRegex) {
             this.updateFilter();
         }

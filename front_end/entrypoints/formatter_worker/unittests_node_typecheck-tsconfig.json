@@ -57,7 +57,7 @@
       "path": "bundle-tsconfig.ref.json"
     },
     {
-      "path": "formatter_actions-tsconfig.ref.json"
+      "path": "../formatter_actions/bundle-tsconfig.ref.json"
     }
   ]
 }

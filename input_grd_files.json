@@ -353,7 +353,7 @@
   "front_end/third_party/codemirror.next/chunk/xml.js",
   "front_end/third_party/codemirror.next/codemirror.next.js",
   "front_end/core/text_utils/text_utils.js",
-  "front_end/entrypoints/formatter_worker/FormatterActions.js",
+  "front_end/entrypoints/formatter_actions/formatter_actions.js",
   "front_end/models/formatter/formatter.js",
   "front_end/third_party/source-map-scopes-codec/source-map-scopes-codec.js",
   "front_end/core/sdk/sdk.js",

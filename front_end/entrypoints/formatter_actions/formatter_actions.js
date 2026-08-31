@@ -1,4 +1,4 @@
-// ../../front_end/entrypoints/formatter_worker/FormatterActions.ts
+// ../../front_end/entrypoints/formatter_actions/formatter_actions.ts
 var FormatterActions = /* @__PURE__ */ ((FormatterActions2) => {
   FormatterActions2["FORMAT"] = "format";
   FormatterActions2["PARSE_CSS"] = "parseCSS";
@@ -44,4 +44,4 @@ export {
   FormatterActions,
   ScopeKind
 };
-//# sourceMappingURL=FormatterActions.js.map
+//# sourceMappingURL=formatter_actions.js.map

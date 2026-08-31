@@ -5364,19 +5364,7 @@ import * as Common9 from "../../core/common/common.js";
 import * as Host6 from "../../core/host/host.js";
 import * as i18n25 from "../../core/i18n/i18n.js";
 import * as TextUtils8 from "../../core/text_utils/text_utils.js";
-
-// gen/front_end/entrypoints/formatter_worker/FormatterActions.js
-var FORMATTABLE_MEDIA_TYPES = [
-  "application/javascript",
-  "application/json",
-  "application/manifest+json",
-  "text/css",
-  "text/html",
-  "text/javascript"
-  /* TEXT_JAVASCRIPT */
-];
-
-// gen/front_end/panels/sources/UISourceCodeFrame.js
+import * as FormatterActions from "../../entrypoints/formatter_actions/formatter_actions.js";
 import * as AiCodeCompletion3 from "../../models/ai_code_completion/ai_code_completion.js";
 import * as Formatter2 from "../../models/formatter/formatter.js";
 import * as IssuesManager from "../../models/issues_manager/issues_manager.js";
@@ -8432,7 +8420,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     Persistence5.Persistence.PersistenceImpl.instance().subscribeForBindingEvent(this.#uiSourceCode, this.#boundOnBindingChanged);
     this.installMessageAndDecorationListeners();
     this.updateStyle();
-    const isFormattable = FORMATTABLE_MEDIA_TYPES.includes(this.contentType);
+    const isFormattable = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(this.contentType);
     const isEditable = Persistence5.Persistence.PersistenceImpl.instance().hasEditableContent(this.#uiSourceCode);
     const isJavaScript = Common9.ResourceType.ResourceType.isJavaScriptMimeType(this.contentType);
     const canPrettyPrint = isFormattable && (!isEditable || !isJavaScript);

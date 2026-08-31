@@ -21,19 +21,7 @@ import "../../legacy.js";
 import * as Common2 from "../../../../core/common/common.js";
 import * as i18n3 from "../../../../core/i18n/i18n.js";
 import * as TextUtils3 from "../../../../core/text_utils/text_utils.js";
-
-// gen/front_end/entrypoints/formatter_worker/FormatterActions.js
-var FORMATTABLE_MEDIA_TYPES = [
-  "application/javascript",
-  "application/json",
-  "application/manifest+json",
-  "text/css",
-  "text/html",
-  "text/javascript"
-  /* TEXT_JAVASCRIPT */
-];
-
-// gen/front_end/ui/legacy/components/source_frame/ResourceSourceFrame.js
+import * as FormatterActions from "../../../../entrypoints/formatter_actions/formatter_actions.js";
 import { render } from "../../../lit/lit.js";
 import * as UI2 from "../../legacy.js";
 
@@ -1153,7 +1141,7 @@ var SearchableContainer = class extends UI2.Widget.VBox {
     const simpleContentType = Common2.ResourceType.ResourceType.simplifyContentType(contentType);
     const sourceFrame = new ResourceSourceFrame(resource, simpleContentType);
     this.sourceFrame = sourceFrame;
-    const canPrettyPrint = FORMATTABLE_MEDIA_TYPES.includes(simpleContentType);
+    const canPrettyPrint = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(simpleContentType);
     sourceFrame.setCanPrettyPrint(
       canPrettyPrint,
       true

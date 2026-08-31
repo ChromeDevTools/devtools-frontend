@@ -1,1 +1,1 @@
-gen/front_end/models/formatter/formatter.js: ../../front_end/entrypoints/formatter_worker/FormatterActions.ts ../../front_end/models/formatter/FormatterWorkerPool.ts ../../front_end/models/formatter/ScriptFormatter.ts ../../front_end/models/formatter/formatter.ts
+gen/front_end/models/formatter/formatter.js: ../../front_end/models/formatter/FormatterWorkerPool.ts ../../front_end/models/formatter/ScriptFormatter.ts ../../front_end/models/formatter/formatter.ts

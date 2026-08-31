@@ -1,0 +1,1 @@
+gen/front_end/services/tracing/tracing.js: ../../front_end/services/tracing/FreshRecording.ts ../../front_end/generated/protocol.ts ../../front_end/services/tracing/TracingManager.ts ../../front_end/services/tracing/PerformanceTracing.ts ../../front_end/services/tracing/tracing.ts

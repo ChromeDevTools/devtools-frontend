@@ -5191,6 +5191,11 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     if (this.parent instanceof _StylePropertyTreeElement && this.parent.isShorthand) {
       return;
     }
+    if (this.#lazyRender) {
+      this.#stylesContainer.untrackForLazyRendering(this.listItemElement);
+      this.#lazyRender = false;
+      this.updateTitle();
+    }
     const selectedElement = context.isEditingName ? this.nameElement : this.valueElement;
     if (!selectedElement) {
       return;
@@ -8989,6 +8994,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends Common5.ObjectWrapper.e
       }
       section5.update(section5 === editedSection);
     }
+    this.#performSyncViewportCheck();
     if (this.#filterRegex) {
       this.updateFilter();
     }

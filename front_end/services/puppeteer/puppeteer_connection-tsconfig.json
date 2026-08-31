@@ -27,7 +27,7 @@
     "noImplicitReturns": true,
     "outDir": ".",
     "preserveConstEnums": true,
-    "rootDir": "../../../../../../front_end/services/tracing",
+    "rootDir": "../../../../../../front_end/services/puppeteer",
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
@@ -41,16 +41,14 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
-    "../../../../../../front_end/services/tracing/FreshRecording.ts",
-    "../../../../../../front_end/services/tracing/PerformanceTracing.ts",
-    "../../../../../../front_end/services/tracing/TracingManager.ts",
+    "../../../../../../front_end/services/puppeteer/PuppeteerConnection.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts"
   ],
   "references": [
     {
-      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+      "path": "../../core/protocol_client/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../generated/generated-tsconfig.ref.json"
@@ -59,7 +57,7 @@
       "path": "../../generated/protocol-tsconfig.ref.json"
     },
     {
-      "path": "../../models/trace/bundle-tsconfig.ref.json"
+      "path": "../../third_party/puppeteer/bundle-tsconfig.ref.json"
     }
   ]
 }

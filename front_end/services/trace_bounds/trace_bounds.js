@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/services/trace_bounds/TraceBounds.js
+// ../../front_end/services/trace_bounds/TraceBounds.ts
 var TraceBounds_exports = {};
 __export(TraceBounds_exports, {
   BoundsManager: () => BoundsManager,
@@ -15,16 +15,13 @@ __export(TraceBounds_exports, {
 import * as Trace from "../../models/trace/trace.js";
 var instance = null;
 var StateChangedEvent = class _StateChangedEvent extends Event {
-  state;
-  updateType;
-  options;
-  static eventName = "traceboundsstatechanged";
   constructor(state, updateType, options = { shouldAnimate: false }) {
     super(_StateChangedEvent.eventName, { composed: true, bubbles: true });
     this.state = state;
     this.updateType = updateType;
     this.options = options;
   }
+  static eventName = "traceboundsstatechanged";
 };
 function onChange(cb) {
   BoundsManager.instance().addEventListener(
@@ -105,7 +102,9 @@ var BoundsManager = class _BoundsManager extends EventTarget {
     ignoreMiniMapBounds: false
   }) {
     if (!this.#currentState) {
-      console.error("TraceBounds.setTimelineVisibleWindow could not set bounds because there is no existing trace window set.");
+      console.error(
+        "TraceBounds.setTimelineVisibleWindow could not set bounds because there is no existing trace window set."
+      );
       return;
     }
     const existingWindow = this.#currentState.timelineTraceWindow;
@@ -123,7 +122,9 @@ var BoundsManager = class _BoundsManager extends EventTarget {
       return;
     }
     this.#currentState.timelineTraceWindow = newWindow;
-    this.dispatchEvent(new StateChangedEvent(this.state(), "VISIBLE_WINDOW", { shouldAnimate: options.shouldAnimate }));
+    this.dispatchEvent(
+      new StateChangedEvent(this.state(), "VISIBLE_WINDOW", { shouldAnimate: options.shouldAnimate })
+    );
   }
 };
 export {

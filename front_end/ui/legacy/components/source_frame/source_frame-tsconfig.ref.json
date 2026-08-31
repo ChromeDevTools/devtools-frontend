@@ -45,7 +45,7 @@
       "path": "../../../../core/text_utils/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../../../entrypoints/formatter_worker/formatter_actions-tsconfig.ref.json"
+      "path": "../../../../entrypoints/formatter_actions/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../../../models/formatter/bundle-tsconfig.ref.json"

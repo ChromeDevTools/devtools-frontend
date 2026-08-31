@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {INPAttribution, Metric} from '../../../../third_party/web-vitals/web-vitals.js';
+import type * as WebVitals from '../../../../third_party/web-vitals/web-vitals.js';
 import type * as Trace from '../../../trace/trace.js';
 
 export const EVENT_BINDING_NAME = '__chromium_devtools_metrics_reporter';
@@ -48,10 +48,10 @@ export interface ClsChangeEvent {
 export interface InpChangeEvent {
   name: 'INP';
   value: Trace.Types.Timing.Milli;
-  interactionType: INPAttribution['interactionType'];
+  interactionType: WebVitals.INPAttribution['interactionType'];
   subparts: InpSubparts;
-  startTime: number;
-  entryGroupId: InteractionEntryGroupId;
+  startTime?: number;
+  entryGroupId?: InteractionEntryGroupId;
 }
 
 // These object keys will be user visible
@@ -95,11 +95,11 @@ export interface PerformanceLongAnimationFrameTimingJSON {
  */
 export interface InteractionEntryEvent {
   name: 'InteractionEntry';
-  interactionType?: INPAttribution['interactionType'];
-  eventName: string;
-  entryGroupId: InteractionEntryGroupId;
-  startTime: number;
-  navigationId: number;
+  interactionType?: WebVitals.INPAttribution['interactionType'];
+  eventName?: string;
+  entryGroupId?: InteractionEntryGroupId;
+  startTime?: number;
+  navigationId?: number;
   nextPaintTime?: number;
   duration: Trace.Types.Timing.Milli;
   subparts: InpSubparts;
@@ -107,7 +107,7 @@ export interface InteractionEntryEvent {
   longAnimationFrameEntries: PerformanceLongAnimationFrameTimingJSON[];
 }
 
-export type NavigationType = Metric['navigationType'];
+export type NavigationType = WebVitals.Metric['navigationType'];
 
 export interface LayoutShiftEvent {
   name: 'LayoutShift';
@@ -120,6 +120,58 @@ export interface ResetEvent {
   name: 'reset';
   url?: string;
   navigationType?: NavigationType;
+}
+
+export function limitScripts(loafs: PerformanceLongAnimationFrameTimingJSON[]):
+    PerformanceLongAnimationFrameTimingJSON[] {
+  return loafs.map(loaf => {
+    loaf.scripts = loaf.scripts.slice()
+                       .sort((a, b) => b.duration - a.duration)
+                       .slice(0, SCRIPTS_PER_LOAF_LIMIT)
+                       .sort((a, b) => a.startTime - b.startTime);
+    return loaf;
+  });
+}
+
+export function createInteractionEntryEvent(interaction: WebVitals.INPMetricWithAttribution): InteractionEntryEvent {
+  const event: InteractionEntryEvent = {
+    name: 'InteractionEntry',
+    duration: interaction.value as Trace.Types.Timing.Milli,
+    subparts: {
+      inputDelay: interaction.attribution.inputDelay as Trace.Types.Timing.Milli,
+      processingDuration: interaction.attribution.processingDuration as Trace.Types.Timing.Milli,
+      presentationDelay: interaction.attribution.presentationDelay as Trace.Types.Timing.Milli,
+    },
+    startTime: interaction.entries?.[0]?.startTime,
+    navigationId: interaction.navigationId,
+    entryGroupId: interaction.entries?.[0]?.interactionId as InteractionEntryGroupId | undefined,
+    nextPaintTime: interaction.attribution.nextPaintTime,
+    interactionType: interaction.attribution.interactionType,
+    eventName: interaction.entries?.[0]?.name,
+    // To limit the amount of events, just get the last 5 LoAFs
+    longAnimationFrameEntries: limitScripts(
+        interaction.attribution.longAnimationFrameEntries?.slice(-LOAF_LIMIT).map(loaf => loaf.toJSON()) ?? []),
+  };
+  const target = interaction.attribution.interactionTarget;
+  if (target) {
+    event.nodeIndex = Number(target);
+  }
+  return event;
+}
+
+export function createInpChangeEvent(metric: WebVitals.INPMetricWithAttribution): InpChangeEvent {
+  return {
+    name: 'INP',
+    value: metric.value as Trace.Types.Timing.Milli,
+    subparts: {
+      inputDelay: metric.attribution.inputDelay as Trace.Types.Timing.Milli,
+      processingDuration: metric.attribution.processingDuration as Trace.Types.Timing.Milli,
+      presentationDelay: metric.attribution.presentationDelay as Trace.Types.Timing.Milli,
+    },
+    startTime: metric.entries?.[0]?.startTime,
+    entryGroupId: metric.entries?.[0]?.interactionId as InteractionEntryGroupId | undefined,
+    interactionType: metric.attribution.interactionType,
+  };
 }
 
 export type WebVitalsEvent =

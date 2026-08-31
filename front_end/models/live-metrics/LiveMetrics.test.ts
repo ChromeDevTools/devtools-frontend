@@ -11,6 +11,7 @@ import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {mockResourceTree} from '../../testing/ResourceTreeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
+import type * as WebVitals from '../../third_party/web-vitals/web-vitals.js';
 
 import * as LiveMetrics from './live-metrics.js';
 import * as Spec from './web-vitals-injected/spec/spec.js';
@@ -269,6 +270,41 @@ describe('LiveMetrics', () => {
       assert.include(expr, '\' + "pointer\'); alert(1); (//" + \' interaction\')');
       assert.notInclude(expr, '100ms pointer\'); alert(1); (// interaction');
     });
+
+    it('handles INP event without startTime and entryGroupId', async () => {
+      await emitBindingCalled(primaryExecutionContextId, {name: 'reset'});
+      await emitBindingCalled(primaryExecutionContextId, {
+        name: 'INP',
+        value: 120 as Milli,
+        subparts: {
+          inputDelay: 10 as Milli,
+          processingDuration: 100 as Milli,
+          presentationDelay: 10 as Milli,
+        },
+        interactionType: 'pointer',
+      });
+
+      assert.strictEqual(liveMetrics.inpValue?.value, 120);
+      assert.isUndefined(liveMetrics.inpValue?.interactionId);
+    });
+
+    it('ignores InteractionEntry without startTime and entryGroupId', async () => {
+      await emitBindingCalled(primaryExecutionContextId, {name: 'reset'});
+      await emitBindingCalled(primaryExecutionContextId, {
+        name: 'InteractionEntry',
+        duration: 120 as Milli,
+        subparts: {
+          inputDelay: 10 as Milli,
+          processingDuration: 100 as Milli,
+          presentationDelay: 10 as Milli,
+        },
+        nextPaintTime: 130,
+        interactionType: 'pointer',
+        longAnimationFrameEntries: [],
+      });
+
+      assert.strictEqual(liveMetrics.interactions.size, 0);
+    });
   });
 
   describe('status updates', () => {
@@ -342,5 +378,104 @@ describe('LiveMetrics', () => {
 
       assert.lengthOf(liveMetrics.layoutShifts, 0);
     });
+  });
+});
+
+describe('web-vitals-injected', () => {
+  it('handles empty entries for INP metric without crashing', () => {
+    const mockMetric = {
+      name: 'INP',
+      value: 120,
+      attribution: {
+        interactionType: 'pointer',
+        inputDelay: 10,
+        processingDuration: 100,
+        presentationDelay: 10,
+      },
+      entries: [],
+    } as unknown as WebVitals.INPMetricWithAttribution;
+
+    const event = Spec.createInpChangeEvent(mockMetric);
+    assert.deepEqual(event, {
+      name: 'INP',
+      value: 120 as Trace.Types.Timing.Milli,
+      subparts: {
+        inputDelay: 10 as Trace.Types.Timing.Milli,
+        processingDuration: 100 as Trace.Types.Timing.Milli,
+        presentationDelay: 10 as Trace.Types.Timing.Milli,
+      },
+      interactionType: 'pointer',
+      startTime: undefined,
+      entryGroupId: undefined,
+    });
+  });
+
+  it('handles empty entries for each interaction without crashing', () => {
+    const mockInteraction = {
+      name: 'InteractionEntry',
+      value: 120,
+      attribution: {
+        inputDelay: 10,
+        processingDuration: 100,
+        presentationDelay: 10,
+        nextPaintTime: 130,
+        interactionType: 'pointer',
+        longAnimationFrameEntries: [],
+      },
+      entries: [],
+    } as unknown as WebVitals.INPMetricWithAttribution;
+
+    const event = Spec.createInteractionEntryEvent(mockInteraction);
+    assert.deepEqual(event, {
+      name: 'InteractionEntry',
+      duration: 120 as Trace.Types.Timing.Milli,
+      subparts: {
+        inputDelay: 10 as Trace.Types.Timing.Milli,
+        processingDuration: 100 as Trace.Types.Timing.Milli,
+        presentationDelay: 10 as Trace.Types.Timing.Milli,
+      },
+      nextPaintTime: 130,
+      interactionType: 'pointer',
+      navigationId: undefined,
+      startTime: undefined,
+      entryGroupId: undefined,
+      eventName: undefined,
+      longAnimationFrameEntries: [],
+    });
+  });
+
+  it('limits and sorts scripts per long animation frame correctly', () => {
+    const mockLoaf: Spec.PerformanceLongAnimationFrameTimingJSON = {
+      renderStart: 190,
+      duration: 200,
+      scripts: [
+        {startTime: 20, duration: 80},
+        {startTime: 10, duration: 20},
+        {startTime: 30, duration: 50},
+        {startTime: 1, duration: 10},
+        {startTime: 2, duration: 10},
+        {startTime: 3, duration: 10},
+        {startTime: 4, duration: 10},
+        {startTime: 5, duration: 10},
+        {startTime: 6, duration: 10},
+        {startTime: 7, duration: 10},
+        {startTime: 8, duration: 10},
+        {startTime: 9, duration: 10},
+      ],
+    };
+
+    const result = Spec.limitScripts([mockLoaf]);
+    assert.deepEqual(result[0].scripts, [
+      {startTime: 1, duration: 10},
+      {startTime: 2, duration: 10},
+      {startTime: 3, duration: 10},
+      {startTime: 4, duration: 10},
+      {startTime: 5, duration: 10},
+      {startTime: 6, duration: 10},
+      {startTime: 7, duration: 10},
+      {startTime: 10, duration: 20},
+      {startTime: 20, duration: 80},
+      {startTime: 30, duration: 50},
+    ]);
   });
 });

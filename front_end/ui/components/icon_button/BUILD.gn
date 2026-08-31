@@ -17,25 +17,27 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("icon_button") {
+  split_compilation = true
   sources = [
     "FileSourceIcon.ts",
     "IconButton.ts",
   ]
 
-  deps = [
-    "../../../Images:optimize_images",
-    "../../../ui/kit:bundle",
-    "../../../ui/lit:bundle",
+  deps = [ "../../../Images:optimize_images" ]
+
+  ts_deps = [
+    "../../kit:bundle",
+    "../../lit:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "icon_button.ts"
 
-  deps = [
-    ":css_files",
-    ":icon_button",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":icon_button" ]
 
   visibility = [
     "../../../entrypoints/inspector_main/*",
@@ -50,6 +52,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -57,7 +60,7 @@ devtools_ui_module("unittests") {
     "IconButton.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../testing",
     "../../kit:bundle",

@@ -1775,6 +1775,7 @@ export class ElementsTreeOutline extends
     super();
 
     this.domTreeWidget = domTreeWidget ?? null;
+    this.renderSelection = true;
     this.treeElementByNode = new WeakMap();
     const shadowContainer = document.createElement('div');
     this.shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(
@@ -2150,13 +2151,22 @@ export class ElementsTreeOutline extends
   }
 
   treeElementFromEventInternal(event: MouseEvent): UI.TreeOutline.TreeElement|null {
+    for (const target of event.composedPath()) {
+      if (target instanceof HTMLLIElement) {
+        const element = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(target);
+        if (element) {
+          return element;
+        }
+      }
+    }
+
     const scrollContainer = this.element.parentElement;
     if (!scrollContainer) {
       return null;
     }
 
-    const x = event.pageX;
-    const y = event.pageY;
+    const x = event.clientX;
+    const y = event.clientY;
 
     // Our list items have 1-pixel cracks between them vertically. We avoid
     // the cracks by checking slightly above and slightly below the mouse
@@ -2239,7 +2249,12 @@ export class ElementsTreeOutline extends
 
   private ondragstart(event: DragEvent): boolean|undefined {
     const node = (event.target as Node | null);
-    if (!node || node.hasSelection()) {
+    if (!node) {
+      return false;
+    }
+    const selection = node.getComponentSelection();
+    if (selection && selection.type === 'Range' && !selection.isCollapsed && selection.toString().length > 0 &&
+        node.hasSelection()) {
       return false;
     }
     if (node.nodeName === 'A') {
@@ -2255,10 +2270,12 @@ export class ElementsTreeOutline extends
       return false;
     }
 
-    if (!event.dataTransfer || !treeElement.listItemElement.textContent) {
-      return;
+    const textContent = treeElement.widget.contentElement.textContent || treeElement.listItemElement.textContent ||
+        treeElement.node().nodeName().toLowerCase();
+    if (!event.dataTransfer || !textContent) {
+      return false;
     }
-    event.dataTransfer.setData('text/plain', treeElement.listItemElement.textContent.replace(/\u200b/g, ''));
+    event.dataTransfer.setData('text/plain', textContent.replace(/\u200b/g, ''));
     event.dataTransfer.effectAllowed = 'copyMove';
     this.treeElementBeingDragged = treeElement;
 
@@ -2269,24 +2286,30 @@ export class ElementsTreeOutline extends
 
   private ondragover(event: DragEvent): boolean {
     if (!this.treeElementBeingDragged) {
+      this.clearDragOverTreeElementMarker();
       return false;
     }
 
     const treeElement = this.validDragSourceOrTarget(this.treeElementFromEventInternal(event));
     if (!treeElement) {
+      this.clearDragOverTreeElementMarker();
       return false;
     }
 
     let node: (SDK.DOMModel.DOMNode|null) = (treeElement.node() as SDK.DOMModel.DOMNode | null);
     while (node) {
       if (node === this.treeElementBeingDragged.nodeInternal) {
+        this.clearDragOverTreeElementMarker();
         return false;
       }
       node = node.parentNode;
     }
 
-    treeElement.listItemElement.classList.add('elements-drag-over');
-    this.dragOverTreeElement = treeElement;
+    if (this.dragOverTreeElement !== treeElement) {
+      this.clearDragOverTreeElementMarker();
+      treeElement.listItemElement.classList.add('elements-drag-over');
+      this.dragOverTreeElement = treeElement;
+    }
     event.preventDefault();
     if (event.dataTransfer) {
       event.dataTransfer.dropEffect = 'move';
@@ -2324,6 +2347,7 @@ export class ElementsTreeOutline extends
     if (treeElement instanceof ElementsTreeElement) {
       this.doMove(treeElement);
     }
+    this.clearDragOverTreeElementMarker();
   }
 
   private doMove(treeElement: ElementsTreeElement): void {

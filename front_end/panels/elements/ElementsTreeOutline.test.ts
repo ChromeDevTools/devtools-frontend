@@ -1201,4 +1201,111 @@ describeWithEnvironment('ElementsTreeOutline', () => {
     assert.strictEqual(shadowRoots[1].node().id, 5);
     assert.strictEqual(shadowRoots[1].node().shadowRootType(), Protocol.DOM.ShadowRootType.Closed);
   });
+
+  describe('Drag and drop', () => {
+    let parentNode: SDK.DOMModel.DOMNode;
+    let childNode1: SDK.DOMModel.DOMNode;
+    let childNode2: SDK.DOMModel.DOMNode;
+    let childTreeElement1: Elements.ElementsTreeElement.ElementsTreeElement;
+    let childTreeElement2: Elements.ElementsTreeElement.ElementsTreeElement;
+
+    beforeEach(async () => {
+      parentNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: Node.ELEMENT_NODE,
+        nodeName: 'BODY',
+        localName: 'body',
+        nodeValue: '',
+        childNodeCount: 2,
+        children: [
+          {
+            nodeId: 2 as Protocol.DOM.NodeId,
+            backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'SPAN',
+            localName: 'span',
+            nodeValue: '',
+          },
+          {
+            nodeId: 3 as Protocol.DOM.NodeId,
+            backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+            nodeType: Node.ELEMENT_NODE,
+            nodeName: 'P',
+            localName: 'p',
+            nodeValue: '',
+          },
+        ],
+      });
+      childNode1 = parentNode.children()![0];
+      childNode2 = parentNode.children()![1];
+
+      treeOutline.rootDOMNode = parentNode;
+      renderElementIntoDOM(treeOutline.element);
+      await doubleRaf();
+
+      childTreeElement1 = treeOutline.findTreeElement(childNode1) as Elements.ElementsTreeElement.ElementsTreeElement;
+      childTreeElement2 = treeOutline.findTreeElement(childNode2) as Elements.ElementsTreeElement.ElementsTreeElement;
+      assert.exists(childTreeElement1);
+      assert.exists(childTreeElement2);
+    });
+
+    it('sets renderSelection to true and configures draggable on list items', () => {
+      assert.isTrue(treeOutline.renderSelection);
+      assert.isTrue(childTreeElement1.listItemElement.draggable);
+      assert.isTrue(childTreeElement2.listItemElement.draggable);
+    });
+
+    it('handles dragstart and populates dataTransfer', () => {
+      const dataStore = new Map<string, string>();
+      const dragEvent = new DragEvent('dragstart', {
+        bubbles: true,
+        cancelable: true,
+      });
+      Object.defineProperty(dragEvent, 'dataTransfer', {
+        value: {
+          setData: (type: string, val: string) => dataStore.set(type, val),
+          effectAllowed: 'none',
+        },
+      });
+
+      childTreeElement1.listItemElement.dispatchEvent(dragEvent);
+      assert.isTrue(dataStore.has('text/plain'));
+    });
+
+    it('adds and removes elements-drag-over class on dragover and dragleave', () => {
+      const dragEvent = new DragEvent('dragstart', {bubbles: true, cancelable: true});
+      Object.defineProperty(dragEvent, 'dataTransfer', {
+        value: {setData: () => {}, effectAllowed: 'none'},
+      });
+      childTreeElement1.listItemElement.dispatchEvent(dragEvent);
+
+      const dragOverEvent = new DragEvent('dragover', {bubbles: true, cancelable: true});
+      Object.defineProperty(dragOverEvent, 'dataTransfer', {
+        value: {dropEffect: 'none'},
+      });
+      childTreeElement2.listItemElement.dispatchEvent(dragOverEvent);
+      assert.isTrue(childTreeElement2.listItemElement.classList.contains('elements-drag-over'));
+
+      const dragLeaveEvent = new DragEvent('dragleave', {bubbles: true, cancelable: true});
+      childTreeElement2.listItemElement.dispatchEvent(dragLeaveEvent);
+      assert.isFalse(childTreeElement2.listItemElement.classList.contains('elements-drag-over'));
+    });
+
+    it('moves node on drop', () => {
+      const moveToStub = sinon.stub(childNode1, 'moveTo');
+      const dragEvent = new DragEvent('dragstart', {bubbles: true, cancelable: true});
+      Object.defineProperty(dragEvent, 'dataTransfer', {
+        value: {setData: () => {}, effectAllowed: 'none'},
+      });
+      childTreeElement1.listItemElement.dispatchEvent(dragEvent);
+
+      const dropEvent = new DragEvent('drop', {bubbles: true, cancelable: true});
+      childTreeElement2.listItemElement.dispatchEvent(dropEvent);
+
+      sinon.assert.calledOnce(moveToStub);
+      assert.strictEqual(moveToStub.firstCall.args[0], parentNode);
+      assert.strictEqual(moveToStub.firstCall.args[1], childNode2);
+    });
+  });
 });

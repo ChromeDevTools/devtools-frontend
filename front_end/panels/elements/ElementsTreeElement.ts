@@ -2806,6 +2806,7 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.widgetWrapper = document.createElement('div');
     this.widgetWrapper.style.display = 'contents';
     this.title = this.widgetWrapper;
+    this.listItemElement.draggable = true;
     this.widget = new ElementsTreeWidget();
     this.widget.isClosingTag = this.#isClosingTag;
     this.widget.node = this.nodeInternal;

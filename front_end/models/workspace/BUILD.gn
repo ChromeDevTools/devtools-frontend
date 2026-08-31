@@ -36,7 +36,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     ":*",
-    "../../../mcp",
+    "../../../mcp:*",
     "../../core/sdk:foundation_unittests",
     "../../core/sdk:foundation_unittests_checked",
     "../../core/sdk:foundation_unittests_node_typecheck",

@@ -5,13 +5,14 @@
 import("../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("mcp") {
+  split_compilation = true
   sources = [ "mcp.ts" ]
 
   es_target = "es2023"
   es_libs = []
   runs_in = "node_esm"
 
-  deps = [
+  ts_deps = [
     "../front_end/core/common:bundle",
     "../front_end/core/host:bundle",
     "../front_end/core/protocol_client:puppeteer_devtools_connection",
@@ -30,14 +31,16 @@ devtools_module("mcp") {
 }
 
 ts_library("foundation_unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "mcp.test.ts" ]
 
-  deps = [ ":mcp" ]
+  ts_deps = [ ":mcp" ]
 }
 
 generated_file("test_inputs") {
+  testonly = true
   outputs = [ "$target_gen_dir/foundation_tests.txt" ]
   data_keys = [ "tests" ]
   rebase = target_gen_dir

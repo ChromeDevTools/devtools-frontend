@@ -12,16 +12,25 @@ template("bundle") {
 
   node_action(target_name) {
     script = "scripts/build/esbuild.js"
+    _bundled_entrypoints_target =
+        devtools_location_prepend + ":bundled_entrypoints"
+    deps = [ _bundled_entrypoints_target ]
+    if (defined(invoker.deps)) {
+      deps += invoker.deps
+    }
     forward_variables_from(invoker,
                            [
                              "visibility",
-                             "deps",
                              "public_deps",
                              "testonly",
                            ])
 
+    _entrypoints_file =
+        get_label_info(_bundled_entrypoints_target, "target_gen_dir") +
+        "/bundled_entrypoints.json"
     inputs = [
       invoker.entrypoint,
+      _entrypoints_file,
       devtools_location_prepend + "scripts/build/devtools_plugin.js",
       devtools_location_prepend + "scripts/devtools_paths.js",
     ]
@@ -39,6 +48,8 @@ template("bundle") {
     args = [
       rebase_path(invoker.entrypoint, root_build_dir),
       rebase_path(invoker.output_file_location, root_build_dir),
+      "--entrypointsFile",
+      rebase_path(_entrypoints_file, root_build_dir),
       "--rootDir",
       rebase_path("//", root_build_dir),
       "--rootGenDir",

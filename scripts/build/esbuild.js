@@ -43,15 +43,38 @@ const rootGenDir = rootGenDirFlagIndex !== -1 ? additionalArgs[rootGenDirFlagInd
 const depfileFlagIndex = additionalArgs.indexOf('--depfile');
 const depfile = depfileFlagIndex !== -1 ? additionalArgs[depfileFlagIndex + 1] : undefined;
 
+const entrypointsFileFlagIndex = additionalArgs.indexOf('--entrypointsFile');
+const entrypointsFile = entrypointsFileFlagIndex !== -1 ? additionalArgs[entrypointsFileFlagIndex + 1] : undefined;
+
+if (!entrypointsFile) {
+  throw new Error('Missing required --entrypointsFile argument');
+}
+if (!fs.existsSync(entrypointsFile)) {
+  throw new Error(`Entrypoints file does not exist: ${entrypointsFile}`);
+}
+if (!rootDir) {
+  throw new Error('Missing required --rootDir argument');
+}
+if (!rootGenDir) {
+  throw new Error('Missing required --rootGenDir argument');
+}
+
 const outdir = path.dirname(outfile);
-const genRoot = rootGenDir ? path.resolve(rootGenDir) : path.join(devtoolsRootPath(), 'out', 'Default', 'gen');
-const root = rootDir ? path.resolve(rootDir) : devtoolsRootPath();
+const genRoot = path.resolve(rootGenDir);
+const root = path.resolve(rootDir);
+
+const content = fs.readFileSync(entrypointsFile, 'utf-8');
+const parsed = JSON.parse(content);
+if (!Array.isArray(parsed)) {
+  throw new Error(`Expected array of entrypoints in ${entrypointsFile}`);
+}
+const externalFiles = new Set(parsed);
 
 const plugin = {
   name: 'devtools-plugin',
   setup(build) {
     // https://esbuild.github.io/plugins/#on-resolve
-    build.onResolve({filter: /.*/}, esbuildPlugin(outdir, genRoot, root));
+    build.onResolve({filter: /.*/}, esbuildPlugin(outdir, genRoot, root, externalFiles));
   },
 };
 

@@ -39,9 +39,19 @@ export function dirnameWithSeparator(file) {
   return path.dirname(file) + path.sep;
 }
 
-export function devtoolsPlugin(source, importer) {
+export function devtoolsPlugin(source, importer, externalFiles, root, genRoot) {
   if (!importer) {
     return null;
+  }
+
+  if (!externalFiles || !(externalFiles instanceof Set)) {
+    throw new Error('devtoolsPlugin requires an externalFiles Set');
+  }
+  if (!root || typeof root !== 'string') {
+    throw new Error('devtoolsPlugin requires a root path');
+  }
+  if (!genRoot || typeof genRoot !== 'string') {
+    throw new Error('devtoolsPlugin requires a genRoot path');
   }
 
   if (source === '../../lib/codemirror' || !source.startsWith('.')) {
@@ -54,126 +64,51 @@ export function devtoolsPlugin(source, importer) {
     };
   }
 
-  const currentDirectory = path.normalize(dirnameWithSeparator(importer));
   const importedFilelocation = path.normalize(
-      path.join(currentDirectory, source),
+      path.join(path.dirname(importer), source),
   );
-  const importedFileDirectory = dirnameWithSeparator(importedFilelocation);
 
-  // Generated files are part of other directories, as they are only imported once
-  if (path.basename(importedFileDirectory) === 'generated') {
-    return null;
-  }
-
-  // An import is considered external (and therefore a separate
-  // bundle) if its filename matches its immediate parent's folder
-  // name (without the extension). For example:
-  // `import * as Components from './components/components.js'` = external
-  // `import * as UI from '../ui/ui.js'` = external
-  // `import * as Lit from '../third_party/lit/lit.js'` = external
-  // `import {DataGrid} from './components/DataGrid.js'` = not external
-  // `import * as Components from './components/foo.js'` = not external
-
-  // Note that we can't do a simple check for only `third_party`, as in Chromium
-  // our full path is `third_party/devtools-frontend/src/`, which thus *always*
-  // includes third_party. It also not possible to use the current directory
-  // as a check for the import, as the import will be different in Chromium and
-  // would therefore not match the path of `__dirname`.
-  // These should be removed because the new heuristic _should_ deal with these
-  // e.g. it'll pick up third_party/lit/lit.js is its own entrypoint
-
-  // The CodeMirror addons look like bundles (addon/comment/comment.js) but are not.
-  if (importedFileDirectory.includes(
-          path.join('front_end', 'third_party', 'codemirror', 'package'),
-          )) {
-    return null;
-  }
-
-  // The LightHouse bundle shouldn't be processed by `terser` again, as it is uniquely built
-  if (importedFilelocation.includes(
-          path.join(
-              'front_end',
-              'third_party',
-              'lighthouse',
-              'lighthouse-dt-bundle.js',
-              ),
-          )) {
-    return {
-      id: importedFilelocation,
-      external: true,
-    };
-  }
-
-  if (importedFileDirectory.includes(
-          path.join('front_end', 'third_party', 'puppeteer', 'package'),
-          )) {
-    // Ignore possible dynamic imports from the Node folder.
-    if (importedFileDirectory.includes(
-            path.join(
-                'front_end',
-                'third_party',
-                'puppeteer',
-                'package',
-                'lib',
-                'esm',
-                'puppeteer',
-                'node',
-                ),
-            )) {
-      return {
-        id: importedFilelocation,
-        external: true,
-      };
+  let rel = importedFilelocation;
+  if (path.isAbsolute(importedFilelocation)) {
+    if (importedFilelocation === genRoot || importedFilelocation.startsWith(genRoot + path.sep)) {
+      rel = path.relative(genRoot, importedFilelocation);
+    } else if (importedFilelocation === root || importedFilelocation.startsWith(root + path.sep)) {
+      rel = path.relative(root, importedFilelocation);
     }
-    return {
-      id: importedFilelocation,
-      external: false,
-    };
   }
-
-  if (importedFileDirectory.includes(
-          path.join('front_end', 'third_party', 'puppeteer-replay', 'package'),
-          )) {
-    return {
-      id: importedFilelocation,
-      external: false,
-    };
+  let normalizedRel = rel.replaceAll('\\', '/');
+  const frontEndIndex = normalizedRel.indexOf('front_end/');
+  if (frontEndIndex !== -1) {
+    normalizedRel = normalizedRel.slice(frontEndIndex);
   }
-
-  if (importedFileDirectory.includes(
-          path.join(
-              'front_end',
-              'third_party',
-              'source-map-scopes-codec',
-              'package',
-              ),
-          )) {
-    return {
-      id: importedFilelocation,
-      external: false,
-    };
-  }
-
-  const importedFileName = path.basename(importedFilelocation, '.js');
-  const importedFileParentDirectory = path.basename(
-      path.dirname(importedFilelocation),
-  );
-  const isExternal = importedFileName === importedFileParentDirectory;
-
+  const isExternal = externalFiles.has(normalizedRel);
   return {
     id: importedFilelocation,
     external: isExternal,
   };
 }
 
-export function esbuildPlugin(outdir, genRoot, rootDir) {
+export function esbuildPlugin(outdir, genRoot, rootDir, externalFiles) {
+  if (!externalFiles || !(externalFiles instanceof Set)) {
+    throw new Error('esbuildPlugin requires an externalFiles Set');
+  }
+  if (!outdir || typeof outdir !== 'string') {
+    throw new Error('esbuildPlugin requires an outdir path');
+  }
+  if (!genRoot || typeof genRoot !== 'string') {
+    throw new Error('esbuildPlugin requires a genRoot path');
+  }
+  if (!rootDir || typeof rootDir !== 'string') {
+    throw new Error('esbuildPlugin requires a rootDir path');
+  }
+
   const normGenRoot = path.resolve(genRoot);
   const root = path.resolve(rootDir);
   const normOutdir = path.resolve(outdir);
 
   return args => {
     // args.importer is absolute path in esbuild.
-    const res = devtoolsPlugin(args.path, args.importer);
+    const res = devtoolsPlugin(args.path, args.importer, externalFiles, root, normGenRoot);
     if (!res) {
       return null;
     }

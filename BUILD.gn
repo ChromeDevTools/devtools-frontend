@@ -103,6 +103,20 @@ generated_file("expected_grd_files") {
   output_conversion = "json"
 }
 
+_grd_entrypoint_files = filter_include(grd_files_bundled_sources,
+                                       [
+                                         "*.js",
+                                         "*.mjs",
+                                       ])
+
+generated_file("bundled_entrypoints") {
+  outputs = [ "$target_gen_dir/bundled_entrypoints.json" ]
+
+  contents = _grd_entrypoint_files
+
+  output_conversion = "json"
+}
+
 generated_file("input_grd_files") {
   outputs = [ "$target_gen_dir/input_grd_files.json" ]
 

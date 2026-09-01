@@ -13,28 +13,30 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("node_text") {
+  split_compilation = true
   sources = [ "NodeText.ts" ]
 
-  deps = [ "../../../ui/lit:bundle" ]
+  ts_deps = [ "../../lit:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "node_text.ts"
 
-  deps = [
-    ":css_files",
-    ":node_text",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":node_text" ]
 
   visibility = default_components_visibility
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "NodeText.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../testing",
   ]

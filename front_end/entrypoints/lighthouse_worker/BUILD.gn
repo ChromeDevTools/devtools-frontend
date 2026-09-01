@@ -7,9 +7,10 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_worker.gni")
 
 devtools_module("lighthouse_worker") {
+  split_compilation = true
   sources = [ "LighthouseWorkerService.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../core/protocol_client:bundle",
     "../../core/root:bundle",
     "../../services/puppeteer:bundle",
@@ -18,14 +19,13 @@ devtools_module("lighthouse_worker") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "lighthouse_worker.ts"
 
   forward_variables_from(devtools_worker_config, "*")
 
-  deps = [
-    ":lighthouse_worker",
-    "../../third_party/lighthouse",
-  ]
+  deps = [ "../../third_party/lighthouse" ]
+  ts_deps = [ ":lighthouse_worker" ]
 
   visibility = [ "../..:front_end" ]
 }

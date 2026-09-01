@@ -17,7 +17,7 @@ import {
 
 export interface RunLighthouseArgs extends ToolArgs {
   explanation: string;
-  category: LHModel.RunTypes.CategoryId;
+  categoryId: LHModel.RunTypes.CategoryId;
   mode?: LHModel.RunTypes.RunMode;
 }
 
@@ -37,7 +37,7 @@ export class RunLighthouseTool implements
         description: 'Reason for running new audits.',
         nullable: false,
       },
-      category: {
+      categoryId: {
         type: Host.AidaClient.ParametersTypes.STRING,
         description: 'Lighthouse category. E.g. "accessibility", "performance".',
         nullable: false,
@@ -49,14 +49,14 @@ export class RunLighthouseTool implements
         nullable: true,
       },
     },
-    required: ['explanation', 'category'],
+    required: ['explanation', 'categoryId'],
   };
 
   displayInfoFromArgs(params: RunLighthouseArgs): {title: string, thought: string, action: string} {
     return {
-      title: `Running Lighthouse audits: ${params.category} (${params.mode ?? 'snapshot'})`,
+      title: `Running Lighthouse audits: ${params.categoryId} (${params.mode ?? 'snapshot'})`,
       thought: params.explanation,
-      action: `runLighthouse('${params.category}', '${params.mode ?? 'snapshot'}')`,
+      action: `runLighthouse('${params.categoryId}', '${params.mode ?? 'snapshot'}')`,
     };
   }
 
@@ -66,14 +66,14 @@ export class RunLighthouseTool implements
     try {
       const report = await context.runLighthouse({
         mode,
-        categoryIds: [params.category],
+        categoryIds: [params.categoryId],
         isAIControlled: true,
       });
       if (!report) {
         return {error: 'Error: Failed to record new audits.'};
       }
 
-      const audits = new LighthouseFormatter().audits(report, params.category);
+      const audits = new LighthouseFormatter().audits(report, params.categoryId);
       const isSnapshot = mode === 'snapshot';
       return {
         result: {audits},

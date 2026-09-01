@@ -28,7 +28,7 @@ export class GetStylesTool implements
     DataTool<GetStylesArgs, unknown, BaseToolCapability&TargetCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.GET_STYLES;
   readonly description: string =
-      `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
+      `Retrieves computed and authored CSS styles for one or more elements by their backend node IDs (uids).
 
 **CRITICAL** An element uid is a number, not a selector.
 **CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.

@@ -34,7 +34,8 @@ interface SourceSummary {
 export class ListSourcesTool implements
     DataTool<Record<string, never>, {files: SourceSummary[]}, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.LIST_SOURCES;
-  readonly description: string = 'Lists all source files in the workspace with their name and a unique ID.';
+  readonly description: string =
+      'Lists deployed and authored source files in the workspace (including source-mapped files) with their display name and unique numeric ID.';
 
   static lastSourceId = 0;
   static uiSourceCodeId: WeakMap<Workspace.UISourceCode.UISourceCode, number> =

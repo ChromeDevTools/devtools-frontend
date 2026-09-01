@@ -32,7 +32,7 @@ export class GetFunctionCodeTool implements
     DataTool<GetFunctionCodeArgs, string, BaseToolCapability&PerformanceTraceCapability> {
   readonly name: ToolName = ToolName.GET_FUNCTION_CODE;
   readonly description: string =
-      'Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.';
+      'Retrieves the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetFunctionCodeArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

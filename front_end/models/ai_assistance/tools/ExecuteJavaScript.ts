@@ -77,43 +77,19 @@ export class ExecuteJavaScriptTool implements
 # Instructions
 
 * To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`.
-* If you modify styles on an element, ALWAYS call the pre-defined global \`async setElementStyles(el: Element, styles: object)\` function. This function is an internal mechanism for you and should never be presented as a command/advice to the user.
-* **CRITICAL** Only get styles that might be relevant to the user request.
+* $0 refers to the currently selected DOM node (or document body if none selected).
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
-* **CRITICAL** Consider that \`data\` variable from the previous function calls are not available in a new function call.
+* **CRITICAL** Variables from previous function calls are not available in subsequent calls.
 * **CRITICAL** Keep code concise (max 40 lines and 2,500 characters). Split complex logic into multiple steps.
 * **CRITICAL** Network requests (e.g., fetch, XMLHttpRequest) are disabled and cannot be made.
 
-For example, the code to change element styles:
-
-\`\`\`
-await setElementStyles($0, {
-  color: 'blue',
-});
-\`\`\`
-
-For example, the code to get overlapping elements:
+For example, to query DOM elements:
 
 \`\`\`
 const data = {
-  overlappingElements: Array.from(document.querySelectorAll('*'))
-    .filter(el => {
-      const rect = el.getBoundingClientRect();
-      const popupRect = $0.getBoundingClientRect();
-      return (
-        el !== $0 &&
-        rect.left < popupRect.right &&
-        rect.right > popupRect.left &&
-        rect.top < popupRect.bottom &&
-        rect.bottom > popupRect.top
-      );
-    })
-    .map(el => ({
-      tagName: el.tagName,
-      id: el.id,
-      className: el.className,
-      zIndex: window.getComputedStyle(el)['z-index']
-    }))
+  title: document.title,
+  elementText: $0?.textContent?.trim(),
+  childCount: $0?.children.length,
 };
 \`\`\`
 `,

@@ -57,7 +57,7 @@ export class GetInsightDetailsTool implements
     DataTool<GetInsightDetailsArgs, string, BaseToolCapability&TargetCapability&PerformanceTraceCapability> {
   readonly name: ToolName = ToolName.GET_INSIGHT_DETAILS;
   readonly description: string =
-      'Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.';
+      'Retrieves detailed metrics, subpart timing breakdowns, related DOM elements, and diagnostic data for a performance insight (e.g., \'LCPBreakdown\', \'LCPDiscovery\', \'RenderBlocking\', \'CLSCulprits\', \'INPBreakdown\', \'ThirdParties\'). Use this before commenting on any specific performance issue.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetInsightDetailsArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

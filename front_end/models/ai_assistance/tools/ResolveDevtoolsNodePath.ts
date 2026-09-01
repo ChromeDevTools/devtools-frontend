@@ -39,7 +39,8 @@ export interface ResolveDevtoolsNodePathArgs extends ToolArgs {
 export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNodePathArgs, {backendNodeId: number},
                                                              BaseToolCapability&TargetCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.RESOLVE_DEVTOOLS_NODE_PATH;
-  readonly description: string = 'Resolves a DevTools node path to a backend node ID.';
+  readonly description: string =
+      'Resolves a DevTools node path (e.g. from a Lighthouse audit snippet) to an element backend node ID for further DOM, style, or accessibility inspection.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof ResolveDevtoolsNodePathArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,
@@ -53,7 +54,7 @@ export class ResolveDevtoolsNodePathTool implements DataTool<ResolveDevtoolsNode
       },
       path: {
         type: Host.AidaClient.ParametersTypes.STRING,
-        description: 'DevTools node path string.',
+        description: 'DevTools node path string (e.g. "1,HTML,1,BODY,2,DIV").',
         nullable: false,
       },
     },

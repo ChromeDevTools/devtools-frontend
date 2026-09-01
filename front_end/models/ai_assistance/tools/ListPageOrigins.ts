@@ -22,7 +22,7 @@ export class ListPageOriginsTool implements
     DataTool<Record<string, never>, {origins: string[]}, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.LIST_PAGE_ORIGINS;
   readonly description: string =
-      'Lists all active, non-empty frame origins loaded by the page. Use this first when generic category context is active to discover all page origins, then pass them to listCookies or listStorageKeys, unless the user\'s explicit request hints at focusing only on the primary page.';
+      'Lists all active, non-empty frame origins loaded by the page. Call this first to discover all page origins before calling listCookies or listStorageKeys, unless the user\'s explicit request focuses only on the primary page.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<never> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

@@ -34,7 +34,7 @@ export class GetResourceContentTool implements DataTool<
     GetResourceContentArgs, {content: string}, BaseToolCapability&TargetCapability&PerformanceTraceCapability> {
   readonly name: ToolName = ToolName.GET_RESOURCE_CONTENT;
   readonly description: string =
-      'Returns the content of the resource with the given url. Only use this for text resource types.';
+      'Retrieves the content of the resource with the given url. Only use this for text resource types.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetResourceContentArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

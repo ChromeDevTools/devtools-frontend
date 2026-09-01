@@ -36,7 +36,7 @@ describe('RunLighthouseTool', () => {
     it('formats title, thought, and action with explicit mode', () => {
       const displayInfo = tool.displayInfoFromArgs({
         explanation: 'Testing color contrast after CSS change',
-        category: 'accessibility',
+        categoryId: 'accessibility',
         mode: 'navigation',
       });
       assert.deepEqual(displayInfo, {
@@ -49,7 +49,7 @@ describe('RunLighthouseTool', () => {
     it('formats title, thought, and action defaulting to snapshot mode when mode is omitted', () => {
       const displayInfo = tool.displayInfoFromArgs({
         explanation: 'Testing in-page fix',
-        category: 'accessibility',
+        categoryId: 'accessibility',
       });
       assert.deepEqual(displayInfo, {
         title: 'Running Lighthouse audits: accessibility (snapshot)',
@@ -67,7 +67,7 @@ describe('RunLighthouseTool', () => {
       };
 
       const result =
-          await tool.handler({explanation: 're-audit', category: 'accessibility', mode: 'snapshot'}, context);
+          await tool.handler({explanation: 're-audit', categoryId: 'accessibility', mode: 'snapshot'}, context);
       assertIsResult(result);
       assert.include(result.result.audits, '# Audits for Accessibility');
       assert.include(result.result.audits, 'Low contrast');
@@ -86,7 +86,7 @@ describe('RunLighthouseTool', () => {
         runLighthouse: recordingStub,
       };
 
-      const result = await tool.handler({explanation: 're-audit', category: 'accessibility'}, context);
+      const result = await tool.handler({explanation: 're-audit', categoryId: 'accessibility'}, context);
       assertIsResult(result);
       assert.deepEqual(result.widgets, [{name: 'LIGHTHOUSE_REPORT', data: {report: mockReport, snapshotReport: true}}]);
       sinon.assert.calledOnceWithExactly(recordingStub, {
@@ -103,7 +103,7 @@ describe('RunLighthouseTool', () => {
       };
 
       const result =
-          await tool.handler({explanation: 're-audit', category: 'accessibility', mode: 'navigation'}, context);
+          await tool.handler({explanation: 're-audit', categoryId: 'accessibility', mode: 'navigation'}, context);
       assertIsResult(result);
       assert.deepEqual(result.widgets,
                        [{name: 'LIGHTHOUSE_REPORT', data: {report: mockReport, snapshotReport: false}}]);
@@ -119,7 +119,7 @@ describe('RunLighthouseTool', () => {
       const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
         runLighthouse: recordingStub,
       };
-      const result = await tool.handler({explanation: 're-audit', category: 'accessibility'}, context);
+      const result = await tool.handler({explanation: 're-audit', categoryId: 'accessibility'}, context);
       assertIsError(result);
       assert.strictEqual(result.error, 'Error: Failed to record new audits.');
     });
@@ -129,7 +129,7 @@ describe('RunLighthouseTool', () => {
       const context: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.LighthouseRecordingCapability = {
         runLighthouse: recordingStub,
       };
-      const result = await tool.handler({explanation: 're-audit', category: 'accessibility'}, context);
+      const result = await tool.handler({explanation: 're-audit', categoryId: 'accessibility'}, context);
       assertIsError(result);
       assert.strictEqual(result.error, 'Error: Failed to record new audits: Navigation timed out');
     });

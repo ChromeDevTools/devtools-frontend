@@ -32,7 +32,7 @@ export class GetStorageBreakdownTool implements
     DataTool<Record<string, never>, GetStorageBreakdownResult, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.GET_STORAGE_BREAKDOWN;
   readonly description: string =
-      'Retrieves a breakdown of active storage usage per storage type for the top-level page.';
+      'Retrieves total storage usage and quota breakdown across all storage types (IndexedDB, CacheStorage, LocalStorage, SessionStorage, cookies) for the top-level page origin.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<never> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

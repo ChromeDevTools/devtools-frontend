@@ -87,7 +87,7 @@ If your new skill needs to use tools that are already implemented:
    ---
    ```
 
-By doing this you ensure that if the AI learns you skill, those functions are learned and added to the active conversation for the AI to invoke.
+By doing this you ensure that if the AI learns your skill, those functions are learned and added to the active conversation for the AI to invoke.
 
 Even if other skills list the tool you need, you should list it also. Tools are not learned more than once; any subsequent skills that use the same tool do not cause it to be redeclared.
 

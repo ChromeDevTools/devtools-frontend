@@ -24,7 +24,8 @@ const lockedString = i18n.i18n.lockedString;
 export class RecordPerformanceTraceTool implements
     ContextTool<Record<string, never>, AgentFocus, BaseToolCapability&PerformanceRecordingCapability> {
   readonly name: ToolName = ToolName.RECORD_PERFORMANCE_TRACE;
-  readonly description: string = 'Records a new performance trace to measure, analyze, and debug page performance.';
+  readonly description: string =
+      'Reloads the page and records a new performance trace to measure, analyze, and debug page performance.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<never> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

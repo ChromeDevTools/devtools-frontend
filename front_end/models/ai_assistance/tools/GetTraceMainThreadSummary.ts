@@ -30,7 +30,7 @@ export class GetTraceMainThreadSummaryTool implements
     DataTool<GetTraceMainThreadSummaryArgs, string, BaseToolCapability&PerformanceTraceCapability> {
   readonly name: ToolName = ToolName.GET_TRACE_MAIN_THREAD_SUMMARY;
   readonly description: string =
-      'Returns a focused, detailed summary of the main thread for a predefined labeled period.';
+      'Retrieves a focused, bottom-up summary of main thread activity for a predefined labeled period (e.g. \'nav-to-lcp\', \'lcp-ttfb\', \'lcp-render-delay\', \'trace-bounds\', or insight names).';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetTraceMainThreadSummaryArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,
@@ -40,7 +40,7 @@ export class GetTraceMainThreadSummaryTool implements
       label: {
         type: Host.AidaClient.ParametersTypes.STRING,
         description:
-            'The label of the period to investigate (e.g., \'LCPBreakdown\', \'CLSCulprits\', \'nav-to-lcp\').',
+            'The label of the period to investigate (e.g., \'LCPBreakdown\', \'CLSCulprits\', \'nav-to-lcp\', \'lcp-render-delay\', \'trace-bounds\').',
         nullable: false,
       },
     },

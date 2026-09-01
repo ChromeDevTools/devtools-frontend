@@ -35,7 +35,8 @@ export interface GetSourceContentArgs extends ToolArgs {
 export class GetSourceContentTool implements
     DataTool<GetSourceContentArgs, {content: string}, BaseToolCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.GET_SOURCE_CONTENT;
-  readonly description: string = 'Gets the content and metadata of a source file by its ID.';
+  readonly description: string =
+      'Retrieves the formatted content and metadata of a source file by its numeric ID obtained from listSources.';
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<keyof GetSourceContentArgs> = {
     type: Host.AidaClient.ParametersTypes.OBJECT,

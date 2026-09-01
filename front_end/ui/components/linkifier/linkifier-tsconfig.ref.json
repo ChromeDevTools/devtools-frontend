@@ -23,10 +23,10 @@
       "path": "../../../models/bindings/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../render_coordinator/bundle-tsconfig.ref.json"
+      "path": "../../lit/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../lit/bundle-tsconfig.ref.json"
+      "path": "../render_coordinator/bundle-tsconfig.ref.json"
     }
   ]
 }

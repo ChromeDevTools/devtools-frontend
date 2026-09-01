@@ -59,8 +59,8 @@ export default `/*
 
   .badge-container {
     margin-right: 10px;
-    min-width: 64px;
-    height: 64px;
+    min-width: var(--sys-size-18);
+    height: var(--sys-size-18);
   }
 
   .badge-image {

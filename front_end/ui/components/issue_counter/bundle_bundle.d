@@ -1,0 +1,1 @@
+gen/front_end/ui/components/issue_counter/issue_counter.js: gen/front_end/ui/components/issue_counter/issueCounter.css.js ../../front_end/ui/components/issue_counter/IssueCounter.ts gen/front_end/ui/components/issue_counter/issueLinkIcon.css.js ../../front_end/ui/components/issue_counter/IssueLinkIcon.ts ../../front_end/ui/components/issue_counter/issue_counter.ts

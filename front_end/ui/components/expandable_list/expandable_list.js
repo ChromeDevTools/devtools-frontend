@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/expandable_list/ExpandableList.js
+// ../../front_end/ui/components/expandable_list/ExpandableList.ts
 var ExpandableList_exports = {};
 __export(ExpandableList_exports, {
   ExpandableList: () => ExpandableList
@@ -91,7 +91,7 @@ button.link {
 
 /*# sourceURL=${import.meta.resolve("./expandableList.css")} */`;
 
-// gen/front_end/ui/components/expandable_list/ExpandableList.js
+// ../../front_end/ui/components/expandable_list/ExpandableList.ts
 var { html, Directives: { ifDefined } } = Lit;
 var ExpandableList = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
@@ -111,7 +111,8 @@ var ExpandableList = class extends HTMLElement {
     if (this.#rows.length < 1) {
       return;
     }
-    Lit.render(html`
+    Lit.render(
+      html`
       <style>${expandableList_css_default}</style>
       <div class="expandable-list-container">
         <div>
@@ -128,7 +129,10 @@ var ExpandableList = class extends HTMLElement {
           `)}
         </div>
       </div>
-    `, this.#shadow, { host: this });
+    `,
+      this.#shadow,
+      { host: this }
+    );
   }
 };
 customElements.define("devtools-expandable-list", ExpandableList);

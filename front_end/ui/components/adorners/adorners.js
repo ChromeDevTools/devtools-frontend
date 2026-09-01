@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/adorners/Adorner.js
+// ../../front_end/ui/components/adorners/Adorner.ts
 var Adorner_exports = {};
 __export(Adorner_exports, {
   Adorner: () => Adorner
@@ -86,7 +86,7 @@ slot {
 
 /*# sourceURL=${import.meta.resolve("./adorner.css")} */`;
 
-// gen/front_end/ui/components/adorners/Adorner.js
+// ../../front_end/ui/components/adorners/Adorner.ts
 var Adorner = class extends HTMLElement {
   name = "";
   #shadow = this.attachShadow({ mode: "open" });

@@ -236,7 +236,6 @@ User query: ${enhancedQuery}`;
             displayInfoFromArgs: tool.displayInfoFromArgs,
             handler: (args, options) => {
                 const context = {
-                    conversationContext: this.context ?? null,
                     changeManager: this.#changes,
                     createExtensionScope: this.#createExtensionScope.bind(this),
                     execJs: this.#execJs,

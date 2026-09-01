@@ -1352,7 +1352,7 @@ export class TreeSearch extends Common.ObjectWrapper.ObjectWrapper {
     })(Events = TreeSearch.Events || (TreeSearch.Events = {}));
 })(TreeSearch || (TreeSearch = {}));
 class TreeViewTreeElement extends TreeElement {
-    static CLONED_ATTRIBUTES = SDK.DOMModel.ARIA_ATTRIBUTES.union(new Set(['jslog']));
+    static CLONED_ATTRIBUTES = SDK.DOMModel.ARIA_ATTRIBUTES.union(new Set(['jslog', 'draggable']));
     #clonedAttributes = new Set();
     #clonedClasses = new Set();
     #userExpanded = false;

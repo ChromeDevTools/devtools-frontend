@@ -2122,13 +2122,13 @@ var callStackSidebarPane_css_default = `/*
 .call-frame-warnings-message {
   text-align: center;
   font-style: italic;
-  padding: 4px;
+  padding: var(--sys-size-3);
   color: var(--sys-color-on-surface-yellow);
   background-color: var(--sys-color-surface-yellow);
 }
 
 .ignore-listed-message {
-  padding: 1px;
+  padding: var(--sys-size-1);
 }
 
 .ignore-listed-message-label {
@@ -2144,12 +2144,12 @@ var callStackSidebarPane_css_default = `/*
 .show-more-message {
   text-align: center;
   font-style: italic;
-  padding: 4px;
-  border-top: 1px solid var(--sys-color-divider);
+  padding: var(--sys-size-3);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .call-frame-item {
-  padding: 3px 8px 3px 20px;
+  padding: 3px var(--sys-size-5) 3px var(--sys-size-9);
   position: relative;
   min-height: 18px;
   line-height: 15px;
@@ -2167,7 +2167,7 @@ var callStackSidebarPane_css_default = `/*
 }
 
 .call-frame-item:not(.async-header) {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .call-frame-item-title,
@@ -2207,8 +2207,8 @@ var callStackSidebarPane_css_default = `/*
 .async-header::before {
   content: " ";
   width: 100%;
-  border-top: 1px solid var(--sys-color-divider);
-  margin-top: 8px;
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  margin-top: var(--sys-size-5);
   position: absolute;
   left: 0;
 }
@@ -2222,7 +2222,7 @@ var callStackSidebarPane_css_default = `/*
   display: none;
   position: absolute;
   top: 3px;
-  left: 4px;
+  left: var(--sys-size-3);
 }
 
 .call-frame-item.selected .selected-call-frame-icon {
@@ -2233,7 +2233,7 @@ var callStackSidebarPane_css_default = `/*
   display: block;
   position: absolute;
   top: 3px;
-  right: 4px;
+  right: var(--sys-size-3);
 }
 
 @media (forced-colors: active) {
@@ -10568,7 +10568,7 @@ var threadsSidebarPane_css_default = `/*
  */
 
 .thread-item {
-  padding: 3px 8px 3px 20px;
+  padding: 3px var(--sys-size-5) 3px var(--sys-size-9);
   position: relative;
   min-height: 18px;
   line-height: 15px;
@@ -10581,7 +10581,7 @@ var threadsSidebarPane_css_default = `/*
 }
 
 .thread-item + .thread-item {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .thread-item:hover {
@@ -10608,9 +10608,9 @@ var threadsSidebarPane_css_default = `/*
 .selected-thread-icon {
   position: absolute;
   top: 3px;
-  left: 4px;
-  width: 16px;
-  height: 16px;
+  left: var(--sys-size-3);
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
 }
 
 @media (forced-colors: active) {
@@ -14340,7 +14340,7 @@ var watchExpressionsSidebarPane_css_default = `/*
 
 .watch-expression-title {
   white-space: nowrap;
-  line-height: 20px;
+  line-height: var(--sys-typescale-body3-line-height);
   display: flex;
 }
 
@@ -14355,13 +14355,13 @@ li.watch-expression-tree-item > span.tree-element-title {
 }
 
 .watch-expression-object-header .watch-expression-title {
-  margin-left: 1px;
+  margin-left: var(--sys-size-1);
 }
 
 .watch-expression {
   position: relative;
   flex: auto;
-  min-height: 20px;
+  min-height: var(--sys-size-9);
   display: block;
   width: 100%;
 }
@@ -14388,7 +14388,7 @@ li.watch-expression-tree-item > span.tree-element-title {
   white-space: nowrap;
   display: inline;
   overflow: hidden;
-  padding-left: 4px;
+  padding-left: var(--sys-size-3);
   text-overflow: ellipsis;
   flex-shrink: 1;
 }
@@ -14397,27 +14397,27 @@ li.watch-expression-tree-item > span.tree-element-title {
   text-overflow: clip;
   overflow: hidden;
   white-space: nowrap;
-  padding-left: 4px;
+  padding-left: var(--sys-size-3);
   min-height: 18px;
   line-height: 18px;
   user-select: text;
 }
 
 .watch-expression-text-prompt-proxy {
-  margin: 2px 12px 2px -4px;
+  margin: var(--sys-size-2) var(--sys-size-6) var(--sys-size-2) calc(-1 * var(--sys-size-3));
   padding-bottom: 3px;
 }
 
 .watch-expression-header {
   flex: auto;
-  margin-left: -16px;
+  margin-left: calc(-1 * var(--sys-size-8));
   padding-left: 15px;
 }
 
 li.watch-expression-tree-item {
   container-type: inline-size;
   container-name: watch-expression;
-  padding-left: 4px;
+  padding-left: var(--sys-size-3);
 
   --watch-expression-delete-button-background-color: var(--sys-color-cdt-base);
 }

@@ -22,7 +22,7 @@ export default `/*
     }
 
     .title {
-        font-size: 20px;
+        font-size: var(--sys-typescale-headline2-size);
     }
 
     .banner-image {

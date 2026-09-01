@@ -24,9 +24,6 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../generated/protocol-tsconfig.ref.json"
-    },
-    {
       "path": "../../models/trace/bundle-tsconfig.ref.json"
     }
   ]

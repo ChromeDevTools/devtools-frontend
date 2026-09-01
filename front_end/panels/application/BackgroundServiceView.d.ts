@@ -1,32 +1,35 @@
 import '../../ui/legacy/legacy.js';
+import '../../ui/legacy/components/data_grid/data_grid.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as Protocol from '../../generated/protocol.js';
-import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { type BackgroundServiceModel } from './BackgroundServiceModel.js';
-export declare class BackgroundServiceView extends UI.Widget.VBox {
+export interface ViewInput {
+    serviceName: Protocol.BackgroundService.ServiceName;
+    isRecording: boolean;
+    selectedEvent: EventData | null;
+    events: EventData[];
+    onClear: () => void;
+    onSave: () => void;
+    toggleRecording: () => void;
+    onSelectEvent: (event: EventData) => void;
+    onOriginCheckboxChanged: (event: Event) => void;
+    onStorageKeyCheckboxChanged: (event: Event) => void;
+    isOriginCheckboxChecked: boolean;
+    isStorageKeyCheckboxChecked: boolean;
+    createLearnMoreLink: () => Platform.DevToolsPath.UrlString;
+}
+type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare class BackgroundServiceView extends UI.Widget.Widget {
     #private;
-    private readonly serviceName;
-    private readonly model;
-    private readonly serviceWorkerManager;
-    private readonly securityOriginManager;
-    private readonly storageKeyManager;
-    private recordAction;
-    private recordButton;
-    private originCheckbox;
-    private storageKeyCheckbox;
-    private saveButton;
-    private readonly toolbar;
-    private readonly splitWidget;
-    private readonly dataGrid;
-    private readonly previewPanel;
-    private preview;
     static getUIString(serviceName: string): string;
-    constructor(serviceName: Protocol.BackgroundService.ServiceName, model: BackgroundServiceModel);
-    getDataGrid(): DataGrid.DataGrid.DataGridImpl<EventData>;
-    /**
-     * Creates the toolbar UI element.
-     */
-    private setupToolbar;
+    constructor(element?: HTMLElement, view?: View);
+    get serviceName(): Protocol.BackgroundService.ServiceName | undefined;
+    set serviceName(serviceName: Protocol.BackgroundService.ServiceName);
+    get model(): BackgroundServiceModel | undefined;
+    set model(model: BackgroundServiceModel);
+    wasShown(): void;
     /**
      * Displays all available events in the grid.
      */
@@ -48,8 +51,6 @@ export declare class BackgroundServiceView extends UI.Widget.VBox {
     private onOriginChanged;
     private onStorageKeyChanged;
     private addEvent;
-    private createDataGrid;
-    performUpdate(): void;
     /**
      * Creates the data object to pass to the DataGrid Node.
      */
@@ -59,15 +60,11 @@ export declare class BackgroundServiceView extends UI.Widget.VBox {
      */
     private acceptEvent;
     private createLearnMoreLink;
+    performUpdate(): void;
     /**
      * Saves all currently displayed events in a file (JSON format).
      */
     private saveToFile;
-}
-export declare class EventDataNode extends DataGrid.DataGrid.DataGridNode<EventData> {
-    private readonly eventMetadata;
-    constructor(data: EventData, eventMetadata: Protocol.BackgroundService.EventMetadata[]);
-    createPreview(): UI.Widget.VBox;
 }
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(context: UI.Context.Context, actionId: string): boolean;
@@ -84,4 +81,6 @@ export interface EventData {
     'sw-scope': string;
     'event-name': string;
     'instance-id': string;
+    eventMetadata: Protocol.BackgroundService.EventMetadata[];
 }
+export {};

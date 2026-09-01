@@ -1,0 +1,1 @@
+gen/front_end/ui/components/icon_button/icon_button.js: gen/front_end/ui/components/icon_button/fileSourceIcon.css.js ../../front_end/ui/components/icon_button/FileSourceIcon.ts gen/front_end/ui/components/icon_button/iconButton.css.js ../../front_end/ui/components/icon_button/IconButton.ts ../../front_end/ui/components/icon_button/icon_button.ts

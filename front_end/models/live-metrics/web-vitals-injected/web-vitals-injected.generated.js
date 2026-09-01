@@ -1294,6 +1294,52 @@
   function getUniqueLayoutShiftId(entry) {
     return `layout-shift-${entry.value}-${entry.startTime}`;
   }
+  function limitScripts(loafs) {
+    return loafs.map((loaf) => {
+      loaf.scripts = loaf.scripts.slice().sort((a, b) => b.duration - a.duration).slice(0, SCRIPTS_PER_LOAF_LIMIT).sort((a, b) => a.startTime - b.startTime);
+      return loaf;
+    });
+  }
+  function createInteractionEntryEvent(interaction) {
+    const event = {
+      name: "InteractionEntry",
+      duration: interaction.value,
+      subparts: {
+        inputDelay: interaction.attribution.inputDelay,
+        processingDuration: interaction.attribution.processingDuration,
+        presentationDelay: interaction.attribution.presentationDelay
+      },
+      startTime: interaction.entries?.[0]?.startTime,
+      navigationId: interaction.navigationId,
+      entryGroupId: interaction.entries?.[0]?.interactionId,
+      nextPaintTime: interaction.attribution.nextPaintTime,
+      interactionType: interaction.attribution.interactionType,
+      eventName: interaction.entries?.[0]?.name,
+      // To limit the amount of events, just get the last 5 LoAFs
+      longAnimationFrameEntries: limitScripts(
+        interaction.attribution.longAnimationFrameEntries?.slice(-5).map((loaf) => loaf.toJSON()) ?? []
+      )
+    };
+    const target = interaction.attribution.interactionTarget;
+    if (target) {
+      event.nodeIndex = Number(target);
+    }
+    return event;
+  }
+  function createInpChangeEvent(metric) {
+    return {
+      name: "INP",
+      value: metric.value,
+      subparts: {
+        inputDelay: metric.attribution.inputDelay,
+        processingDuration: metric.attribution.processingDuration,
+        presentationDelay: metric.attribution.presentationDelay
+      },
+      startTime: metric.entries?.[0]?.startTime,
+      entryGroupId: metric.entries?.[0]?.interactionId,
+      interactionType: metric.attribution.interactionType
+    };
+  }
 
   // Copyright 2024 The Chromium Authors
   // Use of this source code is governed by a BSD-style license that can be
@@ -1385,25 +1431,6 @@
   window.getNodeForIndex = (index) => {
       return nodeList[index].deref();
   };
-  function limitScripts(loafs) {
-      return loafs.map(loaf => {
-          const longestScripts = [];
-          for (const script of loaf.scripts) {
-              if (longestScripts.length < SCRIPTS_PER_LOAF_LIMIT) {
-                  longestScripts.push(script);
-                  continue;
-              }
-              const shorterIndex = longestScripts.findIndex(s => s.duration < script.duration);
-              if (shorterIndex === -1) {
-                  continue;
-              }
-              longestScripts[shorterIndex] = script;
-          }
-          longestScripts.sort((a, b) => a.startTime - b.startTime);
-          loaf.scripts = longestScripts;
-          return loaf;
-      });
-  }
   function isPrerendered() {
       if (document.prerendering) {
           return true;
@@ -1463,46 +1490,10 @@
           sendEventToDevTools(event);
       }, { reportAllChanges: true, reportSoftNavs: window.devToolsReportSoftNavs });
       function onEachInteraction(interaction) {
-          // Multiple `InteractionEntry` events can be emitted for the same `uniqueInteractionId`
-          // However, it is easier to combine these entries in the DevTools client rather than in
-          // this injected code.
-          const event = {
-              name: 'InteractionEntry',
-              duration: interaction.value,
-              subparts: {
-                  inputDelay: interaction.attribution.inputDelay,
-                  processingDuration: interaction.attribution.processingDuration,
-                  presentationDelay: interaction.attribution.presentationDelay,
-              },
-              startTime: interaction.entries[0].startTime,
-              navigationId: interaction.navigationId,
-              entryGroupId: interaction.entries[0].interactionId,
-              nextPaintTime: interaction.attribution.nextPaintTime,
-              interactionType: interaction.attribution.interactionType,
-              eventName: interaction.entries[0].name,
-              // To limit the amount of events, just get the last 5 LoAFs
-              longAnimationFrameEntries: limitScripts(interaction.attribution.longAnimationFrameEntries.slice(-5).map(loaf => loaf.toJSON())),
-          };
-          const target = interaction.attribution.interactionTarget;
-          if (target) {
-              event.nodeIndex = Number(target);
-          }
-          sendEventToDevTools(event);
+          sendEventToDevTools(createInteractionEntryEvent(interaction));
       }
       onINP(metric => {
-          const event = {
-              name: 'INP',
-              value: metric.value,
-              subparts: {
-                  inputDelay: metric.attribution.inputDelay,
-                  processingDuration: metric.attribution.processingDuration,
-                  presentationDelay: metric.attribution.presentationDelay,
-              },
-              startTime: metric.entries[0].startTime,
-              entryGroupId: metric.entries[0].interactionId,
-              interactionType: metric.attribution.interactionType,
-          };
-          sendEventToDevTools(event);
+          sendEventToDevTools(createInpChangeEvent(metric));
       }, {
           reportAllChanges: true,
           durationThreshold: 0,

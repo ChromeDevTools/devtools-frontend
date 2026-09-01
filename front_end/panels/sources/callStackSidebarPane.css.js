@@ -12,13 +12,13 @@ export default `/*
 .call-frame-warnings-message {
   text-align: center;
   font-style: italic;
-  padding: 4px;
+  padding: var(--sys-size-3);
   color: var(--sys-color-on-surface-yellow);
   background-color: var(--sys-color-surface-yellow);
 }
 
 .ignore-listed-message {
-  padding: 1px;
+  padding: var(--sys-size-1);
 }
 
 .ignore-listed-message-label {
@@ -34,12 +34,12 @@ export default `/*
 .show-more-message {
   text-align: center;
   font-style: italic;
-  padding: 4px;
-  border-top: 1px solid var(--sys-color-divider);
+  padding: var(--sys-size-3);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .call-frame-item {
-  padding: 3px 8px 3px 20px;
+  padding: 3px var(--sys-size-5) 3px var(--sys-size-9);
   position: relative;
   min-height: 18px;
   line-height: 15px;
@@ -57,7 +57,7 @@ export default `/*
 }
 
 .call-frame-item:not(.async-header) {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .call-frame-item-title,
@@ -97,8 +97,8 @@ export default `/*
 .async-header::before {
   content: " ";
   width: 100%;
-  border-top: 1px solid var(--sys-color-divider);
-  margin-top: 8px;
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+  margin-top: var(--sys-size-5);
   position: absolute;
   left: 0;
 }
@@ -112,7 +112,7 @@ export default `/*
   display: none;
   position: absolute;
   top: 3px;
-  left: 4px;
+  left: var(--sys-size-3);
 }
 
 .call-frame-item.selected .selected-call-frame-icon {
@@ -123,7 +123,7 @@ export default `/*
   display: block;
   position: absolute;
   top: 3px;
-  right: 4px;
+  right: var(--sys-size-3);
 }
 
 @media (forced-colors: active) {

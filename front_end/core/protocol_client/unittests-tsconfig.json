@@ -56,7 +56,7 @@
       "path": "puppeteer_devtools_connection-tsconfig.ref.json"
     },
     {
-      "path": "../../generated/protocol-tsconfig.ref.json"
+      "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
       "path": "../../testing/testing-tsconfig.ref.json"

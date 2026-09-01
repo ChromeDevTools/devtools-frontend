@@ -1566,7 +1566,7 @@ var ReportSelector = class {
     this.#comboBox.removeOptions();
     this.#comboBox.setEnabled(false);
     this.newLighthouseItem = document.createElement("option");
-    this.newLighthouseItem.label = i18nString2(UIStrings2.newReport);
+    this.newLighthouseItem.textContent = i18nString2(UIStrings2.newReport);
     this.#comboBox.addOption(this.newLighthouseItem);
     this.#comboBox.select(this.newLighthouseItem);
   }
@@ -1633,7 +1633,7 @@ var Item = class {
     const url = new Common4.ParsedURL.ParsedURL(finalDisplayedUrl);
     const timestamp = lighthouseResult.fetchTime;
     this.element = document.createElement("option");
-    this.element.label = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;
+    this.element.textContent = `${new Date(timestamp).toLocaleTimeString()} - ${url.domain()}`;
   }
   select() {
     this.renderReport();

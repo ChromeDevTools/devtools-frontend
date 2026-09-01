@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/entrypoints/formatter_worker",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/entrypoints/formatter_worker/AcornTokenizer.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/CSSFormatter.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/CSSRuleParser.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/ESTreeWalker.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/FormattedContentBuilder.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/FormatterWorker.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/HTMLFormatter.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/IdentityFormatter.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/JSONFormatter.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/JavaScriptFormatter.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/ScopeParser.ts",
+    "../../../../../../front_end/entrypoints/formatter_worker/Substitute.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/root/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/text_utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/acorn/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/codemirror/codemirror-legacy-types-tsconfig.ref.json"
+    },
+    {
+      "path": "../formatter_actions/bundle-tsconfig.ref.json"
+    }
+  ]
+}

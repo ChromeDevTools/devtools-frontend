@@ -36,7 +36,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualElements from '../../ui/visual_logging/visual_logging.js';
 import * as ElementsComponents from './components/components.js';
-import { adornerRef, ElementsTreeElement } from './ElementsTreeElement.js';
+import { adornerRef, ElementsTreeElement, handleAdornerKeydown } from './ElementsTreeElement.js';
 import { ElementsTreeOutline } from './ElementsTreeOutline.js';
 const { html, render } = Lit;
 const UIStrings = {
@@ -54,10 +54,13 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     <span class="elements-tree-shortcut-title">\u21AA ${input.title}</span>
     <devtools-adorner
       .name=${ElementsComponents.AdornerManager.RegisteredAdorners.REVEAL}
-      class="adorner-reveal"
-      jslog=${VisualElements.adorner('reveal')}
+      class="adorner-reveal clickable"
+      role=button
+      tabindex=0
+      jslog=${VisualElements.adorner('reveal').track({ click: true })}
       aria-label=${i18nString(UIStrings.reveal)}
       @click=${input.onRevealAdornerClick}
+      @keydown=${handleAdornerKeydown(input.onRevealAdornerClick)}
       @mousedown=${(e) => e.consume()}
       ${adornerRef()}>
       <span class="adorner-with-icon">

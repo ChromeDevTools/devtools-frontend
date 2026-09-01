@@ -1,0 +1,1 @@
+gen/front_end/ui/components/helpers/helpers.js: ../../front_end/ui/components/helpers/component-server-setup.ts ../../front_end/ui/components/helpers/get-root-node.ts ../../front_end/ui/components/helpers/scheduled-render.ts ../../front_end/ui/components/helpers/helpers.ts

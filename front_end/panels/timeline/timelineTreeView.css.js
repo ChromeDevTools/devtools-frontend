@@ -15,7 +15,7 @@ export default `/*
 
 .timeline-tree-view devtools-toolbar {
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .timeline-tree-view .data-grid {
@@ -86,9 +86,9 @@ export default `/*
 }
 
 .timeline-tree-view .data-grid .name-container .activity-icon {
-  width: 12px;
-  height: 12px;
-  border: 1px solid var(--divider-line);
+  width: var(--sys-size-6);
+  height: var(--sys-size-6);
+  border: var(--sys-size-1) solid var(--divider-line);
   margin: 3px 0;
 }
 
@@ -105,7 +105,7 @@ export default `/*
 
 .timeline-tree-view .data-grid .name-container .activity-warning::after {
   content: "[deopt]";
-  margin: 0 4px;
+  margin: 0 var(--sys-size-3);
   line-height: 12px;
   font-size: 10px;
   color: var(--sys-color-state-disabled);
@@ -125,20 +125,20 @@ export default `/*
 .timeline-tree-view .data-grid .background-bar-container {
   position: absolute;
   /* Small gap on the left side so the first row (which has a 100% width bar, has a distinguishable bar */
-  inset: 0 0 0 2px;
+  inset: 0 0 0 var(--sys-size-2);
 }
 
 .timeline-tree-view .data-grid .background-bar {
   height: 18px;
   background-color: var(--sys-color-surface-yellow);
-  border-bottom: 1px solid var(--sys-color-yellow-outline);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-yellow-outline);
   position: absolute;
   right: 0;
 }
 
 .timeline-tree-view .data-grid .selected .background-bar {
   background-color: var(--app-color-selected-progress-bar);
-  border-bottom: 1px solid var(--app-border-selected-progress-bar);
+  border-bottom: var(--sys-size-1) solid var(--app-border-selected-progress-bar);
 }
 
 .timeline-tree-view .data-grid thead {

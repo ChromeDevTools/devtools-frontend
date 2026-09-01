@@ -17,9 +17,6 @@
   ],
   "references": [
     {
-      "path": "../../../Images/optimize_images-tsconfig.json"
-    },
-    {
       "path": "../../kit/bundle-tsconfig.ref.json"
     },
     {

@@ -9,781 +9,11 @@ var CompilerScriptMapping_exports = {};
 __export(CompilerScriptMapping_exports, {
   CompilerScriptMapping: () => CompilerScriptMapping
 });
-import * as Common5 from "../../core/common/common.js";
-import * as Platform2 from "../../core/platform/platform.js";
-import * as SDK3 from "../../core/sdk/sdk.js";
-import * as TextUtils2 from "../../core/text_utils/text_utils.js";
-
-// ../../front_end/models/stack_trace/DetailedErrorStackParser.ts
-var DetailedErrorStackParser_exports = {};
-__export(DetailedErrorStackParser_exports, {
-  augmentRawFramesWithScriptIds: () => augmentRawFramesWithScriptIds,
-  concatErrorDescriptionAndIssueSummary: () => concatErrorDescriptionAndIssueSummary,
-  parseMessage: () => parseMessage,
-  parseRawFramesFromErrorStack: () => parseRawFramesFromErrorStack
-});
-import * as Common from "../../core/common/common.js";
-var CALL_FRAME_REGEX = /^\s*at\s+/;
-function parseRawFramesFromErrorStack(stack, resolveURL) {
-  const lines = stack.split("\n");
-  const firstAtLineIndex = findFramesStartLine(lines);
-  const rawFrames = [];
-  if (firstAtLineIndex === -1) {
-    return rawFrames;
-  }
-  for (let i = firstAtLineIndex; i < lines.length; ++i) {
-    const line = lines[i];
-    const match = CALL_FRAME_REGEX.exec(line);
-    if (!match) {
-      if (line.trim() === "") {
-        continue;
-      }
-      return null;
-    }
-    let lineContent = line.substring(match[0].length);
-    let isAsync = false;
-    if (lineContent.startsWith("async ")) {
-      isAsync = true;
-      lineContent = lineContent.substring(6);
-    }
-    let isConstructor = false;
-    if (lineContent.startsWith("new ")) {
-      isConstructor = true;
-      lineContent = lineContent.substring(4);
-    }
-    let functionName = "";
-    let url = "";
-    let lineNumber = -1;
-    let columnNumber = -1;
-    let typeName;
-    let methodName;
-    let isEval = false;
-    let isWasm = false;
-    let wasmModuleName;
-    let wasmFunctionIndex;
-    let promiseIndex;
-    let evalOrigin;
-    const openParenIndex = lineContent.indexOf(" (");
-    let location = "";
-    if (lineContent.endsWith(")") && openParenIndex !== -1) {
-      functionName = lineContent.substring(0, openParenIndex).trim();
-      location = lineContent.substring(openParenIndex + 2, lineContent.length - 1);
-    } else if (lineContent.startsWith("(") && lineContent.endsWith(")")) {
-      location = lineContent.substring(1, lineContent.length - 1);
-    } else {
-      location = lineContent;
-    }
-    if (location.startsWith("eval at ")) {
-      isEval = true;
-      const commaIndex = location.lastIndexOf(", ");
-      let evalOriginStr = location;
-      if (commaIndex !== -1) {
-        evalOriginStr = location.substring(0, commaIndex);
-        location = location.substring(commaIndex + 2);
-      } else {
-        location = "";
-      }
-      if (evalOriginStr.startsWith("eval at ")) {
-        evalOriginStr = evalOriginStr.substring(8);
-      }
-      const innerOpenParen = evalOriginStr.indexOf(" (");
-      let evalFunctionName = evalOriginStr;
-      let evalLocation = "";
-      if (innerOpenParen !== -1) {
-        evalFunctionName = evalOriginStr.substring(0, innerOpenParen).trim();
-        evalLocation = evalOriginStr.substring(innerOpenParen + 2, evalOriginStr.length - 1);
-        evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName} (${evalLocation})`, resolveURL)?.[0];
-      } else {
-        evalOrigin = parseRawFramesFromErrorStack(`    at ${evalFunctionName}`, resolveURL)?.[0];
-      }
-    }
-    if (location.startsWith("index ")) {
-      promiseIndex = parseInt(location.substring(6), 10);
-      url = "";
-    } else if (location === "<anonymous>" || location === "native") {
-      url = "";
-    } else if (location.includes(":wasm-function[")) {
-      isWasm = true;
-      const wasmMatch = /^(.*):wasm-function\[(\d+)\]:(0x[0-9a-fA-F]+)$/.exec(location);
-      if (wasmMatch) {
-        url = wasmMatch[1];
-        wasmFunctionIndex = parseInt(wasmMatch[2], 10);
-        columnNumber = parseInt(wasmMatch[3], 16);
-        lineNumber = 0;
-      }
-    } else if (location) {
-      const splitResult = Common.ParsedURL.ParsedURL.splitLineAndColumn(location);
-      lineNumber = splitResult.lineNumber ?? -1;
-      columnNumber = splitResult.columnNumber ?? -1;
-      if (resolveURL && splitResult.url !== "<anonymous>" && splitResult.url !== "native") {
-        const resolved = resolveURL(splitResult.url);
-        if (!resolved) {
-          return null;
-        }
-        url = resolved;
-      } else {
-        url = splitResult.url;
-      }
-    }
-    if (functionName) {
-      const aliasMatch = /(.*)\s+\[as\s+(.*)\]/.exec(functionName);
-      if (aliasMatch) {
-        methodName = aliasMatch[2];
-        functionName = aliasMatch[1];
-      }
-      const dotIndex = functionName.indexOf(".");
-      if (dotIndex !== -1) {
-        typeName = functionName.substring(0, dotIndex);
-        methodName = methodName ?? functionName.substring(dotIndex + 1);
-      }
-      if (isWasm && typeName) {
-        wasmModuleName = typeName;
-      }
-    }
-    rawFrames.push({
-      url,
-      functionName,
-      lineNumber,
-      columnNumber,
-      isWasm,
-      parsedFrameInfo: {
-        isAsync,
-        isConstructor,
-        isEval,
-        evalOrigin,
-        wasmModuleName,
-        wasmFunctionIndex,
-        typeName,
-        methodName,
-        promiseIndex
-      }
-    });
-  }
-  return rawFrames;
-}
-function findFramesStartLine(lines) {
-  return lines.findIndex((line) => CALL_FRAME_REGEX.test(line));
-}
-function parseMessage(stack) {
-  const lines = stack.split("\n");
-  const firstAtLineIndex = findFramesStartLine(lines);
-  if (firstAtLineIndex !== -1) {
-    return lines.slice(0, firstAtLineIndex).join("\n");
-  }
-  return stack;
-}
-function augmentRawFramesWithScriptIds(rawFrames, protocolStackTrace) {
-  function augmentFrame(rawFrame) {
-    const protocolFrame = protocolStackTrace.callFrames.find((frame) => {
-      return rawFrame.url === frame.url && rawFrame.lineNumber === frame.lineNumber && rawFrame.columnNumber === frame.columnNumber;
-    });
-    if (protocolFrame) {
-      rawFrame.scriptId = protocolFrame.scriptId;
-    }
-    if (rawFrame.parsedFrameInfo?.evalOrigin) {
-      augmentFrame(rawFrame.parsedFrameInfo.evalOrigin);
-    }
-  }
-  for (const rawFrame of rawFrames) {
-    augmentFrame(rawFrame);
-  }
-}
-function concatErrorDescriptionAndIssueSummary(description, issueSummary) {
-  const pos = description.indexOf("\n");
-  const prefix = pos === -1 ? description : description.substring(0, pos);
-  const suffix = pos === -1 ? "" : description.substring(pos);
-  description = `${prefix}. ${issueSummary}${suffix}`;
-  return description;
-}
-
-// ../../front_end/models/stack_trace/StackTraceImpl.ts
 import * as Common2 from "../../core/common/common.js";
-var StackTraceImpl = class extends Common2.ObjectWrapper.ObjectWrapper {
-  syncFragment;
-  asyncFragments;
-  constructor(syncFragment, asyncFragments) {
-    super();
-    this.syncFragment = syncFragment;
-    this.asyncFragments = asyncFragments;
-    const fragment = syncFragment instanceof DebuggableFragmentImpl || syncFragment instanceof ParsedErrorStackFragmentImpl ? syncFragment.fragment : syncFragment;
-    fragment.stackTraces.add(this);
-    this.asyncFragments.forEach((asyncFragment) => asyncFragment.fragment.stackTraces.add(this));
-  }
-};
-var FragmentImpl = class _FragmentImpl {
-  static EMPTY_FRAGMENT = new _FragmentImpl();
-  node;
-  stackTraces = /* @__PURE__ */ new Set();
-  /**
-   * Fragments are deduplicated based on the node.
-   *
-   * In turn, each fragment can be part of multiple stack traces.
-   */
-  static getOrCreate(node) {
-    if (!node.fragment) {
-      node.fragment = new _FragmentImpl(node);
-    }
-    return node.fragment;
-  }
-  constructor(node) {
-    this.node = node;
-  }
-  get frames() {
-    if (!this.node) {
-      return [];
-    }
-    const frames = [];
-    for (const node of this.node.getCallStack()) {
-      frames.push(...node.frames);
-    }
-    return frames;
-  }
-};
-var AsyncFragmentImpl = class {
-  constructor(description, fragment) {
-    this.description = description;
-    this.fragment = fragment;
-  }
-  get frames() {
-    return this.fragment.frames;
-  }
-};
-var FrameImpl = class {
-  url;
-  uiSourceCode;
-  name;
-  line;
-  column;
-  missingDebugInfo;
-  rawName;
-  isWasm;
-  isInline;
-  constructor(url, uiSourceCode, name, line, column, missingDebugInfo, rawName, isWasm, isInline) {
-    this.url = url;
-    this.uiSourceCode = uiSourceCode;
-    this.name = name;
-    this.line = line;
-    this.column = column;
-    this.missingDebugInfo = missingDebugInfo;
-    this.rawName = rawName;
-    this.isWasm = isWasm;
-    this.isInline = isInline;
-  }
-};
-function createParsedErrorStackFrameImplFromEvalOrigin(evalOrigin, parsedFrameInfo) {
-  if (!evalOrigin || evalOrigin.frames.length === 0) {
-    return void 0;
-  }
-  const frame = evalOrigin.frames[0];
-  const nestedOrigin = createParsedErrorStackFrameImplFromEvalOrigin(
-    evalOrigin.evalOrigin,
-    parsedFrameInfo?.evalOrigin?.parsedFrameInfo
-  );
-  return new ParsedErrorStackFrameImpl(frame, parsedFrameInfo?.evalOrigin?.parsedFrameInfo, nestedOrigin);
-}
-var ParsedErrorStackFragmentImpl = class {
-  constructor(fragment) {
-    this.fragment = fragment;
-  }
-  get frames() {
-    if (!this.fragment.node) {
-      return [];
-    }
-    const frames = [];
-    for (const node of this.fragment.node.getCallStack()) {
-      const evalOrigin = createParsedErrorStackFrameImplFromEvalOrigin(node.evalOrigin, node.parsedFrameInfo);
-      for (const frame of node.frames) {
-        frames.push(new ParsedErrorStackFrameImpl(frame, node.parsedFrameInfo, evalOrigin));
-      }
-    }
-    return frames;
-  }
-};
-var ParsedErrorStackFrameImpl = class {
-  #frame;
-  #parsedFrameInfo;
-  #evalOrigin;
-  constructor(frame, parsedFrameInfo, evalOrigin) {
-    this.#frame = frame;
-    this.#parsedFrameInfo = parsedFrameInfo;
-    this.#evalOrigin = evalOrigin;
-  }
-  get url() {
-    return this.#frame.url;
-  }
-  get uiSourceCode() {
-    return this.#frame.uiSourceCode;
-  }
-  get name() {
-    return this.#frame.name;
-  }
-  get line() {
-    return this.#frame.line;
-  }
-  get column() {
-    return this.#frame.column;
-  }
-  get missingDebugInfo() {
-    return this.#frame.missingDebugInfo;
-  }
-  get rawName() {
-    return this.#frame.rawName;
-  }
-  get isAsync() {
-    return this.#parsedFrameInfo?.isAsync;
-  }
-  get isConstructor() {
-    return this.#parsedFrameInfo?.isConstructor;
-  }
-  get isEval() {
-    return this.#parsedFrameInfo?.isEval;
-  }
-  get evalOrigin() {
-    return this.#evalOrigin;
-  }
-  get isWasm() {
-    return this.#frame.isWasm;
-  }
-  get isInline() {
-    return this.#frame.isInline;
-  }
-  get wasmModuleName() {
-    return this.#parsedFrameInfo?.wasmModuleName;
-  }
-  get wasmFunctionIndex() {
-    return this.#parsedFrameInfo?.wasmFunctionIndex;
-  }
-  get typeName() {
-    return this.#parsedFrameInfo?.typeName;
-  }
-  get methodName() {
-    return this.#parsedFrameInfo?.methodName;
-  }
-  get promiseIndex() {
-    return this.#parsedFrameInfo?.promiseIndex;
-  }
-};
-var DebuggableFragmentImpl = class {
-  constructor(fragment, callFrames) {
-    this.fragment = fragment;
-    this.callFrames = callFrames;
-  }
-  get frames() {
-    if (!this.fragment.node) {
-      return [];
-    }
-    const frames = [];
-    let index = 0;
-    for (const node of this.fragment.node.getCallStack()) {
-      for (const [inlineIdx, frame] of node.frames.entries()) {
-        const sdkFrame = inlineIdx === 0 ? this.callFrames[index] : this.callFrames[index].createVirtualCallFrame(inlineIdx, frame.name ?? "");
-        frames.push(new DebuggableFrameImpl(frame, sdkFrame));
-      }
-      index++;
-    }
-    return frames;
-  }
-};
-var DebuggableFrameImpl = class {
-  #frame;
-  #sdkFrame;
-  constructor(frame, sdkFrame) {
-    this.#frame = frame;
-    this.#sdkFrame = sdkFrame;
-  }
-  get url() {
-    return this.#frame.url;
-  }
-  get uiSourceCode() {
-    return this.#frame.uiSourceCode;
-  }
-  get name() {
-    return this.#frame.name;
-  }
-  get line() {
-    return this.#frame.line;
-  }
-  get column() {
-    return this.#frame.column;
-  }
-  get missingDebugInfo() {
-    return this.#frame.missingDebugInfo;
-  }
-  get rawName() {
-    return this.#frame.rawName;
-  }
-  get isWasm() {
-    return this.#frame.isWasm;
-  }
-  get isInline() {
-    return this.#frame.isInline;
-  }
-  get sdkFrame() {
-    return this.#sdkFrame;
-  }
-};
-
-// ../../front_end/models/stack_trace/StackTraceModel.ts
-var StackTraceModel_exports = {};
-__export(StackTraceModel_exports, {
-  StackTraceModel: () => StackTraceModel
-});
-import * as Common3 from "../../core/common/common.js";
-import * as SDK from "../../core/sdk/sdk.js";
-import * as StackTrace from "../stack_trace/stack_trace.js";
-
-// ../../front_end/models/stack_trace/Trie.ts
-var Trie_exports = {};
-__export(Trie_exports, {
-  EvalOrigin: () => EvalOrigin,
-  FrameNode: () => FrameNode,
-  Trie: () => Trie,
-  compareRawFrames: () => compareRawFrames,
-  isBuiltinFrame: () => isBuiltinFrame
-});
-function isBuiltinFrame(rawFrame) {
-  return rawFrame.lineNumber === -1 && rawFrame.columnNumber === -1 && !Boolean(rawFrame.scriptId) && !Boolean(rawFrame.url);
-}
-var EvalOrigin = class {
-  frames;
-  evalOrigin;
-  constructor(frames, evalOrigin) {
-    this.frames = frames;
-    this.evalOrigin = evalOrigin;
-  }
-};
-var FrameNode = class {
-  parent;
-  children = [];
-  rawFrame;
-  frames = [];
-  fragment;
-  parsedFrameInfo;
-  evalOrigin;
-  constructor(rawFrame, parent) {
-    this.rawFrame = rawFrame;
-    this.parent = parent;
-    this.parsedFrameInfo = rawFrame.parsedFrameInfo;
-  }
-  /**
-   * Produces the ancestor chain. Including `this` but excluding the `RootFrameNode`.
-   */
-  *getCallStack() {
-    for (let node = this; node.parent; node = node.parent) {
-      yield node;
-    }
-  }
-};
-var Trie = class {
-  #root = { parent: null, children: [] };
-  /**
-   * Most sources produce stack traces in "top-to-bottom" order, so that is what this method expects.
-   *
-   * @returns The {@link FrameNode} corresponding to the top-most stack frame.
-   */
-  insert(frames) {
-    if (frames.length === 0) {
-      throw new Error("Trie.insert called with an empty frames array.");
-    }
-    let currentNode = this.#root;
-    for (let i = frames.length - 1; i >= 0; --i) {
-      currentNode = this.#insert(currentNode, frames[i]);
-    }
-    return currentNode;
-  }
-  /**
-   * Inserts `rawFrame` into the children of the provided node if not already there.
-   *
-   * @returns the child node corresponding to `rawFrame`.
-   */
-  #insert(node, rawFrame) {
-    let i = 0;
-    for (; i < node.children.length; ++i) {
-      const maybeChild = node.children[i];
-      const child = maybeChild instanceof WeakRef ? maybeChild.deref() : maybeChild;
-      if (!child) {
-        continue;
-      }
-      const compareResult = compareRawFrames(child.rawFrame, rawFrame);
-      if (compareResult === 0) {
-        if (rawFrame.parsedFrameInfo && !child.parsedFrameInfo) {
-          child.parsedFrameInfo = rawFrame.parsedFrameInfo;
-        }
-        return child;
-      }
-      if (compareResult > 0) {
-        break;
-      }
-    }
-    const newNode = new FrameNode(rawFrame, node);
-    if (node.parent) {
-      node.children.splice(i, 0, newNode);
-    } else {
-      node.children.splice(i, 0, new WeakRef(newNode));
-    }
-    return newNode;
-  }
-  /**
-   * Traverses the trie in pre-order.
-   *
-   * @param node Start at `node` or `null` to start with the children of the root.
-   * @param visit Called on each node in the trie. Return `true` if the visitor should descend into child nodes of the provided node.
-   */
-  walk(node, visit) {
-    const stack = node ? [node] : [...this.#root.children].map((ref) => ref.deref()).filter((node2) => Boolean(node2));
-    for (let node2 = stack.pop(); node2; node2 = stack.pop()) {
-      const visitChildren = visit(node2);
-      if (visitChildren) {
-        for (let i = node2.children.length - 1; i >= 0; --i) {
-          stack.push(node2.children[i]);
-        }
-      }
-    }
-  }
-};
-function compareRawFrames(a, b) {
-  const scriptIdCompare = (a.scriptId ?? "").localeCompare(b.scriptId ?? "");
-  if (scriptIdCompare !== 0) {
-    return scriptIdCompare;
-  }
-  const urlCompare = (a.url ?? "").localeCompare(b.url ?? "");
-  if (urlCompare !== 0) {
-    return urlCompare;
-  }
-  const nameCompare = (a.functionName ?? "").localeCompare(b.functionName ?? "");
-  if (nameCompare !== 0) {
-    return nameCompare;
-  }
-  if (a.lineNumber !== b.lineNumber) {
-    return a.lineNumber - b.lineNumber;
-  }
-  return a.columnNumber - b.columnNumber;
-}
-
-// ../../front_end/models/stack_trace/StackTraceModel.ts
-var StackTraceModel = class _StackTraceModel extends SDK.SDKModel.SDKModel {
-  #trie = new Trie();
-  #mutex = new Common3.Mutex.Mutex();
-  /** @returns the {@link StackTraceModel} for the target. Throws if the target or its model cannot be found. */
-  static #modelForTarget(target) {
-    const model = target?.model(_StackTraceModel);
-    if (!model) {
-      throw new Error("Unable to find StackTraceModel");
-    }
-    return model;
-  }
-  async createFromProtocolRuntime(stackTrace, rawFramesToUIFrames) {
-    const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
-    const syncFrames = stackTrace.callFrames.map((frame) => {
-      const isWasm = debuggerModel?.isWasm(frame.scriptId) ?? false;
-      return { ...frame, isWasm };
-    });
-    const [syncFragment, asyncFragments] = await Promise.all([
-      this.#createFragment(syncFrames, rawFramesToUIFrames),
-      this.#createAsyncFragments(stackTrace, rawFramesToUIFrames)
-    ]);
-    return new StackTraceImpl(syncFragment, asyncFragments);
-  }
-  async createFromErrorStackLikeString(stack, rawFramesToUIFrames, exceptionDetails) {
-    const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
-    const baseURL = this.target().inspectedURL();
-    const resolveURL = (url) => {
-      let urlWithScheme = parseOrScriptMatch(debuggerModel, url);
-      if (!urlWithScheme && Common3.ParsedURL.ParsedURL.isRelativeURL(url)) {
-        urlWithScheme = parseOrScriptMatch(debuggerModel, Common3.ParsedURL.ParsedURL.completeURL(baseURL, url));
-      }
-      return urlWithScheme;
-    };
-    const rawFrames = parseRawFramesFromErrorStack(stack, resolveURL);
-    if (!rawFrames) {
-      return null;
-    }
-    if (exceptionDetails?.stackTrace) {
-      augmentRawFramesWithScriptIds(rawFrames, exceptionDetails.stackTrace);
-    }
-    const [syncFragment, asyncFragments] = await Promise.all([
-      this.#createFragment(rawFrames, rawFramesToUIFrames),
-      exceptionDetails?.stackTrace ? this.#createAsyncFragments(exceptionDetails.stackTrace, rawFramesToUIFrames) : Promise.resolve([])
-    ]);
-    return new StackTraceImpl(new ParsedErrorStackFragmentImpl(syncFragment), asyncFragments);
-  }
-  async createFromDebuggerPaused(pausedDetails, rawFramesToUIFrames) {
-    const [syncFragment, asyncFragments] = await Promise.all([
-      this.#createDebuggableFragment(pausedDetails, rawFramesToUIFrames),
-      this.#createAsyncFragments(pausedDetails, rawFramesToUIFrames)
-    ]);
-    return new StackTraceImpl(syncFragment, asyncFragments);
-  }
-  /** Trigger re-translation of all fragments with the provide script in their call stack */
-  async scriptInfoChanged(script, translateRawFrames) {
-    const release = await this.#mutex.acquire();
-    try {
-      const translatePromises = [];
-      let stackTracesToUpdate = /* @__PURE__ */ new Set();
-      for (const fragment of this.#affectedFragments(script)) {
-        if (fragment.node?.children.length === 0) {
-          translatePromises.push(this.#translateFragment(fragment, translateRawFrames));
-        }
-        stackTracesToUpdate = stackTracesToUpdate.union(fragment.stackTraces);
-      }
-      await Promise.all(translatePromises);
-      for (const stackTrace of stackTracesToUpdate) {
-        stackTrace.dispatchEventToListeners(StackTrace.StackTrace.Events.UPDATED);
-      }
-    } finally {
-      release();
-    }
-  }
-  async #createDebuggableFragment(pausedDetails, rawFramesToUIFrames) {
-    const fragment = await this.#createFragment(
-      pausedDetails.callFrames.map((frame) => ({
-        scriptId: frame.script.scriptId,
-        url: frame.script.sourceURL,
-        functionName: frame.functionName,
-        lineNumber: frame.location().lineNumber,
-        columnNumber: frame.location().columnNumber,
-        isWasm: frame.script.isWasm()
-      })),
-      rawFramesToUIFrames
-    );
-    return new DebuggableFragmentImpl(fragment, pausedDetails.callFrames);
-  }
-  async #createAsyncFragments(stackTraceOrPausedEvent, rawFramesToUIFrames) {
-    const asyncFragments = [];
-    const debuggerModel = this.target().model(SDK.DebuggerModel.DebuggerModel);
-    if (debuggerModel) {
-      for await (const { stackTrace: asyncStackTrace, target } of debuggerModel.iterateAsyncParents(stackTraceOrPausedEvent)) {
-        if (asyncStackTrace.callFrames.length === 0) {
-          continue;
-        }
-        const model = _StackTraceModel.#modelForTarget(target ?? this.target().targetManager().primaryPageTarget());
-        const targetDebuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
-        const asyncFrames = asyncStackTrace.callFrames.map((frame) => {
-          const isWasm = targetDebuggerModel?.isWasm(frame.scriptId) ?? false;
-          return { ...frame, isWasm };
-        });
-        const asyncFragmentPromise = model.#createFragment(asyncFrames, rawFramesToUIFrames).then((fragment) => new AsyncFragmentImpl(asyncStackTrace.description ?? "", fragment));
-        asyncFragments.push(asyncFragmentPromise);
-      }
-    }
-    return await Promise.all(asyncFragments);
-  }
-  async #createFragment(frames, rawFramesToUIFrames) {
-    if (frames.length === 0) {
-      return FragmentImpl.EMPTY_FRAGMENT;
-    }
-    const release = await this.#mutex.acquire();
-    try {
-      const node = this.#trie.insert(frames);
-      const requiresTranslation = !Boolean(node.fragment);
-      const fragment = FragmentImpl.getOrCreate(node);
-      if (requiresTranslation) {
-        await this.#translateFragment(fragment, rawFramesToUIFrames);
-      }
-      return fragment;
-    } finally {
-      release();
-    }
-  }
-  async #translateFragment(fragment, rawFramesToUIFrames) {
-    if (!fragment.node) {
-      return;
-    }
-    const rawFrames = fragment.node.getCallStack().map((node) => node.rawFrame).toArray();
-    const uiFrames = await rawFramesToUIFrames(rawFrames, this.target());
-    console.assert(rawFrames.length === uiFrames.length, "Broken rawFramesToUIFrames implementation");
-    const evalOriginPromises = [];
-    for (const node of fragment.node.getCallStack()) {
-      if (node.parsedFrameInfo?.evalOrigin) {
-        evalOriginPromises.push(
-          translateEvalOrigin(node.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, this.target())
-        );
-      }
-    }
-    const evalOrigins = await Promise.all(evalOriginPromises);
-    let i = 0;
-    let evalI = 0;
-    for (const node of fragment.node.getCallStack()) {
-      const group = uiFrames[i++];
-      node.frames = group.map((frame, index) => new FrameImpl(
-        frame.url,
-        frame.uiSourceCode,
-        frame.name,
-        frame.line,
-        frame.column,
-        frame.missingDebugInfo,
-        node.rawFrame.functionName,
-        node.rawFrame.isWasm,
-        index < group.length - 1
-      ));
-      if (node.parsedFrameInfo?.evalOrigin) {
-        node.evalOrigin = evalOrigins[evalI++];
-      }
-    }
-  }
-  #affectedFragments(script) {
-    const affectedBranches = /* @__PURE__ */ new Set();
-    this.#trie.walk(null, (node) => {
-      if (node.rawFrame.scriptId === script.scriptId || !node.rawFrame.scriptId && node.rawFrame.url === script.sourceURL) {
-        affectedBranches.add(node);
-        return false;
-      }
-      return true;
-    });
-    const fragments = /* @__PURE__ */ new Set();
-    for (const branch of affectedBranches) {
-      this.#trie.walk(branch, (node) => {
-        if (node.fragment) {
-          fragments.add(node.fragment);
-        }
-        return true;
-      });
-    }
-    return fragments;
-  }
-};
-async function translateEvalOrigin(rawFrame, rawFramesToUIFrames, target) {
-  const uiFrames = await rawFramesToUIFrames([rawFrame], target);
-  const group = uiFrames[0];
-  const frames = group.map((frame, index) => new FrameImpl(
-    frame.url,
-    frame.uiSourceCode,
-    frame.name,
-    frame.line,
-    frame.column,
-    frame.missingDebugInfo,
-    rawFrame.functionName,
-    rawFrame.isWasm,
-    index < group.length - 1
-  ));
-  let parentEvalOrigin;
-  if (rawFrame.parsedFrameInfo?.evalOrigin) {
-    parentEvalOrigin = await translateEvalOrigin(rawFrame.parsedFrameInfo.evalOrigin, rawFramesToUIFrames, target);
-  }
-  return new EvalOrigin(frames, parentEvalOrigin);
-}
-function parseOrScriptMatch(debuggerModel, url) {
-  if (!url) {
-    return null;
-  }
-  if (Common3.ParsedURL.ParsedURL.isValidUrlString(url)) {
-    return url;
-  }
-  if (debuggerModel.scriptsForSourceURL(url).length) {
-    return url;
-  }
-  try {
-    const fileUrl = new URL(url, "file://");
-    if (debuggerModel.scriptsForSourceURL(fileUrl.href).length) {
-      return fileUrl.href;
-    }
-  } catch {
-  }
-  return null;
-}
-SDK.SDKModel.SDKModel.register(StackTraceModel, { capabilities: SDK.Target.Capability.NONE, autostart: false });
-
-// ../../front_end/models/bindings/CompilerScriptMapping.ts
+import * as Platform2 from "../../core/platform/platform.js";
+import * as SDK2 from "../../core/sdk/sdk.js";
+import * as TextUtils2 from "../../core/text_utils/text_utils.js";
+import * as StackTraceImpl from "../stack_trace/stack_trace_impl.js";
 import * as Workspace3 from "../workspace/workspace.js";
 
 // ../../front_end/models/bindings/ContentProviderBasedProject.ts
@@ -927,11 +157,11 @@ __export(NetworkProject_exports, {
   NetworkProject: () => NetworkProject,
   NetworkProjectManager: () => NetworkProjectManager
 });
-import * as Common4 from "../../core/common/common.js";
+import * as Common from "../../core/common/common.js";
 import * as Root from "../../core/root/root.js";
-import * as SDK2 from "../../core/sdk/sdk.js";
+import * as SDK from "../../core/sdk/sdk.js";
 var uiSourceCodeToAttributionMap = /* @__PURE__ */ new WeakMap();
-var NetworkProjectManager = class _NetworkProjectManager extends Common4.ObjectWrapper.ObjectWrapper {
+var NetworkProjectManager = class _NetworkProjectManager extends Common.ObjectWrapper.ObjectWrapper {
   #projectToTargetMap = /* @__PURE__ */ new WeakMap();
   static instance({ forceNew } = { forceNew: false }) {
     if (!Root.DevToolsContext.globalInstance().has(_NetworkProjectManager) || forceNew) {
@@ -960,7 +190,7 @@ var Events = /* @__PURE__ */ ((Events3) => {
 var NetworkProject = class _NetworkProject {
   static resolveFrame(uiSourceCode, frameId) {
     const target = _NetworkProject.targetForUISourceCode(uiSourceCode);
-    const resourceTreeModel = target?.model(SDK2.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target?.model(SDK.ResourceTreeModel.ResourceTreeModel);
     return resourceTreeModel ? resourceTreeModel.frameForId(frameId) : null;
   }
   static setInitialFrameAttribution(uiSourceCode, frameId) {
@@ -1036,7 +266,7 @@ var NetworkProject = class _NetworkProject {
   }
   static framesForUISourceCode(uiSourceCode) {
     const target = _NetworkProject.targetForUISourceCode(uiSourceCode);
-    const resourceTreeModel = target?.model(SDK2.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target?.model(SDK.ResourceTreeModel.ResourceTreeModel);
     const attribution = uiSourceCodeToAttributionMap.get(uiSourceCode);
     if (!resourceTreeModel || !attribution) {
       return [];
@@ -1073,22 +303,22 @@ var CompilerScriptMapping = class {
     );
     this.#eventListeners = [
       this.#sourceMapManager.addEventListener(
-        SDK3.SourceMapManager.Events.SourceMapWillAttach,
+        SDK2.SourceMapManager.Events.SourceMapWillAttach,
         this.sourceMapWillAttach,
         this
       ),
       this.#sourceMapManager.addEventListener(
-        SDK3.SourceMapManager.Events.SourceMapFailedToAttach,
+        SDK2.SourceMapManager.Events.SourceMapFailedToAttach,
         this.sourceMapFailedToAttach,
         this
       ),
       this.#sourceMapManager.addEventListener(
-        SDK3.SourceMapManager.Events.SourceMapAttached,
+        SDK2.SourceMapManager.Events.SourceMapAttached,
         this.sourceMapAttached,
         this
       ),
       this.#sourceMapManager.addEventListener(
-        SDK3.SourceMapManager.Events.SourceMapDetached,
+        SDK2.SourceMapManager.Events.SourceMapDetached,
         this.sourceMapDetached,
         this
       )
@@ -1101,10 +331,10 @@ var CompilerScriptMapping = class {
   }
   addStubUISourceCode(script) {
     const stubUISourceCode = this.#stubProject.addContentProvider(
-      Common5.ParsedURL.ParsedURL.concatenate(script.sourceURL, ":sourcemap"),
+      Common2.ParsedURL.ParsedURL.concatenate(script.sourceURL, ":sourcemap"),
       TextUtils2.StaticContentProvider.StaticContentProvider.fromString(
         script.sourceURL,
-        Common5.ResourceType.resourceTypes.Script,
+        Common2.ResourceType.resourceTypes.Script,
         "\n\n\n\n\n// Please wait a bit.\n// Compiled script is not shown while source map is being loaded!"
       ),
       "text/javascript"
@@ -1306,7 +536,7 @@ var CompilerScriptMapping = class {
   }
   async translateRawFramesStep(rawFrames, translatedFrames) {
     const frame = rawFrames[0];
-    if (Trie_exports.isBuiltinFrame(frame)) {
+    if (StackTraceImpl.Trie.isBuiltinFrame(frame)) {
       return false;
     }
     const sourceMapWithScopeInfoForFrame = async (rawFrame) => {
@@ -1420,9 +650,9 @@ var CompilerScriptMapping = class {
     const embedderName = script.embedderName();
     let securityOrigin;
     if (embedderName) {
-      const extractedOrigin = Common5.ParsedURL.ParsedURL.extractOrigin(embedderName);
+      const extractedOrigin = Common2.ParsedURL.ParsedURL.extractOrigin(embedderName);
       if (extractedOrigin && extractedOrigin !== "null") {
-        securityOrigin = SDK3.SecurityOrigin.SecurityOrigin.create(extractedOrigin);
+        securityOrigin = SDK2.SecurityOrigin.SecurityOrigin.create(extractedOrigin);
       }
     }
     const parsedOrigin = securityOrigin ? `:${securityOrigin.siteId()}` : "";
@@ -1445,13 +675,13 @@ var CompilerScriptMapping = class {
     }
     this.#sourceMapToProject.set(sourceMap, project);
     for (const url of sourceMap.sourceURLs()) {
-      const contentType = Common5.ResourceType.resourceTypes.SourceMapScript;
+      const contentType = Common2.ResourceType.resourceTypes.SourceMapScript;
       const uiSourceCode = project.createUISourceCode(url, contentType);
       if (sourceMap.hasIgnoreListHint(url)) {
         uiSourceCode.markKnownThirdParty();
       }
       const content = sourceMap.embeddedContentByURL(url);
-      const contentProvider = content !== null ? TextUtils2.StaticContentProvider.StaticContentProvider.fromString(url, contentType, content) : new SDK3.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
+      const contentProvider = content !== null ? TextUtils2.StaticContentProvider.StaticContentProvider.fromString(url, contentType, content) : new SDK2.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
         url,
         contentType,
         script.createPageResourceLoadInitiator(),
@@ -1462,7 +692,7 @@ var CompilerScriptMapping = class {
         const encoder = new TextEncoder();
         metadata = new Workspace3.UISourceCode.UISourceCodeMetadata(null, encoder.encode(content).length);
       }
-      const mimeType = Common5.ResourceType.ResourceType.mimeFromURL(url) ?? contentType.canonicalMimeType();
+      const mimeType = Common2.ResourceType.ResourceType.mimeFromURL(url) ?? contentType.canonicalMimeType();
       this.#uiSourceCodeToSourceMaps.set(uiSourceCode, sourceMap);
       NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
       const otherUISourceCode = project.uiSourceCodeForURL(url);
@@ -1528,7 +758,7 @@ var CompilerScriptMapping = class {
   sourceMapAttachedForTest(_sourceMap) {
   }
   dispose() {
-    Common5.EventTarget.removeEventListeners(this.#eventListeners);
+    Common2.EventTarget.removeEventListeners(this.#eventListeners);
     for (const project of this.#projects.values()) {
       project.dispose();
     }
@@ -1543,10 +773,10 @@ __export(CSSWorkspaceBinding_exports, {
   LiveLocation: () => LiveLocation,
   ModelInfo: () => ModelInfo
 });
-import * as Common9 from "../../core/common/common.js";
+import * as Common6 from "../../core/common/common.js";
 import * as Platform4 from "../../core/platform/platform.js";
 import * as Root2 from "../../core/root/root.js";
-import * as SDK7 from "../../core/sdk/sdk.js";
+import * as SDK6 from "../../core/sdk/sdk.js";
 
 // ../../front_end/models/bindings/LiveLocation.ts
 var LiveLocation_exports = {};
@@ -1613,8 +843,8 @@ var SASSSourceMapping_exports = {};
 __export(SASSSourceMapping_exports, {
   SASSSourceMapping: () => SASSSourceMapping
 });
-import * as Common6 from "../../core/common/common.js";
-import * as SDK4 from "../../core/sdk/sdk.js";
+import * as Common3 from "../../core/common/common.js";
+import * as SDK3 from "../../core/sdk/sdk.js";
 import * as TextUtils3 from "../../core/text_utils/text_utils.js";
 import * as Workspace5 from "../workspace/workspace.js";
 var SASSSourceMapping = class {
@@ -1638,12 +868,12 @@ var SASSSourceMapping = class {
     this.#bindings = /* @__PURE__ */ new Map();
     this.#eventListeners = [
       this.#sourceMapManager.addEventListener(
-        SDK4.SourceMapManager.Events.SourceMapAttached,
+        SDK3.SourceMapManager.Events.SourceMapAttached,
         this.sourceMapAttached,
         this
       ),
       this.#sourceMapManager.addEventListener(
-        SDK4.SourceMapManager.Events.SourceMapDetached,
+        SDK3.SourceMapManager.Events.SourceMapDetached,
         this.sourceMapDetached,
         this
       )
@@ -1725,7 +955,7 @@ var SASSSourceMapping = class {
       const header = this.#sourceMapManager.clientForSourceMap(sourceMap);
       if (header) {
         locations.push(
-          ...entries.map((entry) => new SDK4.CSSModel.CSSLocation(header, entry.lineNumber, entry.columnNumber))
+          ...entries.map((entry) => new SDK3.CSSModel.CSSLocation(header, entry.lineNumber, entry.columnNumber))
         );
       }
     }
@@ -1743,7 +973,7 @@ var SASSSourceMapping = class {
     return binding?.getReferringSourceMaps().map((sourceMap) => sourceMap.url()) ?? [];
   }
   dispose() {
-    Common6.EventTarget.removeEventListeners(this.#eventListeners);
+    Common3.EventTarget.removeEventListeners(this.#eventListeners);
     this.#project.dispose();
   }
 };
@@ -1765,9 +995,9 @@ var Binding = class {
   }
   recreateUISourceCodeIfNeeded(frameId) {
     const sourceMap = this.referringSourceMaps[this.referringSourceMaps.length - 1];
-    const contentType = Common6.ResourceType.resourceTypes.SourceMapStyleSheet;
+    const contentType = Common3.ResourceType.resourceTypes.SourceMapStyleSheet;
     const embeddedContent = sourceMap.embeddedContentByURL(this.#url);
-    const contentProvider = embeddedContent !== null ? TextUtils3.StaticContentProvider.StaticContentProvider.fromString(this.#url, contentType, embeddedContent) : new SDK4.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
+    const contentProvider = embeddedContent !== null ? TextUtils3.StaticContentProvider.StaticContentProvider.fromString(this.#url, contentType, embeddedContent) : new SDK3.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
       this.#url,
       contentType,
       this.#initiator,
@@ -1775,7 +1005,7 @@ var Binding = class {
     );
     const newUISourceCode = this.#project.createUISourceCode(this.#url, contentType);
     uiSourceCodeToBinding.set(newUISourceCode, this);
-    const mimeType = Common6.ResourceType.ResourceType.mimeFromURL(this.#url) || contentType.canonicalMimeType();
+    const mimeType = Common3.ResourceType.ResourceType.mimeFromURL(this.#url) || contentType.canonicalMimeType();
     const metadata = typeof embeddedContent === "string" ? new Workspace5.UISourceCode.UISourceCodeMetadata(null, embeddedContent.length) : null;
     if (this.uiSourceCode) {
       NetworkProject.cloneInitialFrameAttribution(this.uiSourceCode, newUISourceCode);
@@ -1821,8 +1051,8 @@ __export(StylesSourceMapping_exports, {
   StyleFile: () => StyleFile,
   StylesSourceMapping: () => StylesSourceMapping
 });
-import * as Common8 from "../../core/common/common.js";
-import * as SDK6 from "../../core/sdk/sdk.js";
+import * as Common5 from "../../core/common/common.js";
+import * as SDK5 from "../../core/sdk/sdk.js";
 import * as TextUtils4 from "../../core/text_utils/text_utils.js";
 import * as Workspace9 from "../workspace/workspace.js";
 
@@ -1834,12 +1064,12 @@ __export(ResourceUtils_exports, {
   resourceForURL: () => resourceForURL,
   resourceMetadata: () => resourceMetadata
 });
-import * as Common7 from "../../core/common/common.js";
+import * as Common4 from "../../core/common/common.js";
 import * as Platform3 from "../../core/platform/platform.js";
-import * as SDK5 from "../../core/sdk/sdk.js";
+import * as SDK4 from "../../core/sdk/sdk.js";
 import * as Workspace7 from "../workspace/workspace.js";
 function resourceForURL(url) {
-  return SDK5.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK5.TargetManager.TargetManager.instance(), url);
+  return SDK4.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK4.TargetManager.TargetManager.instance(), url);
 }
 function displayNameForURL(url) {
   if (!url) {
@@ -1853,11 +1083,11 @@ function displayNameForURL(url) {
   if (resource) {
     return resource.displayName;
   }
-  const inspectedURL = SDK5.TargetManager.TargetManager.instance().inspectedURL();
+  const inspectedURL = SDK4.TargetManager.TargetManager.instance().inspectedURL();
   if (!inspectedURL) {
     return Platform3.StringUtilities.trimURL(url, "");
   }
-  const parsedURL = Common7.ParsedURL.ParsedURL.fromString(inspectedURL);
+  const parsedURL = Common4.ParsedURL.ParsedURL.fromString(inspectedURL);
   if (!parsedURL) {
     return url;
   }
@@ -1873,7 +1103,7 @@ function displayNameForURL(url) {
   return displayName === "/" ? parsedURL.host + "/" : displayName;
 }
 function metadataForURL(target, frameId, url) {
-  const resourceTreeModel = target.model(SDK5.ResourceTreeModel.ResourceTreeModel);
+  const resourceTreeModel = target.model(SDK4.ResourceTreeModel.ResourceTreeModel);
   if (!resourceTreeModel) {
     return null;
   }
@@ -1910,9 +1140,9 @@ var StylesSourceMapping = class {
     );
     NetworkProject.setTargetForProject(this.#project, target);
     this.#eventListeners = [
-      this.#cssModel.addEventListener(SDK6.CSSModel.Events.StyleSheetAdded, this.styleSheetAdded, this),
-      this.#cssModel.addEventListener(SDK6.CSSModel.Events.StyleSheetRemoved, this.styleSheetRemoved, this),
-      this.#cssModel.addEventListener(SDK6.CSSModel.Events.StyleSheetChanged, this.styleSheetChanged, this)
+      this.#cssModel.addEventListener(SDK5.CSSModel.Events.StyleSheetAdded, this.styleSheetAdded, this),
+      this.#cssModel.addEventListener(SDK5.CSSModel.Events.StyleSheetRemoved, this.styleSheetRemoved, this),
+      this.#cssModel.addEventListener(SDK5.CSSModel.Events.StyleSheetChanged, this.styleSheetChanged, this)
     ];
   }
   addSourceMap(sourceUrl, sourceMapUrl) {
@@ -1953,7 +1183,7 @@ var StylesSourceMapping = class {
         columnNumber = header.columnNumberInSource(lineNumber, uiLocation.columnNumber || 0);
         lineNumber = header.lineNumberInSource(lineNumber);
       }
-      rawLocations.push(new SDK6.CSSModel.CSSLocation(header, lineNumber, columnNumber));
+      rawLocations.push(new SDK5.CSSModel.CSSLocation(header, lineNumber, columnNumber));
     }
     return rawLocations;
   }
@@ -2014,7 +1244,7 @@ var StylesSourceMapping = class {
       styleFile.dispose();
     }
     this.#styleFiles.clear();
-    Common8.EventTarget.removeEventListeners(this.#eventListeners);
+    Common5.EventTarget.removeEventListeners(this.#eventListeners);
     this.#project.removeProject();
   }
 };
@@ -2024,7 +1254,7 @@ var StyleFile = class {
   headers;
   uiSourceCode;
   #eventListeners;
-  #throttler = new Common8.Throttler.Throttler(200);
+  #throttler = new Common5.Throttler.Throttler(200);
   #terminated = false;
   #isAddingRevision;
   #isUpdatingHeaders;
@@ -2071,7 +1301,7 @@ var StyleFile = class {
       true
       /* majorChange */
     );
-    void this.#throttler.schedule(mirrorContentBound, Common8.Throttler.Scheduling.DEFAULT);
+    void this.#throttler.schedule(mirrorContentBound, Common5.Throttler.Scheduling.DEFAULT);
   }
   workingCopyCommitted() {
     if (this.#isAddingRevision) {
@@ -2083,7 +1313,7 @@ var StyleFile = class {
       true
       /* majorChange */
     );
-    void this.#throttler.schedule(mirrorContentBound, Common8.Throttler.Scheduling.AS_SOON_AS_POSSIBLE);
+    void this.#throttler.schedule(mirrorContentBound, Common5.Throttler.Scheduling.AS_SOON_AS_POSSIBLE);
   }
   workingCopyChanged() {
     if (this.#isAddingRevision) {
@@ -2095,7 +1325,7 @@ var StyleFile = class {
       false
       /* majorChange */
     );
-    void this.#throttler.schedule(mirrorContentBound, Common8.Throttler.Scheduling.DEFAULT);
+    void this.#throttler.schedule(mirrorContentBound, Common5.Throttler.Scheduling.DEFAULT);
   }
   async mirrorContent(fromProvider, majorChange) {
     if (this.#terminated) {
@@ -2137,7 +1367,7 @@ var StyleFile = class {
     }
     this.#terminated = true;
     this.#project.removeUISourceCode(this.uiSourceCode.url());
-    Common8.EventTarget.removeEventListeners(this.#eventListeners);
+    Common5.EventTarget.removeEventListeners(this.#eventListeners);
   }
   contentURL() {
     console.assert(this.headers.size > 0);
@@ -2183,7 +1413,7 @@ var CSSWorkspaceBinding = class _CSSWorkspaceBinding {
     this.#resourceMapping = resourceMapping;
     this.#resourceMapping.cssLocationUpdater = this;
     this.#modelToInfo = /* @__PURE__ */ new Map();
-    targetManager.observeModels(SDK7.CSSModel.CSSModel, this);
+    targetManager.observeModels(SDK6.CSSModel.CSSModel, this);
     this.#liveLocationPromises = /* @__PURE__ */ new Set();
   }
   static instance(opts = { forceNew: null, resourceMapping: null, targetManager: null }) {
@@ -2240,7 +1470,7 @@ var CSSWorkspaceBinding = class _CSSWorkspaceBinding {
   }
   propertyRawLocation(cssProperty, forName) {
     const style = cssProperty.ownerStyle;
-    if (!style || style.type !== SDK7.CSSStyleDeclaration.Type.Regular || !style.styleSheetId) {
+    if (!style || style.type !== SDK6.CSSStyleDeclaration.Type.Regular || !style.styleSheetId) {
       return null;
     }
     const header = style.cssModel().styleSheetHeaderForId(style.styleSheetId);
@@ -2253,7 +1483,7 @@ var CSSWorkspaceBinding = class _CSSWorkspaceBinding {
     }
     const lineNumber = range.startLine;
     const columnNumber = range.startColumn;
-    return new SDK7.CSSModel.CSSLocation(
+    return new SDK6.CSSModel.CSSLocation(
       header,
       header.lineNumberInSource(lineNumber),
       header.columnNumberInSource(lineNumber, columnNumber)
@@ -2292,14 +1522,14 @@ var ModelInfo = class {
     this.#cssWorkspaceBinding = cssWorkspaceBinding;
     this.#eventListeners = [
       cssModel.addEventListener(
-        SDK7.CSSModel.Events.StyleSheetAdded,
+        SDK6.CSSModel.Events.StyleSheetAdded,
         (event) => {
           void this.styleSheetAdded(event);
         },
         this
       ),
       cssModel.addEventListener(
-        SDK7.CSSModel.Events.StyleSheetRemoved,
+        SDK6.CSSModel.Events.StyleSheetRemoved,
         (event) => {
           void this.styleSheetRemoved(event);
         },
@@ -2390,7 +1620,7 @@ var ModelInfo = class {
     return this.#resourceMapping.uiLocationToCSSLocations(uiLocation);
   }
   dispose() {
-    Common9.EventTarget.removeEventListeners(this.#eventListeners);
+    Common6.EventTarget.removeEventListeners(this.#eventListeners);
     this.#stylesSourceMapping.dispose();
     this.#sassSourceMapping.dispose();
   }
@@ -2421,7 +1651,7 @@ var LiveLocation = class extends LiveLocationWithPool {
     if (!this.#header) {
       return null;
     }
-    const rawLocation = new SDK7.CSSModel.CSSLocation(this.#header, this.#lineNumber, this.#columnNumber);
+    const rawLocation = new SDK6.CSSModel.CSSLocation(this.#header, this.#lineNumber, this.#columnNumber);
     return this.#cssWorkspaceBinding.rawLocationToUILocation(rawLocation);
   }
   dispose() {
@@ -2437,10 +1667,10 @@ __export(DebuggerLanguagePlugins_exports, {
   ExtensionRemoteObject: () => ExtensionRemoteObject,
   SourceScope: () => SourceScope
 });
-import * as Common10 from "../../core/common/common.js";
+import * as Common7 from "../../core/common/common.js";
 import * as i18n3 from "../../core/i18n/i18n.js";
 import { assertNotNullOrUndefined } from "../../core/platform/platform.js";
-import * as SDK8 from "../../core/sdk/sdk.js";
+import * as SDK7 from "../../core/sdk/sdk.js";
 import * as TextUtils5 from "../../core/text_utils/text_utils.js";
 
 // ../../front_end/generated/protocol.ts
@@ -4189,6 +3419,7 @@ var Page;
     PermissionsPolicyFeature2["Gamepad"] = "gamepad";
     PermissionsPolicyFeature2["Geolocation"] = "geolocation";
     PermissionsPolicyFeature2["Gyroscope"] = "gyroscope";
+    PermissionsPolicyFeature2["Haptics"] = "haptics";
     PermissionsPolicyFeature2["Hid"] = "hid";
     PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
     PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
@@ -4893,16 +4124,16 @@ var SystemInfo;
     ImageType2["Unknown"] = "unknown";
   })(ImageType = SystemInfo2.ImageType || (SystemInfo2.ImageType = {}));
 })(SystemInfo || (SystemInfo = {}));
-var Target2;
-((Target3) => {
+var Target;
+((Target2) => {
   let WindowState;
   ((WindowState2) => {
     WindowState2["Normal"] = "normal";
     WindowState2["Minimized"] = "minimized";
     WindowState2["Maximized"] = "maximized";
     WindowState2["Fullscreen"] = "fullscreen";
-  })(WindowState = Target3.WindowState || (Target3.WindowState = {}));
-})(Target2 || (Target2 = {}));
+  })(WindowState = Target2.WindowState || (Target2.WindowState = {}));
+})(Target || (Target = {}));
 var Tracing;
 ((Tracing2) => {
   let TraceConfigRecordMode;
@@ -5244,7 +4475,7 @@ var Runtime;
 })(Runtime || (Runtime = {}));
 
 // ../../front_end/models/bindings/DebuggerLanguagePlugins.ts
-import * as StackTrace3 from "../stack_trace/stack_trace.js";
+import * as StackTrace from "../stack_trace/stack_trace.js";
 import * as Workspace11 from "../workspace/workspace.js";
 var UIStrings2 = {
   /**
@@ -5319,7 +4550,7 @@ var FormattingError = class _FormattingError extends Error {
     return new _FormattingError(errorObject, exceptionDetails);
   }
 };
-var NamespaceObject = class extends SDK8.RemoteObject.LocalJSONObject {
+var NamespaceObject = class extends SDK7.RemoteObject.LocalJSONObject {
   get description() {
     return this.type;
   }
@@ -5352,7 +4583,7 @@ async function wrapRemoteObject(callFrame, object, plugin) {
   }
   return new ExtensionRemoteObject(callFrame, object, plugin);
 }
-var SourceScopeRemoteObject = class extends SDK8.RemoteObject.RemoteObjectImpl {
+var SourceScopeRemoteObject = class extends SDK7.RemoteObject.RemoteObjectImpl {
   variables;
   #callFrame;
   #plugin;
@@ -5371,7 +4602,7 @@ var SourceScopeRemoteObject = class extends SDK8.RemoteObject.RemoteObjectImpl {
     const properties = [];
     const namespaces = {};
     function makeProperty(name, obj) {
-      return new SDK8.RemoteObject.RemoteObjectProperty(
+      return new SDK7.RemoteObject.RemoteObjectProperty(
         name,
         obj,
         /* enumerable=*/
@@ -5388,10 +4619,10 @@ var SourceScopeRemoteObject = class extends SDK8.RemoteObject.RemoteObjectImpl {
       let sourceVar;
       try {
         const evalResult = await this.#plugin.evaluate(variable.name, getRawLocation(this.#callFrame), this.stopId);
-        sourceVar = evalResult ? await wrapRemoteObject(this.#callFrame, evalResult, this.#plugin) : new SDK8.RemoteObject.LocalJSONObject(void 0);
+        sourceVar = evalResult ? await wrapRemoteObject(this.#callFrame, evalResult, this.#plugin) : new SDK7.RemoteObject.LocalJSONObject(void 0);
       } catch (e) {
         console.warn(e);
-        sourceVar = new SDK8.RemoteObject.LocalJSONObject(void 0);
+        sourceVar = new SDK7.RemoteObject.LocalJSONObject(void 0);
       }
       if (variable.nestedName && variable.nestedName.length > 1) {
         let parent = namespaces;
@@ -5476,7 +4707,7 @@ var SourceScope = class {
     return [];
   }
 };
-var ExtensionRemoteObject = class extends SDK8.RemoteObject.RemoteObject {
+var ExtensionRemoteObject = class extends SDK7.RemoteObject.RemoteObject {
   extensionObject;
   plugin;
   callFrame;
@@ -5542,7 +4773,7 @@ var ExtensionRemoteObject = class extends SDK8.RemoteObject.RemoteObject {
       assertNotNullOrUndefined(this.plugin.getProperties);
       const extensionObjectProperties = await this.plugin.getProperties(objectId);
       const properties = await Promise.all(extensionObjectProperties.map(
-        async (p) => new SDK8.RemoteObject.RemoteObjectProperty(
+        async (p) => new SDK7.RemoteObject.RemoteObjectProperty(
           p.name,
           await wrapRemoteObject(this.callFrame, p.value, this.plugin)
         )
@@ -5584,7 +4815,7 @@ var DebuggerLanguagePluginManager = class {
     this.#console = console2;
     this.#plugins = [];
     this.#debuggerModelToData = /* @__PURE__ */ new Map();
-    targetManager.observeModels(SDK8.DebuggerModel.DebuggerModel, this);
+    targetManager.observeModels(SDK7.DebuggerModel.DebuggerModel, this);
     this.#rawModuleHandles = /* @__PURE__ */ new Map();
   }
   async evaluateOnCallFrame(callFrame, options) {
@@ -5610,7 +4841,7 @@ var DebuggerLanguagePluginManager = class {
       if (object) {
         return { object: await wrapRemoteObject(callFrame, object, plugin) };
       }
-      return { object: new SDK8.RemoteObject.LocalJSONObject(void 0) };
+      return { object: new SDK7.RemoteObject.LocalJSONObject(void 0) };
     } catch (error) {
       if (error instanceof FormattingError) {
         const { exception: object2, exceptionDetails: exceptionDetails2 } = error;
@@ -5635,15 +4866,15 @@ var DebuggerLanguagePluginManager = class {
   }
   modelAdded(debuggerModel) {
     this.#debuggerModelToData.set(debuggerModel, new ModelData(debuggerModel, this.#workspace));
-    debuggerModel.addEventListener(SDK8.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
-    debuggerModel.addEventListener(SDK8.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
-    debuggerModel.addEventListener(SDK8.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
+    debuggerModel.addEventListener(SDK7.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
+    debuggerModel.addEventListener(SDK7.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
+    debuggerModel.addEventListener(SDK7.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
     debuggerModel.setEvaluateOnCallFrameCallback(this.evaluateOnCallFrame.bind(this));
   }
   modelRemoved(debuggerModel) {
-    debuggerModel.removeEventListener(SDK8.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
-    debuggerModel.removeEventListener(SDK8.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
-    debuggerModel.removeEventListener(SDK8.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
+    debuggerModel.removeEventListener(SDK7.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this);
+    debuggerModel.removeEventListener(SDK7.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this);
+    debuggerModel.removeEventListener(SDK7.DebuggerModel.Events.DebuggerResumed, this.debuggerResumed, this);
     debuggerModel.setEvaluateOnCallFrameCallback(null);
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
@@ -5799,13 +5030,13 @@ var DebuggerLanguagePluginManager = class {
       }
       return rawLocations.map(
         (m) => ({
-          start: new SDK8.DebuggerModel.Location(
+          start: new SDK7.DebuggerModel.Location(
             script.debuggerModel,
             script.scriptId,
             0,
             Number(m.startOffset) + (script.codeOffset() || 0)
           ),
-          end: new SDK8.DebuggerModel.Location(
+          end: new SDK7.DebuggerModel.Location(
             script.debuggerModel,
             script.scriptId,
             0,
@@ -5855,7 +5086,7 @@ var DebuggerLanguagePluginManager = class {
   }
   async translateRawFramesStep(rawFrames, translatedFrames, target) {
     const frame = rawFrames[0];
-    const script = target.model(SDK8.DebuggerModel.DebuggerModel)?.scriptForId(frame.scriptId ?? "");
+    const script = target.model(SDK7.DebuggerModel.DebuggerModel)?.scriptForId(frame.scriptId ?? "");
     if (!script) {
       return false;
     }
@@ -5866,7 +5097,7 @@ var DebuggerLanguagePluginManager = class {
     rawFrames.shift();
     if ("frames" in functionInfo && functionInfo.frames.length) {
       const framePromises = functionInfo.frames.map(async ({ name }, index) => {
-        const rawLocation = new SDK8.DebuggerModel.Location(
+        const rawLocation = new SDK7.DebuggerModel.Location(
           script.debuggerModel,
           script.scriptId,
           frame.lineNumber,
@@ -5880,14 +5111,14 @@ var DebuggerLanguagePluginManager = class {
       return true;
     }
     const uiLocation = await this.#debuggerWorkspaceBinding.rawLocationToUILocation(
-      new SDK8.DebuggerModel.Location(script.debuggerModel, script.scriptId, frame.lineNumber, frame.columnNumber)
+      new SDK7.DebuggerModel.Location(script.debuggerModel, script.scriptId, frame.lineNumber, frame.columnNumber)
     );
     const mappedFrame = translatedFromUILocation(uiLocation, frame.functionName, frame);
     if ("missingSymbolFiles" in functionInfo && functionInfo.missingSymbolFiles.length) {
       translatedFrames.push([{
         ...mappedFrame,
         missingDebugInfo: {
-          type: StackTrace3.StackTrace.MissingDebugInfoType.PARTIAL_INFO,
+          type: StackTrace.StackTrace.MissingDebugInfoType.PARTIAL_INFO,
           missingDebugFiles: functionInfo.missingSymbolFiles
         }
       }]);
@@ -5895,7 +5126,7 @@ var DebuggerLanguagePluginManager = class {
       translatedFrames.push([{
         ...mappedFrame,
         missingDebugInfo: {
-          type: StackTrace3.StackTrace.MissingDebugInfoType.NO_INFO
+          type: StackTrace.StackTrace.MissingDebugInfoType.NO_INFO
         }
       }]);
     }
@@ -5956,7 +5187,7 @@ var DebuggerLanguagePluginManager = class {
             console2.log(i18nString2(UIStrings2.loadingDebugSymbolsFor, { PH1: plugin.name, PH2: url }));
           }
           try {
-            const code = !symbolsUrl && Common10.ParsedURL.schemeIs(url, "wasm:") ? await script.getWasmBytecode() : void 0;
+            const code = !symbolsUrl && Common7.ParsedURL.schemeIs(url, "wasm:") ? await script.getWasmBytecode() : void 0;
             const addModuleResult = await plugin.addRawModule(rawModuleId, symbolsUrl, { url, code });
             if (rawModuleHandle !== this.#rawModuleHandles.get(rawModuleId)) {
               return [];
@@ -6106,13 +5337,13 @@ var DebuggerLanguagePluginManager = class {
       const locations = await plugin.getInlinedFunctionRanges(pluginLocation);
       return locations.map(
         (m) => ({
-          start: new SDK8.DebuggerModel.Location(
+          start: new SDK7.DebuggerModel.Location(
             script.debuggerModel,
             script.scriptId,
             0,
             Number(m.startOffset) + (script.codeOffset() || 0)
           ),
-          end: new SDK8.DebuggerModel.Location(
+          end: new SDK7.DebuggerModel.Location(
             script.debuggerModel,
             script.scriptId,
             0,
@@ -6144,13 +5375,13 @@ var DebuggerLanguagePluginManager = class {
       const locations = await plugin.getInlinedCalleesRanges(pluginLocation);
       return locations.map(
         (m) => ({
-          start: new SDK8.DebuggerModel.Location(
+          start: new SDK7.DebuggerModel.Location(
             script.debuggerModel,
             script.scriptId,
             0,
             Number(m.startOffset) + (script.codeOffset() || 0)
           ),
-          end: new SDK8.DebuggerModel.Location(
+          end: new SDK7.DebuggerModel.Location(
             script.debuggerModel,
             script.scriptId,
             0,
@@ -6203,16 +5434,16 @@ var ModelData = class {
     for (const url of urls) {
       let uiSourceCode = this.project.uiSourceCodeForURL(url);
       if (!uiSourceCode) {
-        uiSourceCode = this.project.createUISourceCode(url, Common10.ResourceType.resourceTypes.SourceMapScript);
+        uiSourceCode = this.project.createUISourceCode(url, Common7.ResourceType.resourceTypes.SourceMapScript);
         NetworkProject.setInitialFrameAttribution(uiSourceCode, script.frameId);
         this.uiSourceCodeToScripts.set(uiSourceCode, [script]);
-        const contentProvider = new SDK8.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
+        const contentProvider = new SDK7.CompilerSourceMappingContentProvider.CompilerSourceMappingContentProvider(
           url,
-          Common10.ResourceType.resourceTypes.SourceMapScript,
+          Common7.ResourceType.resourceTypes.SourceMapScript,
           initiator,
           script.target().targetManager().getPageResourceLoader()
         );
-        const mimeType = Common10.ResourceType.ResourceType.mimeFromURL(url) || "text/javascript";
+        const mimeType = Common7.ResourceType.ResourceType.mimeFromURL(url) || "text/javascript";
         this.project.addUISourceCodeWithProvider(uiSourceCode, contentProvider, null, mimeType);
       } else {
         const scripts = this.uiSourceCodeToScripts.get(uiSourceCode);
@@ -6249,7 +5480,8 @@ __export(DebuggerWorkspaceBinding_exports, {
 });
 import * as Platform6 from "../../core/platform/platform.js";
 import * as Root3 from "../../core/root/root.js";
-import * as SDK12 from "../../core/sdk/sdk.js";
+import * as SDK11 from "../../core/sdk/sdk.js";
+import * as StackTraceImpl2 from "../stack_trace/stack_trace_impl.js";
 import * as Workspace17 from "../workspace/workspace.js";
 
 // ../../front_end/models/bindings/DefaultScriptMapping.ts
@@ -6257,8 +5489,8 @@ var DefaultScriptMapping_exports = {};
 __export(DefaultScriptMapping_exports, {
   DefaultScriptMapping: () => DefaultScriptMapping
 });
-import * as Common11 from "../../core/common/common.js";
-import * as SDK9 from "../../core/sdk/sdk.js";
+import * as Common8 from "../../core/common/common.js";
+import * as SDK8 from "../../core/sdk/sdk.js";
 import * as Workspace13 from "../workspace/workspace.js";
 var DefaultScriptMapping = class _DefaultScriptMapping {
   #debuggerWorkspaceBinding;
@@ -6278,10 +5510,10 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
       /* isServiceProject */
     );
     this.#eventListeners = [
-      debuggerModel.addEventListener(SDK9.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
-      debuggerModel.addEventListener(SDK9.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this),
+      debuggerModel.addEventListener(SDK8.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
+      debuggerModel.addEventListener(SDK8.DebuggerModel.Events.ParsedScriptSource, this.parsedScriptSource, this),
       debuggerModel.addEventListener(
-        SDK9.DebuggerModel.Events.DiscardedAnonymousScriptSource,
+        SDK8.DebuggerModel.Events.DiscardedAnonymousScriptSource,
         this.discardedScriptSource,
         this
       )
@@ -6290,7 +5522,7 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
     this.#scriptToUISourceCode = /* @__PURE__ */ new Map();
   }
   static createV8ScriptURL(script) {
-    const name = Common11.ParsedURL.ParsedURL.extractName(script.sourceURL);
+    const name = Common8.ParsedURL.ParsedURL.extractName(script.sourceURL);
     const url = "debugger:///VM" + script.scriptId + (name ? " " + name : "");
     return url;
   }
@@ -6340,7 +5572,7 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
   parsedScriptSource(event) {
     const script = event.data;
     const url = _DefaultScriptMapping.createV8ScriptURL(script);
-    const uiSourceCode = this.#project.createUISourceCode(url, Common11.ResourceType.resourceTypes.Script);
+    const uiSourceCode = this.#project.createUISourceCode(url, Common8.ResourceType.resourceTypes.Script);
     if (script.isBreakpointCondition) {
       uiSourceCode.markAsUnconditionallyIgnoreListed();
     }
@@ -6367,7 +5599,7 @@ var DefaultScriptMapping = class _DefaultScriptMapping {
   }
   dispose() {
     defaultScriptMappings.delete(this);
-    Common11.EventTarget.removeEventListeners(this.#eventListeners);
+    Common8.EventTarget.removeEventListeners(this.#eventListeners);
     this.globalObjectCleared();
     this.#project.dispose();
   }
@@ -6380,9 +5612,9 @@ __export(ResourceScriptMapping_exports, {
   ResourceScriptFile: () => ResourceScriptFile,
   ResourceScriptMapping: () => ResourceScriptMapping
 });
-import * as Common12 from "../../core/common/common.js";
+import * as Common9 from "../../core/common/common.js";
 import * as Platform5 from "../../core/platform/platform.js";
-import * as SDK10 from "../../core/sdk/sdk.js";
+import * as SDK9 from "../../core/sdk/sdk.js";
 import * as TextUtils6 from "../../core/text_utils/text_utils.js";
 import * as Formatter from "../formatter/formatter.js";
 import * as Workspace15 from "../workspace/workspace.js";
@@ -6404,18 +5636,18 @@ var ResourceScriptMapping = class {
     const runtimeModel = debuggerModel.runtimeModel();
     this.#eventListeners = [
       this.debuggerModel.addEventListener(
-        SDK10.DebuggerModel.Events.ParsedScriptSource,
+        SDK9.DebuggerModel.Events.ParsedScriptSource,
         (event) => this.addScript(event.data),
         this
       ),
-      this.debuggerModel.addEventListener(SDK10.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
+      this.debuggerModel.addEventListener(SDK9.DebuggerModel.Events.GlobalObjectCleared, this.globalObjectCleared, this),
       runtimeModel.addEventListener(
-        SDK10.RuntimeModel.Events.ExecutionContextDestroyed,
+        SDK9.RuntimeModel.Events.ExecutionContextDestroyed,
         this.executionContextDestroyed,
         this
       ),
       runtimeModel.target().targetManager().addEventListener(
-        SDK10.TargetManager.Events.INSPECTED_URL_CHANGED,
+        SDK9.TargetManager.Events.INSPECTED_URL_CHANGED,
         this.inspectedURLChanged,
         this
       )
@@ -6506,7 +5738,7 @@ var ResourceScriptMapping = class {
     if (!uiSourceCode) {
       return null;
     }
-    const scopeTreeAndText = script ? await SDK10.ScopeTreeCache.scopeTreeForScript(script) : null;
+    const scopeTreeAndText = script ? await SDK9.ScopeTreeCache.scopeTreeForScript(script) : null;
     if (!scopeTreeAndText) {
       return null;
     }
@@ -6547,13 +5779,13 @@ var ResourceScriptMapping = class {
       return;
     }
     if (script.hasSourceURL) {
-      url = SDK10.SourceMapManager.SourceMapManager.resolveRelativeSourceURL(script.debuggerModel.target(), url);
+      url = SDK9.SourceMapManager.SourceMapManager.resolveRelativeSourceURL(script.debuggerModel.target(), url);
     } else {
       if (script.isInlineScript()) {
         return;
       }
       if (script.isContentScript()) {
-        const parsedURL = new Common12.ParsedURL.ParsedURL(url);
+        const parsedURL = new Common9.ParsedURL.ParsedURL(url);
         if (!parsedURL.isValid) {
           return;
         }
@@ -6622,7 +5854,7 @@ var ResourceScriptMapping = class {
     this.globalObjectCleared();
   }
   dispose() {
-    Common12.EventTarget.removeEventListeners(this.#eventListeners);
+    Common9.EventTarget.removeEventListeners(this.#eventListeners);
     this.globalObjectCleared();
   }
 };
@@ -6669,13 +5901,13 @@ __export(SymbolizedError_exports, {
   UnparsableError: () => UnparsableError,
   isErrorLike: () => isErrorLike
 });
-import * as Common13 from "../../core/common/common.js";
-import * as SDK11 from "../../core/sdk/sdk.js";
-import * as StackTrace5 from "../stack_trace/stack_trace.js";
+import * as Common10 from "../../core/common/common.js";
+import * as SDK10 from "../../core/sdk/sdk.js";
+import * as StackTrace3 from "../stack_trace/stack_trace.js";
 function isErrorLike(stack) {
   return /\n\s*at\s/.test(stack) || stack.startsWith("SyntaxError:");
 }
-var UnparsableError = class _UnparsableError extends Common13.ObjectWrapper.ObjectWrapper {
+var UnparsableError = class _UnparsableError extends Common10.ObjectWrapper.ObjectWrapper {
   errorStack;
   cause;
   constructor(errorStack, cause) {
@@ -6694,7 +5926,7 @@ var UnparsableError = class _UnparsableError extends Common13.ObjectWrapper.Obje
     this.dispatchEventToListeners("UPDATED" /* UPDATED */);
   }
 };
-var SymbolizedErrorObject = class _SymbolizedErrorObject extends Common13.ObjectWrapper.ObjectWrapper {
+var SymbolizedErrorObject = class _SymbolizedErrorObject extends Common10.ObjectWrapper.ObjectWrapper {
   message;
   stackTrace;
   cause;
@@ -6704,11 +5936,11 @@ var SymbolizedErrorObject = class _SymbolizedErrorObject extends Common13.Object
     this.message = message;
     this.stackTrace = stackTrace;
     this.cause = cause;
-    this.stackTrace.addEventListener(StackTrace5.StackTrace.Events.UPDATED, this.#fireUpdated, this);
+    this.stackTrace.addEventListener(StackTrace3.StackTrace.Events.UPDATED, this.#fireUpdated, this);
     this.cause?.addEventListener("UPDATED" /* UPDATED */, this.#fireUpdated, this);
   }
   dispose() {
-    this.stackTrace.removeEventListener(StackTrace5.StackTrace.Events.UPDATED, this.#fireUpdated, this);
+    this.stackTrace.removeEventListener(StackTrace3.StackTrace.Events.UPDATED, this.#fireUpdated, this);
     this.cause?.removeEventListener("UPDATED" /* UPDATED */, this.#fireUpdated, this);
     if (this.cause instanceof _SymbolizedErrorObject || this.cause instanceof UnparsableError) {
       this.cause.dispose();
@@ -6742,7 +5974,7 @@ var SymbolizedErrorObject = class _SymbolizedErrorObject extends Common13.Object
     const topFrame = exceptionDetails.stackTrace?.callFrames[0];
     const isProgrammaticThrow = topFrame && topFrame.scriptId === scriptId && topFrame.lineNumber === lineNumber && topFrame.columnNumber === columnNumber;
     if (!isProgrammaticThrow) {
-      const debuggerModel = target.model(SDK11.DebuggerModel.DebuggerModel);
+      const debuggerModel = target.model(SDK10.DebuggerModel.DebuggerModel);
       if (debuggerModel) {
         const rawLocation = debuggerModel.createRawLocationByScriptId(scriptId, lineNumber, columnNumber);
         await debuggerWorkspaceBinding.createLiveLocation(
@@ -6783,7 +6015,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     this.workspace = workspace;
     this.#settings = targetManager.settings;
     this.#debuggerModelToData = /* @__PURE__ */ new Map();
-    targetManager.observeModels(SDK12.DebuggerModel.DebuggerModel, this);
+    targetManager.observeModels(SDK11.DebuggerModel.DebuggerModel, this);
     this.ignoreListManager.addEventListener(
       Workspace17.IgnoreListManager.Events.IGNORED_SCRIPT_RANGES_UPDATED,
       (event) => this.updateLocations(event.data)
@@ -6837,7 +6069,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     }
     const pluginManager = this.pluginManager;
     let ranges = [];
-    if (mode === SDK12.DebuggerModel.StepMode.STEP_OUT) {
+    if (mode === SDK11.DebuggerModel.StepMode.STEP_OUT) {
       return await pluginManager.getInlinedFunctionRanges(rawLocation);
     }
     const uiLocation = await pluginManager.rawLocationToUILocation(rawLocation);
@@ -6848,7 +6080,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
         uiLocation.columnNumber
       ) || [];
       ranges = ranges.filter((range) => contained(rawLocation, range));
-      if (mode === SDK12.DebuggerModel.StepMode.STEP_OVER) {
+      if (mode === SDK11.DebuggerModel.StepMode.STEP_OVER) {
         ranges = ranges.concat(await pluginManager.getInlinedCalleesRanges(rawLocation));
       }
       return ranges;
@@ -6888,7 +6120,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     this.#liveLocationPromises.add(promise);
   }
   async updateLocations(script) {
-    const stackTraceUpdatePromise = script.target().model(StackTraceModel_exports.StackTraceModel)?.scriptInfoChanged(script, this.#translateRawFrames.bind(this));
+    const stackTraceUpdatePromise = script.target().model(StackTraceImpl2.StackTraceModel.StackTraceModel)?.scriptInfoChanged(script, this.#translateRawFrames.bind(this));
     if (stackTraceUpdatePromise) {
       this.recordLiveLocationChange(stackTraceUpdatePromise);
     }
@@ -6902,19 +6134,19 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     await Promise.all(updatePromises);
   }
   async createStackTraceFromProtocolRuntime(stackTrace, target) {
-    const model = target.model(StackTraceModel_exports.StackTraceModel);
+    const model = target.model(StackTraceImpl2.StackTraceModel.StackTraceModel);
     const stackTracePromise = model.createFromProtocolRuntime(stackTrace, this.#translateRawFrames.bind(this));
     this.recordLiveLocationChange(stackTracePromise);
     return await stackTracePromise;
   }
   async createStackTraceFromDebuggerPaused(pausedDetails, target) {
-    const model = target.model(StackTraceModel_exports.StackTraceModel);
+    const model = target.model(StackTraceImpl2.StackTraceModel.StackTraceModel);
     const stackTracePromise = model.createFromDebuggerPaused(pausedDetails, this.#translateRawFrames.bind(this));
     this.recordLiveLocationChange(stackTracePromise);
     return await stackTracePromise;
   }
   async createStackTraceFromErrorStackLikeString(target, stack, exceptionDetails) {
-    const model = target.model(StackTraceModel_exports.StackTraceModel);
+    const model = target.model(StackTraceImpl2.StackTraceModel.StackTraceModel);
     const stackTracePromise = model.createFromErrorStackLikeString(stack, this.#translateRawFrames.bind(this), exceptionDetails);
     this.recordLiveLocationChange(stackTracePromise);
     return await stackTracePromise;
@@ -6924,7 +6156,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     let causeRemoteObject;
     let fetchedExceptionDetails = exceptionDetails;
     if (remoteObject.subtype === "error") {
-      const remoteError = SDK12.RemoteObject.RemoteError.objectAsError(remoteObject);
+      const remoteError = SDK11.RemoteObject.RemoteError.objectAsError(remoteObject);
       errorStack = remoteError.errorStack;
       const [details, causeRemote] = await Promise.all([
         exceptionDetails ? Promise.resolve(exceptionDetails) : remoteError.exceptionDetails(),
@@ -6950,12 +6182,12 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     ]);
     const issueSummary = fetchedExceptionDetails?.exceptionMetaData?.issueSummary;
     if (typeof issueSummary === "string") {
-      errorStack = DetailedErrorStackParser_exports.concatErrorDescriptionAndIssueSummary(errorStack, issueSummary);
+      errorStack = StackTraceImpl2.DetailedErrorStackParser.concatErrorDescriptionAndIssueSummary(errorStack, issueSummary);
     }
     if (!stackTrace) {
       return new UnparsableError(errorStack, cause);
     }
-    const message = DetailedErrorStackParser_exports.parseMessage(errorStack);
+    const message = StackTraceImpl2.DetailedErrorStackParser.parseMessage(errorStack);
     if (remoteObject.subtype === "error" && remoteObject.className === "SyntaxError" && fetchedExceptionDetails) {
       return await SymbolizedErrorObject.createForSyntaxError(
         remoteObject.runtimeModel().target(),
@@ -7131,7 +6363,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     return scripts.every((script) => script.isJavaScript());
   }
   resetForTest(target) {
-    const debuggerModel = target.model(SDK12.DebuggerModel.DebuggerModel);
+    const debuggerModel = target.model(SDK11.DebuggerModel.DebuggerModel);
     const modelData = this.#debuggerModelToData.get(debuggerModel);
     if (modelData) {
       modelData.getResourceScriptMapping().resetForTest();
@@ -7170,7 +6402,7 @@ var DebuggerWorkspaceBinding = class _DebuggerWorkspaceBinding {
     if (await this.pluginManager.translateRawFramesStep(rawFrames, translatedFrames, target)) {
       return;
     }
-    const modelData = this.#debuggerModelToData.get(target.model(SDK12.DebuggerModel.DebuggerModel));
+    const modelData = this.#debuggerModelToData.get(target.model(SDK11.DebuggerModel.DebuggerModel));
     if (modelData) {
       await modelData.translateRawFramesStep(rawFrames, translatedFrames);
       return;
@@ -7372,7 +6604,7 @@ __export(FileUtils_exports, {
   ChunkedFileReader: () => ChunkedFileReader,
   FileOutputStream: () => FileOutputStream
 });
-import * as Common14 from "../../core/common/common.js";
+import * as Common11 from "../../core/common/common.js";
 import * as TextUtils7 from "../../core/text_utils/text_utils.js";
 import * as Workspace19 from "../workspace/workspace.js";
 var ChunkedFileReader = class {
@@ -7405,7 +6637,7 @@ var ChunkedFileReader = class {
     }
     if (this.#file?.type.endsWith("gzip")) {
       const fileStream = this.#file.stream();
-      const stream = Common14.Gzip.decompressStream(fileStream);
+      const stream = Common11.Gzip.decompressStream(fileStream);
       this.#streamReader = stream.getReader();
     } else {
       this.#reader = new FileReader();
@@ -7569,7 +6801,7 @@ __export(PresentationConsoleMessageHelper_exports, {
   PresentationSourceFrameMessageHelper: () => PresentationSourceFrameMessageHelper,
   PresentationSourceFrameMessageManager: () => PresentationSourceFrameMessageManager
 });
-import * as SDK13 from "../../core/sdk/sdk.js";
+import * as SDK12 from "../../core/sdk/sdk.js";
 import * as TextUtils8 from "../../core/text_utils/text_utils.js";
 import * as Workspace20 from "../workspace/workspace.js";
 var PresentationSourceFrameMessageManager = class {
@@ -7585,8 +6817,8 @@ var PresentationSourceFrameMessageManager = class {
     this.#cssWorkspaceBinding = cssWorkspaceBinding;
   }
   enable() {
-    this.#targetManager.observeModels(SDK13.DebuggerModel.DebuggerModel, this);
-    this.#targetManager.observeModels(SDK13.CSSModel.CSSModel, this);
+    this.#targetManager.observeModels(SDK12.DebuggerModel.DebuggerModel, this);
+    this.#targetManager.observeModels(SDK12.CSSModel.CSSModel, this);
   }
   modelAdded(model) {
     const target = model.target();
@@ -7595,7 +6827,7 @@ var PresentationSourceFrameMessageManager = class {
       this.#debuggerWorkspaceBinding,
       this.#cssWorkspaceBinding
     );
-    if (model instanceof SDK13.DebuggerModel.DebuggerModel) {
+    if (model instanceof SDK12.DebuggerModel.DebuggerModel) {
       helper.setDebuggerModel(model);
     } else {
       helper.setCSSModel(model);
@@ -7628,14 +6860,14 @@ var PresentationConsoleMessageManager = class {
       cssWorkspaceBinding
     );
     targetManager.addModelListener(
-      SDK13.ConsoleModel.ConsoleModel,
-      SDK13.ConsoleModel.Events.MessageAdded,
+      SDK12.ConsoleModel.ConsoleModel,
+      SDK12.ConsoleModel.Events.MessageAdded,
       (event) => this.consoleMessageAdded(event.data)
     );
-    SDK13.ConsoleModel.ConsoleModel.allMessagesUnordered(targetManager).forEach(this.consoleMessageAdded, this);
+    SDK12.ConsoleModel.ConsoleModel.allMessagesUnordered(targetManager).forEach(this.consoleMessageAdded, this);
     targetManager.addModelListener(
-      SDK13.ConsoleModel.ConsoleModel,
-      SDK13.ConsoleModel.Events.ConsoleCleared,
+      SDK12.ConsoleModel.ConsoleModel,
+      SDK12.ConsoleModel.Events.ConsoleCleared,
       () => this.#sourceFrameMessageManager.clear()
     );
   }
@@ -7675,12 +6907,12 @@ var PresentationSourceFrameMessageHelper = class {
       throw new Error("Cannot set DebuggerModel twice");
     }
     this.#debuggerModel = debuggerModel;
-    debuggerModel.addEventListener(SDK13.DebuggerModel.Events.ParsedScriptSource, (event) => {
+    debuggerModel.addEventListener(SDK12.DebuggerModel.Events.ParsedScriptSource, (event) => {
       queueMicrotask(() => {
         this.#parsedScriptSource(event);
       });
     });
-    debuggerModel.addEventListener(SDK13.DebuggerModel.Events.GlobalObjectCleared, this.#debuggerReset, this);
+    debuggerModel.addEventListener(SDK12.DebuggerModel.Events.GlobalObjectCleared, this.#debuggerReset, this);
   }
   setCSSModel(cssModel) {
     if (this.#cssModel) {
@@ -7688,7 +6920,7 @@ var PresentationSourceFrameMessageHelper = class {
     }
     this.#cssModel = cssModel;
     cssModel.addEventListener(
-      SDK13.CSSModel.Events.StyleSheetAdded,
+      SDK12.CSSModel.Events.StyleSheetAdded,
       (event) => queueMicrotask(() => this.#styleSheetAdded(event))
     );
   }
@@ -7783,7 +7015,7 @@ var PresentationSourceFrameMessageHelper = class {
     for (const { source, presentation } of messages ?? []) {
       if (header.containsLocation(source.line, source.column)) {
         promises.push(
-          presentation.updateLocationSource(new SDK13.CSSModel.CSSLocation(header, source.line, source.column))
+          presentation.updateLocationSource(new SDK12.CSSModel.CSSLocation(header, source.line, source.column))
         );
       }
     }
@@ -7827,13 +7059,13 @@ var PresentationSourceFrameMessage = class {
     this.#locationPool = locationPool;
   }
   async updateLocationSource(source) {
-    if (source instanceof SDK13.DebuggerModel.Location) {
+    if (source instanceof SDK12.DebuggerModel.Location) {
       await this.#debuggerWorkspaceBinding.createLiveLocation(
         source,
         this.#updateLocation.bind(this),
         this.#locationPool
       );
-    } else if (source instanceof SDK13.CSSModel.CSSLocation) {
+    } else if (source instanceof SDK12.CSSModel.CSSLocation) {
       await this.#cssWorkspaceBinding.createLiveLocation(source, this.#updateLocation.bind(this), this.#locationPool);
     } else if (source instanceof Workspace20.UISourceCode.UILocation) {
       if (!this.#liveLocation) {
@@ -7870,8 +7102,8 @@ var ResourceMapping_exports = {};
 __export(ResourceMapping_exports, {
   ResourceMapping: () => ResourceMapping
 });
-import * as Common15 from "../../core/common/common.js";
-import * as SDK14 from "../../core/sdk/sdk.js";
+import * as Common12 from "../../core/common/common.js";
+import * as SDK13 from "../../core/sdk/sdk.js";
 import * as TextUtils9 from "../../core/text_utils/text_utils.js";
 import * as Formatter2 from "../formatter/formatter.js";
 import * as Workspace22 from "../workspace/workspace.js";
@@ -7891,7 +7123,7 @@ var ResourceMapping = class {
   #cssLocationUpdater = null;
   constructor(targetManager, workspace) {
     this.workspace = workspace;
-    targetManager.observeModels(SDK14.ResourceTreeModel.ResourceTreeModel, this);
+    targetManager.observeModels(SDK13.ResourceTreeModel.ResourceTreeModel, this);
   }
   get debuggerLocationUpdater() {
     return this.#debuggerLocationUpdater;
@@ -7925,7 +7157,7 @@ var ResourceMapping = class {
     }
   }
   infoForTarget(target) {
-    const resourceTreeModel = target.model(SDK14.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK13.ResourceTreeModel.ResourceTreeModel);
     return resourceTreeModel ? this.#modelToInfo.get(resourceTreeModel) || null : null;
   }
   uiSourceCodeForScript(script) {
@@ -7997,7 +7229,7 @@ var ResourceMapping = class {
     if (!target) {
       return [];
     }
-    const debuggerModel = target.model(SDK14.DebuggerModel.DebuggerModel);
+    const debuggerModel = target.model(SDK13.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return [];
     }
@@ -8030,7 +7262,7 @@ var ResourceMapping = class {
     if (!target) {
       return null;
     }
-    const debuggerModel = target.model(SDK14.DebuggerModel.DebuggerModel);
+    const debuggerModel = target.model(SDK13.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return null;
     }
@@ -8069,7 +7301,7 @@ var ResourceMapping = class {
     if (!target) {
       return null;
     }
-    const debuggerModel = target.model(SDK14.DebuggerModel.DebuggerModel);
+    const debuggerModel = target.model(SDK13.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return null;
     }
@@ -8093,7 +7325,7 @@ var ResourceMapping = class {
     if (!target) {
       return [];
     }
-    const cssModel = target.model(SDK14.CSSModel.CSSModel);
+    const cssModel = target.model(SDK13.CSSModel.CSSModel);
     if (!cssModel) {
       return [];
     }
@@ -8125,7 +7357,7 @@ var ResourceMapping = class {
     if (lineNumber === 0) {
       columnNumber -= script.columnOffset;
     }
-    const scopeTreeAndText = script ? await SDK14.ScopeTreeCache.scopeTreeForScript(script) : null;
+    const scopeTreeAndText = script ? await SDK13.ScopeTreeCache.scopeTreeForScript(script) : null;
     if (!scopeTreeAndText) {
       return null;
     }
@@ -8166,7 +7398,7 @@ var ResourceMapping = class {
     return new Workspace22.UISourceCode.UIFunctionBounds(uiSourceCode, range, name);
   }
   resetForTest(target) {
-    const resourceTreeModel = target.model(SDK14.ResourceTreeModel.ResourceTreeModel);
+    const resourceTreeModel = target.model(SDK13.ResourceTreeModel.ResourceTreeModel);
     const info = resourceTreeModel ? this.#modelToInfo.get(resourceTreeModel) : null;
     if (info) {
       info.resetForTest();
@@ -8191,7 +7423,7 @@ var ModelInfo2 = class {
       /* isServiceProject */
     );
     NetworkProject.setTargetForProject(this.project, target);
-    const cssModel = target.model(SDK14.CSSModel.CSSModel);
+    const cssModel = target.model(SDK13.CSSModel.CSSModel);
     console.assert(Boolean(cssModel));
     this.#cssModel = cssModel;
     for (const frame of resourceTreeModel.frames()) {
@@ -8200,11 +7432,11 @@ var ModelInfo2 = class {
       }
     }
     this.#eventListeners = [
-      resourceTreeModel.addEventListener(SDK14.ResourceTreeModel.Events.ResourceAdded, this.resourceAdded, this),
-      resourceTreeModel.addEventListener(SDK14.ResourceTreeModel.Events.FrameWillNavigate, this.frameWillNavigate, this),
-      resourceTreeModel.addEventListener(SDK14.ResourceTreeModel.Events.FrameDetached, this.frameDetached, this),
+      resourceTreeModel.addEventListener(SDK13.ResourceTreeModel.Events.ResourceAdded, this.resourceAdded, this),
+      resourceTreeModel.addEventListener(SDK13.ResourceTreeModel.Events.FrameWillNavigate, this.frameWillNavigate, this),
+      resourceTreeModel.addEventListener(SDK13.ResourceTreeModel.Events.FrameDetached, this.frameDetached, this),
       this.#cssModel.addEventListener(
-        SDK14.CSSModel.Events.StyleSheetChanged,
+        SDK13.CSSModel.Events.StyleSheetChanged,
         (event) => {
           void this.styleSheetChanged(event);
         },
@@ -8225,16 +7457,16 @@ var ModelInfo2 = class {
   }
   acceptsResource(resource) {
     const resourceType = resource.resourceType();
-    if (resourceType !== Common15.ResourceType.resourceTypes.Image && resourceType !== Common15.ResourceType.resourceTypes.Font && resourceType !== Common15.ResourceType.resourceTypes.Document && resourceType !== Common15.ResourceType.resourceTypes.Manifest && resourceType !== Common15.ResourceType.resourceTypes.Fetch && resourceType !== Common15.ResourceType.resourceTypes.XHR) {
+    if (resourceType !== Common12.ResourceType.resourceTypes.Image && resourceType !== Common12.ResourceType.resourceTypes.Font && resourceType !== Common12.ResourceType.resourceTypes.Document && resourceType !== Common12.ResourceType.resourceTypes.Manifest && resourceType !== Common12.ResourceType.resourceTypes.Fetch && resourceType !== Common12.ResourceType.resourceTypes.XHR) {
       return false;
     }
-    if (resourceType === Common15.ResourceType.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith("image")) {
+    if (resourceType === Common12.ResourceType.resourceTypes.Image && resource.mimeType && !resource.mimeType.startsWith("image")) {
       return false;
     }
-    if (resourceType === Common15.ResourceType.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes("font")) {
+    if (resourceType === Common12.ResourceType.resourceTypes.Font && resource.mimeType && !resource.mimeType.includes("font")) {
       return false;
     }
-    if ((resourceType === Common15.ResourceType.resourceTypes.Image || resourceType === Common15.ResourceType.resourceTypes.Font) && Common15.ParsedURL.schemeIs(resource.contentURL(), "data:")) {
+    if ((resourceType === Common12.ResourceType.resourceTypes.Image || resourceType === Common12.ResourceType.resourceTypes.Font) && Common12.ParsedURL.schemeIs(resource.contentURL(), "data:")) {
       return false;
     }
     return true;
@@ -8284,7 +7516,7 @@ var ModelInfo2 = class {
     this.#bindings.clear();
   }
   dispose() {
-    Common15.EventTarget.removeEventListeners(this.#eventListeners);
+    Common12.EventTarget.removeEventListeners(this.#eventListeners);
     for (const binding of this.#bindings.values()) {
       binding.dispose();
     }
@@ -8324,7 +7556,7 @@ var Binding2 = class {
     if (!target) {
       return stylesheets;
     }
-    const cssModel = target.model(SDK14.CSSModel.CSSModel);
+    const cssModel = target.model(SDK13.CSSModel.CSSModel);
     if (cssModel) {
       for (const headerId of cssModel.getStyleSheetIdsForURL(this.#uiSourceCode.url())) {
         const header = cssModel.styleSheetHeaderForId(headerId);
@@ -8340,7 +7572,7 @@ var Binding2 = class {
     if (!target) {
       return [];
     }
-    const debuggerModel = target.model(SDK14.DebuggerModel.DebuggerModel);
+    const debuggerModel = target.model(SDK13.DebuggerModel.DebuggerModel);
     if (!debuggerModel) {
       return [];
     }

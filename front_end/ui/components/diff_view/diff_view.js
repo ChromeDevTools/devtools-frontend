@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/diff_view/DiffView.js
+// ../../front_end/ui/components/diff_view/DiffView.ts
 var DiffView_exports = {};
 __export(DiffView_exports, {
   DiffView: () => DiffView,
@@ -103,7 +103,7 @@ var diffView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./diffView.css")} */`;
 
-// gen/front_end/ui/components/diff_view/DiffView.js
+// ../../front_end/ui/components/diff_view/DiffView.ts
 var { html } = Lit;
 var UIStrings = {
   /**
@@ -131,13 +131,13 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("ui/components/diff_view/DiffView.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var RowType;
-(function(RowType2) {
+var RowType = /* @__PURE__ */ ((RowType2) => {
   RowType2["DELETION"] = "deletion";
   RowType2["ADDITION"] = "addition";
   RowType2["EQUAL"] = "equal";
   RowType2["SPACER"] = "spacer";
-})(RowType || (RowType = {}));
+  return RowType2;
+})(RowType || {});
 function buildDiffRows(diff) {
   let currentLineNumber = 0;
   let originalLineNumber = 0;
@@ -155,11 +155,7 @@ function buildDiffRows(diff) {
         break;
       case Diff.Diff.Operation.Insert:
         for (const line of token[1]) {
-          rows.push(createRow(
-            line,
-            "addition"
-            /* RowType.ADDITION */
-          ));
+          rows.push(createRow(line, "addition" /* ADDITION */));
         }
         currentLines.push(...token[1]);
         break;
@@ -171,11 +167,7 @@ function buildDiffRows(diff) {
           currentLines.push(...diff[i][1]);
         } else {
           for (const line of token[1]) {
-            rows.push(createRow(
-              line,
-              "deletion"
-              /* RowType.DELETION */
-            ));
+            rows.push(createRow(line, "deletion" /* DELETION */));
           }
         }
         break;
@@ -186,17 +178,12 @@ function buildDiffRows(diff) {
     const equalRows = [];
     if (!atStart) {
       for (let i = 0; i < paddingLines && i < lines.length; i++) {
-        equalRows.push(createRow(
-          lines[i],
-          "equal"
-          /* RowType.EQUAL */
-        ));
+        equalRows.push(createRow(lines[i], "equal" /* EQUAL */));
       }
       if (lines.length > paddingLines * 2 + 1 && !atEnd) {
         equalRows.push(createRow(
           i18nString(UIStrings.SkippingDMatchingLines, { PH1: lines.length - paddingLines * 2 }),
-          "spacer"
-          /* RowType.SPACER */
+          "spacer" /* SPACER */
         ));
       }
     }
@@ -211,11 +198,7 @@ function buildDiffRows(diff) {
         currentLineNumber += skip;
       }
       for (let i = start; i < lines.length; i++) {
-        equalRows.push(createRow(
-          lines[i],
-          "equal"
-          /* RowType.EQUAL */
-        ));
+        equalRows.push(createRow(lines[i], "equal" /* EQUAL */));
       }
     }
     return equalRows;
@@ -227,16 +210,8 @@ function buildDiffRows(diff) {
       true
       /* cleanup diff */
     );
-    const deletionRows = [createRow(
-      "",
-      "deletion"
-      /* RowType.DELETION */
-    )];
-    const insertionRows = [createRow(
-      "",
-      "addition"
-      /* RowType.ADDITION */
-    )];
+    const deletionRows = [createRow("", "deletion" /* DELETION */)];
+    const insertionRows = [createRow("", "addition" /* ADDITION */)];
     for (const token of internalDiff) {
       const text = token[1];
       const type = token[0];
@@ -244,18 +219,10 @@ function buildDiffRows(diff) {
       const lines = text.split("\n");
       for (let i = 0; i < lines.length; i++) {
         if (i > 0 && type !== Diff.Diff.Operation.Insert) {
-          deletionRows.push(createRow(
-            "",
-            "deletion"
-            /* RowType.DELETION */
-          ));
+          deletionRows.push(createRow("", "deletion" /* DELETION */));
         }
         if (i > 0 && type !== Diff.Diff.Operation.Delete) {
-          insertionRows.push(createRow(
-            "",
-            "addition"
-            /* RowType.ADDITION */
-          ));
+          insertionRows.push(createRow("", "addition" /* ADDITION */));
         }
         if (!lines[i]) {
           continue;
@@ -271,13 +238,13 @@ function buildDiffRows(diff) {
     return deletionRows.concat(insertionRows);
   }
   function createRow(text, type) {
-    if (type === "addition") {
+    if (type === "addition" /* ADDITION */) {
       currentLineNumber++;
     }
-    if (type === "deletion") {
+    if (type === "deletion" /* DELETION */) {
       originalLineNumber++;
     }
-    if (type === "equal") {
+    if (type === "equal" /* EQUAL */) {
       originalLineNumber++;
       currentLineNumber++;
     }
@@ -293,10 +260,6 @@ function documentMap(lines) {
   return map;
 }
 var DiffRenderer = class _DiffRenderer {
-  originalHighlighter;
-  originalMap;
-  currentHighlighter;
-  currentMap;
   constructor(originalHighlighter, originalMap, currentHighlighter, currentMap) {
     this.originalHighlighter = originalHighlighter;
     this.originalMap = originalMap;
@@ -312,14 +275,14 @@ var DiffRenderer = class _DiffRenderer {
       </div>`;
   }
   #renderRow(row) {
-    const baseNumber = row.type === "equal" || row.type === "deletion" ? String(row.originalLineNumber) : "";
-    const curNumber = row.type === "equal" || row.type === "addition" ? String(row.currentLineNumber) : "";
+    const baseNumber = row.type === "equal" /* EQUAL */ || row.type === "deletion" /* DELETION */ ? String(row.originalLineNumber) : "";
+    const curNumber = row.type === "equal" /* EQUAL */ || row.type === "addition" /* ADDITION */ ? String(row.currentLineNumber) : "";
     let marker = "", markerClass = "diff-line-marker", screenReaderText = null;
-    if (row.type === "addition") {
+    if (row.type === "addition" /* ADDITION */) {
       marker = "+";
       markerClass += " diff-line-addition";
       screenReaderText = html`<span class="diff-hidden-text">${i18nString(UIStrings.additions)}</span>`;
-    } else if (row.type === "deletion") {
+    } else if (row.type === "deletion" /* DELETION */) {
       marker = "-";
       markerClass += " diff-line-deletion";
       screenReaderText = html`<span class="diff-hidden-text">${i18nString(UIStrings.deletions)}</span>`;
@@ -331,10 +294,10 @@ var DiffRenderer = class _DiffRenderer {
       <div class="diff-line-content diff-line-${row.type}" data-line-number=${curNumber} jslog=${VisualLogging.link("changes.reveal-source").track({ click: true })}>${screenReaderText}${this.#renderRowContent(row)}</div>`;
   }
   #renderRowContent(row) {
-    if (row.type === "spacer") {
+    if (row.type === "spacer" /* SPACER */) {
       return row.tokens.map((tok) => html`${tok.text}`);
     }
-    const [doc, startPos] = row.type === "deletion" ? [this.originalHighlighter, this.originalMap.get(row.originalLineNumber)] : [this.currentHighlighter, this.currentMap.get(row.currentLineNumber)];
+    const [doc, startPos] = row.type === "deletion" /* DELETION */ ? [this.originalHighlighter, this.originalMap.get(row.originalLineNumber)] : [this.currentHighlighter, this.currentMap.get(row.currentLineNumber)];
     const content = [];
     let pos = startPos;
     for (const token of row.tokens) {
@@ -342,21 +305,32 @@ var DiffRenderer = class _DiffRenderer {
       doc.highlightRange(pos, pos + token.text.length, (text, style) => {
         tokenContent.push(style ? html`<span class=${style}>${text}</span>` : text);
       });
-      content.push(token.className ? html`<span class=${token.className}>${tokenContent}</span>` : html`${tokenContent}`);
+      content.push(
+        token.className ? html`<span class=${token.className}>${tokenContent}</span>` : html`${tokenContent}`
+      );
       pos += token.text.length;
     }
     return content;
   }
   static async render(diff, mimeType, parent) {
     const { originalLines, currentLines, rows } = buildDiffRows(diff);
-    const renderer = new _DiffRenderer(await CodeHighlighter.CodeHighlighter.create(originalLines.join("\n"), mimeType), documentMap(originalLines), await CodeHighlighter.CodeHighlighter.create(currentLines.join("\n"), mimeType), documentMap(currentLines));
+    const renderer = new _DiffRenderer(
+      await CodeHighlighter.CodeHighlighter.create(originalLines.join("\n"), mimeType),
+      documentMap(originalLines),
+      await CodeHighlighter.CodeHighlighter.create(currentLines.join("\n"), mimeType),
+      documentMap(currentLines)
+    );
     Lit.render(renderer.#render(rows), parent, { host: this });
   }
 };
 function renderNoDiffState(container) {
-  Lit.render(html`
+  Lit.render(
+    html`
     <style>${diffView_css_default}</style>
-    <p class="diff-listing-no-diff" data-testid="no-diff">${i18nString(UIStrings.noDiff)}</p>`, container, { host: container });
+    <p class="diff-listing-no-diff" data-testid="no-diff">${i18nString(UIStrings.noDiff)}</p>`,
+    container,
+    { host: container }
+  );
 }
 var DiffView = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });

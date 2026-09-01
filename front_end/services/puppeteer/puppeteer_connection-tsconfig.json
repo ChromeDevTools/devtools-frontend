@@ -54,9 +54,6 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../generated/protocol-tsconfig.ref.json"
-    },
-    {
       "path": "../../third_party/puppeteer/bundle-tsconfig.ref.json"
     }
   ]

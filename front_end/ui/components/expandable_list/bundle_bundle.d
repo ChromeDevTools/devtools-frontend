@@ -1,0 +1,1 @@
+gen/front_end/ui/components/expandable_list/expandable_list.js: gen/front_end/ui/components/expandable_list/expandableList.css.js ../../front_end/ui/components/expandable_list/ExpandableList.ts ../../front_end/ui/components/expandable_list/expandable_list.ts

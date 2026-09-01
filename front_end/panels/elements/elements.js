@@ -2207,8 +2207,8 @@ var stylePropertiesTreeOutline_css_default = `/*
 }
 
 .tree-outline li {
-  margin-left: 12px;
-  padding-left: 22px;
+  margin-left: var(--sys-size-6);
+  padding-left: var(--sys-size-10);
   white-space: normal;
   text-overflow: ellipsis;
   overflow-wrap: break-word;
@@ -2220,7 +2220,7 @@ var stylePropertiesTreeOutline_css_default = `/*
   }
 
   .webkit-css-property {
-    margin-left: -22px; /* outdent the first line of longhand properties (in an expanded shorthand) to compensate for the "padding-left" shift in .tree-outline li */
+    margin-left: calc(-1 * var(--sys-size-10)); /* outdent the first line of longhand properties (in an expanded shorthand) to compensate for the "padding-left" shift in .tree-outline li */
   }
 
   &.not-parsed-ok {
@@ -2232,12 +2232,12 @@ var stylePropertiesTreeOutline_css_default = `/*
       width: 11px;
       height: 10px;
       margin: 0 7px 0 0;
-      top: 1px;
+      top: var(--sys-size-1);
       left: -36px; /* outdent to compensate for the top-level property indent */
       user-select: none;
       cursor: default;
       z-index: 1;
-      mask: var(--image-file-warning-filled) center / 14px no-repeat;
+      mask: var(--image-file-warning-filled) center / var(--sys-size-7) no-repeat;
       background-color: var(--icon-warning);
     }
 
@@ -2256,8 +2256,8 @@ var stylePropertiesTreeOutline_css_default = `/*
   }
 
   &.editing-sub-part {
-    padding: 3px 6px 8px 18px;
-    margin: -1px -6px -8px;
+    padding: 3px var(--sys-size-4) var(--sys-size-5) 18px;
+    margin: calc(-1 * var(--sys-size-1)) calc(-1 * var(--sys-size-4)) calc(-1 * var(--sys-size-5));
     text-overflow: clip;
   }
 
@@ -2274,7 +2274,7 @@ var stylePropertiesTreeOutline_css_default = `/*
   }
 
   .info {
-    padding-top: 4px;
+    padding-top: var(--sys-size-3);
     padding-bottom: 3px;
   }
 
@@ -2290,14 +2290,14 @@ var stylePropertiesTreeOutline_css_default = `/*
 
   &.ghost-row {
     /* As there is no checkbox to the left of the ghost rows, explicitly set padding-left */
-    padding-left: 56px;
+    padding-left: var(--sys-size-17);
   }
 }
 
 .tree-outline > li {
   padding-left: 38px;
   clear: both;
-  min-height: 14px;
+  min-height: var(--sys-size-7);
 
   .webkit-css-property {
     margin-left: -38px; /* outdent the first line of the top-level properties to compensate for the "padding-left" shift in .tree-outline > li */
@@ -2321,7 +2321,7 @@ ol:not(.tree-outline) {
 }
 
 .tree-outline > ol {
-  padding-inline-start: 16px;
+  padding-inline-start: var(--sys-size-8);
 
   ol {
     padding-left: 0;
@@ -2341,7 +2341,7 @@ ol.expanded {
   position: relative;
   z-index: 1;
   width: 18px;
-  left: -40px; /* original -2px + (-38px) to compensate for the first line outdent */
+  left: calc(-1 * var(--sys-size-14)); /* original -2px + (-38px) to compensate for the first line outdent */
   top: 0.5px;
   height: 13px;
 }
@@ -2418,7 +2418,7 @@ devtools-icon.icon-link {
 
 .styles-name-value-separator {
   display: inline-block;
-  width: 14px;
+  width: var(--sys-size-7);
   text-decoration: inherit;
   white-space: pre;
 }
@@ -2453,9 +2453,9 @@ devtools-icon.icon-link {
 
 .expand-icon {
   user-select: none;
-  margin-left: -6px;
-  margin-right: 2px;
-  margin-bottom: -4px;
+  margin-left: calc(-1 * var(--sys-size-4));
+  margin-right: var(--sys-size-2);
+  margin-bottom: calc(-1 * var(--sys-size-3));
 
   .tree-outline li:not(.parent) & {
     display: none;
@@ -2469,7 +2469,7 @@ devtools-icon.icon-link {
 
 :host-context(.matched-styles) {
   ol.expanded {
-    margin-left: 16px;
+    margin-left: var(--sys-size-8);
   }
 
   :focus-visible {
@@ -2493,13 +2493,13 @@ devtools-css-length {
 }
 
 devtools-css-length {
-  margin-left: 1px;
+  margin-left: var(--sys-size-1);
 }
 
 devtools-icon.open-in-animations-panel {
   position: relative;
   transform: scale(0.7);
-  margin: -5px -2px -3px -4px;
+  margin: -5px calc(-1 * var(--sys-size-2)) -3px calc(-1 * var(--sys-size-3));
   user-select: none;
   color: var(--icon-css);
   cursor: default;
@@ -2523,7 +2523,7 @@ devtools-icon.open-in-animations-panel {
 devtools-icon.bezier-swatch-icon {
   position: relative;
   transform: scale(0.7);
-  margin: -5px -2px -3px -4px;
+  margin: -5px calc(-1 * var(--sys-size-2)) -3px calc(-1 * var(--sys-size-3));
   user-select: none;
   color: var(--icon-css);
   cursor: default;
@@ -12377,6 +12377,7 @@ __export(ElementsTreeElement_exports, {
   InitialChildrenLimit: () => InitialChildrenLimit,
   adornerRef: () => adornerRef,
   convertUnicodeCharsToHTMLEntities: () => convertUnicodeCharsToHTMLEntities,
+  handleAdornerKeydown: () => handleAdornerKeydown,
   isOpeningTag: () => isOpeningTag
 });
 import "../../ui/components/adorners/adorners.js";
@@ -13661,10 +13662,14 @@ var DEFAULT_VIEW5 = (input, output, target) => {
       ${hasAdorners ? html12`<div class="adorner-container ${input.editorState ? "hidden" : ""}">
         ${maybeRenderAdAdorner(input)}
         ${input.showViewSourceAdorner ? html12`<devtools-adorner
+          class="clickable"
+          role=button
+          tabindex=0
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE}
-          jslog=${VisualLogging9.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE)}
+          jslog=${VisualLogging9.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE).track({ click: true })}
           aria-label=${i18nString13(UIStrings14.viewSourceCode)}
           @click=${input.onViewSourceAdornerClick}
+          @keydown=${handleAdornerKeydown(input.onViewSourceAdornerClick)}
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE}</span>
         </devtools-adorner>` : nothing5}
@@ -13796,7 +13801,9 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           </span>
         </devtools-adorner>` : nothing5}
         ${input.showStartingStyleAdorner ? html12`<devtools-adorner
-          class="starting-style"
+          class="starting-style clickable"
+          role=button
+          tabindex=0
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE}
           jslog=${VisualLogging9.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE).track({ click: true })}
           active=${input.startingStyleAdornerActive}
@@ -13830,7 +13837,9 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           </span>
         </devtools-adorner>` : nothing5}
         ${input.showScrollSnapAdorner ? html12`<devtools-adorner
-          class="scroll-snap"
+          class="scroll-snap clickable"
+          role=button
+          tabindex=0
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP}
           jslog=${VisualLogging9.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP).track({ click: true })}
           active=${input.scrollSnapAdornerActive}
@@ -13880,6 +13889,8 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   disableEdits = false;
   showAIButton = false;
   isDOMNodeSelected = false;
+  initialEdit;
+  onInitialEditCompleted;
   expand;
   collapse;
   selectTreeElement;
@@ -14116,7 +14127,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       topLayerIndex: this.node.topLayerIndex(),
       onViewSourceAdornerClick: this.disableEdits ? () => {
       } : this.revealHTMLInSources.bind(this),
-      onGutterClick: this.showContextMenu ? (event) => this.showContextMenu?.(event) : () => {
+      onGutterClick: this.showContextMenu ? (event) => this.showContextMenu?.(event, this) : () => {
       },
       onContainerAdornerClick: this.disableEdits ? () => {
       } : (event) => this.#onContainerAdornerClick(event),
@@ -14161,6 +14172,20 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       this.#highlightSearchResults();
     } else if (!this.#searchQuery && this.#highlights.length) {
       this.hideSearchHighlights();
+    }
+    if (this.initialEdit) {
+      const edit = this.initialEdit;
+      this.initialEdit = null;
+      this.onInitialEditCompleted?.();
+      if (edit.isEditAsHTML) {
+        this.toggleEditAsHTML(edit.editAsHTMLCallback);
+      } else if (edit.isProcessingInstruction) {
+        this.startEditingProcessingInstructionValue();
+      } else if (edit.isNewAttribute) {
+        this.addNewAttribute();
+      } else if (edit.attributeName) {
+        this.triggerEditAttribute(edit.attributeName);
+      }
     }
   }
   async #onCustomElementAdornerClick(event) {
@@ -14876,7 +14901,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       dispose.call(this);
     }
     function dispose() {
-      if (!this.#editorRef) {
+      if (!this.editing && !this.#editorState) {
         return;
       }
       this.editing = null;
@@ -14892,6 +14917,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   }
   attributeEditingCommitted(element, newText, oldText, attributeName, moveDirection) {
     this.editing = null;
+    this.#clearDOMNextUpdate = true;
     function moveToNextAttributeIfNeeded(error) {
       if (error) {
         this.editingCancelled(element, attributeName);
@@ -14985,10 +15011,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
         return;
       }
       Badges3.UserBadges.instance().recordAction(Badges3.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-      const newWidget = this.selectNodeAfterEdit(wasExpanded, error, newNode);
-      if (newWidget) {
-        moveToNextAttributeIfNeeded.call(newWidget);
-      }
+      this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
     });
   }
   textNodeEditingCommitted(textNode, _element, newText) {
@@ -15247,6 +15270,7 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
     this.widgetWrapper = document.createElement("div");
     this.widgetWrapper.style.display = "contents";
     this.title = this.widgetWrapper;
+    this.listItemElement.draggable = true;
     this.widget = new ElementsTreeWidget();
     this.widget.isClosingTag = this.#isClosingTag;
     this.widget.node = this.nodeInternal;
@@ -15333,6 +15357,9 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
   highlightAttribute(name) {
     this.widget.highlightAttribute(name);
   }
+  startEditing() {
+    return this.widget.startEditing();
+  }
   startEditingAttribute(attribute, elementForSelection) {
     return this.widget.startEditingAttribute(attribute, elementForSelection);
   }
@@ -15399,14 +15426,15 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
       this.widget.populateTreeElement = async () => await outline.populateTreeElement(this);
       this.widget.toggleHideElement = (node) => outline.toggleHideElement(node);
       this.widget.isToggledToHidden = (node) => outline.isToggledToHidden(node);
-      this.widget.selectNodeAfterEdit = (wasExpanded, error, newNode) => {
-        const newTreeItem = outline.selectNodeAfterEdit(wasExpanded, error, newNode);
-        return newTreeItem?.widget ?? null;
+      this.widget.selectNodeAfterEdit = (wasExpanded, error, newNode, moveDirection) => {
+        outline.domTreeWidget?.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
       };
       this.widget.runPendingUpdates = () => outline.runPendingUpdates();
       this.widget.focusOutline = () => outline.focus();
-      this.widget.setMultilineEditing = (multilineEditing) => outline.setMultilineEditing(multilineEditing);
-      this.widget.visibleWidth = () => outline.visibleWidth();
+      this.widget.setMultilineEditing = (multilineEditing) => {
+        outline.domTreeWidget?.setMultilineEditing(multilineEditing);
+      };
+      this.widget.visibleWidth = () => outline.domTreeWidget?.visibleWidth ?? outline.visibleWidth();
     }
   }
   onattach() {
@@ -16054,12 +16082,12 @@ var elementsTreeOutline_css_default = `/*
   box-shadow: var(--drop-shadow);
   background-color: var(--sys-color-cdt-base-container);
   text-overflow: clip !important; /* stylelint-disable-line declaration-no-important */
-  padding-left: 2px;
-  margin-left: -2px;
-  padding-right: 2px;
-  margin-right: -2px;
-  margin-bottom: -1px;
-  padding-bottom: 1px;
+  padding-left: var(--sys-size-2);
+  margin-left: calc(-1 * var(--sys-size-2));
+  padding-right: var(--sys-size-2);
+  margin-right: calc(-1 * var(--sys-size-2));
+  margin-bottom: calc(-1 * var(--sys-size-1));
+  padding-bottom: var(--sys-size-1);
   opacity: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 
@@ -16093,7 +16121,7 @@ var elementsTreeOutline_css_default = `/*
 }
 
 .adorner-with-icon *:not(:last-child) {
-  margin-right: 2px;
+  margin-right: var(--sys-size-2);
 }
 
 .elements-disclosure {
@@ -16111,8 +16139,8 @@ var elementsTreeOutline_css_default = `/*
 
 .elements-disclosure li {
   /** Keep margin-left & padding-left in sync with ElementsTreeElements.updateDecorations **/
-  padding: 1px 0 0 14px;
-  margin-left: -2px;
+  padding: var(--sys-size-1) 0 0 var(--sys-size-7);
+  margin-left: calc(-1 * var(--sys-size-2));
   word-break: normal;
   position: relative;
   min-height: 15px;
@@ -16134,7 +16162,7 @@ var elementsTreeOutline_css_default = `/*
 
 .elements-disclosure li.parent:not(.always-parent) {
   /** Keep it in sync with ElementsTreeElements.updateDecorations **/
-  margin-left: -12px;
+  margin-left: calc(-1 * var(--sys-size-6));
 }
 
 .elements-disclosure li .ai-button-container {
@@ -16143,7 +16171,7 @@ var elementsTreeOutline_css_default = `/*
   overflow: visible;
   max-height: var(--sys-size-6);
   vertical-align: top;
-  margin-top: -1px;
+  margin-top: calc(-1 * var(--sys-size-1));
   position: absolute;
   right: var(--sys-size-3);
   bottom: 5px;
@@ -16171,8 +16199,8 @@ var elementsTreeOutline_css_default = `/*
   box-sizing: border-box;
   user-select: none;
   mask-image: var(--image-file-arrow-collapse);
-  height: 14px;
-  width: 14px;
+  height: var(--sys-size-7);
+  width: var(--sys-size-7);
   content: "\\A0\\A0";
   color: transparent;
   text-shadow: none;
@@ -16195,8 +16223,8 @@ var elementsTreeOutline_css_default = `/*
 
 .elements-disclosure li.elements-drag-over .selection {
   display: block;
-  margin-top: -2px;
-  border-top: 2px solid var(--sys-color-primary);
+  margin-top: calc(-1 * var(--sys-size-2));
+  border-top: var(--sys-size-2) solid var(--sys-color-primary);
 }
 
 .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) .selection {
@@ -16212,13 +16240,13 @@ var elementsTreeOutline_css_default = `/*
 }
 
 .elements-disclosure li .webkit-html-tag.close {
-  margin-left: -12px;
+  margin-left: calc(-1 * var(--sys-size-6));
 }
 
 .elements-disclosure .elements-tree-outline.hide-selection-when-blurred .selected:focus-visible .highlight > * {
   background: var(--sys-color-state-focus-highlight);
-  border-radius: 2px;
-  outline: 2px solid var(--sys-color-state-focus-ring);
+  border-radius: var(--sys-size-2);
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
 }
 
 .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
@@ -16228,7 +16256,7 @@ var elementsTreeOutline_css_default = `/*
 .elements-disclosure ol {
   list-style-type: none;
   /** Keep it in sync with ElementsTreeElements.updateDecorations **/
-  padding-inline-start: 12px;
+  padding-inline-start: var(--sys-size-6);
   margin: 0;
 }
 
@@ -16246,11 +16274,11 @@ var elementsTreeOutline_css_default = `/*
   margin: 0;
   min-width: 100%;
   min-height: 100%;
-  padding-left: 2px;
+  padding-left: var(--sys-size-2);
 }
 
 .elements-disclosure li.in-clipboard .highlight {
-  outline: 1px dotted var(--sys-color-divider);
+  outline: var(--sys-size-1) dotted var(--sys-color-divider);
 }
 
 .elements-tree-outline ol.shadow-root-deep {
@@ -16259,7 +16287,7 @@ var elementsTreeOutline_css_default = `/*
 
 .elements-tree-editor {
   box-shadow: var(--drop-shadow);
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 }
 
 button,
@@ -16273,7 +16301,7 @@ select {
   height: 9px;
   width: 9px;
   border-radius: 5px;
-  border: 1px solid var(--decoration-color); /* stylelint-disable-line plugin/use_theme_colors */
+  border: var(--sys-size-1) solid var(--decoration-color); /* stylelint-disable-line plugin/use_theme_colors */
   background-color: var(--decoration-color); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
@@ -16281,14 +16309,14 @@ select {
   display: flex;
   position: absolute;
   top: 0;
-  left: 1px;
+  left: var(--sys-size-1);
   width: 15px;
   height: 15px;
   align-items: center;
 }
 
 .elements-gutter-decoration + .elements-gutter-decoration {
-  margin-left: -6px;
+  margin-left: calc(-1 * var(--sys-size-4));
 }
 
 .elements-gutter-decoration.elements-has-decorated-children {
@@ -16296,8 +16324,8 @@ select {
 }
 
 .add-attribute {
-  margin-left: 1px;
-  margin-right: 1px;
+  margin-left: var(--sys-size-1);
+  margin-right: var(--sys-size-1);
   white-space: nowrap;
 }
 
@@ -16343,7 +16371,7 @@ select {
 
 .dom-update-highlight {
   animation: dom-update-highlight-animation 1.4s 1 cubic-bezier(0, 0, 0.2, 1);
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
 }
 
 :host-context(.theme-with-dark-background) .dom-update-highlight {
@@ -16351,7 +16379,7 @@ select {
 }
 
 .elements-disclosure.single-node li {
-  padding-left: 2px;
+  padding-left: var(--sys-size-2);
 }
 
 .elements-tree-shortcut-title,
@@ -16376,9 +16404,9 @@ select {
   display: block;
   visibility: hidden;
   position: relative;
-  left: -1px;
-  width: 16px;
-  height: 16px;
+  left: calc(-1 * var(--sys-size-1));
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
 }
 
 .elements-disclosure li.selected .gutter-container:not(.has-decorations) > devtools-icon {
@@ -16422,7 +16450,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
     forced-color-adjust: none;
     background: canvas !important; /* stylelint-disable-line declaration-no-important */
-    border: 1px solid Highlight !important; /* stylelint-disable-line declaration-no-important */
+    border: var(--sys-size-1) solid Highlight !important; /* stylelint-disable-line declaration-no-important */
   }
 
   .gutter-container > devtools-icon {
@@ -16435,7 +16463,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   background-image: var(--image-file-errorWave);
   background-repeat: repeat-x;
   background-position: bottom;
-  padding-bottom: 1px;
+  padding-bottom: var(--sys-size-1);
 }
 
 /* Ad Provenance Tooltip */
@@ -16445,7 +16473,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 
 .ad-provenance-tooltip-title {
   color: var(--sys-color-on-surface-subtle);
-  margin-top: 4px;
+  margin-top: var(--sys-size-3);
 }
 
 .ad-provenance-tooltip-title:first-child {
@@ -16453,7 +16481,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 }
 
 .ad-provenance-tooltip-content {
-  padding-left: 16px;
+  padding-left: var(--sys-size-8);
 }
 
 .elements-disclosure.elements-tree-truncated {
@@ -16467,8 +16495,8 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   color: var(--sys-color-primary);
   cursor: pointer;
   display: block;
-  font-size: 12px;
-  padding: 4px 12px;
+  font-size: var(--sys-typescale-body4-size);
+  padding: var(--sys-size-3) var(--sys-size-6);
   text-align: center;
   width: 100%;
 }
@@ -16678,10 +16706,13 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
     <span class="elements-tree-shortcut-title">\u21AA ${input.title}</span>
     <devtools-adorner
       .name=${ElementsComponents6.AdornerManager.RegisteredAdorners.REVEAL}
-      class="adorner-reveal"
-      jslog=${VisualElements.adorner("reveal")}
+      class="adorner-reveal clickable"
+      role=button
+      tabindex=0
+      jslog=${VisualElements.adorner("reveal").track({ click: true })}
       aria-label=${i18nString15(UIStrings16.reveal)}
       @click=${input.onRevealAdornerClick}
+      @keydown=${handleAdornerKeydown(input.onRevealAdornerClick)}
       @mousedown=${(e) => e.consume()}
       ${adornerRef()}>
       <span class="adorner-with-icon">
@@ -17025,6 +17056,22 @@ var DEFAULT_VIEW7 = (input, output, target) => {
       }
     }
   }
+  if (input.nodeToEdit) {
+    const treeElement = output.elementsTreeOutline.findTreeElement(input.nodeToEdit.node);
+    if (treeElement) {
+      const edit = input.nodeToEdit;
+      input.onInitialEditCompleted?.();
+      if (edit.isEditAsHTML) {
+        treeElement.widget.toggleEditAsHTML(edit.editAsHTMLCallback);
+      } else if (edit.isProcessingInstruction) {
+        treeElement.widget.startEditingProcessingInstructionValue();
+      } else if (edit.isNewAttribute) {
+        treeElement.widget.addNewAttribute();
+      } else if (edit.attributeName) {
+        treeElement.widget.triggerEditAttribute(edit.attributeName);
+      }
+    }
+  }
 };
 function isMaxDepthReached(node, rootDOMNode, maxTreeDepth, omitRootDOMNode) {
   if (maxTreeDepth === void 0 || maxTreeDepth === Infinity) {
@@ -17137,6 +17184,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
     const children = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
     const tagName = node.nodeName().toLowerCase();
     const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) && !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
+    const on = Lit9.Directive.directive(Lit9.CustomDirectives.InterceptBindingDirective);
     const onSelect = () => {
       input.onSelect?.(
         node,
@@ -17147,23 +17195,88 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
     const onExpand2 = (event) => {
       input.onExpand?.(node, event.detail.expanded);
     };
+    const isDragOver = input.dragOverNode?.node === node && !input.dragOverNode.isClosingTag;
+    const isClosingTagDragOver = input.dragOverNode?.node === node && Boolean(input.dragOverNode.isClosingTag);
+    const isDraggable = !input.disableEdits && Boolean(input.isValidDragSource?.(node));
     const classes = classMap4({
       hovered: isHovered,
-      "in-clipboard": Boolean(input.isNodeInClipboard?.(node))
+      "in-clipboard": Boolean(input.isNodeInClipboard?.(node)),
+      "elements-drag-over": isDragOver
     });
     const onMouseMove = (event) => {
       event.stopPropagation();
       const showInfo = !UI19.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
       input.onHoverNode?.(node, showInfo);
     };
+    const onContextMenu = (event) => {
+      event.stopPropagation();
+      input.onContextMenu?.(node, event);
+    };
+    const onDragStart = (event) => {
+      event.stopPropagation();
+      const currentTarget = event.currentTarget;
+      const textContent = currentTarget?.firstElementChild?.textContent ?? currentTarget?.textContent ?? void 0;
+      input.onDragStart?.(node, event, textContent);
+    };
+    const onDragOver = (event) => {
+      event.stopPropagation();
+      input.onDragOver?.(
+        node,
+        /* isClosingTag= */
+        false,
+        event
+      );
+    };
+    const onClosingTagDragOver = (event) => {
+      event.stopPropagation();
+      input.onDragOver?.(
+        node,
+        /* isClosingTag= */
+        true,
+        event
+      );
+    };
+    const onDragLeave = (event) => {
+      event.stopPropagation();
+      input.onDragLeave?.(event);
+    };
+    const onDrop = (event) => {
+      event.stopPropagation();
+      input.onDrop?.(
+        node,
+        /* isClosingTag= */
+        false,
+        event
+      );
+    };
+    const onClosingTagDrop = (event) => {
+      event.stopPropagation();
+      input.onDrop?.(
+        node,
+        /* isClosingTag= */
+        true,
+        event
+      );
+    };
+    const onDragEnd = (event) => {
+      event.stopPropagation();
+      input.onDragEnd?.(event);
+    };
     return html14`
       <li role="treeitem"
           ?selected=${isSelected}
           class=${classes}
           ?open=${isExpanded}
+          draggable=${isDraggable ? "true" : "false"}
           @select=${onSelect}
           @expand=${onExpand2}
-          @mousemove=${onMouseMove}
+          @mousemove=${on(onMouseMove)}
+          @contextmenu=${on(onContextMenu)}
+          @dragstart=${on(onDragStart)}
+          @dragover=${on(onDragOver)}
+          @dragleave=${on(onDragLeave)}
+          @drop=${on(onDrop)}
+          @dragend=${on(onDragEnd)}
           jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline").track({
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End",
       resize: true,
@@ -17183,15 +17296,22 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       computeLeftIndent: computeLeftIndent(depth, hasChildren),
       disableEdits: input.disableEdits ?? false,
       showAIButton: input.showAIButton ?? true,
+      initialEdit: input.nodeToEdit?.node === node ? input.nodeToEdit : null,
+      onInitialEditCompleted: input.onInitialEditCompleted,
+      setMultilineEditing: (multilineEditing) => input.domTreeWidget?.setMultilineEditing(multilineEditing),
+      visibleWidth: () => input.domTreeWidget?.visibleWidth ?? 0,
       selectDOMNode: (n, selectedByUser) => input.onSelect?.(n, selectedByUser),
+      selectNodeAfterEdit: (wasExpanded, error, newNode, moveDirection) => {
+        input.onSelectNodeAfterEdit?.(wasExpanded, error, newNode, moveDirection);
+      },
       toggleHideElement: (n) => {
         input.onToggleHideElement?.(n);
         return Promise.resolve();
       },
       isToggledToHidden: (n) => input.isToggledToHidden?.(n) ?? false,
-      showContextMenu: (event) => {
+      showContextMenu: (event, widget4) => {
         if (event instanceof MouseEvent) {
-          input.onContextMenu?.(node, event);
+          input.onContextMenu?.(node, event, widget4);
         }
       }
     })}
@@ -17201,9 +17321,12 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
               ${children.map((child) => renderNode(child, depth + 1))}
               ${needsClosingTag ? html14`
                 <li role="treeitem"
-                    class=${classMap4({ hovered: isHovered })}
+                    class=${classMap4({ hovered: isHovered, "elements-drag-over": isClosingTagDragOver })}
                     jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline")}
-                    @mousemove=${onMouseMove}>
+                    @mousemove=${on(onMouseMove)}
+                    @dragover=${on(onClosingTagDragOver)}
+                    @dragleave=${on(onDragLeave)}
+                    @drop=${on(onClosingTagDrop)}>
                   ${UI19.Widget.widget(ElementsTreeWidget, {
       node,
       isClosingTag: true,
@@ -17214,7 +17337,12 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       hovered: isHovered,
       computeLeftIndent: computeLeftIndent(depth, false),
       disableEdits: input.disableEdits ?? false,
-      showAIButton: false
+      showAIButton: false,
+      showContextMenu: (event, widget4) => {
+        if (event instanceof MouseEvent) {
+          input.onContextMenu?.(node, event, widget4);
+        }
+      }
     })}
                 </li>
               ` : nothing6}
@@ -17284,6 +17412,9 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   }
   get maxRows() {
     return this.#maxRows;
+  }
+  get visibleWidth() {
+    return this.#visibleWidth ?? this.contentElement.offsetWidth;
   }
   set visibleWidth(width) {
     this.#visibleWidth = width;
@@ -17573,6 +17704,10 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   #hoveredDOMNode = null;
   #searchMatchNode = null;
   #searchMatchQuery = null;
+  #nodeToEdit = null;
+  #draggedNode = null;
+  #draggedNodeWasExpanded = false;
+  #dragOverNode = null;
   hoveredDOMNode() {
     if (this.#view === DECLARATIVE_VIEW) {
       return this.#hoveredDOMNode;
@@ -17683,7 +17818,21 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       },
       onPaste: (event) => {
         this.onPaste(event);
-      }
+      },
+      onSelectNodeAfterEdit: (wasExpanded, error, newNode, moveDirection) => {
+        this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
+      },
+      nodeToEdit: this.#nodeToEdit,
+      onInitialEditCompleted: () => {
+        this.#nodeToEdit = null;
+      },
+      dragOverNode: this.#dragOverNode,
+      isValidDragSource: (node) => this.isValidDragSource(node),
+      onDragStart: (node, event, textContent) => this.onDragStart(node, event, textContent),
+      onDragOver: (node, isClosingTag, event) => this.onDragOver(node, isClosingTag, event),
+      onDragLeave: (event) => this.onDragLeave(event),
+      onDrop: (node, isClosingTag, event) => this.onDrop(node, isClosingTag, event),
+      onDragEnd: (event) => this.onDragEnd(event)
     }, this.#viewOutput, this.contentElement);
     if (this.#viewOutput.elementsTreeOutline) {
       this.#viewOutput.elementsTreeOutline.domTreeWidget = this;
@@ -17810,13 +17959,200 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   isToggledToHidden(node) {
     return node.isToggledToHidden();
   }
-  toggleEditAsHTML(node) {
-    this.#viewOutput.elementsTreeOutline?.toggleEditAsHTML(node);
+  #multilineEditing = null;
+  setMultilineEditing(multilineEditing) {
+    this.#multilineEditing = multilineEditing;
+  }
+  multilineEditing() {
+    return this.#multilineEditing;
+  }
+  runPendingUpdates() {
+    this.#viewOutput.elementsTreeOutline?.runPendingUpdates();
+    this.performUpdate();
+  }
+  onResize() {
+    super.onResize();
+    if (this.#multilineEditing) {
+      this.#multilineEditing.resize();
+    }
+  }
+  willHide() {
+    super.willHide();
+    if (this.#multilineEditing) {
+      this.#multilineEditing.cancel();
+    }
+  }
+  toggleEditAsHTML(node, startEditing, callback) {
+    if (node.pseudoType() || node.isShadowRoot() || node.nodeType() === Node.DOCUMENT_NODE) {
+      return;
+    }
+    const parentNode = node.parentNode;
+    const index = node.index;
+    const wasExpanded = this.isNodeExpanded(node);
+    const editingFinished = (success) => {
+      if (callback) {
+        callback();
+      }
+      if (!success) {
+        return;
+      }
+      Badges4.UserBadges.instance().recordAction(Badges4.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
+      this.runPendingUpdates();
+      if (index === void 0) {
+        return;
+      }
+      const children = parentNode?.children();
+      const newNode = children ? children[index] || parentNode : parentNode;
+      if (!newNode) {
+        return;
+      }
+      this.selectDOMNode(newNode, true);
+      if (wasExpanded) {
+        this.setNodeExpanded(newNode, true);
+      }
+    };
+    if (this.#multilineEditing) {
+      this.#multilineEditing.commit();
+      return;
+    }
+    if (startEditing === false) {
+      return;
+    }
+    this.#nodeToEdit = {
+      node,
+      isEditAsHTML: true,
+      editAsHTMLCallback: editingFinished
+    };
+    this.performUpdate();
   }
   duplicateNode(node) {
     node.duplicate();
   }
-  selectNodeAfterEdit(wasExpanded, error, newNode) {
+  nodeBeingDragged() {
+    return this.#draggedNode;
+  }
+  dragOverNode() {
+    return this.#dragOverNode;
+  }
+  isValidDragSource(node) {
+    if (this.disableEdits) {
+      return false;
+    }
+    if (!node.parentNode || node.parentNode.nodeType() !== Node.ELEMENT_NODE) {
+      return false;
+    }
+    const nodeName = node.nodeName();
+    if (nodeName === "BODY" || nodeName === "HEAD") {
+      return false;
+    }
+    return true;
+  }
+  isValidDragTarget(targetNode) {
+    if (!this.#draggedNode) {
+      return false;
+    }
+    if (!targetNode.parentNode || targetNode.parentNode.nodeType() !== Node.ELEMENT_NODE) {
+      return false;
+    }
+    let current = targetNode;
+    while (current) {
+      if (current === this.#draggedNode) {
+        return false;
+      }
+      current = current.parentNode;
+    }
+    return true;
+  }
+  onDragStart(node, event, textContent) {
+    const target = event.target;
+    if (!target) {
+      return false;
+    }
+    const selection = target.getComponentSelection();
+    if (selection && selection.type === "Range" && !selection.isCollapsed && selection.toString().length > 0 && target.hasSelection()) {
+      return false;
+    }
+    if (target.nodeName === "A") {
+      return false;
+    }
+    if (!this.isValidDragSource(node)) {
+      return false;
+    }
+    this.#draggedNode = node;
+    this.#draggedNodeWasExpanded = this.isNodeExpanded(node);
+    if (event.dataTransfer) {
+      const text = textContent ?? node.nodeName().toLowerCase();
+      event.dataTransfer.setData("text/plain", text.replace(/\u200b/g, ""));
+      event.dataTransfer.effectAllowed = "copyMove";
+    }
+    SDK16.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK16.TargetManager.TargetManager.instance());
+    return true;
+  }
+  onDragOver(node, isClosingTag, event) {
+    if (!this.#draggedNode) {
+      return false;
+    }
+    if (!this.isValidDragTarget(node)) {
+      return false;
+    }
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = "move";
+    }
+    if (this.#dragOverNode?.node !== node || this.#dragOverNode?.isClosingTag !== isClosingTag) {
+      this.#dragOverNode = { node, isClosingTag };
+      if (this.#view === DECLARATIVE_VIEW) {
+        this.performUpdate();
+      }
+    }
+    return true;
+  }
+  onDragLeave(event) {
+    event.preventDefault();
+    if (this.#dragOverNode) {
+      this.#dragOverNode = null;
+      if (this.#view === DECLARATIVE_VIEW) {
+        this.performUpdate();
+      }
+    }
+  }
+  onDrop(node, isClosingTag, event) {
+    event.preventDefault();
+    if (!this.#draggedNode) {
+      return;
+    }
+    this.moveNode(this.#draggedNode, node, isClosingTag);
+    this.#draggedNode = null;
+    this.#dragOverNode = null;
+    if (this.#view === DECLARATIVE_VIEW) {
+      this.performUpdate();
+    }
+  }
+  onDragEnd(event) {
+    event.preventDefault();
+    this.#draggedNode = null;
+    this.#dragOverNode = null;
+    if (this.#view === DECLARATIVE_VIEW) {
+      this.performUpdate();
+    }
+  }
+  moveNode(draggedNode, targetNode, isClosingTag) {
+    let parentNode;
+    let anchorNode;
+    if (isClosingTag) {
+      parentNode = targetNode;
+      anchorNode = null;
+    } else {
+      parentNode = targetNode.parentNode;
+      anchorNode = targetNode;
+    }
+    if (!parentNode) {
+      return;
+    }
+    const wasExpanded = this.#draggedNodeWasExpanded;
+    draggedNode.moveTo(parentNode, anchorNode, (error, newNode) => this.selectNodeAfterEdit(wasExpanded, error, newNode));
+  }
+  selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection) {
     if (error || !newNode) {
       return;
     }
@@ -17827,6 +18163,21 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     );
     if (wasExpanded) {
       this.setNodeExpanded(newNode, true);
+    }
+    if (moveDirection) {
+      if (newNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
+        this.#nodeToEdit = { node: newNode, isProcessingInstruction: true };
+      } else if (moveDirection !== "forward") {
+        this.#nodeToEdit = { node: newNode, isNewAttribute: true };
+      } else {
+        const attributes = newNode.attributes();
+        if (attributes.length > 0) {
+          this.#nodeToEdit = { node: newNode, attributeName: attributes[0].name };
+        } else {
+          this.#nodeToEdit = { node: newNode, isNewAttribute: true };
+        }
+      }
+      this.performUpdate();
     }
   }
   onKeyDown(event) {
@@ -17840,12 +18191,16 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     if (UI19.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) && node.parentNode) {
       const wasExpanded = this.isNodeExpanded(node);
       if (event.key === "ArrowUp" && node.previousSibling) {
-        node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, wasExpanded));
+        node.moveTo(node.parentNode, node.previousSibling, (error, newNode) => {
+          this.selectNodeAfterEdit(wasExpanded, error, newNode);
+        });
         event.consume(true);
         return true;
       }
       if (event.key === "ArrowDown" && node.nextSibling) {
-        node.moveTo(node.parentNode, node.nextSibling.nextSibling, this.selectNodeAfterEdit.bind(this, wasExpanded));
+        node.moveTo(node.parentNode, node.nextSibling.nextSibling, (error, newNode) => {
+          this.selectNodeAfterEdit(wasExpanded, error, newNode);
+        });
         event.consume(true);
         return true;
       }
@@ -18077,12 +18432,10 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
   updateRecords;
   treeElementsBeingUpdated;
   decoratorExtensions;
-  multilineEditing;
   visibleWidthInternal;
   isXMLMimeTypeInternal;
   suppressRevealAndSelect = false;
   previousHoveredElement;
-  treeElementBeingDragged;
   dragOverTreeElement;
   updateModifiedNodesTimeout;
   #topLayerContainerByDocument = /* @__PURE__ */ new WeakMap();
@@ -18101,6 +18454,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
   constructor(omitRootDOMNode, selectEnabled, hideGutter, maxTreeDepth, enableContextMenu, showComments, showAIButton, disableEdits, expandRoot, domTreeWidget) {
     super();
     this.domTreeWidget = domTreeWidget ?? null;
+    this.renderSelection = true;
     this.treeElementByNode = /* @__PURE__ */ new WeakMap();
     const shadowContainer = document.createElement("div");
     this.shadowRoot = UI19.UIUtils.createShadowRootWithCoreStyles(shadowContainer, { cssFile: [elementsTreeOutline_css_default, CodeHighlighter5.codeHighlighterStyles] });
@@ -18152,16 +18506,13 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     this.elementInternal.classList.toggle("elements-tree-nowrap", !wrap);
   }
   setMultilineEditing(multilineEditing) {
-    this.multilineEditing = multilineEditing;
+    this.domTreeWidget?.setMultilineEditing(multilineEditing);
   }
   visibleWidth() {
-    return this.visibleWidthInternal || 0;
+    return this.domTreeWidget?.visibleWidth ?? this.visibleWidthInternal ?? 0;
   }
   setVisibleWidth(width) {
     this.visibleWidthInternal = width;
-    if (this.multilineEditing) {
-      this.multilineEditing.resize();
-    }
   }
   setClipboardData(data) {
     this.domTreeWidget?.setClipboardData(data);
@@ -18187,9 +18538,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     }
     this.visible = visible;
     if (!this.visible) {
-      if (this.multilineEditing) {
-        this.multilineEditing.cancel();
-      }
+      this.domTreeWidget?.multilineEditing()?.cancel();
       return;
     }
     this.runPendingUpdates();
@@ -18405,12 +18754,20 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     treeElement.highlightAttribute(attribute);
   }
   treeElementFromEventInternal(event) {
+    for (const target of event.composedPath()) {
+      if (target instanceof HTMLLIElement) {
+        const element2 = UI19.TreeOutline.TreeElement.getTreeElementBylistItemNode(target);
+        if (element2) {
+          return element2;
+        }
+      }
+    }
     const scrollContainer = this.element.parentElement;
     if (!scrollContainer) {
       return null;
     }
-    const x = event.pageX;
-    const y = event.pageY;
+    const x = event.clientX;
+    const y = event.clientY;
     const elementUnderMouse = this.treeElementFromPoint(x, y);
     const elementAboveMouse = this.treeElementFromPoint(x, y - 2);
     let element;
@@ -18473,103 +18830,50 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     SDK16.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK16.TargetManager.TargetManager.instance());
   }
   ondragstart(event) {
-    const node = event.target;
-    if (!node || node.hasSelection()) {
+    const treeElement = this.treeElementFromEventInternal(event);
+    if (!(treeElement instanceof ElementsTreeElement)) {
       return false;
     }
-    if (node.nodeName === "A") {
-      return false;
-    }
-    const treeElement = this.validDragSourceOrTarget(this.treeElementFromEventInternal(event));
-    if (!treeElement) {
-      return false;
-    }
-    if (treeElement.node().nodeName() === "BODY" || treeElement.node().nodeName() === "HEAD") {
-      return false;
-    }
-    if (!event.dataTransfer || !treeElement.listItemElement.textContent) {
-      return;
-    }
-    event.dataTransfer.setData("text/plain", treeElement.listItemElement.textContent.replace(/\u200b/g, ""));
-    event.dataTransfer.effectAllowed = "copyMove";
-    this.treeElementBeingDragged = treeElement;
-    SDK16.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK16.TargetManager.TargetManager.instance());
-    return true;
+    const textContent = treeElement.widget.contentElement.textContent || treeElement.listItemElement.textContent || treeElement.node().nodeName().toLowerCase();
+    const success = this.domTreeWidget?.onDragStart(treeElement.node(), event, textContent);
+    return success;
   }
   ondragover(event) {
-    if (!this.treeElementBeingDragged) {
+    const treeElement = this.treeElementFromEventInternal(event);
+    if (!(treeElement instanceof ElementsTreeElement)) {
+      this.clearDragOverTreeElementMarker();
       return false;
     }
-    const treeElement = this.validDragSourceOrTarget(this.treeElementFromEventInternal(event));
-    if (!treeElement) {
-      return false;
-    }
-    let node = treeElement.node();
-    while (node) {
-      if (node === this.treeElementBeingDragged.nodeInternal) {
-        return false;
+    const success = this.domTreeWidget?.onDragOver(treeElement.node(), treeElement.isClosingTag(), event);
+    if (success) {
+      if (this.dragOverTreeElement !== treeElement) {
+        this.clearDragOverTreeElementMarker();
+        treeElement.listItemElement.classList.add("elements-drag-over");
+        this.dragOverTreeElement = treeElement;
       }
-      node = node.parentNode;
+    } else {
+      this.clearDragOverTreeElementMarker();
     }
-    treeElement.listItemElement.classList.add("elements-drag-over");
-    this.dragOverTreeElement = treeElement;
-    event.preventDefault();
-    if (event.dataTransfer) {
-      event.dataTransfer.dropEffect = "move";
-    }
-    return false;
+    return !success;
   }
   ondragleave(event) {
     this.clearDragOverTreeElementMarker();
+    this.domTreeWidget?.onDragLeave(event);
     event.preventDefault();
     return false;
-  }
-  validDragSourceOrTarget(treeElement) {
-    if (!treeElement) {
-      return null;
-    }
-    if (!(treeElement instanceof ElementsTreeElement)) {
-      return null;
-    }
-    const elementsTreeElement = treeElement;
-    const node = elementsTreeElement.node();
-    if (!node.parentNode || node.parentNode.nodeType() !== Node.ELEMENT_NODE) {
-      return null;
-    }
-    return elementsTreeElement;
   }
   ondrop(event) {
     event.preventDefault();
     const treeElement = this.treeElementFromEventInternal(event);
     if (treeElement instanceof ElementsTreeElement) {
-      this.doMove(treeElement);
+      this.domTreeWidget?.onDrop(treeElement.node(), treeElement.isClosingTag(), event);
     }
-  }
-  doMove(treeElement) {
-    if (!this.treeElementBeingDragged) {
-      return;
-    }
-    let parentNode;
-    let anchorNode;
-    if (treeElement.isClosingTag()) {
-      parentNode = treeElement.node();
-      anchorNode = null;
-    } else {
-      const dragTargetNode = treeElement.node();
-      parentNode = dragTargetNode.parentNode;
-      anchorNode = dragTargetNode;
-    }
-    if (!parentNode) {
-      return;
-    }
-    const wasExpanded = this.treeElementBeingDragged.expanded;
-    this.treeElementBeingDragged.nodeInternal.moveTo(parentNode, anchorNode, this.selectNodeAfterEdit.bind(this, wasExpanded));
-    delete this.treeElementBeingDragged;
+    this.clearDragOverTreeElementMarker();
   }
   ondragend(event) {
     event.preventDefault();
     this.clearDragOverTreeElementMarker();
-    delete this.treeElementBeingDragged;
+    this.domTreeWidget?.onDragEnd(event);
   }
   clearDragOverTreeElementMarker() {
     if (this.dragOverTreeElement) {
@@ -18583,42 +18887,7 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     this.updateModifiedNodes();
   }
   toggleEditAsHTML(node, startEditing, callback) {
-    const treeElement = this.treeElementByNode.get(node);
-    if (!treeElement?.hasEditableNode()) {
-      return;
-    }
-    if (node.pseudoType()) {
-      return;
-    }
-    const parentNode = node.parentNode;
-    const index = node.index;
-    const wasExpanded = treeElement.expanded;
-    treeElement.toggleEditAsHTML(editingFinished.bind(this), startEditing);
-    function editingFinished(success) {
-      if (callback) {
-        callback();
-      }
-      if (!success) {
-        return;
-      }
-      Badges4.UserBadges.instance().recordAction(Badges4.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-      this.runPendingUpdates();
-      if (!index) {
-        return;
-      }
-      const children = parentNode?.children();
-      const newNode = children ? children[index] || parentNode : parentNode;
-      if (!newNode) {
-        return;
-      }
-      this.selectDOMNode(newNode, true);
-      if (wasExpanded) {
-        const newTreeItem = this.findTreeElement(newNode);
-        if (newTreeItem) {
-          newTreeItem.expand();
-        }
-      }
-    }
+    this.domTreeWidget?.toggleEditAsHTML(node, startEditing, callback);
   }
   selectNodeAfterEdit(wasExpanded, error, newNode) {
     if (error) {

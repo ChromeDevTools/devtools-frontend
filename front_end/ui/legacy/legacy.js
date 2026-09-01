@@ -23747,7 +23747,7 @@ var TreeSearch = class extends Common19.ObjectWrapper.ObjectWrapper {
   })(Events13 = TreeSearch2.Events || (TreeSearch2.Events = {}));
 })(TreeSearch || (TreeSearch = {}));
 var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
-  static CLONED_ATTRIBUTES = SDK2.DOMModel.ARIA_ATTRIBUTES.union(/* @__PURE__ */ new Set(["jslog"]));
+  static CLONED_ATTRIBUTES = SDK2.DOMModel.ARIA_ATTRIBUTES.union(/* @__PURE__ */ new Set(["jslog", "draggable"]));
   #clonedAttributes = /* @__PURE__ */ new Set();
   #clonedClasses = /* @__PURE__ */ new Set();
   #userExpanded = false;

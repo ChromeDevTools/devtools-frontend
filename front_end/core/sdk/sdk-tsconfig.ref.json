@@ -128,9 +128,6 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../generated/protocol-tsconfig.ref.json"
-    },
-    {
       "path": "../../models/formatter/bundle-tsconfig.ref.json"
     },
     {

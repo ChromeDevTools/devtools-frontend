@@ -1,0 +1,61 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../mcp",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../mcp/mcp.ts",
+    "../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../front_end/core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/core/host/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/core/protocol_client/puppeteer_devtools_connection-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/foundation/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/models/ai_assistance/ai_assistance-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/models/bindings/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/models/crux-manager/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/models/formatter/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/models/heap_snapshot/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/models/issues_manager/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/models/stack_trace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/models/trace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../front_end/models/workspace/bundle-tsconfig.ref.json"
+    }
+  ]
+}

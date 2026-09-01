@@ -18,13 +18,13 @@ export default `/*
 
     .gdp-sign-up-dialog-header {
         background-image: var(--image-file-gdp-logo-light);
-        height: 20px;
+        height: var(--sys-size-9);
         background-repeat: no-repeat;
         background-size: contain;
         margin: 0;
 
         &:focus-visible {
-            outline: 2px solid var(--sys-color-state-focus-ring);
+            outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
         }
     }
 
@@ -42,7 +42,7 @@ export default `/*
     .section {
         display: flex;
         gap: var(--sys-size-6);
-        padding: 12px 16px 12px 12px;
+        padding: var(--sys-size-6) var(--sys-size-8) var(--sys-size-6) var(--sys-size-6);
         background-color: var(--sys-color-surface4);
         align-self: stretch;
     }

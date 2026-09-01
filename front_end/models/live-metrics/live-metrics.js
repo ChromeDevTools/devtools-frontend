@@ -301,12 +301,15 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
           // Use our own "interactionId" rather than the Chrome/web-vitals
           // provided one, so we can group events with same start time
           // (e.g. `pointerup` and `click` are one interaction log entry)
-          interactionId: `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}`
+          interactionId: webVitalsEvent.entryGroupId !== void 0 && webVitalsEvent.startTime !== void 0 ? `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}` : void 0
         };
         this.#inpValue = inpEvent;
         break;
       }
       case "InteractionEntry": {
+        if (webVitalsEvent.entryGroupId === void 0 || webVitalsEvent.startTime === void 0) {
+          break;
+        }
         const groupInteractions = Platform.MapUtilities.getWithDefault(this.#interactionsByGroupId, webVitalsEvent.entryGroupId, () => []);
         let interaction = groupInteractions.find((interaction2) => interaction2.nextPaintTime && webVitalsEvent.nextPaintTime && Math.abs(interaction2.nextPaintTime - webVitalsEvent.nextPaintTime) < 8);
         if (!interaction) {
@@ -326,7 +329,7 @@ var LiveMetrics = class _LiveMetrics extends Common.ObjectWrapper.ObjectWrapper 
           groupInteractions.push(interaction);
           this.#interactions.set(interaction.interactionId, interaction);
         }
-        if (!interaction.eventNames.includes(webVitalsEvent.eventName)) {
+        if (webVitalsEvent.eventName && !interaction.eventNames.includes(webVitalsEvent.eventName)) {
           interaction.eventNames.push(webVitalsEvent.eventName);
         }
         if (webVitalsEvent.nodeIndex !== void 0) {

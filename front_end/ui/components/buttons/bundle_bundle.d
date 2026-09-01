@@ -1,0 +1,1 @@
+gen/front_end/ui/components/buttons/buttons.js: gen/front_end/ui/components/buttons/button.css.js ../../front_end/ui/components/buttons/Button.ts gen/front_end/ui/components/buttons/floatingButton.css.js ../../front_end/ui/components/buttons/FloatingButton.ts gen/front_end/ui/components/buttons/textButton.css.js ../../front_end/ui/components/buttons/buttons.ts

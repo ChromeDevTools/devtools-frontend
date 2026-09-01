@@ -1,0 +1,1 @@
+gen/front_end/ui/components/linkifier/linkifier.js: gen/front_end/ui/components/linkifier/linkifierImpl.css.js ../../front_end/ui/components/linkifier/LinkifierUtils.ts ../../front_end/ui/components/linkifier/LinkifierImpl.ts ../../front_end/ui/components/linkifier/linkifier.ts

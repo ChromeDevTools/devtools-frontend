@@ -2865,6 +2865,7 @@ var Page;
     PermissionsPolicyFeature2["Gamepad"] = "gamepad";
     PermissionsPolicyFeature2["Geolocation"] = "geolocation";
     PermissionsPolicyFeature2["Gyroscope"] = "gyroscope";
+    PermissionsPolicyFeature2["Haptics"] = "haptics";
     PermissionsPolicyFeature2["Hid"] = "hid";
     PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
     PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";

@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/helpers/component-server-setup.js
+// ../../front_end/ui/components/helpers/component-server-setup.ts
 var component_server_setup_exports = {};
 __export(component_server_setup_exports, {
   setup: () => setup
@@ -21,7 +21,7 @@ async function setup() {
   ThemeSupport.ThemeSupport.instance({ forceNew: true, setting });
 }
 
-// gen/front_end/ui/components/helpers/get-root-node.js
+// ../../front_end/ui/components/helpers/get-root-node.ts
 var get_root_node_exports = {};
 __export(get_root_node_exports, {
   getRootNode: () => getRootNode
@@ -34,7 +34,7 @@ function getRootNode(node) {
   return potentialRoot;
 }
 
-// gen/front_end/ui/components/helpers/scheduled-render.js
+// ../../front_end/ui/components/helpers/scheduled-render.ts
 var scheduled_render_exports = {};
 __export(scheduled_render_exports, {
   isScheduledRender: () => isScheduledRender,
@@ -47,7 +47,9 @@ function scheduleRender(component, callback) {
   const request = requests.get(component);
   if (request !== void 0) {
     if (request.callback !== callback) {
-      throw new TypeError(`Incompatible callback arguments for scheduling rendering of ${component.nodeName.toLowerCase()}`);
+      throw new TypeError(
+        `Incompatible callback arguments for scheduling rendering of ${component.nodeName.toLowerCase()}`
+      );
     }
     return request.promise;
   }

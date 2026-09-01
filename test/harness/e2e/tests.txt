@@ -1,3 +1,4 @@
+e2e/auth-helper.test.js
 e2e/duplicate.test.js
 e2e/e2e.test.js
 e2e/errors.test.js

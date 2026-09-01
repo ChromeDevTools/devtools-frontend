@@ -76,7 +76,7 @@ export default `/*
     align-items: center;
     flex: none;
     color: var(--sys-color-on-surface);
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
     devtools-button {
       margin: calc(-1 * var(--sys-size-1)) 0;
@@ -193,7 +193,7 @@ export default `/*
     gap: var(--sys-size-3);
     width: 100%;
     box-sizing: border-box;
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
     &:hover {
       background-color: var(--sys-color-state-hover-on-subtle);
@@ -255,7 +255,7 @@ export default `/*
 
   .call-details-tabbed-pane {
     flex: auto;
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .call-payload-view {
@@ -277,22 +277,22 @@ export default `/*
 
   .sidebar-tool-details {
     flex: none;
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .call-to-action {
     background-color: var(--sys-color-neutral-container);
-    padding: 8px;
+    padding: var(--sys-size-5);
     border-radius: 5px;
-    margin: 4px;
+    margin: var(--sys-size-3);
   }
 
   .call-to-action-body {
-    padding: 6px 0;
+    padding: var(--sys-size-4) 0;
     margin-left: 9.5px;
-    border-left: 2px solid var(--issue-color-yellow);
+    border-left: var(--sys-size-2) solid var(--issue-color-yellow);
     padding-left: 18px;
-    line-height: 20px;
+    line-height: var(--sys-typescale-body3-line-height);
   }
 
   .call-to-action .explanation {

@@ -75,9 +75,6 @@
       "path": "../../generated/generated-tsconfig.ref.json"
     },
     {
-      "path": "../../generated/protocol-tsconfig.ref.json"
-    },
-    {
       "path": "../../models/ai_assistance/bundle-tsconfig.ref.json"
     },
     {

@@ -10,7 +10,7 @@ export type View = typeof DEFAULT_VIEW;
 export declare class DisabledWidget extends UI.Widget.Widget {
     #private;
     aidaAvailability: Host.AidaClient.AidaAccessPreconditions;
-    constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW);
+    constructor(element?: HTMLElement, view?: View);
     wasShown(): void;
     performUpdate(): Promise<void> | void;
 }

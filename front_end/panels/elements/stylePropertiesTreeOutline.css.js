@@ -22,8 +22,8 @@ export default `/*
 }
 
 .tree-outline li {
-  margin-left: 12px;
-  padding-left: 22px;
+  margin-left: var(--sys-size-6);
+  padding-left: var(--sys-size-10);
   white-space: normal;
   text-overflow: ellipsis;
   overflow-wrap: break-word;
@@ -35,7 +35,7 @@ export default `/*
   }
 
   .webkit-css-property {
-    margin-left: -22px; /* outdent the first line of longhand properties (in an expanded shorthand) to compensate for the "padding-left" shift in .tree-outline li */
+    margin-left: calc(-1 * var(--sys-size-10)); /* outdent the first line of longhand properties (in an expanded shorthand) to compensate for the "padding-left" shift in .tree-outline li */
   }
 
   &.not-parsed-ok {
@@ -47,12 +47,12 @@ export default `/*
       width: 11px;
       height: 10px;
       margin: 0 7px 0 0;
-      top: 1px;
+      top: var(--sys-size-1);
       left: -36px; /* outdent to compensate for the top-level property indent */
       user-select: none;
       cursor: default;
       z-index: 1;
-      mask: var(--image-file-warning-filled) center / 14px no-repeat;
+      mask: var(--image-file-warning-filled) center / var(--sys-size-7) no-repeat;
       background-color: var(--icon-warning);
     }
 
@@ -71,8 +71,8 @@ export default `/*
   }
 
   &.editing-sub-part {
-    padding: 3px 6px 8px 18px;
-    margin: -1px -6px -8px;
+    padding: 3px var(--sys-size-4) var(--sys-size-5) 18px;
+    margin: calc(-1 * var(--sys-size-1)) calc(-1 * var(--sys-size-4)) calc(-1 * var(--sys-size-5));
     text-overflow: clip;
   }
 
@@ -89,7 +89,7 @@ export default `/*
   }
 
   .info {
-    padding-top: 4px;
+    padding-top: var(--sys-size-3);
     padding-bottom: 3px;
   }
 
@@ -105,14 +105,14 @@ export default `/*
 
   &.ghost-row {
     /* As there is no checkbox to the left of the ghost rows, explicitly set padding-left */
-    padding-left: 56px;
+    padding-left: var(--sys-size-17);
   }
 }
 
 .tree-outline > li {
   padding-left: 38px;
   clear: both;
-  min-height: 14px;
+  min-height: var(--sys-size-7);
 
   .webkit-css-property {
     margin-left: -38px; /* outdent the first line of the top-level properties to compensate for the "padding-left" shift in .tree-outline > li */
@@ -136,7 +136,7 @@ ol:not(.tree-outline) {
 }
 
 .tree-outline > ol {
-  padding-inline-start: 16px;
+  padding-inline-start: var(--sys-size-8);
 
   ol {
     padding-left: 0;
@@ -156,7 +156,7 @@ ol.expanded {
   position: relative;
   z-index: 1;
   width: 18px;
-  left: -40px; /* original -2px + (-38px) to compensate for the first line outdent */
+  left: calc(-1 * var(--sys-size-14)); /* original -2px + (-38px) to compensate for the first line outdent */
   top: 0.5px;
   height: 13px;
 }
@@ -233,7 +233,7 @@ devtools-icon.icon-link {
 
 .styles-name-value-separator {
   display: inline-block;
-  width: 14px;
+  width: var(--sys-size-7);
   text-decoration: inherit;
   white-space: pre;
 }
@@ -268,9 +268,9 @@ devtools-icon.icon-link {
 
 .expand-icon {
   user-select: none;
-  margin-left: -6px;
-  margin-right: 2px;
-  margin-bottom: -4px;
+  margin-left: calc(-1 * var(--sys-size-4));
+  margin-right: var(--sys-size-2);
+  margin-bottom: calc(-1 * var(--sys-size-3));
 
   .tree-outline li:not(.parent) & {
     display: none;
@@ -284,7 +284,7 @@ devtools-icon.icon-link {
 
 :host-context(.matched-styles) {
   ol.expanded {
-    margin-left: 16px;
+    margin-left: var(--sys-size-8);
   }
 
   :focus-visible {
@@ -308,13 +308,13 @@ devtools-css-length {
 }
 
 devtools-css-length {
-  margin-left: 1px;
+  margin-left: var(--sys-size-1);
 }
 
 devtools-icon.open-in-animations-panel {
   position: relative;
   transform: scale(0.7);
-  margin: -5px -2px -3px -4px;
+  margin: -5px calc(-1 * var(--sys-size-2)) -3px calc(-1 * var(--sys-size-3));
   user-select: none;
   color: var(--icon-css);
   cursor: default;
@@ -338,7 +338,7 @@ devtools-icon.open-in-animations-panel {
 devtools-icon.bezier-swatch-icon {
   position: relative;
   transform: scale(0.7);
-  margin: -5px -2px -3px -4px;
+  margin: -5px calc(-1 * var(--sys-size-2)) -3px calc(-1 * var(--sys-size-3));
   user-select: none;
   color: var(--icon-css);
   cursor: default;

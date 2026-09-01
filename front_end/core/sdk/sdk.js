@@ -1812,6 +1812,7 @@ var Page;
     PermissionsPolicyFeature2["Gamepad"] = "gamepad";
     PermissionsPolicyFeature2["Geolocation"] = "geolocation";
     PermissionsPolicyFeature2["Gyroscope"] = "gyroscope";
+    PermissionsPolicyFeature2["Haptics"] = "haptics";
     PermissionsPolicyFeature2["Hid"] = "hid";
     PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
     PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
@@ -4866,9 +4867,7 @@ var generatedProperties = [
       "normal",
       "intersection"
     ],
-    "name": "column-rule-break",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "column-rule-break"
   },
   {
     "keywords": [
@@ -4883,81 +4882,63 @@ var generatedProperties = [
       "column-rule-inset-junction-start",
       "column-rule-inset-junction-end"
     ],
-    "name": "column-rule-inset",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "column-rule-inset"
   },
   {
     "longhands": [
       "column-rule-inset-cap-start",
       "column-rule-inset-cap-end"
     ],
-    "name": "column-rule-inset-cap",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "column-rule-inset-cap"
   },
   {
     "inherited": false,
     "keywords": [
       "overlap-join"
     ],
-    "name": "column-rule-inset-cap-end",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "column-rule-inset-cap-end"
   },
   {
     "inherited": false,
     "keywords": [
       "overlap-join"
     ],
-    "name": "column-rule-inset-cap-start",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "column-rule-inset-cap-start"
   },
   {
     "longhands": [
       "column-rule-inset-cap-end",
       "column-rule-inset-junction-end"
     ],
-    "name": "column-rule-inset-end",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "column-rule-inset-end"
   },
   {
     "longhands": [
       "column-rule-inset-junction-start",
       "column-rule-inset-junction-end"
     ],
-    "name": "column-rule-inset-junction",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "column-rule-inset-junction"
   },
   {
     "inherited": false,
     "keywords": [
       "overlap-join"
     ],
-    "name": "column-rule-inset-junction-end",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "column-rule-inset-junction-end"
   },
   {
     "inherited": false,
     "keywords": [
       "overlap-join"
     ],
-    "name": "column-rule-inset-junction-start",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "column-rule-inset-junction-start"
   },
   {
     "longhands": [
       "column-rule-inset-cap-start",
       "column-rule-inset-junction-start"
     ],
-    "name": "column-rule-inset-start",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "column-rule-inset-start"
   },
   {
     "keywords": [
@@ -4982,9 +4963,7 @@ var generatedProperties = [
       "around",
       "between"
     ],
-    "name": "column-rule-visibility-items",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "column-rule-visibility-items"
   },
   {
     "keywords": [
@@ -6099,7 +6078,7 @@ var generatedProperties = [
     ],
     "name": "frame-sizing",
     "runtime_flag": "ResponsiveIframes",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "longhands": [
@@ -7559,9 +7538,7 @@ var generatedProperties = [
       "row-rule-style",
       "row-rule-color"
     ],
-    "name": "row-rule",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule"
   },
   {
     "inherited": false,
@@ -7570,17 +7547,13 @@ var generatedProperties = [
       "normal",
       "intersection"
     ],
-    "name": "row-rule-break",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-break"
   },
   {
     "keywords": [
       "currentcolor"
     ],
-    "name": "row-rule-color",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-color"
   },
   {
     "longhands": [
@@ -7589,81 +7562,63 @@ var generatedProperties = [
       "row-rule-inset-junction-start",
       "row-rule-inset-junction-end"
     ],
-    "name": "row-rule-inset",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-inset"
   },
   {
     "longhands": [
       "row-rule-inset-cap-start",
       "row-rule-inset-cap-end"
     ],
-    "name": "row-rule-inset-cap",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-inset-cap"
   },
   {
     "inherited": false,
     "keywords": [
       "overlap-join"
     ],
-    "name": "row-rule-inset-cap-end",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-inset-cap-end"
   },
   {
     "inherited": false,
     "keywords": [
       "overlap-join"
     ],
-    "name": "row-rule-inset-cap-start",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-inset-cap-start"
   },
   {
     "longhands": [
       "row-rule-inset-cap-end",
       "row-rule-inset-junction-end"
     ],
-    "name": "row-rule-inset-end",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-inset-end"
   },
   {
     "longhands": [
       "row-rule-inset-junction-start",
       "row-rule-inset-junction-end"
     ],
-    "name": "row-rule-inset-junction",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-inset-junction"
   },
   {
     "inherited": false,
     "keywords": [
       "overlap-join"
     ],
-    "name": "row-rule-inset-junction-end",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-inset-junction-end"
   },
   {
     "inherited": false,
     "keywords": [
       "overlap-join"
     ],
-    "name": "row-rule-inset-junction-start",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-inset-junction-start"
   },
   {
     "longhands": [
       "row-rule-inset-cap-start",
       "row-rule-inset-junction-start"
     ],
-    "name": "row-rule-inset-start",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-inset-start"
   },
   {
     "keywords": [
@@ -7678,9 +7633,7 @@ var generatedProperties = [
       "solid",
       "double"
     ],
-    "name": "row-rule-style",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-style"
   },
   {
     "inherited": false,
@@ -7690,9 +7643,7 @@ var generatedProperties = [
       "around",
       "between"
     ],
-    "name": "row-rule-visibility-items",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-visibility-items"
   },
   {
     "keywords": [
@@ -7700,9 +7651,7 @@ var generatedProperties = [
       "medium",
       "thick"
     ],
-    "name": "row-rule-width",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "row-rule-width"
   },
   {
     "inherited": true,
@@ -7742,27 +7691,21 @@ var generatedProperties = [
       "row-rule-style",
       "row-rule-color"
     ],
-    "name": "rule",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "rule"
   },
   {
     "longhands": [
       "row-rule-break",
       "column-rule-break"
     ],
-    "name": "rule-break",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "rule-break"
   },
   {
     "longhands": [
       "column-rule-color",
       "row-rule-color"
     ],
-    "name": "rule-color",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "rule-color"
   },
   {
     "longhands": [
@@ -7775,9 +7718,7 @@ var generatedProperties = [
       "column-rule-inset-junction-start",
       "column-rule-inset-junction-end"
     ],
-    "name": "rule-inset",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "rule-inset"
   },
   {
     "longhands": [
@@ -7786,9 +7727,7 @@ var generatedProperties = [
       "column-rule-inset-cap-start",
       "column-rule-inset-cap-end"
     ],
-    "name": "rule-inset-cap",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "rule-inset-cap"
   },
   {
     "longhands": [
@@ -7797,9 +7736,7 @@ var generatedProperties = [
       "row-rule-inset-cap-end",
       "row-rule-inset-junction-end"
     ],
-    "name": "rule-inset-end",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "rule-inset-end"
   },
   {
     "longhands": [
@@ -7808,9 +7745,7 @@ var generatedProperties = [
       "column-rule-inset-junction-start",
       "column-rule-inset-junction-end"
     ],
-    "name": "rule-inset-junction",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "rule-inset-junction"
   },
   {
     "longhands": [
@@ -7819,9 +7754,7 @@ var generatedProperties = [
       "row-rule-inset-cap-start",
       "row-rule-inset-junction-start"
     ],
-    "name": "rule-inset-start",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "rule-inset-start"
   },
   {
     "inherited": false,
@@ -7829,36 +7762,28 @@ var generatedProperties = [
       "row-over-column",
       "column-over-row"
     ],
-    "name": "rule-overlap",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "rule-overlap"
   },
   {
     "longhands": [
       "column-rule-style",
       "row-rule-style"
     ],
-    "name": "rule-style",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "rule-style"
   },
   {
     "longhands": [
       "column-rule-visibility-items",
       "row-rule-visibility-items"
     ],
-    "name": "rule-visibility-items",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "rule-visibility-items"
   },
   {
     "longhands": [
       "column-rule-width",
       "row-rule-width"
     ],
-    "name": "rule-width",
-    "runtime_flag": "CSSGapDecoration",
-    "runtime_flag_status": "stable"
+    "name": "rule-width"
   },
   {
     "keywords": [

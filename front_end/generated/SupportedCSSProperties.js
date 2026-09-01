@@ -1,7 +1,6 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @stylistic/quotes, @stylistic/quote-props, @stylistic/comma-dangle */
 export const generatedProperties = [
     {
         "longhands": [
@@ -2001,9 +2000,7 @@ export const generatedProperties = [
             "normal",
             "intersection"
         ],
-        "name": "column-rule-break",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "column-rule-break"
     },
     {
         "keywords": [
@@ -2018,81 +2015,63 @@ export const generatedProperties = [
             "column-rule-inset-junction-start",
             "column-rule-inset-junction-end"
         ],
-        "name": "column-rule-inset",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "column-rule-inset"
     },
     {
         "longhands": [
             "column-rule-inset-cap-start",
             "column-rule-inset-cap-end"
         ],
-        "name": "column-rule-inset-cap",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "column-rule-inset-cap"
     },
     {
         "inherited": false,
         "keywords": [
             "overlap-join"
         ],
-        "name": "column-rule-inset-cap-end",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "column-rule-inset-cap-end"
     },
     {
         "inherited": false,
         "keywords": [
             "overlap-join"
         ],
-        "name": "column-rule-inset-cap-start",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "column-rule-inset-cap-start"
     },
     {
         "longhands": [
             "column-rule-inset-cap-end",
             "column-rule-inset-junction-end"
         ],
-        "name": "column-rule-inset-end",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "column-rule-inset-end"
     },
     {
         "longhands": [
             "column-rule-inset-junction-start",
             "column-rule-inset-junction-end"
         ],
-        "name": "column-rule-inset-junction",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "column-rule-inset-junction"
     },
     {
         "inherited": false,
         "keywords": [
             "overlap-join"
         ],
-        "name": "column-rule-inset-junction-end",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "column-rule-inset-junction-end"
     },
     {
         "inherited": false,
         "keywords": [
             "overlap-join"
         ],
-        "name": "column-rule-inset-junction-start",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "column-rule-inset-junction-start"
     },
     {
         "longhands": [
             "column-rule-inset-cap-start",
             "column-rule-inset-junction-start"
         ],
-        "name": "column-rule-inset-start",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "column-rule-inset-start"
     },
     {
         "keywords": [
@@ -2117,9 +2096,7 @@ export const generatedProperties = [
             "around",
             "between"
         ],
-        "name": "column-rule-visibility-items",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "column-rule-visibility-items"
     },
     {
         "keywords": [
@@ -3234,7 +3211,7 @@ export const generatedProperties = [
         ],
         "name": "frame-sizing",
         "runtime_flag": "ResponsiveIframes",
-        "runtime_flag_status": "experimental"
+        "runtime_flag_status": "stable"
     },
     {
         "longhands": [
@@ -4694,9 +4671,7 @@ export const generatedProperties = [
             "row-rule-style",
             "row-rule-color"
         ],
-        "name": "row-rule",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule"
     },
     {
         "inherited": false,
@@ -4705,17 +4680,13 @@ export const generatedProperties = [
             "normal",
             "intersection"
         ],
-        "name": "row-rule-break",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-break"
     },
     {
         "keywords": [
             "currentcolor"
         ],
-        "name": "row-rule-color",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-color"
     },
     {
         "longhands": [
@@ -4724,81 +4695,63 @@ export const generatedProperties = [
             "row-rule-inset-junction-start",
             "row-rule-inset-junction-end"
         ],
-        "name": "row-rule-inset",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-inset"
     },
     {
         "longhands": [
             "row-rule-inset-cap-start",
             "row-rule-inset-cap-end"
         ],
-        "name": "row-rule-inset-cap",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-inset-cap"
     },
     {
         "inherited": false,
         "keywords": [
             "overlap-join"
         ],
-        "name": "row-rule-inset-cap-end",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-inset-cap-end"
     },
     {
         "inherited": false,
         "keywords": [
             "overlap-join"
         ],
-        "name": "row-rule-inset-cap-start",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-inset-cap-start"
     },
     {
         "longhands": [
             "row-rule-inset-cap-end",
             "row-rule-inset-junction-end"
         ],
-        "name": "row-rule-inset-end",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-inset-end"
     },
     {
         "longhands": [
             "row-rule-inset-junction-start",
             "row-rule-inset-junction-end"
         ],
-        "name": "row-rule-inset-junction",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-inset-junction"
     },
     {
         "inherited": false,
         "keywords": [
             "overlap-join"
         ],
-        "name": "row-rule-inset-junction-end",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-inset-junction-end"
     },
     {
         "inherited": false,
         "keywords": [
             "overlap-join"
         ],
-        "name": "row-rule-inset-junction-start",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-inset-junction-start"
     },
     {
         "longhands": [
             "row-rule-inset-cap-start",
             "row-rule-inset-junction-start"
         ],
-        "name": "row-rule-inset-start",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-inset-start"
     },
     {
         "keywords": [
@@ -4813,9 +4766,7 @@ export const generatedProperties = [
             "solid",
             "double"
         ],
-        "name": "row-rule-style",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-style"
     },
     {
         "inherited": false,
@@ -4825,9 +4776,7 @@ export const generatedProperties = [
             "around",
             "between"
         ],
-        "name": "row-rule-visibility-items",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-visibility-items"
     },
     {
         "keywords": [
@@ -4835,9 +4784,7 @@ export const generatedProperties = [
             "medium",
             "thick"
         ],
-        "name": "row-rule-width",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "row-rule-width"
     },
     {
         "inherited": true,
@@ -4877,27 +4824,21 @@ export const generatedProperties = [
             "row-rule-style",
             "row-rule-color"
         ],
-        "name": "rule",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "rule"
     },
     {
         "longhands": [
             "row-rule-break",
             "column-rule-break"
         ],
-        "name": "rule-break",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "rule-break"
     },
     {
         "longhands": [
             "column-rule-color",
             "row-rule-color"
         ],
-        "name": "rule-color",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "rule-color"
     },
     {
         "longhands": [
@@ -4910,9 +4851,7 @@ export const generatedProperties = [
             "column-rule-inset-junction-start",
             "column-rule-inset-junction-end"
         ],
-        "name": "rule-inset",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "rule-inset"
     },
     {
         "longhands": [
@@ -4921,9 +4860,7 @@ export const generatedProperties = [
             "column-rule-inset-cap-start",
             "column-rule-inset-cap-end"
         ],
-        "name": "rule-inset-cap",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "rule-inset-cap"
     },
     {
         "longhands": [
@@ -4932,9 +4869,7 @@ export const generatedProperties = [
             "row-rule-inset-cap-end",
             "row-rule-inset-junction-end"
         ],
-        "name": "rule-inset-end",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "rule-inset-end"
     },
     {
         "longhands": [
@@ -4943,9 +4878,7 @@ export const generatedProperties = [
             "column-rule-inset-junction-start",
             "column-rule-inset-junction-end"
         ],
-        "name": "rule-inset-junction",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "rule-inset-junction"
     },
     {
         "longhands": [
@@ -4954,9 +4887,7 @@ export const generatedProperties = [
             "row-rule-inset-cap-start",
             "row-rule-inset-junction-start"
         ],
-        "name": "rule-inset-start",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "rule-inset-start"
     },
     {
         "inherited": false,
@@ -4964,36 +4895,28 @@ export const generatedProperties = [
             "row-over-column",
             "column-over-row"
         ],
-        "name": "rule-overlap",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "rule-overlap"
     },
     {
         "longhands": [
             "column-rule-style",
             "row-rule-style"
         ],
-        "name": "rule-style",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "rule-style"
     },
     {
         "longhands": [
             "column-rule-visibility-items",
             "row-rule-visibility-items"
         ],
-        "name": "rule-visibility-items",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "rule-visibility-items"
     },
     {
         "longhands": [
             "column-rule-width",
             "row-rule-width"
         ],
-        "name": "rule-width",
-        "runtime_flag": "CSSGapDecoration",
-        "runtime_flag_status": "stable"
+        "name": "rule-width"
     },
     {
         "keywords": [

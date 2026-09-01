@@ -53,13 +53,13 @@ export default `/*
     }
 
     tr {
-      height: 22px;
+      height: var(--sys-size-10);
     }
 
     devtools-button {
       display: inline-flex;
       visibility: hidden;
-      margin: 0 8px 0 4px;
+      margin: 0 var(--sys-size-5) 0 var(--sys-size-3);
       vertical-align: top;
     }
 
@@ -106,7 +106,7 @@ export default `/*
      By not using it, we can benefit from text-overflow:ellipsis applying correctly to names and entity-badges */
  .timeline-tree-view .data-grid .name-container {
     display: block;
-    padding-left: 2px;
+    padding-left: var(--sys-size-2);
 
     .activity-name {
       display: inline;
@@ -122,8 +122,8 @@ export default `/*
       padding: 0 var(--sys-size-2);
       background-color: var(--sys-color-tonal-container);
       border-radius: var(--sys-shape-corner-extra-small);
-      height: 16px;
-      line-height: 16px;
+      height: var(--sys-size-8);
+      line-height: var(--sys-typescale-body4-line-height);
       font-size: var(--sys-typescale-body5-size);
       display: inline-block;
     }

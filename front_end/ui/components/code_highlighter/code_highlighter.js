@@ -111,7 +111,7 @@ var codeHighlighter_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./codeHighlighter.css")} */`;
 
-// gen/front_end/ui/components/code_highlighter/CodeHighlighter.js
+// ../../front_end/ui/components/code_highlighter/CodeHighlighter.ts
 var CodeHighlighter_exports = {};
 __export(CodeHighlighter_exports, {
   CodeHighlighter: () => CodeHighlighter,
@@ -258,8 +258,6 @@ async function languageFromMIME(mimeType) {
   }
 }
 var CodeHighlighter = class {
-  code;
-  tree;
   constructor(code, tree) {
     this.code = code;
     this.tree = tree;

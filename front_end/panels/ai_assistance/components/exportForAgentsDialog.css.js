@@ -66,6 +66,10 @@ export default `/*
     color: var(--sys-color-on-surface);
     border-radius: var(--sys-shape-corner-small);
     border: none;
+
+    &:focus-visible {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    }
   }
 
   main {

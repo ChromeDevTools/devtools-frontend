@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/icon_button/FileSourceIcon.js
+// ../../front_end/ui/components/icon_button/FileSourceIcon.ts
 var FileSourceIcon_exports = {};
 __export(FileSourceIcon_exports, {
   FileSourceIcon: () => FileSourceIcon
@@ -71,7 +71,7 @@ var fileSourceIcon_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./fileSourceIcon.css")} */`;
 
-// gen/front_end/ui/components/icon_button/FileSourceIcon.js
+// ../../front_end/ui/components/icon_button/FileSourceIcon.ts
 var { classMap } = Directives;
 var FileSourceIcon = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
@@ -104,14 +104,18 @@ var FileSourceIcon = class extends HTMLElement {
       green: Boolean(this.#hasDotBadge && !this.#isDotPurple),
       ...this.#contentType ? { [this.#contentType]: this.#contentType } : null
     });
-    render(html`
+    render(
+      html`
       <style>${fileSourceIcon_css_default}</style>
-      <devtools-icon .name=${this.#iconType ?? null} class=${iconClasses}></devtools-icon>`, this.#shadow, { host: this });
+      <devtools-icon .name=${this.#iconType ?? null} class=${iconClasses}></devtools-icon>`,
+      this.#shadow,
+      { host: this }
+    );
   }
 };
 customElements.define("devtools-file-source-icon", FileSourceIcon);
 
-// gen/front_end/ui/components/icon_button/IconButton.js
+// ../../front_end/ui/components/icon_button/IconButton.ts
 var IconButton_exports = {};
 __export(IconButton_exports, {
   IconButton: () => IconButton
@@ -193,7 +197,7 @@ var iconButton_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./iconButton.css")} */`;
 
-// gen/front_end/ui/components/icon_button/IconButton.js
+// ../../front_end/ui/components/icon_button/IconButton.ts
 var { html: html2 } = Lit;
 var IconButton = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open", delegatesFocus: true });
@@ -240,11 +244,13 @@ var IconButton = class extends HTMLElement {
       <style>${iconButton_css_default}</style>
       <button class=${buttonClasses} @click=${this.#onClickHandler} aria-label=${Lit.Directives.ifDefined(this.#accessibleName)}>
       ${!this.#compact && this.#leadingText ? html2`<span class="icon-button-title">${this.#leadingText}</span>` : Lit.nothing}
-      ${filteredGroups.map((counter) => html2`
+      ${filteredGroups.map(
+      (counter) => html2`
       <devtools-icon class="status-icon" name=${counter.iconName} style="color: ${counter.iconColor}; width: ${counter.iconWidth || "var(--sys-size-7)"}; height: ${counter.iconHeight || "var(--sys-size-7)"}">
       </devtools-icon>
       ${this.#compact ? html2`<!-- Force line-height for this element --><span>&#8203;</span>` : Lit.nothing}
-      <span class="icon-button-title">${counter.text}</span>`)}
+      <span class="icon-button-title">${counter.text}</span>`
+    )}
       </button>
       ${!this.#compact && this.#trailingText ? html2`<span class="icon-button-title">${this.#trailingText}</span>` : Lit.nothing}
     `, this.#shadow, { host: this });

@@ -479,7 +479,7 @@ function renderClsCard(input) {
 function renderInpCard(input) {
     const fieldData = input.cruxManager.getSelectedFieldMetricData('interaction_to_next_paint');
     const subparts = input.inpValue?.subparts;
-    const interaction = input.inpValue && input.interactions.get(input.inpValue.interactionId);
+    const interaction = input.inpValue?.interactionId ? input.interactions.get(input.inpValue.interactionId) : undefined;
     // clang-format off
     return html `
     <devtools-metric-card ${createMetricCardRef({

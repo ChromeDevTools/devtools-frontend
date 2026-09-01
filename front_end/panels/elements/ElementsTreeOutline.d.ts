@@ -1,7 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import { ElementsTreeElement, ElementsTreeWidget } from './ElementsTreeElement.js';
+import { ElementsTreeElement, ElementsTreeWidget, type InitialEditState } from './ElementsTreeElement.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
 import type { MarkerDecoratorRegistration } from './MarkerDecorator.js';
@@ -52,6 +52,21 @@ interface ViewInput {
     isNodeInClipboard?: (node: SDK.DOMModel.DOMNode) => boolean;
     onCopyOrCut?: (isCut: boolean, event: Event) => void;
     onPaste?: (event: Event) => void;
+    onSelectNodeAfterEdit?: (wasExpanded: boolean, error: string | null, newNode: SDK.DOMModel.DOMNode | null, moveDirection?: string) => void;
+    nodeToEdit?: ({
+        node: SDK.DOMModel.DOMNode;
+    } & InitialEditState) | null;
+    onInitialEditCompleted?: () => void;
+    dragOverNode?: {
+        node: SDK.DOMModel.DOMNode;
+        isClosingTag: boolean;
+    } | null;
+    isValidDragSource?: (node: SDK.DOMModel.DOMNode) => boolean;
+    onDragStart?: (node: SDK.DOMModel.DOMNode, event: DragEvent, textContent?: string) => boolean;
+    onDragOver?: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) => boolean;
+    onDragLeave?: (event: DragEvent) => void;
+    onDrop?: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) => void;
+    onDragEnd?: (event: DragEvent) => void;
 }
 interface ViewOutput {
     elementsTreeOutline?: ElementsTreeOutline;
@@ -89,6 +104,7 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     onDocumentUpdated: (domModel: SDK.DOMModel.DOMModel) => void;
     set maxRows(maxRows: number | undefined);
     get maxRows(): number | undefined;
+    get visibleWidth(): number;
     set visibleWidth(width: number);
     set rootDOMNode(node: SDK.DOMModel.DOMNode | null);
     get rootDOMNode(): SDK.DOMModel.DOMNode | null;
@@ -151,9 +167,27 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     toggleHideElement(node: SDK.DOMModel.DOMNode): void;
     removeNode(node: SDK.DOMModel.DOMNode): Promise<void>;
     isToggledToHidden(node: SDK.DOMModel.DOMNode): boolean;
-    toggleEditAsHTML(node: SDK.DOMModel.DOMNode): void;
+    setMultilineEditing(multilineEditing: MultilineEditorController | null): void;
+    multilineEditing(): MultilineEditorController | null;
+    runPendingUpdates(): void;
+    onResize(): void;
+    willHide(): void;
+    toggleEditAsHTML(node: SDK.DOMModel.DOMNode, startEditing?: boolean, callback?: (() => void)): void;
     duplicateNode(node: SDK.DOMModel.DOMNode): void;
-    selectNodeAfterEdit(wasExpanded: boolean, error: string | null, newNode: SDK.DOMModel.DOMNode | null): void;
+    nodeBeingDragged(): SDK.DOMModel.DOMNode | null;
+    dragOverNode(): {
+        node: SDK.DOMModel.DOMNode;
+        isClosingTag: boolean;
+    } | null;
+    isValidDragSource(node: SDK.DOMModel.DOMNode): boolean;
+    isValidDragTarget(targetNode: SDK.DOMModel.DOMNode): boolean;
+    onDragStart(node: SDK.DOMModel.DOMNode, event: DragEvent, textContent?: string): boolean;
+    onDragOver(node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent): boolean;
+    onDragLeave(event: DragEvent): void;
+    onDrop(node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent): void;
+    onDragEnd(event: DragEvent): void;
+    moveNode(draggedNode: SDK.DOMModel.DOMNode, targetNode: SDK.DOMModel.DOMNode, isClosingTag: boolean): void;
+    selectNodeAfterEdit(wasExpanded: boolean, error: string | null, newNode: SDK.DOMModel.DOMNode | null, moveDirection?: string): void;
     onKeyDown(event: KeyboardEvent): boolean;
     clipboardData(): ClipboardData | null;
     setClipboardData(data: ClipboardData | null): void;
@@ -195,12 +229,10 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     private updateRecords;
     private treeElementsBeingUpdated;
     decoratorExtensions: MarkerDecoratorRegistration[] | null;
-    private multilineEditing?;
     private visibleWidthInternal?;
     private isXMLMimeTypeInternal?;
     suppressRevealAndSelect: boolean;
     private previousHoveredElement?;
-    private treeElementBeingDragged?;
     private dragOverTreeElement?;
     private updateModifiedNodesTimeout?;
     maxTreeDepth?: number;
@@ -251,9 +283,7 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     private ondragstart;
     private ondragover;
     private ondragleave;
-    private validDragSourceOrTarget;
     private ondrop;
-    private doMove;
     private ondragend;
     private clearDragOverTreeElementMarker;
     showContextMenu: (treeElement: ElementsTreeElement, event: Event) => void;

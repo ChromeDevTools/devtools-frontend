@@ -13,12 +13,12 @@ export default `/*
   box-shadow: var(--drop-shadow);
   background-color: var(--sys-color-cdt-base-container);
   text-overflow: clip !important; /* stylelint-disable-line declaration-no-important */
-  padding-left: 2px;
-  margin-left: -2px;
-  padding-right: 2px;
-  margin-right: -2px;
-  margin-bottom: -1px;
-  padding-bottom: 1px;
+  padding-left: var(--sys-size-2);
+  margin-left: calc(-1 * var(--sys-size-2));
+  padding-right: var(--sys-size-2);
+  margin-right: calc(-1 * var(--sys-size-2));
+  margin-bottom: calc(-1 * var(--sys-size-1));
+  padding-bottom: var(--sys-size-1);
   opacity: 100% !important; /* stylelint-disable-line declaration-no-important */
 }
 
@@ -52,7 +52,7 @@ export default `/*
 }
 
 .adorner-with-icon *:not(:last-child) {
-  margin-right: 2px;
+  margin-right: var(--sys-size-2);
 }
 
 .elements-disclosure {
@@ -70,8 +70,8 @@ export default `/*
 
 .elements-disclosure li {
   /** Keep margin-left & padding-left in sync with ElementsTreeElements.updateDecorations **/
-  padding: 1px 0 0 14px;
-  margin-left: -2px;
+  padding: var(--sys-size-1) 0 0 var(--sys-size-7);
+  margin-left: calc(-1 * var(--sys-size-2));
   word-break: normal;
   position: relative;
   min-height: 15px;
@@ -93,7 +93,7 @@ export default `/*
 
 .elements-disclosure li.parent:not(.always-parent) {
   /** Keep it in sync with ElementsTreeElements.updateDecorations **/
-  margin-left: -12px;
+  margin-left: calc(-1 * var(--sys-size-6));
 }
 
 .elements-disclosure li .ai-button-container {
@@ -102,7 +102,7 @@ export default `/*
   overflow: visible;
   max-height: var(--sys-size-6);
   vertical-align: top;
-  margin-top: -1px;
+  margin-top: calc(-1 * var(--sys-size-1));
   position: absolute;
   right: var(--sys-size-3);
   bottom: 5px;
@@ -130,8 +130,8 @@ export default `/*
   box-sizing: border-box;
   user-select: none;
   mask-image: var(--image-file-arrow-collapse);
-  height: 14px;
-  width: 14px;
+  height: var(--sys-size-7);
+  width: var(--sys-size-7);
   content: "\\A0\\A0";
   color: transparent;
   text-shadow: none;
@@ -154,8 +154,8 @@ export default `/*
 
 .elements-disclosure li.elements-drag-over .selection {
   display: block;
-  margin-top: -2px;
-  border-top: 2px solid var(--sys-color-primary);
+  margin-top: calc(-1 * var(--sys-size-2));
+  border-top: var(--sys-size-2) solid var(--sys-color-primary);
 }
 
 .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) .selection {
@@ -171,13 +171,13 @@ export default `/*
 }
 
 .elements-disclosure li .webkit-html-tag.close {
-  margin-left: -12px;
+  margin-left: calc(-1 * var(--sys-size-6));
 }
 
 .elements-disclosure .elements-tree-outline.hide-selection-when-blurred .selected:focus-visible .highlight > * {
   background: var(--sys-color-state-focus-highlight);
-  border-radius: 2px;
-  outline: 2px solid var(--sys-color-state-focus-ring);
+  border-radius: var(--sys-size-2);
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
 }
 
 .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
@@ -187,7 +187,7 @@ export default `/*
 .elements-disclosure ol {
   list-style-type: none;
   /** Keep it in sync with ElementsTreeElements.updateDecorations **/
-  padding-inline-start: 12px;
+  padding-inline-start: var(--sys-size-6);
   margin: 0;
 }
 
@@ -205,11 +205,11 @@ export default `/*
   margin: 0;
   min-width: 100%;
   min-height: 100%;
-  padding-left: 2px;
+  padding-left: var(--sys-size-2);
 }
 
 .elements-disclosure li.in-clipboard .highlight {
-  outline: 1px dotted var(--sys-color-divider);
+  outline: var(--sys-size-1) dotted var(--sys-color-divider);
 }
 
 .elements-tree-outline ol.shadow-root-deep {
@@ -218,7 +218,7 @@ export default `/*
 
 .elements-tree-editor {
   box-shadow: var(--drop-shadow);
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 }
 
 button,
@@ -232,7 +232,7 @@ select {
   height: 9px;
   width: 9px;
   border-radius: 5px;
-  border: 1px solid var(--decoration-color); /* stylelint-disable-line plugin/use_theme_colors */
+  border: var(--sys-size-1) solid var(--decoration-color); /* stylelint-disable-line plugin/use_theme_colors */
   background-color: var(--decoration-color); /* stylelint-disable-line plugin/use_theme_colors */
 }
 
@@ -240,14 +240,14 @@ select {
   display: flex;
   position: absolute;
   top: 0;
-  left: 1px;
+  left: var(--sys-size-1);
   width: 15px;
   height: 15px;
   align-items: center;
 }
 
 .elements-gutter-decoration + .elements-gutter-decoration {
-  margin-left: -6px;
+  margin-left: calc(-1 * var(--sys-size-4));
 }
 
 .elements-gutter-decoration.elements-has-decorated-children {
@@ -255,8 +255,8 @@ select {
 }
 
 .add-attribute {
-  margin-left: 1px;
-  margin-right: 1px;
+  margin-left: var(--sys-size-1);
+  margin-right: var(--sys-size-1);
   white-space: nowrap;
 }
 
@@ -302,7 +302,7 @@ select {
 
 .dom-update-highlight {
   animation: dom-update-highlight-animation 1.4s 1 cubic-bezier(0, 0, 0.2, 1);
-  border-radius: 2px;
+  border-radius: var(--sys-size-2);
 }
 
 :host-context(.theme-with-dark-background) .dom-update-highlight {
@@ -310,7 +310,7 @@ select {
 }
 
 .elements-disclosure.single-node li {
-  padding-left: 2px;
+  padding-left: var(--sys-size-2);
 }
 
 .elements-tree-shortcut-title,
@@ -335,9 +335,9 @@ select {
   display: block;
   visibility: hidden;
   position: relative;
-  left: -1px;
-  width: 16px;
-  height: 16px;
+  left: calc(-1 * var(--sys-size-1));
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
 }
 
 .elements-disclosure li.selected .gutter-container:not(.has-decorations) > devtools-icon {
@@ -381,7 +381,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   .elements-disclosure .elements-tree-outline:not(.hide-selection-when-blurred) li.selected:focus .selection {
     forced-color-adjust: none;
     background: canvas !important; /* stylelint-disable-line declaration-no-important */
-    border: 1px solid Highlight !important; /* stylelint-disable-line declaration-no-important */
+    border: var(--sys-size-1) solid Highlight !important; /* stylelint-disable-line declaration-no-important */
   }
 
   .gutter-container > devtools-icon {
@@ -394,7 +394,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   background-image: var(--image-file-errorWave);
   background-repeat: repeat-x;
   background-position: bottom;
-  padding-bottom: 1px;
+  padding-bottom: var(--sys-size-1);
 }
 
 /* Ad Provenance Tooltip */
@@ -404,7 +404,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 
 .ad-provenance-tooltip-title {
   color: var(--sys-color-on-surface-subtle);
-  margin-top: 4px;
+  margin-top: var(--sys-size-3);
 }
 
 .ad-provenance-tooltip-title:first-child {
@@ -412,7 +412,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 }
 
 .ad-provenance-tooltip-content {
-  padding-left: 16px;
+  padding-left: var(--sys-size-8);
 }
 
 .elements-disclosure.elements-tree-truncated {
@@ -426,8 +426,8 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   color: var(--sys-color-primary);
   cursor: pointer;
   display: block;
-  font-size: 12px;
-  padding: 4px 12px;
+  font-size: var(--sys-typescale-body4-size);
+  padding: var(--sys-size-3) var(--sys-size-6);
   text-align: center;
   width: 100%;
 }

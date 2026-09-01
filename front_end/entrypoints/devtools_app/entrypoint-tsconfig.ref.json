@@ -1,0 +1,103 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/entrypoints/devtools_app",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/entrypoints/devtools_app/devtools_app.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../core/root/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../inspector_main/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/accessibility/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/animation/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/application/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/autofill/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/browser_debugger/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/css_overview/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/developer_resources/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/elements/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/emulation/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/issues/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/layer_viewer/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/layers/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/lighthouse/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/media/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/mobile_throttling/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/network/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/performance_monitor/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/recorder/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/security/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/sensors/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/timeline/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/web_audio/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/webauthn/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/whats_new/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../main/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../shell/shell-tsconfig.ref.json"
+    }
+  ]
+}

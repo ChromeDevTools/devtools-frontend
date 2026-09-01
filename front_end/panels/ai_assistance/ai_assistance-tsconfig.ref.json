@@ -33,9 +33,6 @@
   ],
   "references": [
     {
-      "path": "./css_files-tsconfig.ref.json"
-    },
-    {
       "path": "../../core/common/bundle-tsconfig.ref.json"
     },
     {

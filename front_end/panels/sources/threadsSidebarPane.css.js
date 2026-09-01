@@ -10,7 +10,7 @@ export default `/*
  */
 
 .thread-item {
-  padding: 3px 8px 3px 20px;
+  padding: 3px var(--sys-size-5) 3px var(--sys-size-9);
   position: relative;
   min-height: 18px;
   line-height: 15px;
@@ -23,7 +23,7 @@ export default `/*
 }
 
 .thread-item + .thread-item {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .thread-item:hover {
@@ -50,9 +50,9 @@ export default `/*
 .selected-thread-icon {
   position: absolute;
   top: 3px;
-  left: 4px;
-  width: 16px;
-  height: 16px;
+  left: var(--sys-size-3);
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
 }
 
 @media (forced-colors: active) {

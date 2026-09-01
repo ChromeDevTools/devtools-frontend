@@ -203,6 +203,7 @@ models/ai_assistance/performance/AICallTree.test.js
 models/ai_assistance/performance/AIContext.test.js
 models/ai_assistance/performance/AIQueries.test.js
 models/ai_assistance/tools/CookieUtils.test.js
+models/ai_assistance/tools/DOMStorageUtils.test.js
 models/ai_assistance/tools/ExecuteJavaScript.test.js
 models/ai_assistance/tools/GetCookieValues.test.js
 models/ai_assistance/tools/GetDetailedCallTree.test.js

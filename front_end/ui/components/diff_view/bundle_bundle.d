@@ -1,0 +1,1 @@
+gen/front_end/ui/components/diff_view/diff_view.js: gen/front_end/ui/components/diff_view/diffView.css.js ../../front_end/ui/components/diff_view/DiffView.ts ../../front_end/ui/components/diff_view/diff_view.ts

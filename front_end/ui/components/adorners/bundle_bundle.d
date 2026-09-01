@@ -1,0 +1,1 @@
+gen/front_end/ui/components/adorners/adorners.js: gen/front_end/ui/components/adorners/adorner.css.js ../../front_end/ui/components/adorners/Adorner.ts ../../front_end/ui/components/adorners/adorners.ts

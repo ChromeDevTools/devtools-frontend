@@ -2056,6 +2056,7 @@ export var Page;
         PermissionsPolicyFeature["Gamepad"] = "gamepad";
         PermissionsPolicyFeature["Geolocation"] = "geolocation";
         PermissionsPolicyFeature["Gyroscope"] = "gyroscope";
+        PermissionsPolicyFeature["Haptics"] = "haptics";
         PermissionsPolicyFeature["Hid"] = "hid";
         PermissionsPolicyFeature["IdentityCredentialsGet"] = "identity-credentials-get";
         PermissionsPolicyFeature["IdleDetection"] = "idle-detection";

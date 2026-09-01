@@ -43,7 +43,7 @@ export interface LcpValue extends MetricValue {
 }
 export interface InpValue extends MetricValue {
     subparts: Spec.InpSubparts;
-    interactionId: InteractionId;
+    interactionId?: InteractionId;
 }
 export interface ClsValue extends MetricValue {
     clusterShiftIds: Spec.UniqueLayoutShiftId[];

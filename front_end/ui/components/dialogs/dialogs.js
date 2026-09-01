@@ -4,13 +4,17 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/dialogs/ButtonDialog.js
+// ../../front_end/ui/components/dialogs/ButtonDialog.ts
 var ButtonDialog_exports = {};
 __export(ButtonDialog_exports, {
   ButtonDialog: () => ButtonDialog
 });
-import * as ComponentHelpers from "../helpers/helpers.js";
-import { Directives, html, render } from "../../lit/lit.js";
+import * as ComponentHelpers2 from "../helpers/helpers.js";
+import {
+  Directives,
+  html as html2,
+  render as render2
+} from "../../lit/lit.js";
 
 // gen/front_end/ui/components/dialogs/buttonDialog.css.js
 var buttonDialog_css_default = `/*
@@ -25,102 +29,7 @@ var buttonDialog_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./buttonDialog.css")} */`;
 
-// gen/front_end/ui/components/dialogs/ButtonDialog.js
-var { ref } = Directives;
-var ButtonDialog = class extends HTMLElement {
-  #shadow = this.attachShadow({ mode: "open" });
-  #dialog = null;
-  #showButton = null;
-  #data = null;
-  set data(data) {
-    this.#data = data;
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-  #showDialog() {
-    if (!this.#dialog) {
-      throw new Error("Dialog not found");
-    }
-    if (this.#data?.state === "disabled") {
-      void this.#dialog.setDialogVisible(false);
-    } else {
-      void this.#dialog.setDialogVisible(true);
-    }
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-  #closeDialog(evt) {
-    if (!this.#dialog) {
-      throw new Error("Dialog not found");
-    }
-    void this.#dialog.setDialogVisible(false);
-    if (evt) {
-      evt.stopImmediatePropagation();
-    }
-    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-  }
-  set state(state) {
-    if (this.#data) {
-      this.#data.state = state;
-      void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
-    }
-  }
-  #render() {
-    if (!this.#data) {
-      throw new Error("ButtonDialog.data is not set");
-    }
-    if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
-      throw new Error("Button dialog render was not scheduled");
-    }
-    render(html`
-      <style>${buttonDialog_css_default}</style>
-      <devtools-button
-        @click=${this.#showDialog}
-        ${ref((el) => {
-      if (el instanceof HTMLElement) {
-        this.#showButton = el;
-      }
-    })}
-        .data=${{
-      variant: this.#data.variant,
-      iconName: this.#data.iconName,
-      disabled: this.#data.disabled,
-      title: this.#data.iconTitle,
-      jslogContext: this.#data.jslogContext
-    }}
-      ></devtools-button>
-      <devtools-dialog
-        @clickoutsidedialog=${this.#closeDialog}
-        .origin=${() => {
-      if (!this.#showButton) {
-        throw new Error("Button not found");
-      }
-      return this.#showButton;
-    }}
-        .position=${this.#data.position ?? "bottom"}
-        .horizontalAlignment=${this.#data.horizontalAlignment ?? "right"}
-        .closeOnESC=${this.#data.closeOnESC ?? false}
-        .closeOnScroll=${this.#data.closeOnScroll ?? false}
-        .closeButton=${this.#data.closeButton ?? false}
-        .dialogTitle=${this.#data.dialogTitle}
-        .jslogContext=${this.#data.jslogContext ?? ""}
-        .state=${this.#data.state ?? "expanded"}
-        ${ref((el) => {
-      if (el instanceof HTMLElement) {
-        this.#dialog = el;
-      }
-    })}
-      >
-        <slot></slot>
-      </devtools-dialog>
-      `, this.#shadow, { host: this });
-    if (this.#data.openOnRender) {
-      this.#showDialog();
-      this.#data.openOnRender = false;
-    }
-  }
-};
-customElements.define("devtools-button-dialog", ButtonDialog);
-
-// gen/front_end/ui/components/dialogs/Dialog.js
+// ../../front_end/ui/components/dialogs/Dialog.ts
 var Dialog_exports = {};
 __export(Dialog_exports, {
   AnimationEndedEvent: () => AnimationEndedEvent,
@@ -139,7 +48,7 @@ __export(Dialog_exports, {
 });
 import * as i18n from "../../../core/i18n/i18n.js";
 import * as Platform from "../../../core/platform/platform.js";
-import * as ComponentHelpers2 from "../helpers/helpers.js";
+import * as ComponentHelpers from "../helpers/helpers.js";
 import * as RenderCoordinator from "../render_coordinator/render_coordinator.js";
 import * as Lit from "../../lit/lit.js";
 import * as VisualLogging from "../../visual_logging/visual_logging.js";
@@ -234,8 +143,8 @@ dialog:focus-visible {
 
 /*# sourceURL=${import.meta.resolve("./dialog.css")} */`;
 
-// gen/front_end/ui/components/dialogs/Dialog.js
-var { html: html2 } = Lit;
+// ../../front_end/ui/components/dialogs/Dialog.ts
+var { html } = Lit;
 var UIStrings = {
   /**
    * @description Title of the close button in a dialog.
@@ -258,8 +167,8 @@ var Dialog = class extends HTMLElement {
   #handleScrollAttemptBound = this.#handleScrollAttempt.bind(this);
   #props = {
     origin: MODAL,
-    position: "bottom",
-    horizontalAlignment: "center",
+    position: "bottom" /* BOTTOM */,
+    horizontalAlignment: "center" /* CENTER */,
     getConnectorCustomXPosition: null,
     dialogShownCallback: null,
     closeOnESC: true,
@@ -267,7 +176,7 @@ var Dialog = class extends HTMLElement {
     closeButton: false,
     dialogTitle: "",
     jslogContext: "",
-    state: "expanded"
+    state: "expanded" /* EXPANDED */
   };
   #dialog = null;
   #isPendingShowDialog = false;
@@ -366,7 +275,7 @@ var Dialog = class extends HTMLElement {
   }
   set state(state) {
     this.#props.state = state;
-    if (this.#props.state === "collapsed" || this.#props.state === "disabled") {
+    if (this.#props.state === "collapsed" /* COLLAPSED */ || this.#props.state === "disabled" /* DISABLED */) {
       this.#forceDialogCloseInDevToolsBound();
     }
     this.#onStateChange();
@@ -375,7 +284,7 @@ var Dialog = class extends HTMLElement {
     this.#dialogClientRect = this.#getDialog().getBoundingClientRect();
   }
   #onStateChange() {
-    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+    void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
   }
   connectedCallback() {
     window.addEventListener("resize", this.#forceDialogCloseInDevToolsBound);
@@ -436,7 +345,7 @@ var Dialog = class extends HTMLElement {
   }
   #mouseEventWasInDialogContent(evt) {
     const dialogBounds = this.#dialogClientRect;
-    let animationOffSetValue = this.bestVerticalPosition === "bottom" ? DIALOG_ANIMATION_OFFSET : -1 * DIALOG_ANIMATION_OFFSET;
+    let animationOffSetValue = this.bestVerticalPosition === "bottom" /* BOTTOM */ ? DIALOG_ANIMATION_OFFSET : -1 * DIALOG_ANIMATION_OFFSET;
     if (this.#props.origin === MODAL) {
       animationOffSetValue = 0;
     }
@@ -465,15 +374,15 @@ var Dialog = class extends HTMLElement {
   }
   #getBestHorizontalAlignment(anchorBounds, devtoolsBounds) {
     if (devtoolsBounds.right - anchorBounds.left > anchorBounds.right - devtoolsBounds.left) {
-      return "left";
+      return "left" /* LEFT */;
     }
-    return "right";
+    return "right" /* RIGHT */;
   }
   #getBestVerticalPosition(originBounds, dialogHeight, devtoolsBounds) {
     if (originBounds.bottom + dialogHeight > devtoolsBounds.height && originBounds.top - dialogHeight > devtoolsBounds.top) {
-      return "top";
+      return "top" /* TOP */;
     }
-    return "bottom";
+    return "bottom" /* BOTTOM */;
   }
   #positionDialog() {
     if (!this.#props.origin) {
@@ -520,19 +429,22 @@ var Dialog = class extends HTMLElement {
           this.#isPendingShowDialog = false;
         }
         const { width: dialogWidth, height: dialogHeight } = dialog2.getBoundingClientRect();
-        this.#bestHorizontalAlignment = this.#props.horizontalAlignment === "auto" ? this.#getBestHorizontalAlignment(absoluteAnchorBounds, devtoolsBounds) : this.#props.horizontalAlignment;
-        this.#bestVerticalPosition = this.#props.position === "auto" ? this.#getBestVerticalPosition(absoluteAnchorBounds, dialogHeight, devtoolsBounds) : this.#props.position;
-        if (this.#bestHorizontalAlignment === "auto" || this.#bestVerticalPosition === "auto") {
+        this.#bestHorizontalAlignment = this.#props.horizontalAlignment === "auto" /* AUTO */ ? this.#getBestHorizontalAlignment(absoluteAnchorBounds, devtoolsBounds) : this.#props.horizontalAlignment;
+        this.#bestVerticalPosition = this.#props.position === "auto" /* AUTO */ ? this.#getBestVerticalPosition(absoluteAnchorBounds, dialogHeight, devtoolsBounds) : this.#props.position;
+        if (this.#bestHorizontalAlignment === "auto" /* AUTO */ || this.#bestVerticalPosition === "auto" /* AUTO */) {
           return;
         }
         this.#hitArea.height = anchorBottom - anchorTop + CONNECTOR_HEIGHT;
         this.#hitArea.width = hitAreaWidth;
-        this.style.setProperty("--content-min-width", `${connectorFixedXValue - anchorLeft + CONNECTOR_WIDTH + DIALOG_SIDE_PADDING * 2}px`);
+        this.style.setProperty(
+          "--content-min-width",
+          `${connectorFixedXValue - anchorLeft + CONNECTOR_WIDTH + DIALOG_SIDE_PADDING * 2}px`
+        );
         this.style.setProperty("--dialog-left", "auto");
         this.style.setProperty("--dialog-right", "auto");
         this.style.setProperty("--dialog-margin", "0");
         switch (this.#bestHorizontalAlignment) {
-          case "left": {
+          case "left" /* LEFT */: {
             const dialogLeft = Math.max(anchorLeft, devToolsLeft);
             const devtoolsRightBorderToDialogLeft = devToolsRight - dialogLeft;
             const dialogMaxWidth = devtoolsRightBorderToDialogLeft - DIALOG_PADDING_FROM_WINDOW;
@@ -541,7 +453,7 @@ var Dialog = class extends HTMLElement {
             this.style.setProperty("--dialog-max-width", `${dialogMaxWidth}px`);
             break;
           }
-          case "right": {
+          case "right" /* RIGHT */: {
             const windowRightBorderToAnchorRight = windowWidth - anchorRight;
             const windowRightBorderToDevToolsRight = windowWidth - devToolsRight;
             const windowRightBorderToDialogRight = Math.max(windowRightBorderToAnchorRight, windowRightBorderToDevToolsRight);
@@ -553,7 +465,7 @@ var Dialog = class extends HTMLElement {
             this.style.setProperty("--dialog-max-width", `${dialogMaxWidth}px`);
             break;
           }
-          case "center": {
+          case "center" /* CENTER */: {
             const dialogCappedWidth = Math.min(devToolsWidth - DIALOG_PADDING_FROM_WINDOW, dialogWidth);
             let dialogLeft = Math.max(originCenterX - dialogCappedWidth * 0.5, devToolsLeft);
             dialogLeft = Math.min(dialogLeft, devToolsRight - dialogCappedWidth);
@@ -563,23 +475,32 @@ var Dialog = class extends HTMLElement {
             break;
           }
           default:
-            Platform.assertNever(this.#bestHorizontalAlignment, `Unknown alignment type: ${this.#bestHorizontalAlignment}`);
+            Platform.assertNever(
+              this.#bestHorizontalAlignment,
+              `Unknown alignment type: ${this.#bestHorizontalAlignment}`
+            );
         }
         switch (this.#bestVerticalPosition) {
-          case "top": {
+          case "top" /* TOP */: {
             this.style.setProperty("--dialog-top", "0");
             this.style.setProperty("--dialog-margin", "auto");
             this.style.setProperty("--dialog-margin-bottom", `${innerHeight - anchorTop}px`);
             this.#hitArea.y = anchorTop - CONNECTOR_HEIGHT;
             this.style.setProperty("--dialog-offset-y", `${DIALOG_ANIMATION_OFFSET}px`);
-            this.style.setProperty("--dialog-max-height", `${devToolsHeight - (innerHeight - anchorTop) - DIALOG_PADDING_FROM_WINDOW}px`);
+            this.style.setProperty(
+              "--dialog-max-height",
+              `${devToolsHeight - (innerHeight - anchorTop) - DIALOG_PADDING_FROM_WINDOW}px`
+            );
             break;
           }
-          case "bottom": {
+          case "bottom" /* BOTTOM */: {
             this.style.setProperty("--dialog-top", `${anchorBottom}px`);
             this.#hitArea.y = anchorTop;
             this.style.setProperty("--dialog-offset-y", `-${DIALOG_ANIMATION_OFFSET}px`);
-            this.style.setProperty("--dialog-max-height", `${devToolsHeight - (anchorBottom - devToolsTop) - DIALOG_PADDING_FROM_WINDOW}px`);
+            this.style.setProperty(
+              "--dialog-max-height",
+              `${devToolsHeight - (anchorBottom - devToolsTop) - DIALOG_PADDING_FROM_WINDOW}px`
+            );
             break;
           }
           default:
@@ -671,16 +592,16 @@ var Dialog = class extends HTMLElement {
     if (!this.#props.dialogTitle && !this.#props.closeButton) {
       return null;
     }
-    return html2`
+    return html`
         <span class="dialog-header-text">${this.#props.dialogTitle}</span>
-        ${this.#props.closeButton ? html2`
+        ${this.#props.closeButton ? html`
           <devtools-button
             @click=${this.#closeDialog}
             .data=${{
-      variant: "toolbar",
+      variant: Buttons.Button.Variant.TOOLBAR,
       iconName: "cross",
       title: i18nString(UIStrings.close),
-      size: "SMALL"
+      size: Buttons.Button.Size.SMALL
     }}
             jslog=${VisualLogging.close().track({ click: true })}
           ></devtools-button>
@@ -688,13 +609,13 @@ var Dialog = class extends HTMLElement {
     `;
   }
   #render() {
-    if (!ComponentHelpers2.ScheduledRender.isScheduledRender(this)) {
+    if (!ComponentHelpers.ScheduledRender.isScheduledRender(this)) {
       throw new Error("Dialog render was not scheduled");
     }
     if (!IS_DIALOG_SUPPORTED) {
       Lit.render(
         // clang-format off
-        html2`
+        html`
         <slot></slot>
       `,
         this.#shadow,
@@ -703,8 +624,8 @@ var Dialog = class extends HTMLElement {
       return;
     }
     let dialogContent = Lit.nothing;
-    if (this.#props.state === "expanded") {
-      dialogContent = html2`
+    if (this.#props.state === "expanded" /* EXPANDED */) {
+      dialogContent = html`
     <div id="content">
           <div class="dialog-header">${this.#renderHeaderRow()}</div>
           <div class='dialog-content'>
@@ -713,7 +634,7 @@ var Dialog = class extends HTMLElement {
     </div>
     `;
     }
-    Lit.render(html2`
+    Lit.render(html`
       <style>${dialog_css_default}</style>
       <dialog @click=${this.#handlePointerEvent} @pointermove=${this.#handlePointerEvent} @cancel=${this.#onCancel} @animationend=${this.#animationEndedEvent}
               jslog=${VisualLogging.dialog(this.#props.jslogContext).track({ resize: true, keydown: "Escape" }).parent("mapped")}>
@@ -752,27 +673,126 @@ var ForcedDialogClose = class _ForcedDialogClose extends Event {
     super(_ForcedDialogClose.eventName, { bubbles: true, composed: true });
   }
 };
-var DialogVerticalPosition;
-(function(DialogVerticalPosition2) {
+var DialogVerticalPosition = /* @__PURE__ */ ((DialogVerticalPosition2) => {
   DialogVerticalPosition2["TOP"] = "top";
   DialogVerticalPosition2["BOTTOM"] = "bottom";
   DialogVerticalPosition2["AUTO"] = "auto";
-})(DialogVerticalPosition || (DialogVerticalPosition = {}));
-var DialogState;
-(function(DialogState2) {
+  return DialogVerticalPosition2;
+})(DialogVerticalPosition || {});
+var DialogState = /* @__PURE__ */ ((DialogState2) => {
   DialogState2["EXPANDED"] = "expanded";
   DialogState2["COLLAPSED"] = "collapsed";
   DialogState2["DISABLED"] = "disabled";
-})(DialogState || (DialogState = {}));
-var DialogHorizontalAlignment;
-(function(DialogHorizontalAlignment2) {
+  return DialogState2;
+})(DialogState || {});
+var DialogHorizontalAlignment = /* @__PURE__ */ ((DialogHorizontalAlignment2) => {
   DialogHorizontalAlignment2["LEFT"] = "left";
   DialogHorizontalAlignment2["RIGHT"] = "right";
   DialogHorizontalAlignment2["CENTER"] = "center";
   DialogHorizontalAlignment2["AUTO"] = "auto";
-})(DialogHorizontalAlignment || (DialogHorizontalAlignment = {}));
+  return DialogHorizontalAlignment2;
+})(DialogHorizontalAlignment || {});
 
-// gen/front_end/ui/components/dialogs/FreDialog.js
+// ../../front_end/ui/components/dialogs/ButtonDialog.ts
+var { ref } = Directives;
+var ButtonDialog = class extends HTMLElement {
+  #shadow = this.attachShadow({ mode: "open" });
+  #dialog = null;
+  #showButton = null;
+  #data = null;
+  set data(data) {
+    this.#data = data;
+    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+  }
+  #showDialog() {
+    if (!this.#dialog) {
+      throw new Error("Dialog not found");
+    }
+    if (this.#data?.state === "disabled" /* DISABLED */) {
+      void this.#dialog.setDialogVisible(false);
+    } else {
+      void this.#dialog.setDialogVisible(true);
+    }
+    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+  }
+  #closeDialog(evt) {
+    if (!this.#dialog) {
+      throw new Error("Dialog not found");
+    }
+    void this.#dialog.setDialogVisible(false);
+    if (evt) {
+      evt.stopImmediatePropagation();
+    }
+    void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+  }
+  set state(state) {
+    if (this.#data) {
+      this.#data.state = state;
+      void ComponentHelpers2.ScheduledRender.scheduleRender(this, this.#render);
+    }
+  }
+  #render() {
+    if (!this.#data) {
+      throw new Error("ButtonDialog.data is not set");
+    }
+    if (!ComponentHelpers2.ScheduledRender.isScheduledRender(this)) {
+      throw new Error("Button dialog render was not scheduled");
+    }
+    render2(
+      html2`
+      <style>${buttonDialog_css_default}</style>
+      <devtools-button
+        @click=${this.#showDialog}
+        ${ref((el) => {
+        if (el instanceof HTMLElement) {
+          this.#showButton = el;
+        }
+      })}
+        .data=${{
+        variant: this.#data.variant,
+        iconName: this.#data.iconName,
+        disabled: this.#data.disabled,
+        title: this.#data.iconTitle,
+        jslogContext: this.#data.jslogContext
+      }}
+      ></devtools-button>
+      <devtools-dialog
+        @clickoutsidedialog=${this.#closeDialog}
+        .origin=${() => {
+        if (!this.#showButton) {
+          throw new Error("Button not found");
+        }
+        return this.#showButton;
+      }}
+        .position=${this.#data.position ?? "bottom" /* BOTTOM */}
+        .horizontalAlignment=${this.#data.horizontalAlignment ?? "right" /* RIGHT */}
+        .closeOnESC=${this.#data.closeOnESC ?? false}
+        .closeOnScroll=${this.#data.closeOnScroll ?? false}
+        .closeButton=${this.#data.closeButton ?? false}
+        .dialogTitle=${this.#data.dialogTitle}
+        .jslogContext=${this.#data.jslogContext ?? ""}
+        .state=${this.#data.state ?? "expanded" /* EXPANDED */}
+        ${ref((el) => {
+        if (el instanceof HTMLElement) {
+          this.#dialog = el;
+        }
+      })}
+      >
+        <slot></slot>
+      </devtools-dialog>
+      `,
+      this.#shadow,
+      { host: this }
+    );
+    if (this.#data.openOnRender) {
+      this.#showDialog();
+      this.#data.openOnRender = false;
+    }
+  }
+};
+customElements.define("devtools-button-dialog", ButtonDialog);
+
+// ../../front_end/ui/components/dialogs/FreDialog.ts
 var FreDialog_exports = {};
 __export(FreDialog_exports, {
   FreDialog: () => FreDialog
@@ -875,7 +895,7 @@ var freDialog_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./freDialog.css")} */`;
 
-// gen/front_end/ui/components/dialogs/FreDialog.js
+// ../../front_end/ui/components/dialogs/FreDialog.ts
 var { html: html3, Directives: { ifDefined } } = Lit2;
 var UIStrings2 = {
   /**
@@ -931,7 +951,7 @@ var FreDialog = class {
           <devtools-button
             @click=${onLearnMoreClick}
             .jslogContext=${"fre-disclaimer.learn-more"}
-            .variant=${"outlined"}
+            .variant=${Buttons2.Button.Variant.OUTLINED}
             .title=${learnMoreButtonAriaLabel ?? i18nString2(UIStrings2.learnMore)}
             aria-label=${ifDefined(learnMoreButtonAriaLabel)}>
             ${learnMoreButtonText ?? i18nString2(UIStrings2.learnMore)}
@@ -943,7 +963,7 @@ var FreDialog = class {
       dialog2.hide();
     }}
               .jslogContext=${"fre-disclaimer.cancel"}
-              .variant=${"tonal"}>
+              .variant=${Buttons2.Button.Variant.TONAL}>
               ${i18nString2(UIStrings2.cancel)}
             </devtools-button>
             <devtools-button
@@ -952,7 +972,7 @@ var FreDialog = class {
       dialog2.hide();
     }}
               .jslogContext=${"fre-disclaimer.continue"}
-              .variant=${"primary"}>
+              .variant=${Buttons2.Button.Variant.PRIMARY}>
               ${i18nString2(UIStrings2.gotIt)}
             </devtools-button>
           </div>
@@ -966,10 +986,7 @@ var FreDialog = class {
     dialog2.setOnHideCallback(() => {
       result.resolve(false);
     });
-    dialog2.setSizeBehavior(
-      "MeasureContent"
-      /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
-    );
+    dialog2.setSizeBehavior(UI2.GlassPane.SizeBehavior.MEASURE_CONTENT);
     dialog2.setDimmed(true);
     dialog2.show();
     dialog2.contentElement.focus();
@@ -979,7 +996,7 @@ var FreDialog = class {
   }
 };
 
-// gen/front_end/ui/components/dialogs/ShortcutDialog.js
+// ../../front_end/ui/components/dialogs/ShortcutDialog.ts
 var ShortcutDialog_exports = {};
 __export(ShortcutDialog_exports, {
   ShortcutDialog: () => ShortcutDialog
@@ -1088,7 +1105,7 @@ var shortcutDialog_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./shortcutDialog.css")} */`;
 
-// gen/front_end/ui/components/dialogs/ShortcutDialog.js
+// ../../front_end/ui/components/dialogs/ShortcutDialog.ts
 var UIStrings3 = {
   /**
    * @description Title of the question mark button for the shortcuts dialog.
@@ -1143,37 +1160,43 @@ var ShortcutDialog = class extends HTMLElement {
     if (!ComponentHelpers3.ScheduledRender.isScheduledRender(this)) {
       throw new Error("Shortcut dialog render was not scheduled");
     }
-    render4(html4`
+    render4(
+      html4`
       <style>${shortcutDialog_css_default}</style>
       <devtools-button-dialog .data=${{
-      openOnRender: this.#openOnRender,
-      closeButton: true,
-      dialogTitle: this.#customTitle ?? i18nString3(UIStrings3.dialogTitle),
-      variant: "toolbar",
-      iconName: "help",
-      iconTitle: i18nString3(UIStrings3.showShortcutTitle),
-      horizontalAlignment: "auto"
-    }}>
+        openOnRender: this.#openOnRender,
+        closeButton: true,
+        dialogTitle: this.#customTitle ?? i18nString3(UIStrings3.dialogTitle),
+        variant: Buttons3.Button.Variant.TOOLBAR,
+        iconName: "help",
+        iconTitle: i18nString3(UIStrings3.showShortcutTitle),
+        horizontalAlignment: "auto" /* AUTO */
+      }}>
         <ul class="keybinds-list">
           ${this.#prependedElement ? html4`${this.#prependedElement}` : nothing2}
-          ${this.#shortcuts.map((shortcut) => html4`
+          ${this.#shortcuts.map(
+        (shortcut) => html4`
               <li class="keybinds-list-item">
                 <div class="keybinds-list-title">${shortcut.title}</div>
                 <div class="shortcuts-for-actions">
                   ${shortcut.rows.map((row) => {
-      return html4`<div class="row-container">${this.#renderRow(row)}</div>
+          return html4`<div class="row-container">${this.#renderRow(row)}</div>
                   `;
-    })}
+        })}
                 </div>
-              </li>`)}
+              </li>`
+      )}
         </ul>
       </devtools-button-dialog>
-      `, this.#shadow, { host: this });
+      `,
+      this.#shadow,
+      { host: this }
+    );
   }
 };
 customElements.define("devtools-shortcut-dialog", ShortcutDialog);
 
-// gen/front_end/ui/components/dialogs/TypeToAllowDialog.js
+// ../../front_end/ui/components/dialogs/TypeToAllowDialog.ts
 var TypeToAllowDialog_exports = {};
 __export(TypeToAllowDialog_exports, {
   TypeToAllowDialog: () => TypeToAllowDialog
@@ -1235,7 +1258,7 @@ var typeToAllowDialog_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./typeToAllowDialog.css")} */`;
 
-// gen/front_end/ui/components/dialogs/TypeToAllowDialog.js
+// ../../front_end/ui/components/dialogs/TypeToAllowDialog.ts
 var UIStrings4 = {
   /**
    * @description Text for the cancel button in the dialog.
@@ -1252,10 +1275,7 @@ var TypeToAllowDialog = class {
   static async show(options) {
     const dialog2 = new UI3.Dialog.Dialog(options.jslogContext.dialog);
     dialog2.setMaxContentSize(new Geometry.Size(504, 340));
-    dialog2.setSizeBehavior(
-      "SetExactWidthMaxHeight"
-      /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
-    );
+    dialog2.setSizeBehavior(UI3.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     dialog2.setDimmed(true);
     const shadowRoot = UI3.UIUtils.createShadowRootWithCoreStyles(dialog2.contentElement, { cssFile: typeToAllowDialog_css_default });
     const content = shadowRoot.createChild("div", "type-to-allow-dialog");
@@ -1269,10 +1289,7 @@ var TypeToAllowDialog = class {
         event.consume(true);
         resolve(false);
       });
-      closeButton.setSize(
-        "SMALL"
-        /* Buttons.Button.Size.SMALL */
-      );
+      closeButton.setSize(Buttons4.Button.Size.SMALL);
       content.createChild("div", "message").textContent = options.message;
       const input = UI3.UIUtils.createInput("text-input", "text", options.jslogContext.input);
       input.placeholder = options.inputPlaceholder;
@@ -1281,11 +1298,7 @@ var TypeToAllowDialog = class {
       const cancelButton = UI3.UIUtils.createTextButton(i18nString4(UIStrings4.cancel), () => resolve(false), { jslogContext: "cancel" });
       const allowButton = UI3.UIUtils.createTextButton(i18nString4(UIStrings4.allow), () => {
         resolve(input.value === options.typePhrase || input.value === `'${options.typePhrase}'`);
-      }, {
-        jslogContext: "confirm",
-        variant: "primary"
-        /* Buttons.Button.Variant.PRIMARY */
-      });
+      }, { jslogContext: "confirm", variant: Buttons4.Button.Variant.PRIMARY });
       allowButton.disabled = true;
       buttonsBar.appendChild(allowButton);
       buttonsBar.appendChild(cancelButton);

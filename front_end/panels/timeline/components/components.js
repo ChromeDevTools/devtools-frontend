@@ -117,8 +117,8 @@ var breadcrumbsUI_css_default = `/*
 }
 
 .breadcrumb {
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: var(--sys-size-2) var(--sys-size-4);
+  border-radius: var(--sys-shape-corner-extra-small);
 }
 
 .breadcrumb:hover {
@@ -126,7 +126,7 @@ var breadcrumbsUI_css_default = `/*
 }
 
 .range {
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   white-space: nowrap;
 }
 
@@ -1119,7 +1119,7 @@ var exportTraceOptions_css_default = `/*
   }
 
   devtools-button {
-    height: 24px;
+    height: var(--sys-size-11);
   }
 
   .export-trace-explanation {
@@ -2242,7 +2242,7 @@ var ignoreListSetting_css_default = `/*
   }
 
   devtools-button {
-    height: 24px;
+    height: var(--sys-size-11);
   }
 
   &:not(:hover) devtools-button {
@@ -2260,8 +2260,8 @@ var ignoreListSetting_css_default = `/*
   .harmony-input[type="text"] {
     /* padding: 3px 6px; */
     /* height: 24px; */
-    border: 1px solid var(--sys-color-neutral-outline);
-    border-radius: 4px;
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+    border-radius: var(--sys-shape-corner-extra-small);
     outline: none;
 
     &.error-input,
@@ -4993,7 +4993,7 @@ function renderClsCard(input) {
 function renderInpCard(input) {
   const fieldData = input.cruxManager.getSelectedFieldMetricData("interaction_to_next_paint");
   const subparts = input.inpValue?.subparts;
-  const interaction = input.inpValue && input.interactions.get(input.inpValue.interactionId);
+  const interaction = input.inpValue?.interactionId ? input.interactions.get(input.inpValue.interactionId) : void 0;
   return html10`
     <devtools-metric-card ${createMetricCardRef({
     metric: "INP",

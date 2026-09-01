@@ -47,13 +47,12 @@ export type DataHandlerResult<DataType> = ToolDataResult<DataType> | ToolApprova
  */
 export type ContextHandlerResult<ContextType = unknown> = ToolContextResult<ContextType> | ToolApprovalResult | ToolErrorResult;
 /**
- * Base capability for all tool contexts, providing access to the conversation context.
+ * Base capability interface for all tool contexts.
+ * This interface is intentionally empty: tools must explicitly declare any
+ * capabilities they require (e.g. `TargetCapability`, `PerformanceTraceCapability`)
+ * rather than relying on implicitly provided context.
  */
 export interface BaseToolCapability {
-    /**
-     * The active context for the current conversation step, if any.
-     */
-    conversationContext: ConversationContext<unknown> | null;
 }
 /**
  * Capability for tools that need to execute JavaScript code on the inspected page.

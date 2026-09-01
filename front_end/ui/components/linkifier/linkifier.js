@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/linkifier/LinkifierImpl.js
+// ../../front_end/ui/components/linkifier/LinkifierImpl.ts
 var LinkifierImpl_exports = {};
 __export(LinkifierImpl_exports, {
   Linkifier: () => Linkifier,
@@ -31,7 +31,7 @@ var linkifierImpl_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./linkifierImpl.css")} */`;
 
-// gen/front_end/ui/components/linkifier/LinkifierUtils.js
+// ../../front_end/ui/components/linkifier/LinkifierUtils.ts
 import * as Bindings from "../../../models/bindings/bindings.js";
 function linkText(url, lineNumber) {
   if (url) {
@@ -45,11 +45,9 @@ function linkText(url, lineNumber) {
   throw new Error("New linkifier component error: don't know how to generate link text for given arguments");
 }
 
-// gen/front_end/ui/components/linkifier/LinkifierImpl.js
+// ../../front_end/ui/components/linkifier/LinkifierImpl.ts
 var { html } = Lit;
 var LinkifierClick = class _LinkifierClick extends Event {
-  data;
-  static eventName = "linkifieractivated";
   constructor(data) {
     super(_LinkifierClick.eventName, {
       bubbles: true,
@@ -58,6 +56,7 @@ var LinkifierClick = class _LinkifierClick extends Event {
     this.data = data;
     this.data = data;
   }
+  static eventName = "linkifieractivated";
 };
 var Linkifier = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
@@ -100,11 +99,15 @@ var Linkifier = class extends HTMLElement {
   async #render() {
     const linkText2 = this.#linkText ?? linkText(this.#url, this.#lineNumber);
     await RenderCoordinator.write(() => {
-      Lit.render(html`
+      Lit.render(
+        html`
         <style>${linkifierImpl_css_default}</style>
         <a class="link" href=${this.#url} @click=${this.#onLinkActivation} title=${Lit.Directives.ifDefined(this.#title)}>
           <slot>${linkText2}</slot>
-        </a>`, this.#shadow, { host: this });
+        </a>`,
+        this.#shadow,
+        { host: this }
+      );
     });
   }
 };

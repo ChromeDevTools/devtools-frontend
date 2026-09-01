@@ -1,0 +1,1 @@
+gen/front_end/ui/components/highlighting/highlighting.js: ../../front_end/ui/components/highlighting/HighlightManager.ts ../../front_end/ui/components/highlighting/MarkupHighlight.ts ../../front_end/ui/components/highlighting/HighlightElement.ts ../../front_end/ui/components/highlighting/highlighting.ts

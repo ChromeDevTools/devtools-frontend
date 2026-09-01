@@ -18,7 +18,7 @@ export default `/*
     cursor: pointer;
     display: inline;
     pointer-events: auto;
-    outline-offset: 2px;
+    outline-offset: var(--sys-size-2);
 
     /* If the element has lots of classes, don't let the label get too wide */
     text-overflow: ellipsis;

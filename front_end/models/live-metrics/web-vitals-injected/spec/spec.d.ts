@@ -37,8 +37,8 @@ export interface InpChangeEvent {
     value: Trace.Types.Timing.Milli;
     interactionType: WebVitals.INPAttribution['interactionType'];
     subparts: InpSubparts;
-    startTime: number;
-    entryGroupId: InteractionEntryGroupId;
+    startTime?: number;
+    entryGroupId?: InteractionEntryGroupId;
 }
 export interface LoAFScript {
     Duration: number;
@@ -75,10 +75,10 @@ export interface PerformanceLongAnimationFrameTimingJSON {
 export interface InteractionEntryEvent {
     name: 'InteractionEntry';
     interactionType?: WebVitals.INPAttribution['interactionType'];
-    eventName: string;
-    entryGroupId: InteractionEntryGroupId;
-    startTime: number;
-    navigationId: number;
+    eventName?: string;
+    entryGroupId?: InteractionEntryGroupId;
+    startTime?: number;
+    navigationId?: number;
     nextPaintTime?: number;
     duration: Trace.Types.Timing.Milli;
     subparts: InpSubparts;
@@ -97,4 +97,7 @@ export interface ResetEvent {
     url?: string;
     navigationType?: NavigationType;
 }
+export declare function limitScripts(loafs: PerformanceLongAnimationFrameTimingJSON[]): PerformanceLongAnimationFrameTimingJSON[];
+export declare function createInteractionEntryEvent(interaction: WebVitals.INPMetricWithAttribution): InteractionEntryEvent;
+export declare function createInpChangeEvent(metric: WebVitals.INPMetricWithAttribution): InpChangeEvent;
 export type WebVitalsEvent = LcpChangeEvent | ClsChangeEvent | InpChangeEvent | InteractionEntryEvent | LayoutShiftEvent | ResetEvent;

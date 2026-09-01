@@ -284,6 +284,25 @@ export const DEFAULT_VIEW = (input, output, target) => {
             }
         }
     }
+    if (input.nodeToEdit) {
+        const treeElement = output.elementsTreeOutline.findTreeElement(input.nodeToEdit.node);
+        if (treeElement) {
+            const edit = input.nodeToEdit;
+            input.onInitialEditCompleted?.();
+            if (edit.isEditAsHTML) {
+                treeElement.widget.toggleEditAsHTML(edit.editAsHTMLCallback);
+            }
+            else if (edit.isProcessingInstruction) {
+                treeElement.widget.startEditingProcessingInstructionValue();
+            }
+            else if (edit.isNewAttribute) {
+                treeElement.widget.addNewAttribute();
+            }
+            else if (edit.attributeName) {
+                treeElement.widget.triggerEditAttribute(edit.attributeName);
+            }
+        }
+    }
 };
 function isMaxDepthReached(node, rootDOMNode, maxTreeDepth, omitRootDOMNode) {
     if (maxTreeDepth === undefined || maxTreeDepth === Infinity) {
@@ -404,9 +423,6 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         const tagName = node.nodeName().toLowerCase();
         const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) &&
             !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
-        // TODO: Move in-place editing (startEditingAttribute, startEditingTextNode, InplaceEditor) out of ElementsTreeElement into ElementsTreeWidget and DOMTreeWidget.
-        // TODO: Move multiline/HTML editing (toggleEditAsHTML, MultilineEditorController) from ElementsTreeOutline into DOMTreeWidget.
-        // TODO: Move Drag and Drop reordering support (ondragstart, ondragover, ondrop, insertion markers) out of ElementsTreeOutline into a declarative drag-and-drop controller for <devtools-tree>.
         // TODO: Move marker decorators and descendant gutter decorations (MarkerDecoratorRegistration, updateDecorations) into declarative state passed to ElementsTreeWidget.
         // TODO: Move TopLayerContainer rendering for top layer elements into a declarative tree element item.
         // TODO: Move AdoptedStyleSheet rendering (AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement) into dedicated declarative widgets.
@@ -414,20 +430,59 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         // TODO: Move ImagePreviewPopover and issue tooltip helpers into declarative Lit directives or tooltip components.
         // TODO: Move in-place keyboard shortcuts (F2 for edit, Enter for attribute edit) into DOMTreeWidget.
         // TODO: Move DOMModel event subscription and reactive state synchronization (updateRecords, DOM update animations) directly into DOMTreeWidget.
+        const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
         const onSelect = () => {
             input.onSelect?.(node, /* selectedByUser= */ true);
         };
         const onExpand = (event) => {
             input.onExpand?.(node, event.detail.expanded);
         };
+        const isDragOver = input.dragOverNode?.node === node && !input.dragOverNode.isClosingTag;
+        const isClosingTagDragOver = input.dragOverNode?.node === node && Boolean(input.dragOverNode.isClosingTag);
+        const isDraggable = !input.disableEdits && Boolean(input.isValidDragSource?.(node));
         const classes = classMap({
             hovered: isHovered,
             'in-clipboard': Boolean(input.isNodeInClipboard?.(node)),
+            'elements-drag-over': isDragOver,
         });
         const onMouseMove = (event) => {
             event.stopPropagation();
             const showInfo = !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
             input.onHoverNode?.(node, showInfo);
+        };
+        const onContextMenu = (event) => {
+            event.stopPropagation();
+            input.onContextMenu?.(node, event);
+        };
+        const onDragStart = (event) => {
+            event.stopPropagation();
+            const currentTarget = event.currentTarget;
+            const textContent = currentTarget?.firstElementChild?.textContent ?? currentTarget?.textContent ?? undefined;
+            input.onDragStart?.(node, event, textContent);
+        };
+        const onDragOver = (event) => {
+            event.stopPropagation();
+            input.onDragOver?.(node, /* isClosingTag= */ false, event);
+        };
+        const onClosingTagDragOver = (event) => {
+            event.stopPropagation();
+            input.onDragOver?.(node, /* isClosingTag= */ true, event);
+        };
+        const onDragLeave = (event) => {
+            event.stopPropagation();
+            input.onDragLeave?.(event);
+        };
+        const onDrop = (event) => {
+            event.stopPropagation();
+            input.onDrop?.(node, /* isClosingTag= */ false, event);
+        };
+        const onClosingTagDrop = (event) => {
+            event.stopPropagation();
+            input.onDrop?.(node, /* isClosingTag= */ true, event);
+        };
+        const onDragEnd = (event) => {
+            event.stopPropagation();
+            input.onDragEnd?.(event);
         };
         /* clang-format off */
         return html `
@@ -435,9 +490,16 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
           ?selected=${isSelected}
           class=${classes}
           ?open=${isExpanded}
+          draggable=${isDraggable ? 'true' : 'false'}
           @select=${onSelect}
           @expand=${onExpand}
-          @mousemove=${onMouseMove}
+          @mousemove=${on(onMouseMove)}
+          @contextmenu=${on(onContextMenu)}
+          @dragstart=${on(onDragStart)}
+          @dragover=${on(onDragOver)}
+          @dragleave=${on(onDragLeave)}
+          @drop=${on(onDrop)}
+          @dragend=${on(onDragEnd)}
           jslog=${VisualLogging.treeItem().parent('elementsTreeOutline').track({
             keydown: 'ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End',
             resize: true,
@@ -457,15 +519,22 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
             computeLeftIndent: computeLeftIndent(depth, hasChildren),
             disableEdits: input.disableEdits ?? false,
             showAIButton: input.showAIButton ?? true,
+            initialEdit: input.nodeToEdit?.node === node ? input.nodeToEdit : null,
+            onInitialEditCompleted: input.onInitialEditCompleted,
+            setMultilineEditing: multilineEditing => input.domTreeWidget?.setMultilineEditing(multilineEditing),
+            visibleWidth: () => input.domTreeWidget?.visibleWidth ?? 0,
             selectDOMNode: (n, selectedByUser) => input.onSelect?.(n, selectedByUser),
+            selectNodeAfterEdit: (wasExpanded, error, newNode, moveDirection) => {
+                input.onSelectNodeAfterEdit?.(wasExpanded, error, newNode, moveDirection);
+            },
             toggleHideElement: (n) => {
                 input.onToggleHideElement?.(n);
                 return Promise.resolve();
             },
             isToggledToHidden: (n) => input.isToggledToHidden?.(n) ?? false,
-            showContextMenu: (event) => {
+            showContextMenu: (event, widget) => {
                 if (event instanceof MouseEvent) {
-                    input.onContextMenu?.(node, event);
+                    input.onContextMenu?.(node, event, widget);
                 }
             },
         })}
@@ -475,9 +544,12 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
               ${children.map(child => renderNode(child, depth + 1))}
               ${needsClosingTag ? html `
                 <li role="treeitem"
-                    class=${classMap({ hovered: isHovered })}
+                    class=${classMap({ hovered: isHovered, 'elements-drag-over': isClosingTagDragOver })}
                     jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}
-                    @mousemove=${onMouseMove}>
+                    @mousemove=${on(onMouseMove)}
+                    @dragover=${on(onClosingTagDragOver)}
+                    @dragleave=${on(onDragLeave)}
+                    @drop=${on(onClosingTagDrop)}>
                   ${UI.Widget.widget(ElementsTreeWidget, {
             node,
             isClosingTag: true,
@@ -489,6 +561,11 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
             computeLeftIndent: computeLeftIndent(depth, false),
             disableEdits: input.disableEdits ?? false,
             showAIButton: false,
+            showContextMenu: (event, widget) => {
+                if (event instanceof MouseEvent) {
+                    input.onContextMenu?.(node, event, widget);
+                }
+            },
         })}
                 </li>
               ` : nothing}
@@ -563,6 +640,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     get maxRows() {
         return this.#maxRows;
+    }
+    get visibleWidth() {
+        return this.#visibleWidth ?? this.contentElement.offsetWidth;
     }
     set visibleWidth(width) {
         this.#visibleWidth = width;
@@ -857,6 +937,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     #hoveredDOMNode = null;
     #searchMatchNode = null;
     #searchMatchQuery = null;
+    #nodeToEdit = null;
+    #draggedNode = null;
+    #draggedNodeWasExpanded = false;
+    #dragOverNode = null;
     hoveredDOMNode() {
         if (this.#view === DECLARATIVE_VIEW) {
             return this.#hoveredDOMNode;
@@ -970,6 +1054,20 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             onPaste: (event) => {
                 this.onPaste(event);
             },
+            onSelectNodeAfterEdit: (wasExpanded, error, newNode, moveDirection) => {
+                this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
+            },
+            nodeToEdit: this.#nodeToEdit,
+            onInitialEditCompleted: () => {
+                this.#nodeToEdit = null;
+            },
+            dragOverNode: this.#dragOverNode,
+            isValidDragSource: (node) => this.isValidDragSource(node),
+            onDragStart: (node, event, textContent) => this.onDragStart(node, event, textContent),
+            onDragOver: (node, isClosingTag, event) => this.onDragOver(node, isClosingTag, event),
+            onDragLeave: (event) => this.onDragLeave(event),
+            onDrop: (node, isClosingTag, event) => this.onDrop(node, isClosingTag, event),
+            onDragEnd: (event) => this.onDragEnd(event),
         }, this.#viewOutput, this.contentElement);
         if (this.#viewOutput.elementsTreeOutline) {
             this.#viewOutput.elementsTreeOutline.domTreeWidget = this;
@@ -1096,19 +1194,227 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     isToggledToHidden(node) {
         return node.isToggledToHidden();
     }
-    toggleEditAsHTML(node) {
-        this.#viewOutput.elementsTreeOutline?.toggleEditAsHTML(node);
+    #multilineEditing = null;
+    setMultilineEditing(multilineEditing) {
+        this.#multilineEditing = multilineEditing;
+    }
+    multilineEditing() {
+        return this.#multilineEditing;
+    }
+    runPendingUpdates() {
+        this.#viewOutput.elementsTreeOutline?.runPendingUpdates();
+        this.performUpdate();
+    }
+    onResize() {
+        super.onResize();
+        if (this.#multilineEditing) {
+            this.#multilineEditing.resize();
+        }
+    }
+    willHide() {
+        super.willHide();
+        if (this.#multilineEditing) {
+            this.#multilineEditing.cancel();
+        }
+    }
+    toggleEditAsHTML(node, startEditing, callback) {
+        if (node.pseudoType() || node.isShadowRoot() || node.nodeType() === Node.DOCUMENT_NODE) {
+            return;
+        }
+        const parentNode = node.parentNode;
+        const index = node.index;
+        const wasExpanded = this.isNodeExpanded(node);
+        const editingFinished = (success) => {
+            if (callback) {
+                callback();
+            }
+            if (!success) {
+                return;
+            }
+            Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
+            this.runPendingUpdates();
+            if (index === undefined) {
+                return;
+            }
+            const children = parentNode?.children();
+            const newNode = children ? children[index] || parentNode : parentNode;
+            if (!newNode) {
+                return;
+            }
+            this.selectDOMNode(newNode, true);
+            if (wasExpanded) {
+                this.setNodeExpanded(newNode, true);
+            }
+        };
+        if (this.#multilineEditing) {
+            this.#multilineEditing.commit();
+            return;
+        }
+        if (startEditing === false) {
+            return;
+        }
+        this.#nodeToEdit = {
+            node,
+            isEditAsHTML: true,
+            editAsHTMLCallback: editingFinished,
+        };
+        this.performUpdate();
     }
     duplicateNode(node) {
         node.duplicate();
     }
-    selectNodeAfterEdit(wasExpanded, error, newNode) {
+    nodeBeingDragged() {
+        return this.#draggedNode;
+    }
+    dragOverNode() {
+        return this.#dragOverNode;
+    }
+    isValidDragSource(node) {
+        if (this.disableEdits) {
+            return false;
+        }
+        if (!node.parentNode || node.parentNode.nodeType() !== Node.ELEMENT_NODE) {
+            return false;
+        }
+        const nodeName = node.nodeName();
+        if (nodeName === 'BODY' || nodeName === 'HEAD') {
+            return false;
+        }
+        return true;
+    }
+    isValidDragTarget(targetNode) {
+        if (!this.#draggedNode) {
+            return false;
+        }
+        if (!targetNode.parentNode || targetNode.parentNode.nodeType() !== Node.ELEMENT_NODE) {
+            return false;
+        }
+        let current = targetNode;
+        while (current) {
+            if (current === this.#draggedNode) {
+                return false;
+            }
+            current = current.parentNode;
+        }
+        return true;
+    }
+    onDragStart(node, event, textContent) {
+        const target = event.target;
+        if (!target) {
+            return false;
+        }
+        const selection = target.getComponentSelection();
+        if (selection && selection.type === 'Range' && !selection.isCollapsed && selection.toString().length > 0 &&
+            target.hasSelection()) {
+            return false;
+        }
+        if (target.nodeName === 'A') {
+            return false;
+        }
+        if (!this.isValidDragSource(node)) {
+            return false;
+        }
+        this.#draggedNode = node;
+        this.#draggedNodeWasExpanded = this.isNodeExpanded(node);
+        if (event.dataTransfer) {
+            const text = textContent ?? node.nodeName().toLowerCase();
+            event.dataTransfer.setData('text/plain', text.replace(/\u200b/g, ''));
+            event.dataTransfer.effectAllowed = 'copyMove';
+        }
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
+        return true;
+    }
+    onDragOver(node, isClosingTag, event) {
+        if (!this.#draggedNode) {
+            return false;
+        }
+        if (!this.isValidDragTarget(node)) {
+            return false;
+        }
+        event.preventDefault();
+        if (event.dataTransfer) {
+            event.dataTransfer.dropEffect = 'move';
+        }
+        if (this.#dragOverNode?.node !== node || this.#dragOverNode?.isClosingTag !== isClosingTag) {
+            this.#dragOverNode = { node, isClosingTag };
+            if (this.#view === DECLARATIVE_VIEW) {
+                this.performUpdate();
+            }
+        }
+        return true;
+    }
+    onDragLeave(event) {
+        event.preventDefault();
+        if (this.#dragOverNode) {
+            this.#dragOverNode = null;
+            if (this.#view === DECLARATIVE_VIEW) {
+                this.performUpdate();
+            }
+        }
+    }
+    onDrop(node, isClosingTag, event) {
+        event.preventDefault();
+        if (!this.#draggedNode) {
+            return;
+        }
+        this.moveNode(this.#draggedNode, node, isClosingTag);
+        this.#draggedNode = null;
+        this.#dragOverNode = null;
+        if (this.#view === DECLARATIVE_VIEW) {
+            this.performUpdate();
+        }
+    }
+    onDragEnd(event) {
+        event.preventDefault();
+        this.#draggedNode = null;
+        this.#dragOverNode = null;
+        if (this.#view === DECLARATIVE_VIEW) {
+            this.performUpdate();
+        }
+    }
+    moveNode(draggedNode, targetNode, isClosingTag) {
+        let parentNode;
+        let anchorNode;
+        if (isClosingTag) {
+            // Drop onto closing tag -> insert as last child.
+            parentNode = targetNode;
+            anchorNode = null;
+        }
+        else {
+            parentNode = targetNode.parentNode;
+            anchorNode = targetNode;
+        }
+        if (!parentNode) {
+            return;
+        }
+        const wasExpanded = this.#draggedNodeWasExpanded;
+        draggedNode.moveTo(parentNode, anchorNode, (error, newNode) => this.selectNodeAfterEdit(wasExpanded, error, newNode));
+    }
+    selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection) {
         if (error || !newNode) {
             return;
         }
         this.selectDOMNode(newNode, /* selectedByUser= */ true);
         if (wasExpanded) {
             this.setNodeExpanded(newNode, true);
+        }
+        if (moveDirection) {
+            if (newNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
+                this.#nodeToEdit = { node: newNode, isProcessingInstruction: true };
+            }
+            else if (moveDirection !== 'forward') {
+                this.#nodeToEdit = { node: newNode, isNewAttribute: true };
+            }
+            else {
+                const attributes = newNode.attributes();
+                if (attributes.length > 0) {
+                    this.#nodeToEdit = { node: newNode, attributeName: attributes[0].name };
+                }
+                else {
+                    this.#nodeToEdit = { node: newNode, isNewAttribute: true };
+                }
+            }
+            this.performUpdate();
         }
     }
     onKeyDown(event) {
@@ -1122,12 +1428,16 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         if (UI.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(event) && node.parentNode) {
             const wasExpanded = this.isNodeExpanded(node);
             if (event.key === 'ArrowUp' && node.previousSibling) {
-                node.moveTo(node.parentNode, node.previousSibling, this.selectNodeAfterEdit.bind(this, wasExpanded));
+                node.moveTo(node.parentNode, node.previousSibling, (error, newNode) => {
+                    this.selectNodeAfterEdit(wasExpanded, error, newNode);
+                });
                 event.consume(true);
                 return true;
             }
             if (event.key === 'ArrowDown' && node.nextSibling) {
-                node.moveTo(node.parentNode, node.nextSibling.nextSibling, this.selectNodeAfterEdit.bind(this, wasExpanded));
+                node.moveTo(node.parentNode, node.nextSibling.nextSibling, (error, newNode) => {
+                    this.selectNodeAfterEdit(wasExpanded, error, newNode);
+                });
                 event.consume(true);
                 return true;
             }
@@ -1366,12 +1676,10 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     updateRecords;
     treeElementsBeingUpdated;
     decoratorExtensions;
-    multilineEditing;
     visibleWidthInternal;
     isXMLMimeTypeInternal;
     suppressRevealAndSelect = false;
     previousHoveredElement;
-    treeElementBeingDragged;
     dragOverTreeElement;
     updateModifiedNodesTimeout;
     #topLayerContainerByDocument = new WeakMap();
@@ -1390,6 +1698,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
     constructor(omitRootDOMNode, selectEnabled, hideGutter, maxTreeDepth, enableContextMenu, showComments, showAIButton, disableEdits, expandRoot, domTreeWidget) {
         super();
         this.domTreeWidget = domTreeWidget ?? null;
+        this.renderSelection = true;
         this.treeElementByNode = new WeakMap();
         const shadowContainer = document.createElement('div');
         this.shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(shadowContainer, { cssFile: [elementsTreeOutlineStyles, CodeHighlighter.codeHighlighterStyles] });
@@ -1441,16 +1750,13 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         this.elementInternal.classList.toggle('elements-tree-nowrap', !wrap);
     }
     setMultilineEditing(multilineEditing) {
-        this.multilineEditing = multilineEditing;
+        this.domTreeWidget?.setMultilineEditing(multilineEditing);
     }
     visibleWidth() {
-        return this.visibleWidthInternal || 0;
+        return this.domTreeWidget?.visibleWidth ?? this.visibleWidthInternal ?? 0;
     }
     setVisibleWidth(width) {
         this.visibleWidthInternal = width;
-        if (this.multilineEditing) {
-            this.multilineEditing.resize();
-        }
     }
     setClipboardData(data) {
         this.domTreeWidget?.setClipboardData(data);
@@ -1476,9 +1782,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         }
         this.visible = visible;
         if (!this.visible) {
-            if (this.multilineEditing) {
-                this.multilineEditing.cancel();
-            }
+            this.domTreeWidget?.multilineEditing()?.cancel();
             return;
         }
         this.runPendingUpdates();
@@ -1710,12 +2014,20 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         treeElement.highlightAttribute(attribute);
     }
     treeElementFromEventInternal(event) {
+        for (const target of event.composedPath()) {
+            if (target instanceof HTMLLIElement) {
+                const element = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(target);
+                if (element) {
+                    return element;
+                }
+            }
+        }
         const scrollContainer = this.element.parentElement;
         if (!scrollContainer) {
             return null;
         }
-        const x = event.pageX;
-        const y = event.pageY;
+        const x = event.clientX;
+        const y = event.clientY;
         // Our list items have 1-pixel cracks between them vertically. We avoid
         // the cracks by checking slightly above and slightly below the mouse
         // and seeing if we hit the same element each time.
@@ -1782,105 +2094,52 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     }
     ondragstart(event) {
-        const node = event.target;
-        if (!node || node.hasSelection()) {
+        const treeElement = this.treeElementFromEventInternal(event);
+        if (!(treeElement instanceof ElementsTreeElement)) {
             return false;
         }
-        if (node.nodeName === 'A') {
-            return false;
-        }
-        const treeElement = this.validDragSourceOrTarget(this.treeElementFromEventInternal(event));
-        if (!treeElement) {
-            return false;
-        }
-        if (treeElement.node().nodeName() === 'BODY' || treeElement.node().nodeName() === 'HEAD') {
-            return false;
-        }
-        if (!event.dataTransfer || !treeElement.listItemElement.textContent) {
-            return;
-        }
-        event.dataTransfer.setData('text/plain', treeElement.listItemElement.textContent.replace(/\u200b/g, ''));
-        event.dataTransfer.effectAllowed = 'copyMove';
-        this.treeElementBeingDragged = treeElement;
-        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
-        return true;
+        const textContent = treeElement.widget.contentElement.textContent || treeElement.listItemElement.textContent ||
+            treeElement.node().nodeName().toLowerCase();
+        const success = this.domTreeWidget?.onDragStart(treeElement.node(), event, textContent);
+        return success;
     }
     ondragover(event) {
-        if (!this.treeElementBeingDragged) {
+        const treeElement = this.treeElementFromEventInternal(event);
+        if (!(treeElement instanceof ElementsTreeElement)) {
+            this.clearDragOverTreeElementMarker();
             return false;
         }
-        const treeElement = this.validDragSourceOrTarget(this.treeElementFromEventInternal(event));
-        if (!treeElement) {
-            return false;
-        }
-        let node = treeElement.node();
-        while (node) {
-            if (node === this.treeElementBeingDragged.nodeInternal) {
-                return false;
+        const success = this.domTreeWidget?.onDragOver(treeElement.node(), treeElement.isClosingTag(), event);
+        if (success) {
+            if (this.dragOverTreeElement !== treeElement) {
+                this.clearDragOverTreeElementMarker();
+                treeElement.listItemElement.classList.add('elements-drag-over');
+                this.dragOverTreeElement = treeElement;
             }
-            node = node.parentNode;
         }
-        treeElement.listItemElement.classList.add('elements-drag-over');
-        this.dragOverTreeElement = treeElement;
-        event.preventDefault();
-        if (event.dataTransfer) {
-            event.dataTransfer.dropEffect = 'move';
+        else {
+            this.clearDragOverTreeElementMarker();
         }
-        return false;
+        return !success;
     }
     ondragleave(event) {
         this.clearDragOverTreeElementMarker();
+        this.domTreeWidget?.onDragLeave(event);
         event.preventDefault();
         return false;
-    }
-    validDragSourceOrTarget(treeElement) {
-        if (!treeElement) {
-            return null;
-        }
-        if (!(treeElement instanceof ElementsTreeElement)) {
-            return null;
-        }
-        const elementsTreeElement = (treeElement);
-        const node = elementsTreeElement.node();
-        if (!node.parentNode || node.parentNode.nodeType() !== Node.ELEMENT_NODE) {
-            return null;
-        }
-        return elementsTreeElement;
     }
     ondrop(event) {
         event.preventDefault();
         const treeElement = this.treeElementFromEventInternal(event);
         if (treeElement instanceof ElementsTreeElement) {
-            this.doMove(treeElement);
+            this.domTreeWidget?.onDrop(treeElement.node(), treeElement.isClosingTag(), event);
         }
-    }
-    doMove(treeElement) {
-        if (!this.treeElementBeingDragged) {
-            return;
-        }
-        let parentNode;
-        let anchorNode;
-        if (treeElement.isClosingTag()) {
-            // Drop onto closing tag -> insert as last child.
-            parentNode = treeElement.node();
-            anchorNode = null;
-        }
-        else {
-            const dragTargetNode = treeElement.node();
-            parentNode = dragTargetNode.parentNode;
-            anchorNode = dragTargetNode;
-        }
-        if (!parentNode) {
-            return;
-        }
-        const wasExpanded = this.treeElementBeingDragged.expanded;
-        this.treeElementBeingDragged.nodeInternal.moveTo(parentNode, anchorNode, this.selectNodeAfterEdit.bind(this, wasExpanded));
-        delete this.treeElementBeingDragged;
+        this.clearDragOverTreeElementMarker();
     }
     ondragend(event) {
         event.preventDefault();
         this.clearDragOverTreeElementMarker();
-        delete this.treeElementBeingDragged;
+        this.domTreeWidget?.onDragEnd(event);
     }
     clearDragOverTreeElementMarker() {
         if (this.dragOverTreeElement) {
@@ -1893,43 +2152,7 @@ export class ElementsTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Tree
         this.updateModifiedNodes();
     }
     toggleEditAsHTML(node, startEditing, callback) {
-        const treeElement = this.treeElementByNode.get(node);
-        if (!treeElement?.hasEditableNode()) {
-            return;
-        }
-        if (node.pseudoType()) {
-            return;
-        }
-        const parentNode = node.parentNode;
-        const index = node.index;
-        const wasExpanded = treeElement.expanded;
-        treeElement.toggleEditAsHTML(editingFinished.bind(this), startEditing);
-        function editingFinished(success) {
-            if (callback) {
-                callback();
-            }
-            if (!success) {
-                return;
-            }
-            Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
-            // Select it and expand if necessary. We force tree update so that it processes dom events and is up to date.
-            this.runPendingUpdates();
-            if (!index) {
-                return;
-            }
-            const children = parentNode?.children();
-            const newNode = children ? children[index] || parentNode : parentNode;
-            if (!newNode) {
-                return;
-            }
-            this.selectDOMNode(newNode, true);
-            if (wasExpanded) {
-                const newTreeItem = this.findTreeElement(newNode);
-                if (newTreeItem) {
-                    newTreeItem.expand();
-                }
-            }
-        }
+        this.domTreeWidget?.toggleEditAsHTML(node, startEditing, callback);
     }
     selectNodeAfterEdit(wasExpanded, error, newNode) {
         if (error) {

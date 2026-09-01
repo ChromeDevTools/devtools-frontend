@@ -22,8 +22,8 @@ export default `/*
 }
 
 .breadcrumb {
-  padding: 2px 6px;
-  border-radius: 4px;
+  padding: var(--sys-size-2) var(--sys-size-4);
+  border-radius: var(--sys-shape-corner-extra-small);
 }
 
 .breadcrumb:hover {
@@ -31,7 +31,7 @@ export default `/*
 }
 
 .range {
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   white-space: nowrap;
 }
 

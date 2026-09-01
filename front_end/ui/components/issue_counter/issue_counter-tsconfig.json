@@ -1,14 +1,14 @@
 {
-  "checkJs": true,
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "checkJs": true,
-    "composite": true,
-    "declaration": true,
+    "composite": false,
+    "declaration": false,
     "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
+    "incremental": false,
     "inlineSources": true,
     "lib": [
       "dom",
@@ -20,12 +20,11 @@
       "ESNext.Array"
     ],
     "module": "esnext",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
     "outDir": ".",
     "preserveConstEnums": true,
     "rootDir": "../../../../../../../front_end/ui/components/issue_counter",
@@ -33,9 +32,12 @@
     "sourceMap": true,
     "strict": true,
     "target": "esnext",
-    "tsBuildInfoFile": "issue_counter-tsconfig.json.tsbuildinfo",
-    "typeRoots": [],
-    "types": [],
+    "typeRoots": [
+
+    ],
+    "types": [
+
+    ],
     "useUnknownInCatchVariables": false
   },
   "files": [
@@ -62,13 +64,13 @@
       "path": "../../../models/issues_manager/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../kit/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../lit/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../visual_logging/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../../kit/bundle-tsconfig.ref.json"
     },
     {
       "path": "../icon_button/bundle-tsconfig.ref.json"

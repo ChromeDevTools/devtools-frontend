@@ -25,7 +25,7 @@ export default `/*
   }
 
   devtools-button {
-    height: 24px;
+    height: var(--sys-size-11);
   }
 
   &:not(:hover) devtools-button {
@@ -43,8 +43,8 @@ export default `/*
   .harmony-input[type="text"] {
     /* padding: 3px 6px; */
     /* height: 24px; */
-    border: 1px solid var(--sys-color-neutral-outline);
-    border-radius: 4px;
+    border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+    border-radius: var(--sys-shape-corner-extra-small);
     outline: none;
 
     &.error-input,

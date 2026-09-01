@@ -2452,6 +2452,14 @@ export declare namespace Browser {
          */
         arguments: string[];
     }
+    interface AddMockCameraRequest {
+        /**
+         * Required non-empty identifier for the mock camera. This is mapped to an
+         * internal virtual-device identifier and is not the MediaDeviceInfo.deviceId
+         * exposed to the page.
+         */
+        deviceId: string;
+    }
     interface GetHistogramsRequest {
         /**
          * Requested substring in name. Only histograms which have query as a
@@ -13574,6 +13582,7 @@ export declare namespace Page {
         Gamepad = "gamepad",
         Geolocation = "geolocation",
         Gyroscope = "gyroscope",
+        Haptics = "haptics",
         Hid = "hid",
         IdentityCredentialsGet = "identity-credentials-get",
         IdleDetection = "idle-detection",
@@ -18526,7 +18535,7 @@ export declare namespace WebAuthn {
          * every assertion operation will report a value of 0.
          * See https://w3c.github.io/webauthn/#signature-counter
          */
-        signCount: integer;
+        signCount: number;
         /**
          * The large blob associated with the credential.
          * See https://w3c.github.io/webauthn/#sctn-large-blob-extension
@@ -18650,7 +18659,7 @@ export declare namespace WebAuthn {
          * assertion operation will report a value of 0.
          * See https://w3c.github.io/webauthn/#signature-counter
          */
-        signCount?: integer;
+        signCount?: number;
     }
     /**
      * Triggered when a credential is added to an authenticator.

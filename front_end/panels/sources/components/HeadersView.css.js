@@ -11,7 +11,7 @@ export default `/*
 
 :host {
   flex-grow: 1;
-  padding: 6px;
+  padding: var(--sys-size-4);
 }
 
 .row {
@@ -21,7 +21,7 @@ export default `/*
   font-family: var(--monospace-font-family);
   font-size: var(--monospace-font-size);
   align-items: center;
-  line-height: 24px;
+  line-height: var(--sys-typescale-body1-line-height);
 }
 
 .row devtools-button {
@@ -61,8 +61,8 @@ export default `/*
 
 .editable:hover,
 .editable:focus {
-  border: 1px solid var(--sys-color-neutral-outline);
-  border-radius: 2px;
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  border-radius: var(--sys-size-2);
 }
 
 .row .inline-button {
@@ -113,12 +113,12 @@ export default `/*
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
   padding: 0;
 }
 
 .learn-more-row {
-  line-height: 24px;
+  line-height: var(--sys-typescale-body1-line-height);
 }
 
 /*# sourceURL=${import.meta.resolve('./HeadersView.css')} */`;

@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/buttons/Button.js
+// ../../front_end/ui/components/buttons/Button.ts
 var Button_exports = {};
 __export(Button_exports, {
   Button: () => Button,
@@ -380,10 +380,9 @@ button {
 
 /*# sourceURL=${import.meta.resolve("./button.css")} */`;
 
-// gen/front_end/ui/components/buttons/Button.js
+// ../../front_end/ui/components/buttons/Button.ts
 var { html, Directives: { ifDefined, ref, classMap } } = Lit;
-var Variant;
-(function(Variant2) {
+var Variant = /* @__PURE__ */ ((Variant2) => {
   Variant2["PRIMARY"] = "primary";
   Variant2["TONAL"] = "tonal";
   Variant2["OUTLINED"] = "outlined";
@@ -393,25 +392,26 @@ var Variant;
   Variant2["ICON"] = "icon";
   Variant2["ICON_TOGGLE"] = "icon_toggle";
   Variant2["ADORNER_ICON"] = "adorner_icon";
-})(Variant || (Variant = {}));
-var Size;
-(function(Size2) {
+  return Variant2;
+})(Variant || {});
+var Size = /* @__PURE__ */ ((Size2) => {
   Size2["MICRO"] = "MICRO";
   Size2["SMALL"] = "SMALL";
   Size2["REGULAR"] = "REGULAR";
-})(Size || (Size = {}));
-var ToggleType;
-(function(ToggleType2) {
+  return Size2;
+})(Size || {});
+var ToggleType = /* @__PURE__ */ ((ToggleType2) => {
   ToggleType2["PRIMARY"] = "primary-toggle";
   ToggleType2["RED"] = "red-toggle";
-})(ToggleType || (ToggleType = {}));
+  return ToggleType2;
+})(ToggleType || {});
 var Button = class extends HTMLElement {
   static formAssociated = true;
   #shadow = this.attachShadow({ mode: "open", delegatesFocus: true });
   #boundOnClick = this.#onClick.bind(this);
   #props = {
-    size: "REGULAR",
-    variant: "primary",
+    size: "REGULAR" /* REGULAR */,
+    variant: "primary" /* PRIMARY */,
     toggleOnClick: true,
     disabled: false,
     active: false,
@@ -441,7 +441,7 @@ var Button = class extends HTMLElement {
     this.#props.iconName = data.iconName;
     this.#props.toggledIconName = data.toggledIconName;
     this.#props.toggleOnClick = data.toggleOnClick !== void 0 ? data.toggleOnClick : true;
-    this.#props.size = "REGULAR";
+    this.#props.size = "REGULAR" /* REGULAR */;
     if ("size" in data && data.size) {
       this.#props.size = data.size;
     }
@@ -591,12 +591,12 @@ var Button = class extends HTMLElement {
       event.preventDefault();
       this.form.reset();
     }
-    if (this.#props.toggleOnClick && this.#props.variant === "icon_toggle" && this.#props.iconName) {
+    if (this.#props.toggleOnClick && this.#props.variant === "icon_toggle" /* ICON_TOGGLE */ && this.#props.iconName) {
       this.toggled = !this.#props.toggled;
     }
   }
   #isToolbarVariant() {
-    return this.#props.variant === "toolbar" || this.#props.variant === "primary_toolbar";
+    return this.#props.variant === "toolbar" /* TOOLBAR */ || this.#props.variant === "primary_toolbar" /* PRIMARY_TOOLBAR */;
   }
   #render() {
     const nodes = this.#slotRef.value?.assignedNodes();
@@ -612,7 +612,7 @@ var Button = class extends HTMLElement {
         throw new Error("Toolbar button does not accept children");
       }
     }
-    if (this.#props.variant === "icon") {
+    if (this.#props.variant === "icon" /* ICON */) {
       if (!this.#props.iconName) {
         throw new Error("Icon button requires an icon");
       }
@@ -622,33 +622,34 @@ var Button = class extends HTMLElement {
     }
     const hasIcon = Boolean(this.#props.iconName);
     const classes = {
-      primary: this.#props.variant === "primary",
-      tonal: this.#props.variant === "tonal",
-      outlined: this.#props.variant === "outlined",
-      text: this.#props.variant === "text",
+      primary: this.#props.variant === "primary" /* PRIMARY */,
+      tonal: this.#props.variant === "tonal" /* TONAL */,
+      outlined: this.#props.variant === "outlined" /* OUTLINED */,
+      text: this.#props.variant === "text" /* TEXT */,
       toolbar: this.#isToolbarVariant(),
-      "primary-toolbar": this.#props.variant === "primary_toolbar",
-      icon: this.#props.variant === "icon" || this.#props.variant === "icon_toggle" || this.#props.variant === "adorner_icon",
-      "primary-toggle": this.#props.toggleType === "primary-toggle",
-      "red-toggle": this.#props.toggleType === "red-toggle",
+      "primary-toolbar": this.#props.variant === "primary_toolbar" /* PRIMARY_TOOLBAR */,
+      icon: this.#props.variant === "icon" /* ICON */ || this.#props.variant === "icon_toggle" /* ICON_TOGGLE */ || this.#props.variant === "adorner_icon" /* ADORNER_ICON */,
+      "primary-toggle": this.#props.toggleType === "primary-toggle" /* PRIMARY */,
+      "red-toggle": this.#props.toggleType === "red-toggle" /* RED */,
       toggled: Boolean(this.#props.toggled),
       checked: Boolean(this.#props.checked),
       "text-with-icon": hasIcon && !isEmpty,
       "only-icon": hasIcon && isEmpty,
-      micro: this.#props.size === "MICRO",
-      small: this.#props.size === "SMALL",
+      micro: this.#props.size === "MICRO" /* MICRO */,
+      small: this.#props.size === "SMALL" /* SMALL */,
       "reduced-focus-ring": Boolean(this.#props.reducedFocusRing),
       active: this.#props.active,
       inverse: Boolean(this.#props.inverseColorTheme)
     };
     const spinnerClasses = {
-      primary: this.#props.variant === "primary",
-      outlined: this.#props.variant === "outlined",
+      primary: this.#props.variant === "primary" /* PRIMARY */,
+      outlined: this.#props.variant === "outlined" /* OUTLINED */,
       disabled: this.#props.disabled,
       spinner: true
     };
     const jslog = this.#props.jslogContext && VisualLogging.action().track({ click: true }).context(this.#props.jslogContext);
-    Lit.render(html`
+    Lit.render(
+      html`
         <style>${button_css_default}</style>
         <button title=${ifDefined(this.title || void 0)}
                 ?disabled=${this.#props.disabled}
@@ -666,7 +667,10 @@ var Button = class extends HTMLElement {
           ${this.#props.spinner ? html`<span class=${classMap(spinnerClasses)}></span>` : ""}
           <slot @slotchange=${this.#render} ${ref(this.#slotRef)}></slot>
         </button>
-      `, this.#shadow, { host: this });
+      `,
+      this.#shadow,
+      { host: this }
+    );
   }
   // Based on https://web.dev/more-capable-form-controls/ to make custom elements form-friendly.
   // Form controls usually expose a "value" property.
@@ -706,7 +710,7 @@ var Button = class extends HTMLElement {
 };
 customElements.define("devtools-button", Button);
 
-// gen/front_end/ui/components/buttons/FloatingButton.js
+// ../../front_end/ui/components/buttons/FloatingButton.ts
 var FloatingButton_exports = {};
 __export(FloatingButton_exports, {
   FloatingButton: () => FloatingButton,
@@ -838,7 +842,7 @@ button {
 
 /*# sourceURL=${import.meta.resolve("./floatingButton.css")} */`;
 
-// gen/front_end/ui/components/buttons/FloatingButton.js
+// ../../front_end/ui/components/buttons/FloatingButton.ts
 var { html: html2, Directives: { classMap: classMap2 } } = Lit2;
 var FloatingButton = class extends HTMLElement {
   static observedAttributes = ["icon-name", "jslogcontext", "disabled"];
@@ -907,9 +911,13 @@ var FloatingButton = class extends HTMLElement {
     const classes = classMap2({
       gemini: this.iconName === "spark"
     });
-    Lit2.render(html2`
+    Lit2.render(
+      html2`
         <style>${floatingButton_css_default}</style>
-        <button class=${classes} ?disabled=${this.disabled}><devtools-icon .name=${this.iconName}></devtools-icon></button>`, this.#shadow, { host: this });
+        <button class=${classes} ?disabled=${this.disabled}><devtools-icon .name=${this.iconName}></devtools-icon></button>`,
+      this.#shadow,
+      { host: this }
+    );
   }
   #updateJslog() {
     if (this.jslogContext) {

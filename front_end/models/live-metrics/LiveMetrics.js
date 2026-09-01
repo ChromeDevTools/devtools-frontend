@@ -310,12 +310,17 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
                     // Use our own "interactionId" rather than the Chrome/web-vitals
                     // provided one, so we can group events with same start time
                     // (e.g. `pointerup` and `click` are one interaction log entry)
-                    interactionId: `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}`,
+                    interactionId: webVitalsEvent.entryGroupId !== undefined && webVitalsEvent.startTime !== undefined ?
+                        `interaction-${webVitalsEvent.entryGroupId}-${webVitalsEvent.startTime}` :
+                        undefined,
                 };
                 this.#inpValue = inpEvent;
                 break;
             }
             case 'InteractionEntry': {
+                if (webVitalsEvent.entryGroupId === undefined || webVitalsEvent.startTime === undefined) {
+                    break;
+                }
                 const groupInteractions = Platform.MapUtilities.getWithDefault(this.#interactionsByGroupId, webVitalsEvent.entryGroupId, () => []);
                 // `nextPaintTime` uses the event duration which is rounded to the nearest 8ms. The best we can do
                 // is check if the `nextPaintTime`s are within 8ms. Exclude undefined/null/0 nextPaintTimes.
@@ -342,7 +347,7 @@ export class LiveMetrics extends Common.ObjectWrapper.ObjectWrapper {
                 // We can get multiple instances of the first input interaction since web-vitals.js installs
                 // an extra listener for events of type `first-input`. This is a simple way to de-dupe those
                 // events without adding complexity to the injected code.
-                if (!interaction.eventNames.includes(webVitalsEvent.eventName)) {
+                if (webVitalsEvent.eventName && !interaction.eventNames.includes(webVitalsEvent.eventName)) {
                     interaction.eventNames.push(webVitalsEvent.eventName);
                 }
                 if (webVitalsEvent.nodeIndex !== undefined) {

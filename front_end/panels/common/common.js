@@ -35,13 +35,13 @@ var gdpSignUpDialog_css_default = `/*
 
     .gdp-sign-up-dialog-header {
         background-image: var(--image-file-gdp-logo-light);
-        height: 20px;
+        height: var(--sys-size-9);
         background-repeat: no-repeat;
         background-size: contain;
         margin: 0;
 
         &:focus-visible {
-            outline: 2px solid var(--sys-color-state-focus-ring);
+            outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
         }
     }
 
@@ -59,7 +59,7 @@ var gdpSignUpDialog_css_default = `/*
     .section {
         display: flex;
         gap: var(--sys-size-6);
-        padding: 12px 16px 12px 12px;
+        padding: var(--sys-size-6) var(--sys-size-8) var(--sys-size-6) var(--sys-size-6);
         background-color: var(--sys-color-surface4);
         align-self: stretch;
     }
@@ -368,7 +368,7 @@ var geminiRebrandPromoDialog_css_default = `/*
     }
 
     .title {
-        font-size: 20px;
+        font-size: var(--sys-typescale-headline2-size);
     }
 
     .banner-image {
@@ -866,8 +866,8 @@ var badgeNotification_css_default = `/*
 
   .badge-container {
     margin-right: 10px;
-    min-width: 64px;
-    height: 64px;
+    min-width: var(--sys-size-18);
+    height: var(--sys-size-18);
   }
 
   .badge-image {
@@ -3281,7 +3281,7 @@ var domLinkifier_css_default = `/*
     cursor: pointer;
     display: inline;
     pointer-events: auto;
-    outline-offset: 2px;
+    outline-offset: var(--sys-size-2);
 
     /* If the element has lots of classes, don't let the label get too wide */
     text-overflow: ellipsis;

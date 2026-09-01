@@ -1,1 +1,0 @@
-gen/front_end/ui/components/code_highlighter/code_highlighter.js: gen/front_end/ui/components/code_highlighter/codeHighlighter.css.js gen/front_end/ui/components/code_highlighter/CodeHighlighter.js gen/front_end/ui/components/code_highlighter/code_highlighter.prebundle.js

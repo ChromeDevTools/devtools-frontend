@@ -48,6 +48,8 @@
     "../../../../../../../../../../../../node_modules/@types/filesystem/index.d.ts"
   ],
   "references": [
-
+    {
+      "path": "prebuilt_lib-tsconfig.ref.json"
+    }
   ]
 }

@@ -12,7 +12,7 @@ export default `/*
 .service-worker-cache-data-view .data-view-toolbar {
   position: relative;
   background-color: var(--sys-color-cdt-base-container);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   padding-right: 10px;
 }
 
@@ -25,7 +25,7 @@ export default `/*
 }
 
 .service-worker-cache-data-view .data-grid .data-container tr:nth-last-child(2) td {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .service-worker-cache-data-view .data-grid .data-container tr.selected {
@@ -54,8 +54,8 @@ export default `/*
 
 .cache-preview-panel-resizer {
   background-color: var(--sys-color-surface1);
-  height: 4px;
-  border-bottom: 1px solid var(--sys-color-divider);
+  height: var(--sys-size-3);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .cache-storage-summary-bar {
@@ -63,7 +63,7 @@ export default `/*
   line-height: 27px;
   padding-left: 5px;
   background-color: var(--sys-color-cdt-base-container);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

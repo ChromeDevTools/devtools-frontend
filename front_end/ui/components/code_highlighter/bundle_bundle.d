@@ -1,0 +1,1 @@
+gen/front_end/ui/components/code_highlighter/code_highlighter.js: gen/front_end/ui/components/code_highlighter/codeHighlighter.css.js ../../front_end/ui/components/code_highlighter/CodeHighlighter.ts ../../front_end/ui/components/code_highlighter/code_highlighter.ts

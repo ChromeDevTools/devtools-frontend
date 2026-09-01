@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/ui/comments",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/ui/comments/CommentAnchorResolver.test.ts",
+    "../../../../../../front_end/ui/comments/CommentOverlayManager.test.ts",
+    "../../../../../../front_end/ui/comments/CommentsOverlayWidget.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/comment_manager/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../third_party/codemirror.next/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../components/text_editor/bundle-tsconfig.ref.json"
+    }
+  ]
+}

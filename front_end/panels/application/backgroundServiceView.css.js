@@ -9,6 +9,12 @@ export default `/*
  * found in the LICENSE file.
  */
 
+.background-service-view, .data-grid-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .background-service-toolbar {
   background-color: var(--sys-color-cdt-base-container);
   border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
@@ -21,6 +27,12 @@ export default `/*
 
 [slot="insertion-point-main"] {
   overflow: auto;
+}
+
+.empty-state-container {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .background-service-preview {

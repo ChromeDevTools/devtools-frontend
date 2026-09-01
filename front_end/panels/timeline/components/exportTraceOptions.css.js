@@ -21,7 +21,7 @@ export default `/*
   }
 
   devtools-button {
-    height: 24px;
+    height: var(--sys-size-11);
   }
 
   .export-trace-explanation {

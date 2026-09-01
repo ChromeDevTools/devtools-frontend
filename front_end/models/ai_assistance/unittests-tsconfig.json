@@ -71,6 +71,7 @@
     "../../../../../../front_end/models/ai_assistance/performance/AIContext.test.ts",
     "../../../../../../front_end/models/ai_assistance/performance/AIQueries.test.ts",
     "../../../../../../front_end/models/ai_assistance/tools/CookieUtils.test.ts",
+    "../../../../../../front_end/models/ai_assistance/tools/DOMStorageUtils.test.ts",
     "../../../../../../front_end/models/ai_assistance/tools/ExecuteJavaScript.test.ts",
     "../../../../../../front_end/models/ai_assistance/tools/GetCookieValues.test.ts",
     "../../../../../../front_end/models/ai_assistance/tools/GetDetailedCallTree.test.ts",

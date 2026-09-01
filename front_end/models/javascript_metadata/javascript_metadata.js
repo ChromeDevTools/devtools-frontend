@@ -6660,7 +6660,7 @@ var NativeFunctions = [
   },
   {
     name: "WebSocket",
-    signatures: [["url", "?protocolsOrOptions"]]
+    signatures: [["url", "?protocols"]]
   },
   {
     name: "WebSocketError",
@@ -7004,7 +7004,7 @@ var NativeFunctions = [
   },
   {
     name: "install",
-    signatures: [["?install_url", "?manifest_id"], ["params"]],
+    signatures: [["?params"]],
     receivers: ["Navigator"]
   },
   {
@@ -7292,7 +7292,7 @@ var NativeFunctions = [
   },
   {
     name: "RTCEncodedVideoFrame",
-    signatures: [["originalFrame", "?options"]]
+    signatures: [["init"], ["originalFrame", "?options"]]
   },
   {
     name: "RTCError",
@@ -8568,7 +8568,21 @@ var NativeFunctions = [
   },
   {
     name: "getElementTransform",
-    signatures: [["element", "draw_transform"]]
+    signatures: [["element", "draw_transform"]],
+    receivers: ["OffscreenCanvas"]
+  },
+  {
+    name: "getElementTransform",
+    signatures: [["element", "?draw_transform"]],
+    receivers: ["HTMLCanvasElement"]
+  },
+  {
+    name: "updateElementGeometry",
+    signatures: [["element", "?options"]]
+  },
+  {
+    name: "clearElementGeometry",
+    signatures: [["element"]]
   },
   {
     name: "NavigateEvent",
@@ -9129,10 +9143,6 @@ var NativeFunctions = [
   {
     name: "prependHTMLUnsafe",
     signatures: [["html", "?options"]]
-  },
-  {
-    name: "setCanvasTransform",
-    signatures: [["?matrix"]]
   },
   {
     name: "matchContainer",

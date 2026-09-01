@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/issue_counter/IssueCounter.js
+// ../../front_end/ui/components/issue_counter/IssueCounter.ts
 var IssueCounter_exports = {};
 __export(IssueCounter_exports, {
   DisplayMode: () => DisplayMode,
@@ -32,7 +32,7 @@ var issueCounter_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./issueCounter.css")} */`;
 
-// gen/front_end/ui/components/issue_counter/IssueCounter.js
+// ../../front_end/ui/components/issue_counter/IssueCounter.ts
 var UIStrings = {
   /**
    * @description Label for link to the Issues tab, specifying how many page errors there are.
@@ -51,11 +51,11 @@ var str_ = i18n.i18n.registerUIStrings("ui/components/issue_counter/IssueCounter
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 function getIssueKindIconName(issueKind) {
   switch (issueKind) {
-    case "PageError":
+    case IssuesManager.Issue.IssueKind.PAGE_ERROR:
       return "issue-cross-filled";
-    case "BreakingChange":
+    case IssuesManager.Issue.IssueKind.BREAKING_CHANGE:
       return "issue-exclamation-filled";
-    case "Improvement":
+    case IssuesManager.Issue.IssueKind.IMPROVEMENT:
       return "issue-text-filled";
   }
 }
@@ -65,12 +65,12 @@ function toIconGroup(iconName, sizeOverride) {
   }
   return { iconName };
 }
-var DisplayMode;
-(function(DisplayMode2) {
+var DisplayMode = /* @__PURE__ */ ((DisplayMode2) => {
   DisplayMode2["OMIT_EMPTY"] = "OmitEmpty";
   DisplayMode2["SHOW_ALWAYS"] = "ShowAlways";
   DisplayMode2["ONLY_MOST_IMPORTANT"] = "OnlyMostImportant";
-})(DisplayMode || (DisplayMode = {}));
+  return DisplayMode2;
+})(DisplayMode || {});
 var listFormatter = /* @__PURE__ */ function defineFormatter() {
   let intlListFormat;
   return {
@@ -85,18 +85,9 @@ var listFormatter = /* @__PURE__ */ function defineFormatter() {
 }();
 function getIssueCountsEnumeration(issuesManager, omitEmpty = true) {
   const counts = [
-    issuesManager.numberOfIssues(
-      "PageError"
-      /* IssuesManager.Issue.IssueKind.PAGE_ERROR */
-    ),
-    issuesManager.numberOfIssues(
-      "BreakingChange"
-      /* IssuesManager.Issue.IssueKind.BREAKING_CHANGE */
-    ),
-    issuesManager.numberOfIssues(
-      "Improvement"
-      /* IssuesManager.Issue.IssueKind.IMPROVEMENT */
-    )
+    issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.PAGE_ERROR),
+    issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.BREAKING_CHANGE),
+    issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.IMPROVEMENT)
   ];
   const phrases = [
     i18nString(UIStrings.pageErrors, { issueCount: counts[0] }),
@@ -112,7 +103,7 @@ var IssueCounter = class extends HTMLElement {
   #leadingText = "";
   #throttler;
   #counts = [0, 0, 0];
-  #displayMode = "OmitEmpty";
+  #displayMode = "OmitEmpty" /* OMIT_EMPTY */;
   #issuesManager;
   #accessibleName;
   #throttlerTimeout;
@@ -128,14 +119,22 @@ var IssueCounter = class extends HTMLElement {
     this.#clickHandler = data.clickHandler;
     this.#leadingText = data.leadingText ?? "";
     this.#tooltipCallback = data.tooltipCallback;
-    this.#displayMode = data.displayMode ?? "OmitEmpty";
+    this.#displayMode = data.displayMode ?? "OmitEmpty" /* OMIT_EMPTY */;
     this.#accessibleName = data.accessibleName;
     this.#throttlerTimeout = data.throttlerTimeout;
     this.#compact = Boolean(data.compact);
     if (this.#issuesManager !== data.issuesManager) {
-      this.#issuesManager?.removeEventListener("IssuesCountUpdated", this.scheduleUpdate, this);
+      this.#issuesManager?.removeEventListener(
+        IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED,
+        this.scheduleUpdate,
+        this
+      );
       this.#issuesManager = data.issuesManager;
-      this.#issuesManager.addEventListener("IssuesCountUpdated", this.scheduleUpdate, this);
+      this.#issuesManager.addEventListener(
+        IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED,
+        this.scheduleUpdate,
+        this
+      );
     }
     if (data.throttlerTimeout !== 0) {
       this.#throttler = new Common.Throttler.Throttler(data.throttlerTimeout ?? 100);
@@ -161,63 +160,41 @@ var IssueCounter = class extends HTMLElement {
       return;
     }
     this.#counts = [
-      this.#issuesManager.numberOfIssues(
-        "PageError"
-        /* IssuesManager.Issue.IssueKind.PAGE_ERROR */
-      ),
-      this.#issuesManager.numberOfIssues(
-        "BreakingChange"
-        /* IssuesManager.Issue.IssueKind.BREAKING_CHANGE */
-      ),
-      this.#issuesManager.numberOfIssues(
-        "Improvement"
-        /* IssuesManager.Issue.IssueKind.IMPROVEMENT */
-      )
+      this.#issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.PAGE_ERROR),
+      this.#issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.BREAKING_CHANGE),
+      this.#issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.IMPROVEMENT)
     ];
     const importance = [
-      "PageError",
-      "BreakingChange",
-      "Improvement"
+      IssuesManager.Issue.IssueKind.PAGE_ERROR,
+      IssuesManager.Issue.IssueKind.BREAKING_CHANGE,
+      IssuesManager.Issue.IssueKind.IMPROVEMENT
     ];
     const mostImportant = importance[this.#counts.findIndex((x) => x > 0) ?? 2];
     const countToString = (kind, count) => {
       switch (this.#displayMode) {
-        case "OmitEmpty":
+        case "OmitEmpty" /* OMIT_EMPTY */:
           return count > 0 ? `${count}` : void 0;
-        case "ShowAlways":
+        case "ShowAlways" /* SHOW_ALWAYS */:
           return `${count}`;
-        case "OnlyMostImportant":
+        case "OnlyMostImportant" /* ONLY_MOST_IMPORTANT */:
           return kind === mostImportant ? `${count}` : void 0;
       }
     };
     const iconSize = "2ex";
-    const accessibleName = this.#accessibleName ?? getIssueCountsEnumeration(
-      this.#issuesManager,
-      this.#displayMode !== "ShowAlways"
-      /* DisplayMode.SHOW_ALWAYS */
-    );
+    const accessibleName = this.#accessibleName ?? getIssueCountsEnumeration(this.#issuesManager, this.#displayMode !== "ShowAlways" /* SHOW_ALWAYS */);
     const data = {
       groups: [
         {
-          ...toIconGroup(getIssueKindIconName(
-            "PageError"
-            /* IssuesManager.Issue.IssueKind.PAGE_ERROR */
-          ), iconSize),
-          text: countToString("PageError", this.#counts[0])
+          ...toIconGroup(getIssueKindIconName(IssuesManager.Issue.IssueKind.PAGE_ERROR), iconSize),
+          text: countToString(IssuesManager.Issue.IssueKind.PAGE_ERROR, this.#counts[0])
         },
         {
-          ...toIconGroup(getIssueKindIconName(
-            "BreakingChange"
-            /* IssuesManager.Issue.IssueKind.BREAKING_CHANGE */
-          ), iconSize),
-          text: countToString("BreakingChange", this.#counts[1])
+          ...toIconGroup(getIssueKindIconName(IssuesManager.Issue.IssueKind.BREAKING_CHANGE), iconSize),
+          text: countToString(IssuesManager.Issue.IssueKind.BREAKING_CHANGE, this.#counts[1])
         },
         {
-          ...toIconGroup(getIssueKindIconName(
-            "Improvement"
-            /* IssuesManager.Issue.IssueKind.IMPROVEMENT */
-          ), iconSize),
-          text: countToString("Improvement", this.#counts[2])
+          ...toIconGroup(getIssueKindIconName(IssuesManager.Issue.IssueKind.IMPROVEMENT), iconSize),
+          text: countToString(IssuesManager.Issue.IssueKind.IMPROVEMENT, this.#counts[2])
         }
       ],
       clickHandler: this.#clickHandler,
@@ -225,16 +202,20 @@ var IssueCounter = class extends HTMLElement {
       accessibleName,
       compact: this.#compact
     };
-    render(html`
+    render(
+      html`
         <style>${issueCounter_css_default}</style>
         <icon-button .data=${data} .accessibleName=${this.#accessibleName}></icon-button>
-        `, this.#shadow, { host: this });
+        `,
+      this.#shadow,
+      { host: this }
+    );
     this.#tooltipCallback?.();
   }
 };
 customElements.define("devtools-issue-counter", IssueCounter);
 
-// gen/front_end/ui/components/issue_counter/IssueLinkIcon.js
+// ../../front_end/ui/components/issue_counter/IssueLinkIcon.ts
 var IssueLinkIcon_exports = {};
 __export(IssueLinkIcon_exports, {
   IssueLinkIcon: () => IssueLinkIcon,
@@ -243,7 +224,7 @@ __export(IssueLinkIcon_exports, {
 import "../../kit/kit.js";
 import * as Common2 from "../../../core/common/common.js";
 import * as i18n3 from "../../../core/i18n/i18n.js";
-import * as IssuesManager2 from "../../../models/issues_manager/issues_manager.js";
+import * as IssuesManager3 from "../../../models/issues_manager/issues_manager.js";
 import * as RenderCoordinator from "../render_coordinator/render_coordinator.js";
 import * as Lit from "../../lit/lit.js";
 import * as VisualLogging from "../../visual_logging/visual_logging.js";
@@ -308,7 +289,7 @@ devtools-icon {
 
 /*# sourceURL=${import.meta.resolve("./issueLinkIcon.css")} */`;
 
-// gen/front_end/ui/components/issue_counter/IssueLinkIcon.js
+// ../../front_end/ui/components/issue_counter/IssueLinkIcon.ts
 var { html: html2 } = Lit;
 var UIStrings2 = {
   /**
@@ -368,7 +349,7 @@ var IssueLinkIcon = class extends HTMLElement {
     }
     const description = this.#issue?.getDescription();
     if (description) {
-      const title = await IssuesManager2.MarkdownIssueDescription.getIssueTitleFromMarkdownDescription(description);
+      const title = await IssuesManager3.MarkdownIssueDescription.getIssueTitleFromMarkdownDescription(description);
       if (title) {
         this.#issueTitle = title;
       }
@@ -412,14 +393,18 @@ var IssueLinkIcon = class extends HTMLElement {
   }
   #render() {
     return RenderCoordinator.write(() => {
-      Lit.render(html2`
+      Lit.render(
+        html2`
       <style>${issueLinkIcon_css_default}</style>
       <button class=${Lit.Directives.classMap({ link: Boolean(this.#issue) })}
               title=${this.#getTooltip()}
               jslog=${VisualLogging.link("issue").track({ click: true })}
               @click=${this.handleClick}>
         <devtools-icon name=${this.#getIconName()}></devtools-icon>
-      </button>`, this.#shadow, { host: this });
+      </button>`,
+        this.#shadow,
+        { host: this }
+      );
     });
   }
 };

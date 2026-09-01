@@ -32,13 +32,13 @@ export default `/*
     background-color: var(--sys-color-cdt-base-container);
     flex-direction: column;
     padding-bottom: 5px;
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .timeline-details-view-row {
     padding-left: 10px;
-    min-height: 20px;
-    line-height: 16px; /* Vertically center text within row, important for background-color rows like .timeline-details-warning */
+    min-height: var(--sys-size-9);
+    line-height: var(--sys-typescale-body4-line-height); /* Vertically center text within row, important for background-color rows like .timeline-details-warning */
   }
 
   .timeline-details-view-block .timeline-details-stack-values {
@@ -46,8 +46,8 @@ export default `/*
   }
 
   .timeline-details-chip-title {
-    font-size: 12px;
-    padding: 8px;
+    font-size: var(--sys-typescale-body4-size);
+    padding: var(--sys-size-5);
     display: flex;
     align-items: center;
   }
@@ -58,16 +58,16 @@ export default `/*
   }
 
   .timeline-details-view-block:first-child > .timeline-details-chip-title {
-    font-size: 13px;
+    font-size: var(--sys-typescale-body3-size);
   }
 
   /* This is the coloured box that shows next to the event name */
   .timeline-details-chip-title > div {
-    width: 14px;
-    height: 14px;
-    border: 1px solid var(--sys-color-divider);
+    width: var(--sys-size-7);
+    height: var(--sys-size-7);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     display: inline-block;
-    margin-right: 4px;
+    margin-right: var(--sys-size-3);
     content: " ";
   }
 
@@ -108,7 +108,7 @@ export default `/*
   }
 
   .timeline-details-view-pie-chart-wrapper {
-    margin: 4px 0;
+    margin: var(--sys-size-3) 0;
   }
 
   .timeline-details-view-pie-chart {

@@ -26,27 +26,21 @@ describe('CustomPreviewComponent', () => {
       bodyGetterId: '4' as Protocol.Runtime.RemoteObjectId,
     });
     // The callFunctionJSON resolves to null so that it falls back to the default body.
-    sinon.stub(object, 'callFunctionJSON').resolves(null);
+    const callFunctionJSONStub = sinon.stub(object, 'callFunctionJSON').resolves(null);
 
     const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
+    renderElementIntoDOM(component.element);
     component.expandIfPossible();
+    await callFunctionJSONStub.firstCall.returnValue;
+    await UI.Widget.Widget.allUpdatesComplete;
 
-    // Wait for the tree outline to be added to the DOM and populated.
-    let defaultBodyElement = component.element.shadowRoot?.querySelector('.custom-expandable-section-default-body');
-    while (!defaultBodyElement) {
-      await new Promise(resolve => setTimeout(resolve, 0));
-      defaultBodyElement = component.element.shadowRoot?.querySelector('.custom-expandable-section-default-body');
-    }
-
-    let firstChildNode = defaultBodyElement.shadowRoot?.querySelector('li');
-    while (!firstChildNode) {
-      await new Promise(resolve => setTimeout(resolve, 0));
-      firstChildNode = defaultBodyElement.shadowRoot?.querySelector('li');
-    }
-
-    const treeElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(firstChildNode);
-    assert.instanceOf(treeElement, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
-    assert.isFalse(treeElement.editable);
+    const tree = component.element.shadowRoot?.querySelector('devtools-tree');
+    assert.exists(tree);
+    const outline = tree.getInternalTreeOutlineForTest();
+    const propertyTreeElement = outline.firstChild();
+    assert.exists(propertyTreeElement);
+    assert.instanceOf(propertyTreeElement, ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement);
+    assert.isFalse(propertyTreeElement.editable);
   });
 
   it('rejects object reference tags that do not have exactly two elements', () => {
@@ -88,7 +82,7 @@ describe('CustomPreviewComponent', () => {
     const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
     const customSection = component.element.shadowRoot?.querySelector('.custom-expandable-section');
     assert.exists(customSection);
-    const headerSpan = customSection?.firstChild as HTMLElement;
+    const headerSpan = customSection?.firstElementChild as HTMLElement;
     assert.exists(headerSpan);
     assert.strictEqual(headerSpan.textContent, 'styled');
     assert.strictEqual(headerSpan.style.backgroundColor, 'red');

@@ -140,7 +140,7 @@ deps = {
     'packages': [
       {
         'package': 'infra/3pp/tools/esbuild/${{platform}}',
-        'version': 'version:3@0.25.1.chromium.2',
+        'version': 'version:3@0.28.2.chromium.2',
       }
     ],
     'dep_type': 'cipd',

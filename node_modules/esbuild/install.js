@@ -57,7 +57,8 @@ var knownUnixlikePackages = {
 };
 var knownWebAssemblyFallbackPackages = {
   "android arm LE": "@esbuild/android-arm",
-  "android x64 LE": "@esbuild/android-x64"
+  "android x64 LE": "@esbuild/android-x64",
+  "openharmony arm64 LE": "@esbuild/openharmony-arm64"
 };
 function pkgAndSubpathForCurrentPlatform() {
   let pkg;
@@ -90,8 +91,9 @@ var os2 = require("os");
 var path2 = require("path");
 var zlib = require("zlib");
 var https = require("https");
+var crypto = require("crypto");
 var child_process = require("child_process");
-var versionFromPackageJSON = require(path2.join(__dirname, "package.json")).version;
+var packageJSON = require(path2.join(__dirname, "package.json"));
 var toPath = path2.join(__dirname, "bin", "esbuild");
 var isToPathJS = true;
 function validateBinaryVersion(...command) {
@@ -131,8 +133,8 @@ which means the "esbuild" binary executable can't be run. You can either:
     }
     throw err;
   }
-  if (stdout !== versionFromPackageJSON) {
-    throw new Error(`Expected ${JSON.stringify(versionFromPackageJSON)} but got ${JSON.stringify(stdout)}`);
+  if (stdout !== packageJSON.version) {
+    throw new Error(`Expected ${JSON.stringify(packageJSON.version)} but got ${JSON.stringify(stdout)}`);
   }
 }
 function isYarn() {
@@ -168,7 +170,7 @@ function extractFileFromTarGzip(buffer, subpath) {
     let name = str(offset, 100);
     let size = parseInt(str(offset + 124, 12), 8);
     offset += 512;
-    if (!isNaN(size)) {
+    if (!isNaN(size) && size >= 0) {
       if (name === subpath) return buffer.subarray(offset, offset + size);
       offset += size + 511 & ~511;
     }
@@ -183,10 +185,11 @@ function installUsingNPM(pkg, subpath, binPath) {
   try {
     fs2.writeFileSync(path2.join(installDir, "package.json"), "{}");
     child_process.execSync(
-      `npm install --loglevel=error --prefer-offline --no-audit --progress=false ${pkg}@${versionFromPackageJSON}`,
+      `npm install --loglevel=error --prefer-offline --no-audit --progress=false ${pkg}@${packageJSON.version}`,
       { cwd: installDir, stdio: "pipe", env }
     );
     const installedBinPath = path2.join(installDir, "node_modules", pkg, subpath);
+    binaryIntegrityCheck(pkg, subpath, fs2.readFileSync(installedBinPath));
     fs2.renameSync(installedBinPath, binPath);
   } finally {
     try {
@@ -219,8 +222,8 @@ require('child_process').execFileSync(${pathString}, process.argv.slice(2), { st
   fs2.writeFileSync(libMain, `var ESBUILD_BINARY_PATH = ${pathString};
 ${code}`);
 }
-function maybeOptimizePackage(binPath) {
-  if (os2.platform() !== "win32" && !isYarn()) {
+function maybeOptimizePackage(binPath, isWASM) {
+  if (os2.platform() !== "win32" && !isYarn() && !isWASM) {
     const tempPath = path2.join(__dirname, "bin-esbuild");
     try {
       fs2.linkSync(binPath, tempPath);
@@ -231,11 +234,20 @@ function maybeOptimizePackage(binPath) {
     }
   }
 }
+function binaryIntegrityCheck(pkg, subpath, bytes) {
+  const hash = crypto.createHash("sha256").update(bytes).digest("hex");
+  const key = `${pkg}/${subpath}`;
+  const expected = packageJSON["esbuild.binaryHashes"][key];
+  if (!expected) throw new Error(`Missing hash for "${key}"`);
+  if (hash !== expected) throw new Error(`"${hash.slice(0, 8)}..." doesn't match "${expected.slice(0, 8)}..." for "${pkg}"`);
+}
 async function downloadDirectlyFromNPM(pkg, subpath, binPath) {
-  const url = `https://registry.npmjs.org/${pkg}/-/${pkg.replace("@esbuild/", "")}-${versionFromPackageJSON}.tgz`;
+  const url = `https://registry.npmjs.org/${pkg}/-/${pkg.replace("@esbuild/", "")}-${packageJSON.version}.tgz`;
   console.error(`[esbuild] Trying to download ${JSON.stringify(url)}`);
   try {
-    fs2.writeFileSync(binPath, extractFileFromTarGzip(await fetch(url), subpath));
+    const bytes = extractFileFromTarGzip(await fetch(url), subpath);
+    binaryIntegrityCheck(pkg, subpath, bytes);
+    fs2.writeFileSync(binPath, bytes);
     fs2.chmodSync(binPath, 493);
   } catch (e) {
     console.error(`[esbuild] Failed to download ${JSON.stringify(url)}: ${e && e.message || e}`);
@@ -251,7 +263,7 @@ async function checkAndPreparePackage() {
       return;
     }
   }
-  const { pkg, subpath } = pkgAndSubpathForCurrentPlatform();
+  const { pkg, subpath, isWASM } = pkgAndSubpathForCurrentPlatform();
   let binPath;
   try {
     binPath = require.resolve(`${pkg}/${subpath}`);
@@ -263,6 +275,7 @@ package.json feature is used by esbuild to install the correct binary executable
 for your current platform. This install script will now attempt to work around
 this. If that fails, you need to remove the "--no-optional" flag to use esbuild.
 `);
+    if (isWASM) throw new Error(`Failed to install package "${pkg}"`);
     binPath = downloadedBinPath(pkg, subpath);
     try {
       console.error(`[esbuild] Trying to install package "${pkg}" using npm`);
@@ -276,7 +289,7 @@ this. If that fails, you need to remove the "--no-optional" flag to use esbuild.
       }
     }
   }
-  maybeOptimizePackage(binPath);
+  maybeOptimizePackage(binPath, isWASM);
 }
 checkAndPreparePackage().then(() => {
   if (isToPathJS) {

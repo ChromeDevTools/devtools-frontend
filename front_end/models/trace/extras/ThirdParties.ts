@@ -52,7 +52,7 @@ function collectMainThreadActivity(data: Handlers.Types.HandlerData): Types.Even
 
 export function summarizeByThirdParty(
     data: Handlers.Types.HandlerData, traceBounds: Types.Timing.TraceWindowMicro): EntitySummary[] {
-  const mainThreadEvents = collectMainThreadActivity(data).sort(Helpers.Trace.eventTimeComparator);
+  const mainThreadEvents = collectMainThreadActivity(data);
   const groupingFunction = (event: Types.Events.Event): string => {
     const entity = data.Renderer.entityMappings.entityByEvent.get(event);
     return entity?.name ?? '';
@@ -68,7 +68,7 @@ export function summarizeByThirdParty(
  */
 export function summarizeByURL(
     data: Handlers.Types.HandlerData, traceBounds: Types.Timing.TraceWindowMicro): URLSummary[] {
-  const mainThreadEvents = collectMainThreadActivity(data).sort(Helpers.Trace.eventTimeComparator);
+  const mainThreadEvents = collectMainThreadActivity(data);
   const groupingFunction = (event: Types.Events.Event): string => {
     return Handlers.Helpers.getNonResolvedURL(event, data) ?? '';
   };
@@ -140,20 +140,20 @@ function summarizeBottomUpByURL(root: TraceTree.BottomUpRootNode, data: Handlers
   return summaries;
 }
 
+// Use the same filtering as front_end/panels/timeline/TimelineTreeView.ts.
+const exclusiveNameFilter = new TraceFilter.ExclusiveNameFilter([]);
+const visibleEventsFilter = new TraceFilter.VisibleEventsFilter(
+    [...Helpers.Trace.VISIBLE_TRACE_EVENT_TYPES.values(), Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]);
+
 function getBottomUpTree(
     mainThreadEvents: Types.Events.Event[], tracebounds: Types.Timing.TraceWindowMicro,
     groupingFunction: ((arg0: Types.Events.Event) => string)|null): TraceTree.BottomUpRootNode {
-  // Use the same filtering as front_end/panels/timeline/TimelineTreeView.ts.
-  const visibleEvents = Helpers.Trace.VISIBLE_TRACE_EVENT_TYPES.values().toArray();
-  const filter =
-      new TraceFilter.VisibleEventsFilter(visibleEvents.concat([Types.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
-
   // The bottom up root node handles all the "in Tracebounds" checks we need for the insight.
   const startTime = Helpers.Timing.microToMilli(tracebounds.min);
   const endTime = Helpers.Timing.microToMilli(tracebounds.max);
   return new TraceTree.BottomUpRootNode(mainThreadEvents, {
-    textFilter: new TraceFilter.ExclusiveNameFilter([]),
-    filters: [filter],
+    textFilter: exclusiveNameFilter,
+    filters: [visibleEventsFilter],
     startTime,
     endTime,
     eventGroupIdCallback: groupingFunction,

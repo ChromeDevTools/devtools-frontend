@@ -69,7 +69,6 @@ import {
 } from './ElementsTreeElement.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import {ImagePreviewPopover} from './ImagePreviewPopover.js';
-import type {MarkerDecoratorRegistration} from './MarkerDecorator.js';
 import {ShortcutTreeElement} from './ShortcutTreeElement.js';
 import {TopLayerContainer} from './TopLayerContainer.js';
 
@@ -768,7 +767,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) &&
         !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
 
-    // TODO: Move marker decorators and descendant gutter decorations (MarkerDecoratorRegistration, updateDecorations) into declarative state passed to ElementsTreeWidget.
     // TODO: Move tree node pagination ("Show all nodes" button and expandedChildrenLimit) to a declarative tree slice model.
     // TODO: Move ImagePreviewPopover and issue tooltip helpers into declarative Lit directives or tooltip components.
     // TODO: Move DOMModel event subscription and reactive state synchronization (updateRecords, DOM update animations) directly into DOMTreeWidget.
@@ -2370,7 +2368,6 @@ export class ElementsTreeOutline extends
   private visible: boolean;
   private updateRecords: Map<SDK.DOMModel.DOMNode, Elements.ElementUpdateRecord.ElementUpdateRecord>;
   private treeElementsBeingUpdated: Set<ElementsTreeElement>;
-  decoratorExtensions: MarkerDecoratorRegistration[]|null;
   private visibleWidthInternal?: number;
   private isXMLMimeTypeInternal?: boolean|null;
   suppressRevealAndSelect = false;
@@ -2442,7 +2439,6 @@ export class ElementsTreeOutline extends
     this.updateRecords = new Map();
     this.treeElementsBeingUpdated = new Set();
 
-    this.decoratorExtensions = null;
     this.setUseLightSelectionColor(true);
   }
 

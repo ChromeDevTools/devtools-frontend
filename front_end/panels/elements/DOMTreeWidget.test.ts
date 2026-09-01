@@ -1937,5 +1937,124 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.detach();
       }
     });
+
+    it('renders gutter marker decorations in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: '#document',
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'DIV',
+              attributes: ['id', 'marker-test'],
+              children: [],
+            },
+          ],
+        });
+        const divNode = rootNode.children()![0];
+        assert.exists(divNode);
+        divNode.setMarker('breakpoint-marker', true);
+
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElements = internalTree.rootElement().children();
+        assert.lengthOf(rootTreeElements, 1);
+
+        const divTreeElement = rootTreeElements[0];
+        assert.exists(divTreeElement);
+        const divWidgetElement = divTreeElement.listItemElement.querySelector('devtools-widget');
+        const divWidget = UI.Widget.Widget.get(divWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(divWidget);
+
+        // Wait for the 100ms #decorationsThrottler delay to settle before waiting for tree updates.
+        await new Promise(resolve => setTimeout(resolve, 150));
+        await waitForTreeUpdates();
+
+        const gutter = divWidget.contentElement.querySelector('.gutter-container.has-decorations');
+        assert.exists(gutter);
+        const decoration = gutter.querySelector('.elements-gutter-decoration');
+        assert.exists(decoration);
+        const container = gutter.querySelector('.elements-gutter-decoration-container');
+        assert.exists(container);
+        assert.include(container.getAttribute('title'), 'DOM breakpoint');
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('renders descendant gutter marker decorations for collapsed nodes in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: '#document',
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'DIV',
+              attributes: ['id', 'parent-div'],
+              children: [
+                {
+                  nodeId: 3,
+                  nodeName: 'SPAN',
+                  attributes: ['id', 'child-span'],
+                  children: [],
+                },
+              ],
+            },
+          ],
+        });
+        const divNode = rootNode.children()![0];
+        assert.exists(divNode);
+        const spanNode = divNode.children()![0];
+        assert.exists(spanNode);
+        spanNode.setMarker('breakpoint-marker', true);
+
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElements = internalTree.rootElement().children();
+        assert.lengthOf(rootTreeElements, 1);
+
+        const divTreeElement = rootTreeElements[0];
+        assert.exists(divTreeElement);
+        const divWidgetElement = divTreeElement.listItemElement.querySelector('devtools-widget');
+        const divWidget = UI.Widget.Widget.get(divWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(divWidget);
+
+        // Wait for the 100ms #decorationsThrottler delay to settle before waiting for tree updates.
+        await new Promise(resolve => setTimeout(resolve, 150));
+        await waitForTreeUpdates();
+
+        const gutter = divWidget.contentElement.querySelector('.gutter-container.has-decorations');
+        assert.exists(gutter);
+        const descendantDecoration =
+            gutter.querySelector('.elements-gutter-decoration.elements-has-decorated-children');
+        assert.exists(descendantDecoration);
+        const container = gutter.querySelector('.elements-gutter-decoration-container');
+        assert.exists(container);
+        assert.include(container.getAttribute('title'), 'Children');
+        assert.include(container.getAttribute('title'), 'DOM breakpoint');
+      } finally {
+        domTree.detach();
+      }
+    });
   });
 });

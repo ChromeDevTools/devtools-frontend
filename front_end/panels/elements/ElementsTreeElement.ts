@@ -1154,7 +1154,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
   #searchQuery: string|null = null;
   #expandedChildrenLimit: number;
-  private readonly decorationsThrottler: Common.Throttler.Throttler;
+  #decorationsThrottler = new Common.Throttler.Throttler(100);
   inClipboard = false;
   #hovered: boolean;
   editing: EditorHandles|null;
@@ -1195,6 +1195,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     this.#node = node;
     if (!this.isClosingTag) {
       void this.#updateAdorners();
+      this.updateDecorations();
     }
   }
 
@@ -1204,6 +1205,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
   set expanded(expanded: boolean) {
     this.#expanded = expanded;
+    this.updateDecorations();
     this.requestUpdate();
   }
 
@@ -1272,7 +1274,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     this.#view = view;
 
     this.#expandedChildrenLimit = InitialChildrenLimit;
-    this.decorationsThrottler = new Common.Throttler.Throttler(100);
 
     this.inClipboard = false;
     this.#hovered = false;
@@ -1341,6 +1342,14 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
   #clearDOMNextUpdate = false;
 
+  override wasShown(): void {
+    super.wasShown();
+    if (!this.isClosingTag) {
+      void this.#updateAdorners();
+      this.updateDecorations();
+    }
+  }
+
   override performUpdate(): void {
     // Skip updating when in-place editing (not HTML editing indicated by the
     // editorState) is happening. Doing an update would break editing
@@ -1348,6 +1357,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     if (this.editing && !this.#editorState) {
       return;
     }
+    this.updateDecorations();
     if (this.#clearDOMNextUpdate) {
       this.#clearDOMNextUpdate = false;
       Lit.render(Lit.nothing, this.contentElement, {host: this});
@@ -2564,7 +2574,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       return;
     }
 
-    void this.decorationsThrottler.schedule(this.#updateDecorations.bind(this));
+    void this.#decorationsThrottler.schedule(this.#updateDecorations.bind(this));
   }
 
   #updateDecorations(): Promise<void> {
@@ -2606,14 +2616,22 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     return Promise.all(promises).then(updateDecorationsUI.bind(this));
 
     function updateDecorationsUI(this: ElementsTreeWidget): void {
-      this.#decorations = decorations;
-      this.#descendantDecorations = descendantDecorations;
-
-      if (!decorations.length && !descendantDecorations.length) {
-        this.#decorationsTooltip = '';
-        this.requestUpdate();
+      if (!this.isShowing()) {
         return;
       }
+
+      if (!decorations.length && !descendantDecorations.length) {
+        if (this.#decorations.length || this.#descendantDecorations.length || this.#decorationsTooltip) {
+          this.#decorations = [];
+          this.#descendantDecorations = [];
+          this.#decorationsTooltip = '';
+          this.requestUpdate();
+        }
+        return;
+      }
+
+      this.#decorations = decorations;
+      this.#descendantDecorations = descendantDecorations;
 
       const tooltip: string[] = [];
       for (const decoration of decorations) {

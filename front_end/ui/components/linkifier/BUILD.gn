@@ -13,35 +13,37 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("linkifier") {
+  split_compilation = true
   sources = [
     "LinkifierImpl.ts",
     "LinkifierUtils.ts",
   ]
-  deps = [
+  ts_deps = [
     "../../../core/platform:bundle",
     "../../../models/bindings:bundle",
-    "../../../ui/components/render_coordinator:bundle",
-    "../../../ui/lit:bundle",
+    "../../lit:bundle",
+    "../render_coordinator:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "linkifier.ts"
 
-  deps = [
-    ":css_files",
-    ":linkifier",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":linkifier" ]
 
   visibility = default_components_visibility
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "LinkifierImpl.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../core/platform:bundle",
     "../../../testing",

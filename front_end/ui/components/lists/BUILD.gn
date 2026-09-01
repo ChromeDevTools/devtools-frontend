@@ -13,32 +13,34 @@ generate_css("css_files") {
 }
 
 devtools_module("lists") {
+  split_compilation = true
   sources = [ "List.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../../core/i18n:bundle",
-    "../../../ui/lit:bundle",
+    "../../lit:bundle",
     "../buttons:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "lists.ts"
 
-  deps = [
-    ":css_files",
-    ":lists",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":lists" ]
 
   visibility = default_components_visibility
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "List.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../testing",
     "../../lit:bundle",

@@ -17,6 +17,10 @@ const UIStrings = {
    * @description Hint text displayed below the quick open input prompt.
    */
   typeToSeeAvailableCommands: 'Type ? to see available commands',
+  /**
+   * @description Accessible text for the hint displayed below the quick open input prompt.
+   */
+  typeQuestionMarkToSeeAvailableCommands: 'Type question mark to see available commands',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/QuickOpen.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -42,7 +46,8 @@ export class QuickOpenImpl {
     const quickOpen = new this();
     const filteredListWidget = new FilteredListWidget(null, history, quickOpen.queryChanged.bind(quickOpen));
     quickOpen.filteredListWidget = filteredListWidget;
-    filteredListWidget.setHintElement(i18nString(UIStrings.typeToSeeAvailableCommands));
+    filteredListWidget.setHintElement(i18nString(UIStrings.typeToSeeAvailableCommands),
+                                      i18nString(UIStrings.typeQuestionMarkToSeeAvailableCommands));
     filteredListWidget.showAsDialog();
     filteredListWidget.setQuery(query);
   }

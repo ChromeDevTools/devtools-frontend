@@ -158,8 +158,9 @@ export class FilteredListWidget extends FilteredListWidgetBase implements UI.Lis
     this.inputBoxElement.setSuggestion(suggestion);
   }
 
-  setHintElement(hint: string): void {
+  setHintElement(hint: string, accessibleName: string): void {
     this.hintElement.textContent = hint;
+    UI.ARIAUtils.setLabel(this.hintElement, accessibleName);
   }
 
   showAsDialog(dialogTitle?: string): void {

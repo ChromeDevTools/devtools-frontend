@@ -5,10 +5,12 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../visibility.gni")
 
 devtools_entrypoint("entrypoint") {
+  split_compilation = true
   entrypoint = "trace_app.ts"
 
-  deps = [
-    "../../Images:optimize_images",
+  deps = [ "../../Images:optimize_images" ]
+
+  ts_deps = [
     "../../entrypoints/inspector_main:meta",
     "../../entrypoints/main:meta",
     "../../panels/ai_assistance:meta",

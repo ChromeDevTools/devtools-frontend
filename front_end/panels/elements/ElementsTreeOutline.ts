@@ -49,13 +49,16 @@ import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
 import {AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement} from './AdoptedStyleSheetTreeElement.js';
+import * as ElementsComponents from './components/components.js';
 import {cssPath, jsPath, xPath} from './DOMPath.js';
 import {showContextMenu} from './DOMTreeContextMenu.js';
 import {getElementIssueDetails} from './ElementIssueUtils.js';
 import {
+  adornerRef,
   ElementsTreeElement,
   ElementsTreeWidget,
   ForbiddenClosingTagElements,
+  handleAdornerKeydown,
   InitialChildrenLimit,
   type InitialEditState,
   isOpeningTag,
@@ -87,6 +90,10 @@ const UIStrings = {
    * @description Text for popover that directs to the Issues panel.
    */
   viewIssue: 'View issue:',
+  /**
+   * @description Link text content in the DOM tree outline of the Elements panel.
+   */
+  reveal: 'reveal',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/elements/ElementsTreeOutline.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -153,6 +160,15 @@ interface ViewInput {
   onDragLeave?: (event: DragEvent) => void;
   onDrop?: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) => void;
   onDragEnd?: (event: DragEvent) => void;
+  getTopLayerShortcuts?: (doc: SDK.DOMModel.DOMDocument) => SDK.DOMModel.DOMNodeShortcut[];
+  isTopLayerExpanded?: (doc: SDK.DOMModel.DOMDocument) => boolean;
+  onToggleTopLayerExpanded?: (doc: SDK.DOMModel.DOMDocument, expanded: boolean) => void;
+  onSelectTopLayerContainer?: (doc: SDK.DOMModel.DOMDocument) => void;
+  isTopLayerShortcutExpanded?: (shortcut: SDK.DOMModel.DOMNodeShortcut) => boolean;
+  onToggleTopLayerShortcutExpanded?: (shortcut: SDK.DOMModel.DOMNodeShortcut, expanded: boolean) => void;
+  selectedTopLayerShortcut?: SDK.DOMModel.DOMNodeShortcut|null;
+  onSelectTopLayerShortcut?: (shortcut: SDK.DOMModel.DOMNodeShortcut) => void;
+  onRevealTopLayerShortcut?: (shortcut: SDK.DOMModel.DOMNodeShortcut) => void;
 }
 
 interface ViewOutput {
@@ -540,6 +556,112 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     }
   }
 
+  const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
+
+  const renderShortcut = (shortcut: SDK.DOMModel.DOMNodeShortcut, shortcutDepth: number): Lit.LitTemplate => {
+    const hasShortcutChildren = shortcut.childShortcuts.length > 0;
+    const isShortcutExpanded = Boolean(input.isTopLayerShortcutExpanded?.(shortcut));
+    const isShortcutSelected = input.selectedTopLayerShortcut === shortcut;
+    let title = shortcut.nodeName.toLowerCase();
+    if (shortcut.nodeType === Node.ELEMENT_NODE) {
+      title = '<' + title + '>';
+    }
+    const onShortcutExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
+      input.onToggleTopLayerShortcutExpanded?.(shortcut, event.detail.expanded);
+    };
+    const onShortcutSelect = (): void => {
+      input.onSelectTopLayerShortcut?.(shortcut);
+    };
+    const onReveal = (event: Event): void => {
+      event.stopPropagation();
+      input.onRevealTopLayerShortcut?.(shortcut);
+    };
+    const onShortcutMouseMove = (event: MouseEvent): void => {
+      event.stopPropagation();
+      shortcut.deferredNode.highlight();
+    };
+    const onShortcutMouseLeave = (event: MouseEvent): void => {
+      event.stopPropagation();
+      SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
+    };
+
+    return html`
+      <li role="treeitem"
+          ?selected=${isShortcutSelected}
+          ?open=${isShortcutExpanded}
+          class="elements-tree-shortcut"
+          style="--indent: ${computeLeftIndent(shortcutDepth, hasShortcutChildren)}px"
+          @select=${onShortcutSelect}
+          @expand=${onShortcutExpand}
+          @mousemove=${on(onShortcutMouseMove)}
+          @mouseleave=${on(onShortcutMouseLeave)}
+          jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
+        <div class="selection fill"></div>
+        <span class="elements-tree-shortcut-title">\u21AA ${title}</span>
+        <devtools-adorner
+          .name=${ElementsComponents.AdornerManager.RegisteredAdorners.REVEAL}
+          class="adorner-reveal clickable"
+          role=button
+          tabindex=0
+          jslog=${VisualLogging.adorner('reveal').track({
+      click: true,
+    })}
+          aria-label=${i18nString(UIStrings.reveal)}
+          @click=${on(onReveal)}
+          @keydown=${handleAdornerKeydown(onReveal)}
+          @mousedown=${(e: Event) => e.consume()}
+          ${adornerRef()}>
+          <span class="adorner-with-icon">
+            <devtools-icon name="select-element"></devtools-icon>
+            <span>${ElementsComponents.AdornerManager.RegisteredAdorners.REVEAL}</span>
+          </span>
+        </devtools-adorner>
+        ${
+        hasShortcutChildren ? html`
+          <ul role="group">
+            ${UI.TreeOutline.ifExpanded(html`
+              ${shortcut.childShortcuts.map(child => renderShortcut(child, shortcutDepth + 1))}
+            `)}
+          </ul>
+        ` :
+                              nothing}
+      </li>
+    `;
+  };
+
+  const renderTopLayerContainer =
+      (doc: SDK.DOMModel.DOMDocument, containerDepth: number): Lit.LitTemplate|typeof nothing => {
+        const shortcuts = input.getTopLayerShortcuts?.(doc) ?? [];
+        if (shortcuts.length === 0) {
+          return nothing;
+        }
+        const isTopLayerExpanded = Boolean(input.isTopLayerExpanded?.(doc));
+        const onTopLayerExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
+          input.onToggleTopLayerExpanded?.(doc, event.detail.expanded);
+        };
+        const onTopLayerSelect = (): void => {
+          input.onSelectTopLayerContainer?.(doc);
+        };
+
+        return html`
+      <li role="treeitem"
+          ?open=${isTopLayerExpanded}
+          class="elements-tree-top-layer-container"
+          style="--indent: ${computeLeftIndent(containerDepth, true)}px"
+          @select=${onTopLayerSelect}
+          @expand=${onTopLayerExpand}
+          jslog=${VisualLogging.treeItem().parent('elementsTreeOutline')}>
+        <div class="selection fill"></div>
+        <span class="elements-tree-shortcut-title">#top-layer</span>
+        <ul role="group">
+          ${UI.TreeOutline.ifExpanded(html`
+            ${shortcuts.map(sc => renderShortcut(sc, containerDepth + 1))}
+          `)}
+        </ul>
+      </li>
+    `;
+      };
+
   const renderNode = (node: SDK.DOMModel.DOMNode, depth = 0): Lit.LitTemplate => {
     const isSelected = input.selectedNode === node;
     const isHovered = (input.currentHighlightedNode === node) || (input.hoveredNode === node);
@@ -556,7 +678,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
 
     // TODO: Move marker decorators and descendant gutter decorations (MarkerDecoratorRegistration, updateDecorations) into declarative state passed to ElementsTreeWidget.
-    // TODO: Move TopLayerContainer rendering for top layer elements into a declarative tree element item.
     // TODO: Move AdoptedStyleSheet rendering (AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement) into dedicated declarative widgets.
     // TODO: Move tree node pagination ("Show all nodes" button and expandedChildrenLimit) to a declarative tree slice model.
     // TODO: Move ImagePreviewPopover and issue tooltip helpers into declarative Lit directives or tooltip components.
@@ -667,6 +788,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           showAIButton: input.showAIButton ?? true,
           initialEdit: input.nodeToEdit?.node === node ? input.nodeToEdit : null,
           onInitialEditCompleted: input.onInitialEditCompleted,
+          revealInTopLayer: (n: SDK.DOMModel.DOMNode) => input.domTreeWidget?.revealInTopLayer(n),
           setMultilineEditing: multilineEditing => input.domTreeWidget?.setMultilineEditing(multilineEditing),
           visibleWidth: () => input.domTreeWidget?.visibleWidth ?? 0,
           selectDOMNode: (n: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => input.onSelect?.(n, selectedByUser),
@@ -688,6 +810,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           <ul role="group">
             ${UI.TreeOutline.ifExpanded(html`
               ${children.map(child => renderNode(child, depth + 1))}
+              ${node instanceof SDK.DOMModel.DOMDocument ? renderTopLayerContainer(node, depth + 1) : nothing}
               ${needsClosingTag ? html`
                 <li role="treeitem"
                     class=${classMap({hovered: isHovered, 'elements-drag-over': isClosingTagDragOver})}
@@ -743,6 +866,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           <style>${CodeHighlighter.codeHighlighterStyles}</style>
           <ul role="tree">
             ${rootNodes.map(node => renderNode(node))}
+            ${input.omitRootDOMNode && input.rootDOMNode instanceof SDK.DOMModel.DOMDocument ? renderTopLayerContainer(input.rootDOMNode, 1) : nothing}
           </ul>
         `}>
       </devtools-tree>
@@ -896,6 +1020,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   #currentHighlightedNode: SDK.DOMModel.DOMNode|null = null;
   #wiredDOMModels = new Set<SDK.DOMModel.DOMModel>();
+  #topLayerShortcutsByDocument = new WeakMap<SDK.DOMModel.DOMDocument, SDK.DOMModel.DOMNodeShortcut[]>();
+  #topLayerContainerExpandedByDocument = new WeakMap<SDK.DOMModel.DOMDocument, boolean>();
+  #topLayerShortcutExpanded = new WeakMap<SDK.DOMModel.DOMNodeShortcut, boolean>();
+  #selectedTopLayerShortcut: SDK.DOMModel.DOMNodeShortcut|null = null;
 
   #view: View;
   #viewOutput: ViewOutput = {
@@ -1276,6 +1404,38 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       onDrop: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) =>
           this.onDrop(node, isClosingTag, event),
       onDragEnd: (event: DragEvent) => this.onDragEnd(event),
+      getTopLayerShortcuts: (doc: SDK.DOMModel.DOMDocument) => this.topLayerShortcuts(doc),
+      isTopLayerExpanded: (doc: SDK.DOMModel.DOMDocument) => this.isTopLayerExpanded(doc),
+      onToggleTopLayerExpanded: (doc: SDK.DOMModel.DOMDocument, expanded: boolean) =>
+          this.setTopLayerExpanded(doc, expanded),
+      onSelectTopLayerContainer: (_doc: SDK.DOMModel.DOMDocument) => {
+        this.#selectedTopLayerShortcut = null;
+        this.selectDOMNode(null);
+        this.performUpdate();
+      },
+      isTopLayerShortcutExpanded: (shortcut: SDK.DOMModel.DOMNodeShortcut) => this.isTopLayerShortcutExpanded(shortcut),
+      onToggleTopLayerShortcutExpanded: (shortcut: SDK.DOMModel.DOMNodeShortcut, expanded: boolean) =>
+          this.setTopLayerShortcutExpanded(shortcut, expanded),
+      selectedTopLayerShortcut: this.#selectedTopLayerShortcut,
+      onSelectTopLayerShortcut: (shortcut: SDK.DOMModel.DOMNodeShortcut) => {
+        this.#selectedTopLayerShortcut = shortcut;
+        this.selectDOMNode(null);
+        shortcut.deferredNode.highlight();
+        shortcut.deferredNode.resolve(node => {
+          if (node) {
+            this.selectDOMNode(node, true);
+          }
+        });
+        this.performUpdate();
+      },
+      onRevealTopLayerShortcut: (shortcut: SDK.DOMModel.DOMNodeShortcut) => {
+        shortcut.deferredNode.resolve(node => {
+          if (node) {
+            this.selectDOMNode(node, true);
+            node.highlight();
+          }
+        });
+      },
     },
                this.#viewOutput, this.contentElement);
     if (this.#viewOutput.elementsTreeOutline) {
@@ -1301,6 +1461,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.#onDOMNodeChanged, this);
         domModel.addEventListener(SDK.DOMModel.Events.MarkersChanged, this.#onDOMNodeChanged, this);
         domModel.addEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.#onDOMNodeChanged, this);
+        domModel.addEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.#onTopLayerElementsChanged, this);
       }
       if (this.isShowing() && !domModel.parentModel() &&
           (!this.rootDOMNode || this.rootDOMNode.domModel() !== domModel)) {
@@ -1340,6 +1501,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.#onDOMNodeChanged, this);
         domModel.removeEventListener(SDK.DOMModel.Events.MarkersChanged, this.#onDOMNodeChanged, this);
         domModel.removeEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.#onDOMNodeChanged, this);
+        domModel.removeEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.#onTopLayerElementsChanged,
+                                     this);
       }
       this.performUpdate();
       return;
@@ -1660,6 +1823,64 @@ export class DOMTreeWidget extends UI.Widget.Widget {
           this.#nodeToEdit = {node: newNode, isNewAttribute: true};
         }
       }
+      this.performUpdate();
+    }
+  }
+
+  topLayerShortcuts(document: SDK.DOMModel.DOMDocument): SDK.DOMModel.DOMNodeShortcut[] {
+    return this.#topLayerShortcutsByDocument.get(document) ?? [];
+  }
+
+  isTopLayerExpanded(document: SDK.DOMModel.DOMDocument): boolean {
+    return this.#topLayerContainerExpandedByDocument.get(document) ?? false;
+  }
+
+  setTopLayerExpanded(document: SDK.DOMModel.DOMDocument, expanded: boolean): void {
+    this.#topLayerContainerExpandedByDocument.set(document, expanded);
+    this.performUpdate();
+  }
+
+  isTopLayerShortcutExpanded(shortcut: SDK.DOMModel.DOMNodeShortcut): boolean {
+    return this.#topLayerShortcutExpanded.get(shortcut) ?? false;
+  }
+
+  setTopLayerShortcutExpanded(shortcut: SDK.DOMModel.DOMNodeShortcut, expanded: boolean): void {
+    this.#topLayerShortcutExpanded.set(shortcut, expanded);
+    this.performUpdate();
+  }
+
+  #onTopLayerElementsChanged(
+      event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.EventTypes['TopLayerElementsChanged']>): void {
+    this.#topLayerShortcutsByDocument.set(event.data.document, event.data.documentShortcuts);
+    this.performUpdate();
+  }
+
+  revealInTopLayer(node: SDK.DOMModel.DOMNode): void {
+    const document = node.ownerDocument;
+    if (!document) {
+      return;
+    }
+    if (this.#viewOutput.elementsTreeOutline) {
+      this.#viewOutput.elementsTreeOutline.revealInTopLayer(node);
+      return;
+    }
+    const shortcuts = this.topLayerShortcuts(document);
+    const findShortcut = (list: SDK.DOMModel.DOMNodeShortcut[]): SDK.DOMModel.DOMNodeShortcut|null => {
+      for (const sc of list) {
+        if (sc.deferredNode.backendNodeId() === node.backendNodeId()) {
+          return sc;
+        }
+        const found = findShortcut(sc.childShortcuts);
+        if (found) {
+          return found;
+        }
+      }
+      return null;
+    };
+    const shortcut = findShortcut(shortcuts);
+    if (shortcut) {
+      this.#topLayerContainerExpandedByDocument.set(document, true);
+      this.#selectedTopLayerShortcut = shortcut;
       this.performUpdate();
     }
   }

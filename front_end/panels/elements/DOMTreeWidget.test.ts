@@ -190,7 +190,10 @@ describeWithEnvironment('DOMTreeWidget', () => {
       };
     };
 
-    const node = SDK.DOMModel.DOMNode.create(domModel, null, false, convertNode(config, parentId));
+    const payload = convertNode(config, parentId);
+    const node = (payload.nodeName === '#document' || payload.nodeType === Node.DOCUMENT_NODE) ?
+        new SDK.DOMModel.DOMDocument(domModel, payload) :
+        SDK.DOMModel.DOMNode.create(domModel, null, false, payload);
     assert.isNotNull(node);
     return node;
   }
@@ -1685,6 +1688,126 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
         treeOutline.elementInternal.dispatchEvent(new KeyboardEvent('keydown', {key: 'F2', bubbles: true}));
         sinon.assert.calledWith(toggleEditAsHTMLSpy, rootNode);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('renders and reveals top layer shortcuts in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: '#document',
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'HTML',
+              children: [
+                {
+                  nodeId: 3,
+                  nodeName: 'BODY',
+                  children: [
+                    {nodeId: 4, nodeName: 'DIALOG', attributes: ['open', '']},
+                  ],
+                },
+              ],
+            },
+          ],
+        });
+        const dialogNode = rootNode.children()![0].children()![0].children()![0];
+
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        // 1. Initially no top-layer container because no shortcuts exist
+        assert.isNull(tree.shadowRoot?.querySelector('.elements-tree-top-layer-container'));
+
+        // 2. Dispatch TopLayerElementsChanged
+        const shortcut = new SDK.DOMModel.DOMNodeShortcut(domModel.target(), dialogNode.backendNodeId(),
+                                                          Node.ELEMENT_NODE, 'DIALOG');
+        domModel.dispatchEventToListeners(SDK.DOMModel.Events.TopLayerElementsChanged, {
+          document: rootNode as SDK.DOMModel.DOMDocument,
+          documentShortcuts: [shortcut],
+        });
+        await waitForTreeUpdates();
+
+        // Top layer container is now rendered
+        const topLayerContainer = tree.shadowRoot?.querySelector('.elements-tree-top-layer-container');
+        assert.exists(topLayerContainer);
+
+        // 3. Expand top layer container
+        domTree.setTopLayerExpanded(rootNode as SDK.DOMModel.DOMDocument, true);
+        await waitForTreeUpdates();
+
+        const shortcutElement = tree.shadowRoot?.querySelector('.elements-tree-shortcut');
+        assert.exists(shortcutElement);
+        assert.include(shortcutElement.textContent, '<dialog>');
+
+        // 4. Reveal top layer element via revealInTopLayer
+        domTree.revealInTopLayer(dialogNode);
+        await waitForTreeUpdates();
+        assert.isTrue(domTree.isTopLayerExpanded(rootNode as SDK.DOMModel.DOMDocument));
+
+        // 5. Click reveal adorner
+        sinon.stub(shortcut.deferredNode, 'resolvePromise').resolves(dialogNode);
+        const revealAdorner = shortcutElement.querySelector('devtools-adorner');
+        assert.exists(revealAdorner);
+
+        const selectDOMNodeSpy = sinon.spy(domTree, 'selectDOMNode');
+        revealAdorner.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        await waitForTreeUpdates();
+
+        sinon.assert.calledWith(selectDOMNodeSpy, dialogNode, true);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('delegates revealInTopLayer to elementsTreeOutline in DEFAULT_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: '#document',
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'HTML',
+              children: [
+                {
+                  nodeId: 3,
+                  nodeName: 'BODY',
+                  children: [
+                    {nodeId: 4, nodeName: 'DIALOG'},
+                  ],
+                },
+              ],
+            },
+          ],
+        });
+        const dialogNode = rootNode.children()![0].children()![0].children()![0];
+
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const treeOutline = domTree.getTreeOutlineForTesting();
+        assert.exists(treeOutline);
+
+        const revealInTopLayerSpy = sinon.spy(treeOutline, 'revealInTopLayer');
+        domTree.revealInTopLayer(dialogNode);
+
+        sinon.assert.calledWith(revealInTopLayerSpy, dialogNode);
       } finally {
         domTree.detach();
       }

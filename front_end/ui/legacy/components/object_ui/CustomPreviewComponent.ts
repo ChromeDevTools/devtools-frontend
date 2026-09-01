@@ -8,13 +8,13 @@ import * as i18n from '../../../../core/i18n/i18n.js';
 import type * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import {createIcon, type Icon} from '../../../kit/kit.js';
-import {render} from '../../../lit/lit.js';
+import {html, type LitTemplate, render} from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 
 import {sanitizeStyle} from './CSSStyleSanitizer.js';
 import customPreviewComponentStyles from './customPreviewComponent.css.js';
 import {
-  defaultObjectPresentation as defaultObjectPresentationTemplate,
+  defaultObjectPresentation,
   ObjectPropertiesMode,
   ObjectPropertiesSectionsTreeOutline,
   ObjectPropertyTreeElement,
@@ -90,7 +90,11 @@ export class CustomPreviewSection {
       Common.Console.Console.instance().error('Broken formatter: object reference must contain exactly two elements');
       return document.createElement('span');
     }
-    return this.layoutObjectTag(jsonML);
+    const template = this.layoutObjectTag(jsonML);
+    const fragment = document.createDocumentFragment();
+    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+    render(template, fragment);
+    return fragment;
   }
 
   // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
@@ -122,17 +126,16 @@ export class CustomPreviewSection {
     return element;
   }
 
-  private layoutObjectTag(objectTag: unknown[]): Node {
+  private layoutObjectTag(objectTag: unknown[]): LitTemplate {
     objectTag.shift();
     const attributes = objectTag.shift();
     const remoteObject = this.object.runtimeModel().createRemoteObject((attributes as Protocol.Runtime.RemoteObject));
     if (remoteObject.customPreview()) {
-      return (new CustomPreviewSection(remoteObject)).element();
+      return html`${(new CustomPreviewSection(remoteObject)).element()}`;
     }
 
-    const sectionElement = defaultObjectPresentation(remoteObject);
-    sectionElement.classList.toggle('custom-expandable-section-standard-section', remoteObject.hasChildren);
-    return sectionElement;
+    return defaultObjectPresentation(remoteObject, undefined, undefined, undefined,
+                                     {'custom-expandable-section-standard-section': remoteObject.hasChildren});
   }
 
   private appendJsonMLTags(parentElement: Node, jsonMLTags: unknown[]): void {
@@ -240,14 +243,8 @@ export class CustomPreviewComponent {
     if (this.element.shadowRoot) {
       this.element.shadowRoot.textContent = '';
       this.customPreviewSection = null;
-      this.element.shadowRoot.appendChild(defaultObjectPresentation(this.object));
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+      render(defaultObjectPresentation(this.object), this.element.shadowRoot);
     }
   }
-}
-
-function defaultObjectPresentation(object: SDK.RemoteObject.RemoteObject): Element {
-  const element = document.createElement('span');
-  // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-  render(defaultObjectPresentationTemplate(object), element);
-  return element;
 }

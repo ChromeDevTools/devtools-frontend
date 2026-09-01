@@ -1638,20 +1638,22 @@ export function renderPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThr
 
 export function defaultObjectPresentation(objectOrTree: SDK.RemoteObject.RemoteObject|ObjectTree,
                                           linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean,
-                                          readOnly?: boolean): LitTemplate {
+                                          readOnly?: boolean, extraClasses?: Record<string, boolean>): LitTemplate {
   const objectTree = objectOrTree instanceof ObjectTree ? objectOrTree : new ObjectTree(objectOrTree, {
     readOnly: Boolean(readOnly),
     propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
   });
   const object = objectTree.object;
-  const title = html`<span class="source-code"><style>${objectValueStyles}</style>${
-      renderPropertyValue(object, /* wasThrown= */ false, /* showPreview= */ true)}</span>`;
+  const title = html`<span class=${
+      classMap({'source-code': true, ...(!object.hasChildren ? extraClasses : undefined)})}><style>${
+      objectValueStyles}</style>${renderPropertyValue(object, /* wasThrown= */ false, /* showPreview= */ true)}</span>`;
   if (!object.hasChildren) {
     return title;
   }
-  return html`${
-      widget(ObjectPropertiesSectionWidget,
-             {objectTree, title, linkifier, skipProto: !!skipProto, showOverflow: !readOnly})}`;
+  return html`<devtools-widget class=${classMap(extraClasses ?? {})} ${
+      widget(
+          ObjectPropertiesSectionWidget,
+          {objectTree, title, linkifier, skipProto: Boolean(skipProto), showOverflow: !readOnly})}></devtools-widget>`;
 }
 
 /**

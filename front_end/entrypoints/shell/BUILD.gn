@@ -6,10 +6,12 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_entrypoint("shell") {
+  split_compilation = true
   entrypoint = "shell.ts"
 
-  deps = [
-    "../../Images:optimize_images",
+  deps = [ "../../Images:optimize_images" ]
+
+  ts_deps = [
     "../../entrypoints/main:meta",
     "../../panels/ai_assistance:meta",
     "../../panels/changes:meta",

@@ -4,6 +4,7 @@
 
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/node.gni")
+import("../../../../scripts/build/typescript/typescript.gni")
 
 web_vitals_injected_sources = [
   "OnEachLayoutShift.ts",
@@ -11,6 +12,7 @@ web_vitals_injected_sources = [
 ]
 
 devtools_module("web-vitals-injected") {
+  split_compilation = true
   sources = web_vitals_injected_sources
 
   ts_deps = [
@@ -36,7 +38,12 @@ node_action("bundled_library") {
              "rollup.config.mjs",
            ] + web_vitals_injected_sources
 
-  deps = [ ":web-vitals-injected" ]
+  deps = []
+  if (!devtools_skip_typecheck) {
+    deps += [ ":web-vitals-injected_checked" ]
+  } else {
+    deps += [ ":web-vitals-injected" ]
+  }
 
   args = [
     "--config",

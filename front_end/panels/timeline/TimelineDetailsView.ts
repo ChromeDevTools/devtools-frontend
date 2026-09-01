@@ -86,7 +86,8 @@ export class TimelineDetailsPane extends
   private lazyLayersView?: TimelineLayersView|null;
   private preferredTabId?: string;
   private selection?: TimelineSelection|null;
-  private updateContentsScheduled: boolean;
+  #debouncedUpdateContentsFromWindow: (() => void)&
+      {cancel: () => void} = Common.Debouncer.debounce(() => this.updateContentsFromWindow(), 100);
   private lazySelectorStatsView: TimelineSelectorStatsView|null;
   #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   #eventToRelatedInsightsMap: TimelineComponents.RelatedInsightChips.EventToRelatedInsightsMap|null = null;
@@ -147,7 +148,6 @@ export class TimelineDetailsPane extends
     this.setPreferredTab(Tab.Details);
 
     this.rangeDetailViews = new Map();
-    this.updateContentsScheduled = false;
 
     const bottomUpView = new BottomUpTimelineTreeView();
     this.appendTab(Tab.BottomUp, i18nString(UIStrings.bottomup), bottomUpView);
@@ -384,13 +384,11 @@ export class TimelineDetailsPane extends
   }
 
   /**
-   * This forces a recalculation and rerendering of the timings
-   * breakdown of a track.
-   * User actions like zooming or scrolling can trigger many updates in
-   * short time windows, so we debounce the calls in those cases. Single
-   * sporadic calls (like selecting a new track) don't need to be
-   * debounced. The forceImmediateUpdate param configures the debouncing
-   * behaviour.
+   * Recalculates and renders the timing breakdown for the active details tab.
+   * Panning or zooming triggers rapid bounds updates, so we debounce this call
+   * using a trailing debounce. This ensures expensive tree recalculations in
+   * detailed views (e.g. Call Tree, Bottom-Up) only run once after user
+   * interaction finishes, preventing main-thread CPU spikes mid-gesture.
    */
   private scheduleUpdateContentsFromWindow(forceImmediateUpdate = false): void {
     if (!this.#parsedTrace) {
@@ -402,17 +400,7 @@ export class TimelineDetailsPane extends
       return;
     }
 
-    // Debounce this update as it's not critical.
-    if (!this.updateContentsScheduled) {
-      this.updateContentsScheduled = true;
-      setTimeout(() => {
-        if (!this.updateContentsScheduled) {
-          return;
-        }
-        this.updateContentsScheduled = false;
-        this.updateContentsFromWindow();
-      }, 100);
-    }
+    this.#debouncedUpdateContentsFromWindow();
   }
 
   private updateContentsFromWindow(): void {
@@ -468,7 +456,7 @@ export class TimelineDetailsPane extends
 
     if (selectionIsEvent(selection)) {
       // Cancel any pending debounced range stats update
-      this.updateContentsScheduled = false;
+      this.#debouncedUpdateContentsFromWindow.cancel();
 
       if (Trace.Types.Events.isLegacyTimelineFrame(selection.event)) {
         this.#addLayerTreeForSelectedFrame(selection.event);

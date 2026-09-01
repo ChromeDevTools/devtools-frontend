@@ -311,10 +311,6 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin<EventT
     this.windowStartTime = startTime;
     this.windowEndTime = endTime;
     this.updateWindow();
-    this.dispatchEventToListeners(Events.OVERVIEW_PANE_WINDOW_CHANGED, {
-      startTime: Trace.Types.Timing.Milli(startTime),
-      endTime: Trace.Types.Timing.Milli(endTime),
-    });
   }
 
   private updateWindow(): void {

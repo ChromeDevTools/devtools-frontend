@@ -108,9 +108,9 @@ export class TimelineMiniMap extends
       return;
     }
 
-    const left = (event.data.startTime > 0) ? event.data.startTime : traceBoundsState.milli.entireTraceBounds.min;
+    const left = (event.data.startTime > 0) ? event.data.startTime : traceBoundsState.milli.minimapTraceBounds.min;
     const right =
-        Number.isFinite(event.data.endTime) ? event.data.endTime : traceBoundsState.milli.entireTraceBounds.max;
+        Number.isFinite(event.data.endTime) ? event.data.endTime : traceBoundsState.milli.minimapTraceBounds.max;
 
     TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(
         Trace.Helpers.Timing.traceWindowFromMilliSeconds(
@@ -118,7 +118,7 @@ export class TimelineMiniMap extends
             Trace.Types.Timing.Milli(right),
             ),
         {
-          shouldAnimate: true,
+          shouldAnimate: false,
         },
     );
   }

@@ -400,6 +400,11 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
         treeElement.widget.toggleEditAsHTML(edit.editAsHTMLCallback);
       } else if (edit.isProcessingInstruction) {
         treeElement.widget.startEditingProcessingInstructionValue();
+      } else if (edit.isTextNode) {
+        const textNode = treeElement.widget.contentElement.querySelector('.webkit-html-text-node');
+        if (textNode) {
+          treeElement.widget.startEditingTextNode(textNode);
+        }
       } else if (edit.isNewAttribute) {
         treeElement.widget.addNewAttribute();
       } else if (edit.attributeName) {
@@ -555,7 +560,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     // TODO: Move AdoptedStyleSheet rendering (AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement) into dedicated declarative widgets.
     // TODO: Move tree node pagination ("Show all nodes" button and expandedChildrenLimit) to a declarative tree slice model.
     // TODO: Move ImagePreviewPopover and issue tooltip helpers into declarative Lit directives or tooltip components.
-    // TODO: Move in-place keyboard shortcuts (F2 for edit, Enter for attribute edit) into DOMTreeWidget.
     // TODO: Move DOMModel event subscription and reactive state synchronization (updateRecords, DOM update animations) directly into DOMTreeWidget.
 
     const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
@@ -1660,6 +1664,31 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
   }
 
+  startEditing(node: SDK.DOMModel.DOMNode): void {
+    if (UI.UIUtils.isEditing()) {
+      return;
+    }
+    const nodeType = node.nodeType();
+    if (nodeType === Node.ELEMENT_NODE) {
+      if (node.isShadowRoot() || node.ancestorUserAgentShadowRoot()) {
+        return;
+      }
+      const attributes = node.attributes();
+      if (attributes.length > 0) {
+        this.#nodeToEdit = {node, attributeName: attributes[0].name};
+      } else {
+        this.#nodeToEdit = {node, isNewAttribute: true};
+      }
+      this.performUpdate();
+    } else if (nodeType === Node.TEXT_NODE) {
+      this.#nodeToEdit = {node, isTextNode: true};
+      this.performUpdate();
+    } else if (nodeType === Node.PROCESSING_INSTRUCTION_NODE) {
+      this.#nodeToEdit = {node, isProcessingInstruction: true};
+      this.performUpdate();
+    }
+  }
+
   onKeyDown(event: KeyboardEvent): boolean {
     if (UI.UIUtils.isEditing()) {
       return false;
@@ -1685,6 +1714,18 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         event.consume(true);
         return true;
       }
+    }
+
+    if (event.key === 'Enter') {
+      this.startEditing(node);
+      event.consume(true);
+      return true;
+    }
+
+    if (event.key === 'F2') {
+      this.toggleEditAsHTML(node);
+      event.consume(true);
+      return true;
     }
 
     if (event.key === 'Delete' || event.key === 'Backspace') {

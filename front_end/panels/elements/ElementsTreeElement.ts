@@ -1104,6 +1104,7 @@ export interface InitialEditState {
   attributeName?: string;
   isNewAttribute?: boolean;
   isProcessingInstruction?: boolean;
+  isTextNode?: boolean;
   isEditAsHTML?: boolean;
   editAsHTMLCallback?: (success: boolean) => void;
 }
@@ -1463,6 +1464,11 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         this.toggleEditAsHTML(edit.editAsHTMLCallback);
       } else if (edit.isProcessingInstruction) {
         this.startEditingProcessingInstructionValue();
+      } else if (edit.isTextNode) {
+        const textNode = this.contentElement.querySelector('.webkit-html-text-node');
+        if (textNode) {
+          this.startEditingTextNode(textNode);
+        }
       } else if (edit.isNewAttribute) {
         this.addNewAttribute();
       } else if (edit.attributeName) {
@@ -3038,6 +3044,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
 
   override onenter(): boolean {
     this.#syncOutlineProperties();
+    const outline = this.treeOutline as ElementsTreeOutline | null;
+    if (outline?.domTreeWidget) {
+      outline.domTreeWidget.startEditing(this.nodeInternal);
+      return true;
+    }
     return this.widget.onenter();
   }
 

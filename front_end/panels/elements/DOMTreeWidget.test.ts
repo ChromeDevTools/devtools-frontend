@@ -1520,5 +1520,174 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.detach();
       }
     });
+
+    it('triggers in-place editing on Enter and edit-as-html on F2 in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['id', 'test-div'],
+          children: [
+            {nodeId: 2, nodeName: 'SPAN'},
+            {nodeId: 3, nodeName: '#text', nodeValue: 'Hello world', nodeType: Node.TEXT_NODE},
+          ],
+        });
+        const spanNode = rootNode.children()![0];
+        const textNode = rootNode.children()![1];
+
+        domTree.rootDOMNode = rootNode;
+        domTree.expandRoot = true;
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        // 1. Enter on element with attributes -> edits first attribute
+        domTree.selectDOMNode(rootNode);
+        await waitForTreeUpdates();
+
+        tree.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
+        await waitForTreeUpdates();
+
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElement = internalTree.rootElement().children()[0];
+        const rootWidgetElement = rootTreeElement.listItemElement.querySelector('devtools-widget');
+        const rootWidget = UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(rootWidget);
+        assert.isTrue(rootWidget.isEditing);
+
+        // End editing
+        rootWidget.editing?.cancel();
+
+        // 2. Enter on element with no attributes -> adds new attribute
+        domTree.selectDOMNode(spanNode);
+        await waitForTreeUpdates();
+
+        tree.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
+        await waitForTreeUpdates();
+
+        const spanTreeElement = rootTreeElement.children()[0];
+        const spanWidgetElement = spanTreeElement.listItemElement.querySelector('devtools-widget');
+        const spanWidget = UI.Widget.Widget.get(spanWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(spanWidget);
+        assert.isTrue(spanWidget.isEditing);
+
+        // End editing
+        spanWidget.editing?.cancel();
+
+        // 3. Enter on text node -> edits text node
+        domTree.selectDOMNode(textNode);
+        await waitForTreeUpdates();
+
+        tree.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true}));
+        await waitForTreeUpdates();
+
+        const textTreeElement = rootTreeElement.children()[1];
+        const textWidgetElement = textTreeElement.listItemElement.querySelector('devtools-widget');
+        const textWidget = UI.Widget.Widget.get(textWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(textWidget);
+        assert.isTrue(textWidget.isEditing);
+
+        // End editing
+        textWidget.editing?.cancel();
+
+        // 4. F2 on element -> triggers toggleEditAsHTML
+        const toggleEditAsHTMLSpy = sinon.spy(domTree, 'toggleEditAsHTML');
+        domTree.selectDOMNode(rootNode);
+        await waitForTreeUpdates();
+
+        tree.dispatchEvent(new KeyboardEvent('keydown', {key: 'F2', bubbles: true}));
+        sinon.assert.calledWith(toggleEditAsHTMLSpy, rootNode);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('triggers in-place editing on Enter and edit-as-html on F2 in DEFAULT_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['id', 'test-div'],
+          children: [
+            {nodeId: 2, nodeName: 'SPAN'},
+            {nodeId: 3, nodeName: '#text', nodeValue: 'Hello world', nodeType: Node.TEXT_NODE},
+          ],
+        });
+        const spanNode = rootNode.children()![0];
+        const textNode = rootNode.children()![1];
+
+        domTree.rootDOMNode = rootNode;
+        domTree.expandRoot = true;
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        const treeOutline = domTree.getTreeOutlineForTesting();
+        assert.exists(treeOutline);
+
+        // 1. Enter on element with attributes -> edits first attribute
+        domTree.selectDOMNode(rootNode);
+        await waitForTreeUpdates();
+
+        const rootTreeElement =
+            treeOutline.findTreeElement(rootNode) as Elements.ElementsTreeElement.ElementsTreeElement;
+        assert.exists(rootTreeElement);
+
+        rootTreeElement.onenter();
+        await waitForTreeUpdates();
+
+        assert.isTrue(rootTreeElement.widget.isEditing);
+        rootTreeElement.widget.editing?.cancel();
+
+        // 2. Enter on element with no attributes -> adds new attribute
+        domTree.selectDOMNode(spanNode);
+        await waitForTreeUpdates();
+
+        const spanTreeElement =
+            treeOutline.findTreeElement(spanNode) as Elements.ElementsTreeElement.ElementsTreeElement;
+        assert.exists(spanTreeElement);
+
+        spanTreeElement.onenter();
+        await waitForTreeUpdates();
+
+        assert.isTrue(spanTreeElement.widget.isEditing);
+        spanTreeElement.widget.editing?.cancel();
+
+        // 3. Enter on text node -> edits text node
+        domTree.selectDOMNode(textNode);
+        await waitForTreeUpdates();
+
+        const textTreeElement =
+            treeOutline.findTreeElement(textNode) as Elements.ElementsTreeElement.ElementsTreeElement;
+        assert.exists(textTreeElement);
+
+        textTreeElement.onenter();
+        await waitForTreeUpdates();
+
+        assert.isTrue(textTreeElement.widget.isEditing);
+        textTreeElement.widget.editing?.cancel();
+
+        // 4. F2 on element -> triggers toggleEditAsHTML
+        const toggleEditAsHTMLSpy = sinon.spy(domTree, 'toggleEditAsHTML');
+        domTree.selectDOMNode(rootNode);
+        await waitForTreeUpdates();
+
+        treeOutline.elementInternal.dispatchEvent(new KeyboardEvent('keydown', {key: 'F2', bubbles: true}));
+        sinon.assert.calledWith(toggleEditAsHTMLSpy, rootNode);
+      } finally {
+        domTree.detach();
+      }
+    });
   });
 });

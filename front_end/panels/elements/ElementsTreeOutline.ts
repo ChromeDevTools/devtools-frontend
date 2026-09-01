@@ -48,7 +48,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as Lit from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement} from './AdoptedStyleSheetTreeElement.js';
+import {
+  AdoptedStyleSheetContentsWidget,
+  AdoptedStyleSheetSetTreeElement,
+  AdoptedStyleSheetTreeElement,
+} from './AdoptedStyleSheetTreeElement.js';
 import * as ElementsComponents from './components/components.js';
 import {cssPath, jsPath, xPath} from './DOMPath.js';
 import {showContextMenu} from './DOMTreeContextMenu.js';
@@ -169,6 +173,13 @@ interface ViewInput {
   selectedTopLayerShortcut?: SDK.DOMModel.DOMNodeShortcut|null;
   onSelectTopLayerShortcut?: (shortcut: SDK.DOMModel.DOMNodeShortcut) => void;
   onRevealTopLayerShortcut?: (shortcut: SDK.DOMModel.DOMNodeShortcut) => void;
+  isAdoptedStyleSheetsExpanded?: (node: SDK.DOMModel.DOMNode) => boolean;
+  onToggleAdoptedStyleSheetsExpanded?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
+  onSelectAdoptedStyleSheets?: (node: SDK.DOMModel.DOMNode) => void;
+  isAdoptedStyleSheetExpanded?: (sheet: SDK.DOMModel.AdoptedStyleSheet) => boolean;
+  onToggleAdoptedStyleSheetExpanded?: (sheet: SDK.DOMModel.AdoptedStyleSheet, expanded: boolean) => void;
+  selectedAdoptedStyleSheet?: SDK.DOMModel.AdoptedStyleSheet|null;
+  onSelectAdoptedStyleSheet?: (sheet: SDK.DOMModel.AdoptedStyleSheet) => void;
 }
 
 interface ViewOutput {
@@ -456,7 +467,8 @@ function nodeHasVisibleChildren(node: SDK.DOMModel.DOMNode, rootDOMNode: SDK.DOM
     return false;
   }
   if (node.isIframe() || node.contentDocument() || node.templateContent() ||
-      ElementsTreeWidget.visibleShadowRoots(node).length || node.hasPseudoElements() || node.isInsertionPoint()) {
+      ElementsTreeWidget.visibleShadowRoots(node).length || node.hasPseudoElements() || node.isInsertionPoint() ||
+      node.adoptedStyleSheetsForNode.length) {
     return true;
   }
   return Boolean(node.childNodeCount()) && !ElementsTreeWidget.canShowInlineText(node);
@@ -464,7 +476,6 @@ function nodeHasVisibleChildren(node: SDK.DOMModel.DOMNode, rootDOMNode: SDK.DOM
 
 function getVisibleChildren(node: SDK.DOMModel.DOMNode, showComments = true): SDK.DOMModel.DOMNode[] {
   const children: SDK.DOMModel.DOMNode[] = [];
-  // TODO: Support rendering AdoptedStyleSheet[] nodes declaratively.
   children.push(...ElementsTreeWidget.visibleShadowRoots(node));
 
   const contentDocument = node.contentDocument();
@@ -662,6 +673,86 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     `;
       };
 
+  const renderAdoptedStyleSheet = (sheet: SDK.DOMModel.AdoptedStyleSheet, depth: number): Lit.LitTemplate => {
+    const header = sheet.cssModel.styleSheetHeaderForId(sheet.id);
+    const linkText = header?.sourceURL;
+    const isExpanded = Boolean(input.isAdoptedStyleSheetExpanded?.(sheet));
+    const isSelected = input.selectedAdoptedStyleSheet === sheet;
+    const onExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
+      input.onToggleAdoptedStyleSheetExpanded?.(sheet, event.detail.expanded);
+    };
+    const onSelect = (): void => {
+      input.onSelectAdoptedStyleSheet?.(sheet);
+    };
+
+    // clang-format off
+    return html`
+      <li role="treeitem"
+          ?selected=${isSelected}
+          ?open=${isExpanded}
+          class="elements-tree-adopted-style-sheet"
+          style="--indent: ${computeLeftIndent(depth, true)}px"
+          @select=${onSelect}
+          @expand=${onExpand}
+          jslog=${VisualLogging.treeItem('adopted-style-sheet').parent('elementsTreeOutline')}>
+        <div class="selection fill"></div>
+        <span class="elements-tree-shortcut-title">#adopted-style-sheet${linkText ? html` (${UIComponentUtils.Linkifier.Linkifier.linkifyURL(linkText, {
+          text: linkText,
+          preventClick: true,
+          showColumnNumber: false,
+        })})` : nothing}</span>
+        <ul role="group">
+          ${UI.TreeOutline.ifExpanded(html`
+            ${header ? html`
+              <li role="treeitem"
+                  class="elements-tree-adopted-style-sheet-contents"
+                  style="--indent: ${computeLeftIndent(depth + 1, false)}px"
+                  jslog=${VisualLogging.treeItem('adopted-style-sheet-contents').parent('elementsTreeOutline')}>
+                <div class="selection fill"></div>
+                ${UI.Widget.widget(AdoptedStyleSheetContentsWidget, {styleSheetHeader: header})}
+              </li>
+            ` : nothing}
+          `)}
+        </ul>
+      </li>
+    `;
+    // clang-format on
+  };
+
+  const renderAdoptedStyleSheets = (node: SDK.DOMModel.DOMNode, depth: number): Lit.LitTemplate|typeof nothing => {
+    const sheets = node.adoptedStyleSheetsForNode;
+    if (!sheets || sheets.length === 0) {
+      return nothing;
+    }
+    const isExpanded = Boolean(input.isAdoptedStyleSheetsExpanded?.(node));
+    const onExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
+      input.onToggleAdoptedStyleSheetsExpanded?.(node, event.detail.expanded);
+    };
+    const onSelect = (): void => {
+      input.onSelectAdoptedStyleSheets?.(node);
+    };
+
+    // clang-format off
+    return html`
+      <li role="treeitem"
+          ?open=${isExpanded}
+          class="elements-tree-adopted-style-sheets"
+          style="--indent: ${computeLeftIndent(depth, true)}px"
+          @select=${onSelect}
+          @expand=${onExpand}
+          jslog=${VisualLogging.treeItem('adopted-style-sheets').parent('elementsTreeOutline')}>
+        <div class="selection fill"></div>
+        <span class="elements-tree-shortcut-title">#adopted-style-sheets</span>
+        <ul role="group">
+          ${UI.TreeOutline.ifExpanded(html`
+            ${sheets.map(sheet => renderAdoptedStyleSheet(sheet, depth + 1))}
+          `)}
+        </ul>
+      </li>
+    `;
+    // clang-format on
+  };
+
   const renderNode = (node: SDK.DOMModel.DOMNode, depth = 0): Lit.LitTemplate => {
     const isSelected = input.selectedNode === node;
     const isHovered = (input.currentHighlightedNode === node) || (input.hoveredNode === node);
@@ -678,7 +769,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
 
     // TODO: Move marker decorators and descendant gutter decorations (MarkerDecoratorRegistration, updateDecorations) into declarative state passed to ElementsTreeWidget.
-    // TODO: Move AdoptedStyleSheet rendering (AdoptedStyleSheetSetTreeElement, AdoptedStyleSheetTreeElement) into dedicated declarative widgets.
     // TODO: Move tree node pagination ("Show all nodes" button and expandedChildrenLimit) to a declarative tree slice model.
     // TODO: Move ImagePreviewPopover and issue tooltip helpers into declarative Lit directives or tooltip components.
     // TODO: Move DOMModel event subscription and reactive state synchronization (updateRecords, DOM update animations) directly into DOMTreeWidget.
@@ -809,6 +899,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         ${hasChildren ? html`
           <ul role="group">
             ${UI.TreeOutline.ifExpanded(html`
+              ${node.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(node, depth + 1) : nothing}
               ${children.map(child => renderNode(child, depth + 1))}
               ${node instanceof SDK.DOMModel.DOMDocument ? renderTopLayerContainer(node, depth + 1) : nothing}
               ${needsClosingTag ? html`
@@ -848,6 +939,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
 
   /* clang-format off */
   render(html`
+    <style>${UI.inspectorCommonStyles}</style>
     <style>${elementsTreeOutlineStyles}</style>
     <style>${CodeHighlighter.codeHighlighterStyles}</style>
     <div class="elements-disclosure ${input.deindentSingleNode && rootNodes.length === 1 && !nodeHasVisibleChildren(rootNodes[0], input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode) ? 'single-node' : ''}">
@@ -862,6 +954,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         @clipboard-paste=${(event: Event) => input.onPaste?.(event)}
         @mouseleave=${input.onLeave}
         .template=${html`
+          <style>${UI.inspectorCommonStyles}</style>
           <style>${elementsTreeOutlineStyles}</style>
           <style>${CodeHighlighter.codeHighlighterStyles}</style>
           <ul role="tree">
@@ -1024,6 +1117,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   #topLayerContainerExpandedByDocument = new WeakMap<SDK.DOMModel.DOMDocument, boolean>();
   #topLayerShortcutExpanded = new WeakMap<SDK.DOMModel.DOMNodeShortcut, boolean>();
   #selectedTopLayerShortcut: SDK.DOMModel.DOMNodeShortcut|null = null;
+  #adoptedStyleSheetsExpandedByNode = new WeakMap<SDK.DOMModel.DOMNode, boolean>();
+  #adoptedStyleSheetExpanded = new WeakMap<SDK.DOMModel.AdoptedStyleSheet, boolean>();
+  #selectedAdoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet|null = null;
 
   #view: View;
   #viewOutput: ViewOutput = {
@@ -1099,9 +1195,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   selectDOMNode(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet|null, focus?: boolean): void {
     if (node instanceof SDK.DOMModel.AdoptedStyleSheet) {
-      this.#viewOutput?.elementsTreeOutline?.highlightAdoptedStyleSheet(node);
+      this.highlightAdoptedStyleSheet(node);
       return;
     }
+    this.#selectedAdoptedStyleSheet = null;
     if (this.#view === DECLARATIVE_VIEW) {
       if (this.#selectedDOMNode === node) {
         return;
@@ -1435,6 +1532,23 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             node.highlight();
           }
         });
+      },
+      isAdoptedStyleSheetsExpanded: (node: SDK.DOMModel.DOMNode) => this.isAdoptedStyleSheetsExpanded(node),
+      onToggleAdoptedStyleSheetsExpanded: (node: SDK.DOMModel.DOMNode, expanded: boolean) =>
+          this.setAdoptedStyleSheetsExpanded(node, expanded),
+      onSelectAdoptedStyleSheets: (_node: SDK.DOMModel.DOMNode) => {
+        this.#selectedAdoptedStyleSheet = null;
+        this.selectDOMNode(null);
+        this.performUpdate();
+      },
+      isAdoptedStyleSheetExpanded: (sheet: SDK.DOMModel.AdoptedStyleSheet) => this.isAdoptedStyleSheetExpanded(sheet),
+      onToggleAdoptedStyleSheetExpanded: (sheet: SDK.DOMModel.AdoptedStyleSheet, expanded: boolean) =>
+          this.setAdoptedStyleSheetExpanded(sheet, expanded),
+      selectedAdoptedStyleSheet: this.#selectedAdoptedStyleSheet,
+      onSelectAdoptedStyleSheet: (sheet: SDK.DOMModel.AdoptedStyleSheet) => {
+        this.#selectedAdoptedStyleSheet = sheet;
+        this.selectDOMNode(null);
+        this.performUpdate();
       },
     },
                this.#viewOutput, this.contentElement);
@@ -1883,6 +1997,42 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       this.#selectedTopLayerShortcut = shortcut;
       this.performUpdate();
     }
+  }
+
+  isAdoptedStyleSheetsExpanded(node: SDK.DOMModel.DOMNode): boolean {
+    return this.#adoptedStyleSheetsExpandedByNode.get(node) ?? false;
+  }
+
+  setAdoptedStyleSheetsExpanded(node: SDK.DOMModel.DOMNode, expanded: boolean): void {
+    this.#adoptedStyleSheetsExpandedByNode.set(node, expanded);
+    this.performUpdate();
+  }
+
+  isAdoptedStyleSheetExpanded(sheet: SDK.DOMModel.AdoptedStyleSheet): boolean {
+    return this.#adoptedStyleSheetExpanded.get(sheet) ?? false;
+  }
+
+  setAdoptedStyleSheetExpanded(sheet: SDK.DOMModel.AdoptedStyleSheet, expanded: boolean): void {
+    this.#adoptedStyleSheetExpanded.set(sheet, expanded);
+    this.performUpdate();
+  }
+
+  highlightAdoptedStyleSheet(adoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet): void {
+    if (this.#viewOutput.elementsTreeOutline) {
+      this.#viewOutput.elementsTreeOutline.highlightAdoptedStyleSheet(adoptedStyleSheet);
+      return;
+    }
+    const parent = adoptedStyleSheet.parent;
+    if (!parent) {
+      return;
+    }
+    for (let current: (SDK.DOMModel.DOMNode|null) = parent; current; current = current.parentNode) {
+      this.#expandedNodes.add(current);
+    }
+    this.setAdoptedStyleSheetsExpanded(parent, true);
+    this.#selectedAdoptedStyleSheet = adoptedStyleSheet;
+    this.selectDOMNode(null);
+    this.performUpdate();
   }
 
   startEditing(node: SDK.DOMModel.DOMNode): void {

@@ -170,6 +170,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
     attributes?: string[];
     nodeValue?: string;
     children?: TestDOMNodeConfig[];
+    adoptedStyleSheets?: Protocol.DOM.StyleSheetId[];
   }
 
   function createTestDOMTree(domModel: SDK.DOMModel.DOMModel, config: TestDOMNodeConfig,
@@ -185,6 +186,8 @@ describeWithEnvironment('DOMTreeWidget', () => {
         localName: isText ? '#text' : nodeConfig.nodeName.toLowerCase(),
         nodeValue: nodeConfig.nodeValue ?? '',
         attributes: nodeConfig.attributes,
+        // eslint-disable-next-line @devtools/no-adopted-style-sheets
+        adoptedStyleSheets: nodeConfig.adoptedStyleSheets,
         childNodeCount: nodeConfig.children?.length ?? 0,
         children: nodeConfig.children?.map(child => convertNode(child, nodeConfig.nodeId as Protocol.DOM.NodeId)),
       };
@@ -1808,6 +1811,128 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.revealInTopLayer(dialogNode);
 
         sinon.assert.calledWith(revealInTopLayerSpy, dialogNode);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('renders and reveals adopted style sheets in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const sheetId = 'sheet-id' as Protocol.DOM.StyleSheetId;
+      const initialCSS = '.button { color: blue; }';
+
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: '#document',
+          adoptedStyleSheets: [sheetId],
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'HTML',
+              children: [],
+            },
+          ],
+        });
+        const adoptedSheet = rootNode.adoptedStyleSheetsForNode[0];
+        assert.exists(adoptedSheet);
+
+        sinon.stub(adoptedSheet.cssModel, 'getStyleSheetText').resolves(initialCSS);
+        adoptedSheet.cssModel.styleSheetAdded({
+          styleSheetId: sheetId,
+          frameId: '' as Protocol.Page.FrameId,
+          sourceURL: '',
+          title: '',
+          origin: 'regular' as Protocol.CSS.StyleSheetOrigin,
+          disabled: false,
+          isInline: false,
+          isMutable: true,
+          isConstructed: true,
+          startLine: 0,
+          startColumn: 0,
+          endLine: 0,
+          endColumn: initialCSS.length,
+          length: initialCSS.length,
+          loadingFailed: false,
+        });
+
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        // 1. #adopted-style-sheets container is rendered
+        const adoptedStyleSheetsContainer = tree.shadowRoot?.querySelector('.elements-tree-adopted-style-sheets');
+        assert.exists(adoptedStyleSheetsContainer);
+        assert.include(adoptedStyleSheetsContainer.textContent, '#adopted-style-sheets');
+
+        // 2. Expand #adopted-style-sheets container
+        domTree.setAdoptedStyleSheetsExpanded(rootNode, true);
+        await waitForTreeUpdates();
+
+        const adoptedStyleSheetElement = tree.shadowRoot?.querySelector('.elements-tree-adopted-style-sheet');
+        assert.exists(adoptedStyleSheetElement);
+        assert.include(adoptedStyleSheetElement.textContent, '#adopted-style-sheet');
+
+        // 3. Expand #adopted-style-sheet item
+        domTree.setAdoptedStyleSheetExpanded(adoptedSheet, true);
+        await waitForTreeUpdates();
+
+        const contentsElement = tree.shadowRoot?.querySelector('.elements-tree-adopted-style-sheet-contents');
+        assert.exists(contentsElement);
+        const textSpan = contentsElement.querySelector('.webkit-html-text-node');
+        assert.exists(textSpan);
+        assert.include(textSpan.textContent, '.button { color: blue; }');
+        assert.strictEqual(window.getComputedStyle(textSpan).whiteSpace, 'pre-wrap');
+
+        // 4. Select adopted style sheet
+        domTree.selectDOMNode(adoptedSheet);
+        await waitForTreeUpdates();
+        assert.isTrue(domTree.isAdoptedStyleSheetsExpanded(rootNode));
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('delegates highlightAdoptedStyleSheet to elementsTreeOutline in DEFAULT_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const sheetId = 'sheet-id' as Protocol.DOM.StyleSheetId;
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: '#document',
+          adoptedStyleSheets: [sheetId],
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'HTML',
+              children: [],
+            },
+          ],
+        });
+        const adoptedSheet = rootNode.adoptedStyleSheetsForNode[0];
+        assert.exists(adoptedSheet);
+
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const treeOutline = domTree.getTreeOutlineForTesting();
+        assert.exists(treeOutline);
+
+        const highlightSpy = sinon.spy(treeOutline, 'highlightAdoptedStyleSheet');
+        domTree.selectDOMNode(adoptedSheet);
+
+        sinon.assert.calledWith(highlightSpy, adoptedSheet);
       } finally {
         domTree.detach();
       }

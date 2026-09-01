@@ -12,20 +12,21 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("panel_introduction_steps") {
+  split_compilation = true
   sources = [ "PanelIntroductionSteps.ts" ]
-  deps = [
-    "../../../ui/components/helpers:bundle",
-    "../../../ui/lit:bundle",
+  ts_deps = [
+    "../../lit:bundle",
+    "../helpers:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "panel_introduction_steps.ts"
 
-  deps = [
-    ":css_files",
-    ":panel_introduction_steps",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":panel_introduction_steps" ]
 
   visibility = default_components_visibility
 }

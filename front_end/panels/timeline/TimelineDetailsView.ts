@@ -42,31 +42,31 @@ import {TracingFrameLayerTree} from './TracingLayerTree.js';
 
 const UIStrings = {
   /**
-   * @description Text for the summary view
+   * @description Title for the summary tab in the details view of the Performance panel.
    */
   summary: 'Summary',
   /**
-   * @description Text in Timeline Details View of the Performance panel
+   * @description Title for the bottom-up tab in the details view of the Performance panel.
    */
   bottomup: 'Bottom-up',
   /**
-   * @description Text in Timeline Details View of the Performance panel
+   * @description Title for the call tree tab in the details view of the Performance panel.
    */
   callTree: 'Call tree',
   /**
-   * @description Text in Timeline Details View of the Performance panel
+   * @description Title for the event log tab in the details view of the Performance panel.
    */
   eventLog: 'Event log',
   /**
-   * @description Title of the paint profiler, old name of the performance pane
+   * @description Title for the paint profiler tab in the details view of the Performance panel.
    */
   paintProfiler: 'Paint profiler',
   /**
-   * @description Title of the Layers tool
+   * @description Title for the layers tab in the details view of the Performance panel.
    */
   layers: 'Layers',
   /**
-   * @description Title of the selector stats tab
+   * @description Title for the selector stats tab in the details view of the Performance panel.
    */
   selectorStats: 'Selector stats',
 } as const;

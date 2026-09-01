@@ -18,26 +18,23 @@ import * as RecordingMetadata from './RecordingMetadata.js';
 
 const UIStrings = {
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Status text shown in the Performance panel when tracing is being initialized.
    */
   initializingTracing: 'Initializing tracing…',
   /**
-   * @description Text to indicate the progress of a trace. Informs the user that we are currently
-   * creating a performance trace.
+   * @description Status text shown in the Performance panel while recording a trace.
    */
   tracing: 'Tracing…',
   /**
-   * @description Text in Timeline Controller of the Performance panel indicating that the Performance Panel cannot
-   * record a performance trace because the type of target (where possible types are page, service worker and shared
-   * worker) doesn't support it.
+   * @description Error message shown when performance trace recording is not supported for the selected target type in the Performance panel.
    */
   tracingNotSupported: 'Performance trace recording not supported for this type of target',
   /**
-   * @description Text in a status dialog shown during a performance trace of a web page. It indicates to the user what the tracing is currently waiting on.
+   * @description Status text shown in the status dialog while waiting for the page load event.
    */
   waitingForLoadEvent: 'Waiting for load event…',
   /**
-   * @description Text in a status dialog shown during a performance trace of a web page. It indicates to the user what the tracing is currently waiting on.
+   * @description Status text shown in the status dialog while waiting for the page load event and five additional seconds.
    */
   waitingForLoadEventPlus5Seconds: 'Waiting for load event (+5s)…',
 } as const;

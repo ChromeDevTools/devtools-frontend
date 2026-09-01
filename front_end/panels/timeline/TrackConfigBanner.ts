@@ -9,16 +9,16 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-   * @description Message shown in a banner when some tracks are hidden in the timeline.
+   * @description Message shown in a banner when some tracks are hidden in the Performance panel.
    */
   someTracksAreHidden:
-      'Some tracks are hidden in this trace. You can configure tracks by right clicking the track name.',
+      'Some tracks are hidden in this trace. You can configure tracks by right-clicking the track name.',
   /**
-   * @description Text for a button to show all hidden tracks.
+   * @description Button label to show all hidden tracks in the Performance panel.
    */
   showAll: 'Show all',
   /**
-   * @description Text for a button that opens a view to configure which tracks are visible.
+   * @description Button label to open the track configuration view in the Performance panel.
    */
   configureTracks: 'Configure tracks',
 } as const;

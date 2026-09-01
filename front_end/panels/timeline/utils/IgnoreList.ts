@@ -10,19 +10,19 @@ import * as Workspace from '../../../models/workspace/workspace.js';
 
 const UIStrings = {
   /**
-   * @description Refers to when skipping content scripts is enabled and the current script is ignored because it's a content script.
+   * @description Reason why a script is ignored because it is a Chrome extension content script.
    */
   skipContentScripts: 'Content script',
   /**
-   * @description Refers to when skipping known third party scripts is enabled and the current script is ignored because it's a known third party script.
+   * @description Reason why a script is ignored because it is marked with ignoreList in the source map.
    */
   skip3rdPartyScripts: 'Marked with ignoreList in source map',
   /**
-   * @description Refers to when skipping anonymous scripts is enabled and the current script is ignored because is an anonymous script.
+   * @description Reason why a script is ignored because it is an anonymous script.
    */
   skipAnonymousScripts: 'Anonymous script',
   /**
-   * @description Refers to when the current script is ignored because of an unknown rule.
+   * @description Reason why a script is ignored because of an unknown ignore rule.
    */
   unknown: 'Unknown',
 } as const;

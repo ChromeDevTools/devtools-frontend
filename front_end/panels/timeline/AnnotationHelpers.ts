@@ -11,44 +11,44 @@ import type {AnnotationModifiedEvent} from './ModificationsManager.js';
 
 const UIStrings = {
   /**
-   * @description text used to announce to a screen reader that they have entered the mode to edit the label
+   * @description Screen reader announcement when entering label editing mode in the Performance panel.
    */
   srEnterLabelEditMode: 'Editing the annotation label text',
   /**
-   * @description text used to announce to a screen reader that the entry label text has been updated
+   * @description Screen reader announcement when an entry label text has been updated in the Performance panel.
    * @example {Hello world} PH1
    */
   srLabelTextUpdated: 'Label updated to {PH1}',
   /**
-   * @description text used to announce to a screen reader that the bounds of a time range annotation have been upodated
+   * @description Screen reader announcement when the bounds of a time range annotation have been updated in the Performance panel.
    * @example {13ms} PH1
    * @example {20ms} PH2
    */
   srTimeRangeBoundsUpdated: 'Time range updated, starting at {PH1} and ending at {PH2}',
   /**
-   * @description label for a time range overlay
+   * @description Accessible label for a time range overlay in the timeline flame chart.
    */
   timeRange: 'time range',
   /**
-   * @description label for a entry label overlay
+   * @description Accessible label for an entry label overlay in the timeline flame chart.
    */
   entryLabel: 'entry label',
   /**
-   * @description label for a connected entries overlay
+   * @description Accessible label for a connected entries overlay in the timeline flame chart.
    */
   entriesLink: 'connected entries',
   /**
-   * @description screen reader text to announce that an annotation has been removed
+   * @description Screen reader announcement when an annotation has been removed in the Performance panel.
    * @example {Entry Label} PH1
    */
   srAnnotationRemoved: 'The {PH1} annotation has been removed',
   /**
-   * @description screen reader text to announce that an annotation has been added
+   * @description Screen reader announcement when an annotation has been added in the Performance panel.
    * @example {Entry Label} PH1
    */
   srAnnotationAdded: 'The {PH1} annotation has been added',
   /**
-   * @description screen reader text to announce the two events that the connected entries annotation links to
+   * @description Screen reader announcement when the connected entries annotation links to two events in the Performance panel.
    * @example {Paint} PH1
    * @example {Function call} PH2
    */

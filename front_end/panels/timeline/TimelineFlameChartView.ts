@@ -49,7 +49,7 @@ import * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   * @description Text in Timeline Flame Chart View of the Performance panel
+   * @description Accessible title for a timeline marker at a given timestamp in the Performance panel.
    * @example {Frame} PH1
    * @example {10ms} PH2
    */

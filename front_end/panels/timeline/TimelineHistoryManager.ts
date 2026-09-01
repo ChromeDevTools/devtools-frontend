@@ -30,42 +30,42 @@ export const LANDING_PAGE_INDEX_DROPDOWN_CHOICE = Infinity;
 
 const UIStrings = {
   /**
-   * @description Screen reader label for the Timeline History dropdown button
+   * @description Screen reader announcement for the current session in the timeline history dropdown button.
    * @example {example.com #3} PH1
    * @example {Show recent timeline sessions} PH2
    */
   currentSessionSS: 'Current session: {PH1}. {PH2}',
   /**
-   * @description the title shown when the user is viewing the landing page which is showing live performance metrics that are updated automatically.
+   * @description Title shown when viewing the live metrics landing page in the Performance panel.
    */
   landingPageTitle: 'Live metrics',
   /**
-   * @description the title shown when the user is viewing the landing page which can be used to make a new performance recording.
+   * @description Title shown when viewing the new recording landing page for Node.js in the Performance panel.
    */
   nodeLandingPageTitle: 'New recording',
   /**
-   * @description Text in Timeline History Manager of the Performance panel
+   * @description Format for a trace title with domain and sequence number in the timeline history dropdown.
    * @example {example.com} PH1
    * @example {2} PH2
    */
   sD: '{PH1} #{PH2}',
   /**
-   * @description Text in Timeline History Manager showing custom title alongside domain sequence number
+   * @description Format for a custom trace title with sequence number in the timeline history dropdown.
    * @example {Custom Profile} PH1
    * @example {example.com #2} PH2
    */
   customTitleWithSequence: '{PH1} ({PH2})',
   /**
-   * @description Accessible label for the timeline session selection menu
+   * @description Accessible label for the timeline session selection dropdown in the Performance panel.
    */
   selectTimelineSession: 'Select timeline session',
   /**
-   * @description Text label for a menu item indicating that a specific slowdown multiplier is applied.
+   * @description Label indicating a CPU slowdown multiplier applied to a recording in the timeline history dropdown.
    * @example {2} PH1
    */
   dSlowdown: '{PH1}× slowdown',
   /**
-   * @description Tooltip text that appears when hovering over the Back arrow inside the 'Select Timeline Session' dropdown in the Performance pane.
+   * @description Tooltip for the back button in the timeline session selection dropdown in the Performance panel.
    */
   backButtonTooltip: 'View live metrics page',
 } as const;

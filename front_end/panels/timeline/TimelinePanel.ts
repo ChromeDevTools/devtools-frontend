@@ -95,160 +95,155 @@ import type * as Utils from './utils/utils.js';
 
 const UIStrings = {
   /**
-   * @description Text that appears when user drag and drop something (for example, a file) in Timeline Panel of the Performance panel
+   * @description Text shown on the drag-and-drop overlay in the Performance panel.
    */
   dropTimelineFileOrUrlHere: 'Drop trace file or URL here',
   /**
-   * @description Dropdown option in the performance panel for the default screenshot capture preset (500 x 500 pixels,
-   * up to 450 frames).
+   * @description Dropdown option in the Performance panel for the default screenshot capture preset (500 x 500 pixels, up to 450 frames).
    */
   screenshotPresetDefault: '500 x 500 px, up to 450 frames',
   /**
-   * @description Dropdown option in the performance panel for a screenshot capture preset that uses smaller frames so
-   * more of them fit in the per-session memory budget (250 x 250 pixels, up to 1800 frames).
+   * @description Dropdown option in the Performance panel for a screenshot capture preset that uses smaller frames so more fit in memory (250 x 250 pixels, up to 1800 frames).
    */
   screenshotPresetMedium: '250 x 250 px, up to 1800 frames',
   /**
-   * @description Dropdown option in the performance panel for a screenshot capture preset that uses higher-resolution
-   * frames at the cost of capturing fewer of them (1000 x 1000 pixels, up to 100 frames).
+   * @description Dropdown option in the Performance panel for a screenshot capture preset that uses higher-resolution frames (1000 x 1000 pixels, up to 100 frames).
    */
   screenshotPresetLarge: '1000 x 1000 px, up to 100 frames',
   /**
-   * @description Dropdown option in the performance panel for a screenshot capture preset that uses very small frames
-   * so many of them fit in the per-session memory budget (100 x 100 pixels, up to 11250 frames).
+   * @description Dropdown option in the Performance panel for a screenshot capture preset that uses very small frames (100 x 100 pixels, up to 11250 frames).
    */
   screenshotPresetTiny: '100 x 100 px, up to 11250 frames',
   /**
-   * @description Text to clear content
+   * @description Tooltip for the clear button in the Performance panel toolbar.
    */
   clear: 'Clear',
   /**
-   * @description A label for a button that fixes something.
+   * @description Adorner label for a trace event that needs attention.
    */
   fixMe: 'Fix me',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon load button
+   * @description Tooltip for the load trace button in the Performance panel toolbar.
    */
   loadTrace: 'Load trace…',
   /**
-   * @description Text to take screenshots
+   * @description Label for the capture screenshots checkbox in the Performance panel settings.
    */
   captureScreenshots: 'Capture screenshots',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Label for the show memory timeline checkbox in the Performance panel toolbar.
    */
   showMemoryTimeline: 'Show memory timeline',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon settings gear in show settings pane setting in timeline panel of the performance panel
+   * @description Tooltip for the capture settings button in the Performance panel toolbar.
    */
   captureSettings: 'Capture settings',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Tooltip for the checkbox that disables JavaScript sampling in the capture settings of the Performance panel.
    */
   disablesJavascriptSampling: 'Disables JavaScript sampling, reduces overhead when running against mobile devices',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Tooltip for the checkbox that captures advanced paint instrumentation in the capture settings of the Performance panel.
    */
   capturesAdvancedPaint: 'Captures advanced paint instrumentation, introduces significant performance overhead',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Tooltip for the checkbox that captures CSS selector statistics in the capture settings of the Performance panel.
    */
   capturesSelectorStats: 'Captures CSS selector statistics',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Label for the network throttling setting in the capture settings of the Performance panel.
    */
   network: 'Network:',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Label for the CPU throttling setting in the capture settings of the Performance panel.
    */
   cpu: 'CPU:',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Status message indicating that CPU throttling is enabled in the Performance panel.
    */
   CpuThrottlingIsEnabled: '- CPU throttling is enabled',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Status message indicating that network throttling is enabled in the Performance panel.
    */
   NetworkThrottlingIsEnabled: '- Network throttling is enabled',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Status message indicating that advanced paint instrumentation is active in the Performance panel.
    */
   SignificantOverheadDueToPaint: '- Significant overhead due to paint instrumentation',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Status message indicating that CSS selector statistics capture is enabled in the Performance panel.
    */
   SelectorStatsEnabled: '- Selector stats is enabled',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Status message indicating that JavaScript sampling is disabled in the Performance panel.
    */
   JavascriptSamplingIsDisabled: '- JavaScript sampling is disabled',
   /**
-   *@description Text in Timeline Panel of the Performance panel
+   * @description Status text shown while stopping a timeline recording in the Performance panel.
    */
   stoppingTimeline: 'Stopping timeline…',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Status label for received data during trace recording in the Performance panel.
    */
   received: 'Received',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Status label for processed data during trace recording in the Performance panel.
    */
   processed: 'Processed',
   /**
-   * @description Text to close something
+   * @description Button label to close the status dialog in the Performance panel.
    */
   close: 'Close',
   /**
-   * @description Status text to indicate the recording has failed in the Performance panel
+   * @description Status text indicating that trace recording failed in the Performance panel.
    */
   recordingFailed: 'Recording failed',
   /**
-   * @description Status text to indicate that exporting the trace has failed
+   * @description Status text indicating that exporting the trace failed in the Performance panel.
    */
   exportingFailed: 'Exporting the trace failed',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Status text shown while initializing trace recording in the Performance panel.
    */
   initializingTracing: 'Initializing tracing…',
   /**
-   * @description Text to indicate the progress of a trace. Informs the user that we are currently
-   * creating a performance trace.
+   * @description Status text shown while recording a trace in the Performance panel.
    */
   tracing: 'Tracing…',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Label for trace buffer usage progress in the status dialog of the Performance panel.
    */
   bufferUsage: 'Buffer usage',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Status text shown while loading a trace file in the Performance panel.
    */
   loadingTrace: 'Loading trace…',
   /**
-   * @description Text in Timeline Panel of the Performance panel
+   * @description Status text shown while processing a trace in the Performance panel.
    */
   processingTrace: 'Processing trace…',
   /**
-   * @description Text in Timeline Panel of the Performance panel. Shown to the user after they request to download the trace.
+   * @description Status text shown while preparing a trace for download in the Performance panel.
    */
   preparingTraceForDownload: 'Preparing…',
   /**
-   * @description Text in Timeline Panel of the Performance panel. Shown to the user after they request to download the trace.
+   * @description Status text shown while compressing a trace for download in the Performance panel.
    */
   compressingTraceForDownload: 'Compressing…',
   /**
-   * @description Text in Timeline Panel of the Performance panel. Shown to the user after they request to download the trace.
+   * @description Status text shown while encoding a trace for download in the Performance panel.
    */
   encodingTraceForDownload: 'Encoding…',
   /**
-   * @description Tooltip description for a checkbox that toggles the visibility of data added by extensions of this panel (Performance).
+   * @description Label for the checkbox to show data added by extensions in the Performance panel.
    */
   showDataAddedByExtensions: 'Show data added by extensions of the Performance panel',
   /**
-   * @description Tooltip for the the sidebar toggle in the Performance panel. Command to open/show the sidebar.
+   * @description Tooltip for the button to show the sidebar in the Performance panel.
    */
   showSidebar: 'Show sidebar',
   /**
-   * @description Tooltip for the the sidebar toggle in the Performance panel. Command to close the sidebar.
+   * @description Tooltip for the button to hide the sidebar in the Performance panel.
    */
   hideSidebar: 'Hide sidebar',
   /**
@@ -260,49 +255,48 @@ const UIStrings = {
    */
   sidebarHidden: 'Performance sidebar hidden',
   /**
-   * @description Screen reader announcement when the user clears their selection
+   * @description Screen reader announcement when the selection is cleared in the Performance panel.
    */
   selectionCleared: 'Selection cleared',
   /**
-   * @description Screen reader announcement when the user selects a frame.
+   * @description Screen reader announcement when a frame is selected in the Performance panel.
    */
   frameSelected: 'Frame selected',
   /**
-   * @description Screen reader announcement when the user selects a trace event.
+   * @description Screen reader announcement when a trace event is selected in the Performance panel.
    * @example {Paint} PH1
    */
   eventSelected: 'Event {PH1} selected',
   /**
-   * @description Text of a hyperlink to documentation.
+   * @description Link text to open documentation in the Performance panel.
    */
   learnMore: 'Learn more',
   /**
-   * @description Tooltip text for a button that takes the user back to the default view which shows performance metrics that are live.
+   * @description Tooltip for the button to return to the live metrics page in the Performance panel.
    */
   backToLiveMetrics: 'Go back to the live metrics page',
   /**
-   * @description Description of the Timeline zoom keyboard instructions that appear in the shortcuts dialog
+   * @description Label for zoom keyboard shortcuts in the shortcuts dialog of the Performance panel.
    */
   timelineZoom: 'Zoom',
   /**
-   * @description Description of the Timeline scrolling & panning instructions that appear in the shortcuts dialog.
+   * @description Label for scroll and pan keyboard shortcuts in the shortcuts dialog of the Performance panel.
    */
-  timelineScrollPan: 'Scroll & Pan',
+  timelineScrollPan: 'Scroll & pan',
   /**
-   * @description Description for the Dim 3rd Parties checkbox tooltip describing how 3rd parties are classified.
+   * @description Tooltip describing that third-party entities are classified by the third-party-web database.
    */
   thirdPartiesByThirdPartyWeb: '3rd parties classified by third-party-web',
   /**
-   * @description Title of the shortcuts dialog shown to the user that lists keyboard shortcuts.
+   * @description Title of the shortcuts dialog listing keyboard shortcuts for the timeline flame chart.
    */
-  shortcutsDialogTitle: 'Keyboard shortcuts for flamechart',
+  shortcutsDialogTitle: 'Keyboard shortcuts for flame chart',
   /**
-   * @description Header for the confirmation dialog asking the user whether
-   * to load a CPU profile recorded by console.profile().
+   * @description Header for the confirmation dialog asking whether to load a CPU profile in the Performance panel.
    */
   loadCpuProfileHeader: 'Load CPU profile?',
   /**
-   * @description Confirmation message asking the user whether to load a CPU profile recorded by console.profile().
+   * @description Confirmation message asking whether to load a recorded CPU profile into the Performance panel.
    * @example {Profile 1} PH1
    */
   loadCpuProfileConfirmation: 'Do you want to load the recorded CPU profile "{PH1}" into the Performance panel?',

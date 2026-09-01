@@ -13,123 +13,123 @@ import type * as Timeline from './timeline.js';
 
 const UIStrings = {
   /**
-   * @description Text for the performance of something
+   * @description Name of the Performance panel.
    */
   performance: 'Performance',
   /**
-   * @description Command for showing the 'Performance' tool
+   * @description Command to show the Performance panel.
    */
   showPerformance: 'Show Performance',
   /**
-   * @description Text to record a series of actions for analysis
+   * @description Title of an action to start recording a performance trace.
    */
   record: 'Record',
   /**
-   * @description Text of an item that stops the running task
+   * @description Title of an action to stop recording a performance trace.
    */
   stop: 'Stop',
   /**
-   * @description Title of an action in the timeline tool to record reload
+   * @description Title of an action to record a performance trace while reloading the page.
    */
   recordAndReload: 'Record and reload',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon download button
+   * @description Title of an action to save the current performance profile.
    */
   saveProfile: 'Save profile…',
   /**
-   * @description Tooltip text that appears when hovering over the largeicon load button
+   * @description Title of an action to load a performance profile.
    */
   loadProfile: 'Load profile…',
   /**
-   * @description Prev button title in Film Strip View of the Performance panel
+   * @description Title of an action to navigate to the previous frame in the film strip view of the Performance panel.
    */
   previousFrame: 'Previous frame',
   /**
-   * @description Next button title in Film Strip View of the Performance panel
+   * @description Title of an action to navigate to the next frame in the film strip view of the Performance panel.
    */
   nextFrame: 'Next frame',
   /**
-   * @description Title of an action in the timeline tool to show history
+   * @description Title of an action to show recent timeline sessions in the Performance panel.
    */
   showRecentTimelineSessions: 'Show recent timeline sessions',
   /**
-   * @description Title of an action that opens the previous recording in the performance panel
+   * @description Title of an action to switch to the previous recording in the Performance panel.
    */
   previousRecording: 'Previous recording',
   /**
-   * @description Title of an action that opens the next recording in the performance panel
+   * @description Title of an action to switch to the next recording in the Performance panel.
    */
   nextRecording: 'Next recording',
   /**
-   * @description Title of a setting under the Performance category in Settings
+   * @description Title of a setting under the Performance category in Settings to show Chrome frame in the Layers view.
    */
   chromeFrameInLayersView: 'Chrome frame in Layers view',
   /**
-   * @description Title of a setting under the Performance category in Settings
+   * @description Title of a setting under the Performance category in Settings to show all events.
    */
   timelineShowAllEvents: 'Show all events',
   /**
-   * @description Title of a setting under the Performance category in Settings
+   * @description Title of a setting under the Performance category in Settings to enable soft navigation monitoring.
    */
   enableSoftNavigations: 'Enable soft navigation performance monitoring',
   /**
-   * @description Title of a setting under the Performance category in Settings
+   * @description Title of a setting under the Performance category in Settings to enable timeline debug mode.
    */
   timelineDebugMode: 'Timeline debug mode (trace event details, etc.)',
   /**
-   * @description Title of a setting under the Performance category in Settings
+   * @description Title of a setting under the Performance category in Settings for invalidation tracking.
    */
   timelineInvalidationTracking: 'Invalidation tracking',
   /**
-   * @description Title of a setting in Performance panel.
+   * @description Title of a setting in the Performance panel to disable JavaScript samples.
    */
   disableJavascriptSamples: 'Disable JavaScript samples',
   /**
-   * @description Title of a setting in Performance panel.
+   * @description Title of a setting in the Performance panel to enable advanced paint instrumentation.
    */
   enableAdvancedPaint: 'Enable advanced paint instrumentation (slow)',
   /**
-   * @description Title of a setting in Performance panel.
+   * @description Title of a setting in the Performance panel to enable CSS selector stats.
    */
   enableSelectorStats: 'Enable CSS selector stats (slow)',
   /**
-   * @description Title of a setting in Performance panel.
+   * @description Title of a setting in the Performance panel to configure screenshot capture.
    */
   screenshotCapture: 'Screenshot capture',
   /**
-   * @description Title of a setting in Performance panel.
+   * @description Title of a setting in the Performance panel to capture screenshots.
    */
   screenshots: 'Screenshots',
   /**
-   * @description Title of a setting in Performance panel.
+   * @description Title of a setting in the Performance panel to show memory counters.
    */
   memory: 'Memory',
   /**
-   * @description Title of a setting in Performance panel.
+   * @description Title of a setting in the Performance panel to dim third parties.
    */
   dimThirdParties: 'Dim 3rd parties',
   /**
-   * @description Title of a setting in Performance panel.
+   * @description Title of a setting in the Performance panel to show custom tracks.
    */
   showCustomtracks: 'Show custom tracks',
   /**
-   * @description Title of a setting in Performance panel counters graph.
+   * @description Title of a counter setting in the Performance panel counters graph for the JS heap.
    */
   jsHeap: 'JS heap',
   /**
-   * @description Title of a setting in Performance panel counters graph.
+   * @description Title of a counter setting in the Performance panel counters graph for documents.
    */
   documents: 'Documents',
   /**
-   * @description Title of a setting in Performance panel counters graph.
+   * @description Title of a counter setting in the Performance panel counters graph for DOM nodes.
    */
   nodes: 'Nodes',
   /**
-   * @description Title of a setting in Performance panel counters graph.
+   * @description Title of a counter setting in the Performance panel counters graph for event listeners.
    */
   listeners: 'Listeners',
   /**
-   * @description Title of a setting in Performance panel counters graph.
+   * @description Title of a counter setting in the Performance panel counters graph for GPU memory.
    */
   gpuMemory: 'GPU memory',
 } as const;

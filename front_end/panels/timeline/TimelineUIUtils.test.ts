@@ -598,7 +598,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
         },
         {
           title: 'Selector stats',
-          value: 'Select "" to collect detailed CSS selector matching statistics.',
+          value: 'Select "" to collect detailed CSS selector matching statistics',
         },
         {
           // The "Recalculation forced" Stack trace

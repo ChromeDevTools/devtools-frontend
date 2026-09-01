@@ -15,7 +15,7 @@ import type {Client} from './TimelineController.js';
 
 const UIStrings = {
   /**
-   * @description Text in Timeline Loader of the Performance panel
+   * @description Error message displayed when timeline trace data cannot be parsed in the Performance panel.
    * @example {Unknown JSON format} PH1
    */
   malformedTimelineDataS: 'Malformed timeline data: {PH1}',

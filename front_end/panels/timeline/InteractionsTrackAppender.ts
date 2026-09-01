@@ -19,7 +19,7 @@ import * as Components from './components/components.js';
 
 const UIStrings = {
   /**
-   * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+   * @description Header for the interactions track in the timeline flame chart of the Performance panel.
    */
   interactions: 'Interactions',
 } as const;

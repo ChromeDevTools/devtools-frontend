@@ -10,11 +10,11 @@ import * as UI from '../../ui/legacy/legacy.js';
 
 const UIStrings = {
   /**
-   * @description Text to show an item is empty
+   * @description Placeholder text shown when a JavaScript VM isolate has no label in the Performance panel.
    */
   empty: '(empty)',
   /**
-   * @description Text in isolate selector in Performance panel
+   * @description Title for the dropdown to select a JavaScript VM instance in the Performance panel.
    */
   selectJavascriptVmInstance: 'Select JavaScript VM instance',
 } as const;

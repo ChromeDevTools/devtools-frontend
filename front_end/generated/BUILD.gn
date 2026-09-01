@@ -2,10 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/devtools_module.gni")
+import("../../scripts/build/typescript/ts_library_split.gni")
 
-devtools_module("generated") {
-  split_compilation = true
+ts_library_split("generated") {
   sources = [
     "ARIAProperties.ts",
     "Deprecation.ts",
@@ -15,8 +14,4 @@ devtools_module("generated") {
     "protocol-proxy-api.d.ts",
     "protocol.ts",
   ]
-
-  deps = []
-
-  visibility = [ "*" ]
 }

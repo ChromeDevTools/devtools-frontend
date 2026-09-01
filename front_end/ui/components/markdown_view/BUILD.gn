@@ -18,6 +18,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("markdown_view") {
+  split_compilation = true
   sources = [
     "CodeBlock.ts",
     "MarkdownImage.ts",
@@ -25,31 +26,32 @@ devtools_ui_module("markdown_view") {
     "MarkdownLinksMap.ts",
     "MarkdownView.ts",
   ]
-  deps = [
+  ts_deps = [
     "../../../core/i18n:bundle",
     "../../../third_party/codemirror.next:bundle",
     "../../../third_party/marked:bundle",
-    "../../../ui/components/buttons:bundle",
-    "../../../ui/components/text_editor:bundle",
-    "../../../ui/kit:bundle",
-    "../../../ui/legacy:bundle",
-    "../../../ui/lit:bundle",
-    "../../../ui/visual_logging:bundle",
+    "../../kit:bundle",
+    "../../legacy:bundle",
+    "../../lit:bundle",
+    "../../visual_logging:bundle",
+    "../buttons:bundle",
+    "../text_editor:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "markdown_view.ts"
 
-  deps = [
-    ":css_files",
-    ":markdown_view",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":markdown_view" ]
 
   visibility = default_components_visibility
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -58,7 +60,7 @@ devtools_ui_module("unittests") {
     "MarkdownView.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",

@@ -14,7 +14,7 @@
  * imported in any component, instead add link in map and
  * use getMarkdownLink to get the appropriate link.
  **/
-export const markdownLinks = new Map<string, string>([
+export const markdownLinks: Map<string, string> = new Map<string, string>([
   ['issuesContrastWCAG21AA', 'https://www.w3.org/TR/WCAG21/#contrast-minimum'],
   ['issuesContrastWCAG21AAA', 'https://www.w3.org/TR/WCAG21/#contrast-enhanced'],
   ['issuesContrastSuggestColor', 'https://developers.google.com/web/updates/2020/08/devtools#accessible-color'],

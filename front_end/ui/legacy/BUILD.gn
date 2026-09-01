@@ -160,7 +160,7 @@ devtools_entrypoint("bundle") {
     "../components/markdown_view:*",
     "../components/menus:*",
     "../components/panel_feedback/*",
-    "../components/request_link_icon:unittests",
+    "../components/request_link_icon:*",
     "../components/snackbars:*",
     "../components/text_editor/*",
     "../components/tooltips:*",

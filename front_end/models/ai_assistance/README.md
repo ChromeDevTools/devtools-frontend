@@ -127,7 +127,7 @@ npm start -- --browser=canary
 or
 
 ```
-/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary --custom-devtools-frontend=file://$(realpath out/Fast/gen/front_end)
+/Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary --custom-devtools-frontend=file://$(realpath out/Default/gen/front_end)
 ```
 
 ### Enable debug logs

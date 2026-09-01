@@ -16,36 +16,38 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("panel_feedback") {
+  split_compilation = true
   sources = [
     "FeedbackButton.ts",
     "PanelFeedback.ts",
     "PreviewToggle.ts",
   ]
-  deps = [
+  ts_deps = [
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
     "../../../core/root:bundle",
-    "../../../ui/components/helpers:bundle",
-    "../../../ui/legacy:bundle",
-    "../../../ui/lit:bundle",
     "../../kit:bundle",
+    "../../legacy:bundle",
+    "../../lit:bundle",
     "../buttons:bundle",
+    "../helpers:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "panel_feedback.ts"
 
-  deps = [
-    ":css_files",
-    ":panel_feedback",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":panel_feedback" ]
 
   visibility = default_components_visibility
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -54,7 +56,7 @@ devtools_ui_module("unittests") {
     "PreviewToggle.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../core/host:bundle",
     "../../../core/platform:bundle",

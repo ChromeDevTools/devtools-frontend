@@ -6,9 +6,9 @@ import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_ui_module("extensions") {
+  split_compilation = true
   sources = [ "ExtensionManager.ts" ]
-
-  deps = [
+  ts_deps = [
     "../../../core/common:bundle",
     "../../../models/extensions:bundle",
     "../../../panels/common:bundle",
@@ -18,9 +18,9 @@ devtools_ui_module("extensions") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "extensions.ts"
-
-  deps = [ ":extensions" ]
+  ts_deps = [ ":extensions" ]
 
   visibility = [
     ":*",

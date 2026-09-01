@@ -93,7 +93,7 @@ class RecordingClient {
 
   constructor(
       bindings: AccessibilityBindings,
-      options = RecordingClient.defaultSetupOptions,
+      options: Readonly<RecordingClientOptions> = RecordingClient.defaultSetupOptions,
   ) {
     this.#logger = new Logger(options.debug ? 'debug' : 'silent');
     this.#logger.log('creating a RecordingClient');

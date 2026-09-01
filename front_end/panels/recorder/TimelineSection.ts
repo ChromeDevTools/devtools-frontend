@@ -56,7 +56,8 @@ export class TimelineSection extends UI.Widget.Widget {
   #isSelected = false;
   #view: typeof DEFAULT_VIEW;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement,
+              view: (input: ViewInput, _output: ViewOutput, target: HTMLElement) => void = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
   }

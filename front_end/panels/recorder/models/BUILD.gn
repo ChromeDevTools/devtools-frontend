@@ -7,6 +7,7 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 
 devtools_ui_module("recorder") {
+  split_compilation = true
   sources = [
     "ConverterIds.ts",
     "RecorderSettings.ts",
@@ -23,8 +24,7 @@ devtools_ui_module("recorder") {
     "Section.ts",
     "Tooltip.ts",
   ]
-
-  deps = [
+  ts_deps = [
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
@@ -34,7 +34,7 @@ devtools_ui_module("recorder") {
     "../../../third_party/puppeteer:bundle",
     "../../../third_party/puppeteer-replay:bundle",
     "../../../ui/legacy:bundle",
-    "../injected:bundle",
+    "../injected",
     "../util:bundle",
   ]
 
@@ -42,9 +42,9 @@ devtools_ui_module("recorder") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "models.ts"
-
-  deps = [ ":recorder" ]
+  ts_deps = [ ":recorder" ]
 
   visibility = [
     ":*",
@@ -61,6 +61,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -73,8 +74,7 @@ devtools_ui_module("unittests") {
     "recording-storage.test.ts",
     "screenshot-storage.test.ts",
   ]
-
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../core/common:bundle",
     "../../../core/host:bundle",

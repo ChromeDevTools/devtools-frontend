@@ -2,58 +2,43 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../../../scripts/build/ninja/copy.gni")
-import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/ninja/node.gni")
+import("../../../../scripts/build/typescript/typescript.gni")
 
-devtools_ui_module("injected") {
-  sources = [
-    "Logger.ts",
-    "MonotonicArray.ts",
-    "RecordingClient.ts",
-    "SelectorComputer.ts",
-    "SelectorPicker.ts",
-    "Step.ts",
-    "selectors/ARIASelector.ts",
-    "selectors/CSSSelector.ts",
-    "selectors/PierceSelector.ts",
-    "selectors/Selector.ts",
-    "selectors/TextSelector.ts",
-    "selectors/XPath.ts",
-    "util.ts",
-  ]
+recorder_injected_sources = [
+  "Logger.ts",
+  "MonotonicArray.ts",
+  "RecordingClient.ts",
+  "SelectorComputer.ts",
+  "SelectorPicker.ts",
+  "Step.ts",
+  "injected.ts",
+  "selectors/ARIASelector.ts",
+  "selectors/CSSSelector.ts",
+  "selectors/PierceSelector.ts",
+  "selectors/Selector.ts",
+  "selectors/TextSelector.ts",
+  "selectors/XPath.ts",
+  "util.ts",
+]
 
-  visibility = [
-    ":*",
-    "../:*",
-    "../../../../test/interactions/front_end/panels/recorder/*",
-    "../../../ui/components/docs/recorder_injected/*",
-    "../controllers:*",
-    "../models:*",
-  ]
+devtools_module("injected") {
+  split_compilation = true
+  sources = recorder_injected_sources
 
-  deps = [
+  ts_deps = [
     "../../../third_party/puppeteer",
     "../../../third_party/puppeteer:bundle",
     "../../../third_party/puppeteer-replay:bundle",
   ]
-}
-
-devtools_entrypoint("bundle") {
-  entrypoint = "injected.ts"
 
   visibility = [
     ":*",
     "../:*",
-    "../../../../test/interactions/panels/recorder/*",
-    "../../../ui/components/docs/recorder_injected/*",
-    "../controllers:*",
     "../models:*",
     "selectors:*",
   ]
-
-  deps = [ ":injected" ]
 }
 
 node_action("bundled_library") {
@@ -63,11 +48,16 @@ node_action("bundled_library") {
   _output_file_location = target_gen_dir + "/injected.generated.js"
 
   inputs = [
-    _bundled_entrypoint,
-    "rollup.config.mjs",
-  ]
+             _bundled_entrypoint,
+             "rollup.config.mjs",
+           ] + recorder_injected_sources
 
-  deps = [ ":bundle" ]
+  deps = []
+  if (!devtools_skip_typecheck) {
+    deps += [ ":injected_checked" ]
+  } else {
+    deps += [ ":injected" ]
+  }
 
   args = [
     "--config",
@@ -83,7 +73,14 @@ node_action("bundled_library") {
   }
 
   outputs = [ _output_file_location ]
+  data = outputs
   metadata = {
     grd_files = [ _output_file_location ]
   }
+
+  visibility = [
+    ":*",
+    "../:*",
+    "../models:*",
+  ]
 }

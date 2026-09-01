@@ -882,7 +882,7 @@ export class RecordingView extends UI.Widget.Widget {
   settings?: Models.RecordingSettings.RecordingSettings;
   lastReplayResult?: Models.RecordingPlayer.ReplayResult;
   replayAllowed = false;
-  breakpointIndexes = new Set<number>();
+  breakpointIndexes: Set<number> = new Set<number>();
   extensionConverters: readonly Converters.Converter.Converter[] = [];
   replayExtensions?: Extensions.ExtensionManager.Extension[];
   extensionDescriptor?: PublicExtensions.RecorderPluginManager.ViewDescriptor;

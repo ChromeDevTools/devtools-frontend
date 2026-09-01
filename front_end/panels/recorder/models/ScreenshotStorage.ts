@@ -28,7 +28,7 @@ export class ScreenshotStorage {
   #screenshots: Map<string, ScreenshotMetaData>;
   #maxStorageSize: number;
 
-  constructor(maxStorageSize = DEFAULT_MAX_STORAGE_SIZE) {
+  constructor(maxStorageSize: number = DEFAULT_MAX_STORAGE_SIZE) {
     this.#screenshotSettings = Common.Settings.Settings.instance().createSetting(
         'recorder-screenshots',
         [],

@@ -49,5 +49,5 @@ export function areSelectorsEqual(stepA: Step, stepB: Step): boolean {
 
 export const minTimeout = 1;
 export const maxTimeout = 30000;
-export const parse = PuppeteerReplay.parse;
-export const parseStep = PuppeteerReplay.parseStep;
+export const parse: typeof PuppeteerReplay.parse = PuppeteerReplay.parse;
+export const parseStep: typeof PuppeteerReplay.parseStep = PuppeteerReplay.parseStep;

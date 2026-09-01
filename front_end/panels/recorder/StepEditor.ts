@@ -38,16 +38,20 @@ type Attribute = Keys<Models.Schema.Step>;
 
 type DataType<A extends Attribute> = ReturnType<typeof typeConverters[typeof dataTypeByAttribute[A]]>;
 
-const typeConverters = Object.freeze({
-  string: (value: string) => value.trim(),
-  number: (value: string) => {
+const typeConverters: Readonly<{
+  string: (value: string) => string,
+  number: (value: string) => number,
+  boolean: (value: string) => boolean,
+}> = Object.freeze({
+  string: (value: string): string => value.trim(),
+  number: (value: string): number => {
     const number = parseFloat(value);
     if (Number.isNaN(number)) {
       return 0;
     }
     return number;
   },
-  boolean: (value: string) => {
+  boolean: (value: string): boolean => {
     if (value.toLowerCase() === 'true') {
       return true;
     }
@@ -55,7 +59,41 @@ const typeConverters = Object.freeze({
   },
 });
 
-const dataTypeByAttribute = Object.freeze({
+const dataTypeByAttribute: Readonly<{
+    readonly selectors: 'string',
+    readonly offsetX: 'number',
+    readonly offsetY: 'number',
+    readonly target: 'string',
+    readonly frame: 'number',
+    readonly assertedEvents: 'string',
+    readonly value: 'string',
+    readonly key: 'string',
+    readonly operator: 'string',
+    readonly count: 'number',
+    readonly expression: 'string',
+    readonly x: 'number',
+    readonly y: 'number',
+    readonly url: 'string',
+    readonly type: 'string',
+    readonly timeout: 'number',
+    readonly duration: 'number',
+    readonly button: 'string',
+    readonly deviceType: 'string',
+    readonly width: 'number',
+    readonly height: 'number',
+    readonly deviceScaleFactor: 'number',
+    readonly isMobile: 'boolean',
+    readonly hasTouch: 'boolean',
+    readonly isLandscape: 'boolean',
+    readonly download: 'number',
+    readonly upload: 'number',
+    readonly latency: 'number',
+    readonly name: 'string',
+    readonly parameters: 'string',
+    readonly visible: 'boolean',
+    readonly properties: 'string',
+    readonly attributes: 'string',
+}> = Object.freeze({
   selectors: 'string',
   offsetX: 'number',
   offsetY: 'number',
@@ -91,7 +129,48 @@ const dataTypeByAttribute = Object.freeze({
   attributes: 'string',
 } as const);
 
-const defaultValuesByAttribute = deepFreeze({
+const defaultValuesByAttribute: DeepImmutable<{
+  selectors: string[][],
+  offsetX: number,
+  offsetY: number,
+  target: string,
+  frame: number[],
+  assertedEvents: Array<{
+    type: string,
+    url: string,
+    title: string,
+  }>,
+  value: string,
+  key: string,
+  operator: string,
+  count: number,
+  expression: string,
+  x: number,
+  y: number,
+  url: string,
+  timeout: number,
+  duration: number,
+  deviceType: string,
+  button: string,
+  type: string,
+  width: number,
+  height: number,
+  deviceScaleFactor: number,
+  isMobile: boolean,
+  hasTouch: boolean,
+  isLandscape: boolean,
+  download: number,
+  upload: number,
+  latency: number,
+  name: string,
+  parameters: string,
+  properties: string,
+  attributes: Array<{
+    name: string,
+    value: string,
+  }>,
+  visible: boolean,
+}> = deepFreeze({
   selectors: [['.cls']],
   offsetX: 1,
   offsetY: 1,
@@ -998,7 +1077,7 @@ export class StepEditor extends UI.Widget.Widget {
   onStepEdited?: (step: Models.Schema.Step) => void;
   onAttributeRequested?: (send: (attribute?: string) => void) => void;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#state = {type: Models.Schema.StepType.WaitForElement};
     this.#view = view;

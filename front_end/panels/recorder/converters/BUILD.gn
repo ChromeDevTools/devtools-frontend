@@ -7,6 +7,7 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 
 devtools_ui_module("converters") {
+  split_compilation = true
   sources = [
     "Converter.ts",
     "ExtensionConverter.ts",
@@ -16,8 +17,7 @@ devtools_ui_module("converters") {
     "PuppeteerFirefoxConverter.ts",
     "PuppeteerReplayConverter.ts",
   ]
-
-  deps = [
+  ts_deps = [
     "../../../third_party/puppeteer-replay:bundle",
     "../extensions:bundle",
     "../models:bundle",
@@ -27,9 +27,9 @@ devtools_ui_module("converters") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "converters.ts"
-
-  deps = [ ":converters" ]
+  ts_deps = [ ":converters" ]
 
   visibility = [
     ":*",
@@ -40,6 +40,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -47,8 +48,7 @@ devtools_ui_module("unittests") {
     "PuppeteerConverter.test.ts",
     "PuppeteerReplayConverter.test.ts",
   ]
-
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../testing",
     "../models:bundle",

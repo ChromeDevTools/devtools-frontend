@@ -18,37 +18,39 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("menus") {
+  split_compilation = true
   sources = [
     "Menu.ts",
     "SelectMenu.ts",
   ]
-  deps = [
-    "../../../../front_end/core/platform:bundle",
-    "../../../../front_end/ui/components/helpers:bundle",
-    "../../../../front_end/ui/components/render_coordinator:bundle",
+  ts_deps = [
+    "../../../core/platform:bundle",
     "../../lit:bundle",
     "../../visual_logging:bundle",
     "../dialogs:bundle",
+    "../helpers:bundle",
+    "../render_coordinator:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "menus.ts"
 
-  deps = [
-    ":css_files",
-    ":menus",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":menus" ]
 
   visibility = [ "*" ]
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "SelectMenu.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../testing",
     "../../lit:bundle",

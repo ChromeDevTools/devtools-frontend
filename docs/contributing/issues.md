@@ -119,7 +119,7 @@ The following components in [crbug] are owned by the Chrome DevTools team.
 | `Chromium>Platform>DevTools>Lighthouse`                  | Lighthouse panel                                              |
 | `Chromium>Platform>DevTools>Memory`                      | Heap/Memory Profiling, Memory Analysis                        |
 | `Chromium>Platform>DevTools>Mobile`                      | Mobile Emulation / Debugging                                  |
-| `Chromium>Platform>DevTools>Network`                     | Network, Network conditions,  Network request blocking panels |
+| `Chromium>Platform>DevTools>Network`                     | Network, Network conditions, Request conditions panels         |
 | `Chromium>Platform>DevTools>Performance`                 | Performance, Performance Monitor, Performance Insights panels |
 | `Chromium>Platform>DevTools>Extensions`                  | Issues related to DevTools extensions and extensibility       |
 | `Chromium>Platform>DevTools>Recorder`                    | Recorder panel                                                |

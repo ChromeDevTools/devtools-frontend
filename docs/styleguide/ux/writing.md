@@ -81,7 +81,7 @@ subheading after a colon, and any proper nouns or other terms that are
 always capitalized a certain way.
 
 *** aside
-Examples: **Network request blocking**, **Blocked response cookies**
+Examples: **Request conditions**, **Blocked response cookies**
 ***
 
 ### Spell UI elements in text
@@ -91,7 +91,7 @@ spell their names in bold and exactly as they are spelled, including
 capitalization, which should be in sentence case.
 
 *** aside
-Example: Open the **Network request blocking** panel.
+Example: Open the **Request conditions** panel.
 ***
 
 If an element doesn't have a

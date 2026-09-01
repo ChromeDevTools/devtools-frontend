@@ -69,15 +69,15 @@ const UIStrings = {
   /**
    * @description Title of a setting under the Network category.
    */
-  networkRequestBlocking: 'Network request blocking',
+  requestBlockingAndThrottling: 'Request blocking and throttling',
   /**
    * @description Title of a setting under the Network category that can be invoked through the Command Menu.
    */
-  enableNetworkRequestBlocking: 'Enable network request blocking',
+  enableRequestBlockingAndThrottling: 'Enable request blocking and throttling',
   /**
    * @description Title of a setting under the Network category that can be invoked through the Command Menu.
    */
-  disableNetworkRequestBlocking: 'Disable network request blocking',
+  disableRequestBlockingAndThrottling: 'Disable request blocking and throttling',
   /**
    * @description Command for showing the 'Network' tool
    */
@@ -87,7 +87,7 @@ const UIStrings = {
    */
   network: 'Network',
   /**
-   * @description Command for showing the 'Network request blocking' tool
+   * @description Command for showing the 'Request conditions' tool
    */
   showRequestConditions: 'Show request conditions',
   /**
@@ -179,11 +179,11 @@ const UIStrings = {
    */
   clear: 'Clear network log',
   /**
-   * @description Title of an action in the Network request blocking panel to add a new URL pattern to the blocklist.
+   * @description Title of an action in the Request conditions panel to add a new URL pattern to the blocklist.
    */
   addNetworkRequestBlockingOrThrottlingPattern: 'Add network request blocking or throttling pattern',
   /**
-   * @description Title of an action in the Network request blocking panel to clear all URL patterns.
+   * @description Title of an action in the Request conditions panel to clear all URL patterns.
    */
   removeAllNetworkRequestBlockingOrThrottlingPatterns: 'Remove all network request blocking or throttling patterns',
   /**
@@ -493,15 +493,15 @@ Common.Settings.registerSettingExtension({
 
 SettingsUI.SettingUIRegistration.register(SDK.SDKSettings.requestBlockingEnabledSettingDescriptor, {
   category: Common.Settings.SettingCategory.NETWORK,
-  title: i18nLazyString(UIStrings.networkRequestBlocking),
+  title: i18nLazyString(UIStrings.requestBlockingAndThrottling),
   options: [
     {
       value: true,
-      title: i18nLazyString(UIStrings.enableNetworkRequestBlocking),
+      title: i18nLazyString(UIStrings.enableRequestBlockingAndThrottling),
     },
     {
       value: false,
-      title: i18nLazyString(UIStrings.disableNetworkRequestBlocking),
+      title: i18nLazyString(UIStrings.disableRequestBlockingAndThrottling),
     },
   ],
 });

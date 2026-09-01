@@ -428,14 +428,13 @@ function renderFontMetrics(font: string, fontMetricInfo: FontMetric[]): Template
       ${fontMetricInfo.map(({label, values}) => html`
         <div>
           <h3>${label}</h3>
-          ${renderGroup(values, 'font-info', `${font}/${label}`)}
+          ${renderGroup(values, 'font-info', `${font}/${label}`, label)}
         </div>`)}
     </div>`;
 }
 
-function renderGroup(
-    values: Array<{title: string, nodes: Array<number|UnusedDeclaration|Protocol.CSS.CSSMedia>}>, type: string,
-    path = ''): TemplateResult {
+function renderGroup(values: Array<{title: string, nodes: Array<number|UnusedDeclaration|Protocol.CSS.CSSMedia>}>,
+                     type: string, path = '', groupLabel = ''): TemplateResult {
   const total = values.reduce((prev, curr) => prev + curr.nodes.length, 0);
 
   // clang-format off
@@ -449,7 +448,7 @@ function renderGroup(
             <div class="title">${title}</div>
             <button data-type=${type} data-path=${path} data-label=${title}
             jslog=${VisualLogging.action().track({click: true}).context(`css-overview.${type}`)}
-            aria-label=${`${title}: ${itemLabel}`}>
+            aria-label=${`${groupLabel ? `${groupLabel}, ` : ''}${title}: ${itemLabel}`}>
               <div class="details">${itemLabel}</div>
               <div class="bar-container">
                 <div class="bar" style=${styleMap({width})}></div>

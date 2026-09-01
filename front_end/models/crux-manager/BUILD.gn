@@ -28,7 +28,7 @@ devtools_entrypoint("bundle") {
   visibility = [
     ":*",
     "../../../mcp/*",
-    "../../entrypoints/main",
+    "../../entrypoints/main/*",
     "../../foundation/*",
     "../../panels/common/*",
     "../../panels/mobile_throttling/*",

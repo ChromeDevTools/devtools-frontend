@@ -33,7 +33,7 @@ devtools_entrypoint("bundle") {
     ":snackbar",
   ]
 
-  visibility = [ "../../../entrypoints/main" ]
+  visibility = [ "../../../entrypoints/main/*" ]
 
   visibility += default_components_visibility
 }

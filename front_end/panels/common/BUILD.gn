@@ -79,7 +79,7 @@ devtools_entrypoint("bundle") {
 
   visibility = [
     "../*",
-    "../../entrypoints/main",
+    "../../entrypoints/main/*",
     "../../testing",
   ]
 

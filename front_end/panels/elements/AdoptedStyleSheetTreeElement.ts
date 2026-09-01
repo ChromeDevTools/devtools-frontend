@@ -16,7 +16,7 @@ import {PanelUtils} from '../utils/utils.js';
 
 import type {EditorHandles} from './ElementsTreeElement.js';
 
-const {html, render} = Lit;
+const {Directives: {ref}, html, render} = Lit;
 
 export class AdoptedStyleSheetSetTreeElement extends UI.TreeOutline.TreeElement {
   constructor(readonly adoptedStyleSheets: SDK.DOMModel.AdoptedStyleSheet[]) {
@@ -132,6 +132,7 @@ export class AdoptedStyleSheetContentsTreeElement extends UI.TreeOutline.TreeEle
 }
 
 export interface AdoptedStyleSheetContentsViewInput {
+  text: string;
   isEditing: boolean;
   onDblClick: (event: MouseEvent) => void;
 }
@@ -141,6 +142,12 @@ export type AdoptedStyleSheetContentsView =
 
 export const DEFAULT_ADOPTED_STYLESHEET_CONTENTS_VIEW: AdoptedStyleSheetContentsView =
     (input: AdoptedStyleSheetContentsViewInput, _output: undefined, target: HTMLElement): void => {
+      const highlightNode = ref(el => {
+        if (el) {
+          el.textContent = input.text;
+          void CodeHighlighter.CodeHighlighter.highlightNode(el, 'text/css');
+        }
+      });
       // clang-format off
       render(html`
         <span class="webkit-html-text-node webkit-html-css-node"
@@ -148,6 +155,7 @@ export const DEFAULT_ADOPTED_STYLESHEET_CONTENTS_VIEW: AdoptedStyleSheetContents
                 change: true,
                 dblclick: true,
               })}
+              ${highlightNode}
               @dblclick=${input.onDblClick}></span>
       `, target);
       // clang-format on
@@ -308,6 +316,7 @@ export class AdoptedStyleSheetContentsWidget extends UI.Widget.Widget {
       return;
     }
     this.#view({
+      text: this.#text,
       isEditing: this.isEditing(),
       onDblClick: (event: MouseEvent) => {
         event.stopPropagation();
@@ -315,10 +324,5 @@ export class AdoptedStyleSheetContentsWidget extends UI.Widget.Widget {
       },
     },
                undefined, this.contentElement);
-    const textSpan = this.contentElement.querySelector<HTMLElement>('.webkit-html-text-node');
-    if (textSpan) {
-      textSpan.textContent = this.#text;
-      void CodeHighlighter.CodeHighlighter.highlightNode(textSpan, 'text/css');
-    }
   }
 }

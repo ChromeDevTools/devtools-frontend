@@ -7,7 +7,7 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 
 import * as WebMCP from './web_mcp.js';
 
@@ -25,7 +25,6 @@ describeWithEnvironment('WebMCPModel', () => {
   let webMCPModel: WebMCP.WebMCPModel.WebMCPModel;
 
   beforeEach(() => {
-    updateHostConfig({devToolsWebMCPSupport: {enabled: true}});
     target = createTarget();
     const model = target.model(WebMCP.WebMCPModel.WebMCPModel);
     assert.isNotNull(model);

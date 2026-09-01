@@ -6,7 +6,6 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
-import * as Root from '../root/root.js';
 
 import {SDKModel, type SDKModelConstructor} from './SDKModel.js';
 import type {TargetManager} from './TargetManager.js';
@@ -50,10 +49,7 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
         this.#capabilitiesMask = Capability.BROWSER | Capability.STORAGE | Capability.DOM | Capability.JS |
             Capability.LOG | Capability.NETWORK | Capability.TARGET | Capability.TRACING | Capability.EMULATION |
             Capability.INPUT | Capability.INSPECTOR | Capability.AUDITS | Capability.WEB_AUTHN | Capability.IO |
-            Capability.MEDIA | Capability.EVENT_BREAKPOINTS | Capability.DOM_STORAGE;
-        if (Root.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
-          this.#capabilitiesMask |= Capability.WEB_MCP;
-        }
+            Capability.MEDIA | Capability.EVENT_BREAKPOINTS | Capability.DOM_STORAGE | Capability.WEB_MCP;
         if (parentTarget?.type() !== Type.FRAME) {
           // This matches backend exposing certain capabilities only for the main frame.
           this.#capabilitiesMask |=

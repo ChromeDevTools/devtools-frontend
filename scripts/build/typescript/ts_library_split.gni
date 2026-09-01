@@ -248,7 +248,8 @@ template("ts_library_split") {
     }
     script = devtools_location_prepend + "scripts/build/run_with_restat.py"
 
-    inputs = typescript_base_inputs + _all_sources
+    inputs = typescript_base_inputs + _all_sources +
+             [ devtools_location_prepend + "scripts/build/response_file.py" ]
     if (defined(invoker.inputs)) {
       inputs += invoker.inputs
     }
@@ -309,6 +310,7 @@ template("ts_library_split") {
   # Sub-target: Expose implementation .ts files as public_inputs for bundling
   # without triggering recompilation of downstream type-checking targets.
   _sources_export_target = "${target_name}_sources"
+
   group(_sources_export_target) {
     if (defined(invoker.testonly)) {
       testonly = invoker.testonly
@@ -343,7 +345,10 @@ template("ts_library_split") {
     if (defined(invoker.testonly)) {
       testonly = invoker.testonly
     }
-    inputs = typescript_base_inputs + _all_sources + [ _tsconfig_file ]
+    inputs = typescript_base_inputs + _all_sources + [
+               _tsconfig_file,
+               devtools_location_prepend + "scripts/build/response_file.py",
+             ]
     if (defined(invoker.inputs)) {
       inputs += invoker.inputs
     }

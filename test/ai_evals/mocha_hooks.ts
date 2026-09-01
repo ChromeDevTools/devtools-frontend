@@ -6,11 +6,11 @@ import {stopServer} from '../conductor/test_server.js';
 
 import {AiEvalStateProvider} from './ai-eval-state-provider.js';
 
-export async function mochaGlobalSetup() {
+export async function mochaGlobalSetup(): Promise<void> {
   await AiEvalStateProvider.instance.resolveBrowser();
 }
 
-export async function mochaGlobalTeardown() {
+export async function mochaGlobalTeardown(): Promise<void> {
   await AiEvalStateProvider.instance.closeBrowsers();
   stopServer();
 }

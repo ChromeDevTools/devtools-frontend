@@ -7,7 +7,10 @@ import type {E2EState} from '../e2e/conductor/state-provider.js';
 
 import {AiEvalStateProvider} from './ai-eval-state-provider.js';
 
-export const devtoolsAiEvalTestInterface = createMochaInterface<E2EState, E2E.SuiteSettings>({
+export const devtoolsAiEvalTestInterface: {
+  (rootSuite: Mocha.Suite): void,
+  description: string,
+} = createMochaInterface<E2EState, E2E.SuiteSettings>({
   description: 'DevTools AI Eval test interface',
   stateProvider: AiEvalStateProvider.instance,
 });

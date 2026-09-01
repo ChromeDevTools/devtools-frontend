@@ -6,6 +6,7 @@ import("../../scripts/build/ninja/copy.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
 group("ai_evals") {
+  testonly = true
   deps = [
     ":eval_tests",
     ":test_inputs",
@@ -13,18 +14,20 @@ group("ai_evals") {
 }
 
 ts_e2e_library("eval_tests") {
+  split_compilation = true
   sources = [ "ai_smoke.test.ts" ]
-  deps = [ ":harness_library" ]
+  ts_deps = [ ":harness_library" ]
 }
 
 ts_e2e_library("harness_library") {
+  split_compilation = true
   sources = [
     "ai-eval-state-provider.ts",
     "mocha-interface.ts",
     "mocha_hooks.ts",
     "run-mocha.ts",
   ]
-  deps = [
+  ts_deps = [
     "../../front_end/core/sdk:bundle",
     "../../front_end/panels/ai_assistance:bundle",
     "../e2e/conductor:implementation",
@@ -35,6 +38,7 @@ ts_e2e_library("harness_library") {
 }
 
 generated_file("test_inputs") {
+  testonly = true
   outputs = [ "$target_gen_dir/tests.txt" ]
   data_keys = [ "tests" ]
   rebase = target_gen_dir

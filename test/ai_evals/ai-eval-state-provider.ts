@@ -10,7 +10,7 @@ import {type BrowserSettings, type BrowserWrapper, Launcher} from '../e2e/shared
 import {InspectedPage} from '../e2e/shared/target-helper.js';
 
 export class AiEvalStateProvider extends StateProvider {
-  static override instance = new AiEvalStateProvider();
+  static override instance: AiEvalStateProvider = new AiEvalStateProvider();
 
   override async launchBrowser(settings: BrowserSettings): Promise<BrowserWrapper> {
     return await Launcher.browserSetup({

@@ -8,20 +8,20 @@ import("../../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "render_coordinator.ts"
-
-  deps = []
 
   visibility = default_components_visibility
   visibility += [ "../../../models/ai_assistance/*" ]
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "render_coordinator.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../testing",
   ]

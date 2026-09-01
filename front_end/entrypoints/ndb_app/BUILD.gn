@@ -5,9 +5,10 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../visibility.gni")
 
 devtools_entrypoint("entrypoint") {
+  split_compilation = true
   entrypoint = "ndb_app.ts"
 
-  deps = [
+  ts_deps = [
     "../main:bundle",
     "../shell",
   ]

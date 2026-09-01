@@ -59,7 +59,7 @@ devtools_entrypoint("bundle") {
     "../../core/sdk:foundation_unittests_node_typecheck",
     "../../core/sdk:unittests",
     "../../core/sdk:unittests_checked",
-    "../../entrypoints/inspector_main",
+    "../../entrypoints/inspector_main/*",
     "../../entrypoints/main/*",
     "../../foundation/*",
     "../../legacy_test_runner/*",

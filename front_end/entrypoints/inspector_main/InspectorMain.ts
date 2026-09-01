@@ -173,7 +173,7 @@ export class NodeIndicator extends UI.Widget.Widget {
   #targetInfos: Protocol.Target.TargetInfo[] = [];
   #wasShown = false;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
 

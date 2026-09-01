@@ -29,7 +29,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class OutermostTargetSelector implements SDK.TargetManager.Observer, UI.SoftDropDown.Delegate<SDK.Target.Target>,
                                                 UI.Toolbar.Provider {
-  readonly listItems = new UI.ListModel.ListModel<SDK.Target.Target>();
+  readonly listItems: UI.ListModel.ListModel<SDK.Target.Target> = new UI.ListModel.ListModel();
   readonly #dropDown: UI.SoftDropDown.SoftDropDown<SDK.Target.Target>;
   readonly #toolbarItem: UI.Toolbar.ToolbarItem;
 

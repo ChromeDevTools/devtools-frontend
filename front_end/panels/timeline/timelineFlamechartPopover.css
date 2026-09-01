@@ -7,8 +7,8 @@
 .timeline-flamechart-popover {
   overflow: hidden;
   /* extend padding into the parent element to avoid clipping the focus-visible outline. */
-  padding: 4px;
-  margin: -4px;
+  padding: var(--sys-size-3);
+  margin: calc(-1 * var(--sys-size-3));
 }
 
 .timeline-flamechart-popover devtools-interaction-breakdown {
@@ -34,7 +34,7 @@
 .timeline-flamechart-popover span.popoverinfo-url-path,
 .timeline-flamechart-popover span.popoverinfo-url-origin {
   color: var(--sys-color-token-subtle);
-  font-size: 11px;
+  font-size: var(--sys-typescale-body5-size);
   white-space: normal;
   word-break: break-all;
 }
@@ -50,11 +50,11 @@
 .layout-shift-viz {
   position: relative;
   margin: var(--sys-size-8) var(--sys-size-5);
-  outline: 1px solid var(--sys-color-divider);
+  outline: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 .layout-shift-viz-rect {
-  outline: 1px solid color-mix(in srgb, var(--color-background-inverted) 20%, var(--app-color-rendering));
+  outline: var(--sys-size-1) solid color-mix(in srgb, var(--color-background-inverted) 20%, var(--app-color-rendering));
   background-color: color-mix(in srgb, var(--color-background-inverted-opacity-0) 50%, var(--app-color-rendering-children));
   position: absolute;
   z-index: 100;

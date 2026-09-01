@@ -14,9 +14,10 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("snackbar") {
+  split_compilation = true
   sources = [ "Snackbar.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../../core/i18n:bundle",
     "../../legacy:bundle",
     "../../lit:bundle",
@@ -26,12 +27,12 @@ devtools_ui_module("snackbar") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "snackbars.ts"
 
-  deps = [
-    ":css_files",
-    ":snackbar",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":snackbar" ]
 
   visibility = [ "../../../entrypoints/main/*" ]
 
@@ -39,11 +40,12 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "Snackbar.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../testing",
     "../../legacy:bundle",

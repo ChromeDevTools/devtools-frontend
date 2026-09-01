@@ -65,9 +65,9 @@ const userArgsBuilder = yargs(hideBin(process.argv))
                               demandOption: true,
                             })
                             .option('eval', {
-                              describe: 'Also output to the format required for the DevTools Eval framework',
+                              describe: 'Output to the format required for the DevTools Eval framework',
                               boolean: true,
-                              default: false,
+                              default: true,
                             })
                             .option('grade', {
                               describe: 'Automatically grade the result',
@@ -450,18 +450,6 @@ async function main() {
 
   await browser.disconnect();
 
-  function computeScore(results: IndividualPromptRequestResponse[]): number {
-    let scoreSum = 0;
-    let count = 0;
-    for (const example of results) {
-      if (example.score !== undefined) {
-        scoreSum += example.score;
-        count++;
-      }
-    }
-    return count > 0 ? scoreSum / count : 0;
-  }
-
   // Group results by label
   const groupedResults = new Map<string, {results: IndividualPromptRequestResponse[], metadata: ExampleMetadata[]}>();
   for (const res of executionResults) {
@@ -476,9 +464,7 @@ async function main() {
 
   // Write output for each group
   for (const [label, data] of groupedResults) {
-    const score = computeScore(data.results);
-    const output: Output = {
-      score,
+    const output = {
       metadata: data.metadata,
       examples: data.results,
     };
@@ -508,20 +494,12 @@ async function main() {
   logger.destroy();
 }
 
-interface Output {
-  score: number;
-  metadata: ExampleMetadata[];
-  examples: IndividualPromptRequestResponse[];
-}
-
 function writeOutput(
-    output: Output,
+    output: {metadata: ExampleMetadata[], examples: IndividualPromptRequestResponse[]},
     userArgs: UserArgs,
     runId: string,
 ) {
   const OUTPUT_DIR = path.resolve(import.meta.dirname, 'data');
-  const dateSuffix = new Date().toISOString().slice(0, 19);
-  const outputPath = path.resolve(OUTPUT_DIR, `${userArgs.label}-${dateSuffix}.json`);
   fs.mkdirSync(OUTPUT_DIR, {recursive: true});
 
   if (output.metadata.length === 0 && output.examples.length === 0) {
@@ -529,41 +507,36 @@ function writeOutput(
     return;
   }
 
-  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2));
-  console.info(`\n[Info]: Finished exporting results to ${outputPath}, it took ${formatElapsedTime()}`);
+  const trajectories = convertRawOutputToEval({
+    inputFromAutoRun: output as RawOutput,
+    label: userArgs.label,
+  });
 
-  if (userArgs.eval || userArgs.grade || userArgs.upload) {
-    const trajectories = convertRawOutputToEval({
-      inputFromAutoRun: output as RawOutput,
-      label: userArgs.label,
-    });
+  const targetDir = path.resolve(import.meta.dirname, '..', 'suite', 'outputs', 'outputs', userArgs.testTarget,
+                                 new Date().toISOString().slice(0, 10));
+  if (userArgs.grade) {
+    fs.mkdirSync(targetDir, {recursive: true});
+  }
 
-    const targetDir = path.resolve(import.meta.dirname, '..', 'suite', 'outputs', 'outputs', userArgs.testTarget,
-                                   new Date().toISOString().slice(0, 10));
+  for (const trajectory of trajectories) {
+    const evalOutputPath =
+        path.resolve(OUTPUT_DIR, `${slug(userArgs.label)}-${trajectory.metadata.session_id}.eval.json`);
+    fs.writeFileSync(evalOutputPath, JSON.stringify(trajectory, null, 2));
+    console.info(`\n[Info]: Exported eval output to ${evalOutputPath}`);
+
     if (userArgs.grade) {
-      fs.mkdirSync(targetDir, {recursive: true});
+      const copiedFileName = `${slug(userArgs.label)}-${trajectory.metadata.session_id}.json`;
+      const copiedFilePath = path.resolve(targetDir, copiedFileName);
+      fs.copyFileSync(evalOutputPath, copiedFilePath);
+      console.info(`\n[Info]: Copied eval output to ${copiedFilePath}`);
     }
 
-    for (const trajectory of trajectories) {
-      const evalOutputPath =
-          path.resolve(OUTPUT_DIR, `${slug(userArgs.label)}-${trajectory.metadata.session_id}.eval.json`);
-      fs.writeFileSync(evalOutputPath, JSON.stringify(trajectory, null, 2));
-      console.info(`\n[Info]: Exported eval output to ${evalOutputPath}`);
-
-      if (userArgs.grade) {
-        const copiedFileName = `${slug(userArgs.label)}-${trajectory.metadata.session_id}.json`;
-        const copiedFilePath = path.resolve(targetDir, copiedFileName);
-        fs.copyFileSync(evalOutputPath, copiedFilePath);
-        console.info(`\n[Info]: Copied eval output to ${copiedFilePath}`);
-      }
-
-      if (userArgs.upload) {
-        uploadEvalToGCS({
-          runId,
-          taskId: trajectory.metadata.autoRunExampleId,
-          localJsonPath: evalOutputPath,
-        });
-      }
+    if (userArgs.upload) {
+      uploadEvalToGCS({
+        runId,
+        taskId: trajectory.metadata.autoRunExampleId,
+        localJsonPath: evalOutputPath,
+      });
     }
   }
 }

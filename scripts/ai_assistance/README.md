@@ -2,10 +2,7 @@
 
 This directory contains scripts for the prompt iteration & evaluation process for AI Assistance.
 
-Mainly, `auto-run/auto-run.ts` script takes example URLs, runs the examples and outputs the results to the `auto-run/data/` directory. Then, the HTML page in `eval/` folder takes these results and presents them in a UI for evaluation.
-
-**NOTE: looking for the automatic evaluation suite?**
-As of September 2025, we also have an evaluation suite where we can define evaluations to apply to an output and have them automatically evaluated, including using an LLM as judge. See the [README in `suite/`](suite/README.md) for more detail on this.
+Mainly, `auto-run/auto-run.ts` script takes example URLs, runs the examples and outputs evaluation trajectories to the `auto-run/data/` directory. These trajectories are then evaluated using the automated evaluation suite in [`suite/`](suite/README.md).
 
 ## Running
 
@@ -15,7 +12,7 @@ As of September 2025, we also have an evaluation suite where we can define evalu
 * You must have enabled AI Assistance logging. To do this, load up DevTools-on-DevTools and in the console run `setAiAssistanceStructuredLogEnabled(true)`.
 
 **Steps**
-1. Run a AI Assistance enabled Chrome executable with `--remote-debugging-port 9222`, `--user-data-dir=/tmp/aida` and `--auto-open-devtools-for-tabs` targeting `about:blank` and login with a Google account. For example:
+1. Run an AI Assistance enabled Chrome executable with `--remote-debugging-port 9222`, `--user-data-dir=/tmp/aida` and `--auto-open-devtools-for-tabs` targeting `about:blank` and login with a Google account. For example:
 ```bash
 /Applications/Google\ Chrome\ Canary.app/Contents/MacOS/Google\ Chrome\ Canary --remote-debugging-port=9222 --user-data-dir=/tmp/aida --auto-open-devtools-for-tabs about:blank
 ```
@@ -30,7 +27,7 @@ As of September 2025, we also have an evaluation suite where we can define evalu
 npm run auto-run -- --test-target elements --example-urls <example-url-1> <example-url-2>
 ```
 
-At the end of these steps, the examples in the urls `<example-url-1>` and `<example-url-2>` should be run and the results must be saved to the `auto-run/data/` folder.
+At the end of these steps, the examples in the urls `<example-url-1>` and `<example-url-2>` should be run and the evaluation trajectory results saved to the `auto-run/data/` folder.
 
 Tip: You can add a `--label <label>` argument to the run to label the dataset. For example:
 ```bash
@@ -41,9 +38,7 @@ Tip: You can omit `--example-urls` and `--label` to run the script in **Recipe M
 ```bash
 npm run auto-run -- --test-target network --grade
 ```
-This will run all available evaluations for the target, generate separate output files for each label, and grade them if `--grade` is specified.
-
-Tip: You can add a `--eval` flag to the run to generate a secondary file named `*.eval.json` that contains the output in the format the evaluation suite expects.
+This will run all available evaluations for the target, generate output files for each label, and grade them if `--grade` is specified.
 
 Tip: You can add a `--grade` flag to the run to automatically grade the results. This flag generates the `.eval.json` file, copies it to the correct subfolder in `suite/outputs/outputs/` (renaming it to use only the label, e.g., `network-test.json`), and then executes the corresponding grader script (e.g., `suite/network.eval.ts`) to calculate scores using the LLM judge.
 
@@ -53,15 +48,11 @@ Tip: You can add an `--upload` flag to automatically upload resulting `trajector
 
 * `elements`: tests the entrypoint via right clicking on an element in the Elements panel.
 * `elements-multimodal`: tests the multimodal support for Elements entrypoint by providing screenshot input with the prompt.
-* `performance`: tests the etrypoint via asking the model about the whole performance trace.
+* `performance`: tests the entrypoint via asking the model about the whole performance trace.
 * `performance-main-thread`: tests the entrypoint via right clicking on an event in the Performance panel main thread.
 * `performance-insights`: tests the entrypoint via the "Ask AI" button shown on an individual Insight in the Performance panel sidebar.
 * `network`: tests the entrypoint via a left click on a request in the Network panel.
-* `patching`: tests the file patching flow. This mode is different
-because it automatically rates the results using assertions defined in
-tests. You need to manually add all workspace folders to your Chrome
-instance before running the tests. The resulting JSON files are not
-compatible with the eval UI.
+* `patching`: tests the file patching flow. This mode automatically rates the results using assertions defined in tests. You need to manually add all workspace folders to your Chrome instance before running the tests.
 
 ## Annotating Examples
 
@@ -79,13 +70,4 @@ If multiple comments are present, the script targets the one with an explicit `P
 
 ## Evaluating the results
 
-**Steps**
-1. Serve the `scripts/ai_assistance` folder in 8000 port by using a simple file server. For example:
-```bash
-python3 -m http.server
-```
-2. Visit http://localhost:8000/eval URL to see the UI.
-3. Select the dataset you want to evaluate in the UI. (`Dataset:` selector)
-4. Evaluate the examples one by one.
-
-Tip: You can navigate the questions with `Tab` key and move between examples with `ArrowLeft` and `ArrowRight`.
+See the [README in `suite/`](suite/README.md) for details on executing the automated evaluation suite and configuring the LLM-as-a-judge scorers.

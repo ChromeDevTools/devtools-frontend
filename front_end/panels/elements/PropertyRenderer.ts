@@ -39,22 +39,24 @@ function mergeWithSpacing(nodes: Node[], merge: Node[]): Node[] {
   return result;
 }
 
+export type RendererBase<MatchT extends SDK.CSSPropertyParser.Match> = abstract new () => MatchRenderer<MatchT>;
+
 export interface MatchRenderer<MatchT extends SDK.CSSPropertyParser.Match> {
   readonly matchType: Platform.Constructor.Constructor<MatchT>;
   render(match: MatchT, context: RenderingContext): Node[];
 }
 
 // A mixin to automatically expose the match type on specific renrerers
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
 export function rendererBase<MatchT extends SDK.CSSPropertyParser.Match>(
-    matchT: Platform.Constructor.Constructor<MatchT>) {
-  abstract class RendererBase implements MatchRenderer<MatchT> {
+    matchT: Platform.Constructor.Constructor<MatchT>): RendererBase<MatchT> {
+  abstract class RendererBaseClass implements MatchRenderer<MatchT> {
     readonly matchType = matchT;
     render(_match: MatchT, _context: RenderingContext): Node[] {
       return [];
     }
   }
-  return RendererBase;
+  return RendererBaseClass;
 }
 
 /**
@@ -347,14 +349,13 @@ export class TracingContext {
 }
 
 export class RenderingContext {
-  constructor(
-      readonly ast: SDK.CSSPropertyParser.SyntaxTree, readonly property: SDK.CSSProperty.CSSProperty|null,
-      readonly renderers:
-          Map<Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>,
-              MatchRenderer<SDK.CSSPropertyParser.Match>>,
-      readonly matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching,
-      readonly cssControls?: SDK.CSSPropertyParser.CSSControlMap, readonly options: {readonly?: boolean} = {},
-      readonly tracing?: TracingContext, readonly signal?: AbortSignal) {
+  constructor(readonly ast: SDK.CSSPropertyParser.SyntaxTree, readonly property: SDK.CSSProperty.CSSProperty|null,
+              readonly renderers: Map<Platform.Constructor.Constructor<SDK.CSSPropertyParser.Match>,
+                                      MatchRenderer<SDK.CSSPropertyParser.Match>>,
+              readonly matchedResult: SDK.CSSPropertyParser.BottomUpTreeMatching,
+              readonly cssControls?: SDK.CSSPropertyParser.CSSControlMap|undefined,
+              readonly options: {readonly?: boolean} = {}, readonly tracing?: TracingContext|undefined,
+              readonly signal?: AbortSignal|undefined) {
   }
 
   addControl(cssType: string, control: HTMLElement): void {
@@ -530,8 +531,10 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
   }
 }
 
+const URLRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.URLMatch> =
+    rendererBase(SDK.CSSPropertyParserMatchers.URLMatch);
 // clang-format off
-export class URLRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.URLMatch) {
+export class URLRenderer extends URLRendererBase {
   // clang-format on
   constructor(private readonly rule: SDK.CSSRule.CSSRule|null, private readonly node: SDK.DOMModel.DOMNode|null) {
     super();
@@ -564,8 +567,10 @@ export class URLRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.URLM
   }
 }
 
+const StringRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.StringMatch> =
+    rendererBase(SDK.CSSPropertyParserMatchers.StringMatch);
 // clang-format off
-export class StringRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.StringMatch) {
+export class StringRenderer extends StringRendererBase {
   // clang-format on
   override render(match: SDK.CSSPropertyParserMatchers.StringMatch): Node[] {
     const element = document.createElement('span');
@@ -575,8 +580,10 @@ export class StringRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
   }
 }
 
+const BinOpRendererBase: RendererBase<SDK.CSSPropertyParserMatchers.BinOpMatch> =
+    rendererBase(SDK.CSSPropertyParserMatchers.BinOpMatch);
 // clang-format off
-export class BinOpRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.BinOpMatch) {
+export class BinOpRenderer extends BinOpRendererBase {
   // clang-format on
   override render(match: SDK.CSSPropertyParserMatchers.BinOpMatch, context: RenderingContext): Node[] {
     const [lhs, binop, rhs] = SDK.CSSPropertyParser.ASTUtils.children(match.node).map(child => {

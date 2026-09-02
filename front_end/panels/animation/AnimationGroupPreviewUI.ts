@@ -160,7 +160,7 @@ export class AnimationGroupPreviewUI extends UI.Widget.Widget {
   #paused = false;
   #focusable = false;
 
-  constructor(config: AnimationGroupPreviewConfig, view = DEFAULT_VIEW) {
+  constructor(config: AnimationGroupPreviewConfig, view: View = DEFAULT_VIEW) {
     super();
     this.#view = view;
     this.#config = config;

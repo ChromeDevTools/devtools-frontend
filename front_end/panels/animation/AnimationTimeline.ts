@@ -1181,7 +1181,7 @@ export class AnimationTimeline extends UI.Widget.VBox implements
   }
 }
 
-export const GlobalPlaybackRates = [1, 0.25, 0.1];
+export const GlobalPlaybackRates: number[] = [1, 0.25, 0.1];
 
 const enum ControlState {
   PLAY = 'play-outline',

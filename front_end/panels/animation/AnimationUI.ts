@@ -501,7 +501,7 @@ export const Options = {
   GridCanvasHeight: 40,
 };
 
-export const Colors = new Map<string, Common.Color.Color|null>([
+export const Colors: Map<string, Common.Color.Color|null> = new Map<string, Common.Color.Color|null>([
   ['Purple', Common.Color.parse('#9C27B0')],
   ['Light Blue', Common.Color.parse('#03A9F4')],
   ['Deep Orange', Common.Color.parse('#FF5722')],

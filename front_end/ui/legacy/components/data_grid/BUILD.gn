@@ -15,6 +15,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("data_grid") {
+  split_compilation = true
   sources = [
     "DataGrid.ts",
     "DataGridElement.ts",
@@ -24,7 +25,7 @@ devtools_ui_module("data_grid") {
     "ViewportDataGrid.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../../core/common:bundle",
     "../../../../core/host:bundle",
     "../../../../core/i18n:bundle",
@@ -39,12 +40,12 @@ devtools_ui_module("data_grid") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "data_grid.ts"
 
-  deps = [
-    ":css_files",
-    ":data_grid",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":data_grid" ]
 
   visibility = [
     # IMPORTANT: Be careful when extending visibility of front_end/ui/legacy/*,
@@ -61,6 +62,7 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [
     "DataGrid.test.ts",
@@ -69,7 +71,7 @@ devtools_ui_module("unittests") {
     "ViewportDataGrid.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../..:bundle",
     "../../../../core/i18n:bundle",

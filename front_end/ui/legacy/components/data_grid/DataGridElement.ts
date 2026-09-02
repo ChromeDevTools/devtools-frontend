@@ -58,7 +58,7 @@ type DataGridElementNode = SortableNode|DynamicHeightNode;
 const elementToNode = new WeakMap<Element, DataGridElementNode>();
 
 export class DataGridElement extends UI.UIUtils.HTMLElementWithLightDOMTemplate {
-  static readonly observedAttributes = ['striped', 'name', 'inline', 'resize', 'highlight'];
+  static readonly observedAttributes: string[] = ['striped', 'name', 'inline', 'resize', 'highlight'];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   #dataGrid!: DataGridImpl<any>;
@@ -805,7 +805,8 @@ class IfExpandedDirective extends Lit.Directive.Directive {
     return node.expanded;
   }
 }
-export const ifExpanded = Lit.Directive.directive(IfExpandedDirective);
+export const ifExpanded: (content: Lit.LitTemplate|Iterable<Lit.LitTemplate>) =>
+    Lit.DirectiveResult<typeof IfExpandedDirective> = Lit.Directive.directive(IfExpandedDirective);
 
 function getNode(element: Element|undefined): DataGridElementNode|undefined {
   return element ? elementToNode.get(element) : undefined;

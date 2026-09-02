@@ -1756,7 +1756,7 @@ export class DataGridNode<T> {
   selectable = true;
   isRoot = false;
   nodeAccessibleText = '';
-  cellAccessibleTextMap = new Map<string, string>();
+  cellAccessibleTextMap: Map<string, string> = new Map<string, string>();
   isCreationNode = false;
   #data: DataGridData;
   #hasChildren: boolean;

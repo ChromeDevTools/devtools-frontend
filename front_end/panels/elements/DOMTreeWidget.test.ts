@@ -9,8 +9,9 @@ import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
+import * as Protocol from '../../generated/protocol.js';
 import * as Bindings from '../../models/bindings/bindings.js';
+import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
 import {assertScreenshot, renderElementIntoDOM, setTestUniverseForWidgets} from '../../testing/DOMHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
@@ -161,6 +162,202 @@ describeWithEnvironment('DOMTreeWidget', () => {
         clock.restore();
       }
     });
+
+    it('shows preview when hovering over a link in DECLARATIVE_VIEW', async () => {
+      const clock = sinon.useFakeTimers();
+      try {
+        const domTree =
+            new Elements.ElementsTreeOutline.DOMTreeWidget(undefined, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+        domTree.markAsRoot();
+        renderElementIntoDOM(domTree);
+        domTree.performUpdate();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        const link = tree.createChild('span');
+        link.boxInWindow = () => new AnchorBox(0, 0, 10, 10);
+        const imageUrl = Platform.DevToolsPath.urlString`http://example.com/image.png`;
+        Elements.ImagePreviewPopover.ImagePreviewPopover.setImageUrl(link, imageUrl);
+
+        const buildStub =
+            sinon.stub(Components.ImagePreview.ImagePreview, 'build').resolves(document.createElement('div'));
+
+        const event = new MouseEvent('mousemove', {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+          clientX: 5,
+          clientY: 5,
+        });
+        link.dispatchEvent(event);
+
+        for (let i = 0; i < 20; i++) {
+          if (buildStub.called) {
+            break;
+          }
+          clock.tick(1);
+          await Promise.resolve();
+        }
+
+        sinon.assert.calledWith(buildStub, imageUrl, true);
+        domTree.detach();
+      } finally {
+        clock.restore();
+      }
+    });
+  });
+
+  describe('issue tooltip popover', () => {
+    it('shows issue tooltip when hovering over a violating element in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const widgetElement = tree.shadowRoot?.querySelector('devtools-widget');
+        assert.exists(widgetElement);
+        const widget = UI.Widget.Widget.get(widgetElement) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(widget);
+
+        const mockIssue = new IssuesManager.GenericIssue.GenericIssue({
+          errorType: Protocol.Audits.GenericIssueErrorType.FormLabelForNameError,
+          frameId: '1' as Protocol.Page.FrameId,
+        },
+                                                                      null);
+
+        sinon.stub(widget, 'issues').get(() => [mockIssue]);
+
+        const violatingTag = widget.contentElement.querySelector('.webkit-html-tag-name');
+        assert.exists(violatingTag);
+        violatingTag.classList.add('violating-element');
+        violatingTag.boxInWindow = () => new AnchorBox(0, 0, 10, 10);
+
+        const issueHelper = domTree.issuePopoverHelperForTest();
+        assert.exists(issueHelper);
+
+        const event = new MouseEvent('mousemove', {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+        });
+        Object.defineProperty(event, 'composedPath', {
+          value: () => [violatingTag],
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const request = (issueHelper as any).getRequest(event);
+        assert.exists(request);
+        assert.deepEqual(request.box, new AnchorBox(0, 0, 10, 10));
+
+        const popover = new UI.GlassPane.GlassPane();
+        const shown = await request.show(popover);
+        assert.isTrue(shown);
+        const content = popover.contentElement.querySelector('.squiggles-content');
+        assert.exists(content);
+        assert.include(content.textContent, 'Incorrect use of <label for=FORM_ELEMENT>');
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('shows issue tooltip when hovering over an attribute violating element in DEFAULT_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['id', 'test-id'],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+        assert.exists(treeOutline);
+        const treeElement = treeOutline.findTreeElement(rootNode);
+        assert.exists(treeElement);
+
+        const mockIssue = new IssuesManager.GenericIssue.GenericIssue({
+          errorType: Protocol.Audits.GenericIssueErrorType.FormLabelForNameError,
+          frameId: '1' as Protocol.Page.FrameId,
+          violatingNodeAttribute: 'id',
+        },
+                                                                      null);
+
+        sinon.stub(treeElement.widget, 'issues').get(() => [mockIssue]);
+
+        const violatingAttr = treeElement.listItemElement.querySelector('.webkit-html-attribute-name');
+        assert.exists(violatingAttr);
+        violatingAttr.classList.add('violating-element');
+        violatingAttr.boxInWindow = () => new AnchorBox(0, 0, 10, 10);
+
+        const issueHelper = domTree.issuePopoverHelperForTest();
+        assert.exists(issueHelper);
+
+        const event = new MouseEvent('mousemove', {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+        });
+        Object.defineProperty(event, 'composedPath', {
+          value: () => [violatingAttr],
+        });
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const request = (issueHelper as any).getRequest(event);
+        assert.exists(request);
+        assert.deepEqual(request.box, new AnchorBox(0, 0, 10, 10));
+
+        const popover = new UI.GlassPane.GlassPane();
+        const shown = await request.show(popover);
+        assert.isTrue(shown);
+        const content = popover.contentElement.querySelector('.squiggles-content');
+        assert.exists(content);
+        assert.include(content.textContent, 'Incorrect use of <label for=FORM_ELEMENT>');
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('hides popovers when selectDOMNode, hideImagePreview, and detach are called', () => {
+      const domTree = new Elements.ElementsTreeOutline.DOMTreeWidget();
+      domTree.markAsRoot();
+      renderElementIntoDOM(domTree);
+      domTree.performUpdate();
+
+      const imagePopover = domTree.imagePreviewPopoverForTest();
+      assert.exists(imagePopover);
+      const imageHideSpy = sinon.spy(imagePopover, 'hide');
+
+      const issueHelper = domTree.issuePopoverHelperForTest();
+      assert.exists(issueHelper);
+      const issueHideSpy = sinon.spy(issueHelper, 'hidePopover');
+
+      domTree.hideImagePreview();
+      sinon.assert.calledOnce(imageHideSpy);
+
+      domTree.selectDOMNode(null);
+      sinon.assert.calledTwice(imageHideSpy);
+      sinon.assert.calledOnce(issueHideSpy);
+
+      domTree.detach();
+      sinon.assert.calledThrice(imageHideSpy);
+      sinon.assert.calledTwice(issueHideSpy);
+    });
   });
 
   interface TestDOMNodeConfig {
@@ -213,6 +410,17 @@ describeWithEnvironment('DOMTreeWidget', () => {
     domTree.performUpdate();
     domTree.modelAdded(domModel);
     return {domTree, domModel};
+  }
+
+  // In DECLARATIVE_VIEW, updating DOMTreeWidget renders the outer devtools-tree element.
+  // When devtools-tree connects the child devtools-widget elements, their internal
+  // ElementsTreeWidgets schedule their render updates in a subsequent microtask/tick.
+  // We wait for DOMTreeWidget, yield a tick to allow child widgets to mount, and then
+  // await all child widget updates.
+  async function waitForTreeUpdates(): Promise<void> {
+    await UI.Widget.Widget.allUpdatesComplete;
+    await new Promise(resolve => setTimeout(resolve, 0));
+    await UI.Widget.Widget.allUpdatesComplete;
   }
 
   describe('context menu', () => {
@@ -1272,17 +1480,6 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.detach();
       }
     });
-
-    // In DECLARATIVE_VIEW, updating DOMTreeWidget renders the outer devtools-tree element.
-    // When devtools-tree connects the child devtools-widget elements, their internal
-    // ElementsTreeWidgets schedule their render updates in a subsequent microtask/tick.
-    // We wait for DOMTreeWidget, yield a tick to allow child widgets to mount, and then
-    // await all child widget updates.
-    async function waitForTreeUpdates(): Promise<void> {
-      await UI.Widget.Widget.allUpdatesComplete;
-      await new Promise(resolve => setTimeout(resolve, 0));
-      await UI.Widget.Widget.allUpdatesComplete;
-    }
 
     it('updates rendered attributes on AttrModified and AttrRemoved in DECLARATIVE_VIEW without duplicates',
        async () => {

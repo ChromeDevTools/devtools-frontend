@@ -186,7 +186,6 @@ interface ViewInput {
 
 interface ViewOutput {
   elementsTreeOutline?: ElementsTreeOutline;
-  imagePreviewPopover?: ImagePreviewPopover;
   highlightedTreeElement: ElementsTreeElement|null;
   searchMatchTreeElement?: ElementsTreeElement|null;
   searchMatchQuery?: string;
@@ -233,84 +232,6 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
     elementsTreeOutline.elementInternal.addEventListener('clipboard-paste', (event: Event) => {
       input.onPaste?.(event);
     }, false);
-    output.imagePreviewPopover = new ImagePreviewPopover(
-        elementsTreeOutline.contentElement,
-        event => {
-          let link: (Element|null) = (event.target as Element | null);
-          while (link && !ImagePreviewPopover.getImageURL(link)) {
-            link = link.parentElementOrShadowHost();
-          }
-          return link;
-        },
-        async link => {
-          const listItem = UI.UIUtils.enclosingNodeOrSelfWithNodeName(link, 'li');
-          if (!listItem) {
-            return undefined;
-          }
-
-          const treeElement =
-              (UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem) as ElementsTreeElement | undefined);
-          return await UIComponentUtils.ImagePreview.loadPrecomputedFeatures(treeElement?.node());
-        });
-    // TODO(changhaohan): refactor the popover to use tooltip component.
-    const popupHelper = new UI.PopoverHelper.PopoverHelper(elementsTreeOutline.elementInternal, event => {
-      const hoveredNode = event.composedPath()[0];
-      if (!(hoveredNode instanceof Element) || !hoveredNode.matches('.violating-element')) {
-        return null;
-      }
-
-      const listItem = UI.UIUtils.enclosingNodeOrSelfWithNodeName(hoveredNode, 'li');
-      if (!listItem) {
-        return null;
-      }
-      const treeElement =
-          UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(listItem) as ElementsTreeElement | undefined;
-      const node = treeElement?.node();
-      if (!node) {
-        return null;
-      }
-      let issues = treeElement?.widget?.issues ?? [];
-      if (hoveredNode.classList.contains('webkit-html-attribute-name')) {
-        const attrName = hoveredNode.textContent;
-        issues = issues.filter(issue => getElementIssueDetails(issue)?.attribute === attrName);
-      } else if (hoveredNode.classList.contains('webkit-html-tag-name')) {
-        issues = issues.filter(issue => {
-          const details = getElementIssueDetails(issue);
-          return Boolean(details && !details.attribute);
-        });
-      }
-      if (issues.length === 0) {
-        return null;
-      }
-
-      return {
-        box: hoveredNode.boxInWindow(),
-        show: async (popover: UI.GlassPane.GlassPane) => {
-          popover.setIgnoreLeftMargin(true);
-          // clang-format off
-          render(html`
-            <div class="squiggles-content">
-              ${issues.map(issue => {
-            const elementIssueDetails = getElementIssueDetails(issue);
-            if (!elementIssueDetails) {
-              return nothing;
-            }
-            const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
-            const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
-            return html`
-                  <div class="squiggles-content-item">
-                  <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
-                  <devtools-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</devtools-link>
-                  <span>${elementIssueDetails.tooltip}</span>
-                  </div>`;
-          })}
-            </div>`, popover.contentElement);
-          // clang-format on
-          return true;
-        },
-      };
-    }, 'elements.issue');
-    popupHelper.setTimeout(300);
     target.appendChild(elementsTreeOutline.element);
   }
 
@@ -336,9 +257,6 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
   }
   if (input.visible !== undefined) {
     output.elementsTreeOutline.setVisible(input.visible);
-    if (!input.visible) {
-      output.imagePreviewPopover?.hide();
-    }
   }
   output.elementsTreeOutline.maxRowsShown = input.maxRowsShown;
   output.elementsTreeOutline.setWordWrap(input.wrap);
@@ -776,7 +694,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) &&
         !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
 
-    // TODO: Move ImagePreviewPopover and issue tooltip helpers into declarative Lit directives or tooltip components.
     // TODO: Move DOMModel event subscription and reactive state synchronization (updateRecords, DOM update animations) directly into DOMTreeWidget.
 
     const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
@@ -1013,6 +930,24 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
   /* clang-format on */
 };
 
+function getElementsTreeWidgetAndNode(element: Element): {node?: SDK.DOMModel.DOMNode, widget?: ElementsTreeWidget} {
+  let current: Element|null = element;
+  while (current) {
+    if (current.tagName === 'LI') {
+      const treeElement = UI.TreeOutline.TreeElement.getTreeElementBylistItemNode(current);
+      if (treeElement instanceof ElementsTreeElement) {
+        return {node: treeElement.node(), widget: treeElement.widget};
+      }
+    }
+    const widget = UI.Widget.Widget.get(current);
+    if (widget instanceof ElementsTreeWidget) {
+      return {node: widget.node, widget};
+    }
+    current = current.parentElementOrShadowHost();
+  }
+  return {};
+}
+
 /**
  * The main goal of this presenter is to wrap ElementsTreeOutline until
  * ElementsTreeOutline can be fully integrated into DOMTreeWidget.
@@ -1167,6 +1102,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   #adoptedStyleSheetExpanded = new WeakMap<SDK.DOMModel.AdoptedStyleSheet, boolean>();
   #selectedAdoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet|null = null;
 
+  // TODO: Move #imagePreviewPopover and #issuePopoverHelper to the view once declarative versions exist.
+  #imagePreviewPopover?: ImagePreviewPopover;
+  #issuePopoverHelper?: UI.PopoverHelper.PopoverHelper;
+
   #view: View;
   #viewOutput: ViewOutput = {
     highlightedTreeElement: null,
@@ -1193,6 +1132,77 @@ export class DOMTreeWidget extends UI.Widget.Widget {
           SDK.OverlayModel.OverlayModel, SDK.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED,
           this.#clearHighlightedNode, this, {scoped: true});
     }
+    this.#setupPopovers();
+  }
+
+  // TODO: Move imagePreviewPopover and issuePopoverHelper to the view once declarative versions exist.
+  #setupPopovers(): void {
+    this.#imagePreviewPopover = new ImagePreviewPopover(
+        this.contentElement,
+        event => {
+          let link: (Element|null) = (event.composedPath()[0] as Element | null);
+          while (link && link !== this.contentElement && !ImagePreviewPopover.getImageURL(link)) {
+            link = link.parentElementOrShadowHost();
+          }
+          return (link && link !== this.contentElement) ? link : null;
+        },
+        async link => {
+          const {node} = getElementsTreeWidgetAndNode(link);
+          return await UIComponentUtils.ImagePreview.loadPrecomputedFeatures(node);
+        });
+
+    this.#issuePopoverHelper = new UI.PopoverHelper.PopoverHelper(this.contentElement, event => {
+      const hoveredNode = event.composedPath()[0];
+      if (!(hoveredNode instanceof Element) || !hoveredNode.matches('.violating-element')) {
+        return null;
+      }
+
+      const {node, widget} = getElementsTreeWidgetAndNode(hoveredNode);
+      if (!node) {
+        return null;
+      }
+      let issues = widget?.issues ?? [];
+      if (hoveredNode.classList.contains('webkit-html-attribute-name')) {
+        const attrName = hoveredNode.textContent;
+        issues = issues.filter(issue => getElementIssueDetails(issue)?.attribute === attrName);
+      } else if (hoveredNode.classList.contains('webkit-html-tag-name')) {
+        issues = issues.filter(issue => {
+          const details = getElementIssueDetails(issue);
+          return Boolean(details && !details.attribute);
+        });
+      }
+      if (issues.length === 0) {
+        return null;
+      }
+
+      return {
+        box: hoveredNode.boxInWindow(),
+        show: async (popover: UI.GlassPane.GlassPane) => {
+          popover.setIgnoreLeftMargin(true);
+          // clang-format off
+          render(html`
+            <div class="squiggles-content">
+              ${issues.map(issue => {
+            const elementIssueDetails = getElementIssueDetails(issue);
+            if (!elementIssueDetails) {
+              return nothing;
+            }
+            const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
+            const openIssueEvent = (): Promise<void> => Common.Revealer.reveal(issue);
+            return html`
+                  <div class="squiggles-content-item">
+                  <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
+                  <devtools-link class="link" @click=${openIssueEvent}>${i18nString(UIStrings.viewIssue)}</devtools-link>
+                  <span>${elementIssueDetails.tooltip}</span>
+                  </div>`;
+          })}
+            </div>`, popover.contentElement);
+          // clang-format on
+          return true;
+        },
+      };
+    }, 'elements.issue');
+    this.#issuePopoverHelper.setTimeout(300);
   }
 
   #onDocumentUpdated(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMModel>): void {
@@ -1240,6 +1250,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   selectDOMNode(node: SDK.DOMModel.DOMNode|SDK.DOMModel.AdoptedStyleSheet|null, focus?: boolean): void {
+    this.#imagePreviewPopover?.hide();
+    this.#issuePopoverHelper?.hidePopover();
     if (node instanceof SDK.DOMModel.AdoptedStyleSheet) {
       this.highlightAdoptedStyleSheet(node);
       return;
@@ -1801,6 +1813,8 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   override willHide(): void {
     super.willHide();
+    this.#imagePreviewPopover?.hide();
+    this.#issuePopoverHelper?.hidePopover();
     if (this.#multilineEditing) {
       this.#multilineEditing.cancel();
     }
@@ -2406,7 +2420,6 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   override wasHidden(): void {
     super.wasHidden();
     this.#visible = false;
-    this.#viewOutput.imagePreviewPopover?.hide();
     this.performUpdate();
   }
 
@@ -2414,8 +2427,19 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     super.detach(overrideHideOnDetach);
     this.#visible = false;
     this.#showHTMLCommentsSetting.removeChangeListener(this.#onShowHTMLCommentsChange, this);
-    this.#viewOutput.imagePreviewPopover?.hide();
     this.performUpdate();
+  }
+
+  hideImagePreview(): void {
+    this.#imagePreviewPopover?.hide();
+  }
+
+  imagePreviewPopoverForTest(): ImagePreviewPopover|undefined {
+    return this.#imagePreviewPopover;
+  }
+
+  issuePopoverHelperForTest(): UI.PopoverHelper.PopoverHelper|undefined {
+    return this.#issuePopoverHelper;
   }
 
   override show(parentElement: Element, insertBefore?: Node|null, suppressOrphanWidgetError = false): void {

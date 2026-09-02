@@ -6,7 +6,7 @@
 import * as Common from '../../../../core/common/common.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as TraceBounds from '../../../../services/trace_bounds/trace_bounds.js';
-import * as VisualLoggging from '../../../visual_logging/visual_logging.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 
@@ -45,7 +45,7 @@ export class TimelineOverviewPane extends TimelineOverviewPaneBase {
     this.overviewCalculator = new TimelineOverviewCalculator();
     this.overviewGrid = new OverviewGrid(prefix, this.overviewCalculator);
     this.overviewGrid.element.setAttribute(
-        'jslog', `${VisualLoggging.timeline(`${prefix}-overview`).track({click: true, drag: true, hover: true})}`);
+        'jslog', `${VisualLogging.timeline(`${prefix}-overview`).track({click: true, drag: true, hover: true})}`);
     this.element.appendChild(this.overviewGrid.element);
     this.cursorArea = this.overviewGrid.element.createChild('div', 'overview-grid-cursor-area');
     this.cursorElement = this.overviewGrid.element.createChild('div', 'overview-grid-cursor-position');

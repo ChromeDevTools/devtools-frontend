@@ -515,6 +515,7 @@ interface UseGcaApi {
 
 interface DevToolsAiV2Architecture {
   enabled: boolean;
+  userTier?: string;
 }
 
 interface DevToolsProtocolMonitor {

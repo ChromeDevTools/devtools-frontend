@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as LHModel from '../lighthouse/lighthouse.js';
 import type * as Trace from '../trace/trace.js';
@@ -78,7 +79,9 @@ export class AiAgent2 extends AiAgent<unknown> {
   // TODO: The static preamble is a placeholder and will eventually live server-side.
   readonly preamble: string = preamble;
   readonly clientFeature: Host.AidaClient.ClientFeature = Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
-  readonly userTier: string = 'TESTERS';
+  get userTier(): string|undefined {
+    return Root.Runtime.hostConfig.devToolsAiV2Architecture?.userTier;
+  }
 
   #changes: ChangeManager;
   #execJs: typeof executeJsCode;

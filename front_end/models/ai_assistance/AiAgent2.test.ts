@@ -8,7 +8,7 @@ import sinon from 'sinon';
 import * as Host from '../../core/host/host.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
-import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment, updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import type * as LHModel from '../lighthouse/lighthouse.js';
 import type * as Trace from '../trace/trace.js';
 
@@ -42,6 +42,16 @@ function mockSkills(agent: AiAssistance.AiAgent2.AiAgent2, skills: Partial<Recor
 }
 
 describeWithEnvironment('AiAgent2', () => {
+  it('retrieves userTier from hostConfig', () => {
+    updateHostConfig({
+      devToolsAiV2Architecture: {
+        userTier: 'TESTERS',
+      },
+    });
+    const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient: mockAidaClient()});
+    assert.strictEqual(agent.userTier, 'TESTERS');
+  });
+
   it('registers all expected skills', () => {
     assert.deepEqual(Object.keys(SKILLS).sort(),
                      ['styling', 'network', 'accessibility', 'performance', 'storage', 'sources'].sort());

@@ -108,7 +108,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane<ShadowRoot> {
   readonly #view: View;
   #attributeBeingEdited: SDK.DOMModel.Attribute|null = null;
 
-  constructor(view = DEFAULT_VIEW) {
+  constructor(view: View = DEFAULT_VIEW) {
     super({
       title: i18nString(UIStrings.ariaAttributes),
       viewId: 'aria-attributes',

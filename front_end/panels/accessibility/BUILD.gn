@@ -18,6 +18,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("accessibility") {
+  split_compilation = true
   sources = [
     "ARIAAttributesView.ts",
     "ARIAMetadata.ts",
@@ -29,7 +30,7 @@ devtools_ui_module("accessibility") {
     "SourceOrderView.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
@@ -46,13 +47,15 @@ devtools_ui_module("accessibility") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "accessibility.ts"
 
   deps = [
-    ":accessibility",
     ":css_files",
     "../../ui/legacy/components/object_ui:css_files",
   ]
+
+  ts_deps = [ ":accessibility" ]
 
   visibility = [
     ":*",
@@ -63,9 +66,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "accessibility-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/i18n:bundle",
     "../../ui/legacy:bundle",
@@ -75,6 +79,7 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -83,7 +88,7 @@ devtools_ui_module("unittests") {
     "AccessibilitySidebarView.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/platform:bundle",
     "../../core/sdk:bundle",

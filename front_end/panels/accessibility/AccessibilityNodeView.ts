@@ -280,7 +280,6 @@ export class AXNodePropertyTreeElement extends UI.TreeOutline.TreeElement {
   appendNameElement(name: string): void {
     const nameElement = document.createElement('span');
     if (name in AXAttributes) {
-      // @ts-expect-error TS can't cast name here but we checked it's valid.
       const attribute = AXAttributes[name];
       nameElement.textContent = attribute.name();
       UI.Tooltip.Tooltip.install(nameElement, attribute.description());
@@ -361,7 +360,7 @@ export const TypeStyles: Record<string, string> = {
   valueUndefined: 'ax-value-undefined',
 };
 
-export const StringProperties = new Set<Protocol.Accessibility.AXValueType>([
+export const StringProperties: Set<Protocol.Accessibility.AXValueType> = new Set<Protocol.Accessibility.AXValueType>([
   Protocol.Accessibility.AXValueType.String,
   Protocol.Accessibility.AXValueType.ComputedString,
   Protocol.Accessibility.AXValueType.IdrefList,

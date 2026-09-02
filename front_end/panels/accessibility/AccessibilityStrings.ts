@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../core/i18n/i18n.js';
+import type * as Protocol from '../../generated/protocol.js';
 const UIStrings = {
   /**
    * @description Text to indicate something is not enabled.
@@ -468,7 +469,8 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/accessibility/AccessibilityStrings.ts', UIStrings);
 const i18nLazyString = i18n.i18n.getLazilyComputedLocalizedString.bind(undefined, str_);
-export const AXAttributes = {
+export const AXAttributes: Record<
+    string, {name: i18n.LazyLocalizeString, description: i18n.LazyLocalizeString, group?: string}> = {
   disabled: {
     name: i18nLazyString(UIStrings.disabled),
     description: i18nLazyString(UIStrings.ifTrueThisElementCurrentlyCannot),
@@ -648,7 +650,8 @@ export const AXAttributes = {
   },
 };
 
-export const AXSourceTypes = {
+export const AXSourceTypes: Record<Protocol.Accessibility.AXValueSourceType,
+                                   {name: i18n.LazyLocalizeString, description: i18n.LazyLocalizeString}> = {
   attribute: {name: i18nLazyString(UIStrings.fromAttribute), description: i18nLazyString(UIStrings.valueFromAttribute)},
   implicit: {
     name: i18nLazyString(UIStrings.implicit),
@@ -664,7 +667,8 @@ export const AXSourceTypes = {
       {name: i18nLazyString(UIStrings.relatedElement), description: i18nLazyString(UIStrings.valueFromRelatedElement)},
 };
 
-export const AXNativeSourceTypes = {
+export const AXNativeSourceTypes: Record<Protocol.Accessibility.AXValueNativeSourceType,
+                                         {name: i18n.LazyLocalizeString, description: i18n.LazyLocalizeString}> = {
   description: {
     name: i18nLazyString(UIStrings.fromDescription),
     description: i18nLazyString(UIStrings.valueFromDescriptionElement),

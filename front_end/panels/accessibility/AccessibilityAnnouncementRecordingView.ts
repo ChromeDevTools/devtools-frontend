@@ -421,10 +421,10 @@ export function teardownScript(): void {
   }
 }
 
-export const INJECTED_SCRIPT_SOURCE = `(${injectedScript.toString()})(${JSON.stringify(AnnouncementApi.ARIA_LIVE)}, ${
-    JSON.stringify(AnnouncementApi.JS_TRIGGERED)});`;
+export const INJECTED_SCRIPT_SOURCE: string = `(${injectedScript.toString()})(${
+    JSON.stringify(AnnouncementApi.ARIA_LIVE)}, ${JSON.stringify(AnnouncementApi.JS_TRIGGERED)});`;
 
-export const TEARDOWN_SCRIPT_SOURCE = `(${teardownScript.toString()})();`;
+export const TEARDOWN_SCRIPT_SOURCE: string = `(${teardownScript.toString()})();`;
 
 export function checkForBlockedPayload(payload: unknown): string|null {
   if (typeof payload !== 'string') {

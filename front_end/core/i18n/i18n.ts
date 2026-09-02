@@ -12,6 +12,7 @@ import * as NumberFormatter from './NumberFormatter.js';
 import * as TimeUtilities from './time-utilities.js';
 
 export type LocalizeString = (id: string, values?: i18nTypes.Values) => Platform.UIString.LocalizedString;
+export type LazyLocalizeString = () => Platform.UIString.LocalizedString;
 
 export {
   ByteUtilities,

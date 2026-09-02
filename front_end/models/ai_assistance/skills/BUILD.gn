@@ -10,17 +10,19 @@ import("../../../../scripts/build/ninja/vars.gni")
 # gen/front_end/models/ai_assistance/skills/
 # so they can be imported relatively by files in this directory.
 
-action_foreach("generate_skills") {
+_skill_sources = [
+  "accessibility.md",
+  "network.md",
+  "performance.md",
+  "sources.md",
+  "storage.md",
+  "styling.md",
+]
+
+action_foreach("_generate_skills") {
   script = "//third_party/node/node.py"
 
-  sources = [
-    "accessibility.md",
-    "network.md",
-    "performance.md",
-    "sources.md",
-    "storage.md",
-    "styling.md",
-  ]
+  sources = _skill_sources
 
   inputs = [
     "../../../../scripts/build/build_ai_skills.mjs",
@@ -47,4 +49,11 @@ action_foreach("generate_skills") {
       }
     }
   }
+}
+
+group("generate_skills") {
+  public_deps = [ ":_generate_skills" ]
+  public_inputs =
+      process_file_template(_skill_sources,
+                            [ "$target_gen_dir/{{source_name_part}}.skill.js" ])
 }

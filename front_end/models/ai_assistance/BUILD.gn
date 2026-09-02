@@ -115,6 +115,8 @@ devtools_entrypoint("bundle") {
   split_compilation = true
   entrypoint = "ai_assistance.ts"
 
+  deps = [ "skills:generate_skills" ]
+
   ts_deps = [ ":ai_assistance" ]
 
   visibility = [

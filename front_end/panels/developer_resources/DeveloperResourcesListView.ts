@@ -183,7 +183,7 @@ export class DeveloperResourcesListView extends UI.Widget.VBox {
   #onSelect: ((item: SDK.PageResourceLoader.PageResource|null) => void)|null = null;
   readonly #view: View;
   #filters: TextUtils.TextUtils.ParsedFilter[] = [];
-  constructor(element: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
   }

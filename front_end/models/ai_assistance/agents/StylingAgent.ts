@@ -94,7 +94,6 @@ const MULTIMODAL_ENHANCEMENT_PROMPTS: Record<MultimodalInputType, string> = {
   [MultimodalInputType.UPLOADED_IMAGE]: promptForUploadedImage + considerationsForMultimodalInputEvaluation,
 };
 
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const AI_ASSISTANCE_FILTER_REGEX: string = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
 
 /**

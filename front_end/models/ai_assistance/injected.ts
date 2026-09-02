@@ -90,7 +90,6 @@ function freestylerBindingFunc(bindingName: string): void {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const freestylerBinding: string = `(${String(freestylerBindingFunc)})('${FREESTYLER_BINDING_NAME}')`;
 
 export const PAGE_EXPOSED_FUNCTIONS: string[] = ['setElementStyles'];
@@ -172,5 +171,4 @@ const setupSetElementStyles = `function setupSetElementStyles(prefix) {
   global.setElementStyles = setElementStyles;
 }`;
 
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const injectedFunctions: string = `(${setupSetElementStyles})('${AI_ASSISTANCE_CSS_CLASS_NAME}')`;

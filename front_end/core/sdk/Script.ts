@@ -457,7 +457,6 @@ function frameIdForScript(script: Script): Protocol.Page.FrameId|null {
   return resourceTreeModel.mainFrame.id;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const sourceURLRegex: RegExp = /^[\x20\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
 
 export async function disassembleWasm(content: string): Promise<TextUtils.WasmDisassembly.WasmDisassembly> {

@@ -536,8 +536,6 @@ export default defineConfig([
       // certain TypeScript compilation errors after fixes
       '@typescript-eslint/no-unnecessary-type-assertion': 'off',
 
-      '@typescript-eslint/no-inferrable-types': 'error',
-
       '@typescript-eslint/consistent-generic-constructors': 'off',
 
       // This is more performant

@@ -13,7 +13,6 @@ export const CHECKOUT_ROOT: string = path.join(__dirname, '..', build.CHECKOUT_R
 export const BUILD_ROOT: string = path.join(__dirname, '..', build.BUILD_ROOT);
 export const GEN_DIR: string = path.normalize(path.join(__dirname, '..', '..'));
 export const BUILD_WITH_CHROMIUM: boolean = build.BUILD_WITH_CHROMIUM;
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const TEST_ID_REGEX: RegExp = /^(.*\.[tj]s):(.*)$/;
 
 function rebase(fromRoot: string, toRoot: string, filename: string, newExt?: string) {

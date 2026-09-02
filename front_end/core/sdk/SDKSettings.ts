@@ -5,6 +5,8 @@
 import type * as Protocol from '../../generated/protocol.js';
 import * as Common from '../common/common.js';
 
+import {DataSaverOverride} from './EmulationModel.js';
+
 export const jsSourceMapsEnabledSettingDescriptor: Common.Settings.SettingDescriptor<boolean> = {
   name: 'js-source-maps-enabled',
   type: Common.Settings.SettingType.BOOLEAN,
@@ -218,6 +220,13 @@ export const emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor: Common.
   name: 'emulated-css-media-feature-prefers-reduced-data',
   type: Common.Settings.SettingType.ENUM,
   defaultValue: '',
+  storageType: Common.Settings.SettingStorageType.SESSION,
+};
+
+export const dataSaverSettingDescriptor: Common.Settings.SettingDescriptor<DataSaverOverride> = {
+  name: 'emulation.data-saver',
+  type: Common.Settings.SettingType.ENUM,
+  defaultValue: DataSaverOverride.UNSET,
   storageType: Common.Settings.SettingStorageType.SESSION,
 };
 

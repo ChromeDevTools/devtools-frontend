@@ -4,6 +4,7 @@
 
 import type * as ProtocolProxyApi from '../../generated/protocol-proxy-api.js';
 import * as Protocol from '../../generated/protocol.js';
+import type * as Common from '../common/common.js';
 
 import {CSSModel} from './CSSModel.js';
 import type {MultitargetNetworkManager} from './NetworkManager.js';
@@ -12,6 +13,7 @@ import {SDKModel} from './SDKModel.js';
 import {
   avifFormatDisabledSettingDescriptor,
   cpuPressureSettingDescriptor,
+  dataSaverSettingDescriptor,
   emulateAutoDarkModeSettingDescriptor,
   emulatedCSSMediaFeatureColorGamutSettingDescriptor,
   emulatedCSSMediaFeatureForcedColorsSettingDescriptor,
@@ -56,6 +58,8 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
   };
   #screenOrientationLocked: boolean;
   #lockedOrientation: Protocol.Emulation.ScreenOrientation|null;
+  readonly #dataSaverSetting: Common.Settings.Setting<DataSaverOverride>;
+  readonly #dataSaverChangeListener: () => void;
 
   constructor(target: Target) {
     super(target);
@@ -239,6 +243,15 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
       updateDisabledImageFormats();
     }
 
+    this.#dataSaverSetting = settings.resolve(dataSaverSettingDescriptor);
+    this.#dataSaverChangeListener = () => {
+      void this.setDataSaverOverride(this.#dataSaverSetting.get());
+    };
+    this.#dataSaverSetting.addChangeListener(this.#dataSaverChangeListener, this);
+    if (this.#dataSaverSetting.get() !== DataSaverOverride.UNSET) {
+      void this.setDataSaverOverride(this.#dataSaverSetting.get());
+    }
+
     this.#cpuPressureEnabled = false;
     this.#touchEmulationAllowed = true;
     this.#touchEnabled = false;
@@ -249,6 +262,11 @@ export class EmulationModel extends SDKModel<EmulationModelEventTypes> implement
       configuration: Protocol.Emulation.SetEmitTouchEventsForMouseRequestConfiguration.Mobile,
     };
     target.registerEmulationDispatcher(this);
+  }
+
+  override dispose(): void {
+    super.dispose();
+    this.#dataSaverSetting.removeChangeListener(this.#dataSaverChangeListener, this);
   }
 
   setTouchEmulationAllowed(touchEmulationAllowed: boolean): void {

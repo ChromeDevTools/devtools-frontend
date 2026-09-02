@@ -88,17 +88,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/mobile_throttling/ThrottlingMan
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 let throttlingManagerInstance: ThrottlingManager;
 
-class PromiseQueue<T> {
-  #promise = Promise.resolve();
-
-  push(promise: Promise<T>): Promise<T> {
-    return new Promise(r => {
-      this.#promise = this.#promise.then(async () => r(await promise));
-    });
-  }
-}
-
-export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<ThrottlingManager.EventTypes> {
+export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<void> {
   private readonly cpuThrottlingControls: Set<UI.Toolbar.ToolbarComboBox>;
   private readonly cpuThrottlingOptions: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption[];
   private readonly customNetworkConditionsSetting: Common.Settings.Setting<SDK.NetworkManager.Conditions[]>;
@@ -111,7 +101,6 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Thrott
   #hardwareConcurrencyOverrideEnabled = false;
   #currentCPUThrottlingOption: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption =
       PanelsCommon.CPUThrottlingOption.NoThrottlingOption;
-  readonly #emulationQueue = new PromiseQueue<void>();
   get hardwareConcurrencyOverrideEnabled(): boolean {
     return this.#hardwareConcurrencyOverrideEnabled;
   }
@@ -302,19 +291,6 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Thrott
     };
   }
 
-  setSaveDataOverride(selectedIndex: number): void {
-    let override = SDK.EmulationModel.DataSaverOverride.UNSET;
-    if (selectedIndex === 1) {
-      override = SDK.EmulationModel.DataSaverOverride.ENABLED;
-    } else if (selectedIndex === 2) {
-      override = SDK.EmulationModel.DataSaverOverride.DISABLED;
-    }
-    for (const emulationModel of SDK.TargetManager.TargetManager.instance().models(SDK.EmulationModel.EmulationModel)) {
-      void this.#emulationQueue.push(emulationModel.setDataSaverOverride(override));
-    }
-    this.dispatchEventToListeners(ThrottlingManager.Events.SAVE_DATA_OVERRIDE_CHANGED, selectedIndex);
-  }
-
   createSaveDataOverrideSelector(className?: string): HTMLSelectElement {
     const select = document.createElement('select');
     select.title = i18nString(UIStrings.saveDataSettingTooltip);
@@ -408,8 +384,8 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<Thrott
 }
 
 export interface SaveDataOverrideViewInput {
-  selectedIndex: number;
-  onSelect: (index: number) => void;
+  selectedOption: SDK.EmulationModel.DataSaverOverride;
+  onSelect: (selectedOption: SDK.EmulationModel.DataSaverOverride) => void;
 }
 
 export type SaveDataOverrideViewFunction =
@@ -418,52 +394,43 @@ export type SaveDataOverrideViewFunction =
 export const DEFAULT_SAVE_DATA_VIEW: SaveDataOverrideViewFunction = (input, _output, target) => {
   // clang-format off
   render(html`
-    <option value="unset" ?selected=${input.selectedIndex === 0}>${i18nString(UIStrings.noSaveDataOverride)}</option>
-    <option value="enabled" ?selected=${input.selectedIndex === 1}>${i18nString(UIStrings.saveDataOn)}</option>
-    <option value="disabled" ?selected=${input.selectedIndex === 2}>${i18nString(UIStrings.saveDataOff)}</option>
-  `, target, {container: {listeners: {change: (e: Event) => input.onSelect((e.target as HTMLSelectElement).selectedIndex)}}});
+    <option value=${SDK.EmulationModel.DataSaverOverride.UNSET} ?selected=${input.selectedOption === SDK.EmulationModel.DataSaverOverride.UNSET}>${i18nString(UIStrings.noSaveDataOverride)}</option>
+    <option value=${SDK.EmulationModel.DataSaverOverride.ENABLED} ?selected=${input.selectedOption === SDK.EmulationModel.DataSaverOverride.ENABLED}>${i18nString(UIStrings.saveDataOn)}</option>
+    <option value=${SDK.EmulationModel.DataSaverOverride.DISABLED} ?selected=${input.selectedOption === SDK.EmulationModel.DataSaverOverride.DISABLED}>${i18nString(UIStrings.saveDataOff)}</option>
+  `, target, {container: {listeners: {change: (e: Event) => input.onSelect((e.target as HTMLSelectElement).value as SDK.EmulationModel.DataSaverOverride)}}});
   // clang-format on
 };
 
-const SaveDataOverrideSelectBase:
-    Common.ObjectWrapper.EventMixin<ThrottlingManager.EventTypes, typeof UI.Widget.Widget<HTMLSelectElement>> =
-    Common.ObjectWrapper.eventMixin(
-        UI.Widget.Widget,
-    );
-
-export class SaveDataOverrideSelect extends SaveDataOverrideSelectBase {
-  #selectedIndex = 0;
+export class SaveDataOverrideSelect extends UI.Widget.Widget<HTMLSelectElement> {
+  readonly #setting: Common.Settings.Setting<SDK.EmulationModel.DataSaverOverride>;
   readonly #view: SaveDataOverrideViewFunction;
 
   constructor(element: HTMLElement, view = DEFAULT_SAVE_DATA_VIEW) {
     super(element);
     this.#view = view;
-    ThrottlingManager.instance().addEventListener(ThrottlingManager.Events.SAVE_DATA_OVERRIDE_CHANGED, ({data}) => {
-      this.#selectedIndex = data;
-      this.requestUpdate();
-    });
+    this.#setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.dataSaverSettingDescriptor);
     this.performUpdate();
   }
 
+  override wasShown(): void {
+    super.wasShown();
+    this.#setting.addChangeListener(this.requestUpdate, this);
+    this.requestUpdate();
+  }
+
+  override willHide(): void {
+    super.willHide();
+    this.#setting.removeChangeListener(this.requestUpdate, this);
+  }
+
   override performUpdate(): void {
-    this.#view(
-        {
-          selectedIndex: this.#selectedIndex,
-          onSelect: index => {
-            ThrottlingManager.instance().setSaveDataOverride(index);
-          },
-        },
-        undefined, this.contentElement);
-  }
-}
-
-export namespace ThrottlingManager {
-  export const enum Events {
-    SAVE_DATA_OVERRIDE_CHANGED = 'SaveDataOverrideChanged',
-  }
-
-  export interface EventTypes {
-    [Events.SAVE_DATA_OVERRIDE_CHANGED]: number;
+    this.#view({
+      selectedOption: this.#setting.get(),
+      onSelect: selectedOption => {
+        this.#setting.set(selectedOption);
+      },
+    },
+               undefined, this.contentElement);
   }
 }
 

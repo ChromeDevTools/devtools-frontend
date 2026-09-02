@@ -117,7 +117,7 @@ export class ReportingApiView extends UI.Widget.VBox implements
   #reports: Protocol.Network.ReportingApiReport[] = [];
   #focusedReport?: Protocol.Network.ReportingApiReport;
 
-  constructor(view = DEFAULT_VIEW) {
+  constructor(view: (input: ViewInput, output: undefined, target: HTMLElement) => void = DEFAULT_VIEW) {
     super();
     this.#view = view;
     this.#endpoints = new Map();

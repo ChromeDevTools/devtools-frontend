@@ -846,7 +846,7 @@ export class FrameDetailsReportView extends UI.Widget.Widget {
   #adScriptAncestry: Protocol.Network.AdAncestry|null = null;
   #view: View;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#protocolMonitorExperimentEnabled =
         Root.Runtime.experiments.isEnabled(Root.ExperimentNames.ExperimentName.PROTOCOL_MONITOR);

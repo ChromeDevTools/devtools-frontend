@@ -768,7 +768,7 @@ export class Section extends UI.Widget.VBox {
   private readonly throttler: Common.Throttler.Throttler;
   #view: SectionView;
 
-  constructor(element: HTMLElement, view = DEFAULT_SECTION_VIEW) {
+  constructor(element: HTMLElement, view: SectionView = DEFAULT_SECTION_VIEW) {
     super(element);
     this.fingerprint = null;
     this.clientInfoCache = new Map();

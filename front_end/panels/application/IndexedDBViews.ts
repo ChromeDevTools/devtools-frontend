@@ -450,7 +450,7 @@ export class IDBDataView extends UI.View.SimpleView {
   readonly #view: IDBDataViewView;
 
   constructor(model: IndexedDBModel, databaseId: DatabaseId, objectStore: ObjectStore, index: Index|null,
-              refreshObjectStoreCallback: () => void, view = IDB_DATA_VIEW_DEFAULT_VIEW) {
+              refreshObjectStoreCallback: () => void, view: IDBDataViewView = IDB_DATA_VIEW_DEFAULT_VIEW) {
     super({
       title: i18nString(UIStrings.idb),
       viewId: 'idb',
@@ -704,7 +704,8 @@ export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
   #objectTree: ObjectUI.ObjectPropertiesSection.ObjectTree|null = null;
   readonly #view: ObjectPropertiesSectionWidgetView;
 
-  constructor(element?: HTMLElement, view = OBJECT_PROPERTIES_SECTION_WIDGET_DEFAULT_VIEW) {
+  constructor(element?: HTMLElement,
+              view: ObjectPropertiesSectionWidgetView = OBJECT_PROPERTIES_SECTION_WIDGET_DEFAULT_VIEW) {
     super(element);
     this.#view = view;
   }

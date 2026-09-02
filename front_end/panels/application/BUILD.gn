@@ -32,6 +32,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("application") {
+  split_compilation = true
   sources = [
     "AppManifestView.ts",
     "ApplicationPanelSidebar.ts",
@@ -71,7 +72,7 @@ devtools_ui_module("application") {
     "preloading/PreloadingView.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -125,13 +126,17 @@ devtools_ui_module("application") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "application.ts"
 
   deps = [
-    ":application",
     ":css_files",
     "../../ui/legacy:css_files",
     "../../ui/legacy/components/data_grid:css_files",
+  ]
+
+  ts_deps = [
+    ":application",
     "components:bundle",
   ]
 
@@ -145,9 +150,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "application-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
@@ -160,6 +166,7 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -192,7 +199,7 @@ devtools_ui_module("unittests") {
     "preloading/PreloadingView.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",

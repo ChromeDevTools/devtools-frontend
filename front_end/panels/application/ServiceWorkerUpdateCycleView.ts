@@ -120,7 +120,7 @@ export class ServiceWorkerUpdateCycleView extends UI.Widget.Widget {
   private expandedRows = new Set<string>();
   #view: View;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
     this.rows = [];

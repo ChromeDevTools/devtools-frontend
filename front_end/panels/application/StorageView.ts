@@ -151,13 +151,14 @@ const UIStrings = {
   sessionStorage: 'Session storage',
 } as const;
 
-export const storagePieColors = new Map<Protocol.Storage.StorageType, string>([
-  [Protocol.Storage.StorageType.Cache_storage, 'rgb(229, 113, 113)'],   // red
-  [Protocol.Storage.StorageType.Cookies, 'rgb(239, 196, 87)'],          // yellow
-  [Protocol.Storage.StorageType.Indexeddb, 'rgb(155, 127, 230)'],       // purple
-  [Protocol.Storage.StorageType.Local_storage, 'rgb(116, 178, 102)'],   // green
-  [Protocol.Storage.StorageType.Service_workers, 'rgb(255, 167, 36)'],  // orange
-]);
+export const storagePieColors: Map<Protocol.Storage.StorageType, string> =
+    new Map<Protocol.Storage.StorageType, string>([
+      [Protocol.Storage.StorageType.Cache_storage, 'rgb(229, 113, 113)'],   // red
+      [Protocol.Storage.StorageType.Cookies, 'rgb(239, 196, 87)'],          // yellow
+      [Protocol.Storage.StorageType.Indexeddb, 'rgb(155, 127, 230)'],       // purple
+      [Protocol.Storage.StorageType.Local_storage, 'rgb(116, 178, 102)'],   // green
+      [Protocol.Storage.StorageType.Service_workers, 'rgb(255, 167, 36)'],  // orange
+    ]);
 
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
@@ -704,7 +705,7 @@ export class StorageView extends UI.Widget.VBox {
   }
 }
 
-export const AllStorageTypes = [
+export const AllStorageTypes: Protocol.Storage.StorageType[] = [
   Protocol.Storage.StorageType.Cache_storage,
   Protocol.Storage.StorageType.Cookies,
   Protocol.Storage.StorageType.Indexeddb,

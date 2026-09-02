@@ -1053,7 +1053,8 @@ export class PayloadWidget extends UI.Widget.Widget {
   #symbolizedError?: Bindings.SymbolizedError.SymbolizedError|null;
   #view: typeof PAYLOAD_DEFAULT_VIEW;
 
-  constructor(element?: HTMLElement, view = PAYLOAD_DEFAULT_VIEW) {
+  constructor(element?: HTMLElement,
+              view: (input: PayloadViewInput, output: object, target: HTMLElement) => void = PAYLOAD_DEFAULT_VIEW) {
     super(element);
     this.#view = view;
   }

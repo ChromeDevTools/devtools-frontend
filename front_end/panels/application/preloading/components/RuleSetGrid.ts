@@ -49,7 +49,7 @@ const UIStrings = {
   buttonRevealPreloadsAssociatedWithRuleSet: 'Reveal speculative loads associated with this rule set',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/preloading/components/RuleSetGrid.ts', UIStrings);
-export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString: i18n.LocalizeString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface RuleSetGridData {
   rows: RuleSetGridRow[];

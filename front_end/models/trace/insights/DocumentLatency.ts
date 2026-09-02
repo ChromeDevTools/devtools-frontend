@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
 import type * as Handlers from '../handlers/handlers.js';
 import * as Helpers from '../helpers/helpers.js';
 import * as Types from '../types/types.js';
@@ -72,8 +71,7 @@ export const UIStrings = {
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/DocumentLatency.ts', UIStrings);
-export const i18nString: (id: string, values?: Record<string, string|number|boolean>) =>
-    Platform.UIString.LocalizedString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString: i18n.LocalizeString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 // Due to the way that DevTools throttling works we cannot see if server response took less than ~570ms.
 // We set our failure threshold to 600ms to avoid those false positives but we want devs to shoot for 100ms.

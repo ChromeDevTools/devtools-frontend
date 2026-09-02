@@ -42,7 +42,7 @@ const UIStrings = {
   clickToDisplayBody: 'Click on any report to display its body',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/ReportingApiView.ts', UIStrings);
-export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString: i18n.LocalizeString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const REPORTING_API_EXPLANATION_URL =
     'https://developer.chrome.com/docs/capabilities/web-apis/reporting-api' as Platform.DevToolsPath.UrlString;

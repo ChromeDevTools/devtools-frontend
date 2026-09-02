@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
 import type * as Handlers from '../handlers/handlers.js';
 import type * as Types from '../types/types.js';
 
@@ -54,8 +53,7 @@ export const UIStrings = {
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/CharacterSet.ts', UIStrings);
-export const i18nString: (id: string, values?: Record<string, string|number|boolean>) =>
-    Platform.UIString.LocalizedString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString: i18n.LocalizeString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const CHARSET_HTTP_REGEX = /charset\s*=\s*[a-zA-Z0-9\-_:.()]{2,}/i;
 

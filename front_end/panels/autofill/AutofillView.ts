@@ -103,7 +103,7 @@ const AUTOFILL_INFO_URL = 'https://goo.gle/devtools-autofill-panel' as Platform.
 const AUTOFILL_FEEDBACK_URL = 'https://crbug.com/329106326' as Platform.DevToolsPath.UrlString;
 
 const str_ = i18n.i18n.registerUIStrings('panels/autofill/AutofillView.ts', UIStrings);
-export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString: i18n.LocalizeString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 interface ViewInput {
   autoOpenViewSetting: Common.Settings.Setting<boolean>;

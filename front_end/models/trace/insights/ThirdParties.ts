@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
 import * as ThirdPartyWeb from '../../../third_party/third-party-web/third-party-web.js';
 import * as Extras from '../extras/extras.js';
 import * as Handlers from '../handlers/handlers.js';
@@ -47,8 +46,7 @@ export const UIStrings = {
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/ThirdParties.ts', UIStrings);
-export const i18nString: (id: string, values?: Record<string, string|number|boolean>) =>
-    Platform.UIString.LocalizedString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString: i18n.LocalizeString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export type ThirdPartiesInsightModel = InsightModel<typeof UIStrings, {
   /** The entity for this navigation's URL. Any other entity is from a third party. */

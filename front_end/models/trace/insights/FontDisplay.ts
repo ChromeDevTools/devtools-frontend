@@ -41,8 +41,7 @@ export const UIStrings = {
 } as const;
 
 const str_ = i18n.i18n.registerUIStrings('models/trace/insights/FontDisplay.ts', UIStrings);
-export const i18nString: (id: string, values?: Record<string, string|number|boolean>) =>
-    Platform.UIString.LocalizedString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString: i18n.LocalizeString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export interface RemoteFont {
   name?: string;

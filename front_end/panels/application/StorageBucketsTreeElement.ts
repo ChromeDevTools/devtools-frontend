@@ -40,7 +40,7 @@ const UIStrings = {
       'On this page you can view and delete storage buckets, and their associated `Storage APIs`.',
 } as const;
 const str_ = i18n.i18n.registerUIStrings('panels/application/StorageBucketsTreeElement.ts', UIStrings);
-export const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
+export const i18nString: i18n.LocalizeString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class StorageBucketsTreeParentElement extends ExpandableApplicationPanelTreeElement {
   private bucketTreeElements = new Set<StorageBucketsTreeElement>();

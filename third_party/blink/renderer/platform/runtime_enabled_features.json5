@@ -1614,6 +1614,10 @@
       status: "experimental",
     },
     {
+      name: "CSSCustomHighlightUniversalSelector",
+      status: "experimental",
+    },
+    {
       name: "CSSCustomMedia",
       status: "test",
     },
@@ -2543,10 +2547,6 @@
       settable_from_internals: true
     },
     {
-      name: "EditingLineMovementWithRubyFix",
-      status: "stable",
-    },
-    {
       name: "EditingUseDomPositionApi",
       status: "test",
     },
@@ -3414,6 +3414,7 @@
     },
     {
       name: "HarfRustShaping",
+      status: "test",
     },
     {
       name: "HasUAVisualTransition",

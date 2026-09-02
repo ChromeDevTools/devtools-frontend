@@ -7282,7 +7282,7 @@ export const NativeFunctions: readonly NativeFunctionValue[] = [
   },
   {
     name: "RTCDTMFToneChangeEvent",
-    signatures: [["type","eventInitDict"]]
+    signatures: [["type","?eventInitDict"]]
   },
   {
     name: "RTCEncodedAudioFrame",

@@ -112,7 +112,14 @@ _grd_entrypoint_files = filter_include(grd_files_bundled_sources,
 generated_file("bundled_entrypoints") {
   outputs = [ "$target_gen_dir/bundled_entrypoints.json" ]
 
-  contents = _grd_entrypoint_files
+  contents = _grd_entrypoint_files + [
+               "front_end/core/legacy_producer/legacy_producer.js",
+               "front_end/core/split_producer/split_producer.js",
+               "front_end/panels/legacy_consumer/legacy_consumer.js",
+               "front_end/panels/legacy_mixed/legacy_mixed.js",
+               "front_end/panels/split_consumer/split_consumer.js",
+               "front_end/panels/split_mixed/split_mixed.js",
+             ]
 
   output_conversion = "json"
 }

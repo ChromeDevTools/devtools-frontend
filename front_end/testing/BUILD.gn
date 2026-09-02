@@ -127,6 +127,7 @@ devtools_foundation_module("test_id_generation") {
 }
 
 devtools_foundation_module("mocha_helpers") {
+  testonly = true
   sources = [ "MochaHelpers.ts" ]
 
   deps = [ ":test_id_generation" ]

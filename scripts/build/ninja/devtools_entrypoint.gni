@@ -217,6 +217,9 @@ template("legacy_devtools_entrypoint") {
 
     # Expose ts files to dependent targets.
     public_inputs = [ invoker.entrypoint ]
+    if (defined(invoker.inputs)) {
+      public_inputs += invoker.inputs
+    }
 
     args = [
              rebase_path(_generated_tsconfig_location, root_build_dir),

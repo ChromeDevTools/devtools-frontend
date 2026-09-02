@@ -143,14 +143,147 @@ typescript_test_types_inputs = [
 ]
 
 typescript_node_types_inputs = [
+  devtools_location_prepend + "node_modules/@types/node/assert.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/assert/strict.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/async_hooks.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/buffer.buffer.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/buffer.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/child_process.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/cluster.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/compatibility/iterators.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/console.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/constants.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/crypto.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/dgram.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/diagnostics_channel.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/dns.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/dns/promises.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/domain.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/events.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/fs.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/fs/promises.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/globals.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/globals.typedarray.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/http.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/http2.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/https.d.ts",
   devtools_location_prepend + "node_modules/@types/node/index.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/inspector.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/inspector.generated.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/module.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/net.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/os.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/path.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/perf_hooks.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/process.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/punycode.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/querystring.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/readline.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/readline/promises.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/repl.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/sea.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/sqlite.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/stream.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/stream/consumers.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/stream/promises.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/stream/web.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/string_decoder.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/test.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/timers.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/timers/promises.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/tls.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/trace_events.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/ts5.6/buffer.buffer.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/ts5.6/compatibility/float16array.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/ts5.6/globals.typedarray.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/ts5.6/index.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/ts5.7/compatibility/float16array.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/ts5.7/index.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/tty.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/url.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/util.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/v8.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/vm.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/wasi.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/web-globals/abortcontroller.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/web-globals/crypto.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/web-globals/domexception.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/web-globals/events.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/web-globals/fetch.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/web-globals/navigator.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/web-globals/storage.d.ts",
+  devtools_location_prepend +
+      "node_modules/@types/node/web-globals/streams.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/worker_threads.d.ts",
+  devtools_location_prepend + "node_modules/@types/node/zlib.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/agent.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/api.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/balanced-pool.d.ts",
+  devtools_location_prepend +
+      "node_modules/undici-types/cache-interceptor.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/cache.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/client-stats.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/client.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/connector.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/content-type.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/cookies.d.ts",
+  devtools_location_prepend +
+      "node_modules/undici-types/diagnostics-channel.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/dispatcher.d.ts",
+  devtools_location_prepend +
+      "node_modules/undici-types/env-http-proxy-agent.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/errors.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/eventsource.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/fetch.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/formdata.d.ts",
+  devtools_location_prepend +
+      "node_modules/undici-types/global-dispatcher.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/global-origin.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/h2c-client.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/handlers.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/header.d.ts",
   devtools_location_prepend + "node_modules/undici-types/index.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/interceptors.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/mock-agent.d.ts",
+  devtools_location_prepend +
+      "node_modules/undici-types/mock-call-history.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/mock-client.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/mock-errors.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/mock-interceptor.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/mock-pool.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/patch.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/pool-stats.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/pool.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/proxy-agent.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/readable.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/retry-agent.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/retry-handler.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/snapshot-agent.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/util.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/utility.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/webidl.d.ts",
+  devtools_location_prepend + "node_modules/undici-types/websocket.d.ts",
 ]
 
 typescript_global_definition_files = [
   devtools_location_prepend + "front_end/legacy/legacy-defs.d.ts",
   devtools_location_prepend + "front_end/global_typings/global_defs.d.ts",
   devtools_location_prepend + "node_modules/@types/filesystem/index.d.ts",
+  devtools_location_prepend + "node_modules/@types/filewriter/index.d.ts",
 ]
 
 default_ts_base_libs = [

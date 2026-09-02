@@ -4,12 +4,16 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/vars.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("web_mcp") {
   split_compilation = true
   sources = [ "WebMCPModel.ts" ]
+
+  inputs = [ devtools_location_prepend +
+             "node_modules/@types/json-schema/index.d.ts" ]
 
   ts_deps = [
     "../../core/common:bundle",

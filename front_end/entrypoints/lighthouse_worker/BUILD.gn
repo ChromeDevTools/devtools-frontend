@@ -5,10 +5,18 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_worker.gni")
+import("../../../scripts/build/typescript/typescript_vars.gni")
 
 devtools_module("lighthouse_worker") {
   split_compilation = true
   sources = [ "LighthouseWorkerService.ts" ]
+
+  # lighthouse_worker runs in the browser, but it adapts Lighthouse and
+  # Puppeteer which rely on globalThis.global (LighthouseWorkerService.ts) and
+  # Node types referenced by Puppeteer's declarations. Under remote execution
+  # (-strict_remote), these type definitions must be explicitly provided in
+  # inputs.
+  inputs = typescript_node_types_inputs
 
   ts_deps = [
     "../../core/protocol_client:bundle",

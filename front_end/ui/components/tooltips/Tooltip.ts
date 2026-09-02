@@ -228,7 +228,7 @@ export interface TooltipProperties {
  *                  as well, `"trigger"` takes precedence.
  */
 export class Tooltip extends HTMLElement {
-  static readonly observedAttributes = ['id', 'variant', 'jslogcontext', 'trigger'];
+  static readonly observedAttributes = ['id', 'variant', 'jslogcontext', 'trigger'] as const;
   static lastOpenedTooltipId: string|null = null;
 
   readonly #shadow = this.attachShadow({mode: 'open'});

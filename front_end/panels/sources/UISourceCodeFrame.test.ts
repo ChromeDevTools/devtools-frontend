@@ -32,39 +32,39 @@ describe('UISourceCodeFrame', () => {
     sinon.restore();
   });
 
+  function setup() {
+    const backend = new MockDebuggerBackend();
+    const target = backend.createTarget();
+    const debuggerWorkspaceBinding = backend.universe.debuggerWorkspaceBinding;
+
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(backend.universe.debuggerWorkspaceBinding);
+    sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
+    sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(backend.universe.workspace);
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
+    sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
+
+    const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
+      forceNew: true,
+      targetManager: backend.universe.targetManager,
+      workspace: backend.universe.workspace,
+      debuggerWorkspaceBinding: backend.universe.debuggerWorkspaceBinding,
+      settings: backend.universe.settings,
+    });
+    const persistence = Persistence.Persistence.PersistenceImpl.instance({
+      forceNew: true,
+      workspace: backend.universe.workspace,
+      breakpointManager,
+    });
+    Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({
+      forceNew: true,
+      workspace: backend.universe.workspace,
+    });
+
+    return {persistence, backend, debuggerWorkspaceBinding, target};
+  }
+
   describe('canEditSource', () => {
-    function setup() {
-      const backend = new MockDebuggerBackend();
-      const target = backend.createTarget();
-      const debuggerWorkspaceBinding = backend.universe.debuggerWorkspaceBinding;
-
-      sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
-          .returns(backend.universe.debuggerWorkspaceBinding);
-      sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(backend.universe.ignoreListManager);
-      sinon.stub(Workspace.Workspace.WorkspaceImpl, 'instance').returns(backend.universe.workspace);
-      sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(backend.universe.targetManager);
-      sinon.stub(SDK.PageResourceLoader.PageResourceLoader, 'instance').returns(backend.universe.pageResourceLoader);
-
-      const breakpointManager = Breakpoints.BreakpointManager.BreakpointManager.instance({
-        forceNew: true,
-        targetManager: backend.universe.targetManager,
-        workspace: backend.universe.workspace,
-        debuggerWorkspaceBinding: backend.universe.debuggerWorkspaceBinding,
-        settings: backend.universe.settings,
-      });
-      const persistence = Persistence.Persistence.PersistenceImpl.instance({
-        forceNew: true,
-        workspace: backend.universe.workspace,
-        breakpointManager,
-      });
-      Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance({
-        forceNew: true,
-        workspace: backend.universe.workspace,
-      });
-
-      return {persistence, backend, debuggerWorkspaceBinding, target};
-    }
-
     it('returns false for source mapped files when they are not mapped in a workspace', async () => {
       const {backend, debuggerWorkspaceBinding, target} = setup();
 
@@ -117,6 +117,27 @@ describe('UISourceCodeFrame', () => {
       renderElementIntoDOM(frame);
 
       assert.isTrue(frame.canEditSource());
+    });
+  });
+
+  describe('data-file-path', () => {
+    it('sets data-file-path on textEditor, updates on title change, and removes on dispose', () => {
+      setup();
+      const {uiSourceCode} = createFileSystemUISourceCode({
+        url: Platform.DevToolsPath.urlString`file:///path/to/file.ts`,
+        mimeType: 'text/typescript',
+        content: 'const a = 1;',
+      });
+
+      const frame = new UISourceCodeFrame(uiSourceCode);
+      assert.strictEqual(frame.textEditor.getAttribute('data-file-path'), 'file:///path/to/file.ts');
+
+      sinon.stub(uiSourceCode, 'url').returns(Platform.DevToolsPath.urlString`file:///path/to/renamed.ts`);
+      uiSourceCode.dispatchEventToListeners(Workspace.UISourceCode.Events.TitleChanged, uiSourceCode);
+      assert.strictEqual(frame.textEditor.getAttribute('data-file-path'), 'file:///path/to/renamed.ts');
+
+      frame.dispose();
+      assert.isNull(frame.textEditor.getAttribute('data-file-path'));
     });
   });
 });

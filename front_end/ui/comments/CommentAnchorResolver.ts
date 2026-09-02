@@ -58,6 +58,16 @@ function isCodeMirrorEditor(element: Element): boolean {
 }
 
 /**
+ * Resolves the file path attribute for a CodeMirror editor element.
+ *
+ * @param element The editor element to check.
+ * @returns The file path string or undefined if not found.
+ */
+export function getEditorFilePath(element: Element): string|undefined {
+  return element.getAttribute('data-file-path') ?? undefined;
+}
+
+/**
  * Checks whether an element contains non-empty text content (after trimming whitespace),
  * including text from any nested shadow roots.
  *
@@ -340,7 +350,7 @@ export function resolveCommentAnchor(
       return null;
     }
     textSignature = lineInfo.textSignature;
-    const filePath = target.getAttribute('data-file-path') ?? undefined;
+    const filePath = getEditorFilePath(target);
     editor = {lineNumber: lineInfo.lineNumber, filePath};
   } else {
     textSignature = target.deepTextContent();
@@ -453,7 +463,7 @@ export function rematchCommentAnchor(comment: CommentThread, root: Document|Elem
     const {lineNumber, filePath} = anchor.editor;
     const cmEditors = deepQuerySelectorAll(root, '.cm-editor');
     const matchingEditors = cmEditors.filter(cmEditor => {
-      if (filePath !== undefined && cmEditor.getAttribute('data-file-path') !== filePath) {
+      if (filePath !== undefined && getEditorFilePath(cmEditor) !== filePath) {
         return false;
       }
       return VisualLogging.getVePath(cmEditor) === anchor.vePath;

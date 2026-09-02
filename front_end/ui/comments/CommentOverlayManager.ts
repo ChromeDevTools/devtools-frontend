@@ -9,6 +9,7 @@ import {
   type CommentThread,
   computeVisibleRect,
   deepQuerySelectorAll,
+  getEditorFilePath,
   rematchCommentAnchor,
   resolveCommentAnchor,
   resolveCommentAnchorElement,
@@ -296,6 +297,13 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
       const el = this.#liveNodeCache.get(thread) || null;
       if (!el || !el.isConnected) {
         continue;
+      }
+
+      if (thread.anchor.editor?.filePath) {
+        const currentFilePath = getEditorFilePath(el);
+        if (currentFilePath && currentFilePath !== thread.anchor.editor.filePath) {
+          continue;
+        }
       }
 
       const observer = this.#getIntersectionObserver();
@@ -608,7 +616,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
       childList: true,
       subtree: true,
       attributes: true,
-      attributeFilter: ['jslog', 'data-network-request-id', 'data-backend-node-id', 'aria-expanded'],
+      attributeFilter: ['jslog', 'data-network-request-id', 'data-backend-node-id', 'aria-expanded', 'data-file-path'],
     });
   }
 

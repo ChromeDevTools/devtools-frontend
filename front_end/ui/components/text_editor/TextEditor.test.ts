@@ -53,6 +53,21 @@ describeWithEnvironment('TextEditor', () => {
       assert.strictEqual(editor.editor.contentDOM.getAttribute('aria-label'), 'Code editor');
     });
 
+    it('propagates data-file-path attribute to active editor DOM', () => {
+      const editor = new TextEditor.TextEditor.TextEditor(makeState(''));
+      editor.setAttribute('data-file-path', 'test.js');
+      assert.strictEqual(editor.editor.dom.getAttribute('data-file-path'), 'test.js');
+
+      renderElementIntoDOM(editor);
+      editor.remove();
+      renderElementIntoDOM(editor);
+      assert.strictEqual(editor.editor.dom.getAttribute('data-file-path'), 'test.js');
+
+      editor.removeAttribute('data-file-path');
+      assert.isNull(editor.editor.dom.getAttribute('data-file-path'));
+      editor.remove();
+    });
+
     it('can highlight whitespace', () => {
       const editor = new TextEditor.TextEditor.TextEditor(
           makeState('line1  \n  line2( )\n\tline3  ', TextEditor.Config.showWhitespace.instance()));

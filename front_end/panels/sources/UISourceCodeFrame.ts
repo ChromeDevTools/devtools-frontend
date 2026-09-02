@@ -150,6 +150,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
   }
 
   private unloadUISourceCode(): void {
+    this.textEditor.removeAttribute('data-file-path');
     Common.EventTarget.removeEventListeners(this.#messageAndDecorationListeners);
     Common.EventTarget.removeEventListeners(this.#uiSourceCodeEventListeners);
     this.#uiSourceCode.removeWorkingCopyGetter();
@@ -158,6 +159,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
   }
 
   private initializeUISourceCode(): void {
+    this.textEditor.setAttribute('data-file-path', this.#uiSourceCode.url());
     this.#uiSourceCodeEventListeners = [
       this.#uiSourceCode.addEventListener(
           Workspace.UISourceCode.Events.WorkingCopyChanged, this.onWorkingCopyChanged, this),
@@ -333,6 +335,7 @@ export class UISourceCodeFrame extends Common.ObjectWrapper
   }
 
   private onTitleChanged(): void {
+    this.textEditor.setAttribute('data-file-path', this.#uiSourceCode.url());
     this.updateLanguageMode('').then(() => this.reloadPlugins(), console.error);
   }
 

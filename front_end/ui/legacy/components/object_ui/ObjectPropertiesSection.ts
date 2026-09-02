@@ -1301,7 +1301,7 @@ export function populateObjectTreeContextMenu(
       {checked: object.includeNullOrUndefinedValues, jslogContext: 'show-all'});
 }
 
-interface ObjectTreeViewInput {
+export interface ObjectTreeViewInput {
   renderAsSubtree: boolean;
   objectTree?: ObjectTree;
   linkifier?: Components.Linkifier.Linkifier;
@@ -1309,7 +1309,7 @@ interface ObjectTreeViewInput {
   skipProto: boolean;
   onExpand: (expanded: boolean) => void;
 }
-type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLElement) => void;
+export type ObjectTreeView = (input: ObjectTreeViewInput, output: object, target: HTMLElement) => void;
 export const OBJECT_TREE_DEFAULT_VIEW: ObjectTreeView = (input, output, target) => {
   const objectTree = input.objectTree;
   if (!objectTree) {
@@ -1351,7 +1351,7 @@ export class ObjectTreeWidget extends UI.Widget.Widget {
   #skipProto = false;
   readonly #view: ObjectTreeView;
 
-  constructor(element?: HTMLElement, view = OBJECT_TREE_DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: ObjectTreeView = OBJECT_TREE_DEFAULT_VIEW) {
     super(element);
     this.#view = view;
   }
@@ -1676,12 +1676,12 @@ export interface ObjectPropertyViewInput {
   node: ObjectTreeNode;
   search?: UI.TreeOutline.TreeSearch<ObjectTreeNodeBase>;
 }
-interface ObjectPropertyViewOutput {
+export interface ObjectPropertyViewOutput {
   valueElement: Element|undefined;
   nameElement: Element|undefined;
 }
-type ObjectPropertyView = (input: ObjectPropertyViewInput, output: ObjectPropertyViewOutput, target: HTMLElement) =>
-    void;
+export type ObjectPropertyView =
+    (input: ObjectPropertyViewInput, output: ObjectPropertyViewOutput, target: HTMLElement) => void;
 export const OBJECT_PROPERTY_DEFAULT_VIEW: ObjectPropertyView = (input, output, target) => {
   const {property} = input.node;
   const isInternalEntries = property.synthetic && input.node.name === '[[Entries]]';
@@ -1807,7 +1807,7 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
   #editable = false;
   #search?: UI.TreeOutline.TreeSearch<ObjectTreeNodeBase>;
 
-  constructor(target?: HTMLElement, view = OBJECT_PROPERTY_DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: ObjectPropertyView = OBJECT_PROPERTY_DEFAULT_VIEW) {
     super(target);
     this.#view = view;
   }
@@ -2522,7 +2522,7 @@ export class ArrayGroupingTreeElement extends UI.TreeOutline.TreeElement {
   static sparseIterationThreshold = 250000;
 }
 
-interface ExpandableTextViewInput {
+export interface ExpandableTextViewInput {
   copyText: () => void;
   expandText: () => void;
   expanded: boolean;
@@ -2530,7 +2530,7 @@ interface ExpandableTextViewInput {
   byteCount: number;
   text: string;
 }
-type ExpandableTextView = (input: ExpandableTextViewInput, output: object, target: HTMLElement) => void;
+export type ExpandableTextView = (input: ExpandableTextViewInput, output: object, target: HTMLElement) => void;
 export const EXPANDABLE_TEXT_DEFAULT_VIEW: ExpandableTextView = (input, output, target) => {
   const totalBytesText = i18n.ByteUtilities.bytesToString(input.byteCount);
   const canExpand = input.text.length < ExpandableTextPropertyValue.MAX_DISPLAYABLE_TEXT_LENGTH;
@@ -2588,7 +2588,7 @@ export class ExpandableTextPropertyValue extends UI.Widget.Widget {
   #maxLength = ExpandableTextPropertyValue.EXPANDABLE_MAX_LENGTH;
   readonly #view: ExpandableTextView;
 
-  constructor(target?: HTMLElement, view = EXPANDABLE_TEXT_DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: ExpandableTextView = EXPANDABLE_TEXT_DEFAULT_VIEW) {
     super(target);
     this.#view = view;
   }

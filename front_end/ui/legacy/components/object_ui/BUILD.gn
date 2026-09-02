@@ -18,6 +18,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("object_ui") {
+  split_compilation = true
   sources = [
     "CSSStyleSanitizer.ts",
     "CustomPreviewComponent.ts",
@@ -27,7 +28,7 @@ devtools_ui_module("object_ui") {
     "RemoteObjectPreviewFormatter.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../../core/common:bundle",
     "../../../../core/host:bundle",
     "../../../../core/i18n:bundle",
@@ -52,12 +53,12 @@ devtools_ui_module("object_ui") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "object_ui.ts"
 
-  deps = [
-    ":css_files",
-    ":object_ui",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":object_ui" ]
 
   visibility = [
     # IMPORTANT: Be careful when extending visibility of front_end/ui/legacy/*,
@@ -81,6 +82,7 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [
     "CSSStyleSanitizer.test.ts",
@@ -91,7 +93,7 @@ devtools_ui_module("unittests") {
     "RemoteObjectPreviewFormatter.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../../core/common:bundle",
     "../../../../core/host:bundle",

@@ -555,19 +555,23 @@ export const removePseudoState = async(devToolsPage: DevToolsPage, pseudoState: 
                        undefined);
 };
 
-export const getComputedStylesForDomNode =
-    async(inspectedPage: InspectedPage, elementSelector: string, styleAttribute: keyof CSSStyleDeclaration):
-        Promise<string|number|(() => ArrayIterator<string>)|CSSRule|((property: string) => string)|
-                ((property: string) => string)|((index: number) => string)|((property: string) => string)|
-                ((property: string, value: string|null, priority?: string) => void)|null> => {
-          return await inspectedPage.evaluate((elementSelector, styleAttribute) => {
-            const element = document.querySelector(elementSelector);
-            if (!element) {
-              throw new Error(`${elementSelector} could not be found`);
-            }
-            return getComputedStyle(element)[styleAttribute];
-          }, elementSelector, styleAttribute);
-        };
+export const getComputedStylesForDomNode = async<K extends keyof CSSStyleDeclaration>(
+    inspectedPage: InspectedPage,
+    elementSelector: string,
+    styleAttribute: K,
+    ): Promise<CSSStyleDeclaration[K]> => {
+  return await inspectedPage.evaluate(
+             (elementSelector, styleAttribute) => {
+               const element = document.querySelector(elementSelector);
+               if (!element) {
+                 throw new Error(`${elementSelector} could not be found`);
+               }
+               return getComputedStyle(element)[styleAttribute];
+             },
+             elementSelector,
+             styleAttribute,
+             ) as CSSStyleDeclaration[K];
+};
 
 export const waitForNumberOfComputedProperties =
     async(devToolsPage: DevToolsPage, numberToWaitFor: number): Promise<true> => {

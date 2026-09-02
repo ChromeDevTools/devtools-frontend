@@ -1528,6 +1528,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
            // 1. Add a new attribute via domModel.attributeModified
            domModel.attributeModified(pNode.id, 'data-test', '123');
+           domTree.updateModifiedNodes();
            await waitForTreeUpdates();
 
            // Verify attributes on pWidget are updated without duplicates
@@ -1538,6 +1539,7 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
            // 2. Remove attribute via domModel.attributeRemoved
            domModel.attributeRemoved(pNode.id, 'class');
+           domTree.updateModifiedNodes();
            await waitForTreeUpdates();
 
            // Verify only remaining attribute is rendered
@@ -1548,6 +1550,144 @@ describeWithEnvironment('DOMTreeWidget', () => {
            domTree.detach();
          }
        });
+
+    it('applies DOM update highlight animation on attribute modified and fires onElementsTreeUpdated in DECLARATIVE_VIEW',
+       async () => {
+         const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+         sinon.stub(domModel, 'requestDocument').resolves(null);
+         const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+         try {
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: 'DIV',
+             children: [
+               {nodeId: 2, nodeName: 'P', attributes: ['class', 'intro']},
+             ],
+           });
+           const pNode = rootNode.children()![0];
+           domTree.rootDOMNode = rootNode;
+           domTree.setNodeExpanded(rootNode, true);
+           domTree.performUpdate();
+
+           await waitForTreeUpdates();
+
+           const updatedNodesPromise = new Promise<SDK.DOMModel.DOMNode[]>(resolve => {
+             domTree.onElementsTreeUpdated = (event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>) => {
+               resolve(event.data);
+             };
+           });
+
+           // Modify attribute
+           domModel.attributeModified(pNode.id, 'class', 'updated');
+           assert.isTrue(domTree.updateRecordsForTest().has(pNode));
+           domTree.updateModifiedNodes();
+           assert.strictEqual(domTree.updateRecordsForTest().size, 0);
+
+           const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+           assert.exists(tree);
+           const internalTree = tree.getInternalTreeOutlineForTest();
+           const pTreeElement = internalTree.rootElement().children()[0].children()[0];
+           const pWidgetElement = pTreeElement.listItemElement.querySelector('devtools-widget');
+           const pWidget = UI.Widget.Widget.get(pWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+           assert.exists(pWidget);
+
+           await pWidget.updateComplete;
+           const highlighted = pWidget.contentElement.querySelectorAll('.dom-update-highlight');
+           assert.isAtLeast(highlighted.length, 1);
+
+           const updatedNodes = await updatedNodesPromise;
+           assert.deepEqual(updatedNodes, [pNode]);
+         } finally {
+           domTree.detach();
+         }
+       });
+
+    it('applies DOM update highlight animation on character data modified in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: '#text', nodeValue: 'Hello'},
+          ],
+        });
+        const textNode = rootNode.children()![0];
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        // Modify character data
+        domModel.characterDataModified(textNode.id, 'World');
+        assert.isTrue(domTree.updateRecordsForTest().has(textNode));
+        domTree.updateModifiedNodes();
+        assert.strictEqual(domTree.updateRecordsForTest().size, 0);
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElement = internalTree.rootElement().children()[0];
+        const rootWidgetElement = rootTreeElement.listItemElement.querySelector('devtools-widget');
+        const rootWidget = UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(rootWidget);
+
+        await rootWidget.updateComplete;
+        const highlighted = rootWidget.contentElement.querySelectorAll('.dom-update-highlight');
+        assert.isAtLeast(highlighted.length, 1);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('continues receiving DOMModel updates after detach and re-show in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {nodeId: 2, nodeName: 'P', attributes: ['class', 'intro']},
+          ],
+        });
+        const pNode = rootNode.children()![0];
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        // Simulate panel switch: detach, then show again
+        domTree.detach();
+        renderElementIntoDOM(domTree);
+        await waitForTreeUpdates();
+
+        // Modify attribute
+        domModel.attributeModified(pNode.id, 'class', 'updated');
+        assert.isTrue(domTree.updateRecordsForTest().has(pNode));
+        domTree.updateModifiedNodes();
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const pTreeElement = internalTree.rootElement().children()[0].children()[0];
+        const pWidgetElement = pTreeElement.listItemElement.querySelector('devtools-widget');
+        const pWidget = UI.Widget.Widget.get(pWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(pWidget);
+
+        const getText = (el: Element): string => el.textContent?.replace(/\u200B/g, '') ?? '';
+        const pAttrs = pWidget.contentElement.querySelectorAll('.webkit-html-attribute');
+        assert.lengthOf(pAttrs, 1);
+        assert.strictEqual(getText(pAttrs[0]), 'class="updated"');
+      } finally {
+        domTree.detach();
+      }
+    });
 
     it('starts editing attribute or new attribute on selectNodeAfterEdit with moveDirection in DECLARATIVE_VIEW',
        async () => {

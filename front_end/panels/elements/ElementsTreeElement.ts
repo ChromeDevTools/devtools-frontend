@@ -1187,6 +1187,18 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
   #updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null = null;
 
+  get updateRecord(): Elements.ElementUpdateRecord.ElementUpdateRecord|null {
+    return this.#updateRecord;
+  }
+
+  set updateRecord(updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord|null) {
+    if (this.#updateRecord === updateRecord) {
+      return;
+    }
+    this.#updateRecord = updateRecord;
+    this.requestUpdate();
+  }
+
   get node(): SDK.DOMModel.DOMNode {
     return this.#node;
   }

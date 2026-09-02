@@ -182,6 +182,7 @@ interface ViewInput {
   onSelectAdoptedStyleSheet?: (sheet: SDK.DOMModel.AdoptedStyleSheet) => void;
   expandedChildrenLimit?: (node: SDK.DOMModel.DOMNode) => number;
   onExpandAllChildren?: (node: SDK.DOMModel.DOMNode) => void;
+  updateRecordForNode?: (node: SDK.DOMModel.DOMNode) => Elements.ElementUpdateRecord.ElementUpdateRecord | null;
 }
 
 interface ViewOutput {
@@ -694,8 +695,6 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) &&
         !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
 
-    // TODO: Move DOMModel event subscription and reactive state synchronization (updateRecords, DOM update animations) directly into DOMTreeWidget.
-
     const on = Lit.Directive.directive(Lit.CustomDirectives.InterceptBindingDirective);
 
     const onSelect = (): void => {
@@ -818,6 +817,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
               input.onContextMenu?.(node, event, widget);
             }
           },
+          updateRecord: input.updateRecordForNode?.(node) ?? null,
         })}
         ${hasChildren ? html`
           <ul role="group">
@@ -865,6 +865,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
                         input.onContextMenu?.(node, event, widget);
                       }
                     },
+                    updateRecord: input.updateRecordForNode?.(node) ?? null,
                   })}
                 </li>
               ` : nothing}
@@ -1205,12 +1206,28 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.#issuePopoverHelper.setTimeout(300);
   }
 
+  #updateRecords = new Map<SDK.DOMModel.DOMNode, Elements.ElementUpdateRecord.ElementUpdateRecord>();
+
+  updateRecordsForTest(): Map<SDK.DOMModel.DOMNode, Elements.ElementUpdateRecord.ElementUpdateRecord> {
+    return this.#updateRecords;
+  }
+
+  #addUpdateRecord(node: SDK.DOMModel.DOMNode): Elements.ElementUpdateRecord.ElementUpdateRecord {
+    let record = this.#updateRecords.get(node);
+    if (!record) {
+      record = new Elements.ElementUpdateRecord.ElementUpdateRecord();
+      this.#updateRecords.set(node, record);
+    }
+    return record;
+  }
+
   #onDocumentUpdated(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMModel>): void {
     const domModel = event.data;
     if (this.#view === DECLARATIVE_VIEW) {
       this.#selectedDOMNode = null;
       this.#expandedNodes.clear();
       this.#currentHighlightedNode = null;
+      this.#updateRecords.clear();
     }
     if (domModel.existingDocument()) {
       this.rootDOMNode = domModel.existingDocument();
@@ -1218,8 +1235,123 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.onDocumentUpdated(domModel);
   }
 
-  #onDOMNodeChanged(): void {
-    this.requestUpdate();
+  #updateModifiedNodesTimeout?: number;
+
+  #updateModifiedNodesSoon(): void {
+    if (!this.#updateRecords.size) {
+      return;
+    }
+    if (this.#updateModifiedNodesTimeout) {
+      return;
+    }
+    this.#updateModifiedNodesTimeout = window.setTimeout(this.updateModifiedNodes.bind(this), 50);
+  }
+
+  #onNodeInserted(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    const node = event.data;
+    if (node.parentNode) {
+      this.#addUpdateRecord(node.parentNode).nodeInserted(node);
+    }
+    this.#updateModifiedNodesSoon();
+  }
+
+  #onNodeRemoved(
+      event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, parent: SDK.DOMModel.DOMNode}>): void {
+    const {node, parent} = event.data;
+    this.resetClipboardIfNeeded(node);
+    if (parent) {
+      this.#addUpdateRecord(parent).nodeRemoved(node);
+    }
+    this.#updateModifiedNodesSoon();
+  }
+
+  #onAttrModified(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}>): void {
+    const {node, name} = event.data;
+    this.#addUpdateRecord(node).attributeModified(name);
+    this.#updateModifiedNodesSoon();
+  }
+
+  #onAttrRemoved(event: Common.EventTarget.EventTargetEvent<{node: SDK.DOMModel.DOMNode, name: string}>): void {
+    const {node, name} = event.data;
+    this.#addUpdateRecord(node).attributeRemoved(name);
+    this.#updateModifiedNodesSoon();
+  }
+
+  #onCharacterDataModified(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    const node = event.data;
+    this.#addUpdateRecord(node).charDataModified();
+    if (node.parentNode && node.parentNode.firstChild === node.parentNode.lastChild) {
+      this.#addUpdateRecord(node.parentNode).childrenModified();
+    }
+    this.#updateModifiedNodesSoon();
+  }
+
+  #onChildNodeCountUpdated(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    const node = event.data;
+    this.#addUpdateRecord(node).childrenModified();
+    this.#updateModifiedNodesSoon();
+  }
+
+  #onAdoptedStyleSheetsModified(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    const node = event.data;
+    this.#addUpdateRecord(node).childrenModified();
+    this.#updateModifiedNodesSoon();
+  }
+
+  #onDistributedNodesChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode>): void {
+    const node = event.data;
+    this.#addUpdateRecord(node).childrenModified();
+    this.#updateModifiedNodesSoon();
+  }
+
+  #onDocumentURLChanged(event: Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMDocument>): void {
+    this.#addUpdateRecord(event.data).charDataModified();
+    this.#updateModifiedNodesSoon();
+  }
+
+  #onMarkersChanged(): void {
+    this.#updateModifiedNodesSoon();
+  }
+
+  updateModifiedNodes(): void {
+    if (this.#view === DECLARATIVE_VIEW) {
+      this.performUpdate();
+      return;
+    }
+    this.#viewOutput.elementsTreeOutline?.updateModifiedNodes();
+  }
+
+  #wireDOMModel(domModel: SDK.DOMModel.DOMModel): void {
+    domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.#onDocumentUpdated, this);
+    domModel.addEventListener(SDK.DOMModel.Events.NodeInserted, this.#onNodeInserted, this);
+    domModel.addEventListener(SDK.DOMModel.Events.NodeRemoved, this.#onNodeRemoved, this);
+    domModel.addEventListener(SDK.DOMModel.Events.AttrModified, this.#onAttrModified, this);
+    domModel.addEventListener(SDK.DOMModel.Events.AttrRemoved, this.#onAttrRemoved, this);
+    domModel.addEventListener(SDK.DOMModel.Events.CharacterDataModified, this.#onCharacterDataModified, this);
+    domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.#onChildNodeCountUpdated, this);
+    domModel.addEventListener(SDK.DOMModel.Events.MarkersChanged, this.#onMarkersChanged, this);
+    domModel.addEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.#onAdoptedStyleSheetsModified, this);
+    domModel.addEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.#onTopLayerElementsChanged, this);
+    domModel.addEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.#onDistributedNodesChanged, this);
+    domModel.addEventListener(SDK.DOMModel.Events.DocumentURLChanged, this.#onDocumentURLChanged, this);
+    domModel.addEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.requestUpdate, this);
+  }
+
+  #unwireDOMModel(domModel: SDK.DOMModel.DOMModel): void {
+    domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.#onDocumentUpdated, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.NodeInserted, this.#onNodeInserted, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.NodeRemoved, this.#onNodeRemoved, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.AttrModified, this.#onAttrModified, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.AttrRemoved, this.#onAttrRemoved, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.CharacterDataModified, this.#onCharacterDataModified, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.#onChildNodeCountUpdated, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.MarkersChanged, this.#onMarkersChanged, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.#onAdoptedStyleSheetsModified,
+                                 this);
+    domModel.removeEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.#onTopLayerElementsChanged, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.DistributedNodesChanged, this.#onDistributedNodesChanged, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.DocumentURLChanged, this.#onDocumentURLChanged, this);
+    domModel.removeEventListener(SDK.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.requestUpdate, this);
   }
 
   #onShowHTMLCommentsChange(): void {
@@ -1505,7 +1637,12 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   override performUpdate(): void {
+    if (this.#updateModifiedNodesTimeout) {
+      clearTimeout(this.#updateModifiedNodesTimeout);
+      this.#updateModifiedNodesTimeout = undefined;
+    }
     const firstRender = !this.#viewOutput.elementsTreeOutline;
+    const updatedNodes = this.#view === DECLARATIVE_VIEW ? [...this.#updateRecords.keys()] : [];
     this.#view({
       domTreeWidget: this,
       rootDOMNode: this.#rootDOMNode,
@@ -1650,8 +1787,15 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       },
       expandedChildrenLimit: (node: SDK.DOMModel.DOMNode) => this.expandedChildrenLimit(node),
       onExpandAllChildren: (node: SDK.DOMModel.DOMNode) => this.expandAllChildren(node),
+      updateRecordForNode: (node: SDK.DOMModel.DOMNode) => this.#updateRecords.get(node) ?? null,
     },
                this.#viewOutput, this.contentElement);
+    if (this.#view === DECLARATIVE_VIEW) {
+      this.#updateRecords.clear();
+      if (updatedNodes.length > 0) {
+        this.onElementsTreeUpdated({data: updatedNodes} as Common.EventTarget.EventTargetEvent<SDK.DOMModel.DOMNode[]>);
+      }
+    }
     if (this.#viewOutput.elementsTreeOutline) {
       this.#viewOutput.elementsTreeOutline.domTreeWidget = this;
     }
@@ -1666,16 +1810,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     if (this.#view === DECLARATIVE_VIEW) {
       if (!this.#wiredDOMModels.has(domModel)) {
         this.#wiredDOMModels.add(domModel);
-        domModel.addEventListener(SDK.DOMModel.Events.DocumentUpdated, this.#onDocumentUpdated, this);
-        domModel.addEventListener(SDK.DOMModel.Events.NodeInserted, this.#onDOMNodeChanged, this);
-        domModel.addEventListener(SDK.DOMModel.Events.NodeRemoved, this.#onDOMNodeChanged, this);
-        domModel.addEventListener(SDK.DOMModel.Events.AttrModified, this.#onDOMNodeChanged, this);
-        domModel.addEventListener(SDK.DOMModel.Events.AttrRemoved, this.#onDOMNodeChanged, this);
-        domModel.addEventListener(SDK.DOMModel.Events.CharacterDataModified, this.#onDOMNodeChanged, this);
-        domModel.addEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.#onDOMNodeChanged, this);
-        domModel.addEventListener(SDK.DOMModel.Events.MarkersChanged, this.#onDOMNodeChanged, this);
-        domModel.addEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.#onDOMNodeChanged, this);
-        domModel.addEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.#onTopLayerElementsChanged, this);
+        this.#wireDOMModel(domModel);
       }
       if (this.isShowing() && !domModel.parentModel() &&
           (!this.rootDOMNode || this.rootDOMNode.domModel() !== domModel)) {
@@ -1706,17 +1841,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     if (this.#view === DECLARATIVE_VIEW) {
       if (this.#wiredDOMModels.has(domModel)) {
         this.#wiredDOMModels.delete(domModel);
-        domModel.removeEventListener(SDK.DOMModel.Events.DocumentUpdated, this.#onDocumentUpdated, this);
-        domModel.removeEventListener(SDK.DOMModel.Events.NodeInserted, this.#onDOMNodeChanged, this);
-        domModel.removeEventListener(SDK.DOMModel.Events.NodeRemoved, this.#onDOMNodeChanged, this);
-        domModel.removeEventListener(SDK.DOMModel.Events.AttrModified, this.#onDOMNodeChanged, this);
-        domModel.removeEventListener(SDK.DOMModel.Events.AttrRemoved, this.#onDOMNodeChanged, this);
-        domModel.removeEventListener(SDK.DOMModel.Events.CharacterDataModified, this.#onDOMNodeChanged, this);
-        domModel.removeEventListener(SDK.DOMModel.Events.ChildNodeCountUpdated, this.#onDOMNodeChanged, this);
-        domModel.removeEventListener(SDK.DOMModel.Events.MarkersChanged, this.#onDOMNodeChanged, this);
-        domModel.removeEventListener(SDK.DOMModel.Events.AdoptedStyleSheetsModified, this.#onDOMNodeChanged, this);
-        domModel.removeEventListener(SDK.DOMModel.Events.TopLayerElementsChanged, this.#onTopLayerElementsChanged,
-                                     this);
+        this.#unwireDOMModel(domModel);
       }
       this.performUpdate();
       return;
@@ -1800,8 +1925,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   runPendingUpdates(): void {
-    this.#viewOutput.elementsTreeOutline?.runPendingUpdates();
-    this.performUpdate();
+    this.updateModifiedNodes();
+    if (this.#view !== DECLARATIVE_VIEW) {
+      this.performUpdate();
+    }
   }
 
   override onResize(): void {
@@ -1815,6 +1942,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     super.willHide();
     this.#imagePreviewPopover?.hide();
     this.#issuePopoverHelper?.hidePopover();
+    if (this.#updateModifiedNodesTimeout) {
+      clearTimeout(this.#updateModifiedNodesTimeout);
+      this.#updateModifiedNodesTimeout = undefined;
+    }
+    if (this.#view === DECLARATIVE_VIEW) {
+      this.#updateRecords.clear();
+    }
     if (this.#multilineEditing) {
       this.#multilineEditing.cancel();
     }
@@ -2420,6 +2554,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   override wasHidden(): void {
     super.wasHidden();
     this.#visible = false;
+    if (this.#updateModifiedNodesTimeout) {
+      clearTimeout(this.#updateModifiedNodesTimeout);
+      this.#updateModifiedNodesTimeout = undefined;
+    }
+    if (this.#view === DECLARATIVE_VIEW) {
+      this.#updateRecords.clear();
+    }
     this.performUpdate();
   }
 
@@ -2427,6 +2568,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     super.detach(overrideHideOnDetach);
     this.#visible = false;
     this.#showHTMLCommentsSetting.removeChangeListener(this.#onShowHTMLCommentsChange, this);
+    if (this.#updateModifiedNodesTimeout) {
+      clearTimeout(this.#updateModifiedNodesTimeout);
+      this.#updateModifiedNodesTimeout = undefined;
+    }
+    if (this.#view === DECLARATIVE_VIEW) {
+      this.#updateRecords.clear();
+    }
     this.performUpdate();
   }
 

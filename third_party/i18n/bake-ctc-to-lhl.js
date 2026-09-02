@@ -124,17 +124,17 @@ function loadCtcStrings(file) {
  * @param {string} path
  * @param {Record<string, LhlMessage>} localeStrings
  */
-function saveLhlStrings(path, localeStrings) {
-  writeIfChanged(path, JSON.stringify(localeStrings, null, 2) + '\n');
+async function saveLhlStrings(path, localeStrings) {
+  await writeIfChanged(path, JSON.stringify(localeStrings, null, 2) + '\n');
 }
 
 /**
  * @param {string} dir
  * @param {string} outputDir
  * @param {Set<string>=} allowedKeys Only include messages where keys are present in this set.
- * @return {Array<string>}
+ * @return {Promise<Array<string>>}
  */
-export function collectAndBakeCtcStrings(dir, outputDir, allowedKeys) {
+export async function collectAndBakeCtcStrings(dir, outputDir, allowedKeys) {
   const lhlFilenames = [];
   for (const filename of fs.readdirSync(dir)) {
     const fullPath = path.join(dir, filename);
@@ -146,7 +146,7 @@ export function collectAndBakeCtcStrings(dir, outputDir, allowedKeys) {
           outputDir,
           path.basename(filename).replace('.ctc', ''),
       );
-      saveLhlStrings(outputFile, strings);
+      await saveLhlStrings(outputFile, strings);
       lhlFilenames.push(path.basename(filename));
     }
   }

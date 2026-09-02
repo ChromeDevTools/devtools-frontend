@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import {writeIfChanged} from './write-if-changed.js';
@@ -11,29 +11,5 @@ const [, , src, dest] = process.argv;
 const srcPath = path.join(process.cwd(), src);
 const destPath = path.join(process.cwd(), dest);
 
-// If there's a file there from a previous build, unlink it first. This
-// is because the file in that location might be a hardlinked file, and
-// overwriting it doesn't change the fact that it's hardlinked.
-const srcContents = fs.readFileSync(srcPath);
-let fileDiffer = true;
-if (fileExists(destPath)) {
-  // Check contents, return early if match
-  const destContents = fs.readFileSync(destPath);
-  fileDiffer = srcContents.compare(destContents) !== 0;
-}
-
-// Force a write to the target filesystem, since by default the ninja
-// toolchain will create a hardlink, which in turn reflects changes in
-// gen and resources/inspector back to //front_end.
-if (fileDiffer) {
-  writeIfChanged(destPath, srcContents);
-}
-
-/**
- * Case sensitive implementation of a file look up.
- */
-function fileExists(filePath) {
-  const dir = path.dirname(filePath);
-  const files = fs.readdirSync(dir);
-  return files.includes(path.basename(filePath));
-}
+const srcContents = await fs.readFile(srcPath);
+await writeIfChanged(destPath, srcContents);

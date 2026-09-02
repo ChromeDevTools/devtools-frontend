@@ -1,7 +1,7 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import {writeIfChanged} from './write-if-changed.js';
@@ -18,5 +18,5 @@ const outputLocation = path.join(outputDirectory, `${rawFileName}.d.ts`);
 // We can't use copy here, as that would maintain the original file timestamps.
 // This can throw off Ninja, which verifies that timestamps of generated files
 // are the same as the timestamp it ran the action on.
-const contents = fs.readFileSync(inputLocation);
-writeIfChanged(outputLocation, contents);
+const contents = await fs.readFile(inputLocation);
+await writeIfChanged(outputLocation, contents);

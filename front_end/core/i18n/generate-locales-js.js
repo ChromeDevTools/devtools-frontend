@@ -53,4 +53,4 @@ export const REMOTE_FETCH_PATTERN = '${yargsObject['remote-fetch-pattern']}';
 export const LOCAL_FETCH_PATTERN = '${yargsObject['local-fetch-pattern']}';
 `;
 
-writeIfChanged(path.join(yargsObject['target-gen-dir'], 'locales.js'), content);
+await writeIfChanged(path.join(yargsObject['target-gen-dir'], 'locales.js'), content);

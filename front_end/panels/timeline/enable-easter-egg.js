@@ -14,7 +14,7 @@ if (process.argv.includes('--should-enable')) {
   value = 'true';
 }
 
-writeIfChanged(
+await writeIfChanged(
     path.join(targetGenDir, 'EasterEgg.js'),
     `export const SHOULD_SHOW_EASTER_EGG = ${value};`,
 );

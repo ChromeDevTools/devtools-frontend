@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
@@ -34,15 +34,18 @@ if (!Array.isArray(entrypoints)) {
   throw new Error('Must specify multiple entrypoints as array');
 }
 
-const templateContent = fs.readFileSync(template, 'utf-8');
+const templatePath = String(template);
+const outDirectoryPath = String(outDirectory);
 
-for (const entrypoint of entrypoints) {
+const templateContent = await fs.readFile(templatePath, 'utf-8');
+
+await Promise.all(entrypoints.map(async entrypoint => {
   const rewrittenTemplateContent = templateContent.replace(
       new RegExp('%ENTRYPOINT_NAME%', 'g'),
-      entrypoint,
+      String(entrypoint),
   );
-  writeIfChanged(
-      path.join(outDirectory, `${entrypoint}.html`),
+  await writeIfChanged(
+      path.join(outDirectoryPath, `${entrypoint}.html`),
       rewrittenTemplateContent,
   );
-}
+}));

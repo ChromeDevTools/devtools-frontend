@@ -37,7 +37,7 @@ const yargsObject = yargs(hideBin(process.argv))
  * @param locale
  * @param strings
  */
-function convertCtcToLhLAndSave(outputDirectory, locale, strings) {
+async function convertCtcToLhLAndSave(outputDirectory, locale, strings) {
   const outputPath = path.join(outputDirectory, `${locale}.json`);
 
   /** @type {Record<string, CtcMessage>} */
@@ -50,7 +50,7 @@ function convertCtcToLhLAndSave(outputDirectory, locale, strings) {
   }
 
   const convertedStrings = bakePlaceholders(sortedCtcStrings);
-  writeIfChanged(outputPath, JSON.stringify(convertedStrings, null, 2) + '\n');
+  await writeIfChanged(outputPath, JSON.stringify(convertedStrings, null, 2) + '\n');
 }
 
 const inputDirectories = yargsObject['input-directories'];
@@ -76,9 +76,9 @@ for (const directory of inputDirectories) {
 }
 
 const outputDirectory = yargsObject['output-directory'];
-convertCtcToLhLAndSave(outputDirectory, 'en-US', collectedStrings);
+await convertCtcToLhLAndSave(outputDirectory, 'en-US', collectedStrings);
 if (yargsObject['include-en-xl']) {
-  convertCtcToLhLAndSave(
+  await convertCtcToLhLAndSave(
       outputDirectory,
       'en-XL',
       createPsuedoLocaleStrings(collectedStrings),
@@ -92,4 +92,4 @@ const depfile = `
 ${path.join(outputDirectory, 'en-US.json')}: ${files.join(' ')}
 `;
 
-writeIfChanged(path.join(outputDirectory, 'collected-ui-strings.d'), depfile);
+await writeIfChanged(path.join(outputDirectory, 'collected-ui-strings.d'), depfile);

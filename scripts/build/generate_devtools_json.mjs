@@ -24,4 +24,4 @@ const devtools = {
     uuid,
   },
 };
-writeIfChanged(outputLocation, JSON.stringify(devtools, null, 2));
+await writeIfChanged(outputLocation, JSON.stringify(devtools, null, 2));

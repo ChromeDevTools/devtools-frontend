@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as fs from 'node:fs';
+import * as fs from 'node:fs/promises';
 
 /**
  * Only write content to a file if the content is different that what it previously contained.
@@ -13,18 +13,29 @@ import * as fs from 'node:fs';
  * unchanged. This would preserve the original file timestamps and hence GN can correctly conclude
  * the file output hasn't changed.
  *
- * @param generatedFileLocation Location to write to
- * @param newContents The contents to write (or noop if unchanged with previous content)
+ * @param {string} generatedFileLocation Location to write to
+ * @param {string | Buffer | Uint8Array} newContents The contents to write (or noop if unchanged with previous content)
  */
-export function writeIfChanged(generatedFileLocation, newContents) {
-  if (fs.existsSync(generatedFileLocation)) {
-    if (fs.readFileSync(generatedFileLocation, {
-          encoding: 'utf8',
-          flag: 'r',
-        }) === newContents) {
-      return;
+export async function writeIfChanged(generatedFileLocation, newContents) {
+  if (typeof newContents === 'string') {
+    try {
+      const existing = await fs.readFile(generatedFileLocation, 'utf-8');
+      if (existing === newContents) {
+        return;
+      }
+    } catch {
+      // If the file doesn't exist, we'll create it.
+    }
+  } else {
+    try {
+      const existing = await fs.readFile(generatedFileLocation);
+      if (existing.equals(newContents)) {
+        return;
+      }
+    } catch {
+      // If the file doesn't exist, we'll create it.
     }
   }
 
-  fs.writeFileSync(generatedFileLocation, newContents, {encoding: 'utf-8'});
+  await fs.writeFile(generatedFileLocation, newContents);
 }

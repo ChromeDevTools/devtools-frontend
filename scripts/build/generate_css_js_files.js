@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 import cssnano from 'cssnano';
 import cssnanoPresetLite from 'cssnano-preset-lite';
-import * as fs from 'node:fs';
+import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import postcss from 'postcss';
 
@@ -45,8 +45,8 @@ async function runMain() {
   const filenames = files.split(',');
   const isDebug = isDebugString === 'true';
 
-  for (const fileName of filenames) {
-    const contents = fs.readFileSync(path.join(srcDir, fileName), {
+  await Promise.all(filenames.map(async fileName => {
+    const contents = await fs.readFile(path.join(srcDir, fileName), {
       encoding: 'utf8',
       flag: 'r',
     });
@@ -59,10 +59,10 @@ async function runMain() {
     const generatedFileName = `${fileName}.js`;
     const generatedFileLocation = path.join(targetGenDir, generatedFileName);
 
-    writeIfChanged(generatedFileLocation, newContents);
-  }
+    await writeIfChanged(generatedFileLocation, newContents);
+  }));
 }
 
 if (import.meta.main) {
-  runMain();
+  await runMain();
 }

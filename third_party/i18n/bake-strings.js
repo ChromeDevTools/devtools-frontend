@@ -29,4 +29,4 @@ function loadReferenceKeys(directory) {
 // Convert all the .ctc.json files in `directory` to JSON files in the LHL
 // format in `directory`.
 const allowedKeys = loadReferenceKeys(directory);
-collectAndBakeCtcStrings(directory, directory, allowedKeys);
+await collectAndBakeCtcStrings(directory, directory, allowedKeys);

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import yaml from 'js-yaml';
-import * as fs from 'node:fs';
+import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 
 import {writeIfChanged} from './ninja/write-if-changed.js';
@@ -40,11 +40,11 @@ export function parseSkill(content) {
   };
 }
 
-function runMain() {
+async function runMain() {
   const [, , buildTimestamp, inputFile, outputFile] = process.argv;
   const year = new Date(Number(buildTimestamp) * 1000).getUTCFullYear();
 
-  const content = fs.readFileSync(inputFile, 'utf-8');
+  const content = await fs.readFile(inputFile, 'utf-8');
   const skill = parseSkill(content);
 
   const outputContent = `// Copyright ${year} The Chromium Authors. All rights reserved.
@@ -56,11 +56,11 @@ export const skill = ${JSON.stringify(skill, null, 2)};
 `;
 
   // Ensure target directory exists
-  fs.mkdirSync(path.dirname(outputFile), {recursive: true});
+  await fs.mkdir(path.dirname(outputFile), {recursive: true});
 
-  writeIfChanged(outputFile, outputContent);
+  await writeIfChanged(outputFile, outputContent);
 }
 
 if (import.meta.main) {
-  runMain();
+  await runMain();
 }

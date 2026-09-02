@@ -8,9 +8,10 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_ui_module("helpers") {
+  split_compilation = true
   sources = [ "OpenInNewTab.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/platform:bundle",
@@ -20,9 +21,10 @@ devtools_ui_module("helpers") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "helpers.ts"
 
-  deps = [ ":helpers" ]
+  ts_deps = [ ":helpers" ]
 
   visibility = [
     ":*",
@@ -42,10 +44,11 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [ "OpenInNewTab.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/host:bundle",
     "../../core/platform:bundle",

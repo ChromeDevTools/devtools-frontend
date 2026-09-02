@@ -48,6 +48,7 @@ import {RemoteObject} from './RemoteObject.js';
 import {Events as ResourceTreeModelEvents, type ResourceTreeFrame, ResourceTreeModel} from './ResourceTreeModel.js';
 import {RuntimeModel} from './RuntimeModel.js';
 import {SDKModel} from './SDKModel.js';
+import {SecurityOrigin} from './SecurityOrigin.js';
 import {Capability, type Target} from './Target.js';
 import type {TargetManager} from './TargetManager.js';
 
@@ -385,6 +386,14 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
 
   topLayerIndex(): number {
     return this.#topLayerIndex;
+  }
+
+  /**
+   * Returns the security origin of the document owning this node, or `null` if
+   * this node is not attached to a document.
+   */
+  securityOrigin(): SecurityOrigin|null {
+    return this.ownerDocument?.securityOrigin() ?? null;
   }
 
   adProvenance(): Protocol.Network.AdProvenance|undefined {
@@ -1424,6 +1433,8 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
       nodeName: this.nodeName(),
       localName: this.localName(),
       nodeValue: this.nodeValueInternal,
+      documentURL: this.documentURL,
+      baseURL: this.baseURL,
     } as Protocol.DOM.Node) :
                                                      new DOMNodeSnapshot(this.domModel());
     snapshot.id = this.id;
@@ -1444,11 +1455,6 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper<DOMNodeEventType
         ownerDocumentSnapshot || ((snapshot instanceof DOMDocument) ? snapshot : this.ownerDocument);
     snapshot.#isInShadowTree = this.#isInShadowTree;
     snapshot.childNodeCountInternal = this.childNodeCountInternal;
-
-    if (snapshot instanceof DOMDocument && this instanceof DOMDocument) {
-      snapshot.documentURL = this.documentURL;
-      snapshot.baseURL = this.baseURL;
-    }
 
     if (!this.childrenInternal && this.childNodeCountInternal > 0) {
       await this.getSubtree(1, false);
@@ -1600,15 +1606,45 @@ export class DOMNodeShortcut {
 export class DOMDocument extends DOMNode {
   body: DOMNode|null;
   documentElement: DOMNode|null;
-  documentURL: Platform.DevToolsPath.UrlString;
-  baseURL: Platform.DevToolsPath.UrlString;
+  #documentURL: Platform.DevToolsPath.UrlString;
+  #baseURL: Platform.DevToolsPath.UrlString;
+  #securityOrigin: SecurityOrigin;
+
   constructor(domModel: DOMModel, payload: Protocol.DOM.Node) {
     super(domModel);
     this.body = null;
     this.documentElement = null;
     this.init(this, false, payload);
-    this.documentURL = (payload.documentURL || '') as Platform.DevToolsPath.UrlString;
-    this.baseURL = (payload.baseURL || '') as Platform.DevToolsPath.UrlString;
+    this.#documentURL = (payload.documentURL || '') as Platform.DevToolsPath.UrlString;
+    this.#baseURL = (payload.baseURL || '') as Platform.DevToolsPath.UrlString;
+    this.#securityOrigin = SecurityOrigin.create(this.#documentURL);
+  }
+
+  get documentURL(): Platform.DevToolsPath.UrlString {
+    return this.#documentURL;
+  }
+
+  get baseURL(): Platform.DevToolsPath.UrlString {
+    return this.#baseURL;
+  }
+
+  /**
+   * Returns the security origin of this document.
+   *
+   * The security origin is derived from the document URL and is recomputed
+   * when the document navigates to a new URL via `setDocumentURL`.
+   */
+  override securityOrigin(): SecurityOrigin {
+    return this.#securityOrigin;
+  }
+
+  /**
+   * Updates the document and base URLs, and recomputes the document's security origin.
+   */
+  setDocumentURL(url: Platform.DevToolsPath.UrlString): void {
+    this.#documentURL = url;
+    this.#baseURL = url;
+    this.#securityOrigin = SecurityOrigin.create(url);
   }
 }
 
@@ -1694,8 +1730,7 @@ export class DOMModel extends SDKModel<EventTypes> {
     if (node) {
       const contentDocument = node.contentDocument();
       if (contentDocument && contentDocument.documentURL !== frame.url) {
-        contentDocument.documentURL = frame.url;
-        contentDocument.baseURL = frame.url;
+        contentDocument.setDocumentURL(frame.url);
         this.dispatchEventToListeners(Events.DocumentURLChanged, contentDocument);
       }
     }

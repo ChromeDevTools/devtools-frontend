@@ -628,7 +628,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
         nodeType: Node.ELEMENT_NODE,
       });
       const ownerDoc = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
-      ownerDoc.documentURL = urlString`https://example.com`;
+      sinon.stub(ownerDoc, 'documentURL').get(() => urlString`https://example.com`);
       initialNode.ownerDocument = ownerDoc;
 
       UI.Context.Context.instance().setFlavor(
@@ -2849,7 +2849,7 @@ describeWithEnvironment('AI Assistance Panel', () => {
           nodeType: Node.ELEMENT_NODE,
         });
         const ownerDoc = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
-        ownerDoc.documentURL = urlString`https://example.com`;
+        sinon.stub(ownerDoc, 'documentURL').get(() => urlString`https://example.com`);
         node.ownerDocument = ownerDoc;
 
         UI.Context.Context.instance().setFlavor(SDK.DOMModel.DOMNode, node);

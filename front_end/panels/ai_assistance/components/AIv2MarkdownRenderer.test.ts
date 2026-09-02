@@ -146,12 +146,8 @@ color: red;
       });
 
       it('linkifies nodes using #node-ID', async () => {
-        const mockDocument = {
-          documentURL: 'https://example.com',
-        } as SDK.DOMModel.DOMDocument;
-        const mockNode = {
-          ownerDocument: mockDocument,
-        } as SDK.DOMModel.DOMNode;
+        const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        mockNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
 
         mockDomModel.pushNodesByBackendIdsToFrontend.resolves(new Map([
           [23 as Protocol.DOM.BackendNodeId, mockNode],
@@ -171,12 +167,8 @@ color: red;
       });
 
       it('does not linkify nodes if the node belongs to a different origin', async () => {
-        const mockDocument = {
-          documentURL: 'https://cross-origin.com',
-        } as SDK.DOMModel.DOMDocument;
-        const mockNode = {
-          ownerDocument: mockDocument,
-        } as SDK.DOMModel.DOMNode;
+        const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        mockNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://cross-origin.com'));
 
         mockDomModel.pushNodesByBackendIdsToFrontend.resolves(new Map([
           [23 as Protocol.DOM.BackendNodeId, mockNode],
@@ -196,13 +188,9 @@ color: red;
       });
 
       it('restricts linkification by frameId if mainFrameId is provided', async () => {
-        const mockDocument = {
-          documentURL: 'https://example.com',
-        } as SDK.DOMModel.DOMDocument;
-        const mockNode = {
-          ownerDocument: mockDocument,
-          frameId: () => 'frame-123',
-        } as unknown as SDK.DOMModel.DOMNode;
+        const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        mockNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
+        mockNode.frameId.returns('frame-123' as Protocol.Page.FrameId);
 
         mockDomModel.pushNodesByBackendIdsToFrontend.resolves(new Map([
           [23 as Protocol.DOM.BackendNodeId, mockNode],
@@ -221,12 +209,8 @@ color: red;
       });
 
       it('linkifies paths using #path-PATH', async () => {
-        const mockDocument = {
-          documentURL: 'https://example.com',
-        } as SDK.DOMModel.DOMDocument;
-        const mockNode = {
-          ownerDocument: mockDocument,
-        } as SDK.DOMModel.DOMNode;
+        const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        mockNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
 
         mockDomModel.pushNodeByPathToFrontend.resolves(42 as Protocol.DOM.NodeId);
         mockDomModel.nodeForId.returns(mockNode);
@@ -244,12 +228,8 @@ color: red;
       });
 
       it('linkifies paths using #1,HTML (without #path- prefix)', async () => {
-        const mockDocument = {
-          documentURL: 'https://example.com',
-        } as SDK.DOMModel.DOMDocument;
-        const mockNode = {
-          ownerDocument: mockDocument,
-        } as SDK.DOMModel.DOMNode;
+        const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        mockNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
 
         mockDomModel.pushNodeByPathToFrontend.resolves(42 as Protocol.DOM.NodeId);
         mockDomModel.nodeForId.returns(mockNode);
@@ -268,12 +248,8 @@ color: red;
       });
 
       it('works for nodes inside codespan', async () => {
-        const mockDocument = {
-          documentURL: 'https://example.com',
-        } as SDK.DOMModel.DOMDocument;
-        const mockNode = {
-          ownerDocument: mockDocument,
-        } as SDK.DOMModel.DOMNode;
+        const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+        mockNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
 
         mockDomModel.pushNodesByBackendIdsToFrontend.resolves(new Map([
           [23 as Protocol.DOM.BackendNodeId, mockNode],

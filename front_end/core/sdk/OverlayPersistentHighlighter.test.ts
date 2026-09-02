@@ -74,9 +74,7 @@ describe('OverlayPersistentHighlighter', () => {
     };
 
     const stubDOMDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
-    // Somehow we're not able to stub this properly
-    // sinon says cannot stub non-existent property.
-    stubDOMDocument.documentURL = DOCUMENT_URL_FOR_TEST;
+    sinon.stub(stubDOMDocument, 'documentURL').get(() => DOCUMENT_URL_FOR_TEST);
 
     mockOverlayModel = sinon.createStubInstance(SDK.OverlayModel.OverlayModel, {
       getDOMModel: sinon.createStubInstance(SDK.DOMModel.DOMModel, {

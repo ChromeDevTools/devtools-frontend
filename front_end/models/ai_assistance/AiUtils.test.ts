@@ -5,50 +5,15 @@
 import {assert} from 'chai';
 
 import * as Host from '../../core/host/host.js';
-import * as Platform from '../../core/platform/platform.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 
 import * as AiAssistance from './ai_assistance.js';
 
-const {urlString} = Platform.DevToolsPath;
-
 describe('AiUtils', () => {
   setupLocaleHooks();
   setupRuntimeHooks();
-  describe('isSameOrigin', () => {
-    it('returns true for identical origins', () => {
-      const url1 = urlString`https://example.com/page1`;
-      const url2 = urlString`https://example.com/page2`;
-      assert.isTrue(AiAssistance.AiUtils.isSameOrigin(url1, url2));
-    });
-
-    it('returns false for different origins', () => {
-      const url1 = urlString`https://example.com`;
-      const url2 = urlString`https://google.com`;
-      assert.isFalse(AiAssistance.AiUtils.isSameOrigin(url1, url2));
-    });
-
-    it('returns true for identical data URLs', () => {
-      const url1 = urlString`data:text/html,hello`;
-      const url2 = urlString`data:text/html,hello`;
-      assert.isTrue(AiAssistance.AiUtils.isSameOrigin(url1, url2));
-    });
-
-    it('returns false for different data URLs', () => {
-      const url1 = urlString`data:text/html,hello`;
-      const url2 = urlString`data:text/html,world`;
-      assert.isFalse(AiAssistance.AiUtils.isSameOrigin(url1, url2));
-    });
-
-    it('returns false if one is data URL and other is not', () => {
-      const url1 = urlString`https://example.com`;
-      const url2 = urlString`data:text/html,hello`;
-      assert.isFalse(AiAssistance.AiUtils.isSameOrigin(url1, url2));
-    });
-  });
-
   describe('getDisabledReasons', () => {
     it('returns an empty array if Aida is available and there are no restrictions', () => {
       updateHostConfig({

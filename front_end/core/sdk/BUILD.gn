@@ -159,6 +159,7 @@ ts_library("unittests") {
     "ScopeTreeCache.test.ts",
     "ScreenCaptureModel.test.ts",
     "Script.test.ts",
+    "SecurityOrigin.test.ts",
     "ServerTiming.test.ts",
     "ServiceWorkerCacheModel.test.ts",
     "ServiceWorkerManager.test.ts",

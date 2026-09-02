@@ -80,7 +80,7 @@ describe('GetElementAccessibilityDetailsTool', () => {
     ]);
 
     const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
-    mockDocument.documentURL = urlString`${nodeUrl}`;
+    sinon.stub(mockDocument, 'documentURL').get(() => urlString`${nodeUrl}`);
     mockNode.ownerDocument = mockDocument;
 
     const mockSnapshot = sinon.createStubInstance(SDK.DOMModel.DOMNodeSnapshot);

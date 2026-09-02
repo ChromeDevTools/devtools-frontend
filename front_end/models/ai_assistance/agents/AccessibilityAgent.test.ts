@@ -5,15 +5,12 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {createTarget, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import * as AiAssistance from '../ai_assistance.js';
-
-const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('AccessibilityAgent', () => {
   const mockReport = {
@@ -182,9 +179,7 @@ describeWithEnvironment('AccessibilityAgent', () => {
     mockNode.id = 42 as Protocol.DOM.NodeId;
     mockNode.backendNodeId.returns(100 as Protocol.DOM.BackendNodeId);
     mockNode.attributes.returns([]);
-    const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
-    mockDocument.documentURL = urlString`https://example.com`;
-    mockNode.ownerDocument = mockDocument;
+    mockNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
 
     const mockSnapshot = sinon.createStubInstance(SDK.DOMModel.DOMNodeSnapshot);
     mockNode.takeSnapshot.resolves(mockSnapshot);
@@ -193,7 +188,7 @@ describeWithEnvironment('AccessibilityAgent', () => {
     sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
 
     const mainDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
-    mainDocument.documentURL = urlString`https://example.com`;
+    mainDocument.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
     sinon.stub(domModel, 'existingDocument').returns(mainDocument);
 
     sinon.stub(accessibilityModel, 'requestAndLoadSubTreeToNode').resolves();
@@ -238,15 +233,13 @@ describeWithEnvironment('AccessibilityAgent', () => {
     const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     mockNode.domModel.returns(domModel);
     mockNode.id = 42 as Protocol.DOM.NodeId;
-    const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
-    mockDocument.documentURL = urlString`https://cross-origin.com`;
-    mockNode.ownerDocument = mockDocument;
+    mockNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://cross-origin.com'));
 
     sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
     sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
 
     const mainDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
-    mainDocument.documentURL = urlString`https://example.com`;
+    mainDocument.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
     sinon.stub(domModel, 'existingDocument').returns(mainDocument);
 
     const responses = await Array.fromAsync(agent.run('test', {selected: context}));
@@ -255,7 +248,7 @@ describeWithEnvironment('AccessibilityAgent', () => {
     assert.strictEqual(actionResponse.output, 'Could not find the element with path: 1,HTML,1,BODY');
   });
 
-  it('getElementAccessibilityDetails proceeds if both are identical data URLs', async () => {
+  it('getElementAccessibilityDetails returns an error if the node is in a different file:// origin', async () => {
     const target = createTarget();
     const aidaClient = mockAidaClient([[{
       explanation: '',
@@ -276,15 +269,49 @@ describeWithEnvironment('AccessibilityAgent', () => {
     mockNode.id = 42 as Protocol.DOM.NodeId;
     mockNode.backendNodeId.returns(100 as Protocol.DOM.BackendNodeId);
     mockNode.attributes.returns([]);
-    const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
-    mockDocument.documentURL = urlString`data:text/html,foo`;
-    mockNode.ownerDocument = mockDocument;
+    mockNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('file:///tmp/victim.html'));
 
     sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
     sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
 
     const mainDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
-    mainDocument.documentURL = urlString`data:text/html,foo`;
+    mainDocument.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('file:///tmp/attacker.html'));
+    sinon.stub(domModel, 'existingDocument').returns(mainDocument);
+
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const actionResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.ACTION);
+    assert.exists(actionResponse);
+    assert.strictEqual(actionResponse.output, 'Could not find the element with path: 1,HTML,1,BODY');
+  });
+
+  it('getElementAccessibilityDetails proceeds if both are the same file:// origin', async () => {
+    const target = createTarget();
+    const aidaClient = mockAidaClient([[{
+      explanation: '',
+      functionCalls: [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
+      metadata: {
+        rpcGlobalId: 123,
+      },
+    }]]);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+    });
+    const context = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
+
+    const domModel = target.model(SDK.DOMModel.DOMModel)!;
+
+    const mockNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+    mockNode.domModel.returns(domModel);
+    mockNode.id = 42 as Protocol.DOM.NodeId;
+    mockNode.backendNodeId.returns(100 as Protocol.DOM.BackendNodeId);
+    mockNode.attributes.returns([]);
+    mockNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('file:///tmp/index.html'));
+
+    sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
+    sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
+
+    const mainDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+    mainDocument.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('file:///tmp/index.html'));
     sinon.stub(domModel, 'existingDocument').returns(mainDocument);
 
     const responses = await Array.fromAsync(agent.run('test', {selected: context}));
@@ -314,15 +341,13 @@ describeWithEnvironment('AccessibilityAgent', () => {
     mockNode.id = 42 as Protocol.DOM.NodeId;
     mockNode.backendNodeId.returns(100 as Protocol.DOM.BackendNodeId);
     mockNode.attributes.returns([]);
-    const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
-    mockDocument.documentURL = urlString`data:text/html,bar`;
-    mockNode.ownerDocument = mockDocument;
+    mockNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('data:text/html,bar'));
 
     sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(42 as Protocol.DOM.NodeId);
     sinon.stub(domModel, 'nodeForId').withArgs(42 as Protocol.DOM.NodeId).returns(mockNode);
 
     const mainDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
-    mainDocument.documentURL = urlString`data:text/html,foo`;
+    mainDocument.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('data:text/html,foo'));
     sinon.stub(domModel, 'existingDocument').returns(mainDocument);
 
     const responses = await Array.fromAsync(agent.run('test', {selected: context}));

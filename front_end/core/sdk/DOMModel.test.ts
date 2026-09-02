@@ -62,6 +62,128 @@ describe('DOMModel', () => {
     sinon.assert.notCalled(spy);
   });
 
+  describe('securityOrigin', () => {
+    it('returns a SecurityOrigin matching the document URL', () => {
+      const target = universe.createTarget();
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      const documentNode = new SDK.DOMModel.DOMDocument(domModel, {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: NodeType.DOCUMENT_NODE,
+        nodeName: '#document',
+        localName: '',
+        nodeValue: '',
+        documentURL: 'https://example.com/page.html',
+      });
+
+      const origin = documentNode.securityOrigin();
+      assert.isTrue(origin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
+      assert.isFalse(origin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://other.com')));
+    });
+
+    it('returns the owner document securityOrigin for child nodes', () => {
+      const target = universe.createTarget();
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      const documentNode = new SDK.DOMModel.DOMDocument(domModel, {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: NodeType.DOCUMENT_NODE,
+        nodeName: '#document',
+        localName: '',
+        nodeValue: '',
+        documentURL: 'https://example.com/page.html',
+      });
+      const childNode = SDK.DOMModel.DOMNode.create(domModel, documentNode, false, {
+        nodeId: 2 as Protocol.DOM.NodeId,
+        backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+        nodeType: NodeType.ELEMENT_NODE,
+        nodeName: 'DIV',
+        localName: 'div',
+        nodeValue: '',
+      });
+
+      assert.isTrue(childNode.securityOrigin()?.isSameOriginWith(documentNode.securityOrigin()));
+    });
+
+    it('returns null for detached nodes without ownerDocument', () => {
+      const target = universe.createTarget();
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      const detachedNode = SDK.DOMModel.DOMNode.create(domModel, null, false, {
+        nodeId: 2 as Protocol.DOM.NodeId,
+        backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+        nodeType: NodeType.ELEMENT_NODE,
+        nodeName: 'DIV',
+        localName: 'div',
+        nodeValue: '',
+      });
+
+      assert.isNull(detachedNode.securityOrigin());
+    });
+
+    it('updates securityOrigin when setDocumentURL is called on DOMDocument', () => {
+      const target = universe.createTarget();
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      const documentNode = new SDK.DOMModel.DOMDocument(domModel, {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: NodeType.DOCUMENT_NODE,
+        nodeName: '#document',
+        localName: '',
+        nodeValue: '',
+        documentURL: 'https://example.com/page.html',
+      });
+
+      assert.isTrue(documentNode.securityOrigin().isSameOriginWith(
+          SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
+
+      documentNode.setDocumentURL(urlString`https://other.com/page.html`);
+
+      assert.isTrue(documentNode.securityOrigin().isSameOriginWith(
+          SDK.SecurityOrigin.SecurityOrigin.create('https://other.com')));
+      assert.isFalse(documentNode.securityOrigin().isSameOriginWith(
+          SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
+    });
+
+    it('preserves securityOrigin in DOMDocumentSnapshot and DOMNodeSnapshot', async () => {
+      const target = universe.createTarget();
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+
+      const documentNode = new SDK.DOMModel.DOMDocument(domModel, {
+        nodeId: 1 as Protocol.DOM.NodeId,
+        backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+        nodeType: NodeType.DOCUMENT_NODE,
+        nodeName: '#document',
+        localName: '',
+        nodeValue: '',
+        documentURL: 'https://example.com/page.html',
+      });
+
+      const docSnapshot = await documentNode.takeSnapshot();
+      assert.isTrue(docSnapshot.securityOrigin()?.isSameOriginWith(documentNode.securityOrigin()));
+
+      const childNode = SDK.DOMModel.DOMNode.create(domModel, documentNode, false, {
+        nodeId: 2 as Protocol.DOM.NodeId,
+        backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+        nodeType: NodeType.ELEMENT_NODE,
+        nodeName: 'DIV',
+        localName: 'div',
+        nodeValue: '',
+      });
+
+      const nodeSnapshot = await childNode.takeSnapshot(docSnapshot as SDK.DOMModel.DOMDocument);
+      assert.isTrue(nodeSnapshot.securityOrigin()?.isSameOriginWith(documentNode.securityOrigin()));
+    });
+  });
+
   it('updates top layer elements correctly', async () => {
     const parentTarget = universe.createTarget();
     const target = universe.createTarget({parentTarget});

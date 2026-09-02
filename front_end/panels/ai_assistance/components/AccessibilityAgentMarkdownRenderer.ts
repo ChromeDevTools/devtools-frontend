@@ -5,7 +5,6 @@
 import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import type * as Marked from '../../../third_party/marked/marked.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../common/common.js';
@@ -35,8 +34,7 @@ export class AccessibilityAgentMarkdownRenderer extends MarkdownRendererWithCode
   }
 
   #isSameOrigin(node: SDK.DOMModel.DOMNode): boolean {
-    const nodeDocumentURL = node.ownerDocument?.documentURL ?? '' as Platform.DevToolsPath.UrlString;
-    return AiAssistanceModel.AiUtils.isSameOrigin(this.mainDocumentURL, nodeDocumentURL);
+    return SDK.SecurityOrigin.SecurityOrigin.create(this.mainDocumentURL).isSameOriginWith(node.securityOrigin());
   }
 
   override templateForToken(token: Marked.Marked.MarkedToken): Lit.LitTemplate|null {

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import type {ElementHandle} from 'puppeteer-core';
 
 import type {UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
 import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
@@ -14,7 +15,7 @@ import {openCommandMenu} from './quick_open-helpers.js';
 const RECORDER_PANEL_TAG_NAME = 'devtools-recorder-panel' as const;
 const TEST_RECORDING_NAME = 'New Recording';
 
-export async function record(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+export async function record(devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<void> {
   await devToolsPage.bringToFront();
   await devToolsPage.waitFor('.settings');
   await inspectedPage.bringToFront();
@@ -23,7 +24,7 @@ export async function record(devToolsPage: DevToolsPage, inspectedPage: Inspecte
   await devToolsPage.bringToFront();
 }
 
-export async function getRecordingPanel(devToolsPage: DevToolsPage) {
+export async function getRecordingPanel(devToolsPage: DevToolsPage): Promise<ElementHandle<Element>> {
   return await devToolsPage.waitFor(
       RECORDER_PANEL_TAG_NAME,
   );
@@ -63,7 +64,7 @@ export async function onReplayFinished(devToolsPage: DevToolsPage): Promise<unkn
   });
 }
 
-export async function enableUntrustedEventMode(devToolsPage: DevToolsPage) {
+export async function enableUntrustedEventMode(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.evaluate(`(async () => {
     // TODO: have an explicit UI setting or perhaps a special event to configure this
     // instead of having a global setting.
@@ -73,7 +74,7 @@ export async function enableUntrustedEventMode(devToolsPage: DevToolsPage) {
 }
 
 export async function enableAndOpenRecorderPanel(devToolsPage: DevToolsPage, inspectedPage: InspectedPage,
-                                                 path: string) {
+                                                 path: string): Promise<void> {
   await inspectedPage.goToResource(path);
   await openRecorderPanel(devToolsPage);
 }
@@ -91,7 +92,8 @@ async function createRecording(devToolsPage: DevToolsPage, name: string, selecto
   }
 }
 
-export async function createAndStartRecording(devToolsPage: DevToolsPage, name?: string, selectorAttribute?: string) {
+export async function createAndStartRecording(devToolsPage: DevToolsPage, name?: string,
+                                              selectorAttribute?: string): Promise<void> {
   await createRecording(devToolsPage, name ?? TEST_RECORDING_NAME, selectorAttribute);
   const onRecordingStarted = onRecordingStateChanged(devToolsPage);
   await devToolsPage.click('.control-button');
@@ -99,7 +101,7 @@ export async function createAndStartRecording(devToolsPage: DevToolsPage, name?:
   await onRecordingStarted;
 }
 
-export async function changeNetworkConditions(devToolsPage: DevToolsPage, condition: string) {
+export async function changeNetworkConditions(devToolsPage: DevToolsPage, condition: string): Promise<void> {
   await openCommandMenu(devToolsPage);
   await devToolsPage.typeText('Show Network');
   await devToolsPage.pressKey('Enter');
@@ -107,7 +109,7 @@ export async function changeNetworkConditions(devToolsPage: DevToolsPage, condit
   await devToolsPage.page.select('pierce/select[aria-label="Throttling"]', condition);
 }
 
-export async function openRecorderPanel(devToolsPage: DevToolsPage) {
+export async function openRecorderPanel(devToolsPage: DevToolsPage): Promise<void> {
   await openCommandMenu(devToolsPage);
   await devToolsPage.typeText('Show Recorder');
   await devToolsPage.pressKey('Enter');
@@ -128,7 +130,7 @@ export async function startRecording(
       networkCondition: '',
       untrustedEvents: false,
     },
-) {
+    ): Promise<void> {
   await devToolsPage.bringToFront();
   if (options.networkCondition) {
     await changeNetworkConditions(devToolsPage, options.networkCondition);
@@ -165,7 +167,8 @@ interface RecordingSnapshotOptions {
 export const processAndVerifyBaseRecording = (
     recording: unknown,
     options: RecordingSnapshotOptions = {},
-    ) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ): any => {
   const {
     offsets = false,
     expectCommon = true,
@@ -236,7 +239,8 @@ async function setCode(devToolsPage: DevToolsPage, flow: string) {
   }, flow);
 }
 
-export async function clickSelectButtonItem(devToolsPage: DevToolsPage, itemLabel: string, root: string) {
+export async function clickSelectButtonItem(devToolsPage: DevToolsPage, itemLabel: string,
+                                            root: string): Promise<void> {
   const selectMenu = await devToolsPage.waitFor(root);
   const selectMenuButton = await devToolsPage.waitFor(
       'select',
@@ -295,7 +299,7 @@ export async function startOrStopRecordingShortcut(
     devToolsPage: DevToolsPage,
     inspectedPage: InspectedPage,
     execute: 'inspectedPage'|'devToolsPage' = 'devToolsPage',
-) {
+    ): Promise<UserFlow> {
   const executeOn = execute === 'devToolsPage' ? devToolsPage : inspectedPage;
   const onRecordingStarted = onRecordingStateChanged(devToolsPage);
   await executeOn.bringToFront();
@@ -310,7 +314,7 @@ export async function fillCreateRecordingForm(
     devToolsPage: DevToolsPage,
     inspectedPage: InspectedPage,
     path: string,
-) {
+    ): Promise<void> {
   await enableAndOpenRecorderPanel(devToolsPage, inspectedPage, path);
   await createRecording(devToolsPage, TEST_RECORDING_NAME, undefined);
 }
@@ -319,21 +323,21 @@ export async function startRecordingViaShortcut(
     devToolsPage: DevToolsPage,
     inspectedPage: InspectedPage,
     path: string,
-) {
+    ): Promise<void> {
   await enableAndOpenRecorderPanel(devToolsPage, inspectedPage, path);
   await startOrStopRecordingShortcut(devToolsPage, inspectedPage, 'devToolsPage');
 }
 
 export async function replayShortcut(
     devToolsPage: DevToolsPage,
-) {
+    ): Promise<void> {
   await devToolsPage.bringToFront();
   await devToolsPage.pressKey('Enter', {control: true});
 }
 
 export async function toggleCodeView(
     devToolsPage: DevToolsPage,
-) {
+    ): Promise<void> {
   await devToolsPage.bringToFront();
   await devToolsPage.pressKey('b', {control: true});
   await devToolsPage.drainTaskQueue();

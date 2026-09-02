@@ -6,7 +6,9 @@ import {veImpression} from './visual-logging-helpers.js';
 
 export const LAYERS_TAB_SELECTOR = '#tab-layers';
 
-export function veImpressionForLayersPanel() {
+export function veImpressionForLayersPanel(): {
+  impressions: string[],
+} {
   return veImpression('Panel', 'layers', [
     veImpression(
         'Pane', 'layers-3d-view',

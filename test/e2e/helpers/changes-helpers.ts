@@ -4,7 +4,9 @@
 
 import {veImpression} from './visual-logging-helpers.js';
 
-export function veImpressionForChangesPanel() {
+export function veImpressionForChangesPanel(): {
+  impressions: string[],
+} {
   return veImpression('Panel', 'changes', [
     veImpression('Pane', 'sidebar'),
     veImpression('Section', 'empty-view'),

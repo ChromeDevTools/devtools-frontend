@@ -13,7 +13,7 @@ export async function navigateToApplicationTab(
     devToolsPage: DevToolsPage,
     inspectedPage: InspectedPage,
     testName: string,
-) {
+    ): Promise<void> {
   await devToolsPage.bringToFront();
   await openCommandMenu(devToolsPage);
   await devToolsPage.typeText('Application');
@@ -27,7 +27,7 @@ export async function navigateToApplicationTab(
   await inspectedPage.goToResource(`application/${testName}.html`);
 }
 
-export async function navigateToServiceWorkers(devToolsPage: DevToolsPage) {
+export async function navigateToServiceWorkers(devToolsPage: DevToolsPage): Promise<void> {
   const SERVICE_WORKER_ROW_SELECTOR = '[aria-label="Service workers"]';
   await devToolsPage.click(SERVICE_WORKER_ROW_SELECTOR);
   await devToolsPage.waitFor('.service-worker-list');
@@ -40,7 +40,7 @@ export async function navigateToServiceWorkers(devToolsPage: DevToolsPage) {
       undefined);
 }
 
-export async function navigateToFrame(devToolsPage: DevToolsPage, name: string) {
+export async function navigateToFrame(devToolsPage: DevToolsPage, name: string): Promise<void> {
   await doubleClickTreeItem(devToolsPage, `[aria-label="${name}"]`);
   await devToolsPage.waitFor('[title="Click to open in Sources panel"]');
   await expectVeEvents(devToolsPage,
@@ -51,7 +51,7 @@ export async function navigateToFrame(devToolsPage: DevToolsPage, name: string) 
                        undefined);
 }
 
-export async function navigateToStorage(devToolsPage: DevToolsPage) {
+export async function navigateToStorage(devToolsPage: DevToolsPage): Promise<void> {
   const STORAGE_SELECTOR = '[aria-label="Storage"]';
   await devToolsPage.click(STORAGE_SELECTOR);
   await devToolsPage.waitFor('#storage-view-clear-button');
@@ -63,7 +63,7 @@ export async function navigateToStorage(devToolsPage: DevToolsPage) {
                        undefined);
 }
 
-export async function navigateToOpenedWindows(devToolsPage: DevToolsPage) {
+export async function navigateToOpenedWindows(devToolsPage: DevToolsPage): Promise<void> {
   await doubleClickTreeItem(devToolsPage, '[aria-label="Opened Windows"]');
   await devToolsPage.waitFor('.empty-state');
   await expectVeEvents(
@@ -77,7 +77,7 @@ export async function navigateToOpenedWindows(devToolsPage: DevToolsPage) {
       undefined);
 }
 
-export async function navigateToWebWorkers(devToolsPage: DevToolsPage) {
+export async function navigateToWebWorkers(devToolsPage: DevToolsPage): Promise<void> {
   const WEB_WORKERS_SELECTOR = '[aria-label="Web Workers"]';
   await doubleClickTreeItem(devToolsPage, WEB_WORKERS_SELECTOR);
   await devToolsPage.waitFor(`${WEB_WORKERS_SELECTOR} + ol li:first-child`);
@@ -92,7 +92,7 @@ export async function navigateToWebWorkers(devToolsPage: DevToolsPage) {
       undefined);
 }
 
-export async function navigateToFrameServiceWorkers(devToolsPage: DevToolsPage, frameName: string) {
+export async function navigateToFrameServiceWorkers(devToolsPage: DevToolsPage, frameName: string): Promise<void> {
   await navigateToFrame(devToolsPage, frameName);
   const SERVICE_WORKERS_SELECTOR = `[aria-label="${frameName}"] ~ ol [aria-label="Service workers"]`;
 
@@ -111,7 +111,8 @@ export async function navigateToFrameServiceWorkers(devToolsPage: DevToolsPage, 
   await Promise.all([emptyState, veEvents]);
 }
 
-export async function navigateToCookiesForTopDomain(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+export async function navigateToCookiesForTopDomain(devToolsPage: DevToolsPage,
+                                                    inspectedPage: InspectedPage): Promise<void> {
   // The parent suffix makes sure we wait for the Cookies item to have children before trying to click it.
   const COOKIES_SELECTOR = '[aria-label="Cookies"].parent';
   const DOMAIN_SELECTOR = `${COOKIES_SELECTOR} + ol > [aria-label="${inspectedPage.domain()}"]`;
@@ -136,7 +137,8 @@ export async function navigateToCookiesForTopDomain(devToolsPage: DevToolsPage, 
                        undefined);
 }
 
-export async function navigateToSessionStorageForTopDomain(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+export async function navigateToSessionStorageForTopDomain(devToolsPage: DevToolsPage,
+                                                           inspectedPage: InspectedPage): Promise<void> {
   const SESSION_STORAGE_SELECTOR = '[aria-label="Session storage"].parent';
   const DOMAIN_SELECTOR = `${SESSION_STORAGE_SELECTOR} + ol > [aria-label="${inspectedPage.domain()}"]`;
   await doubleClickTreeItem(devToolsPage, SESSION_STORAGE_SELECTOR);
@@ -168,7 +170,8 @@ async function doubleClickTreeItem(devToolsPage: DevToolsPage, selector: string)
   await devToolsPage.click(selector, {clickOptions: {count: 2}});
 }
 
-export async function getDataGridData(devToolsPage: DevToolsPage, selector: string, columns: string[]) {
+export async function getDataGridData(devToolsPage: DevToolsPage, selector: string,
+                                      columns: string[]): Promise<Array<Record<string, string|null>>> {
   // Wait for Storage data-grid to show up
   await devToolsPage.waitFor(selector);
 
@@ -185,20 +188,20 @@ export async function getDataGridData(devToolsPage: DevToolsPage, selector: stri
   return dataGridRowValues;
 }
 
-export async function getTrimmedTextContent(devToolsPage: DevToolsPage, selector: string) {
+export async function getTrimmedTextContent(devToolsPage: DevToolsPage, selector: string): Promise<string[]> {
   const elements = await devToolsPage.$$(selector);
   return await Promise.all(elements.map(element => element.evaluate(e => {
     return (e.textContent || '').trim().replace(/[ \n]{2,}/gm, '');  // remove multiple consecutive whitespaces
   })));
 }
 
-export async function getFrameTreeTitles(devToolsPage: DevToolsPage) {
+export async function getFrameTreeTitles(devToolsPage: DevToolsPage): Promise<string[]> {
   const treeTitles = await devToolsPage.$$('[aria-label="Resources Section"] ~ ol .tree-element-title');
   return await Promise.all(treeTitles.map(node => node.evaluate(e => e.textContent)));
 }
 
 export async function getStorageItemsData(devToolsPage: DevToolsPage, columns: string[], leastExpected = 1,
-                                          matchExactNumberOfRows = false) {
+                                          matchExactNumberOfRows = false): Promise<Array<Record<string, string|null>>> {
   const gridData = await devToolsPage.waitForFunction(async () => {
     const values = await getDataGridData(devToolsPage, '.data-grid table', columns);
     if (matchExactNumberOfRows ? values.length === leastExpected : values.length >= leastExpected) {
@@ -213,7 +216,7 @@ export async function getStorageItemsData(devToolsPage: DevToolsPage, columns: s
   return gridData;
 }
 
-export async function filterStorageItems(devToolsPage: DevToolsPage, filter: string) {
+export async function filterStorageItems(devToolsPage: DevToolsPage, filter: string): Promise<void> {
   const element = await devToolsPage.waitFor('.toolbar-input-prompt');
   await expectVeEvents(devToolsPage, [veImpressionsUnder('Panel: resources > Pane: cookies-data > Toolbar',
                                                          [veImpression('TextField', 'filter')])],
@@ -228,18 +231,18 @@ export async function filterStorageItems(devToolsPage: DevToolsPage, filter: str
                        undefined);
 }
 
-export async function clearStorageItemsFilter(devToolsPage: DevToolsPage) {
+export async function clearStorageItemsFilter(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('.toolbar-input .toolbar-input-clear-button');
   await expectVeEvents(devToolsPage,
                        [veClick('Panel: resources > Pane: cookies-data > Toolbar > TextField: filter > Action: clear')],
                        undefined);
 }
 
-export async function clearStorageItems(devToolsPage: DevToolsPage) {
+export async function clearStorageItems(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('#storage-items-delete-all');
 }
 
-export async function selectStorageItemAtIndex(devToolsPage: DevToolsPage, index: number) {
+export async function selectStorageItemAtIndex(devToolsPage: DevToolsPage, index: number): Promise<void> {
   await devToolsPage.waitForFunction(async () => {
     try {
       const dataGridNodes =
@@ -259,7 +262,7 @@ export async function selectStorageItemAtIndex(devToolsPage: DevToolsPage, index
   });
 }
 
-export async function deleteSelectedStorageItem(devToolsPage: DevToolsPage) {
+export async function deleteSelectedStorageItem(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('[title="Delete Selected"]');
   await expectVeEvents(
       devToolsPage,
@@ -267,7 +270,7 @@ export async function deleteSelectedStorageItem(devToolsPage: DevToolsPage) {
       undefined);
 }
 
-export async function selectCookieByName(devToolsPage: DevToolsPage, name: string) {
+export async function selectCookieByName(devToolsPage: DevToolsPage, name: string): Promise<void> {
   const cell = await devToolsPage.waitForFunction(async () => {
     try {
       const dataGrid = await devToolsPage.waitFor('.cookies-table devtools-data-grid');
@@ -300,7 +303,7 @@ export async function selectCookieByName(devToolsPage: DevToolsPage, name: strin
                        undefined);
 }
 
-export async function waitForQuotaUsage(devToolsPage: DevToolsPage, p: (quota: number) => boolean) {
+export async function waitForQuotaUsage(devToolsPage: DevToolsPage, p: (quota: number) => boolean): Promise<void> {
   await devToolsPage.bringToFront();
   await devToolsPage.waitForFunction(async () => {
     const usedQuota = await getQuotaUsage(devToolsPage);
@@ -308,7 +311,7 @@ export async function waitForQuotaUsage(devToolsPage: DevToolsPage, p: (quota: n
   });
 }
 
-export async function getQuotaUsage(devToolsPage: DevToolsPage) {
+export async function getQuotaUsage(devToolsPage: DevToolsPage): Promise<number> {
   const storageRow = await devToolsPage.waitFor('.quota-usage-row');
   const quotaString = await storageRow.evaluate(el => el.textContent);
   const [usedQuotaText, modifier] =
@@ -322,7 +325,7 @@ export async function getQuotaUsage(devToolsPage: DevToolsPage) {
   return usedQuota;
 }
 
-export async function getPieChartLegendRows(devToolsPage: DevToolsPage) {
+export async function getPieChartLegendRows(devToolsPage: DevToolsPage): Promise<string[][]> {
   const pieChartLegend = await devToolsPage.waitFor('.pie-chart-legend');
   const rows = await pieChartLegend.evaluate(legend => {
     const rows = [];
@@ -338,7 +341,7 @@ export async function getPieChartLegendRows(devToolsPage: DevToolsPage) {
   return rows;
 }
 
-export async function unregisterServiceWorker(devToolsPage: DevToolsPage) {
+export async function unregisterServiceWorker(devToolsPage: DevToolsPage): Promise<void> {
   const UNREGISTER_SERVICE_WORKER_SELECTOR = '[title="Unregister service worker"]';
   await devToolsPage.click('#tab-resources');
   await navigateToServiceWorkers(devToolsPage);
@@ -346,7 +349,9 @@ export async function unregisterServiceWorker(devToolsPage: DevToolsPage) {
   await devToolsPage.waitForNone(UNREGISTER_SERVICE_WORKER_SELECTOR);
 }
 
-export function veImpressionForApplicationPanel() {
+export function veImpressionForApplicationPanel(): {
+  impressions: string[],
+} {
   return veImpression('Panel', 'resources', [
     veImpression('Pane', 'sidebar', [
       veImpression('Tree', undefined, [

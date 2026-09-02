@@ -14,20 +14,20 @@ export const MEMORY_TAB_ID = '#tab-heap-profiler';
 const CLASS_FILTER_INPUT = 'div[aria-placeholder="Filter by class"]';
 export const SELECTED_RESULT = '#profile-views table.data tr.data-grid-data-grid-node.revealed.parent.selected';
 
-export async function navigateToMemoryTab(devToolsPage: DevToolsPage) {
+export async function navigateToMemoryTab(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click(MEMORY_TAB_ID);
   await devToolsPage.waitFor(MEMORY_PANEL_CONTENT);
   await devToolsPage.waitFor(PROFILE_TREE_SIDEBAR);
 }
 
-export async function takeDetachedElementsProfile(devToolsPage: DevToolsPage) {
+export async function takeDetachedElementsProfile(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('xpath///label[text()="Detached elements"]');
   await devToolsPage.click('devtools-button[aria-label="Get detached elements"]');
   await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
   await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }
 
-export async function takeAllocationProfile(devToolsPage: DevToolsPage) {
+export async function takeAllocationProfile(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('xpath///label[text()="Allocation sampling"]');
   await devToolsPage.click('devtools-button[aria-label="Start heap profiling"]');
   await new Promise(r => setTimeout(r, 200));
@@ -39,7 +39,7 @@ export async function takeAllocationProfile(devToolsPage: DevToolsPage) {
 export async function takeAllocationTimelineProfile(devToolsPage: DevToolsPage,
                                                     {recordStacks}: {recordStacks: boolean} = {
                                                       recordStacks: false,
-                                                    }) {
+                                                    }): Promise<void> {
   await devToolsPage.click('xpath///label[text()="Allocations on timeline"]');
   if (recordStacks) {
     await devToolsPage.click('[title="Allocation stack traces (more overhead)"]');
@@ -51,7 +51,7 @@ export async function takeAllocationTimelineProfile(devToolsPage: DevToolsPage,
   await devToolsPage.waitFor('.heap-snapshot-sidebar-tree-item.selected');
 }
 
-export async function takeHeapSnapshot(devToolsPage: DevToolsPage, name = 'Snapshot 1') {
+export async function takeHeapSnapshot(devToolsPage: DevToolsPage, name = 'Snapshot 1'): Promise<void> {
   await devToolsPage.click(NEW_HEAP_SNAPSHOT_BUTTON);
   await devToolsPage.waitForNone('.heap-snapshot-sidebar-tree-item.wait');
   await devToolsPage.waitForFunction(async () => {
@@ -61,7 +61,8 @@ export async function takeHeapSnapshot(devToolsPage: DevToolsPage, name = 'Snaps
   });
 }
 
-export async function waitForHeapSnapshotData(devToolsPage: DevToolsPage) {
+export async function waitForHeapSnapshotData(devToolsPage: DevToolsPage):
+    Promise<Array<puppeteer.ElementHandle<Element>>> {
   await devToolsPage.waitFor('#profile-views');
   await devToolsPage.waitFor('#profile-views .data-grid');
   const rowCountMatches = async () => {
@@ -74,24 +75,25 @@ export async function waitForHeapSnapshotData(devToolsPage: DevToolsPage) {
   return await devToolsPage.waitForFunction(rowCountMatches);
 }
 
-export async function waitForNonEmptyHeapSnapshotData(devToolsPage: DevToolsPage) {
+export async function waitForNonEmptyHeapSnapshotData(devToolsPage: DevToolsPage): Promise<void> {
   const rows = await waitForHeapSnapshotData(devToolsPage);
   assert.isTrue(rows.length > 0);
 }
 
-export async function getDataGridRows(devToolsPage: DevToolsPage, selector: string) {
+export async function getDataGridRows(devToolsPage: DevToolsPage,
+                                      selector: string): Promise<Array<puppeteer.ElementHandle<Element>>> {
   // The grid in Memory Tab contains a tree
   const grid = await devToolsPage.waitFor(selector);
   return await devToolsPage.$$('.data-grid-data-grid-node', grid);
 }
 
-export async function setClassFilter(devToolsPage: DevToolsPage, text: string) {
+export async function setClassFilter(devToolsPage: DevToolsPage, text: string): Promise<void> {
   const classFilter = await devToolsPage.waitFor(CLASS_FILTER_INPUT);
   await classFilter.focus();
   void devToolsPage.pasteText(text);
 }
 
-export async function setSearchFilter(devToolsPage: DevToolsPage, text: string) {
+export async function setSearchFilter(devToolsPage: DevToolsPage, text: string): Promise<void> {
   const grid = await devToolsPage.waitFor('#profile-views table.data');
   await grid.focus();
 
@@ -107,7 +109,8 @@ export async function setSearchFilter(devToolsPage: DevToolsPage, text: string) 
   await inputElement.type(text);
 }
 
-export async function waitForSearchResultNumber(devToolsPage: DevToolsPage, results: number) {
+export async function waitForSearchResultNumber(devToolsPage: DevToolsPage,
+                                                results: number): Promise<puppeteer.ElementHandle<Element>> {
   const findMatch = async () => {
     const currentMatch = await devToolsPage.waitFor('.search-results-matches');
     const currentTextContent = currentMatch && await currentMatch.evaluate(el => el.textContent);
@@ -119,7 +122,8 @@ export async function waitForSearchResultNumber(devToolsPage: DevToolsPage, resu
   return await devToolsPage.waitForFunction(findMatch);
 }
 
-export async function waitForSelectedRowWithText(devToolsPage: DevToolsPage, text: string) {
+export async function waitForSelectedRowWithText(devToolsPage: DevToolsPage,
+                                                 text: string): Promise<puppeteer.ElementHandle<Element>> {
   return await devToolsPage.waitForFunction(async () => {
     const selectedRow = await devToolsPage.$('.data-grid-data-grid-node.selected');
     if (!selectedRow) {
@@ -136,7 +140,8 @@ export async function waitForSelectedRowWithText(devToolsPage: DevToolsPage, tex
  * @param searchMatch Leave undefined if you want to go over all instances
  * @param devToolsPage
  */
-export async function findSearchResult(devToolsPage: DevToolsPage, searchResult: string, searchMatch?: string|RegExp) {
+export async function findSearchResult(devToolsPage: DevToolsPage, searchResult: string,
+                                       searchMatch?: string|RegExp): Promise<void> {
   await devToolsPage.waitForFunction(async () => {
     if (!searchMatch) {
       const match = await devToolsPage.waitFor('#profile-views table.data');
@@ -189,8 +194,8 @@ interface RetainerChainEntry {
   retainerClassName: string;
 }
 
-export async function checkRetainerChainSatisfies(devToolsPage: DevToolsPage,
-                                                  p: (retainerChain: RetainerChainEntry[]) => boolean) {
+export async function checkRetainerChainSatisfies(
+    devToolsPage: DevToolsPage, p: (retainerChain: RetainerChainEntry[]) => boolean): Promise<boolean> {
   // Give some time for the expansion to finish.
   const retainerGridElements = await getDataGridRows(devToolsPage, '.retaining-paths-view table.data');
   const retainerChain = [];
@@ -212,12 +217,12 @@ export async function checkRetainerChainSatisfies(devToolsPage: DevToolsPage,
   return p(retainerChain);
 }
 
-export async function waitUntilRetainerChainSatisfies(devToolsPage: DevToolsPage,
-                                                      p: (retainerChain: RetainerChainEntry[]) => boolean) {
+export async function waitUntilRetainerChainSatisfies(
+    devToolsPage: DevToolsPage, p: (retainerChain: RetainerChainEntry[]) => boolean): Promise<void> {
   await devToolsPage.waitForFunction(checkRetainerChainSatisfies.bind(null, devToolsPage, p));
 }
 
-export function appearsInOrder(targetArray: string[], inputArray: string[]) {
+export function appearsInOrder(targetArray: string[], inputArray: string[]): boolean {
   let i = 0;
   let j = 0;
 
@@ -242,14 +247,14 @@ export function appearsInOrder(targetArray: string[], inputArray: string[]) {
   return false;
 }
 
-export async function waitForRetainerChain(devToolsPage: DevToolsPage, expectedRetainers: string[]) {
+export async function waitForRetainerChain(devToolsPage: DevToolsPage, expectedRetainers: string[]): Promise<void> {
   await devToolsPage.waitForFunction(checkRetainerChainSatisfies.bind(null, devToolsPage, retainerChain => {
     const actual = retainerChain.map(e => e.retainerClassName);
     return appearsInOrder(actual, expectedRetainers);
   }));
 }
 
-export async function changeViewViaDropdown(devToolsPage: DevToolsPage, newPerspective: string) {
+export async function changeViewViaDropdown(devToolsPage: DevToolsPage, newPerspective: string): Promise<void> {
   const perspectiveDropdownSelector = 'select[aria-label="Perspective"]';
   const dropdown = await devToolsPage.waitFor(perspectiveDropdownSelector);
 
@@ -261,7 +266,8 @@ export async function changeViewViaDropdown(devToolsPage: DevToolsPage, newPersp
   await dropdown.select(optionValue);
 }
 
-export async function changeAllocationSampleViewViaDropdown(devToolsPage: DevToolsPage, newPerspective: string) {
+export async function changeAllocationSampleViewViaDropdown(devToolsPage: DevToolsPage,
+                                                            newPerspective: string): Promise<void> {
   const perspectiveDropdownSelector = 'select[aria-label="Profile view mode"]';
   const dropdown = await devToolsPage.waitFor(
       perspectiveDropdownSelector,
@@ -274,19 +280,19 @@ export async function changeAllocationSampleViewViaDropdown(devToolsPage: DevToo
   await dropdown.select(optionValue);
 }
 
-export async function focusTableRowWithName(devToolsPage: DevToolsPage, text: string) {
+export async function focusTableRowWithName(devToolsPage: DevToolsPage, text: string): Promise<void> {
   const row = await devToolsPage.waitFor(`//span[text()="${text}"]/ancestor::tr`, undefined, undefined, 'xpath');
   await focusTableRow(devToolsPage, row);
 }
 
-export async function focusTableRow(devToolsPage: DevToolsPage, row: puppeteer.ElementHandle<Element>) {
+export async function focusTableRow(devToolsPage: DevToolsPage, row: puppeteer.ElementHandle<Element>): Promise<void> {
   // Click in a numeric cell, to avoid accidentally clicking a link.
   await devToolsPage.click('.numeric-column', {
     root: row,
   });
 }
 
-export async function expandFocusedRow(devToolsPage: DevToolsPage) {
+export async function expandFocusedRow(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.pressKey('ArrowRight');
   await devToolsPage.waitFor('.selected.data-grid-data-grid-node.expanded');
 }
@@ -317,7 +323,10 @@ async function getSizesFromRow(devToolsPage: DevToolsPage, row: puppeteer.Elemen
   return {shallowSize, retainedSize};
 }
 
-export async function getSizesFromSelectedRow(devToolsPage: DevToolsPage) {
+export async function getSizesFromSelectedRow(devToolsPage: DevToolsPage): Promise<{
+  shallowSize: number,
+  retainedSize: number,
+}> {
   const row = await devToolsPage.waitFor('.selected.data-grid-data-grid-node');
   return await getSizesFromRow(devToolsPage, row);
 }
@@ -333,48 +342,53 @@ export async function getCategoryRow(devToolsPage: DevToolsPage, text: string, w
   return row;
 }
 
-export async function getSizesFromCategoryRow(devToolsPage: DevToolsPage, text: string) {
+export async function getSizesFromCategoryRow(devToolsPage: DevToolsPage, text: string): Promise<{
+  shallowSize: number,
+  retainedSize: number,
+}> {
   const row = await getCategoryRow(devToolsPage, text);
   return await getSizesFromRow(devToolsPage, row);
 }
 
-export async function getDistanceFromCategoryRow(devToolsPage: DevToolsPage, text: string) {
+export async function getDistanceFromCategoryRow(devToolsPage: DevToolsPage, text: string): Promise<number> {
   const row = await getCategoryRow(devToolsPage, text);
   const numericColumns = await devToolsPage.$$('.numeric-column', row);
   return await numericColumns[0].evaluate(e => parseInt(e.textContent, 10));
 }
 
-export async function getCountFromCategoryRowWithName(devToolsPage: DevToolsPage, text: string) {
+export async function getCountFromCategoryRowWithName(devToolsPage: DevToolsPage, text: string): Promise<number> {
   const row = await getCategoryRow(devToolsPage, text);
   return await getCountFromCategoryRow(devToolsPage, row);
 }
 
-export async function getCountFromCategoryRow(devToolsPage: DevToolsPage, row: puppeteer.ElementHandle<Element>) {
+export async function getCountFromCategoryRow(devToolsPage: DevToolsPage,
+                                              row: puppeteer.ElementHandle<Element>): Promise<number> {
   const countSpan = await devToolsPage.waitFor('.objects-count', row);
   return await countSpan.evaluate(e => parseInt(e.textContent.substring(1), 10));
 }
 
-export async function getAddedCountFromComparisonRowWithName(devToolsPage: DevToolsPage, text: string) {
+export async function getAddedCountFromComparisonRowWithName(devToolsPage: DevToolsPage,
+                                                             text: string): Promise<number> {
   const row = await getCategoryRow(devToolsPage, text);
   return await getAddedCountFromComparisonRow(devToolsPage, row);
 }
 
 export async function getAddedCountFromComparisonRow(devToolsPage: DevToolsPage,
-                                                     row: puppeteer.ElementHandle<Element>) {
+                                                     row: puppeteer.ElementHandle<Element>): Promise<number> {
   const addedCountCell = await devToolsPage.waitFor('.addedCount-column', row);
   const countText = await addedCountCell.evaluate(e => e.textContent);
   return parseByteString(countText);
 }
 
 export async function getRemovedCountFromComparisonRow(devToolsPage: DevToolsPage,
-                                                       row: puppeteer.ElementHandle<Element>) {
+                                                       row: puppeteer.ElementHandle<Element>): Promise<number> {
   const addedCountCell = await devToolsPage.waitFor('.removedCount-column', row);
   const countText = await addedCountCell.evaluate(e => e.textContent);
   return parseByteString(countText);
 }
 
 export async function clickOnContextMenuForRetainer(devToolsPage: DevToolsPage, retainerName: string,
-                                                    menuItem: string) {
+                                                    menuItem: string): Promise<void> {
   const retainersPane = await devToolsPage.waitFor('.retaining-paths-view');
   await devToolsPage.click(`xpath///span[text()="${retainerName}"]`, {
     root: retainersPane,
@@ -387,11 +401,11 @@ export async function clickOnContextMenuForRetainer(devToolsPage: DevToolsPage, 
   await devToolsPage.click(`aria/${menuItem}`);
 }
 
-export async function restoreIgnoredRetainers(devToolsPage: DevToolsPage) {
+export async function restoreIgnoredRetainers(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('devtools-button[aria-label="Restore ignored retainers"]');
 }
 
-export async function setFilterDropdown(devToolsPage: DevToolsPage, filter: string) {
+export async function setFilterDropdown(devToolsPage: DevToolsPage, filter: string): Promise<void> {
   const select = await devToolsPage.waitFor('devtools-toolbar select[aria-label="Filter"]');
   await select.select(filter);
 }

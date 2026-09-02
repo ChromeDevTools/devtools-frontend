@@ -27,11 +27,18 @@ export async function navigateToLighthouseTab(devToolsPage: DevToolsPage, inspec
   return await devToolsPage.waitFor('.lighthouse-start-view');
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type LighthouseAny = any;
+
 /**
  * Instead of watching the worker or controller/panel internals, we wait for the Lighthouse renderer
  * to create the new report DOM. And we pull the LHR and artifacts off the lh-root node.
  **/
-export async function waitForResult(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+export async function waitForResult(devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<{
+  reportEl: ElementHandle<Element>,
+  lhr: LighthouseAny,
+  artifacts: LighthouseAny,
+}> {
   // Ensure the target page is in front so the Lighthouse run can finish.
   await inspectedPage.bringToFront();
 
@@ -68,7 +75,7 @@ type CheckboxLabel = Element&{checked: boolean};
  * Set the category checkboxes
  * @param selectedCategoryIds One of 'performance'|'accessibility'|'best-practices'|'seo'|'pwa'
  */
-export async function selectCategories(devToolsPage: DevToolsPage, selectedCategoryIds: string[]) {
+export async function selectCategories(devToolsPage: DevToolsPage, selectedCategoryIds: string[]): Promise<void> {
   const startViewHandle = await devToolsPage.waitFor('.lighthouse-start-view');
   const checkboxHandles = await startViewHandle.$$('devtools-checkbox');
   for (const checkboxHandle of checkboxHandles) {
@@ -81,7 +88,7 @@ export async function selectCategories(devToolsPage: DevToolsPage, selectedCateg
   }
 }
 
-export async function selectRadioOption(devToolsPage: DevToolsPage, value: string, optionName: string) {
+export async function selectRadioOption(devToolsPage: DevToolsPage, value: string, optionName: string): Promise<void> {
   const startViewHandle = await devToolsPage.waitFor('.lighthouse-start-view');
   await startViewHandle.$eval(`input[value="${value}"][name="${optionName}"]`, radioElem => {
     (radioElem as HTMLInputElement).checked = true;
@@ -90,15 +97,16 @@ export async function selectRadioOption(devToolsPage: DevToolsPage, value: strin
   });
 }
 
-export async function selectMode(devToolsPage: DevToolsPage, mode: 'navigation'|'timespan'|'snapshot') {
+export async function selectMode(devToolsPage: DevToolsPage, mode: 'navigation'|'timespan'|'snapshot'): Promise<void> {
   await selectRadioOption(devToolsPage, mode, 'lighthouse.mode');
 }
 
-export async function selectDevice(devToolsPage: DevToolsPage, device: 'mobile'|'desktop') {
+export async function selectDevice(devToolsPage: DevToolsPage, device: 'mobile'|'desktop'): Promise<void> {
   await selectRadioOption(devToolsPage, device, 'lighthouse.device-type');
 }
 
-export async function setToolbarCheckboxWithText(devToolsPage: DevToolsPage, enabled: boolean, textContext: string) {
+export async function setToolbarCheckboxWithText(devToolsPage: DevToolsPage, enabled: boolean,
+                                                 textContext: string): Promise<void> {
   const toolbarHandle = await devToolsPage.waitFor('.lighthouse-settings-pane .lighthouse-settings-toolbar');
   const label = await devToolsPage.waitForElementWithTextContent(textContext, toolbarHandle);
   await label.evaluate((label, enabled: boolean) => {
@@ -110,7 +118,8 @@ export async function setToolbarCheckboxWithText(devToolsPage: DevToolsPage, ena
   }, enabled);
 }
 
-export async function setThrottlingMethod(devToolsPage: DevToolsPage, throttlingMethod: 'simulate'|'devtools') {
+export async function setThrottlingMethod(devToolsPage: DevToolsPage,
+                                          throttlingMethod: 'simulate'|'devtools'): Promise<void> {
   const toolbarHandle = await devToolsPage.waitFor('.lighthouse-settings-pane .lighthouse-settings-toolbar');
   await toolbarHandle.evaluate((toolbar, throttlingMethod) => {
     const selectElem = toolbar.querySelector('select')!;
@@ -120,28 +129,28 @@ export async function setThrottlingMethod(devToolsPage: DevToolsPage, throttling
   }, throttlingMethod);
 }
 
-export async function clickStartButton(devToolsPage: DevToolsPage) {
+export async function clickStartButton(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('.lighthouse-start-view devtools-button');
 }
 
-export async function isGenerateReportButtonDisabled(devToolsPage: DevToolsPage) {
+export async function isGenerateReportButtonDisabled(devToolsPage: DevToolsPage): Promise<boolean> {
   const buttonContainer = await devToolsPage.waitFor<HTMLElement>('.lighthouse-start-button-container');
   const button = await devToolsPage.waitFor('button', buttonContainer);
   return await button.evaluate(element => element.hasAttribute('disabled'));
 }
 
-export async function getHelpText(devToolsPage: DevToolsPage) {
+export async function getHelpText(devToolsPage: DevToolsPage): Promise<string> {
   const helpTextHandle = await devToolsPage.waitFor('.lighthouse-start-view .lighthouse-help-text');
   return await helpTextHandle.evaluate(helpTextEl => helpTextEl.textContent);
 }
 
-export async function openStorageView(devToolsPage: DevToolsPage) {
+export async function openStorageView(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('#tab-resources');
   await devToolsPage.waitFor('.storage-group-list-item');
   await devToolsPage.click('[aria-label="Storage"]');
 }
 
-export async function clearSiteData(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
+export async function clearSiteData(devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<void> {
   await inspectedPage.goToResource('empty.html');
   await openStorageView(devToolsPage);
   await devToolsPage.waitForFunction(async () => {
@@ -150,23 +159,26 @@ export async function clearSiteData(devToolsPage: DevToolsPage, inspectedPage: I
   });
 }
 
-export async function waitForStorageUsage(p: (quota: number) => boolean, devToolsPage: DevToolsPage) {
+export async function waitForStorageUsage(p: (quota: number) => boolean, devToolsPage: DevToolsPage): Promise<void> {
   await openStorageView(devToolsPage);
   await waitForQuotaUsage(devToolsPage, p);
   await devToolsPage.click('#tab-lighthouse');
 }
 
-export async function waitForTimespanStarted(devToolsPage: DevToolsPage) {
+export async function waitForTimespanStarted(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.waitForElementWithTextContent('Timespan started');
 }
 
-export async function endTimespan(devToolsPage: DevToolsPage) {
+export async function endTimespan(devToolsPage: DevToolsPage): Promise<void> {
   const endTimespanBtn = await devToolsPage.waitForElementWithTextContent('End timespan');
   await endTimespanBtn.click();
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getAuditsBreakdown(lhr: any, flakyAudits: string[] = []) {
+export function getAuditsBreakdown(lhr: LighthouseAny, flakyAudits: string[] = []): {
+  auditResults: LighthouseAny[],
+  erroredAudits: LighthouseAny[],
+  failedAudits: LighthouseAny[],
+} {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const auditResults = Object.values<any>(lhr.audits);
   const irrelevantDisplayModes = new Set(['notApplicable', 'manual']);
@@ -191,7 +203,13 @@ export function getAuditsBreakdown(lhr: any, flakyAudits: string[] = []) {
   return {auditResults, erroredAudits, failedAudits};
 }
 
-export async function getTargetViewport(inspectedPage: InspectedPage) {
+export async function getTargetViewport(inspectedPage: InspectedPage): Promise<{
+  innerHeight: number,
+  innerWidth: number,
+  outerWidth: number,
+  outerHeight: number,
+  devicePixelRatio: number,
+}> {
   return await inspectedPage.evaluate(() => ({
                                         innerHeight: window.innerHeight,
                                         innerWidth: window.innerWidth,
@@ -201,13 +219,13 @@ export async function getTargetViewport(inspectedPage: InspectedPage) {
                                       }));
 }
 
-export async function getServiceWorkerCount(inspectedPage: InspectedPage) {
+export async function getServiceWorkerCount(inspectedPage: InspectedPage): Promise<number> {
   return await inspectedPage.evaluate(async () => {
     return (await navigator.serviceWorker.getRegistrations()).length;
   });
 }
 
-export async function registerServiceWorker(inspectedPage: InspectedPage) {
+export async function registerServiceWorker(inspectedPage: InspectedPage): Promise<void> {
   await inspectedPage.evaluate(async () => {
     // @ts-expect-error Custom function added to global scope.
     await window.registerServiceWorker();
@@ -234,7 +252,7 @@ export async function interceptNextFileSave(devToolsPage: DevToolsPage): Promise
   return () => devToolsPage.evaluate(() => window.__nextFile);
 }
 
-export async function renderHtmlInIframe(inspectedPage: InspectedPage, html: string) {
+export async function renderHtmlInIframe(inspectedPage: InspectedPage, html: string): Promise<ElementHandle<Document>> {
   return (await inspectedPage.page.evaluateHandle(async html => {
            const iframe = document.createElement('iframe');
            iframe.srcdoc = html;

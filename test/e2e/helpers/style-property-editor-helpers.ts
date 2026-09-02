@@ -8,14 +8,14 @@ import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 export async function clickStylePropertyEditorButton(devToolsPage: DevToolsPage, title: string,
                                                      editorElement: 'devtools-grid-editor'|'devtools-flexbox-editor'|
-                                                     'devtools-grid-lanes-editor') {
+                                                     'devtools-grid-lanes-editor'): Promise<void> {
   const gridEditorButtons = await devToolsPage.$$(`[title="${title}"]`);
   assert.lengthOf(gridEditorButtons, 1);
   await devToolsPage.click(`[title="${title}"]`);
   await devToolsPage.waitFor(editorElement);
 }
 
-export async function clickPropertyButton(devToolsPage: DevToolsPage, selector: string) {
+export async function clickPropertyButton(devToolsPage: DevToolsPage, selector: string): Promise<void> {
   await devToolsPage.waitFor(selector);
   const buttons = await devToolsPage.$$(selector);
   assert.lengthOf(buttons, 1);

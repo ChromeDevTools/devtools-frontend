@@ -4,7 +4,9 @@
 
 import {veImpression} from './visual-logging-helpers.js';
 
-export function veImpressionForAnimationsPanel() {
+export function veImpressionForAnimationsPanel(): {
+  impressions: string[],
+} {
   return veImpression('Panel', 'animations', [
     veImpression(
         'Toolbar', undefined,

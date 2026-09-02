@@ -13,7 +13,7 @@ type TestLogEntry = TestImpressionLogEntry|{
   interaction: string,
 };
 
-export function veImpressionsUnder(key: string, children: TestImpressionLogEntry[]) {
+export function veImpressionsUnder(key: string, children: TestImpressionLogEntry[]): TestImpressionLogEntry {
   const result: TestImpressionLogEntry = {impressions: []};
   for (const child of children || []) {
     for (const impression of child.impressions) {
@@ -39,7 +39,9 @@ export function veResize(ve: string): TestLogEntry {
   return {interaction: `Resize: ${ve}`};
 }
 
-export function veImpression(ve: string, context?: string, children?: TestImpressionLogEntry[]) {
+export function veImpression(ve: string, context?: string, children?: TestImpressionLogEntry[]): {
+  impressions: string[],
+} {
   let key = ve;
   if (context) {
     key += ': ' + context;
@@ -55,7 +57,9 @@ export function veImpressionForMainToolbar(options?: {
   selectedPanel?: string,
   expectClosedPanels?: string[],
   dockable?: boolean,
-}) {
+}): {
+  impressions: string[],
+} {
   const panels = [
     'elements',
     'console',
@@ -87,7 +91,9 @@ export function veImpressionForMainToolbar(options?: {
   ]);
 }
 
-export function veImpressionForElementsPanel(options?: {dockable?: boolean, expectExistingPanel?: boolean}) {
+export function veImpressionForElementsPanel(options?: {dockable?: boolean, expectExistingPanel?: boolean}): {
+  impressions: string[],
+} {
   return veImpression('Panel', 'elements', [
     veImpression('Toolbar', 'sidebar', [
       veImpressionForTabHeader('styles'),
@@ -129,7 +135,9 @@ export function veImpressionForElementsPanel(options?: {dockable?: boolean, expe
 
 export function veImpressionForDrawerToolbar(options?: {
   selectedPanel?: string,
-}) {
+}): {
+  impressions: string[],
+} {
   const panels = options?.selectedPanel ? [options?.selectedPanel] : [];
   return veImpression('Toolbar', 'drawer', [
     veImpressionForTabHeader('console'),
@@ -143,7 +151,7 @@ export function veImpressionForDrawerToolbar(options?: {
  * Prints all VE events that haven't been matched by expectVeEvents calls
  * Useful for writing new assertions.
  **/
-export async function dumpVeEvents(devToolsPage: DevToolsPage, label: string) {
+export async function dumpVeEvents(devToolsPage: DevToolsPage, label: string): Promise<void> {
   const events =
       // @ts-expect-error
       await devToolsPage.evaluate(async () => (await globalThis.getUnmatchedVeEvents()) as unknown as string[]);
@@ -156,7 +164,8 @@ export async function dumpVeEvents(devToolsPage: DevToolsPage, label: string) {
  * Unexpected VE events are ignored.
  **/
 export async function expectVeEvents(devToolsPage: DevToolsPage, expectedEvents: TestLogEntry[],
-                                     root: string|undefined = undefined, asyncScope = new AsyncScope()) {
+                                     root: string|undefined = undefined,
+                                     asyncScope: AsyncScope = new AsyncScope()): Promise<void> {
   collapseConsecutiveImpressions(expectedEvents);
   prependRoot(expectedEvents, root);
   await asyncScope.exec(

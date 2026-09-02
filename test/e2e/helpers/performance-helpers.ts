@@ -38,7 +38,7 @@ const CSS_SELECTOR_STATS_TITLE = 'Enable CSS selector stats (slow)';
 const TIMELINE_SETTINGS_PANE = '.timeline-settings-pane';
 
 export async function navigateToPerformanceTab(devToolsPage: DevToolsPage, inspectedPage: InspectedPage,
-                                               testResource?: string) {
+                                               testResource?: string): Promise<void> {
   await devToolsPage.evaluate(() => {
     // Prevent the Performance panel shortcuts dialog, that is automatically shown the first
     // time the performance panel is opened, from opening in tests.
@@ -63,7 +63,7 @@ export async function navigateToPerformanceTab(devToolsPage: DevToolsPage, inspe
   await devToolsPage.waitFor('.timeline-landing-page');
 }
 
-export async function openCaptureSettings(devToolsPage: DevToolsPage, sectionClassName: string) {
+export async function openCaptureSettings(devToolsPage: DevToolsPage, sectionClassName: string): Promise<void> {
   const captureSettingsButton = await devToolsPage.waitForAria('Capture settings');
   await captureSettingsButton.click();
   await devToolsPage.waitFor(sectionClassName);
@@ -83,7 +83,7 @@ export async function openCaptureSettings(devToolsPage: DevToolsPage, sectionCla
                        'Panel: timeline');
 }
 
-export async function searchForComponent(devToolsPage: DevToolsPage, searchEntry: string) {
+export async function searchForComponent(devToolsPage: DevToolsPage, searchEntry: string): Promise<void> {
   await devToolsPage.waitFor('div.timeline-summary');
   await devToolsPage.summonSearchBox();
 
@@ -98,7 +98,7 @@ export async function searchForComponent(devToolsPage: DevToolsPage, searchEntry
   await devToolsPage.timeout(300);
 }
 
-export async function navigateToBottomUpTab(devToolsPage: DevToolsPage, veLinkContext: string) {
+export async function navigateToBottomUpTab(devToolsPage: DevToolsPage, veLinkContext: string): Promise<void> {
   await devToolsPage.click(BOTTOM_UP_SELECTOR);
   await expectVeEvents(devToolsPage,
                        [
@@ -137,7 +137,7 @@ export async function navigateToBottomUpTab(devToolsPage: DevToolsPage, veLinkCo
                        'Panel: timeline');
 }
 
-export async function navigateToCallTreeTab(devToolsPage: DevToolsPage) {
+export async function navigateToCallTreeTab(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click(CALL_TREE_SELECTOR);
   await expectVeEvents(devToolsPage,
                        [
@@ -172,7 +172,7 @@ export async function navigateToCallTreeTab(devToolsPage: DevToolsPage) {
                        'Panel: timeline');
 }
 
-export async function setFilter(devToolsPage: DevToolsPage, filter: string) {
+export async function setFilter(devToolsPage: DevToolsPage, filter: string): Promise<void> {
   const filterBoxElement = await devToolsPage.click(FILTER_TEXTBOX_SELECTOR);
   await filterBoxElement.type(filter);
   await expectVeEvents(
@@ -180,7 +180,7 @@ export async function setFilter(devToolsPage: DevToolsPage, filter: string) {
       'Panel: timeline > Section: timeline.flame-chart-view > Pane: bottom-up > Toolbar > TextField: filter');
 }
 
-export async function toggleCaseSensitive(devToolsPage: DevToolsPage) {
+export async function toggleCaseSensitive(devToolsPage: DevToolsPage): Promise<void> {
   const matchCaseButton = await devToolsPage.waitForAria('Match case');
   await matchCaseButton.click();
   await expectVeEvents(
@@ -190,7 +190,7 @@ export async function toggleCaseSensitive(devToolsPage: DevToolsPage) {
       undefined);
 }
 
-export async function toggleRegExButtonBottomUp(devToolsPage: DevToolsPage) {
+export async function toggleRegExButtonBottomUp(devToolsPage: DevToolsPage): Promise<void> {
   const regexButton = await devToolsPage.waitFor('.timeline-tree-view [aria-label="Use regular expression"]');
   await regexButton.click();
   await expectVeEvents(
@@ -202,7 +202,7 @@ export async function toggleRegExButtonBottomUp(devToolsPage: DevToolsPage) {
       undefined);
 }
 
-export async function toggleMatchWholeWordButtonBottomUp(devToolsPage: DevToolsPage) {
+export async function toggleMatchWholeWordButtonBottomUp(devToolsPage: DevToolsPage): Promise<void> {
   const wholeWordButton = await devToolsPage.waitForAria('Match whole word');
   await wholeWordButton.click();
   await expectVeEvents(
@@ -212,7 +212,7 @@ export async function toggleMatchWholeWordButtonBottomUp(devToolsPage: DevToolsP
       undefined);
 }
 
-export async function startRecording(devToolsPage: DevToolsPage) {
+export async function startRecording(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click(CLEAR_BUTTON_SELECTOR);
   await devToolsPage.click(RECORD_BUTTON_SELECTOR);
 
@@ -279,14 +279,14 @@ export async function loadTraceAndWaitToFullyRender(
   return traceLoadedData;
 }
 
-export async function reloadAndRecord(devToolsPage: DevToolsPage) {
+export async function reloadAndRecord(devToolsPage: DevToolsPage): Promise<void> {
   await loadTraceAndWaitToFullyRender(devToolsPage, () => devToolsPage.click(RELOAD_AND_RECORD_BUTTON_SELECTOR));
   await expectVeEvents(devToolsPage,
                        [veClick('Toolbar > Action: timeline.record-reload'), veImpressionForStatusDialog()],
                        'Panel: timeline');
 }
 
-export async function stopRecording(devToolsPage: DevToolsPage) {
+export async function stopRecording(devToolsPage: DevToolsPage): Promise<void> {
   await loadTraceAndWaitToFullyRender(devToolsPage, () => devToolsPage.click(STOP_BUTTON_SELECTOR));
   await expectVeEvents(devToolsPage,
                        [
@@ -311,7 +311,7 @@ export async function getTotalTimeFromPie(devToolsPage: DevToolsPage): Promise<n
   return parseInt(totalText, 10);
 }
 
-export async function retrieveSelectedAndExpandedActivityItems(frontend: puppeteer.Page) {
+export async function retrieveSelectedAndExpandedActivityItems(frontend: puppeteer.Page): Promise<string[]> {
   const treeItems = await frontend.$$('.expanded > td.activity-column,.selected > td.activity-column');
   const tree = [];
   for (const item of treeItems) {
@@ -321,7 +321,7 @@ export async function retrieveSelectedAndExpandedActivityItems(frontend: puppete
   return tree;
 }
 
-export async function navigateToSelectorStatsTab(devToolsPage: DevToolsPage) {
+export async function navigateToSelectorStatsTab(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click(SELECTOR_STATS_SELECTOR);
   await devToolsPage.waitFor('#tab-selector-stats.selected');
   await expectVeEvents(devToolsPage,
@@ -342,7 +342,7 @@ export async function navigateToSelectorStatsTab(devToolsPage: DevToolsPage) {
                        'Panel: timeline > Section: timeline.flame-chart-view');
 }
 
-export async function selectRecalculateStylesEvent(devToolsPage: DevToolsPage) {
+export async function selectRecalculateStylesEvent(devToolsPage: DevToolsPage): Promise<boolean> {
   await searchForComponent(devToolsPage, RECALCULATE_STYLE_TITLE);
   const title = await devToolsPage.$('.timeline-details-chip-title');
   if (!title) {
@@ -352,7 +352,7 @@ export async function selectRecalculateStylesEvent(devToolsPage: DevToolsPage) {
   return titleText === RECALCULATE_STYLE_TITLE;
 }
 
-export async function enableCSSSelectorStats(devToolsPage: DevToolsPage) {
+export async function enableCSSSelectorStats(devToolsPage: DevToolsPage): Promise<void> {
   const timelineSettingsPane = await devToolsPage.waitFor(TIMELINE_SETTINGS_PANE);
   if (await timelineSettingsPane.isHidden()) {
     await openCaptureSettings(devToolsPage, TIMELINE_SETTINGS_PANE);
@@ -376,7 +376,9 @@ export async function enableCSSSelectorStats(devToolsPage: DevToolsPage) {
       undefined);
 }
 
-export function veImpressionForPerformancePanel() {
+export function veImpressionForPerformancePanel(): {
+  impressions: string[],
+} {
   return veImpression('Panel', 'timeline', [
     veImpression(
         'Toolbar', undefined,
@@ -401,7 +403,7 @@ function veImpressionForStatusDialog() {
   return veImpression('Dialog', 'timeline-status');
 }
 
-export async function uploadTraceFile(devToolsPage: DevToolsPage, tracePath: string) {
+export async function uploadTraceFile(devToolsPage: DevToolsPage, tracePath: string): Promise<number> {
   const uploadProfileHandle = await devToolsPage.waitFor('input[type=file]');
   const testTrace = path.join(GEN_DIR, tracePath);
   if (!fs.existsSync(testTrace)) {

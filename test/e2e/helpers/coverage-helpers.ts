@@ -10,33 +10,37 @@ import {openPanelViaMoreTools} from './settings-helpers.js';
 const START_INSTRUMENTING_BUTTON = 'button[title="Start instrumenting coverage and reload page"]';
 const STOP_INSTRUMENTING_BUTTON = 'button[title="Stop instrumenting coverage and show results"]';
 
-export async function waitForTheCoveragePanelToLoad(devToolsPage: DevToolsPage) {
+export async function waitForTheCoveragePanelToLoad(devToolsPage: DevToolsPage): Promise<void> {
   // Open panel and wait for content
   await openPanelViaMoreTools(devToolsPage, 'Coverage');
   await devToolsPage.waitFor('div[aria-label="Coverage panel"]');
   await devToolsPage.waitFor('.coverage-results .empty-widget-container');
 }
 
-export async function navigateToCoverageTestSite(inspectedPage: InspectedPage) {
+export async function navigateToCoverageTestSite(inspectedPage: InspectedPage): Promise<void> {
   await inspectedPage.goToResource('coverage/default.html');
 }
 
-export async function startInstrumentingCoverage(devToolsPage: DevToolsPage) {
+export async function startInstrumentingCoverage(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click(START_INSTRUMENTING_BUTTON);
   await devToolsPage.waitForNone('.coverage-results .empty-widget-container');
 }
 
-export async function stopInstrumentingCoverage(devToolsPage: DevToolsPage) {
+export async function stopInstrumentingCoverage(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click(STOP_INSTRUMENTING_BUTTON);
   await devToolsPage.waitForNone('button[title="Clear coverage"][disabled]');
 }
 
-export async function clearCoverageContent(devToolsPage: DevToolsPage) {
+export async function clearCoverageContent(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('button[title="Clear coverage"]');
   await devToolsPage.waitFor('.coverage-results .empty-widget-container');
 }
 
-export async function getCoverageData(devToolsPage: DevToolsPage, expectedCount: number) {
+export async function getCoverageData(devToolsPage: DevToolsPage, expectedCount: number): Promise<Array<{
+  url: string | undefined,
+  total: string | undefined,
+  unused: string | undefined,
+}>> {
   return await devToolsPage.waitForFunction(async () => {
     const rows = await devToolsPage.waitForMany(
         '.data-grid-data-grid-node', expectedCount, await devToolsPage.waitFor('.coverage-results'));
@@ -51,8 +55,8 @@ export async function getCoverageData(devToolsPage: DevToolsPage, expectedCount:
   });
 }
 
-export async function waitForCoverageData(devToolsPage: DevToolsPage,
-                                          expectedData: Array<{url: string, total: string, unused: string}>) {
+export async function waitForCoverageData(
+    devToolsPage: DevToolsPage, expectedData: Array<{url: string, total: string, unused: string}>): Promise<true> {
   return await devToolsPage.waitForFunction(async () => {
     const data = await getCoverageData(devToolsPage, expectedData.length);
     for (let i = 0; i < data.length; i++) {

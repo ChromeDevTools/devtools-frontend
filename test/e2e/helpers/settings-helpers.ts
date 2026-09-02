@@ -4,7 +4,7 @@
 
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
-export async function openPanelViaMoreTools(devToolsPage: DevToolsPage, panelTitle: string) {
+export async function openPanelViaMoreTools(devToolsPage: DevToolsPage, panelTitle: string): Promise<void> {
   await devToolsPage.bringToFront();
 
   // Head to the triple dot menu.
@@ -30,7 +30,7 @@ export async function openPanelViaMoreTools(devToolsPage: DevToolsPage, panelTit
   await devToolsPage.waitForAria(`${panelTitle} panel[role="tabpanel"]`);
 }
 
-export const openSettingsTab = async (devToolsPage: DevToolsPage, tabTitle: string) => {
+export const openSettingsTab = async(devToolsPage: DevToolsPage, tabTitle: string): Promise<void> => {
   const gearIconSelector = 'devtools-button[aria-label="Settings"]';
   const settingsMenuSelector = `.tabbed-pane-header-tab[aria-label="${tabTitle}"]`;
   const panelSelector = `.view-container[aria-label="${tabTitle} panel"]`;
@@ -43,12 +43,12 @@ export const openSettingsTab = async (devToolsPage: DevToolsPage, tabTitle: stri
   await devToolsPage.waitFor(panelSelector);
 };
 
-export const closeSettings = async (devToolsPage: DevToolsPage) => {
+export const closeSettings = async(devToolsPage: DevToolsPage): Promise<void> => {
   await devToolsPage.click('.dialog-close-button');
 };
 
 export const togglePreferenceInSettingsTab =
-    async (devToolsPage: DevToolsPage, label: string, shouldBeChecked?: boolean) => {
+    async(devToolsPage: DevToolsPage, label: string, shouldBeChecked?: boolean): Promise<void> => {
   await openSettingsTab(devToolsPage, 'Preferences');
 
   const selector = `[aria-label="${label}"]`;
@@ -69,7 +69,7 @@ export const togglePreferenceInSettingsTab =
   await closeSettings(devToolsPage);
 };
 
-export const setIgnoreListPattern = async (devToolsPage: DevToolsPage, pattern: string) => {
+export const setIgnoreListPattern = async(devToolsPage: DevToolsPage, pattern: string): Promise<void> => {
   await openSettingsTab(devToolsPage, 'Ignore list');
   await devToolsPage.click('[aria-label="Add a regular expression rule for the script’s URL"]');
   const textBox = await devToolsPage.waitFor('[aria-label="Add a regular expression rule for the script’s URL"]');
@@ -80,7 +80,7 @@ export const setIgnoreListPattern = async (devToolsPage: DevToolsPage, pattern: 
   await closeSettings(devToolsPage);
 };
 
-export const toggleIgnoreListing = async (devToolsPage: DevToolsPage, enable: boolean) => {
+export const toggleIgnoreListing = async(devToolsPage: DevToolsPage, enable: boolean): Promise<void> => {
   await openSettingsTab(devToolsPage, 'Ignore list');
   await devToolsPage.setCheckBox('[title="Ignore listing"]', enable);
   await closeSettings(devToolsPage);

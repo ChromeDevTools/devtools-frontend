@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
+import type {DataGridElement} from '../../../front_end/ui/legacy/components/data_grid/DataGridElement.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 
 export async function getDataGridRows(
@@ -43,7 +44,8 @@ export async function getDataGridColumnNames(devToolsPage: DevToolsPage,
   return columnNames;
 }
 
-export async function getDataGrid(devToolsPage: DevToolsPage, root: ElementHandle|undefined) {
+export async function getDataGrid(devToolsPage: DevToolsPage,
+                                  root: ElementHandle|undefined): Promise<ElementHandle<DataGridElement>> {
   const dataGrid = await devToolsPage.waitFor('devtools-data-grid', root);
   assert.isOk(dataGrid, 'Could not find data-grid');
   await devToolsPage.waitForFunction(async () => {

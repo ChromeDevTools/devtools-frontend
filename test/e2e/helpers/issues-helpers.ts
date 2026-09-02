@@ -31,15 +31,16 @@ export const HIDE_THIS_ISSUE = 'Hide issues like this';
 export const UNHIDE_THIS_ISSUE = 'Unhide issues like this';
 export const UNHIDE_ALL_ISSUES = '.unhide-all-issues-button';
 
-export async function getHideIssuesMenu(devToolsPage: DevToolsPage, root?: puppeteer.ElementHandle) {
+export async function getHideIssuesMenu(devToolsPage: DevToolsPage,
+                                        root?: puppeteer.ElementHandle): Promise<puppeteer.ElementHandle<Element>> {
   return await devToolsPage.waitFor(HIDE_ISSUES_MENU, root);
 }
 
-export async function navigateToIssuesTab(devToolsPage: DevToolsPage) {
+export async function navigateToIssuesTab(devToolsPage: DevToolsPage): Promise<void> {
   await openPanelViaMoreTools(devToolsPage, 'Issues');
 }
 
-export async function getUnhideAllIssuesBtn(devToolsPage: DevToolsPage) {
+export async function getUnhideAllIssuesBtn(devToolsPage: DevToolsPage): Promise<puppeteer.ElementHandle<Element>> {
   const btn = await devToolsPage.waitFor(UNHIDE_ALL_ISSUES);
   return btn;
 }
@@ -68,13 +69,13 @@ export async function getHiddenIssuesRowBody(devToolsPage: DevToolsPage):
   return await devToolsPage.waitFor('.hidden-issues-body');
 }
 
-export async function assertCategoryName(devToolsPage: DevToolsPage, categoryName: string) {
+export async function assertCategoryName(devToolsPage: DevToolsPage, categoryName: string): Promise<void> {
   const categoryNameElement = await devToolsPage.waitFor(CATEGORY_NAME);
   const selectedCategoryName = await categoryNameElement.evaluate(node => node.textContent);
   assert.strictEqual(selectedCategoryName, categoryName);
 }
 
-export async function assertIssueTitle(devToolsPage: DevToolsPage, issueMessage: string) {
+export async function assertIssueTitle(devToolsPage: DevToolsPage, issueMessage: string): Promise<void> {
   const issueMessageElement = await devToolsPage.waitFor(ISSUE_TITLE);
   const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
   assert.strictEqual(selectedIssueMessage, issueMessage);
@@ -134,14 +135,14 @@ export async function getIssueHeaderByTitle(
   return undefined;
 }
 
-export async function assertStatus(devToolsPage: DevToolsPage, status: 'Blocked'|'Report-only') {
+export async function assertStatus(devToolsPage: DevToolsPage, status: 'Blocked'|'Report-only'): Promise<void> {
   const classStatus = status === 'Blocked' ? BLOCKED_STATUS : REPORT_ONLY_STATUS;
   const issueMessageElement = await devToolsPage.waitFor(classStatus);
   const selectedIssueMessage = await issueMessageElement.evaluate(node => node.textContent);
   assert.strictEqual(selectedIssueMessage, status);
 }
 
-export async function expandCategory(devToolsPage: DevToolsPage) {
+export async function expandCategory(devToolsPage: DevToolsPage): Promise<void> {
   const categoryElement = await devToolsPage.waitFor(CATEGORY);
   const isCategoryExpanded = await categoryElement.evaluate(node => node.classList.contains('expanded'));
 
@@ -152,7 +153,7 @@ export async function expandCategory(devToolsPage: DevToolsPage) {
   await devToolsPage.waitFor(ISSUE);
 }
 
-export async function expandKind(devToolsPage: DevToolsPage, classSelector: string) {
+export async function expandKind(devToolsPage: DevToolsPage, classSelector: string): Promise<void> {
   const kindElement = await devToolsPage.waitFor(`${KIND}${classSelector}`);
   const isKindExpanded = await kindElement.evaluate(node => node.classList.contains('expanded'));
   if (!isKindExpanded) {
@@ -161,7 +162,7 @@ export async function expandKind(devToolsPage: DevToolsPage, classSelector: stri
   await devToolsPage.waitFor(ISSUE);
 }
 
-export async function expandIssue(devToolsPage: DevToolsPage) {
+export async function expandIssue(devToolsPage: DevToolsPage): Promise<void> {
   if (await getGroupByCategoryChecked(devToolsPage)) {
     await expandCategory(devToolsPage);
   }
@@ -192,7 +193,8 @@ export async function getResourcesElement(devToolsPage: DevToolsPage, resourceNa
   });
 }
 
-export async function ensureResourceSectionIsExpanded(devToolsPage: DevToolsPage, section: IssueResourceSection) {
+export async function ensureResourceSectionIsExpanded(devToolsPage: DevToolsPage,
+                                                      section: IssueResourceSection): Promise<void> {
   await section.label.evaluate(el => {
     el.scrollIntoView();
   });
@@ -250,27 +252,27 @@ export function waitForTableFromResourceSectionContents(devToolsPage: DevToolsPa
       (table: string[][]) => matchStringTable(table, expected) === true ? true : undefined);
 }
 
-export async function getGroupByCategoryChecked(devToolsPage: DevToolsPage) {
+export async function getGroupByCategoryChecked(devToolsPage: DevToolsPage): Promise<boolean> {
   const categoryCheckbox = await devToolsPage.waitFor(CATEGORY_CHECKBOX);
   return await categoryCheckbox.evaluate(node => (node as HTMLInputElement).checked);
 }
 
-export async function getGroupByKindChecked(devToolsPage: DevToolsPage) {
+export async function getGroupByKindChecked(devToolsPage: DevToolsPage): Promise<boolean> {
   const categoryCheckbox = await devToolsPage.waitFor(KIND_CHECKBOX);
   return await categoryCheckbox.evaluate(node => (node as HTMLInputElement).checked);
 }
 
-export async function revealNodeInElementsPanel(devToolsPage: DevToolsPage) {
+export async function revealNodeInElementsPanel(devToolsPage: DevToolsPage): Promise<void> {
   const revealIcon = await devToolsPage.waitFor(ELEMENT_REVEAL_ICON);
   await revealIcon.click();
 }
 
-export async function revealViolatingSourcesLines(devToolsPage: DevToolsPage) {
+export async function revealViolatingSourcesLines(devToolsPage: DevToolsPage): Promise<void> {
   const sourcesLink = await devToolsPage.waitFor(SOURCES_LINK);
   await sourcesLink.click();
 }
 
-export async function toggleGroupByCategory(devToolsPage: DevToolsPage) {
+export async function toggleGroupByCategory(devToolsPage: DevToolsPage): Promise<void> {
   const wasChecked = await getGroupByCategoryChecked(devToolsPage);
   const categoryCheckbox = await devToolsPage.waitFor(CATEGORY_CHECKBOX);
 
@@ -284,7 +286,7 @@ export async function toggleGroupByCategory(devToolsPage: DevToolsPage) {
   }
 }
 
-export async function toggleGroupByKind(devToolsPage: DevToolsPage) {
+export async function toggleGroupByKind(devToolsPage: DevToolsPage): Promise<void> {
   const wasChecked = await getGroupByKindChecked(devToolsPage);
   const kindCheckbox = await devToolsPage.waitFor(KIND_CHECKBOX);
 

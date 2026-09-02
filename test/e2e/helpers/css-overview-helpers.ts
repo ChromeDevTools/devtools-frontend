@@ -13,11 +13,11 @@ const CSS_OVERVIEW_PANEL_TITLE = 'CSS overview';
 const CSS_OVERVIEW_CAPTURE_BUTTON_SELECTOR = '.start-capture';
 const CSS_OVERVIEW_COMPLETED_VIEW_SELECTOR = '.overview-completed-view';
 
-export async function cssOverviewTabDoesNotExist(devToolsPage: DevToolsPage) {
+export async function cssOverviewTabDoesNotExist(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.waitForNone(CSS_OVERVIEW_TAB_SELECTOR);
 }
 
-export async function navigateToCssOverviewTab(devToolsPage: DevToolsPage) {
+export async function navigateToCssOverviewTab(devToolsPage: DevToolsPage): Promise<void> {
   const cssOverviewTab = await devToolsPage.$(CSS_OVERVIEW_TAB_SELECTOR);
   if (!cssOverviewTab) {
     await openCSSOverviewPanelFromMoreTools(devToolsPage);
@@ -27,17 +27,17 @@ export async function navigateToCssOverviewTab(devToolsPage: DevToolsPage) {
   }
 }
 
-export async function openCSSOverviewPanelFromMoreTools(devToolsPage: DevToolsPage) {
+export async function openCSSOverviewPanelFromMoreTools(devToolsPage: DevToolsPage): Promise<void> {
   await openPanelViaMoreTools(devToolsPage, CSS_OVERVIEW_PANEL_TITLE);
   await cssOverviewTabExists(devToolsPage);
   await cssOverviewPanelContentIsLoaded(devToolsPage);
 }
 
-export async function cssOverviewTabExists(devToolsPage: DevToolsPage) {
+export async function cssOverviewTabExists(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.waitFor(CSS_OVERVIEW_TAB_SELECTOR);
 }
 
-export async function cssOverviewPanelContentIsLoaded(devToolsPage: DevToolsPage) {
+export async function cssOverviewPanelContentIsLoaded(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.waitFor(CSS_OVERVIEW_PANEL_CONTENT);
   await expectVeEvents(devToolsPage, [veImpressionsUnder('Panel: css-overview',
                                                          [
@@ -49,7 +49,7 @@ export async function cssOverviewPanelContentIsLoaded(devToolsPage: DevToolsPage
                        undefined);
 }
 
-export async function startCaptureCSSOverview(devToolsPage: DevToolsPage) {
+export async function startCaptureCSSOverview(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click(CSS_OVERVIEW_CAPTURE_BUTTON_SELECTOR);
   await devToolsPage.waitFor(CSS_OVERVIEW_COMPLETED_VIEW_SELECTOR);
   await devToolsPage.raf();

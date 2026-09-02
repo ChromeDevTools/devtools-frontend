@@ -23,7 +23,8 @@ export async function findSubMenuEntryItem(devToolsPage: DevToolsPage,
   return matchingElement;
 }
 
-export async function openSoftContextMenuAndClickOnItem(devToolsPage: DevToolsPage, selector: string, label: string) {
+export async function openSoftContextMenuAndClickOnItem(devToolsPage: DevToolsPage, selector: string,
+                                                        label: string): Promise<void> {
   // Find the selected node, right click.
   await devToolsPage.click(selector, {clickOptions: {button: 'right'}});
 
@@ -32,7 +33,7 @@ export async function openSoftContextMenuAndClickOnItem(devToolsPage: DevToolsPa
   await devToolsPage.click(`[aria-label="${label}"]`, {root});
 }
 
-export async function openSubMenu(devToolsPage: DevToolsPage, selector: string, text: string) {
+export async function openSubMenu(devToolsPage: DevToolsPage, selector: string, text: string): Promise<void> {
   // Find the selected node, right click.
   await devToolsPage.click(selector, {clickOptions: {button: 'right'}});
 

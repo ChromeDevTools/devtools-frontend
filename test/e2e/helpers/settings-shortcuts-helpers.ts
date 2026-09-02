@@ -21,19 +21,19 @@ export const ADD_SHORTCUT_LINK_TEXT = 'Add a shortcut';
 export const SHORTCUT_CHORD_TIMEOUT = 1000;
 
 /* eslint-disable @typescript-eslint/naming-convention */
-export let VS_CODE_SHORTCUTS_SHORTCUTS = ['CtrlKCtrlS'];
-export let VS_CODE_SETTINGS_SHORTCUTS = ['Shift?', 'Ctrl,'];
+export let VS_CODE_SHORTCUTS_SHORTCUTS: string[] = ['CtrlKCtrlS'];
+export let VS_CODE_SETTINGS_SHORTCUTS: string[] = ['Shift?', 'Ctrl,'];
 export let VS_CODE_SHORTCUTS_QUICK_OPEN_TEXT = 'Show ShortcutsCtrl + K Ctrl + SSettings';
-export let VS_CODE_PAUSE_SHORTCUTS = ['Ctrl\\', 'F5', 'ShiftF5'];
-export let CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT = ['Ctrl + 1', 'Ctrl + 2'];
-export let CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT = ['Ctrl + 1 Ctrl + 2'];
-export let CONTROL_2_SHORTCUT_INPUT_TEXT = ['Ctrl + 2'];
-export let CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT = ['Ctrl1', 'Ctrl2'];
-export let CONTROL_1_CONTROL_2_CHORD_DISPLAY_TEXT = ['Ctrl1Ctrl2'];
-export let CONTROL_2_SHORTCUT_DISPLAY_TEXT = ['Ctrl2'];
-export let CONSOLE_SHORTCUT_INPUT_TEXT = ['Ctrl + `'];
-export let CONSOLE_SHORTCUT_DISPLAY_TEXT = ['Ctrl`'];
-export let CONTROL_ALT_C_SHORTCUT_INPUT_TEXT = ['Ctrl + Alt + C'];
+export let VS_CODE_PAUSE_SHORTCUTS: string[] = ['Ctrl\\', 'F5', 'ShiftF5'];
+export let CONTROL_1_CONTROL_2_SHORTCUT_INPUTS_TEXT: string[] = ['Ctrl + 1', 'Ctrl + 2'];
+export let CONTROL_1_CONTROL_2_CHORD_INPUT_TEXT: string[] = ['Ctrl + 1 Ctrl + 2'];
+export let CONTROL_2_SHORTCUT_INPUT_TEXT: string[] = ['Ctrl + 2'];
+export let CONTROL_1_CONTROL_2_SHORTCUT_DISPLAY_TEXT: string[] = ['Ctrl1', 'Ctrl2'];
+export let CONTROL_1_CONTROL_2_CHORD_DISPLAY_TEXT: string[] = ['Ctrl1Ctrl2'];
+export let CONTROL_2_SHORTCUT_DISPLAY_TEXT: string[] = ['Ctrl2'];
+export let CONSOLE_SHORTCUT_INPUT_TEXT: string[] = ['Ctrl + `'];
+export let CONSOLE_SHORTCUT_DISPLAY_TEXT: string[] = ['Ctrl`'];
+export let CONTROL_ALT_C_SHORTCUT_INPUT_TEXT: string[] = ['Ctrl + Alt + C'];
 /* eslint-enable @typescript-eslint/naming-convention */
 if (platform === 'mac') {
   VS_CODE_SHORTCUTS_SHORTCUTS = ['⌘K⌘S'];
@@ -51,12 +51,13 @@ if (platform === 'mac') {
   CONTROL_ALT_C_SHORTCUT_INPUT_TEXT = ['⌘ ⌥ C'];
 }
 
-export const selectKeyboardShortcutPreset = async (devToolsPage: DevToolsPage, option: string) => {
+export const selectKeyboardShortcutPreset = async(devToolsPage: DevToolsPage, option: string): Promise<void> => {
   const presetSelectElement = await devToolsPage.waitForElementWithTextContent(SHORTCUT_SELECT_TEXT);
   await (await presetSelectElement.toElement('select')).select(option);
 };
 
-export const getShortcutListItemElement = async (devToolsPage: DevToolsPage, shortcutText: string) => {
+export const getShortcutListItemElement =
+    async(devToolsPage: DevToolsPage, shortcutText: string): Promise<ElementHandle<Node>|null> => {
   const textMatches = await devToolsPage.$$textContent(shortcutText);
   let titleElement;
   for (const matchingElement of textMatches) {
@@ -71,7 +72,7 @@ export const getShortcutListItemElement = async (devToolsPage: DevToolsPage, sho
   return listItemElement.asElement();
 };
 
-export const editShortcutListItem = async (devToolsPage: DevToolsPage, shortcutText: string) => {
+export const editShortcutListItem = async(devToolsPage: DevToolsPage, shortcutText: string): Promise<void> => {
   const listItemElement = await getShortcutListItemElement(devToolsPage, shortcutText) as ElementHandle;
 
   await devToolsPage.clickElement(listItemElement);
@@ -80,7 +81,8 @@ export const editShortcutListItem = async (devToolsPage: DevToolsPage, shortcutT
   await devToolsPage.waitFor(RESET_BUTTON_SELECTOR);
 };
 
-export const shortcutsForAction = async (devToolsPage: DevToolsPage, shortcutText: string) => {
+export const shortcutsForAction =
+    async(devToolsPage: DevToolsPage, shortcutText: string): Promise<Array<string|never[]>> => {
   const listItemElement = await getShortcutListItemElement(devToolsPage, shortcutText);
   assert.isOk(listItemElement, `Could not find shortcut item with text ${shortcutText}`);
   const shortcutElements = await listItemElement.$$(SHORTCUT_DISPLAY_SELECTOR);
@@ -90,14 +92,14 @@ export const shortcutsForAction = async (devToolsPage: DevToolsPage, shortcutTex
       shortcutElementsTextContent.map(async textContent => textContent ? await textContent.jsonValue() : []));
 };
 
-export const shortcutInputValues = async (devToolsPage: DevToolsPage) => {
+export const shortcutInputValues = async(devToolsPage: DevToolsPage): Promise<Array<string|never[]>> => {
   const shortcutInputs = await devToolsPage.$$(SHORTCUT_INPUT_SELECTOR);
   assert.isOk(shortcutInputs.length, 'shortcut input not found');
   const shortcutValues = await Promise.all(shortcutInputs.map(async input => await input.getProperty('value')));
   return await Promise.all(shortcutValues.map(async value => value ? await value.jsonValue() : []));
 };
 
-export const clickAddShortcutLink = async (devToolsPage: DevToolsPage) => {
+export const clickAddShortcutLink = async(devToolsPage: DevToolsPage): Promise<void> => {
   const addShortcutLinkTextMatches = await devToolsPage.waitForElementsWithTextContent(ADD_SHORTCUT_LINK_TEXT);
   let addShortcutLinkElement;
   // the link container and the link have the same textContent, but only the latter has a click handler
@@ -112,19 +114,19 @@ export const clickAddShortcutLink = async (devToolsPage: DevToolsPage) => {
   await devToolsPage.clickElement(addShortcutLinkElement);
 };
 
-export const clickShortcutConfirmButton = async (devToolsPage: DevToolsPage) => {
+export const clickShortcutConfirmButton = async(devToolsPage: DevToolsPage): Promise<void> => {
   await devToolsPage.click(CONFIRM_BUTTON_SELECTOR);
 };
 
-export const clickShortcutCancelButton = async (devToolsPage: DevToolsPage) => {
+export const clickShortcutCancelButton = async(devToolsPage: DevToolsPage): Promise<void> => {
   await devToolsPage.click(CANCEL_BUTTON_SELECTOR);
 };
 
-export const clickShortcutResetButton = async (devToolsPage: DevToolsPage) => {
+export const clickShortcutResetButton = async(devToolsPage: DevToolsPage): Promise<void> => {
   await devToolsPage.click(RESET_BUTTON_SELECTOR);
 };
 
-export const clickShortcutDeleteButton = async (devToolsPage: DevToolsPage, index: number) => {
+export const clickShortcutDeleteButton = async(devToolsPage: DevToolsPage, index: number): Promise<void> => {
   const deleteButtons = await devToolsPage.$$(DELETE_BUTTON_SELECTOR);
   if (deleteButtons.length <= index) {
     assert.fail(`shortcut delete button #${index} not found`);
@@ -132,7 +134,7 @@ export const clickShortcutDeleteButton = async (devToolsPage: DevToolsPage, inde
   await devToolsPage.clickElement(deleteButtons[index]);
 };
 
-export const waitForEmptyShortcutInput = async (devToolsPage: DevToolsPage) => {
+export const waitForEmptyShortcutInput = async(devToolsPage: DevToolsPage): Promise<void> => {
   await devToolsPage.waitForFunction(async () => {
     const shortcutInputs = await devToolsPage.$$(SHORTCUT_INPUT_SELECTOR);
     const shortcutInputValues = await Promise.all(shortcutInputs.map(input => input.getProperty('value')));
@@ -142,7 +144,7 @@ export const waitForEmptyShortcutInput = async (devToolsPage: DevToolsPage) => {
   });
 };
 
-export const waitForVSCodeShortcutPreset = async (devToolsPage: DevToolsPage) => {
+export const waitForVSCodeShortcutPreset = async(devToolsPage: DevToolsPage): Promise<void> => {
   // wait for a shortcut that vsCode has but the default preset does not
   await devToolsPage.waitForElementWithTextContent(VS_CODE_SHORTCUTS_SHORTCUTS.join(''));
 };

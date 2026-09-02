@@ -5,6 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("helpers") {
+  split_compilation = true
   sources = [
     "ai-assistance-helpers.ts",
     "animations-helpers.ts",
@@ -35,7 +36,7 @@ node_ts_library("helpers") {
     "visual-logging-helpers.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../front_end/core/host:bundle",
     "../../../front_end/panels/recorder:bundle",
     "../../../front_end/panels/recorder/models:recorder",

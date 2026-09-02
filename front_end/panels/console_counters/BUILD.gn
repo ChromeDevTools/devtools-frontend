@@ -8,9 +8,10 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_ui_module("console_counters") {
+  split_compilation = true
   sources = [ "WarningErrorCounter.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -25,9 +26,10 @@ devtools_ui_module("console_counters") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "console_counters.ts"
 
-  deps = [ ":console_counters" ]
+  ts_deps = [ ":console_counters" ]
 
   visibility = [
     ":*",
@@ -43,9 +45,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "console_counters-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../ui/legacy:bundle",
   ]
@@ -54,11 +57,12 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "console_counters.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../testing",
   ]

@@ -7,15 +7,17 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_module("dom_extension") {
+  split_compilation = true
   sources = [ "DOMExtension.ts" ]
 
-  deps = [ "../../core/platform:bundle" ]
+  ts_deps = [ "../../core/platform:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "dom_extension.ts"
 
-  deps = [ ":dom_extension" ]
+  ts_deps = [ ":dom_extension" ]
 
   visibility = [
     ":*",
@@ -25,11 +27,12 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "DOMExtension.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../testing",
   ]

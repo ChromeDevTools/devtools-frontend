@@ -64,7 +64,10 @@ class TrackDOMNodeToTreeNode extends Lit.Directive.Directive {
   }
 }
 
-export const trackDOMNodeToTreeNode = Lit.Directive.directive(TrackDOMNodeToTreeNode);
+export const trackDOMNodeToTreeNode: <TreeNodeDataType>(
+    weakmap: WeakMap<HTMLLIElement, TreeNode<TreeNodeDataType>>,
+    treeNode: TreeNode<TreeNodeDataType>,
+    ) => Lit.DirectiveResult<typeof TrackDOMNodeToTreeNode> = Lit.Directive.directive(TrackDOMNodeToTreeNode);
 
 /**
  * Finds the next sibling of the node's parent, recursing up the tree if

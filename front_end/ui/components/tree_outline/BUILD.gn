@@ -13,38 +13,40 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("tree_outline") {
+  split_compilation = true
   sources = [
     "TreeOutline.ts",
     "TreeOutlineUtils.ts",
   ]
-  deps = [
+  ts_deps = [
     "../../../core/platform:bundle",
-    "../../../ui/components/buttons:bundle",
-    "../../../ui/components/render_coordinator:bundle",
-    "../../../ui/legacy:bundle",
-    "../../../ui/lit:bundle",
-    "../../../ui/visual_logging:bundle",
+    "../../legacy:bundle",
+    "../../lit:bundle",
+    "../../visual_logging:bundle",
+    "../buttons:bundle",
     "../code_highlighter:bundle",
+    "../render_coordinator:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "tree_outline.ts"
 
-  deps = [
-    ":css_files",
-    ":tree_outline",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":tree_outline" ]
 
   visibility = default_components_visibility
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "TreeOutline.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../testing",
     "../../lit:bundle",

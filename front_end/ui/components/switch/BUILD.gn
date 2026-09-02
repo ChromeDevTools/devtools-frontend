@@ -14,30 +14,32 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("switch_impl") {
+  split_compilation = true
   sources = [ "SwitchImpl.ts" ]
-  deps = [
-    "../../../ui/lit:bundle",
-    "../../../ui/visual_logging:bundle",
+  ts_deps = [
+    "../../lit:bundle",
+    "../../visual_logging:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "switch.ts"
 
-  deps = [
-    ":css_files",
-    ":switch_impl",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":switch_impl" ]
 
   visibility = default_components_visibility
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "SwitchImpl.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../testing",
   ]

@@ -12,7 +12,9 @@ group("conductor") {
 }
 
 ts_e2e_library("implementation") {
-  deps = [
+  testonly = false
+  split_compilation = true
+  ts_deps = [
     "../../conductor:implementation",
     "../shared",
   ]

@@ -47,7 +47,7 @@ async function takeScreenshots(state: ScreenshotState): Promise<{inspectedPage?:
   }
 }
 
-export async function screenshotError(state: ScreenshotState, error: Error) {
+export async function screenshotError(state: ScreenshotState, error: Error): Promise<Error> {
   if (state.browser && !state.browser.connected) {
     console.error('Browser was disconnected, skipping screenshots');
     return error;
@@ -73,14 +73,14 @@ export async function screenshotError(state: ScreenshotState, error: Error) {
       return ScreenshotError.fromBase64Images(error, inspectedPage, devToolsPage, state.devToolsPage?.screenshotLog);
     } catch (e) {
       console.error('Unexpected error saving screenshots', e);
-      return e;
+      return e instanceof Error ? e : new Error(String(e));
     }
   }
   return error;
 }
 
 export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSettings> {
-  static instance = new StateProvider();
+  static instance: StateProvider = new StateProvider();
   static serverPort: number;
 
   /**
@@ -100,7 +100,7 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
    * This allows us to have a single browser between test
    * that require the same settings.
    */
-  protected settingToBrowser = new Map<string, BrowserWrapper>();
+  protected settingToBrowser: Map<string, BrowserWrapper> = new Map<string, BrowserWrapper>();
 
   protected constructor() {
   }
@@ -181,11 +181,11 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
     return await setupDevToolsPage(inspectedPage, settings);
   }
 
-  async setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number) {
+  async setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number): Promise<InspectedPage> {
     return await setupInspectedPage(context, serverPort);
   }
 
-  async getState(suite: Mocha.Suite) {
+  async getState(suite: Mocha.Suite): Promise<E2EState> {
     return await this.createState(suite);
   }
 
@@ -227,7 +227,7 @@ export class StateProvider implements TestStateProvider<E2EState, E2E.SuiteSetti
     return serverPort;
   }
 
-  async closeBrowsers() {
+  async closeBrowsers(): Promise<void> {
     this.settingToBrowser.values().next().value?.copyCrashDumps();
     await Promise.allSettled([...this.settingToBrowser.values()].map(async browser => {
       await browser.browser.close();

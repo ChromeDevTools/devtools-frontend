@@ -6,7 +6,7 @@ import {stopServer} from '../../conductor/test_server.js';
 
 import {StateProvider} from './state-provider.js';
 
-export async function mochaGlobalTeardown(this: Mocha.Suite) {
+export async function mochaGlobalTeardown(this: Mocha.Suite): Promise<void> {
   await StateProvider.instance.closeBrowsers();
   stopServer();
 }

@@ -7,12 +7,12 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type {TestStateProvider} from '../conductor/mocha-interface-helpers.js';
 import {StateProvider} from '../e2e/conductor/state-provider.js';
-import {setupInspectedPage} from '../e2e/shared/target-helper.js';
+import {type InspectedPage, setupInspectedPage} from '../e2e/shared/target-helper.js';
 
 import {createTargetUniverse} from './TargetUniverse.js';
 
 export class ApiStateProvider implements TestStateProvider<API.State, API.SuiteSettings> {
-  static instance = new ApiStateProvider();
+  static instance: ApiStateProvider = new ApiStateProvider();
   #suiteToSettingsMap = new WeakMap<Mocha.Suite, API.SuiteSettings>();
   #stateToCleanupMap = new WeakMap<API.State, () => void>();
 
@@ -34,7 +34,7 @@ export class ApiStateProvider implements TestStateProvider<API.State, API.SuiteS
     return this.#suiteToSettingsMap.get(suite);
   }
 
-  async setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number) {
+  async setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number): Promise<InspectedPage> {
     return await setupInspectedPage(context, serverPort);
   }
 
@@ -79,7 +79,7 @@ export class ApiStateProvider implements TestStateProvider<API.State, API.SuiteS
     }
   }
 
-  async closeBrowser() {
+  async closeBrowser(): Promise<void> {
     await StateProvider.instance.closeBrowsers();
   }
 }

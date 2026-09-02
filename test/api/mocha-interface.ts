@@ -6,7 +6,10 @@ import {createMochaInterface} from '../conductor/mocha-interface.js';
 
 import {ApiStateProvider} from './api-state-provider.js';
 
-export const devtoolsApiTestInterface = createMochaInterface<API.State, API.SuiteSettings>({
+export const devtoolsApiTestInterface: {
+  (rootSuite: Mocha.Suite): void,
+  description: string,
+} = createMochaInterface<API.State, API.SuiteSettings>({
   description: 'DevTools API test interface',
   stateProvider: ApiStateProvider.instance,
 });

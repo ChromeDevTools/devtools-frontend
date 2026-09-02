@@ -5,6 +5,7 @@
 import("../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("api") {
+  split_compilation = true
   additional_type_definitions = [ "types.d.ts" ]
 
   sources = [
@@ -15,7 +16,7 @@ node_ts_library("api") {
     "run-mocha.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../front_end/core/common:bundle",
     "../../front_end/core/host:bundle",
     "../../front_end/core/protocol_client:bundle",

@@ -12,11 +12,14 @@ describe('gcs-upload', () => {
     assert.match(runId, /^\d{4}-\d{2}-\d{2}-\d{6}-[0-9a-f]{4}-[0-9a-f]{7}$/);
   });
 
-  it('formats destination path correctly with static bucket and project ID', () => {
-    const destination = formatGCSDestination({
-      runId: '2026-08-25-134619-c0c1-8f25f69',
-      taskId: 'example-target-html',
-    });
+  it('formats destination path correctly for trajectory.json', () => {
+    const destination = formatGCSDestination(
+        {
+          runId: '2026-08-25-134619-c0c1-8f25f69',
+          taskId: 'example-target-html',
+        },
+        'trajectory.json',
+    );
     assert.strictEqual(
         destination,
         `gs://${BUCKET}/${

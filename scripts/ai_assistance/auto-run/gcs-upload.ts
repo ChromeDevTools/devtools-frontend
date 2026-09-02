@@ -12,6 +12,7 @@ export interface UploadOptions {
   runId: string;
   taskId: string;
   localJsonPath: string;
+  destinationFileName: string;
 }
 
 /**
@@ -25,8 +26,11 @@ export function generateRunId(): string {
   return `${dateStr}-${hex.slice(0, 4)}-${hex.slice(4, 11)}`;
 }
 
-export function formatGCSDestination(options: Pick<UploadOptions, 'runId'|'taskId'>): string {
-  const gcsPath = `${PROJECT_ID}/runs/${options.runId}/tasks/${options.taskId}/output/trajectory.json`;
+export function formatGCSDestination(
+    options: Pick<UploadOptions, 'runId'|'taskId'>,
+    destinationFileName: string,
+    ): string {
+  const gcsPath = `${PROJECT_ID}/runs/${options.runId}/tasks/${options.taskId}/output/${destinationFileName}`;
   return `gs://${BUCKET}/${gcsPath}`;
 }
 
@@ -34,7 +38,7 @@ export function formatGCSDestination(options: Pick<UploadOptions, 'runId'|'taskI
  * Uploads a local JSON file to GCS using system gcloud CLI.
  */
 export function uploadEvalToGCS(options: UploadOptions): boolean {
-  const destination = formatGCSDestination(options);
+  const destination = formatGCSDestination(options, options.destinationFileName);
 
   console.log(`[GCS] Preparing upload of ${options.localJsonPath} to ${destination}`);
 

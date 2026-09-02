@@ -42,7 +42,7 @@ This will run all available evaluations for the target, generate output files fo
 
 Tip: You can add a `--grade` flag to the run to automatically grade the results. This flag generates the `.eval.json` file, copies it to the correct subfolder in `suite/outputs/outputs/` (renaming it to use only the label, e.g., `network-test.json`), and then executes the corresponding grader script (e.g., `suite/network.eval.ts`) to calculate scores using the LLM judge.
 
-Tip: You can add an `--upload` flag to automatically upload resulting `trajectory.json` files to the GCS bucket (`gs://gleam-eval-cd4h-nonprod/ai_evals/runs/<run_id>/tasks/<task_id>/output/trajectory.json`).
+Tip: You can add an `--upload` flag to automatically upload resulting `trajectory.json` (and `eval_result.json` when `--grade` is specified) files to the GCS bucket (`gs://gleam-eval-cd4h-nonprod/ai_evals/runs/<run_id>/tasks/<task_id>/output/`).
 
 ## `--test-target` values
 

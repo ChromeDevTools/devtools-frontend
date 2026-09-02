@@ -27,67 +27,69 @@ function formatElapsedTime() {
   return `${numberFormatter.format((performance.now() - startTime) / 1000)}s`;
 }
 
-const userArgsBuilder = yargs(hideBin(process.argv))
-                            .option('example-urls', {
-                              string: true,
-                              type: 'array',
-                              demandOption: false,
-                            })
-                            .option('parallel', {
-                              boolean: true,
-                              default: true,
-                            })
-                            .option('times', {
-                              describe: 'How many times do you want to run an example?',
-                              number: true,
-                              default: 1,
-                            })
-                            .option('label', {string: true, default: 'run'})
-                            .option('include-follow-up', {
-                              boolean: true,
-                              default: false,
-                            })
-                            .option('randomize', {
-                              boolean: true,
-                              default: false,
-                            })
-                            .option('test-target', {
-                              describe: 'Which panel do you want to run the examples against?',
-                              choices: [
-                                'elements',
-                                'performance-main-thread',
-                                'performance',
-                                'performance-insights',
-                                'elements-multimodal',
-                                'patching',
-                                'network',
-                              ] as const,
-                              demandOption: true,
-                            })
-                            .option('eval', {
-                              describe: 'Output to the format required for the DevTools Eval framework',
-                              boolean: true,
-                              default: true,
-                            })
-                            .option('grade', {
-                              describe: 'Automatically grade the result',
-                              boolean: true,
-                              default: false,
-                            })
-                            .option('upload', {
-                              describe: 'Upload resulting eval trajectory.json files to GCS',
-                              boolean: true,
-                              default: false,
-                            })
-                            .check(argv => {
-                              const rawArgs = hideBin(process.argv);
-                              const hasLabel = rawArgs.includes('--label');
-                              const hasExampleUrls = argv['example-urls'] && argv['example-urls'].length > 0;
-                              if (!hasExampleUrls && hasLabel) {
-                                throw new Error('Cannot provide --label when running without --example-urls');
-                              }
-                              return true;
-                            });
+const userArgsBuilder =
+    yargs(hideBin(process.argv))
+        .option('example-urls', {
+          string: true,
+          type: 'array',
+          demandOption: false,
+        })
+        .option('parallel', {
+          boolean: true,
+          default: true,
+        })
+        .option('times', {
+          describe: 'How many times do you want to run an example?',
+          number: true,
+          default: 1,
+        })
+        .option('label', {string: true, default: 'run'})
+        .option('include-follow-up', {
+          boolean: true,
+          default: false,
+        })
+        .option('randomize', {
+          boolean: true,
+          default: false,
+        })
+        .option('test-target', {
+          describe: 'Which panel do you want to run the examples against?',
+          choices: [
+            'elements',
+            'performance-main-thread',
+            'performance',
+            'performance-insights',
+            'elements-multimodal',
+            'patching',
+            'network',
+          ] as const,
+          demandOption: true,
+        })
+        .option('eval', {
+          describe: 'Output to the format required for the DevTools Eval framework',
+          boolean: true,
+          default: true,
+        })
+        .option('grade', {
+          describe: 'Automatically grade the result',
+          boolean: true,
+          default: false,
+        })
+        .option('upload', {
+          describe:
+              'Upload resulting eval trajectory.json (and eval_result.json when --grade is specified) files to GCS',
+          boolean: true,
+          default: false,
+        })
+        .check(argv => {
+          const rawArgs = hideBin(process.argv);
+          const hasLabel = rawArgs.includes('--label');
+          const hasExampleUrls = argv['example-urls'] && argv['example-urls'].length > 0;
+          if (!hasExampleUrls && hasLabel) {
+            throw new Error('Cannot provide --label when running without --example-urls');
+          }
+          return true;
+        });
 type UserArgs = ReturnType<typeof userArgsBuilder.parseSync>;
 
 class Logger {
@@ -483,6 +485,27 @@ async function main() {
         console.info(`\n[Info]: Running command: ${cmd} in ${cwd}`);
         const stdout = execSync(cmd, {cwd, encoding: 'utf8'});
         console.info(stdout);
+
+        if (userArgs.upload) {
+          const evalResultPath = path.resolve(import.meta.dirname, 'data', `eval_result-${runId}.json`);
+          fs.writeFileSync(evalResultPath,
+                           JSON.stringify({
+                             runId,
+                             target,
+                             gradingOutput: stdout,
+                           },
+                                          null, 2));
+
+          const allTaskIds = new Set(executionResults.map(r => r.metadata.session_id));
+          for (const taskId of allTaskIds) {
+            uploadEvalToGCS({
+              runId,
+              taskId,
+              localJsonPath: evalResultPath,
+              destinationFileName: 'eval_result.json',
+            });
+          }
+        }
       } catch (error) {
         console.error(`\n[Error]: Grader failed`, error);
       }
@@ -536,6 +559,7 @@ function writeOutput(
         runId,
         taskId: trajectory.metadata.autoRunExampleId,
         localJsonPath: evalOutputPath,
+        destinationFileName: 'trajectory.json',
       });
     }
   }

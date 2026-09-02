@@ -8,8 +8,8 @@ import {
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
-export async function navigateToBucketViaDbMetadata(
-    devToolsPage: DevToolsPage, inspectedPage: InspectedPage, subPanel: string, dbSelector: string) {
+export async function navigateToBucketViaDbMetadata(devToolsPage: DevToolsPage, inspectedPage: InspectedPage,
+                                                    subPanel: string, dbSelector: string): Promise<void> {
   await navigateToApplicationTab(devToolsPage, inspectedPage, 'storage-buckets-link');
 
   await devToolsPage.bringToFront();

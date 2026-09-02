@@ -95,8 +95,12 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: object, target: HTMLElem
 
 export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
-export class StorageItemsToolbar extends
-    Common.ObjectWrapper.eventMixin<StorageItemsToolbar.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
+const StorageItemsToolbarBase: Common.ObjectWrapper.EventMixin<StorageItemsToolbar.EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class StorageItemsToolbar extends StorageItemsToolbarBase {
   filterRegex: RegExp|null;
   #metadataView: ApplicationComponents.StorageMetadataView.StorageMetadataView|undefined;
   readonly #view: View;

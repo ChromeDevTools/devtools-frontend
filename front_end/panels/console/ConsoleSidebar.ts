@@ -171,8 +171,12 @@ const CONSOLE_API_PARSED_FILTERS = [{
   regex: undefined,
 }];
 
-export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox<ShadowRoot>>(
-    UI.Widget.VBox) {
+const ConsoleSidebarBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox<ShadowRoot>> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class ConsoleSidebar extends ConsoleSidebarBase {
   #view: View;
   readonly #groups = [
     new ConsoleFilterGroup(GroupName.ALL, [], ConsoleFilter.allLevelsFilterValue()),

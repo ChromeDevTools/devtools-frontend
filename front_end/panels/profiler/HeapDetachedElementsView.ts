@@ -91,8 +91,13 @@ export class DetachedElementsProfileView extends UI.View.SimpleView implements D
   }
 }
 
-export class DetachedElementsProfileType extends
-    Common.ObjectWrapper.eventMixin<DetachedElementsProfileType.EventTypes, typeof ProfileType>(ProfileType) {
+const DetachedElementsProfileTypeBase:
+    Common.ObjectWrapper.EventMixin<DetachedElementsProfileType.EventTypes, typeof ProfileType> =
+    Common.ObjectWrapper.eventMixin(
+        ProfileType,
+    );
+
+export class DetachedElementsProfileType extends DetachedElementsProfileTypeBase {
   constructor(typeId?: string, description?: string) {
     super(
         typeId || i18nString(UIStrings.detachedElementsTitle),

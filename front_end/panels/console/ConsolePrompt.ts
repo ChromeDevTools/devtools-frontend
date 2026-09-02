@@ -44,8 +44,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePrompt.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class ConsolePrompt extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
-    UI.Widget.Widget) {
+const ConsolePromptBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.Widget,
+    );
+
+export class ConsolePrompt extends ConsolePromptBase {
   private addCompletionsFromHistory: boolean;
   #history: TextEditor.AutocompleteHistory.AutocompleteHistory;
   private initialText: string;

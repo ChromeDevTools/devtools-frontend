@@ -92,8 +92,12 @@ export class CSSLength {
   }
 }
 
-export class CSSShadowEditor extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
-    UI.Widget.VBox) {
+const CSSShadowEditorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class CSSShadowEditor extends CSSShadowEditorBase {
   private readonly typeField: HTMLElement;
   private readonly outsetButton: HTMLElement;
   private readonly insetButton: HTMLElement;

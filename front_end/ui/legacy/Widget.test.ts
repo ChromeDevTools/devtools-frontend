@@ -1044,7 +1044,12 @@ describeWithEnvironment('Widget', () => {
         'test-event': string;
       }
 
-      class EventWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(UI.Widget.Widget) {
+      const EventWidgetBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget> =
+          Common.ObjectWrapper.eventMixin(
+              UI.Widget.Widget,
+          );
+
+      class EventWidget extends EventWidgetBase {
         trigger() {
           this.dispatchEventToListeners('test-event', 'payload');
         }

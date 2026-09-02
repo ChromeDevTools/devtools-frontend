@@ -27,7 +27,11 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/Dialog.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class Dialog extends Common.ObjectWrapper.eventMixin<EventTypes, typeof GlassPane>(GlassPane) {
+const DialogBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof GlassPane> = Common.ObjectWrapper.eventMixin(
+    GlassPane,
+);
+
+export class Dialog extends DialogBase {
   private tabIndexBehavior = OutsideTabIndexBehavior.DISABLE_ALL_OUTSIDE_TAB_INDEX;
   private tabIndexMap = new Map<HTMLElement, number>();
   private focusRestorer: WidgetFocusRestorer|null = null;
@@ -253,7 +257,11 @@ export const enum OutsideTabIndexBehavior {
   PRESERVE_TAB_INDEX = 'PreserveTabIndex',
 }
 
-export class DialogWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof Widget>(Widget) {
+const DialogWidgetBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof Widget> = Common.ObjectWrapper.eventMixin(
+    Widget,
+);
+
+export class DialogWidget extends DialogWidgetBase {
   #open = false;
   #jslogContext = '';
   #dialogStack = false;

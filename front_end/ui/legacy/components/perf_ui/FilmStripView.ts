@@ -37,7 +37,12 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/perf_ui/FilmStripView.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class FilmStripView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.HBox>(UI.Widget.HBox) {
+const FilmStripViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.HBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.HBox,
+    );
+
+export class FilmStripView extends FilmStripViewBase {
   private statusLabel: HTMLElement;
   private zeroTime: Trace.Types.Timing.Milli = Trace.Types.Timing.Milli(0);
   #filmStrip: Trace.Extras.FilmStrip.Data|null = null;

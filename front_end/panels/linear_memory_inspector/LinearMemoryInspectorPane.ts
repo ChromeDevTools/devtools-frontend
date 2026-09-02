@@ -36,8 +36,12 @@ let inspectorInstance: LinearMemoryInspectorPane;
 const MEMORY_INSPECTOR_EXPLANATION_URL =
     'https://developer.chrome.com/docs/devtools/memory-inspector' as Platform.DevToolsPath.UrlString;
 
-export class LinearMemoryInspectorPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
-    UI.Widget.VBox) {
+const LinearMemoryInspectorPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class LinearMemoryInspectorPane extends LinearMemoryInspectorPaneBase {
   readonly #tabbedPane: UI.TabbedPane.TabbedPane;
 
   constructor() {

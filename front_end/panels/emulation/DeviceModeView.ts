@@ -630,7 +630,12 @@ export interface RulerEventTypes {
   [RulerEvents.MARKER_SELECTED]: number;
 }
 
-export class Ruler extends Common.ObjectWrapper.eventMixin<RulerEventTypes, typeof UI.Widget.Widget>(UI.Widget.Widget) {
+const RulerBase: Common.ObjectWrapper.EventMixin<RulerEventTypes, typeof UI.Widget.Widget> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.Widget,
+    );
+
+export class Ruler extends RulerBase {
   #view: RulerView;
   #horizontal = true;
   #scale = 1;

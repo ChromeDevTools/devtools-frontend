@@ -74,8 +74,12 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineDetailsView.ts
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const {widget} = UI.Widget;
 
-export class TimelineDetailsPane extends
-    Common.ObjectWrapper.eventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
+const TimelineDetailsPaneBase: Common.ObjectWrapper.EventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class TimelineDetailsPane extends TimelineDetailsPaneBase {
   private readonly detailsLinkifier: Components.Linkifier.Linkifier;
   private tabbedPane: UI.TabbedPane.TabbedPane;
   private readonly defaultDetailsWidget: UI.Widget.VBox;

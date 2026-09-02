@@ -366,8 +366,12 @@ type ViewMode = {
   mode: 'STATUS_PANE_OVERLAY',
 };
 
-export class TimelinePanel extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Panel.Panel>(UI.Panel.Panel)
-    implements Client, TimelineModeViewDelegate {
+const TimelinePanelBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Panel.Panel> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Panel.Panel,
+    );
+
+export class TimelinePanel extends TimelinePanelBase implements Client, TimelineModeViewDelegate {
   private readonly dropTarget: UI.DropTarget.DropTarget;
   private readonly recordingOptionUIControls: UI.Toolbar.ToolbarItem[];
   private state: State;

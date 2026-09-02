@@ -47,8 +47,12 @@ export interface EventTypes {
   [Events.STYLES_UPDATE_COMPLETED]: void;
 }
 
-export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
-    UI.Widget.VBox) implements StylesContainer {
+const StandaloneStylesContainerBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class StandaloneStylesContainer extends StandaloneStylesContainerBase implements StylesContainer {
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null = null;
   isEditingStyle = false;
   readonly sectionByElement = new WeakMap<Node, StylePropertiesSection>();

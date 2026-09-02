@@ -14,7 +14,12 @@ import bezierEditorStyles from './bezierEditor.css.js';
 
 const PREVIEW_ANIMATION_DEBOUNCE_DELAY = 300;
 
-export class BezierEditor extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
+const BezierEditorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class BezierEditor extends BezierEditorBase {
   private model: AnimationTimingModel;
   private previewElement: HTMLElement;
   private readonly previewOnion: HTMLElement;

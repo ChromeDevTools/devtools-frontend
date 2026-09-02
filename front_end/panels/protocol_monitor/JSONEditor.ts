@@ -177,7 +177,12 @@ export interface EventTypes {
   [Events.SUBMIT_EDITOR]: Command;
 }
 
-export class JSONEditor extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
+const JSONEditorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class JSONEditor extends JSONEditorBase {
   #metadataByCommand = new Map<string, {parameters: Parameter[], description: string, replyArgs: string[]}>();
   #typesByName = new Map<string, Parameter[]>();
   #enumsByName = new Map<string, Record<string, string>>();

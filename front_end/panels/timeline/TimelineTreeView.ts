@@ -162,9 +162,12 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * For an overview, read: https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/main/front_end/panels/timeline/README.md#timeline-tree-views
  */
-export class TimelineTreeView extends
-    Common.ObjectWrapper.eventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
-        implements UI.SearchableView.Searchable {
+const TimelineTreeViewBase: Common.ObjectWrapper.EventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class TimelineTreeView extends TimelineTreeViewBase implements UI.SearchableView.Searchable {
   /** This is sorted by ts. */
   #selectedEvents: Trace.Types.Events.Event[]|null;
   private searchResults: Trace.Extras.TraceTree.Node[];
@@ -1413,8 +1416,12 @@ export class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
   }
 }
 
-export class TimelineStackView extends
-    Common.ObjectWrapper.eventMixin<TimelineStackView.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
+const TimelineStackViewBase: Common.ObjectWrapper.EventMixin<TimelineStackView.EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class TimelineStackView extends TimelineStackViewBase {
   private readonly treeView: TimelineTreeView;
   private readonly dataGrid: DataGrid.ViewportDataGrid.ViewportDataGrid<unknown>;
 

@@ -44,7 +44,12 @@ const UIStrings = {
 } as const;
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/FilterBar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class FilterBar extends Common.ObjectWrapper.eventMixin<FilterBarEventTypes, typeof HBox>(HBox) {
+const FilterBarBase: Common.ObjectWrapper.EventMixin<FilterBarEventTypes, typeof HBox> =
+    Common.ObjectWrapper.eventMixin(
+        HBox,
+    );
+
+export class FilterBar extends FilterBarBase {
   private enabled: boolean;
   private readonly stateSetting: Common.Settings.Setting<boolean>;
   readonly #filterButton: ToolbarSettingToggle;

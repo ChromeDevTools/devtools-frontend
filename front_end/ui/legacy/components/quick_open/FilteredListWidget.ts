@@ -44,8 +44,12 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/FilteredListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class FilteredListWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
-    UI.Widget.VBox) implements UI.ListControl.ListDelegate<number> {
+const FilteredListWidgetBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class FilteredListWidget extends FilteredListWidgetBase implements UI.ListControl.ListDelegate<number> {
   private promptHistory: string[];
   private scoringTimer: number;
   private filterTimer: number;

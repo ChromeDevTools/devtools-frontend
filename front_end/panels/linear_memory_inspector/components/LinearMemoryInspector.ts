@@ -242,8 +242,12 @@ function getSmallestEnclosingMemoryHighlight(highlightedMemoryAreas: HighlightIn
 
 export type View = typeof DEFAULT_VIEW;
 
-export class LinearMemoryInspector extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
-    UI.Widget.Widget) {
+const LinearMemoryInspectorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.Widget,
+    );
+
+export class LinearMemoryInspector extends LinearMemoryInspectorBase {
   readonly #history = new Common.SimpleHistoryManager.SimpleHistoryManager(10);
 
   #memory = new Uint8Array();

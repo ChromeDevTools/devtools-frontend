@@ -129,11 +129,15 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotGridNodes.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-class HeapSnapshotGridNodeBase extends DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode> {}
+class HeapSnapshotGridNodeRawBase extends DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode> {}
 
-export class HeapSnapshotGridNode extends
-    Common.ObjectWrapper.eventMixin<HeapSnapshotGridNode.EventTypes, typeof HeapSnapshotGridNodeBase>(
-        HeapSnapshotGridNodeBase) {
+const HeapSnapshotGridNodeBase:
+    Common.ObjectWrapper.EventMixin<HeapSnapshotGridNode.EventTypes, typeof HeapSnapshotGridNodeRawBase> =
+    Common.ObjectWrapper.eventMixin(
+        HeapSnapshotGridNodeRawBase,
+    );
+
+export class HeapSnapshotGridNode extends HeapSnapshotGridNodeBase {
   dataGridInternal: HeapSnapshotSortableDataGrid;
   instanceCount = 0;
   readonly savedChildren = new Map<number, HeapSnapshotGridNode>();

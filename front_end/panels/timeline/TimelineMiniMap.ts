@@ -40,8 +40,13 @@ export interface OverviewData {
  * update the visible trace window, and when this happens it will update the
  * TraceBounds service with the new values.
  */
-export class TimelineMiniMap extends
-    Common.ObjectWrapper.eventMixin<PerfUI.TimelineOverviewPane.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
+const TimelineMiniMapBase:
+    Common.ObjectWrapper.EventMixin<PerfUI.TimelineOverviewPane.EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class TimelineMiniMap extends TimelineMiniMapBase {
   #overviewComponent = new PerfUI.TimelineOverviewPane.TimelineOverviewPane('timeline');
   #controls: TimelineEventOverview[] = [];
   breadcrumbs: TimelineComponents.Breadcrumbs.Breadcrumbs|null = null;

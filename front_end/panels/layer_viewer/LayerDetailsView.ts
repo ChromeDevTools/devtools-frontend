@@ -280,8 +280,12 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: Docu
   // clang-format on
 };
 
-export class LayerDetailsView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget<ShadowRoot>>(
-    UI.Widget.Widget) implements LayerView {
+const LayerDetailsViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget<ShadowRoot>> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.Widget,
+    );
+
+export class LayerDetailsView extends LayerDetailsViewBase implements LayerView {
   private readonly layerViewHost: LayerViewHost;
   private layerSnapshotMap: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;
   private selection: Selection|null;

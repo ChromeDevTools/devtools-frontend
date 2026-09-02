@@ -239,8 +239,12 @@ const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement)
 
 type View = typeof DEFAULT_VIEW;
 
-export class PaintProfilerView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
-    UI.Widget.Widget) {
+const PaintProfilerViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.Widget,
+    );
+
+export class PaintProfilerView extends PaintProfilerViewBase {
   private canvasContainer?: HTMLElement;
   #selectionWindow?: PerfUI.OverviewGrid.Window;
   private readonly innerBarWidth: number;

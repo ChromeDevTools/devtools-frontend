@@ -86,8 +86,12 @@ const HEADER_OVERRIDES_FILENAME = '.headers';
 
 let tabId = 0;
 
-export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
-    UI.Widget.VBox) {
+const TabbedEditorContainerBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class TabbedEditorContainer extends TabbedEditorContainerBase {
   #historyManager!: EditingLocationHistoryManager;
   set historyManager(historyManager: EditingLocationHistoryManager) {
     this.#historyManager = historyManager;

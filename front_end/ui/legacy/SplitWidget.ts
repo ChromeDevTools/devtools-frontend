@@ -16,7 +16,11 @@ import {ToolbarButton} from './Toolbar.js';
 import {type AnyWidget, registerWidgetConfig, Widget, widgetConfig, WidgetElement} from './Widget.js';
 import {Events as ZoomManagerEvents, ZoomManager} from './ZoomManager.js';
 
-export class SplitWidget extends Common.ObjectWrapper.eventMixin<EventTypes, typeof Widget>(Widget) {
+const SplitWidgetBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof Widget> = Common.ObjectWrapper.eventMixin(
+    Widget,
+);
+
+export class SplitWidget extends SplitWidgetBase {
   #sidebarElement: HTMLElement;
   #mainElement: HTMLElement;
   #resizerElement: HTMLElement;

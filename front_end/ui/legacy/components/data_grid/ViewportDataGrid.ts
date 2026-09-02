@@ -11,8 +11,12 @@ import {type DataGridData, DataGridImpl, DataGridNode, Events as DataGridEvents,
 
 let nextId = 0;
 
-export class ViewportDataGrid<T> extends Common.ObjectWrapper.eventMixin<EventTypes, typeof DataGridImpl>(
-    DataGridImpl)<ViewportDataGridNode<T>> {
+const ViewportDataGridBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof DataGridImpl> =
+    Common.ObjectWrapper.eventMixin(
+        DataGridImpl,
+    );
+
+export class ViewportDataGrid<T> extends ViewportDataGridBase<ViewportDataGridNode<T>> {
   private readonly onScrollBound: (event: Event|null) => void;
   private visibleNodes: Array<ViewportDataGridNode<T>>;
   /**

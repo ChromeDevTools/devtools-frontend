@@ -1116,8 +1116,12 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format on
 };
 
-export class AppManifestView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
-    implements SDK.TargetManager.Observer {
+const AppManifestViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class AppManifestView extends AppManifestViewBase implements SDK.TargetManager.Observer {
   private registeredListeners: Common.EventTarget.EventDescriptor[];
   private target?: SDK.Target.Target;
   private resourceTreeModel?: SDK.ResourceTreeModel.ResourceTreeModel|null;

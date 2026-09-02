@@ -182,8 +182,12 @@ const DISCLAIMER_TOOLTIP_ID = 'styles-ai-code-completion-disclaimer-tooltip';
 const SPINNER_TOOLTIP_ID = 'styles-ai-code-completion-spinner-tooltip';
 const CITATIONS_TOOLTIP_ID = 'styles-ai-code-completion-citations-tooltip';
 
-export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin<EventTypes, typeof ElementsSidebarPane>(
-    ElementsSidebarPane) implements StylesContainer {
+const StylesSidebarPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof ElementsSidebarPane> =
+    Common.ObjectWrapper.eventMixin(
+        ElementsSidebarPane,
+    );
+
+export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesContainer {
   private matchedStyles: SDK.CSSMatchedStyles.CSSMatchedStyles|null = null;
   private currentToolbarPane: UI.Widget.Widget|null = null;
   private animatedToolbarPane: UI.Widget.Widget|null = null;

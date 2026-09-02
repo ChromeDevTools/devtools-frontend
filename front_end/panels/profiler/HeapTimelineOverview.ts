@@ -12,8 +12,12 @@ import * as UI from '../../ui/legacy/legacy.js';
 import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-export class HeapTimelineOverview extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(
-    UI.Widget.VBox) {
+const HeapTimelineOverviewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class HeapTimelineOverview extends HeapTimelineOverviewBase {
   readonly overviewCalculator: OverviewCalculator;
   overviewContainer: HTMLElement;
   overviewGrid: PerfUI.OverviewGrid.OverviewGrid;

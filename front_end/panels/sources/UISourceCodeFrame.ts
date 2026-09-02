@@ -40,9 +40,13 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/sources/UISourceCodeFrame.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class UISourceCodeFrame extends Common.ObjectWrapper
-                                           .eventMixin<EventTypes, typeof SourceFrame.SourceFrame.SourceFrameImpl>(
-                                               SourceFrame.SourceFrame.SourceFrameImpl) {
+const UISourceCodeFrameBase:
+    Common.ObjectWrapper.EventMixin<EventTypes, typeof SourceFrame.SourceFrame.SourceFrameImpl> =
+    Common.ObjectWrapper.eventMixin(
+        SourceFrame.SourceFrame.SourceFrameImpl,
+    );
+
+export class UISourceCodeFrame extends UISourceCodeFrameBase {
   #uiSourceCode: Workspace.UISourceCode.UISourceCode;
   #muteSourceCodeEvents = false;
   #persistenceBinding: Persistence.Persistence.PersistenceBinding|null;

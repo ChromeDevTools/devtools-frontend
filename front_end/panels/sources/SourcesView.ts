@@ -117,8 +117,13 @@ export const DEFAULT_VIEW: View = (input, output, target): void => {
   // clang-format on
 };
 
-export class SourcesView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
-    implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable {
+const SourcesViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class SourcesView extends SourcesViewBase implements UI.SearchableView.Searchable,
+                                                            UI.SearchableView.Replaceable {
   #searchableView!: UI.SearchableView.SearchableView;
   editorContainer?: TabbedEditorContainer;
   #uiSourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();

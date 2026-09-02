@@ -924,8 +924,13 @@ export class HeapProfileView extends UI.View.SimpleView implements UI.Searchable
   }
 }
 
-export class SamplingHeapProfileTypeBase extends
-    Common.ObjectWrapper.eventMixin<SamplingHeapProfileType.EventTypes, typeof ProfileType>(ProfileType) {
+const SamplingHeapProfileTypeBaseBase:
+    Common.ObjectWrapper.EventMixin<SamplingHeapProfileType.EventTypes, typeof ProfileType> =
+    Common.ObjectWrapper.eventMixin(
+        ProfileType,
+    );
+
+export class SamplingHeapProfileTypeBase extends SamplingHeapProfileTypeBaseBase {
   recording: boolean;
   clearedDuringRecording: boolean;
 

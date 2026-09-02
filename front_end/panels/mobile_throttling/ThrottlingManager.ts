@@ -425,9 +425,13 @@ export const DEFAULT_SAVE_DATA_VIEW: SaveDataOverrideViewFunction = (input, _out
   // clang-format on
 };
 
-export class SaveDataOverrideSelect extends
-    Common.ObjectWrapper.eventMixin<ThrottlingManager.EventTypes, typeof UI.Widget.Widget<HTMLSelectElement>>(
-        UI.Widget.Widget) {
+const SaveDataOverrideSelectBase:
+    Common.ObjectWrapper.EventMixin<ThrottlingManager.EventTypes, typeof UI.Widget.Widget<HTMLSelectElement>> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.Widget,
+    );
+
+export class SaveDataOverrideSelect extends SaveDataOverrideSelectBase {
   #selectedIndex = 0;
   readonly #view: SaveDataOverrideViewFunction;
 

@@ -122,11 +122,15 @@ const str_ = i18n.i18n.registerUIStrings('panels/profiler/HeapSnapshotDataGrids.
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const adjacencyMap = new WeakMap<DataGrid.DataGrid.DataGridNode<HeapSnapshotGridNode>, HeapSnapshotGridNode[]>();
 
-class HeapSnapshotSortableDataGridBase extends DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode> {}
+class HeapSnapshotSortableDataGridRawBase extends DataGrid.DataGrid.DataGridImpl<HeapSnapshotGridNode> {}
 
-export class HeapSnapshotSortableDataGrid extends Common.ObjectWrapper
-                                                      .eventMixin<EventTypes, typeof HeapSnapshotSortableDataGridBase>(
-                                                          HeapSnapshotSortableDataGridBase) {
+const HeapSnapshotSortableDataGridBase:
+    Common.ObjectWrapper.EventMixin<EventTypes, typeof HeapSnapshotSortableDataGridRawBase> =
+    Common.ObjectWrapper.eventMixin(
+        HeapSnapshotSortableDataGridRawBase,
+    );
+
+export class HeapSnapshotSortableDataGrid extends HeapSnapshotSortableDataGridBase {
   snapshot: HeapSnapshotModel.HeapSnapshotProxy.HeapSnapshotProxy|null = null;
   override selectedNode: HeapSnapshotGridNode|null = null;
   readonly heapProfilerModelInternal: SDK.HeapProfilerModel.HeapProfilerModel|null;

@@ -245,8 +245,12 @@ export type DrawOverride =
     (context: CanvasRenderingContext2D, x: number, y: number, width: number, height: number,
      timeToPosition: (time: number) => number, transformColor: (color: string) => string) => PositionOverride;
 
-export class FlameChart extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
-    implements NetworkTimeCalculator.Calculator, ChartViewportDelegate {
+const FlameChartBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class FlameChart extends FlameChartBase implements NetworkTimeCalculator.Calculator, ChartViewportDelegate {
   private readonly flameChartDelegate: FlameChartDelegate;
   private chartViewport: ChartViewport;
   private dataProvider: FlameChartDataProvider;

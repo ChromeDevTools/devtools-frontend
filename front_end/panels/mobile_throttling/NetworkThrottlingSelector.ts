@@ -176,8 +176,12 @@ export function getRecommendedNetworkConditions(roundTripTimeMetricData?: CrUXMa
   return null;
 }
 
-export class NetworkThrottlingSelect extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
-    UI.Widget.Widget) {
+const NetworkThrottlingSelectBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.Widget,
+    );
+
+export class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
   readonly #settings: Common.Settings.Settings;
   #recommendedConditions: SDK.NetworkManager.Conditions|null = null;
   #jslogContext?: string;

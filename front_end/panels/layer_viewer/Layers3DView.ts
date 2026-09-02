@@ -137,7 +137,14 @@ export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLE
   // clang-format onn
 };
 
-export class Layers3DView extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
+const Layers3DViewBase: Common.ObjectWrapper.EventMixin<
+  EventTypes,
+  typeof UI.Widget.VBox
+> = Common.ObjectWrapper.eventMixin(
+  UI.Widget.VBox,
+);
+
+export class Layers3DView extends Layers3DViewBase
     implements LayerView {
   private readonly layerViewHost: LayerViewHost;
   private transformController: TransformController;

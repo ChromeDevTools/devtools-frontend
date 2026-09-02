@@ -131,9 +131,12 @@ export class ProfileFlameChartDataProvider implements PerfUI.FlameChart.FlameCha
   }
 }
 
-export class ProfileFlameChart extends
-    Common.ObjectWrapper.eventMixin<PerfUI.FlameChart.EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox)
-        implements UI.SearchableView.Searchable {
+const ProfileFlameChartBase: Common.ObjectWrapper.EventMixin<PerfUI.FlameChart.EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class ProfileFlameChart extends ProfileFlameChartBase implements UI.SearchableView.Searchable {
   readonly searchableView: UI.SearchableView.SearchableView;
   readonly overviewPane: OverviewPane;
   readonly mainPane: PerfUI.FlameChart.FlameChart;
@@ -311,8 +314,12 @@ export class OverviewCalculator implements NetworkTimeCalculator.Calculator {
   }
 }
 
-export class OverviewPane extends Common.ObjectWrapper.eventMixin<OverviewPaneEventTypes, typeof UI.Widget.VBox>(
-    UI.Widget.VBox) implements PerfUI.FlameChart.FlameChartDelegate {
+const OverviewPaneBase: Common.ObjectWrapper.EventMixin<OverviewPaneEventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class OverviewPane extends OverviewPaneBase implements PerfUI.FlameChart.FlameChartDelegate {
   overviewContainer: HTMLElement;
   readonly overviewCalculator: OverviewCalculator;
   readonly overviewGrid: PerfUI.OverviewGrid.OverviewGrid;

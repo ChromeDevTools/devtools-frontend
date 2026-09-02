@@ -9,8 +9,12 @@ import inspectedPagePlaceholderStyles from './inspectedPagePlaceholder.css.js';
 
 let inspectedPagePlaceholderInstance: InspectedPagePlaceholder;
 
-export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
-    UI.Widget.Widget) {
+const InspectedPagePlaceholderBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.Widget,
+    );
+
+export class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
   constructor() {
     super({useShadowDom: true});
     this.registerRequiredCSS(inspectedPagePlaceholderStyles);

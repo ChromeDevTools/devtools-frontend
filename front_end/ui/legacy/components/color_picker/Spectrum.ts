@@ -208,7 +208,12 @@ function getColorFromHsva(gamut: SpectrumGamut, hsva: Common.ColorUtils.Color4D)
   }
 }
 
-export class Spectrum extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
+const SpectrumBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class Spectrum extends SpectrumBase {
   #color?: Common.Color.Color;
   private gamut: SpectrumGamut = SpectrumGamut.SRGB;
   private colorElement: HTMLElement;

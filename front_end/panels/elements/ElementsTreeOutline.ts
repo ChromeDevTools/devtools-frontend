@@ -2469,9 +2469,13 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 }
 
-export class ElementsTreeOutline extends
-    Common.ObjectWrapper.eventMixin<ElementsTreeOutline.EventTypes, typeof UI.TreeOutline.TreeOutline>(
-        UI.TreeOutline.TreeOutline) {
+const ElementsTreeOutlineBase:
+    Common.ObjectWrapper.EventMixin<ElementsTreeOutline.EventTypes, typeof UI.TreeOutline.TreeOutline> =
+    Common.ObjectWrapper.eventMixin(
+        UI.TreeOutline.TreeOutline,
+    );
+
+export class ElementsTreeOutline extends ElementsTreeOutlineBase {
   treeElementByNode: WeakMap<SDK.DOMModel.DOMNode, ElementsTreeElement>;
   private readonly shadowRoot: ShadowRoot;
   readonly elementInternal: HTMLElement;

@@ -169,7 +169,12 @@ export const DEFAULT_VIEW: View = (input, _output, target) => {
 };
 
 /** Grid component to show SpeculationRules rule sets. **/
-export class RuleSetGrid extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.VBox>(UI.Widget.VBox) {
+const RuleSetGridBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class RuleSetGrid extends RuleSetGridBase {
   readonly #view: View;
   #data: RuleSetGridData|null = null;
 

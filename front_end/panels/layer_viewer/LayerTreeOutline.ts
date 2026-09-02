@@ -139,8 +139,13 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   // clang-format on
 };
 
-export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin<EventTypes, typeof UI.Widget.Widget>(
-    UI.Widget.Widget) implements Common.EventTarget.EventTarget<EventTypes>, LayerView {
+const LayerTreeOutlineBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.Widget,
+    );
+
+export class LayerTreeOutline extends LayerTreeOutlineBase implements Common.EventTarget.EventTarget<EventTypes>,
+                                                                      LayerView {
   private layerViewHost: LayerViewHost;
   private layerTree?: SDK.LayerTreeBase.LayerTreeBase|null;
   private layerSnapshotMap?: Map<SDK.LayerTreeBase.Layer, SnapshotSelection>;

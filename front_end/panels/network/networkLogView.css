@@ -416,6 +416,10 @@ td.time-column {
   z-index: 1;
 }
 
+.empty-widget-container devtools-button {
+  margin-top: var(--sys-size-7);
+}
+
 @media (forced-colors: active) {
   .initiator-column .devtools-link {
     color: linktext;

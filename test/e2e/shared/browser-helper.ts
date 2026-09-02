@@ -21,15 +21,15 @@ export class BrowserWrapper {
     this.browser = b;
   }
 
-  get connected() {
+  get connected(): boolean {
     return this.browser.connected;
   }
 
-  async createBrowserContext() {
+  async createBrowserContext(): Promise<puppeteer.BrowserContext> {
     return await this.browser.createBrowserContext();
   }
 
-  copyCrashDumps() {
+  copyCrashDumps(): void {
     const crashesPath = this.#getCrashpadDir();
     if (!fs.existsSync(crashesPath)) {
       // TODO (liviurau): Determine where exactly does Crashpad store the dumps on
@@ -126,7 +126,7 @@ export interface BrowserSettings {
 }
 
 export class Launcher {
-  static async browserSetup(settings: BrowserSettings, serverPort: number) {
+  static async browserSetup(settings: BrowserSettings, serverPort: number): Promise<BrowserWrapper> {
     const browser = await Launcher.launchChrome(settings, serverPort);
     setupBrowserProcessIO(browser);
     const wrapper = new BrowserWrapper(browser);
@@ -145,7 +145,7 @@ export class Launcher {
     return wrapper;
   }
 
-  static async launchChrome(settings: BrowserSettings, serverPort: number) {
+  static async launchChrome(settings: BrowserSettings, serverPort: number): Promise<puppeteer.Browser> {
     const frontEndDirectory = url.pathToFileURL(
         path.join(GEN_DIR, 'front_end'),
     );

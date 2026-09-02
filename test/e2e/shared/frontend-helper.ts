@@ -10,7 +10,7 @@ import type * as Root from '../../../front_end/core/root/root.js';
 import {installPageErrorHandlers} from '../../conductor/events.js';
 import {TestConfig} from '../../conductor/test_config.js';
 
-import {PageWrapper} from './page-wrapper.js';
+import {type DeducedElementType, PageWrapper} from './page-wrapper.js';
 import type {InspectedPage} from './target-helper.js';
 
 const envLatePromises = process.env['LATE_PROMISES'] !== undefined ?
@@ -62,7 +62,7 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
-  override async reload(options?: puppeteer.WaitForOptions) {
+  override async reload(options?: puppeteer.WaitForOptions): Promise<void> {
     await super.reload(options);
     await this.ensureReadyForTesting();
   }
@@ -82,7 +82,7 @@ export class DevToolsPage extends PageWrapper {
    * @param persistReloads If this is true running {@link DevToolsPage.reload} will reloading with
    * the provided options
    */
-  async reloadWithParams({panel, canDock}: DevToolsReloadParams, persistReloads = false) {
+  async reloadWithParams({panel, canDock}: DevToolsReloadParams, persistReloads = false): Promise<void> {
     if (!panel && !canDock) {
       await this.reload();
       return;
@@ -112,7 +112,7 @@ export class DevToolsPage extends PageWrapper {
     }
   }
 
-  async ensureReadyForTesting() {
+  async ensureReadyForTesting(): Promise<void> {
     const devToolsVeLogging = {enabled: true, testing: true};
     await this.evaluateOnNewDocument(`globalThis.hostConfigForTesting = ${JSON.stringify({devToolsVeLogging})};`);
     await this.waitForFunction(async () => {
@@ -144,7 +144,7 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
-  async useSoftMenu() {
+  async useSoftMenu(): Promise<void> {
     await this.evaluate(() => {
       // @ts-expect-error different context
       DevToolsAPI.setUseSoftMenu(true);
@@ -152,7 +152,8 @@ export class DevToolsPage extends PageWrapper {
   }
 
   override async $<ElementType extends Element|null = null, Selector extends string = string>(
-      selector: Selector, root?: puppeteer.ElementHandle, handler = 'pierce') {
+      selector: Selector, root?: puppeteer.ElementHandle,
+      handler = 'pierce'): Promise<puppeteer.ElementHandle<DeducedElementType<ElementType, Selector>>|null> {
     const element = await super.$<ElementType, Selector>(selector, root, handler);
     await this.#maybeHighlight(element);
     return element;
@@ -188,25 +189,25 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
-  debuggerStatement() {
+  debuggerStatement(): Promise<void> {
     return this.page.evaluate(() => {
       // eslint-disable-next-line no-debugger
       debugger;
     });
   }
 
-  async clickMoreTabsButton(root?: puppeteer.ElementHandle<Element>) {
+  async clickMoreTabsButton(root?: puppeteer.ElementHandle<Element>): Promise<void> {
     await this.click('.tabbed-pane-header-tabs-drop-down-container', {root});
   }
 
-  async closePanelTab(panelTabSelector: string) {
+  async closePanelTab(panelTabSelector: string): Promise<void> {
     // Get close button from tab element
     const selector = `${panelTabSelector} > .tabbed-pane-close-button`;
     await this.click(selector);
     await this.waitForNone(selector);
   }
 
-  async closeAllCloseableTabs() {
+  async closeAllCloseableTabs(): Promise<void> {
     // get all closeable tools by looking for the available x buttons on tabs
     const selector = '.tabbed-pane-close-button';
     const allCloseButtons = await this.$$(selector);
@@ -225,13 +226,13 @@ export class DevToolsPage extends PageWrapper {
 
   // Noisy! Do not leave this in your test but it may be helpful
   // when debugging.
-  async enableCDPLogging() {
+  async enableCDPLogging(): Promise<void> {
     await this.page.evaluate(() => {
       globalThis.ProtocolClient.test.dumpProtocol = console.log;  // eslint-disable-line no-console
     });
   }
 
-  async enableCDPTracking() {
+  async enableCDPTracking(): Promise<void> {
     await this.page.evaluate(() => {
       globalThis.__messageMapForTest = new Map();
       globalThis.ProtocolClient.test.onMessageSent = (message: {method: string, id: number}) => {
@@ -245,7 +246,7 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
-  async logOutstandingCDP() {
+  async logOutstandingCDP(): Promise<void> {
     await this.page.evaluate(() => {
       for (const entry of globalThis.__messageMapForTest) {
         console.error(entry);
@@ -253,7 +254,7 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
-  installEventListener(eventType: string) {
+  installEventListener(eventType: string): Promise<void> {
     return this.page.evaluate(eventType => {
       window.__pendingEvents = window.__pendingEvents || new Map();
       window.addEventListener(eventType, (e: Event) => {
@@ -278,7 +279,7 @@ export class DevToolsPage extends PageWrapper {
     }, eventType);
   }
 
-  async renderCoordinatorQueueEmpty() {
+  async renderCoordinatorQueueEmpty(): Promise<void> {
     await this.page.evaluate(() => {
       return new Promise<void>(resolve => {
         const pendingFrames = globalThis.__getRenderCoordinatorPendingFrames();
@@ -291,18 +292,18 @@ export class DevToolsPage extends PageWrapper {
     });
   }
 
-  async summonSearchBox() {
+  async summonSearchBox(): Promise<void> {
     await this.pressKey('f', {control: true});
   }
 
-  async readClipboard() {
+  async readClipboard(): Promise<string> {
     await this.page.browserContext().overridePermissions(this.page.url(), ['clipboard-read', 'clipboard-write']);
     const clipboard = await this.page.evaluate(async () => await navigator.clipboard.readText());
     await this.page.browserContext().clearPermissionOverrides();
     return clipboard;
   }
 
-  async setupOverridesFSMocks() {
+  async setupOverridesFSMocks(): Promise<void> {
     await this.evaluateOnNewDocument(`
       Object.defineProperty(window, 'InspectorFrontendHost', {
         configurable: true,
@@ -395,20 +396,20 @@ export class DevToolsPage extends PageWrapper {
     return this.#cdpSession;
   }
 
-  async disableAnimations() {
+  async disableAnimations(): Promise<void> {
     const session = await this.#getCDPSession();
     await session.send('Animation.enable');
     await session.send('Animation.setPlaybackRate', {playbackRate: 30_000});
   }
 
-  async enableAnimations() {
+  async enableAnimations(): Promise<void> {
     const session = await this.#getCDPSession();
     await session.send('Animation.setPlaybackRate', {playbackRate: 1});
   }
 
   // Debugging utility to be used around flaky code and hopefully reveal visual glitches.
   // Use it with the rdb wrapper to inspect the collected screenshots after a test failure.
-  async captureScreenshot(name?: string) {
+  async captureScreenshot(name?: string): Promise<void> {
     const index = Object.keys(this.screenshotLog).length + 1;
     const fullName = index + ' ' + (name ?? 'screenshot');
     this.screenshotLog[fullName] = await this.screenshot();
@@ -431,7 +432,7 @@ export class DevToolsPage extends PageWrapper {
    * `out/<OutDir>/heap-snapshot-1.heapsnapshot` are two snapshots that can be
    * compared in the Memory panel of DevTools.
    */
-  async captureHeapSnapshot(snapshotName = 'heap-snapshot') {
+  async captureHeapSnapshot(snapshotName = 'heap-snapshot'): Promise<void> {
     const session = await this.page.createCDPSession();
     await session.send('HeapProfiler.enable');
     await session.send('HeapProfiler.collectGarbage');
@@ -569,7 +570,7 @@ async function setDockingSide(devToolsPage: DevToolsPage, side: string) {
 export async function setupDevToolsPage(
     inspectedPage: InspectedPage,
     settings: DevtoolsSettings,
-) {
+    ): Promise<DevToolsPage> {
   const frontend = await inspectedPage.page.openDevTools();
   installPageErrorHandlers(frontend);
   const devToolsPage = new DevToolsPage(frontend);

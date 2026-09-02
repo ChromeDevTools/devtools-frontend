@@ -14,11 +14,11 @@ export class InspectedPage extends PageWrapper implements InspectedPageInterface
     this.serverPort = serverPort;
   }
 
-  async goTo(url: string, options: puppeteer.WaitForOptions = {}) {
+  async goTo(url: string, options: puppeteer.WaitForOptions = {}): Promise<void> {
     await this.page.goto(url, options);
   }
 
-  async goToHtml(unparsedHtml: string) {
+  async goToHtml(unparsedHtml: string): Promise<void> {
     let html = unparsedHtml;
     if (!html.trim().startsWith('<!DOCTYPE html>')) {
       html = `<!DOCTYPE html>${html}`;
@@ -26,15 +26,16 @@ export class InspectedPage extends PageWrapper implements InspectedPageInterface
     return await this.goTo(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
   }
 
-  waitForSelector<Selector extends string>(selector: Selector, options?: puppeteer.WaitForSelectorOptions) {
+  waitForSelector<Selector extends string>(selector: Selector, options?: puppeteer.WaitForSelectorOptions):
+      Promise<puppeteer.ElementHandle<puppeteer.NodeFor<Selector>>|null> {
     return this.page.waitForSelector(selector, options);
   }
 
-  async goToResource(path: string, options: puppeteer.WaitForOptions = {}) {
+  async goToResource(path: string, options: puppeteer.WaitForOptions = {}): Promise<void> {
     await this.goTo(`${this.getResourcesPath()}/${path}`, options);
   }
 
-  async goToResourceWithCustomHost(host: string, path: string) {
+  async goToResourceWithCustomHost(host: string, path: string): Promise<void> {
     assert.isTrue(host.endsWith('.test'), 'Only custom hosts with a .test domain are allowed.');
     await this.goTo(`${this.getResourcesPath(host)}/${path}`);
   }
@@ -47,16 +48,17 @@ export class InspectedPage extends PageWrapper implements InspectedPageInterface
     return `https://${host}:${this.serverPort}`;
   }
 
-  getOopifResourcesPath() {
+  getOopifResourcesPath(): string {
     return this.getResourcesPath('devtools.oopif.test');
   }
 
-  async overridePermissions(permissions: puppeteer.Permission[]) {
+  async overridePermissions(permissions: puppeteer.Permission[]): Promise<void> {
     await this.page.browserContext().overridePermissions(`https://localhost:${this.serverPort}`, permissions);
   }
 }
 
-export async function setupInspectedPage(context: puppeteer.BrowserContext, serverPort: number) {
+export async function setupInspectedPage(context: puppeteer.BrowserContext,
+                                         serverPort: number): Promise<InspectedPage> {
   const page = await context.newPage();
   return new InspectedPage(page, serverPort);
 }

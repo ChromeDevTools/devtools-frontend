@@ -375,6 +375,7 @@ template("ts_e2e_library") {
                              "public_deps",
                              "ts_deps",
                              "split_compilation",
+                             "testonly",
                            ])
   }
 }

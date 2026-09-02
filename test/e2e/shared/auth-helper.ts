@@ -35,12 +35,12 @@ export async function fillGoogleLoginPage(page: puppeteer.Page, username: string
   await page.click('#passwordNext');
 }
 
-export async function typeTextIn(page: puppeteer.Page, selector: string, value: string) {
+export async function typeTextIn(page: puppeteer.Page, selector: string, value: string): Promise<void> {
   await page.focus(selector);
   await page.keyboard.type(value);
 }
 
-export async function configureDevToolsPreferences(page: puppeteer.Page) {
+export async function configureDevToolsPreferences(page: puppeteer.Page): Promise<void> {
   const devtoolsPage = await page.openDevTools();
   if (!devtoolsPage) {
     throw new Error('Could not open DevTools page!');

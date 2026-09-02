@@ -15,6 +15,8 @@ import * as PanelsCommon from '../common/common.js';
 
 import {ThrottlingPresets} from './ThrottlingPresets.js';
 
+export import CPUPerformanceTier = SDK.CPUThrottlingManager.CPUPerformanceTier;
+
 export interface CPUThrottlingSelectorWrapper {
   control: UI.Toolbar.ToolbarComboBox;
   updateRecommendedOption(recommendedOption: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption|null): void;
@@ -374,6 +376,14 @@ export class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<void> 
 
   setHardwareConcurrency(concurrency: number): void {
     this.cpuThrottlingManager.setHardwareConcurrency(concurrency);
+  }
+
+  effectiveCPUPerformanceTier(): CPUPerformanceTier|undefined {
+    return this.cpuThrottlingManager.effectiveCPUPerformanceTier();
+  }
+
+  setCPUPerformanceTier(tier?: CPUPerformanceTier): void {
+    this.cpuThrottlingManager.setCPUPerformanceTier(tier);
   }
 
   private isDirty(): boolean {

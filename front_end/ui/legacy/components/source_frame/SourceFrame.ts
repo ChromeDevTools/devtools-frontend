@@ -107,8 +107,8 @@ export interface EventTypes {
   [Events.EDITOR_SCROLL]: void;
 }
 
-type FormatFn = (lineNo: number, state: CodeMirror.EditorState) => string;
-export const LINE_NUMBER_FORMATTER = CodeMirror.Facet.define<FormatFn, FormatFn>({
+export type FormatFn = (lineNo: number, state: CodeMirror.EditorState) => string;
+export const LINE_NUMBER_FORMATTER: CodeMirror.Facet<FormatFn, FormatFn> = CodeMirror.Facet.define<FormatFn, FormatFn>({
   combine(value): FormatFn {
     if (value.length === 0) {
       return (lineNo: number) => lineNo.toString();
@@ -1184,7 +1184,8 @@ const nonBreakableLineMark = new (class extends CodeMirror.GutterMarker {
 })();
 
 /** Effect to add lines (by position) to the set of non-breakable lines. **/
-export const addNonBreakableLines = CodeMirror.StateEffect.define<readonly number[]>();
+export const addNonBreakableLines: CodeMirror.StateEffectType<readonly number[]> =
+    CodeMirror.StateEffect.define<readonly number[]>();
 
 const nonBreakableLines = CodeMirror.StateField.define<CodeMirror.RangeSet<CodeMirror.GutterMarker>>({
   create(): CodeMirror.RangeSet<CodeMirror.GutterMarker> {
@@ -1264,8 +1265,10 @@ export interface SourceFrameInfobar {
 }
 
 /** Infobar panel state, used to show additional panels below the editor. **/
-export const addSourceFrameInfobar = CodeMirror.StateEffect.define<SourceFrameInfobar>();
-export const removeSourceFrameInfobar = CodeMirror.StateEffect.define<SourceFrameInfobar>();
+export const addSourceFrameInfobar: CodeMirror.StateEffectType<SourceFrameInfobar> =
+    CodeMirror.StateEffect.define<SourceFrameInfobar>();
+export const removeSourceFrameInfobar: CodeMirror.StateEffectType<SourceFrameInfobar> =
+    CodeMirror.StateEffect.define<SourceFrameInfobar>();
 
 const sourceFrameInfobarState = CodeMirror.StateField.define<SourceFrameInfobar[]>({
   create(): SourceFrameInfobar[] {

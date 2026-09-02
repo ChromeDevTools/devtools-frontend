@@ -37,7 +37,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const empty: CM.Extension = [];
 
-export const dynamicSetting = CM.Facet.define<DynamicSetting<unknown>>();
+export const dynamicSetting: CM.Facet<DynamicSetting<unknown>, ReadonlyArray<DynamicSetting<unknown>>> =
+    CM.Facet.define<DynamicSetting<unknown>>();
 
 // The code below is used to wire up dynamic settings to editors. When
 // you include the result of calling `instance()` in an editor
@@ -46,7 +47,7 @@ export const dynamicSetting = CM.Facet.define<DynamicSetting<unknown>>();
 // appropriate.
 
 export class DynamicSetting<T> {
-  compartment = new CM.Compartment();
+  compartment: CM.Compartment = new CM.Compartment();
   readonly setting: string|Common.Settings.SettingDescriptor<T>;
 
   constructor(
@@ -90,11 +91,12 @@ export class DynamicSetting<T> {
   static none: ReadonlyArray<DynamicSetting<unknown>> = [];
 }
 
-export const tabMovesFocus = DynamicSetting.bool('text-editor-tab-moves-focus', [], CM.keymap.of([{
-  key: 'Tab',
-  run: (view: CM.EditorView) => view.state.doc.length ? CM.indentMore(view) : false,
-  shift: (view: CM.EditorView) => view.state.doc.length ? CM.indentLess(view) : false,
-}]));
+export const tabMovesFocus: DynamicSetting<boolean> =
+    DynamicSetting.bool('text-editor-tab-moves-focus', [], CM.keymap.of([{
+      key: 'Tab',
+      run: (view: CM.EditorView) => view.state.doc.length ? CM.indentMore(view) : false,
+      shift: (view: CM.EditorView) => view.state.doc.length ? CM.indentLess(view) : false,
+    }]));
 
 const disableConservativeCompletion = CM.StateEffect.define();
 
@@ -103,7 +105,7 @@ const disableConservativeCompletion = CM.StateEffect.define();
  * and accepting of completions with Enter until the user selects a
  * completion beyond the initially selected one. Used in the console.
  **/
-export const conservativeCompletion = CM.StateField.define<boolean>({
+export const conservativeCompletion: CM.StateField<boolean> = CM.StateField.define<boolean>({
   create() {
     return true;
   },
@@ -180,36 +182,36 @@ function announceSelectedCompletionInfo(view: CM.EditorView): void {
   UI.ARIAUtils.LiveAnnouncer.alert(ariaMessage);
 }
 
-export const autocompletion = new DynamicSetting<boolean>(
+export const autocompletion: DynamicSetting<boolean> = new DynamicSetting<boolean>(
     'text-editor-autocompletion',
-    (activateOnTyping: boolean) =>
-        [CM.autocompletion({
-          activateOnTyping,
-          icons: false,
-          optionClass: (option: CM.Completion) => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
-          tooltipClass: (state: CM.EditorState) => {
-            return state.field(conservativeCompletion, false) ? 'cm-conservativeCompletion' : '';
-          },
-          defaultKeymap: false,
-          updateSyncTime: 100,
-        }),
-         CM.Prec.highest(CM.keymap.of([
-           {key: 'End', run: acceptCompletionIfAtEndOfLine},
-           {key: 'ArrowRight', run: acceptCompletionIfAtEndOfLine},
-           {key: 'Ctrl-Space', run: CM.startCompletion},
-           {key: 'Escape', run: CM.closeCompletion},
-           {key: 'ArrowDown', run: moveCompletionSelectionIfNotConservative(true)},
-           {key: 'ArrowUp', run: moveCompletionSelectionBackwardWrapper()},
-           {mac: 'Ctrl-n', run: moveCompletionSelectionIfNotConservative(true)},
-           {mac: 'Ctrl-p', run: moveCompletionSelectionBackwardWrapper()},
-           {key: 'PageDown', run: CM.moveCompletionSelection(true, 'page')},
-           {key: 'PageUp', run: CM.moveCompletionSelection(false, 'page')},
-           {key: 'Enter', run: acceptCompletionIfNotConservative},
-         ]))]);
+    (activateOnTyping: boolean) => [CM.autocompletion({
+      activateOnTyping,
+      icons: false,
+      optionClass: (option: CM.Completion) => option.type === 'secondary' ? 'cm-secondaryCompletion' : '',
+      tooltipClass: (state: CM.EditorState) => {
+        return state.field(conservativeCompletion, false) ? 'cm-conservativeCompletion' : '';
+      },
+      defaultKeymap: false,
+      updateSyncTime: 100,
+    }),
+                                    CM.Prec.highest(CM.keymap.of([
+                                      {key: 'End', run: acceptCompletionIfAtEndOfLine},
+                                      {key: 'ArrowRight', run: acceptCompletionIfAtEndOfLine},
+                                      {key: 'Ctrl-Space', run: CM.startCompletion},
+                                      {key: 'Escape', run: CM.closeCompletion},
+                                      {key: 'ArrowDown', run: moveCompletionSelectionIfNotConservative(true)},
+                                      {key: 'ArrowUp', run: moveCompletionSelectionBackwardWrapper()},
+                                      {mac: 'Ctrl-n', run: moveCompletionSelectionIfNotConservative(true)},
+                                      {mac: 'Ctrl-p', run: moveCompletionSelectionBackwardWrapper()},
+                                      {key: 'PageDown', run: CM.moveCompletionSelection(true, 'page')},
+                                      {key: 'PageUp', run: CM.moveCompletionSelection(false, 'page')},
+                                      {key: 'Enter', run: acceptCompletionIfNotConservative},
+                                    ]))]);
 
-export const bracketMatching = DynamicSetting.bool('text-editor-bracket-matching', CM.bracketMatching());
+export const bracketMatching: DynamicSetting<boolean> =
+    DynamicSetting.bool('text-editor-bracket-matching', CM.bracketMatching());
 
-export const codeFolding = DynamicSetting.bool('text-editor-code-folding', [
+export const codeFolding: DynamicSetting<boolean> = DynamicSetting.bool('text-editor-code-folding', [
   CM.foldGutter({
     markerDOM(open: boolean): HTMLElement {
       const iconName = open ? 'triangle-down' : 'triangle-right';
@@ -247,7 +249,8 @@ function detectIndentation(doc: CM.Text): string {
   return indentUnit ?? Common.Settings.Settings.instance().moduleSetting('text-editor-indent').get();
 }
 
-export const autoDetectIndent = DynamicSetting.bool('text-editor-auto-detect-indent', AutoDetectIndent);
+export const autoDetectIndent: DynamicSetting<boolean> =
+    DynamicSetting.bool('text-editor-auto-detect-indent', AutoDetectIndent);
 
 function matcher(decorator: CM.MatchDecorator): CM.Extension {
   return CM.ViewPlugin.define(
@@ -291,17 +294,19 @@ const showTrailingWhitespace = matcher(new CM.MatchDecorator({
   boundary: /\S/,
 }));
 
-export const showWhitespace = new DynamicSetting<string>('show-whitespaces-in-editor', value => {
-  if (value === 'all') {
-    return showAllWhitespace;
-  }
-  if (value === 'trailing') {
-    return showTrailingWhitespace;
-  }
-  return empty;
-});
+export const showWhitespace: DynamicSetting<string> =
+    new DynamicSetting<string>('show-whitespaces-in-editor', value => {
+      if (value === 'all') {
+        return showAllWhitespace;
+      }
+      if (value === 'trailing') {
+        return showTrailingWhitespace;
+      }
+      return empty;
+    });
 
-export const allowScrollPastEof = DynamicSetting.bool('allow-scroll-past-eof', CM.scrollPastEnd());
+export const allowScrollPastEof: DynamicSetting<boolean> =
+    DynamicSetting.bool('allow-scroll-past-eof', CM.scrollPastEnd());
 
 const cachedIndentUnit: Record<string, CM.Extension> = Object.create(null);
 
@@ -313,11 +318,12 @@ function getIndentUnit(indent: string): CM.Extension {
   return value;
 }
 
-export const indentUnit = new DynamicSetting<string>('text-editor-indent', getIndentUnit);
+export const indentUnit: DynamicSetting<string> = new DynamicSetting<string>('text-editor-indent', getIndentUnit);
 
-export const domWordWrap = DynamicSetting.bool('dom-word-wrap', CM.EditorView.lineWrapping);
+export const domWordWrap: DynamicSetting<boolean> = DynamicSetting.bool('dom-word-wrap', CM.EditorView.lineWrapping);
 
-export const sourcesWordWrap = DynamicSetting.bool('sources.word-wrap', CM.EditorView.lineWrapping);
+export const sourcesWordWrap: DynamicSetting<boolean> =
+    DynamicSetting.bool('sources.word-wrap', CM.EditorView.lineWrapping);
 
 function detectLineSeparator(text: string): CM.Extension {
   if (/\r\n/.test(text) && !/(^|[^\r])\n/.test(text)) {
@@ -344,8 +350,8 @@ function themeIsDark(): boolean {
   return setting === 'systemPreferred' ? window.matchMedia('(prefers-color-scheme: dark)').matches : setting === 'dark';
 }
 
-export const dummyDarkTheme = CM.EditorView.theme({}, {dark: true});
-export const themeSelection = new CM.Compartment();
+export const dummyDarkTheme: CM.Extension = CM.EditorView.theme({}, {dark: true});
+export const themeSelection: CM.Compartment = new CM.Compartment();
 
 export function theme(): CM.Extension {
   return [editorTheme, themeIsDark() ? themeSelection.of(dummyDarkTheme) : themeSelection.of([])];
@@ -385,7 +391,7 @@ export function baseConfiguration(text: string|CM.Text): CM.Extension {
   ];
 }
 
-export const closeBrackets = DynamicSetting.bool('text-editor-bracket-closing', [
+export const closeBrackets: DynamicSetting<boolean> = DynamicSetting.bool('text-editor-bracket-closing', [
   CM.html.autoCloseTags,
   CM.closeBrackets(),
   CM.keymap.of(CM.closeBracketsKeymap),
@@ -448,7 +454,7 @@ class CompletionHint extends CM.WidgetType {
   }
 }
 
-export const showCompletionHint = CM.ViewPlugin.fromClass(class {
+export class CompletionHintPlugin {
   decorations: CM.DecorationSet = CM.Decoration.none;
   currentHint: string|null = null;
 
@@ -489,7 +495,12 @@ export const showCompletionHint = CM.ViewPlugin.fromClass(class {
     }
     return label.slice(partBefore ? partBefore[0].length : 0);
   }
-}, {decorations: p => p.decorations});
+}
+
+export const showCompletionHint: CM.ViewPlugin<CompletionHintPlugin> = CM.ViewPlugin.fromClass(
+    CompletionHintPlugin,
+    {decorations: p => p.decorations},
+);
 
 export function contentIncludingHint(view: CM.EditorView): string {
   const plugin = view.plugin(showCompletionHint);
@@ -501,7 +512,8 @@ export function contentIncludingHint(view: CM.EditorView): string {
   return content;
 }
 
-export const setAiAutoCompleteSuggestion = CM.StateEffect.define<ActiveSuggestion|null>();
+export const setAiAutoCompleteSuggestion: CM.StateEffectType<ActiveSuggestion|null> =
+    CM.StateEffect.define<ActiveSuggestion|null>();
 
 export const enum AiSuggestionSource {
   COMPLETION = 'completion',
@@ -519,52 +531,53 @@ export interface ActiveSuggestion {
   source: AiSuggestionSource;
 }
 
-export const aiAutoCompleteSuggestionState = CM.StateField.define<ActiveSuggestion|null>({
-  create: () => null,
-  update(value, tr) {
-    for (const effect of tr.effects) {
-      if (effect.is(setAiAutoCompleteSuggestion)) {
-        if (effect.value) {
-          return effect.value;
+export const aiAutoCompleteSuggestionState: CM.StateField<ActiveSuggestion|null> =
+    CM.StateField.define<ActiveSuggestion|null>({
+      create: () => null,
+      update(value, tr) {
+        for (const effect of tr.effects) {
+          if (effect.is(setAiAutoCompleteSuggestion)) {
+            if (effect.value) {
+              return effect.value;
+            }
+            value?.clearCachedRequest?.();
+            return null;
+          }
         }
-        value?.clearCachedRequest?.();
-        return null;
-      }
-    }
 
-    if (!value) {
-      return value;
-    }
+        if (!value) {
+          return value;
+        }
 
-    // A suggestion from an effect can be stale if the document was changed
-    // between when the request was sent and the response was received.
-    // We check if the position is still valid before trying to map it.
-    if (value.from > tr.state.doc.length) {
-      value.clearCachedRequest?.();
-      return null;
-    }
+        // A suggestion from an effect can be stale if the document was changed
+        // between when the request was sent and the response was received.
+        // We check if the position is still valid before trying to map it.
+        if (value.from > tr.state.doc.length) {
+          value.clearCachedRequest?.();
+          return null;
+        }
 
-    // If deletion occurs, set to null. Otherwise, the mapping might fail if
-    // the position is inside the deleted range.
-    if (tr.docChanged && tr.state.doc.length < tr.startState.doc.length) {
-      value.clearCachedRequest?.();
-      return null;
-    }
+        // If deletion occurs, set to null. Otherwise, the mapping might fail if
+        // the position is inside the deleted range.
+        if (tr.docChanged && tr.state.doc.length < tr.startState.doc.length) {
+          value.clearCachedRequest?.();
+          return null;
+        }
 
-    const from = tr.changes.mapPos(value.from);
-    const {head} = tr.state.selection.main;
+        const from = tr.changes.mapPos(value.from);
+        const {head} = tr.state.selection.main;
 
-    // If a change happened before the position from which suggestion was generated, set to null.
-    if (tr.docChanged && head < from) {
-      value.clearCachedRequest?.();
-      return null;
-    }
+        // If a change happened before the position from which suggestion was generated, set to null.
+        if (tr.docChanged && head < from) {
+          value.clearCachedRequest?.();
+          return null;
+        }
 
-    // Check if what's typed after the AI suggestion is a prefix of the AI suggestion.
-    const typedText = tr.state.doc.sliceString(from, head);
-    return value.text.startsWith(typedText) ? value : null;
-  },
-});
+        // Check if what's typed after the AI suggestion is a prefix of the AI suggestion.
+        const typedText = tr.state.doc.sliceString(from, head);
+        return value.text.startsWith(typedText) ? value : null;
+      },
+    });
 
 export function hasActiveAiSuggestion(state: CM.EditorState): boolean {
   return state.field(aiAutoCompleteSuggestionState) !== null;

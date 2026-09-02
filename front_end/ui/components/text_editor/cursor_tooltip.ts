@@ -5,7 +5,7 @@
 import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.next.js';
 
 export type ArgumentHintsTooltip = [CodeMirror.StateField<CodeMirror.Tooltip|null>, CodeMirror.ViewPlugin<object>];
-export const closeTooltip = CodeMirror.StateEffect.define<null>();
+export const closeTooltip: CodeMirror.StateEffectType<null> = CodeMirror.StateEffect.define<null>();
 
 export function cursorTooltip(
     source: (state: CodeMirror.EditorState, pos: number) => Promise<(() => CodeMirror.TooltipView)|null>,

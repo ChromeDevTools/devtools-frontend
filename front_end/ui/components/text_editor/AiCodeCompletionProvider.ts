@@ -33,14 +33,16 @@ export enum AiCodeCompletionTeaserMode {
   ONLY_SHOW_ON_EMPTY = 'onlyShowOnEmpty',
 }
 
-export const setAiCodeCompletionTeaserMode = CodeMirror.StateEffect.define<AiCodeCompletionTeaserMode>();
+export const setAiCodeCompletionTeaserMode: CodeMirror.StateEffectType<AiCodeCompletionTeaserMode> =
+    CodeMirror.StateEffect.define<AiCodeCompletionTeaserMode>();
 
-export const aiCodeCompletionTeaserModeState = CodeMirror.StateField.define<AiCodeCompletionTeaserMode>({
-  create: () => AiCodeCompletionTeaserMode.OFF,
-  update(value, tr) {
-    return tr.effects.find(effect => effect.is(setAiCodeCompletionTeaserMode))?.value ?? value;
-  },
-});
+export const aiCodeCompletionTeaserModeState: CodeMirror.StateField<AiCodeCompletionTeaserMode> =
+    CodeMirror.StateField.define<AiCodeCompletionTeaserMode>({
+      create: () => AiCodeCompletionTeaserMode.OFF,
+      update(value, tr) {
+        return tr.effects.find(effect => effect.is(setAiCodeCompletionTeaserMode))?.value ?? value;
+      },
+    });
 
 export interface AiCodeCompletionConfig {
   completionContext: {

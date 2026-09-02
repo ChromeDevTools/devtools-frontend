@@ -4,7 +4,7 @@
 
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
 
-export const editorTheme = CM.EditorView.theme({
+export const editorTheme: CM.Extension = CM.EditorView.theme({
   '&.cm-editor': {
     color: 'color: var(--sys-color-on-subtle)',
     cursor: 'auto',

@@ -12,7 +12,7 @@ import * as CodeMirror from '../../../third_party/codemirror.next/codemirror.nex
  * view.dispatch({effects: setHighlightedPosition.of(position)});
  * ```
  */
-export const setHighlightedPosition = CodeMirror.StateEffect.define<number>();
+export const setHighlightedPosition: CodeMirror.StateEffectType<number> = CodeMirror.StateEffect.define<number>();
 
 /**
  * The CodeMirror effect used to clear the highlighted execution position.
@@ -22,7 +22,7 @@ export const setHighlightedPosition = CodeMirror.StateEffect.define<number>();
  * view.dispatch({effects: clearHighlightedPosition.of()});
  * ```
  */
-export const clearHighlightedPosition = CodeMirror.StateEffect.define<void>();
+export const clearHighlightedPosition: CodeMirror.StateEffectType<void> = CodeMirror.StateEffect.define<void>();
 
 /**
  * Constructs a CodeMirror extension that can be used to decorate the current execution

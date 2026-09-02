@@ -31,7 +31,8 @@ export enum AiCodeGenerationTeaserMode {
   DISMISSED = 'dismissed',
 }
 
-export const setAiCodeGenerationTeaserMode = CodeMirror.StateEffect.define<AiCodeGenerationTeaserMode>();
+export const setAiCodeGenerationTeaserMode: CodeMirror.StateEffectType<AiCodeGenerationTeaserMode> =
+    CodeMirror.StateEffect.define<AiCodeGenerationTeaserMode>();
 
 const aiCodeGenerationTeaserModeState = CodeMirror.StateField.define<AiCodeGenerationTeaserMode>({
   create: () => AiCodeGenerationTeaserMode.ACTIVE,

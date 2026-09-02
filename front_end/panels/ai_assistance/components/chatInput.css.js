@@ -169,7 +169,7 @@ export default `/*
     var(--sys-size-4);
 
   &::placeholder {
-    opacity: 60%;
+    color: var(--sys-color-on-surface-subtle);
   }
 
   &:focus-visible {

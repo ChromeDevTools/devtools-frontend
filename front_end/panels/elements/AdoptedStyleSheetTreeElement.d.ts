@@ -14,17 +14,33 @@ export declare class AdoptedStyleSheetTreeElement extends UI.TreeOutline.TreeEle
     highlight(): void;
 }
 export declare class AdoptedStyleSheetContentsTreeElement extends UI.TreeOutline.TreeElement {
-    private readonly styleSheetHeader;
-    private editing;
+    readonly widget: AdoptedStyleSheetContentsWidget;
+    private readonly widgetWrapper;
     constructor(styleSheetHeader: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader);
     onbind(): void;
     onunbind(): void;
     onpopulate(): Promise<void>;
-    onStyleSheetChanged({ data: { styleSheetId } }: Common.EventTarget.EventTargetEvent<SDK.CSSModel.StyleSheetChangedEvent>): void;
     ondblclick(event: Event): boolean;
     onenter(): boolean;
-    private startEditing;
-    private editingCommitted;
-    private editingCancelled;
     isEditing(): boolean;
+}
+export interface AdoptedStyleSheetContentsViewInput {
+    text: string;
+    isEditing: boolean;
+    onDblClick: (event: MouseEvent) => void;
+}
+export type AdoptedStyleSheetContentsView = (input: AdoptedStyleSheetContentsViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_ADOPTED_STYLESHEET_CONTENTS_VIEW: AdoptedStyleSheetContentsView;
+export declare class AdoptedStyleSheetContentsWidget extends UI.Widget.Widget {
+    #private;
+    constructor(element?: HTMLElement, view?: AdoptedStyleSheetContentsView);
+    get text(): string;
+    set styleSheetHeader(header: SDK.CSSStyleSheetHeader.CSSStyleSheetHeader | undefined);
+    get styleSheetHeader(): SDK.CSSStyleSheetHeader.CSSStyleSheetHeader | undefined;
+    wasShown(): void;
+    willHide(): void;
+    fetchContent(): Promise<void>;
+    startEditing(target?: Element): void;
+    isEditing(): boolean;
+    performUpdate(): void;
 }

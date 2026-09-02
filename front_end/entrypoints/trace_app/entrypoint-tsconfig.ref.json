@@ -1,0 +1,64 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/entrypoints/trace_app",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/entrypoints/trace_app/trace_app.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../inspector_main/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../main/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/ai_assistance/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/browser_debugger/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/developer_resources/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/mobile_throttling/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/protocol_monitor/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/sensors/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/settings/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/sources/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../panels/timeline/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/components/perf_ui/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/components/quick_open/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/components/source_frame/meta-tsconfig.ref.json"
+    },
+    {
+      "path": "../main/bundle-tsconfig.ref.json"
+    }
+  ]
+}

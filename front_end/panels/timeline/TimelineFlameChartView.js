@@ -100,6 +100,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
     #eventToRelatedInsightsMap = null;
     #selectedGroupName = null;
     #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
+    #debouncedUpdateSearchResults = Common.Debouncer.debounce(() => this.updateSearchResults(false, false), 100);
     #gameKeyMatches = 0;
     #gameTimeout = setTimeout(() => ({}), 0);
     #overlaysContainer = document.createElement('div');
@@ -937,11 +938,7 @@ export class TimelineFlameChartView extends Common.ObjectWrapper.eventMixin(UI.W
         this.mainFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);
         this.networkDataProvider.setWindowTimes(visibleWindow.min, visibleWindow.max);
         this.networkFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);
-        // Updating search results can be very expensive. Debounce to avoid over-calling it.
-        const debouncedUpdate = Common.Debouncer.debounce(() => {
-            this.updateSearchResults(false, false);
-        }, 100);
-        debouncedUpdate();
+        this.#debouncedUpdateSearchResults();
     }
     getLinkSelectionAnnotation() {
         return this.#linkSelectionAnnotation;

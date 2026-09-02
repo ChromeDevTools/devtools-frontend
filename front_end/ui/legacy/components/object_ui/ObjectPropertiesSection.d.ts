@@ -200,7 +200,7 @@ export declare const OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: ObjectPropertiesSec
 export declare function renderPropertyName(name: string | null, isPrivate?: boolean, title?: string): TemplateResult;
 export declare function formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject, linkify: boolean, includePreview?: boolean): Promise<LitTemplate>;
 export declare function renderPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string, includeNullOrUndefined?: boolean, useCustomPreview?: boolean, valueRef?: (element: Element | undefined) => void): LitTemplate;
-export declare function defaultObjectPresentation(objectOrTree: SDK.RemoteObject.RemoteObject | ObjectTree, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean): LitTemplate;
+export declare function defaultObjectPresentation(objectOrTree: SDK.RemoteObject.RemoteObject | ObjectTree, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean, extraClasses?: Record<string, boolean>): LitTemplate;
 /**
  * Number of initially visible children in an ObjectPropertyTreeElement.
  * Remaining children are shown as soon as requested via a show more properties button.

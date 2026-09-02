@@ -388,41 +388,41 @@ var { ref, live, ifDefined } = Directives;
 var { widget: widget2 } = UI2.Widget;
 var UIStrings2 = {
   /**
-   * @description Text to enable blocking of network requests
+   * @description Text to enable blocking and throttling of network requests
    */
   enableBlockingAndThrottling: "Enable blocking and throttling",
   /**
-   * @description Tooltip text for add button in request blocking tool of the Network panel.
+   * @description Tooltip text for add button in request conditions tool of the Network panel.
    */
   addRule: "Add rule",
   /**
-   * @description Accessible label for the button to add request blocking patterns in the network request blocking tool.
+   * @description Accessible label for the button to add request blocking patterns in the request conditions tool.
    */
   addPatternLabel: "Add network request throttling or blocking pattern",
   /**
-   * @description Text that shows in the network request blocking panel if no pattern has yet been added.
+   * @description Text that shows in the request conditions panel if no pattern has yet been added.
    */
   noPattern: "Nothing throttled or blocked",
   /**
-   * @description Text that shows in the network request blocking panel if no pattern has yet been added.
+   * @description Text that shows in the request conditions panel if no pattern has yet been added.
    * @example {Learn more} PH1
    */
   noThrottlingOrBlockingPattern: `To throttle or block a network request, add a rule here manually or via the Network panel\u2019s context menu. {PH1}`,
   /**
-   * @description Text in request blocking tool of the Network panel.
+   * @description Text in request conditions tool of the Network panel.
    * @example {4} PH1
    */
   dAffected: "{PH1} affected",
   /**
-   * @description Tooltip text for pattern input in request blocking tool of the Network panel.
+   * @description Tooltip text for pattern input in request conditions tool of the Network panel.
    */
   textEditPattern: "Text pattern to block or throttle matching requests; use URL Pattern syntax.",
   /**
-   * @description Error text for empty list widget input in Request Blocking tool
+   * @description Error text for empty list widget input in Request Conditions tool
    */
   patternInputCannotBeEmpty: "Pattern input cannot be empty.",
   /**
-   * @description Error text for duplicate list widget input in Request Blocking tool
+   * @description Error text for duplicate list widget input in Request Conditions tool
    */
   patternAlreadyExists: "Pattern already exists.",
   /**
@@ -476,7 +476,7 @@ var UIStrings2 = {
 };
 var str_2 = i18n3.i18n.registerUIStrings("panels/network/RequestConditionsDrawer.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
-var NETWORK_REQUEST_BLOCKING_EXPLANATION_URL = "https://developer.chrome.com/docs/devtools/network-request-blocking";
+var REQUEST_CONDITIONS_EXPLANATION_URL = "https://developer.chrome.com/docs/devtools/request-conditions";
 var { bindToAction } = UI2.UIUtils;
 var DEFAULT_VIEW = (input, output, target) => {
   render2(
@@ -714,7 +714,7 @@ var AffectedCountWidget = class extends UI2.Widget.Widget {
 };
 function learnMore() {
   return html2`<devtools-link
-        href=${NETWORK_REQUEST_BLOCKING_EXPLANATION_URL}
+        href=${REQUEST_CONDITIONS_EXPLANATION_URL}
         tabindex=0
         class=devtools-link
         .jslogContext=${"learn-more"}>
@@ -3072,6 +3072,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
   }
   createCells(trElement) {
     this.initiatorCell = null;
+    trElement.setAttribute("data-network-request-id", this.requestInternal.requestId());
     trElement.classList.toggle("network-throttled-row", Boolean(this.throttlingConditions()?.urlPattern));
     trElement.classList.toggle("network-warning-row", this.isWarning());
     trElement.classList.toggle("network-error-row", this.isError());
@@ -14384,14 +14385,17 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
   throttlingSelectForTest() {
     return this.throttlingSelect;
   }
-  onWindowChanged(event) {
-    const startTime = Math.max(this.calculator.minimumBoundary(), event.data.startTime / 1e3);
-    const endTime = Math.min(this.calculator.maximumBoundary(), event.data.endTime / 1e3);
+  updateNetworkLogWindow(startTimeMs, endTimeMs) {
+    const startTime = Math.max(this.calculator.minimumBoundary(), startTimeMs / 1e3);
+    const endTime = Math.min(this.calculator.maximumBoundary(), endTimeMs / 1e3);
     if (startTime === this.calculator.minimumBoundary() && endTime === this.calculator.maximumBoundary()) {
       this.networkLogView.setWindow(0, 0);
     } else {
       this.networkLogView.setWindow(startTime, endTime);
     }
+  }
+  onWindowChanged(event) {
+    this.updateNetworkLogWindow(event.data.startTime, event.data.endTime);
   }
   async searchToggleClick() {
     const action2 = UI24.ActionRegistry.ActionRegistry.instance().getAction("network.search");
@@ -14711,6 +14715,7 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
   onFilmFrameSelected(event) {
     const timestamp = event.data;
     this.overviewPane.setWindowTimes(Trace2.Types.Timing.Milli(0), Trace2.Types.Timing.Milli(timestamp));
+    this.updateNetworkLogWindow(0, timestamp);
   }
   onFilmFrameEnter(event) {
     const timestamp = event.data;

@@ -1,14 +1,14 @@
 {
-  "checkJs": true,
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "checkJs": true,
-    "composite": true,
-    "declaration": true,
+    "composite": false,
+    "declaration": false,
     "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
+    "incremental": false,
     "inlineSources": true,
     "lib": [
       "dom",
@@ -20,12 +20,11 @@
       "ESNext.Array"
     ],
     "module": "esnext",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
     "outDir": ".",
     "preserveConstEnums": true,
     "rootDir": "../../../../../../../front_end/ui/components/markdown_view",
@@ -33,9 +32,12 @@
     "sourceMap": true,
     "strict": true,
     "target": "esnext",
-    "tsBuildInfoFile": "markdown_view-tsconfig.json.tsbuildinfo",
-    "typeRoots": [],
-    "types": [],
+    "typeRoots": [
+
+    ],
+    "types": [
+
+    ],
     "useUnknownInCatchVariables": false
   },
   "files": [
@@ -59,12 +61,6 @@
       "path": "../../../third_party/marked/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../buttons/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../text_editor/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../kit/bundle-tsconfig.ref.json"
     },
     {
@@ -75,6 +71,12 @@
     },
     {
       "path": "../../visual_logging/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../buttons/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../text_editor/bundle-tsconfig.ref.json"
     }
   ]
 }

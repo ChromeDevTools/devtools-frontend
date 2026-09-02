@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/recorder/converters",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../front_end/panels/recorder/converters/LighthouseConverter.test.ts",
+    "../../../../../../../front_end/panels/recorder/converters/PuppeteerConverter.test.ts",
+    "../../../../../../../front_end/panels/recorder/converters/PuppeteerReplayConverter.test.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../models/bundle-tsconfig.ref.json"
+    }
+  ]
+}

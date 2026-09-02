@@ -16,7 +16,7 @@ export class RunLighthouseTool {
                 description: 'Reason for running new audits.',
                 nullable: false,
             },
-            category: {
+            categoryId: {
                 type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
                 description: 'Lighthouse category. E.g. "accessibility", "performance".',
                 nullable: false,
@@ -27,13 +27,13 @@ export class RunLighthouseTool {
                 nullable: true,
             },
         },
-        required: ['explanation', 'category'],
+        required: ['explanation', 'categoryId'],
     };
     displayInfoFromArgs(params) {
         return {
-            title: `Running Lighthouse audits: ${params.category} (${params.mode ?? 'snapshot'})`,
+            title: `Running Lighthouse audits: ${params.categoryId} (${params.mode ?? 'snapshot'})`,
             thought: params.explanation,
-            action: `runLighthouse('${params.category}', '${params.mode ?? 'snapshot'}')`,
+            action: `runLighthouse('${params.categoryId}', '${params.mode ?? 'snapshot'}')`,
         };
     }
     async handler(params, context) {
@@ -41,13 +41,13 @@ export class RunLighthouseTool {
         try {
             const report = await context.runLighthouse({
                 mode,
-                categoryIds: [params.category],
+                categoryIds: [params.categoryId],
                 isAIControlled: true,
             });
             if (!report) {
                 return { error: 'Error: Failed to record new audits.' };
             }
-            const audits = new LighthouseFormatter().audits(report, params.category);
+            const audits = new LighthouseFormatter().audits(report, params.categoryId);
             const isSnapshot = mode === 'snapshot';
             return {
                 result: { audits },

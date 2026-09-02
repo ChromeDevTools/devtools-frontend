@@ -11,7 +11,7 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 export class GetDetailedCallTreeTool {
     name = "getDetailedCallTree" /* ToolName.GET_DETAILED_CALL_TREE */;
-    description = 'Returns a detailed call tree for the given main thread event.';
+    description = 'Retrieves a bottom-up call tree and execution breakdown for a specific main thread event by its eventKey.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: 'Arguments for looking up a call tree.',

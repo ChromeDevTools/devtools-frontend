@@ -33,7 +33,7 @@ export default `/*
 }
 
 .settings-container::-webkit-scrollbar-thumb {
-  border-radius: var( --sys-size-3);
+  border-radius: var(--sys-shape-corner-extra-small);
   background-color: var(--sys-color-primary);
 }
 
@@ -42,8 +42,8 @@ export default `/*
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  gap: var( --sys-size-3);
-  padding: var( --sys-size-4);
+  gap: var(--sys-size-3);
+  padding: var(--sys-size-4);
   flex-shrink: 0;
   width: 74px;
 }
@@ -65,7 +65,7 @@ export default `/*
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  flex-basis: var( --sys-size-24);
+  flex-basis: var(--sys-size-24);
   user-select: none;
   color: var(--sys-color-on-surface);
   text-align: center;

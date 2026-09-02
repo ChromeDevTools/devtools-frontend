@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/recorder/models",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../front_end/panels/recorder/models/RecorderSettings.test.ts",
+    "../../../../../../../front_end/panels/recorder/models/RecorderShortcutHelper.test.ts",
+    "../../../../../../../front_end/panels/recorder/models/RecordingPlayer.test.ts",
+    "../../../../../../../front_end/panels/recorder/models/SchemaUtils.test.ts",
+    "../../../../../../../front_end/panels/recorder/models/ScreenshotUtils.test.ts",
+    "../../../../../../../front_end/panels/recorder/models/Section.test.ts",
+    "../../../../../../../front_end/panels/recorder/models/recording-storage.test.ts",
+    "../../../../../../../front_end/panels/recorder/models/screenshot-storage.test.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/host/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../testing/testing-tsconfig.ref.json"
+    }
+  ]
+}

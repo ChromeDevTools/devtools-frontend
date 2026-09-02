@@ -1345,17 +1345,17 @@ export function renderPropertyValue(value, wasThrown, showPreview, linkifier, is
       @mousemove=${isNode ? onNodeMouseMove : nothing}
       @mouseleave=${isNode ? onNodeMouseLeave : nothing}>${content}</span>`;
 }
-export function defaultObjectPresentation(objectOrTree, linkifier, skipProto, readOnly) {
+export function defaultObjectPresentation(objectOrTree, linkifier, skipProto, readOnly, extraClasses) {
     const objectTree = objectOrTree instanceof ObjectTree ? objectOrTree : new ObjectTree(objectOrTree, {
         readOnly: Boolean(readOnly),
         propertiesMode: 1 /* ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
     });
     const object = objectTree.object;
-    const title = html `<span class="source-code"><style>${objectValueStyles}</style>${renderPropertyValue(object, /* wasThrown= */ false, /* showPreview= */ true)}</span>`;
+    const title = html `<span class=${classMap({ 'source-code': true, ...(!object.hasChildren ? extraClasses : undefined) })}><style>${objectValueStyles}</style>${renderPropertyValue(object, /* wasThrown= */ false, /* showPreview= */ true)}</span>`;
     if (!object.hasChildren) {
         return title;
     }
-    return html `${widget(ObjectPropertiesSectionWidget, { objectTree, title, linkifier, skipProto: !!skipProto, showOverflow: !readOnly })}`;
+    return html `<devtools-widget class=${classMap(extraClasses ?? {})} ${widget(ObjectPropertiesSectionWidget, { objectTree, title, linkifier, skipProto: Boolean(skipProto), showOverflow: !readOnly })}></devtools-widget>`;
 }
 /**
  * Number of initially visible children in an ObjectPropertyTreeElement.

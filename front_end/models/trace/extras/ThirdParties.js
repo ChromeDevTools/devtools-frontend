@@ -27,7 +27,7 @@ function collectMainThreadActivity(data) {
     return mainFrameMainThread.entries;
 }
 export function summarizeByThirdParty(data, traceBounds) {
-    const mainThreadEvents = collectMainThreadActivity(data).sort(Helpers.Trace.eventTimeComparator);
+    const mainThreadEvents = collectMainThreadActivity(data);
     const groupingFunction = (event) => {
         const entity = data.Renderer.entityMappings.entityByEvent.get(event);
         return entity?.name ?? '';
@@ -40,7 +40,7 @@ export function summarizeByThirdParty(data, traceBounds) {
  * Used only by Lighthouse.
  */
 export function summarizeByURL(data, traceBounds) {
-    const mainThreadEvents = collectMainThreadActivity(data).sort(Helpers.Trace.eventTimeComparator);
+    const mainThreadEvents = collectMainThreadActivity(data);
     const groupingFunction = (event) => {
         return Handlers.Helpers.getNonResolvedURL(event, data) ?? '';
     };
@@ -98,16 +98,16 @@ function summarizeBottomUpByURL(root, data) {
     }
     return summaries;
 }
+// Use the same filtering as front_end/panels/timeline/TimelineTreeView.ts.
+const exclusiveNameFilter = new TraceFilter.ExclusiveNameFilter([]);
+const visibleEventsFilter = new TraceFilter.VisibleEventsFilter([...Helpers.Trace.VISIBLE_TRACE_EVENT_TYPES.values(), "SyntheticNetworkRequest" /* Types.Events.Name.SYNTHETIC_NETWORK_REQUEST */]);
 function getBottomUpTree(mainThreadEvents, tracebounds, groupingFunction) {
-    // Use the same filtering as front_end/panels/timeline/TimelineTreeView.ts.
-    const visibleEvents = Helpers.Trace.VISIBLE_TRACE_EVENT_TYPES.values().toArray();
-    const filter = new TraceFilter.VisibleEventsFilter(visibleEvents.concat(["SyntheticNetworkRequest" /* Types.Events.Name.SYNTHETIC_NETWORK_REQUEST */]));
     // The bottom up root node handles all the "in Tracebounds" checks we need for the insight.
     const startTime = Helpers.Timing.microToMilli(tracebounds.min);
     const endTime = Helpers.Timing.microToMilli(tracebounds.max);
     return new TraceTree.BottomUpRootNode(mainThreadEvents, {
-        textFilter: new TraceFilter.ExclusiveNameFilter([]),
-        filters: [filter],
+        textFilter: exclusiveNameFilter,
+        filters: [visibleEventsFilter],
         startTime,
         endTime,
         eventGroupIdCallback: groupingFunction,

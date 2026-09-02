@@ -13,7 +13,7 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 export class GetResourceContentTool {
     name = "getResourceContent" /* ToolName.GET_RESOURCE_CONTENT */;
-    description = 'Returns the content of the resource with the given url. Only use this for text resource types.';
+    description = 'Retrieves the content of the resource with the given url. Only use this for text resource types.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: 'Arguments for looking up resource content.',

@@ -72,7 +72,7 @@ var entriesLinkOverlay_css_default = `/*
 // gen/front_end/panels/timeline/overlays/components/EntriesLinkOverlay.js
 var UIStrings = {
   /**
-   * @description Accessible label used to explain to a user that they are viewing an arrow representing a link between two entries.
+   * @description Accessible label for the connector container in the entries link overlay of the Performance panel.
    */
   diagram: "Links between entries"
 };
@@ -601,27 +601,27 @@ var entryLabelOverlay_css_default = `/*
 var { html: html2, Directives: Directives2 } = Lit;
 var UIStrings2 = {
   /**
-   * @description Accessible label used to explain to a user that they are viewing an entry label.
+   * @description Accessible label for the entry label overlay in the Performance panel.
    */
   entryLabel: "Entry label",
   /**
-   * @description Accessible label used to prompt the user to input text into the field.
+   * @description Accessible label prompting the user to enter text in an empty entry label field in the Performance panel.
    */
   inputTextPrompt: "Enter an annotation label",
   /**
-   * @description Text displayed on a button that generates an AI label.
+   * @description Button label for generating an AI-powered entry label in the Performance panel.
    */
   generateLabelButton: "Generate label",
   /**
-   * @description Label used for screenreaders on the FRE dialog
+   * @description Accessible label for the first-run consent dialog for AI annotation suggestions in the Performance panel.
    */
   freDialog: "Get AI-powered annotation suggestions dialog",
   /**
-   * @description Screen-reader text for a tooltip link for navigating to "AI innovations" settings where the user can learn more about auto-annotations.
+   * @description Accessible label for the tooltip link that opens AI settings in the Performance panel.
    */
   learnMoreAriaLabel: "Learn more about auto annotations in settings",
   /**
-   * @description Screen-reader text for a tooltip icon.
+   * @description Tooltip text and accessible label for the information button of the AI entry label feature in the Performance panel.
    */
   moreInfoAriaLabel: "More information about this feature"
 };
@@ -1342,7 +1342,7 @@ var timeRangeOverlay_css_default = `/*
 // gen/front_end/panels/timeline/overlays/components/TimeRangeOverlay.js
 var UIStrings3 = {
   /**
-   * @description Accessible label used to explain to a user that they are viewing an entry label.
+   * @description Accessible label for the time range overlay in the Performance panel.
    */
   timeRange: "Time range"
 };

@@ -378,7 +378,7 @@ class CompletionHint extends CM.WidgetType {
         return span;
     }
 }
-export const showCompletionHint = CM.ViewPlugin.fromClass(class {
+export class CompletionHintPlugin {
     decorations = CM.Decoration.none;
     currentHint = null;
     update(update) {
@@ -417,7 +417,8 @@ export const showCompletionHint = CM.ViewPlugin.fromClass(class {
         }
         return label.slice(partBefore ? partBefore[0].length : 0);
     }
-}, { decorations: p => p.decorations });
+}
+export const showCompletionHint = CM.ViewPlugin.fromClass(CompletionHintPlugin, { decorations: p => p.decorations });
 export function contentIncludingHint(view) {
     const plugin = view.plugin(showCompletionHint);
     let content = view.state.doc.toString();

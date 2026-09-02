@@ -3,18 +3,16 @@ export declare class CustomPreviewSection {
     private readonly sectionElement;
     private readonly object;
     private expanded;
-    private cachedContent;
-    private readonly header;
-    private readonly expandIcon;
+    private cachedContent?;
+    private headerJsonML?;
     constructor(object: SDK.RemoteObject.RemoteObject);
+    private render;
     element(): Element;
     private renderJSONMLTag;
     private renderElement;
     private layoutObjectTag;
-    private appendJsonMLTags;
     private onClick;
     private toggleExpand;
-    private defaultBodyTreeOutline;
     loadBody(): Promise<void>;
 }
 export declare class CustomPreviewComponent {

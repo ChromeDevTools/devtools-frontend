@@ -10,7 +10,7 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 export class GetTraceNetworkSummaryTool {
     name = "getTraceNetworkSummary" /* ToolName.GET_TRACE_NETWORK_SUMMARY */;
-    description = 'Returns a summary of the network requests for the given bounds.';
+    description = 'Retrieves a summary of network requests recorded in the trace within the given time bounds.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: 'Arguments for looking up a network track summary.',

@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/node_text/NodeText.js
+// ../../front_end/ui/components/node_text/NodeText.ts
 var NodeText_exports = {};
 __export(NodeText_exports, {
   NodeText: () => NodeText
@@ -42,7 +42,7 @@ var nodeText_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./nodeText.css")} */`;
 
-// gen/front_end/ui/components/node_text/NodeText.js
+// ../../front_end/ui/components/node_text/NodeText.ts
 var { render, html } = Lit;
 var NodeText = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });

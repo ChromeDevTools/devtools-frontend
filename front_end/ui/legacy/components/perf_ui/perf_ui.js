@@ -4781,28 +4781,32 @@ var ChartViewport = class extends UI4.Widget.VBox {
     super.willHide();
     if (this.cancelWindowTimesAnimation) {
       this.cancelWindowTimesAnimation();
+      this.cancelWindowTimesAnimation = null;
       this.setWindowTimes(this.targetLeftTime, this.targetRightTime, false);
     }
   }
   setWindowTimes(startTime, endTime, animate) {
-    if (startTime === this.targetLeftTime && endTime === this.targetRightTime) {
+    if (animate && this.cancelWindowTimesAnimation && this.targetLeftTime === startTime && this.targetRightTime === endTime) {
       return;
     }
-    if (!animate || this.visibleLeftTime === 0 || this.visibleRightTime === Infinity || startTime === 0 && endTime === Infinity || startTime === Infinity && endTime === Infinity) {
-      this.targetLeftTime = startTime;
-      this.targetRightTime = endTime;
+    if (!this.cancelWindowTimesAnimation && this.visibleLeftTime === startTime && this.visibleRightTime === endTime) {
+      return;
+    }
+    if (this.cancelWindowTimesAnimation) {
+      this.cancelWindowTimesAnimation();
+      this.cancelWindowTimesAnimation = null;
+    }
+    this.targetLeftTime = startTime;
+    this.targetRightTime = endTime;
+    const hasInitialWindow = Number.isFinite(this.visibleLeftTime) && Number.isFinite(this.visibleRightTime) && this.visibleRightTime > this.visibleLeftTime;
+    const isFiniteTarget = Number.isFinite(startTime) && Number.isFinite(endTime) && endTime > startTime;
+    const canAnimate = Boolean(animate) && hasInitialWindow && isFiniteTarget;
+    if (!canAnimate) {
       this.visibleLeftTime = startTime;
       this.visibleRightTime = endTime;
       this.scheduleUpdate();
       return;
     }
-    if (this.cancelWindowTimesAnimation) {
-      this.cancelWindowTimesAnimation();
-      this.visibleLeftTime = this.targetLeftTime;
-      this.visibleRightTime = this.targetRightTime;
-    }
-    this.targetLeftTime = startTime;
-    this.targetRightTime = endTime;
     this.cancelWindowTimesAnimation = UI4.UIUtils.animateFunction(this.element.window(), animateWindowTimes.bind(this), [{ from: this.visibleLeftTime, to: startTime }, { from: this.visibleRightTime, to: endTime }], 100, () => {
       this.cancelWindowTimesAnimation = null;
     });
@@ -6856,10 +6860,6 @@ var TimelineOverviewPane = class extends Common5.ObjectWrapper.eventMixin(UI7.Wi
     this.windowStartTime = startTime;
     this.windowEndTime = endTime;
     this.updateWindow();
-    this.dispatchEventToListeners("OverviewPaneWindowChanged", {
-      startTime: Trace4.Types.Timing.Milli(startTime),
-      endTime: Trace4.Types.Timing.Milli(endTime)
-    });
   }
   updateWindow() {
     if (!this.overviewControls.length) {

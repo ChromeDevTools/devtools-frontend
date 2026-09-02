@@ -37,13 +37,13 @@
       "path": "../../../panels/network/forward/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../kit/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../lit/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../visual_logging/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../../kit/bundle-tsconfig.ref.json"
     },
     {
       "path": "../render_coordinator/bundle-tsconfig.ref.json"

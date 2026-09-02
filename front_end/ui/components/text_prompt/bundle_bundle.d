@@ -1,0 +1,1 @@
+gen/front_end/ui/components/text_prompt/text_prompt.js: gen/front_end/ui/components/text_prompt/textPrompt.css.js ../../front_end/ui/components/text_prompt/TextPrompt.ts ../../front_end/ui/components/text_prompt/text_prompt.ts

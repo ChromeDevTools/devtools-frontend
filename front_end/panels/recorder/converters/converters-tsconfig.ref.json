@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/recorder/converters",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../front_end/panels/recorder/converters/Converter.ts",
+    "../../../../../../../front_end/panels/recorder/converters/ExtensionConverter.ts",
+    "../../../../../../../front_end/panels/recorder/converters/JSONConverter.ts",
+    "../../../../../../../front_end/panels/recorder/converters/LighthouseConverter.ts",
+    "../../../../../../../front_end/panels/recorder/converters/PuppeteerConverter.ts",
+    "../../../../../../../front_end/panels/recorder/converters/PuppeteerFirefoxConverter.ts",
+    "../../../../../../../front_end/panels/recorder/converters/PuppeteerReplayConverter.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../third_party/puppeteer-replay/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../extensions/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../models/bundle-tsconfig.ref.json"
+    }
+  ]
+}

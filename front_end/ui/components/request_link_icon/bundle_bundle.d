@@ -1,0 +1,1 @@
+gen/front_end/ui/components/request_link_icon/request_link_icon.js: gen/front_end/ui/components/request_link_icon/requestLinkIcon.css.js ../../front_end/ui/components/request_link_icon/RequestLinkIcon.ts ../../front_end/ui/components/request_link_icon/request_link_icon.ts

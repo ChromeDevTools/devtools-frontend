@@ -57,7 +57,7 @@ export interface TooltipProperties {
  */
 export declare class Tooltip extends HTMLElement {
     #private;
-    static readonly observedAttributes: string[];
+    static readonly observedAttributes: readonly ['id', 'variant', 'jslogcontext', 'trigger'];
     static lastOpenedTooltipId: string | null;
     get openedViaHotkey(): boolean;
     get open(): boolean;

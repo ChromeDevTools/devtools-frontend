@@ -10,7 +10,7 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 export class GetFunctionCodeTool {
     name = "getFunctionCode" /* ToolName.GET_FUNCTION_CODE */;
-    description = 'Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.';
+    description = 'Retrieves the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: 'Arguments for looking up function code.',

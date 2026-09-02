@@ -3766,7 +3766,7 @@ var EvaluateAction = class _EvaluateAction {
       returnByValue: false,
       allowUnsafeEvalBlockedByCSP: false,
       throwOnSideEffect,
-      userGesture: true,
+      userGesture: false,
       awaitPromise: true,
       arguments: args.map((remoteObject) => {
         return { objectId: remoteObject.objectId };
@@ -4368,43 +4368,19 @@ var ExecuteJavaScriptTool = class _ExecuteJavaScriptTool {
 # Instructions
 
 * To return data, define a top-level \`data\` variable and populate it with data you want to get. Only JSON-serializable objects can be assigned to \`data\`.
-* If you modify styles on an element, ALWAYS call the pre-defined global \`async setElementStyles(el: Element, styles: object)\` function. This function is an internal mechanism for you and should never be presented as a command/advice to the user.
-* **CRITICAL** Only get styles that might be relevant to the user request.
+* $0 refers to the currently selected DOM node (or document body if none selected).
 * **CRITICAL** Never assume a selector for the elements unless you verified your knowledge.
-* **CRITICAL** Consider that \`data\` variable from the previous function calls are not available in a new function call.
+* **CRITICAL** Variables from previous function calls are not available in subsequent calls.
 * **CRITICAL** Keep code concise (max 40 lines and 2,500 characters). Split complex logic into multiple steps.
 * **CRITICAL** Network requests (e.g., fetch, XMLHttpRequest) are disabled and cannot be made.
 
-For example, the code to change element styles:
-
-\`\`\`
-await setElementStyles($0, {
-  color: 'blue',
-});
-\`\`\`
-
-For example, the code to get overlapping elements:
+For example, to query DOM elements:
 
 \`\`\`
 const data = {
-  overlappingElements: Array.from(document.querySelectorAll('*'))
-    .filter(el => {
-      const rect = el.getBoundingClientRect();
-      const popupRect = $0.getBoundingClientRect();
-      return (
-        el !== $0 &&
-        rect.left < popupRect.right &&
-        rect.right > popupRect.left &&
-        rect.top < popupRect.bottom &&
-        rect.bottom > popupRect.top
-      );
-    })
-    .map(el => ({
-      tagName: el.tagName,
-      id: el.id,
-      className: el.className,
-      zIndex: window.getComputedStyle(el)['z-index']
-    }))
+  title: document.title,
+  elementText: $0?.textContent?.trim(),
+  childCount: $0?.children.length,
 };
 \`\`\`
 `
@@ -5085,7 +5061,7 @@ var UIStringsNotTranslate = {
 var lockedString3 = i18n6.i18n.lockedString;
 var GetDetailedCallTreeTool = class {
   name = "getDetailedCallTree" /* GET_DETAILED_CALL_TREE */;
-  description = "Returns a detailed call tree for the given main thread event.";
+  description = "Retrieves a bottom-up call tree and execution breakdown for a specific main thread event by its eventKey.";
   parameters = {
     type: Host5.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for looking up a call tree.",
@@ -6043,7 +6019,7 @@ ${await this.describe()}`;
 // ../../front_end/models/ai_assistance/tools/GetElementAccessibilityDetails.ts
 var GetElementAccessibilityDetailsTool = class {
   name = "getElementAccessibilityDetails" /* GET_ELEMENT_ACCESSIBILITY_DETAILS */;
-  description = "Get detailed accessibility information for an element on the inspected page by its backend node ID.";
+  description = "Retrieves detailed accessibility properties (computed role, accessible name, name source, ARIA attributes, ignored state) and a DOM tree snapshot for an element by backend node ID.";
   parameters = {
     type: Host7.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for getting element accessibility details.",
@@ -6146,7 +6122,7 @@ var UIStringsNotTranslate3 = {
 var lockedString5 = i18n12.i18n.lockedString;
 var GetFunctionCodeTool = class {
   name = "getFunctionCode" /* GET_FUNCTION_CODE */;
-  description = "Returns the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.";
+  description = "Retrieves the code for a function defined at the given location. The result is annotated with the runtime performance of each line of code.";
   parameters = {
     type: Host8.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for looking up function code.",
@@ -8705,7 +8681,7 @@ async function getNetworkRequestImageData(target, lcpRequest, networkLog = Logs2
 }
 var GetInsightDetailsTool = class {
   name = "getInsightDetails" /* GET_INSIGHT_DETAILS */;
-  description = "Returns detailed information about a specific insight of an insight set. Use this before commenting on any specific issue to get more information.";
+  description = "Retrieves detailed metrics, subpart timing breakdowns, related DOM elements, and diagnostic data for a performance insight (e.g., 'LCPBreakdown', 'LCPDiscovery', 'RenderBlocking', 'CLSCulprits', 'INPBreakdown', 'ThirdParties'). Use this before commenting on any specific performance issue.";
   parameters = {
     type: Host9.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for getting insight details.",
@@ -8844,7 +8820,7 @@ __export(GetLighthouseAudits_exports, {
 import * as Host10 from "../../core/host/host.js";
 var GetLighthouseAuditsTool = class {
   name = "getLighthouseAudits" /* GET_LIGHTHOUSE_AUDITS */;
-  description = "Returns the audits for a specific Lighthouse category.";
+  description = "Retrieves audit results and diagnostic details from the active Lighthouse report for a specific category (e.g., 'accessibility').";
   parameters = {
     type: Host10.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for retrieving Lighthouse category audits.",
@@ -8994,7 +8970,7 @@ var GetNetworkRequestDetailsTool = class {
     properties: {
       id: {
         type: Host11.AidaClient.ParametersTypes.STRING,
-        description: "The id of the network request to inspect.",
+        description: "The unique requestId obtained from listNetworkRequests.",
         nullable: false
       }
     },
@@ -9061,7 +9037,7 @@ var UIStringsNotTranslate6 = {
 var lockedString9 = i18n20.i18n.lockedString;
 var GetResourceContentTool = class {
   name = "getResourceContent" /* GET_RESOURCE_CONTENT */;
-  description = "Returns the content of the resource with the given url. Only use this for text resource types.";
+  description = "Retrieves the content of the resource with the given url. Only use this for text resource types.";
   parameters = {
     type: Host12.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for looking up resource content.",
@@ -9241,7 +9217,7 @@ var UIStringsNotTranslate7 = {
 var lockedString10 = i18n22.i18n.lockedString;
 var ListSourcesTool = class _ListSourcesTool {
   name = "listSources" /* LIST_SOURCES */;
-  description = "Lists all source files in the workspace with their name and a unique ID.";
+  description = "Lists deployed and authored source files in the workspace (including source-mapped files) with their display name and unique numeric ID.";
   static lastSourceId = 0;
   static uiSourceCodeId = /* @__PURE__ */ new WeakMap();
   static reset() {
@@ -9311,7 +9287,7 @@ var UIStringsNotTranslate8 = {
 var lockedString11 = i18n24.i18n.lockedString;
 var GetSourceContentTool = class {
   name = "getSourceContent" /* GET_SOURCE_CONTENT */;
-  description = "Gets the content and metadata of a source file by its ID.";
+  description = "Retrieves the formatted content and metadata of a source file by its numeric ID obtained from listSources.";
   parameters = {
     type: Host14.AidaClient.ParametersTypes.OBJECT,
     description: "",
@@ -9373,7 +9349,7 @@ import * as SDK12 from "../../core/sdk/sdk.js";
 var lockedString12 = i18n26.i18n.lockedString;
 var GetStorageBreakdownTool = class {
   name = "getStorageBreakdown" /* GET_STORAGE_BREAKDOWN */;
-  description = "Retrieves a breakdown of active storage usage per storage type for the top-level page.";
+  description = "Retrieves total storage usage and quota breakdown across all storage types (IndexedDB, CacheStorage, LocalStorage, SessionStorage, cookies) for the top-level page origin.";
   parameters = {
     type: Host15.AidaClient.ParametersTypes.OBJECT,
     description: "",
@@ -9596,7 +9572,7 @@ import * as Host17 from "../../core/host/host.js";
 import * as SDK14 from "../../core/sdk/sdk.js";
 var GetStylesTool = class {
   name = "getStyles" /* GET_STYLES */;
-  description = `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
+  description = `Retrieves computed and authored CSS styles for one or more elements by their backend node IDs (uids).
 
 **CRITICAL** An element uid is a number, not a selector.
 **CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.
@@ -9711,7 +9687,7 @@ var UIStringsNotTranslate9 = {
 var lockedString14 = i18n30.i18n.lockedString;
 var GetTraceEventByKeyTool = class {
   name = "getTraceEventByKey" /* GET_TRACE_EVENT_BY_KEY */;
-  description = "Get details for a specific trace event by its event key.";
+  description = "Retrieves details for a specific trace event by its event key.";
   parameters = {
     type: Host18.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for looking up a trace event.",
@@ -9768,7 +9744,7 @@ var UIStringsNotTranslate10 = {
 var lockedString15 = i18n32.i18n.lockedString;
 var GetTraceMainThreadSummaryTool = class {
   name = "getTraceMainThreadSummary" /* GET_TRACE_MAIN_THREAD_SUMMARY */;
-  description = "Returns a focused, detailed summary of the main thread for a predefined labeled period.";
+  description = "Retrieves a focused, bottom-up summary of main thread activity for a predefined labeled period (e.g. 'nav-to-lcp', 'lcp-ttfb', 'lcp-render-delay', 'trace-bounds', or insight names).";
   parameters = {
     type: Host19.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for looking up a main thread summary.",
@@ -9776,7 +9752,7 @@ var GetTraceMainThreadSummaryTool = class {
     properties: {
       label: {
         type: Host19.AidaClient.ParametersTypes.STRING,
-        description: "The label of the period to investigate (e.g., 'LCPBreakdown', 'CLSCulprits', 'nav-to-lcp').",
+        description: "The label of the period to investigate (e.g., 'LCPBreakdown', 'CLSCulprits', 'nav-to-lcp', 'lcp-render-delay', 'trace-bounds').",
         nullable: false
       }
     },
@@ -9841,7 +9817,7 @@ var UIStringsNotTranslate11 = {
 var lockedString16 = i18n34.i18n.lockedString;
 var GetTraceNetworkSummaryTool = class {
   name = "getTraceNetworkSummary" /* GET_TRACE_NETWORK_SUMMARY */;
-  description = "Returns a summary of the network requests for the given bounds.";
+  description = "Retrieves a summary of network requests recorded in the trace within the given time bounds.";
   parameters = {
     type: Host20.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for looking up a network track summary.",
@@ -9972,7 +9948,7 @@ var UIStringsNotTranslate12 = {
 var lockedString18 = i18n38.i18n.lockedString;
 var ListNetworkRequestsTool = class {
   name = "listNetworkRequests" /* LIST_NETWORK_REQUESTS */;
-  description = "Gives a list of network requests including URL, status code, and duration.";
+  description = "Lists recorded network requests for the active origin, including request ID, URL, HTTP status code, duration, and transfer size.";
   #networkLog;
   constructor(networkLog) {
     this.#networkLog = networkLog;
@@ -10021,10 +9997,19 @@ var ListNetworkRequestsTool = class {
       requestsToShow.push(request);
     }
     if (requests.length === 0) {
+      if (hasCrossOriginRequest) {
+        return {
+          error: `No requests showing with origin ${origin}. Tell the user to start a new chat`
+        };
+      }
       return {
-        // If there were requests but they were filtered out due to the origin lock,
-        // we ask the user to start a new chat so they can select a request from the other origin.
-        error: hasCrossOriginRequest ? `No requests showing with origin ${origin}. Tell the user to start a new chat` : "No requests recorded by DevTools"
+        result: JSON.stringify([]),
+        widgets: [{
+          name: "NETWORK_REQUESTS_LIST",
+          data: {
+            requests: []
+          }
+        }]
       };
     }
     return {
@@ -10051,7 +10036,7 @@ import * as SDK16 from "../../core/sdk/sdk.js";
 var lockedString19 = i18n40.i18n.lockedString;
 var ListPageOriginsTool = class {
   name = "listPageOrigins" /* LIST_PAGE_ORIGINS */;
-  description = "Lists all active, non-empty frame origins loaded by the page. Use this first when generic category context is active to discover all page origins, then pass them to listCookies or listStorageKeys, unless the user's explicit request hints at focusing only on the primary page.";
+  description = "Lists all active, non-empty frame origins loaded by the page. Call this first to discover all page origins before calling listCookies or listStorageKeys, unless the user's explicit request focuses only on the primary page.";
   parameters = {
     type: Host23.AidaClient.ParametersTypes.OBJECT,
     description: "",
@@ -10771,7 +10756,7 @@ var UIStringsNotTranslate13 = {
 var lockedString21 = i18n44.i18n.lockedString;
 var RecordPerformanceTraceTool = class {
   name = "recordPerformanceTrace" /* RECORD_PERFORMANCE_TRACE */;
-  description = "Records a new performance trace to measure, analyze, and debug page performance.";
+  description = "Reloads the page and records a new performance trace to measure, analyze, and debug page performance.";
   parameters = {
     type: Host25.AidaClient.ParametersTypes.OBJECT,
     description: "Parameters for recording a performance trace.",
@@ -10811,7 +10796,7 @@ import * as Host26 from "../../core/host/host.js";
 import * as SDK19 from "../../core/sdk/sdk.js";
 var ResolveDevtoolsNodePathTool = class {
   name = "resolveDevtoolsNodePath" /* RESOLVE_DEVTOOLS_NODE_PATH */;
-  description = "Resolves a DevTools node path to a backend node ID.";
+  description = "Resolves a DevTools node path (e.g. from a Lighthouse audit snippet) to an element backend node ID for further DOM, style, or accessibility inspection.";
   parameters = {
     type: Host26.AidaClient.ParametersTypes.OBJECT,
     description: "Arguments for resolving a DevTools node path to a backend node ID.",
@@ -10824,7 +10809,7 @@ var ResolveDevtoolsNodePathTool = class {
       },
       path: {
         type: Host26.AidaClient.ParametersTypes.STRING,
-        description: "DevTools node path string.",
+        description: 'DevTools node path string (e.g. "1,HTML,1,BODY,2,DIV").',
         nullable: false
       }
     },
@@ -10895,7 +10880,7 @@ var RunLighthouseTool = class {
         description: "Reason for running new audits.",
         nullable: false
       },
-      category: {
+      categoryId: {
         type: Host27.AidaClient.ParametersTypes.STRING,
         description: 'Lighthouse category. E.g. "accessibility", "performance".',
         nullable: false
@@ -10906,13 +10891,13 @@ var RunLighthouseTool = class {
         nullable: true
       }
     },
-    required: ["explanation", "category"]
+    required: ["explanation", "categoryId"]
   };
   displayInfoFromArgs(params) {
     return {
-      title: `Running Lighthouse audits: ${params.category} (${params.mode ?? "snapshot"})`,
+      title: `Running Lighthouse audits: ${params.categoryId} (${params.mode ?? "snapshot"})`,
       thought: params.explanation,
-      action: `runLighthouse('${params.category}', '${params.mode ?? "snapshot"}')`
+      action: `runLighthouse('${params.categoryId}', '${params.mode ?? "snapshot"}')`
     };
   }
   async handler(params, context) {
@@ -10920,13 +10905,13 @@ var RunLighthouseTool = class {
     try {
       const report = await context.runLighthouse({
         mode,
-        categoryIds: [params.category],
+        categoryIds: [params.categoryId],
         isAIControlled: true
       });
       if (!report) {
         return { error: "Error: Failed to record new audits." };
       }
-      const audits = new LighthouseFormatter().audits(report, params.category);
+      const audits = new LighthouseFormatter().audits(report, params.categoryId);
       const isSnapshot = mode === "snapshot";
       return {
         result: { audits },
@@ -14151,7 +14136,7 @@ __export(SkillRegistry_exports, {
 // gen/front_end/models/ai_assistance/skills/accessibility.skill.js
 var skill = {
   "name": "accessibility",
-  "description": "Accessibility audits and report querying.",
+  "description": "Accessibility audits, ARIA properties, accessible tree inspection, color contrast, and screen reader semantics.",
   "allowedTools": [
     "getLighthouseAudits",
     "resolveDevtoolsNodePath",
@@ -14160,7 +14145,7 @@ var skill = {
     "runLighthouse",
     "executeJavaScript"
   ],
-  "instructions": 'You are an expert accessibility debugging assistant.\nUse getLighthouseAudits to query details from the active report.\n\n* ALWAYS use resolveDevtoolsNodePath to resolve failing element paths to backend node IDs.\n* Once resolved, use getStyles on the backend node ID to inspect layout and styling properties.\n* Use getElementAccessibilityDetails to query detailed accessibility properties (ARIA properties, role, name, focus state) for a resolved element backend node ID.\n* If the user explicitly specifies a Lighthouse mode (e.g. "snapshot", "timespan", or "navigation"), ALWAYS honor the requested mode.\n* When running an initial audit (and no specific mode was requested), use runLighthouse with mode "navigation" for comprehensive page load coverage.\n* When re-auditing after in-page DOM/CSS modifications or fixes, use mode "snapshot" to evaluate live page state without reloading (noting that fewer audits run in snapshot mode).\n* Use mode "timespan" for measuring user interaction periods.\n* Use executeJavaScript to run layout/interaction scripts to verify fixes or dynamic accessibility behaviors.'
+  "instructions": 'You are an expert accessibility debugging assistant.\n\n# Tools & Workflow\n\n1. **Direct Element Accessibility Inspection (`getElementAccessibilityDetails`)**:\n   - For inspecting an element, ALWAYS call `getElementAccessibilityDetails` on its backend node ID.\n   - It retrieves the computed role, accessible name, name source, ARIA attributes, ignored state, and accessibility properties directly from the accessibility tree.\n   - Use `getStyles` on the backend node ID to inspect layout, color contrast, or font properties.\n\n2. **Lighthouse Accessibility Audits (`getLighthouseAudits` & `runLighthouse`)**:\n   - If an active Lighthouse report context exists, query it via `getLighthouseAudits` with `categoryId: \'accessibility\'`.\n   - If no active report exists or new audits are needed, use `runLighthouse` with `categoryId: \'accessibility\'`:\n     - Use `"navigation"` mode for full page-load audits.\n     - Use `"snapshot"` mode to re-evaluate live in-page DOM/CSS modifications without reloading.\n     - Use `"timespan"` mode for user interaction flows.\n     - Always honor explicit mode requests from the user.\n   - When an audit references failing elements by DevTools node path (e.g. `"1,HTML,1,BODY,2,BUTTON"`), use `resolveDevtoolsNodePath` to resolve the path to a `backendNodeId`, then call `getElementAccessibilityDetails` or `getStyles`.\n\n3. **Dynamic Interaction Verification (`executeJavaScript`)**:\n   - Use `executeJavaScript` only to trigger keyboard events, dispatch focus changes, or simulate user interactions when testing dynamic accessibility behaviors.'
 };
 
 // gen/front_end/models/ai_assistance/skills/network.skill.js
@@ -14171,13 +14156,13 @@ var skill2 = {
     "listNetworkRequests",
     "getNetworkRequestDetails"
   ],
-  "instructions": "You are the most advanced network request debugging assistant integrated into Chrome DevTools.\nProvide a comprehensive analysis of network requests, focusing on areas crucial for a software engineer. Your analysis should include:\n* Briefly explain the purpose of the request based on the URL, method, and any relevant headers or payload.\n* Analyze timing information to identify potential bottlenecks or areas for optimization.\n* Highlight potential issues indicated by the status code.\n\n# Considerations\n* If the response payload or request payload contains sensitive data, redact or generalize it in your analysis to ensure privacy.\n* Tailor your explanations and suggestions to the specific context of the request and the technologies involved (if discernible from the provided details)."
+  "instructions": "You are an expert network request debugging assistant.\n\n# Tools & Workflow\n\n1. **Discover Requests (`listNetworkRequests`)**:\n   - Call `listNetworkRequests` to discover recorded network requests matching the active origin.\n   - Inspect the returned list for URLs, status codes, durations, transfer sizes, and unique request `id` values.\n\n2. **Inspect Request Details (`getNetworkRequestDetails`)**:\n   - Call `getNetworkRequestDetails` with the specific request `id` to obtain full headers, timing phases (DNS, initial connection, SSL, TTFB, content download), status text, and response body.\n\n# Considerations\n\n* **Privacy**: If the request or response payload contains sensitive personal data, authorization tokens, or API secrets, redact or generalize it in your response.\n* **Origin Lock**: Only requests belonging to the conversation's established origin can be inspected."
 };
 
 // gen/front_end/models/ai_assistance/skills/performance.skill.js
 var skill3 = {
   "name": "performance",
-  "description": "Web performance analysis, trace inspection, and trace recording.",
+  "description": "Web performance analysis, Core Web Vitals (LCP, INP, CLS), trace inspection, and trace recording.",
   "allowedTools": [
     "recordPerformanceTrace",
     "getTraceEventByKey",
@@ -14189,7 +14174,7 @@ var skill3 = {
     "getResourceContent",
     "getInsightDetails"
   ],
-  "instructions": "You are an expert web performance assistant integrated into Chrome DevTools.\nYour primary goal is to provide actionable advice to web developers about their web page by using the Chrome Performance Panel and analyzing a trace. You may need to diagnose problems yourself, or you may be given direction for what to focus on by the user.\n\nYou will be provided an initial summary of a trace: metrics, critical network requests, bottom-up main thread activity, and a brief overview of available insights.\n\n# Critical Investigation Rules\n\n* **Mandatory Insight Lookup**: When the user asks about performance insights, LCP/INP/CLS, or performance bottlenecks, you MUST NOT answer using only the initial high-level summary. Always call `getInsightDetails` with the relevant `insightSetId` and `insightName` (e.g., `LCPBreakdown`, `LCPDiscovery`, `RenderBlocking`, `CLSCulprits`, `INPBreakdown`, `ThirdParties`) to obtain full diagnostics, subpart timing breakdowns, and candidate elements BEFORE commenting on any specific issue.\n* **No Shortcutting**: Even if the initial facts contain specific metric numbers, insight descriptions, or function names, you are NOT allowed to reply using only that initial summary. You MUST call relevant functions (`getInsightDetails`, `getTraceMainThreadSummary`, `getDetailedCallTree`, `getTraceEventByKey`) to thoroughly inspect and verify the data before providing recommendations.\n* **Investigating LCP**: When asked about LCP or contributing factors to page load, always call `getInsightDetails` for both `LCPBreakdown` and `LCPDiscovery` to examine subparts (TTFB, load delay, load duration, render delay) and inspect the candidate DOM element.\n* **Investigating Main Thread Activity**: You MUST call `getTraceMainThreadSummary` with specific section labels (e.g. `nav-to-lcp`, `lcp-ttfb`, `lcp-render-delay`, `trace-bounds`, or insight names) to uncover root causes on the main thread before suggesting solutions. Look for aggregated cost across small frequent tasks, not just single long tasks.\n* **Investigating Long Tasks and Code**: Use `getDetailedCallTree` with an `eventKey` to retrieve bottom-up execution trees for expensive main thread tasks, and use `getFunctionCode` or `getResourceContent` with script URLs to inspect the source code and identify root causes.\n* **Revealing Events**: If the user asks to see, locate, or show a specific event in the UI, use `selectTraceEventByKey` to reveal and select it in the Flamechart.\n* **Recording Traces**: Use `recordPerformanceTrace` when requested by the user or when a fresh live measurement is required.\n\n# Guidelines & Response Format\n\n- Base your analysis and advice solely on the empirical data retrieved through function calls. Never guess or present options without verifying them first.\n- Structure your response using clear markdown headings and concise bullet points.\n- Ensure all time units in your response are in milliseconds (ms), rounded to the nearest whole number.\n- Never output raw microsecond bounds (e.g., `{min: ...}`) or raw `eventKey` strings (e.g., `eventKey: r-123`) in running text.\n- Be direct and to the point. Focus on delivering actionable advice efficiently."
+  "instructions": "You are an expert web performance assistant integrated into Chrome DevTools.\nYour goal is to provide actionable advice about web page performance by analyzing a trace.\n\n# Investigation Workflow\n\n1. **Insight Inspection (`getInsightDetails`)**:\n   - When asked about performance bottlenecks or Core Web Vitals (LCP, INP, CLS), never reply using only the initial summary.\n   - Always call `getInsightDetails` with the relevant `insightSetId` and `insightName` (e.g. `LCPBreakdown`, `LCPDiscovery`, `RenderBlocking`, `CLSCulprits`, `INPBreakdown`, `ThirdParties`) to obtain full diagnostics, subpart timing breakdowns, and candidate elements.\n   - For LCP investigations, inspect both `LCPBreakdown` and `LCPDiscovery` (TTFB, load delay, load duration, render delay).\n\n2. **Main Thread & Network Inspection (`getTraceMainThreadSummary` & `getTraceNetworkSummary`)**:\n   - Call `getTraceMainThreadSummary` with specific period labels (e.g. `nav-to-lcp`, `lcp-ttfb`, `lcp-render-delay`, `trace-bounds`, or insight names) to uncover main thread bottlenecks. Look for aggregated cost across small frequent tasks, not just single long tasks.\n   - Use `getTraceNetworkSummary` with time bounds to inspect network requests during specific phases.\n\n3. **Call Tree, Event & Source Inspection**:\n   - Use `getDetailedCallTree` to retrieve bottom-up execution trees for expensive main thread tasks.\n   - Use `getTraceEventByKey` to inspect timing and payload data for individual events.\n   - Use `getFunctionCode` or `getResourceContent` to inspect the source code and identify root causes.\n\n4. **UI Selection & Trace Recording**:\n   - Use `selectTraceEventByKey` to reveal and select an event in the Performance Flamechart if requested.\n   - Use `recordPerformanceTrace` when the user requests a fresh live trace measurement.\n\n# Considerations\n\n- Base all advice on empirical data retrieved through function calls. Never guess.\n- Ensure all time units in your response are in milliseconds (ms), rounded to the nearest whole number.\n- Never output raw microsecond bounds (e.g., `{min: ...}`) or raw `eventKey` strings in running text."
 };
 
 // gen/front_end/models/ai_assistance/skills/sources.skill.js
@@ -14200,13 +14185,13 @@ var skill4 = {
     "listSources",
     "getSourceContent"
   ],
-  "instructions": "You are the most advanced source code analysis and debugging assistant integrated into Chrome DevTools.\nProvide a comprehensive analysis of source files, focusing on areas crucial for a software engineer. Your analysis should include:\n* Briefly explain the purpose and architecture of the file or script.\n* Analyze code blocks to identify potential bugs, logic issues, or areas for optimization.\n* Walk through execution flow if requested, pointing to key lines or functions.\n\n# Considerations\n* Never leak sensitive user data or API keys found in source code files. Redact or generalize them in your analysis.\n* Provide clean code snippets and direct line references where helpful."
+  "instructions": "You are an expert source code analysis and debugging assistant.\n\n# Tools & Workflow\n\n1. **Discover Files (`listSources`)**:\n   - Call `listSources` to retrieve all deployed and authored source files (including source-mapped files) in the workspace matching the active origin.\n   - Inspect the returned list for file names and unique numeric `id` values.\n\n2. **Inspect File Content (`getSourceContent`)**:\n   - Call `getSourceContent` with the numeric `id` to retrieve the full, line-numbered source code.\n\n# Considerations\n\n* Provide clean code snippets with direct line references where helpful.\n* Redact sensitive personal data, secrets, or API keys found in source files."
 };
 
 // gen/front_end/models/ai_assistance/skills/storage.skill.js
 var skill5 = {
   "name": "storage",
-  "description": "inspect, understand, and audit the state stored in browser storage (LocalStorage, SessionStorage) and cookies.",
+  "description": "Inspect, understand, and audit the state stored in browser storage (LocalStorage, SessionStorage) and cookies.",
   "allowedTools": [
     "listPageOrigins",
     "listStorageKeys",
@@ -14215,7 +14200,7 @@ var skill5 = {
     "getCookieValues",
     "getStorageBreakdown"
   ],
-  "instructions": 'You are a Senior Software Engineer specializing in state audit and storage analysis within Chrome DevTools. Your mission is to help developers debug storage-related issues faster by analyzing the evidence in LocalStorage, SessionStorage, and cookies.\n\nYou have access to the site\'s storage using tools.\n\n# Goals\n\n1.  **Explain Purpose**: Identify what specific storage entries or cookies are for.\n2.  **Understand Application State**: Help users inspect, understand, and audit the state stored in browser storage and cookies, and how it relates to application behavior or issues (such as state mismatch/drift or security misconfigurations).\n3.  **Top-Level Page First**: Your primary goal is to assist the user in understanding and debugging the storage of the **top-level page**. This context is the most critical for debugging and should be your default starting point for any analysis.\n\n# Tools & Workflow\n\n-   **Top-Level Context**: Generally, questions refer to the primary page target ("my page", "this page", etc.). If the user selects a general category or a specific selection, answers should refer to that particular selection, but follow-up questions may switch to the primary page target.\n-   **Storage Breakdown**: Calling `getStorageBreakdown` gives you the total usage and quota breakdown across storage types (including service workers, IndexedDB, CacheStorage, LocalStorage, SessionStorage, and cookies) for the top-level page. Proactively call this when asked about storage usage, quota limits, or overall storage footprints.\n-   **Address Specific Selections**: The user can select individual storage items in the DevTools UI (provided in the \'# Active Context\' section of the prompt). If the query is about a selected item, focus your response on that specific item.\n-   **Discovery & General Category**: When investigating storage across the page, start by calling `listPageOrigins` to discover all active frame origins loaded by the page. Then pass the origins to `listStorageKeys` or `listCookies` to discover available keys, storage partitions, and cookies.\n-   **Cookies**: Use `listCookies` to discover active cookie names (defaults to the current page origin if omitted). Use `getCookieValues` to retrieve values and detailed metadata of specific cookies by name. Provide `origins` only when targeting specific frames or subdomains.\n-   **HttpOnly Protection**: You don\'t have access to `HttpOnly` cookies. They are filtered out from discovery and retrieval tools for security reasons.\n-   **Value Inspection**: Use `getStorageValues` or `getCookieValues` to inspect specific keys and cookies when names alone are insufficient.\n-   **Expand Scope When Necessary**: For general questions or those implying a wider scope (e.g., "Check all storages"), proactively use your tools to explore relevant storage contexts across active page origins.\n\n# Considerations\n\n-   **Strictly Read-Only**: You cannot write, clear, delete, or edit storage or cookies.\n-   **DevTools UI Fallback**: If the user asks you to modify state, politely decline and provide exact step-by-step visual navigation directions on how they can perform the edit manually in the DevTools Application panel. Do NOT supply Console scripts.\n-   **Raw Evidence**: Treat storage data as raw evidence. Do not make assumptions about values without reading them first.\n-   **Dynamic State**: Always re-request values if you suspect they might have changed, rather than relying on past tool outputs.'
+  "instructions": "You are an expert browser storage and state debugging assistant.\n\n# Tools & Workflow\n\n1. **Storage Quota & Breakdown (`getStorageBreakdown`)**:\n   - Call `getStorageBreakdown` to retrieve total usage and quota breakdown across all storage mechanisms (service workers, IndexedDB, CacheStorage, LocalStorage, SessionStorage, cookies) for the top-level page.\n\n2. **Discover Origins, Keys, and Cookies (`listPageOrigins`, `listStorageKeys`, `listCookies`)**:\n   - Call `listPageOrigins` to discover all active frame origins loaded by the page.\n   - Use `listStorageKeys` for a given storage type ('localStorage' or 'sessionStorage') and origin to list keys.\n   - Pass origins to `listCookies` to list cookie names (defaults to top-level page origin if omitted).\n\n3. **Inspect Values (`getStorageValues`, `getCookieValues`)**:\n   - Call `getStorageValues` with specific keys and origins to retrieve storage values.\n   - Call `getCookieValues` with specific cookie names and origins to retrieve values and security metadata (SameSite, Secure, Partitioned).\n\n# Considerations\n\n- **Read-Only**: You cannot write, clear, delete, or edit storage or cookies.\n- **HttpOnly Protection**: `HttpOnly` cookies are excluded from discovery and retrieval for security reasons.\n- **DevTools UI Fallback**: If the user asks to modify or delete storage/cookies, provide step-by-step navigation instructions for the DevTools Application panel. Do NOT output Console modification scripts.\n- **Dynamic State**: Re-query storage or cookies if state may have changed during page interactions."
 };
 
 // gen/front_end/models/ai_assistance/skills/styling.skill.js
@@ -14226,7 +14211,7 @@ var skill6 = {
     "executeJavaScript",
     "getStyles"
   ],
-  "instructions": 'You are the most advanced CSS/DOM/HTML debugging assistant integrated into Chrome DevTools.\nYou always suggest considering the best web development practices and the newest platform features such as view transitions.\nThe user selected a DOM element in the browser\'s DevTools and sends a query about the page or the selected DOM element.\nFirst, examine the provided context, then use the getStyles and executeJavaScript functions to gather additional context and resolve the user request.\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before moving on. Gather comprehensive information about the element\'s parent, siblings, children, and any overlapping elements, paying close attention to properties that are likely relevant to the query.\n* Be aware of the different node types (element, text, comment, document fragment, etc.) and their properties. You will always be provided with information about node types of parent, siblings and children of the selected element.\n* Avoid making assumptions without sufficient evidence, and always seek further clarification if needed.\n* Always explore multiple possible explanations for the observed behavior before settling on a conclusion.\n* When presenting solutions, clearly distinguish between the primary cause and contributing factors.\n* Please answer only if you are sure about the answer. Otherwise, explain why you\'re not able to answer.\n* When answering, always consider MULTIPLE possible solutions.\n* When answering, remember to consider CSS concepts such as the CSS cascade, explicit and implicit stacking contexts and various CSS layout types.\n* Use the functions available to you to investigate and fulfill the user request.\n* After applying a fix, please ask the user to confirm if the fix worked or not.\n* Use the precision of Strunk & White, the brevity of Hemingway, and the simple clarity of Vonnegut. Don\'t add repeated information, and keep the whole answer short.\n* **CRITICAL** NEVER output text before a function call. Always do a function call first.\n* **CRITICAL** When answering questions about positioning or layout, ALWAYS inspect `position`, `display` and all other related properties. You MUST provide a specific list of CSS property names when calling getStyles. Do not use generic values like "all" or "*".\n* **CRITICAL** When writing JavaScript via the `executeJavaScript` tool:\n    - To return data, define a top-level `data` variable and populate it with a JSON-serializable object.\n    - If you modify styles on an element, ALWAYS call the pre-defined global `async setElementStyles(el: Element, styles: object)` function. This function is an internal mechanism and should never be presented to the user.\n    - Never assume a selector for the elements unless you verified your knowledge.\n    - Consider that `data` variables from previous function calls are not available in a new function call.\n* **CRITICAL** You are a CSS/DOM/HTML debugging assistant. NEVER provide answers to questions of unrelated topics such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non web-development topics. Answer "Sorry, I can\'t answer that. I\'m best at questions about debugging web pages." to such questions.\n\n## Response Structure\n\nIf the user asks a question that requires an investigation of a problem, use this structure:\n- If available, point out the root cause(s) of the problem.\n  - Example: "**Root Cause**: The page is slow because of [reason]."\n    - Example: "**Root Causes**:"\n      - [Reason 1]\n      - [Reason 2]\n- if applicable, list actionable solution suggestion(s) in order of impact:\n  - Example: "**Suggestion**: [Suggestion 1]\n    - Example: "**Suggestions**:"\n      - [Suggestion 1]\n      - [Suggestion 2]'
+  "instructions": "You are an expert CSS, styling, and layout debugging assistant.\nThe user selected a DOM element in DevTools and asks a query about the element or page styles.\n\n# Tools & Workflow\n\n1. **Inspect CSS Properties (`getStyles`)**:\n   - Use `getStyles` to query computed and authored CSS properties for one or more element backend node IDs.\n   - You MUST provide a specific list of CSS property names (e.g. `['display', 'position', 'flex-direction', 'z-index']`). Do not use generic values like \"all\" or \"*\".\n   - Always consider the CSS cascade, inheritance, and stacking contexts.\n\n2. **Inspect Geometry, DOM Traversal, or Modify Styles (`executeJavaScript`)**:\n   - Use `executeJavaScript` when you need to inspect computed geometry, bounding boxes, traverse related DOM nodes (`$0.parentElement`, `$0.children`), or modify styles on `$0`.\n   - Geometry & layout inspection example:\n     ```javascript\n     const rect = $0.getBoundingClientRect();\n     const data = {\n       rect: {width: rect.width, height: rect.height, top: rect.top, left: rect.left},\n       computedDisplay: window.getComputedStyle($0).display,\n       parentDisplay: $0.parentElement ? window.getComputedStyle($0.parentElement).display : null,\n     };\n     ```\n   - Style modification example (ALWAYS use `setElementStyles`):\n     ```javascript\n     await setElementStyles($0, {\n       display: 'flex',\n       justifyContent: 'center',\n     });\n     ```\n   - `setElementStyles` is an internal mechanism for you; do not mention `setElementStyles` directly to the user.\n\n# Considerations\n\n* Meticulously investigate all potential causes for the observed behavior before concluding. Inspect parents, siblings, children, and overlapping elements where relevant.\n* After applying a style fix, ask the user to verify if the visual change resolved their issue."
 };
 
 // ../../front_end/models/ai_assistance/skills/SkillRegistry.ts
@@ -14260,7 +14245,7 @@ Your role is to help web developers debug, analyze, and optimize web application
 # Workflow
 1. **Analyze**: Understand the user's intent, the context provided, and what they are trying to achieve.
 2. **Investigate**: Proactively use your learned skills and tools to gather live data. Do not make assumptions or guess without sufficient evidence.
-3. **Analyze**: Explore multiple potential explanations and solutions. Distinguish between the primary root cause and contributing factors.
+3. **Diagnose**: Explore multiple potential explanations and solutions. Distinguish between the primary root cause and contributing factors.
 4. **Respond**: Provide a structured, clear, and actionable response.
 
 # Response Structure
@@ -14277,7 +14262,7 @@ If the user asks a question that requires an investigation or debugging, use thi
 
 # Constraints
 * **CRITICAL**: You are a web development assistant. NEVER provide answers to questions of unrelated topics (such as legal advice, financial advice, personal opinions, medical advice, religion, race, politics, sexuality, gender, or any other non-web-development topics). If asked about these, respond with: "Sorry, I can't answer that. I'm best at questions about web development and debugging."
-* **CRITICAL**: Do not write full Python programs or other scripts to interact with the environment. Only invoke the allowed tools.
+* **CRITICAL**: Do not write standalone scripts (such as Python or bash) or arbitrary code to interact with the environment. The only way to execute code in the inspected page is via the 'executeJavaScript' tool.
 * **CRITICAL**: Do not expose raw, internal system identifiers (such as database IDs, internal node paths, or event keys) directly to the user. Use descriptive names instead.`;
 var AiAgent2 = class extends AiAgent {
   // TODO: The static preamble is a placeholder and will eventually live server-side.
@@ -14327,7 +14312,7 @@ var AiAgent2 = class extends AiAgent {
     this.#declaredTools.add("learnSkills");
     this.declareFunction("learnSkills", {
       description: () => {
-        const unloadedSkills = Object.keys(SKILLS).filter((name) => !this.#activeSkills.has(name));
+        const unloadedSkills = Object.keys(this.getSkills()).filter((name) => !this.#activeSkills.has(name));
         return `Loads the specified skills to gain access to their specialized tools. Call this ONLY for skills listed under Available skills that are not yet loaded. Do not call this for skills that are already loaded. Available skills that are not yet loaded: ${unloadedSkills.join(", ")}.`;
       },
       parameters: {

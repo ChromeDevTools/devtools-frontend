@@ -1,0 +1,1 @@
+gen/front_end/ui/components/spinners/spinners.js: gen/front_end/ui/components/spinners/spinner.css.js ../../front_end/ui/components/spinners/Spinner.ts ../../front_end/ui/components/spinners/spinners.ts

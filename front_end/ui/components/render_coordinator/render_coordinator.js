@@ -1,4 +1,4 @@
-// gen/front_end/ui/components/render_coordinator/render_coordinator.prebundle.js
+// ../../front_end/ui/components/render_coordinator/render_coordinator.ts
 var WorkItem = class {
   promise;
   trigger;
@@ -14,11 +14,6 @@ var WorkItem = class {
     this.handler = handler;
   }
 };
-var ACTION;
-(function(ACTION2) {
-  ACTION2["READ"] = "read";
-  ACTION2["WRITE"] = "write";
-})(ACTION || (ACTION = {}));
 var RenderCoordinatorQueueEmptyEvent = class _RenderCoordinatorQueueEmptyEvent extends Event {
   static eventName = "renderqueueempty";
   constructor() {
@@ -62,25 +57,27 @@ function done(options) {
     logIfEnabled("[Queue empty]");
     return Promise.resolve();
   }
-  return new Promise((resolve) => window.addEventListener(RenderCoordinatorQueueEmptyEvent.eventName, () => resolve(), { once: true }));
+  return new Promise(
+    (resolve) => window.addEventListener(RenderCoordinatorQueueEmptyEvent.eventName, () => resolve(), { once: true })
+  );
 }
 async function read(labelOrCallback, callback) {
   if (typeof labelOrCallback === "string") {
     if (!callback) {
       throw new Error("Read called with label but no callback");
     }
-    return await enqueueHandler("read", labelOrCallback, callback);
+    return await enqueueHandler("read" /* READ */, labelOrCallback, callback);
   }
-  return await enqueueHandler("read", UNNAMED_READ, labelOrCallback);
+  return await enqueueHandler("read" /* READ */, UNNAMED_READ, labelOrCallback);
 }
 async function write(labelOrCallback, callback) {
   if (typeof labelOrCallback === "string") {
     if (!callback) {
       throw new Error("Write called with label but no callback");
     }
-    return await enqueueHandler("write", labelOrCallback, callback);
+    return await enqueueHandler("write" /* WRITE */, labelOrCallback, callback);
   }
-  return await enqueueHandler("write", UNNAMED_WRITE, labelOrCallback);
+  return await enqueueHandler("write" /* WRITE */, UNNAMED_WRITE, labelOrCallback);
 }
 function takeLoggingRecords() {
   const logs = [...loggingRecords];
@@ -92,19 +89,19 @@ async function scroll(labelOrCallback, callback) {
     if (!callback) {
       throw new Error("Scroll called with label but no callback");
     }
-    return await enqueueHandler("read", labelOrCallback, callback);
+    return await enqueueHandler("read" /* READ */, labelOrCallback, callback);
   }
-  return await enqueueHandler("read", UNNAMED_SCROLL, labelOrCallback);
+  return await enqueueHandler("read" /* READ */, UNNAMED_SCROLL, labelOrCallback);
 }
 function enqueueHandler(action, label, callback) {
   const hasName = ![UNNAMED_READ, UNNAMED_WRITE, UNNAMED_SCROLL].includes(label);
-  label = `${action === "read" ? "[Read]" : "[Write]"}: ${label}`;
+  label = `${action === "read" /* READ */ ? "[Read]" : "[Write]"}: ${label}`;
   let workItems = null;
   switch (action) {
-    case "read":
+    case "read" /* READ */:
       workItems = pendingReaders;
       break;
-    case "write":
+    case "write" /* WRITE */:
       workItems = pendingWriters;
       break;
     default:
@@ -145,7 +142,10 @@ function scheduleWork() {
       await Promise.race([
         Promise.all(readers.map((r) => r.promise)),
         new Promise((_, reject) => {
-          window.setTimeout(() => reject(new Error(`Readers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)), DEADLOCK_TIMEOUT);
+          window.setTimeout(
+            () => reject(new Error(`Readers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
+            DEADLOCK_TIMEOUT
+          );
         })
       ]);
     } catch (err) {
@@ -159,7 +159,10 @@ function scheduleWork() {
       await Promise.race([
         Promise.all(writers.map((w) => w.promise)),
         new Promise((_, reject) => {
-          window.setTimeout(() => reject(new Error(`Writers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)), DEADLOCK_TIMEOUT);
+          window.setTimeout(
+            () => reject(new Error(`Writers took over ${DEADLOCK_TIMEOUT}ms. Possible deadlock?`)),
+            DEADLOCK_TIMEOUT
+          );
         })
       ]);
     } catch (err) {

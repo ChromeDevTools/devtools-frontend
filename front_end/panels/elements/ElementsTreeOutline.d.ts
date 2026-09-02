@@ -4,7 +4,6 @@ import * as UI from '../../ui/legacy/legacy.js';
 import { ElementsTreeElement, ElementsTreeWidget, type InitialEditState } from './ElementsTreeElement.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
 import { ImagePreviewPopover } from './ImagePreviewPopover.js';
-import type { MarkerDecoratorRegistration } from './MarkerDecorator.js';
 import { TopLayerContainer } from './TopLayerContainer.js';
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export { elementsTreeOutlineStyles };
@@ -67,6 +66,22 @@ interface ViewInput {
     onDragLeave?: (event: DragEvent) => void;
     onDrop?: (node: SDK.DOMModel.DOMNode, isClosingTag: boolean, event: DragEvent) => void;
     onDragEnd?: (event: DragEvent) => void;
+    getTopLayerShortcuts?: (doc: SDK.DOMModel.DOMDocument) => SDK.DOMModel.DOMNodeShortcut[];
+    isTopLayerExpanded?: (doc: SDK.DOMModel.DOMDocument) => boolean;
+    onToggleTopLayerExpanded?: (doc: SDK.DOMModel.DOMDocument, expanded: boolean) => void;
+    onSelectTopLayerContainer?: (doc: SDK.DOMModel.DOMDocument) => void;
+    isTopLayerShortcutExpanded?: (shortcut: SDK.DOMModel.DOMNodeShortcut) => boolean;
+    onToggleTopLayerShortcutExpanded?: (shortcut: SDK.DOMModel.DOMNodeShortcut, expanded: boolean) => void;
+    selectedTopLayerShortcut?: SDK.DOMModel.DOMNodeShortcut | null;
+    onSelectTopLayerShortcut?: (shortcut: SDK.DOMModel.DOMNodeShortcut) => void;
+    onRevealTopLayerShortcut?: (shortcut: SDK.DOMModel.DOMNodeShortcut) => void;
+    isAdoptedStyleSheetsExpanded?: (node: SDK.DOMModel.DOMNode) => boolean;
+    onToggleAdoptedStyleSheetsExpanded?: (node: SDK.DOMModel.DOMNode, expanded: boolean) => void;
+    onSelectAdoptedStyleSheets?: (node: SDK.DOMModel.DOMNode) => void;
+    isAdoptedStyleSheetExpanded?: (sheet: SDK.DOMModel.AdoptedStyleSheet) => boolean;
+    onToggleAdoptedStyleSheetExpanded?: (sheet: SDK.DOMModel.AdoptedStyleSheet, expanded: boolean) => void;
+    selectedAdoptedStyleSheet?: SDK.DOMModel.AdoptedStyleSheet | null;
+    onSelectAdoptedStyleSheet?: (sheet: SDK.DOMModel.AdoptedStyleSheet) => void;
 }
 interface ViewOutput {
     elementsTreeOutline?: ElementsTreeOutline;
@@ -188,6 +203,18 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     onDragEnd(event: DragEvent): void;
     moveNode(draggedNode: SDK.DOMModel.DOMNode, targetNode: SDK.DOMModel.DOMNode, isClosingTag: boolean): void;
     selectNodeAfterEdit(wasExpanded: boolean, error: string | null, newNode: SDK.DOMModel.DOMNode | null, moveDirection?: string): void;
+    topLayerShortcuts(document: SDK.DOMModel.DOMDocument): SDK.DOMModel.DOMNodeShortcut[];
+    isTopLayerExpanded(document: SDK.DOMModel.DOMDocument): boolean;
+    setTopLayerExpanded(document: SDK.DOMModel.DOMDocument, expanded: boolean): void;
+    isTopLayerShortcutExpanded(shortcut: SDK.DOMModel.DOMNodeShortcut): boolean;
+    setTopLayerShortcutExpanded(shortcut: SDK.DOMModel.DOMNodeShortcut, expanded: boolean): void;
+    revealInTopLayer(node: SDK.DOMModel.DOMNode): void;
+    isAdoptedStyleSheetsExpanded(node: SDK.DOMModel.DOMNode): boolean;
+    setAdoptedStyleSheetsExpanded(node: SDK.DOMModel.DOMNode, expanded: boolean): void;
+    isAdoptedStyleSheetExpanded(sheet: SDK.DOMModel.AdoptedStyleSheet): boolean;
+    setAdoptedStyleSheetExpanded(sheet: SDK.DOMModel.AdoptedStyleSheet, expanded: boolean): void;
+    highlightAdoptedStyleSheet(adoptedStyleSheet: SDK.DOMModel.AdoptedStyleSheet): void;
+    startEditing(node: SDK.DOMModel.DOMNode): void;
     onKeyDown(event: KeyboardEvent): boolean;
     clipboardData(): ClipboardData | null;
     setClipboardData(data: ClipboardData | null): void;
@@ -228,7 +255,6 @@ export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
     private visible;
     private updateRecords;
     private treeElementsBeingUpdated;
-    decoratorExtensions: MarkerDecoratorRegistration[] | null;
     private visibleWidthInternal?;
     private isXMLMimeTypeInternal?;
     suppressRevealAndSelect: boolean;

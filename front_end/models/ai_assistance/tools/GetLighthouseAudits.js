@@ -5,7 +5,7 @@ import * as Host from '../../../core/host/host.js';
 import { LighthouseFormatter } from '../data_formatters/LighthouseFormatter.js';
 export class GetLighthouseAuditsTool {
     name = "getLighthouseAudits" /* ToolName.GET_LIGHTHOUSE_AUDITS */;
-    description = 'Returns the audits for a specific Lighthouse category.';
+    description = 'Retrieves audit results and diagnostic details from the active Lighthouse report for a specific category (e.g., \'accessibility\').';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: 'Arguments for retrieving Lighthouse category audits.',

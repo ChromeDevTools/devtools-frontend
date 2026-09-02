@@ -6,7 +6,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
 export class GetStylesTool {
     name = "getStyles" /* ToolName.GET_STYLES */;
-    description = `Get computed and source styles for one or multiple elements on the inspected page for multiple elements at once by uid.
+    description = `Retrieves computed and authored CSS styles for one or more elements by their backend node IDs (uids).
 
 **CRITICAL** An element uid is a number, not a selector.
 **CRITICAL** Use selectors to refer to elements in the text output. Do not use uids.

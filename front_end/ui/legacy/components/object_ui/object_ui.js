@@ -54,8 +54,7 @@ __export(CustomPreviewComponent_exports, {
 });
 import * as Common3 from "../../../../core/common/common.js";
 import * as i18n5 from "../../../../core/i18n/i18n.js";
-import { createIcon } from "../../../kit/kit.js";
-import { render as render3 } from "../../../lit/lit.js";
+import { Directives as Directives3, html as html3, nothing as nothing3, render as render3 } from "../../../lit/lit.js";
 import * as UI3 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/object_ui/customPreviewComponent.css.js
@@ -1968,13 +1967,13 @@ function renderPropertyValue(value, wasThrown, showPreview, linkifier, isSynthet
       @mousemove=${isNode ? onNodeMouseMove : nothing2}
       @mouseleave=${isNode ? onNodeMouseLeave : nothing2}>${content}</span>`;
 }
-function defaultObjectPresentation(objectOrTree, linkifier, skipProto, readOnly) {
+function defaultObjectPresentation(objectOrTree, linkifier, skipProto, readOnly, extraClasses) {
   const objectTree = objectOrTree instanceof ObjectTree ? objectOrTree : new ObjectTree(objectOrTree, {
     readOnly: Boolean(readOnly),
     propertiesMode: 1
   });
   const object = objectTree.object;
-  const title = html2`<span class="source-code"><style>${objectValue_css_default}</style>${renderPropertyValue(
+  const title = html2`<span class=${classMap({ "source-code": true, ...!object.hasChildren ? extraClasses : void 0 })}><style>${objectValue_css_default}</style>${renderPropertyValue(
     object,
     /* wasThrown= */
     false,
@@ -1984,7 +1983,7 @@ function defaultObjectPresentation(objectOrTree, linkifier, skipProto, readOnly)
   if (!object.hasChildren) {
     return title;
   }
-  return html2`${widget(ObjectPropertiesSectionWidget, { objectTree, title, linkifier, skipProto: !!skipProto, showOverflow: !readOnly })}`;
+  return html2`<devtools-widget class=${classMap(extraClasses ?? {})} ${widget(ObjectPropertiesSectionWidget, { objectTree, title, linkifier, skipProto: Boolean(skipProto), showOverflow: !readOnly })}></devtools-widget>`;
 }
 var InitialVisibleChildrenLimit = 200;
 var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
@@ -2733,6 +2732,7 @@ var ExpandableTextPropertyValue = class _ExpandableTextPropertyValue extends UI2
 };
 
 // gen/front_end/ui/legacy/components/object_ui/CustomPreviewComponent.js
+var { widget: widget2 } = UI3.Widget;
 var UIStrings3 = {
   /**
    * @description Context menu item to show a custom formatted object as a standard JavaScript object.
@@ -2744,69 +2744,83 @@ var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var CustomPreviewSection = class _CustomPreviewSection {
   sectionElement;
   object;
-  expanded;
+  expanded = false;
   cachedContent;
-  header;
-  expandIcon;
+  headerJsonML;
   constructor(object) {
     this.sectionElement = document.createElement("span");
     this.sectionElement.classList.add("custom-expandable-section");
     this.object = object;
-    this.expanded = false;
-    this.cachedContent = null;
     const customPreview = object.customPreview();
     if (!customPreview) {
       return;
     }
-    let headerJSON;
     try {
-      headerJSON = JSON.parse(customPreview.header);
+      this.headerJsonML = JSON.parse(customPreview.header);
     } catch (e) {
       Common3.Console.Console.instance().error("Broken formatter: header is invalid json " + e);
       return;
     }
-    this.header = this.renderJSONMLTag(headerJSON);
-    if (this.header.nodeType === Node.TEXT_NODE) {
-      Common3.Console.Console.instance().error("Broken formatter: header should be an element node.");
+    this.render();
+  }
+  render() {
+    const customPreview = this.object.customPreview();
+    if (!customPreview || !this.headerJsonML) {
       return;
     }
+    const headerTemplate = this.renderJSONMLTag(this.headerJsonML);
     if (customPreview.bodyGetterId) {
-      if (this.header instanceof Element) {
-        this.header.classList.add("custom-expandable-section-header");
+      let bodyContent;
+      if (this.cachedContent instanceof ObjectTree) {
+        bodyContent = html3`<devtools-widget class="custom-expandable-section-default-body" ${widget2(ObjectPropertiesSectionWidget, {
+          objectTree: this.cachedContent,
+          showOverflow: false
+        })}></devtools-widget>`;
+      } else if (this.cachedContent !== void 0) {
+        bodyContent = this.renderJSONMLTag(this.cachedContent);
       }
-      this.header.addEventListener("click", this.onClick.bind(this), false);
-      this.expandIcon = createIcon("triangle-right", "custom-expand-icon");
-      this.header.insertBefore(this.expandIcon, this.header.firstChild);
+      render3(html3`
+        <span class=${Directives3.classMap({
+        "custom-expandable-section-header": true,
+        expanded: this.expanded
+      })} @click=${(event) => this.onClick(event)}>
+          <devtools-icon name=${this.expanded ? "triangle-down" : "triangle-right"} class="custom-expand-icon"></devtools-icon>
+          ${headerTemplate}
+        </span>
+        ${bodyContent ? html3`<span class="custom-expandable-section-body" ?hidden=${!this.expanded}>${bodyContent}</span>` : nothing3}
+      `, this.sectionElement);
+    } else {
+      render3(html3`${headerTemplate}`, this.sectionElement);
     }
-    this.sectionElement.appendChild(this.header);
   }
   element() {
     return this.sectionElement;
   }
   renderJSONMLTag(jsonML) {
     if (!Array.isArray(jsonML)) {
-      return document.createTextNode(String(jsonML));
+      return html3`${String(jsonML)}`;
     }
     if (jsonML[0] !== "object") {
       return this.renderElement(jsonML);
     }
     if (jsonML.length !== 2) {
       Common3.Console.Console.instance().error("Broken formatter: object reference must contain exactly two elements");
-      return document.createElement("span");
+      return html3`<span></span>`;
     }
     return this.layoutObjectTag(jsonML);
   }
-  // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   renderElement(object) {
-    const tagName = object.shift();
+    const it = object[Symbol.iterator]();
+    const tagName = it.next().value;
     if (!ALLOWED_TAGS.includes(tagName)) {
       Common3.Console.Console.instance().error("Broken formatter: element " + tagName + " is not allowed!");
-      return document.createElement("span");
+      return html3`<span></span>`;
     }
-    const element = document.createElement(tagName);
-    if (typeof object[0] === "object" && !Array.isArray(object[0])) {
-      const attributes = object.shift();
+    let next = it.next();
+    const stylePropertyMap = {};
+    if (typeof next.value === "object" && !Array.isArray(next.value) && next.value !== null) {
+      const attributes = next.value;
       for (const key in attributes) {
         const value = attributes[key];
         if (key !== "style" || typeof value !== "string") {
@@ -2815,32 +2829,49 @@ var CustomPreviewSection = class _CustomPreviewSection {
         const sanitizedStyle = /* @__PURE__ */ new Map();
         sanitizeStyle(sanitizedStyle, value);
         for (const [property, { value: propertyValue, priority }] of sanitizedStyle) {
-          element.style.setProperty(property, propertyValue, priority);
+          stylePropertyMap[property] = priority ? `${propertyValue} !${priority}` : propertyValue;
         }
       }
+      next = it.next();
     }
-    this.appendJsonMLTags(element, object);
-    return element;
+    const children = [];
+    while (!next.done) {
+      children.push(this.renderJSONMLTag(next.value));
+      next = it.next();
+    }
+    const style = Directives3.styleMap(stylePropertyMap);
+    switch (tagName) {
+      case "span":
+        return html3`<span style=${style}>${children}</span>`;
+      case "div":
+        return html3`<div style=${style}>${children}</div>`;
+      case "ol":
+        return html3`<ol style=${style}>${children}</ol>`;
+      case "li":
+        return html3`<li style=${style}>${children}</li>`;
+      case "table":
+        return html3`<table style=${style}>${children}</table>`;
+      case "tr":
+        return html3`<tr style=${style}>${children}</tr>`;
+      case "td":
+        return html3`<td style=${style}>${children}</td>`;
+      default:
+        return html3`<span>${children}</span>`;
+    }
   }
   layoutObjectTag(objectTag) {
-    objectTag.shift();
-    const attributes = objectTag.shift();
+    const it = objectTag[Symbol.iterator]();
+    it.next();
+    const attributes = it.next().value;
     const remoteObject = this.object.runtimeModel().createRemoteObject(attributes);
     if (remoteObject.customPreview()) {
-      return new _CustomPreviewSection(remoteObject).element();
+      return html3`${new _CustomPreviewSection(remoteObject).element()}`;
     }
-    const sectionElement = defaultObjectPresentation2(remoteObject);
-    sectionElement.classList.toggle("custom-expandable-section-standard-section", remoteObject.hasChildren);
-    return sectionElement;
-  }
-  appendJsonMLTags(parentElement, jsonMLTags) {
-    for (let i = 0; i < jsonMLTags.length; ++i) {
-      parentElement.appendChild(this.renderJSONMLTag(jsonMLTags[i]));
-    }
+    return defaultObjectPresentation(remoteObject, void 0, void 0, void 0, { "custom-expandable-section-standard-section": remoteObject.hasChildren });
   }
   onClick(event) {
     event.consume(true);
-    if (this.cachedContent) {
+    if (this.cachedContent !== void 0) {
       this.toggleExpand();
     } else {
       void this.loadBody();
@@ -2848,21 +2879,8 @@ var CustomPreviewSection = class _CustomPreviewSection {
   }
   toggleExpand() {
     this.expanded = !this.expanded;
-    if (this.header instanceof Element) {
-      this.header.classList.toggle("expanded", this.expanded);
-    }
-    if (this.cachedContent instanceof Element) {
-      this.cachedContent.classList.toggle("hidden", !this.expanded);
-    }
-    if (this.expandIcon) {
-      if (this.expanded) {
-        this.expandIcon.name = "triangle-down";
-      } else {
-        this.expandIcon.name = "triangle-right";
-      }
-    }
+    this.render();
   }
-  defaultBodyTreeOutline;
   async loadBody() {
     const customPreview = this.object.customPreview();
     if (!customPreview) {
@@ -2871,24 +2889,17 @@ var CustomPreviewSection = class _CustomPreviewSection {
     if (customPreview.bodyGetterId) {
       const bodyJsonML = await this.object.callFunctionJSON((bodyGetter) => bodyGetter(), [{ objectId: customPreview.bodyGetterId }]);
       if (bodyJsonML === null) {
-        this.defaultBodyTreeOutline = new ObjectPropertiesSectionsTreeOutline();
-        this.defaultBodyTreeOutline.setShowSelectionOnKeyboardFocus(
-          /* show */
-          true,
-          /* preventTabOrder */
-          false
-        );
-        this.defaultBodyTreeOutline.element.classList.add("custom-expandable-section-default-body");
-        void ObjectPropertyTreeElement.populate(this.defaultBodyTreeOutline.rootElement(), new ObjectTree(this.object, {
+        const objectTree = new ObjectTree(this.object, {
           readOnly: true,
           propertiesMode: 1
-        }), false, false);
-        this.cachedContent = this.defaultBodyTreeOutline.element;
+        });
+        objectTree.expanded = true;
+        this.cachedContent = objectTree;
       } else {
-        this.cachedContent = this.renderJSONMLTag(bodyJsonML);
+        this.cachedContent = bodyJsonML;
       }
-      this.sectionElement.appendChild(this.cachedContent);
-      this.toggleExpand();
+      this.expanded = true;
+      this.render();
     }
   }
 };
@@ -2924,15 +2935,10 @@ var CustomPreviewComponent = class {
     if (this.element.shadowRoot) {
       this.element.shadowRoot.textContent = "";
       this.customPreviewSection = null;
-      this.element.shadowRoot.appendChild(defaultObjectPresentation2(this.object));
+      render3(defaultObjectPresentation(this.object), this.element.shadowRoot);
     }
   }
 };
-function defaultObjectPresentation2(object) {
-  const element = document.createElement("span");
-  render3(defaultObjectPresentation(object), element);
-  return element;
-}
 
 // gen/front_end/ui/legacy/components/object_ui/ObjectPopoverHelper.js
 var ObjectPopoverHelper_exports = {};
@@ -2974,13 +2980,13 @@ var objectPopover_css_default = `/*
   white-space: nowrap;
   font-weight: bold;
   padding-left: 18px;
-  padding-bottom: 2px;
+  padding-bottom: var(--sys-size-2);
   padding-top: var(--sys-size-3);
   flex-shrink: 0;
 }
 
 .object-popover-tree {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   overflow: auto;
   width: 100%;
   height: calc(100% - 13px);
@@ -2991,13 +2997,13 @@ var objectPopover_css_default = `/*
 }
 
 .object-popover-description-box {
-  padding: 6px;
+  padding: var(--sys-size-4);
   max-width: 350px;
   line-height: 1.4;
 }
 
 .object-popover-footer {
-  margin-top: 8px;
+  margin-top: var(--sys-size-5);
 }
 
 /*# sourceURL=${import.meta.resolve("./objectPopover.css")} */`;

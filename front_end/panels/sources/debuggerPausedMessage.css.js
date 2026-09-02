@@ -10,8 +10,8 @@ export default `/*
  */
 
 .paused-status {
-  margin: 6px;
-  padding: 4px 10px;
+  margin: var(--sys-size-4);
+  padding: var(--sys-size-3) 10px;
   border-radius: 10px;
   background-color: var(--sys-color-yellow-container);
   color: var(--sys-color-on-yellow-container);
@@ -43,8 +43,8 @@ export default `/*
 
 devtools-icon {
   position: absolute;
-  left: -1px;
-  top: -1px;
+  left: calc(-1 * var(--sys-size-1));
+  top: calc(-1 * var(--sys-size-1));
 }
 
 devtools-icon[name="info"] {

@@ -17,7 +17,7 @@ const lockedString = i18n.i18n.lockedString;
  */
 export class ListNetworkRequestsTool {
     name = "listNetworkRequests" /* ToolName.LIST_NETWORK_REQUESTS */;
-    description = 'Gives a list of network requests including URL, status code, and duration.';
+    description = 'Lists recorded network requests for the active origin, including request ID, URL, HTTP status code, duration, and transfer size.';
     #networkLog;
     constructor(networkLog) {
         this.#networkLog = networkLog;
@@ -74,11 +74,19 @@ export class ListNetworkRequestsTool {
             requestsToShow.push(request);
         }
         if (requests.length === 0) {
+            if (hasCrossOriginRequest) {
+                return {
+                    error: `No requests showing with origin ${origin}. Tell the user to start a new chat`,
+                };
+            }
             return {
-                // If there were requests but they were filtered out due to the origin lock,
-                // we ask the user to start a new chat so they can select a request from the other origin.
-                error: hasCrossOriginRequest ? `No requests showing with origin ${origin}. Tell the user to start a new chat` :
-                    'No requests recorded by DevTools',
+                result: JSON.stringify([]),
+                widgets: [{
+                        name: 'NETWORK_REQUESTS_LIST',
+                        data: {
+                            requests: [],
+                        },
+                    }],
             };
         }
         return {

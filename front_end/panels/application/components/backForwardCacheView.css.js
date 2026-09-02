@@ -23,7 +23,7 @@ devtools-report-value {
 
 .gray-text {
   color: var(--sys-color-token-subtle);
-  margin: 0 0 5px 56px;
+  margin: 0 0 5px var(--sys-size-17);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -34,12 +34,12 @@ devtools-report-value {
 }
 
 .details-list {
-  margin-left: 56px;
+  margin-left: var(--sys-size-17);
   grid-column-start: span 2;
 }
 
 .help-outline-icon {
-  margin: 0 2px;
+  margin: 0 var(--sys-size-2);
 }
 
 .circled-exclamation-icon {
@@ -68,7 +68,7 @@ devtools-report-value {
 }
 
 .report-value {
-  padding: 0 6px;
+  padding: 0 var(--sys-size-4);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -79,7 +79,7 @@ devtools-report-value {
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 }
 
 devtools-report-value:has(devtools-tree-outline) {

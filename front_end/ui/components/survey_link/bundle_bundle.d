@@ -1,0 +1,1 @@
+gen/front_end/ui/components/survey_link/survey_link.js: gen/front_end/ui/components/survey_link/surveyLink.css.js ../../front_end/ui/components/survey_link/SurveyLink.ts ../../front_end/ui/components/survey_link/survey_link.ts

@@ -36,9 +36,9 @@ label {
 }
 
 input[type="text"].add-source-map {
-  box-shadow: 0 0 0 1px var(--box-shadow-outline-color);
+  box-shadow: 0 0 0 var(--sys-size-1) var(--box-shadow-outline-color);
   font-size: inherit;
-  margin: 0 8px 0 5px;
+  margin: 0 var(--sys-size-5) 0 5px;
 }
 
 /*# sourceURL=${import.meta.resolve("./dialog.css")} */`;
@@ -403,10 +403,10 @@ var breakpointEditDialog_css_default = `/*
 
 :host {
   z-index: 30;
-  padding: 4px;
+  padding: var(--sys-size-3);
   background-color: var(--sys-color-surface3);
   border-radius: 7px;
-  border: 2px solid var(--sys-color-divider);
+  border: var(--sys-size-2) solid var(--sys-color-divider);
   width: 90%;
   pointer-events: auto;
 }
@@ -417,25 +417,25 @@ var breakpointEditDialog_css_default = `/*
   background-color: var(--sys-color-surface3);
   width: 555px;
   pointer-events: auto;
-  margin-left: -1px;
+  margin-left: calc(-1 * var(--sys-size-1));
   padding: 0 10px 10px 5px;
-  border: 1px solid var(--sys-color-divider);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .condition-editor {
   background-color: var(--sys-color-cdt-base-container);
-  margin: 0 6px 20px 3px;
+  margin: 0 var(--sys-size-4) var(--sys-size-9) 3px;
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .source-frame-breakpoint-toolbar {
   font-family: var(--default-font-family);
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .link,
 .devtools-link {
   font-family: var(--default-font-family);
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   margin: 0 3px;
 }
 
@@ -443,8 +443,8 @@ var breakpointEditDialog_css_default = `/*
   vertical-align: sub;
   margin-right: 0.5ch;
   color: var(--icon-link);
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .link-wrapper {
@@ -793,15 +793,15 @@ var breakpointsView_css_default = `/*
   }
 
   input {
-    height: 12px;
-    width: 12px;
+    height: var(--sys-size-6);
+    width: var(--sys-size-6);
     flex-shrink: 0;
     margin: 3px 0;
   }
 
   details {
-    border-top: 1px solid var(--sys-color-divider);
-    padding: 2px 0;
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+    padding: var(--sys-size-2) 0;
   }
 
   details:not(.active) {
@@ -810,10 +810,10 @@ var breakpointsView_css_default = `/*
   }
 
   details > summary {
-    min-height: 20px;
+    min-height: var(--sys-size-9);
     list-style: none;
     display: flex;
-    padding: 0 8px 0 6px;
+    padding: 0 var(--sys-size-5) 0 var(--sys-size-4);
     align-items: center;
   }
 
@@ -843,19 +843,19 @@ var breakpointsView_css_default = `/*
     display: inline-flex;
     align-items: center;
     width: 100%;
-    padding-right: 8px;
+    padding-right: var(--sys-size-5);
     overflow: hidden;
   }
 
   .group-icon-or-disable {
     justify-content: center;
     display: flex;
-    width: 16px;
-    margin-left: 2px;
+    width: var(--sys-size-8);
+    margin-left: var(--sys-size-2);
   }
 
   .group-header-title {
-    margin-left: 4px;
+    margin-left: var(--sys-size-3);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -864,7 +864,7 @@ var breakpointsView_css_default = `/*
   .group-header-differentiator {
     font-weight: normal;
     color: var(--sys-color-state-disabled);
-    margin-left: 8px;
+    margin-left: var(--sys-size-5);
   }
 
   .group-hover-actions {
@@ -876,10 +876,10 @@ var breakpointsView_css_default = `/*
   }
 
   .breakpoint-item-location-or-actions {
-    min-width: 20px;
+    min-width: var(--sys-size-9);
     flex: 0 0 auto;
     display: flex;
-    padding-left: 8px;
+    padding-left: var(--sys-size-5);
     justify-content: right;
   }
 
@@ -895,7 +895,7 @@ var breakpointsView_css_default = `/*
   }
 
   button + span {
-    padding-left: 6px;
+    padding-left: var(--sys-size-4);
   }
 
   button + button {
@@ -907,8 +907,8 @@ var breakpointsView_css_default = `/*
   }
 
   devtools-icon {
-    width: 16px;
-    height: 16px;
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
 
     button:hover & {
       color: var(--icon-default-hover);
@@ -919,18 +919,18 @@ var breakpointsView_css_default = `/*
     --override-color-conditional-breakpoint: var(--ref-palette-orange70);
     --override-color-logpoint: var(--ref-palette-pink60);
 
-    border-right: 4px solid;
-    border-radius: 0 2px 2px 0;
+    border-right: var(--sys-size-3) solid;
+    border-radius: 0 var(--sys-size-2) var(--sys-size-2) 0;
     border-color: transparent;
-    height: 16px;
+    height: var(--sys-size-8);
   }
 
   .breakpoint-item {
     display: flex;
     align-items: center;
     line-height: 13px;
-    height: 20px;
-    padding-right: 8px;
+    height: var(--sys-size-9);
+    padding-right: var(--sys-size-5);
   }
 
   .breakpoint-item.hit {
@@ -962,8 +962,8 @@ var breakpointsView_css_default = `/*
   }
 
   .checkbox-label > input {
-    margin-left: 16px;
-    margin-right: 6px;
+    margin-left: var(--sys-size-8);
+    margin-right: var(--sys-size-4);
   }
 
   devtools-icon[name="file-script"] {
@@ -1010,7 +1010,7 @@ var breakpointsView_css_default = `/*
 
   .pause-on-caught-exceptions > .checkbox-label > input,
   .pause-on-uncaught-exceptions > .checkbox-label > input {
-    margin-left: 6px;
+    margin-left: var(--sys-size-4);
   }
 
   .pause-on-caught-exceptions > .checkbox-label > span,
@@ -1024,7 +1024,7 @@ var breakpointsView_css_default = `/*
   .pause-on-caught-exceptions {
     line-height: 13px;
     height: 18px;
-    padding-right: 8px;
+    padding-right: var(--sys-size-5);
 
     & > label {
       width: fit-content;
@@ -2539,8 +2539,8 @@ var debuggerPausedMessage_css_default = `/*
  */
 
 .paused-status {
-  margin: 6px;
-  padding: 4px 10px;
+  margin: var(--sys-size-4);
+  padding: var(--sys-size-3) 10px;
   border-radius: 10px;
   background-color: var(--sys-color-yellow-container);
   color: var(--sys-color-on-yellow-container);
@@ -2572,8 +2572,8 @@ var debuggerPausedMessage_css_default = `/*
 
 devtools-icon {
   position: absolute;
-  left: -1px;
-  top: -1px;
+  left: calc(-1 * var(--sys-size-1));
+  top: calc(-1 * var(--sys-size-1));
 }
 
 devtools-icon[name="info"] {

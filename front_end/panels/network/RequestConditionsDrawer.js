@@ -21,41 +21,41 @@ const { ref, live, ifDefined } = Directives;
 const { widget } = UI.Widget;
 const UIStrings = {
     /**
-     * @description Text to enable blocking of network requests
+     * @description Text to enable blocking and throttling of network requests
      */
     enableBlockingAndThrottling: 'Enable blocking and throttling',
     /**
-     * @description Tooltip text for add button in request blocking tool of the Network panel.
+     * @description Tooltip text for add button in request conditions tool of the Network panel.
      */
     addRule: 'Add rule',
     /**
-     * @description Accessible label for the button to add request blocking patterns in the network request blocking tool.
+     * @description Accessible label for the button to add request blocking patterns in the request conditions tool.
      */
     addPatternLabel: 'Add network request throttling or blocking pattern',
     /**
-     * @description Text that shows in the network request blocking panel if no pattern has yet been added.
+     * @description Text that shows in the request conditions panel if no pattern has yet been added.
      */
     noPattern: 'Nothing throttled or blocked',
     /**
-     * @description Text that shows in the network request blocking panel if no pattern has yet been added.
+     * @description Text that shows in the request conditions panel if no pattern has yet been added.
      * @example {Learn more} PH1
      */
     noThrottlingOrBlockingPattern: `To throttle or block a network request, add a rule here manually or via the Network panel’s context menu. {PH1}`,
     /**
-     * @description Text in request blocking tool of the Network panel.
+     * @description Text in request conditions tool of the Network panel.
      * @example {4} PH1
      */
     dAffected: '{PH1} affected',
     /**
-     * @description Tooltip text for pattern input in request blocking tool of the Network panel.
+     * @description Tooltip text for pattern input in request conditions tool of the Network panel.
      */
     textEditPattern: 'Text pattern to block or throttle matching requests; use URL Pattern syntax.',
     /**
-     * @description Error text for empty list widget input in Request Blocking tool
+     * @description Error text for empty list widget input in Request Conditions tool
      */
     patternInputCannotBeEmpty: 'Pattern input cannot be empty.',
     /**
-     * @description Error text for duplicate list widget input in Request Blocking tool
+     * @description Error text for duplicate list widget input in Request Conditions tool
      */
     patternAlreadyExists: 'Pattern already exists.',
     /**
@@ -109,7 +109,7 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/network/RequestConditionsDrawer.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-const NETWORK_REQUEST_BLOCKING_EXPLANATION_URL = 'https://developer.chrome.com/docs/devtools/network-request-blocking';
+const REQUEST_CONDITIONS_EXPLANATION_URL = 'https://developer.chrome.com/docs/devtools/request-conditions';
 const { bindToAction } = UI.UIUtils;
 export const DEFAULT_VIEW = (input, output, target) => {
     render(
@@ -350,7 +350,7 @@ export class AffectedCountWidget extends UI.Widget.Widget {
 }
 function learnMore() {
     return html `<devtools-link
-        href=${NETWORK_REQUEST_BLOCKING_EXPLANATION_URL}
+        href=${REQUEST_CONDITIONS_EXPLANATION_URL}
         tabindex=0
         class=devtools-link
         .jslogContext=${'learn-more'}>

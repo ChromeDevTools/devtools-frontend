@@ -42,7 +42,7 @@ var adsView_css_default = `/*
 .metrics-container {
   flex: 0 0 auto;
   margin: 0;
-  border: 1px solid var(--sys-color-divider);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: var(--sys-size-1);
@@ -98,7 +98,7 @@ var adsView_css_default = `/*
 
 .ad-frames-container,
 .ad-scripts-container {
-  border: 1px solid var(--sys-color-divider);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
   display: flex;
   flex: 1; /* Takes up remaining space */
   flex-direction: column;
@@ -110,7 +110,7 @@ var adsView_css_default = `/*
 
 .divider {
   border: none;
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   margin: var(--sys-size-8) 0 var(--sys-size-6);
 }
 
@@ -1269,7 +1269,7 @@ devtools-report-value {
 
 .gray-text {
   color: var(--sys-color-token-subtle);
-  margin: 0 0 5px 56px;
+  margin: 0 0 5px var(--sys-size-17);
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -1280,12 +1280,12 @@ devtools-report-value {
 }
 
 .details-list {
-  margin-left: 56px;
+  margin-left: var(--sys-size-17);
   grid-column-start: span 2;
 }
 
 .help-outline-icon {
-  margin: 0 2px;
+  margin: 0 var(--sys-size-2);
 }
 
 .circled-exclamation-icon {
@@ -1314,7 +1314,7 @@ devtools-report-value {
 }
 
 .report-value {
-  padding: 0 6px;
+  padding: 0 var(--sys-size-4);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1325,7 +1325,7 @@ devtools-report-value {
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 }
 
 devtools-report-value:has(devtools-tree-outline) {
@@ -1885,7 +1885,7 @@ devtools-data-grid {
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 }
 
 @media (forced-colors: active) {
@@ -2242,7 +2242,7 @@ var endpointsGrid_css_default = `/*
   .endpoints-header {
     font-size: 15px;
     background-color: var(--sys-color-surface2);
-    padding: 1px 4px;
+    padding: var(--sys-size-1) var(--sys-size-3);
     flex-shrink: 0;
   }
 
@@ -2354,7 +2354,7 @@ var permissionsPolicySection_css_default = `/*
     color: var(--sys-color-primary);
     text-decoration: underline;
     cursor: pointer;
-    outline-offset: 2px;
+    outline-offset: var(--sys-size-2);
   }
 
   button.link {
@@ -2622,7 +2622,7 @@ var protocolHandlersView_css_default = `/*
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 }
 
 .devtools-link:focus-visible {
@@ -2630,9 +2630,9 @@ var protocolHandlersView_css_default = `/*
 }
 
 input.devtools-text-input[type="text"] {
-  padding: 3px 6px;
-  margin-left: 4px;
-  margin-right: 4px;
+  padding: 3px var(--sys-size-4);
+  margin-left: var(--sys-size-3);
+  margin-right: var(--sys-size-3);
   width: 250px;
   height: 25px;
 }
@@ -2646,8 +2646,8 @@ input.devtools-text-input[type="text"]::placeholder {
 }
 
 .inline-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
 
   &[name="check-circle"] {
     color: var(--icon-checkmark-green);
@@ -2852,7 +2852,7 @@ var reportsGrid_css_default = `/*
   .reporting-header {
     font-size: 15px;
     background-color: var(--sys-color-surface2);
-    padding: 1px 4px;
+    padding: var(--sys-size-1) var(--sys-size-3);
     flex-shrink: 0;
   }
 

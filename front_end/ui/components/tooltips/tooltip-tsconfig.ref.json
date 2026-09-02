@@ -19,10 +19,10 @@
       "path": "../../legacy/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../visual_logging/bundle-tsconfig.ref.json"
+      "path": "../../lit/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../../lit/bundle-tsconfig.ref.json"
+      "path": "../../visual_logging/bundle-tsconfig.ref.json"
     }
   ]
 }

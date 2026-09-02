@@ -1,7 +1,7 @@
 import * as Common from '../../../core/common/common.js';
 import type * as Host from '../../../core/host/host.js';
 import * as CM from '../../../third_party/codemirror.next/codemirror.next.js';
-export declare const dynamicSetting: CM.Facet<DynamicSetting<unknown>, readonly DynamicSetting<unknown>[]>;
+export declare const dynamicSetting: CM.Facet<DynamicSetting<unknown>, ReadonlyArray<DynamicSetting<unknown>>>;
 export declare class DynamicSetting<T> {
     private readonly getExtension;
     compartment: CM.Compartment;
@@ -36,12 +36,13 @@ export declare function theme(): CM.Extension;
 export declare function baseConfiguration(text: string | CM.Text): CM.Extension;
 export declare const closeBrackets: DynamicSetting<boolean>;
 export declare function removeTooltipHost(): void;
-export declare const showCompletionHint: CM.ViewPlugin<{
+export declare class CompletionHintPlugin {
     decorations: CM.DecorationSet;
     currentHint: string | null;
     update(update: CM.ViewUpdate): void;
     topCompletion(state: CM.EditorState): string | null;
-}>;
+}
+export declare const showCompletionHint: CM.ViewPlugin<CompletionHintPlugin>;
 export declare function contentIncludingHint(view: CM.EditorView): string;
 export declare const setAiAutoCompleteSuggestion: CM.StateEffectType<ActiveSuggestion | null>;
 export declare const enum AiSuggestionSource {

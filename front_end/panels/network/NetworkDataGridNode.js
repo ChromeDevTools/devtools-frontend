@@ -1008,6 +1008,7 @@ export class NetworkRequestNode extends NetworkNode {
     }
     createCells(trElement) {
         this.initiatorCell = null;
+        trElement.setAttribute('data-network-request-id', this.requestInternal.requestId());
         trElement.classList.toggle('network-throttled-row', Boolean(this.throttlingConditions()?.urlPattern));
         trElement.classList.toggle('network-warning-row', this.isWarning());
         trElement.classList.toggle('network-error-row', this.isError());

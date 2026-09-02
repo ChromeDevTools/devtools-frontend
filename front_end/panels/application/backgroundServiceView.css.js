@@ -41,7 +41,7 @@ export default `/*
   justify-content: center;
   align-items: center;
   overflow: auto;
-  font-size: 13px;
+  font-size: var(--sys-typescale-body3-size);
   color: var(--sys-color-on-surface-subtle);
 }
 
@@ -91,7 +91,7 @@ export default `/*
 }
 
 .background-service-record-inline-button {
-  margin-bottom: 6px;
+  margin-bottom: var(--sys-size-4);
 }
 
 .start-recording-button {

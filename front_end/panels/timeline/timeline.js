@@ -5554,10 +5554,10 @@ var TimelineMiniMap = class extends Common9.ObjectWrapper.eventMixin(UI6.Widget.
     if (!traceBoundsState) {
       return;
     }
-    const left = event.data.startTime > 0 ? event.data.startTime : traceBoundsState.milli.entireTraceBounds.min;
-    const right = Number.isFinite(event.data.endTime) ? event.data.endTime : traceBoundsState.milli.entireTraceBounds.max;
+    const left = event.data.startTime > 0 ? event.data.startTime : traceBoundsState.milli.minimapTraceBounds.min;
+    const right = Number.isFinite(event.data.endTime) ? event.data.endTime : traceBoundsState.milli.minimapTraceBounds.max;
     TraceBounds7.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(Trace18.Helpers.Timing.traceWindowFromMilliSeconds(Trace18.Types.Timing.Milli(left), Trace18.Types.Timing.Milli(right)), {
-      shouldAnimate: true
+      shouldAnimate: false
     });
   }
   #onTraceBoundsChange(event) {
@@ -14192,7 +14192,7 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends Common15.ObjectWrap
   lazyLayersView;
   preferredTabId;
   selection;
-  updateContentsScheduled;
+  #debouncedUpdateContentsFromWindow = Common15.Debouncer.debounce(() => this.updateContentsFromWindow(), 100);
   lazySelectorStatsView;
   #parsedTrace = null;
   #eventToRelatedInsightsMap = null;
@@ -14243,7 +14243,6 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends Common15.ObjectWrap
     this.appendTab(Tab.Details, i18nString24(UIStrings24.summary), this.defaultDetailsWidget);
     this.setPreferredTab(Tab.Details);
     this.rangeDetailViews = /* @__PURE__ */ new Map();
-    this.updateContentsScheduled = false;
     const bottomUpView = new BottomUpTimelineTreeView();
     this.appendTab(Tab.BottomUp, i18nString24(UIStrings24.bottomup), bottomUpView);
     this.rangeDetailViews.set(Tab.BottomUp, bottomUpView);
@@ -14418,13 +14417,11 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends Common15.ObjectWrap
     this.preferredTabId = tabId;
   }
   /**
-   * This forces a recalculation and rerendering of the timings
-   * breakdown of a track.
-   * User actions like zooming or scrolling can trigger many updates in
-   * short time windows, so we debounce the calls in those cases. Single
-   * sporadic calls (like selecting a new track) don't need to be
-   * debounced. The forceImmediateUpdate param configures the debouncing
-   * behaviour.
+   * Recalculates and renders the timing breakdown for the active details tab.
+   * Panning or zooming triggers rapid bounds updates, so we debounce this call
+   * using a trailing debounce. This ensures expensive tree recalculations in
+   * detailed views (e.g. Call Tree, Bottom-Up) only run once after user
+   * interaction finishes, preventing main-thread CPU spikes mid-gesture.
    */
   scheduleUpdateContentsFromWindow(forceImmediateUpdate = false) {
     if (!this.#parsedTrace) {
@@ -14435,16 +14432,7 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends Common15.ObjectWrap
       this.updateContentsFromWindow();
       return;
     }
-    if (!this.updateContentsScheduled) {
-      this.updateContentsScheduled = true;
-      setTimeout(() => {
-        if (!this.updateContentsScheduled) {
-          return;
-        }
-        this.updateContentsScheduled = false;
-        this.updateContentsFromWindow();
-      }, 100);
-    }
+    this.#debouncedUpdateContentsFromWindow();
   }
   updateContentsFromWindow() {
     const traceBoundsState = TraceBounds13.TraceBounds.BoundsManager.instance().state();
@@ -14493,7 +14481,7 @@ var TimelineDetailsPane = class _TimelineDetailsPane extends Common15.ObjectWrap
       return;
     }
     if (selectionIsEvent(selection)) {
-      this.updateContentsScheduled = false;
+      this.#debouncedUpdateContentsFromWindow.cancel();
       if (Trace30.Types.Events.isLegacyTimelineFrame(selection.event)) {
         this.#addLayerTreeForSelectedFrame(selection.event);
       }
@@ -15752,6 +15740,7 @@ var TimelineFlameChartView = class extends Common16.ObjectWrapper.eventMixin(UI1
   #eventToRelatedInsightsMap = null;
   #selectedGroupName = null;
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
+  #debouncedUpdateSearchResults = Common16.Debouncer.debounce(() => this.updateSearchResults(false, false), 100);
   #gameKeyMatches = 0;
   #gameTimeout = setTimeout(() => ({}), 0);
   #overlaysContainer = document.createElement("div");
@@ -16482,10 +16471,7 @@ var TimelineFlameChartView = class extends Common16.ObjectWrapper.eventMixin(UI1
     this.mainFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);
     this.networkDataProvider.setWindowTimes(visibleWindow.min, visibleWindow.max);
     this.networkFlameChart.setWindowTimes(visibleWindow.min, visibleWindow.max, shouldAnimate);
-    const debouncedUpdate = Common16.Debouncer.debounce(() => {
-      this.updateSearchResults(false, false);
-    }, 100);
-    debouncedUpdate();
+    this.#debouncedUpdateSearchResults();
   }
   getLinkSelectionAnnotation() {
     return this.#linkSelectionAnnotation;

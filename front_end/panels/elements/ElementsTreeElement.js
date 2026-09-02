@@ -946,7 +946,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     #view;
     #searchQuery = null;
     #expandedChildrenLimit;
-    decorationsThrottler;
+    #decorationsThrottler = new Common.Throttler.Throttler(100);
     inClipboard = false;
     #hovered;
     editing;
@@ -980,6 +980,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         this.#node = node;
         if (!this.isClosingTag) {
             void this.#updateAdorners();
+            this.updateDecorations();
         }
     }
     get expanded() {
@@ -987,6 +988,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
     set expanded(expanded) {
         this.#expanded = expanded;
+        this.updateDecorations();
         this.requestUpdate();
     }
     get isExpandable() {
@@ -1041,7 +1043,6 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         this.#domIssuesManager = domIssuesManager;
         this.#view = view;
         this.#expandedChildrenLimit = InitialChildrenLimit;
-        this.decorationsThrottler = new Common.Throttler.Throttler(100);
         this.inClipboard = false;
         this.#hovered = false;
         this.editing = null;
@@ -1097,6 +1098,13 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         UI.UIUtils.runCSSAnimationOnce(tagName || this.contentElement, DOM_UPDATE_ANIMATION_CLASS_NAME);
     }
     #clearDOMNextUpdate = false;
+    wasShown() {
+        super.wasShown();
+        if (!this.isClosingTag) {
+            void this.#updateAdorners();
+            this.updateDecorations();
+        }
+    }
     performUpdate() {
         // Skip updating when in-place editing (not HTML editing indicated by the
         // editorState) is happening. Doing an update would break editing
@@ -1104,6 +1112,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         if (this.editing && !this.#editorState) {
             return;
         }
+        this.updateDecorations();
         if (this.#clearDOMNextUpdate) {
             this.#clearDOMNextUpdate = false;
             Lit.render(Lit.nothing, this.contentElement, { host: this });
@@ -1218,6 +1227,12 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             }
             else if (edit.isProcessingInstruction) {
                 this.startEditingProcessingInstructionValue();
+            }
+            else if (edit.isTextNode) {
+                const textNode = this.contentElement.querySelector('.webkit-html-text-node');
+                if (textNode) {
+                    this.startEditingTextNode(textNode);
+                }
             }
             else if (edit.isNewAttribute) {
                 this.addNewAttribute();
@@ -2145,7 +2160,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         if (this.node.nodeType() !== Node.ELEMENT_NODE) {
             return;
         }
-        void this.decorationsThrottler.schedule(this.#updateDecorations.bind(this));
+        void this.#decorationsThrottler.schedule(this.#updateDecorations.bind(this));
     }
     #updateDecorations() {
         const node = this.node;
@@ -2174,13 +2189,20 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         }
         return Promise.all(promises).then(updateDecorationsUI.bind(this));
         function updateDecorationsUI() {
-            this.#decorations = decorations;
-            this.#descendantDecorations = descendantDecorations;
-            if (!decorations.length && !descendantDecorations.length) {
-                this.#decorationsTooltip = '';
-                this.requestUpdate();
+            if (!this.isShowing()) {
                 return;
             }
+            if (!decorations.length && !descendantDecorations.length) {
+                if (this.#decorations.length || this.#descendantDecorations.length || this.#decorationsTooltip) {
+                    this.#decorations = [];
+                    this.#descendantDecorations = [];
+                    this.#decorationsTooltip = '';
+                    this.requestUpdate();
+                }
+                return;
+            }
+            this.#decorations = decorations;
+            this.#descendantDecorations = descendantDecorations;
             const tooltip = [];
             for (const decoration of decorations) {
                 tooltip.push(decoration.title);
@@ -2568,6 +2590,11 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     }
     onenter() {
         this.#syncOutlineProperties();
+        const outline = this.treeOutline;
+        if (outline?.domTreeWidget) {
+            outline.domTreeWidget.startEditing(this.nodeInternal);
+            return true;
+        }
         return this.widget.onenter();
     }
     selectOnMouseDown(event) {

@@ -10,7 +10,7 @@ import { calculateDOMStoragesUsage, resolveDOMStorages } from './DOMStorageUtils
 const lockedString = i18n.i18n.lockedString;
 export class GetStorageBreakdownTool {
     name = "getStorageBreakdown" /* ToolName.GET_STORAGE_BREAKDOWN */;
-    description = 'Retrieves a breakdown of active storage usage per storage type for the top-level page.';
+    description = 'Retrieves total storage usage and quota breakdown across all storage types (IndexedDB, CacheStorage, LocalStorage, SessionStorage, cookies) for the top-level page origin.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: '',

@@ -1,1 +1,0 @@
-gen/front_end/ui/components/text_prompt/text_prompt.js: gen/front_end/ui/components/text_prompt/textPrompt.css.js gen/front_end/ui/components/text_prompt/TextPrompt.js gen/front_end/ui/components/text_prompt/text_prompt.prebundle.js

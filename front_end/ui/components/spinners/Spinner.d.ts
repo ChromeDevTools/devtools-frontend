@@ -3,7 +3,7 @@ export interface SpinnerProperties {
 }
 export declare class Spinner extends HTMLElement {
     #private;
-    static readonly observedAttributes: string[];
+    static readonly observedAttributes: readonly ['active'];
     constructor(props?: SpinnerProperties);
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void;
     /**

@@ -18,7 +18,7 @@ export default `/*
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
 }
 
 .devtools-link:focus-visible {
@@ -26,9 +26,9 @@ export default `/*
 }
 
 input.devtools-text-input[type="text"] {
-  padding: 3px 6px;
-  margin-left: 4px;
-  margin-right: 4px;
+  padding: 3px var(--sys-size-4);
+  margin-left: var(--sys-size-3);
+  margin-right: var(--sys-size-3);
   width: 250px;
   height: 25px;
 }
@@ -42,8 +42,8 @@ input.devtools-text-input[type="text"]::placeholder {
 }
 
 .inline-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
 
   &[name="check-circle"] {
     color: var(--icon-checkmark-green);

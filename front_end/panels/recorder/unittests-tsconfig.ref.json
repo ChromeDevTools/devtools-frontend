@@ -1,0 +1,62 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/panels/recorder",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/panels/recorder/CreateRecordingView.test.ts",
+    "../../../../../../front_end/panels/recorder/RecorderPanel.test.ts",
+    "../../../../../../front_end/panels/recorder/RecordingListView.test.ts",
+    "../../../../../../front_end/panels/recorder/RecordingView.test.ts",
+    "../../../../../../front_end/panels/recorder/ReplaySection.test.ts",
+    "../../../../../../front_end/panels/recorder/StepEditor.test.ts",
+    "../../../../../../front_end/panels/recorder/StepView.test.ts",
+    "../../../../../../front_end/panels/recorder/injected.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/host/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/menus/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/components/suggestion_input/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "converters/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "extensions/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "injected/injected-tsconfig.ref.json"
+    },
+    {
+      "path": "models/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "recorder-actions/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "testing/testing-tsconfig.ref.json"
+    }
+  ]
+}

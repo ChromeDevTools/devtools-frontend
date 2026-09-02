@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/settings/SettingCheckbox.js
+// ../../front_end/ui/components/settings/SettingCheckbox.ts
 var SettingCheckbox_exports = {};
 __export(SettingCheckbox_exports, {
   SettingCheckbox: () => SettingCheckbox
@@ -66,7 +66,7 @@ p {
 
 /*# sourceURL=${import.meta.resolve("./settingCheckbox.css")} */`;
 
-// gen/front_end/ui/components/settings/SettingCheckbox.js
+// ../../front_end/ui/components/settings/SettingCheckbox.ts
 var { html } = Lit;
 var UIStrings = {
   /**
@@ -104,8 +104,8 @@ var SettingCheckbox = class extends HTMLElement {
       const jsLogContext = `${this.#setting.name}-documentation`;
       const data = {
         iconName: "info",
-        variant: "icon",
-        size: "SMALL",
+        variant: Buttons.Button.Variant.ICON,
+        size: Buttons.Button.Size.SMALL,
         jslogContext: jsLogContext
       };
       const url = learnMore.url;
@@ -161,7 +161,8 @@ var SettingCheckbox = class extends HTMLElement {
     const titleText = uiDescriptor?.title ?? "";
     const icon = this.icon();
     const title = learnMore?.tooltip?.() ?? "";
-    Lit.render(html`
+    Lit.render(
+      html`
       <style>${Input.checkboxStyles}</style>
       <style>${settingCheckbox_css_default}</style>
       <p>
@@ -177,7 +178,10 @@ var SettingCheckbox = class extends HTMLElement {
           ${this.#textOverride || titleText}
         </label>
         ${icon}
-      </p>`, this.#shadow, { host: this });
+      </p>`,
+      this.#shadow,
+      { host: this }
+    );
   }
   #checkboxChanged(e) {
     this.#setting?.set(e.target.checked);

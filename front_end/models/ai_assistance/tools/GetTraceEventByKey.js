@@ -10,7 +10,7 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 export class GetTraceEventByKeyTool {
     name = "getTraceEventByKey" /* ToolName.GET_TRACE_EVENT_BY_KEY */;
-    description = 'Get details for a specific trace event by its event key.';
+    description = 'Retrieves details for a specific trace event by its event key.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: 'Arguments for looking up a trace event.',

@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/menus/Menu.js
+// ../../front_end/ui/components/menus/Menu.ts
 var Menu_exports = {};
 __export(Menu_exports, {
   Menu: () => Menu,
@@ -159,7 +159,7 @@ var menuItem_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./menuItem.css")} */`;
 
-// gen/front_end/ui/components/menus/Menu.js
+// ../../front_end/ui/components/menus/Menu.ts
 var { html, Directives: { ref } } = Lit;
 var selectedItemCheckmark = new URL("../../../Images/checkmark.svg", import.meta.url).toString();
 var Menu = class extends HTMLElement {
@@ -169,10 +169,10 @@ var Menu = class extends HTMLElement {
   #props = {
     origin: null,
     open: false,
-    position: "auto",
+    position: Dialogs.Dialog.DialogVerticalPosition.AUTO,
     showDivider: false,
     showSelectedItem: true,
-    horizontalAlignment: "auto",
+    horizontalAlignment: Dialogs.Dialog.DialogHorizontalAlignment.AUTO,
     getConnectorCustomXPosition: null
   };
   get origin() {
@@ -293,13 +293,13 @@ var Menu = class extends HTMLElement {
     evt.stopImmediatePropagation();
     let item = evt.target;
     const path = evt.composedPath();
-    const shouldFocusFirstItem = key === "ArrowDown" || key === "ArrowRight";
+    const shouldFocusFirstItem = key === Platform.KeyboardUtilities.ArrowKey.DOWN || key === Platform.KeyboardUtilities.ArrowKey.RIGHT;
     if (!this.#itemIsFocused && shouldFocusFirstItem) {
       this.#focusFirstItem();
       this.#itemIsFocused = true;
       return;
     }
-    if (!this.#itemIsFocused && key === "ArrowUp") {
+    if (!this.#itemIsFocused && key === Platform.KeyboardUtilities.ArrowKey.UP) {
       this.#focusLastItem();
       this.#itemIsFocused = true;
       return;
@@ -335,12 +335,12 @@ var Menu = class extends HTMLElement {
   }
   #handleArrowKeyNavigation(key, currentItem) {
     let nextSibling = currentItem;
-    if (key === "ArrowDown") {
+    if (key === Platform.KeyboardUtilities.ArrowKey.DOWN) {
       nextSibling = currentItem.nextElementSibling;
       if (nextSibling === null && currentItem.parentElement instanceof MenuGroup) {
         nextSibling = this.#firstItemInNextGroup(currentItem);
       }
-    } else if (key === "ArrowUp") {
+    } else if (key === Platform.KeyboardUtilities.ArrowKey.UP) {
       nextSibling = currentItem.previousElementSibling;
       if (nextSibling === null && currentItem.parentElement instanceof MenuGroup) {
         nextSibling = this.#lastItemInPreviousGroup(currentItem);
@@ -547,12 +547,11 @@ customElements.define("devtools-menu", Menu);
 customElements.define("devtools-menu-item", MenuItem);
 customElements.define("devtools-menu-group", MenuGroup);
 var MenuItemSelectedEvent = class _MenuItemSelectedEvent extends Event {
-  itemValue;
-  static eventName = "menuitemselected";
   constructor(itemValue) {
     super(_MenuItemSelectedEvent.eventName, { bubbles: true, composed: true });
     this.itemValue = itemValue;
   }
+  static eventName = "menuitemselected";
 };
 var MenuCloseRequest = class _MenuCloseRequest extends Event {
   static eventName = "menucloserequest";
@@ -561,7 +560,7 @@ var MenuCloseRequest = class _MenuCloseRequest extends Event {
   }
 };
 
-// gen/front_end/ui/components/menus/SelectMenu.js
+// ../../front_end/ui/components/menus/SelectMenu.ts
 var SelectMenu_exports = {};
 __export(SelectMenu_exports, {
   SelectMenu: () => SelectMenu,
@@ -748,7 +747,7 @@ button[disabled] {
 
 /*# sourceURL=${import.meta.resolve("./selectMenuButton.css")} */`;
 
-// gen/front_end/ui/components/menus/SelectMenu.js
+// ../../front_end/ui/components/menus/SelectMenu.ts
 var { html: html2 } = Lit2;
 var deployMenuArrow = new URL("../../../Images/triangle-down.svg", import.meta.url).toString();
 var SelectMenu = class extends HTMLElement {
@@ -757,8 +756,8 @@ var SelectMenu = class extends HTMLElement {
   #open = false;
   #props = {
     buttonTitle: "",
-    position: "bottom",
-    horizontalAlignment: "auto",
+    position: Dialogs2.Dialog.DialogVerticalPosition.BOTTOM,
+    horizontalAlignment: Dialogs2.Dialog.DialogHorizontalAlignment.AUTO,
     showArrow: false,
     sideButton: false,
     showDivider: false,
@@ -898,7 +897,8 @@ var SelectMenu = class extends HTMLElement {
     if (!ComponentHelpers2.ScheduledRender.isScheduledRender(this)) {
       throw new Error("SelectMenu render was not scheduled");
     }
-    Lit2.render(html2`
+    Lit2.render(
+      html2`
         <style>${selectMenu_css_default}</style>
         <devtools-menu
             @menucloserequest=${this.#onMenuClose}
@@ -911,7 +911,10 @@ var SelectMenu = class extends HTMLElement {
             .getConnectorCustomXPosition=${null}>
           <slot></slot>
         </devtools-menu>
-        ${this.#renderButton()}`, this.#shadow, { host: this });
+        ${this.#renderButton()}`,
+      this.#shadow,
+      { host: this }
+    );
   }
 };
 var SelectMenuButton = class extends HTMLElement {
@@ -921,12 +924,12 @@ var SelectMenuButton = class extends HTMLElement {
     this.style.setProperty("--deploy-menu-arrow", `url(${deployMenuArrow})`);
     void RenderCoordinator2.write(() => {
       switch (this.arrowDirection) {
-        case "auto":
-        case "top": {
+        case Dialogs2.Dialog.DialogVerticalPosition.AUTO:
+        case Dialogs2.Dialog.DialogVerticalPosition.TOP: {
           this.style.setProperty("--arrow-angle", "180deg");
           break;
         }
-        case "bottom": {
+        case Dialogs2.Dialog.DialogVerticalPosition.BOTTOM: {
           this.style.setProperty("--arrow-angle", "0deg");
           break;
         }
@@ -937,7 +940,7 @@ var SelectMenuButton = class extends HTMLElement {
   }
   #props = {
     showArrow: false,
-    arrowDirection: "bottom",
+    arrowDirection: Dialogs2.Dialog.DialogVerticalPosition.BOTTOM,
     disabled: false,
     singleArrow: false,
     jslogContext: ""
@@ -990,8 +993,8 @@ var SelectMenuButton = class extends HTMLElement {
   }
   #handleButtonKeyDown(evt) {
     const key = evt.key;
-    const shouldShowDialogBelow = this.arrowDirection === "bottom" && key === "ArrowDown";
-    const shouldShowDialogAbove = this.arrowDirection === "top" && key === "ArrowUp";
+    const shouldShowDialogBelow = this.arrowDirection === Dialogs2.Dialog.DialogVerticalPosition.BOTTOM && key === Platform2.KeyboardUtilities.ArrowKey.DOWN;
+    const shouldShowDialogAbove = this.arrowDirection === Dialogs2.Dialog.DialogVerticalPosition.TOP && key === Platform2.KeyboardUtilities.ArrowKey.UP;
     const isEnter = key === Platform2.KeyboardUtilities.ENTER_KEY;
     const isSpace = evt.code === "Space";
     if (shouldShowDialogBelow || shouldShowDialogAbove || isEnter || isSpace) {
@@ -1015,7 +1018,8 @@ var SelectMenuButton = class extends HTMLElement {
         </span>
         ${arrow}
       </span>`;
-    Lit2.render(html2`
+    Lit2.render(
+      html2`
         <style>${selectMenuButton_css_default}</style>
         <button
             aria-haspopup="true" aria-expanded="false" class="show"
@@ -1023,18 +1027,20 @@ var SelectMenuButton = class extends HTMLElement {
             ?disabled=${this.disabled}
             jslog=${VisualLogging2.dropDown(this.jslogContext)}>
           ${buttonTitle}
-        </button>`, this.#shadow, { host: this });
+        </button>`,
+      this.#shadow,
+      { host: this }
+    );
   }
 };
 customElements.define("devtools-select-menu", SelectMenu);
 customElements.define("devtools-select-menu-button", SelectMenuButton);
 var SelectMenuItemSelectedEvent = class _SelectMenuItemSelectedEvent extends Event {
-  itemValue;
-  static eventName = "selectmenuselected";
   constructor(itemValue) {
     super(_SelectMenuItemSelectedEvent.eventName, { bubbles: true, composed: true });
     this.itemValue = itemValue;
   }
+  static eventName = "selectmenuselected";
 };
 var SelectMenuSideButtonClickEvent = class _SelectMenuSideButtonClickEvent extends Event {
   static eventName = "selectmenusidebuttonclick";

@@ -13,7 +13,7 @@ import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
  */
 export class ResolveDevtoolsNodePathTool {
     name = "resolveDevtoolsNodePath" /* ToolName.RESOLVE_DEVTOOLS_NODE_PATH */;
-    description = 'Resolves a DevTools node path to a backend node ID.';
+    description = 'Resolves a DevTools node path (e.g. from a Lighthouse audit snippet) to an element backend node ID for further DOM, style, or accessibility inspection.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: 'Arguments for resolving a DevTools node path to a backend node ID.',
@@ -26,7 +26,7 @@ export class ResolveDevtoolsNodePathTool {
             },
             path: {
                 type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                description: 'DevTools node path string.',
+                description: 'DevTools node path string (e.g. "1,HTML,1,BODY,2,DIV").',
                 nullable: false,
             },
         },

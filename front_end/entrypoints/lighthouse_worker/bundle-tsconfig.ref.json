@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/entrypoints/lighthouse_worker",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/entrypoints/lighthouse_worker/lighthouse_worker.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "lighthouse_worker-tsconfig.ref.json"
+    }
+  ]
+}

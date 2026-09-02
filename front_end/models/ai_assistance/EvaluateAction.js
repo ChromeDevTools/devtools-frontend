@@ -81,7 +81,7 @@ export class EvaluateAction {
             returnByValue: false,
             allowUnsafeEvalBlockedByCSP: false,
             throwOnSideEffect,
-            userGesture: true,
+            userGesture: false,
             awaitPromise: true,
             arguments: args.map(remoteObject => {
                 return { objectId: remoteObject.objectId };

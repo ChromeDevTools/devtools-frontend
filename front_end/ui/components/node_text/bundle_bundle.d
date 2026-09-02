@@ -1,0 +1,1 @@
+gen/front_end/ui/components/node_text/node_text.js: gen/front_end/ui/components/node_text/nodeText.css.js ../../front_end/ui/components/node_text/NodeText.ts ../../front_end/ui/components/node_text/node_text.ts

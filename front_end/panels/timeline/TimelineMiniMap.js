@@ -74,10 +74,10 @@ export class TimelineMiniMap extends Common.ObjectWrapper.eventMixin(UI.Widget.V
         if (!traceBoundsState) {
             return;
         }
-        const left = (event.data.startTime > 0) ? event.data.startTime : traceBoundsState.milli.entireTraceBounds.min;
-        const right = Number.isFinite(event.data.endTime) ? event.data.endTime : traceBoundsState.milli.entireTraceBounds.max;
+        const left = (event.data.startTime > 0) ? event.data.startTime : traceBoundsState.milli.minimapTraceBounds.min;
+        const right = Number.isFinite(event.data.endTime) ? event.data.endTime : traceBoundsState.milli.minimapTraceBounds.max;
         TraceBounds.TraceBounds.BoundsManager.instance().setTimelineVisibleWindow(Trace.Helpers.Timing.traceWindowFromMilliSeconds(Trace.Types.Timing.Milli(left), Trace.Types.Timing.Milli(right)), {
-            shouldAnimate: true,
+            shouldAnimate: false,
         });
     }
     #onTraceBoundsChange(event) {

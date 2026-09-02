@@ -423,30 +423,41 @@ export class ChartViewport extends UI.Widget.VBox {
         // that if the view is restored, the time shown is correct.
         if (this.cancelWindowTimesAnimation) {
             this.cancelWindowTimesAnimation();
+            this.cancelWindowTimesAnimation = null;
             this.setWindowTimes(this.targetLeftTime, this.targetRightTime, false);
         }
     }
     setWindowTimes(startTime, endTime, animate) {
-        if (startTime === this.targetLeftTime && endTime === this.targetRightTime) {
+        // If already animating to the requested target, let the active animation continue.
+        if (animate && this.cancelWindowTimesAnimation && this.targetLeftTime === startTime &&
+            this.targetRightTime === endTime) {
             return;
         }
-        if (!animate || this.visibleLeftTime === 0 || this.visibleRightTime === Infinity ||
-            (startTime === 0 && endTime === Infinity) || (startTime === Infinity && endTime === Infinity)) {
-            // Skip animation, move instantly.
-            this.targetLeftTime = startTime;
-            this.targetRightTime = endTime;
+        // If already at rest at the target window with no active animation, nothing to do.
+        if (!this.cancelWindowTimesAnimation && this.visibleLeftTime === startTime && this.visibleRightTime === endTime) {
+            return;
+        }
+        // Cancel any in-flight animation before starting a new transition or snapping.
+        if (this.cancelWindowTimesAnimation) {
+            this.cancelWindowTimesAnimation();
+            this.cancelWindowTimesAnimation = null;
+        }
+        this.targetLeftTime = startTime;
+        this.targetRightTime = endTime;
+        // Only animate if requested and both current and target bounds are finite, valid ranges.
+        // Initial loads (where visibleLeftTime/RightTime are 0 or uninitialized) and sentinel
+        // ranges (like Infinity) snap instantly to prevent animation glitches or NaN calculations.
+        const hasInitialWindow = Number.isFinite(this.visibleLeftTime) && Number.isFinite(this.visibleRightTime) &&
+            this.visibleRightTime > this.visibleLeftTime;
+        const isFiniteTarget = Number.isFinite(startTime) && Number.isFinite(endTime) && endTime > startTime;
+        const canAnimate = Boolean(animate) && hasInitialWindow && isFiniteTarget;
+        if (!canAnimate) {
+            // Snap instantly.
             this.visibleLeftTime = startTime;
             this.visibleRightTime = endTime;
             this.scheduleUpdate();
             return;
         }
-        if (this.cancelWindowTimesAnimation) {
-            this.cancelWindowTimesAnimation();
-            this.visibleLeftTime = this.targetLeftTime;
-            this.visibleRightTime = this.targetRightTime;
-        }
-        this.targetLeftTime = startTime;
-        this.targetRightTime = endTime;
         this.cancelWindowTimesAnimation = UI.UIUtils.animateFunction(this.element.window(), animateWindowTimes.bind(this), [{ from: this.visibleLeftTime, to: startTime }, { from: this.visibleRightTime, to: endTime }], 100, () => {
             this.cancelWindowTimesAnimation = null;
         });

@@ -25,7 +25,7 @@ export default `/*
     color: var(--sys-color-primary);
     text-decoration: underline;
     cursor: pointer;
-    outline-offset: 2px;
+    outline-offset: var(--sys-size-2);
   }
 
   button.link {

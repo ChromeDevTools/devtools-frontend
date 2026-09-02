@@ -253,8 +253,8 @@ var appManifestView_css_default = `/*
 }
 
 .inline-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
   margin-inline: var(--sys-size-3);
 
   &[name="check-circle"] {
@@ -268,7 +268,7 @@ var appManifestView_css_default = `/*
 }
 
 select {
-  margin: 4px;
+  margin: var(--sys-size-3);
 }
 
 .inline-button {
@@ -294,7 +294,7 @@ devtools-report .report-section {
   grid-column: 1 / 3;
   grid-template-columns: subgrid;
   padding-bottom: var(--sys-size-5);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   margin-bottom: var(--sys-size-5);
 }
 
@@ -309,7 +309,7 @@ devtools-report .report-section {
 .image-wrapper {
   display: inline-block;
   height: fit-content;
-  margin-right: 8px;
+  margin-right: var(--sys-size-5);
 }
 
 .show-mask img {
@@ -1803,7 +1803,7 @@ var backgroundServiceView_css_default = `/*
   justify-content: center;
   align-items: center;
   overflow: auto;
-  font-size: 13px;
+  font-size: var(--sys-typescale-body3-size);
   color: var(--sys-color-on-surface-subtle);
 }
 
@@ -1853,7 +1853,7 @@ var backgroundServiceView_css_default = `/*
 }
 
 .background-service-record-inline-button {
-  margin-bottom: 6px;
+  margin-bottom: var(--sys-size-4);
 }
 
 .start-recording-button {

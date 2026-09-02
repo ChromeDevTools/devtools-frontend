@@ -1,1 +1,22 @@
-{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../../front_end/ui/components/lists","outDir":".","declarationDir":"."},"files":["../../../../../../../front_end/ui/components/lists/lists.ts"],"references":[{"path":"./css_files-tsconfig.ref.json"},{"path":"./lists-tsconfig.ref.json"}]}
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/ui/components/lists",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../front_end/ui/components/lists/lists.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "lists-tsconfig.ref.json"
+    }
+  ]
+}

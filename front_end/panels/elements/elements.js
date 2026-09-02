@@ -748,7 +748,7 @@ var ShadowSwatchPopoverHelper = class extends Common.ObjectWrapper.ObjectWrapper
 };
 
 // gen/front_end/panels/elements/ElementsPanel.js
-import * as ElementsComponents7 from "./components/components.js";
+import * as ElementsComponents8 from "./components/components.js";
 
 // gen/front_end/panels/elements/ComputedStyleWidget.js
 var ComputedStyleWidget_exports = {};
@@ -11928,23 +11928,27 @@ import * as Highlighting3 from "../../ui/components/highlighting/highlighting.js
 import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.js";
 import * as UIComponentUtils from "../../ui/legacy/components/utils/utils.js";
 import * as UI19 from "../../ui/legacy/legacy.js";
-import * as Lit9 from "../../ui/lit/lit.js";
+import * as Lit10 from "../../ui/lit/lit.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/AdoptedStyleSheetTreeElement.js
 var AdoptedStyleSheetTreeElement_exports = {};
 __export(AdoptedStyleSheetTreeElement_exports, {
   AdoptedStyleSheetContentsTreeElement: () => AdoptedStyleSheetContentsTreeElement,
+  AdoptedStyleSheetContentsWidget: () => AdoptedStyleSheetContentsWidget,
   AdoptedStyleSheetSetTreeElement: () => AdoptedStyleSheetSetTreeElement,
-  AdoptedStyleSheetTreeElement: () => AdoptedStyleSheetTreeElement
+  AdoptedStyleSheetTreeElement: () => AdoptedStyleSheetTreeElement,
+  DEFAULT_ADOPTED_STYLESHEET_CONTENTS_VIEW: () => DEFAULT_ADOPTED_STYLESHEET_CONTENTS_VIEW
 });
 import * as SDK10 from "../../core/sdk/sdk.js";
 import * as TextUtils6 from "../../core/text_utils/text_utils.js";
 import * as CodeHighlighter from "../../ui/components/code_highlighter/code_highlighter.js";
 import * as Components5 from "../../ui/legacy/components/utils/utils.js";
 import * as UI13 from "../../ui/legacy/legacy.js";
+import * as Lit7 from "../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 import { PanelUtils as PanelUtils2 } from "../utils/utils.js";
+var { Directives: { ref: ref3 }, html: html10, render: render8 } = Lit7;
 var AdoptedStyleSheetSetTreeElement = class extends UI13.TreeOutline.TreeElement {
   adoptedStyleSheets;
   constructor(adoptedStyleSheets) {
@@ -11996,95 +12000,216 @@ var AdoptedStyleSheetTreeElement = class _AdoptedStyleSheetTreeElement extends U
   }
 };
 var AdoptedStyleSheetContentsTreeElement = class extends UI13.TreeOutline.TreeElement {
-  styleSheetHeader;
-  editing = null;
+  widget;
+  widgetWrapper;
   constructor(styleSheetHeader) {
     super("");
-    this.styleSheetHeader = styleSheetHeader;
+    this.widgetWrapper = document.createElement("div");
+    this.widgetWrapper.style.display = "contents";
+    this.title = this.widgetWrapper;
+    this.widget = new AdoptedStyleSheetContentsWidget();
+    this.widget.styleSheetHeader = styleSheetHeader;
+    this.widget.element.classList.remove("vbox", "flex-auto");
+    this.widget.element.style.display = "contents";
+    this.widget.markAsRoot();
+    this.widget.show(this.widgetWrapper);
   }
   onbind() {
-    this.styleSheetHeader.cssModel().addEventListener(SDK10.CSSModel.Events.StyleSheetChanged, this.onStyleSheetChanged, this);
-    void this.onpopulate();
+    if (!this.widget.isShowing()) {
+      this.widget.show(this.widgetWrapper);
+    }
   }
   onunbind() {
-    if (this.editing) {
-      this.editing.cancel();
-    }
-    this.styleSheetHeader.cssModel().removeEventListener(SDK10.CSSModel.Events.StyleSheetChanged, this.onStyleSheetChanged, this);
+    this.widget.detach();
   }
   async onpopulate() {
-    const data = await this.styleSheetHeader.requestContentData();
-    if (!TextUtils6.ContentData.ContentData.isError(data) && data.isTextContent) {
-      this.listItemElement.removeChildren();
-      const newNode = this.listItemElement.createChild("span", "webkit-html-text-node webkit-html-css-node");
-      newNode.setAttribute("jslog", `${VisualLogging7.value("css-text-node").track({ change: true, dblclick: true })}`);
-      const text = data.text;
-      newNode.textContent = text.replace(/^[\n\r]+|\s+$/g, "");
-      void CodeHighlighter.CodeHighlighter.highlightNode(newNode, "text/css");
+    if (!this.widget.text) {
+      await this.widget.fetchContent();
     }
-  }
-  onStyleSheetChanged({ data: { styleSheetId } }) {
-    if (styleSheetId === this.styleSheetHeader.id) {
-      void this.onpopulate();
-    }
+    this.widget.requestUpdate();
+    await this.widget.updateComplete;
   }
   ondblclick(event) {
-    if (this.editing) {
+    if (this.widget.isEditing()) {
       return false;
     }
-    void this.startEditing(event.target);
+    this.widget.startEditing(event.target);
     return false;
   }
   onenter() {
-    if (this.editing) {
+    if (this.widget.isEditing()) {
       return false;
     }
-    const target = this.listItemElement.querySelector(".webkit-html-text-node");
-    if (target) {
-      void this.startEditing(target);
-      return true;
-    }
-    return false;
+    void this.widget.startEditing();
+    return true;
   }
-  async startEditing(target) {
-    if (this.editing || UI13.UIUtils.isBeingEdited(target)) {
+  isEditing() {
+    return this.widget.isEditing();
+  }
+};
+var DEFAULT_ADOPTED_STYLESHEET_CONTENTS_VIEW = (input, _output, target) => {
+  const highlightNode = ref3((el) => {
+    if (el) {
+      el.textContent = input.text;
+      void CodeHighlighter.CodeHighlighter.highlightNode(el, "text/css");
+    }
+  });
+  render8(html10`
+        <span class="webkit-html-text-node webkit-html-css-node"
+              jslog=${VisualLogging7.value("css-text-node").track({
+    change: true,
+    dblclick: true
+  })}
+              ${highlightNode}
+              @dblclick=${input.onDblClick}></span>
+      `, target);
+};
+var AdoptedStyleSheetContentsWidget = class extends UI13.Widget.Widget {
+  #styleSheetHeader;
+  #text = "";
+  #fetchContentPromise = null;
+  #editing = null;
+  #view;
+  constructor(element, view = DEFAULT_ADOPTED_STYLESHEET_CONTENTS_VIEW) {
+    super(element, { useShadowDom: false });
+    this.#view = view;
+  }
+  get text() {
+    return this.#text;
+  }
+  set styleSheetHeader(header) {
+    if (this.#styleSheetHeader === header) {
       return;
     }
-    const textNode = target.enclosingNodeOrSelfWithClass("webkit-html-text-node");
-    if (!textNode) {
+    if (this.#styleSheetHeader) {
+      this.#styleSheetHeader.cssModel().removeEventListener(SDK10.CSSModel.Events.StyleSheetChanged, this.#onStyleSheetChanged, this);
+    }
+    this.#styleSheetHeader = header;
+    this.#text = "";
+    if (this.isShowing() && this.#styleSheetHeader) {
+      this.#styleSheetHeader.cssModel().addEventListener(SDK10.CSSModel.Events.StyleSheetChanged, this.#onStyleSheetChanged, this);
+      void this.fetchContent();
+    }
+  }
+  get styleSheetHeader() {
+    return this.#styleSheetHeader;
+  }
+  wasShown() {
+    super.wasShown();
+    if (this.#styleSheetHeader) {
+      this.#styleSheetHeader.cssModel().addEventListener(SDK10.CSSModel.Events.StyleSheetChanged, this.#onStyleSheetChanged, this);
+      if (!this.#text) {
+        void this.fetchContent();
+      }
+    }
+  }
+  willHide() {
+    super.willHide();
+    if (this.#editing) {
+      this.#editing.cancel();
+      this.#editing = null;
+    }
+    if (this.#styleSheetHeader) {
+      this.#styleSheetHeader.cssModel().removeEventListener(SDK10.CSSModel.Events.StyleSheetChanged, this.#onStyleSheetChanged, this);
+    }
+  }
+  async fetchContent() {
+    const header = this.#styleSheetHeader;
+    if (!header) {
       return;
     }
-    const data = await this.styleSheetHeader.requestContentData();
-    textNode.textContent = TextUtils6.ContentData.ContentData.isError(data) || !data.isTextContent ? "" : data.text;
-    const config = new UI13.InplaceEditor.Config(this.editingCommitted.bind(this), () => this.editingCancelled(), void 0);
-    const editorHandles = UI13.InplaceEditor.InplaceEditor.startEditing(textNode, config);
-    if (!editorHandles) {
+    if (this.#fetchContentPromise) {
+      return await this.#fetchContentPromise;
+    }
+    this.#fetchContentPromise = (async () => {
+      try {
+        const data = await header.requestContentData();
+        if (!TextUtils6.ContentData.ContentData.isError(data) && data.isTextContent) {
+          this.#text = data.text.replace(/^[\n\r]+|\s+$/g, "");
+          this.requestUpdate();
+        }
+      } finally {
+        this.#fetchContentPromise = null;
+      }
+    })();
+    return await this.#fetchContentPromise;
+  }
+  #onStyleSheetChanged({ data: { styleSheetId } }) {
+    if (styleSheetId === this.#styleSheetHeader?.id) {
+      void this.fetchContent();
+    }
+  }
+  startEditing(target) {
+    if (this.#editing || !this.#styleSheetHeader) {
       return;
     }
-    this.editing = {
-      commit: editorHandles.commit,
-      cancel: editorHandles.cancel,
+    const textNode = (target ? target.enclosingNodeOrSelfWithClass("webkit-html-text-node") : null) ?? this.contentElement.querySelector(".webkit-html-text-node");
+    if (!textNode || UI13.UIUtils.isBeingEdited(textNode)) {
+      return;
+    }
+    const dummyEditorHandles = {
+      commit: () => {
+      },
+      cancel: () => {
+      },
       resize: () => {
       }
     };
-    const componentSelection = this.listItemElement.getComponentSelection();
-    componentSelection?.selectAllChildren(textNode);
+    this.#editing = dummyEditorHandles;
+    void (async () => {
+      if (!this.#styleSheetHeader) {
+        this.#editing = null;
+        return;
+      }
+      const data = await this.#styleSheetHeader.requestContentData();
+      textNode.textContent = TextUtils6.ContentData.ContentData.isError(data) || !data.isTextContent ? "" : data.text;
+      const config = new UI13.InplaceEditor.Config((element, newText, oldText) => this.#editingCommitted(element, newText, oldText), () => this.#editingCancelled(), void 0);
+      const editorHandles = UI13.InplaceEditor.InplaceEditor.startEditing(textNode, config);
+      if (!editorHandles) {
+        this.#editing = null;
+        return;
+      }
+      this.#editing = {
+        commit: editorHandles.commit,
+        cancel: editorHandles.cancel,
+        resize: () => {
+        }
+      };
+      const selection = this.contentElement.getComponentSelection();
+      selection?.selectAllChildren(textNode);
+    })();
   }
-  async editingCommitted(element, newText, oldText) {
-    this.editing = null;
-    if (newText !== oldText) {
-      await this.styleSheetHeader.cssModel().setStyleSheetText(this.styleSheetHeader.id, newText, false);
+  async #editingCommitted(_element, newText, oldText) {
+    this.#editing = null;
+    if (newText !== oldText && this.#styleSheetHeader) {
+      await this.#styleSheetHeader.cssModel().setStyleSheetText(this.#styleSheetHeader.id, newText, false);
     }
-    this.editingCancelled();
+    this.#editingCancelled();
   }
-  editingCancelled() {
-    this.editing = null;
-    void this.onpopulate();
+  #editingCancelled() {
+    this.#editing = null;
+    void this.fetchContent();
   }
   isEditing() {
-    return this.editing !== null;
+    return this.#editing !== null;
+  }
+  performUpdate() {
+    if (this.isEditing()) {
+      return;
+    }
+    this.#view({
+      text: this.#text,
+      isEditing: this.isEditing(),
+      onDblClick: (event) => {
+        event.stopPropagation();
+        this.startEditing(event.target);
+      }
+    }, void 0, this.contentElement);
   }
 };
+
+// gen/front_end/panels/elements/ElementsTreeOutline.js
+import * as ElementsComponents7 from "./components/components.js";
 
 // gen/front_end/panels/elements/DOMPath.js
 var DOMPath_exports = {};
@@ -12400,7 +12525,7 @@ import * as Highlighting2 from "../../ui/components/highlighting/highlighting.js
 import * as TextEditor3 from "../../ui/components/text_editor/text_editor.js";
 import * as Components6 from "../../ui/legacy/components/utils/utils.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
-import * as Lit7 from "../../ui/lit/lit.js";
+import * as Lit8 from "../../ui/lit/lit.js";
 import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon3 from "../common/common.js";
 import * as Media from "../media/media.js";
@@ -12571,7 +12696,7 @@ import * as SDK12 from "../../core/sdk/sdk.js";
 import * as Buttons2 from "../../ui/components/buttons/buttons.js";
 import * as UIHelpers from "../../ui/helpers/helpers.js";
 import * as UI14 from "../../ui/legacy/legacy.js";
-import { html as html10, render as render8 } from "../../ui/lit/lit.js";
+import { html as html11, render as render9 } from "../../ui/lit/lit.js";
 import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/elementStatePaneWidget.css.js
@@ -12689,7 +12814,7 @@ var SpecificPseudoStates;
 })(SpecificPseudoStates || (SpecificPseudoStates = {}));
 var DEFAULT_VIEW4 = (input, _output, target) => {
   const createElementStateCheckbox = (state) => {
-    return html10`
+    return html11`
         <div id=${state.state}>
           <devtools-checkbox class="small" @click=${input.onStateCheckboxClicked}
               jslog=${VisualLogging8.toggle(state.state).track({ change: true })} ?checked=${state.checked} ?disabled=${state.disabled}
@@ -12698,7 +12823,7 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
         </devtools-checkbox>
         </div>`;
   };
-  render8(html10`
+  render9(html11`
     <style>${elementStatePaneWidget_css_default}</style>
     <div class="styles-element-state-pane"
         jslog=${VisualLogging8.pane("element-states")}>
@@ -13053,7 +13178,7 @@ function getRegisteredDecorators() {
 }
 
 // gen/front_end/panels/elements/ElementsTreeElement.js
-var { html: html12, nothing: nothing5, render: render10, Directives: { classMap: classMap3, ref: ref3, repeat, until } } = Lit7;
+var { html: html13, nothing: nothing5, render: render11, Directives: { classMap: classMap3, ref: ref4, repeat, until } } = Lit8;
 var { animateOn } = UI15.UIUtils;
 var UIStrings14 = {
   /**
@@ -13226,19 +13351,19 @@ function isOpeningTag(context) {
   return context.tagType === "OPENING_TAG";
 }
 function adornerRef() {
-  let adorner3;
-  return ref3((el) => {
-    if (adorner3) {
-      ElementsPanel.instance().deregisterAdorner(adorner3);
+  let adorner4;
+  return ref4((el) => {
+    if (adorner4) {
+      ElementsPanel.instance().deregisterAdorner(adorner4);
     }
-    adorner3 = el;
-    if (adorner3) {
-      if (ElementsPanel.instance().isAdornerEnabled(adorner3.name)) {
-        adorner3.show();
+    adorner4 = el;
+    if (adorner4) {
+      if (ElementsPanel.instance().isAdornerEnabled(adorner4.name)) {
+        adorner4.show();
       } else {
-        adorner3.hide();
+        adorner4.hide();
       }
-      ElementsPanel.instance().registerAdorner(adorner3);
+      ElementsPanel.instance().registerAdorner(adorner4);
     }
   });
 }
@@ -13263,7 +13388,7 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
         if (pseudoIdentifier) {
           pseudoElementName += `(${pseudoIdentifier})`;
         }
-        return html12`<span class="webkit-html-pseudo-element">${pseudoElementName}</span>\u200B`;
+        return html13`<span class="webkit-html-pseudo-element">${pseudoElementName}</span>\u200B`;
       }
       const tagName = node.nodeNameInCorrectCase();
       if (isClosingTag) {
@@ -13272,7 +13397,7 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
       const openingTag = renderTag(node, tagName, false, expanded, false, updateRecord, issues);
       if (isExpandable) {
         if (!expanded) {
-          return html12`${openingTag}<devtools-elements-tree-expand-button .data=${{ clickHandler: onExpand2 }}></devtools-elements-tree-expand-button><span style="font-size: 0;"
+          return html13`${openingTag}<devtools-elements-tree-expand-button .data=${{ clickHandler: onExpand2 }}></devtools-elements-tree-expand-button><span style="font-size: 0;"
                   >…</span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
         }
         return openingTag;
@@ -13284,55 +13409,55 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
         }
         const result = convertUnicodeCharsToHTMLEntities(firstChild.nodeValue());
         const textContent = Platform7.StringUtilities.collapseWhitespace(result.text);
-        const renderTextNode = ref3((el) => {
+        const renderTextNode = ref4((el) => {
           if (el) {
             el.textContent = textContent;
             Highlighting2.highlightRangesWithStyleClass(el, result.entityRanges, "webkit-html-entity-value");
           }
         });
-        return html12`${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging9.value("text-node").track({ change: true, dblclick: true })} ${animateOn(Boolean(updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
+        return html13`${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging9.value("text-node").track({ change: true, dblclick: true })} ${animateOn(Boolean(updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
       }
       if (isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
-        return html12`${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
+        return html13`${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
       }
       return openingTag;
     }
     case Node.TEXT_NODE: {
       if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "script") {
         const text = node.nodeValue();
-        const highlightNode = ref3((el) => {
+        const highlightNode = ref4((el) => {
           if (el) {
             el.textContent = text.replace(/^[\n\r]+|\s+$/g, "");
             void CodeHighlighter3.CodeHighlighter.highlightNode(el, "text/javascript").then(onUpdateSearchHighlight);
           }
         });
-        return html12`<span class="webkit-html-text-node webkit-html-js-node" jslog=${VisualLogging9.value("script-text-node").track({ change: true, dblclick: true })} ${highlightNode}></span>`;
+        return html13`<span class="webkit-html-text-node webkit-html-js-node" jslog=${VisualLogging9.value("script-text-node").track({ change: true, dblclick: true })} ${highlightNode}></span>`;
       }
       if (node.parentNode && node.parentNode.nodeName().toLowerCase() === "style") {
         const text = node.nodeValue();
-        const highlightNode = ref3((el) => {
+        const highlightNode = ref4((el) => {
           if (el) {
             el.textContent = text.replace(/^[\n\r]+|\s+$/g, "");
             void CodeHighlighter3.CodeHighlighter.highlightNode(el, "text/css").then(onUpdateSearchHighlight);
           }
         });
-        return html12`<span class="webkit-html-text-node webkit-html-css-node" jslog=${VisualLogging9.value("css-text-node").track({ change: true, dblclick: true })} ${highlightNode}></span>`;
+        return html13`<span class="webkit-html-text-node webkit-html-css-node" jslog=${VisualLogging9.value("css-text-node").track({ change: true, dblclick: true })} ${highlightNode}></span>`;
       }
       const result = convertUnicodeCharsToHTMLEntities(node.nodeValue());
       const textContent = Platform7.StringUtilities.collapseWhitespace(result.text);
-      const renderTextNode = ref3((el) => {
+      const renderTextNode = ref4((el) => {
         if (el) {
           el.textContent = textContent;
           Highlighting2.highlightRangesWithStyleClass(el, result.entityRanges, "webkit-html-entity-value");
         }
       });
-      return html12`"<span class="webkit-html-text-node" jslog=${VisualLogging9.value("text-node").track({
+      return html13`"<span class="webkit-html-text-node" jslog=${VisualLogging9.value("text-node").track({
         change: true,
         dblclick: true
       })} ${animateOn(Boolean(updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>"`;
     }
     case Node.COMMENT_NODE: {
-      return html12`<span class="webkit-html-comment">&lt;!--${node.nodeValue()}--&gt;</span>`;
+      return html13`<span class="webkit-html-comment">&lt;!--${node.nodeValue()}--&gt;</span>`;
     }
     case Node.DOCUMENT_TYPE_NODE: {
       let doctype = "<!DOCTYPE " + node.nodeName();
@@ -13348,38 +13473,38 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
         doctype += " [" + node.internalSubset + "]";
       }
       doctype += ">";
-      return html12`<span class="webkit-html-doctype">${doctype}</span>`;
+      return html13`<span class="webkit-html-doctype">${doctype}</span>`;
     }
     case Node.CDATA_SECTION_NODE: {
-      return html12`<span class="webkit-html-text-node">&lt;![CDATA[${node.nodeValue()}]]&gt;</span>`;
+      return html13`<span class="webkit-html-text-node">&lt;![CDATA[${node.nodeValue()}]]&gt;</span>`;
     }
     case Node.DOCUMENT_NODE: {
       const text = node.documentURL;
-      return html12`<span>#document (<span>${Components6.Linkifier.Linkifier.renderLinkifiedUrl(text, {
+      return html13`<span>#document (<span>${Components6.Linkifier.Linkifier.renderLinkifiedUrl(text, {
         text,
         preventClick: true,
         showColumnNumber: false
       })}</span>)</span>`;
     }
     case Node.DOCUMENT_FRAGMENT_NODE: {
-      return html12`<span class="webkit-html-fragment">${Platform7.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase())}</span>`;
+      return html13`<span class="webkit-html-fragment">${Platform7.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase())}</span>`;
     }
     case Node.PROCESSING_INSTRUCTION_NODE: {
       const nodeValue = node.nodeValue();
       const maybeSpace = nodeValue ? " " : "";
-      return html12`<span class="webkit-html-processing-instruction">&lt;?<span
+      return html13`<span class="webkit-html-processing-instruction">&lt;?<span
           class="webkit-html-tag-name" jslog=${VisualLogging9.value("tag-name").track({ change: true, dblclick: true })}>${node.nodeName()}</span>${maybeSpace}<span class="webkit-html-processing-instruction-value" jslog=${VisualLogging9.value("processing-instruction-value").track({
         change: true,
         dblclick: true
       })}>${nodeValue}</span>?&gt;</span>`;
     }
     default: {
-      return html12`${Platform7.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase())}`;
+      return html13`${Platform7.StringUtilities.collapseWhitespace(node.nodeNameInCorrectCase())}`;
     }
   }
 }
 function renderLinkifiedSrcset(tokens, node) {
-  return html12`${repeat(tokens, (token) => {
+  return html13`${repeat(tokens, (token) => {
     switch (token.type) {
       case 1:
         return renderLinkifiedValue(token.value, node);
@@ -13413,7 +13538,7 @@ function setValueWithEntities(element, value5) {
 function renderLinkifiedValue(value5, node) {
   const rewrittenHref = node ? node.resolveURL(value5) : null;
   if (rewrittenHref === null) {
-    return html12`<span ${ref3((el) => {
+    return html13`<span ${ref4((el) => {
       if (el) {
         setValueWithEntities(el, value5);
       }
@@ -13425,7 +13550,7 @@ function renderLinkifiedValue(value5, node) {
   }
   const isAnchor = node && node.nodeName().toLowerCase() === "a";
   if (isAnchor) {
-    return html12`<devtools-link class="devtools-link image-url" href=${rewrittenHref} ${ref3((el) => {
+    return html13`<devtools-link class="devtools-link image-url" href=${rewrittenHref} ${ref4((el) => {
       if (el) {
         ImagePreviewPopover.setImageUrl(el, rewrittenHref);
       }
@@ -13527,7 +13652,7 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
   } else if (nodeName === "image" && (name === "xlink:href" || name === "href")) {
     valueType = 2;
   }
-  const withEntitiesRef = valueType === 0 && !isRelation ? ref3((el) => {
+  const withEntitiesRef = valueType === 0 && !isRelation ? ref4((el) => {
     if (el) {
       setValueWithEntities(el, value5);
     }
@@ -13541,8 +13666,8 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
     "webkit-html-attribute-name": true,
     "violating-element": hasAttributeIssues
   };
-  return html12`<span class="webkit-html-attribute" jslog=${jslog}><span class=${classMap3(attributeNameClasses)}
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until(relationPromise, name) : name}</span>${hasText ? html12`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${withEntitiesRef}>
+  return html13`<span class="webkit-html-attribute" jslog=${jslog}><span class=${classMap3(attributeNameClasses)}
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until(relationPromise, name) : name}</span>${hasText ? html13`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${withEntitiesRef}>
                         ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing5}
                         ${valueType === 2 ? renderLinkifiedSrcset(Common9.Srcset.parseSrcset(value5), node) : nothing5}
                         ${linkifyValue && relationPromise ? until(relationPromise, value5) : nothing5}
@@ -13559,7 +13684,7 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
     hasUpdates = updateRecord.hasRemovedAttributes() || updateRecord.hasRemovedChildren();
     hasUpdates = hasUpdates || !expanded && updateRecord.hasChangedChildren();
   }
-  const setAriaLabel = ref3((el) => {
+  const setAriaLabel = ref4((el) => {
     if (el?.textContent) {
       UI15.ARIAUtils.setLabel(el, el.textContent);
     }
@@ -13575,15 +13700,15 @@ function renderTag(node, tagName, isClosingTag, expanded, isDistinctTreeElement,
   };
   const tagString = (isClosingTag ? "/" : "") + tagName;
   const jslog = !isClosingTag ? VisualLogging9.value("tag-name").track({ change: true, dblclick: true }) : "";
-  return html12`<span
+  return html13`<span
       class=${classMap3(tagClasses)} ${setAriaLabel}
-      >&lt;<span class=${classMap3(tagNameClasses)} jslog=${jslog || nothing5} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html12` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
+      >&lt;<span class=${classMap3(tagNameClasses)} jslog=${jslog || nothing5} ${animateOn(hasUpdates, DOM_UPDATE_ANIMATION_CLASS_NAME)}>${tagString}</span>${attributes.map((attr) => html13` ${renderAttribute(attr, updateRecord, false, node, issues)}`)}&gt;</span>\u200B`;
 }
 function maybeRenderAdAdorner(input) {
   if (!input.adProvenance) {
     return nothing5;
   }
-  return html12`
+  return html13`
     <devtools-adorner
       aria-details=${input.adTooltipId}
       aria-label=${i18nString13(UIStrings14.thisElementWasIdentifiedAsAnAd)}
@@ -13599,15 +13724,15 @@ function maybeRenderAdAdorner(input) {
     -->
     <devtools-tooltip id=${input.adTooltipId} variant=rich @copy=${(e) => e.stopPropagation()}>
       <div class="ad-provenance-tooltip">
-        ${input.adProvenance.filterlistRule ? html12`
+        ${input.adProvenance.filterlistRule ? html13`
           <div class="ad-provenance-tooltip-title">${i18nString13(UIStrings14.filterListRule)}</div>
           <div class="ad-provenance-tooltip-content">${input.adProvenance.filterlistRule}</div>
         ` : nothing5}
 
-        ${input.adProvenance.adScriptAncestry && input.target ? html12`
+        ${input.adProvenance.adScriptAncestry && input.target ? html13`
           <div class="ad-provenance-tooltip-title">${i18nString13(UIStrings14.creatorAdScriptAncestry)}</div>
           <div class="ad-provenance-tooltip-content">
-            ${input.adProvenance.adScriptAncestry.ancestryChain.map((script) => html12`
+            ${input.adProvenance.adScriptAncestry.ancestryChain.map((script) => html13`
               <div>
                 ${UI15.Widget.widget(Components6.Linkifier.ScriptLocationLink, {
     target: input.target,
@@ -13618,7 +13743,7 @@ function maybeRenderAdAdorner(input) {
             `)}
           </div>
 
-          ${input.adProvenance.adScriptAncestry.rootScriptFilterlistRule ? html12`
+          ${input.adProvenance.adScriptAncestry.rootScriptFilterlistRule ? html13`
             <div class="ad-provenance-tooltip-title">${i18nString13(UIStrings14.rootScriptFilterListRule)}</div>
             <div class="ad-provenance-tooltip-content">
               ${input.adProvenance.adScriptAncestry.rootScriptFilterlistRule}
@@ -13626,7 +13751,7 @@ function maybeRenderAdAdorner(input) {
           ` : nothing5}
         ` : nothing5}
 
-        ${!input.adProvenance.adScriptAncestry && !input.adProvenance.filterlistRule ? html12`
+        ${!input.adProvenance.adScriptAncestry && !input.adProvenance.filterlistRule ? html13`
             <div class="ad-provenance-tooltip-title">${i18nString13(UIStrings14.noProvenanceAvailable)}</div>
           ` : nothing5}
       </div>
@@ -13640,28 +13765,28 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     "gutter-container": true,
     hidden: Boolean(input.editorState)
   };
-  render10(html12`
-    <div ${ref3((el) => {
+  render11(html13`
+    <div ${ref4((el) => {
     output.contentElement = el;
   })}>
-      ${input.node ? html12`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand, input.issues)}</span>` : nothing5}
-      ${input.isHovered || input.isSelected ? html12`
+      ${input.node ? html13`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand, input.issues)}</span>` : nothing5}
+      ${input.isHovered || input.isSelected ? html13`
         <div class="selection fill ${input.editorState ? "hidden" : ""}" style=${`margin-left: ${-input.indent}px`}></div>
       ` : nothing5}
       <div class=${classMap3(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
         <devtools-icon name="dots-horizontal"></devtools-icon>
-        ${input.decorations.length || input.descendantDecorations.length ? html12`
+        ${input.decorations.length || input.descendantDecorations.length ? html13`
         <div class="elements-gutter-decoration-container"
              title=${input.decorationsTooltip}>
-             ${input.decorations.map((d) => html12`<div class="elements-gutter-decoration" style="--decoration-color: ${d.color}"></div>`)}
-             ${input.descendantDecorations.map((d) => html12`<div class="elements-gutter-decoration elements-has-decorated-children" style="--decoration-color: ${d.color}"></div>`)}
+             ${input.decorations.map((d) => html13`<div class="elements-gutter-decoration" style="--decoration-color: ${d.color}"></div>`)}
+             ${input.descendantDecorations.map((d) => html13`<div class="elements-gutter-decoration elements-has-decorated-children" style="--decoration-color: ${d.color}"></div>`)}
         </div>` : nothing5}
       </div>
-      ${hasAdorners ? html12`<div class="adorner-container ${input.editorState ? "hidden" : ""}">
+      ${hasAdorners ? html13`<div class="adorner-container ${input.editorState ? "hidden" : ""}">
         ${maybeRenderAdAdorner(input)}
-        ${input.showViewSourceAdorner ? html12`<devtools-adorner
+        ${input.showViewSourceAdorner ? html13`<devtools-adorner
           class="clickable"
           role=button
           tabindex=0
@@ -13673,7 +13798,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.VIEW_SOURCE}</span>
         </devtools-adorner>` : nothing5}
-        ${input.showCustomElementAdorner ? html12`<devtools-adorner
+        ${input.showCustomElementAdorner ? html13`<devtools-adorner
           class="custom-element clickable"
           role=button
           tabindex=0
@@ -13685,7 +13810,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.CUSTOM_ELEMENT}</span>
         </devtools-adorner>` : nothing5}
-        ${input.showContainerAdorner ? html12`<devtools-adorner
+        ${input.showContainerAdorner ? html13`<devtools-adorner
           class=clickable
           role=button
           toggleable=true
@@ -13702,7 +13827,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
             <span>${input.containerType}</span>
           </span>
         </devtools-adorner>` : nothing5}
-        ${input.showFlexAdorner ? html12`<devtools-adorner
+        ${input.showFlexAdorner ? html13`<devtools-adorner
           class=clickable
           role=button
           toggleable=true
@@ -13716,7 +13841,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.FLEX}</span>
         </devtools-adorner>` : nothing5}
-        ${input.showGridAdorner ? html12`<devtools-adorner
+        ${input.showGridAdorner ? html13`<devtools-adorner
           class=clickable
           role=button
           toggleable=true
@@ -13730,7 +13855,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           ${adornerRef()}>
           <span>${input.isSubgrid ? ElementsComponents5.AdornerManager.RegisteredAdorners.SUBGRID : ElementsComponents5.AdornerManager.RegisteredAdorners.GRID}</span>
         </devtools-adorner>` : nothing5}
-        ${input.showGridLanesAdorner ? html12`<devtools-adorner
+        ${input.showGridLanesAdorner ? html13`<devtools-adorner
           class=clickable
           role=button
           toggleable=true
@@ -13744,7 +13869,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.GRID_LANES}</span>
         </devtools-adorner>` : nothing5}
-        ${input.showMediaAdorner ? html12`<devtools-adorner
+        ${input.showMediaAdorner ? html13`<devtools-adorner
           class=clickable
           role=button
           tabindex=0
@@ -13758,7 +13883,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
             ${ElementsComponents5.AdornerManager.RegisteredAdorners.MEDIA}<devtools-icon name="select-element"></devtools-icon>
           </span>
         </devtools-adorner>` : nothing5}
-        ${input.showPopoverAdorner ? html12`<devtools-adorner
+        ${input.showPopoverAdorner ? html13`<devtools-adorner
           class=clickable
           role=button
           toggleable=true
@@ -13772,7 +13897,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.POPOVER}</span>
         </devtools-adorner>` : nothing5}
-        ${input.showInterestAdorner ? html12`<devtools-adorner
+        ${input.showInterestAdorner ? html13`<devtools-adorner
           class=clickable
           role=button
           toggleable=true
@@ -13786,7 +13911,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.INTEREST}</span>
         </devtools-adorner>` : nothing5}
-        ${input.showTopLayerAdorner ? html12`<devtools-adorner
+        ${input.showTopLayerAdorner ? html13`<devtools-adorner
           class=clickable
           role=button
           tabindex=0
@@ -13800,7 +13925,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
             ${`top-layer (${input.topLayerIndex})`}<devtools-icon name="select-element"></devtools-icon>
           </span>
         </devtools-adorner>` : nothing5}
-        ${input.showStartingStyleAdorner ? html12`<devtools-adorner
+        ${input.showStartingStyleAdorner ? html13`<devtools-adorner
           class="starting-style clickable"
           role=button
           tabindex=0
@@ -13814,7 +13939,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.STARTING_STYLE}</span>
         </devtools-adorner>` : nothing5}
-        ${input.showScrollAdorner ? html12`<devtools-adorner
+        ${input.showScrollAdorner ? html13`<devtools-adorner
           class="scroll"
           .name=${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL}
           jslog=${VisualLogging9.adorner(ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL).track({ click: true })}
@@ -13822,7 +13947,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           ${adornerRef()}>
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL}</span>
         </devtools-adorner>` : nothing5}
-        ${input.showSlotAdorner ? html12`<devtools-adorner
+        ${input.showSlotAdorner ? html13`<devtools-adorner
           class=clickable
           role=button
           tabindex=0
@@ -13836,7 +13961,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
             <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SLOT}</span>
           </span>
         </devtools-adorner>` : nothing5}
-        ${input.showScrollSnapAdorner ? html12`<devtools-adorner
+        ${input.showScrollSnapAdorner ? html13`<devtools-adorner
           class="scroll-snap clickable"
           role=button
           tabindex=0
@@ -13851,10 +13976,10 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           <span>${ElementsComponents5.AdornerManager.RegisteredAdorners.SCROLL_SNAP}</span>
         </devtools-adorner>` : nothing5}
       </div>` : nothing5}
-      ${input.isSelected && input.canInspect ? html12`
+      ${input.isSelected && input.canInspect ? html13`
         <span class="selected-hint ${input.editorState ? "hidden" : ""}" title=${i18nString13(UIStrings14.useSInTheConsoleToReferToThis, { PH1: "$0" })} aria-hidden="true"></span>
       ` : nothing5}
-      ${input.showAiButton ? html12`
+      ${input.showAiButton ? html13`
         <span class="ai-button-container ${input.editorState ? "hidden" : ""}">
           <devtools-floating-button
             icon-name=${AIAssistance.AiUtils.getIconName()}
@@ -13865,12 +13990,12 @@ var DEFAULT_VIEW5 = (input, output, target) => {
           </devtools-floating-button>
         </span>
       ` : nothing5}
-      ${input.editorState ? html12`<div @keydown=${(event) => {
+      ${input.editorState ? html13`<div @keydown=${(event) => {
     if (event.key === "Escape") {
       event.consume(true);
     }
   }} class="source-code elements-tree-editor" style="width: ${input.editorWidth ?? 0}px;">
-        <devtools-text-editor .state=${input.editorState} ${ref3((el) => {
+        <devtools-text-editor .state=${input.editorState} ${ref4((el) => {
     output.editorRef = el;
   })}></devtools-text-editor>
       </div>` : nothing5}
@@ -13916,7 +14041,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   #view;
   #searchQuery = null;
   #expandedChildrenLimit;
-  decorationsThrottler;
+  #decorationsThrottler = new Common9.Throttler.Throttler(100);
   inClipboard = false;
   #hovered;
   editing;
@@ -13950,6 +14075,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     this.#node = node;
     if (!this.isClosingTag) {
       void this.#updateAdorners();
+      this.updateDecorations();
     }
   }
   get expanded() {
@@ -13957,6 +14083,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   }
   set expanded(expanded) {
     this.#expanded = expanded;
+    this.updateDecorations();
     this.requestUpdate();
   }
   get isExpandable() {
@@ -14012,7 +14139,6 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     this.#domIssuesManager = domIssuesManager;
     this.#view = view;
     this.#expandedChildrenLimit = InitialChildrenLimit;
-    this.decorationsThrottler = new Common9.Throttler.Throttler(100);
     this.inClipboard = false;
     this.#hovered = false;
     this.editing = null;
@@ -14063,13 +14189,21 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     UI15.UIUtils.runCSSAnimationOnce(tagName || this.contentElement, DOM_UPDATE_ANIMATION_CLASS_NAME);
   }
   #clearDOMNextUpdate = false;
+  wasShown() {
+    super.wasShown();
+    if (!this.isClosingTag) {
+      void this.#updateAdorners();
+      this.updateDecorations();
+    }
+  }
   performUpdate() {
     if (this.editing && !this.#editorState) {
       return;
     }
+    this.updateDecorations();
     if (this.#clearDOMNextUpdate) {
       this.#clearDOMNextUpdate = false;
-      Lit7.render(Lit7.nothing, this.contentElement, { host: this });
+      Lit8.render(Lit8.nothing, this.contentElement, { host: this });
     }
     const isClosingTag = this.isClosingTag;
     const output = {};
@@ -14181,6 +14315,11 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
         this.toggleEditAsHTML(edit.editAsHTMLCallback);
       } else if (edit.isProcessingInstruction) {
         this.startEditingProcessingInstructionValue();
+      } else if (edit.isTextNode) {
+        const textNode = this.contentElement.querySelector(".webkit-html-text-node");
+        if (textNode) {
+          this.startEditingTextNode(textNode);
+        }
       } else if (edit.isNewAttribute) {
         this.addNewAttribute();
       } else if (edit.attributeName) {
@@ -14642,7 +14781,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   }
   addNewAttribute() {
     const container = document.createDocumentFragment();
-    Lit7.render(renderAttribute({ name: " ", value: "" }, null, false, this.node), container);
+    Lit8.render(renderAttribute({ name: " ", value: "" }, null, false, this.node), container);
     const attr = container.firstElementChild;
     attr.style.marginLeft = "2px";
     attr.style.marginRight = "2px";
@@ -15066,7 +15205,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     if (this.node.nodeType() !== Node.ELEMENT_NODE) {
       return;
     }
-    void this.decorationsThrottler.schedule(this.#updateDecorations.bind(this));
+    void this.#decorationsThrottler.schedule(this.#updateDecorations.bind(this));
   }
   #updateDecorations() {
     const node = this.node;
@@ -15095,13 +15234,20 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     }
     return Promise.all(promises).then(updateDecorationsUI.bind(this));
     function updateDecorationsUI() {
-      this.#decorations = decorations;
-      this.#descendantDecorations = descendantDecorations;
-      if (!decorations.length && !descendantDecorations.length) {
-        this.#decorationsTooltip = "";
-        this.requestUpdate();
+      if (!this.isShowing()) {
         return;
       }
+      if (!decorations.length && !descendantDecorations.length) {
+        if (this.#decorations.length || this.#descendantDecorations.length || this.#decorationsTooltip) {
+          this.#decorations = [];
+          this.#descendantDecorations = [];
+          this.#decorationsTooltip = "";
+          this.requestUpdate();
+        }
+        return;
+      }
+      this.#decorations = decorations;
+      this.#descendantDecorations = descendantDecorations;
       const tooltip = [];
       for (const decoration of decorations) {
         tooltip.push(decoration.title);
@@ -15319,7 +15465,7 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
     this.widget.show(this.widgetWrapper);
     if (this.nodeInternal.retained && !this.isClosingTag()) {
       this.setLeadingIcons([
-        html12`<devtools-icon class="extra-small" name="small-status-dot" style="color:var(--icon-error); vertical-align:middle"></devtools-icon>`
+        html13`<devtools-icon class="extra-small" name="small-status-dot" style="color:var(--icon-error); vertical-align:middle"></devtools-icon>`
       ]);
       this.listItemNode.classList.add("detached-elements-detached-node");
       this.listItemNode.style.setProperty("display", "-webkit-box");
@@ -15484,6 +15630,11 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
   }
   onenter() {
     this.#syncOutlineProperties();
+    const outline = this.treeOutline;
+    if (outline?.domTreeWidget) {
+      outline.domTreeWidget.startEditing(this.nodeInternal);
+      return true;
+    }
     return this.widget.onenter();
   }
   selectOnMouseDown(event) {
@@ -16688,10 +16839,10 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 import * as Common11 from "../../core/common/common.js";
 import * as i18n32 from "../../core/i18n/i18n.js";
 import * as UI17 from "../../ui/legacy/legacy.js";
-import * as Lit8 from "../../ui/lit/lit.js";
+import * as Lit9 from "../../ui/lit/lit.js";
 import * as VisualElements from "../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents6 from "./components/components.js";
-var { html: html13, render: render11 } = Lit8;
+var { html: html14, render: render12 } = Lit9;
 var UIStrings16 = {
   /**
    * @description Link text content in the DOM tree outline of the Elements panel.
@@ -16701,7 +16852,7 @@ var UIStrings16 = {
 var str_16 = i18n32.i18n.registerUIStrings("panels/elements/ShortcutTreeElement.ts", UIStrings16);
 var i18nString15 = i18n32.i18n.getLocalizedString.bind(void 0, str_16);
 var DEFAULT_VIEW6 = (input, _output, target) => {
-  render11(html13`
+  render12(html14`
     <div class="selection fill"></div>
     <span class="elements-tree-shortcut-title">\u21AA ${input.title}</span>
     <devtools-adorner
@@ -16838,7 +16989,7 @@ var TopLayerContainer = class extends UI18.TreeOutline.TreeElement {
 };
 
 // gen/front_end/panels/elements/ElementsTreeOutline.js
-var { html: html14, nothing: nothing6, render: render12, Directives: { classMap: classMap4 } } = Lit9;
+var { html: html15, nothing: nothing6, render: render13, Directives: { classMap: classMap4 } } = Lit10;
 var UIStrings17 = {
   /**
    * @description ARIA accessible name in the DOM tree outline of the Elements panel.
@@ -16857,7 +17008,11 @@ var UIStrings17 = {
   /**
    * @description Text for popover that directs to the Issues panel.
    */
-  viewIssue: "View issue:"
+  viewIssue: "View issue:",
+  /**
+   * @description Link text content in the DOM tree outline of the Elements panel.
+   */
+  reveal: "reveal"
 };
 var str_17 = i18n34.i18n.registerUIStrings("panels/elements/ElementsTreeOutline.ts", UIStrings17);
 var i18nString16 = i18n34.i18n.getLocalizedString.bind(void 0, str_17);
@@ -16939,7 +17094,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
         box: hoveredNode.boxInWindow(),
         show: async (popover) => {
           popover.setIgnoreLeftMargin(true);
-          render12(html14`
+          render13(html15`
             <div class="squiggles-content">
               ${issues.map((issue) => {
             const elementIssueDetails = getElementIssueDetails(issue);
@@ -16948,7 +17103,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
             }
             const issueKindIconName = IssueCounter.IssueCounter.getIssueKindIconName(issue.getKind());
             const openIssueEvent = () => Common12.Revealer.reveal(issue);
-            return html14`
+            return html15`
                   <div class="squiggles-content-item">
                   <devtools-icon .name=${issueKindIconName} @click=${openIssueEvent}></devtools-icon>
                   <devtools-link class="link" @click=${openIssueEvent}>${i18nString16(UIStrings17.viewIssue)}</devtools-link>
@@ -17065,6 +17220,11 @@ var DEFAULT_VIEW7 = (input, output, target) => {
         treeElement.widget.toggleEditAsHTML(edit.editAsHTMLCallback);
       } else if (edit.isProcessingInstruction) {
         treeElement.widget.startEditingProcessingInstructionValue();
+      } else if (edit.isTextNode) {
+        const textNode = treeElement.widget.contentElement.querySelector(".webkit-html-text-node");
+        if (textNode) {
+          treeElement.widget.startEditingTextNode(textNode);
+        }
       } else if (edit.isNewAttribute) {
         treeElement.widget.addNewAttribute();
       } else if (edit.attributeName) {
@@ -17095,7 +17255,7 @@ function nodeHasVisibleChildren(node, rootDOMNode = null, maxTreeDepth, omitRoot
   if (isMaxDepthReached(node, rootDOMNode, maxTreeDepth, omitRootDOMNode)) {
     return false;
   }
-  if (node.isIframe() || node.contentDocument() || node.templateContent() || ElementsTreeWidget.visibleShadowRoots(node).length || node.hasPseudoElements() || node.isInsertionPoint()) {
+  if (node.isIframe() || node.contentDocument() || node.templateContent() || ElementsTreeWidget.visibleShadowRoots(node).length || node.hasPseudoElements() || node.isInsertionPoint() || node.adoptedStyleSheetsForNode.length) {
     return true;
   }
   return Boolean(node.childNodeCount()) && !ElementsTreeWidget.canShowInlineText(node);
@@ -17176,6 +17336,176 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       rootNodes = [rootDOMNode];
     }
   }
+  const on = Lit10.Directive.directive(Lit10.CustomDirectives.InterceptBindingDirective);
+  const renderShortcut = (shortcut, shortcutDepth) => {
+    const hasShortcutChildren = shortcut.childShortcuts.length > 0;
+    const isShortcutExpanded = Boolean(input.isTopLayerShortcutExpanded?.(shortcut));
+    const isShortcutSelected = input.selectedTopLayerShortcut === shortcut;
+    let title = shortcut.nodeName.toLowerCase();
+    if (shortcut.nodeType === Node.ELEMENT_NODE) {
+      title = "<" + title + ">";
+    }
+    const onShortcutExpand = (event) => {
+      input.onToggleTopLayerShortcutExpanded?.(shortcut, event.detail.expanded);
+    };
+    const onShortcutSelect = () => {
+      input.onSelectTopLayerShortcut?.(shortcut);
+    };
+    const onReveal = (event) => {
+      event.stopPropagation();
+      input.onRevealTopLayerShortcut?.(shortcut);
+    };
+    const onShortcutMouseMove = (event) => {
+      event.stopPropagation();
+      shortcut.deferredNode.highlight();
+    };
+    const onShortcutMouseLeave = (event) => {
+      event.stopPropagation();
+      SDK16.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK16.TargetManager.TargetManager.instance());
+    };
+    return html15`
+      <li role="treeitem"
+          ?selected=${isShortcutSelected}
+          ?open=${isShortcutExpanded}
+          class="elements-tree-shortcut"
+          style="--indent: ${computeLeftIndent(shortcutDepth, hasShortcutChildren)}px"
+          @select=${onShortcutSelect}
+          @expand=${onShortcutExpand}
+          @mousemove=${on(onShortcutMouseMove)}
+          @mouseleave=${on(onShortcutMouseLeave)}
+          jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline")}>
+        <div class="selection fill"></div>
+        <span class="elements-tree-shortcut-title">\u21AA ${title}</span>
+        <devtools-adorner
+          .name=${ElementsComponents7.AdornerManager.RegisteredAdorners.REVEAL}
+          class="adorner-reveal clickable"
+          role=button
+          tabindex=0
+          jslog=${VisualLogging10.adorner("reveal").track({
+      click: true
+    })}
+          aria-label=${i18nString16(UIStrings17.reveal)}
+          @click=${on(onReveal)}
+          @keydown=${handleAdornerKeydown(onReveal)}
+          @mousedown=${(e) => e.consume()}
+          ${adornerRef()}>
+          <span class="adorner-with-icon">
+            <devtools-icon name="select-element"></devtools-icon>
+            <span>${ElementsComponents7.AdornerManager.RegisteredAdorners.REVEAL}</span>
+          </span>
+        </devtools-adorner>
+        ${hasShortcutChildren ? html15`
+          <ul role="group">
+            ${UI19.TreeOutline.ifExpanded(html15`
+              ${shortcut.childShortcuts.map((child) => renderShortcut(child, shortcutDepth + 1))}
+            `)}
+          </ul>
+        ` : nothing6}
+      </li>
+    `;
+  };
+  const renderTopLayerContainer = (doc, containerDepth) => {
+    const shortcuts = input.getTopLayerShortcuts?.(doc) ?? [];
+    if (shortcuts.length === 0) {
+      return nothing6;
+    }
+    const isTopLayerExpanded = Boolean(input.isTopLayerExpanded?.(doc));
+    const onTopLayerExpand = (event) => {
+      input.onToggleTopLayerExpanded?.(doc, event.detail.expanded);
+    };
+    const onTopLayerSelect = () => {
+      input.onSelectTopLayerContainer?.(doc);
+    };
+    return html15`
+      <li role="treeitem"
+          ?open=${isTopLayerExpanded}
+          class="elements-tree-top-layer-container"
+          style="--indent: ${computeLeftIndent(containerDepth, true)}px"
+          @select=${onTopLayerSelect}
+          @expand=${onTopLayerExpand}
+          jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline")}>
+        <div class="selection fill"></div>
+        <span class="elements-tree-shortcut-title">#top-layer</span>
+        <ul role="group">
+          ${UI19.TreeOutline.ifExpanded(html15`
+            ${shortcuts.map((sc) => renderShortcut(sc, containerDepth + 1))}
+          `)}
+        </ul>
+      </li>
+    `;
+  };
+  const renderAdoptedStyleSheet = (sheet, depth) => {
+    const header = sheet.cssModel.styleSheetHeaderForId(sheet.id);
+    const linkText = header?.sourceURL;
+    const isExpanded = Boolean(input.isAdoptedStyleSheetExpanded?.(sheet));
+    const isSelected = input.selectedAdoptedStyleSheet === sheet;
+    const onExpand2 = (event) => {
+      input.onToggleAdoptedStyleSheetExpanded?.(sheet, event.detail.expanded);
+    };
+    const onSelect = () => {
+      input.onSelectAdoptedStyleSheet?.(sheet);
+    };
+    return html15`
+      <li role="treeitem"
+          ?selected=${isSelected}
+          ?open=${isExpanded}
+          class="elements-tree-adopted-style-sheet"
+          style="--indent: ${computeLeftIndent(depth, true)}px"
+          @select=${onSelect}
+          @expand=${onExpand2}
+          jslog=${VisualLogging10.treeItem("adopted-style-sheet").parent("elementsTreeOutline")}>
+        <div class="selection fill"></div>
+        <span class="elements-tree-shortcut-title">#adopted-style-sheet${linkText ? html15` (${UIComponentUtils.Linkifier.Linkifier.linkifyURL(linkText, {
+      text: linkText,
+      preventClick: true,
+      showColumnNumber: false
+    })})` : nothing6}</span>
+        <ul role="group">
+          ${UI19.TreeOutline.ifExpanded(html15`
+            ${header ? html15`
+              <li role="treeitem"
+                  class="elements-tree-adopted-style-sheet-contents"
+                  style="--indent: ${computeLeftIndent(depth + 1, false)}px"
+                  jslog=${VisualLogging10.treeItem("adopted-style-sheet-contents").parent("elementsTreeOutline")}>
+                <div class="selection fill"></div>
+                ${UI19.Widget.widget(AdoptedStyleSheetContentsWidget, { styleSheetHeader: header })}
+              </li>
+            ` : nothing6}
+          `)}
+        </ul>
+      </li>
+    `;
+  };
+  const renderAdoptedStyleSheets = (node, depth) => {
+    const sheets = node.adoptedStyleSheetsForNode;
+    if (!sheets || sheets.length === 0) {
+      return nothing6;
+    }
+    const isExpanded = Boolean(input.isAdoptedStyleSheetsExpanded?.(node));
+    const onExpand2 = (event) => {
+      input.onToggleAdoptedStyleSheetsExpanded?.(node, event.detail.expanded);
+    };
+    const onSelect = () => {
+      input.onSelectAdoptedStyleSheets?.(node);
+    };
+    return html15`
+      <li role="treeitem"
+          ?open=${isExpanded}
+          class="elements-tree-adopted-style-sheets"
+          style="--indent: ${computeLeftIndent(depth, true)}px"
+          @select=${onSelect}
+          @expand=${onExpand2}
+          jslog=${VisualLogging10.treeItem("adopted-style-sheets").parent("elementsTreeOutline")}>
+        <div class="selection fill"></div>
+        <span class="elements-tree-shortcut-title">#adopted-style-sheets</span>
+        <ul role="group">
+          ${UI19.TreeOutline.ifExpanded(html15`
+            ${sheets.map((sheet) => renderAdoptedStyleSheet(sheet, depth + 1))}
+          `)}
+        </ul>
+      </li>
+    `;
+  };
   const renderNode = (node, depth = 0) => {
     const isSelected = input.selectedNode === node;
     const isHovered = input.currentHighlightedNode === node || input.hoveredNode === node;
@@ -17184,7 +17514,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
     const children = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
     const tagName = node.nodeName().toLowerCase();
     const needsClosingTag = node.nodeType() === Node.ELEMENT_NODE && !ForbiddenClosingTagElements.has(tagName) && !node.pseudoType() && (hasChildren || !ElementsTreeWidget.canShowInlineText(node));
-    const on = Lit9.Directive.directive(Lit9.CustomDirectives.InterceptBindingDirective);
+    const on2 = Lit10.Directive.directive(Lit10.CustomDirectives.InterceptBindingDirective);
     const onSelect = () => {
       input.onSelect?.(
         node,
@@ -17262,7 +17592,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       event.stopPropagation();
       input.onDragEnd?.(event);
     };
-    return html14`
+    return html15`
       <li role="treeitem"
           ?selected=${isSelected}
           class=${classes}
@@ -17270,13 +17600,13 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
           draggable=${isDraggable ? "true" : "false"}
           @select=${onSelect}
           @expand=${onExpand2}
-          @mousemove=${on(onMouseMove)}
-          @contextmenu=${on(onContextMenu)}
-          @dragstart=${on(onDragStart)}
-          @dragover=${on(onDragOver)}
-          @dragleave=${on(onDragLeave)}
-          @drop=${on(onDrop)}
-          @dragend=${on(onDragEnd)}
+          @mousemove=${on2(onMouseMove)}
+          @contextmenu=${on2(onContextMenu)}
+          @dragstart=${on2(onDragStart)}
+          @dragover=${on2(onDragOver)}
+          @dragleave=${on2(onDragLeave)}
+          @drop=${on2(onDrop)}
+          @dragend=${on2(onDragEnd)}
           jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline").track({
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End",
       resize: true,
@@ -17298,6 +17628,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       showAIButton: input.showAIButton ?? true,
       initialEdit: input.nodeToEdit?.node === node ? input.nodeToEdit : null,
       onInitialEditCompleted: input.onInitialEditCompleted,
+      revealInTopLayer: (n) => input.domTreeWidget?.revealInTopLayer(n),
       setMultilineEditing: (multilineEditing) => input.domTreeWidget?.setMultilineEditing(multilineEditing),
       visibleWidth: () => input.domTreeWidget?.visibleWidth ?? 0,
       selectDOMNode: (n, selectedByUser) => input.onSelect?.(n, selectedByUser),
@@ -17315,18 +17646,20 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
         }
       }
     })}
-        ${hasChildren ? html14`
+        ${hasChildren ? html15`
           <ul role="group">
-            ${UI19.TreeOutline.ifExpanded(html14`
+            ${UI19.TreeOutline.ifExpanded(html15`
+              ${node.adoptedStyleSheetsForNode.length > 0 ? renderAdoptedStyleSheets(node, depth + 1) : nothing6}
               ${children.map((child) => renderNode(child, depth + 1))}
-              ${needsClosingTag ? html14`
+              ${node instanceof SDK16.DOMModel.DOMDocument ? renderTopLayerContainer(node, depth + 1) : nothing6}
+              ${needsClosingTag ? html15`
                 <li role="treeitem"
                     class=${classMap4({ hovered: isHovered, "elements-drag-over": isClosingTagDragOver })}
                     jslog=${VisualLogging10.treeItem().parent("elementsTreeOutline")}
-                    @mousemove=${on(onMouseMove)}
-                    @dragover=${on(onClosingTagDragOver)}
-                    @dragleave=${on(onDragLeave)}
-                    @drop=${on(onClosingTagDrop)}>
+                    @mousemove=${on2(onMouseMove)}
+                    @dragover=${on2(onClosingTagDragOver)}
+                    @dragleave=${on2(onDragLeave)}
+                    @drop=${on2(onClosingTagDrop)}>
                   ${UI19.Widget.widget(ElementsTreeWidget, {
       node,
       isClosingTag: true,
@@ -17352,7 +17685,8 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
       </li>
     `;
   };
-  render12(html14`
+  render13(html15`
+    <style>${UI19.inspectorCommonStyles}</style>
     <style>${elementsTreeOutline_css_default}</style>
     <style>${CodeHighlighter5.codeHighlighterStyles}</style>
     <div class="elements-disclosure ${input.deindentSingleNode && rootNodes.length === 1 && !nodeHasVisibleChildren(rootNodes[0], input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode) ? "single-node" : ""}">
@@ -17366,11 +17700,13 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
         @clipboard-cut=${(event) => input.onCopyOrCut?.(true, event)}
         @clipboard-paste=${(event) => input.onPaste?.(event)}
         @mouseleave=${input.onLeave}
-        .template=${html14`
+        .template=${html15`
+          <style>${UI19.inspectorCommonStyles}</style>
           <style>${elementsTreeOutline_css_default}</style>
           <style>${CodeHighlighter5.codeHighlighterStyles}</style>
           <ul role="tree">
             ${rootNodes.map((node) => renderNode(node))}
+            ${input.omitRootDOMNode && input.rootDOMNode instanceof SDK16.DOMModel.DOMDocument ? renderTopLayerContainer(input.rootDOMNode, 1) : nothing6}
           </ul>
         `}>
       </devtools-tree>
@@ -17498,6 +17834,13 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   }
   #currentHighlightedNode = null;
   #wiredDOMModels = /* @__PURE__ */ new Set();
+  #topLayerShortcutsByDocument = /* @__PURE__ */ new WeakMap();
+  #topLayerContainerExpandedByDocument = /* @__PURE__ */ new WeakMap();
+  #topLayerShortcutExpanded = /* @__PURE__ */ new WeakMap();
+  #selectedTopLayerShortcut = null;
+  #adoptedStyleSheetsExpandedByNode = /* @__PURE__ */ new WeakMap();
+  #adoptedStyleSheetExpanded = /* @__PURE__ */ new WeakMap();
+  #selectedAdoptedStyleSheet = null;
   #view;
   #viewOutput = {
     highlightedTreeElement: null,
@@ -17555,9 +17898,10 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   }
   selectDOMNode(node, focus) {
     if (node instanceof SDK16.DOMModel.AdoptedStyleSheet) {
-      this.#viewOutput?.elementsTreeOutline?.highlightAdoptedStyleSheet(node);
+      this.highlightAdoptedStyleSheet(node);
       return;
     }
+    this.#selectedAdoptedStyleSheet = null;
     if (this.#view === DECLARATIVE_VIEW) {
       if (this.#selectedDOMNode === node) {
         return;
@@ -17832,7 +18176,52 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       onDragOver: (node, isClosingTag, event) => this.onDragOver(node, isClosingTag, event),
       onDragLeave: (event) => this.onDragLeave(event),
       onDrop: (node, isClosingTag, event) => this.onDrop(node, isClosingTag, event),
-      onDragEnd: (event) => this.onDragEnd(event)
+      onDragEnd: (event) => this.onDragEnd(event),
+      getTopLayerShortcuts: (doc) => this.topLayerShortcuts(doc),
+      isTopLayerExpanded: (doc) => this.isTopLayerExpanded(doc),
+      onToggleTopLayerExpanded: (doc, expanded) => this.setTopLayerExpanded(doc, expanded),
+      onSelectTopLayerContainer: (_doc) => {
+        this.#selectedTopLayerShortcut = null;
+        this.selectDOMNode(null);
+        this.performUpdate();
+      },
+      isTopLayerShortcutExpanded: (shortcut) => this.isTopLayerShortcutExpanded(shortcut),
+      onToggleTopLayerShortcutExpanded: (shortcut, expanded) => this.setTopLayerShortcutExpanded(shortcut, expanded),
+      selectedTopLayerShortcut: this.#selectedTopLayerShortcut,
+      onSelectTopLayerShortcut: (shortcut) => {
+        this.#selectedTopLayerShortcut = shortcut;
+        this.selectDOMNode(null);
+        shortcut.deferredNode.highlight();
+        shortcut.deferredNode.resolve((node) => {
+          if (node) {
+            this.selectDOMNode(node, true);
+          }
+        });
+        this.performUpdate();
+      },
+      onRevealTopLayerShortcut: (shortcut) => {
+        shortcut.deferredNode.resolve((node) => {
+          if (node) {
+            this.selectDOMNode(node, true);
+            node.highlight();
+          }
+        });
+      },
+      isAdoptedStyleSheetsExpanded: (node) => this.isAdoptedStyleSheetsExpanded(node),
+      onToggleAdoptedStyleSheetsExpanded: (node, expanded) => this.setAdoptedStyleSheetsExpanded(node, expanded),
+      onSelectAdoptedStyleSheets: (_node) => {
+        this.#selectedAdoptedStyleSheet = null;
+        this.selectDOMNode(null);
+        this.performUpdate();
+      },
+      isAdoptedStyleSheetExpanded: (sheet) => this.isAdoptedStyleSheetExpanded(sheet),
+      onToggleAdoptedStyleSheetExpanded: (sheet, expanded) => this.setAdoptedStyleSheetExpanded(sheet, expanded),
+      selectedAdoptedStyleSheet: this.#selectedAdoptedStyleSheet,
+      onSelectAdoptedStyleSheet: (sheet) => {
+        this.#selectedAdoptedStyleSheet = sheet;
+        this.selectDOMNode(null);
+        this.performUpdate();
+      }
     }, this.#viewOutput, this.contentElement);
     if (this.#viewOutput.elementsTreeOutline) {
       this.#viewOutput.elementsTreeOutline.domTreeWidget = this;
@@ -17856,6 +18245,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
         domModel.addEventListener(SDK16.DOMModel.Events.ChildNodeCountUpdated, this.#onDOMNodeChanged, this);
         domModel.addEventListener(SDK16.DOMModel.Events.MarkersChanged, this.#onDOMNodeChanged, this);
         domModel.addEventListener(SDK16.DOMModel.Events.AdoptedStyleSheetsModified, this.#onDOMNodeChanged, this);
+        domModel.addEventListener(SDK16.DOMModel.Events.TopLayerElementsChanged, this.#onTopLayerElementsChanged, this);
       }
       if (this.isShowing() && !domModel.parentModel() && (!this.rootDOMNode || this.rootDOMNode.domModel() !== domModel)) {
         if (domModel.existingDocument()) {
@@ -17893,6 +18283,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
         domModel.removeEventListener(SDK16.DOMModel.Events.ChildNodeCountUpdated, this.#onDOMNodeChanged, this);
         domModel.removeEventListener(SDK16.DOMModel.Events.MarkersChanged, this.#onDOMNodeChanged, this);
         domModel.removeEventListener(SDK16.DOMModel.Events.AdoptedStyleSheetsModified, this.#onDOMNodeChanged, this);
+        domModel.removeEventListener(SDK16.DOMModel.Events.TopLayerElementsChanged, this.#onTopLayerElementsChanged, this);
       }
       this.performUpdate();
       return;
@@ -18180,6 +18571,111 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       this.performUpdate();
     }
   }
+  topLayerShortcuts(document2) {
+    return this.#topLayerShortcutsByDocument.get(document2) ?? [];
+  }
+  isTopLayerExpanded(document2) {
+    return this.#topLayerContainerExpandedByDocument.get(document2) ?? false;
+  }
+  setTopLayerExpanded(document2, expanded) {
+    this.#topLayerContainerExpandedByDocument.set(document2, expanded);
+    this.performUpdate();
+  }
+  isTopLayerShortcutExpanded(shortcut) {
+    return this.#topLayerShortcutExpanded.get(shortcut) ?? false;
+  }
+  setTopLayerShortcutExpanded(shortcut, expanded) {
+    this.#topLayerShortcutExpanded.set(shortcut, expanded);
+    this.performUpdate();
+  }
+  #onTopLayerElementsChanged(event) {
+    this.#topLayerShortcutsByDocument.set(event.data.document, event.data.documentShortcuts);
+    this.performUpdate();
+  }
+  revealInTopLayer(node) {
+    const document2 = node.ownerDocument;
+    if (!document2) {
+      return;
+    }
+    if (this.#viewOutput.elementsTreeOutline) {
+      this.#viewOutput.elementsTreeOutline.revealInTopLayer(node);
+      return;
+    }
+    const shortcuts = this.topLayerShortcuts(document2);
+    const findShortcut = (list) => {
+      for (const sc of list) {
+        if (sc.deferredNode.backendNodeId() === node.backendNodeId()) {
+          return sc;
+        }
+        const found = findShortcut(sc.childShortcuts);
+        if (found) {
+          return found;
+        }
+      }
+      return null;
+    };
+    const shortcut = findShortcut(shortcuts);
+    if (shortcut) {
+      this.#topLayerContainerExpandedByDocument.set(document2, true);
+      this.#selectedTopLayerShortcut = shortcut;
+      this.performUpdate();
+    }
+  }
+  isAdoptedStyleSheetsExpanded(node) {
+    return this.#adoptedStyleSheetsExpandedByNode.get(node) ?? false;
+  }
+  setAdoptedStyleSheetsExpanded(node, expanded) {
+    this.#adoptedStyleSheetsExpandedByNode.set(node, expanded);
+    this.performUpdate();
+  }
+  isAdoptedStyleSheetExpanded(sheet) {
+    return this.#adoptedStyleSheetExpanded.get(sheet) ?? false;
+  }
+  setAdoptedStyleSheetExpanded(sheet, expanded) {
+    this.#adoptedStyleSheetExpanded.set(sheet, expanded);
+    this.performUpdate();
+  }
+  highlightAdoptedStyleSheet(adoptedStyleSheet) {
+    if (this.#viewOutput.elementsTreeOutline) {
+      this.#viewOutput.elementsTreeOutline.highlightAdoptedStyleSheet(adoptedStyleSheet);
+      return;
+    }
+    const parent = adoptedStyleSheet.parent;
+    if (!parent) {
+      return;
+    }
+    for (let current = parent; current; current = current.parentNode) {
+      this.#expandedNodes.add(current);
+    }
+    this.setAdoptedStyleSheetsExpanded(parent, true);
+    this.#selectedAdoptedStyleSheet = adoptedStyleSheet;
+    this.selectDOMNode(null);
+    this.performUpdate();
+  }
+  startEditing(node) {
+    if (UI19.UIUtils.isEditing()) {
+      return;
+    }
+    const nodeType = node.nodeType();
+    if (nodeType === Node.ELEMENT_NODE) {
+      if (node.isShadowRoot() || node.ancestorUserAgentShadowRoot()) {
+        return;
+      }
+      const attributes = node.attributes();
+      if (attributes.length > 0) {
+        this.#nodeToEdit = { node, attributeName: attributes[0].name };
+      } else {
+        this.#nodeToEdit = { node, isNewAttribute: true };
+      }
+      this.performUpdate();
+    } else if (nodeType === Node.TEXT_NODE) {
+      this.#nodeToEdit = { node, isTextNode: true };
+      this.performUpdate();
+    } else if (nodeType === Node.PROCESSING_INSTRUCTION_NODE) {
+      this.#nodeToEdit = { node, isProcessingInstruction: true };
+      this.performUpdate();
+    }
+  }
   onKeyDown(event) {
     if (UI19.UIUtils.isEditing()) {
       return false;
@@ -18204,6 +18700,16 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
         event.consume(true);
         return true;
       }
+    }
+    if (event.key === "Enter") {
+      this.startEditing(node);
+      event.consume(true);
+      return true;
+    }
+    if (event.key === "F2") {
+      this.toggleEditAsHTML(node);
+      event.consume(true);
+      return true;
     }
     if (event.key === "Delete" || event.key === "Backspace") {
       void this.removeNode(node);
@@ -18431,7 +18937,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
   visible;
   updateRecords;
   treeElementsBeingUpdated;
-  decoratorExtensions;
   visibleWidthInternal;
   isXMLMimeTypeInternal;
   suppressRevealAndSelect = false;
@@ -18490,7 +18995,6 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends Common12.ObjectWrap
     this.visible = false;
     this.updateRecords = /* @__PURE__ */ new Map();
     this.treeElementsBeingUpdated = /* @__PURE__ */ new Set();
-    this.decoratorExtensions = null;
     this.setUseLightSelectionColor(true);
   }
   static forDOMModel(domModel) {
@@ -19415,7 +19919,7 @@ import * as Platform8 from "../../core/platform/platform.js";
 import * as SDK17 from "../../core/sdk/sdk.js";
 import * as Buttons3 from "../../ui/components/buttons/buttons.js";
 import * as UI20 from "../../ui/legacy/legacy.js";
-import * as Lit10 from "../../ui/lit/lit.js";
+import * as Lit11 from "../../ui/lit/lit.js";
 import * as SettingUIRegistration from "../../ui/settings/settings.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 
@@ -19609,7 +20113,7 @@ var UIStrings18 = {
 };
 var str_18 = i18n36.i18n.registerUIStrings("panels/elements/LayoutPane.ts", UIStrings18);
 var i18nString17 = i18n36.i18n.getLocalizedString.bind(void 0, str_18);
-var { render: render13, html: html15 } = Lit10;
+var { render: render14, html: html16 } = Lit11;
 var nodeToLayoutElement = (node) => {
   const className = node.getAttribute("class");
   const nodeId = node.id;
@@ -19705,7 +20209,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
       event.preventDefault();
     }
   };
-  const renderElement = (element) => html15`<div
+  const renderElement = (element) => html16`<div
           class="element"
           jslog=${VisualLogging11.item().track({ resize: true })}>
         <devtools-checkbox
@@ -19754,8 +20258,8 @@ var DEFAULT_VIEW8 = (input, output, target) => {
            @click=${(e) => input.onElementClick(element, e)}
            ></devtools-button>
       </div>`;
-  render13(
-    html15`
+  render14(
+    html16`
       <div style="min-width: min-content;" jslog=${VisualLogging11.pane("layout").track({ resize: true })}>
         <style>${layoutPane_css_default}</style>
         <style>@scope to (devtools-widget > *) { ${UI20.inspectorCommonStyles} }</style>
@@ -19768,12 +20272,12 @@ var DEFAULT_VIEW8 = (input, output, target) => {
           <div class="content-section" jslog=${VisualLogging11.section("grid-settings")}>
             <h3 class="content-section-title">${i18nString17(UIStrings18.overlayDisplaySettings)}</h3>
             <div class="select-settings">
-              ${input.enumSettings.map((setting) => html15`<label data-enum-setting="true" class="select-label" title=${setting.title}>
+              ${input.enumSettings.map((setting) => html16`<label data-enum-setting="true" class="select-label" title=${setting.title}>
                       <select
                         data-input="true"
                         jslog=${VisualLogging11.dropDown().track({ change: true }).context(setting.name)}
                         @change=${(e) => input.onEnumSettingChange(setting, e)}>
-                        ${setting.options.map((opt) => html15`<option
+                        ${setting.options.map((opt) => html16`<option
                                 value=${opt.value}
                                 .selected=${setting.value === opt.value}
                                 jslog=${VisualLogging11.item(Platform8.StringUtilities.toKebabCase(opt.value)).track({
@@ -19783,7 +20287,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
                     </label>`)}
             </div>
             <div class="checkbox-settings">
-              ${input.booleanSettings.map((setting) => html15`<div><devtools-checkbox
+              ${input.booleanSettings.map((setting) => html16`<div><devtools-checkbox
                       data-boolean-setting="true"
                       class="checkbox-label"
                       title=${setting.title}
@@ -19794,14 +20298,14 @@ var DEFAULT_VIEW8 = (input, output, target) => {
                   </devtools-checkbox></div>`)}
             </div>
           </div>
-          ${input.gridElements ? html15`<div class="content-section" jslog=${VisualLogging11.section("grid-overlays")}>
+          ${input.gridElements ? html16`<div class="content-section" jslog=${VisualLogging11.section("grid-overlays")}>
               <h3 class="content-section-title">
                 ${input.gridElements.length ? i18nString17(UIStrings18.gridOrGridLanesOverlays) : i18nString17(UIStrings18.noGridOrGridLanesLayoutsFoundOnThisPage)}
               </h3>
-              ${input.gridElements.length ? html15`<div class="elements">${input.gridElements.map(renderElement)}</div>` : ""}
+              ${input.gridElements.length ? html16`<div class="elements">${input.gridElements.map(renderElement)}</div>` : ""}
             </div>` : ""}
         </details>
-        ${input.flexContainerElements !== void 0 ? html15`
+        ${input.flexContainerElements !== void 0 ? html16`
           <details open>
             <summary
                 class="header"
@@ -19809,11 +20313,11 @@ var DEFAULT_VIEW8 = (input, output, target) => {
                 jslog=${VisualLogging11.sectionHeader("flexbox-overlays").track({ click: true })}>
               ${i18nString17(UIStrings18.flexbox)}
             </summary>
-            ${input.flexContainerElements ? html15`<div class="content-section" jslog=${VisualLogging11.section("flexbox-overlays")}>
+            ${input.flexContainerElements ? html16`<div class="content-section" jslog=${VisualLogging11.section("flexbox-overlays")}>
                 <h3 class="content-section-title">
                   ${input.flexContainerElements.length ? i18nString17(UIStrings18.flexboxOverlays) : i18nString17(UIStrings18.noFlexboxLayoutsFoundOnThisPage)}
                 </h3>
-                ${input.flexContainerElements.length ? html15`<div class="elements">${input.flexContainerElements.map(renderElement)}</div>` : ""}
+                ${input.flexContainerElements.length ? html16`<div class="elements">${input.flexContainerElements.map(renderElement)}</div>` : ""}
               </div>` : ""}
           </details>` : ""}
       </div>`,
@@ -20032,7 +20536,7 @@ import * as Common14 from "../../core/common/common.js";
 import * as Platform9 from "../../core/platform/platform.js";
 import * as SDK18 from "../../core/sdk/sdk.js";
 import * as UI21 from "../../ui/legacy/legacy.js";
-import { Directives, html as html16, nothing as nothing7, render as render14 } from "../../ui/lit/lit.js";
+import { Directives, html as html17, nothing as nothing7, render as render15 } from "../../ui/lit/lit.js";
 import * as VisualLogging12 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/metricsSidebarPane.css.js
@@ -20202,7 +20706,7 @@ var DEFAULT_VIEW9 = (input, output, target) => {
     }
     value5 = value5?.replace(/px$/, "");
     value5 = value5 ? Platform9.NumberUtilities.toFixedIfFloating(value5) : value5;
-    return html16`<div class=${side} jslog=${VisualLogging12.value(propertyName).track({
+    return html17`<div class=${side} jslog=${VisualLogging12.value(propertyName).track({
       dblclick: true,
       keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
       change: true
@@ -20261,7 +20765,7 @@ var DEFAULT_VIEW9 = (input, output, target) => {
       /* Common.Color.Format.RGBA */
     ) || "";
     const suffix = name === "border" ? "-width" : "";
-    const box = html16`
+    const box = html17`
       <div
           class="${name} ${shouldHighlight ? "highlighted" : ""}"
           style="background-color: ${shouldHighlight ? backgroundColor : ""}"
@@ -20270,7 +20774,7 @@ var DEFAULT_VIEW9 = (input, output, target) => {
       e.consume();
       onHighlightNode(true, name === "position" ? "all" : name);
     }}>
-      ${name === "content" ? html16`
+      ${name === "content" ? html17`
         <span jslog=${VisualLogging12.value("width").track({
       dblclick: true,
       keydown: "Enter|Escape|ArrowUp|ArrowDown|PageUp|PageDown",
@@ -20287,7 +20791,7 @@ var DEFAULT_VIEW9 = (input, output, target) => {
     })}
             @dblclick=${(e) => onStartEditing(e.currentTarget, "height", "height", style)}
             .innerText=${live(contentHeight)}>
-        </span>` : html16`
+        </span>` : html17`
         <div class="label">${boxLabels[i]}</div>
           ${createBoxPartElement(style, name, "top", suffix)}
           <br>
@@ -20299,7 +20803,7 @@ var DEFAULT_VIEW9 = (input, output, target) => {
         </div>`;
     previousBox = box;
   }
-  render14(html16`
+  render15(html17`
     <div class="metrics ${!node ? "collapsed" : ""}" @mouseover=${(e) => {
     e.consume();
     onHighlightNode(true, "all");
@@ -20633,7 +21137,7 @@ __export(PlatformFontsWidget_exports, {
 import * as i18n38 from "../../core/i18n/i18n.js";
 import * as ComputedStyle2 from "../../models/computed_style/computed_style.js";
 import * as UI22 from "../../ui/legacy/legacy.js";
-import { html as html17, render as render15 } from "../../ui/lit/lit.js";
+import { html as html18, render as render16 } from "../../ui/lit/lit.js";
 
 // gen/front_end/panels/elements/platformFontsWidget.css.js
 var platformFontsWidget_css_default = `/**
@@ -20719,16 +21223,16 @@ var str_19 = i18n38.i18n.registerUIStrings("panels/elements/PlatformFontsWidget.
 var i18nString18 = i18n38.i18n.getLocalizedString.bind(void 0, str_19);
 var DEFAULT_VIEW10 = (input, _output, target) => {
   const isEmptySection = !input.platformFonts?.length;
-  render15(html17`
+  render16(html18`
     <style>${platformFontsWidget_css_default}</style>
     <div class="platform-fonts">
-      ${isEmptySection ? "" : html17`
+      ${isEmptySection ? "" : html18`
         <div class="title">${i18nString18(UIStrings19.renderedFonts)}</div>
         <div class="stats-section">
           ${input.platformFonts?.map((platformFont) => {
     const fontOrigin = platformFont.isCustomFont ? i18nString18(UIStrings19.networkResource) : i18nString18(UIStrings19.localFile);
     const usage = platformFont.glyphCount;
-    return html17`
+    return html18`
               <div class="font-stats-item">
                 <div><span class="font-property-name">${i18nString18(UIStrings19.familyName)}</span>: ${platformFont.familyName}</div>
                 <div><span class="font-property-name">${i18nString18(UIStrings19.postScriptName)}</span>: ${platformFont.postScriptName}</div>
@@ -20940,7 +21444,7 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
     this.#settings.moduleSetting("dom-word-wrap").addChangeListener(this.domWordWrapSettingChanged.bind(this));
     crumbsContainer.id = "elements-crumbs";
     this.accessibilityTreeView = new AccessibilityTreeView();
-    this.breadcrumbs = new ElementsComponents7.ElementsBreadcrumbs.ElementsBreadcrumbs();
+    this.breadcrumbs = new ElementsComponents8.ElementsBreadcrumbs.ElementsBreadcrumbs();
     this.breadcrumbs.addEventListener("breadcrumbsnodeselected", (event) => {
       this.crumbNodeSelected(event);
     });
@@ -20961,7 +21465,7 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
     this.cssStyleTrackerByCSSModel = /* @__PURE__ */ new Map();
     this.currentSearchResultIndex = -1;
     this.pendingNodeReveal = false;
-    this.adornerManager = new ElementsComponents7.AdornerManager.AdornerManager(this.#settings.moduleSetting("adorner-settings"));
+    this.adornerManager = new ElementsComponents8.AdornerManager.AdornerManager(this.#settings.moduleSetting("adorner-settings"));
     this.adornersByName = /* @__PURE__ */ new Map();
     this.#domTreeWidget = new DOMTreeWidget();
     this.#domTreeWidget.omitRootDOMNode = true;
@@ -21712,40 +22216,40 @@ ${node.simpleSelector()} {}`, false);
   populateAdornerSettingsContextMenu(contextMenu) {
     const adornerSubMenu = contextMenu.viewSection().appendSubMenuItem(i18nString19(UIStrings20.adornerSettings), false, "show-adorner-settings");
     const adornerSettings = this.adornerManager.getSettings();
-    for (const [adorner3, isEnabled] of adornerSettings) {
-      adornerSubMenu.defaultSection().appendCheckboxItem(adorner3, () => {
+    for (const [adorner4, isEnabled] of adornerSettings) {
+      adornerSubMenu.defaultSection().appendCheckboxItem(adorner4, () => {
         const updatedIsEnabled = !isEnabled;
-        const adornersToUpdate = this.adornersByName.get(adorner3);
+        const adornersToUpdate = this.adornersByName.get(adorner4);
         if (adornersToUpdate) {
           for (const adornerToUpdate of adornersToUpdate) {
             updatedIsEnabled ? adornerToUpdate.show() : adornerToUpdate.hide();
           }
         }
-        this.adornerManager.getSettings().set(adorner3, updatedIsEnabled);
+        this.adornerManager.getSettings().set(adorner4, updatedIsEnabled);
         this.adornerManager.updateSettings(adornerSettings);
-      }, { checked: isEnabled, jslogContext: adorner3 });
+      }, { checked: isEnabled, jslogContext: adorner4 });
     }
   }
   isAdornerEnabled(adornerText) {
     return this.adornerManager.isAdornerEnabled(adornerText);
   }
-  registerAdorner(adorner3) {
-    let adornerSet = this.adornersByName.get(adorner3.name);
+  registerAdorner(adorner4) {
+    let adornerSet = this.adornersByName.get(adorner4.name);
     if (!adornerSet) {
       adornerSet = /* @__PURE__ */ new Set();
-      this.adornersByName.set(adorner3.name, adornerSet);
+      this.adornersByName.set(adorner4.name, adornerSet);
     }
-    adornerSet.add(adorner3);
-    if (!this.isAdornerEnabled(adorner3.name)) {
-      adorner3.hide();
+    adornerSet.add(adorner4);
+    if (!this.isAdornerEnabled(adorner4.name)) {
+      adorner4.hide();
     }
   }
-  deregisterAdorner(adorner3) {
-    const adornerSet = this.adornersByName.get(adorner3.name);
+  deregisterAdorner(adorner4) {
+    const adornerSet = this.adornersByName.get(adorner4.name);
     if (!adornerSet) {
       return;
     }
-    adornerSet.delete(adorner3);
+    adornerSet.delete(adorner4);
   }
   toggleHideElement(node) {
     this.#domTreeWidget.toggleHideElement(node);
@@ -22102,7 +22606,7 @@ import * as Common17 from "../../core/common/common.js";
 import * as i18n42 from "../../core/i18n/i18n.js";
 import * as SDK21 from "../../core/sdk/sdk.js";
 import * as UI25 from "../../ui/legacy/legacy.js";
-import { html as html18, render as render16 } from "../../ui/lit/lit.js";
+import { html as html19, render as render17 } from "../../ui/lit/lit.js";
 import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 import * as EventListeners from "../event_listeners/event_listeners.js";
 var { bindToAction, bindToSetting: bindToSetting3 } = UI25.UIUtils;
@@ -22145,7 +22649,7 @@ var i18nString20 = i18n42.i18n.getLocalizedString.bind(void 0, str_21);
 var { widget: widget3 } = UI25.Widget;
 var eventListenersWidgetInstance;
 var DEFAULT_VIEW11 = (input, _output, target) => {
-  render16(html18`
+  render17(html19`
     <div jslog=${VisualLogging15.pane("elements.event-listeners").track({ resize: true })}>
       <devtools-toolbar class="event-listener-toolbar" role="presentation">
         <devtools-button ${bindToAction(input.refreshEventListenersActionName)}></devtools-button>
@@ -22158,7 +22662,7 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
           aria-label=${i18nString20(UIStrings21.eventListenersCategory)}
           jslog=${VisualLogging15.filterDropdown().track({ change: true })}
           @change=${(e) => input.onDispatchFilterTypeChange(e.target.value)}>
-          ${input.dispatchFilters.map((filter) => html18`
+          ${input.dispatchFilters.map((filter) => html19`
             <option value=${filter.value} ?selected=${filter.value === input.selectedDispatchFilter}>
               ${filter.name}
             </option>`)}
@@ -22318,7 +22822,7 @@ import * as Platform11 from "../../core/platform/platform.js";
 import * as SDK22 from "../../core/sdk/sdk.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI26 from "../../ui/legacy/legacy.js";
-import { Directives as Directives2, html as html19, nothing as nothing8, render as render17 } from "../../ui/lit/lit.js";
+import { Directives as Directives2, html as html20, nothing as nothing8, render as render18 } from "../../ui/lit/lit.js";
 import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/elements/propertiesWidget.css.js
@@ -22370,7 +22874,7 @@ var UIStrings22 = {
 var str_22 = i18n44.i18n.registerUIStrings("panels/elements/PropertiesWidget.ts", UIStrings22);
 var i18nString21 = i18n44.i18n.getLocalizedString.bind(void 0, str_22);
 var DEFAULT_VIEW12 = (input, _output, target) => {
-  render17(html19`
+  render18(html20`
     <div jslog=${VisualLogging16.pane("element-properties").track({ resize: true })}>
       <div class="hbox properties-widget-toolbar">
         <devtools-toolbar class="styles-pane-toolbar" role="presentation">
@@ -22386,10 +22890,10 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
           </devtools-checkbox>
         </devtools-toolbar>
       </div>
-      ${input.objectTree && input.allChildrenFiltered ? html19`
+      ${input.objectTree && input.allChildrenFiltered ? html20`
         <div class="gray-info-message">${i18nString21(UIStrings22.noMatchingProperty)}</div>
       ` : nothing8}
-      <devtools-tree show-selection-on-keyboard-focus @treeelementexpand=${onExpand} .template=${html19`
+      <devtools-tree show-selection-on-keyboard-focus @treeelementexpand=${onExpand} .template=${html20`
         <ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>;
           <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>;
@@ -22398,7 +22902,7 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
     true,
     true
     /* skipGettersAndSetters */
-  ), (node) => html19`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
+  ), (node) => html20`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
         </ul>
       `}></devtools-tree>
     </div>`, target);
@@ -22901,11 +23405,11 @@ import * as ComputedStyle4 from "../../models/computed_style/computed_style.js";
 import * as InlineEditor5 from "../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components7 from "../../ui/legacy/components/utils/utils.js";
 import * as UI28 from "../../ui/legacy/legacy.js";
-import { html as html20, render as render18 } from "../../ui/lit/lit.js";
+import { html as html21, render as render19 } from "../../ui/lit/lit.js";
 import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
-import * as ElementsComponents8 from "./components/components.js";
+import * as ElementsComponents9 from "./components/components.js";
 var DEFAULT_VIEW13 = (input, _output, target) => {
-  render18(html20`
+  render19(html21`
     <style>${stylesSidebarPane_css_default}</style>
     <div class="style-panes-wrapper" jslog=${VisualLogging18.section("standalone-styles").track({
     resize: true
@@ -23090,7 +23594,7 @@ var StandaloneStylesContainer = class extends Common20.ObjectWrapper.eventMixin(
   }
   getVariablePopoverContents(matchedStyles, variableName, computedValue) {
     const registration = matchedStyles.getRegisteredProperty(variableName);
-    return new ElementsComponents8.CSSVariableValueView.CSSVariableValueView({
+    return new ElementsComponents9.CSSVariableValueView.CSSVariableValueView({
       variableName,
       value: computedValue ?? void 0,
       // TODO: provide a goToDefinition to jump to the StylesSidebarPane

@@ -30,7 +30,7 @@ export class GetNetworkRequestDetailsTool {
         properties: {
             id: {
                 type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                description: 'The id of the network request to inspect.',
+                description: 'The unique requestId obtained from listNetworkRequests.',
                 nullable: false,
             },
         },

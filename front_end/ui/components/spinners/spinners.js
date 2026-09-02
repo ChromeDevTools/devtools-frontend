@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/spinners/Spinner.js
+// ../../front_end/ui/components/spinners/Spinner.ts
 var Spinner_exports = {};
 __export(Spinner_exports, {
   Spinner: () => Spinner
@@ -133,7 +133,7 @@ var spinner_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./spinner.css")} */`;
 
-// gen/front_end/ui/components/spinners/Spinner.js
+// ../../front_end/ui/components/spinners/Spinner.ts
 var { classMap } = Directives;
 var Spinner = class extends HTMLElement {
   static observedAttributes = ["active"];
@@ -170,7 +170,8 @@ var Spinner = class extends HTMLElement {
       indeterminate: this.active,
       spinner: true
     };
-    render(html`
+    render(
+      html`
         <style>
           ${spinner_css_default}
         </style>
@@ -185,7 +186,10 @@ var Spinner = class extends HTMLElement {
             pathLength="100"
           ></circle>
         </svg>
-      `, this.#shadow, { host: this });
+      `,
+      this.#shadow,
+      { host: this }
+    );
   }
 };
 customElements.define("devtools-spinner", Spinner);

@@ -1084,7 +1084,7 @@ function collectMainThreadActivity(data) {
   return mainFrameMainThread.entries;
 }
 function summarizeByThirdParty(data, traceBounds) {
-  const mainThreadEvents = collectMainThreadActivity(data).sort(Helpers5.Trace.eventTimeComparator);
+  const mainThreadEvents = collectMainThreadActivity(data);
   const groupingFunction = (event) => {
     const entity = data.Renderer.entityMappings.entityByEvent.get(event);
     return entity?.name ?? "";
@@ -1094,7 +1094,7 @@ function summarizeByThirdParty(data, traceBounds) {
   return summaries;
 }
 function summarizeByURL(data, traceBounds) {
-  const mainThreadEvents = collectMainThreadActivity(data).sort(Helpers5.Trace.eventTimeComparator);
+  const mainThreadEvents = collectMainThreadActivity(data);
   const groupingFunction = (event) => {
     return Handlers2.Helpers.getNonResolvedURL(event, data) ?? "";
   };
@@ -1148,14 +1148,16 @@ function summarizeBottomUpByURL(root, data) {
   }
   return summaries;
 }
+var exclusiveNameFilter = new ExclusiveNameFilter([]);
+var visibleEventsFilter = new VisibleEventsFilter(
+  [...Helpers5.Trace.VISIBLE_TRACE_EVENT_TYPES.values(), Types5.Events.Name.SYNTHETIC_NETWORK_REQUEST]
+);
 function getBottomUpTree(mainThreadEvents, tracebounds, groupingFunction) {
-  const visibleEvents = Helpers5.Trace.VISIBLE_TRACE_EVENT_TYPES.values().toArray();
-  const filter = new VisibleEventsFilter(visibleEvents.concat([Types5.Events.Name.SYNTHETIC_NETWORK_REQUEST]));
   const startTime = Helpers5.Timing.microToMilli(tracebounds.min);
   const endTime = Helpers5.Timing.microToMilli(tracebounds.max);
   return new BottomUpRootNode(mainThreadEvents, {
-    textFilter: new ExclusiveNameFilter([]),
-    filters: [filter],
+    textFilter: exclusiveNameFilter,
+    filters: [visibleEventsFilter],
     startTime,
     endTime,
     eventGroupIdCallback: groupingFunction,

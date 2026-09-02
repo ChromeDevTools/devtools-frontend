@@ -33,15 +33,15 @@ export default `/*
   }
 
   input {
-    height: 12px;
-    width: 12px;
+    height: var(--sys-size-6);
+    width: var(--sys-size-6);
     flex-shrink: 0;
     margin: 3px 0;
   }
 
   details {
-    border-top: 1px solid var(--sys-color-divider);
-    padding: 2px 0;
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
+    padding: var(--sys-size-2) 0;
   }
 
   details:not(.active) {
@@ -50,10 +50,10 @@ export default `/*
   }
 
   details > summary {
-    min-height: 20px;
+    min-height: var(--sys-size-9);
     list-style: none;
     display: flex;
-    padding: 0 8px 0 6px;
+    padding: 0 var(--sys-size-5) 0 var(--sys-size-4);
     align-items: center;
   }
 
@@ -83,19 +83,19 @@ export default `/*
     display: inline-flex;
     align-items: center;
     width: 100%;
-    padding-right: 8px;
+    padding-right: var(--sys-size-5);
     overflow: hidden;
   }
 
   .group-icon-or-disable {
     justify-content: center;
     display: flex;
-    width: 16px;
-    margin-left: 2px;
+    width: var(--sys-size-8);
+    margin-left: var(--sys-size-2);
   }
 
   .group-header-title {
-    margin-left: 4px;
+    margin-left: var(--sys-size-3);
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
@@ -104,7 +104,7 @@ export default `/*
   .group-header-differentiator {
     font-weight: normal;
     color: var(--sys-color-state-disabled);
-    margin-left: 8px;
+    margin-left: var(--sys-size-5);
   }
 
   .group-hover-actions {
@@ -116,10 +116,10 @@ export default `/*
   }
 
   .breakpoint-item-location-or-actions {
-    min-width: 20px;
+    min-width: var(--sys-size-9);
     flex: 0 0 auto;
     display: flex;
-    padding-left: 8px;
+    padding-left: var(--sys-size-5);
     justify-content: right;
   }
 
@@ -135,7 +135,7 @@ export default `/*
   }
 
   button + span {
-    padding-left: 6px;
+    padding-left: var(--sys-size-4);
   }
 
   button + button {
@@ -147,8 +147,8 @@ export default `/*
   }
 
   devtools-icon {
-    width: 16px;
-    height: 16px;
+    width: var(--sys-size-8);
+    height: var(--sys-size-8);
 
     button:hover & {
       color: var(--icon-default-hover);
@@ -159,18 +159,18 @@ export default `/*
     --override-color-conditional-breakpoint: var(--ref-palette-orange70);
     --override-color-logpoint: var(--ref-palette-pink60);
 
-    border-right: 4px solid;
-    border-radius: 0 2px 2px 0;
+    border-right: var(--sys-size-3) solid;
+    border-radius: 0 var(--sys-size-2) var(--sys-size-2) 0;
     border-color: transparent;
-    height: 16px;
+    height: var(--sys-size-8);
   }
 
   .breakpoint-item {
     display: flex;
     align-items: center;
     line-height: 13px;
-    height: 20px;
-    padding-right: 8px;
+    height: var(--sys-size-9);
+    padding-right: var(--sys-size-5);
   }
 
   .breakpoint-item.hit {
@@ -202,8 +202,8 @@ export default `/*
   }
 
   .checkbox-label > input {
-    margin-left: 16px;
-    margin-right: 6px;
+    margin-left: var(--sys-size-8);
+    margin-right: var(--sys-size-4);
   }
 
   devtools-icon[name="file-script"] {
@@ -250,7 +250,7 @@ export default `/*
 
   .pause-on-caught-exceptions > .checkbox-label > input,
   .pause-on-uncaught-exceptions > .checkbox-label > input {
-    margin-left: 6px;
+    margin-left: var(--sys-size-4);
   }
 
   .pause-on-caught-exceptions > .checkbox-label > span,
@@ -264,7 +264,7 @@ export default `/*
   .pause-on-caught-exceptions {
     line-height: 13px;
     height: 18px;
-    padding-right: 8px;
+    padding-right: var(--sys-size-5);
 
     & > label {
       width: fit-content;

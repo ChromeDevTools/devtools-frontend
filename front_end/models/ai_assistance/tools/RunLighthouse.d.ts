@@ -3,7 +3,7 @@ import type * as LHModel from '../../lighthouse/lighthouse.js';
 import { type BaseToolCapability, type DataHandlerResult, type DataTool, type LighthouseRecordingCapability, type ToolArgs, ToolName } from './Tool.js';
 export interface RunLighthouseArgs extends ToolArgs {
     explanation: string;
-    category: LHModel.RunTypes.CategoryId;
+    categoryId: LHModel.RunTypes.CategoryId;
     mode?: LHModel.RunTypes.RunMode;
 }
 export declare class RunLighthouseTool implements DataTool<RunLighthouseArgs, {

@@ -1,0 +1,1 @@
+gen/front_end/ui/components/settings/settings.js: gen/front_end/ui/components/settings/settingCheckbox.css.js ../../front_end/ui/components/settings/SettingCheckbox.ts ../../front_end/ui/components/settings/settings.ts

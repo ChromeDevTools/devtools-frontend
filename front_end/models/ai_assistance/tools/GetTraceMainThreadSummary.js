@@ -10,7 +10,7 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 export class GetTraceMainThreadSummaryTool {
     name = "getTraceMainThreadSummary" /* ToolName.GET_TRACE_MAIN_THREAD_SUMMARY */;
-    description = 'Returns a focused, detailed summary of the main thread for a predefined labeled period.';
+    description = 'Retrieves a focused, bottom-up summary of main thread activity for a predefined labeled period (e.g. \'nav-to-lcp\', \'lcp-ttfb\', \'lcp-render-delay\', \'trace-bounds\', or insight names).';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: 'Arguments for looking up a main thread summary.',
@@ -18,7 +18,7 @@ export class GetTraceMainThreadSummaryTool {
         properties: {
             label: {
                 type: 1 /* Host.AidaClient.ParametersTypes.STRING */,
-                description: 'The label of the period to investigate (e.g., \'LCPBreakdown\', \'CLSCulprits\', \'nav-to-lcp\').',
+                description: 'The label of the period to investigate (e.g., \'LCPBreakdown\', \'CLSCulprits\', \'nav-to-lcp\', \'lcp-render-delay\', \'trace-bounds\').',
                 nullable: false,
             },
         },

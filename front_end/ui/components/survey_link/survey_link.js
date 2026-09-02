@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/survey_link/SurveyLink.js
+// ../../front_end/ui/components/survey_link/SurveyLink.ts
 var SurveyLink_exports = {};
 __export(SurveyLink_exports, {
   SurveyLink: () => SurveyLink
@@ -57,7 +57,7 @@ var surveyLink_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./surveyLink.css")} */`;
 
-// gen/front_end/ui/components/survey_link/SurveyLink.js
+// ../../front_end/ui/components/survey_link/SurveyLink.ts
 var UIStrings = {
   /**
    * @description Text shown when the link to open a survey is clicked but the survey has not yet appeared.
@@ -74,15 +74,6 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("ui/components/survey_link/SurveyLink.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var State;
-(function(State2) {
-  State2["CHECKING"] = "Checking";
-  State2["SHOW_LINK"] = "ShowLink";
-  State2["SENDING"] = "Sending";
-  State2["SURVEY_SHOWN"] = "SurveyShown";
-  State2["FAILED"] = "Failed";
-  State2["DONT_SHOW_LINK"] = "DontShowLink";
-})(State || (State = {}));
 var SurveyLink = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #trigger = "";
@@ -91,7 +82,7 @@ var SurveyLink = class extends HTMLElement {
   };
   #showSurvey = () => {
   };
-  #state = "Checking";
+  #state = "Checking" /* CHECKING */;
   // Re-setting data will cause the state to go back to 'Checking' which hides the link.
   set data(data) {
     this.#trigger = data.trigger;
@@ -101,47 +92,47 @@ var SurveyLink = class extends HTMLElement {
     this.#checkSurvey();
   }
   #checkSurvey() {
-    this.#state = "Checking";
+    this.#state = "Checking" /* CHECKING */;
     this.#canShowSurvey(this.#trigger, ({ canShowSurvey }) => {
       if (!canShowSurvey) {
-        this.#state = "DontShowLink";
+        this.#state = "DontShowLink" /* DONT_SHOW_LINK */;
       } else {
-        this.#state = "ShowLink";
+        this.#state = "ShowLink" /* SHOW_LINK */;
       }
       this.#render();
     });
   }
   #sendSurvey() {
-    this.#state = "Sending";
+    this.#state = "Sending" /* SENDING */;
     this.#render();
     this.#showSurvey(this.#trigger, ({ surveyShown }) => {
       if (!surveyShown) {
-        this.#state = "Failed";
+        this.#state = "Failed" /* FAILED */;
       } else {
-        this.#state = "SurveyShown";
+        this.#state = "SurveyShown" /* SURVEY_SHOWN */;
       }
       this.#render();
     });
   }
   #render() {
-    if (this.#state === "Checking" || this.#state === "DontShowLink") {
+    if (this.#state === "Checking" /* CHECKING */ || this.#state === "DontShowLink" /* DONT_SHOW_LINK */) {
       return;
     }
     let linkText = this.#promptText;
-    if (this.#state === "Sending") {
+    if (this.#state === "Sending" /* SENDING */) {
       linkText = i18nString(UIStrings.openingSurvey);
-    } else if (this.#state === "SurveyShown") {
+    } else if (this.#state === "SurveyShown" /* SURVEY_SHOWN */) {
       linkText = i18nString(UIStrings.thankYouForYourFeedback);
-    } else if (this.#state === "Failed") {
+    } else if (this.#state === "Failed" /* FAILED */) {
       linkText = i18nString(UIStrings.anErrorOccurredWithTheSurvey);
     }
     let linkState = "";
-    if (this.#state === "Sending") {
+    if (this.#state === "Sending" /* SENDING */) {
       linkState = "pending-link";
-    } else if (this.#state === "Failed" || this.#state === "SurveyShown") {
+    } else if (this.#state === "Failed" /* FAILED */ || this.#state === "SurveyShown" /* SURVEY_SHOWN */) {
       linkState = "disabled-link";
     }
-    const ariaDisabled = this.#state !== "ShowLink";
+    const ariaDisabled = this.#state !== "ShowLink" /* SHOW_LINK */;
     const output = html`
       <style>${surveyLink_css_default}</style>
       <button

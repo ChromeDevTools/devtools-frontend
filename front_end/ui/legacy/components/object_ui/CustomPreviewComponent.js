@@ -4,12 +4,12 @@
 /* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
-import { createIcon } from '../../../kit/kit.js';
-import { render } from '../../../lit/lit.js';
+import { Directives, html, nothing, render } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
 import { sanitizeStyle } from './CSSStyleSanitizer.js';
 import customPreviewComponentStyles from './customPreviewComponent.css.js';
-import { defaultObjectPresentation as defaultObjectPresentationTemplate, ObjectPropertiesSectionsTreeOutline, ObjectPropertyTreeElement, ObjectTree, } from './ObjectPropertiesSection.js';
+import { defaultObjectPresentation, ObjectPropertiesSectionWidget, ObjectTree, } from './ObjectPropertiesSection.js';
+const { widget } = UI.Widget;
 const UIStrings = {
     /**
      * @description Context menu item to show a custom formatted object as a standard JavaScript object.
@@ -21,70 +21,88 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CustomPreviewSection {
     sectionElement;
     object;
-    expanded;
+    expanded = false;
     cachedContent;
-    header;
-    expandIcon;
+    headerJsonML;
     constructor(object) {
         this.sectionElement = document.createElement('span');
         this.sectionElement.classList.add('custom-expandable-section');
         this.object = object;
-        this.expanded = false;
-        this.cachedContent = null;
         const customPreview = object.customPreview();
         if (!customPreview) {
             return;
         }
-        let headerJSON;
         try {
-            headerJSON = JSON.parse(customPreview.header);
+            this.headerJsonML = JSON.parse(customPreview.header);
         }
         catch (e) {
             Common.Console.Console.instance().error('Broken formatter: header is invalid json ' + e);
             return;
         }
-        this.header = this.renderJSONMLTag(headerJSON);
-        if (this.header.nodeType === Node.TEXT_NODE) {
-            Common.Console.Console.instance().error('Broken formatter: header should be an element node.');
+        this.render();
+    }
+    render() {
+        const customPreview = this.object.customPreview();
+        if (!customPreview || !this.headerJsonML) {
             return;
         }
+        const headerTemplate = this.renderJSONMLTag(this.headerJsonML);
         if (customPreview.bodyGetterId) {
-            if (this.header instanceof Element) {
-                this.header.classList.add('custom-expandable-section-header');
+            let bodyContent;
+            if (this.cachedContent instanceof ObjectTree) {
+                bodyContent = html `<devtools-widget class="custom-expandable-section-default-body" ${widget(ObjectPropertiesSectionWidget, {
+                    objectTree: this.cachedContent,
+                    showOverflow: false,
+                })}></devtools-widget>`;
             }
-            this.header.addEventListener('click', this.onClick.bind(this), false);
-            this.expandIcon = createIcon('triangle-right', 'custom-expand-icon');
-            this.header.insertBefore(this.expandIcon, this.header.firstChild);
+            else if (this.cachedContent !== undefined) {
+                bodyContent = this.renderJSONMLTag(this.cachedContent);
+            }
+            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+            render(html `
+        <span class=${Directives.classMap({ 'custom-expandable-section-header': true,
+                expanded: this.expanded })} @click=${(event) => this.onClick(event)}>
+          <devtools-icon name=${this.expanded ? 'triangle-down' : 'triangle-right'} class="custom-expand-icon"></devtools-icon>
+          ${headerTemplate}
+        </span>
+        ${bodyContent ?
+                html `<span class="custom-expandable-section-body" ?hidden=${!this.expanded}>${bodyContent}</span>` :
+                nothing}
+      `, this.sectionElement);
         }
-        this.sectionElement.appendChild(this.header);
+        else {
+            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+            render(html `${headerTemplate}`, this.sectionElement);
+        }
     }
     element() {
         return this.sectionElement;
     }
     renderJSONMLTag(jsonML) {
         if (!Array.isArray(jsonML)) {
-            return document.createTextNode(String(jsonML));
+            return html `${String(jsonML)}`;
         }
         if (jsonML[0] !== 'object') {
             return this.renderElement(jsonML);
         }
         if (jsonML.length !== 2) {
             Common.Console.Console.instance().error('Broken formatter: object reference must contain exactly two elements');
-            return document.createElement('span');
+            return html `<span></span>`;
         }
         return this.layoutObjectTag(jsonML);
     }
-    // TODO(crbug.com/1172300) Ignored during the jsdoc to ts migration)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     renderElement(object) {
-        const tagName = object.shift();
+        const it = object[Symbol.iterator]();
+        const tagName = it.next().value;
         if (!ALLOWED_TAGS.includes(tagName)) {
             Common.Console.Console.instance().error('Broken formatter: element ' + tagName + ' is not allowed!');
-            return document.createElement('span');
+            return html `<span></span>`;
         }
-        const element = document.createElement(tagName);
-        if ((typeof object[0] === 'object') && !Array.isArray(object[0])) {
-            const attributes = object.shift();
+        let next = it.next();
+        const stylePropertyMap = {};
+        if (typeof next.value === 'object' && !Array.isArray(next.value) && next.value !== null) {
+            const attributes = next.value;
             for (const key in attributes) {
                 const value = attributes[key];
                 if ((key !== 'style') || (typeof value !== 'string')) {
@@ -93,32 +111,49 @@ export class CustomPreviewSection {
                 const sanitizedStyle = new Map();
                 sanitizeStyle(sanitizedStyle, value);
                 for (const [property, { value: propertyValue, priority }] of sanitizedStyle) {
-                    element.style.setProperty(property, propertyValue, priority);
+                    stylePropertyMap[property] = priority ? `${propertyValue} !${priority}` : propertyValue;
                 }
             }
+            next = it.next();
         }
-        this.appendJsonMLTags(element, object);
-        return element;
+        const children = [];
+        while (!next.done) {
+            children.push(this.renderJSONMLTag(next.value));
+            next = it.next();
+        }
+        const style = Directives.styleMap(stylePropertyMap);
+        switch (tagName) {
+            case 'span':
+                return html `<span style=${style}>${children}</span>`;
+            case 'div':
+                return html `<div style=${style}>${children}</div>`;
+            case 'ol':
+                return html `<ol style=${style}>${children}</ol>`;
+            case 'li':
+                return html `<li style=${style}>${children}</li>`;
+            case 'table':
+                return html `<table style=${style}>${children}</table>`;
+            case 'tr':
+                return html `<tr style=${style}>${children}</tr>`;
+            case 'td':
+                return html `<td style=${style}>${children}</td>`;
+            default:
+                return html `<span>${children}</span>`;
+        }
     }
     layoutObjectTag(objectTag) {
-        objectTag.shift();
-        const attributes = objectTag.shift();
+        const it = objectTag[Symbol.iterator]();
+        it.next(); // skip 'object'
+        const attributes = it.next().value;
         const remoteObject = this.object.runtimeModel().createRemoteObject(attributes);
         if (remoteObject.customPreview()) {
-            return (new CustomPreviewSection(remoteObject)).element();
+            return html `${(new CustomPreviewSection(remoteObject)).element()}`;
         }
-        const sectionElement = defaultObjectPresentation(remoteObject);
-        sectionElement.classList.toggle('custom-expandable-section-standard-section', remoteObject.hasChildren);
-        return sectionElement;
-    }
-    appendJsonMLTags(parentElement, jsonMLTags) {
-        for (let i = 0; i < jsonMLTags.length; ++i) {
-            parentElement.appendChild(this.renderJSONMLTag(jsonMLTags[i]));
-        }
+        return defaultObjectPresentation(remoteObject, undefined, undefined, undefined, { 'custom-expandable-section-standard-section': remoteObject.hasChildren });
     }
     onClick(event) {
         event.consume(true);
-        if (this.cachedContent) {
+        if (this.cachedContent !== undefined) {
             this.toggleExpand();
         }
         else {
@@ -127,22 +162,8 @@ export class CustomPreviewSection {
     }
     toggleExpand() {
         this.expanded = !this.expanded;
-        if (this.header instanceof Element) {
-            this.header.classList.toggle('expanded', this.expanded);
-        }
-        if (this.cachedContent instanceof Element) {
-            this.cachedContent.classList.toggle('hidden', !this.expanded);
-        }
-        if (this.expandIcon) {
-            if (this.expanded) {
-                this.expandIcon.name = 'triangle-down';
-            }
-            else {
-                this.expandIcon.name = 'triangle-right';
-            }
-        }
+        this.render();
     }
-    defaultBodyTreeOutline;
     async loadBody() {
         const customPreview = this.object.customPreview();
         if (!customPreview) {
@@ -153,20 +174,18 @@ export class CustomPreviewSection {
             if (bodyJsonML === null) {
                 // Per https://firefox-source-docs.mozilla.org/devtools-user/custom_formatters/index.html#custom-formatter-structure
                 // we are supposed to fall back to the default format when the `body()` callback returns `null`.
-                this.defaultBodyTreeOutline = new ObjectPropertiesSectionsTreeOutline();
-                this.defaultBodyTreeOutline.setShowSelectionOnKeyboardFocus(/* show */ true, /* preventTabOrder */ false);
-                this.defaultBodyTreeOutline.element.classList.add('custom-expandable-section-default-body');
-                void ObjectPropertyTreeElement.populate(this.defaultBodyTreeOutline.rootElement(), new ObjectTree(this.object, {
+                const objectTree = new ObjectTree(this.object, {
                     readOnly: true,
                     propertiesMode: 1 /* ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED */,
-                }), false, false);
-                this.cachedContent = this.defaultBodyTreeOutline.element;
+                });
+                objectTree.expanded = true;
+                this.cachedContent = objectTree;
             }
             else {
-                this.cachedContent = this.renderJSONMLTag(bodyJsonML);
+                this.cachedContent = bodyJsonML;
             }
-            this.sectionElement.appendChild(this.cachedContent);
-            this.toggleExpand();
+            this.expanded = true;
+            this.render();
         }
     }
 }
@@ -202,14 +221,9 @@ export class CustomPreviewComponent {
         if (this.element.shadowRoot) {
             this.element.shadowRoot.textContent = '';
             this.customPreviewSection = null;
-            this.element.shadowRoot.appendChild(defaultObjectPresentation(this.object));
+            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+            render(defaultObjectPresentation(this.object), this.element.shadowRoot);
         }
     }
-}
-function defaultObjectPresentation(object) {
-    const element = document.createElement('span');
-    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-    render(defaultObjectPresentationTemplate(object), element);
-    return element;
 }
 //# sourceMappingURL=CustomPreviewComponent.js.map

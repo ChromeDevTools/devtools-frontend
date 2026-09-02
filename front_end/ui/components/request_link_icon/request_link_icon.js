@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/request_link_icon/RequestLinkIcon.js
+// ../../front_end/ui/components/request_link_icon/RequestLinkIcon.ts
 var RequestLinkIcon_exports = {};
 __export(RequestLinkIcon_exports, {
   RequestLinkIcon: () => RequestLinkIcon,
@@ -74,7 +74,7 @@ devtools-icon {
 
 /*# sourceURL=${import.meta.resolve("./requestLinkIcon.css")} */`;
 
-// gen/front_end/ui/components/request_link_icon/RequestLinkIcon.js
+// ../../front_end/ui/components/request_link_icon/RequestLinkIcon.ts
 var { html } = Lit;
 var UIStrings = {
   /**
@@ -161,13 +161,16 @@ var RequestLinkIcon = class extends HTMLElement {
       return;
     }
     if (this.#highlightHeader) {
-      const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.header(linkedRequest, this.#highlightHeader.section, this.#highlightHeader.name);
+      const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.header(
+        linkedRequest,
+        this.#highlightHeader.section,
+        this.#highlightHeader.name
+      );
       void this.#reveal(requestLocation);
     } else {
       const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
         linkedRequest,
-        this.#networkTab ?? "headers-component"
-        /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */
+        this.#networkTab ?? NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT
       );
       void this.#reveal(requestLocation);
     }

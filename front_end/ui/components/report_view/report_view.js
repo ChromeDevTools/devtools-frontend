@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/report_view/ReportView.js
+// ../../front_end/ui/components/report_view/ReportView.ts
 var ReportView_exports = {};
 __export(ReportView_exports, {
   Report: () => Report,
@@ -189,7 +189,7 @@ var reportValue_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./reportValue.css")} */`;
 
-// gen/front_end/ui/components/report_view/ReportView.js
+// ../../front_end/ui/components/report_view/ReportView.ts
 var Report = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #reportTitle = "";

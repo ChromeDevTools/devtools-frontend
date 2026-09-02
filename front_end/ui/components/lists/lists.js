@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/lists/List.js
+// ../../front_end/ui/components/lists/List.ts
 var List_exports = {};
 __export(List_exports, {
   ItemEditEvent: () => ItemEditEvent,
@@ -114,7 +114,7 @@ li {
 
 /*# sourceURL=${import.meta.resolve("./list.css")} */`;
 
-// gen/front_end/ui/components/lists/List.js
+// ../../front_end/ui/components/lists/List.ts
 var UIStrings = {
   /**
    * @description Title of the edit button for the list items.
@@ -207,7 +207,7 @@ var List = class extends HTMLElement {
               aria-label=${i18nString(UIStrings.edit)}
               .iconName=${"edit"}
               .jslogContext=${"edit-item"}
-              .variant=${"icon"}
+              .variant=${Buttons.Button.Variant.ICON}
               @click=${this.#dispatchEdit.bind(this, index)}
             ></devtools-button>
           ` : nothing}
@@ -217,7 +217,7 @@ var List = class extends HTMLElement {
               aria-label=${i18nString(UIStrings.remove)}
               .iconName=${"bin"}
               .jslogContext=${"remove-item"}
-              .variant=${"icon"}
+              .variant=${Buttons.Button.Variant.ICON}
               @click=${this.#dispatchRemove.bind(this, index)}
             ></devtools-button>
           ` : nothing}
@@ -235,12 +235,15 @@ var List = class extends HTMLElement {
         }
         return { index, item };
       });
-      render(html`
+      render(
+        html`
     <style>${list_css_default}</style>
     <ul role='list'>
     ${Directives.repeat(listData, (data) => data.item, (data) => this.createSlottedListItem(data.index))}
     </ul>
-  `, this.shadowRoot);
+  `,
+        this.shadowRoot
+      );
     }
   }
   #dispatchRemove(index) {

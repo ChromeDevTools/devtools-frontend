@@ -11,10 +11,10 @@ export default `/*
 
 :host {
   z-index: 30;
-  padding: 4px;
+  padding: var(--sys-size-3);
   background-color: var(--sys-color-surface3);
   border-radius: 7px;
-  border: 2px solid var(--sys-color-divider);
+  border: var(--sys-size-2) solid var(--sys-color-divider);
   width: 90%;
   pointer-events: auto;
 }
@@ -25,25 +25,25 @@ export default `/*
   background-color: var(--sys-color-surface3);
   width: 555px;
   pointer-events: auto;
-  margin-left: -1px;
+  margin-left: calc(-1 * var(--sys-size-1));
   padding: 0 10px 10px 5px;
-  border: 1px solid var(--sys-color-divider);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .condition-editor {
   background-color: var(--sys-color-cdt-base-container);
-  margin: 0 6px 20px 3px;
+  margin: 0 var(--sys-size-4) var(--sys-size-9) 3px;
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .source-frame-breakpoint-toolbar {
   font-family: var(--default-font-family);
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .link,
 .devtools-link {
   font-family: var(--default-font-family);
-  font-size: 12px;
+  font-size: var(--sys-typescale-body4-size);
   margin: 0 3px;
 }
 
@@ -51,8 +51,8 @@ export default `/*
   vertical-align: sub;
   margin-right: 0.5ch;
   color: var(--icon-link);
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
 }
 
 :host-context(.sources-edit-breakpoint-dialog) .link-wrapper {

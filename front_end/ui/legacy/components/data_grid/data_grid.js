@@ -444,83 +444,81 @@ var dataGrid_css_default = `/*
 // gen/front_end/ui/legacy/components/data_grid/DataGrid.js
 var UIStrings = {
   /**
-   * @description Accessible text label for expandible nodes in datagrids
+   * @description Accessible text label for expanded rows in a datagrid. Lowercase because it is inserted into the middle of another sentence.
    */
   expanded: "expanded",
   /**
-   * @description accessible name for expandible nodes in datagrids
+   * @description Accessible text label for collapsed rows in a datagrid. Lowercase because it is inserted into the middle of another sentence.
    */
   collapsed: "collapsed",
   /**
-   * @description Accessible text for datagrid
+   * @description Accessible text for a row in a datagrid announced by screen readers.
    * @example {Coverage grid} PH1
    * @example {expanded} PH2
    */
-  sRowS: "{PH1} Row {PH2}",
+  sRowS: "{PH1} row {PH2}",
   /**
-   * @description Number of rows in a grid
+   * @description Accessible text indicating the number of rows in a datagrid. Lowercase because it is inserted into the middle of another sentence.
    * @example {1} PH1
    */
-  rowsS: "Rows: {PH1}",
+  rowsS: "rows: {PH1}",
   /**
-   * @description Default Accessible Text for a Datagrid. This text is read to the user by a
-   * screenreader when they navigate to a table structure. The placeholders tell the user something
-   * brief about the table contents i.e. the topic and how much data is in it.
+   * @description Accessible text for a datagrid announced by screen readers when focusing the table without a selected row.
    * @example {Network} PH1
-   * @example {Rows: 27} PH2
+   * @example {rows: 27} PH2
    */
-  sSUseTheUpAndDownArrowKeysTo: "{PH1} {PH2}, use the up and down arrow keys to navigate and interact with the rows of the table; Use browse mode to read cell by cell.",
+  sSUseTheUpAndDownArrowKeysTo: "{PH1} {PH2}, use the up and down arrow keys to navigate and interact with the rows of the table; use browse mode to read cell by cell.",
   /**
-   * @description A context menu item in the Data Grid of a data grid
+   * @description Context menu item label to sort the rows of a datagrid by a column.
    */
   sortByString: "Sort by",
   /**
-   * @description A context menu item in data grids to reset the columns to their default weight
+   * @description Context menu item label in a datagrid to reset column widths to their default values.
    */
   resetColumns: "Reset columns",
   /**
-   * @description A context menu item in data grids to list header options.
+   * @description Context menu submenu label in a datagrid containing column header options.
    */
   headerOptions: "Header options",
   /**
-   * @description Text to refresh the page
+   * @description Context menu item label in a datagrid to refresh the table contents.
    */
   refresh: "Refresh",
   /**
-   * @description A context menu item in the Data Grid of a data grid
+   * @description Context menu item label in a datagrid to add a new row.
    */
   addNew: "Add new",
   /**
-   * @description A context menu item in the Data Grid of a data grid
+   * @description Context menu item label in a datagrid to edit a specific column value in a row.
    * @example {pattern} PH1
    */
   editS: 'Edit "{PH1}"',
   /**
-   * @description Text to delete something
+   * @description Context menu item label in a datagrid to delete a selected row.
    */
   delete: "Delete",
   /**
-   * @description Depth of a node in the datagrid
+   * @description Accessible text indicating the depth level of a row in a hierarchical datagrid.
    * @example {1} PH1
    */
-  levelS: "level {PH1}",
+  levelS: "Level {PH1}",
   /**
-   * @description Text exposed to screen readers on checked items.
+   * @description Accessible text announced by screen readers for checked boolean cells in a datagrid.
    */
-  checked: "checked",
+  checked: "Checked",
   /**
-   * @description Accessible text indicating an empty row is created.
+   * @description Accessible text announced by screen readers when a new editable empty row is added to a datagrid.
    */
-  emptyRowCreated: "An empty table row has been created. You may double click or use context menu to edit.",
+  emptyRowCreated: "An empty table row was added. Double-click or use the context menu to edit.",
   /**
-   * @description Text for screen reader to announce when focusing on a sortable column in data grid.
+   * @description Accessible text announced by screen readers when focusing on a sortable column header in a datagrid.
    * @example {ascending} PH1
    */
-  enterToSort: "Column sort state: {PH1}. Press enter to apply sorting filter",
+  enterToSort: "Column sort state: {PH1}. Press enter to sort.",
   /**
-   * @description Label for sortable column headers.
+   * @description Accessible label for sortable column headers in a datagrid.
    */
-  sortableColumn: "Sortable column. Press enter to apply sorting filter"
+  sortableColumn: "Sortable column. Press enter to sort."
 };
 var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/data_grid/DataGrid.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
@@ -3151,21 +3149,17 @@ import * as i18n3 from "../../../../core/i18n/i18n.js";
 import * as UI2 from "../../legacy.js";
 var UIStrings2 = {
   /**
-   * @description Shown in a table when there are too many results to show directly. The user can
-   * click this button to show more results. This will result in the UI showing X more results before
-   * the current position.
+   * @description Button label in a datagrid to show more rows before the current position.
    * @example {5} PH1
    */
   showDBefore: "Show {PH1} before",
   /**
-   * @description Shown in a table when there are too many results to show directly. The user can
-   * click this button to show more results. This will result in the UI showing X more results after
-   * the current position.
+   * @description Button label in a datagrid to show more rows after the current position.
    * @example {5} PH1
    */
   showDAfter: "Show {PH1} after",
   /**
-   * @description In a data grid, for a list of items with omitted items, display all omitted items
+   * @description Button label in a datagrid to show all remaining hidden rows.
    * @example {50} PH1
    */
   showAllD: "Show all {PH1}"

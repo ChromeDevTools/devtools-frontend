@@ -770,7 +770,7 @@ var UIStrings4 = {
   /**
    * @description Icon title for warning indicator in the Network panel title.
    */
-  requestsMayBeBlocked: "Requests may be blocked. See the Network request blocking panel"
+  requestsMayBeBlocked: "Requests may be blocked. See the Request conditions panel"
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/mobile_throttling/NetworkPanelIndicator.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
@@ -1385,7 +1385,7 @@ var throttlingSettingsTab_css_default = `/*
 }
 
 .settings-container::-webkit-scrollbar-thumb {
-  border-radius: var( --sys-size-3);
+  border-radius: var(--sys-shape-corner-extra-small);
   background-color: var(--sys-color-primary);
 }
 
@@ -1394,8 +1394,8 @@ var throttlingSettingsTab_css_default = `/*
   flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
-  gap: var( --sys-size-3);
-  padding: var( --sys-size-4);
+  gap: var(--sys-size-3);
+  padding: var(--sys-size-4);
   flex-shrink: 0;
   width: 74px;
 }
@@ -1417,7 +1417,7 @@ var throttlingSettingsTab_css_default = `/*
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  flex-basis: var( --sys-size-24);
+  flex-basis: var(--sys-size-24);
   user-select: none;
   color: var(--sys-color-on-surface);
   text-align: center;

@@ -23,8 +23,8 @@ export default `/*
 }
 
 .inline-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
   margin-inline: var(--sys-size-3);
 
   &[name="check-circle"] {
@@ -38,7 +38,7 @@ export default `/*
 }
 
 select {
-  margin: 4px;
+  margin: var(--sys-size-3);
 }
 
 .inline-button {
@@ -64,7 +64,7 @@ devtools-report .report-section {
   grid-column: 1 / 3;
   grid-template-columns: subgrid;
   padding-bottom: var(--sys-size-5);
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   margin-bottom: var(--sys-size-5);
 }
 
@@ -79,7 +79,7 @@ devtools-report .report-section {
 .image-wrapper {
   display: inline-block;
   height: fit-content;
-  margin-right: 8px;
+  margin-right: var(--sys-size-5);
 }
 
 .show-mask img {

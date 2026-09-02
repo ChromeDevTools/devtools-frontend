@@ -352,9 +352,9 @@ export class NetworkPanel extends UI.Panel.Panel {
     throttlingSelectForTest() {
         return this.throttlingSelect;
     }
-    onWindowChanged(event) {
-        const startTime = Math.max(this.calculator.minimumBoundary(), event.data.startTime / 1000);
-        const endTime = Math.min(this.calculator.maximumBoundary(), event.data.endTime / 1000);
+    updateNetworkLogWindow(startTimeMs, endTimeMs) {
+        const startTime = Math.max(this.calculator.minimumBoundary(), startTimeMs / 1000);
+        const endTime = Math.min(this.calculator.maximumBoundary(), endTimeMs / 1000);
         if (startTime === this.calculator.minimumBoundary() && endTime === this.calculator.maximumBoundary()) {
             // Reset the filters for NetworkLogView when the window is reset
             // to its boundaries. This clears the filters and allows the users
@@ -365,6 +365,9 @@ export class NetworkPanel extends UI.Panel.Panel {
         else {
             this.networkLogView.setWindow(startTime, endTime);
         }
+    }
+    onWindowChanged(event) {
+        this.updateNetworkLogWindow(event.data.startTime, event.data.endTime);
     }
     async searchToggleClick() {
         const action = UI.ActionRegistry.ActionRegistry.instance().getAction('network.search');
@@ -683,6 +686,7 @@ export class NetworkPanel extends UI.Panel.Panel {
     onFilmFrameSelected(event) {
         const timestamp = event.data;
         this.overviewPane.setWindowTimes(Trace.Types.Timing.Milli(0), Trace.Types.Timing.Milli(timestamp));
+        this.updateNetworkLogWindow(0, timestamp);
     }
     onFilmFrameEnter(event) {
         const timestamp = event.data;

@@ -14,22 +14,22 @@ import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import * as Components from './components/components.js';
 const UIStrings = {
     /**
-     * @description Text for showing that a metric was observed in the local environment.
+     * @description Tooltip text indicating that a metric was observed in the local environment in the Performance panel.
      * @example {LCP} PH1
      */
     fieldMetricMarkerLocal: '{PH1} - Local',
     /**
-     * @description Text for showing that a metric was observed in the field, from real use data (CrUX). Also denotes if from URL or Origin dataset.
+     * @description Tooltip text indicating that a metric was observed in the field (from Chrome UX Report data) for a specific page scope in the Performance panel.
      * @example {LCP} PH1
      * @example {URL} PH2
      */
     fieldMetricMarkerField: '{PH1} - Field ({PH2})',
     /**
-     * @description Label for an option that selects the page's specific URL as opposed to it's entire origin/domain.
+     * @description Text for the page scope option that selects the specific URL instead of its entire origin in the Performance panel.
      */
     urlOption: 'URL',
     /**
-     * @description Label for an option that selects the page's entire origin/domain as opposed to it's specific URL.
+     * @description Text for the page scope option that selects the entire origin instead of its specific URL in the Performance panel.
      */
     originOption: 'Origin',
 };

@@ -1,1 +1,0 @@
-gen/front_end/ui/components/node_text/node_text.js: gen/front_end/ui/components/node_text/nodeText.css.js gen/front_end/ui/components/node_text/NodeText.js gen/front_end/ui/components/node_text/node_text.prebundle.js

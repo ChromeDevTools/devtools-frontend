@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/tooltips/Tooltip.js
+// ../../front_end/ui/components/tooltips/Tooltip.ts
 var Tooltip_exports = {};
 __export(Tooltip_exports, {
   PositionOption: () => PositionOption,
@@ -74,15 +74,15 @@ var tooltip_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./tooltip.css")} */`;
 
-// gen/front_end/ui/components/tooltips/Tooltip.js
+// ../../front_end/ui/components/tooltips/Tooltip.ts
 var { html } = Lit;
-var PositionOption;
-(function(PositionOption2) {
+var PositionOption = /* @__PURE__ */ ((PositionOption2) => {
   PositionOption2["BOTTOM_SPAN_RIGHT"] = "bottom-span-right";
   PositionOption2["BOTTOM_SPAN_LEFT"] = "bottom-span-left";
   PositionOption2["TOP_SPAN_RIGHT"] = "top-span-right";
   PositionOption2["TOP_SPAN_LEFT"] = "top-span-left";
-})(PositionOption || (PositionOption = {}));
+  return PositionOption2;
+})(PositionOption || {});
 var positioningUtils = {
   bottomSpanRight: ({ anchorRect }) => {
     return {
@@ -155,13 +155,13 @@ var proposedRectForRichTooltip = ({ inspectorViewRect, anchorRect, currentPopove
   ];
   const getProposedRectForPositionOption = (positionOption) => {
     switch (positionOption) {
-      case PositionOption.BOTTOM_SPAN_RIGHT:
+      case "bottom-span-right" /* BOTTOM_SPAN_RIGHT */:
         return positioningUtils.bottomSpanRight({ anchorRect, currentPopoverRect });
-      case PositionOption.BOTTOM_SPAN_LEFT:
+      case "bottom-span-left" /* BOTTOM_SPAN_LEFT */:
         return positioningUtils.bottomSpanLeft({ anchorRect, currentPopoverRect });
-      case PositionOption.TOP_SPAN_RIGHT:
+      case "top-span-right" /* TOP_SPAN_RIGHT */:
         return positioningUtils.topSpanRight({ anchorRect, currentPopoverRect });
-      case PositionOption.TOP_SPAN_LEFT:
+      case "top-span-left" /* TOP_SPAN_LEFT */:
         return positioningUtils.topSpanLeft({ anchorRect, currentPopoverRect });
     }
   };
@@ -178,10 +178,10 @@ var proposedRectForRichTooltip = ({ inspectorViewRect, anchorRect, currentPopove
   const prefersBottom = bottomVerticalOutOfBounds <= topVerticalOutOfBounds;
   const fallbackOption = uniqueOrder.find((option) => {
     if (prefersBottom) {
-      return option === PositionOption.BOTTOM_SPAN_LEFT || option === PositionOption.BOTTOM_SPAN_RIGHT;
+      return option === "bottom-span-left" /* BOTTOM_SPAN_LEFT */ || option === "bottom-span-right" /* BOTTOM_SPAN_RIGHT */;
     }
-    return option === PositionOption.TOP_SPAN_LEFT || option === PositionOption.TOP_SPAN_RIGHT;
-  }) ?? PositionOption.TOP_SPAN_RIGHT;
+    return option === "top-span-left" /* TOP_SPAN_LEFT */ || option === "top-span-right" /* TOP_SPAN_RIGHT */;
+  }) ?? "top-span-right" /* TOP_SPAN_RIGHT */;
   const fallbackRect = getProposedRectForPositionOption(fallbackOption);
   return positioningUtils.insetAdjustedRect({ currentPopoverRect, inspectorViewRect, proposedRect: fallbackRect });
 };
@@ -398,7 +398,7 @@ var Tooltip = class _Tooltip extends HTMLElement {
     this.#previousAnchorRect = anchorRect;
     this.#previousPopoverRect = currentPopoverRect;
     const inspectorViewRect = UI.UIUtils.getDevToolsBoundingElement().getBoundingClientRect();
-    const preferredPositions = this.preferSpanLeft ? [PositionOption.BOTTOM_SPAN_LEFT, PositionOption.TOP_SPAN_LEFT] : [];
+    const preferredPositions = this.preferSpanLeft ? ["bottom-span-left" /* BOTTOM_SPAN_LEFT */, "top-span-left" /* TOP_SPAN_LEFT */] : [];
     const proposedPopoverRect = this.variant === "rich" ? proposedRectForRichTooltip({ inspectorViewRect, anchorRect, currentPopoverRect, preferredPositions }) : proposedRectForSimpleTooltip({ inspectorViewRect, anchorRect, currentPopoverRect });
     this.style.left = `${proposedPopoverRect.left}px`;
     const actualVerticalOffset = anchorRect.top < proposedPopoverRect.top ? this.verticalDistanceIncrease : -this.verticalDistanceIncrease;
@@ -523,7 +523,9 @@ var Tooltip = class _Tooltip extends HTMLElement {
       }
       this.#anchor = anchor;
       if (this.variant === "rich" && !detailsAnchor) {
-        console.warn(`"aria-details" was not defined for tooltip ${id}. For rich tooltips "aria-details" should be defined.`);
+        console.warn(
+          `"aria-details" was not defined for tooltip ${id}. For rich tooltips "aria-details" should be defined.`
+        );
       }
     }
     this.#observeAnchorRemoval(this.#anchor);

@@ -22,9 +22,9 @@ label {
 }
 
 input[type="text"].add-source-map {
-  box-shadow: 0 0 0 1px var(--box-shadow-outline-color);
+  box-shadow: 0 0 0 var(--sys-size-1) var(--box-shadow-outline-color);
   font-size: inherit;
-  margin: 0 8px 0 5px;
+  margin: 0 var(--sys-size-5) 0 5px;
 }
 
 /*# sourceURL=${import.meta.resolve('./dialog.css')} */`;

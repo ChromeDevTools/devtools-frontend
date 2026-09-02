@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/recorder/injected",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../front_end/panels/recorder/injected/Logger.ts",
+    "../../../../../../../front_end/panels/recorder/injected/MonotonicArray.ts",
+    "../../../../../../../front_end/panels/recorder/injected/RecordingClient.ts",
+    "../../../../../../../front_end/panels/recorder/injected/SelectorComputer.ts",
+    "../../../../../../../front_end/panels/recorder/injected/SelectorPicker.ts",
+    "../../../../../../../front_end/panels/recorder/injected/Step.ts",
+    "../../../../../../../front_end/panels/recorder/injected/injected.ts",
+    "../../../../../../../front_end/panels/recorder/injected/selectors/ARIASelector.ts",
+    "../../../../../../../front_end/panels/recorder/injected/selectors/CSSSelector.ts",
+    "../../../../../../../front_end/panels/recorder/injected/selectors/PierceSelector.ts",
+    "../../../../../../../front_end/panels/recorder/injected/selectors/Selector.ts",
+    "../../../../../../../front_end/panels/recorder/injected/selectors/TextSelector.ts",
+    "../../../../../../../front_end/panels/recorder/injected/selectors/XPath.ts",
+    "../../../../../../../front_end/panels/recorder/injected/util.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../third_party/puppeteer/puppeteer-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../third_party/puppeteer/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../third_party/puppeteer-replay/bundle-tsconfig.ref.json"
+    }
+  ]
+}

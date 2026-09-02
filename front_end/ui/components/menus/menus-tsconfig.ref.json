@@ -20,12 +20,6 @@
       "path": "../../../core/platform/bundle-tsconfig.ref.json"
     },
     {
-      "path": "../helpers/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../render_coordinator/bundle-tsconfig.ref.json"
-    },
-    {
       "path": "../../lit/bundle-tsconfig.ref.json"
     },
     {
@@ -33,6 +27,12 @@
     },
     {
       "path": "../dialogs/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../helpers/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../render_coordinator/bundle-tsconfig.ref.json"
     }
   ]
 }

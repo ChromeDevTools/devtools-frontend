@@ -10,7 +10,7 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 export class RecordPerformanceTraceTool {
     name = "recordPerformanceTrace" /* ToolName.RECORD_PERFORMANCE_TRACE */;
-    description = 'Records a new performance trace to measure, analyze, and debug page performance.';
+    description = 'Reloads the page and records a new performance trace to measure, analyze, and debug page performance.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: 'Parameters for recording a performance trace.',

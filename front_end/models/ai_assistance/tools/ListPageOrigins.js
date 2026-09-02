@@ -9,7 +9,7 @@ import { areOriginsEquivalent, isOpaqueOrigin } from '../AiOrigins.js';
 const lockedString = i18n.i18n.lockedString;
 export class ListPageOriginsTool {
     name = "listPageOrigins" /* ToolName.LIST_PAGE_ORIGINS */;
-    description = 'Lists all active, non-empty frame origins loaded by the page. Use this first when generic category context is active to discover all page origins, then pass them to listCookies or listStorageKeys, unless the user\'s explicit request hints at focusing only on the primary page.';
+    description = 'Lists all active, non-empty frame origins loaded by the page. Call this first to discover all page origins before calling listCookies or listStorageKeys, unless the user\'s explicit request focuses only on the primary page.';
     parameters = {
         type: 6 /* Host.AidaClient.ParametersTypes.OBJECT */,
         description: '',

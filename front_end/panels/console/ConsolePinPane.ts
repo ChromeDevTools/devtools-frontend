@@ -109,7 +109,8 @@ export class ConsolePinPane extends UI.Widget.VBox {
   readonly #pinModel: ConsolePinModel;
   readonly #focusOut: () => void;
 
-  constructor(focusOut: () => void, view = DEFAULT_PANE_VIEW) {
+  constructor(focusOut: () => void,
+              view: (input: PaneViewInput, _output: object, target: HTMLElement) => void = DEFAULT_PANE_VIEW) {
     super({useShadowDom: true});
     this.#focusOut = focusOut;
     this.#view = view;
@@ -294,7 +295,8 @@ export class ConsolePinPresenter extends UI.Widget.Widget {
   #deletePinIcon!: Buttons.Button.Button;
   readonly #selfXssWarningDisabledSetting: Common.Settings.Setting<boolean>;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement,
+              view: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
 

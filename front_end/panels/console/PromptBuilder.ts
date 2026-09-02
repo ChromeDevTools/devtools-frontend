@@ -203,7 +203,7 @@ export function lineWhitespace(line: string): string|null {
 
 export function formatRelatedCode(
     {text, columnNumber, lineNumber}: {text: string, columnNumber: number, lineNumber: number},
-    maxCodeSize = MAX_CODE_SIZE): string {
+    maxCodeSize: number = MAX_CODE_SIZE): string {
   const lines = text.split('\n');
   if (lines[lineNumber].length >= maxCodeSize / 2) {
     const start = Math.max(columnNumber - maxCodeSize / 2, 0);

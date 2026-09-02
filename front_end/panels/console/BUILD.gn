@@ -21,6 +21,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("console") {
+  split_compilation = true
   sources = [
     "ConsoleContextSelector.ts",
     "ConsoleFilter.ts",
@@ -37,7 +38,9 @@ devtools_ui_module("console") {
     "SymbolizedErrorWidget.ts",
   ]
 
-  deps = [
+  deps = [ "../../ui/legacy/components/object_ui:css_files" ]
+
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -70,7 +73,6 @@ devtools_ui_module("console") {
     "../../ui/legacy:bundle",
     "../../ui/legacy/components/data_grid:bundle",
     "../../ui/legacy/components/object_ui:bundle",
-    "../../ui/legacy/components/object_ui:css_files",
     "../../ui/legacy/components/settings_ui:bundle",
     "../../ui/legacy/components/utils:bundle",
     "../../ui/lit:bundle",
@@ -82,13 +84,15 @@ devtools_ui_module("console") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "console.ts"
 
   deps = [
-    ":console",
     ":css_files",
     "../../ui/legacy/components/object_ui:css_files",
   ]
+
+  ts_deps = [ ":console" ]
 
   visibility = [
     ":*",
@@ -103,9 +107,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "console-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
@@ -118,6 +123,7 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -134,7 +140,7 @@ devtools_ui_module("unittests") {
     "SymbolizedErrorWidget.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",

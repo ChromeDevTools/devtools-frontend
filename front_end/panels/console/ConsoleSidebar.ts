@@ -117,7 +117,11 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 };
 
 export class ConsoleFilterGroup {
-  readonly urlGroups = new Map<string|null, {filter: ConsoleFilter, url: string|null, count: number}>();
+  readonly urlGroups: Map<string|null, {
+    filter: ConsoleFilter,
+    url: string|null,
+    count: number,
+  }> = new Map<string|null, {filter: ConsoleFilter, url: string|null, count: number}>();
   messageCount = 0;
   readonly name: GroupName;
   readonly filter: ConsoleFilter;
@@ -190,7 +194,7 @@ export class ConsoleSidebar extends ConsoleSidebarBase {
       Common.Settings.Settings.instance().createSetting<string|null>('console.sidebar-selected-filter', null);
   #selectedFilter = this.#groups.find(group => group.name === this.#selectedFilterSetting.get())?.filter;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {
       useShadowDom: 'pure',
     });

@@ -13,9 +13,10 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("autofill") {
+  split_compilation = true
   sources = [ "AutofillView.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -33,12 +34,12 @@ devtools_ui_module("autofill") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "autofill.ts"
 
-  deps = [
-    ":autofill",
-    ":css_files",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":autofill" ]
 
   visibility = [
     ":*",
@@ -49,9 +50,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "autofill-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/i18n:bundle",
     "../../ui/legacy:bundle",
@@ -61,11 +63,12 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "AutofillView.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",

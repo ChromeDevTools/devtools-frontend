@@ -155,11 +155,15 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
       return;
     }
 
-    const details = await lhr.getUserFacingDetails();
+    const [details, widgets] = await Promise.all([
+      lhr.getUserFacingDetails(),
+      lhr.getWidgets(),
+    ]);
     if (details) {
       yield {
         type: ResponseType.CONTEXT,
         details,
+        widgets,
       };
     }
   }

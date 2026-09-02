@@ -77,6 +77,28 @@ describeWithEnvironment('AccessibilityAgent', () => {
     assert.include(text, '**Accessibility Audit**: 50 (Fail)');
   });
 
+  it('yields context with LIGHTHOUSE_REPORT widget', async () => {
+    const aidaClient = mockAidaClient([[{
+      explanation: 'This is the answer',
+      metadata: {
+        rpcGlobalId: 123,
+      },
+    }]]);
+    const agent = new AiAssistance.AccessibilityAgent.AccessibilityAgent({
+      aidaClient,
+    });
+    const context = new AiAssistance.AccessibilityContext.AccessibilityContext(mockReport);
+    const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+    const contextResponse = responses.find(response => response.type === AiAssistance.AiAgent.ResponseType.CONTEXT);
+    assert.exists(contextResponse);
+    assert.deepEqual(contextResponse.widgets, [{
+                       name: 'LIGHTHOUSE_REPORT',
+                       data: {
+                         report: mockReport,
+                       },
+                     }]);
+  });
+
   it('can call the getLighthouseAudits method', async () => {
     const aidaClient = mockAidaClient([[{
       explanation: '',

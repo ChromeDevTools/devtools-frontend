@@ -8,6 +8,7 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_ui_module("settings") {
+  split_compilation = true
   sources = [
     "ConsoleSettings.ts",
     "InspectorMainSettings.ts",
@@ -15,16 +16,17 @@ devtools_ui_module("settings") {
     "SettingUIRegistration.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/platform:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "settings.ts"
 
-  deps = [ ":settings" ]
+  ts_deps = [ ":settings" ]
 
   visibility = [
     ":*",
@@ -40,10 +42,11 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [ "SettingUIRegistration.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",

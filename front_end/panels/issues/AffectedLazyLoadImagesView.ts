@@ -44,7 +44,7 @@ export class AffectedLazyLoadImagesView extends AffectedResourcesView {
   readonly #view: View;
 
   constructor(parent: IssueView, issue: IssuesManager.IssueAggregator.AggregatedIssue, jslogContext: string,
-              view = DEFAULT_VIEW) {
+              view: View = DEFAULT_VIEW) {
     super(parent, issue, jslogContext);
     this.#view = view;
   }

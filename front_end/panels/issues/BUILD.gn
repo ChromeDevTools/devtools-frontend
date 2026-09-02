@@ -16,6 +16,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("issues") {
+  split_compilation = true
   sources = [
     "AffectedBlockedByResponseView.ts",
     "AffectedCookiesView.ts",
@@ -42,7 +43,7 @@ devtools_ui_module("issues") {
     "IssuesPane.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -69,12 +70,12 @@ devtools_ui_module("issues") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "issues.ts"
 
-  deps = [
-    ":css_files",
-    ":issues",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":issues" ]
 
   visibility = [
     ":*",
@@ -86,9 +87,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "issues-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
@@ -100,6 +102,7 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -109,7 +112,7 @@ devtools_ui_module("unittests") {
     "IssuesPane.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/host:bundle",
     "../../core/sdk:bundle",

@@ -1285,7 +1285,7 @@ export interface EventTypes {
   [Events.LIVE_LOCATION_UPDATED]: Bindings.LiveLocation.LiveLocation;
 }
 
-interface ScriptLocationViewInput {
+export interface ScriptLocationViewInput {
   target?: SDK.Target.Target;
   scriptId?: Protocol.Runtime.ScriptId;
   sourceURL: Platform.DevToolsPath.UrlString;
@@ -1294,9 +1294,9 @@ interface ScriptLocationViewInput {
   linkifier: Linkifier;
 }
 
-type ScriptLocationView = (input: ScriptLocationViewInput, output: undefined, target: HTMLElement) => void;
+export type ScriptLocationView = (input: ScriptLocationViewInput, output: undefined, target: HTMLElement) => void;
 
-const DEFAULT_SCRIPT_LOCATION_VIEW: ScriptLocationView = (input, _output, target) => {
+export const DEFAULT_SCRIPT_LOCATION_VIEW: ScriptLocationView = (input, _output, target) => {
   render(
       html`${
           input.linkifier.linkifyScriptLocation(
@@ -1310,10 +1310,10 @@ export class ScriptLocationLink extends UI.Widget.Widget {
   sourceURL = '' as Platform.DevToolsPath.UrlString;
   lineNumber?: number;
   options?: LinkifyOptions;
-  linkifier = new Linkifier();
+  linkifier: Linkifier = new Linkifier();
   #view: ScriptLocationView;
 
-  constructor(element: HTMLElement, view = DEFAULT_SCRIPT_LOCATION_VIEW) {
+  constructor(element: HTMLElement, view: ScriptLocationView = DEFAULT_SCRIPT_LOCATION_VIEW) {
     super(element);
     this.#view = view;
   }

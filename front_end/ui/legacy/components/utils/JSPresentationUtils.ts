@@ -217,7 +217,7 @@ export class StackTracePreviewContent extends UI.Widget.Widget<ShadowRoot> {
   #expanded = false;
   #showIgnoreListed = false;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: 'pure'});
     this.#view = view;
   }

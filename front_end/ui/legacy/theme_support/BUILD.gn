@@ -8,9 +8,10 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 
 devtools_ui_module("theme_support") {
+  split_compilation = true
   sources = [ "ThemeSupport.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/root:bundle",
@@ -19,12 +20,12 @@ devtools_ui_module("theme_support") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "theme_support.ts"
 
-  deps = [
-    ":theme_support",
-    "../:css_files",
-  ]
+  deps = [ "../:css_files" ]
+
+  ts_deps = [ ":theme_support" ]
 
   visibility = [
     # IMPORTANT: Be careful when extending visibility of front_end/ui/legacy/*,
@@ -43,10 +44,11 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [ "ThemeSupport.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../core/host:bundle",
     "../../../testing",

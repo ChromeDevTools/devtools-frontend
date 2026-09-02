@@ -5,6 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("elements") {
+  split_compilation = true
   sources = [
     "accessibility-pane.test.ts",
     "accessibility-tree.test.ts",
@@ -43,7 +44,7 @@ ts_e2e_library("elements") {
     "switch-panels-while-editing-as-html.test.ts",
     "violating-element-and-attributes.test.ts",
   ]
-  deps = [
+  ts_deps = [
     "../helpers",
     "../shared",
   ]

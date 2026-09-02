@@ -856,6 +856,14 @@ export default defineConfig([
     files: ['front_end/legacy_test_runner/**/*'],
     rules: {
       '@devtools/es-modules-import': 'off',
+      '@typescript-eslint/ban-ts-comment': 'off',
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/naming-convention': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-floating-promises': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@devtools/no-imperative-dom-api': 'off',
+      'jsdoc/require-returns-description': 'off',
     },
   },
   {

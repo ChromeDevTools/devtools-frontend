@@ -4,7 +4,7 @@
 
 // @ts-nocheck This file is not checked by TypeScript as it has a lot of legacy code.
 
-import * as Common from '../../core/common/common.js';  // eslint-disable-line no-unused-vars
+import * as Common from '../../core/common/common.js';
 import * as ProtocolClient from '../../core/protocol_client/protocol_client.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
@@ -20,9 +20,9 @@ import * as UI from '../../ui/legacy/legacy.js';
 /* eslint-disable no-console */
 
 /**
- * @returns {boolean}
+ * @returns
  */
-export function isDebugTest() {
+export function isDebugTest(): boolean {
   return !self.testRunner || Boolean(Root.Runtime.Runtime.queryParam('debugFrontend'));
 }
 
@@ -31,7 +31,7 @@ export function isDebugTest() {
  * messages are shown in the right places, instead of having all of the console
  * messages printed at the top of the test expectation file (default behavior).
  */
-export function _printDevToolsConsole() {
+export function _printDevToolsConsole(): void {
   if (isDebugTest()) {
     return;
   }
@@ -76,14 +76,14 @@ let _innerAddResult = text => {
   _results.push(String(text));
 };
 
-export function setInnerResult(updatedInnerResult) {
+export function setInnerResult(updatedInnerResult: any): void {
   _innerAddResult = updatedInnerResult;
 }
 
 /**
- * @param {*} text
+ * @param text
  */
-export function addResult(text) {
+export function addResult(text: any): void {
   _innerAddResult(text);
 }
 
@@ -98,11 +98,11 @@ let _innerCompleteTest = () => {
   self.testRunner.notifyDone();
 };
 
-export function setInnerCompleteTest(updatedInnerCompleteTest) {
+export function setInnerCompleteTest(updatedInnerCompleteTest: any): void {
   _innerCompleteTest = updatedInnerCompleteTest;
 }
 
-export function completeTest() {
+export function completeTest(): void {
   _innerCompleteTest();
 }
 
@@ -125,9 +125,9 @@ function flushResults() {
 }
 
 /**
- * @param {!Array<string>} textArray
+ * @param textArray
  */
-export function addResults(textArray) {
+export function addResults(textArray: any): void {
   if (!textArray) {
     return;
   }
@@ -137,9 +137,9 @@ export function addResults(textArray) {
 }
 
 /**
- * @param {!Array<function()>} tests
+ * @param tests
  */
-export function runTests(tests) {
+export function runTests(tests: any): void {
   nextTest();
 
   function nextTest() {
@@ -158,12 +158,12 @@ export function runTests(tests) {
 }
 
 /**
- * @param {!Object} receiver
- * @param {string} methodName
- * @param {!Function} override
- * @param {boolean=} opt_sticky
+ * @param receiver
+ * @param methodName
+ * @param override
+ * @param opt_sticky
  */
-export function addSniffer(receiver, methodName, override, opt_sticky) {
+export function addSniffer(receiver: any, methodName: any, override: any, opt_sticky: any): void {
   override = safeWrap(override);
 
   const original = receiver[methodName];
@@ -192,11 +192,11 @@ export function addSniffer(receiver, methodName, override, opt_sticky) {
 }
 
 /**
- * @param {!Object} receiver
- * @param {string} methodName
- * @returns {!Promise<*>}
+ * @param receiver
+ * @param methodName
+ * @returns
  */
-export function addSnifferPromise(receiver, methodName) {
+export function addSnifferPromise(receiver: any, methodName: any): Promise<unknown> {
   return new Promise(function(resolve, reject) {
     const original = receiver[methodName];
     if (typeof original !== 'function') {
@@ -225,12 +225,12 @@ export function addSnifferPromise(receiver, methodName) {
 }
 
 /**
- * @param {Text} textNode
- * @param {number=} start
- * @param {number=} end
- * @returns {Text}
+ * @param textNode
+ * @param start
+ * @param end
+ * @returns
  */
-export function selectTextInTextNode(textNode, start, end) {
+export function selectTextInTextNode(textNode: any, start: any, end: any): any {
   start = start || 0;
   end = end || textNode.textContent.length;
 
@@ -248,22 +248,22 @@ export function selectTextInTextNode(textNode, start, end) {
 }
 
 /**
- * @param {string} panel
- * @returns {!Promise.<?UI.Panel.Panel>}
+ * @param panel
+ * @returns
  */
-export function showPanel(panel) {
+export function showPanel(panel: any): Promise<void> {
   return UI.ViewManager.ViewManager.instance().showView(panel);
 }
 
 /**
- * @param {string} key
- * @param {boolean=} ctrlKey
- * @param {boolean=} altKey
- * @param {boolean=} shiftKey
- * @param {boolean=} metaKey
- * @returns {!KeyboardEvent}
+ * @param key
+ * @param ctrlKey
+ * @param altKey
+ * @param shiftKey
+ * @param metaKey
+ * @returns
  */
-export function createKeyEvent(key, ctrlKey, altKey, shiftKey, metaKey) {
+export function createKeyEvent(key: any, ctrlKey: any, altKey: any, shiftKey: any, metaKey: any): KeyboardEvent {
   return new KeyboardEvent('keydown', {
     key,
     bubbles: true,
@@ -278,11 +278,11 @@ export function createKeyEvent(key, ctrlKey, altKey, shiftKey, metaKey) {
 /**
  * Wraps a test function with an exception filter. Does not work
  * correctly for async functions; use safeAsyncWrap instead.
- * @param {!Function|undefined} func
- * @param {!Function=} onexception
- * @returns {!Function}
+ * @param func
+ * @param onexception
+ * @returns
  */
-export function safeWrap(func, onexception) {
+export function safeWrap(func: any, onexception: any): () => any {
   /**
    * @this {*}
    */
@@ -309,8 +309,8 @@ export function safeWrap(func, onexception) {
  * Wraps a test function that returns a Promise with an exception
  * filter. Does not work correctly for functions which don't return
  * a Promise; use safeWrap instead.
- * @param {function(...):Promise<*>} func
- * @returns {function(...):Promise<*>}
+ * @param func
+ * @returns
  */
 function safeAsyncWrap(func) {
   /**
@@ -332,10 +332,10 @@ function safeAsyncWrap(func) {
 }
 
 /**
- * @param {!Node} node
- * @returns {string}
+ * @param node
+ * @returns
  */
-export function textContentWithLineBreaks(node) {
+export function textContentWithLineBreaks(node: any): string {
   function padding(currentNode) {
     let result = 0;
     while (currentNode && currentNode !== node) {
@@ -373,20 +373,20 @@ export function textContentWithLineBreaks(node) {
 }
 
 /**
- * @param {!Node} node
- * @returns {string}
+ * @param node
+ * @returns
  */
-export function textContentWithLineBreaksTrimmed(node) {
+export function textContentWithLineBreaksTrimmed(node: any): string {
   // We want to allow single empty lines (2 white space characters), but
   // compress occurences of 3 or more whitespaces.
   return textContentWithLineBreaks(node).replace(/\s{3,}/g, ' ');
 }
 
 /**
- * @param {!Node} node
- * @returns {string}
+ * @param node
+ * @returns
  */
-export function textContentWithoutStyles(node) {
+export function textContentWithoutStyles(node: any): string {
   let buffer = '';
   let currentNode = node;
   while (true) {
@@ -409,19 +409,19 @@ export function textContentWithoutStyles(node) {
 }
 
 /**
- * @param {string} code
- * @returns {!Promise<*>}
+ * @param code
+ * @returns
  */
-export async function evaluateInPageRemoteObject(code) {
+export async function evaluateInPageRemoteObject(code: any): Promise<any> {
   const response = await _evaluateInPage(code);
   return TestRunner.runtimeModel.createRemoteObject(response.result);
 }
 
 /**
- * @param {string} code
- * @param {function(*, !Protocol.Runtime.ExceptionDetails=):void} callback
+ * @param code
+ * @param callback
  */
-export async function evaluateInPage(code, callback) {
+export async function evaluateInPage(code: any, callback: any): Promise<void> {
   const response = await _evaluateInPage(code);
   safeWrap(callback)(response.result.value, response.exceptionDetails);
 }
@@ -430,11 +430,11 @@ export async function evaluateInPage(code, callback) {
 let _evaluateInPageCounter = 0;
 
 /**
- * @param {string} code
- * @returns {!Promise<undefined|{response: (!SDK.RuntimeModel.RemoteObject|undefined),
- *   exceptionDetails: (!Protocol.Runtime.ExceptionDetails|undefined)}>}
+ * @param code
+ * @returns
+ *
  */
-export async function _evaluateInPage(code) {
+export async function _evaluateInPage(code: any): Promise<any> {
   const lines = new Error().stack.split('at ');
 
   // Handles cases where the function is safe wrapped
@@ -476,11 +476,11 @@ function logResponseError(response) {
 /**
  * Doesn't append sourceURL to snippets evaluated in inspected page
  * to avoid churning test expectations
- * @param {string} code
- * @param {boolean=} userGesture
- * @returns {!Promise<*>}
+ * @param code
+ * @param userGesture
+ * @returns
  */
-export async function evaluateInPageAnonymously(code, userGesture) {
+export async function evaluateInPageAnonymously(code: any, userGesture: any): Promise<any> {
   const response =
       await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console', userGesture});
   if (response && !response.exceptionDetails && !response.getError()) {
@@ -491,18 +491,18 @@ export async function evaluateInPageAnonymously(code, userGesture) {
 }
 
 /**
- * @param {string} code
- * @returns {!Promise<*>}
+ * @param code
+ * @returns
  */
-export function evaluateInPagePromise(code) {
+export function evaluateInPagePromise(code: any): Promise<unknown> {
   return new Promise(success => evaluateInPage(code, success));
 }
 
 /**
- * @param {string} code
- * @returns {!Promise<*>}
+ * @param code
+ * @returns
  */
-export async function evaluateInPageAsync(code) {
+export async function evaluateInPageAsync(code: any): Promise<any> {
   const response = await TestRunner.RuntimeAgent.invoke_evaluate(
       {expression: code, objectGroup: 'console', includeCommandLineAPI: false, awaitPromise: true});
 
@@ -514,29 +514,29 @@ export async function evaluateInPageAsync(code) {
 }
 
 /**
- * @param {string} name
- * @param {!Array<*>} args
- * @returns {!Promise<*>}
+ * @param name
+ * @param args
+ * @returns
  */
-export function callFunctionInPageAsync(name, args) {
+export function callFunctionInPageAsync(name: any, args: any): Promise<any> {
   args = args || [];
   return evaluateInPageAsync(name + '(' + args.map(a => JSON.stringify(a)).join(',') + ')');
 }
 
 /**
- * @param {string} code
- * @param {boolean=} userGesture
+ * @param code
+ * @param userGesture
  */
-export function evaluateInPageWithTimeout(code, userGesture) {
+export function evaluateInPageWithTimeout(code: any, userGesture: any): void {
   // FIXME: we need a better way of waiting for chromium events to happen
   evaluateInPageAnonymously('setTimeout(unescape(\'' + escape(code) + '\'), 1)', userGesture);
 }
 
 /**
- * @param {function():*} func
- * @param {function(*):void} callback
+ * @param func
+ * @param callback
  */
-export function evaluateFunctionInOverlay(func, callback) {
+export function evaluateFunctionInOverlay(func: any, callback: any): void {
   const expression = 'internals.evaluateInInspectorOverlay("(" + ' + func + ' + ")()")';
   const mainContext = TestRunner.runtimeModel.executionContexts()[0];
   mainContext
@@ -553,19 +553,19 @@ export function evaluateFunctionInOverlay(func, callback) {
 }
 
 /**
- * @param {boolean} passCondition
- * @param {string} failureText
+ * @param passCondition
+ * @param failureText
  */
-export function check(passCondition, failureText) {
+export function check(passCondition: any, failureText: any): void {
   if (!passCondition) {
     addResult('FAIL: ' + failureText);
   }
 }
 
 /**
- * @param {!Function} callback
+ * @param callback
  */
-export function deprecatedRunAfterPendingDispatches(callback) {
+export function deprecatedRunAfterPendingDispatches(callback: any): void {
   ProtocolClient.InspectorBackend.test.deprecatedRunAfterPendingDispatches(callback);
 }
 
@@ -573,10 +573,10 @@ export function deprecatedRunAfterPendingDispatches(callback) {
  * This ensures a base tag is set so all DOM references
  * are relative to the test file and not the inspected page
  * (i.e. http/tests/devtools/resources/inspected-page.html).
- * @param {string} html
- * @returns {!Promise<*>}
+ * @param html
+ * @returns
  */
-export function loadHTML(html) {
+export function loadHTML(html: any): Promise<any> {
   if (!html.includes('<base')) {
     // <!DOCTYPE...> tag needs to be first
     const doctypeRegex = /(<!DOCTYPE.*?>)/i;
@@ -592,10 +592,10 @@ export function loadHTML(html) {
 }
 
 /**
- * @param {string} path
- * @returns {!Promise<*>}
+ * @param path
+ * @returns
  */
-export function addScriptTag(path) {
+export function addScriptTag(path: any): Promise<any> {
   return evaluateInPageAsync(`
     (function(){
       let script = document.createElement('script');
@@ -607,10 +607,10 @@ export function addScriptTag(path) {
 }
 
 /**
- * @param {string} path
- * @returns {!Promise<*>}
+ * @param path
+ * @returns
  */
-export function addStylesheetTag(path) {
+export function addStylesheetTag(path: any): Promise<any> {
   return evaluateInPageAsync(`
     (function(){
       const link = document.createElement('link');
@@ -635,11 +635,11 @@ export function addStylesheetTag(path) {
  * NOTE you should manually ensure the path is correct. There
  * is no error event triggered if it is incorrect, and this is
  * in line with the standard (crbug 365457).
- * @param {string} path
- * @param {!Object|undefined} options
- * @returns {!Promise<*>}
+ * @param path
+ * @param options
+ * @returns
  */
-export function addIframe(path, options = {}) {
+export function addIframe(path: any, options = {}): Promise<any> {
   options.id = options.id || '';
   options.name = options.name || '';
   return evaluateInPageAsync(`
@@ -666,29 +666,29 @@ export function addIframe(path, options = {}) {
  * In most cases, this is used to set up inspected page functions (e.g. makeSimpleXHR)
  * which should become a *TestRunner method (e.g. NetworkTestRunner.makeSimpleXHR)
  * that calls evaluateInPageAnonymously(...).
- * @param {string} code
+ * @param code
  */
-export async function deprecatedInitAsync(code) {
+export async function deprecatedInitAsync(code: any): Promise<void> {
   await TestRunner.RuntimeAgent.invoke_evaluate({expression: code, objectGroup: 'console'});
 }
 
 /**
- * @param {string} title
+ * @param title
  */
-export function markStep(title) {
+export function markStep(title: any): void {
   addResult('\nRunning: ' + title);
 }
 
-export function startDumpingProtocolMessages() {
+export function startDumpingProtocolMessages(): void {
   ProtocolClient.InspectorBackend.test.dumpProtocol = self.testRunner.logToStderr.bind(self.testRunner);
 }
 
 /**
- * @param {string} url
- * @param {string} content
- * @param {!SDK.ResourceTreeModel.ResourceTreeFrame} frame
+ * @param url
+ * @param content
+ * @param frame
  */
-export function addScriptForFrame(url, content, frame) {
+export function addScriptForFrame(url: any, content: any, frame: any): void {
   content += '\n//# sourceURL=' + url;
   const executionContext = TestRunner.runtimeModel.executionContexts().find(context => context.frameId === frame.id);
   TestRunner.RuntimeAgent.invoke_evaluate({
@@ -703,18 +703,18 @@ export function addScriptForFrame(url, content, frame) {
 export const formatters = {
 
   /**
-   * @param {*} value
-   * @returns {string}
+   * @param value
+   * @returns
    */
-  formatAsTypeName(value) {
+  formatAsTypeName(value: any): string {
     return '<' + typeof value + '>';
   },
 
   /**
-   * @param {*} value
-   * @returns {string}
+   * @param value
+   * @returns
    */
-  formatAsTypeNameOrNull(value) {
+  formatAsTypeNameOrNull(value: any): string {
     if (value === null) {
       return 'null';
     }
@@ -722,22 +722,23 @@ export const formatters = {
   },
 
   /**
-   * @param {*} value
-   * @returns {string|!Date}
+   * @param value
+   * @returns
    */
-  formatAsRecentTime(value) {
-    if (typeof value !== 'object' || !(value instanceof Date)) {
-      return formatters.formatAsTypeName(value);
-    }
-    const delta = Date.now() - value;
-    return 0 <= delta && delta < 30 * 60 * 1000 ? '<plausible>' : value;
-  },
+  formatAsRecentTime(value: any): string |
+      Date {
+        if (typeof value !== 'object' || !(value instanceof Date)) {
+          return formatters.formatAsTypeName(value);
+        }
+        const delta = Date.now() - value;
+        return 0 <= delta && delta < 30 * 60 * 1000 ? '<plausible>' : value;
+      },
 
   /**
-   * @param {string} value
-   * @returns {string}
+   * @param value
+   * @returns
    */
-  formatAsURL(value) {
+  formatAsURL(value: any): any {
     if (!value) {
       return value;
     }
@@ -749,10 +750,10 @@ export const formatters = {
   },
 
   /**
-   * @param {string} value
-   * @returns {string}
+   * @param value
+   * @returns
    */
-  formatAsDescription(value) {
+  formatAsDescription(value: any): any {
     if (!value) {
       return value;
     }
@@ -761,12 +762,12 @@ export const formatters = {
 };
 
 /**
- * @param {!Object} object
- * @param {!TestRunner.CustomFormatters=} customFormatters
- * @param {string=} prefix
- * @param {string=} firstLinePrefix
+ * @param object
+ * @param customFormatters
+ * @param prefix
+ * @param firstLinePrefix
  */
-export function addObject(object, customFormatters, prefix, firstLinePrefix) {
+export function addObject(object: any, customFormatters: any, prefix: any, firstLinePrefix: any): void {
   prefix = prefix || '';
   firstLinePrefix = firstLinePrefix || prefix;
   addResult(firstLinePrefix + '{');
@@ -793,12 +794,12 @@ export function addObject(object, customFormatters, prefix, firstLinePrefix) {
 }
 
 /**
- * @param {!Array} array
- * @param {!TestRunner.CustomFormatters=} customFormatters
- * @param {string=} prefix
- * @param {string=} firstLinePrefix
+ * @param array
+ * @param customFormatters
+ * @param prefix
+ * @param firstLinePrefix
  */
-export function addArray(array, customFormatters, prefix, firstLinePrefix) {
+export function addArray(array: any, customFormatters: any, prefix: any, firstLinePrefix: any): void {
   prefix = prefix || '';
   firstLinePrefix = firstLinePrefix || prefix;
   addResult(firstLinePrefix + '[');
@@ -809,12 +810,12 @@ export function addArray(array, customFormatters, prefix, firstLinePrefix) {
 }
 
 /**
- * @param {!Node} node
+ * @param node
  */
-export function dumpDeepInnerHTML(node) {
+export function dumpDeepInnerHTML(node: any): void {
   /**
-   * @param {string} prefix
-   * @param {!Node} node
+   * @param prefix
+   * @param node
    */
   function innerHTML(prefix, node) {
     const openTag = [];
@@ -844,10 +845,10 @@ export function dumpDeepInnerHTML(node) {
 }
 
 /**
- * @param {!Node} node
- * @returns {string}
+ * @param node
+ * @returns
  */
-export function deepTextContent(node) {
+export function deepTextContent(node: any): any {
   if (!node) {
     return '';
   }
@@ -866,12 +867,12 @@ export function deepTextContent(node) {
 }
 
 /**
- * @param {*} value
- * @param {!TestRunner.CustomFormatters=} customFormatters
- * @param {string=} prefix
- * @param {string=} prefixWithName
+ * @param value
+ * @param customFormatters
+ * @param prefix
+ * @param prefixWithName
  */
-export function dump(value, customFormatters, prefix, prefixWithName) {
+export function dump(value: any, customFormatters: any, prefix: any, prefixWithName: any): void {
   prefixWithName = prefixWithName || prefix;
   if (prefixWithName && prefixWithName.length > 80) {
     addResult(prefixWithName + 'was skipped due to prefix length limit');
@@ -891,12 +892,12 @@ export function dump(value, customFormatters, prefix, prefixWithName) {
 }
 
 /**
- * @param {symbol} eventName
- * @param {!Common.ObjectWrapper.ObjectWrapper} obj
- * @param {function(?):boolean=} condition
- * @returns {!Promise}
+ * @param eventName
+ * @param obj
+ * @param condition
+ * @returns
  */
-export function waitForEvent(eventName, obj, condition) {
+export function waitForEvent(eventName: any, obj: any, condition: any): Promise<unknown> {
   condition = condition || function() {
     return true;
   };
@@ -904,7 +905,7 @@ export function waitForEvent(eventName, obj, condition) {
     obj.addEventListener(eventName, onEventFired);
 
     /**
-     * @param {!Common.EventTarget.EventTargetEvent} event
+     * @param event
      */
     function onEventFired(event) {
       if (!condition(event.data)) {
@@ -917,10 +918,10 @@ export function waitForEvent(eventName, obj, condition) {
 }
 
 /**
- * @param {function(!SDK.Target.Target):boolean} filter
- * @returns {!Promise<!SDK.Target.Target>}
+ * @param filter
+ * @returns
  */
-export function waitForTarget(filter) {
+export function waitForTarget(filter: any): Promise<unknown> {
   filter = filter || (target => true);
   for (const target of SDK.TargetManager.TargetManager.instance().targets()) {
     if (filter(target)) {
@@ -942,10 +943,10 @@ export function waitForTarget(filter) {
 }
 
 /**
- * @param {!SDK.Target.Target} targetToRemove
- * @returns {!Promise<!SDK.Target.Target>}
+ * @param targetToRemove
+ * @returns
  */
-export function waitForTargetRemoved(targetToRemove) {
+export function waitForTargetRemoved(targetToRemove: any): Promise<unknown> {
   return new Promise(fulfill => {
     const observer = /** @type {!SDK.TargetManager.Observer} */ ({
       targetRemoved: function(target) {
@@ -961,10 +962,10 @@ export function waitForTargetRemoved(targetToRemove) {
 }
 
 /**
- * @param {!SDK.RuntimeModel.RuntimeModel} runtimeModel
- * @returns {!Promise}
+ * @param runtimeModel
+ * @returns
  */
-export function waitForExecutionContext(runtimeModel) {
+export function waitForExecutionContext(runtimeModel: any): any {
   if (runtimeModel.executionContexts().length) {
     return Promise.resolve(runtimeModel.executionContexts()[0]);
   }
@@ -972,25 +973,24 @@ export function waitForExecutionContext(runtimeModel) {
 }
 
 /**
- * @param {!SDK.RuntimeModel.ExecutionContext} context
- * @returns {!Promise}
+ * @param context
+ * @returns
  */
-export function waitForExecutionContextDestroyed(context) {
+export function waitForExecutionContextDestroyed(context: any): Promise<unknown> {
   const runtimeModel = context.runtimeModel;
   if (runtimeModel.executionContexts().indexOf(context) === -1) {
     return Promise.resolve();
   }
-  return waitForEvent(
-      SDK.RuntimeModel.Events.ExecutionContextDestroyed, runtimeModel,
-      destroyedContext => destroyedContext === context);
+  return waitForEvent(SDK.RuntimeModel.Events.ExecutionContextDestroyed, runtimeModel,
+                      destroyedContext => destroyedContext === context);
 }
 
 /**
- * @param {number} a
- * @param {number} b
- * @param {string=} message
+ * @param a
+ * @param b
+ * @param message
  */
-export function assertGreaterOrEqual(a, b, message) {
+export function assertGreaterOrEqual(a: any, b: any, message: any): void {
   if (a < b) {
     addResult('FAILED: ' + (message ? message + ': ' : '') + a + ' < ' + b);
   }
@@ -999,10 +999,10 @@ export function assertGreaterOrEqual(a, b, message) {
 let _pageLoadedCallback;
 
 /**
- * @param {string} url
- * @param {function():void} callback
+ * @param url
+ * @param callback
  */
-export function navigate(url, callback) {
+export function navigate(url: any, callback: any): void {
   _pageLoadedCallback = safeWrap(callback);
   TestRunner.resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, _pageNavigated);
   // Note: injected <base> means that url is relative to test
@@ -1011,64 +1011,64 @@ export function navigate(url, callback) {
 }
 
 /**
- * @returns {!Promise}
+ * @returns
  */
-export function navigatePromise(url) {
+export function navigatePromise(url: any): Promise<unknown> {
   return new Promise(fulfill => navigate(url, fulfill));
 }
 
-export function _pageNavigated() {
+export function _pageNavigated(): void {
   TestRunner.resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.Load, _pageNavigated);
   _handlePageLoaded();
 }
 
 /**
- * @param {function():void} callback
+ * @param callback
  */
-export function hardReloadPage(callback) {
+export function hardReloadPage(callback: any): void {
   _innerReloadPage(true, undefined, callback);
 }
 
 /**
- * @param {function():void} callback
+ * @param callback
  */
-export function reloadPage(callback) {
+export function reloadPage(callback: any): void {
   _innerReloadPage(false, undefined, callback);
 }
 
 /**
- * @param {(string|undefined)} injectedScript
- * @param {function():void} callback
+ * @param injectedScript
+ * @param callback
  */
-export function reloadPageWithInjectedScript(injectedScript, callback) {
+export function reloadPageWithInjectedScript(injectedScript: any, callback: any): void {
   _innerReloadPage(false, injectedScript, callback);
 }
 
 /**
- * @returns {!Promise}
+ * @returns
  */
-export function reloadPagePromise() {
+export function reloadPagePromise(): Promise<unknown> {
   return new Promise(fulfill => reloadPage(fulfill));
 }
 
 /**
- * @param {boolean} hardReload
- * @param {(string|undefined)} injectedScript
- * @param {function():void} callback
+ * @param hardReload
+ * @param injectedScript
+ * @param callback
  */
-export function _innerReloadPage(hardReload, injectedScript, callback) {
+export function _innerReloadPage(hardReload: any, injectedScript: any, callback: any): void {
   _pageLoadedCallback = safeWrap(callback);
   TestRunner.resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, pageLoaded);
   TestRunner.resourceTreeModel.reloadPage(hardReload, injectedScript);
 }
 
-export function pageLoaded() {
+export function pageLoaded(): void {
   TestRunner.resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.Load, pageLoaded);
   addResult('Page reloaded.');
   _handlePageLoaded();
 }
 
-export async function _handlePageLoaded() {
+export async function _handlePageLoaded(): Promise<void> {
   await waitForExecutionContext(/** @type {!SDK.RuntimeModel.RuntimeModel} */ (TestRunner.runtimeModel));
   if (_pageLoadedCallback) {
     const callback = _pageLoadedCallback;
@@ -1078,9 +1078,9 @@ export async function _handlePageLoaded() {
 }
 
 /**
- * @param {function():void} callback
+ * @param callback
  */
-export function waitForPageLoad(callback) {
+export function waitForPageLoad(callback: any): void {
   TestRunner.resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.Load, onLoaded);
 
   function onLoaded() {
@@ -1090,9 +1090,9 @@ export function waitForPageLoad(callback) {
 }
 
 /**
- * @param {function():void} callback
+ * @param callback
  */
-export function runWhenPageLoads(callback) {
+export function runWhenPageLoads(callback: any): void {
   const oldCallback = _pageLoadedCallback;
   function chainedCallback() {
     if (oldCallback) {
@@ -1104,9 +1104,9 @@ export function runWhenPageLoads(callback) {
 }
 
 /**
- * @param {!Array<function(function():void)>} testSuite
+ * @param testSuite
  */
-export function runTestSuite(testSuite) {
+export function runTestSuite(testSuite: any): void {
   const testSuiteTests = testSuite.slice();
 
   function runner() {
@@ -1116,23 +1116,21 @@ export function runTestSuite(testSuite) {
     }
     const nextTest = testSuiteTests.shift();
     addResult('');
-    addResult(
-        'Running: ' +
-        /function\s([^(]*)/.exec(nextTest)[1]);
+    addResult('Running: ' +
+              /function\s([^(]*)/.exec(nextTest)[1]);
     safeWrap(nextTest)(runner);
   }
   runner();
 }
 
 /**
- * @param {!Array<function():Promise<*>>} testSuite
+ * @param testSuite
  */
-export async function runAsyncTestSuite(testSuite) {
+export async function runAsyncTestSuite(testSuite: any): Promise<void> {
   for (const nextTest of testSuite) {
     addResult('');
-    addResult(
-        'Running: ' +
-        /function\s([^(]*)/.exec(nextTest)[1]);
+    addResult('Running: ' +
+              /function\s([^(]*)/.exec(nextTest)[1]);
     await safeAsyncWrap(nextTest)();
   }
 
@@ -1140,11 +1138,11 @@ export async function runAsyncTestSuite(testSuite) {
 }
 
 /**
- * @param {*} expected
- * @param {*} found
- * @param {string} message
+ * @param expected
+ * @param found
+ * @param message
  */
-export function assertEquals(expected, found, message) {
+export function assertEquals(expected: any, found: any, message: any): void {
   if (expected === found) {
     return;
   }
@@ -1159,21 +1157,21 @@ export function assertEquals(expected, found, message) {
 }
 
 /**
- * @param {*} found
- * @param {string} message
+ * @param found
+ * @param message
  */
-export function assertTrue(found, message) {
+export function assertTrue(found: any, message: any): void {
   assertEquals(true, Boolean(found), message);
 }
 
 /**
- * @param {!Object} receiver
- * @param {string} methodName
- * @param {!Function} override
- * @param {boolean=} opt_sticky
- * @returns {!Function}
+ * @param receiver
+ * @param methodName
+ * @param override
+ * @param opt_sticky
+ * @returns
  */
-export function override(receiver, methodName, override, opt_sticky) {
+export function override(receiver: any, methodName: any, override: any, opt_sticky: any): any {
   override = safeWrap(override);
 
   const original = receiver[methodName];
@@ -1197,10 +1195,10 @@ export function override(receiver, methodName, override, opt_sticky) {
 }
 
 /**
- * @param {string} text
- * @returns {string}
+ * @param text
+ * @returns
  */
-export function clearSpecificInfoFromStackFrames(text) {
+export function clearSpecificInfoFromStackFrames(text: any): any {
   let buffer = text.replace(/\(file:\/\/\/(?:[^)]+\)|[\w\/:-]+)/g, '(...)');
   buffer = buffer.replace(/\(http:\/\/(?:[^)]+\)|[\w\/:-]+)/g, '(...)');
   buffer = buffer.replace(/\(test:\/\/(?:[^)]+\)|[\w\/:-]+)/g, '(...)');
@@ -1209,81 +1207,83 @@ export function clearSpecificInfoFromStackFrames(text) {
   return buffer.replace(/\s*at[^()]+\(native\)/g, '');
 }
 
-export function hideInspectorView() {
+export function hideInspectorView(): void {
   UI.InspectorView.InspectorView.instance().element.setAttribute('style', 'display:none !important');
 }
 
 /**
- * @returns {?SDK.ResourceTreeModel.ResourceTreeFrame}
+ * @returns
  */
-export function mainFrame() {
+export function mainFrame(): any {
   return TestRunner.resourceTreeModel.mainFrame;
 }
 
 export class StringOutputStream {
+  callback: (data: string) => void;
+  buffer: string;
+
   /**
-   * @param {function(string):void} callback
+   * @param callback
    */
-  constructor(callback) {
+  constructor(callback: (data: string) => void) {
     this.callback = callback;
     this.buffer = '';
   }
 
   /**
-   * @param {string} fileName
-   * @returns {!Promise<boolean>}
+   * @param fileName
+   * @returns
    */
-  async open(fileName) {
+  async open(fileName: string): Promise<boolean> {
     return true;
   }
 
   /**
-   * @param {string} chunk
+   * @param chunk
    */
-  async write(chunk) {
+  async write(chunk: string): Promise<void> {
     this.buffer += chunk;
   }
 
-  async close() {
+  async close(): Promise<void> {
     this.callback(this.buffer);
   }
 }
 
-/**
- * @template V
- */
-export class MockSetting {
+export class MockSetting<V> {
+  value: V;
+
   /**
-   * @param {V} value
+   * @param value
    */
-  constructor(value) {
+  constructor(value: V) {
     this.value = value;
   }
 
   /**
-   * @returns {V}
+   * @returns
    */
-  get() {
+  get(): V {
     return this.value;
   }
 
   /**
-   * @param {V} value
+   * @param value
    */
-  set(value) {
+  set(value: V): void {
     this.value = value;
   }
 }
 
 /**
- * @param {string} urlSuffix
- * @param {!Workspace.Workspace.projectTypes=} projectType
- * @returns {!Promise}
+ * @param urlSuffix
+ * @param projectType
+ * @returns
  */
-export function waitForUISourceCode(urlSuffix, projectType) {
+export function waitForUISourceCode(urlSuffix: any, projectType: any): Promise<unknown> {
   /**
-   * @param {!Workspace.UISourceCode.UISourceCode} uiSourceCode
-   * @returns {boolean}
+   * @param uiSourceCode
+   * @returns
    */
   function matches(uiSourceCode) {
     if (projectType && uiSourceCode.project().type() !== projectType) {
@@ -1304,24 +1304,24 @@ export function waitForUISourceCode(urlSuffix, projectType) {
     }
   }
 
-  return waitForEvent(
-      Workspace.Workspace.Events.UISourceCodeAdded, Workspace.Workspace.WorkspaceImpl.instance(), matches);
+  return waitForEvent(Workspace.Workspace.Events.UISourceCodeAdded, Workspace.Workspace.WorkspaceImpl.instance(),
+                      matches);
 }
 
 /**
- * @param {!Function} callback
+ * @param callback
  */
-export function waitForUISourceCodeRemoved(callback) {
+export function waitForUISourceCodeRemoved(callback: any): void {
   Workspace.Workspace.WorkspaceImpl.instance().once(Workspace.Workspace.Events.UISourceCodeRemoved).then(callback);
 }
 
 /**
- * @param {string=} url
- * @returns {string}
+ * @param url
+ * @returns
  */
-export function url(url = '') {
-  const testScriptURL = /** @type {string} */ (
-      Root.Runtime.Runtime.queryParam('inspected_test') || Root.Runtime.Runtime.queryParam('test'));
+export function url(url = ''): string {
+  const testScriptURL = /** @type {string} */ (Root.Runtime.Runtime.queryParam('inspected_test') ||
+                                               Root.Runtime.Runtime.queryParam('test'));
 
   // This handles relative (e.g. "../file"), root (e.g. "/resource"),
   // absolute (e.g. "http://", "data:") and empty (e.g. "") paths
@@ -1329,11 +1329,11 @@ export function url(url = '') {
 }
 
 /**
- * @param {string} str
- * @param {string} mimeType
- * @returns {!Promise.<undefined>}
+ * @param str
+ * @param mimeType
+ * @returns
  */
-export function dumpSyntaxHighlight(str, mimeType) {
+export function dumpSyntaxHighlight(str: any, mimeType: any): Promise<void> {
   const node = document.createElement('span');
   node.textContent = str;
   return CodeHighlighter.CodeHighlighter.highlightNode(node, mimeType).then(dumpSyntax);
@@ -1361,9 +1361,9 @@ export function dumpSyntaxHighlight(str, mimeType) {
 
 /**
  *
- * @param {string} inputString
- * @param {string} searchString
- * @returns {!Array.<number>}
+ * @param inputString
+ * @param searchString
+ * @returns
  */
 const findIndexesOfSubString = function(inputString, searchString) {
   const matches = [];
@@ -1377,19 +1377,19 @@ const findIndexesOfSubString = function(inputString, searchString) {
 
 /**
  *
- * @param {string} inputString
- * @returns {!Array.<number>}
+ * @param inputString
+ * @returns
  */
-export const findLineEndingIndexes = function(inputString) {
+export const findLineEndingIndexes = function(inputString: any): any[] {
   const endings = findIndexesOfSubString(inputString, '\n');
   endings.push(inputString.length);
   return endings;
 };
 
 /**
- * @param {string} querySelector
+ * @param querySelector
  */
-export async function dumpInspectedPageElementText(querySelector) {
+export async function dumpInspectedPageElementText(querySelector: any): Promise<void> {
   const value = await evaluateInPageAsync(`document.querySelector('${querySelector}').innerText`);
   addResult(value);
 }
@@ -1403,7 +1403,7 @@ export async function dumpInspectedPageElementText(querySelector) {
  * To give tests more control, waitForPendingLiveLocationUpdates returns a promise that resolves
  * once all currently-pending updates (at call time) are completed.
  */
-export async function waitForPendingLiveLocationUpdates() {
+export async function waitForPendingLiveLocationUpdates(): Promise<void> {
   await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pendingLiveLocationChangesPromise();
   await Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().pendingLiveLocationChangesPromise();
   await UI.Widget.Widget.allUpdatesComplete;  // Let async Widgets finish rendering.

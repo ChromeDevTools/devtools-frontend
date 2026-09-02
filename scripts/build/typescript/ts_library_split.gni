@@ -242,7 +242,6 @@ template("ts_library_split") {
   }
   foreach(src, invoker.sources) {
     _ext = get_path_info(src, "extension")
-    _name = get_path_info(src, "name")
     _rel_name = rebase_path(src, _rootdir)
     _rel_dir = get_path_info(_rel_name, "dir")
     if (_rel_dir == "" || _rel_dir == ".") {
@@ -251,7 +250,8 @@ template("ts_library_split") {
       _file_base = _rel_dir + "/" + get_path_info(_rel_name, "name")
     }
 
-    if (!(_ext == "ts" && get_path_info(_name, "extension") == "d")) {
+    if (!(_ext == "ts" &&
+          get_path_info(get_path_info(src, "name"), "extension") == "d")) {
       _dts_outputs += [ "$target_gen_dir/$_file_base.d.ts" ]
       if (!_no_js_emit) {
         _js_outputs += [

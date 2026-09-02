@@ -6,9 +6,10 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("test_runner") {
-  sources = [ "TestRunner.js" ]
+  split_compilation = true
+  sources = [ "TestRunner.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/protocol_client:bundle",
     "../../core/root:bundle",
@@ -22,9 +23,10 @@ devtools_module("test_runner") {
 }
 
 devtools_entrypoint("bundle") {
-  entrypoint = "test_runner.js"
+  split_compilation = true
+  entrypoint = "test_runner.ts"
 
-  deps = [ ":test_runner" ]
+  ts_deps = [ ":test_runner" ]
 
   visibility = [ "../*" ]
 }

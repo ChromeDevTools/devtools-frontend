@@ -11,9 +11,9 @@ import * as Tracing from '../../services/tracing/tracing.js';
 import * as TestRunner from './TestRunner.js';
 
 /**
- * @param {!SDK.Target.Target} target
+ * @param target
  */
-function _setupTestHelpers(target) {
+function _setupTestHelpers(target: SDK.Target.Target): void {
   self.TestRunner.BrowserAgent = target.browserAgent();
   self.TestRunner.CSSAgent = target.cssAgent();
   self.TestRunner.DeviceOrientationAgent = target.deviceOrientationAgent();
@@ -47,7 +47,7 @@ function _setupTestHelpers(target) {
   self.TestRunner.mainTarget = target;
 }
 
-export async function _executeTestScript() {
+export async function _executeTestScript(): Promise<void> {
   const testScriptURL = /** @type {string} */ (Root.Runtime.Runtime.queryParam('test'));
   if (TestRunner.isDebugTest()) {
     /* eslint-disable no-console */
@@ -75,15 +75,12 @@ export async function _executeTestScript() {
 /** @type {boolean} */
 let _startedTest = false;
 
-/**
- * @implements {SDK.TargetManager.Observer}
- */
-export class _TestObserver {
+export class _TestObserver implements SDK.TargetManager.Observer {
   /**
    * @override
-   * @param {!SDK.Target.Target} target
+   * @param target
    */
-  targetAdded(target) {
+  targetAdded(target: SDK.Target.Target): void {
     if (target.id() === 'main' && target.type() === 'frame' ||
         target.parentTarget()?.type() === 'tab' && target.type() === 'frame' && !target.targetInfo()?.subtype?.length) {
       _setupTestHelpers(target);
@@ -104,9 +101,9 @@ export class _TestObserver {
 
   /**
    * @override
-   * @param {!SDK.Target.Target} target
+   * @param target
    */
-  targetRemoved(target) {
+  targetRemoved(target: SDK.Target.Target): void {
   }
 }
 
@@ -117,5 +114,5 @@ Common.Runnable.registerEarlyInitializationRunnable(() => ({
                                                       },
                                                     }));
 
-const globalTestRunner = self.TestRunner;
+const globalTestRunner: typeof TestRunner = self.TestRunner;
 export {globalTestRunner as TestRunner};

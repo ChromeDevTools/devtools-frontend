@@ -2056,5 +2056,283 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.detach();
       }
     });
+
+    it('limits expanded children and renders "Show all nodes" button in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const childNodes = Array.from({length: 10}, (_, i) => ({
+                                                      nodeId: i + 2,
+                                                      nodeName: 'SPAN',
+                                                      attributes: ['id', `child-${i + 1}`],
+                                                    }));
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: childNodes,
+        });
+
+        domTree.setExpandedChildrenLimit(rootNode, 5);
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        // Find the expand all button in shadow root.
+        const expandAllItem = tree.shadowRoot?.querySelector('.elements-tree-expand-all');
+        assert.exists(expandAllItem);
+        const button = expandAllItem.querySelector('devtools-button');
+        assert.exists(button);
+        assert.include(button.textContent, 'Show all nodes (5 more)');
+
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElements = internalTree.rootElement().children();
+        assert.lengthOf(rootTreeElements, 1);
+        const childTreeElements = rootTreeElements[0].children();
+        // 5 children plus 1 expand-all item plus 1 closing tag tree element = 7
+        assert.lengthOf(childTreeElements, 7);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('expands children limit when "Show all nodes" button is clicked in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const childNodes = Array.from({length: 10}, (_, i) => ({
+                                                      nodeId: i + 2,
+                                                      nodeName: 'SPAN',
+                                                      attributes: ['id', `child-${i + 1}`],
+                                                    }));
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: childNodes,
+        });
+
+        domTree.setExpandedChildrenLimit(rootNode, 5);
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        const expandAllItem = tree.shadowRoot?.querySelector('.elements-tree-expand-all');
+        assert.exists(expandAllItem);
+        const button = expandAllItem.querySelector('devtools-button');
+        assert.exists(button);
+
+        button.click();
+        await waitForTreeUpdates();
+
+        // Verify the limit was expanded.
+        assert.isAtLeast(domTree.expandedChildrenLimit(rootNode), 10);
+
+        // Verify the expand-all button is now gone.
+        const updatedExpandAllItem = tree.shadowRoot?.querySelector('.elements-tree-expand-all');
+        assert.isNull(updatedExpandAllItem);
+
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElements = internalTree.rootElement().children();
+        assert.lengthOf(rootTreeElements, 1);
+        const childTreeElements = rootTreeElements[0].children();
+        // 10 children plus 1 closing tag tree element = 11
+        assert.lengthOf(childTreeElements, 11);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('auto-expands children limit when hidden child beyond limit is selected in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const childNodes = Array.from({length: 10}, (_, i) => ({
+                                                      nodeId: i + 2,
+                                                      nodeName: 'SPAN',
+                                                      attributes: ['id', `child-${i + 1}`],
+                                                    }));
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: childNodes,
+        });
+
+        const tenthChild = rootNode.children()![9];
+        assert.exists(tenthChild);
+
+        domTree.setExpandedChildrenLimit(rootNode, 5);
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        // Check before selection that expand all item is present.
+        assert.exists(tree.shadowRoot?.querySelector('.elements-tree-expand-all'));
+
+        // Select 10th child, which should reveal and auto-expand the limit.
+        domTree.selectDOMNode(tenthChild);
+        await waitForTreeUpdates();
+
+        // Verify the limit was expanded to at least 10.
+        assert.isAtLeast(domTree.expandedChildrenLimit(rootNode), 10);
+
+        // Verify the expand-all button is gone.
+        assert.isNull(tree.shadowRoot?.querySelector('.elements-tree-expand-all'));
+
+        // Verify the 10th child is selected.
+        assert.strictEqual(domTree.selectedDOMNode(), tenthChild);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('renders "Show all nodes" button with depth 0 indent when omitRootDOMNode is true in DECLARATIVE_VIEW',
+       async () => {
+         const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+         sinon.stub(domModel, 'requestDocument').resolves(null);
+         const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+         try {
+           const childNodes = Array.from({length: 10}, (_, i) => ({
+                                                         nodeId: i + 2,
+                                                         nodeName: 'DIV',
+                                                         attributes: ['id', `child-${i + 1}`],
+                                                       }));
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: 'BODY',
+             children: childNodes,
+           });
+
+           domTree.omitRootDOMNode = true;
+           domTree.setExpandedChildrenLimit(rootNode, 5);
+           domTree.rootDOMNode = rootNode;
+           domTree.performUpdate();
+
+           await waitForTreeUpdates();
+
+           const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+           assert.exists(tree);
+
+           const internalTree = tree.getInternalTreeOutlineForTest();
+           const rootTreeElements = internalTree.rootElement().children();
+           // 5 child root elements plus 1 expand-all element = 6
+           assert.lengthOf(rootTreeElements, 6);
+
+           const expandAllTreeElement =
+               rootTreeElements[5] as UI.TreeOutline.TreeElement & {configElement?: HTMLElement};
+           assert.exists(expandAllTreeElement.listItemElement.querySelector('.elements-tree-expand-all') ??
+                         expandAllTreeElement.listItemElement.classList.contains('elements-tree-expand-all'));
+           // Indent for depth 0 without children should be 12 * (0 - 1) + 12 = 0px.
+           assert.strictEqual(expandAllTreeElement.configElement?.style.getPropertyValue('--indent'), '0px');
+         } finally {
+           domTree.detach();
+         }
+       });
+
+    it('auto-expands children limit when ancestor children are loaded asynchronously in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const childNodes = Array.from({length: 10}, (_, i) => ({
+                                                      nodeId: i + 2,
+                                                      nodeName: 'SPAN',
+                                                      attributes: ['id', `child-${i + 1}`],
+                                                    }));
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: childNodes,
+        });
+
+        const tenthChild = rootNode.children()![9];
+        assert.exists(tenthChild);
+
+        // Simulate children not yet loaded initially on rootNode.
+        sinon.stub(rootNode, 'children').callsFake(() => null);
+        sinon.stub(rootNode, 'getChildNodes').callsFake(callback => {
+          (rootNode.children as sinon.SinonStub).restore();
+          if (callback) {
+            callback(rootNode.children());
+          }
+        });
+
+        domTree.setExpandedChildrenLimit(rootNode, 5);
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        // Select 10th child while rootNode children() was initially null.
+        domTree.selectDOMNode(tenthChild);
+        await waitForTreeUpdates();
+
+        // Verify that getChildNodes loaded children and expanded the limit.
+        assert.isAtLeast(domTree.expandedChildrenLimit(rootNode), 10);
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('synchronizes expandedChildrenLimit with treeElement in DEFAULT_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW);
+
+      try {
+        const childNodes = Array.from({length: 10}, (_, i) => ({
+                                                      nodeId: i + 2,
+                                                      nodeName: 'SPAN',
+                                                      attributes: ['id', `child-${i + 1}`],
+                                                    }));
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: childNodes,
+        });
+
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+        assert.exists(treeOutline);
+        const treeElement = treeOutline.findTreeElement(rootNode);
+        assert.exists(treeElement);
+
+        // 1. Updating limit via ElementsTreeOutline updates DOMTreeWidget
+        treeOutline.setExpandedChildrenLimit(treeElement, 5);
+        assert.strictEqual(treeElement.expandedChildrenLimit(), 5);
+        assert.strictEqual(domTree.expandedChildrenLimit(rootNode), 5);
+
+        // 2. Updating limit via DOMTreeWidget updates ElementsTreeOutline
+        domTree.setExpandedChildrenLimit(rootNode, 15);
+        assert.strictEqual(treeElement.expandedChildrenLimit(), 15);
+        assert.strictEqual(domTree.expandedChildrenLimit(rootNode), 15);
+      } finally {
+        domTree.detach();
+      }
+    });
   });
 });

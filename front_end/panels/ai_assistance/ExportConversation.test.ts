@@ -8,25 +8,28 @@ import sinon from 'sinon';
 import type * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as AiAssistanceModel from '../../models/ai_assistance/ai_assistance.js';
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 
 import * as AiAssistancePanel from './ai_assistance.js';
 
-describeWithEnvironment('Export Conversation as Markdown', () => {
+describe('Export Conversation as Markdown', () => {
+  setupSettingsHooks();
   it('generates a filename based on the query', async () => {
     const fileManager = stubFileManager();
     const conversation = new AiAssistanceModel.AiConversation.AiConversation({
       type: AiAssistanceModel.AiHistoryStorage.ConversationType.NONE,
-      data: [],
+      data: [
+        {
+          type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY,
+          query: 'test query',
+        },
+      ],
       id: 'test-id',
       isReadOnly: false,
-      aidaClient: mockAidaClient([
-        [{explanation: 'Answer'}],
-      ]),
+      aidaClient: mockAidaClient([]),
     });
 
-    await Array.fromAsync(conversation.run('test query'));
     await AiAssistancePanel.ExportConversation.saveToDisk(conversation);
     sinon.assert.calledOnce(fileManager.save);
     sinon.assert.calledOnce(fileManager.close);
@@ -39,16 +42,17 @@ describeWithEnvironment('Export Conversation as Markdown', () => {
     const fileManager = stubFileManager();
     const conversation = new AiAssistanceModel.AiConversation.AiConversation({
       type: AiAssistanceModel.AiHistoryStorage.ConversationType.NONE,
-      data: [],
+      data: [
+        {
+          type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY,
+          query: 'this is a very long title that should be truncated when exporting the conversation to a file',
+        },
+      ],
       id: 'test-id',
       isReadOnly: false,
-      aidaClient: mockAidaClient([
-        [{explanation: 'Answer'}],
-      ]),
+      aidaClient: mockAidaClient([]),
     });
 
-    await Array.fromAsync(conversation.run(
-        'this is a very long title that should be truncated when exporting the conversation to a file'));
     await AiAssistancePanel.ExportConversation.saveToDisk(conversation);
     sinon.assert.calledOnce(fileManager.save);
     sinon.assert.calledOnce(fileManager.close);
@@ -61,19 +65,21 @@ describeWithEnvironment('Export Conversation as Markdown', () => {
     const fileManager = stubFileManager();
     const conversation = new AiAssistanceModel.AiConversation.AiConversation({
       type: AiAssistanceModel.AiHistoryStorage.ConversationType.NONE,
-      data: [],
+      data: [
+        {
+          type: AiAssistanceModel.AiAgent.ResponseType.USER_QUERY,
+          query: 'test query',
+        },
+      ],
       id: 'test-id',
       isReadOnly: false,
-      aidaClient: mockAidaClient([
-        [{explanation: 'Answer'}],
-      ]),
+      aidaClient: mockAidaClient([]),
     });
 
     sinon.stub(conversation, 'getConversationMarkdown').callsFake(() => {
       return 'FAKE CONVERSATION TEXT';
     });
 
-    await Array.fromAsync(conversation.run('test query'));
     await AiAssistancePanel.ExportConversation.saveToDisk(conversation);
     sinon.assert.calledOnce(fileManager.save);
     sinon.assert.calledOnce(fileManager.close);

@@ -8,25 +8,11 @@ import sinon from 'sinon';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
-import {
-  cleanup,
-  initializePersistenceImplForTests,
-  setupAutomaticFileSystem,
-} from '../../../testing/AiAssistanceHelpers.js';
 import {raf, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import * as AiAssistancePanel from '../ai_assistance.js';
 
 describeWithEnvironment('ChatView', () => {
-  beforeEach(() => {
-    initializePersistenceImplForTests();
-    setupAutomaticFileSystem();
-  });
-
-  afterEach(() => {
-    cleanup();
-  });
-
   function getProp(options: Partial<AiAssistancePanel.Props>): AiAssistancePanel.Props {
     const noop = () => {};
     const messages = options.messages ?? [];

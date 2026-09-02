@@ -6,18 +6,14 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import {querySelectorErrorOnMissing, renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
-import {deinitializeGlobalVars, initializeGlobalVars} from '../../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import type * as Buttons from '../../../ui/components/buttons/buttons.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 describe('OptInChangeDialog', () => {
-  beforeEach(async () => {
-    await initializeGlobalVars();
-  });
-
-  afterEach(async () => {
-    await deinitializeGlobalVars();
-  });
+  setupLocaleHooks();
+  setupSettingsHooks();
 
   it('renders correctly', async () => {
     const component = new AiAssistance.OptInChangeDialog.OptInChangeDialog({

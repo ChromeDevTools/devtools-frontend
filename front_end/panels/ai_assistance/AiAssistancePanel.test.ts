@@ -36,12 +36,10 @@ import {
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
-import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../testing/SnapshotTester.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';
 import * as UI from '../../ui/legacy/legacy.js';
-import * as Network from '../network/network.js';
 import type * as TimelineComponents from '../timeline/components/components.js';
 import * as Timeline from '../timeline/timeline.js';
 
@@ -56,7 +54,6 @@ describeWithEnvironment('AI Assistance Panel', () => {
 
   async function enableAllFeatureAndSetting() {
     viewManagerIsViewVisibleStub.callsFake(viewName => viewName === 'elements');
-    await createNetworkPanelForMockConnection();
     Common.Settings.Settings.instance().moduleSetting('ai-assistance-enabled').set(true);
     Common.Settings.Settings.instance()
         .moduleSetting(
@@ -370,10 +367,6 @@ describeWithEnvironment('AI Assistance Panel', () => {
   describe('contexts', () => {
     beforeEach(async () => {
       await enableAllFeatureAndSetting();
-    });
-
-    afterEach(async () => {
-      Network.NetworkPanel.NetworkPanel.instance().detach();
     });
 
     const tests = [
@@ -1978,10 +1971,6 @@ describeWithEnvironment('AI Assistance Panel', () => {
       await enableAllFeatureAndSetting();
     });
 
-    afterEach(async () => {
-      Network.NetworkPanel.NetworkPanel.instance().detach();
-    });
-
     it('blocks input on requests with a different document origin', async () => {
       const networkRequest = createNetworkRequest({
         url: urlString`https://a.test/app.js`,
@@ -3485,7 +3474,6 @@ describe('AiAssistancePanel.ActionDelegate', () => {
   beforeEach(async () => {
     UI.ViewManager.ViewManager.instance({forceNew: true});
     UI.InspectorView.InspectorView.instance({forceNew: true});
-    await createNetworkPanelForMockConnection();
   });
 
   it('should set drawer size to 25% of total size if it\'s less than that size', async () => {

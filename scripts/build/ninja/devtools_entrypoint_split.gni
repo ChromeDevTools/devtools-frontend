@@ -45,17 +45,15 @@ template("devtools_entrypoint_split") {
       visibility = [ ":*" ]
     }
 
-    # Sub-target: Expose the entrypoint's single TypeScript file as
-    # public_inputs. Because cross-module entrypoints are marked external by
-    # esbuild, bundling will not traverse further into dependencies when
-    # consuming this entrypoint.
+    # Sub-target: Terminal barrier for transitive source propagation. Because
+    # cross-module entrypoints are marked external by esbuild, bundling will not
+    # traverse further into dependencies when consuming this entrypoint.
+    # Therefore, this group exposes no public_inputs and forwards no
+    # public_deps.
     _sources_target = "${target_name}_sources"
+
     group(_sources_target) {
-      public_inputs = [ invoker.entrypoint ]
       forward_variables_from(invoker, [ "testonly" ])
-      if (defined(invoker.visibility)) {
-        visibility = [ ":*" ] + invoker.visibility
-      }
     }
 
     _bundle_deps = [ ":$_sources_target" ]

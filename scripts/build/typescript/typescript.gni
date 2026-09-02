@@ -287,7 +287,17 @@ template("legacy_ts_library") {
     }
   }
 
+  _sources_deps = []
+  if (defined(invoker.ts_deps)) {
+    foreach(dep, invoker.ts_deps) {
+      _dep_dir = get_label_info(dep, "dir")
+      _dep_name = get_label_info(dep, "name")
+      _sources_deps += [ "$_dep_dir:${_dep_name}_sources" ]
+    }
+  }
+
   _sources_export_target = "${target_name}_sources"
+
   group(_sources_export_target) {
     if (defined(invoker.testonly)) {
       testonly = invoker.testonly
@@ -299,9 +309,7 @@ template("legacy_ts_library") {
     if (defined(invoker.inputs)) {
       public_inputs += invoker.inputs
     }
-    if (defined(invoker.visibility)) {
-      visibility = [ ":*" ] + invoker.visibility
-    }
+    public_deps = _sources_deps
   }
 }
 
@@ -350,6 +358,7 @@ template("node_ts_library") {
                            ])
   }
 }
+
 template("ts_e2e_library") {
   node_ts_library(target_name) {
     additional_type_definitions =

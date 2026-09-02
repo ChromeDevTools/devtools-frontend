@@ -123,10 +123,12 @@ template("ts_library_split") {
 
   _ts_references = []
   _ts_deps = []
+  _sources_deps = []
   if (defined(invoker.ts_deps)) {
     _ts_deps = invoker.ts_deps
     foreach(dep, _ts_deps) {
       _dep_name = get_label_info(dep, "name")
+      _dep_dir = get_label_info(dep, "dir")
       _dep_gen_dir = get_label_info(dep, "target_gen_dir")
       _ts_references += [
         {
@@ -134,6 +136,7 @@ template("ts_library_split") {
                              target_gen_dir)
         },
       ]
+      _sources_deps += [ "$_dep_dir:${_dep_name}_sources" ]
     }
   }
 
@@ -319,10 +322,7 @@ template("ts_library_split") {
     if (defined(invoker.inputs)) {
       public_inputs += invoker.inputs
     }
-    public_deps = _non_ts_deps
-    if (defined(invoker.visibility)) {
-      visibility = [ ":*" ] + invoker.visibility
-    }
+    public_deps = _non_ts_deps + _sources_deps
   }
 
   # Sub-target 3: Generate tsconfig.json used by sub-target 4 for

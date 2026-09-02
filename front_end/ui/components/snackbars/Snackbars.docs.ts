@@ -4,7 +4,7 @@
 
 import {Snackbar} from './snackbars.js';
 
-export function render(container: HTMLElement) {
+export function render(container: HTMLElement): void {
   const onActionClick = (): void => {
     console.log('Action button clicked!');
   };

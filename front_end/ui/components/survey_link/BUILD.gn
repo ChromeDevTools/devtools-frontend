@@ -51,7 +51,7 @@ devtools_ui_module("unittests") {
 
 component_doc("docs") {
   sources = [ "SurveyLink.docs.ts" ]
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../core/common:bundle",
   ]

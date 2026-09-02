@@ -8,6 +8,6 @@ import * as Lit from '../../lit/lit.js';
 
 const {html} = Lit;
 
-export function render(container: HTMLElement) {
+export function render(container: HTMLElement): void {
   Lit.render(html`<devtools-spinner></devtools-spinner>`, container);
 }

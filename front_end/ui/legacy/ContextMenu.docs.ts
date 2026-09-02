@@ -8,7 +8,7 @@ import {ContextMenu} from './legacy.js';
 
 const {html} = Lit;
 
-export function render(container: HTMLElement) {
+export function render(container: HTMLElement): void {
   const menuDocs = container.createChild('div', 'menu-docs');
   const style = document.createElement('style');
   style.textContent = `

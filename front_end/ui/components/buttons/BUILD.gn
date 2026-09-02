@@ -65,5 +65,5 @@ devtools_ui_module("unittests") {
 
 component_doc("docs") {
   sources = [ "Button.docs.ts" ]
-  deps = [ ":bundle" ]
+  ts_deps = [ ":bundle" ]
 }

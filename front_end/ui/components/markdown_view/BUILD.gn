@@ -79,7 +79,7 @@ devtools_ui_module("unittests") {
 
 component_doc("docs") {
   sources = [ "MarkdownView.docs.ts" ]
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../third_party/marked:bundle",
     "../../lit:bundle",

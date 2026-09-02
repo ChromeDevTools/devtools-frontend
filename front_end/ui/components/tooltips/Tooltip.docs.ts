@@ -8,7 +8,7 @@ import {Tooltip} from './tooltips.js';
 
 const {html} = Lit;
 
-export function render(container: HTMLElement) {
+export function render(container: HTMLElement): void {
   Lit.render(
       html`
     <div style="position: relative; z-index: 0;">

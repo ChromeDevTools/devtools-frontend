@@ -32,7 +32,7 @@ devtools_entrypoint("bundle") {
 
 component_doc("docs") {
   sources = [ "Spinners.docs.ts" ]
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../lit:bundle",
   ]

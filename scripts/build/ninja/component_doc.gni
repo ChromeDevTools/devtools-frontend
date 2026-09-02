@@ -7,20 +7,32 @@ import("../typescript/typescript.gni")
 template("component_doc") {
   _ts_target = target_name + "_ts"
 
+  _doc_sources = []
+  foreach(src, invoker.sources) {
+    _rel_dir = get_path_info(src, "dir")
+    if (_rel_dir == "" || _rel_dir == ".") {
+      _file_base = get_path_info(src, "name")
+    } else {
+      _file_base = _rel_dir + "/" + get_path_info(src, "name")
+    }
+    _doc_sources += [ "$target_gen_dir/$_file_base.js" ]
+  }
+
   ts_library(_ts_target) {
+    split_compilation = true
     forward_variables_from(invoker,
                            [
                              "sources",
                              "deps",
+                             "ts_deps",
                            ])
   }
 
   group(target_name) {
     deps = [ ":$_ts_target" ]
 
-    _ts_library_outputs = get_target_outputs(":$_ts_target")
     metadata = {
-      doc_sources = filter_include(_ts_library_outputs, [ "*.js" ])
+      doc_sources = _doc_sources
     }
   }
 }

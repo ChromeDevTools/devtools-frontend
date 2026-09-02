@@ -55,5 +55,5 @@ devtools_ui_module("unittests") {
 
 component_doc("docs") {
   sources = [ "ThemeColors.docs.ts" ]
-  deps = [ "../../lit:bundle" ]
+  ts_deps = [ "../../lit:bundle" ]
 }

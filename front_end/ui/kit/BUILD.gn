@@ -69,7 +69,7 @@ component_doc("docs") {
     "icons/Icon.docs.ts",
     "link/Link.docs.ts",
   ]
-  deps = [
+  ts_deps = [
     ":bundle",
     "../lit:bundle",
   ]

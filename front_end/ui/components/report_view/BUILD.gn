@@ -57,7 +57,7 @@ devtools_ui_module("unittests") {
 component_doc("docs") {
   sources = [ "ReportView.docs.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../lit:bundle",
   ]

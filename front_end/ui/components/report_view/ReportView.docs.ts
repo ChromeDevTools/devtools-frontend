@@ -15,7 +15,7 @@ const exampleRenderHelper = (key: string, value: string) => html`
           <devtools-report-value>${value}</devtools-report-value>
         `;
 
-export function render(container: HTMLElement) {
+export function render(container: HTMLElement): void {
   // clang-format off
   Lit.render(
       html`

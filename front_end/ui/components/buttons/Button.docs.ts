@@ -4,7 +4,7 @@
 
 import {Button, FloatingButton} from './buttons.js';
 
-export function render(container: HTMLElement) {
+export function render(container: HTMLElement): void {
   const buttonDocs = container.createChild('div', 'button-docs');
   const style = document.createElement('style');
   style.textContent = `

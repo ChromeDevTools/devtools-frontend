@@ -77,7 +77,7 @@ export class ChangesView extends UI.Widget.VBox<ShadowRoot> {
   #selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null = null;
   readonly #view: View;
 
-  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(target, {useShadowDom: 'pure'});
 
     this.#workspaceDiff = WorkspaceDiff.WorkspaceDiff.workspaceDiff();

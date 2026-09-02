@@ -73,7 +73,7 @@ export class ChangesSidebar extends ChangesSidebarBase {
   readonly #view: View;
   readonly #sourceCodes = new Set<Workspace.UISourceCode.UISourceCode>();
   #selectedUISourceCode: Workspace.UISourceCode.UISourceCode|null = null;
-  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(target);
     this.#view = view;
   }

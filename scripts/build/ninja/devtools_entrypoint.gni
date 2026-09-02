@@ -21,8 +21,6 @@ template("legacy_devtools_entrypoint") {
   assert(defined(invoker.entrypoint),
          "You must define the 'entrypoint' for a bundle target")
 
-  not_needed(invoker, [ "testonly" ])
-
   _entrypoint_target_name = "devtools_entrypoint-" + target_name
 
   _entrypoint_output_file_name = get_path_info(invoker.entrypoint, "name")
@@ -51,6 +49,7 @@ template("legacy_devtools_entrypoint") {
                                "es_target",
                                "es_libs",
                                "inputs",
+                               "testonly",
                              ])
       deps = _all_deps
 
@@ -103,6 +102,7 @@ template("legacy_devtools_entrypoint") {
     _prebundle_target_name = _entrypoint_target_name + "-tsconfig"
 
     node_action(_copy_target_name) {
+      forward_variables_from(invoker, [ "testonly" ])
       script = "scripts/build/ninja/copy-file.js"
 
       inputs = [ invoker.entrypoint ]
@@ -126,6 +126,7 @@ template("legacy_devtools_entrypoint") {
                                "es_target",
                                "es_libs",
                                "inputs",
+                               "testonly",
                              ])
       deps = _all_deps
 
@@ -137,6 +138,7 @@ template("legacy_devtools_entrypoint") {
     }
 
     bundle(_bundle_target_name) {
+      forward_variables_from(invoker, [ "testonly" ])
       entrypoint = _prebundle_output_file_name
 
       output_file_location = _entrypoint_gen_file_location
@@ -162,6 +164,7 @@ template("legacy_devtools_entrypoint") {
       # the generated `prebundle.d.ts` over, as the public API for a
       # rolled up bundle remains the same.
       node_action(_generated_declaration_target_name) {
+        forward_variables_from(invoker, [ "testonly" ])
         script = "scripts/build/ninja/generate-declaration.js"
 
         args = [
@@ -213,6 +216,7 @@ template("legacy_devtools_entrypoint") {
   ]
 
   node_action(target_name) {
+    forward_variables_from(invoker, [ "testonly" ])
     script = "scripts/build/ninja/generate-tsconfig.js"
 
     # Expose ts files to dependent targets.

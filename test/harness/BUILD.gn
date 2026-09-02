@@ -57,6 +57,7 @@ devtools_ui_module("unit_fixtures") {
 }
 
 generated_file("foundation_test_inputs") {
+  testonly = true
   outputs = [ "$target_gen_dir/unit/foundation_tests.txt" ]
   data_keys = [ "tests" ]
   rebase = "$target_gen_dir/unit"
@@ -65,6 +66,7 @@ generated_file("foundation_test_inputs") {
 }
 
 generated_file("unit_test_inputs") {
+  testonly = true
   outputs = [ "$target_gen_dir/unit/tests.txt" ]
   data_keys = [ "tests" ]
   rebase = "$target_gen_dir/unit"
@@ -73,6 +75,7 @@ generated_file("unit_test_inputs") {
 }
 
 generated_file("e2e_test_inputs") {
+  testonly = true
   outputs = [ "$target_gen_dir/e2e/tests.txt" ]
   data_keys = [ "tests" ]
   rebase = target_gen_dir

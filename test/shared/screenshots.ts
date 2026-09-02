@@ -62,11 +62,11 @@ const DEFAULT_MS_BETWEEN_RETRIES = 150;
 // acceptable and will not fail the test.
 const DEFAULT_SCREENSHOT_THRESHOLD_PERCENT = 0;
 
-export const assertElementScreenshotUnchanged = async (
+export const assertElementScreenshotUnchanged = async(
     element: puppeteer.ElementHandle|null,
     fileName: NonNullable<puppeteer.ScreenshotOptions['path']>,
     options: Partial<puppeteer.ScreenshotOptions> = {},
-    ) => {
+    ): Promise<void> => {
   assert.isOk(element, `Given element for test ${fileName} was not found.`);
   // Only assert screenshots on Linux, unless forceScreenshots is enabled.
   if (platform !== 'linux' && !TestConfig.forceScreenshots) {

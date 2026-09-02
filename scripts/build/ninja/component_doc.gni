@@ -8,7 +8,6 @@ template("component_doc") {
   _ts_target = target_name + "_ts"
 
   ts_library(_ts_target) {
-    testonly = true
     forward_variables_from(invoker,
                            [
                              "sources",

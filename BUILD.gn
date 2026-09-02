@@ -257,6 +257,7 @@ group("mcp") {
 }
 
 group("harness_tests") {
+  testonly = true
   deps = [ "./test/harness" ]
 }
 

@@ -61,6 +61,7 @@ template("legacy_ts_library") {
                              "metadata",
                              "additional_type_definitions",
                              "ts_deps",
+                             "testonly",
                            ])
     if (!defined(inputs)) {
       inputs = []

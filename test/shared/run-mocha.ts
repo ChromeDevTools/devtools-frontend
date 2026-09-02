@@ -40,7 +40,7 @@ function optionsWithDefalts(options: Options): Options {
   return withDefaults;
 }
 
-export async function run(options: Omit<Options, OmitOptions>) {
+export async function run(options: Omit<Options, OmitOptions>): Promise<void> {
   const mocha = new Mocha(optionsWithDefalts(options));
 
   // Load files

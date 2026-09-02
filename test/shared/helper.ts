@@ -61,18 +61,18 @@ export function matchArray<A, E>(
   return true;
 }
 
-export function matchTable<A, E>(
-    actual: A[][], expected: E[][], comparator: (actual: A, expected: E) => true | string) {
+export function matchTable<A, E>(actual: A[][], expected: E[][],
+                                 comparator: (actual: A, expected: E) => true | string): string|true {
   return matchArray(actual, expected, (actual, expected) => matchArray<A, E>(actual, expected, comparator));
 }
 
-export const matchStringArray = (actual: string[], expected: Array<string|RegExp>) =>
+export const matchStringArray = (actual: string[], expected: Array<string|RegExp>): string|true =>
     matchArray(actual, expected, matchString);
 
-export const matchStringTable = (actual: string[][], expected: Array<Array<string|RegExp>>) =>
+export const matchStringTable = (actual: string[][], expected: Array<Array<string|RegExp>>): string|true =>
     matchTable(actual, expected, matchString);
 
-export const replacePuppeteerUrl = (value: string) => {
+export const replacePuppeteerUrl = (value: string): string => {
   return value.replace(/pptr:.*:([0-9]+)$/, (_, match) => {
     return `(index):${match}`;
   });

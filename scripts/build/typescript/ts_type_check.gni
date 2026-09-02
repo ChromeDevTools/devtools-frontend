@@ -11,12 +11,8 @@ template("ts_type_check") {
   assert(defined(invoker.sources),
          "You must specify 'sources' for $target_name")
 
-  # We explicitly do not set GN `testonly` on the underlying action to avoid
-  # dependency graph errors when legacy non-testonly GN actions depend on this
-  # verification target.
   not_needed(invoker,
              [
-               "testonly",
                "reset_timestamps",
                "split_compilation",
              ])
@@ -111,6 +107,9 @@ template("ts_type_check") {
 
   # Sub-target 1: Generate tsconfig.json used for type checking
   generated_file(_tsconfig_target) {
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
     outputs = [ _tsconfig_file ]
     output_conversion = "json"
     contents = {
@@ -122,6 +121,9 @@ template("ts_type_check") {
 
   # Primary action target: Type checking via direct tsc
   action(target_name) {
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
     script = devtools_location_prepend + "scripts/build/run_with_stamp.py"
 
     inputs = typescript_base_inputs + _all_sources + [

@@ -230,11 +230,18 @@ describe('The Application Tab', () => {
   it('can sort cookies', async ({devToolsPage, inspectedPage, browser}) => {
     expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');
     await navigateToApplicationTab(devToolsPage, inspectedPage, 'cookies');
+    await inspectedPage.waitForFunction(async () => {
+      const cookies = await inspectedPage.page.cookies();
+      return cookies.length === 4 ? cookies : undefined;
+    });
 
     await navigateToCookiesForTopDomain(devToolsPage, inspectedPage);
+    await getStorageItemsData(devToolsPage, ['name'], 4, true);
     const dataGrid = await devToolsPage.waitFor('devtools-data-grid');
     await devToolsPage.click('th.name-column', {root: dataGrid});
+    await devToolsPage.waitFor('th.name-column.sort-ascending', dataGrid);
     await devToolsPage.click('th.name-column', {root: dataGrid});
+    await devToolsPage.waitFor('th.name-column.sort-descending', dataGrid);
     const dataGridRowValues = await devToolsPage.waitForFunction(async () => {
       const values = await getDataGridData(devToolsPage, '.storage-view table', ['name']);
       return values.length === 4 && values[0].name === 'urlencoded' ? values : undefined;

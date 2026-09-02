@@ -204,6 +204,10 @@ export async function getStorageItemsData(devToolsPage: DevToolsPage, columns: s
     if (matchExactNumberOfRows ? values.length === leastExpected : values.length >= leastExpected) {
       return values;
     }
+    const refreshButton = await devToolsPage.$('devtools-button[title="Refresh"]');
+    if (refreshButton) {
+      await refreshButton.click();
+    }
     return undefined;
   });
   return gridData;
@@ -284,6 +288,10 @@ export async function selectCookieByName(devToolsPage: DevToolsPage, name: strin
         return undefined;
       }
       throw error;
+    }
+    const refreshButton = await devToolsPage.$('devtools-button[title="Refresh"]');
+    if (refreshButton) {
+      await refreshButton.click();
     }
     return undefined;
   });

@@ -27,4 +27,4 @@ export abstract class AnimationTimingModel {
   }
 }
 
-export const LINEAR_BEZIER = Geometry.LINEAR_BEZIER;
+export const LINEAR_BEZIER: Geometry.CubicBezier = Geometry.LINEAR_BEZIER;

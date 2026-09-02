@@ -24,6 +24,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("inline_editor") {
+  split_compilation = true
   sources = [
     "AnimationTimingModel.ts",
     "AnimationTimingUI.ts",
@@ -43,7 +44,7 @@ devtools_ui_module("inline_editor") {
     "Swatches.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../../core/common:bundle",
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
@@ -61,12 +62,12 @@ devtools_ui_module("inline_editor") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "inline_editor.ts"
 
-  deps = [
-    ":css_files",
-    ":inline_editor",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":inline_editor" ]
 
   visibility = [
     # IMPORTANT: Be careful when extending visibility of front_end/ui/legacy/*,
@@ -86,6 +87,7 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [
     "AnimationTimingModel.test.ts",
@@ -99,7 +101,7 @@ devtools_ui_module("unittests") {
     "LinkSwatch.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../../core/common:bundle",
     "../../../../models/geometry:bundle",

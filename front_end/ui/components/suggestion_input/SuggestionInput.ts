@@ -4,7 +4,6 @@
 /* eslint-disable @devtools/enforce-custom-element-definitions-location */
 
 import * as CodeHighlighter from '../../../ui/components/code_highlighter/code_highlighter.js';
-import codeHighlighterStyles from '../../../ui/components/code_highlighter/codeHighlighter.css.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 
@@ -338,7 +337,7 @@ export class SuggestionInput extends LitElement {
   protected override render(): Lit.TemplateResult {
     // clang-format off
     return html`<style>${contentEditableStyles}</style>
-      <style>${codeHighlighterStyles}</style>
+      <style>${CodeHighlighter.codeHighlighterStyles}</style>
       <devtools-editable-content
         ?disabled=${this.disabled}
         class=${classMap({

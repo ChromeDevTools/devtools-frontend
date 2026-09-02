@@ -216,7 +216,7 @@ export class DOMBreakpointsSidebarPane extends UI.Widget.VBox implements
     }
   }
 
-  constructor(view = DEFAULT_VIEW) {
+  constructor(view: View = DEFAULT_VIEW) {
     super({useShadowDom: true});
 
     this.#view = view;

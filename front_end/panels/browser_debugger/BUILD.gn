@@ -17,6 +17,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("browser_debugger") {
+  split_compilation = true
   sources = [
     "CSPViolationBreakpointsSidebarPane.ts",
     "CategorizedBreakpointsSidebarPane.ts",
@@ -26,7 +27,7 @@ devtools_ui_module("browser_debugger") {
     "XHRBreakpointsSidebarPane.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
@@ -43,12 +44,12 @@ devtools_ui_module("browser_debugger") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "browser_debugger.ts"
 
-  deps = [
-    ":browser_debugger",
-    ":css_files",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":browser_debugger" ]
 
   visibility = [
     ":*",
@@ -59,9 +60,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "browser_debugger-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
@@ -75,6 +77,7 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -84,7 +87,7 @@ devtools_ui_module("unittests") {
     "browser_debugger.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/sdk:bundle",
     "../../generated",

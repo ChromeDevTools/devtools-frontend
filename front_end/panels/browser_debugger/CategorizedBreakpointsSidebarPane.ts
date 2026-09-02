@@ -262,9 +262,8 @@ export abstract class CategorizedBreakpointsSidebarPane extends UI.Widget.VBox<S
   #filterText: string|null = null;
   #view: View;
   #selectedItem: SDK.CategorizedBreakpoint.Category|SDK.CategorizedBreakpoint.CategorizedBreakpoint|null = null;
-  constructor(
-      breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[], jslog: string, viewId: string,
-      view = DEFAULT_VIEW) {
+  constructor(breakpoints: SDK.CategorizedBreakpoint.CategorizedBreakpoint[], jslog: string, viewId: string,
+              view: View = DEFAULT_VIEW) {
     super({useShadowDom: 'pure'});
     this.#view = view;
     this.#jslog = jslog;

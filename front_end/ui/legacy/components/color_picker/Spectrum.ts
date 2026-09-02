@@ -1645,7 +1645,13 @@ const MaterialPaletteShades = new Map([
   ],
 ]);
 
-export const MaterialPalette = {
+export const MaterialPalette: {
+  title: string,
+  mutable: boolean,
+  matchUserFormat: boolean,
+  colors: string[],
+  colorNames: string[],
+} = {
   title: 'Material',
   mutable: false,
   matchUserFormat: true,

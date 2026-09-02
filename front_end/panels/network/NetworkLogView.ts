@@ -1146,7 +1146,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin<EventTypes, 
         jslogContext: actionName,
         variant: Buttons.Button.Variant.TONAL,
       });
-      this.recordingHint.contentElement.appendChild(button);
+      this.recordingHint.element.appendChild(button);
     }
 
     this.recordingHint.show(this.element);

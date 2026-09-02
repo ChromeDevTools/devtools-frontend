@@ -129,9 +129,16 @@ export class Link extends HTMLElement {
   };
 
   #onKeyDown = (event: KeyboardEvent): void => {
-    if (Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
-      this.#handleOpeningLink(event);
+    if (!Platform.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+      return;
     }
+    if (this.href) {
+      this.#handleOpeningLink(event);
+      return;
+    }
+
+    event.consume(true);
+    this.click();
   };
 
   #render(): void {

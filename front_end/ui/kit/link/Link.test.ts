@@ -3,9 +3,14 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
+import * as Host from '../../../core/host/host.js';
+import * as Platform from '../../../core/platform/platform.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {Link} from '../kit.js';
+
+const {urlString} = Platform.DevToolsPath;
 
 describe('devtools-link', () => {
   describe('title', () => {
@@ -60,6 +65,50 @@ describe('devtools-link', () => {
       const link = new Link();
       link.setAttribute('allow-privileged', '');
       assert.isTrue(link.allowPrivileged);
+    });
+  });
+
+  describe('keyboard activation', () => {
+    function dispatchKeyDown(link: Link, key: string): void {
+      link.dispatchEvent(new KeyboardEvent('keydown', {key, bubbles: true, cancelable: true}));
+    }
+
+    for (const key of ['Enter', ' ']) {
+      it(`dispatches a click on "${key}" when there is no href`, () => {
+        const link = new Link();
+        const onClick = sinon.spy();
+        link.addEventListener('click', onClick);
+        renderElementIntoDOM(link);
+
+        dispatchKeyDown(link, key);
+
+        sinon.assert.calledOnce(onClick);
+      });
+    }
+
+    it('does not dispatch a click for other keys', () => {
+      const link = new Link();
+      const onClick = sinon.spy();
+      link.addEventListener('click', onClick);
+      renderElementIntoDOM(link);
+
+      dispatchKeyDown(link, 'a');
+
+      sinon.assert.notCalled(onClick);
+    });
+
+    it('opens the href instead of dispatching a click when there is an href', () => {
+      const stub = sinon.stub(Host.InspectorFrontendHost.InspectorFrontendHostInstance, 'openInNewTab');
+      const link = new Link();
+      const onClick = sinon.spy();
+      link.addEventListener('click', onClick);
+      link.setAttribute('href', 'https://example.com/');
+      renderElementIntoDOM(link);
+
+      dispatchKeyDown(link, 'Enter');
+
+      sinon.assert.calledOnceWithExactly(stub, urlString`https://example.com/`);
+      sinon.assert.notCalled(onClick);
     });
   });
 

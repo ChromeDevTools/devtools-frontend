@@ -44,7 +44,7 @@ import cardStyles from './card.css.js';
  * @attribute heading - The heading text.
  */
 export class Card extends HTMLElement {
-  static readonly observedAttributes = ['heading'];
+  static readonly observedAttributes: string[] = ['heading'];
 
   readonly #shadow = this.attachShadow({mode: 'open'});
 

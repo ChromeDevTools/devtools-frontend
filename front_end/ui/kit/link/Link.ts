@@ -32,7 +32,7 @@ import linkStyles from './link.css.js';
 export class Link extends HTMLElement {
   readonly #shadow = this.attachShadow({mode: 'open'});
 
-  static readonly observedAttributes = ['href', 'jslogcontext'];
+  static readonly observedAttributes: string[] = ['href', 'jslogcontext'];
 
   connectedCallback(): void {
     if (!this.hasAttribute('tabindex')) {

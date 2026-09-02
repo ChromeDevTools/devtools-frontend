@@ -68,7 +68,7 @@ export type IconData = IconWithName|{
  *              should not be used in newly written code.
  */
 export class Icon extends HTMLElement {
-  static readonly observedAttributes = ['name'];
+  static readonly observedAttributes: string[] = ['name'];
 
   readonly #shadowRoot;
   readonly #icon;

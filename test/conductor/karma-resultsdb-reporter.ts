@@ -16,7 +16,7 @@ import {ScreenshotError} from './screenshot-error.js';
 import {TestConfig} from './test_config.js';
 import {isExpectedResult} from './test_expectations.js';
 
-export function formatAsPatch(assertionDiff: any) {
+export function formatAsPatch(assertionDiff: any): string|null {
   const consoleDiffLines = Array.from(formatDiff(
       assertionDiff,
       (same: string) => ` ${same}`,
@@ -29,8 +29,10 @@ export function formatAsPatch(assertionDiff: any) {
   return null;
 }
 
-export const ResultsDBReporter = function(
-    this: any, baseReporterDecorator: (arg0: any) => void, formatError: any, _config: any) {
+export const ResultsDBReporter: {
+  (this: any, baseReporterDecorator: (arg0: any) => void, formatError: any, _config: any): void,
+  $inject: string[],
+} = function(this: any, baseReporterDecorator: (arg0: any) => void, formatError: any, _config: any): void {
   baseReporterDecorator(this);
 
   this.USE_COLORS = false;

@@ -45,7 +45,7 @@ export class ScreenshotError extends Error {
   /**
    * Creates a ScreenshotError when a reference golden does not exists.
    */
-  static fromGeneratedScreenshot(message: string, generatedImgPath: string) {
+  static fromGeneratedScreenshot(message: string, generatedImgPath: string): ScreenshotError {
     const screenshots = {
       generated: {filePath: this.stashArtifact(generatedImgPath, 'generated')},
     };
@@ -65,7 +65,7 @@ export class ScreenshotError extends Error {
       goldenImgPath: string,
       generatedImgPath: string,
       diffImgPath: string,
-  ) {
+      ): ScreenshotError {
     const screenshots = {
       expected_image: {filePath: this.stashArtifact(goldenImgPath, 'expected')},
       actual_image: {filePath: this.stashArtifact(generatedImgPath, 'actual')},
@@ -97,7 +97,7 @@ export class ScreenshotError extends Error {
   }
   static saveArtifacts(
       collectedScreenshots: Record<string, string>|undefined,
-  ) {
+      ): ArtifactGroup {
     const screenshots: ArtifactGroup = {};
     for (const name in collectedScreenshots) {
       screenshots[name] = {
@@ -162,8 +162,15 @@ export class ScreenshotError extends Error {
   }
 }
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export const ScreenshotErrorReporter = function(this: any, baseReporterDecorator: (arg0: unknown) => void) {
+export interface ScreenshotErrorReporterInstance {
+  onRunComplete?: () => void;
+  [key: string]: unknown;
+}
+
+export const ScreenshotErrorReporter: {
+  (this: ScreenshotErrorReporterInstance, baseReporterDecorator: (arg0: unknown) => void): void,
+  $inject: string[],
+} = function(this: ScreenshotErrorReporterInstance, baseReporterDecorator: (arg0: unknown) => void): void {
   const JSON_PATH = path.join(GEN_DIR, 'test', '.generated', 'errors.js');
   baseReporterDecorator(this);
   this.onRunComplete = () => {

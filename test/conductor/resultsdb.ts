@@ -54,7 +54,23 @@ export function sanitizedTestId(rawTestId: string): SanitizedTestId {
   return rawTestId.replace(/[^\x20-\x7E]/g, '').substring(0, 512) as SanitizedTestId;
 }
 
-export function buildTestProperties(exactTestId: string, coarseName: string, fineName: string, caseName: string) {
+export function buildTestProperties(exactTestId: string, coarseName: string, fineName: string, caseName: string): {
+  testId: SanitizedTestId,
+  testIdStructured: {
+    moduleName: string,
+    moduleScheme: string,
+    coarseName: string,
+    fineName: string,
+    caseNameComponents: string[],
+  },
+  testMetadata: {
+    name: string,
+    location: {
+      repo: string,
+      fileName: string,
+    },
+  },
+} {
   return {
     testId: sanitizedTestId(exactTestId),
     testIdStructured: {

@@ -34,7 +34,7 @@ export enum DiffBehaviors {
   NO_UPDATE = 'no-update',
 }
 
-export function asArray(value?: string|string[]) {
+export function asArray(value?: string|string[]): string[] {
   if (!value) {
     return [];
   }
@@ -61,7 +61,31 @@ function validateDiffBehaviors(args?: string|string[]) {
   return asArray(args);
 }
 
-export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T>) {
+export interface CommandLineOptions {
+  debug: boolean;
+  headless?: boolean;
+  coverage: boolean;
+  'artifacts-dir'?: string;
+  'chrome-binary'?: string;
+  'on-diff'?: string[];
+  verbose: number;
+  shuffle: boolean;
+  repeat: number;
+  bail: boolean;
+  retries: number;
+  grep?: string;
+  fgrep?: string;
+  'invert-grep': boolean;
+  'cpu-throttle': number;
+  'shard-count': number;
+  'shard-number': number;
+  'shard-bias': number;
+  'expectations-file'?: string;
+  'force-screenshots': boolean;
+  'ota-username'?: string;
+}
+
+export function commandLineArgs<T = Record<string, unknown>>(yargs: Yargs.Argv<T>): Yargs.Argv<T&CommandLineOptions> {
   return yargs
       .parserConfiguration({
         'camel-case-expansion': false,

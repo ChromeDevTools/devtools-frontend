@@ -8,12 +8,13 @@ import * as path from 'node:path';
 // @ts-expect-error created at test/BUILD.gn
 import build from '../build.js';
 
-export const SOURCE_ROOT = path.join(__dirname, '..', build.SOURCE_ROOT);
-export const CHECKOUT_ROOT = path.join(__dirname, '..', build.CHECKOUT_ROOT);
-export const BUILD_ROOT = path.join(__dirname, '..', build.BUILD_ROOT);
-export const GEN_DIR = path.normalize(path.join(__dirname, '..', '..'));
-export const BUILD_WITH_CHROMIUM = build.BUILD_WITH_CHROMIUM;
-export const TEST_ID_REGEX = /^(.*\.[tj]s):(.*)$/;
+export const SOURCE_ROOT: string = path.join(__dirname, '..', build.SOURCE_ROOT);
+export const CHECKOUT_ROOT: string = path.join(__dirname, '..', build.CHECKOUT_ROOT);
+export const BUILD_ROOT: string = path.join(__dirname, '..', build.BUILD_ROOT);
+export const GEN_DIR: string = path.normalize(path.join(__dirname, '..', '..'));
+export const BUILD_WITH_CHROMIUM: boolean = build.BUILD_WITH_CHROMIUM;
+// eslint-disable-next-line @typescript-eslint/no-inferrable-types
+export const TEST_ID_REGEX: RegExp = /^(.*\.[tj]s):(.*)$/;
 
 function rebase(fromRoot: string, toRoot: string, filename: string, newExt?: string) {
   if (!path.isAbsolute(filename) || !path.isAbsolute(fromRoot) || !path.isAbsolute(toRoot)) {
@@ -37,7 +38,7 @@ function rebase(fromRoot: string, toRoot: string, filename: string, newExt?: str
   return ext.length > 0 ? rebased.substr(0, rebased.length - ext.length) + newExt : rebased;
 }
 
-export function isContainedInDirectory(contained: string, directory: string) {
+export function isContainedInDirectory(contained: string, directory: string): boolean {
   return !path.relative(directory, contained).startsWith('..');
 }
 
@@ -48,7 +49,7 @@ export class PathPair {
     }
   }
 
-  static get(pathname: string) {
+  static get(pathname: string): PathPair|null {
     const absPath = path.normalize(path.resolve(pathname));
     if (!absPath) {
       return null;
@@ -67,14 +68,14 @@ export class TestId<Pair extends PathPair = PathPair> {
   protected constructor(readonly pathPair: Pair, readonly subTestId?: string) {
   }
 
-  toBuildTestId() {
+  toBuildTestId(): string {
     if (!this.subTestId) {
       return this.pathPair.buildPath;
     }
     return `${this.pathPair.buildPath}:${this.subTestId}`;
   }
 
-  static create(testId: string) {
+  static create(testId: string): TestId<PathPair>|null {
     let subTestId = undefined;
     let pathname = testId;
     if (TEST_ID_REGEX.test(testId)) {
@@ -90,7 +91,7 @@ export class TestId<Pair extends PathPair = PathPair> {
   }
 }
 
-export function defaultChromePath() {
+export function defaultChromePath(): string {
   if (BUILD_WITH_CHROMIUM) {
     // In a full chromium checkout, find the chrome binary in the build directory.
     const paths = {

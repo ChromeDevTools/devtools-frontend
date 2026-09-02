@@ -45,8 +45,11 @@ export interface CustomMochaGlobals<TState, TSuiteSettings> {
 }
 
 export function createMochaInterface<TState = unknown, TSuiteSettings = unknown>(
-    options: MochaInterfaceOptions<TState, TSuiteSettings>) {
-  const devtoolsTestInterface = function(rootSuite: Mocha.Suite) {
+    options: MochaInterfaceOptions<TState, TSuiteSettings>): {
+  (rootSuite: Mocha.Suite): void,
+  description: string,
+} {
+  const devtoolsTestInterface = function(rootSuite: Mocha.Suite): void {
     let defaultImplementation: CommonFunctions;
     let mochaGlobals: CustomMochaGlobals<TState, TSuiteSettings>;
     let mochaRoot: Mocha;
@@ -174,7 +177,10 @@ function customIt<TState>(
   return localIt;
 }
 
-export const devtoolsTestInterface = createMochaInterface({
+export const devtoolsTestInterface: {
+  (rootSuite: Mocha.Suite): void,
+  description: string,
+} = createMochaInterface({
   description: 'DevTools test interface',
   stateProvider: DefaultPuppeteerStateProvider.instance,
 });

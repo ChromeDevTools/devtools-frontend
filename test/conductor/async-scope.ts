@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 export class AsyncScope {
-  static scopes = new Set<AsyncScope>();
+  static scopes: Set<AsyncScope> = new Set<AsyncScope>();
   static abortSignal: AbortSignal|undefined;
   private asyncStack: Array<{description?: string, frames: string[], messages: string[]}> = [];
 
@@ -39,14 +39,14 @@ export class AsyncScope {
     return messages;
   }
 
-  pop() {
+  pop(): void {
     this.asyncStack.pop();
     if (this.asyncStack.length === 0) {
       AsyncScope.scopes.delete(this);
     }
   }
 
-  async exec<T>(callable: (messages: string[]) => Promise<T>, description?: string) {
+  async exec<T>(callable: (messages: string[]) => Promise<T>, description?: string): Promise<T> {
     const messages = this.push(description);
     try {
       const result = await callable(messages);

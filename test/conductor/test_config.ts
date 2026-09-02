@@ -187,7 +187,7 @@ export const TestConfig: Config = {
   otaUsername: options['ota-username'],
 };
 
-export function loadTests(testDirectory: string, filename = 'tests.txt') {
+export function loadTests(testDirectory: string, filename = 'tests.txt'): string[] {
   const tests = fs.readFileSync(path.join(testDirectory, filename))
                     .toString()
                     .split('\n')

@@ -20,9 +20,8 @@ function sanitize(message: string): string {
 }
 
 export function*
-    formatDiff(
-        diffBlocks: Array<{value: string, added: boolean, removed: boolean}>, onSame: DiffCallback,
-        onAdded: DiffCallback, onRemoved: DiffCallback) {
+    formatDiff(diffBlocks: Array<{value: string, added: boolean, removed: boolean}>, onSame: DiffCallback,
+               onAdded: DiffCallback, onRemoved: DiffCallback): Generator<string, void, unknown> {
   for (const block of diffBlocks) {
     const lines = block.value.split('\n').filter(l => l.length > 0);
     if (!block.added && !block.removed && lines.length > 3) {
@@ -43,7 +42,7 @@ export function*
   }
 }
 
-export function resultAssertionsDiff(assertionErrors: any[]) {
+export function resultAssertionsDiff(assertionErrors: any[]): any {
   if (!assertionErrors || assertionErrors.length === 0) {
     return [];
   }

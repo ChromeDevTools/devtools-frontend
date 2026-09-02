@@ -172,16 +172,16 @@ export class ErrorExpectation {
     pendingErrorExpectations.add(this);
   }
 
-  drop() {
+  drop(): Error|puppeteer.ConsoleMessage|undefined {
     pendingErrorExpectations.delete(this);
     return this.#caught;
   }
 
-  get caught() {
+  get caught(): Error|puppeteer.ConsoleMessage|undefined {
     return this.#caught;
   }
 
-  check(consoleMessage: puppeteer.ConsoleMessage|Error) {
+  check(consoleMessage: puppeteer.ConsoleMessage|Error): boolean {
     const text = consoleMessage instanceof Error ? consoleMessage.message : consoleMessage.text();
     let match = (this.#msg instanceof RegExp) ? Boolean(text.match(this.#msg)) : text.includes(this.#msg);
     // When console.assert(condition) fails (no second arg), the only message is
@@ -199,7 +199,7 @@ export class ErrorExpectation {
   }
 }
 
-export function expectError(msg: string|RegExp) {
+export function expectError(msg: string|RegExp): ErrorExpectation {
   return new ErrorExpectation(msg);
 }
 

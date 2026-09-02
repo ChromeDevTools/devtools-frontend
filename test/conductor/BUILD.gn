@@ -2,7 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/ninja/copy.gni")
+import("../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
 group("conductor") {
@@ -12,8 +12,21 @@ group("conductor") {
   ]
 }
 
+devtools_pre_built("expectations_parser") {
+  sources_are_release = false
+  sources = [
+    "test_expectations_parser.d.ts",
+    "test_expectations_parser.js",
+  ]
+}
+
 node_ts_library("implementation") {
-  deps = [ "../../front_end/testing:test_id_generation" ]
+  split_compilation = true
+  testonly = false
+  ts_deps = [
+    ":expectations_parser",
+    "../../front_end/testing:test_id_generation",
+  ]
 
   sources = [
     "async-scope.ts",
@@ -32,7 +45,6 @@ node_ts_library("implementation") {
     "sharding.ts",
     "test_config.ts",
     "test_expectations.ts",
-    "test_expectations_parser.js",
     "test_server.ts",
   ]
 }

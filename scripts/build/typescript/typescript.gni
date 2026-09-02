@@ -340,6 +340,9 @@ template("node_ts_library") {
   ts_library(target_name) {
     runs_in = "node_cjs"
     testonly = true
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
     reset_timestamps = true
 
     inputs =

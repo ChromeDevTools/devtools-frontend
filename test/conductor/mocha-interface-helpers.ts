@@ -43,12 +43,12 @@ export class InstrumentedTestFunction<TState = unknown> {
    * the test.
    * https://github.com/mochajs/mocha/blob/main/lib/runnable.js#L307
    */
-  static timeoutByContext = new WeakMap<Mocha.Context, number>();
+  static timeoutByContext: WeakMap<Mocha.Context, number> = new WeakMap<Mocha.Context, number>();
   /**
    * We track the initial timeouts for each functions because mocha
    * does not reset test timeout for retries.
    */
-  static timeoutByTestFunction = new WeakMap<object, number>();
+  static timeoutByTestFunction: WeakMap<object, number> = new WeakMap<object, number>();
 
   #abortController = new AbortController();
   state: TState|undefined;
@@ -183,7 +183,7 @@ export class InstrumentedTestFunction<TState = unknown> {
  * on test failures or timeouts if active pages are registered.
  */
 export class DefaultPuppeteerStateProvider implements TestStateProvider<unknown, unknown> {
-  static instance = new DefaultPuppeteerStateProvider();
+  static instance: DefaultPuppeteerStateProvider = new DefaultPuppeteerStateProvider();
 
   async createState(): Promise<unknown> {
     return undefined;
@@ -198,6 +198,6 @@ export class DefaultPuppeteerStateProvider implements TestStateProvider<unknown,
   }
 }
 
-export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string) {
+export function makeInstrumentedTestFunction(fn: Mocha.AsyncFunc, label: string): Mocha.AsyncFunc {
   return InstrumentedTestFunction.instrument(fn, label, undefined, DefaultPuppeteerStateProvider.instance);
 }

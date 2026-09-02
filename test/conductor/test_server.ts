@@ -48,6 +48,6 @@ export function startServer(commandLineArgs: string[]): Promise<number> {
 }
 
 process.on('exit', stopServer);
-export function stopServer() {
+export function stopServer(): void {
   runningServer?.kill();
 }

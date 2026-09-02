@@ -13,18 +13,19 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("spinner") {
+  split_compilation = true
   sources = [ "Spinner.ts" ]
 
-  deps = [ "../../../ui/lit:bundle" ]
+  ts_deps = [ "../../lit:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "spinners.ts"
 
-  deps = [
-    ":css_files",
-    ":spinner",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":spinner" ]
 
   visibility = default_components_visibility
 }
@@ -33,6 +34,6 @@ component_doc("docs") {
   sources = [ "Spinners.docs.ts" ]
   deps = [
     ":bundle",
-    "../../../ui/lit:bundle",
+    "../../lit:bundle",
   ]
 }

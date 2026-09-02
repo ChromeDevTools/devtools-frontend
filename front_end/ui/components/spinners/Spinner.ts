@@ -14,7 +14,7 @@ export interface SpinnerProperties {
 }
 
 export class Spinner extends HTMLElement {
-  static readonly observedAttributes = ['active'];
+  static readonly observedAttributes = ['active'] as const;
   readonly #shadow = this.attachShadow({mode: 'open'});
 
   constructor(props?: SpinnerProperties) {

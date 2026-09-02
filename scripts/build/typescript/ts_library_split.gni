@@ -208,13 +208,31 @@ template("ts_library_split") {
                                       "*.d.mts",
                                       "*.d.cts",
                                     ])
-  if (defined(invoker.additional_type_definitions)) {
-    _handwritten_dts += filter_include(invoker.additional_type_definitions,
-                                       [
-                                         "*.d.ts",
-                                         "*.d.mts",
-                                         "*.d.cts",
-                                       ])
+  _non_dts_sources = filter_exclude(invoker.sources,
+                                    [
+                                      "*.d.ts",
+                                      "*.d.mts",
+                                      "*.d.cts",
+                                    ])
+
+  _has_handwritten_dts = _handwritten_dts != []
+  _copied_dts_outputs = []
+  if (_has_handwritten_dts) {
+    _copy_dts_target = "${target_name}_copy_dts"
+    foreach(src, _handwritten_dts) {
+      _copied_dts_outputs += [ "$target_gen_dir/$src" ]
+    }
+
+    copy(_copy_dts_target) {
+      if (defined(invoker.testonly)) {
+        testonly = invoker.testonly
+      }
+      sources = _handwritten_dts
+      outputs = [ "$target_gen_dir/{{source_target_relative}}" ]
+      if (defined(invoker.visibility)) {
+        visibility = [ ":*" ] + invoker.visibility
+      }
+    }
   }
 
   # Compute output file paths (tsc does not emit for .d.ts inputs)
@@ -261,9 +279,6 @@ template("ts_library_split") {
 
     outputs = _dts_outputs
 
-    # Expose handwritten .d.ts files to dependent targets if any.
-    public_inputs = filter_include(_all_sources, [ "*.d.ts" ])
-
     response_file_contents =
         rebase_path(_dts_outputs, root_build_dir) + [ "--" ] + [
           rebase_path(tsc_binary, root_build_dir),
@@ -286,6 +301,15 @@ template("ts_library_split") {
     }
   }
 
+  _ref_sources = _non_dts_sources + typescript_global_definition_files
+  if (defined(invoker.additional_type_definitions)) {
+    _ref_sources += invoker.additional_type_definitions
+  }
+  _compiled_sources = rebase_path(_ref_sources, target_gen_dir)
+  if (_has_handwritten_dts) {
+    _compiled_sources += rebase_path(_copied_dts_outputs, target_gen_dir)
+  }
+
   # Sub-target 2: Generate tsconfig.ref.json for downstream consumers.
   # Downstream dependents point to this tsconfig.ref.json as a project
   # "reference" in the dependent's tsconfig used for type-checking.
@@ -305,7 +329,7 @@ template("ts_library_split") {
         outDir = "."
         declarationDir = "."
       }
-      files = rebase_path(_all_sources, target_gen_dir)
+      files = _compiled_sources
       references = _ts_references
     }
   }
@@ -335,7 +359,7 @@ template("ts_library_split") {
     output_conversion = "json"
     contents = {
       compilerOptions = _compiler_options
-      files = rebase_path(_all_sources, target_gen_dir)
+      files = _compiled_sources
       references = _ts_references
     }
   }
@@ -353,6 +377,10 @@ template("ts_library_split") {
       inputs += invoker.inputs
     }
 
+    if (_has_handwritten_dts) {
+      inputs += _copied_dts_outputs
+    }
+
     if (_test_only) {
       inputs += typescript_test_types_inputs
     }
@@ -365,6 +393,10 @@ template("ts_library_split") {
              ":$_dts_target",
              ":$_tsconfig_target",
            ] + _ts_deps + _non_ts_deps
+
+    if (_has_handwritten_dts) {
+      deps += [ ":$_copy_dts_target" ]
+    }
 
     if (_no_js_emit) {
       script = devtools_location_prepend + "scripts/build/run_with_stamp.py"
@@ -401,8 +433,11 @@ template("ts_library_split") {
                     ":$_dts_target",
                     ":$_tsconfig_ref_target",
                   ] + _ts_deps
+    if (_has_handwritten_dts) {
+      public_deps += [ ":$_copy_dts_target" ]
+    }
     public_inputs = filter_include(_dts_outputs, [ "*.d.ts" ]) +
-                    _handwritten_dts + [ _tsconfig_ref_file ]
+                    _copied_dts_outputs + [ _tsconfig_ref_file ]
     if (defined(invoker.public_deps)) {
       public_deps += invoker.public_deps
     }

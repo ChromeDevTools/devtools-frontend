@@ -15,12 +15,13 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("components") {
+  split_compilation = true
   sources = [
     "./ElementsPanelLink.ts",
     "./HideIssuesMenu.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
     "../../../ui/components/buttons:bundle",
@@ -31,12 +32,12 @@ devtools_ui_module("components") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "components.ts"
 
-  deps = [
-    ":components",
-    ":css_files",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":components" ]
 
   visibility = [
     ":*",

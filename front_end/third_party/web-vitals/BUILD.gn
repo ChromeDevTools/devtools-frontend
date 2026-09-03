@@ -94,7 +94,6 @@ SOURCES = [
   "package/dist/modules/types/lcp.js",
   "package/dist/modules/types/ttfb.d.ts",
   "package/dist/modules/types/ttfb.js",
-  "web-vitals-tsconfig.json",
 ]
 
 devtools_pre_built("web-vitals") {
@@ -104,9 +103,10 @@ devtools_pre_built("web-vitals") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "web-vitals.ts"
 
-  deps = [ ":web-vitals" ]
+  ts_deps = [ ":web-vitals" ]
 
   visibility = [ "../../../front_end/*" ]
 

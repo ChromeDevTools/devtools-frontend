@@ -9,7 +9,6 @@ import("../visibility.gni")
 
 _lighthouse_sources = [
   "lighthouse-dt-bundle.d.ts",
-  "lighthouse-tsconfig.json",
   "locales/ar-XB.json",
   "locales/ar.json",
   "locales/bg.json",

@@ -165,7 +165,8 @@ export class MediaQueryInspector extends UI.Widget.Widget<ShadowRoot> implements
   private cssModel?: SDK.CSSModel.CSSModel;
   private cachedQueryModels?: MediaQueryUIModel[];
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement,
+              view: (input: ViewInput, _output: object, target: DocumentFragment) => void = DEFAULT_VIEW) {
     super(element, {useShadowDom: 'pure'});
     this.view = view;
     this.#scale = 1;

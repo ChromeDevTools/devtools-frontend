@@ -13,7 +13,7 @@ vars = {
   'checkout_ai_evals': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
-  'build_revision': '79a1bf83d34af212d9162a2f0c38e2233b42c040',
+  'build_revision': '042f906423c4be487c8767c6b99ec69b8692ff32',
 
   'buildtools_url': 'https://chromium.googlesource.com/chromium/src/buildtools.git',
   'buildtools_revision': '6f6a5dbf04b734214f3b1f386567d101ec9d607e',

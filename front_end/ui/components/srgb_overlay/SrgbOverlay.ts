@@ -9,7 +9,7 @@ import {html, render} from '../../../ui/lit/lit.js';
 
 import srgbOverlayStyles from './srgbOverlay.css.js';
 
-interface SrgbOverlayProps {
+export interface SrgbOverlayProps {
   // [0 - 1] corresponding to HSV hue
   hue: number;
   width: number;

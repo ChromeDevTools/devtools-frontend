@@ -4,21 +4,36 @@
 
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
+import("../../../scripts/build/ninja/devtools_pre_built.gni")
 import("../visibility.gni")
 
-devtools_module("diff") {
+devtools_pre_built("diff_match_patch") {
+  sources_are_release = false
+
   sources = [
-    "DiffWrapper.ts",
+    "diff_match_patch.d.ts",
     "diff_match_patch.js",
   ]
+}
 
-  deps = [ "../../core/common:bundle" ]
+devtools_module("diff") {
+  split_compilation = true
+  sources = [ "DiffWrapper.ts" ]
+
+  ts_deps = [
+    ":diff_match_patch",
+    "../../core/common:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "diff.ts"
 
-  deps = [ ":diff" ]
+  ts_deps = [
+    ":diff",
+    ":diff_match_patch",
+  ]
 
   visibility = [
     ":*",

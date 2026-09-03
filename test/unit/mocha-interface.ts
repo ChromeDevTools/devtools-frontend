@@ -4,7 +4,7 @@
 
 import './browser-globals.js';
 
-export function installDevtoolsBdd() {
+export function installDevtoolsBdd(): void {
   const mochaGlobal = window.Mocha;
 
   const karmaConfig = window.__karma__.config;

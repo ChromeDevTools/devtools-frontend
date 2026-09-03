@@ -7,22 +7,22 @@ import("../../scripts/build/typescript/typescript.gni")
 
 ts_library("browser-globals") {
   testonly = true
+  split_compilation = true
   sources = [ "browser-globals.ts" ]
 }
 
 ts_library("mocha-interface") {
   testonly = true
+  split_compilation = true
   sources = [ "mocha-interface.ts" ]
-  deps = [
-    ":browser-globals",
-    "../../front_end/testing",
-  ]
+  ts_deps = [ ":browser-globals" ]
 }
 
 ts_library("mocha-adapter-browser") {
   testonly = true
+  split_compilation = true
   sources = [ "mocha-adapter-browser.ts" ]
-  deps = [
+  ts_deps = [
     ":browser-globals",
     ":mocha-interface",
     "../../front_end/testing:mocha_helpers",
@@ -30,13 +30,14 @@ ts_library("mocha-adapter-browser") {
 }
 
 node_ts_library("karma") {
+  split_compilation = true
   sources = [
     "karma.conf.ts",
     "mocha-hooks.ts",
     "run-mocha.ts",
   ]
-  deps = [
-    "../../front_end/testing",
+  ts_deps = [
+    "../../front_end/testing:test_id_generation",
     "../conductor:implementation",
     "../shared",
   ]
@@ -44,6 +45,7 @@ node_ts_library("karma") {
     ":context",
     ":mocha-adapter-browser",
     ":mocha-interface",
+    "../../front_end/testing",
   ]
 }
 

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 export const mochaHooks = {
-  async afterEach() {
+  async afterEach(): Promise<void> {
     // Use the ESM module as the file pull CJS
     const sinon = await import('sinon');
     await sinon.clock?.runAllAsync();

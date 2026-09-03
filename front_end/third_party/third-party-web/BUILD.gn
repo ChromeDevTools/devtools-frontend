@@ -12,18 +12,20 @@ devtools_pre_built("third-party-web") {
   sources = [
     "lib/nostats-subset.d.ts",
     "lib/nostats-subset.js",
-    "third-party-web-tsconfig.json",
+    "package/lib/index.d.ts",
+    "package/lib/subsets/nostats.d.ts",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "third-party-web.ts"
 
-  deps = [ ":third-party-web" ]
+  ts_deps = [ ":third-party-web" ]
 
   visibility = [
     "../../entrypoints/lighthouse_worker/*",
-    "../../models/issues_manager:issues_manager",
+    "../../models/issues_manager/*",
     "../../models/trace/*",
   ]
 

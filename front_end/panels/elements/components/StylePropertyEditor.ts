@@ -290,151 +290,163 @@ declare global {
   }
 }
 
-export const FlexboxEditableProperties = [
-  {
-    propertyName: 'flex-direction',
-    propertyValues: [
-      'row',
-      'column',
-      'row-reverse',
-      'column-reverse',
-    ],
-  },
-  {
-    propertyName: 'flex-wrap',
-    propertyValues: [
-      'nowrap',
-      'wrap',
-    ],
-  },
-  {
-    propertyName: 'align-content',
-    propertyValues: [
-      'center',
-      'flex-start',
-      'flex-end',
-      'space-around',
-      'space-between',
-      'stretch',
-    ],
-  },
-  {
-    propertyName: 'justify-content',
-    propertyValues: [
-      'center',
-      'flex-start',
-      'flex-end',
-      'space-between',
-      'space-around',
-      'space-evenly',
-    ],
-  },
-  {
-    propertyName: 'align-items',
-    propertyValues: [
-      'center',
-      'flex-start',
-      'flex-end',
-      'stretch',
-      'baseline',
-    ],
-  },
-];
+export const FlexboxEditableProperties: Array<{
+  propertyName: string,
+  propertyValues: string[],
+}> =
+    [
+      {
+        propertyName: 'flex-direction',
+        propertyValues: [
+          'row',
+          'column',
+          'row-reverse',
+          'column-reverse',
+        ],
+      },
+      {
+        propertyName: 'flex-wrap',
+        propertyValues: [
+          'nowrap',
+          'wrap',
+        ],
+      },
+      {
+        propertyName: 'align-content',
+        propertyValues: [
+          'center',
+          'flex-start',
+          'flex-end',
+          'space-around',
+          'space-between',
+          'stretch',
+        ],
+      },
+      {
+        propertyName: 'justify-content',
+        propertyValues: [
+          'center',
+          'flex-start',
+          'flex-end',
+          'space-between',
+          'space-around',
+          'space-evenly',
+        ],
+      },
+      {
+        propertyName: 'align-items',
+        propertyValues: [
+          'center',
+          'flex-start',
+          'flex-end',
+          'stretch',
+          'baseline',
+        ],
+      },
+    ];
 
-export const GridEditableProperties = [
-  {
-    propertyName: 'grid-auto-flow',
-    propertyValues: [
-      'row',
-      'column',
-    ],
-  },
-  {
-    propertyName: 'align-content',
-    propertyValues: [
-      'center',
-      'start',
-      'end',
-      'space-between',
-      'space-around',
-      'space-evenly',
-      'stretch',
-    ],
-  },
-  {
-    propertyName: 'justify-content',
-    propertyValues: [
-      'center',
-      'start',
-      'end',
-      'space-between',
-      'space-around',
-      'space-evenly',
-      'stretch',
-    ],
-  },
-  {
-    propertyName: 'align-items',
-    propertyValues: [
-      'center',
-      'start',
-      'end',
-      'stretch',
-      'baseline',
-    ],
-  },
-  {
-    propertyName: 'justify-items',
-    propertyValues: [
-      'center',
-      'start',
-      'end',
-      'stretch',
-    ],
-  },
-];
+export const GridEditableProperties: Array<{
+  propertyName: string,
+  propertyValues: string[],
+}> =
+    [
+      {
+        propertyName: 'grid-auto-flow',
+        propertyValues: [
+          'row',
+          'column',
+        ],
+      },
+      {
+        propertyName: 'align-content',
+        propertyValues: [
+          'center',
+          'start',
+          'end',
+          'space-between',
+          'space-around',
+          'space-evenly',
+          'stretch',
+        ],
+      },
+      {
+        propertyName: 'justify-content',
+        propertyValues: [
+          'center',
+          'start',
+          'end',
+          'space-between',
+          'space-around',
+          'space-evenly',
+          'stretch',
+        ],
+      },
+      {
+        propertyName: 'align-items',
+        propertyValues: [
+          'center',
+          'start',
+          'end',
+          'stretch',
+          'baseline',
+        ],
+      },
+      {
+        propertyName: 'justify-items',
+        propertyValues: [
+          'center',
+          'start',
+          'end',
+          'stretch',
+        ],
+      },
+    ];
 
-export const GridLanesEditableProperties = [
-  {
-    propertyName: 'align-content',
-    propertyValues: [
-      'center',
-      'start',
-      'end',
-      'space-between',
-      'space-around',
-      'space-evenly',
-      'stretch',
-    ],
-  },
-  {
-    propertyName: 'justify-content',
-    propertyValues: [
-      'center',
-      'start',
-      'end',
-      'space-between',
-      'space-around',
-      'space-evenly',
-      'stretch',
-    ],
-  },
-  {
-    propertyName: 'align-items',
-    propertyValues: [
-      'center',
-      'start',
-      'end',
-      'stretch',
-    ],
-  },
-  {
-    propertyName: 'justify-items',
-    propertyValues: [
-      'center',
-      'start',
-      'end',
-      'stretch',
-    ],
-  },
-];
+export const GridLanesEditableProperties: Array<{
+  propertyName: string,
+  propertyValues: string[],
+}> =
+    [
+      {
+        propertyName: 'align-content',
+        propertyValues: [
+          'center',
+          'start',
+          'end',
+          'space-between',
+          'space-around',
+          'space-evenly',
+          'stretch',
+        ],
+      },
+      {
+        propertyName: 'justify-content',
+        propertyValues: [
+          'center',
+          'start',
+          'end',
+          'space-between',
+          'space-around',
+          'space-evenly',
+          'stretch',
+        ],
+      },
+      {
+        propertyName: 'align-items',
+        propertyValues: [
+          'center',
+          'start',
+          'end',
+          'stretch',
+        ],
+      },
+      {
+        propertyName: 'justify-items',
+        propertyValues: [
+          'center',
+          'start',
+          'end',
+          'stretch',
+        ],
+      },
+    ];

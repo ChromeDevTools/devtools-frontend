@@ -24,6 +24,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("components") {
+  split_compilation = true
   sources = [
     "AccessibilityTreeNode.ts",
     "AdornerManager.ts",
@@ -40,8 +41,7 @@ devtools_ui_module("components") {
     "QueryContainer.ts",
     "StylePropertyEditor.ts",
   ]
-
-  deps = [
+  ts_deps = [
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
@@ -62,14 +62,15 @@ devtools_ui_module("components") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "components.ts"
-
   deps = [
-    ":components",
     ":css_files",
     "../:css_files",
     "../../../ui/legacy:css_files",
   ]
+
+  ts_deps = [ ":components" ]
 
   visibility = [
     ":*",
@@ -83,6 +84,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
   sources = [
     "AccessibilityTreeNode.test.ts",
@@ -99,8 +101,7 @@ devtools_ui_module("unittests") {
     "QueryContainer.test.ts",
     "StylePropertyEditor.test.ts",
   ]
-
-  deps = [
+  ts_deps = [
     ":bundle",
     "..:bundle",
     "../../../core/sdk:bundle",

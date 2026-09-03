@@ -6,6 +6,7 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_foundation_module("source-map-scopes-codec") {
+  split_compilation = true
   sources = [
     "package/src/builder/builder.ts",
     "package/src/builder/safe_builder.ts",
@@ -21,9 +22,10 @@ devtools_foundation_module("source-map-scopes-codec") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "source-map-scopes-codec.ts"
 
-  deps = [ ":source-map-scopes-codec" ]
+  ts_deps = [ ":source-map-scopes-codec" ]
 
   visibility = [ "*" ]
 }

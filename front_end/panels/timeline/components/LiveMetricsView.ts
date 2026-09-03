@@ -1123,7 +1123,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 };
 
 export class LiveMetricsView extends UI.Widget.Widget {
-  isNode = Root.Runtime.Runtime.isNode();
+  isNode: boolean = Root.Runtime.Runtime.isNode();
 
   #lcpValue?: LiveMetrics.LcpValue;
   #clsValue?: LiveMetrics.ClsValue;

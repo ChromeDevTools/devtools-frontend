@@ -59,7 +59,7 @@ export const enum SidebarTabs {
   INSIGHTS = 'insights',
   ANNOTATIONS = 'annotations',
 }
-export const DEFAULT_SIDEBAR_TAB = SidebarTabs.INSIGHTS;
+export const DEFAULT_SIDEBAR_TAB: SidebarTabs = SidebarTabs.INSIGHTS;
 
 export const DEFAULT_SIDEBAR_WIDTH_PX = 240;
 const MIN_SIDEBAR_WIDTH_PX = 170;

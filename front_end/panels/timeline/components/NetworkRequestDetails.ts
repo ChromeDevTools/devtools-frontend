@@ -117,8 +117,19 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/components/NetworkRequestDetails.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
+export interface ViewInput {
+  request: Trace.Types.Events.SyntheticNetworkRequest|null;
+  target: SDK.Target.Target|null;
+  previewElementsCache: WeakMap<Trace.Types.Events.SyntheticNetworkRequest, HTMLElement>;
+  entityMapper: Trace.EntityMapper.EntityMapper|null;
+  serverTimings: SDK.ServerTiming.ServerTiming[]|null;
+  linkifier: LegacyComponents.Linkifier.Linkifier|null;
+  parsedTrace: Trace.TraceModel.ParsedTrace|null;
+}
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+
 export class NetworkRequestDetails extends UI.Widget.Widget {
-  #view: typeof DEFAULT_VIEW;
+  #view: View;
   #request: Trace.Types.Events.SyntheticNetworkRequest|null = null;
   #requestPreviewElements = new WeakMap<Trace.Types.Events.SyntheticNetworkRequest, HTMLElement>();
   #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
@@ -127,7 +138,7 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
   #serverTimings: SDK.ServerTiming.ServerTiming[]|null = null;
   #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
     this.requestUpdate();
@@ -186,27 +197,17 @@ export class NetworkRequestDetails extends UI.Widget.Widget {
   }
 }
 
-export interface ViewInput {
-  request: Trace.Types.Events.SyntheticNetworkRequest|null;
-  target: SDK.Target.Target|null;
-  previewElementsCache: WeakMap<Trace.Types.Events.SyntheticNetworkRequest, HTMLElement>;
-  entityMapper: Trace.EntityMapper.EntityMapper|null;
-  serverTimings: SDK.ServerTiming.ServerTiming[]|null;
-  linkifier: LegacyComponents.Linkifier.Linkifier|null;
-  parsedTrace: Trace.TraceModel.ParsedTrace|null;
-}
+export const DEFAULT_VIEW: View =
+    (input, _output, target) => {
+      if (!input.request) {
+        render(Lit.nothing, target);
+        return;
+      }
+      const {request} = input;
+      const {data} = request.args;
 
-export const DEFAULT_VIEW: (
-    input: ViewInput, output: object, target: HTMLElement) => void = (input, _output, target) => {
-  if (!input.request) {
-    render(Lit.nothing, target);
-    return;
-  }
-  const {request} = input;
-  const {data} = request.args;
-
-  const redirectsHtml = NetworkRequestTooltip.renderRedirects(request);
-  // clang-format off
+      const redirectsHtml = NetworkRequestTooltip.renderRedirects(request);
+      // clang-format off
       render(html`
         <style>${networkRequestDetailsStyles}</style>
         <style>${networkRequestTooltipStyles}</style>
@@ -251,8 +252,8 @@ export const DEFAULT_VIEW: (
           </div>
         </div>
      `, target);
-  // clang-format on
-};
+      // clang-format on
+    };
 
 function renderTitle(request: Trace.Types.Events.SyntheticNetworkRequest): Lit.TemplateResult {
   const style = {

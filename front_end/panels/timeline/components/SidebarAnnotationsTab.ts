@@ -100,6 +100,7 @@ export interface SidebarAnnotationsTabViewInput {
   onAnnotationHoverOut: () => void;
   onAnnotationDelete: (annotation: Trace.Types.File.Annotation) => void;
 }
+export type View = (input: SidebarAnnotationsTabViewInput, output: object, target: HTMLElement) => void;
 
 export class SidebarAnnotationsTab extends UI.Widget.Widget {
   #annotations: Trace.Types.File.Annotation[] = [];
@@ -108,9 +109,9 @@ export class SidebarAnnotationsTab extends UI.Widget.Widget {
   #annotationEntryToColorMap = new Map<Trace.Types.Events.Event|Trace.Types.Events.LegacyTimelineFrame, string>();
 
   readonly #annotationsHiddenSetting: Common.Settings.Setting<boolean>;
-  #view: typeof DEFAULT_VIEW;
+  #view: View;
 
-  constructor(view = DEFAULT_VIEW) {
+  constructor(view: View = DEFAULT_VIEW) {
     super();
     this.#view = view;
     this.#annotationsHiddenSetting = Common.Settings.Settings.instance().moduleSetting('annotations-hidden');
@@ -406,7 +407,7 @@ function renderTutorial(): Lit.LitTemplate {
   // clang-format on
 }
 
-export const DEFAULT_VIEW: (input: SidebarAnnotationsTabViewInput, output: object, target: HTMLElement) => void =
+export const DEFAULT_VIEW: View =
     (input, _output, target) => {
       // clang-format off
       render(html`

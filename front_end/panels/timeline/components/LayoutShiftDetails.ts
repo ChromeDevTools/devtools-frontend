@@ -88,14 +88,15 @@ export interface ViewInput {
   togglePopover: (e: MouseEvent) => void;
   onEventClick: (event: Trace.Types.Events.Event) => void;
 }
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
 export class LayoutShiftDetails extends UI.Widget.Widget {
-  #view: typeof DEFAULT_VIEW;
+  #view: View;
   #event: Trace.Types.Events.SyntheticLayoutShift|Trace.Types.Events.SyntheticLayoutShiftCluster|null = null;
   #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   #isFreshRecording = false;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
   }
@@ -155,7 +156,7 @@ export class LayoutShiftDetails extends UI.Widget.Widget {
   }
 }
 
-export const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElement) => void =
+export const DEFAULT_VIEW: View =
     (input, _output, target) => {
       if (!input.event || !input.parsedTrace) {
         render(Lit.nothing, target);

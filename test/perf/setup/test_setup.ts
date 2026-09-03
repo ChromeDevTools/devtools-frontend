@@ -4,11 +4,11 @@
 
 import {clearResults, collectMeasurements, writeReport} from '../report/report.js';
 
-export async function mochaGlobalTeardown(this: Mocha.Suite) {
+export async function mochaGlobalTeardown(this: Mocha.Suite): Promise<void> {
   collectMeasurements();
   writeReport();
 }
 
-export async function mochaGlobalSetup(this: Mocha.Suite) {
+export async function mochaGlobalSetup(this: Mocha.Suite): Promise<void> {
   clearResults();
 }

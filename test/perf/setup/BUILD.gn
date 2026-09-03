@@ -5,6 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("setup") {
+  split_compilation = true
   sources = [ "test_setup.ts" ]
-  deps = [ "../report" ]
+  ts_deps = [ "../report" ]
 }

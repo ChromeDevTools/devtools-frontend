@@ -12,13 +12,14 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("whats_new") {
+  split_compilation = true
   sources = [
     "ReleaseNoteText.ts",
     "ReleaseNoteView.ts",
     "WhatsNewImpl.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -37,19 +38,21 @@ devtools_ui_module("whats_new") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "whats_new.ts"
 
-  deps = [
-    ":css_files",
-    ":whats_new",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":whats_new" ]
+
   visibility = [ ":*" ]
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "whats_new-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
@@ -65,12 +68,14 @@ devtools_entrypoint("meta") {
 
 devtools_ui_module("unittests") {
   testonly = true
+  split_compilation = true
+
   sources = [
     "ReleaseNote.test.ts",
     "ReleaseNoteView.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",

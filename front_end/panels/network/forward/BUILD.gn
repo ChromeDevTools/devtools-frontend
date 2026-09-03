@@ -7,22 +7,24 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../visibility.gni")
 
 devtools_ui_module("forward") {
+  split_compilation = true
   sources = [
     "NetworkRequestId.ts",
     "UIFilter.ts",
     "UIRequestLocation.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../core/sdk:bundle",
     "../../../core/text_utils:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "forward.ts"
 
-  deps = [ ":forward" ]
+  ts_deps = [ ":forward" ]
 
   visibility = [
     "../../../models/*",

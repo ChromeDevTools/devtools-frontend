@@ -189,7 +189,7 @@ export class CoverageListView extends UI.Widget.VBox {
   #expandedUrls = new Set<Platform.DevToolsPath.UrlString>();
   #view: View;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true, delegatesFocus: true});
     this.#view = view;
     this.#highlightRegExp = null;

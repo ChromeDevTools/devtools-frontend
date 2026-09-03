@@ -58,6 +58,7 @@ import * as LayerTreeBase from './LayerTreeBase.js';
 import * as LogModel from './LogModel.js';
 import * as NetworkManager from './NetworkManager.js';
 import * as NetworkRequest from './NetworkRequest.js';
+import * as NetworkRequestAccess from './NetworkRequestAccess.js';
 import * as OverlayColorGenerator from './OverlayColorGenerator.js';
 import * as OverlayModel from './OverlayModel.js';
 import * as OverlayPersistentHighlighter from './OverlayPersistentHighlighter.js';
@@ -146,6 +147,7 @@ export {
   LogModel,
   NetworkManager,
   NetworkRequest,
+  NetworkRequestAccess,
   OverlayColorGenerator,
   OverlayModel,
   OverlayPersistentHighlighter,

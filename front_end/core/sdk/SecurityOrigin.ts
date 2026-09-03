@@ -30,6 +30,15 @@ const OPAQUE_PREFIXES = [
   'blob:null',
 ] as const;
 
+/**
+ * String prefixes for imported artifact schemes (e.g., HAR recordings, traces).
+ * Imported entities operate in an isolated origin domain (`imported-har://${domain}`)
+ * that never matches live web origins (`https://${domain}`).
+ */
+export const IMPORTED_ORIGIN_PREFIXES: ReadonlySet<string> = new Set([
+  'imported-har:',
+]);
+
 function isOpaqueUrlString(url: string): boolean {
   const lower = url.trim().toLowerCase();
   if (OPAQUE_EXACT_MATCHES.has(lower)) {
@@ -84,6 +93,22 @@ export class SecurityOrigin {
   static create(rawUrl: string): SecurityOrigin {
     if (isOpaqueUrlString(rawUrl)) {
       return SecurityOrigin.createUniqueOpaque();
+    }
+
+    // Custom imported schemes (e.g. `imported-har:`) are not supported by standard URL parsers.
+    // We extract the host to construct a domain-scoped origin (`imported-har://${host}`).
+    // This isolates imported artifacts from live web pages (`imported-har://example.com` != `https://example.com`),
+    // while enabling same-origin comparison between requests within the same imported session domain.
+    for (const prefix of IMPORTED_ORIGIN_PREFIXES) {
+      if (rawUrl.toLowerCase().startsWith(prefix)) {
+        const afterScheme = rawUrl.substring(prefix.length).replace(/^\/+/, '');
+        const slashIndex = afterScheme.indexOf('/');
+        const host = slashIndex === -1 ? afterScheme : afterScheme.substring(0, slashIndex);
+        if (!host) {
+          return SecurityOrigin.createUniqueOpaque();
+        }
+        return new SecurityOrigin({type: 'origin', value: `${prefix}//${host.toLowerCase()}`});
+      }
     }
 
     if (rawUrl.toLowerCase().startsWith('file://')) {

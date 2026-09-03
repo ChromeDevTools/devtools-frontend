@@ -58,6 +58,31 @@ describe('SecurityOrigin', () => {
       assert.isFalse(detachedOrigin.isSameOriginWith(emptyOrigin));
     });
 
+    it('isolates imported artifact schemes to their own domain', () => {
+      const har1 = SDK.SecurityOrigin.SecurityOrigin.create('imported-har://example.com/api/data');
+      const har2 = SDK.SecurityOrigin.SecurityOrigin.create('imported-har://example.com/index.html');
+      const harNoPath = SDK.SecurityOrigin.SecurityOrigin.create('imported-har://example.com');
+      const harUpperCase = SDK.SecurityOrigin.SecurityOrigin.create('IMPORTED-HAR://EXAMPLE.COM/other');
+      const harOtherDomain = SDK.SecurityOrigin.SecurityOrigin.create('imported-har://other.com/api/data');
+      const livePage = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com/api/data');
+
+      assert.isFalse(har1.isOpaque());
+      assert.isTrue(har1.isSameOriginWith(har2));
+      assert.isTrue(har1.isSameOriginWith(harNoPath));
+      assert.isTrue(har1.isSameOriginWith(harUpperCase));
+      assert.isFalse(har1.isSameOriginWith(harOtherDomain));
+      assert.isFalse(har1.isSameOriginWith(livePage));
+    });
+
+    it('treats imported artifact schemes with empty host as opaque', () => {
+      const emptyHost1 = SDK.SecurityOrigin.SecurityOrigin.create('imported-har://');
+      const emptyHost2 = SDK.SecurityOrigin.SecurityOrigin.create('imported-har://');
+
+      assert.isTrue(emptyHost1.isOpaque());
+      assert.isTrue(emptyHost2.isOpaque());
+      assert.isFalse(emptyHost1.isSameOriginWith(emptyHost2));
+    });
+
     it('does not treat URLs with hostnames containing detached as opaque', () => {
       const origin1 = SDK.SecurityOrigin.SecurityOrigin.create('https://detached.example.com/page.html');
       const origin2 = SDK.SecurityOrigin.SecurityOrigin.create('https://detached.example.com/other.html');

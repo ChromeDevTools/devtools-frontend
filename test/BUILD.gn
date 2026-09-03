@@ -27,6 +27,7 @@ group("api_tests") {
     "api",
   ]
 }
+
 group("unittests") {
   testonly = true
   deps = [
@@ -40,9 +41,10 @@ group("unittests") {
 }
 
 node_ts_library("run") {
+  split_compilation = true
   sources = [ "run.ts" ]
 
-  deps = [ "shared" ]
+  ts_deps = [ "conductor:implementation" ]
 }
 
 source_root = rebase_path("//$devtools_location", target_gen_dir)

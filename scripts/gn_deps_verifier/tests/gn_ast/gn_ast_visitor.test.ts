@@ -84,11 +84,22 @@ describe('gn_ast_visitor', () => {
     });
 
     it('respects recursive = false and only visits top-level statements', () => {
-      const topLevelAssign = createAstNode.assignment('deps', createAstNode.list(), '=');
-      const nestedAssign = createAstNode.assignment('deps', createAstNode.list(), '+=');
+      const topLevelAssign = createAstNode.assignment(
+          'deps',
+          createAstNode.list(),
+          '=',
+      );
+      const nestedAssign = createAstNode.assignment(
+          'deps',
+          createAstNode.list(),
+          '+=',
+      );
       const conditionBlock: GnAstNode = {
         type: 'CONDITION',
-        child: [createAstNode.identifier('is_chromeos'), {type: 'BLOCK', child: [nestedAssign]}],
+        child: [
+          createAstNode.identifier('is_chromeos'),
+          {type: 'BLOCK', child: [nestedAssign]},
+        ],
       };
 
       const stmts: GnAstNode[] = [topLevelAssign, conditionBlock];
@@ -131,7 +142,9 @@ describe('gn_ast_visitor', () => {
       assert.isDefined(helpersAssign);
       assert.isDefined(helpersAssign.child);
       const helpersRhs = helpersAssign.child[1];
-      const variables = new Map<string, string[]>([['_helper_sources', ['Helper.ts']]]);
+      const variables = new Map<string, string[]>([
+        ['_helper_sources', ['Helper.ts']],
+      ]);
       const helperSources = extractStringValues(helpersRhs, variables);
       assert.deepEqual(helperSources, ['Helper.ts', 'Extra.ts']);
 
@@ -149,7 +162,9 @@ describe('gn_ast_visitor', () => {
     });
 
     it('correctly filters out subtracted items in binary minus expressions when present in LHS', () => {
-      const variables = new Map<string, string[]>([['_helper_sources', ['Helper.ts', 'Excluded.ts']]]);
+      const variables = new Map<string, string[]>([
+        ['_helper_sources', ['Helper.ts', 'Excluded.ts']],
+      ]);
       const minusNode = createAstNode.binary(
           '-',
           createAstNode.identifier('_helper_sources'),
@@ -389,7 +404,10 @@ describe('gn_ast_visitor', () => {
 
     it('handles negative assignment on variables defined in outer/parent scope without local = declaration', () => {
       const parentVariables = new Map<string, string[]>([
-        ['configs', ['//build/config:default', '//build/config/compiler:MyWarningFlags']],
+        [
+          'configs',
+          ['//build/config:default', '//build/config/compiler:MyWarningFlags'],
+        ],
         ['sources', ['main.cc', 'extra.cc']],
       ]);
 
@@ -403,7 +421,11 @@ describe('gn_ast_visitor', () => {
             child: [
               createAstNode.assignment(
                   'configs',
-                  createAstNode.list([createAstNode.stringLiteral('//build/config/compiler:MyWarningFlags')]),
+                  createAstNode.list([
+                    createAstNode.stringLiteral(
+                        '//build/config/compiler:MyWarningFlags',
+                        ),
+                  ]),
                   '-=',
                   ),
             ],

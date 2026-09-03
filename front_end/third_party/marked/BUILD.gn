@@ -10,7 +10,6 @@ devtools_pre_built("marked") {
   sources_are_release = false
 
   sources = [
-    "marked-tsconfig.json",
     "package/lib/marked.esm.d.ts",
     "package/lib/marked.esm.js",
     "package/lib/marked.esm.js.map",
@@ -18,9 +17,10 @@ devtools_pre_built("marked") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "marked.ts"
 
-  deps = [ ":marked" ]
+  ts_deps = [ ":marked" ]
 
   visibility = [
     "../../models/issues_manager/*",

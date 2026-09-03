@@ -66,7 +66,7 @@ export function registerParentProvider(name: string, provider: ParentProvider): 
 }
 
 /** MUST NOT BE EXPORTED */
-const PARENT = Symbol('veParent');
+const PARENT: unique symbol = Symbol('veParent');
 type ElementWithParent = Element&{[PARENT]?: Element};
 registerParentProvider('mapped', (e: ElementWithParent) => e[PARENT]);
 

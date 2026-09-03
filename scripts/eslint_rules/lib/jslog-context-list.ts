@@ -29,7 +29,7 @@ const LICENSE_HEADER = `// Copyright 2025 The Chromium Authors
  */
 
 `;
-let formattedValues = new Set();
+let formattedValues = new Set<string>();
 
 const statsCache = {
   mtimeMs: Infinity,
@@ -37,7 +37,7 @@ const statsCache = {
 };
 
 function writeToFile() {
-  const finalContents = LICENSE_HEADER + 'export const knownContextValues = new Set([\n' +
+  const finalContents = LICENSE_HEADER + 'export const knownContextValues: Set<string> = new Set([\n' +
       [...formattedValues].sort().join('\n') + '\n]);\n';
   fs.writeFileSync(ABSOLUTE_FILE_PATH, finalContents, 'utf-8');
   const stats = fs.statSync(ABSOLUTE_FILE_PATH);

@@ -13,7 +13,7 @@
  * See crbug.com/504758084 for details.
  */
 
-export const knownContextValues = new Set([
+export const knownContextValues: Set<string> = new Set([
   '%',
   '*',
   '-alternative-animation-with-timeline',

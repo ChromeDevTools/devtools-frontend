@@ -7,6 +7,7 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_ui_module("visual_logging") {
+  split_compilation = true
   sources = [
     "Debugging.ts",
     "DomState.ts",
@@ -18,7 +19,7 @@ devtools_ui_module("visual_logging") {
     "LoggingState.ts",
     "NonDomState.ts",
   ]
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/platform:bundle",
@@ -28,9 +29,10 @@ devtools_ui_module("visual_logging") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "visual_logging.ts"
 
-  deps = [ ":visual_logging" ]
+  ts_deps = [ ":visual_logging" ]
 
   visibility = [
     ":*",
@@ -46,18 +48,20 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("testing") {
+  split_compilation = true
   entrypoint = "visual_logging-testing.ts"
 
-  deps = [ ":visual_logging" ]
+  ts_deps = [ ":visual_logging" ]
 
   visibility = [
-    ":unittests",
+    ":*",
     "../../testing/*",
   ]
 }
 
 devtools_ui_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [
     "Debugging.test.ts",
@@ -69,7 +73,7 @@ devtools_ui_module("unittests") {
     "NonDomState.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":testing",
     "../../core/common:bundle",
     "../../core/host:bundle",

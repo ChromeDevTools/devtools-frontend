@@ -28,11 +28,11 @@ const noOpThrottler = {
 } as unknown as Common.Throttler.Throttler;
 
 let processingThrottler = noOpThrottler;
-export let keyboardLogThrottler = noOpThrottler;
+export let keyboardLogThrottler: Common.Throttler.Throttler = noOpThrottler;
 let hoverLogThrottler = noOpThrottler;
 let dragLogThrottler = noOpThrottler;
-export let clickLogThrottler = noOpThrottler;
-export let resizeLogThrottler = noOpThrottler;
+export let clickLogThrottler: Common.Throttler.Throttler = noOpThrottler;
+export let resizeLogThrottler: Common.Throttler.Throttler = noOpThrottler;
 
 const mutationObserver = new MutationObserver(scheduleProcessing);
 const resizeObserver = new ResizeObserver(onResizeOrIntersection);

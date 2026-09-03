@@ -49,8 +49,8 @@ export const logResize = (loggable: Loggable, size: DOMRect): void => {
   processEventForDebugging('Resize', loggingState, {width: Math.round(size.width), height: Math.round(size.height)});
 };
 
-export const logClick = (throttler: Common.Throttler.Throttler) => (
-    loggable: Loggable, event: Event, options?: {doubleClick?: boolean}) => {
+export const logClick = (throttler: Common.Throttler.Throttler) => (loggable: Loggable, event: Event,
+                                                                    options?: {doubleClick?: boolean}): void => {
   const loggingState = getLoggingState(loggable);
   if (!loggingState) {
     return;
@@ -67,7 +67,7 @@ export const logClick = (throttler: Common.Throttler.Throttler) => (
   }, Common.Throttler.Scheduling.DELAYED);
 };
 
-export const logHover = (throttler: Common.Throttler.Throttler) => async (event: Event) => {
+export const logHover = (throttler: Common.Throttler.Throttler) => async(event: Event): Promise<void> => {
   const loggingState = getLoggingState(event.currentTarget as Element);
   assertNotNullOrUndefined(loggingState);
   const hoverEvent: Host.InspectorFrontendHostAPI.HoverEvent = {veid: loggingState.veid};
@@ -77,7 +77,7 @@ export const logHover = (throttler: Common.Throttler.Throttler) => async (event:
   }, Common.Throttler.Scheduling.DELAYED);
 };
 
-export const logDrag = (throttler: Common.Throttler.Throttler) => async (event: Event) => {
+export const logDrag = (throttler: Common.Throttler.Throttler) => async(event: Event): Promise<void> => {
   const loggingState = getLoggingState(event.currentTarget as Element);
   assertNotNullOrUndefined(loggingState);
   const dragEvent: Host.InspectorFrontendHostAPI.DragEvent = {veid: loggingState.veid};
@@ -102,7 +102,7 @@ export async function logChange(loggable: Loggable): Promise<void> {
 let pendingKeyDownContext: string|null = null;
 
 export const logKeyDown = (throttler: Common.Throttler.Throttler) =>
-    async (loggable: Loggable|null, event: Event|null, context?: string) => {
+    async(loggable: Loggable|null, event: Event|null, context?: string): Promise<void> => {
   if (!(event instanceof KeyboardEvent)) {
     return;
   }

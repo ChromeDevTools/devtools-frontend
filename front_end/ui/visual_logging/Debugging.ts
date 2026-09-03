@@ -443,7 +443,8 @@ export const enum DebugLoggingFormat {
   AD_HOC_ANALYSIS = 'AdHocAnalysis',
 }
 
-export function setVeDebugLoggingEnabled(enabled: boolean, format = DebugLoggingFormat.INTUITIVE): void {
+export function setVeDebugLoggingEnabled(enabled: boolean,
+                                         format: DebugLoggingFormat = DebugLoggingFormat.INTUITIVE): void {
   if (enabled) {
     localStorage.setItem('veDebugLoggingEnabled', format);
   } else {

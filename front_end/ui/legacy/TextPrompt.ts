@@ -68,7 +68,8 @@ import {cloneCustomElement, ElementFocusRestorer} from './UIUtils.js';
  * @attribute value Sets the initial text value that's edited when editing starts. If not provided, the slot's inner text is used.
  */
 export class TextPromptElement extends HTMLElement {
-  static readonly observedAttributes = ['editing', 'completions', 'placeholder', 'cancel-on-blur', 'render-as-block'];
+  static readonly observedAttributes: string[] =
+      ['editing', 'completions', 'placeholder', 'cancel-on-blur', 'render-as-block'];
   static formAssociated = true;
   readonly #shadow = this.attachShadow({mode: 'open'});
   readonly #internals = this.attachInternals();

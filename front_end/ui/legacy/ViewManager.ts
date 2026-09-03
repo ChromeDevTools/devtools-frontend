@@ -173,7 +173,7 @@ export interface EventTypes {
 }
 
 export class ViewManager extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
-  readonly views = new Map<string, View>();
+  readonly views: Map<string, View> = new Map<string, View>();
   private readonly locationNameByViewId = new Map<string, string>();
   private readonly locationOverrideSetting: Common.Settings.Setting<Record<string, string>>;
 

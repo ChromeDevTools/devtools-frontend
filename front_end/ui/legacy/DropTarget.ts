@@ -97,7 +97,12 @@ export class DropTarget {
   }
 }
 
-export const Type = {
+export interface DropTargetType {
+  kind: string;
+  type: RegExp;
+}
+
+export const Type: Record<'URI'|'Folder'|'File'|'WebFile'|'ImageFile', DropTargetType> = {
   URI: {kind: 'string', type: /text\/uri-list/},
   Folder: {kind: 'file', type: /$^/},
   File: {kind: 'file', type: /.*/},

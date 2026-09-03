@@ -71,7 +71,8 @@ declare global {
     'dt-small-bubble': DevToolsSmallBubble;
   }
 }
-const {Directives, render} = Lit;
+const Directives: typeof Lit.Directives = Lit.Directives;
+const render: typeof Lit.render = Lit.render;
 
 const UIStrings = {
   /**
@@ -753,7 +754,8 @@ class AnimateOnDirective extends Lit.Directive.Directive {
   }
 }
 
-export const animateOn = Lit.Directive.directive(AnimateOnDirective);
+export const animateOn: (_condition: boolean, _className: string) => Lit.DirectiveResult<typeof AnimateOnDirective> =
+    Lit.Directive.directive(AnimateOnDirective);
 
 export function measurePreferredSize(element: Element, containerElement?: Element|null): Geometry.Size {
   const oldParent = element.parentElement;
@@ -1195,7 +1197,8 @@ export function setTitle(element: HTMLElement, title: string): void {
 }
 
 export class CheckboxLabel extends HTMLElement {
-  static readonly observedAttributes = ['checked', 'disabled', 'indeterminate', 'name', 'title', 'aria-label', 'small'];
+  static readonly observedAttributes: string[] =
+      ['checked', 'disabled', 'indeterminate', 'name', 'title', 'aria-label', 'small'];
 
   readonly #shadowRoot!: DocumentFragment;
   #checkboxElement!: HTMLInputElement;

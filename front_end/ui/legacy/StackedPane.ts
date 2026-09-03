@@ -157,7 +157,7 @@ export class ExpandableContainerWidget extends VBox {
 const expandableContainerForView = new WeakMap<View, ExpandableContainerWidget>();
 
 export class StackedPane extends VBox {
-  readonly expandableContainers = new Map<string, ExpandableContainerWidget>();
+  readonly expandableContainers: Map<string, ExpandableContainerWidget> = new Map<string, ExpandableContainerWidget>();
   constructor(
       private readonly createToolbar: CreateToolbarFn,
       private readonly setWidgetForView: SetWidgetForViewFn,

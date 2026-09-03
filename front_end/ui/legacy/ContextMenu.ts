@@ -946,7 +946,7 @@ export class ContextMenu extends SubMenu {
 
   private static pendingMenu: ContextMenu|null = null;
   private static useSoftMenu = false;
-  static readonly groupWeights = [
+  static readonly groupWeights: string[] = [
     'header',
     'new',
     'reveal',
@@ -978,7 +978,7 @@ export class ContextMenu extends SubMenu {
  *
  */
 export class MenuButton extends HTMLElement {
-  static readonly observedAttributes = ['icon-name', 'disabled'];
+  static readonly observedAttributes: string[] = ['icon-name', 'disabled'];
   readonly #shadow = this.attachShadow({mode: 'open'});
   #triggerTimeoutId?: number;
   #populateMenuCall?: (arg0: ContextMenu) => void;

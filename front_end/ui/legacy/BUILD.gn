@@ -48,6 +48,7 @@ copy_to_gen("copy_stylesheets_for_server") {
 }
 
 devtools_ui_module("ui") {
+  split_compilation = true
   sources = [
     "ARIAUtils.ts",
     "ActionRegistration.ts",
@@ -106,7 +107,7 @@ devtools_ui_module("ui") {
     "ZoomManager.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -129,12 +130,12 @@ devtools_ui_module("ui") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "legacy.ts"
 
-  deps = [
-    ":css_files",
-    ":ui",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":ui" ]
 
   visibility = [
     # IMPORTANT: Be careful when extending visibility of front_end/ui/legacy,
@@ -176,6 +177,7 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [
     "ARIAUtils.test.ts",
@@ -214,7 +216,7 @@ devtools_ui_module("unittests") {
     "Widget.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",

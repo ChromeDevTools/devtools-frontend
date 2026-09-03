@@ -52,7 +52,7 @@ export class EmptyWidget extends VBox {
   #link: Platform.DevToolsPath.UrlString|undefined|null;
   #view: View;
 
-  constructor(headerOrElement: string|HTMLElement, text = '', element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(headerOrElement: string|HTMLElement, text = '', element?: HTMLElement, view: View = DEFAULT_VIEW) {
     const header = typeof headerOrElement === 'string' ? headerOrElement : '';
     if (!element && headerOrElement instanceof HTMLElement) {
       element = headerOrElement;

@@ -888,7 +888,8 @@ export class SplitWidget extends SplitWidgetBase {
 }
 
 export class SplitWidgetElement extends WidgetElement<SplitWidget> {
-  static readonly observedAttributes = ['direction', 'sidebar-position', 'sidebar-initial-size', 'sidebar-visibility'];
+  static readonly observedAttributes: string[] =
+      ['direction', 'sidebar-position', 'sidebar-initial-size', 'sidebar-visibility'];
 
   constructor() {
     super();

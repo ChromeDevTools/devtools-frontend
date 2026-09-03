@@ -514,10 +514,10 @@ export class ShortcutTreeNode {
 }
 
 export class ForwardedShortcut {
-  static instance = new ForwardedShortcut();
+  static instance: ForwardedShortcut = new ForwardedShortcut();
 }
 
-export const ForwardedActions = new Set<string>([
+export const ForwardedActions: Set<string> = new Set<string>([
   'main.toggle-dock',
   'debugger.toggle-breakpoints-active',
   'debugger.toggle-pause',

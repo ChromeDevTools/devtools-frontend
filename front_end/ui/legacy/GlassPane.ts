@@ -372,4 +372,4 @@ const containers = new Map<Document, Element>();
 const panes = new Set<GlassPane>();
 
 /** Exported for layout tests. **/
-export const GlassPanePanes = panes;
+export const GlassPanePanes: Set<GlassPane> = panes;

@@ -467,7 +467,7 @@ export class TreeOutlineInShadow extends TreeOutline {
   }
 }
 
-export const treeElementBylistItemNode = new WeakMap<Node, TreeElement>();
+export const treeElementBylistItemNode: WeakMap<Node, TreeElement> = new WeakMap<Node, TreeElement>();
 export class TreeElement {
   treeOutline: TreeOutline|null;
   parent: TreeElement|null;
@@ -1828,7 +1828,7 @@ function removeNode(node: TreeElement, preserveParentExpandable = false): void {
  * @attribute hide-overflow
  */
 export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
-  static readonly observedAttributes =
+  static readonly observedAttributes: string[] =
       ['navigation-variant', 'hide-overflow', 'dense', 'show-selection-on-keyboard-focus'];
   readonly #treeOutline = new TreeOutlineInShadow(undefined, this, true);
 
@@ -2104,7 +2104,8 @@ class IfExpandedDirective extends Lit.Directive.Directive {
     return node.expanded;
   }
 }
-export const ifExpanded = Lit.Directive.directive(IfExpandedDirective);
+export const ifExpanded: (content: Lit.LitTemplate|Iterable<Lit.LitTemplate>) =>
+    Lit.DirectiveResult<typeof IfExpandedDirective> = Lit.Directive.directive(IfExpandedDirective);
 
 export class TreeElementWrapper extends HTMLElement {
   #treeElement?: TreeElement;

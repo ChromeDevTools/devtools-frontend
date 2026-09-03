@@ -886,7 +886,7 @@ export class ToolbarFilter extends ToolbarInput {
 }
 
 export class ToolbarInputElement extends HTMLElement {
-  static observedAttributes = ['value', 'disabled', 'regex'];
+  static observedAttributes: string[] = ['value', 'disabled', 'regex'];
 
   item?: ToolbarInput;
   datalist: HTMLDataListElement|null = null;

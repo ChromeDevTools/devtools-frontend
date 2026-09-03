@@ -20,12 +20,13 @@ generated_file("component_docs_sources") {
 
 ts_library("docs_environment") {
   testonly = true
+  split_compilation = true
   sources = [
     "docs_environment.ts",
     "toggle_dark_mode.ts",
     "toggle_fonts.ts",
   ]
-  deps = [
+  ts_deps = [
     "../../front_end/core/common:bundle",
     "../../front_end/testing",
     "../../front_end/ui/legacy/theme_support:bundle",

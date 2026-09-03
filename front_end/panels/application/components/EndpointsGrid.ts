@@ -71,7 +71,8 @@ export const DEFAULT_VIEW = (input: ViewInput, output: undefined, target: HTMLEl
 type View = typeof DEFAULT_VIEW;
 
 export class EndpointsGrid extends UI.Widget.Widget {
-  endpoints = new Map<string, Protocol.Network.ReportingApiEndpoint[]>();
+  endpoints: Map<string, Protocol.Network.ReportingApiEndpoint[]> =
+      new Map<string, Protocol.Network.ReportingApiEndpoint[]>();
   #view: View;
 
   constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {

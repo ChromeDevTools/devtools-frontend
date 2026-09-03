@@ -141,7 +141,7 @@ export class TrustTokensView extends UI.Widget.VBox {
   #tokens: Protocol.Storage.TrustTokens[] = [];
   #view: View;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
   }

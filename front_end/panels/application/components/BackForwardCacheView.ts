@@ -460,7 +460,7 @@ export class BackForwardCacheView extends UI.Widget.Widget {
   #historyIndex = 0;
   #view: View;
 
-  constructor(view = DEFAULT_VIEW) {
+  constructor(view: View = DEFAULT_VIEW) {
     super({useShadowDom: true, delegatesFocus: true});
     this.#view = view;
   }

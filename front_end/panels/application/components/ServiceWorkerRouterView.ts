@@ -45,7 +45,7 @@ export class ServiceWorkerRouterView extends UI.Widget.Widget {
   #rules: SDK.ServiceWorkerManager.ServiceWorkerRouterRule[] = [];
   #view: View;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
   }

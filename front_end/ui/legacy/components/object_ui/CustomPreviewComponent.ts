@@ -19,7 +19,6 @@ import {
   ObjectTree,
 } from './ObjectPropertiesSection.js';
 
-const {widget} = UI.Widget;
 const UIStrings = {
   /**
    * @description Context menu item to show a custom formatted object as a standard JavaScript object.
@@ -34,6 +33,12 @@ export class CustomPreviewSection extends UI.Widget.Widget {
   private expanded = false;
   private cachedContent?: unknown|ObjectTree;
   private headerJsonML?: unknown;
+  private readonly view: View;
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.view = view;
+  }
 
   get object(): SDK.RemoteObject.RemoteObject|undefined {
     return this.#object;
@@ -48,6 +53,8 @@ export class CustomPreviewSection extends UI.Widget.Widget {
     this.cachedContent = undefined;
     this.expanded = false;
     this.parseHeader();
+    // CustomPreviewComponent is used synchronously by ConsoleViewMessage. We must render synchronously
+    // so ConsoleViewport can measure the true row height upon insertion.
     this.performUpdate();
   }
 
@@ -64,148 +71,18 @@ export class CustomPreviewSection extends UI.Widget.Widget {
     }
   }
 
-  override wasShown(): void {
-    super.wasShown();
-    this.requestUpdate();
-  }
-
   override performUpdate(): void {
-    if (!this.#object) {
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(nothing, this.contentElement);
-      return;
-    }
-    this.render(this.#object);
+    this.view({
+      object: this.#object,
+      headerJsonML: this.headerJsonML,
+      expanded: this.expanded,
+      cachedContent: this.cachedContent,
+      toggleExpanded: this.toggleExpanded,
+    },
+              undefined, this.contentElement);
   }
 
-  private render(object: SDK.RemoteObject.RemoteObject): void {
-    const customPreview = object.customPreview();
-    if (!customPreview || !this.headerJsonML) {
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(nothing, this.contentElement);
-      return;
-    }
-
-    const headerTemplate = this.renderJSONMLTag(object, this.headerJsonML);
-    if (customPreview.bodyGetterId) {
-      let bodyContent: LitTemplate|Node|undefined;
-      if (this.cachedContent instanceof ObjectTree) {
-        bodyContent = html`<devtools-widget class="custom-expandable-section-default-body" ${
-            widget(ObjectPropertiesSectionWidget, {
-              objectTree: this.cachedContent,
-              showOverflow: false,
-            })}></devtools-widget>`;
-      } else if (this.cachedContent !== undefined) {
-        bodyContent = this.renderJSONMLTag(object, this.cachedContent);
-      }
-
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(
-          html`
-        <span class=${
-              Directives.classMap({'custom-expandable-section-header': true,
-                                   expanded: this.expanded})} @click=${(event: Event) => this.onClick(event)}>
-          <devtools-icon name=${
-              this.expanded ? 'triangle-down' : 'triangle-right'} class="custom-expand-icon"></devtools-icon>
-          ${headerTemplate}
-        </span>
-        ${
-              bodyContent ?
-                  html`<span class="custom-expandable-section-body" ?hidden=${!this.expanded}>${bodyContent}</span>` :
-                  nothing}
-      `,
-          this.contentElement, {container: {classes: ['custom-expandable-section']}});
-    } else {
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(html`${headerTemplate}`, this.contentElement, {container: {classes: ['custom-expandable-section']}});
-    }
-  }
-
-  private renderJSONMLTag(object: SDK.RemoteObject.RemoteObject, jsonML: unknown): LitTemplate {
-    if (!Array.isArray(jsonML)) {
-      return html`${String(jsonML)}`;
-    }
-
-    if (jsonML[0] !== 'object') {
-      return this.renderElement(object, jsonML);
-    }
-    if (jsonML.length !== 2) {
-      Common.Console.Console.instance().error('Broken formatter: object reference must contain exactly two elements');
-      return html`<span></span>`;
-    }
-    return this.layoutObjectTag(object, jsonML);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private renderElement(object: SDK.RemoteObject.RemoteObject, jsonML: any[]): LitTemplate {
-    const it = jsonML[Symbol.iterator]();
-    const tagName = it.next().value as string;
-    if (!ALLOWED_TAGS.includes(tagName)) {
-      Common.Console.Console.instance().error('Broken formatter: element ' + tagName + ' is not allowed!');
-      return html`<span></span>`;
-    }
-
-    let next = it.next();
-    const stylePropertyMap: Record<string, string> = {};
-    if (typeof next.value === 'object' && !Array.isArray(next.value) && next.value !== null) {
-      const attributes = next.value as Record<string, string>;
-      for (const key in attributes) {
-        const value = attributes[key];
-        if ((key !== 'style') || (typeof value !== 'string')) {
-          continue;
-        }
-
-        const sanitizedStyle = new Map<string, {value: string, priority: string}>();
-        sanitizeStyle(sanitizedStyle, value);
-        for (const [property, {value: propertyValue, priority}] of sanitizedStyle) {
-          stylePropertyMap[property] = priority ? `${propertyValue} !${priority}` : propertyValue;
-        }
-      }
-      next = it.next();
-    }
-
-    const children: LitTemplate[] = [];
-    while (!next.done) {
-      children.push(this.renderJSONMLTag(object, next.value));
-      next = it.next();
-    }
-    const style = Directives.styleMap(stylePropertyMap);
-
-    switch (tagName) {
-      case 'span':
-        return html`<span style=${style}>${children}</span>`;
-      case 'div':
-        return html`<div style=${style}>${children}</div>`;
-      case 'ol':
-        return html`<ol style=${style}>${children}</ol>`;
-      case 'li':
-        return html`<li style=${style}>${children}</li>`;
-      case 'table':
-        return html`<table style=${style}>${children}</table>`;
-      case 'tr':
-        return html`<tr style=${style}>${children}</tr>`;
-      case 'td':
-        return html`<td style=${style}>${children}</td>`;
-      default:
-        return html`<span>${children}</span>`;
-    }
-  }
-
-  private layoutObjectTag(object: SDK.RemoteObject.RemoteObject, objectTag: unknown[]): LitTemplate {
-    const it = objectTag[Symbol.iterator]();
-    it.next();  // skip 'object'
-    const attributes = it.next().value;
-    const remoteObject = object.runtimeModel().createRemoteObject((attributes as Protocol.Runtime.RemoteObject));
-    if (remoteObject.customPreview()) {
-      return html`${UI.Widget.widget(CustomPreviewSection, {object: remoteObject})}`;
-    }
-
-    return defaultObjectPresentation(remoteObject, undefined, undefined, undefined,
-                                     {'custom-expandable-section-standard-section': remoteObject.hasChildren});
-  }
-
-  private onClick = (event: Event): void => {
-    event.consume(true);
+  private toggleExpanded = (): void => {
     if (this.cachedContent !== undefined) {
       this.toggleExpand();
     } else {
@@ -245,6 +122,143 @@ export class CustomPreviewSection extends UI.Widget.Widget {
 }
 
 const ALLOWED_TAGS = ['span', 'div', 'ol', 'li', 'table', 'tr', 'td'];
+
+export interface ViewInput {
+  object?: SDK.RemoteObject.RemoteObject;
+  headerJsonML?: unknown;
+  expanded: boolean;
+  cachedContent?: unknown|ObjectTree|null;
+  toggleExpanded: () => void;
+}
+
+export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+  const renderJSONMLTag = (object: SDK.RemoteObject.RemoteObject, jsonML: unknown): LitTemplate => {
+    if (!Array.isArray(jsonML)) {
+      return html`${String(jsonML)}`;
+    }
+
+    if (jsonML[0] !== 'object') {
+      return renderElement(object, jsonML);
+    }
+    if (jsonML.length !== 2) {
+      Common.Console.Console.instance().error('Broken formatter: object reference must contain exactly two elements');
+      return html`<span></span>`;
+    }
+    return layoutObjectTag(object, jsonML);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const renderElement = (object: SDK.RemoteObject.RemoteObject, jsonML: any[]): LitTemplate => {
+    const it = jsonML[Symbol.iterator]();
+    const tagName = it.next().value as string;
+    if (!ALLOWED_TAGS.includes(tagName)) {
+      Common.Console.Console.instance().error('Broken formatter: element ' + tagName + ' is not allowed!');
+      return html`<span></span>`;
+    }
+
+    let next = it.next();
+    const stylePropertyMap: Record<string, string> = {};
+    if (typeof next.value === 'object' && !Array.isArray(next.value) && next.value !== null) {
+      const attributes = next.value as Record<string, string>;
+      for (const key in attributes) {
+        const value = attributes[key];
+        if ((key !== 'style') || (typeof value !== 'string')) {
+          continue;
+        }
+
+        const sanitizedStyle = new Map<string, {value: string, priority: string}>();
+        sanitizeStyle(sanitizedStyle, value);
+        for (const [property, {value: propertyValue, priority}] of sanitizedStyle) {
+          stylePropertyMap[property] = priority ? `${propertyValue} !${priority}` : propertyValue;
+        }
+      }
+      next = it.next();
+    }
+
+    const children: LitTemplate[] = [];
+    while (!next.done) {
+      children.push(renderJSONMLTag(object, next.value));
+      next = it.next();
+    }
+    const style = Directives.styleMap(stylePropertyMap);
+
+    switch (tagName) {
+      case 'span':
+        return html`<span style=${style}>${children}</span>`;
+      case 'div':
+        return html`<div style=${style}>${children}</div>`;
+      case 'ol':
+        return html`<ol style=${style}>${children}</ol>`;
+      case 'li':
+        return html`<li style=${style}>${children}</li>`;
+      case 'table':
+        return html`<table style=${style}>${children}</table>`;
+      case 'tr':
+        return html`<tr style=${style}>${children}</tr>`;
+      case 'td':
+        return html`<td style=${style}>${children}</td>`;
+      default:
+        return html`<span>${children}</span>`;
+    }
+  };
+
+  const layoutObjectTag = (object: SDK.RemoteObject.RemoteObject, objectTag: unknown[]): LitTemplate => {
+    const it = objectTag[Symbol.iterator]();
+    it.next();  // skip 'object'
+    const attributes = it.next().value;
+    const remoteObject = object.runtimeModel().createRemoteObject((attributes as Protocol.Runtime.RemoteObject));
+    if (remoteObject.customPreview()) {
+      return html`${UI.Widget.widget(CustomPreviewSection, {object: remoteObject})}`;
+    }
+
+    return defaultObjectPresentation(remoteObject, undefined, undefined, undefined,
+                                     {'custom-expandable-section-standard-section': remoteObject.hasChildren});
+  };
+
+  const onClick = (event: Event): void => {
+    event.consume(true);
+    input.toggleExpanded();
+  };
+
+  const object = input.object;
+  const customPreview = object?.customPreview();
+  if (!object || !customPreview || !input.headerJsonML) {
+    render(nothing, target);
+    return;
+  }
+
+  const headerTemplate = renderJSONMLTag(object, input.headerJsonML);
+  if (customPreview.bodyGetterId) {
+    let bodyContent: LitTemplate|Node|undefined;
+    if (input.cachedContent instanceof ObjectTree) {
+      bodyContent = html`<devtools-widget class="custom-expandable-section-default-body" ${
+          UI.Widget.widget(ObjectPropertiesSectionWidget, {
+            objectTree: input.cachedContent,
+            showOverflow: false,
+          })}></devtools-widget>`;
+    } else if (input.cachedContent) {
+      bodyContent = renderJSONMLTag(object, input.cachedContent);
+    }
+
+    render(html`
+      <span class=${Directives.classMap({'custom-expandable-section-header': true,
+                                         expanded: input.expanded})} @click=${onClick}>
+        <devtools-icon name=${
+               input.expanded ? 'triangle-down' : 'triangle-right'} class="custom-expand-icon"></devtools-icon>
+        ${headerTemplate}
+      </span>
+      ${
+               bodyContent ?
+                   html`<span class="custom-expandable-section-body" ?hidden=${!input.expanded}>${bodyContent}</span>` :
+                   nothing}
+    `,
+           target, {container: {classes: ['custom-expandable-section']}});
+  } else {
+    render(html`${headerTemplate}`, target, {container: {classes: ['custom-expandable-section']}});
+  }
+};
+
+export type View = typeof DEFAULT_VIEW;
 
 export class CustomPreviewComponent {
   private readonly object: SDK.RemoteObject.RemoteObject;

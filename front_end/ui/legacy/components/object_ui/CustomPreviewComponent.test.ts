@@ -59,7 +59,7 @@ describe('CustomPreviewComponent', () => {
     sinon.assert.notCalled(runtimeModel.createRemoteObject);
   });
 
-  it('renders object reference tags with exactly two elements', () => {
+  it('renders object reference tags with exactly two elements', async () => {
     const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
     sinon.stub(object, 'customPreview').returns({
       header: JSON.stringify(['span', {}, ['object', {type: 'object', objectId: '1.2.3'}]]),
@@ -69,19 +69,22 @@ describe('CustomPreviewComponent', () => {
     sinon.stub(object, 'runtimeModel').returns(runtimeModel);
 
     new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
+    await UI.Widget.Widget.allUpdatesComplete;
 
     sinon.assert.calledOnceWithMatch(runtimeModel.createRemoteObject, {
       type: 'object' as Protocol.Runtime.RemoteObjectType,
       objectId: '1.2.3' as Protocol.Runtime.RemoteObjectId,
     });
   });
-  it('renders custom styling sanitization in JSONML elements', () => {
+
+  it('renders custom styling sanitization in JSONML elements', async () => {
     const object = SDK.RemoteObject.RemoteObject.fromLocalObject({});
     sinon.stub(object, 'customPreview').returns({
       header: JSON.stringify(['span', {style: 'background-color: red; width: 100px;'}, 'styled']),
     });
 
     const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
+    await UI.Widget.Widget.allUpdatesComplete;
     const customSection = component.element.shadowRoot?.querySelector('.custom-expandable-section');
     assert.exists(customSection);
     const headerSpan = customSection?.querySelector('span') as HTMLElement;
@@ -100,10 +103,12 @@ describe('CustomPreviewComponent', () => {
     sinon.stub(object, 'callFunctionJSON').resolves(['table', {}, ['tr', {}, ['td', {}, 'cell']]]);
 
     const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const customSection = component.element.shadowRoot?.querySelector('.custom-expandable-section');
     assert.exists(customSection);
     await component.expandIfPossible();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const table = customSection.querySelector('table');
     assert.exists(table);
@@ -120,6 +125,7 @@ describe('CustomPreviewComponent', () => {
     const parentWidget = new UI.Widget.Widget();
     parentWidget.contentElement.appendChild(component.element);
     renderElementIntoDOM(parentWidget);
+    await UI.Widget.Widget.allUpdatesComplete;
     const customSection = component.element.shadowRoot?.querySelector('.custom-expandable-section');
     assert.exists(customSection);
 

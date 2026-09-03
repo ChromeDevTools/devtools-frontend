@@ -13,9 +13,10 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("webauthn") {
+  split_compilation = true
   sources = [ "WebauthnPane.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -32,12 +33,12 @@ devtools_ui_module("webauthn") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "webauthn.ts"
 
-  deps = [
-    ":css_files",
-    ":webauthn",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":webauthn" ]
 
   visibility = [
     ":*",
@@ -48,9 +49,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "webauthn-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/i18n:bundle",
     "../../ui/legacy:bundle",
@@ -61,10 +63,11 @@ devtools_entrypoint("meta") {
 
 devtools_ui_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [ "WebauthnPane.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/sdk:bundle",
     "../../generated",

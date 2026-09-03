@@ -240,19 +240,13 @@ const PROTOCOL_AUTHENTICATOR_VALUES: Protocol.EnumerableEnum<typeof Protocol.Web
   U2f: Protocol.WebAuthn.AuthenticatorProtocol.U2f,
 };
 
-interface Authenticator {
+export interface Authenticator {
   name: string;
   options: Protocol.WebAuthn.VirtualAuthenticatorOptions;
   credentials: Protocol.WebAuthn.Credential[];
 }
 
-interface Authenticator {
-  name: string;
-  options: Protocol.WebAuthn.VirtualAuthenticatorOptions;
-  credentials: Protocol.WebAuthn.Credential[];
-}
-
-interface ViewInput {
+export interface ViewInput {
   enabled: boolean;
   onToggleEnabled: () => void;
   authenticators: Map<Protocol.WebAuthn.AuthenticatorId, Authenticator>;
@@ -270,11 +264,11 @@ interface ViewInput {
   onRemoveCredential: (id: Protocol.WebAuthn.AuthenticatorId, credentialId: string) => void;
 }
 
-interface ViewOutput {
+export interface ViewOutput {
   revealSection: Map<string, () => void>;
 }
 
-type ViewFunction = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type ViewFunction = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 function renderToolbar(enabled: boolean, onToggle: () => void): Lit.TemplateResult {
   const enableCheckboxTitle = i18nString(UIStrings.enableVirtualAuthenticator);
@@ -629,7 +623,7 @@ export class WebauthnPaneImpl extends UI.Panel.Panel implements
     revealSection: new Map(),
   };
 
-  constructor(view = DEFAULT_VIEW) {
+  constructor(view: ViewFunction = DEFAULT_VIEW) {
     super('webauthn');
 
     this.#view = view;

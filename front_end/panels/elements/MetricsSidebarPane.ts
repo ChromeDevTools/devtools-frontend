@@ -193,7 +193,7 @@ export class MetricsSidebarPane extends ElementsSidebarPane<ShadowRoot> {
   private isEditingMetrics?: boolean;
   private view: View;
 
-  constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel, view = DEFAULT_VIEW) {
+  constructor(computedStyleModel: ComputedStyle.ComputedStyleModel.ComputedStyleModel, view: View = DEFAULT_VIEW) {
     super(computedStyleModel, {useShadowDom: 'pure'});
     this.registerRequiredCSS(metricsSidebarPaneStyles);
 

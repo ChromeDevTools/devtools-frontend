@@ -17,7 +17,7 @@ export const enum Category {
   OTHER = 'Other',
 }
 
-export const DefaultCategoryOrder = [
+export const DefaultCategoryOrder: Category[] = [
   Category.LAYOUT,
   Category.TEXT,
   Category.APPEARANCE,

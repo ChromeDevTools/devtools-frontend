@@ -199,9 +199,10 @@ export class StylesSidebarPane extends StylesSidebarPaneBase implements StylesCo
   private visibleSections: number|null = null;
   private noMatchesElement: HTMLElement;
   private sectionsContainer: UI.Widget.Widget;
-  sectionByElement = new WeakMap<Node, StylePropertiesSection>();
+  sectionByElement: WeakMap<Node, StylePropertiesSection> = new WeakMap<Node, StylePropertiesSection>();
   readonly #swatchPopoverHelper = new InlineEditor.SwatchPopoverHelper.SwatchPopoverHelper();
-  readonly linkifier = new Components.Linkifier.Linkifier(MAX_LINK_LENGTH, /* useLinkDecorator */ true);
+  readonly linkifier: Components.Linkifier.Linkifier =
+      new Components.Linkifier.Linkifier(MAX_LINK_LENGTH, /* useLinkDecorator */ true);
 
   private readonly decorator: StylePropertyHighlighter;
 

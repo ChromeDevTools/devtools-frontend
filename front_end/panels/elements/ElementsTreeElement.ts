@@ -1110,7 +1110,8 @@ export interface InitialEditState {
 }
 
 export class ElementsTreeWidget extends UI.Widget.Widget {
-  static override readonly INJECT = [IssuesManager.DOMIssuesManager.DOMIssuesManager] as const;
+  static override readonly INJECT: readonly[typeof IssuesManager.DOMIssuesManager.DOMIssuesManager] =
+      [IssuesManager.DOMIssuesManager.DOMIssuesManager] as const;
   #domIssuesManager?: IssuesManager.DOMIssuesManager.DOMIssuesManager;
 
   #node!: SDK.DOMModel.DOMNode;
@@ -3203,13 +3204,13 @@ export const InitialChildrenLimit = 500;
  * A union of HTML4 and HTML5-Draft elements that explicitly
  * or implicitly (for HTML5) forbid the closing tag.
  **/
-export const ForbiddenClosingTagElements = new Set<string>([
+export const ForbiddenClosingTagElements: Set<string> = new Set<string>([
   'area', 'base',  'basefont', 'br',   'canvas',   'col',  'command', 'embed',  'frame', 'hr',
   'img',  'input', 'keygen',   'link', 'menuitem', 'meta', 'param',   'source', 'track', 'wbr',
 ]);
 
 /** These tags we do not allow editing their tag name. **/
-export const EditTagBlocklist = new Set<string>(['html', 'head', 'body']);
+export const EditTagBlocklist: Set<string> = new Set<string>(['html', 'head', 'body']);
 
 export function convertUnicodeCharsToHTMLEntities(text: string): {
   text: string,

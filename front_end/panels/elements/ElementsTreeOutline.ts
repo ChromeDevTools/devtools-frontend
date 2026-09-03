@@ -1513,7 +1513,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.setExpandedChildrenLimit(node, Math.max(visibleChildren.length, currentLimit + InitialChildrenLimit));
   }
 
-  async expandRecursively(node: SDK.DOMModel.DOMNode, maxDepth = Number.MAX_VALUE): Promise<void> {
+  async expandRecursively(node: SDK.DOMModel.DOMNode, maxDepth: number = Number.MAX_VALUE): Promise<void> {
     if (this.#view === DECLARATIVE_VIEW) {
       await node.getSubtree(100, true);
       const expand = async(n: SDK.DOMModel.DOMNode, depth: number): Promise<void> => {
@@ -3816,7 +3816,7 @@ export namespace ElementsTreeOutline {
 }
 
 // clang-format off
-export const MappedCharToEntity = new Map<string, string>([
+export const MappedCharToEntity: Map<string, string> = new Map<string, string>([
   ['\xA0', 'nbsp'],
   ['\xAD', 'shy'],
   ['\u2002', 'ensp'],

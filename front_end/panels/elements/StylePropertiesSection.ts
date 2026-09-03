@@ -191,7 +191,7 @@ export class StylePropertiesSection {
   readonly #specificityTooltips: HTMLSpanElement;
   static #nextSpecificityTooltipId = 0;
   static #nextSectionTooltipIdPrefix = 0;
-  readonly sectionTooltipIdPrefix = StylePropertiesSection.#nextSectionTooltipIdPrefix++;
+  readonly sectionTooltipIdPrefix: number = StylePropertiesSection.#nextSectionTooltipIdPrefix++;
 
   private ghostStyleTreeElements: GhostStylePropertyTreeElement[] = [];
   #activeAiSuggestion?: ActiveAiSuggestion;

@@ -55,7 +55,7 @@ const StandaloneStylesContainerBase: Common.ObjectWrapper.EventMixin<EventTypes,
 export class StandaloneStylesContainer extends StandaloneStylesContainerBase implements StylesContainer {
   activeCSSAngle: InlineEditor.CSSAngle.CSSAngle|null = null;
   isEditingStyle = false;
-  readonly sectionByElement = new WeakMap<Node, StylePropertiesSection>();
+  readonly sectionByElement: WeakMap<Node, StylePropertiesSection> = new WeakMap<Node, StylePropertiesSection>();
   // TODO: Reference the MAX_LINK_LENGTH from StylesSidebarPane at a later stage, when we have a reference to it.
   readonly linkifier: Components.Linkifier.Linkifier =
       new Components.Linkifier.Linkifier(23, /* useLinkDecorator */ true);

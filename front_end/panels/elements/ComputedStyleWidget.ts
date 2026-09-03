@@ -344,7 +344,7 @@ export class ComputedStyleWidget extends UI.Widget.VBox {
   #filterIsRegex = false;
   #allowUserControl = true;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
 

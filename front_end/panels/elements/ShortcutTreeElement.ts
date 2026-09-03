@@ -89,7 +89,8 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
   #hovered?: boolean;
   #view: typeof DEFAULT_VIEW;
 
-  constructor(nodeShortcut: SDK.DOMModel.DOMNodeShortcut, view = DEFAULT_VIEW) {
+  constructor(nodeShortcut: SDK.DOMModel.DOMNodeShortcut,
+              view: (input: ViewInput, _output: undefined, target: HTMLElement) => void = DEFAULT_VIEW) {
     super('');
     this.nodeShortcut = nodeShortcut;
     this.#view = view;

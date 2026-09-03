@@ -20,6 +20,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("components") {
+  split_compilation = true
   sources = [
     "DirectSocketConnectionView.ts",
     "EditableSpan.ts",
@@ -29,7 +30,7 @@ devtools_ui_module("components") {
     "ResponseHeaderSection.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../core/common:bundle",
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
@@ -54,12 +55,12 @@ devtools_ui_module("components") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "components.ts"
 
-  deps = [
-    ":components",
-    ":css_files",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":components" ]
 
   visibility = [
     ":*",
@@ -71,6 +72,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
   sources = [
     "DirectSocketConnectionView.test.ts",
@@ -80,7 +82,7 @@ devtools_ui_module("unittests") {
     "ResponseHeaderSection.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../core/common:bundle",
     "../../../core/host:bundle",

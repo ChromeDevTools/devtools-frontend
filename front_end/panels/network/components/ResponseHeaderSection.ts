@@ -87,7 +87,7 @@ export interface ResponseHeaderSectionData {
 }
 
 class ResponseHeaderSectionBase extends HTMLElement {
-  protected readonly shadow = this.attachShadow({mode: 'open'});
+  protected readonly shadow: ShadowRoot = this.attachShadow({mode: 'open'});
   protected headerDetails: HeaderDetailsDescriptor[] = [];
 
   protected setHeaders(headers: SDK.NetworkRequest.NameValue[]): void {

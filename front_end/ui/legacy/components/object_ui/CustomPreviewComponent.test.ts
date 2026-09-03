@@ -26,17 +26,15 @@ describe('CustomPreviewComponent', () => {
       bodyGetterId: '4' as Protocol.Runtime.RemoteObjectId,
     });
     // The callFunctionJSON resolves to null so that it falls back to the default body.
-    const callFunctionJSONStub = sinon.stub(object, 'callFunctionJSON').resolves(null);
+    sinon.stub(object, 'callFunctionJSON').resolves(null);
 
-    const section = new ObjectUI.CustomPreviewComponent.CustomPreviewSection();
-    section.object = object;
-    renderElementIntoDOM(section);
-    await section.loadBody();
-    await UI.Widget.Widget.allUpdatesComplete;
-    await callFunctionJSONStub.firstCall.returnValue;
+    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent();
+    renderElementIntoDOM(component);
+    component.object = object;
+    component.expanded = true;
     await UI.Widget.Widget.allUpdatesComplete;
 
-    const tree = section.element.querySelector('devtools-tree');
+    const tree = component.element.shadowRoot?.querySelector('devtools-tree');
     assert.exists(tree);
     const outline = tree.getInternalTreeOutlineForTest();
     const propertyTreeElement = outline.firstChild();
@@ -54,7 +52,9 @@ describe('CustomPreviewComponent', () => {
     runtimeModel.createRemoteObject.returns(SDK.RemoteObject.RemoteObject.fromLocalObject({}));
     sinon.stub(object, 'runtimeModel').returns(runtimeModel);
 
-    new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
+    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent();
+    renderElementIntoDOM(component);
+    component.object = object;
 
     sinon.assert.notCalled(runtimeModel.createRemoteObject);
   });
@@ -68,7 +68,9 @@ describe('CustomPreviewComponent', () => {
     runtimeModel.createRemoteObject.returns(SDK.RemoteObject.RemoteObject.fromLocalObject({}));
     sinon.stub(object, 'runtimeModel').returns(runtimeModel);
 
-    new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
+    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent();
+    renderElementIntoDOM(component);
+    component.object = object;
     await UI.Widget.Widget.allUpdatesComplete;
 
     sinon.assert.calledOnceWithMatch(runtimeModel.createRemoteObject, {
@@ -83,7 +85,9 @@ describe('CustomPreviewComponent', () => {
       header: JSON.stringify(['span', {style: 'background-color: red; width: 100px;'}, 'styled']),
     });
 
-    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
+    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent();
+    renderElementIntoDOM(component);
+    component.object = object;
     await UI.Widget.Widget.allUpdatesComplete;
     const customSection = component.element.shadowRoot?.querySelector('.custom-expandable-section');
     assert.exists(customSection);
@@ -102,12 +106,14 @@ describe('CustomPreviewComponent', () => {
     // Return a basic table JSONML body
     sinon.stub(object, 'callFunctionJSON').resolves(['table', {}, ['tr', {}, ['td', {}, 'cell']]]);
 
-    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
+    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent();
+    renderElementIntoDOM(component);
+    component.object = object;
     await UI.Widget.Widget.allUpdatesComplete;
 
     const customSection = component.element.shadowRoot?.querySelector('.custom-expandable-section');
     assert.exists(customSection);
-    await component.expandIfPossible();
+    component.expanded = true;
     await UI.Widget.Widget.allUpdatesComplete;
 
     const table = customSection.querySelector('table');
@@ -121,10 +127,9 @@ describe('CustomPreviewComponent', () => {
       header: JSON.stringify(['span', {}, 'Header']),
     });
 
-    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
-    const parentWidget = new UI.Widget.Widget();
-    parentWidget.contentElement.appendChild(component.element);
-    renderElementIntoDOM(parentWidget);
+    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent();
+    renderElementIntoDOM(component);
+    component.object = object;
     await UI.Widget.Widget.allUpdatesComplete;
     const customSection = component.element.shadowRoot?.querySelector('.custom-expandable-section');
     assert.exists(customSection);
@@ -148,10 +153,10 @@ describe('CustomPreviewComponent', () => {
       header: '["span", {"style": "color: red;"}, "Header text"]',
     });
 
-    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
-    const parentWidget = new UI.Widget.Widget();
-    parentWidget.contentElement.appendChild(component.element);
-    renderElementIntoDOM(parentWidget, {includeCommonStyles: true});
+    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent();
+    renderElementIntoDOM(component, {includeCommonStyles: true});
+    component.object = object;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     await assertScreenshot('custom_preview/base.png');
   });
@@ -168,11 +173,11 @@ describe('CustomPreviewComponent', () => {
       ['li', {}, ['span', {}, 'body item']],
     ]);
 
-    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
-    const parentWidget = new UI.Widget.Widget();
-    parentWidget.contentElement.appendChild(component.element);
-    renderElementIntoDOM(parentWidget, {includeCommonStyles: true});
-    await component.expandIfPossible();
+    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent();
+    renderElementIntoDOM(component, {includeCommonStyles: true});
+    component.object = object;
+    component.expanded = true;
+    await UI.Widget.Widget.allUpdatesComplete;
 
     await assertScreenshot('custom_preview/expanded.png');
   });

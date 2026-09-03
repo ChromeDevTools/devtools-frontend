@@ -1,7 +1,6 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -30,7 +29,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 export class CustomPreviewSection extends UI.Widget.Widget {
   #object?: SDK.RemoteObject.RemoteObject;
-  private expanded = false;
+  #expanded = false;
   private cachedContent?: unknown|ObjectTree;
   private headerJsonML?: unknown;
   private readonly view: View;
@@ -51,13 +50,27 @@ export class CustomPreviewSection extends UI.Widget.Widget {
     this.#object = object;
     this.headerJsonML = undefined;
     this.cachedContent = undefined;
-    this.expanded = false;
+    this.#expanded = false;
     this.parseHeader();
     // CustomPreviewComponent is used synchronously by ConsoleViewMessage. We must render synchronously
     // so ConsoleViewport can measure the true row height upon insertion.
     this.performUpdate();
   }
 
+  get expanded(): boolean {
+    return this.#expanded;
+  }
+
+  set expanded(expanded: boolean) {
+    if (this.#expanded === expanded) {
+      return;
+    }
+    this.#expanded = expanded;
+    if (this.#expanded && !this.cachedContent) {
+      void this.loadBody();
+    }
+    this.performUpdate();
+  }
   private parseHeader(): void {
     const customPreview = this.#object?.customPreview();
     if (!customPreview) {
@@ -75,27 +88,17 @@ export class CustomPreviewSection extends UI.Widget.Widget {
     this.view({
       object: this.#object,
       headerJsonML: this.headerJsonML,
-      expanded: this.expanded,
+      expanded: this.#expanded,
       cachedContent: this.cachedContent,
       toggleExpanded: this.toggleExpanded,
     },
               undefined, this.contentElement);
   }
-
   private toggleExpanded = (): void => {
-    if (this.cachedContent !== undefined) {
-      this.toggleExpand();
-    } else {
-      void this.loadBody();
-    }
+    this.expanded = !this.expanded;
   };
 
-  private toggleExpand(): void {
-    this.expanded = !this.expanded;
-    this.performUpdate();
-  }
-
-  async loadBody(): Promise<void> {
+  private async loadBody(): Promise<void> {
     const customPreview = this.#object?.customPreview();
     if (!this.#object || !customPreview?.bodyGetterId) {
       return;
@@ -116,7 +119,6 @@ export class CustomPreviewSection extends UI.Widget.Widget {
       this.cachedContent = bodyJsonML;
     }
 
-    this.expanded = true;
     this.performUpdate();
   }
 }
@@ -130,6 +132,8 @@ export interface ViewInput {
   cachedContent?: unknown|ObjectTree|null;
   toggleExpanded: () => void;
 }
+
+const remoteObjectCache = new WeakMap<object, SDK.RemoteObject.RemoteObject>();
 
 export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
   const renderJSONMLTag = (object: SDK.RemoteObject.RemoteObject, jsonML: unknown): LitTemplate => {
@@ -205,8 +209,15 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
   const layoutObjectTag = (object: SDK.RemoteObject.RemoteObject, objectTag: unknown[]): LitTemplate => {
     const it = objectTag[Symbol.iterator]();
     it.next();  // skip 'object'
-    const attributes = it.next().value;
-    const remoteObject = object.runtimeModel().createRemoteObject((attributes as Protocol.Runtime.RemoteObject));
+    const attributes = it.next().value as Protocol.Runtime.RemoteObject;
+    let remoteObject =
+        typeof attributes === 'object' && attributes !== null ? remoteObjectCache.get(attributes) : undefined;
+    if (!remoteObject) {
+      remoteObject = object.runtimeModel().createRemoteObject(attributes);
+      if (typeof attributes === 'object' && attributes !== null) {
+        remoteObjectCache.set(attributes, remoteObject);
+      }
+    }
     if (remoteObject.customPreview()) {
       return html`${UI.Widget.widget(CustomPreviewSection, {object: remoteObject})}`;
     }
@@ -260,47 +271,98 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: undefined, target: HTMLE
 
 export type View = typeof DEFAULT_VIEW;
 
-export class CustomPreviewComponent {
-  private readonly object: SDK.RemoteObject.RemoteObject;
-  private customPreviewSection: CustomPreviewSection|null;
-  element: HTMLSpanElement;
-  constructor(object: SDK.RemoteObject.RemoteObject) {
-    this.object = object;
-    this.customPreviewSection = new CustomPreviewSection();
-    this.customPreviewSection.object = object;
-    this.element = document.createElement('span');
-    this.element.classList.add('source-code');
-    const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(this.element, {cssFile: customPreviewComponentStyles});
-    this.element.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
-    this.customPreviewSection.show(shadowRoot, undefined, /* suppressOrphanWidgetError= */ true);
+export interface CustomPreviewComponentViewInput {
+  object?: SDK.RemoteObject.RemoteObject;
+  expanded: boolean;
+  disassembled: boolean;
+  onContextMenu: (event: Event) => void;
+}
+
+export const CUSTOM_PREVIEW_COMPONENT_DEFAULT_VIEW =
+    (input: CustomPreviewComponentViewInput, _output: undefined, target: HTMLElement|DocumentFragment): void => {
+      if (!input.object) {
+        render(nothing, target);
+        return;
+      }
+      render(html`<style>${customPreviewComponentStyles}</style>${
+                 input.disassembled ?
+                     defaultObjectPresentation(input.object) :
+                     UI.Widget.widget(CustomPreviewSection, {object: input.object, expanded: input.expanded})}`,
+             target, {
+               container: {
+                 classes: ['source-code'],
+                 listeners: {contextmenu: input.onContextMenu},
+               },
+             });
+    };
+
+export type CustomPreviewComponentView = typeof CUSTOM_PREVIEW_COMPONENT_DEFAULT_VIEW;
+
+export class CustomPreviewComponent extends UI.Widget.Widget<DocumentFragment> {
+  #object?: SDK.RemoteObject.RemoteObject;
+  #expanded = false;
+  #disassembled = false;
+  readonly #view: CustomPreviewComponentView;
+
+  constructor(element?: HTMLElement, view: CustomPreviewComponentView = CUSTOM_PREVIEW_COMPONENT_DEFAULT_VIEW) {
+    super(element, {useShadowDom: 'pure'});
+    this.#view = view;
   }
 
-  async expandIfPossible(): Promise<void> {
-    const customPreview = this.object.customPreview();
-    if (customPreview && customPreview.bodyGetterId && this.customPreviewSection) {
-      await this.customPreviewSection.loadBody();
+  get object(): SDK.RemoteObject.RemoteObject|undefined {
+    return this.#object;
+  }
+
+  set object(object: SDK.RemoteObject.RemoteObject|undefined) {
+    if (this.#object === object) {
+      return;
     }
+    this.#object = object;
+    this.#disassembled = false;
+    this.performUpdate();
   }
 
-  private contextMenuEventFired(event: Event): void {
+  get expanded(): boolean {
+    return this.#expanded;
+  }
+
+  set expanded(expanded: boolean) {
+    if (this.#expanded === expanded) {
+      return;
+    }
+    this.#expanded = expanded;
+    this.performUpdate();
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    this.#view({
+      object: this.#object,
+      expanded: this.#expanded,
+      disassembled: this.#disassembled,
+      onContextMenu: this.#onContextMenu,
+    },
+               undefined, this.contentElement);
+  }
+
+  #onContextMenu = (event: Event): void => {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
-    if (this.customPreviewSection) {
-      contextMenu.revealSection().appendItem(i18nString(UIStrings.showAsJavascriptObject), this.disassemble.bind(this),
+    if (!this.#disassembled) {
+      contextMenu.revealSection().appendItem(i18nString(UIStrings.showAsJavascriptObject), this.#disassemble.bind(this),
                                              {jslogContext: 'show-as-javascript-object'});
     }
-    contextMenu.appendApplicableItems(this.object);
-    void contextMenu.show();
-  }
-
-  private disassemble(): void {
-    if (this.element.shadowRoot) {
-      if (this.customPreviewSection) {
-        this.customPreviewSection.detach();
-        this.customPreviewSection = null;
-      }
-      this.element.shadowRoot.textContent = '';
-      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(defaultObjectPresentation(this.object), this.element.shadowRoot);
+    if (this.#object) {
+      contextMenu.appendApplicableItems(this.#object);
     }
+    void contextMenu.show();
+  };
+
+  #disassemble(): void {
+    this.#disassembled = true;
+    this.requestUpdate();
   }
 }

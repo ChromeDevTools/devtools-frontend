@@ -1543,10 +1543,9 @@ export function renderPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThr
                                     variableName?: string, includeNullOrUndefined?: boolean, useCustomPreview = false,
                                     valueRef?: (element: Element|undefined) => void): LitTemplate {
   if (useCustomPreview && value.customPreview()) {
-    const result = (new CustomPreviewComponent(value)).element;
-    result.classList.add('object-properties-section-custom-section');
-    valueRef?.(result);
-    return html`${result}`;
+    return html`<devtools-widget class="object-properties-section-custom-section" ${
+        UI.Widget.widget(CustomPreviewComponent,
+                         {object: value})} ${valueRef ? Directives.ref(valueRef) : nothing}></devtools-widget>`;
   }
 
   const type = value.type;

@@ -288,7 +288,7 @@ const hoverButtonObserver = new IntersectionObserver(results => {
   }
 });
 
-function appendOrShow(parent: Element, child: DocumentFragment|UI.Widget.Widget): void {
+function appendOrShow(parent: Element, child: DocumentFragment|UI.Widget.AnyWidget|HTMLElement): void {
   if (child instanceof UI.Widget.Widget) {
     child.show(parent, null, /* suppressOprhanWidgetError=*/ true);
   } else {
@@ -795,7 +795,7 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
       if (shouldFormatMessage && parameters[i].type === 'string') {
         appendOrShow(formattedResult, this.linkifyStringAsFragment(parameters[i].description || ''));
       } else {
-        formattedResult.appendChild(this.formatParameter(parameters[i], false, true));
+        appendOrShow(formattedResult, this.formatParameter(parameters[i], false, true));
       }
       if (i < parameters.length - 1) {
         UI.UIUtils.createTextChild(formattedResult, ' ');
@@ -804,10 +804,12 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     return formattedResult;
   }
 
-  protected formatParameter(
-      output: SDK.RemoteObject.RemoteObject, forceObjectFormat?: boolean, includePreview?: boolean): HTMLElement {
+  protected formatParameter(output: SDK.RemoteObject.RemoteObject, forceObjectFormat?: boolean,
+                            includePreview?: boolean): HTMLElement|UI.Widget.AnyWidget {
     if (output.customPreview()) {
-      return new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(output).element as HTMLElement;
+      const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent();
+      component.object = output;
+      return component;
     }
 
     const outputType = forceObjectFormat ? 'object' : (output.subtype || output.type);
@@ -1185,11 +1187,13 @@ export class ConsoleViewMessage implements ConsoleViewportElement {
     for (const token of tokens) {
       switch (token.type) {
         case 'generic': {
-          formattedResult.append(this.formatParameter(token.value, true /* force */, false /* includePreview */));
+          appendOrShow(formattedResult,
+                       this.formatParameter(token.value, true /* force */, false /* includePreview */));
           break;
         }
         case 'optimal': {
-          formattedResult.append(this.formatParameter(token.value, false /* force */, true /* includePreview */));
+          appendOrShow(formattedResult,
+                       this.formatParameter(token.value, false /* force */, true /* includePreview */));
           break;
         }
         case 'string': {
@@ -2271,7 +2275,7 @@ export class ConsoleTableMessageView extends ConsoleViewMessage {
         formattedResult.classList.add('console-message-text');
         const tableElement = formattedResult.createChild('div', 'console-message-formatted-table');
         const dataGridContainer = tableElement.createChild('span');
-        tableElement.appendChild(this.formatParameter(actualTable, true, false));
+        appendOrShow(tableElement, this.formatParameter(actualTable, true, false));
         const shadowRoot = dataGridContainer.attachShadow({mode: 'open'});
         const dataGridWidget = this.dataGrid.asWidget();
         dataGridWidget.markAsRoot();

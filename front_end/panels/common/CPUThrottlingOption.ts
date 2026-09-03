@@ -66,10 +66,14 @@ function makeFixedPresetThrottlingOption(rate: CPUThrottlingRates): CPUThrottlin
   };
 }
 
-export const NoThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.NO_THROTTLING);
-export const MidTierThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.MID_TIER_MOBILE);
-export const LowTierThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.LOW_TIER_MOBILE);
-export const ExtraSlowThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.EXTRA_SLOW);
+export const NoThrottlingOption: CPUThrottlingOption =
+    makeFixedPresetThrottlingOption(CPUThrottlingRates.NO_THROTTLING);
+export const MidTierThrottlingOption: CPUThrottlingOption =
+    makeFixedPresetThrottlingOption(CPUThrottlingRates.MID_TIER_MOBILE);
+export const LowTierThrottlingOption: CPUThrottlingOption =
+    makeFixedPresetThrottlingOption(CPUThrottlingRates.LOW_TIER_MOBILE);
+export const ExtraSlowThrottlingOption: CPUThrottlingOption =
+    makeFixedPresetThrottlingOption(CPUThrottlingRates.EXTRA_SLOW);
 
 function makeCalibratedThrottlingOption(calibratedDeviceType: CalibratedDeviceType): CPUThrottlingOption {
   const getSettingValue = (): number|CalibrationError|null => {
@@ -109,8 +113,10 @@ function makeCalibratedThrottlingOption(calibratedDeviceType: CalibratedDeviceTy
   };
 }
 
-export const CalibratedLowTierMobileThrottlingOption = makeCalibratedThrottlingOption('low-tier-mobile');
-export const CalibratedMidTierMobileThrottlingOption = makeCalibratedThrottlingOption('mid-tier-mobile');
+export const CalibratedLowTierMobileThrottlingOption: CPUThrottlingOption =
+    makeCalibratedThrottlingOption('low-tier-mobile');
+export const CalibratedMidTierMobileThrottlingOption: CPUThrottlingOption =
+    makeCalibratedThrottlingOption('mid-tier-mobile');
 
 export function calibrationErrorToString(error: CalibrationError): string {
   if (error === CalibrationError.DEVICE_TOO_WEAK) {

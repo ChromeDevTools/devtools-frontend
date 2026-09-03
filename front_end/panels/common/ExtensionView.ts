@@ -41,7 +41,8 @@ export class ExtensionView extends UI.Widget.Widget {
   #frameIndex?: number;
 
   #view: typeof DEFAULT_VIEW;
-  constructor(server: ExtensionServer, id: string, src: string, className: string, view = DEFAULT_VIEW) {
+  constructor(server: ExtensionServer, id: string, src: string, className: string,
+              view: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void = DEFAULT_VIEW) {
     super();
     this.#view = view;
     this.#server = server;

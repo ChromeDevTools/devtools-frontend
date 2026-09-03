@@ -19,6 +19,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("common") {
+  split_compilation = true
   sources = [
     "AiCodeCompletionSummaryToolbar.ts",
     "BadgeNotification.ts",
@@ -31,8 +32,7 @@ devtools_ui_module("common") {
     "GeminiRebrandPromoDialog.ts",
     "PersistenceUtils.ts",
   ]
-
-  deps = [
+  ts_deps = [
     "../../../extension-api",
     "../../core/common:bundle",
     "../../core/host:bundle",
@@ -70,12 +70,11 @@ devtools_ui_module("common") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "common.ts"
+  deps = [ ":css_files" ]
 
-  deps = [
-    ":common",
-    ":css_files",
-  ]
+  ts_deps = [ ":common" ]
 
   visibility = [
     "../*",
@@ -87,6 +86,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -97,8 +97,7 @@ devtools_ui_module("unittests") {
     "ExtensionServer.test.ts",
     "GdpSignUpDialog.test.ts",
   ]
-
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../extension-api",
     "../../core/common:bundle",

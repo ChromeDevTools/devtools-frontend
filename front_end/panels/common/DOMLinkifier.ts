@@ -91,7 +91,7 @@ export class DOMNodeLink extends UI.Widget.Widget {
   #options: Options|undefined = undefined;
   #view: View;
 
-  constructor(element?: HTMLElement, node?: SDK.DOMModel.DOMNode, options?: Options, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, node?: SDK.DOMModel.DOMNode, options?: Options, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.element.classList.remove('vbox');
     this.#node = node;

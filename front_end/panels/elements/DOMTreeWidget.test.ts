@@ -525,6 +525,50 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.detach();
       }
     });
+
+    it('collapses children of a node in DEFAULT_VIEW', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'DIV',
+              children: [
+                {
+                  nodeId: 3,
+                  nodeName: 'SPAN',
+                  children: [{nodeId: 4, nodeName: 'B'}],
+                },
+              ],
+            },
+          ],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+        assert.exists(treeOutline);
+        const rootTreeElement = treeOutline.findTreeElement(rootNode);
+        assert.exists(rootTreeElement);
+        await rootTreeElement.expandRecursively();
+
+        const childNode = rootNode.children()![0];
+        const childTreeElement = treeOutline.findTreeElement(childNode);
+        assert.exists(childTreeElement);
+        assert.isTrue(childTreeElement.expanded);
+
+        domTree.collapseChildren(rootNode);
+
+        assert.isTrue(rootTreeElement.expanded);
+        assert.isFalse(childTreeElement.expanded);
+      } finally {
+        domTree.detach();
+      }
+    });
   });
 
   describe('DECLARATIVE_VIEW', () => {
@@ -580,6 +624,56 @@ describeWithEnvironment('DOMTreeWidget', () => {
 
         domTree.setNodeExpanded(rootNode, false);
         assert.isFalse(domTree.isNodeExpanded(rootNode));
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('collapses children of a node', async () => {
+      const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'DIV',
+              children: [
+                {
+                  nodeId: 3,
+                  nodeName: 'SPAN',
+                  children: [{nodeId: 4, nodeName: 'B'}],
+                },
+              ],
+            },
+          ],
+        });
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        const childNode = rootNode.children()![0];
+        const grandChildNode = childNode.children()![0];
+        domTree.setNodeExpanded(childNode, true);
+        domTree.setNodeExpanded(grandChildNode, true);
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        assert.isTrue(domTree.isNodeExpanded(rootNode));
+        assert.isTrue(domTree.isNodeExpanded(childNode));
+        assert.isTrue(domTree.isNodeExpanded(grandChildNode));
+
+        domTree.collapseChildren(rootNode);
+        await waitForTreeUpdates();
+
+        assert.isTrue(domTree.isNodeExpanded(rootNode));
+        assert.isFalse(domTree.isNodeExpanded(childNode));
+        assert.isFalse(domTree.isNodeExpanded(grandChildNode));
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree')!;
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElement = internalTree.rootElement().children()[0];
+        const childTreeElement = rootTreeElement.children()[0];
+        assert.isFalse(childTreeElement.expanded);
       } finally {
         domTree.detach();
       }

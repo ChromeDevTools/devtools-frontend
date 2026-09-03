@@ -22,8 +22,7 @@ function assert<T>(
   }
 }
 
-const {html, Decorators, Directives, LitElement} = Lit;
-const {customElement, property, state} = Decorators;
+const {html, Directives} = Lit;
 const {classMap} = Directives;
 
 declare global {
@@ -41,7 +40,6 @@ const jsonPropertyOptions = {
   attribute: false,
 };
 
-@customElement('devtools-editable-content')
 class EditableContent extends HTMLElement {
   static get observedAttributes(): string[] {
     return ['disabled', 'placeholder'];
@@ -127,7 +125,7 @@ class SuggestionInitEvent extends Event {
   }
 }
 
-type SuggestionFilter = (option: string, query: string) => boolean;
+export type SuggestionFilter = (option: string, query: string) => boolean;
 
 const defaultSuggestionFilter = (option: string, query: string): boolean =>
     option.toLowerCase().startsWith(query.toLowerCase());
@@ -136,13 +134,19 @@ const defaultSuggestionFilter = (option: string, query: string): boolean =>
  * @fires SuggestionInitEvent#suggestioninit
  * @fires SuggestEvent#suggest
  */
-@customElement('devtools-suggestion-box')
-class SuggestionBox extends LitElement {
-  @property(jsonPropertyOptions) declare options: readonly string[];
-  @property() declare expression: string;
-  @property() declare suggestionFilter?: SuggestionFilter;
+class SuggestionBox extends Lit.LitElement {
+  static override properties: typeof Lit.LitElement.properties = {
+    options: jsonPropertyOptions,
+    expression: {type: String},
+    suggestionFilter: {attribute: false},
+    cursor: {state: true},
+  };
 
-  @state() private declare cursor: number;
+  declare options: readonly string[];
+  declare expression: string;
+  declare suggestionFilter?: SuggestionFilter;
+
+  private declare cursor: number;
 
   #suggestions: string[] = [];
 
@@ -229,30 +233,42 @@ class SuggestionBox extends LitElement {
   }
 }
 
-@customElement('devtools-suggestion-input')
-export class SuggestionInput extends LitElement {
-  static override shadowRootOptions = {
-    ...LitElement.shadowRootOptions,
+export class SuggestionInput extends Lit.LitElement {
+  static override shadowRootOptions: ShadowRootInit = {
+    ...Lit.LitElement.shadowRootOptions,
     delegatesFocus: true,
-  } as const;
+  };
+
+  static override properties: typeof Lit.LitElement.properties = {
+    options: jsonPropertyOptions,
+    autocomplete: {type: Boolean},
+    suggestionFilter: {attribute: false},
+    expression: {state: true},
+    placeholder: {type: String},
+    value: {type: String},
+    disabled: {type: Boolean},
+    strikethrough: {type: Boolean},
+    mimeType: {type: String},
+    jslogContext: {type: String},
+  };
 
   /**
    * State passed to devtools-suggestion-box.
    */
-  @property(jsonPropertyOptions) declare options: readonly string[];
-  @property({type: Boolean}) declare autocomplete?: boolean;
-  @property() declare suggestionFilter?: SuggestionFilter;
-  @state() declare expression: string;
+  declare options: readonly string[];
+  declare autocomplete?: boolean;
+  declare suggestionFilter?: SuggestionFilter;
+  declare expression: string;
 
   /**
    * State passed to devtools-editable-content.
    */
-  @property() declare placeholder: string;
-  @property() declare value: string;
-  @property({type: Boolean}) declare disabled: boolean;
-  @property({type: Boolean}) declare strikethrough: boolean;
-  @property() declare mimeType: string;
-  @property() declare jslogContext?: string;
+  declare placeholder: string;
+  declare value: string;
+  declare disabled: boolean;
+  declare strikethrough: boolean;
+  declare mimeType: string;
+  declare jslogContext?: string;
 
   constructor() {
     super();
@@ -364,3 +380,7 @@ export class SuggestionInput extends LitElement {
     // clang-format on
   }
 }
+
+customElements.define('devtools-editable-content', EditableContent);
+customElements.define('devtools-suggestion-box', SuggestionBox);
+customElements.define('devtools-suggestion-input', SuggestionInput);

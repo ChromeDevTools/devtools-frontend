@@ -8,21 +8,23 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 import("../../../visibility.gni")
 
 devtools_ui_module("ui_utils") {
+  split_compilation = true
   sources = [
     "StructuredHeaders.ts",
     "UserAgentMetadata.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../../generated",
     "../../../../ui/legacy:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "utils.ts"
 
-  deps = [ ":ui_utils" ]
+  ts_deps = [ ":ui_utils" ]
 
   visibility = [
     ":*",
@@ -34,6 +36,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -41,7 +44,7 @@ devtools_ui_module("unittests") {
     "UserAgentMetadata.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../../generated",
   ]

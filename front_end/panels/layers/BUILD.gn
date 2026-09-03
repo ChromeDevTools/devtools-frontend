@@ -8,13 +8,14 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_ui_module("layers") {
+  split_compilation = true
   sources = [
     "LayerPaintProfilerView.ts",
     "LayerTreeModel.ts",
     "LayersPanel.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
@@ -28,9 +29,10 @@ devtools_ui_module("layers") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "layers.ts"
 
-  deps = [ ":layers" ]
+  ts_deps = [ ":layers" ]
 
   visibility = [
     ":*",
@@ -41,9 +43,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "layers-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/i18n:bundle",
     "../../ui/legacy:bundle",
@@ -53,11 +56,12 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "LayersPanel.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/sdk:bundle",
     "../../testing",

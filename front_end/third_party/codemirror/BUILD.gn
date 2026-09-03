@@ -11,7 +11,6 @@ devtools_pre_built("codemirror") {
   sources_are_release = false
 
   sources = [
-    "codemirror-tsconfig.json",
     "package/addon/runmode/runmode-standalone.d.mts",
     "package/addon/runmode/runmode-standalone.mjs",
     "package/mode/css/css.d.mts",
@@ -26,8 +25,5 @@ devtools_pre_built("codemirror") {
 devtools_pre_built("codemirror-legacy-types") {
   sources_are_release = false
 
-  sources = [
-    "codemirror-legacy-types-tsconfig.json",
-    "codemirror-legacy.d.ts",
-  ]
+  sources = [ "codemirror-legacy.d.ts" ]
 }

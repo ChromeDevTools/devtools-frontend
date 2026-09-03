@@ -10,19 +10,25 @@ import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
-  describeWithEnvironment,
   restoreUserAgentForTesting,
   setUserAgentForTesting,
   updateHostConfig,
 } from '../../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {createStubbedDomNodeWithModels, getMatchedStyles, ruleMatch} from '../../../testing/StyleHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 const {StylingAgent, AiAgent} = AiAssistance;
 
-describeWithEnvironment('StylingAgent', function() {
+describe('StylingAgent', function() {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
   const snapshotTester = new SnapshotTester(this, import.meta);
   let connection: MockCDPConnection;
   beforeEach(() => {
@@ -919,5 +925,4 @@ describeWithEnvironment('StylingAgent', function() {
       assert.strictEqual(actionStep.output, 'Error: Could not get authored styles.');
     });
   });
-
 });

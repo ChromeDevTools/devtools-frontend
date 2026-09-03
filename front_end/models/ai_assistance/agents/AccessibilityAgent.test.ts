@@ -8,11 +8,29 @@ import sinon from 'sinon';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
-import {createTarget, describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {deinitializeGlobalVars} from '../../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
+import {TestUniverse} from '../../../testing/TestUniverse.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-describeWithEnvironment('AccessibilityAgent', () => {
+describe('AccessibilityAgent', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+
+  beforeEach(() => {
+    universe = new TestUniverse();
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
+  });
+
+  afterEach(async () => {
+    await deinitializeGlobalVars();
+  });
   const mockReport = {
     lighthouseVersion: '1.0.0',
     userAgent: 'test user agent',
@@ -159,7 +177,7 @@ describeWithEnvironment('AccessibilityAgent', () => {
   });
 
   it('getElementAccessibilityDetails yields a DomTreeAiWidget containing the node snapshot', async () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const aidaClient = mockAidaClient([[{
       explanation: '',
       functionCalls: [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
@@ -215,7 +233,7 @@ describeWithEnvironment('AccessibilityAgent', () => {
   });
 
   it('getElementAccessibilityDetails returns an error if the node is in a different origin', async () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const aidaClient = mockAidaClient([[{
       explanation: '',
       functionCalls: [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
@@ -249,7 +267,7 @@ describeWithEnvironment('AccessibilityAgent', () => {
   });
 
   it('getElementAccessibilityDetails returns an error if the node is in a different file:// origin', async () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const aidaClient = mockAidaClient([[{
       explanation: '',
       functionCalls: [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
@@ -285,7 +303,7 @@ describeWithEnvironment('AccessibilityAgent', () => {
   });
 
   it('getElementAccessibilityDetails proceeds if both are the same file:// origin', async () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const aidaClient = mockAidaClient([[{
       explanation: '',
       functionCalls: [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
@@ -321,7 +339,7 @@ describeWithEnvironment('AccessibilityAgent', () => {
   });
 
   it('getElementAccessibilityDetails returns an error if they are different data URLs', async () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const aidaClient = mockAidaClient([[{
       explanation: '',
       functionCalls: [{name: 'getElementAccessibilityDetails', args: {path: '1,HTML,1,BODY', explanation: 'testing'}}],
@@ -396,7 +414,7 @@ describeWithEnvironment('AccessibilityAgent', () => {
   }
 
   it('can call the executeJavaScript method', async () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const aidaClient = mockAidaClient([
       [{
         explanation: 'thought',
@@ -433,7 +451,7 @@ describeWithEnvironment('AccessibilityAgent', () => {
   });
 
   it('cannot call executeJavaScript if the report is imported', async () => {
-    const target = createTarget();
+    const target = universe.createTarget();
     const aidaClient = mockAidaClient([
       [{
         explanation: 'thought',

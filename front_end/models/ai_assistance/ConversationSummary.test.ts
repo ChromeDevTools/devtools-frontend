@@ -5,13 +5,12 @@
 import {assert} from 'chai';
 
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
-import {
-  describeWithEnvironment,
-} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 
 import {ConversationSummary} from './ai_assistance.js';
 
-describeWithEnvironment('ConversationSummary', () => {
+describe('ConversationSummary', () => {
+  setupLocaleHooks();
   it('summarizes a conversation', async () => {
     const summaryRunner = new ConversationSummary.ConversationSummary({
       aidaClient: mockAidaClient([[{

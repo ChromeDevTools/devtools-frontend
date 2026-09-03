@@ -29,7 +29,7 @@ describe('GetNetworkRequestDetailsTool', () => {
     networkLog = universe.networkLog;
   });
 
-  afterEach(async () => {
+  after(async () => {
     await deinitializeGlobalVars();
   });
 

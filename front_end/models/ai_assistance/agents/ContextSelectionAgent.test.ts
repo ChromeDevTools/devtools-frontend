@@ -70,7 +70,7 @@ describe('ContextSelectionAgent', function() {
     sinon.stub(Workspace.IgnoreListManager.IgnoreListManager, 'instance').returns(ignoreListManager);
   });
 
-  afterEach(async () => {
+  after(async () => {
     await deinitializeGlobalVars();
   });
 

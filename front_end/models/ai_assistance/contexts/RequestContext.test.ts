@@ -8,14 +8,17 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-describeWithEnvironment('RequestContext', function() {
+describe('RequestContext', function() {
+  setupLocaleHooks();
+  setupSettingsHooks();
   const snapshotTester = new SnapshotTester(this, import.meta);
 
   it('should return the origin of the documentURL', () => {

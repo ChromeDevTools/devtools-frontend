@@ -10,9 +10,7 @@ import {
   assertIsError,
   assertIsResult,
 } from '../../../testing/AiAssistanceHelpers.js';
-import {
-  describeWithEnvironment,
-} from '../../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {MockCDPConnection} from '../../../testing/MockCDPConnection.js';
 import {
   createStubbedDomNodeWithModels,
@@ -21,7 +19,8 @@ import {
 } from '../../../testing/StyleHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-describeWithEnvironment('GetStylesTool', () => {
+describe('GetStylesTool', () => {
+  setupLocaleHooks();
   let element: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;
   let target: sinon.SinonStubbedInstance<SDK.Target.Target>;
   let domModel: sinon.SinonStubbedInstance<SDK.DOMModel.DOMModel>;

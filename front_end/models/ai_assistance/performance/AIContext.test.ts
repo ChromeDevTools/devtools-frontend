@@ -4,13 +4,13 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-describeWithEnvironment('AgentFocus', function() {
+describe('AgentFocus', function() {
   it('lookupEvent catches all errors and returns null for invalid event keys', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz', undefined, {withTimelinePanel: false});
     const focus = AiAssistance.AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
     const invalidKey = 'r-invalid';
@@ -20,7 +20,8 @@ describeWithEnvironment('AgentFocus', function() {
   });
 
   it('lookupEvent returns the event for a valid event key', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz', undefined, {withTimelinePanel: false});
     const focus = AiAssistance.AIContext.AgentFocus.fromParsedTrace(parsedTrace);
 
     const rawEvent = parsedTrace.traceEvents[0];

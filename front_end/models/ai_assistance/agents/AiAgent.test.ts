@@ -7,9 +7,7 @@ import sinon from 'sinon';
 
 import * as Host from '../../../core/host/host.js';
 import {mockAidaClient, MockAidaPayloadLimitError, MockAidaQuotaError} from '../../../testing/AiAssistanceHelpers.js';
-import {
-  describeWithEnvironment,
-} from '../../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 function mockConversationContext(): AiAssistance.AiAgent.ConversationContext<unknown> {
@@ -62,7 +60,8 @@ class AiAgentMock extends AiAssistance.AiAgent.AiAgent<unknown> {
   }
 }
 
-describeWithEnvironment('AiAgent', () => {
+describe('AiAgent', () => {
+  setupLocaleHooks();
   describe('buildRequest', () => {
     beforeEach(() => {
       sinon.stub(crypto, 'randomUUID').returns('sessionId' as `${string}-${string}-${string}-${string}-${string}`);

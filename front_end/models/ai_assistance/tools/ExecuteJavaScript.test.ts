@@ -12,23 +12,28 @@ import {
   assertIsResult,
   assertRequiresApproval,
 } from '../../../testing/AiAssistanceHelpers.js';
-import {describeWithEnvironment, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import * as Formatter from '../../formatter/formatter.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-describeWithEnvironment('ExecuteJavaScriptTool', () => {
+describe('ExecuteJavaScriptTool', () => {
+  setupLocaleHooks();
+  setupSettingsHooks();
   let element: sinon.SinonStubbedInstance<SDK.DOMModel.DOMNode>;
   let target: sinon.SinonStubbedInstance<SDK.Target.Target>;
   let domModel: sinon.SinonStubbedInstance<SDK.DOMModel.DOMModel>;
+  let formatStub: sinon.SinonStub;
 
   beforeEach(() => {
-    sinon.stub(Formatter.FormatterWorkerPool.FormatterWorkerPool.prototype, 'format')
-        .callsFake(async (_mimeType, content) => {
-          return {
-            content,
-            mapping: {original: [], formatted: []},
-          };
-        });
+    formatStub = sinon.stub(Formatter.FormatterWorkerPool.FormatterWorkerPool.prototype, 'format')
+                     .callsFake(async (_mimeType, content) => {
+                       return {
+                         content,
+                         mapping: {original: [], formatted: []},
+                       };
+                     });
 
     target = sinon.createStubInstance(SDK.Target.Target);
     target.model.returns(null);
@@ -294,116 +299,111 @@ describeWithEnvironment('ExecuteJavaScriptTool', () => {
       assert.strictEqual(clock.countTimers(), 0);
       resolveMockPromise('done');
     });
+  });
 
-    describe('validateAndFormatCode', () => {
-      const {validateAndFormatCode} = AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool;
-      let formatStub: sinon.SinonStub;
+  describe('validateAndFormatCode', () => {
+    const {validateAndFormatCode} = AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool;
 
-      beforeEach(() => {
-        formatStub = Formatter.FormatterWorkerPool.FormatterWorkerPool.prototype.format as sinon.SinonStub;
-      });
-
-      it('formats valid JS code correctly', async () => {
-        formatStub.resolves({
-          content: 'const a = 1;\nconst b = 2;',
-          mapping: {original: [], formatted: []},
-        });
-        const result = await validateAndFormatCode('const a=1;const b=2;');
-        assert.strictEqual(result.formattedCode, 'const a = 1;\nconst b = 2;');
-        assert.isUndefined(result.error);
-      });
-
-      it('returns an error when formatted code exceeds 40 lines', async () => {
-        const longCode = Array.from({length: 45}, (_, i) => `const var${i} = ${i};`).join('\n');
-        formatStub.resolves({
-          content: longCode,
-          mapping: {original: [], formatted: []},
-        });
-        const result = await validateAndFormatCode(longCode);
-        assert.match(result.error ?? '', /exceeds maximum allowed size/);
-      });
-
-      it('returns an error when a line exceeds 120 characters', async () => {
-        const longLineCode = `const longVar = "${'a'.repeat(130)}";`;
-        formatStub.resolves({
-          content: longLineCode,
-          mapping: {original: [], formatted: []},
-        });
-        const result = await validateAndFormatCode(longLineCode);
-        assert.match(result.error ?? '', /exceeds maximum allowed size/);
-      });
-
-      it('returns an error when total character count exceeds 2500', async () => {
-        const bulkCode = Array.from({length: 30}, (_, i) => `const var${i} = "${'x'.repeat(75)}";`).join('\n');
-        formatStub.resolves({
-          content: bulkCode,
-          mapping: {original: [], formatted: []},
-        });
-        const result = await validateAndFormatCode(bulkCode);
-        assert.match(result.error ?? '', /exceeds maximum allowed size/);
-      });
-    });
-
-    it('formats code and executes successfully when V2 architecture is enabled', async () => {
-      updateHostConfig({devToolsAiV2Architecture: {enabled: true}});
-      (Formatter.FormatterWorkerPool.FormatterWorkerPool.prototype.format as sinon.SinonStub).resolves({
+    it('formats valid JS code correctly', async () => {
+      formatStub.resolves({
         content: 'const a = 1;\nconst b = 2;',
         mapping: {original: [], formatted: []},
       });
-      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
-      const mockScope = {
-        install: sinon.stub().resolves(),
-        uninstall: sinon.stub().resolves(),
-      };
-      const context = {
-        getExecutionContextNode: () => element,
-        execJs: sinon.stub().resolves('undefined'),
-        changeManager: new AiAssistance.ChangeManager.ChangeManager(),
-        createExtensionScope: sinon.stub().returns(mockScope),
-      };
-
-      const response = await tool.handler(
-          {
-            explanation: 'Check element',
-            title: 'Title',
-            code: 'const a=1;const b=2;',
-          },
-          context,
-      );
-
-      assertIsResult(response);
+      const result = await validateAndFormatCode('const a=1;const b=2;');
+      assert.strictEqual(result.formattedCode, 'const a = 1;\nconst b = 2;');
+      assert.isUndefined(result.error);
     });
 
-    it('returns error result when V2 architecture is enabled and code violates limits', async () => {
-      updateHostConfig({devToolsAiV2Architecture: {enabled: true}});
+    it('returns an error when formatted code exceeds 40 lines', async () => {
       const longCode = Array.from({length: 45}, (_, i) => `const var${i} = ${i};`).join('\n');
-      (Formatter.FormatterWorkerPool.FormatterWorkerPool.prototype.format as sinon.SinonStub).resolves({
+      formatStub.resolves({
         content: longCode,
         mapping: {original: [], formatted: []},
       });
-      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
-      const mockScope = {
-        install: sinon.stub().resolves(),
-        uninstall: sinon.stub().resolves(),
-      };
-      const context = {
-        getExecutionContextNode: () => element,
-        execJs: sinon.stub().resolves('undefined'),
-        changeManager: new AiAssistance.ChangeManager.ChangeManager(),
-        createExtensionScope: sinon.stub().returns(mockScope),
-      };
-
-      const response = await tool.handler(
-          {
-            explanation: 'Check element',
-            title: 'Title',
-            code: longCode,
-          },
-          context,
-      );
-
-      assertIsError(response);
-      assert.match(response.error, /exceeds maximum allowed size/);
+      const result = await validateAndFormatCode(longCode);
+      assert.match(result.error ?? '', /exceeds maximum allowed size/);
     });
+
+    it('returns an error when a line exceeds 120 characters', async () => {
+      const longLineCode = `const longVar = "${'a'.repeat(130)}";`;
+      formatStub.resolves({
+        content: longLineCode,
+        mapping: {original: [], formatted: []},
+      });
+      const result = await validateAndFormatCode(longLineCode);
+      assert.match(result.error ?? '', /exceeds maximum allowed size/);
+    });
+
+    it('returns an error when total character count exceeds 2500', async () => {
+      const bulkCode = Array.from({length: 30}, (_, i) => `const var${i} = "${'x'.repeat(75)}";`).join('\n');
+      formatStub.resolves({
+        content: bulkCode,
+        mapping: {original: [], formatted: []},
+      });
+      const result = await validateAndFormatCode(bulkCode);
+      assert.match(result.error ?? '', /exceeds maximum allowed size/);
+    });
+  });
+
+  it('formats code and executes successfully when V2 architecture is enabled', async () => {
+    updateHostConfig({devToolsAiV2Architecture: {enabled: true}});
+    formatStub.resolves({
+      content: 'const a = 1;\nconst b = 2;',
+      mapping: {original: [], formatted: []},
+    });
+    const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+    const mockScope = {
+      install: sinon.stub().resolves(),
+      uninstall: sinon.stub().resolves(),
+    };
+    const context = {
+      getExecutionContextNode: () => element,
+      execJs: sinon.stub().resolves('undefined'),
+      changeManager: new AiAssistance.ChangeManager.ChangeManager(),
+      createExtensionScope: sinon.stub().returns(mockScope),
+    };
+
+    const response = await tool.handler(
+        {
+          explanation: 'Check element',
+          title: 'Title',
+          code: 'const a=1;const b=2;',
+        },
+        context,
+    );
+
+    assertIsResult(response);
+  });
+
+  it('returns error result when V2 architecture is enabled and code violates limits', async () => {
+    updateHostConfig({devToolsAiV2Architecture: {enabled: true}});
+    const longCode = Array.from({length: 45}, (_, i) => `const var${i} = ${i};`).join('\n');
+    formatStub.resolves({
+      content: longCode,
+      mapping: {original: [], formatted: []},
+    });
+    const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+    const mockScope = {
+      install: sinon.stub().resolves(),
+      uninstall: sinon.stub().resolves(),
+    };
+    const context = {
+      getExecutionContextNode: () => element,
+      execJs: sinon.stub().resolves('undefined'),
+      changeManager: new AiAssistance.ChangeManager.ChangeManager(),
+      createExtensionScope: sinon.stub().returns(mockScope),
+    };
+
+    const response = await tool.handler(
+        {
+          explanation: 'Check element',
+          title: 'Title',
+          code: longCode,
+        },
+        context,
+    );
+
+    assertIsError(response);
+    assert.match(response.error, /exceeds maximum allowed size/);
   });
 });

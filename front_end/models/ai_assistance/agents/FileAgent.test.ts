@@ -38,7 +38,7 @@ describe('FileAgent', () => {
     sinon.stub(Logs.NetworkLog.NetworkLog, 'instance').returns(universe.networkLog);
   });
 
-  afterEach(async () => {
+  after(async () => {
     await deinitializeGlobalVars();
   });
 

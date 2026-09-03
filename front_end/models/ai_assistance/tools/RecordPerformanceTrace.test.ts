@@ -5,19 +5,31 @@
 import {assert} from 'chai';
 import * as sinon from 'sinon';
 
+import * as SDK from '../../../core/sdk/sdk.js';
 import {
   assertIsContext,
   assertIsError,
-  initializePersistenceImplForTests,
 } from '../../../testing/AiAssistanceHelpers.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
+import {TestUniverse} from '../../../testing/TestUniverse.js';
+import * as Bindings from '../../bindings/bindings.js';
 import type * as Trace from '../../trace/trace.js';
 import * as AiAssistance from '../ai_assistance.js';
 
-describeWithEnvironment('RecordPerformanceTraceTool', () => {
+describe('RecordPerformanceTraceTool', () => {
+  setupLocaleHooks();
+  setupRuntimeHooks();
+
+  let universe: TestUniverse;
+
   beforeEach(() => {
-    initializePersistenceImplForTests();
+    universe = new TestUniverse();
+    sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
+        .returns(universe.debuggerWorkspaceBinding);
+    sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
   });
+
   const RecordPerformanceTraceTool = AiAssistance.RecordPerformanceTrace.RecordPerformanceTraceTool;
 
   it('returns display info', () => {

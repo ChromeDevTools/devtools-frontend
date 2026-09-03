@@ -7,10 +7,9 @@ import sinon from 'sinon';
 
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import * as AiAssistanceModel from '../ai_assistance/ai_assistance.js';
 
-describeWithEnvironment('ChangeManager', () => {
+describe('ChangeManager', () => {
   let styleSheetId = 0;
   const frameId = '1' as Protocol.Page.FrameId;
   const anotherFrameId = '2' as Protocol.Page.FrameId;
@@ -187,9 +186,7 @@ describeWithEnvironment('ChangeManager', () => {
   });
 
   it('disposes targetManager and cssModel listeners on dispose', async () => {
-    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-    const targetManager = SDK.TargetManager.TargetManager.instance();
-    const removeModelListenerSpy = sinon.spy(targetManager, 'removeModelListener');
+    const targetManager = sinon.createStubInstance(SDK.TargetManager.TargetManager);
     const changeManager = new AiAssistanceModel.ChangeManager.ChangeManager(targetManager);
     const cssModel = createModel();
     await changeManager.addChange(cssModel, frameId, {
@@ -204,7 +201,7 @@ describeWithEnvironment('ChangeManager', () => {
     changeManager.dispose();
 
     sinon.assert.calledWith(
-        removeModelListenerSpy,
+        targetManager.removeModelListener,
         SDK.ResourceTreeModel.ResourceTreeModel,
         sinon.match(SDK.ResourceTreeModel.Events.PrimaryPageChanged),
         changeManager.clear,

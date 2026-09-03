@@ -4,11 +4,9 @@
 
 import {assert} from 'chai';
 
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
-
 import * as AiAssistance from './ai_assistance.js';
 
-describeWithEnvironment('AiOrigins', () => {
+describe('AiOrigins', () => {
   describe('isOpaqueOrigin', () => {
     it('identifies opaque origins', () => {
       assert.isTrue(AiAssistance.AiOrigins.isOpaqueOrigin('null'));

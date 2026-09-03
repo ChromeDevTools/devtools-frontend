@@ -17,6 +17,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("insights") {
+  split_compilation = true
   sources = [
     "BaseInsightComponent.ts",
     "CLSCulprits.ts",
@@ -49,7 +50,7 @@ devtools_ui_module("insights") {
     "types.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../../core/common:bundle",
     "../../../../core/i18n:bundle",
     "../../../../core/platform:bundle",
@@ -78,12 +79,12 @@ devtools_ui_module("insights") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "insights.ts"
 
-  deps = [
-    ":css_files",
-    ":insights",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":insights" ]
 
   visibility = [
     ":*",
@@ -94,6 +95,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -105,7 +107,7 @@ devtools_ui_module("unittests") {
     "Table.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../../core/common:bundle",
     "../../../../core/root:bundle",

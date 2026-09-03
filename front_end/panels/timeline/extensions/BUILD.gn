@@ -7,18 +7,20 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 
 devtools_ui_module("extensions") {
+  split_compilation = true
   sources = [ "ExtensionUI.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../../models/trace:bundle",
     "../../../ui/legacy/theme_support:bundle",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "extensions.ts"
 
-  deps = [ ":extensions" ]
+  ts_deps = [ ":extensions" ]
 
   visibility = [
     "..:*",

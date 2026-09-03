@@ -1691,7 +1691,10 @@ export class NetworkLogView extends NetworkLogViewBase implements
     this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.Scheme, String(request.scheme));
     this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.StatusCode, String(request.statusCode));
     this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.ResourceType, request.resourceType().name());
-    this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.Url, request.securityOrigin());
+    const requestURLSecurityOrigin = request.requestURLSecurityOrigin();
+    if (!requestURLSecurityOrigin.isOpaque()) {
+      this.suggestionBuilder.addItem(NetworkForward.UIFilter.FilterType.Url, requestURLSecurityOrigin.siteId());
+    }
 
     const priority = request.priority();
     if (priority) {

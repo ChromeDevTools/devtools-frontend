@@ -621,4 +621,114 @@ describeWithEnvironment('requestStreamingContent', () => {
       ]);
     });
   });
+
+  describe('requestURLSecurityOrigin', () => {
+    it('returns standard origin matching scheme, host, and port for web URLs', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req1',
+          urlString`https://example.com:8080/api/users?id=1`,
+          urlString`https://example.com:8080/index.html`,
+          null,
+      );
+      const origin = request.requestURLSecurityOrigin();
+      const expectedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com:8080');
+
+      assert.isFalse(origin.isOpaque());
+      assert.isTrue(origin.isSameOriginWith(expectedOrigin));
+      assert.strictEqual(origin.siteId(), 'https://example.com:8080');
+    });
+
+    it('returns path-scoped origin for file:// URLs', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req1',
+          urlString`file:///home/user/app.js`,
+          urlString`file:///home/user/index.html`,
+          null,
+      );
+      const origin = request.requestURLSecurityOrigin();
+      const expectedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('file:///home/user/app.js');
+
+      assert.isFalse(origin.isOpaque());
+      assert.isTrue(origin.isSameOriginWith(expectedOrigin));
+      assert.strictEqual(origin.siteId(), 'file:///home/user/app.js');
+    });
+
+    it('returns unique opaque origin for data: URLs', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req1',
+          urlString`data:text/html,<h1>Hello</h1>`,
+          urlString`https://example.com/`,
+          null,
+      );
+      const origin = request.requestURLSecurityOrigin();
+      const anotherOrigin = request.requestURLSecurityOrigin();
+
+      assert.isTrue(origin.isOpaque());
+      assert.isTrue(anotherOrigin.isOpaque());
+      assert.isFalse(origin.isSameOriginWith(anotherOrigin));
+    });
+
+    it('returns virtual imported-har origin for imported HAR requests', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req1',
+          urlString`https://api.example.com/data`,
+          urlString`https://example.com/index.html`,
+          null,
+      );
+      request.setIsImportedHar(true);
+      const origin = request.requestURLSecurityOrigin();
+      const liveOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://api.example.com');
+      const expectedHarOrigin = SDK.SecurityOrigin.SecurityOrigin.create('imported-har://api.example.com');
+
+      assert.isFalse(origin.isOpaque());
+      assert.isTrue(origin.isSameOriginWith(expectedHarOrigin));
+      assert.isFalse(origin.isSameOriginWith(liveOrigin));
+      assert.strictEqual(origin.siteId(), 'imported-har://api.example.com');
+    });
+  });
+
+  describe('initiatorSecurityOrigin', () => {
+    it('returns standard origin matching documentURL', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req1',
+          urlString`https://api.example.com/data`,
+          urlString`https://example.com:8443/index.html`,
+          null,
+      );
+      const initiatorOrigin = request.initiatorSecurityOrigin();
+      const expectedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com:8443');
+
+      assert.isFalse(initiatorOrigin.isOpaque());
+      assert.isTrue(initiatorOrigin.isSameOriginWith(expectedOrigin));
+      assert.strictEqual(initiatorOrigin.siteId(), 'https://example.com:8443');
+    });
+
+    it('returns virtual imported-har origin for imported HAR documentURL', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req1',
+          urlString`https://api.example.com/data`,
+          urlString`https://example.com/index.html`,
+          null,
+      );
+      request.setIsImportedHar(true);
+      const initiatorOrigin = request.initiatorSecurityOrigin();
+      const expectedHarOrigin = SDK.SecurityOrigin.SecurityOrigin.create('imported-har://example.com');
+
+      assert.isFalse(initiatorOrigin.isOpaque());
+      assert.isTrue(initiatorOrigin.isSameOriginWith(expectedHarOrigin));
+      assert.strictEqual(initiatorOrigin.siteId(), 'imported-har://example.com');
+    });
+
+    it('returns opaque origin when documentURL is empty or opaque', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'req1',
+          urlString`https://api.example.com/data`,
+          urlString``,
+          null,
+      );
+      const initiatorOrigin = request.initiatorSecurityOrigin();
+
+      assert.isTrue(initiatorOrigin.isOpaque());
+    });
+  });
 });

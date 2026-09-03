@@ -14,14 +14,14 @@ devtools_pre_built("wasmparser") {
     "package/dist/esm/WasmDis.js",
     "package/dist/esm/WasmParser.d.ts",
     "package/dist/esm/WasmParser.js",
-    "wasmparser-tsconfig.json",
   ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "wasmparser.ts"
 
-  deps = [ ":wasmparser" ]
+  ts_deps = [ ":wasmparser" ]
 
   visibility = [ "../../entrypoints/wasmparser_worker/*" ]
 

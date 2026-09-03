@@ -7,7 +7,7 @@ import sinon from 'sinon';
 import * as Common from '../core/common/common.js';
 
 function createSettingValue(category: Common.Settings.SettingCategory, settingName: string, defaultValue: unknown,
-                            settingType = Common.Settings.SettingType.BOOLEAN,
+                            settingType: Common.SettingRegistration.SettingType = Common.Settings.SettingType.BOOLEAN,
                             title?: string|(() => Common.UIString.LocalizedString),
                             options?: Common.SettingRegistration.SettingRegistration['options']):
     Common.SettingRegistration.SettingRegistration {
@@ -28,7 +28,7 @@ const rawOption = (value: string, title: string) => ({
   raw: true as const,
 });
 
-export function stubNoopSettings() {
+export function stubNoopSettings(): void {
   const createDummySetting = (name: string|{name: string}) => {
     const settingName = typeof name === 'string' ? name : name.name;
     return {
@@ -295,7 +295,7 @@ export const DEFAULT_SETTING_REGISTRATIONS_FOR_TEST: ReadonlyArray<ReturnType<ty
                      Common.Settings.SettingType.BOOLEAN),
 ];
 
-export function setupSettings(reset: boolean) {
+export function setupSettings(reset: boolean): void {
   // Create the appropriate settings needed to boot.
   Common.Settings.registerSettingsForTest(DEFAULT_SETTING_REGISTRATIONS_FOR_TEST.slice(0), reset);
   // Instantiate the storage.
@@ -310,16 +310,16 @@ export function setupSettings(reset: boolean) {
   });
 }
 
-export function cleanupSettings() {
+export function cleanupSettings(): void {
   Common.Settings.resetSettings();
 }
 
-export function setupSettingsHooks() {
+export function setupSettingsHooks(): void {
   beforeEach(() => setupSettings(true));
   afterEach(cleanupSettings);
 }
 
-export function createSettingsForTest(settingRegistrations = DEFAULT_SETTING_REGISTRATIONS_FOR_TEST.slice(0)) {
+export function createSettingsForTest(settingRegistrations: Common.SettingRegistration.SettingRegistration[] = DEFAULT_SETTING_REGISTRATIONS_FOR_TEST.slice(0)): Common.Settings.Settings {
   const storage = new Common.Settings.SettingsStorage({});
   return new Common.Settings.Settings({
     syncedStorage: storage,

@@ -14,7 +14,7 @@ type GetEnvironmentVariablesCallback = (params: unknown) =>
     PromiseLike<Omit<Protocol.CSS.GetEnvironmentVariablesResponse, 'getError'>|{getError(): string}>;
 
 export function mockGetEnvironmentVariables(connection: MockCDPConnection,
-                                            environmentVariables: Record<string, string> = {}) {
+                                            environmentVariables: Record<string, string> = {}): void {
   connection.setHandler('CSS.getEnvironmentVariables', null);
   connection.setSuccessHandler('CSS.getEnvironmentVariables', () => ({environmentVariables}));
 }
@@ -53,7 +53,7 @@ export function getMatchedStylesWithBlankRule(payload: {
   origin?: Protocol.CSS.StyleSheetOrigin,
   styleSheetId?: Protocol.DOM.StyleSheetId,
   getEnvironmentVariablesCallback?: GetEnvironmentVariablesCallback,
-}&Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>) {
+}&Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles> {
   return getMatchedStylesWithProperties({properties: {}, ...payload});
 }
 
@@ -123,7 +123,7 @@ export function getMatchedStylesWithProperties(payload: {
   origin?: Protocol.CSS.StyleSheetOrigin,
   styleSheetId?: Protocol.DOM.StyleSheetId,
   getEnvironmentVariablesCallback?: GetEnvironmentVariablesCallback,
-}&Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>) {
+}&Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles> {
   const styleSheetId = payload.styleSheetId ?? '0' as Protocol.DOM.StyleSheetId;
   const range = payload.range;
   const origin = payload.origin ?? Protocol.CSS.StyleSheetOrigin.Regular;
@@ -134,7 +134,7 @@ export function getMatchedStylesWithProperties(payload: {
 export function getMatchedStyles(
     payload: Partial<SDK.CSSMatchedStyles.CSSMatchedStylesPayload>&{connection: MockCDPConnection},
     getEnvironmentVariablesCallback: GetEnvironmentVariablesCallback = () => ({environmentVariables: {}}),
-    connection: MockCDPConnection = payload.connection) {
+    connection: MockCDPConnection = payload.connection): Promise<SDK.CSSMatchedStyles.CSSMatchedStyles> {
   connection.setHandler('CSS.getEnvironmentVariables', null);
   connection.setHandler('CSS.getEnvironmentVariables', params => {
     const result = getEnvironmentVariablesCallback(params);

@@ -17,7 +17,7 @@ export interface LoadResult {
   errorDescription: Host.ResourceLoader.LoadErrorDescription;
 }
 
-export function setupPageResourceLoaderForSourceMap(sourceMapContent: string) {
+export function setupPageResourceLoaderForSourceMap(sourceMapContent: string): void {
   const loadSourceMap = async (_url: string) => {
     return {
       success: true,

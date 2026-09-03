@@ -54,7 +54,9 @@ export function registerNoopActions(actionIds: string[]): void {
   UI.ShortcutRegistry.ShortcutRegistry.instance({forceNew: true, actionRegistry: actionRegistryInstance});
 }
 
-export async function initializeGlobalVars({reset = true} = {}) {
+export async function initializeGlobalVars({reset = true}: {
+    reset?: boolean | undefined,
+} = {}): Promise<void> {
   await initializeGlobalLocaleVars();
 
   setupSettings(reset);
@@ -69,7 +71,7 @@ export async function initializeGlobalVars({reset = true} = {}) {
   UI.UIUtils.initializeUIUtils(document);
 }
 
-export async function deinitializeGlobalVars() {
+export async function deinitializeGlobalVars(): Promise<void> {
   // Remove the global SDK.
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const globalObject = (globalThis as unknown as {SDK?: unknown, ls?: unknown});
@@ -132,7 +134,7 @@ export async function deinitializeGlobalVars() {
 
 export function describeWithEnvironment(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {
   reset: true,
-}) {
+}): Mocha.Suite {
   return describe(title, function() {
     beforeEach(async () => await initializeGlobalVars(opts));
     fn.call(this);
@@ -140,16 +142,18 @@ export function describeWithEnvironment(title: string, fn: (this: Mocha.Suite) =
   });
 }
 
-describeWithEnvironment.only = function(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {
-  reset: true,
-}) {
-  // eslint-disable-next-line mocha/no-exclusive-tests
-  return describe.only(title, function() {
-    beforeEach(async () => await initializeGlobalVars(opts));
-    fn.call(this);
-    afterEach(async () => await deinitializeGlobalVars());
-  });
-};
+export namespace describeWithEnvironment {
+  export function only(title: string, fn: (this: Mocha.Suite) => void, opts: {reset: boolean} = {
+    reset: true,
+  }): Mocha.Suite {
+    // eslint-disable-next-line mocha/no-exclusive-tests
+    return describe.only(title, function() {
+      beforeEach(async () => await initializeGlobalVars(opts));
+      fn.call(this);
+      afterEach(async () => await deinitializeGlobalVars());
+    });
+  }
+}
 
 export function createFakeSetting<T>(name: string, defaultValue: T): Common.Settings.Setting<T> {
   const storage = new Common.Settings.SettingsStorage({}, undefined, 'test');
@@ -163,7 +167,7 @@ export function createFakeRegExpSetting(name: string, defaultValue: string): Com
                                            Common.Console.Console.instance());
 }
 
-export function setupActionRegistry() {
+export function setupActionRegistry(): void {
   beforeEach(function() {
     const actionRegistry = UI.ActionRegistry.ActionRegistry.instance();
     UI.ShortcutRegistry.ShortcutRegistry.instance({
@@ -180,7 +184,7 @@ export function setupActionRegistry() {
 }
 
 /** This needs to be invoked within a describe block, rather than within an it() block. **/
-export function expectConsoleLogs(expectedLogs: {warn?: string[], log?: string[], error?: string[]}) {
+export function expectConsoleLogs(expectedLogs: {warn?: string[], log?: string[], error?: string[]}): void {
   const {error, warn, log} = console;
   before(() => {
     if (expectedLogs.log) {
@@ -231,7 +235,7 @@ export function restoreUserAgentForTesting(): void {
   userAgentStub = undefined;
 }
 
-export function resetHostConfig() {
+export function resetHostConfig(): void {
   for (const key of Object.keys(Root.Runtime.hostConfig)) {
     // @ts-expect-error TypeScript does not deduce the correct type
     delete Root.Runtime.hostConfig[key];
@@ -243,7 +247,7 @@ export function resetHostConfig() {
  * `Root.Runtime.hostConfig` is automatically cleaned-up between unit
  * tests.
  */
-export function updateHostConfig(config: Root.Runtime.HostConfig) {
+export function updateHostConfig(config: Root.Runtime.HostConfig): void {
   Object.assign(Root.Runtime.hostConfig, config);
 }
 

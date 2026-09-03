@@ -13,7 +13,7 @@ import * as Workspace from '../models/workspace/workspace.js';
 
 const {urlString} = Platform.DevToolsPath;
 
-export function setUpEnvironment() {
+export function setUpEnvironment(): { networkPersistenceManager: Persistence.NetworkPersistenceManager.NetworkPersistenceManager, workspace: Workspace.Workspace.WorkspaceImpl, debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding } {
   const workspace = Workspace.Workspace.WorkspaceImpl.instance();
   const targetManager = SDK.TargetManager.TargetManager.instance();
   const resourceMapping = new Bindings.ResourceMapping.ResourceMapping(targetManager, workspace);
@@ -38,7 +38,7 @@ export function setUpEnvironment() {
 }
 
 export async function createWorkspaceProject(
-    baseUrl: Platform.DevToolsPath.UrlString, files: Array<{path: string, content: string, name: string}>) {
+    baseUrl: Platform.DevToolsPath.UrlString, files: Array<{path: string, content: string, name: string}>): Promise<Persistence.NetworkPersistenceManager.NetworkPersistenceManager> {
   const {networkPersistenceManager} = setUpEnvironment();
   const fileSystem: Partial<Persistence.FileSystemWorkspaceBinding.FileSystem> = {
     fileSystemPath: () => baseUrl,

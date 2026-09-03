@@ -26,7 +26,7 @@ export function escapeTestIdBlock(block: string): string {
  * Build test ID is like the test ID used on the CLI but the path part of it is
  * an absolute path to the build dir.
  */
-export function computeBuildTestId(file: string, titlePath: string[]) {
+export function computeBuildTestId(file: string, titlePath: string[]): string {
   const blocks = titlePath.map(escapeTestIdBlock);
   const caseName = blocks.join(':');
   const exactTestId = `${file}:${caseName}`;

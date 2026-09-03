@@ -11,7 +11,10 @@ import * as Logs from '../models/logs/logs.js';
 import * as Console from '../panels/console/console.js';
 import * as Components from '../ui/legacy/components/utils/utils.js';
 
-export function createConsoleViewMessageWithStubDeps(rawMessage: SDK.ConsoleModel.ConsoleMessage) {
+export function createConsoleViewMessageWithStubDeps(rawMessage: SDK.ConsoleModel.ConsoleMessage): {
+  message: Console.ConsoleViewMessage.ConsoleViewMessage,
+  linkifier: sinon.SinonStubbedInstance<Components.Linkifier.Linkifier>,
+} {
   const linkifier = sinon.createStubInstance(Components.Linkifier.Linkifier);
   const requestResolver = sinon.createStubInstance(Logs.RequestResolver.RequestResolver);
   requestResolver.waitFor.returns(Promise.reject());

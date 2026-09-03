@@ -3,29 +3,26 @@
 // found in the LICENSE file.
 
 import * as Protocol from '../generated/protocol.js';
-// eslint-disable-next-line @devtools/es-modules-import
-import {
-  Issue,
-  IssueCategory,
-  IssueKind,
-} from '../models/issues_manager/Issue.js';
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
 
-export class StubIssue extends Issue {
+export class StubIssue extends IssuesManager.Issue.Issue {
   private requestIds: string[];
   private cookieNames: string[];
-  private issueKind: IssueKind;
+  private issueKind: IssuesManager.Issue.IssueKind;
   private locations: Protocol.Audits.SourceCodeLocation[] = [];
   private mockIssueId?: Protocol.Audits.IssueId;
-  private mockIssueCategory?: IssueCategory;
+  private mockIssueCategory?: IssuesManager.Issue.IssueCategory;
 
-  constructor(code: string, requestIds: string[], cookieNames: string[], issueKind = IssueKind.IMPROVEMENT) {
+  constructor(
+      code: string, requestIds: string[], cookieNames: string[],
+      issueKind: IssuesManager.Issue.IssueKind = IssuesManager.Issue.IssueKind.IMPROVEMENT) {
     super(code, null);
     this.requestIds = requestIds;
     this.cookieNames = cookieNames;
     this.issueKind = issueKind;
   }
 
-  getDescription() {
+  getDescription(): IssuesManager.MarkdownIssueDescription.MarkdownIssueDescription {
     return {
       file: '',
       links: [],
@@ -36,61 +33,61 @@ export class StubIssue extends Issue {
     return `${this.code()}-(${this.cookieNames.join(';')})-(${this.requestIds.join(';')})`;
   }
 
-  override requests() {
+  override requests(): Protocol.Audits.AffectedRequest[] {
     return this.requestIds.map(id => {
       return {requestId: id as Protocol.Network.RequestId, url: ''};
     });
   }
 
-  getCategory(): IssueCategory {
-    return this.mockIssueCategory ? this.mockIssueCategory as unknown as IssueCategory : IssueCategory.OTHER;
+  getCategory(): IssuesManager.Issue.IssueCategory {
+    return this.mockIssueCategory ? this.mockIssueCategory : IssuesManager.Issue.IssueCategory.OTHER;
   }
 
-  override sources() {
+  override sources(): Protocol.Audits.SourceCodeLocation[] {
     return this.locations;
   }
 
-  getKind() {
+  getKind(): IssuesManager.Issue.IssueKind {
     return this.issueKind;
   }
 
-  override cookies() {
+  override cookies(): Protocol.Audits.AffectedCookie[] {
     return this.cookieNames.map(name => {
       return {name, domain: '', path: ''};
     });
   }
 
-  override getIssueId() {
+  override getIssueId(): Protocol.Audits.IssueId|undefined {
     return this.mockIssueId;
   }
 
-  static createFromRequestIds(requestIds: string[]) {
+  static createFromRequestIds(requestIds: string[]): StubIssue {
     return new StubIssue('StubIssue', requestIds, []);
   }
 
-  static createFromCookieNames(cookieNames: string[]) {
+  static createFromCookieNames(cookieNames: string[]): StubIssue {
     return new StubIssue('StubIssue', [], cookieNames);
   }
 
-  static createFromIssueKinds(issueKinds: IssueKind[]) {
+  static createFromIssueKinds(issueKinds: IssuesManager.Issue.IssueKind[]): StubIssue[] {
     return issueKinds.map(k => new StubIssue('StubIssue', [], [], k));
   }
 
-  static createFromAffectedLocations(locations: Protocol.Audits.SourceCodeLocation[]) {
+  static createFromAffectedLocations(locations: Protocol.Audits.SourceCodeLocation[]): StubIssue {
     const issue = new StubIssue('StubIssue', [], []);
     issue.locations = locations;
     return issue;
   }
 
-  static createFromIssueId(issueId: Protocol.Audits.IssueId) {
+  static createFromIssueId(issueId: Protocol.Audits.IssueId): StubIssue {
     const issue = new StubIssue('StubIssue', [], []);
     issue.mockIssueId = issueId;
     return issue;
   }
 
-  static createCookieIssue(code: string) {
+  static createCookieIssue(code: string): StubIssue {
     const issue = new StubIssue(code, [], []);
-    issue.mockIssueCategory = IssueCategory.COOKIE;
+    issue.mockIssueCategory = IssuesManager.Issue.IssueCategory.COOKIE;
     return issue;
   }
 }
@@ -103,7 +100,7 @@ export class ThirdPartyStubIssue extends StubIssue {
     this.isThirdParty = isThirdParty;
   }
 
-  override isCausedByThirdParty() {
+  override isCausedByThirdParty(): boolean {
     return this.isThirdParty;
   }
 }

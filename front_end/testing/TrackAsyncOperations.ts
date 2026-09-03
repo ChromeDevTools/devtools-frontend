@@ -37,7 +37,7 @@ interface AsyncActivity {
 
 const asyncActivity: AsyncActivity[] = [];
 
-export async function checkForPendingActivity(testName = '') {
+export async function checkForPendingActivity(testName = ''): Promise<void> {
   let stillPending: AsyncActivity[] = [];
   const wait = 5;
   let retries = 20;
@@ -96,7 +96,7 @@ export async function checkForPendingActivity(testName = '') {
   }
 }
 
-export function stopTrackingAsyncActivity() {
+export function stopTrackingAsyncActivity(): void {
   asyncActivity.length = 0;
   restoreAll();
 }
@@ -266,7 +266,7 @@ const stubMethods: TrackedAsyncOperations = {
   Promise: TrackingPromise,
 };
 
-export function startTrackingAsyncActivity() {
+export function startTrackingAsyncActivity(): void {
   // Reset everything before starting a new tracking session.
   // Do this in case something went wrong with cleanup
   stopTrackingAsyncActivity();

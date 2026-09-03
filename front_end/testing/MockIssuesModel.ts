@@ -13,7 +13,7 @@ export class MockIssuesModel extends Common.ObjectWrapper.ObjectWrapper<SDK.Issu
     super();
     this.mockIssues = issues;
   }
-  issues() {
+  issues(): Iterable<IssuesManager.Issue.Issue> {
     return this.mockIssues;
   }
   target() {

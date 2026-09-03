@@ -25,7 +25,7 @@ export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper<Issues
     this.mockIssues = Array.from(issues);
   }
 
-  issues() {
+  issues(): IssuesManager.Issue.Issue[] {
     return this.mockIssues;
   }
 
@@ -49,14 +49,14 @@ export class MockIssuesManager extends Common.ObjectWrapper.ObjectWrapper<Issues
     this.issueCounts = counts;
   }
 
-  incrementIssueCountsOfAllKinds() {
+  incrementIssueCountsOfAllKinds(): void {
     for (const [key, value] of this.issueCounts) {
       this.issueCounts.set(key, value + 1);
     }
     this.dispatchEventToListeners(IssuesManager.IssuesManager.Events.ISSUES_COUNT_UPDATED);
   }
 
-  addIssue(mockIssue: StubIssue) {
+  addIssue(mockIssue: StubIssue): void {
     this.mockIssues.push(mockIssue);
     this.dispatchEventToListeners(
         IssuesManager.IssuesManager.Events.ISSUE_ADDED, {issue: mockIssue, issuesModel: this.mockModel});

@@ -29,11 +29,11 @@ export class MockNetworkLog extends Common.ObjectWrapper.ObjectWrapper<Logs.Netw
     this.mockRequests = mockRequests;
   }
 
-  requestsForId(requestId: string) {
+  requestsForId(requestId: string): MockNetworkRequest[] {
     return this.mockRequests.filter(x => x.requestId() === requestId);
   }
 
-  addRequest(mockRequest: MockNetworkRequest) {
+  addRequest(mockRequest: MockNetworkRequest): void {
     this.mockRequests.push(mockRequest);
     this.dispatchEventToListeners(
         Logs.NetworkLog.Events.RequestAdded, {request: mockRequest as SDK.NetworkRequest.NetworkRequest});

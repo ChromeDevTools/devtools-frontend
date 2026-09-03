@@ -35,7 +35,7 @@ const MAIN_FRAME = {
   id: MAIN_FRAME_ID,
 };
 
-export function mockResourceTree(connection: MockCDPConnection) {
+export function mockResourceTree(connection: MockCDPConnection): void {
   connection.setSuccessHandler('Page.getResourceTree', () => ({
                                                          frameTree: {
                                                            frame: MAIN_FRAME,
@@ -67,7 +67,7 @@ export async function addChildFrame(target: SDK.Target.Target, framePayload?: Pa
 
 export function navigate(
     frame: SDK.ResourceTreeModel.ResourceTreeFrame, framePayload?: Partial<Protocol.Page.Frame>,
-    type: Protocol.Page.NavigationType = Protocol.Page.NavigationType.Navigation) {
+    type: Protocol.Page.NavigationType = Protocol.Page.NavigationType.Navigation): void {
   const effectivePayload = getEffectivePayload(frame.id, FRAME, framePayload);
   frame.resourceTreeModel().frameNavigated(effectivePayload, type);
 }

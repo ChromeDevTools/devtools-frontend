@@ -37,7 +37,7 @@ devtools_entrypoint("bundle") {
     "../../entrypoints/main/*",
     "../../foundation/*",
     "../../panels/*",
-    "../../testing",
+    "../../testing/*",
   ]
 
   visibility += devtools_models_visibility

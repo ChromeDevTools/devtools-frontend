@@ -11,7 +11,7 @@ import * as Explain from '../panels/explain/explain.js';
 import * as Lit from '../ui/lit/lit.js';
 
 import {updateHostConfig} from './EnvironmentHelpers.js';
-import {createViewFunctionStub} from './ViewFunctionHelpers.js';
+import {createViewFunctionStub, type ViewFunctionStub} from './ViewFunctionHelpers.js';
 
 function getTestAidaClient() {
   return {
@@ -51,7 +51,16 @@ export async function createConsoleInsightWidget(options?: Partial<Explain.ViewO
   aidaAvailability?: Host.AidaClient.AidaAccessPreconditions,
   promptBuilder?: Explain.PublicPromptBuilder,
   aidaClient?: Explain.PublicAidaClient,
-}) {
+}): Promise<{
+  component: Explain.ConsoleInsight,
+  view: ViewFunctionStub<typeof Explain.ConsoleInsight>,
+  output: Explain.ViewOutput,
+  stubAidaCheckAccessPreconditions: (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) => sinon.SinonStub,
+  testPromptBuilder: Explain.PublicPromptBuilder,
+  testAidaClient: Explain.PublicAidaClient & {
+    registerClientEvent: sinon.SinonSpy,
+  },
+}> {
   const output = {
     headerRef: options?.headerRef ?? Lit.Directives.createRef<HTMLHeadingElement>(),
     citationLinks: options?.citationLinks ?? [],

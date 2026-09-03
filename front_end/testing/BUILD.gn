@@ -7,6 +7,7 @@ import("../../scripts/build/ninja/devtools_module.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
 ts_library("testing") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -63,7 +64,7 @@ ts_library("testing") {
 
   data_deps = [ "../core/i18n/locales" ]
 
-  deps = [
+  ts_deps = [
     "../../extension-api",
     "../core/common:bundle",
     "../core/host:bundle",
@@ -86,7 +87,6 @@ ts_library("testing") {
     "../models/emulation:bundle",
     "../models/extensions:bundle",
     "../models/formatter:bundle",
-    "../models/issues_manager",
     "../models/issues_manager:bundle",
     "../models/javascript_metadata:bundle",
     "../models/live-metrics:bundle",
@@ -123,17 +123,20 @@ ts_library("testing") {
 }
 
 devtools_foundation_module("test_id_generation") {
+  split_compilation = true
   sources = [ "TestIdGeneration.ts" ]
 }
 
 devtools_foundation_module("mocha_helpers") {
+  split_compilation = true
   testonly = true
   sources = [ "MochaHelpers.ts" ]
 
-  deps = [ ":test_id_generation" ]
+  ts_deps = [ ":test_id_generation" ]
 }
 
 devtools_foundation_module("foundation_unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -141,13 +144,14 @@ devtools_foundation_module("foundation_unittests") {
     "TestIdGeneration.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":mocha_helpers",
     ":test_id_generation",
   ]
 }
 
 ts_library("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -158,7 +162,7 @@ ts_library("unittests") {
     "SourceMapEncoder.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":foundation_unittests",
     ":testing",
     "../core/protocol_client:bundle",

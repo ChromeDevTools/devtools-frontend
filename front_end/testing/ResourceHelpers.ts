@@ -12,10 +12,10 @@ const {urlString} = Platform.DevToolsPath;
 export const LOADER_ID = 'LOADER_ID' as Protocol.Network.LoaderId;
 export const MAIN_FRAME_ID = 'main' as Protocol.Page.FrameId;
 export const DOMAIN = 'example.com';
-export const SECURITY_ORIGIN = `https://${DOMAIN}`;
-export const FRAME_URL = urlString`${`${SECURITY_ORIGIN}/`}`;
+export const SECURITY_ORIGIN: string = `https://${DOMAIN}`;
+export const FRAME_URL: Platform.DevToolsPath.UrlString = urlString`${`${SECURITY_ORIGIN}/`}`;
 
-export const FRAME = {
+export const FRAME: Omit<Protocol.Page.Frame, 'id'> = {
   url: FRAME_URL,
   loaderId: LOADER_ID,
   domainAndRegistry: DOMAIN,
@@ -55,7 +55,7 @@ export function getMainFrame(
 
 export function createResource(
     frame: SDK.ResourceTreeModel.ResourceTreeFrame, networkScriptUrl: Platform.DevToolsPath.UrlString, mimeType: string,
-    content: string) {
+    content: string): SDK.Resource.Resource {
   const resource = new SDK.Resource.Resource(
       frame.resourceTreeModel(), null, networkScriptUrl, networkScriptUrl, MAIN_FRAME_ID, null,
       Common.ResourceType.ResourceType.fromMimeType(mimeType), mimeType, null, content.length);

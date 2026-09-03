@@ -9,7 +9,7 @@ import {
   dispatchKeyDownEvent,
 } from './DOMHelpers.js';
 
-export const getFocusableCell = (node: ParentNode) => {
+export const getFocusableCell = (node: ParentNode): HTMLTableCellElement => {
   // We only expect one here, but we qSA so we can assert on only one.
   // Can't use td as it may be a th if the user has focused a column header.
   const tabIndexCells = node.querySelectorAll('table [tabindex="0"]');
@@ -18,7 +18,7 @@ export const getFocusableCell = (node: ParentNode) => {
   return tabIndexCells[0];
 };
 
-export const getCellByIndexes = (node: ParentNode, indexes: {column: number, row: number}) => {
+export const getCellByIndexes = (node: ParentNode, indexes: {column: number, row: number}): HTMLTableCellElement => {
   const cell =
       node.querySelector<HTMLTableCellElement>(`tr:nth-child(${indexes.row + 1}) td:nth-child(${indexes.column + 1})`);
   assert.instanceOf(cell, HTMLTableCellElement);
@@ -28,7 +28,7 @@ export const getCellByIndexes = (node: ParentNode, indexes: {column: number, row
 export const getHeaderCells = (node: ParentNode, options: {onlyVisible: boolean, withJslog?: boolean} = {
   onlyVisible: false,
   withJslog: true,
-}) => {
+}): HTMLTableCellElement[] => {
   const querySelector = options.withJslog ? 'th[jslog]' : 'th';
   const cells = node.querySelectorAll(querySelector);
   assertElements(cells, HTMLTableCellElement);
@@ -43,28 +43,29 @@ export const getHeaderCells = (node: ParentNode, options: {onlyVisible: boolean,
 
 export const getAllRows = (node: ParentNode, options: {withJslog?: boolean} = {
   withJslog: true,
-}) => {
+}): HTMLTableRowElement[] => {
   const querySelector = options.withJslog ? 'tbody tr[jslog]' : 'tbody tr';
   const rows = node.querySelectorAll(querySelector);
   assertElements(rows, HTMLTableRowElement);
   return Array.from(rows);
 };
 
-export const assertGridContents = (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) => {
-  const grid = gridComponent.shadowRoot?.querySelector('devtools-data-grid')!;
-  assert.isNotNull(grid.shadowRoot);
+export const assertGridContents =
+    (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]): Element => {
+      const grid = gridComponent.shadowRoot?.querySelector('devtools-data-grid')!;
+      assert.isNotNull(grid.shadowRoot);
 
-  const headerActual = getHeaderCells(grid.shadowRoot).map(({textContent}) => textContent!.trim());
-  assert.deepEqual(headerActual, headerExpected);
+      const headerActual = getHeaderCells(grid.shadowRoot).map(({textContent}) => textContent!.trim());
+      assert.deepEqual(headerActual, headerExpected);
 
-  const rowsActual = getValuesOfAllBodyRows(grid.shadowRoot).map(row => row.map(cell => cell.trim()));
-  assert.deepEqual(rowsActual, rowsExpected);
+      const rowsActual = getValuesOfAllBodyRows(grid.shadowRoot).map(row => row.map(cell => cell.trim()));
+      assert.deepEqual(rowsActual, rowsExpected);
 
-  return grid;
-};
+      return grid;
+    };
 
 export const assertGridWidgetContents =
-    (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) => {
+    (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]): Element => {
       const grid = gridComponent.querySelector('devtools-data-grid')!;
 
       const headerActual =
@@ -80,7 +81,7 @@ export const assertGridWidgetContents =
     };
 
 export const emulateUserKeyboardNavigation =
-    (shadowRoot: ShadowRoot, key: 'ArrowLeft'|'ArrowRight'|'ArrowUp'|'ArrowDown') => {
+    (shadowRoot: ShadowRoot, key: 'ArrowLeft'|'ArrowRight'|'ArrowUp'|'ArrowDown'): void => {
       const table = shadowRoot.querySelector('table');
       assert.instanceOf(table, HTMLTableElement);
       dispatchKeyDownEvent(table, {key});
@@ -89,7 +90,7 @@ export const emulateUserKeyboardNavigation =
 export const getValuesOfAllBodyRows = (node: ParentNode, options: {onlyVisible: boolean, withJslog?: boolean} = {
   onlyVisible: false,
   withJslog: true,
-}) => {
+}): string[][] => {
   const rows = getAllRows(node, {withJslog: options.withJslog});
   return rows
       .map(row => {

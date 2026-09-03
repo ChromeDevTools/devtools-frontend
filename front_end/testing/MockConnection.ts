@@ -8,7 +8,7 @@ import type {ProtocolMapping} from '../generated/protocol-mapping.js';
 import type * as ProtocolProxyApi from '../generated/protocol-proxy-api.js';
 
 export function dispatchEvent<E extends keyof ProtocolMapping.Events>(
-    target: SDK.Target.Target, eventName: E, ...payload: ProtocolMapping.Events[E]) {
+    target: SDK.Target.Target, eventName: E, ...payload: ProtocolMapping.Events[E]): void {
   const event = eventName as ProtocolClient.InspectorBackend.QualifiedName;
   const [domain] = ProtocolClient.InspectorBackend.splitQualifiedName(event);
 

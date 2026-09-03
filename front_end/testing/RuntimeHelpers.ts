@@ -4,7 +4,7 @@
 
 import * as Root from '../core/root/root.js';
 
-export function setupRuntime() {
+export function setupRuntime(): void {
   Root.Runtime.experiments.clearForTest();
 
   // The Instrumentation breakpoints experiment is used by the very universal BreakpointManager.
@@ -17,12 +17,12 @@ export function setupRuntime() {
   });
 }
 
-export function cleanupRuntime() {
+export function cleanupRuntime(): void {
   Root.Runtime.experiments.clearForTest();
   Root.Runtime.Runtime.removeInstance();
 }
 
-export function setupRuntimeHooks() {
+export function setupRuntimeHooks(): void {
   beforeEach(setupRuntime);
   afterEach(cleanupRuntime);
 }

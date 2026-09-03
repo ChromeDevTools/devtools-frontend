@@ -8,7 +8,7 @@ import * as i18n from '../core/i18n/i18n.js';
 // eslint-disable-next-line  @devtools/es-modules-import
 import EnUsLocaleData from '../core/i18n/locales/en-US.json' with {type : 'json'};
 
-export async function initializeGlobalLocaleVars() {
+export async function initializeGlobalLocaleVars(): Promise<void> {
   // Expose the locale.
   i18n.DevToolsLocale.DevToolsLocale.instance({
     create: true,
@@ -26,11 +26,11 @@ export async function initializeGlobalLocaleVars() {
   i18n.i18n.registerLocaleDataForTest('en-US', EnUsLocaleData);
 }
 
-export function deinitializeGlobalLocaleVars() {
+export function deinitializeGlobalLocaleVars(): void {
   i18n.DevToolsLocale.DevToolsLocale.removeInstance();
 }
 
-export function setupLocaleHooks() {
+export function setupLocaleHooks(): void {
   beforeEach(async () => await initializeGlobalLocaleVars());
   afterEach(deinitializeGlobalLocaleVars);
 }

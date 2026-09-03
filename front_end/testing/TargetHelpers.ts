@@ -28,7 +28,7 @@ export function createTarget({
   url?: string,
   connection?: ProtocolClient.CDPConnection.CDPConnection,
   targetManager?: SDK.TargetManager.TargetManager,
-} = {}) {
+} = {}): SDK.Target.Target {
   if (!id) {
     if (!uniqueTargetId++) {
       id = 'test' as Protocol.Target.TargetID;

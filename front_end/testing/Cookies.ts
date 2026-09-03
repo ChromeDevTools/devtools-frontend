@@ -37,7 +37,7 @@ const cookieExpectationDefaults: CookieExpectation = {
 
 const requestDate = new Date('Mon Oct 18 2010 17:00:00 GMT+0000');
 
-export function expectCookie(cookie: SDK.Cookie.Cookie, cookieExpectation: CookieExpectation) {
+export function expectCookie(cookie: SDK.Cookie.Cookie, cookieExpectation: CookieExpectation): void {
   const expectation = {...cookieExpectationDefaults, ...cookieExpectation};
   assert.strictEqual(cookie.name(), expectation.name, 'name');
   assert.strictEqual(cookie.value(), expectation.value, 'value');

@@ -57,7 +57,7 @@ function removeAnnouncer() {
  * Completely cleans out the test DOM to ensure it's empty for the next test run.
  * This is run automatically between tests - you should not be manually calling this yourself.
  **/
-export const cleanTestDOM = (testName = '') => {
+export const cleanTestDOM = (testName = ''): void => {
   resetTestUniverseForWidgets();
   const previousContainer = document.getElementById(TEST_CONTAINER_ID);
   if (previousContainer) {
@@ -82,7 +82,7 @@ export const cleanTestDOM = (testName = '') => {
  * Sets up the DOM for testing,
  * If not clean logs an error and cleans itself
  **/
-export const setupTestDOM = async () => {
+export const setupTestDOM = async (): Promise<void> => {
   for (const child of document.body.children) {
     documentBodyElements.add(child);
   }

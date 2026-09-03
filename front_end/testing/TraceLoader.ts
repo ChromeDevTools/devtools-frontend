@@ -259,7 +259,7 @@ export class TraceLoader {
    * Karma test run in a single context if we load all the traces
    * we risk getting out of memory
    */
-  static resetCache() {
+  static resetCache(): void {
     fileContentsCache.clear();
     traceEngineCache.clear();
   }

@@ -204,7 +204,13 @@ export async function createAiAssistancePanel(options?: {
   aidaClient?: Host.AidaClient.AidaClient,
   aidaAvailability?: Host.AidaClient.AidaAccessPreconditions,
   chatView?: AiAssistancePanel.ChatView,
-}) {
+}): Promise<{
+  panel: AiAssistancePanel.AiAssistancePanel,
+  view: ViewFunctionStub<typeof AiAssistancePanel.AiAssistancePanel>,
+  aidaClient: Host.AidaClient.AidaClient,
+  stubAidaCheckAccessPreconditions: (aidaAvailability: Host.AidaClient.AidaAccessPreconditions) =>
+      sinon.SinonStub<[], Promise<Host.AidaClient.AidaAccessPreconditions>>,
+}> {
   let aidaAvailabilityForStub = options?.aidaAvailability ?? Host.AidaClient.AidaAccessPreconditions.AVAILABLE;
 
   const view = createViewFunctionStub(AiAssistancePanel.AiAssistancePanel, {chatView: options?.chatView});
@@ -278,7 +284,7 @@ export function initializePersistenceImplForTests(): void {
   WorkspaceDiff.WorkspaceDiff.workspaceDiff({forceNew: true});
 }
 
-export function cleanup() {
+export function cleanup(): void {
   for (const panel of panels) {
     panel.detach();
   }
@@ -304,7 +310,11 @@ export function stripId<T extends {id: string}>(message: T): T extends AiAssista
 export function openHistoryContextMenu(
     lastUpdate: AiAssistancePanel.ViewInput,
     item: string,
-) {
+    ): {
+  contextMenu: UI.ContextMenu.ContextMenu,
+  id: number|undefined,
+  entry: UI.ContextMenu.Item|undefined,
+} {
   const contextMenu = new UI.ContextMenu.ContextMenu(new MouseEvent('click'));
   lastUpdate.populateHistoryMenu(contextMenu);
 
@@ -319,7 +329,10 @@ export function openHistoryContextMenu(
 export function createTestFilesystem(fileSystemPath: string, files?: Array<{
                                        path: string,
                                        content: string,
-                                     }>) {
+                                     }>): {
+  project: Persistence.FileSystemWorkspaceBinding.FileSystem,
+  uiSourceCode: Workspace.UISourceCode.UISourceCode,
+} {
   const {project, uiSourceCode} = createFileSystemUISourceCode({
     url: Platform.DevToolsPath.urlString`${fileSystemPath}/index.html`,
     mimeType: 'text/html',

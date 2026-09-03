@@ -104,7 +104,7 @@ devtools_entrypoint("bundle") {
     ":*",
     "../../../test/ai_evals/*",
     "../../entrypoints/*",
-    "../../testing",
+    "../../testing/*",
     "../../ui/components/docs/ai_assistance/*",
     "../console/*",
     "../explain",

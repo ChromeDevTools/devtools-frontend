@@ -26,12 +26,12 @@ export interface ExtensionContext {
   backend?: Partial<MockDebuggerBackend>;
 }
 
-export function getExtensionOrigin() {
+export function getExtensionOrigin(): string {
   return window.location.origin;
 }
 
 export function setupDevtoolsExtensionHooks(
-    extension: Partial<Host.InspectorFrontendHostAPI.ExtensionDescriptor> = {}) {
+    extension: Partial<Host.InspectorFrontendHostAPI.ExtensionDescriptor> = {}): ExtensionContext {
   const extensionDescriptor = {
     startPage: `${getExtensionOrigin()}/blank.html`,
     name: 'TestExtension',

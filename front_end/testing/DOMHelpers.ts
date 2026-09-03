@@ -116,7 +116,7 @@ export function assertElements<T extends Element>(
 }
 
 export function getElementWithinComponent<T extends HTMLElement, V extends Element>(
-    component: T, selector: string, elementClass: Platform.Constructor.Constructor<V>) {
+    component: T, selector: string, elementClass: Platform.Constructor.Constructor<V>): V {
   assert.isNotNull(component.shadowRoot);
   const element = component.shadowRoot.querySelector(selector);
   assert.instanceOf(element, elementClass);
@@ -124,7 +124,7 @@ export function getElementWithinComponent<T extends HTMLElement, V extends Eleme
 }
 
 export function getElementsWithinComponent<T extends HTMLElement, V extends Element>(
-    component: T, selector: string, elementClass: Platform.Constructor.Constructor<V>) {
+    component: T, selector: string, elementClass: Platform.Constructor.Constructor<V>): NodeListOf<V> {
   assert.isNotNull(component.shadowRoot);
   const elements = component.shadowRoot.querySelectorAll(selector);
   assertElements(elements, elementClass);
@@ -162,27 +162,27 @@ export function waitForScrollLeft<T extends Element>(element: T, desiredScrollLe
 /**
  * Dispatches a mouse click event.
  */
-export function dispatchClickEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
+export function dispatchClickEvent<T extends Element>(element: T, options: MouseEventInit = {}): void {
   const clickEvent = new MouseEvent('click', options);
   element.dispatchEvent(clickEvent);
 }
 
-export function dispatchMouseUpEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
+export function dispatchMouseUpEvent<T extends Element>(element: T, options: MouseEventInit = {}): void {
   const clickEvent = new MouseEvent('mouseup', options);
   element.dispatchEvent(clickEvent);
 }
 
-export function dispatchBlurEvent<T extends Element>(element: T, options: FocusEventInit = {}) {
+export function dispatchBlurEvent<T extends Element>(element: T, options: FocusEventInit = {}): void {
   const focusEvent = new FocusEvent('blur', options);
   element.dispatchEvent(focusEvent);
 }
 
-export function dispatchFocusEvent<T extends Element>(element: T, options: FocusEventInit = {}) {
+export function dispatchFocusEvent<T extends Element>(element: T, options: FocusEventInit = {}): void {
   const focusEvent = new FocusEvent('focus', options);
   element.dispatchEvent(focusEvent);
 }
 
-export function dispatchFocusOutEvent<T extends Element>(element: T, options: FocusEventInit = {}) {
+export function dispatchFocusOutEvent<T extends Element>(element: T, options: FocusEventInit = {}): void {
   const focusEvent = new FocusEvent('focusout', options);
   element.dispatchEvent(focusEvent);
 }
@@ -190,13 +190,13 @@ export function dispatchFocusOutEvent<T extends Element>(element: T, options: Fo
 /**
  * Dispatches a keydown event. Errors if the event was not dispatched successfully.
  */
-export function dispatchKeyDownEvent<T extends Element>(element: T, options: KeyboardEventInit = {}) {
+export function dispatchKeyDownEvent<T extends Element>(element: T, options: KeyboardEventInit = {}): void {
   const clickEvent = new KeyboardEvent('keydown', options);
   const success = element.dispatchEvent(clickEvent);
   assert.isOk(success, 'Failed to trigger keydown event successfully.');
 }
 
-export function dispatchInputEvent<T extends Element>(element: T, options: InputEventInit = {}) {
+export function dispatchInputEvent<T extends Element>(element: T, options: InputEventInit = {}): void {
   const inputEvent = new InputEvent('input', options);
   element.dispatchEvent(inputEvent);
 }
@@ -204,14 +204,14 @@ export function dispatchInputEvent<T extends Element>(element: T, options: Input
 /**
  * Dispatches a mouse over event.
  */
-export function dispatchMouseOverEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
+export function dispatchMouseOverEvent<T extends Element>(element: T, options: MouseEventInit = {}): void {
   const moveEvent = new MouseEvent('mouseover', options);
   element.dispatchEvent(moveEvent);
 }
 /**
  * Dispatches a mouse out event.
  */
-export function dispatchMouseOutEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
+export function dispatchMouseOutEvent<T extends Element>(element: T, options: MouseEventInit = {}): void {
   const moveEvent = new MouseEvent('mouseout', options);
   element.dispatchEvent(moveEvent);
 }
@@ -219,7 +219,7 @@ export function dispatchMouseOutEvent<T extends Element>(element: T, options: Mo
 /**
  * Dispatches a mouse move event.
  */
-export function dispatchMouseMoveEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
+export function dispatchMouseMoveEvent<T extends Element>(element: T, options: MouseEventInit = {}): void {
   const moveEvent = new MouseEvent('mousemove', options);
   element.dispatchEvent(moveEvent);
 }
@@ -227,7 +227,7 @@ export function dispatchMouseMoveEvent<T extends Element>(element: T, options: M
 /**
  * Dispatches a mouse leave event.
  */
-export function dispatchMouseLeaveEvent<T extends Element>(element: T, options: MouseEventInit = {}) {
+export function dispatchMouseLeaveEvent<T extends Element>(element: T, options: MouseEventInit = {}): void {
   const leaveEvent = new MouseEvent('mouseleave', options);
   element.dispatchEvent(leaveEvent);
 }
@@ -235,7 +235,7 @@ export function dispatchMouseLeaveEvent<T extends Element>(element: T, options: 
 /**
  * Dispatches a clipboard copy event.
  */
-export function dispatchCopyEvent<T extends Element>(element: T, options: ClipboardEventInit = {}) {
+export function dispatchCopyEvent<T extends Element>(element: T, options: ClipboardEventInit = {}): void {
   const copyEvent = new ClipboardEvent('copy', options);
   element.dispatchEvent(copyEvent);
 }
@@ -243,7 +243,7 @@ export function dispatchCopyEvent<T extends Element>(element: T, options: Clipbo
 /**
  * Dispatches a clipboard paste event.
  */
-export function dispatchPasteEvent<T extends Element>(element: T, options: ClipboardEventInit = {}) {
+export function dispatchPasteEvent<T extends Element>(element: T, options: ClipboardEventInit = {}): void {
   const pasteEvent = new ClipboardEvent('paste', options);
   element.dispatchEvent(pasteEvent);
 }
@@ -260,11 +260,11 @@ export function getEventPromise<T extends Event>(element: EventTarget, eventName
   });
 }
 
-export async function doubleRaf() {
+export async function doubleRaf(): Promise<number> {
   return await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 }
 
-export async function raf() {
+export async function raf(): Promise<number> {
   return await new Promise(resolve => requestAnimationFrame(resolve));
 }
 
@@ -274,7 +274,7 @@ export async function raf() {
  * static parts of a template, and we don't want our tests full of noise
  * from those.
  */
-export function stripLitHtmlCommentNodes(text: string) {
+export function stripLitHtmlCommentNodes(text: string): string {
   /**
    * Lit comments take the form of:
    * <!--?lit$1234?--> or:
@@ -312,7 +312,7 @@ export function cleanTextContent(input: string): string {
   return input.trim().replace(/[ \n]{2,}/g, ' ');
 }
 
-export function assertNodeTextContent(component: NodeText.NodeText.NodeText, expectedContent: string) {
+export function assertNodeTextContent(component: NodeText.NodeText.NodeText, expectedContent: string): void {
   assert.isNotNull(component.shadowRoot);
   const content = Array.from(component.shadowRoot.querySelectorAll('span')).map(span => span.textContent).join('');
   assert.strictEqual(content, expectedContent);
@@ -343,7 +343,7 @@ declare global {
  * Currently, it only asserts screenshots match goldens on Linux.
  * The function relies on the bindings exposed via the karma config.
  */
-export async function assertScreenshot(filename: string) {
+export async function assertScreenshot(filename: string): Promise<void> {
   // To avoid a lot of empty space in the screenshot.
   const container = document.getElementById(TEST_CONTAINER_ID)!;
   if (!container.style.width) {

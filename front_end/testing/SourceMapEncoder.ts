@@ -28,7 +28,7 @@ export function encodeVlq(n: number): string {
   return result;
 }
 
-export function encodeVlqList(list: number[]) {
+export function encodeVlqList(list: number[]): string {
   return list.map(encodeVlq).join('');
 }
 

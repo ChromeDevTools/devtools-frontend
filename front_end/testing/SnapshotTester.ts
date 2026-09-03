@@ -59,7 +59,7 @@ class BaseSnapshotTester {
     this.snapshotPath = meta.url.substring(relativePathStart).replace('.test.js', '.snapshot.txt').split('?')[0];
   }
 
-  async load() {
+  async load(): Promise<void> {
     if (BaseSnapshotTester.#updateMode === null) {
       const config = await this.checkIfUpdateMode();
       BaseSnapshotTester.#updateMode = config.updateMode;
@@ -70,7 +70,7 @@ class BaseSnapshotTester {
     }
   }
 
-  assert(context: Mocha.Context, actual: string) {
+  assert(context: Mocha.Context, actual: string): void {
     const title = context.test?.fullTitle() ?? '';
 
     if (context.test && this.#seenTestObjects.has(context.test)) {
@@ -103,7 +103,7 @@ class BaseSnapshotTester {
     }
   }
 
-  async finish() {
+  async finish(): Promise<void> {
     if (BaseSnapshotTester.#updateMode) {
       await this.postUpdate();
     }
@@ -229,6 +229,6 @@ class NodeSnapshotTester extends BaseSnapshotTester {
 
 export type SnapshotTester = NodeSnapshotTester|WebSnapshotTester;
 
-const SnapshotTesterValue = (typeof window === 'undefined') ? NodeSnapshotTester : WebSnapshotTester;
+const SnapshotTesterValue: typeof WebSnapshotTester | typeof NodeSnapshotTester = (typeof window === 'undefined') ? NodeSnapshotTester : WebSnapshotTester;
 
 export {SnapshotTesterValue as SnapshotTester};

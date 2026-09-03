@@ -315,7 +315,7 @@ export class MockDebuggerBackend {
     };
   }
 
-  setBreakpointByUrlToFail(url: string, lineNumber: number) {
+  setBreakpointByUrlToFail(url: string, lineNumber: number): void {
     const key = this.#getBreakpointKey(url, lineNumber);
     const responsePromise = Promise.resolve(serverError('Breakpoint error'));
     this.#setBreakpointByUrlResponses.set(key, {response: responsePromise, callback: () => {}, isOneShot: false});

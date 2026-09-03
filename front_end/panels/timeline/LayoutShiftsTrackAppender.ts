@@ -48,7 +48,7 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
  * allow us to do this properly and not hack around it.
  * TODO: Delete this once the new Layout Shift UI ships out of the TIMELINE_LAYOUT_SHIFT_DETAILS experiment
  **/
-export const LAYOUT_SHIFT_SYNTHETIC_DURATION = Trace.Types.Timing.Micro(5_000);
+export const LAYOUT_SHIFT_SYNTHETIC_DURATION: Trace.Types.Timing.Micro = Trace.Types.Timing.Micro(5_000);
 
 export class LayoutShiftsTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'LayoutShifts';

@@ -37,7 +37,7 @@ export class NetworkTrackAppender implements TrackAppender {
   readonly appenderName: TrackAppenderName = 'Network';
 
   #flameChartData: PerfUI.FlameChart.FlameChartTimelineData;
-  webSocketIdToLevel = new Map<number, number>();
+  webSocketIdToLevel: Map<number, number> = new Map();
   #events: NetworkTrackEvent[] = [];
 
   #font: string;

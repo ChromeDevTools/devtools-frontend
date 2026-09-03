@@ -2560,9 +2560,9 @@ export class TimelinePanel extends TimelinePanelBase implements Client, Timeline
    * run when the user switches to an existing trace, please @see
    * #setModelForActiveTrace and put your code in there.
    **/
-  async loadingComplete(
-      collectedEvents: Trace.Types.Events.Event[], exclusiveFilter: Trace.Extras.TraceFilter.TraceFilter|null = null,
-      metadata: Trace.Types.File.MetaData|null): Promise<void> {
+  async loadingComplete(collectedEvents: Trace.Types.Events.Event[],
+                        exclusiveFilter: Trace.Extras.TraceFilter.TraceFilter|null|undefined = null,
+                        metadata: Trace.Types.File.MetaData|null): Promise<void> {
     this.#traceEngineModel.resetProcessor();
 
     delete this.loader;

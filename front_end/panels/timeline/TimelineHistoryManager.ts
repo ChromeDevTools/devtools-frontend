@@ -26,7 +26,7 @@ import type {TimelineMiniMap} from './TimelineMiniMap.js';
  * represent that as Infinity so we never accidentally collide with an actual
  * trace (in reality a large number like 99 would probably suffice...)
  */
-export const LANDING_PAGE_INDEX_DROPDOWN_CHOICE = Infinity;
+export const LANDING_PAGE_INDEX_DROPDOWN_CHOICE: number = Infinity;
 
 const UIStrings = {
   /**

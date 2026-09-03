@@ -503,7 +503,7 @@ const str_ = i18n.i18n.registerUIStrings('panels/timeline/TimelineUIUtils.ts', U
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 /** Look for scheme:// plus text and exclude any punctuation at the end. **/
-export const URL_REGEX = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
+export const URL_REGEX: RegExp = /(?:[a-zA-Z][a-zA-Z0-9+.-]{2,}:\/\/)[^\s"]{2,}[^\s"'\)\}\],:;.!?]/u;
 const ALWAYS_LINKIFIED_SCHEMES = new Set(['http', 'https']);
 
 let eventDispatchDesciptors: EventDispatchTypeDescriptor[];
@@ -2211,9 +2211,9 @@ export class TimelineUIUtils {
   }
 }
 
-export const aggregatedStatsKey = Symbol('aggregatedStats');
+export const aggregatedStatsKey: unique symbol = Symbol('aggregatedStats');
 
-export const previewElementSymbol = Symbol('previewElement');
+export const previewElementSymbol: unique symbol = Symbol('previewElement');
 
 export class EventDispatchTypeDescriptor {
   priority: number;
@@ -2441,7 +2441,7 @@ export class TimelineDetailsContentHelper {
   }
 }
 
-export const categoryBreakdownCacheSymbol = Symbol('categoryBreakdownCache');
+export const categoryBreakdownCacheSymbol: unique symbol = Symbol('categoryBreakdownCache');
 export interface TimelineMarkerStyle {
   title: string;
   color: string;

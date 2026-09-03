@@ -25,7 +25,7 @@ export class IsolateSelector extends UI.Toolbar.ToolbarItem implements SDK.Isola
   menu: Menus.SelectMenu.SelectMenu;
   options?: Array<{index: number, isolate: SDK.IsolateManager.Isolate}>;
   items?: Menus.Menu.MenuItem[];
-  readonly itemByIsolate = new Map<SDK.IsolateManager.Isolate, Menus.Menu.MenuItem>();
+  readonly itemByIsolate: Map<SDK.IsolateManager.Isolate, Menus.Menu.MenuItem> = new Map();
   readonly #targetManager: SDK.TargetManager.TargetManager;
   readonly #isolateManager: SDK.IsolateManager.IsolateManager;
 

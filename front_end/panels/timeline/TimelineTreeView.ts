@@ -194,7 +194,7 @@ export class TimelineTreeView extends TimelineTreeViewBase implements UI.Searcha
   #parsedTrace: Trace.TraceModel.ParsedTrace|null = null;
   #entityMapper: Trace.EntityMapper.EntityMapper|null = null;
   #lastHighlightedEvent: HTMLElement|null = null;
-  eventToTreeNode = new WeakMap<Trace.Types.Events.Event, Trace.Extras.TraceTree.Node>();
+  eventToTreeNode: WeakMap<Trace.Types.Events.Event, Trace.Extras.TraceTree.Node> = new WeakMap();
   // Compact mode is used to render the tree view in a more compact UI,
   // suitable for AI assistance widgets. It removes sidebars and toolbars.
   #compactMode = false;

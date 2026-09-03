@@ -221,7 +221,11 @@ export interface TimelinePaintImageViewInput {
   };
 }
 
-export const DEFAULT_VIEW = (input: TimelinePaintImageViewInput, output: undefined, target: HTMLElement): {
+export type View = (input: TimelinePaintImageViewInput, output: undefined, target: HTMLElement) => {
+  imageElementNaturalHeight: number, imageElementNaturalWidth: number,
+};
+
+export const DEFAULT_VIEW: View = (input: TimelinePaintImageViewInput, _output: undefined, target: HTMLElement): {
   imageElementNaturalHeight: number,
   imageElementNaturalWidth: number,
 } => {
@@ -262,13 +266,13 @@ export class TimelinePaintImageView extends UI.Widget.Widget {
     maskElementStyle: {},
   };
 
-  #view: typeof DEFAULT_VIEW;
+  #view: View;
   #imageElementDimensions?: {
     naturalHeight: number,
     naturalWidth: number,
   };
 
-  constructor(view = DEFAULT_VIEW) {
+  constructor(view: View = DEFAULT_VIEW) {
     super();
     this.registerRequiredCSS(timelinePaintProfilerStyles);
     this.#view = view;

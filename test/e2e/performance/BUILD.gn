@@ -5,6 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("performance") {
+  split_compilation = true
   sources = [
     "landing-page.test.ts",
     "multiple-traces.test.ts",
@@ -17,7 +18,8 @@ ts_e2e_library("performance") {
     "trace-app.test.ts",
     "wasm/performance_profiling.test.ts",
   ]
-  deps = [
+  ts_deps = [
+    "../../conductor:implementation",
     "../helpers",
     "../shared",
   ]

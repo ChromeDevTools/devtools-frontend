@@ -5,6 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("issues") {
+  split_compilation = true
   sources = [
     "bounce-tracking-issues.test.ts",
     "client-hint-issues.test.ts",
@@ -31,7 +32,7 @@ ts_e2e_library("issues") {
     "sab-issues.test.ts",
     "select-element-accessibility-issues.test.ts",
   ]
-  deps = [
+  ts_deps = [
     "../helpers",
     "../shared",
   ]

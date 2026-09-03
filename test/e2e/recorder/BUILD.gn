@@ -5,13 +5,16 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("recorder") {
+  split_compilation = true
   sources = [
     "export.test.ts",
     "recorder.test.ts",
     "replay.test.ts",
     "ui.test.ts",
   ]
-  deps = [
+  ts_deps = [
+    "../../../front_end/panels/recorder/models:recorder",
+    "../../conductor:implementation",
     "../helpers",
     "../shared",
   ]

@@ -5,6 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("network") {
+  split_compilation = true
   sources = [
     "can-pretty-print-network.test.ts",
     "network-conditions.test.ts",
@@ -18,8 +19,9 @@ ts_e2e_library("network") {
     "user-agent-override.test.ts",
   ]
 
-  deps = [
-    "../../shared",
+  ts_deps = [
+    "../../conductor:implementation",
     "../helpers",
+    "../shared",
   ]
 }

@@ -5,9 +5,10 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("search") {
+  split_compilation = true
   sources = [ "search-scope.test.ts" ]
 
-  deps = [
+  ts_deps = [
     "../helpers",
     "../shared",
   ]

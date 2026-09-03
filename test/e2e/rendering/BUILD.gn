@@ -5,7 +5,8 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("rendering") {
+  split_compilation = true
   sources = [ "rendering.test.ts" ]
 
-  deps = [ "../helpers" ]
+  ts_deps = [ "../helpers" ]
 }

@@ -5,6 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("sources") {
+  split_compilation = true
   sources = [
     "authored-deployed-grouping.test.ts",
     "breakpoint-csp-violations.test.ts",
@@ -51,7 +52,7 @@ ts_e2e_library("sources") {
     "worker-relative-sourcemap.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../front_end/ui/components/text_editor:bundle",
     "../helpers",
     "../shared",

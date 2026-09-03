@@ -6,7 +6,6 @@ import("../../../scripts/build/ninja/devtools_pre_built.gni")
 
 devtools_pre_built("bundle") {
   sources = [
-    "bundle-tsconfig.json",
     "chunk/angular.js",
     "chunk/angular.js.map",
     "chunk/codemirror.js",

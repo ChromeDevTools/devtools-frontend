@@ -11,7 +11,6 @@ import { performance } from 'node:perf_hooks';
 import {
   autoninjaPyPath,
   gnPyPath,
-  isInChromiumDirectory,
   rootPath,
   vpython3ExecutablePath,
 } from './devtools_paths.js';
@@ -222,24 +221,10 @@ ${stderr}
 `;
   }
   if (stdout) {
-    // Check for `tsc` or `esbuild` errors in the stdout.
+    // Check for `tsc` errors in the stdout.
     const tscErrors = [
       ...stdout.matchAll(/^[^\s].*\(\d+,\d+\): error TS\d+:\s+.*$/gm),
     ].map(([tscError]) => tscError);
-    if (!tscErrors.length) {
-      // We didn't find any `tsc` errors, but maybe there are `esbuild` errors.
-      // Transform these into the `tsc` format (with a made up error code), so
-      // we can report all TypeScript errors consistently in `tsc` format (which
-      // is well-known and understood by tools).
-      const esbuildErrors = stdout.matchAll(
-        /^✘ \[ERROR\] ([^\n]+)\n\n\s+\.\.\/\.\.\/(.+):(\d+):(\d+):/gm,
-      );
-      for (const [, message, filename, line, column] of esbuildErrors) {
-        tscErrors.push(
-          `${filename}(${line},${column}): error TS0000: ${message}`,
-        );
-      }
-    }
     if (tscErrors.length) {
       return `TypeScript compilation failed for \`${target}'
 
@@ -356,94 +341,18 @@ export function gnArgsForTarget(target) {
   return gnArgs;
 }
 
-/** @type Map<string, Map<string, Promise<Array<string>>>> */
-const gnRefsCache = new Map();
-
-function gnRefsForTarget(target, filename) {
-  let gnRefsPerTarget = gnRefsCache.get(target);
-  if (!gnRefsPerTarget) {
-    gnRefsPerTarget = new Map();
-    gnRefsCache.set(target, gnRefsPerTarget);
-  }
-  let gnRef = gnRefsPerTarget.get(filename);
-  if (!gnRef) {
-    gnRef = (async () => {
-      const cwd = rootPath();
-      const outDir = path.join(rootPath(), 'out', target);
-      const gnExe = vpython3ExecutablePath();
-      const gnArgs = [gnPyPath(), 'refs', outDir, '--as=output', filename];
-      const { stdout } = await spawn(gnExe, gnArgs, { cwd });
-      return stdout.trim().split('\n');
-    })();
-    gnRefsPerTarget.set(filename, gnRef);
-  }
-  return gnRef;
-}
-
-/**
- *
- * @param {string} target
- * @param {string[]=} filenames
- * @returns {Promise<string[]>}
- */
-async function computeBuildTargetsForFiles(target, filenames) {
-  const SUPPORTED_EXTENSIONS = ['.css', '.ts'];
-  if (
-    filenames &&
-    filenames.length &&
-    filenames.every(filename =>
-      SUPPORTED_EXTENSIONS.includes(path.extname(filename)),
-    )
-  ) {
-    if (isInChromiumDirectory().isInChromium) {
-      filenames = filenames.map(filename =>
-        path.join('third_party', 'devtools-frontend', 'src', filename),
-      );
-    }
-    const gnArgs = await gnArgsForTarget(target);
-    if (gnArgs.get('devtools_bundle') === 'false') {
-      try {
-        const gnRefs = (
-          await Promise.all(
-            filenames.map(filename => gnRefsForTarget(target, filename)),
-          )
-        ).flat();
-        if (gnRefs.length) {
-          // If there are any changes to TypeScript files, we need to also rebuild the
-          // `en-US.json`, as otherwise the changes to `UIStrings` aren't picked up.
-          if (filenames.some(filename => path.extname(filename) === '.ts')) {
-            gnRefs.push('collect_strings');
-          }
-          return gnRefs;
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
-
-  return [];
-}
-
 /**
  * @param {string} target
- * @param {{ filenames?: string[], signal?: AbortSignal}} options
- * @returns a `BuildResult` with statistics for the build.
+ * @param {{ signal?: AbortSignal }} [options]
+ * @returns {Promise<BuildResult>} a `BuildResult` with statistics for the build.
  */
 export async function build(target, options = {}) {
   const startTime = performance.now();
   const outDir = path.join(rootPath(), 'out', target);
 
-  // Build just the devtools-frontend resources in |outDir|. This is important
-  // since we might be running in a full Chromium checkout and certainly don't
-  // want to build all of Chromium first.
-  const buildTargets = await computeBuildTargetsForFiles(
-    target,
-    options.filenames,
-  );
   try {
     const autoninjaExe = vpython3ExecutablePath();
-    const autoninjaArgs = [autoninjaPyPath(), '-C', outDir, ...buildTargets];
+    const autoninjaArgs = [autoninjaPyPath(), '-C', outDir];
     await spawn(autoninjaExe, autoninjaArgs, {
       signal: options.signal,
     });

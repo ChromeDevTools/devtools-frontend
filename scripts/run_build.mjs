@@ -46,21 +46,7 @@ const timeFormatter = new Intl.NumberFormat('en-US', {
 // Prepare the build target if not initialized.
 const spinner = ora('Preparing…').start();
 try {
-  const gnArgs = await prepareBuild(target);
-  if (watch) {
-    if (gnArgs.get('devtools_bundle') !== 'false') {
-      spinner.info(
-          'Using watch mode with full rebuilds. Use `gn gen out/' + target +
-              ' --args="devtools_bundle=false"` to enable fast rebuilds.',
-      );
-    } else {
-      spinner.warn(
-          'Using watch mode with fast rebuilds (since `devtools_bundle=false`' +
-              ' for //out/' + target + '). Be aware that fast rebuilds are a best' +
-              ' effort and might not work reliably in all cases.',
-      );
-    }
-  }
+  await prepareBuild(target);
   spinner.clear();
 } catch (error) {
   spinner.fail(error.message);
@@ -88,19 +74,14 @@ if (watch) {
   let timeoutId;
   let buildPromise = Promise.resolve();
   let abortController = new AbortController();
-  /**
-   * @type {Set<string>}
-   */
-  const changes = new Set();
 
   function watchCallback(eventType, filename) {
     if (eventType !== 'change' && eventType !== 'rename') {
       return;
     }
-    if (!/^(BUILD\.gn)|(.*\.(css|js|ts))$/.test(filename)) {
+    if (!/(BUILD\.gn|\.(css|js|mjs|ts|json|svg|png|html|gni|gn))$/i.test(filename)) {
       return;
     }
-    changes.add(filename);
     clearTimeout(timeoutId);
     timeoutId = setTimeout(watchRebuild, 250);
   }
@@ -110,13 +91,11 @@ if (watch) {
     abortController.abort();
     abortController = new AbortController();
     const {signal} = abortController;
-    const filenames = [...changes];
-    changes.clear();
 
     buildPromise = buildPromise.then(async () => {
       try {
         spinner.start('Rebuilding...');
-        const {time} = await build(target, {signal, filenames});
+        const {time} = await build(target, {signal});
         spinner.succeed(`Rebuild successfully (${timeFormatter.format(time)})`);
       } catch (error) {
         if (error.name !== 'AbortError') {

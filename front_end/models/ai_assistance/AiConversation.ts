@@ -1,7 +1,6 @@
 // Copyright 2024 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../core/common/common.js';
 import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
@@ -46,14 +45,13 @@ export const NOT_FOUND_IMAGE_DATA = '';
 export const CONTEXT_TITLE = 'Analyzing data';
 const MAX_TITLE_LENGTH = 80;
 /**
- * List of page navigations that are allowed during an AI agent run.
- * These are page navigations triggered by agents themselves:
- * - `about://` : Navigated to before initiating a trace recording to ensure a clean state.
- * - `chrome://terms`: Navigated to by Lighthouse during its Back-Forward Cache
- *    audit.
+ * Page URL prefixes permitted during an AI agent run.
+ * Agents trigger these navigations internally:
+ * - `about:blank`: Used before recording a performance trace to ensure a clean state.
+ * - `chrome://terms`: Used by Lighthouse during Back-Forward Cache audits.
  */
 export const ALLOWED_PAGE_NAVIGATIONS: Platform.DevToolsPath.UrlString[] = [
-  Platform.DevToolsPath.urlString`about://`,
+  Platform.DevToolsPath.urlString`about:blank`,
   Platform.DevToolsPath.urlString`chrome://terms`,
 ];
 
@@ -431,14 +429,17 @@ export class AiConversation {
           } = {},
           ): AsyncGenerator<ResponseData, void, void> {
     this.#navigationOccurredDuringRun = false;
-    const originAtRunStart = getPrimaryPageOrigin(this.#targetManager);
+    const originAtRunStart = getPrimaryPageSecurityOrigin(this.#targetManager);
     const listener = (): void => {
-      // If an unexpected navigation to a different origin occurred
-      // during processing the user's request, we don't want to allow
-      // the agent to run any function calls and retrieve data from the new origin.
-      // Performance agent and accessibility agent navigate to 'about://' or 'chrome://terms'
-      const newOrigin = getPrimaryPageOrigin(this.#targetManager);
-      if (originAtRunStart !== newOrigin && newOrigin && !ALLOWED_PAGE_NAVIGATIONS.includes(newOrigin)) {
+      // Prevent the agent from executing tools or reading data from an untrusted origin
+      // if the page navigates unexpectedly during execution.
+      const newInspectedURL = this.#targetManager.primaryPageTarget()?.inspectedURL();
+      const newOrigin = newInspectedURL ? SDK.SecurityOrigin.SecurityOrigin.create(newInspectedURL) : undefined;
+      const isSameOrigin = Boolean(originAtRunStart && newOrigin && originAtRunStart.isSameOriginWith(newOrigin));
+      const isAllowedNavigation =
+          Boolean(newInspectedURL && ALLOWED_PAGE_NAVIGATIONS.some(allowed => newInspectedURL.startsWith(allowed)));
+
+      if (!isSameOrigin && !isAllowedNavigation) {
         this.#navigationOccurredDuringRun = true;
       }
     };
@@ -551,6 +552,10 @@ export class AiConversation {
     return this.#type;
   }
 
+  /**
+   * Returns the permitted origin for agent tool execution, or blocks execution
+   * if an unapproved cross-origin navigation occurred during the current run.
+   */
   allowedOrigin = (): AllowedOriginResult => {
     if (this.#navigationOccurredDuringRun) {
       return {blocked: true};
@@ -558,7 +563,7 @@ export class AiConversation {
     if (this.#origin) {
       return {origin: this.origin};
     }
-    this.#origin = getPrimaryPageOrigin(this.#targetManager);
+    this.#origin = getPrimaryPageSecurityOrigin(this.#targetManager);
 
     return {origin: this.origin};
   };
@@ -574,10 +579,16 @@ function isAiAssistanceServerSideLoggingAllowed(): boolean {
   return !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
 
-function getPrimaryPageOrigin(
+/**
+ * Returns the security origin of the primary page target.
+ *
+ * @param targetManager Target manager used to locate the primary page target.
+ * @returns The parsed SecurityOrigin, or undefined if no target or inspected URL exists.
+ */
+function getPrimaryPageSecurityOrigin(
     targetManager: SDK.TargetManager.TargetManager,
-    ): Platform.DevToolsPath.UrlString|undefined {
+    ): SDK.SecurityOrigin.SecurityOrigin|undefined {
   const target = targetManager.primaryPageTarget();
   const inspectedURL = target?.inspectedURL();
-  return inspectedURL ? new Common.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : undefined;
+  return inspectedURL ? SDK.SecurityOrigin.SecurityOrigin.create(inspectedURL) : undefined;
 }

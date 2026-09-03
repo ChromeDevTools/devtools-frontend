@@ -754,16 +754,18 @@ describe('AiConversation', () => {
   async function testNavigationDuringRun({
     navigationUrl,
     expectBlocked,
+    initialUrl = Platform.DevToolsPath.urlString`https://example.com/`,
   }: {
     navigationUrl: Platform.DevToolsPath.UrlString,
     expectBlocked: boolean,
+    initialUrl?: Platform.DevToolsPath.UrlString,
   }) {
     updateHostConfig({devToolsAiAssistanceContextSelectionAgent: {enabled: true}});
 
     const origin = Platform.DevToolsPath.urlString`https://example.com`;
 
-    const target = universe.createTarget({url: Platform.DevToolsPath.urlString`${origin}/`});
-    target.setInspectedURL(Platform.DevToolsPath.urlString`${origin}/`);
+    const target = universe.createTarget({url: initialUrl});
+    target.setInspectedURL(initialUrl);
 
     const request = SDK.NetworkRequest.NetworkRequest.create(
         'requestId1' as Protocol.Network.RequestId,
@@ -841,10 +843,64 @@ describe('AiConversation', () => {
     });
   });
 
-  it('does NOT block tool calls if navigation is to about://', async () => {
+  it('blocks tool calls if navigation occurs between different file:// URLs during run', async () => {
     await testNavigationDuringRun({
-      navigationUrl: Platform.DevToolsPath.urlString`about://`,
+      initialUrl: Platform.DevToolsPath.urlString`file:///home/user/Downloads/attacker.html`,
+      navigationUrl: Platform.DevToolsPath.urlString`file:///home/user/.ssh/config`,
+      expectBlocked: true,
+    });
+  });
+
+  it('blocks tool calls if navigation occurs between local files in the same directory during run', async () => {
+    await testNavigationDuringRun({
+      initialUrl: Platform.DevToolsPath.urlString`file:///Users/dev/site/index.html`,
+      navigationUrl: Platform.DevToolsPath.urlString`file:///Users/dev/site/about.html`,
+      expectBlocked: true,
+    });
+  });
+
+  it('does NOT block tool calls if navigation occurs to the same file:// URL during run', async () => {
+    await testNavigationDuringRun({
+      initialUrl: Platform.DevToolsPath.urlString`file:///home/user/app.html`,
+      navigationUrl: Platform.DevToolsPath.urlString`file:///home/user/app.html#section2`,
       expectBlocked: false,
+    });
+  });
+
+  it('does not block tool calls if navigation occurs to a different path on the same https:// origin', async () => {
+    await testNavigationDuringRun({
+      initialUrl: Platform.DevToolsPath.urlString`https://example.com/page1.html`,
+      navigationUrl: Platform.DevToolsPath.urlString`https://example.com/page2.html`,
+      expectBlocked: false,
+    });
+  });
+
+  it('blocks tool calls if navigation occurs between opaque blob:null URLs during run', async () => {
+    await testNavigationDuringRun({
+      initialUrl: Platform.DevToolsPath.urlString`blob:null/11111111-1111-1111-1111-111111111111`,
+      navigationUrl: Platform.DevToolsPath.urlString`blob:null/22222222-2222-2222-2222-222222222222`,
+      expectBlocked: true,
+    });
+  });
+
+  it('does NOT block tool calls if navigation is to about:blank', async () => {
+    await testNavigationDuringRun({
+      navigationUrl: Platform.DevToolsPath.urlString`about:blank`,
+      expectBlocked: false,
+    });
+  });
+
+  it('blocks tool calls if navigation is to about:flags', async () => {
+    await testNavigationDuringRun({
+      navigationUrl: Platform.DevToolsPath.urlString`about:flags`,
+      expectBlocked: true,
+    });
+  });
+
+  it('blocks tool calls if navigation occurs to an empty URL during run', async () => {
+    await testNavigationDuringRun({
+      navigationUrl: Platform.DevToolsPath.EmptyUrlString,
+      expectBlocked: true,
     });
   });
 

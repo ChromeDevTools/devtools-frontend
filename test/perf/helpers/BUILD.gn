@@ -5,6 +5,7 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("helpers") {
+  split_compilation = true
   sources = [ "perf-helper.ts" ]
-  deps = [ "../../e2e/conductor:implementation" ]
+  ts_deps = [ "../../e2e/conductor:implementation" ]
 }

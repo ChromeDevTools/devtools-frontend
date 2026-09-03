@@ -5,7 +5,7 @@
 import * as fs from 'node:fs';
 import {join} from 'node:path';
 
-export const storeGeneratedResults = (file: string, content: string) => {
+export const storeGeneratedResults = (file: string, content: string): void => {
   const directory = join(__dirname, '..', '..', '..', '..', '..', '..', 'perf-data');
   fs.mkdirSync(directory, {recursive: true});
 
@@ -13,7 +13,7 @@ export const storeGeneratedResults = (file: string, content: string) => {
   fs.writeFileSync(filePath, content, {encoding: 'utf8'});
 };
 
-export const percentile = (values: number[], position: number) => {
+export const percentile = (values: number[], position: number): number => {
   if (values.length === 0) {
     return 0;
   }
@@ -26,7 +26,7 @@ export const percentile = (values: number[], position: number) => {
   return (values[idx] + values[idx - 1]) / 2;
 };
 
-export const mean = (values: number[]) => {
+export const mean = (values: number[]): number => {
   if (values.length === 0) {
     return 0;
   }

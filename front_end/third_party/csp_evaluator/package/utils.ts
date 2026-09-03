@@ -136,7 +136,7 @@ export function matchWildcardUrls(
 export function applyCheckFunktionToDirectives(
     parsedCsp: csp.Csp,
     check: (directive: string, directiveValues: string[]) => void,
-) {
+): void {
   const directiveNames = Object.keys(parsedCsp.directives);
 
   for (const directive of directiveNames) {

@@ -97,4 +97,6 @@ function normalizeDirectiveValue(directiveValue: string): string {
   return directiveValue;
 }
 
-export const TEST_ONLY = {normalizeDirectiveValue};
+export const TEST_ONLY: {
+  normalizeDirectiveValue: typeof normalizeDirectiveValue,
+} = {normalizeDirectiveValue};

@@ -343,12 +343,12 @@ export function isUrlScheme(urlScheme: string): boolean {
 /**
  * A regex pattern to check nonce prefix and Base64 formatting of a nonce value.
  */
-export const STRICT_NONCE_PATTERN =
+export const STRICT_NONCE_PATTERN: RegExp =
     new RegExp('^\'nonce-[a-zA-Z0-9+/_-]+[=]{0,2}\'$');
 
 
 /** A regex pattern for checking if nonce prefix. */
-export const NONCE_PATTERN = new RegExp('^\'nonce-(.+)\'$');
+export const NONCE_PATTERN: RegExp = new RegExp('^\'nonce-(.+)\'$');
 
 
 /**
@@ -367,12 +367,12 @@ export function isNonce(nonce: string, strictCheck?: boolean): boolean {
 /**
  * A regex pattern to check hash prefix and Base64 formatting of a hash value.
  */
-export const STRICT_HASH_PATTERN =
+export const STRICT_HASH_PATTERN: RegExp =
     new RegExp('^\'(sha256|sha384|sha512)-[a-zA-Z0-9+/]+[=]{0,2}\'$');
 
 
 /** A regex pattern to check hash prefix. */
-export const HASH_PATTERN = new RegExp('^\'(sha256|sha384|sha512)-(.+)\'$');
+export const HASH_PATTERN: RegExp = new RegExp('^\'(sha256|sha384|sha512)-(.+)\'$');
 
 
 /**

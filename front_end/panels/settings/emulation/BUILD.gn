@@ -12,9 +12,10 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("emulation") {
+  split_compilation = true
   sources = [ "DevicesSettingsTab.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../../core/i18n:bundle",
     "../../../core/root:bundle",
     "../../../models/emulation:bundle",
@@ -27,12 +28,12 @@ devtools_ui_module("emulation") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "emulation.ts"
 
-  deps = [
-    ":css_files",
-    ":emulation",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":emulation" ]
 
   visibility = [
     ":*",
@@ -43,9 +44,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "emulation-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../core/i18n:bundle",
     "../../../ui/legacy:bundle",
@@ -58,11 +60,12 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "DevicesSettingsTab.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../models/emulation:bundle",
     "../../../testing",

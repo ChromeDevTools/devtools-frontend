@@ -13,9 +13,10 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("components") {
+  split_compilation = true
   sources = [ "HeadersView.ts" ]
 
-  deps = [
+  ts_deps = [
     "../../../core/host:bundle",
     "../../../core/i18n:bundle",
     "../../../core/text_utils:bundle",
@@ -31,12 +32,12 @@ devtools_ui_module("components") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "components.ts"
 
-  deps = [
-    ":components",
-    ":css_files",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":components" ]
 
   visibility = [
     ":*",
@@ -48,10 +49,11 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [ "HeadersView.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../core/host:bundle",
     "../../../core/platform:bundle",

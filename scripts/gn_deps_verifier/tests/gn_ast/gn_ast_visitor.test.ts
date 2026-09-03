@@ -327,6 +327,18 @@ describe('gn_ast_visitor', () => {
         '../../core/common:bundle',
         '../../core/sdk:bundle',
       ]);
+      assert.isFalse(targetInfo.testonly);
+
+      const unittestsNode = findTargetNode(gnBuild.ast, 'unittests');
+      assert.isDefined(unittestsNode);
+      const unittestsInfo = extractTargetFromFunctionNode(
+          unittestsNode,
+          '//front_end/panels/animation',
+          fixturePath,
+          new Map(),
+      );
+      assert.isNotNull(unittestsInfo);
+      assert.isTrue(unittestsInfo.testonly);
     });
 
     it('handles +=, -=, inputs, and entrypoint assignments with local variable resolution', () => {

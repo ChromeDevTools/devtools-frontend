@@ -8,7 +8,7 @@ import ts from 'typescript';
 
 export class TypeScriptImportExtractor {
   #tsImportsCache = new Map<string, Promise<string[]>>();
-  static #instance: TypeScriptImportExtractor;
+  static #instance: TypeScriptImportExtractor|undefined;
 
   private constructor() {
   }
@@ -18,6 +18,14 @@ export class TypeScriptImportExtractor {
       TypeScriptImportExtractor.#instance = new TypeScriptImportExtractor();
     }
     return TypeScriptImportExtractor.#instance;
+  }
+
+  static clearCacheForTesting(): void {
+    if (TypeScriptImportExtractor.#instance) {
+      TypeScriptImportExtractor.#instance.#tsImportsCache.clear();
+      TypeScriptImportExtractor.#instance.#dirListingsCache.clear();
+      TypeScriptImportExtractor.#instance = undefined;
+    }
   }
 
   #dirListingsCache = new Map<string, Promise<Set<string>>>();

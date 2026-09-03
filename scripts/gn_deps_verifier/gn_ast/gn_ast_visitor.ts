@@ -255,11 +255,17 @@ export function extractTargetFromFunctionNode(
     // ...(scopedVariables.get('public_deps') || []),
   ];
 
-  return {
+  const testonlyVals = scopedVariables.get('testonly');
+  const testonly = testonlyVals ? testonlyVals.includes('true') : undefined;
+
+  const info: AstTargetInfo = {
     label,
     templateName,
     buildFile: buildFilePath,
     sources: Array.from(new Set(sources)),
     deps: Array.from(new Set(deps)),
+    testonly: Boolean(testonly),
   };
+
+  return info;
 }

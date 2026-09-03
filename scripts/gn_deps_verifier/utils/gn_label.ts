@@ -107,4 +107,21 @@ export class GnLabel {
 
     return `${relPath}:${this.name}`;
   }
+
+  /**
+   * Normalizes a dependency label (absolute, relative, or shorthand)
+   * into a formatted relative GN dependency from the perspective of currentDir.
+   */
+  static formatRelativeDep(
+      dep: string,
+      currentDir: string,
+      rootDir: string,
+      ): string {
+    const resolvedAbsolute = dep.startsWith('//') ? dep : GnLabel.resolveDeclaredDep(dep, currentDir, rootDir);
+    const parsed = GnLabel.parse(resolvedAbsolute);
+    if (!parsed) {
+      return dep;
+    }
+    return parsed.toRelativeDep(currentDir, rootDir);
+  }
 }

@@ -363,6 +363,29 @@ describe('GnBuildFile', () => {
       assert.strictEqual(newDupOccurrences.length, 1);
     });
 
+    it('normalizes fully-qualified absolute labels in missingDeps to relative dependencies', async () => {
+      const gnBuild = await GnBuildFile.from(fixturePath, rootDir);
+      const currentDir = path.dirname(fixturePath);
+
+      gnBuild.updateTargetDeps('bundle', {
+        unusedDeps: [],
+        missingDeps: [
+          '//front_end/core/common:bundle',
+          GnLabel.resolveDeclaredDep(':new_local_dep', currentDir, rootDir),
+        ],
+      });
+
+      const bundleNode = findTargetNode(gnBuild.ast, 'bundle');
+      const block = bundleNode?.child?.[1];
+      const depsAssign = findAssignments(block?.child || [], 'deps')[0];
+      const deps = extractStringValues(depsAssign?.child?.[1] as GnAstNode);
+
+      assert.include(deps, ':new_local_dep');
+      const expectedRel = GnLabel.formatRelativeDep('//front_end/core/common:bundle', currentDir, rootDir);
+      assert.include(deps, expectedRel);
+      assert.notInclude(deps, '//front_end/core/common:bundle');
+    });
+
     it('handles quote safety for quoted string literals in missingDeps', async () => {
       const gnBuild = await GnBuildFile.from(fixturePath, rootDir);
 

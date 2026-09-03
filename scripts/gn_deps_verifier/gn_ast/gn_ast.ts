@@ -220,8 +220,9 @@ export class GnBuildFile {
         }
         existingDeps.add(resolved);
 
+        const relDep = GnLabel.formatRelativeDep(dep, currentDir, this.rootDir);
         listNode.child = listNode.child || [];
-        listNode.child.push(createAstNode.stringLiteral(dep));
+        listNode.child.push(createAstNode.stringLiteral(relDep));
         modified = true;
       }
     }

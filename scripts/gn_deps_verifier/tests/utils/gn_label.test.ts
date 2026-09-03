@@ -212,4 +212,39 @@ describe('GnLabel', () => {
       );
     });
   });
+
+  describe('formatRelativeDep', () => {
+    it('normalizes absolute label to relative dep from currentDir', () => {
+      assert.strictEqual(
+          GnLabel.formatRelativeDep('//front_end/core/sdk:bundle', currentDir, rootDir),
+          '../sdk:bundle',
+      );
+      assert.strictEqual(
+          GnLabel.formatRelativeDep('//front_end/core/common:bundle', currentDir, rootDir),
+          ':bundle',
+      );
+      assert.strictEqual(
+          GnLabel.formatRelativeDep('//front_end/core/common:common', currentDir, rootDir),
+          ':common',
+      );
+    });
+
+    it('normalizes shorthand local label', () => {
+      assert.strictEqual(
+          GnLabel.formatRelativeDep(':bundle', currentDir, rootDir),
+          ':bundle',
+      );
+    });
+
+    it('normalizes existing relative label', () => {
+      assert.strictEqual(
+          GnLabel.formatRelativeDep('../sdk:bundle', currentDir, rootDir),
+          '../sdk:bundle',
+      );
+      assert.strictEqual(
+          GnLabel.formatRelativeDep('../../panels/animation:bundle', currentDir, rootDir),
+          '../../panels/animation:bundle',
+      );
+    });
+  });
 });

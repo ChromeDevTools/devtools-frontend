@@ -30,6 +30,7 @@ export interface AstTargetInfo {
   buildFile: string;
   sources: string[];
   deps: string[];
+  testonly: boolean;
 }
 
 export interface UpdateTargetDepsOptions {

@@ -133,6 +133,7 @@ devtools_entrypoint("bundle") {
     ":css_files",
     "../../ui/legacy:css_files",
     "../../ui/legacy/components/data_grid:css_files",
+    "../console:css_files",
   ]
 
   ts_deps = [

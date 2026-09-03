@@ -335,6 +335,30 @@ describe('TreeViewElement', () => {
     assert.isFalse(node.expanded, 'Node should remain collapsed after re-render');
   });
 
+  it('collapses the node after re-rendering without open attribute', async () => {
+    let isOpen = true;
+    const makeTemplate = () => html`
+      <ul role="tree">
+        <li role="treeitem" ?open=${isOpen}>subtree
+          <ul role="group">
+            <li role="treeitem">in subtree</li>
+          </ul>
+        </li>
+      </ul>`;
+    const component = await makeTree(html`<devtools-tree .template=${makeTemplate()}></devtools-tree>`);
+
+    const node = component.getInternalTreeOutlineForTest().rootElement().children()[0];
+    assert.isTrue(node.expanded);
+
+    // Re-render without the 'open' attribute
+    isOpen = false;
+    component.template = makeTemplate();
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const updatedNode = component.getInternalTreeOutlineForTest().rootElement().children()[0];
+    assert.isFalse(updatedNode.expanded, 'Node should collapse when open attribute is removed');
+  });
+
   it('sends a `select` event when a node is selected', async () => {
     const onSelectFirst = sinon.stub<[UI.TreeOutline.TreeViewElement.SelectEvent]>();
     const onSelectSecond = sinon.stub<[UI.TreeOutline.TreeViewElement.SelectEvent]>();

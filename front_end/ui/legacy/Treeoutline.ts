@@ -1594,8 +1594,6 @@ class TreeViewTreeElement extends TreeElement {
   static readonly CLONED_ATTRIBUTES = SDK.DOMModel.ARIA_ATTRIBUTES.union(new Set(['jslog', 'draggable']));
   #clonedAttributes = new Set<string>();
   #clonedClasses = new Set<string>();
-  #userExpanded = false;
-  #isProcessingAttribute = false;
   #previousOpenAttributeValue?: string|null;
   #refreshScheduled = false;
 
@@ -1609,39 +1607,16 @@ class TreeViewTreeElement extends TreeElement {
     this.refresh();
   }
 
-  override onexpand(): void {
-    if (!this.#isProcessingAttribute) {
-      this.#userExpanded = true;
-    }
-  }
-
-  override oncollapse(): void {
-    if (!this.#isProcessingAttribute) {
-      this.#userExpanded = false;
-    }
-  }
-
   updateExpansionFromAttribute(): void {
-    this.#isProcessingAttribute = true;
-    try {
-      const openAttr = this.configElement.getAttribute('open');
-      if (openAttr === this.#previousOpenAttributeValue) {
-        return;
-      }
-      this.#previousOpenAttributeValue = openAttr;
-      if (openAttr === null) {
-        if (this.#userExpanded) {
-          this.expand();
-        } else {
-          this.collapse();
-        }
-      } else if (openAttr === 'false') {
-        this.collapse();
-      } else {
-        this.expand();
-      }
-    } finally {
-      this.#isProcessingAttribute = false;
+    const openAttr = this.configElement.getAttribute('open');
+    if (openAttr === this.#previousOpenAttributeValue) {
+      return;
+    }
+    this.#previousOpenAttributeValue = openAttr;
+    if (openAttr !== null && openAttr !== 'false') {
+      this.expand();
+    } else {
+      this.collapse();
     }
   }
 

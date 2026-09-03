@@ -9,6 +9,6 @@ export {ESTree};
 
 export { type Comment, defaultOptions, getLineInfo, Node, SourceLocation, Token, tokTypes} from './package/dist/acorn.mjs';
 
-export const Parser = acorn.Parser;
-export const tokenizer = acorn.Parser.tokenizer.bind(acorn.Parser);
-export const parse = acorn.Parser.parse.bind(acorn.Parser);
+export const Parser: typeof acorn.Parser = acorn.Parser;
+export const tokenizer: typeof acorn.Parser.tokenizer = acorn.Parser.tokenizer.bind(acorn.Parser);
+export const parse: typeof acorn.Parser.parse = acorn.Parser.parse.bind(acorn.Parser);

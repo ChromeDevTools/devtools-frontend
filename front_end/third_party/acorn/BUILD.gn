@@ -11,7 +11,6 @@ devtools_pre_built("acorn") {
   sources_are_release = false
 
   sources = [
-    "acorn-tsconfig.json",
     "package/dist/acorn.d.mts",
     "package/dist/acorn.d.ts",
     "package/dist/acorn.mjs",
@@ -23,19 +22,17 @@ devtools_pre_built("acorn") {
 devtools_pre_built("estree") {
   sources_are_release = false
 
-  sources = [
-    "estree-legacy.d.ts",
-    "estree-tsconfig.json",
-  ]
+  sources = [ "estree-legacy.d.ts" ]
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "acorn.ts"
 
   inputs =
       [ devtools_location_prepend + "node_modules/@types/estree/index.d.ts" ]
 
-  deps = [
+  ts_deps = [
     ":acorn",
     ":estree",
   ]

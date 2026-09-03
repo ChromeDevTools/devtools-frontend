@@ -76,14 +76,14 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const WEBAUDIO_EXPLANATION_URL =
     'https://developer.chrome.com/docs/devtools/webaudio' as Platform.DevToolsPath.UrlString;
 
-interface ViewInput {
+export interface ViewInput {
   contexts: Protocol.WebAudio.BaseAudioContext[];
   selectedContextIndex: number;
   onContextSelectorSelectionChanged: (contextId: string) => void;
   contextRealtimeData: Protocol.WebAudio.ContextRealtimeData|null;
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement|DocumentFragment) => void;
+export type View = (input: ViewInput, output: object, target: HTMLElement|DocumentFragment) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   const {
@@ -189,7 +189,7 @@ export class WebAudioView extends UI.Widget.VBox<ShadowRoot> implements
   private selectedContextIndex = -1;
   private readonly pollRealtimeDataThrottler: Common.Throttler.Throttler;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super({useShadowDom: 'pure'});
     this.view = view;
 

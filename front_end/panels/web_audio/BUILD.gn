@@ -13,12 +13,13 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("web_audio") {
+  split_compilation = true
   sources = [
     "WebAudioModel.ts",
     "WebAudioView.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
@@ -31,12 +32,12 @@ devtools_ui_module("web_audio") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "web_audio.ts"
 
-  deps = [
-    ":css_files",
-    ":web_audio",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":web_audio" ]
 
   visibility = [
     ":*",
@@ -47,9 +48,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "web_audio-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/i18n:bundle",
     "../../ui/legacy:bundle",
@@ -60,13 +62,14 @@ devtools_entrypoint("meta") {
 
 devtools_ui_module("unittests") {
   testonly = true
+  split_compilation = true
 
   sources = [
     "WebAudioView.test.ts",
     "web_audio.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/platform:bundle",
     "../../generated",

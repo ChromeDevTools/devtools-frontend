@@ -6,6 +6,7 @@ import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_ui_module("utils") {
+  split_compilation = true
   sources = [
     "EntryNodes.ts",
     "Helpers.ts",
@@ -14,7 +15,7 @@ devtools_ui_module("utils") {
     "Treemap.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
@@ -27,9 +28,10 @@ devtools_ui_module("utils") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "utils.ts"
 
-  deps = [ ":utils" ]
+  ts_deps = [ ":utils" ]
 
   visibility = [
     ":*",
@@ -48,6 +50,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -58,7 +61,7 @@ devtools_ui_module("unittests") {
     "Treemap.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../core/common:bundle",
     "../../../core/platform:bundle",

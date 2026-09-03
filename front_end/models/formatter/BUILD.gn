@@ -43,7 +43,7 @@ devtools_entrypoint("bundle") {
     "../../panels/console/*",
     "../../panels/coverage/*",
     "../../panels/sources/*",
-    "../../panels/timeline/utils:unittests",
+    "../../panels/timeline/utils:*",
     "../../panels/utils/*",
     "../../testing/*",
     "../../ui/components/text_editor/*",

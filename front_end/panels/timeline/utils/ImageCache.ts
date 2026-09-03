@@ -6,7 +6,7 @@ import * as Trace from '../../../models/trace/trace.js';
 
 const imageCache =
     new WeakMap<Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot, HTMLImageElement|null>();
-export const emitter = new EventTarget();
+export const emitter: EventTarget = new EventTarget();
 
 /**
  * Synchronously returns an image, or return `null` while queuing up an async load of that image.
@@ -55,5 +55,7 @@ export function preload(screenshots: Array<Trace.Types.Events.LegacySyntheticScr
   return Promise.all(promises);
 }
 
-export const cacheForTesting = imageCache;
-export const loadImageForTesting = loadImage;
+export const cacheForTesting:
+    WeakMap<Trace.Types.Events.LegacySyntheticScreenshot|Trace.Types.Events.Screenshot, HTMLImageElement|null> =
+        imageCache;
+export const loadImageForTesting: typeof loadImage = loadImage;

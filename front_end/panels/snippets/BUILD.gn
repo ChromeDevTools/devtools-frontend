@@ -8,12 +8,13 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_ui_module("snippets") {
+  split_compilation = true
   sources = [
     "ScriptSnippetFileSystem.ts",
     "SnippetsQuickOpen.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
@@ -31,9 +32,10 @@ devtools_ui_module("snippets") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "snippets.ts"
 
-  deps = [ ":snippets" ]
+  ts_deps = [ ":snippets" ]
 
   visibility = [
     ":*",
@@ -47,11 +49,12 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "ScriptSnippetFileSystem.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/platform:bundle",

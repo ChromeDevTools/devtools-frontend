@@ -23,97 +23,92 @@ import timelineTreeViewStyles from './timelineTreeView.css.js';
 import { TimelineUIUtils } from './TimelineUIUtils.js';
 const UIStrings = {
     /**
-     * @description Text for the performance of something
+     * @description Data grid name for timeline tree view tables in the Performance panel.
      */
     performance: 'Performance',
     /**
-     * @description Time of a single activity, as opposed to the total time
+     * @description Column header for self time in timeline tree views.
      */
     selfTime: 'Self time',
     /**
-     * @description Text for the total time of something
+     * @description Column header for total time in timeline tree views.
      */
     totalTime: 'Total time',
     /**
-     * @description Text in Timeline Tree View of the Performance panel
+     * @description Column header for the activity name in timeline tree views.
      */
     activity: 'Activity',
     /**
-     * @description Text of a DOM element in Timeline Tree View of the Performance panel
+     * @description Banner message shown when no tree item is selected for details in the Performance panel.
      */
-    selectItemForDetails: 'Select item for details.',
+    selectItemForDetails: 'Select item for details',
     /**
-     * @description Number followed by percent sign
+     * @description Percentage format in timeline tree views.
      * @example {20} PH1
      */
     percentPlaceholder: '{PH1} %',
     /**
-     * @description Text in Timeline Tree View of the Performance panel
+     * @description Row label for Chrome extensions overhead in timeline tree views.
      */
     chromeExtensionsOverhead: '[`Chrome` extensions overhead]',
     /**
-     * @description Text in Timeline Tree View of the Performance panel. The text is presented
-     * when developers investigate the performance of a page. 'V8 Runtime' labels the time
-     * spent in (i.e. runtime) the V8 JavaScript engine.
+     * @description Row label for V8 runtime overhead in timeline tree views.
      */
-    vRuntime: '[`V8` Runtime]',
+    vRuntime: '[`V8` runtime]',
     /**
-     * @description Text in Timeline Tree View of the Performance panel
+     * @description Row label for unattributed activity in timeline tree views.
      */
     unattributed: '[unattributed]',
     /**
-     * @description Text that refers to one or a group of webpages
+     * @description Label for the main frame page in grouping options.
      */
     page: 'Page',
     /**
-     * @description Text in Timeline Tree View of the Performance panel
+     * @description Option in the grouping dropdown for no grouping in timeline tree views.
      */
     noGrouping: 'No grouping',
     /**
-     * @description Text in Timeline Tree View of the Performance panel
+     * @description Option in the grouping dropdown to group by activity in timeline tree views.
      */
     groupByActivity: 'Group by activity',
     /**
-     * @description Text in Timeline Tree View of the Performance panel
+     * @description Option in the grouping dropdown to group by category in timeline tree views.
      */
     groupByCategory: 'Group by category',
     /**
-     * @description Text in Timeline Tree View of the Performance panel
+     * @description Option in the grouping dropdown to group by domain in timeline tree views.
      */
     groupByDomain: 'Group by domain',
     /**
-     * @description Text in Timeline Tree View of the Performance panel
+     * @description Option in the grouping dropdown to group by frame in timeline tree views.
      */
     groupByFrame: 'Group by frame',
     /**
-     * @description Text in Timeline Tree View of the Performance panel
+     * @description Option in the grouping dropdown to group by subdomain in timeline tree views.
      */
     groupBySubdomain: 'Group by subdomain',
     /**
-     * @description Text in Timeline Tree View of the Performance panel
+     * @description Option in the grouping dropdown to group by URL in timeline tree views.
      */
     groupByUrl: 'Group by URL',
     /**
-     * @description Text in Timeline Tree View of the Performance panel
+     * @description Option in the grouping dropdown to group by third parties in timeline tree views.
      */
-    groupByThirdParties: 'Group by Third Parties',
+    groupByThirdParties: 'Group by 3rd parties',
     /**
-     * @description Aria-label for grouping combo box in Timeline Details View
+     * @description Accessible label for the grouping dropdown in timeline tree views.
      */
     groupBy: 'Group by',
     /**
-     * @description Title of the sidebar pane in the Performance panel which shows the stack (call
-     * stack) where the program spent the most time (out of all the call stacks) while executing.
+     * @description Title for the heaviest stack sidebar in timeline tree views.
      */
     heaviestStack: 'Heaviest stack',
     /**
-     * @description Tooltip for the the Heaviest stack sidebar toggle in the Timeline Tree View of the
-     * Performance panel. Command to open/show the sidebar.
+     * @description Tooltip for the button to show the heaviest stack sidebar in timeline tree views.
      */
     showHeaviestStack: 'Show heaviest stack',
     /**
-     * @description Tooltip for the the Heaviest stack sidebar toggle in the Timeline Tree View of the
-     * Performance panel. Command to close/hide the sidebar.
+     * @description Tooltip for the button to hide the heaviest stack sidebar in timeline tree views.
      */
     hideHeaviestStack: 'Hide heaviest stack',
     /**
@@ -125,35 +120,35 @@ const UIStrings = {
      */
     heaviestStackHidden: 'Heaviest stack sidebar hidden',
     /**
-     * @description Data grid name for Timeline Stack data grids
+     * @description Data grid name for heaviest stack tables in the Performance panel.
      */
     timelineStack: 'Timeline stack',
     /**
-     * /*@description Text to search by matching case of the input button
+     * @description Tooltip for the match case search button in timeline tree views.
      */
     matchCase: 'Match case',
     /**
-     * @description Text for searching with regular expression button
+     * @description Tooltip for the regular expression search button in timeline tree views.
      */
     useRegularExpression: 'Use regular expression',
     /**
-     * @description Text for Match whole word button
+     * @description Tooltip for the match whole word search button in timeline tree views.
      */
     matchWholeWord: 'Match whole word',
     /**
-     * @description Text for bottom up tree button
+     * @description Tooltip for the button to switch to the bottom-up view in timeline tree views.
      */
     bottomUp: 'Bottom-up',
     /**
-     * @description Text referring to view bottom up tree
+     * @description Accessible label for the button to switch to the bottom-up view in timeline tree views.
      */
-    viewBottomUp: 'View Bottom-up',
+    viewBottomUp: 'View bottom-up',
     /**
-     * @description Text referring to a 1st party entity
+     * @description Badge text for a 1st party entity in timeline tree views.
      */
     firstParty: '1st party',
     /**
-     * @description Text referring to an entity that is an extension
+     * @description Badge text for an extension entity in timeline tree views.
      */
     extension: 'Extension',
 };
@@ -162,7 +157,8 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 /**
  * For an overview, read: https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/main/front_end/panels/timeline/README.md#timeline-tree-views
  */
-export class TimelineTreeView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const TimelineTreeViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class TimelineTreeView extends TimelineTreeViewBase {
     /** This is sorted by ts. */
     #selectedEvents;
     searchResults;
@@ -1229,7 +1225,8 @@ export class BottomUpTimelineTreeView extends AggregatedTimelineTreeView {
         });
     }
 }
-export class TimelineStackView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const TimelineStackViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class TimelineStackView extends TimelineStackViewBase {
     treeView;
     dataGrid;
     constructor(treeView) {

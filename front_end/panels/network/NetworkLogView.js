@@ -536,7 +536,8 @@ var FetchStyle;
     FetchStyle[FetchStyle["BROWSER"] = 0] = "BROWSER";
     FetchStyle[FetchStyle["NODE_JS"] = 1] = "NODE_JS";
 })(FetchStyle || (FetchStyle = {}));
-export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const NetworkLogViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class NetworkLogView extends NetworkLogViewBase {
     networkInvertFilterSetting;
     networkHideDataURLSetting;
     networkHideChromeExtensions;
@@ -1016,7 +1017,7 @@ export class NetworkLogView extends Common.ObjectWrapper.eventMixin(UI.Widget.VB
                 jslogContext: actionName,
                 variant: "tonal" /* Buttons.Button.Variant.TONAL */,
             });
-            this.recordingHint.contentElement.appendChild(button);
+            this.recordingHint.element.appendChild(button);
         }
         this.recordingHint.show(this.element);
         this.setHidden(true);

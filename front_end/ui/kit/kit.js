@@ -1,4 +1,4 @@
-// gen/front_end/ui/kit/cards/Card.js
+// ../../front_end/ui/kit/cards/Card.ts
 import { html, nothing, render } from "../lit/lit.js";
 
 // gen/front_end/ui/kit/cards/card.css.js
@@ -62,7 +62,7 @@ var card_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./cards/card.css")} */`;
 
-// gen/front_end/ui/kit/cards/Card.js
+// ../../front_end/ui/kit/cards/Card.ts
 var Card = class extends HTMLElement {
   static observedAttributes = ["heading"];
   #shadow = this.attachShadow({ mode: "open" });
@@ -98,7 +98,8 @@ var Card = class extends HTMLElement {
     }
   }
   #render() {
-    render(html`
+    render(
+      html`
         <style>${card_css_default}</style>
         <div id="card">
           <div id="heading">
@@ -107,12 +108,15 @@ var Card = class extends HTMLElement {
             <slot name="heading-suffix"></slot>
           </div>
           <slot id="content"></slot>
-        </div>`, this.#shadow, { host: this });
+        </div>`,
+      this.#shadow,
+      { host: this }
+    );
   }
 };
 customElements.define("devtools-card", Card);
 
-// gen/front_end/ui/kit/icons/Icon.js
+// ../../front_end/ui/kit/icons/Icon.ts
 import "../../Images/Images.js";
 
 // gen/front_end/ui/kit/icons/icon.css.js
@@ -236,7 +240,7 @@ span {
 
 /*# sourceURL=${import.meta.resolve("./icons/icon.css")} */`;
 
-// gen/front_end/ui/kit/icons/Icon.js
+// ../../front_end/ui/kit/icons/Icon.ts
 var Icon = class extends HTMLElement {
   static observedAttributes = ["name"];
   #shadowRoot;
@@ -332,7 +336,7 @@ var createIcon = (name, className) => {
 };
 customElements.define("devtools-icon", Icon);
 
-// gen/front_end/ui/kit/link/Link.js
+// ../../front_end/ui/kit/link/Link.ts
 import * as Platform from "../../core/platform/platform.js";
 import * as UIHelpers from "../helpers/helpers.js";
 import { html as html2, render as render2 } from "../lit/lit.js";
@@ -369,7 +373,7 @@ var link_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./link/link.css")} */`;
 
-// gen/front_end/ui/kit/link/Link.js
+// ../../front_end/ui/kit/link/Link.ts
 var Link = class _Link extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   static observedAttributes = ["href", "jslogcontext"];
@@ -450,9 +454,13 @@ var Link = class _Link extends HTMLElement {
     }
   };
   #render() {
-    render2(html2`<style>
+    render2(
+      html2`<style>
           ${link_css_default}
-        </style><slot></slot>`, this.#shadow, { host: this });
+        </style><slot></slot>`,
+      this.#shadow,
+      { host: this }
+    );
   }
   /**
    * Should be used only by old code relying on imperative API,

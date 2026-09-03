@@ -45,12 +45,13 @@
     "../../../../../front_end/generated/Deprecation.ts",
     "../../../../../front_end/generated/InspectorBackendCommands.ts",
     "../../../../../front_end/generated/SupportedCSSProperties.ts",
-    "../../../../../front_end/generated/protocol-mapping.d.ts",
-    "../../../../../front_end/generated/protocol-proxy-api.d.ts",
     "../../../../../front_end/generated/protocol.ts",
     "../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../front_end/global_typings/global_defs.d.ts",
-    "../../../../../node_modules/@types/filesystem/index.d.ts"
+    "../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../node_modules/@types/filewriter/index.d.ts",
+    "protocol-mapping.d.ts",
+    "protocol-proxy-api.d.ts"
   ],
   "references": [
 

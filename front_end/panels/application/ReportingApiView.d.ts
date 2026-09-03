@@ -1,8 +1,8 @@
-import type * as Platform from '../../core/platform/platform.js';
+import * as i18n from '../../core/i18n/i18n.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
-export declare const i18nString: (id: string, values?: import("../../core/i18n/i18nTypes.js").Values | undefined) => Platform.UIString.LocalizedString;
+export declare const i18nString: i18n.LocalizeString;
 interface ViewInput {
     hasReports: boolean;
     hasEndpoints: boolean;
@@ -14,7 +14,7 @@ interface ViewInput {
 export declare const DEFAULT_VIEW: (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export declare class ReportingApiView extends UI.Widget.VBox implements SDK.TargetManager.SDKModelObserver<SDK.NetworkManager.NetworkManager> {
     #private;
-    constructor(view?: typeof DEFAULT_VIEW);
+    constructor(view?: (input: ViewInput, output: undefined, target: HTMLElement) => void);
     modelAdded(networkManager: SDK.NetworkManager.NetworkManager): void;
     modelRemoved(networkManager: SDK.NetworkManager.NetworkManager): void;
     performUpdate(): void;

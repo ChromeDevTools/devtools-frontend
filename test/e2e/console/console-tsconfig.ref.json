@@ -1,0 +1,59 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../test/e2e/console",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../test/e2e/console/alert-toString-exception.test.ts",
+    "../../../../../../test/e2e/console/command-line-api.test.ts",
+    "../../../../../../test/e2e/console/console-accessors.test.ts",
+    "../../../../../../test/e2e/console/console-autocomplete.test.ts",
+    "../../../../../../test/e2e/console/console-bind-fake.test.ts",
+    "../../../../../../test/e2e/console/console-clear.test.ts",
+    "../../../../../../test/e2e/console/console-context-menu.test.ts",
+    "../../../../../../test/e2e/console/console-context-selector.test.ts",
+    "../../../../../../test/e2e/console/console-errors.test.ts",
+    "../../../../../../test/e2e/console/console-eval-blocked-by-CSP.test.ts",
+    "../../../../../../test/e2e/console/console-eval-fake.test.ts",
+    "../../../../../../test/e2e/console/console-eval-global.test.ts",
+    "../../../../../../test/e2e/console/console-expand-recursively.test.ts",
+    "../../../../../../test/e2e/console/console-fetch-logging.test.ts",
+    "../../../../../../test/e2e/console/console-filter.test.ts",
+    "../../../../../../test/e2e/console/console-ignore-list.test.ts",
+    "../../../../../../test/e2e/console/console-insight.test.ts",
+    "../../../../../../test/e2e/console/console-last-result.test.ts",
+    "../../../../../../test/e2e/console/console-live-expressions.test.ts",
+    "../../../../../../test/e2e/console/console-log.test.ts",
+    "../../../../../../test/e2e/console/console-message-format.test.ts",
+    "../../../../../../test/e2e/console/console-repl-mode.test.ts",
+    "../../../../../../test/e2e/console/console-stack-trace.test.ts",
+    "../../../../../../test/e2e/console/console-time.test.ts",
+    "../../../../../../test/e2e/console/console-truncate-long-messages.test.ts",
+    "../../../../../../test/e2e/console/console-trusted-types.test.ts",
+    "../../../../../../test/e2e/console/console-uncaught-promise.test.ts",
+    "../../../../../../test/e2e/console/filter.test.ts",
+    "../../../../../../test/e2e/console/issues-toolbar.test.ts",
+    "../../../../../../test/e2e/console/search.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts",
+    "../../../../../../test/e2e/types.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../front_end/panels/console/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../shared/shared-tsconfig.ref.json"
+    }
+  ]
+}

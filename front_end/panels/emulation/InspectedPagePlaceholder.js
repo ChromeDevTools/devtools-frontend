@@ -5,7 +5,8 @@ import * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import inspectedPagePlaceholderStyles from './inspectedPagePlaceholder.css.js';
 let inspectedPagePlaceholderInstance;
-export class InspectedPagePlaceholder extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
+const InspectedPagePlaceholderBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
+export class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
     constructor() {
         super({ useShadowDom: true });
         this.registerRequiredCSS(inspectedPagePlaceholderStyles);

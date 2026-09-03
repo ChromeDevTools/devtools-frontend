@@ -32,8 +32,8 @@ export declare class ConsoleFilterGroup {
     onMessage(viewMessage: ConsoleViewMessage): void;
     clear(): void;
 }
-declare const ConsoleSidebar_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.VBox<ShadowRoot>;
-export declare class ConsoleSidebar extends ConsoleSidebar_base {
+declare const ConsoleSidebarBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox<ShadowRoot>>;
+export declare class ConsoleSidebar extends ConsoleSidebarBase {
     #private;
     constructor(element?: HTMLElement, view?: View);
     performUpdate(): void;

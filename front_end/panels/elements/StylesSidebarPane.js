@@ -156,7 +156,8 @@ const HIGHLIGHTABLE_PROPERTIES = [
 const DISCLAIMER_TOOLTIP_ID = 'styles-ai-code-completion-disclaimer-tooltip';
 const SPINNER_TOOLTIP_ID = 'styles-ai-code-completion-spinner-tooltip';
 const CITATIONS_TOOLTIP_ID = 'styles-ai-code-completion-citations-tooltip';
-export class StylesSidebarPane extends Common.ObjectWrapper.eventMixin(ElementsSidebarPane) {
+const StylesSidebarPaneBase = Common.ObjectWrapper.eventMixin(ElementsSidebarPane);
+export class StylesSidebarPane extends StylesSidebarPaneBase {
     matchedStyles = null;
     currentToolbarPane = null;
     animatedToolbarPane = null;

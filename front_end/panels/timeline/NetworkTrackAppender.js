@@ -10,7 +10,7 @@ import * as Components from './components/components.js';
 import { InstantEventVisibleDurationMs } from './TimelineFlameChartDataProvider.js';
 const UIStrings = {
     /**
-     * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+     * @description Header for the network track in the timeline flame chart of the Performance panel.
      */
     network: 'Network',
 };

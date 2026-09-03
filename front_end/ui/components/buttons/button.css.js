@@ -364,4 +364,25 @@ button {
   }
 }
 
+@media (forced-colors: active) {
+  button.outlined {
+    background: ButtonFace;
+    border-color: ButtonText;
+    color: ButtonText;
+
+    devtools-icon {
+      color: ButtonText;
+    }
+
+    &:disabled {
+      border-color: GrayText;
+      color: GrayText;
+
+      devtools-icon {
+        color: GrayText;
+      }
+    }
+  }
+}
+
 /*# sourceURL=${import.meta.resolve('./button.css')} */`;

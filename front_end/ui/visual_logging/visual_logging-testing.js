@@ -4914,7 +4914,7 @@ function registerParentProvider(name, provider) {
   }
   parentProviders.set(name, provider);
 }
-var PARENT = Symbol("veParent");
+var PARENT = /* @__PURE__ */ Symbol("veParent");
 registerParentProvider("mapped", (e) => e[PARENT]);
 function setMappedParent(element, parent) {
   element[PARENT] = parent;

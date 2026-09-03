@@ -352,10 +352,8 @@ export class ApplicationPanelSidebar extends UI.Widget.VBox {
         this.applicationTreeElement.appendChild(this.serviceWorkersTreeElement);
         this.storageTreeElement = new StorageTreeElement(panel);
         this.applicationTreeElement.appendChild(this.storageTreeElement);
-        if (Root.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
-            this.webMcpTreeElement = new WebMCPTreeElement(panel);
-            this.applicationTreeElement.appendChild(this.webMcpTreeElement);
-        }
+        this.webMcpTreeElement = new WebMCPTreeElement(panel);
+        this.applicationTreeElement.appendChild(this.webMcpTreeElement);
         if (Root.Runtime.hostConfig.devToolsAdsPanel?.enabled) {
             const adsTreeElement = new ApplicationPanelTreeElement(panel, i18nString(UIStrings.ads), false, 'ads');
             adsTreeElement.listItemElement.classList.add('ads-tree-element');

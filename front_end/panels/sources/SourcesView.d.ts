@@ -1,6 +1,5 @@
 import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import type * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -23,8 +22,8 @@ export interface ViewOutput {
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
-declare const SourcesView_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.VBox;
-export declare class SourcesView extends SourcesView_base implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable {
+declare const SourcesViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
+export declare class SourcesView extends SourcesViewBase implements UI.SearchableView.Searchable, UI.SearchableView.Replaceable {
     #private;
     editorContainer?: TabbedEditorContainer;
     private readonly historyManager;

@@ -1,13 +1,12 @@
 import './Toolbar.js';
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import filterStyles from './filter.css.js';
 import type { Suggestions } from './SuggestBox.js';
 import { type ToolbarButton } from './Toolbar.js';
 import { HBox } from './Widget.js';
 export { filterStyles };
-declare const FilterBar_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<FilterBarEventTypes>, any[]> & typeof HBox;
-export declare class FilterBar extends FilterBar_base {
+declare const FilterBarBase: Common.ObjectWrapper.EventMixin<FilterBarEventTypes, typeof HBox>;
+export declare class FilterBar extends FilterBarBase {
     #private;
     private enabled;
     private readonly stateSetting;

@@ -242,9 +242,6 @@ interface DevToolsAiV2Architecture {
 interface DevToolsProtocolMonitor {
     enabled: boolean;
 }
-interface DevToolsWebMCPSupport {
-    enabled: boolean;
-}
 interface DevToolsAdsPanel {
     enabled: boolean;
 }
@@ -314,7 +311,6 @@ export type HostConfig = Platform.TypeScriptUtilities.RecursivePartial<{
     devToolsConsoleInsightsTeasers: ConsoleInsightsTeasers;
     devToolsGeminiRebranding: HostConfigGeminiRebranding;
     devToolsProtocolMonitor: DevToolsProtocolMonitor;
-    devToolsWebMCPSupport: DevToolsWebMCPSupport;
     devToolsAdsPanel: DevToolsAdsPanel;
     devToolsUseGcaApi: UseGcaApi;
     devToolsPlusButton: DevToolsPlusButton;

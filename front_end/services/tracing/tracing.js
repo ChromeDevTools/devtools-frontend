@@ -2993,6 +2993,7 @@ var RawTraceEvents = class {
   constructor(events) {
     this.events = events;
   }
+  events;
   getEvents() {
     return this.events;
   }

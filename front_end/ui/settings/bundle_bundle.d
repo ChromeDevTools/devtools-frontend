@@ -1,0 +1,1 @@
+gen/front_end/ui/settings/settings.js: ../../front_end/ui/settings/ConsoleSettings.ts ../../front_end/ui/settings/InspectorMainSettings.ts ../../front_end/ui/settings/MainSettings.ts ../../front_end/ui/settings/SettingUIRegistration.ts ../../front_end/ui/settings/settings.ts

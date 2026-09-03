@@ -11,8 +11,8 @@ export interface ViewInput {
 }
 export type ViewOutput = undefined;
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: ViewOutput, target: DocumentFragment) => void;
-declare const LayerDetailsView_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.Widget<ShadowRoot>;
-export declare class LayerDetailsView extends LayerDetailsView_base implements LayerView {
+declare const LayerDetailsViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget<ShadowRoot>>;
+export declare class LayerDetailsView extends LayerDetailsViewBase implements LayerView {
     private readonly layerViewHost;
     private layerSnapshotMap;
     private selection;

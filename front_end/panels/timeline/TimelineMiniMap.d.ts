@@ -12,7 +12,6 @@ export interface OverviewData {
         showMemory: boolean;
     };
 }
-declare const TimelineMiniMap_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<PerfUI.TimelineOverviewPane.EventTypes>, any[]> & typeof UI.Widget.VBox;
 /**
  * This component wraps the generic PerfUI Overview component and configures it
  * specifically for the Performance Panel, including injecting the CSS we use
@@ -22,7 +21,8 @@ declare const TimelineMiniMap_base: import("../../core/platform/Constructor.js")
  * update the visible trace window, and when this happens it will update the
  * TraceBounds service with the new values.
  */
-export declare class TimelineMiniMap extends TimelineMiniMap_base {
+declare const TimelineMiniMapBase: Common.ObjectWrapper.EventMixin<PerfUI.TimelineOverviewPane.EventTypes, typeof UI.Widget.VBox>;
+export declare class TimelineMiniMap extends TimelineMiniMapBase {
     #private;
     breadcrumbs: TimelineComponents.Breadcrumbs.Breadcrumbs | null;
     constructor();

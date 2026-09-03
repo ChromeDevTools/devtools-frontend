@@ -2082,7 +2082,8 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
   }
   render6(template, target);
 };
-var RuleSetGrid = class extends Common3.ObjectWrapper.eventMixin(UI6.Widget.VBox) {
+var RuleSetGridBase = Common3.ObjectWrapper.eventMixin(UI6.Widget.VBox);
+var RuleSetGrid = class extends RuleSetGridBase {
   #view;
   #data = null;
   constructor(view = DEFAULT_VIEW5) {

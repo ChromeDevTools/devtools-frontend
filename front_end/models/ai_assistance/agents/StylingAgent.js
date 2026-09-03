@@ -71,7 +71,6 @@ const MULTIMODAL_ENHANCEMENT_PROMPTS = {
     ["screenshot" /* MultimodalInputType.SCREENSHOT */]: promptForScreenshot + considerationsForMultimodalInputEvaluation,
     ["uploaded-image" /* MultimodalInputType.UPLOADED_IMAGE */]: promptForUploadedImage + considerationsForMultimodalInputEvaluation,
 };
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const AI_ASSISTANCE_FILTER_REGEX = `\\.${AI_ASSISTANCE_CSS_CLASS_NAME}-.*&`;
 /**
  * One agent instance handles one conversation. Create a new agent

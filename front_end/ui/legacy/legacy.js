@@ -4190,7 +4190,8 @@ var UIStrings4 = {
 };
 var str_4 = i18n7.i18n.registerUIStrings("ui/legacy/TabbedPane.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
-var TabbedPane = class extends Common6.ObjectWrapper.eventMixin(VBox) {
+var TabbedPaneBase = Common6.ObjectWrapper.eventMixin(VBox);
+var TabbedPane = class extends TabbedPaneBase {
   #headerElement;
   headerContentsElement;
   tabSlider;
@@ -7414,7 +7415,8 @@ var splitWidget_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./splitWidget.css")} */`;
 
 // gen/front_end/ui/legacy/SplitWidget.js
-var SplitWidget = class extends Common10.ObjectWrapper.eventMixin(Widget) {
+var SplitWidgetBase = Common10.ObjectWrapper.eventMixin(Widget);
+var SplitWidget = class extends SplitWidgetBase {
   #sidebarElement;
   #mainElement;
   #resizerElement;
@@ -13453,7 +13455,7 @@ var ToolbarInputElement = class extends HTMLElement {
       return [];
     }
     const options = this.datalist.options;
-    return [...options].map(({ value }) => value).filter((value) => value.startsWith(prefix)).map((text) => ({ text }));
+    return [...options].map((({ value }) => value)).filter((value) => value.startsWith(prefix)).map((text) => ({ text }));
   }
   attributeChangedCallback(name, _oldValue, newValue) {
     if (name === "value") {
@@ -17589,7 +17591,8 @@ var UIStrings14 = {
 };
 var str_14 = i18n27.i18n.registerUIStrings("ui/legacy/Dialog.ts", UIStrings14);
 var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
-var Dialog = class _Dialog extends Common16.ObjectWrapper.eventMixin(GlassPane) {
+var DialogBase = Common16.ObjectWrapper.eventMixin(GlassPane);
+var Dialog = class _Dialog extends DialogBase {
   tabIndexBehavior = "DisableAllTabIndex";
   tabIndexMap = /* @__PURE__ */ new Map();
   focusRestorer = null;
@@ -17785,7 +17788,8 @@ var OutsideTabIndexBehavior;
   OutsideTabIndexBehavior2["PRESERVE_MAIN_VIEW_TAB_INDEX"] = "PreserveMainViewTabIndex";
   OutsideTabIndexBehavior2["PRESERVE_TAB_INDEX"] = "PreserveTabIndex";
 })(OutsideTabIndexBehavior || (OutsideTabIndexBehavior = {}));
-var DialogWidget = class extends Common16.ObjectWrapper.eventMixin(Widget) {
+var DialogWidgetBase = Common16.ObjectWrapper.eventMixin(Widget);
+var DialogWidget = class extends DialogWidgetBase {
   #open = false;
   #jslogContext = "";
   #dialogStack = false;
@@ -18665,7 +18669,8 @@ var UIStrings16 = {
 };
 var str_16 = i18n31.i18n.registerUIStrings("ui/legacy/FilterBar.ts", UIStrings16);
 var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var FilterBar = class extends Common17.ObjectWrapper.eventMixin(HBox) {
+var FilterBarBase = Common17.ObjectWrapper.eventMixin(HBox);
+var FilterBar = class extends FilterBarBase {
   enabled;
   stateSetting;
   #filterButton;

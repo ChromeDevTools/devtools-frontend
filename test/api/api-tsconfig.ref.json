@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../test/api",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../test/api/TargetUniverse.ts",
+    "../../../../../test/api/api-state-provider.ts",
+    "../../../../../test/api/mocha-interface.ts",
+    "../../../../../test/api/mocha_hooks.ts",
+    "../../../../../test/api/run-mocha.ts",
+    "../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../node_modules/@types/filewriter/index.d.ts",
+    "../../../../../test/api/types.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../front_end/core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../front_end/core/host/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../front_end/core/protocol_client/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../front_end/core/protocol_client/puppeteer_devtools_connection-tsconfig.ref.json"
+    },
+    {
+      "path": "../../front_end/core/root/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../front_end/core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../front_end/foundation/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../conductor/implementation-tsconfig.ref.json"
+    },
+    {
+      "path": "../e2e/conductor/implementation-tsconfig.ref.json"
+    },
+    {
+      "path": "../shared/shared-tsconfig.ref.json"
+    }
+  ]
+}

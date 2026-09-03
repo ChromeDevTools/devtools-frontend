@@ -455,7 +455,8 @@ var DEFAULT_VIEW = (input, _output, target) => {
       </button>` : nothing}
     </div>`, target, { container: { attributes: { jslog: `${VisualLogging.pane("layers-details")}` } } });
 };
-var LayerDetailsView = class extends Common2.ObjectWrapper.eventMixin(UI.Widget.Widget) {
+var LayerDetailsViewBase = Common2.ObjectWrapper.eventMixin(UI.Widget.Widget);
+var LayerDetailsView = class extends LayerDetailsViewBase {
   layerViewHost;
   layerSnapshotMap;
   selection;
@@ -677,7 +678,8 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     </div>
   `, target);
 };
-var LayerTreeOutline = class extends Common3.ObjectWrapper.eventMixin(UI2.Widget.Widget) {
+var LayerTreeOutlineBase = Common3.ObjectWrapper.eventMixin(UI2.Widget.Widget);
+var LayerTreeOutline = class extends LayerTreeOutlineBase {
   layerViewHost;
   layerTree;
   layerSnapshotMap;
@@ -1245,7 +1247,8 @@ var DEFAULT_VIEW3 = (input, output, target) => {
     output.canvasElement = el;
   })}></canvas>`, target, { container: { attributes: { jslog: `${VisualLogging4.pane("layers-3d-view")}` } } });
 };
-var Layers3DView = class extends Common5.ObjectWrapper.eventMixin(UI4.Widget.VBox) {
+var Layers3DViewBase = Common5.ObjectWrapper.eventMixin(UI4.Widget.VBox);
+var Layers3DView = class extends Layers3DViewBase {
   layerViewHost;
   transformController;
   lastSelection;
@@ -2440,7 +2443,8 @@ var DEFAULT_VIEW4 = (input, output, target) => {
   const pieChartData = calculatePieChartData(input, canvas2.width, samplesPerBar, emptyPieChartData);
   render4(getTemplate(pieChartData), target);
 };
-var PaintProfilerView = class _PaintProfilerView extends Common6.ObjectWrapper.eventMixin(UI5.Widget.Widget) {
+var PaintProfilerViewBase = Common6.ObjectWrapper.eventMixin(UI5.Widget.Widget);
+var PaintProfilerView = class _PaintProfilerView extends PaintProfilerViewBase {
   canvasContainer;
   #selectionWindow;
   innerBarWidth;

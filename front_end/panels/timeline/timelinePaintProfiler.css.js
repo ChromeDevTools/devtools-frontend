@@ -18,7 +18,7 @@ export default `/*
 }
 
 .paint-profiler-image-view .paint-profiler-image-container div {
-  border-color: 1px solid var(--sys-color-divider);
+  border-color: var(--sys-size-1) solid var(--sys-color-divider);
   border-style: solid;
   z-index: 100;
   position: absolute;
@@ -27,7 +27,7 @@ export default `/*
 }
 
 .paint-profiler-image-view img {
-  border: solid 1px var(--sys-color-inverse-surface);
+  border: solid var(--sys-size-1) var(--sys-color-inverse-surface);
 }
 
 /*# sourceURL=${import.meta.resolve('./timelinePaintProfiler.css')} */`;

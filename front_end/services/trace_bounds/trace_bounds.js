@@ -21,6 +21,9 @@ var StateChangedEvent = class _StateChangedEvent extends Event {
     this.updateType = updateType;
     this.options = options;
   }
+  state;
+  updateType;
+  options;
   static eventName = "traceboundsstatechanged";
 };
 function onChange(cb) {

@@ -1,11 +1,12 @@
 import * as Common from '../../core/common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as PanelsCommon from '../common/common.js';
 export interface CPUThrottlingSelectorWrapper {
     control: UI.Toolbar.ToolbarComboBox;
     updateRecommendedOption(recommendedOption: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption | null): void;
 }
-export declare class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<ThrottlingManager.EventTypes> {
+export declare class ThrottlingManager extends Common.ObjectWrapper.ObjectWrapper<void> {
     #private;
     private readonly cpuThrottlingControls;
     private readonly cpuThrottlingOptions;
@@ -27,7 +28,6 @@ export declare class ThrottlingManager extends Common.ObjectWrapper.ObjectWrappe
     private onCalibratedSettingChanged;
     onCPUThrottlingRateChangedOnSDK(rate: number): void;
     createCPUThrottlingSelector(): CPUThrottlingSelectorWrapper;
-    setSaveDataOverride(selectedIndex: number): void;
     createSaveDataOverrideSelector(className?: string): HTMLSelectElement;
     /** Hardware Concurrency doesn't store state in a setting. */
     createHardwareConcurrencySelector(): {
@@ -40,27 +40,19 @@ export declare class ThrottlingManager extends Common.ObjectWrapper.ObjectWrappe
     private isDirty;
 }
 export interface SaveDataOverrideViewInput {
-    selectedIndex: number;
-    onSelect: (index: number) => void;
+    selectedOption: SDK.EmulationModel.DataSaverOverride;
+    onSelect: (selectedOption: SDK.EmulationModel.DataSaverOverride) => void;
 }
 export type SaveDataOverrideViewFunction = (input: SaveDataOverrideViewInput, output: undefined, target: HTMLSelectElement) => void;
 export declare const DEFAULT_SAVE_DATA_VIEW: SaveDataOverrideViewFunction;
-declare const SaveDataOverrideSelect_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<ThrottlingManager.EventTypes>, any[]> & typeof UI.Widget.Widget<HTMLSelectElement>;
-export declare class SaveDataOverrideSelect extends SaveDataOverrideSelect_base {
+export declare class SaveDataOverrideSelect extends UI.Widget.Widget<HTMLSelectElement> {
     #private;
     constructor(element: HTMLElement, view?: SaveDataOverrideViewFunction);
+    wasShown(): void;
+    willHide(): void;
     performUpdate(): void;
-}
-export declare namespace ThrottlingManager {
-    const enum Events {
-        SAVE_DATA_OVERRIDE_CHANGED = "SaveDataOverrideChanged"
-    }
-    interface EventTypes {
-        [Events.SAVE_DATA_OVERRIDE_CHANGED]: number;
-    }
 }
 export declare class ActionDelegate implements UI.ActionRegistration.ActionDelegate {
     handleAction(_context: UI.Context.Context, actionId: string): boolean;
 }
 export declare function throttlingManager(): ThrottlingManager;
-export {};

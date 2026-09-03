@@ -34,8 +34,13 @@
     "strict": true,
     "target": "ES2023",
     "tsBuildInfoFile": "docs_environment-tsconfig.json.tsbuildinfo",
-    "typeRoots": [],
-    "types": [],
+    "typeRoots": [
+      "../../../../../node_modules/@types",
+      "../../../../../node_modules"
+    ],
+    "types": [
+      "mocha"
+    ],
     "useUnknownInCatchVariables": false
   },
   "files": [

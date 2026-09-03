@@ -266,6 +266,10 @@ var DiffRenderer = class _DiffRenderer {
     this.currentHighlighter = currentHighlighter;
     this.currentMap = currentMap;
   }
+  originalHighlighter;
+  originalMap;
+  currentHighlighter;
+  currentMap;
   #render(rows) {
     return html`
       <style>${diffView_css_default}</style>

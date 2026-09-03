@@ -1210,6 +1210,7 @@ var HostUrlPattern = class _HostUrlPattern {
   constructor(pattern) {
     this.pattern = pattern;
   }
+  pattern;
   static parse(pattern) {
     if (pattern === "<all_urls>") {
       return new _HostUrlPattern({ matchesAll: true });

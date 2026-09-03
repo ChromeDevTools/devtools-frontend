@@ -26,6 +26,11 @@ export default `/*
   background-color: var(--sys-color-state-header-hover);
 }
 
+.header:focus-visible {
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: calc(-1 * var(--sys-size-2));
+}
+
 details[open] .header-count {
   display: none;
 }

@@ -133,6 +133,7 @@ var SwitchChangeEvent = class _SwitchChangeEvent extends Event {
     super(_SwitchChangeEvent.eventName);
     this.checked = checked;
   }
+  checked;
   static eventName = "switchchange";
 };
 var Switch = class extends HTMLElement {

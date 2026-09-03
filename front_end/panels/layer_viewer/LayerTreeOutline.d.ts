@@ -23,8 +23,8 @@ export interface ViewOutput {
 }
 export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 export declare const DEFAULT_VIEW: View;
-declare const LayerTreeOutline_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.Widget;
-export declare class LayerTreeOutline extends LayerTreeOutline_base implements Common.EventTarget.EventTarget<EventTypes>, LayerView {
+declare const LayerTreeOutlineBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget>;
+export declare class LayerTreeOutline extends LayerTreeOutlineBase implements Common.EventTarget.EventTarget<EventTypes>, LayerView {
     #private;
     private layerViewHost;
     private layerTree?;

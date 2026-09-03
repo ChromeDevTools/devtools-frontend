@@ -1,4 +1,4 @@
-// gen/front_end/ui/dom_extension/DOMExtension.js
+// ../../front_end/ui/dom_extension/DOMExtension.ts
 var DOMExtension_exports = {};
 import * as Platform from "../../core/platform/platform.js";
 Node.prototype.traverseNextTextNode = function(stayWithin) {

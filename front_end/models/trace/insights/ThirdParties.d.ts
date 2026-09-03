@@ -1,4 +1,4 @@
-import type * as Platform from '../../../core/platform/platform.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Extras from '../extras/extras.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Types from '../types/types.js';
@@ -30,7 +30,7 @@ export declare const UIStrings: {
      */
     readonly noThirdParties: 'No third parties found';
 };
-export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
+export declare const i18nString: i18n.LocalizeString;
 export type ThirdPartiesInsightModel = InsightModel<typeof UIStrings, {
     /** The entity for this navigation's URL. Any other entity is from a third party. */
     entitySummaries: Extras.ThirdParties.EntitySummary[];

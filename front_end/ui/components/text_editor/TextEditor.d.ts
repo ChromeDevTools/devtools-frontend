@@ -6,6 +6,8 @@ declare global {
 }
 export declare class TextEditor extends HTMLElement {
     #private;
+    static get observedAttributes(): string[];
+    attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null): void;
     constructor(pendingState?: CodeMirror.EditorState);
     get editor(): CodeMirror.EditorView;
     dispatch(spec: CodeMirror.TransactionSpec): void;

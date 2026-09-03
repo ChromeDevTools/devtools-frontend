@@ -53,6 +53,10 @@ var SearchMatch = class {
     this.columnNumber = columnNumber;
     this.matchLength = matchLength;
   }
+  lineNumber;
+  lineContent;
+  columnNumber;
+  matchLength;
   static comparator(a, b) {
     return a.lineNumber - b.lineNumber || a.columnNumber - b.columnNumber;
   }
@@ -128,6 +132,10 @@ var TextRange = class _TextRange {
     this.endLine = endLine;
     this.endColumn = endColumn;
   }
+  startLine;
+  startColumn;
+  endLine;
+  endColumn;
   static createFromLocation(line, column) {
     return new _TextRange(line, column, line, column);
   }
@@ -342,6 +350,8 @@ var SourceRange = class {
     this.offset = offset;
     this.length = length;
   }
+  offset;
+  length;
   cssValue() {
     return `${this.offset},${this.length}`;
   }

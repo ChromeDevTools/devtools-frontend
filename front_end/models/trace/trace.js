@@ -3381,6 +3381,7 @@ var TraceParseProgressEvent = class _TraceParseProgressEvent extends Event {
     super(_TraceParseProgressEvent.eventName, init);
     this.data = data;
   }
+  data;
   static eventName = "traceparseprogress";
 };
 function calculateProgress(value, phase) {
@@ -4023,6 +4024,7 @@ var ModelUpdateEvent = class _ModelUpdateEvent extends Event {
     super(_ModelUpdateEvent.eventName);
     this.data = data;
   }
+  data;
   static eventName = "modelupdate";
 };
 function isModelUpdateDataComplete(eventData) {

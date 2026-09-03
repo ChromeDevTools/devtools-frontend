@@ -613,4 +613,8 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   outline: 1px dotted var(--sys-color-divider);
 }
 
+.tree-outline-disclosure li.elements-tree-expand-all {
+  margin: var(--sys-size-2) 0;
+}
+
 /*# sourceURL=${import.meta.resolve('./elementsTreeOutline.css')} */`;

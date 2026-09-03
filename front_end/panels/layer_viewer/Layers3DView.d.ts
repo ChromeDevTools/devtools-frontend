@@ -1,5 +1,4 @@
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -17,8 +16,8 @@ export interface ViewOutput {
     canvasElement?: HTMLCanvasElement;
 }
 export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
-declare const Layers3DView_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.VBox;
-export declare class Layers3DView extends Layers3DView_base implements LayerView {
+declare const Layers3DViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
+export declare class Layers3DView extends Layers3DViewBase implements LayerView {
     #private;
     private readonly layerViewHost;
     private transformController;

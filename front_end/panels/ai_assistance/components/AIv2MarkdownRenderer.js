@@ -27,8 +27,8 @@ export class AIv2MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownInsi
         if (!this.options.mainDocumentURL) {
             return true;
         }
-        const nodeDocumentURL = node.ownerDocument?.documentURL ?? '';
-        return AiAssistanceModel.AiUtils.isSameOrigin(this.options.mainDocumentURL, nodeDocumentURL);
+        return SDK.SecurityOrigin.SecurityOrigin.create(this.options.mainDocumentURL)
+            .isSameOriginWith(node.securityOrigin());
     }
     #revealableLink(revealable, label) {
         return html `<devtools-link @click=${(e) => {

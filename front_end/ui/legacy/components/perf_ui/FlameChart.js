@@ -155,7 +155,8 @@ export var FilterAction;
     FilterAction["RESET_CHILDREN"] = "RESET_CHILDREN";
     FilterAction["UNDO_ALL_ACTIONS"] = "UNDO_ALL_ACTIONS";
 })(FilterAction || (FilterAction = {}));
-export class FlameChart extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const FlameChartBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class FlameChart extends FlameChartBase {
     flameChartDelegate;
     chartViewport;
     dataProvider;

@@ -12,23 +12,23 @@ export default `/*
 
 .lighthouse-start-view {
   line-height: 18px;
-  padding: 24px;
+  padding: var(--sys-size-11);
   overflow: auto;
   height: 100%;
   /* for buttons */
   --legacy-accent-color: #0535c1;
   --legacy-accent-color-hover: #17b;
-  --font-size: 14px;
+  --font-size: var(--sys-typescale-body2-size);
   --report-font-family: roboto, helvetica, arial, sans-serif;
 }
 
 .lighthouse-start-view header {
   display: flex;
-  font-size: 18px;
+  font-size: var(--sys-typescale-headline3-size);
   flex-direction: row;
   align-items: center;
-  column-gap: 16px;
-  margin-bottom: 16px;
+  column-gap: var(--sys-size-8);
+  margin-bottom: var(--sys-size-8);
 }
 
 .lighthouse-start-view .lighthouse-title {
@@ -53,14 +53,14 @@ export default `/*
 }
 
 .lighthouse-form-section {
-  padding: 8px;
+  padding: var(--sys-size-5);
   flex: 1 1;
 }
 
 .lighthouse-form-categories-fieldset {
   border: none;
   margin: 0;
-  padding: 8px;
+  padding: var(--sys-size-5);
 }
 
 .lighthouse-form-section-label {
@@ -70,15 +70,15 @@ export default `/*
 
 .lighthouse-form-section-label i span {
   position: relative;
-  top: -2px;
+  top: calc(-1 * var(--sys-size-2));
 }
 
 .lighthouse-form-section-label span.largeicon-checkmark {
-  top: -4px;
+  top: calc(-1 * var(--sys-size-3));
 }
 
 .lighthouse-form-section-label .lighthouse-learn-more {
-  margin: 20px;
+  margin: var(--sys-size-9);
 }
 
 .lighthouse-radio {
@@ -103,7 +103,7 @@ export default `/*
 }
 
 .lighthouse-start-button-container button {
-  margin: 16px auto;
+  margin: var(--sys-size-8) auto;
   font-family: var(--report-font-family);
   font-weight: 500;
   font-size: var(--font-size);
@@ -120,12 +120,12 @@ export default `/*
   }
 
   &:not(:has(devtools-checkbox)) {
-    margin-bottom: 6px;
+    margin-bottom: var(--sys-size-4);
   }
 }
 
 .lighthouse-launcher-row .dimmed {
-  padding-left: 22px;
+  padding-left: var(--sys-size-10);
 }
 
 .lighthouse-help-text {

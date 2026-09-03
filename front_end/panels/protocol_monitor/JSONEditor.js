@@ -88,7 +88,8 @@ export var Events;
 (function (Events) {
     Events["SUBMIT_EDITOR"] = "submiteditor";
 })(Events || (Events = {}));
-export class JSONEditor extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const JSONEditorBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class JSONEditor extends JSONEditorBase {
     #metadataByCommand = new Map();
     #typesByName = new Map();
     #enumsByName = new Map();

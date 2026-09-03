@@ -89,7 +89,7 @@ export interface PayloadViewInput {
 export declare const PAYLOAD_DEFAULT_VIEW: (input: PayloadViewInput, output: object, target: HTMLElement) => void;
 export declare class PayloadWidget extends UI.Widget.Widget {
     #private;
-    constructor(element?: HTMLElement, view?: typeof PAYLOAD_DEFAULT_VIEW);
+    constructor(element?: HTMLElement, view?: (input: PayloadViewInput, output: object, target: HTMLElement) => void);
     set valueObject(valueObject: unknown);
     get valueObject(): unknown;
     set valueString(valueString: string | undefined);

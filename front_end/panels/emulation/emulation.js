@@ -1362,7 +1362,8 @@ var inspectedPagePlaceholder_css_default = `/*
 
 // gen/front_end/panels/emulation/InspectedPagePlaceholder.js
 var inspectedPagePlaceholderInstance;
-var InspectedPagePlaceholder = class _InspectedPagePlaceholder extends Common2.ObjectWrapper.eventMixin(UI2.Widget.Widget) {
+var InspectedPagePlaceholderBase = Common2.ObjectWrapper.eventMixin(UI2.Widget.Widget);
+var InspectedPagePlaceholder = class _InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
   constructor() {
     super({ useShadowDom: true });
     this.registerRequiredCSS(inspectedPagePlaceholder_css_default);
@@ -2486,7 +2487,8 @@ var RulerEvents;
 (function(RulerEvents2) {
   RulerEvents2["MARKER_SELECTED"] = "MarkerSelected";
 })(RulerEvents || (RulerEvents = {}));
-var Ruler = class extends Common4.ObjectWrapper.eventMixin(UI4.Widget.Widget) {
+var RulerBase = Common4.ObjectWrapper.eventMixin(UI4.Widget.Widget);
+var Ruler = class extends RulerBase {
   #view;
   #horizontal = true;
   #scale = 1;

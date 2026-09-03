@@ -156,6 +156,7 @@ core/sdk/ResourceTreeModel.test.js
 core/sdk/ScopeTreeCache.test.js
 core/sdk/ScreenCaptureModel.test.js
 core/sdk/Script.test.js
+core/sdk/SecurityOrigin.test.js
 core/sdk/ServerTiming.test.js
 core/sdk/ServiceWorkerCacheModel.test.js
 core/sdk/ServiceWorkerManager.test.js

@@ -21,7 +21,8 @@ import { TimelineUIUtils } from './TimelineUIUtils.js';
  * update the visible trace window, and when this happens it will update the
  * TraceBounds service with the new values.
  */
-export class TimelineMiniMap extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const TimelineMiniMapBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class TimelineMiniMap extends TimelineMiniMapBase {
     #overviewComponent = new PerfUI.TimelineOverviewPane.TimelineOverviewPane('timeline');
     #controls = [];
     breadcrumbs = null;

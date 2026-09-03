@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/settings/ConsoleSettings.js
+// ../../front_end/ui/settings/ConsoleSettings.ts
 var ConsoleSettings_exports = {};
 __export(ConsoleSettings_exports, {
   consoleAutocompleteOnEnterSettingDescriptor: () => consoleAutocompleteOnEnterSettingDescriptor,
@@ -20,58 +20,58 @@ __export(ConsoleSettings_exports, {
 import * as Common from "../../core/common/common.js";
 var networkMessagesSettingDescriptor = {
   name: "network-messages",
-  type: "boolean",
+  type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: "Synced"
+  storageType: Common.Settings.SettingStorageType.SYNCED
 };
 var selectedContextFilterEnabledSettingDescriptor = {
   name: "selected-context-filter-enabled",
-  type: "boolean",
+  type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: "Synced"
+  storageType: Common.Settings.SettingStorageType.SYNCED
 };
 var consoleTimestampsEnabledSettingDescriptor = {
   name: "console-timestamps-enabled",
-  type: "boolean",
+  type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: "Synced"
+  storageType: Common.Settings.SettingStorageType.SYNCED
 };
 var consoleHistoryAutocompleteSettingDescriptor = {
   name: "console-history-autocomplete",
-  type: "boolean",
+  type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true
 };
 var consoleAutocompleteOnEnterSettingDescriptor = {
   name: "console-autocomplete-on-enter",
-  type: "boolean",
+  type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: "Synced"
+  storageType: Common.Settings.SettingStorageType.SYNCED
 };
 var consoleGroupSimilarSettingDescriptor = {
   name: "console-group-similar",
-  type: "boolean",
+  type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: "Synced"
+  storageType: Common.Settings.SettingStorageType.SYNCED
 };
 var consoleShowsCorsErrorsSettingDescriptor = {
   name: "console-shows-cors-errors",
-  type: "boolean",
+  type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true
 };
 var consoleEagerEvalSettingDescriptor = {
   name: "console-eager-eval",
-  type: "boolean",
+  type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: "Synced"
+  storageType: Common.Settings.SettingStorageType.SYNCED
 };
 var consoleTraceExpandSettingDescriptor = {
   name: "console-trace-expand",
-  type: "boolean",
+  type: Common.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: "Synced"
+  storageType: Common.Settings.SettingStorageType.SYNCED
 };
 
-// gen/front_end/ui/settings/InspectorMainSettings.js
+// ../../front_end/ui/settings/InspectorMainSettings.ts
 var InspectorMainSettings_exports = {};
 __export(InspectorMainSettings_exports, {
   adBlockingEnabledSettingDescriptor: () => adBlockingEnabledSettingDescriptor,
@@ -80,18 +80,18 @@ __export(InspectorMainSettings_exports, {
 import * as Common2 from "../../core/common/common.js";
 var adBlockingEnabledSettingDescriptor = {
   name: "network.ad-blocking-enabled",
-  type: "boolean",
+  type: Common2.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: "Session"
+  storageType: Common2.Settings.SettingStorageType.SESSION
 };
 var autoAttachToCreatedPagesSettingDescriptor = {
   name: "auto-attach-to-created-pages",
-  type: "boolean",
+  type: Common2.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: "Synced"
+  storageType: Common2.Settings.SettingStorageType.SYNCED
 };
 
-// gen/front_end/ui/settings/MainSettings.js
+// ../../front_end/ui/settings/MainSettings.ts
 var MainSettings_exports = {};
 __export(MainSettings_exports, {
   activeKeybindSetSettingDescriptor: () => activeKeybindSetSettingDescriptor,
@@ -108,64 +108,64 @@ __export(MainSettings_exports, {
 import * as Common3 from "../../core/common/common.js";
 var uiThemeSettingDescriptor = {
   name: "ui-theme",
-  type: "enum",
+  type: Common3.Settings.SettingType.ENUM,
   defaultValue: "systemPreferred",
-  storageType: "Synced"
+  storageType: Common3.Settings.SettingStorageType.SYNCED
 };
 var chromeThemeColorsSettingDescriptor = {
   name: "chrome-theme-colors",
-  type: "boolean",
+  type: Common3.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: "Synced"
+  storageType: Common3.Settings.SettingStorageType.SYNCED
 };
 var sidebarPositionSettingDescriptor = {
   name: "sidebar-position",
-  type: "enum",
+  type: Common3.Settings.SettingType.ENUM,
   defaultValue: "auto",
-  storageType: "Synced"
+  storageType: Common3.Settings.SettingStorageType.SYNCED
 };
 var languageSettingDescriptor = {
   name: "language",
-  type: "enum",
+  type: Common3.Settings.SettingType.ENUM,
   defaultValue: "en-US",
-  storageType: "Synced"
+  storageType: Common3.Settings.SettingStorageType.SYNCED
 };
 var shortcutPanelSwitchSettingDescriptor = {
   name: "shortcut-panel-switch",
-  type: "boolean",
+  type: Common3.Settings.SettingType.BOOLEAN,
   defaultValue: false,
-  storageType: "Synced"
+  storageType: Common3.Settings.SettingStorageType.SYNCED
 };
 var currentDockStateSettingDescriptor = {
   name: "currentDockState",
-  type: "enum",
+  type: Common3.Settings.SettingType.ENUM,
   defaultValue: "right"
 };
 var activeKeybindSetSettingDescriptor = {
   name: "active-keybind-set",
-  type: "enum",
+  type: Common3.Settings.SettingType.ENUM,
   defaultValue: "devToolsDefault",
-  storageType: "Synced"
+  storageType: Common3.Settings.SettingStorageType.SYNCED
 };
 var syncPreferencesSettingDescriptor = {
   name: "sync-preferences",
-  type: "boolean",
+  type: Common3.Settings.SettingType.BOOLEAN,
   defaultValue: false
 };
 var userShortcutsSettingDescriptor = {
   name: "user-shortcuts",
-  type: "array",
+  type: Common3.Settings.SettingType.ARRAY,
   defaultValue: [],
-  storageType: "Synced"
+  storageType: Common3.Settings.SettingStorageType.SYNCED
 };
 var searchAsYouTypeSettingDescriptor = {
   name: "search-as-you-type",
-  type: "boolean",
+  type: Common3.Settings.SettingType.BOOLEAN,
   defaultValue: true,
-  storageType: "Local"
+  storageType: Common3.Settings.SettingStorageType.LOCAL
 };
 
-// gen/front_end/ui/settings/SettingUIRegistration.js
+// ../../front_end/ui/settings/SettingUIRegistration.ts
 var SettingUIRegistration_exports = {};
 __export(SettingUIRegistration_exports, {
   SettingUI: () => SettingUI,

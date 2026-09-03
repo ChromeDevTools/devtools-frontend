@@ -143,7 +143,8 @@ export function getRecommendedNetworkConditions(roundTripTimeMetricData) {
     }
     return null;
 }
-export class NetworkThrottlingSelect extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
+const NetworkThrottlingSelectBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
+export class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
     #settings;
     #recommendedConditions = null;
     #jslogContext;

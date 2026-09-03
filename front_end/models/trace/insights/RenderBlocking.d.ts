@@ -1,4 +1,4 @@
-import type * as Platform from '../../../core/platform/platform.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Handlers from '../handlers/handlers.js';
 import type * as Types from '../types/types.js';
 import { type InsightModel, type InsightSetContext } from './types.js';
@@ -24,7 +24,7 @@ export declare const UIStrings: {
      */
     readonly noRenderBlocking: 'No render-blocking requests for this navigation';
 };
-export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
+export declare const i18nString: i18n.LocalizeString;
 export declare function isRenderBlockingInsight(insight: InsightModel): insight is RenderBlockingInsightModel;
 export type RenderBlockingInsightModel = InsightModel<typeof UIStrings, {
     renderBlockingRequests: Types.Events.SyntheticNetworkRequest[];

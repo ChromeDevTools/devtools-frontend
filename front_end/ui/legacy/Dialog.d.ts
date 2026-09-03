@@ -2,8 +2,8 @@ import * as Common from '../../core/common/common.js';
 import { type LitTemplate } from '../../ui/lit/lit.js';
 import { GlassPane } from './GlassPane.js';
 import { Widget } from './Widget.js';
-declare const Dialog_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof GlassPane;
-export declare class Dialog extends Dialog_base {
+declare const DialogBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof GlassPane>;
+export declare class Dialog extends DialogBase {
     private tabIndexBehavior;
     private tabIndexMap;
     private focusRestorer;
@@ -52,8 +52,8 @@ export declare const enum OutsideTabIndexBehavior {
     PRESERVE_MAIN_VIEW_TAB_INDEX = "PreserveMainViewTabIndex",
     PRESERVE_TAB_INDEX = "PreserveTabIndex"
 }
-declare const DialogWidget_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof Widget;
-export declare class DialogWidget extends DialogWidget_base {
+declare const DialogWidgetBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof Widget>;
+export declare class DialogWidget extends DialogWidgetBase {
     #private;
     constructor(element?: HTMLElement);
     get open(): boolean;

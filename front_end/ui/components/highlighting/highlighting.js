@@ -29,6 +29,7 @@ var RangeWalker = class {
     this.#treeWalker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, nodeFilter);
     this.#eof = !this.#treeWalker.firstChild();
   }
+  root;
   #offset = 0;
   #treeWalker;
   #eof;

@@ -16143,7 +16143,7 @@
     "message": "Nodes"
   },
   "panels/timeline/CountersGraph.ts | noEventsFound": {
-    "message": "No memory usage data found within selected events."
+    "message": "No memory usage data found within selected events"
   },
   "panels/timeline/CountersGraph.ts | ss": {
     "message": "[{PH1} – {PH2}]"
@@ -16620,7 +16620,7 @@
     "message": "- Selector stats is enabled"
   },
   "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
-    "message": "Keyboard shortcuts for flamechart"
+    "message": "Keyboard shortcuts for flame chart"
   },
   "panels/timeline/TimelinePanel.ts | showDataAddedByExtensions": {
     "message": "Show data added by extensions of the Performance panel"
@@ -16647,7 +16647,7 @@
     "message": "3rd parties classified by third-party-web"
   },
   "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
-    "message": "Scroll & Pan"
+    "message": "Scroll & pan"
   },
   "panels/timeline/TimelinePanel.ts | timelineZoom": {
     "message": "Zoom"
@@ -16662,7 +16662,7 @@
     "message": "Elapsed (ms)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | elapsedExplanation": {
-    "message": "Elapsed time spent matching a selector against the DOM in milliseconds."
+    "message": "Elapsed time spent matching a selector against the DOM in milliseconds"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | invalidationCount": {
     "message": "Invalidation count"
@@ -16677,19 +16677,19 @@
     "message": "Match attempts"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | matchAttemptsExplanation": {
-    "message": "Count of nodes that the engine attempted to match against a style rule."
+    "message": "Count of nodes that the engine attempted to match against a style rule"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | matchCount": {
     "message": "Match count"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | matchCountExplanation": {
-    "message": "Count of nodes that matched a style rule."
+    "message": "Count of nodes that matched a style rule"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Selector"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selectorExplanation": {
-    "message": "CSS selector text of a style rule."
+    "message": "CSS selector text of a style rule"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selectorStats": {
     "message": "Selector stats"
@@ -16698,10 +16698,10 @@
     "message": "% of slow-path non-matches"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | slowPathNonMatchesExplanation": {
-    "message": "The percentage of non-matching nodes (Match Attempts - Match Count) that couldn’t be quickly ruled out by the bloom filter due to high selector complexity. Lower is better."
+    "message": "The percentage of non-matching nodes (match attempts − match count) that couldn’t be quickly ruled out by the bloom filter due to high selector complexity. Lower is better."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | styleSheetId": {
-    "message": "Style Sheet"
+    "message": "Style sheet"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | styleSheetIdExplanation": {
     "message": "Links to the selector rule definition in the style sheets. Note that a selector rule could be defined in multiple places in a style sheet or defined in multiple style sheets. Selector rules from browser user-agent style sheet or dynamic style sheets don’t have a link."
@@ -16752,7 +16752,7 @@
     "message": "Group by subdomain"
   },
   "panels/timeline/TimelineTreeView.ts | groupByThirdParties": {
-    "message": "Group by Third Parties"
+    "message": "Group by 3rd parties"
   },
   "panels/timeline/TimelineTreeView.ts | groupByUrl": {
     "message": "Group by URL"
@@ -16788,7 +16788,7 @@
     "message": "Performance"
   },
   "panels/timeline/TimelineTreeView.ts | selectItemForDetails": {
-    "message": "Select item for details."
+    "message": "Select item for details"
   },
   "panels/timeline/TimelineTreeView.ts | selfTime": {
     "message": "Self time"
@@ -16809,10 +16809,10 @@
     "message": "Use regular expression"
   },
   "panels/timeline/TimelineTreeView.ts | viewBottomUp": {
-    "message": "View Bottom-up"
+    "message": "View bottom-up"
   },
   "panels/timeline/TimelineTreeView.ts | vRuntime": {
-    "message": "[V8 Runtime]"
+    "message": "[V8 runtime]"
   },
   "panels/timeline/TimelineUIUtils.ts | aggregatedTime": {
     "message": "Aggregated time"
@@ -16869,7 +16869,7 @@
     "message": "Effect has unsupported timing parameters"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedEffectSuppressedByDevtools": {
-    "message": "Effect suppressed by DevTools "
+    "message": "Effect suppressed by DevTools"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedFilterRelatedPropertyMayMovePixels": {
     "message": "Filter-related property may move pixels"
@@ -16902,7 +16902,7 @@
     "message": "Transform-related property cannot be accelerated on target"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedUnknownReason": {
-    "message": "Unknown Reason"
+    "message": "Unknown reason"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedUnsupportedCSSProperty": {
     "message": "{propertyCount, plural,\n    =1 {Unsupported CSS property: {properties}}\n    other {Unsupported CSS properties: {properties}}\n  }"
@@ -17076,7 +17076,7 @@
     "message": "{PH1}: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
-    "message": "Select \"{PH1}\" to collect detailed CSS selector matching statistics."
+    "message": "Select \"{PH1}\" to collect detailed CSS selector matching statistics"
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (self)"
@@ -17127,7 +17127,7 @@
     "message": "Show all"
   },
   "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
-    "message": "Some tracks are hidden in this trace. You can configure tracks by right clicking the track name."
+    "message": "Some tracks are hidden in this trace. You can configure tracks by right-clicking the track name."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
     "message": "Async"
@@ -18016,6 +18016,9 @@
   },
   "ui/legacy/components/quick_open/quick_open-meta.ts | runCommand": {
     "message": "Run command"
+  },
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailableCommands": {
+    "message": "Type question mark to see available commands"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Type ? to see available commands"

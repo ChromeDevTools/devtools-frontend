@@ -10,19 +10,19 @@ import thirdPartyTreeViewStyles from './thirdPartyTreeView.css.js';
 import * as TimelineTreeView from './TimelineTreeView.js';
 const UIStrings = {
     /**
-     * @description Unattributed text for an unattributed entity.
+     * @description Label for an unattributed entity in the 1st / 3rd party tree view.
      */
     unattributed: '[unattributed]',
     /**
-     * @description Title for the name of either 1st or 3rd Party entities.
+     * @description Column header for entity names in the 1st / 3rd party tree view.
      */
     firstOrThirdPartyName: '1st / 3rd party',
     /**
-     * @description Title referencing transfer size.
+     * @description Column header for the network transfer size in the 1st / 3rd party tree view.
      */
     transferSize: 'Transfer size',
     /**
-     * @description Title referencing main thread time.
+     * @description Column header for the main thread time in the 1st / 3rd party tree view.
      */
     mainThreadTime: 'Main thread time',
 };

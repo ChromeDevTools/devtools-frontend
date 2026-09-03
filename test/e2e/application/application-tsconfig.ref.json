@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../test/e2e/application",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../test/e2e/application/cookies.test.ts",
+    "../../../../../../test/e2e/application/crash-report-context.test.ts",
+    "../../../../../../test/e2e/application/frame-tree.test.ts",
+    "../../../../../../test/e2e/application/manifest.test.ts",
+    "../../../../../../test/e2e/application/reporting-api.test.ts",
+    "../../../../../../test/e2e/application/resource-tree.test.ts",
+    "../../../../../../test/e2e/application/service-worker-network.test.ts",
+    "../../../../../../test/e2e/application/service-worker-update.test.ts",
+    "../../../../../../test/e2e/application/session-storage.test.ts",
+    "../../../../../../test/e2e/application/storage-metadata.test.ts",
+    "../../../../../../test/e2e/application/storage.test.ts",
+    "../../../../../../test/e2e/application/window-controls.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts",
+    "../../../../../../test/e2e/types.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../shared/shared-tsconfig.ref.json"
+    }
+  ]
+}

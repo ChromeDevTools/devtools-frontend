@@ -1,4 +1,4 @@
-// gen/front_end/ui/i18n/i18n.prebundle.js
+// ../../front_end/ui/i18n/i18n.ts
 import * as I18n from "../../core/i18n/i18n.js";
 import { Directives, html, nothing } from "../lit/lit.js";
 var { repeat } = Directives;

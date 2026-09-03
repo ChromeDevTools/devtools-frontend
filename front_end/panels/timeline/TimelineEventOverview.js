@@ -11,19 +11,19 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 const UIStrings = {
     /**
-     * @description Short for Network. Label for the network requests section of the Performance panel.
+     * @description Label for the network overview strip in the Performance panel.
      */
     net: 'NET',
     /**
-     * @description Text in Timeline Event Overview of the Performance panel
+     * @description Label for the CPU overview strip in the Performance panel.
      */
     cpu: 'CPU',
     /**
-     * @description Text in Timeline Event Overview of the Performance panel
+     * @description Label for the heap memory overview strip in the Performance panel.
      */
     heap: 'HEAP',
     /**
-     * @description Heap size label text content in Timeline Event Overview of the Performance panel
+     * @description Range label for minimum and maximum heap size in the heap memory overview strip of the Performance panel.
      * @example {10 MB} PH1
      * @example {30 MB} PH2
      */

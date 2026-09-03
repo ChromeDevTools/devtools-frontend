@@ -3313,8 +3313,8 @@ var Lazy_exports = {};
 __export(Lazy_exports, {
   lazy: () => lazy
 });
-var UNINITIALIZED = Symbol("uninitialized");
-var ERROR_STATE = Symbol("error");
+var UNINITIALIZED = /* @__PURE__ */ Symbol("uninitialized");
+var ERROR_STATE = /* @__PURE__ */ Symbol("error");
 function lazy(producer) {
   let value = UNINITIALIZED;
   let error = new Error("Initial");
@@ -5898,6 +5898,9 @@ var SettingsStorage = class {
     this.backingStore = backingStore;
     this.storagePrefix = storagePrefix;
   }
+  object;
+  backingStore;
+  storagePrefix;
   register(name) {
     name = this.storagePrefix + name;
     this.backingStore.register(name);
@@ -5963,6 +5966,10 @@ var Setting = class {
     this.#console = console2;
     this.#logSettingAccess = logSettingAccess;
   }
+  name;
+  defaultValue;
+  eventSupport;
+  storage;
   #registration = null;
   #type = null;
   #requiresUserAction;

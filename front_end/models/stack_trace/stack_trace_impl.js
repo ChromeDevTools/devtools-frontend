@@ -245,6 +245,8 @@ var AsyncFragmentImpl = class {
     this.description = description;
     this.fragment = fragment;
   }
+  description;
+  fragment;
   get frames() {
     return this.fragment.frames;
   }
@@ -286,6 +288,7 @@ var ParsedErrorStackFragmentImpl = class {
   constructor(fragment) {
     this.fragment = fragment;
   }
+  fragment;
   get frames() {
     if (!this.fragment.node) {
       return [];
@@ -369,6 +372,8 @@ var DebuggableFragmentImpl = class {
     this.fragment = fragment;
     this.callFrames = callFrames;
   }
+  fragment;
+  callFrames;
   get frames() {
     if (!this.fragment.node) {
       return [];

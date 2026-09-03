@@ -2,8 +2,8 @@ import * as Common from '../../../../core/common/common.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as UI from '../../legacy.js';
 import { TimelineOverviewCalculator } from './TimelineOverviewCalculator.js';
-declare const TimelineOverviewPane_base: import("../../../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.VBox;
-export declare class TimelineOverviewPane extends TimelineOverviewPane_base {
+declare const TimelineOverviewPaneBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
+export declare class TimelineOverviewPane extends TimelineOverviewPaneBase {
     #private;
     readonly overviewCalculator: TimelineOverviewCalculator;
     private readonly overviewGrid;

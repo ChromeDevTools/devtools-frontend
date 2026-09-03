@@ -101,7 +101,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
   `, target);
     // clang-format on
 };
-export class LayerTreeOutline extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
+const LayerTreeOutlineBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
+export class LayerTreeOutline extends LayerTreeOutlineBase {
     layerViewHost;
     layerTree;
     layerSnapshotMap;

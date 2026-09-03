@@ -8320,7 +8320,8 @@ var UIStrings13 = {
 };
 var str_13 = i18n25.i18n.registerUIStrings("panels/sources/UISourceCodeFrame.ts", UIStrings13);
 var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
-var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.eventMixin(SourceFrame6.SourceFrame.SourceFrameImpl) {
+var UISourceCodeFrameBase = Common9.ObjectWrapper.eventMixin(SourceFrame6.SourceFrame.SourceFrameImpl);
+var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
   #uiSourceCode;
   #muteSourceCodeEvents = false;
   #persistenceBinding;
@@ -8406,12 +8407,14 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     }, console.error);
   }
   unloadUISourceCode() {
+    this.textEditor.removeAttribute("data-file-path");
     Common9.EventTarget.removeEventListeners(this.#messageAndDecorationListeners);
     Common9.EventTarget.removeEventListeners(this.#uiSourceCodeEventListeners);
     this.#uiSourceCode.removeWorkingCopyGetter();
     Persistence5.Persistence.PersistenceImpl.instance().unsubscribeFromBindingEvent(this.#uiSourceCode, this.#boundOnBindingChanged);
   }
   initializeUISourceCode() {
+    this.textEditor.setAttribute("data-file-path", this.#uiSourceCode.url());
     this.#uiSourceCodeEventListeners = [
       this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.WorkingCopyChanged, this.onWorkingCopyChanged, this),
       this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.WorkingCopyCommitted, this.onWorkingCopyCommitted, this),
@@ -8551,6 +8554,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends Common9.ObjectWrapper.e
     }
   }
   onTitleChanged() {
+    this.textEditor.setAttribute("data-file-path", this.#uiSourceCode.url());
     this.updateLanguageMode("").then(() => this.reloadPlugins(), console.error);
   }
   static sourceFramePlugins() {
@@ -9083,7 +9087,8 @@ var SourceViewType;
 })(SourceViewType || (SourceViewType = {}));
 var HEADER_OVERRIDES_FILENAME = ".headers";
 var tabId = 0;
-var TabbedEditorContainer = class extends Common10.ObjectWrapper.eventMixin(UI14.Widget.VBox) {
+var TabbedEditorContainerBase = Common10.ObjectWrapper.eventMixin(UI14.Widget.VBox);
+var TabbedEditorContainer = class extends TabbedEditorContainerBase {
   #historyManager;
   set historyManager(historyManager) {
     this.#historyManager = historyManager;
@@ -9948,7 +9953,8 @@ var DEFAULT_VIEW5 = (input, output, target) => {
       </devtools-toolbar>
     </div>`, target);
 };
-var SourcesView = class _SourcesView extends Common11.ObjectWrapper.eventMixin(UI15.Widget.VBox) {
+var SourcesViewBase = Common11.ObjectWrapper.eventMixin(UI15.Widget.VBox);
+var SourcesView = class _SourcesView extends SourcesViewBase {
   #searchableView;
   editorContainer;
   #uiSourceCodes = /* @__PURE__ */ new Set();
@@ -12195,7 +12201,7 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(text.join("\n"));
   }
 };
-var elementSymbol = Symbol("element");
+var elementSymbol = /* @__PURE__ */ Symbol("element");
 var defaultMaxAsyncStackChainDepth = 32;
 var ActionDelegate4 = class {
   handleAction(_context, actionId) {

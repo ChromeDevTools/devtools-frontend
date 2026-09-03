@@ -20,6 +20,7 @@ var AccessiblePlaceholder = class extends CM.WidgetType {
     super();
     this.teaser = teaser;
   }
+  teaser;
   toDOM() {
     const wrap = document.createElement("span");
     wrap.classList.add("cm-placeholder");
@@ -1809,6 +1810,7 @@ var DynamicSetting = class _DynamicSetting {
     this.getExtension = getExtension;
     this.setting = setting;
   }
+  getExtension;
   compartment = new CM3.Compartment();
   setting;
   get settingName() {
@@ -2117,6 +2119,7 @@ var CompletionHint = class extends CM3.WidgetType {
     super();
     this.text = text;
   }
+  text;
   eq(other) {
     return this.text === other.text;
   }
@@ -3133,6 +3136,7 @@ function aiCodeCompletionTeaserExtension(teaser) {
       this.#teaserMode = view.state.field(aiCodeCompletionTeaserModeState);
       this.#setupDecoration();
     }
+    view;
     teaser;
     #teaserDecoration = CodeMirror3.Decoration.none;
     #teaserMode;
@@ -3593,6 +3597,8 @@ var CompletionSet = class _CompletionSet {
     this.completions = completions;
     this.seen = seen;
   }
+  completions;
+  seen;
   add(completion2) {
     if (!this.seen.has(completion2.label)) {
       this.seen.add(completion2.label);
@@ -4315,6 +4321,18 @@ var TextEditor = class extends HTMLElement {
     }
   };
   #devtoolsResizeObserver = new ResizeObserver(this.#resizeListener);
+  static get observedAttributes() {
+    return ["data-file-path"];
+  }
+  attributeChangedCallback(name, _oldValue, newValue) {
+    if (name === "data-file-path" && this.#activeEditor) {
+      if (newValue !== null) {
+        this.#activeEditor.dom.setAttribute("data-file-path", newValue);
+      } else {
+        this.#activeEditor.dom.removeAttribute("data-file-path");
+      }
+    }
+  }
   constructor(pendingState) {
     super();
     this.#pendingState = pendingState;
@@ -4334,6 +4352,10 @@ var TextEditor = class extends HTMLElement {
       },
       scrollTo: this.#lastScrollSnapshot
     });
+    const filePath = this.getAttribute("data-file-path");
+    if (filePath) {
+      this.#activeEditor.dom.setAttribute("data-file-path", filePath);
+    }
     this.#activeEditor.scrollDOM.addEventListener("scroll", () => {
       if (!this.#activeEditor) {
         return;

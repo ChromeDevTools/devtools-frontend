@@ -6,63 +6,63 @@ import * as Root from '../../core/root/root.js';
 import * as Trace from '../../models/trace/trace.js';
 const UIStrings = {
     /**
-     * @description Text in Timeline UIUtils of the Performance panel
+     * @description Label for a frame start event in the Performance panel.
      */
     frameStart: 'Frame start',
     /**
-     * @description Text in Timeline UIUtils of the Performance panel
+     * @description Label for a draw frame event in the Performance panel.
      */
     drawFrame: 'Draw frame',
     /**
-     * @description Text in Timeline UIUtils of the Performance panel
+     * @description Label for a layout event in the Performance panel.
      */
     layout: 'Layout',
     /**
-     * @description Text in UIDevtools Utils of the Performance panel
+     * @description Label for a rasterizing event in the Performance panel.
      */
     rasterizing: 'Rasterizing',
     /**
-     * @description Text in UIDevtools Utils of the Performance panel
+     * @description Label for a drawing event in the Performance panel.
      */
     drawing: 'Drawing',
     /**
-     * @description Text in Timeline UIUtils of the Performance panel
+     * @description Label for a painting event in the Performance panel.
      */
     painting: 'Painting',
     /**
-     * @description Text in Timeline UIUtils of the Performance panel
+     * @description Event category for system activity in the Performance panel.
      */
     system: 'System',
     /**
-     * @description Text in Timeline UIUtils of the Performance panel
+     * @description Event category for idle time in the Performance panel.
      */
     idle: 'Idle',
     /**
-     * @description Category in the Summary view of the Performance panel to indicate time spent to load resources
+     * @description Event category for network and resource loading in the Performance panel.
      */
     loading: 'Loading',
     /**
-     * @description Text in Timeline for the Experience title
+     * @description Header for the user experience events track in the Performance panel.
      */
     experience: 'Experience',
     /**
-     * @description Category in the Summary view of the Performance panel to indicate time spent in script execution
+     * @description Event category for script execution in the Performance panel.
      */
     scripting: 'Scripting',
     /**
-     * @description Category in the Summary view of the Performance panel to indicate time spent in rendering the web page
+     * @description Event category for layout and rendering in the Performance panel.
      */
     rendering: 'Rendering',
     /**
-     * @description Event category in the Performance panel for time spent in the GPU
+     * @description Event category for GPU activity in the Performance panel.
      */
     gpu: 'GPU',
     /**
-     * @description Text in Timeline UIUtils of the Performance panel
+     * @description Event category for asynchronous activity in the Performance panel.
      */
     async: 'Async',
     /**
-     * @description Text in Timeline UIUtils of the Performance panel
+     * @description Event category for messaging activity in the Performance panel.
      */
     messaging: 'Messaging',
 };

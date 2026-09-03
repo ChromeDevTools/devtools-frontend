@@ -1,4 +1,4 @@
-import * as Platform from '../../../core/platform/platform.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Types from '../types/types.js';
 import { type InsightModel, type InsightSetContext } from './types.js';
@@ -24,7 +24,7 @@ export declare const UIStrings: {
      */
     readonly noOldProtocolRequests: 'No requests used HTTP/1.1, or its current use of HTTP/1.1 doesn’t present a significant optimization opportunity. HTTP/1.1 requests are only flagged if six or more static assets originate from the same origin, and they aren’t served from a local development environment or a third-party source.';
 };
-export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
+export declare const i18nString: i18n.LocalizeString;
 export type ModernHTTPInsightModel = InsightModel<typeof UIStrings, {
     http1Requests: Types.Events.SyntheticNetworkRequest[];
 }>;

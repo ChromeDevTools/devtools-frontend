@@ -262,6 +262,8 @@ var CodeHighlighter = class {
     this.code = code;
     this.tree = tree;
   }
+  code;
+  tree;
   highlight(token) {
     this.highlightRange(0, this.code.length, token);
   }

@@ -5,7 +5,6 @@ import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import { isSameOrigin } from '../AiUtils.js';
 import { ChangeManager } from '../ChangeManager.js';
 import { LighthouseFormatter } from '../data_formatters/LighthouseFormatter.js';
 import { debugLog } from '../debug.js';
@@ -125,11 +124,15 @@ export class AccessibilityAgent extends AiAgent {
         if (!lhr) {
             return;
         }
-        const details = await lhr.getUserFacingDetails();
+        const [details, widgets] = await Promise.all([
+            lhr.getUserFacingDetails(),
+            lhr.getWidgets(),
+        ]);
         if (details) {
             yield {
                 type: "context" /* ResponseType.CONTEXT */,
                 details,
+                widgets,
             };
         }
     }
@@ -151,12 +154,7 @@ export class AccessibilityAgent extends AiAgent {
             return null;
         }
         const mainDocument = domModel.existingDocument();
-        if (!mainDocument) {
-            return null;
-        }
-        const mainDocumentURL = mainDocument.documentURL;
-        const nodeDocumentURL = node.ownerDocument?.documentURL ?? '';
-        if (!isSameOrigin(mainDocumentURL, nodeDocumentURL)) {
+        if (!mainDocument || !mainDocument.securityOrigin().isSameOriginWith(node.securityOrigin())) {
             return null;
         }
         return node;

@@ -1,0 +1,1 @@
+gen/front_end/ui/kit/kit.js: gen/front_end/ui/kit/cards/card.css.js ../../front_end/ui/kit/cards/Card.ts gen/front_end/ui/kit/icons/icon.css.js ../../front_end/ui/kit/icons/Icon.ts gen/front_end/ui/kit/link/link.css.js ../../front_end/ui/kit/link/Link.ts ../../front_end/ui/kit/kit.ts

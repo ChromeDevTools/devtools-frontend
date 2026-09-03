@@ -357,7 +357,6 @@ function frameIdForScript(script) {
     }
     return resourceTreeModel.mainFrame.id;
 }
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const sourceURLRegex = /^[\x20\t]*\/\/[@#] sourceURL=\s*(\S*?)\s*$/;
 export async function disassembleWasm(content) {
     const worker = Platform.HostRuntime.HOST_RUNTIME.createWorker(new URL('../../entrypoints/wasmparser_worker/wasmparser_worker-entrypoint.js', import.meta.url).toString());

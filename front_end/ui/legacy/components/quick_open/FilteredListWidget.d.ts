@@ -1,9 +1,8 @@
 import * as Common from '../../../../core/common/common.js';
-import * as Platform from '../../../../core/platform/platform.js';
 import { type LitTemplate } from '../../../lit/lit.js';
 import * as UI from '../../legacy.js';
-declare const FilteredListWidget_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.VBox;
-export declare class FilteredListWidget extends FilteredListWidget_base implements UI.ListControl.ListDelegate<number> {
+declare const FilteredListWidgetBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
+export declare class FilteredListWidget extends FilteredListWidgetBase implements UI.ListControl.ListDelegate<number> {
     private promptHistory;
     private scoringTimer;
     private filterTimer;
@@ -27,7 +26,7 @@ export declare class FilteredListWidget extends FilteredListWidget_base implemen
     static getHighlightRanges(text: string, query: string, caseInsensitive?: boolean): string;
     setCommandPrefix(commandPrefix: string): void;
     setCommandSuggestion(suggestion: string): void;
-    setHintElement(hint: string): void;
+    setHintElement(hint: string, accessibleName: string): void;
     showAsDialog(dialogTitle?: string): void;
     setPrefix(prefix: string): void;
     setProvider(provider: Provider | null): void;

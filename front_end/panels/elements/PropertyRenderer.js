@@ -33,15 +33,14 @@ function mergeWithSpacing(nodes, merge) {
     return result;
 }
 // A mixin to automatically expose the match type on specific renrerers
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function rendererBase(matchT) {
-    class RendererBase {
+    class RendererBaseClass {
         matchType = matchT;
         render(_match, _context) {
             return [];
         }
     }
-    return RendererBase;
+    return RendererBaseClass;
 }
 /**
  * This class implements highlighting for rendered nodes in value traces. On hover, all nodes belonging to the same
@@ -439,8 +438,9 @@ export class Renderer extends SDK.CSSPropertyParser.TreeWalker {
         return Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
     }
 }
+const URLRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.URLMatch);
 // clang-format off
-export class URLRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.URLMatch) {
+export class URLRenderer extends URLRendererBase {
     rule;
     node;
     // clang-format on
@@ -475,8 +475,9 @@ export class URLRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.URLM
         return [container];
     }
 }
+const StringRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.StringMatch);
 // clang-format off
-export class StringRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.StringMatch) {
+export class StringRenderer extends StringRendererBase {
     // clang-format on
     render(match) {
         const element = document.createElement('span');
@@ -485,8 +486,9 @@ export class StringRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
         return [element];
     }
 }
+const BinOpRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.BinOpMatch);
 // clang-format off
-export class BinOpRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.BinOpMatch) {
+export class BinOpRenderer extends BinOpRendererBase {
     // clang-format on
     render(match, context) {
         const [lhs, binop, rhs] = SDK.CSSPropertyParser.ASTUtils.children(match.node).map(child => {

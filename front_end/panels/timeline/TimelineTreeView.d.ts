@@ -1,17 +1,16 @@
 import '../../ui/legacy/legacy.js';
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as Components from '../../ui/legacy/components/utils/utils.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { TimelineRegExp } from './TimelineFilters.js';
 import { type TimelineSelection } from './TimelineSelection.js';
-declare const TimelineTreeView_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<TimelineTreeView.EventTypes>, any[]> & typeof UI.Widget.VBox;
 /**
  * For an overview, read: https://chromium.googlesource.com/devtools/devtools-frontend/+/refs/heads/main/front_end/panels/timeline/README.md#timeline-tree-views
  */
-export declare class TimelineTreeView extends TimelineTreeView_base implements UI.SearchableView.Searchable {
+declare const TimelineTreeViewBase: Common.ObjectWrapper.EventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>;
+export declare class TimelineTreeView extends TimelineTreeViewBase implements UI.SearchableView.Searchable {
     #private;
     private searchResults;
     linkifier: Components.Linkifier.Linkifier;
@@ -201,8 +200,8 @@ export declare class BottomUpTimelineTreeView extends AggregatedTimelineTreeView
     constructor(element?: HTMLElement);
     buildTree(): Trace.Extras.TraceTree.Node;
 }
-declare const TimelineStackView_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<TimelineStackView.EventTypes>, any[]> & typeof UI.Widget.VBox;
-export declare class TimelineStackView extends TimelineStackView_base {
+declare const TimelineStackViewBase: Common.ObjectWrapper.EventMixin<TimelineStackView.EventTypes, typeof UI.Widget.VBox>;
+export declare class TimelineStackView extends TimelineStackViewBase {
     private readonly treeView;
     private readonly dataGrid;
     constructor(treeView: TimelineTreeView);

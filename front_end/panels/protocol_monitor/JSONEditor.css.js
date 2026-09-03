@@ -28,7 +28,7 @@ export default `/*
 
 .warning-icon {
   margin-left: -18px;
-  margin-right: 4px;
+  margin-right: var(--sys-size-3);
 }
 
 .row {
@@ -109,7 +109,7 @@ ul {
 }
 
 .protocol-monitor-sidebar-toolbar {
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
 }
 
 /*# sourceURL=${import.meta.resolve('./JSONEditor.css')} */`;

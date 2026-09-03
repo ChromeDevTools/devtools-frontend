@@ -184,7 +184,8 @@ const DEFAULT_VIEW = (input, output, target) => {
     const pieChartData = calculatePieChartData(input, canvas.width, samplesPerBar, emptyPieChartData);
     render(getTemplate(pieChartData), target);
 };
-export class PaintProfilerView extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
+const PaintProfilerViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
+export class PaintProfilerView extends PaintProfilerViewBase {
     canvasContainer;
     #selectionWindow;
     innerBarWidth;

@@ -238,7 +238,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     </div>`, target, { container: { attributes: { jslog: `${VisualLogging.pane('layers-details')}` } } });
     // clang-format on
 };
-export class LayerDetailsView extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
+const LayerDetailsViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
+export class LayerDetailsView extends LayerDetailsViewBase {
     layerViewHost;
     layerSnapshotMap;
     selection;

@@ -29,6 +29,8 @@ export default `/*
 
 .request-initiator-view-section-title:focus-visible {
   background-color: var(--sys-color-state-focus-highlight);
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: calc(-1 * var(--sys-size-2));
 }
 
 @media (forced-colors: active) {

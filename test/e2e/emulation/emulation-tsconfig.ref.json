@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../test/e2e/emulation",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../test/e2e/emulation/custom-device-ua-clear.test.ts",
+    "../../../../../../test/e2e/emulation/custom-devices.test.ts",
+    "../../../../../../test/e2e/emulation/dual-screen.test.ts",
+    "../../../../../../test/e2e/emulation/foldable-device.test.ts",
+    "../../../../../../test/e2e/emulation/media-query-inspector.test.ts",
+    "../../../../../../test/e2e/emulation/responsive.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts",
+    "../../../../../../test/e2e/types.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../shared/shared-tsconfig.ref.json"
+    }
+  ]
+}

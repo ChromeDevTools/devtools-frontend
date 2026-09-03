@@ -1,5 +1,4 @@
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -20,8 +19,8 @@ interface ViewOutput {
 }
 declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 type View = typeof DEFAULT_VIEW;
-declare const PaintProfilerView_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.Widget;
-export declare class PaintProfilerView extends PaintProfilerView_base {
+declare const PaintProfilerViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget>;
+export declare class PaintProfilerView extends PaintProfilerViewBase {
     #private;
     private canvasContainer?;
     private readonly innerBarWidth;

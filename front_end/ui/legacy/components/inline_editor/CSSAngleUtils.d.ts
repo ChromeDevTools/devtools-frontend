@@ -1,4 +1,3 @@
-export declare const CSSAngleRegex: RegExp;
 export declare const enum AngleUnit {
     DEG = "deg",
     GRAD = "grad",

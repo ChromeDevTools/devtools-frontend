@@ -15,13 +15,13 @@ export default `/*
 }
 
 .preview-item {
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
 
   &:first-child {
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
-  padding: 6px 10px;
+  padding: var(--sys-size-4) 10px;
   position: relative;
 
   .metadata {
@@ -37,7 +37,7 @@ export default `/*
     top: 0;
     bottom: 0;
     left: 0;
-    width: 2px;
+    width: var(--sys-size-2);
     background-color: var(--sys-color-primary);
   }
 }
@@ -62,7 +62,7 @@ export default `/*
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 240px;
+  max-width: var(--sys-size-28);
 }
 
 .text-details .metadata {
@@ -73,8 +73,8 @@ export default `/*
 
 .screenshot-thumb {
   display: flex;
-  border: 1px solid var(--sys-color-surface3);
-  margin: 2px 4px;
+  border: var(--sys-size-1) solid var(--sys-color-surface3);
+  margin: var(--sys-size-2) var(--sys-size-3);
 }
 
 .screenshot-thumb img {

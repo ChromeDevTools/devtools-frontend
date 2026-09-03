@@ -633,7 +633,7 @@ var TopDownNode = class _TopDownNode extends Node {
       let id;
       let groupId = "";
       if (!eventIdCallback) {
-        id = Symbol("uniqueId");
+        id = /* @__PURE__ */ Symbol("uniqueId");
       } else {
         id = eventIdCallback(e);
         groupId = eventGroupIdCallback ? eventGroupIdCallback(e) : "";

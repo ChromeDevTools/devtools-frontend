@@ -982,7 +982,7 @@ export var Events;
 (function (Events) {
     Events["LIVE_LOCATION_UPDATED"] = "liveLocationUpdated";
 })(Events || (Events = {}));
-const DEFAULT_SCRIPT_LOCATION_VIEW = (input, _output, target) => {
+export const DEFAULT_SCRIPT_LOCATION_VIEW = (input, _output, target) => {
     render(html `${input.linkifier.linkifyScriptLocation(input.target ?? null, input.scriptId ?? null, input.sourceURL, input.lineNumber, input.options)}`, target);
 };
 export class ScriptLocationLink extends UI.Widget.Widget {

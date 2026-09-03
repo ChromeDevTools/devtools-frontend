@@ -1,4 +1,4 @@
-// gen/front_end/ui/helpers/OpenInNewTab.js
+// ../../front_end/ui/helpers/OpenInNewTab.ts
 import * as Common from "../../core/common/common.js";
 import * as Host from "../../core/host/host.js";
 import * as Platform from "../../core/platform/platform.js";

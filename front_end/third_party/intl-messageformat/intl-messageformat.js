@@ -549,7 +549,7 @@ if (REGEX_SUPPORTS_U_AND_Y) {
   };
 }
 var IDENTIFIER_PREFIX_RE_1;
-var Parser = function() {
+var Parser = (function() {
   function Parser2(message, options) {
     if (options === void 0) {
       options = {};
@@ -1191,7 +1191,7 @@ var Parser = function() {
     return nextCode !== null && nextCode !== void 0 ? nextCode : null;
   };
   return Parser2;
-}();
+})();
 function _isAlpha(codepoint) {
   return codepoint >= 97 && codepoint <= 122 || codepoint >= 65 && codepoint <= 90;
 }

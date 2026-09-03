@@ -145,7 +145,8 @@ const CONSOLE_API_PARSED_FILTERS = [{
         negative: false,
         regex: undefined,
     }];
-export class ConsoleSidebar extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const ConsoleSidebarBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class ConsoleSidebar extends ConsoleSidebarBase {
     #view;
     #groups = [
         new ConsoleFilterGroup("message" /* GroupName.ALL */, [], ConsoleFilter.allLevelsFilterValue()),

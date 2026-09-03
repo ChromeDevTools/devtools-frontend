@@ -14,23 +14,23 @@ import { traceJsonGenerator } from './SaveFileFormatter.js';
 import timelineStatusDialogStyles from './timelineStatusDialog.css.js';
 const UIStrings = {
     /**
-     * @description Text to download the trace file after an error
+     * @description Button label to download the trace file after an error in the status dialog.
      */
     downloadAfterError: 'Download trace',
     /**
-     * @description Text for the status of something
+     * @description Label for the status field in the status dialog.
      */
     status: 'Status',
     /**
-     * @description Text that refers to the time
+     * @description Label for the elapsed time field in the status dialog.
      */
     time: 'Time',
     /**
-     * @description Text for the description of something
+     * @description Label for the description field in the status dialog.
      */
     description: 'Description',
     /**
-     * @description Text of an item that stops the running task
+     * @description Button label to stop recording in the status dialog.
      */
     stop: 'Stop',
 };

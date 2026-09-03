@@ -1,0 +1,93 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": true,
+    "composite": false,
+    "declaration": false,
+    "disableSourceOfProjectReferenceRedirect": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "inlineSources": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "outDir": ".",
+    "preserveConstEnums": true,
+    "rootDir": "../../../../../../front_end/panels/lighthouse",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "typeRoots": [
+      "../../../../../../node_modules/@types",
+      "../../../../../../node_modules"
+    ],
+    "types": [
+      "mocha"
+    ],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../front_end/panels/lighthouse/LighthouseController.test.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthousePanel.test.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthouseProtocolService.test.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthouseReportRenderer.test.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthouseStartView.test.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthouseStatusView.test.ts",
+    "../../../../../../front_end/panels/lighthouse/LighthouseTimespanView.test.ts",
+    "../../../../../../front_end/panels/lighthouse/RadioSetting.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/protocol_client/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/lighthouse/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/lit/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../common/bundle-tsconfig.ref.json"
+    }
+  ]
+}

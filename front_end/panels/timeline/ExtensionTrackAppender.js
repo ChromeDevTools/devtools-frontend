@@ -9,7 +9,7 @@ import { buildGroupStyle, buildTrackHeader, getDurationString } from './Appender
 import * as Extensions from './extensions/extensions.js';
 const UIStrings = {
     /**
-     * @description The subtitle to show (by the side of the track name).
+     * @description Subtitle shown next to the track name for an extension track in the timeline flame chart.
      */
     customTrackSubtitle: '— Custom',
 };

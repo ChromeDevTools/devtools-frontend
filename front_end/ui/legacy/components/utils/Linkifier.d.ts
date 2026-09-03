@@ -174,7 +174,7 @@ export declare const enum Events {
 export interface EventTypes {
     [Events.LIVE_LOCATION_UPDATED]: Bindings.LiveLocation.LiveLocation;
 }
-interface ScriptLocationViewInput {
+export interface ScriptLocationViewInput {
     target?: SDK.Target.Target;
     scriptId?: Protocol.Runtime.ScriptId;
     sourceURL: Platform.DevToolsPath.UrlString;
@@ -182,7 +182,8 @@ interface ScriptLocationViewInput {
     options?: LinkifyOptions;
     linkifier: Linkifier;
 }
-type ScriptLocationView = (input: ScriptLocationViewInput, output: undefined, target: HTMLElement) => void;
+export type ScriptLocationView = (input: ScriptLocationViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_SCRIPT_LOCATION_VIEW: ScriptLocationView;
 export declare class ScriptLocationLink extends UI.Widget.Widget {
     #private;
     target?: SDK.Target.Target;

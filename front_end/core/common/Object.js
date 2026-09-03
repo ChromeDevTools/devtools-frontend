@@ -68,7 +68,6 @@ export class ObjectWrapper {
     }
 }
 export function eventMixin(base) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     console.assert(base !== HTMLElement);
     return class EventHandling extends base {
         // Note that the weird name is due to TSC disallowing private/protected fields in

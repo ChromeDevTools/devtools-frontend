@@ -973,6 +973,16 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     static #adTooltipIdCounter = 0;
     #adTooltipId = `ad-tooltip-${++ElementsTreeWidget.#adTooltipIdCounter}`;
     #updateRecord = null;
+    get updateRecord() {
+        return this.#updateRecord;
+    }
+    set updateRecord(updateRecord) {
+        if (this.#updateRecord === updateRecord) {
+            return;
+        }
+        this.#updateRecord = updateRecord;
+        this.requestUpdate();
+    }
     get node() {
         return this.#node;
     }

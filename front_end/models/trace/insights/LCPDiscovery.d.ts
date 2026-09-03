@@ -1,4 +1,4 @@
-import type * as Platform from '../../../core/platform/platform.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import * as Handlers from '../handlers/handlers.js';
 import * as Types from '../types/types.js';
 import { type Checklist, type InsightModel, type InsightSetContext } from './types.js';
@@ -45,7 +45,7 @@ export declare const UIStrings: {
      */
     readonly noLcpResource: 'No LCP resource detected because the LCP isn’t an image';
 };
-export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
+export declare const i18nString: i18n.LocalizeString;
 export declare function isLCPDiscoveryInsight(model: InsightModel): model is LCPDiscoveryInsightModel;
 export type LCPDiscoveryInsightModel = InsightModel<typeof UIStrings, {
     lcpEvent?: Types.Events.AnyLargestContentfulPaintCandidate;

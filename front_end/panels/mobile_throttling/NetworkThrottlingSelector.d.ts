@@ -1,5 +1,4 @@
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as CrUXManager from '../../models/crux-manager/crux-manager.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -28,8 +27,8 @@ export interface EventTypes {
  * metric data. Returns null if no RTT data is available or no preset matches.
  */
 export declare function getRecommendedNetworkConditions(roundTripTimeMetricData?: CrUXManager.MetricResponse): SDK.NetworkManager.Conditions | null;
-declare const NetworkThrottlingSelect_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.Widget;
-export declare class NetworkThrottlingSelect extends NetworkThrottlingSelect_base {
+declare const NetworkThrottlingSelectBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget>;
+export declare class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
     #private;
     static createForGlobalConditions(element: HTMLElement, title: string): NetworkThrottlingSelect;
     constructor(element?: HTMLElement, options?: {

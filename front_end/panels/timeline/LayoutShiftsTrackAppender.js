@@ -13,15 +13,15 @@ import { buildGroupStyle, buildTrackHeader } from './AppenderUtils.js';
 import * as Utils from './utils/utils.js';
 const UIStrings = {
     /**
-     * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+     * @description Header for the layout shifts track in the timeline flame chart of the Performance panel.
      */
     layoutShifts: 'Layout shifts',
     /**
-     * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+     * @description Title for a layout shift cluster event in the timeline flame chart.
      */
     layoutShiftCluster: 'Layout shift cluster',
     /**
-     * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+     * @description Title for a layout shift event in the timeline flame chart.
      */
     layoutShift: 'Layout shift',
 };

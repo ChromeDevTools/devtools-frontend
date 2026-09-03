@@ -71,7 +71,7 @@ var DisplayMode = /* @__PURE__ */ ((DisplayMode2) => {
   DisplayMode2["ONLY_MOST_IMPORTANT"] = "OnlyMostImportant";
   return DisplayMode2;
 })(DisplayMode || {});
-var listFormatter = /* @__PURE__ */ function defineFormatter() {
+var listFormatter = /* @__PURE__ */ (function defineFormatter() {
   let intlListFormat;
   return {
     format(...args) {
@@ -82,7 +82,7 @@ var listFormatter = /* @__PURE__ */ function defineFormatter() {
       return intlListFormat.format(...args);
     }
   };
-}();
+})();
 function getIssueCountsEnumeration(issuesManager, omitEmpty = true) {
   const counts = [
     issuesManager.numberOfIssues(IssuesManager.Issue.IssueKind.PAGE_ERROR),

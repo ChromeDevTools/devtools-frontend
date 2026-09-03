@@ -1,1 +1,0 @@
-gen/front_end/ui/kit/kit.js: gen/front_end/ui/kit/cards/card.css.js gen/front_end/ui/kit/cards/Card.js gen/front_end/ui/kit/icons/icon.css.js gen/front_end/ui/kit/icons/Icon.js gen/front_end/ui/kit/link/link.css.js gen/front_end/ui/kit/link/Link.js gen/front_end/ui/kit/kit.prebundle.js

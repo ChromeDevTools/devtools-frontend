@@ -56,6 +56,7 @@ var LinkifierClick = class _LinkifierClick extends Event {
     this.data = data;
     this.data = data;
   }
+  data;
   static eventName = "linkifieractivated";
 };
 var Linkifier = class extends HTMLElement {

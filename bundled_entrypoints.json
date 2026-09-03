@@ -277,5 +277,11 @@
   "front_end/ui/legacy/theme_support/theme_support.js",
   "front_end/ui/lit/lit.js",
   "front_end/ui/settings/settings.js",
-  "front_end/ui/visual_logging/visual_logging.js"
+  "front_end/ui/visual_logging/visual_logging.js",
+  "front_end/core/legacy_producer/legacy_producer.js",
+  "front_end/core/split_producer/split_producer.js",
+  "front_end/panels/legacy_consumer/legacy_consumer.js",
+  "front_end/panels/legacy_mixed/legacy_mixed.js",
+  "front_end/panels/split_consumer/split_consumer.js",
+  "front_end/panels/split_mixed/split_mixed.js"
 ]

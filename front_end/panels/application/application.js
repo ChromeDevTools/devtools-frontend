@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/application/ApplicationPanelSidebar.js
+// ../../front_end/panels/application/ApplicationPanelSidebar.ts
 var ApplicationPanelSidebar_exports = {};
 __export(ApplicationPanelSidebar_exports, {
   AppManifestTreeElement: () => AppManifestTreeElement,
@@ -31,13 +31,2816 @@ import * as i18n57 from "../../core/i18n/i18n.js";
 import * as Platform11 from "../../core/platform/platform.js";
 import * as Root2 from "../../core/root/root.js";
 import * as SDK24 from "../../core/sdk/sdk.js";
+
+// ../../front_end/generated/protocol.ts
+var Accessibility;
+((Accessibility2) => {
+  let AXValueType;
+  ((AXValueType2) => {
+    AXValueType2["Boolean"] = "boolean";
+    AXValueType2["Tristate"] = "tristate";
+    AXValueType2["BooleanOrUndefined"] = "booleanOrUndefined";
+    AXValueType2["Idref"] = "idref";
+    AXValueType2["IdrefList"] = "idrefList";
+    AXValueType2["Integer"] = "integer";
+    AXValueType2["Node"] = "node";
+    AXValueType2["NodeList"] = "nodeList";
+    AXValueType2["Number"] = "number";
+    AXValueType2["String"] = "string";
+    AXValueType2["ComputedString"] = "computedString";
+    AXValueType2["Token"] = "token";
+    AXValueType2["TokenList"] = "tokenList";
+    AXValueType2["DomRelation"] = "domRelation";
+    AXValueType2["Role"] = "role";
+    AXValueType2["InternalRole"] = "internalRole";
+    AXValueType2["ValueUndefined"] = "valueUndefined";
+  })(AXValueType = Accessibility2.AXValueType || (Accessibility2.AXValueType = {}));
+  let AXValueSourceType;
+  ((AXValueSourceType2) => {
+    AXValueSourceType2["Attribute"] = "attribute";
+    AXValueSourceType2["Implicit"] = "implicit";
+    AXValueSourceType2["Style"] = "style";
+    AXValueSourceType2["Contents"] = "contents";
+    AXValueSourceType2["Placeholder"] = "placeholder";
+    AXValueSourceType2["RelatedElement"] = "relatedElement";
+  })(AXValueSourceType = Accessibility2.AXValueSourceType || (Accessibility2.AXValueSourceType = {}));
+  let AXValueNativeSourceType;
+  ((AXValueNativeSourceType2) => {
+    AXValueNativeSourceType2["Description"] = "description";
+    AXValueNativeSourceType2["Figcaption"] = "figcaption";
+    AXValueNativeSourceType2["Label"] = "label";
+    AXValueNativeSourceType2["Labelfor"] = "labelfor";
+    AXValueNativeSourceType2["Labelwrapped"] = "labelwrapped";
+    AXValueNativeSourceType2["Legend"] = "legend";
+    AXValueNativeSourceType2["Rubyannotation"] = "rubyannotation";
+    AXValueNativeSourceType2["Tablecaption"] = "tablecaption";
+    AXValueNativeSourceType2["Title"] = "title";
+    AXValueNativeSourceType2["Other"] = "other";
+  })(AXValueNativeSourceType = Accessibility2.AXValueNativeSourceType || (Accessibility2.AXValueNativeSourceType = {}));
+  let AXPropertyName;
+  ((AXPropertyName2) => {
+    AXPropertyName2["Actions"] = "actions";
+    AXPropertyName2["Busy"] = "busy";
+    AXPropertyName2["Disabled"] = "disabled";
+    AXPropertyName2["Editable"] = "editable";
+    AXPropertyName2["Focusable"] = "focusable";
+    AXPropertyName2["Focused"] = "focused";
+    AXPropertyName2["Hidden"] = "hidden";
+    AXPropertyName2["HiddenRoot"] = "hiddenRoot";
+    AXPropertyName2["Invalid"] = "invalid";
+    AXPropertyName2["Keyshortcuts"] = "keyshortcuts";
+    AXPropertyName2["Settable"] = "settable";
+    AXPropertyName2["Roledescription"] = "roledescription";
+    AXPropertyName2["Live"] = "live";
+    AXPropertyName2["Atomic"] = "atomic";
+    AXPropertyName2["Relevant"] = "relevant";
+    AXPropertyName2["Root"] = "root";
+    AXPropertyName2["Autocomplete"] = "autocomplete";
+    AXPropertyName2["HasPopup"] = "hasPopup";
+    AXPropertyName2["Level"] = "level";
+    AXPropertyName2["Multiselectable"] = "multiselectable";
+    AXPropertyName2["Orientation"] = "orientation";
+    AXPropertyName2["Multiline"] = "multiline";
+    AXPropertyName2["Readonly"] = "readonly";
+    AXPropertyName2["Required"] = "required";
+    AXPropertyName2["Valuemin"] = "valuemin";
+    AXPropertyName2["Valuemax"] = "valuemax";
+    AXPropertyName2["Valuetext"] = "valuetext";
+    AXPropertyName2["Checked"] = "checked";
+    AXPropertyName2["Expanded"] = "expanded";
+    AXPropertyName2["Modal"] = "modal";
+    AXPropertyName2["Pressed"] = "pressed";
+    AXPropertyName2["Selected"] = "selected";
+    AXPropertyName2["Activedescendant"] = "activedescendant";
+    AXPropertyName2["Controls"] = "controls";
+    AXPropertyName2["Describedby"] = "describedby";
+    AXPropertyName2["Details"] = "details";
+    AXPropertyName2["Errormessage"] = "errormessage";
+    AXPropertyName2["Flowto"] = "flowto";
+    AXPropertyName2["Labelledby"] = "labelledby";
+    AXPropertyName2["Owns"] = "owns";
+    AXPropertyName2["Url"] = "url";
+    AXPropertyName2["ActiveFullscreenElement"] = "activeFullscreenElement";
+    AXPropertyName2["ActiveModalDialog"] = "activeModalDialog";
+    AXPropertyName2["ActiveAriaModalDialog"] = "activeAriaModalDialog";
+    AXPropertyName2["AriaHiddenElement"] = "ariaHiddenElement";
+    AXPropertyName2["AriaHiddenSubtree"] = "ariaHiddenSubtree";
+    AXPropertyName2["EmptyAlt"] = "emptyAlt";
+    AXPropertyName2["EmptyText"] = "emptyText";
+    AXPropertyName2["InertElement"] = "inertElement";
+    AXPropertyName2["InertSubtree"] = "inertSubtree";
+    AXPropertyName2["LabelContainer"] = "labelContainer";
+    AXPropertyName2["LabelFor"] = "labelFor";
+    AXPropertyName2["NotRendered"] = "notRendered";
+    AXPropertyName2["NotVisible"] = "notVisible";
+    AXPropertyName2["PresentationalRole"] = "presentationalRole";
+    AXPropertyName2["ProbablyPresentational"] = "probablyPresentational";
+    AXPropertyName2["InactiveCarouselTabContent"] = "inactiveCarouselTabContent";
+    AXPropertyName2["Uninteresting"] = "uninteresting";
+  })(AXPropertyName = Accessibility2.AXPropertyName || (Accessibility2.AXPropertyName = {}));
+})(Accessibility || (Accessibility = {}));
+var Animation;
+((Animation2) => {
+  let AnimationType;
+  ((AnimationType2) => {
+    AnimationType2["CSSTransition"] = "CSSTransition";
+    AnimationType2["CSSAnimation"] = "CSSAnimation";
+    AnimationType2["WebAnimation"] = "WebAnimation";
+  })(AnimationType = Animation2.AnimationType || (Animation2.AnimationType = {}));
+})(Animation || (Animation = {}));
+var Audits;
+((Audits2) => {
+  let CookieExclusionReason;
+  ((CookieExclusionReason2) => {
+    CookieExclusionReason2["ExcludeSameSiteUnspecifiedTreatedAsLax"] = "ExcludeSameSiteUnspecifiedTreatedAsLax";
+    CookieExclusionReason2["ExcludeSameSiteNoneInsecure"] = "ExcludeSameSiteNoneInsecure";
+    CookieExclusionReason2["ExcludeSameSiteLax"] = "ExcludeSameSiteLax";
+    CookieExclusionReason2["ExcludeSameSiteStrict"] = "ExcludeSameSiteStrict";
+    CookieExclusionReason2["ExcludeDomainNonASCII"] = "ExcludeDomainNonASCII";
+    CookieExclusionReason2["ExcludeThirdPartyCookieBlockedInFirstPartySet"] = "ExcludeThirdPartyCookieBlockedInFirstPartySet";
+    CookieExclusionReason2["ExcludeThirdPartyPhaseout"] = "ExcludeThirdPartyPhaseout";
+    CookieExclusionReason2["ExcludePortMismatch"] = "ExcludePortMismatch";
+    CookieExclusionReason2["ExcludeSchemeMismatch"] = "ExcludeSchemeMismatch";
+  })(CookieExclusionReason = Audits2.CookieExclusionReason || (Audits2.CookieExclusionReason = {}));
+  let CookieWarningReason;
+  ((CookieWarningReason2) => {
+    CookieWarningReason2["WarnSameSiteUnspecifiedCrossSiteContext"] = "WarnSameSiteUnspecifiedCrossSiteContext";
+    CookieWarningReason2["WarnSameSiteNoneInsecure"] = "WarnSameSiteNoneInsecure";
+    CookieWarningReason2["WarnSameSiteUnspecifiedLaxAllowUnsafe"] = "WarnSameSiteUnspecifiedLaxAllowUnsafe";
+    CookieWarningReason2["WarnSameSiteStrictLaxDowngradeStrict"] = "WarnSameSiteStrictLaxDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteStrictCrossDowngradeStrict"] = "WarnSameSiteStrictCrossDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteStrictCrossDowngradeLax"] = "WarnSameSiteStrictCrossDowngradeLax";
+    CookieWarningReason2["WarnSameSiteLaxCrossDowngradeStrict"] = "WarnSameSiteLaxCrossDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteLaxCrossDowngradeLax"] = "WarnSameSiteLaxCrossDowngradeLax";
+    CookieWarningReason2["WarnAttributeValueExceedsMaxSize"] = "WarnAttributeValueExceedsMaxSize";
+    CookieWarningReason2["WarnDomainNonASCII"] = "WarnDomainNonASCII";
+    CookieWarningReason2["WarnThirdPartyPhaseout"] = "WarnThirdPartyPhaseout";
+    CookieWarningReason2["WarnCrossSiteRedirectDowngradeChangesInclusion"] = "WarnCrossSiteRedirectDowngradeChangesInclusion";
+    CookieWarningReason2["WarnDeprecationTrialMetadata"] = "WarnDeprecationTrialMetadata";
+    CookieWarningReason2["WarnThirdPartyCookieHeuristic"] = "WarnThirdPartyCookieHeuristic";
+  })(CookieWarningReason = Audits2.CookieWarningReason || (Audits2.CookieWarningReason = {}));
+  let CookieOperation;
+  ((CookieOperation2) => {
+    CookieOperation2["SetCookie"] = "SetCookie";
+    CookieOperation2["ReadCookie"] = "ReadCookie";
+  })(CookieOperation = Audits2.CookieOperation || (Audits2.CookieOperation = {}));
+  let InsightType;
+  ((InsightType2) => {
+    InsightType2["GitHubResource"] = "GitHubResource";
+    InsightType2["GracePeriod"] = "GracePeriod";
+    InsightType2["Heuristics"] = "Heuristics";
+  })(InsightType = Audits2.InsightType || (Audits2.InsightType = {}));
+  let PerformanceIssueType;
+  ((PerformanceIssueType2) => {
+    PerformanceIssueType2["DocumentCookie"] = "DocumentCookie";
+  })(PerformanceIssueType = Audits2.PerformanceIssueType || (Audits2.PerformanceIssueType = {}));
+  let MixedContentResolutionStatus;
+  ((MixedContentResolutionStatus2) => {
+    MixedContentResolutionStatus2["MixedContentBlocked"] = "MixedContentBlocked";
+    MixedContentResolutionStatus2["MixedContentAutomaticallyUpgraded"] = "MixedContentAutomaticallyUpgraded";
+    MixedContentResolutionStatus2["MixedContentWarning"] = "MixedContentWarning";
+  })(MixedContentResolutionStatus = Audits2.MixedContentResolutionStatus || (Audits2.MixedContentResolutionStatus = {}));
+  let MixedContentResourceType;
+  ((MixedContentResourceType2) => {
+    MixedContentResourceType2["Audio"] = "Audio";
+    MixedContentResourceType2["Beacon"] = "Beacon";
+    MixedContentResourceType2["CSPReport"] = "CSPReport";
+    MixedContentResourceType2["Download"] = "Download";
+    MixedContentResourceType2["EventSource"] = "EventSource";
+    MixedContentResourceType2["Favicon"] = "Favicon";
+    MixedContentResourceType2["Font"] = "Font";
+    MixedContentResourceType2["Form"] = "Form";
+    MixedContentResourceType2["Frame"] = "Frame";
+    MixedContentResourceType2["Image"] = "Image";
+    MixedContentResourceType2["Import"] = "Import";
+    MixedContentResourceType2["JSON"] = "JSON";
+    MixedContentResourceType2["Manifest"] = "Manifest";
+    MixedContentResourceType2["Ping"] = "Ping";
+    MixedContentResourceType2["PluginData"] = "PluginData";
+    MixedContentResourceType2["PluginResource"] = "PluginResource";
+    MixedContentResourceType2["Prefetch"] = "Prefetch";
+    MixedContentResourceType2["Resource"] = "Resource";
+    MixedContentResourceType2["Script"] = "Script";
+    MixedContentResourceType2["ServiceWorker"] = "ServiceWorker";
+    MixedContentResourceType2["SharedWorker"] = "SharedWorker";
+    MixedContentResourceType2["SpeculationRules"] = "SpeculationRules";
+    MixedContentResourceType2["Stylesheet"] = "Stylesheet";
+    MixedContentResourceType2["Track"] = "Track";
+    MixedContentResourceType2["Video"] = "Video";
+    MixedContentResourceType2["Worker"] = "Worker";
+    MixedContentResourceType2["XMLHttpRequest"] = "XMLHttpRequest";
+    MixedContentResourceType2["XSLT"] = "XSLT";
+  })(MixedContentResourceType = Audits2.MixedContentResourceType || (Audits2.MixedContentResourceType = {}));
+  let BlockedByResponseReason;
+  ((BlockedByResponseReason2) => {
+    BlockedByResponseReason2["CoepFrameResourceNeedsCoepHeader"] = "CoepFrameResourceNeedsCoepHeader";
+    BlockedByResponseReason2["CoopSandboxedIFrameCannotNavigateToCoopPage"] = "CoopSandboxedIFrameCannotNavigateToCoopPage";
+    BlockedByResponseReason2["CorpNotSameOrigin"] = "CorpNotSameOrigin";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoep"] = "CorpNotSameOriginAfterDefaultedToSameOriginByCoep";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByDip"] = "CorpNotSameOriginAfterDefaultedToSameOriginByDip";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"] = "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip";
+    BlockedByResponseReason2["CorpNotSameSite"] = "CorpNotSameSite";
+    BlockedByResponseReason2["SRIMessageSignatureMismatch"] = "SRIMessageSignatureMismatch";
+  })(BlockedByResponseReason = Audits2.BlockedByResponseReason || (Audits2.BlockedByResponseReason = {}));
+  let HeavyAdResolutionStatus;
+  ((HeavyAdResolutionStatus2) => {
+    HeavyAdResolutionStatus2["HeavyAdBlocked"] = "HeavyAdBlocked";
+    HeavyAdResolutionStatus2["HeavyAdWarning"] = "HeavyAdWarning";
+  })(HeavyAdResolutionStatus = Audits2.HeavyAdResolutionStatus || (Audits2.HeavyAdResolutionStatus = {}));
+  let HeavyAdReason;
+  ((HeavyAdReason2) => {
+    HeavyAdReason2["NetworkTotalLimit"] = "NetworkTotalLimit";
+    HeavyAdReason2["CpuTotalLimit"] = "CpuTotalLimit";
+    HeavyAdReason2["CpuPeakLimit"] = "CpuPeakLimit";
+  })(HeavyAdReason = Audits2.HeavyAdReason || (Audits2.HeavyAdReason = {}));
+  let ContentSecurityPolicyViolationType;
+  ((ContentSecurityPolicyViolationType2) => {
+    ContentSecurityPolicyViolationType2["KInlineViolation"] = "kInlineViolation";
+    ContentSecurityPolicyViolationType2["KEvalViolation"] = "kEvalViolation";
+    ContentSecurityPolicyViolationType2["KURLViolation"] = "kURLViolation";
+    ContentSecurityPolicyViolationType2["KSRIViolation"] = "kSRIViolation";
+    ContentSecurityPolicyViolationType2["KTrustedTypesSinkViolation"] = "kTrustedTypesSinkViolation";
+    ContentSecurityPolicyViolationType2["KTrustedTypesPolicyViolation"] = "kTrustedTypesPolicyViolation";
+    ContentSecurityPolicyViolationType2["KWasmEvalViolation"] = "kWasmEvalViolation";
+  })(ContentSecurityPolicyViolationType = Audits2.ContentSecurityPolicyViolationType || (Audits2.ContentSecurityPolicyViolationType = {}));
+  let SharedArrayBufferIssueType;
+  ((SharedArrayBufferIssueType2) => {
+    SharedArrayBufferIssueType2["TransferIssue"] = "TransferIssue";
+    SharedArrayBufferIssueType2["CreationIssue"] = "CreationIssue";
+  })(SharedArrayBufferIssueType = Audits2.SharedArrayBufferIssueType || (Audits2.SharedArrayBufferIssueType = {}));
+  let SharedDictionaryError;
+  ((SharedDictionaryError2) => {
+    SharedDictionaryError2["UseErrorCrossOriginNoCorsRequest"] = "UseErrorCrossOriginNoCorsRequest";
+    SharedDictionaryError2["UseErrorDictionaryLoadFailure"] = "UseErrorDictionaryLoadFailure";
+    SharedDictionaryError2["UseErrorMatchingDictionaryNotUsed"] = "UseErrorMatchingDictionaryNotUsed";
+    SharedDictionaryError2["UseErrorUnexpectedContentDictionaryHeader"] = "UseErrorUnexpectedContentDictionaryHeader";
+    SharedDictionaryError2["WriteErrorCossOriginNoCorsRequest"] = "WriteErrorCossOriginNoCorsRequest";
+    SharedDictionaryError2["WriteErrorDisallowedBySettings"] = "WriteErrorDisallowedBySettings";
+    SharedDictionaryError2["WriteErrorExpiredResponse"] = "WriteErrorExpiredResponse";
+    SharedDictionaryError2["WriteErrorFeatureDisabled"] = "WriteErrorFeatureDisabled";
+    SharedDictionaryError2["WriteErrorInsufficientResources"] = "WriteErrorInsufficientResources";
+    SharedDictionaryError2["WriteErrorInvalidMatchField"] = "WriteErrorInvalidMatchField";
+    SharedDictionaryError2["WriteErrorInvalidStructuredHeader"] = "WriteErrorInvalidStructuredHeader";
+    SharedDictionaryError2["WriteErrorInvalidTTLField"] = "WriteErrorInvalidTTLField";
+    SharedDictionaryError2["WriteErrorNavigationRequest"] = "WriteErrorNavigationRequest";
+    SharedDictionaryError2["WriteErrorNoMatchField"] = "WriteErrorNoMatchField";
+    SharedDictionaryError2["WriteErrorNonIntegerTTLField"] = "WriteErrorNonIntegerTTLField";
+    SharedDictionaryError2["WriteErrorNonListMatchDestField"] = "WriteErrorNonListMatchDestField";
+    SharedDictionaryError2["WriteErrorNonSecureContext"] = "WriteErrorNonSecureContext";
+    SharedDictionaryError2["WriteErrorNonStringIdField"] = "WriteErrorNonStringIdField";
+    SharedDictionaryError2["WriteErrorNonStringInMatchDestList"] = "WriteErrorNonStringInMatchDestList";
+    SharedDictionaryError2["WriteErrorInvalidMatchDestList"] = "WriteErrorInvalidMatchDestList";
+    SharedDictionaryError2["WriteErrorNonStringMatchField"] = "WriteErrorNonStringMatchField";
+    SharedDictionaryError2["WriteErrorNonTokenTypeField"] = "WriteErrorNonTokenTypeField";
+    SharedDictionaryError2["WriteErrorRequestAborted"] = "WriteErrorRequestAborted";
+    SharedDictionaryError2["WriteErrorShuttingDown"] = "WriteErrorShuttingDown";
+    SharedDictionaryError2["WriteErrorTooLongIdField"] = "WriteErrorTooLongIdField";
+    SharedDictionaryError2["WriteErrorUnsupportedType"] = "WriteErrorUnsupportedType";
+  })(SharedDictionaryError = Audits2.SharedDictionaryError || (Audits2.SharedDictionaryError = {}));
+  let SRIMessageSignatureError;
+  ((SRIMessageSignatureError2) => {
+    SRIMessageSignatureError2["MissingSignatureHeader"] = "MissingSignatureHeader";
+    SRIMessageSignatureError2["MissingSignatureInputHeader"] = "MissingSignatureInputHeader";
+    SRIMessageSignatureError2["InvalidSignatureHeader"] = "InvalidSignatureHeader";
+    SRIMessageSignatureError2["InvalidSignatureInputHeader"] = "InvalidSignatureInputHeader";
+    SRIMessageSignatureError2["SignatureHeaderValueIsNotByteSequence"] = "SignatureHeaderValueIsNotByteSequence";
+    SRIMessageSignatureError2["SignatureHeaderValueIsParameterized"] = "SignatureHeaderValueIsParameterized";
+    SRIMessageSignatureError2["SignatureHeaderValueIsIncorrectLength"] = "SignatureHeaderValueIsIncorrectLength";
+    SRIMessageSignatureError2["SignatureInputHeaderMissingLabel"] = "SignatureInputHeaderMissingLabel";
+    SRIMessageSignatureError2["SignatureInputHeaderValueNotInnerList"] = "SignatureInputHeaderValueNotInnerList";
+    SRIMessageSignatureError2["SignatureInputHeaderValueMissingComponents"] = "SignatureInputHeaderValueMissingComponents";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidComponentType"] = "SignatureInputHeaderInvalidComponentType";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidComponentName"] = "SignatureInputHeaderInvalidComponentName";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidHeaderComponentParameter"] = "SignatureInputHeaderInvalidHeaderComponentParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidDerivedComponentParameter"] = "SignatureInputHeaderInvalidDerivedComponentParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderKeyIdLength"] = "SignatureInputHeaderKeyIdLength";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidParameter"] = "SignatureInputHeaderInvalidParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderMissingRequiredParameters"] = "SignatureInputHeaderMissingRequiredParameters";
+    SRIMessageSignatureError2["ValidationFailedSignatureExpired"] = "ValidationFailedSignatureExpired";
+    SRIMessageSignatureError2["ValidationFailedInvalidLength"] = "ValidationFailedInvalidLength";
+    SRIMessageSignatureError2["ValidationFailedSignatureMismatch"] = "ValidationFailedSignatureMismatch";
+    SRIMessageSignatureError2["ValidationFailedIntegrityMismatch"] = "ValidationFailedIntegrityMismatch";
+    SRIMessageSignatureError2["SignatureBaseUnknownDerivedComponent"] = "SignatureBaseUnknownDerivedComponent";
+    SRIMessageSignatureError2["SignatureBaseMissingHeader"] = "SignatureBaseMissingHeader";
+    SRIMessageSignatureError2["SignatureBaseInvalidUnencodedDigest"] = "SignatureBaseInvalidUnencodedDigest";
+    SRIMessageSignatureError2["SignatureBaseUnsupportedComponent"] = "SignatureBaseUnsupportedComponent";
+  })(SRIMessageSignatureError = Audits2.SRIMessageSignatureError || (Audits2.SRIMessageSignatureError = {}));
+  let UnencodedDigestError;
+  ((UnencodedDigestError2) => {
+    UnencodedDigestError2["MalformedDictionary"] = "MalformedDictionary";
+    UnencodedDigestError2["UnknownAlgorithm"] = "UnknownAlgorithm";
+    UnencodedDigestError2["IncorrectDigestType"] = "IncorrectDigestType";
+    UnencodedDigestError2["IncorrectDigestLength"] = "IncorrectDigestLength";
+  })(UnencodedDigestError = Audits2.UnencodedDigestError || (Audits2.UnencodedDigestError = {}));
+  let ConnectionAllowlistError;
+  ((ConnectionAllowlistError2) => {
+    ConnectionAllowlistError2["InvalidHeader"] = "InvalidHeader";
+    ConnectionAllowlistError2["MoreThanOneList"] = "MoreThanOneList";
+    ConnectionAllowlistError2["ItemNotInnerList"] = "ItemNotInnerList";
+    ConnectionAllowlistError2["InvalidAllowlistItemType"] = "InvalidAllowlistItemType";
+    ConnectionAllowlistError2["ReportingEndpointNotToken"] = "ReportingEndpointNotToken";
+    ConnectionAllowlistError2["InvalidUrlPattern"] = "InvalidUrlPattern";
+    ConnectionAllowlistError2["IFrameAttributeLoosensEmbeddingRequirement"] = "IFrameAttributeLoosensEmbeddingRequirement";
+    ConnectionAllowlistError2["InvalidAllowConnectionAllowlistFrom"] = "InvalidAllowConnectionAllowlistFrom";
+    ConnectionAllowlistError2["EmbeddingRequirementNotSatisfied"] = "EmbeddingRequirementNotSatisfied";
+  })(ConnectionAllowlistError = Audits2.ConnectionAllowlistError || (Audits2.ConnectionAllowlistError = {}));
+  let GenericIssueErrorType;
+  ((GenericIssueErrorType2) => {
+    GenericIssueErrorType2["FormLabelForNameError"] = "FormLabelForNameError";
+    GenericIssueErrorType2["FormDuplicateIdForInputError"] = "FormDuplicateIdForInputError";
+    GenericIssueErrorType2["FormInputWithNoLabelError"] = "FormInputWithNoLabelError";
+    GenericIssueErrorType2["FormAutocompleteAttributeEmptyError"] = "FormAutocompleteAttributeEmptyError";
+    GenericIssueErrorType2["FormEmptyIdAndNameAttributesForInputError"] = "FormEmptyIdAndNameAttributesForInputError";
+    GenericIssueErrorType2["FormAriaLabelledByToNonExistingIdError"] = "FormAriaLabelledByToNonExistingIdError";
+    GenericIssueErrorType2["FormInputAssignedAutocompleteValueToIdOrNameAttributeError"] = "FormInputAssignedAutocompleteValueToIdOrNameAttributeError";
+    GenericIssueErrorType2["FormLabelHasNeitherForNorNestedInputError"] = "FormLabelHasNeitherForNorNestedInputError";
+    GenericIssueErrorType2["FormLabelForMatchesNonExistingIdError"] = "FormLabelForMatchesNonExistingIdError";
+    GenericIssueErrorType2["FormInputHasWrongButWellIntendedAutocompleteValueError"] = "FormInputHasWrongButWellIntendedAutocompleteValueError";
+    GenericIssueErrorType2["ResponseWasBlockedByORB"] = "ResponseWasBlockedByORB";
+    GenericIssueErrorType2["NavigationEntryMarkedSkippable"] = "NavigationEntryMarkedSkippable";
+    GenericIssueErrorType2["BackUINavigationWouldSkipAd"] = "BackUINavigationWouldSkipAd";
+    GenericIssueErrorType2["AutofillAndManualTextPolicyControlledFeaturesInfo"] = "AutofillAndManualTextPolicyControlledFeaturesInfo";
+    GenericIssueErrorType2["AutofillPolicyControlledFeatureInfo"] = "AutofillPolicyControlledFeatureInfo";
+    GenericIssueErrorType2["ManualTextPolicyControlledFeatureInfo"] = "ManualTextPolicyControlledFeatureInfo";
+    GenericIssueErrorType2["FormModelContextParameterMissingTitleAndDescription"] = "FormModelContextParameterMissingTitleAndDescription";
+    GenericIssueErrorType2["FormModelContextMissingToolName"] = "FormModelContextMissingToolName";
+    GenericIssueErrorType2["FormModelContextMissingToolDescription"] = "FormModelContextMissingToolDescription";
+    GenericIssueErrorType2["FormModelContextRequiredParameterMissingName"] = "FormModelContextRequiredParameterMissingName";
+    GenericIssueErrorType2["FormModelContextParameterMissingName"] = "FormModelContextParameterMissingName";
+  })(GenericIssueErrorType = Audits2.GenericIssueErrorType || (Audits2.GenericIssueErrorType = {}));
+  let ClientHintIssueReason;
+  ((ClientHintIssueReason2) => {
+    ClientHintIssueReason2["MetaTagAllowListInvalidOrigin"] = "MetaTagAllowListInvalidOrigin";
+    ClientHintIssueReason2["MetaTagModifiedHTML"] = "MetaTagModifiedHTML";
+  })(ClientHintIssueReason = Audits2.ClientHintIssueReason || (Audits2.ClientHintIssueReason = {}));
+  let FederatedAuthRequestIssueReason;
+  ((FederatedAuthRequestIssueReason2) => {
+    FederatedAuthRequestIssueReason2["ShouldEmbargo"] = "ShouldEmbargo";
+    FederatedAuthRequestIssueReason2["TooManyRequests"] = "TooManyRequests";
+    FederatedAuthRequestIssueReason2["WellKnownHttpNotFound"] = "WellKnownHttpNotFound";
+    FederatedAuthRequestIssueReason2["WellKnownNoResponse"] = "WellKnownNoResponse";
+    FederatedAuthRequestIssueReason2["WellKnownBlockedByConnectionAllowlist"] = "WellKnownBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["WellKnownInvalidResponse"] = "WellKnownInvalidResponse";
+    FederatedAuthRequestIssueReason2["WellKnownListEmpty"] = "WellKnownListEmpty";
+    FederatedAuthRequestIssueReason2["WellKnownInvalidContentType"] = "WellKnownInvalidContentType";
+    FederatedAuthRequestIssueReason2["ConfigNotInWellKnown"] = "ConfigNotInWellKnown";
+    FederatedAuthRequestIssueReason2["WellKnownTooBig"] = "WellKnownTooBig";
+    FederatedAuthRequestIssueReason2["ConfigHttpNotFound"] = "ConfigHttpNotFound";
+    FederatedAuthRequestIssueReason2["ConfigNoResponse"] = "ConfigNoResponse";
+    FederatedAuthRequestIssueReason2["ConfigBlockedByConnectionAllowlist"] = "ConfigBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["ConfigInvalidResponse"] = "ConfigInvalidResponse";
+    FederatedAuthRequestIssueReason2["ConfigInvalidContentType"] = "ConfigInvalidContentType";
+    FederatedAuthRequestIssueReason2["IdpNotPotentiallyTrustworthy"] = "IdpNotPotentiallyTrustworthy";
+    FederatedAuthRequestIssueReason2["DisabledInSettings"] = "DisabledInSettings";
+    FederatedAuthRequestIssueReason2["DisabledInFlags"] = "DisabledInFlags";
+    FederatedAuthRequestIssueReason2["ErrorFetchingSignin"] = "ErrorFetchingSignin";
+    FederatedAuthRequestIssueReason2["InvalidSigninResponse"] = "InvalidSigninResponse";
+    FederatedAuthRequestIssueReason2["AccountsHttpNotFound"] = "AccountsHttpNotFound";
+    FederatedAuthRequestIssueReason2["AccountsNoResponse"] = "AccountsNoResponse";
+    FederatedAuthRequestIssueReason2["AccountsBlockedByConnectionAllowlist"] = "AccountsBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["AccountsInvalidResponse"] = "AccountsInvalidResponse";
+    FederatedAuthRequestIssueReason2["AccountsListEmpty"] = "AccountsListEmpty";
+    FederatedAuthRequestIssueReason2["AccountsInvalidContentType"] = "AccountsInvalidContentType";
+    FederatedAuthRequestIssueReason2["IdTokenHttpNotFound"] = "IdTokenHttpNotFound";
+    FederatedAuthRequestIssueReason2["IdTokenNoResponse"] = "IdTokenNoResponse";
+    FederatedAuthRequestIssueReason2["IdTokenBlockedByConnectionAllowlist"] = "IdTokenBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidResponse"] = "IdTokenInvalidResponse";
+    FederatedAuthRequestIssueReason2["IdTokenIdpErrorResponse"] = "IdTokenIdpErrorResponse";
+    FederatedAuthRequestIssueReason2["IdTokenCrossSiteIdpErrorResponse"] = "IdTokenCrossSiteIdpErrorResponse";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidRequest"] = "IdTokenInvalidRequest";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidContentType"] = "IdTokenInvalidContentType";
+    FederatedAuthRequestIssueReason2["ErrorIdToken"] = "ErrorIdToken";
+    FederatedAuthRequestIssueReason2["Canceled"] = "Canceled";
+    FederatedAuthRequestIssueReason2["RpPageNotVisible"] = "RpPageNotVisible";
+    FederatedAuthRequestIssueReason2["SilentMediationFailure"] = "SilentMediationFailure";
+    FederatedAuthRequestIssueReason2["NotSignedInWithIdp"] = "NotSignedInWithIdp";
+    FederatedAuthRequestIssueReason2["MissingTransientUserActivation"] = "MissingTransientUserActivation";
+    FederatedAuthRequestIssueReason2["ReplacedByActiveMode"] = "ReplacedByActiveMode";
+    FederatedAuthRequestIssueReason2["RelyingPartyOriginIsOpaque"] = "RelyingPartyOriginIsOpaque";
+    FederatedAuthRequestIssueReason2["TypeNotMatching"] = "TypeNotMatching";
+    FederatedAuthRequestIssueReason2["UiDismissedNoEmbargo"] = "UiDismissedNoEmbargo";
+    FederatedAuthRequestIssueReason2["CorsError"] = "CorsError";
+    FederatedAuthRequestIssueReason2["SuppressedBySegmentationPlatform"] = "SuppressedBySegmentationPlatform";
+  })(FederatedAuthRequestIssueReason = Audits2.FederatedAuthRequestIssueReason || (Audits2.FederatedAuthRequestIssueReason = {}));
+  let FederatedAuthUserInfoRequestIssueReason;
+  ((FederatedAuthUserInfoRequestIssueReason2) => {
+    FederatedAuthUserInfoRequestIssueReason2["NotSameOrigin"] = "NotSameOrigin";
+    FederatedAuthUserInfoRequestIssueReason2["NotIframe"] = "NotIframe";
+    FederatedAuthUserInfoRequestIssueReason2["NotPotentiallyTrustworthy"] = "NotPotentiallyTrustworthy";
+    FederatedAuthUserInfoRequestIssueReason2["NoAPIPermission"] = "NoApiPermission";
+    FederatedAuthUserInfoRequestIssueReason2["NotSignedInWithIdp"] = "NotSignedInWithIdp";
+    FederatedAuthUserInfoRequestIssueReason2["NoAccountSharingPermission"] = "NoAccountSharingPermission";
+    FederatedAuthUserInfoRequestIssueReason2["InvalidConfigOrWellKnown"] = "InvalidConfigOrWellKnown";
+    FederatedAuthUserInfoRequestIssueReason2["InvalidAccountsResponse"] = "InvalidAccountsResponse";
+    FederatedAuthUserInfoRequestIssueReason2["NoReturningUserFromFetchedAccounts"] = "NoReturningUserFromFetchedAccounts";
+  })(FederatedAuthUserInfoRequestIssueReason = Audits2.FederatedAuthUserInfoRequestIssueReason || (Audits2.FederatedAuthUserInfoRequestIssueReason = {}));
+  let EmailVerificationRequestIssueReason;
+  ((EmailVerificationRequestIssueReason2) => {
+    EmailVerificationRequestIssueReason2["InvalidEmail"] = "InvalidEmail";
+    EmailVerificationRequestIssueReason2["DnsFetchFailed"] = "DnsFetchFailed";
+    EmailVerificationRequestIssueReason2["DnsInvalidRecord"] = "DnsInvalidRecord";
+    EmailVerificationRequestIssueReason2["WellKnownHttpNotFound"] = "WellKnownHttpNotFound";
+    EmailVerificationRequestIssueReason2["WellKnownNoResponse"] = "WellKnownNoResponse";
+    EmailVerificationRequestIssueReason2["WellKnownInvalidResponse"] = "WellKnownInvalidResponse";
+    EmailVerificationRequestIssueReason2["WellKnownListEmpty"] = "WellKnownListEmpty";
+    EmailVerificationRequestIssueReason2["WellKnownInvalidContentType"] = "WellKnownInvalidContentType";
+    EmailVerificationRequestIssueReason2["WellKnownMissingIssuanceEndpoint"] = "WellKnownMissingIssuanceEndpoint";
+    EmailVerificationRequestIssueReason2["WellKnownIssuanceEndpointCrossOrigin"] = "WellKnownIssuanceEndpointCrossOrigin";
+    EmailVerificationRequestIssueReason2["WellKnownUnsupportedSigningAlgorithm"] = "WellKnownUnsupportedSigningAlgorithm";
+    EmailVerificationRequestIssueReason2["TokenHttpNotFound"] = "TokenHttpNotFound";
+    EmailVerificationRequestIssueReason2["TokenNoResponse"] = "TokenNoResponse";
+    EmailVerificationRequestIssueReason2["TokenInvalidResponse"] = "TokenInvalidResponse";
+    EmailVerificationRequestIssueReason2["TokenInvalidContentType"] = "TokenInvalidContentType";
+    EmailVerificationRequestIssueReason2["TokenMalformedSdJwt"] = "TokenMalformedSdJwt";
+    EmailVerificationRequestIssueReason2["TokenInvalidSdJwt"] = "TokenInvalidSdJwt";
+    EmailVerificationRequestIssueReason2["KeyBindingSigningFailed"] = "KeyBindingSigningFailed";
+    EmailVerificationRequestIssueReason2["RpOriginIsOpaque"] = "RpOriginIsOpaque";
+    EmailVerificationRequestIssueReason2["WellKnownMissingAccountsEndpoint"] = "WellKnownMissingAccountsEndpoint";
+    EmailVerificationRequestIssueReason2["UserLoggedOut"] = "UserLoggedOut";
+    EmailVerificationRequestIssueReason2["WellKnownAccountsEndpointCrossOrigin"] = "WellKnownAccountsEndpointCrossOrigin";
+    EmailVerificationRequestIssueReason2["AccountsHttpNotFound"] = "AccountsHttpNotFound";
+    EmailVerificationRequestIssueReason2["AccountsNoResponse"] = "AccountsNoResponse";
+    EmailVerificationRequestIssueReason2["AccountsInvalidResponse"] = "AccountsInvalidResponse";
+    EmailVerificationRequestIssueReason2["AccountsInvalidContentType"] = "AccountsInvalidContentType";
+    EmailVerificationRequestIssueReason2["AccountsEmptyList"] = "AccountsEmptyList";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownHttpNotFound"] = "EmailVerificationWellKnownHttpNotFound";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownNoResponse"] = "EmailVerificationWellKnownNoResponse";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownInvalidResponse"] = "EmailVerificationWellKnownInvalidResponse";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownInvalidContentType"] = "EmailVerificationWellKnownInvalidContentType";
+    EmailVerificationRequestIssueReason2["JwksHttpNotFound"] = "JwksHttpNotFound";
+    EmailVerificationRequestIssueReason2["JwksInvalidResponse"] = "JwksInvalidResponse";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtUnsupportedHeaderAlg"] = "TokenVerificationSdJwtUnsupportedHeaderAlg";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidTyp"] = "TokenVerificationSdJwtInvalidTyp";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingIss"] = "TokenVerificationSdJwtMissingIss";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingIat"] = "TokenVerificationSdJwtMissingIat";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingCnf"] = "TokenVerificationSdJwtMissingCnf";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingEmail"] = "TokenVerificationSdJwtMissingEmail";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidIssuedAt"] = "TokenVerificationSdJwtInvalidIssuedAt";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidIssuer"] = "TokenVerificationSdJwtInvalidIssuer";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtJwksMissingKeys"] = "TokenVerificationSdJwtJwksMissingKeys";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtSignatureFailed"] = "TokenVerificationSdJwtSignatureFailed";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidEmailVerified"] = "TokenVerificationSdJwtInvalidEmailVerified";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidEmail"] = "TokenVerificationSdJwtInvalidEmail";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidHolderKey"] = "TokenVerificationSdJwtInvalidHolderKey";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidTyp"] = "TokenVerificationKbInvalidTyp";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingAud"] = "TokenVerificationKbMissingAud";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingNonce"] = "TokenVerificationKbMissingNonce";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingIat"] = "TokenVerificationKbMissingIat";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingSdHash"] = "TokenVerificationKbMissingSdHash";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidIssuedAt"] = "TokenVerificationKbInvalidIssuedAt";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidAudience"] = "TokenVerificationKbInvalidAudience";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidNonce"] = "TokenVerificationKbInvalidNonce";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidSdHash"] = "TokenVerificationKbInvalidSdHash";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingCnf"] = "TokenVerificationKbMissingCnf";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbSignatureFailed"] = "TokenVerificationKbSignatureFailed";
+  })(EmailVerificationRequestIssueReason = Audits2.EmailVerificationRequestIssueReason || (Audits2.EmailVerificationRequestIssueReason = {}));
+  let PartitioningBlobURLInfo;
+  ((PartitioningBlobURLInfo2) => {
+    PartitioningBlobURLInfo2["BlockedCrossPartitionFetching"] = "BlockedCrossPartitionFetching";
+    PartitioningBlobURLInfo2["EnforceNoopenerForNavigation"] = "EnforceNoopenerForNavigation";
+  })(PartitioningBlobURLInfo = Audits2.PartitioningBlobURLInfo || (Audits2.PartitioningBlobURLInfo = {}));
+  let ElementAccessibilityIssueReason;
+  ((ElementAccessibilityIssueReason2) => {
+    ElementAccessibilityIssueReason2["DisallowedSelectChild"] = "DisallowedSelectChild";
+    ElementAccessibilityIssueReason2["DisallowedOptGroupChild"] = "DisallowedOptGroupChild";
+    ElementAccessibilityIssueReason2["NonPhrasingContentOptionChild"] = "NonPhrasingContentOptionChild";
+    ElementAccessibilityIssueReason2["InteractiveContentOptionChild"] = "InteractiveContentOptionChild";
+    ElementAccessibilityIssueReason2["InteractiveContentLegendChild"] = "InteractiveContentLegendChild";
+    ElementAccessibilityIssueReason2["InteractiveContentSummaryDescendant"] = "InteractiveContentSummaryDescendant";
+  })(ElementAccessibilityIssueReason = Audits2.ElementAccessibilityIssueReason || (Audits2.ElementAccessibilityIssueReason = {}));
+  let StyleSheetLoadingIssueReason;
+  ((StyleSheetLoadingIssueReason2) => {
+    StyleSheetLoadingIssueReason2["LateImportRule"] = "LateImportRule";
+    StyleSheetLoadingIssueReason2["RequestFailed"] = "RequestFailed";
+  })(StyleSheetLoadingIssueReason = Audits2.StyleSheetLoadingIssueReason || (Audits2.StyleSheetLoadingIssueReason = {}));
+  let PropertyRuleIssueReason;
+  ((PropertyRuleIssueReason2) => {
+    PropertyRuleIssueReason2["InvalidSyntax"] = "InvalidSyntax";
+    PropertyRuleIssueReason2["InvalidInitialValue"] = "InvalidInitialValue";
+    PropertyRuleIssueReason2["InvalidInherits"] = "InvalidInherits";
+    PropertyRuleIssueReason2["InvalidName"] = "InvalidName";
+  })(PropertyRuleIssueReason = Audits2.PropertyRuleIssueReason || (Audits2.PropertyRuleIssueReason = {}));
+  let UserReidentificationIssueType;
+  ((UserReidentificationIssueType2) => {
+    UserReidentificationIssueType2["BlockedFrameNavigation"] = "BlockedFrameNavigation";
+    UserReidentificationIssueType2["BlockedSubresource"] = "BlockedSubresource";
+    UserReidentificationIssueType2["NoisedCanvasReadback"] = "NoisedCanvasReadback";
+  })(UserReidentificationIssueType = Audits2.UserReidentificationIssueType || (Audits2.UserReidentificationIssueType = {}));
+  let PermissionElementIssueType;
+  ((PermissionElementIssueType2) => {
+    PermissionElementIssueType2["InvalidType"] = "InvalidType";
+    PermissionElementIssueType2["FencedFrameDisallowed"] = "FencedFrameDisallowed";
+    PermissionElementIssueType2["CspFrameAncestorsMissing"] = "CspFrameAncestorsMissing";
+    PermissionElementIssueType2["PermissionsPolicyBlocked"] = "PermissionsPolicyBlocked";
+    PermissionElementIssueType2["PaddingRightUnsupported"] = "PaddingRightUnsupported";
+    PermissionElementIssueType2["PaddingBottomUnsupported"] = "PaddingBottomUnsupported";
+    PermissionElementIssueType2["InsetBoxShadowUnsupported"] = "InsetBoxShadowUnsupported";
+    PermissionElementIssueType2["RequestInProgress"] = "RequestInProgress";
+    PermissionElementIssueType2["UntrustedEvent"] = "UntrustedEvent";
+    PermissionElementIssueType2["RegistrationFailed"] = "RegistrationFailed";
+    PermissionElementIssueType2["TypeNotSupported"] = "TypeNotSupported";
+    PermissionElementIssueType2["InvalidTypeActivation"] = "InvalidTypeActivation";
+    PermissionElementIssueType2["SecurityChecksFailed"] = "SecurityChecksFailed";
+    PermissionElementIssueType2["ActivationDisabled"] = "ActivationDisabled";
+    PermissionElementIssueType2["GeolocationDeprecated"] = "GeolocationDeprecated";
+    PermissionElementIssueType2["InvalidDisplayStyle"] = "InvalidDisplayStyle";
+    PermissionElementIssueType2["NonOpaqueColor"] = "NonOpaqueColor";
+    PermissionElementIssueType2["LowContrast"] = "LowContrast";
+    PermissionElementIssueType2["FontSizeTooSmall"] = "FontSizeTooSmall";
+    PermissionElementIssueType2["FontSizeTooLarge"] = "FontSizeTooLarge";
+    PermissionElementIssueType2["InvalidSizeValue"] = "InvalidSizeValue";
+    PermissionElementIssueType2["NonSecureContext"] = "NonSecureContext";
+    PermissionElementIssueType2["MissingTransientUserActivation"] = "MissingTransientUserActivation";
+  })(PermissionElementIssueType = Audits2.PermissionElementIssueType || (Audits2.PermissionElementIssueType = {}));
+  let InspectorIssueCode;
+  ((InspectorIssueCode2) => {
+    InspectorIssueCode2["CookieIssue"] = "CookieIssue";
+    InspectorIssueCode2["MixedContentIssue"] = "MixedContentIssue";
+    InspectorIssueCode2["BlockedByResponseIssue"] = "BlockedByResponseIssue";
+    InspectorIssueCode2["HeavyAdIssue"] = "HeavyAdIssue";
+    InspectorIssueCode2["ContentSecurityPolicyIssue"] = "ContentSecurityPolicyIssue";
+    InspectorIssueCode2["SharedArrayBufferIssue"] = "SharedArrayBufferIssue";
+    InspectorIssueCode2["CorsIssue"] = "CorsIssue";
+    InspectorIssueCode2["QuirksModeIssue"] = "QuirksModeIssue";
+    InspectorIssueCode2["PartitioningBlobURLIssue"] = "PartitioningBlobURLIssue";
+    InspectorIssueCode2["NavigatorUserAgentIssue"] = "NavigatorUserAgentIssue";
+    InspectorIssueCode2["GenericIssue"] = "GenericIssue";
+    InspectorIssueCode2["DeprecationIssue"] = "DeprecationIssue";
+    InspectorIssueCode2["ClientHintIssue"] = "ClientHintIssue";
+    InspectorIssueCode2["FederatedAuthRequestIssue"] = "FederatedAuthRequestIssue";
+    InspectorIssueCode2["BounceTrackingIssue"] = "BounceTrackingIssue";
+    InspectorIssueCode2["CookieDeprecationMetadataIssue"] = "CookieDeprecationMetadataIssue";
+    InspectorIssueCode2["StylesheetLoadingIssue"] = "StylesheetLoadingIssue";
+    InspectorIssueCode2["FederatedAuthUserInfoRequestIssue"] = "FederatedAuthUserInfoRequestIssue";
+    InspectorIssueCode2["PropertyRuleIssue"] = "PropertyRuleIssue";
+    InspectorIssueCode2["SharedDictionaryIssue"] = "SharedDictionaryIssue";
+    InspectorIssueCode2["ElementAccessibilityIssue"] = "ElementAccessibilityIssue";
+    InspectorIssueCode2["SRIMessageSignatureIssue"] = "SRIMessageSignatureIssue";
+    InspectorIssueCode2["UnencodedDigestIssue"] = "UnencodedDigestIssue";
+    InspectorIssueCode2["ConnectionAllowlistIssue"] = "ConnectionAllowlistIssue";
+    InspectorIssueCode2["UserReidentificationIssue"] = "UserReidentificationIssue";
+    InspectorIssueCode2["PermissionElementIssue"] = "PermissionElementIssue";
+    InspectorIssueCode2["PerformanceIssue"] = "PerformanceIssue";
+    InspectorIssueCode2["SelectivePermissionsInterventionIssue"] = "SelectivePermissionsInterventionIssue";
+    InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
+    InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
+  })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
+  let GetEncodedResponseRequestEncoding;
+  ((GetEncodedResponseRequestEncoding2) => {
+    GetEncodedResponseRequestEncoding2["Webp"] = "webp";
+    GetEncodedResponseRequestEncoding2["Jpeg"] = "jpeg";
+    GetEncodedResponseRequestEncoding2["Png"] = "png";
+  })(GetEncodedResponseRequestEncoding = Audits2.GetEncodedResponseRequestEncoding || (Audits2.GetEncodedResponseRequestEncoding = {}));
+})(Audits || (Audits = {}));
+var Autofill;
+((Autofill2) => {
+  let FillingStrategy;
+  ((FillingStrategy2) => {
+    FillingStrategy2["AutocompleteAttribute"] = "autocompleteAttribute";
+    FillingStrategy2["AutofillInferred"] = "autofillInferred";
+  })(FillingStrategy = Autofill2.FillingStrategy || (Autofill2.FillingStrategy = {}));
+})(Autofill || (Autofill = {}));
+var BackgroundService;
+((BackgroundService2) => {
+  let ServiceName;
+  ((ServiceName2) => {
+    ServiceName2["BackgroundFetch"] = "backgroundFetch";
+    ServiceName2["BackgroundSync"] = "backgroundSync";
+    ServiceName2["PushMessaging"] = "pushMessaging";
+    ServiceName2["Notifications"] = "notifications";
+    ServiceName2["PaymentHandler"] = "paymentHandler";
+    ServiceName2["PeriodicBackgroundSync"] = "periodicBackgroundSync";
+  })(ServiceName = BackgroundService2.ServiceName || (BackgroundService2.ServiceName = {}));
+})(BackgroundService || (BackgroundService = {}));
+var BluetoothEmulation;
+((BluetoothEmulation2) => {
+  let CentralState;
+  ((CentralState2) => {
+    CentralState2["Absent"] = "absent";
+    CentralState2["PoweredOff"] = "powered-off";
+    CentralState2["PoweredOn"] = "powered-on";
+  })(CentralState = BluetoothEmulation2.CentralState || (BluetoothEmulation2.CentralState = {}));
+  let GATTOperationType;
+  ((GATTOperationType2) => {
+    GATTOperationType2["Connection"] = "connection";
+    GATTOperationType2["Discovery"] = "discovery";
+  })(GATTOperationType = BluetoothEmulation2.GATTOperationType || (BluetoothEmulation2.GATTOperationType = {}));
+  let CharacteristicWriteType;
+  ((CharacteristicWriteType2) => {
+    CharacteristicWriteType2["WriteDefaultDeprecated"] = "write-default-deprecated";
+    CharacteristicWriteType2["WriteWithResponse"] = "write-with-response";
+    CharacteristicWriteType2["WriteWithoutResponse"] = "write-without-response";
+  })(CharacteristicWriteType = BluetoothEmulation2.CharacteristicWriteType || (BluetoothEmulation2.CharacteristicWriteType = {}));
+  let CharacteristicOperationType;
+  ((CharacteristicOperationType2) => {
+    CharacteristicOperationType2["Read"] = "read";
+    CharacteristicOperationType2["Write"] = "write";
+    CharacteristicOperationType2["SubscribeToNotifications"] = "subscribe-to-notifications";
+    CharacteristicOperationType2["UnsubscribeFromNotifications"] = "unsubscribe-from-notifications";
+  })(CharacteristicOperationType = BluetoothEmulation2.CharacteristicOperationType || (BluetoothEmulation2.CharacteristicOperationType = {}));
+  let DescriptorOperationType;
+  ((DescriptorOperationType2) => {
+    DescriptorOperationType2["Read"] = "read";
+    DescriptorOperationType2["Write"] = "write";
+  })(DescriptorOperationType = BluetoothEmulation2.DescriptorOperationType || (BluetoothEmulation2.DescriptorOperationType = {}));
+})(BluetoothEmulation || (BluetoothEmulation = {}));
+var Browser;
+((Browser2) => {
+  let WindowState;
+  ((WindowState2) => {
+    WindowState2["Normal"] = "normal";
+    WindowState2["Minimized"] = "minimized";
+    WindowState2["Maximized"] = "maximized";
+    WindowState2["Fullscreen"] = "fullscreen";
+  })(WindowState = Browser2.WindowState || (Browser2.WindowState = {}));
+  let PermissionType;
+  ((PermissionType2) => {
+    PermissionType2["Ar"] = "ar";
+    PermissionType2["AudioCapture"] = "audioCapture";
+    PermissionType2["AutomaticFullscreen"] = "automaticFullscreen";
+    PermissionType2["BackgroundFetch"] = "backgroundFetch";
+    PermissionType2["BackgroundSync"] = "backgroundSync";
+    PermissionType2["CameraPanTiltZoom"] = "cameraPanTiltZoom";
+    PermissionType2["CapturedSurfaceControl"] = "capturedSurfaceControl";
+    PermissionType2["ClipboardReadWrite"] = "clipboardReadWrite";
+    PermissionType2["ClipboardSanitizedWrite"] = "clipboardSanitizedWrite";
+    PermissionType2["DisplayCapture"] = "displayCapture";
+    PermissionType2["DurableStorage"] = "durableStorage";
+    PermissionType2["Geolocation"] = "geolocation";
+    PermissionType2["HandTracking"] = "handTracking";
+    PermissionType2["IdleDetection"] = "idleDetection";
+    PermissionType2["KeyboardLock"] = "keyboardLock";
+    PermissionType2["LocalFonts"] = "localFonts";
+    PermissionType2["LocalNetwork"] = "localNetwork";
+    PermissionType2["LocalNetworkAccess"] = "localNetworkAccess";
+    PermissionType2["LoopbackNetwork"] = "loopbackNetwork";
+    PermissionType2["Midi"] = "midi";
+    PermissionType2["MidiSysex"] = "midiSysex";
+    PermissionType2["Nfc"] = "nfc";
+    PermissionType2["Notifications"] = "notifications";
+    PermissionType2["PaymentHandler"] = "paymentHandler";
+    PermissionType2["PeriodicBackgroundSync"] = "periodicBackgroundSync";
+    PermissionType2["PointerLock"] = "pointerLock";
+    PermissionType2["ProtectedMediaIdentifier"] = "protectedMediaIdentifier";
+    PermissionType2["Sensors"] = "sensors";
+    PermissionType2["SmartCard"] = "smartCard";
+    PermissionType2["SpeakerSelection"] = "speakerSelection";
+    PermissionType2["StorageAccess"] = "storageAccess";
+    PermissionType2["TopLevelStorageAccess"] = "topLevelStorageAccess";
+    PermissionType2["VideoCapture"] = "videoCapture";
+    PermissionType2["Vr"] = "vr";
+    PermissionType2["WakeLockScreen"] = "wakeLockScreen";
+    PermissionType2["WakeLockSystem"] = "wakeLockSystem";
+    PermissionType2["WebAppInstallation"] = "webAppInstallation";
+    PermissionType2["WebPrinting"] = "webPrinting";
+    PermissionType2["WindowManagement"] = "windowManagement";
+  })(PermissionType = Browser2.PermissionType || (Browser2.PermissionType = {}));
+  let PermissionSetting;
+  ((PermissionSetting2) => {
+    PermissionSetting2["Granted"] = "granted";
+    PermissionSetting2["Denied"] = "denied";
+    PermissionSetting2["Prompt"] = "prompt";
+  })(PermissionSetting = Browser2.PermissionSetting || (Browser2.PermissionSetting = {}));
+  let BrowserCommandId;
+  ((BrowserCommandId2) => {
+    BrowserCommandId2["OpenTabSearch"] = "openTabSearch";
+    BrowserCommandId2["CloseTabSearch"] = "closeTabSearch";
+    BrowserCommandId2["OpenGlic"] = "openGlic";
+  })(BrowserCommandId = Browser2.BrowserCommandId || (Browser2.BrowserCommandId = {}));
+  let SetDownloadBehaviorRequestBehavior;
+  ((SetDownloadBehaviorRequestBehavior2) => {
+    SetDownloadBehaviorRequestBehavior2["Deny"] = "deny";
+    SetDownloadBehaviorRequestBehavior2["Allow"] = "allow";
+    SetDownloadBehaviorRequestBehavior2["AllowAndName"] = "allowAndName";
+    SetDownloadBehaviorRequestBehavior2["Default"] = "default";
+  })(SetDownloadBehaviorRequestBehavior = Browser2.SetDownloadBehaviorRequestBehavior || (Browser2.SetDownloadBehaviorRequestBehavior = {}));
+  let DownloadProgressEventState;
+  ((DownloadProgressEventState2) => {
+    DownloadProgressEventState2["InProgress"] = "inProgress";
+    DownloadProgressEventState2["Completed"] = "completed";
+    DownloadProgressEventState2["Canceled"] = "canceled";
+  })(DownloadProgressEventState = Browser2.DownloadProgressEventState || (Browser2.DownloadProgressEventState = {}));
+})(Browser || (Browser = {}));
+var CSS;
+((CSS2) => {
+  let StyleSheetOrigin;
+  ((StyleSheetOrigin2) => {
+    StyleSheetOrigin2["Injected"] = "injected";
+    StyleSheetOrigin2["UserAgent"] = "user-agent";
+    StyleSheetOrigin2["Inspector"] = "inspector";
+    StyleSheetOrigin2["Regular"] = "regular";
+  })(StyleSheetOrigin = CSS2.StyleSheetOrigin || (CSS2.StyleSheetOrigin = {}));
+  let CSSRuleType;
+  ((CSSRuleType2) => {
+    CSSRuleType2["MediaRule"] = "MediaRule";
+    CSSRuleType2["SupportsRule"] = "SupportsRule";
+    CSSRuleType2["ContainerRule"] = "ContainerRule";
+    CSSRuleType2["LayerRule"] = "LayerRule";
+    CSSRuleType2["ScopeRule"] = "ScopeRule";
+    CSSRuleType2["StyleRule"] = "StyleRule";
+    CSSRuleType2["StartingStyleRule"] = "StartingStyleRule";
+    CSSRuleType2["NavigationRule"] = "NavigationRule";
+  })(CSSRuleType = CSS2.CSSRuleType || (CSS2.CSSRuleType = {}));
+  let CSSMediaSource;
+  ((CSSMediaSource2) => {
+    CSSMediaSource2["MediaRule"] = "mediaRule";
+    CSSMediaSource2["ImportRule"] = "importRule";
+    CSSMediaSource2["LinkedSheet"] = "linkedSheet";
+    CSSMediaSource2["InlineSheet"] = "inlineSheet";
+  })(CSSMediaSource = CSS2.CSSMediaSource || (CSS2.CSSMediaSource = {}));
+  let CSSAtRuleType;
+  ((CSSAtRuleType2) => {
+    CSSAtRuleType2["FontFace"] = "font-face";
+    CSSAtRuleType2["FontFeatureValues"] = "font-feature-values";
+    CSSAtRuleType2["FontPaletteValues"] = "font-palette-values";
+    CSSAtRuleType2["CounterStyle"] = "counter-style";
+  })(CSSAtRuleType = CSS2.CSSAtRuleType || (CSS2.CSSAtRuleType = {}));
+  let CSSAtRuleSubsection;
+  ((CSSAtRuleSubsection2) => {
+    CSSAtRuleSubsection2["Swash"] = "swash";
+    CSSAtRuleSubsection2["Annotation"] = "annotation";
+    CSSAtRuleSubsection2["Ornaments"] = "ornaments";
+    CSSAtRuleSubsection2["Stylistic"] = "stylistic";
+    CSSAtRuleSubsection2["Styleset"] = "styleset";
+    CSSAtRuleSubsection2["CharacterVariant"] = "character-variant";
+  })(CSSAtRuleSubsection = CSS2.CSSAtRuleSubsection || (CSS2.CSSAtRuleSubsection = {}));
+})(CSS || (CSS = {}));
+var CacheStorage;
+((CacheStorage2) => {
+  let CachedResponseType;
+  ((CachedResponseType2) => {
+    CachedResponseType2["Basic"] = "basic";
+    CachedResponseType2["Cors"] = "cors";
+    CachedResponseType2["Default"] = "default";
+    CachedResponseType2["Error"] = "error";
+    CachedResponseType2["OpaqueResponse"] = "opaqueResponse";
+    CachedResponseType2["OpaqueRedirect"] = "opaqueRedirect";
+  })(CachedResponseType = CacheStorage2.CachedResponseType || (CacheStorage2.CachedResponseType = {}));
+})(CacheStorage || (CacheStorage = {}));
+var DOM;
+((DOM2) => {
+  let PseudoType;
+  ((PseudoType2) => {
+    PseudoType2["FirstLine"] = "first-line";
+    PseudoType2["FirstLetter"] = "first-letter";
+    PseudoType2["Checkmark"] = "checkmark";
+    PseudoType2["Before"] = "before";
+    PseudoType2["After"] = "after";
+    PseudoType2["ExpandIcon"] = "expand-icon";
+    PseudoType2["PickerIcon"] = "picker-icon";
+    PseudoType2["InterestButton"] = "interest-button";
+    PseudoType2["Marker"] = "marker";
+    PseudoType2["Backdrop"] = "backdrop";
+    PseudoType2["Column"] = "column";
+    PseudoType2["Selection"] = "selection";
+    PseudoType2["SearchText"] = "search-text";
+    PseudoType2["TargetText"] = "target-text";
+    PseudoType2["SpellingError"] = "spelling-error";
+    PseudoType2["GrammarError"] = "grammar-error";
+    PseudoType2["Highlight"] = "highlight";
+    PseudoType2["FirstLineInherited"] = "first-line-inherited";
+    PseudoType2["ScrollMarker"] = "scroll-marker";
+    PseudoType2["ScrollMarkerGroup"] = "scroll-marker-group";
+    PseudoType2["ScrollButton"] = "scroll-button";
+    PseudoType2["Scrollbar"] = "scrollbar";
+    PseudoType2["ScrollbarThumb"] = "scrollbar-thumb";
+    PseudoType2["ScrollbarButton"] = "scrollbar-button";
+    PseudoType2["ScrollbarTrack"] = "scrollbar-track";
+    PseudoType2["ScrollbarTrackPiece"] = "scrollbar-track-piece";
+    PseudoType2["ScrollbarCorner"] = "scrollbar-corner";
+    PseudoType2["Resizer"] = "resizer";
+    PseudoType2["InputListButton"] = "input-list-button";
+    PseudoType2["ViewTransition"] = "view-transition";
+    PseudoType2["ViewTransitionGroup"] = "view-transition-group";
+    PseudoType2["ViewTransitionImagePair"] = "view-transition-image-pair";
+    PseudoType2["ViewTransitionGroupChildren"] = "view-transition-group-children";
+    PseudoType2["ViewTransitionOld"] = "view-transition-old";
+    PseudoType2["ViewTransitionNew"] = "view-transition-new";
+    PseudoType2["Placeholder"] = "placeholder";
+    PseudoType2["FileSelectorButton"] = "file-selector-button";
+    PseudoType2["DetailsContent"] = "details-content";
+    PseudoType2["Picker"] = "picker";
+    PseudoType2["SelectListbox"] = "select-listbox";
+    PseudoType2["PermissionIcon"] = "permission-icon";
+    PseudoType2["OverscrollAreaParent"] = "overscroll-area-parent";
+    PseudoType2["OverscrollBackdrop"] = "overscroll-backdrop";
+    PseudoType2["Skeleton"] = "skeleton";
+  })(PseudoType = DOM2.PseudoType || (DOM2.PseudoType = {}));
+  let ShadowRootType;
+  ((ShadowRootType2) => {
+    ShadowRootType2["UserAgent"] = "user-agent";
+    ShadowRootType2["Open"] = "open";
+    ShadowRootType2["Closed"] = "closed";
+  })(ShadowRootType = DOM2.ShadowRootType || (DOM2.ShadowRootType = {}));
+  let CompatibilityMode;
+  ((CompatibilityMode2) => {
+    CompatibilityMode2["QuirksMode"] = "QuirksMode";
+    CompatibilityMode2["LimitedQuirksMode"] = "LimitedQuirksMode";
+    CompatibilityMode2["NoQuirksMode"] = "NoQuirksMode";
+  })(CompatibilityMode = DOM2.CompatibilityMode || (DOM2.CompatibilityMode = {}));
+  let PhysicalAxes;
+  ((PhysicalAxes2) => {
+    PhysicalAxes2["Horizontal"] = "Horizontal";
+    PhysicalAxes2["Vertical"] = "Vertical";
+    PhysicalAxes2["Both"] = "Both";
+  })(PhysicalAxes = DOM2.PhysicalAxes || (DOM2.PhysicalAxes = {}));
+  let LogicalAxes;
+  ((LogicalAxes2) => {
+    LogicalAxes2["Inline"] = "Inline";
+    LogicalAxes2["Block"] = "Block";
+    LogicalAxes2["Both"] = "Both";
+  })(LogicalAxes = DOM2.LogicalAxes || (DOM2.LogicalAxes = {}));
+  let ScrollOrientation;
+  ((ScrollOrientation2) => {
+    ScrollOrientation2["Horizontal"] = "horizontal";
+    ScrollOrientation2["Vertical"] = "vertical";
+  })(ScrollOrientation = DOM2.ScrollOrientation || (DOM2.ScrollOrientation = {}));
+  let EnableRequestIncludeWhitespace;
+  ((EnableRequestIncludeWhitespace2) => {
+    EnableRequestIncludeWhitespace2["None"] = "none";
+    EnableRequestIncludeWhitespace2["All"] = "all";
+  })(EnableRequestIncludeWhitespace = DOM2.EnableRequestIncludeWhitespace || (DOM2.EnableRequestIncludeWhitespace = {}));
+  let GetElementByRelationRequestRelation;
+  ((GetElementByRelationRequestRelation2) => {
+    GetElementByRelationRequestRelation2["PopoverTarget"] = "PopoverTarget";
+    GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
+    GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
+  })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+})(DOM || (DOM = {}));
+var DOMDebugger;
+((DOMDebugger2) => {
+  let DOMBreakpointType;
+  ((DOMBreakpointType2) => {
+    DOMBreakpointType2["SubtreeModified"] = "subtree-modified";
+    DOMBreakpointType2["AttributeModified"] = "attribute-modified";
+    DOMBreakpointType2["NodeRemoved"] = "node-removed";
+  })(DOMBreakpointType = DOMDebugger2.DOMBreakpointType || (DOMDebugger2.DOMBreakpointType = {}));
+  let CSPViolationType;
+  ((CSPViolationType2) => {
+    CSPViolationType2["TrustedtypeSinkViolation"] = "trustedtype-sink-violation";
+    CSPViolationType2["TrustedtypePolicyViolation"] = "trustedtype-policy-violation";
+  })(CSPViolationType = DOMDebugger2.CSPViolationType || (DOMDebugger2.CSPViolationType = {}));
+})(DOMDebugger || (DOMDebugger = {}));
+var DigitalCredentials;
+((DigitalCredentials2) => {
+  let VirtualWalletAction;
+  ((VirtualWalletAction2) => {
+    VirtualWalletAction2["Respond"] = "respond";
+    VirtualWalletAction2["Decline"] = "decline";
+    VirtualWalletAction2["Wait"] = "wait";
+    VirtualWalletAction2["Clear"] = "clear";
+  })(VirtualWalletAction = DigitalCredentials2.VirtualWalletAction || (DigitalCredentials2.VirtualWalletAction = {}));
+})(DigitalCredentials || (DigitalCredentials = {}));
+var Emulation;
+((Emulation2) => {
+  let ScreenOrientationType;
+  ((ScreenOrientationType2) => {
+    ScreenOrientationType2["PortraitPrimary"] = "portraitPrimary";
+    ScreenOrientationType2["PortraitSecondary"] = "portraitSecondary";
+    ScreenOrientationType2["LandscapePrimary"] = "landscapePrimary";
+    ScreenOrientationType2["LandscapeSecondary"] = "landscapeSecondary";
+  })(ScreenOrientationType = Emulation2.ScreenOrientationType || (Emulation2.ScreenOrientationType = {}));
+  let DisplayFeatureOrientation;
+  ((DisplayFeatureOrientation2) => {
+    DisplayFeatureOrientation2["Vertical"] = "vertical";
+    DisplayFeatureOrientation2["Horizontal"] = "horizontal";
+  })(DisplayFeatureOrientation = Emulation2.DisplayFeatureOrientation || (Emulation2.DisplayFeatureOrientation = {}));
+  let DevicePostureType;
+  ((DevicePostureType2) => {
+    DevicePostureType2["Continuous"] = "continuous";
+    DevicePostureType2["Folded"] = "folded";
+  })(DevicePostureType = Emulation2.DevicePostureType || (Emulation2.DevicePostureType = {}));
+  let VirtualTimePolicy;
+  ((VirtualTimePolicy2) => {
+    VirtualTimePolicy2["Advance"] = "advance";
+    VirtualTimePolicy2["Pause"] = "pause";
+    VirtualTimePolicy2["PauseIfNetworkFetchesPending"] = "pauseIfNetworkFetchesPending";
+  })(VirtualTimePolicy = Emulation2.VirtualTimePolicy || (Emulation2.VirtualTimePolicy = {}));
+  let SensorType;
+  ((SensorType2) => {
+    SensorType2["AbsoluteOrientation"] = "absolute-orientation";
+    SensorType2["Accelerometer"] = "accelerometer";
+    SensorType2["AmbientLight"] = "ambient-light";
+    SensorType2["Gravity"] = "gravity";
+    SensorType2["Gyroscope"] = "gyroscope";
+    SensorType2["LinearAcceleration"] = "linear-acceleration";
+    SensorType2["Magnetometer"] = "magnetometer";
+    SensorType2["RelativeOrientation"] = "relative-orientation";
+  })(SensorType = Emulation2.SensorType || (Emulation2.SensorType = {}));
+  let PressureSource;
+  ((PressureSource2) => {
+    PressureSource2["Cpu"] = "cpu";
+  })(PressureSource = Emulation2.PressureSource || (Emulation2.PressureSource = {}));
+  let PressureState;
+  ((PressureState2) => {
+    PressureState2["Nominal"] = "nominal";
+    PressureState2["Fair"] = "fair";
+    PressureState2["Serious"] = "serious";
+    PressureState2["Critical"] = "critical";
+  })(PressureState = Emulation2.PressureState || (Emulation2.PressureState = {}));
+  let DisabledImageType;
+  ((DisabledImageType2) => {
+    DisabledImageType2["Avif"] = "avif";
+    DisabledImageType2["Jxl"] = "jxl";
+    DisabledImageType2["Webp"] = "webp";
+  })(DisabledImageType = Emulation2.DisabledImageType || (Emulation2.DisabledImageType = {}));
+  let SetDeviceMetricsOverrideRequestScrollbarType;
+  ((SetDeviceMetricsOverrideRequestScrollbarType2) => {
+    SetDeviceMetricsOverrideRequestScrollbarType2["Overlay"] = "overlay";
+    SetDeviceMetricsOverrideRequestScrollbarType2["Default"] = "default";
+  })(SetDeviceMetricsOverrideRequestScrollbarType = Emulation2.SetDeviceMetricsOverrideRequestScrollbarType || (Emulation2.SetDeviceMetricsOverrideRequestScrollbarType = {}));
+  let SetEmitTouchEventsForMouseRequestConfiguration;
+  ((SetEmitTouchEventsForMouseRequestConfiguration2) => {
+    SetEmitTouchEventsForMouseRequestConfiguration2["Mobile"] = "mobile";
+    SetEmitTouchEventsForMouseRequestConfiguration2["Desktop"] = "desktop";
+  })(SetEmitTouchEventsForMouseRequestConfiguration = Emulation2.SetEmitTouchEventsForMouseRequestConfiguration || (Emulation2.SetEmitTouchEventsForMouseRequestConfiguration = {}));
+  let SetEmulatedVisionDeficiencyRequestType;
+  ((SetEmulatedVisionDeficiencyRequestType2) => {
+    SetEmulatedVisionDeficiencyRequestType2["None"] = "none";
+    SetEmulatedVisionDeficiencyRequestType2["BlurredVision"] = "blurredVision";
+    SetEmulatedVisionDeficiencyRequestType2["ReducedContrast"] = "reducedContrast";
+    SetEmulatedVisionDeficiencyRequestType2["Achromatopsia"] = "achromatopsia";
+    SetEmulatedVisionDeficiencyRequestType2["Deuteranopia"] = "deuteranopia";
+    SetEmulatedVisionDeficiencyRequestType2["Protanopia"] = "protanopia";
+    SetEmulatedVisionDeficiencyRequestType2["Tritanopia"] = "tritanopia";
+  })(SetEmulatedVisionDeficiencyRequestType = Emulation2.SetEmulatedVisionDeficiencyRequestType || (Emulation2.SetEmulatedVisionDeficiencyRequestType = {}));
+  let SetCPUPerformanceOverrideRequestPerformanceTier;
+  ((SetCPUPerformanceOverrideRequestPerformanceTier2) => {
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Unknown"] = "unknown";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Low"] = "low";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Mid"] = "mid";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["High"] = "high";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Ultra"] = "ultra";
+  })(SetCPUPerformanceOverrideRequestPerformanceTier = Emulation2.SetCPUPerformanceOverrideRequestPerformanceTier || (Emulation2.SetCPUPerformanceOverrideRequestPerformanceTier = {}));
+})(Emulation || (Emulation = {}));
+var Extensions;
+((Extensions2) => {
+  let StorageArea;
+  ((StorageArea2) => {
+    StorageArea2["Session"] = "session";
+    StorageArea2["Local"] = "local";
+    StorageArea2["Sync"] = "sync";
+    StorageArea2["Managed"] = "managed";
+  })(StorageArea = Extensions2.StorageArea || (Extensions2.StorageArea = {}));
+})(Extensions || (Extensions = {}));
+var FedCm;
+((FedCm2) => {
+  let LoginState;
+  ((LoginState2) => {
+    LoginState2["SignIn"] = "SignIn";
+    LoginState2["SignUp"] = "SignUp";
+  })(LoginState = FedCm2.LoginState || (FedCm2.LoginState = {}));
+  let DialogType;
+  ((DialogType2) => {
+    DialogType2["AccountChooser"] = "AccountChooser";
+    DialogType2["AutoReauthn"] = "AutoReauthn";
+    DialogType2["ConfirmIdpLogin"] = "ConfirmIdpLogin";
+    DialogType2["Error"] = "Error";
+  })(DialogType = FedCm2.DialogType || (FedCm2.DialogType = {}));
+  let DialogButton;
+  ((DialogButton2) => {
+    DialogButton2["ConfirmIdpLoginContinue"] = "ConfirmIdpLoginContinue";
+    DialogButton2["ErrorGotIt"] = "ErrorGotIt";
+    DialogButton2["ErrorMoreDetails"] = "ErrorMoreDetails";
+  })(DialogButton = FedCm2.DialogButton || (FedCm2.DialogButton = {}));
+  let AccountUrlType;
+  ((AccountUrlType2) => {
+    AccountUrlType2["TermsOfService"] = "TermsOfService";
+    AccountUrlType2["PrivacyPolicy"] = "PrivacyPolicy";
+  })(AccountUrlType = FedCm2.AccountUrlType || (FedCm2.AccountUrlType = {}));
+})(FedCm || (FedCm = {}));
+var Fetch;
+((Fetch2) => {
+  let RequestStage;
+  ((RequestStage2) => {
+    RequestStage2["Request"] = "Request";
+    RequestStage2["Response"] = "Response";
+  })(RequestStage = Fetch2.RequestStage || (Fetch2.RequestStage = {}));
+  let AuthChallengeSource;
+  ((AuthChallengeSource2) => {
+    AuthChallengeSource2["Server"] = "Server";
+    AuthChallengeSource2["Proxy"] = "Proxy";
+  })(AuthChallengeSource = Fetch2.AuthChallengeSource || (Fetch2.AuthChallengeSource = {}));
+  let AuthChallengeResponseResponse;
+  ((AuthChallengeResponseResponse2) => {
+    AuthChallengeResponseResponse2["Default"] = "Default";
+    AuthChallengeResponseResponse2["CancelAuth"] = "CancelAuth";
+    AuthChallengeResponseResponse2["ProvideCredentials"] = "ProvideCredentials";
+  })(AuthChallengeResponseResponse = Fetch2.AuthChallengeResponseResponse || (Fetch2.AuthChallengeResponseResponse = {}));
+})(Fetch || (Fetch = {}));
+var HeadlessExperimental;
+((HeadlessExperimental2) => {
+  let ScreenshotParamsFormat;
+  ((ScreenshotParamsFormat2) => {
+    ScreenshotParamsFormat2["Jpeg"] = "jpeg";
+    ScreenshotParamsFormat2["Png"] = "png";
+    ScreenshotParamsFormat2["Webp"] = "webp";
+  })(ScreenshotParamsFormat = HeadlessExperimental2.ScreenshotParamsFormat || (HeadlessExperimental2.ScreenshotParamsFormat = {}));
+})(HeadlessExperimental || (HeadlessExperimental = {}));
+var IndexedDB;
+((IndexedDB2) => {
+  let KeyType;
+  ((KeyType2) => {
+    KeyType2["Number"] = "number";
+    KeyType2["String"] = "string";
+    KeyType2["Date"] = "date";
+    KeyType2["Array"] = "array";
+  })(KeyType = IndexedDB2.KeyType || (IndexedDB2.KeyType = {}));
+  let KeyPathType;
+  ((KeyPathType2) => {
+    KeyPathType2["Null"] = "null";
+    KeyPathType2["String"] = "string";
+    KeyPathType2["Array"] = "array";
+  })(KeyPathType = IndexedDB2.KeyPathType || (IndexedDB2.KeyPathType = {}));
+})(IndexedDB || (IndexedDB = {}));
+var Input;
+((Input3) => {
+  let GestureSourceType;
+  ((GestureSourceType2) => {
+    GestureSourceType2["Default"] = "default";
+    GestureSourceType2["Touch"] = "touch";
+    GestureSourceType2["Mouse"] = "mouse";
+  })(GestureSourceType = Input3.GestureSourceType || (Input3.GestureSourceType = {}));
+  let MouseButton;
+  ((MouseButton2) => {
+    MouseButton2["None"] = "none";
+    MouseButton2["Left"] = "left";
+    MouseButton2["Middle"] = "middle";
+    MouseButton2["Right"] = "right";
+    MouseButton2["Back"] = "back";
+    MouseButton2["Forward"] = "forward";
+  })(MouseButton = Input3.MouseButton || (Input3.MouseButton = {}));
+  let DispatchDragEventRequestType;
+  ((DispatchDragEventRequestType2) => {
+    DispatchDragEventRequestType2["DragEnter"] = "dragEnter";
+    DispatchDragEventRequestType2["DragOver"] = "dragOver";
+    DispatchDragEventRequestType2["Drop"] = "drop";
+    DispatchDragEventRequestType2["DragCancel"] = "dragCancel";
+  })(DispatchDragEventRequestType = Input3.DispatchDragEventRequestType || (Input3.DispatchDragEventRequestType = {}));
+  let DispatchKeyEventRequestType;
+  ((DispatchKeyEventRequestType2) => {
+    DispatchKeyEventRequestType2["KeyDown"] = "keyDown";
+    DispatchKeyEventRequestType2["KeyUp"] = "keyUp";
+    DispatchKeyEventRequestType2["RawKeyDown"] = "rawKeyDown";
+    DispatchKeyEventRequestType2["Char"] = "char";
+  })(DispatchKeyEventRequestType = Input3.DispatchKeyEventRequestType || (Input3.DispatchKeyEventRequestType = {}));
+  let DispatchMouseEventRequestType;
+  ((DispatchMouseEventRequestType2) => {
+    DispatchMouseEventRequestType2["MousePressed"] = "mousePressed";
+    DispatchMouseEventRequestType2["MouseReleased"] = "mouseReleased";
+    DispatchMouseEventRequestType2["MouseMoved"] = "mouseMoved";
+    DispatchMouseEventRequestType2["MouseWheel"] = "mouseWheel";
+  })(DispatchMouseEventRequestType = Input3.DispatchMouseEventRequestType || (Input3.DispatchMouseEventRequestType = {}));
+  let DispatchMouseEventRequestPointerType;
+  ((DispatchMouseEventRequestPointerType2) => {
+    DispatchMouseEventRequestPointerType2["Mouse"] = "mouse";
+    DispatchMouseEventRequestPointerType2["Pen"] = "pen";
+  })(DispatchMouseEventRequestPointerType = Input3.DispatchMouseEventRequestPointerType || (Input3.DispatchMouseEventRequestPointerType = {}));
+  let DispatchTouchEventRequestType;
+  ((DispatchTouchEventRequestType2) => {
+    DispatchTouchEventRequestType2["TouchStart"] = "touchStart";
+    DispatchTouchEventRequestType2["TouchEnd"] = "touchEnd";
+    DispatchTouchEventRequestType2["TouchMove"] = "touchMove";
+    DispatchTouchEventRequestType2["TouchCancel"] = "touchCancel";
+  })(DispatchTouchEventRequestType = Input3.DispatchTouchEventRequestType || (Input3.DispatchTouchEventRequestType = {}));
+  let EmulateTouchFromMouseEventRequestType;
+  ((EmulateTouchFromMouseEventRequestType2) => {
+    EmulateTouchFromMouseEventRequestType2["MousePressed"] = "mousePressed";
+    EmulateTouchFromMouseEventRequestType2["MouseReleased"] = "mouseReleased";
+    EmulateTouchFromMouseEventRequestType2["MouseMoved"] = "mouseMoved";
+    EmulateTouchFromMouseEventRequestType2["MouseWheel"] = "mouseWheel";
+  })(EmulateTouchFromMouseEventRequestType = Input3.EmulateTouchFromMouseEventRequestType || (Input3.EmulateTouchFromMouseEventRequestType = {}));
+})(Input || (Input = {}));
+var LayerTree;
+((LayerTree2) => {
+  let ScrollRectType;
+  ((ScrollRectType2) => {
+    ScrollRectType2["RepaintsOnScroll"] = "RepaintsOnScroll";
+    ScrollRectType2["TouchEventHandler"] = "TouchEventHandler";
+    ScrollRectType2["WheelEventHandler"] = "WheelEventHandler";
+  })(ScrollRectType = LayerTree2.ScrollRectType || (LayerTree2.ScrollRectType = {}));
+})(LayerTree || (LayerTree = {}));
+var Log;
+((Log2) => {
+  let LogEntrySource;
+  ((LogEntrySource2) => {
+    LogEntrySource2["XML"] = "xml";
+    LogEntrySource2["Javascript"] = "javascript";
+    LogEntrySource2["Network"] = "network";
+    LogEntrySource2["Storage"] = "storage";
+    LogEntrySource2["Appcache"] = "appcache";
+    LogEntrySource2["Rendering"] = "rendering";
+    LogEntrySource2["Security"] = "security";
+    LogEntrySource2["Deprecation"] = "deprecation";
+    LogEntrySource2["Worker"] = "worker";
+    LogEntrySource2["Violation"] = "violation";
+    LogEntrySource2["Intervention"] = "intervention";
+    LogEntrySource2["Recommendation"] = "recommendation";
+    LogEntrySource2["Other"] = "other";
+  })(LogEntrySource = Log2.LogEntrySource || (Log2.LogEntrySource = {}));
+  let LogEntryLevel;
+  ((LogEntryLevel2) => {
+    LogEntryLevel2["Verbose"] = "verbose";
+    LogEntryLevel2["Info"] = "info";
+    LogEntryLevel2["Warning"] = "warning";
+    LogEntryLevel2["Error"] = "error";
+  })(LogEntryLevel = Log2.LogEntryLevel || (Log2.LogEntryLevel = {}));
+  let LogEntryCategory;
+  ((LogEntryCategory2) => {
+    LogEntryCategory2["Cors"] = "cors";
+  })(LogEntryCategory = Log2.LogEntryCategory || (Log2.LogEntryCategory = {}));
+  let ViolationSettingName;
+  ((ViolationSettingName2) => {
+    ViolationSettingName2["LongTask"] = "longTask";
+    ViolationSettingName2["LongLayout"] = "longLayout";
+    ViolationSettingName2["BlockedEvent"] = "blockedEvent";
+    ViolationSettingName2["BlockedParser"] = "blockedParser";
+    ViolationSettingName2["DiscouragedAPIUse"] = "discouragedAPIUse";
+    ViolationSettingName2["Handler"] = "handler";
+    ViolationSettingName2["RecurringHandler"] = "recurringHandler";
+  })(ViolationSettingName = Log2.ViolationSettingName || (Log2.ViolationSettingName = {}));
+})(Log || (Log = {}));
+var Media;
+((Media2) => {
+  let PlayerMessageLevel;
+  ((PlayerMessageLevel2) => {
+    PlayerMessageLevel2["Error"] = "error";
+    PlayerMessageLevel2["Warning"] = "warning";
+    PlayerMessageLevel2["Info"] = "info";
+    PlayerMessageLevel2["Debug"] = "debug";
+  })(PlayerMessageLevel = Media2.PlayerMessageLevel || (Media2.PlayerMessageLevel = {}));
+})(Media || (Media = {}));
+var Memory;
+((Memory2) => {
+  let PressureLevel;
+  ((PressureLevel2) => {
+    PressureLevel2["Moderate"] = "moderate";
+    PressureLevel2["Critical"] = "critical";
+  })(PressureLevel = Memory2.PressureLevel || (Memory2.PressureLevel = {}));
+})(Memory || (Memory = {}));
+var Network;
+((Network3) => {
+  let ResourceType5;
+  ((ResourceType6) => {
+    ResourceType6["Document"] = "Document";
+    ResourceType6["Stylesheet"] = "Stylesheet";
+    ResourceType6["Image"] = "Image";
+    ResourceType6["Media"] = "Media";
+    ResourceType6["Font"] = "Font";
+    ResourceType6["Script"] = "Script";
+    ResourceType6["TextTrack"] = "TextTrack";
+    ResourceType6["XHR"] = "XHR";
+    ResourceType6["Fetch"] = "Fetch";
+    ResourceType6["Prefetch"] = "Prefetch";
+    ResourceType6["EventSource"] = "EventSource";
+    ResourceType6["WebSocket"] = "WebSocket";
+    ResourceType6["Manifest"] = "Manifest";
+    ResourceType6["SignedExchange"] = "SignedExchange";
+    ResourceType6["Ping"] = "Ping";
+    ResourceType6["CSPViolationReport"] = "CSPViolationReport";
+    ResourceType6["Preflight"] = "Preflight";
+    ResourceType6["FedCM"] = "FedCM";
+    ResourceType6["Other"] = "Other";
+  })(ResourceType5 = Network3.ResourceType || (Network3.ResourceType = {}));
+  let ErrorReason;
+  ((ErrorReason2) => {
+    ErrorReason2["Failed"] = "Failed";
+    ErrorReason2["Aborted"] = "Aborted";
+    ErrorReason2["TimedOut"] = "TimedOut";
+    ErrorReason2["AccessDenied"] = "AccessDenied";
+    ErrorReason2["ConnectionClosed"] = "ConnectionClosed";
+    ErrorReason2["ConnectionReset"] = "ConnectionReset";
+    ErrorReason2["ConnectionRefused"] = "ConnectionRefused";
+    ErrorReason2["ConnectionAborted"] = "ConnectionAborted";
+    ErrorReason2["ConnectionFailed"] = "ConnectionFailed";
+    ErrorReason2["NameNotResolved"] = "NameNotResolved";
+    ErrorReason2["InternetDisconnected"] = "InternetDisconnected";
+    ErrorReason2["AddressUnreachable"] = "AddressUnreachable";
+    ErrorReason2["BlockedByClient"] = "BlockedByClient";
+    ErrorReason2["BlockedByResponse"] = "BlockedByResponse";
+  })(ErrorReason = Network3.ErrorReason || (Network3.ErrorReason = {}));
+  let ConnectionType;
+  ((ConnectionType2) => {
+    ConnectionType2["None"] = "none";
+    ConnectionType2["Cellular2g"] = "cellular2g";
+    ConnectionType2["Cellular3g"] = "cellular3g";
+    ConnectionType2["Cellular4g"] = "cellular4g";
+    ConnectionType2["Bluetooth"] = "bluetooth";
+    ConnectionType2["Ethernet"] = "ethernet";
+    ConnectionType2["Wifi"] = "wifi";
+    ConnectionType2["Wimax"] = "wimax";
+    ConnectionType2["Other"] = "other";
+  })(ConnectionType = Network3.ConnectionType || (Network3.ConnectionType = {}));
+  let CookieSameSite;
+  ((CookieSameSite2) => {
+    CookieSameSite2["Strict"] = "Strict";
+    CookieSameSite2["Lax"] = "Lax";
+    CookieSameSite2["None"] = "None";
+  })(CookieSameSite = Network3.CookieSameSite || (Network3.CookieSameSite = {}));
+  let CookiePriority;
+  ((CookiePriority2) => {
+    CookiePriority2["Low"] = "Low";
+    CookiePriority2["Medium"] = "Medium";
+    CookiePriority2["High"] = "High";
+  })(CookiePriority = Network3.CookiePriority || (Network3.CookiePriority = {}));
+  let CookieSourceScheme;
+  ((CookieSourceScheme2) => {
+    CookieSourceScheme2["Unset"] = "Unset";
+    CookieSourceScheme2["NonSecure"] = "NonSecure";
+    CookieSourceScheme2["Secure"] = "Secure";
+  })(CookieSourceScheme = Network3.CookieSourceScheme || (Network3.CookieSourceScheme = {}));
+  let ResourcePriority;
+  ((ResourcePriority2) => {
+    ResourcePriority2["VeryLow"] = "VeryLow";
+    ResourcePriority2["Low"] = "Low";
+    ResourcePriority2["Medium"] = "Medium";
+    ResourcePriority2["High"] = "High";
+    ResourcePriority2["VeryHigh"] = "VeryHigh";
+  })(ResourcePriority = Network3.ResourcePriority || (Network3.ResourcePriority = {}));
+  let RenderBlockingBehavior;
+  ((RenderBlockingBehavior2) => {
+    RenderBlockingBehavior2["Blocking"] = "Blocking";
+    RenderBlockingBehavior2["InBodyParserBlocking"] = "InBodyParserBlocking";
+    RenderBlockingBehavior2["NonBlocking"] = "NonBlocking";
+    RenderBlockingBehavior2["NonBlockingDynamic"] = "NonBlockingDynamic";
+    RenderBlockingBehavior2["PotentiallyBlocking"] = "PotentiallyBlocking";
+  })(RenderBlockingBehavior = Network3.RenderBlockingBehavior || (Network3.RenderBlockingBehavior = {}));
+  let RequestReferrerPolicy;
+  ((RequestReferrerPolicy2) => {
+    RequestReferrerPolicy2["UnsafeUrl"] = "unsafe-url";
+    RequestReferrerPolicy2["NoReferrerWhenDowngrade"] = "no-referrer-when-downgrade";
+    RequestReferrerPolicy2["NoReferrer"] = "no-referrer";
+    RequestReferrerPolicy2["Origin"] = "origin";
+    RequestReferrerPolicy2["OriginWhenCrossOrigin"] = "origin-when-cross-origin";
+    RequestReferrerPolicy2["SameOrigin"] = "same-origin";
+    RequestReferrerPolicy2["StrictOrigin"] = "strict-origin";
+    RequestReferrerPolicy2["StrictOriginWhenCrossOrigin"] = "strict-origin-when-cross-origin";
+  })(RequestReferrerPolicy = Network3.RequestReferrerPolicy || (Network3.RequestReferrerPolicy = {}));
+  let CertificateTransparencyCompliance;
+  ((CertificateTransparencyCompliance2) => {
+    CertificateTransparencyCompliance2["Unknown"] = "unknown";
+    CertificateTransparencyCompliance2["NotCompliant"] = "not-compliant";
+    CertificateTransparencyCompliance2["Compliant"] = "compliant";
+  })(CertificateTransparencyCompliance = Network3.CertificateTransparencyCompliance || (Network3.CertificateTransparencyCompliance = {}));
+  let BlockedReason;
+  ((BlockedReason2) => {
+    BlockedReason2["Other"] = "other";
+    BlockedReason2["Csp"] = "csp";
+    BlockedReason2["MixedContent"] = "mixed-content";
+    BlockedReason2["Origin"] = "origin";
+    BlockedReason2["Inspector"] = "inspector";
+    BlockedReason2["Integrity"] = "integrity";
+    BlockedReason2["SubresourceFilter"] = "subresource-filter";
+    BlockedReason2["ContentType"] = "content-type";
+    BlockedReason2["CoepFrameResourceNeedsCoepHeader"] = "coep-frame-resource-needs-coep-header";
+    BlockedReason2["CoopSandboxedIframeCannotNavigateToCoopPage"] = "coop-sandboxed-iframe-cannot-navigate-to-coop-page";
+    BlockedReason2["CorpNotSameOrigin"] = "corp-not-same-origin";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoep"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByDip"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-dip";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip";
+    BlockedReason2["CorpNotSameSite"] = "corp-not-same-site";
+    BlockedReason2["SriMessageSignatureMismatch"] = "sri-message-signature-mismatch";
+  })(BlockedReason = Network3.BlockedReason || (Network3.BlockedReason = {}));
+  let CorsError;
+  ((CorsError2) => {
+    CorsError2["DisallowedByMode"] = "DisallowedByMode";
+    CorsError2["InvalidResponse"] = "InvalidResponse";
+    CorsError2["WildcardOriginNotAllowed"] = "WildcardOriginNotAllowed";
+    CorsError2["MissingAllowOriginHeader"] = "MissingAllowOriginHeader";
+    CorsError2["MultipleAllowOriginValues"] = "MultipleAllowOriginValues";
+    CorsError2["InvalidAllowOriginValue"] = "InvalidAllowOriginValue";
+    CorsError2["AllowOriginMismatch"] = "AllowOriginMismatch";
+    CorsError2["InvalidAllowCredentials"] = "InvalidAllowCredentials";
+    CorsError2["CorsDisabledScheme"] = "CorsDisabledScheme";
+    CorsError2["PreflightInvalidStatus"] = "PreflightInvalidStatus";
+    CorsError2["PreflightDisallowedRedirect"] = "PreflightDisallowedRedirect";
+    CorsError2["PreflightWildcardOriginNotAllowed"] = "PreflightWildcardOriginNotAllowed";
+    CorsError2["PreflightMissingAllowOriginHeader"] = "PreflightMissingAllowOriginHeader";
+    CorsError2["PreflightMultipleAllowOriginValues"] = "PreflightMultipleAllowOriginValues";
+    CorsError2["PreflightInvalidAllowOriginValue"] = "PreflightInvalidAllowOriginValue";
+    CorsError2["PreflightAllowOriginMismatch"] = "PreflightAllowOriginMismatch";
+    CorsError2["PreflightInvalidAllowCredentials"] = "PreflightInvalidAllowCredentials";
+    CorsError2["PreflightMissingAllowExternal"] = "PreflightMissingAllowExternal";
+    CorsError2["PreflightInvalidAllowExternal"] = "PreflightInvalidAllowExternal";
+    CorsError2["InvalidAllowMethodsPreflightResponse"] = "InvalidAllowMethodsPreflightResponse";
+    CorsError2["InvalidAllowHeadersPreflightResponse"] = "InvalidAllowHeadersPreflightResponse";
+    CorsError2["MethodDisallowedByPreflightResponse"] = "MethodDisallowedByPreflightResponse";
+    CorsError2["HeaderDisallowedByPreflightResponse"] = "HeaderDisallowedByPreflightResponse";
+    CorsError2["RedirectContainsCredentials"] = "RedirectContainsCredentials";
+    CorsError2["InsecureLocalNetwork"] = "InsecureLocalNetwork";
+    CorsError2["InvalidLocalNetworkAccess"] = "InvalidLocalNetworkAccess";
+    CorsError2["NoCorsRedirectModeNotFollow"] = "NoCorsRedirectModeNotFollow";
+    CorsError2["LocalNetworkAccessPermissionDenied"] = "LocalNetworkAccessPermissionDenied";
+  })(CorsError = Network3.CorsError || (Network3.CorsError = {}));
+  let ServiceWorkerResponseSource;
+  ((ServiceWorkerResponseSource2) => {
+    ServiceWorkerResponseSource2["CacheStorage"] = "cache-storage";
+    ServiceWorkerResponseSource2["HttpCache"] = "http-cache";
+    ServiceWorkerResponseSource2["FallbackCode"] = "fallback-code";
+    ServiceWorkerResponseSource2["Network"] = "network";
+  })(ServiceWorkerResponseSource = Network3.ServiceWorkerResponseSource || (Network3.ServiceWorkerResponseSource = {}));
+  let TrustTokenParamsRefreshPolicy;
+  ((TrustTokenParamsRefreshPolicy2) => {
+    TrustTokenParamsRefreshPolicy2["UseCached"] = "UseCached";
+    TrustTokenParamsRefreshPolicy2["Refresh"] = "Refresh";
+  })(TrustTokenParamsRefreshPolicy = Network3.TrustTokenParamsRefreshPolicy || (Network3.TrustTokenParamsRefreshPolicy = {}));
+  let TrustTokenOperationType;
+  ((TrustTokenOperationType2) => {
+    TrustTokenOperationType2["Issuance"] = "Issuance";
+    TrustTokenOperationType2["Redemption"] = "Redemption";
+    TrustTokenOperationType2["Signing"] = "Signing";
+  })(TrustTokenOperationType = Network3.TrustTokenOperationType || (Network3.TrustTokenOperationType = {}));
+  let AlternateProtocolUsage;
+  ((AlternateProtocolUsage2) => {
+    AlternateProtocolUsage2["AlternativeJobWonWithoutRace"] = "alternativeJobWonWithoutRace";
+    AlternateProtocolUsage2["AlternativeJobWonRace"] = "alternativeJobWonRace";
+    AlternateProtocolUsage2["MainJobWonRace"] = "mainJobWonRace";
+    AlternateProtocolUsage2["MappingMissing"] = "mappingMissing";
+    AlternateProtocolUsage2["Broken"] = "broken";
+    AlternateProtocolUsage2["DnsAlpnH3JobWonWithoutRace"] = "dnsAlpnH3JobWonWithoutRace";
+    AlternateProtocolUsage2["DnsAlpnH3JobWonRace"] = "dnsAlpnH3JobWonRace";
+    AlternateProtocolUsage2["UnspecifiedReason"] = "unspecifiedReason";
+  })(AlternateProtocolUsage = Network3.AlternateProtocolUsage || (Network3.AlternateProtocolUsage = {}));
+  let ServiceWorkerRouterSource;
+  ((ServiceWorkerRouterSource2) => {
+    ServiceWorkerRouterSource2["Network"] = "network";
+    ServiceWorkerRouterSource2["Cache"] = "cache";
+    ServiceWorkerRouterSource2["FetchEvent"] = "fetch-event";
+    ServiceWorkerRouterSource2["RaceNetworkAndFetchHandler"] = "race-network-and-fetch-handler";
+    ServiceWorkerRouterSource2["RaceNetworkAndCache"] = "race-network-and-cache";
+  })(ServiceWorkerRouterSource = Network3.ServiceWorkerRouterSource || (Network3.ServiceWorkerRouterSource = {}));
+  let InitiatorType;
+  ((InitiatorType2) => {
+    InitiatorType2["Parser"] = "parser";
+    InitiatorType2["Script"] = "script";
+    InitiatorType2["Preload"] = "preload";
+    InitiatorType2["SignedExchange"] = "SignedExchange";
+    InitiatorType2["Preflight"] = "preflight";
+    InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["Other"] = "other";
+  })(InitiatorType = Network3.InitiatorType || (Network3.InitiatorType = {}));
+  let SetCookieBlockedReason;
+  ((SetCookieBlockedReason2) => {
+    SetCookieBlockedReason2["SecureOnly"] = "SecureOnly";
+    SetCookieBlockedReason2["SameSiteStrict"] = "SameSiteStrict";
+    SetCookieBlockedReason2["SameSiteLax"] = "SameSiteLax";
+    SetCookieBlockedReason2["SameSiteUnspecifiedTreatedAsLax"] = "SameSiteUnspecifiedTreatedAsLax";
+    SetCookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
+    SetCookieBlockedReason2["UserPreferences"] = "UserPreferences";
+    SetCookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
+    SetCookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
+    SetCookieBlockedReason2["SyntaxError"] = "SyntaxError";
+    SetCookieBlockedReason2["SchemeNotSupported"] = "SchemeNotSupported";
+    SetCookieBlockedReason2["OverwriteSecure"] = "OverwriteSecure";
+    SetCookieBlockedReason2["InvalidDomain"] = "InvalidDomain";
+    SetCookieBlockedReason2["InvalidPrefix"] = "InvalidPrefix";
+    SetCookieBlockedReason2["UnknownError"] = "UnknownError";
+    SetCookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
+    SetCookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
+    SetCookieBlockedReason2["SchemefulSameSiteUnspecifiedTreatedAsLax"] = "SchemefulSameSiteUnspecifiedTreatedAsLax";
+    SetCookieBlockedReason2["NameValuePairExceedsMaxSize"] = "NameValuePairExceedsMaxSize";
+    SetCookieBlockedReason2["DisallowedCharacter"] = "DisallowedCharacter";
+    SetCookieBlockedReason2["NoCookieContent"] = "NoCookieContent";
+  })(SetCookieBlockedReason = Network3.SetCookieBlockedReason || (Network3.SetCookieBlockedReason = {}));
+  let CookieBlockedReason;
+  ((CookieBlockedReason2) => {
+    CookieBlockedReason2["SecureOnly"] = "SecureOnly";
+    CookieBlockedReason2["NotOnPath"] = "NotOnPath";
+    CookieBlockedReason2["DomainMismatch"] = "DomainMismatch";
+    CookieBlockedReason2["SameSiteStrict"] = "SameSiteStrict";
+    CookieBlockedReason2["SameSiteLax"] = "SameSiteLax";
+    CookieBlockedReason2["SameSiteUnspecifiedTreatedAsLax"] = "SameSiteUnspecifiedTreatedAsLax";
+    CookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
+    CookieBlockedReason2["UserPreferences"] = "UserPreferences";
+    CookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
+    CookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
+    CookieBlockedReason2["UnknownError"] = "UnknownError";
+    CookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
+    CookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
+    CookieBlockedReason2["SchemefulSameSiteUnspecifiedTreatedAsLax"] = "SchemefulSameSiteUnspecifiedTreatedAsLax";
+    CookieBlockedReason2["NameValuePairExceedsMaxSize"] = "NameValuePairExceedsMaxSize";
+    CookieBlockedReason2["PortMismatch"] = "PortMismatch";
+    CookieBlockedReason2["SchemeMismatch"] = "SchemeMismatch";
+    CookieBlockedReason2["AnonymousContext"] = "AnonymousContext";
+  })(CookieBlockedReason = Network3.CookieBlockedReason || (Network3.CookieBlockedReason = {}));
+  let CookieExemptionReason;
+  ((CookieExemptionReason2) => {
+    CookieExemptionReason2["None"] = "None";
+    CookieExemptionReason2["UserSetting"] = "UserSetting";
+    CookieExemptionReason2["EnterprisePolicy"] = "EnterprisePolicy";
+    CookieExemptionReason2["StorageAccess"] = "StorageAccess";
+    CookieExemptionReason2["TopLevelStorageAccess"] = "TopLevelStorageAccess";
+    CookieExemptionReason2["Scheme"] = "Scheme";
+    CookieExemptionReason2["SameSiteNoneCookiesInSandbox"] = "SameSiteNoneCookiesInSandbox";
+  })(CookieExemptionReason = Network3.CookieExemptionReason || (Network3.CookieExemptionReason = {}));
+  let AuthChallengeSource;
+  ((AuthChallengeSource2) => {
+    AuthChallengeSource2["Server"] = "Server";
+    AuthChallengeSource2["Proxy"] = "Proxy";
+  })(AuthChallengeSource = Network3.AuthChallengeSource || (Network3.AuthChallengeSource = {}));
+  let AuthChallengeResponseResponse;
+  ((AuthChallengeResponseResponse2) => {
+    AuthChallengeResponseResponse2["Default"] = "Default";
+    AuthChallengeResponseResponse2["CancelAuth"] = "CancelAuth";
+    AuthChallengeResponseResponse2["ProvideCredentials"] = "ProvideCredentials";
+  })(AuthChallengeResponseResponse = Network3.AuthChallengeResponseResponse || (Network3.AuthChallengeResponseResponse = {}));
+  let SignedExchangeErrorField;
+  ((SignedExchangeErrorField2) => {
+    SignedExchangeErrorField2["SignatureSig"] = "signatureSig";
+    SignedExchangeErrorField2["SignatureIntegrity"] = "signatureIntegrity";
+    SignedExchangeErrorField2["SignatureCertUrl"] = "signatureCertUrl";
+    SignedExchangeErrorField2["SignatureCertSha256"] = "signatureCertSha256";
+    SignedExchangeErrorField2["SignatureValidityUrl"] = "signatureValidityUrl";
+    SignedExchangeErrorField2["SignatureTimestamps"] = "signatureTimestamps";
+  })(SignedExchangeErrorField = Network3.SignedExchangeErrorField || (Network3.SignedExchangeErrorField = {}));
+  let DirectSocketDnsQueryType;
+  ((DirectSocketDnsQueryType2) => {
+    DirectSocketDnsQueryType2["Ipv4"] = "ipv4";
+    DirectSocketDnsQueryType2["Ipv6"] = "ipv6";
+  })(DirectSocketDnsQueryType = Network3.DirectSocketDnsQueryType || (Network3.DirectSocketDnsQueryType = {}));
+  let LocalNetworkAccessRequestPolicy;
+  ((LocalNetworkAccessRequestPolicy2) => {
+    LocalNetworkAccessRequestPolicy2["Allow"] = "Allow";
+    LocalNetworkAccessRequestPolicy2["BlockFromInsecureToMorePrivate"] = "BlockFromInsecureToMorePrivate";
+    LocalNetworkAccessRequestPolicy2["WarnFromInsecureToMorePrivate"] = "WarnFromInsecureToMorePrivate";
+    LocalNetworkAccessRequestPolicy2["PermissionBlock"] = "PermissionBlock";
+    LocalNetworkAccessRequestPolicy2["PermissionWarn"] = "PermissionWarn";
+  })(LocalNetworkAccessRequestPolicy = Network3.LocalNetworkAccessRequestPolicy || (Network3.LocalNetworkAccessRequestPolicy = {}));
+  let IPAddressSpace;
+  ((IPAddressSpace2) => {
+    IPAddressSpace2["Loopback"] = "Loopback";
+    IPAddressSpace2["Local"] = "Local";
+    IPAddressSpace2["Public"] = "Public";
+    IPAddressSpace2["Unknown"] = "Unknown";
+  })(IPAddressSpace = Network3.IPAddressSpace || (Network3.IPAddressSpace = {}));
+  let CrossOriginOpenerPolicyValue;
+  ((CrossOriginOpenerPolicyValue2) => {
+    CrossOriginOpenerPolicyValue2["SameOrigin"] = "SameOrigin";
+    CrossOriginOpenerPolicyValue2["SameOriginAllowPopups"] = "SameOriginAllowPopups";
+    CrossOriginOpenerPolicyValue2["RestrictProperties"] = "RestrictProperties";
+    CrossOriginOpenerPolicyValue2["UnsafeNone"] = "UnsafeNone";
+    CrossOriginOpenerPolicyValue2["SameOriginPlusCoep"] = "SameOriginPlusCoep";
+    CrossOriginOpenerPolicyValue2["RestrictPropertiesPlusCoep"] = "RestrictPropertiesPlusCoep";
+    CrossOriginOpenerPolicyValue2["NoopenerAllowPopups"] = "NoopenerAllowPopups";
+  })(CrossOriginOpenerPolicyValue = Network3.CrossOriginOpenerPolicyValue || (Network3.CrossOriginOpenerPolicyValue = {}));
+  let CrossOriginEmbedderPolicyValue;
+  ((CrossOriginEmbedderPolicyValue2) => {
+    CrossOriginEmbedderPolicyValue2["None"] = "None";
+    CrossOriginEmbedderPolicyValue2["Credentialless"] = "Credentialless";
+    CrossOriginEmbedderPolicyValue2["RequireCorp"] = "RequireCorp";
+  })(CrossOriginEmbedderPolicyValue = Network3.CrossOriginEmbedderPolicyValue || (Network3.CrossOriginEmbedderPolicyValue = {}));
+  let ContentSecurityPolicySource;
+  ((ContentSecurityPolicySource2) => {
+    ContentSecurityPolicySource2["HTTP"] = "HTTP";
+    ContentSecurityPolicySource2["Meta"] = "Meta";
+  })(ContentSecurityPolicySource = Network3.ContentSecurityPolicySource || (Network3.ContentSecurityPolicySource = {}));
+  let ReportStatus;
+  ((ReportStatus2) => {
+    ReportStatus2["Queued"] = "Queued";
+    ReportStatus2["Pending"] = "Pending";
+    ReportStatus2["MarkedForRemoval"] = "MarkedForRemoval";
+    ReportStatus2["Success"] = "Success";
+  })(ReportStatus = Network3.ReportStatus || (Network3.ReportStatus = {}));
+  let DeviceBoundSessionWithUsageUsage;
+  ((DeviceBoundSessionWithUsageUsage2) => {
+    DeviceBoundSessionWithUsageUsage2["NotInScope"] = "NotInScope";
+    DeviceBoundSessionWithUsageUsage2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+    DeviceBoundSessionWithUsageUsage2["InScopeRefreshNotAllowed"] = "InScopeRefreshNotAllowed";
+    DeviceBoundSessionWithUsageUsage2["ProactiveRefreshNotPossible"] = "ProactiveRefreshNotPossible";
+    DeviceBoundSessionWithUsageUsage2["ProactiveRefreshAttempted"] = "ProactiveRefreshAttempted";
+    DeviceBoundSessionWithUsageUsage2["Deferred"] = "Deferred";
+  })(DeviceBoundSessionWithUsageUsage = Network3.DeviceBoundSessionWithUsageUsage || (Network3.DeviceBoundSessionWithUsageUsage = {}));
+  let DeviceBoundSessionUrlRuleRuleType;
+  ((DeviceBoundSessionUrlRuleRuleType2) => {
+    DeviceBoundSessionUrlRuleRuleType2["Exclude"] = "Exclude";
+    DeviceBoundSessionUrlRuleRuleType2["Include"] = "Include";
+  })(DeviceBoundSessionUrlRuleRuleType = Network3.DeviceBoundSessionUrlRuleRuleType || (Network3.DeviceBoundSessionUrlRuleRuleType = {}));
+  let DeviceBoundSessionFetchResult;
+  ((DeviceBoundSessionFetchResult2) => {
+    DeviceBoundSessionFetchResult2["Success"] = "Success";
+    DeviceBoundSessionFetchResult2["SigningKeyGenerationError"] = "SigningKeyGenerationError";
+    DeviceBoundSessionFetchResult2["AttestationKeyGenerationError"] = "AttestationKeyGenerationError";
+    DeviceBoundSessionFetchResult2["SigningError"] = "SigningError";
+    DeviceBoundSessionFetchResult2["TransientSigningError"] = "TransientSigningError";
+    DeviceBoundSessionFetchResult2["ServerRequestedTermination"] = "ServerRequestedTermination";
+    DeviceBoundSessionFetchResult2["InvalidSessionId"] = "InvalidSessionId";
+    DeviceBoundSessionFetchResult2["InvalidChallenge"] = "InvalidChallenge";
+    DeviceBoundSessionFetchResult2["TooManyChallenges"] = "TooManyChallenges";
+    DeviceBoundSessionFetchResult2["InvalidFetcherUrl"] = "InvalidFetcherUrl";
+    DeviceBoundSessionFetchResult2["InvalidRefreshUrl"] = "InvalidRefreshUrl";
+    DeviceBoundSessionFetchResult2["TransientHttpError"] = "TransientHttpError";
+    DeviceBoundSessionFetchResult2["ScopeOriginSameSiteMismatch"] = "ScopeOriginSameSiteMismatch";
+    DeviceBoundSessionFetchResult2["RefreshUrlSameSiteMismatch"] = "RefreshUrlSameSiteMismatch";
+    DeviceBoundSessionFetchResult2["MismatchedSessionId"] = "MismatchedSessionId";
+    DeviceBoundSessionFetchResult2["MissingScope"] = "MissingScope";
+    DeviceBoundSessionFetchResult2["NoCredentials"] = "NoCredentials";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationWellKnownUnavailable"] = "SubdomainRegistrationWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationUnauthorized"] = "SubdomainRegistrationUnauthorized";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationWellKnownMalformed"] = "SubdomainRegistrationWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownUnavailable"] = "SessionProviderWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownUnavailable"] = "RelyingPartyWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["FederatedKeyThumbprintMismatch"] = "FederatedKeyThumbprintMismatch";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionUrl"] = "InvalidFederatedSessionUrl";
+    DeviceBoundSessionFetchResult2["InvalidFederatedKey"] = "InvalidFederatedKey";
+    DeviceBoundSessionFetchResult2["TooManyRelyingOriginLabels"] = "TooManyRelyingOriginLabels";
+    DeviceBoundSessionFetchResult2["BoundCookieSetForbidden"] = "BoundCookieSetForbidden";
+    DeviceBoundSessionFetchResult2["NetError"] = "NetError";
+    DeviceBoundSessionFetchResult2["ProxyError"] = "ProxyError";
+    DeviceBoundSessionFetchResult2["EmptySessionConfig"] = "EmptySessionConfig";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsConfig"] = "InvalidCredentialsConfig";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsType"] = "InvalidCredentialsType";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsEmptyName"] = "InvalidCredentialsEmptyName";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookie"] = "InvalidCredentialsCookie";
+    DeviceBoundSessionFetchResult2["PersistentHttpError"] = "PersistentHttpError";
+    DeviceBoundSessionFetchResult2["RegistrationAttemptedChallenge"] = "RegistrationAttemptedChallenge";
+    DeviceBoundSessionFetchResult2["InvalidScopeOrigin"] = "InvalidScopeOrigin";
+    DeviceBoundSessionFetchResult2["ScopeOriginContainsPath"] = "ScopeOriginContainsPath";
+    DeviceBoundSessionFetchResult2["RefreshInitiatorNotString"] = "RefreshInitiatorNotString";
+    DeviceBoundSessionFetchResult2["RefreshInitiatorInvalidHostPattern"] = "RefreshInitiatorInvalidHostPattern";
+    DeviceBoundSessionFetchResult2["InvalidScopeSpecification"] = "InvalidScopeSpecification";
+    DeviceBoundSessionFetchResult2["MissingScopeSpecificationType"] = "MissingScopeSpecificationType";
+    DeviceBoundSessionFetchResult2["EmptyScopeSpecificationDomain"] = "EmptyScopeSpecificationDomain";
+    DeviceBoundSessionFetchResult2["EmptyScopeSpecificationPath"] = "EmptyScopeSpecificationPath";
+    DeviceBoundSessionFetchResult2["InvalidScopeSpecificationType"] = "InvalidScopeSpecificationType";
+    DeviceBoundSessionFetchResult2["InvalidScopeIncludeSite"] = "InvalidScopeIncludeSite";
+    DeviceBoundSessionFetchResult2["MissingScopeIncludeSite"] = "MissingScopeIncludeSite";
+    DeviceBoundSessionFetchResult2["FederatedNotAuthorizedByProvider"] = "FederatedNotAuthorizedByProvider";
+    DeviceBoundSessionFetchResult2["FederatedNotAuthorizedByRelyingParty"] = "FederatedNotAuthorizedByRelyingParty";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownMalformed"] = "SessionProviderWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownHasProviderOrigin"] = "SessionProviderWellKnownHasProviderOrigin";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownMalformed"] = "RelyingPartyWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownHasRelyingOrigins"] = "RelyingPartyWellKnownHasRelyingOrigins";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionProviderSessionMissing"] = "InvalidFederatedSessionProviderSessionMissing";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionWrongProviderOrigin"] = "InvalidFederatedSessionWrongProviderOrigin";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieCreationTime"] = "InvalidCredentialsCookieCreationTime";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieName"] = "InvalidCredentialsCookieName";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieParsing"] = "InvalidCredentialsCookieParsing";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieUnpermittedAttribute"] = "InvalidCredentialsCookieUnpermittedAttribute";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieInvalidDomain"] = "InvalidCredentialsCookieInvalidDomain";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookiePrefix"] = "InvalidCredentialsCookiePrefix";
+    DeviceBoundSessionFetchResult2["InvalidScopeRulePath"] = "InvalidScopeRulePath";
+    DeviceBoundSessionFetchResult2["InvalidScopeRuleHostPattern"] = "InvalidScopeRuleHostPattern";
+    DeviceBoundSessionFetchResult2["ScopeRuleOriginScopedHostPatternMismatch"] = "ScopeRuleOriginScopedHostPatternMismatch";
+    DeviceBoundSessionFetchResult2["ScopeRuleSiteScopedHostPatternMismatch"] = "ScopeRuleSiteScopedHostPatternMismatch";
+    DeviceBoundSessionFetchResult2["SigningQuotaExceeded"] = "SigningQuotaExceeded";
+    DeviceBoundSessionFetchResult2["InvalidConfigJson"] = "InvalidConfigJson";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionProviderFailedToRestoreKey"] = "InvalidFederatedSessionProviderFailedToRestoreKey";
+    DeviceBoundSessionFetchResult2["FailedToUnwrapKey"] = "FailedToUnwrapKey";
+    DeviceBoundSessionFetchResult2["SessionDeletedDuringRefresh"] = "SessionDeletedDuringRefresh";
+    DeviceBoundSessionFetchResult2["CrossOriginRegistrationSiteNotIncluded"] = "CrossOriginRegistrationSiteNotIncluded";
+    DeviceBoundSessionFetchResult2["InvalidPreProvisionedKeyInitiatorMissing"] = "InvalidPreProvisionedKeyInitiatorMissing";
+    DeviceBoundSessionFetchResult2["PreProvisionedKeyAccessNotGranted"] = "PreProvisionedKeyAccessNotGranted";
+    DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
+    DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
+    DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+  })(DeviceBoundSessionFetchResult = Network3.DeviceBoundSessionFetchResult || (Network3.DeviceBoundSessionFetchResult = {}));
+  let RefreshEventDetailsRefreshResult;
+  ((RefreshEventDetailsRefreshResult2) => {
+    RefreshEventDetailsRefreshResult2["Refreshed"] = "Refreshed";
+    RefreshEventDetailsRefreshResult2["InitializedService"] = "InitializedService";
+    RefreshEventDetailsRefreshResult2["Unreachable"] = "Unreachable";
+    RefreshEventDetailsRefreshResult2["ServerError"] = "ServerError";
+    RefreshEventDetailsRefreshResult2["FatalError"] = "FatalError";
+    RefreshEventDetailsRefreshResult2["SigningQuotaExceeded"] = "SigningQuotaExceeded";
+    RefreshEventDetailsRefreshResult2["RefreshedAsWaiter"] = "RefreshedAsWaiter";
+    RefreshEventDetailsRefreshResult2["TransientSigningError"] = "TransientSigningError";
+    RefreshEventDetailsRefreshResult2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+  })(RefreshEventDetailsRefreshResult = Network3.RefreshEventDetailsRefreshResult || (Network3.RefreshEventDetailsRefreshResult = {}));
+  let TerminationEventDetailsDeletionReason;
+  ((TerminationEventDetailsDeletionReason2) => {
+    TerminationEventDetailsDeletionReason2["Expired"] = "Expired";
+    TerminationEventDetailsDeletionReason2["FailedToRestoreKey"] = "FailedToRestoreKey";
+    TerminationEventDetailsDeletionReason2["FailedToUnwrapKey"] = "FailedToUnwrapKey";
+    TerminationEventDetailsDeletionReason2["StoragePartitionCleared"] = "StoragePartitionCleared";
+    TerminationEventDetailsDeletionReason2["ClearBrowsingData"] = "ClearBrowsingData";
+    TerminationEventDetailsDeletionReason2["ServerRequested"] = "ServerRequested";
+    TerminationEventDetailsDeletionReason2["InvalidSessionParams"] = "InvalidSessionParams";
+    TerminationEventDetailsDeletionReason2["RefreshFatalError"] = "RefreshFatalError";
+    TerminationEventDetailsDeletionReason2["DevTools"] = "DevTools";
+  })(TerminationEventDetailsDeletionReason = Network3.TerminationEventDetailsDeletionReason || (Network3.TerminationEventDetailsDeletionReason = {}));
+  let ChallengeEventDetailsChallengeResult;
+  ((ChallengeEventDetailsChallengeResult2) => {
+    ChallengeEventDetailsChallengeResult2["Success"] = "Success";
+    ChallengeEventDetailsChallengeResult2["NoSessionId"] = "NoSessionId";
+    ChallengeEventDetailsChallengeResult2["NoSessionMatch"] = "NoSessionMatch";
+    ChallengeEventDetailsChallengeResult2["CantSetBoundCookie"] = "CantSetBoundCookie";
+  })(ChallengeEventDetailsChallengeResult = Network3.ChallengeEventDetailsChallengeResult || (Network3.ChallengeEventDetailsChallengeResult = {}));
+  let TrustTokenOperationDoneEventStatus;
+  ((TrustTokenOperationDoneEventStatus2) => {
+    TrustTokenOperationDoneEventStatus2["Ok"] = "Ok";
+    TrustTokenOperationDoneEventStatus2["InvalidArgument"] = "InvalidArgument";
+    TrustTokenOperationDoneEventStatus2["MissingIssuerKeys"] = "MissingIssuerKeys";
+    TrustTokenOperationDoneEventStatus2["FailedPrecondition"] = "FailedPrecondition";
+    TrustTokenOperationDoneEventStatus2["ResourceExhausted"] = "ResourceExhausted";
+    TrustTokenOperationDoneEventStatus2["AlreadyExists"] = "AlreadyExists";
+    TrustTokenOperationDoneEventStatus2["ResourceLimited"] = "ResourceLimited";
+    TrustTokenOperationDoneEventStatus2["Unauthorized"] = "Unauthorized";
+    TrustTokenOperationDoneEventStatus2["BadResponse"] = "BadResponse";
+    TrustTokenOperationDoneEventStatus2["InternalError"] = "InternalError";
+    TrustTokenOperationDoneEventStatus2["UnknownError"] = "UnknownError";
+    TrustTokenOperationDoneEventStatus2["FulfilledLocally"] = "FulfilledLocally";
+    TrustTokenOperationDoneEventStatus2["SiteIssuerLimit"] = "SiteIssuerLimit";
+  })(TrustTokenOperationDoneEventStatus = Network3.TrustTokenOperationDoneEventStatus || (Network3.TrustTokenOperationDoneEventStatus = {}));
+})(Network || (Network = {}));
+var Overlay;
+((Overlay2) => {
+  let LineStylePattern;
+  ((LineStylePattern2) => {
+    LineStylePattern2["Dashed"] = "dashed";
+    LineStylePattern2["Dotted"] = "dotted";
+  })(LineStylePattern = Overlay2.LineStylePattern || (Overlay2.LineStylePattern = {}));
+  let ContrastAlgorithm;
+  ((ContrastAlgorithm2) => {
+    ContrastAlgorithm2["Aa"] = "aa";
+    ContrastAlgorithm2["Aaa"] = "aaa";
+    ContrastAlgorithm2["Apca"] = "apca";
+  })(ContrastAlgorithm = Overlay2.ContrastAlgorithm || (Overlay2.ContrastAlgorithm = {}));
+  let ColorFormat;
+  ((ColorFormat2) => {
+    ColorFormat2["Rgb"] = "rgb";
+    ColorFormat2["Hsl"] = "hsl";
+    ColorFormat2["Hwb"] = "hwb";
+    ColorFormat2["Hex"] = "hex";
+  })(ColorFormat = Overlay2.ColorFormat || (Overlay2.ColorFormat = {}));
+  let DisplayCutoutShape;
+  ((DisplayCutoutShape2) => {
+    DisplayCutoutShape2["Pill"] = "pill";
+    DisplayCutoutShape2["Notch"] = "notch";
+    DisplayCutoutShape2["Circle"] = "circle";
+    DisplayCutoutShape2["Rectangle"] = "rectangle";
+  })(DisplayCutoutShape = Overlay2.DisplayCutoutShape || (Overlay2.DisplayCutoutShape = {}));
+  let InspectMode;
+  ((InspectMode2) => {
+    InspectMode2["SearchForNode"] = "searchForNode";
+    InspectMode2["SearchForUAShadowDOM"] = "searchForUAShadowDOM";
+    InspectMode2["CaptureAreaScreenshot"] = "captureAreaScreenshot";
+    InspectMode2["None"] = "none";
+  })(InspectMode = Overlay2.InspectMode || (Overlay2.InspectMode = {}));
+})(Overlay || (Overlay = {}));
+var PWA;
+((PWA2) => {
+  let DisplayMode;
+  ((DisplayMode2) => {
+    DisplayMode2["Standalone"] = "standalone";
+    DisplayMode2["Browser"] = "browser";
+  })(DisplayMode = PWA2.DisplayMode || (PWA2.DisplayMode = {}));
+})(PWA || (PWA = {}));
+var Page;
+((Page2) => {
+  let AdFrameType;
+  ((AdFrameType2) => {
+    AdFrameType2["None"] = "none";
+    AdFrameType2["Child"] = "child";
+    AdFrameType2["Root"] = "root";
+  })(AdFrameType = Page2.AdFrameType || (Page2.AdFrameType = {}));
+  let AdFrameExplanation;
+  ((AdFrameExplanation2) => {
+    AdFrameExplanation2["ParentIsAd"] = "ParentIsAd";
+    AdFrameExplanation2["CreatedByAdScript"] = "CreatedByAdScript";
+    AdFrameExplanation2["MatchedBlockingRule"] = "MatchedBlockingRule";
+  })(AdFrameExplanation = Page2.AdFrameExplanation || (Page2.AdFrameExplanation = {}));
+  let SecureContextType;
+  ((SecureContextType2) => {
+    SecureContextType2["Secure"] = "Secure";
+    SecureContextType2["SecureLocalhost"] = "SecureLocalhost";
+    SecureContextType2["InsecureScheme"] = "InsecureScheme";
+    SecureContextType2["InsecureAncestor"] = "InsecureAncestor";
+  })(SecureContextType = Page2.SecureContextType || (Page2.SecureContextType = {}));
+  let CrossOriginIsolatedContextType;
+  ((CrossOriginIsolatedContextType2) => {
+    CrossOriginIsolatedContextType2["Isolated"] = "Isolated";
+    CrossOriginIsolatedContextType2["NotIsolated"] = "NotIsolated";
+    CrossOriginIsolatedContextType2["NotIsolatedFeatureDisabled"] = "NotIsolatedFeatureDisabled";
+  })(CrossOriginIsolatedContextType = Page2.CrossOriginIsolatedContextType || (Page2.CrossOriginIsolatedContextType = {}));
+  let GatedAPIFeatures;
+  ((GatedAPIFeatures2) => {
+    GatedAPIFeatures2["SharedArrayBuffers"] = "SharedArrayBuffers";
+    GatedAPIFeatures2["SharedArrayBuffersTransferAllowed"] = "SharedArrayBuffersTransferAllowed";
+    GatedAPIFeatures2["PerformanceMeasureMemory"] = "PerformanceMeasureMemory";
+    GatedAPIFeatures2["PerformanceProfile"] = "PerformanceProfile";
+  })(GatedAPIFeatures = Page2.GatedAPIFeatures || (Page2.GatedAPIFeatures = {}));
+  let PermissionsPolicyFeature;
+  ((PermissionsPolicyFeature2) => {
+    PermissionsPolicyFeature2["Accelerometer"] = "accelerometer";
+    PermissionsPolicyFeature2["AllScreensCapture"] = "all-screens-capture";
+    PermissionsPolicyFeature2["AmbientLightSensor"] = "ambient-light-sensor";
+    PermissionsPolicyFeature2["AriaNotify"] = "aria-notify";
+    PermissionsPolicyFeature2["Autofill"] = "autofill";
+    PermissionsPolicyFeature2["Autoplay"] = "autoplay";
+    PermissionsPolicyFeature2["Bluetooth"] = "bluetooth";
+    PermissionsPolicyFeature2["BrowsingTopics"] = "browsing-topics";
+    PermissionsPolicyFeature2["Camera"] = "camera";
+    PermissionsPolicyFeature2["CapturedSurfaceControl"] = "captured-surface-control";
+    PermissionsPolicyFeature2["ChDpr"] = "ch-dpr";
+    PermissionsPolicyFeature2["ChDeviceMemory"] = "ch-device-memory";
+    PermissionsPolicyFeature2["ChDownlink"] = "ch-downlink";
+    PermissionsPolicyFeature2["ChEct"] = "ch-ect";
+    PermissionsPolicyFeature2["ChPrefersColorScheme"] = "ch-prefers-color-scheme";
+    PermissionsPolicyFeature2["ChPrefersReducedMotion"] = "ch-prefers-reduced-motion";
+    PermissionsPolicyFeature2["ChPrefersReducedTransparency"] = "ch-prefers-reduced-transparency";
+    PermissionsPolicyFeature2["ChRtt"] = "ch-rtt";
+    PermissionsPolicyFeature2["ChSaveData"] = "ch-save-data";
+    PermissionsPolicyFeature2["ChUa"] = "ch-ua";
+    PermissionsPolicyFeature2["ChUaArch"] = "ch-ua-arch";
+    PermissionsPolicyFeature2["ChUaBitness"] = "ch-ua-bitness";
+    PermissionsPolicyFeature2["ChUaHighEntropyValues"] = "ch-ua-high-entropy-values";
+    PermissionsPolicyFeature2["ChUaPlatform"] = "ch-ua-platform";
+    PermissionsPolicyFeature2["ChUaModel"] = "ch-ua-model";
+    PermissionsPolicyFeature2["ChUaMobile"] = "ch-ua-mobile";
+    PermissionsPolicyFeature2["ChUaFormFactors"] = "ch-ua-form-factors";
+    PermissionsPolicyFeature2["ChUaFullVersion"] = "ch-ua-full-version";
+    PermissionsPolicyFeature2["ChUaFullVersionList"] = "ch-ua-full-version-list";
+    PermissionsPolicyFeature2["ChUaPlatformVersion"] = "ch-ua-platform-version";
+    PermissionsPolicyFeature2["ChUaWow64"] = "ch-ua-wow64";
+    PermissionsPolicyFeature2["ChViewportHeight"] = "ch-viewport-height";
+    PermissionsPolicyFeature2["ChViewportWidth"] = "ch-viewport-width";
+    PermissionsPolicyFeature2["ChWidth"] = "ch-width";
+    PermissionsPolicyFeature2["ClipboardRead"] = "clipboard-read";
+    PermissionsPolicyFeature2["ClipboardWrite"] = "clipboard-write";
+    PermissionsPolicyFeature2["ComputePressure"] = "compute-pressure";
+    PermissionsPolicyFeature2["ControlledFrame"] = "controlled-frame";
+    PermissionsPolicyFeature2["CrossOriginIsolated"] = "cross-origin-isolated";
+    PermissionsPolicyFeature2["DeferredFetch"] = "deferred-fetch";
+    PermissionsPolicyFeature2["DeferredFetchMinimal"] = "deferred-fetch-minimal";
+    PermissionsPolicyFeature2["DeviceAttributes"] = "device-attributes";
+    PermissionsPolicyFeature2["DigitalCredentialsCreate"] = "digital-credentials-create";
+    PermissionsPolicyFeature2["DigitalCredentialsGet"] = "digital-credentials-get";
+    PermissionsPolicyFeature2["DirectSockets"] = "direct-sockets";
+    PermissionsPolicyFeature2["DirectSocketsMulticast"] = "direct-sockets-multicast";
+    PermissionsPolicyFeature2["DisplayCapture"] = "display-capture";
+    PermissionsPolicyFeature2["DocumentDomain"] = "document-domain";
+    PermissionsPolicyFeature2["EncryptedMedia"] = "encrypted-media";
+    PermissionsPolicyFeature2["ExecutionWhileOutOfViewport"] = "execution-while-out-of-viewport";
+    PermissionsPolicyFeature2["ExecutionWhileNotRendered"] = "execution-while-not-rendered";
+    PermissionsPolicyFeature2["FocusWithoutUserActivation"] = "focus-without-user-activation";
+    PermissionsPolicyFeature2["Fullscreen"] = "fullscreen";
+    PermissionsPolicyFeature2["Frobulate"] = "frobulate";
+    PermissionsPolicyFeature2["Gamepad"] = "gamepad";
+    PermissionsPolicyFeature2["Geolocation"] = "geolocation";
+    PermissionsPolicyFeature2["Gyroscope"] = "gyroscope";
+    PermissionsPolicyFeature2["Haptics"] = "haptics";
+    PermissionsPolicyFeature2["Hid"] = "hid";
+    PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
+    PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
+    PermissionsPolicyFeature2["InterestCohort"] = "interest-cohort";
+    PermissionsPolicyFeature2["KeyboardMap"] = "keyboard-map";
+    PermissionsPolicyFeature2["LanguageDetector"] = "language-detector";
+    PermissionsPolicyFeature2["LanguageModel"] = "language-model";
+    PermissionsPolicyFeature2["LocalFonts"] = "local-fonts";
+    PermissionsPolicyFeature2["LocalNetwork"] = "local-network";
+    PermissionsPolicyFeature2["LocalNetworkAccess"] = "local-network-access";
+    PermissionsPolicyFeature2["LoopbackNetwork"] = "loopback-network";
+    PermissionsPolicyFeature2["Magnetometer"] = "magnetometer";
+    PermissionsPolicyFeature2["ManualText"] = "manual-text";
+    PermissionsPolicyFeature2["MediaPlaybackWhileNotVisible"] = "media-playback-while-not-visible";
+    PermissionsPolicyFeature2["Microphone"] = "microphone";
+    PermissionsPolicyFeature2["Midi"] = "midi";
+    PermissionsPolicyFeature2["OnDeviceSpeechRecognition"] = "on-device-speech-recognition";
+    PermissionsPolicyFeature2["OtpCredentials"] = "otp-credentials";
+    PermissionsPolicyFeature2["Payment"] = "payment";
+    PermissionsPolicyFeature2["PictureInPicture"] = "picture-in-picture";
+    PermissionsPolicyFeature2["PrivateStateTokenIssuance"] = "private-state-token-issuance";
+    PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
+    PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
+    PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["Rewriter"] = "rewriter";
+    PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["Serial"] = "serial";
+    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
+    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
+    PermissionsPolicyFeature2["SmartCard"] = "smart-card";
+    PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
+    PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
+    PermissionsPolicyFeature2["SubApps"] = "sub-apps";
+    PermissionsPolicyFeature2["Summarizer"] = "summarizer";
+    PermissionsPolicyFeature2["SyncXhr"] = "sync-xhr";
+    PermissionsPolicyFeature2["Tools"] = "tools";
+    PermissionsPolicyFeature2["Translator"] = "translator";
+    PermissionsPolicyFeature2["Unload"] = "unload";
+    PermissionsPolicyFeature2["Usb"] = "usb";
+    PermissionsPolicyFeature2["UsbUnrestricted"] = "usb-unrestricted";
+    PermissionsPolicyFeature2["VerticalScroll"] = "vertical-scroll";
+    PermissionsPolicyFeature2["WebAppInstallation"] = "web-app-installation";
+    PermissionsPolicyFeature2["Webnn"] = "webnn";
+    PermissionsPolicyFeature2["WebPrinting"] = "web-printing";
+    PermissionsPolicyFeature2["WebShare"] = "web-share";
+    PermissionsPolicyFeature2["WindowManagement"] = "window-management";
+    PermissionsPolicyFeature2["Writer"] = "writer";
+    PermissionsPolicyFeature2["XrSpatialTracking"] = "xr-spatial-tracking";
+  })(PermissionsPolicyFeature = Page2.PermissionsPolicyFeature || (Page2.PermissionsPolicyFeature = {}));
+  let PermissionsPolicyBlockReason;
+  ((PermissionsPolicyBlockReason2) => {
+    PermissionsPolicyBlockReason2["Header"] = "Header";
+    PermissionsPolicyBlockReason2["IframeAttribute"] = "IframeAttribute";
+    PermissionsPolicyBlockReason2["InFencedFrameTree"] = "InFencedFrameTree";
+    PermissionsPolicyBlockReason2["InIsolatedApp"] = "InIsolatedApp";
+  })(PermissionsPolicyBlockReason = Page2.PermissionsPolicyBlockReason || (Page2.PermissionsPolicyBlockReason = {}));
+  let OriginTrialTokenStatus;
+  ((OriginTrialTokenStatus2) => {
+    OriginTrialTokenStatus2["Success"] = "Success";
+    OriginTrialTokenStatus2["NotSupported"] = "NotSupported";
+    OriginTrialTokenStatus2["Insecure"] = "Insecure";
+    OriginTrialTokenStatus2["Expired"] = "Expired";
+    OriginTrialTokenStatus2["WrongOrigin"] = "WrongOrigin";
+    OriginTrialTokenStatus2["InvalidSignature"] = "InvalidSignature";
+    OriginTrialTokenStatus2["Malformed"] = "Malformed";
+    OriginTrialTokenStatus2["WrongVersion"] = "WrongVersion";
+    OriginTrialTokenStatus2["FeatureDisabled"] = "FeatureDisabled";
+    OriginTrialTokenStatus2["TokenDisabled"] = "TokenDisabled";
+    OriginTrialTokenStatus2["FeatureDisabledForUser"] = "FeatureDisabledForUser";
+    OriginTrialTokenStatus2["UnknownTrial"] = "UnknownTrial";
+  })(OriginTrialTokenStatus = Page2.OriginTrialTokenStatus || (Page2.OriginTrialTokenStatus = {}));
+  let OriginTrialStatus;
+  ((OriginTrialStatus2) => {
+    OriginTrialStatus2["Enabled"] = "Enabled";
+    OriginTrialStatus2["ValidTokenNotProvided"] = "ValidTokenNotProvided";
+    OriginTrialStatus2["OSNotSupported"] = "OSNotSupported";
+    OriginTrialStatus2["TrialNotAllowed"] = "TrialNotAllowed";
+  })(OriginTrialStatus = Page2.OriginTrialStatus || (Page2.OriginTrialStatus = {}));
+  let OriginTrialUsageRestriction;
+  ((OriginTrialUsageRestriction2) => {
+    OriginTrialUsageRestriction2["None"] = "None";
+    OriginTrialUsageRestriction2["Subset"] = "Subset";
+  })(OriginTrialUsageRestriction = Page2.OriginTrialUsageRestriction || (Page2.OriginTrialUsageRestriction = {}));
+  let TransitionType;
+  ((TransitionType2) => {
+    TransitionType2["Link"] = "link";
+    TransitionType2["Typed"] = "typed";
+    TransitionType2["Address_bar"] = "address_bar";
+    TransitionType2["Auto_bookmark"] = "auto_bookmark";
+    TransitionType2["Auto_subframe"] = "auto_subframe";
+    TransitionType2["Manual_subframe"] = "manual_subframe";
+    TransitionType2["Generated"] = "generated";
+    TransitionType2["Auto_toplevel"] = "auto_toplevel";
+    TransitionType2["Form_submit"] = "form_submit";
+    TransitionType2["Reload"] = "reload";
+    TransitionType2["Keyword"] = "keyword";
+    TransitionType2["Keyword_generated"] = "keyword_generated";
+    TransitionType2["Other"] = "other";
+  })(TransitionType = Page2.TransitionType || (Page2.TransitionType = {}));
+  let DialogType;
+  ((DialogType2) => {
+    DialogType2["Alert"] = "alert";
+    DialogType2["Confirm"] = "confirm";
+    DialogType2["Prompt"] = "prompt";
+    DialogType2["Beforeunload"] = "beforeunload";
+  })(DialogType = Page2.DialogType || (Page2.DialogType = {}));
+  let ClientNavigationReason;
+  ((ClientNavigationReason2) => {
+    ClientNavigationReason2["AnchorClick"] = "anchorClick";
+    ClientNavigationReason2["FormSubmissionGet"] = "formSubmissionGet";
+    ClientNavigationReason2["FormSubmissionPost"] = "formSubmissionPost";
+    ClientNavigationReason2["HttpHeaderRefresh"] = "httpHeaderRefresh";
+    ClientNavigationReason2["InitialFrameNavigation"] = "initialFrameNavigation";
+    ClientNavigationReason2["MetaTagRefresh"] = "metaTagRefresh";
+    ClientNavigationReason2["Other"] = "other";
+    ClientNavigationReason2["PageBlockInterstitial"] = "pageBlockInterstitial";
+    ClientNavigationReason2["Reload"] = "reload";
+    ClientNavigationReason2["ScriptInitiated"] = "scriptInitiated";
+  })(ClientNavigationReason = Page2.ClientNavigationReason || (Page2.ClientNavigationReason = {}));
+  let ClientNavigationDisposition;
+  ((ClientNavigationDisposition2) => {
+    ClientNavigationDisposition2["CurrentTab"] = "currentTab";
+    ClientNavigationDisposition2["NewTab"] = "newTab";
+    ClientNavigationDisposition2["NewWindow"] = "newWindow";
+    ClientNavigationDisposition2["Download"] = "download";
+  })(ClientNavigationDisposition = Page2.ClientNavigationDisposition || (Page2.ClientNavigationDisposition = {}));
+  let ReferrerPolicy;
+  ((ReferrerPolicy2) => {
+    ReferrerPolicy2["NoReferrer"] = "noReferrer";
+    ReferrerPolicy2["NoReferrerWhenDowngrade"] = "noReferrerWhenDowngrade";
+    ReferrerPolicy2["Origin"] = "origin";
+    ReferrerPolicy2["OriginWhenCrossOrigin"] = "originWhenCrossOrigin";
+    ReferrerPolicy2["SameOrigin"] = "sameOrigin";
+    ReferrerPolicy2["StrictOrigin"] = "strictOrigin";
+    ReferrerPolicy2["StrictOriginWhenCrossOrigin"] = "strictOriginWhenCrossOrigin";
+    ReferrerPolicy2["UnsafeUrl"] = "unsafeUrl";
+  })(ReferrerPolicy = Page2.ReferrerPolicy || (Page2.ReferrerPolicy = {}));
+  let NavigationType;
+  ((NavigationType2) => {
+    NavigationType2["Navigation"] = "Navigation";
+    NavigationType2["BackForwardCacheRestore"] = "BackForwardCacheRestore";
+  })(NavigationType = Page2.NavigationType || (Page2.NavigationType = {}));
+  let BackForwardCacheNotRestoredReason;
+  ((BackForwardCacheNotRestoredReason2) => {
+    BackForwardCacheNotRestoredReason2["NotPrimaryMainFrame"] = "NotPrimaryMainFrame";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabled"] = "BackForwardCacheDisabled";
+    BackForwardCacheNotRestoredReason2["RelatedActiveContentsExist"] = "RelatedActiveContentsExist";
+    BackForwardCacheNotRestoredReason2["HTTPStatusNotOK"] = "HTTPStatusNotOK";
+    BackForwardCacheNotRestoredReason2["SchemeNotHTTPOrHTTPS"] = "SchemeNotHTTPOrHTTPS";
+    BackForwardCacheNotRestoredReason2["Loading"] = "Loading";
+    BackForwardCacheNotRestoredReason2["WasGrantedMediaAccess"] = "WasGrantedMediaAccess";
+    BackForwardCacheNotRestoredReason2["DisableForRenderFrameHostCalled"] = "DisableForRenderFrameHostCalled";
+    BackForwardCacheNotRestoredReason2["DomainNotAllowed"] = "DomainNotAllowed";
+    BackForwardCacheNotRestoredReason2["HTTPMethodNotGET"] = "HTTPMethodNotGET";
+    BackForwardCacheNotRestoredReason2["SubframeIsNavigating"] = "SubframeIsNavigating";
+    BackForwardCacheNotRestoredReason2["Timeout"] = "Timeout";
+    BackForwardCacheNotRestoredReason2["CacheLimit"] = "CacheLimit";
+    BackForwardCacheNotRestoredReason2["JavaScriptExecution"] = "JavaScriptExecution";
+    BackForwardCacheNotRestoredReason2["RendererProcessKilled"] = "RendererProcessKilled";
+    BackForwardCacheNotRestoredReason2["RendererProcessCrashed"] = "RendererProcessCrashed";
+    BackForwardCacheNotRestoredReason2["SchedulerTrackedFeatureUsed"] = "SchedulerTrackedFeatureUsed";
+    BackForwardCacheNotRestoredReason2["ConflictingBrowsingInstance"] = "ConflictingBrowsingInstance";
+    BackForwardCacheNotRestoredReason2["CacheFlushed"] = "CacheFlushed";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerVersionActivation"] = "ServiceWorkerVersionActivation";
+    BackForwardCacheNotRestoredReason2["SessionRestored"] = "SessionRestored";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerPostMessage"] = "ServiceWorkerPostMessage";
+    BackForwardCacheNotRestoredReason2["EnteredBackForwardCacheBeforeServiceWorkerHostAdded"] = "EnteredBackForwardCacheBeforeServiceWorkerHostAdded";
+    BackForwardCacheNotRestoredReason2["RenderFrameHostReused_SameSite"] = "RenderFrameHostReused_SameSite";
+    BackForwardCacheNotRestoredReason2["RenderFrameHostReused_CrossSite"] = "RenderFrameHostReused_CrossSite";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerClaim"] = "ServiceWorkerClaim";
+    BackForwardCacheNotRestoredReason2["IgnoreEventAndEvict"] = "IgnoreEventAndEvict";
+    BackForwardCacheNotRestoredReason2["HaveInnerContents"] = "HaveInnerContents";
+    BackForwardCacheNotRestoredReason2["TimeoutPuttingInCache"] = "TimeoutPuttingInCache";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledByLowMemory"] = "BackForwardCacheDisabledByLowMemory";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledByCommandLine"] = "BackForwardCacheDisabledByCommandLine";
+    BackForwardCacheNotRestoredReason2["NetworkRequestDatAPIpeDrainedAsBytesConsumer"] = "NetworkRequestDatapipeDrainedAsBytesConsumer";
+    BackForwardCacheNotRestoredReason2["NetworkRequestRedirected"] = "NetworkRequestRedirected";
+    BackForwardCacheNotRestoredReason2["NetworkRequestTimeout"] = "NetworkRequestTimeout";
+    BackForwardCacheNotRestoredReason2["NetworkExceedsBufferLimit"] = "NetworkExceedsBufferLimit";
+    BackForwardCacheNotRestoredReason2["NavigationCancelledWhileRestoring"] = "NavigationCancelledWhileRestoring";
+    BackForwardCacheNotRestoredReason2["NotMostRecentNavigationEntry"] = "NotMostRecentNavigationEntry";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledForPrerender"] = "BackForwardCacheDisabledForPrerender";
+    BackForwardCacheNotRestoredReason2["UserAgentOverrideDiffers"] = "UserAgentOverrideDiffers";
+    BackForwardCacheNotRestoredReason2["ForegroundCacheLimit"] = "ForegroundCacheLimit";
+    BackForwardCacheNotRestoredReason2["ForwardCacheDisabled"] = "ForwardCacheDisabled";
+    BackForwardCacheNotRestoredReason2["BrowsingInstanceNotSwapped"] = "BrowsingInstanceNotSwapped";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledForDelegate"] = "BackForwardCacheDisabledForDelegate";
+    BackForwardCacheNotRestoredReason2["UnloadHandlerExistsInMainFrame"] = "UnloadHandlerExistsInMainFrame";
+    BackForwardCacheNotRestoredReason2["UnloadHandlerExistsInSubFrame"] = "UnloadHandlerExistsInSubFrame";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerUnregistration"] = "ServiceWorkerUnregistration";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStore"] = "CacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreCookieModified"] = "CacheControlNoStoreCookieModified";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreHTTPOnlyCookieModified"] = "CacheControlNoStoreHTTPOnlyCookieModified";
+    BackForwardCacheNotRestoredReason2["NoResponseHead"] = "NoResponseHead";
+    BackForwardCacheNotRestoredReason2["Unknown"] = "Unknown";
+    BackForwardCacheNotRestoredReason2["ActivationNavigationsDisallowedForBug1234857"] = "ActivationNavigationsDisallowedForBug1234857";
+    BackForwardCacheNotRestoredReason2["ErrorDocument"] = "ErrorDocument";
+    BackForwardCacheNotRestoredReason2["FencedFramesEmbedder"] = "FencedFramesEmbedder";
+    BackForwardCacheNotRestoredReason2["CookieDisabled"] = "CookieDisabled";
+    BackForwardCacheNotRestoredReason2["HTTPAuthRequired"] = "HTTPAuthRequired";
+    BackForwardCacheNotRestoredReason2["CookieFlushed"] = "CookieFlushed";
+    BackForwardCacheNotRestoredReason2["BroadcastChannelOnMessage"] = "BroadcastChannelOnMessage";
+    BackForwardCacheNotRestoredReason2["WebViewSettingsChanged"] = "WebViewSettingsChanged";
+    BackForwardCacheNotRestoredReason2["WebViewJavaScriptObjectChanged"] = "WebViewJavaScriptObjectChanged";
+    BackForwardCacheNotRestoredReason2["WebViewMessageListenerInjected"] = "WebViewMessageListenerInjected";
+    BackForwardCacheNotRestoredReason2["WebViewSafeBrowsingAllowlistChanged"] = "WebViewSafeBrowsingAllowlistChanged";
+    BackForwardCacheNotRestoredReason2["WebViewDocumentStartJavascriptChanged"] = "WebViewDocumentStartJavascriptChanged";
+    BackForwardCacheNotRestoredReason2["WebSocket"] = "WebSocket";
+    BackForwardCacheNotRestoredReason2["WebTransport"] = "WebTransport";
+    BackForwardCacheNotRestoredReason2["WebRTC"] = "WebRTC";
+    BackForwardCacheNotRestoredReason2["MainResourceHasCacheControlNoStore"] = "MainResourceHasCacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["MainResourceHasCacheControlNoCache"] = "MainResourceHasCacheControlNoCache";
+    BackForwardCacheNotRestoredReason2["SubresourceHasCacheControlNoStore"] = "SubresourceHasCacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["SubresourceHasCacheControlNoCache"] = "SubresourceHasCacheControlNoCache";
+    BackForwardCacheNotRestoredReason2["ContainsPlugins"] = "ContainsPlugins";
+    BackForwardCacheNotRestoredReason2["DocumentLoaded"] = "DocumentLoaded";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestOthers"] = "OutstandingNetworkRequestOthers";
+    BackForwardCacheNotRestoredReason2["RequestedMIDIPermission"] = "RequestedMIDIPermission";
+    BackForwardCacheNotRestoredReason2["RequestedAudioCapturePermission"] = "RequestedAudioCapturePermission";
+    BackForwardCacheNotRestoredReason2["RequestedVideoCapturePermission"] = "RequestedVideoCapturePermission";
+    BackForwardCacheNotRestoredReason2["RequestedBackForwardCacheBlockedSensors"] = "RequestedBackForwardCacheBlockedSensors";
+    BackForwardCacheNotRestoredReason2["RequestedBackgroundWorkPermission"] = "RequestedBackgroundWorkPermission";
+    BackForwardCacheNotRestoredReason2["BroadcastChannel"] = "BroadcastChannel";
+    BackForwardCacheNotRestoredReason2["WebXR"] = "WebXR";
+    BackForwardCacheNotRestoredReason2["SharedWorker"] = "SharedWorker";
+    BackForwardCacheNotRestoredReason2["SharedWorkerMessage"] = "SharedWorkerMessage";
+    BackForwardCacheNotRestoredReason2["SharedWorkerWithNoActiveClient"] = "SharedWorkerWithNoActiveClient";
+    BackForwardCacheNotRestoredReason2["WebLocks"] = "WebLocks";
+    BackForwardCacheNotRestoredReason2["WebLocksContention"] = "WebLocksContention";
+    BackForwardCacheNotRestoredReason2["WebHID"] = "WebHID";
+    BackForwardCacheNotRestoredReason2["WebBluetooth"] = "WebBluetooth";
+    BackForwardCacheNotRestoredReason2["WebShare"] = "WebShare";
+    BackForwardCacheNotRestoredReason2["RequestedStorageAccessGrant"] = "RequestedStorageAccessGrant";
+    BackForwardCacheNotRestoredReason2["WebNfc"] = "WebNfc";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestFetch"] = "OutstandingNetworkRequestFetch";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestXHR"] = "OutstandingNetworkRequestXHR";
+    BackForwardCacheNotRestoredReason2["AppBanner"] = "AppBanner";
+    BackForwardCacheNotRestoredReason2["Printing"] = "Printing";
+    BackForwardCacheNotRestoredReason2["WebDatabase"] = "WebDatabase";
+    BackForwardCacheNotRestoredReason2["PictureInPicture"] = "PictureInPicture";
+    BackForwardCacheNotRestoredReason2["SpeechRecognizer"] = "SpeechRecognizer";
+    BackForwardCacheNotRestoredReason2["IdleManager"] = "IdleManager";
+    BackForwardCacheNotRestoredReason2["PaymentManager"] = "PaymentManager";
+    BackForwardCacheNotRestoredReason2["SpeechSynthesis"] = "SpeechSynthesis";
+    BackForwardCacheNotRestoredReason2["KeyboardLock"] = "KeyboardLock";
+    BackForwardCacheNotRestoredReason2["WebOTPService"] = "WebOTPService";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestDirectSocket"] = "OutstandingNetworkRequestDirectSocket";
+    BackForwardCacheNotRestoredReason2["InjectedJavascript"] = "InjectedJavascript";
+    BackForwardCacheNotRestoredReason2["InjectedStyleSheet"] = "InjectedStyleSheet";
+    BackForwardCacheNotRestoredReason2["KeepaliveRequest"] = "KeepaliveRequest";
+    BackForwardCacheNotRestoredReason2["IndexedDBEvent"] = "IndexedDBEvent";
+    BackForwardCacheNotRestoredReason2["Dummy"] = "Dummy";
+    BackForwardCacheNotRestoredReason2["JsNetworkRequestReceivedCacheControlNoStoreResource"] = "JsNetworkRequestReceivedCacheControlNoStoreResource";
+    BackForwardCacheNotRestoredReason2["WebRTCUsedWithCCNS"] = "WebRTCUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["WebTransportUsedWithCCNS"] = "WebTransportUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["WebSocketUsedWithCCNS"] = "WebSocketUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["SmartCard"] = "SmartCard";
+    BackForwardCacheNotRestoredReason2["LiveMediaStreamTrack"] = "LiveMediaStreamTrack";
+    BackForwardCacheNotRestoredReason2["UnloadHandler"] = "UnloadHandler";
+    BackForwardCacheNotRestoredReason2["ParserAborted"] = "ParserAborted";
+    BackForwardCacheNotRestoredReason2["ContentSecurityHandler"] = "ContentSecurityHandler";
+    BackForwardCacheNotRestoredReason2["ContentWebAuthenticationAPI"] = "ContentWebAuthenticationAPI";
+    BackForwardCacheNotRestoredReason2["ContentFileChooser"] = "ContentFileChooser";
+    BackForwardCacheNotRestoredReason2["ContentSerial"] = "ContentSerial";
+    BackForwardCacheNotRestoredReason2["ContentFileSystemAccess"] = "ContentFileSystemAccess";
+    BackForwardCacheNotRestoredReason2["ContentMediaDevicesDispatcherHost"] = "ContentMediaDevicesDispatcherHost";
+    BackForwardCacheNotRestoredReason2["ContentWebBluetooth"] = "ContentWebBluetooth";
+    BackForwardCacheNotRestoredReason2["ContentWebUSB"] = "ContentWebUSB";
+    BackForwardCacheNotRestoredReason2["ContentMediaSessionService"] = "ContentMediaSessionService";
+    BackForwardCacheNotRestoredReason2["ContentScreenReader"] = "ContentScreenReader";
+    BackForwardCacheNotRestoredReason2["ContentDiscarded"] = "ContentDiscarded";
+    BackForwardCacheNotRestoredReason2["EmbedderPopupBlockerTabHelper"] = "EmbedderPopupBlockerTabHelper";
+    BackForwardCacheNotRestoredReason2["EmbedderSafeBrowsingTriggeredPopupBlocker"] = "EmbedderSafeBrowsingTriggeredPopupBlocker";
+    BackForwardCacheNotRestoredReason2["EmbedderSafeBrowsingThreatDetails"] = "EmbedderSafeBrowsingThreatDetails";
+    BackForwardCacheNotRestoredReason2["EmbedderAppBannerManager"] = "EmbedderAppBannerManager";
+    BackForwardCacheNotRestoredReason2["EmbedderDomDistillerViewerSource"] = "EmbedderDomDistillerViewerSource";
+    BackForwardCacheNotRestoredReason2["EmbedderDomDistillerSelfDeletingRequestDelegate"] = "EmbedderDomDistillerSelfDeletingRequestDelegate";
+    BackForwardCacheNotRestoredReason2["EmbedderOomInterventionTabHelper"] = "EmbedderOomInterventionTabHelper";
+    BackForwardCacheNotRestoredReason2["EmbedderOfflinePage"] = "EmbedderOfflinePage";
+    BackForwardCacheNotRestoredReason2["EmbedderChromePasswordManagerClientBindCredentialManager"] = "EmbedderChromePasswordManagerClientBindCredentialManager";
+    BackForwardCacheNotRestoredReason2["EmbedderPermissionRequestManager"] = "EmbedderPermissionRequestManager";
+    BackForwardCacheNotRestoredReason2["EmbedderModalDialog"] = "EmbedderModalDialog";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensions"] = "EmbedderExtensions";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionMessaging"] = "EmbedderExtensionMessaging";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionMessagingForOpenPort"] = "EmbedderExtensionMessagingForOpenPort";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionSentMessageToCachedFrame"] = "EmbedderExtensionSentMessageToCachedFrame";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionFrame"] = "EmbedderExtensionFrame";
+    BackForwardCacheNotRestoredReason2["EmbedderPrivilegedWebContents"] = "EmbedderPrivilegedWebContents";
+    BackForwardCacheNotRestoredReason2["RequestedByWebViewClient"] = "RequestedByWebViewClient";
+    BackForwardCacheNotRestoredReason2["PostMessageByWebViewClient"] = "PostMessageByWebViewClient";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreDeviceBoundSessionTerminated"] = "CacheControlNoStoreDeviceBoundSessionTerminated";
+    BackForwardCacheNotRestoredReason2["CacheLimitPrunedOnModerateMemoryPressure"] = "CacheLimitPrunedOnModerateMemoryPressure";
+    BackForwardCacheNotRestoredReason2["CacheLimitPrunedOnCriticalMemoryPressure"] = "CacheLimitPrunedOnCriticalMemoryPressure";
+  })(BackForwardCacheNotRestoredReason = Page2.BackForwardCacheNotRestoredReason || (Page2.BackForwardCacheNotRestoredReason = {}));
+  let BackForwardCacheNotRestoredReasonType;
+  ((BackForwardCacheNotRestoredReasonType2) => {
+    BackForwardCacheNotRestoredReasonType2["SupportPending"] = "SupportPending";
+    BackForwardCacheNotRestoredReasonType2["PageSupportNeeded"] = "PageSupportNeeded";
+    BackForwardCacheNotRestoredReasonType2["Circumstantial"] = "Circumstantial";
+  })(BackForwardCacheNotRestoredReasonType = Page2.BackForwardCacheNotRestoredReasonType || (Page2.BackForwardCacheNotRestoredReasonType = {}));
+  let CaptureScreenshotRequestFormat;
+  ((CaptureScreenshotRequestFormat2) => {
+    CaptureScreenshotRequestFormat2["Jpeg"] = "jpeg";
+    CaptureScreenshotRequestFormat2["Png"] = "png";
+    CaptureScreenshotRequestFormat2["Webp"] = "webp";
+  })(CaptureScreenshotRequestFormat = Page2.CaptureScreenshotRequestFormat || (Page2.CaptureScreenshotRequestFormat = {}));
+  let CaptureSnapshotRequestFormat;
+  ((CaptureSnapshotRequestFormat2) => {
+    CaptureSnapshotRequestFormat2["MHTML"] = "mhtml";
+  })(CaptureSnapshotRequestFormat = Page2.CaptureSnapshotRequestFormat || (Page2.CaptureSnapshotRequestFormat = {}));
+  let PrintToPDFRequestTransferMode;
+  ((PrintToPDFRequestTransferMode2) => {
+    PrintToPDFRequestTransferMode2["ReturnAsBase64"] = "ReturnAsBase64";
+    PrintToPDFRequestTransferMode2["ReturnAsStream"] = "ReturnAsStream";
+  })(PrintToPDFRequestTransferMode = Page2.PrintToPDFRequestTransferMode || (Page2.PrintToPDFRequestTransferMode = {}));
+  let SetDownloadBehaviorRequestBehavior;
+  ((SetDownloadBehaviorRequestBehavior2) => {
+    SetDownloadBehaviorRequestBehavior2["Deny"] = "deny";
+    SetDownloadBehaviorRequestBehavior2["Allow"] = "allow";
+    SetDownloadBehaviorRequestBehavior2["Default"] = "default";
+  })(SetDownloadBehaviorRequestBehavior = Page2.SetDownloadBehaviorRequestBehavior || (Page2.SetDownloadBehaviorRequestBehavior = {}));
+  let SetTouchEmulationEnabledRequestConfiguration;
+  ((SetTouchEmulationEnabledRequestConfiguration2) => {
+    SetTouchEmulationEnabledRequestConfiguration2["Mobile"] = "mobile";
+    SetTouchEmulationEnabledRequestConfiguration2["Desktop"] = "desktop";
+  })(SetTouchEmulationEnabledRequestConfiguration = Page2.SetTouchEmulationEnabledRequestConfiguration || (Page2.SetTouchEmulationEnabledRequestConfiguration = {}));
+  let StartScreencastRequestFormat;
+  ((StartScreencastRequestFormat2) => {
+    StartScreencastRequestFormat2["Jpeg"] = "jpeg";
+    StartScreencastRequestFormat2["Png"] = "png";
+  })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let SetWebLifecycleStateRequestState;
+  ((SetWebLifecycleStateRequestState2) => {
+    SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
+    SetWebLifecycleStateRequestState2["Active"] = "active";
+  })(SetWebLifecycleStateRequestState = Page2.SetWebLifecycleStateRequestState || (Page2.SetWebLifecycleStateRequestState = {}));
+  let SetSPCTransactionModeRequestMode;
+  ((SetSPCTransactionModeRequestMode2) => {
+    SetSPCTransactionModeRequestMode2["None"] = "none";
+    SetSPCTransactionModeRequestMode2["AutoAccept"] = "autoAccept";
+    SetSPCTransactionModeRequestMode2["AutoChooseToAuthAnotherWay"] = "autoChooseToAuthAnotherWay";
+    SetSPCTransactionModeRequestMode2["AutoReject"] = "autoReject";
+    SetSPCTransactionModeRequestMode2["AutoOptOut"] = "autoOptOut";
+  })(SetSPCTransactionModeRequestMode = Page2.SetSPCTransactionModeRequestMode || (Page2.SetSPCTransactionModeRequestMode = {}));
+  let SetRPHRegistrationModeRequestMode;
+  ((SetRPHRegistrationModeRequestMode2) => {
+    SetRPHRegistrationModeRequestMode2["None"] = "none";
+    SetRPHRegistrationModeRequestMode2["AutoAccept"] = "autoAccept";
+    SetRPHRegistrationModeRequestMode2["AutoReject"] = "autoReject";
+  })(SetRPHRegistrationModeRequestMode = Page2.SetRPHRegistrationModeRequestMode || (Page2.SetRPHRegistrationModeRequestMode = {}));
+  let FileChooserOpenedEventMode;
+  ((FileChooserOpenedEventMode2) => {
+    FileChooserOpenedEventMode2["SelectSingle"] = "selectSingle";
+    FileChooserOpenedEventMode2["SelectMultiple"] = "selectMultiple";
+  })(FileChooserOpenedEventMode = Page2.FileChooserOpenedEventMode || (Page2.FileChooserOpenedEventMode = {}));
+  let FrameDetachedEventReason;
+  ((FrameDetachedEventReason2) => {
+    FrameDetachedEventReason2["Remove"] = "remove";
+    FrameDetachedEventReason2["Swap"] = "swap";
+  })(FrameDetachedEventReason = Page2.FrameDetachedEventReason || (Page2.FrameDetachedEventReason = {}));
+  let FrameStartedNavigatingEventNavigationType;
+  ((FrameStartedNavigatingEventNavigationType2) => {
+    FrameStartedNavigatingEventNavigationType2["Reload"] = "reload";
+    FrameStartedNavigatingEventNavigationType2["ReloadBypassingCache"] = "reloadBypassingCache";
+    FrameStartedNavigatingEventNavigationType2["Restore"] = "restore";
+    FrameStartedNavigatingEventNavigationType2["RestoreWithPost"] = "restoreWithPost";
+    FrameStartedNavigatingEventNavigationType2["HistorySameDocument"] = "historySameDocument";
+    FrameStartedNavigatingEventNavigationType2["HistoryDifferentDocument"] = "historyDifferentDocument";
+    FrameStartedNavigatingEventNavigationType2["SameDocument"] = "sameDocument";
+    FrameStartedNavigatingEventNavigationType2["DifferentDocument"] = "differentDocument";
+  })(FrameStartedNavigatingEventNavigationType = Page2.FrameStartedNavigatingEventNavigationType || (Page2.FrameStartedNavigatingEventNavigationType = {}));
+  let DownloadProgressEventState;
+  ((DownloadProgressEventState2) => {
+    DownloadProgressEventState2["InProgress"] = "inProgress";
+    DownloadProgressEventState2["Completed"] = "completed";
+    DownloadProgressEventState2["Canceled"] = "canceled";
+  })(DownloadProgressEventState = Page2.DownloadProgressEventState || (Page2.DownloadProgressEventState = {}));
+  let NavigatedWithinDocumentEventNavigationType;
+  ((NavigatedWithinDocumentEventNavigationType2) => {
+    NavigatedWithinDocumentEventNavigationType2["Fragment"] = "fragment";
+    NavigatedWithinDocumentEventNavigationType2["HistoryAPI"] = "historyApi";
+    NavigatedWithinDocumentEventNavigationType2["Other"] = "other";
+  })(NavigatedWithinDocumentEventNavigationType = Page2.NavigatedWithinDocumentEventNavigationType || (Page2.NavigatedWithinDocumentEventNavigationType = {}));
+})(Page || (Page = {}));
+var Performance;
+((Performance2) => {
+  let EnableRequestTimeDomain;
+  ((EnableRequestTimeDomain2) => {
+    EnableRequestTimeDomain2["TimeTicks"] = "timeTicks";
+    EnableRequestTimeDomain2["ThreadTicks"] = "threadTicks";
+  })(EnableRequestTimeDomain = Performance2.EnableRequestTimeDomain || (Performance2.EnableRequestTimeDomain = {}));
+  let SetTimeDomainRequestTimeDomain;
+  ((SetTimeDomainRequestTimeDomain2) => {
+    SetTimeDomainRequestTimeDomain2["TimeTicks"] = "timeTicks";
+    SetTimeDomainRequestTimeDomain2["ThreadTicks"] = "threadTicks";
+  })(SetTimeDomainRequestTimeDomain = Performance2.SetTimeDomainRequestTimeDomain || (Performance2.SetTimeDomainRequestTimeDomain = {}));
+})(Performance || (Performance = {}));
+var Preload;
+((Preload2) => {
+  let RuleSetErrorType;
+  ((RuleSetErrorType2) => {
+    RuleSetErrorType2["SourceIsNotJsonObject"] = "SourceIsNotJsonObject";
+    RuleSetErrorType2["InvalidRulesSkipped"] = "InvalidRulesSkipped";
+    RuleSetErrorType2["InvalidRulesetLevelTag"] = "InvalidRulesetLevelTag";
+  })(RuleSetErrorType = Preload2.RuleSetErrorType || (Preload2.RuleSetErrorType = {}));
+  let SpeculationAction;
+  ((SpeculationAction2) => {
+    SpeculationAction2["Prefetch"] = "Prefetch";
+    SpeculationAction2["Prerender"] = "Prerender";
+    SpeculationAction2["PrerenderUntilScript"] = "PrerenderUntilScript";
+  })(SpeculationAction = Preload2.SpeculationAction || (Preload2.SpeculationAction = {}));
+  let SpeculationTargetHint;
+  ((SpeculationTargetHint2) => {
+    SpeculationTargetHint2["Blank"] = "Blank";
+    SpeculationTargetHint2["Self"] = "Self";
+  })(SpeculationTargetHint = Preload2.SpeculationTargetHint || (Preload2.SpeculationTargetHint = {}));
+  let PrerenderFinalStatus;
+  ((PrerenderFinalStatus2) => {
+    PrerenderFinalStatus2["Activated"] = "Activated";
+    PrerenderFinalStatus2["Destroyed"] = "Destroyed";
+    PrerenderFinalStatus2["LowEndDevice"] = "LowEndDevice";
+    PrerenderFinalStatus2["InvalidSchemeRedirect"] = "InvalidSchemeRedirect";
+    PrerenderFinalStatus2["InvalidSchemeNavigation"] = "InvalidSchemeNavigation";
+    PrerenderFinalStatus2["NavigationRequestBlockedByCsp"] = "NavigationRequestBlockedByCsp";
+    PrerenderFinalStatus2["MojoBinderPolicy"] = "MojoBinderPolicy";
+    PrerenderFinalStatus2["RendererProcessCrashed"] = "RendererProcessCrashed";
+    PrerenderFinalStatus2["RendererProcessKilled"] = "RendererProcessKilled";
+    PrerenderFinalStatus2["Download"] = "Download";
+    PrerenderFinalStatus2["TriggerDestroyed"] = "TriggerDestroyed";
+    PrerenderFinalStatus2["NavigationNotCommitted"] = "NavigationNotCommitted";
+    PrerenderFinalStatus2["NavigationBadHttpStatus"] = "NavigationBadHttpStatus";
+    PrerenderFinalStatus2["ClientCertRequested"] = "ClientCertRequested";
+    PrerenderFinalStatus2["NavigationRequestNetworkError"] = "NavigationRequestNetworkError";
+    PrerenderFinalStatus2["CancelAllHostsForTesting"] = "CancelAllHostsForTesting";
+    PrerenderFinalStatus2["DidFailLoad"] = "DidFailLoad";
+    PrerenderFinalStatus2["Stop"] = "Stop";
+    PrerenderFinalStatus2["SslCertificateError"] = "SslCertificateError";
+    PrerenderFinalStatus2["LoginAuthRequested"] = "LoginAuthRequested";
+    PrerenderFinalStatus2["UaChangeRequiresReload"] = "UaChangeRequiresReload";
+    PrerenderFinalStatus2["BlockedByClient"] = "BlockedByClient";
+    PrerenderFinalStatus2["AudioOutputDeviceRequested"] = "AudioOutputDeviceRequested";
+    PrerenderFinalStatus2["MixedContent"] = "MixedContent";
+    PrerenderFinalStatus2["TriggerBackgrounded"] = "TriggerBackgrounded";
+    PrerenderFinalStatus2["MemoryLimitExceeded"] = "MemoryLimitExceeded";
+    PrerenderFinalStatus2["DataSaverEnabled"] = "DataSaverEnabled";
+    PrerenderFinalStatus2["TriggerUrlHasEffectiveUrl"] = "TriggerUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["ActivatedBeforeStarted"] = "ActivatedBeforeStarted";
+    PrerenderFinalStatus2["InactivePageRestriction"] = "InactivePageRestriction";
+    PrerenderFinalStatus2["StartFailed"] = "StartFailed";
+    PrerenderFinalStatus2["TimeoutBackgrounded"] = "TimeoutBackgrounded";
+    PrerenderFinalStatus2["CrossSiteRedirectInInitialNavigation"] = "CrossSiteRedirectInInitialNavigation";
+    PrerenderFinalStatus2["CrossSiteNavigationInInitialNavigation"] = "CrossSiteNavigationInInitialNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginRedirectNotOptInInInitialNavigation"] = "SameSiteCrossOriginRedirectNotOptInInInitialNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginNavigationNotOptInInInitialNavigation"] = "SameSiteCrossOriginNavigationNotOptInInInitialNavigation";
+    PrerenderFinalStatus2["ActivationNavigationParameterMismatch"] = "ActivationNavigationParameterMismatch";
+    PrerenderFinalStatus2["ActivatedInBackground"] = "ActivatedInBackground";
+    PrerenderFinalStatus2["EmbedderHostDisallowed"] = "EmbedderHostDisallowed";
+    PrerenderFinalStatus2["ActivationNavigationDestroyedBeforeSuccess"] = "ActivationNavigationDestroyedBeforeSuccess";
+    PrerenderFinalStatus2["TabClosedByUserGesture"] = "TabClosedByUserGesture";
+    PrerenderFinalStatus2["TabClosedWithoutUserGesture"] = "TabClosedWithoutUserGesture";
+    PrerenderFinalStatus2["PrimaryMainFrameRendererProcessCrashed"] = "PrimaryMainFrameRendererProcessCrashed";
+    PrerenderFinalStatus2["PrimaryMainFrameRendererProcessKilled"] = "PrimaryMainFrameRendererProcessKilled";
+    PrerenderFinalStatus2["ActivationFramePolicyNotCompatible"] = "ActivationFramePolicyNotCompatible";
+    PrerenderFinalStatus2["PreloadingDisabled"] = "PreloadingDisabled";
+    PrerenderFinalStatus2["BatterySaverEnabled"] = "BatterySaverEnabled";
+    PrerenderFinalStatus2["ActivatedDuringMainFrameNavigation"] = "ActivatedDuringMainFrameNavigation";
+    PrerenderFinalStatus2["PreloadingUnsupportedByWebContents"] = "PreloadingUnsupportedByWebContents";
+    PrerenderFinalStatus2["CrossSiteRedirectInMainFrameNavigation"] = "CrossSiteRedirectInMainFrameNavigation";
+    PrerenderFinalStatus2["CrossSiteNavigationInMainFrameNavigation"] = "CrossSiteNavigationInMainFrameNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation"] = "SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation"] = "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation";
+    PrerenderFinalStatus2["MemoryPressureOnTrigger"] = "MemoryPressureOnTrigger";
+    PrerenderFinalStatus2["MemoryPressureAfterTriggered"] = "MemoryPressureAfterTriggered";
+    PrerenderFinalStatus2["PrerenderingDisabledByDevTools"] = "PrerenderingDisabledByDevTools";
+    PrerenderFinalStatus2["SpeculationRuleRemoved"] = "SpeculationRuleRemoved";
+    PrerenderFinalStatus2["ActivatedWithAuxiliaryBrowsingContexts"] = "ActivatedWithAuxiliaryBrowsingContexts";
+    PrerenderFinalStatus2["MaxNumOfRunningEagerPrerendersExceeded"] = "MaxNumOfRunningEagerPrerendersExceeded";
+    PrerenderFinalStatus2["MaxNumOfRunningNonEagerPrerendersExceeded"] = "MaxNumOfRunningNonEagerPrerendersExceeded";
+    PrerenderFinalStatus2["MaxNumOfRunningEmbedderPrerendersExceeded"] = "MaxNumOfRunningEmbedderPrerendersExceeded";
+    PrerenderFinalStatus2["PrerenderingUrlHasEffectiveUrl"] = "PrerenderingUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["RedirectedPrerenderingUrlHasEffectiveUrl"] = "RedirectedPrerenderingUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["ActivationUrlHasEffectiveUrl"] = "ActivationUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["JavaScriptInterfaceAdded"] = "JavaScriptInterfaceAdded";
+    PrerenderFinalStatus2["JavaScriptInterfaceRemoved"] = "JavaScriptInterfaceRemoved";
+    PrerenderFinalStatus2["AllPrerenderingCanceled"] = "AllPrerenderingCanceled";
+    PrerenderFinalStatus2["WindowClosed"] = "WindowClosed";
+    PrerenderFinalStatus2["SlowNetwork"] = "SlowNetwork";
+    PrerenderFinalStatus2["OtherPrerenderedPageActivated"] = "OtherPrerenderedPageActivated";
+    PrerenderFinalStatus2["V8OptimizerDisabled"] = "V8OptimizerDisabled";
+    PrerenderFinalStatus2["PrerenderFailedDuringPrefetch"] = "PrerenderFailedDuringPrefetch";
+    PrerenderFinalStatus2["BrowsingDataRemoved"] = "BrowsingDataRemoved";
+    PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
+    PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
+    PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+  })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
+  let PreloadingStatus;
+  ((PreloadingStatus2) => {
+    PreloadingStatus2["Pending"] = "Pending";
+    PreloadingStatus2["Running"] = "Running";
+    PreloadingStatus2["Ready"] = "Ready";
+    PreloadingStatus2["Success"] = "Success";
+    PreloadingStatus2["Failure"] = "Failure";
+    PreloadingStatus2["NotSupported"] = "NotSupported";
+  })(PreloadingStatus = Preload2.PreloadingStatus || (Preload2.PreloadingStatus = {}));
+  let PrefetchStatus;
+  ((PrefetchStatus2) => {
+    PrefetchStatus2["PrefetchAllowed"] = "PrefetchAllowed";
+    PrefetchStatus2["PrefetchFailedIneligibleRedirect"] = "PrefetchFailedIneligibleRedirect";
+    PrefetchStatus2["PrefetchFailedInvalidRedirect"] = "PrefetchFailedInvalidRedirect";
+    PrefetchStatus2["PrefetchFailedMIMENotSupported"] = "PrefetchFailedMIMENotSupported";
+    PrefetchStatus2["PrefetchFailedNetError"] = "PrefetchFailedNetError";
+    PrefetchStatus2["PrefetchFailedNon2XX"] = "PrefetchFailedNon2XX";
+    PrefetchStatus2["PrefetchEvictedAfterBrowsingDataRemoved"] = "PrefetchEvictedAfterBrowsingDataRemoved";
+    PrefetchStatus2["PrefetchEvictedAfterCandidateRemoved"] = "PrefetchEvictedAfterCandidateRemoved";
+    PrefetchStatus2["PrefetchEvictedForNewerPrefetch"] = "PrefetchEvictedForNewerPrefetch";
+    PrefetchStatus2["PrefetchHeldback"] = "PrefetchHeldback";
+    PrefetchStatus2["PrefetchIneligibleRetryAfter"] = "PrefetchIneligibleRetryAfter";
+    PrefetchStatus2["PrefetchIsPrivacyDecoy"] = "PrefetchIsPrivacyDecoy";
+    PrefetchStatus2["PrefetchIsStale"] = "PrefetchIsStale";
+    PrefetchStatus2["PrefetchNotEligibleBlockedByConnectionAllowlist"] = "PrefetchNotEligibleBlockedByConnectionAllowlist";
+    PrefetchStatus2["PrefetchNotEligibleBrowserContextOffTheRecord"] = "PrefetchNotEligibleBrowserContextOffTheRecord";
+    PrefetchStatus2["PrefetchNotEligibleCrossOrigin"] = "PrefetchNotEligibleCrossOrigin";
+    PrefetchStatus2["PrefetchNotEligibleDataSaverEnabled"] = "PrefetchNotEligibleDataSaverEnabled";
+    PrefetchStatus2["PrefetchNotEligibleExistingProxy"] = "PrefetchNotEligibleExistingProxy";
+    PrefetchStatus2["PrefetchNotEligibleHostIsNonUnique"] = "PrefetchNotEligibleHostIsNonUnique";
+    PrefetchStatus2["PrefetchNotEligibleNonDefaultStoragePartition"] = "PrefetchNotEligibleNonDefaultStoragePartition";
+    PrefetchStatus2["PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy"] = "PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy";
+    PrefetchStatus2["PrefetchNotEligibleSchemeIsNotHttps"] = "PrefetchNotEligibleSchemeIsNotHttps";
+    PrefetchStatus2["PrefetchNotEligibleUserHasCookies"] = "PrefetchNotEligibleUserHasCookies";
+    PrefetchStatus2["PrefetchNotEligibleUserHasServiceWorker"] = "PrefetchNotEligibleUserHasServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler"] = "PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler";
+    PrefetchStatus2["PrefetchNotEligibleRedirectFromServiceWorker"] = "PrefetchNotEligibleRedirectFromServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleRedirectToServiceWorker"] = "PrefetchNotEligibleRedirectToServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleBatterySaverEnabled"] = "PrefetchNotEligibleBatterySaverEnabled";
+    PrefetchStatus2["PrefetchNotEligiblePreloadingDisabled"] = "PrefetchNotEligiblePreloadingDisabled";
+    PrefetchStatus2["PrefetchNotFinishedInTime"] = "PrefetchNotFinishedInTime";
+    PrefetchStatus2["PrefetchNotStarted"] = "PrefetchNotStarted";
+    PrefetchStatus2["PrefetchNotUsedCookiesChanged"] = "PrefetchNotUsedCookiesChanged";
+    PrefetchStatus2["PrefetchProxyNotAvailable"] = "PrefetchProxyNotAvailable";
+    PrefetchStatus2["PrefetchResponseUsed"] = "PrefetchResponseUsed";
+    PrefetchStatus2["PrefetchSuccessfulButNotUsed"] = "PrefetchSuccessfulButNotUsed";
+    PrefetchStatus2["PrefetchNotUsedProbeFailed"] = "PrefetchNotUsedProbeFailed";
+    PrefetchStatus2["PrefetchCancelledOnUserNavigation"] = "PrefetchCancelledOnUserNavigation";
+  })(PrefetchStatus = Preload2.PrefetchStatus || (Preload2.PrefetchStatus = {}));
+})(Preload || (Preload = {}));
+var Security;
+((Security2) => {
+  let MixedContentType;
+  ((MixedContentType2) => {
+    MixedContentType2["Blockable"] = "blockable";
+    MixedContentType2["OptionallyBlockable"] = "optionally-blockable";
+    MixedContentType2["None"] = "none";
+  })(MixedContentType = Security2.MixedContentType || (Security2.MixedContentType = {}));
+  let SecurityState;
+  ((SecurityState2) => {
+    SecurityState2["Unknown"] = "unknown";
+    SecurityState2["Neutral"] = "neutral";
+    SecurityState2["Insecure"] = "insecure";
+    SecurityState2["Secure"] = "secure";
+    SecurityState2["Info"] = "info";
+    SecurityState2["InsecureBroken"] = "insecure-broken";
+  })(SecurityState = Security2.SecurityState || (Security2.SecurityState = {}));
+  let SafetyTipStatus;
+  ((SafetyTipStatus2) => {
+    SafetyTipStatus2["BadReputation"] = "badReputation";
+    SafetyTipStatus2["Lookalike"] = "lookalike";
+  })(SafetyTipStatus = Security2.SafetyTipStatus || (Security2.SafetyTipStatus = {}));
+  let CertificateErrorAction;
+  ((CertificateErrorAction2) => {
+    CertificateErrorAction2["Continue"] = "continue";
+    CertificateErrorAction2["Cancel"] = "cancel";
+  })(CertificateErrorAction = Security2.CertificateErrorAction || (Security2.CertificateErrorAction = {}));
+})(Security || (Security = {}));
+var ServiceWorker;
+((ServiceWorker2) => {
+  let ServiceWorkerVersionRunningStatus;
+  ((ServiceWorkerVersionRunningStatus2) => {
+    ServiceWorkerVersionRunningStatus2["Stopped"] = "stopped";
+    ServiceWorkerVersionRunningStatus2["Starting"] = "starting";
+    ServiceWorkerVersionRunningStatus2["Running"] = "running";
+    ServiceWorkerVersionRunningStatus2["Stopping"] = "stopping";
+  })(ServiceWorkerVersionRunningStatus = ServiceWorker2.ServiceWorkerVersionRunningStatus || (ServiceWorker2.ServiceWorkerVersionRunningStatus = {}));
+  let ServiceWorkerVersionStatus;
+  ((ServiceWorkerVersionStatus2) => {
+    ServiceWorkerVersionStatus2["New"] = "new";
+    ServiceWorkerVersionStatus2["Installing"] = "installing";
+    ServiceWorkerVersionStatus2["Installed"] = "installed";
+    ServiceWorkerVersionStatus2["Activating"] = "activating";
+    ServiceWorkerVersionStatus2["Activated"] = "activated";
+    ServiceWorkerVersionStatus2["Redundant"] = "redundant";
+  })(ServiceWorkerVersionStatus = ServiceWorker2.ServiceWorkerVersionStatus || (ServiceWorker2.ServiceWorkerVersionStatus = {}));
+  let ServiceWorkerRouterSourceType;
+  ((ServiceWorkerRouterSourceType2) => {
+    ServiceWorkerRouterSourceType2["Cache"] = "cache";
+    ServiceWorkerRouterSourceType2["FetchEvent"] = "fetchEvent";
+    ServiceWorkerRouterSourceType2["Network"] = "network";
+    ServiceWorkerRouterSourceType2["RaceNetworkAndFetchHandler"] = "raceNetworkAndFetchHandler";
+    ServiceWorkerRouterSourceType2["RaceNetworkAndCache"] = "raceNetworkAndCache";
+    ServiceWorkerRouterSourceType2["SourceDict"] = "sourceDict";
+  })(ServiceWorkerRouterSourceType = ServiceWorker2.ServiceWorkerRouterSourceType || (ServiceWorker2.ServiceWorkerRouterSourceType = {}));
+})(ServiceWorker || (ServiceWorker = {}));
+var SmartCardEmulation;
+((SmartCardEmulation2) => {
+  let ResultCode;
+  ((ResultCode2) => {
+    ResultCode2["Success"] = "success";
+    ResultCode2["RemovedCard"] = "removed-card";
+    ResultCode2["ResetCard"] = "reset-card";
+    ResultCode2["UnpoweredCard"] = "unpowered-card";
+    ResultCode2["UnresponsiveCard"] = "unresponsive-card";
+    ResultCode2["UnsupportedCard"] = "unsupported-card";
+    ResultCode2["ReaderUnavailable"] = "reader-unavailable";
+    ResultCode2["SharingViolation"] = "sharing-violation";
+    ResultCode2["NotTransacted"] = "not-transacted";
+    ResultCode2["NoSmartcard"] = "no-smartcard";
+    ResultCode2["ProtoMismatch"] = "proto-mismatch";
+    ResultCode2["SystemCancelled"] = "system-cancelled";
+    ResultCode2["NotReady"] = "not-ready";
+    ResultCode2["Cancelled"] = "cancelled";
+    ResultCode2["InsufficientBuffer"] = "insufficient-buffer";
+    ResultCode2["InvalidHandle"] = "invalid-handle";
+    ResultCode2["InvalidParameter"] = "invalid-parameter";
+    ResultCode2["InvalidValue"] = "invalid-value";
+    ResultCode2["NoMemory"] = "no-memory";
+    ResultCode2["Timeout"] = "timeout";
+    ResultCode2["UnknownReader"] = "unknown-reader";
+    ResultCode2["UnsupportedFeature"] = "unsupported-feature";
+    ResultCode2["NoReadersAvailable"] = "no-readers-available";
+    ResultCode2["ServiceStopped"] = "service-stopped";
+    ResultCode2["NoService"] = "no-service";
+    ResultCode2["CommError"] = "comm-error";
+    ResultCode2["InternalError"] = "internal-error";
+    ResultCode2["ServerTooBusy"] = "server-too-busy";
+    ResultCode2["Unexpected"] = "unexpected";
+    ResultCode2["Shutdown"] = "shutdown";
+    ResultCode2["UnknownCard"] = "unknown-card";
+    ResultCode2["Unknown"] = "unknown";
+  })(ResultCode = SmartCardEmulation2.ResultCode || (SmartCardEmulation2.ResultCode = {}));
+  let ShareMode;
+  ((ShareMode2) => {
+    ShareMode2["Shared"] = "shared";
+    ShareMode2["Exclusive"] = "exclusive";
+    ShareMode2["Direct"] = "direct";
+  })(ShareMode = SmartCardEmulation2.ShareMode || (SmartCardEmulation2.ShareMode = {}));
+  let Disposition;
+  ((Disposition2) => {
+    Disposition2["LeaveCard"] = "leave-card";
+    Disposition2["ResetCard"] = "reset-card";
+    Disposition2["UnpowerCard"] = "unpower-card";
+    Disposition2["EjectCard"] = "eject-card";
+  })(Disposition = SmartCardEmulation2.Disposition || (SmartCardEmulation2.Disposition = {}));
+  let ConnectionState;
+  ((ConnectionState2) => {
+    ConnectionState2["Absent"] = "absent";
+    ConnectionState2["Present"] = "present";
+    ConnectionState2["Swallowed"] = "swallowed";
+    ConnectionState2["Powered"] = "powered";
+    ConnectionState2["Negotiable"] = "negotiable";
+    ConnectionState2["Specific"] = "specific";
+  })(ConnectionState = SmartCardEmulation2.ConnectionState || (SmartCardEmulation2.ConnectionState = {}));
+  let Protocol;
+  ((Protocol2) => {
+    Protocol2["T0"] = "t0";
+    Protocol2["T1"] = "t1";
+    Protocol2["Raw"] = "raw";
+  })(Protocol = SmartCardEmulation2.Protocol || (SmartCardEmulation2.Protocol = {}));
+})(SmartCardEmulation || (SmartCardEmulation = {}));
+var Storage;
+((Storage2) => {
+  let StorageType;
+  ((StorageType2) => {
+    StorageType2["Cookies"] = "cookies";
+    StorageType2["File_systems"] = "file_systems";
+    StorageType2["Indexeddb"] = "indexeddb";
+    StorageType2["Local_storage"] = "local_storage";
+    StorageType2["Shader_cache"] = "shader_cache";
+    StorageType2["Websql"] = "websql";
+    StorageType2["Service_workers"] = "service_workers";
+    StorageType2["Cache_storage"] = "cache_storage";
+    StorageType2["Storage_buckets"] = "storage_buckets";
+    StorageType2["All"] = "all";
+    StorageType2["Other"] = "other";
+  })(StorageType = Storage2.StorageType || (Storage2.StorageType = {}));
+  let StorageBucketsDurability;
+  ((StorageBucketsDurability2) => {
+    StorageBucketsDurability2["Relaxed"] = "relaxed";
+    StorageBucketsDurability2["Strict"] = "strict";
+  })(StorageBucketsDurability = Storage2.StorageBucketsDurability || (Storage2.StorageBucketsDurability = {}));
+})(Storage || (Storage = {}));
+var SystemInfo;
+((SystemInfo2) => {
+  let SubsamplingFormat;
+  ((SubsamplingFormat2) => {
+    SubsamplingFormat2["Yuv420"] = "yuv420";
+    SubsamplingFormat2["Yuv422"] = "yuv422";
+    SubsamplingFormat2["Yuv444"] = "yuv444";
+  })(SubsamplingFormat = SystemInfo2.SubsamplingFormat || (SystemInfo2.SubsamplingFormat = {}));
+  let ImageType;
+  ((ImageType2) => {
+    ImageType2["Jpeg"] = "jpeg";
+    ImageType2["Webp"] = "webp";
+    ImageType2["Unknown"] = "unknown";
+  })(ImageType = SystemInfo2.ImageType || (SystemInfo2.ImageType = {}));
+})(SystemInfo || (SystemInfo = {}));
+var Target;
+((Target6) => {
+  let WindowState;
+  ((WindowState2) => {
+    WindowState2["Normal"] = "normal";
+    WindowState2["Minimized"] = "minimized";
+    WindowState2["Maximized"] = "maximized";
+    WindowState2["Fullscreen"] = "fullscreen";
+  })(WindowState = Target6.WindowState || (Target6.WindowState = {}));
+})(Target || (Target = {}));
+var Tracing;
+((Tracing2) => {
+  let TraceConfigRecordMode;
+  ((TraceConfigRecordMode2) => {
+    TraceConfigRecordMode2["RecordUntilFull"] = "recordUntilFull";
+    TraceConfigRecordMode2["RecordContinuously"] = "recordContinuously";
+    TraceConfigRecordMode2["RecordAsMuchAsPossible"] = "recordAsMuchAsPossible";
+    TraceConfigRecordMode2["EchoToConsole"] = "echoToConsole";
+  })(TraceConfigRecordMode = Tracing2.TraceConfigRecordMode || (Tracing2.TraceConfigRecordMode = {}));
+  let StreamFormat;
+  ((StreamFormat2) => {
+    StreamFormat2["Json"] = "json";
+    StreamFormat2["Proto"] = "proto";
+  })(StreamFormat = Tracing2.StreamFormat || (Tracing2.StreamFormat = {}));
+  let StreamCompression;
+  ((StreamCompression2) => {
+    StreamCompression2["None"] = "none";
+    StreamCompression2["Gzip"] = "gzip";
+  })(StreamCompression = Tracing2.StreamCompression || (Tracing2.StreamCompression = {}));
+  let MemoryDumpLevelOfDetail;
+  ((MemoryDumpLevelOfDetail2) => {
+    MemoryDumpLevelOfDetail2["Background"] = "background";
+    MemoryDumpLevelOfDetail2["Light"] = "light";
+    MemoryDumpLevelOfDetail2["Detailed"] = "detailed";
+  })(MemoryDumpLevelOfDetail = Tracing2.MemoryDumpLevelOfDetail || (Tracing2.MemoryDumpLevelOfDetail = {}));
+  let TracingBackend;
+  ((TracingBackend2) => {
+    TracingBackend2["Auto"] = "auto";
+    TracingBackend2["Chrome"] = "chrome";
+    TracingBackend2["System"] = "system";
+  })(TracingBackend = Tracing2.TracingBackend || (Tracing2.TracingBackend = {}));
+  let StartRequestTransferMode;
+  ((StartRequestTransferMode2) => {
+    StartRequestTransferMode2["ReportEvents"] = "ReportEvents";
+    StartRequestTransferMode2["ReturnAsStream"] = "ReturnAsStream";
+  })(StartRequestTransferMode = Tracing2.StartRequestTransferMode || (Tracing2.StartRequestTransferMode = {}));
+})(Tracing || (Tracing = {}));
+var WebAudio;
+((WebAudio2) => {
+  let ContextType;
+  ((ContextType2) => {
+    ContextType2["Realtime"] = "realtime";
+    ContextType2["Offline"] = "offline";
+  })(ContextType = WebAudio2.ContextType || (WebAudio2.ContextType = {}));
+  let ContextState;
+  ((ContextState2) => {
+    ContextState2["Suspended"] = "suspended";
+    ContextState2["Running"] = "running";
+    ContextState2["Closed"] = "closed";
+    ContextState2["Interrupted"] = "interrupted";
+  })(ContextState = WebAudio2.ContextState || (WebAudio2.ContextState = {}));
+  let ChannelCountMode;
+  ((ChannelCountMode2) => {
+    ChannelCountMode2["ClampedMax"] = "clamped-max";
+    ChannelCountMode2["Explicit"] = "explicit";
+    ChannelCountMode2["Max"] = "max";
+  })(ChannelCountMode = WebAudio2.ChannelCountMode || (WebAudio2.ChannelCountMode = {}));
+  let ChannelInterpretation;
+  ((ChannelInterpretation2) => {
+    ChannelInterpretation2["Discrete"] = "discrete";
+    ChannelInterpretation2["Speakers"] = "speakers";
+  })(ChannelInterpretation = WebAudio2.ChannelInterpretation || (WebAudio2.ChannelInterpretation = {}));
+  let AutomationRate;
+  ((AutomationRate2) => {
+    AutomationRate2["ARate"] = "a-rate";
+    AutomationRate2["KRate"] = "k-rate";
+  })(AutomationRate = WebAudio2.AutomationRate || (WebAudio2.AutomationRate = {}));
+})(WebAudio || (WebAudio = {}));
+var WebAuthn;
+((WebAuthn2) => {
+  let AuthenticatorProtocol;
+  ((AuthenticatorProtocol2) => {
+    AuthenticatorProtocol2["U2f"] = "u2f";
+    AuthenticatorProtocol2["Ctap2"] = "ctap2";
+  })(AuthenticatorProtocol = WebAuthn2.AuthenticatorProtocol || (WebAuthn2.AuthenticatorProtocol = {}));
+  let Ctap2Version;
+  ((Ctap2Version2) => {
+    Ctap2Version2["Ctap2_0"] = "ctap2_0";
+    Ctap2Version2["Ctap2_1"] = "ctap2_1";
+    Ctap2Version2["Ctap2_2"] = "ctap2_2";
+  })(Ctap2Version = WebAuthn2.Ctap2Version || (WebAuthn2.Ctap2Version = {}));
+  let AuthenticatorTransport;
+  ((AuthenticatorTransport2) => {
+    AuthenticatorTransport2["Usb"] = "usb";
+    AuthenticatorTransport2["Nfc"] = "nfc";
+    AuthenticatorTransport2["Ble"] = "ble";
+    AuthenticatorTransport2["Cable"] = "cable";
+    AuthenticatorTransport2["Hybrid"] = "hybrid";
+    AuthenticatorTransport2["SmartCard"] = "smart-card";
+    AuthenticatorTransport2["Internal"] = "internal";
+  })(AuthenticatorTransport = WebAuthn2.AuthenticatorTransport || (WebAuthn2.AuthenticatorTransport = {}));
+})(WebAuthn || (WebAuthn = {}));
+var WebMCP;
+((WebMCP3) => {
+  let InvocationStatus;
+  ((InvocationStatus2) => {
+    InvocationStatus2["Completed"] = "Completed";
+    InvocationStatus2["Canceled"] = "Canceled";
+    InvocationStatus2["Error"] = "Error";
+  })(InvocationStatus = WebMCP3.InvocationStatus || (WebMCP3.InvocationStatus = {}));
+})(WebMCP || (WebMCP = {}));
+var Debugger;
+((Debugger2) => {
+  let ScopeType;
+  ((ScopeType2) => {
+    ScopeType2["Global"] = "global";
+    ScopeType2["Local"] = "local";
+    ScopeType2["With"] = "with";
+    ScopeType2["Closure"] = "closure";
+    ScopeType2["Catch"] = "catch";
+    ScopeType2["Block"] = "block";
+    ScopeType2["Script"] = "script";
+    ScopeType2["Eval"] = "eval";
+    ScopeType2["Module"] = "module";
+    ScopeType2["WasmExpressionStack"] = "wasm-expression-stack";
+  })(ScopeType = Debugger2.ScopeType || (Debugger2.ScopeType = {}));
+  let BreakLocationType;
+  ((BreakLocationType2) => {
+    BreakLocationType2["DebuggerStatement"] = "debuggerStatement";
+    BreakLocationType2["Call"] = "call";
+    BreakLocationType2["Return"] = "return";
+  })(BreakLocationType = Debugger2.BreakLocationType || (Debugger2.BreakLocationType = {}));
+  let ScriptLanguage;
+  ((ScriptLanguage2) => {
+    ScriptLanguage2["JavaScript"] = "JavaScript";
+    ScriptLanguage2["WebAssembly"] = "WebAssembly";
+  })(ScriptLanguage = Debugger2.ScriptLanguage || (Debugger2.ScriptLanguage = {}));
+  let DebugSymbolsType;
+  ((DebugSymbolsType2) => {
+    DebugSymbolsType2["SourceMap"] = "SourceMap";
+    DebugSymbolsType2["EmbeddedDWARF"] = "EmbeddedDWARF";
+    DebugSymbolsType2["ExternalDWARF"] = "ExternalDWARF";
+  })(DebugSymbolsType = Debugger2.DebugSymbolsType || (Debugger2.DebugSymbolsType = {}));
+  let ContinueToLocationRequestTargetCallFrames;
+  ((ContinueToLocationRequestTargetCallFrames2) => {
+    ContinueToLocationRequestTargetCallFrames2["Any"] = "any";
+    ContinueToLocationRequestTargetCallFrames2["Current"] = "current";
+  })(ContinueToLocationRequestTargetCallFrames = Debugger2.ContinueToLocationRequestTargetCallFrames || (Debugger2.ContinueToLocationRequestTargetCallFrames = {}));
+  let RestartFrameRequestMode;
+  ((RestartFrameRequestMode2) => {
+    RestartFrameRequestMode2["StepInto"] = "StepInto";
+  })(RestartFrameRequestMode = Debugger2.RestartFrameRequestMode || (Debugger2.RestartFrameRequestMode = {}));
+  let SetInstrumentationBreakpointRequestInstrumentation;
+  ((SetInstrumentationBreakpointRequestInstrumentation2) => {
+    SetInstrumentationBreakpointRequestInstrumentation2["BeforeScriptExecution"] = "beforeScriptExecution";
+    SetInstrumentationBreakpointRequestInstrumentation2["BeforeScriptWithSourceMapExecution"] = "beforeScriptWithSourceMapExecution";
+  })(SetInstrumentationBreakpointRequestInstrumentation = Debugger2.SetInstrumentationBreakpointRequestInstrumentation || (Debugger2.SetInstrumentationBreakpointRequestInstrumentation = {}));
+  let SetPauseOnExceptionsRequestState;
+  ((SetPauseOnExceptionsRequestState2) => {
+    SetPauseOnExceptionsRequestState2["None"] = "none";
+    SetPauseOnExceptionsRequestState2["Caught"] = "caught";
+    SetPauseOnExceptionsRequestState2["Uncaught"] = "uncaught";
+    SetPauseOnExceptionsRequestState2["All"] = "all";
+  })(SetPauseOnExceptionsRequestState = Debugger2.SetPauseOnExceptionsRequestState || (Debugger2.SetPauseOnExceptionsRequestState = {}));
+  let SetScriptSourceResponseStatus;
+  ((SetScriptSourceResponseStatus2) => {
+    SetScriptSourceResponseStatus2["Ok"] = "Ok";
+    SetScriptSourceResponseStatus2["CompileError"] = "CompileError";
+    SetScriptSourceResponseStatus2["BlockedByActiveGenerator"] = "BlockedByActiveGenerator";
+    SetScriptSourceResponseStatus2["BlockedByActiveFunction"] = "BlockedByActiveFunction";
+    SetScriptSourceResponseStatus2["BlockedByTopLevelEsModuleChange"] = "BlockedByTopLevelEsModuleChange";
+  })(SetScriptSourceResponseStatus = Debugger2.SetScriptSourceResponseStatus || (Debugger2.SetScriptSourceResponseStatus = {}));
+  let PausedEventReason;
+  ((PausedEventReason2) => {
+    PausedEventReason2["Ambiguous"] = "ambiguous";
+    PausedEventReason2["Assert"] = "assert";
+    PausedEventReason2["CSPViolation"] = "CSPViolation";
+    PausedEventReason2["DebugCommand"] = "debugCommand";
+    PausedEventReason2["DOM"] = "DOM";
+    PausedEventReason2["EventListener"] = "EventListener";
+    PausedEventReason2["Exception"] = "exception";
+    PausedEventReason2["Instrumentation"] = "instrumentation";
+    PausedEventReason2["OOM"] = "OOM";
+    PausedEventReason2["Other"] = "other";
+    PausedEventReason2["PromiseRejection"] = "promiseRejection";
+    PausedEventReason2["XHR"] = "XHR";
+    PausedEventReason2["Step"] = "step";
+  })(PausedEventReason = Debugger2.PausedEventReason || (Debugger2.PausedEventReason = {}));
+})(Debugger || (Debugger = {}));
+var Runtime;
+((Runtime4) => {
+  let SerializationOptionsSerialization;
+  ((SerializationOptionsSerialization2) => {
+    SerializationOptionsSerialization2["Deep"] = "deep";
+    SerializationOptionsSerialization2["Json"] = "json";
+    SerializationOptionsSerialization2["IdOnly"] = "idOnly";
+  })(SerializationOptionsSerialization = Runtime4.SerializationOptionsSerialization || (Runtime4.SerializationOptionsSerialization = {}));
+  let DeepSerializedValueType;
+  ((DeepSerializedValueType2) => {
+    DeepSerializedValueType2["Undefined"] = "undefined";
+    DeepSerializedValueType2["Null"] = "null";
+    DeepSerializedValueType2["String"] = "string";
+    DeepSerializedValueType2["Number"] = "number";
+    DeepSerializedValueType2["Boolean"] = "boolean";
+    DeepSerializedValueType2["Bigint"] = "bigint";
+    DeepSerializedValueType2["Regexp"] = "regexp";
+    DeepSerializedValueType2["Date"] = "date";
+    DeepSerializedValueType2["Symbol"] = "symbol";
+    DeepSerializedValueType2["Array"] = "array";
+    DeepSerializedValueType2["Object"] = "object";
+    DeepSerializedValueType2["Function"] = "function";
+    DeepSerializedValueType2["Map"] = "map";
+    DeepSerializedValueType2["Set"] = "set";
+    DeepSerializedValueType2["Weakmap"] = "weakmap";
+    DeepSerializedValueType2["Weakset"] = "weakset";
+    DeepSerializedValueType2["Error"] = "error";
+    DeepSerializedValueType2["Proxy"] = "proxy";
+    DeepSerializedValueType2["Promise"] = "promise";
+    DeepSerializedValueType2["Typedarray"] = "typedarray";
+    DeepSerializedValueType2["Arraybuffer"] = "arraybuffer";
+    DeepSerializedValueType2["Node"] = "node";
+    DeepSerializedValueType2["Window"] = "window";
+    DeepSerializedValueType2["Generator"] = "generator";
+  })(DeepSerializedValueType = Runtime4.DeepSerializedValueType || (Runtime4.DeepSerializedValueType = {}));
+  let RemoteObjectType;
+  ((RemoteObjectType2) => {
+    RemoteObjectType2["Object"] = "object";
+    RemoteObjectType2["Function"] = "function";
+    RemoteObjectType2["Undefined"] = "undefined";
+    RemoteObjectType2["String"] = "string";
+    RemoteObjectType2["Number"] = "number";
+    RemoteObjectType2["Boolean"] = "boolean";
+    RemoteObjectType2["Symbol"] = "symbol";
+    RemoteObjectType2["Bigint"] = "bigint";
+  })(RemoteObjectType = Runtime4.RemoteObjectType || (Runtime4.RemoteObjectType = {}));
+  let RemoteObjectSubtype;
+  ((RemoteObjectSubtype2) => {
+    RemoteObjectSubtype2["Array"] = "array";
+    RemoteObjectSubtype2["Null"] = "null";
+    RemoteObjectSubtype2["Node"] = "node";
+    RemoteObjectSubtype2["Regexp"] = "regexp";
+    RemoteObjectSubtype2["Date"] = "date";
+    RemoteObjectSubtype2["Map"] = "map";
+    RemoteObjectSubtype2["Set"] = "set";
+    RemoteObjectSubtype2["Weakmap"] = "weakmap";
+    RemoteObjectSubtype2["Weakset"] = "weakset";
+    RemoteObjectSubtype2["Iterator"] = "iterator";
+    RemoteObjectSubtype2["Generator"] = "generator";
+    RemoteObjectSubtype2["Error"] = "error";
+    RemoteObjectSubtype2["Proxy"] = "proxy";
+    RemoteObjectSubtype2["Promise"] = "promise";
+    RemoteObjectSubtype2["Typedarray"] = "typedarray";
+    RemoteObjectSubtype2["Arraybuffer"] = "arraybuffer";
+    RemoteObjectSubtype2["Dataview"] = "dataview";
+    RemoteObjectSubtype2["Webassemblymemory"] = "webassemblymemory";
+    RemoteObjectSubtype2["Wasmvalue"] = "wasmvalue";
+    RemoteObjectSubtype2["Trustedtype"] = "trustedtype";
+  })(RemoteObjectSubtype = Runtime4.RemoteObjectSubtype || (Runtime4.RemoteObjectSubtype = {}));
+  let ObjectPreviewType;
+  ((ObjectPreviewType2) => {
+    ObjectPreviewType2["Object"] = "object";
+    ObjectPreviewType2["Function"] = "function";
+    ObjectPreviewType2["Undefined"] = "undefined";
+    ObjectPreviewType2["String"] = "string";
+    ObjectPreviewType2["Number"] = "number";
+    ObjectPreviewType2["Boolean"] = "boolean";
+    ObjectPreviewType2["Symbol"] = "symbol";
+    ObjectPreviewType2["Bigint"] = "bigint";
+  })(ObjectPreviewType = Runtime4.ObjectPreviewType || (Runtime4.ObjectPreviewType = {}));
+  let ObjectPreviewSubtype;
+  ((ObjectPreviewSubtype2) => {
+    ObjectPreviewSubtype2["Array"] = "array";
+    ObjectPreviewSubtype2["Null"] = "null";
+    ObjectPreviewSubtype2["Node"] = "node";
+    ObjectPreviewSubtype2["Regexp"] = "regexp";
+    ObjectPreviewSubtype2["Date"] = "date";
+    ObjectPreviewSubtype2["Map"] = "map";
+    ObjectPreviewSubtype2["Set"] = "set";
+    ObjectPreviewSubtype2["Weakmap"] = "weakmap";
+    ObjectPreviewSubtype2["Weakset"] = "weakset";
+    ObjectPreviewSubtype2["Iterator"] = "iterator";
+    ObjectPreviewSubtype2["Generator"] = "generator";
+    ObjectPreviewSubtype2["Error"] = "error";
+    ObjectPreviewSubtype2["Proxy"] = "proxy";
+    ObjectPreviewSubtype2["Promise"] = "promise";
+    ObjectPreviewSubtype2["Typedarray"] = "typedarray";
+    ObjectPreviewSubtype2["Arraybuffer"] = "arraybuffer";
+    ObjectPreviewSubtype2["Dataview"] = "dataview";
+    ObjectPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
+    ObjectPreviewSubtype2["Wasmvalue"] = "wasmvalue";
+    ObjectPreviewSubtype2["Trustedtype"] = "trustedtype";
+  })(ObjectPreviewSubtype = Runtime4.ObjectPreviewSubtype || (Runtime4.ObjectPreviewSubtype = {}));
+  let PropertyPreviewType;
+  ((PropertyPreviewType2) => {
+    PropertyPreviewType2["Object"] = "object";
+    PropertyPreviewType2["Function"] = "function";
+    PropertyPreviewType2["Undefined"] = "undefined";
+    PropertyPreviewType2["String"] = "string";
+    PropertyPreviewType2["Number"] = "number";
+    PropertyPreviewType2["Boolean"] = "boolean";
+    PropertyPreviewType2["Symbol"] = "symbol";
+    PropertyPreviewType2["Accessor"] = "accessor";
+    PropertyPreviewType2["Bigint"] = "bigint";
+  })(PropertyPreviewType = Runtime4.PropertyPreviewType || (Runtime4.PropertyPreviewType = {}));
+  let PropertyPreviewSubtype;
+  ((PropertyPreviewSubtype2) => {
+    PropertyPreviewSubtype2["Array"] = "array";
+    PropertyPreviewSubtype2["Null"] = "null";
+    PropertyPreviewSubtype2["Node"] = "node";
+    PropertyPreviewSubtype2["Regexp"] = "regexp";
+    PropertyPreviewSubtype2["Date"] = "date";
+    PropertyPreviewSubtype2["Map"] = "map";
+    PropertyPreviewSubtype2["Set"] = "set";
+    PropertyPreviewSubtype2["Weakmap"] = "weakmap";
+    PropertyPreviewSubtype2["Weakset"] = "weakset";
+    PropertyPreviewSubtype2["Iterator"] = "iterator";
+    PropertyPreviewSubtype2["Generator"] = "generator";
+    PropertyPreviewSubtype2["Error"] = "error";
+    PropertyPreviewSubtype2["Proxy"] = "proxy";
+    PropertyPreviewSubtype2["Promise"] = "promise";
+    PropertyPreviewSubtype2["Typedarray"] = "typedarray";
+    PropertyPreviewSubtype2["Arraybuffer"] = "arraybuffer";
+    PropertyPreviewSubtype2["Dataview"] = "dataview";
+    PropertyPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
+    PropertyPreviewSubtype2["Wasmvalue"] = "wasmvalue";
+    PropertyPreviewSubtype2["Trustedtype"] = "trustedtype";
+  })(PropertyPreviewSubtype = Runtime4.PropertyPreviewSubtype || (Runtime4.PropertyPreviewSubtype = {}));
+  let ConsoleAPICalledEventType;
+  ((ConsoleAPICalledEventType2) => {
+    ConsoleAPICalledEventType2["Log"] = "log";
+    ConsoleAPICalledEventType2["Debug"] = "debug";
+    ConsoleAPICalledEventType2["Info"] = "info";
+    ConsoleAPICalledEventType2["Error"] = "error";
+    ConsoleAPICalledEventType2["Warning"] = "warning";
+    ConsoleAPICalledEventType2["Dir"] = "dir";
+    ConsoleAPICalledEventType2["DirXML"] = "dirxml";
+    ConsoleAPICalledEventType2["Table"] = "table";
+    ConsoleAPICalledEventType2["Trace"] = "trace";
+    ConsoleAPICalledEventType2["Clear"] = "clear";
+    ConsoleAPICalledEventType2["StartGroup"] = "startGroup";
+    ConsoleAPICalledEventType2["StartGroupCollapsed"] = "startGroupCollapsed";
+    ConsoleAPICalledEventType2["EndGroup"] = "endGroup";
+    ConsoleAPICalledEventType2["Assert"] = "assert";
+    ConsoleAPICalledEventType2["Profile"] = "profile";
+    ConsoleAPICalledEventType2["ProfileEnd"] = "profileEnd";
+    ConsoleAPICalledEventType2["Count"] = "count";
+    ConsoleAPICalledEventType2["TimeEnd"] = "timeEnd";
+  })(ConsoleAPICalledEventType = Runtime4.ConsoleAPICalledEventType || (Runtime4.ConsoleAPICalledEventType = {}));
+})(Runtime || (Runtime = {}));
+
+// ../../front_end/panels/application/ApplicationPanelSidebar.ts
 import * as AiAssistance2 from "../../models/ai_assistance/ai_assistance.js";
 import * as LegacyWrapper3 from "../../ui/components/legacy_wrapper/legacy_wrapper.js";
 import { createIcon as createIcon11 } from "../../ui/kit/kit.js";
 import * as SourceFrame6 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI31 from "../../ui/legacy/legacy.js";
 
-// gen/front_end/panels/application/ApplicationPanelTreeElement.js
+// ../../front_end/panels/application/ApplicationPanelTreeElement.ts
 var ApplicationPanelTreeElement_exports = {};
 __export(ApplicationPanelTreeElement_exports, {
   ApplicationPanelTreeElement: () => ApplicationPanelTreeElement,
@@ -212,7 +3015,7 @@ var ExpandableApplicationPanelTreeElement = class extends ApplicationPanelTreeEl
   }
 };
 
-// gen/front_end/panels/application/AppManifestView.js
+// ../../front_end/panels/application/AppManifestView.ts
 var AppManifestView_exports = {};
 __export(AppManifestView_exports, {
   AppManifestView: () => AppManifestView,
@@ -325,7 +3128,7 @@ devtools-report .report-section {
 
 /*# sourceURL=${import.meta.resolve("./appManifestView.css")} */`;
 
-// gen/front_end/panels/application/AppManifestView.js
+// ../../front_end/panels/application/AppManifestView.ts
 import * as ApplicationComponents from "./components/components.js";
 var { styleMap, classMap, ref } = Directives;
 var { linkifyURL } = Components.Linkifier.Linkifier;
@@ -800,8 +3603,8 @@ function renderIdentity(identityData, onCopy, output) {
     PH1: html2`<code>${recommendedId}</code>`,
     PH2: html2`<devtools-button class="inline-button" @click=${onCopy}
                           .iconName=${"copy"}
-                          .variant=${"icon"}
-                          .size=${"SMALL"}
+                          .variant=${Buttons.Button.Variant.ICON}
+                          .size=${Buttons.Button.Size.SMALL}
                           .jslogContext=${"manifest.copy-id"}
                           .title=${i18nString(UIStrings.copyToClipboard)}>
                         </devtools-button>`
@@ -811,7 +3614,17 @@ function renderIdentity(identityData, onCopy, output) {
     </div>`;
 }
 function renderPresentation(presentationData, output) {
-  const { startUrl, completeStartUrl, themeColor, backgroundColor, orientation, display, newNoteUrl, hasNewNoteUrl, completeNewNoteUrl } = presentationData;
+  const {
+    startUrl,
+    completeStartUrl,
+    themeColor,
+    backgroundColor,
+    orientation,
+    display,
+    newNoteUrl,
+    hasNewNoteUrl,
+    completeNewNoteUrl
+  } = presentationData;
   return html2`${renderSectionHeader(i18nString(UIStrings.presentation), output)}
     <div class="report-section" jslog=${VisualLogging.section("presentation")}>
       <devtools-report-key>${i18nString(UIStrings.startUrl)}</devtools-report-key>
@@ -843,7 +3656,10 @@ function renderPresentation(presentationData, output) {
 function renderProtocolHandlers(data, output) {
   return html2`${renderSectionHeader(i18nString(UIStrings.protocolHandlers), output)}
     <div class="report-row">
-      <devtools-widget ${widget(ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView, { protocolHandlers: data.protocolHandlers, manifestLink: data.manifestLink })}
+      <devtools-widget ${widget(
+    ApplicationComponents.ProtocolHandlersView.ProtocolHandlersView,
+    { protocolHandlers: data.protocolHandlers, manifestLink: data.manifestLink }
+  )}
         ${ref(setFocusOnSection(i18nString(UIStrings.protocolHandlers), output))}>
       </devtools-widget>
     </div>
@@ -1065,7 +3881,10 @@ function getInstallabilityErrorMessages(installabilityErrors) {
         errorMessage = i18nString(UIStrings.manifestContainsDisplayoverride);
         break;
       case "warn-not-offline-capable":
-        errorMessage = i18nString(UIStrings.pageDoesNotWorkOfflineThePage, { PH1: "https://developer.chrome.com/blog/improved-pwa-offline-detection/" });
+        errorMessage = i18nString(
+          UIStrings.pageDoesNotWorkOfflineThePage,
+          { PH1: "https://developer.chrome.com/blog/improved-pwa-offline-detection/" }
+        );
         break;
       default:
         console.error(`Installability error id '${installabilityError.errorId}' is not recognized`);
@@ -1090,15 +3909,15 @@ function renderWindowControls(selectedPlatform, onSelectOs, onToggleWcoToolbar) 
     void onSelectOs(selectedOS);
   }}
              .selectedIndex=${0}>
-        <option value=${"Windows"}
+        <option value=${SDK2.OverlayModel.EmulatedOSType.WINDOWS}
                 jslog=${VisualLogging.item("windows").track({ click: true })}>
           Windows
         </option>
-        <option value=${"Mac"}
+        <option value=${SDK2.OverlayModel.EmulatedOSType.MAC}
                 jslog=${VisualLogging.item("macos").track({ click: true })}>
           macOS
         </option>
-        <option value=${"Linux"}
+        <option value=${SDK2.OverlayModel.EmulatedOSType.LINUX}
                 jslog=${VisualLogging.item("linux").track({ click: true })}>
           Linux
         </option>
@@ -1106,7 +3925,27 @@ function renderWindowControls(selectedPlatform, onSelectOs, onToggleWcoToolbar) 
     </div>`;
 }
 var DEFAULT_VIEW = (input, output, target) => {
-  const { isEmpty, identityData, presentationData, protocolHandlersData, iconsData, shortcutsData, screenshotsData, installabilityErrors, warnings, errors, imageErrors, maskedIcons, windowControlsData, selectedPlatform, onSelectOs, onToggleWcoToolbar, onToggleIconMasked, onCopyId, url } = input;
+  const {
+    isEmpty,
+    identityData,
+    presentationData,
+    protocolHandlersData,
+    iconsData,
+    shortcutsData,
+    screenshotsData,
+    installabilityErrors,
+    warnings,
+    errors,
+    imageErrors,
+    maskedIcons,
+    windowControlsData,
+    selectedPlatform,
+    onSelectOs,
+    onToggleWcoToolbar,
+    onToggleIconMasked,
+    onCopyId,
+    url
+  } = input;
   render2(html2`
     <style>${appManifestView_css_default}</style>
     <style>${UI2.inspectorCommonStyles}</style>
@@ -1122,12 +3961,21 @@ var DEFAULT_VIEW = (input, output, target) => {
       ${presentationData ? renderPresentation(presentationData, output) : nothing}
       ${protocolHandlersData ? renderProtocolHandlers(protocolHandlersData, output) : nothing}
       ${iconsData && onToggleIconMasked ? renderIcons(iconsData, Boolean(maskedIcons), onToggleIconMasked, output) : nothing}
-      ${windowControlsData && output ? renderWindowControlsSection(windowControlsData, selectedPlatform, onSelectOs, onToggleWcoToolbar, output) : nothing}
+      ${windowControlsData && output ? renderWindowControlsSection(
+    windowControlsData,
+    selectedPlatform,
+    onSelectOs,
+    onToggleWcoToolbar,
+    output
+  ) : nothing}
       ${shortcutsData ? renderShortcuts(shortcutsData) : nothing}
       ${screenshotsData ? renderScreenshots(screenshotsData) : nothing}
     </devtools-report>`}`, target);
 };
-var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.VBox) {
+var AppManifestViewBase = Common2.ObjectWrapper.eventMixin(
+  UI2.Widget.VBox
+);
+var AppManifestView = class extends AppManifestViewBase {
   registeredListeners;
   target;
   resourceTreeModel;
@@ -1197,12 +4045,18 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     }
     void this.updateManifest(true);
     this.registeredListeners = [
-      this.resourceTreeModel.addEventListener(SDK2.ResourceTreeModel.Events.DOMContentLoaded, () => {
-        void this.updateManifest(true);
-      }),
-      this.serviceWorkerManager.addEventListener("RegistrationUpdated", () => {
-        void this.updateManifest(false);
-      })
+      this.resourceTreeModel.addEventListener(
+        SDK2.ResourceTreeModel.Events.DOMContentLoaded,
+        () => {
+          void this.updateManifest(true);
+        }
+      ),
+      this.serviceWorkerManager.addEventListener(
+        SDK2.ServiceWorkerManager.Events.REGISTRATION_UPDATED,
+        () => {
+          void this.updateManifest(false);
+        }
+      )
     ];
   }
   targetRemoved(target) {
@@ -1247,10 +4101,10 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     const recommendedId = appIdResponse?.recommendedId || null;
     if ((!data || data === "{}") && !errors.length) {
       this.view({ isEmpty: true }, this.output, this.contentElement);
-      this.dispatchEventToListeners("ManifestDetected", false);
+      this.dispatchEventToListeners("ManifestDetected" /* MANIFEST_DETECTED */, false);
       return;
     }
-    this.dispatchEventToListeners("ManifestDetected", true);
+    this.dispatchEventToListeners("ManifestDetected" /* MANIFEST_DETECTED */, true);
     if (!data) {
       this.view({ url, errors }, this.output, this.contentElement);
       return;
@@ -1287,27 +4141,31 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
       this.maskedIcons = masked;
       this.requestUpdate();
     };
-    this.view({
-      maskedIcons: this.maskedIcons,
-      parsedManifest,
-      url,
-      identityData,
-      presentationData,
-      protocolHandlersData,
-      iconsData,
-      shortcutsData,
-      screenshotsData,
-      installabilityErrors,
-      warnings,
-      errors,
-      imageErrors,
-      windowControlsData,
-      selectedPlatform,
-      onSelectOs,
-      onToggleWcoToolbar,
-      onCopyId,
-      onToggleIconMasked
-    }, this.output, this.contentElement);
+    this.view(
+      {
+        maskedIcons: this.maskedIcons,
+        parsedManifest,
+        url,
+        identityData,
+        presentationData,
+        protocolHandlersData,
+        iconsData,
+        shortcutsData,
+        screenshotsData,
+        installabilityErrors,
+        warnings,
+        errors,
+        imageErrors,
+        windowControlsData,
+        selectedPlatform,
+        onSelectOs,
+        onToggleWcoToolbar,
+        onCopyId,
+        onToggleIconMasked
+      },
+      this.output,
+      this.contentElement
+    );
   }
   stringProperty(parsedManifest, name) {
     const value = parsedManifest[name];
@@ -1395,13 +4253,19 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     }
     if (naturalWidth !== size.width) {
       return {
-        error: i18nString(UIStrings.actualWidthSpxOfSSDoesNotMatch, { PH1: naturalWidth, PH2: resourceName, PH3: imageUrl, PH4: size.width }),
+        error: i18nString(
+          UIStrings.actualWidthSpxOfSSDoesNotMatch,
+          { PH1: naturalWidth, PH2: resourceName, PH3: imageUrl, PH4: size.width }
+        ),
         hasSquareSize
       };
     }
     if (naturalHeight !== size.height) {
       return {
-        error: i18nString(UIStrings.actualHeightSpxOfSSDoesNotMatch, { PH1: naturalHeight, PH2: resourceName, PH3: imageUrl, PH4: size.height }),
+        error: i18nString(
+          UIStrings.actualHeightSpxOfSSDoesNotMatch,
+          { PH1: naturalHeight, PH2: resourceName, PH3: imageUrl, PH4: size.height }
+        ),
         hasSquareSize
       };
     }
@@ -1416,7 +4280,9 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     }
     const imageUrl = Common2.ParsedURL.ParsedURL.completeURL(baseUrl, imageResource["src"]);
     if (!imageUrl) {
-      imageResourceErrors.push(i18nString(UIStrings.sUrlSFailedToParse, { PH1: resourceName, PH2: imageResource["src"] }));
+      imageResourceErrors.push(
+        i18nString(UIStrings.sUrlSFailedToParse, { PH1: resourceName, PH2: imageResource["src"] })
+      );
       return { imageResourceErrors, imageUrl: imageResource["src"] };
     }
     const result = await this.loadImage(imageUrl);
@@ -1443,13 +4309,21 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
           const width = "any" in size ? naturalWidth : size.width;
           const height = "any" in size ? naturalHeight : size.height;
           if (width < 320 || height < 320) {
-            imageResourceErrors.push(i18nString(UIStrings.sSSizeShouldBeAtLeast320, { PH1: resourceName, PH2: imageUrl }));
+            imageResourceErrors.push(
+              i18nString(UIStrings.sSSizeShouldBeAtLeast320, { PH1: resourceName, PH2: imageUrl })
+            );
           } else if (width > 3840 || height > 3840) {
-            imageResourceErrors.push(i18nString(UIStrings.sSSizeShouldBeAtMost3840, { PH1: resourceName, PH2: imageUrl }));
+            imageResourceErrors.push(
+              i18nString(UIStrings.sSSizeShouldBeAtMost3840, { PH1: resourceName, PH2: imageUrl })
+            );
           } else if (width > height * 2.3) {
-            imageResourceErrors.push(i18nString(UIStrings.sSWidthDoesNotComplyWithRatioRequirement, { PH1: resourceName, PH2: imageUrl }));
+            imageResourceErrors.push(
+              i18nString(UIStrings.sSWidthDoesNotComplyWithRatioRequirement, { PH1: resourceName, PH2: imageUrl })
+            );
           } else if (height > width * 2.3) {
-            imageResourceErrors.push(i18nString(UIStrings.sSHeightDoesNotComplyWithRatioRequirement, { PH1: resourceName, PH2: imageUrl }));
+            imageResourceErrors.push(
+              i18nString(UIStrings.sSHeightDoesNotComplyWithRatioRequirement, { PH1: resourceName, PH2: imageUrl })
+            );
           }
         }
       }
@@ -1515,7 +4389,10 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
         squareSizedIconAvailable = true;
       }
     }
-    const processedIconsByTitle = Map.groupBy(processedIcons.filter((icon) => "title" in icon), (img) => img.title);
+    const processedIconsByTitle = Map.groupBy(
+      processedIcons.filter((icon) => "title" in icon),
+      (img) => img.title
+    );
     if (!squareSizedIconAvailable) {
       imageErrors.push(i18nString(UIStrings.sSShouldHaveSquareIcon));
     }
@@ -1551,7 +4428,10 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
           }
         }
       }
-      const iconsByTitle = Map.groupBy(processedIcons.filter((icon) => "title" in icon), (img) => img.title);
+      const iconsByTitle = Map.groupBy(
+        processedIcons.filter((icon) => "title" in icon),
+        (img) => img.title
+      );
       processedShortcuts.push({
         name: shortcut.name,
         shortName: shortcut.short_name,
@@ -1657,12 +4537,12 @@ var AppManifestView = class extends Common2.ObjectWrapper.eventMixin(UI2.Widget.
     };
   }
 };
-var Events;
-(function(Events5) {
+var Events = /* @__PURE__ */ ((Events5) => {
   Events5["MANIFEST_DETECTED"] = "ManifestDetected";
-})(Events || (Events = {}));
+  return Events5;
+})(Events || {});
 
-// gen/front_end/panels/application/BackForwardCacheTreeElement.js
+// ../../front_end/panels/application/BackForwardCacheTreeElement.ts
 import * as i18n3 from "../../core/i18n/i18n.js";
 import { createIcon } from "../../ui/kit/kit.js";
 import * as UI3 from "../../ui/legacy/legacy.js";
@@ -1696,7 +4576,7 @@ var BackForwardCacheTreeElement = class extends ApplicationPanelTreeElement {
   }
 };
 
-// gen/front_end/panels/application/BackgroundServiceModel.js
+// ../../front_end/panels/application/BackgroundServiceModel.ts
 var BackgroundServiceModel_exports = {};
 __export(BackgroundServiceModel_exports, {
   BackgroundServiceModel: () => BackgroundServiceModel,
@@ -1728,23 +4608,23 @@ var BackgroundServiceModel = class extends SDK3.SDKModel.SDKModel {
     return this.events.get(service) || [];
   }
   recordingStateChanged({ isRecording, service }) {
-    this.dispatchEventToListeners(Events2.RecordingStateChanged, { isRecording, serviceName: service });
+    this.dispatchEventToListeners("RecordingStateChanged" /* RecordingStateChanged */, { isRecording, serviceName: service });
   }
   backgroundServiceEventReceived({ backgroundServiceEvent }) {
     const events = this.events.get(backgroundServiceEvent.service);
     Platform2.assertNotNullOrUndefined(events);
     events.push(backgroundServiceEvent);
-    this.dispatchEventToListeners(Events2.BackgroundServiceEventReceived, backgroundServiceEvent);
+    this.dispatchEventToListeners("BackgroundServiceEventReceived" /* BackgroundServiceEventReceived */, backgroundServiceEvent);
   }
 };
-SDK3.SDKModel.SDKModel.register(BackgroundServiceModel, { capabilities: 1, autostart: false });
-var Events2;
-(function(Events5) {
+SDK3.SDKModel.SDKModel.register(BackgroundServiceModel, { capabilities: SDK3.Target.Capability.BROWSER, autostart: false });
+var Events2 = /* @__PURE__ */ ((Events5) => {
   Events5["RecordingStateChanged"] = "RecordingStateChanged";
   Events5["BackgroundServiceEventReceived"] = "BackgroundServiceEventReceived";
-})(Events2 || (Events2 = {}));
+  return Events5;
+})(Events2 || {});
 
-// gen/front_end/panels/application/BackgroundServiceView.js
+// ../../front_end/panels/application/BackgroundServiceView.ts
 var BackgroundServiceView_exports = {};
 __export(BackgroundServiceView_exports, {
   ActionDelegate: () => ActionDelegate,
@@ -1759,7 +4639,7 @@ import * as SDK4 from "../../core/sdk/sdk.js";
 import * as Bindings from "../../models/bindings/bindings.js";
 import * as Workspace from "../../models/workspace/workspace.js";
 import * as Buttons2 from "../../ui/components/buttons/buttons.js";
-import * as Input from "../../ui/components/input/input.js";
+import * as Input2 from "../../ui/components/input/input.js";
 import * as UI4 from "../../ui/legacy/legacy.js";
 import { html as html3, render as render3 } from "../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
@@ -1862,7 +4742,7 @@ var backgroundServiceView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./backgroundServiceView.css")} */`;
 
-// gen/front_end/panels/application/BackgroundServiceView.js
+// ../../front_end/panels/application/BackgroundServiceView.ts
 var UIStrings3 = {
   /**
    * @description Text in Background Service View of the Application panel
@@ -2017,28 +4897,28 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   `;
   render3(html3`
     <style>${backgroundServiceView_css_default}</style>
-    <style>${Input.checkboxStyles}</style>
+    <style>${Input2.checkboxStyles}</style>
     <div class="background-service-view">
       <devtools-toolbar class="background-service-toolbar" jslog=${VisualLogging2.toolbar()}>
         <devtools-button title=${buttonTooltip}
             class="toolbar-button"
             .iconName=${"record-start"}
             .toggledIconName=${"record-stop"}
-            .toggleType=${"primary-toggle"}
+            .toggleType=${Buttons2.Button.ToggleType.PRIMARY}
             .toggled=${input.isRecording}
             @click=${input.toggleRecording}
-            .variant=${"toolbar"}
+            .variant=${Buttons2.Button.Variant.TOOLBAR}
             .jslogContext=${"background-service.toggle-recording"}></devtools-button>
         <devtools-button title=${i18nString3(UIStrings3.clear)} @click=${input.onClear}
             class="toolbar-button"
-            .iconName=${"clear"} .variant=${"toolbar"}
+            .iconName=${"clear"} .variant=${Buttons2.Button.Variant.TOOLBAR}
             .jslogContext=${"background-service.clear"}></devtools-button>
         <div class="toolbar-divider"></div>
         <devtools-button title=${i18nString3(UIStrings3.saveEvents)}
             class="toolbar-button"
             @click=${input.onSave}
             .disabled=${input.events.length === 0}
-            .iconName=${"download"} .variant=${"toolbar"}
+            .iconName=${"download"} .variant=${Buttons2.Button.Variant.TOOLBAR}
             .jslogContext=${"background-service.save-events"}></devtools-button>
         <div class="toolbar-divider"></div>
         <label title=${i18nString3(UIStrings3.showEventsFromOtherDomains)} class="checkbox-label"
@@ -2067,7 +4947,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     text: startRecordingText,
     link: input.createLearnMoreLink()
   })}>
-          <devtools-button class="start-recording-button" .variant=${"tonal"} jslogContext=${"start-recording"} @click=${input.toggleRecording}>
+          <devtools-button class="start-recording-button" .variant=${Buttons2.Button.Variant.TONAL} jslogContext=${"start-recording"} @click=${input.toggleRecording}>
             ${i18nString3(UIStrings3.startRecordingEvents)}
           </devtools-button>
         </devtools-widget>
@@ -2128,17 +5008,17 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI4.Widget.Widg
   #view;
   static getUIString(serviceName) {
     switch (serviceName) {
-      case "backgroundFetch":
+      case BackgroundService.ServiceName.BackgroundFetch:
         return i18nString3(UIStrings3.backgroundFetch);
-      case "backgroundSync":
+      case BackgroundService.ServiceName.BackgroundSync:
         return i18nString3(UIStrings3.backgroundSync);
-      case "pushMessaging":
+      case BackgroundService.ServiceName.PushMessaging:
         return i18nString3(UIStrings3.pushMessaging);
-      case "notifications":
+      case BackgroundService.ServiceName.Notifications:
         return i18nString3(UIStrings3.notifications);
-      case "paymentHandler":
+      case BackgroundService.ServiceName.PaymentHandler:
         return i18nString3(UIStrings3.paymentHandler);
-      case "periodicBackgroundSync":
+      case BackgroundService.ServiceName.PeriodicBackgroundSync:
         return i18nString3(UIStrings3.periodicBackgroundSync);
       default:
         return "";
@@ -2169,23 +5049,29 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI4.Widget.Widg
       return;
     }
     if (this.#model) {
-      this.#model.removeEventListener(Events2.RecordingStateChanged, this.onRecordingStateChanged, this);
-      this.#model.removeEventListener(Events2.BackgroundServiceEventReceived, this.onEventReceived, this);
+      this.#model.removeEventListener("RecordingStateChanged" /* RecordingStateChanged */, this.onRecordingStateChanged, this);
+      this.#model.removeEventListener("BackgroundServiceEventReceived" /* BackgroundServiceEventReceived */, this.onEventReceived, this);
     }
     this.#model = model;
-    this.#model.addEventListener(Events2.RecordingStateChanged, this.onRecordingStateChanged, this);
-    this.#model.addEventListener(Events2.BackgroundServiceEventReceived, this.onEventReceived, this);
+    this.#model.addEventListener("RecordingStateChanged" /* RecordingStateChanged */, this.onRecordingStateChanged, this);
+    this.#model.addEventListener("BackgroundServiceEventReceived" /* BackgroundServiceEventReceived */, this.onEventReceived, this);
     if (this.#serviceName) {
       this.#model.enable(this.#serviceName);
     }
     this.#serviceWorkerManager = this.#model.target().model(SDK4.ServiceWorkerManager.ServiceWorkerManager) ?? void 0;
     this.#securityOriginManager = this.#model.target().model(SDK4.SecurityOriginManager.SecurityOriginManager) ?? void 0;
     if (this.#securityOriginManager) {
-      this.#securityOriginManager.addEventListener(SDK4.SecurityOriginManager.Events.MainSecurityOriginChanged, () => this.onOriginChanged());
+      this.#securityOriginManager.addEventListener(
+        SDK4.SecurityOriginManager.Events.MainSecurityOriginChanged,
+        () => this.onOriginChanged()
+      );
     }
     this.#storageKeyManager = this.#model.target().model(SDK4.StorageKeyManager.StorageKeyManager) ?? void 0;
     if (this.#storageKeyManager) {
-      this.#storageKeyManager.addEventListener("MainStorageKeyChanged", () => this.onStorageKeyChanged());
+      this.#storageKeyManager.addEventListener(
+        SDK4.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED,
+        () => this.onStorageKeyChanged()
+      );
     }
     this.requestUpdate();
   }
@@ -2225,7 +5111,9 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI4.Widget.Widg
     this.#model.setRecording(isRecording, this.#serviceName);
     const featureName = _BackgroundServiceView.getUIString(this.#serviceName).toLowerCase();
     if (isRecording) {
-      UI4.ARIAUtils.LiveAnnouncer.alert(i18nString3(UIStrings3.recordingSActivity, { PH1: featureName }) + " " + i18nString3(UIStrings3.devtoolsWillRecordAllSActivity, { PH1: featureName }));
+      UI4.ARIAUtils.LiveAnnouncer.alert(
+        i18nString3(UIStrings3.recordingSActivity, { PH1: featureName }) + " " + i18nString3(UIStrings3.devtoolsWillRecordAllSActivity, { PH1: featureName })
+      );
     }
   }
   /**
@@ -2247,7 +5135,9 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI4.Widget.Widg
     this.#isRecording = state.isRecording;
     this.requestUpdate();
   }
-  onEventReceived({ data: serviceEvent }) {
+  onEventReceived({
+    data: serviceEvent
+  }) {
     if (!this.acceptEvent(serviceEvent)) {
       return;
     }
@@ -2311,16 +5201,16 @@ var BackgroundServiceView = class _BackgroundServiceView extends UI4.Widget.Widg
   createLearnMoreLink() {
     let url = "https://developer.chrome.com/docs/devtools/javascript/background-services/";
     switch (this.#serviceName) {
-      case "backgroundFetch":
+      case BackgroundService.ServiceName.BackgroundFetch:
         url += "#fetch";
         break;
-      case "backgroundSync":
+      case BackgroundService.ServiceName.BackgroundSync:
         url += "#sync";
         break;
-      case "pushMessaging":
+      case BackgroundService.ServiceName.PushMessaging:
         url += "#push";
         break;
-      case "notifications":
+      case BackgroundService.ServiceName.Notifications:
         url += "#notifications";
         break;
       default:
@@ -2394,7 +5284,7 @@ var ActionDelegate = class {
   }
 };
 
-// gen/front_end/panels/application/BounceTrackingMitigationsTreeElement.js
+// ../../front_end/panels/application/BounceTrackingMitigationsTreeElement.ts
 var BounceTrackingMitigationsTreeElement_exports = {};
 __export(BounceTrackingMitigationsTreeElement_exports, {
   BounceTrackingMitigationsTreeElement: () => BounceTrackingMitigationsTreeElement,
@@ -2433,10 +5323,10 @@ var BounceTrackingMitigationsTreeElement = class extends ApplicationPanelTreeEle
   }
 };
 
-// gen/front_end/panels/application/ApplicationPanelSidebar.js
+// ../../front_end/panels/application/ApplicationPanelSidebar.ts
 import * as ApplicationComponents13 from "./components/components.js";
 
-// gen/front_end/panels/application/DeviceBoundSessionsModel.js
+// ../../front_end/panels/application/DeviceBoundSessionsModel.ts
 var DeviceBoundSessionsModel_exports = {};
 __export(DeviceBoundSessionsModel_exports, {
   DeviceBoundSessionModelEvents: () => DeviceBoundSessionModelEvents,
@@ -2453,29 +5343,34 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
   }
   modelAdded(networkManager) {
     networkManager.addEventListener(SDK5.NetworkManager.Events.DeviceBoundSessionsAdded, this.#onSessionsSet, this);
-    networkManager.addEventListener(SDK5.NetworkManager.Events.DeviceBoundSessionEventOccurred, this.#onEventOccurred, this);
+    networkManager.addEventListener(
+      SDK5.NetworkManager.Events.DeviceBoundSessionEventOccurred,
+      this.#onEventOccurred,
+      this
+    );
     void networkManager.enableDeviceBoundSessions();
   }
   modelRemoved(networkManager) {
     networkManager.removeEventListener(SDK5.NetworkManager.Events.DeviceBoundSessionsAdded, this.#onSessionsSet, this);
-    networkManager.removeEventListener(SDK5.NetworkManager.Events.DeviceBoundSessionEventOccurred, this.#onEventOccurred, this);
+    networkManager.removeEventListener(
+      SDK5.NetworkManager.Events.DeviceBoundSessionEventOccurred,
+      this.#onEventOccurred,
+      this
+    );
   }
   addVisibleSite(site) {
     if (this.#visibleSites.has(site)) {
       return;
     }
     this.#visibleSites.add(site);
-    this.dispatchEventToListeners("ADD_VISIBLE_SITE", { site });
+    this.dispatchEventToListeners("ADD_VISIBLE_SITE" /* ADD_VISIBLE_SITE */, { site });
   }
   clearVisibleSites() {
     if (this.getPreserveLogSetting().get()) {
       return;
     }
     this.#visibleSites.clear();
-    this.dispatchEventToListeners(
-      "CLEAR_VISIBLE_SITES"
-      /* DeviceBoundSessionModelEvents.CLEAR_VISIBLE_SITES */
-    );
+    this.dispatchEventToListeners("CLEAR_VISIBLE_SITES" /* CLEAR_VISIBLE_SITES */);
   }
   clearEvents() {
     if (this.getPreserveLogSetting().get()) {
@@ -2512,10 +5407,16 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
         emptySites.add(site);
       }
     }
-    this.dispatchEventToListeners("CLEAR_EVENTS", { emptySessions, emptySites, noLongerFailedSessions });
+    this.dispatchEventToListeners(
+      "CLEAR_EVENTS" /* CLEAR_EVENTS */,
+      { emptySessions, emptySites, noLongerFailedSessions }
+    );
   }
   deleteSession(site, id) {
-    for (const networkManager of SDK5.TargetManager.TargetManager.instance().models(SDK5.NetworkManager.NetworkManager, { scoped: true })) {
+    for (const networkManager of SDK5.TargetManager.TargetManager.instance().models(
+      SDK5.NetworkManager.NetworkManager,
+      { scoped: true }
+    )) {
       void networkManager.deleteDeviceBoundSession({ site, id });
     }
   }
@@ -2547,7 +5448,7 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
       const sessionAndEvents = this.#ensureSiteAndSessionInitialized(session.key.site, session.key.id);
       sessionAndEvents.session = session;
     }
-    this.dispatchEventToListeners("INITIALIZE_SESSIONS", { sessions });
+    this.dispatchEventToListeners("INITIALIZE_SESSIONS" /* INITIALIZE_SESSIONS */, { sessions });
   }
   #ensureSiteAndSessionInitialized(site, sessionId) {
     let sessionIdToSessionMap = this.#siteSessions.get(site);
@@ -2590,19 +5491,22 @@ var DeviceBoundSessionsModel = class extends Common3.ObjectWrapper.ObjectWrapper
     if (!event.succeeded) {
       sessionAndEvent.hasErrors = true;
     }
-    this.dispatchEventToListeners("EVENT_OCCURRED", { site: eventWithTimestamp.event.site, sessionId: eventWithTimestamp.event.sessionId });
+    this.dispatchEventToListeners(
+      "EVENT_OCCURRED" /* EVENT_OCCURRED */,
+      { site: eventWithTimestamp.event.site, sessionId: eventWithTimestamp.event.sessionId }
+    );
   }
 };
-var DeviceBoundSessionModelEvents;
-(function(DeviceBoundSessionModelEvents2) {
+var DeviceBoundSessionModelEvents = /* @__PURE__ */ ((DeviceBoundSessionModelEvents2) => {
   DeviceBoundSessionModelEvents2["INITIALIZE_SESSIONS"] = "INITIALIZE_SESSIONS";
   DeviceBoundSessionModelEvents2["ADD_VISIBLE_SITE"] = "ADD_VISIBLE_SITE";
   DeviceBoundSessionModelEvents2["CLEAR_VISIBLE_SITES"] = "CLEAR_VISIBLE_SITES";
   DeviceBoundSessionModelEvents2["EVENT_OCCURRED"] = "EVENT_OCCURRED";
   DeviceBoundSessionModelEvents2["CLEAR_EVENTS"] = "CLEAR_EVENTS";
-})(DeviceBoundSessionModelEvents || (DeviceBoundSessionModelEvents = {}));
+  return DeviceBoundSessionModelEvents2;
+})(DeviceBoundSessionModelEvents || {});
 
-// gen/front_end/panels/application/DeviceBoundSessionsTreeElement.js
+// ../../front_end/panels/application/DeviceBoundSessionsTreeElement.ts
 var DeviceBoundSessionsTreeElement_exports = {};
 __export(DeviceBoundSessionsTreeElement_exports, {
   RootTreeElement: () => RootTreeElement
@@ -2677,24 +5581,32 @@ var RootTreeElement = class extends ApplicationPanelTreeElement {
   }
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
-    this.resourcesPanel.showDeviceBoundSessionDefault(this.#model, i18nString5(UIStrings5.deviceBoundSessions), i18nString5(UIStrings5.deviceBoundSessionsCategoryDescription));
+    this.resourcesPanel.showDeviceBoundSessionDefault(
+      this.#model,
+      i18nString5(UIStrings5.deviceBoundSessions),
+      i18nString5(UIStrings5.deviceBoundSessionsCategoryDescription)
+    );
     return false;
   }
   onbind() {
     super.onbind();
-    this.#model.addEventListener("INITIALIZE_SESSIONS", this.#onNewSessions, this);
-    this.#model.addEventListener("ADD_VISIBLE_SITE", this.#onVisibleSiteAdded, this);
-    this.#model.addEventListener("CLEAR_VISIBLE_SITES", this.#onVisibleSitesCleared, this);
-    this.#model.addEventListener("EVENT_OCCURRED", this.#onEventOccurred, this);
-    this.#model.addEventListener("CLEAR_EVENTS", this.#onClearEvents, this);
+    this.#model.addEventListener("INITIALIZE_SESSIONS" /* INITIALIZE_SESSIONS */, this.#onNewSessions, this);
+    this.#model.addEventListener("ADD_VISIBLE_SITE" /* ADD_VISIBLE_SITE */, this.#onVisibleSiteAdded, this);
+    this.#model.addEventListener("CLEAR_VISIBLE_SITES" /* CLEAR_VISIBLE_SITES */, this.#onVisibleSitesCleared, this);
+    this.#model.addEventListener("EVENT_OCCURRED" /* EVENT_OCCURRED */, this.#onEventOccurred, this);
+    this.#model.addEventListener("CLEAR_EVENTS" /* CLEAR_EVENTS */, this.#onClearEvents, this);
   }
   onunbind() {
     super.onunbind();
-    this.#model.removeEventListener("INITIALIZE_SESSIONS", this.#onNewSessions, this);
-    this.#model.removeEventListener("ADD_VISIBLE_SITE", this.#onVisibleSiteAdded, this);
-    this.#model.removeEventListener("CLEAR_VISIBLE_SITES", this.#onVisibleSitesCleared, this);
-    this.#model.removeEventListener("EVENT_OCCURRED", this.#onEventOccurred, this);
-    this.#model.removeEventListener("CLEAR_EVENTS", this.#onClearEvents, this);
+    this.#model.removeEventListener("INITIALIZE_SESSIONS" /* INITIALIZE_SESSIONS */, this.#onNewSessions, this);
+    this.#model.removeEventListener("ADD_VISIBLE_SITE" /* ADD_VISIBLE_SITE */, this.#onVisibleSiteAdded, this);
+    this.#model.removeEventListener(
+      "CLEAR_VISIBLE_SITES" /* CLEAR_VISIBLE_SITES */,
+      this.#onVisibleSitesCleared,
+      this
+    );
+    this.#model.removeEventListener("EVENT_OCCURRED" /* EVENT_OCCURRED */, this.#onEventOccurred, this);
+    this.#model.removeEventListener("CLEAR_EVENTS" /* CLEAR_EVENTS */, this.#onClearEvents, this);
   }
   #updateSiteTreeElementVisibility(site) {
     const siteMapEntry = this.#sites.get(site);
@@ -2781,14 +5693,23 @@ var RootTreeElement = class extends ApplicationPanelTreeElement {
       const defaultOnSelect = siteElement.onselect.bind(siteElement);
       siteElement.onselect = (selectedByUser) => {
         defaultOnSelect(selectedByUser);
-        this.resourcesPanel.showDeviceBoundSessionDefault(this.#model, i18nString5(UIStrings5.deviceBoundSessions), i18nString5(UIStrings5.deviceBoundSessionsCategoryDescription));
+        this.resourcesPanel.showDeviceBoundSessionDefault(
+          this.#model,
+          i18nString5(UIStrings5.deviceBoundSessions),
+          i18nString5(UIStrings5.deviceBoundSessionsCategoryDescription)
+        );
         return false;
       };
       siteMapEntry = { siteTreeElement: siteElement, sessions: /* @__PURE__ */ new Map() };
       this.#sites.set(site, siteMapEntry);
     }
     if (!siteMapEntry.sessions.has(sessionId)) {
-      const sessionElement = new ApplicationPanelTreeElement(this.resourcesPanel, sessionId ?? i18nString5(UIStrings5.noSession), false, "device-bound-sessions-session");
+      const sessionElement = new ApplicationPanelTreeElement(
+        this.resourcesPanel,
+        sessionId ?? i18nString5(UIStrings5.noSession),
+        false,
+        "device-bound-sessions-session"
+      );
       if (sessionId === void 0) {
         sessionElement.listItemElement.classList.add("no-device-bound-session");
       }
@@ -2810,7 +5731,11 @@ var RootTreeElement = class extends ApplicationPanelTreeElement {
       sessionElement.listItemElement.addEventListener("contextmenu", (event) => {
         if (sessionId !== void 0) {
           const contextMenu = new UI6.ContextMenu.ContextMenu(event);
-          contextMenu.defaultSection().appendItem(i18nString5(UIStrings5.clear), () => this.#model.deleteSession(site, sessionId), { jslogContext: "clear" });
+          contextMenu.defaultSection().appendItem(
+            i18nString5(UIStrings5.clear),
+            () => this.#model.deleteSession(site, sessionId),
+            { jslogContext: "clear" }
+          );
           void contextMenu.show();
         }
       });
@@ -2865,7 +5790,7 @@ var RootTreeElement = class extends ApplicationPanelTreeElement {
   }
 };
 
-// gen/front_end/panels/application/ExtensionStorageModel.js
+// ../../front_end/panels/application/ExtensionStorageModel.ts
 var ExtensionStorageModel_exports = {};
 __export(ExtensionStorageModel_exports, {
   Events: () => Events3,
@@ -2919,13 +5844,17 @@ var ExtensionStorage = class extends Common4.ObjectWrapper.ObjectWrapper {
     return response.data;
   }
   async setItem(key, value) {
-    const response = await this.#model.agent.invoke_setStorageItems({ id: this.#extensionId, storageArea: this.#storageArea, values: { [key]: value } });
+    const response = await this.#model.agent.invoke_setStorageItems(
+      { id: this.#extensionId, storageArea: this.#storageArea, values: { [key]: value } }
+    );
     if (response.getError()) {
       throw new Error(response.getError());
     }
   }
   async removeItem(key) {
-    const response = await this.#model.agent.invoke_removeStorageItems({ id: this.#extensionId, storageArea: this.#storageArea, keys: [key] });
+    const response = await this.#model.agent.invoke_removeStorageItems(
+      { id: this.#extensionId, storageArea: this.#storageArea, keys: [key] }
+    );
     if (response.getError()) {
       throw new Error(response.getError());
     }
@@ -2961,8 +5890,16 @@ var ExtensionStorageModel = class extends SDK6.SDKModel.SDKModel {
       return;
     }
     if (this.#runtimeModel) {
-      this.#runtimeModel.addEventListener(SDK6.RuntimeModel.Events.ExecutionContextCreated, this.#onExecutionContextCreated, this);
-      this.#runtimeModel.addEventListener(SDK6.RuntimeModel.Events.ExecutionContextDestroyed, this.#onExecutionContextDestroyed, this);
+      this.#runtimeModel.addEventListener(
+        SDK6.RuntimeModel.Events.ExecutionContextCreated,
+        this.#onExecutionContextCreated,
+        this
+      );
+      this.#runtimeModel.addEventListener(
+        SDK6.RuntimeModel.Events.ExecutionContextDestroyed,
+        this.#onExecutionContextDestroyed,
+        this
+      );
       this.#runtimeModel.executionContexts().forEach(this.#executionContextCreated, this);
     }
     this.#enabled = true;
@@ -2978,11 +5915,10 @@ var ExtensionStorageModel = class extends SDK6.SDKModel.SDKModel {
   }
   #addExtension(id, name) {
     for (const storageArea of [
-      "session",
-      "local",
-      "sync",
-      "managed"
-      /* Protocol.Extensions.StorageArea.Managed */
+      Extensions.StorageArea.Session,
+      Extensions.StorageArea.Local,
+      Extensions.StorageArea.Sync,
+      Extensions.StorageArea.Managed
     ]) {
       const storages = this.#getStoragesForExtension(id);
       const storage = new ExtensionStorage(this, id, name, storageArea);
@@ -2995,9 +5931,11 @@ var ExtensionStorageModel = class extends SDK6.SDKModel.SDKModel {
           return;
         }
         storages.set(storageArea, storage);
-        this.dispatchEventToListeners("ExtensionStorageAdded", storage);
-      }).catch(() => {
-      });
+        this.dispatchEventToListeners("ExtensionStorageAdded" /* EXTENSION_STORAGE_ADDED */, storage);
+      }).catch(
+        () => {
+        }
+      );
     }
   }
   #removeExtension(id) {
@@ -3007,7 +5945,7 @@ var ExtensionStorageModel = class extends SDK6.SDKModel.SDKModel {
     }
     for (const [key, storage] of storages) {
       storages.delete(key);
-      this.dispatchEventToListeners("ExtensionStorageRemoved", storage);
+      this.dispatchEventToListeners("ExtensionStorageRemoved" /* EXTENSION_STORAGE_REMOVED */, storage);
     }
     this.#storages.delete(id);
   }
@@ -3047,14 +5985,14 @@ var ExtensionStorageModel = class extends SDK6.SDKModel.SDKModel {
     return result;
   }
 };
-SDK6.SDKModel.SDKModel.register(ExtensionStorageModel, { capabilities: 4, autostart: false });
-var Events3;
-(function(Events5) {
+SDK6.SDKModel.SDKModel.register(ExtensionStorageModel, { capabilities: SDK6.Target.Capability.JS, autostart: false });
+var Events3 = /* @__PURE__ */ ((Events5) => {
   Events5["EXTENSION_STORAGE_ADDED"] = "ExtensionStorageAdded";
   Events5["EXTENSION_STORAGE_REMOVED"] = "ExtensionStorageRemoved";
-})(Events3 || (Events3 = {}));
+  return Events5;
+})(Events3 || {});
 
-// gen/front_end/panels/application/FrameDetailsView.js
+// ../../front_end/panels/application/FrameDetailsView.ts
 var FrameDetailsView_exports = {};
 __export(FrameDetailsView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW4,
@@ -3214,7 +6152,7 @@ button.text-link {
 
 /*# sourceURL=${import.meta.resolve("./frameDetailsReportView.css")} */`;
 
-// gen/front_end/panels/application/OriginTrialTreeView.js
+// ../../front_end/panels/application/OriginTrialTreeView.ts
 var OriginTrialTreeView_exports = {};
 __export(OriginTrialTreeView_exports, {
   OriginTrialTokenRows: () => OriginTrialTokenRows,
@@ -3308,7 +6246,7 @@ var originTrialTreeView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./originTrialTreeView.css")} */`;
 
-// gen/front_end/panels/application/OriginTrialTreeView.js
+// ../../front_end/panels/application/OriginTrialTreeView.ts
 var { classMap: classMap2 } = Directives2;
 var { widget: widget2 } = UI7.Widget;
 var UIStrings6 = {
@@ -3366,7 +6304,7 @@ var UIStrings6 = {
 var str_6 = i18n11.i18n.registerUIStrings("panels/application/OriginTrialTreeView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 function renderOriginTrialTree(originTrial) {
-  const success = originTrial.status === "Enabled";
+  const success = originTrial.status === Page.OriginTrialStatus.Enabled;
   return html4`
     <li role="treeitem">
       ${originTrial.trialName}
@@ -3383,7 +6321,7 @@ function renderOriginTrialTree(originTrial) {
     </li>`;
 }
 function renderTokenNode(token) {
-  const success = token.status === "Success";
+  const success = token.status === Page.OriginTrialTokenStatus.Success;
   return html4`
     <li role="treeitem">
       ${i18nString6(UIStrings6.token)}
@@ -3421,7 +6359,7 @@ function renderRawTokenTextNode(tokenText) {
     </li>`;
 }
 var ROWS_DEFAULT_VIEW = (input, _output, target) => {
-  const success = input.tokenWithStatus.status === "Success";
+  const success = input.tokenWithStatus.status === Page.OriginTrialTokenStatus.Success;
   render4(html4`
     <style>
       ${originTrialTokenRows_css_default}
@@ -3448,7 +6386,10 @@ var OriginTrialTokenRows = class extends UI7.Widget.Widget {
   #view;
   #tokenWithStatus = null;
   #parsedTokenDetails = [];
-  #dateFormatter = new Intl.DateTimeFormat(i18n11.DevToolsLocale.DevToolsLocale.instance().locale, { dateStyle: "long", timeStyle: "long" });
+  #dateFormatter = new Intl.DateTimeFormat(
+    i18n11.DevToolsLocale.DevToolsLocale.instance().locale,
+    { dateStyle: "long", timeStyle: "long" }
+  );
   constructor(element, view = ROWS_DEFAULT_VIEW) {
     super(element, { useShadowDom: true });
     this.#view = view;
@@ -3469,14 +6410,14 @@ var OriginTrialTokenRows = class extends UI7.Widget.Widget {
         name: i18nString6(UIStrings6.origin),
         value: {
           text: this.#tokenWithStatus.parsedToken.origin,
-          hasError: this.#tokenWithStatus.status === "WrongOrigin"
+          hasError: this.#tokenWithStatus.status === Page.OriginTrialTokenStatus.WrongOrigin
         }
       },
       {
         name: i18nString6(UIStrings6.expiryTime),
         value: {
           text: this.#dateFormatter.format(this.#tokenWithStatus.parsedToken.expiryTime * 1e3),
-          hasError: this.#tokenWithStatus.status === "Expired"
+          hasError: this.#tokenWithStatus.status === Page.OriginTrialTokenStatus.Expired
         }
       },
       {
@@ -3492,7 +6433,7 @@ var OriginTrialTokenRows = class extends UI7.Widget.Widget {
         value: { text: this.#tokenWithStatus.parsedToken.matchSubDomains.toString() }
       }
     ];
-    if (this.#tokenWithStatus.status === "UnknownTrial") {
+    if (this.#tokenWithStatus.status === Page.OriginTrialTokenStatus.UnknownTrial) {
       this.#parsedTokenDetails = [
         {
           name: i18nString6(UIStrings6.trialName),
@@ -3550,7 +6491,7 @@ var OriginTrialTreeView = class extends UI7.Widget.Widget {
   }
 };
 
-// gen/front_end/panels/application/FrameDetailsView.js
+// ../../front_end/panels/application/FrameDetailsView.ts
 var { widget: widget3 } = UI8.Widget;
 var UIStrings7 = {
   /**
@@ -3838,10 +6779,20 @@ function renderDocumentSection(input) {
       <devtools-report-divider></devtools-report-divider>`;
 }
 function renderSourcesLinkForURL(onRevealInSources) {
-  return ApplicationComponents4.PermissionsPolicySection.renderIconLink("label", i18nString7(UIStrings7.clickToOpenInSourcesPanel), onRevealInSources, "reveal-in-sources");
+  return ApplicationComponents4.PermissionsPolicySection.renderIconLink(
+    "label",
+    i18nString7(UIStrings7.clickToOpenInSourcesPanel),
+    onRevealInSources,
+    "reveal-in-sources"
+  );
 }
 function renderNetworkLinkForURL(onRevealInNetwork) {
-  return ApplicationComponents4.PermissionsPolicySection.renderIconLink("arrow-up-down-circle", i18nString7(UIStrings7.clickToOpenInNetworkPanel), onRevealInNetwork, "reveal-in-network");
+  return ApplicationComponents4.PermissionsPolicySection.renderIconLink(
+    "arrow-up-down-circle",
+    i18nString7(UIStrings7.clickToOpenInNetworkPanel),
+    onRevealInNetwork,
+    "reveal-in-network"
+  );
 }
 function maybeRenderUnreachableURL(unreachableUrl) {
   if (!unreachableUrl) {
@@ -3860,18 +6811,23 @@ function maybeRenderUnreachableURL(unreachableUrl) {
 function renderNetworkLinkForUnreachableURL(unreachableUrlString) {
   const unreachableUrl = Common5.ParsedURL.ParsedURL.fromString(unreachableUrlString);
   if (unreachableUrl) {
-    return ApplicationComponents4.PermissionsPolicySection.renderIconLink("arrow-up-down-circle", i18nString7(UIStrings7.clickToOpenInNetworkPanelMight), () => {
-      void Common5.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
-        {
-          filterType: NetworkForward.UIFilter.FilterType.Domain,
-          filterValue: unreachableUrl.domain()
-        },
-        {
-          filterType: null,
-          filterValue: unreachableUrl.path
-        }
-      ]));
-    }, "unreachable-url.reveal-in-network");
+    return ApplicationComponents4.PermissionsPolicySection.renderIconLink(
+      "arrow-up-down-circle",
+      i18nString7(UIStrings7.clickToOpenInNetworkPanelMight),
+      () => {
+        void Common5.Revealer.reveal(NetworkForward.UIFilter.UIRequestFilter.filters([
+          {
+            filterType: NetworkForward.UIFilter.FilterType.Domain,
+            filterValue: unreachableUrl.domain()
+          },
+          {
+            filterType: null,
+            filterValue: unreachableUrl.path
+          }
+        ]));
+      },
+      "unreachable-url.reveal-in-network"
+    );
   }
   return nothing3;
 }
@@ -3904,7 +6860,10 @@ function maybeRenderCreationStacktrace(stackTrace) {
     return html5`
         <devtools-report-key title=${i18nString7(UIStrings7.creationStackTraceExplanation)}>${i18nString7(UIStrings7.creationStackTrace)}</devtools-report-key>
         <devtools-report-value jslog=${VisualLogging3.section("frame-creation-stack-trace")}>
-          ${widget3(Components2.JSPresentationUtils.StackTracePreviewContent, { stackTrace, options: { expandable: true } })}
+          ${widget3(
+      Components2.JSPresentationUtils.StackTracePreviewContent,
+      { stackTrace, options: { expandable: true } }
+    )}
         </devtools-report-value>
       `;
   }
@@ -3912,24 +6871,24 @@ function maybeRenderCreationStacktrace(stackTrace) {
 }
 function getAdFrameTypeStrings(type) {
   switch (type) {
-    case "child":
+    case Page.AdFrameType.Child:
       return { value: i18nString7(UIStrings7.child), description: i18nString7(UIStrings7.childDescription) };
-    case "root":
+    case Page.AdFrameType.Root:
       return { value: i18nString7(UIStrings7.root), description: i18nString7(UIStrings7.rootDescription) };
   }
 }
 function getAdFrameExplanationString(explanation) {
   switch (explanation) {
-    case "CreatedByAdScript":
+    case Page.AdFrameExplanation.CreatedByAdScript:
       return i18nString7(UIStrings7.createdByAdScriptExplanation);
-    case "MatchedBlockingRule":
+    case Page.AdFrameExplanation.MatchedBlockingRule:
       return i18nString7(UIStrings7.matchedBlockingRuleExplanation);
-    case "ParentIsAd":
+    case Page.AdFrameExplanation.ParentIsAd:
       return i18nString7(UIStrings7.parentIsAdExplanation);
   }
 }
 function maybeRenderAdStatus(adFrameType, adFrameStatus) {
-  if (adFrameType === void 0 || adFrameType === "none") {
+  if (adFrameType === void 0 || adFrameType === Page.AdFrameType.None) {
     return nothing3;
   }
   const typeStrings = getAdFrameTypeStrings(adFrameType);
@@ -3945,7 +6904,7 @@ function maybeRenderAdStatus(adFrameType, adFrameStatus) {
       </devtools-report-value>`;
 }
 function maybeRenderCreatorAdScriptAncestry(adFrameType, target, adScriptAncestry) {
-  if (adFrameType === "none") {
+  if (adFrameType === Page.AdFrameType.None) {
     return nothing3;
   }
   if (!target || !adScriptAncestry || adScriptAncestry.ancestryChain.length === 0) {
@@ -3953,7 +6912,10 @@ function maybeRenderCreatorAdScriptAncestry(adFrameType, target, adScriptAncestr
   }
   const rows = adScriptAncestry.ancestryChain.map((adScriptId) => {
     return html5`<div>
-      ${widget3(Components2.Linkifier.ScriptLocationLink, { target, scriptId: adScriptId.scriptId, options: { jslogContext: "ad-script" } })}
+      ${widget3(
+      Components2.Linkifier.ScriptLocationLink,
+      { target, scriptId: adScriptId.scriptId, options: { jslogContext: "ad-script" } }
+    )}
     </div>`;
   });
   const shouldRenderFilterlistRule = adScriptAncestry.rootScriptFilterlistRule !== void 0;
@@ -3996,13 +6958,13 @@ function maybeRenderSecureContextExplanation(frame) {
 }
 function getSecureContextExplanation(frame) {
   switch (frame?.getSecureContextType()) {
-    case "Secure":
+    case Page.SecureContextType.Secure:
       return null;
-    case "SecureLocalhost":
+    case Page.SecureContextType.SecureLocalhost:
       return i18nString7(UIStrings7.localhostIsAlwaysASecureContext);
-    case "InsecureAncestor":
+    case Page.SecureContextType.InsecureAncestor:
       return i18nString7(UIStrings7.aFrameAncestorIsAnInsecure);
-    case "InsecureScheme":
+    case Page.SecureContextType.InsecureScheme:
       return i18nString7(UIStrings7.theFramesSchemeIsInsecure);
   }
   return null;
@@ -4013,14 +6975,12 @@ function maybeRenderCoopCoepCSPStatus(info) {
           ${maybeRenderCrossOriginStatus(
       info.coep,
       i18n13.i18n.lockedString("Cross-Origin Embedder Policy (COEP)"),
-      "None"
-      /* Protocol.Network.CrossOriginEmbedderPolicyValue.None */
+      Network.CrossOriginEmbedderPolicyValue.None
     )}
           ${maybeRenderCrossOriginStatus(
       info.coop,
       i18n13.i18n.lockedString("Cross-Origin Opener Policy (COOP)"),
-      "UnsafeNone"
-      /* Protocol.Network.CrossOriginOpenerPolicyValue.UnsafeNone */
+      Network.CrossOriginOpenerPolicyValue.UnsafeNone
     )}
           ${renderCSPSection(info.csp)}
         `;
@@ -4033,25 +6993,25 @@ function maybeRenderCrossOriginStatus(info, policyName, noneValue) {
   }
   function crossOriginValueToString(value) {
     switch (value) {
-      case "Credentialless":
+      case Network.CrossOriginEmbedderPolicyValue.Credentialless:
         return "credentialless";
-      case "None":
+      case Network.CrossOriginEmbedderPolicyValue.None:
         return "none";
-      case "RequireCorp":
+      case Network.CrossOriginEmbedderPolicyValue.RequireCorp:
         return "require-corp";
-      case "NoopenerAllowPopups":
+      case Network.CrossOriginOpenerPolicyValue.NoopenerAllowPopups:
         return "noopenener-allow-popups";
-      case "SameOrigin":
+      case Network.CrossOriginOpenerPolicyValue.SameOrigin:
         return "same-origin";
-      case "SameOriginAllowPopups":
+      case Network.CrossOriginOpenerPolicyValue.SameOriginAllowPopups:
         return "same-origin-allow-popups";
-      case "SameOriginPlusCoep":
+      case Network.CrossOriginOpenerPolicyValue.SameOriginPlusCoep:
         return "same-origin-plus-coep";
-      case "RestrictProperties":
+      case Network.CrossOriginOpenerPolicyValue.RestrictProperties:
         return "restrict-properties";
-      case "RestrictPropertiesPlusCoep":
+      case Network.CrossOriginOpenerPolicyValue.RestrictPropertiesPlusCoep:
         return "restrict-properties-plus-coep";
-      case "UnsafeNone":
+      case Network.CrossOriginOpenerPolicyValue.UnsafeNone:
         return "unsafe-none";
     }
   }
@@ -4088,8 +7048,8 @@ function renderSingleCSP(cspInfo, divider) {
             .iconName=${"help"}
             class='help-button'
             .accessibleLabel=${i18nString7(UIStrings7.learnMore)}
-            .variant=${"icon"}
-            .size=${"SMALL"}
+            .variant=${Buttons3.Button.Variant.ICON}
+            .size=${Buttons3.Button.Size.SMALL}
             @click=${() => {
     UIHelpers.openInNewTab("https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy-Report-Only");
   }}
@@ -4097,7 +7057,7 @@ function renderSingleCSP(cspInfo, divider) {
             ></devtools-button>`}
       </devtools-report-key>
       <devtools-report-value>
-        ${cspInfo.source === "HTTP" ? i18n13.i18n.lockedString("HTTP header") : i18n13.i18n.lockedString("Meta tag")}
+        ${cspInfo.source === Network.ContentSecurityPolicySource.HTTP ? i18n13.i18n.lockedString("HTTP header") : i18n13.i18n.lockedString("Meta tag")}
         ${renderEffectiveDirectives(cspInfo.effectiveDirectives)}
       </devtools-report-value>
       ${divider ? html5`<devtools-report-divider class="subsection-divider"></devtools-report-divider>` : nothing3}
@@ -4147,9 +7107,9 @@ function renderSharedArrayBufferAvailability(frame) {
     if (features) {
       let renderHint = function(frame2) {
         switch (frame2.getCrossOriginIsolatedContextType()) {
-          case "Isolated":
+          case Page.CrossOriginIsolatedContextType.Isolated:
             return nothing3;
-          case "NotIsolated":
+          case Page.CrossOriginIsolatedContextType.NotIsolated:
             if (sabAvailable) {
               return html5`
                   <span class="inline-comment">
@@ -4157,7 +7117,7 @@ function renderSharedArrayBufferAvailability(frame) {
                   </span>`;
             }
             return html5`<span class="inline-comment">${i18nString7(UIStrings7.requiresCrossoriginIsolated)}</span>`;
-          case "NotIsolatedFeatureDisabled":
+          case Page.CrossOriginIsolatedContextType.NotIsolatedFeatureDisabled:
             if (!sabTransferAvailable) {
               return html5`
                   <span class="inline-comment">
@@ -4169,14 +7129,8 @@ function renderSharedArrayBufferAvailability(frame) {
         }
         return nothing3;
       };
-      const sabAvailable = features.includes(
-        "SharedArrayBuffers"
-        /* Protocol.Page.GatedAPIFeatures.SharedArrayBuffers */
-      );
-      const sabTransferAvailable = sabAvailable && features.includes(
-        "SharedArrayBuffersTransferAllowed"
-        /* Protocol.Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed */
-      );
+      const sabAvailable = features.includes(Page.GatedAPIFeatures.SharedArrayBuffers);
+      const sabTransferAvailable = sabAvailable && features.includes(Page.GatedAPIFeatures.SharedArrayBuffersTransferAllowed);
       const availabilityText = sabTransferAvailable ? i18nString7(UIStrings7.availableTransferable) : sabAvailable ? i18nString7(UIStrings7.availableNotTransferable) : i18nString7(UIStrings7.unavailable);
       const tooltipText = sabTransferAvailable ? i18nString7(UIStrings7.sharedarraybufferConstructorIs) : sabAvailable ? i18nString7(UIStrings7.sharedarraybufferConstructorIsAvailable) : "";
       return html5`
@@ -4291,8 +7245,7 @@ var FrameDetailsReportView = class extends UI8.Widget.Widget {
       onRevealInNetwork: frameRequest ? () => {
         const requestLocation = NetworkForward.UIRequestLocation.UIRequestLocation.tab(
           frameRequest,
-          "headers-component"
-          /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */
+          NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT
         );
         return Common5.Revealer.reveal(requestLocation);
       } : void 0,
@@ -4319,7 +7272,7 @@ var FrameDetailsReportView = class extends UI8.Widget.Widget {
   }
 };
 
-// gen/front_end/panels/application/IndexedDBModel.js
+// ../../front_end/panels/application/IndexedDBModel.ts
 var IndexedDBModel_exports = {};
 __export(IndexedDBModel_exports, {
   Database: () => Database,
@@ -4364,20 +7317,20 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
     switch (typeof idbKey) {
       case "number":
         key = {
-          type: "number",
+          type: IndexedDB.KeyType.Number,
           number: idbKey
         };
         break;
       case "string":
         key = {
-          type: "string",
+          type: IndexedDB.KeyType.String,
           string: idbKey
         };
         break;
       case "object":
         if (idbKey instanceof Date) {
           key = {
-            type: "date",
+            type: IndexedDB.KeyType.Date,
             date: idbKey.getTime()
           };
         } else if (Array.isArray(idbKey)) {
@@ -4389,7 +7342,7 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
             }
           }
           key = {
-            type: "array",
+            type: IndexedDB.KeyType.Array,
             array
           };
         } else {
@@ -4412,13 +7365,13 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
   static idbKeyPathFromKeyPath(keyPath) {
     let idbKeyPath;
     switch (keyPath.type) {
-      case "null":
+      case IndexedDB.KeyPathType.Null:
         idbKeyPath = null;
         break;
-      case "string":
+      case IndexedDB.KeyPathType.String:
         idbKeyPath = keyPath.string;
         break;
-      case "array":
+      case IndexedDB.KeyPathType.Array:
         idbKeyPath = keyPath.array;
         break;
     }
@@ -4439,8 +7392,16 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
     }
     void this.indexedDBAgent.invoke_enable();
     if (this.storageBucketModel) {
-      this.storageBucketModel.addEventListener("BucketAdded", this.storageBucketAdded, this);
-      this.storageBucketModel.addEventListener("BucketRemoved", this.storageBucketRemoved, this);
+      this.storageBucketModel.addEventListener(
+        SDK8.StorageBucketsModel.Events.BUCKET_ADDED,
+        this.storageBucketAdded,
+        this
+      );
+      this.storageBucketModel.addEventListener(
+        SDK8.StorageBucketsModel.Events.BUCKET_REMOVED,
+        this.storageBucketRemoved,
+        this
+      );
       for (const { bucket } of this.storageBucketModel.getBuckets()) {
         this.addStorageBucket(bucket);
       }
@@ -4467,7 +7428,9 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
     if (!this.enabled) {
       return;
     }
-    await this.indexedDBAgent.invoke_deleteDatabase({ storageBucket: databaseId.storageBucket, databaseName: databaseId.name });
+    await this.indexedDBAgent.invoke_deleteDatabase(
+      { storageBucket: databaseId.storageBucket, databaseName: databaseId.name }
+    );
     void this.loadDatabaseNamesByStorageBucket(databaseId.storageBucket);
   }
   async refreshDatabaseNames() {
@@ -4480,17 +7443,21 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
         }
       }
     }
-    this.dispatchEventToListeners(Events4.DatabaseNamesRefreshed);
+    this.dispatchEventToListeners("DatabaseNamesRefreshed" /* DatabaseNamesRefreshed */);
   }
   refreshDatabase(databaseId) {
     void this.loadDatabase(databaseId, true);
   }
   async clearObjectStore(databaseId, objectStoreName) {
-    await this.indexedDBAgent.invoke_clearObjectStore({ storageBucket: databaseId.storageBucket, databaseName: databaseId.name, objectStoreName });
+    await this.indexedDBAgent.invoke_clearObjectStore(
+      { storageBucket: databaseId.storageBucket, databaseName: databaseId.name, objectStoreName }
+    );
   }
   async deleteEntries(databaseId, objectStoreName, idbKeyRange) {
     const keyRange = _IndexedDBModel.keyRangeFromIDBKeyRange(idbKeyRange);
-    await this.indexedDBAgent.invoke_deleteObjectStoreEntries({ storageBucket: databaseId.storageBucket, databaseName: databaseId.name, objectStoreName, keyRange });
+    await this.indexedDBAgent.invoke_deleteObjectStoreEntries(
+      { storageBucket: databaseId.storageBucket, databaseName: databaseId.name, objectStoreName, keyRange }
+    );
   }
   storageBucketAdded({ data: { bucketInfo: { bucket } } }) {
     this.addStorageBucket(bucket);
@@ -4555,10 +7522,10 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
     return result;
   }
   databaseAddedForStorageBucket(databaseId) {
-    this.dispatchEventToListeners(Events4.DatabaseAdded, { model: this, databaseId });
+    this.dispatchEventToListeners("DatabaseAdded" /* DatabaseAdded */, { model: this, databaseId });
   }
   databaseRemovedForStorageBucket(databaseId) {
-    this.dispatchEventToListeners(Events4.DatabaseRemoved, { model: this, databaseId });
+    this.dispatchEventToListeners("DatabaseRemoved" /* DatabaseRemoved */, { model: this, databaseId });
   }
   async loadDatabaseNamesByStorageBucket(storageBucket) {
     const { storageKey } = storageBucket;
@@ -4600,7 +7567,7 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
       }
       databaseModel.objectStores.set(objectStoreModel.name, objectStoreModel);
     }
-    this.dispatchEventToListeners(Events4.DatabaseLoaded, { model: this, database: databaseModel, entriesUpdated });
+    this.dispatchEventToListeners("DatabaseLoaded" /* DatabaseLoaded */, { model: this, database: databaseModel, entriesUpdated });
   }
   loadObjectStoreData(databaseId, objectStoreName, idbKeyRange, skipCount, pageSize, callback) {
     void this.requestData(
@@ -4616,7 +7583,16 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
     );
   }
   loadIndexData(databaseId, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback) {
-    void this.requestData(databaseId, databaseId.name, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback);
+    void this.requestData(
+      databaseId,
+      databaseId.name,
+      objectStoreName,
+      indexName,
+      idbKeyRange,
+      skipCount,
+      pageSize,
+      callback
+    );
   }
   async requestData(databaseId, databaseName, objectStoreName, indexName, idbKeyRange, skipCount, pageSize, callback) {
     const keyRange = idbKeyRange ? _IndexedDBModel.keyRangeFromIDBKeyRange(idbKeyRange) : void 0;
@@ -4653,7 +7629,9 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
   async getMetadata(databaseId, objectStore) {
     const databaseName = databaseId.name;
     const objectStoreName = objectStore.name;
-    const response = await this.indexedDBAgent.invoke_getMetadata({ storageBucket: databaseId.storageBucket, databaseName, objectStoreName });
+    const response = await this.indexedDBAgent.invoke_getMetadata(
+      { storageBucket: databaseId.storageBucket, databaseName, objectStoreName }
+    );
     if (response.getError()) {
       console.error("IndexedDBAgent error: " + response.getError());
       return null;
@@ -4683,7 +7661,7 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
     const storageBucket = this.storageBucketModel?.getBucketById(bucketId)?.bucket;
     if (storageBucket) {
       const databaseId = new DatabaseId(storageBucket, databaseName);
-      this.dispatchEventToListeners(Events4.IndexedDBContentUpdated, { databaseId, objectStoreName, model: this });
+      this.dispatchEventToListeners("IndexedDBContentUpdated" /* IndexedDBContentUpdated */, { databaseId, objectStoreName, model: this });
     }
   }
   cacheStorageListUpdated(_event) {
@@ -4695,15 +7673,15 @@ var IndexedDBModel = class _IndexedDBModel extends SDK8.SDKModel.SDKModel {
   storageBucketDeleted(_event) {
   }
 };
-SDK8.SDKModel.SDKModel.register(IndexedDBModel, { capabilities: 8192, autostart: false });
-var Events4;
-(function(Events5) {
+SDK8.SDKModel.SDKModel.register(IndexedDBModel, { capabilities: SDK8.Target.Capability.STORAGE, autostart: false });
+var Events4 = /* @__PURE__ */ ((Events5) => {
   Events5["DatabaseAdded"] = "DatabaseAdded";
   Events5["DatabaseRemoved"] = "DatabaseRemoved";
   Events5["DatabaseLoaded"] = "DatabaseLoaded";
   Events5["DatabaseNamesRefreshed"] = "DatabaseNamesRefreshed";
   Events5["IndexedDBContentUpdated"] = "IndexedDBContentUpdated";
-})(Events4 || (Events4 = {}));
+  return Events5;
+})(Events4 || {});
 var Entry = class {
   key;
   primaryKey;
@@ -4785,7 +7763,7 @@ var Index = class {
   }
 };
 
-// gen/front_end/panels/application/IndexedDBViews.js
+// ../../front_end/panels/application/IndexedDBViews.ts
 var IndexedDBViews_exports = {};
 __export(IndexedDBViews_exports, {
   IDBDataView: () => IDBDataView,
@@ -4919,7 +7897,7 @@ var indexedDBViews_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./indexedDBViews.css")} */`;
 
-// gen/front_end/panels/application/IndexedDBViews.js
+// ../../front_end/panels/application/IndexedDBViews.ts
 var UIStrings8 = {
   /**
    * @description Text in Indexed DBViews of the Application panel
@@ -5064,7 +8042,7 @@ var IDBDatabaseView = class extends ApplicationComponents5.StorageMetadataView.S
       <devtools-report-section>
       <devtools-button
           aria-label=${i18nString8(UIStrings8.deleteDatabase)}
-          .variant=${"outlined"}
+          .variant=${Buttons4.Button.Variant.OUTLINED}
           @click=${this.deleteDatabase}
           jslog=${VisualLogging4.action("delete-database").track({
       click: true
@@ -5073,7 +8051,7 @@ var IDBDatabaseView = class extends ApplicationComponents5.StorageMetadataView.S
       </devtools-button>&nbsp;
       <devtools-button
           aria-label=${i18nString8(UIStrings8.refreshDatabase)}
-          .variant=${"outlined"}
+          .variant=${Buttons4.Button.Variant.OUTLINED}
           @click=${this.refreshDatabaseButtonClicked}
           jslog=${VisualLogging4.action("refresh-database").track({
       click: true
@@ -5099,7 +8077,12 @@ var IDBDatabaseView = class extends ApplicationComponents5.StorageMetadataView.S
   updatedForTests() {
   }
   async deleteDatabase() {
-    const ok = await UI9.UIUtils.ConfirmDialog.show(i18nString8(UIStrings8.databaseWillBeRemoved), i18nString8(UIStrings8.confirmDeleteDatabase, { PH1: this.database.databaseId.name }), this, { jslogContext: "delete-database-confirmation" });
+    const ok = await UI9.UIUtils.ConfirmDialog.show(
+      i18nString8(UIStrings8.databaseWillBeRemoved),
+      i18nString8(UIStrings8.confirmDeleteDatabase, { PH1: this.database.databaseId.name }),
+      this,
+      { jslogContext: "delete-database-confirmation" }
+    );
     if (ok) {
       void this.model.deleteDatabase(this.database.databaseId);
     }
@@ -5169,7 +8152,7 @@ var renderToolbar = (input) => {
         .title=${i18nString8(UIStrings8.refresh)}
         jslog=${VisualLogging4.action("refresh").track({ click: true })}
         @click=${input.refreshButtonClicked}
-        .variant=${"toolbar"}
+        .variant=${Buttons4.Button.Variant.TOOLBAR}
       ></devtools-button>
       <devtools-button
         class="toolbar-button"
@@ -5178,7 +8161,7 @@ var renderToolbar = (input) => {
         jslog=${VisualLogging4.action("clear-all").track({ click: true })}
         @click=${input.clearButtonClicked}
         .disabled=${input.isIndex || !input.clearButtonEnabled}
-        .variant=${"toolbar"}>
+        .variant=${Buttons4.Button.Variant.TOOLBAR}>
       </devtools-button>
       <devtools-button
         class="toolbar-button"
@@ -5187,7 +8170,7 @@ var renderToolbar = (input) => {
         jslog=${VisualLogging4.action("delete-selected").track({ click: true })}
         @click=${input.deleteButtonClicked}
         .disabled=${input.selectedRowNumber < 0 || input.entries.length === 0}
-        .variant=${"toolbar"}>
+        .variant=${Buttons4.Button.Variant.TOOLBAR}>
       </devtools-button>
 
       <div class="toolbar-divider"></div>
@@ -5198,7 +8181,7 @@ var renderToolbar = (input) => {
         .title=${i18nString8(UIStrings8.showPreviousPage)}
         .disabled=${input.skipCount <= 0}
         @click=${input.pageBackButtonClicked}
-        .variant=${"toolbar"}>
+        .variant=${Buttons4.Button.Variant.TOOLBAR}>
       </devtools-button>
       <devtools-button
         class="toolbar-button"
@@ -5206,7 +8189,7 @@ var renderToolbar = (input) => {
         .title=${i18nString8(UIStrings8.showNextPage)}
         .disabled=${!input.hasMore}
         @click=${input.pageForwardButtonClicked}
-        .variant=${"toolbar"}>
+        .variant=${Buttons4.Button.Variant.TOOLBAR}>
       </devtools-button>
 
       <devtools-toolbar-input
@@ -5221,7 +8204,9 @@ var renderToolbar = (input) => {
 
       ${input.needsRefreshVisible ? html6`
         <div class="toolbar-divider"></div>
-        <div class="toolbar-item stale-data-warning" title=${i18nString8(UIStrings8.someEntriesMayHaveBeenModified)}>
+        <div class="toolbar-item stale-data-warning" title=${i18nString8(
+    UIStrings8.someEntriesMayHaveBeenModified
+  )}>
           <devtools-icon name="warning" class="warning-icon"></devtools-icon>
           <span>${i18nString8(UIStrings8.dataMayBeStale)}</span>
         </div>
@@ -5359,9 +8344,24 @@ var IDBDataView = class extends UI9.View.SimpleView {
     }
     const idbKeyRange = key ? window.IDBKeyRange.lowerBound(key) : null;
     if (this.isIndex && this.index) {
-      this.model.loadIndexData(this.databaseId, this.objectStore.name, this.index.name, idbKeyRange, skipCount, pageSize, callback.bind(this));
+      this.model.loadIndexData(
+        this.databaseId,
+        this.objectStore.name,
+        this.index.name,
+        idbKeyRange,
+        skipCount,
+        pageSize,
+        callback.bind(this)
+      );
     } else {
-      this.model.loadObjectStoreData(this.databaseId, this.objectStore.name, idbKeyRange, skipCount, pageSize, callback.bind(this));
+      this.model.loadObjectStoreData(
+        this.databaseId,
+        this.objectStore.name,
+        idbKeyRange,
+        skipCount,
+        pageSize,
+        callback.bind(this)
+      );
     }
     void this.model.getMetadata(this.databaseId, this.objectStore).then((metadata) => {
       this.#metadata = metadata;
@@ -5450,30 +8450,34 @@ var IDBDataView = class extends UI9.View.SimpleView {
     this.performUpdate();
   }
   performUpdate() {
-    this.#view({
-      isIndex: this.isIndex,
-      index: this.index,
-      objectStore: this.objectStore,
-      entries: this.entries,
-      skipCount: this.skipCount,
-      selectedRowNumber: this.#selectedRowNumber,
-      clearButtonEnabled: this.#clearButtonEnabled,
-      hasMore: this.#hasMore,
-      keyFilter: this.#keyFilter,
-      needsRefreshVisible: this.#needsRefreshVisible,
-      metadata: this.#metadata,
-      refreshButtonClicked: this.refreshButtonClicked.bind(this),
-      clearButtonClicked: this.clearButtonClicked.bind(this),
-      deleteButtonClicked: this.deleteButtonClicked.bind(this),
-      pageBackButtonClicked: this.pageBackButtonClicked.bind(this),
-      pageForwardButtonClicked: this.pageForwardButtonClicked.bind(this),
-      onKeyFilterChange: (value) => {
-        this.#keyFilter = value;
-        this.updateData(false);
+    this.#view(
+      {
+        isIndex: this.isIndex,
+        index: this.index,
+        objectStore: this.objectStore,
+        entries: this.entries,
+        skipCount: this.skipCount,
+        selectedRowNumber: this.#selectedRowNumber,
+        clearButtonEnabled: this.#clearButtonEnabled,
+        hasMore: this.#hasMore,
+        keyFilter: this.#keyFilter,
+        needsRefreshVisible: this.#needsRefreshVisible,
+        metadata: this.#metadata,
+        refreshButtonClicked: this.refreshButtonClicked.bind(this),
+        clearButtonClicked: this.clearButtonClicked.bind(this),
+        deleteButtonClicked: this.deleteButtonClicked.bind(this),
+        pageBackButtonClicked: this.pageBackButtonClicked.bind(this),
+        pageForwardButtonClicked: this.pageForwardButtonClicked.bind(this),
+        onKeyFilterChange: (value) => {
+          this.#keyFilter = value;
+          this.updateData(false);
+        },
+        onRowSelected: this.onRowSelected.bind(this),
+        deleteEntry: this.deleteEntry.bind(this)
       },
-      onRowSelected: this.onRowSelected.bind(this),
-      deleteEntry: this.deleteEntry.bind(this)
-    }, void 0, this.element);
+      void 0,
+      this.element
+    );
   }
 };
 var OBJECT_PROPERTIES_SECTION_WIDGET_DEFAULT_VIEW = (input, output, target) => {
@@ -5481,13 +8485,16 @@ var OBJECT_PROPERTIES_SECTION_WIDGET_DEFAULT_VIEW = (input, output, target) => {
     render6(nothing4, target);
     return;
   }
-  render6(ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(
-    input.objectTree,
-    void 0,
-    true,
-    true
-    /* readOnly */
-  ), target);
+  render6(
+    ObjectUI.ObjectPropertiesSection.defaultObjectPresentation(
+      input.objectTree,
+      void 0,
+      true,
+      true
+      /* readOnly */
+    ),
+    target
+  );
 };
 var ObjectPropertiesSectionWidget = class extends UI9.Widget.Widget {
   #objectTree = null;
@@ -5500,7 +8507,7 @@ var ObjectPropertiesSectionWidget = class extends UI9.Widget.Widget {
     if (value) {
       this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(value, {
         readOnly: true,
-        propertiesMode: 1
+        propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
       });
     } else {
       this.#objectTree = null;
@@ -5530,7 +8537,7 @@ var ObjectPropertiesSectionWidget = class extends UI9.Widget.Widget {
   }
 };
 
-// gen/front_end/panels/application/OpenedWindowDetailsView.js
+// ../../front_end/panels/application/OpenedWindowDetailsView.ts
 var OpenedWindowDetailsView_exports = {};
 __export(OpenedWindowDetailsView_exports, {
   OpenedWindowDetailsView: () => OpenedWindowDetailsView,
@@ -5617,7 +8624,7 @@ var openedWindowDetailsView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./openedWindowDetailsView.css")} */`;
 
-// gen/front_end/panels/application/OpenedWindowDetailsView.js
+// ../../front_end/panels/application/OpenedWindowDetailsView.ts
 var UIStrings9 = {
   /**
    * @description Text in Timeline indicating that input has happened recently
@@ -5722,7 +8729,11 @@ async function maybeCreateLinkToElementsPanel(opener) {
   if (!linkTargetDOMNode) {
     return null;
   }
-  const linkElement = linkifyIcon("code-circle", i18nString9(UIStrings9.clickToOpenInElementsPanel), () => Common7.Revealer.reveal(linkTargetDOMNode));
+  const linkElement = linkifyIcon(
+    "code-circle",
+    i18nString9(UIStrings9.clickToOpenInElementsPanel),
+    () => Common7.Revealer.reveal(linkTargetDOMNode)
+  );
   const label = document.createElement("span");
   label.textContent = `<${linkTargetDOMNode.nodeName().toLocaleLowerCase()}>`;
   linkElement.insertBefore(label, linkElement.firstChild);
@@ -5839,7 +8850,7 @@ var WorkerDetailsView = class extends UI10.Widget.VBox {
     if (!info) {
       return;
     }
-    const coepIsEnabled = (value) => value !== "None";
+    const coepIsEnabled = (value) => value !== Network.CrossOriginEmbedderPolicyValue.None;
     this.fillCrossOriginPolicy(this.coepPolicy, coepIsEnabled, info.coep);
   }
   fillCrossOriginPolicy(field, isEnabled, info) {
@@ -5868,7 +8879,7 @@ var WorkerDetailsView = class extends UI10.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/application/PreloadingTreeElement.js
+// ../../front_end/panels/application/PreloadingTreeElement.ts
 var PreloadingTreeElement_exports = {};
 __export(PreloadingTreeElement_exports, {
   PreloadingRuleSetTreeElement: () => PreloadingRuleSetTreeElement,
@@ -5878,7 +8889,7 @@ import * as i18n21 from "../../core/i18n/i18n.js";
 import { createIcon as createIcon5 } from "../../ui/kit/kit.js";
 import * as PreloadingHelper2 from "./preloading/helper/helper.js";
 
-// gen/front_end/panels/application/preloading/PreloadingView.js
+// ../../front_end/panels/application/preloading/PreloadingView.ts
 var PreloadingView_exports = {};
 __export(PreloadingView_exports, {
   PreloadingAttemptView: () => PreloadingAttemptView,
@@ -5915,7 +8926,7 @@ var emptyWidget_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./emptyWidget.css")} */`;
 
-// gen/front_end/panels/application/preloading/PreloadingView.js
+// ../../front_end/panels/application/preloading/PreloadingView.ts
 import * as UI11 from "../../ui/legacy/legacy.js";
 import { Directives as Directives4, html as html7, render as render7 } from "../../ui/lit/lit.js";
 import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
@@ -5985,7 +8996,7 @@ var preloadingViewDropDown_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./preloading/preloadingViewDropDown.css")} */`;
 
-// gen/front_end/panels/application/preloading/PreloadingView.js
+// ../../front_end/panels/application/preloading/PreloadingView.ts
 var { createRef, ref: ref2 } = Directives4;
 var { widget: widget5 } = UI11.Widget;
 var UIStrings10 = {
@@ -6066,39 +9077,39 @@ var UIStrings10 = {
 var str_10 = i18n19.i18n.registerUIStrings("panels/application/preloading/PreloadingView.ts", UIStrings10);
 var i18nString10 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
 var SPECULATION_EXPLANATION_URL = "https://developer.chrome.com/docs/devtools/application/debugging-speculation-rules";
-var AllRuleSetRootId = Symbol("AllRuleSetRootId");
+var AllRuleSetRootId = /* @__PURE__ */ Symbol("AllRuleSetRootId");
 var PreloadingUIUtils = class {
   static status(status) {
     switch (status) {
-      case "NotTriggered":
+      case SDK11.PreloadingModel.PreloadingStatus.NOT_TRIGGERED:
         return i18nString10(UIStrings10.statusNotTriggered);
-      case "Pending":
+      case SDK11.PreloadingModel.PreloadingStatus.PENDING:
         return i18nString10(UIStrings10.statusPending);
-      case "Running":
+      case SDK11.PreloadingModel.PreloadingStatus.RUNNING:
         return i18nString10(UIStrings10.statusRunning);
-      case "Ready":
+      case SDK11.PreloadingModel.PreloadingStatus.READY:
         return i18nString10(UIStrings10.statusReady);
-      case "Success":
+      case SDK11.PreloadingModel.PreloadingStatus.SUCCESS:
         return i18nString10(UIStrings10.statusSuccess);
-      case "Failure":
+      case SDK11.PreloadingModel.PreloadingStatus.FAILURE:
         return i18nString10(UIStrings10.statusFailure);
       // NotSupported is used to handle unreachable case. For example,
       // there is no code path for
       // PreloadingTriggeringOutcome::kTriggeredButPending in prefetch,
       // which is mapped to NotSupported. So, we regard it as an
       // internal error.
-      case "NotSupported":
+      case SDK11.PreloadingModel.PreloadingStatus.NOT_SUPPORTED:
         return i18n19.i18n.lockedString("Internal error");
     }
   }
   static preloadsStatusSummary(countsByStatus) {
     const LIST = [
-      "NotTriggered",
-      "Pending",
-      "Running",
-      "Ready",
-      "Success",
-      "Failure"
+      SDK11.PreloadingModel.PreloadingStatus.NOT_TRIGGERED,
+      SDK11.PreloadingModel.PreloadingStatus.PENDING,
+      SDK11.PreloadingModel.PreloadingStatus.RUNNING,
+      SDK11.PreloadingModel.PreloadingStatus.READY,
+      SDK11.PreloadingModel.PreloadingStatus.SUCCESS,
+      SDK11.PreloadingModel.PreloadingStatus.FAILURE
     ];
     return LIST.filter((status) => (countsByStatus?.get(status) || 0) > 0).map((status) => (countsByStatus?.get(status) || 0) + " " + this.status(status)).join(", ").toLocaleLowerCase();
   }
@@ -6107,10 +9118,10 @@ var PreloadingUIUtils = class {
     switch (errorType) {
       case void 0:
         return i18nString10(UIStrings10.validityValid);
-      case "SourceIsNotJsonObject":
-      case "InvalidRulesetLevelTag":
+      case Preload.RuleSetErrorType.SourceIsNotJsonObject:
+      case Preload.RuleSetErrorType.InvalidRulesetLevelTag:
         return i18nString10(UIStrings10.validityInvalid);
-      case "InvalidRulesSkipped":
+      case Preload.RuleSetErrorType.InvalidRulesSkipped:
         return i18nString10(UIStrings10.validitySomeRulesInvalid);
     }
   }
@@ -6147,21 +9158,38 @@ var PreloadingRuleSetView = class extends UI11.Widget.VBox {
     this.registerRequiredCSS(emptyWidget_css_default, preloadingView_css_default);
     this.model = model;
     SDK11.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
-    SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.PreloadingModel.PreloadingModel, "ModelUpdated", this.render, this, { scoped: true });
-    SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.PreloadingModel.PreloadingModel, "WarningsUpdated", (e) => {
-      Object.assign(this.warningsView, e.data);
-    }, this, { scoped: true });
+    SDK11.TargetManager.TargetManager.instance().addModelListener(
+      SDK11.PreloadingModel.PreloadingModel,
+      SDK11.PreloadingModel.Events.MODEL_UPDATED,
+      this.render,
+      this,
+      { scoped: true }
+    );
+    SDK11.TargetManager.TargetManager.instance().addModelListener(
+      SDK11.PreloadingModel.PreloadingModel,
+      SDK11.PreloadingModel.Events.WARNINGS_UPDATED,
+      (e) => {
+        Object.assign(this.warningsView, e.data);
+      },
+      this,
+      { scoped: true }
+    );
     this.warningsContainer = document.createElement("div");
     this.warningsContainer.classList.add("flex-none");
     this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
     this.warningsView.show(this.warningsContainer);
-    this.ruleSetGrid.addEventListener("select", this.onRuleSetsGridCellFocused, this);
+    this.ruleSetGrid.addEventListener(
+      PreloadingComponents.RuleSetGrid.Events.SELECT,
+      this.onRuleSetsGridCellFocused,
+      this
+    );
     this.ruleSetDetailsRef = createRef();
     const onPrettyPrintToggle = () => {
       this.shouldPrettyPrint = !this.shouldPrettyPrint;
       this.updateRuleSetDetails();
     };
-    render7(html7`
+    render7(
+      html7`
         <div class="empty-state">
           <span class="empty-state-header">${i18nString10(UIStrings10.noRulesDetected)}</span>
           <div class="empty-state-description">
@@ -6178,9 +9206,9 @@ var PreloadingRuleSetView = class extends UI11.Widget.VBox {
           </div>
           <div slot="sidebar" jslog=${VisualLogging5.section("rule-set-details")}>
             <devtools-widget ${widget5(PreloadingComponents.RuleSetDetailsView.RuleSetDetailsView, {
-      ruleSet: this.getRuleSet(),
-      shouldPrettyPrint: this.shouldPrettyPrint
-    })} ${ref2(this.ruleSetDetailsRef)}></devtools-widget>
+        ruleSet: this.getRuleSet(),
+        shouldPrettyPrint: this.shouldPrettyPrint
+      })} ${ref2(this.ruleSetDetailsRef)}></devtools-widget>
           </div>
         </devtools-split-view>
         <div class="pretty-print-button" style="border-top: 1px solid var(--sys-color-divider)">
@@ -6188,13 +9216,16 @@ var PreloadingRuleSetView = class extends UI11.Widget.VBox {
           .iconName=${"brackets"}
           .toggledIconName=${"brackets"}
           .toggled=${this.shouldPrettyPrint}
-          .toggleType=${"primary-toggle"}
+          .toggleType=${Buttons5.Button.ToggleType.PRIMARY}
           .title=${i18nString10(UIStrings10.prettyPrint)}
-          .variant=${"icon_toggle"}
-          .size=${"REGULAR"}
+          .variant=${Buttons5.Button.Variant.ICON_TOGGLE}
+          .size=${Buttons5.Button.Size.REGULAR}
           @click=${onPrettyPrintToggle}
           jslog=${VisualLogging5.action().track({ click: true }).context("preloading-status-panel-pretty-print")}></devtools-button>
-        </div>`, this.contentElement, { host: this });
+        </div>`,
+      this.contentElement,
+      { host: this }
+    );
     this.hsplit = this.contentElement.querySelector("devtools-split-view");
   }
   wasShown() {
@@ -6279,7 +9310,9 @@ function applyFilterText(filterText, rows) {
   return rows.filter((row) => {
     const attempt = row.pipeline.getOriginallyTriggered();
     const url = attempt.key.url.toLowerCase();
-    const action7 = PreloadingComponents.PreloadingString.capitalizedAction(attempt.action).toLowerCase();
+    const action7 = PreloadingComponents.PreloadingString.capitalizedAction(
+      attempt.action
+    ).toLowerCase();
     const status = PreloadingUIUtils.status(attempt.status).toLowerCase();
     return query.every((term) => {
       if (term.text === void 0 || term.text === null || term.text === "") {
@@ -6326,10 +9359,22 @@ var PreloadingAttemptView = class extends UI11.Widget.VBox {
     this.registerRequiredCSS(emptyWidget_css_default, preloadingView_css_default);
     this.model = model;
     SDK11.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
-    SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.PreloadingModel.PreloadingModel, "ModelUpdated", this.render, this, { scoped: true });
-    SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.PreloadingModel.PreloadingModel, "WarningsUpdated", (e) => {
-      Object.assign(this.warningsView, e.data);
-    }, this, { scoped: true });
+    SDK11.TargetManager.TargetManager.instance().addModelListener(
+      SDK11.PreloadingModel.PreloadingModel,
+      SDK11.PreloadingModel.Events.MODEL_UPDATED,
+      this.render,
+      this,
+      { scoped: true }
+    );
+    SDK11.TargetManager.TargetManager.instance().addModelListener(
+      SDK11.PreloadingModel.PreloadingModel,
+      SDK11.PreloadingModel.Events.WARNINGS_UPDATED,
+      (e) => {
+        Object.assign(this.warningsView, e.data);
+      },
+      this,
+      { scoped: true }
+    );
     this.warningsContainer = document.createElement("div");
     this.warningsContainer.classList.add("flex-none");
     this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
@@ -6340,11 +9385,11 @@ var PreloadingAttemptView = class extends UI11.Widget.VBox {
     this.ruleSetSelector = new PreloadingRuleSetSelector(() => this.render());
     toolbar8.appendToolbarItem(this.ruleSetSelector.item());
     this.textFilterUI = new UI11.Toolbar.ToolbarFilter(void 0, 1, 1);
-    this.textFilterUI.addEventListener("TextChanged", this.onTextFilterChanged, this);
+    this.textFilterUI.addEventListener(UI11.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onTextFilterChanged, this);
     toolbar8.appendToolbarItem(this.textFilterUI);
     toolbar8.appendToolbarItem(new UI11.Toolbar.ToolbarSeparator());
     this.clearButton = new UI11.Toolbar.ToolbarButton("Clear speculative loads", "clear", void 0, "clear-speculative-loads");
-    this.clearButton.addEventListener("Click", () => {
+    this.clearButton.addEventListener(UI11.Toolbar.ToolbarButton.Events.CLICK, () => {
       const model2 = SDK11.TargetManager.TargetManager.instance().scopeTarget()?.model(SDK11.PreloadingModel.PreloadingModel);
       if (!model2) {
         return;
@@ -6438,9 +9483,12 @@ var PreloadingAttemptView = class extends UI11.Widget.VBox {
           >${i18nString10(UIStrings10.learnMore)}</devtools-link>
         </div>
       </div>
-      <devtools-split-view sidebar-position="second" ${UI11.Widget.widgetRef(UI11.SplitWidget.SplitWidget, (w) => {
-      this.hsplit = w;
-    })}>
+      <devtools-split-view sidebar-position="second" ${UI11.Widget.widgetRef(
+      UI11.SplitWidget.SplitWidget,
+      (w) => {
+        this.hsplit = w;
+      }
+    )}>
         <div slot="main" class="overflow-auto" style="height: 100%">
           ${this.preloadingGridContainer}
         </div>
@@ -6485,10 +9533,22 @@ var PreloadingSummaryView = class extends UI11.Widget.VBox {
     this.registerRequiredCSS(emptyWidget_css_default, preloadingView_css_default);
     this.model = model;
     SDK11.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
-    SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.PreloadingModel.PreloadingModel, "ModelUpdated", this.render, this, { scoped: true });
-    SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.PreloadingModel.PreloadingModel, "WarningsUpdated", (e) => {
-      Object.assign(this.warningsView, e.data);
-    }, this, { scoped: true });
+    SDK11.TargetManager.TargetManager.instance().addModelListener(
+      SDK11.PreloadingModel.PreloadingModel,
+      SDK11.PreloadingModel.Events.MODEL_UPDATED,
+      this.render,
+      this,
+      { scoped: true }
+    );
+    SDK11.TargetManager.TargetManager.instance().addModelListener(
+      SDK11.PreloadingModel.PreloadingModel,
+      SDK11.PreloadingModel.Events.WARNINGS_UPDATED,
+      (e) => {
+        Object.assign(this.warningsView, e.data);
+      },
+      this,
+      { scoped: true }
+    );
     this.warningsContainer = document.createElement("div");
     this.warningsContainer.classList.add("flex-none");
     this.contentElement.insertBefore(this.warningsContainer, this.contentElement.firstChild);
@@ -6529,7 +9589,13 @@ var PreloadingRuleSetSelector = class {
     assertNotNullOrUndefined2(model);
     this.model = model;
     SDK11.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
-    SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.PreloadingModel.PreloadingModel, "ModelUpdated", this.onModelUpdated, this, { scoped: true });
+    SDK11.TargetManager.TargetManager.instance().addModelListener(
+      SDK11.PreloadingModel.PreloadingModel,
+      SDK11.PreloadingModel.Events.MODEL_UPDATED,
+      this.onModelUpdated,
+      this,
+      { scoped: true }
+    );
     this.listModel = new UI11.ListModel.ListModel();
     this.dropDown = new UI11.SoftDropDown.SoftDropDown(this.listModel, this);
     this.dropDown.setRowHeight(36);
@@ -6537,7 +9603,10 @@ var PreloadingRuleSetSelector = class {
     this.toolbarItem = new UI11.Toolbar.ToolbarItem(this.dropDown.element);
     this.toolbarItem.setTitle(i18nString10(UIStrings10.filterFilterByRuleSet));
     this.toolbarItem.element.classList.add("toolbar-has-dropdown");
-    this.toolbarItem.element.setAttribute("jslog", `${VisualLogging5.action("filter-by-rule-set").track({ click: true })}`);
+    this.toolbarItem.element.setAttribute(
+      "jslog",
+      `${VisualLogging5.action("filter-by-rule-set").track({ click: true })}`
+    );
     this.onModelUpdated();
     this.onSelectionChanged = onSelectionChanged;
   }
@@ -6596,7 +9665,10 @@ var PreloadingRuleSetSelector = class {
     if (ruleSet === null) {
       return i18n19.i18n.lockedString("Internal error");
     }
-    return PreloadingComponents.PreloadingString.ruleSetTagOrLocationShort(ruleSet, pageURL());
+    return PreloadingComponents.PreloadingString.ruleSetTagOrLocationShort(
+      ruleSet,
+      pageURL()
+    );
   }
   subtitleFor(id) {
     const convertedId = this.translateItemIdToRuleSetId(id);
@@ -6626,7 +9698,7 @@ var PreloadingRuleSetSelector = class {
   }
 };
 
-// gen/front_end/panels/application/PreloadingTreeElement.js
+// ../../front_end/panels/application/PreloadingTreeElement.ts
 var UIStrings11 = {
   /**
    * @description Text in Application Panel Sidebar of the Application panel
@@ -6750,7 +9822,12 @@ var PreloadingSummaryTreeElement = class extends ExpandableApplicationPanelTreeE
 };
 var PreloadingRuleSetTreeElement = class extends PreloadingTreeElementBase {
   constructor(panel) {
-    super(panel, PreloadingRuleSetView, "preloading://rule-set", i18nString11(UIStrings11.rules));
+    super(
+      panel,
+      PreloadingRuleSetView,
+      "preloading://rule-set",
+      i18nString11(UIStrings11.rules)
+    );
   }
   revealRuleSet(revealInfo) {
     this.select();
@@ -6762,7 +9839,12 @@ var PreloadingRuleSetTreeElement = class extends PreloadingTreeElementBase {
 };
 var PreloadingAttemptTreeElement = class extends PreloadingTreeElementBase {
   constructor(panel) {
-    super(panel, PreloadingAttemptView, "preloading://attempt", i18nString11(UIStrings11.speculations));
+    super(
+      panel,
+      PreloadingAttemptView,
+      "preloading://attempt",
+      i18nString11(UIStrings11.speculations)
+    );
   }
   revealAttempts(filter) {
     this.select();
@@ -6770,7 +9852,7 @@ var PreloadingAttemptTreeElement = class extends PreloadingTreeElementBase {
   }
 };
 
-// gen/front_end/panels/application/ReportingApiTreeElement.js
+// ../../front_end/panels/application/ReportingApiTreeElement.ts
 var ReportingApiTreeElement_exports = {};
 __export(ReportingApiTreeElement_exports, {
   CrashReportContextTreeElement: () => CrashReportContextTreeElement,
@@ -6781,7 +9863,7 @@ import * as i18n27 from "../../core/i18n/i18n.js";
 import { createIcon as createIcon6 } from "../../ui/kit/kit.js";
 import * as UI14 from "../../ui/legacy/legacy.js";
 
-// gen/front_end/panels/application/CrashReportContextView.js
+// ../../front_end/panels/application/CrashReportContextView.ts
 var CrashReportContextView_exports = {};
 __export(CrashReportContextView_exports, {
   CrashReportContextView: () => CrashReportContextView,
@@ -6818,7 +9900,8 @@ var str_12 = i18n23.i18n.registerUIStrings("panels/application/CrashReportContex
 var i18nString12 = i18n23.i18n.getLocalizedString.bind(void 0, str_12);
 var DEFAULT_VIEW5 = (input, _output, target) => {
   const { widget: widget12 } = UI12.Widget;
-  render8(html8`
+  render8(
+    html8`
     <style>${UI12.inspectorCommonStyles}</style>
     <style>
       .crash-report-context-view {
@@ -6863,10 +9946,10 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         <devtools-button title=${i18nString12(UIStrings12.refresh)}
                          @click=${input.onRefresh}
                          .iconName=${"refresh"}
-                         .variant=${"toolbar"}
+                         .variant=${Buttons6.Button.Variant.TOOLBAR}
                          jslog=${VisualLogging6.action("refresh").track({
-    click: true
-  })}>
+      click: true
+    })}>
         </devtools-button>
         <devtools-toolbar-input type="filter" placeholder=${i18nString12(UIStrings12.filterByText)}
             @change=${(e) => input.onFilterChanged(e)} class="flex-auto">
@@ -6882,12 +9965,12 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
               <div class="grid-container">
                 <devtools-widget
                   ${widget12(ApplicationComponents6.CrashReportContextGrid.CrashReportContextGrid, {
-    data: {
-      entries: frame.entries.map((e) => ({ key: e.key, value: e.value })),
-      selectedKey: input.selectedKey || void 0,
-      filters: input.filters
-    }
-  })}
+      data: {
+        entries: frame.entries.map((e) => ({ key: e.key, value: e.value })),
+        selectedKey: input.selectedKey || void 0,
+        filters: input.filters
+      }
+    })}
                   @select=${(e) => input.onRowSelected(e.detail)}>
                 </devtools-widget>
               </div>
@@ -6896,11 +9979,13 @@ var DEFAULT_VIEW5 = (input, _output, target) => {
         </div>
       ` : html8`
         ${widget12(UI12.EmptyWidget.EmptyWidget, {
-    header: i18nString12(UIStrings12.noContext)
-  })}
+      header: i18nString12(UIStrings12.noContext)
+    })}
       `}
     </div>
-  `, target);
+  `,
+    target
+  );
 };
 var CrashReportContextView = class extends UI12.Widget.VBox {
   selectedKey = null;
@@ -6915,30 +10000,34 @@ var CrashReportContextView = class extends UI12.Widget.VBox {
     const models = SDK12.TargetManager.TargetManager.instance().models(SDK12.CrashReportContextModel.CrashReportContextModel);
     const allEntries = (await Promise.all(models.map((model) => model.getEntries()))).flat().filter((entry) => entry !== null);
     const frameData = this.#processFrameData(allEntries);
-    this.#view({
-      frames: frameData,
-      selectedKey: this.selectedKey,
-      filters: this.#filters,
-      onRowSelected: (key) => {
-        this.selectedKey = key;
-        this.requestUpdate();
-      },
-      onRefresh: () => {
-        this.requestUpdate();
-      },
-      onFilterChanged: (e) => {
-        const text = e.detail;
-        const textFilterRegExp = text ? Platform5.StringUtilities.createPlainTextSearchRegex(text, "i") : null;
-        if (textFilterRegExp) {
-          this.#filters = [
-            { key: "key,value", regex: textFilterRegExp, negative: false }
-          ];
-        } else {
-          this.#filters = [];
+    this.#view(
+      {
+        frames: frameData,
+        selectedKey: this.selectedKey,
+        filters: this.#filters,
+        onRowSelected: (key) => {
+          this.selectedKey = key;
+          this.requestUpdate();
+        },
+        onRefresh: () => {
+          this.requestUpdate();
+        },
+        onFilterChanged: (e) => {
+          const text = e.detail;
+          const textFilterRegExp = text ? Platform5.StringUtilities.createPlainTextSearchRegex(text, "i") : null;
+          if (textFilterRegExp) {
+            this.#filters = [
+              { key: "key,value", regex: textFilterRegExp, negative: false }
+            ];
+          } else {
+            this.#filters = [];
+          }
+          this.requestUpdate();
         }
-        this.requestUpdate();
-      }
-    }, void 0, this.contentElement);
+      },
+      void 0,
+      this.contentElement
+    );
   }
   #processFrameData(allEntries) {
     if (allEntries.length === 0) {
@@ -6974,7 +10063,7 @@ var CrashReportContextView = class extends UI12.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/application/ReportingApiView.js
+// ../../front_end/panels/application/ReportingApiView.ts
 var ReportingApiView_exports = {};
 __export(ReportingApiView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW6,
@@ -7081,9 +10170,17 @@ var ReportingApiView = class extends UI13.Widget.VBox {
       return;
     }
     this.#networkManager = networkManager;
-    this.#networkManager.addEventListener(SDK13.NetworkManager.Events.ReportingApiEndpointsChangedForOrigin, this.#onEndpointsChangedForOrigin, this);
+    this.#networkManager.addEventListener(
+      SDK13.NetworkManager.Events.ReportingApiEndpointsChangedForOrigin,
+      this.#onEndpointsChangedForOrigin,
+      this
+    );
     this.#networkManager.addEventListener(SDK13.NetworkManager.Events.ReportingApiReportAdded, this.#onReportAdded, this);
-    this.#networkManager.addEventListener(SDK13.NetworkManager.Events.ReportingApiReportUpdated, this.#onReportUpdated, this);
+    this.#networkManager.addEventListener(
+      SDK13.NetworkManager.Events.ReportingApiReportUpdated,
+      this.#onReportUpdated,
+      this
+    );
     void this.#networkManager.enableReportingApi();
     this.requestUpdate();
   }
@@ -7091,9 +10188,21 @@ var ReportingApiView = class extends UI13.Widget.VBox {
     if (!this.#networkManager || this.#networkManager !== networkManager) {
       return;
     }
-    this.#networkManager.removeEventListener(SDK13.NetworkManager.Events.ReportingApiEndpointsChangedForOrigin, this.#onEndpointsChangedForOrigin, this);
-    this.#networkManager.removeEventListener(SDK13.NetworkManager.Events.ReportingApiReportAdded, this.#onReportAdded, this);
-    this.#networkManager.removeEventListener(SDK13.NetworkManager.Events.ReportingApiReportUpdated, this.#onReportUpdated, this);
+    this.#networkManager.removeEventListener(
+      SDK13.NetworkManager.Events.ReportingApiEndpointsChangedForOrigin,
+      this.#onEndpointsChangedForOrigin,
+      this
+    );
+    this.#networkManager.removeEventListener(
+      SDK13.NetworkManager.Events.ReportingApiReportAdded,
+      this.#onReportAdded,
+      this
+    );
+    this.#networkManager.removeEventListener(
+      SDK13.NetworkManager.Events.ReportingApiReportUpdated,
+      this.#onReportUpdated,
+      this
+    );
     this.#networkManager = void 0;
   }
   performUpdate() {
@@ -7129,7 +10238,7 @@ var ReportingApiView = class extends UI13.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/application/ReportingApiTreeElement.js
+// ../../front_end/panels/application/ReportingApiTreeElement.ts
 var UIStrings14 = {
   /**
    * @description Label for an item in the Application Panel Sidebar of the Application panel
@@ -7278,7 +10387,7 @@ devtools-icon.navigator-font-tree-item {
 
 /*# sourceURL=${import.meta.resolve("./resourcesSidebar.css")} */`;
 
-// gen/front_end/panels/application/ServiceWorkerCacheTreeElement.js
+// ../../front_end/panels/application/ServiceWorkerCacheTreeElement.ts
 var ServiceWorkerCacheTreeElement_exports = {};
 __export(ServiceWorkerCacheTreeElement_exports, {
   SWCacheTreeElement: () => SWCacheTreeElement,
@@ -7289,7 +10398,7 @@ import * as SDK15 from "../../core/sdk/sdk.js";
 import { createIcon as createIcon7 } from "../../ui/kit/kit.js";
 import * as UI16 from "../../ui/legacy/legacy.js";
 
-// gen/front_end/panels/application/ServiceWorkerCacheViews.js
+// ../../front_end/panels/application/ServiceWorkerCacheViews.ts
 var ServiceWorkerCacheViews_exports = {};
 __export(ServiceWorkerCacheViews_exports, {
   DataGridNode: () => DataGridNode,
@@ -7305,7 +10414,7 @@ import * as TextUtils3 from "../../core/text_utils/text_utils.js";
 import * as DataGrid2 from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as UI15 from "../../ui/legacy/legacy.js";
 import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
-import * as Network from "../network/network.js";
+import * as Network2 from "../network/network.js";
 import * as ApplicationComponents8 from "./components/components.js";
 
 // gen/front_end/panels/application/serviceWorkerCacheViews.css.js
@@ -7377,7 +10486,7 @@ var serviceWorkerCacheViews_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./serviceWorkerCacheViews.css")} */`;
 
-// gen/front_end/panels/application/ServiceWorkerCacheViews.js
+// ../../front_end/panels/application/ServiceWorkerCacheViews.ts
 var UIStrings15 = {
   /**
    * @description Text in Application Panel Sidebar of the Application panel
@@ -7488,10 +10597,15 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
     this.dataGrid = null;
     this.refreshThrottler = new Common9.Throttler.Throttler(300);
     this.refreshButton = new UI15.Toolbar.ToolbarButton(i18nString15(UIStrings15.refresh), "refresh", void 0, "cache-storage.refresh");
-    this.refreshButton.addEventListener("Click", this.refreshButtonClicked, this);
+    this.refreshButton.addEventListener(UI15.Toolbar.ToolbarButton.Events.CLICK, this.refreshButtonClicked, this);
     editorToolbar.appendToolbarItem(this.refreshButton);
-    this.deleteSelectedButton = new UI15.Toolbar.ToolbarButton(i18nString15(UIStrings15.deleteSelected), "cross", void 0, "cache-storage.delete-selected");
-    this.deleteSelectedButton.addEventListener("Click", (_event) => {
+    this.deleteSelectedButton = new UI15.Toolbar.ToolbarButton(
+      i18nString15(UIStrings15.deleteSelected),
+      "cross",
+      void 0,
+      "cache-storage.delete-selected"
+    );
+    this.deleteSelectedButton.addEventListener(UI15.Toolbar.ToolbarButton.Events.CLICK, (_event) => {
       void this.deleteButtonClicked(null);
     });
     editorToolbar.appendToolbarItem(this.deleteSelectedButton);
@@ -7499,7 +10613,7 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
     editorToolbar.appendToolbarItem(entryPathFilterBox);
     const entryPathFilterThrottler = new Common9.Throttler.Throttler(300);
     this.entryPathFilter = "";
-    entryPathFilterBox.addEventListener("TextChanged", () => {
+    entryPathFilterBox.addEventListener(UI15.Toolbar.ToolbarInput.Event.TEXT_CHANGED, () => {
       void entryPathFilterThrottler.schedule(() => {
         this.entryPathFilter = entryPathFilterBox.value();
         return this.updateData(true);
@@ -7521,12 +10635,20 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
   }
   wasShown() {
     super.wasShown();
-    this.model.addEventListener("CacheStorageContentUpdated", this.cacheContentUpdated, this);
+    this.model.addEventListener(
+      SDK14.ServiceWorkerCacheModel.Events.CACHE_STORAGE_CONTENT_UPDATED,
+      this.cacheContentUpdated,
+      this
+    );
     void this.updateData(true);
   }
   willHide() {
     super.willHide();
-    this.model.removeEventListener("CacheStorageContentUpdated", this.cacheContentUpdated, this);
+    this.model.removeEventListener(
+      SDK14.ServiceWorkerCacheModel.Events.CACHE_STORAGE_CONTENT_UPDATED,
+      this.cacheContentUpdated,
+      this
+    );
   }
   showPreview(preview) {
     if (preview && this.preview === preview) {
@@ -7536,7 +10658,10 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
       this.preview.detach();
     }
     if (!preview) {
-      preview = new UI15.EmptyWidget.EmptyWidget(i18nString15(UIStrings15.noCacheEntrySelected), i18nString15(UIStrings15.selectACacheEntryAboveToPreview));
+      preview = new UI15.EmptyWidget.EmptyWidget(
+        i18nString15(UIStrings15.noCacheEntrySelected),
+        i18nString15(UIStrings15.selectACacheEntryAboveToPreview)
+      );
     }
     this.preview = preview;
     this.preview.show(this.previewPanel.element);
@@ -7549,7 +10674,7 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
         id: "response-type",
         title: i18n29.i18n.lockedString("Response-Type"),
         weight: 1,
-        align: "right",
+        align: DataGrid2.DataGrid.Align.RIGHT,
         sortable: true
       },
       { id: "content-type", title: i18n29.i18n.lockedString("Content-Type"), weight: 1, sortable: true },
@@ -7557,7 +10682,7 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
         id: "content-length",
         title: i18n29.i18n.lockedString("Content-Length"),
         weight: 1,
-        align: "right",
+        align: DataGrid2.DataGrid.Align.RIGHT,
         sortable: true
       },
       {
@@ -7565,7 +10690,7 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
         title: i18nString15(UIStrings15.timeCached),
         width: "12em",
         weight: 1,
-        align: "right",
+        align: DataGrid2.DataGrid.Align.RIGHT,
         sortable: true
       },
       { id: "vary-header", title: i18n29.i18n.lockedString("Vary Header"), weight: 1, sortable: true }
@@ -7576,8 +10701,8 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
       deleteCallback: this.deleteButtonClicked.bind(this),
       refreshCallback: this.updateData.bind(this, true)
     });
-    dataGrid.addEventListener("SortingChanged", this.sortingChanged, this);
-    dataGrid.addEventListener("SelectedNode", (event) => {
+    dataGrid.addEventListener(DataGrid2.DataGrid.Events.SORTING_CHANGED, this.sortingChanged, this);
+    dataGrid.addEventListener(DataGrid2.DataGrid.Events.SELECTED_NODE, (event) => {
       void this.previewCachedResponse(event.data.data);
     }, this);
     dataGrid.setStriped(true);
@@ -7688,9 +10813,13 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
       return await this.loadingPromise;
     }
     this.loadingPromise = new Promise((resolve) => {
-      this.model.loadAllCacheData(this.cache, this.entryPathFilter, (entries2, returnCount2) => {
-        resolve({ entries: entries2, returnCount: returnCount2 });
-      });
+      this.model.loadAllCacheData(
+        this.cache,
+        this.entryPathFilter,
+        (entries2, returnCount2) => {
+          resolve({ entries: entries2, returnCount: returnCount2 });
+        }
+      );
     });
     const { entries, returnCount } = await this.loadingPromise;
     this.updateDataCallback(entries, returnCount);
@@ -7707,8 +10836,7 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
     }
     void this.refreshThrottler.schedule(
       () => Promise.resolve(this.updateData(true)),
-      "AsSoonAsPossible"
-      /* Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE */
+      Common9.Throttler.Scheduling.AS_SOON_AS_POSSIBLE
     );
   }
   async previewCachedResponse(request) {
@@ -7722,7 +10850,12 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
     }
   }
   createRequest(entry) {
-    const request = SDK14.NetworkRequest.NetworkRequest.createWithoutBackendRequest("cache-storage-" + entry.requestURL, entry.requestURL, Platform6.DevToolsPath.EmptyUrlString, null);
+    const request = SDK14.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+      "cache-storage-" + entry.requestURL,
+      entry.requestURL,
+      Platform6.DevToolsPath.EmptyUrlString,
+      null
+    );
     request.requestMethod = entry.requestMethod;
     request.setRequestHeaders(entry.requestHeaders);
     request.statusCode = entry.responseStatus;
@@ -7732,7 +10865,7 @@ var ServiceWorkerCacheView = class extends UI15.View.SimpleView {
     request.setRequestHeadersText("");
     request.endTime = entry.responseTime;
     let header = entry.responseHeaders.find((header2) => header2.name.toLowerCase() === "content-type");
-    let mimeType = "text/plain";
+    let mimeType = Platform6.MimeType.MimeType.PLAIN;
     if (header) {
       const result = Platform6.MimeType.parseContentType(header.value);
       if (result.mimeType) {
@@ -7839,10 +10972,14 @@ var RequestView = class extends UI15.Widget.VBox {
     this.tabbedPane.element.setAttribute("jslog", `${VisualLogging8.section("network-item-preview")}`);
     this.tabbedPane.addEventListener(UI15.TabbedPane.Events.TabSelected, this.tabSelected, this);
     this.resourceViewTabSetting = Common9.Settings.Settings.instance().createSetting("cache-storage-view-tab", "preview");
-    const requestHeadersView = new Network.RequestHeadersView.RequestHeadersView();
+    const requestHeadersView = new Network2.RequestHeadersView.RequestHeadersView();
     requestHeadersView.request = request;
     this.tabbedPane.appendTab("headers", i18nString15(UIStrings15.headers), requestHeadersView);
-    this.tabbedPane.appendTab("preview", i18nString15(UIStrings15.preview), new Network.RequestPreviewView.RequestPreviewView(request));
+    this.tabbedPane.appendTab(
+      "preview",
+      i18nString15(UIStrings15.preview),
+      new Network2.RequestPreviewView.RequestPreviewView(request)
+    );
     this.tabbedPane.show(this.element);
   }
   wasShown() {
@@ -7865,7 +11002,7 @@ var RequestView = class extends UI15.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/application/ServiceWorkerCacheTreeElement.js
+// ../../front_end/panels/application/ServiceWorkerCacheTreeElement.ts
 var UIStrings16 = {
   /**
    * @description Text in Application Panel Sidebar of the Application panel
@@ -7896,7 +11033,13 @@ var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTree
   swCacheModelObserver;
   storageBucket;
   constructor(resourcesPanel, storageBucket) {
-    super(resourcesPanel, i18nString16(UIStrings16.cacheStorage), i18nString16(UIStrings16.noCacheStorage), i18nString16(UIStrings16.cacheStorageDescription), "cache-storage");
+    super(
+      resourcesPanel,
+      i18nString16(UIStrings16.cacheStorage),
+      i18nString16(UIStrings16.noCacheStorage),
+      i18nString16(UIStrings16.cacheStorageDescription),
+      "cache-storage"
+    );
     const icon = createIcon7("database");
     this.setLink("https://developer.chrome.com/docs/devtools/storage/cache/");
     this.setLeadingIcons([icon]);
@@ -7910,13 +11053,20 @@ var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTree
     this.swCacheModels.clear();
     this.swCacheTreeElements.clear();
     if (this.swCacheModelObserver) {
-      SDK15.TargetManager.TargetManager.instance().unobserveModels(SDK15.ServiceWorkerCacheModel.ServiceWorkerCacheModel, this.swCacheModelObserver);
+      SDK15.TargetManager.TargetManager.instance().unobserveModels(
+        SDK15.ServiceWorkerCacheModel.ServiceWorkerCacheModel,
+        this.swCacheModelObserver
+      );
     }
     this.swCacheModelObserver = {
       modelAdded: (model) => this.serviceWorkerCacheModelAdded(model),
       modelRemoved: (model) => this.serviceWorkerCacheModelRemoved(model)
     };
-    SDK15.TargetManager.TargetManager.instance().observeModels(SDK15.ServiceWorkerCacheModel.ServiceWorkerCacheModel, this.swCacheModelObserver, { scoped: true });
+    SDK15.TargetManager.TargetManager.instance().observeModels(
+      SDK15.ServiceWorkerCacheModel.ServiceWorkerCacheModel,
+      this.swCacheModelObserver,
+      { scoped: true }
+    );
   }
   onattach() {
     super.onattach();
@@ -7924,7 +11074,11 @@ var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTree
   }
   handleContextMenuEvent(event) {
     const contextMenu = new UI16.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString16(UIStrings16.refreshCaches), this.refreshCaches.bind(this), { jslogContext: "refresh-caches" });
+    contextMenu.defaultSection().appendItem(
+      i18nString16(UIStrings16.refreshCaches),
+      this.refreshCaches.bind(this),
+      { jslogContext: "refresh-caches" }
+    );
     void contextMenu.show();
   }
   refreshCaches() {
@@ -7938,15 +11092,15 @@ var ServiceWorkerCacheTreeElement = class extends ExpandableApplicationPanelTree
     for (const cache of model.caches()) {
       this.addCache(model, cache);
     }
-    model.addEventListener("CacheAdded", this.cacheAdded, this);
-    model.addEventListener("CacheRemoved", this.cacheRemoved, this);
+    model.addEventListener(SDK15.ServiceWorkerCacheModel.Events.CACHE_ADDED, this.cacheAdded, this);
+    model.addEventListener(SDK15.ServiceWorkerCacheModel.Events.CACHE_REMOVED, this.cacheRemoved, this);
   }
   serviceWorkerCacheModelRemoved(model) {
     for (const cache of model.caches()) {
       this.removeCache(model, cache);
     }
-    model.removeEventListener("CacheAdded", this.cacheAdded, this);
-    model.removeEventListener("CacheRemoved", this.cacheRemoved, this);
+    model.removeEventListener(SDK15.ServiceWorkerCacheModel.Events.CACHE_ADDED, this.cacheAdded, this);
+    model.removeEventListener(SDK15.ServiceWorkerCacheModel.Events.CACHE_REMOVED, this.cacheRemoved, this);
     this.swCacheModels.delete(model);
   }
   cacheAdded(event) {
@@ -8017,7 +11171,11 @@ var SWCacheTreeElement = class extends ApplicationPanelTreeElement {
   }
   handleContextMenuEvent(event) {
     const contextMenu = new UI16.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString16(UIStrings16.delete), this.clearCache.bind(this), { jslogContext: "delete" });
+    contextMenu.defaultSection().appendItem(
+      i18nString16(UIStrings16.delete),
+      this.clearCache.bind(this),
+      { jslogContext: "delete" }
+    );
     void contextMenu.show();
   }
   clearCache() {
@@ -8043,7 +11201,7 @@ var SWCacheTreeElement = class extends ApplicationPanelTreeElement {
   }
 };
 
-// gen/front_end/panels/application/ServiceWorkersView.js
+// ../../front_end/panels/application/ServiceWorkersView.ts
 var ServiceWorkersView_exports = {};
 __export(ServiceWorkersView_exports, {
   DEFAULT_SECTION_VIEW: () => DEFAULT_SECTION_VIEW,
@@ -8270,7 +11428,7 @@ devtools-widget {
 
 /*# sourceURL=${import.meta.resolve("./serviceWorkersView.css")} */`;
 
-// gen/front_end/panels/application/ServiceWorkerUpdateCycleView.js
+// ../../front_end/panels/application/ServiceWorkerUpdateCycleView.ts
 var ServiceWorkerUpdateCycleView_exports = {};
 __export(ServiceWorkerUpdateCycleView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW7,
@@ -8342,6 +11500,8 @@ var serviceWorkerUpdateCycleView_css_default = `/*
 
   .service-worker-update-timing-bar-clickable:focus-visible {
     background-color: var(--sys-color-state-focus-highlight);
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: calc(-1 * var(--sys-size-2));
   }
 
   .service-worker-update-timing-bar-clickable[aria-checked="true"]::before {
@@ -8399,7 +11559,7 @@ var serviceWorkerUpdateCycleView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./serviceWorkerUpdateCycleView.css")} */`;
 
-// gen/front_end/panels/application/ServiceWorkerUpdateCycleView.js
+// ../../front_end/panels/application/ServiceWorkerUpdateCycleView.ts
 var UIStrings17 = {
   /**
    * @description Text in Indexed DBViews of the Application panel
@@ -8512,15 +11672,18 @@ var ServiceWorkerUpdateCycleView = class extends UI17.Widget.Widget {
       }
     }
     function addNormalizedRanges(ranges, id, startInstallTime, endInstallTime, startActivateTime, endActivateTime, status) {
-      addRange(ranges, { id, phase: "Install", start: startInstallTime, end: endInstallTime });
-      if (status === "activating" || status === "activated" || status === "redundant") {
+      addRange(ranges, { id, phase: "Install" /* INSTALL */, start: startInstallTime, end: endInstallTime });
+      if (status === ServiceWorker.ServiceWorkerVersionStatus.Activating || status === ServiceWorker.ServiceWorkerVersionStatus.Activated || status === ServiceWorker.ServiceWorkerVersionStatus.Redundant) {
         addRange(ranges, {
           id,
-          phase: "Wait",
+          phase: "Wait" /* WAIT */,
           start: endInstallTime,
           end: startActivateTime
         });
-        addRange(ranges, { id, phase: "Activate", start: startActivateTime, end: endActivateTime });
+        addRange(
+          ranges,
+          { id, phase: "Activate" /* ACTIVATE */, start: startActivateTime, end: endActivateTime }
+        );
       }
     }
     function rangesForVersion(version) {
@@ -8530,20 +11693,20 @@ var ServiceWorkerUpdateCycleView = class extends UI17.Widget.Widget {
       let endInstallTime = 0;
       let beginInstallTime = 0;
       const currentStatus = state.status;
-      if (currentStatus === "new") {
+      if (currentStatus === ServiceWorker.ServiceWorkerVersionStatus.New) {
         return [];
       }
       while (state) {
-        if (state.status === "activated") {
+        if (state.status === ServiceWorker.ServiceWorkerVersionStatus.Activated) {
           endActivateTime = state.lastUpdatedTimestamp;
-        } else if (state.status === "activating") {
+        } else if (state.status === ServiceWorker.ServiceWorkerVersionStatus.Activating) {
           if (endActivateTime === 0) {
             endActivateTime = state.lastUpdatedTimestamp;
           }
           beginActivateTime = state.lastUpdatedTimestamp;
-        } else if (state.status === "installed") {
+        } else if (state.status === ServiceWorker.ServiceWorkerVersionStatus.Installed) {
           endInstallTime = state.lastUpdatedTimestamp;
-        } else if (state.status === "installing") {
+        } else if (state.status === ServiceWorker.ServiceWorkerVersionStatus.Installing) {
           if (endInstallTime === 0) {
             endInstallTime = state.lastUpdatedTimestamp;
           }
@@ -8552,7 +11715,15 @@ var ServiceWorkerUpdateCycleView = class extends UI17.Widget.Widget {
         state = state.previousState;
       }
       const ranges = [];
-      addNormalizedRanges(ranges, version.id, beginInstallTime, endInstallTime, beginActivateTime, endActivateTime, currentStatus);
+      addNormalizedRanges(
+        ranges,
+        version.id,
+        beginInstallTime,
+        endInstallTime,
+        beginActivateTime,
+        endActivateTime,
+        currentStatus
+      );
       return ranges;
     }
     if (!this.#registration) {
@@ -8560,10 +11731,10 @@ var ServiceWorkerUpdateCycleView = class extends UI17.Widget.Widget {
     }
     const versions = this.#registration.versionsByMode();
     const modes = [
-      "active",
-      "waiting",
-      "installing",
-      "redundant"
+      SDK16.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE,
+      SDK16.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING,
+      SDK16.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING,
+      SDK16.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT
     ];
     for (const mode of modes) {
       const version = versions.get(mode);
@@ -8691,14 +11862,14 @@ var ServiceWorkerUpdateCycleView = class extends UI17.Widget.Widget {
     event.preventDefault();
   }
 };
-var ServiceWorkerUpdateNames;
-(function(ServiceWorkerUpdateNames2) {
+var ServiceWorkerUpdateNames = /* @__PURE__ */ ((ServiceWorkerUpdateNames2) => {
   ServiceWorkerUpdateNames2["INSTALL"] = "Install";
   ServiceWorkerUpdateNames2["WAIT"] = "Wait";
   ServiceWorkerUpdateNames2["ACTIVATE"] = "Activate";
-})(ServiceWorkerUpdateNames || (ServiceWorkerUpdateNames = {}));
+  return ServiceWorkerUpdateNames2;
+})(ServiceWorkerUpdateNames || {});
 
-// gen/front_end/panels/application/ServiceWorkersView.js
+// ../../front_end/panels/application/ServiceWorkersView.ts
 var UIStrings18 = {
   /**
    * @description Text for linking to other Service Worker registrations
@@ -8895,22 +12066,10 @@ function renderOthersOriginView() {
 function getTimeStamp(registration) {
   const versions = registration.versionsByMode();
   let timestamp = 0;
-  const active = versions.get(
-    "active"
-    /* SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE */
-  );
-  const installing = versions.get(
-    "installing"
-    /* SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING */
-  );
-  const waiting = versions.get(
-    "waiting"
-    /* SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING */
-  );
-  const redundant = versions.get(
-    "redundant"
-    /* SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT */
-  );
+  const active = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE);
+  const installing = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING);
+  const waiting = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING);
+  const redundant = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT);
   if (active) {
     timestamp = active.scriptResponseTime;
   } else if (waiting) {
@@ -8940,17 +12099,21 @@ function renderOriginReport(input) {
   </div>`;
 }
 var DEFAULT_VIEW8 = (input, _output, target) => {
-  render11(html11`
+  render11(
+    html11`
     <!-- This Origin Report -->
     ${renderOriginReport(input)}
-    ${renderOthersOriginView()}`, target, {
-    container: {
-      classes: [
-        "service-worker-list",
-        input.sections.length > 0 ? "service-worker-has-current" : "service-worker-list-empty"
-      ]
+    ${renderOthersOriginView()}`,
+    target,
+    {
+      container: {
+        classes: [
+          "service-worker-list",
+          input.sections.length > 0 ? "service-worker-has-current" : "service-worker-list-empty"
+        ]
+      }
     }
-  });
+  );
 };
 var throttleDisabledForDebugging = false;
 var setThrottleDisabledForDebugging = (enable) => {
@@ -9007,10 +12170,26 @@ var ServiceWorkersView = class extends UI18.Widget.VBox {
       this.updateRegistration(registration);
     }
     this.eventListeners.set(serviceWorkerManager, [
-      this.manager.addEventListener("RegistrationUpdated", this.registrationUpdated, this),
-      this.manager.addEventListener("RegistrationDeleted", this.registrationDeleted, this),
-      this.securityOriginManager.addEventListener(SDK17.SecurityOriginManager.Events.SecurityOriginAdded, this.requestUpdate, this),
-      this.securityOriginManager.addEventListener(SDK17.SecurityOriginManager.Events.SecurityOriginRemoved, this.requestUpdate, this)
+      this.manager.addEventListener(
+        SDK17.ServiceWorkerManager.Events.REGISTRATION_UPDATED,
+        this.registrationUpdated,
+        this
+      ),
+      this.manager.addEventListener(
+        SDK17.ServiceWorkerManager.Events.REGISTRATION_DELETED,
+        this.registrationDeleted,
+        this
+      ),
+      this.securityOriginManager.addEventListener(
+        SDK17.SecurityOriginManager.Events.SecurityOriginAdded,
+        this.requestUpdate,
+        this
+      ),
+      this.securityOriginManager.addEventListener(
+        SDK17.SecurityOriginManager.Events.SecurityOriginRemoved,
+        this.requestUpdate,
+        this
+      )
     ]);
   }
   modelRemoved(serviceWorkerManager) {
@@ -9093,7 +12272,7 @@ var ServiceWorkersView = class extends UI18.Widget.VBox {
 function renderHeaderButtons(input) {
   return html11`
     <devtools-button .data=${{
-    variant: "text",
+    variant: Buttons7.Button.Variant.TEXT,
     title: i18nString18(UIStrings18.networkRequests),
     jslogContext: "show-network-requests"
   }}
@@ -9102,7 +12281,7 @@ function renderHeaderButtons(input) {
       ${i18nString18(UIStrings18.networkRequests)}
     </devtools-button>
     <devtools-button .data=${{
-    variant: "text",
+    variant: Buttons7.Button.Variant.TEXT,
     title: i18nString18(UIStrings18.update),
     jslogContext: "update"
   }}
@@ -9111,7 +12290,7 @@ function renderHeaderButtons(input) {
       ${i18nString18(UIStrings18.update)}
     </devtools-button>
     <devtools-button .data=${{
-    variant: "text",
+    variant: Buttons7.Button.Variant.TEXT,
     title: i18nString18(UIStrings18.unregisterServiceWorker),
     jslogContext: "unregister"
   }}
@@ -9139,7 +12318,7 @@ function renderSyncNotificationField(label, initialValue, placeholder, callback,
         >
         <devtools-button .data=${{
     type: "submit",
-    variant: "outlined",
+    variant: Buttons7.Button.Variant.OUTLINED,
     jslogContext
   }}>
           ${label}
@@ -9217,33 +12396,34 @@ function renderStatusField(input, active, waiting, installing, redundant) {
     <div class="report-field-value">
       <div class="service-worker-version-stack">
         <div class="service-worker-version-stack-bar"></div>
-        ${active ? renderVersion("service-worker-active-circle", i18nString18(UIStrings18.sActivatedAndIsS, {
-    PH1: active.id,
-    PH2: SDK17.ServiceWorkerManager.ServiceWorkerVersion.RunningStatus[active.currentState.runningStatus]()
-  }), active.isRunning() || active.isStarting() ? html11`
-              <devtools-button .data=${{
-    jslogContext: "stop",
-    variant: "outlined"
-    /* Buttons.Button.Variant.OUTLINED */
-  }}
+        ${active ? renderVersion(
+    "service-worker-active-circle",
+    i18nString18(UIStrings18.sActivatedAndIsS, {
+      PH1: active.id,
+      PH2: SDK17.ServiceWorkerManager.ServiceWorkerVersion.RunningStatus[active.currentState.runningStatus]()
+    }),
+    active.isRunning() || active.isStarting() ? html11`
+              <devtools-button .data=${{ jslogContext: "stop", variant: Buttons7.Button.Variant.OUTLINED }}
                               @click=${() => input.onStop(active.id)}>
                   ${i18nString18(UIStrings18.stopString)}
               </devtools-button>` : active.isStartable() ? html11`
-              <devtools-button .data=${{
-    jslogContext: "start",
-    variant: "outlined"
-    /* Buttons.Button.Variant.OUTLINED */
-  }}
+              <devtools-button .data=${{ jslogContext: "start", variant: Buttons7.Button.Variant.OUTLINED }}
                               @click=${input.onStart}>
                   ${i18nString18(UIStrings18.startString)}
-              </devtools-button>` : nothing6) : redundant ? renderVersion("service-worker-redundant-circle", i18nString18(UIStrings18.sIsRedundant, { PH1: redundant.id })) : nothing6}
-        ${waiting ? renderVersion("service-worker-waiting-circle", i18nString18(UIStrings18.sWaitingToActivate, { PH1: waiting.id }), html11`
+              </devtools-button>` : nothing6
+  ) : redundant ? renderVersion(
+    "service-worker-redundant-circle",
+    i18nString18(UIStrings18.sIsRedundant, { PH1: redundant.id })
+  ) : nothing6}
+        ${waiting ? renderVersion(
+    "service-worker-waiting-circle",
+    i18nString18(UIStrings18.sWaitingToActivate, { PH1: waiting.id }),
+    html11`
               <devtools-button .data=${{
-    jslogContext: "skip-waiting",
-    title: i18n35.i18n.lockedString("skipWaiting"),
-    variant: "outlined"
-    /* Buttons.Button.Variant.OUTLINED */
-  }}
+      jslogContext: "skip-waiting",
+      title: i18n35.i18n.lockedString("skipWaiting"),
+      variant: Buttons7.Button.Variant.OUTLINED
+    }}
                   @click=${input.onSkipWaiting}>
                 ${i18n35.i18n.lockedString("skipWaiting")}
               </devtools-button>
@@ -9252,11 +12432,16 @@ function renderStatusField(input, active, waiting, installing, redundant) {
                   ${i18nString18(UIStrings18.receivedS, { PH1: new Date(waiting.scriptResponseTime * 1e3).toLocaleString() })}
                 </div>
               ` : nothing6}
-          `) : nothing6}
-        ${installing ? renderVersion("service-worker-installing-circle", i18nString18(UIStrings18.sTryingToInstall, { PH1: installing.id }), installing.scriptResponseTime !== void 0 ? html11`
+          `
+  ) : nothing6}
+        ${installing ? renderVersion(
+    "service-worker-installing-circle",
+    i18nString18(UIStrings18.sTryingToInstall, { PH1: installing.id }),
+    installing.scriptResponseTime !== void 0 ? html11`
             <div class="service-worker-subtitle">
               ${i18nString18(UIStrings18.receivedS, { PH1: new Date(installing.scriptResponseTime * 1e3).toLocaleString() })}
-            </div>` : nothing6) : nothing6}
+            </div>` : nothing6
+  ) : nothing6}
       </div>
     </div>
   </div>`;
@@ -9299,9 +12484,27 @@ var DEFAULT_SECTION_VIEW = (input, _output, target) => {
          ${renderSourceField(input, input.activeVersion ?? input.redundantVersion)}
          ${renderStatusField(input, input.activeVersion, input.waitingVersion, input.installingVersion, input.redundantVersion)}
          ${renderClientsField(input, input.activeVersion ?? input.redundantVersion)}
-         ${renderSyncNotificationField(i18nString18(UIStrings18.pushString), input.pushData, i18nString18(UIStrings18.pushData), input.onPush, "push-message")}
-         ${renderSyncNotificationField(i18nString18(UIStrings18.syncString), input.syncTag, i18nString18(UIStrings18.syncTag), input.onSync, "sync-tag")}
-         ${renderSyncNotificationField(i18nString18(UIStrings18.periodicSync), input.periodicSyncTag, i18nString18(UIStrings18.periodicSyncTag), input.onPeriodicSync, "periodic-sync-tag")}
+         ${renderSyncNotificationField(
+    i18nString18(UIStrings18.pushString),
+    input.pushData,
+    i18nString18(UIStrings18.pushData),
+    input.onPush,
+    "push-message"
+  )}
+         ${renderSyncNotificationField(
+    i18nString18(UIStrings18.syncString),
+    input.syncTag,
+    i18nString18(UIStrings18.syncTag),
+    input.onSync,
+    "sync-tag"
+  )}
+         ${renderSyncNotificationField(
+    i18nString18(UIStrings18.periodicSync),
+    input.periodicSyncTag,
+    i18nString18(UIStrings18.periodicSyncTag),
+    input.onPeriodicSync,
+    "periodic-sync-tag"
+  )}
          ${renderUpdateCycleField(input)}
          ${renderRouterField(input)}
       </div>
@@ -9331,7 +12534,10 @@ var Section = class extends UI18.Widget.VBox {
     this.manager = data.manager;
     this.registration = data.registration;
     if (!this.pushNotificationDataSetting) {
-      this.pushNotificationDataSetting = Common10.Settings.Settings.instance().createLocalSetting("push-data", i18nString18(UIStrings18.testPushMessageFromDevtools));
+      this.pushNotificationDataSetting = Common10.Settings.Settings.instance().createLocalSetting(
+        "push-data",
+        i18nString18(UIStrings18.testPushMessageFromDevtools)
+      );
       this.syncTagNameSetting = Common10.Settings.Settings.instance().createLocalSetting("sync-tag-name", "test-tag-from-devtools");
       this.periodicSyncTagNameSetting = Common10.Settings.Settings.instance().createLocalSetting("periodic-sync-tag-name", "test-tag-from-devtools");
     }
@@ -9363,22 +12569,10 @@ var Section = class extends UI18.Widget.VBox {
     }
     this.fingerprint = fingerprint;
     const versions = this.registration.versionsByMode();
-    const active = versions.get(
-      "active"
-      /* SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE */
-    );
-    const waiting = versions.get(
-      "waiting"
-      /* SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING */
-    );
-    const installing = versions.get(
-      "installing"
-      /* SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING */
-    );
-    const redundant = versions.get(
-      "redundant"
-      /* SDK.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT */
-    );
+    const active = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.ACTIVE);
+    const waiting = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.WAITING);
+    const installing = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.INSTALLING);
+    const redundant = versions.get(SDK17.ServiceWorkerManager.ServiceWorkerVersion.Modes.REDUNDANT);
     const title = this.getTitle();
     const input = {
       title,
@@ -9416,7 +12610,7 @@ var Section = class extends UI18.Widget.VBox {
     void Common10.Revealer.reveal(NetworkForward2.UIFilter.UIRequestFilter.filters([
       {
         filterType: NetworkForward2.UIFilter.FilterType.Is,
-        filterValue: "service-worker-intercepted"
+        filterValue: NetworkForward2.UIFilter.IsFilterType.SERVICE_WORKER_INTERCEPTED
       }
     ]));
     Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.ServiceWorkerNetworkRequestClicked);
@@ -9453,8 +12647,8 @@ var Section = class extends UI18.Widget.VBox {
       <devtools-button
         .data=${{
       iconName: "select-element",
-      variant: "icon",
-      size: "SMALL",
+      variant: Buttons7.Button.Variant.ICON,
+      size: Buttons7.Button.Size.SMALL,
       title: i18nString18(UIStrings18.focus),
       jslogContext: "client-focus"
     }}
@@ -9476,7 +12670,7 @@ var Section = class extends UI18.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/application/StorageBucketsTreeElement.js
+// ../../front_end/panels/application/StorageBucketsTreeElement.ts
 var StorageBucketsTreeElement_exports = {};
 __export(StorageBucketsTreeElement_exports, {
   StorageBucketsTreeElement: () => StorageBucketsTreeElement,
@@ -9515,16 +12709,41 @@ var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 var StorageBucketsTreeParentElement = class extends ExpandableApplicationPanelTreeElement {
   bucketTreeElements = /* @__PURE__ */ new Set();
   constructor(storagePanel) {
-    super(storagePanel, i18nString19(UIStrings19.storageBuckets), i18nString19(UIStrings19.noStorageBuckets), i18nString19(UIStrings19.storageBucketsDescription), "storage-buckets");
+    super(
+      storagePanel,
+      i18nString19(UIStrings19.storageBuckets),
+      i18nString19(UIStrings19.noStorageBuckets),
+      i18nString19(UIStrings19.storageBucketsDescription),
+      "storage-buckets"
+    );
     const icon = createIcon8("bucket");
     this.setLeadingIcons([icon]);
-    this.setLink("https://github.com/WICG/storage-buckets/blob/gh-pages/explainer.md");
+    this.setLink(
+      "https://github.com/WICG/storage-buckets/blob/gh-pages/explainer.md"
+    );
   }
   initialize() {
-    SDK18.TargetManager.TargetManager.instance().addModelListener(SDK18.StorageBucketsModel.StorageBucketsModel, "BucketAdded", this.bucketAdded, this);
-    SDK18.TargetManager.TargetManager.instance().addModelListener(SDK18.StorageBucketsModel.StorageBucketsModel, "BucketRemoved", this.bucketRemoved, this);
-    SDK18.TargetManager.TargetManager.instance().addModelListener(SDK18.StorageBucketsModel.StorageBucketsModel, "BucketChanged", this.bucketChanged, this);
-    for (const bucketsModel of SDK18.TargetManager.TargetManager.instance().models(SDK18.StorageBucketsModel.StorageBucketsModel)) {
+    SDK18.TargetManager.TargetManager.instance().addModelListener(
+      SDK18.StorageBucketsModel.StorageBucketsModel,
+      SDK18.StorageBucketsModel.Events.BUCKET_ADDED,
+      this.bucketAdded,
+      this
+    );
+    SDK18.TargetManager.TargetManager.instance().addModelListener(
+      SDK18.StorageBucketsModel.StorageBucketsModel,
+      SDK18.StorageBucketsModel.Events.BUCKET_REMOVED,
+      this.bucketRemoved,
+      this
+    );
+    SDK18.TargetManager.TargetManager.instance().addModelListener(
+      SDK18.StorageBucketsModel.StorageBucketsModel,
+      SDK18.StorageBucketsModel.Events.BUCKET_CHANGED,
+      this.bucketChanged,
+      this
+    );
+    for (const bucketsModel of SDK18.TargetManager.TargetManager.instance().models(
+      SDK18.StorageBucketsModel.StorageBucketsModel
+    )) {
       const buckets = bucketsModel.getBuckets();
       for (const bucket of buckets) {
         this.addBucketTreeElement(bucketsModel, bucket);
@@ -9572,7 +12791,9 @@ var StorageBucketsTreeParentElement = class extends ExpandableApplicationPanelTr
   get itemURL() {
     return "storage-buckets-group://";
   }
-  getBucketTreeElement(model, { bucket: { storageKey, name } }) {
+  getBucketTreeElement(model, {
+    bucket: { storageKey, name }
+  }) {
     for (const bucketTreeElement of this.bucketTreeElements) {
       if (bucketTreeElement.model === model && bucketTreeElement.bucketInfo.bucket.storageKey === storageKey && bucketTreeElement.bucketInfo.bucket.name === name) {
         return bucketTreeElement;
@@ -9630,7 +12851,7 @@ var StorageBucketsTreeElement = class extends ExpandableApplicationPanelTreeElem
   }
 };
 
-// gen/front_end/panels/application/StorageView.js
+// ../../front_end/panels/application/StorageView.ts
 var StorageView_exports = {};
 __export(StorageView_exports, {
   ActionDelegate: () => ActionDelegate2,
@@ -9651,7 +12872,7 @@ import * as SettingsUI from "../../ui/legacy/components/settings_ui/settings_ui.
 import * as UI27 from "../../ui/legacy/legacy.js";
 import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/application/ResourcesPanel.js
+// ../../front_end/panels/application/ResourcesPanel.ts
 var ResourcesPanel_exports = {};
 __export(ResourcesPanel_exports, {
   AttemptViewWithFilterRevealer: () => AttemptViewWithFilterRevealer,
@@ -9670,7 +12891,7 @@ import * as UI26 from "../../ui/legacy/legacy.js";
 import { render as render16 } from "../../ui/lit/lit.js";
 import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/application/CookieItemsView.js
+// ../../front_end/panels/application/CookieItemsView.ts
 var CookieItemsView_exports = {};
 __export(CookieItemsView_exports, {
   CookieItemsView: () => CookieItemsView,
@@ -9731,7 +12952,7 @@ var cookieItemsView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./cookieItemsView.css")} */`;
 
-// gen/front_end/panels/application/StorageItemsToolbar.js
+// ../../front_end/panels/application/StorageItemsToolbar.ts
 var StorageItemsToolbar_exports = {};
 __export(StorageItemsToolbar_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW9,
@@ -9779,7 +13000,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
     })}
                          @click=${input.onRefresh}
                          .iconName=${"refresh"}
-                         .variant=${"toolbar"}></devtools-button>
+                         .variant=${Buttons8.Button.Variant.TOOLBAR}></devtools-button>
         <devtools-toolbar-input type="filter"
                                 ?disabled=${!input.filterItemEnabled}
                                 @change=${input.onFilterChanged}
@@ -9793,7 +13014,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
       click: true
     })}
                          .iconName=${input.deleteAllButtonIconName}
-                         .variant=${"toolbar"}></devtools-button>
+                         .variant=${Buttons8.Button.Variant.TOOLBAR}></devtools-button>
         <devtools-button title=${i18nString20(UIStrings20.deleteSelected)}
                          @click=${input.onDeleteSelected}
                          ?disabled=${!input.deleteSelectedButtonDisabled}
@@ -9801,7 +13022,7 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
       click: true
     })}
                          .iconName=${"cross"}
-                         .variant=${"toolbar"}></devtools-button>
+                         .variant=${Buttons8.Button.Variant.TOOLBAR}></devtools-button>
         ${input.mainToolbarItems.map((item4) => item4.element)}
       </devtools-toolbar>
       ${input.metadataView}`,
@@ -9809,7 +13030,10 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
     target
   );
 };
-var StorageItemsToolbar = class extends Common11.ObjectWrapper.eventMixin(UI20.Widget.VBox) {
+var StorageItemsToolbarBase = Common11.ObjectWrapper.eventMixin(
+  UI20.Widget.VBox
+);
+var StorageItemsToolbar = class _StorageItemsToolbar extends StorageItemsToolbarBase {
   filterRegex;
   #metadataView;
   #view;
@@ -9844,23 +13068,14 @@ var StorageItemsToolbar = class extends Common11.ObjectWrapper.eventMixin(UI20.W
       metadataView: this.metadataView,
       onFilterChanged: this.filterChanged.bind(this),
       onRefresh: () => {
-        this.dispatchEventToListeners(
-          "Refresh"
-          /* StorageItemsToolbar.Events.REFRESH */
-        );
+        this.dispatchEventToListeners(_StorageItemsToolbar.Events.REFRESH);
         UI20.ARIAUtils.LiveAnnouncer.alert(i18nString20(UIStrings20.refreshedStatus));
       },
       onDeleteAll: () => {
-        this.dispatchEventToListeners(
-          "DeleteAll"
-          /* StorageItemsToolbar.Events.DELETE_ALL */
-        );
+        this.dispatchEventToListeners(_StorageItemsToolbar.Events.DELETE_ALL);
       },
       onDeleteSelected: () => {
-        this.dispatchEventToListeners(
-          "DeleteSelected"
-          /* StorageItemsToolbar.Events.DELETE_SELECTED */
-        );
+        this.dispatchEventToListeners(_StorageItemsToolbar.Events.DELETE_SELECTED);
       }
     };
     this.#view(viewInput, {}, this.contentElement);
@@ -9882,10 +13097,7 @@ var StorageItemsToolbar = class extends Common11.ObjectWrapper.eventMixin(UI20.W
   }
   filterChanged({ detail: text }) {
     this.filterRegex = text ? new RegExp(Platform7.StringUtilities.escapeForRegExp(text), "i") : null;
-    this.dispatchEventToListeners(
-      "Refresh"
-      /* StorageItemsToolbar.Events.REFRESH */
-    );
+    this.dispatchEventToListeners(_StorageItemsToolbar.Events.REFRESH);
   }
   hasFilter() {
     return Boolean(this.filterRegex);
@@ -9903,9 +13115,9 @@ var StorageItemsToolbar = class extends Common11.ObjectWrapper.eventMixin(UI20.W
     this.requestUpdate();
   }
 };
-(function(StorageItemsToolbar2) {
+((StorageItemsToolbar2) => {
   let Events5;
-  (function(Events6) {
+  ((Events6) => {
     Events6["REFRESH"] = "Refresh";
     Events6["FILTER_CHANGED"] = "FilterChanged";
     Events6["DELETE_ALL"] = "DeleteAll";
@@ -9913,7 +13125,7 @@ var StorageItemsToolbar = class extends Common11.ObjectWrapper.eventMixin(UI20.W
   })(Events5 = StorageItemsToolbar2.Events || (StorageItemsToolbar2.Events = {}));
 })(StorageItemsToolbar || (StorageItemsToolbar = {}));
 
-// gen/front_end/panels/application/CookieItemsView.js
+// ../../front_end/panels/application/CookieItemsView.ts
 var UIStrings21 = {
   /**
    * @description Label for checkbox to show URL-decoded cookie values
@@ -10086,9 +13298,14 @@ var CookieItemsView = class extends UI21.Widget.VBox {
     this.view = view;
     this.model = model;
     this.cookieDomain = cookieDomain;
-    this.onlyIssuesFilterUI = new UI21.Toolbar.ToolbarCheckbox(i18nString21(UIStrings21.onlyShowCookiesWithAnIssue), i18nString21(UIStrings21.onlyShowCookiesWhichHaveAn), () => {
-      this.updateWithCookies(this.allCookies);
-    }, "only-show-cookies-with-issues");
+    this.onlyIssuesFilterUI = new UI21.Toolbar.ToolbarCheckbox(
+      i18nString21(UIStrings21.onlyShowCookiesWithAnIssue),
+      i18nString21(UIStrings21.onlyShowCookiesWhichHaveAn),
+      () => {
+        this.updateWithCookies(this.allCookies);
+      },
+      "only-show-cookies-with-issues"
+    );
     this.allCookies = [];
     this.shownCookies = [];
     this.selectedCookie = null;
@@ -10096,11 +13313,11 @@ var CookieItemsView = class extends UI21.Widget.VBox {
     this.requestUpdate();
   }
   setCookiesDomain(model, domain) {
-    this.model.removeEventListener("CookieListUpdated", this.onCookieListUpdate, this);
+    this.model.removeEventListener(SDK19.CookieModel.Events.COOKIE_LIST_UPDATED, this.onCookieListUpdate, this);
     this.model = model;
     this.cookieDomain = domain;
     this.refreshItems();
-    this.model.addEventListener("CookieListUpdated", this.onCookieListUpdate, this);
+    this.model.addEventListener(SDK19.CookieModel.Events.COOKIE_LIST_UPDATED, this.onCookieListUpdate, this);
   }
   performUpdate() {
     const that = this;
@@ -10193,7 +13410,9 @@ var CookieItemsView = class extends UI21.Widget.VBox {
       this.#toolbar.setDeleteAllTitle(i18nString21(UIStrings21.clearAllCookies));
       this.#toolbar.setDeleteAllGlyph("clear-list");
     }
-    UI21.ARIAUtils.LiveAnnouncer.alert(i18nString21(UIStrings21.numberOfCookiesShownInTableS, { PH1: this.shownCookies.length }));
+    UI21.ARIAUtils.LiveAnnouncer.alert(
+      i18nString21(UIStrings21.numberOfCookiesShownInTableS, { PH1: this.shownCookies.length })
+    );
     this.#toolbar.setCanFilter(true);
     this.#toolbar.setCanDeleteAll(this.shownCookies.length > 0);
     this.#toolbar.setCanDeleteSelected(Boolean(this.selectedCookie));
@@ -10243,7 +13462,11 @@ var CookieItemsView = class extends UI21.Widget.VBox {
         const action7 = UI21.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action7.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString21(UIStrings21.startAChat));
-        submenu.defaultSection().appendItem(i18nString21(UIStrings21.explainCookie), () => action7.execute({ prompt: "What is the purpose of this cookie?" }), { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".cookies" });
+        submenu.defaultSection().appendItem(
+          i18nString21(UIStrings21.explainCookie),
+          () => action7.execute({ prompt: "What is the purpose of this cookie?" }),
+          { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".cookies" }
+        );
       }
     }
   }
@@ -10257,7 +13480,7 @@ var CookieItemsView = class extends UI21.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/application/DeviceBoundSessionsView.js
+// ../../front_end/panels/application/DeviceBoundSessionsView.ts
 var DeviceBoundSessionsView_exports = {};
 __export(DeviceBoundSessionsView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW11,
@@ -10302,7 +13525,7 @@ var deviceBoundSessionsView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./deviceBoundSessionsView.css")} */`;
 
-// gen/front_end/panels/application/DeviceBoundSessionsView.js
+// ../../front_end/panels/application/DeviceBoundSessionsView.ts
 var { widget: widget9 } = UI22.Widget;
 var UIStrings22 = {
   /**
@@ -10845,12 +14068,16 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
       render14(nothing7, target);
       return;
     }
-    render14(html14`
+    render14(
+      html14`
       <style>${UI22.inspectorCommonStyles}</style>
       <style>${deviceBoundSessionsView_css_default}</style>
       ${toolbarHtml}
       <devtools-widget ${widget9(UI22.EmptyWidget.EmptyWidget, { header: defaultTitle, text: defaultDescription })} jslog=${VisualLogging13.pane("device-bound-sessions-empty")}></devtools-widget>
-    `, target, { container: { attributes: { jslog: `${VisualLogging13.pane("device-bound-sessions")}` } } });
+    `,
+      target,
+      { container: { attributes: { jslog: `${VisualLogging13.pane("device-bound-sessions")}` } } }
+    );
     return;
   }
   let sessionDetailsHtml;
@@ -11042,7 +14269,8 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
       <devtools-report-section-header role="heading" aria-level="2">${i18nString22(UIStrings22.eventDetails)}</devtools-report-section-header>
       ${eventDetailsContentHtml}
   `;
-  render14(html14`
+  render14(
+    html14`
         <style>${UI22.inspectorCommonStyles}</style>
         <style>${deviceBoundSessionsView_css_default}</style>
         ${toolbarHtml}
@@ -11054,7 +14282,9 @@ var DEFAULT_VIEW11 = (input, _output, target) => {
           <div slot="sidebar" class="device-bound-session-sidebar" role="region" aria-label=${i18nString22(UIStrings22.eventDetails)}>
             ${eventDetailsHtml}
           </div>
-        </devtools-split-view>`, target);
+        </devtools-split-view>`,
+    target
+  );
 };
 var DeviceBoundSessionsView = class extends UI22.Widget.VBox {
   #site;
@@ -11086,12 +14316,12 @@ var DeviceBoundSessionsView = class extends UI22.Widget.VBox {
   }
   #attachModel(model) {
     if (this.#model) {
-      this.#model.removeEventListener("EVENT_OCCURRED", this.performUpdate, this);
-      this.#model.removeEventListener("CLEAR_EVENTS", this.performUpdate, this);
+      this.#model.removeEventListener("EVENT_OCCURRED" /* EVENT_OCCURRED */, this.performUpdate, this);
+      this.#model.removeEventListener("CLEAR_EVENTS" /* CLEAR_EVENTS */, this.performUpdate, this);
     }
     this.#model = model;
-    this.#model.addEventListener("EVENT_OCCURRED", this.performUpdate, this);
-    this.#model.addEventListener("CLEAR_EVENTS", this.performUpdate, this);
+    this.#model.addEventListener("EVENT_OCCURRED" /* EVENT_OCCURRED */, this.performUpdate, this);
+    this.#model.addEventListener("CLEAR_EVENTS" /* CLEAR_EVENTS */, this.performUpdate, this);
     if (this.#selectedEvent) {
       this.#selectedEvent = void 0;
     }
@@ -11105,14 +14335,18 @@ var DeviceBoundSessionsView = class extends UI22.Widget.VBox {
         sessionAndEvents = this.#model.getSession(this.#site, this.#sessionId);
       }
     }
-    this.#view({
-      sessionAndEvents,
-      preserveLogSetting,
-      defaultTitle: this.#defaultTitle,
-      defaultDescription: this.#defaultDescription,
-      selectedEvent: this.#selectedEvent,
-      onEventRowSelected: this.#onEventRowSelected.bind(this)
-    }, {}, this.contentElement);
+    this.#view(
+      {
+        sessionAndEvents,
+        preserveLogSetting,
+        defaultTitle: this.#defaultTitle,
+        defaultDescription: this.#defaultDescription,
+        selectedEvent: this.#selectedEvent,
+        onEventRowSelected: this.#onEventRowSelected.bind(this)
+      },
+      {},
+      this.contentElement
+    );
   }
   #onEventRowSelected(selectedEvent) {
     this.#selectedEvent = selectedEvent;
@@ -11121,9 +14355,9 @@ var DeviceBoundSessionsView = class extends UI22.Widget.VBox {
 };
 function ruleTypeToString(ruleType) {
   switch (ruleType) {
-    case "Exclude":
+    case Network.DeviceBoundSessionUrlRuleRuleType.Exclude:
       return i18nString22(UIStrings22.ruleTypeExclude);
-    case "Include":
+    case Network.DeviceBoundSessionUrlRuleRuleType.Include:
       return i18nString22(UIStrings22.ruleTypeInclude);
     default:
       return ruleType;
@@ -11146,145 +14380,145 @@ function getEventTypeString(event) {
 }
 function fetchResultToString(fetchResult) {
   switch (fetchResult) {
-    case "Success":
+    case Network.DeviceBoundSessionFetchResult.Success:
       return i18nString22(UIStrings22.success);
-    case "SigningKeyGenerationError":
+    case Network.DeviceBoundSessionFetchResult.SigningKeyGenerationError:
       return i18nString22(UIStrings22.signingKeyGenerationError);
-    case "AttestationKeyGenerationError":
+    case Network.DeviceBoundSessionFetchResult.AttestationKeyGenerationError:
       return i18nString22(UIStrings22.attestationKeyGenerationError);
-    case "SigningError":
+    case Network.DeviceBoundSessionFetchResult.SigningError:
       return i18nString22(UIStrings22.signingError);
-    case "TransientSigningError":
+    case Network.DeviceBoundSessionFetchResult.TransientSigningError:
       return i18nString22(UIStrings22.transientSigningError);
-    case "ServerRequestedTermination":
+    case Network.DeviceBoundSessionFetchResult.ServerRequestedTermination:
       return i18nString22(UIStrings22.serverRequestedTermination);
-    case "InvalidSessionId":
+    case Network.DeviceBoundSessionFetchResult.InvalidSessionId:
       return i18nString22(UIStrings22.invalidSessionId);
-    case "InvalidChallenge":
+    case Network.DeviceBoundSessionFetchResult.InvalidChallenge:
       return i18nString22(UIStrings22.invalidChallenge);
-    case "TooManyChallenges":
+    case Network.DeviceBoundSessionFetchResult.TooManyChallenges:
       return i18nString22(UIStrings22.tooManyChallenges);
-    case "InvalidFetcherUrl":
+    case Network.DeviceBoundSessionFetchResult.InvalidFetcherUrl:
       return i18nString22(UIStrings22.invalidFetcherUrl);
-    case "InvalidRefreshUrl":
+    case Network.DeviceBoundSessionFetchResult.InvalidRefreshUrl:
       return i18nString22(UIStrings22.invalidRefreshUrl);
-    case "TransientHttpError":
+    case Network.DeviceBoundSessionFetchResult.TransientHttpError:
       return i18nString22(UIStrings22.transientHttpError);
-    case "ScopeOriginSameSiteMismatch":
+    case Network.DeviceBoundSessionFetchResult.ScopeOriginSameSiteMismatch:
       return i18nString22(UIStrings22.scopeOriginSameSiteMismatch);
-    case "RefreshUrlSameSiteMismatch":
+    case Network.DeviceBoundSessionFetchResult.RefreshUrlSameSiteMismatch:
       return i18nString22(UIStrings22.refreshUrlSameSiteMismatch);
-    case "MismatchedSessionId":
+    case Network.DeviceBoundSessionFetchResult.MismatchedSessionId:
       return i18nString22(UIStrings22.mismatchedSessionId);
-    case "MissingScope":
+    case Network.DeviceBoundSessionFetchResult.MissingScope:
       return i18nString22(UIStrings22.missingScope);
-    case "NoCredentials":
+    case Network.DeviceBoundSessionFetchResult.NoCredentials:
       return i18nString22(UIStrings22.noCredentials);
-    case "SubdomainRegistrationWellKnownUnavailable":
+    case Network.DeviceBoundSessionFetchResult.SubdomainRegistrationWellKnownUnavailable:
       return i18nString22(UIStrings22.subdomainRegistrationWellKnownUnavailable);
-    case "SubdomainRegistrationUnauthorized":
+    case Network.DeviceBoundSessionFetchResult.SubdomainRegistrationUnauthorized:
       return i18nString22(UIStrings22.subdomainRegistrationUnauthorized);
-    case "SubdomainRegistrationWellKnownMalformed":
+    case Network.DeviceBoundSessionFetchResult.SubdomainRegistrationWellKnownMalformed:
       return i18nString22(UIStrings22.subdomainRegistrationWellKnownMalformed);
-    case "SessionProviderWellKnownUnavailable":
+    case Network.DeviceBoundSessionFetchResult.SessionProviderWellKnownUnavailable:
       return i18nString22(UIStrings22.sessionProviderWellKnownUnavailable);
-    case "RelyingPartyWellKnownUnavailable":
+    case Network.DeviceBoundSessionFetchResult.RelyingPartyWellKnownUnavailable:
       return i18nString22(UIStrings22.relyingPartyWellKnownUnavailable);
-    case "FederatedKeyThumbprintMismatch":
+    case Network.DeviceBoundSessionFetchResult.FederatedKeyThumbprintMismatch:
       return i18nString22(UIStrings22.federatedKeyThumbprintMismatch);
-    case "InvalidFederatedSessionUrl":
+    case Network.DeviceBoundSessionFetchResult.InvalidFederatedSessionUrl:
       return i18nString22(UIStrings22.invalidFederatedSessionUrl);
-    case "InvalidFederatedKey":
+    case Network.DeviceBoundSessionFetchResult.InvalidFederatedKey:
       return i18nString22(UIStrings22.invalidFederatedKey);
-    case "TooManyRelyingOriginLabels":
+    case Network.DeviceBoundSessionFetchResult.TooManyRelyingOriginLabels:
       return i18nString22(UIStrings22.tooManyRelyingOriginLabels);
-    case "BoundCookieSetForbidden":
+    case Network.DeviceBoundSessionFetchResult.BoundCookieSetForbidden:
       return i18nString22(UIStrings22.boundCookieSetForbidden);
-    case "NetError":
+    case Network.DeviceBoundSessionFetchResult.NetError:
       return i18nString22(UIStrings22.netError);
-    case "ProxyError":
+    case Network.DeviceBoundSessionFetchResult.ProxyError:
       return i18nString22(UIStrings22.proxyError);
-    case "EmptySessionConfig":
+    case Network.DeviceBoundSessionFetchResult.EmptySessionConfig:
       return i18nString22(UIStrings22.emptySessionConfig);
-    case "InvalidCredentialsConfig":
+    case Network.DeviceBoundSessionFetchResult.InvalidCredentialsConfig:
       return i18nString22(UIStrings22.invalidCredentialsConfig);
-    case "InvalidCredentialsType":
+    case Network.DeviceBoundSessionFetchResult.InvalidCredentialsType:
       return i18nString22(UIStrings22.invalidCredentialsType);
-    case "InvalidCredentialsEmptyName":
+    case Network.DeviceBoundSessionFetchResult.InvalidCredentialsEmptyName:
       return i18nString22(UIStrings22.invalidCredentialsEmptyName);
-    case "InvalidCredentialsCookie":
+    case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookie:
       return i18nString22(UIStrings22.invalidCredentialsCookie);
-    case "PersistentHttpError":
+    case Network.DeviceBoundSessionFetchResult.PersistentHttpError:
       return i18nString22(UIStrings22.persistentHttpError);
-    case "RegistrationAttemptedChallenge":
+    case Network.DeviceBoundSessionFetchResult.RegistrationAttemptedChallenge:
       return i18nString22(UIStrings22.registrationAttemptedChallenge);
-    case "InvalidScopeOrigin":
+    case Network.DeviceBoundSessionFetchResult.InvalidScopeOrigin:
       return i18nString22(UIStrings22.invalidScopeOrigin);
-    case "ScopeOriginContainsPath":
+    case Network.DeviceBoundSessionFetchResult.ScopeOriginContainsPath:
       return i18nString22(UIStrings22.scopeOriginContainsPath);
-    case "RefreshInitiatorNotString":
+    case Network.DeviceBoundSessionFetchResult.RefreshInitiatorNotString:
       return i18nString22(UIStrings22.refreshInitiatorNotString);
-    case "RefreshInitiatorInvalidHostPattern":
+    case Network.DeviceBoundSessionFetchResult.RefreshInitiatorInvalidHostPattern:
       return i18nString22(UIStrings22.refreshInitiatorInvalidHostPattern);
-    case "InvalidScopeSpecification":
+    case Network.DeviceBoundSessionFetchResult.InvalidScopeSpecification:
       return i18nString22(UIStrings22.invalidScopeSpecification);
-    case "MissingScopeSpecificationType":
+    case Network.DeviceBoundSessionFetchResult.MissingScopeSpecificationType:
       return i18nString22(UIStrings22.missingScopeSpecificationType);
-    case "EmptyScopeSpecificationDomain":
+    case Network.DeviceBoundSessionFetchResult.EmptyScopeSpecificationDomain:
       return i18nString22(UIStrings22.emptyScopeSpecificationDomain);
-    case "EmptyScopeSpecificationPath":
+    case Network.DeviceBoundSessionFetchResult.EmptyScopeSpecificationPath:
       return i18nString22(UIStrings22.emptyScopeSpecificationPath);
-    case "InvalidScopeSpecificationType":
+    case Network.DeviceBoundSessionFetchResult.InvalidScopeSpecificationType:
       return i18nString22(UIStrings22.invalidScopeSpecificationType);
-    case "InvalidScopeIncludeSite":
+    case Network.DeviceBoundSessionFetchResult.InvalidScopeIncludeSite:
       return i18nString22(UIStrings22.invalidScopeIncludeSite);
-    case "MissingScopeIncludeSite":
+    case Network.DeviceBoundSessionFetchResult.MissingScopeIncludeSite:
       return i18nString22(UIStrings22.missingScopeIncludeSite);
-    case "FederatedNotAuthorizedByProvider":
+    case Network.DeviceBoundSessionFetchResult.FederatedNotAuthorizedByProvider:
       return i18nString22(UIStrings22.federatedNotAuthorizedByProvider);
-    case "FederatedNotAuthorizedByRelyingParty":
+    case Network.DeviceBoundSessionFetchResult.FederatedNotAuthorizedByRelyingParty:
       return i18nString22(UIStrings22.federatedNotAuthorizedByRelyingParty);
-    case "SessionProviderWellKnownMalformed":
+    case Network.DeviceBoundSessionFetchResult.SessionProviderWellKnownMalformed:
       return i18nString22(UIStrings22.sessionProviderWellKnownMalformed);
-    case "SessionProviderWellKnownHasProviderOrigin":
+    case Network.DeviceBoundSessionFetchResult.SessionProviderWellKnownHasProviderOrigin:
       return i18nString22(UIStrings22.sessionProviderWellKnownHasProviderOrigin);
-    case "RelyingPartyWellKnownMalformed":
+    case Network.DeviceBoundSessionFetchResult.RelyingPartyWellKnownMalformed:
       return i18nString22(UIStrings22.relyingPartyWellKnownMalformed);
-    case "RelyingPartyWellKnownHasRelyingOrigins":
+    case Network.DeviceBoundSessionFetchResult.RelyingPartyWellKnownHasRelyingOrigins:
       return i18nString22(UIStrings22.relyingPartyWellKnownHasRelyingOrigins);
-    case "InvalidFederatedSessionProviderSessionMissing":
+    case Network.DeviceBoundSessionFetchResult.InvalidFederatedSessionProviderSessionMissing:
       return i18nString22(UIStrings22.invalidFederatedSessionProviderSessionMissing);
-    case "InvalidFederatedSessionWrongProviderOrigin":
+    case Network.DeviceBoundSessionFetchResult.InvalidFederatedSessionWrongProviderOrigin:
       return i18nString22(UIStrings22.invalidFederatedSessionWrongProviderOrigin);
-    case "InvalidCredentialsCookieCreationTime":
+    case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookieCreationTime:
       return i18nString22(UIStrings22.invalidCredentialsCookieCreationTime);
-    case "InvalidCredentialsCookieName":
+    case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookieName:
       return i18nString22(UIStrings22.invalidCredentialsCookieName);
-    case "InvalidCredentialsCookieParsing":
+    case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookieParsing:
       return i18nString22(UIStrings22.invalidCredentialsCookieParsing);
-    case "InvalidCredentialsCookieUnpermittedAttribute":
+    case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookieUnpermittedAttribute:
       return i18nString22(UIStrings22.invalidCredentialsCookieUnpermittedAttribute);
-    case "InvalidCredentialsCookieInvalidDomain":
+    case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookieInvalidDomain:
       return i18nString22(UIStrings22.invalidCredentialsCookieInvalidDomain);
-    case "InvalidCredentialsCookiePrefix":
+    case Network.DeviceBoundSessionFetchResult.InvalidCredentialsCookiePrefix:
       return i18nString22(UIStrings22.invalidCredentialsCookiePrefix);
-    case "InvalidScopeRulePath":
+    case Network.DeviceBoundSessionFetchResult.InvalidScopeRulePath:
       return i18nString22(UIStrings22.invalidScopeRulePath);
-    case "InvalidScopeRuleHostPattern":
+    case Network.DeviceBoundSessionFetchResult.InvalidScopeRuleHostPattern:
       return i18nString22(UIStrings22.invalidScopeRuleHostPattern);
-    case "ScopeRuleOriginScopedHostPatternMismatch":
+    case Network.DeviceBoundSessionFetchResult.ScopeRuleOriginScopedHostPatternMismatch:
       return i18nString22(UIStrings22.scopeRuleOriginScopedHostPatternMismatch);
-    case "ScopeRuleSiteScopedHostPatternMismatch":
+    case Network.DeviceBoundSessionFetchResult.ScopeRuleSiteScopedHostPatternMismatch:
       return i18nString22(UIStrings22.scopeRuleSiteScopedHostPatternMismatch);
-    case "SigningQuotaExceeded":
+    case Network.DeviceBoundSessionFetchResult.SigningQuotaExceeded:
       return i18nString22(UIStrings22.signingQuotaExceeded);
-    case "InvalidConfigJson":
+    case Network.DeviceBoundSessionFetchResult.InvalidConfigJson:
       return i18nString22(UIStrings22.invalidConfigJson);
-    case "InvalidFederatedSessionProviderFailedToRestoreKey":
+    case Network.DeviceBoundSessionFetchResult.InvalidFederatedSessionProviderFailedToRestoreKey:
       return i18nString22(UIStrings22.invalidFederatedSessionProviderFailedToRestoreKey);
-    case "FailedToUnwrapKey":
+    case Network.DeviceBoundSessionFetchResult.FailedToUnwrapKey:
       return i18nString22(UIStrings22.failedToUnwrapKey);
-    case "SessionDeletedDuringRefresh":
+    case Network.DeviceBoundSessionFetchResult.SessionDeletedDuringRefresh:
       return i18nString22(UIStrings22.sessionDeletedDuringRefresh);
     default:
       return fetchResult;
@@ -11292,17 +14526,17 @@ function fetchResultToString(fetchResult) {
 }
 function refreshResultToString(refreshResult) {
   switch (refreshResult) {
-    case "Refreshed":
+    case Network.RefreshEventDetailsRefreshResult.Refreshed:
       return i18nString22(UIStrings22.refreshed);
-    case "InitializedService":
+    case Network.RefreshEventDetailsRefreshResult.InitializedService:
       return i18nString22(UIStrings22.initializedService);
-    case "Unreachable":
+    case Network.RefreshEventDetailsRefreshResult.Unreachable:
       return i18nString22(UIStrings22.unreachable);
-    case "ServerError":
+    case Network.RefreshEventDetailsRefreshResult.ServerError:
       return i18nString22(UIStrings22.serverError);
-    case "FatalError":
+    case Network.RefreshEventDetailsRefreshResult.FatalError:
       return i18nString22(UIStrings22.fatalError);
-    case "SigningQuotaExceeded":
+    case Network.RefreshEventDetailsRefreshResult.SigningQuotaExceeded:
       return i18nString22(UIStrings22.signingQuotaExceeded);
     default:
       return refreshResult;
@@ -11310,13 +14544,13 @@ function refreshResultToString(refreshResult) {
 }
 function challengeResultToString(challengeResult) {
   switch (challengeResult) {
-    case "Success":
+    case Network.ChallengeEventDetailsChallengeResult.Success:
       return i18nString22(UIStrings22.success);
-    case "NoSessionId":
+    case Network.ChallengeEventDetailsChallengeResult.NoSessionId:
       return i18nString22(UIStrings22.noSessionId);
-    case "NoSessionMatch":
+    case Network.ChallengeEventDetailsChallengeResult.NoSessionMatch:
       return i18nString22(UIStrings22.noSessionMatch);
-    case "CantSetBoundCookie":
+    case Network.ChallengeEventDetailsChallengeResult.CantSetBoundCookie:
       return i18nString22(UIStrings22.cantSetBoundCookie);
     default:
       return challengeResult;
@@ -11324,21 +14558,21 @@ function challengeResultToString(challengeResult) {
 }
 function deletionReasonToString(deletionReason) {
   switch (deletionReason) {
-    case "Expired":
+    case Network.TerminationEventDetailsDeletionReason.Expired:
       return i18nString22(UIStrings22.expired);
-    case "FailedToRestoreKey":
+    case Network.TerminationEventDetailsDeletionReason.FailedToRestoreKey:
       return i18nString22(UIStrings22.failedToRestoreKey);
-    case "FailedToUnwrapKey":
+    case Network.TerminationEventDetailsDeletionReason.FailedToUnwrapKey:
       return i18nString22(UIStrings22.failedToUnwrapKey);
-    case "StoragePartitionCleared":
+    case Network.TerminationEventDetailsDeletionReason.StoragePartitionCleared:
       return i18nString22(UIStrings22.storagePartitionCleared);
-    case "ClearBrowsingData":
+    case Network.TerminationEventDetailsDeletionReason.ClearBrowsingData:
       return i18nString22(UIStrings22.clearBrowsingData);
-    case "ServerRequested":
+    case Network.TerminationEventDetailsDeletionReason.ServerRequested:
       return i18nString22(UIStrings22.serverRequestedTermination);
-    case "InvalidSessionParams":
+    case Network.TerminationEventDetailsDeletionReason.InvalidSessionParams:
       return i18nString22(UIStrings22.invalidSessionParams);
-    case "RefreshFatalError":
+    case Network.TerminationEventDetailsDeletionReason.RefreshFatalError:
       return i18nString22(UIStrings22.refreshFatalError);
     default:
       return deletionReason;
@@ -11363,7 +14597,7 @@ function tryParseJson(body) {
   return { body: parsedBody };
 }
 
-// gen/front_end/panels/application/DOMStorageItemsView.js
+// ../../front_end/panels/application/DOMStorageItemsView.ts
 var DOMStorageItemsView_exports = {};
 __export(DOMStorageItemsView_exports, {
   DOMStorageItemsView: () => DOMStorageItemsView
@@ -11377,7 +14611,7 @@ import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_fr
 import * as UI24 from "../../ui/legacy/legacy.js";
 import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/application/KeyValueStorageItemsView.js
+// ../../front_end/panels/application/KeyValueStorageItemsView.ts
 var KeyValueStorageItemsView_exports = {};
 __export(KeyValueStorageItemsView_exports, {
   KeyValueStorageItemsView: () => KeyValueStorageItemsView
@@ -11411,7 +14645,7 @@ var dataGridAiButton_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./dataGridAiButton.css")} */`;
 
-// gen/front_end/panels/application/KeyValueStorageItemsView.js
+// ../../front_end/panels/application/KeyValueStorageItemsView.ts
 import * as UI23 from "../../ui/legacy/legacy.js";
 import { Directives as LitDirectives, html as html15, nothing as nothing8, render as render15 } from "../../ui/lit/lit.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
@@ -11755,7 +14989,7 @@ var KeyValueStorageItemsView = class extends UI23.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/application/DOMStorageItemsView.js
+// ../../front_end/panels/application/DOMStorageItemsView.ts
 var UIStrings24 = {
   /**
    * @description Name for the "DOM Storage Items" table that shows the content of the DOM Storage.
@@ -11808,8 +15042,15 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   createPreview(key, value) {
     const protocol = this.domStorage.isLocalStorage ? "localstorage" : "sessionstorage";
     const url = `${protocol}://${key}`;
-    const provider = TextUtils4.StaticContentProvider.StaticContentProvider.fromString(url, Common13.ResourceType.resourceTypes.XHR, value);
-    return SourceFrame3.PreviewFactory.PreviewFactory.createPreview(provider, "text/plain");
+    const provider = TextUtils4.StaticContentProvider.StaticContentProvider.fromString(
+      url,
+      Common13.ResourceType.resourceTypes.XHR,
+      value
+    );
+    return SourceFrame3.PreviewFactory.PreviewFactory.createPreview(
+      provider,
+      "text/plain"
+    );
   }
   setStorage(domStorage) {
     Common13.EventTarget.removeEventListeners(this.eventListeners);
@@ -11820,10 +15061,26 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
       this.toolbar?.setStorageKey(domStorage.storageKey);
     }
     this.eventListeners = [
-      this.domStorage.addEventListener("DOMStorageItemsCleared", this.domStorageItemsCleared, this),
-      this.domStorage.addEventListener("DOMStorageItemRemoved", this.domStorageItemRemoved, this),
-      this.domStorage.addEventListener("DOMStorageItemAdded", this.domStorageItemAdded, this),
-      this.domStorage.addEventListener("DOMStorageItemUpdated", this.domStorageItemUpdated, this)
+      this.domStorage.addEventListener(
+        SDK20.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEMS_CLEARED,
+        this.domStorageItemsCleared,
+        this
+      ),
+      this.domStorage.addEventListener(
+        SDK20.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_REMOVED,
+        this.domStorageItemRemoved,
+        this
+      ),
+      this.domStorage.addEventListener(
+        SDK20.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_ADDED,
+        this.domStorageItemAdded,
+        this
+      ),
+      this.domStorage.addEventListener(
+        SDK20.DOMStorageModel.DOMStorage.Events.DOM_STORAGE_ITEM_UPDATED,
+        this.domStorageItemUpdated,
+        this
+      )
     ];
     this.refreshItems();
   }
@@ -11885,7 +15142,13 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
       UI24.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, null);
       return;
     }
-    const storageItem = new AiAssistanceModel2.StorageItem.DOMStorageItem(mainPageOrigin, origin, storageKey, storageType, item4 ? item4.key : void 0);
+    const storageItem = new AiAssistanceModel2.StorageItem.DOMStorageItem(
+      mainPageOrigin,
+      origin,
+      storageKey,
+      storageType,
+      item4 ? item4.key : void 0
+    );
     UI24.Context.Context.instance().setFlavor(AiAssistanceModel2.StorageItem.StorageItem, storageItem);
   }
   deleteAllItems() {
@@ -11906,7 +15169,11 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
       const action7 = actionRegistry.getAction(openAiAssistanceId);
       const submenu = contextMenu.footerSection().appendSubMenuItem(action7.title(), false, openAiAssistanceId);
       submenu.defaultSection().appendAction(openAiAssistanceId, i18nString24(UIStrings24.startAChat));
-      submenu.defaultSection().appendItem(i18nString24(UIStrings24.explainItem), () => action7.execute({ prompt: "Explain this storage item." }), { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".storage" });
+      submenu.defaultSection().appendItem(
+        i18nString24(UIStrings24.explainItem),
+        () => action7.execute({ prompt: "Explain this storage item." }),
+        { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".storage" }
+      );
     }
   }
   onAiButtonClick(item4, _event) {
@@ -11925,7 +15192,7 @@ var DOMStorageItemsView = class extends KeyValueStorageItemsView {
   }
 };
 
-// gen/front_end/panels/application/ExtensionStorageItemsView.js
+// ../../front_end/panels/application/ExtensionStorageItemsView.ts
 var ExtensionStorageItemsView_exports = {};
 __export(ExtensionStorageItemsView_exports, {
   ExtensionStorageItemsDispatcher: () => ExtensionStorageItemsDispatcher,
@@ -11952,9 +15219,9 @@ var UIStrings25 = {
 var str_25 = i18n49.i18n.registerUIStrings("panels/application/ExtensionStorageItemsView.ts", UIStrings25);
 var i18nString25 = i18n49.i18n.getLocalizedString.bind(void 0, str_25);
 var ExtensionStorageItemsDispatcher;
-(function(ExtensionStorageItemsDispatcher2) {
+((ExtensionStorageItemsDispatcher2) => {
   let Events5;
-  (function(Events6) {
+  ((Events6) => {
     Events6["ITEM_EDITED"] = "ItemEdited";
     Events6["ITEMS_REFRESHED"] = "ItemsRefreshed";
   })(Events5 = ExtensionStorageItemsDispatcher2.Events || (ExtensionStorageItemsDispatcher2.Events = {}));
@@ -11963,12 +15230,20 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
   #extensionStorage;
   extensionStorageItemsDispatcher;
   constructor(extensionStorage, view) {
-    super(i18nString25(UIStrings25.extensionStorageItems), "extension-storage", true, view, void 0, `${VisualLogging16.pane().context("extension-storage-data")}`, ["storage-view", "table"]);
+    super(
+      i18nString25(UIStrings25.extensionStorageItems),
+      "extension-storage",
+      true,
+      view,
+      void 0,
+      `${VisualLogging16.pane().context("extension-storage-data")}`,
+      ["storage-view", "table"]
+    );
     this.extensionStorageItemsDispatcher = new Common14.ObjectWrapper.ObjectWrapper();
     this.setStorage(extensionStorage);
   }
   get #isEditable() {
-    return this.#extensionStorage.storageArea !== "managed";
+    return this.#extensionStorage.storageArea !== Extensions.StorageArea.Managed;
   }
   /**
    * When parsing a value provided by the user, attempt to treat it as JSON,
@@ -11989,16 +15264,20 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
   setItem(key, value) {
     void this.#extensionStorage.setItem(key, this.parseValue(value)).then(() => {
       this.refreshItems();
-      this.extensionStorageItemsDispatcher.dispatchEventToListeners(
-        "ItemEdited"
-        /* ExtensionStorageItemsDispatcher.Events.ITEM_EDITED */
-      );
+      this.extensionStorageItemsDispatcher.dispatchEventToListeners("ItemEdited" /* ITEM_EDITED */);
     });
   }
   createPreview(key, value) {
     const url = "extension-storage://" + this.#extensionStorage.extensionId + "/" + this.#extensionStorage.storageArea + "/preview/" + key;
-    const provider = TextUtils5.StaticContentProvider.StaticContentProvider.fromString(url, Common14.ResourceType.resourceTypes.XHR, value);
-    return SourceFrame4.PreviewFactory.PreviewFactory.createPreview(provider, "text/plain");
+    const provider = TextUtils5.StaticContentProvider.StaticContentProvider.fromString(
+      url,
+      Common14.ResourceType.resourceTypes.XHR,
+      value
+    );
+    return SourceFrame4.PreviewFactory.PreviewFactory.createPreview(
+      provider,
+      "text/plain"
+    );
   }
   setStorage(extensionStorage) {
     this.#extensionStorage = extensionStorage;
@@ -12029,19 +15308,21 @@ var ExtensionStorageItemsView = class extends KeyValueStorageItemsView {
     const filteredItems = Object.entries(items).map(([key, value]) => ({ key, value: typeof value === "string" ? value : JSON.stringify(value) })).filter((item4) => this.toolbar?.filterRegex?.test(`${item4.key} ${item4.value}`) ?? true);
     this.showItems(filteredItems);
     this.extensionStorageItemsDispatcher.dispatchEventToListeners(
-      "ItemsRefreshed"
-      /* ExtensionStorageItemsDispatcher.Events.ITEMS_REFRESHED */
+      "ItemsRefreshed" /* ITEMS_REFRESHED */
     );
   }
   deleteAllItems() {
     if (!this.#isEditable) {
       return;
     }
-    this.#extensionStorage.clear().then(() => {
-      this.#extensionStorageItemsCleared();
-    }, () => {
-      throw new Error("Unable to clear storage.");
-    });
+    this.#extensionStorage.clear().then(
+      () => {
+        this.#extensionStorageItemsCleared();
+      },
+      () => {
+        throw new Error("Unable to clear storage.");
+      }
+    );
   }
 };
 
@@ -12196,7 +15477,7 @@ var resourcesPanel_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./resourcesPanel.css")} */`;
 
-// gen/front_end/panels/application/ResourcesPanel.js
+// ../../front_end/panels/application/ResourcesPanel.ts
 var resourcesPanelInstance;
 var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
   resourcesLastSelectedItemSetting;
@@ -12304,7 +15585,10 @@ var ResourcesPanel = class _ResourcesPanel extends UI26.Panel.PanelWithSidebar {
     if (!this.categoryView) {
       this.categoryView = new StorageCategoryView();
     }
-    this.categoryView.element.setAttribute("jslog", `${VisualLogging17.pane().context(Platform8.StringUtilities.toKebabCase(categoryName))}`);
+    this.categoryView.element.setAttribute(
+      "jslog",
+      `${VisualLogging17.pane().context(Platform8.StringUtilities.toKebabCase(categoryName))}`
+    );
     this.categoryView.setHeadline(categoryHeadline);
     this.categoryView.setText(categoryDescription);
     this.categoryView.setLink(categoryLink);
@@ -12505,7 +15789,7 @@ var storageView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./storageView.css")} */`;
 
-// gen/front_end/panels/application/StorageView.js
+// ../../front_end/panels/application/StorageView.ts
 var UIStrings26 = {
   /**
    * @description Text in the Storage View that expresses the amount of used and available storage quota
@@ -12637,15 +15921,15 @@ var UIStrings26 = {
   sessionStorage: "Session storage"
 };
 var storagePieColors = /* @__PURE__ */ new Map([
-  ["cache_storage", "rgb(229, 113, 113)"],
+  [Storage.StorageType.Cache_storage, "rgb(229, 113, 113)"],
   // red
-  ["cookies", "rgb(239, 196, 87)"],
+  [Storage.StorageType.Cookies, "rgb(239, 196, 87)"],
   // yellow
-  ["indexeddb", "rgb(155, 127, 230)"],
+  [Storage.StorageType.Indexeddb, "rgb(155, 127, 230)"],
   // purple
-  ["local_storage", "rgb(116, 178, 102)"],
+  [Storage.StorageType.Local_storage, "rgb(116, 178, 102)"],
   // green
-  ["service_workers", "rgb(255, 167, 36)"]
+  [Storage.StorageType.Service_workers, "rgb(255, 167, 36)"]
   // orange
 ]);
 var str_26 = i18n51.i18n.registerUIStrings("panels/application/StorageView.ts", UIStrings26);
@@ -12686,7 +15970,13 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     this.storageKey = null;
     this.settings = /* @__PURE__ */ new Map();
     for (const type of AllStorageTypes) {
-      this.settings.set(type, Common16.Settings.Settings.instance().createSetting("clear-storage-" + Platform9.StringUtilities.toKebabCase(type), true));
+      this.settings.set(
+        type,
+        Common16.Settings.Settings.instance().createSetting(
+          "clear-storage-" + Platform9.StringUtilities.toKebabCase(type),
+          true
+        )
+      );
     }
     this.includeThirdPartyCookiesSetting = Common16.Settings.Settings.instance().createSetting("clear-storage-include-third-party-cookies", false);
     const clearSiteData = this.reportView.appendSection(i18nString26(UIStrings26.clearSiteData));
@@ -12694,31 +15984,62 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     const clearSiteDataCheckboxesRow = clearSiteData.appendRow();
     clearSiteDataCheckboxesRow.classList.add("clear-site-data-checkboxes-row");
     const leftColumn = clearSiteDataCheckboxesRow.createChild("div", "clear-site-data-checkbox-column");
-    this.appendSettingCheckbox(leftColumn, i18nString26(UIStrings26.cacheStorage), "cache_storage", "cache-storage-checkbox");
-    this.appendSettingCheckbox(leftColumn, i18nString26(UIStrings26.indexDB), "indexeddb", "indexeddb-checkbox");
-    this.appendSettingCheckbox(leftColumn, i18nString26(UIStrings26.localAndSessionStorage), "local_storage", "local-and-session-storage-checkbox");
+    this.appendSettingCheckbox(
+      leftColumn,
+      i18nString26(UIStrings26.cacheStorage),
+      Storage.StorageType.Cache_storage,
+      "cache-storage-checkbox"
+    );
+    this.appendSettingCheckbox(
+      leftColumn,
+      i18nString26(UIStrings26.indexDB),
+      Storage.StorageType.Indexeddb,
+      "indexeddb-checkbox"
+    );
+    this.appendSettingCheckbox(
+      leftColumn,
+      i18nString26(UIStrings26.localAndSessionStorage),
+      Storage.StorageType.Local_storage,
+      "local-and-session-storage-checkbox"
+    );
     const rightColumn = clearSiteDataCheckboxesRow.createChild("div", "clear-site-data-checkbox-column");
-    this.appendSettingCheckbox(rightColumn, i18nString26(UIStrings26.unregisterServiceWorker), "service_workers", "unregister-service-worker-checkbox");
-    const cookiesCheckbox = this.appendSettingCheckbox(rightColumn, i18nString26(UIStrings26.cookies), "cookies", "cookies-checkbox");
+    this.appendSettingCheckbox(
+      rightColumn,
+      i18nString26(UIStrings26.unregisterServiceWorker),
+      Storage.StorageType.Service_workers,
+      "unregister-service-worker-checkbox"
+    );
+    const cookiesCheckbox = this.appendSettingCheckbox(
+      rightColumn,
+      i18nString26(UIStrings26.cookies),
+      Storage.StorageType.Cookies,
+      "cookies-checkbox"
+    );
     cookiesCheckbox.classList.add("cookies-row");
     const includeThirdPartyCookiesRow = rightColumn.createChild("div", "include-third-party-cookies-row");
-    this.includeThirdPartyCookiesCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(i18nString26(UIStrings26.thirdPartyCookies), this.includeThirdPartyCookiesSetting);
+    this.includeThirdPartyCookiesCheckbox = SettingsUI.SettingsUI.createSettingCheckbox(
+      i18nString26(UIStrings26.thirdPartyCookies),
+      this.includeThirdPartyCookiesSetting
+    );
     this.includeThirdPartyCookiesCheckbox.classList.add("third-party-cookies-checkbox");
     includeThirdPartyCookiesRow.appendChild(this.includeThirdPartyCookiesCheckbox);
     const clearButtonRow = clearSiteData.appendRow();
     clearButtonRow.classList.add("clear-selected-button-row");
-    this.clearButton = UI27.UIUtils.createTextButton(i18nString26(UIStrings26.clearSelected), this.clear.bind(this), { jslogContext: "storage.clear-site-data" });
+    this.clearButton = UI27.UIUtils.createTextButton(
+      i18nString26(UIStrings26.clearSelected),
+      this.clear.bind(this),
+      { jslogContext: "storage.clear-site-data" }
+    );
     this.clearButton.id = "storage-view-clear-button";
     clearButtonRow.appendChild(this.clearButton);
     clearSiteData.markFieldListAsGroup();
-    const cookiesSetting = this.settings.get(
-      "cookies"
-      /* Protocol.Storage.StorageType.Cookies */
-    );
+    const cookiesSetting = this.settings.get(Storage.StorageType.Cookies);
     if (cookiesSetting) {
       cookiesSetting.addChangeListener((event) => this.onCookiesSettingChanged(event.data));
     }
-    this.includeThirdPartyCookiesSetting.addChangeListener((event) => this.onIncludeThirdPartyCookiesSettingChanged(event.data));
+    this.includeThirdPartyCookiesSetting.addChangeListener(
+      (event) => this.onIncludeThirdPartyCookiesSettingChanged(event.data)
+    );
     cookiesCheckbox.addEventListener("change", () => {
       this.syncCheckboxAttributeState(cookiesCheckbox);
       if (!cookiesCheckbox.checked && this.includeThirdPartyCookiesCheckbox.checked) {
@@ -12737,7 +16058,12 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     this.quotaRow.classList.add("quota-usage-row");
     this.quotaRow.setAttribute("jslog", `${VisualLogging18.item("storage-usage")}`);
     const learnMoreRow = quota.appendRow();
-    const learnMore = Link.create("https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses", i18nString26(UIStrings26.learnMore), void 0, "learn-more");
+    const learnMore = Link.create(
+      "https://developer.chrome.com/docs/devtools/progressive-web-apps#opaque-responses",
+      i18nString26(UIStrings26.learnMore),
+      void 0,
+      "learn-more"
+    );
     learnMoreRow.appendChild(learnMore);
     this.quotaUsage = null;
     this.quotaQuota = null;
@@ -12752,13 +16078,19 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     const quotaOverrideCheckboxRow = quota.appendRow();
     quotaOverrideCheckboxRow.classList.add("quota-override-row");
     this.quotaOverrideCheckbox = UI27.UIUtils.CheckboxLabel.create(i18nString26(UIStrings26.simulateCustomStorage), false);
-    this.quotaOverrideCheckbox.setAttribute("jslog", `${VisualLogging18.toggle("simulate-custom-quota").track({ change: true })}`);
+    this.quotaOverrideCheckbox.setAttribute(
+      "jslog",
+      `${VisualLogging18.toggle("simulate-custom-quota").track({ change: true })}`
+    );
     quotaOverrideCheckboxRow.appendChild(this.quotaOverrideCheckbox);
     this.quotaOverrideCheckbox.addEventListener("click", this.onClickCheckbox.bind(this), false);
     this.quotaOverrideControlRow = quota.appendRow();
     this.quotaOverrideEditor = this.quotaOverrideControlRow.createChild("input", "quota-override-notification-editor");
     this.quotaOverrideEditor.setAttribute("placeholder", i18nString26(UIStrings26.pleaseEnterANumber));
-    this.quotaOverrideEditor.setAttribute("jslog", `${VisualLogging18.textField("quota-override").track({ change: true })}`);
+    this.quotaOverrideEditor.setAttribute(
+      "jslog",
+      `${VisualLogging18.textField("quota-override").track({ change: true })}`
+    );
     this.quotaOverrideControlRow.appendChild(UI27.UIUtils.createLabel(i18nString26(UIStrings26.mb)));
     this.quotaOverrideControlRow.classList.add("hidden");
     this.quotaOverrideEditor.addEventListener("keyup", (event) => {
@@ -12798,10 +16130,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     this.updateThirdPartyCookiesCheckboxState();
   }
   onIncludeThirdPartyCookiesSettingChanged(includeThirdPartyCookiesEnabled) {
-    const cookiesSetting = this.settings.get(
-      "cookies"
-      /* Protocol.Storage.StorageType.Cookies */
-    );
+    const cookiesSetting = this.settings.get(Storage.StorageType.Cookies);
     if (includeThirdPartyCookiesEnabled && cookiesSetting && !cookiesSetting.get()) {
       cookiesSetting.set(true);
       return;
@@ -12812,10 +16141,7 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     checkbox.toggleAttribute("checked", checkbox.checked);
   }
   updateThirdPartyCookiesCheckboxState() {
-    const cookiesSetting = this.settings.get(
-      "cookies"
-      /* Protocol.Storage.StorageType.Cookies */
-    );
+    const cookiesSetting = this.settings.get(Storage.StorageType.Cookies);
     this.includeThirdPartyCookiesCheckbox.disabled = !cookiesSetting?.get();
   }
   targetAdded(target) {
@@ -12824,20 +16150,39 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     }
     this.target = target;
     const securityOriginManager = target.model(SDK22.SecurityOriginManager.SecurityOriginManager);
-    this.updateOrigin(securityOriginManager.mainSecurityOrigin(), securityOriginManager.unreachableMainSecurityOrigin());
-    securityOriginManager.addEventListener(SDK22.SecurityOriginManager.Events.MainSecurityOriginChanged, this.originChanged, this);
+    this.updateOrigin(
+      securityOriginManager.mainSecurityOrigin(),
+      securityOriginManager.unreachableMainSecurityOrigin()
+    );
+    securityOriginManager.addEventListener(
+      SDK22.SecurityOriginManager.Events.MainSecurityOriginChanged,
+      this.originChanged,
+      this
+    );
     const storageKeyManager = target.model(SDK22.StorageKeyManager.StorageKeyManager);
     this.updateStorageKey(storageKeyManager.mainStorageKey());
-    storageKeyManager.addEventListener("MainStorageKeyChanged", this.storageKeyChanged, this);
+    storageKeyManager.addEventListener(
+      SDK22.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED,
+      this.storageKeyChanged,
+      this
+    );
   }
   targetRemoved(target) {
     if (this.target !== target) {
       return;
     }
     const securityOriginManager = target.model(SDK22.SecurityOriginManager.SecurityOriginManager);
-    securityOriginManager.removeEventListener(SDK22.SecurityOriginManager.Events.MainSecurityOriginChanged, this.originChanged, this);
+    securityOriginManager.removeEventListener(
+      SDK22.SecurityOriginManager.Events.MainSecurityOriginChanged,
+      this.originChanged,
+      this
+    );
     const storageKeyManager = target.model(SDK22.StorageKeyManager.StorageKeyManager);
-    storageKeyManager.removeEventListener("MainStorageKeyChanged", this.storageKeyChanged, this);
+    storageKeyManager.removeEventListener(
+      SDK22.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED,
+      this.storageKeyChanged,
+      this
+    );
   }
   originChanged(event) {
     const { mainSecurityOrigin, unreachableMainSecurityOrigin } = event.data;
@@ -12908,7 +16253,9 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     const quotaFieldValue = `${quotaInBytes / bytesPerMB}`;
     this.quotaOverrideEditor.value = quotaFieldValue;
     this.previousOverrideFieldValue = quotaFieldValue;
-    await this.target.storageAgent().invoke_overrideQuotaForOrigin({ origin: this.securityOrigin, quotaSize: quotaInBytes });
+    await this.target.storageAgent().invoke_overrideQuotaForOrigin(
+      { origin: this.securityOrigin, quotaSize: quotaInBytes }
+    );
   }
   async clearQuotaForOrigin(target, origin) {
     await target.storageAgent().invoke_overrideQuotaForOrigin({ origin });
@@ -12939,7 +16286,13 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     }
     if (this.target) {
       const includeThirdPartyCookies = this.includeThirdPartyCookiesSetting.get();
-      _StorageView.clear(this.target, this.storageKey, this.securityOrigin, selectedStorageTypes, includeThirdPartyCookies);
+      _StorageView.clear(
+        this.target,
+        this.storageKey,
+        this.securityOrigin,
+        selectedStorageTypes,
+        includeThirdPartyCookies
+      );
     }
     this.clearButton.disabled = true;
     const label = this.clearButton.textContent;
@@ -12956,25 +16309,18 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
     if (!storageKey) {
       return;
     }
-    void target.storageAgent().invoke_clearDataForStorageKey({ storageKey, storageTypes: selectedStorageTypes.join(",") });
-    const set = new Set(selectedStorageTypes);
-    const hasAll = set.has(
-      "all"
-      /* Protocol.Storage.StorageType.All */
+    void target.storageAgent().invoke_clearDataForStorageKey(
+      { storageKey, storageTypes: selectedStorageTypes.join(",") }
     );
-    if (set.has(
-      "local_storage"
-      /* Protocol.Storage.StorageType.Local_storage */
-    ) || hasAll) {
+    const set = new Set(selectedStorageTypes);
+    const hasAll = set.has(Storage.StorageType.All);
+    if (set.has(Storage.StorageType.Local_storage) || hasAll) {
       const storageModel = target.model(SDK22.DOMStorageModel.DOMStorageModel);
       if (storageModel) {
         storageModel.clearForStorageKey(storageKey);
       }
     }
-    if (set.has(
-      "indexeddb"
-      /* Protocol.Storage.StorageType.Indexeddb */
-    ) || hasAll) {
+    if (set.has(Storage.StorageType.Indexeddb) || hasAll) {
       for (const target2 of SDK22.TargetManager.TargetManager.instance().targets()) {
         const indexedDBModel = target2.model(IndexedDBModel);
         if (indexedDBModel) {
@@ -12982,24 +16328,16 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
         }
       }
     }
-    if (originForCookies && (set.has(
-      "cookies"
-      /* Protocol.Storage.StorageType.Cookies */
-    ) || hasAll)) {
-      void target.storageAgent().invoke_clearDataForOrigin({
-        origin: originForCookies,
-        storageTypes: "cookies"
-        /* Protocol.Storage.StorageType.Cookies */
-      });
+    if (originForCookies && (set.has(Storage.StorageType.Cookies) || hasAll)) {
+      void target.storageAgent().invoke_clearDataForOrigin(
+        { origin: originForCookies, storageTypes: Storage.StorageType.Cookies }
+      );
       const cookieModel = target.model(SDK22.CookieModel.CookieModel);
       if (cookieModel) {
         void cookieModel.clear(void 0, includeThirdPartyCookies ? void 0 : originForCookies);
       }
     }
-    if (set.has(
-      "cache_storage"
-      /* Protocol.Storage.StorageType.Cache_storage */
-    ) || hasAll) {
+    if (set.has(Storage.StorageType.Cache_storage) || hasAll) {
       const target2 = SDK22.TargetManager.TargetManager.instance().primaryPageTarget();
       const model = target2?.model(SDK22.ServiceWorkerCacheModel.ServiceWorkerCacheModel);
       if (model) {
@@ -13045,7 +16383,13 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
       }
       const element = uiI18n.getFormatLocalizedString(str_26, UIStrings26.storageQuotaUsed, { PH1: usageAsString, PH2: quota });
       this.quotaRow.appendChild(element);
-      UI27.Tooltip.Tooltip.install(this.quotaRow, i18nString26(UIStrings26.storageQuotaUsedWithBytes, { PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString() }));
+      UI27.Tooltip.Tooltip.install(
+        this.quotaRow,
+        i18nString26(
+          UIStrings26.storageQuotaUsedWithBytes,
+          { PH1: response.usage.toLocaleString(), PH2: response.quota.toLocaleString() }
+        )
+      );
       if (!response.overrideActive && response.quota < 125829120) {
         const icon = new Icon();
         icon.name = "info";
@@ -13082,13 +16426,13 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
   }
   static getStorageTypeName(type) {
     switch (type) {
-      case "file_systems":
+      case Storage.StorageType.File_systems:
         return i18nString26(UIStrings26.fileSystem);
-      case "indexeddb":
+      case Storage.StorageType.Indexeddb:
         return i18nString26(UIStrings26.indexDB);
-      case "cache_storage":
+      case Storage.StorageType.Cache_storage:
         return i18nString26(UIStrings26.cacheStorage);
-      case "service_workers":
+      case Storage.StorageType.Service_workers:
         return i18nString26(UIStrings26.serviceWorkers);
       default:
         return i18nString26(UIStrings26.other);
@@ -13119,11 +16463,11 @@ var StorageView = class _StorageView extends UI27.Widget.VBox {
   }
 };
 var AllStorageTypes = [
-  "cache_storage",
-  "cookies",
-  "indexeddb",
-  "local_storage",
-  "service_workers"
+  Storage.StorageType.Cache_storage,
+  Storage.StorageType.Cookies,
+  Storage.StorageType.Indexeddb,
+  Storage.StorageType.Local_storage,
+  Storage.StorageType.Service_workers
 ];
 var ActionDelegate2 = class {
   handleAction(_context, actionId) {
@@ -13153,10 +16497,10 @@ var ActionDelegate2 = class {
   }
 };
 var StorageRevealable = class {
-  target;
   constructor(target) {
     this.target = target;
   }
+  target;
 };
 var StorageRevealer = class {
   async reveal(_revealable) {
@@ -13165,7 +16509,7 @@ var StorageRevealer = class {
   }
 };
 
-// gen/front_end/panels/application/TrustTokensTreeElement.js
+// ../../front_end/panels/application/TrustTokensTreeElement.ts
 var TrustTokensTreeElement_exports = {};
 __export(TrustTokensTreeElement_exports, {
   TrustTokensTreeElement: () => TrustTokensTreeElement,
@@ -13205,7 +16549,7 @@ var TrustTokensTreeElement = class extends ApplicationPanelTreeElement {
   }
 };
 
-// gen/front_end/panels/application/WebMCPTreeElement.js
+// ../../front_end/panels/application/WebMCPTreeElement.ts
 var WebMCPTreeElement_exports = {};
 __export(WebMCPTreeElement_exports, {
   WebMCPTreeElement: () => WebMCPTreeElement
@@ -13214,7 +16558,7 @@ import { createIcon as createIcon10 } from "../../ui/kit/kit.js";
 import * as UI30 from "../../ui/legacy/legacy.js";
 import { html as html17, render as render18 } from "../../ui/lit/lit.js";
 
-// gen/front_end/panels/application/WebMCPView.js
+// ../../front_end/panels/application/WebMCPView.ts
 var WebMCPView_exports = {};
 __export(WebMCPView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW12,
@@ -13238,13 +16582,18 @@ import * as Host3 from "../../core/host/host.js";
 import * as i18n55 from "../../core/i18n/i18n.js";
 import * as Platform10 from "../../core/platform/platform.js";
 import * as SDK23 from "../../core/sdk/sdk.js";
-import * as WebMCP from "../../models/web_mcp/web_mcp.js";
+import * as WebMCP2 from "../../models/web_mcp/web_mcp.js";
 import * as Adorners from "../../ui/components/adorners/adorners.js";
 import * as Buttons9 from "../../ui/components/buttons/buttons.js";
 import * as ObjectUI2 from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI29 from "../../ui/legacy/legacy.js";
-import { Directives as Directives7, html as html16, nothing as nothing9, render as render17 } from "../../ui/lit/lit.js";
+import {
+  Directives as Directives7,
+  html as html16,
+  nothing as nothing9,
+  render as render17
+} from "../../ui/lit/lit.js";
 import * as VisualLogging19 from "../../ui/visual_logging/visual_logging.js";
 import * as Console2 from "../console/console.js";
 
@@ -13300,7 +16649,7 @@ var symbolizedErrorWidget_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./symbolizedErrorWidget.css")} */`;
 
-// gen/front_end/panels/application/WebMCPView.js
+// ../../front_end/panels/application/WebMCPView.ts
 import * as ProtocolMonitor from "../protocol_monitor/protocol_monitor.js";
 
 // gen/front_end/panels/application/webMCPView.css.js
@@ -13619,7 +16968,7 @@ var webMCPView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./webMCPView.css")} */`;
 
-// gen/front_end/panels/application/WebMCPView.js
+// ../../front_end/panels/application/WebMCPView.ts
 var UIStrings28 = {
   /**
    * @description Text for the header of the tool registry section
@@ -13789,25 +17138,25 @@ var UIStrings28 = {
 var str_28 = i18n55.i18n.registerUIStrings("panels/application/WebMCPView.ts", UIStrings28);
 var i18nString28 = i18n55.i18n.getLocalizedString.bind(void 0, str_28);
 var { widget: widget11 } = UI29.Widget;
-var TabId;
-(function(TabId2) {
+var TabId = /* @__PURE__ */ ((TabId2) => {
   TabId2["DETAILS"] = "webmcp.tool-details";
   TabId2["INPUT"] = "webmcp.call-inputs";
   TabId2["OUTPUT"] = "webmcp.call-outputs";
-})(TabId || (TabId = {}));
+  return TabId2;
+})(TabId || {});
 function filterToolCalls(toolCalls, filterState) {
   let filtered = [...toolCalls];
   const statusTypes = filterState.statusTypes;
   if (statusTypes) {
     filtered = filtered.filter((call) => {
       const { completed, error, pending, canceled } = statusTypes;
-      if (completed && call.result?.status === "Completed") {
+      if (completed && call.result?.status === WebMCP.InvocationStatus.Completed) {
         return true;
       }
-      if (error && call.result?.status === "Error") {
+      if (error && call.result?.status === WebMCP.InvocationStatus.Error) {
         return true;
       }
-      if (canceled && call.result?.status === "Canceled") {
+      if (canceled && call.result?.status === WebMCP.InvocationStatus.Canceled) {
         return true;
       }
       if (pending && call.result === void 0) {
@@ -13853,11 +17202,11 @@ function calculateToolStats(calls) {
 }
 function toolStatsIcon(status) {
   switch (status) {
-    case "Completed":
+    case WebMCP.InvocationStatus.Completed:
       return { iconName: "check-circle", iconColor: "var(--sys-color-green)" };
-    case "Error":
+    case WebMCP.InvocationStatus.Error:
       return { iconName: "cross-circle-filled", iconColor: "var(--sys-color-error)" };
-    case "Canceled":
+    case WebMCP.InvocationStatus.Canceled:
       return { iconName: "record-stop", iconColor: "var(--sys-color-on-surface-light)" };
     case void 0:
       return { iconName: "watch" };
@@ -13865,9 +17214,9 @@ function toolStatsIcon(status) {
 }
 function getIconGroupsFromStats(toolStats) {
   const status = [
-    "Completed",
-    "Error",
-    "Canceled",
+    WebMCP.InvocationStatus.Completed,
+    WebMCP.InvocationStatus.Error,
+    WebMCP.InvocationStatus.Canceled,
     void 0
   ];
   return status.map((status2) => ({
@@ -13912,9 +17261,9 @@ var DEFAULT_VIEW12 = (input, output, target) => {
   const isFilterActive = Boolean(input.filters.text) || Boolean(input.filters.toolTypes) || Boolean(input.filters.statusTypes);
   const iconName = (call) => {
     switch (call.result?.status) {
-      case "Error":
+      case WebMCP.InvocationStatus.Error:
         return "cross-circle-filled";
-      case "Canceled":
+      case WebMCP.InvocationStatus.Canceled:
         return "record-stop";
       case void 0:
         return "watch";
@@ -13924,11 +17273,11 @@ var DEFAULT_VIEW12 = (input, output, target) => {
   };
   const statusString = (call) => {
     switch (call.result?.status) {
-      case "Error":
+      case WebMCP.InvocationStatus.Error:
         return i18nString28(UIStrings28.error);
-      case "Canceled":
+      case WebMCP.InvocationStatus.Canceled:
         return i18nString28(UIStrings28.canceled);
-      case "Completed":
+      case WebMCP.InvocationStatus.Completed:
         return i18nString28(UIStrings28.completed);
       default:
         return i18nString28(UIStrings28.inProgress);
@@ -13936,11 +17285,11 @@ var DEFAULT_VIEW12 = (input, output, target) => {
   };
   const onIconClick = (toolName, status) => {
     let statusTypes = void 0;
-    if (status === "Completed") {
+    if (status === WebMCP.InvocationStatus.Completed) {
       statusTypes = { completed: true };
-    } else if (status === "Error") {
+    } else if (status === WebMCP.InvocationStatus.Error) {
       statusTypes = { error: true };
-    } else if (status === "Canceled") {
+    } else if (status === WebMCP.InvocationStatus.Canceled) {
       statusTypes = { canceled: true };
     } else if (status === void 0) {
       statusTypes = { pending: true };
@@ -13970,7 +17319,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
           <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
             <devtools-button title=${i18nString28(UIStrings28.clearLog)}
                              .iconName=${"clear"}
-                             .variant=${"toolbar"}
+                             .variant=${Buttons9.Button.Variant.TOOLBAR}
                              .jslogContext=${"clear"}
                              @click=${input.onClearLogClick}></devtools-button>
             <div class="toolbar-divider"></div>
@@ -13986,7 +17335,7 @@ var DEFAULT_VIEW12 = (input, output, target) => {
             <div class="toolbar-spacer"></div>
             <devtools-button title=${i18nString28(UIStrings28.clearFilters)}
                              .iconName=${"filter-clear"}
-                             .variant=${"toolbar"}
+                             .variant=${Buttons9.Button.Variant.TOOLBAR}
                              .jslogContext=${"clear-filter"}
                              @click=${() => input.onFilterChange({ text: "" })}
                              ?hidden=${!isFilterActive}></devtools-button>
@@ -14011,36 +17360,35 @@ var DEFAULT_VIEW12 = (input, output, target) => {
                     <th id="output" weight="30">${i18nString28(UIStrings28.output)}</th>
                             ` : nothing9}
                   </tr>
-                      ${Directives7.repeat(input.toolCalls, (call) => call.invocationId + "-" + (call.result?.status ?? ""), (call) => html16`
+                      ${Directives7.repeat(
+    input.toolCalls,
+    (call) => call.invocationId + "-" + (call.result?.status ?? ""),
+    (call) => html16`
                     <tr class=${Directives7.classMap({
-    "status-error": call.result?.status === "Error",
-    "status-cancelled": call.result?.status === "Canceled",
-    selected: call === input.selectedCall
-  })} jslog=${VisualLogging19.tableRow().track({ click: true })} @click=${() => input.onCallSelect(call)}
+      "status-error": call.result?.status === WebMCP.InvocationStatus.Error,
+      "status-cancelled": call.result?.status === WebMCP.InvocationStatus.Canceled,
+      selected: call === input.selectedCall
+    })} jslog=${VisualLogging19.tableRow().track({ click: true })} @click=${() => input.onCallSelect(call)}
                         @contextmenu=${(e) => {
-    const contextMenu = e.detail;
-    const isUnregistered = !input.tools.includes(call.tool);
-    contextMenu.defaultSection().appendItem(i18nString28(UIStrings28.revealTool), () => {
-      input.onRevealTool(call.tool);
-    }, { jslogContext: "webmcp.reveal-tool", disabled: isUnregistered });
-    contextMenu.defaultSection().appendItem(i18nString28(UIStrings28.editAndRun), () => {
-      const payload = parsePayload(call.input);
-      input.onRevealTool(call.tool, payload.valueObject);
-    }, { jslogContext: "webmcp.edit-and-run", disabled: isUnregistered });
-    if (call.result === void 0) {
-      contextMenu.defaultSection().appendItem(i18nString28(UIStrings28.cancelCall), () => {
-        call.cancel();
-      }, { jslogContext: "webmcp.cancel-call" });
-    }
-  }}>
+      const contextMenu = e.detail;
+      const isUnregistered = !input.tools.includes(call.tool);
+      contextMenu.defaultSection().appendItem(i18nString28(UIStrings28.revealTool), () => {
+        input.onRevealTool(call.tool);
+      }, { jslogContext: "webmcp.reveal-tool", disabled: isUnregistered });
+      contextMenu.defaultSection().appendItem(i18nString28(UIStrings28.editAndRun), () => {
+        const payload = parsePayload(call.input);
+        input.onRevealTool(call.tool, payload.valueObject);
+      }, { jslogContext: "webmcp.edit-and-run", disabled: isUnregistered });
+      if (call.result === void 0) {
+        contextMenu.defaultSection().appendItem(i18nString28(UIStrings28.cancelCall), () => {
+          call.cancel();
+        }, { jslogContext: "webmcp.cancel-call" });
+      }
+    }}>
                       <td @click=${(e) => {
-    e.stopPropagation();
-    input.onCallSelect(
-      call,
-      "webmcp.tool-details"
-      /* TabId.DETAILS */
-    );
-  }}>
+      e.stopPropagation();
+      input.onCallSelect(call, "webmcp.tool-details" /* DETAILS */);
+    }}>
                         <div class="name-cell">
                           <span>${call.tool.name}</span>
                           <button class="run-tool-action-button"
@@ -14048,22 +17396,21 @@ var DEFAULT_VIEW12 = (input, output, target) => {
                                   aria-label=${i18nString28(UIStrings28.editAndRun)}
                                   jslog=${VisualLogging19.action("edit-and-run").track({ click: true })}
                                   @click=${(e) => {
-    e.stopPropagation();
-    const payload = parsePayload(call.input);
-    input.onRevealTool(call.tool, payload.valueObject);
-  }}>
+      e.stopPropagation();
+      const payload = parsePayload(call.input);
+      input.onRevealTool(
+        call.tool,
+        payload.valueObject
+      );
+    }}>
                             <devtools-icon name="goto-filled"></devtools-icon>
                           </button>
                         </div>
                       </td>
                       <td @click=${(e) => {
-    e.stopPropagation();
-    input.onCallSelect(
-      call,
-      "webmcp.call-outputs"
-      /* TabId.OUTPUT */
-    );
-  }}>
+      e.stopPropagation();
+      input.onCallSelect(call, "webmcp.call-outputs" /* OUTPUT */);
+    }}>
                         <div class="status-cell">
                           ${iconName(call) ? html16`<devtools-icon class="small" name=${iconName(call)}></devtools-icon>` : ""}
                           <span>${statusString(call)}</span>
@@ -14071,24 +17418,17 @@ var DEFAULT_VIEW12 = (input, output, target) => {
                       </td>
                       ${!input.selectedCall ? html16`
                         <td @click=${(e) => {
-    e.stopPropagation();
-    input.onCallSelect(
-      call,
-      "webmcp.call-inputs"
-      /* TabId.INPUT */
-    );
-  }}>${call.input}</td>
+      e.stopPropagation();
+      input.onCallSelect(call, "webmcp.call-inputs" /* INPUT */);
+    }}>${call.input}</td>
                         <td @click=${(e) => {
-    e.stopPropagation();
-    input.onCallSelect(
-      call,
-      "webmcp.call-outputs"
-      /* TabId.OUTPUT */
-    );
-  }}>${call.result?.output !== void 0 ? JSON.stringify(call.result.output) : call.result?.errorText ?? ""}</td>
+      e.stopPropagation();
+      input.onCallSelect(call, "webmcp.call-outputs" /* OUTPUT */);
+    }}>${call.result?.output !== void 0 ? JSON.stringify(call.result.output) : call.result?.errorText ?? ""}</td>
                         ` : nothing9}
                     </tr>
-                  `)}
+                  `
+  )}
                   </table>`}>
               </devtools-data-grid>
             </div>
@@ -14099,36 +17439,27 @@ var DEFAULT_VIEW12 = (input, output, target) => {
                 <devtools-button
                   slot="left"
                   .iconName=${"cross"}
-                  .size=${"SMALL"}
-                  .variant=${"icon"}
+                  .size=${Buttons9.Button.Size.SMALL}
+                  .variant=${Buttons9.Button.Variant.ICON}
                   .jslogContext=${"close"}
                   title=${i18nString28(UIStrings28.close)}
                   @click=${() => input.onCallSelect(null)}
                 ></devtools-button>
                 <devtools-widget
-                  id=${"webmcp.tool-details"}
-                  ?selected=${Directives7.live(
-    input.selectedTab === "webmcp.tool-details"
-    /* TabId.DETAILS */
-  )}
+                  id=${"webmcp.tool-details" /* DETAILS */}
+                  ?selected=${Directives7.live(input.selectedTab === "webmcp.tool-details" /* DETAILS */)}
                   title=${i18nString28(UIStrings28.toolDetails)}
                   ${widget11(ToolDetailsWidget, { tool: input.selectedCall?.tool, isUnregistered: input.selectedCall ? !input.tools.includes(input.selectedCall.tool) : false })}>
                 </devtools-widget>
                 <devtools-widget
-                  id=${"webmcp.call-inputs"}
-                  ?selected=${Directives7.live(
-    input.selectedTab === "webmcp.call-inputs"
-    /* TabId.INPUT */
-  )}
+                  id=${"webmcp.call-inputs" /* INPUT */}
+                  ?selected=${Directives7.live(input.selectedTab === "webmcp.call-inputs" /* INPUT */)}
                   title=${i18nString28(UIStrings28.input)}
                   ${widget11(PayloadWidget, parsePayload(input.selectedCall?.input))}>
                 </devtools-widget>
                 <devtools-widget
-                  id=${"webmcp.call-outputs"}
-                  ?selected=${Directives7.live(
-    input.selectedTab === "webmcp.call-outputs"
-    /* TabId.OUTPUT */
-  )}
+                  id=${"webmcp.call-outputs" /* OUTPUT */}
+                  ?selected=${Directives7.live(input.selectedTab === "webmcp.call-outputs" /* OUTPUT */)}
                   title=${i18nString28(UIStrings28.output)}
                   ${widget11(PayloadWidget, {
     valueObject: input.selectedCall?.result?.output,
@@ -14143,17 +17474,20 @@ var DEFAULT_VIEW12 = (input, output, target) => {
             <devtools-toolbar class="webmcp-toolbar" role="presentation" wrappable>
               <span class="toolbar-text">${i18nString28(UIStrings28.totalCalls, { PH1: input.toolCalls.length })}</span>
               <div class="toolbar-divider"></div>
-              <span class="toolbar-text status-error-text">${i18nString28(UIStrings28.failed, { PH1: toolStats.totals.get(
-    "Error"
-    /* Protocol.WebMCP.InvocationStatus.Error */
-  ) ?? 0 })}</span>
+              <span class="toolbar-text status-error-text">${i18nString28(
+    UIStrings28.failed,
+    { PH1: toolStats.totals.get(WebMCP.InvocationStatus.Error) ?? 0 }
+  )}</span>
               <div class="toolbar-divider"></div>
-              <span class="toolbar-text status-cancelled-text">${i18nString28(UIStrings28.canceledCount, { PH1: toolStats.totals.get(
-    "Canceled"
-    /* Protocol.WebMCP.InvocationStatus.Canceled */
-  ) ?? 0 })}</span>
+              <span class="toolbar-text status-cancelled-text">${i18nString28(
+    UIStrings28.canceledCount,
+    { PH1: toolStats.totals.get(WebMCP.InvocationStatus.Canceled) ?? 0 }
+  )}</span>
               <div class="toolbar-divider"></div>
-              <span class="toolbar-text">${i18nString28(UIStrings28.inProgressCount, { PH1: toolStats.totals.get(void 0) ?? 0 })}</span>
+              <span class="toolbar-text">${i18nString28(
+    UIStrings28.inProgressCount,
+    { PH1: toolStats.totals.get(void 0) ?? 0 }
+  )}</span>
             </devtools-toolbar>
           </div>
         ` : html16`
@@ -14205,8 +17539,8 @@ var DEFAULT_VIEW12 = (input, output, target) => {
           <div class="section-title">
             <devtools-button
               .iconName=${"cross"}
-              .size=${"SMALL"}
-              .variant=${"icon"}
+              .size=${Buttons9.Button.Size.SMALL}
+              .variant=${Buttons9.Button.Variant.ICON}
               .jslogContext=${"close"}
               title=${i18nString28(UIStrings28.close)}
               @click=${() => input.onToolSelect(null)}
@@ -14222,8 +17556,8 @@ var DEFAULT_VIEW12 = (input, output, target) => {
               <div style="flex: auto;"></div>
               <devtools-button
                 .iconName=${"import"}
-                .size=${"SMALL"}
-                .variant=${"text"}
+                .size=${Buttons9.Button.Size.SMALL}
+                .variant=${Buttons9.Button.Variant.TEXT}
                 .jslogContext=${"paste"}
                 title=${i18nString28(UIStrings28.paste)}
                 @click=${input.onPaste}
@@ -14248,8 +17582,8 @@ var DEFAULT_VIEW12 = (input, output, target) => {
             ></devtools-widget>
             <devtools-button
               class="webmcp-run-tool-button"
-              .variant=${"outlined"}
-              .size=${"SMALL"}
+              .variant=${Buttons9.Button.Variant.OUTLINED}
+              .size=${Buttons9.Button.Size.SMALL}
               .jslogContext=${"run-tool"}
               @click=${() => {
     if (editorWidget && input.selectedTool) {
@@ -14314,8 +17648,11 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
   constructor(target, view = DEFAULT_VIEW12) {
     super(target);
     this.#view = view;
-    this.#filterButtons = _WebMCPView.createFilterButtons(this.#showToolTypesContextMenu.bind(this), this.#showStatusTypesContextMenu.bind(this));
-    SDK23.TargetManager.TargetManager.instance().observeModels(WebMCP.WebMCPModel.WebMCPModel, {
+    this.#filterButtons = _WebMCPView.createFilterButtons(
+      this.#showToolTypesContextMenu.bind(this),
+      this.#showStatusTypesContextMenu.bind(this)
+    );
+    SDK23.TargetManager.TargetManager.instance().observeModels(WebMCP2.WebMCPModel.WebMCPModel, {
       modelAdded: (model) => this.#webMCPModelAdded(model),
       modelRemoved: (model) => this.#webMCPModelRemoved(model)
     });
@@ -14331,8 +17668,16 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
       }
       this.#handleFilterChange({ ...this.#filterState, toolTypes: toolTypesToPass });
     };
-    contextMenu.defaultSection().appendCheckboxItem(i18nString28(UIStrings28.imperative), () => toggle5("imperative"), { checked: this.#filterState.toolTypes?.imperative ?? false, jslogContext: "webmcp.imperative" });
-    contextMenu.defaultSection().appendCheckboxItem(i18nString28(UIStrings28.declarative), () => toggle5("declarative"), { checked: this.#filterState.toolTypes?.declarative ?? false, jslogContext: "webmcp.declarative" });
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString28(UIStrings28.imperative),
+      () => toggle5("imperative"),
+      { checked: this.#filterState.toolTypes?.imperative ?? false, jslogContext: "webmcp.imperative" }
+    );
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString28(UIStrings28.declarative),
+      () => toggle5("declarative"),
+      { checked: this.#filterState.toolTypes?.declarative ?? false, jslogContext: "webmcp.declarative" }
+    );
   }
   #showStatusTypesContextMenu(contextMenu) {
     const toggle5 = (key) => {
@@ -14344,22 +17689,38 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
       }
       this.#handleFilterChange({ ...this.#filterState, statusTypes: statusTypesToPass });
     };
-    contextMenu.defaultSection().appendCheckboxItem(i18nString28(UIStrings28.completed), () => toggle5("completed"), { checked: this.#filterState.statusTypes?.["completed"] ?? false, jslogContext: "webmcp.completed" });
-    contextMenu.defaultSection().appendCheckboxItem(i18nString28(UIStrings28.error), () => toggle5("error"), { checked: this.#filterState.statusTypes?.["error"] ?? false, jslogContext: "webmcp.error" });
-    contextMenu.defaultSection().appendCheckboxItem(i18nString28(UIStrings28.canceled), () => toggle5("canceled"), { checked: this.#filterState.statusTypes?.["canceled"] ?? false, jslogContext: "webmcp.canceled" });
-    contextMenu.defaultSection().appendCheckboxItem(i18nString28(UIStrings28.pending), () => toggle5("pending"), { checked: this.#filterState.statusTypes?.["pending"] ?? false, jslogContext: "webmcp.pending" });
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString28(UIStrings28.completed),
+      () => toggle5("completed"),
+      { checked: this.#filterState.statusTypes?.["completed"] ?? false, jslogContext: "webmcp.completed" }
+    );
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString28(UIStrings28.error),
+      () => toggle5("error"),
+      { checked: this.#filterState.statusTypes?.["error"] ?? false, jslogContext: "webmcp.error" }
+    );
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString28(UIStrings28.canceled),
+      () => toggle5("canceled"),
+      { checked: this.#filterState.statusTypes?.["canceled"] ?? false, jslogContext: "webmcp.canceled" }
+    );
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString28(UIStrings28.pending),
+      () => toggle5("pending"),
+      { checked: this.#filterState.statusTypes?.["pending"] ?? false, jslogContext: "webmcp.pending" }
+    );
   }
   #webMCPModelAdded(model) {
-    model.addEventListener("ToolsAdded", this.requestUpdate, this);
-    model.addEventListener("ToolsRemoved", this.#toolsRemoved, this);
-    model.addEventListener("ToolInvoked", this.#toolInvoked, this);
-    model.addEventListener("ToolResponded", this.requestUpdate, this);
+    model.addEventListener(WebMCP2.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
+    model.addEventListener(WebMCP2.WebMCPModel.Events.TOOLS_REMOVED, this.#toolsRemoved, this);
+    model.addEventListener(WebMCP2.WebMCPModel.Events.TOOL_INVOKED, this.#toolInvoked, this);
+    model.addEventListener(WebMCP2.WebMCPModel.Events.TOOL_RESPONDED, this.requestUpdate, this);
   }
   #webMCPModelRemoved(model) {
-    model.removeEventListener("ToolsAdded", this.requestUpdate, this);
-    model.removeEventListener("ToolsRemoved", this.#toolsRemoved, this);
-    model.removeEventListener("ToolInvoked", this.#toolInvoked, this);
-    model.removeEventListener("ToolResponded", this.requestUpdate, this);
+    model.removeEventListener(WebMCP2.WebMCPModel.Events.TOOLS_ADDED, this.requestUpdate, this);
+    model.removeEventListener(WebMCP2.WebMCPModel.Events.TOOLS_REMOVED, this.#toolsRemoved, this);
+    model.removeEventListener(WebMCP2.WebMCPModel.Events.TOOL_INVOKED, this.#toolInvoked, this);
+    model.removeEventListener(WebMCP2.WebMCPModel.Events.TOOL_RESPONDED, this.requestUpdate, this);
   }
   #toolInvoked(event) {
     const call = event.data;
@@ -14376,7 +17737,7 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
     this.requestUpdate();
   }
   #handleClearLogClick = () => {
-    const models = SDK23.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
+    const models = SDK23.TargetManager.TargetManager.instance().models(WebMCP2.WebMCPModel.WebMCPModel);
     for (const model of models) {
       model.clearCalls();
     }
@@ -14391,12 +17752,12 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
     this.requestUpdate();
   };
   #getTools() {
-    const models = SDK23.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
+    const models = SDK23.TargetManager.TargetManager.instance().models(WebMCP2.WebMCPModel.WebMCPModel);
     const tools = models.flatMap((model) => model.tools.toArray());
     return tools.sort((a, b) => a.name.localeCompare(b.name));
   }
   performUpdate() {
-    const models = SDK23.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
+    const models = SDK23.TargetManager.TargetManager.instance().models(WebMCP2.WebMCPModel.WebMCPModel);
     const toolCalls = models.flatMap((model) => model.toolCalls);
     const filteredCalls = filterToolCalls(toolCalls, this.#filterState);
     const tools = this.#getTools();
@@ -14438,7 +17799,7 @@ var WebMCPView = class _WebMCPView extends UI29.Widget.VBox {
           this.#selectedTool.parameters = event.data.parameters || {};
           this.#lastDevToolsInvocationId = await this.#selectedTool.tool.invoke(this.#selectedTool.parameters) ?? null;
           if (this.#lastDevToolsInvocationId) {
-            const models2 = SDK23.TargetManager.TargetManager.instance().models(WebMCP.WebMCPModel.WebMCPModel);
+            const models2 = SDK23.TargetManager.TargetManager.instance().models(WebMCP2.WebMCPModel.WebMCPModel);
             const call = models2.flatMap((model) => model.toolCalls).find((c) => c.invocationId === this.#lastDevToolsInvocationId);
             if (call) {
               this.#selectedCall = call;
@@ -14477,7 +17838,7 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
     const object = new SDK23.RemoteObject.LocalJSONObject(parsedInput);
     const objectTree = new ObjectUI2.ObjectPropertiesSection.ObjectTree(object, {
       readOnly: true,
-      propertiesMode: 1
+      propertiesMode: ObjectUI2.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
     });
     objectTree.expanded = true;
     return html16`<devtools-tree .template=${html16`
@@ -14505,7 +17866,8 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
       </div>
     `;
   };
-  render17(html16`
+  render17(
+    html16`
     <style>${webMCPView_css_default}</style>
     <style>${symbolizedErrorWidget_css_default}</style>
     <div class="call-payload-view">
@@ -14513,7 +17875,9 @@ var PAYLOAD_DEFAULT_VIEW = (input, output, target) => {
             ${isParsable ? createPayload(input.valueObject) : input.valueString !== void 0 ? createSourceText(input.valueString) : input.symbolizedError ? createException(input.symbolizedError) : input.errorText ? createErrorText(input.errorText) : nothing9}
       </div>
     </div>
-  `, target);
+  `,
+    target
+  );
 };
 var PayloadWidget = class extends UI29.Widget.Widget {
   #valueObject;
@@ -14628,14 +17992,17 @@ var TOOL_DETAILS_VIEW = (input, output, target) => {
            aria-label=${i18nString28(UIStrings28.viewInElementsPanel)}
            .iconName=${"select-element"}
            .jslogContext=${"elements.select-element"}
-           .size=${"SMALL"}
-           .variant=${"icon"}
+           .size=${Buttons9.Button.Size.SMALL}
+           .variant=${Buttons9.Button.Variant.ICON}
            @click=${() => input.revealNode(origin)}
            ></devtools-button>
       </div>` : origin ? html16`
       <div class="label">${i18nString28(UIStrings28.origin)}</div>
       <div class="value stack-trace">
-        ${widget11(Components4.JSPresentationUtils.StackTracePreviewContent, { stackTrace: origin, options: { expandable: true } })}
+        ${widget11(
+    Components4.JSPresentationUtils.StackTracePreviewContent,
+    { stackTrace: origin, options: { expandable: true } }
+  )}
       </div>` : nothing9}
     </div>
     ${input.isUnregistered ? html16`
@@ -14742,14 +18109,14 @@ function parseToolSchema(schema) {
     if (def.type === "string" && def.enum) {
       enumsByName.set(name, createEnumRecord(def.enum));
     } else if (def.type && typeof def.type === "string" && def.type !== "object" && def.type !== "array") {
-      let paramType = "string";
+      let paramType = ProtocolMonitor.JSONEditor.ParameterType.STRING;
       switch (def.type) {
         case "number":
         case "integer":
-          paramType = "number";
+          paramType = ProtocolMonitor.JSONEditor.ParameterType.NUMBER;
           break;
         case "boolean":
-          paramType = "boolean";
+          paramType = ProtocolMonitor.JSONEditor.ParameterType.BOOLEAN;
           break;
       }
       simpleTypesByName.set(name, paramType);
@@ -14794,16 +18161,16 @@ function parseToolSchema(schema) {
         name,
         optional,
         description: "",
-        type: "string",
+        type: ProtocolMonitor.JSONEditor.ParameterType.STRING,
         isCorrectType: true
       };
     }
     const prop = propDef;
     if (prop.$ref) {
       const typeRef = prop.$ref.split("/").pop() || "";
-      let paramType2 = "object";
+      let paramType2 = ProtocolMonitor.JSONEditor.ParameterType.OBJECT;
       if (enumsByName.has(typeRef)) {
-        paramType2 = "string";
+        paramType2 = ProtocolMonitor.JSONEditor.ParameterType.STRING;
       } else {
         const simpleType = simpleTypesByName.get(typeRef);
         if (simpleType !== void 0) {
@@ -14831,22 +18198,22 @@ function parseToolSchema(schema) {
       }
     }
     const description = prop.description || "";
-    let paramType = "unknown";
+    let paramType = ProtocolMonitor.JSONEditor.ParameterType.UNKNOWN;
     switch (type) {
       case "string":
-        paramType = "string";
+        paramType = ProtocolMonitor.JSONEditor.ParameterType.STRING;
         break;
       case "number":
-        paramType = "number";
+        paramType = ProtocolMonitor.JSONEditor.ParameterType.NUMBER;
         break;
       case "boolean":
-        paramType = "boolean";
+        paramType = ProtocolMonitor.JSONEditor.ParameterType.BOOLEAN;
         break;
       case "object":
-        paramType = "object";
+        paramType = ProtocolMonitor.JSONEditor.ParameterType.OBJECT;
         break;
       case "array":
-        paramType = "array";
+        paramType = ProtocolMonitor.JSONEditor.ParameterType.ARRAY;
         break;
     }
     const base = {
@@ -14920,7 +18287,7 @@ function parseToolSchema(schema) {
   return result;
 }
 
-// gen/front_end/panels/application/WebMCPTreeElement.js
+// ../../front_end/panels/application/WebMCPTreeElement.ts
 var WebMCPTreeElement = class extends ApplicationPanelTreeElement {
   #view;
   constructor(storagePanel) {
@@ -14948,7 +18315,7 @@ var WebMCPTreeElement = class extends ApplicationPanelTreeElement {
   }
 };
 
-// gen/front_end/panels/application/ApplicationPanelSidebar.js
+// ../../front_end/panels/application/ApplicationPanelSidebar.ts
 var UIStrings29 = {
   /**
    * @description Text of a context menu item to start a chat with AI
@@ -15163,13 +18530,13 @@ function assertNotMainTarget(targetId) {
 }
 function nameForExtensionStorageArea(storageArea) {
   switch (storageArea) {
-    case "session":
+    case Extensions.StorageArea.Session:
       return i18nString29(UIStrings29.extensionSessionStorage);
-    case "local":
+    case Extensions.StorageArea.Local:
       return i18nString29(UIStrings29.extensionLocalStorage);
-    case "sync":
+    case Extensions.StorageArea.Sync:
       return i18nString29(UIStrings29.extensionSyncStorage);
-    case "managed":
+    case Extensions.StorageArea.Managed:
       return i18nString29(UIStrings29.extensionManagedStorage);
     default:
       throw new Error(`Unrecognized storage type: ${storageArea}`);
@@ -15215,10 +18582,7 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
   constructor(panel) {
     super();
     this.panel = panel;
-    this.sidebarTree = new UI31.TreeOutline.TreeOutlineInShadow(
-      "NavigationTree"
-      /* UI.TreeOutline.TreeVariant.NAVIGATION_TREE */
-    );
+    this.sidebarTree = new UI31.TreeOutline.TreeOutlineInShadow(UI31.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.sidebarTree.registerRequiredCSS(resourcesSidebar_css_default);
     this.sidebarTree.element.classList.add("resources-sidebar");
     this.sidebarTree.setHideOverflow(true);
@@ -15238,10 +18602,8 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     this.applicationTreeElement.appendChild(this.serviceWorkersTreeElement);
     this.storageTreeElement = new StorageTreeElement(panel);
     this.applicationTreeElement.appendChild(this.storageTreeElement);
-    if (Root2.Runtime.hostConfig.devToolsWebMCPSupport?.enabled) {
-      this.webMcpTreeElement = new WebMCPTreeElement(panel);
-      this.applicationTreeElement.appendChild(this.webMcpTreeElement);
-    }
+    this.webMcpTreeElement = new WebMCPTreeElement(panel);
+    this.applicationTreeElement.appendChild(this.webMcpTreeElement);
     if (Root2.Runtime.hostConfig.devToolsAdsPanel?.enabled) {
       const adsTreeElement = new ApplicationPanelTreeElement(panel, i18nString29(UIStrings29.ads), false, "ads");
       adsTreeElement.listItemElement.classList.add("ads-tree-element");
@@ -15266,26 +18628,60 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     }
     const storageSectionTitle = i18nString29(UIStrings29.storage);
     const storageTreeElement = this.addSidebarSection(storageSectionTitle, "storage");
-    this.localStorageListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString29(UIStrings29.localStorage), i18nString29(UIStrings29.noLocalStorage), i18nString29(UIStrings29.localStorageDescription), "local-storage");
-    this.localStorageListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/localstorage/");
+    this.localStorageListTreeElement = new ExpandableApplicationPanelTreeElement(
+      panel,
+      i18nString29(UIStrings29.localStorage),
+      i18nString29(UIStrings29.noLocalStorage),
+      i18nString29(UIStrings29.localStorageDescription),
+      "local-storage"
+    );
+    this.localStorageListTreeElement.setLink(
+      "https://developer.chrome.com/docs/devtools/storage/localstorage/"
+    );
     const localStorageIcon = createIcon11("table");
     this.localStorageListTreeElement.setLeadingIcons([localStorageIcon]);
     storageTreeElement.appendChild(this.localStorageListTreeElement);
-    this.sessionStorageListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString29(UIStrings29.sessionStorage), i18nString29(UIStrings29.noSessionStorage), i18nString29(UIStrings29.sessionStorageDescription), "session-storage");
-    this.sessionStorageListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/sessionstorage/");
+    this.sessionStorageListTreeElement = new ExpandableApplicationPanelTreeElement(
+      panel,
+      i18nString29(UIStrings29.sessionStorage),
+      i18nString29(UIStrings29.noSessionStorage),
+      i18nString29(UIStrings29.sessionStorageDescription),
+      "session-storage"
+    );
+    this.sessionStorageListTreeElement.setLink(
+      "https://developer.chrome.com/docs/devtools/storage/sessionstorage/"
+    );
     const sessionStorageIcon = createIcon11("table");
     this.sessionStorageListTreeElement.setLeadingIcons([sessionStorageIcon]);
     storageTreeElement.appendChild(this.sessionStorageListTreeElement);
-    this.extensionStorageListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString29(UIStrings29.extensionStorage), i18nString29(UIStrings29.noExtensionStorage), i18nString29(UIStrings29.extensionStorageDescription), "extension-storage");
-    this.extensionStorageListTreeElement.setLink("https://developer.chrome.com/docs/extensions/reference/api/storage/");
+    this.extensionStorageListTreeElement = new ExpandableApplicationPanelTreeElement(
+      panel,
+      i18nString29(UIStrings29.extensionStorage),
+      i18nString29(UIStrings29.noExtensionStorage),
+      i18nString29(UIStrings29.extensionStorageDescription),
+      "extension-storage"
+    );
+    this.extensionStorageListTreeElement.setLink(
+      "https://developer.chrome.com/docs/extensions/reference/api/storage/"
+    );
     const extensionStorageIcon = createIcon11("table");
     this.extensionStorageListTreeElement.setLeadingIcons([extensionStorageIcon]);
     storageTreeElement.appendChild(this.extensionStorageListTreeElement);
     this.indexedDBListTreeElement = new IndexedDBTreeElement(panel);
-    this.indexedDBListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/indexeddb/");
+    this.indexedDBListTreeElement.setLink(
+      "https://developer.chrome.com/docs/devtools/storage/indexeddb/"
+    );
     storageTreeElement.appendChild(this.indexedDBListTreeElement);
-    this.cookieListTreeElement = new ExpandableApplicationPanelTreeElement(panel, i18nString29(UIStrings29.cookies), i18nString29(UIStrings29.noCookies), i18nString29(UIStrings29.cookiesDescription), "cookies");
-    this.cookieListTreeElement.setLink("https://developer.chrome.com/docs/devtools/storage/cookies/");
+    this.cookieListTreeElement = new ExpandableApplicationPanelTreeElement(
+      panel,
+      i18nString29(UIStrings29.cookies),
+      i18nString29(UIStrings29.noCookies),
+      i18nString29(UIStrings29.cookiesDescription),
+      "cookies"
+    );
+    this.cookieListTreeElement.setLink(
+      "https://developer.chrome.com/docs/devtools/storage/cookies/"
+    );
     const cookieIcon = createIcon11("cookie");
     this.cookieListTreeElement.setLeadingIcons([cookieIcon]);
     storageTreeElement.appendChild(this.cookieListTreeElement);
@@ -15299,46 +18695,22 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     const backgroundServiceTreeElement = this.addSidebarSection(backgroundServiceSectionTitle, "background-services");
     this.backForwardCacheListTreeElement = new BackForwardCacheTreeElement(panel);
     backgroundServiceTreeElement.appendChild(this.backForwardCacheListTreeElement);
-    this.backgroundFetchTreeElement = new BackgroundServiceTreeElement(
-      panel,
-      "backgroundFetch"
-      /* Protocol.BackgroundService.ServiceName.BackgroundFetch */
-    );
+    this.backgroundFetchTreeElement = new BackgroundServiceTreeElement(panel, BackgroundService.ServiceName.BackgroundFetch);
     backgroundServiceTreeElement.appendChild(this.backgroundFetchTreeElement);
-    this.backgroundSyncTreeElement = new BackgroundServiceTreeElement(
-      panel,
-      "backgroundSync"
-      /* Protocol.BackgroundService.ServiceName.BackgroundSync */
-    );
+    this.backgroundSyncTreeElement = new BackgroundServiceTreeElement(panel, BackgroundService.ServiceName.BackgroundSync);
     backgroundServiceTreeElement.appendChild(this.backgroundSyncTreeElement);
     this.bounceTrackingMitigationsTreeElement = new BounceTrackingMitigationsTreeElement(panel);
     backgroundServiceTreeElement.appendChild(this.bounceTrackingMitigationsTreeElement);
-    this.notificationsTreeElement = new BackgroundServiceTreeElement(
-      panel,
-      "notifications"
-      /* Protocol.BackgroundService.ServiceName.Notifications */
-    );
+    this.notificationsTreeElement = new BackgroundServiceTreeElement(panel, BackgroundService.ServiceName.Notifications);
     backgroundServiceTreeElement.appendChild(this.notificationsTreeElement);
-    this.paymentHandlerTreeElement = new BackgroundServiceTreeElement(
-      panel,
-      "paymentHandler"
-      /* Protocol.BackgroundService.ServiceName.PaymentHandler */
-    );
+    this.paymentHandlerTreeElement = new BackgroundServiceTreeElement(panel, BackgroundService.ServiceName.PaymentHandler);
     backgroundServiceTreeElement.appendChild(this.paymentHandlerTreeElement);
-    this.periodicBackgroundSyncTreeElement = new BackgroundServiceTreeElement(
-      panel,
-      "periodicBackgroundSync"
-      /* Protocol.BackgroundService.ServiceName.PeriodicBackgroundSync */
-    );
+    this.periodicBackgroundSyncTreeElement = new BackgroundServiceTreeElement(panel, BackgroundService.ServiceName.PeriodicBackgroundSync);
     backgroundServiceTreeElement.appendChild(this.periodicBackgroundSyncTreeElement);
     this.preloadingSummaryTreeElement = new PreloadingSummaryTreeElement(panel);
     backgroundServiceTreeElement.appendChild(this.preloadingSummaryTreeElement);
     this.preloadingSummaryTreeElement.constructChildren(panel);
-    this.pushMessagingTreeElement = new BackgroundServiceTreeElement(
-      panel,
-      "pushMessaging"
-      /* Protocol.BackgroundService.ServiceName.PushMessaging */
-    );
+    this.pushMessagingTreeElement = new BackgroundServiceTreeElement(panel, BackgroundService.ServiceName.PushMessaging);
     backgroundServiceTreeElement.appendChild(this.pushMessagingTreeElement);
     this.reportingApiTreeElement = new ReportingApiTreeElement(panel);
     backgroundServiceTreeElement.appendChild(this.reportingApiTreeElement);
@@ -15358,27 +18730,49 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     this.sidebarTree.contentElement.addEventListener("mousemove", this.onmousemove.bind(this), false);
     this.sidebarTree.contentElement.addEventListener("mouseleave", this.onmouseleave.bind(this), false);
     SDK24.TargetManager.TargetManager.instance().observeTargets(this, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().addModelListener(SDK24.ResourceTreeModel.ResourceTreeModel, SDK24.ResourceTreeModel.Events.FrameNavigated, this.frameNavigated, this, { scoped: true });
+    SDK24.TargetManager.TargetManager.instance().addModelListener(
+      SDK24.ResourceTreeModel.ResourceTreeModel,
+      SDK24.ResourceTreeModel.Events.FrameNavigated,
+      this.frameNavigated,
+      this,
+      { scoped: true }
+    );
     const selection = this.panel.lastSelectedItemPath();
     if (!selection.length) {
       manifestTreeElement.select();
     }
-    SDK24.TargetManager.TargetManager.instance().observeModels(SDK24.DOMStorageModel.DOMStorageModel, {
-      modelAdded: (model) => this.domStorageModelAdded(model),
-      modelRemoved: (model) => this.domStorageModelRemoved(model)
-    }, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().observeModels(ExtensionStorageModel, {
-      modelAdded: (model) => this.extensionStorageModelAdded(model),
-      modelRemoved: (model) => this.extensionStorageModelRemoved(model)
-    }, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().observeModels(IndexedDBModel, {
-      modelAdded: (model) => this.indexedDBModelAdded(model),
-      modelRemoved: (model) => this.indexedDBModelRemoved(model)
-    }, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().observeModels(SDK24.StorageBucketsModel.StorageBucketsModel, {
-      modelAdded: (model) => this.storageBucketsModelAdded(model),
-      modelRemoved: (model) => this.storageBucketsModelRemoved(model)
-    }, { scoped: true });
+    SDK24.TargetManager.TargetManager.instance().observeModels(
+      SDK24.DOMStorageModel.DOMStorageModel,
+      {
+        modelAdded: (model) => this.domStorageModelAdded(model),
+        modelRemoved: (model) => this.domStorageModelRemoved(model)
+      },
+      { scoped: true }
+    );
+    SDK24.TargetManager.TargetManager.instance().observeModels(
+      ExtensionStorageModel,
+      {
+        modelAdded: (model) => this.extensionStorageModelAdded(model),
+        modelRemoved: (model) => this.extensionStorageModelRemoved(model)
+      },
+      { scoped: true }
+    );
+    SDK24.TargetManager.TargetManager.instance().observeModels(
+      IndexedDBModel,
+      {
+        modelAdded: (model) => this.indexedDBModelAdded(model),
+        modelRemoved: (model) => this.indexedDBModelRemoved(model)
+      },
+      { scoped: true }
+    );
+    SDK24.TargetManager.TargetManager.instance().observeModels(
+      SDK24.StorageBucketsModel.StorageBucketsModel,
+      {
+        modelAdded: (model) => this.storageBucketsModelAdded(model),
+        modelRemoved: (model) => this.storageBucketsModelRemoved(model)
+      },
+      { scoped: true }
+    );
     this.contentElement.style.contain = "layout style";
   }
   addSidebarSection(title, jslogContext) {
@@ -15404,7 +18798,11 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
       this.initialize();
     }
     resourceTreeModel.addEventListener(SDK24.ResourceTreeModel.Events.CachedResourcesLoaded, this.initialize, this);
-    resourceTreeModel.addEventListener(SDK24.ResourceTreeModel.Events.WillLoadCachedResources, this.resetWithFrames, this);
+    resourceTreeModel.addEventListener(
+      SDK24.ResourceTreeModel.Events.WillLoadCachedResources,
+      this.resetWithFrames,
+      this
+    );
   }
   targetRemoved(target) {
     if (target !== this.target) {
@@ -15414,7 +18812,11 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     const resourceTreeModel = target.model(SDK24.ResourceTreeModel.ResourceTreeModel);
     if (resourceTreeModel) {
       resourceTreeModel.removeEventListener(SDK24.ResourceTreeModel.Events.CachedResourcesLoaded, this.initialize, this);
-      resourceTreeModel.removeEventListener(SDK24.ResourceTreeModel.Events.WillLoadCachedResources, this.resetWithFrames, this);
+      resourceTreeModel.removeEventListener(
+        SDK24.ResourceTreeModel.Events.WillLoadCachedResources,
+        this.resetWithFrames,
+        this
+      );
     }
     this.resetWithFrames();
   }
@@ -15441,27 +18843,31 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
   domStorageModelAdded(model) {
     model.enable();
     model.storages().forEach(this.addDOMStorage.bind(this));
-    model.addEventListener("DOMStorageAdded", this.domStorageAdded, this);
-    model.addEventListener("DOMStorageRemoved", this.domStorageRemoved, this);
+    model.addEventListener(SDK24.DOMStorageModel.Events.DOM_STORAGE_ADDED, this.domStorageAdded, this);
+    model.addEventListener(SDK24.DOMStorageModel.Events.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
   }
   domStorageModelRemoved(model) {
     model.storages().forEach(this.removeDOMStorage.bind(this));
-    model.removeEventListener("DOMStorageAdded", this.domStorageAdded, this);
-    model.removeEventListener("DOMStorageRemoved", this.domStorageRemoved, this);
+    model.removeEventListener(SDK24.DOMStorageModel.Events.DOM_STORAGE_ADDED, this.domStorageAdded, this);
+    model.removeEventListener(SDK24.DOMStorageModel.Events.DOM_STORAGE_REMOVED, this.domStorageRemoved, this);
   }
   extensionStorageModelAdded(model) {
     this.extensionStorageModels.push(model);
     model.enable();
     model.storages().forEach(this.addExtensionStorage.bind(this));
-    model.addEventListener("ExtensionStorageAdded", this.extensionStorageAdded, this);
-    model.addEventListener("ExtensionStorageRemoved", this.extensionStorageRemoved, this);
+    model.addEventListener("ExtensionStorageAdded" /* EXTENSION_STORAGE_ADDED */, this.extensionStorageAdded, this);
+    model.addEventListener("ExtensionStorageRemoved" /* EXTENSION_STORAGE_REMOVED */, this.extensionStorageRemoved, this);
   }
   extensionStorageModelRemoved(model) {
     console.assert(this.extensionStorageModels.includes(model));
     this.extensionStorageModels.splice(this.extensionStorageModels.indexOf(model), 1);
     model.storages().forEach(this.removeExtensionStorage.bind(this));
-    model.removeEventListener("ExtensionStorageAdded", this.extensionStorageAdded, this);
-    model.removeEventListener("ExtensionStorageRemoved", this.extensionStorageRemoved, this);
+    model.removeEventListener("ExtensionStorageAdded" /* EXTENSION_STORAGE_ADDED */, this.extensionStorageAdded, this);
+    model.removeEventListener(
+      "ExtensionStorageRemoved" /* EXTENSION_STORAGE_REMOVED */,
+      this.extensionStorageRemoved,
+      this
+    );
   }
   indexedDBModelAdded(model) {
     model.enable();
@@ -15610,7 +19016,9 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     return parent;
   }
   addExtensionStorage(extensionStorage) {
-    if (this.extensionStorageModels.find((m) => m !== extensionStorage.model && m.storageForIdAndArea(extensionStorage.extensionId, extensionStorage.storageArea))) {
+    if (this.extensionStorageModels.find(
+      (m) => m !== extensionStorage.model && m.storageForIdAndArea(extensionStorage.extensionId, extensionStorage.storageArea)
+    )) {
       return;
     }
     console.assert(Boolean(this.extensionStorageListTreeElement));
@@ -15621,10 +19029,10 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     function comparator(a, b) {
       const getStorageArea = (e) => e.storageArea;
       const order = [
-        "session",
-        "local",
-        "sync",
-        "managed"
+        Extensions.StorageArea.Session,
+        Extensions.StorageArea.Local,
+        Extensions.StorageArea.Sync,
+        Extensions.StorageArea.Managed
       ];
       return order.indexOf(getStorageArea(a)) - order.indexOf(getStorageArea(b));
     }
@@ -15634,7 +19042,9 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     this.removeExtensionStorage(extensionStorage);
   }
   removeExtensionStorage(extensionStorage) {
-    if (this.extensionStorageModels.find((m) => m.storageForIdAndArea(extensionStorage.extensionId, extensionStorage.storageArea))) {
+    if (this.extensionStorageModels.find(
+      ((m) => m.storageForIdAndArea(extensionStorage.extensionId, extensionStorage.storageArea))
+    )) {
       return;
     }
     const treeElement = this.extensionStorageTreeElements.get(extensionStorage.key);
@@ -15671,7 +19081,9 @@ var ApplicationPanelSidebar = class extends UI31.Widget.VBox {
     }
   }
   showStorageBucket(bucketInfo) {
-    const bucketsModel = SDK24.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK24.StorageBucketsModel.StorageBucketsModel);
+    const bucketsModel = SDK24.TargetManager.TargetManager.instance().primaryPageTarget()?.model(
+      SDK24.StorageBucketsModel.StorageBucketsModel
+    );
     if (bucketsModel) {
       this.storageBucketsTreeElement?.getBucketTreeElement(bucketsModel, bucketInfo)?.revealAndSelect(true);
     }
@@ -15715,7 +19127,12 @@ var BackgroundServiceTreeElement = class extends ApplicationPanelTreeElement {
   model;
   #selected;
   constructor(storagePanel, serviceName) {
-    super(storagePanel, BackgroundServiceView.getUIString(serviceName), false, Platform11.StringUtilities.toKebabCase(serviceName));
+    super(
+      storagePanel,
+      BackgroundServiceView.getUIString(serviceName),
+      false,
+      Platform11.StringUtilities.toKebabCase(serviceName)
+    );
     this.serviceName = serviceName;
     this.#selected = false;
     this.view = null;
@@ -15725,17 +19142,17 @@ var BackgroundServiceTreeElement = class extends ApplicationPanelTreeElement {
   }
   getIconType() {
     switch (this.serviceName) {
-      case "backgroundFetch":
+      case BackgroundService.ServiceName.BackgroundFetch:
         return "arrow-up-down";
-      case "backgroundSync":
+      case BackgroundService.ServiceName.BackgroundSync:
         return "sync";
-      case "pushMessaging":
+      case BackgroundService.ServiceName.PushMessaging:
         return "cloud";
-      case "notifications":
+      case BackgroundService.ServiceName.Notifications:
         return "bell";
-      case "paymentHandler":
+      case BackgroundService.ServiceName.PaymentHandler:
         return "credit-card";
-      case "periodicBackgroundSync":
+      case BackgroundService.ServiceName.PeriodicBackgroundSync:
         return "watch";
       default:
         console.error(`Service ${this.serviceName} does not have a dedicated icon`);
@@ -15809,7 +19226,7 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
     const handleExpansion = (hasManifest) => {
       this.setExpandable(hasManifest);
     };
-    this.view.addEventListener("ManifestDetected", (event) => handleExpansion(event.data));
+    this.view.addEventListener("ManifestDetected" /* MANIFEST_DETECTED */, (event) => handleExpansion(event.data));
   }
   get itemURL() {
     return "manifest://";
@@ -15842,7 +19259,10 @@ var AppManifestTreeElement = class extends ApplicationPanelTreeElement {
           event.consume(true);
         }
       });
-      UI31.ARIAUtils.setLabel(child.listItemElement, i18nString29(UIStrings29.beforeInvokeAlert, { PH1: child.listItemElement.title }));
+      UI31.ARIAUtils.setLabel(
+        child.listItemElement,
+        i18nString29(UIStrings29.beforeInvokeAlert, { PH1: child.listItemElement.title })
+      );
       this.appendChild(child);
     }
   }
@@ -15867,7 +19287,9 @@ var StorageTreeElement = class extends ApplicationPanelTreeElement {
       this.view = new StorageView();
     }
     this.showView(this.view);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown(Host4.UserMetrics.PanelCodes[Host4.UserMetrics.PanelCodes.storage]);
+    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown(
+      Host4.UserMetrics.PanelCodes[Host4.UserMetrics.PanelCodes.storage]
+    );
     return false;
   }
 };
@@ -15875,7 +19297,13 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
   idbDatabaseTreeElements;
   storageBucket;
   constructor(storagePanel, storageBucket) {
-    super(storagePanel, i18nString29(UIStrings29.indexeddb), i18nString29(UIStrings29.noIndexeddb), i18nString29(UIStrings29.indexeddbDescription), "indexed-db");
+    super(
+      storagePanel,
+      i18nString29(UIStrings29.indexeddb),
+      i18nString29(UIStrings29.noIndexeddb),
+      i18nString29(UIStrings29.indexeddbDescription),
+      "indexed-db"
+    );
     const icon = createIcon11("database");
     this.setLeadingIcons([icon]);
     this.idbDatabaseTreeElements = [];
@@ -15883,10 +19311,34 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
     this.initialize();
   }
   initialize() {
-    SDK24.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, Events4.DatabaseAdded, this.indexedDBAdded, this, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, Events4.DatabaseRemoved, this.indexedDBRemoved, this, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, Events4.DatabaseLoaded, this.indexedDBLoaded, this, { scoped: true });
-    SDK24.TargetManager.TargetManager.instance().addModelListener(IndexedDBModel, Events4.IndexedDBContentUpdated, this.indexedDBContentUpdated, this, { scoped: true });
+    SDK24.TargetManager.TargetManager.instance().addModelListener(
+      IndexedDBModel,
+      "DatabaseAdded" /* DatabaseAdded */,
+      this.indexedDBAdded,
+      this,
+      { scoped: true }
+    );
+    SDK24.TargetManager.TargetManager.instance().addModelListener(
+      IndexedDBModel,
+      "DatabaseRemoved" /* DatabaseRemoved */,
+      this.indexedDBRemoved,
+      this,
+      { scoped: true }
+    );
+    SDK24.TargetManager.TargetManager.instance().addModelListener(
+      IndexedDBModel,
+      "DatabaseLoaded" /* DatabaseLoaded */,
+      this.indexedDBLoaded,
+      this,
+      { scoped: true }
+    );
+    SDK24.TargetManager.TargetManager.instance().addModelListener(
+      IndexedDBModel,
+      "IndexedDBContentUpdated" /* IndexedDBContentUpdated */,
+      this.indexedDBContentUpdated,
+      this,
+      { scoped: true }
+    );
     this.idbDatabaseTreeElements = [];
     for (const indexedDBModel of SDK24.TargetManager.TargetManager.instance().models(IndexedDBModel, { scoped: true })) {
       const databases = indexedDBModel.databases();
@@ -15912,7 +19364,11 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
   }
   handleContextMenuEvent(event) {
     const contextMenu = new UI31.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.refreshIndexeddb), this.refreshIndexedDB.bind(this), { jslogContext: "refresh-indexeddb" });
+    contextMenu.defaultSection().appendItem(
+      i18nString29(UIStrings29.refreshIndexeddb),
+      this.refreshIndexedDB.bind(this),
+      { jslogContext: "refresh-indexeddb" }
+    );
     void contextMenu.show();
   }
   refreshIndexedDB() {
@@ -15926,7 +19382,9 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
     }
     return true;
   }
-  indexedDBAdded({ data: { databaseId, model } }) {
+  indexedDBAdded({
+    data: { databaseId, model }
+  }) {
     this.addIndexedDB(model, databaseId);
   }
   addIndexedDB(model, databaseId) {
@@ -15938,7 +19396,9 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
     this.appendChild(idbDatabaseTreeElement);
     model.refreshDatabase(databaseId);
   }
-  indexedDBRemoved({ data: { databaseId, model } }) {
+  indexedDBRemoved({
+    data: { databaseId, model }
+  }) {
     const idbDatabaseTreeElement = this.idbDatabaseTreeElement(model, databaseId);
     if (!idbDatabaseTreeElement) {
       return;
@@ -15961,7 +19421,9 @@ var IndexedDBTreeElement = class extends ExpandableApplicationPanelTreeElement {
   }
   indexedDBLoadedForTest() {
   }
-  indexedDBContentUpdated({ data: { databaseId, objectStoreName, model } }) {
+  indexedDBContentUpdated({
+    data: { databaseId, objectStoreName, model }
+  }) {
     const idbDatabaseTreeElement = this.idbDatabaseTreeElement(model, databaseId);
     if (!idbDatabaseTreeElement) {
       return;
@@ -15985,7 +19447,7 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
     this.idbObjectStoreTreeElements = /* @__PURE__ */ new Map();
     const icon = createIcon11("database");
     this.setLeadingIcons([icon]);
-    this.model.addEventListener(Events4.DatabaseNamesRefreshed, this.refreshIndexedDB, this);
+    this.model.addEventListener("DatabaseNamesRefreshed" /* DatabaseNamesRefreshed */, this.refreshIndexedDB, this);
   }
   get itemURL() {
     return "indexedDB://" + this.databaseId.storageBucket.storageKey + "/" + (this.databaseId.storageBucket.name ?? "") + "/" + this.databaseId.name;
@@ -15996,7 +19458,11 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
   }
   handleContextMenuEvent(event) {
     const contextMenu = new UI31.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.refreshIndexeddb), this.refreshIndexedDB.bind(this), { jslogContext: "refresh-indexeddb" });
+    contextMenu.defaultSection().appendItem(
+      i18nString29(UIStrings29.refreshIndexeddb),
+      this.refreshIndexedDB.bind(this),
+      { jslogContext: "refresh-indexeddb" }
+    );
     void contextMenu.show();
   }
   refreshIndexedDB() {
@@ -16055,7 +19521,11 @@ var IDBDatabaseTreeElement = class extends ApplicationPanelTreeElement {
       return false;
     }
     if (!this.view) {
-      this.view = LegacyWrapper3.LegacyWrapper.legacyWrapper(UI31.Widget.VBox, new IDBDatabaseView(this.model, this.database), "indexeddb-data");
+      this.view = LegacyWrapper3.LegacyWrapper.legacyWrapper(
+        UI31.Widget.VBox,
+        new IDBDatabaseView(this.model, this.database),
+        "indexeddb-data"
+      );
     }
     this.showView(this.view);
     UI31.UIUserMetrics.UIUserMetrics.instance().panelShown("indexed-db");
@@ -16109,7 +19579,11 @@ var IDBObjectStoreTreeElement = class extends ApplicationPanelTreeElement {
   }
   handleContextMenuEvent(event) {
     const contextMenu = new UI31.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.clear), this.clearObjectStore.bind(this), { jslogContext: "clear" });
+    contextMenu.defaultSection().appendItem(
+      i18nString29(UIStrings29.clear),
+      this.clearObjectStore.bind(this),
+      { jslogContext: "clear" }
+    );
     void contextMenu.show();
   }
   refreshObjectStore() {
@@ -16131,7 +19605,14 @@ var IDBObjectStoreTreeElement = class extends ApplicationPanelTreeElement {
       indexNames.add(index.name);
       let treeElement = this.idbIndexTreeElements.get(index.name);
       if (!treeElement) {
-        treeElement = new IDBIndexTreeElement(this.resourcesPanel, this.model, this.databaseId, this.objectStore, index, this.refreshObjectStore.bind(this));
+        treeElement = new IDBIndexTreeElement(
+          this.resourcesPanel,
+          this.model,
+          this.databaseId,
+          this.objectStore,
+          index,
+          this.refreshObjectStore.bind(this)
+        );
         this.idbIndexTreeElements.set(index.name, treeElement);
         this.appendChild(treeElement);
       }
@@ -16256,7 +19737,12 @@ var IDBIndexTreeElement = class extends ApplicationPanelTreeElement {
 var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
   domStorage;
   constructor(storagePanel, domStorage) {
-    super(storagePanel, domStorage.storageKey ? SDK24.StorageKeyManager.parseStorageKey(domStorage.storageKey).origin : i18nString29(UIStrings29.localFiles), false, domStorage.isLocalStorage ? "local-storage-for-domain" : "session-storage-for-domain");
+    super(
+      storagePanel,
+      domStorage.storageKey ? SDK24.StorageKeyManager.parseStorageKey(domStorage.storageKey).origin : i18nString29(UIStrings29.localFiles),
+      false,
+      domStorage.isLocalStorage ? "local-storage-for-domain" : "session-storage-for-domain"
+    );
     this.domStorage = domStorage;
     const icon = createIcon11("table");
     this.setLeadingIcons([icon]);
@@ -16296,7 +19782,11 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
   }
   handleContextMenuEvent(event) {
     const contextMenu = new UI31.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.clear), () => this.domStorage.clear(), { jslogContext: "clear" });
+    contextMenu.defaultSection().appendItem(
+      i18nString29(UIStrings29.clear),
+      () => this.domStorage.clear(),
+      { jslogContext: "clear" }
+    );
     const storageItem = this.#getStorageItem();
     if (storageItem) {
       const openAiAssistanceId = "ai-assistance.application-panel-context";
@@ -16305,7 +19795,11 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
         const action7 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action7.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString29(UIStrings29.startAChat));
-        submenu.defaultSection().appendItem(i18nString29(UIStrings29.explainStorage), () => action7.execute({ prompt: "What is the purpose of this storage bucket?" }), { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".storage" });
+        submenu.defaultSection().appendItem(
+          i18nString29(UIStrings29.explainStorage),
+          () => action7.execute({ prompt: "What is the purpose of this storage bucket?" }),
+          { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".storage" }
+        );
       }
     }
     void contextMenu.show();
@@ -16314,7 +19808,12 @@ var DOMStorageTreeElement = class extends ApplicationPanelTreeElement {
 var ExtensionStorageTreeElement = class extends ApplicationPanelTreeElement {
   extensionStorage;
   constructor(storagePanel, extensionStorage) {
-    super(storagePanel, nameForExtensionStorageArea(extensionStorage.storageArea), false, "extension-storage-for-domain");
+    super(
+      storagePanel,
+      nameForExtensionStorageArea(extensionStorage.storageArea),
+      false,
+      "extension-storage-for-domain"
+    );
     this.extensionStorage = extensionStorage;
     const icon = createIcon11("table");
     this.setLeadingIcons([icon]);
@@ -16337,7 +19836,11 @@ var ExtensionStorageTreeElement = class extends ApplicationPanelTreeElement {
   }
   handleContextMenuEvent(event) {
     const contextMenu = new UI31.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.clear), () => this.extensionStorage.clear(), { jslogContext: "clear" });
+    contextMenu.defaultSection().appendItem(
+      i18nString29(UIStrings29.clear),
+      () => this.extensionStorage.clear(),
+      { jslogContext: "clear" }
+    );
     void contextMenu.show();
   }
 };
@@ -16392,7 +19895,11 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
   }
   handleContextMenuEvent(event) {
     const contextMenu = new UI31.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString29(UIStrings29.clear), () => this.resourcesPanel.clearCookies(this.target, this.#cookieDomain), { jslogContext: "clear" });
+    contextMenu.defaultSection().appendItem(
+      i18nString29(UIStrings29.clear),
+      () => this.resourcesPanel.clearCookies(this.target, this.#cookieDomain),
+      { jslogContext: "clear" }
+    );
     const storageItem = this.#getStorageItem();
     if (storageItem) {
       const openAiAssistanceId = "ai-assistance.application-panel-context";
@@ -16401,7 +19908,11 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
         const action7 = UI31.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action7.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString29(UIStrings29.startAChat));
-        submenu.defaultSection().appendItem(i18nString29(UIStrings29.explainCookies), () => action7.execute({ prompt: "What is the purpose of these cookies?" }), { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".cookies" });
+        submenu.defaultSection().appendItem(
+          i18nString29(UIStrings29.explainCookies),
+          () => action7.execute({ prompt: "What is the purpose of these cookies?" }),
+          { disabled: !action7.enabled(), jslogContext: openAiAssistanceId + ".cookies" }
+        );
       }
     }
     void contextMenu.show();
@@ -16409,7 +19920,9 @@ var CookieTreeElement = class extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     this.resourcesPanel.showCookies(this.target, this.#cookieDomain);
-    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown(Host4.UserMetrics.PanelCodes[Host4.UserMetrics.PanelCodes.cookies]);
+    UI31.UIUserMetrics.UIUserMetrics.instance().panelShown(
+      Host4.UserMetrics.PanelCodes[Host4.UserMetrics.PanelCodes.cookies]
+    );
     const storageItem = this.#getStorageItem();
     UI31.Context.Context.instance().setFlavor(AiAssistance2.StorageItem.StorageItem, storageItem);
     return false;
@@ -16445,14 +19958,48 @@ var ResourcesSection = class {
     this.treeElementForFrameId = /* @__PURE__ */ new Map();
     this.treeElementForTargetId = /* @__PURE__ */ new Map();
     const frameManager = SDK24.FrameManager.FrameManager.instance();
-    frameManager.addEventListener("FrameAddedToTarget", (event) => this.frameAdded(event.data.frame), this);
-    frameManager.addEventListener("FrameRemoved", (event) => this.frameDetached(event.data.frameId), this);
-    frameManager.addEventListener("FrameNavigated", (event) => this.frameNavigated(event.data.frame), this);
-    frameManager.addEventListener("ResourceAdded", (event) => this.resourceAdded(event.data.resource), this);
+    frameManager.addEventListener(
+      SDK24.FrameManager.Events.FRAME_ADDED_TO_TARGET,
+      (event) => this.frameAdded(event.data.frame),
+      this
+    );
+    frameManager.addEventListener(
+      SDK24.FrameManager.Events.FRAME_REMOVED,
+      (event) => this.frameDetached(event.data.frameId),
+      this
+    );
+    frameManager.addEventListener(
+      SDK24.FrameManager.Events.FRAME_NAVIGATED,
+      (event) => this.frameNavigated(event.data.frame),
+      this
+    );
+    frameManager.addEventListener(
+      SDK24.FrameManager.Events.RESOURCE_ADDED,
+      (event) => this.resourceAdded(event.data.resource),
+      this
+    );
     if (this.panel.mode !== "node") {
-      SDK24.TargetManager.TargetManager.instance().addModelListener(SDK24.ChildTargetManager.ChildTargetManager, "TargetCreated", this.windowOpened, this, { scoped: true });
-      SDK24.TargetManager.TargetManager.instance().addModelListener(SDK24.ChildTargetManager.ChildTargetManager, "TargetInfoChanged", this.windowChanged, this, { scoped: true });
-      SDK24.TargetManager.TargetManager.instance().addModelListener(SDK24.ChildTargetManager.ChildTargetManager, "TargetDestroyed", this.windowDestroyed, this, { scoped: true });
+      SDK24.TargetManager.TargetManager.instance().addModelListener(
+        SDK24.ChildTargetManager.ChildTargetManager,
+        SDK24.ChildTargetManager.Events.TARGET_CREATED,
+        this.windowOpened,
+        this,
+        { scoped: true }
+      );
+      SDK24.TargetManager.TargetManager.instance().addModelListener(
+        SDK24.ChildTargetManager.ChildTargetManager,
+        SDK24.ChildTargetManager.Events.TARGET_INFO_CHANGED,
+        this.windowChanged,
+        this,
+        { scoped: true }
+      );
+      SDK24.TargetManager.TargetManager.instance().addModelListener(
+        SDK24.ChildTargetManager.ChildTargetManager,
+        SDK24.ChildTargetManager.Events.TARGET_DESTROYED,
+        this.windowDestroyed,
+        this,
+        { scoped: true }
+      );
       SDK24.TargetManager.TargetManager.instance().observeTargets(this, { scoped: true });
     }
   }
@@ -16723,7 +20270,14 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
     const categoryName = resourceType.name();
     let categoryElement = resourceType === Common18.ResourceType.resourceTypes.Document ? this : this.categoryElements.get(categoryName);
     if (!categoryElement) {
-      categoryElement = new ExpandableApplicationPanelTreeElement(this.section.panel, resource.resourceType().category().title(), "", i18nString29(UIStrings29.resourceDescription), categoryName, categoryName === "Frames");
+      categoryElement = new ExpandableApplicationPanelTreeElement(
+        this.section.panel,
+        resource.resourceType().category().title(),
+        "",
+        i18nString29(UIStrings29.resourceDescription),
+        categoryName,
+        categoryName === "Frames"
+      );
       this.categoryElements.set(resourceType.name(), categoryElement);
       this.appendChild(categoryElement, _FrameTreeElement.presentationOrderCompare);
     }
@@ -16735,7 +20289,13 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
     const categoryKey = "opened-windows";
     let categoryElement = this.categoryElements.get(categoryKey);
     if (!categoryElement) {
-      categoryElement = new ExpandableApplicationPanelTreeElement(this.section.panel, i18nString29(UIStrings29.openedWindows), "", i18nString29(UIStrings29.openedWindowsDescription), categoryKey);
+      categoryElement = new ExpandableApplicationPanelTreeElement(
+        this.section.panel,
+        i18nString29(UIStrings29.openedWindows),
+        "",
+        i18nString29(UIStrings29.openedWindowsDescription),
+        categoryKey
+      );
       this.categoryElements.set(categoryKey, categoryElement);
       this.appendChild(categoryElement, _FrameTreeElement.presentationOrderCompare);
     }
@@ -16750,7 +20310,13 @@ var FrameTreeElement = class _FrameTreeElement extends ApplicationPanelTreeEleme
     const categoryName = targetInfo.type === "service_worker" ? i18n57.i18n.lockedString("Service workers") : i18nString29(UIStrings29.webWorkers);
     let categoryElement = this.categoryElements.get(categoryKey);
     if (!categoryElement) {
-      categoryElement = new ExpandableApplicationPanelTreeElement(this.section.panel, categoryName, "", i18nString29(UIStrings29.workerDescription), categoryKey);
+      categoryElement = new ExpandableApplicationPanelTreeElement(
+        this.section.panel,
+        categoryName,
+        "",
+        i18nString29(UIStrings29.workerDescription),
+        categoryKey
+      );
       this.categoryElements.set(categoryKey, categoryElement);
       this.appendChild(categoryElement, _FrameTreeElement.presentationOrderCompare);
     }
@@ -16804,7 +20370,12 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
   resource;
   previewPromise;
   constructor(storagePanel, resource) {
-    super(storagePanel, resource.isGenerated ? i18nString29(UIStrings29.documentNotAvailable) : resource.displayName, false, "frame-resource");
+    super(
+      storagePanel,
+      resource.isGenerated ? i18nString29(UIStrings29.documentNotAvailable) : resource.displayName,
+      false,
+      "frame-resource"
+    );
     this.panel = storagePanel;
     this.resource = resource;
     this.previewPromise = null;
@@ -16836,7 +20407,12 @@ var FrameResourceTreeElement = class extends ApplicationPanelTreeElement {
   onselect(selectedByUser) {
     super.onselect(selectedByUser);
     if (this.resource.isGenerated) {
-      this.panel.showCategoryView("", i18nString29(UIStrings29.documentNotAvailable), i18nString29(UIStrings29.theContentOfThisDocumentHasBeen), null);
+      this.panel.showCategoryView(
+        "",
+        i18nString29(UIStrings29.documentNotAvailable),
+        i18nString29(UIStrings29.theContentOfThisDocumentHasBeen),
+        null
+      );
     } else {
       void this.panel.scheduleShowView(this.preparePreview());
     }
@@ -16950,7 +20526,7 @@ var WorkerTreeElement = class extends ApplicationPanelTreeElement {
   }
 };
 
-// gen/front_end/panels/application/application.prebundle.js
+// ../../front_end/panels/application/application.ts
 import * as Components5 from "./components/components.js";
 export {
   AppManifestView_exports as AppManifestView,

@@ -141,6 +141,8 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     inClipboard: boolean;
     editing: EditorHandles | null;
     expandAllButtonElement: UI.TreeOutline.TreeElement | null;
+    get updateRecord(): Elements.ElementUpdateRecord.ElementUpdateRecord | null;
+    set updateRecord(updateRecord: Elements.ElementUpdateRecord.ElementUpdateRecord | null);
     get node(): SDK.DOMModel.DOMNode;
     set node(node: SDK.DOMModel.DOMNode);
     get expanded(): boolean;

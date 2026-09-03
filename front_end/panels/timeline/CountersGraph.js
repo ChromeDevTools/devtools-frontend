@@ -12,35 +12,35 @@ import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 const UIStrings = {
     /**
-     * @description Text for a heap profile type
+     * @description Label for the JS heap counter in the counters graph of the Performance panel.
      */
     jsHeap: 'JS heap',
     /**
-     * @description Text for documents, a type of resources
+     * @description Label for the documents counter in the counters graph of the Performance panel.
      */
     documents: 'Documents',
     /**
-     * @description Text in Counters Graph of the Performance panel
+     * @description Label for the DOM nodes counter in the counters graph of the Performance panel.
      */
     nodes: 'Nodes',
     /**
-     * @description Text in Counters Graph of the Performance panel
+     * @description Label for the event listeners counter in the counters graph of the Performance panel.
      */
     listeners: 'Listeners',
     /**
-     * @description Text in Counters Graph of the Performance panel
+     * @description Label for the GPU memory counter in the counters graph of the Performance panel.
      */
     gpuMemory: 'GPU memory',
     /**
-     * @description Range text content in Counters Graph of the Performance panel
+     * @description Range text content in the counters graph of the Performance panel.
      * @example {2} PH1
      * @example {10} PH2
      */
     ss: '[{PH1} – {PH2}]',
     /**
-     * @description text shown when no counter events are found and the graph is empty
+     * @description Message displayed when no memory usage data is found in the counters graph of the Performance panel.
      */
-    noEventsFound: 'No memory usage data found within selected events.',
+    noEventsFound: 'No memory usage data found within selected events',
 };
 const str_ = i18n.i18n.registerUIStrings('panels/timeline/CountersGraph.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);

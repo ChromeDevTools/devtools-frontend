@@ -13,17 +13,12 @@
     "../../../../../../../front_end/ui/components/tree_outline/TreeOutlineUtils.ts",
     "../../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../../front_end/global_typings/global_defs.d.ts",
-    "../../../../../../../node_modules/@types/filesystem/index.d.ts"
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../../node_modules/@types/filewriter/index.d.ts"
   ],
   "references": [
     {
       "path": "../../../core/platform/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../buttons/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../render_coordinator/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../legacy/bundle-tsconfig.ref.json"
@@ -35,7 +30,13 @@
       "path": "../../visual_logging/bundle-tsconfig.ref.json"
     },
     {
+      "path": "../buttons/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../code_highlighter/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../render_coordinator/bundle-tsconfig.ref.json"
     }
   ]
 }

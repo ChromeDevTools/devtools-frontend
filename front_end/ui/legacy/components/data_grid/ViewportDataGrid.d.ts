@@ -1,9 +1,8 @@
 import * as Common from '../../../../core/common/common.js';
-import * as Platform from '../../../../core/platform/platform.js';
 import type * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import { type DataGridData, DataGridImpl, DataGridNode, type Parameters } from './DataGrid.js';
-declare const ViewportDataGrid_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof DataGridImpl;
-export declare class ViewportDataGrid<T> extends ViewportDataGrid_base<ViewportDataGridNode<T>> {
+declare const ViewportDataGridBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof DataGridImpl>;
+export declare class ViewportDataGrid<T> extends ViewportDataGridBase<ViewportDataGridNode<T>> {
     private readonly onScrollBound;
     private visibleNodes;
     /**

@@ -186,6 +186,12 @@ export const emulatedCSSMediaFeaturePrefersReducedDataSettingDescriptor = {
     defaultValue: '',
     storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
 };
+export const dataSaverSettingDescriptor = {
+    name: 'emulation.data-saver',
+    type: "enum" /* Common.Settings.SettingType.ENUM */,
+    defaultValue: "unset" /* DataSaverOverride.UNSET */,
+    storageType: "Session" /* Common.Settings.SettingStorageType.SESSION */,
+};
 export const emulatedCSSMediaFeaturePrefersReducedTransparencySettingDescriptor = {
     name: 'emulated-css-media-feature-prefers-reduced-transparency',
     type: "enum" /* Common.Settings.SettingType.ENUM */,

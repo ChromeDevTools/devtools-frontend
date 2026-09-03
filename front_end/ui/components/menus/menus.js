@@ -551,6 +551,7 @@ var MenuItemSelectedEvent = class _MenuItemSelectedEvent extends Event {
     super(_MenuItemSelectedEvent.eventName, { bubbles: true, composed: true });
     this.itemValue = itemValue;
   }
+  itemValue;
   static eventName = "menuitemselected";
 };
 var MenuCloseRequest = class _MenuCloseRequest extends Event {
@@ -1040,6 +1041,7 @@ var SelectMenuItemSelectedEvent = class _SelectMenuItemSelectedEvent extends Eve
     super(_SelectMenuItemSelectedEvent.eventName, { bubbles: true, composed: true });
     this.itemValue = itemValue;
   }
+  itemValue;
   static eventName = "selectmenuselected";
 };
 var SelectMenuSideButtonClickEvent = class _SelectMenuSideButtonClickEvent extends Event {

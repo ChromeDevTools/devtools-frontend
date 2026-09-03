@@ -80,8 +80,8 @@ export declare const enum RulerEvents {
 export interface RulerEventTypes {
     [RulerEvents.MARKER_SELECTED]: number;
 }
-declare const Ruler_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<RulerEventTypes>, any[]> & typeof UI.Widget.Widget;
-export declare class Ruler extends Ruler_base {
+declare const RulerBase: Common.ObjectWrapper.EventMixin<RulerEventTypes, typeof UI.Widget.Widget>;
+export declare class Ruler extends RulerBase {
     #private;
     constructor(element?: HTMLElement, view?: RulerView);
     get horizontal(): boolean;

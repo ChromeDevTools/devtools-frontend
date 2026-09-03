@@ -1,8 +1,8 @@
 import * as Common from '../../core/common/common.js';
 import * as TextEditor from '../../ui/components/text_editor/text_editor.js';
 import * as UI from '../../ui/legacy/legacy.js';
-declare const ConsolePrompt_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.Widget;
-export declare class ConsolePrompt extends ConsolePrompt_base {
+declare const ConsolePromptBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget>;
+export declare class ConsolePrompt extends ConsolePromptBase {
     #private;
     private addCompletionsFromHistory;
     private initialText;

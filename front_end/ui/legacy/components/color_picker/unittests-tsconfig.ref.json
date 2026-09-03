@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../../front_end/ui/legacy/components/color_picker",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../../front_end/ui/legacy/components/color_picker/ColorFormatSpec.test.ts",
+    "../../../../../../../../front_end/ui/legacy/components/color_picker/Spectrum.test.ts",
+    "../../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../core/text_utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../bundle-tsconfig.ref.json"
+    }
+  ]
+}

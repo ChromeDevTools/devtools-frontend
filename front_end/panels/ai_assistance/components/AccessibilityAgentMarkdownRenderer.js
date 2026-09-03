@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as SDK from '../../../core/sdk/sdk.js';
-import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as PanelsCommon from '../../common/common.js';
 import { MarkdownRendererWithCodeBlock } from './MarkdownRendererWithCodeBlock.js';
@@ -15,8 +14,7 @@ export class AccessibilityAgentMarkdownRenderer extends MarkdownRendererWithCode
         this.mainDocumentURL = mainDocumentURL;
     }
     #isSameOrigin(node) {
-        const nodeDocumentURL = node.ownerDocument?.documentURL ?? '';
-        return AiAssistanceModel.AiUtils.isSameOrigin(this.mainDocumentURL, nodeDocumentURL);
+        return SDK.SecurityOrigin.SecurityOrigin.create(this.mainDocumentURL).isSameOriginWith(node.securityOrigin());
     }
     templateForToken(token) {
         if (token.type === 'link' && token.href.startsWith('#')) {

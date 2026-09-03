@@ -6,7 +6,8 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as RenderCoordinator from '../../../components/render_coordinator/render_coordinator.js';
 import { DataGridImpl, DataGridNode } from './DataGrid.js';
 let nextId = 0;
-export class ViewportDataGrid extends Common.ObjectWrapper.eventMixin(DataGridImpl) {
+const ViewportDataGridBase = Common.ObjectWrapper.eventMixin(DataGridImpl);
+export class ViewportDataGrid extends ViewportDataGridBase {
     onScrollBound;
     visibleNodes;
     /**

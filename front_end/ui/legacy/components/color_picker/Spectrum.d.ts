@@ -1,10 +1,9 @@
 import '../../legacy.js';
 import * as Common from '../../../../core/common/common.js';
-import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
 import type { ContrastInfo } from './ContrastInfo.js';
-declare const Spectrum_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.VBox;
-export declare class Spectrum extends Spectrum_base {
+declare const SpectrumBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
+export declare class Spectrum extends SpectrumBase {
     #private;
     private gamut;
     private colorElement;
@@ -133,7 +132,7 @@ export declare const MaterialPalette: {
     mutable: boolean;
     matchUserFormat: boolean;
     colors: string[];
-    colorNames: never[];
+    colorNames: string[];
 };
 export declare class Swatch {
     private colorString;

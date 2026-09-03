@@ -73,8 +73,8 @@ export interface ViewInput {
 }
 export declare const DEFAULT_VIEW: (input: ViewInput, _output: Record<string, unknown>, target: HTMLElement) => void;
 export type View = typeof DEFAULT_VIEW;
-declare const LinearMemoryInspector_base: import("../../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.Widget;
-export declare class LinearMemoryInspector extends LinearMemoryInspector_base {
+declare const LinearMemoryInspectorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget>;
+export declare class LinearMemoryInspector extends LinearMemoryInspectorBase {
     #private;
     constructor(element?: HTMLElement, view?: View);
     set memory(value: Uint8Array<ArrayBuffer>);

@@ -1,5 +1,6 @@
 import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
+import * as Elements from '../../models/elements/elements.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import { ElementsTreeElement, ElementsTreeWidget, type InitialEditState } from './ElementsTreeElement.js';
 import elementsTreeOutlineStyles from './elementsTreeOutline.css.js';
@@ -82,10 +83,12 @@ interface ViewInput {
     onToggleAdoptedStyleSheetExpanded?: (sheet: SDK.DOMModel.AdoptedStyleSheet, expanded: boolean) => void;
     selectedAdoptedStyleSheet?: SDK.DOMModel.AdoptedStyleSheet | null;
     onSelectAdoptedStyleSheet?: (sheet: SDK.DOMModel.AdoptedStyleSheet) => void;
+    expandedChildrenLimit?: (node: SDK.DOMModel.DOMNode) => number;
+    onExpandAllChildren?: (node: SDK.DOMModel.DOMNode) => void;
+    updateRecordForNode?: (node: SDK.DOMModel.DOMNode) => Elements.ElementUpdateRecord.ElementUpdateRecord | null;
 }
 interface ViewOutput {
     elementsTreeOutline?: ElementsTreeOutline;
-    imagePreviewPopover?: ImagePreviewPopover;
     highlightedTreeElement: ElementsTreeElement | null;
     searchMatchTreeElement?: ElementsTreeElement | null;
     searchMatchQuery?: string;
@@ -136,6 +139,8 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     get expandRoot(): boolean;
     set expandRoot(expandRoot: boolean);
     constructor(element?: HTMLElement, view?: View);
+    updateRecordsForTest(): Map<SDK.DOMModel.DOMNode, Elements.ElementUpdateRecord.ElementUpdateRecord>;
+    updateModifiedNodes(): void;
     selectDOMNode(node: SDK.DOMModel.DOMNode | SDK.DOMModel.AdoptedStyleSheet | null, focus?: boolean): void;
     highlightNodeAttribute(node: SDK.DOMModel.DOMNode, attribute: string): void;
     get wrap(): boolean;
@@ -144,6 +149,9 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     selectedDOMNode(): SDK.DOMModel.DOMNode | null;
     setNodeExpanded(node: SDK.DOMModel.DOMNode, expanded: boolean): void;
     isNodeExpanded(node: SDK.DOMModel.DOMNode): boolean;
+    expandedChildrenLimit(node: SDK.DOMModel.DOMNode): number;
+    setExpandedChildrenLimit(node: SDK.DOMModel.DOMNode, limit: number): void;
+    expandAllChildren(node: SDK.DOMModel.DOMNode): void;
     expandRecursively(node: SDK.DOMModel.DOMNode, maxDepth?: number): Promise<void>;
     collapseChildren(node: SDK.DOMModel.DOMNode): void;
     showContextMenu(node: SDK.DOMModel.DOMNode, event: MouseEvent, widget?: ElementsTreeWidget): Promise<UI.ContextMenu.ContextMenu | undefined>;
@@ -240,10 +248,13 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     wasShown(): void;
     wasHidden(): void;
     detach(overrideHideOnDetach?: boolean): void;
+    hideImagePreview(): void;
+    imagePreviewPopoverForTest(): ImagePreviewPopover | undefined;
+    issuePopoverHelperForTest(): UI.PopoverHelper.PopoverHelper | undefined;
     show(parentElement: Element, insertBefore?: Node | null, suppressOrphanWidgetError?: boolean): void;
 }
-declare const ElementsTreeOutline_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<ElementsTreeOutline.EventTypes>, any[]> & typeof UI.TreeOutline.TreeOutline;
-export declare class ElementsTreeOutline extends ElementsTreeOutline_base {
+declare const ElementsTreeOutlineBase: Common.ObjectWrapper.EventMixin<ElementsTreeOutline.EventTypes, typeof UI.TreeOutline.TreeOutline>;
+export declare class ElementsTreeOutline extends ElementsTreeOutlineBase {
     #private;
     treeElementByNode: WeakMap<SDK.DOMModel.DOMNode, ElementsTreeElement>;
     private readonly shadowRoot;

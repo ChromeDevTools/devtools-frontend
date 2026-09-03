@@ -11,6 +11,7 @@ import { RemoteObject } from './RemoteObject.js';
 import { Events as ResourceTreeModelEvents, ResourceTreeModel } from './ResourceTreeModel.js';
 import { RuntimeModel } from './RuntimeModel.js';
 import { SDKModel } from './SDKModel.js';
+import { SecurityOrigin } from './SecurityOrigin.js';
 export var NodeType;
 (function (NodeType) {
     NodeType[NodeType["ELEMENT_NODE"] = 1] = "ELEMENT_NODE";
@@ -306,6 +307,13 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
     }
     topLayerIndex() {
         return this.#topLayerIndex;
+    }
+    /**
+     * Returns the security origin of the document owning this node, or `null` if
+     * this node is not attached to a document.
+     */
+    securityOrigin() {
+        return this.ownerDocument?.securityOrigin() ?? null;
     }
     adProvenance() {
         if (this.#adProvenance !== undefined) {
@@ -1183,6 +1191,8 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
             nodeName: this.nodeName(),
             localName: this.localName(),
             nodeValue: this.nodeValueInternal,
+            documentURL: this.documentURL,
+            baseURL: this.baseURL,
         }) :
             new DOMNodeSnapshot(this.domModel());
         snapshot.id = this.id;
@@ -1203,10 +1213,6 @@ export class DOMNode extends Common.ObjectWrapper.ObjectWrapper {
             ownerDocumentSnapshot || ((snapshot instanceof DOMDocument) ? snapshot : this.ownerDocument);
         snapshot.#isInShadowTree = this.#isInShadowTree;
         snapshot.childNodeCountInternal = this.childNodeCountInternal;
-        if (snapshot instanceof DOMDocument && this instanceof DOMDocument) {
-            snapshot.documentURL = this.documentURL;
-            snapshot.baseURL = this.baseURL;
-        }
         if (!this.childrenInternal && this.childNodeCountInternal > 0) {
             await this.getSubtree(1, false);
         }
@@ -1332,15 +1338,40 @@ export class DOMNodeShortcut {
 export class DOMDocument extends DOMNode {
     body;
     documentElement;
-    documentURL;
-    baseURL;
+    #documentURL;
+    #baseURL;
+    #securityOrigin;
     constructor(domModel, payload) {
         super(domModel);
         this.body = null;
         this.documentElement = null;
         this.init(this, false, payload);
-        this.documentURL = (payload.documentURL || '');
-        this.baseURL = (payload.baseURL || '');
+        this.#documentURL = (payload.documentURL || '');
+        this.#baseURL = (payload.baseURL || '');
+        this.#securityOrigin = SecurityOrigin.create(this.#documentURL);
+    }
+    get documentURL() {
+        return this.#documentURL;
+    }
+    get baseURL() {
+        return this.#baseURL;
+    }
+    /**
+     * Returns the security origin of this document.
+     *
+     * The security origin is derived from the document URL and is recomputed
+     * when the document navigates to a new URL via `setDocumentURL`.
+     */
+    securityOrigin() {
+        return this.#securityOrigin;
+    }
+    /**
+     * Updates the document and base URLs, and recomputes the document's security origin.
+     */
+    setDocumentURL(url) {
+        this.#documentURL = url;
+        this.#baseURL = url;
+        this.#securityOrigin = SecurityOrigin.create(url);
     }
 }
 export class AdoptedStyleSheet {
@@ -1413,8 +1444,7 @@ export class DOMModel extends SDKModel {
         if (node) {
             const contentDocument = node.contentDocument();
             if (contentDocument && contentDocument.documentURL !== frame.url) {
-                contentDocument.documentURL = frame.url;
-                contentDocument.baseURL = frame.url;
+                contentDocument.setDocumentURL(frame.url);
                 this.dispatchEventToListeners(Events.DocumentURLChanged, contentDocument);
             }
         }

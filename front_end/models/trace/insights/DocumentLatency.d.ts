@@ -1,4 +1,4 @@
-import type * as Platform from '../../../core/platform/platform.js';
+import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Handlers from '../handlers/handlers.js';
 import * as Types from '../types/types.js';
 import { type Checklist, type InsightModel, type InsightSetContext } from './types.js';
@@ -52,7 +52,7 @@ export declare const UIStrings: {
      */
     readonly uncompressedDownload: 'Uncompressed download';
 };
-export declare const i18nString: (id: string, values?: Record<string, string | number | boolean>) => Platform.UIString.LocalizedString;
+export declare const i18nString: i18n.LocalizeString;
 export declare function isDocumentLatencyInsight(x: InsightModel): x is DocumentLatencyInsightModel;
 export type DocumentLatencyInsightModel = InsightModel<typeof UIStrings, {
     data?: {

@@ -24,6 +24,9 @@ var RegisteredFileStrings = class {
     this.stringStructure = stringStructure;
     this.localizedMessages = localizedMessages;
   }
+  filename;
+  stringStructure;
+  localizedMessages;
   localizedStringSet;
   getLocalizedStringSetFor(locale) {
     if (this.localizedStringSet) {
@@ -44,6 +47,9 @@ var LocalizedStringSet = class {
     this.localizedMessages = localizedMessages;
     this.localeForFormatter = locale === "en-XA" || locale === "en-XL" ? "de-DE" : locale;
   }
+  filename;
+  stringStructure;
+  localizedMessages;
   cachedSimpleStrings = /* @__PURE__ */ new Map();
   cachedMessageFormatters = /* @__PURE__ */ new Map();
   /** For pseudo locales, use 'de-DE' for number formatting */

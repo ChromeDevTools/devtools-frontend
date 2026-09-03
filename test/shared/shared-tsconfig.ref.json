@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../test/shared",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../test/shared/debug-check.ts",
+    "../../../../../test/shared/helper.ts",
+    "../../../../../test/shared/mocha-resultsdb-reporter.ts",
+    "../../../../../test/shared/run-mocha.ts",
+    "../../../../../test/shared/screenshots.ts",
+    "../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../front_end/testing/mocha_helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../../front_end/testing/test_id_generation-tsconfig.ref.json"
+    },
+    {
+      "path": "../conductor/implementation-tsconfig.ref.json"
+    },
+    {
+      "path": "../e2e/shared/shared-tsconfig.ref.json"
+    }
+  ]
+}

@@ -860,7 +860,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
     </devtools-report>`}`, target);
     // clang-format on
 };
-export class AppManifestView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const AppManifestViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class AppManifestView extends AppManifestViewBase {
     registeredListeners;
     target;
     resourceTreeModel;

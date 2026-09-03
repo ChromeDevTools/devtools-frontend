@@ -40,7 +40,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/quick_open/FilteredListWidget.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class FilteredListWidget extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const FilteredListWidgetBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class FilteredListWidget extends FilteredListWidgetBase {
     promptHistory;
     scoringTimer;
     filterTimer;
@@ -132,8 +133,9 @@ export class FilteredListWidget extends Common.ObjectWrapper.eventMixin(UI.Widge
     setCommandSuggestion(suggestion) {
         this.inputBoxElement.setSuggestion(suggestion);
     }
-    setHintElement(hint) {
+    setHintElement(hint, accessibleName) {
         this.hintElement.textContent = hint;
+        UI.ARIAUtils.setLabel(this.hintElement, accessibleName);
     }
     showAsDialog(dialogTitle) {
         if (!dialogTitle) {

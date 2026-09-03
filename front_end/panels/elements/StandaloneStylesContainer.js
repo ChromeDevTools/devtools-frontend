@@ -28,7 +28,8 @@ export var Events;
 (function (Events) {
     Events["STYLES_UPDATE_COMPLETED"] = "StylesUpdateCompleted";
 })(Events || (Events = {}));
-export class StandaloneStylesContainer extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const StandaloneStylesContainerBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class StandaloneStylesContainer extends StandaloneStylesContainerBase {
     activeCSSAngle = null;
     isEditingStyle = false;
     sectionByElement = new WeakMap();

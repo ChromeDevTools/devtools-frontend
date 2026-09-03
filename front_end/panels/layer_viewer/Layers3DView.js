@@ -97,7 +97,8 @@ export const DEFAULT_VIEW = (input, output, target) => {
     })}></canvas>`, target, { container: { attributes: { jslog: `${VisualLogging.pane('layers-3d-view')}` } } });
     // clang-format onn
 };
-export class Layers3DView extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const Layers3DViewBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class Layers3DView extends Layers3DViewBase {
     layerViewHost;
     transformController;
     lastSelection;

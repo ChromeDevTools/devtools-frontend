@@ -9,7 +9,6 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 import * as CodeHighlighter from '../../../ui/components/code_highlighter/code_highlighter.js';
-import codeHighlighterStyles from '../../../ui/components/code_highlighter/codeHighlighter.css.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import contentEditableStyles from './suggestionInput.css.js';
@@ -264,7 +263,7 @@ let SuggestionInput = class SuggestionInput extends LitElement {
     render() {
         // clang-format off
         return html `<style>${contentEditableStyles}</style>
-      <style>${codeHighlighterStyles}</style>
+      <style>${CodeHighlighter.codeHighlighterStyles}</style>
       <devtools-editable-content
         ?disabled=${this.disabled}
         class=${classMap({

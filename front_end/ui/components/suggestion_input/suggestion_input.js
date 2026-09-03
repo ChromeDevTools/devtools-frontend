@@ -10,115 +10,6 @@ __export(SuggestionInput_exports, {
   SuggestionInput: () => SuggestionInput
 });
 import * as CodeHighlighter from "../code_highlighter/code_highlighter.js";
-
-// gen/front_end/ui/components/code_highlighter/codeHighlighter.css.js
-var codeHighlighter_css_default = `/*
- * Copyright 2021 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.token-variable {
-  color: var(--sys-color-token-variable);
-}
-
-.token-property {
-  color: var(--sys-color-token-property);
-}
-
-.token-type {
-  color: var(--sys-color-token-type);
-}
-
-.token-variable-special {
-  color: var(--sys-color-token-variable-special);
-}
-
-.token-definition {
-  color: var(--sys-color-token-definition);
-}
-
-.token-builtin {
-  color: var(--sys-color-token-builtin);
-}
-
-.token-number {
-  color: var(--sys-color-token-number);
-}
-
-.token-string {
-  color: var(--sys-color-token-string);
-}
-
-.token-string-special {
-  color: var(--sys-color-token-string-special);
-}
-
-.token-atom {
-  color: var(--sys-color-token-atom);
-}
-
-.token-keyword {
-  color: var(--sys-color-token-keyword);
-}
-
-.token-comment {
-  color: var(--sys-color-token-comment);
-}
-
-.token-meta {
-  color: var(--sys-color-token-meta);
-}
-
-.token-invalid {
-  color: var(--sys-color-error);
-}
-
-.token-tag {
-  color: var(--sys-color-token-tag);
-}
-
-.token-attribute {
-  color: var(--sys-color-token-attribute);
-}
-
-.token-attribute-value {
-  color: var(--sys-color-token-attribute-value);
-}
-
-.token-inserted {
-  color: var(--sys-color-token-inserted);
-}
-
-.token-deleted {
-  color: var(--sys-color-token-deleted);
-}
-
-.token-heading {
-  color: var(--sys-color-token-variable-special);
-  font-weight: bold;
-}
-
-.token-link {
-  color: var(--sys-color-token-variable-special);
-  text-decoration: underline;
-}
-
-.token-strikethrough {
-  text-decoration: line-through;
-}
-
-.token-strong {
-  font-weight: bold;
-}
-
-.token-emphasis {
-  font-style: italic;
-}
-
-/*# sourceURL=${import.meta.resolve("./codeHighlighter.css")} */`;
-
-// gen/front_end/ui/components/suggestion_input/SuggestionInput.js
 import * as Lit from "../../lit/lit.js";
 import * as VisualLogging from "../../visual_logging/visual_logging.js";
 
@@ -455,7 +346,7 @@ var SuggestionInput = class SuggestionInput2 extends LitElement {
   }
   render() {
     return html`<style>${suggestionInput_css_default}</style>
-      <style>${codeHighlighter_css_default}</style>
+      <style>${CodeHighlighter.codeHighlighterStyles}</style>
       <devtools-editable-content
         ?disabled=${this.disabled}
         class=${classMap({

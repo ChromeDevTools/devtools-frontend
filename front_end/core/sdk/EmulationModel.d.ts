@@ -11,6 +11,7 @@ export declare const enum DataSaverOverride {
 export declare class EmulationModel extends SDKModel<EmulationModelEventTypes> implements ProtocolProxyApi.EmulationDispatcher {
     #private;
     constructor(target: Target);
+    dispose(): void;
     setTouchEmulationAllowed(touchEmulationAllowed: boolean): void;
     supportsDeviceEmulation(): boolean;
     resetPageScaleFactor(): Promise<void>;

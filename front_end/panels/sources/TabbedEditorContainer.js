@@ -77,7 +77,8 @@ var SourceViewType;
 })(SourceViewType || (SourceViewType = {}));
 const HEADER_OVERRIDES_FILENAME = '.headers';
 let tabId = 0;
-export class TabbedEditorContainer extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const TabbedEditorContainerBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class TabbedEditorContainer extends TabbedEditorContainerBase {
     #historyManager;
     set historyManager(historyManager) {
         this.#historyManager = historyManager;

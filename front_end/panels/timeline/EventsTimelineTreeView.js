@@ -14,15 +14,15 @@ import { TimelineTreeView } from './TimelineTreeView.js';
 import { TimelineUIUtils } from './TimelineUIUtils.js';
 const UIStrings = {
     /**
-     * @description Text for the start time of an activity
+     * @description Column header for start time in the event log tree view of the Performance panel.
      */
     startTime: 'Start time',
     /**
-     * @description Screen reader label for a select box that filters the Performance panel Event Log by duration.
+     * @description Screen reader label for a select box that filters the event log by duration in the Performance panel.
      */
     durationFilter: 'Duration filter',
     /**
-     * @description Text for everything
+     * @description Option in the duration filter dropdown to show all events in the event log of the Performance panel.
      */
     all: 'All',
 };

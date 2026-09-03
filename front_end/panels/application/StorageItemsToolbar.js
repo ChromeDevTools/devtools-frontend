@@ -72,7 +72,8 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     // clang-format on
     target);
 };
-export class StorageItemsToolbar extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const StorageItemsToolbarBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class StorageItemsToolbar extends StorageItemsToolbarBase {
     filterRegex;
     #metadataView;
     #view;

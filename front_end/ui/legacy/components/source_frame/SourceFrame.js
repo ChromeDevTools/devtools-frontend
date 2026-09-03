@@ -98,7 +98,8 @@ export const LINE_NUMBER_FORMATTER = CodeMirror.Facet.define({
         return value[0];
     },
 });
-export class SourceFrameImpl extends Common.ObjectWrapper.eventMixin(UI.View.SimpleView) {
+const SourceFrameImplBase = Common.ObjectWrapper.eventMixin(UI.View.SimpleView);
+export class SourceFrameImpl extends SourceFrameImplBase {
     options;
     lazyContent;
     prettyInternal;

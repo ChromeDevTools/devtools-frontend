@@ -136,8 +136,9 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('panels/elements/StylePropertyTreeElement.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const parentMap = new WeakMap();
+const EnvFunctionRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.EnvFunctionMatch);
 // clang-format off
-export class EnvFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.EnvFunctionMatch) {
+export class EnvFunctionRenderer extends EnvFunctionRendererBase {
     treeElement;
     matchedStyles;
     computedStyles;
@@ -172,8 +173,9 @@ export class EnvFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatch
         return [span];
     }
 }
+const FlexGridRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch);
 // clang-format off
-export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.FlexGridGridLanesMatch) {
+export class FlexGridRenderer extends FlexGridRendererBase {
     // clang-format on
     #treeElement;
     #stylesContainer;
@@ -232,8 +234,9 @@ export class FlexGridRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         return [...children, button];
     }
 }
+const CSSWideKeywordRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch);
 // clang-format off
-export class CSSWideKeywordRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.CSSWideKeywordMatch) {
+export class CSSWideKeywordRenderer extends CSSWideKeywordRendererBase {
     // clang-format on
     #treeElement;
     #stylesContainer;
@@ -279,8 +282,9 @@ export function handleVarDefinitionActivate(variable, stylesContainer) {
         stylesContainer.jumpToProperty('initial-value', variable.name, REGISTERED_PROPERTY_SECTION_NAME);
     }
 }
+const VariableRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.VariableMatch);
 // clang-format off
-export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.VariableMatch) {
+export class VariableRenderer extends VariableRendererBase {
     // clang-format on
     #stylesContainer;
     #treeElement;
@@ -359,8 +363,9 @@ export class VariableRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         return [colorSwatch, varSwatch];
     }
 }
+const VariableNameRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.VariableNameMatch);
 // clang-format off
-export class VariableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.VariableNameMatch) {
+export class VariableNameRenderer extends VariableNameRendererBase {
     // clang-format on
     #stylesContainer;
     #treeElement;
@@ -406,8 +411,9 @@ export class VariableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
         return [varSwatch];
     }
 }
+const AttributeRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.AttributeMatch);
 // clang-format off
-export class AttributeRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.AttributeMatch) {
+export class AttributeRenderer extends AttributeRendererBase {
     // clang-format on
     #stylesContainer;
     #treeElement;
@@ -498,8 +504,9 @@ export class AttributeRenderer extends rendererBase(SDK.CSSPropertyParserMatcher
         ElementsPanel.instance().highlightNodeAttribute(node, attribute);
     }
 }
+const LinearGradientRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.LinearGradientMatch);
 // clang-format off
-export class LinearGradientRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.LinearGradientMatch) {
+export class LinearGradientRenderer extends LinearGradientRendererBase {
     // clang-format on
     render(match, context) {
         const children = ASTUtils.children(match.node);
@@ -520,8 +527,9 @@ export class LinearGradientRenderer extends rendererBase(SDK.CSSPropertyParserMa
         return nodes;
     }
 }
+const RelativeColorChannelRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch);
 // clang-format off
-export class RelativeColorChannelRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.RelativeColorChannelMatch) {
+export class RelativeColorChannelRenderer extends RelativeColorChannelRendererBase {
     // clang-format on
     #treeElement;
     constructor(treeElement) {
@@ -558,8 +566,9 @@ export class RelativeColorChannelRenderer extends rendererBase(SDK.CSSPropertyPa
         return [span, tooltip];
     }
 }
+const ColorRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.ColorMatch);
 // clang-format off
-export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMatch) {
+export class ColorRenderer extends ColorRendererBase {
     // clang-format on
     #treeElement;
     #stylesContainer;
@@ -687,8 +696,9 @@ export class ColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.Co
         swatchIcon.setContrastInfo(contrastInfo);
     }
 }
+const LightDarkColorRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.LightDarkColorMatch);
 // clang-format off
-export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.LightDarkColorMatch) {
+export class LightDarkColorRenderer extends LightDarkColorRendererBase {
     // clang-format on
     #treeElement;
     #stylesContainer;
@@ -770,8 +780,9 @@ export class LightDarkColorRenderer extends rendererBase(SDK.CSSPropertyParserMa
         }
     }
 }
+const ColorMixRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.ColorMixMatch);
 // clang-format off
-export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ColorMixMatch) {
+export class ColorMixRenderer extends ColorMixRendererBase {
     // clang-format on
     #stylesContainer;
     #matchedStyles;
@@ -893,8 +904,9 @@ export class ColorMixRenderer extends rendererBase(SDK.CSSPropertyParserMatchers
         return [swatch, contentChild, tooltip];
     }
 }
+const ContrastColorRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.ContrastColorMatch);
 // clang-format off
-export class ContrastColorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ContrastColorMatch) {
+export class ContrastColorRenderer extends ContrastColorRendererBase {
     // clang-format on
     #treeElement;
     #stylesContainer;
@@ -926,8 +938,9 @@ export class ContrastColorRenderer extends rendererBase(SDK.CSSPropertyParserMat
         return [colorSwatch, content];
     }
 }
+const AngleRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.AngleMatch);
 // clang-format off
-export class AngleRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.AngleMatch) {
+export class AngleRenderer extends AngleRendererBase {
     // clang-format on
     #treeElement;
     constructor(treeElement) {
@@ -977,8 +990,9 @@ export class AngleRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.An
         return [cssAngle];
     }
 }
+const LinkableNameRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.LinkableNameMatch);
 // clang-format off
-export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.LinkableNameMatch) {
+export class LinkableNameRenderer extends LinkableNameRendererBase {
     // clang-format on
     #matchedStyles;
     #stylesContainer;
@@ -1071,8 +1085,9 @@ export class LinkableNameRenderer extends rendererBase(SDK.CSSPropertyParserMatc
         return [swatch];
     }
 }
+const BezierRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.BezierMatch);
 // clang-format off
-export class BezierRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.BezierMatch) {
+export class BezierRenderer extends BezierRendererBase {
     // clang-format on
     #treeElement;
     constructor(treeElement) {
@@ -1103,8 +1118,9 @@ export class BezierRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.B
         return [iconAndTextContainer];
     }
 }
+const AutoBaseRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.AutoBaseMatch);
 // clang-format off
-export class AutoBaseRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.AutoBaseMatch) {
+export class AutoBaseRenderer extends AutoBaseRendererBase {
     #computedStyleExtraFields;
     // clang-format on
     constructor(computedStyle, computedStyleExtraFields) {
@@ -1273,8 +1289,9 @@ export class ShadowModel {
         }
     }
 }
+const ShadowRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.ShadowMatch);
 // clang-format off
-export class ShadowRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.ShadowMatch) {
+export class ShadowRenderer extends ShadowRendererBase {
     #treeElement;
     // clang-format on
     constructor(treeElement) {
@@ -1392,8 +1409,9 @@ export class ShadowRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.S
         return result;
     }
 }
+const GridTemplateRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.GridTemplateMatch);
 // clang-format off
-export class GridTemplateRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.GridTemplateMatch) {
+export class GridTemplateRenderer extends GridTemplateRendererBase {
     // clang-format on
     render(match, context) {
         if (match.lines.length <= 1) {
@@ -1439,8 +1457,9 @@ async function resolveValues(stylesContainer, propertyName, match, context, ...v
     return (await stylesContainer.cssModel()?.resolveValues(propertyName, nodeId, ...values)) ??
         (await stylesContainer.cssModel()?.resolveValues(undefined, nodeId, ...values));
 }
+const LengthRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.LengthMatch);
 // clang-format off
-export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.LengthMatch) {
+export class LengthRenderer extends LengthRendererBase {
     // clang-format on
     #stylesContainer;
     #treeElement;
@@ -1499,8 +1518,9 @@ export class LengthRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.L
         tooltip.appendChild(document.createTextNode(pixelValue[0]));
     }
 }
+const BaseFunctionRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.BaseFunctionMatch);
 // clang-format off
-export class BaseFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.BaseFunctionMatch) {
+export class BaseFunctionRenderer extends BaseFunctionRendererBase {
     // clang-format on
     #stylesContainer;
     #matchedStyles;
@@ -1592,8 +1612,9 @@ export class MathFunctionRenderer extends BaseFunctionRenderer {
 export class CustomFunctionRenderer extends BaseFunctionRenderer {
     matchType = SDK.CSSPropertyParserMatchers.CustomFunctionMatch;
 }
+const AnchorFunctionRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.AnchorFunctionMatch);
 // clang-format off
-export class AnchorFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.AnchorFunctionMatch) {
+export class AnchorFunctionRenderer extends AnchorFunctionRendererBase {
     // clang-format on
     #stylesContainer;
     static async decorateAnchorForAnchorLink(stylesContainer, container, { identifier, needsSpace }) {
@@ -1679,8 +1700,9 @@ export class AnchorFunctionRenderer extends rendererBase(SDK.CSSPropertyParserMa
         return [content];
     }
 }
+const PositionAnchorRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.PositionAnchorMatch);
 // clang-format off
-export class PositionAnchorRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.PositionAnchorMatch) {
+export class PositionAnchorRenderer extends PositionAnchorRendererBase {
     #stylesContainer;
     // clang-format on
     constructor(stylesContainer) {
@@ -1693,8 +1715,9 @@ export class PositionAnchorRenderer extends rendererBase(SDK.CSSPropertyParserMa
         return [content];
     }
 }
+const PositionTryRendererBase = rendererBase(SDK.CSSPropertyParserMatchers.PositionTryMatch);
 // clang-format off
-export class PositionTryRenderer extends rendererBase(SDK.CSSPropertyParserMatchers.PositionTryMatch) {
+export class PositionTryRenderer extends PositionTryRendererBase {
     #matchedStyles;
     // clang-format on
     constructor(matchedStyles) {

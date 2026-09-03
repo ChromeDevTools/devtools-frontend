@@ -1,0 +1,42 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../test/conductor",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../test/conductor/async-scope.ts",
+    "../../../../../test/conductor/commandline.ts",
+    "../../../../../test/conductor/custom-query-handlers.ts",
+    "../../../../../test/conductor/diff-utils.ts",
+    "../../../../../test/conductor/events.ts",
+    "../../../../../test/conductor/inspected_page.ts",
+    "../../../../../test/conductor/karma-resultsdb-reporter.ts",
+    "../../../../../test/conductor/mocha-interface-helpers.ts",
+    "../../../../../test/conductor/mocha-interface.ts",
+    "../../../../../test/conductor/paths.ts",
+    "../../../../../test/conductor/platform.ts",
+    "../../../../../test/conductor/resultsdb.ts",
+    "../../../../../test/conductor/screenshot-error.ts",
+    "../../../../../test/conductor/sharding.ts",
+    "../../../../../test/conductor/test_config.ts",
+    "../../../../../test/conductor/test_expectations.ts",
+    "../../../../../test/conductor/test_server.ts",
+    "../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "expectations_parser-tsconfig.ref.json"
+    },
+    {
+      "path": "../../front_end/testing/test_id_generation-tsconfig.ref.json"
+    }
+  ]
+}

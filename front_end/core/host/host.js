@@ -1612,6 +1612,8 @@ var DispatchHttpRequestError = class extends Error {
     this.type = type;
     this.response = response;
   }
+  type;
+  response;
 };
 async function makeHttpRequest(request, options) {
   const signal = options?.signal;

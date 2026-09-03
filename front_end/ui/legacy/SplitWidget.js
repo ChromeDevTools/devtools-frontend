@@ -12,7 +12,8 @@ import splitWidgetStyles from './splitWidget.css.js';
 import { ToolbarButton } from './Toolbar.js';
 import { registerWidgetConfig, Widget, widgetConfig, WidgetElement } from './Widget.js';
 import { ZoomManager } from './ZoomManager.js';
-export class SplitWidget extends Common.ObjectWrapper.eventMixin(Widget) {
+const SplitWidgetBase = Common.ObjectWrapper.eventMixin(Widget);
+export class SplitWidget extends SplitWidgetBase {
     #sidebarElement;
     #mainElement;
     #resizerElement;

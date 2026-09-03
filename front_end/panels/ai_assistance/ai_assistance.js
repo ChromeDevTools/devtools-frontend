@@ -12,7 +12,7 @@ import * as i18n17 from "../../core/i18n/i18n.js";
 import * as Platform5 from "../../core/platform/platform.js";
 import * as Root4 from "../../core/root/root.js";
 import * as SDK6 from "../../core/sdk/sdk.js";
-import * as AiAssistanceModel8 from "../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel7 from "../../models/ai_assistance/ai_assistance.js";
 import * as Badges from "../../models/badges/badges.js";
 import * as Workspace4 from "../../models/workspace/workspace.js";
 import * as Buttons7 from "../../ui/components/buttons/buttons.js";
@@ -76,7 +76,6 @@ var aiAssistancePanel_css_default = `/*
 
 // ../../front_end/panels/ai_assistance/components/AccessibilityAgentMarkdownRenderer.ts
 import * as SDK from "../../core/sdk/sdk.js";
-import * as AiAssistanceModel2 from "../../models/ai_assistance/ai_assistance.js";
 import * as Lit2 from "../../ui/lit/lit.js";
 import * as PanelsCommon from "../common/common.js";
 
@@ -155,9 +154,9 @@ var AccessibilityAgentMarkdownRenderer = class extends MarkdownRendererWithCodeB
     super();
     this.mainDocumentURL = mainDocumentURL;
   }
+  mainDocumentURL;
   #isSameOrigin(node) {
-    const nodeDocumentURL = node.ownerDocument?.documentURL ?? "";
-    return AiAssistanceModel2.AiUtils.isSameOrigin(this.mainDocumentURL, nodeDocumentURL);
+    return SDK.SecurityOrigin.SecurityOrigin.create(this.mainDocumentURL).isSameOriginWith(node.securityOrigin());
   }
   templateForToken(token) {
     if (token.type === "link" && token.href.startsWith("#")) {
@@ -250,7 +249,7 @@ var AccessibilityAgentMarkdownRenderer = class extends MarkdownRendererWithCodeB
 import * as Common2 from "../../core/common/common.js";
 import * as Platform2 from "../../core/platform/platform.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
-import * as AiAssistanceModel3 from "../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel2 from "../../models/ai_assistance/ai_assistance.js";
 import * as Logs2 from "../../models/logs/logs.js";
 import * as Trace from "../../models/trace/trace.js";
 import * as MarkdownView3 from "../../ui/components/markdown_view/markdown_view.js";
@@ -263,12 +262,12 @@ var AIv2MarkdownRenderer = class extends MarkdownView3.MarkdownView.MarkdownInsi
     super();
     this.options = options;
   }
+  options;
   #isSameOrigin(node) {
     if (!this.options.mainDocumentURL) {
       return true;
     }
-    const nodeDocumentURL = node.ownerDocument?.documentURL ?? "";
-    return AiAssistanceModel3.AiUtils.isSameOrigin(this.options.mainDocumentURL, nodeDocumentURL);
+    return SDK2.SecurityOrigin.SecurityOrigin.create(this.options.mainDocumentURL).isSameOriginWith(node.securityOrigin());
   }
   #revealableLink(revealable, label) {
     return html3`<devtools-link @click=${(e) => {
@@ -318,8 +317,8 @@ var AIv2MarkdownRenderer = class extends MarkdownView3.MarkdownView.MarkdownInsi
       return html3`${fallbackText}`;
     }
     if (href.startsWith("#file-")) {
-      const file = AiAssistanceModel3.ListSources.ListSourcesTool.getUISourceCodes().find(
-        (file2) => AiAssistanceModel3.ListSources.ListSourcesTool.uiSourceCodeId.get(file2) === Number(href.substring(6))
+      const file = AiAssistanceModel2.ListSources.ListSourcesTool.getUISourceCodes().find(
+        (file2) => AiAssistanceModel2.ListSources.ListSourcesTool.uiSourceCodeId.get(file2) === Number(href.substring(6))
       );
       if (file) {
         return this.#revealableLink(file, file.name());
@@ -438,7 +437,7 @@ import * as i18n3 from "../../core/i18n/i18n.js";
 import * as Platform3 from "../../core/platform/platform.js";
 import * as SDK3 from "../../core/sdk/sdk.js";
 import * as TextUtils from "../../core/text_utils/text_utils.js";
-import * as AiAssistanceModel5 from "../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel4 from "../../models/ai_assistance/ai_assistance.js";
 import * as ComputedStyle from "../../models/computed_style/computed_style.js";
 import * as Formatter from "../../models/formatter/formatter.js";
 import * as Trace2 from "../../models/trace/trace.js";
@@ -1147,7 +1146,7 @@ __export(WalkthroughView_exports, {
   walkthroughTitle: () => walkthroughTitle
 });
 import * as i18n from "../../core/i18n/i18n.js";
-import * as AiAssistanceModel4 from "../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel3 from "../../models/ai_assistance/ai_assistance.js";
 import * as Buttons from "../../ui/components/buttons/buttons.js";
 import * as Input from "../../ui/components/input/input.js";
 import * as UI from "../../ui/legacy/legacy.js";
@@ -1446,7 +1445,7 @@ function renderInlineWalkthrough(input, stepsOutput, allSteps) {
     }
   }
   const hasWidgets = allSteps.some((s) => s.widgets?.length);
-  const icon = AiAssistanceModel4.AiUtils.getIconName();
+  const icon = AiAssistanceModel3.AiUtils.getIconName();
   return html4`
     <div class="inline-wrapper" ?data-open=${input.isExpanded} jslog=${VisualLogging.section("walkthrough-container")}>
       <span class="inline-icon">
@@ -2212,7 +2211,7 @@ function renderWalkthroughSidebarButton(input, steps) {
     lastStep
   });
   const variant = hasOneStepWithWidget && !input.isLoading ? Buttons2.Button.Variant.TONAL : Buttons2.Button.Variant.TEXT;
-  const icon = AiAssistanceModel5.AiUtils.getIconName();
+  const icon = AiAssistanceModel4.AiUtils.getIconName();
   const toggleContainerClasses = Lit5.Directives.classMap({
     "walkthrough-toggle-container": true,
     // We only apply the widget styling when loading is complete
@@ -2375,7 +2374,7 @@ async function makeStorageBreakdownWidget(widgetData) {
   const chartData = {
     chartName: lockedString2(UIStringsNotTranslate.storageBreakdown),
     size: 110,
-    formatter: (val) => AiAssistanceModel5.UnitFormatters.bytes(val),
+    formatter: (val) => AiAssistanceModel4.UnitFormatters.bytes(val),
     showLegend: true,
     total,
     slices
@@ -2627,7 +2626,7 @@ async function makePerfInsightWidget(widgetData) {
   return renderInsightWidget(meta.component, insight, meta.jslog, meta.accessibleLabel, meta.title, bounds);
 }
 async function makeBottomUpTimelineTreeWidget(widgetData) {
-  const bottomUpRootNode = AiAssistanceModel5.AIQueries.AIQueries.mainThreadActivityBottomUp(
+  const bottomUpRootNode = AiAssistanceModel4.AIQueries.AIQueries.mainThreadActivityBottomUp(
     widgetData.data.bounds,
     widgetData.data.parsedTrace
   );
@@ -3110,23 +3109,23 @@ function renderError(message) {
   if (message.error) {
     let errorMessage;
     switch (message.error) {
-      case AiAssistanceModel5.AiAgent.ErrorType.UNKNOWN:
-      case AiAssistanceModel5.AiAgent.ErrorType.BLOCK:
+      case AiAssistanceModel4.AiAgent.ErrorType.UNKNOWN:
+      case AiAssistanceModel4.AiAgent.ErrorType.BLOCK:
         errorMessage = UIStringsNotTranslate.systemError;
         break;
-      case AiAssistanceModel5.AiAgent.ErrorType.QUOTA:
+      case AiAssistanceModel4.AiAgent.ErrorType.QUOTA:
         errorMessage = UIStringsNotTranslate.quotaError;
         break;
-      case AiAssistanceModel5.AiAgent.ErrorType.MAX_STEPS:
+      case AiAssistanceModel4.AiAgent.ErrorType.MAX_STEPS:
         errorMessage = UIStringsNotTranslate.maxStepsError;
         break;
-      case AiAssistanceModel5.AiAgent.ErrorType.CROSS_ORIGIN:
+      case AiAssistanceModel4.AiAgent.ErrorType.CROSS_ORIGIN:
         errorMessage = UIStringsNotTranslate.crossOriginError;
         break;
-      case AiAssistanceModel5.AiAgent.ErrorType.PAYLOAD_TOO_LARGE:
+      case AiAssistanceModel4.AiAgent.ErrorType.PAYLOAD_TOO_LARGE:
         errorMessage = UIStringsNotTranslate.payloadTooLargeError;
         break;
-      case AiAssistanceModel5.AiAgent.ErrorType.ABORT:
+      case AiAssistanceModel4.AiAgent.ErrorType.ABORT:
         return html5`<p class="aborted" jslog=${VisualLogging2.section("aborted")}>${lockedString2(UIStringsNotTranslate.stoppedResponse)}</p>`;
     }
     return html5`<p class="error" jslog=${VisualLogging2.section("error")}>${lockedString2(errorMessage)}</p>`;
@@ -3134,7 +3133,7 @@ function renderError(message) {
   return Lit5.nothing;
 }
 function renderImageChatMessage(inlineData) {
-  if (inlineData.data === AiAssistanceModel5.AiConversation.NOT_FOUND_IMAGE_DATA) {
+  if (inlineData.data === AiAssistanceModel4.AiConversation.NOT_FOUND_IMAGE_DATA) {
     return html5`<div class="unavailable-image" title=${UIStringsNotTranslate.imageUnavailable}>
       <devtools-icon name='file-image'></devtools-icon>
     </div>`;
@@ -3473,10 +3472,10 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
         break;
       }
     }
-    const mainThread = AiAssistanceModel5.AIQueries.AIQueries.findMainThread(navigationId, parsedTrace);
+    const mainThread = AiAssistanceModel4.AIQueries.AIQueries.findMainThread(navigationId, parsedTrace);
     if (mainThread) {
       events = mainThread.entries;
-      AiAssistanceModel5.Debug.debugLog(
+      AiAssistanceModel4.Debug.debugLog(
         `AiAssistanceModel.AiAgent.TimelineRangeSummaryAiWidget found main thread. PID:`,
         mainThread.pid,
         "TID:",
@@ -3487,7 +3486,7 @@ async function makeTimelineRangeSummaryWidget(widgetData) {
     }
   }
   if (!events) {
-    AiAssistanceModel5.Debug.debugLog(
+    AiAssistanceModel4.Debug.debugLog(
       `Warning: could not find events for AiAssistanceModel.AiAgent.TimelineRangeSummaryAiWidget`,
       widgetData
     );
@@ -3605,7 +3604,7 @@ async function makeNetworkRequestGeneralHeadersWidget(widgetData) {
 import "../../ui/components/spinners/spinners.js";
 import * as Host3 from "../../core/host/host.js";
 import * as i18n9 from "../../core/i18n/i18n.js";
-import * as AiAssistanceModel7 from "../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel6 from "../../models/ai_assistance/ai_assistance.js";
 import * as Buttons5 from "../../ui/components/buttons/buttons.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
 import { Directives as Directives6, html as html8, render as render5 } from "../../ui/lit/lit.js";
@@ -6423,7 +6422,7 @@ var Runtime;
 })(Runtime || (Runtime = {}));
 
 // ../../front_end/panels/ai_assistance/components/ChatInput.ts
-import * as AiAssistanceModel6 from "../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel5 from "../../models/ai_assistance/ai_assistance.js";
 import * as PanelsCommon4 from "../common/common.js";
 import * as PanelUtils2 from "../utils/utils.js";
 import * as Buttons3 from "../../ui/components/buttons/buttons.js";
@@ -7003,19 +7002,19 @@ var MAX_IMAGE_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 var RELEVANT_DATA_LINK_CHAT_ID = "relevant-data-link-chat";
 var RELEVANT_DATA_LINK_FOOTER_ID = "relevant-data-link-footer";
 function getContextRemoveLabel(context) {
-  if (context instanceof AiAssistanceModel6.FileContext.FileContext) {
+  if (context instanceof AiAssistanceModel5.FileContext.FileContext) {
     return lockedString3(UIStringsNotTranslate2.removeContextFile);
   }
-  if (context instanceof AiAssistanceModel6.DOMNodeContext.DOMNodeContext) {
+  if (context instanceof AiAssistanceModel5.DOMNodeContext.DOMNodeContext) {
     return lockedString3(UIStringsNotTranslate2.removeContextElement);
   }
-  if (context instanceof AiAssistanceModel6.RequestContext.RequestContext) {
+  if (context instanceof AiAssistanceModel5.RequestContext.RequestContext) {
     return lockedString3(UIStringsNotTranslate2.removeContextRequest);
   }
-  if (context instanceof AiAssistanceModel6.PerformanceTraceContext.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel5.PerformanceTraceContext.PerformanceTraceContext) {
     return lockedString3(UIStringsNotTranslate2.removeContextPerfInsight);
   }
-  if (context instanceof AiAssistanceModel6.StorageContext.StorageContext) {
+  if (context instanceof AiAssistanceModel5.StorageContext.StorageContext) {
     return lockedString3(UIStringsNotTranslate2.removeContextStorage);
   }
   return lockedString3(UIStringsNotTranslate2.removeContext);
@@ -7129,7 +7128,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
               <div class="chat-input-actions-left">
                 ${input.context ? html6`
                     <div class="select-element">
-                      ${input.conversationType === AiAssistanceModel6.AiHistoryStorage.ConversationType.STYLING ? html6`
+                      ${input.conversationType === AiAssistanceModel5.AiHistoryStorage.ConversationType.STYLING ? html6`
                           <devtools-button
                             .data=${{
     variant: Buttons3.Button.Variant.ICON_TOGGLE,
@@ -7150,7 +7149,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
     disabled: !input.isContextSelected
   })}
                       >
-                        ${input.context instanceof AiAssistanceModel6.DOMNodeContext.DOMNodeContext ? html6`
+                        ${input.context instanceof AiAssistanceModel5.DOMNodeContext.DOMNodeContext ? html6`
                               <devtools-widget
                                 class="title"
                                 ${widget2(PanelsCommon4.DOMLinkifier.DOMNodeLink, {
@@ -7158,13 +7157,13 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
     options: {
       disabled: !input.isContextSelected,
       hiddenClassList: input.context.getItem().classNames().filter(
-        (className) => className.startsWith(AiAssistanceModel6.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)
+        (className) => className.startsWith(AiAssistanceModel5.Injected.AI_ASSISTANCE_CSS_CLASS_NAME)
       ),
       ariaDescription: i18nString2(UIStrings2.revealContextDescription)
     }
   })}
                               ></devtools-widget>` : html6`
-                          ${input.context instanceof AiAssistanceModel6.RequestContext.RequestContext ? PanelUtils2.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel6.FileContext.FileContext ? PanelUtils2.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel6.AccessibilityContext.AccessibilityContext ? html6`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` : input.context instanceof AiAssistanceModel6.PerformanceTraceContext.PerformanceTraceContext ? html6`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : input.context instanceof AiAssistanceModel6.StorageContext.StorageContext ? html6`<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` : Lit6.nothing}
+                          ${input.context instanceof AiAssistanceModel5.RequestContext.RequestContext ? PanelUtils2.PanelUtils.getIconForNetworkRequest(input.context.getItem()) : input.context instanceof AiAssistanceModel5.FileContext.FileContext ? PanelUtils2.PanelUtils.getIconForSourceFile(input.context.getItem()) : input.context instanceof AiAssistanceModel5.AccessibilityContext.AccessibilityContext ? html6`<devtools-icon class="icon" name="performance" title="Lighthouse"></devtools-icon>` : input.context instanceof AiAssistanceModel5.PerformanceTraceContext.PerformanceTraceContext ? html6`<devtools-icon class="icon" name="performance" title="Performance"></devtools-icon>` : input.context instanceof AiAssistanceModel5.StorageContext.StorageContext ? html6`<devtools-icon class="icon" name="table" title="Storage"></devtools-icon>` : Lit6.nothing}
                             <span
                               role="button"
                               class="title"
@@ -7293,7 +7292,7 @@ var ChatInput = class extends UI3.Widget.Widget {
   isContextSelected = false;
   inspectElementToggled = false;
   disclaimerText = "";
-  conversationType = AiAssistanceModel6.AiHistoryStorage.ConversationType.STYLING;
+  conversationType = AiAssistanceModel5.AiHistoryStorage.ConversationType.STYLING;
   multimodalInputEnabled = false;
   uploadImageInputEnabled = false;
   isReadOnly = false;
@@ -7348,7 +7347,7 @@ var ChatInput = class extends UI3.Widget.Widget {
    * @param dir direction to navigate. -1 for older, 1 for newer.
    */
   #navigatePromptHistory(dir) {
-    const prompts = AiAssistanceModel6.AiHistoryStorage.AiHistoryStorage.instance().getRecentPrompts();
+    const prompts = AiAssistanceModel5.AiHistoryStorage.AiHistoryStorage.instance().getRecentPrompts();
     if (!prompts.length) {
       return;
     }
@@ -7392,7 +7391,7 @@ var ChatInput = class extends UI3.Widget.Widget {
         isLoading: false,
         data: bytes,
         mimeType: JPEG_MIME_TYPE,
-        inputType: AiAssistanceModel6.AiAgent.MultimodalInputType.SCREENSHOT
+        inputType: AiAssistanceModel5.AiAgent.MultimodalInputType.SCREENSHOT
       };
       this.performUpdate();
       void this.updateComplete.then(() => {
@@ -7416,7 +7415,7 @@ var ChatInput = class extends UI3.Widget.Widget {
     });
   }
   #handleImageDataTransferEvent(dataTransfer, event) {
-    if (this.conversationType !== AiAssistanceModel6.AiHistoryStorage.ConversationType.STYLING) {
+    if (this.conversationType !== AiAssistanceModel5.AiHistoryStorage.ConversationType.STYLING) {
       return;
     }
     const files = dataTransfer?.files;
@@ -7434,7 +7433,7 @@ var ChatInput = class extends UI3.Widget.Widget {
     this.#handleImageDataTransferEvent(event.clipboardData, event);
   };
   #handleImageDragOver = (event) => {
-    if (this.conversationType !== AiAssistanceModel6.AiHistoryStorage.ConversationType.STYLING) {
+    if (this.conversationType !== AiAssistanceModel5.AiHistoryStorage.ConversationType.STYLING) {
       return;
     }
     event.preventDefault();
@@ -7457,7 +7456,7 @@ var ChatInput = class extends UI3.Widget.Widget {
         isLoading: false,
         data: compressed.data,
         mimeType: compressed.mimeType,
-        inputType: AiAssistanceModel6.AiAgent.MultimodalInputType.UPLOADED_IMAGE
+        inputType: AiAssistanceModel5.AiAgent.MultimodalInputType.UPLOADED_IMAGE
       };
     } catch (err) {
       console.error("Failed to compress image:", err);
@@ -8357,7 +8356,7 @@ var SCROLL_ROUNDING_OFFSET2 = 1;
 var DEFAULT_VIEW5 = (input, output, target) => {
   const chatUiClasses = classMap({
     "chat-ui": true,
-    gemini: AiAssistanceModel7.AiUtils.isGeminiBranding()
+    gemini: AiAssistanceModel6.AiUtils.isGeminiBranding()
   });
   const inputWidgetClasses = classMap({
     "chat-input-widget": true,
@@ -8401,7 +8400,7 @@ var DEFAULT_VIEW5 = (input, output, target) => {
                     name="smart-assistant"
                   ></devtools-icon>
                 </div>
-                ${AiAssistanceModel7.AiUtils.isGeminiBranding() ? html8`
+                ${AiAssistanceModel6.AiUtils.isGeminiBranding() ? html8`
                     <h1 class='greeting'>Hello</h1>
                     <p class='cta'>${lockedString4(UIStringsNotTranslate3.emptyStateTextGemini)}</p>
                   ` : html8`<h1>${lockedString4(UIStringsNotTranslate3.emptyStateText)}</h1>`}
@@ -9347,6 +9346,8 @@ var PerformanceAgentMarkdownRenderer = class extends MarkdownRendererWithCodeBlo
     this.mainFrameId = mainFrameId;
     this.lookupEvent = lookupEvent;
   }
+  mainFrameId;
+  lookupEvent;
   templateForToken(token) {
     if (token.type === "link" && token.href.startsWith("#")) {
       if (token.href.startsWith("#node-")) {
@@ -9582,42 +9583,42 @@ async function getEmptyStateSuggestions(conversation) {
     return [];
   }
   switch (conversation.type) {
-    case AiAssistanceModel8.AiHistoryStorage.ConversationType.STYLING:
+    case AiAssistanceModel7.AiHistoryStorage.ConversationType.STYLING:
       return [
         { title: "What can you help me with?", jslogContext: "styling-default" },
         { title: "Why isn\u2019t this element visible?", jslogContext: "styling-default" },
         { title: "How do I center this element?", jslogContext: "styling-default" }
       ];
-    case AiAssistanceModel8.AiHistoryStorage.ConversationType.FILE:
+    case AiAssistanceModel7.AiHistoryStorage.ConversationType.FILE:
       return [
         { title: "What does this script do?", jslogContext: "file-default" },
         { title: "Is the script optimized for performance?", jslogContext: "file-default" },
         { title: "Does the script handle user input safely?", jslogContext: "file-default" }
       ];
-    case AiAssistanceModel8.AiHistoryStorage.ConversationType.ACCESSIBILITY:
+    case AiAssistanceModel7.AiHistoryStorage.ConversationType.ACCESSIBILITY:
       return [
         { title: "How can I fix accessibility issues on my page?", jslogContext: "accessibility-default" },
         { title: "What accessibility issues exist on my page?", jslogContext: "accessibility-default" }
       ];
-    case AiAssistanceModel8.AiHistoryStorage.ConversationType.NETWORK:
+    case AiAssistanceModel7.AiHistoryStorage.ConversationType.NETWORK:
       return [
         { title: "Why is this network request taking so long?", jslogContext: "network-default" },
         { title: "Are there any security headers present?", jslogContext: "network-default" },
         { title: "Why is the request failing?", jslogContext: "network-default" }
       ];
-    case AiAssistanceModel8.AiHistoryStorage.ConversationType.PERFORMANCE: {
+    case AiAssistanceModel7.AiHistoryStorage.ConversationType.PERFORMANCE: {
       return [
         { title: "What performance issues exist with my page?", jslogContext: "performance-default" }
       ];
     }
-    case AiAssistanceModel8.AiHistoryStorage.ConversationType.NONE: {
+    case AiAssistanceModel7.AiHistoryStorage.ConversationType.NONE: {
       return [
         { title: "What can you help me with?", jslogContext: "empty" },
         { title: "What performance issues exist on the page?", jslogContext: "empty" },
         { title: "What are the slowest network requests on this page?", jslogContext: "empty" }
       ];
     }
-    case AiAssistanceModel8.AiHistoryStorage.ConversationType.STORAGE: {
+    case AiAssistanceModel7.AiHistoryStorage.ConversationType.STORAGE: {
       return [
         { title: "How is localStorage used on this page?", jslogContext: "storage-default" },
         { title: "How is sessionStorage used on this page?", jslogContext: "storage-default" },
@@ -9634,7 +9635,7 @@ function createV2MarkdownRenderer(conversation) {
   const domModel = primaryTarget?.model(SDK6.DOMModel.DOMModel);
   const resourceTreeModel = primaryTarget?.model(SDK6.ResourceTreeModel.ResourceTreeModel);
   const context = conversation?.selectedContext;
-  if (context instanceof AiAssistanceModel8.PerformanceTraceContext.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel7.PerformanceTraceContext.PerformanceTraceContext) {
     const focus = context.getItem();
     options.mainFrameId = focus.parsedTrace.data.Meta.mainFrameId;
     options.lookupTraceEvent = focus.lookupEvent.bind(focus);
@@ -9649,21 +9650,21 @@ function createV2MarkdownRenderer(conversation) {
   return new AIv2MarkdownRenderer(options);
 }
 function getMarkdownRenderer(conversation) {
-  if (conversation?.type === AiAssistanceModel8.AiHistoryStorage.ConversationType.PERFORMANCE && conversation.isReadOnly) {
+  if (conversation?.type === AiAssistanceModel7.AiHistoryStorage.ConversationType.PERFORMANCE && conversation.isReadOnly) {
     return new PerformanceAgentMarkdownRenderer();
   }
   if (Root4.Runtime.hostConfig.devToolsAiV2Architecture?.enabled && conversation && !conversation.isReadOnly) {
     return createV2MarkdownRenderer(conversation);
   }
   const context = conversation?.selectedContext;
-  if (context instanceof AiAssistanceModel8.PerformanceTraceContext.PerformanceTraceContext) {
+  if (context instanceof AiAssistanceModel7.PerformanceTraceContext.PerformanceTraceContext) {
     const focus = context.getItem();
     return new PerformanceAgentMarkdownRenderer(focus.parsedTrace.data.Meta.mainFrameId, focus.lookupEvent.bind(focus));
   }
-  if (conversation?.type === AiAssistanceModel8.AiHistoryStorage.ConversationType.PERFORMANCE) {
+  if (conversation?.type === AiAssistanceModel7.AiHistoryStorage.ConversationType.PERFORMANCE) {
     return new PerformanceAgentMarkdownRenderer();
   }
-  if (conversation?.type === AiAssistanceModel8.AiHistoryStorage.ConversationType.ACCESSIBILITY) {
+  if (conversation?.type === AiAssistanceModel7.AiHistoryStorage.ConversationType.ACCESSIBILITY) {
     const domModel = SDK6.TargetManager.TargetManager.instance().primaryPageTarget()?.model(SDK6.DOMModel.DOMModel);
     const mainDocumentURL = domModel?.existingDocument()?.documentURL;
     return new AccessibilityAgentMarkdownRenderer(mainDocumentURL);
@@ -9789,38 +9790,38 @@ function createDOMNodeContext(node) {
   if (!node) {
     return null;
   }
-  return new AiAssistanceModel8.DOMNodeContext.DOMNodeContext(node);
+  return new AiAssistanceModel7.DOMNodeContext.DOMNodeContext(node);
 }
 function createFileContext(file) {
   if (!file) {
     return null;
   }
-  return new AiAssistanceModel8.FileContext.FileContext(file);
+  return new AiAssistanceModel7.FileContext.FileContext(file);
 }
 function createAccessibilityContext(report) {
   if (!report) {
     return null;
   }
-  return new AiAssistanceModel8.AccessibilityContext.AccessibilityContext(report.report);
+  return new AiAssistanceModel7.AccessibilityContext.AccessibilityContext(report.report);
 }
 function createRequestContext(request) {
   if (!request) {
     return null;
   }
   const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-  return new AiAssistanceModel8.RequestContext.RequestContext(request, calculator);
+  return new AiAssistanceModel7.RequestContext.RequestContext(request, calculator);
 }
 function createPerformanceTraceContext(focus) {
   if (!focus) {
     return null;
   }
-  return new AiAssistanceModel8.PerformanceTraceContext.PerformanceTraceContext(focus);
+  return new AiAssistanceModel7.PerformanceTraceContext.PerformanceTraceContext(focus);
 }
 function createStorageContext(item) {
   if (!item) {
     return null;
   }
-  return new AiAssistanceModel8.StorageContext.StorageContext(item);
+  return new AiAssistanceModel7.StorageContext.StorageContext(item);
 }
 var panelInstance;
 var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
@@ -9835,6 +9836,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       this.#toggleSearchElementAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
     }
   }
+  view;
   static panelName = "freestyler";
   // NodeJS debugging does not have Elements panel, thus this action might not exist.
   #toggleSearchElementAction;
@@ -9843,7 +9845,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
   #viewOutput = {};
   #serverSideLoggingEnabled = isAiAssistanceServerSideLoggingEnabled();
   #aiAssistanceEnabledSetting;
-  #changeManager = new AiAssistanceModel8.ChangeManager.ChangeManager();
+  #changeManager = new AiAssistanceModel7.ChangeManager.ChangeManager();
   #mutex = new Common5.Mutex.Mutex();
   #conversation;
   #selectedFile = null;
@@ -9898,7 +9900,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       const emptyStateSuggestions = await getEmptyStateSuggestions(this.#conversation);
       const markdownRenderer = getMarkdownRenderer(this.#conversation);
       let onContextAdd = null;
-      if (AiAssistanceModel8.AiUtils.isContextSelectionEnabled() && // Only add it the button if can have anything already selected
+      if (AiAssistanceModel7.AiUtils.isContextSelectionEnabled() && // Only add it the button if can have anything already selected
       this.#getConversationContext(this.#getDefaultConversationType())) {
         onContextAdd = this.#handleContextAdd.bind(this);
       }
@@ -9920,7 +9922,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
           isReadOnly: this.#conversation.isReadOnly ?? false,
           inspectElementToggled: this.#toggleSearchElementAction?.toggled() ?? false,
           canShowFeedbackForm: this.#serverSideLoggingEnabled,
-          multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() && this.#conversation.type === AiAssistanceModel8.AiHistoryStorage.ConversationType.STYLING,
+          multimodalInputEnabled: isAiAssistanceMultimodalInputEnabled() && this.#conversation.type === AiAssistanceModel7.AiHistoryStorage.ConversationType.STYLING,
           isTextInputDisabled: this.#isTextInputDisabled(),
           emptyStateSuggestions,
           inputPlaceholder: this.#getChatInputPlaceholder(),
@@ -9930,12 +9932,12 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             this.#textInputValue = text;
           },
           onExportConversation: this.#onExportConversationClick.bind(this),
-          uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() && this.#conversation.type === AiAssistanceModel8.AiHistoryStorage.ConversationType.STYLING,
+          uploadImageInputEnabled: isAiAssistanceMultimodalUploadInputEnabled() && this.#conversation.type === AiAssistanceModel7.AiHistoryStorage.ConversationType.STYLING,
           markdownRenderer,
           conversationMarkdown: this.#conversation.getConversationMarkdown(),
           generateConversationSummary: async (markdown) => {
             if (!this.#conversationSummary) {
-              this.#conversationSummary = new AiAssistanceModel8.ConversationSummary.ConversationSummary({
+              this.#conversationSummary = new AiAssistanceModel7.ConversationSummary.ConversationSummary({
                 aidaClient: this.#aidaClient,
                 serverSideLoggingEnabled: this.#serverSideLoggingEnabled
               });
@@ -9948,7 +9950,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
               void this.#startConversation(text, imageInput, multimodalInputType);
             };
             const seenSetting = Common5.Settings.Settings.instance().resolve(
-              AiAssistanceModel8.AiUtils.aiAssistanceV2OptInChangeDialogSeenSettingDescriptor
+              AiAssistanceModel7.AiUtils.aiAssistanceV2OptInChangeDialogSeenSettingDescriptor
             );
             if (!seenSetting.get()) {
               OptInChangeDialog.show({
@@ -9972,7 +9974,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
           onContextClick: this.#handleContextClick.bind(this),
           onNewConversation: this.#handleNewChatRequest.bind(this),
           onCopyResponseClick: this.#onCopyResponseClick.bind(this),
-          onContextRemoved: AiAssistanceModel8.AiUtils.isContextSelectionEnabled() ? this.#handleContextRemoved.bind(this) : null,
+          onContextRemoved: AiAssistanceModel7.AiUtils.isContextSelectionEnabled() ? this.#handleContextRemoved.bind(this) : null,
           onContextAdd,
           walkthrough: {
             onToggle: this.#toggleWalkthrough.bind(this),
@@ -10050,8 +10052,8 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     this.requestUpdate();
   }
   #getAiAssistanceEnabledSetting() {
-    return new AiAssistanceModel8.AiSetting.AiSetting(
-      AiAssistanceModel8.AiUtils.aiAssistanceEnabledSettingDescriptor,
+    return new AiAssistanceModel7.AiSetting.AiSetting(
+      AiAssistanceModel7.AiUtils.aiAssistanceEnabledSettingDescriptor,
       Host5.AidaClient.HostConfigTracker.instance(),
       Common5.Settings.Settings.instance()
     );
@@ -10111,20 +10113,20 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     const isApplicationPanelVisible = viewManager.isViewVisible("resources");
     let targetConversationType;
     if (isElementsPanelVisible && hostConfig.devToolsFreestyler?.enabled) {
-      targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.STYLING;
+      targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.STYLING;
     } else if (isNetworkPanelVisible && hostConfig.devToolsAiAssistanceNetworkAgent?.enabled) {
-      targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.NETWORK;
+      targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.NETWORK;
     } else if (isSourcesPanelVisible && hostConfig.devToolsAiAssistanceFileAgent?.enabled) {
-      targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.FILE;
+      targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.FILE;
     } else if (isPerformancePanelVisible && hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
-      targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.PERFORMANCE;
+      targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.PERFORMANCE;
     } else if (isLighthousePanelVisible && hostConfig.devToolsAiAssistanceAccessibilityAgent?.enabled) {
-      targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.ACCESSIBILITY;
+      targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.ACCESSIBILITY;
     } else if (isApplicationPanelVisible && hostConfig.devToolsAiAssistanceStorageAgent?.enabled) {
-      targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.STORAGE;
+      targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.STORAGE;
     }
-    if (AiAssistanceModel8.AiUtils.isContextSelectionEnabled() && !targetConversationType) {
-      return AiAssistanceModel8.AiHistoryStorage.ConversationType.NONE;
+    if (AiAssistanceModel7.AiUtils.isContextSelectionEnabled() && !targetConversationType) {
+      return AiAssistanceModel7.AiHistoryStorage.ConversationType.NONE;
     }
     return targetConversationType;
   }
@@ -10144,7 +10146,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       this.requestUpdate();
       return;
     }
-    const conversation = targetConversationType ? new AiAssistanceModel8.AiConversation.AiConversation({
+    const conversation = targetConversationType ? new AiAssistanceModel7.AiConversation.AiConversation({
       type: targetConversationType,
       data: [],
       isReadOnly: false,
@@ -10166,7 +10168,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       if (!conversation) {
         const conversationType = this.#getDefaultConversationType();
         if (conversationType) {
-          conversation = new AiAssistanceModel8.AiConversation.AiConversation({
+          conversation = new AiAssistanceModel7.AiConversation.AiConversation({
             type: conversationType,
             data: [],
             isReadOnly: false,
@@ -10182,12 +10184,12 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       this.#conversation = conversation;
     }
     if (this.#conversation) {
-      if (this.#conversation.isEmpty && AiAssistanceModel8.AiUtils.isContextSelectionEnabled()) {
+      if (this.#conversation.isEmpty && AiAssistanceModel7.AiUtils.isContextSelectionEnabled()) {
         const context = this.#getConversationContext(this.#getDefaultConversationType());
         this.#conversation.setContext(context);
       } else {
         const context = this.#getConversationContext(this.#conversation.type);
-        if (context || !AiAssistanceModel8.AiUtils.isContextSelectionEnabled()) {
+        if (context || !AiAssistanceModel7.AiUtils.isContextSelectionEnabled()) {
           this.#conversation.setContext(context);
         }
       }
@@ -10200,20 +10202,20 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     this.#viewOutput.chatView?.focusTextInput();
     this.#selectedElement = createDOMNodeContext(selectedElementFilter(UI9.Context.Context.instance().flavor(SDK6.DOMModel.DOMNode)));
     this.#selectedRequest = createRequestContext(UI9.Context.Context.instance().flavor(SDK6.NetworkRequest.NetworkRequest));
-    this.#selectedPerformanceTrace = createPerformanceTraceContext(UI9.Context.Context.instance().flavor(AiAssistanceModel8.AIContext.AgentFocus));
+    this.#selectedPerformanceTrace = createPerformanceTraceContext(UI9.Context.Context.instance().flavor(AiAssistanceModel7.AIContext.AgentFocus));
     this.#selectedFile = createFileContext(UI9.Context.Context.instance().flavor(Workspace4.UISourceCode.UISourceCode));
     this.#selectedAccessibility = createAccessibilityContext(
       UI9.Context.Context.instance().flavor(LighthousePanel2.LighthousePanel.ActiveLighthouseReport)
     );
-    this.#selectedStorage = createStorageContext(UI9.Context.Context.instance().flavor(AiAssistanceModel8.StorageItem.StorageItem));
+    this.#selectedStorage = createStorageContext(UI9.Context.Context.instance().flavor(AiAssistanceModel7.StorageItem.StorageItem));
     this.#updateConversationState(this.#conversation);
-    AiAssistanceModel8.AiHistoryStorage.AiHistoryStorage.instance().addEventListener(
-      AiAssistanceModel8.AiHistoryStorage.Events.HISTORY_DELETED,
+    AiAssistanceModel7.AiHistoryStorage.AiHistoryStorage.instance().addEventListener(
+      AiAssistanceModel7.AiHistoryStorage.Events.HISTORY_DELETED,
       this.#onHistoryDeleted,
       this
     );
     this.#aiAssistanceEnabledSetting.addEventListener(
-      AiAssistanceModel8.AiSetting.Events.CHANGED,
+      AiAssistanceModel7.AiSetting.Events.CHANGED,
       this.requestUpdate,
       this
     );
@@ -10232,11 +10234,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       this.#handleNetworkRequestFlavorChange
     );
     UI9.Context.Context.instance().addFlavorChangeListener(
-      AiAssistanceModel8.AIContext.AgentFocus,
+      AiAssistanceModel7.AIContext.AgentFocus,
       this.#handlePerformanceTraceFlavorChange
     );
     UI9.Context.Context.instance().addFlavorChangeListener(
-      AiAssistanceModel8.StorageItem.StorageItem,
+      AiAssistanceModel7.StorageItem.StorageItem,
       this.#handleStorageItemFlavorChange
     );
     UI9.Context.Context.instance().addFlavorChangeListener(
@@ -10275,13 +10277,13 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
   }
   willHide() {
     super.willHide();
-    AiAssistanceModel8.AiHistoryStorage.AiHistoryStorage.instance().removeEventListener(
-      AiAssistanceModel8.AiHistoryStorage.Events.HISTORY_DELETED,
+    AiAssistanceModel7.AiHistoryStorage.AiHistoryStorage.instance().removeEventListener(
+      AiAssistanceModel7.AiHistoryStorage.Events.HISTORY_DELETED,
       this.#onHistoryDeleted,
       this
     );
     this.#aiAssistanceEnabledSetting.removeEventListener(
-      AiAssistanceModel8.AiSetting.Events.CHANGED,
+      AiAssistanceModel7.AiSetting.Events.CHANGED,
       this.requestUpdate,
       this
     );
@@ -10300,11 +10302,11 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       this.#handleNetworkRequestFlavorChange
     );
     UI9.Context.Context.instance().removeFlavorChangeListener(
-      AiAssistanceModel8.AIContext.AgentFocus,
+      AiAssistanceModel7.AIContext.AgentFocus,
       this.#handlePerformanceTraceFlavorChange
     );
     UI9.Context.Context.instance().removeFlavorChangeListener(
-      AiAssistanceModel8.StorageItem.StorageItem,
+      AiAssistanceModel7.StorageItem.StorageItem,
       this.#handleStorageItemFlavorChange
     );
     UI9.Context.Context.instance().removeFlavorChangeListener(
@@ -10382,7 +10384,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
     if (ev.data) {
       const calculator = NetworkPanel.NetworkPanel.NetworkPanel.instance().networkLogView.timeCalculator();
-      this.#selectedRequest = new AiAssistanceModel8.RequestContext.RequestContext(ev.data, calculator);
+      this.#selectedRequest = new AiAssistanceModel7.RequestContext.RequestContext(ev.data, calculator);
     } else {
       this.#selectedRequest = null;
     }
@@ -10392,7 +10394,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     if (this.#selectedPerformanceTrace?.getItem() === ev.data) {
       return;
     }
-    this.#selectedPerformanceTrace = Boolean(ev.data) ? new AiAssistanceModel8.PerformanceTraceContext.PerformanceTraceContext(ev.data) : null;
+    this.#selectedPerformanceTrace = Boolean(ev.data) ? new AiAssistanceModel7.PerformanceTraceContext.PerformanceTraceContext(ev.data) : null;
     this.#updateConversationState(this.#conversation);
   };
   #handleUISourceCodeFlavorChange = (ev) => {
@@ -10400,7 +10402,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     if (!newFile || this.#selectedFile?.getItem() === newFile) {
       return;
     }
-    this.#selectedFile = new AiAssistanceModel8.FileContext.FileContext(ev.data);
+    this.#selectedFile = new AiAssistanceModel7.FileContext.FileContext(ev.data);
     this.#updateConversationState(this.#conversation);
   };
   #handleLighthouseReportFlavorChange = (ev) => {
@@ -10441,7 +10443,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     if (!this.#conversation) {
       return true;
     }
-    if (!this.#conversation.selectedContext && !AiAssistanceModel8.AiUtils.isContextSelectionEnabled()) {
+    if (!this.#conversation.selectedContext && !AiAssistanceModel7.AiUtils.isContextSelectionEnabled()) {
       return true;
     }
     return false;
@@ -10468,25 +10470,25 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       return lockedString6(UIStringsNotTranslate5.inputPlaceholderForV2);
     }
     switch (this.#conversation.type) {
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.STYLING:
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.STYLING:
         return this.#conversation.selectedContext ? lockedString6(UIStringsNotTranslate5.inputPlaceholderForStyling) : lockedString6(UIStringsNotTranslate5.inputPlaceholderForStylingNoContext);
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.FILE:
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.FILE:
         return this.#conversation.selectedContext ? lockedString6(UIStringsNotTranslate5.inputPlaceholderForFile) : lockedString6(UIStringsNotTranslate5.inputPlaceholderForFileNoContext);
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.NETWORK:
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.NETWORK:
         return this.#conversation.selectedContext ? lockedString6(UIStringsNotTranslate5.inputPlaceholderForNetwork) : lockedString6(UIStringsNotTranslate5.inputPlaceholderForNetworkNoContext);
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.PERFORMANCE: {
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.PERFORMANCE: {
         const perfPanel = UI9.Context.Context.instance().flavor(TimelinePanel2.TimelinePanel.TimelinePanel);
         if (perfPanel?.hasActiveTrace()) {
           return this.#conversation.selectedContext ? lockedString6(UIStringsNotTranslate5.inputPlaceholderForPerformanceTrace) : lockedString6(UIStringsNotTranslate5.inputPlaceholderForPerformanceTraceNoContext);
         }
         return lockedString6(UIStringsNotTranslate5.inputPlaceholderForPerformanceWithNoRecording);
       }
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.ACCESSIBILITY:
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.ACCESSIBILITY:
         return this.#conversation.selectedContext ? lockedString6(UIStringsNotTranslate5.inputPlaceholderForAccessibility) : lockedString6(UIStringsNotTranslate5.inputPlaceholderForAccessibilityNoContext);
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.STORAGE:
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.STORAGE:
         return lockedString6(UIStringsNotTranslate5.inputPlaceholderForNoContext);
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.NONE:
-        if (AiAssistanceModel8.AiUtils.isGeminiBranding()) {
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.NONE:
+        if (AiAssistanceModel7.AiUtils.isGeminiBranding()) {
           return lockedString6(UIStringsNotTranslate5.inputPlaceholderForNoContextBranded);
         }
         return lockedString6(UIStringsNotTranslate5.inputPlaceholderForNoContext);
@@ -10521,17 +10523,17 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       return;
     }
     const context = this.#conversation.selectedContext;
-    if (context instanceof AiAssistanceModel8.RequestContext.RequestContext) {
+    if (context instanceof AiAssistanceModel7.RequestContext.RequestContext) {
       const requestLocation = NetworkForward2.UIRequestLocation.UIRequestLocation.tab(
         context.getItem(),
         NetworkForward2.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT
       );
       return Common5.Revealer.reveal(requestLocation);
     }
-    if (context instanceof AiAssistanceModel8.FileContext.FileContext) {
+    if (context instanceof AiAssistanceModel7.FileContext.FileContext) {
       return Common5.Revealer.reveal(context.getItem().uiLocation(0, 0));
     }
-    if (context instanceof AiAssistanceModel8.PerformanceTraceContext.PerformanceTraceContext) {
+    if (context instanceof AiAssistanceModel7.PerformanceTraceContext.PerformanceTraceContext) {
       const focus = context.getItem();
       if (focus.callTree) {
         const event = focus.callTree.selectedNode?.event ?? focus.callTree.rootNode.event;
@@ -10567,47 +10569,47 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     switch (actionId) {
       case "freestyler.elements-floating-button": {
         Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceOpenedFromElementsPanelFloatingButton);
-        targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.STYLING;
+        targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.STYLING;
         break;
       }
       case "freestyler.element-panel-context": {
         Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceOpenedFromElementsPanel);
-        targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.STYLING;
+        targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.STYLING;
         break;
       }
       case "drjones.network-floating-button": {
         Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceOpenedFromNetworkPanelFloatingButton);
-        targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.NETWORK;
+        targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.NETWORK;
         break;
       }
       case "drjones.network-panel-context": {
         Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceOpenedFromNetworkPanel);
-        targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.NETWORK;
+        targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.NETWORK;
         break;
       }
       case "drjones.performance-panel-context": {
         Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceOpenedFromPerformancePanelCallTree);
-        targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.PERFORMANCE;
+        targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.PERFORMANCE;
         break;
       }
       case "drjones.sources-floating-button": {
         Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceOpenedFromSourcesPanelFloatingButton);
-        targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.FILE;
+        targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.FILE;
         break;
       }
       case "drjones.sources-panel-context": {
         Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceOpenedFromSourcesPanel);
-        targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.FILE;
+        targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.FILE;
         break;
       }
       case "ai-assistance.storage-floating-button": {
         Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceOpenedFromApplicationPanelFloatingButton);
-        targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.STORAGE;
+        targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.STORAGE;
         break;
       }
       case "ai-assistance.application-panel-context": {
         Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceOpenedFromApplicationPanel);
-        targetConversationType = AiAssistanceModel8.AiHistoryStorage.ConversationType.STORAGE;
+        targetConversationType = AiAssistanceModel7.AiHistoryStorage.ConversationType.STORAGE;
         break;
       }
     }
@@ -10616,7 +10618,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
     let conversation = this.#conversation;
     if (!this.#conversation || this.#conversation.type !== targetConversationType || this.#conversation.isEmpty) {
-      conversation = new AiAssistanceModel8.AiConversation.AiConversation({
+      conversation = new AiAssistanceModel7.AiConversation.AiConversation({
         type: targetConversationType,
         data: [],
         isReadOnly: false,
@@ -10644,19 +10646,19 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     }
   }
   #populateHistoryMenu(contextMenu) {
-    const history = AiAssistanceModel8.AiHistoryStorage.AiHistoryStorage.instance().getHistory();
+    const history = AiAssistanceModel7.AiHistoryStorage.AiHistoryStorage.instance().getHistory();
     const activeId = this.#conversation?.id;
     for (const serialized of [...history].reverse()) {
       const isConversationEmpty = serialized.history.length === 0;
       if (isConversationEmpty) {
         continue;
       }
-      const title = AiAssistanceModel8.AiConversation.AiConversation.titleForSerialized(serialized);
+      const title = AiAssistanceModel7.AiConversation.AiConversation.titleForSerialized(serialized);
       if (!title) {
         continue;
       }
       contextMenu.defaultSection().appendCheckboxItem(title, () => {
-        const conversation = AiAssistanceModel8.AiConversation.AiConversation.fromSerializedConversation(serialized);
+        const conversation = AiAssistanceModel7.AiConversation.AiConversation.fromSerializedConversation(serialized);
         void this.#openHistoricConversation(conversation);
       }, { checked: activeId === serialized.id, jslogContext: "freestyler.history-item" });
     }
@@ -10670,7 +10672,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     contextMenu.footerSection().appendItem(
       i18nString6(UIStrings6.clearChatHistory),
       () => {
-        void AiAssistanceModel8.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
+        void AiAssistanceModel7.AiHistoryStorage.AiHistoryStorage.instance().deleteAll();
       },
       {
         disabled: historyEmpty
@@ -10690,7 +10692,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       return;
     }
     this.#resetWalkthrough();
-    void AiAssistanceModel8.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
+    void AiAssistanceModel7.AiHistoryStorage.AiHistoryStorage.instance().deleteHistoryEntry(this.#conversation.id);
     this.#updateConversationState();
     UI9.ARIAUtils.LiveAnnouncer.alert(i18nString6(UIStrings6.chatDeleted));
   }
@@ -10719,35 +10721,35 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
   }
   #getConversationContext(type) {
     switch (type) {
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.STYLING:
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.STYLING:
         return this.#selectedElement;
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.FILE:
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.FILE:
         return this.#selectedFile;
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.NETWORK:
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.NETWORK:
         return this.#selectedRequest;
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.PERFORMANCE:
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.PERFORMANCE:
         return this.#selectedPerformanceTrace;
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.ACCESSIBILITY:
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.ACCESSIBILITY:
         return this.#selectedAccessibility;
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.STORAGE:
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.STORAGE:
         return this.#selectedStorage;
-      case AiAssistanceModel8.AiHistoryStorage.ConversationType.NONE:
+      case AiAssistanceModel7.AiHistoryStorage.ConversationType.NONE:
       case void 0:
         return null;
     }
   }
   #handleConversationContextChange = (data) => {
-    if (data instanceof AiAssistanceModel8.FileContext.FileContext) {
+    if (data instanceof AiAssistanceModel7.FileContext.FileContext) {
       this.#selectedFile = data;
-    } else if (data instanceof AiAssistanceModel8.DOMNodeContext.DOMNodeContext) {
+    } else if (data instanceof AiAssistanceModel7.DOMNodeContext.DOMNodeContext) {
       this.#selectedElement = data;
-    } else if (data instanceof AiAssistanceModel8.RequestContext.RequestContext) {
+    } else if (data instanceof AiAssistanceModel7.RequestContext.RequestContext) {
       this.#selectedRequest = data;
-    } else if (data instanceof AiAssistanceModel8.PerformanceTraceContext.PerformanceTraceContext) {
+    } else if (data instanceof AiAssistanceModel7.PerformanceTraceContext.PerformanceTraceContext) {
       this.#selectedPerformanceTrace = data;
-    } else if (data instanceof AiAssistanceModel8.AccessibilityContext.AccessibilityContext) {
+    } else if (data instanceof AiAssistanceModel7.AccessibilityContext.AccessibilityContext) {
       this.#selectedAccessibility = data;
-    } else if (data instanceof AiAssistanceModel8.StorageContext.StorageContext) {
+    } else if (data instanceof AiAssistanceModel7.StorageContext.StorageContext) {
       this.#selectedStorage = data;
     }
     void VisualLogging8.logFunctionCall(`context-change-${this.#conversation?.type}`);
@@ -10850,7 +10852,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       let announcedAnswerReady = false;
       for await (const data of items) {
         switch (data.type) {
-          case AiAssistanceModel8.AiAgent.ResponseType.USER_QUERY: {
+          case AiAssistanceModel7.AiAgent.ResponseType.USER_QUERY: {
             this.#messages.push({
               entity: "user" /* USER */,
               text: data.query,
@@ -10869,14 +10871,14 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             }
             break;
           }
-          case AiAssistanceModel8.AiAgent.ResponseType.QUERYING: {
+          case AiAssistanceModel7.AiAgent.ResponseType.QUERYING: {
             step = { state: { type: "in_progress" } };
             if (!systemMessage.parts.length) {
               commitStep();
             }
             break;
           }
-          case AiAssistanceModel8.AiAgent.ResponseType.CONTEXT: {
+          case AiAssistanceModel7.AiAgent.ResponseType.CONTEXT: {
             step.title = lockedString6(UIStringsNotTranslate5.analyzingData);
             step.contextDetails = data.details;
             step.widgets = data.widgets;
@@ -10884,18 +10886,18 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             commitStep();
             break;
           }
-          case AiAssistanceModel8.AiAgent.ResponseType.TITLE: {
+          case AiAssistanceModel7.AiAgent.ResponseType.TITLE: {
             step.title = data.title;
             commitStep();
             break;
           }
-          case AiAssistanceModel8.AiAgent.ResponseType.THOUGHT: {
+          case AiAssistanceModel7.AiAgent.ResponseType.THOUGHT: {
             step.state = { type: "completed" };
             step.thought = data.thought;
             commitStep();
             break;
           }
-          case AiAssistanceModel8.AiAgent.ResponseType.SUGGESTIONS: {
+          case AiAssistanceModel7.AiAgent.ResponseType.SUGGESTIONS: {
             const lastPart = systemMessage.parts.at(-1);
             if (lastPart?.type === "answer") {
               lastPart.suggestions = data.suggestions;
@@ -10908,7 +10910,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             }
             break;
           }
-          case AiAssistanceModel8.AiAgent.ResponseType.SIDE_EFFECT: {
+          case AiAssistanceModel7.AiAgent.ResponseType.SIDE_EFFECT: {
             step.code ??= data.code;
             step.state = {
               type: "needs_approval",
@@ -10924,7 +10926,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             commitStep();
             break;
           }
-          case AiAssistanceModel8.AiAgent.ResponseType.ACTION: {
+          case AiAssistanceModel7.AiAgent.ResponseType.ACTION: {
             step.state = data.canceled ? { type: "canceled" } : { type: "completed" };
             step.code ??= data.code;
             step.output ??= data.output;
@@ -10932,7 +10934,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             commitStep();
             break;
           }
-          case AiAssistanceModel8.AiAgent.ResponseType.ANSWER: {
+          case AiAssistanceModel7.AiAgent.ResponseType.ANSWER: {
             systemMessage.rpcId = data.rpcId;
             const lastPart = systemMessage.parts.at(-1);
             if (lastPart?.type === "answer") {
@@ -10965,18 +10967,18 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             step.state = { type: "completed" };
             break;
           }
-          case AiAssistanceModel8.AiAgent.ResponseType.ERROR: {
+          case AiAssistanceModel7.AiAgent.ResponseType.ERROR: {
             systemMessage.error = data.error;
             const lastPart = systemMessage.parts.at(-1);
             if (lastPart?.type === "step") {
               const lastStep = lastPart.step;
-              if (data.error === AiAssistanceModel8.AiAgent.ErrorType.ABORT) {
+              if (data.error === AiAssistanceModel7.AiAgent.ErrorType.ABORT) {
                 lastStep.state = { type: "canceled" };
               } else if (lastStep.state.type === "in_progress") {
                 systemMessage.parts.pop();
               }
             }
-            if (data.error === AiAssistanceModel8.AiAgent.ErrorType.BLOCK) {
+            if (data.error === AiAssistanceModel7.AiAgent.ErrorType.BLOCK) {
               const lastPart2 = systemMessage.parts.at(-1);
               if (lastPart2?.type === "answer") {
                 systemMessage.parts.pop();
@@ -10984,7 +10986,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
             }
             break;
           }
-          case AiAssistanceModel8.AiAgent.ResponseType.CONTEXT_CHANGE: {
+          case AiAssistanceModel7.AiAgent.ResponseType.CONTEXT_CHANGE: {
             this.#handleConversationContextChange(data.context);
             step.state = { type: "completed" };
             step.widgets = data.widgets;
@@ -10995,14 +10997,14 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
         }
         if (!this.#conversation?.isReadOnly) {
           this.requestUpdate();
-          if (data.type === AiAssistanceModel8.AiAgent.ResponseType.CONTEXT || data.type === AiAssistanceModel8.AiAgent.ResponseType.SIDE_EFFECT) {
+          if (data.type === AiAssistanceModel7.AiAgent.ResponseType.CONTEXT || data.type === AiAssistanceModel7.AiAgent.ResponseType.SIDE_EFFECT) {
             this.#viewOutput.chatView?.scrollToBottom();
           }
           switch (data.type) {
-            case AiAssistanceModel8.AiAgent.ResponseType.CONTEXT:
+            case AiAssistanceModel7.AiAgent.ResponseType.CONTEXT:
               UI9.ARIAUtils.LiveAnnouncer.status(lockedString6(UIStringsNotTranslate5.analyzingData));
               break;
-            case AiAssistanceModel8.AiAgent.ResponseType.ANSWER: {
+            case AiAssistanceModel7.AiAgent.ResponseType.ANSWER: {
               if (!data.complete && !announcedAnswerLoading) {
                 announcedAnswerLoading = true;
                 UI9.ARIAUtils.LiveAnnouncer.status(lockedString6(UIStringsNotTranslate5.answerLoading));
@@ -11034,7 +11036,7 @@ ${part.text}`);
         contentParts.push(`### ${step.title}`);
       }
       if (step.contextDetails) {
-        contentParts.push(AiAssistanceModel8.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
+        contentParts.push(AiAssistanceModel7.AiConversation.generateContextDetailsMarkdown(step.contextDetails));
       }
       if (step.thought) {
         contentParts.push(step.thought);
@@ -11109,15 +11111,15 @@ __export(ExternalHandler_exports, {
 });
 import * as Host6 from "../../core/host/host.js";
 import * as SDK7 from "../../core/sdk/sdk.js";
-import * as AiAssistanceModel9 from "../../models/ai_assistance/ai_assistance.js";
+import * as AiAssistanceModel8 from "../../models/ai_assistance/ai_assistance.js";
 import * as NetworkTimeCalculator from "../../models/network_time_calculator/network_time_calculator.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
 function resolveConversationType(contextType) {
   switch (contextType) {
     case "NETWORK_REQUEST":
-      return AiAssistanceModel9.AiHistoryStorage.ConversationType.NETWORK;
+      return AiAssistanceModel8.AiHistoryStorage.ConversationType.NETWORK;
     default:
-      return AiAssistanceModel9.AiHistoryStorage.ConversationType.NONE;
+      return AiAssistanceModel8.AiHistoryStorage.ConversationType.NONE;
   }
 }
 function getMatchingFlavorContext(contextOptions) {
@@ -11130,7 +11132,7 @@ function getMatchingFlavorContext(contextOptions) {
       if (raw.name() !== contextOptions.contextIdentifier && raw.url() !== contextOptions.contextIdentifier) {
         return null;
       }
-      return new AiAssistanceModel9.RequestContext.RequestContext(
+      return new AiAssistanceModel8.RequestContext.RequestContext(
         raw,
         new NetworkTimeCalculator.NetworkTransferTimeCalculator()
       );
@@ -11143,7 +11145,7 @@ async function handleExternalAIRequest(options) {
   localStorage.removeItem("aiAssistanceStructuredLog");
   const conversationType = resolveConversationType(options.context?.type);
   const aidaClient = new Host6.AidaClient.AidaClient();
-  const conversation = new AiAssistanceModel9.AiConversation.AiConversation({
+  const conversation = new AiAssistanceModel8.AiConversation.AiConversation({
     type: conversationType,
     data: [],
     isReadOnly: false,

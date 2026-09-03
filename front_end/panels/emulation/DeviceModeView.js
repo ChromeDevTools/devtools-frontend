@@ -512,7 +512,8 @@ export var RulerEvents;
 (function (RulerEvents) {
     RulerEvents["MARKER_SELECTED"] = "MarkerSelected";
 })(RulerEvents || (RulerEvents = {}));
-export class Ruler extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
+const RulerBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
+export class Ruler extends RulerBase {
     #view;
     #horizontal = true;
     #scale = 1;

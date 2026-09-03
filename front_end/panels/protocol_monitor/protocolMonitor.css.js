@@ -10,11 +10,11 @@ export default `/*
  */
 @scope to (devtools-widget > *) {
   .protocol-monitor-toolbar {
-    border-bottom: 1px solid var(--sys-color-divider);
+    border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .protocol-monitor-bottom-toolbar {
-    border-top: 1px solid var(--sys-color-divider);
+    border-top: var(--sys-size-1) solid var(--sys-color-divider);
   }
 
   .target-selector {

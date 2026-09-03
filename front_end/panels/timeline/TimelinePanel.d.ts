@@ -10,8 +10,8 @@ import { type Client } from './TimelineController.js';
 import { TimelineFlameChartView } from './TimelineFlameChartView.js';
 import { type TimelineSelection } from './TimelineSelection.js';
 import type * as Utils from './utils/utils.js';
-declare const TimelinePanel_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Panel.Panel;
-export declare class TimelinePanel extends TimelinePanel_base implements Client, TimelineModeViewDelegate {
+declare const TimelinePanelBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Panel.Panel>;
+export declare class TimelinePanel extends TimelinePanelBase implements Client, TimelineModeViewDelegate {
     #private;
     private readonly dropTarget;
     private readonly recordingOptionUIControls;

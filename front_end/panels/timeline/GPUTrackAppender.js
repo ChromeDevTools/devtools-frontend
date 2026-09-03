@@ -8,7 +8,7 @@ import * as ThemeSupport from '../../ui/legacy/theme_support/theme_support.js';
 import { buildGroupStyle, buildTrackHeader } from './AppenderUtils.js';
 const UIStrings = {
     /**
-     * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+     * @description Header for the GPU track in the timeline flame chart of the Performance panel.
      */
     gpu: 'GPU',
 };

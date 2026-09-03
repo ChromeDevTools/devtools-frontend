@@ -46,7 +46,7 @@ export default `/*
 .overlay-type-ENTRY_SELECTED,
 .overlay-type-ENTRY_OUTLINE {
   pointer-events: none;
-  border: 2px solid var(--sys-color-primary);
+  border: var(--sys-size-2) solid var(--sys-color-primary);
   background-color: var(--sys-color-state-ripple-primary);
 
   &.cut-off-top {
@@ -73,7 +73,7 @@ export default `/*
 
 .overlay-type-ENTRY_OUTLINE {
   background-color: transparent;
-  border-width: 1px;
+  border-width: var(--sys-size-1);
   /* Ensure ENTRY_SELECTED overlays are always displayed on top of ENTRY_OUTLINE overlays */
   z-index: 0;
 
@@ -87,7 +87,7 @@ export default `/*
 }
 
 .overlay-type-CANDY_STRIPED_TIME_RANGE {
-  --red-stripe-width: 2px;
+  --red-stripe-width: var(--sys-size-2);
   --white-stripe-width: 7px;
 
   background-image:
@@ -98,7 +98,7 @@ export default `/*
       transparent var(--red-stripe-width),
       transparent var(--white-stripe-width)
     );
-  border: 1px solid var(--sys-color-error-bright);
+  border: var(--sys-size-1) solid var(--sys-color-error-bright);
 
   &.cut-off-bottom {
     border-bottom: none;
@@ -138,7 +138,7 @@ export default `/*
 .overlay-type-TIMESTAMP_MARKER {
   top: 0;
   bottom: 0;
-  width: 2px;
+  width: var(--sys-size-2);
   background-color: var(--sys-color-primary);
   pointer-events: none;
 }
@@ -181,7 +181,7 @@ export default `/*
   bottom: 0;
   left: 0;
   right: 0;
-  height: 40px;
+  height: var(--sys-size-14);
   /* Unlike other overlays, the user can click + interact with this one */
   pointer-events: auto;
   /* Ensure this one is always on top of any others */
@@ -216,9 +216,9 @@ export default `/*
 }
 
 .timeline-flamechart-resizer {
-  flex: 8px 0 0;
+  flex: var(--sys-size-5) 0 0;
   background-color: var(--sys-color-surface2);
-  border: 1px var(--sys-color-divider);
+  border: var(--sys-size-1) var(--sys-color-divider);
   border-style: solid none;
   display: flex;
   flex-direction: row;
@@ -232,8 +232,8 @@ export default `/*
 
 .timeline-flamechart-resizer::after {
   content: "...";
-  font-size: 14px;
-  margin-bottom: -1px;
+  font-size: var(--sys-typescale-body2-size);
+  margin-bottom: calc(-1 * var(--sys-size-1));
 }
 
 /*# sourceURL=${import.meta.resolve('./timelineFlameChartView.css')} */`;

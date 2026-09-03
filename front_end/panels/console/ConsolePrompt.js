@@ -38,7 +38,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('panels/console/ConsolePrompt.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class ConsolePrompt extends Common.ObjectWrapper.eventMixin(UI.Widget.Widget) {
+const ConsolePromptBase = Common.ObjectWrapper.eventMixin(UI.Widget.Widget);
+export class ConsolePrompt extends ConsolePromptBase {
     addCompletionsFromHistory;
     #history;
     initialText;

@@ -13,90 +13,90 @@ import timelineSelectorStatsViewStyles from './timelineSelectorStatsView.css.js'
 import * as Utils from './utils/utils.js';
 const UIStrings = {
     /**
-     * @description Label for selector stats data table
+     * @description Accessible name for the selector stats data grid in the Performance panel.
      */
     selectorStats: 'Selector stats',
     /**
-     * @description Column name and time unit for elapsed time spent computing a style rule
+     * @description Column header for elapsed time in the selector stats data grid.
      */
     elapsed: 'Elapsed (ms)',
     /**
-     * @description Tooltip description 'Elapsed (ms)'
+     * @description Tooltip explanation for the elapsed time column in the selector stats data grid.
      */
-    elapsedExplanation: 'Elapsed time spent matching a selector against the DOM in milliseconds.',
+    elapsedExplanation: 'Elapsed time spent matching a selector against the DOM in milliseconds',
     /**
-     * @description Column name and percentage of slow mach non-matches computing a style rule
+     * @description Column header for the percentage of slow-path non-matches in the selector stats data grid.
      */
     slowPathNonMatches: '% of slow-path non-matches',
     /**
-     * @description Tooltip description '% of slow-path non-matches'
+     * @description Tooltip explanation for the slow-path non-matches column in the selector stats data grid.
      */
-    slowPathNonMatchesExplanation: 'The percentage of non-matching nodes (Match Attempts - Match Count) that couldn’t be quickly ruled out by the bloom filter due to high selector complexity. Lower is better.',
+    slowPathNonMatchesExplanation: 'The percentage of non-matching nodes (match attempts − match count) that couldn’t be quickly ruled out by the bloom filter due to high selector complexity. Lower is better.',
     /**
-     * @description Column name for count of elements that the engine attempted to match against a style rule
+     * @description Column header for match attempts in the selector stats data grid.
      */
     matchAttempts: 'Match attempts',
     /**
-     * @description Tooltip description 'Match attempts'
+     * @description Tooltip explanation for the match attempts column in the selector stats data grid.
      */
-    matchAttemptsExplanation: 'Count of nodes that the engine attempted to match against a style rule.',
+    matchAttemptsExplanation: 'Count of nodes that the engine attempted to match against a style rule',
     /**
-     * @description Column name for count of elements that matched a style rule
+     * @description Column header for match count in the selector stats data grid.
      */
     matchCount: 'Match count',
     /**
-     * @description Tooltip description 'Match count'
+     * @description Tooltip explanation for the match count column in the selector stats data grid.
      */
-    matchCountExplanation: 'Count of nodes that matched a style rule.',
+    matchCountExplanation: 'Count of nodes that matched a style rule',
     /**
-     * @description Column name for a style rule's CSS selector text
+     * @description Column header for the CSS selector in the selector stats data grid.
      */
     selector: 'Selector',
     /**
-     * @description Tooltip description 'Selector'
+     * @description Tooltip explanation for the selector column in the selector stats data grid.
      */
-    selectorExplanation: 'CSS selector text of a style rule.',
+    selectorExplanation: 'CSS selector text of a style rule',
     /**
-     * @description Column name for a style rule's CSS selector text
+     * @description Column header for the stylesheet link in the selector stats data grid.
      */
-    styleSheetId: 'Style Sheet',
+    styleSheetId: 'Style sheet',
     /**
-     * @description Tooltip description 'Style Sheet'
+     * @description Tooltip explanation for the style sheet column in the selector stats data grid.
      */
     styleSheetIdExplanation: 'Links to the selector rule definition in the style sheets. Note that a selector rule could be defined in multiple places in a style sheet or defined in multiple style sheets. Selector rules from browser user-agent style sheet or dynamic style sheets don’t have a link.',
     /**
-     * @description A context menu item in data grids to copy entire table to clipboard
+     * @description Context menu item to copy the selector stats table to clipboard.
      */
     copyTable: 'Copy table',
     /**
-     * @description A cell value displayed in table when no source file can be traced via css style
+     * @description Cell value displayed when a stylesheet source file cannot be linked.
      */
     unableToLink: 'Unable to link',
     /**
-     * @description Tooltip for the cell that no source file can be traced via style sheet id
+     * @description Tooltip displayed when a stylesheet source file cannot be linked via its ID.
      * @example {style-sheet-4} PH1
      */
     unableToLinkViaStyleSheetId: 'Unable to link via {PH1}',
     /**
-     * @description Text for announcing that the entire table was copied to clipboard
+     * @description Screen reader announcement when the selector stats table is copied to clipboard.
      */
     tableCopiedToClipboard: 'Table copied to clipboard',
     /**
-     * @description Text shown as the "Selectelector" cell value for one row of the Selector Stats table, however this particular row is the totals. While normally the Selector cell is values like "div.container", the parenthesis can denote this description is not an actual selector, but a general row description.
+     * @description Row description for the aggregated totals of all selectors in the selector stats data grid.
      */
     totalForAllSelectors: '(Totals for all selectors)',
     /**
-     * @description Text for showing the location of a selector in the style sheet
+     * @description Link text showing the line and column number of a selector rule in a stylesheet.
      * @example {256} PH1
      * @example {14} PH2
      */
     lineNumber: 'Line {PH1}:{PH2}',
     /**
-     * @description Count of invalidation for a specific selector. Note that a node can be invalidated multiple times.
+     * @description Column header for invalidation count in the selector stats data grid.
      */
     invalidationCount: 'Invalidation count',
     /**
-     * @description Tooltip description 'Invalidation count'
+     * @description Tooltip explanation for the invalidation count column in the selector stats data grid.
      */
     invalidationCountExplanation: 'Aggregated count of invalidations on nodes and subsequently had style recalculated, all of which are matched by this selector. Note that a node can be invalidated multiple times and by multiple selectors.',
 };

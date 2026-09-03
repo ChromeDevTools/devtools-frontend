@@ -7100,6 +7100,7 @@ var IssueAggregator = class extends Common3.ObjectWrapper.ObjectWrapper {
       this.#aggregateIssue(issue);
     }
   }
+  issuesManager;
   #aggregatedIssuesByKey = /* @__PURE__ */ new Map();
   #hiddenAggregatedIssuesByKey = /* @__PURE__ */ new Map();
   #onIssueAdded(event) {
@@ -7712,6 +7713,7 @@ var SourceFrameIssuesManager = class {
     this.issuesManager.addEventListener("IssueAdded" /* ISSUE_ADDED */, this.#onIssueAdded, this);
     this.issuesManager.addEventListener("FullUpdateRequired" /* FULL_UPDATE_REQUIRED */, this.#onFullUpdateRequired, this);
   }
+  issuesManager;
   #sourceFrameMessageManager;
   #onIssueAdded(event) {
     const { issue } = event.data;
@@ -8116,6 +8118,8 @@ var IssuesManager = class _IssuesManager extends Common5.ObjectWrapper.ObjectWra
       { scoped: true }
     );
   }
+  showThirdPartyIssuesSetting;
+  hideIssueSetting;
   #eventListeners = /* @__PURE__ */ new WeakMap();
   #allIssues = /* @__PURE__ */ new Map();
   #filteredIssues = /* @__PURE__ */ new Map();

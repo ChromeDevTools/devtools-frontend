@@ -5,13 +5,14 @@
 import * as Common from '../../../../core/common/common.js';
 import * as Trace from '../../../../models/trace/trace.js';
 import * as TraceBounds from '../../../../services/trace_bounds/trace_bounds.js';
-import * as VisualLoggging from '../../../visual_logging/visual_logging.js';
+import * as VisualLogging from '../../../visual_logging/visual_logging.js';
 import * as UI from '../../legacy.js';
 import * as ThemeSupport from '../../theme_support/theme_support.js';
 import { OverviewGrid } from './OverviewGrid.js';
 import { TimelineOverviewCalculator } from './TimelineOverviewCalculator.js';
 import timelineOverviewInfoStyles from './timelineOverviewInfo.css.js';
-export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin(UI.Widget.VBox) {
+const TimelineOverviewPaneBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class TimelineOverviewPane extends TimelineOverviewPaneBase {
     overviewCalculator;
     overviewGrid;
     cursorArea;
@@ -34,7 +35,7 @@ export class TimelineOverviewPane extends Common.ObjectWrapper.eventMixin(UI.Wid
         this.element.id = prefix + '-overview-pane';
         this.overviewCalculator = new TimelineOverviewCalculator();
         this.overviewGrid = new OverviewGrid(prefix, this.overviewCalculator);
-        this.overviewGrid.element.setAttribute('jslog', `${VisualLoggging.timeline(`${prefix}-overview`).track({ click: true, drag: true, hover: true })}`);
+        this.overviewGrid.element.setAttribute('jslog', `${VisualLogging.timeline(`${prefix}-overview`).track({ click: true, drag: true, hover: true })}`);
         this.element.appendChild(this.overviewGrid.element);
         this.cursorArea = this.overviewGrid.element.createChild('div', 'overview-grid-cursor-area');
         this.cursorElement = this.overviewGrid.element.createChild('div', 'overview-grid-cursor-position');

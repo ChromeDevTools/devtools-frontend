@@ -8217,7 +8217,7 @@ var CategorySummary = class extends UI17.Widget.Widget {
 // gen/front_end/panels/timeline/components/TimelineRangeSummaryView.js
 var { render: render19, html: html19 } = Lit19;
 var { widget: widget6 } = UI18.Widget;
-var categoryBreakdownCacheSymbol = Symbol("categoryBreakdownCache");
+var categoryBreakdownCacheSymbol = /* @__PURE__ */ Symbol("categoryBreakdownCache");
 var TIMELINE_RANGE_SUMMARY_VIEW_DEFAULT_VIEW = (input, _output, target) => {
   const { parsedTrace, events, startTime, endTime } = input;
   if (!events || !parsedTrace) {

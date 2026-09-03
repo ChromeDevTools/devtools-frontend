@@ -16,4 +16,5 @@ export declare class ObjectWrapper<Events> implements EventTarget<Events> {
 export type EventMixinBase = {
     dispatchDOMEvent?(event: Event): void;
 } & object;
-export declare function eventMixin<Events, Base extends Platform.Constructor.Constructor<EventMixinBase>>(base: Base): Platform.Constructor.Constructor<EventTarget<Events>> & Base;
+export type EventMixin<Events, Base extends Platform.Constructor.Constructor<EventMixinBase>> = Base & Platform.Constructor.Constructor<EventTarget<Events>>;
+export declare function eventMixin<Events, Base extends Platform.Constructor.Constructor<EventMixinBase>>(base: Base): EventMixin<Events, Base>;

@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/legacy/components/utils/ImagePreview.js
+// ../../front_end/ui/legacy/components/utils/ImagePreview.ts
 var ImagePreview_exports = {};
 __export(ImagePreview_exports, {
   Align: () => Align,
@@ -94,7 +94,7 @@ var imagePreview_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./imagePreview.css")} */`;
 
-// gen/front_end/ui/legacy/components/utils/ImagePreview.js
+// ../../front_end/ui/legacy/components/utils/ImagePreview.ts
 var UIStrings = {
   /**
    * @description Fallback text used in image preview alt text when the image source is unknown.
@@ -132,21 +132,21 @@ var UIStrings = {
 };
 var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/utils/ImagePreview.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var Align;
-(function(Align2) {
+var Align = /* @__PURE__ */ ((Align2) => {
   Align2["START"] = "start";
   Align2["CENTER"] = "center";
-})(Align || (Align = {}));
+  return Align2;
+})(Align || {});
 function isImageResource(resource) {
   return resource !== null && resource.resourceType() === Common.ResourceType.resourceTypes.Image;
 }
 var ImagePreview = class {
-  static async build(originalImageURL, showDimensions, options = {
-    align: "center"
-    /* Align.CENTER */
-  }) {
+  static async build(originalImageURL, showDimensions, options = { align: "center" /* CENTER */ }) {
     const { precomputedFeatures, imageAltText, align } = options;
-    let resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK.TargetManager.TargetManager.instance(), originalImageURL);
+    let resource = SDK.ResourceTreeModel.ResourceTreeModel.resourceForURL(
+      SDK.TargetManager.TargetManager.instance(),
+      originalImageURL
+    );
     let imageURL = originalImageURL;
     if (!isImageResource(resource) && precomputedFeatures?.currentSrc) {
       imageURL = precomputedFeatures.currentSrc;
@@ -249,7 +249,7 @@ async function loadPrecomputedFeatures(node) {
   }
 }
 
-// gen/front_end/ui/legacy/components/utils/JSPresentationUtils.js
+// ../../front_end/ui/legacy/components/utils/JSPresentationUtils.ts
 var JSPresentationUtils_exports = {};
 __export(JSPresentationUtils_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
@@ -400,10 +400,11 @@ insert their text through css rather than put the text in the DOM. */
 
 /*# sourceURL=${import.meta.resolve("./jsUtils.css")} */`;
 
-// gen/front_end/ui/legacy/components/utils/Linkifier.js
+// ../../front_end/ui/legacy/components/utils/Linkifier.ts
 var Linkifier_exports = {};
 __export(Linkifier_exports, {
   ContentProviderContextMenuProvider: () => ContentProviderContextMenuProvider,
+  DEFAULT_SCRIPT_LOCATION_VIEW: () => DEFAULT_SCRIPT_LOCATION_VIEW,
   Events: () => Events,
   LinkContextMenuProvider: () => LinkContextMenuProvider,
   LinkDecorator: () => LinkDecorator,
@@ -475,10 +476,20 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     this.#anchorUpdaters = /* @__PURE__ */ new WeakMap();
     instances.add(this);
     SDK2.TargetManager.TargetManager.instance().observeTargets(this);
-    Workspace.Workspace.WorkspaceImpl.instance().addEventListener(Workspace.Workspace.Events.WorkingCopyChanged, this.#onWorkingCopyChangedOrCommitted, this);
-    Workspace.Workspace.WorkspaceImpl.instance().addEventListener(Workspace.Workspace.Events.WorkingCopyCommitted, this.#onWorkingCopyChangedOrCommitted, this);
+    Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
+      Workspace.Workspace.Events.WorkingCopyChanged,
+      this.#onWorkingCopyChangedOrCommitted,
+      this
+    );
+    Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
+      Workspace.Workspace.Events.WorkingCopyCommitted,
+      this.#onWorkingCopyChangedOrCommitted,
+      this
+    );
   }
-  #onWorkingCopyChangedOrCommitted({ data: { uiSourceCode } }) {
+  #onWorkingCopyChangedOrCommitted({
+    data: { uiSourceCode }
+  }) {
     const anchors = anchorsByUISourceCode.get(uiSourceCode);
     if (!anchors) {
       return;
@@ -494,7 +505,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
   static setLinkDecorator(linkDecorator) {
     console.assert(!decorator, "Cannot re-register link decorator.");
     decorator = linkDecorator;
-    linkDecorator.addEventListener("LinkIconChanged", onLinkIconChanged);
+    linkDecorator.addEventListener(LinkDecorator.Events.LINK_ICON_CHANGED, onLinkIconChanged);
     for (const linkifier of instances) {
       linkifier.updateAllAnchorDecorations();
     }
@@ -631,7 +642,11 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       tabStop: options?.tabStop,
       jslogContext: "script-location"
     };
-    const { link: link3, linkInfo } = _Linkifier.createLink(fallbackAnchor?.textContent ? fallbackAnchor.textContent : "", className, createLinkOptions);
+    const { link: link3, linkInfo } = _Linkifier.createLink(
+      fallbackAnchor?.textContent ? fallbackAnchor.textContent : "",
+      className,
+      createLinkOptions
+    );
     linkInfo.enableDecorator = this.useLinkDecorator;
     linkInfo.fallback = fallbackAnchor;
     linkInfo.userMetric = options?.userMetric;
@@ -646,7 +661,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     };
     const updateDelegate = async (liveLocation) => {
       await this.updateAnchor(link3, linkDisplayOptions, liveLocation);
-      this.dispatchEventToListeners("liveLocationUpdated", liveLocation);
+      this.dispatchEventToListeners("liveLocationUpdated" /* LIVE_LOCATION_UPDATED */, liveLocation);
     };
     void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createLiveLocation(rawLocation, updateDelegate.bind(this), pool).then((liveLocation) => {
       if (liveLocation) {
@@ -673,18 +688,30 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     return scriptLink || _Linkifier.linkifyURL(sourceURL, linkifyURLOptions);
   }
   linkifyRawLocation(rawLocation, fallbackUrl, className, options) {
-    return this.linkifyScriptLocation(rawLocation.debuggerModel.target(), rawLocation.scriptId, fallbackUrl, rawLocation.lineNumber, {
-      columnNumber: rawLocation.columnNumber,
-      className,
-      tabStop: options?.tabStop
-    });
+    return this.linkifyScriptLocation(
+      rawLocation.debuggerModel.target(),
+      rawLocation.scriptId,
+      fallbackUrl,
+      rawLocation.lineNumber,
+      {
+        columnNumber: rawLocation.columnNumber,
+        className,
+        tabStop: options?.tabStop
+      }
+    );
   }
   maybeLinkifyConsoleCallFrame(target, callFrame, options) {
     const linkifyOptions = {
       ...options,
       columnNumber: callFrame.columnNumber
     };
-    return this.maybeLinkifyScriptLocation(target, String(callFrame.scriptId), callFrame.url, callFrame.lineNumber, linkifyOptions);
+    return this.maybeLinkifyScriptLocation(
+      target,
+      String(callFrame.scriptId),
+      callFrame.url,
+      callFrame.lineNumber,
+      linkifyOptions
+    );
   }
   static linkifyUILocation(uiLocation, options) {
     const linkifyURLOptions = {
@@ -706,7 +733,11 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       tabStop: options?.tabStop,
       jslogContext: "script-location"
     };
-    const { link: link3, linkInfo } = _Linkifier.createLink(fallbackAnchor?.textContent ? fallbackAnchor.textContent : "", className, createLinkOptions);
+    const { link: link3, linkInfo } = _Linkifier.createLink(
+      fallbackAnchor?.textContent ? fallbackAnchor.textContent : "",
+      className,
+      createLinkOptions
+    );
     linkInfo.fallback = fallbackAnchor;
     linkInfo.userMetric = options?.userMetric;
     const linkDisplayOptions = {
@@ -768,9 +799,13 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     const linkDisplayOptions = { showColumnNumber: false, maxLength: this.maxLength };
     const updateDelegate = async (liveLocation) => {
       await this.updateAnchor(link3, linkDisplayOptions, liveLocation);
-      this.dispatchEventToListeners("liveLocationUpdated", liveLocation);
+      this.dispatchEventToListeners("liveLocationUpdated" /* LIVE_LOCATION_UPDATED */, liveLocation);
     };
-    void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceTopFrameLiveLocation(debuggerModel.createRawLocationsByStackTrace(stackTrace), updateDelegate.bind(this), pool).then((liveLocation) => {
+    void Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceTopFrameLiveLocation(
+      debuggerModel.createRawLocationsByStackTrace(stackTrace),
+      updateDelegate.bind(this),
+      pool
+    ).then((liveLocation) => {
       linkInfo.liveLocation = liveLocation;
     });
     const anchors = this.anchorsByTarget.get(target);
@@ -791,7 +826,7 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     const linkDisplayOptions = { showColumnNumber: false, maxLength: this.maxLength };
     const updateDelegate = async (liveLocation) => {
       await this.updateAnchor(link3, linkDisplayOptions, liveLocation);
-      this.dispatchEventToListeners("liveLocationUpdated", liveLocation);
+      this.dispatchEventToListeners("liveLocationUpdated" /* LIVE_LOCATION_UPDATED */, liveLocation);
     };
     void Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().createLiveLocation(rawLocation, updateDelegate.bind(this), pool).then((liveLocation) => {
       linkInfo.liveLocation = liveLocation;
@@ -808,8 +843,16 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
     this.listeners?.clear();
   }
   dispose() {
-    Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(Workspace.Workspace.Events.WorkingCopyChanged, this.#onWorkingCopyChangedOrCommitted, this);
-    Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(Workspace.Workspace.Events.WorkingCopyCommitted, this.#onWorkingCopyChangedOrCommitted, this);
+    Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
+      Workspace.Workspace.Events.WorkingCopyChanged,
+      this.#onWorkingCopyChangedOrCommitted,
+      this
+    );
+    Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
+      Workspace.Workspace.Events.WorkingCopyCommitted,
+      this.#onWorkingCopyChangedOrCommitted,
+      this
+    );
     for (const target of [...this.anchorsByTarget.keys()]) {
       this.targetRemoved(target);
     }
@@ -1113,7 +1156,9 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       const existingHandler = linkHandlers.get(origin);
       if (existingHandler?.scheme === registration.scheme) {
         const schemeString = registration.scheme ? `scheme '${registration.scheme}'` : "all schemes";
-        Common2.Console.Console.instance().warn(`DevTools extension '${registration.title}' registered with setOpenResourceHandler for ${schemeString}, which is already registered by '${existingHandler?.title}'. This can lead to unexpected results.`);
+        Common2.Console.Console.instance().warn(
+          `DevTools extension '${registration.title}' registered with setOpenResourceHandler for ${schemeString}, which is already registered by '${existingHandler?.title}'. This can lead to unexpected results.`
+        );
       }
     }
     linkHandlers.set(registration.origin, registration);
@@ -1156,7 +1201,9 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
       url = uiLocation.uiSourceCode.contentURL();
     } else if (info.url) {
       url = info.url;
-      const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url) || Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(Common2.ParsedURL.ParsedURL.urlWithoutHash(url));
+      const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url) || Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(
+        Common2.ParsedURL.ParsedURL.urlWithoutHash(url)
+      );
       uiLocation = uiSourceCode ? uiSourceCode.uiLocation(info.lineNumber || 0, info.columnNumber || 0) : null;
     }
     const resource = url ? Bindings.ResourceUtils.resourceForURL(url) : null;
@@ -1224,9 +1271,9 @@ var Linkifier = class _Linkifier extends Common2.ObjectWrapper.ObjectWrapper {
   }
 };
 var LinkDecorator;
-(function(LinkDecorator2) {
+((LinkDecorator2) => {
   let Events2;
-  (function(Events3) {
+  ((Events3) => {
     Events3["LINK_ICON_CHANGED"] = "LinkIconChanged";
   })(Events2 = LinkDecorator2.Events || (LinkDecorator2.Events = {}));
 })(LinkDecorator || (LinkDecorator = {}));
@@ -1312,7 +1359,13 @@ var ContentProviderContextMenuProvider = class {
       return;
     }
     if (!Common2.ParsedURL.schemeIs(contentUrl, "file:")) {
-      contextMenu.revealSection().appendItem(UI.UIUtils.openLinkExternallyLabel(), () => UIHelpers.openInNewTab(contentUrl.endsWith(":formatted") ? Common2.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(":")) : contentUrl), { jslogContext: "open-in-new-tab" });
+      contextMenu.revealSection().appendItem(
+        UI.UIUtils.openLinkExternallyLabel(),
+        () => UIHelpers.openInNewTab(
+          contentUrl.endsWith(":formatted") ? Common2.ParsedURL.ParsedURL.slice(contentUrl, 0, contentUrl.lastIndexOf(":")) : contentUrl
+        ),
+        { jslogContext: "open-in-new-tab" }
+      );
     }
     for (const origin of linkHandlers.keys()) {
       const registration = linkHandlers.get(origin);
@@ -1320,25 +1373,50 @@ var ContentProviderContextMenuProvider = class {
         continue;
       }
       const { title } = registration;
-      contextMenu.revealSection().appendItem(i18nString2(UIStrings2.openUsingS, { PH1: title }), registration.handler.bind(null, contentProvider, 0), { jslogContext: "open-using" });
+      contextMenu.revealSection().appendItem(
+        i18nString2(UIStrings2.openUsingS, { PH1: title }),
+        registration.handler.bind(null, contentProvider, 0),
+        { jslogContext: "open-using" }
+      );
     }
     if (contentProvider instanceof SDK2.NetworkRequest.NetworkRequest) {
       return;
     }
-    contextMenu.clipboardSection().appendItem(UI.UIUtils.copyLinkAddressLabel(), () => Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentUrl), { jslogContext: "copy-link-address" });
+    contextMenu.clipboardSection().appendItem(
+      UI.UIUtils.copyLinkAddressLabel(),
+      () => Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentUrl),
+      { jslogContext: "copy-link-address" }
+    );
     if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
-      contextMenu.clipboardSection().appendItem(UI.UIUtils.copyFileNameLabel(), () => Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.displayName()), { jslogContext: "copy-file-name" });
+      contextMenu.clipboardSection().appendItem(
+        UI.UIUtils.copyFileNameLabel(),
+        () => Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.displayName()),
+        { jslogContext: "copy-file-name" }
+      );
     } else {
-      contextMenu.clipboardSection().appendItem(UI.UIUtils.copyFileNameLabel(), () => Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.displayName), { jslogContext: "copy-file-name" });
+      contextMenu.clipboardSection().appendItem(
+        UI.UIUtils.copyFileNameLabel(),
+        () => Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(contentProvider.displayName),
+        { jslogContext: "copy-file-name" }
+      );
     }
   }
 };
-var Events;
-(function(Events2) {
+var Events = /* @__PURE__ */ ((Events2) => {
   Events2["LIVE_LOCATION_UPDATED"] = "liveLocationUpdated";
-})(Events || (Events = {}));
+  return Events2;
+})(Events || {});
 var DEFAULT_SCRIPT_LOCATION_VIEW = (input, _output, target) => {
-  render(html`${input.linkifier.linkifyScriptLocation(input.target ?? null, input.scriptId ?? null, input.sourceURL, input.lineNumber, input.options)}`, target);
+  render(
+    html`${input.linkifier.linkifyScriptLocation(
+      input.target ?? null,
+      input.scriptId ?? null,
+      input.sourceURL,
+      input.lineNumber,
+      input.options
+    )}`,
+    target
+  );
 };
 var ScriptLocationLink = class extends UI.Widget.Widget {
   target;
@@ -1360,7 +1438,7 @@ var ScriptLocationLink = class extends UI.Widget.Widget {
   }
 };
 
-// gen/front_end/ui/legacy/components/utils/JSPresentationUtils.js
+// ../../front_end/ui/legacy/components/utils/JSPresentationUtils.ts
 var { classMap: classMap2 } = Directives2;
 var UIStrings3 = {
   /**
@@ -1388,9 +1466,19 @@ function populateContextMenu(link3, event) {
   const uiLocation = Linkifier.uiLocation(link3);
   if (uiLocation && Workspace3.IgnoreListManager.IgnoreListManager.instance().canIgnoreListUISourceCode(uiLocation.uiSourceCode)) {
     if (Workspace3.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(uiLocation.uiSourceCode.url())) {
-      contextMenu.debugSection().appendItem(i18nString3(UIStrings3.removeFromIgnore), () => Workspace3.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(uiLocation.uiSourceCode), { jslogContext: "remove-from-ignore-list" });
+      contextMenu.debugSection().appendItem(
+        i18nString3(UIStrings3.removeFromIgnore),
+        () => Workspace3.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(
+          uiLocation.uiSourceCode
+        ),
+        { jslogContext: "remove-from-ignore-list" }
+      );
     } else {
-      contextMenu.debugSection().appendItem(i18nString3(UIStrings3.addToIgnore), () => Workspace3.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiLocation.uiSourceCode), { jslogContext: "add-to-ignore-list" });
+      contextMenu.debugSection().appendItem(
+        i18nString3(UIStrings3.addToIgnore),
+        () => Workspace3.IgnoreListManager.IgnoreListManager.instance().ignoreListUISourceCode(uiLocation.uiSourceCode),
+        { jslogContext: "add-to-ignore-list" }
+      );
     }
   }
   contextMenu.appendApplicableItems(event);
@@ -1534,13 +1622,13 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
       Workspace3.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.#updateHasNonIgnoredLinks);
     }
     if (this.#stackTrace) {
-      this.#stackTrace.addEventListener("UPDATED", this.requestUpdate, this);
+      this.#stackTrace.addEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
     this.requestUpdate();
   }
   willHide() {
     if (this.#stackTrace) {
-      this.#stackTrace.removeEventListener("UPDATED", this.requestUpdate, this);
+      this.#stackTrace.removeEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
     if (Root.DevToolsContext.globalInstance().has(Workspace3.IgnoreListManager.IgnoreListManager)) {
       Workspace3.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.#updateHasNonIgnoredLinks);
@@ -1556,11 +1644,11 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
   }
   set stackTrace(stackTrace) {
     if (this.#stackTrace) {
-      this.#stackTrace.removeEventListener("UPDATED", this.requestUpdate, this);
+      this.#stackTrace.removeEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
     this.#stackTrace = stackTrace;
     if (this.#stackTrace && this.isShowing()) {
-      this.#stackTrace.addEventListener("UPDATED", this.requestUpdate, this);
+      this.#stackTrace.addEventListener(StackTrace.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
     this.requestUpdate();
   }
@@ -1575,7 +1663,7 @@ var StackTracePreviewContent = class extends UI2.Widget.Widget {
   }
 };
 
-// gen/front_end/ui/legacy/components/utils/Reload.js
+// ../../front_end/ui/legacy/components/utils/Reload.ts
 var Reload_exports = {};
 __export(Reload_exports, {
   reload: () => reload
@@ -1583,14 +1671,14 @@ __export(Reload_exports, {
 import * as Host3 from "../../../../core/host/host.js";
 import * as UI3 from "../../legacy.js";
 function reload() {
-  if (UI3.DockController.DockController.instance().canDock() && UI3.DockController.DockController.instance().dockSide() === "undocked") {
+  if (UI3.DockController.DockController.instance().canDock() && UI3.DockController.DockController.instance().dockSide() === UI3.DockController.DockState.UNDOCKED) {
     Host3.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {
     });
   }
   Host3.InspectorFrontendHost.InspectorFrontendHostInstance.reattach(() => window.location.reload());
 }
 
-// gen/front_end/ui/legacy/components/utils/TargetDetachedDialog.js
+// ../../front_end/ui/legacy/components/utils/TargetDetachedDialog.ts
 var TargetDetachedDialog_exports = {};
 __export(TargetDetachedDialog_exports, {
   TargetDetachedDialog: () => TargetDetachedDialog
@@ -1625,10 +1713,7 @@ var TargetDetachedDialog = class _TargetDetachedDialog extends SDK4.SDKModel.SDK
       return;
     }
     const dialog = new UI4.Dialog.Dialog("target-crashed");
-    dialog.setSizeBehavior(
-      "MeasureContent"
-      /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
-    );
+    dialog.setSizeBehavior(UI4.GlassPane.SizeBehavior.MEASURE_CONTENT);
     dialog.addCloseButton();
     dialog.setDimmed(true);
     _TargetDetachedDialog.hideCrashedDialog = dialog.hide.bind(dialog);
@@ -1648,7 +1733,7 @@ var TargetDetachedDialog = class _TargetDetachedDialog extends SDK4.SDKModel.SDK
     }
   }
 };
-SDK4.SDKModel.SDKModel.register(TargetDetachedDialog, { capabilities: 2048, autostart: true });
+SDK4.SDKModel.SDKModel.register(TargetDetachedDialog, { capabilities: SDK4.Target.Capability.INSPECTOR, autostart: true });
 export {
   ImagePreview_exports as ImagePreview,
   JSPresentationUtils_exports as JSPresentationUtils,

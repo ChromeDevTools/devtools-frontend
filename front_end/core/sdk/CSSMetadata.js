@@ -357,13 +357,9 @@ export const PositionTryOrderKeywords = [
     "most-block-size" /* PositionTryOrderKeyword.MOST_BLOCK_SIZE */,
     "most-inline-size" /* PositionTryOrderKeyword.MOST_INLINE_SIZE */,
 ];
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const VariableNameRegex = /(\s*--.*?)/gs;
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const VariableRegex = /(var\(\s*--.*?\))/gs;
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const CustomVariableRegex = /(var\(*--[\w\d]+-([\w]+-[\w]+)\))/g;
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
 /**
  * Matches an instance of a grid area 'row' definition.
@@ -373,7 +369,6 @@ export const URLRegex = /url\(\s*('.+?'|".+?"|[^)]+)\s*\)/g;
  * 'grid', 'grid-template', e.g.
  *    [track-#name] "a a ." minmax(50px, auto) [track-#name]
  */
-// eslint-disable-next-line @typescript-eslint/no-inferrable-types
 export const GridAreaRowRegex = /((?:\[[\w\- ]+\]\s*)*(?:"[^"]+"|'[^']+'))[^'"\[]*\[?[^'"\[]*/;
 let cssMetadataInstance = null;
 export function cssMetadata() {

@@ -1,13 +1,12 @@
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as Trace from '../../models/trace/trace.js';
 import * as UI from '../../ui/legacy/legacy.js';
 import * as TimelineComponents from './components/components.js';
 import type { TimelineModeViewDelegate } from './TimelinePanel.js';
 import { type TimelineSelection } from './TimelineSelection.js';
 import { AggregatedTimelineTreeView, TimelineTreeView } from './TimelineTreeView.js';
-declare const TimelineDetailsPane_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<TimelineTreeView.EventTypes>, any[]> & typeof UI.Widget.VBox;
-export declare class TimelineDetailsPane extends TimelineDetailsPane_base {
+declare const TimelineDetailsPaneBase: Common.ObjectWrapper.EventMixin<TimelineTreeView.EventTypes, typeof UI.Widget.VBox>;
+export declare class TimelineDetailsPane extends TimelineDetailsPaneBase {
     #private;
     private readonly detailsLinkifier;
     private tabbedPane;

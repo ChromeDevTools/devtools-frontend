@@ -1,0 +1,97 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": true,
+    "composite": false,
+    "declaration": false,
+    "disableSourceOfProjectReferenceRedirect": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "inlineSources": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "outDir": ".",
+    "preserveConstEnums": true,
+    "rootDir": "../../../../../../test/e2e/elements",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "ES2023",
+    "typeRoots": [
+      "../../../../../../node_modules/@types",
+      "../../../../../../node_modules"
+    ],
+    "types": [
+      "mocha",
+      "node",
+      "undici-types"
+    ],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../test/e2e/elements/accessibility-pane.test.ts",
+    "../../../../../../test/e2e/elements/accessibility-tree.test.ts",
+    "../../../../../../test/e2e/elements/add-view-transition-pseudo-styles.test.ts",
+    "../../../../../../test/e2e/elements/adopted-stylesheets.test.ts",
+    "../../../../../../test/e2e/elements/adornment.test.ts",
+    "../../../../../../test/e2e/elements/at-function-sections.test.ts",
+    "../../../../../../test/e2e/elements/at-property-sections.test.ts",
+    "../../../../../../test/e2e/elements/classes-pane.test.ts",
+    "../../../../../../test/e2e/elements/color-picker.test.ts",
+    "../../../../../../test/e2e/elements/computed-pane-properties.test.ts",
+    "../../../../../../test/e2e/elements/css-hints.test.ts",
+    "../../../../../../test/e2e/elements/dom-breakpoints.test.ts",
+    "../../../../../../test/e2e/elements/edit-as-html-select-all.test.ts",
+    "../../../../../../test/e2e/elements/element-breadcrumbs.test.ts",
+    "../../../../../../test/e2e/elements/elements-tree.test.ts",
+    "../../../../../../test/e2e/elements/filter-matched-styles.test.ts",
+    "../../../../../../test/e2e/elements/flexbox-editor.test.ts",
+    "../../../../../../test/e2e/elements/grid-editor.test.ts",
+    "../../../../../../test/e2e/elements/grid-lanes-editor.test.ts",
+    "../../../../../../test/e2e/elements/inspect-element.test.ts",
+    "../../../../../../test/e2e/elements/layout-pane.test.ts",
+    "../../../../../../test/e2e/elements/oopif-elements.test.ts",
+    "../../../../../../test/e2e/elements/oopif-navigation.test.ts",
+    "../../../../../../test/e2e/elements/prerender.test.ts",
+    "../../../../../../test/e2e/elements/pseudo-states.test.ts",
+    "../../../../../../test/e2e/elements/reveal-correct-node.test.ts",
+    "../../../../../../test/e2e/elements/search-elements.test.ts",
+    "../../../../../../test/e2e/elements/selection-after-delete.test.ts",
+    "../../../../../../test/e2e/elements/shadowroot-styles.test.ts",
+    "../../../../../../test/e2e/elements/sidebar-event-listeners.test.ts",
+    "../../../../../../test/e2e/elements/style-flash.test.ts",
+    "../../../../../../test/e2e/elements/style-pane-properties.test.ts",
+    "../../../../../../test/e2e/elements/styles-disable-inherited.test.ts",
+    "../../../../../../test/e2e/elements/styles-inactive-rules.test.ts",
+    "../../../../../../test/e2e/elements/switch-panels-while-editing-as-html.test.ts",
+    "../../../../../../test/e2e/elements/violating-element-and-attributes.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts",
+    "../../../../../../test/e2e/types.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../shared/shared-tsconfig.ref.json"
+    }
+  ]
+}

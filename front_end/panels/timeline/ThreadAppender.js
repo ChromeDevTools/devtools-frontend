@@ -15,61 +15,59 @@ import * as ModificationsManager from './ModificationsManager.js';
 import * as Utils from './utils/utils.js';
 const UIStrings = {
     /**
-     * @description Text shown for an entry in the flame chart that is ignored because it matches
-     * a predefined ignore list.
+     * @description Text shown for an entry in the flame chart that matches an ignore list rule.
      * @example {/analytics\.js$} rule
      */
     onIgnoreList: 'On ignore list ({rule})',
     /**
-     * @description Refers to the "Main frame", meaning the top level frame. See https://www.w3.org/TR/html401/present/frames.html
+     * @description Header for the main thread track of a top-level frame in the timeline flame chart.
      * @example {example.com} PH1
      */
     mainS: 'Main — {PH1}',
     /**
-     * @description Refers to the main thread of execution of a program. See https://developer.mozilla.org/en-US/docs/Glossary/Main_thread
+     * @description Header for the main thread track in the timeline flame chart.
      */
     main: 'Main',
     /**
-     * @description Refers to any frame in the page. See https://www.w3.org/TR/html401/present/frames.html
+     * @description Header for a frame thread track in the timeline flame chart.
      * @example {https://example.com} PH1
      */
     frameS: 'Frame — {PH1}',
     /**
-     * @description A web worker in the page. See https://developer.mozilla.org/en-US/docs/Web/API/Worker
+     * @description Header for a dedicated worker thread track in the timeline flame chart.
      * @example {https://google.com} PH1
      */
     workerS: '`Worker` — {PH1}',
     /**
-     * @description A web worker in the page. See https://developer.mozilla.org/en-US/docs/Web/API/Worker
+     * @description Header for a named dedicated worker thread track in the timeline flame chart.
      * @example {FormatterWorker} PH1
      * @example {https://google.com} PH2
      */
     workerSS: '`Worker`: {PH1} — {PH2}',
     /**
-     * @description Label for a web worker exclusively allocated for a purpose.
+     * @description Header for an unnamed dedicated worker thread track in the timeline flame chart.
      */
     dedicatedWorker: 'Dedicated `Worker`',
     /**
-     * @description A generic name given for a thread running in the browser (sequence of programmed instructions).
-     * The placeholder is an enumeration given to the thread.
+     * @description Generic header for a thread track in the timeline flame chart.
      * @example {1} PH1
      */
     threadS: 'Thread {PH1}',
     /**
-     * @description Rasterization in computer graphics.
+     * @description Header for the rasterizer thread track in the timeline flame chart.
      */
     raster: 'Raster',
     /**
-     * @description Threads used for background tasks.
+     * @description Header for the thread pool track in the timeline flame chart.
      */
     threadPool: 'Thread pool',
     /**
-     * @description Name for a thread that rasterizes graphics in a website.
+     * @description Header for an indexed rasterizer thread track in the timeline flame chart.
      * @example {2} PH1
      */
     rasterizerThreadS: 'Rasterizer thread {PH1}',
     /**
-     * @description Text in Timeline Flame Chart Data Provider of the Performance panel
+     * @description Header for an indexed thread pool worker track in the timeline flame chart.
      * @example {2} PH1
      */
     threadPoolThreadS: 'Thread pool worker {PH1}',

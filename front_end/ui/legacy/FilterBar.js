@@ -37,7 +37,8 @@ const UIStrings = {
 };
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/FilterBar.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
-export class FilterBar extends Common.ObjectWrapper.eventMixin(HBox) {
+const FilterBarBase = Common.ObjectWrapper.eventMixin(HBox);
+export class FilterBar extends FilterBarBase {
     enabled;
     stateSetting;
     #filterButton;

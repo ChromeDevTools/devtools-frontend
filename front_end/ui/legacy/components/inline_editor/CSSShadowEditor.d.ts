@@ -1,5 +1,4 @@
 import * as Common from '../../../../core/common/common.js';
-import * as Platform from '../../../../core/platform/platform.js';
 import * as UI from '../../legacy.js';
 export interface CSSShadowModel {
     setInset(inset: boolean): void;
@@ -22,8 +21,8 @@ export declare class CSSLength {
     static zero(): CSSLength;
     asCSSText(): string;
 }
-declare const CSSShadowEditor_base: Platform.Constructor.Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.VBox;
-export declare class CSSShadowEditor extends CSSShadowEditor_base {
+declare const CSSShadowEditorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
+export declare class CSSShadowEditor extends CSSShadowEditorBase {
     private readonly typeField;
     private readonly outsetButton;
     private readonly insetButton;

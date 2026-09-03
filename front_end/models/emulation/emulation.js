@@ -5788,6 +5788,10 @@ var Insets = class {
     this.right = right;
     this.bottom = bottom;
   }
+  left;
+  top;
+  right;
+  bottom;
   isEqual(insets) {
     return insets !== null && this.left === insets.left && this.top === insets.top && this.right === insets.right && this.bottom === insets.bottom;
   }
@@ -5799,6 +5803,10 @@ var Rect = class _Rect {
     this.width = width;
     this.height = height;
   }
+  left;
+  top;
+  width;
+  height;
   isEqual(rect) {
     return rect !== null && this.left === rect.left && this.top === rect.top && this.width === rect.width && this.height === rect.height;
   }

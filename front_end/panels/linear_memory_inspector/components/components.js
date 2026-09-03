@@ -1997,7 +1997,8 @@ function getSmallestEnclosingMemoryHighlight(highlightedMemoryAreas, address) {
   }
   return smallestEnclosingHighlight;
 }
-var LinearMemoryInspector = class extends Common.ObjectWrapper.eventMixin(UI6.Widget.Widget) {
+var LinearMemoryInspectorBase = Common.ObjectWrapper.eventMixin(UI6.Widget.Widget);
+var LinearMemoryInspector = class extends LinearMemoryInspectorBase {
   #history = new Common.SimpleHistoryManager.SimpleHistoryManager(10);
   #memory = new Uint8Array();
   #memoryOffset = 0;

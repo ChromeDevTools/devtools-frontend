@@ -1,7 +1,7 @@
 import * as Common from '../../core/common/common.js';
 import * as UI from '../../ui/legacy/legacy.js';
-declare const InspectedPagePlaceholder_base: import("../../core/platform/Constructor.js").Constructor<Common.EventTarget.EventTarget<EventTypes>, any[]> & typeof UI.Widget.Widget;
-export declare class InspectedPagePlaceholder extends InspectedPagePlaceholder_base {
+declare const InspectedPagePlaceholderBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.Widget>;
+export declare class InspectedPagePlaceholder extends InspectedPagePlaceholderBase {
     constructor();
     static instance(opts?: {
         forceNew: boolean | null;

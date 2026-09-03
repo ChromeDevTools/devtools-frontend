@@ -268,7 +268,7 @@ export class RequestHeadersView extends UI.Widget.Widget {
     this.#addEventListeners();
   }
 
-  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super();
     this.#view = view;
   }

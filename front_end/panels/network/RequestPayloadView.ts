@@ -365,7 +365,7 @@ export class RequestPayloadView extends UI.Widget.VBox {
   #viewQueryParamSource = false;
   #refreshFormDataPromiseForTest = Promise.resolve();
 
-  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super();
     this.#view = view;
   }

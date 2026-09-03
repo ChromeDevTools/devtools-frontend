@@ -986,15 +986,17 @@ export class NetworkRequestNode extends NetworkNode {
     return aValue.localeCompare(bValue) || aRequest.identityCompare(bRequest);
   }
 
-  static readonly ResponseHeaderStringComparator = NetworkRequestNode.HeaderStringComparator.bind(
-      null,
-      (req: SDK.NetworkRequest.NetworkRequest, name: string) => req.responseHeaderValue(name),
-  );
+  static readonly ResponseHeaderStringComparator:
+      (propertyName: string, a: NetworkNode, b: NetworkNode) => number = NetworkRequestNode.HeaderStringComparator.bind(
+          null,
+          (req: SDK.NetworkRequest.NetworkRequest, name: string) => req.responseHeaderValue(name),
+      );
 
-  static readonly RequestHeaderStringComparator = NetworkRequestNode.HeaderStringComparator.bind(
-      null,
-      (req: SDK.NetworkRequest.NetworkRequest, name: string) => req.requestHeaderValue(name),
-  );
+  static readonly RequestHeaderStringComparator:
+      (propertyName: string, a: NetworkNode, b: NetworkNode) => number = NetworkRequestNode.HeaderStringComparator.bind(
+          null,
+          (req: SDK.NetworkRequest.NetworkRequest, name: string) => req.requestHeaderValue(name),
+      );
 
   static ResponseHeaderNumberComparator(propertyName: string, a: NetworkNode, b: NetworkNode): number {
     // TODO(allada) Handle this properly for group nodes.

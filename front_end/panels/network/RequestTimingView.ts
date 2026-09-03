@@ -614,7 +614,7 @@ export class RequestTimingView extends UI.Widget.VBox {
   #calculator?: NetworkTimeCalculator.NetworkTimeCalculator;
   #lastMinimumBoundary = -1;
   readonly #view: View;
-  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(target);
     this.#view = view;
   }

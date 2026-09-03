@@ -34,6 +34,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("network") {
+  split_compilation = true
   sources = [
     "BinaryResourceView.ts",
     "EventSourceMessagesView.ts",
@@ -67,7 +68,7 @@ devtools_ui_module("network") {
     "SignedExchangeInfoView.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -116,14 +117,18 @@ devtools_ui_module("network") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "network.ts"
 
   deps = [
     ":css_files",
-    ":network",
-    "../../models/network_time_calculator:bundle",
     "../../ui/legacy/components/data_grid:css_files",
     "../../ui/legacy/components/object_ui:css_files",
+  ]
+
+  ts_deps = [
+    ":network",
+    "../../models/network_time_calculator:bundle",
   ]
 
   visibility = [
@@ -140,9 +145,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "network-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
@@ -158,12 +164,13 @@ devtools_entrypoint("meta") {
   ]
 
   visibility = [
-    ":unittests",
+    ":*",
     "../../entrypoints/*",
   ]
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -192,7 +199,7 @@ devtools_ui_module("unittests") {
     "ShowMoreDetailsWidget.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     ":meta",
     "../../core/common:bundle",
@@ -218,6 +225,6 @@ devtools_ui_module("unittests") {
     "../search:bundle",
     "../utils:bundle",
     "./components:bundle",
-    "forward:bundle",
+    "./forward:bundle",
   ]
 }

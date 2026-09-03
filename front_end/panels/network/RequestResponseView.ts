@@ -82,7 +82,7 @@ export class RequestResponseView extends UI.Widget.VBox {
   #view: View;
   #revealPosition?: (position: SourceFrame.SourceFrame.RevealPosition) => Promise<void>;
 
-  constructor(request: SDK.NetworkRequest.NetworkRequest, view = DEFAULT_VIEW) {
+  constructor(request: SDK.NetworkRequest.NetworkRequest, view: View = DEFAULT_VIEW) {
     super();
     this.request = request;
     this.#view = view;

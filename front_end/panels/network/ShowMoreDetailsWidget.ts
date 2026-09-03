@@ -61,7 +61,7 @@ export class ShowMoreDetailsWidget extends UI.Widget.Widget {
   #text = '';
   #showMore = false;
   #copy: CopyMenuItem|null = null;
-  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(target);
     this.#view = view;
   }

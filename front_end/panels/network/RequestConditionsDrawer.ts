@@ -383,7 +383,7 @@ export class AffectedCountWidget extends UI.Widget.Widget {
   #condition?: SDK.NetworkManager.RequestCondition;
   #lookUpRequestCount?: (condition: SDK.NetworkManager.RequestCondition) => number;
 
-  constructor(target?: HTMLElement, view = AFFECTED_COUNT_DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: AffectedCountView = AFFECTED_COUNT_DEFAULT_VIEW) {
     super(target);
     this.#view = view;
   }
@@ -459,7 +459,7 @@ export class RequestConditionsDrawer extends UI.Widget.VBox {
   #viewOutput: ViewOutput = {itemRefs: new Map()};
   #editingCondition?: SDK.NetworkManager.RequestCondition;
 
-  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(target, {
       jslog: `${VisualLogging.panel('network.blocked-urls').track({resize: true})}`,
       useShadowDom: true,

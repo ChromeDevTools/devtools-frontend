@@ -5,9 +5,12 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("report") {
-  deps = [
+  split_compilation = true
+  sources = [ "report.ts" ]
+
+  ts_deps = [
+    "../../conductor:implementation",
     "../../shared",
     "../helpers",
   ]
-  sources = [ "report.ts" ]
 }

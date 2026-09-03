@@ -46,15 +46,15 @@ interface SingleMeasurement {
   measurement: number;
 }
 
-export function addBenchmarkResult(benchmark: Benchmark) {
+export function addBenchmarkResult(benchmark: Benchmark): void {
   results.push(benchmark);
 }
 
-export function clearResults() {
+export function clearResults(): void {
   results.length = 0;
 }
 
-export function writeReport() {
+export function writeReport(): void {
   // This points to perf-data under devtools root directory
   // devtools-frontend/perf-data.
   const directory = join(ts.TestConfig.artifactsDir, 'perf-data');
@@ -72,7 +72,7 @@ export const measurements: Record<string, number[]> = {
   LargeCPULoad: [] as number[],
 };
 
-export function collectMeasurements() {
+export function collectMeasurements(): void {
   for (const name in measurements) {
     const values = measurements[name];
     const meanMeasure = Number(mean(values).toFixed(2));

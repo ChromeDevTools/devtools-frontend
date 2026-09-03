@@ -46,11 +46,11 @@ const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 const FEEDBACK_LINK = 'https://g.co/devtools/css-overview-feedback' as Platform.DevToolsPath.UrlString;
 const DOC_LINK = 'https://developer.chrome.com/docs/devtools/css-overview' as Platform.DevToolsPath.UrlString;
 
-interface ViewInput {
+export interface ViewInput {
   onStartCapture: () => void;
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
 const DEFAULT_VIEW: View = (input, output, target) => {
   // Disabled until https://crbug.com/1079231 is fixed.
@@ -93,7 +93,7 @@ export class CSSOverviewStartView extends UI.Widget.Widget {
   #view: View;
   onStartCapture = (): void => {};
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true, delegatesFocus: true});
     this.#view = view;
     this.performUpdate();

@@ -16,7 +16,7 @@ import type {UnusedDeclaration} from './CSSOverviewUnusedDeclarations.js';
 
 const {widget} = UI.Widget;
 
-interface ViewInput {
+export interface ViewInput {
   state: 'start'|'processing'|'completed';
   onStartCapture: () => void;
   onCancel: () => void;
@@ -25,7 +25,7 @@ interface ViewInput {
   target?: SDK.Target.Target;
 }
 
-type View = (input: ViewInput, output: object, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, _output, target) => {
   render(
@@ -55,7 +55,7 @@ export class CSSOverviewPanel extends UI.Panel.Panel implements SDK.TargetManage
   #state!: 'start'|'processing'|'completed';
   #view: View;
 
-  constructor(view = DEFAULT_VIEW) {
+  constructor(view: View = DEFAULT_VIEW) {
     super('css-overview');
     this.#currentUrl = SDK.TargetManager.TargetManager.instance().inspectedURL();
     SDK.TargetManager.TargetManager.instance().addEventListener(

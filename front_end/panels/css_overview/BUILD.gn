@@ -19,6 +19,7 @@ generate_css("css_files") {
 import("../visibility.gni")
 
 devtools_ui_module("css_overview") {
+  split_compilation = true
   sources = [
     "CSSOverviewCompletedView.ts",
     "CSSOverviewModel.ts",
@@ -29,7 +30,7 @@ devtools_ui_module("css_overview") {
     "CSSOverviewUnusedDeclarations.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -53,12 +54,12 @@ devtools_ui_module("css_overview") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "css_overview.ts"
 
-  deps = [
-    ":css_files",
-    ":css_overview",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":css_overview" ]
 
   visibility = [
     ":*",
@@ -70,9 +71,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "css_overview-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/i18n:bundle",
     "../../ui/legacy:bundle",
@@ -82,11 +84,12 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [ "CSSOverviewPanel.test.ts" ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/sdk:bundle",
     "../../generated",

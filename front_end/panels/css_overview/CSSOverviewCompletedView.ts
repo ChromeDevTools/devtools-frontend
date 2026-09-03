@@ -219,7 +219,7 @@ export interface OverviewData {
 }
 
 export type FontInfo = Map<string, Map<string, Map<string, number[]>>>;
-interface FontMetric {
+export interface FontMetric {
   label: string;
   values: Array<{title: string, nodes: number[]}>;
 }
@@ -236,7 +236,7 @@ function getBorderString(color: Common.Color.Color): string {
   return `1px solid hsl(${h}deg ${s}% ${l}%)`;
 }
 
-interface ViewInput {
+export interface ViewInput {
   elementCount: number;
   backgroundColors: string[];
   textColors: string[];
@@ -253,7 +253,7 @@ interface ViewInput {
   onReset: () => void;
 }
 
-interface ViewOutput {
+export interface ViewOutput {
   revealSection: Map<string, (setFocus: boolean) => void>;
   closeAllTabs: () => void;
   addTab: (id: string, tabTitle: string, view: UI.Widget.Widget, jslogContext: string) => void;
@@ -261,7 +261,7 @@ interface ViewOutput {
 
 const formatter = new Intl.NumberFormat('en-US');
 
-type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
 
 export const DEFAULT_VIEW: View = (input, output, target) => {
   function revealSection(section: Element|undefined, setFocus: boolean): void {
@@ -541,7 +541,7 @@ function renderColor(section: string, color: string): LitTemplate {
   // clang-format on
 }
 
-type PopulateNodesEvent = {
+export type PopulateNodesEvent = {
   type: 'contrast',
   key: string,
   section: string|undefined,
@@ -583,7 +583,7 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     addTab: (_id, _tabTitle, _view, _jslogContext) => {},
   };
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
     this.registerRequiredCSS(cssOverviewCompletedViewStyles);
@@ -879,10 +879,10 @@ export class CSSOverviewCompletedView extends UI.Widget.VBox {
     this.requestUpdate();
   }
 
-  static readonly pushedNodes = new Set<Protocol.DOM.BackendNodeId>();
+  static readonly pushedNodes: Set<Protocol.DOM.BackendNodeId> = new Set<Protocol.DOM.BackendNodeId>();
 }
 
-interface ElementDetailsViewInput {
+export interface ElementDetailsViewInput {
   items: Array<{
     data: PopulateNodesEventNodeTypes,
     link?: LitTemplate,
@@ -890,7 +890,7 @@ interface ElementDetailsViewInput {
   }>;
   visibility: Set<string>;
 }
-type ElementDetailsViewFunction = (input: ElementDetailsViewInput, output: object, target: HTMLElement) => void;
+export type ElementDetailsViewFunction = (input: ElementDetailsViewInput, output: object, target: HTMLElement) => void;
 
 export const ELEMENT_DETAILS_DEFAULT_VIEW: ElementDetailsViewFunction = (input, _output, target) => {
   const {items, visibility} = input;

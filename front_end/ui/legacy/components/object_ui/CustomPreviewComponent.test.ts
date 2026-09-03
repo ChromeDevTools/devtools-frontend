@@ -8,7 +8,7 @@ import sinon from 'sinon';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../../generated/protocol.js';
 import {findMenuItemWithLabel, getContextMenuForElement} from '../../../../testing/ContextMenuHelpers.js';
-import {assertScreenshot, raf, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {assertScreenshot, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import {setupSettingsHooks} from '../../../../testing/SettingsHelpers.js';
 import * as UI from '../../legacy.js';
@@ -28,13 +28,15 @@ describe('CustomPreviewComponent', () => {
     // The callFunctionJSON resolves to null so that it falls back to the default body.
     const callFunctionJSONStub = sinon.stub(object, 'callFunctionJSON').resolves(null);
 
-    const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
-    renderElementIntoDOM(component.element);
-    component.expandIfPossible();
+    const section = new ObjectUI.CustomPreviewComponent.CustomPreviewSection();
+    section.object = object;
+    renderElementIntoDOM(section);
+    await section.loadBody();
+    await UI.Widget.Widget.allUpdatesComplete;
     await callFunctionJSONStub.firstCall.returnValue;
     await UI.Widget.Widget.allUpdatesComplete;
 
-    const tree = component.element.shadowRoot?.querySelector('devtools-tree');
+    const tree = section.element.querySelector('devtools-tree');
     assert.exists(tree);
     const outline = tree.getInternalTreeOutlineForTest();
     const propertyTreeElement = outline.firstChild();
@@ -82,7 +84,7 @@ describe('CustomPreviewComponent', () => {
     const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
     const customSection = component.element.shadowRoot?.querySelector('.custom-expandable-section');
     assert.exists(customSection);
-    const headerSpan = customSection?.firstElementChild as HTMLElement;
+    const headerSpan = customSection?.querySelector('span') as HTMLElement;
     assert.exists(headerSpan);
     assert.strictEqual(headerSpan.textContent, 'styled');
     assert.strictEqual(headerSpan.style.backgroundColor, 'red');
@@ -95,21 +97,17 @@ describe('CustomPreviewComponent', () => {
       bodyGetterId: '4' as Protocol.Runtime.RemoteObjectId,
     });
     // Return a basic table JSONML body
-    const callFunctionJSONStub =
-        sinon.stub(object, 'callFunctionJSON').resolves(['table', {}, ['tr', {}, ['td', {}, 'cell']]]);
+    sinon.stub(object, 'callFunctionJSON').resolves(['table', {}, ['tr', {}, ['td', {}, 'cell']]]);
 
     const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
 
     const customSection = component.element.shadowRoot?.querySelector('.custom-expandable-section');
     assert.exists(customSection);
-    component.expandIfPossible();
+    await component.expandIfPossible();
 
-    // Await the stub's returned promise so that the microtask queue resolves loadBody's .then before we continue
-    await callFunctionJSONStub.firstCall.returnValue;
-
-    const table = customSection?.querySelector('table');
+    const table = customSection.querySelector('table');
     assert.exists(table);
-    assert.strictEqual(table?.textContent, 'cell');
+    assert.strictEqual(table.textContent, 'cell');
   });
 
   it('can be disassembled past the context menu', async () => {
@@ -119,7 +117,9 @@ describe('CustomPreviewComponent', () => {
     });
 
     const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
-    renderElementIntoDOM(component.element);
+    const parentWidget = new UI.Widget.Widget();
+    parentWidget.contentElement.appendChild(component.element);
+    renderElementIntoDOM(parentWidget);
     const customSection = component.element.shadowRoot?.querySelector('.custom-expandable-section');
     assert.exists(customSection);
 
@@ -128,7 +128,7 @@ describe('CustomPreviewComponent', () => {
     assert.exists(disassembleItem);
 
     contextMenu.invokeHandler(disassembleItem.id());
-    await raf();
+    await UI.Widget.Widget.allUpdatesComplete;
 
     const standardSection = component.element.shadowRoot?.querySelector('devtools-tree');
     assert.exists(standardSection);
@@ -143,7 +143,9 @@ describe('CustomPreviewComponent', () => {
     });
 
     const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
-    renderElementIntoDOM(component.element, {includeCommonStyles: true});
+    const parentWidget = new UI.Widget.Widget();
+    parentWidget.contentElement.appendChild(component.element);
+    renderElementIntoDOM(parentWidget, {includeCommonStyles: true});
 
     await assertScreenshot('custom_preview/base.png');
   });
@@ -154,16 +156,17 @@ describe('CustomPreviewComponent', () => {
       header: '["span", {}, "Expandable"]',
       bodyGetterId: '4' as Protocol.Runtime.RemoteObjectId,
     });
-    const callFunctionJSONStub = sinon.stub(object, 'callFunctionJSON').resolves([
+    sinon.stub(object, 'callFunctionJSON').resolves([
       'ol',
       {},
       ['li', {}, ['span', {}, 'body item']],
     ]);
 
     const component = new ObjectUI.CustomPreviewComponent.CustomPreviewComponent(object);
-    renderElementIntoDOM(component.element, {includeCommonStyles: true});
-    component.expandIfPossible();
-    await callFunctionJSONStub.firstCall.returnValue;
+    const parentWidget = new UI.Widget.Widget();
+    parentWidget.contentElement.appendChild(component.element);
+    renderElementIntoDOM(parentWidget, {includeCommonStyles: true});
+    await component.expandIfPossible();
 
     await assertScreenshot('custom_preview/expanded.png');
   });

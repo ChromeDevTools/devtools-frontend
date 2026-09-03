@@ -20,7 +20,6 @@ import {
 } from './ObjectPropertiesSection.js';
 
 const {widget} = UI.Widget;
-
 const UIStrings = {
   /**
    * @description Context menu item to show a custom formatted object as a standard JavaScript object.
@@ -30,18 +29,30 @@ const UIStrings = {
 const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/CustomPreviewComponent.ts', UIStrings);
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-export class CustomPreviewSection {
-  private readonly sectionElement: HTMLSpanElement;
-  private readonly object: SDK.RemoteObject.RemoteObject;
+export class CustomPreviewSection extends UI.Widget.Widget {
+  #object?: SDK.RemoteObject.RemoteObject;
   private expanded = false;
-  private cachedContent?: unknown|ObjectTree|null;
+  private cachedContent?: unknown|ObjectTree;
   private headerJsonML?: unknown;
-  constructor(object: SDK.RemoteObject.RemoteObject) {
-    this.sectionElement = document.createElement('span');
-    this.sectionElement.classList.add('custom-expandable-section');
-    this.object = object;
-    const customPreview = object.customPreview();
 
+  get object(): SDK.RemoteObject.RemoteObject|undefined {
+    return this.#object;
+  }
+
+  set object(object: SDK.RemoteObject.RemoteObject|undefined) {
+    if (this.#object === object) {
+      return;
+    }
+    this.#object = object;
+    this.headerJsonML = undefined;
+    this.cachedContent = undefined;
+    this.expanded = false;
+    this.parseHeader();
+    this.performUpdate();
+  }
+
+  private parseHeader(): void {
+    const customPreview = this.#object?.customPreview();
     if (!customPreview) {
       return;
     }
@@ -50,18 +61,32 @@ export class CustomPreviewSection {
       this.headerJsonML = JSON.parse(customPreview.header);
     } catch (e) {
       Common.Console.Console.instance().error('Broken formatter: header is invalid json ' + e);
-      return;
     }
-    this.render();
   }
 
-  private render(): void {
-    const customPreview = this.object.customPreview();
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  override performUpdate(): void {
+    if (!this.#object) {
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+      render(nothing, this.contentElement);
+      return;
+    }
+    this.render(this.#object);
+  }
+
+  private render(object: SDK.RemoteObject.RemoteObject): void {
+    const customPreview = object.customPreview();
     if (!customPreview || !this.headerJsonML) {
+      // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+      render(nothing, this.contentElement);
       return;
     }
 
-    const headerTemplate = this.renderJSONMLTag(this.headerJsonML);
+    const headerTemplate = this.renderJSONMLTag(object, this.headerJsonML);
     if (customPreview.bodyGetterId) {
       let bodyContent: LitTemplate|Node|undefined;
       if (this.cachedContent instanceof ObjectTree) {
@@ -71,7 +96,7 @@ export class CustomPreviewSection {
               showOverflow: false,
             })}></devtools-widget>`;
       } else if (this.cachedContent !== undefined) {
-        bodyContent = this.renderJSONMLTag(this.cachedContent);
+        bodyContent = this.renderJSONMLTag(object, this.cachedContent);
       }
 
       // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
@@ -89,35 +114,31 @@ export class CustomPreviewSection {
                   html`<span class="custom-expandable-section-body" ?hidden=${!this.expanded}>${bodyContent}</span>` :
                   nothing}
       `,
-          this.sectionElement);
+          this.contentElement, {container: {classes: ['custom-expandable-section']}});
     } else {
       // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-      render(html`${headerTemplate}`, this.sectionElement);
+      render(html`${headerTemplate}`, this.contentElement, {container: {classes: ['custom-expandable-section']}});
     }
   }
 
-  element(): Element {
-    return this.sectionElement;
-  }
-
-  private renderJSONMLTag(jsonML: unknown): LitTemplate {
+  private renderJSONMLTag(object: SDK.RemoteObject.RemoteObject, jsonML: unknown): LitTemplate {
     if (!Array.isArray(jsonML)) {
       return html`${String(jsonML)}`;
     }
 
     if (jsonML[0] !== 'object') {
-      return this.renderElement(jsonML);
+      return this.renderElement(object, jsonML);
     }
     if (jsonML.length !== 2) {
       Common.Console.Console.instance().error('Broken formatter: object reference must contain exactly two elements');
       return html`<span></span>`;
     }
-    return this.layoutObjectTag(jsonML);
+    return this.layoutObjectTag(object, jsonML);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private renderElement(object: any[]): LitTemplate {
-    const it = object[Symbol.iterator]();
+  private renderElement(object: SDK.RemoteObject.RemoteObject, jsonML: any[]): LitTemplate {
+    const it = jsonML[Symbol.iterator]();
     const tagName = it.next().value as string;
     if (!ALLOWED_TAGS.includes(tagName)) {
       Common.Console.Console.instance().error('Broken formatter: element ' + tagName + ' is not allowed!');
@@ -145,7 +166,7 @@ export class CustomPreviewSection {
 
     const children: LitTemplate[] = [];
     while (!next.done) {
-      children.push(this.renderJSONMLTag(next.value));
+      children.push(this.renderJSONMLTag(object, next.value));
       next = it.next();
     }
     const style = Directives.styleMap(stylePropertyMap);
@@ -170,59 +191,56 @@ export class CustomPreviewSection {
     }
   }
 
-  private layoutObjectTag(objectTag: unknown[]): LitTemplate {
+  private layoutObjectTag(object: SDK.RemoteObject.RemoteObject, objectTag: unknown[]): LitTemplate {
     const it = objectTag[Symbol.iterator]();
     it.next();  // skip 'object'
     const attributes = it.next().value;
-    const remoteObject = this.object.runtimeModel().createRemoteObject((attributes as Protocol.Runtime.RemoteObject));
+    const remoteObject = object.runtimeModel().createRemoteObject((attributes as Protocol.Runtime.RemoteObject));
     if (remoteObject.customPreview()) {
-      return html`${(new CustomPreviewSection(remoteObject)).element()}`;
+      return html`${UI.Widget.widget(CustomPreviewSection, {object: remoteObject})}`;
     }
 
     return defaultObjectPresentation(remoteObject, undefined, undefined, undefined,
                                      {'custom-expandable-section-standard-section': remoteObject.hasChildren});
   }
 
-  private onClick(event: Event): void {
+  private onClick = (event: Event): void => {
     event.consume(true);
     if (this.cachedContent !== undefined) {
       this.toggleExpand();
     } else {
       void this.loadBody();
     }
-  }
+  };
 
   private toggleExpand(): void {
     this.expanded = !this.expanded;
-    this.render();
+    this.performUpdate();
   }
 
   async loadBody(): Promise<void> {
-    const customPreview = this.object.customPreview();
-
-    if (!customPreview) {
+    const customPreview = this.#object?.customPreview();
+    if (!this.#object || !customPreview?.bodyGetterId) {
       return;
     }
 
-    if (customPreview.bodyGetterId) {
-      const bodyJsonML =
-          await this.object.callFunctionJSON(bodyGetter => bodyGetter(), [{objectId: customPreview.bodyGetterId}]);
-      if (bodyJsonML === null) {
-        // Per https://firefox-source-docs.mozilla.org/devtools-user/custom_formatters/index.html#custom-formatter-structure
-        // we are supposed to fall back to the default format when the `body()` callback returns `null`.
-        const objectTree = new ObjectTree(this.object, {
-          readOnly: true,
-          propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
-        });
-        objectTree.expanded = true;
-        this.cachedContent = objectTree;
-      } else {
-        this.cachedContent = bodyJsonML;
-      }
-
-      this.expanded = true;
-      this.render();
+    const bodyJsonML =
+        await this.#object.callFunctionJSON(bodyGetter => bodyGetter(), [{objectId: customPreview.bodyGetterId}]);
+    if (bodyJsonML === null) {
+      // Per https://firefox-source-docs.mozilla.org/devtools-user/custom_formatters/index.html#custom-formatter-structure
+      // we are supposed to fall back to the default format when the `body()` callback returns `null`.
+      const objectTree = new ObjectTree(this.#object, {
+        readOnly: true,
+        propertiesMode: ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
+      });
+      objectTree.expanded = true;
+      this.cachedContent = objectTree;
+    } else {
+      this.cachedContent = bodyJsonML;
     }
+
+    this.expanded = true;
+    this.performUpdate();
   }
 }
 
@@ -234,27 +252,27 @@ export class CustomPreviewComponent {
   element: HTMLSpanElement;
   constructor(object: SDK.RemoteObject.RemoteObject) {
     this.object = object;
-    this.customPreviewSection = new CustomPreviewSection(object);
+    this.customPreviewSection = new CustomPreviewSection();
+    this.customPreviewSection.object = object;
     this.element = document.createElement('span');
     this.element.classList.add('source-code');
     const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(this.element, {cssFile: customPreviewComponentStyles});
     this.element.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
-    shadowRoot.appendChild(this.customPreviewSection.element());
+    this.customPreviewSection.show(shadowRoot, undefined, /* suppressOrphanWidgetError= */ true);
   }
 
-  expandIfPossible(): void {
+  async expandIfPossible(): Promise<void> {
     const customPreview = this.object.customPreview();
     if (customPreview && customPreview.bodyGetterId && this.customPreviewSection) {
-      void this.customPreviewSection.loadBody();
+      await this.customPreviewSection.loadBody();
     }
   }
 
   private contextMenuEventFired(event: Event): void {
     const contextMenu = new UI.ContextMenu.ContextMenu(event);
     if (this.customPreviewSection) {
-      contextMenu.revealSection().appendItem(
-          i18nString(UIStrings.showAsJavascriptObject), this.disassemble.bind(this),
-          {jslogContext: 'show-as-javascript-object'});
+      contextMenu.revealSection().appendItem(i18nString(UIStrings.showAsJavascriptObject), this.disassemble.bind(this),
+                                             {jslogContext: 'show-as-javascript-object'});
     }
     contextMenu.appendApplicableItems(this.object);
     void contextMenu.show();
@@ -262,8 +280,11 @@ export class CustomPreviewComponent {
 
   private disassemble(): void {
     if (this.element.shadowRoot) {
+      if (this.customPreviewSection) {
+        this.customPreviewSection.detach();
+        this.customPreviewSection = null;
+      }
       this.element.shadowRoot.textContent = '';
-      this.customPreviewSection = null;
       // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
       render(defaultObjectPresentation(this.object), this.element.shadowRoot);
     }

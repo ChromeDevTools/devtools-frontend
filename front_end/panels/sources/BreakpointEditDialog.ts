@@ -164,7 +164,7 @@ export class BreakpointEditDialog extends UI.Widget.Widget {
   #editor?: TextEditor.TextEditor.TextEditor;
   #state?: CodeMirror.EditorState;
 
-  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super({
       jslog: `${VisualLogging.dialog('edit-breakpoint')}`,
       useShadowDom: true,

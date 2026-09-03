@@ -182,7 +182,8 @@ const DEFAULT_VIEW = (input: ViewInput|null, _output: undefined, target: Documen
 type View = typeof DEFAULT_VIEW;
 
 export class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
-  static override readonly INJECT = [SDK.EventBreakpointsModel.EventBreakpointsManager] as const;
+  static override readonly INJECT: readonly[typeof SDK.EventBreakpointsModel.EventBreakpointsManager] =
+      [SDK.EventBreakpointsModel.EventBreakpointsManager] as const;
 
   #viewInput: ViewInput|null = null;
   readonly #eventBreakpointsManager: SDK.EventBreakpointsModel.EventBreakpointsManager;
@@ -342,11 +343,12 @@ export class DebuggerPausedMessage extends UI.Widget.Widget<ShadowRoot> {
   }
 }
 
-export const BreakpointTypeNouns = new Map([
-  [Protocol.DOMDebugger.DOMBreakpointType.SubtreeModified, i18nLazyString(UIStrings.subtreeModifications)],
-  [Protocol.DOMDebugger.DOMBreakpointType.AttributeModified, i18nLazyString(UIStrings.attributeModifications)],
-  [Protocol.DOMDebugger.DOMBreakpointType.NodeRemoved, i18nLazyString(UIStrings.nodeRemoval)],
-]);
+export const BreakpointTypeNouns: Map<Protocol.DOMDebugger.DOMBreakpointType, () => Platform.UIString.LocalizedString> =
+    new Map([
+      [Protocol.DOMDebugger.DOMBreakpointType.SubtreeModified, i18nLazyString(UIStrings.subtreeModifications)],
+      [Protocol.DOMDebugger.DOMBreakpointType.AttributeModified, i18nLazyString(UIStrings.attributeModifications)],
+      [Protocol.DOMDebugger.DOMBreakpointType.NodeRemoved, i18nLazyString(UIStrings.nodeRemoval)],
+    ]);
 
 interface PausedDetailsAuxData {
   description?: string;

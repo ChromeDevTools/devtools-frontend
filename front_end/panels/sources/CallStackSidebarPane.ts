@@ -498,7 +498,7 @@ export class CallStackSidebarPane extends UI.View.SimpleView implements UI.Conte
   }
 }
 
-export const elementSymbol = Symbol('element');
+export const elementSymbol: unique symbol = Symbol('element');
 export const defaultMaxAsyncStackChainDepth = 32;
 
 export class ActionDelegate implements UI.ActionRegistration.ActionDelegate {

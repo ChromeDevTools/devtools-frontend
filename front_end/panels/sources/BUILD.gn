@@ -28,6 +28,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("sources") {
+  split_compilation = true
   sources = [
     "AddSourceMapURLDialog.ts",
     "AiCodeCompletionPlugin.ts",
@@ -64,7 +65,7 @@ devtools_ui_module("sources") {
     "WatchExpressionsSidebarPane.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -119,12 +120,12 @@ devtools_ui_module("sources") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "sources.ts"
 
-  deps = [
-    ":css_files",
-    ":sources",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":sources" ]
 
   visibility = [
     ":*",
@@ -138,9 +139,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "sources-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",
@@ -160,6 +162,7 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -189,7 +192,7 @@ devtools_ui_module("unittests") {
     "WatchExpressionsSidebarPane.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/host:bundle",

@@ -189,7 +189,7 @@ export class ScopeChainSidebarPane extends UI.Widget.VBox implements UI.ContextF
           null;
   #view: View;
 
-  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(target, {
       jslog: `${VisualLogging.section('sources.scope-chain')}`,
       useShadowDom: true,

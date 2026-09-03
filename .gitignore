@@ -33,6 +33,8 @@ npm-debug.log
 /scripts/ai_assistance/agent_preambles.md
 # This folder is populated from the GCP bucket and managed by gclient sync.
 /scripts/ai_assistance/suite/outputs
+# Evaluation dependencies populated from Git-on-Borg and managed by gclient sync.
+/test/ai_evals/eval_data
 
 /build
 /buildtools

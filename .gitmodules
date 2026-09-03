@@ -1,3 +1,7 @@
+[submodule "test/ai_evals/eval_data"]
+	path = test/ai_evals/eval_data
+	url = https://chrome-internal.googlesource.com/devtools/chrome-devtools-evals
+	gclient-condition = checkout_ai_evals == True
 [submodule "third_party/clang-format/script"]
 	path = third_party/clang-format/script
 	url = https://chromium.googlesource.com/external/github.com/llvm/llvm-project/clang/tools/clang-format

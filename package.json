@@ -31,6 +31,7 @@
     "webtest": "vpython3 third_party/node/node.py --output scripts/npm_test.js",
     "watch": "npm run build -- --watch",
     "test": "vpython3 third_party/node/node.py --output scripts/run_on_target.mjs gen/test/run.js",
+    "test:evals": "npm run test -- test/ai_evals/",
     "test-health": "node scripts/test_health.ts"
   },
   "devDependencies": {

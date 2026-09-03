@@ -6,10 +6,14 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("helpers") {
   split_compilation = true
-  sources = [ "ai_eval-helpers.ts" ]
+  sources = [
+    "ai_eval-helpers.ts",
+    "eval-environment.ts",
+  ]
 
   ts_deps = [
     "../../../front_end/panels/ai_assistance:bundle",
+    "../../conductor:implementation",
     "../../e2e/helpers",
     "../../e2e/shared",
   ]

@@ -5,8 +5,10 @@
 import {stopServer} from '../conductor/test_server.js';
 
 import {AiEvalStateProvider} from './ai-eval-state-provider.js';
+import {validateEvalEnvironment} from './helpers/eval-environment.js';
 
 export async function mochaGlobalSetup(): Promise<void> {
+  validateEvalEnvironment();
   await AiEvalStateProvider.instance.resolveBrowser();
 }
 

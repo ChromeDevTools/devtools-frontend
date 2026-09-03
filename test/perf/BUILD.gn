@@ -14,16 +14,22 @@ group("perf") {
 }
 
 node_ts_library("tests") {
-  deps = [
+  split_compilation = true
+  sources = [ "run-mocha.ts" ]
+
+  ts_deps = [
+    "../conductor:implementation",
     "../e2e/conductor:implementation",
+    "../shared",
+  ]
+
+  deps = [
     "application",
     "helpers",
     "panels/performance",
     "report",
     "setup",
   ]
-
-  sources = [ "run-mocha.ts" ]
 }
 
 generated_file("test_inputs") {

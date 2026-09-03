@@ -388,7 +388,6 @@ SOURCES = [
   "package/lib/third_party/urlpattern-polyfill/urlpattern-polyfill.d.ts",
   "package/lib/third_party/urlpattern-polyfill/urlpattern-polyfill.js",
   "package/lib/types.d.ts",
-  "puppeteer-tsconfig.json",
 ]
 
 devtools_pre_built("puppeteer") {
@@ -398,9 +397,10 @@ devtools_pre_built("puppeteer") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "puppeteer.ts"
 
-  deps = [ ":puppeteer" ]
+  ts_deps = [ ":puppeteer" ]
 
   visibility = [
     "../../../front_end/*",

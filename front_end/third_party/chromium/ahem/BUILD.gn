@@ -1,6 +1,11 @@
-import("../../../../scripts/build/typescript/typescript.gni")
+import("../../../../scripts/build/ninja/devtools_pre_built.gni")
 
-ts_library("ahem") {
+devtools_pre_built("ahem") {
   testonly = true
-  sources = [ "ahem.js" ]
+  sources_are_release = false
+
+  sources = [
+    "ahem.d.ts",
+    "ahem.js",
+  ]
 }

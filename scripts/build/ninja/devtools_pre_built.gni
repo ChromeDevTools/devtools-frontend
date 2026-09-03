@@ -15,6 +15,9 @@ template("devtools_pre_built") {
   copy_to_gen(_gen_target_name) {
     sources = invoker.sources
     deps = _prebuilt_public_deps
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
   }
 
   _gen_outputs = []
@@ -96,6 +99,9 @@ template("devtools_pre_built") {
     if (defined(invoker.visibility)) {
       visibility = invoker.visibility
     }
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
+    }
   }
 
   # Expose ${target_name}-dts group alias so ts_deps and ts_library_split
@@ -111,6 +117,9 @@ template("devtools_pre_built") {
     public_deps += _prebuilt_public_deps
     if (defined(invoker.visibility)) {
       visibility = invoker.visibility
+    }
+    if (defined(invoker.testonly)) {
+      testonly = invoker.testonly
     }
   }
 

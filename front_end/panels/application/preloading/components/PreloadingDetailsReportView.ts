@@ -443,7 +443,8 @@ export class PreloadingDetailsReportView extends UI.Widget.VBox {
   #data: PreloadingDetailsReportViewData = null;
   #view: typeof DEFAULT_VIEW;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement,
+              view: (input: ViewInput, _output: undefined, target: HTMLElement) => void = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
   }

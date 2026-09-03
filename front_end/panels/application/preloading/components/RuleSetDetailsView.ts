@@ -79,7 +79,8 @@ export class RuleSetDetailsView extends UI.Widget.VBox {
   #ruleSet: RuleSet|null = null;
   #shouldPrettyPrint = true;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement,
+              view: (input: ViewInput|null, _output: object, target: HTMLElement) => void = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
   }

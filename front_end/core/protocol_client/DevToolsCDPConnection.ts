@@ -25,21 +25,15 @@ interface CallbackWithDebugInfo {
 
 type Callback = (error: MessageError|null, arg1: Object|null) => void;
 
-const LongPollingMethods = new Set<string>(['CSS.takeComputedStyleUpdates']);
-
 export class DevToolsCDPConnection implements CDPConnection {
   readonly #transport: ConnectionTransport;
   #lastMessageId = 1;
-  #pendingResponsesCount = 0;
-  readonly #pendingLongPollingMessageIds = new Set<number>();
-  #pendingScripts: Array<() => void> = [];
   readonly #callbacks = new Map<number, CallbackWithDebugInfo>();
   readonly #observers = new Set<CDPConnectionObserver>();
 
   constructor(transport: ConnectionTransport) {
     this.#transport = transport;
 
-    test.deprecatedRunAfterPendingDispatches = this.deprecatedRunAfterPendingDispatches.bind(this);
     test.sendRawMessage = this.sendRawMessageForTesting.bind(this);
 
     this.#transport.setOnMessage(this.onMessage.bind(this));
@@ -79,11 +73,6 @@ export class DevToolsCDPConnection implements CDPConnection {
       const domain = method.split('.')[0];
       const paramsObject = JSON.parse(JSON.stringify(params || {}));
       test.onMessageSent({domain, method, params: (paramsObject as Object), id: messageId, sessionId});
-    }
-
-    ++this.#pendingResponsesCount;
-    if (LongPollingMethods.has(method)) {
-      this.#pendingLongPollingMessageIds.add(messageId);
     }
 
     return new Promise(resolve => {
@@ -147,45 +136,10 @@ export class DevToolsCDPConnection implements CDPConnection {
       }
 
       callback.resolve(messageObject);
-      --this.#pendingResponsesCount;
-      this.#pendingLongPollingMessageIds.delete(messageObject.id);
-
-      if (this.#pendingScripts.length && !this.hasOutstandingNonLongPollingRequests()) {
-        this.deprecatedRunAfterPendingDispatches();
-      }
     } else if ('method' in messageObject) {
       this.#observers.forEach(observer => observer.onEvent(messageObject));
     } else {
       InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
-    }
-  }
-
-  private hasOutstandingNonLongPollingRequests(): boolean {
-    return this.#pendingResponsesCount - this.#pendingLongPollingMessageIds.size > 0;
-  }
-
-  private deprecatedRunAfterPendingDispatches(script?: (() => void)): void {
-    if (script) {
-      this.#pendingScripts.push(script);
-    }
-
-    // Execute all promises.
-    setTimeout(() => {
-      if (!this.hasOutstandingNonLongPollingRequests()) {
-        this.executeAfterPendingDispatches();
-      } else {
-        this.deprecatedRunAfterPendingDispatches();
-      }
-    }, 0);
-  }
-
-  private executeAfterPendingDispatches(): void {
-    if (!this.hasOutstandingNonLongPollingRequests()) {
-      const scripts = this.#pendingScripts;
-      this.#pendingScripts = [];
-      for (let id = 0; id < scripts.length; ++id) {
-        scripts[id]();
-      }
     }
   }
 }

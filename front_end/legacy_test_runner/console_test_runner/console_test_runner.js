@@ -465,6 +465,13 @@ ConsoleTestRunner.expandConsoleMessagesPromise = function(deepFilter, sectionFil
 };
 
 /**
+ * @returns {!Promise<void>}
+ */
+ConsoleTestRunner.waitForAllPopulations = function() {
+  return new Promise(resolve => TestRunner.deprecatedRunAfterPendingDispatches(resolve));
+};
+
+/**
  * @param {!Function} callback
  */
 ConsoleTestRunner.expandGettersInConsoleMessages = async function(callback) {

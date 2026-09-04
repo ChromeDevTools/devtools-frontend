@@ -6,7 +6,6 @@ import("../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../scripts/build/ninja/devtools_module.gni")
 
 devtools_foundation_module("foundation") {
-  split_compilation = true
   sources = [ "Universe.ts" ]
 
   ts_deps = [
@@ -34,7 +33,6 @@ devtools_foundation_module("foundation") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "foundation.ts"
 
   ts_deps = [ ":foundation" ]
@@ -52,7 +50,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_api_test_module("api_tests") {
-  split_compilation = true
   sources = [ "Universe.test.api.ts" ]
 
   ts_deps = [
@@ -63,7 +60,6 @@ devtools_api_test_module("api_tests") {
 }
 
 devtools_foundation_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "Universe.test.ts" ]

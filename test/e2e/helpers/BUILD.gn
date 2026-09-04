@@ -5,7 +5,6 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("helpers") {
-  split_compilation = true
   sources = [
     "ai-assistance-helpers.ts",
     "animations-helpers.ts",

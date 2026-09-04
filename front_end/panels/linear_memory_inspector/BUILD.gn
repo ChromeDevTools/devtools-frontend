@@ -9,7 +9,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_ui_module("linear_memory_inspector") {
-  split_compilation = true
   sources = [
     "LinearMemoryInspectorController.ts",
     "LinearMemoryInspectorPane.ts",
@@ -32,7 +31,6 @@ devtools_ui_module("linear_memory_inspector") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "linear_memory_inspector.ts"
 
   deps = [ "../../ui/legacy:css_files" ]
@@ -49,7 +47,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
-  split_compilation = true
   entrypoint = "linear_memory_inspector-meta.ts"
 
   ts_deps = [
@@ -65,7 +62,6 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

@@ -16,7 +16,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("panel_feedback") {
-  split_compilation = true
   sources = [
     "FeedbackButton.ts",
     "PanelFeedback.ts",
@@ -36,7 +35,6 @@ devtools_ui_module("panel_feedback") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "panel_feedback.ts"
 
   deps = [ ":css_files" ]
@@ -47,7 +45,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

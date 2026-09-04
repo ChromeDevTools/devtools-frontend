@@ -5,7 +5,6 @@
 import("../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("api") {
-  split_compilation = true
   additional_type_definitions = [ "types.d.ts" ]
 
   sources = [

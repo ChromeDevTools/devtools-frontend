@@ -14,13 +14,11 @@ group("ai_evals") {
 }
 
 ts_e2e_library("eval_tests") {
-  split_compilation = true
   sources = [ "ai_smoke.test.ts" ]
   ts_deps = [ ":harness_library" ]
 }
 
 ts_e2e_library("harness_library") {
-  split_compilation = true
   sources = [
     "ai-eval-state-provider.ts",
     "mocha-interface.ts",

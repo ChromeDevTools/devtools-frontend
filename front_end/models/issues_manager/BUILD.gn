@@ -9,7 +9,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("issues_manager") {
-  split_compilation = true
   sources = [
     "BounceTrackingIssue.ts",
     "ClientHintIssue.ts",
@@ -333,7 +332,6 @@ devtools_pre_built("descriptions") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "issues_manager.ts"
 
   ts_deps = [ ":issues_manager" ]
@@ -363,7 +361,6 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [
@@ -381,7 +378,6 @@ ts_library("unittests") {
 }
 
 devtools_foundation_module("foundation_unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

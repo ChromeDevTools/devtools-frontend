@@ -8,7 +8,6 @@ import("../../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_module("handlers") {
-  split_compilation = true
   sources = [
     "AnimationFramesHandler.ts",
     "AnimationHandler.ts",
@@ -58,7 +57,6 @@ devtools_module("handlers") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "handlers.ts"
   ts_deps = [ ":handlers" ]
   visibility = [
@@ -70,7 +68,6 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

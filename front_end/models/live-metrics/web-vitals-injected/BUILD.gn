@@ -12,7 +12,6 @@ web_vitals_injected_sources = [
 ]
 
 devtools_module("web-vitals-injected") {
-  split_compilation = true
   sources = web_vitals_injected_sources
 
   ts_deps = [

@@ -11,11 +11,7 @@ template("ts_type_check") {
   assert(defined(invoker.sources),
          "You must specify 'sources' for $target_name")
 
-  not_needed(invoker,
-             [
-               "reset_timestamps",
-               "split_compilation",
-             ])
+  not_needed(invoker, [ "reset_timestamps" ])
 
   _rootdir = "."
   if (defined(invoker.rootdir)) {

@@ -5,7 +5,6 @@
 import("../../../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "CSSSelector.test.ts" ]

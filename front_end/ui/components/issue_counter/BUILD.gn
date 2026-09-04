@@ -16,7 +16,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("issue_counter") {
-  split_compilation = true
   sources = [
     "IssueCounter.ts",
     "IssueLinkIcon.ts",
@@ -37,7 +36,6 @@ devtools_ui_module("issue_counter") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "issue_counter.ts"
 
   deps = [ ":css_files" ]
@@ -48,7 +46,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

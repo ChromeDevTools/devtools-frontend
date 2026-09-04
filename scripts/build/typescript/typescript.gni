@@ -315,10 +315,8 @@ template("legacy_ts_library") {
 }
 
 template("ts_library") {
-  not_needed(invoker, [ "split_compilation" ])
-
   ts_library_split(target_name) {
-    forward_variables_from(invoker, "*", [ "split_compilation" ])
+    forward_variables_from(invoker, "*")
   }
 }
 
@@ -349,7 +347,6 @@ template("node_ts_library") {
                              "public_deps",
                              "additional_type_definitions",
                              "ts_deps",
-                             "split_compilation",
                            ])
   }
 }
@@ -366,7 +363,6 @@ template("ts_e2e_library") {
                              "data_deps",
                              "public_deps",
                              "ts_deps",
-                             "split_compilation",
                              "testonly",
                            ])
   }

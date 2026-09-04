@@ -12,7 +12,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("cookie_table") {
-  split_compilation = true
   sources = [ "CookiesTable.ts" ]
 
   ts_deps = [
@@ -32,7 +31,6 @@ devtools_ui_module("cookie_table") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "cookie_table.ts"
 
   deps = [
@@ -56,7 +54,6 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [ "CookiesTable.test.ts" ]
 

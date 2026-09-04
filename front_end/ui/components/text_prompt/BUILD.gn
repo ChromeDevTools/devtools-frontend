@@ -13,7 +13,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("text_prompt") {
-  split_compilation = true
   sources = [ "TextPrompt.ts" ]
   ts_deps = [
     "../../../core/platform:bundle",
@@ -22,7 +21,6 @@ devtools_ui_module("text_prompt") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "text_prompt.ts"
 
   deps = [ ":css_files" ]
@@ -35,7 +33,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "TextPrompt.test.ts" ]

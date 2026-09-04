@@ -16,7 +16,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("search") {
-  split_compilation = true
   sources = [
     "SearchResultsPane.ts",
     "SearchScope.ts",
@@ -41,7 +40,6 @@ devtools_ui_module("search") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "search.ts"
 
   deps = [ ":css_files" ]
@@ -59,7 +57,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

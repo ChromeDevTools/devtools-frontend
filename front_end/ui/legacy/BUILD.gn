@@ -48,7 +48,6 @@ copy_to_gen("copy_stylesheets_for_server") {
 }
 
 devtools_ui_module("ui") {
-  split_compilation = true
   sources = [
     "ARIAUtils.ts",
     "ActionRegistration.ts",
@@ -130,7 +129,6 @@ devtools_ui_module("ui") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "legacy.ts"
 
   deps = [ ":css_files" ]
@@ -177,7 +175,6 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "ARIAUtils.test.ts",

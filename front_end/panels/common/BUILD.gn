@@ -19,7 +19,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("common") {
-  split_compilation = true
   sources = [
     "AiCodeCompletionSummaryToolbar.ts",
     "BadgeNotification.ts",
@@ -70,7 +69,6 @@ devtools_ui_module("common") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "common.ts"
   deps = [ ":css_files" ]
 
@@ -86,7 +84,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

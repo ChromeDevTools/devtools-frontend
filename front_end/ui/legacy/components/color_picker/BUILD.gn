@@ -13,7 +13,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("color_picker") {
-  split_compilation = true
   sources = [
     "ColorFormatSpec.ts",
     "ContrastDetails.ts",
@@ -39,7 +38,6 @@ devtools_ui_module("color_picker") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "color_picker.ts"
 
   deps = [ ":css_files" ]
@@ -62,7 +60,6 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "ColorFormatSpec.test.ts",

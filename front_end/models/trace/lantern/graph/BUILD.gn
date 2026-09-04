@@ -8,7 +8,6 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 import("../../../visibility.gni")
 
 devtools_module("graph") {
-  split_compilation = true
   sources = [
     "BaseNode.ts",
     "CPUNode.ts",
@@ -23,7 +22,6 @@ devtools_module("graph") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "graph.ts"
   ts_deps = [ ":graph" ]
   visibility = [
@@ -35,7 +33,6 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

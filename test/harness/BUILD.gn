@@ -6,7 +6,6 @@ import("../../scripts/build/ninja/devtools_module.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
 node_ts_library("harness") {
-  split_compilation = true
   sources = [ "run-mocha.ts" ]
 
   ts_deps = [
@@ -27,7 +26,6 @@ node_ts_library("harness") {
 }
 
 ts_e2e_library("e2e_fixtures") {
-  split_compilation = true
   ts_deps = [
     "../../test/conductor:implementation",
     "../../test/e2e/conductor:implementation",
@@ -44,7 +42,6 @@ ts_e2e_library("e2e_fixtures") {
 
 devtools_ui_module("unit_fixtures") {
   testonly = true
-  split_compilation = true
   sources = [
     "unit/after_each_hook_fail.test.ts",
     "unit/before_each_hook_fail.test.ts",

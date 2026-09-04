@@ -6,7 +6,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("shared") {
   testonly = false
-  split_compilation = true
   ts_deps = [
     "../../../front_end/core/root:bundle",
     "../../conductor:implementation",

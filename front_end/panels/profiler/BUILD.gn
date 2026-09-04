@@ -19,7 +19,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("profiler") {
-  split_compilation = true
   sources = [
     "BottomUpProfileDataGrid.ts",
     "HeapDetachedElementsDataGrid.ts",
@@ -72,7 +71,6 @@ devtools_ui_module("profiler") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "profiler.ts"
 
   deps = [
@@ -92,7 +90,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
-  split_compilation = true
   entrypoint = "profiler-meta.ts"
 
   ts_deps = [
@@ -106,7 +103,6 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

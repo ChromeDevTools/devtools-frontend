@@ -6,7 +6,6 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("network_time_calculator") {
-  split_compilation = true
   sources = [
     "Calculator.ts",
     "NetworkTimeCalculator.ts",
@@ -22,7 +21,6 @@ devtools_module("network_time_calculator") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "network_time_calculator.ts"
 
   ts_deps = [ ":network_time_calculator" ]

@@ -6,12 +6,10 @@ import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_foundation_module("api") {
-  split_compilation = true
   sources = [ "HostRuntime.ts" ]
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "api.ts"
 
   ts_deps = [ ":api" ]

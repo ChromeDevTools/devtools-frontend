@@ -7,7 +7,6 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_module("cpu_profile") {
-  split_compilation = true
   sources = [
     "CPUProfileDataModel.ts",
     "ProfileTreeModel.ts",
@@ -20,7 +19,6 @@ devtools_module("cpu_profile") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "cpu_profile.ts"
 
   ts_deps = [ ":cpu_profile" ]
@@ -37,7 +35,6 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "CPUProfileDataModel.test.ts" ]

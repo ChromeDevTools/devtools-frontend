@@ -9,7 +9,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("wasmparser_worker") {
-  split_compilation = true
   sources = [ "WasmParserWorker.ts" ]
 
   ts_deps = [
@@ -19,7 +18,6 @@ devtools_module("wasmparser_worker") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "wasmparser_worker.ts"
 
   ts_deps = [ ":wasmparser_worker" ]
@@ -30,7 +28,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("worker_entrypoint") {
-  split_compilation = true
   entrypoint = "wasmparser_worker-entrypoint.ts"
 
   forward_variables_from(devtools_worker_config, "*")
@@ -43,7 +40,6 @@ devtools_entrypoint("worker_entrypoint") {
 }
 
 ts_library("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "wasmparser_worker.test.ts" ]

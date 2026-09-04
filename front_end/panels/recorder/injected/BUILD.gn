@@ -24,7 +24,6 @@ recorder_injected_sources = [
 ]
 
 devtools_module("injected") {
-  split_compilation = true
   sources = recorder_injected_sources
 
   ts_deps = [

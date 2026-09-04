@@ -6,7 +6,6 @@ import("../../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_ui_module("utils") {
-  split_compilation = true
   sources = [
     "EntryNodes.ts",
     "Helpers.ts",
@@ -28,7 +27,6 @@ devtools_ui_module("utils") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "utils.ts"
 
   ts_deps = [ ":utils" ]
@@ -50,7 +48,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

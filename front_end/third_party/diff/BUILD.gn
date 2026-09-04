@@ -17,7 +17,6 @@ devtools_pre_built("diff_match_patch") {
 }
 
 devtools_module("diff") {
-  split_compilation = true
   sources = [ "DiffWrapper.ts" ]
 
   ts_deps = [
@@ -27,7 +26,6 @@ devtools_module("diff") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "diff.ts"
 
   ts_deps = [

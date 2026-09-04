@@ -8,7 +8,6 @@ import("../../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_module("helpers") {
-  split_compilation = true
   sources = [
     "Extensions.ts",
     "Network.ts",
@@ -29,7 +28,6 @@ devtools_module("helpers") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "helpers.ts"
   ts_deps = [ ":helpers" ]
   visibility = [
@@ -43,7 +41,6 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

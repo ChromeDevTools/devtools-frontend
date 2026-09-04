@@ -17,7 +17,6 @@ devtools_pre_built("client-variations") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "client-variations.ts"
 
   ts_deps = [ ":client-variations" ]
@@ -32,7 +31,6 @@ devtools_entrypoint("bundle") {
 
 ts_library("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [ "ClientVariations.test.ts" ]
 

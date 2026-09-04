@@ -20,7 +20,6 @@ generated_file("component_docs_sources") {
 
 ts_library("docs_environment") {
   testonly = true
-  split_compilation = true
   sources = [
     "docs_environment.ts",
     "toggle_dark_mode.ts",

@@ -71,9 +71,6 @@ ts_library("my_feature") {
 - **`visibility`** (`list(string)`, optional):
   Standard GN visibility list restricting which targets can depend on this library.
 
-- **`split_compilation`** (`boolean`, optional):
-  Flag to opt into TypeScript Split Compilation during the migration period (defaults to `false`).
-
 #### Examples
 
 ##### Basic Library

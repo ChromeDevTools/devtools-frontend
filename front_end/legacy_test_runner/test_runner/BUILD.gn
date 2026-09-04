@@ -6,7 +6,6 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("test_runner") {
-  split_compilation = true
   sources = [ "TestRunner.ts" ]
 
   ts_deps = [
@@ -23,7 +22,6 @@ devtools_module("test_runner") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "test_runner.ts"
 
   ts_deps = [ ":test_runner" ]

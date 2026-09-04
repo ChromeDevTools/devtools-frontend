@@ -13,7 +13,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("request_link_icon") {
-  split_compilation = true
   sources = [ "RequestLinkIcon.ts" ]
 
   ts_deps = [
@@ -32,7 +31,6 @@ devtools_ui_module("request_link_icon") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "request_link_icon.ts"
 
   deps = [ ":css_files" ]
@@ -43,7 +41,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "RequestLinkIcon.test.ts" ]

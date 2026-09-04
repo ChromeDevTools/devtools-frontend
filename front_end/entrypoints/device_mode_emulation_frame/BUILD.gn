@@ -5,7 +5,6 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../visibility.gni")
 
 devtools_entrypoint("device_mode_emulation_frame") {
-  split_compilation = true
   entrypoint = "device_mode_emulation_frame.ts"
 
   deps = [ "../../Images:optimize_images" ]

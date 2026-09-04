@@ -5,7 +5,6 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("sensors") {
-  split_compilation = true
   sources = [
     "emulate-hardware-concurrency.test.ts",
     "helpers.ts",

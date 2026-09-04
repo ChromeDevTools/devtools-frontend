@@ -18,7 +18,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("text_editor") {
-  split_compilation = true
   sources = [
     "AccessiblePlaceholder.ts",
     "AiCodeCompletionDisclaimer.ts",
@@ -69,7 +68,6 @@ devtools_ui_module("text_editor") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "text_editor.ts"
 
   deps = [ ":css_files" ]
@@ -85,7 +83,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

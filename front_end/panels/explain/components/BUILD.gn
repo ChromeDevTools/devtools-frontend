@@ -12,7 +12,6 @@ import("../../visibility.gni")
 # 'panels/explain/components'.
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "ConsoleInsight.test.ts" ]

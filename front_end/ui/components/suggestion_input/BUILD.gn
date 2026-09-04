@@ -12,7 +12,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("suggestion_input") {
-  split_compilation = true
   sources = [ "SuggestionInput.ts" ]
 
   deps = [ ":css_files" ]
@@ -25,7 +24,6 @@ devtools_ui_module("suggestion_input") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "suggestion_input.ts"
 
   deps = [ ":css_files" ]

@@ -9,7 +9,6 @@ import("../../../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_module("settings_ui") {
-  split_compilation = true
   sources = [ "SettingsUI.ts" ]
 
   ts_deps = [
@@ -25,7 +24,6 @@ devtools_module("settings_ui") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "settings_ui.ts"
 
   ts_deps = [ ":settings_ui" ]
@@ -42,7 +40,6 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [ "SettingsUI.test.ts" ]
 

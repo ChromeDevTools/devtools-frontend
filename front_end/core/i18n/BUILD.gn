@@ -12,7 +12,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("//$devtools_root_location/config/gni/i18n.gni")
 
 devtools_foundation_module("i18n") {
-  split_compilation = true
   sources = [
     "ByteUtilities.ts",
     "DevToolsLocale.ts",
@@ -32,7 +31,6 @@ devtools_foundation_module("i18n") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "i18n.ts"
   ts_deps = [ ":i18n" ]
 
@@ -119,7 +117,6 @@ devtools_pre_built("locales_js") {
 
 devtools_foundation_module("foundation_unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "ByteUtilities.test.ts",

@@ -24,7 +24,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("inline_editor") {
-  split_compilation = true
   sources = [
     "AnimationTimingModel.ts",
     "AnimationTimingUI.ts",
@@ -62,7 +61,6 @@ devtools_ui_module("inline_editor") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "inline_editor.ts"
 
   deps = [ ":css_files" ]
@@ -87,7 +85,6 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "AnimationTimingModel.test.ts",

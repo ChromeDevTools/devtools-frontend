@@ -8,14 +8,12 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("elements") {
-  split_compilation = true
   sources = [ "ElementUpdateRecord.ts" ]
 
   ts_deps = [ "../../core/sdk:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "elements.ts"
 
   ts_deps = [ ":elements" ]

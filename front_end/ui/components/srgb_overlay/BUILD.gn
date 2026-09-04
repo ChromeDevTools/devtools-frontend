@@ -12,7 +12,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("srgb_overlay") {
-  split_compilation = true
   sources = [ "SrgbOverlay.ts" ]
 
   ts_deps = [
@@ -23,7 +22,6 @@ devtools_ui_module("srgb_overlay") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "srgb_overlay.ts"
 
   deps = [ ":css_files" ]

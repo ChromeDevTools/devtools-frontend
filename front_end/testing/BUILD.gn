@@ -7,7 +7,6 @@ import("../../scripts/build/ninja/devtools_module.gni")
 import("../../scripts/build/typescript/typescript.gni")
 
 ts_library("testing") {
-  split_compilation = true
   testonly = true
 
   sources = [
@@ -123,12 +122,10 @@ ts_library("testing") {
 }
 
 devtools_foundation_module("test_id_generation") {
-  split_compilation = true
   sources = [ "TestIdGeneration.ts" ]
 }
 
 devtools_foundation_module("mocha_helpers") {
-  split_compilation = true
   testonly = true
   sources = [ "MochaHelpers.ts" ]
 
@@ -136,7 +133,6 @@ devtools_foundation_module("mocha_helpers") {
 }
 
 devtools_foundation_module("foundation_unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [
@@ -151,7 +147,6 @@ devtools_foundation_module("foundation_unittests") {
 }
 
 ts_library("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

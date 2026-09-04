@@ -12,7 +12,6 @@ generate_css("css_files") {
 }
 
 devtools_module("app") {
-  split_compilation = true
   sources = [
     "NodeConnectionsPanel.ts",
     "NodeMain.ts",
@@ -35,7 +34,6 @@ devtools_module("app") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "app.ts"
 
   deps = [ ":css_files" ]
@@ -48,7 +46,6 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "NodeMain.test.ts" ]

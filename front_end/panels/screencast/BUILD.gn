@@ -13,7 +13,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("screencast") {
-  split_compilation = true
   sources = [
     "InputModel.ts",
     "ScreencastApp.ts",
@@ -37,7 +36,6 @@ devtools_ui_module("screencast") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "screencast.ts"
 
   deps = [ ":css_files" ]
@@ -53,7 +51,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
-  split_compilation = true
   entrypoint = "screencast-meta.ts"
 
   ts_deps = [
@@ -65,7 +62,6 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "ScreencastApp.test.ts" ]

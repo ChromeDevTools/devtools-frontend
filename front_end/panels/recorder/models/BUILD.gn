@@ -7,7 +7,6 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 
 devtools_ui_module("recorder") {
-  split_compilation = true
   sources = [
     "ConverterIds.ts",
     "RecorderSettings.ts",
@@ -42,7 +41,6 @@ devtools_ui_module("recorder") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "models.ts"
   ts_deps = [ ":recorder" ]
 
@@ -61,7 +59,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

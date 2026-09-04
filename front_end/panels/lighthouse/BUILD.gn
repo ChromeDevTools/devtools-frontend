@@ -17,7 +17,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("lighthouse") {
-  split_compilation = true
   sources = [
     "LighthouseController.ts",
     "LighthousePanel.ts",
@@ -57,7 +56,6 @@ devtools_ui_module("lighthouse") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "lighthouse.ts"
 
   deps = [
@@ -77,7 +75,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
-  split_compilation = true
   entrypoint = "lighthouse-meta.ts"
 
   ts_deps = [
@@ -91,7 +88,6 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

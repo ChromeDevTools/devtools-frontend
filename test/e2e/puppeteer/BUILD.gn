@@ -5,7 +5,6 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("puppeteer") {
-  split_compilation = true
   sources = [ "puppeteer.test.ts" ]
 
   ts_deps = [

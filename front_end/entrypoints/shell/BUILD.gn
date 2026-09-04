@@ -6,7 +6,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_entrypoint("shell") {
-  split_compilation = true
   entrypoint = "shell.ts"
 
   deps = [ "../../Images:optimize_images" ]

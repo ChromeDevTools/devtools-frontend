@@ -257,10 +257,8 @@ template("legacy_devtools_entrypoint") {
 }
 
 template("devtools_entrypoint") {
-  not_needed(invoker, [ "split_compilation" ])
-
   devtools_entrypoint_split(target_name) {
-    forward_variables_from(invoker, "*", [ "split_compilation" ])
+    forward_variables_from(invoker, "*")
   }
 }
 

@@ -41,7 +41,6 @@ group("unittests") {
 }
 
 node_ts_library("run") {
-  split_compilation = true
   sources = [ "run.ts" ]
 
   ts_deps = [ "conductor:implementation" ]

@@ -15,7 +15,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("data_grid") {
-  split_compilation = true
   sources = [
     "DataGrid.ts",
     "DataGridElement.ts",
@@ -40,7 +39,6 @@ devtools_ui_module("data_grid") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "data_grid.ts"
 
   deps = [ ":css_files" ]
@@ -62,7 +60,6 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "DataGrid.test.ts",

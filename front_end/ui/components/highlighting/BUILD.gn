@@ -9,7 +9,6 @@ import("../../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_ui_module("highlighting") {
-  split_compilation = true
   sources = [
     "HighlightElement.ts",
     "HighlightManager.ts",
@@ -19,7 +18,6 @@ devtools_ui_module("highlighting") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "highlighting.ts"
 
   ts_deps = [ ":highlighting" ]
@@ -28,7 +26,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

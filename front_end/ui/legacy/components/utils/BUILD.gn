@@ -16,7 +16,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("utils") {
-  split_compilation = true
   sources = [
     "ImagePreview.ts",
     "JSPresentationUtils.ts",
@@ -47,7 +46,6 @@ devtools_ui_module("utils") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "utils.ts"
 
   deps = [ ":css_files" ]
@@ -74,7 +72,6 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "JSPresentationUtils.test.ts",

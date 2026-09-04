@@ -9,7 +9,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_foundation_module("heap_snapshot_worker") {
-  split_compilation = true
   sources = [
     "AllocationProfile.ts",
     "HeapSnapshot.ts",
@@ -27,7 +26,6 @@ devtools_foundation_module("heap_snapshot_worker") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "heap_snapshot_worker.ts"
 
   ts_deps = [ ":heap_snapshot_worker" ]
@@ -38,7 +36,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("worker_entrypoint") {
-  split_compilation = true
   entrypoint = "heap_snapshot_worker-entrypoint.ts"
 
   forward_variables_from(devtools_worker_config, "*")
@@ -57,7 +54,6 @@ devtools_entrypoint("worker_entrypoint") {
 }
 
 devtools_foundation_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

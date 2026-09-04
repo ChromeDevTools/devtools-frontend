@@ -82,7 +82,6 @@ copy("copy_css_to_gen") {
 }
 
 ts_library("inspector_overlay") {
-  split_compilation = true
   sources = [
     "common.ts",
     "css_grid_label_helpers.ts",
@@ -108,7 +107,6 @@ ts_library("inspector_overlay") {
 }
 
 ts_library("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

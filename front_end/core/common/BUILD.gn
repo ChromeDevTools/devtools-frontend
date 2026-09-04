@@ -7,12 +7,10 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_library("ColorUtils") {
-  split_compilation = true
   sources = [ "ColorUtils.ts" ]
 }
 
 devtools_module("common") {
-  split_compilation = true
   sources = [
     "Base64.ts",
     "CharacterIdMap.ts",
@@ -55,7 +53,6 @@ devtools_module("common") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "common.ts"
 
   ts_deps = [
@@ -69,7 +66,6 @@ devtools_entrypoint("bundle") {
 
 devtools_foundation_module("foundation_unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "Base64.test.ts",

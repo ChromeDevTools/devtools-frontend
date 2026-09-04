@@ -20,7 +20,6 @@ devtools_pre_built("json5") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "json5.ts"
 
   ts_deps = [ ":json5" ]

@@ -13,14 +13,12 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("code_highlighter") {
-  split_compilation = true
   sources = [ "CodeHighlighter.ts" ]
 
   ts_deps = [ "../../../third_party/codemirror.next:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "code_highlighter.ts"
 
   deps = [ ":css_files" ]
@@ -32,7 +30,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "CodeHighlighter.test.ts" ]

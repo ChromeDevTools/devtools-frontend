@@ -7,7 +7,6 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../visibility.gni")
 
 devtools_ui_module("legacy_wrapper") {
-  split_compilation = true
   sources = [ "LegacyWrapper.ts" ]
   ts_deps = [
     "../../../core/platform:bundle",
@@ -17,7 +16,6 @@ devtools_ui_module("legacy_wrapper") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "legacy_wrapper.ts"
 
   ts_deps = [ ":legacy_wrapper" ]

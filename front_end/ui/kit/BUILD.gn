@@ -16,7 +16,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("kit") {
-  split_compilation = true
   sources = [
     "cards/Card.ts",
     "icons/Icon.ts",
@@ -34,7 +33,6 @@ devtools_ui_module("kit") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "kit.ts"
 
   deps = [ ":css_files" ]
@@ -52,7 +50,6 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "cards/Card.test.ts",

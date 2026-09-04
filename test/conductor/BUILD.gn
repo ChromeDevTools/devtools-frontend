@@ -21,7 +21,6 @@ devtools_pre_built("expectations_parser") {
 }
 
 node_ts_library("implementation") {
-  split_compilation = true
   testonly = false
   ts_deps = [
     ":expectations_parser",

@@ -7,7 +7,6 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_foundation_module("root") {
-  split_compilation = true
   sources = [
     "DevToolsContext.ts",
     "ExperimentNames.ts",
@@ -18,7 +17,6 @@ devtools_foundation_module("root") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "root.ts"
 
   ts_deps = [ ":root" ]
@@ -28,7 +26,6 @@ devtools_entrypoint("bundle") {
 
 devtools_foundation_module("foundation_unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [ "Runtime.test.ts" ]
 

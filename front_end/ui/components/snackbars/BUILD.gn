@@ -14,7 +14,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("snackbar") {
-  split_compilation = true
   sources = [ "Snackbar.ts" ]
 
   ts_deps = [
@@ -27,7 +26,6 @@ devtools_ui_module("snackbar") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "snackbars.ts"
 
   deps = [ ":css_files" ]
@@ -40,7 +38,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "Snackbar.test.ts" ]

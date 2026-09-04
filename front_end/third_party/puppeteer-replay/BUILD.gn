@@ -26,7 +26,6 @@ devtools_pre_built("puppeteer-replay") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "puppeteer-replay.ts"
 
   ts_deps = [ ":puppeteer-replay" ]

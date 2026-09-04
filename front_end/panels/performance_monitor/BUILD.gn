@@ -13,7 +13,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("performance_monitor") {
-  split_compilation = true
   sources = [ "PerformanceMonitor.ts" ]
 
   ts_deps = [
@@ -30,7 +29,6 @@ devtools_ui_module("performance_monitor") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "performance_monitor.ts"
 
   deps = [ ":css_files" ]
@@ -46,7 +44,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
-  split_compilation = true
   entrypoint = "performance_monitor-meta.ts"
 
   ts_deps = [
@@ -59,7 +56,6 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "PerformanceMonitor.test.ts" ]

@@ -7,7 +7,6 @@ import("../../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../visibility.gni")
 
 devtools_ui_module("helper") {
-  split_compilation = true
   sources = [ "PreloadingForward.ts" ]
   ts_deps = [
     "../../../../core/sdk:bundle",
@@ -17,7 +16,6 @@ devtools_ui_module("helper") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "helper.ts"
   ts_deps = [ ":helper" ]
 

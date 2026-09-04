@@ -8,7 +8,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_foundation_module("text_utils") {
-  split_compilation = true
   sources = [
     "CodeMirrorUtils.ts",
     "ContentData.ts",
@@ -30,7 +29,6 @@ devtools_foundation_module("text_utils") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "text_utils.ts"
 
   ts_deps = [ ":text_utils" ]
@@ -57,7 +55,6 @@ devtools_entrypoint("bundle") {
 
 devtools_foundation_module("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "ContentData.test.ts",

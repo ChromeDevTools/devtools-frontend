@@ -8,7 +8,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_ui_module("helpers") {
-  split_compilation = true
   sources = [ "OpenInNewTab.ts" ]
 
   ts_deps = [
@@ -21,7 +20,6 @@ devtools_ui_module("helpers") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "helpers.ts"
 
   ts_deps = [ ":helpers" ]
@@ -44,7 +42,6 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [ "OpenInNewTab.test.ts" ]
 

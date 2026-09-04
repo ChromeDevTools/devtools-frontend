@@ -8,14 +8,12 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_foundation_module("comment_manager") {
-  split_compilation = true
   sources = [ "CommentManager.ts" ]
 
   ts_deps = [ "../../core/common:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "comment_manager.ts"
 
   ts_deps = [ ":comment_manager" ]
@@ -32,7 +30,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_foundation_module("foundation_unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "CommentManager.test.ts" ]

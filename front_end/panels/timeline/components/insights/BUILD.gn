@@ -17,7 +17,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("insights") {
-  split_compilation = true
   sources = [
     "BaseInsightComponent.ts",
     "CLSCulprits.ts",
@@ -79,7 +78,6 @@ devtools_ui_module("insights") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "insights.ts"
 
   deps = [ ":css_files" ]
@@ -95,7 +93,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

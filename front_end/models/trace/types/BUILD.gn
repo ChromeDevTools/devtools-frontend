@@ -8,7 +8,6 @@ import("../../../../scripts/build/typescript/typescript.gni")
 import("../../visibility.gni")
 
 devtools_module("types") {
-  split_compilation = true
   sources = [
     "Configuration.ts",
     "Extensions.ts",
@@ -28,7 +27,6 @@ devtools_module("types") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "types.ts"
   ts_deps = [ ":types" ]
   visibility = [
@@ -41,7 +39,6 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

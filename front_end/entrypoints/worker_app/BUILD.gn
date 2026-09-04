@@ -6,7 +6,6 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../visibility.gni")
 
 devtools_module("worker_main") {
-  split_compilation = true
   sources = [ "WorkerMain.ts" ]
 
   ts_deps = [
@@ -19,7 +18,6 @@ devtools_module("worker_main") {
 }
 
 devtools_entrypoint("entrypoint") {
-  split_compilation = true
   entrypoint = "worker_app.ts"
 
   ts_deps = [

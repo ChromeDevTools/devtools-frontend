@@ -13,7 +13,6 @@ generate_css("css_files") {
 }
 
 devtools_module("lists") {
-  split_compilation = true
   sources = [ "List.ts" ]
 
   ts_deps = [
@@ -24,7 +23,6 @@ devtools_module("lists") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "lists.ts"
 
   deps = [ ":css_files" ]
@@ -35,7 +33,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "List.test.ts" ]

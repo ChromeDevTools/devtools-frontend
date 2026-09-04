@@ -22,7 +22,6 @@ copy_to_gen("copy_stylesheets_for_server") {
 }
 
 devtools_ui_module("button") {
-  split_compilation = true
   sources = [
     "Button.ts",
     "FloatingButton.ts",
@@ -36,7 +35,6 @@ devtools_ui_module("button") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "buttons.ts"
 
   deps = [ ":css_files" ]
@@ -52,7 +50,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "Button.test.ts" ]

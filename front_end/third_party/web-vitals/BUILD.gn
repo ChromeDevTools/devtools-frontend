@@ -103,7 +103,6 @@ devtools_pre_built("web-vitals") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "web-vitals.ts"
 
   ts_deps = [ ":web-vitals" ]

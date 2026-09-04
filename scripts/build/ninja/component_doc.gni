@@ -19,7 +19,6 @@ template("component_doc") {
   }
 
   ts_library(_ts_target) {
-    split_compilation = true
     forward_variables_from(invoker,
                            [
                              "sources",

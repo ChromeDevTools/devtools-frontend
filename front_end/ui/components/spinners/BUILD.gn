@@ -13,14 +13,12 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("spinner") {
-  split_compilation = true
   sources = [ "Spinner.ts" ]
 
   ts_deps = [ "../../lit:bundle" ]
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "spinners.ts"
 
   deps = [ ":css_files" ]

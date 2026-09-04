@@ -7,7 +7,6 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../visibility.gni")
 
 devtools_module("insights") {
-  split_compilation = true
   sources = [
     "CLSCulprits.ts",
     "Cache.ts",
@@ -51,7 +50,6 @@ devtools_module("insights") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "insights.ts"
   ts_deps = [ ":insights" ]
   visibility = [
@@ -66,7 +64,6 @@ devtools_entrypoint("bundle") {
 }
 
 ts_library("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

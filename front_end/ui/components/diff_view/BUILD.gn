@@ -13,7 +13,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("diff_view") {
-  split_compilation = true
   sources = [ "DiffView.ts" ]
 
   deps = [ ":css_files" ]
@@ -28,7 +27,6 @@ devtools_ui_module("diff_view") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "diff_view.ts"
 
   ts_deps = [ ":diff_view" ]
@@ -37,7 +35,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "DiffView.test.ts" ]

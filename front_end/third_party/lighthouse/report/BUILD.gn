@@ -16,7 +16,6 @@ devtools_pre_built("bundle") {
 }
 
 devtools_entrypoint("report") {
-  split_compilation = true
   entrypoint = "report.ts"
 
   ts_deps = [ ":bundle" ]

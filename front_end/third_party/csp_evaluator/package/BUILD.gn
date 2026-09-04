@@ -6,7 +6,6 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../visibility.gni")
 
 devtools_module("csp_evaluator") {
-  split_compilation = true
   sources = [
     "allowlist_bypasses/angular.ts",
     "allowlist_bypasses/flash.ts",

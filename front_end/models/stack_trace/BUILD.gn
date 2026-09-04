@@ -6,7 +6,6 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_foundation_module("stack_trace") {
-  split_compilation = true
   sources = [ "StackTrace.ts" ]
 
   ts_deps = [
@@ -18,7 +17,6 @@ devtools_foundation_module("stack_trace") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "stack_trace.ts"
 
   ts_deps = [ ":stack_trace" ]
@@ -27,7 +25,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_foundation_module("stack_trace_impl") {
-  split_compilation = true
   sources = [
     "DetailedErrorStackParser.ts",
     "StackTraceImpl.ts",
@@ -46,7 +43,6 @@ devtools_foundation_module("stack_trace_impl") {
 }
 
 devtools_entrypoint("impl") {
-  split_compilation = true
   entrypoint = "stack_trace_impl.ts"
 
   ts_deps = [ ":stack_trace_impl" ]
@@ -61,7 +57,6 @@ devtools_entrypoint("impl") {
 }
 
 devtools_foundation_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

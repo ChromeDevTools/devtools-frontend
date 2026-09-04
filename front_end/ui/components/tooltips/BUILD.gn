@@ -14,7 +14,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("tooltip") {
-  split_compilation = true
   sources = [ "Tooltip.ts" ]
 
   ts_deps = [
@@ -25,7 +24,6 @@ devtools_ui_module("tooltip") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "tooltips.ts"
 
   deps = [ ":css_files" ]
@@ -36,7 +34,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "Tooltip.test.ts" ]

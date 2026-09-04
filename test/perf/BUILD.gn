@@ -14,7 +14,6 @@ group("perf") {
 }
 
 node_ts_library("tests") {
-  split_compilation = true
   sources = [ "run-mocha.ts" ]
 
   ts_deps = [

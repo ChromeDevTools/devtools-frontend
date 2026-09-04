@@ -6,7 +6,6 @@ import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 
 devtools_module("lighthouse") {
-  split_compilation = true
   sources = [
     "LighthouseReporterTypes.ts",
     "RunTypes.ts",
@@ -21,7 +20,6 @@ devtools_module("lighthouse") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "lighthouse.ts"
 
   ts_deps = [ ":lighthouse" ]

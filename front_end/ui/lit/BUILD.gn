@@ -8,7 +8,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("./visibility.gni")
 
 devtools_ui_module("lit") {
-  split_compilation = true
   sources = [
     "Directives.ts",
     "i18n-template.ts",
@@ -25,7 +24,6 @@ devtools_ui_module("lit") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "lit.ts"
 
   ts_deps = [
@@ -54,7 +52,6 @@ devtools_entrypoint("bundle") {
 
 devtools_ui_module("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "Directives.test.ts",

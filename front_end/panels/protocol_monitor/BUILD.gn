@@ -16,7 +16,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("protocol_monitor") {
-  split_compilation = true
   sources = [
     "JSONEditor.ts",
     "ProtocolMonitor.ts",
@@ -49,7 +48,6 @@ devtools_ui_module("protocol_monitor") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "protocol_monitor.ts"
 
   ts_deps = [ ":protocol_monitor" ]
@@ -64,7 +62,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
-  split_compilation = true
   entrypoint = "protocol_monitor-meta.ts"
 
   ts_deps = [
@@ -78,7 +75,6 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

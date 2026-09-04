@@ -8,7 +8,6 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_module("heap_snapshot") {
-  split_compilation = true
   sources = [
     "ChildrenProvider.ts",
     "HeapSnapshotModel.ts",
@@ -23,7 +22,6 @@ devtools_module("heap_snapshot") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "heap_snapshot.ts"
 
   ts_deps = [ ":heap_snapshot" ]
@@ -39,7 +37,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_foundation_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "heap_snapshot.test.ts" ]

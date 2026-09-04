@@ -7,7 +7,6 @@ import("../../../../scripts/build/ninja/devtools_module.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 
 devtools_ui_module("overlays") {
-  split_compilation = true
   sources = [ "OverlaysImpl.ts" ]
 
   ts_deps = [
@@ -25,7 +24,6 @@ devtools_ui_module("overlays") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "overlays.ts"
 
   ts_deps = [ ":overlays" ]
@@ -39,7 +37,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "OverlaysImpl.test.ts" ]

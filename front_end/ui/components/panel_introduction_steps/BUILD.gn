@@ -12,7 +12,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("panel_introduction_steps") {
-  split_compilation = true
   sources = [ "PanelIntroductionSteps.ts" ]
   ts_deps = [
     "../../lit:bundle",
@@ -21,7 +20,6 @@ devtools_ui_module("panel_introduction_steps") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "panel_introduction_steps.ts"
 
   deps = [ ":css_files" ]

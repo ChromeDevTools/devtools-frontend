@@ -12,7 +12,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("components") {
-  split_compilation = true
   sources = [ "SyncSection.ts" ]
 
   ts_deps = [
@@ -35,7 +34,6 @@ devtools_ui_module("components") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "components.ts"
 
   deps = [ ":css_files" ]
@@ -49,7 +47,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "SyncSection.test.ts" ]

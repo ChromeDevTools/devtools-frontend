@@ -7,7 +7,6 @@ import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 
 devtools_module("sdk") {
-  split_compilation = true
   sources = [
     "AccessibilityModel.ts",
     "AnimationModel.ts",
@@ -117,7 +116,6 @@ devtools_module("sdk") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "sdk.ts"
 
   ts_deps = [
@@ -130,7 +128,6 @@ devtools_entrypoint("bundle") {
 
 ts_library("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "CSSMatchedStyles.test.ts",
@@ -194,7 +191,6 @@ ts_library("unittests") {
 
 devtools_foundation_module("foundation_unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "AccessibilityModel.test.ts",
@@ -233,7 +229,6 @@ devtools_foundation_module("foundation_unittests") {
 }
 
 devtools_api_test_module("api_tests") {
-  split_compilation = true
   sources = [
     "CSSModel.test.api.ts",
     "DOMModel.test.api.ts",

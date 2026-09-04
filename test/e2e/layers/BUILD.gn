@@ -5,7 +5,6 @@
 import("../../../scripts/build/typescript/typescript.gni")
 
 ts_e2e_library("layers") {
-  split_compilation = true
   sources = [ "layers.test.ts" ]
 
   ts_deps = [

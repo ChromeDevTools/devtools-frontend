@@ -20,7 +20,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("source_frame") {
-  split_compilation = true
   sources = [
     "BinaryResourceViewFactory.ts",
     "FontView.ts",
@@ -59,7 +58,6 @@ devtools_ui_module("source_frame") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "source_frame.ts"
 
   deps = [ ":css_files" ]
@@ -86,7 +84,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
-  split_compilation = true
   entrypoint = "source_frame-meta.ts"
 
   ts_deps = [
@@ -99,7 +96,6 @@ devtools_entrypoint("meta") {
 
 devtools_ui_module("unittests") {
   testonly = true
-  split_compilation = true
 
   sources = [
     "BinaryResourceViewFactory.test.ts",

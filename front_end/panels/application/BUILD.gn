@@ -32,7 +32,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("application") {
-  split_compilation = true
   sources = [
     "AppManifestView.ts",
     "ApplicationPanelSidebar.ts",
@@ -126,7 +125,6 @@ devtools_ui_module("application") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "application.ts"
 
   deps = [
@@ -151,7 +149,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
-  split_compilation = true
   entrypoint = "application-meta.ts"
 
   ts_deps = [
@@ -167,7 +164,6 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

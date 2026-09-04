@@ -21,7 +21,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("report_view") {
-  split_compilation = true
   sources = [ "ReportView.ts" ]
   ts_deps = [
     "../../../core/platform:bundle",
@@ -31,7 +30,6 @@ devtools_ui_module("report_view") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "report_view.ts"
 
   deps = [ ":css_files" ]
@@ -42,7 +40,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [ "ReportView.test.ts" ]

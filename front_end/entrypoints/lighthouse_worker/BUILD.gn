@@ -8,7 +8,6 @@ import("../../../scripts/build/ninja/devtools_worker.gni")
 import("../../../scripts/build/typescript/typescript_vars.gni")
 
 devtools_module("lighthouse_worker") {
-  split_compilation = true
   sources = [ "LighthouseWorkerService.ts" ]
 
   # lighthouse_worker runs in the browser, but it adapts Lighthouse and
@@ -27,7 +26,6 @@ devtools_module("lighthouse_worker") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "lighthouse_worker.ts"
 
   forward_variables_from(devtools_worker_config, "*")

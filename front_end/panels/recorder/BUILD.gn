@@ -24,7 +24,6 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("recorder") {
-  split_compilation = true
   sources = [
     "ControlButton.ts",
     "CreateRecordingView.ts",
@@ -76,7 +75,6 @@ devtools_ui_module("recorder") {
 }
 
 devtools_entrypoint("bundle") {
-  split_compilation = true
   entrypoint = "recorder.ts"
   deps = [ ":css_files" ]
 
@@ -93,7 +91,6 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
-  split_compilation = true
   entrypoint = "recorder-meta.ts"
   ts_deps = [
     ":bundle",
@@ -110,7 +107,6 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
-  split_compilation = true
   testonly = true
 
   sources = [

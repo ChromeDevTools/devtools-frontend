@@ -61,16 +61,6 @@ generate_ci_configs(
             use_siso = SISO.CHROMIUM_TRUSTED,
         ),
         builder_descriptor(
-            name = "DevTools Linux Fastbuild",
-            recipe_name = "chromium_integration",
-            consoles = ["ci"],
-            execution_timeout = 3 * time.hour,
-            use_siso = SISO.CHROMIUM_TRUSTED,
-            description_html = """
-This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/ci/DevTools%20Linux">
-DevTools Linux</a> but has devtools_skip_typecheck=True.""",
-        ),
-        builder_descriptor(
             name = "Stand-alone Linux",
             recipe_name = "devtools/devtools-frontend",
             consoles = ["ci", "beta", "stable", "extended"],
@@ -108,20 +98,6 @@ DevTools Linux</a> but has devtools_skip_typecheck=True.""",
                 "coverage": False,
             },
             use_siso = SISO.CHROMIUM_TRUSTED,
-        ),
-        builder_descriptor(
-            name = "Linux Compile Debug Fastbuild",
-            recipe_name = "devtools/devtools-frontend",
-            consoles = ["ci"],
-            properties = {
-                "builder_config": "Debug",
-                "devtools_skip_typecheck": True,
-                "coverage": False,
-            },
-            use_siso = SISO.CHROMIUM_TRUSTED,
-            description_html = """
-This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/ci/Linux%20Compile%20Debug">
-Linux Compile Debug</a> but has devtools_skip_typecheck=True.""",
         ),
         builder_descriptor(
             name = "Linux Compile Full Release",

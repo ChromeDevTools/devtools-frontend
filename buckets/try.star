@@ -80,19 +80,6 @@ try_builder(
 )
 
 try_builder(
-    name = "devtools_frontend_linux_blink_light_rel_fastbuild",
-    recipe_name = "chromium_trybot",
-    dimensions = dimensions.beefy_ubuntu,
-    execution_timeout = 2 * time.hour,
-    build_numbers = True,
-    use_siso = SISO.CHROMIUM_UNTRUSTED,
-    description_html = """
-This is the same with <a href="https://ci.chromium.org/p/devtools-frontend/builders/try/devtools_frontend_linux_blink_light_rel">
-devtools_frontend_linux_blink_light_rel</a> but has
-devtools_skip_typecheck=True.""",
-)
-
-try_builder(
     name = "dtf_check_no_bundle",
     recipe_name = "devtools/compilator",
     dimensions = dimensions.default_ubuntu,
@@ -158,18 +145,6 @@ try_pair(
     properties = {"builder_config": "Debug"},
     legacy_variant = True,
 )
-try_pair(
-    "dtf_linux",
-    "dbg_fastbuild",
-    dimensions.default_ubuntu,
-    "Ubuntu-22.04",
-    "x86-64",
-    properties = {
-        "builder_config": "Debug",
-        "devtools_skip_typecheck": True,
-    },
-    legacy_variant = True,
-)
 
 def cpp_debug_extension_try(suffix, extra_properties):
     properties = extra_properties or {}
@@ -202,7 +177,6 @@ cq_builders = struct(
         "cpp_debug_extension_e2e_rel",
         "dtf_check_no_bundle",
         "dtf_linux_dbg",
-        "dtf_linux_dbg_fastbuild",
         "dtf_linux_rel",
         "dtf_mac_arm64_rel",
         "dtf_mac_cross_rel",
@@ -211,7 +185,6 @@ cq_builders = struct(
     ],
     chromium_builders = [
         "devtools_frontend_linux_blink_light_rel",
-        "devtools_frontend_linux_blink_light_rel_fastbuild",
     ],
     experiment_builders = {
         # Quarantine a builder here
@@ -219,7 +192,6 @@ cq_builders = struct(
     },
     includable_only_builders = [
         "dtf_mac_cross_rel",
-        "devtools_frontend_linux_blink_light_rel",
         "devtools_frontend_shuffled_linux_rel",
         "devtools_frontend_shuffled_mac_rel",
         "devtools_frontend_shuffled_win64_rel",
@@ -228,7 +200,6 @@ cq_builders = struct(
     has_legacy_variant = [
         "dtf_check_no_bundle",
         "dtf_linux_dbg",
-        "dtf_linux_dbg_fastbuild",
         "dtf_linux_rel",
         "dtf_mac_arm64_rel",
         "dtf_win64_rel",

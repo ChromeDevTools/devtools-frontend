@@ -4,6 +4,7 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
+import {isAssertMethodCall} from './helpers/helpers.ts';
 import {createRule} from './utils/ruleCreator.ts';
 
 const FALSY_ASSERTIONS = new Set(['isFalse', 'isNotOk', 'isNotTrue', 'notOk']);
@@ -11,29 +12,6 @@ const TRUTHY_ASSERTIONS = new Set(['isNotFalse', 'isOk', 'isTrue', 'ok']);
 
 type MessageIds =
     'useAssertIsOk'|'useAssertIsOkInsteadOfNegation'|'useAssertIsNotOk'|'useAssertIsNotOkInsteadOfNegation';
-
-function isAssertOk(node: TSESTree.Expression) {
-  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
-      node.property.type === 'Identifier' && node.property.name === 'ok';
-}
-
-function isAssertNotOk(node: TSESTree.Expression) {
-  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
-      node.property.type === 'Identifier' && node.property.name === 'notOk';
-}
-
-function isTruthyAssertion(node: TSESTree.Expression) {
-  if (node.type === 'Identifier' && node.name === 'assert') {
-    return true;
-  }
-  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
-      node.property.type === 'Identifier' && TRUTHY_ASSERTIONS.has(node.property.name);
-}
-
-function isFalsyAssertion(node: TSESTree.Expression) {
-  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
-      node.property.type === 'Identifier' && FALSY_ASSERTIONS.has(node.property.name);
-}
 
 export default createRule<unknown[], MessageIds>({
   name: 'prefer-assert-is-ok',
@@ -81,19 +59,20 @@ export default createRule<unknown[], MessageIds>({
 
         const [argumentNode] = node.arguments;
         if (argumentNode.type === 'UnaryExpression' && argumentNode.operator === '!') {
-          if (isTruthyAssertion(node.callee)) {
+          if (isAssertMethodCall(node, TRUTHY_ASSERTIONS) ||
+              (node.callee.type === 'Identifier' && node.callee.name === 'assert')) {
             reportError(node, 'assert.isNotOk', argumentNode.argument, 'useAssertIsNotOkInsteadOfNegation');
             return;
           }
-          if (isFalsyAssertion(node.callee)) {
+          if (isAssertMethodCall(node, FALSY_ASSERTIONS)) {
             reportError(node, 'assert.isOk', argumentNode.argument, 'useAssertIsOkInsteadOfNegation');
             return;
           }
         }
 
-        if (isAssertOk(node.callee)) {
+        if (isAssertMethodCall(node, 'ok')) {
           reportError(node, 'assert.isOk', argumentNode, 'useAssertIsOk');
-        } else if (isAssertNotOk(node.callee)) {
+        } else if (isAssertMethodCall(node, 'notOk')) {
           reportError(node, 'assert.isNotOk', argumentNode, 'useAssertIsNotOk');
         }
       },

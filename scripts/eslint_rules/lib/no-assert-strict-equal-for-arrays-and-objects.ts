@@ -9,27 +9,15 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
+import {type AssertCallExpression, isAssertMethodCall} from './helpers/helpers.ts';
 import {createRule} from './utils/ruleCreator.ts';
 
-type MessageIds = 'unexpectedAssertStrictEqual'|'unexpectedAssertNotStrictEqual';
-
-type AssertCallExpression = TSESTree.CallExpression&{
-  callee: TSESTree.MemberExpression & {
-    object: TSESTree.Identifier & {name: 'assert'},
-    property: TSESTree.Identifier & {name: 'strictEqual' | 'notStrictEqual'},
-  },
-};
-
-/** Type guard for assert.strictEqual/notStrictEqual member expressions **/
-function isAssertStrictMemberExpression(
-    node: TSESTree.CallExpression, methodName: 'strictEqual'|'notStrictEqual'): node is AssertCallExpression {
-  const callee = node.callee;
-  return callee.type === 'MemberExpression' && callee.object.type === 'Identifier' && callee.object.name === 'assert' &&
-      callee.property.type === 'Identifier' && callee.property.name === methodName;
-}
+type MessageIds =|'unexpectedAssertStrictEqual'|'unexpectedAssertNotStrictEqual';
 
 /** Type guard for ArrayExpression or ObjectExpression **/
-function isArrayOrObjectExpression(node: TSESTree.Node): node is TSESTree.ArrayExpression|TSESTree.ObjectExpression {
+function isArrayOrObjectExpression(
+    node: TSESTree.Node,
+    ): node is TSESTree.ArrayExpression|TSESTree.ObjectExpression {
   return node.type === 'ArrayExpression' || node.type === 'ObjectExpression';
 }
 
@@ -54,7 +42,7 @@ export default createRule<[], MessageIds>({
   defaultOptions: [],
   create: function(context) {
     function reportError(
-        node: AssertCallExpression,
+        node: AssertCallExpression<'strictEqual'|'notStrictEqual'>,
         calleePropertyText: 'deepEqual'|'notDeepEqual',
         messageId: MessageIds,
         ): void {
@@ -70,14 +58,16 @@ export default createRule<[], MessageIds>({
 
     return {
       CallExpression(node) {
-        const hasArrayOrObjectLiteralArg = node.arguments.some(isArrayOrObjectExpression);
+        const hasArrayOrObjectLiteralArg = node.arguments.some(
+            isArrayOrObjectExpression,
+        );
         if (!hasArrayOrObjectLiteralArg) {
           return;
         }
 
-        if (isAssertStrictMemberExpression(node, 'strictEqual')) {
+        if (isAssertMethodCall(node, 'strictEqual')) {
           reportError(node, 'deepEqual', 'unexpectedAssertStrictEqual');
-        } else if (isAssertStrictMemberExpression(node, 'notStrictEqual')) {
+        } else if (isAssertMethodCall(node, 'notStrictEqual')) {
           reportError(node, 'notDeepEqual', 'unexpectedAssertNotStrictEqual');
         }
       },

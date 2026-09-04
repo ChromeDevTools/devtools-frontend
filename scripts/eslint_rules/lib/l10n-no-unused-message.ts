@@ -56,6 +56,9 @@ export default createRule({
         '\\',
         '/',
     );
+    if (MODULE_UI_STRINGS_FILENAME_REGEX.test(filename) || TRACE_INSIGHTS_UI_STRINGS_FILENAME_REGEX.test(filename)) {
+      return {};
+    }
 
     const sourceCode = context.sourceCode;
     // Store the Property node itself to report errors and apply fixes
@@ -114,11 +117,6 @@ export default createRule({
 
     return {
       VariableDeclarator(node) {
-        if (MODULE_UI_STRINGS_FILENAME_REGEX.test(filename) ||
-            TRACE_INSIGHTS_UI_STRINGS_FILENAME_REGEX.test(filename)) {
-          return;
-        }
-
         if (!isUIStringsVariableDeclarator(context, node)) {
           return;
         }
@@ -142,6 +140,10 @@ export default createRule({
         usedUIStringsKeys.add(node.property.name);
       },
       'Program:exit': function() {
+        if (declaredUIStringsKeys.size === 0) {
+          return;
+        }
+
         for (const usedKey of usedUIStringsKeys) {
           declaredUIStringsKeys.delete(usedKey);
         }

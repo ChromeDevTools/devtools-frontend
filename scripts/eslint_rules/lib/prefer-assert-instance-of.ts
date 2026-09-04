@@ -13,13 +13,13 @@ function isTruthyAssertion(node: TSESTree.Expression) {
   if (node.type === 'Identifier' && node.name === 'assert') {
     return true;
   }
-  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
-      node.property.type === 'Identifier' && TRUTHY_ASSERTIONS.has(node.property.name);
+  return (node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
+          node.property.type === 'Identifier' && TRUTHY_ASSERTIONS.has(node.property.name));
 }
 
 function isFalsyAssertion(node: TSESTree.Expression) {
-  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
-      node.property.type === 'Identifier' && FALSY_ASSERTIONS.has(node.property.name);
+  return (node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
+          node.property.type === 'Identifier' && FALSY_ASSERTIONS.has(node.property.name));
 }
 
 function isInstanceofExpression(node: TSESTree.CallExpressionArgument) {
@@ -45,7 +45,10 @@ export default createRule({
   defaultOptions: [],
   create: function(context) {
     function reportError(
-        node: TSESTree.CallExpression, calleeText: string, messageId: 'useAssertInstanceOf'|'useAssertNotInstanceOf') {
+        node: TSESTree.CallExpression,
+        calleeText: string,
+        messageId: 'useAssertInstanceOf'|'useAssertNotInstanceOf',
+    ) {
       context.report({
         node,
         messageId,
@@ -67,12 +70,17 @@ export default createRule({
 
     return {
       CallExpression(node) {
-        if (node.arguments.length >= 1 && isInstanceofExpression(node.arguments[0])) {
-          if (isTruthyAssertion(node.callee)) {
-            reportError(node, 'assert.instanceOf', 'useAssertInstanceOf');
-          } else if (isFalsyAssertion(node.callee)) {
-            reportError(node, 'assert.notInstanceOf', 'useAssertNotInstanceOf');
-          }
+        if (node.arguments.length === 0) {
+          return;
+        }
+
+        if (!isInstanceofExpression(node.arguments[0])) {
+          return;
+        }
+        if (isTruthyAssertion(node.callee)) {
+          reportError(node, 'assert.instanceOf', 'useAssertInstanceOf');
+        } else if (isFalsyAssertion(node.callee)) {
+          reportError(node, 'assert.notInstanceOf', 'useAssertNotInstanceOf');
         }
       },
     };

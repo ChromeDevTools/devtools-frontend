@@ -42,11 +42,11 @@ export default createRule({
 
         // We look for `startsWith` because we want to capture other variations as well
         // such as `UIStringsNotTranslate` from the AIAssistancePanel.
-        const isIdentifierUIStrings = declarationId.type === 'Identifier' && declarationId.name.startsWith('UIStrings');
+        if (declarationId.type !== 'Identifier' || !declarationId.name.startsWith('UIStrings')) {
+          return;
+        }
 
-        const isObjectExpressionWithoutAsConst = declarationInit?.type === 'ObjectExpression';
-
-        if (!isIdentifierUIStrings || !isObjectExpressionWithoutAsConst) {
+        if (declarationInit?.type !== 'ObjectExpression') {
           return;
         }
 

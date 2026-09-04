@@ -35,14 +35,14 @@ export function isModuleScope(context: RuleContext, node: Node): boolean {
  * (module scope, identifier starts with UIStrings, initializer is a TSAsExpression).
  */
 export function isUIStringsVariableDeclarator(context: RuleContext, variableDeclarator: VariableDeclarator): boolean {
-  if (!isModuleScope(context, variableDeclarator)) {
-    return false;
-  }
-
   if (!isUIStringsIdentifier(variableDeclarator.id)) {
     return false;
   }
 
   // Check if the initializer exists and is a TSAsExpression
-  return variableDeclarator.init?.type === 'TSAsExpression';
+  if (variableDeclarator.init?.type !== 'TSAsExpression') {
+    return false;
+  }
+
+  return isModuleScope(context, variableDeclarator);
 }

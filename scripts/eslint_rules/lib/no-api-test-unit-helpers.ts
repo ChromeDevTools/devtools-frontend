@@ -26,6 +26,10 @@ export default createRule({
   create(context) {
     return {
       Identifier(node: TSESTree.Identifier) {
+        if (node.name !== 'TestUniverse' && node.name !== 'describeWithEnvironment') {
+          return;
+        }
+
         if (node.parent.type === 'ImportSpecifier' && node !== node.parent.local) {
           return;
         }
@@ -38,7 +42,7 @@ export default createRule({
             node,
             messageId: 'noTestUniverse',
           });
-        } else if (node.name === 'describeWithEnvironment') {
+        } else {
           context.report({
             node,
             messageId: 'noDescribeWithEnvironment',

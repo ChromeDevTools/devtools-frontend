@@ -54,6 +54,7 @@ export default createRule<[], MessageIds>({
     // Use a more specific type for the set elements if possible, otherwise Node or TemplateElement
     const litCheckboxElements = new Set<TemplateElement>();
     let hasCheckboxStylesInTemplate = false;
+    const absoluteDirectory = path.dirname(path.resolve(filename));
     return {
       TaggedTemplateExpression(node) {
         // Assuming isLitHtmlTemplateCall is typed appropriately in utils.ts
@@ -80,13 +81,10 @@ export default createRule<[], MessageIds>({
         }
 
         // Ensure node.source.value is a string before resolving
-        if (typeof node.source.value !== 'string') {
+        if (typeof node.source.value !== 'string' || !node.source.value.includes('input')) {
           return;
         }
 
-        // Get the absolute path of the current file's directory, so we can
-        // compare it to COMMON_INPUT_STYLES and see if the file does import the common styles.
-        const absoluteDirectory = path.dirname(path.resolve(filename));
         // Use try-catch for path resolution as it might fail for invalid paths
         try {
           const fullImportPath = path.resolve(absoluteDirectory, node.source.value);
@@ -104,10 +102,11 @@ export default createRule<[], MessageIds>({
       },
 
       AssignmentExpression(node: AssignmentExpression) {
-        if (node.left.type === 'MemberExpression' && node.left.property.type === 'Identifier' &&
-            node.left.property.name === 'adoptedStyleSheets') {
-          adoptedStyleSheetsCallNode = node;
+        if (node.left.type !== 'MemberExpression' || node.left.property.type !== 'Identifier' ||
+            node.left.property.name !== 'adoptedStyleSheets') {
+          return;
         }
+        adoptedStyleSheetsCallNode = node;
       },
 
       'Program:exit'() {

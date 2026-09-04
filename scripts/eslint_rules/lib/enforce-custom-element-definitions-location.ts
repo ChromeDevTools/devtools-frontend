@@ -57,29 +57,29 @@ export default createRule<[{rootFrontendDirectory: string}], 'definitionInWrongF
       path.join(frontEndDirectory, 'ui', 'legacy'),
     ]);
 
+    for (const allowedLocation of ALLOWED_CUSTOM_ELEMENT_LOCATIONS) {
+      if (classDefiningFileName.startsWith(allowedLocation)) {
+        return {};
+      }
+    }
+
+    if (classDefiningFileName.startsWith(PANELS_DIRECTORY)) {
+      const filePathWithPanelName = classDefiningFileName.substring(
+          PANELS_DIRECTORY.length + 1,
+      );
+      const filePathWithoutPanelName = filePathWithPanelName.substring(
+          filePathWithPanelName.indexOf(path.sep) + 1,
+      );
+
+      if (filePathWithoutPanelName.includes(`components${path.sep}`)) {
+        return {};
+      }
+    }
+
     return {
       ClassDeclaration(node) {
         if (node.superClass?.type !== 'Identifier' || node.superClass?.name !== 'HTMLElement') {
           return;
-        }
-
-        for (const allowedLocation of ALLOWED_CUSTOM_ELEMENT_LOCATIONS) {
-          if (classDefiningFileName.startsWith(allowedLocation)) {
-            return;
-          }
-        }
-
-        if (classDefiningFileName.startsWith(PANELS_DIRECTORY)) {
-          const filePathWithPanelName = classDefiningFileName.substring(
-              PANELS_DIRECTORY.length + 1,
-          );
-          const filePathWithoutPanelName = filePathWithPanelName.substring(
-              filePathWithPanelName.indexOf(path.sep) + 1,
-          );
-
-          if (filePathWithoutPanelName.includes(`components${path.sep}`)) {
-            return;
-          }
         }
 
         context.report({

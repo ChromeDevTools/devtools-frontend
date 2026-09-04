@@ -7,22 +7,8 @@
  * @author Jack Franklin
  */
 
-import type {TSESTree} from '@typescript-eslint/utils';
-
+import {isAssertMethodCall} from './helpers/helpers.ts';
 import {createRule} from './utils/ruleCreator.ts';
-
-/** Helper type guard to check for assert.equal calls **/
-function isAssertEqualCall(node: TSESTree.Node): node is TSESTree.CallExpression&{
-  callee: TSESTree.MemberExpression&{
-    object: TSESTree.Identifier & {name: 'assert'},
-    property: TSESTree.Identifier & {name: 'equal'},
-  },
-}
-{
-  return node.type === 'CallExpression' && node.callee.type === 'MemberExpression' &&
-      node.callee.object.type === 'Identifier' && node.callee.object.name === 'assert' &&
-      node.callee.property.type === 'Identifier' && node.callee.property.name === 'equal';
-}
 
 export default createRule({
   name: 'no-assert-equal',
@@ -44,7 +30,7 @@ export default createRule({
   create(context) {
     return {
       CallExpression(node) {
-        if (!isAssertEqualCall(node)) {
+        if (!isAssertMethodCall(node, 'equal')) {
           return;
         }
 

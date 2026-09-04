@@ -8,10 +8,10 @@ import {createRule} from './utils/ruleCreator.ts';
 import {isStarAsImportSpecifier} from './utils/treeHelpers.ts';
 
 // Define the structure of the options expected by the rule.
-type RuleOptions = [{
+type RuleOptions = Array<{
   modulePath: string,
   importName: string,
-}];
+}>;
 
 // Define the message IDs used by the rule.
 type MessageIds = 'invalidName';
@@ -42,15 +42,20 @@ export default createRule<RuleOptions, MessageIds>({
       minItems: 0,  // Allow empty options array
     },
   },
-  defaultOptions: [{
-    modulePath: '',
-    importName: '',
-  }],
+  defaultOptions: [],
   create: function(context) {
-    const filename = context.filename;
     const options = context.options;
+    if (!options || options.length === 0) {
+      return {};
+    }
+    const filename = context.filename;
     const importingFileName = path.resolve(filename);
     const importingDir = path.dirname(importingFileName);
+
+    const resolvedChecks = options.map(check => ({
+                                         ...check,
+                                         absoluteCheckPath: path.resolve(check.modulePath),
+                                       }));
 
     return {
       ImportDeclaration(node) {
@@ -61,15 +66,17 @@ export default createRule<RuleOptions, MessageIds>({
         }
 
         const importSourceValue = node.source.value;
+        if (typeof importSourceValue !== 'string') {
+          return;
+        }
         const normalizedImportPath = path.normalize(importSourceValue);
         const importPathForErrorMessage = importSourceValue.replace(/\\/g, '/');
         const absoluteImportPath = path.resolve(importingDir, normalizedImportPath);
 
         const importNameInCode = node.specifiers[0].local.name;
 
-        for (const check of options) {
-          const absoluteCheckPath = path.resolve(check.modulePath);
-          if (absoluteImportPath === absoluteCheckPath && importNameInCode !== check.importName) {
+        for (const check of resolvedChecks) {
+          if (absoluteImportPath === check.absoluteCheckPath && importNameInCode !== check.importName) {
             context.report({
               messageId: 'invalidName',
               node: node.specifiers[0].local,

@@ -41,30 +41,39 @@ export default createRule({
   create: function(context) {
     return {
       MemberExpression(node) {
-        if (node.object.type !== 'Identifier' || node.property.type !== 'Identifier') {
+        if (node.property.type !== 'Identifier' || node.property.name !== 'skip') {
           return;
         }
-
-        if ((node.object.name === 'it' || node.object.name === 'describe') && node.property.name === 'skip' &&
-            node.parent?.type === 'CallExpression') {
-          context.report({
-            node,
-            messageId: 'disallowSkip',
-          });
+        if (node.object.type !== 'Identifier') {
+          return;
         }
+        if (node.object.name !== 'it' && node.object.name !== 'describe') {
+          return;
+        }
+        if (node.parent?.type !== 'CallExpression') {
+          return;
+        }
+        context.report({
+          node,
+          messageId: 'disallowSkip',
+        });
       },
 
       CallExpression(node: TSESTree.CallExpression) {
-        if (node.callee.type === 'Identifier' && node.callee.name === 'it' && node.arguments[0]) {
-          const textValue = getTextValue(node.arguments[0]);
-
-          if (textValue && TEST_NAME_REGEX.test(textValue)) {
-            context.report({
-              node,
-              messageId: 'extraBugId',
-            });
-          }
+        if (node.callee.type !== 'Identifier' || node.callee.name !== 'it') {
+          return;
         }
+        if (node.arguments.length === 0) {
+          return;
+        }
+        const textValue = getTextValue(node.arguments[0]);
+        if (!textValue || !TEST_NAME_REGEX.test(textValue)) {
+          return;
+        }
+        context.report({
+          node,
+          messageId: 'extraBugId',
+        });
       },
     };
   },

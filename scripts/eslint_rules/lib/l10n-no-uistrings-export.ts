@@ -32,6 +32,9 @@ export default createRule({
   defaultOptions: [],
   create: function(context) {
     const filename = context.filename.replaceAll('\\', '/');
+    if (MODULE_UI_STRINGS_FILENAME_REGEX.test(filename) || TRACE_INSIGHTS_UI_STRINGS_FILENAME_REGEX.test(filename)) {
+      return {};
+    }
     const sourceCode = context.sourceCode;
 
     function removeExportKeywordFromUIStrings(
@@ -52,10 +55,6 @@ export default createRule({
 
     return {
       ExportNamedDeclaration(node) {
-        if (MODULE_UI_STRINGS_FILENAME_REGEX.test(filename) ||
-            TRACE_INSIGHTS_UI_STRINGS_FILENAME_REGEX.test(filename)) {
-          return;
-        }
 
         const declaration = node.declaration;
         if (declaration?.type !== 'VariableDeclaration') {

@@ -4,14 +4,10 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
+import {isAssertMethodCall} from './helpers/helpers.ts';
 import {createRule} from './utils/ruleCreator.ts';
 
 const EQUALITY_ASSERTIONS = new Set(['deepEqual', 'deepStrictEqual', 'equal', 'strictEqual']);
-
-function isAssertEquality(node: TSESTree.Expression) {
-  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
-      node.property.type === 'Identifier' && EQUALITY_ASSERTIONS.has(node.property.name);
-}
 
 function isLengthProperty(node: TSESTree.CallExpressionArgument): node is TSESTree.MemberExpression {
   return node.type === 'MemberExpression' && node.property.type === 'Identifier' && node.property.name === 'length';
@@ -65,9 +61,15 @@ export default createRule({
 
     return {
       CallExpression(node) {
-        if (isAssertEquality(node.callee) && node.arguments.length >= 2 &&
-            (isLengthProperty(node.arguments[0]) && isNumberLiteral(node.arguments[1]) ||
-             (isNumberLiteral(node.arguments[0]) && isLengthProperty(node.arguments[1])))) {
+        if (!isAssertMethodCall(node, EQUALITY_ASSERTIONS)) {
+          return;
+        }
+        if (node.arguments.length < 2) {
+          return;
+        }
+        const [firstArg, secondArg] = node.arguments;
+        if ((isLengthProperty(firstArg) && isNumberLiteral(secondArg)) ||
+            (isNumberLiteral(firstArg) && isLengthProperty(secondArg))) {
           reportError(node);
         }
       },

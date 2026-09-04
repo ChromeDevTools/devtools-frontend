@@ -126,13 +126,17 @@ export default createRule({
         scopeToCanvasCalls.set(nodeToKeyForMap(node), []);
       },
       MemberExpression(node: MemberExpression) {
-        const methodCallsToTrack = ['save', 'restore'];
-        if (node.object.type === 'Identifier' && node.object?.name === 'context' &&
-            node.property.type === 'Identifier' &&
-            // Use type assertion because .includes doesn't narrow the type
-            methodCallsToTrack.includes(node.property?.name as CanvasCall)) {
-          trackContextCall(node.property.name as CanvasCall);
+        if (node.property.type !== 'Identifier') {
+          return;
         }
+        const propName = node.property.name;
+        if (propName !== 'save' && propName !== 'restore') {
+          return;
+        }
+        if (node.object.type !== 'Identifier' || node.object.name !== 'context') {
+          return;
+        }
+        trackContextCall(propName as CanvasCall);
       },
       // All the different types of scope we have to deal with.
       BlockStatement: (node: BlockStatement) => enterScope(node),

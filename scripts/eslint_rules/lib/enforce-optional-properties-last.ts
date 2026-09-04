@@ -37,6 +37,9 @@ export default createRule<RuleOptions, MessageIds>({
     const sourceCode = context.sourceCode;
 
     function handleTypeElements(typeElements: TSESTree.TypeElement[]) {
+      if (typeElements.length < 2) {
+        return;
+      }
       let misplacedOptionalProp: TSESTree.TSPropertySignature|null = null;
 
       for (const member of typeElements) {

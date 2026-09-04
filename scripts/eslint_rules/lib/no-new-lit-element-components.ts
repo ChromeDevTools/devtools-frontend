@@ -27,15 +27,15 @@ export default createRule({
   defaultOptions: [],
   create: function(context) {
     const filename = context.filename;
+    const normalizedFilename = path.normalize(filename);
+    if (allowedPaths.some(allowedPath => normalizedFilename.includes(path.normalize(allowedPath)))) {
+      return {};
+    }
+
     return {
       ClassDeclaration(node) {
         // Use `extends LitElement` as a signal.
         if (node.superClass?.type !== 'Identifier' || node.superClass?.name !== 'LitElement') {
-          return;
-        }
-        // Existing components are still allowed.
-        // This needs to use includes if we resolve the full path
-        if (allowedPaths.some(allowedPath => path.normalize(filename).includes(path.normalize(allowedPath)))) {
           return;
         }
         context.report({

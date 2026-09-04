@@ -2,8 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import type {TSESTree} from '@typescript-eslint/utils';
-
+import {isAssertMethodCall} from './helpers/helpers.ts';
 import {createRule} from './utils/ruleCreator.ts';
 
 /**
@@ -35,23 +34,14 @@ export default createRule({
   },
   defaultOptions: [],
   create(context) {
-    function isAssertDeepStrictEqual(node: TSESTree.Expression): node is TSESTree.MemberExpression&{
-      property: TSESTree.Identifier,
-    }
-    {
-      return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
-          node.property.type === 'Identifier' && node.property.name === 'deepStrictEqual';
-    }
-
     return {
       CallExpression(node) {
-        const callee = node.callee;
-        if (isAssertDeepStrictEqual(callee)) {
+        if (isAssertMethodCall(node, 'deepStrictEqual')) {
           context.report({
             node,
             messageId: 'unexpectedAssertDeepStrictEqual',
             fix(fixer) {
-              return fixer.replaceText(callee.property, 'deepEqual');
+              return fixer.replaceText(node.callee.property, 'deepEqual');
             },
           });
         }

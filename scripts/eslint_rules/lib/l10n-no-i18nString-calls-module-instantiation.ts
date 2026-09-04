@@ -44,10 +44,10 @@ export default createRule({
           return;
         }
 
-        const ancestorTypes = sourceCode.getAncestors(callExpression).map(node => node.type);
-        const hasRequiredAncestor = ancestorTypes.some(
-            ancestorType => REQUIRED_ANCESTOR.has(ancestorType),
-        );
+        const hasRequiredAncestor = sourceCode.getAncestors(callExpression)
+                                        .some(
+                                            node => REQUIRED_ANCESTOR.has(node.type),
+                                        );
 
         if (!hasRequiredAncestor) {
           context.report({

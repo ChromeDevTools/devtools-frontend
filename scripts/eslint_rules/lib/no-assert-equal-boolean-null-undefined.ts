@@ -12,40 +12,15 @@
 
 import type {TSESTree} from '@typescript-eslint/utils';
 
+import {type AssertCallExpression, isAssertMethodCall} from './helpers/helpers.ts';
 import {createRule} from './utils/ruleCreator.ts';
 
 // Define message IDs based on the meta.messages keys
 type MessageIds = 'useAssertIsDefined'|'useAssertIsFalse'|'useAssertIsNotFalse'|'useAssertIsNotNull'|
     'useAssertIsNotTrue'|'useAssertIsNull'|'useAssertIsTrue'|'useAssertIsUndefined';
 
-type AssertMemberExpression<T extends Set<string> = Set<string>> = TSESTree.MemberExpression&{
-  object: TSESTree.Identifier & {name: 'assert'},
-  property: TSESTree.Identifier & {name: keyof T},
-};
-
 const EQUALITY_ASSERTIONS = new Set(['deepEqual', 'strictEqual']);
 const INEQUALITY_ASSERTIONS = new Set(['notDeepEqual', 'notStrictEqual']);
-
-function isAssertMemberExpression(node: TSESTree.Node): node is AssertMemberExpression {
-  return node.type === 'MemberExpression' && node.object.type === 'Identifier' && node.object.name === 'assert' &&
-      node.property.type === 'Identifier';
-}
-
-function isAssertEquality(node: TSESTree.CallExpression): node is TSESTree.CallExpression&{
-  callee: AssertMemberExpression<typeof EQUALITY_ASSERTIONS>,
-}
-{
-  const calleeNode = node.callee;
-  return isAssertMemberExpression(calleeNode) && EQUALITY_ASSERTIONS.has(calleeNode.property.name);
-}
-
-function isAssertInequality(node: TSESTree.CallExpression): node is TSESTree.CallExpression&{
-  callee: AssertMemberExpression<typeof INEQUALITY_ASSERTIONS>,
-}
-{
-  const calleeNode = node.callee;
-  return isAssertMemberExpression(calleeNode) && INEQUALITY_ASSERTIONS.has(calleeNode.property.name);
-}
 
 /** Type guard for Literal nodes with specific values **/
 function isLiteral<T extends string|boolean|null|number|RegExp>(
@@ -95,9 +70,8 @@ export default createRule<[], MessageIds>({
   create: function(context) {
     const sourceCode = context.sourceCode;
 
-    function reportError(
-        node: TSESTree.CallExpression&{callee: AssertMemberExpression}, calleeText: string, argumentIndex: number,
-        messageId: MessageIds): void {
+    function reportError(node: AssertCallExpression, calleeText: string, argumentIndex: number,
+                         messageId: MessageIds): void {
       // Type assertion is safe here because reportError is only called after isAssertEquality/Inequality checks
       const methodName = node.callee.property.name;
       context.report({
@@ -123,6 +97,10 @@ export default createRule<[], MessageIds>({
 
     return {
       CallExpression(node): void {
+        if (!isAssertMethodCall(node, EQUALITY_ASSERTIONS) && !isAssertMethodCall(node, INEQUALITY_ASSERTIONS)) {
+          return;
+        }
+
         // Need at least two arguments for equality/inequality checks
         if (node.arguments.length < 2) {
           return;
@@ -135,7 +113,7 @@ export default createRule<[], MessageIds>({
           return;
         }
 
-        if (isAssertEquality(node)) {
+        if (isAssertMethodCall(node, EQUALITY_ASSERTIONS)) {
           if (isLiteral(arg1, false)) {
             reportError(node, 'assert.isFalse', 0, 'useAssertIsFalse');
           } else if (isLiteral(arg0, false)) {
@@ -153,7 +131,7 @@ export default createRule<[], MessageIds>({
           } else if (isUndefinedIdentifier(arg0)) {
             reportError(node, 'assert.isUndefined', 1, 'useAssertIsUndefined');
           }
-        } else if (isAssertInequality(node)) {
+        } else if (isAssertMethodCall(node, INEQUALITY_ASSERTIONS)) {
           if (isLiteral(arg1, false)) {
             reportError(node, 'assert.isNotFalse', 0, 'useAssertIsNotFalse');
           } else if (isLiteral(arg0, false)) {

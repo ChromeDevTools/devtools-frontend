@@ -27,9 +27,16 @@ export default createRule({
   create: function(context) {
     return {
       ImportDeclaration(node) {
-        const importPath = node.source.value;
-        const normalizedImportPath = path.normalize(importPath);
+        if (!isStarAsImportSpecifier(node.specifiers)) {
+          return;
+        }
 
+        const importPath = node.source.value;
+        if (typeof importPath !== 'string' || !importPath.includes('kit')) {
+          return;
+        }
+
+        const normalizedImportPath = path.normalize(importPath);
         const currentFileAbsolutePath = context.filename;
         const currentFileDirectory = path.dirname(currentFileAbsolutePath);
         const resolvedAbsoluteImportPath = path.resolve(currentFileDirectory, normalizedImportPath);
@@ -39,15 +46,13 @@ export default createRule({
         }
 
         const importPathForErrorMessage = importPath.replace(/\\/g, '/');
-        if (isStarAsImportSpecifier(node.specifiers)) {
-          context.report({
-            node,
-            messageId: 'namedKitImport',
-            data: {
-              importPathForErrorMessage,
-            },
-          });
-        }
+        context.report({
+          node,
+          messageId: 'namedKitImport',
+          data: {
+            importPathForErrorMessage,
+          },
+        });
       },
     };
   },

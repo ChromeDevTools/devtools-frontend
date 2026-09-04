@@ -27,7 +27,7 @@
 
 import type {TSESTree} from '@typescript-eslint/typescript-estree';
 import {ESLintUtils} from '@typescript-eslint/utils';
-import type {Type} from 'typescript';
+import type {Type, TypeChecker} from 'typescript';
 
 import {createRule} from './utils/ruleCreator.ts';
 
@@ -56,14 +56,20 @@ export default createRule({
   },
   defaultOptions: [],
   create: function(context) {
-    // This might speed things up a bit.
     const rawSourceCode = context.sourceCode.getText();
-    if (!rawSourceCode.match(/Timing|Micro|Milli|Seconds/i)) {
+    if (!/\b(Micro|Milli|Seconds)\b/.test(rawSourceCode)) {
       return {};
     }
+    let services: ReturnType<typeof ESLintUtils.getParserServices>|undefined;
+    let checker: TypeChecker|undefined;
 
-    const services = ESLintUtils.getParserServices(context);
-    const checker = services.program.getTypeChecker();
+    function getServicesAndChecker() {
+      if (!services || !checker) {
+        services = ESLintUtils.getParserServices(context);
+        checker = services.program.getTypeChecker();
+      }
+      return {services, checker};
+    }
 
     function getTypeName(node: TSESTree.Node): string|null {
       if (node.type === 'BinaryExpression') {
@@ -72,7 +78,9 @@ export default createRule({
         return left === right ? left : null;
       }
 
-      const type = checker.getTypeAtLocation(services.esTreeNodeToTSNodeMap.get(node));
+      const {services: parserServices, checker: typeChecker} = getServicesAndChecker();
+      const tsNode = parserServices.esTreeNodeToTSNodeMap.get(node);
+      const type = typeChecker.getTypeAtLocation(tsNode);
       if (type.isLiteral()) {
         return null;
       }
@@ -289,13 +297,16 @@ export default createRule({
 
     return {
       TSAsExpression(node) {
+        if (node.expression.type !== 'BinaryExpression' && node.expression.type !== 'CallExpression') {
+          return;
+        }
         const expectedResultType = getTypeName(node.typeAnnotation);
         if (expectedResultType && isTimingType(expectedResultType)) {
           validateTimingResult(node.expression, expectedResultType);
         }
       },
       VariableDeclarator(node) {
-        if (!node.init) {
+        if (!node.init || (node.init.type !== 'BinaryExpression' && node.init.type !== 'CallExpression')) {
           return;
         }
 
@@ -305,6 +316,9 @@ export default createRule({
         }
       },
       AssignmentExpression(node) {
+        if (node.right.type !== 'BinaryExpression' && node.right.type !== 'CallExpression') {
+          return;
+        }
         const expectedResultType = getTypeName(node.left);
         if (isTimingType(expectedResultType)) {
           validateTimingResult(node.right, expectedResultType);
@@ -323,6 +337,10 @@ export default createRule({
         }
       },
       CallExpression(node) {
+        if (node.callee.type !== 'MemberExpression' || node.callee.object.type !== 'Identifier' ||
+            node.callee.object.name !== 'Math') {
+          return;
+        }
         validateMinMaxCall(node, null);
       },
     };

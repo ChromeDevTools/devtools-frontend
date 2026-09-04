@@ -153,14 +153,10 @@ export default createRule({
           return;
         }
 
-        if (node.superClass?.type !== 'Identifier' || node.superClass.name !== 'Event') {
-          return;
-        }
-
         classDeclarationsToLint.push(node);
       },
       'Program:exit'(): void {
-        if (foundLocalEventClassDeclaration) {
+        if (foundLocalEventClassDeclaration || classDeclarationsToLint.length === 0) {
           return;
         }
 

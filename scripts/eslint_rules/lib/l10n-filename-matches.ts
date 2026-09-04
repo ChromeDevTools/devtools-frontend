@@ -82,9 +82,22 @@ export default createRule<Options, MessageIds>({
           '\'rootFrontendDirectory\' option must be provided for the l10n-filename-matches rule.',
       );
     }
+    const currentSourceFile = path.resolve(filename);
+    const currentFileRelativeToFrontEnd = path.relative(
+        frontEndDirectory,
+        currentSourceFile,
+    );
+    const currentModuleDirectory = path.dirname(currentSourceFile);
+    const allowedPathArguments = new Set([
+      currentSourceFile,
+      path.join(currentModuleDirectory, 'ModuleUIStrings.js'),
+      path.join(currentModuleDirectory, 'ModuleUIStrings.ts'),
+    ]);
+    const newFileName = currentFileRelativeToFrontEnd.replace(/\\/g, '/');
+
     return {
       CallExpression(node) {
-        if (!isModuleScope(context, node) || !isRegisterUIStringsCall(node)) {
+        if (!isRegisterUIStringsCall(node) || !isModuleScope(context, node)) {
           return;
         }
 
@@ -96,26 +109,12 @@ export default createRule<Options, MessageIds>({
           return;
         }
 
-        const currentSourceFile = path.resolve(filename);
-        const currentFileRelativeToFrontEnd = path.relative(
-            frontEndDirectory,
-            currentSourceFile,
-        );
-
-        const currentModuleDirectory = path.dirname(currentSourceFile);
-        const allowedPathArguments = [
-          currentSourceFile,
-          path.join(currentModuleDirectory, 'ModuleUIStrings.js'),
-          path.join(currentModuleDirectory, 'ModuleUIStrings.ts'),
-        ];
-
         const actualPath = path.join(
             frontEndDirectory,
             `${firstArgument.value}`,
         );
 
-        if (!allowedPathArguments.includes(actualPath)) {
-          const newFileName = currentFileRelativeToFrontEnd.replace(/\\/g, '/');
+        if (!allowedPathArguments.has(actualPath)) {
           context.report({
             node,
             messageId: 'pathMismatch',

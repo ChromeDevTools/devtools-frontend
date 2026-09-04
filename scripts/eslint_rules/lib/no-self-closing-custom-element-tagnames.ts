@@ -28,6 +28,10 @@ export default createRule({
           return;
         }
 
+        if (!node.quasi.quasis.some(templatePart => templatePart.value.raw.includes('/>'))) {
+          return;
+        }
+
         const text = node.quasi.quasis.map(templatePart => templatePart.value.raw).join('@TEMPLATE_EXPRESSION()');
 
         if (text.match(/<@TEMPLATE_EXPRESSION\(\)([^>]*?)\/>/)) {

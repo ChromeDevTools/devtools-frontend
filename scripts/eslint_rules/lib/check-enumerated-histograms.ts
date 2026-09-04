@@ -23,18 +23,26 @@ export default createRule({
   create: function(context) {
     return {
       CallExpression(node) {
-        if (node.callee.type === 'MemberExpression' && node.callee.object.type === 'Identifier' &&
-            node.callee.object.name === 'InspectorFrontendHostInstance' && node.callee.property.type === 'Identifier' &&
-            node.callee.property.name === 'recordEnumeratedHistogram') {
-          const argumentNode = node.arguments[2];
+        if (node.callee.type !== 'MemberExpression') {
+          return;
+        }
+        if (node.callee.property.type !== 'Identifier' || node.callee.property.name !== 'recordEnumeratedHistogram') {
+          return;
+        }
+        if (node.callee.object.type !== 'Identifier' || node.callee.object.name !== 'InspectorFrontendHostInstance') {
+          return;
+        }
+        const argumentNode = node.arguments[2];
+        if (!argumentNode) {
+          return;
+        }
 
-          if (argumentNode.type !== 'MemberExpression' || argumentNode.property.type !== 'Identifier' ||
-              argumentNode.property.name !== 'MAX_VALUE') {
-            context.report({
-              node,
-              messageId: 'invalidArgument',
-            });
-          }
+        if (argumentNode.type !== 'MemberExpression' || argumentNode.property.type !== 'Identifier' ||
+            argumentNode.property.name !== 'MAX_VALUE') {
+          context.report({
+            node,
+            messageId: 'invalidArgument',
+          });
         }
       },
     };

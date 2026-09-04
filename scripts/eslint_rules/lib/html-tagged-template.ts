@@ -33,52 +33,63 @@ export default createRule({
         lastImport = node;
       },
       VariableDeclarator(node) {
-        const scope = sourceCode.getScope(node);
-        if (scope.type !== 'module') {
+        if (shorthandDefined) {
           return;
         }
+        let matchesHtml = false;
         if (node.id.type === 'Identifier' && node.id.name === 'html') {
-          shorthandDefined = true;
+          matchesHtml = true;
+        } else if (node.id.type === 'ObjectPattern') {
+          for (const property of node.id.properties || []) {
+            if (property.type === 'Property' && property.key.type === 'Identifier' && property.key.name === 'html') {
+              matchesHtml = true;
+              break;
+            }
+          }
         }
-
-        if (node.id.type !== 'ObjectPattern') {
+        if (!matchesHtml) {
           return;
         }
 
-        for (const property of node.id.properties || []) {
-          if (property.type === 'Property' && property.key.type === 'Identifier' && property.key.name === 'html') {
-            shorthandDefined = true;
-          }
+        const scope = sourceCode.getScope(node);
+        if (scope.type === 'module') {
+          shorthandDefined = true;
         }
       },
       TaggedTemplateExpression(node) {
         const tag = node.tag;
-        if (tag.type === 'MemberExpression' && tag.object.type === 'Identifier' && tag.object.name === 'Lit' &&
-            tag.property.type === 'Identifier' && tag.property.name === 'html') {
-          context.report({
-            node,
-            messageId: 'useUnqualifiedHtmlTaggedTemplate',
-            fix(fixer) {
-              const result: RuleFix[] = [];
-              if (tag.object?.range?.[0] && tag.property?.range?.[0]) {
-                result.push(
-                    fixer.removeRange([
-                      tag.object.range[0],
-                      tag.property.range[0],
-                    ]),
-                );
-              }
-
-              if (lastImport && !shorthandDefined) {
-                result.push(
-                    fixer.insertTextAfter(lastImport, '\n\nconst {html} = Lit;'),
-                );
-                shorthandDefined = true;
-              }
-              return result;
-            },
-          });
+        if (tag.type !== 'MemberExpression') {
+          return;
         }
+        if (tag.property.type !== 'Identifier' || tag.property.name !== 'html') {
+          return;
+        }
+        if (tag.object.type !== 'Identifier' || tag.object.name !== 'Lit') {
+          return;
+        }
+        context.report({
+          node,
+          messageId: 'useUnqualifiedHtmlTaggedTemplate',
+          fix(fixer) {
+            const result: RuleFix[] = [];
+            if (tag.object?.range?.[0] && tag.property?.range?.[0]) {
+              result.push(
+                  fixer.removeRange([
+                    tag.object.range[0],
+                    tag.property.range[0],
+                  ]),
+              );
+            }
+
+            if (lastImport && !shorthandDefined) {
+              result.push(
+                  fixer.insertTextAfter(lastImport, '\n\nconst {html} = Lit;'),
+              );
+              shorthandDefined = true;
+            }
+            return result;
+          },
+        });
       },
     };
   },

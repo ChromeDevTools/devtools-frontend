@@ -31,20 +31,22 @@ export default createRule({
     const filename = context.filename;
     return {
       ImportDeclaration(node) {
-        const importPath = path.normalize(`${node.source.value}`);
+        const value = typeof node.source.value === 'string' ? node.source.value : '';
+        if (!value.endsWith('.css.js')) {
+          return;
+        }
 
-        if (importPath.endsWith('.css.js')) {
-          const importingFileName = path.resolve(filename);
-          const exportingFileName = path.resolve(path.dirname(importingFileName), importPath);
-          const importedCSS = exportingFileName.replace(/\.js$/, '');
+        const importPath = path.normalize(value);
+        const importingFileName = path.resolve(filename);
+        const exportingFileName = path.resolve(path.dirname(importingFileName), importPath);
+        const importedCSS = exportingFileName.replace(/\.js$/, '');
 
-          if (!fs.existsSync(importedCSS)) {
-            context.report({
-              node,
-              messageId: 'fileDoesNotExist',
-              data: {filename: path.basename(importedCSS)},
-            });
-          }
+        if (!fs.existsSync(importedCSS)) {
+          context.report({
+            node,
+            messageId: 'fileDoesNotExist',
+            data: {filename: path.basename(importedCSS)},
+          });
         }
       },
     };

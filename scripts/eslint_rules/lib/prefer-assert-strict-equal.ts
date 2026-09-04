@@ -43,9 +43,8 @@ export default createRule({
   defaultOptions: [],
   create: function(context) {
     const {sourceCode} = context;
-
-    const parserServices = ESLintUtils.getParserServices(context);
-    const checker: TypeChecker = parserServices.program.getTypeChecker();
+    let parserServices: ReturnType<typeof ESLintUtils.getParserServices>|undefined;
+    let checker: TypeChecker|undefined;
 
     function reportError(
         node: TSESTree.CallExpression, calleeText: string,
@@ -59,6 +58,10 @@ export default createRule({
       // Allow type narrowing for objects called via `x.y === z`
       // Also for false assertion we want to skip this
       if (argumentNode.left.type === 'MemberExpression' && calleeText === 'assert.strictEqual') {
+        if (!parserServices || !checker) {
+          parserServices = ESLintUtils.getParserServices(context);
+          checker = parserServices.program.getTypeChecker();
+        }
         const tsNode = parserServices.esTreeNodeToTSNodeMap.get(argumentNode.left.property);
         const type: Type = checker.getTypeAtLocation(tsNode);
         if ((type.flags & TypeFlags.Object) === 0) {

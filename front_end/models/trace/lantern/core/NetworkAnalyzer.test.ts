@@ -8,21 +8,23 @@ import {expectConsoleLogs} from '../../../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
 import * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';
-import {runTrace, toLanternTrace} from '../testing/testing.js';
+import {toLanternTrace} from '../testing/testing.js';
 
 const {NetworkAnalyzer} = Lantern.Core;
 
-async function createRequests(context: Mocha.Suite|Mocha.Context, trace: Lantern.Types.Trace) {
-  const parsedTrace = await runTrace(context, trace);
-  return Trace.LanternComputationData.createNetworkRequests(trace, parsedTrace);
-}
-
 describe('NetworkAnalyzer', () => {
-  let trace: Lantern.Types.Trace;
-  let traceWithRedirect: Lantern.Types.Trace;
+  let requests: Trace.Lantern.Types.NetworkRequest[];
+  let requestsWithRedirect: Trace.Lantern.Types.NetworkRequest[];
   before(async function() {
-    trace = toLanternTrace(await TraceLoader.rawEvents(this, 'lantern/paul/trace.json.gz'));
-    traceWithRedirect = toLanternTrace(await TraceLoader.rawEvents(this, 'lantern/redirect/trace.json.gz'));
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz', undefined, {withTimelinePanel: false});
+    const parsedTraceWithRedirect =
+        await TraceLoader.traceEngine(this, 'lantern/redirect/trace.json.gz', undefined, {withTimelinePanel: false});
+    const trace = toLanternTrace(parsedTrace.traceEvents);
+    const traceWithRedirect = toLanternTrace(parsedTraceWithRedirect.traceEvents);
+    requests = Trace.LanternComputationData.createNetworkRequests(trace, parsedTrace.data);
+    requestsWithRedirect =
+        Trace.LanternComputationData.createNetworkRequests(traceWithRedirect, parsedTraceWithRedirect.data);
   });
 
   let recordId = 1;
@@ -160,8 +162,7 @@ describe('NetworkAnalyzer', () => {
       assert.deepEqual(result, expected);
     });
 
-    it('should work on a real trace', async () => {
-      const requests = await createRequests(this, trace);
+    it('should work on a real trace', () => {
       const result = NetworkAnalyzer.estimateIfConnectionWasReused(requests);
       const distinctConnections = Array.from(result.values()).filter(item => !item).length;
       assert.strictEqual(result.size, 24);
@@ -269,16 +270,14 @@ describe('NetworkAnalyzer', () => {
       assert.deepEqual(result.get('https://example.com'), expected);
     });
 
-    it('should work on a real trace', async () => {
-      const requests = await createRequests(this, trace);
+    it('should work on a real trace', () => {
       const result = NetworkAnalyzer.estimateRTTByOrigin(requests);
       assertCloseEnough(result.get('https://www.paulirish.com')?.min ?? 0, 10);
       assertCloseEnough(result.get('https://www.googletagmanager.com')?.min ?? 0, 17);
       assertCloseEnough(result.get('https://www.google-analytics.com')?.min ?? 0, 10);
     });
 
-    it('should approximate well with either method', async () => {
-      const requests = await createRequests(this, trace);
+    it('should approximate well with either method', () => {
       const result = NetworkAnalyzer.estimateRTTByOrigin(requests).get(NetworkAnalyzer.summary);
       const resultApprox = NetworkAnalyzer
                                .estimateRTTByOrigin(requests, {
@@ -312,8 +311,7 @@ describe('NetworkAnalyzer', () => {
       assert.deepEqual(result.get('https://example.com'), expected);
     });
 
-    it('should work on a real trace', async () => {
-      const requests = await createRequests(this, trace);
+    it('should work on a real trace', () => {
       const rttByOrigin = NetworkAnalyzer.estimateMinimumRTTByOrigin(requests);
       const result = NetworkAnalyzer.estimateServerResponseTimeByOrigin(requests, {rttByOrigin});
       assertCloseEnough(result.get('https://www.paulirish.com')?.avg ?? 0, 35);
@@ -321,8 +319,7 @@ describe('NetworkAnalyzer', () => {
       assertCloseEnough(result.get('https://www.google-analytics.com')?.avg ?? 0, 8);
     });
 
-    it('should approximate well with either method', async () => {
-      const requests = await createRequests(this, trace);
+    it('should approximate well with either method', () => {
       const rttByOrigin = NetworkAnalyzer.estimateMinimumRTTByOrigin(requests);
       const result = NetworkAnalyzer.estimateServerResponseTimeByOrigin(requests, {rttByOrigin})
                          .get(
@@ -438,9 +435,8 @@ describe('NetworkAnalyzer', () => {
     });
   });
 
-  describe('#computeRTTAndServerResponseTime', function() {
-    it('should work', async () => {
-      const requests = await createRequests(this, trace);
+  describe('#computeRTTAndServerResponseTime', () => {
+    it('should work', () => {
       const result = NetworkAnalyzer.computeRTTAndServerResponseTime(requests);
 
       assert.closeTo(result.rtt, 0.082, 0.001);
@@ -485,28 +481,25 @@ describe('NetworkAnalyzer', () => {
     });
   });
 
-  describe('#findMainDocument', function() {
-    it('should find the main document', async () => {
-      const requests = await createRequests(this, trace);
+  describe('#findMainDocument', () => {
+    it('should find the main document', () => {
       const mainDocument = NetworkAnalyzer.findResourceForUrl(requests, 'https://www.paulirish.com/');
       assert.isOk(mainDocument);
       assert.strictEqual(mainDocument.url, 'https://www.paulirish.com/');
     });
 
-    it('should find the main document if the URL includes a fragment', async () => {
-      const requests = await createRequests(this, trace);
+    it('should find the main document if the URL includes a fragment', () => {
       const mainDocument = NetworkAnalyzer.findResourceForUrl(requests, 'https://www.paulirish.com/#info');
       assert.isOk(mainDocument);
       assert.strictEqual(mainDocument.url, 'https://www.paulirish.com/');
     });
   });
 
-  describe('#resolveRedirects', function() {
+  describe('#resolveRedirects', () => {
     expectConsoleLogs({
       error: ['Error: missing metric scores for specified navigation'],
     });
-    it('should resolve to the same document when no redirect', async () => {
-      const requests = await createRequests(this, trace);
+    it('should resolve to the same document when no redirect', () => {
       const mainDocument = NetworkAnalyzer.findResourceForUrl(requests, 'https://www.paulirish.com/');
       assert.isOk(mainDocument);
       const finalDocument = NetworkAnalyzer.resolveRedirects(mainDocument);
@@ -514,9 +507,8 @@ describe('NetworkAnalyzer', () => {
       assert.strictEqual(finalDocument.url, 'https://www.paulirish.com/');
     });
 
-    it('should resolve to the final document with redirects', async () => {
-      const requests = await createRequests(this, traceWithRedirect);
-      const mainDocument = NetworkAnalyzer.findResourceForUrl(requests, 'http://www.vkontakte.ru/');
+    it('should resolve to the final document with redirects', () => {
+      const mainDocument = NetworkAnalyzer.findResourceForUrl(requestsWithRedirect, 'http://www.vkontakte.ru/');
       assert.isOk(mainDocument);
       const finalDocument = NetworkAnalyzer.resolveRedirects(mainDocument);
       assert.notEqual(mainDocument.url, finalDocument.url);

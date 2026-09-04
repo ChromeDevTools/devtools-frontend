@@ -5,23 +5,21 @@
 import {assert} from 'chai';
 
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
+import type * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';
-import {getComputationDataFromFixture, toLanternTrace} from '../testing/testing.js';
+import {getComputationDataFromFixture} from '../testing/testing.js';
 
 const {FirstContentfulPaint} = Lantern.Metrics;
 
 describe('Metrics: Lantern FCP', function() {
-  if (this.timeout() > 0) {
-    this.timeout(45_000);
-  }
-
-  let trace: Lantern.Types.Trace;
+  let parsedTrace: Trace.TraceModel.ParsedTrace;
   before(async function() {
-    trace = toLanternTrace(await TraceLoader.rawEvents(this, 'lantern/progressive-app/trace.json.gz'));
+    parsedTrace = await TraceLoader.traceEngine(this, 'lantern/progressive-app/trace.json.gz', undefined,
+                                                {withTimelinePanel: false});
   });
 
   it('should compute predicted value', async () => {
-    const data = await getComputationDataFromFixture(this, {trace});
+    const data = await getComputationDataFromFixture(this, {parsedTrace});
     const result = FirstContentfulPaint.compute(data);
 
     assert.deepEqual(
@@ -44,7 +42,7 @@ describe('Metrics: Lantern FCP', function() {
   });
 
   it('should handle negative request networkEndTime', async () => {
-    const data = await getComputationDataFromFixture(this, {trace});
+    const data = await getComputationDataFromFixture(this, {parsedTrace});
 
     assert(data.graph.type === 'network');
     data.graph.request.networkEndTime = -1;

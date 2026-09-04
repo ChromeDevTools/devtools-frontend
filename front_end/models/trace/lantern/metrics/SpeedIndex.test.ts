@@ -5,21 +5,23 @@
 import {assert} from 'chai';
 
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
+import type * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';
-import {getComputationDataFromFixture, toLanternTrace} from '../testing/testing.js';
+import {getComputationDataFromFixture} from '../testing/testing.js';
 
 const {SpeedIndex, FirstContentfulPaint} = Lantern.Metrics;
 
 const defaultThrottling = Lantern.Simulation.Constants.throttling.mobileSlow4G;
 
 describe('Metrics: Lantern Speed Index', function() {
-  let trace: Lantern.Types.Trace;
+  let parsedTrace: Trace.TraceModel.ParsedTrace;
   before(async function() {
-    trace = toLanternTrace(await TraceLoader.rawEvents(this, 'lantern/progressive-app/trace.json.gz'));
+    parsedTrace = await TraceLoader.traceEngine(this, 'lantern/progressive-app/trace.json.gz', undefined,
+                                                {withTimelinePanel: false});
   });
 
   it('should compute predicted value', async () => {
-    const data = await getComputationDataFromFixture(this, {trace});
+    const data = await getComputationDataFromFixture(this, {parsedTrace});
     // TODO: observedSpeedIndex is from the Speedline library, and is used for optimistic
     // mode. At the moment callers must pass the result into Lantern.
     const observedSpeedIndex = 379.04474997520487;
@@ -48,7 +50,7 @@ describe('Metrics: Lantern Speed Index', function() {
       // @ts-expect-error: not needed for test
       networkAnalysis: null,
     };
-    const data = await getComputationDataFromFixture(this, {trace, settings});
+    const data = await getComputationDataFromFixture(this, {parsedTrace, settings});
     const observedSpeedIndex = 379.04474997520487;
     const result = SpeedIndex.compute(data, {
       fcpResult: FirstContentfulPaint.compute(data),

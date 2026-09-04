@@ -5,25 +5,24 @@
 import {assert} from 'chai';
 
 import {TraceLoader} from '../../../../testing/TraceLoader.js';
+import type * as Trace from '../../trace.js';
 import * as Lantern from '../lantern.js';
-import {getComputationDataFromFixture, toLanternTrace} from '../testing/testing.js';
+import {getComputationDataFromFixture} from '../testing/testing.js';
 
 const {Interactive, FirstContentfulPaint, LargestContentfulPaint} = Lantern.Metrics;
 
 describe('Metrics: Lantern TTI', function() {
-  if (this.timeout() > 0) {
-    this.timeout(45_000);
-  }
-
-  let trace: Lantern.Types.Trace;
-  let iframeTrace: Lantern.Types.Trace;
+  let parsedTrace: Trace.TraceModel.ParsedTrace;
+  let iframeParsedTrace: Trace.TraceModel.ParsedTrace;
   before(async function() {
-    trace = toLanternTrace(await TraceLoader.rawEvents(this, 'lantern/progressive-app/trace.json.gz'));
-    iframeTrace = toLanternTrace(await TraceLoader.rawEvents(this, 'lantern/iframe/trace.json.gz'));
+    parsedTrace = await TraceLoader.traceEngine(this, 'lantern/progressive-app/trace.json.gz', undefined,
+                                                {withTimelinePanel: false});
+    iframeParsedTrace =
+        await TraceLoader.traceEngine(this, 'lantern/iframe/trace.json.gz', undefined, {withTimelinePanel: false});
   });
 
   it('should compute predicted value', async () => {
-    const data = await getComputationDataFromFixture(this, {trace});
+    const data = await getComputationDataFromFixture(this, {parsedTrace});
     const result = Interactive.compute(data, {
       lcpResult: LargestContentfulPaint.compute(data, {
         fcpResult: FirstContentfulPaint.compute(data),
@@ -49,7 +48,7 @@ describe('Metrics: Lantern TTI', function() {
 
   it('should compute predicted value on iframes with substantial layout', async () => {
     const data = await getComputationDataFromFixture(this, {
-      trace: iframeTrace,
+      parsedTrace: iframeParsedTrace,
     });
     const result = await Interactive.compute(data, {
       lcpResult: await LargestContentfulPaint.compute(data, {

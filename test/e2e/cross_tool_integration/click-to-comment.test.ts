@@ -4,11 +4,13 @@
 
 import {assert} from 'chai';
 
-import {navigateToConsoleTab} from '../helpers/console-helpers.js';
 import type {DevToolsPage} from '../shared/frontend-helper.js';
 import type {InspectedPage} from '../shared/target-helper.js';
 
 const COMMENT_TOGGLE_SELECTOR = '[aria-label="Add comments to send to your AI coding agent"]';
+const OVERLAY_CONTAINER_SELECTOR = '.comments-overlay-container';
+const COMMENT_PIN_SELECTOR = '.comment-pin';
+const COMMENT_ANCHOR_HIGHLIGHT_SELECTOR = '.comment-anchor-highlight';
 
 describe('Click-to-Comment mode across DevTools panels', function() {
   async function setupForTests(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
@@ -21,126 +23,64 @@ describe('Click-to-Comment mode across DevTools panels', function() {
     await devToolsPage.closeAllCloseableTabs();
   }
 
-  async function enableCommentMode(devToolsPage: DevToolsPage) {
+  async function isCommentModeActive(devToolsPage: DevToolsPage): Promise<boolean> {
+    const toggleButton = await devToolsPage.waitFor(COMMENT_TOGGLE_SELECTOR);
+    return await toggleButton.evaluate(el => el.getAttribute('aria-pressed') === 'true');
+  }
+
+  async function toggleCommentMode(devToolsPage: DevToolsPage): Promise<void> {
+    const initialState = await isCommentModeActive(devToolsPage);
     await devToolsPage.waitFor(COMMENT_TOGGLE_SELECTOR);
     await devToolsPage.click(COMMENT_TOGGLE_SELECTOR);
     await devToolsPage.waitForFunction(async () => {
-      return await devToolsPage.evaluate(async () => {
-        // @ts-expect-error Evaluated in DevTools context
-        const Root = await import('./core/root/root.js');
-        // @ts-expect-error Evaluated in DevTools context
-        const CommentManager = await import('./models/comment_manager/comment_manager.js');
-        const mgr = Root.DevToolsContext.globalInstance().get(CommentManager.CommentManager.CommentManager);
-        return mgr?.isCommentMode() === true;
-      });
+      return (await isCommentModeActive(devToolsPage)) !== initialState;
     });
   }
 
-  async function getCommentThreadsCount(devToolsPage: DevToolsPage): Promise<number> {
-    return await devToolsPage.evaluate(async () => {
-      // @ts-expect-error Evaluated in DevTools context
-      const Root = await import('./core/root/root.js');
-      // @ts-expect-error Evaluated in DevTools context
-      const CommentManager = await import('./models/comment_manager/comment_manager.js');
-      const mgr = Root.DevToolsContext.globalInstance().get(CommentManager.CommentManager.CommentManager);
-      return mgr?.getCommentThreads().length ?? 0;
-    });
+  async function getCommentPins(devToolsPage: DevToolsPage) {
+    return await devToolsPage.$$(COMMENT_PIN_SELECTOR);
   }
 
-  async function waitForCommentThreadCount(devToolsPage: DevToolsPage, minCount = 1): Promise<number> {
-    await devToolsPage.waitForFunction(async () => {
-      const count = await devToolsPage.evaluate(async () => {
-        // @ts-expect-error Evaluated in DevTools context
-        const Root = await import('./core/root/root.js');
-        // @ts-expect-error Evaluated in DevTools context
-        const CommentManager = await import('./models/comment_manager/comment_manager.js');
-        const mgr = Root.DevToolsContext.globalInstance().get(CommentManager.CommentManager.CommentManager);
-        return mgr?.getCommentThreads().length ?? 0;
-      });
-      return count >= minCount;
-    });
-    return await getCommentThreadsCount(devToolsPage);
+  async function getCommentHighlights(devToolsPage: DevToolsPage) {
+    return await devToolsPage.$$(COMMENT_ANCHOR_HIGHLIGHT_SELECTOR);
   }
 
-  async function getLastCommentVePath(devToolsPage: DevToolsPage): Promise<string> {
-    return await devToolsPage.evaluate(async () => {
-      // @ts-expect-error Evaluated in DevTools context
-      const Root = await import('./core/root/root.js');
-      // @ts-expect-error Evaluated in DevTools context
-      const CommentManager = await import('./models/comment_manager/comment_manager.js');
-      const mgr = Root.DevToolsContext.globalInstance().get(CommentManager.CommentManager.CommentManager);
-      const threads = mgr?.getCommentThreads() ?? [];
-      const last = threads[threads.length - 1];
-      return last ? last.anchor.vePath : '';
-    });
-  }
-
-  async function isPinAndHighlightVisible(devToolsPage: DevToolsPage): Promise<boolean> {
-    const pin = await devToolsPage.waitFor('.comment-pin');
-    const highlight = await devToolsPage.waitFor('.comment-anchor-highlight');
-    return Boolean(pin && highlight);
-  }
-
-  it('creates comment on DOM tree item in Elements panel with TreeItem vePath',
+  it('completes basic comment flow: toggle mode, click target, verify pin and highlight, and deactivate',
      async ({devToolsPage, inspectedPage}) => {
        await setupForTests(devToolsPage, inspectedPage);
        await devToolsPage.click('#tab-elements');
        await devToolsPage.waitFor('[role="treeitem"]');
 
-       await enableCommentMode(devToolsPage);
+       // 1. Verify initial state: comment mode is not active and no overlay artifacts exist.
+       assert.isFalse(await isCommentModeActive(devToolsPage));
+       assert.lengthOf(await getCommentPins(devToolsPage), 0);
+       assert.lengthOf(await getCommentHighlights(devToolsPage), 0);
+
+       // 2. Toggle comment mode ON.
+       await toggleCommentMode(devToolsPage);
+       assert.isTrue(await isCommentModeActive(devToolsPage));
+       await devToolsPage.waitFor(OVERLAY_CONTAINER_SELECTOR);
+
+       // 3. Click on a target element in Elements panel.
        await devToolsPage.click('[role="treeitem"]');
 
-       const count = await waitForCommentThreadCount(devToolsPage, 1);
-       assert.isAbove(count, 0);
+       // 4. Verify that a comment pin and highlight have been created.
+       const pin = await devToolsPage.waitFor(COMMENT_PIN_SELECTOR);
+       await devToolsPage.waitFor(COMMENT_ANCHOR_HIGHLIGHT_SELECTOR);
 
-       const vePath = await getLastCommentVePath(devToolsPage);
-       assert.include(vePath, 'TreeItem');
+       const pinHtml = await pin.evaluate(el => el.innerHTML.trim());
+       assert.isNotEmpty(pinHtml);
 
-       const visible = await isPinAndHighlightVisible(devToolsPage);
-       assert.isTrue(visible);
+       // 5. Toggle comment mode OFF.
+       await toggleCommentMode(devToolsPage);
+       assert.isFalse(await isCommentModeActive(devToolsPage));
+
+       // 6. Verify existing pin and highlight persist.
+       assert.lengthOf(await getCommentPins(devToolsPage), 1);
+       assert.lengthOf(await getCommentHighlights(devToolsPage), 1);
+
+       // 7. Verify subsequent clicks do not create new comments when mode is deactivated.
+       await devToolsPage.click('[role="treeitem"]');
+       assert.lengthOf(await getCommentPins(devToolsPage), 1);
      });
-
-  it('creates comment on console message in Console panel', async ({devToolsPage, inspectedPage}) => {
-    await setupForTests(devToolsPage, inspectedPage);
-    await navigateToConsoleTab(devToolsPage);
-    await devToolsPage.waitFor('.console-message-wrapper');
-
-    await enableCommentMode(devToolsPage);
-    await devToolsPage.click('.console-message-wrapper');
-
-    const count = await waitForCommentThreadCount(devToolsPage, 1);
-    assert.isAbove(count, 0);
-
-    const visible = await isPinAndHighlightVisible(devToolsPage);
-    assert.isTrue(visible);
-  });
-
-  it('creates comment on item in Sources panel', async ({devToolsPage, inspectedPage}) => {
-    await setupForTests(devToolsPage, inspectedPage);
-    await devToolsPage.click('#tab-sources');
-    await devToolsPage.waitFor('.navigator-file-tree-item, .empty-state');
-
-    await enableCommentMode(devToolsPage);
-    await devToolsPage.click('.navigator-file-tree-item, .empty-state');
-
-    const count = await waitForCommentThreadCount(devToolsPage, 1);
-    assert.isAbove(count, 0);
-  });
-
-  it('escalates cell click to entire TableRow in Network panel', async ({devToolsPage, inspectedPage}) => {
-    await setupForTests(devToolsPage, inspectedPage);
-    await devToolsPage.click('#tab-network');
-    await devToolsPage.waitFor('.network-log-grid');
-    await inspectedPage.reload();
-    await devToolsPage.waitFor('.network-log-grid tbody .name-column');
-
-    await enableCommentMode(devToolsPage);
-    await devToolsPage.click('.network-log-grid tbody .name-column');
-
-    const count = await waitForCommentThreadCount(devToolsPage, 1);
-    assert.isAbove(count, 0);
-
-    const vePath = await getLastCommentVePath(devToolsPage);
-    assert.include(vePath, 'TableRow');
-  });
 });

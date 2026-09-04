@@ -31,11 +31,13 @@ export class TypeScriptAnalyzer {
   static #instance: TypeScriptAnalyzer|undefined;
 
   readonly #astExtractor: GnAstExtractor;
+  readonly #importExtractor: TypeScriptImportExtractor;
   readonly #buildFiles = new Map<string, Promise<void>>();
   readonly #targetDeps = new Map<string, Promise<Set<string>|null>>();
 
   private constructor(rootDir?: string) {
     this.#astExtractor = GnAstExtractor.create(rootDir);
+    this.#importExtractor = TypeScriptImportExtractor.create();
   }
 
   static create(rootDir?: string): TypeScriptAnalyzer {
@@ -187,5 +189,177 @@ export class TypeScriptAnalyzer {
     }
 
     return {missingDeps, unusedDeps};
+  }
+  async resolveImportDependencies(
+      importedFile: string,
+      importedBySources: string[],
+      targetLabel: string,
+      targetInfo: AstTargetInfo,
+      ): Promise<ImportResolutionResult> {
+    const impTargets = await this.#astExtractor.getTargetsForFile(importedFile);
+
+    if (impTargets.length === 0) {
+      const importedBy = importedBySources.join(', ');
+      console.error(
+          `Failed to find target for import: ${importedFile}\n` +
+              ` - is imported by ${importedBy}\n` +
+              ` - while analyzing ${targetLabel}\n in ${targetInfo.buildFile}\n`,
+      );
+      return {success: false, deps: []};
+    }
+
+    // Internal import within the same target requires no external dependency.
+    if (impTargets.includes(targetLabel)) {
+      return {success: true, deps: []};
+    }
+
+    const targetGnLabel = GnLabel.parse(targetLabel);
+    const isConsumerTarget = TypeScriptAnalyzer.isConsumerTarget(targetLabel, targetInfo);
+    const labelBundle = targetGnLabel?.bundleLabel;
+
+    const deps = new Set<string>();
+    for (const impTarget of impTargets) {
+      const finalTarget = TypeScriptAnalyzer.getMappedTarget(impTarget);
+
+      // Do not allow a target to depend on itself.
+      if (finalTarget === targetLabel) {
+        continue;
+      }
+
+      // Implementation modules must not depend on their own bundle (avoids circular deps).
+      if (!isConsumerTarget && finalTarget === labelBundle) {
+        continue;
+      }
+
+      deps.add(finalTarget);
+    }
+
+    return {success: true, deps: Array.from(deps)};
+  }
+
+  async analyzeTarget(
+      targetLabel: string,
+      targetInfo: AstTargetInfo,
+      ): Promise<Set<string>|null> {
+    const cachedPromise = this.#targetDeps.get(targetLabel);
+    if (cachedPromise !== undefined) {
+      return await cachedPromise;
+    }
+
+    const analyzePromise = this.#computeTargetDependencies(targetLabel, targetInfo);
+    this.#targetDeps.set(targetLabel, analyzePromise);
+    analyzePromise.catch(() => {
+      this.#targetDeps.delete(targetLabel);
+    });
+    return await analyzePromise;
+  }
+
+  async #computeTargetDependencies(
+      targetLabel: string,
+      targetInfo: AstTargetInfo,
+      ): Promise<Set<string>|null> {
+    if (targetLabel.includes('/legacy_test_runner/') || targetLabel.includes('/third_party/')) {
+      return null;
+    }
+
+    const allTargetFiles = TypeScriptAnalyzer.resolveTargetSourceFiles(targetInfo, this.#astExtractor.rootDir);
+    if (allTargetFiles.length === 0) {
+      return null;
+    }
+
+    const importsMap = await this.#importExtractor.extractTsImports(allTargetFiles);
+    const importToSources = TypeScriptAnalyzer.mapImportsToSources(importsMap);
+
+    const resolutionTasks = Array.from(importToSources.entries()).map(([imp, sources]) => {
+      return this.resolveImportDependencies(imp, sources, targetLabel, targetInfo);
+    });
+
+    const results = await Promise.all(resolutionTasks);
+    const hasTargetNotFound = results.some(r => !r.success);
+    if (hasTargetNotFound) {
+      return null;
+    }
+
+    const requiredDeps = new Set<string>();
+    for (const res of results) {
+      for (const dep of res.deps) {
+        requiredDeps.add(dep);
+      }
+    }
+
+    return requiredDeps;
+  }
+
+  async processBuildFile(buildFile: string): Promise<void> {
+    const absPath = path.resolve(buildFile);
+
+    const cachedPromise = this.#buildFiles.get(absPath);
+    if (cachedPromise !== undefined) {
+      return await cachedPromise;
+    }
+
+    const task = this.#executeProcessBuildFile(absPath);
+    this.#buildFiles.set(absPath, task);
+    task.catch(() => {
+      this.#buildFiles.delete(absPath);
+    });
+    return await task;
+  }
+
+  async #executeProcessBuildFile(absPath: string): Promise<void> {
+    let gnBuild = await this.#astExtractor.buildFiles.get(absPath);
+    if (!gnBuild) {
+      await this.#astExtractor.extractTargetsFromAst([absPath]);
+      gnBuild = await this.#astExtractor.buildFiles.get(absPath);
+    }
+
+    if (!gnBuild) {
+      return;
+    }
+
+    const targetTasks = Array.from(gnBuild.targets.entries()).map(([targetLabel, targetInfo]) => {
+      return this.analyzeTarget(targetLabel, targetInfo);
+    });
+
+    await Promise.all(targetTasks);
+  }
+
+  async #processDiscoveredBuildFiles(): Promise<void> {
+    const pending: Array<Promise<void>> = [];
+
+    for (const filePath of this.#astExtractor.buildFiles.keys()) {
+      if (!this.#buildFiles.has(filePath)) {
+        pending.push(this.processBuildFile(filePath));
+      }
+    }
+
+    if (pending.length > 0) {
+      await Promise.all(pending);
+      await this.#processDiscoveredBuildFiles();
+    }
+  }
+
+  async analyze(buildFiles?: string[]): Promise<Map<string, Set<string>>> {
+    if (buildFiles && buildFiles.length > 0) {
+      await this.#astExtractor.extractTargetsFromAst(buildFiles);
+    }
+    await this.#processDiscoveredBuildFiles();
+
+    const targetEntries = Array.from(this.#targetDeps.entries());
+    const resolvedResults = await Promise.all(
+        targetEntries.map(async ([targetLabel, depsPromise]) => {
+          const deps = await depsPromise;
+          return [targetLabel, deps] as const;
+        }),
+    );
+
+    const targetRequiredDeps = new Map<string, Set<string>>();
+    for (const [targetLabel, deps] of resolvedResults) {
+      if (deps !== null) {
+        targetRequiredDeps.set(targetLabel, deps);
+      }
+    }
+
+    return targetRequiredDeps;
   }
 }

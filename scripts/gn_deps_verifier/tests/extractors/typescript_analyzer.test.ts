@@ -6,10 +6,14 @@ import {assert} from 'chai';
 import * as path from 'node:path';
 import sinon from 'sinon';
 
+import {GnAstExtractor} from '../../extractors/gn_ast_extractor.ts';
 import {TypeScriptAnalyzer} from '../../extractors/typescript_analyzer.ts';
+import {TypeScriptImportExtractor} from '../../extractors/typescript_import.ts';
 import type {AstTargetInfo} from '../../gn_ast/gn_ast_types.ts';
 
 const ROOT_DIR = path.resolve(import.meta.dirname, './../../../');
+const FIXTURES_DIR = path.join(import.meta.dirname, './../fixtures/typescript_analyzer');
+const FIXTURES_BUILD_GN = path.join(FIXTURES_DIR, 'BUILD.gn');
 
 describe('typescript_analyzer', () => {
   afterEach(() => {
@@ -335,6 +339,414 @@ describe('typescript_analyzer', () => {
 
       assert.deepEqual(diff.missingDeps, ['../../core/host']);
       assert.deepEqual(diff.unusedDeps, []);
+    });
+  });
+  describe('resolveImportDependencies', () => {
+    let extractor: GnAstExtractor;
+    let analyzer: TypeScriptAnalyzer;
+
+    beforeEach(() => {
+      extractor = GnAstExtractor.create(ROOT_DIR);
+      analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
+    });
+
+    it('returns failure when imported file does not map to any target', async () => {
+      sinon.stub(console, 'error');
+      const targetInfo: AstTargetInfo = {
+        label: '//test:target',
+        templateName: 'devtools_module',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['main.ts'],
+        deps: [],
+      };
+
+      const res = await analyzer.resolveImportDependencies(
+          '/non/existent/imported/file.ts',
+          ['main.ts'],
+          '//test:target',
+          targetInfo,
+      );
+
+      assert.isFalse(res.success);
+      assert.deepEqual(res.deps, []);
+    });
+
+    it('returns empty deps for internal imports within the same target', async () => {
+      const animFile = path.join(FIXTURES_DIR, 'AnimationTimeline.ts');
+      const targetInfo: AstTargetInfo = {
+        label: '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:animation',
+        templateName: 'devtools_module',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['AnimationTimeline.ts'],
+        deps: [],
+      };
+
+      await extractor.getTargetsForFile(animFile);
+
+      const res = await analyzer.resolveImportDependencies(
+          animFile,
+          ['AnimationUI.ts'],
+          '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:animation',
+          targetInfo,
+      );
+
+      assert.isTrue(res.success);
+      assert.deepEqual(res.deps, []);
+    });
+
+    it('includes bundle dependency for consumer targets', async () => {
+      const bundleFile = path.join(FIXTURES_DIR, 'animation.ts');
+      await extractor.getTargetsForFile(bundleFile);
+
+      const targetInfo: AstTargetInfo = {
+        label: '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:unittests',
+        templateName: 'devtools_ui_module',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['AnimationTimeline.test.ts'],
+        deps: [],
+        testonly: true,
+      };
+
+      const res = await analyzer.resolveImportDependencies(
+          bundleFile,
+          ['AnimationTimeline.test.ts'],
+          '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:unittests',
+          targetInfo,
+      );
+
+      assert.isTrue(res.success);
+      assert.deepEqual(res.deps, ['//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:bundle']);
+    });
+
+    it('does not allow target to depend on itself when mapped target equals targetLabel', async () => {
+      // Simulate an internal file that maps to codemirror.next-compilation being analyzed inside codemirror.next:bundle
+      const targetInfo: AstTargetInfo = {
+        label: '//front_end/third_party/codemirror.next:bundle',
+        templateName: 'devtools_entrypoint',
+        buildFile: '/path/to/BUILD.gn',
+        sources: ['bundle.ts'],
+        deps: [],
+      };
+
+      sinon.stub(extractor, 'getTargetsForFile').resolves([
+        '//front_end/third_party/codemirror.next:codemirror.next-compilation',
+      ]);
+
+      const res = await analyzer.resolveImportDependencies(
+          '/path/to/internal.ts',
+          ['bundle.ts'],
+          '//front_end/third_party/codemirror.next:bundle',
+          targetInfo,
+      );
+
+      assert.isTrue(res.success);
+      assert.deepEqual(res.deps, []);
+    });
+
+    it('does not allow bundle target to depend on its own bundle', async () => {
+      const bundleFile = path.join(FIXTURES_DIR, 'animation.ts');
+      await extractor.getTargetsForFile(bundleFile);
+
+      const targetInfo: AstTargetInfo = {
+        label: '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:bundle',
+        templateName: 'devtools_entrypoint',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['animation.ts'],
+        deps: [],
+      };
+
+      const res = await analyzer.resolveImportDependencies(
+          bundleFile,
+          ['animation.ts'],
+          '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:bundle',
+          targetInfo,
+      );
+
+      assert.isTrue(res.success);
+      assert.deepEqual(res.deps, []);
+    });
+
+    it('does not require own bundle for implementation module when name differs from directory', async () => {
+      const targetInfo: AstTargetInfo = {
+        label: '//front_end/entrypoints/worker_app:worker_main',
+        templateName: 'devtools_module',
+        buildFile: '/path/to/BUILD.gn',
+        sources: ['WorkerMain.ts'],
+        deps: [],
+      };
+
+      sinon.stub(extractor, 'getTargetsForFile').resolves([
+        '//front_end/entrypoints/worker_app:bundle',
+      ]);
+
+      const res = await analyzer.resolveImportDependencies(
+          '/path/to/other.ts',
+          ['WorkerMain.ts'],
+          targetInfo.label,
+          targetInfo,
+      );
+
+      assert.isTrue(res.success);
+      assert.deepEqual(res.deps, []);
+    });
+
+    it('deduplicates multiple mapped targets', async () => {
+      const targetInfo: AstTargetInfo = {
+        label: '//test:consumer',
+        templateName: 'devtools_ui_module',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['consumer.ts'],
+        deps: [],
+      };
+
+      // Both map to //front_end/third_party/codemirror.next:bundle
+      sinon.stub(extractor, 'getTargetsForFile').resolves([
+        '//front_end/third_party/codemirror.next:codemirror.next-compilation',
+        '//front_end/third_party/codemirror.next:codemirror.next-sources',
+      ]);
+
+      const res = await analyzer.resolveImportDependencies(
+          '/path/to/file.ts',
+          ['consumer.ts'],
+          '//test:consumer',
+          targetInfo,
+      );
+
+      assert.isTrue(res.success);
+      assert.deepEqual(res.deps, ['//front_end/third_party/codemirror.next:bundle']);
+    });
+  });
+
+  describe('analyzeTarget', () => {
+    let analyzer: TypeScriptAnalyzer;
+
+    beforeEach(() => {
+      analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
+    });
+
+    it('returns null for legacy_test_runner targets', async () => {
+      const targetInfo: AstTargetInfo = {
+        label: '//front_end/legacy_test_runner/common:common',
+        templateName: 'devtools_module',
+        buildFile: '/path/BUILD.gn',
+        sources: ['file.ts'],
+        deps: [],
+      };
+
+      const res = await analyzer.analyzeTarget(targetInfo.label, targetInfo);
+      assert.isNull(res);
+    });
+
+    it('returns null for third_party targets', async () => {
+      const targetInfo: AstTargetInfo = {
+        label: '//front_end/third_party/codemirror:codemirror',
+        templateName: 'devtools_module',
+        buildFile: '/path/BUILD.gn',
+        sources: ['file.ts'],
+        deps: [],
+      };
+
+      const res = await analyzer.analyzeTarget(targetInfo.label, targetInfo);
+      assert.isNull(res);
+    });
+
+    it('returns null when target has no TypeScript sources', async () => {
+      const targetInfo: AstTargetInfo = {
+        label: '//test:css_target',
+        templateName: 'generate_css',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['style.css'],
+        deps: [],
+      };
+
+      const res = await analyzer.analyzeTarget(targetInfo.label, targetInfo);
+      assert.isNull(res);
+    });
+
+    it('returns null when target import cannot be mapped to a GN target', async () => {
+      sinon.stub(console, 'error');
+      const extractor = GnAstExtractor.create(ROOT_DIR);
+      sinon.stub(extractor, 'getTargetsForFile').resolves([]);
+
+      const targetInfo: AstTargetInfo = {
+        label: '//test:broken',
+        templateName: 'devtools_module',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['AnimationTimeline.ts'],
+        deps: [],
+      };
+
+      const res = await analyzer.analyzeTarget(targetInfo.label, targetInfo);
+      assert.isNull(res);
+    });
+
+    it('evicts from cache when an exception occurs', async () => {
+      const targetInfo: AstTargetInfo = {
+        label: '//test:error',
+        templateName: 'devtools_module',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['AnimationTimeline.ts'],
+        deps: [],
+      };
+
+      const importExtractor = TypeScriptImportExtractor.create();
+      sinon.stub(importExtractor, 'extractTsImports').rejects(new Error('I/O failure'));
+
+      try {
+        await analyzer.analyzeTarget(targetInfo.label, targetInfo);
+        assert.fail('Expected exception');
+      } catch (err) {
+        assert.strictEqual((err as Error).message, 'I/O failure');
+      }
+
+      assert.isFalse(analyzer.targetDeps.has(targetInfo.label));
+    });
+  });
+
+  describe('analyze', () => {
+    it('analyzes fixture targets and resolves required dependencies', async () => {
+      const analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
+      const result = await analyzer.analyze([FIXTURES_BUILD_GN]);
+
+      assert.isAbove(result.size, 0);
+
+      // animation target has only internal imports
+      const animDeps = result.get('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:animation');
+      assert.isDefined(animDeps);
+      assert.isFalse(animDeps?.has('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:bundle'));
+
+      // bundle target imports animation.ts which imports AnimationTimeline.ts (in :animation)
+      const bundleDeps = result.get('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:bundle');
+      assert.isDefined(bundleDeps);
+      assert.isTrue(bundleDeps?.has('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:animation'));
+      assert.isFalse(bundleDeps?.has('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:bundle'));
+
+      // unittests target imports animation.ts (in :bundle)
+      const testDeps = result.get('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:unittests');
+      assert.isDefined(testDeps);
+      assert.isTrue(testDeps?.has('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:bundle'));
+    });
+
+    it('does not require own bundle for non-consumer targets', async () => {
+      const analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
+      const result = await analyzer.analyze([FIXTURES_BUILD_GN]);
+
+      const animDeps = result.get('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:animation');
+      assert.isDefined(animDeps);
+      assert.isFalse(animDeps?.has('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:bundle'));
+    });
+
+    it('ignores legacy_test_runner and third_party targets', async () => {
+      const extractor = GnAstExtractor.create(ROOT_DIR);
+      await extractor.extractTargetsFromAst([FIXTURES_BUILD_GN]);
+
+      const analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
+      const result = await analyzer.analyze();
+
+      for (const target of result.keys()) {
+        assert.isFalse(target.includes('/legacy_test_runner/'));
+        assert.isFalse(target.includes('/third_party/'));
+      }
+    });
+
+    it('handles targets with no TS sources without error', async () => {
+      const analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
+      const result = await analyzer.analyze([FIXTURES_BUILD_GN]);
+
+      assert.isFalse(result.has('//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:css_files'));
+    });
+
+    it('handles empty buildFiles gracefully', async () => {
+      const analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
+      const result = await analyzer.analyze();
+      assert.strictEqual(result.size, 0);
+    });
+  });
+
+  describe('TypeScriptAnalyzer class', () => {
+    it('creates singleton instance with rootDir', () => {
+      const a1 = TypeScriptAnalyzer.create(ROOT_DIR);
+      const a2 = TypeScriptAnalyzer.create();
+      assert.strictEqual(a1, a2);
+      assert.strictEqual(a1.rootDir, ROOT_DIR);
+    });
+
+    it('throws error if created without rootDir on first initialization', () => {
+      assert.throws(() => {
+        TypeScriptAnalyzer.create();
+      }, 'rootDir is required for first initialization');
+    });
+
+    it('throws error if created with conflicting rootDir', () => {
+      TypeScriptAnalyzer.create(ROOT_DIR);
+      assert.throws(() => {
+        TypeScriptAnalyzer.create('/some/other/path');
+      }, 'Instance already exists with a different rootDir');
+    });
+
+    it('caches target dependencies in targetDeps', async () => {
+      const analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
+      const targetInfo: AstTargetInfo = {
+        label: '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:unittests',
+        templateName: 'devtools_ui_module',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['AnimationTimeline.test.ts'],
+        deps: [],
+      };
+
+      const deps = await analyzer.analyzeTarget(targetInfo.label, targetInfo);
+      assert.isNotNull(deps);
+      assert.strictEqual(await analyzer.targetDeps.get(targetInfo.label), deps);
+
+      // Subsequent call returns the cached set directly
+      const cachedDeps = await analyzer.analyzeTarget(targetInfo.label, targetInfo);
+      assert.strictEqual(cachedDeps, deps);
+    });
+
+    it('deduplicates in-flight concurrent calls to analyzeTarget', async () => {
+      const analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
+      const targetInfo: AstTargetInfo = {
+        label: '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:unittests',
+        templateName: 'devtools_ui_module',
+        buildFile: FIXTURES_BUILD_GN,
+        sources: ['AnimationTimeline.test.ts'],
+        deps: [],
+      };
+
+      const p1 = analyzer.analyzeTarget(targetInfo.label, targetInfo);
+      const p2 = analyzer.analyzeTarget(targetInfo.label, targetInfo);
+
+      const [r1, r2] = await Promise.all([p1, p2]);
+      assert.strictEqual(r1, r2);
+    });
+
+    it('processes build file by filepath and caches in buildFiles', async () => {
+      const analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
+      await analyzer.processBuildFile(FIXTURES_BUILD_GN);
+
+      assert.isTrue(analyzer.buildFiles.has(FIXTURES_BUILD_GN));
+      const cached = analyzer.buildFiles.get(FIXTURES_BUILD_GN);
+      assert.isDefined(cached);
+
+      // Calling processBuildFile again returns the cached promise
+      await analyzer.processBuildFile(FIXTURES_BUILD_GN);
+      assert.strictEqual(analyzer.buildFiles.get(FIXTURES_BUILD_GN), cached);
+    });
+
+    it('clears all extractor caches on clearCacheForTesting', () => {
+      const a1 = TypeScriptAnalyzer.create(ROOT_DIR);
+      const e1 = GnAstExtractor.create(ROOT_DIR);
+      const i1 = TypeScriptImportExtractor.create();
+
+      TypeScriptAnalyzer.clearCacheForTesting();
+
+      const a2 = TypeScriptAnalyzer.create(ROOT_DIR);
+      const e2 = GnAstExtractor.create(ROOT_DIR);
+      const i2 = TypeScriptImportExtractor.create();
+
+      assert.notStrictEqual(a1, a2);
+      assert.notStrictEqual(e1, e2);
+      assert.notStrictEqual(i1, i2);
     });
   });
 });

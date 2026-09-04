@@ -91,27 +91,132 @@ describe('LayoutShiftsHandler', function() {
     assert.lengthOf(layoutShifts.clusters[1].events, 2);
   });
 
-  it('creates a cluster after the maximum time gap between shifts', async function() {
-    await processTrace(this, 'cls-cluster-max-timeout.json.gz');
+  describe('with cls-cluster-max-timeout', () => {
+    let layoutShifts: Trace.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsData;
 
-    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
-    assert.lengthOf(layoutShifts.clusters, 3);
-    // The first cluster should end because the maximum time gap between
-    // shifts ends, and thus the time between the last shift and the window
-    // end should be exactly MAX_SHIFT_TIME_DELTA;
-    const firstCluster = layoutShifts.clusters[0];
-    const firstClusterEvents = layoutShifts.clusters[0].events;
+    before(async function() {
+      await processTrace(this, 'cls-cluster-max-timeout.json.gz');
+      layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
+    });
 
-    assert.strictEqual(
-        firstCluster.clusterWindow.max - firstClusterEvents[firstClusterEvents.length - 1].ts,
-        Trace.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA);
+    it('creates a cluster after the maximum time gap between shifts', () => {
+      assert.lengthOf(layoutShifts.clusters, 3);
+      // The first cluster should end because the maximum time gap between
+      // shifts ends, and thus the time between the last shift and the window
+      // end should be exactly MAX_SHIFT_TIME_DELTA;
+      const firstCluster = layoutShifts.clusters[0];
+      const firstClusterEvents = layoutShifts.clusters[0].events;
 
-    // There are seven shifts in quick succession in the first cluster,
-    // only one shift in the second cluster and only one shift in the
-    // third cluster.
-    assert.lengthOf(layoutShifts.clusters[0].events, 7);
-    assert.lengthOf(layoutShifts.clusters[1].events, 1);
-    assert.lengthOf(layoutShifts.clusters[2].events, 1);
+      assert.strictEqual(firstCluster.clusterWindow.max - firstClusterEvents[firstClusterEvents.length - 1].ts,
+                         Trace.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA);
+
+      // There are seven shifts in quick succession in the first cluster,
+      // only one shift in the second cluster and only one shift in the
+      // third cluster.
+      assert.lengthOf(layoutShifts.clusters[0].events, 7);
+      assert.lengthOf(layoutShifts.clusters[1].events, 1);
+      assert.lengthOf(layoutShifts.clusters[2].events, 1);
+    });
+
+    it('sets the end of the last session window to the max gap between duration correctly', () => {
+      const lastWindow = layoutShifts.clusters.at(-1)?.clusterWindow;
+      const lastShiftInWindow = layoutShifts.clusters.at(-1)?.events.at(-1);
+      assert.isOk(lastWindow, 'Session window not found.');
+
+      assert.isOk(lastShiftInWindow, 'Session window not found.');
+      assert.strictEqual(lastWindow.max,
+                         lastShiftInWindow.ts + Trace.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA);
+      assert.isBelow(lastWindow.range, Trace.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
+    });
+
+    it('calculates Cumulative Layout Shift correctly for multiple session windows', () => {
+      assert.lengthOf(layoutShifts.clusters, 3);
+
+      let globalCLS = 0;
+      let clusterCount = 1;
+      let clusterWithCLS = 0;
+      for (const cluster of layoutShifts.clusters) {
+        let clusterCumulativeScore = 0;
+        for (const shift of cluster.events) {
+          clusterCumulativeScore += shift.args.data?.weighted_score_delta || 0;
+          // Test the cumulative score until this shift.
+          assert.strictEqual(shift.parsedData.cumulativeWeightedScoreInWindow, clusterCumulativeScore);
+          // Test the score of this shift's session window.
+          assert.strictEqual(shift.parsedData.sessionWindowData.cumulativeWindowScore, cluster.clusterCumulativeScore);
+          // Test the id of this shift's session window.
+          assert.strictEqual(shift.parsedData.sessionWindowData.id, clusterCount);
+        }
+        clusterCount++;
+        // Test the accumulated
+        assert.strictEqual(cluster.clusterCumulativeScore, clusterCumulativeScore);
+        if (cluster.clusterCumulativeScore > globalCLS) {
+          globalCLS = cluster.clusterCumulativeScore;
+          clusterWithCLS = clusterCount - 1;
+        }
+      }
+      // Test the calculated CLS.
+      assert.strictEqual(layoutShifts.sessionMaxScore, globalCLS);
+      assert.strictEqual(layoutShifts.clsWindowID, clusterWithCLS);
+    });
+
+    it('calculates worst shift correctly for clusters', () => {
+      const clusters = layoutShifts.clusters;
+      assert.isNotEmpty(clusters);
+
+      for (const cluster of clusters) {
+        // Get the max shift score from the list of layout shifts.
+        const maxShiftScore = Math.max(...cluster.events.map(s => s.args.data?.weighted_score_delta ?? 0));
+        const gotShift = cluster.worstShiftEvent as Trace.Types.Events.SyntheticLayoutShift;
+        assert.isNotNull(gotShift);
+        // Make sure the worstShiftEvent's data matches the maxShiftScore.
+        assert.strictEqual(gotShift.args.data?.weighted_score_delta ?? 0, maxShiftScore);
+      }
+    });
+
+    it('correctly calculates the duration and start time of the clusters', () => {
+      const clusters = layoutShifts.clusters;
+      assert.isNotEmpty(clusters);
+
+      for (const cluster of clusters) {
+        // Earliest and latest layout shifts should match.
+        const earliestLayoutShiftTs = Math.min(...cluster.events.map(s => s.ts));
+        assert.strictEqual(cluster.events[0].ts, earliestLayoutShiftTs);
+        const latestLayoutShiftTs = Math.max(...cluster.events.map(s => s.ts));
+        assert.strictEqual(cluster.events[cluster.events.length - 1].ts, latestLayoutShiftTs);
+        // earliest layout shift ts should be the cluster's ts.
+        assert.strictEqual(cluster.ts, earliestLayoutShiftTs);
+
+        const lastShiftTimings =
+            Trace.Helpers.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
+        const wantEndTime = lastShiftTimings.endTime + Trace.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA;
+        const dur = Trace.Types.Timing.Micro(wantEndTime - earliestLayoutShiftTs);
+        assert.strictEqual(cluster.dur || 0, dur);
+      }
+    });
+  });
+
+  describe('with cls-cluster-max-duration', () => {
+    let layoutShifts: Trace.Handlers.ModelHandlers.LayoutShifts.LayoutShiftsData;
+    let metaData: Trace.Handlers.ModelHandlers.Meta.MetaHandlerData;
+
+    before(async function() {
+      await processTrace(this, 'cls-cluster-max-duration.json.gz');
+      layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
+      metaData = Trace.Handlers.ModelHandlers.Meta.data();
+    });
+
+    it('creates a cluster after exceeding the continuous shift limit', () => {
+      assert.lengthOf(layoutShifts.clusters, 2);
+      // Cluster must be closed as soon as MAX_CLUSTER_DURATION is reached, even if
+      // there is a gap greater than MAX_SHIFT_TIME_DELTA right after the max window
+      // length happens.
+      assert.strictEqual(layoutShifts.clusters[0].clusterWindow.max - layoutShifts.clusters[0].clusterWindow.min,
+                         Trace.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
+    });
+
+    it('sets the end of the last session window to the trace end time correctly', () => {
+      assert.strictEqual(layoutShifts.clusters.at(-1)?.clusterWindow.max, metaData.traceBounds.max);
+    });
   });
 
   it('creates a cluster after a navigation', async function() {
@@ -143,39 +248,6 @@ describe('LayoutShiftsHandler', function() {
     assert.strictEqual(secondCluster.navigationId, navigations[0].args.data?.navigationId);
   });
 
-  it('creates a cluster after exceeding the continuous shift limit', async function() {
-    await processTrace(this, 'cls-cluster-max-duration.json.gz');
-
-    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
-    assert.lengthOf(layoutShifts.clusters, 2);
-    // Cluster must be closed as soon as MAX_CLUSTER_DURATION is reached, even if
-    // there is a gap greater than MAX_SHIFT_TIME_DELTA right after the max window
-    // length happens.
-    assert.strictEqual(
-        layoutShifts.clusters[0].clusterWindow.max - layoutShifts.clusters[0].clusterWindow.min,
-        Trace.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
-  });
-  it('sets the end of the last session window to the trace end time correctly', async function() {
-    await processTrace(this, 'cls-cluster-max-duration.json.gz');
-
-    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
-    assert.strictEqual(
-        layoutShifts.clusters.at(-1)?.clusterWindow.max, Trace.Handlers.ModelHandlers.Meta.data().traceBounds.max);
-  });
-
-  it('sets the end of the last session window to the max gap between duration correctly', async function() {
-    await processTrace(this, 'cls-cluster-max-timeout.json.gz');
-
-    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
-    const lastWindow = layoutShifts.clusters.at(-1)?.clusterWindow;
-    const lastShiftInWindow = layoutShifts.clusters.at(-1)?.events.at(-1);
-    assert.isOk(lastWindow, 'Session window not found.');
-
-    assert.isOk(lastShiftInWindow, 'Session window not found.');
-    assert.strictEqual(
-        lastWindow.max, lastShiftInWindow.ts + Trace.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA);
-    assert.isBelow(lastWindow.range, Trace.Handlers.ModelHandlers.LayoutShifts.MAX_CLUSTER_DURATION);
-  });
   it('sets the end of the last session window to the max session duration correctly', async function() {
     await processTrace(this, 'cls-last-cluster-max-duration.json.gz');
     const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
@@ -224,77 +296,6 @@ describe('LayoutShiftsHandler', function() {
           assert.strictEqual(cluster.scoreWindows.bad.min, event.ts);
         }
       }
-    }
-  });
-
-  it('calculates Cumulative Layout Shift correctly for multiple session windows', async function() {
-    await processTrace(this, 'cls-cluster-max-timeout.json.gz');
-
-    const layoutShifts = Trace.Handlers.ModelHandlers.LayoutShifts.data();
-    assert.lengthOf(layoutShifts.clusters, 3);
-
-    let globalCLS = 0;
-    let clusterCount = 1;
-    let clusterWithCLS = 0;
-    for (const cluster of layoutShifts.clusters) {
-      let clusterCumulativeScore = 0;
-      for (const shift of cluster.events) {
-        clusterCumulativeScore += shift.args.data?.weighted_score_delta || 0;
-        // Test the cumulative score until this shift.
-        assert.strictEqual(shift.parsedData.cumulativeWeightedScoreInWindow, clusterCumulativeScore);
-        // Test the score of this shift's session window.
-        assert.strictEqual(shift.parsedData.sessionWindowData.cumulativeWindowScore, cluster.clusterCumulativeScore);
-        // Test the id of this shift's session window.
-        assert.strictEqual(shift.parsedData.sessionWindowData.id, clusterCount);
-      }
-      clusterCount++;
-      // Test the accumulated
-      assert.strictEqual(cluster.clusterCumulativeScore, clusterCumulativeScore);
-      if (cluster.clusterCumulativeScore > globalCLS) {
-        globalCLS = cluster.clusterCumulativeScore;
-        clusterWithCLS = clusterCount - 1;
-      }
-    }
-    // Test the calculated CLS.
-    assert.strictEqual(layoutShifts.sessionMaxScore, globalCLS);
-    assert.strictEqual(layoutShifts.clsWindowID, clusterWithCLS);
-  });
-
-  it('calculates worst shift correctly for clusters', async function() {
-    await processTrace(this, 'cls-cluster-max-timeout.json.gz');
-
-    const clusters = Trace.Handlers.ModelHandlers.LayoutShifts.data().clusters;
-    assert.isNotEmpty(clusters);
-
-    for (const cluster of clusters) {
-      // Get the max shift score from the list of layout shifts.
-      const maxShiftScore = Math.max(...cluster.events.map(s => s.args.data?.weighted_score_delta ?? 0));
-      const gotShift = cluster.worstShiftEvent as Trace.Types.Events.SyntheticLayoutShift;
-      assert.isNotNull(gotShift);
-      // Make sure the worstShiftEvent's data matches the maxShiftScore.
-      assert.strictEqual(gotShift.args.data?.weighted_score_delta ?? 0, maxShiftScore);
-    }
-  });
-
-  it('correctly calculates the duration and start time of the clusters', async function() {
-    await processTrace(this, 'cls-cluster-max-timeout.json.gz');
-
-    const clusters = Trace.Handlers.ModelHandlers.LayoutShifts.data().clusters;
-    assert.isNotEmpty(clusters);
-
-    for (const cluster of clusters) {
-      // Earliest and latest layout shifts should match.
-      const earliestLayoutShiftTs = Math.min(...cluster.events.map(s => s.ts));
-      assert.strictEqual(cluster.events[0].ts, earliestLayoutShiftTs);
-      const latestLayoutShiftTs = Math.max(...cluster.events.map(s => s.ts));
-      assert.strictEqual(cluster.events[cluster.events.length - 1].ts, latestLayoutShiftTs);
-      // earliest layout shift ts should be the cluster's ts.
-      assert.strictEqual(cluster.ts, earliestLayoutShiftTs);
-
-      const lastShiftTimings = Trace.Helpers.Timing.eventTimingsMicroSeconds(cluster.events[cluster.events.length - 1]);
-      const wantEndTime = lastShiftTimings.endTime + Trace.Handlers.ModelHandlers.LayoutShifts.MAX_SHIFT_TIME_DELTA;
-      const dur = Trace.Types.Timing.Micro(wantEndTime - earliestLayoutShiftTs);
-      assert.strictEqual(cluster.dur || 0, dur);
     }
   });
 

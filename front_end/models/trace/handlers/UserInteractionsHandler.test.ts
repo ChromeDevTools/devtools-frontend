@@ -7,7 +7,8 @@ import {assert} from 'chai';
 import {TraceLoader} from '../../../testing/TraceLoader.js';
 import * as Trace from '../trace.js';
 
-async function processTrace(context: Mocha.Suite|Mocha.Context|null, path: string): Promise<void> {
+async function processTrace(context: Mocha.Suite|Mocha.Context|null,
+                            path: string): Promise<Trace.Handlers.ModelHandlers.UserInteractions.UserInteractionsData> {
   const traceEvents = await TraceLoader.rawEvents(context, path);
   Trace.Handlers.ModelHandlers.Meta.reset();
   for (const event of traceEvents) {
@@ -16,11 +17,8 @@ async function processTrace(context: Mocha.Suite|Mocha.Context|null, path: strin
   }
   await Trace.Handlers.ModelHandlers.Meta.finalize();
   await Trace.Handlers.ModelHandlers.UserInteractions.finalize();
+  return Trace.Handlers.ModelHandlers.UserInteractions.data();
 }
-
-beforeEach(() => {
-  Trace.Handlers.ModelHandlers.Meta.reset();
-});
 
 describe('UserInteractionsHandler', function() {
   function makeFakeInteraction(type: string, options: {
@@ -43,145 +41,142 @@ describe('UserInteractionsHandler', function() {
     return event as unknown as Trace.Types.Events.SyntheticInteractionPair;
   }
 
-  it('returns all interaction events', async () => {
-    await processTrace(this, 'slow-interaction-button-click.json.gz');
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    // There are three inct interactions:
-    // pointerdown on the button (start of the click)
-    // pointerup & click on the button (end of the click)
-    assert.lengthOf(data.interactionEvents, 3);
-  });
-
-  it('adds microsecond processingStart and processingEnd times to the synthetic event', async function() {
-    await processTrace(this, 'one-second-interaction.json.gz');
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    const oneSecondInteraction = Array.from(data.interactionEvents).find(entry => {
-      return entry.dur === 979974 && entry.type === 'click';
+  describe('slow-interaction-button-click trace', () => {
+    let data: Trace.Handlers.ModelHandlers.UserInteractions.UserInteractionsData;
+    before(async function() {
+      data = await processTrace(this, 'slow-interaction-button-click.json.gz');
     });
-    if (!oneSecondInteraction) {
-      throw new Error('Could not find interaction');
-    }
 
-    assert.strictEqual(oneSecondInteraction.processingStart, 141251950944);
-    assert.strictEqual(oneSecondInteraction.processingEnd, 141252927944);
-  });
-
-  it('adds the INP phases to the interaction', async function() {
-    await processTrace(this, 'one-second-interaction.json.gz');
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    const oneSecondInteraction = Array.from(data.interactionEvents).find(entry => {
-      return entry.dur === 979974 && entry.type === 'click';
+    it('returns all interaction events', () => {
+      // There are three inct interactions:
+      // pointerdown on the button (start of the click)
+      // pointerup & click on the button (end of the click)
+      assert.lengthOf(data.interactionEvents, 3);
     });
-    if (!oneSecondInteraction) {
-      throw new Error('Could not find interaction');
-    }
 
-    // These numbers do seem suspciously round: that is because they are from
-    // converted millisecond values and this is expected.
-    assert.strictEqual(oneSecondInteraction.inputDelay, 1_000);
-    assert.strictEqual(oneSecondInteraction.mainThreadHandling, 977_000);
-    assert.strictEqual(oneSecondInteraction.presentationDelay, 1974);
-  });
-
-  it('identifies the longest interaction', async () => {
-    await processTrace(this, 'slow-interaction-keydown.json.gz');
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    assert.lengthOf(data.interactionEvents, 5);
-
-    const expectedLongestEvent = data.interactionEvents.find(event => {
-      return event.type === 'keydown' && event.interactionId === 7378;
+    it('sets the `dur` key on each event by finding the begin and end events and subtracting the ts', () => {
+      for (const syntheticEvent of data.interactionEvents) {
+        assert.strictEqual(syntheticEvent.dur,
+                           syntheticEvent.args.data.endEvent.ts - syntheticEvent.args.data.beginEvent.ts);
+      }
     });
-    assert.strictEqual(data.longestInteractionEvent, expectedLongestEvent);
+
+    it('gets the right interaction IDs for each interaction', () => {
+      assert.deepEqual(data.interactionEvents.map(i => i.interactionId), [
+        // pointerdown, pointerup and click are all from the same interaction
+        1540,
+        1540,
+        1540,
+      ]);
+    });
   });
 
-  it('returns a set of all interactions that exceed the threshold', async () => {
-    await processTrace(this, 'one-second-interaction.json.gz');
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    // There are two long interactions: the pointerup, and the click.
-    assert.strictEqual(data.interactionsOverThreshold.size, 2);
+  describe('one-second-interaction trace', () => {
+    let data: Trace.Handlers.ModelHandlers.UserInteractions.UserInteractionsData;
+    before(async function() {
+      data = await processTrace(this, 'one-second-interaction.json.gz');
+    });
+
+    it('adds microsecond processingStart and processingEnd times to the synthetic event', () => {
+      const oneSecondInteraction = Array.from(data.interactionEvents).find(entry => {
+        return entry.dur === 979974 && entry.type === 'click';
+      });
+      if (!oneSecondInteraction) {
+        throw new Error('Could not find interaction');
+      }
+
+      assert.strictEqual(oneSecondInteraction.processingStart, 141251950944);
+      assert.strictEqual(oneSecondInteraction.processingEnd, 141252927944);
+    });
+
+    it('adds the INP phases to the interaction', () => {
+      const oneSecondInteraction = Array.from(data.interactionEvents).find(entry => {
+        return entry.dur === 979974 && entry.type === 'click';
+      });
+      if (!oneSecondInteraction) {
+        throw new Error('Could not find interaction');
+      }
+
+      // These numbers do seem suspciously round: that is because they are from
+      // converted millisecond values and this is expected.
+      assert.strictEqual(oneSecondInteraction.inputDelay, 1_000);
+      assert.strictEqual(oneSecondInteraction.mainThreadHandling, 977_000);
+      assert.strictEqual(oneSecondInteraction.presentationDelay, 1974);
+    });
+
+    it('returns a set of all interactions that exceed the threshold', () => {
+      // There are two long interactions: the pointerup, and the click.
+      assert.strictEqual(data.interactionsOverThreshold.size, 2);
+    });
   });
 
-  it('does not include interactions below the threshold', async () => {
-    await processTrace(this, 'slow-interaction-keydown.json.gz');
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    // All the interactions in this trace are < 200ms
-    assert.strictEqual(data.interactionsOverThreshold.size, 0);
-  });
+  describe('slow-interaction-keydown trace', () => {
+    let data: Trace.Handlers.ModelHandlers.UserInteractions.UserInteractionsData;
+    before(async function() {
+      data = await processTrace(this, 'slow-interaction-keydown.json.gz');
+    });
 
-  it('sets the `dur` key on each event by finding the begin and end events and subtracting the ts', async () => {
-    await processTrace(this, 'slow-interaction-button-click.json.gz');
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    for (const syntheticEvent of data.interactionEvents) {
-      assert.strictEqual(
-          syntheticEvent.dur, syntheticEvent.args.data.endEvent.ts - syntheticEvent.args.data.beginEvent.ts);
-    }
-  });
+    it('identifies the longest interaction', () => {
+      assert.lengthOf(data.interactionEvents, 5);
 
-  it('gets the right interaction IDs for each interaction', async () => {
-    await processTrace(this, 'slow-interaction-button-click.json.gz');
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    assert.deepEqual(data.interactionEvents.map(i => i.interactionId), [
-      // pointerdown, pointerup and click are all from the same interaction
-      1540,
-      1540,
-      1540,
-    ]);
-  });
+      const expectedLongestEvent = data.interactionEvents.find(event => {
+        return event.type === 'keydown' && event.interactionId === 7378;
+      });
+      assert.strictEqual(data.longestInteractionEvent, expectedLongestEvent);
+    });
 
-  it('gets the right interaction IDs for a keypress interaction', async () => {
-    await processTrace(this, 'slow-interaction-keydown.json.gz');
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    assert.deepEqual(data.interactionEvents.map(i => i.interactionId), [
-      // pointerdown from clicking on the input
-      7371,
-      // pointerup from clicking on the input
-      7371,
-      // click from clicking on the input
-      7371,
-      // keydown from typing character
-      7378,
-      // keyup from typing character
-      7378,
-    ]);
-  });
+    it('does not include interactions below the threshold', () => {
+      // All the interactions in this trace are < 200ms
+      assert.strictEqual(data.interactionsOverThreshold.size, 0);
+    });
 
-  it('detects correct events for a click and keydown interaction', async () => {
-    await processTrace(this, 'slow-interaction-keydown.json.gz');
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
-    const foundInteractions =
-        data.interactionEvents.filter(Trace.Types.Events.isEventTimingStart).filter(e => e.dur > 1);
-    // We expect there to be 3 interactions:
-    // User clicks on input:
-    // 1.pointerdown, 2. click, 3. pointerup.
-    // User types into input:
-    // 4. keydown, 5. keyup.
+    it('gets the right interaction IDs for a keypress interaction', () => {
+      assert.deepEqual(data.interactionEvents.map(i => i.interactionId), [
+        // pointerdown from clicking on the input
+        7371,
+        // pointerup from clicking on the input
+        7371,
+        // click from clicking on the input
+        7371,
+        // keydown from typing character
+        7378,
+        // keyup from typing character
+        7378,
+      ]);
+    });
 
-    assert.deepEqual(
-        foundInteractions.map(event => event.type), ['pointerdown', 'click', 'pointerup', 'keydown', 'keyup']);
+    it('detects correct events for a click and keydown interaction', () => {
+      const foundInteractions =
+          data.interactionEvents.filter(Trace.Types.Events.isEventTimingStart).filter(e => e.dur > 1);
+      // We expect there to be 3 interactions:
+      // User clicks on input:
+      // 1.pointerdown, 2. click, 3. pointerup.
+      // User types into input:
+      // 4. keydown, 5. keyup.
 
-    assert.deepEqual(foundInteractions.map(e => e.interactionId), [
-      // The first three events relate to the click, so they have the same InteractionID
-      7371,
-      7371,
-      7371,
-      // The final two relate to the keypress, so they have the same InteractionID
-      7378,
-      7378,
-    ]);
-  });
+      assert.deepEqual(foundInteractions.map(event => event.type),
+                       ['pointerdown', 'click', 'pointerup', 'keydown', 'keyup']);
 
-  it('sets the main thread handling duration for the non-nested keyboard interaction', async () => {
-    await processTrace(this, 'slow-interaction-keydown.json.gz');
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
+      assert.deepEqual(foundInteractions.map(e => e.interactionId), [
+        // The first three events relate to the click, so they have the same InteractionID
+        7371,
+        7371,
+        7371,
+        // The final two relate to the keypress, so they have the same InteractionID
+        7378,
+        7378,
+      ]);
+    });
 
-    const keyboardInteraction = data.interactionEventsWithNoNesting.find(e => e.interactionId === 7378);
-    assert.isOk(keyboardInteraction);
-    assert.strictEqual(keyboardInteraction.mainThreadHandling, 143901);
+    it('sets the main thread handling duration for the non-nested keyboard interaction', () => {
+      const keyboardInteraction = data.interactionEventsWithNoNesting.find(e => e.interactionId === 7378);
+      assert.isOk(keyboardInteraction);
+      assert.strictEqual(keyboardInteraction.mainThreadHandling, 143901);
+    });
   });
 
   it('works with a trace that has reused event IDs', async () => {
-    await processTrace(this, 'interaction-events-with-shared-ids.json.gz');
-    const data = Trace.Handlers.ModelHandlers.UserInteractions.data();
+    const data = await processTrace(this, 'interaction-events-with-shared-ids.json.gz');
 
     // The two particular events that we care about with this test.
     const pointerEvent = data.interactionEvents.find(e => e.interactionId === 421);

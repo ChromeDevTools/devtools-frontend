@@ -25,176 +25,178 @@ const SUB_FRAME_PID_3 = 2236123;
 
 async function handleEventsFromTraceFile(
     context: Mocha.Suite|Mocha.Context, file: string): Promise<Trace.Handlers.Types.HandlerData> {
-  const parsedTrace = await TraceLoader.traceEngine(context, file);
+  const parsedTrace = await TraceLoader.traceEngine(context, file, undefined, {withTimelinePanel: false});
   return parsedTrace.data;
 }
 
 describeWithEnvironment('RendererHandler', function() {
-  it('finds all the renderers in a real world profile', async () => {
-    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    assert.strictEqual(renderers.processes.size, 4);
-
-    const pids = [...renderers.processes].map(([pid]) => pid);
-    assert.deepEqual(
-        pids,
-        [
-          MAIN_FRAME_PID,   // Main frame process: localhost:5000
-          SUB_FRAME_PID,    // Sub frame process (trace start): example.com
-          SUB_FRAME_PID_2,  // Sub frame process (after first navigation): example.com
-          SUB_FRAME_PID_3,  // Sub frame process (after second navigation): example.com
-        ],
-        'Process IDs do not match expectations');
-
-    const origins = [...renderers.processes].map(([, process]) => {
-      return process.url ? new URL(process.url).origin : null;
+  describe('process and thread structure with multiple navigations and iframes', () => {
+    let parsedData: Trace.Handlers.Types.HandlerData;
+    before(async function() {
+      parsedData = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
     });
-    assert.deepEqual(
-        origins,
-        [
-          'http://localhost:5000',    // Main frame process: localhost:5000
-          'https://www.example.com',  // Sub frame process (trace start): example.com
-          'https://www.example.com',  // Sub frame process (after first navigation): example.com
-          'https://www.example.com',  // Sub frame process (after second navigation): example.com
-        ],
-        'Process origins do not meet expectations');
 
-    // Assert on whether it has correctly detected a given process to be on the
-    // main frame or in a subframe.
-    const isOnMainFrame = [...renderers.processes].map(([, process]) => process.isOnMainFrame);
-    assert.deepEqual(
-        isOnMainFrame,
-        [
-          true,   // Main frame process: localhost:5000
-          false,  // Sub frame process (trace start): example.com
-          false,  // Sub frame process (after first navigation): example.com
-          false,  // Sub frame process (after second navigation): example.com
-        ],
-        'Processes are incorrectly assigned as being on the main frame');
-  });
+    it('finds all the renderers in a real world profile', () => {
+      const {Renderer: renderers} = parsedData;
+      assert.strictEqual(renderers.processes.size, 4);
 
-  it('finds all the main frame threads in a real world profile', async () => {
-    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const frame = renderers.processes.get(Trace.Types.Events.ProcessID(MAIN_FRAME_PID)) as
-        Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
-    const names = [...frame.threads].map(([, thread]) => thread.name).sort();
-    assert.deepEqual(
-        names,
-        [
-          'Chrome_ChildIOThread',
-          'Compositor',
-          'CompositorTileWorker1',
-          'CompositorTileWorker2',
-          'CompositorTileWorker3',
-          'CompositorTileWorker4',
-          'CrRendererMain',
-          'ThreadPoolForegroundWorker',
-          'ThreadPoolForegroundWorker',
-          'ThreadPoolForegroundWorker',
-          'ThreadPoolForegroundWorker',
-          'ThreadPoolForegroundWorker',
-          'ThreadPoolForegroundWorker',
-          'ThreadPoolForegroundWorker',
-          'ThreadPoolForegroundWorker',
-          'ThreadPoolServiceThread',
-        ],
-        'Main frame thread names do not meet expectations before navigation');
-  });
+      const pids = [...renderers.processes].map(([pid]) => pid);
+      assert.deepEqual(pids,
+                       [
+                         MAIN_FRAME_PID,   // Main frame process: localhost:5000
+                         SUB_FRAME_PID,    // Sub frame process (trace start): example.com
+                         SUB_FRAME_PID_2,  // Sub frame process (after first navigation): example.com
+                         SUB_FRAME_PID_3,  // Sub frame process (after second navigation): example.com
+                       ],
+                       'Process IDs do not match expectations');
 
-  it('finds all the sub frame threads in a real world profile', async () => {
-    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const frame = renderers.processes.get(Trace.Types.Events.ProcessID(SUB_FRAME_PID)) as
-        Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
-    const names = [...frame.threads].map(([, thread]) => thread.name).sort();
-    assert.deepEqual(
-        names,
-        [
-          'Chrome_ChildIOThread',
-          'Compositor',
-          'CrRendererMain',
-          'ThreadPoolServiceThread',
-        ],
-        'Main frame thread names do not meet expectations after navigation');
-  });
+      const origins = [...renderers.processes].map(([, process]) => {
+        return process.url ? new URL(process.url).origin : null;
+      });
+      assert.deepEqual(origins,
+                       [
+                         'http://localhost:5000',    // Main frame process: localhost:5000
+                         'https://www.example.com',  // Sub frame process (trace start): example.com
+                         'https://www.example.com',  // Sub frame process (after first navigation): example.com
+                         'https://www.example.com',  // Sub frame process (after second navigation): example.com
+                       ],
+                       'Process origins do not meet expectations');
 
-  it('finds all the roots on the main frame\'s main thread in a real world profile', async () => {
-    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const frame = renderers.processes.get(Trace.Types.Events.ProcessID(MAIN_FRAME_PID)) as
-        Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
-    const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
-    if (!thread) {
-      assert(false, 'Main thread was not found');
-    }
+      // Assert on whether it has correctly detected a given process to be on the
+      // main frame or in a subframe.
+      const isOnMainFrame = [...renderers.processes].map(([, process]) => process.isOnMainFrame);
+      assert.deepEqual(isOnMainFrame,
+                       [
+                         true,   // Main frame process: localhost:5000
+                         false,  // Sub frame process (trace start): example.com
+                         false,  // Sub frame process (after first navigation): example.com
+                         false,  // Sub frame process (after second navigation): example.com
+                       ],
+                       'Processes are incorrectly assigned as being on the main frame');
+    });
 
-    const tree = thread.tree;
-    if (!tree) {
-      assert(false, 'Main thread has no tree of events');
-    }
-    assert.deepEqual([...tree.roots].map(root => root.id), [
-      0,    1,    2,    3,    4,    5,    16,   18,   29,   38,   49,   58,   77,   183,  184,  185,  186,  188,  189,
-      190,  199,  200,  201,  202,  211,  212,  213,  214,  229,  230,  232,  237,  239,  240,  242,  251,  252,  261,
-      264,  265,  266,  267,  268,  279,  282,  284,  285,  286,  287,  288,  289,  290,  293,  294,  295,  296,  297,
-      298,  299,  300,  301,  302,  303,  304,  305,  306,  328,  329,  330,  331,  332,  333,  334,  335,  336,  337,
-      338,  339,  340,  341,  342,  343,  344,  345,  354,  355,  356,  359,  389,  408,  409,  410,  411,  412,  413,
-      414,  415,  416,  417,  418,  419,  420,  421,  422,  423,  424,  425,  426,  427,  428,  429,  430,  431,  432,
-      433,  441,  442,  443,  444,  445,  446,  447,  448,  455,  456,  457,  458,  459,  460,  461,  462,  463,  464,
-      465,  466,  467,  468,  469,  479,  480,  481,  482,  483,  484,  485,  492,  493,  494,  495,  496,  498,  506,
-      507,  508,  509,  510,  511,  516,  517,  518,  519,  520,  521,  522,  523,  524,  525,  526,  538,  540,  541,
-      552,  555,  556,  565,  566,  575,  576,  585,  586,  595,  596,  605,  606,  615,  616,  625,  626,  635,  636,
-      645,  646,  657,  660,  661,  662,  663,  674,  677,  678,  679,  680,  689,  690,  691,  692,  701,  702,  711,
-      712,  721,  722,  733,  734,  737,  738,  739,  740,  749,  750,  751,  760,  761,  762,  771,  772,  773,  782,
-      783,  784,  793,  794,  795,  796,  797,  808,  809,  810,  811,  835,  843,  844,  845,  846,  848,  861,  869,
-      870,  871,  872,  873,  874,  875,  876,  877,  878,  881,  882,  883,  884,  885,  886,  887,  888,  889,  890,
-      904,  905,  906,  907,  908,  909,  910,  911,  912,  913,  914,  915,  916,  917,  918,  919,  920,  921,  922,
-      931,  932,  933,  936,  966,  967,  983,  984,  985,  986,  987,  988,  989,  990,  991,  992,  993,  994,  995,
-      996,  997,  998,  999,  1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1020, 1021,
-      1022, 1023, 1024, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055,
-      1056, 1057, 1064, 1065, 1066, 1068, 1069, 1077, 1078, 1079, 1080, 1081, 1082, 1083, 1084, 1085, 1086, 1087, 1088,
-      1089, 1090, 1091, 1092, 1102, 1104, 1105, 1106, 1107, 1116, 1117, 1118, 1127, 1128, 1129, 1138, 1139, 1140, 1141,
-      1150, 1151, 1152, 1153, 1154, 1165, 1166, 1167, 1176, 1177, 1178, 1189, 1192, 1193, 1194, 1203, 1204, 1205, 1206,
-      1215, 1216, 1225, 1226, 1235, 1236, 1237, 1246, 1247, 1256, 1257, 1266, 1267, 1276, 1277, 1286, 1287, 1298, 1301,
-      1302, 1303, 1304, 1313, 1314, 1315, 1324, 1325, 1326, 1335, 1336, 1337, 1348, 1351, 1352, 1353, 1362, 1364, 1365,
-      1366, 1367, 1368, 1369, 1370, 1371, 1378,
-    ]);
-  });
+    it('finds all the main frame threads in a real world profile', () => {
+      const {Renderer: renderers} = parsedData;
+      const frame = renderers.processes.get(Trace.Types.Events.ProcessID(MAIN_FRAME_PID)) as
+          Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
+      const names = [...frame.threads].map(([, thread]) => thread.name).sort();
+      assert.deepEqual(names,
+                       [
+                         'Chrome_ChildIOThread',
+                         'Compositor',
+                         'CompositorTileWorker1',
+                         'CompositorTileWorker2',
+                         'CompositorTileWorker3',
+                         'CompositorTileWorker4',
+                         'CrRendererMain',
+                         'ThreadPoolForegroundWorker',
+                         'ThreadPoolForegroundWorker',
+                         'ThreadPoolForegroundWorker',
+                         'ThreadPoolForegroundWorker',
+                         'ThreadPoolForegroundWorker',
+                         'ThreadPoolForegroundWorker',
+                         'ThreadPoolForegroundWorker',
+                         'ThreadPoolForegroundWorker',
+                         'ThreadPoolServiceThread',
+                       ],
+                       'Main frame thread names do not meet expectations before navigation');
+    });
 
-  it('finds all the roots on the sub frame\'s main thread in a real world profile', async () => {
-    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const frame = renderers.processes.get(Trace.Types.Events.ProcessID(SUB_FRAME_PID)) as
-        Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
-    const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
-    if (!thread) {
-      assert(false, 'Main thread was not found');
-    }
+    it('finds all the sub frame threads in a real world profile', () => {
+      const {Renderer: renderers} = parsedData;
+      const frame = renderers.processes.get(Trace.Types.Events.ProcessID(SUB_FRAME_PID)) as
+          Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
+      const names = [...frame.threads].map(([, thread]) => thread.name).sort();
+      assert.deepEqual(names,
+                       [
+                         'Chrome_ChildIOThread',
+                         'Compositor',
+                         'CrRendererMain',
+                         'ThreadPoolServiceThread',
+                       ],
+                       'Main frame thread names do not meet expectations after navigation');
+    });
 
-    const tree = thread.tree;
-    if (!tree) {
-      assert(false, 'Main thread has no tree of events');
-    }
-    assert.deepEqual(
-        [...tree.roots].map(root => root.id), [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20]);
-  });
+    it('finds all the roots on the main frame\'s main thread in a real world profile', () => {
+      const {Renderer: renderers} = parsedData;
+      const frame = renderers.processes.get(Trace.Types.Events.ProcessID(MAIN_FRAME_PID)) as
+          Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
+      const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
+      if (!thread) {
+        assert(false, 'Main thread was not found');
+      }
 
-  it('builds a hierarchy for the main frame\'s main thread in a real world profile', async () => {
-    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const frame = renderers.processes.get(Trace.Types.Events.ProcessID(MAIN_FRAME_PID)) as
-        Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
-    const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
-    if (!thread) {
-      assert(false, 'Main thread was not found');
-    }
+      const tree = thread.tree;
+      if (!tree) {
+        assert(false, 'Main thread has no tree of events');
+      }
+      assert.deepEqual([...tree.roots].map(root => root.id), [
+        0,    1,    2,    3,    4,    5,    16,   18,   29,   38,   49,   58,   77,   183,  184,  185,  186,  188,
+        189,  190,  199,  200,  201,  202,  211,  212,  213,  214,  229,  230,  232,  237,  239,  240,  242,  251,
+        252,  261,  264,  265,  266,  267,  268,  279,  282,  284,  285,  286,  287,  288,  289,  290,  293,  294,
+        295,  296,  297,  298,  299,  300,  301,  302,  303,  304,  305,  306,  328,  329,  330,  331,  332,  333,
+        334,  335,  336,  337,  338,  339,  340,  341,  342,  343,  344,  345,  354,  355,  356,  359,  389,  408,
+        409,  410,  411,  412,  413,  414,  415,  416,  417,  418,  419,  420,  421,  422,  423,  424,  425,  426,
+        427,  428,  429,  430,  431,  432,  433,  441,  442,  443,  444,  445,  446,  447,  448,  455,  456,  457,
+        458,  459,  460,  461,  462,  463,  464,  465,  466,  467,  468,  469,  479,  480,  481,  482,  483,  484,
+        485,  492,  493,  494,  495,  496,  498,  506,  507,  508,  509,  510,  511,  516,  517,  518,  519,  520,
+        521,  522,  523,  524,  525,  526,  538,  540,  541,  552,  555,  556,  565,  566,  575,  576,  585,  586,
+        595,  596,  605,  606,  615,  616,  625,  626,  635,  636,  645,  646,  657,  660,  661,  662,  663,  674,
+        677,  678,  679,  680,  689,  690,  691,  692,  701,  702,  711,  712,  721,  722,  733,  734,  737,  738,
+        739,  740,  749,  750,  751,  760,  761,  762,  771,  772,  773,  782,  783,  784,  793,  794,  795,  796,
+        797,  808,  809,  810,  811,  835,  843,  844,  845,  846,  848,  861,  869,  870,  871,  872,  873,  874,
+        875,  876,  877,  878,  881,  882,  883,  884,  885,  886,  887,  888,  889,  890,  904,  905,  906,  907,
+        908,  909,  910,  911,  912,  913,  914,  915,  916,  917,  918,  919,  920,  921,  922,  931,  932,  933,
+        936,  966,  967,  983,  984,  985,  986,  987,  988,  989,  990,  991,  992,  993,  994,  995,  996,  997,
+        998,  999,  1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010, 1011, 1012, 1020, 1021, 1022,
+        1023, 1024, 1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1048, 1049, 1050, 1051, 1052, 1053, 1054, 1055,
+        1056, 1057, 1064, 1065, 1066, 1068, 1069, 1077, 1078, 1079, 1080, 1081, 1082, 1083, 1084, 1085, 1086, 1087,
+        1088, 1089, 1090, 1091, 1092, 1102, 1104, 1105, 1106, 1107, 1116, 1117, 1118, 1127, 1128, 1129, 1138, 1139,
+        1140, 1141, 1150, 1151, 1152, 1153, 1154, 1165, 1166, 1167, 1176, 1177, 1178, 1189, 1192, 1193, 1194, 1203,
+        1204, 1205, 1206, 1215, 1216, 1225, 1226, 1235, 1236, 1237, 1246, 1247, 1256, 1257, 1266, 1267, 1276, 1277,
+        1286, 1287, 1298, 1301, 1302, 1303, 1304, 1313, 1314, 1315, 1324, 1325, 1326, 1335, 1336, 1337, 1348, 1351,
+        1352, 1353, 1362, 1364, 1365, 1366, 1367, 1368, 1369, 1370, 1371, 1378,
+      ]);
+    });
 
-    const tree = thread.tree;
-    if (!tree) {
-      assert(false, 'Main thread has no tree of events');
-    }
+    it('finds all the roots on the sub frame\'s main thread in a real world profile', () => {
+      const {Renderer: renderers} = parsedData;
+      const frame = renderers.processes.get(Trace.Types.Events.ProcessID(SUB_FRAME_PID)) as
+          Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
+      const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
+      if (!thread) {
+        assert(false, 'Main thread was not found');
+      }
 
-    const isRoot = (node: Trace.Helpers.TreeHelpers.TraceEntryNode) => node.depth === 0;
-    const isInstant = (event: Trace.Types.Events.Event) => Trace.Types.Events.isInstant(event);
-    const isLong = (event: Trace.Types.Events.Event) => Trace.Types.Events.isComplete(event) && event.dur > 1000;
-    const isIncluded = (node: Trace.Helpers.TreeHelpers.TraceEntryNode, event: Trace.Types.Events.Event) =>
-        (!isRoot(node) || isInstant(event) || isLong(event)) &&
-        Boolean(Trace.Styles.getEventStyle(event.name as Trace.Types.Events.Name));
-    assert.strictEqual(prettyPrint(tree, isIncluded), `
+      const tree = thread.tree;
+      if (!tree) {
+        assert(false, 'Main thread has no tree of events');
+      }
+      assert.deepEqual([...tree.roots].map(root => root.id),
+                       [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 14, 15, 16, 17, 18, 19, 20]);
+    });
+
+    it('builds a hierarchy for the main frame\'s main thread in a real world profile', () => {
+      const {Renderer: renderers} = parsedData;
+      const frame = renderers.processes.get(Trace.Types.Events.ProcessID(MAIN_FRAME_PID)) as
+          Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
+      const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
+      if (!thread) {
+        assert(false, 'Main thread was not found');
+      }
+
+      const tree = thread.tree;
+      if (!tree) {
+        assert(false, 'Main thread has no tree of events');
+      }
+
+      const isRoot = (node: Trace.Helpers.TreeHelpers.TraceEntryNode) => node.depth === 0;
+      const isInstant = (event: Trace.Types.Events.Event) => Trace.Types.Events.isInstant(event);
+      const isLong = (event: Trace.Types.Events.Event) => Trace.Types.Events.isComplete(event) && event.dur > 1000;
+      const isIncluded = (node: Trace.Helpers.TreeHelpers.TraceEntryNode, event: Trace.Types.Events.Event) =>
+          (!isRoot(node) || isInstant(event) || isLong(event)) &&
+          Boolean(Trace.Styles.getEventStyle(event.name as Trace.Types.Events.Name));
+      assert.strictEqual(prettyPrint(tree, isIncluded), `
 ............
 -RunTask [2.21ms]
 .
@@ -376,24 +378,24 @@ describeWithEnvironment('RendererHandler', function() {
 .
   -ScheduleStyleRecalculation [0ms]
 ......................................................................................................................`);
-  });
+    });
 
-  it('builds a hierarchy for the sub frame\'s main thread in a real world profile', async () => {
-    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const frame = renderers.processes.get(Trace.Types.Events.ProcessID(SUB_FRAME_PID)) as
-        Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
-    const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
-    if (!thread) {
-      assert(false, 'Main thread was not found');
-    }
+    it('builds a hierarchy for the sub frame\'s main thread in a real world profile', () => {
+      const {Renderer: renderers} = parsedData;
+      const frame = renderers.processes.get(Trace.Types.Events.ProcessID(SUB_FRAME_PID)) as
+          Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
+      const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
+      if (!thread) {
+        assert(false, 'Main thread was not found');
+      }
 
-    const tree = thread.tree;
-    if (!tree) {
-      assert(false, 'Main thread has no tree of events');
-    }
-    const isIncluded = (_node: Trace.Helpers.TreeHelpers.TraceEntryNode, event: Trace.Types.Events.Event) =>
-        Boolean(Trace.Styles.getEventStyle(event.name as Trace.Types.Events.Name));
-    assert.strictEqual(prettyPrint(tree, isIncluded), `
+      const tree = thread.tree;
+      if (!tree) {
+        assert(false, 'Main thread has no tree of events');
+      }
+      const isIncluded = (_node: Trace.Helpers.TreeHelpers.TraceEntryNode, event: Trace.Types.Events.Event) =>
+          Boolean(Trace.Styles.getEventStyle(event.name as Trace.Types.Events.Name));
+      assert.strictEqual(prettyPrint(tree, isIncluded), `
 -RunTask [0.13ms]
 -RunTask [0.005ms]
 -RunTask [0.009ms]
@@ -415,127 +417,225 @@ describeWithEnvironment('RendererHandler', function() {
 -EventDispatch (webkitvisibilitychange) [0.016ms]
 -EventDispatch (unload) [0.007ms]
 .`);
-  });
-
-  it('has some correct known roots for the main frame\'s main thread in a real world profile', async () => {
-    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const frame = renderers.processes.get(Trace.Types.Events.ProcessID(MAIN_FRAME_PID)) as
-        Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
-    const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
-    if (!thread) {
-      assert(false, 'Main thread was not found');
-    }
-
-    const tree = thread.tree;
-    if (!tree) {
-      assert(false, 'Main thread has no tree of events');
-    }
-
-    const event0 = getRootAt(thread, 1).entry;
-    assert.deepEqual(event0 as unknown, {
-      args: {},
-      cat: 'disabled-by-default-devtools.timeline',
-      dur: 132,
-      name: 'RunTask',
-      ph: 'X',
-      pid: 2154214,
-      tdur: 131,
-      tid: 1,
-      ts: 643492822363,
-      tts: 291450,
     });
-    assert.strictEqual(renderers.entryToNode.get(event0)?.selfTime, 132);
 
-    const event1 = getRootAt(thread, 2).entry;
-    assert.deepEqual(event1 as unknown, {
-      args: {},
-      cat: 'disabled-by-default-devtools.timeline',
-      dur: 4,
-      name: 'RunTask',
-      ph: 'X',
-      pid: 2154214,
-      tdur: 4,
-      tid: 1,
-      ts: 643492822500,
-      tts: 291586,
+    it('has some correct known roots for the main frame\'s main thread in a real world profile', () => {
+      const {Renderer: renderers} = parsedData;
+      const frame = renderers.processes.get(Trace.Types.Events.ProcessID(MAIN_FRAME_PID)) as
+          Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
+      const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
+      if (!thread) {
+        assert(false, 'Main thread was not found');
+      }
+
+      const tree = thread.tree;
+      if (!tree) {
+        assert(false, 'Main thread has no tree of events');
+      }
+
+      const event0 = getRootAt(thread, 1).entry;
+      assert.deepEqual(event0 as unknown, {
+        args: {},
+        cat: 'disabled-by-default-devtools.timeline',
+        dur: 132,
+        name: 'RunTask',
+        ph: 'X',
+        pid: 2154214,
+        tdur: 131,
+        tid: 1,
+        ts: 643492822363,
+        tts: 291450,
+      });
+      assert.strictEqual(renderers.entryToNode.get(event0)?.selfTime, 132);
+
+      const event1 = getRootAt(thread, 2).entry;
+      assert.deepEqual(event1 as unknown, {
+        args: {},
+        cat: 'disabled-by-default-devtools.timeline',
+        dur: 4,
+        name: 'RunTask',
+        ph: 'X',
+        pid: 2154214,
+        tdur: 4,
+        tid: 1,
+        ts: 643492822500,
+        tts: 291586,
+      });
+      assert.strictEqual(renderers.entryToNode.get(event1)?.selfTime, 4);
+
+      const eventLast = getRootAt(thread, tree.roots.size - 1).entry;
+      assert.deepEqual(eventLast as unknown, {
+        args: {},
+        cat: 'disabled-by-default-devtools.timeline',
+        dur: 67,
+        name: 'RunTask',
+        ph: 'X',
+        pid: 2154214,
+        tdur: 67,
+        tid: 1,
+        ts: 643499551460,
+        tts: 949032,
+      });
+      assert.strictEqual(renderers.entryToNode.get(eventLast)?.selfTime, 35);
     });
-    assert.strictEqual(renderers.entryToNode.get(event1)?.selfTime, 4);
 
-    const eventLast = getRootAt(thread, tree.roots.size - 1).entry;
-    assert.deepEqual(eventLast as unknown, {
-      args: {},
-      cat: 'disabled-by-default-devtools.timeline',
-      dur: 67,
-      name: 'RunTask',
-      ph: 'X',
-      pid: 2154214,
-      tdur: 67,
-      tid: 1,
-      ts: 643499551460,
-      tts: 949032,
+    it('has some correct known roots for the sub frame\'s main thread in a real world profile', () => {
+      const {Renderer: renderers} = parsedData;
+      const frame = renderers.processes.get(Trace.Types.Events.ProcessID(SUB_FRAME_PID)) as
+          Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
+      const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
+      if (!thread) {
+        assert(false, 'Main thread was not found');
+      }
+
+      const tree = thread.tree;
+      if (!tree) {
+        assert(false, 'Main thread has no tree of events');
+      }
+
+      const event0 = getRootAt(thread, 0).entry;
+      assert.deepEqual(event0 as unknown, {
+        args: {},
+        cat: 'disabled-by-default-devtools.timeline',
+        dur: 130,
+        name: 'RunTask',
+        ph: 'X',
+        pid: 2236065,
+        tdur: 129,
+        tid: 1,
+        ts: 643492822099,
+        tts: 62157,
+      });
+      assert.strictEqual(renderers.entryToNode.get(event0)?.selfTime, 130);
+
+      const event1 = getRootAt(thread, 1).entry;
+      assert.deepEqual(event1 as unknown, {
+        args: {},
+        cat: 'disabled-by-default-devtools.timeline',
+        dur: 5,
+        name: 'RunTask',
+        ph: 'X',
+        pid: 2236065,
+        tdur: 5,
+        tid: 1,
+        ts: 643492822234,
+        tts: 62291,
+      });
+      assert.strictEqual(renderers.entryToNode.get(event1)?.selfTime, 5);
+
+      const event2 = getRootAt(thread, 2).entry;
+
+      assert.deepEqual(event2 as unknown, {
+        args: {},
+        cat: 'disabled-by-default-devtools.timeline',
+        dur: 9,
+        name: 'RunTask',
+        ph: 'X',
+        pid: 2236065,
+        tdur: 9,
+        tid: 1,
+        ts: 643492822242,
+        tts: 62299,
+      });
+      assert.strictEqual(renderers.entryToNode.get(event2)?.selfTime, 9);
     });
-    assert.strictEqual(renderers.entryToNode.get(eventLast)?.selfTime, 35);
-  });
 
-  it('has some correct known roots for the sub frame\'s main thread in a real world profile', async () => {
-    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const frame = renderers.processes.get(Trace.Types.Events.ProcessID(SUB_FRAME_PID)) as
-        Trace.Handlers.ModelHandlers.Renderer.RendererProcess;
-    const thread = [...frame.threads.values()].find(thread => thread.name === 'CrRendererMain');
-    if (!thread) {
-      assert(false, 'Main thread was not found');
-    }
+    it('can assign origins to processes', () => {
+      const {Meta: metadata} = parsedData;
+      const processes = new Map<Trace.Types.Events.ProcessID, Trace.Handlers.ModelHandlers.Renderer.RendererProcess>();
 
-    const tree = thread.tree;
-    if (!tree) {
-      assert(false, 'Main thread has no tree of events');
-    }
+      Trace.Handlers.ModelHandlers.Renderer.assignOrigin(processes, metadata.rendererProcessesByFrame);
 
-    const event0 = getRootAt(thread, 0).entry;
-    assert.deepEqual(event0 as unknown, {
-      args: {},
-      cat: 'disabled-by-default-devtools.timeline',
-      dur: 130,
-      name: 'RunTask',
-      ph: 'X',
-      pid: 2236065,
-      tdur: 129,
-      tid: 1,
-      ts: 643492822099,
-      tts: 62157,
+      assert.deepEqual([...processes].map(([pid, p]) => [pid, p.url ? new URL(p.url).origin : null]), [
+        [Trace.Types.Events.ProcessID(MAIN_FRAME_PID), 'http://localhost:5000'],
+        [Trace.Types.Events.ProcessID(SUB_FRAME_PID), 'https://www.example.com'],
+        [Trace.Types.Events.ProcessID(SUB_FRAME_PID_2), 'https://www.example.com'],
+        [Trace.Types.Events.ProcessID(SUB_FRAME_PID_3), 'https://www.example.com'],
+      ]);
     });
-    assert.strictEqual(renderers.entryToNode.get(event0)?.selfTime, 130);
 
-    const event1 = getRootAt(thread, 1).entry;
-    assert.deepEqual(event1 as unknown, {
-      args: {},
-      cat: 'disabled-by-default-devtools.timeline',
-      dur: 5,
-      name: 'RunTask',
-      ph: 'X',
-      pid: 2236065,
-      tdur: 5,
-      tid: 1,
-      ts: 643492822234,
-      tts: 62291,
+    it('can assign main frame flags to processes', () => {
+      const {Meta: metadata} = parsedData;
+      const processes = new Map<Trace.Types.Events.ProcessID, Trace.Handlers.ModelHandlers.Renderer.RendererProcess>();
+
+      Trace.Handlers.ModelHandlers.Renderer.assignIsMainFrame(processes, metadata.mainFrameId,
+                                                              metadata.rendererProcessesByFrame);
+
+      assert.deepEqual([...processes].map(([pid, p]) => [pid, p.isOnMainFrame]), [
+        [Trace.Types.Events.ProcessID(MAIN_FRAME_PID), true],
+        [Trace.Types.Events.ProcessID(SUB_FRAME_PID), false],
+        [Trace.Types.Events.ProcessID(SUB_FRAME_PID_2), false],
+        [Trace.Types.Events.ProcessID(SUB_FRAME_PID_3), false],
+      ]);
     });
-    assert.strictEqual(renderers.entryToNode.get(event1)?.selfTime, 5);
 
-    const event2 = getRootAt(thread, 2).entry;
+    it('can assign thread names to threads in processes', () => {
+      const {Meta: metadata} = parsedData;
+      const {mainFrameId, rendererProcessesByFrame, threadsInProcess} = metadata;
+      const processes = new Map<Trace.Types.Events.ProcessID, Trace.Handlers.ModelHandlers.Renderer.RendererProcess>();
 
-    assert.deepEqual(event2 as unknown, {
-      args: {},
-      cat: 'disabled-by-default-devtools.timeline',
-      dur: 9,
-      name: 'RunTask',
-      ph: 'X',
-      pid: 2236065,
-      tdur: 9,
-      tid: 1,
-      ts: 643492822242,
-      tts: 62299,
+      Trace.Handlers.ModelHandlers.Renderer.assignMeta(processes, mainFrameId, rendererProcessesByFrame,
+                                                       threadsInProcess);
+
+      assert.deepEqual([...processes].map(([pid, p]) => [pid, [...p.threads].map(([tid, t]) => [tid, t.name])]), [
+        [
+          Trace.Types.Events.ProcessID(MAIN_FRAME_PID),
+          [
+            [Trace.Types.Events.ThreadID(1), 'CrRendererMain'],
+            [Trace.Types.Events.ThreadID(7), 'Compositor'],
+            [Trace.Types.Events.ThreadID(2), 'ThreadPoolServiceThread'],
+            [Trace.Types.Events.ThreadID(4), 'Chrome_ChildIOThread'],
+            [Trace.Types.Events.ThreadID(24), 'ThreadPoolForegroundWorker'],
+            [Trace.Types.Events.ThreadID(27), 'ThreadPoolForegroundWorker'],
+            [Trace.Types.Events.ThreadID(17), 'ThreadPoolForegroundWorker'],
+            [Trace.Types.Events.ThreadID(29), 'ThreadPoolForegroundWorker'],
+            [Trace.Types.Events.ThreadID(25), 'ThreadPoolForegroundWorker'],
+            [Trace.Types.Events.ThreadID(28), 'ThreadPoolForegroundWorker'],
+            [Trace.Types.Events.ThreadID(30), 'ThreadPoolForegroundWorker'],
+            [Trace.Types.Events.ThreadID(26), 'ThreadPoolForegroundWorker'],
+            [Trace.Types.Events.ThreadID(11), 'CompositorTileWorker3'],
+            [Trace.Types.Events.ThreadID(12), 'CompositorTileWorker4'],
+            [Trace.Types.Events.ThreadID(10), 'CompositorTileWorker2'],
+            [Trace.Types.Events.ThreadID(9), 'CompositorTileWorker1'],
+          ],
+        ],
+        [
+          Trace.Types.Events.ProcessID(SUB_FRAME_PID),
+          [
+            [Trace.Types.Events.ThreadID(2), 'ThreadPoolServiceThread'],
+            [Trace.Types.Events.ThreadID(1), 'CrRendererMain'],
+            [Trace.Types.Events.ThreadID(7), 'Compositor'],
+            [Trace.Types.Events.ThreadID(4), 'Chrome_ChildIOThread'],
+          ],
+        ],
+        [
+          Trace.Types.Events.ProcessID(SUB_FRAME_PID_2),
+          [
+            [Trace.Types.Events.ThreadID(1), 'CrRendererMain'],
+            [Trace.Types.Events.ThreadID(4), 'Chrome_ChildIOThread'],
+            [Trace.Types.Events.ThreadID(8), 'Compositor'],
+            [Trace.Types.Events.ThreadID(2), 'ThreadPoolServiceThread'],
+            [Trace.Types.Events.ThreadID(10), 'CompositorTileWorker1'],
+          ],
+        ],
+        [
+          Trace.Types.Events.ProcessID(SUB_FRAME_PID_3),
+          [
+            [Trace.Types.Events.ThreadID(1), 'CrRendererMain'],
+            [Trace.Types.Events.ThreadID(2), 'ThreadPoolServiceThread'],
+            [Trace.Types.Events.ThreadID(4), 'Chrome_ChildIOThread'],
+            [Trace.Types.Events.ThreadID(7), 'Compositor'],
+            [Trace.Types.Events.ThreadID(10), 'CompositorTileWorker2'],
+            [Trace.Types.Events.ThreadID(3), 'ThreadPoolForegroundWorker'],
+          ],
+        ],
+      ]);
     });
-    assert.strictEqual(renderers.entryToNode.get(event2)?.selfTime, 9);
+
+    it('populates the map of trace events to tree nodes', () => {
+      const {Renderer: renderers} = parsedData;
+      assert.strictEqual(renderers.entryToNode.size, 3591);
+    });
   });
 
   it('can correctly sort a simple list of complete events', async () => {
@@ -688,103 +788,6 @@ describeWithEnvironment('RendererHandler', function() {
       {name: 'F', ts: 0, dur: 3},
       {name: 'G', ts: 3, dur: 10},
     ]);
-  });
-
-  it('can assign origins to processes', async () => {
-    const {Meta: metadata} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const processes = new Map<Trace.Types.Events.ProcessID, Trace.Handlers.ModelHandlers.Renderer.RendererProcess>();
-
-    Trace.Handlers.ModelHandlers.Renderer.assignOrigin(processes, metadata.rendererProcessesByFrame);
-
-    assert.deepEqual([...processes].map(([pid, p]) => [pid, p.url ? new URL(p.url).origin : null]), [
-      [Trace.Types.Events.ProcessID(MAIN_FRAME_PID), 'http://localhost:5000'],
-      [Trace.Types.Events.ProcessID(SUB_FRAME_PID), 'https://www.example.com'],
-      [Trace.Types.Events.ProcessID(SUB_FRAME_PID_2), 'https://www.example.com'],
-      [Trace.Types.Events.ProcessID(SUB_FRAME_PID_3), 'https://www.example.com'],
-    ]);
-  });
-
-  it('can assign main frame flags to processes', async () => {
-    const {Meta: metadata} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const processes = new Map<Trace.Types.Events.ProcessID, Trace.Handlers.ModelHandlers.Renderer.RendererProcess>();
-
-    Trace.Handlers.ModelHandlers.Renderer.assignIsMainFrame(
-        processes, metadata.mainFrameId, metadata.rendererProcessesByFrame);
-
-    assert.deepEqual([...processes].map(([pid, p]) => [pid, p.isOnMainFrame]), [
-      [Trace.Types.Events.ProcessID(MAIN_FRAME_PID), true],
-      [Trace.Types.Events.ProcessID(SUB_FRAME_PID), false],
-      [Trace.Types.Events.ProcessID(SUB_FRAME_PID_2), false],
-      [Trace.Types.Events.ProcessID(SUB_FRAME_PID_3), false],
-    ]);
-  });
-
-  it('can assign thread names to threads in processes', async () => {
-    const {Meta: metadata} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    const {mainFrameId, rendererProcessesByFrame, threadsInProcess} = metadata;
-    const processes = new Map<Trace.Types.Events.ProcessID, Trace.Handlers.ModelHandlers.Renderer.RendererProcess>();
-
-    Trace.Handlers.ModelHandlers.Renderer.assignMeta(
-        processes, mainFrameId, rendererProcessesByFrame, threadsInProcess);
-
-    assert.deepEqual([...processes].map(([pid, p]) => [pid, [...p.threads].map(([tid, t]) => [tid, t.name])]), [
-      [
-        Trace.Types.Events.ProcessID(MAIN_FRAME_PID),
-        [
-          [Trace.Types.Events.ThreadID(1), 'CrRendererMain'],
-          [Trace.Types.Events.ThreadID(7), 'Compositor'],
-          [Trace.Types.Events.ThreadID(2), 'ThreadPoolServiceThread'],
-          [Trace.Types.Events.ThreadID(4), 'Chrome_ChildIOThread'],
-          [Trace.Types.Events.ThreadID(24), 'ThreadPoolForegroundWorker'],
-          [Trace.Types.Events.ThreadID(27), 'ThreadPoolForegroundWorker'],
-          [Trace.Types.Events.ThreadID(17), 'ThreadPoolForegroundWorker'],
-          [Trace.Types.Events.ThreadID(29), 'ThreadPoolForegroundWorker'],
-          [Trace.Types.Events.ThreadID(25), 'ThreadPoolForegroundWorker'],
-          [Trace.Types.Events.ThreadID(28), 'ThreadPoolForegroundWorker'],
-          [Trace.Types.Events.ThreadID(30), 'ThreadPoolForegroundWorker'],
-          [Trace.Types.Events.ThreadID(26), 'ThreadPoolForegroundWorker'],
-          [Trace.Types.Events.ThreadID(11), 'CompositorTileWorker3'],
-          [Trace.Types.Events.ThreadID(12), 'CompositorTileWorker4'],
-          [Trace.Types.Events.ThreadID(10), 'CompositorTileWorker2'],
-          [Trace.Types.Events.ThreadID(9), 'CompositorTileWorker1'],
-        ],
-      ],
-      [
-        Trace.Types.Events.ProcessID(SUB_FRAME_PID),
-        [
-          [Trace.Types.Events.ThreadID(2), 'ThreadPoolServiceThread'],
-          [Trace.Types.Events.ThreadID(1), 'CrRendererMain'],
-          [Trace.Types.Events.ThreadID(7), 'Compositor'],
-          [Trace.Types.Events.ThreadID(4), 'Chrome_ChildIOThread'],
-        ],
-      ],
-      [
-        Trace.Types.Events.ProcessID(SUB_FRAME_PID_2),
-        [
-          [Trace.Types.Events.ThreadID(1), 'CrRendererMain'],
-          [Trace.Types.Events.ThreadID(4), 'Chrome_ChildIOThread'],
-          [Trace.Types.Events.ThreadID(8), 'Compositor'],
-          [Trace.Types.Events.ThreadID(2), 'ThreadPoolServiceThread'],
-          [Trace.Types.Events.ThreadID(10), 'CompositorTileWorker1'],
-        ],
-      ],
-      [
-        Trace.Types.Events.ProcessID(SUB_FRAME_PID_3),
-        [
-          [Trace.Types.Events.ThreadID(1), 'CrRendererMain'],
-          [Trace.Types.Events.ThreadID(2), 'ThreadPoolServiceThread'],
-          [Trace.Types.Events.ThreadID(4), 'Chrome_ChildIOThread'],
-          [Trace.Types.Events.ThreadID(7), 'Compositor'],
-          [Trace.Types.Events.ThreadID(10), 'CompositorTileWorker2'],
-          [Trace.Types.Events.ThreadID(3), 'ThreadPoolForegroundWorker'],
-        ],
-      ],
-    ]);
-  });
-
-  it('populates the map of trace events to tree nodes', async () => {
-    const {Renderer: renderers} = await handleEventsFromTraceFile(this, 'multiple-navigations-with-iframes.json.gz');
-    assert.strictEqual(renderers.entryToNode.size, 3591);
   });
 
   describe('Synthetic complete events', () => {

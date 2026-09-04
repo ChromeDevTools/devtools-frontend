@@ -37,7 +37,7 @@ import type {HandlerName} from './types.js';
 // score for the given recording, and almost certainly not the
 // navigation-to-unload CLS score.
 
-interface LayoutShiftsData {
+export interface LayoutShiftsData {
   clusters: readonly Types.Events.SyntheticLayoutShiftCluster[];
   sessionMaxScore: number;
   // The session window which contains the SessionMaxScore

@@ -126,6 +126,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   readonly #targetManager: SDK.TargetManager.TargetManager;
   readonly #settings: Common.Settings.Settings;
   readonly #multitargetNetworkManager: SDK.NetworkManager.MultitargetNetworkManager;
+  #lastScreenshotBlobUrl: string|null = null;
 
   constructor(
       targetManager: SDK.TargetManager.TargetManager,
@@ -234,6 +235,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   dispose(): void {
     this.#targetManager.unobserveModels(SDK.EmulationModel.EmulationModel, this);
+    this.#revokeLastScreenshotBlobUrl();
   }
 
   static widthValidator(value: string): {
@@ -350,6 +352,8 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
     if (type !== Type.None) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.DeviceModeEnabled);
+    } else {
+      this.#revokeLastScreenshotBlobUrl();
     }
     this.calculateAndEmulate(resetPageScaleFactor);
   }
@@ -492,7 +496,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       const resourceTreeModel = emulationModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
       if (resourceTreeModel) {
         resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameResized, this.onFrameChange, this);
-        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this.onFrameChange, this);
+        resourceTreeModel.addEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this.onFrameNavigated, this);
       }
     } else {
       void emulationModel.emulateTouch(this.#touchEnabled, this.#touchMobile);
@@ -504,8 +508,14 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
       emulationModel.removeEventListener(
           SDK.EmulationModel.EmulationModelEvents.SCREEN_ORIENTATION_LOCK_CHANGED, this.onScreenOrientationLockChanged,
           this);
+      const resourceTreeModel = emulationModel.target().model(SDK.ResourceTreeModel.ResourceTreeModel);
+      if (resourceTreeModel) {
+        resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.FrameResized, this.onFrameChange, this);
+        resourceTreeModel.removeEventListener(SDK.ResourceTreeModel.Events.FrameNavigated, this.onFrameNavigated, this);
+      }
       this.#emulationModel = null;
       this.#screenOrientationLocked = false;
+      this.#revokeLastScreenshotBlobUrl();
       this.dispatchEventToListeners(Events.UPDATED);
     }
   }
@@ -521,6 +531,13 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     }
 
     this.showDeviceOverlaysIfApplicable(overlayModel);
+  }
+
+  private onFrameNavigated(event: Common.EventTarget.EventTargetEvent<SDK.ResourceTreeModel.ResourceTreeFrame>): void {
+    if (event.data.isMainFrame()) {
+      this.#revokeLastScreenshotBlobUrl();
+    }
+    this.onFrameChange();
   }
 
   private onScreenOrientationLockChanged(
@@ -927,7 +944,7 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     });
   }
 
-  private async saveScreenshot(canvas: OffscreenCanvas): Promise<void> {
+  async saveScreenshot(canvas: OffscreenCanvas): Promise<void> {
     const url = this.inspectedURL();
     let fileName = '';
     if (url) {
@@ -939,12 +956,22 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
     if (device && this.type() === Type.Device) {
       fileName += `(${device.title})`;
     }
+    this.#revokeLastScreenshotBlobUrl();
     /* eslint-disable-next-line @devtools/no-imperative-dom-api */
     const link = document.createElement('a');
     link.download = fileName + '.png';
     const blob = await canvas.convertToBlob({type: 'image/png'});
-    link.href = URL.createObjectURL(blob);
+    const blobUrl = URL.createObjectURL(blob);
+    this.#lastScreenshotBlobUrl = blobUrl;
+    link.href = blobUrl;
     link.click();
+  }
+
+  #revokeLastScreenshotBlobUrl(): void {
+    if (this.#lastScreenshotBlobUrl) {
+      URL.revokeObjectURL(this.#lastScreenshotBlobUrl);
+      this.#lastScreenshotBlobUrl = null;
+    }
   }
 
   private applyTouch(touchEnabled: boolean, mobile: boolean): void {

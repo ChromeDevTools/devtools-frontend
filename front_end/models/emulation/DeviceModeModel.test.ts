@@ -5,6 +5,7 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
@@ -947,5 +948,65 @@ describe('DeviceModeModel', () => {
     } finally {
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
     }
+  });
+
+  describe('saveScreenshot', () => {
+    const {urlString} = Platform.DevToolsPath;
+
+    it('triggers a download with the correct filename and revokes the previous blob URL on subsequent save or dispose',
+       async () => {
+         const url = urlString`https://example.test/path/to/page.html#section`;
+         sinon.stub(deviceModeModel, 'inspectedURL').returns(url);
+         sinon.stub(deviceModeModel, 'type').returns(EmulationModel.DeviceModeModel.Type.Device);
+         const device = new EmulationModel.EmulatedDevices.EmulatedDevice();
+         device.title = 'Pixel 10';
+         sinon.stub(deviceModeModel, 'device').returns(device);
+
+         const clickStub = sinon.stub(HTMLAnchorElement.prototype, 'click');
+         const revokeObjectURLSpy = sinon.spy(URL, 'revokeObjectURL');
+
+         const canvas = new OffscreenCanvas(1, 1);
+         canvas.getContext('2d');
+         await deviceModeModel.saveScreenshot(canvas);
+
+         sinon.assert.calledOnce(clickStub);
+         assert.strictEqual(clickStub.firstCall.thisValue.download, 'example.test/path/to/page.html(Pixel 10).png');
+         // The current blob URL is retained so the download can complete without timing issues.
+         sinon.assert.notCalled(revokeObjectURLSpy);
+
+         // A second screenshot revokes the first blob URL.
+         await deviceModeModel.saveScreenshot(canvas);
+         sinon.assert.calledOnce(revokeObjectURLSpy);
+
+         // Disposing the model revokes the remaining blob URL.
+         deviceModeModel.dispose();
+         sinon.assert.calledTwice(revokeObjectURLSpy);
+       });
+
+    it('revokes blob URL when turning off device mode', async () => {
+      sinon.stub(HTMLAnchorElement.prototype, 'click');
+      const revokeObjectURLSpy = sinon.spy(URL, 'revokeObjectURL');
+
+      const canvas = new OffscreenCanvas(1, 1);
+      canvas.getContext('2d');
+      await deviceModeModel.saveScreenshot(canvas);
+      sinon.assert.notCalled(revokeObjectURLSpy);
+
+      deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
+      sinon.assert.calledOnce(revokeObjectURLSpy);
+    });
+
+    it('revokes blob URL when the main frame navigates', async () => {
+      sinon.stub(HTMLAnchorElement.prototype, 'click');
+      const revokeObjectURLSpy = sinon.spy(URL, 'revokeObjectURL');
+
+      const canvas = new OffscreenCanvas(1, 1);
+      canvas.getContext('2d');
+      await deviceModeModel.saveScreenshot(canvas);
+      sinon.assert.notCalled(revokeObjectURLSpy);
+
+      navigate(getMainFrame(target));
+      sinon.assert.calledOnce(revokeObjectURLSpy);
+    });
   });
 });

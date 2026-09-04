@@ -117,7 +117,7 @@ describeWithEnvironment('CommentOverlayManager', () => {
     }
   });
 
-  it('clears all comment threads, pin positions, and resets cursor when clear() is called', () => {
+  it('clears all comment threads and pin positions when clear() is called', () => {
     manager.setCommentMode(true);
     const item = document.createElement('div');
     item.setAttribute('jslog', 'TreeItem; context: clear-test');
@@ -128,23 +128,39 @@ describeWithEnvironment('CommentOverlayManager', () => {
     assert.lengthOf(manager.getCommentThreads(), 1);
     assert.lengthOf(manager.getPinPositions(), 1);
     assert.isTrue(manager.isCommentMode());
-    assert.strictEqual(document.body.style.cursor, 'crosshair');
 
     manager.clear();
     assert.lengthOf(manager.getCommentThreads(), 0);
     assert.lengthOf(manager.getPinPositions(), 0);
     assert.isFalse(manager.isCommentMode());
-    assert.strictEqual(document.body.style.cursor, '');
   });
 
-  it('toggles comment mode and updates document cursor', () => {
+  it('toggles comment mode', () => {
     manager.setCommentMode(true);
     assert.isTrue(manager.isCommentMode());
-    assert.strictEqual(document.body.style.cursor, 'crosshair');
 
     manager.setCommentMode(false);
     assert.isFalse(manager.isCommentMode());
-    assert.strictEqual(document.body.style.cursor, '');
+  });
+
+  it('updates cursor when hovering over commentable elements in comment mode', () => {
+    manager.start(container, 'Hover cursor test');
+    manager.setCommentMode(true);
+
+    const commentableEl = document.createElement('div');
+    commentableEl.setAttribute('jslog', 'TreeItem; context: commentable-hover');
+    commentableEl.textContent = 'hover me';
+    container.appendChild(commentableEl);
+
+    commentableEl.dispatchEvent(new MouseEvent('mouseover', {bubbles: true, cancelable: true}));
+    assert.strictEqual(commentableEl.style.cursor, Comments.CommentOverlayManager.COMMENT_MODE_CURSOR);
+
+    commentableEl.dispatchEvent(new MouseEvent('mouseleave', {bubbles: true, cancelable: true}));
+    assert.strictEqual(commentableEl.style.cursor, '');
+
+    commentableEl.dispatchEvent(new MouseEvent('mouseover', {bubbles: true, cancelable: true}));
+    manager.setCommentMode(false);
+    assert.strictEqual(commentableEl.style.cursor, '');
   });
 
   it('handles element clicks in comment mode', () => {

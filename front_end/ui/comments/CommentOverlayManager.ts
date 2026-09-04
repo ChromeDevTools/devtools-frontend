@@ -15,6 +15,8 @@ import {
   resolveCommentAnchorElement,
 } from './CommentAnchorResolver.js';
 
+export const COMMENT_MODE_CURSOR = 'var(--comment-cursor)';
+
 export interface StartOptions {
   root?: Document|Element;
   scrollTarget?: EventTarget;
@@ -105,6 +107,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
 
   #mutationObserver?: MutationObserver;
   #rematchTimeoutId?: ReturnType<typeof setTimeout>;
+  #cursorElement: HTMLElement|null = null;
 
   constructor(commentManager: CommentManager.CommentManager.CommentManager) {
     super();
@@ -120,9 +123,9 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
         CommentManager.CommentManager.Events.COMMENT_MODE_CHANGED,
         ({data: active}) => {
           if (!active) {
-            this.#setHoverHighlight(null);
+            this.#clearHover();
           }
-          document.body.style.cursor = active ? 'crosshair' : '';
+          document.body.style.cursor = active ? COMMENT_MODE_CURSOR : '';
         },
         this,
     );
@@ -157,6 +160,27 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     return this.#commentManager.isCommentMode();
   }
 
+  #setHoverCursor(element: Element|null): void {
+    const previousElement = this.#cursorElement;
+    const newElement = element instanceof HTMLElement ? element : null;
+
+    if (previousElement === newElement) {
+      return;
+    }
+
+    if (previousElement) {
+      previousElement.style.cursor = '';
+      previousElement.style.removeProperty('--override-cursor');
+    }
+
+    if (newElement) {
+      newElement.style.cursor = COMMENT_MODE_CURSOR;
+      newElement.style.setProperty('--override-cursor', COMMENT_MODE_CURSOR);
+    }
+
+    this.#cursorElement = newElement;
+  }
+
   #setHoverHighlight(data: HoverHighlightData|null): void {
     if (data === null && this.#hoverData === null) {
       return;
@@ -168,6 +192,11 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     }
     this.#hoverData = data;
     this.dispatchEventToListeners(Events.HOVER_HIGHLIGHT_CHANGED, data);
+  }
+
+  #clearHover(): void {
+    this.#setHoverHighlight(null);
+    this.#setHoverCursor(null);
   }
 
   getHoverHighlight(): HoverHighlightData|null {
@@ -387,10 +416,12 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
    * Stops and detaches all active listeners and observers without clearing comment threads.
    */
   stop(): void {
+    document.body.style.cursor = '';
     this.#removeClickListener();
     this.#removeScrollListener();
     this.#removeResizeObserver();
     this.#removeMutationObserver();
+    this.#clearHover();
   }
 
   /**
@@ -438,25 +469,25 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
 
     this.#hoverListener = (event: Event): void => {
       if (!this.isCommentMode()) {
-        this.#setHoverHighlight(null);
+        this.#clearHover();
         return;
       }
       const composedTarget = event.composedPath()[0];
       const target = (composedTarget instanceof Element) ? composedTarget : event.target;
       if (!(target instanceof Element)) {
-        this.#setHoverHighlight(null);
+        this.#clearHover();
         return;
       }
       const isLeaveEvent = event.type === 'mouseout' || event.type === 'mouseleave' || event.type === 'pointerout';
       const anchorEl = resolveCommentAnchorElement(target);
       if (isLeaveEvent) {
         const relatedTarget = (event as MouseEvent | PointerEvent).relatedTarget;
-        if (anchorEl && relatedTarget instanceof Node && anchorEl.contains(relatedTarget)) {
+        if (anchorEl && relatedTarget instanceof Node && anchorEl.isSelfOrAncestor(relatedTarget)) {
           event.consume(true);
           return;
         }
 
-        this.#setHoverHighlight(null);
+        this.#clearHover();
         if (anchorEl) {
           event.consume(true);
         }
@@ -477,12 +508,13 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
             height: visibleRect.height,
             visible: true,
           });
+          this.#setHoverCursor(highlightTarget);
         } else {
-          this.#setHoverHighlight(null);
+          this.#clearHover();
         }
         event.consume(true);
       } else {
-        this.#setHoverHighlight(null);
+        this.#clearHover();
       }
     };
 
@@ -528,7 +560,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     this.#removeScrollListener();
     this.#scrollTarget = target;
     this.#scrollListener = (): void => {
-      this.#setHoverHighlight(null);
+      this.#clearHover();
       if (this.#scrollRafId !== undefined) {
         cancelAnimationFrame(this.#scrollRafId);
       }
@@ -562,7 +594,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
   #installResizeObserver(element: Element = document.body): void {
     this.#removeResizeObserver();
     this.#devToolsResizeObserver = new ResizeObserver(() => {
-      this.#setHoverHighlight(null);
+      this.#clearHover();
       if (this.#resizeRafId !== undefined) {
         cancelAnimationFrame(this.#resizeRafId);
       }
@@ -649,6 +681,7 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     this.#observedThreads = new WeakSet();
     this.#pinPositions = [];
     this.#highlightRects = [];
+    this.#clearHover();
     this.#updatePositions();
   }
 }

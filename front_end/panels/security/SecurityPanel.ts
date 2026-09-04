@@ -567,9 +567,11 @@ export class SecurityPanel extends UI.Panel.Panel implements SDK.TargetManager.S
   private eventListeners: Common.EventTarget.EventDescriptor[];
   private securityModel: SecurityModel|null;
   readonly splitWidget!: UI.SplitWidget.SplitWidget;
+  private view: View;
 
-  constructor(private view: View = DEFAULT_VIEW) {
+  constructor(view: View|undefined = DEFAULT_VIEW) {
     super('security');
+    this.view = view;
 
     this.update();
 

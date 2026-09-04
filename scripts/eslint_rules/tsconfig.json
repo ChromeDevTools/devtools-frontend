@@ -1,5 +1,4 @@
 {
-  "extends": "../../config/typescript/tsconfig.base.json",
   "compilerOptions": {
     "module": "nodenext",
     "moduleResolution": "nodenext",

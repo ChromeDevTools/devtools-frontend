@@ -626,11 +626,14 @@ export class AiAssistancePanel extends UI.Panel.Panel {
   };
   #textInputValue = '';
 
-  constructor(private view: View = defaultView, {aidaClient, aidaAvailability}: {
+  private view: View;
+
+  constructor(view: View|undefined = defaultView, {aidaClient, aidaAvailability}: {
     aidaClient: Host.AidaClient.AidaClient,
     aidaAvailability: Host.AidaClient.AidaAccessPreconditions,
   }) {
     super(AiAssistancePanel.panelName);
+    this.view = view;
     this.registerRequiredCSS(aiAssistancePanelStyles);
     this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
 

@@ -23,6 +23,7 @@
     "preserveConstEnums": true,
     "composite": true,
     "declaration": true,
+    "isolatedDeclarations": true,
 
     "sourceMap": true,
     "inlineSources": true

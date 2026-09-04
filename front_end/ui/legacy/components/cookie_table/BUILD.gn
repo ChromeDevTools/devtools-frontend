@@ -35,7 +35,10 @@ devtools_entrypoint("bundle") {
   split_compilation = true
   entrypoint = "cookie_table.ts"
 
-  deps = [ ":css_files" ]
+  deps = [
+    ":css_files",
+    "../data_grid:css_files",
+  ]
 
   ts_deps = [ ":cookie_table" ]
 

@@ -123,7 +123,10 @@ devtools_entrypoint("bundle") {
   split_compilation = true
   entrypoint = "sources.ts"
 
-  deps = [ ":css_files" ]
+  deps = [
+    ":css_files",
+    "../../ui/legacy/components/object_ui:css_files",
+  ]
 
   ts_deps = [ ":sources" ]
 

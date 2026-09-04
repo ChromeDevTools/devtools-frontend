@@ -164,7 +164,10 @@ devtools_entrypoint("bundle") {
   split_compilation = true
   entrypoint = "timeline.ts"
 
-  deps = [ ":css_files" ]
+  deps = [
+    ":css_files",
+    "../../ui/legacy/components/utils:css_files",
+  ]
 
   ts_deps = [
     ":timeline",

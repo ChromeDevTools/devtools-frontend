@@ -110,7 +110,7 @@ function renderConversationCard(conversation: Trajectory, headerLabel: string, s
       <div class="card-content">
         <div class="metadata">
           <span><strong>Model:</strong> ${conversation.metadata.model}</span>
-          <span><strong>Chrome:</strong> ${conversation.metadata.chromeVersion}</span>
+          <span><strong>Chrome:</strong> ${conversation.metadata.chrome_version}</span>
         </div>
         ${renderConversationTranscript(conversation)}
         ${detailsHtml}

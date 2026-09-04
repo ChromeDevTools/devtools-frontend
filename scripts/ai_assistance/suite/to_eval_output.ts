@@ -13,11 +13,6 @@ import type {Trajectory, Turn} from './types.js';
 
 /** Note: non-exhaustive. **/
 /* eslint-disable @typescript-eslint/naming-convention */
-export interface RawMetadata {
-  session_id: string;
-  explanation: string;
-}
-
 export interface RawRequest {
   current_message: {
     parts: Array<{
@@ -65,7 +60,9 @@ export interface RawExample {
 }
 
 export interface RawOutput {
-  metadata: RawMetadata[];
+  metadata: Array<{
+    session_id: string,
+  }>;
   examples: RawExample[];
 }
 /* eslint-enable @typescript-eslint/naming-convention */
@@ -90,7 +87,7 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): Trajectory[] {
           return null;
         }
         const sessionId = `${inputHash}-${index}`;
-        return buildTrajectory(sessionId, meta, sessionExamples);
+        return buildTrajectory(sessionId, /* autoRunExampleId: */ meta.session_id, sessionExamples);
       })
       .filter((trajectory): trajectory is Trajectory => trajectory !== null);
 }
@@ -100,7 +97,7 @@ export function convertRawOutputToEval(opts: RawToEvalOptions): Trajectory[] {
  */
 function buildTrajectory(
     sessionId: string,
-    meta: RawMetadata,
+    autoRunExampleId: string,
     examples: RawExample[],
     ): Trajectory {
   const firstExample = examples[0];
@@ -114,9 +111,8 @@ function buildTrajectory(
     metadata: {
       session_id: sessionId,
       model: modelData.modelId ?? '',
-      chromeVersion,
-      autoRunExampleId: meta.session_id,
-      explanation: meta.explanation ?? '',
+      chrome_version: chromeVersion,
+      auto_run_example_id: autoRunExampleId,
     },
     data: buildTurns(examples),
   };

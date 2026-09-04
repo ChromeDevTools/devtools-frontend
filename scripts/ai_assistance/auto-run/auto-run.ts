@@ -557,7 +557,7 @@ function writeOutput(
     if (userArgs.upload) {
       uploadEvalToGCS({
         runId,
-        taskId: trajectory.metadata.autoRunExampleId,
+        taskId: trajectory.metadata.auto_run_example_id,
         localJsonPath: evalOutputPath,
         destinationFileName: 'trajectory.json',
       });

@@ -31,11 +31,8 @@ export interface Trajectory {
   metadata: {
     session_id: string,
     model: string,
-    chromeVersion: string,
-    autoRunExampleId: string,
-    // These are explanations found in the input example HTML that can be used to
-    // judge the AI's output.
-    explanation: string,
+    chrome_version: string,
+    auto_run_example_id: string,
   };
   data: Turn[];
 }

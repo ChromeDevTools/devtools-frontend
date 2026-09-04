@@ -945,8 +945,10 @@ export class ScreencastView extends UI.Widget.Widget implements SDK.OverlayModel
 
 export const BORDERS_SIZE = 44;
 export const NAVBAR_HEIGHT = 29;
-export const HTTP_REGEX = /^http:\/\/(.+)/;
-export const SCHEME_REGEX = /^(https?|about|chrome):/;
+
+export const HTTP_REGEX: RegExp = /^http:\/\/(.+)/;
+
+export const SCHEME_REGEX: RegExp = /^(https?|about|chrome):/;
 
 export class ProgressTracker {
   private readonly resourceTreeModel: SDK.ResourceTreeModel.ResourceTreeModel|null;

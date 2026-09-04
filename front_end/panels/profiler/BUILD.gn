@@ -19,6 +19,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("profiler") {
+  split_compilation = true
   sources = [
     "BottomUpProfileDataGrid.ts",
     "HeapDetachedElementsDataGrid.ts",
@@ -42,7 +43,7 @@ devtools_ui_module("profiler") {
     "WritableProfileHeader.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -71,13 +72,15 @@ devtools_ui_module("profiler") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "profiler.ts"
 
   deps = [
     ":css_files",
-    ":profiler",
     "../../ui/legacy/components/object_ui:css_files",
   ]
+
+  ts_deps = [ ":profiler" ]
 
   visibility = [
     ":*",
@@ -89,9 +92,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "profiler-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/i18n:bundle",
     "../../core/sdk:bundle",
@@ -102,6 +106,7 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -109,7 +114,7 @@ devtools_ui_module("unittests") {
     "HeapProfileView.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/sdk:bundle",

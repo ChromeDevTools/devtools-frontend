@@ -140,7 +140,7 @@ const HeapSnapshotGridNodeBase:
 export class HeapSnapshotGridNode extends HeapSnapshotGridNodeBase {
   dataGridInternal: HeapSnapshotSortableDataGrid;
   instanceCount = 0;
-  readonly savedChildren = new Map<number, HeapSnapshotGridNode>();
+  readonly savedChildren: Map<number, HeapSnapshotGridNode> = new Map();
   /**
    * List of position ranges for all visible nodes: [startPos1, endPos1),...,[startPosN, endPosN)
    * Position is an item position in the provider.

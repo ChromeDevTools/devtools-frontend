@@ -1329,7 +1329,7 @@ export class NodeFormatter implements Formatter {
   }
 }
 
-export const nodeFormatter = new NodeFormatter();
+export const nodeFormatter: NodeFormatter = new NodeFormatter();
 
 export class HeapFlameChartDataProvider extends ProfileFlameChartDataProvider {
   readonly profile: CPUProfile.ProfileTreeModel.ProfileTreeModel;

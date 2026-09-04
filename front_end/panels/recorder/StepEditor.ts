@@ -598,6 +598,7 @@ const DEFAULT_VIEW: View = (input, _output, target) => {
         aria-labelledby="type"
         .disabled=${!editable || input.disabled}
         .options=${Object.values(Models.Schema.StepType)}
+        .hideExactMatch=${true}
         .placeholder=${defaultValuesByAttribute.type}
         .value=${live(input.state.type)}
         @blur=${input.handleTypeInputBlur}

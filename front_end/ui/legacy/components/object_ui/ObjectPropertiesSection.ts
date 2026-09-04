@@ -168,7 +168,7 @@ interface NodeChildren {
   accessors?: ObjectTreeNode[];
 }
 
-export interface ObjectTreeOptions {
+interface ObjectTreeOptions {
   readonly propertiesMode: ObjectPropertiesMode;
   readonly readOnly: boolean;
   readonly expansionTracker?: ObjectTreeExpansionTracker;
@@ -178,7 +178,7 @@ export interface ObjectTreeOptions {
 // WASM properties are index-based (e.g. locals[0], globals[1]); alphabetical
 // reordering would break the correspondence between displayed index and actual
 // index, so WASM objects are always shown in insertion order.
-export function isWasmObject(object: SDK.RemoteObject.RemoteObject|undefined): boolean {
+function isWasmObject(object: SDK.RemoteObject.RemoteObject|undefined): boolean {
   return object?.subtype === 'webassemblymemory' || object?.subtype === 'wasmvalue';
 }
 
@@ -703,7 +703,7 @@ interface ArrayGroupRange {
   count: number;
 }
 
-export class ArrayGroupTreeNode extends ObjectTreeNodeBase {
+class ArrayGroupTreeNode extends ObjectTreeNodeBase {
   readonly #object: SDK.RemoteObject.RemoteObject;
   readonly #range: ArrayGroupRange;
   constructor(object: SDK.RemoteObject.RemoteObject, range: ArrayGroupRange, parent: ObjectTreeNodeBase,
@@ -1244,19 +1244,6 @@ const ARRAY_LOAD_THRESHOLD = 100;
 
 const maxRenderableStringLength = 10000;
 
-export interface TreeOutlineOptions {
-  readOnly?: boolean;
-}
-
-export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutlineInShadow {
-  constructor() {
-    super();
-    this.registerRequiredCSS(objectValueStyles, objectPropertiesSectionStyles);
-    this.contentElement.classList.add('source-code');
-    this.contentElement.classList.add('object-properties-section');
-  }
-}
-
 export const enum ObjectPropertiesMode {
   ALL = 0,                             // All properties, including prototype properties
   OWN_AND_INTERNAL_AND_INHERITED = 1,  // Own, internal, and inherited properties
@@ -1659,7 +1646,7 @@ export function defaultObjectPresentation(objectOrTree: SDK.RemoteObject.RemoteO
  * Number of initially visible children in an ObjectPropertyTreeElement.
  * Remaining children are shown as soon as requested via a show more properties button.
  **/
-export const InitialVisibleChildrenLimit = 200;
+const InitialVisibleChildrenLimit = 200;
 
 export interface ObjectPropertyViewInput {
   editable: boolean;

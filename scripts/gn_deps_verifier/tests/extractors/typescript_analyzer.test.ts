@@ -11,7 +11,7 @@ import {TypeScriptAnalyzer} from '../../extractors/typescript_analyzer.ts';
 import {TypeScriptImportExtractor} from '../../extractors/typescript_import.ts';
 import type {AstTargetInfo} from '../../gn_ast/gn_ast_types.ts';
 
-const ROOT_DIR = path.resolve(import.meta.dirname, './../../../');
+const ROOT_DIR = path.resolve(import.meta.dirname, '../../../../');
 const FIXTURES_DIR = path.join(import.meta.dirname, './../fixtures/typescript_analyzer');
 const FIXTURES_BUILD_GN = path.join(FIXTURES_DIR, 'BUILD.gn');
 
@@ -353,6 +353,7 @@ describe('typescript_analyzer', () => {
     it('returns failure when imported file does not map to any target', async () => {
       sinon.stub(console, 'error');
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//test:target',
         templateName: 'devtools_module',
         buildFile: FIXTURES_BUILD_GN,
@@ -374,6 +375,7 @@ describe('typescript_analyzer', () => {
     it('returns empty deps for internal imports within the same target', async () => {
       const animFile = path.join(FIXTURES_DIR, 'AnimationTimeline.ts');
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:animation',
         templateName: 'devtools_module',
         buildFile: FIXTURES_BUILD_GN,
@@ -421,6 +423,7 @@ describe('typescript_analyzer', () => {
     it('does not allow target to depend on itself when mapped target equals targetLabel', async () => {
       // Simulate an internal file that maps to codemirror.next-compilation being analyzed inside codemirror.next:bundle
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//front_end/third_party/codemirror.next:bundle',
         templateName: 'devtools_entrypoint',
         buildFile: '/path/to/BUILD.gn',
@@ -448,6 +451,7 @@ describe('typescript_analyzer', () => {
       await extractor.getTargetsForFile(bundleFile);
 
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:bundle',
         templateName: 'devtools_entrypoint',
         buildFile: FIXTURES_BUILD_GN,
@@ -468,6 +472,7 @@ describe('typescript_analyzer', () => {
 
     it('does not require own bundle for implementation module when name differs from directory', async () => {
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//front_end/entrypoints/worker_app:worker_main',
         templateName: 'devtools_module',
         buildFile: '/path/to/BUILD.gn',
@@ -492,6 +497,7 @@ describe('typescript_analyzer', () => {
 
     it('deduplicates multiple mapped targets', async () => {
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//test:consumer',
         templateName: 'devtools_ui_module',
         buildFile: FIXTURES_BUILD_GN,
@@ -526,6 +532,7 @@ describe('typescript_analyzer', () => {
 
     it('returns null for legacy_test_runner targets', async () => {
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//front_end/legacy_test_runner/common:common',
         templateName: 'devtools_module',
         buildFile: '/path/BUILD.gn',
@@ -539,6 +546,7 @@ describe('typescript_analyzer', () => {
 
     it('returns null for third_party targets', async () => {
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//front_end/third_party/codemirror:codemirror',
         templateName: 'devtools_module',
         buildFile: '/path/BUILD.gn',
@@ -552,6 +560,7 @@ describe('typescript_analyzer', () => {
 
     it('returns null when target has no TypeScript sources', async () => {
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//test:css_target',
         templateName: 'generate_css',
         buildFile: FIXTURES_BUILD_GN,
@@ -569,6 +578,7 @@ describe('typescript_analyzer', () => {
       sinon.stub(extractor, 'getTargetsForFile').resolves([]);
 
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//test:broken',
         templateName: 'devtools_module',
         buildFile: FIXTURES_BUILD_GN,
@@ -582,6 +592,7 @@ describe('typescript_analyzer', () => {
 
     it('evicts from cache when an exception occurs', async () => {
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//test:error',
         templateName: 'devtools_module',
         buildFile: FIXTURES_BUILD_GN,
@@ -687,6 +698,7 @@ describe('typescript_analyzer', () => {
     it('caches target dependencies in targetDeps', async () => {
       const analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:unittests',
         templateName: 'devtools_ui_module',
         buildFile: FIXTURES_BUILD_GN,
@@ -706,6 +718,7 @@ describe('typescript_analyzer', () => {
     it('deduplicates in-flight concurrent calls to analyzeTarget', async () => {
       const analyzer = TypeScriptAnalyzer.create(ROOT_DIR);
       const targetInfo: AstTargetInfo = {
+        testonly: false,
         label: '//scripts/gn_deps_verifier/tests/fixtures/typescript_analyzer:unittests',
         templateName: 'devtools_ui_module',
         buildFile: FIXTURES_BUILD_GN,

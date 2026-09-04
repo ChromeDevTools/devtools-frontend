@@ -8,10 +8,8 @@ import * as i18n from '../../core/i18n/i18n.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import * as TextUtils from '../../core/text_utils/text_utils.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Geometry from '../geometry/geometry.js';
-import * as Workspace from '../workspace/workspace.js';
 
 import {
   type Cutout,
@@ -128,19 +126,16 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
   readonly #targetManager: SDK.TargetManager.TargetManager;
   readonly #settings: Common.Settings.Settings;
   readonly #multitargetNetworkManager: SDK.NetworkManager.MultitargetNetworkManager;
-  readonly #fileManager: Workspace.FileManager.FileManager;
 
   constructor(
       targetManager: SDK.TargetManager.TargetManager,
       settings: Common.Settings.Settings,
       multitargetNetworkManager: SDK.NetworkManager.MultitargetNetworkManager,
-      fileManager: Workspace.FileManager.FileManager,
   ) {
     super();
     this.#targetManager = targetManager;
     this.#settings = settings;
     this.#multitargetNetworkManager = multitargetNetworkManager;
-    this.#fileManager = fileManager;
     this.#screenRect = new Rect(0, 0, 1, 1);
     this.#visiblePageRect = new Rect(0, 0, 1, 1);
     this.#availableSize = new Geometry.Size(1, 1);
@@ -209,8 +204,6 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
               Common.Settings.Settings.instance(),
               // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
               SDK.NetworkManager.MultitargetNetworkManager.instance(),
-              // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-              Workspace.FileManager.FileManager.instance(),
               ));
     }
 
@@ -936,52 +929,22 @@ export class DeviceModeModel extends Common.ObjectWrapper.ObjectWrapper<EventTyp
 
   private async saveScreenshot(canvas: OffscreenCanvas): Promise<void> {
     const url = this.inspectedURL();
-    let baseName = '';
+    let fileName = '';
     if (url) {
-      const parsedURL = Common.ParsedURL.ParsedURL.fromString(url);
-      if (parsedURL) {
-        const host = parsedURL.host;
-        const path = parsedURL.path.replace(/^\/+/, '').replace(/\/+$/, '');
-        baseName = host;
-        if (path) {
-          baseName += '-' + path.replaceAll('/', '-');
-        }
-        baseName = baseName.replace(/[^a-z0-9._-]/gi, '_');
-      }
+      const withoutFragment = Platform.StringUtilities.removeURLFragment(url);
+      fileName = Platform.StringUtilities.trimURL(withoutFragment);
     }
 
-    if (!baseName) {
-      baseName = 'screenshot';
-    }
-
-    let suffix = '';
     const device = this.device();
     if (device && this.type() === Type.Device) {
-      suffix += `(${device.title})`;
+      fileName += `(${device.title})`;
     }
-    suffix += '.png';
-
-    // The Windows save dialog / Chrome wrapper limits the suggested filename
-    // to 63 characters (due to a 64-byte null-terminated buffer).
-    // Capping the total filename length at 63 avoids truncation of the extension.
-    const maxBaseNameLength = Math.max(0, 63 - suffix.length);
-    baseName = Platform.StringUtilities.truncateToCodeUnitLength(baseName, maxBaseNameLength);
-
-    let fileName = baseName + suffix;
-    if (fileName.length > 63) {
-      fileName = Platform.StringUtilities.truncateToCodeUnitLength(fileName, 59) + '.png';
-    }
+    /* eslint-disable-next-line @devtools/no-imperative-dom-api */
+    const link = document.createElement('a');
+    link.download = fileName + '.png';
     const blob = await canvas.convertToBlob({type: 'image/png'});
-    const dataUrl = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-    const base64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
-    const contentData = new TextUtils.ContentData.ContentData(base64, /* isBase64=*/ true, 'image/png');
-    await this.#fileManager.save(fileName as Platform.DevToolsPath.RawPathString, contentData, /* forceSaveAs=*/ true);
-    this.#fileManager.close(fileName as Platform.DevToolsPath.RawPathString);
+    link.href = URL.createObjectURL(blob);
+    link.click();
   }
 
   private applyTouch(touchEnabled: boolean, mobile: boolean): void {

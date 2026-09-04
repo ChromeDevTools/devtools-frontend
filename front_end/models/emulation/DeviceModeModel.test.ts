@@ -5,7 +5,6 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
@@ -948,67 +947,5 @@ describe('DeviceModeModel', () => {
     } finally {
       deviceModeModel.emulate(EmulationModel.DeviceModeModel.Type.None, null, null);
     }
-  });
-
-  describe('saveScreenshot', () => {
-    const {urlString} = Platform.DevToolsPath;
-
-    it('generates a correct and safe screenshot filename under 63 characters', async () => {
-      const url =
-          urlString`https://example.test/path/to/a/very/long/url/representing/some/products/coffee-machine-compact-espresso-maker-stainless-steel-model-77`;
-      sinon.stub(deviceModeModel, 'inspectedURL').returns(url);
-      sinon.stub(deviceModeModel, 'type').returns(EmulationModel.DeviceModeModel.Type.Device);
-      sinon.stub(deviceModeModel, 'device').returns({
-        title: 'Pixel 10',
-      } as unknown as EmulationModel.EmulatedDevices.EmulatedDevice);
-
-      const saveStub = sinon.stub(universe.fileManager, 'save').resolves({
-        fileSystemPath: 'foo' as Platform.DevToolsPath.RawPathString,
-      });
-      sinon.stub(universe.fileManager, 'close');
-
-      const canvas = new OffscreenCanvas(1, 1);
-      canvas.getContext('2d');
-      await (deviceModeModel as unknown as {
-        saveScreenshot: (canvas: OffscreenCanvas) => Promise<void>,
-      }).saveScreenshot(canvas);
-
-      sinon.assert.calledOnce(saveStub);
-      const filename = saveStub.firstCall.args[0];
-      assert.isAtMost(filename.length, 63);
-      assert.isTrue(filename.endsWith('(Pixel 10).png'));
-      assert.isFalse(filename.includes('/'));
-      assert.strictEqual(filename, 'example.test-path-to-a-very-long-url-representing(Pixel 10).png');
-    });
-
-    it('truncates the screenshot filename correctly when the device name is extremely long', async () => {
-      const url =
-          urlString`https://example.test/path/to/a/very/long/url/representing/some/products/coffee-machine-compact-espresso-maker-stainless-steel-model-77`;
-      sinon.stub(deviceModeModel, 'inspectedURL').returns(url);
-      sinon.stub(deviceModeModel, 'type').returns(EmulationModel.DeviceModeModel.Type.Device);
-      const longDeviceName = 'A'.repeat(70);
-      sinon.stub(deviceModeModel, 'device').returns({
-        title: longDeviceName,
-      } as unknown as EmulationModel.EmulatedDevices.EmulatedDevice);
-
-      const saveStub = sinon.stub(universe.fileManager, 'save').resolves({
-        fileSystemPath: 'foo' as Platform.DevToolsPath.RawPathString,
-      });
-      sinon.stub(universe.fileManager, 'close');
-
-      const canvas = new OffscreenCanvas(1, 1);
-      canvas.getContext('2d');
-      await (deviceModeModel as unknown as {
-        saveScreenshot: (canvas: OffscreenCanvas) => Promise<void>,
-      }).saveScreenshot(canvas);
-
-      sinon.assert.calledOnce(saveStub);
-      const filename = saveStub.firstCall.args[0];
-      assert.isAtMost(filename.length, 63);
-      assert.isTrue(filename.endsWith('.png'));
-      assert.isFalse(filename.includes('/'));
-      const expectedName = `(${'A'.repeat(58)}.png`;
-      assert.strictEqual(filename, expectedName);
-    });
   });
 });

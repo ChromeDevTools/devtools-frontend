@@ -81,7 +81,7 @@ devtools_module("ai_assistance") {
     "tools/ToolRegistry.ts",
   ]
 
-  # We use public_deps here to avoid ts_library.py looking for a tsconfig
+  # We use public_deps here to avoid ts_library looking for a tsconfig
   # for the generated skills files. This is a deviation from standard practice
   # because the generated files are .js and types are provided globally.
   public_deps = [ "skills:generate_skills" ]

@@ -294,7 +294,7 @@ export class SearchView extends UI.Widget.VBox<ShadowRoot> {
 
   #searchResults: SearchResult[] = [];
 
-  constructor(settingKey: string, view = DEFAULT_VIEW) {
+  constructor(settingKey: string, view: View = DEFAULT_VIEW) {
     super({useShadowDom: 'pure'});
     this.#view = view;
     this.setMinimumSize(0, 40);

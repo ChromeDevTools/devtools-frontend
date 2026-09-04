@@ -54,13 +54,35 @@ export class SyntheticEventsManager {
     this.#rawTraceEvents = rawEvents;
   }
 
+  #rawEventIndexes: Map<Types.Events.Event, number>|null = null;
+
+  #getRawEventIndex(event: Types.Events.Event): number {
+    if (!this.#rawEventIndexes) {
+      this.#rawEventIndexes = new Map();
+      for (let i = 0; i < this.#rawTraceEvents.length; i++) {
+        this.#rawEventIndexes.set(this.#rawTraceEvents[i], i);
+      }
+    }
+    return this.#rawEventIndexes.get(event) ?? -1;
+  }
+
+  /**
+   * Clears the transient raw event index map.
+   * During trace parsing, this map provides O(1) lookups for registering synthetic events.
+   * Once parsing is complete, queries look up synthetic events exclusively by index in
+   * `#syntheticTraces`, so this map is discarded to reclaim memory.
+   */
+  clearRegistrationIndex(): void {
+    this.#rawEventIndexes = null;
+  }
+
   /**
    * Registers and returns a branded synthetic event. Synthetic events need to
    * be created with this method to ensure they are registered and made
    * available to load events using serialized keys.
    */
   #registerSyntheticEvent<T extends Types.Events.SyntheticBased>(syntheticEvent: Omit<T, '_tag'>): T {
-    const rawIndex = this.#rawTraceEvents.indexOf(syntheticEvent.rawSourceEvent);
+    const rawIndex = this.#getRawEventIndex(syntheticEvent.rawSourceEvent);
     if (rawIndex < 0) {
       throw new Error('Attempted to register a synthetic event paired to an unknown raw event.');
     }

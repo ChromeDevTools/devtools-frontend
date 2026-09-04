@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import type * as puppeteer from 'puppeteer-core';
 
 import {
   elementWithPartialText,
@@ -13,49 +14,49 @@ import {
   waitForPartialContentOfSelectedElementsNode,
   waitForSelectedNodeChange,
 } from '../helpers/elements-helpers.js';
+import type {DevToolsPage} from '../shared/frontend-helper.js';
 
-function assertStartsWith(actual: string, expected: string): void {
-  assert.strictEqual(actual.substring(0, expected.length), expected);
+async function waitForStartsWith(devToolsPage: DevToolsPage, tree: puppeteer.ElementHandle,
+                                 expectedText: string): Promise<void> {
+  await devToolsPage.waitForFunction(async () => {
+    const content = await tree.evaluate(e => e.textContent);
+    return content?.startsWith(expectedText) ? content : undefined;
+  }, undefined, `Waiting for text to start with ${expectedText}`);
 }
 
 describe('The Elements tab', function() {
   it('shows adopted stylesheets in document root', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/adopted-stylesheet.html');
     const tree = await devToolsPage.waitForAria('Page DOM');
-    const treeContent = await devToolsPage.waitForTextNotMatching(tree, /^\<html\>/);
     const expectedAdoptedStyleSheet = '#adopted-style-sheets#adopted-style-sheet/* For document */';
-    assertStartsWith(treeContent, expectedAdoptedStyleSheet);
+    await waitForStartsWith(devToolsPage, tree, expectedAdoptedStyleSheet);
   });
 
   it('updates adopted stylesheets in document root', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/adopted-stylesheet.html');
     const tree = await devToolsPage.waitForAria('Page DOM');
     const initialAdoptedStyleSheet = '#adopted-style-sheets#adopted-style-sheet/* For document */';
-    assertStartsWith(await tree.evaluate(e => e.textContent), initialAdoptedStyleSheet);
+    await waitForStartsWith(devToolsPage, tree, initialAdoptedStyleSheet);
     await inspectedPage.evaluate(() => {
       document.adoptedStyleSheets = [];
     });
-    assertStartsWith(await devToolsPage.waitForTextNotMatching(tree, /^#adopted-style-sheet/), '<html>');
+    await waitForStartsWith(devToolsPage, tree, '<html>');
     await inspectedPage.evaluate(() => {
       document.adoptedStyleSheets = [new CSSStyleSheet(), new CSSStyleSheet()];
     });
-    assertStartsWith(
-        await devToolsPage.waitForTextNotMatching(tree, /^\<html\>/),
-        '#adopted-style-sheets#adopted-style-sheet#adopted-style-sheet<html>');
+    await waitForStartsWith(devToolsPage, tree, '#adopted-style-sheets#adopted-style-sheet#adopted-style-sheet<html>');
     await inspectedPage.evaluate(() => {
       document.adoptedStyleSheets[0].replaceSync('/**/');
     });
-    assertStartsWith(
-        await devToolsPage.waitForTextNotMatching(
-            tree, /^#adopted-style-sheets#adopted-style-sheet#adopted-style-sheet/),
-        '#adopted-style-sheets#adopted-style-sheet/**/#adopted-style-sheet<html>');
+    await waitForStartsWith(devToolsPage, tree,
+                            '#adopted-style-sheets#adopted-style-sheet/**/#adopted-style-sheet<html>');
   });
 
   it('shows link to imported stylesheet', async ({devToolsPage, inspectedPage}) => {
     await inspectedPage.goToResource('elements/adopted-stylesheet.html');
     const tree = await devToolsPage.waitForAria('Page DOM');
     // Wait until adopted stylesheets have been reported.
-    await devToolsPage.waitForTextNotMatching(tree, /^\<html\>/);
+    await waitForStartsWith(devToolsPage, tree, '#adopted-style-sheets');
 
     // Check to make sure we have the correct node selected after opening a file
     await waitForPartialContentOfSelectedElementsNode(devToolsPage, '<body>');
@@ -102,7 +103,7 @@ describe('The Elements tab', function() {
      async ({devToolsPage, inspectedPage}) => {
        await inspectedPage.goToResource('elements/adopted-stylesheet.html');
        const tree = await devToolsPage.waitForAria('Page DOM');
-       await devToolsPage.waitForTextNotMatching(tree, /^\<html\>/);
+       await waitForStartsWith(devToolsPage, tree, '#adopted-style-sheets');
        const styleSheets = await elementWithPartialText(devToolsPage, '#adopted-style-sheets');
        assert.isOk(styleSheets);
        const expectExpanded = async (expanded: boolean) =>

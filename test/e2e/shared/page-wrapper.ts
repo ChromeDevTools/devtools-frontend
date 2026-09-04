@@ -548,16 +548,6 @@ export class PageWrapper {
     }, undefined, `Waiting for element to have class '${classname}'`);
   }
 
-  waitForTextNotMatching(element: puppeteer.ElementHandle<Element>, regex: RegExp): Promise<string> {
-    return this.waitForFunction(async () => {
-      const text = await element.evaluate(e => e.textContent);
-      if (text.match(regex)) {
-        return;
-      }
-      return text;
-    }, undefined, `Waiting for text not to match '${regex}'`);
-  }
-
   async setCheckBox(selector: string, wantChecked: boolean): Promise<void> {
     const checkbox = await this.waitFor<HTMLInputElement>(selector);
     const checked = await checkbox.evaluate(box => box.checked);

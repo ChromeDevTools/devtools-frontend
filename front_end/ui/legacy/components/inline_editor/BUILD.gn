@@ -39,6 +39,7 @@ devtools_ui_module("inline_editor") {
     "ColorSwatch.ts",
     "InlineEditorUtils.ts",
     "LinkSwatch.ts",
+    "PositionAreaEditor.ts",
     "SwatchPopoverHelper.ts",
     "Swatches.ts",
   ]
@@ -96,6 +97,7 @@ devtools_ui_module("unittests") {
     "ColorMixSwatch.test.ts",
     "ColorSwatch.test.ts",
     "LinkSwatch.test.ts",
+    "PositionAreaEditor.test.ts",
   ]
 
   ts_deps = [

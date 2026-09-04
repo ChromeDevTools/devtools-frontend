@@ -14,6 +14,7 @@ import * as CSSLinearEasingModel from './CSSLinearEasingModel.js';
 import * as CSSShadowEditor from './CSSShadowEditor.js';
 import * as InlineEditorUtils from './InlineEditorUtils.js';
 import * as LinkSwatch from './LinkSwatch.js';
+import * as PositionAreaEditor from './PositionAreaEditor.js';
 import * as Swatches from './Swatches.js';
 import * as SwatchPopoverHelper from './SwatchPopoverHelper.js';
 
@@ -30,6 +31,7 @@ export {
   CSSShadowEditor,
   InlineEditorUtils,
   LinkSwatch,
+  PositionAreaEditor,
   Swatches,
   SwatchPopoverHelper,
 };

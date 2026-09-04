@@ -38,12 +38,7 @@ node_action("bundled_library") {
              "rollup.config.mjs",
            ] + web_vitals_injected_sources
 
-  deps = []
-  if (!devtools_skip_typecheck) {
-    deps += [ ":web-vitals-injected_checked" ]
-  } else {
-    deps += [ ":web-vitals-injected" ]
-  }
+  deps = [ ":web-vitals-injected_checked" ]
 
   args = [
     "--config",

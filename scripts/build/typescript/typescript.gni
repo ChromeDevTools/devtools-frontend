@@ -315,19 +315,10 @@ template("legacy_ts_library") {
 }
 
 template("ts_library") {
-  _split_compilation = false
-  if (defined(invoker.split_compilation) && !devtools_skip_typecheck) {
-    _split_compilation = invoker.split_compilation
-  }
+  not_needed(invoker, [ "split_compilation" ])
 
-  if (_split_compilation) {
-    ts_library_split(target_name) {
-      forward_variables_from(invoker, "*", [ "split_compilation" ])
-    }
-  } else {
-    legacy_ts_library(target_name) {
-      forward_variables_from(invoker, "*", [ "split_compilation" ])
-    }
+  ts_library_split(target_name) {
+    forward_variables_from(invoker, "*", [ "split_compilation" ])
   }
 }
 

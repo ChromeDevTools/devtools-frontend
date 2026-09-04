@@ -52,12 +52,7 @@ node_action("bundled_library") {
              "rollup.config.mjs",
            ] + recorder_injected_sources
 
-  deps = []
-  if (!devtools_skip_typecheck) {
-    deps += [ ":injected_checked" ]
-  } else {
-    deps += [ ":injected" ]
-  }
+  deps = [ ":injected_checked" ]
 
   args = [
     "--config",

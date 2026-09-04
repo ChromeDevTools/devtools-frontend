@@ -59,11 +59,7 @@ action("build_inspector_overlay") {
     ":copy_resources",
   ]
 
-  if (!devtools_skip_typecheck) {
-    public_deps += [ ":inspector_overlay_checked" ]
-  } else {
-    public_deps += [ ":inspector_overlay" ]
-  }
+  public_deps += [ ":inspector_overlay_checked" ]
 }
 
 copy("copy_resources") {

@@ -196,7 +196,7 @@ export class JSONEditor extends JSONEditorBase {
   displayCommandInput = true;
   displayToolbar = true;
 
-  constructor(element: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
     this.registerRequiredCSS(editorWidgetStyles);

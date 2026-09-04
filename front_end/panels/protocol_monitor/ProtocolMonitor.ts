@@ -669,14 +669,14 @@ export class CommandAutocompleteSuggestionProvider {
   }
 }
 
-interface InfoWidgetViewInput {
+export interface InfoWidgetViewInput {
   request: Record<string, unknown>|undefined;
   response: Record<string, unknown>|undefined;
   type: 'sent'|'received'|undefined;
   selectedTab: 'request'|'response'|undefined;
 }
 
-type InfoWidgetView = (input: InfoWidgetViewInput, output: undefined, target: HTMLElement) => void;
+export type InfoWidgetView = (input: InfoWidgetViewInput, output: undefined, target: HTMLElement) => void;
 
 const INFO_WIDGET_VIEW: InfoWidgetView = (input, _output, target) => {
   // clang-format off
@@ -715,7 +715,7 @@ export class InfoWidget extends UI.Widget.VBox {
   request: Record<string, unknown>|undefined;
   response: Record<string, unknown>|undefined;
   type: 'sent'|'received'|undefined;
-  constructor(element: HTMLElement, view = INFO_WIDGET_VIEW) {
+  constructor(element: HTMLElement, view: InfoWidgetView = INFO_WIDGET_VIEW) {
     super(element);
     this.#view = view;
     this.requestUpdate();

@@ -16,13 +16,15 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("protocol_monitor") {
+  split_compilation = true
   sources = [
     "JSONEditor.ts",
     "ProtocolMonitor.ts",
   ]
 
-  deps = [
-    ":css_files",
+  deps = [ ":css_files" ]
+
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/host:bundle",
     "../../core/i18n:bundle",
@@ -47,9 +49,10 @@ devtools_ui_module("protocol_monitor") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "protocol_monitor.ts"
 
-  deps = [ ":protocol_monitor" ]
+  ts_deps = [ ":protocol_monitor" ]
 
   visibility = [
     ":*",
@@ -61,9 +64,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "protocol_monitor-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/i18n:bundle",
     "../../core/root:bundle",
@@ -74,6 +78,7 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -81,7 +86,7 @@ devtools_ui_module("unittests") {
     "ProtocolMonitor.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/host:bundle",
     "../../core/platform:bundle",

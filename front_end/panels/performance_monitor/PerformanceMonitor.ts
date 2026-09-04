@@ -127,7 +127,7 @@ export class PerformanceMonitorImpl extends UI.Widget.HBox<ShadowRoot> implement
   private suspended = false;
   private graphRenderingContext: CanvasRenderingContext2D|null = null;
 
-  constructor(pollIntervalMs = 500, view = DEFAULT_VIEW) {
+  constructor(pollIntervalMs = 500, view: PerformanceMonitorView = DEFAULT_VIEW) {
     super({useShadowDom: 'pure'});
     this.view = view;
     this.registerRequiredCSS(performanceMonitorStyles);
@@ -650,7 +650,7 @@ export class ControlPane extends UI.Widget.VBox {
   readonly #metricValues = new Map<string, number>();
   readonly #view: ControlPaneView;
 
-  constructor(element: HTMLElement, view = CONTROL_PANE_DEFAULT_VIEW) {
+  constructor(element: HTMLElement, view: ControlPaneView = CONTROL_PANE_DEFAULT_VIEW) {
     super(element, {useShadowDom: false});
     this.#view = view;
 
@@ -746,7 +746,7 @@ function renderMetricIndicator(
   // clang-format on
 }
 
-export const format = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
+export const format: Intl.NumberFormat = new Intl.NumberFormat('en-US', {maximumFractionDigits: 1});
 export interface MetricInfo {
   name: string;
   color: string;

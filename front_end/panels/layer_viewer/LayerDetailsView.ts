@@ -383,13 +383,14 @@ export interface EventTypes {
   [Events.PAINT_PROFILER_REQUESTED]: Selection;
 }
 
-export const slowScrollRectNames = new Map([
-  [SDK.LayerTreeBase.Layer.ScrollRectType.NON_FAST_SCROLLABLE, i18nLazyString(UIStrings.nonFastScrollable)],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.TOUCH_EVENT_HANDLER, i18nLazyString(UIStrings.touchEventHandler)],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.WHEEL_EVENT_HANDLER, i18nLazyString(UIStrings.wheelEventHandler)],
-  [SDK.LayerTreeBase.Layer.ScrollRectType.REPAINTS_ON_SCROLL, i18nLazyString(UIStrings.repaintsOnScroll)],
-  [
-    SDK.LayerTreeBase.Layer.ScrollRectType.MAIN_THREAD_SCROLL_REASON,
-    i18nLazyString(UIStrings.mainThreadScrollingReason),
-  ],
-]);
+export const slowScrollRectNames: Map<SDK.LayerTreeBase.Layer.ScrollRectType, () => Common.UIString.LocalizedString> =
+    new Map([
+      [SDK.LayerTreeBase.Layer.ScrollRectType.NON_FAST_SCROLLABLE, i18nLazyString(UIStrings.nonFastScrollable)],
+      [SDK.LayerTreeBase.Layer.ScrollRectType.TOUCH_EVENT_HANDLER, i18nLazyString(UIStrings.touchEventHandler)],
+      [SDK.LayerTreeBase.Layer.ScrollRectType.WHEEL_EVENT_HANDLER, i18nLazyString(UIStrings.wheelEventHandler)],
+      [SDK.LayerTreeBase.Layer.ScrollRectType.REPAINTS_ON_SCROLL, i18nLazyString(UIStrings.repaintsOnScroll)],
+      [
+        SDK.LayerTreeBase.Layer.ScrollRectType.MAIN_THREAD_SCROLL_REASON,
+        i18nLazyString(UIStrings.mainThreadScrollingReason),
+      ],
+    ]);

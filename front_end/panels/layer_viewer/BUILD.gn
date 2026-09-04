@@ -18,6 +18,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("layer_viewer") {
+  split_compilation = true
   sources = [
     "LayerDetailsView.ts",
     "LayerTreeOutline.ts",
@@ -27,7 +28,7 @@ devtools_ui_module("layer_viewer") {
     "TransformController.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
@@ -44,12 +45,12 @@ devtools_ui_module("layer_viewer") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "layer_viewer.ts"
 
-  deps = [
-    ":css_files",
-    ":layer_viewer",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":layer_viewer" ]
 
   visibility = [
     ":*",
@@ -62,9 +63,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "layer_viewer-meta.ts"
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../ui/legacy:bundle",
@@ -74,6 +76,7 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -81,7 +84,7 @@ devtools_ui_module("unittests") {
     "layer_viewer.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/sdk:bundle",
     "../../testing",

@@ -93,7 +93,9 @@ export interface ViewOutput {
   canvasElement?: HTMLCanvasElement;
 }
 
-export const DEFAULT_VIEW = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+
+export const DEFAULT_VIEW: View = (input: ViewInput, output: ViewOutput, target: HTMLElement): void => {
   // clang-format off
   render(html`<style>
       ${layers3DViewStyles}
@@ -173,11 +175,11 @@ export class Layers3DView extends Layers3DViewBase
   private mouseDownX?: number;
   private mouseDownY?: number;
 
-  #view: typeof DEFAULT_VIEW;
+  #view: View;
   #error?: 'missing-root' | 'webgl-disabled';
   #canvasElement!: HTMLCanvasElement;
 
-  constructor(layerViewHost: LayerViewHost, view = DEFAULT_VIEW) {
+  constructor(layerViewHost: LayerViewHost, view: View = DEFAULT_VIEW) {
     super();
     this.#view = view;
 
@@ -966,7 +968,7 @@ export const enum ChromeTexture {
   RIGHT = 2,
 }
 
-export const FragmentShader = '' +
+export const FragmentShader: string = '' +
     'precision mediump float;\n' +
     'varying vec4 vColor;\n' +
     'varying vec2 vTextureCoord;\n' +
@@ -976,7 +978,7 @@ export const FragmentShader = '' +
     '    gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * vColor;\n' +
     '}';
 
-export const VertexShader = '' +
+export const VertexShader: string = '' +
     'attribute vec3 aVertexPosition;\n' +
     'attribute vec2 aTextureCoord;\n' +
     'attribute vec4 aVertexColor;\n' +
@@ -990,12 +992,12 @@ export const VertexShader = '' +
     'vTextureCoord = aTextureCoord;\n' +
     '}';
 
-export const HoveredBorderColor = [0, 0, 255, 1];
-export const SelectedBorderColor = [0, 255, 0, 1];
-export const BorderColor = [0, 0, 0, 1];
-export const ViewportBorderColor = [160, 160, 160, 1];
-export const ScrollRectBackgroundColor = [178, 100, 100, 0.6];
-export const HoveredImageMaskColor = [200, 200, 255, 1];
+export const HoveredBorderColor: number[] = [0, 0, 255, 1];
+export const SelectedBorderColor: number[] = [0, 255, 0, 1];
+export const BorderColor: number[] = [0, 0, 0, 1];
+export const ViewportBorderColor: number[] = [160, 160, 160, 1];
+export const ScrollRectBackgroundColor: number[] = [178, 100, 100, 0.6];
+export const HoveredImageMaskColor: number[] = [200, 200, 255, 1];
 export const BorderWidth = 1;
 export const SelectedBorderWidth = 2;
 export const ViewportBorderWidth = 3;

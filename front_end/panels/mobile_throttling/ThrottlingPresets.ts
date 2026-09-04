@@ -145,7 +145,8 @@ export class ThrottlingPresets {
     SDK.NetworkManager.OfflineConditions,
   ];
 
-  static cpuThrottlingPresets = PanelsCommon.CPUThrottlingOption.cpuThrottlingPresets;
+  static cpuThrottlingPresets: PanelsCommon.CPUThrottlingOption.CPUThrottlingOption[] =
+      PanelsCommon.CPUThrottlingOption.cpuThrottlingPresets;
 }
 
 // @ts-expect-error exported for Tests.js

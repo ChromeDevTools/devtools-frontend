@@ -207,7 +207,8 @@ export class NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
     currentConditions?: SDK.NetworkManager.Conditions,
     includeBlocking?: true,
   } = {},
-              settings = Common.Settings.Settings.instance(), view = DEFAULT_VIEW) {
+              settings: Common.Settings.Settings = Common.Settings.Settings.instance(),
+              view: ViewFunction = DEFAULT_VIEW) {
     super(element);
     this.#settings = settings;
     SDK.NetworkManager.customUserNetworkConditionsSetting(settings).addChangeListener(this.requestUpdate, this);

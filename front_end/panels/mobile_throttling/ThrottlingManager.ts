@@ -405,7 +405,7 @@ export class SaveDataOverrideSelect extends UI.Widget.Widget<HTMLSelectElement> 
   readonly #setting: Common.Settings.Setting<SDK.EmulationModel.DataSaverOverride>;
   readonly #view: SaveDataOverrideViewFunction;
 
-  constructor(element: HTMLElement, view = DEFAULT_SAVE_DATA_VIEW) {
+  constructor(element: HTMLElement, view: SaveDataOverrideViewFunction = DEFAULT_SAVE_DATA_VIEW) {
     super(element);
     this.#view = view;
     this.#setting = Common.Settings.Settings.instance().resolve(SDK.SDKSettings.dataSaverSettingDescriptor);

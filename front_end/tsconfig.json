@@ -33,8 +33,7 @@
     "devtools_compatibility.js",
     "Images/generate-css-vars.js",
     "core/i18n/collect-ui-strings.js",
-    "core/i18n/generate-locales-js.js",
-    "panels/timeline/enable-easter-egg.js"
+    "core/i18n/generate-locales-js.js"
   ],
   "references": [{ "path": "./tsconfig.compatibility.json" }]
 }

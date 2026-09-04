@@ -20,7 +20,6 @@ import {getAnnotationEntries, getAnnotationWindow} from './AnnotationHelpers.js'
 import type * as TimelineComponents from './components/components.js';
 import * as TimelineInsights from './components/insights/insights.js';
 import {CountersGraph} from './CountersGraph.js';
-import {SHOULD_SHOW_EASTER_EGG} from './EasterEgg.js';
 import {ModificationsManager} from './ModificationsManager.js';
 import * as OverlayComponents from './overlays/components/components.js';
 import * as Overlays from './overlays/overlays.js';
@@ -112,7 +111,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   private readonly networkPane: UI.Widget.VBox;
   private readonly splitResizer: HTMLElement;
   private readonly chartSplitWidget: UI.SplitWidget.SplitWidget;
-  private brickGame?: PerfUI.BrickBreaker.BrickBreaker;
   private readonly countersView: CountersGraph;
   private readonly detailsSplitWidget: UI.SplitWidget.SplitWidget;
   private readonly detailsView: TimelineDetailsPane;
@@ -146,8 +144,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
   #debouncedUpdateSearchResults: () => void = Common.Debouncer.debounce(() => this.updateSearchResults(false, false),
                                                                         100);
-  #gameKeyMatches = 0;
-  #gameTimeout = setTimeout(() => ({}), 0);
 
   #overlaysContainer: HTMLElement = document.createElement('div');
   #overlays: Overlays.Overlays.Overlays;
@@ -1074,8 +1070,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
   }
 
   #keydownHandler(event: KeyboardEvent): void {
-    const keyCombo = 'fixme';
-
     // `CREATION_NOT_STARTED` is only true in the state when both empty label and button to create connection are
     // created at the same time. If any key is typed in that state, it means that the label is in focus and the key
     // is typed into the label. This tells us that the user chose to create the
@@ -1104,36 +1098,10 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase implement
       event.stopPropagation();
       return;
     }
-
-    if (event.key === keyCombo[this.#gameKeyMatches]) {
-      this.#gameKeyMatches++;
-      clearTimeout(this.#gameTimeout);
-      this.#gameTimeout = setTimeout(() => {
-        this.#gameKeyMatches = 0;
-      }, 2000);
-    } else {
-      this.#gameKeyMatches = 0;
-      clearTimeout(this.#gameTimeout);
-    }
-    if (this.#gameKeyMatches !== keyCombo.length) {
-      return;
-    }
-    this.runBrickBreakerGame();
   }
 
   forceAnimationsForTest(): void {
     this.#checkReducedMotion = false;
-  }
-  runBrickBreakerGame(): void {
-    if (!SHOULD_SHOW_EASTER_EGG) {
-      return;
-    }
-    if ([...this.element.childNodes].find(child => child instanceof PerfUI.BrickBreaker.BrickBreaker)) {
-      return;
-    }
-    this.brickGame = new PerfUI.BrickBreaker.BrickBreaker(this.mainFlameChart);
-    this.brickGame.classList.add('brick-game');
-    this.element.append(this.brickGame);
   }
 
   #onTraceBoundsChange(event: TraceBounds.TraceBounds.StateChangedEvent): void {

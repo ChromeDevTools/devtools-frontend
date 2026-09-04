@@ -265,6 +265,31 @@ export class UserMetrics {
     InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.ShortTeaserGenerationTime',
                                                              timeInMilliseconds);
   }
+
+  changeRecorded(count: number): void {
+    InspectorFrontendHostInstance.recordCountHistogram('DevTools.Comments.ChangeRecorded', count, 1, 100, 50);
+  }
+
+  changeSharedWithAgent(count: number): void {
+    InspectorFrontendHostInstance.recordCountHistogram('DevTools.Comments.ChangeSharedWithAgent', count, 1, 100, 50);
+  }
+
+  commentCreated(count: number): void {
+    InspectorFrontendHostInstance.recordCountHistogram('DevTools.Comments.CommentCreated', count, 1, 100, 50);
+  }
+
+  commentResolved(resolver: CommentResolver, count: number): void {
+    InspectorFrontendHostInstance.recordCountHistogram(`DevTools.Comments.CommentResolvedBy${resolver}`, count, 1, 100,
+                                                       50);
+  }
+
+  commentSharedWithAgent(count: number): void {
+    InspectorFrontendHostInstance.recordCountHistogram('DevTools.Comments.CommentSharedWithAgent', count, 1, 100, 50);
+  }
+
+  commentSize(characters: number): void {
+    InspectorFrontendHostInstance.recordCountHistogram('DevTools.Comments.CommentSize', characters, 1, 100_000, 50);
+  }
 }
 
 /**
@@ -493,3 +518,5 @@ export function resendRequestType(resourceType: Common.ResourceType.ResourceType
   const key = resendRequestTypeMap.get(resourceType);
   return (key ? ResendRequestType[key] : undefined) ?? ResendRequestType.OTHER;
 }
+
+export type CommentResolver = 'Agent'|'User';

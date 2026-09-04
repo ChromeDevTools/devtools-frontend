@@ -20,6 +20,8 @@ export function resetRecordedMetrics(): void {
   const instance = Host.InspectorFrontendHost.InspectorFrontendHostInstance;
   if (instance instanceof Host.InspectorFrontendHost.InspectorFrontendHostStub) {
     instance.recordedEnumeratedHistograms = [];
+    instance.recordedPerformanceHistograms = [];
+    instance.recordedCountHistograms = [];
   }
 }
 

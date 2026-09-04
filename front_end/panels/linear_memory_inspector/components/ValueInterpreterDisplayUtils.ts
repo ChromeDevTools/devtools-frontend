@@ -57,7 +57,7 @@ const DEFAULT_MODE_MAPPING = new Map([
   [ValueType.POINTER64, ValueTypeMode.HEXADECIMAL],
 ]);
 
-export const VALUE_TYPE_MODE_LIST = [
+export const VALUE_TYPE_MODE_LIST: ValueTypeMode[] = [
   ValueTypeMode.DECIMAL,
   ValueTypeMode.HEXADECIMAL,
   ValueTypeMode.OCTAL,

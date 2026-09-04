@@ -14,7 +14,7 @@ import * as LinearMemoryInspectorComponents from './components.js';
 
 export const HIGHLIGHT_CHIP = '.highlight-chip';
 export const HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR = '.jump-to-highlight-button';
-export const HIGHLIGHT_PILL_VARIABLE_NAME = HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR + ' .value';
+export const HIGHLIGHT_PILL_VARIABLE_NAME: string = HIGHLIGHT_PILL_JUMP_BUTTON_SELECTOR + ' .value';
 export const HIGHLIGHT_ROW_REMOVE_BUTTON_SELECTOR = '.delete-highlight-button';
 
 describe('LinearMemoryInspectorHighlightChipList', () => {

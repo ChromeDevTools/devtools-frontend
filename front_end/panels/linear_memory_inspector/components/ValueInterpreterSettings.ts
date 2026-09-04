@@ -86,7 +86,7 @@ export class ValueInterpreterSettings extends UI.Widget.Widget {
   #valueTypes = new Set<ValueType>();
   #onToggle: (type: ValueType, checked: boolean) => void = () => {};
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element);
     this.#view = view;
   }

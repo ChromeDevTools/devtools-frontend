@@ -21,6 +21,7 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("components") {
+  split_compilation = true
   sources = [
     "LinearMemoryHighlightChipList.ts",
     "LinearMemoryInspector.ts",
@@ -34,7 +35,7 @@ devtools_ui_module("components") {
     "ValueInterpreterSettings.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../../core/common:bundle",
     "../../../core/i18n:bundle",
     "../../../core/platform:bundle",
@@ -47,12 +48,12 @@ devtools_ui_module("components") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "components.ts"
 
-  deps = [
-    ":components",
-    ":css_files",
-  ]
+  deps = [ ":css_files" ]
+
+  ts_deps = [ ":components" ]
 
   visibility = [
     ":*",
@@ -66,6 +67,7 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -77,7 +79,7 @@ devtools_ui_module("unittests") {
     "ValueInterpreterSettings.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../../testing",
     "../../../ui/components/buttons:bundle",

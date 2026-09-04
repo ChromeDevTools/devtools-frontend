@@ -89,7 +89,7 @@ export class LinearMemoryHighlightChipList extends UI.Widget.Widget {
   #deleteHighlight = (_: HighlightInfo): void => {};
   #view: View;
 
-  constructor(element?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(element, {useShadowDom: true});
     this.#view = view;
   }

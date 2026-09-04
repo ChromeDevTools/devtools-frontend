@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-export const HEXADECIMAL_REGEXP = /^0x[a-fA-F0-9]+$/;
-export const DECIMAL_REGEXP = /^0$|[1-9]\d*$/;
+export const HEXADECIMAL_REGEXP: RegExp = /^0x[a-fA-F0-9]+$/;
+export const DECIMAL_REGEXP: RegExp = /^0$|[1-9]\d*$/;
 
 export function toHexString(data: {number: number, pad: number, prefix: boolean}): string {
   const hex = data.number.toString(16).padStart(data.pad, '0');

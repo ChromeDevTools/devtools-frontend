@@ -9,12 +9,13 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_ui_module("linear_memory_inspector") {
+  split_compilation = true
   sources = [
     "LinearMemoryInspectorController.ts",
     "LinearMemoryInspectorPane.ts",
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/common:bundle",
     "../../core/i18n:bundle",
     "../../core/platform:bundle",
@@ -31,12 +32,12 @@ devtools_ui_module("linear_memory_inspector") {
 }
 
 devtools_entrypoint("bundle") {
+  split_compilation = true
   entrypoint = "linear_memory_inspector.ts"
 
-  deps = [
-    ":linear_memory_inspector",
-    "../../ui/legacy:css_files",
-  ]
+  deps = [ "../../ui/legacy:css_files" ]
+
+  ts_deps = [ ":linear_memory_inspector" ]
 
   visibility = [
     ":*",
@@ -48,9 +49,10 @@ devtools_entrypoint("bundle") {
 }
 
 devtools_entrypoint("meta") {
+  split_compilation = true
   entrypoint = "linear_memory_inspector-meta.ts"
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/common:bundle",
     "../../core/i18n:bundle",
@@ -63,6 +65,7 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  split_compilation = true
   testonly = true
 
   sources = [
@@ -70,7 +73,7 @@ devtools_ui_module("unittests") {
     "LinearMemoryInspectorPane.test.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ":bundle",
     "../../core/sdk:bundle",
     "../../testing",

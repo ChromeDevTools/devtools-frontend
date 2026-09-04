@@ -81,17 +81,11 @@ export class Universe {
     const multitargetNetworkManager = new SDK.NetworkManager.MultitargetNetworkManager(targetManager);
     context.set(SDK.NetworkManager.MultitargetNetworkManager, multitargetNetworkManager);
 
-    const workspace = new Workspace.Workspace.WorkspaceImpl();
-    context.set(Workspace.Workspace.WorkspaceImpl, workspace);
-
-    const fileManager = new Workspace.FileManager.FileManager();
-    context.set(Workspace.FileManager.FileManager, fileManager);
-
     this.supportsEmulation = options.supportsEmulation;
     let deviceModeModel = null;
     if (options.supportsEmulation) {
-      deviceModeModel = new Emulation.DeviceModeModel.DeviceModeModel(targetManager, settings,
-                                                                      multitargetNetworkManager, fileManager);
+      deviceModeModel =
+          new Emulation.DeviceModeModel.DeviceModeModel(targetManager, settings, multitargetNetworkManager);
       context.set(Emulation.DeviceModeModel.DeviceModeModel, deviceModeModel);
     }
 
@@ -130,6 +124,11 @@ export class Universe {
 
     const domModelUndoStack = new SDK.DOMModel.DOMModelUndoStack();
     context.set(SDK.DOMModel.DOMModelUndoStack, domModelUndoStack);
+    const workspace = new Workspace.Workspace.WorkspaceImpl();
+    context.set(Workspace.Workspace.WorkspaceImpl, workspace);
+
+    const fileManager = new Workspace.FileManager.FileManager();
+    context.set(Workspace.FileManager.FileManager, fileManager);
 
     if (automaticFileSystemManager) {
       const automaticFileSystemWorkspaceBinding =
@@ -215,7 +214,6 @@ export class Universe {
 
     const domIssuesManager = new IssuesManager.DOMIssuesManager.DOMIssuesManager(issuesManager, targetManager);
     context.set(IssuesManager.DOMIssuesManager.DOMIssuesManager, domIssuesManager);
-
     const javaScriptMetadata = new JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl();
     context.set(JavaScriptMetadata.JavaScriptMetadata.JavaScriptMetadataImpl, javaScriptMetadata);
 
@@ -233,7 +231,6 @@ export class Universe {
 
     const commentManager = new CommentManager.CommentManager.CommentManager();
     context.set(CommentManager.CommentManager.CommentManager, commentManager);
-
     this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
     context.set(AutofillManager.AutofillManager.AutofillManager, this.autofillManager);
   }
@@ -273,7 +270,6 @@ export class Universe {
   get commentManager(): CommentManager.CommentManager.CommentManager {
     return this.context.get(CommentManager.CommentManager.CommentManager);
   }
-
   get cpuThrottlingManager(): SDK.CPUThrottlingManager.CPUThrottlingManager {
     return this.context.get(SDK.CPUThrottlingManager.CPUThrottlingManager);
   }
@@ -302,7 +298,6 @@ export class Universe {
   get domIssuesManager(): IssuesManager.DOMIssuesManager.DOMIssuesManager {
     return this.context.get(IssuesManager.DOMIssuesManager.DOMIssuesManager);
   }
-
   get domModelUndoStack(): SDK.DOMModel.DOMModelUndoStack {
     return this.context.get(SDK.DOMModel.DOMModelUndoStack);
   }

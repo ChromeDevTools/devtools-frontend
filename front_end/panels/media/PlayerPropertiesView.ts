@@ -517,7 +517,7 @@ export class PlayerPropertiesView extends UI.Widget.VBox {
     [PlayerPropertyKeys.TEXT_TRACKS]: new TrackProperty(PlayerPropertyKeys.TEXT_TRACKS),
   };
 
-  constructor(target?: HTMLElement, view = DEFAULT_VIEW) {
+  constructor(target?: HTMLElement, view: View = DEFAULT_VIEW) {
     super(target);
     this.#view = view;
   }

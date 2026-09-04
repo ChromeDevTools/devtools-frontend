@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/sources/AddSourceMapURLDialog.js
+// ../../front_end/panels/sources/AddSourceMapURLDialog.ts
 var AddSourceMapURLDialog_exports = {};
 __export(AddSourceMapURLDialog_exports, {
   AddDebugInfoURLDialog: () => AddDebugInfoURLDialog,
@@ -43,7 +43,7 @@ input[type="text"].add-source-map {
 
 /*# sourceURL=${import.meta.resolve("./dialog.css")} */`;
 
-// gen/front_end/panels/sources/AddSourceMapURLDialog.js
+// ../../front_end/panels/sources/AddSourceMapURLDialog.ts
 var UIStrings = {
   /**
    * @description Text in Add source map URL dialog of the Sources panel.
@@ -61,21 +61,24 @@ var UIStrings = {
 var str_ = i18n.i18n.registerUIStrings("panels/sources/AddSourceMapURLDialog.ts", UIStrings);
 var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var DEFAULT_VIEW = (input, _output, target) => {
-  render(html`
+  render(
+    html`
     <style>${dialog_css_default}</style>
     <label>${input.label}</label>
     <input class="harmony-input add-source-map" spellcheck="false" type="text"
         jslog=${VisualLogging.textField("url").track({ keydown: "Enter", change: true })}
         @keydown=${(e) => {
-    if (e.key === "Enter") {
-      e.consume(true);
-      input.onEnter(e.target.value);
-    }
-  }}
+      if (e.key === "Enter") {
+        e.consume(true);
+        input.onEnter(e.target.value);
+      }
+    }}
         @change=${(e) => input.onInputChange(e.target.value)}
         autofocus>
     <devtools-button @click=${input.apply} .jslogContext=${"add"}
-        .variant=${"outlined"}>${i18nString(UIStrings.add)}</devtools-button>`, target);
+        .variant=${Buttons.Button.Variant.OUTLINED}>${i18nString(UIStrings.add)}</devtools-button>`,
+    target
+  );
 };
 var AddDebugInfoURLDialog = class _AddDebugInfoURLDialog extends UI.Widget.HBox {
   url = "";
@@ -91,10 +94,7 @@ var AddDebugInfoURLDialog = class _AddDebugInfoURLDialog extends UI.Widget.HBox 
     };
     view(viewInput, void 0, this.contentElement);
     this.dialog = new UI.Dialog.Dialog(jslogContext);
-    this.dialog.setSizeBehavior(
-      "MeasureContent"
-      /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
-    );
+    this.dialog.setSizeBehavior(UI.GlassPane.SizeBehavior.MEASURE_CONTENT);
     this.callback = callback;
   }
   static createAddSourceMapURLDialog(callback) {
@@ -123,7 +123,7 @@ var AddDebugInfoURLDialog = class _AddDebugInfoURLDialog extends UI.Widget.HBox 
   }
 };
 
-// gen/front_end/panels/sources/AiCodeCompletionPlugin.js
+// ../../front_end/panels/sources/AiCodeCompletionPlugin.ts
 var AiCodeCompletionPlugin_exports = {};
 __export(AiCodeCompletionPlugin_exports, {
   AiCodeCompletionPlugin: () => AiCodeCompletionPlugin
@@ -136,16 +136,16 @@ import * as SourceFrame from "../../ui/legacy/components/source_frame/source_fra
 import * as UI2 from "../../ui/legacy/legacy.js";
 import * as PanelCommon from "../common/common.js";
 
-// gen/front_end/panels/sources/Plugin.js
+// ../../front_end/panels/sources/Plugin.ts
 var Plugin_exports = {};
 __export(Plugin_exports, {
   Plugin: () => Plugin
 });
 var Plugin = class {
-  uiSourceCode;
   constructor(uiSourceCode, _transformer) {
     this.uiSourceCode = uiSourceCode;
   }
+  uiSourceCode;
   static accepts(_uiSourceCode) {
     return false;
   }
@@ -177,7 +177,7 @@ var Plugin = class {
   }
 };
 
-// gen/front_end/panels/sources/AiCodeCompletionPlugin.js
+// ../../front_end/panels/sources/AiCodeCompletionPlugin.ts
 var DISCLAIMER_TOOLTIP_ID = "sources-ai-code-completion-disclaimer-tooltip";
 var SPINNER_TOOLTIP_ID = "sources-ai-code-completion-spinner-tooltip";
 var CITATIONS_TOOLTIP_ID = "sources-ai-code-completion-citations-tooltip";
@@ -235,7 +235,9 @@ var AiCodeCompletionPlugin = class extends Plugin {
     this.#editor = editor;
     this.#aiCodeCompletionProvider.editorInitialized(editor);
     this.#editor.editor.dispatch({
-      effects: TextEditor.AiCodeCompletionProvider.setAiCodeCompletionTeaserMode.of(TextEditor.AiCodeCompletionProvider.AiCodeCompletionTeaserMode.ON)
+      effects: TextEditor.AiCodeCompletionProvider.setAiCodeCompletionTeaserMode.of(
+        TextEditor.AiCodeCompletionProvider.AiCodeCompletionTeaserMode.ON
+      )
     });
   }
   editorExtension() {
@@ -272,7 +274,9 @@ var AiCodeCompletionPlugin = class extends Plugin {
   #attachAiCodeCompletionCitationsToolbar() {
     if (this.#editor) {
       this.#editor.dispatch({
-        effects: SourceFrame.SourceFrame.addSourceFrameInfobar.of({ element: this.#aiCodeCompletionCitationsToolbarContainer, order: 100 })
+        effects: SourceFrame.SourceFrame.addSourceFrameInfobar.of(
+          { element: this.#aiCodeCompletionCitationsToolbarContainer, order: 100 }
+        )
       });
       this.#aiCodeCompletionCitationsToolbarAttached = true;
     }
@@ -281,7 +285,9 @@ var AiCodeCompletionPlugin = class extends Plugin {
     this.#aiCodeCompletionCitationsToolbar?.detach();
     if (this.#editor) {
       this.#editor.dispatch({
-        effects: SourceFrame.SourceFrame.removeSourceFrameInfobar.of({ element: this.#aiCodeCompletionCitationsToolbarContainer })
+        effects: SourceFrame.SourceFrame.removeSourceFrameInfobar.of(
+          { element: this.#aiCodeCompletionCitationsToolbarContainer }
+        )
       });
       this.#aiCodeCompletionCitationsToolbarAttached = false;
     }
@@ -331,53 +337,53 @@ var AiCodeCompletionPlugin = class extends Plugin {
       case "text/x-javascript":
       case "text/javascript":
       case "text/jsx":
-        return "JAVASCRIPT";
+        return Host.AidaClient.AidaInferenceLanguage.JAVASCRIPT;
       case "text/typescript":
       case "text/typescript-jsx":
       case "application/typescript":
-        return "TYPESCRIPT";
+        return Host.AidaClient.AidaInferenceLanguage.TYPESCRIPT;
       case "text/css":
-        return "CSS";
+        return Host.AidaClient.AidaInferenceLanguage.CSS;
       case "text/html":
-        return "HTML";
+        return Host.AidaClient.AidaInferenceLanguage.HTML;
       case "text/x-python":
       case "application/python":
-        return "PYTHON";
+        return Host.AidaClient.AidaInferenceLanguage.PYTHON;
       case "text/x-java":
       case "text/x-java-source":
-        return "JAVA";
+        return Host.AidaClient.AidaInferenceLanguage.JAVA;
       case "text/x-c++src":
       case "text/x-csrc":
       case "text/x-c":
-        return "CPP";
+        return Host.AidaClient.AidaInferenceLanguage.CPP;
       case "application/json":
       case "application/manifest+json":
-        return "JSON";
+        return Host.AidaClient.AidaInferenceLanguage.JSON;
       case "text/markdown":
-        return "MARKDOWN";
+        return Host.AidaClient.AidaInferenceLanguage.MARKDOWN;
       case "application/xml":
       case "application/xhtml+xml":
       case "text/xml":
-        return "XML";
+        return Host.AidaClient.AidaInferenceLanguage.XML;
       case "text/x-go":
-        return "GO";
+        return Host.AidaClient.AidaInferenceLanguage.GO;
       case "application/x-sh":
       case "text/x-sh":
-        return "BASH";
+        return Host.AidaClient.AidaInferenceLanguage.BASH;
       case "text/x-kotlin":
-        return "KOTLIN";
+        return Host.AidaClient.AidaInferenceLanguage.KOTLIN;
       case "text/x-vue":
       case "text/x.vue":
-        return "VUE";
+        return Host.AidaClient.AidaInferenceLanguage.VUE;
       case "application/vnd.dart":
-        return "DART";
+        return Host.AidaClient.AidaInferenceLanguage.DART;
       default:
         return void 0;
     }
   }
 };
 
-// gen/front_end/panels/sources/BreakpointEditDialog.js
+// ../../front_end/panels/sources/BreakpointEditDialog.ts
 var BreakpointEditDialog_exports = {};
 __export(BreakpointEditDialog_exports, {
   BreakpointEditDialog: () => BreakpointEditDialog,
@@ -463,7 +469,7 @@ var breakpointEditDialog_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./breakpointEditDialog.css")} */`;
 
-// gen/front_end/panels/sources/BreakpointEditDialog.js
+// ../../front_end/panels/sources/BreakpointEditDialog.ts
 var { ref } = Directives;
 var { Direction } = TextEditor2.TextEditorHistory;
 var UIStrings2 = {
@@ -530,21 +536,21 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       <devtools-toolbar class=source-frame-breakpoint-toolbar>Line ${input.editorLineNumber + 1}:
         <select
           class=type-selector
-          title=${input.breakpointType === "LOGPOINT" ? i18nString2(UIStrings2.logAMessageToConsoleDoNotBreak) : i18nString2(UIStrings2.pauseOnlyWhenTheConditionIsTrue)}
+          title=${input.breakpointType === SDK.DebuggerModel.BreakpointType.LOGPOINT ? i18nString2(UIStrings2.logAMessageToConsoleDoNotBreak) : i18nString2(UIStrings2.pauseOnlyWhenTheConditionIsTrue)}
           aria-label=${i18nString2(UIStrings2.breakpointType)}
           jslog=${VisualLogging2.dropDown("type").track({ change: true })}
           @change=${onTypeChanged}>
-            <option value=${"REGULAR_BREAKPOINT"}>
+            <option value=${SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT}>
               ${i18nString2(UIStrings2.breakpoint)}
             </option>
             <option
-              value=${"CONDITIONAL_BREAKPOINT"}
-              .selected=${input.breakpointType === "CONDITIONAL_BREAKPOINT"}>
+              value=${SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT}
+              .selected=${input.breakpointType === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT}>
                 ${i18nString2(UIStrings2.conditionalBreakpoint)}
             </option>
             <option
-              value=${"LOGPOINT"}
-              .selected=${input.breakpointType === "LOGPOINT"}>
+              value=${SDK.DebuggerModel.BreakpointType.LOGPOINT}
+              .selected=${input.breakpointType === SDK.DebuggerModel.BreakpointType.LOGPOINT}>
                 ${i18nString2(UIStrings2.logpoint)}
             </option>
         </select>
@@ -575,11 +581,13 @@ var DEFAULT_VIEW2 = (input, output, target) => {
 };
 var BreakpointEditDialog = class extends UI3.Widget.Widget {
   #view;
-  #history = new TextEditor2.AutocompleteHistory.AutocompleteHistory(Common.Settings.Settings.instance().createLocalSetting("breakpoint-condition-history", []));
+  #history = new TextEditor2.AutocompleteHistory.AutocompleteHistory(
+    Common.Settings.Settings.instance().createLocalSetting("breakpoint-condition-history", [])
+  );
   #finished = false;
   #editorLineNumber = 0;
   #oldCondition = "";
-  #breakpointType = "CONDITIONAL_BREAKPOINT";
+  #breakpointType = SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT;
   #onFinish = () => {
   };
   #editor;
@@ -652,18 +660,18 @@ var BreakpointEditDialog = class extends UI3.Widget.Widget {
       return this.#state;
     }
     const getPlaceholder = () => {
-      if (this.#breakpointType === "CONDITIONAL_BREAKPOINT") {
+      if (this.#breakpointType === SDK.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT) {
         return CodeMirror.placeholder(i18nString2(UIStrings2.expressionToCheckBeforePausingEg));
       }
-      if (this.#breakpointType === "LOGPOINT") {
+      if (this.#breakpointType === SDK.DebuggerModel.BreakpointType.LOGPOINT) {
         return CodeMirror.placeholder(i18nString2(UIStrings2.logMessageEgXIsX));
       }
       return [];
     };
     const history = () => this.#editor && new TextEditor2.TextEditorHistory.TextEditorHistory(this.#editor, this.#history);
     const autocomplete = (context) => history()?.historyCompletions(context) ?? null;
-    const historyBack = (force) => history()?.moveHistory(-1, force) ?? false;
-    const historyForward = (force) => history()?.moveHistory(1, force) ?? false;
+    const historyBack = (force) => history()?.moveHistory(Direction.BACKWARD, force) ?? false;
+    const historyForward = (force) => history()?.moveHistory(Direction.FORWARD, force) ?? false;
     const finishIfComplete = (view) => {
       void TextEditor2.JavaScript.isExpressionComplete(view.state.doc.toString()).then((complete) => {
         if (complete) {
@@ -714,7 +722,7 @@ var BreakpointEditDialog = class extends UI3.Widget.Widget {
     return this.#state;
   }
   #typeChanged(breakpointType) {
-    if (breakpointType === "REGULAR_BREAKPOINT") {
+    if (breakpointType === SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT) {
       this.finishEditing(true, "");
       return;
     }
@@ -727,7 +735,7 @@ var BreakpointEditDialog = class extends UI3.Widget.Widget {
     }
     this.#finished = true;
     this.#history.pushHistoryItem(condition);
-    const isLogpoint = this.breakpointType === "LOGPOINT";
+    const isLogpoint = this.breakpointType === SDK.DebuggerModel.BreakpointType.LOGPOINT;
     this.onFinish({ committed, condition, isLogpoint });
   }
   saveAndFinish() {
@@ -737,7 +745,7 @@ var BreakpointEditDialog = class extends UI3.Widget.Widget {
   }
 };
 
-// gen/front_end/panels/sources/BreakpointsView.js
+// ../../front_end/panels/sources/BreakpointsView.ts
 var BreakpointsView_exports = {};
 __export(BreakpointsView_exports, {
   BreakpointStatus: () => BreakpointStatus,
@@ -1042,7 +1050,7 @@ var breakpointsView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./breakpointsView.css")} */`;
 
-// gen/front_end/panels/sources/BreakpointsViewUtils.js
+// ../../front_end/panels/sources/BreakpointsViewUtils.ts
 var BreakpointsViewUtils_exports = {};
 __export(BreakpointsViewUtils_exports, {
   findNextNodeForKeyboardNavigation: () => findNextNodeForKeyboardNavigation,
@@ -1101,7 +1109,7 @@ function findNextNodeForPauseOnExceptions(target, key) {
   console.assert(domNodeIsPauseOnExceptionsNode(target));
   let nextNode = null;
   switch (key) {
-    case "ArrowUp": {
+    case Platform.KeyboardUtilities.ArrowKey.UP: {
       const previousElementSibling = target.previousElementSibling;
       if (previousElementSibling instanceof HTMLElement) {
         nextNode = previousElementSibling;
@@ -1109,7 +1117,7 @@ function findNextNodeForPauseOnExceptions(target, key) {
       }
       break;
     }
-    case "ArrowDown": {
+    case Platform.KeyboardUtilities.ArrowKey.DOWN: {
       const nextElementSibling = target.nextElementSibling;
       if (nextElementSibling instanceof HTMLElement) {
         if (domNodeIsTree(nextElementSibling)) {
@@ -1139,7 +1147,7 @@ async function findNextNodeForKeyboardNavigation(target, key, setGroupExpandedSt
   }
   let nextNode = null;
   switch (key) {
-    case "ArrowLeft": {
+    case Platform.KeyboardUtilities.ArrowKey.LEFT: {
       if (domNodeIsSummaryNode(target)) {
         if (groupIsExpanded(detailsElement)) {
           await setGroupExpandedStateCallback(detailsElement, false);
@@ -1149,7 +1157,7 @@ async function findNextNodeForKeyboardNavigation(target, key, setGroupExpandedSt
       }
       break;
     }
-    case "ArrowRight": {
+    case Platform.KeyboardUtilities.ArrowKey.RIGHT: {
       if (domNodeIsSummaryNode(target)) {
         if (groupIsExpanded(detailsElement)) {
           return getFirstBreakpointItemInGroup(detailsElement);
@@ -1158,7 +1166,7 @@ async function findNextNodeForKeyboardNavigation(target, key, setGroupExpandedSt
       }
       break;
     }
-    case "ArrowDown": {
+    case Platform.KeyboardUtilities.ArrowKey.DOWN: {
       if (domNodeIsSummaryNode(target)) {
         if (groupIsExpanded(detailsElement)) {
           nextNode = getFirstBreakpointItemInGroup(detailsElement);
@@ -1175,7 +1183,7 @@ async function findNextNodeForKeyboardNavigation(target, key, setGroupExpandedSt
       }
       break;
     }
-    case "ArrowUp": {
+    case Platform.KeyboardUtilities.ArrowKey.UP: {
       if (domNodeIsSummaryNode(target)) {
         const previousDetailsElement = getPreviousDetailsElement(detailsElement);
         if (previousDetailsElement) {
@@ -1265,7 +1273,7 @@ function getDifferentiatingPathMap(titleInfos) {
   return urlToDifferentiatingPath;
 }
 
-// gen/front_end/panels/sources/BreakpointsView.js
+// ../../front_end/panels/sources/BreakpointsView.ts
 var { html: html3, render: render3, Directives: { ifDefined, repeat, classMap, live } } = Lit;
 var UIStrings3 = {
   /**
@@ -1351,12 +1359,12 @@ var UIStrings3 = {
 var str_3 = i18n5.i18n.registerUIStrings("panels/sources/BreakpointsView.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var MAX_SNIPPET_LENGTH = 200;
-var BreakpointStatus;
-(function(BreakpointStatus2) {
+var BreakpointStatus = /* @__PURE__ */ ((BreakpointStatus2) => {
   BreakpointStatus2["ENABLED"] = "ENABLED";
   BreakpointStatus2["DISABLED"] = "DISABLED";
   BreakpointStatus2["INDETERMINATE"] = "INDETERMINATE";
-})(BreakpointStatus || (BreakpointStatus = {}));
+  return BreakpointStatus2;
+})(BreakpointStatus || {});
 var breakpointsViewInstance = null;
 var breakpointsViewControllerInstance;
 var BreakpointsSidebarController = class _BreakpointsSidebarController {
@@ -1376,8 +1384,16 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
     this.#collapsedFilesSettings = Common3.Settings.Settings.instance().createSetting("collapsed-files", []);
     this.#collapsedFiles = new Set(this.#collapsedFilesSettings.get());
     this.#breakpointManager = breakpointManager;
-    this.#breakpointManager.addEventListener(Breakpoints.BreakpointManager.Events.BreakpointAdded, this.#onBreakpointAdded, this);
-    this.#breakpointManager.addEventListener(Breakpoints.BreakpointManager.Events.BreakpointRemoved, this.#onBreakpointRemoved, this);
+    this.#breakpointManager.addEventListener(
+      Breakpoints.BreakpointManager.Events.BreakpointAdded,
+      this.#onBreakpointAdded,
+      this
+    );
+    this.#breakpointManager.addEventListener(
+      Breakpoints.BreakpointManager.Events.BreakpointRemoved,
+      this.#onBreakpointRemoved,
+      this
+    );
     this.#breakpointsActiveSetting = settings.resolve(SDK2.SDKSettings.breakpointsActiveSettingDescriptor);
     this.#breakpointsActiveSetting.addChangeListener(this.update, this);
     this.#pauseOnUncaughtExceptionSetting = settings.resolve(SDK2.SDKSettings.pauseOnUncaughtExceptionSettingDescriptor);
@@ -1551,7 +1567,7 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
   }
   #onBreakpointAdded(event) {
     const breakpoint = event.data.breakpoint;
-    if (breakpoint.origin === "USER_ACTION" && this.#collapsedFiles.has(breakpoint.url())) {
+    if (breakpoint.origin === Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION && this.#collapsedFiles.has(breakpoint.url())) {
       this.#collapsedFiles.delete(breakpoint.url());
       this.#saveSettings();
     }
@@ -1575,15 +1591,12 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
   #getBreakpointTypeAndDetails(breakpoint) {
     const condition = breakpoint.condition();
     if (!condition) {
-      return {
-        type: "REGULAR_BREAKPOINT"
-        /* SDK.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT */
-      };
+      return { type: SDK2.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT };
     }
     if (breakpoint.isLogpoint()) {
-      return { type: "LOGPOINT", hoverText: condition };
+      return { type: SDK2.DebuggerModel.BreakpointType.LOGPOINT, hoverText: condition };
     }
-    return { type: "CONDITIONAL_BREAKPOINT", hoverText: condition };
+    return { type: SDK2.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT, hoverText: condition };
   }
   #getLocationsForBreakpointItem(breakpointItem) {
     const locations = this.#breakpointItemToLocationMap.get(breakpointItem);
@@ -1593,12 +1606,16 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
   async #getHitUILocation() {
     const details = UI4.Context.Context.instance().flavor(SDK2.DebuggerModel.DebuggerPausedDetails);
     if (details?.callFrames.length) {
-      return await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(details.callFrames[0].location());
+      return await Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
+        details.callFrames[0].location()
+      );
     }
     return null;
   }
   #getBreakpointLocations() {
-    const locations = this.#breakpointManager.allBreakpointLocations().filter((breakpointLocation) => breakpointLocation.uiLocation.uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Debugger);
+    const locations = this.#breakpointManager.allBreakpointLocations().filter(
+      (breakpointLocation) => breakpointLocation.uiLocation.uiSourceCode.project().type() !== Workspace.Workspace.projectTypes.Debugger
+    );
     locations.sort((item1, item2) => item1.uiLocation.compareTo(item2.uiLocation));
     const result = [];
     let lastBreakpoint = null;
@@ -1626,7 +1643,7 @@ var BreakpointsSidebarController = class _BreakpointsSidebarController {
     return result;
   }
   #getBreakpointState(breakpoint) {
-    return breakpoint.enabled() ? "ENABLED" : "DISABLED";
+    return breakpoint.enabled() ? "ENABLED" /* ENABLED */ : "DISABLED" /* DISABLED */;
   }
   #getContent(locationsGroupedById) {
     return Promise.all(locationsGroupedById.map(async (locations) => {
@@ -1667,7 +1684,10 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
           </label>
       </div>
       <div role=tree>
-        ${repeat(input.breakpointGroups, (group) => group.url, (group, groupIndex) => html3`
+        ${repeat(
+    input.breakpointGroups,
+    (group) => group.url,
+    (group, groupIndex) => html3`
             <details class=${classMap({ active: input.breakpointsActive })}
                   ?data-first-group=${groupIndex === 0}
                   ?data-last-group=${groupIndex === input.breakpointGroups.length - 1}
@@ -1685,10 +1705,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                     <devtools-icon name="file-script"></devtools-icon>
                     <input class='group-checkbox small' type='checkbox'
                           aria-label=''
-                          .checked=${group.breakpointItems.some(
-    (item) => item.status === "ENABLED"
-    /* BreakpointStatus.ENABLED */
-  )}
+                          .checked=${group.breakpointItems.some((item) => item.status === "ENABLED" /* ENABLED */)}
                           @change=${input.groupCheckboxToggled.bind(void 0, group)}
                           tabindex=-1
                           jslog=${VisualLogging3.toggle("breakpoint-group").track({ change: true })}>
@@ -1710,13 +1727,16 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                   </button>
                 </span>
               </summary>
-            ${repeat(group.breakpointItems, (item) => item.id, (item, itemIndex) => html3`
+            ${repeat(
+      group.breakpointItems,
+      (item) => item.id,
+      (item, itemIndex) => html3`
                 <div class=${classMap({
-    "breakpoint-item": true,
-    hit: item.isHit,
-    "conditional-breakpoint": item.type === "CONDITIONAL_BREAKPOINT",
-    logpoint: item.type === "LOGPOINT"
-  })}
+        "breakpoint-item": true,
+        hit: item.isHit,
+        "conditional-breakpoint": item.type === SDK2.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT,
+        logpoint: item.type === SDK2.DebuggerModel.BreakpointType.LOGPOINT
+      })}
                     ?data-first-breakpoint=${itemIndex === 0}
                     ?data-last-breakpoint=${itemIndex === group.breakpointItems.length - 1}
                     aria-label=${ifDefined(input.itemDetails.get(item.id)?.itemDescription)}
@@ -1730,8 +1750,8 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                     <input type='checkbox'
                           aria-label=${item.location}
                           class='small'
-                          ?indeterminate=${item.status === "INDETERMINATE"}
-                          .checked=${item.status === "ENABLED"}
+                          ?indeterminate=${item.status === "INDETERMINATE" /* INDETERMINATE */}
+                          .checked=${item.status === "ENABLED" /* ENABLED */}
                           @change=${input.itemCheckboxToggled.bind(void 0, item)}
                           tabindex=-1
                           jslog=${VisualLogging3.toggle("breakpoint").track({ change: true })}>
@@ -1742,7 +1762,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                   <span class='breakpoint-item-location-or-actions'>
                     ${group.editable ? html3`
                           <button data-edit-breakpoint @click=${input.itemEditClickHandler.bind(void 0, item)}
-                                  title=${item.type === "LOGPOINT" ? i18nString3(UIStrings3.editLogpoint) : i18nString3(UIStrings3.editCondition)}
+                                  title=${item.type === SDK2.DebuggerModel.BreakpointType.LOGPOINT ? i18nString3(UIStrings3.editLogpoint) : i18nString3(UIStrings3.editCondition)}
                                   jslog=${VisualLogging3.action("edit-breakpoint").track({ click: true })}>
                             <devtools-icon name="edit"></devtools-icon>
                           </button>` : Lit.nothing}
@@ -1755,8 +1775,10 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
                     </button>
                     <span class='location'>${item.location}</span>
                   </span>
-                </div>`)}
-            </details>`)}
+                </div>`
+    )}
+            </details>`
+  )}
       </div>
     </div>`, target);
 };
@@ -1858,7 +1880,7 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
   #groupCheckboxToggled(group, event) {
     Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.BreakpointsInFileCheckboxToggled);
     const element = event.target;
-    const updatedStatus = element.checked ? "ENABLED" : "DISABLED";
+    const updatedStatus = element.checked ? "ENABLED" /* ENABLED */ : "DISABLED" /* DISABLED */;
     const itemsToUpdate = group.breakpointItems.filter((item) => item.status !== updatedStatus);
     itemsToUpdate.forEach((item) => {
       this.#controller.breakpointStateChanged(item, element.checked);
@@ -1981,20 +2003,14 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
       const breakpointItems2 = this.#breakpointGroups.map(({ breakpointItems: breakpointItems3 }) => breakpointItems3).flat();
       void this.#controller.breakpointsRemoved(breakpointItems2);
     }, { jslogContext: "remove-all-breakpoints" });
-    const notEnabledItems = breakpointItems.filter(
-      (breakpointItem) => breakpointItem.status !== "ENABLED"
-      /* BreakpointStatus.ENABLED */
-    );
+    const notEnabledItems = breakpointItems.filter((breakpointItem) => breakpointItem.status !== "ENABLED" /* ENABLED */);
     menu.debugSection().appendItem(i18nString3(UIStrings3.enableAllBreakpointsInFile), () => {
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.BreakpointsInFileEnabledDisabledFromContextMenu);
       for (const breakpointItem of notEnabledItems) {
         this.#controller.breakpointStateChanged(breakpointItem, true);
       }
     }, { disabled: notEnabledItems.length === 0, jslogContext: "enable-file-breakpoints" });
-    const notDisabledItems = breakpointItems.filter(
-      (breakpointItem) => breakpointItem.status !== "DISABLED"
-      /* BreakpointStatus.DISABLED */
-    );
+    const notDisabledItems = breakpointItems.filter((breakpointItem) => breakpointItem.status !== "DISABLED" /* DISABLED */);
     menu.debugSection().appendItem(i18nString3(UIStrings3.disableAllBreakpointsInFile), () => {
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.BreakpointsInFileEnabledDisabledFromContextMenu);
       for (const breakpointItem of notDisabledItems) {
@@ -2007,7 +2023,7 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
     const items = this.#breakpointGroups.map(({ breakpointItems }) => breakpointItems).flat();
     const otherItems = items.filter((item) => item !== breakpointItem);
     const menu = new UI4.ContextMenu.ContextMenu(event);
-    const editBreakpointText = breakpointItem.type === "LOGPOINT" ? i18nString3(UIStrings3.editLogpoint) : i18nString3(UIStrings3.editCondition);
+    const editBreakpointText = breakpointItem.type === SDK2.DebuggerModel.BreakpointType.LOGPOINT ? i18nString3(UIStrings3.editLogpoint) : i18nString3(UIStrings3.editCondition);
     menu.revealSection().appendItem(i18nString3(UIStrings3.revealLocation), () => {
       void this.#controller.jumpToSource(breakpointItem);
     }, { jslogContext: "jump-to-breakpoint" });
@@ -2018,20 +2034,22 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
         /* editButtonClicked */
       );
     }, { disabled: !editable, jslogContext: "edit-breakpoint" });
-    menu.defaultSection().appendItem(i18nString3(UIStrings3.enableAllBreakpoints), items.forEach.bind(items, (item) => this.#controller.breakpointStateChanged(item, true)), {
-      disabled: items.every(
-        (item) => item.status === "ENABLED"
-        /* BreakpointStatus.ENABLED */
-      ),
-      jslogContext: "enable-all-breakpoints"
-    });
-    menu.defaultSection().appendItem(i18nString3(UIStrings3.disableAllBreakpoints), items.forEach.bind(items, (item) => this.#controller.breakpointStateChanged(item, false)), {
-      disabled: items.every(
-        (item) => item.status === "DISABLED"
-        /* BreakpointStatus.DISABLED */
-      ),
-      jslogContext: "disable-all-breakpoints"
-    });
+    menu.defaultSection().appendItem(
+      i18nString3(UIStrings3.enableAllBreakpoints),
+      items.forEach.bind(items, (item) => this.#controller.breakpointStateChanged(item, true)),
+      {
+        disabled: items.every((item) => item.status === "ENABLED" /* ENABLED */),
+        jslogContext: "enable-all-breakpoints"
+      }
+    );
+    menu.defaultSection().appendItem(
+      i18nString3(UIStrings3.disableAllBreakpoints),
+      items.forEach.bind(items, (item) => this.#controller.breakpointStateChanged(item, false)),
+      {
+        disabled: items.every((item) => item.status === "DISABLED" /* DISABLED */),
+        jslogContext: "disable-all-breakpoints"
+      }
+    );
     menu.footerSection().appendItem(i18nString3(UIStrings3.removeBreakpoint), () => {
       Host2.userMetrics.actionTaken(Host2.UserMetrics.Action.BreakpointRemovedFromContextMenu);
       void this.#controller.breakpointsRemoved([breakpointItem]);
@@ -2047,12 +2065,12 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
   }
   #getCodeSnippetTooltip(type, hoverText) {
     switch (type) {
-      case "REGULAR_BREAKPOINT":
+      case SDK2.DebuggerModel.BreakpointType.REGULAR_BREAKPOINT:
         return void 0;
-      case "CONDITIONAL_BREAKPOINT":
+      case SDK2.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT:
         assertNotNullOrUndefined2(hoverText);
         return i18nString3(UIStrings3.conditionCode, { PH1: hoverText });
-      case "LOGPOINT":
+      case SDK2.DebuggerModel.BreakpointType.LOGPOINT:
         assertNotNullOrUndefined2(hoverText);
         return i18nString3(UIStrings3.logpointCode, { PH1: hoverText });
     }
@@ -2060,13 +2078,13 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
   #getBreakpointItemDescription(breakpointItem) {
     let checkboxDescription;
     switch (breakpointItem.status) {
-      case "ENABLED":
+      case "ENABLED" /* ENABLED */:
         checkboxDescription = i18nString3(UIStrings3.checked);
         break;
-      case "DISABLED":
+      case "DISABLED" /* DISABLED */:
         checkboxDescription = i18nString3(UIStrings3.unchecked);
         break;
-      case "INDETERMINATE":
+      case "INDETERMINATE" /* INDETERMINATE */:
         checkboxDescription = i18nString3(UIStrings3.indeterminate);
         break;
     }
@@ -2089,7 +2107,7 @@ var BreakpointsView = class _BreakpointsView extends UI4.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/sources/CallStackSidebarPane.js
+// ../../front_end/panels/sources/CallStackSidebarPane.ts
 var CallStackSidebarPane_exports = {};
 __export(CallStackSidebarPane_exports, {
   ActionDelegate: () => ActionDelegate4,
@@ -2251,7 +2269,7 @@ var callStackSidebarPane_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./callStackSidebarPane.css")} */`;
 
-// gen/front_end/panels/sources/SourcesPanel.js
+// ../../front_end/panels/sources/SourcesPanel.ts
 var SourcesPanel_exports = {};
 __export(SourcesPanel_exports, {
   ActionDelegate: () => ActionDelegate3,
@@ -2273,6 +2291,2809 @@ import * as i18n33 from "../../core/i18n/i18n.js";
 import * as Platform12 from "../../core/platform/platform.js";
 import * as Root2 from "../../core/root/root.js";
 import * as SDK11 from "../../core/sdk/sdk.js";
+
+// ../../front_end/generated/protocol.ts
+var Accessibility;
+((Accessibility2) => {
+  let AXValueType;
+  ((AXValueType2) => {
+    AXValueType2["Boolean"] = "boolean";
+    AXValueType2["Tristate"] = "tristate";
+    AXValueType2["BooleanOrUndefined"] = "booleanOrUndefined";
+    AXValueType2["Idref"] = "idref";
+    AXValueType2["IdrefList"] = "idrefList";
+    AXValueType2["Integer"] = "integer";
+    AXValueType2["Node"] = "node";
+    AXValueType2["NodeList"] = "nodeList";
+    AXValueType2["Number"] = "number";
+    AXValueType2["String"] = "string";
+    AXValueType2["ComputedString"] = "computedString";
+    AXValueType2["Token"] = "token";
+    AXValueType2["TokenList"] = "tokenList";
+    AXValueType2["DomRelation"] = "domRelation";
+    AXValueType2["Role"] = "role";
+    AXValueType2["InternalRole"] = "internalRole";
+    AXValueType2["ValueUndefined"] = "valueUndefined";
+  })(AXValueType = Accessibility2.AXValueType || (Accessibility2.AXValueType = {}));
+  let AXValueSourceType;
+  ((AXValueSourceType2) => {
+    AXValueSourceType2["Attribute"] = "attribute";
+    AXValueSourceType2["Implicit"] = "implicit";
+    AXValueSourceType2["Style"] = "style";
+    AXValueSourceType2["Contents"] = "contents";
+    AXValueSourceType2["Placeholder"] = "placeholder";
+    AXValueSourceType2["RelatedElement"] = "relatedElement";
+  })(AXValueSourceType = Accessibility2.AXValueSourceType || (Accessibility2.AXValueSourceType = {}));
+  let AXValueNativeSourceType;
+  ((AXValueNativeSourceType2) => {
+    AXValueNativeSourceType2["Description"] = "description";
+    AXValueNativeSourceType2["Figcaption"] = "figcaption";
+    AXValueNativeSourceType2["Label"] = "label";
+    AXValueNativeSourceType2["Labelfor"] = "labelfor";
+    AXValueNativeSourceType2["Labelwrapped"] = "labelwrapped";
+    AXValueNativeSourceType2["Legend"] = "legend";
+    AXValueNativeSourceType2["Rubyannotation"] = "rubyannotation";
+    AXValueNativeSourceType2["Tablecaption"] = "tablecaption";
+    AXValueNativeSourceType2["Title"] = "title";
+    AXValueNativeSourceType2["Other"] = "other";
+  })(AXValueNativeSourceType = Accessibility2.AXValueNativeSourceType || (Accessibility2.AXValueNativeSourceType = {}));
+  let AXPropertyName;
+  ((AXPropertyName2) => {
+    AXPropertyName2["Actions"] = "actions";
+    AXPropertyName2["Busy"] = "busy";
+    AXPropertyName2["Disabled"] = "disabled";
+    AXPropertyName2["Editable"] = "editable";
+    AXPropertyName2["Focusable"] = "focusable";
+    AXPropertyName2["Focused"] = "focused";
+    AXPropertyName2["Hidden"] = "hidden";
+    AXPropertyName2["HiddenRoot"] = "hiddenRoot";
+    AXPropertyName2["Invalid"] = "invalid";
+    AXPropertyName2["Keyshortcuts"] = "keyshortcuts";
+    AXPropertyName2["Settable"] = "settable";
+    AXPropertyName2["Roledescription"] = "roledescription";
+    AXPropertyName2["Live"] = "live";
+    AXPropertyName2["Atomic"] = "atomic";
+    AXPropertyName2["Relevant"] = "relevant";
+    AXPropertyName2["Root"] = "root";
+    AXPropertyName2["Autocomplete"] = "autocomplete";
+    AXPropertyName2["HasPopup"] = "hasPopup";
+    AXPropertyName2["Level"] = "level";
+    AXPropertyName2["Multiselectable"] = "multiselectable";
+    AXPropertyName2["Orientation"] = "orientation";
+    AXPropertyName2["Multiline"] = "multiline";
+    AXPropertyName2["Readonly"] = "readonly";
+    AXPropertyName2["Required"] = "required";
+    AXPropertyName2["Valuemin"] = "valuemin";
+    AXPropertyName2["Valuemax"] = "valuemax";
+    AXPropertyName2["Valuetext"] = "valuetext";
+    AXPropertyName2["Checked"] = "checked";
+    AXPropertyName2["Expanded"] = "expanded";
+    AXPropertyName2["Modal"] = "modal";
+    AXPropertyName2["Pressed"] = "pressed";
+    AXPropertyName2["Selected"] = "selected";
+    AXPropertyName2["Activedescendant"] = "activedescendant";
+    AXPropertyName2["Controls"] = "controls";
+    AXPropertyName2["Describedby"] = "describedby";
+    AXPropertyName2["Details"] = "details";
+    AXPropertyName2["Errormessage"] = "errormessage";
+    AXPropertyName2["Flowto"] = "flowto";
+    AXPropertyName2["Labelledby"] = "labelledby";
+    AXPropertyName2["Owns"] = "owns";
+    AXPropertyName2["Url"] = "url";
+    AXPropertyName2["ActiveFullscreenElement"] = "activeFullscreenElement";
+    AXPropertyName2["ActiveModalDialog"] = "activeModalDialog";
+    AXPropertyName2["ActiveAriaModalDialog"] = "activeAriaModalDialog";
+    AXPropertyName2["AriaHiddenElement"] = "ariaHiddenElement";
+    AXPropertyName2["AriaHiddenSubtree"] = "ariaHiddenSubtree";
+    AXPropertyName2["EmptyAlt"] = "emptyAlt";
+    AXPropertyName2["EmptyText"] = "emptyText";
+    AXPropertyName2["InertElement"] = "inertElement";
+    AXPropertyName2["InertSubtree"] = "inertSubtree";
+    AXPropertyName2["LabelContainer"] = "labelContainer";
+    AXPropertyName2["LabelFor"] = "labelFor";
+    AXPropertyName2["NotRendered"] = "notRendered";
+    AXPropertyName2["NotVisible"] = "notVisible";
+    AXPropertyName2["PresentationalRole"] = "presentationalRole";
+    AXPropertyName2["ProbablyPresentational"] = "probablyPresentational";
+    AXPropertyName2["InactiveCarouselTabContent"] = "inactiveCarouselTabContent";
+    AXPropertyName2["Uninteresting"] = "uninteresting";
+  })(AXPropertyName = Accessibility2.AXPropertyName || (Accessibility2.AXPropertyName = {}));
+})(Accessibility || (Accessibility = {}));
+var Animation;
+((Animation2) => {
+  let AnimationType;
+  ((AnimationType2) => {
+    AnimationType2["CSSTransition"] = "CSSTransition";
+    AnimationType2["CSSAnimation"] = "CSSAnimation";
+    AnimationType2["WebAnimation"] = "WebAnimation";
+  })(AnimationType = Animation2.AnimationType || (Animation2.AnimationType = {}));
+})(Animation || (Animation = {}));
+var Audits;
+((Audits2) => {
+  let CookieExclusionReason;
+  ((CookieExclusionReason2) => {
+    CookieExclusionReason2["ExcludeSameSiteUnspecifiedTreatedAsLax"] = "ExcludeSameSiteUnspecifiedTreatedAsLax";
+    CookieExclusionReason2["ExcludeSameSiteNoneInsecure"] = "ExcludeSameSiteNoneInsecure";
+    CookieExclusionReason2["ExcludeSameSiteLax"] = "ExcludeSameSiteLax";
+    CookieExclusionReason2["ExcludeSameSiteStrict"] = "ExcludeSameSiteStrict";
+    CookieExclusionReason2["ExcludeDomainNonASCII"] = "ExcludeDomainNonASCII";
+    CookieExclusionReason2["ExcludeThirdPartyCookieBlockedInFirstPartySet"] = "ExcludeThirdPartyCookieBlockedInFirstPartySet";
+    CookieExclusionReason2["ExcludeThirdPartyPhaseout"] = "ExcludeThirdPartyPhaseout";
+    CookieExclusionReason2["ExcludePortMismatch"] = "ExcludePortMismatch";
+    CookieExclusionReason2["ExcludeSchemeMismatch"] = "ExcludeSchemeMismatch";
+  })(CookieExclusionReason = Audits2.CookieExclusionReason || (Audits2.CookieExclusionReason = {}));
+  let CookieWarningReason;
+  ((CookieWarningReason2) => {
+    CookieWarningReason2["WarnSameSiteUnspecifiedCrossSiteContext"] = "WarnSameSiteUnspecifiedCrossSiteContext";
+    CookieWarningReason2["WarnSameSiteNoneInsecure"] = "WarnSameSiteNoneInsecure";
+    CookieWarningReason2["WarnSameSiteUnspecifiedLaxAllowUnsafe"] = "WarnSameSiteUnspecifiedLaxAllowUnsafe";
+    CookieWarningReason2["WarnSameSiteStrictLaxDowngradeStrict"] = "WarnSameSiteStrictLaxDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteStrictCrossDowngradeStrict"] = "WarnSameSiteStrictCrossDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteStrictCrossDowngradeLax"] = "WarnSameSiteStrictCrossDowngradeLax";
+    CookieWarningReason2["WarnSameSiteLaxCrossDowngradeStrict"] = "WarnSameSiteLaxCrossDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteLaxCrossDowngradeLax"] = "WarnSameSiteLaxCrossDowngradeLax";
+    CookieWarningReason2["WarnAttributeValueExceedsMaxSize"] = "WarnAttributeValueExceedsMaxSize";
+    CookieWarningReason2["WarnDomainNonASCII"] = "WarnDomainNonASCII";
+    CookieWarningReason2["WarnThirdPartyPhaseout"] = "WarnThirdPartyPhaseout";
+    CookieWarningReason2["WarnCrossSiteRedirectDowngradeChangesInclusion"] = "WarnCrossSiteRedirectDowngradeChangesInclusion";
+    CookieWarningReason2["WarnDeprecationTrialMetadata"] = "WarnDeprecationTrialMetadata";
+    CookieWarningReason2["WarnThirdPartyCookieHeuristic"] = "WarnThirdPartyCookieHeuristic";
+  })(CookieWarningReason = Audits2.CookieWarningReason || (Audits2.CookieWarningReason = {}));
+  let CookieOperation;
+  ((CookieOperation2) => {
+    CookieOperation2["SetCookie"] = "SetCookie";
+    CookieOperation2["ReadCookie"] = "ReadCookie";
+  })(CookieOperation = Audits2.CookieOperation || (Audits2.CookieOperation = {}));
+  let InsightType;
+  ((InsightType2) => {
+    InsightType2["GitHubResource"] = "GitHubResource";
+    InsightType2["GracePeriod"] = "GracePeriod";
+    InsightType2["Heuristics"] = "Heuristics";
+  })(InsightType = Audits2.InsightType || (Audits2.InsightType = {}));
+  let PerformanceIssueType;
+  ((PerformanceIssueType2) => {
+    PerformanceIssueType2["DocumentCookie"] = "DocumentCookie";
+  })(PerformanceIssueType = Audits2.PerformanceIssueType || (Audits2.PerformanceIssueType = {}));
+  let MixedContentResolutionStatus;
+  ((MixedContentResolutionStatus2) => {
+    MixedContentResolutionStatus2["MixedContentBlocked"] = "MixedContentBlocked";
+    MixedContentResolutionStatus2["MixedContentAutomaticallyUpgraded"] = "MixedContentAutomaticallyUpgraded";
+    MixedContentResolutionStatus2["MixedContentWarning"] = "MixedContentWarning";
+  })(MixedContentResolutionStatus = Audits2.MixedContentResolutionStatus || (Audits2.MixedContentResolutionStatus = {}));
+  let MixedContentResourceType;
+  ((MixedContentResourceType2) => {
+    MixedContentResourceType2["Audio"] = "Audio";
+    MixedContentResourceType2["Beacon"] = "Beacon";
+    MixedContentResourceType2["CSPReport"] = "CSPReport";
+    MixedContentResourceType2["Download"] = "Download";
+    MixedContentResourceType2["EventSource"] = "EventSource";
+    MixedContentResourceType2["Favicon"] = "Favicon";
+    MixedContentResourceType2["Font"] = "Font";
+    MixedContentResourceType2["Form"] = "Form";
+    MixedContentResourceType2["Frame"] = "Frame";
+    MixedContentResourceType2["Image"] = "Image";
+    MixedContentResourceType2["Import"] = "Import";
+    MixedContentResourceType2["JSON"] = "JSON";
+    MixedContentResourceType2["Manifest"] = "Manifest";
+    MixedContentResourceType2["Ping"] = "Ping";
+    MixedContentResourceType2["PluginData"] = "PluginData";
+    MixedContentResourceType2["PluginResource"] = "PluginResource";
+    MixedContentResourceType2["Prefetch"] = "Prefetch";
+    MixedContentResourceType2["Resource"] = "Resource";
+    MixedContentResourceType2["Script"] = "Script";
+    MixedContentResourceType2["ServiceWorker"] = "ServiceWorker";
+    MixedContentResourceType2["SharedWorker"] = "SharedWorker";
+    MixedContentResourceType2["SpeculationRules"] = "SpeculationRules";
+    MixedContentResourceType2["Stylesheet"] = "Stylesheet";
+    MixedContentResourceType2["Track"] = "Track";
+    MixedContentResourceType2["Video"] = "Video";
+    MixedContentResourceType2["Worker"] = "Worker";
+    MixedContentResourceType2["XMLHttpRequest"] = "XMLHttpRequest";
+    MixedContentResourceType2["XSLT"] = "XSLT";
+  })(MixedContentResourceType = Audits2.MixedContentResourceType || (Audits2.MixedContentResourceType = {}));
+  let BlockedByResponseReason;
+  ((BlockedByResponseReason2) => {
+    BlockedByResponseReason2["CoepFrameResourceNeedsCoepHeader"] = "CoepFrameResourceNeedsCoepHeader";
+    BlockedByResponseReason2["CoopSandboxedIFrameCannotNavigateToCoopPage"] = "CoopSandboxedIFrameCannotNavigateToCoopPage";
+    BlockedByResponseReason2["CorpNotSameOrigin"] = "CorpNotSameOrigin";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoep"] = "CorpNotSameOriginAfterDefaultedToSameOriginByCoep";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByDip"] = "CorpNotSameOriginAfterDefaultedToSameOriginByDip";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"] = "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip";
+    BlockedByResponseReason2["CorpNotSameSite"] = "CorpNotSameSite";
+    BlockedByResponseReason2["SRIMessageSignatureMismatch"] = "SRIMessageSignatureMismatch";
+  })(BlockedByResponseReason = Audits2.BlockedByResponseReason || (Audits2.BlockedByResponseReason = {}));
+  let HeavyAdResolutionStatus;
+  ((HeavyAdResolutionStatus2) => {
+    HeavyAdResolutionStatus2["HeavyAdBlocked"] = "HeavyAdBlocked";
+    HeavyAdResolutionStatus2["HeavyAdWarning"] = "HeavyAdWarning";
+  })(HeavyAdResolutionStatus = Audits2.HeavyAdResolutionStatus || (Audits2.HeavyAdResolutionStatus = {}));
+  let HeavyAdReason;
+  ((HeavyAdReason2) => {
+    HeavyAdReason2["NetworkTotalLimit"] = "NetworkTotalLimit";
+    HeavyAdReason2["CpuTotalLimit"] = "CpuTotalLimit";
+    HeavyAdReason2["CpuPeakLimit"] = "CpuPeakLimit";
+  })(HeavyAdReason = Audits2.HeavyAdReason || (Audits2.HeavyAdReason = {}));
+  let ContentSecurityPolicyViolationType;
+  ((ContentSecurityPolicyViolationType2) => {
+    ContentSecurityPolicyViolationType2["KInlineViolation"] = "kInlineViolation";
+    ContentSecurityPolicyViolationType2["KEvalViolation"] = "kEvalViolation";
+    ContentSecurityPolicyViolationType2["KURLViolation"] = "kURLViolation";
+    ContentSecurityPolicyViolationType2["KSRIViolation"] = "kSRIViolation";
+    ContentSecurityPolicyViolationType2["KTrustedTypesSinkViolation"] = "kTrustedTypesSinkViolation";
+    ContentSecurityPolicyViolationType2["KTrustedTypesPolicyViolation"] = "kTrustedTypesPolicyViolation";
+    ContentSecurityPolicyViolationType2["KWasmEvalViolation"] = "kWasmEvalViolation";
+  })(ContentSecurityPolicyViolationType = Audits2.ContentSecurityPolicyViolationType || (Audits2.ContentSecurityPolicyViolationType = {}));
+  let SharedArrayBufferIssueType;
+  ((SharedArrayBufferIssueType2) => {
+    SharedArrayBufferIssueType2["TransferIssue"] = "TransferIssue";
+    SharedArrayBufferIssueType2["CreationIssue"] = "CreationIssue";
+  })(SharedArrayBufferIssueType = Audits2.SharedArrayBufferIssueType || (Audits2.SharedArrayBufferIssueType = {}));
+  let SharedDictionaryError;
+  ((SharedDictionaryError2) => {
+    SharedDictionaryError2["UseErrorCrossOriginNoCorsRequest"] = "UseErrorCrossOriginNoCorsRequest";
+    SharedDictionaryError2["UseErrorDictionaryLoadFailure"] = "UseErrorDictionaryLoadFailure";
+    SharedDictionaryError2["UseErrorMatchingDictionaryNotUsed"] = "UseErrorMatchingDictionaryNotUsed";
+    SharedDictionaryError2["UseErrorUnexpectedContentDictionaryHeader"] = "UseErrorUnexpectedContentDictionaryHeader";
+    SharedDictionaryError2["WriteErrorCossOriginNoCorsRequest"] = "WriteErrorCossOriginNoCorsRequest";
+    SharedDictionaryError2["WriteErrorDisallowedBySettings"] = "WriteErrorDisallowedBySettings";
+    SharedDictionaryError2["WriteErrorExpiredResponse"] = "WriteErrorExpiredResponse";
+    SharedDictionaryError2["WriteErrorFeatureDisabled"] = "WriteErrorFeatureDisabled";
+    SharedDictionaryError2["WriteErrorInsufficientResources"] = "WriteErrorInsufficientResources";
+    SharedDictionaryError2["WriteErrorInvalidMatchField"] = "WriteErrorInvalidMatchField";
+    SharedDictionaryError2["WriteErrorInvalidStructuredHeader"] = "WriteErrorInvalidStructuredHeader";
+    SharedDictionaryError2["WriteErrorInvalidTTLField"] = "WriteErrorInvalidTTLField";
+    SharedDictionaryError2["WriteErrorNavigationRequest"] = "WriteErrorNavigationRequest";
+    SharedDictionaryError2["WriteErrorNoMatchField"] = "WriteErrorNoMatchField";
+    SharedDictionaryError2["WriteErrorNonIntegerTTLField"] = "WriteErrorNonIntegerTTLField";
+    SharedDictionaryError2["WriteErrorNonListMatchDestField"] = "WriteErrorNonListMatchDestField";
+    SharedDictionaryError2["WriteErrorNonSecureContext"] = "WriteErrorNonSecureContext";
+    SharedDictionaryError2["WriteErrorNonStringIdField"] = "WriteErrorNonStringIdField";
+    SharedDictionaryError2["WriteErrorNonStringInMatchDestList"] = "WriteErrorNonStringInMatchDestList";
+    SharedDictionaryError2["WriteErrorInvalidMatchDestList"] = "WriteErrorInvalidMatchDestList";
+    SharedDictionaryError2["WriteErrorNonStringMatchField"] = "WriteErrorNonStringMatchField";
+    SharedDictionaryError2["WriteErrorNonTokenTypeField"] = "WriteErrorNonTokenTypeField";
+    SharedDictionaryError2["WriteErrorRequestAborted"] = "WriteErrorRequestAborted";
+    SharedDictionaryError2["WriteErrorShuttingDown"] = "WriteErrorShuttingDown";
+    SharedDictionaryError2["WriteErrorTooLongIdField"] = "WriteErrorTooLongIdField";
+    SharedDictionaryError2["WriteErrorUnsupportedType"] = "WriteErrorUnsupportedType";
+  })(SharedDictionaryError = Audits2.SharedDictionaryError || (Audits2.SharedDictionaryError = {}));
+  let SRIMessageSignatureError;
+  ((SRIMessageSignatureError2) => {
+    SRIMessageSignatureError2["MissingSignatureHeader"] = "MissingSignatureHeader";
+    SRIMessageSignatureError2["MissingSignatureInputHeader"] = "MissingSignatureInputHeader";
+    SRIMessageSignatureError2["InvalidSignatureHeader"] = "InvalidSignatureHeader";
+    SRIMessageSignatureError2["InvalidSignatureInputHeader"] = "InvalidSignatureInputHeader";
+    SRIMessageSignatureError2["SignatureHeaderValueIsNotByteSequence"] = "SignatureHeaderValueIsNotByteSequence";
+    SRIMessageSignatureError2["SignatureHeaderValueIsParameterized"] = "SignatureHeaderValueIsParameterized";
+    SRIMessageSignatureError2["SignatureHeaderValueIsIncorrectLength"] = "SignatureHeaderValueIsIncorrectLength";
+    SRIMessageSignatureError2["SignatureInputHeaderMissingLabel"] = "SignatureInputHeaderMissingLabel";
+    SRIMessageSignatureError2["SignatureInputHeaderValueNotInnerList"] = "SignatureInputHeaderValueNotInnerList";
+    SRIMessageSignatureError2["SignatureInputHeaderValueMissingComponents"] = "SignatureInputHeaderValueMissingComponents";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidComponentType"] = "SignatureInputHeaderInvalidComponentType";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidComponentName"] = "SignatureInputHeaderInvalidComponentName";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidHeaderComponentParameter"] = "SignatureInputHeaderInvalidHeaderComponentParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidDerivedComponentParameter"] = "SignatureInputHeaderInvalidDerivedComponentParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderKeyIdLength"] = "SignatureInputHeaderKeyIdLength";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidParameter"] = "SignatureInputHeaderInvalidParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderMissingRequiredParameters"] = "SignatureInputHeaderMissingRequiredParameters";
+    SRIMessageSignatureError2["ValidationFailedSignatureExpired"] = "ValidationFailedSignatureExpired";
+    SRIMessageSignatureError2["ValidationFailedInvalidLength"] = "ValidationFailedInvalidLength";
+    SRIMessageSignatureError2["ValidationFailedSignatureMismatch"] = "ValidationFailedSignatureMismatch";
+    SRIMessageSignatureError2["ValidationFailedIntegrityMismatch"] = "ValidationFailedIntegrityMismatch";
+    SRIMessageSignatureError2["SignatureBaseUnknownDerivedComponent"] = "SignatureBaseUnknownDerivedComponent";
+    SRIMessageSignatureError2["SignatureBaseMissingHeader"] = "SignatureBaseMissingHeader";
+    SRIMessageSignatureError2["SignatureBaseInvalidUnencodedDigest"] = "SignatureBaseInvalidUnencodedDigest";
+    SRIMessageSignatureError2["SignatureBaseUnsupportedComponent"] = "SignatureBaseUnsupportedComponent";
+  })(SRIMessageSignatureError = Audits2.SRIMessageSignatureError || (Audits2.SRIMessageSignatureError = {}));
+  let UnencodedDigestError;
+  ((UnencodedDigestError2) => {
+    UnencodedDigestError2["MalformedDictionary"] = "MalformedDictionary";
+    UnencodedDigestError2["UnknownAlgorithm"] = "UnknownAlgorithm";
+    UnencodedDigestError2["IncorrectDigestType"] = "IncorrectDigestType";
+    UnencodedDigestError2["IncorrectDigestLength"] = "IncorrectDigestLength";
+  })(UnencodedDigestError = Audits2.UnencodedDigestError || (Audits2.UnencodedDigestError = {}));
+  let ConnectionAllowlistError;
+  ((ConnectionAllowlistError2) => {
+    ConnectionAllowlistError2["InvalidHeader"] = "InvalidHeader";
+    ConnectionAllowlistError2["MoreThanOneList"] = "MoreThanOneList";
+    ConnectionAllowlistError2["ItemNotInnerList"] = "ItemNotInnerList";
+    ConnectionAllowlistError2["InvalidAllowlistItemType"] = "InvalidAllowlistItemType";
+    ConnectionAllowlistError2["ReportingEndpointNotToken"] = "ReportingEndpointNotToken";
+    ConnectionAllowlistError2["InvalidUrlPattern"] = "InvalidUrlPattern";
+    ConnectionAllowlistError2["IFrameAttributeLoosensEmbeddingRequirement"] = "IFrameAttributeLoosensEmbeddingRequirement";
+    ConnectionAllowlistError2["InvalidAllowConnectionAllowlistFrom"] = "InvalidAllowConnectionAllowlistFrom";
+    ConnectionAllowlistError2["EmbeddingRequirementNotSatisfied"] = "EmbeddingRequirementNotSatisfied";
+  })(ConnectionAllowlistError = Audits2.ConnectionAllowlistError || (Audits2.ConnectionAllowlistError = {}));
+  let GenericIssueErrorType;
+  ((GenericIssueErrorType2) => {
+    GenericIssueErrorType2["FormLabelForNameError"] = "FormLabelForNameError";
+    GenericIssueErrorType2["FormDuplicateIdForInputError"] = "FormDuplicateIdForInputError";
+    GenericIssueErrorType2["FormInputWithNoLabelError"] = "FormInputWithNoLabelError";
+    GenericIssueErrorType2["FormAutocompleteAttributeEmptyError"] = "FormAutocompleteAttributeEmptyError";
+    GenericIssueErrorType2["FormEmptyIdAndNameAttributesForInputError"] = "FormEmptyIdAndNameAttributesForInputError";
+    GenericIssueErrorType2["FormAriaLabelledByToNonExistingIdError"] = "FormAriaLabelledByToNonExistingIdError";
+    GenericIssueErrorType2["FormInputAssignedAutocompleteValueToIdOrNameAttributeError"] = "FormInputAssignedAutocompleteValueToIdOrNameAttributeError";
+    GenericIssueErrorType2["FormLabelHasNeitherForNorNestedInputError"] = "FormLabelHasNeitherForNorNestedInputError";
+    GenericIssueErrorType2["FormLabelForMatchesNonExistingIdError"] = "FormLabelForMatchesNonExistingIdError";
+    GenericIssueErrorType2["FormInputHasWrongButWellIntendedAutocompleteValueError"] = "FormInputHasWrongButWellIntendedAutocompleteValueError";
+    GenericIssueErrorType2["ResponseWasBlockedByORB"] = "ResponseWasBlockedByORB";
+    GenericIssueErrorType2["NavigationEntryMarkedSkippable"] = "NavigationEntryMarkedSkippable";
+    GenericIssueErrorType2["BackUINavigationWouldSkipAd"] = "BackUINavigationWouldSkipAd";
+    GenericIssueErrorType2["AutofillAndManualTextPolicyControlledFeaturesInfo"] = "AutofillAndManualTextPolicyControlledFeaturesInfo";
+    GenericIssueErrorType2["AutofillPolicyControlledFeatureInfo"] = "AutofillPolicyControlledFeatureInfo";
+    GenericIssueErrorType2["ManualTextPolicyControlledFeatureInfo"] = "ManualTextPolicyControlledFeatureInfo";
+    GenericIssueErrorType2["FormModelContextParameterMissingTitleAndDescription"] = "FormModelContextParameterMissingTitleAndDescription";
+    GenericIssueErrorType2["FormModelContextMissingToolName"] = "FormModelContextMissingToolName";
+    GenericIssueErrorType2["FormModelContextMissingToolDescription"] = "FormModelContextMissingToolDescription";
+    GenericIssueErrorType2["FormModelContextRequiredParameterMissingName"] = "FormModelContextRequiredParameterMissingName";
+    GenericIssueErrorType2["FormModelContextParameterMissingName"] = "FormModelContextParameterMissingName";
+  })(GenericIssueErrorType = Audits2.GenericIssueErrorType || (Audits2.GenericIssueErrorType = {}));
+  let ClientHintIssueReason;
+  ((ClientHintIssueReason2) => {
+    ClientHintIssueReason2["MetaTagAllowListInvalidOrigin"] = "MetaTagAllowListInvalidOrigin";
+    ClientHintIssueReason2["MetaTagModifiedHTML"] = "MetaTagModifiedHTML";
+  })(ClientHintIssueReason = Audits2.ClientHintIssueReason || (Audits2.ClientHintIssueReason = {}));
+  let FederatedAuthRequestIssueReason;
+  ((FederatedAuthRequestIssueReason2) => {
+    FederatedAuthRequestIssueReason2["ShouldEmbargo"] = "ShouldEmbargo";
+    FederatedAuthRequestIssueReason2["TooManyRequests"] = "TooManyRequests";
+    FederatedAuthRequestIssueReason2["WellKnownHttpNotFound"] = "WellKnownHttpNotFound";
+    FederatedAuthRequestIssueReason2["WellKnownNoResponse"] = "WellKnownNoResponse";
+    FederatedAuthRequestIssueReason2["WellKnownBlockedByConnectionAllowlist"] = "WellKnownBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["WellKnownInvalidResponse"] = "WellKnownInvalidResponse";
+    FederatedAuthRequestIssueReason2["WellKnownListEmpty"] = "WellKnownListEmpty";
+    FederatedAuthRequestIssueReason2["WellKnownInvalidContentType"] = "WellKnownInvalidContentType";
+    FederatedAuthRequestIssueReason2["ConfigNotInWellKnown"] = "ConfigNotInWellKnown";
+    FederatedAuthRequestIssueReason2["WellKnownTooBig"] = "WellKnownTooBig";
+    FederatedAuthRequestIssueReason2["ConfigHttpNotFound"] = "ConfigHttpNotFound";
+    FederatedAuthRequestIssueReason2["ConfigNoResponse"] = "ConfigNoResponse";
+    FederatedAuthRequestIssueReason2["ConfigBlockedByConnectionAllowlist"] = "ConfigBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["ConfigInvalidResponse"] = "ConfigInvalidResponse";
+    FederatedAuthRequestIssueReason2["ConfigInvalidContentType"] = "ConfigInvalidContentType";
+    FederatedAuthRequestIssueReason2["IdpNotPotentiallyTrustworthy"] = "IdpNotPotentiallyTrustworthy";
+    FederatedAuthRequestIssueReason2["DisabledInSettings"] = "DisabledInSettings";
+    FederatedAuthRequestIssueReason2["DisabledInFlags"] = "DisabledInFlags";
+    FederatedAuthRequestIssueReason2["ErrorFetchingSignin"] = "ErrorFetchingSignin";
+    FederatedAuthRequestIssueReason2["InvalidSigninResponse"] = "InvalidSigninResponse";
+    FederatedAuthRequestIssueReason2["AccountsHttpNotFound"] = "AccountsHttpNotFound";
+    FederatedAuthRequestIssueReason2["AccountsNoResponse"] = "AccountsNoResponse";
+    FederatedAuthRequestIssueReason2["AccountsBlockedByConnectionAllowlist"] = "AccountsBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["AccountsInvalidResponse"] = "AccountsInvalidResponse";
+    FederatedAuthRequestIssueReason2["AccountsListEmpty"] = "AccountsListEmpty";
+    FederatedAuthRequestIssueReason2["AccountsInvalidContentType"] = "AccountsInvalidContentType";
+    FederatedAuthRequestIssueReason2["IdTokenHttpNotFound"] = "IdTokenHttpNotFound";
+    FederatedAuthRequestIssueReason2["IdTokenNoResponse"] = "IdTokenNoResponse";
+    FederatedAuthRequestIssueReason2["IdTokenBlockedByConnectionAllowlist"] = "IdTokenBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidResponse"] = "IdTokenInvalidResponse";
+    FederatedAuthRequestIssueReason2["IdTokenIdpErrorResponse"] = "IdTokenIdpErrorResponse";
+    FederatedAuthRequestIssueReason2["IdTokenCrossSiteIdpErrorResponse"] = "IdTokenCrossSiteIdpErrorResponse";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidRequest"] = "IdTokenInvalidRequest";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidContentType"] = "IdTokenInvalidContentType";
+    FederatedAuthRequestIssueReason2["ErrorIdToken"] = "ErrorIdToken";
+    FederatedAuthRequestIssueReason2["Canceled"] = "Canceled";
+    FederatedAuthRequestIssueReason2["RpPageNotVisible"] = "RpPageNotVisible";
+    FederatedAuthRequestIssueReason2["SilentMediationFailure"] = "SilentMediationFailure";
+    FederatedAuthRequestIssueReason2["NotSignedInWithIdp"] = "NotSignedInWithIdp";
+    FederatedAuthRequestIssueReason2["MissingTransientUserActivation"] = "MissingTransientUserActivation";
+    FederatedAuthRequestIssueReason2["ReplacedByActiveMode"] = "ReplacedByActiveMode";
+    FederatedAuthRequestIssueReason2["RelyingPartyOriginIsOpaque"] = "RelyingPartyOriginIsOpaque";
+    FederatedAuthRequestIssueReason2["TypeNotMatching"] = "TypeNotMatching";
+    FederatedAuthRequestIssueReason2["UiDismissedNoEmbargo"] = "UiDismissedNoEmbargo";
+    FederatedAuthRequestIssueReason2["CorsError"] = "CorsError";
+    FederatedAuthRequestIssueReason2["SuppressedBySegmentationPlatform"] = "SuppressedBySegmentationPlatform";
+  })(FederatedAuthRequestIssueReason = Audits2.FederatedAuthRequestIssueReason || (Audits2.FederatedAuthRequestIssueReason = {}));
+  let FederatedAuthUserInfoRequestIssueReason;
+  ((FederatedAuthUserInfoRequestIssueReason2) => {
+    FederatedAuthUserInfoRequestIssueReason2["NotSameOrigin"] = "NotSameOrigin";
+    FederatedAuthUserInfoRequestIssueReason2["NotIframe"] = "NotIframe";
+    FederatedAuthUserInfoRequestIssueReason2["NotPotentiallyTrustworthy"] = "NotPotentiallyTrustworthy";
+    FederatedAuthUserInfoRequestIssueReason2["NoAPIPermission"] = "NoApiPermission";
+    FederatedAuthUserInfoRequestIssueReason2["NotSignedInWithIdp"] = "NotSignedInWithIdp";
+    FederatedAuthUserInfoRequestIssueReason2["NoAccountSharingPermission"] = "NoAccountSharingPermission";
+    FederatedAuthUserInfoRequestIssueReason2["InvalidConfigOrWellKnown"] = "InvalidConfigOrWellKnown";
+    FederatedAuthUserInfoRequestIssueReason2["InvalidAccountsResponse"] = "InvalidAccountsResponse";
+    FederatedAuthUserInfoRequestIssueReason2["NoReturningUserFromFetchedAccounts"] = "NoReturningUserFromFetchedAccounts";
+  })(FederatedAuthUserInfoRequestIssueReason = Audits2.FederatedAuthUserInfoRequestIssueReason || (Audits2.FederatedAuthUserInfoRequestIssueReason = {}));
+  let EmailVerificationRequestIssueReason;
+  ((EmailVerificationRequestIssueReason2) => {
+    EmailVerificationRequestIssueReason2["InvalidEmail"] = "InvalidEmail";
+    EmailVerificationRequestIssueReason2["DnsFetchFailed"] = "DnsFetchFailed";
+    EmailVerificationRequestIssueReason2["DnsInvalidRecord"] = "DnsInvalidRecord";
+    EmailVerificationRequestIssueReason2["WellKnownHttpNotFound"] = "WellKnownHttpNotFound";
+    EmailVerificationRequestIssueReason2["WellKnownNoResponse"] = "WellKnownNoResponse";
+    EmailVerificationRequestIssueReason2["WellKnownInvalidResponse"] = "WellKnownInvalidResponse";
+    EmailVerificationRequestIssueReason2["WellKnownListEmpty"] = "WellKnownListEmpty";
+    EmailVerificationRequestIssueReason2["WellKnownInvalidContentType"] = "WellKnownInvalidContentType";
+    EmailVerificationRequestIssueReason2["WellKnownMissingIssuanceEndpoint"] = "WellKnownMissingIssuanceEndpoint";
+    EmailVerificationRequestIssueReason2["WellKnownIssuanceEndpointCrossOrigin"] = "WellKnownIssuanceEndpointCrossOrigin";
+    EmailVerificationRequestIssueReason2["WellKnownUnsupportedSigningAlgorithm"] = "WellKnownUnsupportedSigningAlgorithm";
+    EmailVerificationRequestIssueReason2["TokenHttpNotFound"] = "TokenHttpNotFound";
+    EmailVerificationRequestIssueReason2["TokenNoResponse"] = "TokenNoResponse";
+    EmailVerificationRequestIssueReason2["TokenInvalidResponse"] = "TokenInvalidResponse";
+    EmailVerificationRequestIssueReason2["TokenInvalidContentType"] = "TokenInvalidContentType";
+    EmailVerificationRequestIssueReason2["TokenMalformedSdJwt"] = "TokenMalformedSdJwt";
+    EmailVerificationRequestIssueReason2["TokenInvalidSdJwt"] = "TokenInvalidSdJwt";
+    EmailVerificationRequestIssueReason2["KeyBindingSigningFailed"] = "KeyBindingSigningFailed";
+    EmailVerificationRequestIssueReason2["RpOriginIsOpaque"] = "RpOriginIsOpaque";
+    EmailVerificationRequestIssueReason2["WellKnownMissingAccountsEndpoint"] = "WellKnownMissingAccountsEndpoint";
+    EmailVerificationRequestIssueReason2["UserLoggedOut"] = "UserLoggedOut";
+    EmailVerificationRequestIssueReason2["WellKnownAccountsEndpointCrossOrigin"] = "WellKnownAccountsEndpointCrossOrigin";
+    EmailVerificationRequestIssueReason2["AccountsHttpNotFound"] = "AccountsHttpNotFound";
+    EmailVerificationRequestIssueReason2["AccountsNoResponse"] = "AccountsNoResponse";
+    EmailVerificationRequestIssueReason2["AccountsInvalidResponse"] = "AccountsInvalidResponse";
+    EmailVerificationRequestIssueReason2["AccountsInvalidContentType"] = "AccountsInvalidContentType";
+    EmailVerificationRequestIssueReason2["AccountsEmptyList"] = "AccountsEmptyList";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownHttpNotFound"] = "EmailVerificationWellKnownHttpNotFound";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownNoResponse"] = "EmailVerificationWellKnownNoResponse";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownInvalidResponse"] = "EmailVerificationWellKnownInvalidResponse";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownInvalidContentType"] = "EmailVerificationWellKnownInvalidContentType";
+    EmailVerificationRequestIssueReason2["JwksHttpNotFound"] = "JwksHttpNotFound";
+    EmailVerificationRequestIssueReason2["JwksInvalidResponse"] = "JwksInvalidResponse";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtUnsupportedHeaderAlg"] = "TokenVerificationSdJwtUnsupportedHeaderAlg";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidTyp"] = "TokenVerificationSdJwtInvalidTyp";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingIss"] = "TokenVerificationSdJwtMissingIss";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingIat"] = "TokenVerificationSdJwtMissingIat";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingCnf"] = "TokenVerificationSdJwtMissingCnf";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingEmail"] = "TokenVerificationSdJwtMissingEmail";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidIssuedAt"] = "TokenVerificationSdJwtInvalidIssuedAt";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidIssuer"] = "TokenVerificationSdJwtInvalidIssuer";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtJwksMissingKeys"] = "TokenVerificationSdJwtJwksMissingKeys";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtSignatureFailed"] = "TokenVerificationSdJwtSignatureFailed";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidEmailVerified"] = "TokenVerificationSdJwtInvalidEmailVerified";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidEmail"] = "TokenVerificationSdJwtInvalidEmail";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidHolderKey"] = "TokenVerificationSdJwtInvalidHolderKey";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidTyp"] = "TokenVerificationKbInvalidTyp";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingAud"] = "TokenVerificationKbMissingAud";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingNonce"] = "TokenVerificationKbMissingNonce";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingIat"] = "TokenVerificationKbMissingIat";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingSdHash"] = "TokenVerificationKbMissingSdHash";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidIssuedAt"] = "TokenVerificationKbInvalidIssuedAt";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidAudience"] = "TokenVerificationKbInvalidAudience";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidNonce"] = "TokenVerificationKbInvalidNonce";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidSdHash"] = "TokenVerificationKbInvalidSdHash";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingCnf"] = "TokenVerificationKbMissingCnf";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbSignatureFailed"] = "TokenVerificationKbSignatureFailed";
+  })(EmailVerificationRequestIssueReason = Audits2.EmailVerificationRequestIssueReason || (Audits2.EmailVerificationRequestIssueReason = {}));
+  let PartitioningBlobURLInfo;
+  ((PartitioningBlobURLInfo2) => {
+    PartitioningBlobURLInfo2["BlockedCrossPartitionFetching"] = "BlockedCrossPartitionFetching";
+    PartitioningBlobURLInfo2["EnforceNoopenerForNavigation"] = "EnforceNoopenerForNavigation";
+  })(PartitioningBlobURLInfo = Audits2.PartitioningBlobURLInfo || (Audits2.PartitioningBlobURLInfo = {}));
+  let ElementAccessibilityIssueReason;
+  ((ElementAccessibilityIssueReason2) => {
+    ElementAccessibilityIssueReason2["DisallowedSelectChild"] = "DisallowedSelectChild";
+    ElementAccessibilityIssueReason2["DisallowedOptGroupChild"] = "DisallowedOptGroupChild";
+    ElementAccessibilityIssueReason2["NonPhrasingContentOptionChild"] = "NonPhrasingContentOptionChild";
+    ElementAccessibilityIssueReason2["InteractiveContentOptionChild"] = "InteractiveContentOptionChild";
+    ElementAccessibilityIssueReason2["InteractiveContentLegendChild"] = "InteractiveContentLegendChild";
+    ElementAccessibilityIssueReason2["InteractiveContentSummaryDescendant"] = "InteractiveContentSummaryDescendant";
+  })(ElementAccessibilityIssueReason = Audits2.ElementAccessibilityIssueReason || (Audits2.ElementAccessibilityIssueReason = {}));
+  let StyleSheetLoadingIssueReason;
+  ((StyleSheetLoadingIssueReason2) => {
+    StyleSheetLoadingIssueReason2["LateImportRule"] = "LateImportRule";
+    StyleSheetLoadingIssueReason2["RequestFailed"] = "RequestFailed";
+  })(StyleSheetLoadingIssueReason = Audits2.StyleSheetLoadingIssueReason || (Audits2.StyleSheetLoadingIssueReason = {}));
+  let PropertyRuleIssueReason;
+  ((PropertyRuleIssueReason2) => {
+    PropertyRuleIssueReason2["InvalidSyntax"] = "InvalidSyntax";
+    PropertyRuleIssueReason2["InvalidInitialValue"] = "InvalidInitialValue";
+    PropertyRuleIssueReason2["InvalidInherits"] = "InvalidInherits";
+    PropertyRuleIssueReason2["InvalidName"] = "InvalidName";
+  })(PropertyRuleIssueReason = Audits2.PropertyRuleIssueReason || (Audits2.PropertyRuleIssueReason = {}));
+  let UserReidentificationIssueType;
+  ((UserReidentificationIssueType2) => {
+    UserReidentificationIssueType2["BlockedFrameNavigation"] = "BlockedFrameNavigation";
+    UserReidentificationIssueType2["BlockedSubresource"] = "BlockedSubresource";
+    UserReidentificationIssueType2["NoisedCanvasReadback"] = "NoisedCanvasReadback";
+  })(UserReidentificationIssueType = Audits2.UserReidentificationIssueType || (Audits2.UserReidentificationIssueType = {}));
+  let PermissionElementIssueType;
+  ((PermissionElementIssueType2) => {
+    PermissionElementIssueType2["InvalidType"] = "InvalidType";
+    PermissionElementIssueType2["FencedFrameDisallowed"] = "FencedFrameDisallowed";
+    PermissionElementIssueType2["CspFrameAncestorsMissing"] = "CspFrameAncestorsMissing";
+    PermissionElementIssueType2["PermissionsPolicyBlocked"] = "PermissionsPolicyBlocked";
+    PermissionElementIssueType2["PaddingRightUnsupported"] = "PaddingRightUnsupported";
+    PermissionElementIssueType2["PaddingBottomUnsupported"] = "PaddingBottomUnsupported";
+    PermissionElementIssueType2["InsetBoxShadowUnsupported"] = "InsetBoxShadowUnsupported";
+    PermissionElementIssueType2["RequestInProgress"] = "RequestInProgress";
+    PermissionElementIssueType2["UntrustedEvent"] = "UntrustedEvent";
+    PermissionElementIssueType2["RegistrationFailed"] = "RegistrationFailed";
+    PermissionElementIssueType2["TypeNotSupported"] = "TypeNotSupported";
+    PermissionElementIssueType2["InvalidTypeActivation"] = "InvalidTypeActivation";
+    PermissionElementIssueType2["SecurityChecksFailed"] = "SecurityChecksFailed";
+    PermissionElementIssueType2["ActivationDisabled"] = "ActivationDisabled";
+    PermissionElementIssueType2["GeolocationDeprecated"] = "GeolocationDeprecated";
+    PermissionElementIssueType2["InvalidDisplayStyle"] = "InvalidDisplayStyle";
+    PermissionElementIssueType2["NonOpaqueColor"] = "NonOpaqueColor";
+    PermissionElementIssueType2["LowContrast"] = "LowContrast";
+    PermissionElementIssueType2["FontSizeTooSmall"] = "FontSizeTooSmall";
+    PermissionElementIssueType2["FontSizeTooLarge"] = "FontSizeTooLarge";
+    PermissionElementIssueType2["InvalidSizeValue"] = "InvalidSizeValue";
+    PermissionElementIssueType2["NonSecureContext"] = "NonSecureContext";
+    PermissionElementIssueType2["MissingTransientUserActivation"] = "MissingTransientUserActivation";
+  })(PermissionElementIssueType = Audits2.PermissionElementIssueType || (Audits2.PermissionElementIssueType = {}));
+  let InspectorIssueCode;
+  ((InspectorIssueCode2) => {
+    InspectorIssueCode2["CookieIssue"] = "CookieIssue";
+    InspectorIssueCode2["MixedContentIssue"] = "MixedContentIssue";
+    InspectorIssueCode2["BlockedByResponseIssue"] = "BlockedByResponseIssue";
+    InspectorIssueCode2["HeavyAdIssue"] = "HeavyAdIssue";
+    InspectorIssueCode2["ContentSecurityPolicyIssue"] = "ContentSecurityPolicyIssue";
+    InspectorIssueCode2["SharedArrayBufferIssue"] = "SharedArrayBufferIssue";
+    InspectorIssueCode2["CorsIssue"] = "CorsIssue";
+    InspectorIssueCode2["QuirksModeIssue"] = "QuirksModeIssue";
+    InspectorIssueCode2["PartitioningBlobURLIssue"] = "PartitioningBlobURLIssue";
+    InspectorIssueCode2["NavigatorUserAgentIssue"] = "NavigatorUserAgentIssue";
+    InspectorIssueCode2["GenericIssue"] = "GenericIssue";
+    InspectorIssueCode2["DeprecationIssue"] = "DeprecationIssue";
+    InspectorIssueCode2["ClientHintIssue"] = "ClientHintIssue";
+    InspectorIssueCode2["FederatedAuthRequestIssue"] = "FederatedAuthRequestIssue";
+    InspectorIssueCode2["BounceTrackingIssue"] = "BounceTrackingIssue";
+    InspectorIssueCode2["CookieDeprecationMetadataIssue"] = "CookieDeprecationMetadataIssue";
+    InspectorIssueCode2["StylesheetLoadingIssue"] = "StylesheetLoadingIssue";
+    InspectorIssueCode2["FederatedAuthUserInfoRequestIssue"] = "FederatedAuthUserInfoRequestIssue";
+    InspectorIssueCode2["PropertyRuleIssue"] = "PropertyRuleIssue";
+    InspectorIssueCode2["SharedDictionaryIssue"] = "SharedDictionaryIssue";
+    InspectorIssueCode2["ElementAccessibilityIssue"] = "ElementAccessibilityIssue";
+    InspectorIssueCode2["SRIMessageSignatureIssue"] = "SRIMessageSignatureIssue";
+    InspectorIssueCode2["UnencodedDigestIssue"] = "UnencodedDigestIssue";
+    InspectorIssueCode2["ConnectionAllowlistIssue"] = "ConnectionAllowlistIssue";
+    InspectorIssueCode2["UserReidentificationIssue"] = "UserReidentificationIssue";
+    InspectorIssueCode2["PermissionElementIssue"] = "PermissionElementIssue";
+    InspectorIssueCode2["PerformanceIssue"] = "PerformanceIssue";
+    InspectorIssueCode2["SelectivePermissionsInterventionIssue"] = "SelectivePermissionsInterventionIssue";
+    InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
+    InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
+  })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
+  let GetEncodedResponseRequestEncoding;
+  ((GetEncodedResponseRequestEncoding2) => {
+    GetEncodedResponseRequestEncoding2["Webp"] = "webp";
+    GetEncodedResponseRequestEncoding2["Jpeg"] = "jpeg";
+    GetEncodedResponseRequestEncoding2["Png"] = "png";
+  })(GetEncodedResponseRequestEncoding = Audits2.GetEncodedResponseRequestEncoding || (Audits2.GetEncodedResponseRequestEncoding = {}));
+})(Audits || (Audits = {}));
+var Autofill;
+((Autofill2) => {
+  let FillingStrategy;
+  ((FillingStrategy2) => {
+    FillingStrategy2["AutocompleteAttribute"] = "autocompleteAttribute";
+    FillingStrategy2["AutofillInferred"] = "autofillInferred";
+  })(FillingStrategy = Autofill2.FillingStrategy || (Autofill2.FillingStrategy = {}));
+})(Autofill || (Autofill = {}));
+var BackgroundService;
+((BackgroundService2) => {
+  let ServiceName;
+  ((ServiceName2) => {
+    ServiceName2["BackgroundFetch"] = "backgroundFetch";
+    ServiceName2["BackgroundSync"] = "backgroundSync";
+    ServiceName2["PushMessaging"] = "pushMessaging";
+    ServiceName2["Notifications"] = "notifications";
+    ServiceName2["PaymentHandler"] = "paymentHandler";
+    ServiceName2["PeriodicBackgroundSync"] = "periodicBackgroundSync";
+  })(ServiceName = BackgroundService2.ServiceName || (BackgroundService2.ServiceName = {}));
+})(BackgroundService || (BackgroundService = {}));
+var BluetoothEmulation;
+((BluetoothEmulation2) => {
+  let CentralState;
+  ((CentralState2) => {
+    CentralState2["Absent"] = "absent";
+    CentralState2["PoweredOff"] = "powered-off";
+    CentralState2["PoweredOn"] = "powered-on";
+  })(CentralState = BluetoothEmulation2.CentralState || (BluetoothEmulation2.CentralState = {}));
+  let GATTOperationType;
+  ((GATTOperationType2) => {
+    GATTOperationType2["Connection"] = "connection";
+    GATTOperationType2["Discovery"] = "discovery";
+  })(GATTOperationType = BluetoothEmulation2.GATTOperationType || (BluetoothEmulation2.GATTOperationType = {}));
+  let CharacteristicWriteType;
+  ((CharacteristicWriteType2) => {
+    CharacteristicWriteType2["WriteDefaultDeprecated"] = "write-default-deprecated";
+    CharacteristicWriteType2["WriteWithResponse"] = "write-with-response";
+    CharacteristicWriteType2["WriteWithoutResponse"] = "write-without-response";
+  })(CharacteristicWriteType = BluetoothEmulation2.CharacteristicWriteType || (BluetoothEmulation2.CharacteristicWriteType = {}));
+  let CharacteristicOperationType;
+  ((CharacteristicOperationType2) => {
+    CharacteristicOperationType2["Read"] = "read";
+    CharacteristicOperationType2["Write"] = "write";
+    CharacteristicOperationType2["SubscribeToNotifications"] = "subscribe-to-notifications";
+    CharacteristicOperationType2["UnsubscribeFromNotifications"] = "unsubscribe-from-notifications";
+  })(CharacteristicOperationType = BluetoothEmulation2.CharacteristicOperationType || (BluetoothEmulation2.CharacteristicOperationType = {}));
+  let DescriptorOperationType;
+  ((DescriptorOperationType2) => {
+    DescriptorOperationType2["Read"] = "read";
+    DescriptorOperationType2["Write"] = "write";
+  })(DescriptorOperationType = BluetoothEmulation2.DescriptorOperationType || (BluetoothEmulation2.DescriptorOperationType = {}));
+})(BluetoothEmulation || (BluetoothEmulation = {}));
+var Browser;
+((Browser2) => {
+  let WindowState;
+  ((WindowState2) => {
+    WindowState2["Normal"] = "normal";
+    WindowState2["Minimized"] = "minimized";
+    WindowState2["Maximized"] = "maximized";
+    WindowState2["Fullscreen"] = "fullscreen";
+  })(WindowState = Browser2.WindowState || (Browser2.WindowState = {}));
+  let PermissionType;
+  ((PermissionType2) => {
+    PermissionType2["Ar"] = "ar";
+    PermissionType2["AudioCapture"] = "audioCapture";
+    PermissionType2["AutomaticFullscreen"] = "automaticFullscreen";
+    PermissionType2["BackgroundFetch"] = "backgroundFetch";
+    PermissionType2["BackgroundSync"] = "backgroundSync";
+    PermissionType2["CameraPanTiltZoom"] = "cameraPanTiltZoom";
+    PermissionType2["CapturedSurfaceControl"] = "capturedSurfaceControl";
+    PermissionType2["ClipboardReadWrite"] = "clipboardReadWrite";
+    PermissionType2["ClipboardSanitizedWrite"] = "clipboardSanitizedWrite";
+    PermissionType2["DisplayCapture"] = "displayCapture";
+    PermissionType2["DurableStorage"] = "durableStorage";
+    PermissionType2["Geolocation"] = "geolocation";
+    PermissionType2["HandTracking"] = "handTracking";
+    PermissionType2["IdleDetection"] = "idleDetection";
+    PermissionType2["KeyboardLock"] = "keyboardLock";
+    PermissionType2["LocalFonts"] = "localFonts";
+    PermissionType2["LocalNetwork"] = "localNetwork";
+    PermissionType2["LocalNetworkAccess"] = "localNetworkAccess";
+    PermissionType2["LoopbackNetwork"] = "loopbackNetwork";
+    PermissionType2["Midi"] = "midi";
+    PermissionType2["MidiSysex"] = "midiSysex";
+    PermissionType2["Nfc"] = "nfc";
+    PermissionType2["Notifications"] = "notifications";
+    PermissionType2["PaymentHandler"] = "paymentHandler";
+    PermissionType2["PeriodicBackgroundSync"] = "periodicBackgroundSync";
+    PermissionType2["PointerLock"] = "pointerLock";
+    PermissionType2["ProtectedMediaIdentifier"] = "protectedMediaIdentifier";
+    PermissionType2["Sensors"] = "sensors";
+    PermissionType2["SmartCard"] = "smartCard";
+    PermissionType2["SpeakerSelection"] = "speakerSelection";
+    PermissionType2["StorageAccess"] = "storageAccess";
+    PermissionType2["TopLevelStorageAccess"] = "topLevelStorageAccess";
+    PermissionType2["VideoCapture"] = "videoCapture";
+    PermissionType2["Vr"] = "vr";
+    PermissionType2["WakeLockScreen"] = "wakeLockScreen";
+    PermissionType2["WakeLockSystem"] = "wakeLockSystem";
+    PermissionType2["WebAppInstallation"] = "webAppInstallation";
+    PermissionType2["WebPrinting"] = "webPrinting";
+    PermissionType2["WindowManagement"] = "windowManagement";
+  })(PermissionType = Browser2.PermissionType || (Browser2.PermissionType = {}));
+  let PermissionSetting;
+  ((PermissionSetting2) => {
+    PermissionSetting2["Granted"] = "granted";
+    PermissionSetting2["Denied"] = "denied";
+    PermissionSetting2["Prompt"] = "prompt";
+  })(PermissionSetting = Browser2.PermissionSetting || (Browser2.PermissionSetting = {}));
+  let BrowserCommandId;
+  ((BrowserCommandId2) => {
+    BrowserCommandId2["OpenTabSearch"] = "openTabSearch";
+    BrowserCommandId2["CloseTabSearch"] = "closeTabSearch";
+    BrowserCommandId2["OpenGlic"] = "openGlic";
+  })(BrowserCommandId = Browser2.BrowserCommandId || (Browser2.BrowserCommandId = {}));
+  let SetDownloadBehaviorRequestBehavior;
+  ((SetDownloadBehaviorRequestBehavior2) => {
+    SetDownloadBehaviorRequestBehavior2["Deny"] = "deny";
+    SetDownloadBehaviorRequestBehavior2["Allow"] = "allow";
+    SetDownloadBehaviorRequestBehavior2["AllowAndName"] = "allowAndName";
+    SetDownloadBehaviorRequestBehavior2["Default"] = "default";
+  })(SetDownloadBehaviorRequestBehavior = Browser2.SetDownloadBehaviorRequestBehavior || (Browser2.SetDownloadBehaviorRequestBehavior = {}));
+  let DownloadProgressEventState;
+  ((DownloadProgressEventState2) => {
+    DownloadProgressEventState2["InProgress"] = "inProgress";
+    DownloadProgressEventState2["Completed"] = "completed";
+    DownloadProgressEventState2["Canceled"] = "canceled";
+  })(DownloadProgressEventState = Browser2.DownloadProgressEventState || (Browser2.DownloadProgressEventState = {}));
+})(Browser || (Browser = {}));
+var CSS;
+((CSS2) => {
+  let StyleSheetOrigin;
+  ((StyleSheetOrigin2) => {
+    StyleSheetOrigin2["Injected"] = "injected";
+    StyleSheetOrigin2["UserAgent"] = "user-agent";
+    StyleSheetOrigin2["Inspector"] = "inspector";
+    StyleSheetOrigin2["Regular"] = "regular";
+  })(StyleSheetOrigin = CSS2.StyleSheetOrigin || (CSS2.StyleSheetOrigin = {}));
+  let CSSRuleType;
+  ((CSSRuleType2) => {
+    CSSRuleType2["MediaRule"] = "MediaRule";
+    CSSRuleType2["SupportsRule"] = "SupportsRule";
+    CSSRuleType2["ContainerRule"] = "ContainerRule";
+    CSSRuleType2["LayerRule"] = "LayerRule";
+    CSSRuleType2["ScopeRule"] = "ScopeRule";
+    CSSRuleType2["StyleRule"] = "StyleRule";
+    CSSRuleType2["StartingStyleRule"] = "StartingStyleRule";
+    CSSRuleType2["NavigationRule"] = "NavigationRule";
+  })(CSSRuleType = CSS2.CSSRuleType || (CSS2.CSSRuleType = {}));
+  let CSSMediaSource;
+  ((CSSMediaSource2) => {
+    CSSMediaSource2["MediaRule"] = "mediaRule";
+    CSSMediaSource2["ImportRule"] = "importRule";
+    CSSMediaSource2["LinkedSheet"] = "linkedSheet";
+    CSSMediaSource2["InlineSheet"] = "inlineSheet";
+  })(CSSMediaSource = CSS2.CSSMediaSource || (CSS2.CSSMediaSource = {}));
+  let CSSAtRuleType;
+  ((CSSAtRuleType2) => {
+    CSSAtRuleType2["FontFace"] = "font-face";
+    CSSAtRuleType2["FontFeatureValues"] = "font-feature-values";
+    CSSAtRuleType2["FontPaletteValues"] = "font-palette-values";
+    CSSAtRuleType2["CounterStyle"] = "counter-style";
+  })(CSSAtRuleType = CSS2.CSSAtRuleType || (CSS2.CSSAtRuleType = {}));
+  let CSSAtRuleSubsection;
+  ((CSSAtRuleSubsection2) => {
+    CSSAtRuleSubsection2["Swash"] = "swash";
+    CSSAtRuleSubsection2["Annotation"] = "annotation";
+    CSSAtRuleSubsection2["Ornaments"] = "ornaments";
+    CSSAtRuleSubsection2["Stylistic"] = "stylistic";
+    CSSAtRuleSubsection2["Styleset"] = "styleset";
+    CSSAtRuleSubsection2["CharacterVariant"] = "character-variant";
+  })(CSSAtRuleSubsection = CSS2.CSSAtRuleSubsection || (CSS2.CSSAtRuleSubsection = {}));
+})(CSS || (CSS = {}));
+var CacheStorage;
+((CacheStorage2) => {
+  let CachedResponseType;
+  ((CachedResponseType2) => {
+    CachedResponseType2["Basic"] = "basic";
+    CachedResponseType2["Cors"] = "cors";
+    CachedResponseType2["Default"] = "default";
+    CachedResponseType2["Error"] = "error";
+    CachedResponseType2["OpaqueResponse"] = "opaqueResponse";
+    CachedResponseType2["OpaqueRedirect"] = "opaqueRedirect";
+  })(CachedResponseType = CacheStorage2.CachedResponseType || (CacheStorage2.CachedResponseType = {}));
+})(CacheStorage || (CacheStorage = {}));
+var DOM;
+((DOM2) => {
+  let PseudoType;
+  ((PseudoType2) => {
+    PseudoType2["FirstLine"] = "first-line";
+    PseudoType2["FirstLetter"] = "first-letter";
+    PseudoType2["Checkmark"] = "checkmark";
+    PseudoType2["Before"] = "before";
+    PseudoType2["After"] = "after";
+    PseudoType2["ExpandIcon"] = "expand-icon";
+    PseudoType2["PickerIcon"] = "picker-icon";
+    PseudoType2["InterestButton"] = "interest-button";
+    PseudoType2["Marker"] = "marker";
+    PseudoType2["Backdrop"] = "backdrop";
+    PseudoType2["Column"] = "column";
+    PseudoType2["Selection"] = "selection";
+    PseudoType2["SearchText"] = "search-text";
+    PseudoType2["TargetText"] = "target-text";
+    PseudoType2["SpellingError"] = "spelling-error";
+    PseudoType2["GrammarError"] = "grammar-error";
+    PseudoType2["Highlight"] = "highlight";
+    PseudoType2["FirstLineInherited"] = "first-line-inherited";
+    PseudoType2["ScrollMarker"] = "scroll-marker";
+    PseudoType2["ScrollMarkerGroup"] = "scroll-marker-group";
+    PseudoType2["ScrollButton"] = "scroll-button";
+    PseudoType2["Scrollbar"] = "scrollbar";
+    PseudoType2["ScrollbarThumb"] = "scrollbar-thumb";
+    PseudoType2["ScrollbarButton"] = "scrollbar-button";
+    PseudoType2["ScrollbarTrack"] = "scrollbar-track";
+    PseudoType2["ScrollbarTrackPiece"] = "scrollbar-track-piece";
+    PseudoType2["ScrollbarCorner"] = "scrollbar-corner";
+    PseudoType2["Resizer"] = "resizer";
+    PseudoType2["InputListButton"] = "input-list-button";
+    PseudoType2["ViewTransition"] = "view-transition";
+    PseudoType2["ViewTransitionGroup"] = "view-transition-group";
+    PseudoType2["ViewTransitionImagePair"] = "view-transition-image-pair";
+    PseudoType2["ViewTransitionGroupChildren"] = "view-transition-group-children";
+    PseudoType2["ViewTransitionOld"] = "view-transition-old";
+    PseudoType2["ViewTransitionNew"] = "view-transition-new";
+    PseudoType2["Placeholder"] = "placeholder";
+    PseudoType2["FileSelectorButton"] = "file-selector-button";
+    PseudoType2["DetailsContent"] = "details-content";
+    PseudoType2["Picker"] = "picker";
+    PseudoType2["SelectListbox"] = "select-listbox";
+    PseudoType2["PermissionIcon"] = "permission-icon";
+    PseudoType2["OverscrollAreaParent"] = "overscroll-area-parent";
+    PseudoType2["OverscrollBackdrop"] = "overscroll-backdrop";
+    PseudoType2["Skeleton"] = "skeleton";
+  })(PseudoType = DOM2.PseudoType || (DOM2.PseudoType = {}));
+  let ShadowRootType;
+  ((ShadowRootType2) => {
+    ShadowRootType2["UserAgent"] = "user-agent";
+    ShadowRootType2["Open"] = "open";
+    ShadowRootType2["Closed"] = "closed";
+  })(ShadowRootType = DOM2.ShadowRootType || (DOM2.ShadowRootType = {}));
+  let CompatibilityMode;
+  ((CompatibilityMode2) => {
+    CompatibilityMode2["QuirksMode"] = "QuirksMode";
+    CompatibilityMode2["LimitedQuirksMode"] = "LimitedQuirksMode";
+    CompatibilityMode2["NoQuirksMode"] = "NoQuirksMode";
+  })(CompatibilityMode = DOM2.CompatibilityMode || (DOM2.CompatibilityMode = {}));
+  let PhysicalAxes;
+  ((PhysicalAxes2) => {
+    PhysicalAxes2["Horizontal"] = "Horizontal";
+    PhysicalAxes2["Vertical"] = "Vertical";
+    PhysicalAxes2["Both"] = "Both";
+  })(PhysicalAxes = DOM2.PhysicalAxes || (DOM2.PhysicalAxes = {}));
+  let LogicalAxes;
+  ((LogicalAxes2) => {
+    LogicalAxes2["Inline"] = "Inline";
+    LogicalAxes2["Block"] = "Block";
+    LogicalAxes2["Both"] = "Both";
+  })(LogicalAxes = DOM2.LogicalAxes || (DOM2.LogicalAxes = {}));
+  let ScrollOrientation;
+  ((ScrollOrientation2) => {
+    ScrollOrientation2["Horizontal"] = "horizontal";
+    ScrollOrientation2["Vertical"] = "vertical";
+  })(ScrollOrientation = DOM2.ScrollOrientation || (DOM2.ScrollOrientation = {}));
+  let EnableRequestIncludeWhitespace;
+  ((EnableRequestIncludeWhitespace2) => {
+    EnableRequestIncludeWhitespace2["None"] = "none";
+    EnableRequestIncludeWhitespace2["All"] = "all";
+  })(EnableRequestIncludeWhitespace = DOM2.EnableRequestIncludeWhitespace || (DOM2.EnableRequestIncludeWhitespace = {}));
+  let GetElementByRelationRequestRelation;
+  ((GetElementByRelationRequestRelation2) => {
+    GetElementByRelationRequestRelation2["PopoverTarget"] = "PopoverTarget";
+    GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
+    GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
+  })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+})(DOM || (DOM = {}));
+var DOMDebugger;
+((DOMDebugger2) => {
+  let DOMBreakpointType;
+  ((DOMBreakpointType2) => {
+    DOMBreakpointType2["SubtreeModified"] = "subtree-modified";
+    DOMBreakpointType2["AttributeModified"] = "attribute-modified";
+    DOMBreakpointType2["NodeRemoved"] = "node-removed";
+  })(DOMBreakpointType = DOMDebugger2.DOMBreakpointType || (DOMDebugger2.DOMBreakpointType = {}));
+  let CSPViolationType;
+  ((CSPViolationType2) => {
+    CSPViolationType2["TrustedtypeSinkViolation"] = "trustedtype-sink-violation";
+    CSPViolationType2["TrustedtypePolicyViolation"] = "trustedtype-policy-violation";
+  })(CSPViolationType = DOMDebugger2.CSPViolationType || (DOMDebugger2.CSPViolationType = {}));
+})(DOMDebugger || (DOMDebugger = {}));
+var DigitalCredentials;
+((DigitalCredentials2) => {
+  let VirtualWalletAction;
+  ((VirtualWalletAction2) => {
+    VirtualWalletAction2["Respond"] = "respond";
+    VirtualWalletAction2["Decline"] = "decline";
+    VirtualWalletAction2["Wait"] = "wait";
+    VirtualWalletAction2["Clear"] = "clear";
+  })(VirtualWalletAction = DigitalCredentials2.VirtualWalletAction || (DigitalCredentials2.VirtualWalletAction = {}));
+})(DigitalCredentials || (DigitalCredentials = {}));
+var Emulation;
+((Emulation2) => {
+  let ScreenOrientationType;
+  ((ScreenOrientationType2) => {
+    ScreenOrientationType2["PortraitPrimary"] = "portraitPrimary";
+    ScreenOrientationType2["PortraitSecondary"] = "portraitSecondary";
+    ScreenOrientationType2["LandscapePrimary"] = "landscapePrimary";
+    ScreenOrientationType2["LandscapeSecondary"] = "landscapeSecondary";
+  })(ScreenOrientationType = Emulation2.ScreenOrientationType || (Emulation2.ScreenOrientationType = {}));
+  let DisplayFeatureOrientation;
+  ((DisplayFeatureOrientation2) => {
+    DisplayFeatureOrientation2["Vertical"] = "vertical";
+    DisplayFeatureOrientation2["Horizontal"] = "horizontal";
+  })(DisplayFeatureOrientation = Emulation2.DisplayFeatureOrientation || (Emulation2.DisplayFeatureOrientation = {}));
+  let DevicePostureType;
+  ((DevicePostureType2) => {
+    DevicePostureType2["Continuous"] = "continuous";
+    DevicePostureType2["Folded"] = "folded";
+  })(DevicePostureType = Emulation2.DevicePostureType || (Emulation2.DevicePostureType = {}));
+  let VirtualTimePolicy;
+  ((VirtualTimePolicy2) => {
+    VirtualTimePolicy2["Advance"] = "advance";
+    VirtualTimePolicy2["Pause"] = "pause";
+    VirtualTimePolicy2["PauseIfNetworkFetchesPending"] = "pauseIfNetworkFetchesPending";
+  })(VirtualTimePolicy = Emulation2.VirtualTimePolicy || (Emulation2.VirtualTimePolicy = {}));
+  let SensorType;
+  ((SensorType2) => {
+    SensorType2["AbsoluteOrientation"] = "absolute-orientation";
+    SensorType2["Accelerometer"] = "accelerometer";
+    SensorType2["AmbientLight"] = "ambient-light";
+    SensorType2["Gravity"] = "gravity";
+    SensorType2["Gyroscope"] = "gyroscope";
+    SensorType2["LinearAcceleration"] = "linear-acceleration";
+    SensorType2["Magnetometer"] = "magnetometer";
+    SensorType2["RelativeOrientation"] = "relative-orientation";
+  })(SensorType = Emulation2.SensorType || (Emulation2.SensorType = {}));
+  let PressureSource;
+  ((PressureSource2) => {
+    PressureSource2["Cpu"] = "cpu";
+  })(PressureSource = Emulation2.PressureSource || (Emulation2.PressureSource = {}));
+  let PressureState;
+  ((PressureState2) => {
+    PressureState2["Nominal"] = "nominal";
+    PressureState2["Fair"] = "fair";
+    PressureState2["Serious"] = "serious";
+    PressureState2["Critical"] = "critical";
+  })(PressureState = Emulation2.PressureState || (Emulation2.PressureState = {}));
+  let DisabledImageType;
+  ((DisabledImageType2) => {
+    DisabledImageType2["Avif"] = "avif";
+    DisabledImageType2["Jxl"] = "jxl";
+    DisabledImageType2["Webp"] = "webp";
+  })(DisabledImageType = Emulation2.DisabledImageType || (Emulation2.DisabledImageType = {}));
+  let SetDeviceMetricsOverrideRequestScrollbarType;
+  ((SetDeviceMetricsOverrideRequestScrollbarType2) => {
+    SetDeviceMetricsOverrideRequestScrollbarType2["Overlay"] = "overlay";
+    SetDeviceMetricsOverrideRequestScrollbarType2["Default"] = "default";
+  })(SetDeviceMetricsOverrideRequestScrollbarType = Emulation2.SetDeviceMetricsOverrideRequestScrollbarType || (Emulation2.SetDeviceMetricsOverrideRequestScrollbarType = {}));
+  let SetEmitTouchEventsForMouseRequestConfiguration;
+  ((SetEmitTouchEventsForMouseRequestConfiguration2) => {
+    SetEmitTouchEventsForMouseRequestConfiguration2["Mobile"] = "mobile";
+    SetEmitTouchEventsForMouseRequestConfiguration2["Desktop"] = "desktop";
+  })(SetEmitTouchEventsForMouseRequestConfiguration = Emulation2.SetEmitTouchEventsForMouseRequestConfiguration || (Emulation2.SetEmitTouchEventsForMouseRequestConfiguration = {}));
+  let SetEmulatedVisionDeficiencyRequestType;
+  ((SetEmulatedVisionDeficiencyRequestType2) => {
+    SetEmulatedVisionDeficiencyRequestType2["None"] = "none";
+    SetEmulatedVisionDeficiencyRequestType2["BlurredVision"] = "blurredVision";
+    SetEmulatedVisionDeficiencyRequestType2["ReducedContrast"] = "reducedContrast";
+    SetEmulatedVisionDeficiencyRequestType2["Achromatopsia"] = "achromatopsia";
+    SetEmulatedVisionDeficiencyRequestType2["Deuteranopia"] = "deuteranopia";
+    SetEmulatedVisionDeficiencyRequestType2["Protanopia"] = "protanopia";
+    SetEmulatedVisionDeficiencyRequestType2["Tritanopia"] = "tritanopia";
+  })(SetEmulatedVisionDeficiencyRequestType = Emulation2.SetEmulatedVisionDeficiencyRequestType || (Emulation2.SetEmulatedVisionDeficiencyRequestType = {}));
+  let SetCPUPerformanceOverrideRequestPerformanceTier;
+  ((SetCPUPerformanceOverrideRequestPerformanceTier2) => {
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Unknown"] = "unknown";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Low"] = "low";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Mid"] = "mid";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["High"] = "high";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Ultra"] = "ultra";
+  })(SetCPUPerformanceOverrideRequestPerformanceTier = Emulation2.SetCPUPerformanceOverrideRequestPerformanceTier || (Emulation2.SetCPUPerformanceOverrideRequestPerformanceTier = {}));
+})(Emulation || (Emulation = {}));
+var Extensions;
+((Extensions2) => {
+  let StorageArea;
+  ((StorageArea2) => {
+    StorageArea2["Session"] = "session";
+    StorageArea2["Local"] = "local";
+    StorageArea2["Sync"] = "sync";
+    StorageArea2["Managed"] = "managed";
+  })(StorageArea = Extensions2.StorageArea || (Extensions2.StorageArea = {}));
+})(Extensions || (Extensions = {}));
+var FedCm;
+((FedCm2) => {
+  let LoginState;
+  ((LoginState2) => {
+    LoginState2["SignIn"] = "SignIn";
+    LoginState2["SignUp"] = "SignUp";
+  })(LoginState = FedCm2.LoginState || (FedCm2.LoginState = {}));
+  let DialogType;
+  ((DialogType2) => {
+    DialogType2["AccountChooser"] = "AccountChooser";
+    DialogType2["AutoReauthn"] = "AutoReauthn";
+    DialogType2["ConfirmIdpLogin"] = "ConfirmIdpLogin";
+    DialogType2["Error"] = "Error";
+  })(DialogType = FedCm2.DialogType || (FedCm2.DialogType = {}));
+  let DialogButton;
+  ((DialogButton2) => {
+    DialogButton2["ConfirmIdpLoginContinue"] = "ConfirmIdpLoginContinue";
+    DialogButton2["ErrorGotIt"] = "ErrorGotIt";
+    DialogButton2["ErrorMoreDetails"] = "ErrorMoreDetails";
+  })(DialogButton = FedCm2.DialogButton || (FedCm2.DialogButton = {}));
+  let AccountUrlType;
+  ((AccountUrlType2) => {
+    AccountUrlType2["TermsOfService"] = "TermsOfService";
+    AccountUrlType2["PrivacyPolicy"] = "PrivacyPolicy";
+  })(AccountUrlType = FedCm2.AccountUrlType || (FedCm2.AccountUrlType = {}));
+})(FedCm || (FedCm = {}));
+var Fetch;
+((Fetch2) => {
+  let RequestStage;
+  ((RequestStage2) => {
+    RequestStage2["Request"] = "Request";
+    RequestStage2["Response"] = "Response";
+  })(RequestStage = Fetch2.RequestStage || (Fetch2.RequestStage = {}));
+  let AuthChallengeSource;
+  ((AuthChallengeSource2) => {
+    AuthChallengeSource2["Server"] = "Server";
+    AuthChallengeSource2["Proxy"] = "Proxy";
+  })(AuthChallengeSource = Fetch2.AuthChallengeSource || (Fetch2.AuthChallengeSource = {}));
+  let AuthChallengeResponseResponse;
+  ((AuthChallengeResponseResponse2) => {
+    AuthChallengeResponseResponse2["Default"] = "Default";
+    AuthChallengeResponseResponse2["CancelAuth"] = "CancelAuth";
+    AuthChallengeResponseResponse2["ProvideCredentials"] = "ProvideCredentials";
+  })(AuthChallengeResponseResponse = Fetch2.AuthChallengeResponseResponse || (Fetch2.AuthChallengeResponseResponse = {}));
+})(Fetch || (Fetch = {}));
+var HeadlessExperimental;
+((HeadlessExperimental2) => {
+  let ScreenshotParamsFormat;
+  ((ScreenshotParamsFormat2) => {
+    ScreenshotParamsFormat2["Jpeg"] = "jpeg";
+    ScreenshotParamsFormat2["Png"] = "png";
+    ScreenshotParamsFormat2["Webp"] = "webp";
+  })(ScreenshotParamsFormat = HeadlessExperimental2.ScreenshotParamsFormat || (HeadlessExperimental2.ScreenshotParamsFormat = {}));
+})(HeadlessExperimental || (HeadlessExperimental = {}));
+var IndexedDB;
+((IndexedDB2) => {
+  let KeyType;
+  ((KeyType2) => {
+    KeyType2["Number"] = "number";
+    KeyType2["String"] = "string";
+    KeyType2["Date"] = "date";
+    KeyType2["Array"] = "array";
+  })(KeyType = IndexedDB2.KeyType || (IndexedDB2.KeyType = {}));
+  let KeyPathType;
+  ((KeyPathType2) => {
+    KeyPathType2["Null"] = "null";
+    KeyPathType2["String"] = "string";
+    KeyPathType2["Array"] = "array";
+  })(KeyPathType = IndexedDB2.KeyPathType || (IndexedDB2.KeyPathType = {}));
+})(IndexedDB || (IndexedDB = {}));
+var Input2;
+((Input3) => {
+  let GestureSourceType;
+  ((GestureSourceType2) => {
+    GestureSourceType2["Default"] = "default";
+    GestureSourceType2["Touch"] = "touch";
+    GestureSourceType2["Mouse"] = "mouse";
+  })(GestureSourceType = Input3.GestureSourceType || (Input3.GestureSourceType = {}));
+  let MouseButton;
+  ((MouseButton2) => {
+    MouseButton2["None"] = "none";
+    MouseButton2["Left"] = "left";
+    MouseButton2["Middle"] = "middle";
+    MouseButton2["Right"] = "right";
+    MouseButton2["Back"] = "back";
+    MouseButton2["Forward"] = "forward";
+  })(MouseButton = Input3.MouseButton || (Input3.MouseButton = {}));
+  let DispatchDragEventRequestType;
+  ((DispatchDragEventRequestType2) => {
+    DispatchDragEventRequestType2["DragEnter"] = "dragEnter";
+    DispatchDragEventRequestType2["DragOver"] = "dragOver";
+    DispatchDragEventRequestType2["Drop"] = "drop";
+    DispatchDragEventRequestType2["DragCancel"] = "dragCancel";
+  })(DispatchDragEventRequestType = Input3.DispatchDragEventRequestType || (Input3.DispatchDragEventRequestType = {}));
+  let DispatchKeyEventRequestType;
+  ((DispatchKeyEventRequestType2) => {
+    DispatchKeyEventRequestType2["KeyDown"] = "keyDown";
+    DispatchKeyEventRequestType2["KeyUp"] = "keyUp";
+    DispatchKeyEventRequestType2["RawKeyDown"] = "rawKeyDown";
+    DispatchKeyEventRequestType2["Char"] = "char";
+  })(DispatchKeyEventRequestType = Input3.DispatchKeyEventRequestType || (Input3.DispatchKeyEventRequestType = {}));
+  let DispatchMouseEventRequestType;
+  ((DispatchMouseEventRequestType2) => {
+    DispatchMouseEventRequestType2["MousePressed"] = "mousePressed";
+    DispatchMouseEventRequestType2["MouseReleased"] = "mouseReleased";
+    DispatchMouseEventRequestType2["MouseMoved"] = "mouseMoved";
+    DispatchMouseEventRequestType2["MouseWheel"] = "mouseWheel";
+  })(DispatchMouseEventRequestType = Input3.DispatchMouseEventRequestType || (Input3.DispatchMouseEventRequestType = {}));
+  let DispatchMouseEventRequestPointerType;
+  ((DispatchMouseEventRequestPointerType2) => {
+    DispatchMouseEventRequestPointerType2["Mouse"] = "mouse";
+    DispatchMouseEventRequestPointerType2["Pen"] = "pen";
+  })(DispatchMouseEventRequestPointerType = Input3.DispatchMouseEventRequestPointerType || (Input3.DispatchMouseEventRequestPointerType = {}));
+  let DispatchTouchEventRequestType;
+  ((DispatchTouchEventRequestType2) => {
+    DispatchTouchEventRequestType2["TouchStart"] = "touchStart";
+    DispatchTouchEventRequestType2["TouchEnd"] = "touchEnd";
+    DispatchTouchEventRequestType2["TouchMove"] = "touchMove";
+    DispatchTouchEventRequestType2["TouchCancel"] = "touchCancel";
+  })(DispatchTouchEventRequestType = Input3.DispatchTouchEventRequestType || (Input3.DispatchTouchEventRequestType = {}));
+  let EmulateTouchFromMouseEventRequestType;
+  ((EmulateTouchFromMouseEventRequestType2) => {
+    EmulateTouchFromMouseEventRequestType2["MousePressed"] = "mousePressed";
+    EmulateTouchFromMouseEventRequestType2["MouseReleased"] = "mouseReleased";
+    EmulateTouchFromMouseEventRequestType2["MouseMoved"] = "mouseMoved";
+    EmulateTouchFromMouseEventRequestType2["MouseWheel"] = "mouseWheel";
+  })(EmulateTouchFromMouseEventRequestType = Input3.EmulateTouchFromMouseEventRequestType || (Input3.EmulateTouchFromMouseEventRequestType = {}));
+})(Input2 || (Input2 = {}));
+var LayerTree;
+((LayerTree2) => {
+  let ScrollRectType;
+  ((ScrollRectType2) => {
+    ScrollRectType2["RepaintsOnScroll"] = "RepaintsOnScroll";
+    ScrollRectType2["TouchEventHandler"] = "TouchEventHandler";
+    ScrollRectType2["WheelEventHandler"] = "WheelEventHandler";
+  })(ScrollRectType = LayerTree2.ScrollRectType || (LayerTree2.ScrollRectType = {}));
+})(LayerTree || (LayerTree = {}));
+var Log;
+((Log2) => {
+  let LogEntrySource;
+  ((LogEntrySource2) => {
+    LogEntrySource2["XML"] = "xml";
+    LogEntrySource2["Javascript"] = "javascript";
+    LogEntrySource2["Network"] = "network";
+    LogEntrySource2["Storage"] = "storage";
+    LogEntrySource2["Appcache"] = "appcache";
+    LogEntrySource2["Rendering"] = "rendering";
+    LogEntrySource2["Security"] = "security";
+    LogEntrySource2["Deprecation"] = "deprecation";
+    LogEntrySource2["Worker"] = "worker";
+    LogEntrySource2["Violation"] = "violation";
+    LogEntrySource2["Intervention"] = "intervention";
+    LogEntrySource2["Recommendation"] = "recommendation";
+    LogEntrySource2["Other"] = "other";
+  })(LogEntrySource = Log2.LogEntrySource || (Log2.LogEntrySource = {}));
+  let LogEntryLevel;
+  ((LogEntryLevel2) => {
+    LogEntryLevel2["Verbose"] = "verbose";
+    LogEntryLevel2["Info"] = "info";
+    LogEntryLevel2["Warning"] = "warning";
+    LogEntryLevel2["Error"] = "error";
+  })(LogEntryLevel = Log2.LogEntryLevel || (Log2.LogEntryLevel = {}));
+  let LogEntryCategory;
+  ((LogEntryCategory2) => {
+    LogEntryCategory2["Cors"] = "cors";
+  })(LogEntryCategory = Log2.LogEntryCategory || (Log2.LogEntryCategory = {}));
+  let ViolationSettingName;
+  ((ViolationSettingName2) => {
+    ViolationSettingName2["LongTask"] = "longTask";
+    ViolationSettingName2["LongLayout"] = "longLayout";
+    ViolationSettingName2["BlockedEvent"] = "blockedEvent";
+    ViolationSettingName2["BlockedParser"] = "blockedParser";
+    ViolationSettingName2["DiscouragedAPIUse"] = "discouragedAPIUse";
+    ViolationSettingName2["Handler"] = "handler";
+    ViolationSettingName2["RecurringHandler"] = "recurringHandler";
+  })(ViolationSettingName = Log2.ViolationSettingName || (Log2.ViolationSettingName = {}));
+})(Log || (Log = {}));
+var Media;
+((Media2) => {
+  let PlayerMessageLevel;
+  ((PlayerMessageLevel2) => {
+    PlayerMessageLevel2["Error"] = "error";
+    PlayerMessageLevel2["Warning"] = "warning";
+    PlayerMessageLevel2["Info"] = "info";
+    PlayerMessageLevel2["Debug"] = "debug";
+  })(PlayerMessageLevel = Media2.PlayerMessageLevel || (Media2.PlayerMessageLevel = {}));
+})(Media || (Media = {}));
+var Memory;
+((Memory2) => {
+  let PressureLevel;
+  ((PressureLevel2) => {
+    PressureLevel2["Moderate"] = "moderate";
+    PressureLevel2["Critical"] = "critical";
+  })(PressureLevel = Memory2.PressureLevel || (Memory2.PressureLevel = {}));
+})(Memory || (Memory = {}));
+var Network;
+((Network2) => {
+  let ResourceType4;
+  ((ResourceType5) => {
+    ResourceType5["Document"] = "Document";
+    ResourceType5["Stylesheet"] = "Stylesheet";
+    ResourceType5["Image"] = "Image";
+    ResourceType5["Media"] = "Media";
+    ResourceType5["Font"] = "Font";
+    ResourceType5["Script"] = "Script";
+    ResourceType5["TextTrack"] = "TextTrack";
+    ResourceType5["XHR"] = "XHR";
+    ResourceType5["Fetch"] = "Fetch";
+    ResourceType5["Prefetch"] = "Prefetch";
+    ResourceType5["EventSource"] = "EventSource";
+    ResourceType5["WebSocket"] = "WebSocket";
+    ResourceType5["Manifest"] = "Manifest";
+    ResourceType5["SignedExchange"] = "SignedExchange";
+    ResourceType5["Ping"] = "Ping";
+    ResourceType5["CSPViolationReport"] = "CSPViolationReport";
+    ResourceType5["Preflight"] = "Preflight";
+    ResourceType5["FedCM"] = "FedCM";
+    ResourceType5["Other"] = "Other";
+  })(ResourceType4 = Network2.ResourceType || (Network2.ResourceType = {}));
+  let ErrorReason;
+  ((ErrorReason2) => {
+    ErrorReason2["Failed"] = "Failed";
+    ErrorReason2["Aborted"] = "Aborted";
+    ErrorReason2["TimedOut"] = "TimedOut";
+    ErrorReason2["AccessDenied"] = "AccessDenied";
+    ErrorReason2["ConnectionClosed"] = "ConnectionClosed";
+    ErrorReason2["ConnectionReset"] = "ConnectionReset";
+    ErrorReason2["ConnectionRefused"] = "ConnectionRefused";
+    ErrorReason2["ConnectionAborted"] = "ConnectionAborted";
+    ErrorReason2["ConnectionFailed"] = "ConnectionFailed";
+    ErrorReason2["NameNotResolved"] = "NameNotResolved";
+    ErrorReason2["InternetDisconnected"] = "InternetDisconnected";
+    ErrorReason2["AddressUnreachable"] = "AddressUnreachable";
+    ErrorReason2["BlockedByClient"] = "BlockedByClient";
+    ErrorReason2["BlockedByResponse"] = "BlockedByResponse";
+  })(ErrorReason = Network2.ErrorReason || (Network2.ErrorReason = {}));
+  let ConnectionType;
+  ((ConnectionType2) => {
+    ConnectionType2["None"] = "none";
+    ConnectionType2["Cellular2g"] = "cellular2g";
+    ConnectionType2["Cellular3g"] = "cellular3g";
+    ConnectionType2["Cellular4g"] = "cellular4g";
+    ConnectionType2["Bluetooth"] = "bluetooth";
+    ConnectionType2["Ethernet"] = "ethernet";
+    ConnectionType2["Wifi"] = "wifi";
+    ConnectionType2["Wimax"] = "wimax";
+    ConnectionType2["Other"] = "other";
+  })(ConnectionType = Network2.ConnectionType || (Network2.ConnectionType = {}));
+  let CookieSameSite;
+  ((CookieSameSite2) => {
+    CookieSameSite2["Strict"] = "Strict";
+    CookieSameSite2["Lax"] = "Lax";
+    CookieSameSite2["None"] = "None";
+  })(CookieSameSite = Network2.CookieSameSite || (Network2.CookieSameSite = {}));
+  let CookiePriority;
+  ((CookiePriority2) => {
+    CookiePriority2["Low"] = "Low";
+    CookiePriority2["Medium"] = "Medium";
+    CookiePriority2["High"] = "High";
+  })(CookiePriority = Network2.CookiePriority || (Network2.CookiePriority = {}));
+  let CookieSourceScheme;
+  ((CookieSourceScheme2) => {
+    CookieSourceScheme2["Unset"] = "Unset";
+    CookieSourceScheme2["NonSecure"] = "NonSecure";
+    CookieSourceScheme2["Secure"] = "Secure";
+  })(CookieSourceScheme = Network2.CookieSourceScheme || (Network2.CookieSourceScheme = {}));
+  let ResourcePriority;
+  ((ResourcePriority2) => {
+    ResourcePriority2["VeryLow"] = "VeryLow";
+    ResourcePriority2["Low"] = "Low";
+    ResourcePriority2["Medium"] = "Medium";
+    ResourcePriority2["High"] = "High";
+    ResourcePriority2["VeryHigh"] = "VeryHigh";
+  })(ResourcePriority = Network2.ResourcePriority || (Network2.ResourcePriority = {}));
+  let RenderBlockingBehavior;
+  ((RenderBlockingBehavior2) => {
+    RenderBlockingBehavior2["Blocking"] = "Blocking";
+    RenderBlockingBehavior2["InBodyParserBlocking"] = "InBodyParserBlocking";
+    RenderBlockingBehavior2["NonBlocking"] = "NonBlocking";
+    RenderBlockingBehavior2["NonBlockingDynamic"] = "NonBlockingDynamic";
+    RenderBlockingBehavior2["PotentiallyBlocking"] = "PotentiallyBlocking";
+  })(RenderBlockingBehavior = Network2.RenderBlockingBehavior || (Network2.RenderBlockingBehavior = {}));
+  let RequestReferrerPolicy;
+  ((RequestReferrerPolicy2) => {
+    RequestReferrerPolicy2["UnsafeUrl"] = "unsafe-url";
+    RequestReferrerPolicy2["NoReferrerWhenDowngrade"] = "no-referrer-when-downgrade";
+    RequestReferrerPolicy2["NoReferrer"] = "no-referrer";
+    RequestReferrerPolicy2["Origin"] = "origin";
+    RequestReferrerPolicy2["OriginWhenCrossOrigin"] = "origin-when-cross-origin";
+    RequestReferrerPolicy2["SameOrigin"] = "same-origin";
+    RequestReferrerPolicy2["StrictOrigin"] = "strict-origin";
+    RequestReferrerPolicy2["StrictOriginWhenCrossOrigin"] = "strict-origin-when-cross-origin";
+  })(RequestReferrerPolicy = Network2.RequestReferrerPolicy || (Network2.RequestReferrerPolicy = {}));
+  let CertificateTransparencyCompliance;
+  ((CertificateTransparencyCompliance2) => {
+    CertificateTransparencyCompliance2["Unknown"] = "unknown";
+    CertificateTransparencyCompliance2["NotCompliant"] = "not-compliant";
+    CertificateTransparencyCompliance2["Compliant"] = "compliant";
+  })(CertificateTransparencyCompliance = Network2.CertificateTransparencyCompliance || (Network2.CertificateTransparencyCompliance = {}));
+  let BlockedReason;
+  ((BlockedReason2) => {
+    BlockedReason2["Other"] = "other";
+    BlockedReason2["Csp"] = "csp";
+    BlockedReason2["MixedContent"] = "mixed-content";
+    BlockedReason2["Origin"] = "origin";
+    BlockedReason2["Inspector"] = "inspector";
+    BlockedReason2["Integrity"] = "integrity";
+    BlockedReason2["SubresourceFilter"] = "subresource-filter";
+    BlockedReason2["ContentType"] = "content-type";
+    BlockedReason2["CoepFrameResourceNeedsCoepHeader"] = "coep-frame-resource-needs-coep-header";
+    BlockedReason2["CoopSandboxedIframeCannotNavigateToCoopPage"] = "coop-sandboxed-iframe-cannot-navigate-to-coop-page";
+    BlockedReason2["CorpNotSameOrigin"] = "corp-not-same-origin";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoep"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByDip"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-dip";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip";
+    BlockedReason2["CorpNotSameSite"] = "corp-not-same-site";
+    BlockedReason2["SriMessageSignatureMismatch"] = "sri-message-signature-mismatch";
+  })(BlockedReason = Network2.BlockedReason || (Network2.BlockedReason = {}));
+  let CorsError;
+  ((CorsError2) => {
+    CorsError2["DisallowedByMode"] = "DisallowedByMode";
+    CorsError2["InvalidResponse"] = "InvalidResponse";
+    CorsError2["WildcardOriginNotAllowed"] = "WildcardOriginNotAllowed";
+    CorsError2["MissingAllowOriginHeader"] = "MissingAllowOriginHeader";
+    CorsError2["MultipleAllowOriginValues"] = "MultipleAllowOriginValues";
+    CorsError2["InvalidAllowOriginValue"] = "InvalidAllowOriginValue";
+    CorsError2["AllowOriginMismatch"] = "AllowOriginMismatch";
+    CorsError2["InvalidAllowCredentials"] = "InvalidAllowCredentials";
+    CorsError2["CorsDisabledScheme"] = "CorsDisabledScheme";
+    CorsError2["PreflightInvalidStatus"] = "PreflightInvalidStatus";
+    CorsError2["PreflightDisallowedRedirect"] = "PreflightDisallowedRedirect";
+    CorsError2["PreflightWildcardOriginNotAllowed"] = "PreflightWildcardOriginNotAllowed";
+    CorsError2["PreflightMissingAllowOriginHeader"] = "PreflightMissingAllowOriginHeader";
+    CorsError2["PreflightMultipleAllowOriginValues"] = "PreflightMultipleAllowOriginValues";
+    CorsError2["PreflightInvalidAllowOriginValue"] = "PreflightInvalidAllowOriginValue";
+    CorsError2["PreflightAllowOriginMismatch"] = "PreflightAllowOriginMismatch";
+    CorsError2["PreflightInvalidAllowCredentials"] = "PreflightInvalidAllowCredentials";
+    CorsError2["PreflightMissingAllowExternal"] = "PreflightMissingAllowExternal";
+    CorsError2["PreflightInvalidAllowExternal"] = "PreflightInvalidAllowExternal";
+    CorsError2["InvalidAllowMethodsPreflightResponse"] = "InvalidAllowMethodsPreflightResponse";
+    CorsError2["InvalidAllowHeadersPreflightResponse"] = "InvalidAllowHeadersPreflightResponse";
+    CorsError2["MethodDisallowedByPreflightResponse"] = "MethodDisallowedByPreflightResponse";
+    CorsError2["HeaderDisallowedByPreflightResponse"] = "HeaderDisallowedByPreflightResponse";
+    CorsError2["RedirectContainsCredentials"] = "RedirectContainsCredentials";
+    CorsError2["InsecureLocalNetwork"] = "InsecureLocalNetwork";
+    CorsError2["InvalidLocalNetworkAccess"] = "InvalidLocalNetworkAccess";
+    CorsError2["NoCorsRedirectModeNotFollow"] = "NoCorsRedirectModeNotFollow";
+    CorsError2["LocalNetworkAccessPermissionDenied"] = "LocalNetworkAccessPermissionDenied";
+  })(CorsError = Network2.CorsError || (Network2.CorsError = {}));
+  let ServiceWorkerResponseSource;
+  ((ServiceWorkerResponseSource2) => {
+    ServiceWorkerResponseSource2["CacheStorage"] = "cache-storage";
+    ServiceWorkerResponseSource2["HttpCache"] = "http-cache";
+    ServiceWorkerResponseSource2["FallbackCode"] = "fallback-code";
+    ServiceWorkerResponseSource2["Network"] = "network";
+  })(ServiceWorkerResponseSource = Network2.ServiceWorkerResponseSource || (Network2.ServiceWorkerResponseSource = {}));
+  let TrustTokenParamsRefreshPolicy;
+  ((TrustTokenParamsRefreshPolicy2) => {
+    TrustTokenParamsRefreshPolicy2["UseCached"] = "UseCached";
+    TrustTokenParamsRefreshPolicy2["Refresh"] = "Refresh";
+  })(TrustTokenParamsRefreshPolicy = Network2.TrustTokenParamsRefreshPolicy || (Network2.TrustTokenParamsRefreshPolicy = {}));
+  let TrustTokenOperationType;
+  ((TrustTokenOperationType2) => {
+    TrustTokenOperationType2["Issuance"] = "Issuance";
+    TrustTokenOperationType2["Redemption"] = "Redemption";
+    TrustTokenOperationType2["Signing"] = "Signing";
+  })(TrustTokenOperationType = Network2.TrustTokenOperationType || (Network2.TrustTokenOperationType = {}));
+  let AlternateProtocolUsage;
+  ((AlternateProtocolUsage2) => {
+    AlternateProtocolUsage2["AlternativeJobWonWithoutRace"] = "alternativeJobWonWithoutRace";
+    AlternateProtocolUsage2["AlternativeJobWonRace"] = "alternativeJobWonRace";
+    AlternateProtocolUsage2["MainJobWonRace"] = "mainJobWonRace";
+    AlternateProtocolUsage2["MappingMissing"] = "mappingMissing";
+    AlternateProtocolUsage2["Broken"] = "broken";
+    AlternateProtocolUsage2["DnsAlpnH3JobWonWithoutRace"] = "dnsAlpnH3JobWonWithoutRace";
+    AlternateProtocolUsage2["DnsAlpnH3JobWonRace"] = "dnsAlpnH3JobWonRace";
+    AlternateProtocolUsage2["UnspecifiedReason"] = "unspecifiedReason";
+  })(AlternateProtocolUsage = Network2.AlternateProtocolUsage || (Network2.AlternateProtocolUsage = {}));
+  let ServiceWorkerRouterSource;
+  ((ServiceWorkerRouterSource2) => {
+    ServiceWorkerRouterSource2["Network"] = "network";
+    ServiceWorkerRouterSource2["Cache"] = "cache";
+    ServiceWorkerRouterSource2["FetchEvent"] = "fetch-event";
+    ServiceWorkerRouterSource2["RaceNetworkAndFetchHandler"] = "race-network-and-fetch-handler";
+    ServiceWorkerRouterSource2["RaceNetworkAndCache"] = "race-network-and-cache";
+  })(ServiceWorkerRouterSource = Network2.ServiceWorkerRouterSource || (Network2.ServiceWorkerRouterSource = {}));
+  let InitiatorType;
+  ((InitiatorType2) => {
+    InitiatorType2["Parser"] = "parser";
+    InitiatorType2["Script"] = "script";
+    InitiatorType2["Preload"] = "preload";
+    InitiatorType2["SignedExchange"] = "SignedExchange";
+    InitiatorType2["Preflight"] = "preflight";
+    InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["Other"] = "other";
+  })(InitiatorType = Network2.InitiatorType || (Network2.InitiatorType = {}));
+  let SetCookieBlockedReason;
+  ((SetCookieBlockedReason2) => {
+    SetCookieBlockedReason2["SecureOnly"] = "SecureOnly";
+    SetCookieBlockedReason2["SameSiteStrict"] = "SameSiteStrict";
+    SetCookieBlockedReason2["SameSiteLax"] = "SameSiteLax";
+    SetCookieBlockedReason2["SameSiteUnspecifiedTreatedAsLax"] = "SameSiteUnspecifiedTreatedAsLax";
+    SetCookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
+    SetCookieBlockedReason2["UserPreferences"] = "UserPreferences";
+    SetCookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
+    SetCookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
+    SetCookieBlockedReason2["SyntaxError"] = "SyntaxError";
+    SetCookieBlockedReason2["SchemeNotSupported"] = "SchemeNotSupported";
+    SetCookieBlockedReason2["OverwriteSecure"] = "OverwriteSecure";
+    SetCookieBlockedReason2["InvalidDomain"] = "InvalidDomain";
+    SetCookieBlockedReason2["InvalidPrefix"] = "InvalidPrefix";
+    SetCookieBlockedReason2["UnknownError"] = "UnknownError";
+    SetCookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
+    SetCookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
+    SetCookieBlockedReason2["SchemefulSameSiteUnspecifiedTreatedAsLax"] = "SchemefulSameSiteUnspecifiedTreatedAsLax";
+    SetCookieBlockedReason2["NameValuePairExceedsMaxSize"] = "NameValuePairExceedsMaxSize";
+    SetCookieBlockedReason2["DisallowedCharacter"] = "DisallowedCharacter";
+    SetCookieBlockedReason2["NoCookieContent"] = "NoCookieContent";
+  })(SetCookieBlockedReason = Network2.SetCookieBlockedReason || (Network2.SetCookieBlockedReason = {}));
+  let CookieBlockedReason;
+  ((CookieBlockedReason2) => {
+    CookieBlockedReason2["SecureOnly"] = "SecureOnly";
+    CookieBlockedReason2["NotOnPath"] = "NotOnPath";
+    CookieBlockedReason2["DomainMismatch"] = "DomainMismatch";
+    CookieBlockedReason2["SameSiteStrict"] = "SameSiteStrict";
+    CookieBlockedReason2["SameSiteLax"] = "SameSiteLax";
+    CookieBlockedReason2["SameSiteUnspecifiedTreatedAsLax"] = "SameSiteUnspecifiedTreatedAsLax";
+    CookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
+    CookieBlockedReason2["UserPreferences"] = "UserPreferences";
+    CookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
+    CookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
+    CookieBlockedReason2["UnknownError"] = "UnknownError";
+    CookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
+    CookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
+    CookieBlockedReason2["SchemefulSameSiteUnspecifiedTreatedAsLax"] = "SchemefulSameSiteUnspecifiedTreatedAsLax";
+    CookieBlockedReason2["NameValuePairExceedsMaxSize"] = "NameValuePairExceedsMaxSize";
+    CookieBlockedReason2["PortMismatch"] = "PortMismatch";
+    CookieBlockedReason2["SchemeMismatch"] = "SchemeMismatch";
+    CookieBlockedReason2["AnonymousContext"] = "AnonymousContext";
+  })(CookieBlockedReason = Network2.CookieBlockedReason || (Network2.CookieBlockedReason = {}));
+  let CookieExemptionReason;
+  ((CookieExemptionReason2) => {
+    CookieExemptionReason2["None"] = "None";
+    CookieExemptionReason2["UserSetting"] = "UserSetting";
+    CookieExemptionReason2["EnterprisePolicy"] = "EnterprisePolicy";
+    CookieExemptionReason2["StorageAccess"] = "StorageAccess";
+    CookieExemptionReason2["TopLevelStorageAccess"] = "TopLevelStorageAccess";
+    CookieExemptionReason2["Scheme"] = "Scheme";
+    CookieExemptionReason2["SameSiteNoneCookiesInSandbox"] = "SameSiteNoneCookiesInSandbox";
+  })(CookieExemptionReason = Network2.CookieExemptionReason || (Network2.CookieExemptionReason = {}));
+  let AuthChallengeSource;
+  ((AuthChallengeSource2) => {
+    AuthChallengeSource2["Server"] = "Server";
+    AuthChallengeSource2["Proxy"] = "Proxy";
+  })(AuthChallengeSource = Network2.AuthChallengeSource || (Network2.AuthChallengeSource = {}));
+  let AuthChallengeResponseResponse;
+  ((AuthChallengeResponseResponse2) => {
+    AuthChallengeResponseResponse2["Default"] = "Default";
+    AuthChallengeResponseResponse2["CancelAuth"] = "CancelAuth";
+    AuthChallengeResponseResponse2["ProvideCredentials"] = "ProvideCredentials";
+  })(AuthChallengeResponseResponse = Network2.AuthChallengeResponseResponse || (Network2.AuthChallengeResponseResponse = {}));
+  let SignedExchangeErrorField;
+  ((SignedExchangeErrorField2) => {
+    SignedExchangeErrorField2["SignatureSig"] = "signatureSig";
+    SignedExchangeErrorField2["SignatureIntegrity"] = "signatureIntegrity";
+    SignedExchangeErrorField2["SignatureCertUrl"] = "signatureCertUrl";
+    SignedExchangeErrorField2["SignatureCertSha256"] = "signatureCertSha256";
+    SignedExchangeErrorField2["SignatureValidityUrl"] = "signatureValidityUrl";
+    SignedExchangeErrorField2["SignatureTimestamps"] = "signatureTimestamps";
+  })(SignedExchangeErrorField = Network2.SignedExchangeErrorField || (Network2.SignedExchangeErrorField = {}));
+  let DirectSocketDnsQueryType;
+  ((DirectSocketDnsQueryType2) => {
+    DirectSocketDnsQueryType2["Ipv4"] = "ipv4";
+    DirectSocketDnsQueryType2["Ipv6"] = "ipv6";
+  })(DirectSocketDnsQueryType = Network2.DirectSocketDnsQueryType || (Network2.DirectSocketDnsQueryType = {}));
+  let LocalNetworkAccessRequestPolicy;
+  ((LocalNetworkAccessRequestPolicy2) => {
+    LocalNetworkAccessRequestPolicy2["Allow"] = "Allow";
+    LocalNetworkAccessRequestPolicy2["BlockFromInsecureToMorePrivate"] = "BlockFromInsecureToMorePrivate";
+    LocalNetworkAccessRequestPolicy2["WarnFromInsecureToMorePrivate"] = "WarnFromInsecureToMorePrivate";
+    LocalNetworkAccessRequestPolicy2["PermissionBlock"] = "PermissionBlock";
+    LocalNetworkAccessRequestPolicy2["PermissionWarn"] = "PermissionWarn";
+  })(LocalNetworkAccessRequestPolicy = Network2.LocalNetworkAccessRequestPolicy || (Network2.LocalNetworkAccessRequestPolicy = {}));
+  let IPAddressSpace;
+  ((IPAddressSpace2) => {
+    IPAddressSpace2["Loopback"] = "Loopback";
+    IPAddressSpace2["Local"] = "Local";
+    IPAddressSpace2["Public"] = "Public";
+    IPAddressSpace2["Unknown"] = "Unknown";
+  })(IPAddressSpace = Network2.IPAddressSpace || (Network2.IPAddressSpace = {}));
+  let CrossOriginOpenerPolicyValue;
+  ((CrossOriginOpenerPolicyValue2) => {
+    CrossOriginOpenerPolicyValue2["SameOrigin"] = "SameOrigin";
+    CrossOriginOpenerPolicyValue2["SameOriginAllowPopups"] = "SameOriginAllowPopups";
+    CrossOriginOpenerPolicyValue2["RestrictProperties"] = "RestrictProperties";
+    CrossOriginOpenerPolicyValue2["UnsafeNone"] = "UnsafeNone";
+    CrossOriginOpenerPolicyValue2["SameOriginPlusCoep"] = "SameOriginPlusCoep";
+    CrossOriginOpenerPolicyValue2["RestrictPropertiesPlusCoep"] = "RestrictPropertiesPlusCoep";
+    CrossOriginOpenerPolicyValue2["NoopenerAllowPopups"] = "NoopenerAllowPopups";
+  })(CrossOriginOpenerPolicyValue = Network2.CrossOriginOpenerPolicyValue || (Network2.CrossOriginOpenerPolicyValue = {}));
+  let CrossOriginEmbedderPolicyValue;
+  ((CrossOriginEmbedderPolicyValue2) => {
+    CrossOriginEmbedderPolicyValue2["None"] = "None";
+    CrossOriginEmbedderPolicyValue2["Credentialless"] = "Credentialless";
+    CrossOriginEmbedderPolicyValue2["RequireCorp"] = "RequireCorp";
+  })(CrossOriginEmbedderPolicyValue = Network2.CrossOriginEmbedderPolicyValue || (Network2.CrossOriginEmbedderPolicyValue = {}));
+  let ContentSecurityPolicySource;
+  ((ContentSecurityPolicySource2) => {
+    ContentSecurityPolicySource2["HTTP"] = "HTTP";
+    ContentSecurityPolicySource2["Meta"] = "Meta";
+  })(ContentSecurityPolicySource = Network2.ContentSecurityPolicySource || (Network2.ContentSecurityPolicySource = {}));
+  let ReportStatus;
+  ((ReportStatus2) => {
+    ReportStatus2["Queued"] = "Queued";
+    ReportStatus2["Pending"] = "Pending";
+    ReportStatus2["MarkedForRemoval"] = "MarkedForRemoval";
+    ReportStatus2["Success"] = "Success";
+  })(ReportStatus = Network2.ReportStatus || (Network2.ReportStatus = {}));
+  let DeviceBoundSessionWithUsageUsage;
+  ((DeviceBoundSessionWithUsageUsage2) => {
+    DeviceBoundSessionWithUsageUsage2["NotInScope"] = "NotInScope";
+    DeviceBoundSessionWithUsageUsage2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+    DeviceBoundSessionWithUsageUsage2["InScopeRefreshNotAllowed"] = "InScopeRefreshNotAllowed";
+    DeviceBoundSessionWithUsageUsage2["ProactiveRefreshNotPossible"] = "ProactiveRefreshNotPossible";
+    DeviceBoundSessionWithUsageUsage2["ProactiveRefreshAttempted"] = "ProactiveRefreshAttempted";
+    DeviceBoundSessionWithUsageUsage2["Deferred"] = "Deferred";
+  })(DeviceBoundSessionWithUsageUsage = Network2.DeviceBoundSessionWithUsageUsage || (Network2.DeviceBoundSessionWithUsageUsage = {}));
+  let DeviceBoundSessionUrlRuleRuleType;
+  ((DeviceBoundSessionUrlRuleRuleType2) => {
+    DeviceBoundSessionUrlRuleRuleType2["Exclude"] = "Exclude";
+    DeviceBoundSessionUrlRuleRuleType2["Include"] = "Include";
+  })(DeviceBoundSessionUrlRuleRuleType = Network2.DeviceBoundSessionUrlRuleRuleType || (Network2.DeviceBoundSessionUrlRuleRuleType = {}));
+  let DeviceBoundSessionFetchResult;
+  ((DeviceBoundSessionFetchResult2) => {
+    DeviceBoundSessionFetchResult2["Success"] = "Success";
+    DeviceBoundSessionFetchResult2["SigningKeyGenerationError"] = "SigningKeyGenerationError";
+    DeviceBoundSessionFetchResult2["AttestationKeyGenerationError"] = "AttestationKeyGenerationError";
+    DeviceBoundSessionFetchResult2["SigningError"] = "SigningError";
+    DeviceBoundSessionFetchResult2["TransientSigningError"] = "TransientSigningError";
+    DeviceBoundSessionFetchResult2["ServerRequestedTermination"] = "ServerRequestedTermination";
+    DeviceBoundSessionFetchResult2["InvalidSessionId"] = "InvalidSessionId";
+    DeviceBoundSessionFetchResult2["InvalidChallenge"] = "InvalidChallenge";
+    DeviceBoundSessionFetchResult2["TooManyChallenges"] = "TooManyChallenges";
+    DeviceBoundSessionFetchResult2["InvalidFetcherUrl"] = "InvalidFetcherUrl";
+    DeviceBoundSessionFetchResult2["InvalidRefreshUrl"] = "InvalidRefreshUrl";
+    DeviceBoundSessionFetchResult2["TransientHttpError"] = "TransientHttpError";
+    DeviceBoundSessionFetchResult2["ScopeOriginSameSiteMismatch"] = "ScopeOriginSameSiteMismatch";
+    DeviceBoundSessionFetchResult2["RefreshUrlSameSiteMismatch"] = "RefreshUrlSameSiteMismatch";
+    DeviceBoundSessionFetchResult2["MismatchedSessionId"] = "MismatchedSessionId";
+    DeviceBoundSessionFetchResult2["MissingScope"] = "MissingScope";
+    DeviceBoundSessionFetchResult2["NoCredentials"] = "NoCredentials";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationWellKnownUnavailable"] = "SubdomainRegistrationWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationUnauthorized"] = "SubdomainRegistrationUnauthorized";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationWellKnownMalformed"] = "SubdomainRegistrationWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownUnavailable"] = "SessionProviderWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownUnavailable"] = "RelyingPartyWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["FederatedKeyThumbprintMismatch"] = "FederatedKeyThumbprintMismatch";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionUrl"] = "InvalidFederatedSessionUrl";
+    DeviceBoundSessionFetchResult2["InvalidFederatedKey"] = "InvalidFederatedKey";
+    DeviceBoundSessionFetchResult2["TooManyRelyingOriginLabels"] = "TooManyRelyingOriginLabels";
+    DeviceBoundSessionFetchResult2["BoundCookieSetForbidden"] = "BoundCookieSetForbidden";
+    DeviceBoundSessionFetchResult2["NetError"] = "NetError";
+    DeviceBoundSessionFetchResult2["ProxyError"] = "ProxyError";
+    DeviceBoundSessionFetchResult2["EmptySessionConfig"] = "EmptySessionConfig";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsConfig"] = "InvalidCredentialsConfig";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsType"] = "InvalidCredentialsType";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsEmptyName"] = "InvalidCredentialsEmptyName";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookie"] = "InvalidCredentialsCookie";
+    DeviceBoundSessionFetchResult2["PersistentHttpError"] = "PersistentHttpError";
+    DeviceBoundSessionFetchResult2["RegistrationAttemptedChallenge"] = "RegistrationAttemptedChallenge";
+    DeviceBoundSessionFetchResult2["InvalidScopeOrigin"] = "InvalidScopeOrigin";
+    DeviceBoundSessionFetchResult2["ScopeOriginContainsPath"] = "ScopeOriginContainsPath";
+    DeviceBoundSessionFetchResult2["RefreshInitiatorNotString"] = "RefreshInitiatorNotString";
+    DeviceBoundSessionFetchResult2["RefreshInitiatorInvalidHostPattern"] = "RefreshInitiatorInvalidHostPattern";
+    DeviceBoundSessionFetchResult2["InvalidScopeSpecification"] = "InvalidScopeSpecification";
+    DeviceBoundSessionFetchResult2["MissingScopeSpecificationType"] = "MissingScopeSpecificationType";
+    DeviceBoundSessionFetchResult2["EmptyScopeSpecificationDomain"] = "EmptyScopeSpecificationDomain";
+    DeviceBoundSessionFetchResult2["EmptyScopeSpecificationPath"] = "EmptyScopeSpecificationPath";
+    DeviceBoundSessionFetchResult2["InvalidScopeSpecificationType"] = "InvalidScopeSpecificationType";
+    DeviceBoundSessionFetchResult2["InvalidScopeIncludeSite"] = "InvalidScopeIncludeSite";
+    DeviceBoundSessionFetchResult2["MissingScopeIncludeSite"] = "MissingScopeIncludeSite";
+    DeviceBoundSessionFetchResult2["FederatedNotAuthorizedByProvider"] = "FederatedNotAuthorizedByProvider";
+    DeviceBoundSessionFetchResult2["FederatedNotAuthorizedByRelyingParty"] = "FederatedNotAuthorizedByRelyingParty";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownMalformed"] = "SessionProviderWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownHasProviderOrigin"] = "SessionProviderWellKnownHasProviderOrigin";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownMalformed"] = "RelyingPartyWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownHasRelyingOrigins"] = "RelyingPartyWellKnownHasRelyingOrigins";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionProviderSessionMissing"] = "InvalidFederatedSessionProviderSessionMissing";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionWrongProviderOrigin"] = "InvalidFederatedSessionWrongProviderOrigin";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieCreationTime"] = "InvalidCredentialsCookieCreationTime";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieName"] = "InvalidCredentialsCookieName";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieParsing"] = "InvalidCredentialsCookieParsing";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieUnpermittedAttribute"] = "InvalidCredentialsCookieUnpermittedAttribute";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieInvalidDomain"] = "InvalidCredentialsCookieInvalidDomain";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookiePrefix"] = "InvalidCredentialsCookiePrefix";
+    DeviceBoundSessionFetchResult2["InvalidScopeRulePath"] = "InvalidScopeRulePath";
+    DeviceBoundSessionFetchResult2["InvalidScopeRuleHostPattern"] = "InvalidScopeRuleHostPattern";
+    DeviceBoundSessionFetchResult2["ScopeRuleOriginScopedHostPatternMismatch"] = "ScopeRuleOriginScopedHostPatternMismatch";
+    DeviceBoundSessionFetchResult2["ScopeRuleSiteScopedHostPatternMismatch"] = "ScopeRuleSiteScopedHostPatternMismatch";
+    DeviceBoundSessionFetchResult2["SigningQuotaExceeded"] = "SigningQuotaExceeded";
+    DeviceBoundSessionFetchResult2["InvalidConfigJson"] = "InvalidConfigJson";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionProviderFailedToRestoreKey"] = "InvalidFederatedSessionProviderFailedToRestoreKey";
+    DeviceBoundSessionFetchResult2["FailedToUnwrapKey"] = "FailedToUnwrapKey";
+    DeviceBoundSessionFetchResult2["SessionDeletedDuringRefresh"] = "SessionDeletedDuringRefresh";
+    DeviceBoundSessionFetchResult2["CrossOriginRegistrationSiteNotIncluded"] = "CrossOriginRegistrationSiteNotIncluded";
+    DeviceBoundSessionFetchResult2["InvalidPreProvisionedKeyInitiatorMissing"] = "InvalidPreProvisionedKeyInitiatorMissing";
+    DeviceBoundSessionFetchResult2["PreProvisionedKeyAccessNotGranted"] = "PreProvisionedKeyAccessNotGranted";
+    DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
+    DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
+    DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+  })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
+  let RefreshEventDetailsRefreshResult;
+  ((RefreshEventDetailsRefreshResult2) => {
+    RefreshEventDetailsRefreshResult2["Refreshed"] = "Refreshed";
+    RefreshEventDetailsRefreshResult2["InitializedService"] = "InitializedService";
+    RefreshEventDetailsRefreshResult2["Unreachable"] = "Unreachable";
+    RefreshEventDetailsRefreshResult2["ServerError"] = "ServerError";
+    RefreshEventDetailsRefreshResult2["FatalError"] = "FatalError";
+    RefreshEventDetailsRefreshResult2["SigningQuotaExceeded"] = "SigningQuotaExceeded";
+    RefreshEventDetailsRefreshResult2["RefreshedAsWaiter"] = "RefreshedAsWaiter";
+    RefreshEventDetailsRefreshResult2["TransientSigningError"] = "TransientSigningError";
+    RefreshEventDetailsRefreshResult2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+  })(RefreshEventDetailsRefreshResult = Network2.RefreshEventDetailsRefreshResult || (Network2.RefreshEventDetailsRefreshResult = {}));
+  let TerminationEventDetailsDeletionReason;
+  ((TerminationEventDetailsDeletionReason2) => {
+    TerminationEventDetailsDeletionReason2["Expired"] = "Expired";
+    TerminationEventDetailsDeletionReason2["FailedToRestoreKey"] = "FailedToRestoreKey";
+    TerminationEventDetailsDeletionReason2["FailedToUnwrapKey"] = "FailedToUnwrapKey";
+    TerminationEventDetailsDeletionReason2["StoragePartitionCleared"] = "StoragePartitionCleared";
+    TerminationEventDetailsDeletionReason2["ClearBrowsingData"] = "ClearBrowsingData";
+    TerminationEventDetailsDeletionReason2["ServerRequested"] = "ServerRequested";
+    TerminationEventDetailsDeletionReason2["InvalidSessionParams"] = "InvalidSessionParams";
+    TerminationEventDetailsDeletionReason2["RefreshFatalError"] = "RefreshFatalError";
+    TerminationEventDetailsDeletionReason2["DevTools"] = "DevTools";
+  })(TerminationEventDetailsDeletionReason = Network2.TerminationEventDetailsDeletionReason || (Network2.TerminationEventDetailsDeletionReason = {}));
+  let ChallengeEventDetailsChallengeResult;
+  ((ChallengeEventDetailsChallengeResult2) => {
+    ChallengeEventDetailsChallengeResult2["Success"] = "Success";
+    ChallengeEventDetailsChallengeResult2["NoSessionId"] = "NoSessionId";
+    ChallengeEventDetailsChallengeResult2["NoSessionMatch"] = "NoSessionMatch";
+    ChallengeEventDetailsChallengeResult2["CantSetBoundCookie"] = "CantSetBoundCookie";
+  })(ChallengeEventDetailsChallengeResult = Network2.ChallengeEventDetailsChallengeResult || (Network2.ChallengeEventDetailsChallengeResult = {}));
+  let TrustTokenOperationDoneEventStatus;
+  ((TrustTokenOperationDoneEventStatus2) => {
+    TrustTokenOperationDoneEventStatus2["Ok"] = "Ok";
+    TrustTokenOperationDoneEventStatus2["InvalidArgument"] = "InvalidArgument";
+    TrustTokenOperationDoneEventStatus2["MissingIssuerKeys"] = "MissingIssuerKeys";
+    TrustTokenOperationDoneEventStatus2["FailedPrecondition"] = "FailedPrecondition";
+    TrustTokenOperationDoneEventStatus2["ResourceExhausted"] = "ResourceExhausted";
+    TrustTokenOperationDoneEventStatus2["AlreadyExists"] = "AlreadyExists";
+    TrustTokenOperationDoneEventStatus2["ResourceLimited"] = "ResourceLimited";
+    TrustTokenOperationDoneEventStatus2["Unauthorized"] = "Unauthorized";
+    TrustTokenOperationDoneEventStatus2["BadResponse"] = "BadResponse";
+    TrustTokenOperationDoneEventStatus2["InternalError"] = "InternalError";
+    TrustTokenOperationDoneEventStatus2["UnknownError"] = "UnknownError";
+    TrustTokenOperationDoneEventStatus2["FulfilledLocally"] = "FulfilledLocally";
+    TrustTokenOperationDoneEventStatus2["SiteIssuerLimit"] = "SiteIssuerLimit";
+  })(TrustTokenOperationDoneEventStatus = Network2.TrustTokenOperationDoneEventStatus || (Network2.TrustTokenOperationDoneEventStatus = {}));
+})(Network || (Network = {}));
+var Overlay;
+((Overlay2) => {
+  let LineStylePattern;
+  ((LineStylePattern2) => {
+    LineStylePattern2["Dashed"] = "dashed";
+    LineStylePattern2["Dotted"] = "dotted";
+  })(LineStylePattern = Overlay2.LineStylePattern || (Overlay2.LineStylePattern = {}));
+  let ContrastAlgorithm;
+  ((ContrastAlgorithm2) => {
+    ContrastAlgorithm2["Aa"] = "aa";
+    ContrastAlgorithm2["Aaa"] = "aaa";
+    ContrastAlgorithm2["Apca"] = "apca";
+  })(ContrastAlgorithm = Overlay2.ContrastAlgorithm || (Overlay2.ContrastAlgorithm = {}));
+  let ColorFormat;
+  ((ColorFormat2) => {
+    ColorFormat2["Rgb"] = "rgb";
+    ColorFormat2["Hsl"] = "hsl";
+    ColorFormat2["Hwb"] = "hwb";
+    ColorFormat2["Hex"] = "hex";
+  })(ColorFormat = Overlay2.ColorFormat || (Overlay2.ColorFormat = {}));
+  let DisplayCutoutShape;
+  ((DisplayCutoutShape2) => {
+    DisplayCutoutShape2["Pill"] = "pill";
+    DisplayCutoutShape2["Notch"] = "notch";
+    DisplayCutoutShape2["Circle"] = "circle";
+    DisplayCutoutShape2["Rectangle"] = "rectangle";
+  })(DisplayCutoutShape = Overlay2.DisplayCutoutShape || (Overlay2.DisplayCutoutShape = {}));
+  let InspectMode;
+  ((InspectMode2) => {
+    InspectMode2["SearchForNode"] = "searchForNode";
+    InspectMode2["SearchForUAShadowDOM"] = "searchForUAShadowDOM";
+    InspectMode2["CaptureAreaScreenshot"] = "captureAreaScreenshot";
+    InspectMode2["None"] = "none";
+  })(InspectMode = Overlay2.InspectMode || (Overlay2.InspectMode = {}));
+})(Overlay || (Overlay = {}));
+var PWA;
+((PWA2) => {
+  let DisplayMode;
+  ((DisplayMode2) => {
+    DisplayMode2["Standalone"] = "standalone";
+    DisplayMode2["Browser"] = "browser";
+  })(DisplayMode = PWA2.DisplayMode || (PWA2.DisplayMode = {}));
+})(PWA || (PWA = {}));
+var Page;
+((Page2) => {
+  let AdFrameType;
+  ((AdFrameType2) => {
+    AdFrameType2["None"] = "none";
+    AdFrameType2["Child"] = "child";
+    AdFrameType2["Root"] = "root";
+  })(AdFrameType = Page2.AdFrameType || (Page2.AdFrameType = {}));
+  let AdFrameExplanation;
+  ((AdFrameExplanation2) => {
+    AdFrameExplanation2["ParentIsAd"] = "ParentIsAd";
+    AdFrameExplanation2["CreatedByAdScript"] = "CreatedByAdScript";
+    AdFrameExplanation2["MatchedBlockingRule"] = "MatchedBlockingRule";
+  })(AdFrameExplanation = Page2.AdFrameExplanation || (Page2.AdFrameExplanation = {}));
+  let SecureContextType;
+  ((SecureContextType2) => {
+    SecureContextType2["Secure"] = "Secure";
+    SecureContextType2["SecureLocalhost"] = "SecureLocalhost";
+    SecureContextType2["InsecureScheme"] = "InsecureScheme";
+    SecureContextType2["InsecureAncestor"] = "InsecureAncestor";
+  })(SecureContextType = Page2.SecureContextType || (Page2.SecureContextType = {}));
+  let CrossOriginIsolatedContextType;
+  ((CrossOriginIsolatedContextType2) => {
+    CrossOriginIsolatedContextType2["Isolated"] = "Isolated";
+    CrossOriginIsolatedContextType2["NotIsolated"] = "NotIsolated";
+    CrossOriginIsolatedContextType2["NotIsolatedFeatureDisabled"] = "NotIsolatedFeatureDisabled";
+  })(CrossOriginIsolatedContextType = Page2.CrossOriginIsolatedContextType || (Page2.CrossOriginIsolatedContextType = {}));
+  let GatedAPIFeatures;
+  ((GatedAPIFeatures2) => {
+    GatedAPIFeatures2["SharedArrayBuffers"] = "SharedArrayBuffers";
+    GatedAPIFeatures2["SharedArrayBuffersTransferAllowed"] = "SharedArrayBuffersTransferAllowed";
+    GatedAPIFeatures2["PerformanceMeasureMemory"] = "PerformanceMeasureMemory";
+    GatedAPIFeatures2["PerformanceProfile"] = "PerformanceProfile";
+  })(GatedAPIFeatures = Page2.GatedAPIFeatures || (Page2.GatedAPIFeatures = {}));
+  let PermissionsPolicyFeature;
+  ((PermissionsPolicyFeature2) => {
+    PermissionsPolicyFeature2["Accelerometer"] = "accelerometer";
+    PermissionsPolicyFeature2["AllScreensCapture"] = "all-screens-capture";
+    PermissionsPolicyFeature2["AmbientLightSensor"] = "ambient-light-sensor";
+    PermissionsPolicyFeature2["AriaNotify"] = "aria-notify";
+    PermissionsPolicyFeature2["Autofill"] = "autofill";
+    PermissionsPolicyFeature2["Autoplay"] = "autoplay";
+    PermissionsPolicyFeature2["Bluetooth"] = "bluetooth";
+    PermissionsPolicyFeature2["BrowsingTopics"] = "browsing-topics";
+    PermissionsPolicyFeature2["Camera"] = "camera";
+    PermissionsPolicyFeature2["CapturedSurfaceControl"] = "captured-surface-control";
+    PermissionsPolicyFeature2["ChDpr"] = "ch-dpr";
+    PermissionsPolicyFeature2["ChDeviceMemory"] = "ch-device-memory";
+    PermissionsPolicyFeature2["ChDownlink"] = "ch-downlink";
+    PermissionsPolicyFeature2["ChEct"] = "ch-ect";
+    PermissionsPolicyFeature2["ChPrefersColorScheme"] = "ch-prefers-color-scheme";
+    PermissionsPolicyFeature2["ChPrefersReducedMotion"] = "ch-prefers-reduced-motion";
+    PermissionsPolicyFeature2["ChPrefersReducedTransparency"] = "ch-prefers-reduced-transparency";
+    PermissionsPolicyFeature2["ChRtt"] = "ch-rtt";
+    PermissionsPolicyFeature2["ChSaveData"] = "ch-save-data";
+    PermissionsPolicyFeature2["ChUa"] = "ch-ua";
+    PermissionsPolicyFeature2["ChUaArch"] = "ch-ua-arch";
+    PermissionsPolicyFeature2["ChUaBitness"] = "ch-ua-bitness";
+    PermissionsPolicyFeature2["ChUaHighEntropyValues"] = "ch-ua-high-entropy-values";
+    PermissionsPolicyFeature2["ChUaPlatform"] = "ch-ua-platform";
+    PermissionsPolicyFeature2["ChUaModel"] = "ch-ua-model";
+    PermissionsPolicyFeature2["ChUaMobile"] = "ch-ua-mobile";
+    PermissionsPolicyFeature2["ChUaFormFactors"] = "ch-ua-form-factors";
+    PermissionsPolicyFeature2["ChUaFullVersion"] = "ch-ua-full-version";
+    PermissionsPolicyFeature2["ChUaFullVersionList"] = "ch-ua-full-version-list";
+    PermissionsPolicyFeature2["ChUaPlatformVersion"] = "ch-ua-platform-version";
+    PermissionsPolicyFeature2["ChUaWow64"] = "ch-ua-wow64";
+    PermissionsPolicyFeature2["ChViewportHeight"] = "ch-viewport-height";
+    PermissionsPolicyFeature2["ChViewportWidth"] = "ch-viewport-width";
+    PermissionsPolicyFeature2["ChWidth"] = "ch-width";
+    PermissionsPolicyFeature2["ClipboardRead"] = "clipboard-read";
+    PermissionsPolicyFeature2["ClipboardWrite"] = "clipboard-write";
+    PermissionsPolicyFeature2["ComputePressure"] = "compute-pressure";
+    PermissionsPolicyFeature2["ControlledFrame"] = "controlled-frame";
+    PermissionsPolicyFeature2["CrossOriginIsolated"] = "cross-origin-isolated";
+    PermissionsPolicyFeature2["DeferredFetch"] = "deferred-fetch";
+    PermissionsPolicyFeature2["DeferredFetchMinimal"] = "deferred-fetch-minimal";
+    PermissionsPolicyFeature2["DeviceAttributes"] = "device-attributes";
+    PermissionsPolicyFeature2["DigitalCredentialsCreate"] = "digital-credentials-create";
+    PermissionsPolicyFeature2["DigitalCredentialsGet"] = "digital-credentials-get";
+    PermissionsPolicyFeature2["DirectSockets"] = "direct-sockets";
+    PermissionsPolicyFeature2["DirectSocketsMulticast"] = "direct-sockets-multicast";
+    PermissionsPolicyFeature2["DisplayCapture"] = "display-capture";
+    PermissionsPolicyFeature2["DocumentDomain"] = "document-domain";
+    PermissionsPolicyFeature2["EncryptedMedia"] = "encrypted-media";
+    PermissionsPolicyFeature2["ExecutionWhileOutOfViewport"] = "execution-while-out-of-viewport";
+    PermissionsPolicyFeature2["ExecutionWhileNotRendered"] = "execution-while-not-rendered";
+    PermissionsPolicyFeature2["FocusWithoutUserActivation"] = "focus-without-user-activation";
+    PermissionsPolicyFeature2["Fullscreen"] = "fullscreen";
+    PermissionsPolicyFeature2["Frobulate"] = "frobulate";
+    PermissionsPolicyFeature2["Gamepad"] = "gamepad";
+    PermissionsPolicyFeature2["Geolocation"] = "geolocation";
+    PermissionsPolicyFeature2["Gyroscope"] = "gyroscope";
+    PermissionsPolicyFeature2["Haptics"] = "haptics";
+    PermissionsPolicyFeature2["Hid"] = "hid";
+    PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
+    PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
+    PermissionsPolicyFeature2["InterestCohort"] = "interest-cohort";
+    PermissionsPolicyFeature2["KeyboardMap"] = "keyboard-map";
+    PermissionsPolicyFeature2["LanguageDetector"] = "language-detector";
+    PermissionsPolicyFeature2["LanguageModel"] = "language-model";
+    PermissionsPolicyFeature2["LocalFonts"] = "local-fonts";
+    PermissionsPolicyFeature2["LocalNetwork"] = "local-network";
+    PermissionsPolicyFeature2["LocalNetworkAccess"] = "local-network-access";
+    PermissionsPolicyFeature2["LoopbackNetwork"] = "loopback-network";
+    PermissionsPolicyFeature2["Magnetometer"] = "magnetometer";
+    PermissionsPolicyFeature2["ManualText"] = "manual-text";
+    PermissionsPolicyFeature2["MediaPlaybackWhileNotVisible"] = "media-playback-while-not-visible";
+    PermissionsPolicyFeature2["Microphone"] = "microphone";
+    PermissionsPolicyFeature2["Midi"] = "midi";
+    PermissionsPolicyFeature2["OnDeviceSpeechRecognition"] = "on-device-speech-recognition";
+    PermissionsPolicyFeature2["OtpCredentials"] = "otp-credentials";
+    PermissionsPolicyFeature2["Payment"] = "payment";
+    PermissionsPolicyFeature2["PictureInPicture"] = "picture-in-picture";
+    PermissionsPolicyFeature2["PrivateStateTokenIssuance"] = "private-state-token-issuance";
+    PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
+    PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
+    PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["Rewriter"] = "rewriter";
+    PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["Serial"] = "serial";
+    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
+    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
+    PermissionsPolicyFeature2["SmartCard"] = "smart-card";
+    PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
+    PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
+    PermissionsPolicyFeature2["SubApps"] = "sub-apps";
+    PermissionsPolicyFeature2["Summarizer"] = "summarizer";
+    PermissionsPolicyFeature2["SyncXhr"] = "sync-xhr";
+    PermissionsPolicyFeature2["Tools"] = "tools";
+    PermissionsPolicyFeature2["Translator"] = "translator";
+    PermissionsPolicyFeature2["Unload"] = "unload";
+    PermissionsPolicyFeature2["Usb"] = "usb";
+    PermissionsPolicyFeature2["UsbUnrestricted"] = "usb-unrestricted";
+    PermissionsPolicyFeature2["VerticalScroll"] = "vertical-scroll";
+    PermissionsPolicyFeature2["WebAppInstallation"] = "web-app-installation";
+    PermissionsPolicyFeature2["Webnn"] = "webnn";
+    PermissionsPolicyFeature2["WebPrinting"] = "web-printing";
+    PermissionsPolicyFeature2["WebShare"] = "web-share";
+    PermissionsPolicyFeature2["WindowManagement"] = "window-management";
+    PermissionsPolicyFeature2["Writer"] = "writer";
+    PermissionsPolicyFeature2["XrSpatialTracking"] = "xr-spatial-tracking";
+  })(PermissionsPolicyFeature = Page2.PermissionsPolicyFeature || (Page2.PermissionsPolicyFeature = {}));
+  let PermissionsPolicyBlockReason;
+  ((PermissionsPolicyBlockReason2) => {
+    PermissionsPolicyBlockReason2["Header"] = "Header";
+    PermissionsPolicyBlockReason2["IframeAttribute"] = "IframeAttribute";
+    PermissionsPolicyBlockReason2["InFencedFrameTree"] = "InFencedFrameTree";
+    PermissionsPolicyBlockReason2["InIsolatedApp"] = "InIsolatedApp";
+  })(PermissionsPolicyBlockReason = Page2.PermissionsPolicyBlockReason || (Page2.PermissionsPolicyBlockReason = {}));
+  let OriginTrialTokenStatus;
+  ((OriginTrialTokenStatus2) => {
+    OriginTrialTokenStatus2["Success"] = "Success";
+    OriginTrialTokenStatus2["NotSupported"] = "NotSupported";
+    OriginTrialTokenStatus2["Insecure"] = "Insecure";
+    OriginTrialTokenStatus2["Expired"] = "Expired";
+    OriginTrialTokenStatus2["WrongOrigin"] = "WrongOrigin";
+    OriginTrialTokenStatus2["InvalidSignature"] = "InvalidSignature";
+    OriginTrialTokenStatus2["Malformed"] = "Malformed";
+    OriginTrialTokenStatus2["WrongVersion"] = "WrongVersion";
+    OriginTrialTokenStatus2["FeatureDisabled"] = "FeatureDisabled";
+    OriginTrialTokenStatus2["TokenDisabled"] = "TokenDisabled";
+    OriginTrialTokenStatus2["FeatureDisabledForUser"] = "FeatureDisabledForUser";
+    OriginTrialTokenStatus2["UnknownTrial"] = "UnknownTrial";
+  })(OriginTrialTokenStatus = Page2.OriginTrialTokenStatus || (Page2.OriginTrialTokenStatus = {}));
+  let OriginTrialStatus;
+  ((OriginTrialStatus2) => {
+    OriginTrialStatus2["Enabled"] = "Enabled";
+    OriginTrialStatus2["ValidTokenNotProvided"] = "ValidTokenNotProvided";
+    OriginTrialStatus2["OSNotSupported"] = "OSNotSupported";
+    OriginTrialStatus2["TrialNotAllowed"] = "TrialNotAllowed";
+  })(OriginTrialStatus = Page2.OriginTrialStatus || (Page2.OriginTrialStatus = {}));
+  let OriginTrialUsageRestriction;
+  ((OriginTrialUsageRestriction2) => {
+    OriginTrialUsageRestriction2["None"] = "None";
+    OriginTrialUsageRestriction2["Subset"] = "Subset";
+  })(OriginTrialUsageRestriction = Page2.OriginTrialUsageRestriction || (Page2.OriginTrialUsageRestriction = {}));
+  let TransitionType;
+  ((TransitionType2) => {
+    TransitionType2["Link"] = "link";
+    TransitionType2["Typed"] = "typed";
+    TransitionType2["Address_bar"] = "address_bar";
+    TransitionType2["Auto_bookmark"] = "auto_bookmark";
+    TransitionType2["Auto_subframe"] = "auto_subframe";
+    TransitionType2["Manual_subframe"] = "manual_subframe";
+    TransitionType2["Generated"] = "generated";
+    TransitionType2["Auto_toplevel"] = "auto_toplevel";
+    TransitionType2["Form_submit"] = "form_submit";
+    TransitionType2["Reload"] = "reload";
+    TransitionType2["Keyword"] = "keyword";
+    TransitionType2["Keyword_generated"] = "keyword_generated";
+    TransitionType2["Other"] = "other";
+  })(TransitionType = Page2.TransitionType || (Page2.TransitionType = {}));
+  let DialogType;
+  ((DialogType2) => {
+    DialogType2["Alert"] = "alert";
+    DialogType2["Confirm"] = "confirm";
+    DialogType2["Prompt"] = "prompt";
+    DialogType2["Beforeunload"] = "beforeunload";
+  })(DialogType = Page2.DialogType || (Page2.DialogType = {}));
+  let ClientNavigationReason;
+  ((ClientNavigationReason2) => {
+    ClientNavigationReason2["AnchorClick"] = "anchorClick";
+    ClientNavigationReason2["FormSubmissionGet"] = "formSubmissionGet";
+    ClientNavigationReason2["FormSubmissionPost"] = "formSubmissionPost";
+    ClientNavigationReason2["HttpHeaderRefresh"] = "httpHeaderRefresh";
+    ClientNavigationReason2["InitialFrameNavigation"] = "initialFrameNavigation";
+    ClientNavigationReason2["MetaTagRefresh"] = "metaTagRefresh";
+    ClientNavigationReason2["Other"] = "other";
+    ClientNavigationReason2["PageBlockInterstitial"] = "pageBlockInterstitial";
+    ClientNavigationReason2["Reload"] = "reload";
+    ClientNavigationReason2["ScriptInitiated"] = "scriptInitiated";
+  })(ClientNavigationReason = Page2.ClientNavigationReason || (Page2.ClientNavigationReason = {}));
+  let ClientNavigationDisposition;
+  ((ClientNavigationDisposition2) => {
+    ClientNavigationDisposition2["CurrentTab"] = "currentTab";
+    ClientNavigationDisposition2["NewTab"] = "newTab";
+    ClientNavigationDisposition2["NewWindow"] = "newWindow";
+    ClientNavigationDisposition2["Download"] = "download";
+  })(ClientNavigationDisposition = Page2.ClientNavigationDisposition || (Page2.ClientNavigationDisposition = {}));
+  let ReferrerPolicy;
+  ((ReferrerPolicy2) => {
+    ReferrerPolicy2["NoReferrer"] = "noReferrer";
+    ReferrerPolicy2["NoReferrerWhenDowngrade"] = "noReferrerWhenDowngrade";
+    ReferrerPolicy2["Origin"] = "origin";
+    ReferrerPolicy2["OriginWhenCrossOrigin"] = "originWhenCrossOrigin";
+    ReferrerPolicy2["SameOrigin"] = "sameOrigin";
+    ReferrerPolicy2["StrictOrigin"] = "strictOrigin";
+    ReferrerPolicy2["StrictOriginWhenCrossOrigin"] = "strictOriginWhenCrossOrigin";
+    ReferrerPolicy2["UnsafeUrl"] = "unsafeUrl";
+  })(ReferrerPolicy = Page2.ReferrerPolicy || (Page2.ReferrerPolicy = {}));
+  let NavigationType;
+  ((NavigationType2) => {
+    NavigationType2["Navigation"] = "Navigation";
+    NavigationType2["BackForwardCacheRestore"] = "BackForwardCacheRestore";
+  })(NavigationType = Page2.NavigationType || (Page2.NavigationType = {}));
+  let BackForwardCacheNotRestoredReason;
+  ((BackForwardCacheNotRestoredReason2) => {
+    BackForwardCacheNotRestoredReason2["NotPrimaryMainFrame"] = "NotPrimaryMainFrame";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabled"] = "BackForwardCacheDisabled";
+    BackForwardCacheNotRestoredReason2["RelatedActiveContentsExist"] = "RelatedActiveContentsExist";
+    BackForwardCacheNotRestoredReason2["HTTPStatusNotOK"] = "HTTPStatusNotOK";
+    BackForwardCacheNotRestoredReason2["SchemeNotHTTPOrHTTPS"] = "SchemeNotHTTPOrHTTPS";
+    BackForwardCacheNotRestoredReason2["Loading"] = "Loading";
+    BackForwardCacheNotRestoredReason2["WasGrantedMediaAccess"] = "WasGrantedMediaAccess";
+    BackForwardCacheNotRestoredReason2["DisableForRenderFrameHostCalled"] = "DisableForRenderFrameHostCalled";
+    BackForwardCacheNotRestoredReason2["DomainNotAllowed"] = "DomainNotAllowed";
+    BackForwardCacheNotRestoredReason2["HTTPMethodNotGET"] = "HTTPMethodNotGET";
+    BackForwardCacheNotRestoredReason2["SubframeIsNavigating"] = "SubframeIsNavigating";
+    BackForwardCacheNotRestoredReason2["Timeout"] = "Timeout";
+    BackForwardCacheNotRestoredReason2["CacheLimit"] = "CacheLimit";
+    BackForwardCacheNotRestoredReason2["JavaScriptExecution"] = "JavaScriptExecution";
+    BackForwardCacheNotRestoredReason2["RendererProcessKilled"] = "RendererProcessKilled";
+    BackForwardCacheNotRestoredReason2["RendererProcessCrashed"] = "RendererProcessCrashed";
+    BackForwardCacheNotRestoredReason2["SchedulerTrackedFeatureUsed"] = "SchedulerTrackedFeatureUsed";
+    BackForwardCacheNotRestoredReason2["ConflictingBrowsingInstance"] = "ConflictingBrowsingInstance";
+    BackForwardCacheNotRestoredReason2["CacheFlushed"] = "CacheFlushed";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerVersionActivation"] = "ServiceWorkerVersionActivation";
+    BackForwardCacheNotRestoredReason2["SessionRestored"] = "SessionRestored";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerPostMessage"] = "ServiceWorkerPostMessage";
+    BackForwardCacheNotRestoredReason2["EnteredBackForwardCacheBeforeServiceWorkerHostAdded"] = "EnteredBackForwardCacheBeforeServiceWorkerHostAdded";
+    BackForwardCacheNotRestoredReason2["RenderFrameHostReused_SameSite"] = "RenderFrameHostReused_SameSite";
+    BackForwardCacheNotRestoredReason2["RenderFrameHostReused_CrossSite"] = "RenderFrameHostReused_CrossSite";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerClaim"] = "ServiceWorkerClaim";
+    BackForwardCacheNotRestoredReason2["IgnoreEventAndEvict"] = "IgnoreEventAndEvict";
+    BackForwardCacheNotRestoredReason2["HaveInnerContents"] = "HaveInnerContents";
+    BackForwardCacheNotRestoredReason2["TimeoutPuttingInCache"] = "TimeoutPuttingInCache";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledByLowMemory"] = "BackForwardCacheDisabledByLowMemory";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledByCommandLine"] = "BackForwardCacheDisabledByCommandLine";
+    BackForwardCacheNotRestoredReason2["NetworkRequestDatAPIpeDrainedAsBytesConsumer"] = "NetworkRequestDatapipeDrainedAsBytesConsumer";
+    BackForwardCacheNotRestoredReason2["NetworkRequestRedirected"] = "NetworkRequestRedirected";
+    BackForwardCacheNotRestoredReason2["NetworkRequestTimeout"] = "NetworkRequestTimeout";
+    BackForwardCacheNotRestoredReason2["NetworkExceedsBufferLimit"] = "NetworkExceedsBufferLimit";
+    BackForwardCacheNotRestoredReason2["NavigationCancelledWhileRestoring"] = "NavigationCancelledWhileRestoring";
+    BackForwardCacheNotRestoredReason2["NotMostRecentNavigationEntry"] = "NotMostRecentNavigationEntry";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledForPrerender"] = "BackForwardCacheDisabledForPrerender";
+    BackForwardCacheNotRestoredReason2["UserAgentOverrideDiffers"] = "UserAgentOverrideDiffers";
+    BackForwardCacheNotRestoredReason2["ForegroundCacheLimit"] = "ForegroundCacheLimit";
+    BackForwardCacheNotRestoredReason2["ForwardCacheDisabled"] = "ForwardCacheDisabled";
+    BackForwardCacheNotRestoredReason2["BrowsingInstanceNotSwapped"] = "BrowsingInstanceNotSwapped";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledForDelegate"] = "BackForwardCacheDisabledForDelegate";
+    BackForwardCacheNotRestoredReason2["UnloadHandlerExistsInMainFrame"] = "UnloadHandlerExistsInMainFrame";
+    BackForwardCacheNotRestoredReason2["UnloadHandlerExistsInSubFrame"] = "UnloadHandlerExistsInSubFrame";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerUnregistration"] = "ServiceWorkerUnregistration";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStore"] = "CacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreCookieModified"] = "CacheControlNoStoreCookieModified";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreHTTPOnlyCookieModified"] = "CacheControlNoStoreHTTPOnlyCookieModified";
+    BackForwardCacheNotRestoredReason2["NoResponseHead"] = "NoResponseHead";
+    BackForwardCacheNotRestoredReason2["Unknown"] = "Unknown";
+    BackForwardCacheNotRestoredReason2["ActivationNavigationsDisallowedForBug1234857"] = "ActivationNavigationsDisallowedForBug1234857";
+    BackForwardCacheNotRestoredReason2["ErrorDocument"] = "ErrorDocument";
+    BackForwardCacheNotRestoredReason2["FencedFramesEmbedder"] = "FencedFramesEmbedder";
+    BackForwardCacheNotRestoredReason2["CookieDisabled"] = "CookieDisabled";
+    BackForwardCacheNotRestoredReason2["HTTPAuthRequired"] = "HTTPAuthRequired";
+    BackForwardCacheNotRestoredReason2["CookieFlushed"] = "CookieFlushed";
+    BackForwardCacheNotRestoredReason2["BroadcastChannelOnMessage"] = "BroadcastChannelOnMessage";
+    BackForwardCacheNotRestoredReason2["WebViewSettingsChanged"] = "WebViewSettingsChanged";
+    BackForwardCacheNotRestoredReason2["WebViewJavaScriptObjectChanged"] = "WebViewJavaScriptObjectChanged";
+    BackForwardCacheNotRestoredReason2["WebViewMessageListenerInjected"] = "WebViewMessageListenerInjected";
+    BackForwardCacheNotRestoredReason2["WebViewSafeBrowsingAllowlistChanged"] = "WebViewSafeBrowsingAllowlistChanged";
+    BackForwardCacheNotRestoredReason2["WebViewDocumentStartJavascriptChanged"] = "WebViewDocumentStartJavascriptChanged";
+    BackForwardCacheNotRestoredReason2["WebSocket"] = "WebSocket";
+    BackForwardCacheNotRestoredReason2["WebTransport"] = "WebTransport";
+    BackForwardCacheNotRestoredReason2["WebRTC"] = "WebRTC";
+    BackForwardCacheNotRestoredReason2["MainResourceHasCacheControlNoStore"] = "MainResourceHasCacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["MainResourceHasCacheControlNoCache"] = "MainResourceHasCacheControlNoCache";
+    BackForwardCacheNotRestoredReason2["SubresourceHasCacheControlNoStore"] = "SubresourceHasCacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["SubresourceHasCacheControlNoCache"] = "SubresourceHasCacheControlNoCache";
+    BackForwardCacheNotRestoredReason2["ContainsPlugins"] = "ContainsPlugins";
+    BackForwardCacheNotRestoredReason2["DocumentLoaded"] = "DocumentLoaded";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestOthers"] = "OutstandingNetworkRequestOthers";
+    BackForwardCacheNotRestoredReason2["RequestedMIDIPermission"] = "RequestedMIDIPermission";
+    BackForwardCacheNotRestoredReason2["RequestedAudioCapturePermission"] = "RequestedAudioCapturePermission";
+    BackForwardCacheNotRestoredReason2["RequestedVideoCapturePermission"] = "RequestedVideoCapturePermission";
+    BackForwardCacheNotRestoredReason2["RequestedBackForwardCacheBlockedSensors"] = "RequestedBackForwardCacheBlockedSensors";
+    BackForwardCacheNotRestoredReason2["RequestedBackgroundWorkPermission"] = "RequestedBackgroundWorkPermission";
+    BackForwardCacheNotRestoredReason2["BroadcastChannel"] = "BroadcastChannel";
+    BackForwardCacheNotRestoredReason2["WebXR"] = "WebXR";
+    BackForwardCacheNotRestoredReason2["SharedWorker"] = "SharedWorker";
+    BackForwardCacheNotRestoredReason2["SharedWorkerMessage"] = "SharedWorkerMessage";
+    BackForwardCacheNotRestoredReason2["SharedWorkerWithNoActiveClient"] = "SharedWorkerWithNoActiveClient";
+    BackForwardCacheNotRestoredReason2["WebLocks"] = "WebLocks";
+    BackForwardCacheNotRestoredReason2["WebLocksContention"] = "WebLocksContention";
+    BackForwardCacheNotRestoredReason2["WebHID"] = "WebHID";
+    BackForwardCacheNotRestoredReason2["WebBluetooth"] = "WebBluetooth";
+    BackForwardCacheNotRestoredReason2["WebShare"] = "WebShare";
+    BackForwardCacheNotRestoredReason2["RequestedStorageAccessGrant"] = "RequestedStorageAccessGrant";
+    BackForwardCacheNotRestoredReason2["WebNfc"] = "WebNfc";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestFetch"] = "OutstandingNetworkRequestFetch";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestXHR"] = "OutstandingNetworkRequestXHR";
+    BackForwardCacheNotRestoredReason2["AppBanner"] = "AppBanner";
+    BackForwardCacheNotRestoredReason2["Printing"] = "Printing";
+    BackForwardCacheNotRestoredReason2["WebDatabase"] = "WebDatabase";
+    BackForwardCacheNotRestoredReason2["PictureInPicture"] = "PictureInPicture";
+    BackForwardCacheNotRestoredReason2["SpeechRecognizer"] = "SpeechRecognizer";
+    BackForwardCacheNotRestoredReason2["IdleManager"] = "IdleManager";
+    BackForwardCacheNotRestoredReason2["PaymentManager"] = "PaymentManager";
+    BackForwardCacheNotRestoredReason2["SpeechSynthesis"] = "SpeechSynthesis";
+    BackForwardCacheNotRestoredReason2["KeyboardLock"] = "KeyboardLock";
+    BackForwardCacheNotRestoredReason2["WebOTPService"] = "WebOTPService";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestDirectSocket"] = "OutstandingNetworkRequestDirectSocket";
+    BackForwardCacheNotRestoredReason2["InjectedJavascript"] = "InjectedJavascript";
+    BackForwardCacheNotRestoredReason2["InjectedStyleSheet"] = "InjectedStyleSheet";
+    BackForwardCacheNotRestoredReason2["KeepaliveRequest"] = "KeepaliveRequest";
+    BackForwardCacheNotRestoredReason2["IndexedDBEvent"] = "IndexedDBEvent";
+    BackForwardCacheNotRestoredReason2["Dummy"] = "Dummy";
+    BackForwardCacheNotRestoredReason2["JsNetworkRequestReceivedCacheControlNoStoreResource"] = "JsNetworkRequestReceivedCacheControlNoStoreResource";
+    BackForwardCacheNotRestoredReason2["WebRTCUsedWithCCNS"] = "WebRTCUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["WebTransportUsedWithCCNS"] = "WebTransportUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["WebSocketUsedWithCCNS"] = "WebSocketUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["SmartCard"] = "SmartCard";
+    BackForwardCacheNotRestoredReason2["LiveMediaStreamTrack"] = "LiveMediaStreamTrack";
+    BackForwardCacheNotRestoredReason2["UnloadHandler"] = "UnloadHandler";
+    BackForwardCacheNotRestoredReason2["ParserAborted"] = "ParserAborted";
+    BackForwardCacheNotRestoredReason2["ContentSecurityHandler"] = "ContentSecurityHandler";
+    BackForwardCacheNotRestoredReason2["ContentWebAuthenticationAPI"] = "ContentWebAuthenticationAPI";
+    BackForwardCacheNotRestoredReason2["ContentFileChooser"] = "ContentFileChooser";
+    BackForwardCacheNotRestoredReason2["ContentSerial"] = "ContentSerial";
+    BackForwardCacheNotRestoredReason2["ContentFileSystemAccess"] = "ContentFileSystemAccess";
+    BackForwardCacheNotRestoredReason2["ContentMediaDevicesDispatcherHost"] = "ContentMediaDevicesDispatcherHost";
+    BackForwardCacheNotRestoredReason2["ContentWebBluetooth"] = "ContentWebBluetooth";
+    BackForwardCacheNotRestoredReason2["ContentWebUSB"] = "ContentWebUSB";
+    BackForwardCacheNotRestoredReason2["ContentMediaSessionService"] = "ContentMediaSessionService";
+    BackForwardCacheNotRestoredReason2["ContentScreenReader"] = "ContentScreenReader";
+    BackForwardCacheNotRestoredReason2["ContentDiscarded"] = "ContentDiscarded";
+    BackForwardCacheNotRestoredReason2["EmbedderPopupBlockerTabHelper"] = "EmbedderPopupBlockerTabHelper";
+    BackForwardCacheNotRestoredReason2["EmbedderSafeBrowsingTriggeredPopupBlocker"] = "EmbedderSafeBrowsingTriggeredPopupBlocker";
+    BackForwardCacheNotRestoredReason2["EmbedderSafeBrowsingThreatDetails"] = "EmbedderSafeBrowsingThreatDetails";
+    BackForwardCacheNotRestoredReason2["EmbedderAppBannerManager"] = "EmbedderAppBannerManager";
+    BackForwardCacheNotRestoredReason2["EmbedderDomDistillerViewerSource"] = "EmbedderDomDistillerViewerSource";
+    BackForwardCacheNotRestoredReason2["EmbedderDomDistillerSelfDeletingRequestDelegate"] = "EmbedderDomDistillerSelfDeletingRequestDelegate";
+    BackForwardCacheNotRestoredReason2["EmbedderOomInterventionTabHelper"] = "EmbedderOomInterventionTabHelper";
+    BackForwardCacheNotRestoredReason2["EmbedderOfflinePage"] = "EmbedderOfflinePage";
+    BackForwardCacheNotRestoredReason2["EmbedderChromePasswordManagerClientBindCredentialManager"] = "EmbedderChromePasswordManagerClientBindCredentialManager";
+    BackForwardCacheNotRestoredReason2["EmbedderPermissionRequestManager"] = "EmbedderPermissionRequestManager";
+    BackForwardCacheNotRestoredReason2["EmbedderModalDialog"] = "EmbedderModalDialog";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensions"] = "EmbedderExtensions";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionMessaging"] = "EmbedderExtensionMessaging";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionMessagingForOpenPort"] = "EmbedderExtensionMessagingForOpenPort";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionSentMessageToCachedFrame"] = "EmbedderExtensionSentMessageToCachedFrame";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionFrame"] = "EmbedderExtensionFrame";
+    BackForwardCacheNotRestoredReason2["EmbedderPrivilegedWebContents"] = "EmbedderPrivilegedWebContents";
+    BackForwardCacheNotRestoredReason2["RequestedByWebViewClient"] = "RequestedByWebViewClient";
+    BackForwardCacheNotRestoredReason2["PostMessageByWebViewClient"] = "PostMessageByWebViewClient";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreDeviceBoundSessionTerminated"] = "CacheControlNoStoreDeviceBoundSessionTerminated";
+    BackForwardCacheNotRestoredReason2["CacheLimitPrunedOnModerateMemoryPressure"] = "CacheLimitPrunedOnModerateMemoryPressure";
+    BackForwardCacheNotRestoredReason2["CacheLimitPrunedOnCriticalMemoryPressure"] = "CacheLimitPrunedOnCriticalMemoryPressure";
+  })(BackForwardCacheNotRestoredReason = Page2.BackForwardCacheNotRestoredReason || (Page2.BackForwardCacheNotRestoredReason = {}));
+  let BackForwardCacheNotRestoredReasonType;
+  ((BackForwardCacheNotRestoredReasonType2) => {
+    BackForwardCacheNotRestoredReasonType2["SupportPending"] = "SupportPending";
+    BackForwardCacheNotRestoredReasonType2["PageSupportNeeded"] = "PageSupportNeeded";
+    BackForwardCacheNotRestoredReasonType2["Circumstantial"] = "Circumstantial";
+  })(BackForwardCacheNotRestoredReasonType = Page2.BackForwardCacheNotRestoredReasonType || (Page2.BackForwardCacheNotRestoredReasonType = {}));
+  let CaptureScreenshotRequestFormat;
+  ((CaptureScreenshotRequestFormat2) => {
+    CaptureScreenshotRequestFormat2["Jpeg"] = "jpeg";
+    CaptureScreenshotRequestFormat2["Png"] = "png";
+    CaptureScreenshotRequestFormat2["Webp"] = "webp";
+  })(CaptureScreenshotRequestFormat = Page2.CaptureScreenshotRequestFormat || (Page2.CaptureScreenshotRequestFormat = {}));
+  let CaptureSnapshotRequestFormat;
+  ((CaptureSnapshotRequestFormat2) => {
+    CaptureSnapshotRequestFormat2["MHTML"] = "mhtml";
+  })(CaptureSnapshotRequestFormat = Page2.CaptureSnapshotRequestFormat || (Page2.CaptureSnapshotRequestFormat = {}));
+  let PrintToPDFRequestTransferMode;
+  ((PrintToPDFRequestTransferMode2) => {
+    PrintToPDFRequestTransferMode2["ReturnAsBase64"] = "ReturnAsBase64";
+    PrintToPDFRequestTransferMode2["ReturnAsStream"] = "ReturnAsStream";
+  })(PrintToPDFRequestTransferMode = Page2.PrintToPDFRequestTransferMode || (Page2.PrintToPDFRequestTransferMode = {}));
+  let SetDownloadBehaviorRequestBehavior;
+  ((SetDownloadBehaviorRequestBehavior2) => {
+    SetDownloadBehaviorRequestBehavior2["Deny"] = "deny";
+    SetDownloadBehaviorRequestBehavior2["Allow"] = "allow";
+    SetDownloadBehaviorRequestBehavior2["Default"] = "default";
+  })(SetDownloadBehaviorRequestBehavior = Page2.SetDownloadBehaviorRequestBehavior || (Page2.SetDownloadBehaviorRequestBehavior = {}));
+  let SetTouchEmulationEnabledRequestConfiguration;
+  ((SetTouchEmulationEnabledRequestConfiguration2) => {
+    SetTouchEmulationEnabledRequestConfiguration2["Mobile"] = "mobile";
+    SetTouchEmulationEnabledRequestConfiguration2["Desktop"] = "desktop";
+  })(SetTouchEmulationEnabledRequestConfiguration = Page2.SetTouchEmulationEnabledRequestConfiguration || (Page2.SetTouchEmulationEnabledRequestConfiguration = {}));
+  let StartScreencastRequestFormat;
+  ((StartScreencastRequestFormat2) => {
+    StartScreencastRequestFormat2["Jpeg"] = "jpeg";
+    StartScreencastRequestFormat2["Png"] = "png";
+  })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let SetWebLifecycleStateRequestState;
+  ((SetWebLifecycleStateRequestState2) => {
+    SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
+    SetWebLifecycleStateRequestState2["Active"] = "active";
+  })(SetWebLifecycleStateRequestState = Page2.SetWebLifecycleStateRequestState || (Page2.SetWebLifecycleStateRequestState = {}));
+  let SetSPCTransactionModeRequestMode;
+  ((SetSPCTransactionModeRequestMode2) => {
+    SetSPCTransactionModeRequestMode2["None"] = "none";
+    SetSPCTransactionModeRequestMode2["AutoAccept"] = "autoAccept";
+    SetSPCTransactionModeRequestMode2["AutoChooseToAuthAnotherWay"] = "autoChooseToAuthAnotherWay";
+    SetSPCTransactionModeRequestMode2["AutoReject"] = "autoReject";
+    SetSPCTransactionModeRequestMode2["AutoOptOut"] = "autoOptOut";
+  })(SetSPCTransactionModeRequestMode = Page2.SetSPCTransactionModeRequestMode || (Page2.SetSPCTransactionModeRequestMode = {}));
+  let SetRPHRegistrationModeRequestMode;
+  ((SetRPHRegistrationModeRequestMode2) => {
+    SetRPHRegistrationModeRequestMode2["None"] = "none";
+    SetRPHRegistrationModeRequestMode2["AutoAccept"] = "autoAccept";
+    SetRPHRegistrationModeRequestMode2["AutoReject"] = "autoReject";
+  })(SetRPHRegistrationModeRequestMode = Page2.SetRPHRegistrationModeRequestMode || (Page2.SetRPHRegistrationModeRequestMode = {}));
+  let FileChooserOpenedEventMode;
+  ((FileChooserOpenedEventMode2) => {
+    FileChooserOpenedEventMode2["SelectSingle"] = "selectSingle";
+    FileChooserOpenedEventMode2["SelectMultiple"] = "selectMultiple";
+  })(FileChooserOpenedEventMode = Page2.FileChooserOpenedEventMode || (Page2.FileChooserOpenedEventMode = {}));
+  let FrameDetachedEventReason;
+  ((FrameDetachedEventReason2) => {
+    FrameDetachedEventReason2["Remove"] = "remove";
+    FrameDetachedEventReason2["Swap"] = "swap";
+  })(FrameDetachedEventReason = Page2.FrameDetachedEventReason || (Page2.FrameDetachedEventReason = {}));
+  let FrameStartedNavigatingEventNavigationType;
+  ((FrameStartedNavigatingEventNavigationType2) => {
+    FrameStartedNavigatingEventNavigationType2["Reload"] = "reload";
+    FrameStartedNavigatingEventNavigationType2["ReloadBypassingCache"] = "reloadBypassingCache";
+    FrameStartedNavigatingEventNavigationType2["Restore"] = "restore";
+    FrameStartedNavigatingEventNavigationType2["RestoreWithPost"] = "restoreWithPost";
+    FrameStartedNavigatingEventNavigationType2["HistorySameDocument"] = "historySameDocument";
+    FrameStartedNavigatingEventNavigationType2["HistoryDifferentDocument"] = "historyDifferentDocument";
+    FrameStartedNavigatingEventNavigationType2["SameDocument"] = "sameDocument";
+    FrameStartedNavigatingEventNavigationType2["DifferentDocument"] = "differentDocument";
+  })(FrameStartedNavigatingEventNavigationType = Page2.FrameStartedNavigatingEventNavigationType || (Page2.FrameStartedNavigatingEventNavigationType = {}));
+  let DownloadProgressEventState;
+  ((DownloadProgressEventState2) => {
+    DownloadProgressEventState2["InProgress"] = "inProgress";
+    DownloadProgressEventState2["Completed"] = "completed";
+    DownloadProgressEventState2["Canceled"] = "canceled";
+  })(DownloadProgressEventState = Page2.DownloadProgressEventState || (Page2.DownloadProgressEventState = {}));
+  let NavigatedWithinDocumentEventNavigationType;
+  ((NavigatedWithinDocumentEventNavigationType2) => {
+    NavigatedWithinDocumentEventNavigationType2["Fragment"] = "fragment";
+    NavigatedWithinDocumentEventNavigationType2["HistoryAPI"] = "historyApi";
+    NavigatedWithinDocumentEventNavigationType2["Other"] = "other";
+  })(NavigatedWithinDocumentEventNavigationType = Page2.NavigatedWithinDocumentEventNavigationType || (Page2.NavigatedWithinDocumentEventNavigationType = {}));
+})(Page || (Page = {}));
+var Performance;
+((Performance2) => {
+  let EnableRequestTimeDomain;
+  ((EnableRequestTimeDomain2) => {
+    EnableRequestTimeDomain2["TimeTicks"] = "timeTicks";
+    EnableRequestTimeDomain2["ThreadTicks"] = "threadTicks";
+  })(EnableRequestTimeDomain = Performance2.EnableRequestTimeDomain || (Performance2.EnableRequestTimeDomain = {}));
+  let SetTimeDomainRequestTimeDomain;
+  ((SetTimeDomainRequestTimeDomain2) => {
+    SetTimeDomainRequestTimeDomain2["TimeTicks"] = "timeTicks";
+    SetTimeDomainRequestTimeDomain2["ThreadTicks"] = "threadTicks";
+  })(SetTimeDomainRequestTimeDomain = Performance2.SetTimeDomainRequestTimeDomain || (Performance2.SetTimeDomainRequestTimeDomain = {}));
+})(Performance || (Performance = {}));
+var Preload;
+((Preload2) => {
+  let RuleSetErrorType;
+  ((RuleSetErrorType2) => {
+    RuleSetErrorType2["SourceIsNotJsonObject"] = "SourceIsNotJsonObject";
+    RuleSetErrorType2["InvalidRulesSkipped"] = "InvalidRulesSkipped";
+    RuleSetErrorType2["InvalidRulesetLevelTag"] = "InvalidRulesetLevelTag";
+  })(RuleSetErrorType = Preload2.RuleSetErrorType || (Preload2.RuleSetErrorType = {}));
+  let SpeculationAction;
+  ((SpeculationAction2) => {
+    SpeculationAction2["Prefetch"] = "Prefetch";
+    SpeculationAction2["Prerender"] = "Prerender";
+    SpeculationAction2["PrerenderUntilScript"] = "PrerenderUntilScript";
+  })(SpeculationAction = Preload2.SpeculationAction || (Preload2.SpeculationAction = {}));
+  let SpeculationTargetHint;
+  ((SpeculationTargetHint2) => {
+    SpeculationTargetHint2["Blank"] = "Blank";
+    SpeculationTargetHint2["Self"] = "Self";
+  })(SpeculationTargetHint = Preload2.SpeculationTargetHint || (Preload2.SpeculationTargetHint = {}));
+  let PrerenderFinalStatus;
+  ((PrerenderFinalStatus2) => {
+    PrerenderFinalStatus2["Activated"] = "Activated";
+    PrerenderFinalStatus2["Destroyed"] = "Destroyed";
+    PrerenderFinalStatus2["LowEndDevice"] = "LowEndDevice";
+    PrerenderFinalStatus2["InvalidSchemeRedirect"] = "InvalidSchemeRedirect";
+    PrerenderFinalStatus2["InvalidSchemeNavigation"] = "InvalidSchemeNavigation";
+    PrerenderFinalStatus2["NavigationRequestBlockedByCsp"] = "NavigationRequestBlockedByCsp";
+    PrerenderFinalStatus2["MojoBinderPolicy"] = "MojoBinderPolicy";
+    PrerenderFinalStatus2["RendererProcessCrashed"] = "RendererProcessCrashed";
+    PrerenderFinalStatus2["RendererProcessKilled"] = "RendererProcessKilled";
+    PrerenderFinalStatus2["Download"] = "Download";
+    PrerenderFinalStatus2["TriggerDestroyed"] = "TriggerDestroyed";
+    PrerenderFinalStatus2["NavigationNotCommitted"] = "NavigationNotCommitted";
+    PrerenderFinalStatus2["NavigationBadHttpStatus"] = "NavigationBadHttpStatus";
+    PrerenderFinalStatus2["ClientCertRequested"] = "ClientCertRequested";
+    PrerenderFinalStatus2["NavigationRequestNetworkError"] = "NavigationRequestNetworkError";
+    PrerenderFinalStatus2["CancelAllHostsForTesting"] = "CancelAllHostsForTesting";
+    PrerenderFinalStatus2["DidFailLoad"] = "DidFailLoad";
+    PrerenderFinalStatus2["Stop"] = "Stop";
+    PrerenderFinalStatus2["SslCertificateError"] = "SslCertificateError";
+    PrerenderFinalStatus2["LoginAuthRequested"] = "LoginAuthRequested";
+    PrerenderFinalStatus2["UaChangeRequiresReload"] = "UaChangeRequiresReload";
+    PrerenderFinalStatus2["BlockedByClient"] = "BlockedByClient";
+    PrerenderFinalStatus2["AudioOutputDeviceRequested"] = "AudioOutputDeviceRequested";
+    PrerenderFinalStatus2["MixedContent"] = "MixedContent";
+    PrerenderFinalStatus2["TriggerBackgrounded"] = "TriggerBackgrounded";
+    PrerenderFinalStatus2["MemoryLimitExceeded"] = "MemoryLimitExceeded";
+    PrerenderFinalStatus2["DataSaverEnabled"] = "DataSaverEnabled";
+    PrerenderFinalStatus2["TriggerUrlHasEffectiveUrl"] = "TriggerUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["ActivatedBeforeStarted"] = "ActivatedBeforeStarted";
+    PrerenderFinalStatus2["InactivePageRestriction"] = "InactivePageRestriction";
+    PrerenderFinalStatus2["StartFailed"] = "StartFailed";
+    PrerenderFinalStatus2["TimeoutBackgrounded"] = "TimeoutBackgrounded";
+    PrerenderFinalStatus2["CrossSiteRedirectInInitialNavigation"] = "CrossSiteRedirectInInitialNavigation";
+    PrerenderFinalStatus2["CrossSiteNavigationInInitialNavigation"] = "CrossSiteNavigationInInitialNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginRedirectNotOptInInInitialNavigation"] = "SameSiteCrossOriginRedirectNotOptInInInitialNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginNavigationNotOptInInInitialNavigation"] = "SameSiteCrossOriginNavigationNotOptInInInitialNavigation";
+    PrerenderFinalStatus2["ActivationNavigationParameterMismatch"] = "ActivationNavigationParameterMismatch";
+    PrerenderFinalStatus2["ActivatedInBackground"] = "ActivatedInBackground";
+    PrerenderFinalStatus2["EmbedderHostDisallowed"] = "EmbedderHostDisallowed";
+    PrerenderFinalStatus2["ActivationNavigationDestroyedBeforeSuccess"] = "ActivationNavigationDestroyedBeforeSuccess";
+    PrerenderFinalStatus2["TabClosedByUserGesture"] = "TabClosedByUserGesture";
+    PrerenderFinalStatus2["TabClosedWithoutUserGesture"] = "TabClosedWithoutUserGesture";
+    PrerenderFinalStatus2["PrimaryMainFrameRendererProcessCrashed"] = "PrimaryMainFrameRendererProcessCrashed";
+    PrerenderFinalStatus2["PrimaryMainFrameRendererProcessKilled"] = "PrimaryMainFrameRendererProcessKilled";
+    PrerenderFinalStatus2["ActivationFramePolicyNotCompatible"] = "ActivationFramePolicyNotCompatible";
+    PrerenderFinalStatus2["PreloadingDisabled"] = "PreloadingDisabled";
+    PrerenderFinalStatus2["BatterySaverEnabled"] = "BatterySaverEnabled";
+    PrerenderFinalStatus2["ActivatedDuringMainFrameNavigation"] = "ActivatedDuringMainFrameNavigation";
+    PrerenderFinalStatus2["PreloadingUnsupportedByWebContents"] = "PreloadingUnsupportedByWebContents";
+    PrerenderFinalStatus2["CrossSiteRedirectInMainFrameNavigation"] = "CrossSiteRedirectInMainFrameNavigation";
+    PrerenderFinalStatus2["CrossSiteNavigationInMainFrameNavigation"] = "CrossSiteNavigationInMainFrameNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation"] = "SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation"] = "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation";
+    PrerenderFinalStatus2["MemoryPressureOnTrigger"] = "MemoryPressureOnTrigger";
+    PrerenderFinalStatus2["MemoryPressureAfterTriggered"] = "MemoryPressureAfterTriggered";
+    PrerenderFinalStatus2["PrerenderingDisabledByDevTools"] = "PrerenderingDisabledByDevTools";
+    PrerenderFinalStatus2["SpeculationRuleRemoved"] = "SpeculationRuleRemoved";
+    PrerenderFinalStatus2["ActivatedWithAuxiliaryBrowsingContexts"] = "ActivatedWithAuxiliaryBrowsingContexts";
+    PrerenderFinalStatus2["MaxNumOfRunningEagerPrerendersExceeded"] = "MaxNumOfRunningEagerPrerendersExceeded";
+    PrerenderFinalStatus2["MaxNumOfRunningNonEagerPrerendersExceeded"] = "MaxNumOfRunningNonEagerPrerendersExceeded";
+    PrerenderFinalStatus2["MaxNumOfRunningEmbedderPrerendersExceeded"] = "MaxNumOfRunningEmbedderPrerendersExceeded";
+    PrerenderFinalStatus2["PrerenderingUrlHasEffectiveUrl"] = "PrerenderingUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["RedirectedPrerenderingUrlHasEffectiveUrl"] = "RedirectedPrerenderingUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["ActivationUrlHasEffectiveUrl"] = "ActivationUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["JavaScriptInterfaceAdded"] = "JavaScriptInterfaceAdded";
+    PrerenderFinalStatus2["JavaScriptInterfaceRemoved"] = "JavaScriptInterfaceRemoved";
+    PrerenderFinalStatus2["AllPrerenderingCanceled"] = "AllPrerenderingCanceled";
+    PrerenderFinalStatus2["WindowClosed"] = "WindowClosed";
+    PrerenderFinalStatus2["SlowNetwork"] = "SlowNetwork";
+    PrerenderFinalStatus2["OtherPrerenderedPageActivated"] = "OtherPrerenderedPageActivated";
+    PrerenderFinalStatus2["V8OptimizerDisabled"] = "V8OptimizerDisabled";
+    PrerenderFinalStatus2["PrerenderFailedDuringPrefetch"] = "PrerenderFailedDuringPrefetch";
+    PrerenderFinalStatus2["BrowsingDataRemoved"] = "BrowsingDataRemoved";
+    PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
+    PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
+    PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+  })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
+  let PreloadingStatus;
+  ((PreloadingStatus2) => {
+    PreloadingStatus2["Pending"] = "Pending";
+    PreloadingStatus2["Running"] = "Running";
+    PreloadingStatus2["Ready"] = "Ready";
+    PreloadingStatus2["Success"] = "Success";
+    PreloadingStatus2["Failure"] = "Failure";
+    PreloadingStatus2["NotSupported"] = "NotSupported";
+  })(PreloadingStatus = Preload2.PreloadingStatus || (Preload2.PreloadingStatus = {}));
+  let PrefetchStatus;
+  ((PrefetchStatus2) => {
+    PrefetchStatus2["PrefetchAllowed"] = "PrefetchAllowed";
+    PrefetchStatus2["PrefetchFailedIneligibleRedirect"] = "PrefetchFailedIneligibleRedirect";
+    PrefetchStatus2["PrefetchFailedInvalidRedirect"] = "PrefetchFailedInvalidRedirect";
+    PrefetchStatus2["PrefetchFailedMIMENotSupported"] = "PrefetchFailedMIMENotSupported";
+    PrefetchStatus2["PrefetchFailedNetError"] = "PrefetchFailedNetError";
+    PrefetchStatus2["PrefetchFailedNon2XX"] = "PrefetchFailedNon2XX";
+    PrefetchStatus2["PrefetchEvictedAfterBrowsingDataRemoved"] = "PrefetchEvictedAfterBrowsingDataRemoved";
+    PrefetchStatus2["PrefetchEvictedAfterCandidateRemoved"] = "PrefetchEvictedAfterCandidateRemoved";
+    PrefetchStatus2["PrefetchEvictedForNewerPrefetch"] = "PrefetchEvictedForNewerPrefetch";
+    PrefetchStatus2["PrefetchHeldback"] = "PrefetchHeldback";
+    PrefetchStatus2["PrefetchIneligibleRetryAfter"] = "PrefetchIneligibleRetryAfter";
+    PrefetchStatus2["PrefetchIsPrivacyDecoy"] = "PrefetchIsPrivacyDecoy";
+    PrefetchStatus2["PrefetchIsStale"] = "PrefetchIsStale";
+    PrefetchStatus2["PrefetchNotEligibleBlockedByConnectionAllowlist"] = "PrefetchNotEligibleBlockedByConnectionAllowlist";
+    PrefetchStatus2["PrefetchNotEligibleBrowserContextOffTheRecord"] = "PrefetchNotEligibleBrowserContextOffTheRecord";
+    PrefetchStatus2["PrefetchNotEligibleCrossOrigin"] = "PrefetchNotEligibleCrossOrigin";
+    PrefetchStatus2["PrefetchNotEligibleDataSaverEnabled"] = "PrefetchNotEligibleDataSaverEnabled";
+    PrefetchStatus2["PrefetchNotEligibleExistingProxy"] = "PrefetchNotEligibleExistingProxy";
+    PrefetchStatus2["PrefetchNotEligibleHostIsNonUnique"] = "PrefetchNotEligibleHostIsNonUnique";
+    PrefetchStatus2["PrefetchNotEligibleNonDefaultStoragePartition"] = "PrefetchNotEligibleNonDefaultStoragePartition";
+    PrefetchStatus2["PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy"] = "PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy";
+    PrefetchStatus2["PrefetchNotEligibleSchemeIsNotHttps"] = "PrefetchNotEligibleSchemeIsNotHttps";
+    PrefetchStatus2["PrefetchNotEligibleUserHasCookies"] = "PrefetchNotEligibleUserHasCookies";
+    PrefetchStatus2["PrefetchNotEligibleUserHasServiceWorker"] = "PrefetchNotEligibleUserHasServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler"] = "PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler";
+    PrefetchStatus2["PrefetchNotEligibleRedirectFromServiceWorker"] = "PrefetchNotEligibleRedirectFromServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleRedirectToServiceWorker"] = "PrefetchNotEligibleRedirectToServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleBatterySaverEnabled"] = "PrefetchNotEligibleBatterySaverEnabled";
+    PrefetchStatus2["PrefetchNotEligiblePreloadingDisabled"] = "PrefetchNotEligiblePreloadingDisabled";
+    PrefetchStatus2["PrefetchNotFinishedInTime"] = "PrefetchNotFinishedInTime";
+    PrefetchStatus2["PrefetchNotStarted"] = "PrefetchNotStarted";
+    PrefetchStatus2["PrefetchNotUsedCookiesChanged"] = "PrefetchNotUsedCookiesChanged";
+    PrefetchStatus2["PrefetchProxyNotAvailable"] = "PrefetchProxyNotAvailable";
+    PrefetchStatus2["PrefetchResponseUsed"] = "PrefetchResponseUsed";
+    PrefetchStatus2["PrefetchSuccessfulButNotUsed"] = "PrefetchSuccessfulButNotUsed";
+    PrefetchStatus2["PrefetchNotUsedProbeFailed"] = "PrefetchNotUsedProbeFailed";
+    PrefetchStatus2["PrefetchCancelledOnUserNavigation"] = "PrefetchCancelledOnUserNavigation";
+  })(PrefetchStatus = Preload2.PrefetchStatus || (Preload2.PrefetchStatus = {}));
+})(Preload || (Preload = {}));
+var Security;
+((Security2) => {
+  let MixedContentType;
+  ((MixedContentType2) => {
+    MixedContentType2["Blockable"] = "blockable";
+    MixedContentType2["OptionallyBlockable"] = "optionally-blockable";
+    MixedContentType2["None"] = "none";
+  })(MixedContentType = Security2.MixedContentType || (Security2.MixedContentType = {}));
+  let SecurityState;
+  ((SecurityState2) => {
+    SecurityState2["Unknown"] = "unknown";
+    SecurityState2["Neutral"] = "neutral";
+    SecurityState2["Insecure"] = "insecure";
+    SecurityState2["Secure"] = "secure";
+    SecurityState2["Info"] = "info";
+    SecurityState2["InsecureBroken"] = "insecure-broken";
+  })(SecurityState = Security2.SecurityState || (Security2.SecurityState = {}));
+  let SafetyTipStatus;
+  ((SafetyTipStatus2) => {
+    SafetyTipStatus2["BadReputation"] = "badReputation";
+    SafetyTipStatus2["Lookalike"] = "lookalike";
+  })(SafetyTipStatus = Security2.SafetyTipStatus || (Security2.SafetyTipStatus = {}));
+  let CertificateErrorAction;
+  ((CertificateErrorAction2) => {
+    CertificateErrorAction2["Continue"] = "continue";
+    CertificateErrorAction2["Cancel"] = "cancel";
+  })(CertificateErrorAction = Security2.CertificateErrorAction || (Security2.CertificateErrorAction = {}));
+})(Security || (Security = {}));
+var ServiceWorker;
+((ServiceWorker2) => {
+  let ServiceWorkerVersionRunningStatus;
+  ((ServiceWorkerVersionRunningStatus2) => {
+    ServiceWorkerVersionRunningStatus2["Stopped"] = "stopped";
+    ServiceWorkerVersionRunningStatus2["Starting"] = "starting";
+    ServiceWorkerVersionRunningStatus2["Running"] = "running";
+    ServiceWorkerVersionRunningStatus2["Stopping"] = "stopping";
+  })(ServiceWorkerVersionRunningStatus = ServiceWorker2.ServiceWorkerVersionRunningStatus || (ServiceWorker2.ServiceWorkerVersionRunningStatus = {}));
+  let ServiceWorkerVersionStatus;
+  ((ServiceWorkerVersionStatus2) => {
+    ServiceWorkerVersionStatus2["New"] = "new";
+    ServiceWorkerVersionStatus2["Installing"] = "installing";
+    ServiceWorkerVersionStatus2["Installed"] = "installed";
+    ServiceWorkerVersionStatus2["Activating"] = "activating";
+    ServiceWorkerVersionStatus2["Activated"] = "activated";
+    ServiceWorkerVersionStatus2["Redundant"] = "redundant";
+  })(ServiceWorkerVersionStatus = ServiceWorker2.ServiceWorkerVersionStatus || (ServiceWorker2.ServiceWorkerVersionStatus = {}));
+  let ServiceWorkerRouterSourceType;
+  ((ServiceWorkerRouterSourceType2) => {
+    ServiceWorkerRouterSourceType2["Cache"] = "cache";
+    ServiceWorkerRouterSourceType2["FetchEvent"] = "fetchEvent";
+    ServiceWorkerRouterSourceType2["Network"] = "network";
+    ServiceWorkerRouterSourceType2["RaceNetworkAndFetchHandler"] = "raceNetworkAndFetchHandler";
+    ServiceWorkerRouterSourceType2["RaceNetworkAndCache"] = "raceNetworkAndCache";
+    ServiceWorkerRouterSourceType2["SourceDict"] = "sourceDict";
+  })(ServiceWorkerRouterSourceType = ServiceWorker2.ServiceWorkerRouterSourceType || (ServiceWorker2.ServiceWorkerRouterSourceType = {}));
+})(ServiceWorker || (ServiceWorker = {}));
+var SmartCardEmulation;
+((SmartCardEmulation2) => {
+  let ResultCode;
+  ((ResultCode2) => {
+    ResultCode2["Success"] = "success";
+    ResultCode2["RemovedCard"] = "removed-card";
+    ResultCode2["ResetCard"] = "reset-card";
+    ResultCode2["UnpoweredCard"] = "unpowered-card";
+    ResultCode2["UnresponsiveCard"] = "unresponsive-card";
+    ResultCode2["UnsupportedCard"] = "unsupported-card";
+    ResultCode2["ReaderUnavailable"] = "reader-unavailable";
+    ResultCode2["SharingViolation"] = "sharing-violation";
+    ResultCode2["NotTransacted"] = "not-transacted";
+    ResultCode2["NoSmartcard"] = "no-smartcard";
+    ResultCode2["ProtoMismatch"] = "proto-mismatch";
+    ResultCode2["SystemCancelled"] = "system-cancelled";
+    ResultCode2["NotReady"] = "not-ready";
+    ResultCode2["Cancelled"] = "cancelled";
+    ResultCode2["InsufficientBuffer"] = "insufficient-buffer";
+    ResultCode2["InvalidHandle"] = "invalid-handle";
+    ResultCode2["InvalidParameter"] = "invalid-parameter";
+    ResultCode2["InvalidValue"] = "invalid-value";
+    ResultCode2["NoMemory"] = "no-memory";
+    ResultCode2["Timeout"] = "timeout";
+    ResultCode2["UnknownReader"] = "unknown-reader";
+    ResultCode2["UnsupportedFeature"] = "unsupported-feature";
+    ResultCode2["NoReadersAvailable"] = "no-readers-available";
+    ResultCode2["ServiceStopped"] = "service-stopped";
+    ResultCode2["NoService"] = "no-service";
+    ResultCode2["CommError"] = "comm-error";
+    ResultCode2["InternalError"] = "internal-error";
+    ResultCode2["ServerTooBusy"] = "server-too-busy";
+    ResultCode2["Unexpected"] = "unexpected";
+    ResultCode2["Shutdown"] = "shutdown";
+    ResultCode2["UnknownCard"] = "unknown-card";
+    ResultCode2["Unknown"] = "unknown";
+  })(ResultCode = SmartCardEmulation2.ResultCode || (SmartCardEmulation2.ResultCode = {}));
+  let ShareMode;
+  ((ShareMode2) => {
+    ShareMode2["Shared"] = "shared";
+    ShareMode2["Exclusive"] = "exclusive";
+    ShareMode2["Direct"] = "direct";
+  })(ShareMode = SmartCardEmulation2.ShareMode || (SmartCardEmulation2.ShareMode = {}));
+  let Disposition;
+  ((Disposition2) => {
+    Disposition2["LeaveCard"] = "leave-card";
+    Disposition2["ResetCard"] = "reset-card";
+    Disposition2["UnpowerCard"] = "unpower-card";
+    Disposition2["EjectCard"] = "eject-card";
+  })(Disposition = SmartCardEmulation2.Disposition || (SmartCardEmulation2.Disposition = {}));
+  let ConnectionState;
+  ((ConnectionState2) => {
+    ConnectionState2["Absent"] = "absent";
+    ConnectionState2["Present"] = "present";
+    ConnectionState2["Swallowed"] = "swallowed";
+    ConnectionState2["Powered"] = "powered";
+    ConnectionState2["Negotiable"] = "negotiable";
+    ConnectionState2["Specific"] = "specific";
+  })(ConnectionState = SmartCardEmulation2.ConnectionState || (SmartCardEmulation2.ConnectionState = {}));
+  let Protocol;
+  ((Protocol2) => {
+    Protocol2["T0"] = "t0";
+    Protocol2["T1"] = "t1";
+    Protocol2["Raw"] = "raw";
+  })(Protocol = SmartCardEmulation2.Protocol || (SmartCardEmulation2.Protocol = {}));
+})(SmartCardEmulation || (SmartCardEmulation = {}));
+var Storage;
+((Storage2) => {
+  let StorageType;
+  ((StorageType2) => {
+    StorageType2["Cookies"] = "cookies";
+    StorageType2["File_systems"] = "file_systems";
+    StorageType2["Indexeddb"] = "indexeddb";
+    StorageType2["Local_storage"] = "local_storage";
+    StorageType2["Shader_cache"] = "shader_cache";
+    StorageType2["Websql"] = "websql";
+    StorageType2["Service_workers"] = "service_workers";
+    StorageType2["Cache_storage"] = "cache_storage";
+    StorageType2["Storage_buckets"] = "storage_buckets";
+    StorageType2["All"] = "all";
+    StorageType2["Other"] = "other";
+  })(StorageType = Storage2.StorageType || (Storage2.StorageType = {}));
+  let StorageBucketsDurability;
+  ((StorageBucketsDurability2) => {
+    StorageBucketsDurability2["Relaxed"] = "relaxed";
+    StorageBucketsDurability2["Strict"] = "strict";
+  })(StorageBucketsDurability = Storage2.StorageBucketsDurability || (Storage2.StorageBucketsDurability = {}));
+})(Storage || (Storage = {}));
+var SystemInfo;
+((SystemInfo2) => {
+  let SubsamplingFormat;
+  ((SubsamplingFormat2) => {
+    SubsamplingFormat2["Yuv420"] = "yuv420";
+    SubsamplingFormat2["Yuv422"] = "yuv422";
+    SubsamplingFormat2["Yuv444"] = "yuv444";
+  })(SubsamplingFormat = SystemInfo2.SubsamplingFormat || (SystemInfo2.SubsamplingFormat = {}));
+  let ImageType;
+  ((ImageType2) => {
+    ImageType2["Jpeg"] = "jpeg";
+    ImageType2["Webp"] = "webp";
+    ImageType2["Unknown"] = "unknown";
+  })(ImageType = SystemInfo2.ImageType || (SystemInfo2.ImageType = {}));
+})(SystemInfo || (SystemInfo = {}));
+var Target;
+((Target6) => {
+  let WindowState;
+  ((WindowState2) => {
+    WindowState2["Normal"] = "normal";
+    WindowState2["Minimized"] = "minimized";
+    WindowState2["Maximized"] = "maximized";
+    WindowState2["Fullscreen"] = "fullscreen";
+  })(WindowState = Target6.WindowState || (Target6.WindowState = {}));
+})(Target || (Target = {}));
+var Tracing;
+((Tracing2) => {
+  let TraceConfigRecordMode;
+  ((TraceConfigRecordMode2) => {
+    TraceConfigRecordMode2["RecordUntilFull"] = "recordUntilFull";
+    TraceConfigRecordMode2["RecordContinuously"] = "recordContinuously";
+    TraceConfigRecordMode2["RecordAsMuchAsPossible"] = "recordAsMuchAsPossible";
+    TraceConfigRecordMode2["EchoToConsole"] = "echoToConsole";
+  })(TraceConfigRecordMode = Tracing2.TraceConfigRecordMode || (Tracing2.TraceConfigRecordMode = {}));
+  let StreamFormat;
+  ((StreamFormat2) => {
+    StreamFormat2["Json"] = "json";
+    StreamFormat2["Proto"] = "proto";
+  })(StreamFormat = Tracing2.StreamFormat || (Tracing2.StreamFormat = {}));
+  let StreamCompression;
+  ((StreamCompression2) => {
+    StreamCompression2["None"] = "none";
+    StreamCompression2["Gzip"] = "gzip";
+  })(StreamCompression = Tracing2.StreamCompression || (Tracing2.StreamCompression = {}));
+  let MemoryDumpLevelOfDetail;
+  ((MemoryDumpLevelOfDetail2) => {
+    MemoryDumpLevelOfDetail2["Background"] = "background";
+    MemoryDumpLevelOfDetail2["Light"] = "light";
+    MemoryDumpLevelOfDetail2["Detailed"] = "detailed";
+  })(MemoryDumpLevelOfDetail = Tracing2.MemoryDumpLevelOfDetail || (Tracing2.MemoryDumpLevelOfDetail = {}));
+  let TracingBackend;
+  ((TracingBackend2) => {
+    TracingBackend2["Auto"] = "auto";
+    TracingBackend2["Chrome"] = "chrome";
+    TracingBackend2["System"] = "system";
+  })(TracingBackend = Tracing2.TracingBackend || (Tracing2.TracingBackend = {}));
+  let StartRequestTransferMode;
+  ((StartRequestTransferMode2) => {
+    StartRequestTransferMode2["ReportEvents"] = "ReportEvents";
+    StartRequestTransferMode2["ReturnAsStream"] = "ReturnAsStream";
+  })(StartRequestTransferMode = Tracing2.StartRequestTransferMode || (Tracing2.StartRequestTransferMode = {}));
+})(Tracing || (Tracing = {}));
+var WebAudio;
+((WebAudio2) => {
+  let ContextType;
+  ((ContextType2) => {
+    ContextType2["Realtime"] = "realtime";
+    ContextType2["Offline"] = "offline";
+  })(ContextType = WebAudio2.ContextType || (WebAudio2.ContextType = {}));
+  let ContextState;
+  ((ContextState2) => {
+    ContextState2["Suspended"] = "suspended";
+    ContextState2["Running"] = "running";
+    ContextState2["Closed"] = "closed";
+    ContextState2["Interrupted"] = "interrupted";
+  })(ContextState = WebAudio2.ContextState || (WebAudio2.ContextState = {}));
+  let ChannelCountMode;
+  ((ChannelCountMode2) => {
+    ChannelCountMode2["ClampedMax"] = "clamped-max";
+    ChannelCountMode2["Explicit"] = "explicit";
+    ChannelCountMode2["Max"] = "max";
+  })(ChannelCountMode = WebAudio2.ChannelCountMode || (WebAudio2.ChannelCountMode = {}));
+  let ChannelInterpretation;
+  ((ChannelInterpretation2) => {
+    ChannelInterpretation2["Discrete"] = "discrete";
+    ChannelInterpretation2["Speakers"] = "speakers";
+  })(ChannelInterpretation = WebAudio2.ChannelInterpretation || (WebAudio2.ChannelInterpretation = {}));
+  let AutomationRate;
+  ((AutomationRate2) => {
+    AutomationRate2["ARate"] = "a-rate";
+    AutomationRate2["KRate"] = "k-rate";
+  })(AutomationRate = WebAudio2.AutomationRate || (WebAudio2.AutomationRate = {}));
+})(WebAudio || (WebAudio = {}));
+var WebAuthn;
+((WebAuthn2) => {
+  let AuthenticatorProtocol;
+  ((AuthenticatorProtocol2) => {
+    AuthenticatorProtocol2["U2f"] = "u2f";
+    AuthenticatorProtocol2["Ctap2"] = "ctap2";
+  })(AuthenticatorProtocol = WebAuthn2.AuthenticatorProtocol || (WebAuthn2.AuthenticatorProtocol = {}));
+  let Ctap2Version;
+  ((Ctap2Version2) => {
+    Ctap2Version2["Ctap2_0"] = "ctap2_0";
+    Ctap2Version2["Ctap2_1"] = "ctap2_1";
+    Ctap2Version2["Ctap2_2"] = "ctap2_2";
+  })(Ctap2Version = WebAuthn2.Ctap2Version || (WebAuthn2.Ctap2Version = {}));
+  let AuthenticatorTransport;
+  ((AuthenticatorTransport2) => {
+    AuthenticatorTransport2["Usb"] = "usb";
+    AuthenticatorTransport2["Nfc"] = "nfc";
+    AuthenticatorTransport2["Ble"] = "ble";
+    AuthenticatorTransport2["Cable"] = "cable";
+    AuthenticatorTransport2["Hybrid"] = "hybrid";
+    AuthenticatorTransport2["SmartCard"] = "smart-card";
+    AuthenticatorTransport2["Internal"] = "internal";
+  })(AuthenticatorTransport = WebAuthn2.AuthenticatorTransport || (WebAuthn2.AuthenticatorTransport = {}));
+})(WebAuthn || (WebAuthn = {}));
+var WebMCP;
+((WebMCP2) => {
+  let InvocationStatus;
+  ((InvocationStatus2) => {
+    InvocationStatus2["Completed"] = "Completed";
+    InvocationStatus2["Canceled"] = "Canceled";
+    InvocationStatus2["Error"] = "Error";
+  })(InvocationStatus = WebMCP2.InvocationStatus || (WebMCP2.InvocationStatus = {}));
+})(WebMCP || (WebMCP = {}));
+var Debugger;
+((Debugger2) => {
+  let ScopeType;
+  ((ScopeType2) => {
+    ScopeType2["Global"] = "global";
+    ScopeType2["Local"] = "local";
+    ScopeType2["With"] = "with";
+    ScopeType2["Closure"] = "closure";
+    ScopeType2["Catch"] = "catch";
+    ScopeType2["Block"] = "block";
+    ScopeType2["Script"] = "script";
+    ScopeType2["Eval"] = "eval";
+    ScopeType2["Module"] = "module";
+    ScopeType2["WasmExpressionStack"] = "wasm-expression-stack";
+  })(ScopeType = Debugger2.ScopeType || (Debugger2.ScopeType = {}));
+  let BreakLocationType;
+  ((BreakLocationType2) => {
+    BreakLocationType2["DebuggerStatement"] = "debuggerStatement";
+    BreakLocationType2["Call"] = "call";
+    BreakLocationType2["Return"] = "return";
+  })(BreakLocationType = Debugger2.BreakLocationType || (Debugger2.BreakLocationType = {}));
+  let ScriptLanguage;
+  ((ScriptLanguage2) => {
+    ScriptLanguage2["JavaScript"] = "JavaScript";
+    ScriptLanguage2["WebAssembly"] = "WebAssembly";
+  })(ScriptLanguage = Debugger2.ScriptLanguage || (Debugger2.ScriptLanguage = {}));
+  let DebugSymbolsType;
+  ((DebugSymbolsType2) => {
+    DebugSymbolsType2["SourceMap"] = "SourceMap";
+    DebugSymbolsType2["EmbeddedDWARF"] = "EmbeddedDWARF";
+    DebugSymbolsType2["ExternalDWARF"] = "ExternalDWARF";
+  })(DebugSymbolsType = Debugger2.DebugSymbolsType || (Debugger2.DebugSymbolsType = {}));
+  let ContinueToLocationRequestTargetCallFrames;
+  ((ContinueToLocationRequestTargetCallFrames2) => {
+    ContinueToLocationRequestTargetCallFrames2["Any"] = "any";
+    ContinueToLocationRequestTargetCallFrames2["Current"] = "current";
+  })(ContinueToLocationRequestTargetCallFrames = Debugger2.ContinueToLocationRequestTargetCallFrames || (Debugger2.ContinueToLocationRequestTargetCallFrames = {}));
+  let RestartFrameRequestMode;
+  ((RestartFrameRequestMode2) => {
+    RestartFrameRequestMode2["StepInto"] = "StepInto";
+  })(RestartFrameRequestMode = Debugger2.RestartFrameRequestMode || (Debugger2.RestartFrameRequestMode = {}));
+  let SetInstrumentationBreakpointRequestInstrumentation;
+  ((SetInstrumentationBreakpointRequestInstrumentation2) => {
+    SetInstrumentationBreakpointRequestInstrumentation2["BeforeScriptExecution"] = "beforeScriptExecution";
+    SetInstrumentationBreakpointRequestInstrumentation2["BeforeScriptWithSourceMapExecution"] = "beforeScriptWithSourceMapExecution";
+  })(SetInstrumentationBreakpointRequestInstrumentation = Debugger2.SetInstrumentationBreakpointRequestInstrumentation || (Debugger2.SetInstrumentationBreakpointRequestInstrumentation = {}));
+  let SetPauseOnExceptionsRequestState;
+  ((SetPauseOnExceptionsRequestState2) => {
+    SetPauseOnExceptionsRequestState2["None"] = "none";
+    SetPauseOnExceptionsRequestState2["Caught"] = "caught";
+    SetPauseOnExceptionsRequestState2["Uncaught"] = "uncaught";
+    SetPauseOnExceptionsRequestState2["All"] = "all";
+  })(SetPauseOnExceptionsRequestState = Debugger2.SetPauseOnExceptionsRequestState || (Debugger2.SetPauseOnExceptionsRequestState = {}));
+  let SetScriptSourceResponseStatus;
+  ((SetScriptSourceResponseStatus2) => {
+    SetScriptSourceResponseStatus2["Ok"] = "Ok";
+    SetScriptSourceResponseStatus2["CompileError"] = "CompileError";
+    SetScriptSourceResponseStatus2["BlockedByActiveGenerator"] = "BlockedByActiveGenerator";
+    SetScriptSourceResponseStatus2["BlockedByActiveFunction"] = "BlockedByActiveFunction";
+    SetScriptSourceResponseStatus2["BlockedByTopLevelEsModuleChange"] = "BlockedByTopLevelEsModuleChange";
+  })(SetScriptSourceResponseStatus = Debugger2.SetScriptSourceResponseStatus || (Debugger2.SetScriptSourceResponseStatus = {}));
+  let PausedEventReason;
+  ((PausedEventReason2) => {
+    PausedEventReason2["Ambiguous"] = "ambiguous";
+    PausedEventReason2["Assert"] = "assert";
+    PausedEventReason2["CSPViolation"] = "CSPViolation";
+    PausedEventReason2["DebugCommand"] = "debugCommand";
+    PausedEventReason2["DOM"] = "DOM";
+    PausedEventReason2["EventListener"] = "EventListener";
+    PausedEventReason2["Exception"] = "exception";
+    PausedEventReason2["Instrumentation"] = "instrumentation";
+    PausedEventReason2["OOM"] = "OOM";
+    PausedEventReason2["Other"] = "other";
+    PausedEventReason2["PromiseRejection"] = "promiseRejection";
+    PausedEventReason2["XHR"] = "XHR";
+    PausedEventReason2["Step"] = "step";
+  })(PausedEventReason = Debugger2.PausedEventReason || (Debugger2.PausedEventReason = {}));
+})(Debugger || (Debugger = {}));
+var Runtime;
+((Runtime4) => {
+  let SerializationOptionsSerialization;
+  ((SerializationOptionsSerialization2) => {
+    SerializationOptionsSerialization2["Deep"] = "deep";
+    SerializationOptionsSerialization2["Json"] = "json";
+    SerializationOptionsSerialization2["IdOnly"] = "idOnly";
+  })(SerializationOptionsSerialization = Runtime4.SerializationOptionsSerialization || (Runtime4.SerializationOptionsSerialization = {}));
+  let DeepSerializedValueType;
+  ((DeepSerializedValueType2) => {
+    DeepSerializedValueType2["Undefined"] = "undefined";
+    DeepSerializedValueType2["Null"] = "null";
+    DeepSerializedValueType2["String"] = "string";
+    DeepSerializedValueType2["Number"] = "number";
+    DeepSerializedValueType2["Boolean"] = "boolean";
+    DeepSerializedValueType2["Bigint"] = "bigint";
+    DeepSerializedValueType2["Regexp"] = "regexp";
+    DeepSerializedValueType2["Date"] = "date";
+    DeepSerializedValueType2["Symbol"] = "symbol";
+    DeepSerializedValueType2["Array"] = "array";
+    DeepSerializedValueType2["Object"] = "object";
+    DeepSerializedValueType2["Function"] = "function";
+    DeepSerializedValueType2["Map"] = "map";
+    DeepSerializedValueType2["Set"] = "set";
+    DeepSerializedValueType2["Weakmap"] = "weakmap";
+    DeepSerializedValueType2["Weakset"] = "weakset";
+    DeepSerializedValueType2["Error"] = "error";
+    DeepSerializedValueType2["Proxy"] = "proxy";
+    DeepSerializedValueType2["Promise"] = "promise";
+    DeepSerializedValueType2["Typedarray"] = "typedarray";
+    DeepSerializedValueType2["Arraybuffer"] = "arraybuffer";
+    DeepSerializedValueType2["Node"] = "node";
+    DeepSerializedValueType2["Window"] = "window";
+    DeepSerializedValueType2["Generator"] = "generator";
+  })(DeepSerializedValueType = Runtime4.DeepSerializedValueType || (Runtime4.DeepSerializedValueType = {}));
+  let RemoteObjectType;
+  ((RemoteObjectType2) => {
+    RemoteObjectType2["Object"] = "object";
+    RemoteObjectType2["Function"] = "function";
+    RemoteObjectType2["Undefined"] = "undefined";
+    RemoteObjectType2["String"] = "string";
+    RemoteObjectType2["Number"] = "number";
+    RemoteObjectType2["Boolean"] = "boolean";
+    RemoteObjectType2["Symbol"] = "symbol";
+    RemoteObjectType2["Bigint"] = "bigint";
+  })(RemoteObjectType = Runtime4.RemoteObjectType || (Runtime4.RemoteObjectType = {}));
+  let RemoteObjectSubtype;
+  ((RemoteObjectSubtype2) => {
+    RemoteObjectSubtype2["Array"] = "array";
+    RemoteObjectSubtype2["Null"] = "null";
+    RemoteObjectSubtype2["Node"] = "node";
+    RemoteObjectSubtype2["Regexp"] = "regexp";
+    RemoteObjectSubtype2["Date"] = "date";
+    RemoteObjectSubtype2["Map"] = "map";
+    RemoteObjectSubtype2["Set"] = "set";
+    RemoteObjectSubtype2["Weakmap"] = "weakmap";
+    RemoteObjectSubtype2["Weakset"] = "weakset";
+    RemoteObjectSubtype2["Iterator"] = "iterator";
+    RemoteObjectSubtype2["Generator"] = "generator";
+    RemoteObjectSubtype2["Error"] = "error";
+    RemoteObjectSubtype2["Proxy"] = "proxy";
+    RemoteObjectSubtype2["Promise"] = "promise";
+    RemoteObjectSubtype2["Typedarray"] = "typedarray";
+    RemoteObjectSubtype2["Arraybuffer"] = "arraybuffer";
+    RemoteObjectSubtype2["Dataview"] = "dataview";
+    RemoteObjectSubtype2["Webassemblymemory"] = "webassemblymemory";
+    RemoteObjectSubtype2["Wasmvalue"] = "wasmvalue";
+    RemoteObjectSubtype2["Trustedtype"] = "trustedtype";
+  })(RemoteObjectSubtype = Runtime4.RemoteObjectSubtype || (Runtime4.RemoteObjectSubtype = {}));
+  let ObjectPreviewType;
+  ((ObjectPreviewType2) => {
+    ObjectPreviewType2["Object"] = "object";
+    ObjectPreviewType2["Function"] = "function";
+    ObjectPreviewType2["Undefined"] = "undefined";
+    ObjectPreviewType2["String"] = "string";
+    ObjectPreviewType2["Number"] = "number";
+    ObjectPreviewType2["Boolean"] = "boolean";
+    ObjectPreviewType2["Symbol"] = "symbol";
+    ObjectPreviewType2["Bigint"] = "bigint";
+  })(ObjectPreviewType = Runtime4.ObjectPreviewType || (Runtime4.ObjectPreviewType = {}));
+  let ObjectPreviewSubtype;
+  ((ObjectPreviewSubtype2) => {
+    ObjectPreviewSubtype2["Array"] = "array";
+    ObjectPreviewSubtype2["Null"] = "null";
+    ObjectPreviewSubtype2["Node"] = "node";
+    ObjectPreviewSubtype2["Regexp"] = "regexp";
+    ObjectPreviewSubtype2["Date"] = "date";
+    ObjectPreviewSubtype2["Map"] = "map";
+    ObjectPreviewSubtype2["Set"] = "set";
+    ObjectPreviewSubtype2["Weakmap"] = "weakmap";
+    ObjectPreviewSubtype2["Weakset"] = "weakset";
+    ObjectPreviewSubtype2["Iterator"] = "iterator";
+    ObjectPreviewSubtype2["Generator"] = "generator";
+    ObjectPreviewSubtype2["Error"] = "error";
+    ObjectPreviewSubtype2["Proxy"] = "proxy";
+    ObjectPreviewSubtype2["Promise"] = "promise";
+    ObjectPreviewSubtype2["Typedarray"] = "typedarray";
+    ObjectPreviewSubtype2["Arraybuffer"] = "arraybuffer";
+    ObjectPreviewSubtype2["Dataview"] = "dataview";
+    ObjectPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
+    ObjectPreviewSubtype2["Wasmvalue"] = "wasmvalue";
+    ObjectPreviewSubtype2["Trustedtype"] = "trustedtype";
+  })(ObjectPreviewSubtype = Runtime4.ObjectPreviewSubtype || (Runtime4.ObjectPreviewSubtype = {}));
+  let PropertyPreviewType;
+  ((PropertyPreviewType2) => {
+    PropertyPreviewType2["Object"] = "object";
+    PropertyPreviewType2["Function"] = "function";
+    PropertyPreviewType2["Undefined"] = "undefined";
+    PropertyPreviewType2["String"] = "string";
+    PropertyPreviewType2["Number"] = "number";
+    PropertyPreviewType2["Boolean"] = "boolean";
+    PropertyPreviewType2["Symbol"] = "symbol";
+    PropertyPreviewType2["Accessor"] = "accessor";
+    PropertyPreviewType2["Bigint"] = "bigint";
+  })(PropertyPreviewType = Runtime4.PropertyPreviewType || (Runtime4.PropertyPreviewType = {}));
+  let PropertyPreviewSubtype;
+  ((PropertyPreviewSubtype2) => {
+    PropertyPreviewSubtype2["Array"] = "array";
+    PropertyPreviewSubtype2["Null"] = "null";
+    PropertyPreviewSubtype2["Node"] = "node";
+    PropertyPreviewSubtype2["Regexp"] = "regexp";
+    PropertyPreviewSubtype2["Date"] = "date";
+    PropertyPreviewSubtype2["Map"] = "map";
+    PropertyPreviewSubtype2["Set"] = "set";
+    PropertyPreviewSubtype2["Weakmap"] = "weakmap";
+    PropertyPreviewSubtype2["Weakset"] = "weakset";
+    PropertyPreviewSubtype2["Iterator"] = "iterator";
+    PropertyPreviewSubtype2["Generator"] = "generator";
+    PropertyPreviewSubtype2["Error"] = "error";
+    PropertyPreviewSubtype2["Proxy"] = "proxy";
+    PropertyPreviewSubtype2["Promise"] = "promise";
+    PropertyPreviewSubtype2["Typedarray"] = "typedarray";
+    PropertyPreviewSubtype2["Arraybuffer"] = "arraybuffer";
+    PropertyPreviewSubtype2["Dataview"] = "dataview";
+    PropertyPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
+    PropertyPreviewSubtype2["Wasmvalue"] = "wasmvalue";
+    PropertyPreviewSubtype2["Trustedtype"] = "trustedtype";
+  })(PropertyPreviewSubtype = Runtime4.PropertyPreviewSubtype || (Runtime4.PropertyPreviewSubtype = {}));
+  let ConsoleAPICalledEventType;
+  ((ConsoleAPICalledEventType2) => {
+    ConsoleAPICalledEventType2["Log"] = "log";
+    ConsoleAPICalledEventType2["Debug"] = "debug";
+    ConsoleAPICalledEventType2["Info"] = "info";
+    ConsoleAPICalledEventType2["Error"] = "error";
+    ConsoleAPICalledEventType2["Warning"] = "warning";
+    ConsoleAPICalledEventType2["Dir"] = "dir";
+    ConsoleAPICalledEventType2["DirXML"] = "dirxml";
+    ConsoleAPICalledEventType2["Table"] = "table";
+    ConsoleAPICalledEventType2["Trace"] = "trace";
+    ConsoleAPICalledEventType2["Clear"] = "clear";
+    ConsoleAPICalledEventType2["StartGroup"] = "startGroup";
+    ConsoleAPICalledEventType2["StartGroupCollapsed"] = "startGroupCollapsed";
+    ConsoleAPICalledEventType2["EndGroup"] = "endGroup";
+    ConsoleAPICalledEventType2["Assert"] = "assert";
+    ConsoleAPICalledEventType2["Profile"] = "profile";
+    ConsoleAPICalledEventType2["ProfileEnd"] = "profileEnd";
+    ConsoleAPICalledEventType2["Count"] = "count";
+    ConsoleAPICalledEventType2["TimeEnd"] = "timeEnd";
+  })(ConsoleAPICalledEventType = Runtime4.ConsoleAPICalledEventType || (Runtime4.ConsoleAPICalledEventType = {}));
+})(Runtime || (Runtime = {}));
+
+// ../../front_end/panels/sources/SourcesPanel.ts
 import * as Badges2 from "../../models/badges/badges.js";
 import * as Bindings8 from "../../models/bindings/bindings.js";
 import * as Breakpoints3 from "../../models/breakpoints/breakpoints.js";
@@ -2286,7 +5107,7 @@ import * as Settings9 from "../../ui/settings/settings.js";
 import * as VisualLogging11 from "../../ui/visual_logging/visual_logging.js";
 import * as Snippets4 from "../snippets/snippets.js";
 
-// gen/front_end/panels/sources/DebuggerPausedMessage.js
+// ../../front_end/panels/sources/DebuggerPausedMessage.ts
 var DebuggerPausedMessage_exports = {};
 __export(DebuggerPausedMessage_exports, {
   BreakpointTypeNouns: () => BreakpointTypeNouns,
@@ -2299,7 +5120,7 @@ import * as Lit2 from "../../ui/lit/lit.js";
 import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "../common/common.js";
 
-// gen/front_end/panels/sources/CategorizedBreakpointL10n.js
+// ../../front_end/panels/sources/CategorizedBreakpointL10n.ts
 var CategorizedBreakpointL10n_exports = {};
 __export(CategorizedBreakpointL10n_exports, {
   getLocalizedBreakpointName: () => getLocalizedBreakpointName
@@ -2403,128 +5224,38 @@ function getLocalizedBreakpointName(name) {
   return l10nLazyName();
 }
 var LOCALIZED_INSTRUMENTATION_NAMES = {
-  [
-    "beforeBidderWorkletBiddingStart"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.BEFORE_BIDDER_WORKLET_BIDDING_START */
-  ]: i18nLazyString(UIStrings4.beforeBidderWorkletBiddingStart),
-  [
-    "beforeBidderWorkletReportingStart"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.BEFORE_BIDDER_WORKLET_REPORTING_START */
-  ]: i18nLazyString(UIStrings4.beforeBidderWorkletReportingStart),
-  [
-    "beforeSellerWorkletScoringStart"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.BEFORE_SELLER_WORKLET_SCORING_START */
-  ]: i18nLazyString(UIStrings4.beforeSellerWorkletScoringStart),
-  [
-    "beforeSellerWorkletReportingStart"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.BEFORE_SELLER_WORKLET_REPORTING_START */
-  ]: i18nLazyString(UIStrings4.beforeSellerWorkletReportingStart),
-  [
-    "setTimeout"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.SET_TIMEOUT */
-  ]: i18n7.i18n.lockedLazyString("setTimeout"),
-  [
-    "clearTimeout"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.CLEAR_TIMEOUT */
-  ]: i18n7.i18n.lockedLazyString("clearTimeout"),
-  [
-    "setTimeout.callback"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.SET_TIMEOUT_CALLBACK */
-  ]: i18nLazyString(UIStrings4.setTimeoutOrIntervalFired, { PH1: "setTimeout" }),
-  [
-    "setInterval"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.SET_INTERVAL */
-  ]: i18n7.i18n.lockedLazyString("setInterval"),
-  [
-    "clearInterval"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.CLEAR_INTERVAL */
-  ]: i18n7.i18n.lockedLazyString("clearInterval"),
-  [
-    "setInterval.callback"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.SET_INTERVAL_CALLBACK */
-  ]: i18nLazyString(UIStrings4.setTimeoutOrIntervalFired, { PH1: "setInterval" }),
-  [
-    "scriptFirstStatement"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.SCRIPT_FIRST_STATEMENT */
-  ]: i18nLazyString(UIStrings4.scriptFirstStatement),
-  [
-    "scriptBlockedByCSP"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.SCRIPT_BLOCKED_BY_CSP */
-  ]: i18nLazyString(UIStrings4.scriptBlockedByContentSecurity),
-  [
-    "requestAnimationFrame"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.REQUEST_ANIMATION_FRAME */
-  ]: i18nLazyString(UIStrings4.requestAnimationFrame),
-  [
-    "cancelAnimationFrame"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.CANCEL_ANIMATION_FRAME */
-  ]: i18nLazyString(UIStrings4.cancelAnimationFrame),
-  [
-    "requestAnimationFrame.callback"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.REQUEST_ANIMATION_FRAME_CALLBACK */
-  ]: i18nLazyString(UIStrings4.animationFrameFired),
-  [
-    "webglErrorFired"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.WEBGL_ERROR_FIRED */
-  ]: i18nLazyString(UIStrings4.webglErrorFired),
-  [
-    "webglWarningFired"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.WEBGL_WARNING_FIRED */
-  ]: i18nLazyString(UIStrings4.webglWarningFired),
-  [
-    "Element.setInnerHTML"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.ELEMENT_SET_INNER_HTML */
-  ]: i18nLazyString(UIStrings4.setInnerhtml),
-  [
-    "canvasContextCreated"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.CANVAS_CONTEXT_CREATED */
-  ]: i18nLazyString(UIStrings4.createCanvasContext),
-  [
-    "Geolocation.getCurrentPosition"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.GEOLOCATION_GET_CURRENT_POSITION */
-  ]: i18n7.i18n.lockedLazyString("getCurrentPosition"),
-  [
-    "Geolocation.watchPosition"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.GEOLOCATION_WATCH_POSITION */
-  ]: i18n7.i18n.lockedLazyString("watchPosition"),
-  [
-    "Notification.requestPermission"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.NOTIFICATION_REQUEST_PERMISSION */
-  ]: i18n7.i18n.lockedLazyString("requestPermission"),
-  [
-    "DOMWindow.close"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.DOM_WINDOW_CLOSE */
-  ]: i18n7.i18n.lockedLazyString("window.close"),
-  [
-    "Document.write"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.DOCUMENT_WRITE */
-  ]: i18n7.i18n.lockedLazyString("document.write"),
-  [
-    "audioContextCreated"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.AUDIO_CONTEXT_CREATED */
-  ]: i18nLazyString(UIStrings4.createAudiocontext),
-  [
-    "audioContextClosed"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.AUDIO_CONTEXT_CLOSED */
-  ]: i18nLazyString(UIStrings4.closeAudiocontext),
-  [
-    "audioContextResumed"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.AUDIO_CONTEXT_RESUMED */
-  ]: i18nLazyString(UIStrings4.resumeAudiocontext),
-  [
-    "audioContextSuspended"
-    /* SDK.EventBreakpointsModel.InstrumentationNames.AUDIO_CONTEXT_SUSPENDED */
-  ]: i18nLazyString(UIStrings4.suspendAudiocontext)
+  [SDK3.EventBreakpointsModel.InstrumentationNames.BEFORE_BIDDER_WORKLET_BIDDING_START]: i18nLazyString(UIStrings4.beforeBidderWorkletBiddingStart),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.BEFORE_BIDDER_WORKLET_REPORTING_START]: i18nLazyString(UIStrings4.beforeBidderWorkletReportingStart),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.BEFORE_SELLER_WORKLET_SCORING_START]: i18nLazyString(UIStrings4.beforeSellerWorkletScoringStart),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.BEFORE_SELLER_WORKLET_REPORTING_START]: i18nLazyString(UIStrings4.beforeSellerWorkletReportingStart),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.SET_TIMEOUT]: i18n7.i18n.lockedLazyString("setTimeout"),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.CLEAR_TIMEOUT]: i18n7.i18n.lockedLazyString("clearTimeout"),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.SET_TIMEOUT_CALLBACK]: i18nLazyString(UIStrings4.setTimeoutOrIntervalFired, { PH1: "setTimeout" }),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.SET_INTERVAL]: i18n7.i18n.lockedLazyString("setInterval"),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.CLEAR_INTERVAL]: i18n7.i18n.lockedLazyString("clearInterval"),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.SET_INTERVAL_CALLBACK]: i18nLazyString(UIStrings4.setTimeoutOrIntervalFired, { PH1: "setInterval" }),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.SCRIPT_FIRST_STATEMENT]: i18nLazyString(UIStrings4.scriptFirstStatement),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.SCRIPT_BLOCKED_BY_CSP]: i18nLazyString(UIStrings4.scriptBlockedByContentSecurity),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.REQUEST_ANIMATION_FRAME]: i18nLazyString(UIStrings4.requestAnimationFrame),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.CANCEL_ANIMATION_FRAME]: i18nLazyString(UIStrings4.cancelAnimationFrame),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.REQUEST_ANIMATION_FRAME_CALLBACK]: i18nLazyString(UIStrings4.animationFrameFired),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.WEBGL_ERROR_FIRED]: i18nLazyString(UIStrings4.webglErrorFired),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.WEBGL_WARNING_FIRED]: i18nLazyString(UIStrings4.webglWarningFired),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.ELEMENT_SET_INNER_HTML]: i18nLazyString(UIStrings4.setInnerhtml),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.CANVAS_CONTEXT_CREATED]: i18nLazyString(UIStrings4.createCanvasContext),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.GEOLOCATION_GET_CURRENT_POSITION]: i18n7.i18n.lockedLazyString("getCurrentPosition"),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.GEOLOCATION_WATCH_POSITION]: i18n7.i18n.lockedLazyString("watchPosition"),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.NOTIFICATION_REQUEST_PERMISSION]: i18n7.i18n.lockedLazyString("requestPermission"),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.DOM_WINDOW_CLOSE]: i18n7.i18n.lockedLazyString("window.close"),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.DOCUMENT_WRITE]: i18n7.i18n.lockedLazyString("document.write"),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.AUDIO_CONTEXT_CREATED]: i18nLazyString(UIStrings4.createAudiocontext),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.AUDIO_CONTEXT_CLOSED]: i18nLazyString(UIStrings4.closeAudiocontext),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.AUDIO_CONTEXT_RESUMED]: i18nLazyString(UIStrings4.resumeAudiocontext),
+  [SDK3.EventBreakpointsModel.InstrumentationNames.AUDIO_CONTEXT_SUSPENDED]: i18nLazyString(UIStrings4.suspendAudiocontext)
 };
 var LOCALIZED_CSP_VIOLATION_TYPES = {
-  [
-    "trustedtype-policy-violation"
-    /* Protocol.DOMDebugger.CSPViolationType.TrustedtypePolicyViolation */
-  ]: i18nLazyString(UIStrings4.policyViolations),
-  [
-    "trustedtype-sink-violation"
-    /* Protocol.DOMDebugger.CSPViolationType.TrustedtypeSinkViolation */
-  ]: i18nLazyString(UIStrings4.sinkViolations)
+  [DOMDebugger.CSPViolationType.TrustedtypePolicyViolation]: i18nLazyString(UIStrings4.policyViolations),
+  [DOMDebugger.CSPViolationType.TrustedtypeSinkViolation]: i18nLazyString(UIStrings4.sinkViolations)
 };
 var LOCALIZED_NAMES = new Map([
   ...Object.entries(LOCALIZED_INSTRUMENTATION_NAMES),
@@ -2586,7 +5317,7 @@ devtools-icon[name="cross-circle-filled"] {
 
 /*# sourceURL=${import.meta.resolve("./debuggerPausedMessage.css")} */`;
 
-// gen/front_end/panels/sources/DebuggerPausedMessage.js
+// ../../front_end/panels/sources/DebuggerPausedMessage.ts
 var { html: html4, render: render4, nothing: nothing3, Directives: { ifDefined: ifDefined2 } } = Lit2;
 var UIStrings5 = {
   /**
@@ -2730,10 +5461,6 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
   });
 };
 var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI5.Widget.Widget {
-  view;
-  static INJECT = [SDK4.EventBreakpointsModel.EventBreakpointsManager];
-  #viewInput = null;
-  #eventBreakpointsManager;
   constructor(element, [eventBreakpointsManager], view = DEFAULT_VIEW4) {
     super(element, {
       useShadowDom: "pure"
@@ -2741,6 +5468,10 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI5.Widget.Widg
     this.view = view;
     this.#eventBreakpointsManager = eventBreakpointsManager;
   }
+  view;
+  static INJECT = [SDK4.EventBreakpointsModel.EventBreakpointsManager];
+  #viewInput = null;
+  #eventBreakpointsManager;
   static descriptionWithoutStack(description) {
     const firstCallFrame = /^\s+at\s/m.exec(description);
     return firstCallFrame ? description.substring(0, firstCallFrame.index - 1) : description.substring(0, description.lastIndexOf("\n"));
@@ -2789,16 +5520,16 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI5.Widget.Widg
       this.requestUpdate();
       return;
     }
-    const errorLike = details.reason === "exception" || details.reason === "promiseRejection" || details.reason === "assert" || details.reason === "OOM";
-    if (details.reason === "DOM") {
+    const errorLike = details.reason === Debugger.PausedEventReason.Exception || details.reason === Debugger.PausedEventReason.PromiseRejection || details.reason === Debugger.PausedEventReason.Assert || details.reason === Debugger.PausedEventReason.OOM;
+    if (details.reason === Debugger.PausedEventReason.DOM) {
       this.#viewInput = await _DebuggerPausedMessage.createDOMBreakpointHitMessageDetails(details);
-    } else if (details.reason === "EventListener") {
+    } else if (details.reason === Debugger.PausedEventReason.EventListener) {
       const eventNameForUI = this.#findEventNameForUi(details.auxData);
       this.#viewInput = { mainText: i18nString4(UIStrings5.pausedOnEventListener), subText: eventNameForUI, errorLike };
-    } else if (details.reason === "XHR") {
+    } else if (details.reason === Debugger.PausedEventReason.XHR) {
       const auxData = details.auxData;
       this.#viewInput = { mainText: i18nString4(UIStrings5.pausedOnXhrOrFetch), subText: auxData.url || "", errorLike };
-    } else if (details.reason === "exception") {
+    } else if (details.reason === Debugger.PausedEventReason.Exception) {
       const auxData = details.auxData;
       const description = auxData.description || auxData.value || "";
       const descriptionWithoutStack = _DebuggerPausedMessage.descriptionWithoutStack(description);
@@ -2808,7 +5539,7 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI5.Widget.Widg
         title: description,
         errorLike
       };
-    } else if (details.reason === "promiseRejection") {
+    } else if (details.reason === Debugger.PausedEventReason.PromiseRejection) {
       const auxData = details.auxData;
       const description = auxData.description || auxData.value || "";
       const descriptionWithoutStack = _DebuggerPausedMessage.descriptionWithoutStack(description);
@@ -2818,21 +5549,21 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI5.Widget.Widg
         title: description,
         errorLike
       };
-    } else if (details.reason === "assert") {
+    } else if (details.reason === Debugger.PausedEventReason.Assert) {
       this.#viewInput = { mainText: i18nString4(UIStrings5.pausedOnAssertion), errorLike };
-    } else if (details.reason === "debugCommand") {
+    } else if (details.reason === Debugger.PausedEventReason.DebugCommand) {
       this.#viewInput = { mainText: i18nString4(UIStrings5.pausedOnDebuggedFunction), errorLike };
-    } else if (details.reason === "OOM") {
+    } else if (details.reason === Debugger.PausedEventReason.OOM) {
       this.#viewInput = { mainText: i18nString4(UIStrings5.pausedBeforePotentialOutofmemory), errorLike };
-    } else if (details.reason === "CSPViolation" && details.auxData?.["violationType"]) {
+    } else if (details.reason === Debugger.PausedEventReason.CSPViolation && details.auxData?.["violationType"]) {
       const text = details.auxData["violationType"];
-      if (text === "trustedtype-sink-violation") {
+      if (text === DOMDebugger.CSPViolationType.TrustedtypeSinkViolation) {
         this.#viewInput = {
           mainText: i18nString4(UIStrings5.pausedOnCspViolation),
           subText: i18nString4(UIStrings5.trustedTypeSinkViolation),
           errorLike
         };
-      } else if (text === "trustedtype-policy-violation") {
+      } else if (text === DOMDebugger.CSPViolationType.TrustedtypePolicyViolation) {
         this.#viewInput = {
           mainText: i18nString4(UIStrings5.pausedOnCspViolation),
           subText: i18nString4(UIStrings5.trustedTypePolicyViolation),
@@ -2846,7 +5577,9 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI5.Widget.Widg
       this.#viewInput = { mainText: defaultText, errorLike };
     } else {
       this.#viewInput = null;
-      console.warn("ScriptsPanel paused, but callFrames.length is zero.");
+      console.warn(
+        "ScriptsPanel paused, but callFrames.length is zero."
+      );
     }
     this.requestUpdate();
   }
@@ -2855,12 +5588,12 @@ var DebuggerPausedMessage = class _DebuggerPausedMessage extends UI5.Widget.Widg
   }
 };
 var BreakpointTypeNouns = /* @__PURE__ */ new Map([
-  ["subtree-modified", i18nLazyString2(UIStrings5.subtreeModifications)],
-  ["attribute-modified", i18nLazyString2(UIStrings5.attributeModifications)],
-  ["node-removed", i18nLazyString2(UIStrings5.nodeRemoval)]
+  [DOMDebugger.DOMBreakpointType.SubtreeModified, i18nLazyString2(UIStrings5.subtreeModifications)],
+  [DOMDebugger.DOMBreakpointType.AttributeModified, i18nLazyString2(UIStrings5.attributeModifications)],
+  [DOMDebugger.DOMBreakpointType.NodeRemoved, i18nLazyString2(UIStrings5.nodeRemoval)]
 ]);
 
-// gen/front_end/panels/sources/NavigatorView.js
+// ../../front_end/panels/sources/NavigatorView.ts
 var NavigatorView_exports = {};
 __export(NavigatorView_exports, {
   NavigatorFolderTreeElement: () => NavigatorFolderTreeElement,
@@ -3070,7 +5803,7 @@ var navigatorView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./navigatorView.css")} */`;
 
-// gen/front_end/panels/sources/SearchSourcesView.js
+// ../../front_end/panels/sources/SearchSourcesView.ts
 var SearchSourcesView_exports = {};
 __export(SearchSourcesView_exports, {
   ActionDelegate: () => ActionDelegate,
@@ -3082,7 +5815,7 @@ import * as Common5 from "../../core/common/common.js";
 import * as UI6 from "../../ui/legacy/legacy.js";
 import * as Search from "../search/search.js";
 
-// gen/front_end/panels/sources/SourcesSearchScope.js
+// ../../front_end/panels/sources/SourcesSearchScope.ts
 var SourcesSearchScope_exports = {};
 __export(SourcesSearchScope_exports, {
   FileBasedSearchResult: () => FileBasedSearchResult,
@@ -3127,7 +5860,10 @@ var SourcesSearchScope = class _SourcesSearchScope {
     if (!url1 && url2) {
       return 1;
     }
-    return Platform3.StringUtilities.naturalOrderComparator(uiSourceCode1.fullDisplayName(), uiSourceCode2.fullDisplayName());
+    return Platform3.StringUtilities.naturalOrderComparator(
+      uiSourceCode1.fullDisplayName(),
+      uiSourceCode2.fullDisplayName()
+    );
   }
   static urlComparator(uiSourceCode1, uiSourceCode2) {
     return Platform3.StringUtilities.naturalOrderComparator(uiSourceCode1.url(), uiSourceCode2.url());
@@ -3175,10 +5911,21 @@ var SourcesSearchScope = class _SourcesSearchScope {
       const weight = [...project.uiSourceCodes()].length;
       const findMatchingFilesInProjectProgress = findMatchingFilesProgress.createSubProgress(weight);
       const filesMatchingFileQuery = this.projectFilesMatchingFileQuery(project, searchConfig);
-      const promise = project.findFilesMatchingSearchRequest(searchConfig, filesMatchingFileQuery, findMatchingFilesInProjectProgress).then(this.processMatchingFilesForProject.bind(this, this.searchId, project, searchConfig, filesMatchingFileQuery));
+      const promise = project.findFilesMatchingSearchRequest(searchConfig, filesMatchingFileQuery, findMatchingFilesInProjectProgress).then(this.processMatchingFilesForProject.bind(
+        this,
+        this.searchId,
+        project,
+        searchConfig,
+        filesMatchingFileQuery
+      ));
       promises.push(promise);
     }
-    void Promise.all(promises).then(this.processMatchingFiles.bind(this, this.searchId, searchContentProgress, this.searchFinishedCallback.bind(this, true)));
+    void Promise.all(promises).then(this.processMatchingFiles.bind(
+      this,
+      this.searchId,
+      searchContentProgress,
+      this.searchFinishedCallback.bind(this, true)
+    ));
   }
   projectFilesMatchingFileQuery(project, searchConfig, dirtyOnly) {
     const result = [];
@@ -3186,7 +5933,9 @@ var SourcesSearchScope = class _SourcesSearchScope {
       if (!uiSourceCode.contentType().isTextType()) {
         continue;
       }
-      if (Workspace3.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+      if (Workspace3.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+        uiSourceCode
+      )) {
         continue;
       }
       const binding = Persistence.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
@@ -3196,7 +5945,9 @@ var SourcesSearchScope = class _SourcesSearchScope {
       if (dirtyOnly && !uiSourceCode.isDirty()) {
         continue;
       }
-      if (searchConfig.filePathMatchesFileQuery(uiSourceCode.fullDisplayName())) {
+      if (searchConfig.filePathMatchesFileQuery(
+        uiSourceCode.fullDisplayName()
+      )) {
         result.push(uiSourceCode);
       }
     }
@@ -3222,7 +5973,11 @@ var SourcesSearchScope = class _SourcesSearchScope {
       uiSourceCodes.push(uiSourceCode);
     }
     uiSourceCodes.sort(_SourcesSearchScope.filesComparator);
-    this.searchResultCandidates = Platform3.ArrayUtilities.mergeOrdered(this.searchResultCandidates, uiSourceCodes, _SourcesSearchScope.filesComparator);
+    this.searchResultCandidates = Platform3.ArrayUtilities.mergeOrdered(
+      this.searchResultCandidates,
+      uiSourceCodes,
+      _SourcesSearchScope.filesComparator
+    );
   }
   processMatchingFiles(searchId, progress, callback) {
     if (searchId !== this.searchId && this.searchFinishedCallback) {
@@ -3247,7 +6002,11 @@ var SourcesSearchScope = class _SourcesSearchScope {
         contentLoaded.call(this, uiSourceCode, new TextUtils2.Text.Text(uiSourceCode.workingCopy()));
       } else {
         void uiSourceCode.requestContentData().then((contentData) => {
-          contentLoaded.call(this, uiSourceCode, TextUtils2.ContentData.ContentData.contentDataOrEmpty(contentData).textObj);
+          contentLoaded.call(
+            this,
+            uiSourceCode,
+            TextUtils2.ContentData.ContentData.contentDataOrEmpty(contentData).textObj
+          );
         });
       }
     }
@@ -3271,8 +6030,17 @@ var SourcesSearchScope = class _SourcesSearchScope {
       const queries = searchConfig.queries();
       if (content !== null) {
         for (let i = 0; i < queries.length; ++i) {
-          const nextMatches = TextUtils2.TextUtils.performSearchInContent(content, queries[i], !searchConfig.ignoreCase(), searchConfig.isRegex());
-          matches = Platform3.ArrayUtilities.mergeOrdered(matches, nextMatches, TextUtils2.ContentProvider.SearchMatch.comparator);
+          const nextMatches = TextUtils2.TextUtils.performSearchInContent(
+            content,
+            queries[i],
+            !searchConfig.ignoreCase(),
+            searchConfig.isRegex()
+          );
+          matches = Platform3.ArrayUtilities.mergeOrdered(
+            matches,
+            nextMatches,
+            TextUtils2.ContentProvider.SearchMatch.comparator
+          );
         }
         if (!searchConfig.queries().length) {
           matches = [new TextUtils2.ContentProvider.SearchMatch(0, content.lineAt(0), 0, 0)];
@@ -3325,7 +6093,7 @@ var FileBasedSearchResult = class {
   }
 };
 
-// gen/front_end/panels/sources/SearchSourcesView.js
+// ../../front_end/panels/sources/SearchSourcesView.ts
 var SearchSources = class {
   query;
   constructor(query) {
@@ -3364,7 +6132,7 @@ var Revealer3 = class {
   }
 };
 
-// gen/front_end/panels/sources/NavigatorView.js
+// ../../front_end/panels/sources/NavigatorView.ts
 var UIStrings6 = {
   /**
    * @description Text in Navigator view of the Sources panel.
@@ -3528,10 +6296,7 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
     });
     this.registerRequiredCSS(navigatorView_css_default);
     this.placeholder = null;
-    this.scriptsTree = new UI7.TreeOutline.TreeOutlineInShadow(
-      "NavigationTree"
-      /* UI.TreeOutline.TreeVariant.NAVIGATION_TREE */
-    );
+    this.scriptsTree = new UI7.TreeOutline.TreeOutlineInShadow(UI7.TreeOutline.TreeVariant.NAVIGATION_TREE);
     this.scriptsTree.registerRequiredCSS(navigatorTree_css_default);
     this.scriptsTree.setHideOverflow(true);
     this.scriptsTree.setComparator(_NavigatorView.treeElementsCompare);
@@ -3544,7 +6309,10 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
     this.rootNode.populate();
     this.frameNodes = /* @__PURE__ */ new Map();
     this.contentElement.addEventListener("contextmenu", this.handleContextMenu.bind(this), false);
-    UI7.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(this.contentElement, { "sources.rename": this.renameShortcut.bind(this) });
+    UI7.ShortcutRegistry.ShortcutRegistry.instance().addShortcutListener(
+      this.contentElement,
+      { "sources.rename": this.renameShortcut.bind(this) }
+    );
     this.navigatorGroupByFolderSetting = Common6.Settings.Settings.instance().moduleSetting("navigator-group-by-folder");
     this.navigatorGroupByFolderSetting.addChangeListener(this.groupingChanged.bind(this));
     this.navigatorJustMyCodeSetting = Common6.Settings.Settings.instance().moduleSetting("navigator-just-my-code");
@@ -3555,15 +6323,39 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
     }
     Workspace5.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListChanged.bind(this));
     this.initGrouping();
-    Persistence3.Persistence.PersistenceImpl.instance().addEventListener(Persistence3.Persistence.Events.BindingCreated, this.onBindingChanged, this);
-    Persistence3.Persistence.PersistenceImpl.instance().addEventListener(Persistence3.Persistence.Events.BindingRemoved, this.onBindingChanged, this);
-    Persistence3.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("RequestsForHeaderOverridesFileChanged", this.#onRequestsForHeaderOverridesFileChanged, this);
-    SDK5.TargetManager.TargetManager.instance().addEventListener("NameChanged", this.targetNameChanged, this);
+    Persistence3.Persistence.PersistenceImpl.instance().addEventListener(
+      Persistence3.Persistence.Events.BindingCreated,
+      this.onBindingChanged,
+      this
+    );
+    Persistence3.Persistence.PersistenceImpl.instance().addEventListener(
+      Persistence3.Persistence.Events.BindingRemoved,
+      this.onBindingChanged,
+      this
+    );
+    Persistence3.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
+      Persistence3.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
+      this.#onRequestsForHeaderOverridesFileChanged,
+      this
+    );
+    SDK5.TargetManager.TargetManager.instance().addEventListener(
+      SDK5.TargetManager.Events.NAME_CHANGED,
+      this.targetNameChanged,
+      this
+    );
     SDK5.TargetManager.TargetManager.instance().observeTargets(this);
     this.resetWorkspace(Workspace5.Workspace.WorkspaceImpl.instance());
     this.#workspace.uiSourceCodes().forEach(this.addUISourceCode.bind(this));
-    networkProjectManager.addEventListener("FrameAttributionAdded", this.frameAttributionAdded, this);
-    networkProjectManager.addEventListener("FrameAttributionRemoved", this.frameAttributionRemoved, this);
+    networkProjectManager.addEventListener(
+      Bindings3.NetworkProject.Events.FRAME_ATTRIBUTION_ADDED,
+      this.frameAttributionAdded,
+      this
+    );
+    networkProjectManager.addEventListener(
+      Bindings3.NetworkProject.Events.FRAME_ATTRIBUTION_REMOVED,
+      this.frameAttributionRemoved,
+      this
+    );
   }
   static treeElementOrder(treeElement) {
     if (boostOrderForNode.has(treeElement)) {
@@ -3588,7 +6380,11 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
   static appendSearchItem(contextMenu, path) {
     const searchLabel = path ? i18nString5(UIStrings6.searchInFolder) : i18nString5(UIStrings6.searchInAllFiles);
     const searchSources = new SearchSources(path && `file:${path}`);
-    contextMenu.viewSection().appendItem(searchLabel, () => Common6.Revealer.reveal(searchSources), { jslogContext: path ? "search-in-folder" : "search-in-all-files" });
+    contextMenu.viewSection().appendItem(
+      searchLabel,
+      () => Common6.Revealer.reveal(searchSources),
+      { jslogContext: path ? "search-in-folder" : "search-in-all-files" }
+    );
   }
   static treeElementsCompare(treeElement1, treeElement2) {
     const typeWeight1 = _NavigatorView.treeElementOrder(treeElement1);
@@ -3635,7 +6431,14 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
     let folderPath = Platform5.DevToolsPath.EmptyEncodedPathString;
     for (let i = 0; i < pathTokens.length - 1; ++i) {
       folderPath = Common6.ParsedURL.ParsedURL.concatenate(folderPath, pathTokens[i]);
-      const folderId = this.folderNodeId(binding.fileSystem.project(), null, null, binding.fileSystem.origin(), isFromSourceMap, folderPath);
+      const folderId = this.folderNodeId(
+        binding.fileSystem.project(),
+        null,
+        null,
+        binding.fileSystem.origin(),
+        isFromSourceMap,
+        folderPath
+      );
       const folderNode = this.subfolderNodes.get(folderId);
       if (folderNode) {
         folderNode.updateTitle();
@@ -3677,14 +6480,30 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
   }
   resetWorkspace(workspace) {
     if (this.#workspace) {
-      this.#workspace.removeEventListener(Workspace5.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAddedCallback, this);
-      this.#workspace.removeEventListener(Workspace5.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemovedCallback, this);
+      this.#workspace.removeEventListener(
+        Workspace5.Workspace.Events.UISourceCodeAdded,
+        this.uiSourceCodeAddedCallback,
+        this
+      );
+      this.#workspace.removeEventListener(
+        Workspace5.Workspace.Events.UISourceCodeRemoved,
+        this.uiSourceCodeRemovedCallback,
+        this
+      );
       this.#workspace.removeEventListener(Workspace5.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
       this.#workspace.removeEventListener(Workspace5.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
     }
     this.#workspace = workspace;
-    this.#workspace.addEventListener(Workspace5.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAddedCallback, this);
-    this.#workspace.addEventListener(Workspace5.Workspace.Events.UISourceCodeRemoved, this.uiSourceCodeRemovedCallback, this);
+    this.#workspace.addEventListener(
+      Workspace5.Workspace.Events.UISourceCodeAdded,
+      this.uiSourceCodeAddedCallback,
+      this
+    );
+    this.#workspace.addEventListener(
+      Workspace5.Workspace.Events.UISourceCodeRemoved,
+      this.uiSourceCodeRemovedCallback,
+      this
+    );
     this.#workspace.addEventListener(Workspace5.Workspace.Events.ProjectAdded, this.projectAddedCallback, this);
     this.#workspace.addEventListener(Workspace5.Workspace.Events.ProjectRemoved, this.projectRemovedCallback, this);
     this.#workspace.projects().forEach(this.projectAdded.bind(this));
@@ -3733,7 +6552,9 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
     return this.acceptProject(uiSourceCode.project());
   }
   addUISourceCode(uiSourceCode) {
-    if (this.navigatorJustMyCodeSetting.get() && Workspace5.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+    if (this.navigatorJustMyCodeSetting.get() && Workspace5.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+      uiSourceCode
+    )) {
       return;
     }
     if (!this.acceptsUISourceCode(uiSourceCode)) {
@@ -3838,7 +6659,9 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
       );
       reversedIndex.add(reversedPath);
       const prefixPath = reversedPath.slice(0, commonPrefix.length + 1);
-      const path = Common6.ParsedURL.ParsedURL.encodedPathToRawPathString(prefixPath.reverse().join("/"));
+      const path = Common6.ParsedURL.ParsedURL.encodedPathToRawPathString(
+        prefixPath.reverse().join("/")
+      );
       const fileSystemNode = rootOrDeployed.child(project.id());
       if (fileSystemNode) {
         fileSystemNode.setTitle(path);
@@ -3910,7 +6733,13 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
     if (domainNode) {
       return domainNode;
     }
-    domainNode = new NavigatorGroupTreeNode(this, project, projectOrigin, Types.Domain, this.computeProjectDisplayName(target, projectOrigin));
+    domainNode = new NavigatorGroupTreeNode(
+      this,
+      project,
+      projectOrigin,
+      Types.Domain,
+      this.computeProjectDisplayName(target, projectOrigin)
+    );
     if (frame && projectOrigin === Common6.ParsedURL.ParsedURL.extractOrigin(frame.url)) {
       boostOrderForNode.add(domainNode.treeNode());
     }
@@ -3952,7 +6781,14 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
   targetNode(project, target, isAuthored) {
     if (this.groupByAuthored && isAuthored) {
       if (!this.authoredNode) {
-        this.authoredNode = new NavigatorGroupTreeNode(this, null, "group:Authored", Types.Authored, i18nString5(UIStrings6.authored), i18nString5(UIStrings6.authoredTooltip));
+        this.authoredNode = new NavigatorGroupTreeNode(
+          this,
+          null,
+          "group:Authored",
+          Types.Authored,
+          i18nString5(UIStrings6.authored),
+          i18nString5(UIStrings6.authoredTooltip)
+        );
         this.rootNode.appendChild(this.authoredNode);
         this.authoredNode.treeNode().expand();
       }
@@ -3964,7 +6800,13 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
     }
     let targetNode = rootOrDeployed.child("target:" + target.id());
     if (!targetNode) {
-      targetNode = new NavigatorGroupTreeNode(this, project, "target:" + target.id(), target.type() === SDK5.Target.Type.FRAME ? Types.Frame : Types.Worker, target.name());
+      targetNode = new NavigatorGroupTreeNode(
+        this,
+        project,
+        "target:" + target.id(),
+        target.type() === SDK5.Target.Type.FRAME ? Types.Frame : Types.Worker,
+        target.name()
+      );
       rootOrDeployed.appendChild(targetNode);
     }
     return targetNode;
@@ -3972,7 +6814,14 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
   rootOrDeployedNode() {
     if (this.groupByAuthored) {
       if (!this.deployedNode) {
-        this.deployedNode = new NavigatorGroupTreeNode(this, null, "group:Deployed", Types.Deployed, i18nString5(UIStrings6.deployed), i18nString5(UIStrings6.deployedTooltip));
+        this.deployedNode = new NavigatorGroupTreeNode(
+          this,
+          null,
+          "group:Deployed",
+          Types.Deployed,
+          i18nString5(UIStrings6.deployed),
+          i18nString5(UIStrings6.deployedTooltip)
+        );
         this.rootNode.appendChild(this.deployedNode);
       }
       return this.deployedNode;
@@ -4084,10 +6933,20 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
         break;
       }
       if (currentNode.type === Types.Frame) {
-        this.discardFrame(frame, Boolean(this.groupByAuthored) && uiSourceCode.contentType().isFromSourceMap());
+        this.discardFrame(
+          frame,
+          Boolean(this.groupByAuthored) && uiSourceCode.contentType().isFromSourceMap()
+        );
         frame = frame.parentFrame();
       } else {
-        const folderId = this.folderNodeId(project, target, frame, uiSourceCode.origin(), uiSourceCode.contentType().isFromSourceMap(), currentNode instanceof NavigatorFolderTreeNode && currentNode.folderPath || Platform5.DevToolsPath.EmptyEncodedPathString);
+        const folderId = this.folderNodeId(
+          project,
+          target,
+          frame,
+          uiSourceCode.origin(),
+          uiSourceCode.contentType().isFromSourceMap(),
+          currentNode instanceof NavigatorFolderTreeNode && currentNode.folderPath || Platform5.DevToolsPath.EmptyEncodedPathString
+        );
         this.subfolderNodes.delete(folderId);
         parentNode.removeChild(currentNode);
       }
@@ -4138,15 +6997,27 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
     this.rename(node, false);
   }
   async handleContextMenuExclude(project, path) {
-    const shouldExclude = await UI7.UIUtils.ConfirmDialog.show(i18nString5(UIStrings6.folderWillNotBeShown), i18nString5(UIStrings6.excludeThisFolder), void 0, { jslogContext: "exclude-folder-confirmation" });
+    const shouldExclude = await UI7.UIUtils.ConfirmDialog.show(
+      i18nString5(UIStrings6.folderWillNotBeShown),
+      i18nString5(UIStrings6.excludeThisFolder),
+      void 0,
+      { jslogContext: "exclude-folder-confirmation" }
+    );
     if (shouldExclude) {
       UI7.UIUtils.startBatchUpdate();
-      project.excludeFolder(Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.completeURL(project, path));
+      project.excludeFolder(
+        Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.completeURL(project, path)
+      );
       UI7.UIUtils.endBatchUpdate();
     }
   }
   async handleContextMenuDelete(uiSourceCode) {
-    const shouldDelete = await UI7.UIUtils.ConfirmDialog.show(i18nString5(UIStrings6.actionCannotBeUndone), i18nString5(UIStrings6.deleteThisFile), void 0, { jslogContext: "delete-file-confirmation" });
+    const shouldDelete = await UI7.UIUtils.ConfirmDialog.show(
+      i18nString5(UIStrings6.actionCannotBeUndone),
+      i18nString5(UIStrings6.deleteThisFile),
+      void 0,
+      { jslogContext: "delete-file-confirmation" }
+    );
     if (shouldDelete) {
       uiSourceCode.project().deleteFile(uiSourceCode);
     }
@@ -4157,14 +7028,31 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
     contextMenu.appendApplicableItems(uiSourceCode);
     const project = uiSourceCode.project();
     if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
-      contextMenu.editSection().appendItem(i18nString5(UIStrings6.rename), this.handleContextMenuRename.bind(this, node), { jslogContext: "rename" });
-      contextMenu.editSection().appendItem(i18nString5(UIStrings6.makeACopy), this.handleContextMenuCreate.bind(this, project, Platform5.DevToolsPath.EmptyEncodedPathString, uiSourceCode), { jslogContext: "make-a-copy" });
-      contextMenu.editSection().appendItem(i18nString5(UIStrings6.delete), this.handleContextMenuDelete.bind(this, uiSourceCode), { jslogContext: "delete" });
+      contextMenu.editSection().appendItem(
+        i18nString5(UIStrings6.rename),
+        this.handleContextMenuRename.bind(this, node),
+        { jslogContext: "rename" }
+      );
+      contextMenu.editSection().appendItem(
+        i18nString5(UIStrings6.makeACopy),
+        this.handleContextMenuCreate.bind(this, project, Platform5.DevToolsPath.EmptyEncodedPathString, uiSourceCode),
+        { jslogContext: "make-a-copy" }
+      );
+      contextMenu.editSection().appendItem(
+        i18nString5(UIStrings6.delete),
+        this.handleContextMenuDelete.bind(this, uiSourceCode),
+        { jslogContext: "delete" }
+      );
     }
     void contextMenu.show();
   }
   async handleDeleteFolder(node) {
-    const shouldRemove = await UI7.UIUtils.ConfirmDialog.show(i18nString5(UIStrings6.actionCannotBeUndone), i18nString5(UIStrings6.deleteFolder), void 0, { jslogContext: "delete-folder-confirmation" });
+    const shouldRemove = await UI7.UIUtils.ConfirmDialog.show(
+      i18nString5(UIStrings6.actionCannotBeUndone),
+      i18nString5(UIStrings6.deleteFolder),
+      void 0,
+      { jslogContext: "delete-folder-confirmation" }
+    );
     if (shouldRemove) {
       Host3.userMetrics.actionTaken(Host3.UserMetrics.Action.OverrideTabDeleteFolderContextMenu);
       const topNode = this.findTopNonMergedNode(node);
@@ -4206,8 +7094,15 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
       return;
     }
     if (project.type() === Workspace5.Workspace.projectTypes.FileSystem) {
-      const folderPath = Common6.ParsedURL.ParsedURL.urlToRawPathString(Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.completeURL(project, path), Host3.Platform.isWin());
-      contextMenu.revealSection().appendItem(i18nString5(UIStrings6.openFolder), () => Host3.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(folderPath), { jslogContext: "open-folder" });
+      const folderPath = Common6.ParsedURL.ParsedURL.urlToRawPathString(
+        Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.completeURL(project, path),
+        Host3.Platform.isWin()
+      );
+      contextMenu.revealSection().appendItem(
+        i18nString5(UIStrings6.openFolder),
+        () => Host3.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(folderPath),
+        { jslogContext: "open-folder" }
+      );
       if (project.canCreateFile()) {
         contextMenu.defaultSection().appendItem(i18nString5(UIStrings6.newFile), () => {
           this.handleContextMenuCreate(project, path, void 0);
@@ -4225,7 +7120,11 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
       }
     }
     if (project.canExcludeFolder(path)) {
-      contextMenu.defaultSection().appendItem(i18nString5(UIStrings6.excludeFolder), this.handleContextMenuExclude.bind(this, project, path), { jslogContext: "exclude-folder" });
+      contextMenu.defaultSection().appendItem(
+        i18nString5(UIStrings6.excludeFolder),
+        this.handleContextMenuExclude.bind(this, project, path),
+        { jslogContext: "exclude-folder" }
+      );
     }
     if (project.type() === Workspace5.Workspace.projectTypes.ConnectableFileSystem) {
       const automaticFileSystemManager = Persistence3.AutomaticFileSystemManager.AutomaticFileSystemManager.instance();
@@ -4254,7 +7153,11 @@ var NavigatorView = class _NavigatorView extends UI7.Widget.VBox {
           }, { jslogContext: "remove-folder-from-workspace" });
         }
       } else if (!(node instanceof NavigatorGroupTreeNode)) {
-        contextMenu.defaultSection().appendItem(i18nString5(UIStrings6.delete), this.handleDeleteFolder.bind(this, node), { jslogContext: "delete" });
+        contextMenu.defaultSection().appendItem(
+          i18nString5(UIStrings6.delete),
+          this.handleDeleteFolder.bind(this, node),
+          { jslogContext: "delete" }
+        );
       }
     }
     void contextMenu.show();
@@ -4474,10 +7377,16 @@ var NavigatorSourceTreeElement = class extends UI7.TreeOutline.TreeElement {
     this.nodeType = Types.File;
     this.node = node;
     this.title = title;
-    this.listItemElement.classList.add("navigator-" + uiSourceCode.contentType().name() + "-tree-item", "navigator-file-tree-item");
+    this.listItemElement.classList.add(
+      "navigator-" + uiSourceCode.contentType().name() + "-tree-item",
+      "navigator-file-tree-item"
+    );
     this.tooltip = uiSourceCode.url();
     UI7.ARIAUtils.setLabel(this.listItemElement, `${uiSourceCode.name()}, ${this.nodeType}`);
-    window.dispatchEvent(new CustomEvent("source-tree-file-added", { bubbles: true, cancelable: true, detail: uiSourceCode.fullDisplayName() }));
+    window.dispatchEvent(new CustomEvent(
+      "source-tree-file-added",
+      { bubbles: true, cancelable: true, detail: uiSourceCode.fullDisplayName() }
+    ));
     this.navigatorView = navigatorView;
     this.#uiSourceCode = uiSourceCode;
     this.updateIcon();
@@ -4747,7 +7656,9 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
     return this.treeElement;
   }
   updateTitle(ignoreIsDirty) {
-    const isIgnoreListed = Workspace5.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(this.#uiSourceCode);
+    const isIgnoreListed = Workspace5.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+      this.#uiSourceCode
+    );
     if (this.#uiSourceCode.contentType().isScript() || isIgnoreListed) {
       this.recursiveProperties.exclusivelyIgnored = isIgnoreListed;
     }
@@ -4835,7 +7746,9 @@ var NavigatorUISourceCodeTreeNode = class extends NavigatorTreeNode {
       }
     };
     this.updateTitle(true);
-    this.treeElement.startEditingTitle(new UI7.InplaceEditor.Config(commitHandler, () => afterEditing(false), void 0));
+    this.treeElement.startEditingTitle(
+      new UI7.InplaceEditor.Config(commitHandler, () => afterEditing(false), void 0)
+    );
   }
 };
 var NavigatorFolderTreeNode = class _NavigatorFolderTreeNode extends NavigatorTreeNode {
@@ -4881,7 +7794,13 @@ var NavigatorFolderTreeNode = class _NavigatorFolderTreeNode extends NavigatorTr
     if (!this.project || this.project.type() !== Workspace5.Workspace.projectTypes.FileSystem) {
       return;
     }
-    const absoluteFileSystemPath = Common6.ParsedURL.ParsedURL.concatenate(Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(this.project.id()), "/", this.folderPath);
+    const absoluteFileSystemPath = Common6.ParsedURL.ParsedURL.concatenate(
+      Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
+        this.project.id()
+      ),
+      "/",
+      this.folderPath
+    );
     const isOverrides = Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === "overrides";
     const hasMappedFiles = isOverrides ? Common6.Settings.Settings.instance().resolve(Persistence3.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).get() : Persistence3.Persistence.PersistenceImpl.instance().filePathHasBindings(absoluteFileSystemPath);
     this.treeElement.listItemElement.classList.toggle("has-mapped-files", hasMappedFiles);
@@ -5021,8 +7940,8 @@ var NavigatorGroupTreeNode = class extends NavigatorTreeNode {
         case "disconnected": {
           const button = new Buttons2.Button.Button();
           button.data = {
-            variant: "outlined",
-            size: "MICRO",
+            variant: Buttons2.Button.Variant.OUTLINED,
+            size: Buttons2.Button.Size.MICRO,
             title: i18nString5(UIStrings6.connectFolderToWorkspace),
             jslogContext: "automatic-workspace-folders.connect"
           };
@@ -5048,7 +7967,9 @@ var NavigatorGroupTreeNode = class extends NavigatorTreeNode {
     if (!this.treeElement || !this.project || this.project.type() !== Workspace5.Workspace.projectTypes.FileSystem) {
       return;
     }
-    const fileSystemPath = Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(this.project.id());
+    const fileSystemPath = Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemPath(
+      this.project.id()
+    );
     const wasActive = this.treeElement.listItemElement.classList.contains("has-mapped-files");
     const isOverrides = Persistence3.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.fileSystemType(this.project) === "overrides";
     const isActive = isOverrides ? Common6.Settings.Settings.instance().resolve(Persistence3.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).get() : Persistence3.Persistence.PersistenceImpl.instance().filePathHasBindings(fileSystemPath);
@@ -5157,7 +8078,7 @@ var sourcesPanel_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./sourcesPanel.css")} */`;
 
-// gen/front_end/panels/sources/SourcesView.js
+// ../../front_end/panels/sources/SourcesView.ts
 var SourcesView_exports = {};
 __export(SourcesView_exports, {
   ActionDelegate: () => ActionDelegate2,
@@ -5180,7 +8101,7 @@ import * as UI15 from "../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html6, render as render7 } from "../../ui/lit/lit.js";
 import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/sources/EditingLocationHistoryManager.js
+// ../../front_end/panels/sources/EditingLocationHistoryManager.ts
 var EditingLocationHistoryManager_exports = {};
 __export(EditingLocationHistoryManager_exports, {
   EditingLocationHistoryManager: () => EditingLocationHistoryManager,
@@ -5190,15 +8111,18 @@ import * as Workspace7 from "../../models/workspace/workspace.js";
 import * as SourceFrame3 from "../../ui/legacy/components/source_frame/source_frame.js";
 var HistoryDepth = 20;
 var EditingLocationHistoryManager = class {
+  constructor(sourcesView) {
+    this.sourcesView = sourcesView;
+  }
   sourcesView;
   entries = [];
   current = -1;
   revealingCount = 0;
-  constructor(sourcesView) {
-    this.sourcesView = sourcesView;
-  }
   trackSourceFrameCursorJumps(sourceFrame) {
-    sourceFrame.addEventListener("EditorUpdate", (event) => this.onEditorUpdate(event.data, sourceFrame));
+    sourceFrame.addEventListener(
+      SourceFrame3.SourceFrame.Events.EDITOR_UPDATE,
+      (event) => this.onEditorUpdate(event.data, sourceFrame)
+    );
   }
   onEditorUpdate(update, sourceFrame) {
     if (update.docChanged) {
@@ -5207,7 +8131,9 @@ var EditingLocationHistoryManager = class {
     const prevPos = update.startState.selection.main;
     const newPos = update.state.selection.main;
     const isJump = this.revealingCount === 0 && prevPos.anchor !== newPos.anchor && update.transactions.some((tr) => {
-      return Boolean(tr.isUserEvent("select.pointer") || tr.isUserEvent("select.reveal") || tr.isUserEvent("select.search"));
+      return Boolean(
+        tr.isUserEvent("select.pointer") || tr.isUserEvent("select.reveal") || tr.isUserEvent("select.search")
+      );
     });
     if (isJump) {
       this.updateCurrentState(sourceFrame.uiSourceCode(), prevPos.head);
@@ -5327,7 +8253,7 @@ var sourcesView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./sourcesView.css")} */`;
 
-// gen/front_end/panels/sources/TabbedEditorContainer.js
+// ../../front_end/panels/sources/TabbedEditorContainer.ts
 var TabbedEditorContainer_exports = {};
 __export(TabbedEditorContainer_exports, {
   EditorContainerTabDelegate: () => EditorContainerTabDelegate,
@@ -5346,7 +8272,7 @@ import * as Workspace17 from "../../models/workspace/workspace.js";
 import * as Tooltips2 from "../../ui/components/tooltips/tooltips.js";
 import * as uiI18n2 from "../../ui/i18n/i18n.js";
 import { Icon as Icon2, Link } from "../../ui/kit/kit.js";
-import * as SourceFrame8 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as SourceFrame9 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI14 from "../../ui/legacy/legacy.js";
 import { html as html5, render as render6 } from "../../ui/lit/lit.js";
 import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
@@ -5354,7 +8280,7 @@ import * as PanelCommon2 from "../common/common.js";
 import * as Snippets3 from "../snippets/snippets.js";
 import * as Components2 from "./components/components.js";
 
-// gen/front_end/panels/sources/UISourceCodeFrame.js
+// ../../front_end/panels/sources/UISourceCodeFrame.ts
 var UISourceCodeFrame_exports = {};
 __export(UISourceCodeFrame_exports, {
   Events: () => Events,
@@ -5374,10 +8300,10 @@ import * as CodeMirror6 from "../../third_party/codemirror.next/codemirror.next.
 import * as IssueCounter from "../../ui/components/issue_counter/issue_counter.js";
 import * as TextEditor5 from "../../ui/components/text_editor/text_editor.js";
 import { Icon } from "../../ui/kit/kit.js";
-import * as SourceFrame6 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as SourceFrame7 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI13 from "../../ui/legacy/legacy.js";
 
-// gen/front_end/panels/sources/CoveragePlugin.js
+// ../../front_end/panels/sources/CoveragePlugin.ts
 var CoveragePlugin_exports = {};
 __export(CoveragePlugin_exports, {
   CoveragePlugin: () => CoveragePlugin
@@ -5420,9 +8346,14 @@ var CoveragePlugin = class extends Plugin {
     super(uiSourceCode);
     this.originalSourceCode = this.uiSourceCode;
     this.#transformer = transformer;
-    this.infoInToolbar = new UI8.Toolbar.ToolbarButton(i18nString6(UIStrings7.clickToShowCoveragePanel), void 0, void 0, "debugger.show-coverage");
+    this.infoInToolbar = new UI8.Toolbar.ToolbarButton(
+      i18nString6(UIStrings7.clickToShowCoveragePanel),
+      void 0,
+      void 0,
+      "debugger.show-coverage"
+    );
     this.infoInToolbar.setSecondary();
-    this.infoInToolbar.addEventListener("Click", () => {
+    this.infoInToolbar.addEventListener(UI8.Toolbar.ToolbarButton.Events.CLICK, () => {
       void UI8.ViewManager.ViewManager.instance().showView("coverage");
     });
     const mainTarget = SDK6.TargetManager.TargetManager.instance().primaryPageTarget();
@@ -5432,7 +8363,11 @@ var CoveragePlugin = class extends Plugin {
         this.model.addEventListener(Coverage.CoverageModel.Events.CoverageReset, this.handleReset, this);
         this.coverage = this.model.getCoverageForUrl(this.originalSourceCode.url());
         if (this.coverage) {
-          this.coverage.addEventListener(Coverage.CoverageModel.URLCoverageInfo.Events.SizesChanged, this.handleCoverageSizesChanged, this);
+          this.coverage.addEventListener(
+            Coverage.CoverageModel.URLCoverageInfo.Events.SizesChanged,
+            this.handleCoverageSizesChanged,
+            this
+          );
         }
       }
     }
@@ -5440,7 +8375,11 @@ var CoveragePlugin = class extends Plugin {
   }
   dispose() {
     if (this.coverage) {
-      this.coverage.removeEventListener(Coverage.CoverageModel.URLCoverageInfo.Events.SizesChanged, this.handleCoverageSizesChanged, this);
+      this.coverage.removeEventListener(
+        Coverage.CoverageModel.URLCoverageInfo.Events.SizesChanged,
+        this.handleCoverageSizesChanged,
+        this
+      );
     }
     if (this.model) {
       this.model.removeEventListener(Coverage.CoverageModel.Events.CoverageReset, this.handleReset, this);
@@ -5463,7 +8402,9 @@ var CoveragePlugin = class extends Plugin {
         style: "percent",
         maximumFractionDigits: 1
       });
-      this.infoInToolbar.setText(i18nString6(UIStrings7.coverageS, { PH1: formatter.format(this.coverage.usedPercentage()) }));
+      this.infoInToolbar.setText(
+        i18nString6(UIStrings7.coverageS, { PH1: formatter.format(this.coverage.usedPercentage()) })
+      );
     } else {
       this.infoInToolbar.setTitle(i18nString6(UIStrings7.clickToShowCoveragePanel));
       this.infoInToolbar.setText(i18nString6(UIStrings7.coverageNa));
@@ -5476,10 +8417,7 @@ var CoveragePlugin = class extends Plugin {
     return coverageCompartment.of([]);
   }
   getCoverageManager() {
-    return this.uiSourceCode.getDecorationData(
-      "coverage"
-      /* Workspace.UISourceCode.DecoratorType.COVERAGE */
-    );
+    return this.uiSourceCode.getDecorationData(Workspace9.UISourceCode.DecoratorType.COVERAGE);
   }
   editorInitialized(editor) {
     if (this.getCoverageManager()) {
@@ -5487,7 +8425,7 @@ var CoveragePlugin = class extends Plugin {
     }
   }
   decorationChanged(type, editor) {
-    if (type === "coverage") {
+    if (type === Workspace9.UISourceCode.DecoratorType.COVERAGE) {
       this.startDecoUpdate(editor);
     }
   }
@@ -5591,7 +8529,7 @@ var theme = CodeMirror2.EditorView.baseTheme({
   }
 });
 
-// gen/front_end/panels/sources/CSSPlugin.js
+// ../../front_end/panels/sources/CSSPlugin.ts
 var CSSPlugin_exports = {};
 __export(CSSPlugin_exports, {
   CSSPlugin: () => CSSPlugin,
@@ -5741,7 +8679,7 @@ var ColorSwatchWidget = class extends CodeMirror3.WidgetType {
       event.consume(true);
       view.dispatch({
         effects: setTooltip.of({
-          type: 0,
+          type: 0 /* COLOR */,
           pos: view.posAtDOM(swatch),
           text: this.#text,
           swatch,
@@ -5756,13 +8694,13 @@ var ColorSwatchWidget = class extends CodeMirror3.WidgetType {
   }
 };
 var CurveSwatchWidget = class extends CodeMirror3.WidgetType {
-  curve;
-  text;
   constructor(curve, text) {
     super();
     this.curve = curve;
     this.text = text;
   }
+  curve;
+  text;
   eq(other) {
     return this.curve.asCSSText() === other.curve.asCSSText() && this.text === other.text;
   }
@@ -5777,7 +8715,7 @@ var CurveSwatchWidget = class extends CodeMirror3.WidgetType {
       event.consume(true);
       view.dispatch({
         effects: setTooltip.of({
-          type: 1,
+          type: 1 /* CURVE */,
           pos: view.posAtDOM(icon),
           text: this.text,
           swatch: icon,
@@ -5791,11 +8729,6 @@ var CurveSwatchWidget = class extends CodeMirror3.WidgetType {
     return true;
   }
 };
-var TooltipType;
-(function(TooltipType2) {
-  TooltipType2[TooltipType2["COLOR"] = 0] = "COLOR";
-  TooltipType2[TooltipType2["CURVE"] = 1] = "CURVE";
-})(TooltipType || (TooltipType = {}));
 function createCSSTooltip(active) {
   return {
     pos: active.pos,
@@ -5803,19 +8736,19 @@ function createCSSTooltip(active) {
     create(view) {
       let text = active.text;
       let widget3, addListener;
-      if (active.type === 0) {
+      if (active.type === 0 /* COLOR */) {
         const spectrum = new ColorPicker.Spectrum.Spectrum();
         addListener = (handler) => {
-          spectrum.addEventListener("ColorChanged", handler);
+          spectrum.addEventListener(ColorPicker.Spectrum.Events.COLOR_CHANGED, handler);
         };
-        spectrum.addEventListener("SizeChanged", () => view.requestMeasure());
+        spectrum.addEventListener(ColorPicker.Spectrum.Events.SIZE_CHANGED, () => view.requestMeasure());
         spectrum.setColor(active.color);
         widget3 = spectrum;
       } else {
         const spectrum = new InlineEditor.BezierEditor.BezierEditor(active.curve);
         widget3 = spectrum;
         addListener = (handler) => {
-          spectrum.addEventListener("BezierChanged", handler);
+          spectrum.addEventListener(InlineEditor.BezierEditor.Events.BEZIER_CHANGED, handler);
         };
       }
       const dom = document.createElement("div");
@@ -5881,11 +8814,21 @@ var cssTooltipState = CodeMirror3.StateField.define({
 });
 function computeSwatchDeco(state, from, to) {
   const builder = new CodeMirror3.RangeSetBuilder();
-  findColorsAndCurves(state, from, to, (pos, parsedColor, colorText) => {
-    builder.add(pos, pos, CodeMirror3.Decoration.widget({ widget: new ColorSwatchWidget(parsedColor, colorText, pos) }));
-  }, (pos, curve, text) => {
-    builder.add(pos, pos, CodeMirror3.Decoration.widget({ widget: new CurveSwatchWidget(curve, text) }));
-  });
+  findColorsAndCurves(
+    state,
+    from,
+    to,
+    (pos, parsedColor, colorText) => {
+      builder.add(
+        pos,
+        pos,
+        CodeMirror3.Decoration.widget({ widget: new ColorSwatchWidget(parsedColor, colorText, pos) })
+      );
+    },
+    (pos, curve, text) => {
+      builder.add(pos, pos, CodeMirror3.Decoration.widget({ widget: new CurveSwatchWidget(curve, text) }));
+    }
+  );
   return builder.finish();
 }
 var cssSwatchPlugin = CodeMirror3.ViewPlugin.fromClass(class {
@@ -5986,7 +8929,10 @@ var CSSPlugin = class extends Plugin {
   populateTextAreaContextMenu(contextMenu) {
     function addSourceMapURL(cssModel2, sourceUrl) {
       const dialog4 = AddDebugInfoURLDialog.createAddSourceMapURLDialog((sourceMapUrl) => {
-        Bindings4.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().modelToInfo.get(cssModel2)?.addSourceMap(sourceUrl, sourceMapUrl);
+        Bindings4.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().modelToInfo.get(cssModel2)?.addSourceMap(
+          sourceUrl,
+          sourceMapUrl
+        );
       });
       dialog4.show();
     }
@@ -5994,7 +8940,11 @@ var CSSPlugin = class extends Plugin {
     const url = this.uiSourceCode.url();
     if (this.uiSourceCode.project().type() === Workspace10.Workspace.projectTypes.Network && cssModel && !Workspace10.IgnoreListManager.IgnoreListManager.instance().isUserIgnoreListedURL(url)) {
       const addSourceMapURLLabel = i18nString7(UIStrings8.addSourceMap);
-      contextMenu.debugSection().appendItem(addSourceMapURLLabel, () => addSourceMapURL(cssModel, url), { jslogContext: "add-source-map" });
+      contextMenu.debugSection().appendItem(
+        addSourceMapURLLabel,
+        () => addSourceMapURL(cssModel, url),
+        { jslogContext: "add-source-map" }
+      );
     }
   }
 };
@@ -6006,7 +8956,7 @@ var theme2 = CodeMirror3.EditorView.baseTheme({
   }
 });
 
-// gen/front_end/panels/sources/DebuggerPlugin.js
+// ../../front_end/panels/sources/DebuggerPlugin.ts
 var DebuggerPlugin_exports = {};
 __export(DebuggerPlugin_exports, {
   BreakpointLocationRevealer: () => BreakpointLocationRevealer,
@@ -6035,7 +8985,7 @@ import * as Buttons3 from "../../ui/components/buttons/buttons.js";
 import * as TextEditor3 from "../../ui/components/text_editor/text_editor.js";
 import * as Tooltips from "../../ui/components/tooltips/tooltips.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
-import * as SourceFrame4 from "../../ui/legacy/components/source_frame/source_frame.js";
+import * as SourceFrame5 from "../../ui/legacy/components/source_frame/source_frame.js";
 import * as UI10 from "../../ui/legacy/legacy.js";
 import { render as render5 } from "../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
@@ -6162,6 +9112,48 @@ var MAX_CODE_SIZE_FOR_VALUE_DECORATIONS = 1e4;
 var MAX_PROPERTIES_IN_SCOPE_FOR_VALUE_DECORATIONS = 500;
 var debuggerPluginForUISourceCode = /* @__PURE__ */ new Map();
 var DebuggerPlugin = class extends Plugin {
+  constructor(uiSourceCode, transformer) {
+    super(uiSourceCode);
+    this.transformer = transformer;
+    debuggerPluginForUISourceCode.set(uiSourceCode, this);
+    this.scriptsPanel = SourcesPanel.instance();
+    this.breakpointManager = Breakpoints2.BreakpointManager.BreakpointManager.instance();
+    this.breakpointManager.addEventListener(
+      Breakpoints2.BreakpointManager.Events.BreakpointAdded,
+      this.breakpointChange,
+      this
+    );
+    this.breakpointManager.addEventListener(
+      Breakpoints2.BreakpointManager.Events.BreakpointRemoved,
+      this.breakpointChange,
+      this
+    );
+    this.uiSourceCode.addEventListener(Workspace12.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
+    this.uiSourceCode.addEventListener(
+      Workspace12.UISourceCode.Events.WorkingCopyCommitted,
+      this.workingCopyCommitted,
+      this
+    );
+    this.scriptFileForDebuggerModel = /* @__PURE__ */ new Map();
+    this.loader = SDK8.PageResourceLoader.PageResourceLoader.instance();
+    this.loader.addEventListener(
+      SDK8.PageResourceLoader.Events.UPDATE,
+      this.showSourceMapInfobarIfNeeded.bind(this),
+      this
+    );
+    this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
+    Workspace12.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
+    UI10.Context.Context.instance().addFlavorChangeListener(
+      StackTrace.StackTrace.DebuggableFrameFlavor,
+      this.callFrameChanged,
+      this
+    );
+    this.updateScriptFiles();
+    this.muted = this.uiSourceCode.isDirty();
+    this.initializedMuted = this.muted;
+    this.ignoreListInfobar = null;
+    this.showIgnoreListInfobarIfNeeded();
+  }
   transformer;
   editor = void 0;
   // Set if the debugger is stopped on a breakpoint in this file
@@ -6201,28 +9193,6 @@ var DebuggerPlugin = class extends Plugin {
   #sourcesPanelDebuggedMetricsRecorded = false;
   loader;
   ignoreListCallback;
-  constructor(uiSourceCode, transformer) {
-    super(uiSourceCode);
-    this.transformer = transformer;
-    debuggerPluginForUISourceCode.set(uiSourceCode, this);
-    this.scriptsPanel = SourcesPanel.instance();
-    this.breakpointManager = Breakpoints2.BreakpointManager.BreakpointManager.instance();
-    this.breakpointManager.addEventListener(Breakpoints2.BreakpointManager.Events.BreakpointAdded, this.breakpointChange, this);
-    this.breakpointManager.addEventListener(Breakpoints2.BreakpointManager.Events.BreakpointRemoved, this.breakpointChange, this);
-    this.uiSourceCode.addEventListener(Workspace12.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
-    this.uiSourceCode.addEventListener(Workspace12.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
-    this.scriptFileForDebuggerModel = /* @__PURE__ */ new Map();
-    this.loader = SDK8.PageResourceLoader.PageResourceLoader.instance();
-    this.loader.addEventListener("Update", this.showSourceMapInfobarIfNeeded.bind(this), this);
-    this.ignoreListCallback = this.showIgnoreListInfobarIfNeeded.bind(this);
-    Workspace12.IgnoreListManager.IgnoreListManager.instance().addChangeListener(this.ignoreListCallback);
-    UI10.Context.Context.instance().addFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
-    this.updateScriptFiles();
-    this.muted = this.uiSourceCode.isDirty();
-    this.initializedMuted = this.muted;
-    this.ignoreListInfobar = null;
-    this.showIgnoreListInfobarIfNeeded();
-  }
   editorExtension() {
     const handlers = this.shortcutHandlers();
     return [
@@ -6302,7 +9272,7 @@ var DebuggerPlugin = class extends Plugin {
     this.editor = editor;
     computeNonBreakableLines(editor.state, this.transformer, this.uiSourceCode).then((linePositions) => {
       if (linePositions.length) {
-        editor.dispatch({ effects: SourceFrame4.SourceFrame.addNonBreakableLines.of(linePositions) });
+        editor.dispatch({ effects: SourceFrame5.SourceFrame.addNonBreakableLines.of(linePositions) });
       }
     }, console.error);
     if (this.ignoreListInfobar) {
@@ -6331,7 +9301,9 @@ var DebuggerPlugin = class extends Plugin {
     if (!uiSourceCode.contentType().hasScripts()) {
       return;
     }
-    if (!Workspace12.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+    if (!Workspace12.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+      uiSourceCode
+    )) {
       this.hideIgnoreListInfobar();
       return;
     }
@@ -6341,21 +9313,30 @@ var DebuggerPlugin = class extends Plugin {
     function unIgnoreList() {
       Workspace12.IgnoreListManager.IgnoreListManager.instance().unIgnoreListUISourceCode(uiSourceCode);
     }
-    const infobar = new UI10.Infobar.Infobar("warning", i18nString8(UIStrings9.thisScriptIsOnTheDebuggersIgnore), [
-      {
-        text: i18nString8(UIStrings9.configure),
-        delegate: UI10.ViewManager.ViewManager.instance().showView.bind(UI10.ViewManager.ViewManager.instance(), "blackbox"),
-        dismiss: false,
-        jslogContext: "configure"
-      },
-      {
-        text: i18nString8(UIStrings9.removeFromIgnoreList),
-        delegate: unIgnoreList,
-        buttonVariant: "tonal",
-        dismiss: true,
-        jslogContext: "remove-from-ignore-list"
-      }
-    ], void 0, "script-on-ignore-list");
+    const infobar = new UI10.Infobar.Infobar(
+      UI10.Infobar.Type.WARNING,
+      i18nString8(UIStrings9.thisScriptIsOnTheDebuggersIgnore),
+      [
+        {
+          text: i18nString8(UIStrings9.configure),
+          delegate: UI10.ViewManager.ViewManager.instance().showView.bind(
+            UI10.ViewManager.ViewManager.instance(),
+            "blackbox"
+          ),
+          dismiss: false,
+          jslogContext: "configure"
+        },
+        {
+          text: i18nString8(UIStrings9.removeFromIgnoreList),
+          delegate: unIgnoreList,
+          buttonVariant: Buttons3.Button.Variant.TONAL,
+          dismiss: true,
+          jslogContext: "remove-from-ignore-list"
+        }
+      ],
+      void 0,
+      "script-on-ignore-list"
+    );
     this.ignoreListInfobar = infobar;
     infobar.setCloseCallback(() => this.removeInfobar(this.ignoreListInfobar));
     infobar.createDetailsRowMessage(i18nString8(UIStrings9.theDebuggerWillSkipStepping));
@@ -6363,12 +9344,12 @@ var DebuggerPlugin = class extends Plugin {
   }
   attachInfobar(bar) {
     if (this.editor) {
-      this.editor.dispatch({ effects: SourceFrame4.SourceFrame.addSourceFrameInfobar.of({ element: bar.element }) });
+      this.editor.dispatch({ effects: SourceFrame5.SourceFrame.addSourceFrameInfobar.of({ element: bar.element }) });
     }
   }
   removeInfobar(bar) {
     if (this.editor && bar) {
-      this.editor.dispatch({ effects: SourceFrame4.SourceFrame.removeSourceFrameInfobar.of({ element: bar.element }) });
+      this.editor.dispatch({ effects: SourceFrame5.SourceFrame.removeSourceFrameInfobar.of({ element: bar.element }) });
     }
   }
   hideIgnoreListInfobar() {
@@ -6398,18 +9379,24 @@ var DebuggerPlugin = class extends Plugin {
     }
     const line = this.editor.state.doc.line(editorLineNumber + 1);
     const breakpoints = this.lineBreakpoints(line);
-    const supportsConditionalBreakpoints = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().supportsConditionalBreakpoints(this.uiSourceCode);
+    const supportsConditionalBreakpoints = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().supportsConditionalBreakpoints(
+      this.uiSourceCode
+    );
     if (!breakpoints.length) {
-      if (this.editor && SourceFrame4.SourceFrame.isBreakableLine(this.editor.state, line)) {
-        contextMenu.debugSection().appendItem(i18nString8(UIStrings9.addBreakpoint), this.createNewBreakpoint.bind(
-          this,
-          line,
-          EMPTY_BREAKPOINT_CONDITION,
-          /* enabled */
-          true,
-          /* isLogpoint */
-          false
-        ), { jslogContext: "add-breakpoint" });
+      if (this.editor && SourceFrame5.SourceFrame.isBreakableLine(this.editor.state, line)) {
+        contextMenu.debugSection().appendItem(
+          i18nString8(UIStrings9.addBreakpoint),
+          this.createNewBreakpoint.bind(
+            this,
+            line,
+            EMPTY_BREAKPOINT_CONDITION,
+            /* enabled */
+            true,
+            /* isLogpoint */
+            false
+          ),
+          { jslogContext: "add-breakpoint" }
+        );
         if (supportsConditionalBreakpoints) {
           contextMenu.debugSection().appendItem(i18nString8(UIStrings9.addConditionalBreakpoint), () => {
             this.editBreakpointCondition({ line, breakpoint: null, location: null, isLogpoint: false });
@@ -6417,23 +9404,31 @@ var DebuggerPlugin = class extends Plugin {
           contextMenu.debugSection().appendItem(i18nString8(UIStrings9.addLogpoint), () => {
             this.editBreakpointCondition({ line, breakpoint: null, location: null, isLogpoint: true });
           }, { jslogContext: "add-logpoint" });
-          contextMenu.debugSection().appendItem(i18nString8(UIStrings9.neverPauseHere), this.createNewBreakpoint.bind(
-            this,
-            line,
-            NEVER_PAUSE_HERE_CONDITION,
-            /* enabled */
-            true,
-            /* isLogpoint */
-            false
-          ), { jslogContext: "never-pause-here" });
+          contextMenu.debugSection().appendItem(
+            i18nString8(UIStrings9.neverPauseHere),
+            this.createNewBreakpoint.bind(
+              this,
+              line,
+              NEVER_PAUSE_HERE_CONDITION,
+              /* enabled */
+              true,
+              /* isLogpoint */
+              false
+            ),
+            { jslogContext: "never-pause-here" }
+          );
         }
       }
     } else {
       const removeTitle = i18nString8(UIStrings9.removeBreakpoint, { n: breakpoints.length });
-      contextMenu.debugSection().appendItem(removeTitle, () => breakpoints.forEach((breakpoint) => {
-        Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.BreakpointRemovedFromGutterContextMenu);
-        void breakpoint.remove(false);
-      }), { jslogContext: "remove-breakpoint" });
+      contextMenu.debugSection().appendItem(
+        removeTitle,
+        () => breakpoints.forEach((breakpoint) => {
+          Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.BreakpointRemovedFromGutterContextMenu);
+          void breakpoint.remove(false);
+        }),
+        { jslogContext: "remove-breakpoint" }
+      );
       if (breakpoints.length === 1 && supportsConditionalBreakpoints) {
         contextMenu.debugSection().appendItem(i18nString8(UIStrings9.editBreakpoint), () => {
           this.editBreakpointCondition({ line, breakpoint: breakpoints[0], location: null });
@@ -6442,12 +9437,20 @@ var DebuggerPlugin = class extends Plugin {
       const hasEnabled = breakpoints.some((breakpoint) => breakpoint.enabled());
       if (hasEnabled) {
         const title = i18nString8(UIStrings9.disableBreakpoint, { n: breakpoints.length });
-        contextMenu.debugSection().appendItem(title, () => breakpoints.forEach((breakpoint) => breakpoint.setEnabled(false)), { jslogContext: "enable-breakpoint" });
+        contextMenu.debugSection().appendItem(
+          title,
+          () => breakpoints.forEach((breakpoint) => breakpoint.setEnabled(false)),
+          { jslogContext: "enable-breakpoint" }
+        );
       }
       const hasDisabled = breakpoints.some((breakpoint) => !breakpoint.enabled());
       if (hasDisabled) {
         const title = i18nString8(UIStrings9.enableBreakpoint, { n: breakpoints.length });
-        contextMenu.debugSection().appendItem(title, () => breakpoints.forEach((breakpoint) => breakpoint.setEnabled(true)), { jslogContext: "disable-breakpoint" });
+        contextMenu.debugSection().appendItem(
+          title,
+          () => breakpoints.forEach((breakpoint) => breakpoint.setEnabled(true)),
+          { jslogContext: "disable-breakpoint" }
+        );
       }
     }
   }
@@ -6479,9 +9482,19 @@ var DebuggerPlugin = class extends Plugin {
       if (this.scriptFileForDebuggerModel.size) {
         const scriptFile = this.scriptFileForDebuggerModel.values().next().value;
         const addSourceMapURLLabel = i18nString8(UIStrings9.addSourceMap);
-        contextMenu.debugSection().appendItem(addSourceMapURLLabel, addSourceMapURL.bind(null, scriptFile), { jslogContext: "add-source-map" });
-        if (scriptFile.script?.isWasm() && !Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager.hasPluginForScript(scriptFile.script)) {
-          contextMenu.debugSection().appendItem(i18nString8(UIStrings9.addWasmDebugInfo), addDebugInfoURL.bind(this, scriptFile), { jslogContext: "add-wasm-debug-info" });
+        contextMenu.debugSection().appendItem(
+          addSourceMapURLLabel,
+          addSourceMapURL.bind(null, scriptFile),
+          { jslogContext: "add-source-map" }
+        );
+        if (scriptFile.script?.isWasm() && !Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().pluginManager.hasPluginForScript(
+          scriptFile.script
+        )) {
+          contextMenu.debugSection().appendItem(
+            i18nString8(UIStrings9.addWasmDebugInfo),
+            addDebugInfoURL.bind(this, scriptFile),
+            { jslogContext: "add-wasm-debug-info" }
+          );
         }
       }
     }
@@ -6551,7 +9564,12 @@ var DebuggerPlugin = class extends Plugin {
     if (!leftCorner || !rightCorner) {
       return null;
     }
-    const box = new AnchorBox(leftCorner.left, leftCorner.top - 2, rightCorner.right - leftCorner.left, rightCorner.bottom - leftCorner.top);
+    const box = new AnchorBox(
+      leftCorner.left,
+      leftCorner.top - 2,
+      rightCorner.right - leftCorner.left,
+      rightCorner.bottom - leftCorner.top
+    );
     const evaluationText = editor.state.sliceDoc(highlightRange.from, highlightRange.to);
     let objectPopoverHelper = null;
     return {
@@ -6559,7 +9577,10 @@ var DebuggerPlugin = class extends Plugin {
       show: async (popover) => {
         let resolvedText = "";
         if (selectedCallFrame.script.isJavaScript()) {
-          const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(selectedCallFrame, Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+          const nameMap = await SourceMapScopes.NamesResolver.allVariablesInCallFrame(
+            selectedCallFrame,
+            Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+          );
           try {
             resolvedText = await Formatter.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(evaluationText, nameMap);
           } catch {
@@ -6697,7 +9718,7 @@ var DebuggerPlugin = class extends Plugin {
     const compartment = new CodeMirror4.Compartment();
     const dialog4 = new BreakpointEditDialog();
     dialog4.editorLineNumber = line.number - 1;
-    dialog4.oldCondition = oldCondition, dialog4.breakpointType = isLogpointForDialog ? "LOGPOINT" : "CONDITIONAL_BREAKPOINT";
+    dialog4.oldCondition = oldCondition, dialog4.breakpointType = isLogpointForDialog ? SDK8.DebuggerModel.BreakpointType.LOGPOINT : SDK8.DebuggerModel.BreakpointType.CONDITIONAL_BREAKPOINT;
     dialog4.onFinish = async (result) => {
       this.activeBreakpointDialog = null;
       this.#activeBreakpointEditRequest = void 0;
@@ -6730,15 +9751,17 @@ var DebuggerPlugin = class extends Plugin {
       }
     };
     editor.dispatch({
-      effects: CodeMirror4.StateEffect.appendConfig.of(compartment.of(CodeMirror4.EditorView.decorations.of(CodeMirror4.Decoration.set([CodeMirror4.Decoration.widget({
-        block: true,
-        widget: new class extends CodeMirror4.WidgetType {
-          toDOM() {
-            return decorationElement;
-          }
-        }(),
-        side: 1
-      }).range(line.to)]))))
+      effects: CodeMirror4.StateEffect.appendConfig.of(compartment.of(CodeMirror4.EditorView.decorations.of(
+        CodeMirror4.Decoration.set([CodeMirror4.Decoration.widget({
+          block: true,
+          widget: new class extends CodeMirror4.WidgetType {
+            toDOM() {
+              return decorationElement;
+            }
+          }(),
+          side: 1
+        }).range(line.to)])
+      )))
     });
     dialog4.element.addEventListener("blur", async (event) => {
       if (!event.relatedTarget || event.relatedTarget && !event.relatedTarget.isSelfOrDescendant(dialog4.element)) {
@@ -6798,7 +9821,9 @@ var DebuggerPlugin = class extends Plugin {
     if (!uiLocation || uiLocation.uiSourceCode.url() !== url) {
       return null;
     }
-    const offset = this.editor?.toOffset(this.transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber));
+    const offset = this.editor?.toOffset(
+      this.transformer.uiLocationToEditorLocation(uiLocation.lineNumber, uiLocation.columnNumber)
+    );
     return offset ?? null;
   }
   async computeValueDecorations() {
@@ -6882,7 +9907,7 @@ var DebuggerPlugin = class extends Plugin {
     let previousCallLine = -1;
     for (const location of locations.reverse()) {
       const editorLocation = this.transformer.uiLocationToEditorLocation(location.lineNumber, location.columnNumber);
-      if (previousCallLine === editorLocation.lineNumber && location.type !== "call" || editorLocation.lineNumber >= state.doc.lines) {
+      if (previousCallLine === editorLocation.lineNumber && location.type !== Debugger.BreakLocationType.Call || editorLocation.lineNumber >= state.doc.lines) {
         continue;
       }
       const line = state.doc.line(editorLocation.lineNumber + 1);
@@ -6903,8 +9928,10 @@ var DebuggerPlugin = class extends Plugin {
       if (!validKeyword && !this.isIdentifier(syntaxType)) {
         continue;
       }
-      this.continueToLocations.push({ from: syntaxNode.from, to: syntaxNode.to, async: false, click: () => location.continueToLocation() });
-      if (location.type === "call") {
+      this.continueToLocations.push(
+        { from: syntaxNode.from, to: syntaxNode.to, async: false, click: () => location.continueToLocation() }
+      );
+      if (location.type === Debugger.BreakLocationType.Call) {
         previousCallLine = editorLocation.lineNumber;
       }
       const identifierName = validKeyword ? "" : line.text.slice(syntaxNode.from - line.from, syntaxNode.to - line.from);
@@ -6920,7 +9947,7 @@ var DebuggerPlugin = class extends Plugin {
           asyncCall = syntaxNode.parent;
         }
       }
-      if (asyncCall && (asyncCall.name === "CallExpression" || asyncCall.name === "NewExpression") && location.type === "call") {
+      if (asyncCall && (asyncCall.name === "CallExpression" || asyncCall.name === "NewExpression") && location.type === Debugger.BreakLocationType.Call) {
         const firstArg = asyncCall.getChild("ArgList")?.firstChild?.nextSibling;
         let highlightNode;
         if (firstArg?.name === "VariableName") {
@@ -6942,9 +9969,12 @@ var DebuggerPlugin = class extends Plugin {
         }
       }
     }
-    const decorations = CodeMirror4.Decoration.set(this.continueToLocations.map((loc) => {
-      return (loc.async ? asyncContinueToMark : continueToMark).range(loc.from, loc.to);
-    }), true);
+    const decorations = CodeMirror4.Decoration.set(
+      this.continueToLocations.map((loc) => {
+        return (loc.async ? asyncContinueToMark : continueToMark).range(loc.from, loc.to);
+      }),
+      true
+    );
     this.editor.dispatch({ effects: continueToMarkers.update.of(decorations) });
   }
   clearContinueToLocations() {
@@ -6985,8 +10015,16 @@ var DebuggerPlugin = class extends Plugin {
   }
   async linePossibleBreakpoints(line) {
     const start = this.transformer.editorLocationToUILocation(line.number - 1, 0);
-    const end = this.transformer.editorLocationToUILocation(line.number - 1, Math.min(line.length, MAX_POSSIBLE_BREAKPOINT_LINE));
-    const range = new TextUtils6.TextRange.TextRange(start.lineNumber, start.columnNumber || 0, end.lineNumber, end.columnNumber || 0);
+    const end = this.transformer.editorLocationToUILocation(
+      line.number - 1,
+      Math.min(line.length, MAX_POSSIBLE_BREAKPOINT_LINE)
+    );
+    const range = new TextUtils6.TextRange.TextRange(
+      start.lineNumber,
+      start.columnNumber || 0,
+      end.lineNumber,
+      end.columnNumber || 0
+    );
     return await this.breakpointManager.possibleBreakpoints(this.uiSourceCode, range);
   }
   // Compute the decorations for existing breakpoints (both on the
@@ -7014,7 +10052,9 @@ var DebuggerPlugin = class extends Plugin {
         breakpointsByLine.set(line.from, forThisLine);
       }
       if (breakpoint.enabled() && forThisLine.every((b) => !b.enabled())) {
-        possibleBreakpointRequests.push(this.linePossibleBreakpoints(line).then((locations) => addPossibleBreakpoints(line, locations)));
+        possibleBreakpointRequests.push(
+          this.linePossibleBreakpoints(line).then((locations) => addPossibleBreakpoints(line, locations))
+        );
       }
       forThisLine.push(breakpoint);
       if (breakpoint.enabled()) {
@@ -7125,9 +10165,11 @@ var DebuggerPlugin = class extends Plugin {
     const editor = this.editor;
     const position = editor.editor.posAtDOM(event.target);
     const line = editor.state.doc.lineAt(position);
-    if (!SourceFrame4.SourceFrame.isBreakableLine(editor.state, line) || // Editing breakpoints only make sense for conditional breakpoints
+    if (!SourceFrame5.SourceFrame.isBreakableLine(editor.state, line) || // Editing breakpoints only make sense for conditional breakpoints
     // and logpoints.
-    !Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().supportsConditionalBreakpoints(this.uiSourceCode)) {
+    !Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().supportsConditionalBreakpoints(
+      this.uiSourceCode
+    )) {
       return;
     }
     const contextMenu = new UI10.ContextMenu.ContextMenu(event);
@@ -7143,21 +10185,28 @@ var DebuggerPlugin = class extends Plugin {
       contextMenu.debugSection().appendItem(i18nString8(UIStrings9.addLogpoint), () => {
         this.editBreakpointCondition({ line, breakpoint: null, location: uiLocation, isLogpoint: true });
       }, { jslogContext: "add-logpoint" });
-      contextMenu.debugSection().appendItem(i18nString8(UIStrings9.neverPauseHere), () => this.setBreakpoint(
-        uiLocation.lineNumber,
-        uiLocation.columnNumber,
-        NEVER_PAUSE_HERE_CONDITION,
-        /* enabled */
-        true,
-        /* isLogpoint */
-        false
-      ), { jslogContext: "never-pause-here" });
+      contextMenu.debugSection().appendItem(
+        i18nString8(UIStrings9.neverPauseHere),
+        () => this.setBreakpoint(
+          uiLocation.lineNumber,
+          uiLocation.columnNumber,
+          NEVER_PAUSE_HERE_CONDITION,
+          /* enabled */
+          true,
+          /* isLogpoint */
+          false
+        ),
+        { jslogContext: "never-pause-here" }
+      );
     }
     void contextMenu.show();
   }
   updateScriptFiles() {
     for (const debuggerModel of SDK8.TargetManager.TargetManager.instance().models(SDK8.DebuggerModel.DebuggerModel)) {
-      const scriptFile = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(this.uiSourceCode, debuggerModel);
+      const scriptFile = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(
+        this.uiSourceCode,
+        debuggerModel
+      );
       if (scriptFile) {
         this.updateScriptFile(debuggerModel);
       }
@@ -7166,7 +10215,10 @@ var DebuggerPlugin = class extends Plugin {
   }
   updateScriptFile(debuggerModel) {
     this.scriptFileForDebuggerModel.delete(debuggerModel);
-    const newScriptFile = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(this.uiSourceCode, debuggerModel);
+    const newScriptFile = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(
+      this.uiSourceCode,
+      debuggerModel
+    );
     if (!newScriptFile) {
       return;
     }
@@ -7189,22 +10241,20 @@ var DebuggerPlugin = class extends Plugin {
       this.missingDebugInfoBar = null;
       return;
     }
-    this.missingDebugInfoBar = UI10.Infobar.Infobar.create("error", warning.details, [], void 0, "missing-debug-info");
+    this.missingDebugInfoBar = UI10.Infobar.Infobar.create(UI10.Infobar.Type.ERROR, warning.details, [], void 0, "missing-debug-info");
     if (!this.missingDebugInfoBar) {
       return;
     }
     for (const resource of warning.resources) {
-      const detailsRow = this.missingDebugInfoBar?.createDetailsRowMessage(i18nString8(UIStrings9.debugFileNotFound, { PH1: Common8.ParsedURL.ParsedURL.extractName(resource.resourceUrl) }));
+      const detailsRow = this.missingDebugInfoBar?.createDetailsRowMessage(
+        i18nString8(UIStrings9.debugFileNotFound, { PH1: Common8.ParsedURL.ParsedURL.extractName(resource.resourceUrl) })
+      );
       if (detailsRow) {
         const pageResourceKey = SDK8.PageResourceLoader.PageResourceLoader.makeExtensionKey(resource.resourceUrl, resource.initiator);
         if (SDK8.PageResourceLoader.PageResourceLoader.instance().getResourcesLoaded().get(pageResourceKey)) {
           const showRequest = UI10.UIUtils.createTextButton(i18nString8(UIStrings9.showRequest), () => {
             void Common8.Revealer.reveal(new SDK8.PageResourceLoader.ResourceKey(pageResourceKey));
-          }, {
-            jslogContext: "show-request",
-            variant: "text"
-            /* Buttons.Button.Variant.TEXT */
-          });
+          }, { jslogContext: "show-request", variant: Buttons3.Button.Variant.TEXT });
           showRequest.style.setProperty("margin-left", "10px");
           showRequest.title = i18nString8(UIStrings9.openDeveloperResources);
           detailsRow.appendChild(showRequest);
@@ -7220,7 +10270,10 @@ var DebuggerPlugin = class extends Plugin {
   }
   scriptHasSourceMap() {
     for (const debuggerModel of SDK8.TargetManager.TargetManager.instance().models(SDK8.DebuggerModel.DebuggerModel)) {
-      const scriptFile = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(this.uiSourceCode, debuggerModel);
+      const scriptFile = Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptFile(
+        this.uiSourceCode,
+        debuggerModel
+      );
       if (scriptFile?.hasSourceMapURL()) {
         return true;
       }
@@ -7232,10 +10285,16 @@ var DebuggerPlugin = class extends Plugin {
     for (const [debuggerModel, script] of this.scriptFileForDebuggerModel.entries()) {
       const url = script.script?.sourceMapURL;
       if (url) {
-        const initiatorUrl = SDK8.SourceMapManager.SourceMapManager.resolveRelativeSourceURL(debuggerModel.target(), script.script.sourceURL);
+        const initiatorUrl = SDK8.SourceMapManager.SourceMapManager.resolveRelativeSourceURL(
+          debuggerModel.target(),
+          script.script.sourceURL
+        );
         const resolvedUrl = Common8.ParsedURL.ParsedURL.completeURL(initiatorUrl, url);
         if (resolvedUrl) {
-          const resource = resourceMap.get(SDK8.PageResourceLoader.PageResourceLoader.makeKey(resolvedUrl, script.script.createPageResourceLoadInitiator()));
+          const resource = resourceMap.get(SDK8.PageResourceLoader.PageResourceLoader.makeKey(
+            resolvedUrl,
+            script.script.createPageResourceLoadInitiator()
+          ));
           if (resource) {
             return resource;
           }
@@ -7259,14 +10318,26 @@ var DebuggerPlugin = class extends Plugin {
       return;
     }
     if (!resource) {
-      this.sourceMapInfobar = UI10.Infobar.Infobar.create("info", i18nString8(UIStrings9.sourceMapSkipped), [], Common8.Settings.Settings.instance().createSetting("source-map-skipped-infobar-disabled", false), "source-map-skipped");
+      this.sourceMapInfobar = UI10.Infobar.Infobar.create(
+        UI10.Infobar.Type.INFO,
+        i18nString8(UIStrings9.sourceMapSkipped),
+        [],
+        Common8.Settings.Settings.instance().createSetting("source-map-skipped-infobar-disabled", false),
+        "source-map-skipped"
+      );
       if (!this.sourceMapInfobar) {
         return;
       }
       this.sourceMapInfobar.createDetailsRowMessage(i18nString8(UIStrings9.debuggingPowerReduced));
       this.sourceMapInfobar.createDetailsRowMessage(i18nString8(UIStrings9.reloadForSourceMap));
     } else if (resource.success) {
-      this.sourceMapInfobar = UI10.Infobar.Infobar.create("info", i18nString8(UIStrings9.sourceMapLoaded), [], Common8.Settings.Settings.instance().createSetting("source-map-infobar-disabled", false), "source-map-loaded");
+      this.sourceMapInfobar = UI10.Infobar.Infobar.create(
+        UI10.Infobar.Type.INFO,
+        i18nString8(UIStrings9.sourceMapLoaded),
+        [],
+        Common8.Settings.Settings.instance().createSetting("source-map-infobar-disabled", false),
+        "source-map-loaded"
+      );
       if (!this.sourceMapInfobar) {
         return;
       }
@@ -7275,7 +10346,13 @@ var DebuggerPlugin = class extends Plugin {
         PH1: String(UI10.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction("quick-open.show"))
       }));
     } else {
-      this.sourceMapInfobar = UI10.Infobar.Infobar.create("warning", i18nString8(UIStrings9.sourceMapFailed), [], void 0, "source-map-failed");
+      this.sourceMapInfobar = UI10.Infobar.Infobar.create(
+        UI10.Infobar.Type.WARNING,
+        i18nString8(UIStrings9.sourceMapFailed),
+        [],
+        void 0,
+        "source-map-failed"
+      );
       if (!this.sourceMapInfobar) {
         return;
       }
@@ -7335,7 +10412,10 @@ var DebuggerPlugin = class extends Plugin {
   }
   async defaultBreakpointLocation(line) {
     if (this.executionLocation) {
-      const editorExecutionLocation = this.transformer.uiLocationToEditorLocation(this.executionLocation.lineNumber, this.executionLocation.columnNumber);
+      const editorExecutionLocation = this.transformer.uiLocationToEditorLocation(
+        this.executionLocation.lineNumber,
+        this.executionLocation.columnNumber
+      );
       if (editorExecutionLocation.lineNumber === line.number - 1) {
         const possibleBreakpoints = await this.linePossibleBreakpoints(line);
         for (const location of possibleBreakpoints) {
@@ -7348,7 +10428,7 @@ var DebuggerPlugin = class extends Plugin {
     return this.transformer.editorLocationToUILocation(line.number - 1);
   }
   async createNewBreakpoint(line, condition, enabled, isLogpoint) {
-    if (!this.editor || !SourceFrame4.SourceFrame.isBreakableLine(this.editor.state, line)) {
+    if (!this.editor || !SourceFrame5.SourceFrame.isBreakableLine(this.editor.state, line)) {
       return;
     }
     Host4.userMetrics.actionTaken(Host4.UserMetrics.Action.ScriptsBreakpointSet);
@@ -7365,8 +10445,7 @@ var DebuggerPlugin = class extends Plugin {
       condition,
       enabled,
       isLogpoint,
-      "USER_ACTION"
-      /* Breakpoints.BreakpointManager.BreakpointOrigin.USER_ACTION */
+      Breakpoints2.BreakpointManager.BreakpointOrigin.USER_ACTION
     );
     this.breakpointWasSetForTest(lineNumber, columnNumber, condition, enabled);
     if (bp) {
@@ -7379,10 +10458,16 @@ var DebuggerPlugin = class extends Plugin {
   async callFrameChanged() {
     const frameFlavor = UI10.Context.Context.instance().flavor(StackTrace.StackTrace.DebuggableFrameFlavor);
     if (frameFlavor?.frame.uiSourceCode?.canonicalScriptId() === this.uiSourceCode.canonicalScriptId()) {
-      const uiLocation = new Workspace12.UISourceCode.UILocation(frameFlavor.frame.uiSourceCode, frameFlavor.frame.line, frameFlavor.frame.column);
+      const uiLocation = new Workspace12.UISourceCode.UILocation(
+        frameFlavor.frame.uiSourceCode,
+        frameFlavor.frame.line,
+        frameFlavor.frame.column
+      );
       this.setExecutionLocation(uiLocation);
       if (frameFlavor.frame.missingDebugInfo) {
-        this.updateMissingDebugInfoInfobar(convertMissingDebugInfo(frameFlavor.frame.missingDebugInfo, frameFlavor.sdkFrame.functionName));
+        this.updateMissingDebugInfoInfobar(
+          convertMissingDebugInfo(frameFlavor.frame.missingDebugInfo, frameFlavor.sdkFrame.functionName)
+        );
       } else {
         this.updateMissingDebugInfoInfobar(null);
       }
@@ -7427,16 +10512,36 @@ var DebuggerPlugin = class extends Plugin {
     this.popoverHelper?.hidePopover();
     this.popoverHelper?.dispose();
     this.setExecutionLocation(null);
-    this.breakpointManager.removeEventListener(Breakpoints2.BreakpointManager.Events.BreakpointAdded, this.breakpointChange, this);
-    this.breakpointManager.removeEventListener(Breakpoints2.BreakpointManager.Events.BreakpointRemoved, this.breakpointChange, this);
-    this.uiSourceCode.removeEventListener(Workspace12.UISourceCode.Events.WorkingCopyChanged, this.workingCopyChanged, this);
-    this.uiSourceCode.removeEventListener(Workspace12.UISourceCode.Events.WorkingCopyCommitted, this.workingCopyCommitted, this);
+    this.breakpointManager.removeEventListener(
+      Breakpoints2.BreakpointManager.Events.BreakpointAdded,
+      this.breakpointChange,
+      this
+    );
+    this.breakpointManager.removeEventListener(
+      Breakpoints2.BreakpointManager.Events.BreakpointRemoved,
+      this.breakpointChange,
+      this
+    );
+    this.uiSourceCode.removeEventListener(
+      Workspace12.UISourceCode.Events.WorkingCopyChanged,
+      this.workingCopyChanged,
+      this
+    );
+    this.uiSourceCode.removeEventListener(
+      Workspace12.UISourceCode.Events.WorkingCopyCommitted,
+      this.workingCopyCommitted,
+      this
+    );
     Workspace12.IgnoreListManager.IgnoreListManager.instance().removeChangeListener(this.ignoreListCallback);
     debuggerPluginForUISourceCode.delete(this.uiSourceCode);
     super.dispose();
     window.clearTimeout(this.refreshBreakpointsTimeout);
     this.editor = void 0;
-    UI10.Context.Context.instance().removeFlavorChangeListener(StackTrace.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
+    UI10.Context.Context.instance().removeFlavorChangeListener(
+      StackTrace.StackTrace.DebuggableFrameFlavor,
+      this.callFrameChanged,
+      this
+    );
   }
   /**
    * Only records metrics once per DebuggerPlugin instance and must only be
@@ -7448,7 +10553,13 @@ var DebuggerPlugin = class extends Plugin {
     }
     this.#sourcesPanelDebuggedMetricsRecorded = true;
     const mimeType = Common8.ResourceType.ResourceType.mimeFromURL(this.uiSourceCode.url());
-    const mediaType = Common8.ResourceType.ResourceType.mediaTypeForMetrics(mimeType ?? "", this.uiSourceCode.contentType().isFromSourceMap(), TextUtils6.TextUtils.isMinified(this.uiSourceCode.content()), this.uiSourceCode.url().startsWith("snippet://"), this.uiSourceCode.url().startsWith("debugger://"));
+    const mediaType = Common8.ResourceType.ResourceType.mediaTypeForMetrics(
+      mimeType ?? "",
+      this.uiSourceCode.contentType().isFromSourceMap(),
+      TextUtils6.TextUtils.isMinified(this.uiSourceCode.content()),
+      this.uiSourceCode.url().startsWith("snippet://"),
+      this.uiSourceCode.url().startsWith("debugger://")
+    );
     Host4.userMetrics.sourcesPanelFileDebugged(mediaType);
   }
 };
@@ -7488,7 +10599,11 @@ function muteGutterMarkers(markers, doc) {
     if (!/cm-breakpoint-disabled/.test(className)) {
       className += " cm-breakpoint-disabled";
     }
-    newMarkers.push(new BreakpointGutterMarker(className, from, marker instanceof BreakpointGutterMarker ? marker.condition : void 0).range(from));
+    newMarkers.push(new BreakpointGutterMarker(
+      className,
+      from,
+      marker instanceof BreakpointGutterMarker ? marker.condition : void 0
+    ).range(from));
   });
   return CodeMirror4.RangeSet.of(newMarkers, false);
 }
@@ -7515,9 +10630,6 @@ var breakpointMarkers = CodeMirror4.StateField.define({
   ]
 });
 var BreakpointInlineMarker = class extends CodeMirror4.WidgetType {
-  breakpoint;
-  parent;
-  class;
   constructor(breakpoint, parent) {
     super();
     this.breakpoint = breakpoint;
@@ -7532,6 +10644,9 @@ var BreakpointInlineMarker = class extends CodeMirror4.WidgetType {
       this.class += " cm-inlineBreakpoint-disabled";
     }
   }
+  breakpoint;
+  parent;
+  class;
   eq(other) {
     return other.class === this.class && other.breakpoint === this.breakpoint;
   }
@@ -7554,16 +10669,16 @@ var BreakpointInlineMarker = class extends CodeMirror4.WidgetType {
   }
 };
 var BreakpointGutterMarker = class _BreakpointGutterMarker extends CodeMirror4.GutterMarker {
-  elementClass;
-  static nextTooltipId = 0;
-  #position;
-  condition;
   constructor(elementClass, position, condition) {
     super();
     this.elementClass = elementClass;
     this.#position = position;
     this.condition = condition;
   }
+  elementClass;
+  static nextTooltipId = 0;
+  #position;
+  condition;
   eq(other) {
     return other.elementClass === this.elementClass;
   }
@@ -7571,7 +10686,7 @@ var BreakpointGutterMarker = class _BreakpointGutterMarker extends CodeMirror4.G
     const div = document.createElement("div");
     div.setAttribute("jslog", `${VisualLogging7.breakpointMarker().track({ click: true })}`);
     const line = view.state.doc.lineAt(this.#position).number;
-    const formatNumber = view.state.facet(SourceFrame4.SourceFrame.LINE_NUMBER_FORMATTER);
+    const formatNumber = view.state.facet(SourceFrame5.SourceFrame.LINE_NUMBER_FORMATTER);
     div.textContent = formatNumber(line, view.state);
     if (!this.condition) {
       return div;
@@ -7626,11 +10741,11 @@ var markIfContinueTo = CodeMirror4.EditorView.contentAttributes.compute([continu
   return state.field(continueToMarkers.field).size ? hasContinueMarkers : noMarkers;
 });
 var ValueDecoration = class extends CodeMirror4.WidgetType {
-  pairs;
   constructor(pairs) {
     super();
     this.pairs = pairs;
   }
+  pairs;
   eq(other) {
     return this.pairs.length === other.pairs.length && this.pairs.every((p, i) => p[0] === other.pairs[i][0] && p[1] === other.pairs[i][1]);
   }
@@ -7759,9 +10874,11 @@ async function computeScopeMappings(callFrame, rawLocationToEditorOffset) {
     if (!properties || properties.length > MAX_PROPERTIES_IN_SCOPE_FOR_VALUE_DECORATIONS) {
       break;
     }
-    const variableMap = new Map(properties.map((p) => [p.name, p.value]));
+    const variableMap = new Map(
+      properties.map((p) => [p.name, p.value])
+    );
     scopeMappings.push({ scopeStart, scopeEnd, variableMap });
-    if (scope.type() === "local") {
+    if (scope.type() === Debugger.ScopeType.Local) {
       break;
     }
   }
@@ -8061,16 +11178,22 @@ function lineNumberArrow(color, outline2) {
   return `url('data:image/svg+xml,<svg height="11" width="26" xmlns="http://www.w3.org/2000/svg"><path d="M22.8.5l2.7 5-2.7 5H.5V.5z" fill="${encodeURIComponent(color)}" stroke="${encodeURIComponent(outline2)}"/></svg>') 1 3 1 1`;
 }
 function inlineBreakpointArrow(color, outline2, opacity = "1") {
-  return `url('data:image/svg+xml,<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5H5.80139C6.29382 0.5 6.7549 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.7549 11.2583 6.29382 11.5 5.80139 11.5H0.5V0.5Z" fill="${encodeURIComponent(color)}" stroke="${encodeURIComponent(outline2)}" fill-opacity="${encodeURIComponent(opacity)}"/></svg>')`;
+  return `url('data:image/svg+xml,<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5H5.80139C6.29382 0.5 6.7549 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.7549 11.2583 6.29382 11.5 5.80139 11.5H0.5V0.5Z" fill="${encodeURIComponent(
+    color
+  )}" stroke="${encodeURIComponent(outline2)}" fill-opacity="${encodeURIComponent(opacity)}"/></svg>')`;
 }
 function inlineConditionalBreakpointArrow(color, outline2, opacity = "1") {
-  return `url('data:image/svg+xml,<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5H5.80139C6.29382 0.5 6.75489 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.75489 11.2583 6.29382 11.5 5.80138 11.5H0.5V0.5Z" fill="${encodeURIComponent(color)}" fill-opacity="${encodeURIComponent(opacity)}" stroke="${encodeURIComponent(outline2)}"/><path d="M3.51074 7.75635H4.68408V9H3.51074V7.75635ZM4.68408 7.23779H3.51074V6.56104C3.51074 6.271 3.55615 6.02344 3.64697 5.81836C3.73779 5.61328 3.90039 5.39648 4.13477 5.16797L4.53027 4.77686C4.71484 4.59814 4.83936 4.4502 4.90381 4.33301C4.97119 4.21582 5.00488 4.09424 5.00488 3.96826C5.00488 3.77197 4.9375 3.62402 4.80273 3.52441C4.66797 3.4248 4.46582 3.375 4.19629 3.375C3.9502 3.375 3.69238 3.42773 3.42285 3.5332C3.15625 3.63574 2.88232 3.78955 2.60107 3.99463V2.81689C2.88818 2.65283 3.17822 2.52979 3.47119 2.44775C3.76709 2.36279 4.06299 2.32031 4.35889 2.32031C4.95068 2.32031 5.41504 2.45801 5.75195 2.7334C6.08887 3.00879 6.25732 3.38818 6.25732 3.87158C6.25732 4.09424 6.20752 4.30225 6.10791 4.49561C6.0083 4.68604 5.8208 4.91602 5.54541 5.18555L5.15869 5.56348C4.95947 5.75684 4.83203 5.91504 4.77637 6.03809C4.7207 6.16113 4.69287 6.31201 4.69287 6.49072C4.69287 6.51709 4.69141 6.54785 4.68848 6.58301C4.68848 6.61816 4.68701 6.65625 4.68408 6.69727V7.23779Z" fill="white"/></svg>')`;
+  return `url('data:image/svg+xml,<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5H5.80139C6.29382 0.5 6.75489 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.75489 11.2583 6.29382 11.5 5.80138 11.5H0.5V0.5Z" fill="${encodeURIComponent(color)}" fill-opacity="${encodeURIComponent(opacity)}" stroke="${encodeURIComponent(
+    outline2
+  )}"/><path d="M3.51074 7.75635H4.68408V9H3.51074V7.75635ZM4.68408 7.23779H3.51074V6.56104C3.51074 6.271 3.55615 6.02344 3.64697 5.81836C3.73779 5.61328 3.90039 5.39648 4.13477 5.16797L4.53027 4.77686C4.71484 4.59814 4.83936 4.4502 4.90381 4.33301C4.97119 4.21582 5.00488 4.09424 5.00488 3.96826C5.00488 3.77197 4.9375 3.62402 4.80273 3.52441C4.66797 3.4248 4.46582 3.375 4.19629 3.375C3.9502 3.375 3.69238 3.42773 3.42285 3.5332C3.15625 3.63574 2.88232 3.78955 2.60107 3.99463V2.81689C2.88818 2.65283 3.17822 2.52979 3.47119 2.44775C3.76709 2.36279 4.06299 2.32031 4.35889 2.32031C4.95068 2.32031 5.41504 2.45801 5.75195 2.7334C6.08887 3.00879 6.25732 3.38818 6.25732 3.87158C6.25732 4.09424 6.20752 4.30225 6.10791 4.49561C6.0083 4.68604 5.8208 4.91602 5.54541 5.18555L5.15869 5.56348C4.95947 5.75684 4.83203 5.91504 4.77637 6.03809C4.7207 6.16113 4.69287 6.31201 4.69287 6.49072C4.69287 6.51709 4.69141 6.54785 4.68848 6.58301C4.68848 6.61816 4.68701 6.65625 4.68408 6.69727V7.23779Z" fill="white"/></svg>')`;
 }
 function inlineLogpointArrow(color, outline2, opacity = "1") {
-  return `url('data:image/svg+xml,<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5H5.80139C6.29382 0.5 6.7549 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.7549 11.2583 6.29382 11.5 5.80139 11.5H0.5V0.5Z" fill="${encodeURIComponent(color)}" stroke="${encodeURIComponent(outline2)}" fill-opacity="${encodeURIComponent(opacity)}"/><circle cx="3" cy="6" r="1" fill="white"/><circle cx="7" cy="6" r="1" fill="white"/></svg>')`;
+  return `url('data:image/svg+xml,<svg width="11" height="12" viewBox="0 0 11 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 0.5H5.80139C6.29382 0.5 6.7549 0.741701 7.03503 1.14669L10.392 6L7.03503 10.8533C6.7549 11.2583 6.29382 11.5 5.80139 11.5H0.5V0.5Z" fill="${encodeURIComponent(color)}" stroke="${encodeURIComponent(outline2)}" fill-opacity="${encodeURIComponent(
+    opacity
+  )}"/><circle cx="3" cy="6" r="1" fill="white"/><circle cx="7" cy="6" r="1" fill="white"/></svg>')`;
 }
 
-// gen/front_end/panels/sources/ProfilePlugin.js
+// ../../front_end/panels/sources/ProfilePlugin.ts
 import * as i18n19 from "../../core/i18n/i18n.js";
 import * as Platform7 from "../../core/platform/platform.js";
 import * as Workspace14 from "../../models/workspace/workspace.js";
@@ -8084,11 +11207,11 @@ var UIStrings10 = {
 var str_10 = i18n19.i18n.registerUIStrings("panels/sources/ProfilePlugin.ts", UIStrings10);
 var i18nString9 = i18n19.i18n.getLocalizedString.bind(void 0, str_10);
 var PerformanceMarker = class extends CodeMirror5.GutterMarker {
-  value;
   constructor(value2) {
     super();
     this.value = value2;
   }
+  value;
   eq(other) {
     return this.value === other.value;
   }
@@ -8141,7 +11264,7 @@ var PerformanceProfilePlugin = class extends Plugin {
     });
     this.gutter = CodeMirror5.gutter({
       markers: (view) => view.state.field(this.field),
-      class: `cm-${"performance"}Gutter`
+      class: `cm-${Workspace14.UISourceCode.DecoratorType.PERFORMANCE}Gutter`
     });
     this.#transformer = transformer;
   }
@@ -8149,10 +11272,7 @@ var PerformanceProfilePlugin = class extends Plugin {
     return uiSourceCode.contentType().hasScripts();
   }
   getLineMap() {
-    const uiSourceCodeProfileMap = this.uiSourceCode.getDecorationData(
-      "performance"
-      /* Workspace.UISourceCode.DecoratorType.PERFORMANCE */
-    );
+    const uiSourceCodeProfileMap = this.uiSourceCode.getDecorationData(Workspace14.UISourceCode.DecoratorType.PERFORMANCE);
     if (!uiSourceCodeProfileMap) {
       return void 0;
     }
@@ -8163,7 +11283,9 @@ var PerformanceProfilePlugin = class extends Plugin {
   }
   editorExtension() {
     const map = this.getLineMap();
-    return this.compartment.of(!map ? [] : [this.field.init((state) => markersFromProfileData(map, state)), this.gutter, theme4]);
+    return this.compartment.of(
+      !map ? [] : [this.field.init((state) => markersFromProfileData(map, state)), this.gutter, theme4]
+    );
   }
   decorationChanged(type, editor) {
     const installed = Boolean(editor.state.field(this.field, false));
@@ -8174,7 +11296,9 @@ var PerformanceProfilePlugin = class extends Plugin {
       }
     } else if (!installed) {
       editor.dispatch({
-        effects: this.compartment.reconfigure([this.field.init((state) => markersFromProfileData(map, state)), this.gutter, theme4])
+        effects: this.compartment.reconfigure(
+          [this.field.init((state) => markersFromProfileData(map, state)), this.gutter, theme4]
+        )
       });
     } else {
       editor.dispatch({ effects: this.updateEffect.of(map) });
@@ -8202,7 +11326,7 @@ var theme4 = CodeMirror5.EditorView.baseTheme({
   }
 });
 
-// gen/front_end/panels/sources/ResourceOriginPlugin.js
+// ../../front_end/panels/sources/ResourceOriginPlugin.ts
 var ResourceOriginPlugin_exports = {};
 __export(ResourceOriginPlugin_exports, {
   ResourceOriginPlugin: () => ResourceOriginPlugin
@@ -8244,7 +11368,14 @@ var ResourceOriginPlugin = class extends Plugin {
         const url = uiSourceCode.url();
         const text = Bindings6.ResourceUtils.displayNameForURL(url);
         const title = i18nString10(UIStrings11.sourceMappedFromS, { PH1: text });
-        links.push(Components.Linkifier.Linkifier.linkifyRevealable(uiSourceCode, text, url, title, void 0, "original-script-location"));
+        links.push(Components.Linkifier.Linkifier.linkifyRevealable(
+          uiSourceCode,
+          text,
+          url,
+          title,
+          void 0,
+          "original-script-location"
+        ));
       }
       for (const originURL of Bindings6.SASSSourceMapping.SASSSourceMapping.uiSourceOrigin(this.uiSourceCode)) {
         links.push(Components.Linkifier.Linkifier.linkifyURL(originURL));
@@ -8274,7 +11405,7 @@ var ResourceOriginPlugin = class extends Plugin {
   }
 };
 
-// gen/front_end/panels/sources/SnippetsPlugin.js
+// ../../front_end/panels/sources/SnippetsPlugin.ts
 var SnippetsPlugin_exports = {};
 __export(SnippetsPlugin_exports, {
   SnippetsPlugin: () => SnippetsPlugin
@@ -8311,7 +11442,7 @@ var SnippetsPlugin = class extends Plugin {
   }
 };
 
-// gen/front_end/panels/sources/UISourceCodeFrame.js
+// ../../front_end/panels/sources/UISourceCodeFrame.ts
 var UIStrings13 = {
   /**
    * @description Title of the format button
@@ -8320,7 +11451,9 @@ var UIStrings13 = {
 };
 var str_13 = i18n25.i18n.registerUIStrings("panels/sources/UISourceCodeFrame.ts", UIStrings13);
 var i18nString12 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
-var UISourceCodeFrameBase = Common9.ObjectWrapper.eventMixin(SourceFrame6.SourceFrame.SourceFrameImpl);
+var UISourceCodeFrameBase = Common9.ObjectWrapper.eventMixin(
+  SourceFrame7.SourceFrame.SourceFrameImpl
+);
 var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
   #uiSourceCode;
   #muteSourceCodeEvents = false;
@@ -8340,7 +11473,11 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     this.#persistenceBinding = Persistence5.Persistence.PersistenceImpl.instance().binding(uiSourceCode);
     this.#boundOnBindingChanged = this.onBindingChanged.bind(this);
     Common9.Settings.Settings.instance().resolve(Persistence5.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).addChangeListener(this.onNetworkPersistenceChanged, this);
-    this.#errorPopoverHelper = new UI13.PopoverHelper.PopoverHelper(this.textEditor.editor.contentDOM, this.getErrorPopoverContent.bind(this), "sources.error");
+    this.#errorPopoverHelper = new UI13.PopoverHelper.PopoverHelper(
+      this.textEditor.editor.contentDOM,
+      this.getErrorPopoverContent.bind(this),
+      "sources.error"
+    );
     this.#errorPopoverHelper.setTimeout(100, 100);
     this.initializeUISourceCode();
   }
@@ -8374,15 +11511,27 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
       this.#messageAndDecorationListeners = [
         networkSourceCode.addEventListener(Workspace15.UISourceCode.Events.MessageAdded, this.onMessageAdded, this),
         networkSourceCode.addEventListener(Workspace15.UISourceCode.Events.MessageRemoved, this.onMessageRemoved, this),
-        networkSourceCode.addEventListener(Workspace15.UISourceCode.Events.DecorationChanged, this.onDecorationChanged, this),
+        networkSourceCode.addEventListener(
+          Workspace15.UISourceCode.Events.DecorationChanged,
+          this.onDecorationChanged,
+          this
+        ),
         fileSystemSourceCode.addEventListener(Workspace15.UISourceCode.Events.MessageAdded, this.onMessageAdded, this),
-        fileSystemSourceCode.addEventListener(Workspace15.UISourceCode.Events.MessageRemoved, this.onMessageRemoved, this)
+        fileSystemSourceCode.addEventListener(
+          Workspace15.UISourceCode.Events.MessageRemoved,
+          this.onMessageRemoved,
+          this
+        )
       ];
     } else {
       this.#messageAndDecorationListeners = [
         this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.MessageAdded, this.onMessageAdded, this),
         this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.MessageRemoved, this.onMessageRemoved, this),
-        this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.DecorationChanged, this.onDecorationChanged, this)
+        this.#uiSourceCode.addEventListener(
+          Workspace15.UISourceCode.Events.DecorationChanged,
+          this.onDecorationChanged,
+          this
+        )
       ];
     }
   }
@@ -8411,16 +11560,30 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     Common9.EventTarget.removeEventListeners(this.#messageAndDecorationListeners);
     Common9.EventTarget.removeEventListeners(this.#uiSourceCodeEventListeners);
     this.#uiSourceCode.removeWorkingCopyGetter();
-    Persistence5.Persistence.PersistenceImpl.instance().unsubscribeFromBindingEvent(this.#uiSourceCode, this.#boundOnBindingChanged);
+    Persistence5.Persistence.PersistenceImpl.instance().unsubscribeFromBindingEvent(
+      this.#uiSourceCode,
+      this.#boundOnBindingChanged
+    );
   }
   initializeUISourceCode() {
     this.textEditor.setAttribute("data-file-path", this.#uiSourceCode.url());
     this.#uiSourceCodeEventListeners = [
-      this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.WorkingCopyChanged, this.onWorkingCopyChanged, this),
-      this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.WorkingCopyCommitted, this.onWorkingCopyCommitted, this),
+      this.#uiSourceCode.addEventListener(
+        Workspace15.UISourceCode.Events.WorkingCopyChanged,
+        this.onWorkingCopyChanged,
+        this
+      ),
+      this.#uiSourceCode.addEventListener(
+        Workspace15.UISourceCode.Events.WorkingCopyCommitted,
+        this.onWorkingCopyCommitted,
+        this
+      ),
       this.#uiSourceCode.addEventListener(Workspace15.UISourceCode.Events.TitleChanged, this.onTitleChanged, this)
     ];
-    Persistence5.Persistence.PersistenceImpl.instance().subscribeForBindingEvent(this.#uiSourceCode, this.#boundOnBindingChanged);
+    Persistence5.Persistence.PersistenceImpl.instance().subscribeForBindingEvent(
+      this.#uiSourceCode,
+      this.#boundOnBindingChanged
+    );
     this.installMessageAndDecorationListeners();
     this.updateStyle();
     const isFormattable = FormatterActions.FORMATTABLE_MEDIA_TYPES.includes(this.contentType);
@@ -8493,7 +11656,10 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
       plugin.editorInitialized(this.textEditor);
     }
     this.#recordSourcesPanelOpenedMetrics();
-    window.dispatchEvent(new CustomEvent("source-file-loaded", { bubbles: true, cancelable: true, detail: this.#uiSourceCode.displayName(true) }));
+    window.dispatchEvent(new CustomEvent(
+      "source-file-loaded",
+      { bubbles: true, cancelable: true, detail: this.#uiSourceCode.displayName(true) }
+    ));
   }
   createMessage(origin) {
     const { lineNumber, columnNumber } = this.uiLocationToEditorLocation(origin.lineNumber(), origin.columnNumber());
@@ -8528,7 +11694,12 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
       return;
     }
     const content = TextUtils8.ContentData.ContentData.textOr(contentDataOrError, "");
-    const { formattedContent, formattedMapping } = await Formatter2.ScriptFormatter.format(Common9.Settings.Settings.instance(), this.#uiSourceCode.contentType(), this.contentType, content);
+    const { formattedContent, formattedMapping } = await Formatter2.ScriptFormatter.format(
+      Common9.Settings.Settings.instance(),
+      this.#uiSourceCode.contentType(),
+      this.contentType,
+      content
+    );
     if (this.#uiSourceCode.workingCopy() === formattedContent) {
       return;
     }
@@ -8579,10 +11750,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
         this.plugins.push(new pluginType(pluginUISourceCode, this));
       }
     }
-    this.dispatchEventToListeners(
-      "ToolbarItemsChanged"
-      /* Events.TOOLBAR_ITEMS_CHANGED */
-    );
+    this.dispatchEventToListeners("ToolbarItemsChanged" /* TOOLBAR_ITEMS_CHANGED */);
   }
   disposePlugins() {
     for (const plugin of this.plugins) {
@@ -8618,7 +11786,9 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     super.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
     contextMenu.appendApplicableItems(this.#uiSourceCode);
     const location = this.editorLocationToUILocation(lineNumber, columnNumber);
-    contextMenu.appendApplicableItems(new Workspace15.UISourceCode.UILocation(this.#uiSourceCode, location.lineNumber, location.columnNumber));
+    contextMenu.appendApplicableItems(
+      new Workspace15.UISourceCode.UILocation(this.#uiSourceCode, location.lineNumber, location.columnNumber)
+    );
     for (const plugin of this.plugins) {
       plugin.populateTextAreaContextMenu(contextMenu, lineNumber, columnNumber);
     }
@@ -8663,7 +11833,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     const isInplaceFormattable = isEditable && isJavaScript;
     if (isInplaceFormattable) {
       const formatButton = new UI13.Toolbar.ToolbarButton(i18nString12(UIStrings13.format), "brackets");
-      formatButton.addEventListener("Click", () => {
+      formatButton.addEventListener(UI13.Toolbar.ToolbarButton.Events.CLICK, () => {
         void this.#formatSourceInPlace();
       });
       leftToolbarItems.unshift(formatButton);
@@ -8703,7 +11873,7 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
       return null;
     }
     const issues = anchorElement.classList.contains("cm-messageIcon-issue");
-    const messages = row.filter((msg) => msg.level() === "Issue" === issues);
+    const messages = row.filter((msg) => msg.level() === Workspace15.UISourceCode.Message.Level.ISSUE === issues);
     if (!messages.length) {
       return null;
     }
@@ -8736,46 +11906,43 @@ var UISourceCodeFrame = class _UISourceCodeFrame extends UISourceCodeFrameBase {
     }
     this.#sourcesPanelOpenedMetricsRecorded = true;
     const mimeType = Common9.ResourceType.ResourceType.mimeFromURL(this.#uiSourceCode.url());
-    const mediaType = Common9.ResourceType.ResourceType.mediaTypeForMetrics(mimeType ?? "", this.#uiSourceCode.contentType().isFromSourceMap(), TextUtils8.TextUtils.isMinified(this.#uiSourceCode.content()), this.#uiSourceCode.url().startsWith("snippet://"), this.#uiSourceCode.url().startsWith("debugger://"));
+    const mediaType = Common9.ResourceType.ResourceType.mediaTypeForMetrics(
+      mimeType ?? "",
+      this.#uiSourceCode.contentType().isFromSourceMap(),
+      TextUtils8.TextUtils.isMinified(this.#uiSourceCode.content()),
+      this.#uiSourceCode.url().startsWith("snippet://"),
+      this.#uiSourceCode.url().startsWith("debugger://")
+    );
     Host6.userMetrics.sourcesPanelFileOpened(mediaType);
   }
 };
 function getIconDataForLevel(level) {
-  if (level === "Error") {
+  if (level === Workspace15.UISourceCode.Message.Level.ERROR) {
     return { color: "var(--icon-error)", width: "16px", height: "14px", iconName: "cross-circle-filled" };
   }
-  if (level === "Warning") {
+  if (level === Workspace15.UISourceCode.Message.Level.WARNING) {
     return { color: "var(--icon-warning)", width: "18px", height: "14px", iconName: "warning-filled" };
   }
-  if (level === "Issue") {
+  if (level === Workspace15.UISourceCode.Message.Level.ISSUE) {
     return { color: "var(--icon-warning)", width: "17px", height: "14px", iconName: "issue-exclamation-filled" };
   }
   return { color: "var(--icon-error)", width: "16px", height: "14px", iconName: "cross-circle-filled" };
 }
 function getBubbleTypePerLevel(level) {
   switch (level) {
-    case "Error":
+    case Workspace15.UISourceCode.Message.Level.ERROR:
       return "error";
-    case "Warning":
+    case Workspace15.UISourceCode.Message.Level.WARNING:
       return "warning";
-    case "Issue":
+    case Workspace15.UISourceCode.Message.Level.ISSUE:
       return "warning";
   }
 }
 function messageLevelComparator(a, b) {
   const messageLevelPriority = {
-    [
-      "Issue"
-      /* Workspace.UISourceCode.Message.Level.ISSUE */
-    ]: 2,
-    [
-      "Warning"
-      /* Workspace.UISourceCode.Message.Level.WARNING */
-    ]: 3,
-    [
-      "Error"
-      /* Workspace.UISourceCode.Message.Level.ERROR */
-    ]: 4
+    [Workspace15.UISourceCode.Message.Level.ISSUE]: 2,
+    [Workspace15.UISourceCode.Message.Level.WARNING]: 3,
+    [Workspace15.UISourceCode.Message.Level.ERROR]: 4
   };
   return messageLevelPriority[a.level()] - messageLevelPriority[b.level()];
 }
@@ -8785,10 +11952,10 @@ function getIconDataForMessage(message) {
   }
   return getIconDataForLevel(message.level());
 }
-var Events;
-(function(Events4) {
+var Events = /* @__PURE__ */ ((Events4) => {
   Events4["TOOLBAR_ITEMS_CHANGED"] = "ToolbarItemsChanged";
-})(Events || (Events = {}));
+  return Events4;
+})(Events || {});
 var pluginCompartment = new CodeMirror6.Compartment();
 var RowMessage = class {
   origin;
@@ -8848,10 +12015,10 @@ function removeMessage(rows, message) {
   }
 }
 var RowMessages = class _RowMessages {
-  rows;
   constructor(rows) {
     this.rows = rows;
   }
+  rows;
   static create(messages) {
     const rows = [];
     for (const message of messages) {
@@ -8871,21 +12038,18 @@ var RowMessages = class _RowMessages {
 var setRowMessages = CodeMirror6.StateEffect.define();
 var underlineMark = CodeMirror6.Decoration.mark({ class: "cm-waveUnderline" });
 var MessageWidget = class extends CodeMirror6.WidgetType {
-  messages;
   constructor(messages) {
     super();
     this.messages = messages;
   }
+  messages;
   eq(other) {
     return other.messages === this.messages;
   }
   toDOM() {
     const wrap = document.createElement("span");
     wrap.classList.add("cm-messageIcon");
-    const nonIssues = this.messages.filter(
-      (msg) => msg.level() !== "Issue"
-      /* Workspace.UISourceCode.Message.Level.ISSUE */
-    );
+    const nonIssues = this.messages.filter((msg) => msg.level() !== Workspace15.UISourceCode.Message.Level.ISSUE);
     if (nonIssues.length) {
       const maxIssue = nonIssues.sort(messageLevelComparator)[nonIssues.length - 1];
       const iconData = getIconDataForLevel(maxIssue.level());
@@ -8893,10 +12057,7 @@ var MessageWidget = class extends CodeMirror6.WidgetType {
       wrap.appendChild(errorIcon);
       errorIcon.classList.add("cm-messageIcon-error");
     }
-    const issue = this.messages.find(
-      (m) => m.level() === "Issue"
-      /* Workspace.UISourceCode.Message.Level.ISSUE */
-    );
+    const issue = this.messages.find((m) => m.level() === Workspace15.UISourceCode.Message.Level.ISSUE);
     if (issue) {
       const iconData = getIconDataForMessage(issue);
       const issueIcon = createIconFromIconData(iconData);
@@ -8908,12 +12069,12 @@ var MessageWidget = class extends CodeMirror6.WidgetType {
   }
 };
 var RowMessageDecorations = class _RowMessageDecorations {
-  messages;
-  decorations;
   constructor(messages, decorations) {
     this.messages = messages;
     this.decorations = decorations;
   }
+  messages;
+  decorations;
   static create(messages, doc) {
     const builder = new CodeMirror6.RangeSetBuilder();
     for (const row of messages.rows) {
@@ -9029,7 +12190,7 @@ function rowMessages(initialMessages) {
   ];
 }
 
-// gen/front_end/panels/sources/TabbedEditorContainer.js
+// ../../front_end/panels/sources/TabbedEditorContainer.ts
 var UIStrings14 = {
   /**
    * @description Text to open a file.
@@ -9078,16 +12239,11 @@ var UIStrings14 = {
 };
 var str_14 = i18n27.i18n.registerUIStrings("panels/sources/TabbedEditorContainer.ts", UIStrings14);
 var i18nString13 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
-var SourceViewType;
-(function(SourceViewType2) {
-  SourceViewType2["IMAGE_VIEW"] = "ImageView";
-  SourceViewType2["FONT_VIEW"] = "FontView";
-  SourceViewType2["HEADERS_VIEW"] = "HeadersView";
-  SourceViewType2["SOURCE_VIEW"] = "SourceView";
-})(SourceViewType || (SourceViewType = {}));
 var HEADER_OVERRIDES_FILENAME = ".headers";
 var tabId = 0;
-var TabbedEditorContainerBase = Common10.ObjectWrapper.eventMixin(UI14.Widget.VBox);
+var TabbedEditorContainerBase = Common10.ObjectWrapper.eventMixin(
+  UI14.Widget.VBox
+);
 var TabbedEditorContainer = class extends TabbedEditorContainerBase {
   #historyManager;
   set historyManager(historyManager) {
@@ -9125,10 +12281,25 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     this.tabbedPane.setAllowTabReorder(true, true);
     this.tabbedPane.addEventListener(UI14.TabbedPane.Events.TabClosed, this.tabClosed, this);
     this.tabbedPane.addEventListener(UI14.TabbedPane.Events.TabSelected, this.tabSelected, this);
-    this.tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging8.toolbar("top").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`);
-    Persistence7.Persistence.PersistenceImpl.instance().addEventListener(Persistence7.Persistence.Events.BindingCreated, this.onBindingCreated, this);
-    Persistence7.Persistence.PersistenceImpl.instance().addEventListener(Persistence7.Persistence.Events.BindingRemoved, this.onBindingRemoved, this);
-    Persistence7.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("RequestsForHeaderOverridesFileChanged", this.#onRequestsForHeaderOverridesFileChanged, this);
+    this.tabbedPane.headerElement().setAttribute(
+      "jslog",
+      `${VisualLogging8.toolbar("top").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`
+    );
+    Persistence7.Persistence.PersistenceImpl.instance().addEventListener(
+      Persistence7.Persistence.Events.BindingCreated,
+      this.onBindingCreated,
+      this
+    );
+    Persistence7.Persistence.PersistenceImpl.instance().addEventListener(
+      Persistence7.Persistence.Events.BindingRemoved,
+      this.onBindingRemoved,
+      this
+    );
+    Persistence7.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
+      Persistence7.NetworkPersistenceManager.Events.REQUEST_FOR_HEADER_OVERRIDES_FILE_CHANGED,
+      this.#onRequestsForHeaderOverridesFileChanged,
+      this
+    );
     this.tabIds = /* @__PURE__ */ new Map();
     this.files = /* @__PURE__ */ new Map();
     this.uriToUISourceCode = /* @__PURE__ */ new Map();
@@ -9193,7 +12364,10 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     uiSourceCode = binding ? binding.fileSystem : uiSourceCode;
     const frame = UI14.Context.Context.instance().flavor(SourcesView);
     if (frame?.currentSourceFrame()?.contentSet && this.#currentFile === uiSourceCode && frame?.currentUISourceCode() === uiSourceCode) {
-      window.dispatchEvent(new CustomEvent("source-file-loaded", { bubbles: true, cancelable: true, detail: uiSourceCode.displayName(true) }));
+      window.dispatchEvent(new CustomEvent(
+        "source-file-loaded",
+        { bubbles: true, cancelable: true, detail: uiSourceCode.displayName(true) }
+      ));
     } else {
       this.#showFile(uiSourceCode, true);
     }
@@ -9228,21 +12402,21 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     this.tabbedPane.selectPrevTab();
   }
   addViewListeners() {
-    if (!this.currentView || !(this.currentView instanceof SourceFrame8.SourceFrame.SourceFrameImpl)) {
+    if (!this.currentView || !(this.currentView instanceof SourceFrame9.SourceFrame.SourceFrameImpl)) {
       return;
     }
-    this.currentView.addEventListener("EditorUpdate", this.onEditorUpdate, this);
-    this.currentView.addEventListener("EditorScroll", this.onScrollChanged, this);
+    this.currentView.addEventListener(SourceFrame9.SourceFrame.Events.EDITOR_UPDATE, this.onEditorUpdate, this);
+    this.currentView.addEventListener(SourceFrame9.SourceFrame.Events.EDITOR_SCROLL, this.onScrollChanged, this);
   }
   removeViewListeners() {
-    if (!this.currentView || !(this.currentView instanceof SourceFrame8.SourceFrame.SourceFrameImpl)) {
+    if (!this.currentView || !(this.currentView instanceof SourceFrame9.SourceFrame.SourceFrameImpl)) {
       return;
     }
-    this.currentView.removeEventListener("EditorUpdate", this.onEditorUpdate, this);
-    this.currentView.removeEventListener("EditorScroll", this.onScrollChanged, this);
+    this.currentView.removeEventListener(SourceFrame9.SourceFrame.Events.EDITOR_UPDATE, this.onEditorUpdate, this);
+    this.currentView.removeEventListener(SourceFrame9.SourceFrame.Events.EDITOR_SCROLL, this.onScrollChanged, this);
   }
   onScrollChanged() {
-    if (this.currentView instanceof SourceFrame8.SourceFrame.SourceFrameImpl) {
+    if (this.currentView instanceof SourceFrame9.SourceFrame.SourceFrameImpl) {
       if (this.scrollTimer) {
         clearTimeout(this.scrollTimer);
       }
@@ -9259,7 +12433,12 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     if (update.docChanged || update.selectionSet) {
       const { main } = update.state.selection;
       const lineFrom = update.state.doc.lineAt(main.from), lineTo = update.state.doc.lineAt(main.to);
-      const range = new TextUtils10.TextRange.TextRange(lineFrom.number - 1, main.from - lineFrom.from, lineTo.number - 1, main.to - lineTo.from);
+      const range = new TextUtils10.TextRange.TextRange(
+        lineFrom.number - 1,
+        main.from - lineFrom.from,
+        lineTo.number - 1,
+        main.to - lineTo.from
+      );
       if (this.#currentFile) {
         this.history.updateSelectionRange(historyItemKey(this.#currentFile), range);
       }
@@ -9306,7 +12485,7 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
       previousView,
       userGesture
     };
-    this.dispatchEventToListeners("EditorSelected", eventData);
+    this.dispatchEventToListeners("EditorSelected" /* EDITOR_SELECTED */, eventData);
   }
   titleForFile(uiSourceCode) {
     const maxDisplayNameLength = 30;
@@ -9480,7 +12659,7 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     }
   }
   restoreEditorProperties(editorView, selection, firstLineNumber) {
-    const sourceFrame = editorView instanceof SourceFrame8.SourceFrame.SourceFrameImpl ? editorView : null;
+    const sourceFrame = editorView instanceof SourceFrame9.SourceFrame.SourceFrameImpl ? editorView : null;
     if (!sourceFrame) {
       return;
     }
@@ -9506,7 +12685,7 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     if (uiSourceCode) {
       this.removeUISourceCodeListeners(uiSourceCode);
       this.removeSourceFrame(uiSourceCode);
-      this.dispatchEventToListeners("EditorClosed", uiSourceCode);
+      this.dispatchEventToListeners("EditorClosed" /* EDITOR_CLOSED */, uiSourceCode);
       if (isUserGesture) {
         this.editorClosedByUserAction(uiSourceCode);
       }
@@ -9521,13 +12700,29 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
   }
   addUISourceCodeListeners(uiSourceCode) {
     uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
-    uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.WorkingCopyChanged, this.uiSourceCodeWorkingCopyChanged, this);
-    uiSourceCode.addEventListener(Workspace17.UISourceCode.Events.WorkingCopyCommitted, this.uiSourceCodeWorkingCopyCommitted, this);
+    uiSourceCode.addEventListener(
+      Workspace17.UISourceCode.Events.WorkingCopyChanged,
+      this.uiSourceCodeWorkingCopyChanged,
+      this
+    );
+    uiSourceCode.addEventListener(
+      Workspace17.UISourceCode.Events.WorkingCopyCommitted,
+      this.uiSourceCodeWorkingCopyCommitted,
+      this
+    );
   }
   removeUISourceCodeListeners(uiSourceCode) {
     uiSourceCode.removeEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
-    uiSourceCode.removeEventListener(Workspace17.UISourceCode.Events.WorkingCopyChanged, this.uiSourceCodeWorkingCopyChanged, this);
-    uiSourceCode.removeEventListener(Workspace17.UISourceCode.Events.WorkingCopyCommitted, this.uiSourceCodeWorkingCopyCommitted, this);
+    uiSourceCode.removeEventListener(
+      Workspace17.UISourceCode.Events.WorkingCopyChanged,
+      this.uiSourceCodeWorkingCopyChanged,
+      this
+    );
+    uiSourceCode.removeEventListener(
+      Workspace17.UISourceCode.Events.WorkingCopyCommitted,
+      this.uiSourceCodeWorkingCopyCommitted,
+      this
+    );
   }
   updateFileTitle(uiSourceCode) {
     const tabId2 = this.tabIds.get(uiSourceCode);
@@ -9562,10 +12757,18 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
               true
             );
           });
-          tooltip2.append(uiI18n2.getFormatLocalizedString(str_14, UIStrings14.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace, { PH1: link }));
+          tooltip2.append(uiI18n2.getFormatLocalizedString(
+            str_14,
+            UIStrings14.changesWereNotSavedToFileSystemToSaveAddFolderToWorkspace,
+            { PH1: link }
+          ));
         } else {
           const link = Link.create("https://developer.chrome.com/docs/devtools/workspaces/", "Workspace");
-          tooltip2.append(uiI18n2.getFormatLocalizedString(str_14, UIStrings14.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace, { PH1: link }));
+          tooltip2.append(uiI18n2.getFormatLocalizedString(
+            str_14,
+            UIStrings14.changesWereNotSavedToFileSystemToSaveSetUpYourWorkspace,
+            { PH1: link }
+          ));
         }
         suffixElement.append(icon, tooltip2);
         this.tabbedPane.setSuffixElement(tabId2, suffixElement);
@@ -9680,9 +12883,9 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     let sourceView;
     const contentType = uiSourceCode.contentType();
     if (contentType === Common10.ResourceType.resourceTypes.Image || uiSourceCode.mimeType().startsWith("image/")) {
-      sourceView = new SourceFrame8.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
+      sourceView = new SourceFrame9.ImageView.ImageView(uiSourceCode.mimeType(), uiSourceCode);
     } else if (contentType === Common10.ResourceType.resourceTypes.Font || uiSourceCode.mimeType().includes("font")) {
-      sourceView = new SourceFrame8.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
+      sourceView = new SourceFrame9.FontView.FontView(uiSourceCode.mimeType(), uiSourceCode);
     } else if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
       sourceView = new Components2.HeadersView.HeadersView(uiSourceCode);
     } else {
@@ -9694,7 +12897,11 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     return sourceView;
   }
   recycleUISourceCodeFrame(sourceFrame, uiSourceCode) {
-    sourceFrame.uiSourceCode().removeEventListener(Workspace17.UISourceCode.Events.TitleChanged, this.uiSourceCodeTitleChanged, this);
+    sourceFrame.uiSourceCode().removeEventListener(
+      Workspace17.UISourceCode.Events.TitleChanged,
+      this.uiSourceCodeTitleChanged,
+      this
+    );
     this.sourceViewByUISourceCode.delete(sourceFrame.uiSourceCode());
     sourceFrame.setUISourceCode(uiSourceCode);
     this.sourceViewByUISourceCode.set(uiSourceCode, sourceFrame);
@@ -9711,29 +12918,29 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
     }
   }
   #sourceViewTypeForWidget(widget3) {
-    if (widget3 instanceof SourceFrame8.ImageView.ImageView) {
-      return "ImageView";
+    if (widget3 instanceof SourceFrame9.ImageView.ImageView) {
+      return "ImageView" /* IMAGE_VIEW */;
     }
-    if (widget3 instanceof SourceFrame8.FontView.FontView) {
-      return "FontView";
+    if (widget3 instanceof SourceFrame9.FontView.FontView) {
+      return "FontView" /* FONT_VIEW */;
     }
     if (widget3 instanceof Components2.HeadersView.HeadersView) {
-      return "HeadersView";
+      return "HeadersView" /* HEADERS_VIEW */;
     }
-    return "SourceView";
+    return "SourceView" /* SOURCE_VIEW */;
   }
   #sourceViewTypeForUISourceCode(uiSourceCode) {
     if (uiSourceCode.name() === HEADER_OVERRIDES_FILENAME) {
-      return "HeadersView";
+      return "HeadersView" /* HEADERS_VIEW */;
     }
     const contentType = uiSourceCode.contentType();
     switch (contentType) {
       case Common10.ResourceType.resourceTypes.Image:
-        return "ImageView";
+        return "ImageView" /* IMAGE_VIEW */;
       case Common10.ResourceType.resourceTypes.Font:
-        return "FontView";
+        return "FontView" /* FONT_VIEW */;
       default:
-        return "SourceView";
+        return "SourceView" /* SOURCE_VIEW */;
     }
   }
   currentFile() {
@@ -9741,11 +12948,11 @@ var TabbedEditorContainer = class extends TabbedEditorContainerBase {
   }
 };
 var nextTooltipId = 1;
-var Events2;
-(function(Events4) {
+var Events2 = /* @__PURE__ */ ((Events4) => {
   Events4["EDITOR_SELECTED"] = "EditorSelected";
   Events4["EDITOR_CLOSED"] = "EditorClosed";
-})(Events2 || (Events2 = {}));
+  return Events4;
+})(Events2 || {});
 var MAX_PREVIOUSLY_VIEWED_FILES_COUNT = 30;
 var MAX_SERIALIZABLE_URL_LENGTH = 4096;
 function historyItemKey(uiSourceCode) {
@@ -9768,7 +12975,12 @@ var HistoryItem = class _HistoryItem {
       throw new TypeError(`Invalid resource type name "${serializedHistoryItem.resourceTypeName}"`);
     }
     const selectionRange = serializedHistoryItem.selectionRange ? TextUtils10.TextRange.TextRange.fromObject(serializedHistoryItem.selectionRange) : void 0;
-    return new _HistoryItem(serializedHistoryItem.url, resourceType, selectionRange, serializedHistoryItem.scrollLineNumber);
+    return new _HistoryItem(
+      serializedHistoryItem.url,
+      resourceType,
+      selectionRange,
+      serializedHistoryItem.scrollLineNumber
+    );
   }
   toObject() {
     if (this.url.length >= MAX_SERIALIZABLE_URL_LENGTH) {
@@ -9881,7 +13093,7 @@ var EditorContainerTabDelegate = class {
   }
 };
 
-// gen/front_end/panels/sources/SourcesView.js
+// ../../front_end/panels/sources/SourcesView.ts
 var UIStrings15 = {
   /**
    * @description Tooltip for the navigator toggle in the Sources panel. Command to open or show the
@@ -9953,7 +13165,9 @@ var DEFAULT_VIEW5 = (input, output, target) => {
       </devtools-toolbar>
     </div>`, target);
 };
-var SourcesViewBase = Common11.ObjectWrapper.eventMixin(UI15.Widget.VBox);
+var SourcesViewBase = Common11.ObjectWrapper.eventMixin(
+  UI15.Widget.VBox
+);
 var SourcesView = class _SourcesView extends SourcesViewBase {
   #searchableView;
   editorContainer;
@@ -9993,15 +13207,21 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     this.historyManager = new EditingLocationHistoryManager(this);
     this.toolbarChangedListener = null;
     this.#toggleNavigatorSidebarButton = new UI15.Toolbar.ToolbarButton(i18nString14(UIStrings15.showNavigator), "left-panel-open");
-    this.#toggleNavigatorSidebarButton.addEventListener("Click", () => {
+    this.#toggleNavigatorSidebarButton.addEventListener(UI15.Toolbar.ToolbarButton.Events.CLICK, () => {
       this.#onToggleNavigatorSidebar?.();
     });
-    this.#toggleNavigatorSidebarButton.element.setAttribute("jslog", `${VisualLogging9.toggleSubpane().track({ click: true }).context("navigator")}`);
+    this.#toggleNavigatorSidebarButton.element.setAttribute(
+      "jslog",
+      `${VisualLogging9.toggleSubpane().track({ click: true }).context("navigator")}`
+    );
     this.#toggleDebuggerSidebarButton = new UI15.Toolbar.ToolbarButton(i18nString14(UIStrings15.showDebugger), "right-panel-open");
-    this.#toggleDebuggerSidebarButton.addEventListener("Click", () => {
+    this.#toggleDebuggerSidebarButton.addEventListener(UI15.Toolbar.ToolbarButton.Events.CLICK, () => {
       this.#onToggleDebuggerSidebar?.();
     });
-    this.#toggleDebuggerSidebarButton.element.setAttribute("jslog", `${VisualLogging9.toggleSubpane().track({ click: true }).context("debugger")}`);
+    this.#toggleDebuggerSidebarButton.element.setAttribute(
+      "jslog",
+      `${VisualLogging9.toggleSubpane().track({ click: true }).context("debugger")}`
+    );
     this.previouslyViewedFilesSetting = Common11.Settings.Settings.instance().createLocalSetting("previously-viewed-files", []);
     this.requestUpdate();
     UI15.UIUtils.startBatchUpdate();
@@ -10070,8 +13290,8 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
       return;
     }
     if (this.editorContainer) {
-      this.editorContainer.removeEventListener("EditorSelected", this.editorSelected, this);
-      this.editorContainer.removeEventListener("EditorClosed", this.editorClosed, this);
+      this.editorContainer.removeEventListener("EditorSelected" /* EDITOR_SELECTED */, this.editorSelected, this);
+      this.editorContainer.removeEventListener("EditorClosed" /* EDITOR_CLOSED */, this.editorClosed, this);
     }
     this.editorContainer = editorContainer;
     if (this.editorContainer) {
@@ -10091,8 +13311,8 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
         this.editorContainer.element.classList.toggle("breakpoints-deactivated", !this.#breakpointsActive);
       }
       this.#editorContainerResolve(editorContainer);
-      this.editorContainer.addEventListener("EditorSelected", this.editorSelected, this);
-      this.editorContainer.addEventListener("EditorClosed", this.editorClosed, this);
+      this.editorContainer.addEventListener("EditorSelected" /* EDITOR_SELECTED */, this.editorSelected, this);
+      this.editorContainer.addEventListener("EditorClosed" /* EDITOR_CLOSED */, this.editorClosed, this);
       UI15.UIUtils.startBatchUpdate();
       for (const uiSourceCode of this.#uiSourceCodes) {
         this.editorContainer.addUISourceCode(uiSourceCode);
@@ -10309,7 +13529,10 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     }
     const currentFrame = this.currentSourceFrame();
     if (currentFrame) {
-      this.historyManager.updateCurrentState(currentFrame.uiSourceCode(), currentFrame.textEditor.state.selection.main.head);
+      this.historyManager.updateCurrentState(
+        currentFrame.uiSourceCode(),
+        currentFrame.textEditor.state.selection.main.head
+      );
     }
     this.editorContainer?.showFile(uiSourceCode);
     const currentSourceFrame = this.currentSourceFrame();
@@ -10341,7 +13564,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
       uiSourceCode,
       wasSelected
     };
-    this.dispatchEventToListeners("EditorClosed", data);
+    this.dispatchEventToListeners("EditorClosed" /* EDITOR_CLOSED */, data);
   }
   editorSelected(event) {
     const previousSourceFrame = event.data.previousView instanceof UISourceCodeFrame ? event.data.previousView : null;
@@ -10358,7 +13581,7 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     this.updateScriptViewToolbarItems();
     const currentFile = this.editorContainer?.currentFile();
     if (currentFile) {
-      this.dispatchEventToListeners("EditorSelected", currentFile);
+      this.dispatchEventToListeners("EditorSelected" /* EDITOR_SELECTED */, currentFile);
     }
   }
   removeToolbarChangedListener() {
@@ -10373,7 +13596,11 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     if (!sourceFrame) {
       return;
     }
-    this.toolbarChangedListener = sourceFrame.addEventListener("ToolbarItemsChanged", this.updateScriptViewToolbarItems, this);
+    this.toolbarChangedListener = sourceFrame.addEventListener(
+      "ToolbarItemsChanged" /* TOOLBAR_ITEMS_CHANGED */,
+      this.updateScriptViewToolbarItems,
+      this
+    );
   }
   onSearchCanceled() {
     if (this.searchView) {
@@ -10467,11 +13694,11 @@ var SourcesView = class _SourcesView extends SourcesViewBase {
     this.requestUpdate();
   }
 };
-var Events3;
-(function(Events4) {
+var Events3 = /* @__PURE__ */ ((Events4) => {
   Events4["EDITOR_CLOSED"] = "EditorClosed";
   Events4["EDITOR_SELECTED"] = "EditorSelected";
-})(Events3 || (Events3 = {}));
+  return Events4;
+})(Events3 || {});
 var SwitchFileActionDelegate = class _SwitchFileActionDelegate {
   static nextFile(currentUISourceCode) {
     function fileNamePrefix(name2) {
@@ -10493,7 +13720,10 @@ var SwitchFileActionDelegate = class _SwitchFileActionDelegate {
     }
     candidates.sort(Platform11.StringUtilities.naturalOrderComparator);
     const index = Platform11.NumberUtilities.mod(candidates.indexOf(name) + 1, candidates.length);
-    const fullURL = Common11.ParsedURL.ParsedURL.concatenate(url ? Common11.ParsedURL.ParsedURL.concatenate(url, "/") : "", candidates[index]);
+    const fullURL = Common11.ParsedURL.ParsedURL.concatenate(
+      url ? Common11.ParsedURL.ParsedURL.concatenate(url, "/") : "",
+      candidates[index]
+    );
     const nextUISourceCode = currentUISourceCode.project().uiSourceCodeForURL(fullURL);
     return nextUISourceCode !== currentUISourceCode ? nextUISourceCode : null;
   }
@@ -10555,7 +13785,7 @@ var ActionDelegate2 = class {
   }
 };
 
-// gen/front_end/panels/sources/ThreadsSidebarPane.js
+// ../../front_end/panels/sources/ThreadsSidebarPane.ts
 var ThreadsSidebarPane_exports = {};
 __export(ThreadsSidebarPane_exports, {
   ThreadsSidebarPane: () => ThreadsSidebarPane
@@ -10634,7 +13864,7 @@ var threadsSidebarPane_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./threadsSidebarPane.css")} */`;
 
-// gen/front_end/panels/sources/ThreadsSidebarPane.js
+// ../../front_end/panels/sources/ThreadsSidebarPane.ts
 var { html: html7, render: render8, nothing: nothing4 } = Lit3;
 var UIStrings16 = {
   /**
@@ -10713,16 +13943,30 @@ var ThreadsSidebarPane = class extends UI16.Widget.VBox {
     this.#debuggerModels.add(debuggerModel);
     debuggerModel.addEventListener(SDK10.DebuggerModel.Events.DebuggerPaused, this.#updatePausedState);
     debuggerModel.addEventListener(SDK10.DebuggerModel.Events.DebuggerResumed, this.#updatePausedState);
-    debuggerModel.runtimeModel().addEventListener(SDK10.RuntimeModel.Events.ExecutionContextChanged, this.requestUpdate, this);
-    SDK10.TargetManager.TargetManager.instance().addEventListener("NameChanged", this.#targetNameChanged);
+    debuggerModel.runtimeModel().addEventListener(
+      SDK10.RuntimeModel.Events.ExecutionContextChanged,
+      this.requestUpdate,
+      this
+    );
+    SDK10.TargetManager.TargetManager.instance().addEventListener(
+      SDK10.TargetManager.Events.NAME_CHANGED,
+      this.#targetNameChanged
+    );
     this.requestUpdate();
   }
   modelRemoved(debuggerModel) {
     this.#debuggerModels.delete(debuggerModel);
     debuggerModel.removeEventListener(SDK10.DebuggerModel.Events.DebuggerPaused, this.#updatePausedState);
     debuggerModel.removeEventListener(SDK10.DebuggerModel.Events.DebuggerResumed, this.#updatePausedState);
-    debuggerModel.runtimeModel().removeEventListener(SDK10.RuntimeModel.Events.ExecutionContextChanged, this.requestUpdate, this);
-    SDK10.TargetManager.TargetManager.instance().removeEventListener("NameChanged", this.#targetNameChanged);
+    debuggerModel.runtimeModel().removeEventListener(
+      SDK10.RuntimeModel.Events.ExecutionContextChanged,
+      this.requestUpdate,
+      this
+    );
+    SDK10.TargetManager.TargetManager.instance().removeEventListener(
+      SDK10.TargetManager.Events.NAME_CHANGED,
+      this.#targetNameChanged
+    );
     this.requestUpdate();
   }
   targetFlavorChanged({ data: target }) {
@@ -10731,7 +13975,7 @@ var ThreadsSidebarPane = class extends UI16.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/sources/SourcesPanel.js
+// ../../front_end/panels/sources/SourcesPanel.ts
 var UIStrings17 = {
   /**
    * @description Text that appears when user drags and drops a folder in the Sources panel.
@@ -10860,7 +14104,12 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   constructor() {
     super("sources");
     this.registerRequiredCSS(sourcesPanel_css_default);
-    new UI17.DropTarget.DropTarget(this.element, [UI17.DropTarget.Type.Folder], i18nString16(UIStrings17.dropWorkspaceFolderHere), this.handleDrop.bind(this));
+    new UI17.DropTarget.DropTarget(
+      this.element,
+      [UI17.DropTarget.Type.Folder],
+      i18nString16(UIStrings17.dropWorkspaceFolderHere),
+      this.handleDrop.bind(this)
+    );
     this.workspace = Workspace21.Workspace.WorkspaceImpl.instance();
     this.togglePauseAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.toggle-pause");
     this.stepOverAction = UI17.ActionRegistry.ActionRegistry.instance().getAction("debugger.step-over");
@@ -10883,11 +14132,19 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     this.editorView = new UI17.SplitWidget.SplitWidget(true, false, "sources-panel-navigator-split-view-state", initialNavigatorWidth);
     this.editorView.enableShowModeSaving();
     this.splitWidget.setMainWidget(this.editorView);
-    this.navigatorTabbedLocation = UI17.ViewManager.ViewManager.instance().createTabbedLocation(this.revealNavigatorSidebar.bind(this), "navigator-view", true, true);
+    this.navigatorTabbedLocation = UI17.ViewManager.ViewManager.instance().createTabbedLocation(
+      this.revealNavigatorSidebar.bind(this),
+      "navigator-view",
+      true,
+      true
+    );
     const tabbedPane = this.navigatorTabbedLocation.tabbedPane();
     tabbedPane.setMinimumSize(100, 25);
     tabbedPane.element.classList.add("navigator-tabbed-pane");
-    tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging11.toolbar("navigator").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`);
+    tabbedPane.headerElement().setAttribute(
+      "jslog",
+      `${VisualLogging11.toolbar("navigator").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`
+    );
     const navigatorMenuButton = new UI17.ContextMenu.MenuButton();
     navigatorMenuButton.populateMenuCall = this.populateNavigatorMenu.bind(this);
     navigatorMenuButton.jslogContext = "more-options";
@@ -10905,15 +14162,15 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       this.editorView.setSidebarWidget(tabbedPane);
     }
     this.#sourcesView = new SourcesView();
-    this.#sourcesView.addEventListener("EditorSelected", this.editorSelected.bind(this));
+    this.#sourcesView.addEventListener("EditorSelected" /* EDITOR_SELECTED */, this.editorSelected.bind(this));
     this.#sourcesView.onToggleNavigatorSidebar = this.toggleNavigatorSidebar.bind(this);
     this.#sourcesView.onToggleDebuggerSidebar = this.toggleDebuggerSidebar.bind(this);
     this.#sourcesView.isNavigatorSidebarOpen = this.editorView.sidebarIsShowing();
     this.#sourcesView.isDebuggerSidebarOpen = this.splitWidget.sidebarIsShowing();
-    this.editorView.addEventListener("ShowModeChanged", () => {
+    this.editorView.addEventListener(UI17.SplitWidget.Events.SHOW_MODE_CHANGED, () => {
       this.#sourcesView.isNavigatorSidebarOpen = this.editorView.sidebarIsShowing();
     });
-    this.splitWidget.addEventListener("ShowModeChanged", () => {
+    this.splitWidget.addEventListener(UI17.SplitWidget.Events.SHOW_MODE_CHANGED, () => {
       this.#sourcesView.isDebuggerSidebarOpen = this.splitWidget.sidebarIsShowing();
     });
     this.editorView.setMainWidget(this.#sourcesView);
@@ -10926,13 +14183,44 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     this.setTarget(UI17.Context.Context.instance().flavor(SDK11.Target.Target));
     Common12.Settings.Settings.instance().resolve(SDK11.SDKSettings.breakpointsActiveSettingDescriptor).addChangeListener(this.breakpointsActiveStateChanged, this);
     UI17.Context.Context.instance().addFlavorChangeListener(SDK11.Target.Target, this.onCurrentTargetChanged, this);
-    UI17.Context.Context.instance().addFlavorChangeListener(StackTrace3.StackTrace.DebuggableFrameFlavor, this.callFrameChanged, this);
-    SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.DebuggerWasEnabled, this.debuggerWasEnabled, this);
-    SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.DebuggerPaused, this.debuggerPaused, this);
-    SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.DebugInfoAttached, this.debugInfoAttached, this);
-    SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.DebuggerResumed, (event) => this.debuggerResumed(event.data));
-    SDK11.TargetManager.TargetManager.instance().addModelListener(SDK11.DebuggerModel.DebuggerModel, SDK11.DebuggerModel.Events.GlobalObjectCleared, (event) => this.debuggerResumed(event.data));
-    PanelCommon3.ExtensionServer.ExtensionServer.instance().addEventListener("SidebarPaneAdded", this.extensionSidebarPaneAdded, this);
+    UI17.Context.Context.instance().addFlavorChangeListener(
+      StackTrace3.StackTrace.DebuggableFrameFlavor,
+      this.callFrameChanged,
+      this
+    );
+    SDK11.TargetManager.TargetManager.instance().addModelListener(
+      SDK11.DebuggerModel.DebuggerModel,
+      SDK11.DebuggerModel.Events.DebuggerWasEnabled,
+      this.debuggerWasEnabled,
+      this
+    );
+    SDK11.TargetManager.TargetManager.instance().addModelListener(
+      SDK11.DebuggerModel.DebuggerModel,
+      SDK11.DebuggerModel.Events.DebuggerPaused,
+      this.debuggerPaused,
+      this
+    );
+    SDK11.TargetManager.TargetManager.instance().addModelListener(
+      SDK11.DebuggerModel.DebuggerModel,
+      SDK11.DebuggerModel.Events.DebugInfoAttached,
+      this.debugInfoAttached,
+      this
+    );
+    SDK11.TargetManager.TargetManager.instance().addModelListener(
+      SDK11.DebuggerModel.DebuggerModel,
+      SDK11.DebuggerModel.Events.DebuggerResumed,
+      (event) => this.debuggerResumed(event.data)
+    );
+    SDK11.TargetManager.TargetManager.instance().addModelListener(
+      SDK11.DebuggerModel.DebuggerModel,
+      SDK11.DebuggerModel.Events.GlobalObjectCleared,
+      (event) => this.debuggerResumed(event.data)
+    );
+    PanelCommon3.ExtensionServer.ExtensionServer.instance().addEventListener(
+      PanelCommon3.ExtensionServer.Events.SidebarPaneAdded,
+      this.extensionSidebarPaneAdded,
+      this
+    );
     SDK11.TargetManager.TargetManager.instance().observeTargets(this);
     this.lastModificationTime = -Infinity;
   }
@@ -10956,7 +14244,10 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     if (ThreadsSidebarPane.shouldBeShown() && !this.threadsSidebarPane) {
       this.threadsSidebarPane = UI17.ViewManager.ViewManager.instance().view("sources.threads");
       if (this.sidebarPaneStack && this.threadsSidebarPane) {
-        this.sidebarPaneStack.appendView(this.threadsSidebarPane, this.splitWidget.isVertical() ? this.watchSidebarPane : this.callstackPane);
+        this.sidebarPaneStack.appendView(
+          this.threadsSidebarPane,
+          this.splitWidget.isVertical() ? this.watchSidebarPane : this.callstackPane
+        );
       }
     }
   }
@@ -10969,7 +14260,9 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       return;
     }
     if (debuggerModel.isPaused()) {
-      this.showDebuggerPausedDetails(debuggerModel.debuggerPausedDetails());
+      this.showDebuggerPausedDetails(
+        debuggerModel.debuggerPausedDetails()
+      );
     } else {
       this.#paused = false;
       this.clearInterface();
@@ -11072,9 +14365,24 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     const withOverlay = UI17.Context.Context.instance().flavor(SDK11.Target.Target)?.model(SDK11.OverlayModel.OverlayModel) && !Common12.Settings.Settings.instance().resolve(SDK11.SDKSettings.disablePausedStateOverlaySettingDescriptor).get();
     if (withOverlay && !this.overlayLoggables) {
       this.overlayLoggables = { debuggerPausedMessage: {}, resumeButton: {}, stepOverButton: {} };
-      VisualLogging11.registerLoggable(this.overlayLoggables.debuggerPausedMessage, `${VisualLogging11.dialog("debugger-paused")}`, null, new DOMRect(0, 0, 200, 20));
-      VisualLogging11.registerLoggable(this.overlayLoggables.resumeButton, `${VisualLogging11.action("debugger.toggle-pause")}`, this.overlayLoggables.debuggerPausedMessage, new DOMRect(0, 0, 20, 20));
-      VisualLogging11.registerLoggable(this.overlayLoggables.stepOverButton, `${VisualLogging11.action("debugger.step-over")}`, this.overlayLoggables.debuggerPausedMessage, new DOMRect(0, 0, 20, 20));
+      VisualLogging11.registerLoggable(
+        this.overlayLoggables.debuggerPausedMessage,
+        `${VisualLogging11.dialog("debugger-paused")}`,
+        null,
+        new DOMRect(0, 0, 200, 20)
+      );
+      VisualLogging11.registerLoggable(
+        this.overlayLoggables.resumeButton,
+        `${VisualLogging11.action("debugger.toggle-pause")}`,
+        this.overlayLoggables.debuggerPausedMessage,
+        new DOMRect(0, 0, 20, 20)
+      );
+      VisualLogging11.registerLoggable(
+        this.overlayLoggables.stepOverButton,
+        `${VisualLogging11.action("debugger.step-over")}`,
+        this.overlayLoggables.debuggerPausedMessage,
+        new DOMRect(0, 0, 20, 20)
+      );
     }
     this.#lastPausedTarget = new WeakRef(details.debuggerModel.target());
   }
@@ -11089,7 +14397,10 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       }
       if (byOverlayButton) {
         const details = UI17.Context.Context.instance().flavor(SDK11.DebuggerModel.DebuggerPausedDetails);
-        VisualLogging11.logClick(this.#paused && details?.reason === "step" ? this.overlayLoggables.stepOverButton : this.overlayLoggables.resumeButton, new MouseEvent("click"));
+        VisualLogging11.logClick(
+          this.#paused && details?.reason === Debugger.PausedEventReason.Step ? this.overlayLoggables.stepOverButton : this.overlayLoggables.resumeButton,
+          new MouseEvent("click")
+        );
       }
       if (!this.#paused) {
         VisualLogging11.logResize(this.overlayLoggables.debuggerPausedMessage, new DOMRect(0, 0, 0, 0));
@@ -11140,10 +14451,7 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   }
   async revealInNavigator(uiSourceCode, skipReveal) {
     const viewManager = UI17.ViewManager.ViewManager.instance();
-    for (const view of viewManager.viewsForLocation(
-      "navigator-view"
-      /* UI.ViewManager.ViewLocationValues.NAVIGATOR_VIEW */
-    )) {
+    for (const view of viewManager.viewsForLocation(UI17.ViewManager.ViewLocationValues.NAVIGATOR_VIEW)) {
       const navigatorView = await view.widget();
       if (navigatorView instanceof NavigatorView && navigatorView.acceptProject(uiSourceCode.project())) {
         navigatorView.revealUISourceCode(uiSourceCode, true);
@@ -11158,13 +14466,29 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   }
   addSettingMenuItem(contextMenu, settingName, menuText) {
     const setting = Common12.Settings.Settings.instance().moduleSetting(settingName);
-    contextMenu.appendCheckboxItem(menuText, () => setting.set(!setting.get()), { checked: setting.get(), jslogContext: setting.name });
+    contextMenu.appendCheckboxItem(
+      menuText,
+      () => setting.set(!setting.get()),
+      { checked: setting.get(), jslogContext: setting.name }
+    );
   }
   populateNavigatorMenu(contextMenu) {
     contextMenu.appendItemsAtLocation("navigatorMenu");
-    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-group-by-folder", i18nString16(UIStrings17.groupByFolder));
-    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-group-by-authored", i18nString16(UIStrings17.groupByAuthored));
-    this.addSettingMenuItem(contextMenu.viewSection(), "navigator-just-my-code", i18nString16(UIStrings17.hideIgnoreListed));
+    this.addSettingMenuItem(
+      contextMenu.viewSection(),
+      "navigator-group-by-folder",
+      i18nString16(UIStrings17.groupByFolder)
+    );
+    this.addSettingMenuItem(
+      contextMenu.viewSection(),
+      "navigator-group-by-authored",
+      i18nString16(UIStrings17.groupByAuthored)
+    );
+    this.addSettingMenuItem(
+      contextMenu.viewSection(),
+      "navigator-just-my-code",
+      i18nString16(UIStrings17.hideIgnoreListed)
+    );
   }
   updateLastModificationTime() {
     this.lastModificationTime = window.performance.now();
@@ -11174,7 +14498,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     if (!frameFlavor?.frame.uiSourceCode) {
       return;
     }
-    const uiLocation = new Workspace21.UISourceCode.UILocation(frameFlavor.frame.uiSourceCode, frameFlavor.frame.line, frameFlavor.frame.column);
+    const uiLocation = new Workspace21.UISourceCode.UILocation(
+      frameFlavor.frame.uiSourceCode,
+      frameFlavor.frame.line,
+      frameFlavor.frame.column
+    );
     if (window.performance.now() - this.lastModificationTime < lastModificationTimeout) {
       return;
     }
@@ -11185,7 +14513,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     const currentDebuggerModel = currentTarget ? currentTarget.model(SDK11.DebuggerModel.DebuggerModel) : null;
     const paused = this.#paused;
     const details = currentDebuggerModel ? currentDebuggerModel.debuggerPausedDetails() : null;
-    await this.debuggerPausedMessage.render(details, Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), Breakpoints3.BreakpointManager.BreakpointManager.instance());
+    await this.debuggerPausedMessage.render(
+      details,
+      Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+      Breakpoints3.BreakpointManager.BreakpointManager.instance()
+    );
     await this.debuggerPausedMessage.updateComplete;
     if (!currentDebuggerModel) {
       this.togglePauseAction.setEnabled(false);
@@ -11320,7 +14652,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     if (!executionContext) {
       return;
     }
-    const rawLocations = await Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(uiLocation.uiSourceCode, uiLocation.lineNumber, 0);
+    const rawLocations = await Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().uiLocationToRawLocations(
+      uiLocation.uiSourceCode,
+      uiLocation.lineNumber,
+      0
+    );
     const rawLocation = rawLocations.find((location) => location.debuggerModel === executionContext.debuggerModel);
     if (rawLocation && this.prepareToResume()) {
       rawLocation.continueToLocation();
@@ -11338,12 +14674,19 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
   createDebugToolbar() {
     const debugToolbar = document.createElement("devtools-toolbar");
     debugToolbar.classList.add("scripts-debug-toolbar");
-    debugToolbar.setAttribute("jslog", `${VisualLogging11.toolbar("debug").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`);
+    debugToolbar.setAttribute(
+      "jslog",
+      `${VisualLogging11.toolbar("debug").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`
+    );
     const longResumeButton = new UI17.Toolbar.ToolbarButton(i18nString16(UIStrings17.resumeWithAllPausesBlockedForMs), "play");
-    longResumeButton.addEventListener("Click", this.longResume, this);
+    longResumeButton.addEventListener(UI17.Toolbar.ToolbarButton.Events.CLICK, this.longResume, this);
     const terminateExecutionButton = new UI17.Toolbar.ToolbarButton(i18nString16(UIStrings17.terminateCurrentJavascriptCall), "stop");
-    terminateExecutionButton.addEventListener("Click", this.terminateExecution, this);
-    const pauseActionButton = UI17.Toolbar.Toolbar.createLongPressActionButton(this.togglePauseAction, [terminateExecutionButton, longResumeButton], []);
+    terminateExecutionButton.addEventListener(UI17.Toolbar.ToolbarButton.Events.CLICK, this.terminateExecution, this);
+    const pauseActionButton = UI17.Toolbar.Toolbar.createLongPressActionButton(
+      this.togglePauseAction,
+      [terminateExecutionButton, longResumeButton],
+      []
+    );
     pauseActionButton.toggleOnClick(false);
     debugToolbar.appendToolbarItem(pauseActionButton);
     debugToolbar.appendToolbarItem(UI17.Toolbar.Toolbar.createActionButton(this.stepOverAction));
@@ -11386,10 +14729,16 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       return;
     }
     const eventTarget = event.target;
-    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Common12.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace21.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode))) {
-      contextMenu.revealSection().appendItem(i18nString16(UIStrings17.revealInSidebar), this.revealInNavigator.bind(this, uiSourceCode), {
-        jslogContext: "sources.reveal-in-navigator-sidebar"
-      });
+    if (!uiSourceCode.project().isServiceProject() && !eventTarget.isSelfOrDescendant(this.navigatorTabbedLocation.widget().element) && !(Common12.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace21.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+      uiSourceCode
+    ))) {
+      contextMenu.revealSection().appendItem(
+        i18nString16(UIStrings17.revealInSidebar),
+        this.revealInNavigator.bind(this, uiSourceCode),
+        {
+          jslogContext: "sources.reveal-in-navigator-sidebar"
+        }
+      );
     }
     const openAiAssistanceId = "drjones.sources-panel-context";
     if (UI17.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
@@ -11399,16 +14748,38 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
         const action3 = UI17.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action3.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction("drjones.sources-panel-context", i18nString16(UIStrings17.startAChat));
-        appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.assessPerformance), "Is this script optimized for performance?", openAiAssistanceId + ".performance");
-        appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.explainThisScript), "What does this script do?", openAiAssistanceId + ".script");
-        appendSubmenuPromptAction(submenu, action3, i18nString16(UIStrings17.explainInputHandling), "Does the script handle user input safely", openAiAssistanceId + ".input");
+        appendSubmenuPromptAction(
+          submenu,
+          action3,
+          i18nString16(UIStrings17.assessPerformance),
+          "Is this script optimized for performance?",
+          openAiAssistanceId + ".performance"
+        );
+        appendSubmenuPromptAction(
+          submenu,
+          action3,
+          i18nString16(UIStrings17.explainThisScript),
+          "What does this script do?",
+          openAiAssistanceId + ".script"
+        );
+        appendSubmenuPromptAction(
+          submenu,
+          action3,
+          i18nString16(UIStrings17.explainInputHandling),
+          "Does the script handle user input safely",
+          openAiAssistanceId + ".input"
+        );
       }
     }
     if (uiSourceCode.contentType().hasScripts() && Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(uiSourceCode).every((script) => script.isJavaScript())) {
       this.callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
     }
     function appendSubmenuPromptAction(submenu, action3, label, prompt, jslogContext) {
-      submenu.defaultSection().appendItem(label, () => action3.execute({ prompt }), { disabled: !action3.enabled(), jslogContext });
+      submenu.defaultSection().appendItem(
+        label,
+        () => action3.execute({ prompt }),
+        { disabled: !action3.enabled(), jslogContext }
+      );
     }
   }
   appendUISourceCodeFrameItems(contextMenu, target) {
@@ -11427,7 +14798,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       const target = UI17.Context.Context.instance().flavor(SDK11.Target.Target);
       const debuggerModel = target ? target.model(SDK11.DebuggerModel.DebuggerModel) : null;
       if (debuggerModel?.isPaused()) {
-        contextMenu.debugSection().appendItem(i18nString16(UIStrings17.continueToHere), this.continueToLocation.bind(this, uiLocation), { jslogContext: "continue-to-here" });
+        contextMenu.debugSection().appendItem(
+          i18nString16(UIStrings17.continueToHere),
+          this.continueToLocation.bind(this, uiLocation),
+          { jslogContext: "continue-to-here" }
+        );
       }
       this.callstackPane.appendIgnoreListURLContextMenuItems(contextMenu, uiSourceCode);
     }
@@ -11445,7 +14820,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       return remoteObject.type;
     }
     const copyContextMenuTitle = getObjectTitle();
-    contextMenu.debugSection().appendItem(i18nString16(UIStrings17.storeAsGlobalVariable), () => executionContext?.target().model(SDK11.ConsoleModel.ConsoleModel)?.saveToTempVariable(executionContext, remoteObject), { jslogContext: "store-as-global-variable" });
+    contextMenu.debugSection().appendItem(
+      i18nString16(UIStrings17.storeAsGlobalVariable),
+      () => executionContext?.target().model(SDK11.ConsoleModel.ConsoleModel)?.saveToTempVariable(executionContext, remoteObject),
+      { jslogContext: "store-as-global-variable" }
+    );
     const ctxMenuClipboardSection = contextMenu.clipboardSection();
     const inspectorFrontendHost = Host8.InspectorFrontendHost.InspectorFrontendHostInstance;
     if (remoteObject.type === "string") {
@@ -11472,9 +14851,17 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
         }]);
         inspectorFrontendHost.copyText(result);
       };
-      ctxMenuClipboardSection.appendItem(i18nString16(UIStrings17.copyS, { PH1: String(copyContextMenuTitle) }), copyDecodedValueHandler, { jslogContext: "copy-object" });
+      ctxMenuClipboardSection.appendItem(
+        i18nString16(UIStrings17.copyS, { PH1: String(copyContextMenuTitle) }),
+        copyDecodedValueHandler,
+        { jslogContext: "copy-object" }
+      );
     } else if (remoteObject.type === "function") {
-      contextMenu.debugSection().appendItem(i18nString16(UIStrings17.showFunctionDefinition), this.showFunctionDefinition.bind(this, remoteObject), { jslogContext: "show-function-definition" });
+      contextMenu.debugSection().appendItem(
+        i18nString16(UIStrings17.showFunctionDefinition),
+        this.showFunctionDefinition.bind(this, remoteObject),
+        { jslogContext: "show-function-definition" }
+      );
     }
     function toStringForClipboard(data) {
       const subtype = data.subtype;
@@ -11518,13 +14905,17 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     contextMenu.revealSection().appendItem(openText, callback, { jslogContext: "reveal-in-sources" });
   }
   showFunctionDefinition(remoteObject) {
-    void SDK11.RemoteObject.RemoteFunction.objectAsFunction(remoteObject).targetFunction().then((targetFunction) => targetFunction.debuggerModel().functionDetailsPromise(targetFunction).then(this.didGetFunctionDetails.bind(this)));
+    void SDK11.RemoteObject.RemoteFunction.objectAsFunction(remoteObject).targetFunction().then(
+      (targetFunction) => targetFunction.debuggerModel().functionDetailsPromise(targetFunction).then(this.didGetFunctionDetails.bind(this))
+    );
   }
   async didGetFunctionDetails(response) {
     if (!response?.location) {
       return;
     }
-    const uiLocation = await Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(response.location);
+    const uiLocation = await Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
+      response.location
+    );
     if (uiLocation) {
       await this.showUILocation(uiLocation);
     }
@@ -11569,7 +14960,11 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
     vbox.element.appendChild(this.debugToolbar);
     vbox.element.appendChild(this.debugToolbarDrawer);
     vbox.setMinimumAndPreferredSizes(minToolbarWidth, 25, minToolbarWidth, 100);
-    this.sidebarPaneStack = UI17.ViewManager.ViewManager.instance().createStackLocation(this.revealDebuggerSidebar.bind(this), void 0, "debug");
+    this.sidebarPaneStack = UI17.ViewManager.ViewManager.instance().createStackLocation(
+      this.revealDebuggerSidebar.bind(this),
+      void 0,
+      "debug"
+    );
     this.sidebarPaneStack.widget().element.classList.add("y-overflow-only");
     this.sidebarPaneStack.widget().show(vbox.element);
     this.debuggerPausedMessage.show(this.sidebarPaneStack.widget().element);
@@ -11596,7 +14991,10 @@ var SourcesPanel = class _SourcesPanel extends UI17.Panel.Panel {
       splitWidget.setMainWidget(vbox);
       void this.sidebarPaneStack.showView(jsBreakpoints);
       void this.sidebarPaneStack.showView(this.callstackPane);
-      const tabbedLocation = UI17.ViewManager.ViewManager.instance().createTabbedLocation(this.revealDebuggerSidebar.bind(this), "sources-panel-debugger-sidebar");
+      const tabbedLocation = UI17.ViewManager.ViewManager.instance().createTabbedLocation(
+        this.revealDebuggerSidebar.bind(this),
+        "sources-panel-debugger-sidebar"
+      );
       splitWidget.setSidebarWidget(tabbedLocation.tabbedPane());
       this.tabbedLocationHeader = tabbedLocation.tabbedPane().headerElement();
       this.splitWidget.installResizer(this.tabbedLocationHeader);
@@ -11663,7 +15061,9 @@ var UILocationRangeRevealer = class _UILocationRangeRevealer {
 };
 var DebuggerLocationRevealer = class {
   async reveal(rawLocation, omitFocus) {
-    const uiLocation = await Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(rawLocation);
+    const uiLocation = await Bindings8.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
+      rawLocation
+    );
     if (uiLocation) {
       await SourcesPanel.instance().showUILocation(uiLocation, omitFocus);
     }
@@ -11804,7 +15204,7 @@ var QuickSourceView = class _QuickSourceView extends UI17.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/sources/CallStackSidebarPane.js
+// ../../front_end/panels/sources/CallStackSidebarPane.ts
 var UIStrings18 = {
   /**
    * @description Text in the call stack sidebar of the Sources panel
@@ -11948,13 +15348,13 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     this.ignoreListCheckboxElement.checked = false;
     this.maxAsyncStackChainDepth = defaultMaxAsyncStackChainDepth;
     if (this.#stackTrace) {
-      this.#stackTrace.removeEventListener("UPDATED", this.requestUpdate, this);
+      this.#stackTrace.removeEventListener(StackTrace5.StackTrace.Events.UPDATED, this.requestUpdate, this);
       this.#stackTrace = null;
       this.requestUpdate();
     }
     if (details) {
       this.#stackTrace = await Bindings9.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().createStackTraceFromDebuggerPaused(details, details.debuggerModel.target());
-      this.#stackTrace.addEventListener("UPDATED", this.requestUpdate, this);
+      this.#stackTrace.addEventListener(StackTrace5.StackTrace.Events.UPDATED, this.requestUpdate, this);
     }
     this.requestUpdate();
   }
@@ -12076,7 +15476,9 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
       icon2.name = "warning-filled";
       icon2.classList.add("call-frame-warning-icon", "small");
       const { resources, details } = convertMissingDebugInfo(item.frame.missingDebugInfo, item.frame.sdkFrame.functionName);
-      const messages = resources.map((r) => i18nString17(UIStrings18.debugFileNotFound, { PH1: Common13.ParsedURL.ParsedURL.extractName(r.resourceUrl) }));
+      const messages = resources.map(
+        (r) => i18nString17(UIStrings18.debugFileNotFound, { PH1: Common13.ParsedURL.ParsedURL.extractName(r.resourceUrl) })
+      );
       UI18.Tooltip.Tooltip.install(icon2, [details, ...messages].join("\n"));
       element.appendChild(icon2);
     }
@@ -12117,7 +15519,11 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
         void debuggerCallFrame.restart();
       }, { disabled: !debuggerCallFrame.canBeRestarted, jslogContext: "restart-frame" });
     }
-    contextMenu.defaultSection().appendItem(i18nString17(UIStrings18.copyStackTrace), this.copyStackTrace.bind(this), { jslogContext: "copy-stack-trace" });
+    contextMenu.defaultSection().appendItem(
+      i18nString17(UIStrings18.copyStackTrace),
+      this.copyStackTrace.bind(this),
+      { jslogContext: "copy-stack-trace" }
+    );
     if (item.uiLocation) {
       this.appendIgnoreListURLContextMenuItems(contextMenu, item.uiLocation.uiSourceCode);
     }
@@ -12133,7 +15539,10 @@ var CallStackSidebarPane = class _CallStackSidebarPane extends UI18.View.SimpleV
     const oldItem = this.activeCallFrameItem();
     if (debuggerCallFrame) {
       debuggerCallFrame.sdkFrame.debuggerModel.setSelectedCallFrame(debuggerCallFrame.sdkFrame);
-      UI18.Context.Context.instance().setFlavor(StackTrace5.StackTrace.DebuggableFrameFlavor, StackTrace5.StackTrace.DebuggableFrameFlavor.for(debuggerCallFrame));
+      UI18.Context.Context.instance().setFlavor(
+        StackTrace5.StackTrace.DebuggableFrameFlavor,
+        StackTrace5.StackTrace.DebuggableFrameFlavor.for(debuggerCallFrame)
+      );
     } else {
       void Common13.Revealer.reveal(uiLocation);
     }
@@ -12251,12 +15660,12 @@ var Item = class _Item {
 };
 function convertMissingDebugInfo(missingDebugInfo, functionName) {
   switch (missingDebugInfo.type) {
-    case "PARTIAL_INFO":
+    case StackTrace5.StackTrace.MissingDebugInfoType.PARTIAL_INFO:
       return {
         details: i18nString17(UIStrings18.debugSymbolsIncomplete, { PH1: functionName ?? "" }),
         resources: missingDebugInfo.missingDebugFiles
       };
-    case "NO_INFO":
+    case StackTrace5.StackTrace.MissingDebugInfoType.NO_INFO:
       return {
         details: i18nString17(UIStrings18.failedToLoadDebugSymbolsForFunction, { PH1: functionName ?? "" }),
         resources: []
@@ -12264,7 +15673,7 @@ function convertMissingDebugInfo(missingDebugInfo, functionName) {
   }
 }
 
-// gen/front_end/panels/sources/FilePathScoreFunction.js
+// ../../front_end/panels/sources/FilePathScoreFunction.ts
 var FilePathScoreFunction_exports = {};
 __export(FilePathScoreFunction_exports, {
   FilePathScoreFunction: () => FilePathScoreFunction
@@ -12412,7 +15821,7 @@ var FilePathScoreFunction = class {
   }
 };
 
-// gen/front_end/panels/sources/FilteredUISourceCodeListProvider.js
+// ../../front_end/panels/sources/FilteredUISourceCodeListProvider.ts
 var FilteredUISourceCodeListProvider_exports = {};
 __export(FilteredUISourceCodeListProvider_exports, {
   FilteredUISourceCodeListProvider: () => FilteredUISourceCodeListProvider
@@ -12481,7 +15890,7 @@ var filteredUISourceCodeListProvider_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./filteredUISourceCodeListProvider.css")} */`;
 
-// gen/front_end/panels/sources/FilteredUISourceCodeListProvider.js
+// ../../front_end/panels/sources/FilteredUISourceCodeListProvider.ts
 var UIStrings19 = {
   /**
    * @description Text in Filtered UISourceCode list provider of the Sources panel.
@@ -12549,7 +15958,9 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     if (this.uiSourceCodeIds.has(uiSourceCode.canonicalScriptId())) {
       return false;
     }
-    if (Common14.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+    if (Common14.Settings.Settings.instance().moduleSetting("navigator-just-my-code").get() && Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+      uiSourceCode
+    )) {
       return false;
     }
     if (uiSourceCode.isFetchXHR()) {
@@ -12597,7 +16008,9 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
       contentTypeBonus = 100;
     }
     if (uiSourceCode.contentType().isScript()) {
-      if (!Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode)) {
+      if (!Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+        uiSourceCode
+      )) {
         contentTypeBonus += 50;
       }
     }
@@ -12611,7 +16024,9 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     const indexes = [];
     new FilePathScoreFunction(query).calculateScore(fullDisplayName, indexes);
     const fileNameIndex = fullDisplayName.lastIndexOf("/");
-    const isIgnoreListed = Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(uiSourceCode);
+    const isIgnoreListed = Workspace24.IgnoreListManager.IgnoreListManager.instance().isUserOrSourceMapIgnoreListedUISourceCode(
+      uiSourceCode
+    );
     let tooltipText = fullDisplayName;
     if (isIgnoreListed) {
       tooltipText = i18nString18(UIStrings19.sIgnoreListed, { PH1: tooltipText });
@@ -12695,19 +16110,35 @@ var FilteredUISourceCodeListProvider = class extends QuickOpen3.FilteredListWidg
     return i18nString18(UIStrings19.noFilesFound);
   }
   attach() {
-    Workspace24.Workspace.WorkspaceImpl.instance().addEventListener(Workspace24.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
-    Workspace24.Workspace.WorkspaceImpl.instance().addEventListener(Workspace24.Workspace.Events.ProjectRemoved, this.projectRemoved, this);
+    Workspace24.Workspace.WorkspaceImpl.instance().addEventListener(
+      Workspace24.Workspace.Events.UISourceCodeAdded,
+      this.uiSourceCodeAdded,
+      this
+    );
+    Workspace24.Workspace.WorkspaceImpl.instance().addEventListener(
+      Workspace24.Workspace.Events.ProjectRemoved,
+      this.projectRemoved,
+      this
+    );
     this.populate();
   }
   detach() {
-    Workspace24.Workspace.WorkspaceImpl.instance().removeEventListener(Workspace24.Workspace.Events.UISourceCodeAdded, this.uiSourceCodeAdded, this);
-    Workspace24.Workspace.WorkspaceImpl.instance().removeEventListener(Workspace24.Workspace.Events.ProjectRemoved, this.projectRemoved, this);
+    Workspace24.Workspace.WorkspaceImpl.instance().removeEventListener(
+      Workspace24.Workspace.Events.UISourceCodeAdded,
+      this.uiSourceCodeAdded,
+      this
+    );
+    Workspace24.Workspace.WorkspaceImpl.instance().removeEventListener(
+      Workspace24.Workspace.Events.ProjectRemoved,
+      this.projectRemoved,
+      this
+    );
     this.queryLineNumberAndColumnNumber = "";
     this.defaultScores = null;
   }
 };
 
-// gen/front_end/panels/sources/GoToLineQuickOpen.js
+// ../../front_end/panels/sources/GoToLineQuickOpen.ts
 var GoToLineQuickOpen_exports = {};
 __export(GoToLineQuickOpen_exports, {
   GoToLineQuickOpen: () => GoToLineQuickOpen
@@ -12859,7 +16290,7 @@ var GoToLineQuickOpen = class extends QuickOpen4.FilteredListWidget.Provider {
   }
 };
 
-// gen/front_end/panels/sources/OpenFileQuickOpen.js
+// ../../front_end/panels/sources/OpenFileQuickOpen.ts
 var OpenFileQuickOpen_exports = {};
 __export(OpenFileQuickOpen_exports, {
   OpenFileQuickOpen: () => OpenFileQuickOpen
@@ -12897,7 +16328,7 @@ var OpenFileQuickOpen = class extends FilteredUISourceCodeListProvider {
   }
 };
 
-// gen/front_end/panels/sources/OutlineQuickOpen.js
+// ../../front_end/panels/sources/OutlineQuickOpen.ts
 var OutlineQuickOpen_exports = {};
 __export(OutlineQuickOpen_exports, {
   OutlineQuickOpen: () => OutlineQuickOpen,
@@ -13257,7 +16688,7 @@ var OutlineQuickOpen = class extends QuickOpen5.FilteredListWidget.Provider {
   }
 };
 
-// gen/front_end/panels/sources/PersistenceActions.js
+// ../../front_end/panels/sources/PersistenceActions.ts
 var PersistenceActions_exports = {};
 __export(PersistenceActions_exports, {
   ContextMenuProvider: () => ContextMenuProvider
@@ -13385,7 +16816,11 @@ var ContextMenuProvider = class {
       const fileURL = fileSystemUISourceCode.contentURL();
       if (Common16.ParsedURL.schemeIs(fileURL, "file:")) {
         const path = Common16.ParsedURL.ParsedURL.urlToRawPathString(fileURL, Host11.Platform.isWin());
-        contextMenu.revealSection().appendItem(i18nString21(UIStrings22.openInContainingFolder), () => Host11.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path), { jslogContext: "open-in-containing-folder" });
+        contextMenu.revealSection().appendItem(
+          i18nString21(UIStrings22.openInContainingFolder),
+          () => Host11.InspectorFrontendHost.InspectorFrontendHostInstance.showItemInFolder(path),
+          { jslogContext: "open-in-containing-folder" }
+        );
       }
     }
     if (contentProvider instanceof Workspace26.UISourceCode.UISourceCode && contentProvider.project().type() === Workspace26.Workspace.projectTypes.FileSystem) {
@@ -13406,7 +16841,11 @@ var ContextMenuProvider = class {
         }
       }
     }
-    contextMenu.overrideSection().appendItem(i18nString21(UIStrings22.overrideContent), handler, { disabled, jslogContext: "override-content" });
+    contextMenu.overrideSection().appendItem(
+      i18nString21(UIStrings22.overrideContent),
+      handler,
+      { disabled, jslogContext: "override-content" }
+    );
     if (contentProvider instanceof SDK12.NetworkRequest.NetworkRequest) {
       contextMenu.overrideSection().appendItem(i18nString21(UIStrings22.showOverrides), async () => {
         await UI21.ViewManager.ViewManager.instance().showView("navigator-overrides");
@@ -13445,7 +16884,12 @@ var ContextMenuProvider = class {
     const deployedName = Bindings10.ResourceUtils.displayNameForURL(deployedUrl);
     const originalUrl = originalUiSourceCode.url();
     const originalName = Bindings10.ResourceUtils.displayNameForURL(originalUrl);
-    const shouldJumpToDeployedFile = await UI21.UIUtils.ConfirmDialog.show(i18nString21(UIStrings22.overrideSourceMappedFileExplanation, { PH1: originalName }), i18nString21(UIStrings22.overrideSourceMappedFileWarning, { PH1: deployedName }), void 0, { jslogContext: "override-source-mapped-file-warning" });
+    const shouldJumpToDeployedFile = await UI21.UIUtils.ConfirmDialog.show(
+      i18nString21(UIStrings22.overrideSourceMappedFileExplanation, { PH1: originalName }),
+      i18nString21(UIStrings22.overrideSourceMappedFileWarning, { PH1: deployedName }),
+      void 0,
+      { jslogContext: "override-source-mapped-file-warning" }
+    );
     if (shouldJumpToDeployedFile) {
       Host11.userMetrics.actionTaken(Host11.UserMetrics.Action.OverrideContentContextMenuRedirectToDeployed);
       await this.handleOverrideContent(deployedUiSourceCode, deployedUiSourceCode);
@@ -13463,7 +16907,9 @@ var ContextMenuProvider = class {
     if (!deployedStylesUrl) {
       return null;
     }
-    const deployedUiSourceCode = Workspace26.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(deployedStylesUrl) || Workspace26.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(Common16.ParsedURL.ParsedURL.urlWithoutHash(deployedStylesUrl));
+    const deployedUiSourceCode = Workspace26.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(deployedStylesUrl) || Workspace26.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(
+      Common16.ParsedURL.ParsedURL.urlWithoutHash(deployedStylesUrl)
+    );
     return deployedUiSourceCode;
   }
 };
@@ -13479,10 +16925,12 @@ function getScript(contentProvider) {
       return resourceFile.script;
     }
   }
-  return Bindings10.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(contentProvider)[0] ?? null;
+  return Bindings10.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().scriptsForUISourceCode(
+    contentProvider
+  )[0] ?? null;
 }
 
-// gen/front_end/panels/sources/ScopeChainSidebarPane.js
+// ../../front_end/panels/sources/ScopeChainSidebarPane.ts
 var ScopeChainSidebarPane_exports = {};
 __export(ScopeChainSidebarPane_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW7,
@@ -13543,7 +16991,7 @@ var scopeChainSidebarPane_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./scopeChainSidebarPane.css")} */`;
 
-// gen/front_end/panels/sources/ScopeChainSidebarPane.js
+// ../../front_end/panels/sources/ScopeChainSidebarPane.ts
 var UIStrings23 = {
   /**
    * @description Loading indicator in the scope sidebar of the Sources panel.
@@ -13573,7 +17021,7 @@ var scopeChainSidebarPaneInstance;
 var DEFAULT_VIEW7 = (input, output, target) => {
   const createScopeSection = ({ scope, objectTree }) => {
     let emptyPlaceholder;
-    if (scope.type() === "local" || scope.type() === "closure") {
+    if (scope.type() === Debugger.ScopeType.Local || scope.type() === Debugger.ScopeType.Closure) {
       emptyPlaceholder = i18nString22(UIStrings23.noVariables);
     }
     const icon = scope.icon();
@@ -13624,7 +17072,7 @@ var DEFAULT_VIEW7 = (input, output, target) => {
 };
 function scopeTitle(scope) {
   let title = scope.typeName();
-  if (scope.type() === "closure") {
+  if (scope.type() === Debugger.ScopeType.Closure) {
     const scopeName = scope.name();
     if (scopeName) {
       title = i18nString22(UIStrings23.closureS, { PH1: UI22.UIUtils.beautifyFunctionName(scopeName) });
@@ -13640,7 +17088,7 @@ function scopeTitle(scope) {
 }
 function scopeKey(scope) {
   let title = scope.typeName();
-  if (scope.type() === "closure") {
+  if (scope.type() === Debugger.ScopeType.Closure) {
     const scopeName = scope.name();
     if (scopeName) {
       title = `Closure: ${UI22.UIUtils.beautifyFunctionName(scopeName)}`;
@@ -13681,9 +17129,12 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBo
     this.#scopeChain = null;
     this.#linkifier.reset();
     if (callFrame) {
-      const scopeChainModel = new SourceMapScopes2.ScopeChainModel.ScopeChainModel(callFrame.sdkFrame, Bindings11.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+      const scopeChainModel = new SourceMapScopes2.ScopeChainModel.ScopeChainModel(
+        callFrame.sdkFrame,
+        Bindings11.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+      );
       this.#scopeChainModel = scopeChainModel;
-      this.#scopeChainModel.addEventListener("ScopeChainUpdated", (event) => {
+      this.#scopeChainModel.addEventListener(SourceMapScopes2.ScopeChainModel.Events.SCOPE_CHAIN_UPDATED, (event) => {
         if (this.#scopeChainModel === scopeChainModel) {
           this.#buildScopeChain(event.data);
         }
@@ -13692,30 +17143,41 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBo
     this.requestUpdate();
   }
   performUpdate() {
-    this.#view({
-      linkifier: this.#linkifier,
-      isPaused: Boolean(this.#scopeChainModel),
-      scopeChain: this.#scopeChain,
-      onToggle: (objectTree, expanded) => {
-        objectTree.expanded = expanded;
-        this.requestUpdate();
+    this.#view(
+      {
+        linkifier: this.#linkifier,
+        isPaused: Boolean(this.#scopeChainModel),
+        scopeChain: this.#scopeChain,
+        onToggle: (objectTree, expanded) => {
+          objectTree.expanded = expanded;
+          this.requestUpdate();
+        },
+        onContextMenu: (objectTree, contextMenu) => {
+          ObjectUI3.ObjectPropertiesSection.populateObjectTreeContextMenu(
+            contextMenu,
+            objectTree,
+            async () => {
+              await objectTree.expandRecursively(ObjectUI3.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
+              this.requestUpdate();
+            },
+            () => {
+              objectTree.collapseRecursively();
+              this.requestUpdate();
+            },
+            () => {
+              objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
+              this.requestUpdate();
+            },
+            () => {
+              objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
+              this.requestUpdate();
+            }
+          );
+        }
       },
-      onContextMenu: (objectTree, contextMenu) => {
-        ObjectUI3.ObjectPropertiesSection.populateObjectTreeContextMenu(contextMenu, objectTree, async () => {
-          await objectTree.expandRecursively(ObjectUI3.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
-          this.requestUpdate();
-        }, () => {
-          objectTree.collapseRecursively();
-          this.requestUpdate();
-        }, () => {
-          objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
-          this.requestUpdate();
-        }, () => {
-          objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
-          this.requestUpdate();
-        });
-      }
-    }, {}, this.contentElement);
+      {},
+      this.contentElement
+    );
   }
   #buildScopeChain({ scopeChain }) {
     const oldExpansionTrackers = this.#expansionTrackers;
@@ -13729,25 +17191,25 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBo
         this.#expansionTrackers.set(key, expansionTracker);
       }
       const objectTree = new ObjectUI3.ObjectPropertiesSection.ObjectTree(scope.object(), {
-        propertiesMode: 0,
+        propertiesMode: ObjectUI3.ObjectPropertiesSection.ObjectPropertiesMode.ALL,
         readOnly: false,
         expansionTracker
       });
-      objectTree.addEventListener("children-changed", () => {
+      objectTree.addEventListener(ObjectUI3.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED, () => {
         this.requestUpdate();
       });
       void expansionTracker.apply(objectTree);
       objectTree.addExtraProperties(...scope.extraProperties());
-      if (scope.type() === "global") {
+      if (scope.type() === Debugger.ScopeType.Global) {
         objectTree.expanded = false;
       }
       this.#scopeChain.push({ scope, objectTree });
     }
     for (const { scope, objectTree } of this.#scopeChain) {
-      if (scope.type() !== "global") {
+      if (scope.type() !== Debugger.ScopeType.Global) {
         objectTree.expanded = true;
       }
-      if (scope.type() === "local") {
+      if (scope.type() === Debugger.ScopeType.Local) {
         break;
       }
     }
@@ -13761,7 +17223,7 @@ var ScopeChainSidebarPane = class _ScopeChainSidebarPane extends UI22.Widget.VBo
   }
 };
 
-// gen/front_end/panels/sources/SourcesNavigator.js
+// ../../front_end/panels/sources/SourcesNavigator.ts
 var SourcesNavigator_exports = {};
 __export(SourcesNavigator_exports, {
   ActionDelegate: () => ActionDelegate5,
@@ -13813,7 +17275,7 @@ var sourcesNavigator_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./sourcesNavigator.css")} */`;
 
-// gen/front_end/panels/sources/SourcesNavigator.js
+// ../../front_end/panels/sources/SourcesNavigator.ts
 var UIStrings24 = {
   /**
    * @description Text to show if no workspaces are set up. Learn more at https://goo.gle/devtools-workspace.
@@ -13903,7 +17365,11 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
   constructor(networkProjectManager) {
     super("navigator-network", networkProjectManager, true);
     this.registerRequiredCSS(sourcesNavigator_css_default);
-    SDK13.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
+    SDK13.TargetManager.TargetManager.instance().addEventListener(
+      SDK13.TargetManager.Events.INSPECTED_URL_CHANGED,
+      this.inspectedURLChanged,
+      this
+    );
     UI23.UIUserMetrics.UIUserMetrics.instance().panelLoaded("sources", "DevTools.Launch.Sources");
     SDK13.TargetManager.TargetManager.instance().addScopeChangeListener(this.onScopeChange.bind(this));
   }
@@ -13915,7 +17381,9 @@ var NetworkNavigatorView = class _NetworkNavigatorView extends NavigatorView {
     return networkNavigatorViewInstance;
   }
   acceptProject(project) {
-    return project.type() === Workspace28.Workspace.projectTypes.Network && SDK13.TargetManager.TargetManager.instance().isInScope(Bindings12.NetworkProject.NetworkProject.getTargetForProject(project));
+    return project.type() === Workspace28.Workspace.projectTypes.Network && SDK13.TargetManager.TargetManager.instance().isInScope(
+      Bindings12.NetworkProject.NetworkProject.getTargetForProject(project)
+    );
   }
   onScopeChange() {
     for (const project of Workspace28.Workspace.WorkspaceImpl.instance().projects()) {
@@ -13977,8 +17445,16 @@ var FilesNavigatorView = class extends NavigatorView {
   wasShown() {
     super.wasShown();
     this.#eventListeners = [
-      this.#automaticFileSystemManager.addEventListener("AutomaticFileSystemChanged", this.#automaticFileSystemChanged, this),
-      this.#automaticFileSystemManager.addEventListener("AvailabilityChanged", this.#availabilityChanged, this)
+      this.#automaticFileSystemManager.addEventListener(
+        Persistence16.AutomaticFileSystemManager.Events.AUTOMATIC_FILE_SYSTEM_CHANGED,
+        this.#automaticFileSystemChanged,
+        this
+      ),
+      this.#automaticFileSystemManager.addEventListener(
+        Persistence16.AutomaticFileSystemManager.Events.AVAILABILITY_CHANGED,
+        this.#availabilityChanged,
+        this
+      )
     ];
     this.#automaticFileSystemChanged({ data: this.#automaticFileSystemManager.automaticFileSystem });
   }
@@ -14016,14 +17492,25 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
   toolbar;
   constructor(networkProjectManager) {
     super("navigator-overrides", networkProjectManager);
-    const placeholder2 = new UI23.EmptyWidget.EmptyWidget(i18nString23(UIStrings24.noLocalOverrides), i18nString23(UIStrings24.explainLocalOverrides));
+    const placeholder2 = new UI23.EmptyWidget.EmptyWidget(
+      i18nString23(UIStrings24.noLocalOverrides),
+      i18nString23(UIStrings24.explainLocalOverrides)
+    );
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/docs/devtools/overrides/";
     this.toolbar = document.createElement("devtools-toolbar");
     this.toolbar.classList.add("navigator-toolbar");
     this.contentElement.insertBefore(this.toolbar, this.contentElement.firstChild);
-    Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("ProjectChanged", this.updateProjectAndUI, this);
-    Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener("LocalOverridesProjectUpdated", this.updateProjectAndUI, this);
+    Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
+      Persistence16.NetworkPersistenceManager.Events.PROJECT_CHANGED,
+      this.updateProjectAndUI,
+      this
+    );
+    Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().addEventListener(
+      Persistence16.NetworkPersistenceManager.Events.LOCAL_OVERRIDES_PROJECT_UPDATED,
+      this.updateProjectAndUI,
+      this
+    );
     this.workspace().addEventListener(Workspace28.Workspace.Events.ProjectAdded, this.onProjectAddOrRemoved, this);
     this.workspace().addEventListener(Workspace28.Workspace.Events.ProjectRemoved, this.onProjectAddOrRemoved, this);
     this.updateProjectAndUI();
@@ -14054,11 +17541,13 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
     this.toolbar.removeToolbarItems();
     const project = Persistence16.NetworkPersistenceManager.NetworkPersistenceManager.instance().project();
     if (project) {
-      const enableCheckbox = new UI23.Toolbar.ToolbarSettingCheckbox(Common17.Settings.Settings.instance().resolve(Persistence16.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor));
+      const enableCheckbox = new UI23.Toolbar.ToolbarSettingCheckbox(Common17.Settings.Settings.instance().resolve(
+        Persistence16.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor
+      ));
       this.toolbar.appendToolbarItem(enableCheckbox);
       this.toolbar.appendToolbarItem(new UI23.Toolbar.ToolbarSeparator(true));
       const clearButton = new UI23.Toolbar.ToolbarButton(i18nString23(UIStrings24.clearConfiguration), "clear");
-      clearButton.addEventListener("Click", () => {
+      clearButton.addEventListener(UI23.Toolbar.ToolbarButton.Events.CLICK, () => {
         Common17.Settings.Settings.instance().resolve(Persistence16.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).set(false);
         project.remove();
       });
@@ -14067,7 +17556,7 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
     }
     const title = i18nString23(UIStrings24.selectFolderForOverrides);
     const setupButton = new UI23.Toolbar.ToolbarButton(title, "plus", title);
-    setupButton.addEventListener("Click", (_event) => {
+    setupButton.addEventListener(UI23.Toolbar.ToolbarButton.Events.CLICK, (_event) => {
       void _OverridesNavigatorView.setupNewWorkspace();
     }, this);
     this.toolbar.appendToolbarItem(setupButton);
@@ -14090,7 +17579,10 @@ var OverridesNavigatorView = class _OverridesNavigatorView extends NavigatorView
 var ContentScriptsNavigatorView = class extends NavigatorView {
   constructor(networkProjectManager) {
     super("navigator-content-scripts", networkProjectManager);
-    const placeholder2 = new UI23.EmptyWidget.EmptyWidget(i18nString23(UIStrings24.noContentScripts), i18nString23(UIStrings24.explainContentScripts));
+    const placeholder2 = new UI23.EmptyWidget.EmptyWidget(
+      i18nString23(UIStrings24.noContentScripts),
+      i18nString23(UIStrings24.explainContentScripts)
+    );
     this.setPlaceholder(placeholder2);
     placeholder2.link = "https://developer.chrome.com/extensions/content_scripts";
   }
@@ -14106,9 +17598,17 @@ var SnippetsNavigatorView = class extends NavigatorView {
     placeholder2.link = "https://developer.chrome.com/docs/devtools/javascript/snippets/";
     const toolbar4 = document.createElement("devtools-toolbar");
     toolbar4.classList.add("navigator-toolbar");
-    const newButton = new UI23.Toolbar.ToolbarButton(i18nString23(UIStrings24.newSnippet), "plus", i18nString23(UIStrings24.newSnippet), "sources.new-snippet");
-    newButton.addEventListener("Click", (_event) => {
-      void this.create(Snippets5.ScriptSnippetFileSystem.findSnippetsProject(), "");
+    const newButton = new UI23.Toolbar.ToolbarButton(
+      i18nString23(UIStrings24.newSnippet),
+      "plus",
+      i18nString23(UIStrings24.newSnippet),
+      "sources.new-snippet"
+    );
+    newButton.addEventListener(UI23.Toolbar.ToolbarButton.Events.CLICK, (_event) => {
+      void this.create(
+        Snippets5.ScriptSnippetFileSystem.findSnippetsProject(),
+        ""
+      );
     });
     toolbar4.appendToolbarItem(newButton);
     this.contentElement.insertBefore(toolbar4, this.contentElement.firstChild);
@@ -14118,16 +17618,39 @@ var SnippetsNavigatorView = class extends NavigatorView {
   }
   handleContextMenu(event) {
     const contextMenu = new UI23.ContextMenu.ContextMenu(event);
-    contextMenu.headerSection().appendItem(i18nString23(UIStrings24.createNewSnippet), () => this.create(Snippets5.ScriptSnippetFileSystem.findSnippetsProject(), ""), { jslogContext: "create-new-snippet" });
+    contextMenu.headerSection().appendItem(
+      i18nString23(UIStrings24.createNewSnippet),
+      () => this.create(
+        Snippets5.ScriptSnippetFileSystem.findSnippetsProject(),
+        ""
+      ),
+      { jslogContext: "create-new-snippet" }
+    );
     void contextMenu.show();
   }
   handleFileContextMenu(event, node) {
     const uiSourceCode = node.uiSourceCode();
     const contextMenu = new UI23.ContextMenu.ContextMenu(event);
-    contextMenu.headerSection().appendItem(i18nString23(UIStrings24.run), () => Snippets5.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode), { jslogContext: "run" });
-    contextMenu.editSection().appendItem(i18nString23(UIStrings24.rename), () => this.rename(node, false), { jslogContext: "rename" });
-    contextMenu.editSection().appendItem(i18nString23(UIStrings24.remove), () => uiSourceCode.project().deleteFile(uiSourceCode), { jslogContext: "remove" });
-    contextMenu.saveSection().appendItem(i18nString23(UIStrings24.saveAs), this.handleSaveAs.bind(this, uiSourceCode), { jslogContext: "save-as" });
+    contextMenu.headerSection().appendItem(
+      i18nString23(UIStrings24.run),
+      () => Snippets5.ScriptSnippetFileSystem.evaluateScriptSnippet(uiSourceCode),
+      { jslogContext: "run" }
+    );
+    contextMenu.editSection().appendItem(
+      i18nString23(UIStrings24.rename),
+      () => this.rename(node, false),
+      { jslogContext: "rename" }
+    );
+    contextMenu.editSection().appendItem(
+      i18nString23(UIStrings24.remove),
+      () => uiSourceCode.project().deleteFile(uiSourceCode),
+      { jslogContext: "remove" }
+    );
+    contextMenu.saveSection().appendItem(
+      i18nString23(UIStrings24.saveAs),
+      this.handleSaveAs.bind(this, uiSourceCode),
+      { jslogContext: "save-as" }
+    );
     void contextMenu.show();
   }
   async handleSaveAs(uiSourceCode) {
@@ -14168,7 +17691,7 @@ var ActionDelegate5 = class {
   }
 };
 
-// gen/front_end/panels/sources/WatchExpressionsSidebarPane.js
+// ../../front_end/panels/sources/WatchExpressionsSidebarPane.ts
 var WatchExpressionsSidebarPane_exports = {};
 __export(WatchExpressionsSidebarPane_exports, {
   DEFAULT_PROMPT_VIEW: () => DEFAULT_PROMPT_VIEW,
@@ -14299,7 +17822,7 @@ var objectValue_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./objectValue.css")} */`;
 
-// gen/front_end/panels/sources/WatchExpressionsSidebarPane.js
+// ../../front_end/panels/sources/WatchExpressionsSidebarPane.ts
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI24 from "../../ui/legacy/legacy.js";
 import { Directives as Directives6, html as html14, nothing as nothing8, render as render11 } from "../../ui/lit/lit.js";
@@ -14477,7 +18000,7 @@ li.watch-expression-editing::before {
 
 /*# sourceURL=${import.meta.resolve("./watchExpressionsSidebarPane.css")} */`;
 
-// gen/front_end/panels/sources/WatchExpressionsSidebarPane.js
+// ../../front_end/panels/sources/WatchExpressionsSidebarPane.ts
 var UIStrings25 = {
   /**
    * @description A context menu item in the watch expressions sidebar of the Sources panel.
@@ -14534,13 +18057,14 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
     false,
     e.expression ?? void 0
   );
-  render11(html14`
+  render11(
+    html14`
         <devtools-prompt
             class=${classMap3({
-    monospace: true,
-    "watch-expression": true,
-    "watch-expression-text-prompt-proxy": Boolean(e.editing)
-  })}
+      monospace: true,
+      "watch-expression": true,
+      "watch-expression-text-prompt-proxy": Boolean(e.editing)
+    })}
             value=${e.expression ?? ""}
             ?editing=${Boolean(e.editing)}
             completions=${input.completionsId}
@@ -14551,23 +18075,23 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
             @click=${stopPropagationIfEditing}
             @dblclick=${stopPropagationIfEditing}>
           <div class=${classMap3({
-    "watch-expression-header": true,
-    "watch-expression-object-header": !e.exceptionDetails && e.result !== void 0 && e.result.hasChildren && !e.result.object.customPreview()
-  })}
+      "watch-expression-header": true,
+      "watch-expression-object-header": !e.exceptionDetails && e.result !== void 0 && e.result.hasChildren && !e.result.object.customPreview()
+    })}
                @contextmenu=${input.onContextMenu}
                @dblclick=${input.onStartEditing}>
             <div class=${classMap3({
-    "watch-expression-title": true,
-    "tree-element-title": true,
-    dimmed: Boolean(e.exceptionDetails) && !e.result
-  })}>
+      "watch-expression-title": true,
+      "tree-element-title": true,
+      dimmed: Boolean(e.exceptionDetails) && !e.result
+    })}>
               <devtools-button
                 .data=${{
-    variant: "icon",
-    iconName: "bin",
-    size: "SMALL",
-    jslogContext: "delete-watch-expression"
-  }}
+      variant: Buttons4.Button.Variant.ICON,
+      iconName: "bin",
+      size: Buttons4.Button.Size.SMALL,
+      jslogContext: "delete-watch-expression"
+    }}
                 class=watch-expression-delete-button
                 title=${i18nString24(UIStrings25.deleteWatchExpression)}
                 @click=${input.onDelete}></devtools-button>
@@ -14577,16 +18101,16 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
                     class="watch-expression-error value"
                     title=${ifDefined3(e.exceptionDetails?.exception?.description)}
                     >${i18nString24(UIStrings25.notAvailable)}</span>` : ObjectUI4.ObjectPropertiesSection.renderPropertyValue(
-    e.result.object,
-    Boolean(e.exceptionDetails),
-    false,
-    input.linkifier,
-    false,
-    void 0,
-    void 0,
-    /* useCustomPreview */
-    true
-  )}
+      e.result.object,
+      Boolean(e.exceptionDetails),
+      false,
+      input.linkifier,
+      false,
+      void 0,
+      void 0,
+      /* useCustomPreview */
+      true
+    )}
             </div>
           </div>
           ${e.editing ? html14`
@@ -14595,7 +18119,9 @@ var DEFAULT_PROMPT_VIEW = (input, _output, target) => {
             </datalist>
           ` : nothing8}
         </devtools-prompt>
-      `, target);
+      `,
+    target
+  );
 };
 var WatchExpressionPromptWidget = class extends UI24.Widget.Widget {
   #expression;
@@ -14689,17 +18215,33 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     const contextMenu = new UI24.ContextMenu.ContextMenu(event);
     const isEditing = input.watchExpressions.some((e) => e.editing);
     if (!isEditing) {
-      contextMenu.debugSection().appendItem(i18nString24(UIStrings25.addWatchExpression), input.onAddExpression, { jslogContext: "add-watch-expression" });
+      contextMenu.debugSection().appendItem(
+        i18nString24(UIStrings25.addWatchExpression),
+        input.onAddExpression,
+        { jslogContext: "add-watch-expression" }
+      );
     }
     if (input.watchExpressions.length > 1) {
-      contextMenu.debugSection().appendItem(i18nString24(UIStrings25.deleteAllWatchExpressions), input.onDeleteAll, { jslogContext: "delete-all-watch-expressions" });
+      contextMenu.debugSection().appendItem(
+        i18nString24(UIStrings25.deleteAllWatchExpressions),
+        input.onDeleteAll,
+        { jslogContext: "delete-all-watch-expressions" }
+      );
     }
     if (watchExpression) {
       if (!watchExpression.editing) {
-        contextMenu.editSection().appendItem(i18nString24(UIStrings25.deleteWatchExpression), () => input.onDelete(watchExpression), { jslogContext: "delete-watch-expression" });
+        contextMenu.editSection().appendItem(
+          i18nString24(UIStrings25.deleteWatchExpression),
+          () => input.onDelete(watchExpression),
+          { jslogContext: "delete-watch-expression" }
+        );
       }
       if (!watchExpression.editing && watchExpression.result && (watchExpression.result.object.type === "number" || watchExpression.result.object.type === "string")) {
-        contextMenu.clipboardSection().appendItem(i18nString24(UIStrings25.copyValue), () => input.onCopyWatchExpression(watchExpression), { jslogContext: "copy-watch-expression-value" });
+        contextMenu.clipboardSection().appendItem(
+          i18nString24(UIStrings25.copyValue),
+          () => input.onCopyWatchExpression(watchExpression),
+          { jslogContext: "copy-watch-expression-value" }
+        );
       }
       contextMenu.appendApplicableItems(watchExpression.result);
     }
@@ -14734,7 +18276,14 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     })}></devtools-widget>
         ${e.editing || !e.result || e.exceptionDetails || !e.result.hasChildren || e.result.object.customPreview() ? nothing8 : html14`
           <ul role=group>
-            ${ObjectUI4.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(e.result.children ?? {}, false, false, input.linkifier).map((node) => html14`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
+            ${ObjectUI4.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(
+      e.result.children ?? {},
+      false,
+      false,
+      input.linkifier
+    ).map(
+      (node) => html14`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`
+    )}
           </ul>`}
       </li>`;
   };
@@ -14776,8 +18325,16 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     this.registerRequiredCSS(watchExpressionsSidebarPane_css_default, objectValue_css_default);
     this.#watchExpressions = [];
     this.#watchExpressionsSetting = Common18.Settings.Settings.instance().createLocalSetting("watch-expressions", []);
-    UI24.Context.Context.instance().addFlavorChangeListener(SDK14.RuntimeModel.ExecutionContext, this.#refreshExpressions, this);
-    UI24.Context.Context.instance().addFlavorChangeListener(StackTrace9.StackTrace.DebuggableFrameFlavor, this.#refreshExpressions, this);
+    UI24.Context.Context.instance().addFlavorChangeListener(
+      SDK14.RuntimeModel.ExecutionContext,
+      this.#refreshExpressions,
+      this
+    );
+    UI24.Context.Context.instance().addFlavorChangeListener(
+      StackTrace9.StackTrace.DebuggableFrameFlavor,
+      this.#refreshExpressions,
+      this
+    );
     this.linkifier = new Components4.Linkifier.Linkifier();
     this.#view = DEFAULT_VIEW8;
     void this.#refreshExpressions();
@@ -14794,17 +18351,17 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
   toolbarItems() {
     return html14`
       <devtools-button .data=${{
-      variant: "toolbar",
+      variant: Buttons4.Button.Variant.TOOLBAR,
       iconName: "plus",
-      size: "SMALL",
+      size: Buttons4.Button.Size.SMALL,
       title: i18nString24(UIStrings25.addWatchExpression),
       jslogContext: "add-watch-expression"
     }}
         @click=${(e) => this.addButtonClicked(e)}></devtools-button>
       <devtools-button .data=${{
-      variant: "toolbar",
+      variant: Buttons4.Button.Variant.TOOLBAR,
       iconName: "refresh",
-      size: "SMALL",
+      size: Buttons4.Button.Size.SMALL,
       title: i18nString24(UIStrings25.refreshWatchExpressions),
       jslogContext: "refresh-watch-expressions"
     }}
@@ -14857,50 +18414,54 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
     this.requestUpdate();
   }
   async performUpdate() {
-    this.#view({
-      watchExpressions: this.watchExpressions,
-      linkifier: this.linkifier,
-      onDeleteAll: this.#onDeleteAll.bind(this),
-      onAddExpression: this.addButtonClicked.bind(this),
-      onCopyWatchExpression: (watchExpression) => {
-        if (watchExpression.result?.object.description) {
-          Host13.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(watchExpression.result.object.description);
-        }
-      },
-      onFinishEditing: async (watchExpression, expression) => {
-        if (!watchExpression.editing) {
-          return;
-        }
-        watchExpression.editing = false;
-        this.requestUpdate();
-        if (expression === "" || expression === null && !watchExpression.expression) {
-          Platform16.ArrayUtilities.removeElement(this.#watchExpressions, watchExpression);
-        } else if (expression) {
-          if (watchExpression.expression && watchExpression.expression !== expression) {
-            this.#getExpansionTracker(watchExpression.expression).clear();
-            this.#getExpansionTracker(expression).clear();
+    this.#view(
+      {
+        watchExpressions: this.watchExpressions,
+        linkifier: this.linkifier,
+        onDeleteAll: this.#onDeleteAll.bind(this),
+        onAddExpression: this.addButtonClicked.bind(this),
+        onCopyWatchExpression: (watchExpression) => {
+          if (watchExpression.result?.object.description) {
+            Host13.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(watchExpression.result.object.description);
           }
-          await watchExpression.setExpression(expression, this.#getExpansionTracker(expression));
-        }
-        this.saveExpressions();
-        this.requestUpdate();
-      },
-      onStartEditing: (watchExpression) => {
-        watchExpression.editing = true;
-        this.requestUpdate();
-      },
-      onDelete: (watchExpression) => {
-        Platform16.ArrayUtilities.removeElement(this.#watchExpressions, watchExpression);
-        this.saveExpressions();
-        this.requestUpdate();
-      },
-      onExpand: async (e, expanded) => {
-        if (expanded) {
-          await e.result?.populateChildrenIfNeeded();
+        },
+        onFinishEditing: async (watchExpression, expression) => {
+          if (!watchExpression.editing) {
+            return;
+          }
+          watchExpression.editing = false;
           this.requestUpdate();
+          if (expression === "" || expression === null && !watchExpression.expression) {
+            Platform16.ArrayUtilities.removeElement(this.#watchExpressions, watchExpression);
+          } else if (expression) {
+            if (watchExpression.expression && watchExpression.expression !== expression) {
+              this.#getExpansionTracker(watchExpression.expression).clear();
+              this.#getExpansionTracker(expression).clear();
+            }
+            await watchExpression.setExpression(expression, this.#getExpansionTracker(expression));
+          }
+          this.saveExpressions();
+          this.requestUpdate();
+        },
+        onStartEditing: (watchExpression) => {
+          watchExpression.editing = true;
+          this.requestUpdate();
+        },
+        onDelete: (watchExpression) => {
+          Platform16.ArrayUtilities.removeElement(this.#watchExpressions, watchExpression);
+          this.saveExpressions();
+          this.requestUpdate();
+        },
+        onExpand: async (e, expanded) => {
+          if (expanded) {
+            await e.result?.populateChildrenIfNeeded();
+            this.requestUpdate();
+          }
         }
-      }
-    }, {}, this.contentElement);
+      },
+      {},
+      this.contentElement
+    );
   }
   #getExpansionTracker(expression) {
     if (expression === null) {
@@ -14939,7 +18500,11 @@ var WatchExpressionsSidebarPane = class _WatchExpressionsSidebarPane extends UI2
   appendApplicableItems(_event, contextMenu, target) {
     if (target instanceof ObjectUI4.ObjectPropertiesSection.ObjectPropertyTreeElement) {
       if (!target.property.property.synthetic) {
-        contextMenu.debugSection().appendItem(i18nString24(UIStrings25.addPropertyPathToWatch), () => this.#focusAndAddExpressionToWatch(target.path()), { jslogContext: "add-property-path-to-watch" });
+        contextMenu.debugSection().appendItem(
+          i18nString24(UIStrings25.addPropertyPathToWatch),
+          () => this.#focusAndAddExpressionToWatch(target.path()),
+          { jslogContext: "add-property-path-to-watch" }
+        );
       }
       return;
     }
@@ -14972,7 +18537,10 @@ var WatchExpression = class _WatchExpression {
     }
     const callFrame = executionContext.debuggerModel.selectedCallFrame();
     if (callFrame?.script.isJavaScript()) {
-      const nameMap = await SourceMapScopes3.NamesResolver.allVariablesInCallFrame(callFrame, Bindings13.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance());
+      const nameMap = await SourceMapScopes3.NamesResolver.allVariablesInCallFrame(
+        callFrame,
+        Bindings13.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance()
+      );
       try {
         expression = await Formatter3.FormatterWorkerPool.formatterWorkerPool().javaScriptSubstitute(expression, nameMap);
       } catch {
@@ -14996,7 +18564,7 @@ var WatchExpression = class _WatchExpression {
       if ("object" in result) {
         const objectTree = new ObjectUI4.ObjectPropertiesSection.ObjectTree(result.object, {
           readOnly: true,
-          propertiesMode: 1,
+          propertiesMode: ObjectUI4.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
           expansionTracker: expandController
         });
         await expandController.apply(objectTree);

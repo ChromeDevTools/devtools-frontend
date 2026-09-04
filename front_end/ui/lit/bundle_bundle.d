@@ -1,0 +1,1 @@
+gen/front_end/ui/lit/lit.js: ../../front_end/ui/lit/Directives.ts ../../front_end/ui/lit/i18n-template.ts ../../front_end/ui/lit/render.ts ../../front_end/ui/lit/strip-whitespace.ts ../../front_end/ui/lit/lit.ts

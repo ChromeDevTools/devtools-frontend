@@ -11,15 +11,16 @@ export interface ViewInput {
     eventToInsightsMap: EventToRelatedInsightsMap;
     onInsightClick: (insight: RelatedInsight) => void;
 }
+export type View = (input: ViewInput, output: object, target: HTMLElement) => void;
 export interface Data {
     eventToRelatedInsightsMap: EventToRelatedInsightsMap | null;
     activeEvent: Trace.Types.Events.Event | null;
 }
 export declare class RelatedInsightChips extends UI.Widget.Widget {
     #private;
-    constructor(element?: HTMLElement, view?: (input: ViewInput, output: object, target: HTMLElement) => void);
+    constructor(element?: HTMLElement, view?: View);
     set activeEvent(event: Trace.Types.Events.Event | null);
     set eventToInsightsMap(map: EventToRelatedInsightsMap | null);
     performUpdate(): Promise<void> | void;
 }
-export declare const DEFAULT_VIEW: (input: ViewInput, output: object, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;

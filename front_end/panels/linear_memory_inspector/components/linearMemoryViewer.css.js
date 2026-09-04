@@ -12,7 +12,7 @@ export default `/*
 :host {
   flex: auto;
   display: flex;
-  min-height: 20px;
+  min-height: var(--sys-size-9);
 }
 
 .view {
@@ -25,13 +25,13 @@ export default `/*
 
 .row {
   display: flex;
-  height: 20px;
+  height: var(--sys-size-9);
   align-items: center;
 }
 
 .cell {
   text-align: center;
-  border: 1px solid transparent;
+  border: var(--sys-size-1) solid transparent;
   border-radius: 2px;
 
   &.focused-area {
@@ -56,7 +56,7 @@ export default `/*
 }
 
 .text-cell {
-  min-width: 14px;
+  min-width: var(--sys-size-7);
   color: var(--sys-color-on-surface-subtle);
 }
 
@@ -70,10 +70,10 @@ export default `/*
 }
 
 .divider {
-  width: 1px;
+  width: var(--sys-size-1);
   height: inherit;
   background-color: var(--sys-color-divider);
-  margin: 0 4px;
+  margin: 0 var(--sys-size-3);
 }
 
 .highlight-area {

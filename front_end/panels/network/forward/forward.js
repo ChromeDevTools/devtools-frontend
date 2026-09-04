@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/network/forward/NetworkRequestId.js
+// ../../front_end/panels/network/forward/NetworkRequestId.ts
 var NetworkRequestId_exports = {};
 __export(NetworkRequestId_exports, {
   NetworkRequestId: () => NetworkRequestId
@@ -18,7 +18,7 @@ var NetworkRequestId = class {
   }
 };
 
-// gen/front_end/panels/network/forward/UIFilter.js
+// ../../front_end/panels/network/forward/UIFilter.ts
 var UIFilter_exports = {};
 __export(UIFilter_exports, {
   FilterType: () => FilterType,
@@ -26,8 +26,7 @@ __export(UIFilter_exports, {
   MixedContentFilterValues: () => MixedContentFilterValues,
   UIRequestFilter: () => UIRequestFilter
 });
-var FilterType;
-(function(FilterType2) {
+var FilterType = /* @__PURE__ */ ((FilterType2) => {
   FilterType2["Domain"] = "domain";
   FilterType2["HasResponseHeader"] = "has-response-header";
   FilterType2["HasRequestHeader"] = "has-request-header";
@@ -50,22 +49,23 @@ var FilterType;
   FilterType2["CookieValue"] = "cookie-value";
   FilterType2["StatusCode"] = "status-code";
   FilterType2["Url"] = "url";
-})(FilterType || (FilterType = {}));
-var IsFilterType;
-(function(IsFilterType2) {
+  return FilterType2;
+})(FilterType || {});
+var IsFilterType = /* @__PURE__ */ ((IsFilterType2) => {
   IsFilterType2["RUNNING"] = "running";
   IsFilterType2["FROM_CACHE"] = "from-cache";
   IsFilterType2["SERVICE_WORKER_INTERCEPTED"] = "service-worker-intercepted";
   IsFilterType2["SERVICE_WORKER_INITIATED"] = "service-worker-initiated";
   IsFilterType2["PRELOAD"] = "preloaded";
-})(IsFilterType || (IsFilterType = {}));
-var MixedContentFilterValues;
-(function(MixedContentFilterValues2) {
+  return IsFilterType2;
+})(IsFilterType || {});
+var MixedContentFilterValues = /* @__PURE__ */ ((MixedContentFilterValues2) => {
   MixedContentFilterValues2["ALL"] = "all";
   MixedContentFilterValues2["DISPLAYED"] = "displayed";
   MixedContentFilterValues2["BLOCKED"] = "blocked";
   MixedContentFilterValues2["BLOCK_OVERRIDDEN"] = "block-overridden";
-})(MixedContentFilterValues || (MixedContentFilterValues = {}));
+  return MixedContentFilterValues2;
+})(MixedContentFilterValues || {});
 var UIRequestFilter = class _UIRequestFilter {
   filters;
   constructor(filters) {
@@ -76,22 +76,21 @@ var UIRequestFilter = class _UIRequestFilter {
   }
 };
 
-// gen/front_end/panels/network/forward/UIRequestLocation.js
+// ../../front_end/panels/network/forward/UIRequestLocation.ts
 var UIRequestLocation_exports = {};
 __export(UIRequestLocation_exports, {
   UIHeaderSection: () => UIHeaderSection,
   UIRequestLocation: () => UIRequestLocation,
   UIRequestTabs: () => UIRequestTabs
 });
-var UIHeaderSection;
-(function(UIHeaderSection2) {
+var UIHeaderSection = /* @__PURE__ */ ((UIHeaderSection2) => {
   UIHeaderSection2["GENERAL"] = "General";
   UIHeaderSection2["REQUEST"] = "Request";
   UIHeaderSection2["RESPONSE"] = "Response";
   UIHeaderSection2["EARLY_HINTS"] = "EarlyHints";
-})(UIHeaderSection || (UIHeaderSection = {}));
-var UIRequestTabs;
-(function(UIRequestTabs2) {
+  return UIHeaderSection2;
+})(UIHeaderSection || {});
+var UIRequestTabs = /* @__PURE__ */ ((UIRequestTabs2) => {
   UIRequestTabs2["COOKIES"] = "cookies";
   UIRequestTabs2["DEVICE_BOUND_SESSIONS"] = "device-bound-sessions";
   UIRequestTabs2["EVENT_SOURCE"] = "eventSource";
@@ -105,7 +104,8 @@ var UIRequestTabs;
   UIRequestTabs2["WS_FRAMES"] = "web-socket-frames";
   UIRequestTabs2["DIRECT_SOCKET_CONNECTION"] = "direct-socket-connection";
   UIRequestTabs2["DIRECT_SOCKET_CHUNKS"] = "direct-socket-chunks";
-})(UIRequestTabs || (UIRequestTabs = {}));
+  return UIRequestTabs2;
+})(UIRequestTabs || {});
 var UIRequestLocation = class _UIRequestLocation {
   request;
   header;
@@ -122,10 +122,24 @@ var UIRequestLocation = class _UIRequestLocation {
     this.filterOptions = filterOptions;
   }
   static requestHeaderMatch(request, header) {
-    return new _UIRequestLocation(request, { section: "Request", header }, null, false, void 0, void 0);
+    return new _UIRequestLocation(
+      request,
+      { section: "Request" /* REQUEST */, header },
+      null,
+      false,
+      void 0,
+      void 0
+    );
   }
   static responseHeaderMatch(request, header) {
-    return new _UIRequestLocation(request, { section: "Response", header }, null, false, void 0, void 0);
+    return new _UIRequestLocation(
+      request,
+      { section: "Response" /* RESPONSE */, header },
+      null,
+      false,
+      void 0,
+      void 0
+    );
   }
   static bodyMatch(request, searchMatch) {
     return new _UIRequestLocation(request, null, searchMatch, false, void 0, void 0);

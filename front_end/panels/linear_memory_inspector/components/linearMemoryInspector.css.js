@@ -27,7 +27,7 @@ export default `/*
     flex-direction: column;
     font-family: var(--monospace-font-family);
     font-size: var(--monospace-font-size);
-    padding: 9px 12px 9px 7px;
+    padding: 9px var(--sys-size-6) 9px 7px;
   }
 
   devtools-linear-memory-inspector-viewer {
@@ -35,7 +35,7 @@ export default `/*
   }
 
   .navigator-widget ~ devtools-linear-memory-inspector-viewer {
-    margin-top: 12px;
+    margin-top: var(--sys-size-6);
   }
 
   .value-interpreter {

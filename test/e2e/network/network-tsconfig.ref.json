@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../test/e2e/network",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../test/e2e/network/can-pretty-print-network.test.ts",
+    "../../../../../../test/e2e/network/network-conditions.test.ts",
+    "../../../../../../test/e2e/network/network-datagrid.test.ts",
+    "../../../../../../test/e2e/network/network-filter.test.ts",
+    "../../../../../../test/e2e/network/network-request-view.test.ts",
+    "../../../../../../test/e2e/network/network-search.test.ts",
+    "../../../../../../test/e2e/network/network-throttle-persist.test.ts",
+    "../../../../../../test/e2e/network/network.test.ts",
+    "../../../../../../test/e2e/network/request-blocking.test.ts",
+    "../../../../../../test/e2e/network/user-agent-override.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts",
+    "../../../../../../test/e2e/types.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../conductor/implementation-tsconfig.ref.json"
+    },
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../shared/shared-tsconfig.ref.json"
+    }
+  ]
+}

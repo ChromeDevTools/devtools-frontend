@@ -1,2 +1,3 @@
-export declare const parse: typeof import("./package/lib/parse.js");
-export declare const stringify: typeof import("./package/lib/stringify.js");
+import JSON5 from './lib/index.js';
+export declare const parse: typeof JSON5.parse;
+export declare const stringify: typeof JSON5.stringify;

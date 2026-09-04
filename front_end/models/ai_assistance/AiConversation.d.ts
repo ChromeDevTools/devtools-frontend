@@ -10,11 +10,10 @@ import type { ChangeManager } from './ChangeManager.js';
 export declare const NOT_FOUND_IMAGE_DATA = "";
 export declare const CONTEXT_TITLE = "Analyzing data";
 /**
- * List of page navigations that are allowed during an AI agent run.
- * These are page navigations triggered by agents themselves:
- * - `about://` : Navigated to before initiating a trace recording to ensure a clean state.
- * - `chrome://terms`: Navigated to by Lighthouse during its Back-Forward Cache
- *    audit.
+ * Page URL prefixes permitted during an AI agent run.
+ * Agents trigger these navigations internally:
+ * - `about:blank`: Used before recording a performance trace to ensure a clean state.
+ * - `chrome://terms`: Used by Lighthouse during Back-Forward Cache audits.
  */
 export declare const ALLOWED_PAGE_NAVIGATIONS: Platform.DevToolsPath.UrlString[];
 export declare function generateContextDetailsMarkdown(details: ContextDetail[]): string;
@@ -61,5 +60,9 @@ export declare class AiConversation {
     get isBlockedByOrigin(): boolean;
     get origin(): string | undefined;
     get type(): ConversationType;
+    /**
+     * Returns the permitted origin for agent tool execution, or blocks execution
+     * if an unapproved cross-origin navigation occurred during the current run.
+     */
     allowedOrigin: () => AllowedOriginResult;
 }

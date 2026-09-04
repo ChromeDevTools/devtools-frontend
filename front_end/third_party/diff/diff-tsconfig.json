@@ -1,14 +1,14 @@
 {
-  "checkJs": true,
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "checkJs": true,
-    "composite": true,
-    "declaration": true,
+    "composite": false,
+    "declaration": false,
     "disableSourceOfProjectReferenceRedirect": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
+    "incremental": false,
     "inlineSources": true,
     "lib": [
       "dom",
@@ -20,12 +20,11 @@
       "ESNext.Array"
     ],
     "module": "esnext",
+    "moduleResolution": "bundler",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
     "outDir": ".",
     "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/third_party/diff",
@@ -33,19 +32,25 @@
     "sourceMap": true,
     "strict": true,
     "target": "ES2023",
-    "tsBuildInfoFile": "diff-tsconfig.json.tsbuildinfo",
-    "typeRoots": [],
-    "types": [],
+    "typeRoots": [
+
+    ],
+    "types": [
+
+    ],
     "useUnknownInCatchVariables": false
   },
   "files": [
     "../../../../../../front_end/third_party/diff/DiffWrapper.ts",
-    "../../../../../../front_end/third_party/diff/diff_match_patch.js",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
-    "../../../../../../node_modules/@types/filesystem/index.d.ts"
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts"
   ],
   "references": [
+    {
+      "path": "diff_match_patch-tsconfig.ref.json"
+    },
     {
       "path": "../../core/common/bundle-tsconfig.ref.json"
     }

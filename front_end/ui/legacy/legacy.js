@@ -4,12 +4,12 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/legacy/ActionRegistration.js
+// ../../front_end/ui/legacy/ActionRegistration.ts
 var ActionRegistration_exports = {};
 __export(ActionRegistration_exports, {
   Action: () => Action,
   ActionCategory: () => ActionCategory,
-  Events: () => Events2,
+  Events: () => Events,
   IconClass: () => IconClass,
   KeybindSet: () => KeybindSet,
   Platforms: () => Platforms,
@@ -24,7 +24,7 @@ import * as i18n from "../../core/i18n/i18n.js";
 import * as Platform from "../../core/platform/platform.js";
 import * as Root from "../../core/root/root.js";
 
-// gen/front_end/ui/legacy/Context.js
+// ../../front_end/ui/legacy/Context.ts
 var Context_exports = {};
 __export(Context_exports, {
   Context: () => Context,
@@ -69,7 +69,7 @@ var Context = class _Context {
     if (!dispatcher) {
       return;
     }
-    dispatcher.dispatchEventToListeners("FlavorChanged", flavorValue);
+    dispatcher.dispatchEventToListeners("FlavorChanged" /* FLAVOR_CHANGED */, flavorValue);
   }
   addFlavorChangeListener(flavorType, listener, thisObject) {
     let dispatcher = this.#eventDispatchers.get(flavorType);
@@ -77,18 +77,23 @@ var Context = class _Context {
       dispatcher = new Common.ObjectWrapper.ObjectWrapper();
       this.#eventDispatchers.set(flavorType, dispatcher);
     }
-    dispatcher.addEventListener("FlavorChanged", listener, thisObject);
+    dispatcher.addEventListener(
+      "FlavorChanged" /* FLAVOR_CHANGED */,
+      listener,
+      thisObject
+    );
   }
   removeFlavorChangeListener(flavorType, listener, thisObject) {
     const dispatcher = this.#eventDispatchers.get(flavorType);
     if (!dispatcher) {
       return;
     }
-    dispatcher.removeEventListener("FlavorChanged", listener, thisObject);
-    if (!dispatcher.hasEventListeners(
-      "FlavorChanged"
-      /* Events.FLAVOR_CHANGED */
-    )) {
+    dispatcher.removeEventListener(
+      "FlavorChanged" /* FLAVOR_CHANGED */,
+      listener,
+      thisObject
+    );
+    if (!dispatcher.hasEventListeners("FlavorChanged" /* FLAVOR_CHANGED */)) {
       this.#eventDispatchers.delete(flavorType);
     }
   }
@@ -99,10 +104,6 @@ var Context = class _Context {
     return new Set(this.#flavors.keys());
   }
 };
-var Events;
-(function(Events13) {
-  Events13["FLAVOR_CHANGED"] = "FlavorChanged";
-})(Events || (Events = {}));
 var registeredListeners = [];
 function registerListener(registration) {
   registeredListeners.push(registration);
@@ -111,7 +112,7 @@ function getRegisteredListeners() {
   return registeredListeners;
 }
 
-// gen/front_end/ui/legacy/ActionRegistration.js
+// ../../front_end/ui/legacy/ActionRegistration.ts
 var UIStrings = {
   /**
    * @description Title of the Elements shortcut category in the shortcuts tab in the Settings panel.
@@ -233,7 +234,7 @@ var Action = class extends Common2.ObjectWrapper.ObjectWrapper {
       return;
     }
     this.#enabled = enabled;
-    this.dispatchEventToListeners("Enabled", enabled);
+    this.dispatchEventToListeners("Enabled" /* ENABLED */, enabled);
   }
   enabled() {
     return this.#enabled;
@@ -270,7 +271,7 @@ var Action = class extends Common2.ObjectWrapper.ObjectWrapper {
       return;
     }
     this.#toggled = toggled;
-    this.dispatchEventToListeners("Toggled", toggled);
+    this.dispatchEventToListeners("Toggled" /* TOGGLED */, toggled);
   }
   options() {
     return this.actionRegistration.options;
@@ -345,21 +346,20 @@ function getRegisteredActionExtensions() {
 function maybeRemoveActionExtension(actionId) {
   return registeredActions.delete(actionId);
 }
-var Platforms;
-(function(Platforms2) {
+var Platforms = /* @__PURE__ */ ((Platforms2) => {
   Platforms2["ALL"] = "All platforms";
   Platforms2["MAC"] = "mac";
   Platforms2["WINDOWS_LINUX"] = "windows,linux";
   Platforms2["ANDROID"] = "Android";
   Platforms2["WINDOWS"] = "windows";
-})(Platforms || (Platforms = {}));
-var Events2;
-(function(Events13) {
-  Events13["ENABLED"] = "Enabled";
-  Events13["TOGGLED"] = "Toggled";
-})(Events2 || (Events2 = {}));
-var ActionCategory;
-(function(ActionCategory2) {
+  return Platforms2;
+})(Platforms || {});
+var Events = /* @__PURE__ */ ((Events12) => {
+  Events12["ENABLED"] = "Enabled";
+  Events12["TOGGLED"] = "Toggled";
+  return Events12;
+})(Events || {});
+var ActionCategory = /* @__PURE__ */ ((ActionCategory2) => {
   ActionCategory2["NONE"] = "";
   ActionCategory2["ELEMENTS"] = "ELEMENTS";
   ActionCategory2["SCREENSHOT"] = "SCREENSHOT";
@@ -382,58 +382,58 @@ var ActionCategory;
   ActionCategory2["RENDERING"] = "RENDERING";
   ActionCategory2["RECORDER"] = "RECORDER";
   ActionCategory2["CHANGES"] = "CHANGES";
-})(ActionCategory || (ActionCategory = {}));
+  return ActionCategory2;
+})(ActionCategory || {});
 function getLocalizedActionCategory(category) {
   switch (category) {
-    case "ELEMENTS":
+    case "ELEMENTS" /* ELEMENTS */:
       return i18nString(UIStrings.elements);
-    case "SCREENSHOT":
+    case "SCREENSHOT" /* SCREENSHOT */:
       return i18nString(UIStrings.screenshot);
-    case "NETWORK":
+    case "NETWORK" /* NETWORK */:
       return i18nString(UIStrings.network);
-    case "MEMORY":
+    case "MEMORY" /* MEMORY */:
       return i18nString(UIStrings.memory);
-    case "JAVASCRIPT_PROFILER":
+    case "JAVASCRIPT_PROFILER" /* JAVASCRIPT_PROFILER */:
       return i18nString(UIStrings.javascript_profiler);
-    case "CONSOLE":
+    case "CONSOLE" /* CONSOLE */:
       return i18nString(UIStrings.console);
-    case "PERFORMANCE":
+    case "PERFORMANCE" /* PERFORMANCE */:
       return i18nString(UIStrings.performance);
-    case "MOBILE":
+    case "MOBILE" /* MOBILE */:
       return i18nString(UIStrings.mobile);
-    case "HELP":
+    case "HELP" /* HELP */:
       return i18nString(UIStrings.help);
-    case "LAYERS":
+    case "LAYERS" /* LAYERS */:
       return i18nString(UIStrings.layers);
-    case "NAVIGATION":
+    case "NAVIGATION" /* NAVIGATION */:
       return i18nString(UIStrings.navigation);
-    case "DRAWER":
+    case "DRAWER" /* DRAWER */:
       return i18nString(UIStrings.drawer);
-    case "GLOBAL":
+    case "GLOBAL" /* GLOBAL */:
       return i18nString(UIStrings.global);
-    case "RESOURCES":
+    case "RESOURCES" /* RESOURCES */:
       return i18nString(UIStrings.resources);
-    case "BACKGROUND_SERVICES":
+    case "BACKGROUND_SERVICES" /* BACKGROUND_SERVICES */:
       return i18nString(UIStrings.background_services);
-    case "SETTINGS":
+    case "SETTINGS" /* SETTINGS */:
       return i18nString(UIStrings.settings);
-    case "DEBUGGER":
+    case "DEBUGGER" /* DEBUGGER */:
       return i18nString(UIStrings.debugger);
-    case "SOURCES":
+    case "SOURCES" /* SOURCES */:
       return i18nString(UIStrings.sources);
-    case "RENDERING":
+    case "RENDERING" /* RENDERING */:
       return i18nString(UIStrings.rendering);
-    case "RECORDER":
+    case "RECORDER" /* RECORDER */:
       return i18nString(UIStrings.recorder);
-    case "CHANGES":
+    case "CHANGES" /* CHANGES */:
       return i18nString(UIStrings.changes);
-    case "":
+    case "" /* NONE */:
       return i18n.i18n.lockedString("");
   }
   return i18n.i18n.lockedString(category);
 }
-var IconClass;
-(function(IconClass2) {
+var IconClass = /* @__PURE__ */ ((IconClass2) => {
   IconClass2["LARGEICON_NODE_SEARCH"] = "select-element";
   IconClass2["START_RECORDING"] = "record-start";
   IconClass2["STOP_RECORDING"] = "record-stop";
@@ -459,14 +459,15 @@ var IconClass;
   IconClass2["COPY"] = "copy";
   IconClass2["IMPORT"] = "import";
   IconClass2["COMMENT_MODE"] = "comment-mode";
-})(IconClass || (IconClass = {}));
-var KeybindSet;
-(function(KeybindSet2) {
+  return IconClass2;
+})(IconClass || {});
+var KeybindSet = /* @__PURE__ */ ((KeybindSet2) => {
   KeybindSet2["DEVTOOLS_DEFAULT"] = "devToolsDefault";
   KeybindSet2["VS_CODE"] = "vsCode";
-})(KeybindSet || (KeybindSet = {}));
+  return KeybindSet2;
+})(KeybindSet || {});
 
-// gen/front_end/ui/legacy/ActionRegistry.js
+// ../../front_end/ui/legacy/ActionRegistry.ts
 var ActionRegistry_exports = {};
 __export(ActionRegistry_exports, {
   ActionRegistry: () => ActionRegistry
@@ -544,10 +545,10 @@ var ActionRegistry = class _ActionRegistry {
   }
 };
 
-// gen/front_end/ui/legacy/App.js
+// ../../front_end/ui/legacy/App.ts
 var App_exports = {};
 
-// gen/front_end/ui/legacy/AppProvider.js
+// ../../front_end/ui/legacy/AppProvider.ts
 var AppProvider_exports = {};
 __export(AppProvider_exports, {
   getRegisteredAppProviders: () => getRegisteredAppProviders,
@@ -566,7 +567,7 @@ function getRegisteredAppProviders() {
   });
 }
 
-// gen/front_end/ui/legacy/ARIAUtils.js
+// ../../front_end/ui/legacy/ARIAUtils.ts
 var ARIAUtils_exports = {};
 __export(ARIAUtils_exports, {
   AnnouncerRole: () => AnnouncerRole,
@@ -642,17 +643,17 @@ __export(ARIAUtils_exports, {
 });
 import * as Platform16 from "../../core/platform/platform.js";
 
-// gen/front_end/ui/legacy/Dialog.js
+// ../../front_end/ui/legacy/Dialog.ts
 var Dialog_exports = {};
 __export(Dialog_exports, {
   Dialog: () => Dialog,
   DialogWidget: () => DialogWidget,
-  Events: () => Events11,
+  Events: () => Events10,
   OutsideTabIndexBehavior: () => OutsideTabIndexBehavior
 });
 import * as Common16 from "../../core/common/common.js";
 import * as i18n27 from "../../core/i18n/i18n.js";
-import { nothing as nothing4, render as render7 } from "../lit/lit.js";
+import { nothing as nothing4, render as render8 } from "../lit/lit.js";
 import * as Buttons7 from "../components/buttons/buttons.js";
 import * as VisualLogging17 from "../visual_logging/visual_logging.js";
 
@@ -682,7 +683,7 @@ var dialog_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./dialog.css")} */`;
 
-// gen/front_end/ui/legacy/GlassPane.js
+// ../../front_end/ui/legacy/GlassPane.ts
 var GlassPane_exports = {};
 __export(GlassPane_exports, {
   AnchorBehavior: () => AnchorBehavior,
@@ -729,7 +730,7 @@ var glassPane_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./glassPane.css")} */`;
 
-// gen/front_end/ui/legacy/UIUtils.js
+// ../../front_end/ui/legacy/UIUtils.ts
 var UIUtils_exports = {};
 __export(UIUtils_exports, {
   CheckboxLabel: () => CheckboxLabel,
@@ -810,7 +811,7 @@ __export(UIUtils_exports, {
   trimTextMiddle: () => trimTextMiddle
 });
 
-// gen/front_end/ui/legacy/Toolbar.js
+// ../../front_end/ui/legacy/Toolbar.ts
 var Toolbar_exports = {};
 __export(Toolbar_exports, {
   Toolbar: () => Toolbar,
@@ -843,7 +844,7 @@ import { createIcon as createIcon7 } from "../kit/kit.js";
 import { nothing as nothing2, render as render5 } from "../lit/lit.js";
 import * as SettingUIRegistration from "../settings/settings.js";
 
-// gen/front_end/ui/legacy/ContextMenu.js
+// ../../front_end/ui/legacy/ContextMenu.ts
 var ContextMenu_exports = {};
 __export(ContextMenu_exports, {
   ContextMenu: () => ContextMenu,
@@ -862,7 +863,7 @@ import * as Buttons4 from "../components/buttons/buttons.js";
 import { html as html3, render as render4 } from "../lit/lit.js";
 import * as VisualLogging11 from "../visual_logging/visual_logging.js";
 
-// gen/front_end/ui/legacy/ShortcutRegistry.js
+// ../../front_end/ui/legacy/ShortcutRegistry.ts
 var ShortcutRegistry_exports = {};
 __export(ShortcutRegistry_exports, {
   DefaultShortcutSetting: () => DefaultShortcutSetting,
@@ -878,7 +879,7 @@ import * as Platform4 from "../../core/platform/platform.js";
 import * as VisualLogging from "../visual_logging/visual_logging.js";
 import * as Settings3 from "../settings/settings.js";
 
-// gen/front_end/ui/legacy/KeyboardShortcut.js
+// ../../front_end/ui/legacy/KeyboardShortcut.ts
 var KeyboardShortcut_exports = {};
 __export(KeyboardShortcut_exports, {
   KeyBindings: () => KeyBindings,
@@ -903,7 +904,7 @@ var KeyboardShortcut = class _KeyboardShortcut {
     return this.descriptors.map((descriptor) => descriptor.name).join(" ");
   }
   isDefault() {
-    return this.type === "DefaultShortcut" || this.type === "DisabledDefault" || this.type === "KeybindSetShortcut" && this.keybindSets.has(DefaultShortcutSetting);
+    return this.type === "DefaultShortcut" /* DEFAULT_SHORTCUT */ || this.type === "DisabledDefault" /* DISABLED_DEFAULT */ || this.type === "KeybindSetShortcut" /* KEYBIND_SET_SHORTCUT */ && this.keybindSets.has(DefaultShortcutSetting);
   }
   changeType(type) {
     return new _KeyboardShortcut(this.descriptors, this.action, type);
@@ -981,7 +982,10 @@ var KeyboardShortcut = class _KeyboardShortcut {
     let modifiers = 0;
     for (const modifierString of modifierStrings) {
       const modifier = Modifiers[modifierString].value;
-      console.assert(typeof modifier !== "undefined", `Only one key other than modifier is allowed in shortcut <${shortcut}>`);
+      console.assert(
+        typeof modifier !== "undefined",
+        `Only one key other than modifier is allowed in shortcut <${shortcut}>`
+      );
       modifiers |= modifier;
     }
     console.assert(keyString.length > 0, `Modifiers-only shortcuts are not allowed (encountered <${shortcut}>)`);
@@ -1179,14 +1183,14 @@ var Keys = {
   // "default" command/ctrl key for platform, Command on Mac, Ctrl on other platforms
   CtrlOrMeta: Host.Platform.isMac() ? metaKey : ctrlKey
 };
-var Type;
-(function(Type4) {
+var Type = /* @__PURE__ */ ((Type4) => {
   Type4["USER_SHORTCUT"] = "UserShortcut";
   Type4["DEFAULT_SHORTCUT"] = "DefaultShortcut";
   Type4["DISABLED_DEFAULT"] = "DisabledDefault";
   Type4["UNSET_SHORTCUT"] = "UnsetShortcut";
   Type4["KEYBIND_SET_SHORTCUT"] = "KeybindSetShortcut";
-})(Type || (Type = {}));
+  return Type4;
+})(Type || {});
 var KeyBindings = {};
 (function() {
   for (const key in Keys) {
@@ -1198,7 +1202,7 @@ var KeyBindings = {};
   }
 })();
 
-// gen/front_end/ui/legacy/ShortcutRegistry.js
+// ../../front_end/ui/legacy/ShortcutRegistry.ts
 var shortcutRegistryInstance;
 var ShortcutRegistry = class _ShortcutRegistry {
   actionRegistry;
@@ -1287,7 +1291,9 @@ var ShortcutRegistry = class _ShortcutRegistry {
     return keys;
   }
   keysForAction(actionId) {
-    const keys = [...this.actionToShortcut.get(actionId)].flatMap((shortcut) => shortcut.descriptors.map((descriptor) => descriptor.key));
+    const keys = [...this.actionToShortcut.get(actionId)].flatMap(
+      (shortcut) => shortcut.descriptors.map((descriptor) => descriptor.key)
+    );
     return keys;
   }
   shortcutTitleForAction(actionId) {
@@ -1450,11 +1456,8 @@ var ShortcutRegistry = class _ShortcutRegistry {
     this.addShortcutToSetting(shortcut);
   }
   removeShortcut(shortcut) {
-    if (shortcut.type === "DefaultShortcut" || shortcut.type === "KeybindSetShortcut") {
-      this.addShortcutToSetting(shortcut.changeType(
-        "DisabledDefault"
-        /* Type.DISABLED_DEFAULT */
-      ));
+    if (shortcut.type === "DefaultShortcut" /* DEFAULT_SHORTCUT */ || shortcut.type === "KeybindSetShortcut" /* KEYBIND_SET_SHORTCUT */) {
+      this.addShortcutToSetting(shortcut.changeType("DisabledDefault" /* DISABLED_DEFAULT */));
     } else {
       this.removeShortcutFromSetting(shortcut);
     }
@@ -1489,11 +1492,13 @@ var ShortcutRegistry = class _ShortcutRegistry {
     const userShortcuts = this.userShortcutsSetting.get();
     for (const userShortcut of userShortcuts) {
       const shortcut = KeyboardShortcut.createShortcutFromSettingObject(userShortcut);
-      if (shortcut.type === "DisabledDefault") {
+      if (shortcut.type === "DisabledDefault" /* DISABLED_DEFAULT */) {
         this.disabledDefaultShortcutsForAction.set(shortcut.action, shortcut);
       } else {
         if (ForwardedActions.has(shortcut.action)) {
-          forwardedKeys.push(...shortcut.descriptors.map((descriptor) => KeyboardShortcut.keyCodeAndModifiersFromKey(descriptor.key)));
+          forwardedKeys.push(
+            ...shortcut.descriptors.map((descriptor) => KeyboardShortcut.keyCodeAndModifiersFromKey(descriptor.key))
+          );
         }
         this.registerShortcut(shortcut);
       }
@@ -1514,24 +1519,20 @@ var ShortcutRegistry = class _ShortcutRegistry {
             continue;
           }
           if (ForwardedActions.has(actionId)) {
-            forwardedKeys.push(...shortcutDescriptors.map((shortcut) => KeyboardShortcut.keyCodeAndModifiersFromKey(shortcut.key)));
+            forwardedKeys.push(
+              ...shortcutDescriptors.map((shortcut) => KeyboardShortcut.keyCodeAndModifiersFromKey(shortcut.key))
+            );
           }
           if (!keybindSets) {
             this.devToolsDefaultShortcutActions.add(actionId);
-            this.registerShortcut(new KeyboardShortcut(
-              shortcutDescriptors,
-              actionId,
-              "DefaultShortcut"
-              /* Type.DEFAULT_SHORTCUT */
-            ));
+            this.registerShortcut(new KeyboardShortcut(shortcutDescriptors, actionId, "DefaultShortcut" /* DEFAULT_SHORTCUT */));
           } else {
-            if (keybindSets.includes(
-              "devToolsDefault"
-              /* KeybindSet.DEVTOOLS_DEFAULT */
-            )) {
+            if (keybindSets.includes("devToolsDefault" /* DEVTOOLS_DEFAULT */)) {
               this.devToolsDefaultShortcutActions.add(actionId);
             }
-            this.registerShortcut(new KeyboardShortcut(shortcutDescriptors, actionId, "KeybindSetShortcut", new Set(keybindSets)));
+            this.registerShortcut(
+              new KeyboardShortcut(shortcutDescriptors, actionId, "KeybindSetShortcut" /* KEYBIND_SET_SHORTCUT */, new Set(keybindSets))
+            );
           }
         }
       }
@@ -1627,7 +1628,7 @@ var ForwardedActions = /* @__PURE__ */ new Set([
 var KeyTimeout = 1e3;
 var DefaultShortcutSetting = "devToolsDefault";
 
-// gen/front_end/ui/legacy/SoftContextMenu.js
+// ../../front_end/ui/legacy/SoftContextMenu.ts
 var SoftContextMenu_exports = {};
 __export(SoftContextMenu_exports, {
   SoftContextMenu: () => SoftContextMenu
@@ -1636,7 +1637,7 @@ import * as i18n19 from "../../core/i18n/i18n.js";
 import { createIcon as createIcon6 } from "../kit/kit.js";
 import * as VisualLogging10 from "../visual_logging/visual_logging.js";
 
-// gen/front_end/ui/legacy/InspectorView.js
+// ../../front_end/ui/legacy/InspectorView.ts
 var InspectorView_exports = {};
 __export(InspectorView_exports, {
   ActionDelegate: () => ActionDelegate,
@@ -1655,13 +1656,13 @@ import { createIcon as createIcon5 } from "../kit/kit.js";
 import * as SettingsUI2 from "../settings/settings.js";
 import * as VisualLogging9 from "../visual_logging/visual_logging.js";
 
-// gen/front_end/ui/legacy/DockController.js
+// ../../front_end/ui/legacy/DockController.ts
 var DockController_exports = {};
 __export(DockController_exports, {
   CloseButtonProvider: () => CloseButtonProvider,
   DockController: () => DockController,
   DockState: () => DockState,
-  Events: () => Events3,
+  Events: () => Events2,
   ToggleDockActionDelegate: () => ToggleDockActionDelegate
 });
 import * as Common4 from "../../core/common/common.js";
@@ -1699,30 +1700,25 @@ var DockController = class _DockController extends Common4.ObjectWrapper.ObjectW
     this.closeButton = new ToolbarButton(i18nString2(UIStrings2.close), "cross");
     this.closeButton.element.setAttribute("jslog", `${VisualLogging2.close().track({ click: true })}`);
     this.closeButton.element.classList.add("close-devtools");
-    this.closeButton.addEventListener("Click", Host3.InspectorFrontendHost.InspectorFrontendHostInstance.closeWindow.bind(Host3.InspectorFrontendHost.InspectorFrontendHostInstance));
-    this.currentDockStateSetting = Common4.Settings.Settings.instance().resolve(SettingsUI.MainSettings.currentDockStateSettingDescriptor);
-    this.lastDockStateSetting = Common4.Settings.Settings.instance().createSetting(
-      "last-dock-state",
-      "bottom"
-      /* DockState.BOTTOM */
+    this.closeButton.addEventListener(
+      ToolbarButton.Events.CLICK,
+      Host3.InspectorFrontendHost.InspectorFrontendHostInstance.closeWindow.bind(
+        Host3.InspectorFrontendHost.InspectorFrontendHostInstance
+      )
     );
+    this.currentDockStateSetting = Common4.Settings.Settings.instance().resolve(SettingsUI.MainSettings.currentDockStateSettingDescriptor);
+    this.lastDockStateSetting = Common4.Settings.Settings.instance().createSetting("last-dock-state", "bottom" /* BOTTOM */);
     if (!canDock) {
-      this.#dockSide = "undocked";
+      this.#dockSide = "undocked" /* UNDOCKED */;
       this.closeButton.setVisible(false);
       return;
     }
     this.currentDockStateSetting.addChangeListener(this.dockSideChanged, this);
     if (states.indexOf(this.currentDockStateSetting.get()) === -1) {
-      this.currentDockStateSetting.set(
-        "right"
-        /* DockState.RIGHT */
-      );
+      this.currentDockStateSetting.set("right" /* RIGHT */);
     }
     if (states.indexOf(this.lastDockStateSetting.get()) === -1) {
-      this.currentDockStateSetting.set(
-        "bottom"
-        /* DockState.BOTTOM */
-      );
+      this.currentDockStateSetting.set("bottom" /* BOTTOM */);
     }
   }
   static instance(opts = { forceNew: null, canDock: false }) {
@@ -1754,7 +1750,7 @@ var DockController = class _DockController extends Common4.ObjectWrapper.ObjectW
     return this.#canDock;
   }
   isVertical() {
-    return this.#dockSide === "right" || this.#dockSide === "left";
+    return this.#dockSide === "right" /* RIGHT */ || this.#dockSide === "left" /* LEFT */;
   }
   setDockSide(dockSide) {
     if (states.indexOf(dockSide) === -1) {
@@ -1771,19 +1767,19 @@ var DockController = class _DockController extends Common4.ObjectWrapper.ObjectW
       this.lastDockStateSetting.set(this.#dockSide);
     }
     const eventData = { from: this.#dockSide, to: dockSide };
-    this.dispatchEventToListeners("BeforeDockSideChanged", eventData);
+    this.dispatchEventToListeners("BeforeDockSideChanged" /* BEFORE_DOCK_SIDE_CHANGED */, eventData);
     console.timeStamp("DockController.setIsDocked");
     this.#dockSide = dockSide;
     this.currentDockStateSetting.set(dockSide);
-    Host3.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(dockSide !== "undocked", this.setIsDockedResponse.bind(this, eventData));
-    this.closeButton.setVisible(
-      this.#dockSide !== "undocked"
-      /* DockState.UNDOCKED */
+    Host3.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(
+      dockSide !== "undocked" /* UNDOCKED */,
+      this.setIsDockedResponse.bind(this, eventData)
     );
-    this.dispatchEventToListeners("DockSideChanged", eventData);
+    this.closeButton.setVisible(this.#dockSide !== "undocked" /* UNDOCKED */);
+    this.dispatchEventToListeners("DockSideChanged" /* DOCK_SIDE_CHANGED */, eventData);
   }
   setIsDockedResponse(eventData) {
-    this.dispatchEventToListeners("AfterDockSideChanged", eventData);
+    this.dispatchEventToListeners("AfterDockSideChanged" /* AFTER_DOCK_SIDE_CHANGED */, eventData);
     this.announceDockLocation();
   }
   toggleDockSide() {
@@ -1794,33 +1790,27 @@ var DockController = class _DockController extends Common4.ObjectWrapper.ObjectW
     this.setDockSide(this.lastDockStateSetting.get());
   }
   announceDockLocation() {
-    if (this.#dockSide === "undocked") {
+    if (this.#dockSide === "undocked" /* UNDOCKED */) {
       LiveAnnouncer.alert(i18nString2(UIStrings2.devtoolsUndocked));
     } else {
       LiveAnnouncer.alert(i18nString2(UIStrings2.devToolsDockedTo, { PH1: this.#dockSide || "" }));
     }
   }
 };
-var DockState;
-(function(DockState2) {
+var DockState = /* @__PURE__ */ ((DockState2) => {
   DockState2["BOTTOM"] = "bottom";
   DockState2["RIGHT"] = "right";
   DockState2["LEFT"] = "left";
   DockState2["UNDOCKED"] = "undocked";
-})(DockState || (DockState = {}));
-var states = [
-  "right",
-  "bottom",
-  "left",
-  "undocked"
-  /* DockState.UNDOCKED */
-];
-var Events3;
-(function(Events13) {
-  Events13["BEFORE_DOCK_SIDE_CHANGED"] = "BeforeDockSideChanged";
-  Events13["DOCK_SIDE_CHANGED"] = "DockSideChanged";
-  Events13["AFTER_DOCK_SIDE_CHANGED"] = "AfterDockSideChanged";
-})(Events3 || (Events3 = {}));
+  return DockState2;
+})(DockState || {});
+var states = ["right" /* RIGHT */, "bottom" /* BOTTOM */, "left" /* LEFT */, "undocked" /* UNDOCKED */];
+var Events2 = /* @__PURE__ */ ((Events12) => {
+  Events12["BEFORE_DOCK_SIDE_CHANGED"] = "BeforeDockSideChanged";
+  Events12["DOCK_SIDE_CHANGED"] = "DockSideChanged";
+  Events12["AFTER_DOCK_SIDE_CHANGED"] = "AfterDockSideChanged";
+  return Events12;
+})(Events2 || {});
 var ToggleDockActionDelegate = class {
   handleAction(_context, _actionId) {
     DockController.instance().toggleDockSide();
@@ -1841,7 +1831,7 @@ var CloseButtonProvider = class _CloseButtonProvider {
   }
 };
 
-// gen/front_end/ui/legacy/Infobar.js
+// ../../front_end/ui/legacy/Infobar.ts
 var Infobar_exports = {};
 __export(Infobar_exports, {
   Infobar: () => Infobar,
@@ -2027,7 +2017,7 @@ details {
 
 /*# sourceURL=${import.meta.resolve("./infobar.css")} */`;
 
-// gen/front_end/ui/legacy/Infobar.js
+// ../../front_end/ui/legacy/Infobar.ts
 var UIStrings3 = {
   /**
    * @description Button text to permanently dismiss an infobar and prevent it from appearing again.
@@ -2057,7 +2047,10 @@ var Infobar = class _Infobar {
   constructor(type, text, actions, disableSetting, jslogContext) {
     this.element = document.createElement("div");
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging3.dialog(jslogContext).track({ resize: true, keydown: "Enter|Escape" })}`);
+      this.element.setAttribute(
+        "jslog",
+        `${VisualLogging3.dialog(jslogContext).track({ resize: true, keydown: "Enter|Escape" })}`
+      );
     }
     this.element.classList.add("flex-none");
     this.shadowRoot = createShadowRootWithCoreStyles(this.element, { cssFile: infobar_css_default });
@@ -2071,12 +2064,16 @@ var Infobar = class _Infobar {
     this.infoText.textContent = text;
     markAsAlert(this.infoText);
     this.actionContainer = this.infoContainer.createChild("div", "infobar-info-actions");
-    let defaultActionButtonVariant = "outlined";
+    let defaultActionButtonVariant = Buttons.Button.Variant.OUTLINED;
     this.disableSetting = disableSetting || null;
     if (disableSetting) {
-      const disableButton = createTextButton(i18nString3(UIStrings3.dontShowAgain), this.onDisable.bind(this), { className: "infobar-button", jslogContext: "dont-show-again" });
+      const disableButton = createTextButton(
+        i18nString3(UIStrings3.dontShowAgain),
+        this.onDisable.bind(this),
+        { className: "infobar-button", jslogContext: "dont-show-again" }
+      );
       this.actionContainer.appendChild(disableButton);
-      defaultActionButtonVariant = "tonal";
+      defaultActionButtonVariant = Buttons.Button.Variant.TONAL;
     }
     if (actions) {
       this.contentElement.setAttribute("role", "group");
@@ -2093,13 +2090,10 @@ var Infobar = class _Infobar {
     }
     this.closeButton = this.contentElement.createChild("dt-close-button", "icon-container");
     this.closeButton.setTabbable(true);
-    this.closeButton.setSize(
-      "SMALL"
-      /* Buttons.Button.Size.SMALL */
-    );
+    this.closeButton.setSize(Buttons.Button.Size.SMALL);
     setDescription(this.closeButton, i18nString3(UIStrings3.close));
     self.onInvokeElement(this.closeButton, this.dispose.bind(this));
-    if (type !== "issue") {
+    if (type !== "issue" /* ISSUE */) {
       this.contentElement.tabIndex = 0;
     }
     setLabel(this.contentElement, text);
@@ -2181,37 +2175,25 @@ var Infobar = class _Infobar {
     return detailsRowMessage;
   }
 };
-var Type2;
-(function(Type4) {
+var Type2 = /* @__PURE__ */ ((Type4) => {
   Type4["WARNING"] = "warning";
   Type4["INFO"] = "info";
   Type4["ISSUE"] = "issue";
   Type4["ERROR"] = "error";
-})(Type2 || (Type2 = {}));
+  return Type4;
+})(Type2 || {});
 var TYPE_TO_ICON = {
-  [
-    "warning"
-    /* Type.WARNING */
-  ]: "warning",
-  [
-    "info"
-    /* Type.INFO */
-  ]: "info",
-  [
-    "issue"
-    /* Type.ISSUE */
-  ]: "issue-text-filled",
-  [
-    "error"
-    /* Type.ERROR */
-  ]: "cross-circle"
+  ["warning" /* WARNING */]: "warning",
+  ["info" /* INFO */]: "info",
+  ["issue" /* ISSUE */]: "issue-text-filled",
+  ["error" /* ERROR */]: "cross-circle"
 };
 
-// gen/front_end/ui/legacy/InspectorDrawerView.js
-import * as Common8 from "../../core/common/common.js";
+// ../../front_end/ui/legacy/InspectorDrawerView.ts
+import * as Common10 from "../../core/common/common.js";
 import * as i18n15 from "../../core/i18n/i18n.js";
 import * as Root5 from "../../core/root/root.js";
-import * as VisualLogging7 from "../visual_logging/visual_logging.js";
+import * as VisualLogging8 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/inspectorDrawerTabbedPane.css.js
 var inspectorDrawerTabbedPane_css_default = `/*
@@ -2276,21 +2258,2336 @@ devtools-toolbar.collapsed-vertical-drawer-toolbar-content .toolbar-spacer {
 
 /*# sourceURL=${import.meta.resolve("./inspectorDrawerTabbedPane.css")} */`;
 
-// gen/front_end/ui/legacy/TabbedPane.js
+// ../../front_end/ui/legacy/SplitWidget.ts
+var SplitWidget_exports = {};
+__export(SplitWidget_exports, {
+  Events: () => Events5,
+  ShowMode: () => ShowMode,
+  SplitWidget: () => SplitWidget,
+  SplitWidgetElement: () => SplitWidgetElement
+});
+import * as Common7 from "../../core/common/common.js";
+import * as Platform6 from "../../core/platform/platform.js";
+import * as Geometry2 from "../../models/geometry/geometry.js";
+import * as VisualLogging4 from "../visual_logging/visual_logging.js";
+
+// ../../front_end/ui/legacy/ResizerWidget.ts
+var ResizerWidget_exports = {};
+__export(ResizerWidget_exports, {
+  Events: () => Events3,
+  ResizerWidget: () => ResizerWidget,
+  SimpleResizerWidget: () => SimpleResizerWidget
+});
+import * as Common5 from "../../core/common/common.js";
+var ResizerWidget = class extends Common5.ObjectWrapper.ObjectWrapper {
+  #isEnabled = true;
+  #elements = /* @__PURE__ */ new Set();
+  #installDragOnMouseDownBound;
+  #cursor = "nwse-resize";
+  #startX;
+  #startY;
+  constructor() {
+    super();
+    this.#installDragOnMouseDownBound = this.#installDragOnMouseDown.bind(this);
+  }
+  isEnabled() {
+    return this.#isEnabled;
+  }
+  setEnabled(enabled) {
+    this.#isEnabled = enabled;
+    this.updateElementCursors();
+  }
+  elements() {
+    return [...this.#elements];
+  }
+  addElement(element) {
+    if (!this.#elements.has(element)) {
+      this.#elements.add(element);
+      element.addEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
+      this.#updateElementCursor(element);
+    }
+  }
+  removeElement(element) {
+    if (this.#elements.has(element)) {
+      this.#elements.delete(element);
+      element.removeEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
+      element.style.removeProperty("cursor");
+    }
+  }
+  updateElementCursors() {
+    this.#elements.forEach(this.#updateElementCursor.bind(this));
+  }
+  #updateElementCursor(element) {
+    if (this.#isEnabled) {
+      element.style.setProperty("cursor", this.cursor());
+      element.style.setProperty("touch-action", "none");
+    } else {
+      element.style.removeProperty("cursor");
+      element.style.removeProperty("touch-action");
+    }
+  }
+  cursor() {
+    return this.#cursor;
+  }
+  setCursor(cursor) {
+    this.#cursor = cursor;
+    this.updateElementCursors();
+  }
+  #installDragOnMouseDown(event) {
+    const element = event.target;
+    if (!this.#elements.has(element)) {
+      return false;
+    }
+    elementDragStart(element, this.#dragStart.bind(this), (event2) => {
+      this.#drag(event2);
+    }, this.#dragEnd.bind(this), this.cursor(), event);
+    return void 0;
+  }
+  #dragStart(event) {
+    if (!this.#isEnabled) {
+      return false;
+    }
+    this.#startX = event.pageX;
+    this.#startY = event.pageY;
+    this.sendDragStart(this.#startX, this.#startY);
+    return true;
+  }
+  sendDragStart(x, y) {
+    this.dispatchEventToListeners("ResizeStart" /* RESIZE_START */, { startX: x, currentX: x, startY: y, currentY: y });
+  }
+  #drag(event) {
+    if (!this.#isEnabled) {
+      this.#dragEnd(event);
+      return true;
+    }
+    this.sendDragMove(this.#startX, event.pageX, this.#startY, event.pageY, event.shiftKey);
+    event.preventDefault();
+    return false;
+  }
+  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
+    this.dispatchEventToListeners("ResizeUpdateXY" /* RESIZE_UPDATE_XY */, { startX, currentX, startY, currentY, shiftKey });
+  }
+  #dragEnd(_event) {
+    this.dispatchEventToListeners("ResizeEnd" /* RESIZE_END */);
+    this.#startX = void 0;
+    this.#startY = void 0;
+  }
+};
+var Events3 = /* @__PURE__ */ ((Events12) => {
+  Events12["RESIZE_START"] = "ResizeStart";
+  Events12["RESIZE_UPDATE_XY"] = "ResizeUpdateXY";
+  Events12["RESIZE_UPDATE_POSITION"] = "ResizeUpdatePosition";
+  Events12["RESIZE_END"] = "ResizeEnd";
+  return Events12;
+})(Events3 || {});
+var SimpleResizerWidget = class extends ResizerWidget {
+  #isVertical = true;
+  isVertical() {
+    return this.#isVertical;
+  }
+  /**
+   * Vertical widget resizes height (along y-axis).
+   */
+  setVertical(vertical) {
+    this.#isVertical = vertical;
+    this.updateElementCursors();
+  }
+  cursor() {
+    return this.#isVertical ? "ns-resize" : "ew-resize";
+  }
+  sendDragStart(x, y) {
+    const position = this.#isVertical ? y : x;
+    this.dispatchEventToListeners("ResizeStart" /* RESIZE_START */, { startPosition: position, currentPosition: position });
+  }
+  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
+    if (this.#isVertical) {
+      this.dispatchEventToListeners(
+        "ResizeUpdatePosition" /* RESIZE_UPDATE_POSITION */,
+        { startPosition: startY, currentPosition: currentY, shiftKey }
+      );
+    } else {
+      this.dispatchEventToListeners(
+        "ResizeUpdatePosition" /* RESIZE_UPDATE_POSITION */,
+        { startPosition: startX, currentPosition: currentX, shiftKey }
+      );
+    }
+  }
+};
+
+// gen/front_end/ui/legacy/splitWidget.css.js
+var splitWidget_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+.shadow-split-widget {
+  display: flex;
+  overflow: hidden;
+}
+
+.shadow-split-widget-contents {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  contain: layout size style;
+}
+
+.shadow-split-widget-sidebar {
+  flex: none;
+}
+
+.shadow-split-widget-main,
+.shadow-split-widget-sidebar.maximized {
+  flex: auto;
+}
+
+.shadow-split-widget.hbox > .shadow-split-widget-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: var(--sys-size-4);
+  z-index: 4000;
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-resizer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--sys-size-4);
+  z-index: 4000;
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {
+  border: 0 !important; /* stylelint-disable-line declaration-no-important */
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
+  border: 0;
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+.shadow-split-widget.hbox > .shadow-split-widget-sidebar:not(.maximized) {
+  border: 0;
+  border-left: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+.shadow-split-widget.vbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
+  border: 0;
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+.shadow-split-widget.hbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
+  border: 0;
+  border-right: var(--sys-size-1) solid var(--sys-color-divider);
+}
+
+:host-context(.disable-resizer-for-elements-hack) .shadow-split-widget-resizer {
+  pointer-events: none;
+}
+
+:host {
+  display: flex;
+}
+
+/*# sourceURL=${import.meta.resolve("./splitWidget.css")} */`;
+
+// ../../front_end/ui/legacy/Widget.ts
+var Widget_exports = {};
+__export(Widget_exports, {
+  HBox: () => HBox,
+  VBox: () => VBox,
+  VBoxWithResizeCallback: () => VBoxWithResizeCallback,
+  Widget: () => Widget,
+  WidgetConfig: () => WidgetConfig,
+  WidgetDirective: () => WidgetDirective,
+  WidgetElement: () => WidgetElement,
+  WidgetFocusRestorer: () => WidgetFocusRestorer,
+  instantiateWidget: () => instantiateWidget,
+  lookupUniverseForElement: () => lookupUniverseForElement,
+  registerWidgetConfig: () => registerWidgetConfig,
+  widget: () => widget,
+  widgetConfig: () => widgetConfig,
+  widgetConfigs: () => widgetConfigs,
+  widgetRef: () => widgetRef
+});
+import "../dom_extension/dom_extension.js";
+import * as Platform5 from "../../core/platform/platform.js";
+import * as Geometry from "../../models/geometry/geometry.js";
+import * as Lit from "../lit/lit.js";
+
+// ../../front_end/ui/legacy/DOMUtilities.ts
+var DOMUtilities_exports = {};
+__export(DOMUtilities_exports, {
+  appendStyle: () => appendStyle,
+  deepActiveElement: () => deepActiveElement,
+  getEnclosingShadowRootForNode: () => getEnclosingShadowRootForNode,
+  rangeOfWord: () => rangeOfWord
+});
+function deepActiveElement(doc) {
+  let activeElement = doc.activeElement;
+  while (activeElement?.shadowRoot?.activeElement) {
+    activeElement = activeElement.shadowRoot.activeElement;
+  }
+  return activeElement;
+}
+function getEnclosingShadowRootForNode(node) {
+  let parentNode = node.parentNodeOrShadowHost();
+  while (parentNode) {
+    if (parentNode instanceof ShadowRoot) {
+      return parentNode;
+    }
+    parentNode = parentNode.parentNodeOrShadowHost();
+  }
+  return null;
+}
+function rangeOfWord(rootNode, offset, stopCharacters, stayWithinNode, direction) {
+  let startNode;
+  let startOffset = 0;
+  let endNode;
+  let endOffset = 0;
+  if (!stayWithinNode) {
+    stayWithinNode = rootNode;
+  }
+  if (!direction || direction === "backward" || direction === "both") {
+    let node = rootNode;
+    while (node) {
+      if (node === stayWithinNode) {
+        if (!startNode) {
+          startNode = stayWithinNode;
+        }
+        break;
+      }
+      if (node.nodeType === Node.TEXT_NODE && node.nodeValue !== null) {
+        const start = node === rootNode ? offset - 1 : node.nodeValue.length - 1;
+        for (let i = start; i >= 0; --i) {
+          if (stopCharacters.indexOf(node.nodeValue[i]) !== -1) {
+            startNode = node;
+            startOffset = i + 1;
+            break;
+          }
+        }
+      }
+      if (startNode) {
+        break;
+      }
+      node = node.traversePreviousNode(stayWithinNode);
+    }
+    if (!startNode) {
+      startNode = stayWithinNode;
+      startOffset = 0;
+    }
+  } else {
+    startNode = rootNode;
+    startOffset = offset;
+  }
+  if (!direction || direction === "forward" || direction === "both") {
+    let node = rootNode;
+    while (node) {
+      if (node === stayWithinNode) {
+        if (!endNode) {
+          endNode = stayWithinNode;
+        }
+        break;
+      }
+      if (node.nodeType === Node.TEXT_NODE && node.nodeValue !== null) {
+        const start = node === rootNode ? offset : 0;
+        for (let i = start; i < node.nodeValue.length; ++i) {
+          if (stopCharacters.indexOf(node.nodeValue[i]) !== -1) {
+            endNode = node;
+            endOffset = i;
+            break;
+          }
+        }
+      }
+      if (endNode) {
+        break;
+      }
+      node = node.traverseNextNode(stayWithinNode);
+    }
+    if (!endNode) {
+      endNode = stayWithinNode;
+      endOffset = stayWithinNode.nodeType === Node.TEXT_NODE ? stayWithinNode.nodeValue?.length || 0 : stayWithinNode.childNodes.length;
+    }
+  } else {
+    endNode = rootNode;
+    endOffset = offset;
+  }
+  if (!rootNode.ownerDocument) {
+    throw new Error("No `ownerDocument` found for rootNode");
+  }
+  const result = rootNode.ownerDocument.createRange();
+  result.setStart(startNode, startOffset);
+  result.setEnd(endNode, endOffset);
+  return result;
+}
+function appendStyle(node, ...styles) {
+  for (const cssText of styles) {
+    const style = (node.ownerDocument ?? document).createElement("style");
+    style.textContent = cssText;
+    node.appendChild(style);
+  }
+}
+
+// ../../front_end/ui/legacy/UniverseRequestEvent.ts
+var UniverseRequestEvent_exports = {};
+__export(UniverseRequestEvent_exports, {
+  UniverseRequestEvent: () => UniverseRequestEvent
+});
+var UniverseRequestEvent = class _UniverseRequestEvent extends Event {
+  static eventName = "universerequest";
+  /**
+   * The `Universe` will be filled in by the `RootView` in the event handler.
+   * Widget.ts dispatches a new UniverseRequestEvent, and retrieves the Universe from the event right after.
+   */
+  universe;
+  constructor() {
+    super(_UniverseRequestEvent.eventName, { bubbles: true, composed: true });
+  }
+};
+
+// ../../front_end/ui/legacy/Widget.ts
+var { html } = Lit;
+function lookupUniverseForElement(element) {
+  const event = new UniverseRequestEvent();
+  element.dispatchEvent(event);
+  return event.universe;
+}
+var originalAppendChild = Node.prototype.appendChild;
+var originalInsertBefore = Node.prototype.insertBefore;
+var originalRemoveChild = Node.prototype.removeChild;
+var originalRemoveChildren = Node.prototype.removeChildren;
+function assert(condition, message) {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
+var WidgetConfig = class {
+  constructor(widgetClass, widgetParams) {
+    this.widgetClass = widgetClass;
+    this.widgetParams = widgetParams;
+  }
+  widgetClass;
+  widgetParams;
+};
+function widgetConfig(widgetClass, widgetParams) {
+  return new WidgetConfig(widgetClass, widgetParams);
+}
+var currentUpdateQueue = null;
+var currentlyProcessed = /* @__PURE__ */ new Set();
+var nextUpdateQueue = /* @__PURE__ */ new Map();
+var pendingAnimationFrames = /* @__PURE__ */ new WeakMap();
+var overallUpdatePromise = null;
+function enqueueIntoNextUpdateQueue(widget2) {
+  const scheduledUpdate = nextUpdateQueue.get(widget2) ?? Promise.withResolvers();
+  nextUpdateQueue.delete(widget2);
+  nextUpdateQueue.set(widget2, scheduledUpdate);
+  const widgetWindow = widget2.contentElement.window() || window;
+  if (!pendingAnimationFrames.has(widgetWindow)) {
+    const frameId = widgetWindow.requestAnimationFrame(() => {
+      pendingAnimationFrames.delete(widgetWindow);
+      runNextUpdate();
+    });
+    pendingAnimationFrames.set(widgetWindow, frameId);
+  }
+  return scheduledUpdate.promise;
+}
+function enqueueWidgetUpdate(widget2) {
+  if (currentUpdateQueue) {
+    if (currentlyProcessed.has(widget2)) {
+      return enqueueIntoNextUpdateQueue(widget2);
+    }
+    const scheduledUpdate = currentUpdateQueue.get(widget2) ?? Promise.withResolvers();
+    currentUpdateQueue.delete(widget2);
+    currentUpdateQueue.set(widget2, scheduledUpdate);
+    return scheduledUpdate.promise;
+  }
+  return enqueueIntoNextUpdateQueue(widget2);
+}
+function cancelUpdate(widget2) {
+  widget2.cancelUpdateController();
+  if (currentUpdateQueue) {
+    const scheduledUpdate2 = currentUpdateQueue.get(widget2);
+    if (scheduledUpdate2) {
+      scheduledUpdate2.resolve();
+      currentUpdateQueue.delete(widget2);
+    }
+  }
+  const scheduledUpdate = nextUpdateQueue.get(widget2);
+  if (scheduledUpdate) {
+    scheduledUpdate.resolve();
+    nextUpdateQueue.delete(widget2);
+  }
+}
+function resolveOverallUpdatePromise() {
+  if (currentlyProcessed.size === 0 && (!currentUpdateQueue || currentUpdateQueue.size === 0) && nextUpdateQueue.size === 0 && overallUpdatePromise) {
+    overallUpdatePromise.resolve();
+    overallUpdatePromise = null;
+  }
+}
+function runNextUpdate() {
+  if (!currentUpdateQueue) {
+    currentUpdateQueue = nextUpdateQueue;
+    nextUpdateQueue = /* @__PURE__ */ new Map();
+  }
+  for (const [widget2, update] of currentUpdateQueue) {
+    if (currentlyProcessed.has(widget2)) {
+      const scheduledUpdate = nextUpdateQueue.get(widget2);
+      if (!scheduledUpdate) {
+        nextUpdateQueue.set(widget2, update);
+      } else {
+        void scheduledUpdate.promise.then(update.resolve);
+      }
+      continue;
+    }
+    const { resolve } = update;
+    currentlyProcessed.add(widget2);
+    void (async () => {
+      try {
+        const controller = new AbortController();
+        widget2.addUpdateController(controller);
+        await widget2.performUpdate(controller.signal);
+      } finally {
+        currentlyProcessed.delete(widget2);
+        const nextUpdate = nextUpdateQueue.get(widget2);
+        if (nextUpdate) {
+          void nextUpdate.promise.then(resolve);
+          const widgetWindow = widget2.contentElement.window() || window;
+          if (!pendingAnimationFrames.has(widgetWindow)) {
+            const frameId = widgetWindow.requestAnimationFrame(() => {
+              pendingAnimationFrames.delete(widgetWindow);
+              runNextUpdate();
+            });
+            pendingAnimationFrames.set(widgetWindow, frameId);
+          }
+        } else {
+          resolve();
+        }
+        resolveOverallUpdatePromise();
+      }
+    })().catch((e) => {
+      if (e.name !== "AbortError") {
+        console.error(`${widget2.constructor.name}.performUpdate failed: `, e);
+      }
+    });
+  }
+  currentUpdateQueue.clear();
+  queueMicrotask(() => {
+    if (currentUpdateQueue && currentUpdateQueue.size > 0) {
+      runNextUpdate();
+    } else {
+      currentUpdateQueue = null;
+      resolveOverallUpdatePromise();
+    }
+  });
+}
+var widgetConfigs = /* @__PURE__ */ new WeakMap();
+function registerWidgetConfig(element, config) {
+  if (!widgetConfigs.has(element)) {
+    setUpLifecycleTracking(element);
+  }
+  widgetConfigs.set(element, config);
+}
+function instantiateWidget(element, widgetConfig2) {
+  if (!widgetConfig2.widgetClass) {
+    throw new Error("No widgetClass defined");
+  }
+  let newWidget;
+  if (Widget.isPrototypeOf(widgetConfig2.widgetClass)) {
+    const ctor = widgetConfig2.widgetClass;
+    const depsCtors = ctor.INJECT;
+    if (depsCtors && depsCtors.length > 0) {
+      const universe = lookupUniverseForElement(element);
+      if (!universe) {
+        throw new Error(`No Universe found for widget ${ctor.name} requesting dependencies via INJECT.`);
+      }
+      const deps = depsCtors.map((depCtor) => universe.get(depCtor));
+      newWidget = new ctor(element, deps);
+    } else {
+      newWidget = new ctor(element);
+    }
+  } else {
+    const factory = widgetConfig2.widgetClass;
+    const universe = lookupUniverseForElement(element);
+    newWidget = factory(element, universe);
+  }
+  if (widgetConfig2.widgetParams) {
+    Object.assign(newWidget, widgetConfig2.widgetParams);
+  }
+  newWidget.requestUpdate();
+  return newWidget;
+}
+function setUpLifecycleTracking(element) {
+  let tracker;
+  if (element instanceof WidgetElement) {
+    tracker = element;
+  } else {
+    tracker = document.createElement("devtools-widget");
+    tracker.style.display = "none";
+    element.appendChild(tracker);
+  }
+  tracker.onDisconnect = () => {
+    const widget2 = Widget.get(element);
+    if (widget2) {
+      widget2.setHideOnDetach();
+      widget2.detach();
+    }
+  };
+  tracker.onConnect = () => {
+    let widget2 = Widget.get(element);
+    if (!widget2) {
+      const config = widgetConfigs.get(element);
+      if (!config) {
+        throw new Error("No widgetConfig defined");
+      }
+      widget2 = instantiateWidget(element, config);
+    }
+    const parent = element.parentNode instanceof DocumentFragment ? element.parentNode : element.parentElementOrShadowHost();
+    if (!parent) {
+      widget2.markAsRoot();
+    } else {
+      widget2.show(
+        parent,
+        void 0,
+        /* suppressOrphanWidgetError= */
+        true
+      );
+    }
+  };
+}
+var WidgetElement = class extends HTMLElement {
+  onDisconnect;
+  onConnect;
+  #disconnectTimeout;
+  getWidget() {
+    return Widget.get(this);
+  }
+  connectedCallback() {
+    if (this.#disconnectTimeout) {
+      clearTimeout(this.#disconnectTimeout);
+      this.#disconnectTimeout = void 0;
+    }
+    if (this.onConnect) {
+      this.onConnect();
+      return;
+    }
+  }
+  disconnectedCallback() {
+    if (this.onDisconnect) {
+      this.#disconnectTimeout = setTimeout(() => {
+        this.onDisconnect?.();
+      }, 0);
+      return;
+    }
+  }
+  appendChild(child) {
+    const widget2 = child instanceof HTMLElement ? Widget.get(child) : null;
+    if (widget2) {
+      widget2.show(
+        this,
+        void 0,
+        /* suppressOrphanWidgetError= */
+        true
+      );
+      return child;
+    }
+    return super.appendChild(child);
+  }
+  insertBefore(child, referenceChild) {
+    const widget2 = child instanceof HTMLElement ? Widget.get(child) : null;
+    if (widget2) {
+      widget2.show(
+        this,
+        referenceChild,
+        /* suppressOrphanWidgetError= */
+        true
+      );
+      return child;
+    }
+    return super.insertBefore(child, referenceChild);
+  }
+  removeChild(child) {
+    const childWidget = Widget.get(child);
+    if (childWidget) {
+      childWidget.detach(
+        /* overrideHideOnDetach= */
+        true
+      );
+      return child;
+    }
+    return super.removeChild(child);
+  }
+  removeChildren() {
+    for (const child of this.children) {
+      const childWidget = Widget.get(child);
+      if (childWidget) {
+        childWidget.detach(
+          /* overrideHideOnDetach= */
+          true
+        );
+      }
+    }
+    super.removeChildren();
+  }
+  cloneNode(deep) {
+    const clone = cloneCustomElement(this, deep);
+    const config = widgetConfigs.get(this);
+    if (config) {
+      registerWidgetConfig(clone, config);
+    }
+    return clone;
+  }
+  focus() {
+    const widget2 = Widget.get(this);
+    if (widget2) {
+      widget2.focus();
+    }
+  }
+};
+customElements.define("devtools-widget", WidgetElement);
+var WidgetDirective = class extends Lit.Directive.Directive {
+  #partType;
+  #lastWidgetClass;
+  #lastKey;
+  constructor(partInfo) {
+    super(partInfo);
+    this.#partType = partInfo.type;
+    if (this.#partType !== Lit.Directive.PartType.CHILD && this.#partType !== Lit.Directive.PartType.ELEMENT) {
+      throw new Error("Widget directive must be used as a child or element directive.");
+    }
+  }
+  update(part, [widgetClass, widgetParams]) {
+    if (this.#partType === Lit.Directive.PartType.ELEMENT) {
+      const element = part.element;
+      const config = widgetConfig(widgetClass, widgetParams);
+      const oldConfig = widgetConfigs.get(element);
+      const widget2 = Widget.get(element);
+      if (widget2 && config.widgetParams) {
+        let needsUpdate = false;
+        for (const key in config.widgetParams) {
+          if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) && config.widgetParams[key] !== oldConfig?.widgetParams?.[key]) {
+            widget2[key] = config.widgetParams[key];
+            needsUpdate = true;
+          }
+        }
+        if (needsUpdate) {
+          widget2.requestUpdate();
+        }
+      }
+      registerWidgetConfig(element, config);
+      return Lit.nothing;
+    }
+    return this.render(widgetClass, widgetParams);
+  }
+  render(widgetClass, widgetParams) {
+    if (this.#partType === Lit.Directive.PartType.ELEMENT) {
+      return Lit.nothing;
+    }
+    if (this.#lastWidgetClass !== widgetClass) {
+      this.#lastWidgetClass = widgetClass;
+      this.#lastKey = Widget.isPrototypeOf(widgetClass) ? widgetClass : widgetClass.toString();
+    }
+    return Lit.Directives.repeat(
+      [widgetClass],
+      () => this.#lastKey,
+      () => html`<devtools-widget ${widget(widgetClass, widgetParams)}></devtools-widget>`
+    );
+  }
+};
+var widget = Lit.Directive.directive(WidgetDirective);
+function widgetRef(type, callback) {
+  return Lit.Directives.ref((e) => {
+    if (!(e instanceof HTMLElement)) {
+      return;
+    }
+    const widget2 = Widget.getOrCreateWidget(e);
+    if (!(widget2 instanceof type)) {
+      throw new Error(`Expected an element with a widget of type ${type.name} but got ${e?.constructor?.name}`);
+    }
+    callback(widget2);
+  });
+}
+var widgetCounterMap = /* @__PURE__ */ new WeakMap();
+var widgetMap = /* @__PURE__ */ new WeakMap();
+function incrementWidgetCounter(parentElement, childElement) {
+  const count = (widgetCounterMap.get(childElement) || 0) + (Widget.get(childElement) ? 1 : 0);
+  for (let el = parentElement; el; el = el.parentElementOrShadowHost()) {
+    widgetCounterMap.set(el, (widgetCounterMap.get(el) || 0) + count);
+  }
+}
+function decrementWidgetCounter(parentElement, childElement) {
+  const count = (widgetCounterMap.get(childElement) || 0) + (Widget.get(childElement) ? 1 : 0);
+  for (let el = parentElement; el; el = el.parentElementOrShadowHost()) {
+    const elCounter = widgetCounterMap.get(el);
+    if (elCounter) {
+      widgetCounterMap.set(el, elCounter - count);
+    }
+  }
+}
+var UPDATE_COMPLETE = Promise.resolve();
+var Widget = class _Widget {
+  element;
+  #contentElement;
+  #shadowRoot;
+  #visible = false;
+  #isRoot = false;
+  #isShowing = false;
+  #children = [];
+  #hideOnDetach = false;
+  #notificationDepth = 0;
+  #invalidationsSuspended = 0;
+  #parentWidget = null;
+  #cachedConstraints;
+  #constraints;
+  #invalidationsRequested;
+  #externallyManaged;
+  #updateComplete = UPDATE_COMPLETE;
+  #updateController;
+  #updateState = "NORMAL" /* NORMAL */;
+  constructor(elementOrOptions, options) {
+    if (elementOrOptions instanceof HTMLElement) {
+      this.element = elementOrOptions;
+    } else {
+      this.element = document.createElement("div");
+      if (elementOrOptions !== void 0) {
+        options = elementOrOptions;
+      }
+    }
+    this.#shadowRoot = this.element.shadowRoot;
+    if (options?.useShadowDom && !this.#shadowRoot) {
+      this.element.classList.add("vbox");
+      this.element.classList.add("flex-auto");
+      this.#shadowRoot = createShadowRootWithCoreStyles(this.element, {
+        delegatesFocus: options?.delegatesFocus
+      });
+      if (options.useShadowDom === "pure") {
+        this.#contentElement = this.#shadowRoot;
+      } else {
+        const div = document.createElement("div");
+        this.#shadowRoot.appendChild(div);
+        this.#contentElement = div;
+      }
+    } else {
+      this.#contentElement = this.element;
+    }
+    const legacyOptions = options;
+    if (legacyOptions?.classes) {
+      this.element.classList.add(...legacyOptions.classes);
+    }
+    if (legacyOptions?.jslog) {
+      this.element.setAttribute("jslog", legacyOptions.jslog);
+    }
+    if (this.contentElement instanceof HTMLElement) {
+      this.contentElement.classList.add("widget");
+    } else if (options?.useShadowDom === "pure") {
+      this.element.classList.add("widget");
+    }
+    widgetMap.set(this.element, this);
+  }
+  /**
+   * An array of dependency constructors that this widget class expects to receive as an array
+   * in the second positional argument to its constructor during `instantiateWidget`:
+   * `constructor(element: HTMLElement, deps: WidgetDependencies<typeof MyWidget>)`
+   *
+   * Override this static field in sub-classes to specify dependency constructors to be retrieved from `Universe`.
+   */
+  static INJECT = [];
+  /**
+   * Returns the {@link Widget} whose element is the given `node`, or `undefined`
+   * if the `node` is not an element for a widget.
+   *
+   * @param node a DOM node.
+   * @returns the {@link Widget} that is attached to the `node` or `undefined`.
+   */
+  static get(node) {
+    return widgetMap.get(node);
+  }
+  static get allUpdatesComplete() {
+    if (nextUpdateQueue.size === 0 && !currentUpdateQueue && currentlyProcessed.size === 0) {
+      return Promise.resolve();
+    }
+    if (!overallUpdatePromise) {
+      overallUpdatePromise = Promise.withResolvers();
+    }
+    return overallUpdatePromise.promise;
+  }
+  static getOrCreateWidget(element) {
+    const widget2 = _Widget.get(element);
+    if (widget2) {
+      return widget2;
+    }
+    let config = widgetConfigs.get(element);
+    if (!config) {
+      config = widgetConfig((element2) => new _Widget(element2));
+    }
+    return instantiateWidget(element, config);
+  }
+  get contentElement() {
+    return this.#contentElement;
+  }
+  set contentElement(contentElement) {
+    this.#contentElement = contentElement;
+  }
+  dispatchDOMEvent(event) {
+    this.element.dispatchEvent(event);
+  }
+  markAsRoot() {
+    assert(!this.element.parentElement, "Attempt to mark as root attached node");
+    this.#isRoot = true;
+  }
+  parentWidget() {
+    return this.#parentWidget;
+  }
+  children() {
+    return this.#children;
+  }
+  childWasDetached(_widget) {
+  }
+  isShowing() {
+    return this.#isShowing;
+  }
+  shouldHideOnDetach() {
+    if (!this.element.parentElement) {
+      return false;
+    }
+    if (this.#hideOnDetach) {
+      return true;
+    }
+    for (const child of this.#children) {
+      if (child.shouldHideOnDetach()) {
+        return true;
+      }
+    }
+    return false;
+  }
+  setHideOnDetach() {
+    this.#hideOnDetach = true;
+  }
+  inNotification() {
+    return Boolean(this.#notificationDepth) || Boolean(this.#parentWidget?.inNotification());
+  }
+  parentIsShowing() {
+    if (this.#isRoot) {
+      return true;
+    }
+    return this.#parentWidget?.isShowing() ?? false;
+  }
+  callOnVisibleChildren(method) {
+    const copy = this.#children.slice();
+    for (let i = 0; i < copy.length; ++i) {
+      if (copy[i].#parentWidget === this && copy[i].#visible) {
+        method.call(copy[i]);
+      }
+    }
+  }
+  processWillShow() {
+    this.callOnVisibleChildren(this.processWillShow);
+    this.#isShowing = true;
+  }
+  processWasShown() {
+    if (this.inNotification()) {
+      return;
+    }
+    this.restoreScrollPositions();
+    this.notify(this.wasShown);
+    this.callOnVisibleChildren(this.processWasShown);
+  }
+  processWillHide() {
+    if (this.inNotification()) {
+      return;
+    }
+    this.storeScrollPositions();
+    this.callOnVisibleChildren(this.processWillHide);
+    this.notify(this.willHide);
+    this.#isShowing = false;
+  }
+  processWasHidden() {
+    this.callOnVisibleChildren(this.processWasHidden);
+    this.notify(this.wasHidden);
+  }
+  processOnResize() {
+    if (this.inNotification()) {
+      return;
+    }
+    if (!this.isShowing()) {
+      return;
+    }
+    this.notify(this.onResize);
+    this.callOnVisibleChildren(this.processOnResize);
+  }
+  notify(notification) {
+    ++this.#notificationDepth;
+    try {
+      notification.call(this);
+    } finally {
+      --this.#notificationDepth;
+    }
+  }
+  wasShown() {
+  }
+  willHide() {
+  }
+  wasHidden() {
+  }
+  onResize() {
+  }
+  onLayout() {
+  }
+  onDetach() {
+  }
+  async ownerViewDisposed() {
+  }
+  show(parentElement, insertBefore, suppressOrphanWidgetError = false) {
+    assert(parentElement, "Attempt to attach widget with no parent element");
+    if (!this.#isRoot) {
+      let currentParent = parentElement;
+      let currentWidget = void 0;
+      while (!currentWidget) {
+        if (!currentParent) {
+          if (suppressOrphanWidgetError) {
+            this.#isRoot = true;
+            this.show(parentElement, insertBefore);
+            return;
+          }
+          throw new Error("Attempt to attach widget to orphan node");
+        }
+        currentWidget = widgetMap.get(currentParent);
+        currentParent = currentParent.parentElementOrShadowHost();
+      }
+      this.attach(currentWidget);
+    }
+    this.#showWidget(parentElement, insertBefore);
+  }
+  attach(parentWidget) {
+    if (parentWidget === this.#parentWidget) {
+      return;
+    }
+    if (this.#parentWidget) {
+      this.detach();
+    }
+    this.#parentWidget = parentWidget;
+    this.#parentWidget.#children.push(this);
+    this.#isRoot = false;
+  }
+  showWidget() {
+    if (this.#visible) {
+      return;
+    }
+    if (!this.element.parentElement) {
+      throw new Error("Attempt to show widget that is not hidden using hideWidget().");
+    }
+    this.#showWidget(this.element.parentElement, this.element.nextSibling);
+  }
+  #showWidget(parentElement, insertBefore) {
+    let currentParent = parentElement;
+    while (currentParent && !_Widget.get(currentParent)) {
+      currentParent = currentParent.parentElementOrShadowHost();
+    }
+    if (this.#isRoot) {
+      assert(!currentParent, "Attempt to show root widget under another widget");
+    } else {
+      assert(
+        currentParent && widgetMap.get(currentParent) === this.#parentWidget,
+        "Attempt to show under node belonging to alien widget"
+      );
+    }
+    const wasVisible = this.#visible;
+    if (wasVisible && this.element.parentNode === parentElement) {
+      return;
+    }
+    this.#visible = true;
+    if (!wasVisible && this.parentIsShowing()) {
+      this.processWillShow();
+    }
+    this.element.classList.remove("hidden");
+    if (this.element.parentNode !== parentElement) {
+      if (!this.#externallyManaged) {
+        incrementWidgetCounter(parentElement, this.element);
+      }
+      if (insertBefore) {
+        originalInsertBefore.call(parentElement, this.element, insertBefore);
+      } else {
+        originalAppendChild.call(parentElement, this.element);
+      }
+    }
+    const focusedElementsCount = this.#parentWidget?.getDefaultFocusedElements?.()?.length ?? 0;
+    if (this.element.hasAttribute("autofocus") && focusedElementsCount > 1) {
+      this.element.removeAttribute("autofocus");
+    }
+    if (!wasVisible && this.parentIsShowing()) {
+      this.processWasShown();
+    }
+    if (this.#parentWidget && this.hasNonZeroConstraints()) {
+      this.#parentWidget.invalidateConstraints();
+    } else {
+      this.processOnResize();
+    }
+  }
+  hideWidget() {
+    if (!this.#visible) {
+      return;
+    }
+    this.#hideWidget(false);
+  }
+  #hideWidget(removeFromDOM) {
+    this.#visible = false;
+    const { parentElement } = this.element;
+    if (this.parentIsShowing()) {
+      this.processWillHide();
+    }
+    if (removeFromDOM) {
+      if (parentElement) {
+        decrementWidgetCounter(parentElement, this.element);
+        originalRemoveChild.call(parentElement, this.element);
+      }
+      this.onDetach();
+    } else {
+      this.element.classList.add("hidden");
+    }
+    if (this.parentIsShowing()) {
+      this.processWasHidden();
+    }
+    if (this.#parentWidget && this.hasNonZeroConstraints()) {
+      this.#parentWidget.invalidateConstraints();
+    }
+  }
+  detach(overrideHideOnDetach) {
+    if (!this.#parentWidget && !this.#isRoot) {
+      return;
+    }
+    cancelUpdate(this);
+    const removeFromDOM = overrideHideOnDetach || !this.shouldHideOnDetach();
+    if (this.#visible) {
+      this.#hideWidget(removeFromDOM);
+    } else if (removeFromDOM) {
+      const { parentElement } = this.element;
+      if (parentElement) {
+        decrementWidgetCounter(parentElement, this.element);
+        originalRemoveChild.call(parentElement, this.element);
+      }
+    }
+    if (this.#parentWidget) {
+      const childIndex = this.#parentWidget.#children.indexOf(this);
+      assert(childIndex >= 0, "Attempt to remove non-child widget");
+      this.#parentWidget.#children.splice(childIndex, 1);
+      this.#parentWidget.childWasDetached(this);
+      this.#parentWidget = null;
+    } else {
+      assert(this.#isRoot, "Removing non-root widget from DOM");
+    }
+  }
+  detachChildWidgets() {
+    const children = this.#children.slice();
+    for (let i = 0; i < children.length; ++i) {
+      children[i].detach();
+    }
+  }
+  elementsToRestoreScrollPositionsFor() {
+    return [this.element];
+  }
+  storeScrollPositions() {
+    const elements = this.elementsToRestoreScrollPositionsFor();
+    for (const container of elements) {
+      storedScrollPositions.set(container, { scrollLeft: container.scrollLeft, scrollTop: container.scrollTop });
+    }
+  }
+  restoreScrollPositions() {
+    const elements = this.elementsToRestoreScrollPositionsFor();
+    for (const container of elements) {
+      const storedPositions = storedScrollPositions.get(container);
+      if (storedPositions) {
+        container.scrollLeft = storedPositions.scrollLeft;
+        container.scrollTop = storedPositions.scrollTop;
+      }
+    }
+  }
+  doResize() {
+    if (!this.isShowing()) {
+      return;
+    }
+    if (!this.inNotification()) {
+      this.callOnVisibleChildren(this.processOnResize);
+    }
+  }
+  doLayout() {
+    if (!this.isShowing()) {
+      return;
+    }
+    this.notify(this.onLayout);
+    this.doResize();
+  }
+  registerRequiredCSS(...cssFiles) {
+    for (const cssFile of cssFiles) {
+      appendStyle(this.#shadowRoot ?? this.element, cssFile);
+    }
+  }
+  // Unused, but useful for debugging.
+  printWidgetHierarchy() {
+    const lines = [];
+    this.collectWidgetHierarchy("", lines);
+    console.log(lines.join("\n"));
+  }
+  collectWidgetHierarchy(prefix, lines) {
+    lines.push(prefix + "[" + this.element.className + "]" + (this.#children.length ? " {" : ""));
+    for (let i = 0; i < this.#children.length; ++i) {
+      this.#children[i].collectWidgetHierarchy(prefix + "    ", lines);
+    }
+    if (this.#children.length) {
+      lines.push(prefix + "}");
+    }
+  }
+  setDefaultFocusedElement(element) {
+    const defaultFocusedElement = this.getDefaultFocusedElement();
+    if (defaultFocusedElement) {
+      defaultFocusedElement.removeAttribute("autofocus");
+    }
+    if (element) {
+      element.setAttribute("autofocus", "");
+    }
+  }
+  setDefaultFocusedChild(child) {
+    assert(child.#parentWidget === this, "Attempt to set non-child widget as default focused.");
+    const defaultFocusedElement = this.getDefaultFocusedElement();
+    if (defaultFocusedElement) {
+      defaultFocusedElement.removeAttribute("autofocus");
+    }
+    child.element.setAttribute("autofocus", "");
+  }
+  getDefaultFocusedElements() {
+    const autofocusElements = [...this.contentElement.querySelectorAll("[autofocus]")];
+    const contentElement = this.contentElement;
+    if (contentElement !== this.element) {
+      if (contentElement instanceof HTMLElement && contentElement.hasAttribute("autofocus")) {
+        autofocusElements.push(contentElement);
+      }
+      if (autofocusElements.length === 0) {
+        autofocusElements.push(...this.element.querySelectorAll("[autofocus]"));
+      }
+    }
+    return autofocusElements.filter((autofocusElement) => {
+      let widgetElement = autofocusElement;
+      while (widgetElement) {
+        const widget2 = _Widget.get(widgetElement);
+        if (widget2) {
+          if (widgetElement === autofocusElement && widget2.#parentWidget === this && widget2.#visible) {
+            return true;
+          }
+          return widget2 === this;
+        }
+        widgetElement = widgetElement.parentElementOrShadowHost();
+      }
+      return false;
+    });
+  }
+  getDefaultFocusedElement() {
+    const elements = this.getDefaultFocusedElements();
+    if (elements.length > 1) {
+      console.error(
+        "Multiple autofocus elements found",
+        this.constructor.name,
+        ...elements.map((e) => Platform5.StringUtilities.trimMiddle(e.outerHTML, 250))
+      );
+    }
+    return elements[0] || null;
+  }
+  focus() {
+    if (!this.isShowing()) {
+      return;
+    }
+    const autofocusElement = this.getDefaultFocusedElement();
+    if (autofocusElement) {
+      const widget2 = _Widget.get(autofocusElement);
+      if (widget2 && widget2 !== this) {
+        widget2.focus();
+      } else if (autofocusElement === this.element && autofocusElement instanceof WidgetElement) {
+        HTMLElement.prototype.focus.call(autofocusElement);
+      } else {
+        autofocusElement.focus();
+      }
+      return;
+    }
+    for (const child of this.#children) {
+      if (child.#visible) {
+        child.focus();
+        return;
+      }
+    }
+    if (this.element === this.contentElement && this.element.hasAttribute("autofocus")) {
+      if (this.element instanceof WidgetElement) {
+        HTMLElement.prototype.focus.call(this.element);
+      } else {
+        this.element.focus();
+      }
+    }
+  }
+  hasFocus() {
+    return this.element.hasFocus();
+  }
+  calculateConstraints() {
+    return new Geometry.Constraints();
+  }
+  constraints() {
+    if (typeof this.#constraints !== "undefined") {
+      return this.#constraints;
+    }
+    if (typeof this.#cachedConstraints === "undefined") {
+      this.#cachedConstraints = this.calculateConstraints();
+    }
+    return this.#cachedConstraints;
+  }
+  setMinimumAndPreferredSizes(width, height, preferredWidth, preferredHeight) {
+    const newConstraints = new Geometry.Constraints(new Geometry.Size(width, height), new Geometry.Size(preferredWidth, preferredHeight));
+    if (this.#constraints?.isEqual(newConstraints)) {
+      return;
+    }
+    this.#constraints = newConstraints;
+    this.invalidateConstraints();
+  }
+  setMinimumSize(width, height) {
+    this.minimumSize = new Geometry.Size(width, height);
+  }
+  set minimumSize(size) {
+    const newConstraints = new Geometry.Constraints(size);
+    if (this.#constraints?.isEqual(newConstraints)) {
+      return;
+    }
+    this.#constraints = newConstraints;
+    this.invalidateConstraints();
+  }
+  hasNonZeroConstraints() {
+    const constraints = this.constraints();
+    return Boolean(constraints.minimum.width || constraints.minimum.height || constraints.preferred.width || constraints.preferred.height);
+  }
+  suspendInvalidations() {
+    ++this.#invalidationsSuspended;
+  }
+  resumeInvalidations() {
+    --this.#invalidationsSuspended;
+    if (!this.#invalidationsSuspended && this.#invalidationsRequested) {
+      this.invalidateConstraints();
+    }
+  }
+  invalidateConstraints() {
+    if (this.#invalidationsSuspended) {
+      this.#invalidationsRequested = true;
+      return;
+    }
+    this.#invalidationsRequested = false;
+    const cached = this.#cachedConstraints;
+    this.#cachedConstraints = void 0;
+    const actual = this.constraints();
+    if (!actual.isEqual(cached || null) && this.#parentWidget) {
+      this.#parentWidget.invalidateConstraints();
+    } else {
+      this.doLayout();
+    }
+  }
+  // Excludes the widget from being tracked by its parents/ancestors via
+  // widgetCounter because the widget is being handled by external code.
+  // Widgets marked as being externally managed are responsible for
+  // finishing out their own lifecycle (i.e. calling detach() before being
+  // removed from the DOM). This is e.g. used for CodeMirror.
+  //
+  // Also note that this must be called before the widget is shown so that
+  // so that its ancestor's widgetCounter is not incremented.
+  markAsExternallyManaged() {
+    assert(!this.#parentWidget, "Attempt to mark widget as externally managed after insertion to the DOM");
+    this.#externallyManaged = true;
+  }
+  performUpdate(_signal) {
+  }
+  addUpdateController(controller) {
+    const wasInterrupted = this.#updateState === "INTERRUPTED" /* INTERRUPTED */;
+    this.#updateController?.abort();
+    this.#updateController = controller;
+    this.#updateState = wasInterrupted ? "SHIELDED" /* SHIELDED */ : "NORMAL" /* NORMAL */;
+  }
+  cancelUpdateController() {
+    this.#updateController?.abort();
+    this.#updateController = void 0;
+    this.#updateState = "NORMAL" /* NORMAL */;
+  }
+  /**
+   * Schedules an asynchronous update for this widget.
+   *
+   * The update will be deduplicated and executed with the next animation
+   * frame.
+   */
+  requestUpdate() {
+    if (this.#updateState !== "SHIELDED" /* SHIELDED */) {
+      if (currentlyProcessed.has(this)) {
+        this.#updateState = "INTERRUPTED" /* INTERRUPTED */;
+      }
+      this.#updateController?.abort();
+    }
+    this.#updateComplete = enqueueWidgetUpdate(this);
+  }
+  /**
+   * The `updateComplete` promise resolves when the widget has finished updating.
+   *
+   * Use `updateComplete` to wait for an update:
+   * ```js
+   * await widget.updateComplete;
+   * // do stuff
+   * ```
+   *
+   * This method is primarily useful for unit tests, to wait for widgets to build
+   * their DOM. For example:
+   * ```js
+   * // Set up the test widget, and wait for the initial update cycle to complete.
+   * const widget = new SomeWidget(someData);
+   * widget.requestUpdate();
+   * await widget.updateComplete;
+   *
+   * // Assert state of the widget.
+   * assert.isTrue(widget.someDataLoaded);
+   * ```
+   *
+   * @returns a promise that resolves when the widget has finished updating.
+   */
+  get updateComplete() {
+    return this.#updateComplete;
+  }
+};
+var storedScrollPositions = /* @__PURE__ */ new WeakMap();
+var VBox = class extends Widget {
+  constructor(elementOrOptions, options) {
+    super(elementOrOptions, options);
+    if (this.contentElement instanceof HTMLElement) {
+      this.contentElement.classList.add("vbox");
+    } else {
+      this.element.classList.add("vbox");
+    }
+  }
+  calculateConstraints() {
+    let constraints = new Geometry.Constraints();
+    function updateForChild() {
+      const child = this.constraints();
+      constraints = constraints.widthToMax(child);
+      constraints = constraints.addHeight(child);
+    }
+    this.callOnVisibleChildren(updateForChild);
+    return constraints;
+  }
+};
+var HBox = class extends Widget {
+  constructor(elementOrOptions, options) {
+    super(elementOrOptions, options);
+    if (this.contentElement instanceof HTMLElement) {
+      this.contentElement.classList.add("hbox");
+    } else {
+      this.element.classList.remove("vbox");
+      this.element.classList.add("hbox");
+    }
+  }
+  calculateConstraints() {
+    let constraints = new Geometry.Constraints();
+    function updateForChild() {
+      const child = this.constraints();
+      constraints = constraints.addWidth(child);
+      constraints = constraints.heightToMax(child);
+    }
+    this.callOnVisibleChildren(updateForChild);
+    return constraints;
+  }
+};
+var VBoxWithResizeCallback = class extends VBox {
+  resizeCallback;
+  constructor(resizeCallback) {
+    super();
+    this.resizeCallback = resizeCallback;
+  }
+  onResize() {
+    this.resizeCallback();
+  }
+};
+var WidgetFocusRestorer = class {
+  widget;
+  previous;
+  constructor(widget2) {
+    this.widget = widget2;
+    this.previous = deepActiveElement(widget2.element.ownerDocument);
+    widget2.focus();
+  }
+  restore() {
+    if (!this.widget) {
+      return;
+    }
+    if (this.widget.hasFocus() && this.previous) {
+      this.previous.focus();
+    }
+    this.previous = null;
+    this.widget = null;
+  }
+};
+function domOperationError(funcName) {
+  return new Error(`Attempt to modify widget with native DOM method \`${funcName}\``);
+}
+Node.prototype.appendChild = function(node) {
+  if (widgetMap.get(node) && node.parentNode !== this) {
+    throw domOperationError("appendChild");
+  }
+  return originalAppendChild.call(this, node);
+};
+Node.prototype.insertBefore = function(node, child) {
+  if (widgetMap.get(node) && node.parentNode !== this) {
+    throw domOperationError("insertBefore");
+  }
+  return originalInsertBefore.call(this, node, child);
+};
+Node.prototype.removeChild = function(child) {
+  if (widgetCounterMap.get(child) || widgetMap.get(child)) {
+    throw domOperationError("removeChild");
+  }
+  return originalRemoveChild.call(this, child);
+};
+Node.prototype.removeChildren = function() {
+  if (widgetCounterMap.get(this)) {
+    throw domOperationError("removeChildren");
+  }
+  return originalRemoveChildren.call(this);
+};
+
+// ../../front_end/ui/legacy/ZoomManager.ts
+var ZoomManager_exports = {};
+__export(ZoomManager_exports, {
+  Events: () => Events4,
+  ZoomManager: () => ZoomManager
+});
+import * as Common6 from "../../core/common/common.js";
+var zoomManagerInstance;
+var ZoomManager = class _ZoomManager extends Common6.ObjectWrapper.ObjectWrapper {
+  frontendHost;
+  #zoomFactor;
+  constructor(window2, frontendHost) {
+    super();
+    this.frontendHost = frontendHost;
+    this.#zoomFactor = this.frontendHost.zoomFactor();
+    window2.addEventListener("resize", this.onWindowResize.bind(this), true);
+  }
+  static instance(opts = { forceNew: null, win: null, frontendHost: null }) {
+    const { forceNew, win, frontendHost } = opts;
+    if (!zoomManagerInstance || forceNew) {
+      if (!win || !frontendHost) {
+        throw new Error(
+          `Unable to create zoom manager: window and frontendHost must be provided: ${new Error().stack}`
+        );
+      }
+      zoomManagerInstance = new _ZoomManager(win, frontendHost);
+    }
+    return zoomManagerInstance;
+  }
+  static removeInstance() {
+    zoomManagerInstance = void 0;
+  }
+  zoomFactor() {
+    return this.#zoomFactor;
+  }
+  cssToDIP(value) {
+    return value * this.#zoomFactor;
+  }
+  dipToCSS(valueDIP) {
+    return valueDIP / this.#zoomFactor;
+  }
+  onWindowResize() {
+    const oldZoomFactor = this.#zoomFactor;
+    this.#zoomFactor = this.frontendHost.zoomFactor();
+    if (oldZoomFactor !== this.#zoomFactor) {
+      this.dispatchEventToListeners("ZoomChanged" /* ZOOM_CHANGED */, { from: oldZoomFactor, to: this.#zoomFactor });
+    }
+  }
+};
+var Events4 = /* @__PURE__ */ ((Events12) => {
+  Events12["ZOOM_CHANGED"] = "ZoomChanged";
+  return Events12;
+})(Events4 || {});
+
+// ../../front_end/ui/legacy/SplitWidget.ts
+var SplitWidgetBase = Common7.ObjectWrapper.eventMixin(
+  Widget
+);
+var SplitWidget = class extends SplitWidgetBase {
+  #sidebarElement;
+  #mainElement;
+  #resizerElement;
+  #resizerElementSize = null;
+  #resizerWidget;
+  #defaultSidebarWidth;
+  #defaultSidebarHeight;
+  #constraintsInDip;
+  #resizeStartSizeDIP = 0;
+  // TODO: Used in WebTests
+  setting;
+  #totalSizeCSS = 0;
+  #totalSizeOtherDimensionCSS = 0;
+  #mainWidget = null;
+  #sidebarWidget = null;
+  #animationFrameHandle = 0;
+  #animationCallback = null;
+  #showSidebarButtonTitle = Common7.UIString.LocalizedEmptyString;
+  #hideSidebarButtonTitle = Common7.UIString.LocalizedEmptyString;
+  #shownSidebarString = Common7.UIString.LocalizedEmptyString;
+  #hiddenSidebarString = Common7.UIString.LocalizedEmptyString;
+  #showHideSidebarButton = null;
+  #isVertical = false;
+  #sidebarMinimized = false;
+  #detaching = false;
+  #sidebarSizeDIP = -1;
+  #savedSidebarSizeDIP;
+  #secondIsSidebar = false;
+  #shouldSaveShowMode = false;
+  #savedVerticalMainSize = null;
+  #savedHorizontalMainSize = null;
+  #showMode = "Both" /* BOTH */;
+  #savedShowMode;
+  #autoAdjustOrientation = false;
+  #zoomManager = ZoomManager.instance();
+  constructor(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip, element) {
+    super(element, { useShadowDom: true });
+    this.element.classList.add("split-widget");
+    this.registerRequiredCSS(splitWidget_css_default);
+    this.contentElement.classList.add("shadow-split-widget");
+    this.#sidebarElement = this.contentElement.createChild("div", "shadow-split-widget-contents shadow-split-widget-sidebar vbox");
+    this.#mainElement = this.contentElement.createChild("div", "shadow-split-widget-contents shadow-split-widget-main vbox");
+    const mainSlot = this.#mainElement.createChild("slot");
+    mainSlot.name = "main";
+    mainSlot.addEventListener("slotchange", (_) => {
+      const assignedNode = mainSlot.assignedNodes()[0];
+      const widget2 = assignedNode instanceof HTMLElement ? Widget.getOrCreateWidget(assignedNode) : null;
+      if (widget2 && widget2 !== this.#mainWidget) {
+        this.setMainWidget(widget2);
+      }
+    });
+    const sidebarSlot = this.#sidebarElement.createChild("slot");
+    sidebarSlot.name = "sidebar";
+    sidebarSlot.addEventListener("slotchange", (_) => {
+      const assignedNode = sidebarSlot.assignedNodes()[0];
+      const widget2 = assignedNode instanceof HTMLElement ? Widget.getOrCreateWidget(assignedNode) : null;
+      if (widget2 && widget2 !== this.#sidebarWidget) {
+        this.setSidebarWidget(widget2);
+      }
+    });
+    this.#resizerElement = this.contentElement.createChild("div", "shadow-split-widget-resizer");
+    this.#resizerWidget = new SimpleResizerWidget();
+    this.#resizerWidget.setEnabled(true);
+    this.#resizerWidget.addEventListener("ResizeStart" /* RESIZE_START */, this.#onResizeStart, this);
+    this.#resizerWidget.addEventListener("ResizeUpdatePosition" /* RESIZE_UPDATE_POSITION */, this.#onResizeUpdate, this);
+    this.#resizerWidget.addEventListener("ResizeEnd" /* RESIZE_END */, this.#onResizeEnd, this);
+    this.#defaultSidebarWidth = defaultSidebarWidth || 200;
+    this.#defaultSidebarHeight = defaultSidebarHeight || this.#defaultSidebarWidth;
+    this.#constraintsInDip = Boolean(constraintsInDip);
+    this.setting = settingName ? Common7.Settings.Settings.instance().createSetting(settingName, {}) : null;
+    this.#savedSidebarSizeDIP = this.#sidebarSizeDIP;
+    this.setSecondIsSidebar(secondIsSidebar);
+    this.#setVertical(isVertical);
+    this.#savedShowMode = this.#showMode;
+    this.installResizer(this.#resizerElement);
+  }
+  isVertical() {
+    return this.#isVertical;
+  }
+  setVertical(isVertical) {
+    if (this.#isVertical === isVertical) {
+      return;
+    }
+    this.#setVertical(isVertical);
+    if (this.isShowing()) {
+      this.#updateLayout();
+    }
+  }
+  setAutoAdjustOrientation(autoAdjustOrientation) {
+    this.#autoAdjustOrientation = autoAdjustOrientation;
+    this.#maybeAutoAdjustOrientation();
+  }
+  #setVertical(isVertical) {
+    this.contentElement.classList.toggle("vbox", !isVertical);
+    this.contentElement.classList.toggle("hbox", isVertical);
+    this.#isVertical = isVertical;
+    this.#resizerElementSize = null;
+    this.#sidebarSizeDIP = -1;
+    this.#restoreSidebarSizeFromSettings();
+    if (this.#shouldSaveShowMode) {
+      this.#restoreAndApplyShowModeFromSettings();
+    }
+    this.#updateShowHideSidebarButton();
+    this.#resizerWidget.setVertical(!isVertical);
+    this.invalidateConstraints();
+  }
+  #updateLayout(animate) {
+    this.#totalSizeCSS = 0;
+    this.#totalSizeOtherDimensionCSS = 0;
+    this.#mainElement.style.removeProperty("width");
+    this.#mainElement.style.removeProperty("height");
+    this.#sidebarElement.style.removeProperty("width");
+    this.#sidebarElement.style.removeProperty("height");
+    this.#setSidebarSizeDIP(this.#preferredSidebarSizeDIP(), Boolean(animate));
+  }
+  setMainWidget(widget2) {
+    if (this.#mainWidget === widget2) {
+      return;
+    }
+    this.suspendInvalidations();
+    if (this.#mainWidget) {
+      this.#mainWidget.detach();
+    }
+    this.#mainWidget = widget2;
+    if (widget2) {
+      widget2.element.slot = "main";
+      if (this.#showMode === "OnlyMain" /* ONLY_MAIN */ || this.#showMode === "Both" /* BOTH */) {
+        widget2.show(this.element);
+      }
+    }
+    this.resumeInvalidations();
+  }
+  setSidebarWidget(widget2) {
+    if (this.#sidebarWidget === widget2) {
+      return;
+    }
+    this.suspendInvalidations();
+    if (this.#sidebarWidget) {
+      this.#sidebarWidget.detach();
+    }
+    this.#sidebarWidget = widget2;
+    if (widget2) {
+      widget2.element.slot = "sidebar";
+      if (this.#showMode === "OnlySidebar" /* ONLY_SIDEBAR */ || this.#showMode === "Both" /* BOTH */) {
+        widget2.show(this.element);
+      }
+    }
+    this.resumeInvalidations();
+  }
+  mainWidget() {
+    return this.#mainWidget;
+  }
+  sidebarWidget() {
+    return this.#sidebarWidget;
+  }
+  sidebarElement() {
+    return this.#sidebarElement;
+  }
+  childWasDetached(widget2) {
+    if (this.#detaching) {
+      return;
+    }
+    if (this.#mainWidget === widget2) {
+      this.#mainWidget = null;
+    }
+    if (this.#sidebarWidget === widget2) {
+      this.#sidebarWidget = null;
+    }
+    this.invalidateConstraints();
+  }
+  isSidebarSecond() {
+    return this.#secondIsSidebar;
+  }
+  enableShowModeSaving() {
+    this.#shouldSaveShowMode = true;
+    this.#restoreAndApplyShowModeFromSettings();
+  }
+  showMode() {
+    return this.#showMode;
+  }
+  sidebarIsShowing() {
+    return this.#showMode !== "OnlyMain" /* ONLY_MAIN */;
+  }
+  setSecondIsSidebar(secondIsSidebar) {
+    if (secondIsSidebar === this.#secondIsSidebar) {
+      return;
+    }
+    this.#secondIsSidebar = secondIsSidebar;
+    if (!this.#mainWidget?.shouldHideOnDetach()) {
+      if (secondIsSidebar) {
+        this.contentElement.insertBefore(this.#mainElement, this.#sidebarElement);
+      } else {
+        this.contentElement.insertBefore(this.#mainElement, this.#resizerElement);
+      }
+    } else if (!this.#sidebarWidget?.shouldHideOnDetach()) {
+      if (secondIsSidebar) {
+        this.contentElement.insertBefore(this.#sidebarElement, this.#resizerElement);
+      } else {
+        this.contentElement.insertBefore(this.#sidebarElement, this.#mainElement);
+      }
+    } else {
+      console.error("Could not swap split widget side. Both children widgets contain iframes.");
+      this.#secondIsSidebar = !secondIsSidebar;
+    }
+  }
+  resizerElement() {
+    return this.#resizerElement;
+  }
+  hideMain(animate) {
+    this.#showOnly(this.#sidebarWidget, this.#mainWidget, this.#sidebarElement, this.#mainElement, animate);
+    this.#updateShowMode("OnlySidebar" /* ONLY_SIDEBAR */);
+  }
+  hideSidebar(animate) {
+    this.#showOnly(this.#mainWidget, this.#sidebarWidget, this.#mainElement, this.#sidebarElement, animate);
+    this.#updateShowMode("OnlyMain" /* ONLY_MAIN */);
+  }
+  setSidebarMinimized(minimized) {
+    this.#sidebarMinimized = minimized;
+    this.invalidateConstraints();
+  }
+  isSidebarMinimized() {
+    return this.#sidebarMinimized;
+  }
+  #showOnly(sideToShow, sideToHide, shadowToShow, shadowToHide, animate) {
+    this.#cancelAnimation();
+    function callback() {
+      if (sideToShow) {
+        if (sideToShow === this.#mainWidget) {
+          this.#mainWidget.show(this.element, this.#sidebarWidget ? this.#sidebarWidget.element : null);
+        } else if (this.#sidebarWidget) {
+          this.#sidebarWidget.show(this.element);
+        }
+      }
+      if (sideToHide) {
+        this.#detaching = true;
+        sideToHide.detach();
+        this.#detaching = false;
+      }
+      this.#resizerElement.classList.add("hidden");
+      shadowToShow.classList.remove("hidden");
+      shadowToShow.classList.add("maximized");
+      shadowToHide.classList.add("hidden");
+      shadowToHide.classList.remove("maximized");
+      this.#removeAllLayoutProperties();
+      this.doResize();
+      this.showFinishedForTest();
+    }
+    if (animate) {
+      this.#animate(true, callback.bind(this));
+    } else {
+      callback.call(this);
+    }
+    this.#sidebarSizeDIP = -1;
+    this.setResizable(false);
+  }
+  showFinishedForTest() {
+  }
+  #removeAllLayoutProperties() {
+    this.#sidebarElement.style.removeProperty("flexBasis");
+    this.#mainElement.style.removeProperty("width");
+    this.#mainElement.style.removeProperty("height");
+    this.#sidebarElement.style.removeProperty("width");
+    this.#sidebarElement.style.removeProperty("height");
+    this.#resizerElement.style.removeProperty("left");
+    this.#resizerElement.style.removeProperty("right");
+    this.#resizerElement.style.removeProperty("top");
+    this.#resizerElement.style.removeProperty("bottom");
+    this.#resizerElement.style.removeProperty("margin-left");
+    this.#resizerElement.style.removeProperty("margin-right");
+    this.#resizerElement.style.removeProperty("margin-top");
+    this.#resizerElement.style.removeProperty("margin-bottom");
+  }
+  showBoth(animate) {
+    if (this.#showMode === "Both" /* BOTH */) {
+      animate = false;
+    }
+    this.#cancelAnimation();
+    this.#mainElement.classList.remove("maximized", "hidden");
+    this.#sidebarElement.classList.remove("maximized", "hidden");
+    this.#resizerElement.classList.remove("hidden");
+    this.setResizable(true);
+    this.suspendInvalidations();
+    if (this.#sidebarWidget) {
+      this.#sidebarWidget.show(this.element);
+    }
+    if (this.#mainWidget) {
+      this.#mainWidget.show(this.element, this.#sidebarWidget ? this.#sidebarWidget.element : null);
+    }
+    this.resumeInvalidations();
+    this.setSecondIsSidebar(this.#secondIsSidebar);
+    this.#sidebarSizeDIP = -1;
+    this.#updateShowMode("Both" /* BOTH */);
+    this.#updateLayout(animate);
+  }
+  setResizable(resizable) {
+    this.#resizerWidget.setEnabled(resizable);
+  }
+  // Currently unused
+  forceSetSidebarWidth(width) {
+    this.#defaultSidebarWidth = width;
+    this.#savedSidebarSizeDIP = width;
+    this.#updateLayout();
+  }
+  isResizable() {
+    return this.#resizerWidget.isEnabled();
+  }
+  setSidebarSize(size) {
+    const sizeDIP = this.#zoomManager.cssToDIP(size);
+    this.#savedSidebarSizeDIP = sizeDIP;
+    this.#saveSetting();
+    this.#setSidebarSizeDIP(sizeDIP, false, true);
+  }
+  sidebarSize() {
+    const sizeDIP = Math.max(0, this.#sidebarSizeDIP);
+    return this.#zoomManager.dipToCSS(sizeDIP);
+  }
+  totalSize() {
+    const sizeDIP = Math.max(0, this.#totalSizeDIP());
+    return this.#zoomManager.dipToCSS(sizeDIP);
+  }
+  /**
+   * Returns total size in DIP.
+   */
+  #totalSizeDIP() {
+    if (!this.#totalSizeCSS) {
+      const { width, height } = this.contentElement.getBoundingClientRect();
+      this.#totalSizeCSS = this.#isVertical ? width : height;
+      this.#totalSizeOtherDimensionCSS = this.#isVertical ? height : width;
+    }
+    return this.#zoomManager.cssToDIP(this.#totalSizeCSS);
+  }
+  #updateShowMode(showMode) {
+    this.#showMode = showMode;
+    this.#saveShowModeToSettings();
+    this.#updateShowHideSidebarButton();
+    this.dispatchEventToListeners("ShowModeChanged" /* SHOW_MODE_CHANGED */, showMode);
+    this.invalidateConstraints();
+  }
+  #setSidebarSizeDIP(sizeDIP, animate, userAction) {
+    if (this.#showMode !== "Both" /* BOTH */ || !this.isShowing()) {
+      return;
+    }
+    sizeDIP = this.#applyConstraints(sizeDIP, userAction);
+    if (this.#sidebarSizeDIP === sizeDIP) {
+      return;
+    }
+    if (!this.#resizerElementSize) {
+      this.#resizerElementSize = this.#isVertical ? this.#resizerElement.offsetWidth : this.#resizerElement.offsetHeight;
+    }
+    this.#removeAllLayoutProperties();
+    const sizeCSS = this.#zoomManager.dipToCSS(sizeDIP);
+    const sidebarSizeValue = sizeCSS + "px";
+    const mainSizeValue = this.#totalSizeCSS - sizeCSS + "px";
+    this.#sidebarElement.style.flexBasis = sidebarSizeValue;
+    if (this.#isVertical) {
+      this.#sidebarElement.style.width = sidebarSizeValue;
+      this.#mainElement.style.width = mainSizeValue;
+      this.#sidebarElement.style.height = this.#totalSizeOtherDimensionCSS + "px";
+      this.#mainElement.style.height = this.#totalSizeOtherDimensionCSS + "px";
+    } else {
+      this.#sidebarElement.style.height = sidebarSizeValue;
+      this.#mainElement.style.height = mainSizeValue;
+      this.#sidebarElement.style.width = this.#totalSizeOtherDimensionCSS + "px";
+      this.#mainElement.style.width = this.#totalSizeOtherDimensionCSS + "px";
+    }
+    if (this.#isVertical) {
+      if (this.#secondIsSidebar) {
+        this.#resizerElement.style.right = sidebarSizeValue;
+        this.#resizerElement.style.marginRight = -this.#resizerElementSize / 2 + "px";
+      } else {
+        this.#resizerElement.style.left = sidebarSizeValue;
+        this.#resizerElement.style.marginLeft = -this.#resizerElementSize / 2 + "px";
+      }
+    } else if (this.#secondIsSidebar) {
+      this.#resizerElement.style.bottom = sidebarSizeValue;
+      this.#resizerElement.style.marginBottom = -this.#resizerElementSize / 2 + "px";
+    } else {
+      this.#resizerElement.style.top = sidebarSizeValue;
+      this.#resizerElement.style.marginTop = -this.#resizerElementSize / 2 + "px";
+    }
+    this.#sidebarSizeDIP = sizeDIP;
+    if (animate) {
+      this.#animate(false);
+    } else {
+      this.doResize();
+      this.dispatchEventToListeners("SidebarSizeChanged" /* SIDEBAR_SIZE_CHANGED */, this.sidebarSize());
+    }
+  }
+  #animate(reverse, callback) {
+    const animationTime = 50;
+    this.#animationCallback = callback || null;
+    let animatedMarginPropertyName;
+    if (this.#isVertical) {
+      animatedMarginPropertyName = this.#secondIsSidebar ? "margin-right" : "margin-left";
+    } else {
+      animatedMarginPropertyName = this.#secondIsSidebar ? "margin-bottom" : "margin-top";
+    }
+    const marginFrom = reverse ? "0" : "-" + this.#zoomManager.dipToCSS(this.#sidebarSizeDIP) + "px";
+    const marginTo = reverse ? "-" + this.#zoomManager.dipToCSS(this.#sidebarSizeDIP) + "px" : "0";
+    this.contentElement.style.setProperty(animatedMarginPropertyName, marginFrom);
+    this.contentElement.style.setProperty("overflow", "hidden");
+    if (!reverse) {
+      suppressUnused(this.#mainElement.offsetWidth);
+      suppressUnused(this.#sidebarElement.offsetWidth);
+    }
+    if (!reverse && this.#sidebarWidget) {
+      this.#sidebarWidget.doResize();
+    }
+    this.contentElement.style.setProperty("transition", animatedMarginPropertyName + " " + animationTime + "ms linear");
+    const boundAnimationFrame = animationFrame.bind(this);
+    let startTime = null;
+    function animationFrame() {
+      this.#animationFrameHandle = 0;
+      if (!startTime) {
+        this.contentElement.style.setProperty(animatedMarginPropertyName, marginTo);
+        startTime = window.performance.now();
+      } else if (window.performance.now() < startTime + animationTime) {
+        if (this.#mainWidget) {
+          this.#mainWidget.doResize();
+        }
+      } else {
+        this.#cancelAnimation();
+        if (this.#mainWidget) {
+          this.#mainWidget.doResize();
+        }
+        this.dispatchEventToListeners("SidebarSizeChanged" /* SIDEBAR_SIZE_CHANGED */, this.sidebarSize());
+        return;
+      }
+      this.#animationFrameHandle = this.contentElement.window().requestAnimationFrame(boundAnimationFrame);
+    }
+    this.#animationFrameHandle = this.contentElement.window().requestAnimationFrame(boundAnimationFrame);
+  }
+  #cancelAnimation() {
+    this.contentElement.style.removeProperty("margin-top");
+    this.contentElement.style.removeProperty("margin-right");
+    this.contentElement.style.removeProperty("margin-bottom");
+    this.contentElement.style.removeProperty("margin-left");
+    this.contentElement.style.removeProperty("transition");
+    this.contentElement.style.removeProperty("overflow");
+    if (this.#animationFrameHandle) {
+      this.contentElement.window().cancelAnimationFrame(this.#animationFrameHandle);
+      this.#animationFrameHandle = 0;
+    }
+    if (this.#animationCallback) {
+      this.#animationCallback();
+      this.#animationCallback = null;
+    }
+  }
+  #applyConstraints(sidebarSize, userAction) {
+    const totalSize = this.#totalSizeDIP();
+    const zoomFactor = this.#constraintsInDip ? 1 : this.#zoomManager.zoomFactor();
+    let constraints = this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry2.Constraints();
+    let minSidebarSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
+    if (!minSidebarSize) {
+      minSidebarSize = MinPadding;
+    }
+    minSidebarSize *= zoomFactor;
+    if (this.#sidebarMinimized) {
+      sidebarSize = minSidebarSize;
+    }
+    let preferredSidebarSize = this.isVertical() ? constraints.preferred.width : constraints.preferred.height;
+    if (!preferredSidebarSize) {
+      preferredSidebarSize = MinPadding;
+    }
+    preferredSidebarSize *= zoomFactor;
+    if (sidebarSize < preferredSidebarSize) {
+      preferredSidebarSize = Math.max(sidebarSize, minSidebarSize);
+    }
+    preferredSidebarSize += zoomFactor;
+    constraints = this.#mainWidget ? this.#mainWidget.constraints() : new Geometry2.Constraints();
+    let minMainSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
+    if (!minMainSize) {
+      minMainSize = MinPadding;
+    }
+    minMainSize *= zoomFactor;
+    let preferredMainSize = this.isVertical() ? constraints.preferred.width : constraints.preferred.height;
+    if (!preferredMainSize) {
+      preferredMainSize = MinPadding;
+    }
+    preferredMainSize *= zoomFactor;
+    const savedMainSize = this.isVertical() ? this.#savedVerticalMainSize : this.#savedHorizontalMainSize;
+    if (savedMainSize !== null) {
+      preferredMainSize = Math.min(preferredMainSize, savedMainSize * zoomFactor);
+    }
+    if (userAction) {
+      preferredMainSize = minMainSize;
+    }
+    const totalPreferred = preferredMainSize + preferredSidebarSize;
+    if (totalPreferred <= totalSize) {
+      return Platform6.NumberUtilities.clamp(sidebarSize, preferredSidebarSize, totalSize - preferredMainSize);
+    }
+    if (minMainSize + minSidebarSize <= totalSize) {
+      const delta = totalPreferred - totalSize;
+      const sidebarDelta = delta * preferredSidebarSize / totalPreferred;
+      sidebarSize = preferredSidebarSize - sidebarDelta;
+      return Platform6.NumberUtilities.clamp(sidebarSize, minSidebarSize, totalSize - minMainSize);
+    }
+    return Math.max(0, totalSize - minMainSize);
+  }
+  wasShown() {
+    super.wasShown();
+    this.#forceUpdateLayout();
+    this.#zoomManager.addEventListener("ZoomChanged" /* ZOOM_CHANGED */, this.onZoomChanged, this);
+  }
+  willHide() {
+    super.willHide();
+    this.#zoomManager.removeEventListener("ZoomChanged" /* ZOOM_CHANGED */, this.onZoomChanged, this);
+  }
+  onResize() {
+    this.#maybeAutoAdjustOrientation();
+    this.#updateLayout();
+  }
+  onLayout() {
+    this.#updateLayout();
+  }
+  calculateConstraints() {
+    if (this.#showMode === "OnlyMain" /* ONLY_MAIN */) {
+      return this.#mainWidget ? this.#mainWidget.constraints() : new Geometry2.Constraints();
+    }
+    if (this.#showMode === "OnlySidebar" /* ONLY_SIDEBAR */) {
+      return this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry2.Constraints();
+    }
+    let mainConstraints = this.#mainWidget ? this.#mainWidget.constraints() : new Geometry2.Constraints();
+    let sidebarConstraints = this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry2.Constraints();
+    const min = MinPadding;
+    if (this.#isVertical) {
+      mainConstraints = mainConstraints.widthToMax(min).addWidth(1);
+      sidebarConstraints = sidebarConstraints.widthToMax(min);
+      return mainConstraints.addWidth(sidebarConstraints).heightToMax(sidebarConstraints);
+    }
+    mainConstraints = mainConstraints.heightToMax(min).addHeight(1);
+    sidebarConstraints = sidebarConstraints.heightToMax(min);
+    return mainConstraints.widthToMax(sidebarConstraints).addHeight(sidebarConstraints);
+  }
+  #maybeAutoAdjustOrientation() {
+    if (this.#autoAdjustOrientation) {
+      const width = this.isVertical() ? this.#totalSizeCSS : this.#totalSizeOtherDimensionCSS;
+      const height = this.isVertical() ? this.#totalSizeOtherDimensionCSS : this.#totalSizeCSS;
+      if (width <= 600 && height >= 600) {
+        this.setVertical(false);
+      } else {
+        this.setVertical(true);
+      }
+    }
+  }
+  #onResizeStart() {
+    this.#resizeStartSizeDIP = this.#sidebarSizeDIP;
+  }
+  #onResizeUpdate(event) {
+    const offset = event.data.currentPosition - event.data.startPosition;
+    const offsetDIP = this.#zoomManager.cssToDIP(offset);
+    const newSizeDIP = this.#secondIsSidebar ? this.#resizeStartSizeDIP - offsetDIP : this.#resizeStartSizeDIP + offsetDIP;
+    const constrainedSizeDIP = this.#applyConstraints(newSizeDIP, true);
+    this.#savedSidebarSizeDIP = constrainedSizeDIP;
+    this.#saveSetting();
+    this.#setSidebarSizeDIP(constrainedSizeDIP, false, true);
+    if (this.isVertical()) {
+      this.#savedVerticalMainSize = this.#totalSizeDIP() - this.#sidebarSizeDIP;
+    } else {
+      this.#savedHorizontalMainSize = this.#totalSizeDIP() - this.#sidebarSizeDIP;
+    }
+  }
+  #onResizeEnd() {
+    this.#resizeStartSizeDIP = 0;
+  }
+  hideDefaultResizer(noSplitter) {
+    this.#resizerElement.classList.toggle("hidden", Boolean(noSplitter));
+    this.uninstallResizer(this.#resizerElement);
+    this.#sidebarElement.classList.toggle("no-default-splitter", Boolean(noSplitter));
+  }
+  installResizer(resizerElement) {
+    this.#resizerWidget.addElement(resizerElement);
+  }
+  uninstallResizer(resizerElement) {
+    this.#resizerWidget.removeElement(resizerElement);
+  }
+  toggleResizer(resizer, on) {
+    if (on) {
+      this.installResizer(resizer);
+    } else {
+      this.uninstallResizer(resizer);
+    }
+  }
+  #settingForOrientation() {
+    const state = this.setting ? this.setting.get() : {};
+    const orientationState = this.#isVertical ? state.vertical : state.horizontal;
+    return orientationState ?? null;
+  }
+  #preferredSidebarSizeDIP() {
+    let size = this.#savedSidebarSizeDIP;
+    if (!size) {
+      size = this.#isVertical ? this.#defaultSidebarWidth : this.#defaultSidebarHeight;
+      if (0 < size && size < 1) {
+        size *= this.#totalSizeDIP();
+      }
+    }
+    return size;
+  }
+  #restoreSidebarSizeFromSettings() {
+    const settingForOrientation = this.#settingForOrientation();
+    this.#savedSidebarSizeDIP = settingForOrientation ? settingForOrientation.size : 0;
+  }
+  #restoreAndApplyShowModeFromSettings() {
+    const orientationState = this.#settingForOrientation();
+    this.#savedShowMode = orientationState?.showMode ? orientationState.showMode : this.#showMode;
+    this.#showMode = this.#savedShowMode;
+    switch (this.#savedShowMode) {
+      case "Both" /* BOTH */:
+        this.showBoth();
+        break;
+      case "OnlyMain" /* ONLY_MAIN */:
+        this.hideSidebar();
+        break;
+      case "OnlySidebar" /* ONLY_SIDEBAR */:
+        this.hideMain();
+        break;
+    }
+  }
+  #saveShowModeToSettings() {
+    this.#savedShowMode = this.#showMode;
+    this.#saveSetting();
+  }
+  #saveSetting() {
+    if (!this.setting) {
+      return;
+    }
+    const state = this.setting.get();
+    const orientationState = (this.#isVertical ? state.vertical : state.horizontal) || {};
+    orientationState.size = this.#savedSidebarSizeDIP;
+    if (this.#shouldSaveShowMode) {
+      orientationState.showMode = this.#savedShowMode;
+    }
+    if (this.#isVertical) {
+      state.vertical = orientationState;
+    } else {
+      state.horizontal = orientationState;
+    }
+    this.setting.set(state);
+  }
+  #forceUpdateLayout() {
+    this.#sidebarSizeDIP = -1;
+    this.#updateLayout();
+  }
+  onZoomChanged() {
+    this.#forceUpdateLayout();
+  }
+  createShowHideSidebarButton(showTitle, hideTitle, shownString, hiddenString, jslogContext) {
+    this.#showSidebarButtonTitle = showTitle;
+    this.#hideSidebarButtonTitle = hideTitle;
+    this.#shownSidebarString = shownString;
+    this.#hiddenSidebarString = hiddenString;
+    this.#showHideSidebarButton = new ToolbarButton("", "right-panel-open");
+    this.#showHideSidebarButton.addEventListener(ToolbarButton.Events.CLICK, buttonClicked, this);
+    if (jslogContext) {
+      this.#showHideSidebarButton.element.setAttribute(
+        "jslog",
+        `${VisualLogging4.toggleSubpane().track({ click: true }).context(jslogContext)}`
+      );
+    }
+    this.#updateShowHideSidebarButton();
+    function buttonClicked() {
+      this.toggleSidebar();
+    }
+    return this.#showHideSidebarButton;
+  }
+  /**
+   * @returns true if this call makes the sidebar visible, and false otherwise.
+   */
+  toggleSidebar() {
+    if (this.#showMode !== "Both" /* BOTH */) {
+      this.showBoth(true);
+      LiveAnnouncer.alert(this.#shownSidebarString);
+      return true;
+    }
+    this.hideSidebar(true);
+    LiveAnnouncer.alert(this.#hiddenSidebarString);
+    return false;
+  }
+  #updateShowHideSidebarButton() {
+    if (!this.#showHideSidebarButton) {
+      return;
+    }
+    const sidebarHidden = this.#showMode === "OnlyMain" /* ONLY_MAIN */;
+    let glyph = "";
+    if (sidebarHidden) {
+      glyph = this.isVertical() ? this.isSidebarSecond() ? "right-panel-open" : "left-panel-open" : this.isSidebarSecond() ? "bottom-panel-open" : "top-panel-open";
+    } else {
+      glyph = this.isVertical() ? this.isSidebarSecond() ? "right-panel-close" : "left-panel-close" : this.isSidebarSecond() ? "bottom-panel-close" : "top-panel-close";
+    }
+    this.#showHideSidebarButton.setGlyph(glyph);
+    this.#showHideSidebarButton.setTitle(sidebarHidden ? this.#showSidebarButtonTitle : this.#hideSidebarButtonTitle);
+  }
+};
+var SplitWidgetElement = class extends WidgetElement {
+  static observedAttributes = ["direction", "sidebar-position", "sidebar-initial-size", "sidebar-visibility"];
+  constructor() {
+    super();
+    registerWidgetConfig(this, widgetConfig((element) => {
+      const vertical = element.getAttribute("direction") === "column";
+      const autoAdjustOrientation = element.getAttribute("direction") === "auto";
+      const secondIsSidebar = element.getAttribute("sidebar-position") === "second";
+      const settingName = element.getAttribute("name") ?? void 0;
+      const sidebarSize = parseInt(element.getAttribute("sidebar-initial-size") || "", 10);
+      const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : void 0;
+      const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : void 0;
+      const widget2 = new SplitWidget(
+        vertical,
+        secondIsSidebar,
+        settingName,
+        defaultSidebarWidth,
+        defaultSidebarHeight,
+        /* constraintsInDip=*/
+        false,
+        element
+      );
+      if (element.getAttribute("sidebar-initial-size") === "minimized") {
+        widget2.setSidebarMinimized(true);
+      }
+      if (autoAdjustOrientation) {
+        widget2.setAutoAdjustOrientation(true);
+      }
+      const sidebarHidden = element.getAttribute("sidebar-visibility") === "hidden";
+      if (sidebarHidden) {
+        widget2.hideSidebar();
+      }
+      widget2.addEventListener("ShowModeChanged" /* SHOW_MODE_CHANGED */, () => {
+        element.dispatchEvent(new CustomEvent("change", { detail: widget2.showMode() }));
+      });
+      return widget2;
+    }));
+  }
+  attributeChangedCallback(name, _oldValue, newValue) {
+    const widget2 = Widget.get(this);
+    if (!widget2) {
+      return;
+    }
+    if (name === "direction") {
+      widget2.setVertical(newValue === "column");
+      widget2.setAutoAdjustOrientation(newValue === "auto");
+    } else if (name === "sidebar-position") {
+      widget2.setSecondIsSidebar(newValue === "second");
+    } else if (name === "sidebar-visibility") {
+      if (newValue === "hidden") {
+        widget2.hideSidebar();
+      } else {
+        widget2.showBoth();
+      }
+    }
+  }
+};
+customElements.define("devtools-split-view", SplitWidgetElement);
+var ShowMode = /* @__PURE__ */ ((ShowMode2) => {
+  ShowMode2["BOTH"] = "Both";
+  ShowMode2["ONLY_MAIN"] = "OnlyMain";
+  ShowMode2["ONLY_SIDEBAR"] = "OnlySidebar";
+  return ShowMode2;
+})(ShowMode || {});
+var Events5 = /* @__PURE__ */ ((Events12) => {
+  Events12["SIDEBAR_SIZE_CHANGED"] = "SidebarSizeChanged";
+  Events12["SHOW_MODE_CHANGED"] = "ShowModeChanged";
+  return Events12;
+})(Events5 || {});
+var MinPadding = 20;
+var suppressUnused = function(_value) {
+};
+
+// ../../front_end/ui/legacy/TabbedPane.ts
 var TabbedPane_exports = {};
 __export(TabbedPane_exports, {
-  Events: () => Events5,
+  Events: () => Events6,
   TabbedPane: () => TabbedPane,
   TabbedPaneElement: () => TabbedPaneElement,
   TabbedPaneTab: () => TabbedPaneTab
 });
-import * as Common6 from "../../core/common/common.js";
+import * as Common8 from "../../core/common/common.js";
 import * as i18n7 from "../../core/i18n/i18n.js";
-import * as Platform6 from "../../core/platform/platform.js";
-import * as Geometry2 from "../../models/geometry/geometry.js";
+import * as Platform7 from "../../core/platform/platform.js";
+import * as Geometry3 from "../../models/geometry/geometry.js";
 import * as Buttons2 from "../components/buttons/buttons.js";
 import { render } from "../lit/lit.js";
-import * as VisualLogging4 from "../visual_logging/visual_logging.js";
+import * as VisualLogging5 from "../visual_logging/visual_logging.js";
 import { createIcon as createIcon2, Icon } from "../kit/kit.js";
 
 // gen/front_end/ui/legacy/tabbedPane.css.js
@@ -2826,7 +5123,7 @@ var tabbedPane_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./tabbedPane.css")} */`;
 
-// gen/front_end/ui/legacy/Tooltip.js
+// ../../front_end/ui/legacy/Tooltip.ts
 var Tooltip_exports = {};
 __export(Tooltip_exports, {
   Tooltip: () => Tooltip
@@ -2845,1310 +5142,7 @@ var Tooltip = class {
   }
 };
 
-// gen/front_end/ui/legacy/Widget.js
-var Widget_exports = {};
-__export(Widget_exports, {
-  HBox: () => HBox,
-  VBox: () => VBox,
-  VBoxWithResizeCallback: () => VBoxWithResizeCallback,
-  Widget: () => Widget,
-  WidgetConfig: () => WidgetConfig,
-  WidgetDirective: () => WidgetDirective,
-  WidgetElement: () => WidgetElement,
-  WidgetFocusRestorer: () => WidgetFocusRestorer,
-  instantiateWidget: () => instantiateWidget,
-  lookupUniverseForElement: () => lookupUniverseForElement,
-  registerWidgetConfig: () => registerWidgetConfig,
-  widget: () => widget,
-  widgetConfig: () => widgetConfig,
-  widgetConfigs: () => widgetConfigs,
-  widgetRef: () => widgetRef
-});
-import "../dom_extension/dom_extension.js";
-import * as Platform5 from "../../core/platform/platform.js";
-import * as Geometry from "../../models/geometry/geometry.js";
-import * as Lit from "../lit/lit.js";
-
-// gen/front_end/ui/legacy/DOMUtilities.js
-var DOMUtilities_exports = {};
-__export(DOMUtilities_exports, {
-  appendStyle: () => appendStyle,
-  deepActiveElement: () => deepActiveElement,
-  getEnclosingShadowRootForNode: () => getEnclosingShadowRootForNode,
-  rangeOfWord: () => rangeOfWord
-});
-function deepActiveElement(doc) {
-  let activeElement = doc.activeElement;
-  while (activeElement?.shadowRoot?.activeElement) {
-    activeElement = activeElement.shadowRoot.activeElement;
-  }
-  return activeElement;
-}
-function getEnclosingShadowRootForNode(node) {
-  let parentNode = node.parentNodeOrShadowHost();
-  while (parentNode) {
-    if (parentNode instanceof ShadowRoot) {
-      return parentNode;
-    }
-    parentNode = parentNode.parentNodeOrShadowHost();
-  }
-  return null;
-}
-function rangeOfWord(rootNode, offset, stopCharacters, stayWithinNode, direction) {
-  let startNode;
-  let startOffset = 0;
-  let endNode;
-  let endOffset = 0;
-  if (!stayWithinNode) {
-    stayWithinNode = rootNode;
-  }
-  if (!direction || direction === "backward" || direction === "both") {
-    let node = rootNode;
-    while (node) {
-      if (node === stayWithinNode) {
-        if (!startNode) {
-          startNode = stayWithinNode;
-        }
-        break;
-      }
-      if (node.nodeType === Node.TEXT_NODE && node.nodeValue !== null) {
-        const start = node === rootNode ? offset - 1 : node.nodeValue.length - 1;
-        for (let i = start; i >= 0; --i) {
-          if (stopCharacters.indexOf(node.nodeValue[i]) !== -1) {
-            startNode = node;
-            startOffset = i + 1;
-            break;
-          }
-        }
-      }
-      if (startNode) {
-        break;
-      }
-      node = node.traversePreviousNode(stayWithinNode);
-    }
-    if (!startNode) {
-      startNode = stayWithinNode;
-      startOffset = 0;
-    }
-  } else {
-    startNode = rootNode;
-    startOffset = offset;
-  }
-  if (!direction || direction === "forward" || direction === "both") {
-    let node = rootNode;
-    while (node) {
-      if (node === stayWithinNode) {
-        if (!endNode) {
-          endNode = stayWithinNode;
-        }
-        break;
-      }
-      if (node.nodeType === Node.TEXT_NODE && node.nodeValue !== null) {
-        const start = node === rootNode ? offset : 0;
-        for (let i = start; i < node.nodeValue.length; ++i) {
-          if (stopCharacters.indexOf(node.nodeValue[i]) !== -1) {
-            endNode = node;
-            endOffset = i;
-            break;
-          }
-        }
-      }
-      if (endNode) {
-        break;
-      }
-      node = node.traverseNextNode(stayWithinNode);
-    }
-    if (!endNode) {
-      endNode = stayWithinNode;
-      endOffset = stayWithinNode.nodeType === Node.TEXT_NODE ? stayWithinNode.nodeValue?.length || 0 : stayWithinNode.childNodes.length;
-    }
-  } else {
-    endNode = rootNode;
-    endOffset = offset;
-  }
-  if (!rootNode.ownerDocument) {
-    throw new Error("No `ownerDocument` found for rootNode");
-  }
-  const result = rootNode.ownerDocument.createRange();
-  result.setStart(startNode, startOffset);
-  result.setEnd(endNode, endOffset);
-  return result;
-}
-function appendStyle(node, ...styles) {
-  for (const cssText of styles) {
-    const style = (node.ownerDocument ?? document).createElement("style");
-    style.textContent = cssText;
-    node.appendChild(style);
-  }
-}
-
-// gen/front_end/ui/legacy/UniverseRequestEvent.js
-var UniverseRequestEvent_exports = {};
-__export(UniverseRequestEvent_exports, {
-  UniverseRequestEvent: () => UniverseRequestEvent
-});
-var UniverseRequestEvent = class _UniverseRequestEvent extends Event {
-  static eventName = "universerequest";
-  /**
-   * The `Universe` will be filled in by the `RootView` in the event handler.
-   * Widget.ts dispatches a new UniverseRequestEvent, and retrieves the Universe from the event right after.
-   */
-  universe;
-  constructor() {
-    super(_UniverseRequestEvent.eventName, { bubbles: true, composed: true });
-  }
-};
-
-// gen/front_end/ui/legacy/Widget.js
-var { html } = Lit;
-function lookupUniverseForElement(element) {
-  const event = new UniverseRequestEvent();
-  element.dispatchEvent(event);
-  return event.universe;
-}
-var originalAppendChild = Node.prototype.appendChild;
-var originalInsertBefore = Node.prototype.insertBefore;
-var originalRemoveChild = Node.prototype.removeChild;
-var originalRemoveChildren = Node.prototype.removeChildren;
-function assert(condition, message) {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
-var WidgetConfig = class {
-  widgetClass;
-  widgetParams;
-  constructor(widgetClass, widgetParams) {
-    this.widgetClass = widgetClass;
-    this.widgetParams = widgetParams;
-  }
-};
-function widgetConfig(widgetClass, widgetParams) {
-  return new WidgetConfig(widgetClass, widgetParams);
-}
-var currentUpdateQueue = null;
-var currentlyProcessed = /* @__PURE__ */ new Set();
-var nextUpdateQueue = /* @__PURE__ */ new Map();
-var pendingAnimationFrames = /* @__PURE__ */ new WeakMap();
-var overallUpdatePromise = null;
-function enqueueIntoNextUpdateQueue(widget2) {
-  const scheduledUpdate = nextUpdateQueue.get(widget2) ?? Promise.withResolvers();
-  nextUpdateQueue.delete(widget2);
-  nextUpdateQueue.set(widget2, scheduledUpdate);
-  const widgetWindow = widget2.contentElement.window() || window;
-  if (!pendingAnimationFrames.has(widgetWindow)) {
-    const frameId = widgetWindow.requestAnimationFrame(() => {
-      pendingAnimationFrames.delete(widgetWindow);
-      runNextUpdate();
-    });
-    pendingAnimationFrames.set(widgetWindow, frameId);
-  }
-  return scheduledUpdate.promise;
-}
-function enqueueWidgetUpdate(widget2) {
-  if (currentUpdateQueue) {
-    if (currentlyProcessed.has(widget2)) {
-      return enqueueIntoNextUpdateQueue(widget2);
-    }
-    const scheduledUpdate = currentUpdateQueue.get(widget2) ?? Promise.withResolvers();
-    currentUpdateQueue.delete(widget2);
-    currentUpdateQueue.set(widget2, scheduledUpdate);
-    return scheduledUpdate.promise;
-  }
-  return enqueueIntoNextUpdateQueue(widget2);
-}
-function cancelUpdate(widget2) {
-  widget2.cancelUpdateController();
-  if (currentUpdateQueue) {
-    const scheduledUpdate2 = currentUpdateQueue.get(widget2);
-    if (scheduledUpdate2) {
-      scheduledUpdate2.resolve();
-      currentUpdateQueue.delete(widget2);
-    }
-  }
-  const scheduledUpdate = nextUpdateQueue.get(widget2);
-  if (scheduledUpdate) {
-    scheduledUpdate.resolve();
-    nextUpdateQueue.delete(widget2);
-  }
-}
-function resolveOverallUpdatePromise() {
-  if (currentlyProcessed.size === 0 && (!currentUpdateQueue || currentUpdateQueue.size === 0) && nextUpdateQueue.size === 0 && overallUpdatePromise) {
-    overallUpdatePromise.resolve();
-    overallUpdatePromise = null;
-  }
-}
-function runNextUpdate() {
-  if (!currentUpdateQueue) {
-    currentUpdateQueue = nextUpdateQueue;
-    nextUpdateQueue = /* @__PURE__ */ new Map();
-  }
-  for (const [widget2, update] of currentUpdateQueue) {
-    if (currentlyProcessed.has(widget2)) {
-      const scheduledUpdate = nextUpdateQueue.get(widget2);
-      if (!scheduledUpdate) {
-        nextUpdateQueue.set(widget2, update);
-      } else {
-        void scheduledUpdate.promise.then(update.resolve);
-      }
-      continue;
-    }
-    const { resolve } = update;
-    currentlyProcessed.add(widget2);
-    void (async () => {
-      try {
-        const controller = new AbortController();
-        widget2.addUpdateController(controller);
-        await widget2.performUpdate(controller.signal);
-      } finally {
-        currentlyProcessed.delete(widget2);
-        const nextUpdate = nextUpdateQueue.get(widget2);
-        if (nextUpdate) {
-          void nextUpdate.promise.then(resolve);
-          const widgetWindow = widget2.contentElement.window() || window;
-          if (!pendingAnimationFrames.has(widgetWindow)) {
-            const frameId = widgetWindow.requestAnimationFrame(() => {
-              pendingAnimationFrames.delete(widgetWindow);
-              runNextUpdate();
-            });
-            pendingAnimationFrames.set(widgetWindow, frameId);
-          }
-        } else {
-          resolve();
-        }
-        resolveOverallUpdatePromise();
-      }
-    })().catch((e) => {
-      if (e.name !== "AbortError") {
-        console.error(`${widget2.constructor.name}.performUpdate failed: `, e);
-      }
-    });
-  }
-  currentUpdateQueue.clear();
-  queueMicrotask(() => {
-    if (currentUpdateQueue && currentUpdateQueue.size > 0) {
-      runNextUpdate();
-    } else {
-      currentUpdateQueue = null;
-      resolveOverallUpdatePromise();
-    }
-  });
-}
-var widgetConfigs = /* @__PURE__ */ new WeakMap();
-function registerWidgetConfig(element, config) {
-  if (!widgetConfigs.has(element)) {
-    setUpLifecycleTracking(element);
-  }
-  widgetConfigs.set(element, config);
-}
-function instantiateWidget(element, widgetConfig2) {
-  if (!widgetConfig2.widgetClass) {
-    throw new Error("No widgetClass defined");
-  }
-  let newWidget;
-  if (Widget.isPrototypeOf(widgetConfig2.widgetClass)) {
-    const ctor = widgetConfig2.widgetClass;
-    const depsCtors = ctor.INJECT;
-    if (depsCtors && depsCtors.length > 0) {
-      const universe = lookupUniverseForElement(element);
-      if (!universe) {
-        throw new Error(`No Universe found for widget ${ctor.name} requesting dependencies via INJECT.`);
-      }
-      const deps = depsCtors.map((depCtor) => universe.get(depCtor));
-      newWidget = new ctor(element, deps);
-    } else {
-      newWidget = new ctor(element);
-    }
-  } else {
-    const factory = widgetConfig2.widgetClass;
-    const universe = lookupUniverseForElement(element);
-    newWidget = factory(element, universe);
-  }
-  if (widgetConfig2.widgetParams) {
-    Object.assign(newWidget, widgetConfig2.widgetParams);
-  }
-  newWidget.requestUpdate();
-  return newWidget;
-}
-function setUpLifecycleTracking(element) {
-  let tracker;
-  if (element instanceof WidgetElement) {
-    tracker = element;
-  } else {
-    tracker = document.createElement("devtools-widget");
-    tracker.style.display = "none";
-    element.appendChild(tracker);
-  }
-  tracker.onDisconnect = () => {
-    const widget2 = Widget.get(element);
-    if (widget2) {
-      widget2.setHideOnDetach();
-      widget2.detach();
-    }
-  };
-  tracker.onConnect = () => {
-    let widget2 = Widget.get(element);
-    if (!widget2) {
-      const config = widgetConfigs.get(element);
-      if (!config) {
-        throw new Error("No widgetConfig defined");
-      }
-      widget2 = instantiateWidget(element, config);
-    }
-    const parent = element.parentNode instanceof DocumentFragment ? element.parentNode : element.parentElementOrShadowHost();
-    if (!parent) {
-      widget2.markAsRoot();
-    } else {
-      widget2.show(
-        parent,
-        void 0,
-        /* suppressOrphanWidgetError= */
-        true
-      );
-    }
-  };
-}
-var WidgetElement = class extends HTMLElement {
-  onDisconnect;
-  onConnect;
-  #disconnectTimeout;
-  getWidget() {
-    return Widget.get(this);
-  }
-  connectedCallback() {
-    if (this.#disconnectTimeout) {
-      clearTimeout(this.#disconnectTimeout);
-      this.#disconnectTimeout = void 0;
-    }
-    if (this.onConnect) {
-      this.onConnect();
-      return;
-    }
-  }
-  disconnectedCallback() {
-    if (this.onDisconnect) {
-      this.#disconnectTimeout = setTimeout(() => {
-        this.onDisconnect?.();
-      }, 0);
-      return;
-    }
-  }
-  appendChild(child) {
-    const widget2 = child instanceof HTMLElement ? Widget.get(child) : null;
-    if (widget2) {
-      widget2.show(
-        this,
-        void 0,
-        /* suppressOrphanWidgetError= */
-        true
-      );
-      return child;
-    }
-    return super.appendChild(child);
-  }
-  insertBefore(child, referenceChild) {
-    const widget2 = child instanceof HTMLElement ? Widget.get(child) : null;
-    if (widget2) {
-      widget2.show(
-        this,
-        referenceChild,
-        /* suppressOrphanWidgetError= */
-        true
-      );
-      return child;
-    }
-    return super.insertBefore(child, referenceChild);
-  }
-  removeChild(child) {
-    const childWidget = Widget.get(child);
-    if (childWidget) {
-      childWidget.detach(
-        /* overrideHideOnDetach= */
-        true
-      );
-      return child;
-    }
-    return super.removeChild(child);
-  }
-  removeChildren() {
-    for (const child of this.children) {
-      const childWidget = Widget.get(child);
-      if (childWidget) {
-        childWidget.detach(
-          /* overrideHideOnDetach= */
-          true
-        );
-      }
-    }
-    super.removeChildren();
-  }
-  cloneNode(deep) {
-    const clone = cloneCustomElement(this, deep);
-    const config = widgetConfigs.get(this);
-    if (config) {
-      registerWidgetConfig(clone, config);
-    }
-    return clone;
-  }
-  focus() {
-    const widget2 = Widget.get(this);
-    if (widget2) {
-      widget2.focus();
-    }
-  }
-};
-customElements.define("devtools-widget", WidgetElement);
-var WidgetDirective = class extends Lit.Directive.Directive {
-  #partType;
-  #lastWidgetClass;
-  #lastKey;
-  constructor(partInfo) {
-    super(partInfo);
-    this.#partType = partInfo.type;
-    if (this.#partType !== Lit.Directive.PartType.CHILD && this.#partType !== Lit.Directive.PartType.ELEMENT) {
-      throw new Error("Widget directive must be used as a child or element directive.");
-    }
-  }
-  update(part, [widgetClass, widgetParams]) {
-    if (this.#partType === Lit.Directive.PartType.ELEMENT) {
-      const element = part.element;
-      const config = widgetConfig(widgetClass, widgetParams);
-      const oldConfig = widgetConfigs.get(element);
-      const widget2 = Widget.get(element);
-      if (widget2 && config.widgetParams) {
-        let needsUpdate = false;
-        for (const key in config.widgetParams) {
-          if (Object.prototype.hasOwnProperty.call(config.widgetParams, key) && config.widgetParams[key] !== oldConfig?.widgetParams?.[key]) {
-            widget2[key] = config.widgetParams[key];
-            needsUpdate = true;
-          }
-        }
-        if (needsUpdate) {
-          widget2.requestUpdate();
-        }
-      }
-      registerWidgetConfig(element, config);
-      return Lit.nothing;
-    }
-    return this.render(widgetClass, widgetParams);
-  }
-  render(widgetClass, widgetParams) {
-    if (this.#partType === Lit.Directive.PartType.ELEMENT) {
-      return Lit.nothing;
-    }
-    if (this.#lastWidgetClass !== widgetClass) {
-      this.#lastWidgetClass = widgetClass;
-      this.#lastKey = Widget.isPrototypeOf(widgetClass) ? widgetClass : widgetClass.toString();
-    }
-    return Lit.Directives.repeat([widgetClass], () => this.#lastKey, () => html`<devtools-widget ${widget(widgetClass, widgetParams)}></devtools-widget>`);
-  }
-};
-var widget = Lit.Directive.directive(WidgetDirective);
-function widgetRef(type, callback) {
-  return Lit.Directives.ref((e) => {
-    if (!(e instanceof HTMLElement)) {
-      return;
-    }
-    const widget2 = Widget.getOrCreateWidget(e);
-    if (!(widget2 instanceof type)) {
-      throw new Error(`Expected an element with a widget of type ${type.name} but got ${e?.constructor?.name}`);
-    }
-    callback(widget2);
-  });
-}
-var widgetCounterMap = /* @__PURE__ */ new WeakMap();
-var widgetMap = /* @__PURE__ */ new WeakMap();
-function incrementWidgetCounter(parentElement, childElement) {
-  const count = (widgetCounterMap.get(childElement) || 0) + (Widget.get(childElement) ? 1 : 0);
-  for (let el = parentElement; el; el = el.parentElementOrShadowHost()) {
-    widgetCounterMap.set(el, (widgetCounterMap.get(el) || 0) + count);
-  }
-}
-function decrementWidgetCounter(parentElement, childElement) {
-  const count = (widgetCounterMap.get(childElement) || 0) + (Widget.get(childElement) ? 1 : 0);
-  for (let el = parentElement; el; el = el.parentElementOrShadowHost()) {
-    const elCounter = widgetCounterMap.get(el);
-    if (elCounter) {
-      widgetCounterMap.set(el, elCounter - count);
-    }
-  }
-}
-var UPDATE_COMPLETE = Promise.resolve();
-var UpdateState;
-(function(UpdateState2) {
-  UpdateState2["NORMAL"] = "NORMAL";
-  UpdateState2["INTERRUPTED"] = "INTERRUPTED";
-  UpdateState2["SHIELDED"] = "SHIELDED";
-})(UpdateState || (UpdateState = {}));
-var Widget = class _Widget {
-  element;
-  #contentElement;
-  #shadowRoot;
-  #visible = false;
-  #isRoot = false;
-  #isShowing = false;
-  #children = [];
-  #hideOnDetach = false;
-  #notificationDepth = 0;
-  #invalidationsSuspended = 0;
-  #parentWidget = null;
-  #cachedConstraints;
-  #constraints;
-  #invalidationsRequested;
-  #externallyManaged;
-  #updateComplete = UPDATE_COMPLETE;
-  #updateController;
-  #updateState = "NORMAL";
-  constructor(elementOrOptions, options) {
-    if (elementOrOptions instanceof HTMLElement) {
-      this.element = elementOrOptions;
-    } else {
-      this.element = document.createElement("div");
-      if (elementOrOptions !== void 0) {
-        options = elementOrOptions;
-      }
-    }
-    this.#shadowRoot = this.element.shadowRoot;
-    if (options?.useShadowDom && !this.#shadowRoot) {
-      this.element.classList.add("vbox");
-      this.element.classList.add("flex-auto");
-      this.#shadowRoot = createShadowRootWithCoreStyles(this.element, {
-        delegatesFocus: options?.delegatesFocus
-      });
-      if (options.useShadowDom === "pure") {
-        this.#contentElement = this.#shadowRoot;
-      } else {
-        const div = document.createElement("div");
-        this.#shadowRoot.appendChild(div);
-        this.#contentElement = div;
-      }
-    } else {
-      this.#contentElement = this.element;
-    }
-    const legacyOptions = options;
-    if (legacyOptions?.classes) {
-      this.element.classList.add(...legacyOptions.classes);
-    }
-    if (legacyOptions?.jslog) {
-      this.element.setAttribute("jslog", legacyOptions.jslog);
-    }
-    if (this.contentElement instanceof HTMLElement) {
-      this.contentElement.classList.add("widget");
-    } else if (options?.useShadowDom === "pure") {
-      this.element.classList.add("widget");
-    }
-    widgetMap.set(this.element, this);
-  }
-  /**
-   * An array of dependency constructors that this widget class expects to receive as an array
-   * in the second positional argument to its constructor during `instantiateWidget`:
-   * `constructor(element: HTMLElement, deps: WidgetDependencies<typeof MyWidget>)`
-   *
-   * Override this static field in sub-classes to specify dependency constructors to be retrieved from `Universe`.
-   */
-  static INJECT = [];
-  /**
-   * Returns the {@link Widget} whose element is the given `node`, or `undefined`
-   * if the `node` is not an element for a widget.
-   *
-   * @param node a DOM node.
-   * @returns the {@link Widget} that is attached to the `node` or `undefined`.
-   */
-  static get(node) {
-    return widgetMap.get(node);
-  }
-  static get allUpdatesComplete() {
-    if (nextUpdateQueue.size === 0 && !currentUpdateQueue && currentlyProcessed.size === 0) {
-      return Promise.resolve();
-    }
-    if (!overallUpdatePromise) {
-      overallUpdatePromise = Promise.withResolvers();
-    }
-    return overallUpdatePromise.promise;
-  }
-  static getOrCreateWidget(element) {
-    const widget2 = _Widget.get(element);
-    if (widget2) {
-      return widget2;
-    }
-    let config = widgetConfigs.get(element);
-    if (!config) {
-      config = widgetConfig((element2) => new _Widget(element2));
-    }
-    return instantiateWidget(element, config);
-  }
-  get contentElement() {
-    return this.#contentElement;
-  }
-  set contentElement(contentElement) {
-    this.#contentElement = contentElement;
-  }
-  dispatchDOMEvent(event) {
-    this.element.dispatchEvent(event);
-  }
-  markAsRoot() {
-    assert(!this.element.parentElement, "Attempt to mark as root attached node");
-    this.#isRoot = true;
-  }
-  parentWidget() {
-    return this.#parentWidget;
-  }
-  children() {
-    return this.#children;
-  }
-  childWasDetached(_widget) {
-  }
-  isShowing() {
-    return this.#isShowing;
-  }
-  shouldHideOnDetach() {
-    if (!this.element.parentElement) {
-      return false;
-    }
-    if (this.#hideOnDetach) {
-      return true;
-    }
-    for (const child of this.#children) {
-      if (child.shouldHideOnDetach()) {
-        return true;
-      }
-    }
-    return false;
-  }
-  setHideOnDetach() {
-    this.#hideOnDetach = true;
-  }
-  inNotification() {
-    return Boolean(this.#notificationDepth) || Boolean(this.#parentWidget?.inNotification());
-  }
-  parentIsShowing() {
-    if (this.#isRoot) {
-      return true;
-    }
-    return this.#parentWidget?.isShowing() ?? false;
-  }
-  callOnVisibleChildren(method) {
-    const copy = this.#children.slice();
-    for (let i = 0; i < copy.length; ++i) {
-      if (copy[i].#parentWidget === this && copy[i].#visible) {
-        method.call(copy[i]);
-      }
-    }
-  }
-  processWillShow() {
-    this.callOnVisibleChildren(this.processWillShow);
-    this.#isShowing = true;
-  }
-  processWasShown() {
-    if (this.inNotification()) {
-      return;
-    }
-    this.restoreScrollPositions();
-    this.notify(this.wasShown);
-    this.callOnVisibleChildren(this.processWasShown);
-  }
-  processWillHide() {
-    if (this.inNotification()) {
-      return;
-    }
-    this.storeScrollPositions();
-    this.callOnVisibleChildren(this.processWillHide);
-    this.notify(this.willHide);
-    this.#isShowing = false;
-  }
-  processWasHidden() {
-    this.callOnVisibleChildren(this.processWasHidden);
-    this.notify(this.wasHidden);
-  }
-  processOnResize() {
-    if (this.inNotification()) {
-      return;
-    }
-    if (!this.isShowing()) {
-      return;
-    }
-    this.notify(this.onResize);
-    this.callOnVisibleChildren(this.processOnResize);
-  }
-  notify(notification) {
-    ++this.#notificationDepth;
-    try {
-      notification.call(this);
-    } finally {
-      --this.#notificationDepth;
-    }
-  }
-  wasShown() {
-  }
-  willHide() {
-  }
-  wasHidden() {
-  }
-  onResize() {
-  }
-  onLayout() {
-  }
-  onDetach() {
-  }
-  async ownerViewDisposed() {
-  }
-  show(parentElement, insertBefore, suppressOrphanWidgetError = false) {
-    assert(parentElement, "Attempt to attach widget with no parent element");
-    if (!this.#isRoot) {
-      let currentParent = parentElement;
-      let currentWidget = void 0;
-      while (!currentWidget) {
-        if (!currentParent) {
-          if (suppressOrphanWidgetError) {
-            this.#isRoot = true;
-            this.show(parentElement, insertBefore);
-            return;
-          }
-          throw new Error("Attempt to attach widget to orphan node");
-        }
-        currentWidget = widgetMap.get(currentParent);
-        currentParent = currentParent.parentElementOrShadowHost();
-      }
-      this.attach(currentWidget);
-    }
-    this.#showWidget(parentElement, insertBefore);
-  }
-  attach(parentWidget) {
-    if (parentWidget === this.#parentWidget) {
-      return;
-    }
-    if (this.#parentWidget) {
-      this.detach();
-    }
-    this.#parentWidget = parentWidget;
-    this.#parentWidget.#children.push(this);
-    this.#isRoot = false;
-  }
-  showWidget() {
-    if (this.#visible) {
-      return;
-    }
-    if (!this.element.parentElement) {
-      throw new Error("Attempt to show widget that is not hidden using hideWidget().");
-    }
-    this.#showWidget(this.element.parentElement, this.element.nextSibling);
-  }
-  #showWidget(parentElement, insertBefore) {
-    let currentParent = parentElement;
-    while (currentParent && !_Widget.get(currentParent)) {
-      currentParent = currentParent.parentElementOrShadowHost();
-    }
-    if (this.#isRoot) {
-      assert(!currentParent, "Attempt to show root widget under another widget");
-    } else {
-      assert(currentParent && widgetMap.get(currentParent) === this.#parentWidget, "Attempt to show under node belonging to alien widget");
-    }
-    const wasVisible = this.#visible;
-    if (wasVisible && this.element.parentNode === parentElement) {
-      return;
-    }
-    this.#visible = true;
-    if (!wasVisible && this.parentIsShowing()) {
-      this.processWillShow();
-    }
-    this.element.classList.remove("hidden");
-    if (this.element.parentNode !== parentElement) {
-      if (!this.#externallyManaged) {
-        incrementWidgetCounter(parentElement, this.element);
-      }
-      if (insertBefore) {
-        originalInsertBefore.call(parentElement, this.element, insertBefore);
-      } else {
-        originalAppendChild.call(parentElement, this.element);
-      }
-    }
-    const focusedElementsCount = this.#parentWidget?.getDefaultFocusedElements?.()?.length ?? 0;
-    if (this.element.hasAttribute("autofocus") && focusedElementsCount > 1) {
-      this.element.removeAttribute("autofocus");
-    }
-    if (!wasVisible && this.parentIsShowing()) {
-      this.processWasShown();
-    }
-    if (this.#parentWidget && this.hasNonZeroConstraints()) {
-      this.#parentWidget.invalidateConstraints();
-    } else {
-      this.processOnResize();
-    }
-  }
-  hideWidget() {
-    if (!this.#visible) {
-      return;
-    }
-    this.#hideWidget(false);
-  }
-  #hideWidget(removeFromDOM) {
-    this.#visible = false;
-    const { parentElement } = this.element;
-    if (this.parentIsShowing()) {
-      this.processWillHide();
-    }
-    if (removeFromDOM) {
-      if (parentElement) {
-        decrementWidgetCounter(parentElement, this.element);
-        originalRemoveChild.call(parentElement, this.element);
-      }
-      this.onDetach();
-    } else {
-      this.element.classList.add("hidden");
-    }
-    if (this.parentIsShowing()) {
-      this.processWasHidden();
-    }
-    if (this.#parentWidget && this.hasNonZeroConstraints()) {
-      this.#parentWidget.invalidateConstraints();
-    }
-  }
-  detach(overrideHideOnDetach) {
-    if (!this.#parentWidget && !this.#isRoot) {
-      return;
-    }
-    cancelUpdate(this);
-    const removeFromDOM = overrideHideOnDetach || !this.shouldHideOnDetach();
-    if (this.#visible) {
-      this.#hideWidget(removeFromDOM);
-    } else if (removeFromDOM) {
-      const { parentElement } = this.element;
-      if (parentElement) {
-        decrementWidgetCounter(parentElement, this.element);
-        originalRemoveChild.call(parentElement, this.element);
-      }
-    }
-    if (this.#parentWidget) {
-      const childIndex = this.#parentWidget.#children.indexOf(this);
-      assert(childIndex >= 0, "Attempt to remove non-child widget");
-      this.#parentWidget.#children.splice(childIndex, 1);
-      this.#parentWidget.childWasDetached(this);
-      this.#parentWidget = null;
-    } else {
-      assert(this.#isRoot, "Removing non-root widget from DOM");
-    }
-  }
-  detachChildWidgets() {
-    const children = this.#children.slice();
-    for (let i = 0; i < children.length; ++i) {
-      children[i].detach();
-    }
-  }
-  elementsToRestoreScrollPositionsFor() {
-    return [this.element];
-  }
-  storeScrollPositions() {
-    const elements = this.elementsToRestoreScrollPositionsFor();
-    for (const container of elements) {
-      storedScrollPositions.set(container, { scrollLeft: container.scrollLeft, scrollTop: container.scrollTop });
-    }
-  }
-  restoreScrollPositions() {
-    const elements = this.elementsToRestoreScrollPositionsFor();
-    for (const container of elements) {
-      const storedPositions = storedScrollPositions.get(container);
-      if (storedPositions) {
-        container.scrollLeft = storedPositions.scrollLeft;
-        container.scrollTop = storedPositions.scrollTop;
-      }
-    }
-  }
-  doResize() {
-    if (!this.isShowing()) {
-      return;
-    }
-    if (!this.inNotification()) {
-      this.callOnVisibleChildren(this.processOnResize);
-    }
-  }
-  doLayout() {
-    if (!this.isShowing()) {
-      return;
-    }
-    this.notify(this.onLayout);
-    this.doResize();
-  }
-  registerRequiredCSS(...cssFiles) {
-    for (const cssFile of cssFiles) {
-      appendStyle(this.#shadowRoot ?? this.element, cssFile);
-    }
-  }
-  // Unused, but useful for debugging.
-  printWidgetHierarchy() {
-    const lines = [];
-    this.collectWidgetHierarchy("", lines);
-    console.log(lines.join("\n"));
-  }
-  collectWidgetHierarchy(prefix, lines) {
-    lines.push(prefix + "[" + this.element.className + "]" + (this.#children.length ? " {" : ""));
-    for (let i = 0; i < this.#children.length; ++i) {
-      this.#children[i].collectWidgetHierarchy(prefix + "    ", lines);
-    }
-    if (this.#children.length) {
-      lines.push(prefix + "}");
-    }
-  }
-  setDefaultFocusedElement(element) {
-    const defaultFocusedElement = this.getDefaultFocusedElement();
-    if (defaultFocusedElement) {
-      defaultFocusedElement.removeAttribute("autofocus");
-    }
-    if (element) {
-      element.setAttribute("autofocus", "");
-    }
-  }
-  setDefaultFocusedChild(child) {
-    assert(child.#parentWidget === this, "Attempt to set non-child widget as default focused.");
-    const defaultFocusedElement = this.getDefaultFocusedElement();
-    if (defaultFocusedElement) {
-      defaultFocusedElement.removeAttribute("autofocus");
-    }
-    child.element.setAttribute("autofocus", "");
-  }
-  getDefaultFocusedElements() {
-    const autofocusElements = [...this.contentElement.querySelectorAll("[autofocus]")];
-    const contentElement = this.contentElement;
-    if (contentElement !== this.element) {
-      if (contentElement instanceof HTMLElement && contentElement.hasAttribute("autofocus")) {
-        autofocusElements.push(contentElement);
-      }
-      if (autofocusElements.length === 0) {
-        autofocusElements.push(...this.element.querySelectorAll("[autofocus]"));
-      }
-    }
-    return autofocusElements.filter((autofocusElement) => {
-      let widgetElement = autofocusElement;
-      while (widgetElement) {
-        const widget2 = _Widget.get(widgetElement);
-        if (widget2) {
-          if (widgetElement === autofocusElement && widget2.#parentWidget === this && widget2.#visible) {
-            return true;
-          }
-          return widget2 === this;
-        }
-        widgetElement = widgetElement.parentElementOrShadowHost();
-      }
-      return false;
-    });
-  }
-  getDefaultFocusedElement() {
-    const elements = this.getDefaultFocusedElements();
-    if (elements.length > 1) {
-      console.error("Multiple autofocus elements found", this.constructor.name, ...elements.map((e) => Platform5.StringUtilities.trimMiddle(e.outerHTML, 250)));
-    }
-    return elements[0] || null;
-  }
-  focus() {
-    if (!this.isShowing()) {
-      return;
-    }
-    const autofocusElement = this.getDefaultFocusedElement();
-    if (autofocusElement) {
-      const widget2 = _Widget.get(autofocusElement);
-      if (widget2 && widget2 !== this) {
-        widget2.focus();
-      } else if (autofocusElement === this.element && autofocusElement instanceof WidgetElement) {
-        HTMLElement.prototype.focus.call(autofocusElement);
-      } else {
-        autofocusElement.focus();
-      }
-      return;
-    }
-    for (const child of this.#children) {
-      if (child.#visible) {
-        child.focus();
-        return;
-      }
-    }
-    if (this.element === this.contentElement && this.element.hasAttribute("autofocus")) {
-      if (this.element instanceof WidgetElement) {
-        HTMLElement.prototype.focus.call(this.element);
-      } else {
-        this.element.focus();
-      }
-    }
-  }
-  hasFocus() {
-    return this.element.hasFocus();
-  }
-  calculateConstraints() {
-    return new Geometry.Constraints();
-  }
-  constraints() {
-    if (typeof this.#constraints !== "undefined") {
-      return this.#constraints;
-    }
-    if (typeof this.#cachedConstraints === "undefined") {
-      this.#cachedConstraints = this.calculateConstraints();
-    }
-    return this.#cachedConstraints;
-  }
-  setMinimumAndPreferredSizes(width, height, preferredWidth, preferredHeight) {
-    const newConstraints = new Geometry.Constraints(new Geometry.Size(width, height), new Geometry.Size(preferredWidth, preferredHeight));
-    if (this.#constraints?.isEqual(newConstraints)) {
-      return;
-    }
-    this.#constraints = newConstraints;
-    this.invalidateConstraints();
-  }
-  setMinimumSize(width, height) {
-    this.minimumSize = new Geometry.Size(width, height);
-  }
-  set minimumSize(size) {
-    const newConstraints = new Geometry.Constraints(size);
-    if (this.#constraints?.isEqual(newConstraints)) {
-      return;
-    }
-    this.#constraints = newConstraints;
-    this.invalidateConstraints();
-  }
-  hasNonZeroConstraints() {
-    const constraints = this.constraints();
-    return Boolean(constraints.minimum.width || constraints.minimum.height || constraints.preferred.width || constraints.preferred.height);
-  }
-  suspendInvalidations() {
-    ++this.#invalidationsSuspended;
-  }
-  resumeInvalidations() {
-    --this.#invalidationsSuspended;
-    if (!this.#invalidationsSuspended && this.#invalidationsRequested) {
-      this.invalidateConstraints();
-    }
-  }
-  invalidateConstraints() {
-    if (this.#invalidationsSuspended) {
-      this.#invalidationsRequested = true;
-      return;
-    }
-    this.#invalidationsRequested = false;
-    const cached = this.#cachedConstraints;
-    this.#cachedConstraints = void 0;
-    const actual = this.constraints();
-    if (!actual.isEqual(cached || null) && this.#parentWidget) {
-      this.#parentWidget.invalidateConstraints();
-    } else {
-      this.doLayout();
-    }
-  }
-  // Excludes the widget from being tracked by its parents/ancestors via
-  // widgetCounter because the widget is being handled by external code.
-  // Widgets marked as being externally managed are responsible for
-  // finishing out their own lifecycle (i.e. calling detach() before being
-  // removed from the DOM). This is e.g. used for CodeMirror.
-  //
-  // Also note that this must be called before the widget is shown so that
-  // so that its ancestor's widgetCounter is not incremented.
-  markAsExternallyManaged() {
-    assert(!this.#parentWidget, "Attempt to mark widget as externally managed after insertion to the DOM");
-    this.#externallyManaged = true;
-  }
-  performUpdate(_signal) {
-  }
-  addUpdateController(controller) {
-    const wasInterrupted = this.#updateState === "INTERRUPTED";
-    this.#updateController?.abort();
-    this.#updateController = controller;
-    this.#updateState = wasInterrupted ? "SHIELDED" : "NORMAL";
-  }
-  cancelUpdateController() {
-    this.#updateController?.abort();
-    this.#updateController = void 0;
-    this.#updateState = "NORMAL";
-  }
-  /**
-   * Schedules an asynchronous update for this widget.
-   *
-   * The update will be deduplicated and executed with the next animation
-   * frame.
-   */
-  requestUpdate() {
-    if (this.#updateState !== "SHIELDED") {
-      if (currentlyProcessed.has(this)) {
-        this.#updateState = "INTERRUPTED";
-      }
-      this.#updateController?.abort();
-    }
-    this.#updateComplete = enqueueWidgetUpdate(this);
-  }
-  /**
-   * The `updateComplete` promise resolves when the widget has finished updating.
-   *
-   * Use `updateComplete` to wait for an update:
-   * ```js
-   * await widget.updateComplete;
-   * // do stuff
-   * ```
-   *
-   * This method is primarily useful for unit tests, to wait for widgets to build
-   * their DOM. For example:
-   * ```js
-   * // Set up the test widget, and wait for the initial update cycle to complete.
-   * const widget = new SomeWidget(someData);
-   * widget.requestUpdate();
-   * await widget.updateComplete;
-   *
-   * // Assert state of the widget.
-   * assert.isTrue(widget.someDataLoaded);
-   * ```
-   *
-   * @returns a promise that resolves when the widget has finished updating.
-   */
-  get updateComplete() {
-    return this.#updateComplete;
-  }
-};
-var storedScrollPositions = /* @__PURE__ */ new WeakMap();
-var VBox = class extends Widget {
-  constructor(elementOrOptions, options) {
-    super(elementOrOptions, options);
-    if (this.contentElement instanceof HTMLElement) {
-      this.contentElement.classList.add("vbox");
-    } else {
-      this.element.classList.add("vbox");
-    }
-  }
-  calculateConstraints() {
-    let constraints = new Geometry.Constraints();
-    function updateForChild() {
-      const child = this.constraints();
-      constraints = constraints.widthToMax(child);
-      constraints = constraints.addHeight(child);
-    }
-    this.callOnVisibleChildren(updateForChild);
-    return constraints;
-  }
-};
-var HBox = class extends Widget {
-  constructor(elementOrOptions, options) {
-    super(elementOrOptions, options);
-    if (this.contentElement instanceof HTMLElement) {
-      this.contentElement.classList.add("hbox");
-    } else {
-      this.element.classList.remove("vbox");
-      this.element.classList.add("hbox");
-    }
-  }
-  calculateConstraints() {
-    let constraints = new Geometry.Constraints();
-    function updateForChild() {
-      const child = this.constraints();
-      constraints = constraints.addWidth(child);
-      constraints = constraints.heightToMax(child);
-    }
-    this.callOnVisibleChildren(updateForChild);
-    return constraints;
-  }
-};
-var VBoxWithResizeCallback = class extends VBox {
-  resizeCallback;
-  constructor(resizeCallback) {
-    super();
-    this.resizeCallback = resizeCallback;
-  }
-  onResize() {
-    this.resizeCallback();
-  }
-};
-var WidgetFocusRestorer = class {
-  widget;
-  previous;
-  constructor(widget2) {
-    this.widget = widget2;
-    this.previous = deepActiveElement(widget2.element.ownerDocument);
-    widget2.focus();
-  }
-  restore() {
-    if (!this.widget) {
-      return;
-    }
-    if (this.widget.hasFocus() && this.previous) {
-      this.previous.focus();
-    }
-    this.previous = null;
-    this.widget = null;
-  }
-};
-function domOperationError(funcName) {
-  return new Error(`Attempt to modify widget with native DOM method \`${funcName}\``);
-}
-Node.prototype.appendChild = function(node) {
-  if (widgetMap.get(node) && node.parentNode !== this) {
-    throw domOperationError("appendChild");
-  }
-  return originalAppendChild.call(this, node);
-};
-Node.prototype.insertBefore = function(node, child) {
-  if (widgetMap.get(node) && node.parentNode !== this) {
-    throw domOperationError("insertBefore");
-  }
-  return originalInsertBefore.call(this, node, child);
-};
-Node.prototype.removeChild = function(child) {
-  if (widgetCounterMap.get(child) || widgetMap.get(child)) {
-    throw domOperationError("removeChild");
-  }
-  return originalRemoveChild.call(this, child);
-};
-Node.prototype.removeChildren = function() {
-  if (widgetCounterMap.get(this)) {
-    throw domOperationError("removeChildren");
-  }
-  return originalRemoveChildren.call(this);
-};
-
-// gen/front_end/ui/legacy/ZoomManager.js
-var ZoomManager_exports = {};
-__export(ZoomManager_exports, {
-  Events: () => Events4,
-  ZoomManager: () => ZoomManager
-});
-import * as Common5 from "../../core/common/common.js";
-var zoomManagerInstance;
-var ZoomManager = class _ZoomManager extends Common5.ObjectWrapper.ObjectWrapper {
-  frontendHost;
-  #zoomFactor;
-  constructor(window2, frontendHost) {
-    super();
-    this.frontendHost = frontendHost;
-    this.#zoomFactor = this.frontendHost.zoomFactor();
-    window2.addEventListener("resize", this.onWindowResize.bind(this), true);
-  }
-  static instance(opts = { forceNew: null, win: null, frontendHost: null }) {
-    const { forceNew, win, frontendHost } = opts;
-    if (!zoomManagerInstance || forceNew) {
-      if (!win || !frontendHost) {
-        throw new Error(`Unable to create zoom manager: window and frontendHost must be provided: ${new Error().stack}`);
-      }
-      zoomManagerInstance = new _ZoomManager(win, frontendHost);
-    }
-    return zoomManagerInstance;
-  }
-  static removeInstance() {
-    zoomManagerInstance = void 0;
-  }
-  zoomFactor() {
-    return this.#zoomFactor;
-  }
-  cssToDIP(value) {
-    return value * this.#zoomFactor;
-  }
-  dipToCSS(valueDIP) {
-    return valueDIP / this.#zoomFactor;
-  }
-  onWindowResize() {
-    const oldZoomFactor = this.#zoomFactor;
-    this.#zoomFactor = this.frontendHost.zoomFactor();
-    if (oldZoomFactor !== this.#zoomFactor) {
-      this.dispatchEventToListeners("ZoomChanged", { from: oldZoomFactor, to: this.#zoomFactor });
-    }
-  }
-};
-var Events4;
-(function(Events13) {
-  Events13["ZOOM_CHANGED"] = "ZoomChanged";
-})(Events4 || (Events4 = {}));
-
-// gen/front_end/ui/legacy/TabbedPane.js
+// ../../front_end/ui/legacy/TabbedPane.ts
 var UIStrings4 = {
   /**
    * @description Tooltip and accessible label for the more tabs dropdown button in a tab strip.
@@ -4190,7 +5184,9 @@ var UIStrings4 = {
 };
 var str_4 = i18n7.i18n.registerUIStrings("ui/legacy/TabbedPane.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
-var TabbedPaneBase = Common6.ObjectWrapper.eventMixin(VBox);
+var TabbedPaneBase = Common8.ObjectWrapper.eventMixin(
+  VBox
+);
 var TabbedPane = class extends TabbedPaneBase {
   #headerElement;
   headerContentsElement;
@@ -4268,7 +5264,7 @@ var TabbedPane = class extends TabbedPaneBase {
     this.triggerDropDownTimeout = null;
     this.dropDownButton = this.createDropDownButton();
     this.currentDevicePixelRatio = window.devicePixelRatio;
-    ZoomManager.instance().addEventListener("ZoomChanged", this.zoomChanged, this);
+    ZoomManager.instance().addEventListener("ZoomChanged" /* ZOOM_CHANGED */, this.zoomChanged, this);
     this.makeTabSlider();
   }
   setAccessibleName(name) {
@@ -4345,7 +5341,10 @@ var TabbedPane = class extends TabbedPaneBase {
     console.assert(!this.tabsById.has(id2), `Tabbed pane already contains a tab with id '${id2}'`);
     this.tabsById.set(id2, tab);
     tab.tabElement.tabIndex = -1;
-    tab.tabElement.setAttribute("jslog", `${VisualLogging4.panelTabHeader().track({ click: true, drag: true }).context(tab.jslogContext)}`);
+    tab.tabElement.setAttribute(
+      "jslog",
+      `${VisualLogging5.panelTabHeader().track({ click: true, drag: true }).context(tab.jslogContext)}`
+    );
     if (index !== void 0) {
       this.#tabs.splice(index, 0, tab);
     } else {
@@ -4394,7 +5393,7 @@ var TabbedPane = class extends TabbedPaneBase {
       this.hideTabElement(tab);
     }
     const eventData = { tabId: id2, view: tab.view, isUserGesture: userGesture };
-    this.dispatchEventToListeners(Events5.TabClosed, eventData);
+    this.dispatchEventToListeners("TabClosed" /* TabClosed */, eventData);
     return true;
   }
   hasTab(tabId) {
@@ -4447,7 +5446,7 @@ var TabbedPane = class extends TabbedPaneBase {
       view: tab.view,
       isUserGesture: userGesture
     };
-    this.dispatchEventToListeners(Events5.TabInvoked, eventData);
+    this.dispatchEventToListeners("TabInvoked" /* TabInvoked */, eventData);
     if (this.currentTab?.id === id2) {
       return true;
     }
@@ -4462,17 +5461,17 @@ var TabbedPane = class extends TabbedPaneBase {
     if (focused || forceFocus) {
       this.focus();
     }
-    this.dispatchEventToListeners(Events5.TabSelected, eventData);
+    this.dispatchEventToListeners("TabSelected" /* TabSelected */, eventData);
     return true;
   }
   selectNextTab() {
     const index = this.#tabs.indexOf(this.currentTab);
-    const nextIndex = Platform6.NumberUtilities.mod(index + 1, this.#tabs.length);
+    const nextIndex = Platform7.NumberUtilities.mod(index + 1, this.#tabs.length);
     this.selectTab(this.#tabs[nextIndex].id, true);
   }
   selectPrevTab() {
     const index = this.#tabs.indexOf(this.currentTab);
-    const nextIndex = Platform6.NumberUtilities.mod(index - 1, this.#tabs.length);
+    const nextIndex = Platform7.NumberUtilities.mod(index - 1, this.#tabs.length);
     this.selectTab(this.#tabs[nextIndex].id, true);
   }
   getTabIndex(id2) {
@@ -4659,10 +5658,10 @@ var TabbedPane = class extends TabbedPaneBase {
       this.selectTab(effectiveTab.id);
     }
     this.requestUpdate();
-    this.dispatchEventToListeners(Events5.PaneVisibilityChanged, { isVisible: true });
+    this.dispatchEventToListeners("PaneVisibilityChanged" /* PaneVisibilityChanged */, { isVisible: true });
   }
   wasHidden() {
-    this.dispatchEventToListeners(Events5.PaneVisibilityChanged, { isVisible: false });
+    this.dispatchEventToListeners("PaneVisibilityChanged" /* PaneVisibilityChanged */, { isVisible: false });
   }
   makeTabSlider() {
     if (this.verticalTabLayout) {
@@ -4676,12 +5675,12 @@ var TabbedPane = class extends TabbedPaneBase {
   }
   calculateConstraints() {
     let constraints = super.calculateConstraints();
-    const minContentConstraints = new Geometry2.Constraints(new Geometry2.Size(0, 0), new Geometry2.Size(50, 50));
+    const minContentConstraints = new Geometry3.Constraints(new Geometry3.Size(0, 0), new Geometry3.Size(50, 50));
     constraints = constraints.widthToMax(minContentConstraints).heightToMax(minContentConstraints);
     if (this.verticalTabLayout) {
-      constraints = constraints.addWidth(new Geometry2.Constraints(new Geometry2.Size(120, 0)));
+      constraints = constraints.addWidth(new Geometry3.Constraints(new Geometry3.Size(120, 0)));
     } else {
-      constraints = constraints.addHeight(new Geometry2.Constraints(new Geometry2.Size(0, 30)));
+      constraints = constraints.addHeight(new Geometry3.Constraints(new Geometry3.Size(0, 30)));
     }
     return constraints;
   }
@@ -4746,7 +5745,7 @@ var TabbedPane = class extends TabbedPaneBase {
   createDropDownButton() {
     const dropDownContainer = document.createElement("div");
     dropDownContainer.classList.add("tabbed-pane-header-tabs-drop-down-container");
-    dropDownContainer.setAttribute("jslog", `${VisualLogging4.dropDown("more-tabs").track({ click: true })}`);
+    dropDownContainer.setAttribute("jslog", `${VisualLogging5.dropDown("more-tabs").track({ click: true })}`);
     const chevronIcon = createIcon2("chevron-double-right", "chevron-icon");
     const moreTabsString = i18nString4(UIStrings4.moreTabs);
     dropDownContainer.title = moreTabsString;
@@ -4786,15 +5785,23 @@ var TabbedPane = class extends TabbedPaneBase {
         continue;
       }
       if (this.numberOfTabsShown() === 0 && this.tabsHistory[0] === tab) {
-        menu5.defaultSection().appendCheckboxItem(tab.title, this.dropDownMenuItemSelected.bind(this, tab), { checked: true, jslogContext: tab.jslogContext });
+        menu5.defaultSection().appendCheckboxItem(
+          tab.title,
+          this.dropDownMenuItemSelected.bind(this, tab),
+          { checked: true, jslogContext: tab.jslogContext }
+        );
       } else {
-        menu5.defaultSection().appendItem(tab.title, this.dropDownMenuItemSelected.bind(this, tab), { jslogContext: tab.jslogContext });
+        menu5.defaultSection().appendItem(
+          tab.title,
+          this.dropDownMenuItemSelected.bind(this, tab),
+          { jslogContext: tab.jslogContext }
+        );
       }
     }
     void menu5.show().then(() => setExpanded(this.dropDownButton, menu5.isHostedMenuOpen()));
   }
   dropDownKeydown(event) {
-    if (Platform6.KeyboardUtilities.isEnterOrSpaceKey(event)) {
+    if (Platform7.KeyboardUtilities.isEnterOrSpaceKey(event)) {
       this.dropDownButton.click();
       event.consume(true);
     }
@@ -4914,7 +5921,7 @@ var TabbedPane = class extends TabbedPaneBase {
     this.#tabs.splice(oldIndex, 1);
     this.#tabs.splice(targetIndex, 0, tab);
     const eventData = { tabId: tab.id, view: tab.view };
-    this.dispatchEventToListeners(Events5.TabOrderChanged, eventData);
+    this.dispatchEventToListeners("TabOrderChanged" /* TabOrderChanged */, eventData);
     this.requestUpdate();
   }
   measureDropDownButton() {
@@ -5074,7 +6081,7 @@ var TabbedPane = class extends TabbedPaneBase {
     }
     this.#tabs.splice(index, 0, tab);
     const eventData = { tabId: tab.id, view: tab.view };
-    this.dispatchEventToListeners(Events5.TabOrderChanged, eventData);
+    this.dispatchEventToListeners("TabOrderChanged" /* TabOrderChanged */, eventData);
   }
   leftToolbar() {
     if (!this.#leftToolbar) {
@@ -5142,14 +6149,14 @@ var TabbedPane = class extends TabbedPaneBase {
     nextTabElement.focus();
   }
 };
-var Events5;
-(function(Events13) {
-  Events13["TabInvoked"] = "TabInvoked";
-  Events13["TabSelected"] = "TabSelected";
-  Events13["TabClosed"] = "TabClosed";
-  Events13["TabOrderChanged"] = "TabOrderChanged";
-  Events13["PaneVisibilityChanged"] = "PaneVisibilityChanged";
-})(Events5 || (Events5 = {}));
+var Events6 = /* @__PURE__ */ ((Events12) => {
+  Events12["TabInvoked"] = "TabInvoked";
+  Events12["TabSelected"] = "TabSelected";
+  Events12["TabClosed"] = "TabClosed";
+  Events12["TabOrderChanged"] = "TabOrderChanged";
+  Events12["PaneVisibilityChanged"] = "PaneVisibilityChanged";
+  return Events12;
+})(Events6 || {});
 var TabbedPaneTab = class {
   closeable;
   previewFeature = false;
@@ -5339,7 +6346,15 @@ var TabbedPaneTab = class {
       tabElement.addEventListener("mouseup", this.tabMouseUp.bind(this), false);
       tabElement.addEventListener("contextmenu", this.tabContextMenu.bind(this), false);
       if (this.tabbedPane.allowTabReorder) {
-        installDragHandle(tabElement, this.startTabDragging.bind(this), this.tabDragging.bind(this), this.endTabDragging.bind(this), null, null, 200);
+        installDragHandle(
+          tabElement,
+          this.startTabDragging.bind(this),
+          this.tabDragging.bind(this),
+          this.endTabDragging.bind(this),
+          null,
+          null,
+          200
+        );
       }
     }
     return tabElement;
@@ -5347,13 +6362,13 @@ var TabbedPaneTab = class {
   createCloseIconButton() {
     const closeButton = new Buttons2.Button.Button();
     closeButton.data = {
-      variant: "icon",
-      size: "MICRO",
+      variant: Buttons2.Button.Variant.ICON,
+      size: Buttons2.Button.Size.MICRO,
       iconName: "cross",
       title: i18nString4(UIStrings4.closeS, { PH1: this.title })
     };
     closeButton.classList.add("close-button", "tabbed-pane-close-button");
-    closeButton.setAttribute("jslog", `${VisualLogging4.close().track({ click: true })}`);
+    closeButton.setAttribute("jslog", `${VisualLogging5.close().track({ click: true })}`);
     closeButton.setAttribute("aria-label", i18nString4(UIStrings4.closeS, { PH1: this.title }));
     return closeButton;
   }
@@ -5433,19 +6448,39 @@ var TabbedPaneTab = class {
     const contextMenu = new ContextMenu(event);
     if (this.closeable) {
       contextMenu.defaultSection().appendItem(i18nString4(UIStrings4.close), close5.bind(this), { jslogContext: "close" });
-      contextMenu.defaultSection().appendItem(i18nString4(UIStrings4.closeOthers), closeOthers.bind(this), { jslogContext: "close-others" });
-      contextMenu.defaultSection().appendItem(i18nString4(UIStrings4.closeTabsToTheRight), closeToTheRight.bind(this), { jslogContext: "close-tabs-to-the-right" });
-      contextMenu.defaultSection().appendItem(i18nString4(UIStrings4.closeAll), closeAll.bind(this), { jslogContext: "close-all" });
+      contextMenu.defaultSection().appendItem(
+        i18nString4(UIStrings4.closeOthers),
+        closeOthers.bind(this),
+        { jslogContext: "close-others" }
+      );
+      contextMenu.defaultSection().appendItem(
+        i18nString4(UIStrings4.closeTabsToTheRight),
+        closeToTheRight.bind(this),
+        { jslogContext: "close-tabs-to-the-right" }
+      );
+      contextMenu.defaultSection().appendItem(
+        i18nString4(UIStrings4.closeAll),
+        closeAll.bind(this),
+        { jslogContext: "close-all" }
+      );
     }
     if (this.delegate) {
       this.delegate.onContextMenu(this.id, contextMenu);
     }
     const tabIndex = this.tabbedPane.getTabIndex(this.id);
     if (tabIndex > 0) {
-      contextMenu.defaultSection().appendItem(i18nString4(UIStrings4.moveTabLeft), moveTabBackward.bind(this, tabIndex), { jslogContext: "move-tab-backward" });
+      contextMenu.defaultSection().appendItem(
+        i18nString4(UIStrings4.moveTabLeft),
+        moveTabBackward.bind(this, tabIndex),
+        { jslogContext: "move-tab-backward" }
+      );
     }
     if (tabIndex < this.tabbedPane.tabsElement.childNodes.length - 1) {
-      contextMenu.defaultSection().appendItem(i18nString4(UIStrings4.moveTabRight), moveTabForward.bind(this, tabIndex), { jslogContext: "move-tab-forward" });
+      contextMenu.defaultSection().appendItem(
+        i18nString4(UIStrings4.moveTabRight),
+        moveTabForward.bind(this, tabIndex),
+        { jslogContext: "move-tab-forward" }
+      );
     }
     void contextMenu.show();
   }
@@ -5533,7 +6568,7 @@ var TabbedPaneElement = class extends WidgetElement {
       if (slot) {
         slot.addEventListener("slotchange", () => this.#syncTabs());
       }
-      widget2.addEventListener(Events5.TabSelected, () => {
+      widget2.addEventListener("TabSelected" /* TabSelected */, () => {
         const slot2 = widget2.contentElement.querySelector("slot:not([name])");
         const nodes = slot2 ? slot2.assignedElements() : [];
         for (const child of nodes) {
@@ -5545,11 +6580,14 @@ var TabbedPaneElement = class extends WidgetElement {
         }
         this.dispatchEvent(new CustomEvent("select", { detail: { tabId: widget2.selectedTabId } }));
       });
-      widget2.addEventListener(Events5.TabClosed, (event) => {
+      widget2.addEventListener("TabClosed" /* TabClosed */, (event) => {
         this.dispatchEvent(new CustomEvent("close", { detail: { tabId: event.data.tabId } }));
       });
-      widget2.addEventListener(Events5.TabOrderChanged, (event) => {
-        this.dispatchEvent(new CustomEvent("taborderchanged", { detail: { tabId: event.data.tabId, tabIds: widget2.tabIds() } }));
+      widget2.addEventListener("TabOrderChanged" /* TabOrderChanged */, (event) => {
+        this.dispatchEvent(new CustomEvent(
+          "taborderchanged",
+          { detail: { tabId: event.data.tabId, tabIds: widget2.tabIds() } }
+        ));
       });
       this.#syncTabs(widget2);
       return widget2;
@@ -5614,11 +6652,11 @@ var TabbedPaneElement = class extends WidgetElement {
 };
 customElements.define("devtools-tabbed-pane", TabbedPaneElement);
 
-// gen/front_end/ui/legacy/ViewManager.js
+// ../../front_end/ui/legacy/ViewManager.ts
 var ViewManager_exports = {};
 __export(ViewManager_exports, {
   ContainerWidget: () => ContainerWidget,
-  Events: () => Events6,
+  Events: () => Events7,
   PreRegisteredView: () => PreRegisteredView,
   StackLocation: () => StackLocation,
   ViewLocationCategory: () => ViewLocationCategory,
@@ -5633,16 +6671,16 @@ __export(ViewManager_exports, {
   registerViewExtension: () => registerViewExtension,
   resetViewRegistration: () => resetViewRegistration
 });
-import * as Common7 from "../../core/common/common.js";
+import * as Common9 from "../../core/common/common.js";
 import * as Host5 from "../../core/host/host.js";
 import * as i18n13 from "../../core/i18n/i18n.js";
-import * as Platform7 from "../../core/platform/platform.js";
+import * as Platform8 from "../../core/platform/platform.js";
 import * as Root4 from "../../core/root/root.js";
 import { createIcon as createIcon4 } from "../kit/kit.js";
 import { render as render3 } from "../lit/lit.js";
-import * as VisualLogging6 from "../visual_logging/visual_logging.js";
+import * as VisualLogging7 from "../visual_logging/visual_logging.js";
 
-// gen/front_end/ui/legacy/PlusButton.js
+// ../../front_end/ui/legacy/PlusButton.ts
 var PlusButton_exports = {};
 __export(PlusButton_exports, {
   PLUS_BUTTON_VIEW: () => PLUS_BUTTON_VIEW,
@@ -5652,16 +6690,138 @@ __export(PlusButton_exports, {
   revealOverflowTab: () => revealOverflowTab
 });
 import * as Host4 from "../../core/host/host.js";
-import * as i18n9 from "../../core/i18n/i18n.js";
+import * as i18n11 from "../../core/i18n/i18n.js";
 import { Directives as Directives2, html as html2, render as render2 } from "../lit/lit.js";
+
+// ../../front_end/ui/legacy/ViewRegistration.ts
+import * as i18n9 from "../../core/i18n/i18n.js";
+import * as Root3 from "../../core/root/root.js";
 var UIStrings5 = {
+  /**
+   * @description Badge label for an entry in the command menu that opens the Elements panel.
+   */
+  elements: "Elements",
+  /**
+   * @description Badge label for an entry in the command menu that opens the drawer.
+   */
+  drawer: "Drawer",
+  /**
+   * @description Badge label for an entry in the command menu that opens the drawer sidebar.
+   */
+  drawer_sidebar: "Drawer sidebar",
+  /**
+   * @description Badge label for an entry in the command menu that opens a panel.
+   */
+  panel: "Panel",
+  /**
+   * @description Badge label for an entry in the command menu that opens the Network panel.
+   */
+  network: "Network",
+  /**
+   * @description Badge label for an entry in the command menu that opens the Settings panel.
+   */
+  settings: "Settings",
+  /**
+   * @description Badge label for an entry in the command menu that opens the Sources panel.
+   */
+  sources: "Sources"
+};
+var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/ViewRegistration.ts", UIStrings5);
+var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var ViewPersistence = /* @__PURE__ */ ((ViewPersistence2) => {
+  ViewPersistence2["CLOSEABLE"] = "closeable";
+  ViewPersistence2["PERMANENT"] = "permanent";
+  ViewPersistence2["TRANSIENT"] = "transient";
+  return ViewPersistence2;
+})(ViewPersistence || {});
+var ViewLocationValues = /* @__PURE__ */ ((ViewLocationValues2) => {
+  ViewLocationValues2["PANEL"] = "panel";
+  ViewLocationValues2["SETTINGS_VIEW"] = "settings-view";
+  ViewLocationValues2["ELEMENTS_SIDEBAR"] = "elements-sidebar";
+  ViewLocationValues2["SOURCES_SIDEBAR_BOTTOM"] = "sources.sidebar-bottom";
+  ViewLocationValues2["NAVIGATOR_VIEW"] = "navigator-view";
+  ViewLocationValues2["DRAWER_VIEW"] = "drawer-view";
+  ViewLocationValues2["DRAWER_SIDEBAR"] = "drawer-sidebar";
+  ViewLocationValues2["NETWORK_SIDEBAR"] = "network-sidebar";
+  ViewLocationValues2["SOURCES_SIDEBAR_TOP"] = "sources.sidebar-top";
+  ViewLocationValues2["SOURCES_SIDEBAR_TABS"] = "sources.sidebar-tabs";
+  return ViewLocationValues2;
+})(ViewLocationValues || {});
+var registeredViewExtensions = /* @__PURE__ */ new Map();
+function registerViewExtension(registration) {
+  const viewId = registration.id;
+  if (registeredViewExtensions.has(viewId)) {
+    throw new Error(`Duplicate view id '${viewId}'`);
+  }
+  registeredViewExtensions.set(viewId, registration);
+}
+function getRegisteredViewExtensions() {
+  return registeredViewExtensions.values().filter(
+    (view) => Root3.Runtime.Runtime.isDescriptorEnabled({ experiment: view.experiment, condition: view.condition })
+  ).toArray();
+}
+function maybeRemoveViewExtension(viewId) {
+  return registeredViewExtensions.delete(viewId);
+}
+var registeredLocationResolvers = [];
+var viewLocationNameSet = /* @__PURE__ */ new Set();
+function registerLocationResolver(registration) {
+  const locationName = registration.name;
+  if (viewLocationNameSet.has(locationName)) {
+    throw new Error(`Duplicate view location name registration '${locationName}'`);
+  }
+  viewLocationNameSet.add(locationName);
+  registeredLocationResolvers.push(registration);
+}
+function getRegisteredLocationResolvers() {
+  return registeredLocationResolvers;
+}
+function resetViewRegistration() {
+  registeredViewExtensions.clear();
+  registeredLocationResolvers.length = 0;
+  viewLocationNameSet.clear();
+}
+var ViewLocationCategory = /* @__PURE__ */ ((ViewLocationCategory2) => {
+  ViewLocationCategory2["NONE"] = "";
+  ViewLocationCategory2["ELEMENTS"] = "ELEMENTS";
+  ViewLocationCategory2["DRAWER"] = "DRAWER";
+  ViewLocationCategory2["DRAWER_SIDEBAR"] = "DRAWER_SIDEBAR";
+  ViewLocationCategory2["PANEL"] = "PANEL";
+  ViewLocationCategory2["NETWORK"] = "NETWORK";
+  ViewLocationCategory2["SETTINGS"] = "SETTINGS";
+  ViewLocationCategory2["SOURCES"] = "SOURCES";
+  return ViewLocationCategory2;
+})(ViewLocationCategory || {});
+function getLocalizedViewLocationCategory(category) {
+  switch (category) {
+    case "ELEMENTS" /* ELEMENTS */:
+      return i18nString5(UIStrings5.elements);
+    case "DRAWER" /* DRAWER */:
+      return i18nString5(UIStrings5.drawer);
+    case "DRAWER_SIDEBAR" /* DRAWER_SIDEBAR */:
+      return i18nString5(UIStrings5.drawer_sidebar);
+    case "PANEL" /* PANEL */:
+      return i18nString5(UIStrings5.panel);
+    case "NETWORK" /* NETWORK */:
+      return i18nString5(UIStrings5.network);
+    case "SETTINGS" /* SETTINGS */:
+      return i18nString5(UIStrings5.settings);
+    case "SOURCES" /* SOURCES */:
+      return i18nString5(UIStrings5.sources);
+    case "" /* NONE */:
+      return i18n9.i18n.lockedString("");
+  }
+}
+
+// ../../front_end/ui/legacy/PlusButton.ts
+var UIStrings6 = {
   /**
    * @description Default tooltip and accessible name for the plus button shown in a tab strip.
    */
   moreTools: "More tools"
 };
-var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/PlusButton.ts", UIStrings5);
-var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/PlusButton.ts", UIStrings6);
+var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var PlusButtonPresenter = class {
   #context;
   constructor(context) {
@@ -5700,7 +6860,7 @@ var PlusButtonPresenter = class {
         }
       });
     }
-    const otherLocation = location === "panel" ? "drawer-view" : location === "drawer-view" ? "panel" : null;
+    const otherLocation = location === "panel" /* PANEL */ ? "drawer-view" /* DRAWER_VIEW */ : location === "drawer-view" /* DRAWER_VIEW */ ? "panel" /* PANEL */ : null;
     if (otherLocation) {
       for (const view of manager.viewsForLocation(otherLocation)) {
         if (view.isTransient() || !view.isCloseable() || seenIds.has(view.viewId()) || seenTitles.has(view.title())) {
@@ -5725,11 +6885,19 @@ function populatePlusButtonMenu(contextMenu, context) {
   const model = new PlusButtonPresenter(context).buildModel();
   const hasOverflow = model.overflowTabs.length > 0;
   for (const tab of model.overflowTabs) {
-    contextMenu.defaultSection().appendItem(tab.title, () => revealOverflowTab(context.tabbedPane, tab.id), { jslogContext: tab.jslogContext ?? tab.id });
+    contextMenu.defaultSection().appendItem(
+      tab.title,
+      () => revealOverflowTab(context.tabbedPane, tab.id),
+      { jslogContext: tab.jslogContext ?? tab.id }
+    );
   }
   const addToolSection = hasOverflow ? contextMenu.footerSection() : contextMenu.defaultSection();
   for (const entry of model.addToolEntries) {
-    addToolSection.appendItem(entry.title, entry.action, { isPreviewFeature: entry.isPreviewFeature, jslogContext: entry.jslogContext });
+    addToolSection.appendItem(
+      entry.title,
+      entry.action,
+      { isPreviewFeature: entry.isPreviewFeature, jslogContext: entry.jslogContext }
+    );
   }
 }
 function revealOverflowTab(tabbedPane, tabId) {
@@ -5746,39 +6914,46 @@ function revealOverflowTab(tabbedPane, tabId) {
   );
 }
 var PLUS_BUTTON_VIEW = (input, output, target) => {
-  render2(html2`
+  render2(
+    html2`
         <devtools-menu-button
             ${Directives2.ref((el) => {
-    output.button = el;
-  })}
+      output.button = el;
+    })}
             slot="trailing-button"
             .iconName=${"plus"}
             .title=${input.title}
             .jslogContext=${input.jslogContext}
             .populateMenuCall=${input.populateMenuCall}>
-        </devtools-menu-button>`, target);
+        </devtools-menu-button>`,
+    target
+  );
 };
 function installPlusButton(context, options = {}) {
   const output = {};
-  PLUS_BUTTON_VIEW({
-    title: options.title ?? i18nString5(UIStrings5.moreTools),
-    jslogContext: options.jslogContext ?? "",
-    populateMenuCall: (menu5) => populatePlusButtonMenu(menu5, context)
-  }, output, context.tabbedPane.element);
+  PLUS_BUTTON_VIEW(
+    {
+      title: options.title ?? i18nString6(UIStrings6.moreTools),
+      jslogContext: options.jslogContext ?? "",
+      populateMenuCall: (menu5) => populatePlusButtonMenu(menu5, context)
+    },
+    output,
+    context.tabbedPane.element
+  );
   if (!output.button) {
     throw new Error("installPlusButton: ref directive did not capture <devtools-menu-button>");
   }
   return output.button;
 }
 
-// gen/front_end/ui/legacy/StackedPane.js
+// ../../front_end/ui/legacy/StackedPane.ts
 var StackedPane_exports = {};
 __export(StackedPane_exports, {
   ExpandableContainerWidget: () => ExpandableContainerWidget,
   StackedPane: () => StackedPane
 });
 import { createIcon as createIcon3 } from "../kit/kit.js";
-import * as VisualLogging5 from "../visual_logging/visual_logging.js";
+import * as VisualLogging6 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/viewContainers.css.js
 var viewContainers_css_default = `/* Copyright 2025 The Chromium Authors
@@ -5873,16 +7048,8 @@ found in the LICENSE file. */
 
 /*# sourceURL=${import.meta.resolve("./viewContainers.css")} */`;
 
-// gen/front_end/ui/legacy/StackedPane.js
+// ../../front_end/ui/legacy/StackedPane.ts
 var ExpandableContainerWidget = class extends VBox {
-  createToolbar;
-  setWidgetForView;
-  onVisibilityChanged;
-  titleElement;
-  titleExpandIcon;
-  view;
-  widget;
-  materializePromise;
   constructor(view, createToolbar, setWidgetForView, onVisibilityChanged) {
     super({ useShadowDom: true });
     this.createToolbar = createToolbar;
@@ -5894,7 +7061,7 @@ var ExpandableContainerWidget = class extends VBox {
     this.createToolbar = createToolbar;
     this.titleElement = document.createElement("div");
     this.titleElement.classList.add("expandable-view-title");
-    this.titleElement.setAttribute("jslog", `${VisualLogging5.sectionHeader().context(view.viewId()).track({
+    this.titleElement.setAttribute("jslog", `${VisualLogging6.sectionHeader().context(view.viewId()).track({
       click: true,
       keydown: "Enter|Space|ArrowLeft|ArrowRight"
     })}`);
@@ -5913,6 +7080,14 @@ var ExpandableContainerWidget = class extends VBox {
     this.view = view;
     expandableContainerForView.set(view, this);
   }
+  createToolbar;
+  setWidgetForView;
+  onVisibilityChanged;
+  titleElement;
+  titleExpandIcon;
+  view;
+  widget;
+  materializePromise;
   isExpanded() {
     return this.titleElement.classList.contains("expanded");
   }
@@ -6001,10 +7176,6 @@ var ExpandableContainerWidget = class extends VBox {
 };
 var expandableContainerForView = /* @__PURE__ */ new WeakMap();
 var StackedPane = class extends VBox {
-  createToolbar;
-  setWidgetForView;
-  onViewVisibilityChanged;
-  expandableContainers = /* @__PURE__ */ new Map();
   constructor(createToolbar, setWidgetForView, onViewVisibilityChanged) {
     super();
     this.createToolbar = createToolbar;
@@ -6014,10 +7185,19 @@ var StackedPane = class extends VBox {
     this.onViewVisibilityChanged = onViewVisibilityChanged;
     markAsTree(this.element);
   }
+  createToolbar;
+  setWidgetForView;
+  onViewVisibilityChanged;
+  expandableContainers = /* @__PURE__ */ new Map();
   appendView(view, insertBefore) {
     let container = this.expandableContainers.get(view.viewId());
     if (!container) {
-      container = new ExpandableContainerWidget(view, this.createToolbar, this.setWidgetForView, (isExpanded) => this.onViewVisibilityChanged?.(view.viewId(), isExpanded));
+      container = new ExpandableContainerWidget(
+        view,
+        this.createToolbar,
+        this.setWidgetForView,
+        (isExpanded) => this.onViewVisibilityChanged?.(view.viewId(), isExpanded)
+      );
       let beforeElement = null;
       if (insertBefore) {
         const beforeContainer = expandableContainerForView.get(insertBefore);
@@ -6065,125 +7245,7 @@ var StackedPane = class extends VBox {
   }
 };
 
-// gen/front_end/ui/legacy/ViewRegistration.js
-import * as i18n11 from "../../core/i18n/i18n.js";
-import * as Root3 from "../../core/root/root.js";
-var UIStrings6 = {
-  /**
-   * @description Badge label for an entry in the command menu that opens the Elements panel.
-   */
-  elements: "Elements",
-  /**
-   * @description Badge label for an entry in the command menu that opens the drawer.
-   */
-  drawer: "Drawer",
-  /**
-   * @description Badge label for an entry in the command menu that opens the drawer sidebar.
-   */
-  drawer_sidebar: "Drawer sidebar",
-  /**
-   * @description Badge label for an entry in the command menu that opens a panel.
-   */
-  panel: "Panel",
-  /**
-   * @description Badge label for an entry in the command menu that opens the Network panel.
-   */
-  network: "Network",
-  /**
-   * @description Badge label for an entry in the command menu that opens the Settings panel.
-   */
-  settings: "Settings",
-  /**
-   * @description Badge label for an entry in the command menu that opens the Sources panel.
-   */
-  sources: "Sources"
-};
-var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/ViewRegistration.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var ViewPersistence;
-(function(ViewPersistence2) {
-  ViewPersistence2["CLOSEABLE"] = "closeable";
-  ViewPersistence2["PERMANENT"] = "permanent";
-  ViewPersistence2["TRANSIENT"] = "transient";
-})(ViewPersistence || (ViewPersistence = {}));
-var ViewLocationValues;
-(function(ViewLocationValues2) {
-  ViewLocationValues2["PANEL"] = "panel";
-  ViewLocationValues2["SETTINGS_VIEW"] = "settings-view";
-  ViewLocationValues2["ELEMENTS_SIDEBAR"] = "elements-sidebar";
-  ViewLocationValues2["SOURCES_SIDEBAR_BOTTOM"] = "sources.sidebar-bottom";
-  ViewLocationValues2["NAVIGATOR_VIEW"] = "navigator-view";
-  ViewLocationValues2["DRAWER_VIEW"] = "drawer-view";
-  ViewLocationValues2["DRAWER_SIDEBAR"] = "drawer-sidebar";
-  ViewLocationValues2["NETWORK_SIDEBAR"] = "network-sidebar";
-  ViewLocationValues2["SOURCES_SIDEBAR_TOP"] = "sources.sidebar-top";
-  ViewLocationValues2["SOURCES_SIDEBAR_TABS"] = "sources.sidebar-tabs";
-})(ViewLocationValues || (ViewLocationValues = {}));
-var registeredViewExtensions = /* @__PURE__ */ new Map();
-function registerViewExtension(registration) {
-  const viewId = registration.id;
-  if (registeredViewExtensions.has(viewId)) {
-    throw new Error(`Duplicate view id '${viewId}'`);
-  }
-  registeredViewExtensions.set(viewId, registration);
-}
-function getRegisteredViewExtensions() {
-  return registeredViewExtensions.values().filter((view) => Root3.Runtime.Runtime.isDescriptorEnabled({ experiment: view.experiment, condition: view.condition })).toArray();
-}
-function maybeRemoveViewExtension(viewId) {
-  return registeredViewExtensions.delete(viewId);
-}
-var registeredLocationResolvers = [];
-var viewLocationNameSet = /* @__PURE__ */ new Set();
-function registerLocationResolver(registration) {
-  const locationName = registration.name;
-  if (viewLocationNameSet.has(locationName)) {
-    throw new Error(`Duplicate view location name registration '${locationName}'`);
-  }
-  viewLocationNameSet.add(locationName);
-  registeredLocationResolvers.push(registration);
-}
-function getRegisteredLocationResolvers() {
-  return registeredLocationResolvers;
-}
-function resetViewRegistration() {
-  registeredViewExtensions.clear();
-  registeredLocationResolvers.length = 0;
-  viewLocationNameSet.clear();
-}
-var ViewLocationCategory;
-(function(ViewLocationCategory2) {
-  ViewLocationCategory2["NONE"] = "";
-  ViewLocationCategory2["ELEMENTS"] = "ELEMENTS";
-  ViewLocationCategory2["DRAWER"] = "DRAWER";
-  ViewLocationCategory2["DRAWER_SIDEBAR"] = "DRAWER_SIDEBAR";
-  ViewLocationCategory2["PANEL"] = "PANEL";
-  ViewLocationCategory2["NETWORK"] = "NETWORK";
-  ViewLocationCategory2["SETTINGS"] = "SETTINGS";
-  ViewLocationCategory2["SOURCES"] = "SOURCES";
-})(ViewLocationCategory || (ViewLocationCategory = {}));
-function getLocalizedViewLocationCategory(category) {
-  switch (category) {
-    case "ELEMENTS":
-      return i18nString6(UIStrings6.elements);
-    case "DRAWER":
-      return i18nString6(UIStrings6.drawer);
-    case "DRAWER_SIDEBAR":
-      return i18nString6(UIStrings6.drawer_sidebar);
-    case "PANEL":
-      return i18nString6(UIStrings6.panel);
-    case "NETWORK":
-      return i18nString6(UIStrings6.network);
-    case "SETTINGS":
-      return i18nString6(UIStrings6.settings);
-    case "SOURCES":
-      return i18nString6(UIStrings6.sources);
-    case "":
-      return i18n11.i18n.lockedString("");
-  }
-}
-
-// gen/front_end/ui/legacy/ViewManager.js
+// ../../front_end/ui/legacy/ViewManager.ts
 var UIStrings7 = {
   /**
    * @description Accessible label for a panel view container.
@@ -6213,7 +7275,7 @@ var PreRegisteredView = class {
     return this.viewRegistration.commandPrompt();
   }
   isCloseable() {
-    return this.viewRegistration.persistence === "closeable";
+    return this.viewRegistration.persistence === "closeable" /* CLOSEABLE */;
   }
   isPreviewFeature() {
     return Boolean(this.viewRegistration.isPreviewFeature);
@@ -6225,7 +7287,7 @@ var PreRegisteredView = class {
     return this.viewRegistration.iconName;
   }
   isTransient() {
-    return this.viewRegistration.persistence === "transient";
+    return this.viewRegistration.persistence === "transient" /* TRANSIENT */;
   }
   viewId() {
     return this.viewRegistration.id;
@@ -6279,11 +7341,11 @@ var PreRegisteredView = class {
   }
 };
 var viewManagerInstance;
-var Events6;
-(function(Events13) {
-  Events13["VIEW_VISIBILITY_CHANGED"] = "ViewVisibilityChanged";
-})(Events6 || (Events6 = {}));
-var ViewManager = class _ViewManager extends Common7.ObjectWrapper.ObjectWrapper {
+var Events7 = /* @__PURE__ */ ((Events12) => {
+  Events12["VIEW_VISIBILITY_CHANGED"] = "ViewVisibilityChanged";
+  return Events12;
+})(Events7 || {});
+var ViewManager = class _ViewManager extends Common9.ObjectWrapper.ObjectWrapper {
   views = /* @__PURE__ */ new Map();
   locationNameByViewId = /* @__PURE__ */ new Map();
   locationOverrideSetting;
@@ -6292,7 +7354,7 @@ var ViewManager = class _ViewManager extends Common7.ObjectWrapper.ObjectWrapper
   //   on `instance()` to create ViewManagers lazily in after/afterEach blocks.
   constructor(universe) {
     super();
-    this.locationOverrideSetting = Common7.Settings.Settings.instance().createSetting("views-location-override", {});
+    this.locationOverrideSetting = Common9.Settings.Settings.instance().createSetting("views-location-override", {});
     const preferredExtensionLocations = this.locationOverrideSetting.get();
     const viewsByLocation = /* @__PURE__ */ new Map();
     for (const view of getRegisteredViewExtensions()) {
@@ -6319,7 +7381,7 @@ var ViewManager = class _ViewManager extends Common7.ObjectWrapper.ObjectWrapper
       if (this.views.has(viewId)) {
         throw new Error(`Duplicate view id '${viewId}'`);
       }
-      if (!Platform7.StringUtilities.isExtendedKebabCase(viewId)) {
+      if (!Platform8.StringUtilities.isExtendedKebabCase(viewId)) {
         throw new Error(`Invalid view ID '${viewId}'`);
       }
       this.views.set(viewId, view);
@@ -6588,35 +7650,38 @@ var TabbedLocation = class _TabbedLocation extends Location {
     this.location = location;
     this.#tabbedPane = tabbedPane;
     this.allowReorder = allowReorder;
-    this.#tabbedPane.addEventListener(Events5.TabSelected, this.tabSelected, this);
-    this.#tabbedPane.addEventListener(Events5.TabClosed, this.tabClosed, this);
-    this.#tabbedPane.addEventListener(Events5.PaneVisibilityChanged, this.tabbedPaneVisibilityChanged, this);
-    this.closeableTabSetting = Common7.Settings.Settings.instance().createSetting("closeable-tabs", {});
+    this.#tabbedPane.addEventListener("TabSelected" /* TabSelected */, this.tabSelected, this);
+    this.#tabbedPane.addEventListener("TabClosed" /* TabClosed */, this.tabClosed, this);
+    this.#tabbedPane.addEventListener("PaneVisibilityChanged" /* PaneVisibilityChanged */, this.tabbedPaneVisibilityChanged, this);
+    this.closeableTabSetting = Common9.Settings.Settings.instance().createSetting("closeable-tabs", {});
     this.setOrUpdateCloseableTabsSetting();
-    this.tabOrderSetting = Common7.Settings.Settings.instance().createSetting(location + "-tab-order", {});
-    this.#tabbedPane.addEventListener(Events5.TabOrderChanged, this.persistTabOrder, this);
+    this.tabOrderSetting = Common9.Settings.Settings.instance().createSetting(location + "-tab-order", {});
+    this.#tabbedPane.addEventListener("TabOrderChanged" /* TabOrderChanged */, this.persistTabOrder, this);
     if (restoreSelection) {
-      this.lastSelectedTabSetting = Common7.Settings.Settings.instance().createSetting(location + "-selected-tab", "");
+      this.lastSelectedTabSetting = Common9.Settings.Settings.instance().createSetting(location + "-selected-tab", "");
     }
     this.defaultTab = options?.defaultTab;
     this.isLocationVisible = options?.isLocationVisible;
     if (options?.plusButton && Root4.Runtime.hostConfig.devToolsPlusButton?.enabled) {
-      installPlusButton({
-        tabbedPane: this.#tabbedPane,
-        location: this.location,
-        // Use the local `views` map (not `manager.viewsForLocation`) so
-        // cross-location moves added via `appendView` are reflected.
-        views: () => this.views.values(),
-        manager: this.manager,
-        showView: (view) => {
-          this.showView(
-            view,
-            void 0,
-            /* userGesture */
-            true
-          ).catch((err) => console.error(err));
-        }
-      }, options.plusButton);
+      installPlusButton(
+        {
+          tabbedPane: this.#tabbedPane,
+          location: this.location,
+          // Use the local `views` map (not `manager.viewsForLocation`) so
+          // cross-location moves added via `appendView` are reflected.
+          views: () => this.views.values(),
+          manager: this.manager,
+          showView: (view) => {
+            this.showView(
+              view,
+              void 0,
+              /* userGesture */
+              true
+            ).catch((err) => console.error(err));
+          }
+        },
+        options.plusButton
+      );
     }
     if (location) {
       this.appendApplicableItems(location);
@@ -6697,11 +7762,24 @@ var TabbedLocation = class _TabbedLocation extends Location {
         continue;
       }
       const isPreviewFeature = view.isPreviewFeature();
-      contextMenu.defaultSection().appendItem(title, this.showView.bind(this, view, void 0, true), { isPreviewFeature, jslogContext: view.viewId() });
+      contextMenu.defaultSection().appendItem(
+        title,
+        this.showView.bind(this, view, void 0, true),
+        { isPreviewFeature, jslogContext: view.viewId() }
+      );
     }
   }
   appendTab(view, index) {
-    this.#tabbedPane.appendTab(view.viewId(), view.title(), new ContainerWidget(view), void 0, false, view.isCloseable() || view.isTransient(), view.isPreviewFeature(), index);
+    this.#tabbedPane.appendTab(
+      view.viewId(),
+      view.title(),
+      new ContainerWidget(view),
+      void 0,
+      false,
+      view.isCloseable() || view.isTransient(),
+      view.isPreviewFeature(),
+      index
+    );
     const iconName = view.iconName();
     if (iconName) {
       const icon = createIcon4(iconName);
@@ -6777,7 +7855,7 @@ var TabbedLocation = class _TabbedLocation extends Location {
     if (!this.#tabbedPane.selectedTabId) {
       return;
     }
-    this.manager.dispatchEventToListeners("ViewVisibilityChanged", {
+    this.manager.dispatchEventToListeners("ViewVisibilityChanged" /* VIEW_VISIBILITY_CHANGED */, {
       location: this.location,
       revealedViewId: event.data.isVisible ? this.#tabbedPane.selectedTabId : void 0,
       hiddenViewId: event.data.isVisible ? void 0 : this.#tabbedPane.selectedTabId
@@ -6788,7 +7866,7 @@ var TabbedLocation = class _TabbedLocation extends Location {
     if (this.lastSelectedTabSetting && isUserGesture) {
       this.lastSelectedTabSetting.set(tabId);
     }
-    this.manager.dispatchEventToListeners("ViewVisibilityChanged", {
+    this.manager.dispatchEventToListeners("ViewVisibilityChanged" /* VIEW_VISIBILITY_CHANGED */, {
       location: this.location,
       revealedViewId: tabId,
       hiddenViewId: prevTabId
@@ -6835,14 +7913,14 @@ var StackLocation = class extends Location {
   constructor(manager, revealCallback, location, jslogContext, initialVisibility = true) {
     const stackedPane = new StackedPane(ViewManager.createToolbar, ViewManager.setWidgetForView, (viewId, isExpanded) => {
       if (this.#isVisible) {
-        manager.dispatchEventToListeners("ViewVisibilityChanged", {
+        manager.dispatchEventToListeners("ViewVisibilityChanged" /* VIEW_VISIBILITY_CHANGED */, {
           location: this.location,
           revealedViewId: isExpanded ? viewId : void 0,
           hiddenViewId: isExpanded ? void 0 : viewId
         });
       }
     });
-    stackedPane.element.setAttribute("jslog", `${VisualLogging6.pane(jslogContext || "sidebar").track({ resize: true })}`);
+    stackedPane.element.setAttribute("jslog", `${VisualLogging7.pane(jslogContext || "sidebar").track({ resize: true })}`);
     super(manager, stackedPane, revealCallback);
     this.location = location || "";
     this.stackedPane = stackedPane;
@@ -6862,7 +7940,7 @@ var StackLocation = class extends Location {
     this.#isVisible = isVisible;
     for (const [viewId, container] of this.stackedPane.expandableContainers) {
       if (container.isExpanded()) {
-        this.manager.dispatchEventToListeners("ViewVisibilityChanged", {
+        this.manager.dispatchEventToListeners("ViewVisibilityChanged" /* VIEW_VISIBILITY_CHANGED */, {
           location: this.location,
           revealedViewId: isVisible ? viewId : void 0,
           hiddenViewId: isVisible ? void 0 : viewId
@@ -6898,7 +7976,7 @@ var StackLocation = class extends Location {
   }
 };
 
-// gen/front_end/ui/legacy/InspectorDrawerView.js
+// ../../front_end/ui/legacy/InspectorDrawerView.ts
 var VERTICAL_MINIMIZED_DRAWER_SIZE = 27;
 var DrawerTabbedPane = class extends TabbedPane {
   constructor() {
@@ -6971,7 +8049,7 @@ var InspectorDrawerView = class {
     this.#onMinimizeFromTabInteraction = options.onMinimizeFromTabInteraction;
     this.#onTabSelected = options.onTabSelected;
     this.#isConsoleOpenInMainAndDrawer = options.isConsoleOpenInMainAndDrawer;
-    this.#drawerMinimizedSetting = Common8.Settings.Settings.instance().createLocalSetting("inspector.drawer-minimized", false);
+    this.#drawerMinimizedSetting = Common10.Settings.Settings.instance().createLocalSetting("inspector.drawer-minimized", false);
     this.tabbedLocation = ViewManager.instance().createTabbedLocation(options.revealDrawer, "drawer-view", true, true, {
       isLocationVisible: options.isVisible,
       tabbedPaneFactory: () => new DrawerTabbedPane(),
@@ -6985,26 +8063,41 @@ var InspectorDrawerView = class {
     }
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.element.classList.add("drawer-tabbed-pane");
-    this.tabbedPane.element.setAttribute("jslog", `${VisualLogging7.drawer()}`);
-    this.#minimizeExpandButton = new ToolbarButton(i18nString8(UIStrings8.minimizeDrawer), options.isVertical ? "right-panel-close" : "bottom-panel-close");
-    this.#minimizeExpandButton.element.setAttribute("jslog", `${VisualLogging7.toggle("minimize-drawer").track({ click: true })}`);
-    this.#minimizeExpandButton.addEventListener("Click", options.onToggleMinimized);
+    this.tabbedPane.element.setAttribute("jslog", `${VisualLogging8.drawer()}`);
+    this.#minimizeExpandButton = new ToolbarButton(
+      i18nString8(UIStrings8.minimizeDrawer),
+      options.isVertical ? "right-panel-close" : "bottom-panel-close"
+    );
+    this.#minimizeExpandButton.element.setAttribute(
+      "jslog",
+      `${VisualLogging8.toggle("minimize-drawer").track({ click: true })}`
+    );
+    this.#minimizeExpandButton.addEventListener(ToolbarButton.Events.CLICK, options.onToggleMinimized);
     this.#closeDrawerButton = new ToolbarButton(i18nString8(UIStrings8.closeDrawer), "cross");
-    this.#closeDrawerButton.element.setAttribute("jslog", `${VisualLogging7.close("close-drawer").track({ click: true })}`);
-    this.#closeDrawerButton.addEventListener("Click", options.onHide);
-    this.#toggleOrientationButton = new ToolbarButton(i18nString8(UIStrings8.toggleDrawerOrientation), options.isVertical ? "dock-bottom" : "dock-right");
-    this.#toggleOrientationButton.element.setAttribute("jslog", `${VisualLogging7.toggle("toggle-drawer-orientation").track({ click: true })}`);
-    this.#toggleOrientationButton.addEventListener("Click", options.onToggleOrientation);
+    this.#closeDrawerButton.element.setAttribute(
+      "jslog",
+      `${VisualLogging8.close("close-drawer").track({ click: true })}`
+    );
+    this.#closeDrawerButton.addEventListener(ToolbarButton.Events.CLICK, options.onHide);
+    this.#toggleOrientationButton = new ToolbarButton(
+      i18nString8(UIStrings8.toggleDrawerOrientation),
+      options.isVertical ? "dock-bottom" : "dock-right"
+    );
+    this.#toggleOrientationButton.element.setAttribute(
+      "jslog",
+      `${VisualLogging8.toggle("toggle-drawer-orientation").track({ click: true })}`
+    );
+    this.#toggleOrientationButton.addEventListener(ToolbarButton.Events.CLICK, options.onToggleOrientation);
     if (options.enableOrientationToggle) {
       this.tabbedPane.rightToolbar().appendToolbarItem(this.#toggleOrientationButton);
     }
     this.tabbedPane.rightToolbar().appendToolbarItem(this.#minimizeExpandButton);
     this.tabbedPane.rightToolbar().appendToolbarItem(this.#closeDrawerButton);
-    this.tabbedPane.addEventListener(Events5.TabInvoked, this.#drawerTabInvoked, this);
-    this.tabbedPane.addEventListener(Events5.TabSelected, this.#drawerTabSelected, this);
+    this.tabbedPane.addEventListener("TabInvoked" /* TabInvoked */, this.#drawerTabInvoked, this);
+    this.tabbedPane.addEventListener("TabSelected" /* TabSelected */, this.#drawerTabSelected, this);
     this.tabbedPane.setTabDelegate(options.tabDelegate);
     const selectedDrawerTab = this.tabbedPane.selectedTabId;
-    if (this.#splitWidget.showMode() !== "OnlyMain" && selectedDrawerTab) {
+    if (this.#splitWidget.showMode() !== "OnlyMain" /* ONLY_MAIN */ && selectedDrawerTab) {
       this.#onTabSelected(selectedDrawerTab);
     }
     const drawerElement = this.tabbedPane.element;
@@ -7012,7 +8105,7 @@ var InspectorDrawerView = class {
     setLabel(drawerElement, options.drawerLabel);
     this.#splitWidget.installResizer(this.tabbedPane.headerElement());
     this.#splitWidget.setSidebarWidget(this.tabbedPane);
-    this.tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging7.toolbar("drawer").track({
+    this.tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging8.toolbar("drawer").track({
       drag: true,
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
@@ -7038,19 +8131,19 @@ var InspectorDrawerView = class {
   applyState(showMode, minimized) {
     if (this.#splitWidget.showMode() !== showMode) {
       switch (showMode) {
-        case "Both":
+        case "Both" /* BOTH */:
           this.#splitWidget.showBoth();
           break;
-        case "OnlyMain":
+        case "OnlyMain" /* ONLY_MAIN */:
           this.#splitWidget.hideSidebar();
           break;
-        case "OnlySidebar":
+        case "OnlySidebar" /* ONLY_SIDEBAR */:
           this.#splitWidget.hideMain();
           break;
       }
     }
-    const shouldBeMinimized = showMode === "Both" && minimized;
-    if (showMode === "Both") {
+    const shouldBeMinimized = showMode === "Both" /* BOTH */ && minimized;
+    if (showMode === "Both" /* BOTH */) {
       this.setMinimized(shouldBeMinimized);
       return;
     }
@@ -7144,7 +8237,10 @@ var InspectorDrawerView = class {
   }
   #updatePresentation(minimized) {
     const requireVerticalMinimumWidth = this.#splitWidget.isVertical() && this.#splitWidget.sidebarIsShowing() && !minimized;
-    this.#setInspectorMinimumSize(requireVerticalMinimumWidth ? this.#minimumSizes.inspectorWidthWhenVertical : this.#minimumSizes.inspectorWidthWhenHorizontal, this.#minimumSizes.inspectorHeight);
+    this.#setInspectorMinimumSize(
+      requireVerticalMinimumWidth ? this.#minimumSizes.inspectorWidthWhenVertical : this.#minimumSizes.inspectorWidthWhenHorizontal,
+      this.#minimumSizes.inspectorHeight
+    );
     const drawerIsVertical = this.#splitWidget.isVertical();
     this.updatePresentation({
       isVertical: drawerIsVertical,
@@ -7157,7 +8253,7 @@ var InspectorDrawerView = class {
     if (wasDrawerVisible === isDrawerVisible) {
       return;
     }
-    this.tabbedPane.dispatchEventToListeners(Events5.PaneVisibilityChanged, { isVisible: isDrawerVisible });
+    this.tabbedPane.dispatchEventToListeners("PaneVisibilityChanged" /* PaneVisibilityChanged */, { isVisible: isDrawerVisible });
   }
   #drawerTabSelected(event) {
     const { tabId, prevTabId, isUserGesture } = event.data;
@@ -7183,1013 +8279,7 @@ var InspectorDrawerView = class {
   }
 };
 
-// gen/front_end/ui/legacy/SplitWidget.js
-var SplitWidget_exports = {};
-__export(SplitWidget_exports, {
-  Events: () => Events8,
-  ShowMode: () => ShowMode,
-  SplitWidget: () => SplitWidget,
-  SplitWidgetElement: () => SplitWidgetElement
-});
-import * as Common10 from "../../core/common/common.js";
-import * as Platform8 from "../../core/platform/platform.js";
-import * as Geometry3 from "../../models/geometry/geometry.js";
-import * as VisualLogging8 from "../visual_logging/visual_logging.js";
-
-// gen/front_end/ui/legacy/ResizerWidget.js
-var ResizerWidget_exports = {};
-__export(ResizerWidget_exports, {
-  Events: () => Events7,
-  ResizerWidget: () => ResizerWidget,
-  SimpleResizerWidget: () => SimpleResizerWidget
-});
-import * as Common9 from "../../core/common/common.js";
-var ResizerWidget = class extends Common9.ObjectWrapper.ObjectWrapper {
-  #isEnabled = true;
-  #elements = /* @__PURE__ */ new Set();
-  #installDragOnMouseDownBound;
-  #cursor = "nwse-resize";
-  #startX;
-  #startY;
-  constructor() {
-    super();
-    this.#installDragOnMouseDownBound = this.#installDragOnMouseDown.bind(this);
-  }
-  isEnabled() {
-    return this.#isEnabled;
-  }
-  setEnabled(enabled) {
-    this.#isEnabled = enabled;
-    this.updateElementCursors();
-  }
-  elements() {
-    return [...this.#elements];
-  }
-  addElement(element) {
-    if (!this.#elements.has(element)) {
-      this.#elements.add(element);
-      element.addEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
-      this.#updateElementCursor(element);
-    }
-  }
-  removeElement(element) {
-    if (this.#elements.has(element)) {
-      this.#elements.delete(element);
-      element.removeEventListener("pointerdown", this.#installDragOnMouseDownBound, false);
-      element.style.removeProperty("cursor");
-    }
-  }
-  updateElementCursors() {
-    this.#elements.forEach(this.#updateElementCursor.bind(this));
-  }
-  #updateElementCursor(element) {
-    if (this.#isEnabled) {
-      element.style.setProperty("cursor", this.cursor());
-      element.style.setProperty("touch-action", "none");
-    } else {
-      element.style.removeProperty("cursor");
-      element.style.removeProperty("touch-action");
-    }
-  }
-  cursor() {
-    return this.#cursor;
-  }
-  setCursor(cursor) {
-    this.#cursor = cursor;
-    this.updateElementCursors();
-  }
-  #installDragOnMouseDown(event) {
-    const element = event.target;
-    if (!this.#elements.has(element)) {
-      return false;
-    }
-    elementDragStart(element, this.#dragStart.bind(this), (event2) => {
-      this.#drag(event2);
-    }, this.#dragEnd.bind(this), this.cursor(), event);
-    return void 0;
-  }
-  #dragStart(event) {
-    if (!this.#isEnabled) {
-      return false;
-    }
-    this.#startX = event.pageX;
-    this.#startY = event.pageY;
-    this.sendDragStart(this.#startX, this.#startY);
-    return true;
-  }
-  sendDragStart(x, y) {
-    this.dispatchEventToListeners("ResizeStart", { startX: x, currentX: x, startY: y, currentY: y });
-  }
-  #drag(event) {
-    if (!this.#isEnabled) {
-      this.#dragEnd(event);
-      return true;
-    }
-    this.sendDragMove(this.#startX, event.pageX, this.#startY, event.pageY, event.shiftKey);
-    event.preventDefault();
-    return false;
-  }
-  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
-    this.dispatchEventToListeners("ResizeUpdateXY", { startX, currentX, startY, currentY, shiftKey });
-  }
-  #dragEnd(_event) {
-    this.dispatchEventToListeners(
-      "ResizeEnd"
-      /* Events.RESIZE_END */
-    );
-    this.#startX = void 0;
-    this.#startY = void 0;
-  }
-};
-var Events7;
-(function(Events13) {
-  Events13["RESIZE_START"] = "ResizeStart";
-  Events13["RESIZE_UPDATE_XY"] = "ResizeUpdateXY";
-  Events13["RESIZE_UPDATE_POSITION"] = "ResizeUpdatePosition";
-  Events13["RESIZE_END"] = "ResizeEnd";
-})(Events7 || (Events7 = {}));
-var SimpleResizerWidget = class extends ResizerWidget {
-  #isVertical = true;
-  isVertical() {
-    return this.#isVertical;
-  }
-  /**
-   * Vertical widget resizes height (along y-axis).
-   */
-  setVertical(vertical) {
-    this.#isVertical = vertical;
-    this.updateElementCursors();
-  }
-  cursor() {
-    return this.#isVertical ? "ns-resize" : "ew-resize";
-  }
-  sendDragStart(x, y) {
-    const position = this.#isVertical ? y : x;
-    this.dispatchEventToListeners("ResizeStart", { startPosition: position, currentPosition: position });
-  }
-  sendDragMove(startX, currentX, startY, currentY, shiftKey) {
-    if (this.#isVertical) {
-      this.dispatchEventToListeners("ResizeUpdatePosition", { startPosition: startY, currentPosition: currentY, shiftKey });
-    } else {
-      this.dispatchEventToListeners("ResizeUpdatePosition", { startPosition: startX, currentPosition: currentX, shiftKey });
-    }
-  }
-};
-
-// gen/front_end/ui/legacy/splitWidget.css.js
-var splitWidget_css_default = `/*
- * Copyright 2026 The Chromium Authors
- * Use of this source code is governed by a BSD-style license that can be
- * found in the LICENSE file.
- */
-
-.shadow-split-widget {
-  display: flex;
-  overflow: hidden;
-}
-
-.shadow-split-widget-contents {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  contain: layout size style;
-}
-
-.shadow-split-widget-sidebar {
-  flex: none;
-}
-
-.shadow-split-widget-main,
-.shadow-split-widget-sidebar.maximized {
-  flex: auto;
-}
-
-.shadow-split-widget.hbox > .shadow-split-widget-resizer {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: var(--sys-size-4);
-  z-index: 4000;
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-resizer {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: var(--sys-size-4);
-  z-index: 4000;
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-sidebar.no-default-splitter {
-  border: 0 !important; /* stylelint-disable-line declaration-no-important */
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-sidebar:not(.maximized) {
-  border: 0;
-  border-top: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-.shadow-split-widget.hbox > .shadow-split-widget-sidebar:not(.maximized) {
-  border: 0;
-  border-left: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-.shadow-split-widget.vbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
-  border: 0;
-  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-.shadow-split-widget.hbox > .shadow-split-widget-sidebar:first-child:not(.maximized) {
-  border: 0;
-  border-right: var(--sys-size-1) solid var(--sys-color-divider);
-}
-
-:host-context(.disable-resizer-for-elements-hack) .shadow-split-widget-resizer {
-  pointer-events: none;
-}
-
-:host {
-  display: flex;
-}
-
-/*# sourceURL=${import.meta.resolve("./splitWidget.css")} */`;
-
-// gen/front_end/ui/legacy/SplitWidget.js
-var SplitWidgetBase = Common10.ObjectWrapper.eventMixin(Widget);
-var SplitWidget = class extends SplitWidgetBase {
-  #sidebarElement;
-  #mainElement;
-  #resizerElement;
-  #resizerElementSize = null;
-  #resizerWidget;
-  #defaultSidebarWidth;
-  #defaultSidebarHeight;
-  #constraintsInDip;
-  #resizeStartSizeDIP = 0;
-  // TODO: Used in WebTests
-  setting;
-  #totalSizeCSS = 0;
-  #totalSizeOtherDimensionCSS = 0;
-  #mainWidget = null;
-  #sidebarWidget = null;
-  #animationFrameHandle = 0;
-  #animationCallback = null;
-  #showSidebarButtonTitle = Common10.UIString.LocalizedEmptyString;
-  #hideSidebarButtonTitle = Common10.UIString.LocalizedEmptyString;
-  #shownSidebarString = Common10.UIString.LocalizedEmptyString;
-  #hiddenSidebarString = Common10.UIString.LocalizedEmptyString;
-  #showHideSidebarButton = null;
-  #isVertical = false;
-  #sidebarMinimized = false;
-  #detaching = false;
-  #sidebarSizeDIP = -1;
-  #savedSidebarSizeDIP;
-  #secondIsSidebar = false;
-  #shouldSaveShowMode = false;
-  #savedVerticalMainSize = null;
-  #savedHorizontalMainSize = null;
-  #showMode = "Both";
-  #savedShowMode;
-  #autoAdjustOrientation = false;
-  #zoomManager = ZoomManager.instance();
-  constructor(isVertical, secondIsSidebar, settingName, defaultSidebarWidth, defaultSidebarHeight, constraintsInDip, element) {
-    super(element, { useShadowDom: true });
-    this.element.classList.add("split-widget");
-    this.registerRequiredCSS(splitWidget_css_default);
-    this.contentElement.classList.add("shadow-split-widget");
-    this.#sidebarElement = this.contentElement.createChild("div", "shadow-split-widget-contents shadow-split-widget-sidebar vbox");
-    this.#mainElement = this.contentElement.createChild("div", "shadow-split-widget-contents shadow-split-widget-main vbox");
-    const mainSlot = this.#mainElement.createChild("slot");
-    mainSlot.name = "main";
-    mainSlot.addEventListener("slotchange", (_) => {
-      const assignedNode = mainSlot.assignedNodes()[0];
-      const widget2 = assignedNode instanceof HTMLElement ? Widget.getOrCreateWidget(assignedNode) : null;
-      if (widget2 && widget2 !== this.#mainWidget) {
-        this.setMainWidget(widget2);
-      }
-    });
-    const sidebarSlot = this.#sidebarElement.createChild("slot");
-    sidebarSlot.name = "sidebar";
-    sidebarSlot.addEventListener("slotchange", (_) => {
-      const assignedNode = sidebarSlot.assignedNodes()[0];
-      const widget2 = assignedNode instanceof HTMLElement ? Widget.getOrCreateWidget(assignedNode) : null;
-      if (widget2 && widget2 !== this.#sidebarWidget) {
-        this.setSidebarWidget(widget2);
-      }
-    });
-    this.#resizerElement = this.contentElement.createChild("div", "shadow-split-widget-resizer");
-    this.#resizerWidget = new SimpleResizerWidget();
-    this.#resizerWidget.setEnabled(true);
-    this.#resizerWidget.addEventListener("ResizeStart", this.#onResizeStart, this);
-    this.#resizerWidget.addEventListener("ResizeUpdatePosition", this.#onResizeUpdate, this);
-    this.#resizerWidget.addEventListener("ResizeEnd", this.#onResizeEnd, this);
-    this.#defaultSidebarWidth = defaultSidebarWidth || 200;
-    this.#defaultSidebarHeight = defaultSidebarHeight || this.#defaultSidebarWidth;
-    this.#constraintsInDip = Boolean(constraintsInDip);
-    this.setting = settingName ? Common10.Settings.Settings.instance().createSetting(settingName, {}) : null;
-    this.#savedSidebarSizeDIP = this.#sidebarSizeDIP;
-    this.setSecondIsSidebar(secondIsSidebar);
-    this.#setVertical(isVertical);
-    this.#savedShowMode = this.#showMode;
-    this.installResizer(this.#resizerElement);
-  }
-  isVertical() {
-    return this.#isVertical;
-  }
-  setVertical(isVertical) {
-    if (this.#isVertical === isVertical) {
-      return;
-    }
-    this.#setVertical(isVertical);
-    if (this.isShowing()) {
-      this.#updateLayout();
-    }
-  }
-  setAutoAdjustOrientation(autoAdjustOrientation) {
-    this.#autoAdjustOrientation = autoAdjustOrientation;
-    this.#maybeAutoAdjustOrientation();
-  }
-  #setVertical(isVertical) {
-    this.contentElement.classList.toggle("vbox", !isVertical);
-    this.contentElement.classList.toggle("hbox", isVertical);
-    this.#isVertical = isVertical;
-    this.#resizerElementSize = null;
-    this.#sidebarSizeDIP = -1;
-    this.#restoreSidebarSizeFromSettings();
-    if (this.#shouldSaveShowMode) {
-      this.#restoreAndApplyShowModeFromSettings();
-    }
-    this.#updateShowHideSidebarButton();
-    this.#resizerWidget.setVertical(!isVertical);
-    this.invalidateConstraints();
-  }
-  #updateLayout(animate) {
-    this.#totalSizeCSS = 0;
-    this.#totalSizeOtherDimensionCSS = 0;
-    this.#mainElement.style.removeProperty("width");
-    this.#mainElement.style.removeProperty("height");
-    this.#sidebarElement.style.removeProperty("width");
-    this.#sidebarElement.style.removeProperty("height");
-    this.#setSidebarSizeDIP(this.#preferredSidebarSizeDIP(), Boolean(animate));
-  }
-  setMainWidget(widget2) {
-    if (this.#mainWidget === widget2) {
-      return;
-    }
-    this.suspendInvalidations();
-    if (this.#mainWidget) {
-      this.#mainWidget.detach();
-    }
-    this.#mainWidget = widget2;
-    if (widget2) {
-      widget2.element.slot = "main";
-      if (this.#showMode === "OnlyMain" || this.#showMode === "Both") {
-        widget2.show(this.element);
-      }
-    }
-    this.resumeInvalidations();
-  }
-  setSidebarWidget(widget2) {
-    if (this.#sidebarWidget === widget2) {
-      return;
-    }
-    this.suspendInvalidations();
-    if (this.#sidebarWidget) {
-      this.#sidebarWidget.detach();
-    }
-    this.#sidebarWidget = widget2;
-    if (widget2) {
-      widget2.element.slot = "sidebar";
-      if (this.#showMode === "OnlySidebar" || this.#showMode === "Both") {
-        widget2.show(this.element);
-      }
-    }
-    this.resumeInvalidations();
-  }
-  mainWidget() {
-    return this.#mainWidget;
-  }
-  sidebarWidget() {
-    return this.#sidebarWidget;
-  }
-  sidebarElement() {
-    return this.#sidebarElement;
-  }
-  childWasDetached(widget2) {
-    if (this.#detaching) {
-      return;
-    }
-    if (this.#mainWidget === widget2) {
-      this.#mainWidget = null;
-    }
-    if (this.#sidebarWidget === widget2) {
-      this.#sidebarWidget = null;
-    }
-    this.invalidateConstraints();
-  }
-  isSidebarSecond() {
-    return this.#secondIsSidebar;
-  }
-  enableShowModeSaving() {
-    this.#shouldSaveShowMode = true;
-    this.#restoreAndApplyShowModeFromSettings();
-  }
-  showMode() {
-    return this.#showMode;
-  }
-  sidebarIsShowing() {
-    return this.#showMode !== "OnlyMain";
-  }
-  setSecondIsSidebar(secondIsSidebar) {
-    if (secondIsSidebar === this.#secondIsSidebar) {
-      return;
-    }
-    this.#secondIsSidebar = secondIsSidebar;
-    if (!this.#mainWidget?.shouldHideOnDetach()) {
-      if (secondIsSidebar) {
-        this.contentElement.insertBefore(this.#mainElement, this.#sidebarElement);
-      } else {
-        this.contentElement.insertBefore(this.#mainElement, this.#resizerElement);
-      }
-    } else if (!this.#sidebarWidget?.shouldHideOnDetach()) {
-      if (secondIsSidebar) {
-        this.contentElement.insertBefore(this.#sidebarElement, this.#resizerElement);
-      } else {
-        this.contentElement.insertBefore(this.#sidebarElement, this.#mainElement);
-      }
-    } else {
-      console.error("Could not swap split widget side. Both children widgets contain iframes.");
-      this.#secondIsSidebar = !secondIsSidebar;
-    }
-  }
-  resizerElement() {
-    return this.#resizerElement;
-  }
-  hideMain(animate) {
-    this.#showOnly(this.#sidebarWidget, this.#mainWidget, this.#sidebarElement, this.#mainElement, animate);
-    this.#updateShowMode(
-      "OnlySidebar"
-      /* ShowMode.ONLY_SIDEBAR */
-    );
-  }
-  hideSidebar(animate) {
-    this.#showOnly(this.#mainWidget, this.#sidebarWidget, this.#mainElement, this.#sidebarElement, animate);
-    this.#updateShowMode(
-      "OnlyMain"
-      /* ShowMode.ONLY_MAIN */
-    );
-  }
-  setSidebarMinimized(minimized) {
-    this.#sidebarMinimized = minimized;
-    this.invalidateConstraints();
-  }
-  isSidebarMinimized() {
-    return this.#sidebarMinimized;
-  }
-  #showOnly(sideToShow, sideToHide, shadowToShow, shadowToHide, animate) {
-    this.#cancelAnimation();
-    function callback() {
-      if (sideToShow) {
-        if (sideToShow === this.#mainWidget) {
-          this.#mainWidget.show(this.element, this.#sidebarWidget ? this.#sidebarWidget.element : null);
-        } else if (this.#sidebarWidget) {
-          this.#sidebarWidget.show(this.element);
-        }
-      }
-      if (sideToHide) {
-        this.#detaching = true;
-        sideToHide.detach();
-        this.#detaching = false;
-      }
-      this.#resizerElement.classList.add("hidden");
-      shadowToShow.classList.remove("hidden");
-      shadowToShow.classList.add("maximized");
-      shadowToHide.classList.add("hidden");
-      shadowToHide.classList.remove("maximized");
-      this.#removeAllLayoutProperties();
-      this.doResize();
-      this.showFinishedForTest();
-    }
-    if (animate) {
-      this.#animate(true, callback.bind(this));
-    } else {
-      callback.call(this);
-    }
-    this.#sidebarSizeDIP = -1;
-    this.setResizable(false);
-  }
-  showFinishedForTest() {
-  }
-  #removeAllLayoutProperties() {
-    this.#sidebarElement.style.removeProperty("flexBasis");
-    this.#mainElement.style.removeProperty("width");
-    this.#mainElement.style.removeProperty("height");
-    this.#sidebarElement.style.removeProperty("width");
-    this.#sidebarElement.style.removeProperty("height");
-    this.#resizerElement.style.removeProperty("left");
-    this.#resizerElement.style.removeProperty("right");
-    this.#resizerElement.style.removeProperty("top");
-    this.#resizerElement.style.removeProperty("bottom");
-    this.#resizerElement.style.removeProperty("margin-left");
-    this.#resizerElement.style.removeProperty("margin-right");
-    this.#resizerElement.style.removeProperty("margin-top");
-    this.#resizerElement.style.removeProperty("margin-bottom");
-  }
-  showBoth(animate) {
-    if (this.#showMode === "Both") {
-      animate = false;
-    }
-    this.#cancelAnimation();
-    this.#mainElement.classList.remove("maximized", "hidden");
-    this.#sidebarElement.classList.remove("maximized", "hidden");
-    this.#resizerElement.classList.remove("hidden");
-    this.setResizable(true);
-    this.suspendInvalidations();
-    if (this.#sidebarWidget) {
-      this.#sidebarWidget.show(this.element);
-    }
-    if (this.#mainWidget) {
-      this.#mainWidget.show(this.element, this.#sidebarWidget ? this.#sidebarWidget.element : null);
-    }
-    this.resumeInvalidations();
-    this.setSecondIsSidebar(this.#secondIsSidebar);
-    this.#sidebarSizeDIP = -1;
-    this.#updateShowMode(
-      "Both"
-      /* ShowMode.BOTH */
-    );
-    this.#updateLayout(animate);
-  }
-  setResizable(resizable) {
-    this.#resizerWidget.setEnabled(resizable);
-  }
-  // Currently unused
-  forceSetSidebarWidth(width) {
-    this.#defaultSidebarWidth = width;
-    this.#savedSidebarSizeDIP = width;
-    this.#updateLayout();
-  }
-  isResizable() {
-    return this.#resizerWidget.isEnabled();
-  }
-  setSidebarSize(size) {
-    const sizeDIP = this.#zoomManager.cssToDIP(size);
-    this.#savedSidebarSizeDIP = sizeDIP;
-    this.#saveSetting();
-    this.#setSidebarSizeDIP(sizeDIP, false, true);
-  }
-  sidebarSize() {
-    const sizeDIP = Math.max(0, this.#sidebarSizeDIP);
-    return this.#zoomManager.dipToCSS(sizeDIP);
-  }
-  totalSize() {
-    const sizeDIP = Math.max(0, this.#totalSizeDIP());
-    return this.#zoomManager.dipToCSS(sizeDIP);
-  }
-  /**
-   * Returns total size in DIP.
-   */
-  #totalSizeDIP() {
-    if (!this.#totalSizeCSS) {
-      const { width, height } = this.contentElement.getBoundingClientRect();
-      this.#totalSizeCSS = this.#isVertical ? width : height;
-      this.#totalSizeOtherDimensionCSS = this.#isVertical ? height : width;
-    }
-    return this.#zoomManager.cssToDIP(this.#totalSizeCSS);
-  }
-  #updateShowMode(showMode) {
-    this.#showMode = showMode;
-    this.#saveShowModeToSettings();
-    this.#updateShowHideSidebarButton();
-    this.dispatchEventToListeners("ShowModeChanged", showMode);
-    this.invalidateConstraints();
-  }
-  #setSidebarSizeDIP(sizeDIP, animate, userAction) {
-    if (this.#showMode !== "Both" || !this.isShowing()) {
-      return;
-    }
-    sizeDIP = this.#applyConstraints(sizeDIP, userAction);
-    if (this.#sidebarSizeDIP === sizeDIP) {
-      return;
-    }
-    if (!this.#resizerElementSize) {
-      this.#resizerElementSize = this.#isVertical ? this.#resizerElement.offsetWidth : this.#resizerElement.offsetHeight;
-    }
-    this.#removeAllLayoutProperties();
-    const sizeCSS = this.#zoomManager.dipToCSS(sizeDIP);
-    const sidebarSizeValue = sizeCSS + "px";
-    const mainSizeValue = this.#totalSizeCSS - sizeCSS + "px";
-    this.#sidebarElement.style.flexBasis = sidebarSizeValue;
-    if (this.#isVertical) {
-      this.#sidebarElement.style.width = sidebarSizeValue;
-      this.#mainElement.style.width = mainSizeValue;
-      this.#sidebarElement.style.height = this.#totalSizeOtherDimensionCSS + "px";
-      this.#mainElement.style.height = this.#totalSizeOtherDimensionCSS + "px";
-    } else {
-      this.#sidebarElement.style.height = sidebarSizeValue;
-      this.#mainElement.style.height = mainSizeValue;
-      this.#sidebarElement.style.width = this.#totalSizeOtherDimensionCSS + "px";
-      this.#mainElement.style.width = this.#totalSizeOtherDimensionCSS + "px";
-    }
-    if (this.#isVertical) {
-      if (this.#secondIsSidebar) {
-        this.#resizerElement.style.right = sidebarSizeValue;
-        this.#resizerElement.style.marginRight = -this.#resizerElementSize / 2 + "px";
-      } else {
-        this.#resizerElement.style.left = sidebarSizeValue;
-        this.#resizerElement.style.marginLeft = -this.#resizerElementSize / 2 + "px";
-      }
-    } else if (this.#secondIsSidebar) {
-      this.#resizerElement.style.bottom = sidebarSizeValue;
-      this.#resizerElement.style.marginBottom = -this.#resizerElementSize / 2 + "px";
-    } else {
-      this.#resizerElement.style.top = sidebarSizeValue;
-      this.#resizerElement.style.marginTop = -this.#resizerElementSize / 2 + "px";
-    }
-    this.#sidebarSizeDIP = sizeDIP;
-    if (animate) {
-      this.#animate(false);
-    } else {
-      this.doResize();
-      this.dispatchEventToListeners("SidebarSizeChanged", this.sidebarSize());
-    }
-  }
-  #animate(reverse, callback) {
-    const animationTime = 50;
-    this.#animationCallback = callback || null;
-    let animatedMarginPropertyName;
-    if (this.#isVertical) {
-      animatedMarginPropertyName = this.#secondIsSidebar ? "margin-right" : "margin-left";
-    } else {
-      animatedMarginPropertyName = this.#secondIsSidebar ? "margin-bottom" : "margin-top";
-    }
-    const marginFrom = reverse ? "0" : "-" + this.#zoomManager.dipToCSS(this.#sidebarSizeDIP) + "px";
-    const marginTo = reverse ? "-" + this.#zoomManager.dipToCSS(this.#sidebarSizeDIP) + "px" : "0";
-    this.contentElement.style.setProperty(animatedMarginPropertyName, marginFrom);
-    this.contentElement.style.setProperty("overflow", "hidden");
-    if (!reverse) {
-      suppressUnused(this.#mainElement.offsetWidth);
-      suppressUnused(this.#sidebarElement.offsetWidth);
-    }
-    if (!reverse && this.#sidebarWidget) {
-      this.#sidebarWidget.doResize();
-    }
-    this.contentElement.style.setProperty("transition", animatedMarginPropertyName + " " + animationTime + "ms linear");
-    const boundAnimationFrame = animationFrame.bind(this);
-    let startTime = null;
-    function animationFrame() {
-      this.#animationFrameHandle = 0;
-      if (!startTime) {
-        this.contentElement.style.setProperty(animatedMarginPropertyName, marginTo);
-        startTime = window.performance.now();
-      } else if (window.performance.now() < startTime + animationTime) {
-        if (this.#mainWidget) {
-          this.#mainWidget.doResize();
-        }
-      } else {
-        this.#cancelAnimation();
-        if (this.#mainWidget) {
-          this.#mainWidget.doResize();
-        }
-        this.dispatchEventToListeners("SidebarSizeChanged", this.sidebarSize());
-        return;
-      }
-      this.#animationFrameHandle = this.contentElement.window().requestAnimationFrame(boundAnimationFrame);
-    }
-    this.#animationFrameHandle = this.contentElement.window().requestAnimationFrame(boundAnimationFrame);
-  }
-  #cancelAnimation() {
-    this.contentElement.style.removeProperty("margin-top");
-    this.contentElement.style.removeProperty("margin-right");
-    this.contentElement.style.removeProperty("margin-bottom");
-    this.contentElement.style.removeProperty("margin-left");
-    this.contentElement.style.removeProperty("transition");
-    this.contentElement.style.removeProperty("overflow");
-    if (this.#animationFrameHandle) {
-      this.contentElement.window().cancelAnimationFrame(this.#animationFrameHandle);
-      this.#animationFrameHandle = 0;
-    }
-    if (this.#animationCallback) {
-      this.#animationCallback();
-      this.#animationCallback = null;
-    }
-  }
-  #applyConstraints(sidebarSize, userAction) {
-    const totalSize = this.#totalSizeDIP();
-    const zoomFactor = this.#constraintsInDip ? 1 : this.#zoomManager.zoomFactor();
-    let constraints = this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry3.Constraints();
-    let minSidebarSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
-    if (!minSidebarSize) {
-      minSidebarSize = MinPadding;
-    }
-    minSidebarSize *= zoomFactor;
-    if (this.#sidebarMinimized) {
-      sidebarSize = minSidebarSize;
-    }
-    let preferredSidebarSize = this.isVertical() ? constraints.preferred.width : constraints.preferred.height;
-    if (!preferredSidebarSize) {
-      preferredSidebarSize = MinPadding;
-    }
-    preferredSidebarSize *= zoomFactor;
-    if (sidebarSize < preferredSidebarSize) {
-      preferredSidebarSize = Math.max(sidebarSize, minSidebarSize);
-    }
-    preferredSidebarSize += zoomFactor;
-    constraints = this.#mainWidget ? this.#mainWidget.constraints() : new Geometry3.Constraints();
-    let minMainSize = this.isVertical() ? constraints.minimum.width : constraints.minimum.height;
-    if (!minMainSize) {
-      minMainSize = MinPadding;
-    }
-    minMainSize *= zoomFactor;
-    let preferredMainSize = this.isVertical() ? constraints.preferred.width : constraints.preferred.height;
-    if (!preferredMainSize) {
-      preferredMainSize = MinPadding;
-    }
-    preferredMainSize *= zoomFactor;
-    const savedMainSize = this.isVertical() ? this.#savedVerticalMainSize : this.#savedHorizontalMainSize;
-    if (savedMainSize !== null) {
-      preferredMainSize = Math.min(preferredMainSize, savedMainSize * zoomFactor);
-    }
-    if (userAction) {
-      preferredMainSize = minMainSize;
-    }
-    const totalPreferred = preferredMainSize + preferredSidebarSize;
-    if (totalPreferred <= totalSize) {
-      return Platform8.NumberUtilities.clamp(sidebarSize, preferredSidebarSize, totalSize - preferredMainSize);
-    }
-    if (minMainSize + minSidebarSize <= totalSize) {
-      const delta = totalPreferred - totalSize;
-      const sidebarDelta = delta * preferredSidebarSize / totalPreferred;
-      sidebarSize = preferredSidebarSize - sidebarDelta;
-      return Platform8.NumberUtilities.clamp(sidebarSize, minSidebarSize, totalSize - minMainSize);
-    }
-    return Math.max(0, totalSize - minMainSize);
-  }
-  wasShown() {
-    super.wasShown();
-    this.#forceUpdateLayout();
-    this.#zoomManager.addEventListener("ZoomChanged", this.onZoomChanged, this);
-  }
-  willHide() {
-    super.willHide();
-    this.#zoomManager.removeEventListener("ZoomChanged", this.onZoomChanged, this);
-  }
-  onResize() {
-    this.#maybeAutoAdjustOrientation();
-    this.#updateLayout();
-  }
-  onLayout() {
-    this.#updateLayout();
-  }
-  calculateConstraints() {
-    if (this.#showMode === "OnlyMain") {
-      return this.#mainWidget ? this.#mainWidget.constraints() : new Geometry3.Constraints();
-    }
-    if (this.#showMode === "OnlySidebar") {
-      return this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry3.Constraints();
-    }
-    let mainConstraints = this.#mainWidget ? this.#mainWidget.constraints() : new Geometry3.Constraints();
-    let sidebarConstraints = this.#sidebarWidget ? this.#sidebarWidget.constraints() : new Geometry3.Constraints();
-    const min = MinPadding;
-    if (this.#isVertical) {
-      mainConstraints = mainConstraints.widthToMax(min).addWidth(1);
-      sidebarConstraints = sidebarConstraints.widthToMax(min);
-      return mainConstraints.addWidth(sidebarConstraints).heightToMax(sidebarConstraints);
-    }
-    mainConstraints = mainConstraints.heightToMax(min).addHeight(1);
-    sidebarConstraints = sidebarConstraints.heightToMax(min);
-    return mainConstraints.widthToMax(sidebarConstraints).addHeight(sidebarConstraints);
-  }
-  #maybeAutoAdjustOrientation() {
-    if (this.#autoAdjustOrientation) {
-      const width = this.isVertical() ? this.#totalSizeCSS : this.#totalSizeOtherDimensionCSS;
-      const height = this.isVertical() ? this.#totalSizeOtherDimensionCSS : this.#totalSizeCSS;
-      if (width <= 600 && height >= 600) {
-        this.setVertical(false);
-      } else {
-        this.setVertical(true);
-      }
-    }
-  }
-  #onResizeStart() {
-    this.#resizeStartSizeDIP = this.#sidebarSizeDIP;
-  }
-  #onResizeUpdate(event) {
-    const offset = event.data.currentPosition - event.data.startPosition;
-    const offsetDIP = this.#zoomManager.cssToDIP(offset);
-    const newSizeDIP = this.#secondIsSidebar ? this.#resizeStartSizeDIP - offsetDIP : this.#resizeStartSizeDIP + offsetDIP;
-    const constrainedSizeDIP = this.#applyConstraints(newSizeDIP, true);
-    this.#savedSidebarSizeDIP = constrainedSizeDIP;
-    this.#saveSetting();
-    this.#setSidebarSizeDIP(constrainedSizeDIP, false, true);
-    if (this.isVertical()) {
-      this.#savedVerticalMainSize = this.#totalSizeDIP() - this.#sidebarSizeDIP;
-    } else {
-      this.#savedHorizontalMainSize = this.#totalSizeDIP() - this.#sidebarSizeDIP;
-    }
-  }
-  #onResizeEnd() {
-    this.#resizeStartSizeDIP = 0;
-  }
-  hideDefaultResizer(noSplitter) {
-    this.#resizerElement.classList.toggle("hidden", Boolean(noSplitter));
-    this.uninstallResizer(this.#resizerElement);
-    this.#sidebarElement.classList.toggle("no-default-splitter", Boolean(noSplitter));
-  }
-  installResizer(resizerElement) {
-    this.#resizerWidget.addElement(resizerElement);
-  }
-  uninstallResizer(resizerElement) {
-    this.#resizerWidget.removeElement(resizerElement);
-  }
-  toggleResizer(resizer, on) {
-    if (on) {
-      this.installResizer(resizer);
-    } else {
-      this.uninstallResizer(resizer);
-    }
-  }
-  #settingForOrientation() {
-    const state = this.setting ? this.setting.get() : {};
-    const orientationState = this.#isVertical ? state.vertical : state.horizontal;
-    return orientationState ?? null;
-  }
-  #preferredSidebarSizeDIP() {
-    let size = this.#savedSidebarSizeDIP;
-    if (!size) {
-      size = this.#isVertical ? this.#defaultSidebarWidth : this.#defaultSidebarHeight;
-      if (0 < size && size < 1) {
-        size *= this.#totalSizeDIP();
-      }
-    }
-    return size;
-  }
-  #restoreSidebarSizeFromSettings() {
-    const settingForOrientation = this.#settingForOrientation();
-    this.#savedSidebarSizeDIP = settingForOrientation ? settingForOrientation.size : 0;
-  }
-  #restoreAndApplyShowModeFromSettings() {
-    const orientationState = this.#settingForOrientation();
-    this.#savedShowMode = orientationState?.showMode ? orientationState.showMode : this.#showMode;
-    this.#showMode = this.#savedShowMode;
-    switch (this.#savedShowMode) {
-      case "Both":
-        this.showBoth();
-        break;
-      case "OnlyMain":
-        this.hideSidebar();
-        break;
-      case "OnlySidebar":
-        this.hideMain();
-        break;
-    }
-  }
-  #saveShowModeToSettings() {
-    this.#savedShowMode = this.#showMode;
-    this.#saveSetting();
-  }
-  #saveSetting() {
-    if (!this.setting) {
-      return;
-    }
-    const state = this.setting.get();
-    const orientationState = (this.#isVertical ? state.vertical : state.horizontal) || {};
-    orientationState.size = this.#savedSidebarSizeDIP;
-    if (this.#shouldSaveShowMode) {
-      orientationState.showMode = this.#savedShowMode;
-    }
-    if (this.#isVertical) {
-      state.vertical = orientationState;
-    } else {
-      state.horizontal = orientationState;
-    }
-    this.setting.set(state);
-  }
-  #forceUpdateLayout() {
-    this.#sidebarSizeDIP = -1;
-    this.#updateLayout();
-  }
-  onZoomChanged() {
-    this.#forceUpdateLayout();
-  }
-  createShowHideSidebarButton(showTitle, hideTitle, shownString, hiddenString, jslogContext) {
-    this.#showSidebarButtonTitle = showTitle;
-    this.#hideSidebarButtonTitle = hideTitle;
-    this.#shownSidebarString = shownString;
-    this.#hiddenSidebarString = hiddenString;
-    this.#showHideSidebarButton = new ToolbarButton("", "right-panel-open");
-    this.#showHideSidebarButton.addEventListener("Click", buttonClicked, this);
-    if (jslogContext) {
-      this.#showHideSidebarButton.element.setAttribute("jslog", `${VisualLogging8.toggleSubpane().track({ click: true }).context(jslogContext)}`);
-    }
-    this.#updateShowHideSidebarButton();
-    function buttonClicked() {
-      this.toggleSidebar();
-    }
-    return this.#showHideSidebarButton;
-  }
-  /**
-   * @returns true if this call makes the sidebar visible, and false otherwise.
-   */
-  toggleSidebar() {
-    if (this.#showMode !== "Both") {
-      this.showBoth(true);
-      LiveAnnouncer.alert(this.#shownSidebarString);
-      return true;
-    }
-    this.hideSidebar(true);
-    LiveAnnouncer.alert(this.#hiddenSidebarString);
-    return false;
-  }
-  #updateShowHideSidebarButton() {
-    if (!this.#showHideSidebarButton) {
-      return;
-    }
-    const sidebarHidden = this.#showMode === "OnlyMain";
-    let glyph = "";
-    if (sidebarHidden) {
-      glyph = this.isVertical() ? this.isSidebarSecond() ? "right-panel-open" : "left-panel-open" : this.isSidebarSecond() ? "bottom-panel-open" : "top-panel-open";
-    } else {
-      glyph = this.isVertical() ? this.isSidebarSecond() ? "right-panel-close" : "left-panel-close" : this.isSidebarSecond() ? "bottom-panel-close" : "top-panel-close";
-    }
-    this.#showHideSidebarButton.setGlyph(glyph);
-    this.#showHideSidebarButton.setTitle(sidebarHidden ? this.#showSidebarButtonTitle : this.#hideSidebarButtonTitle);
-  }
-};
-var SplitWidgetElement = class extends WidgetElement {
-  static observedAttributes = ["direction", "sidebar-position", "sidebar-initial-size", "sidebar-visibility"];
-  constructor() {
-    super();
-    registerWidgetConfig(this, widgetConfig((element) => {
-      const vertical = element.getAttribute("direction") === "column";
-      const autoAdjustOrientation = element.getAttribute("direction") === "auto";
-      const secondIsSidebar = element.getAttribute("sidebar-position") === "second";
-      const settingName = element.getAttribute("name") ?? void 0;
-      const sidebarSize = parseInt(element.getAttribute("sidebar-initial-size") || "", 10);
-      const defaultSidebarWidth = !isNaN(sidebarSize) ? sidebarSize : void 0;
-      const defaultSidebarHeight = !isNaN(sidebarSize) ? sidebarSize : void 0;
-      const widget2 = new SplitWidget(
-        vertical,
-        secondIsSidebar,
-        settingName,
-        defaultSidebarWidth,
-        defaultSidebarHeight,
-        /* constraintsInDip=*/
-        false,
-        element
-      );
-      if (element.getAttribute("sidebar-initial-size") === "minimized") {
-        widget2.setSidebarMinimized(true);
-      }
-      if (autoAdjustOrientation) {
-        widget2.setAutoAdjustOrientation(true);
-      }
-      const sidebarHidden = element.getAttribute("sidebar-visibility") === "hidden";
-      if (sidebarHidden) {
-        widget2.hideSidebar();
-      }
-      widget2.addEventListener("ShowModeChanged", () => {
-        element.dispatchEvent(new CustomEvent("change", { detail: widget2.showMode() }));
-      });
-      return widget2;
-    }));
-  }
-  attributeChangedCallback(name, _oldValue, newValue) {
-    const widget2 = Widget.get(this);
-    if (!widget2) {
-      return;
-    }
-    if (name === "direction") {
-      widget2.setVertical(newValue === "column");
-      widget2.setAutoAdjustOrientation(newValue === "auto");
-    } else if (name === "sidebar-position") {
-      widget2.setSecondIsSidebar(newValue === "second");
-    } else if (name === "sidebar-visibility") {
-      if (newValue === "hidden") {
-        widget2.hideSidebar();
-      } else {
-        widget2.showBoth();
-      }
-    }
-  }
-};
-customElements.define("devtools-split-view", SplitWidgetElement);
-var ShowMode;
-(function(ShowMode2) {
-  ShowMode2["BOTH"] = "Both";
-  ShowMode2["ONLY_MAIN"] = "OnlyMain";
-  ShowMode2["ONLY_SIDEBAR"] = "OnlySidebar";
-})(ShowMode || (ShowMode = {}));
-var Events8;
-(function(Events13) {
-  Events13["SIDEBAR_SIZE_CHANGED"] = "SidebarSizeChanged";
-  Events13["SHOW_MODE_CHANGED"] = "ShowModeChanged";
-})(Events8 || (Events8 = {}));
-var MinPadding = 20;
-var suppressUnused = function(_value) {
-};
-
-// gen/front_end/ui/legacy/UIUserMetrics.js
+// ../../front_end/ui/legacy/UIUserMetrics.ts
 var UIUserMetrics_exports = {};
 __export(UIUserMetrics_exports, {
   UIUserMetrics: () => UIUserMetrics
@@ -8217,7 +8307,10 @@ var UIUserMetrics = class _UIUserMetrics {
         if (this.#panelChangedSinceLaunch) {
           return;
         }
-        Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordPerformanceHistogram(histogramName, performance.now());
+        Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordPerformanceHistogram(
+          histogramName,
+          performance.now()
+        );
       }, 0);
     });
   }
@@ -8225,12 +8318,21 @@ var UIUserMetrics = class _UIUserMetrics {
     this.#launchPanelName = panelName;
   }
   performanceTraceLoad(measure) {
-    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordPerformanceHistogram("DevTools.TraceLoad", measure.duration);
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordPerformanceHistogram(
+      "DevTools.TraceLoad",
+      measure.duration
+    );
   }
   panelShown(panelName, isLaunching) {
     const code = Host6.UserMetrics.PanelCodes[panelName] || 0;
-    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordEnumeratedHistogram("DevTools.PanelShown", code, Host6.UserMetrics.PanelCodes.MAX_VALUE);
-    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordUserMetricsAction("DevTools_PanelShown_" + panelName);
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordEnumeratedHistogram(
+      Host6.InspectorFrontendHostAPI.EnumeratedHistogram.PanelShown,
+      code,
+      Host6.UserMetrics.PanelCodes.MAX_VALUE
+    );
+    Host6.InspectorFrontendHost.InspectorFrontendHostInstance.recordUserMetricsAction(
+      "DevTools_PanelShown_" + panelName
+    );
     if (!isLaunching) {
       this.#panelChangedSinceLaunch = true;
     }
@@ -8240,7 +8342,7 @@ var UIUserMetrics = class _UIUserMetrics {
   }
 };
 
-// gen/front_end/ui/legacy/InspectorView.js
+// ../../front_end/ui/legacy/InspectorView.ts
 var UIStrings9 = {
   /**
    * @description Announcement text for screen readers when the drawer is minimized.
@@ -8325,18 +8427,18 @@ var MIN_VERTICAL_DRAWER_WIDTH = 280;
 var MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER = 250;
 var MIN_INSPECTOR_WIDTH_VERTICAL_DRAWER = 530;
 var MIN_INSPECTOR_HEIGHT = 72;
-var DrawerOrientation;
-(function(DrawerOrientation2) {
+var DrawerOrientation = /* @__PURE__ */ ((DrawerOrientation2) => {
   DrawerOrientation2["VERTICAL"] = "vertical";
   DrawerOrientation2["HORIZONTAL"] = "horizontal";
   DrawerOrientation2["UNSET"] = "unset";
-})(DrawerOrientation || (DrawerOrientation = {}));
-var DockMode;
-(function(DockMode2) {
+  return DrawerOrientation2;
+})(DrawerOrientation || {});
+var DockMode = /* @__PURE__ */ ((DockMode2) => {
   DockMode2["BOTTOM"] = "bottom";
   DockMode2["SIDE"] = "side";
   DockMode2["UNDOCKED"] = "undocked";
-})(DockMode || (DockMode = {}));
+  return DockMode2;
+})(DockMode || {});
 var InspectorView = class _InspectorView extends VBox {
   drawerOrientationByDockSetting;
   drawerSplitWidget;
@@ -8364,12 +8466,12 @@ var InspectorView = class _InspectorView extends VBox {
     GlassPane.setContainer(this.element);
     this.setMinimumSize(MIN_INSPECTOR_WIDTH_HORIZONTAL_DRAWER, MIN_INSPECTOR_HEIGHT);
     this.drawerOrientationByDockSetting = Common11.Settings.Settings.instance().createSetting("inspector.drawer-orientation-by-dock-mode", {
-      [DockMode.BOTTOM]: DrawerOrientation.UNSET,
-      [DockMode.SIDE]: DrawerOrientation.UNSET,
-      [DockMode.UNDOCKED]: DrawerOrientation.UNSET
+      ["bottom" /* BOTTOM */]: "unset" /* UNSET */,
+      ["side" /* SIDE */]: "unset" /* UNSET */,
+      ["undocked" /* UNDOCKED */]: "unset" /* UNSET */
     });
     const initialOrientation = this.#getOrientationForDockMode();
-    const isVertical = initialOrientation === DrawerOrientation.VERTICAL;
+    const isVertical = initialOrientation === "vertical" /* VERTICAL */;
     this.drawerSplitWidget = new SplitWidget(isVertical, true, "inspector.drawer-split-view-state", 200, 200);
     this.drawerSplitWidget.hideSidebar();
     this.drawerSplitWidget.enableShowModeSaving();
@@ -8403,16 +8505,28 @@ var InspectorView = class _InspectorView extends VBox {
     });
     this.drawerTabbedLocation = this.#drawerView.tabbedLocation;
     this.drawerTabbedPane = this.#drawerView.tabbedPane;
-    this.tabbedLocation = ViewManager.instance().createTabbedLocation(Host7.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(Host7.InspectorFrontendHost.InspectorFrontendHostInstance), "panel", true, true, {
-      defaultTab: Root6.Runtime.Runtime.queryParam("panel"),
-      plusButton: { jslogContext: "plus-button-panel" }
-    });
+    this.tabbedLocation = ViewManager.instance().createTabbedLocation(
+      Host7.InspectorFrontendHost.InspectorFrontendHostInstance.bringToFront.bind(
+        Host7.InspectorFrontendHost.InspectorFrontendHostInstance
+      ),
+      "panel",
+      true,
+      true,
+      {
+        defaultTab: Root6.Runtime.Runtime.queryParam("panel"),
+        plusButton: { jslogContext: "plus-button-panel" }
+      }
+    );
     this.tabbedPane = this.tabbedLocation.tabbedPane();
     this.tabbedPane.setMinimumSize(MIN_MAIN_PANEL_WIDTH, 0);
     this.tabbedPane.element.classList.add("main-tabbed-pane");
     const allocatedSpace = Root6.Runtime.conditions.canDock() ? "69px" : "41px";
     this.tabbedPane.leftToolbar().style.minWidth = allocatedSpace;
-    this.tabbedPane.addEventListener(Events5.TabSelected, (event) => this.tabSelected(event.data.tabId), this);
+    this.tabbedPane.addEventListener(
+      "TabSelected" /* TabSelected */,
+      (event) => this.tabSelected(event.data.tabId),
+      this
+    );
     const selectedTab = this.tabbedPane.selectedTabId;
     if (selectedTab) {
       UIUserMetrics.instance().panelShown(selectedTab, true);
@@ -8433,7 +8547,10 @@ var InspectorView = class _InspectorView extends VBox {
     this.drawerSplitWidget.setMainWidget(this.tabbedPane);
     this.drawerSplitWidget.setDefaultFocusedChild(this.tabbedPane);
     this.keyDownBound = this.keyDown.bind(this);
-    Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host7.InspectorFrontendHostAPI.Events.ShowPanel, showPanel.bind(this));
+    Host7.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+      Host7.InspectorFrontendHostAPI.Events.ShowPanel,
+      showPanel.bind(this)
+    );
     function showPanel({ data: panelName }) {
       void this.showPanel(panelName);
     }
@@ -8443,9 +8560,21 @@ var InspectorView = class _InspectorView extends VBox {
       this.attachInfobar(infobar);
     }
     this.#resizeObserver = new ResizeObserver(this.#observedResize.bind(this));
-    DockController.instance().addEventListener("BeforeDockSideChanged", this.#rememberDrawerStateBeforeDockSideChange, this);
-    DockController.instance().addEventListener("DockSideChanged", this.#applyDrawerOrientationForDockSide, this);
-    DockController.instance().addEventListener("AfterDockSideChanged", this.#restoreDrawerStateAfterDockSideChange, this);
+    DockController.instance().addEventListener(
+      "BeforeDockSideChanged" /* BEFORE_DOCK_SIDE_CHANGED */,
+      this.#rememberDrawerStateBeforeDockSideChange,
+      this
+    );
+    DockController.instance().addEventListener(
+      "DockSideChanged" /* DOCK_SIDE_CHANGED */,
+      this.#applyDrawerOrientationForDockSide,
+      this
+    );
+    DockController.instance().addEventListener(
+      "AfterDockSideChanged" /* AFTER_DOCK_SIDE_CHANGED */,
+      this.#restoreDrawerStateAfterDockSideChange,
+      this
+    );
     this.#drawerView.restoreMinimizedStateFromSettings();
   }
   static instance(opts = { forceNew: null }) {
@@ -8470,25 +8599,25 @@ var InspectorView = class _InspectorView extends VBox {
   }
   #getDockMode() {
     const dockSide = DockController.instance().dockSide();
-    if (dockSide === "bottom") {
-      return DockMode.BOTTOM;
+    if (dockSide === "bottom" /* BOTTOM */) {
+      return "bottom" /* BOTTOM */;
     }
-    if (dockSide === "undocked") {
-      return DockMode.UNDOCKED;
+    if (dockSide === "undocked" /* UNDOCKED */) {
+      return "undocked" /* UNDOCKED */;
     }
-    return DockMode.SIDE;
+    return "side" /* SIDE */;
   }
   #getOrientationForDockMode() {
     const dockMode = this.#getDockMode();
     const orientationSetting = this.drawerOrientationByDockSetting.get();
     let orientation = orientationSetting[dockMode];
-    if (orientation === DrawerOrientation.UNSET) {
-      orientation = dockMode === DockMode.BOTTOM ? DrawerOrientation.VERTICAL : DrawerOrientation.HORIZONTAL;
+    if (orientation === "unset" /* UNSET */) {
+      orientation = dockMode === "bottom" /* BOTTOM */ ? "vertical" /* VERTICAL */ : "horizontal" /* HORIZONTAL */;
     }
     return orientation;
   }
   #applyDrawerOrientation(orientation) {
-    const shouldBeVertical = orientation === DrawerOrientation.VERTICAL;
+    const shouldBeVertical = orientation === "vertical" /* VERTICAL */;
     const isVertical = this.#drawerView.isVertical();
     if (shouldBeVertical === isVertical) {
       return;
@@ -8653,7 +8782,7 @@ var InspectorView = class _InspectorView extends VBox {
       newOrientation = force;
     } else {
       const currentOrientation = this.#getOrientationForDockMode();
-      newOrientation = currentOrientation === DrawerOrientation.VERTICAL ? DrawerOrientation.HORIZONTAL : DrawerOrientation.VERTICAL;
+      newOrientation = currentOrientation === "vertical" /* VERTICAL */ ? "horizontal" /* HORIZONTAL */ : "vertical" /* VERTICAL */;
     }
     currentSettings[dockMode] = newOrientation;
     this.drawerOrientationByDockSetting.set(currentSettings);
@@ -8662,7 +8791,7 @@ var InspectorView = class _InspectorView extends VBox {
   isUserExplicitlyUpdatedDrawerOrientation() {
     const orientationSetting = this.drawerOrientationByDockSetting.get();
     const dockMode = this.#getDockMode();
-    return orientationSetting[dockMode] !== DrawerOrientation.UNSET;
+    return orientationSetting[dockMode] !== "unset" /* UNSET */;
   }
   setDrawerMinimized(minimized) {
     const scrollState = this.#captureMainPanelScrollState();
@@ -8802,44 +8931,66 @@ var InspectorView = class _InspectorView extends VBox {
   }
   displayDebuggedTabReloadRequiredWarning(message) {
     if (!this.#debuggedTabReloadRequiredInfobar) {
-      const infobar = new Infobar("info", message, [
-        {
-          text: i18nString9(UIStrings9.reloadDebuggedTab),
-          delegate: () => {
-            reloadDebuggedTab();
-            this.removeDebuggedTabReloadRequiredWarning();
-          },
-          dismiss: false,
-          buttonVariant: "primary",
-          jslogContext: "main.debug-reload"
-        }
-      ], void 0, "reload-required");
+      const infobar = new Infobar(
+        "info" /* INFO */,
+        message,
+        [
+          {
+            text: i18nString9(UIStrings9.reloadDebuggedTab),
+            delegate: () => {
+              reloadDebuggedTab();
+              this.removeDebuggedTabReloadRequiredWarning();
+            },
+            dismiss: false,
+            buttonVariant: Buttons3.Button.Variant.PRIMARY,
+            jslogContext: "main.debug-reload"
+          }
+        ],
+        void 0,
+        "reload-required"
+      );
       infobar.setParentView(this);
       this.attachInfobar(infobar);
       this.#debuggedTabReloadRequiredInfobar = infobar;
       infobar.setCloseCallback(() => {
         this.#debuggedTabReloadRequiredInfobar = void 0;
       });
-      SDK.TargetManager.TargetManager.instance().addModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.removeDebuggedTabReloadRequiredWarning, this);
+      SDK.TargetManager.TargetManager.instance().addModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel,
+        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.removeDebuggedTabReloadRequiredWarning,
+        this
+      );
     }
   }
   removeDebuggedTabReloadRequiredWarning() {
     if (this.#debuggedTabReloadRequiredInfobar) {
       this.#debuggedTabReloadRequiredInfobar.dispose();
-      SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.ResourceTreeModel.ResourceTreeModel, SDK.ResourceTreeModel.Events.PrimaryPageChanged, this.removeDebuggedTabReloadRequiredWarning, this);
+      SDK.TargetManager.TargetManager.instance().removeModelListener(
+        SDK.ResourceTreeModel.ResourceTreeModel,
+        SDK.ResourceTreeModel.Events.PrimaryPageChanged,
+        this.removeDebuggedTabReloadRequiredWarning,
+        this
+      );
     }
   }
   displayReloadRequiredWarning(message) {
     if (!this.reloadRequiredInfobar && !this.#chromeRestartRequiredInfobar) {
-      const infobar = new Infobar("info", message, [
-        {
-          text: i18nString9(UIStrings9.reloadDevtools),
-          delegate: () => reloadDevTools(),
-          dismiss: false,
-          buttonVariant: "primary",
-          jslogContext: "main.debug-reload"
-        }
-      ], void 0, "reload-required");
+      const infobar = new Infobar(
+        "info" /* INFO */,
+        message,
+        [
+          {
+            text: i18nString9(UIStrings9.reloadDevtools),
+            delegate: () => reloadDevTools(),
+            dismiss: false,
+            buttonVariant: Buttons3.Button.Variant.PRIMARY,
+            jslogContext: "main.debug-reload"
+          }
+        ],
+        void 0,
+        "reload-required"
+      );
       infobar.setParentView(this);
       this.attachInfobar(infobar);
       this.reloadRequiredInfobar = infobar;
@@ -8853,19 +9004,25 @@ var InspectorView = class _InspectorView extends VBox {
       this.reloadRequiredInfobar.dispose();
     }
     if (!this.#chromeRestartRequiredInfobar) {
-      const infobar = new Infobar("info", message, [
-        {
-          text: i18nString9(UIStrings9.restartChrome),
-          delegate: () => {
-            if (confirm(i18nString9(UIStrings9.areYouSureYouWantToRestartChrome))) {
-              Host7.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
-            }
-          },
-          dismiss: false,
-          buttonVariant: "primary",
-          jslogContext: "main.chrome-restart-chrome"
-        }
-      ], void 0, "reload-required");
+      const infobar = new Infobar(
+        "info" /* INFO */,
+        message,
+        [
+          {
+            text: i18nString9(UIStrings9.restartChrome),
+            delegate: () => {
+              if (confirm(i18nString9(UIStrings9.areYouSureYouWantToRestartChrome))) {
+                Host7.InspectorFrontendHost.InspectorFrontendHostInstance.requestRestart();
+              }
+            },
+            dismiss: false,
+            buttonVariant: Buttons3.Button.Variant.PRIMARY,
+            jslogContext: "main.chrome-restart-chrome"
+          }
+        ],
+        void 0,
+        "reload-required"
+      );
       infobar.setParentView(this);
       this.attachInfobar(infobar);
       this.#chromeRestartRequiredInfobar = infobar;
@@ -8876,15 +9033,21 @@ var InspectorView = class _InspectorView extends VBox {
   }
   displaySelectOverrideFolderInfobar(callback) {
     if (!this.#selectOverrideFolderInfobar) {
-      const infobar = new Infobar("info", i18nString9(UIStrings9.selectOverrideFolder), [
-        {
-          text: i18nString9(UIStrings9.selectFolder),
-          delegate: () => callback(),
-          dismiss: true,
-          buttonVariant: "tonal",
-          jslogContext: "select-folder"
-        }
-      ], void 0, "select-override-folder");
+      const infobar = new Infobar(
+        "info" /* INFO */,
+        i18nString9(UIStrings9.selectOverrideFolder),
+        [
+          {
+            text: i18nString9(UIStrings9.selectFolder),
+            delegate: () => callback(),
+            dismiss: true,
+            buttonVariant: Buttons3.Button.Variant.TONAL,
+            jslogContext: "select-folder"
+          }
+        ],
+        void 0,
+        "select-override-folder"
+      );
       infobar.setParentView(this);
       this.attachInfobar(infobar);
       this.#selectOverrideFolderInfobar = infobar;
@@ -8924,31 +9087,37 @@ function createLocaleInfobar() {
   const locale = new Intl.Locale(closestSupportedLocale);
   const closestSupportedLanguageInCurrentLocale = new Intl.DisplayNames([devtoolsLocale.locale], { type: "language" }).of(locale.language || "en") || "English";
   const languageSetting = Common11.Settings.Settings.instance().moduleSetting("language");
-  return new Infobar("info", i18nString9(UIStrings9.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }), [
-    {
-      text: i18nString9(UIStrings9.setToBrowserLanguage),
-      delegate: () => {
-        languageSetting.set("browserLanguage");
-        getDisableLocaleInfoBarSetting().set(true);
-        reloadDevTools();
+  return new Infobar(
+    "info" /* INFO */,
+    i18nString9(UIStrings9.devToolsLanguageMissmatch, { PH1: closestSupportedLanguageInCurrentLocale }),
+    [
+      {
+        text: i18nString9(UIStrings9.setToBrowserLanguage),
+        delegate: () => {
+          languageSetting.set("browserLanguage");
+          getDisableLocaleInfoBarSetting().set(true);
+          reloadDevTools();
+        },
+        dismiss: true,
+        jslogContext: "set-to-browser-language"
       },
-      dismiss: true,
-      jslogContext: "set-to-browser-language"
-    },
-    {
-      text: i18nString9(UIStrings9.setToSpecificLanguage, { PH1: closestSupportedLanguageInCurrentLocale }),
-      delegate: () => {
-        languageSetting.set(closestSupportedLocale);
-        getDisableLocaleInfoBarSetting().set(true);
-        reloadDevTools();
-      },
-      dismiss: true,
-      jslogContext: "set-to-specific-language"
-    }
-  ], getDisableLocaleInfoBarSetting(), "language-mismatch");
+      {
+        text: i18nString9(UIStrings9.setToSpecificLanguage, { PH1: closestSupportedLanguageInCurrentLocale }),
+        delegate: () => {
+          languageSetting.set(closestSupportedLocale);
+          getDisableLocaleInfoBarSetting().set(true);
+          reloadDevTools();
+        },
+        dismiss: true,
+        jslogContext: "set-to-specific-language"
+      }
+    ],
+    getDisableLocaleInfoBarSetting(),
+    "language-mismatch"
+  );
 }
 function reloadDevTools() {
-  if (DockController.instance().canDock() && DockController.instance().dockSide() === "undocked") {
+  if (DockController.instance().canDock() && DockController.instance().dockSide() === "undocked" /* UNDOCKED */) {
     Host7.InspectorFrontendHost.InspectorFrontendHostInstance.setIsDocked(true, function() {
     });
   }
@@ -9003,9 +9172,17 @@ var InspectorViewTabDelegate = class {
     }
     const locationName = ViewManager.instance().locationNameForViewId(tabId);
     if (locationName === "drawer-view") {
-      contextMenu.defaultSection().appendItem(i18nString9(UIStrings9.moveToMainTabBar), this.moveToMainTabBar.bind(this, tabId), { jslogContext: "move-to-top" });
+      contextMenu.defaultSection().appendItem(
+        i18nString9(UIStrings9.moveToMainTabBar),
+        this.moveToMainTabBar.bind(this, tabId),
+        { jslogContext: "move-to-top" }
+      );
     } else {
-      contextMenu.defaultSection().appendItem(i18nString9(UIStrings9.moveToDrawer), this.moveToDrawer.bind(this, tabId), { jslogContext: "move-to-bottom" });
+      contextMenu.defaultSection().appendItem(
+        i18nString9(UIStrings9.moveToDrawer),
+        this.moveToDrawer.bind(this, tabId),
+        { jslogContext: "move-to-bottom" }
+      );
     }
   }
 };
@@ -9165,7 +9342,7 @@ var softContextMenu_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./softContextMenu.css")} */`;
 
-// gen/front_end/ui/legacy/SoftContextMenu.js
+// ../../front_end/ui/legacy/SoftContextMenu.ts
 var UIStrings10 = {
   /**
    * @description Accessible state text for checked items in a context menu.
@@ -9232,23 +9409,13 @@ var SoftContextMenu = class _SoftContextMenu {
     this.document = document2;
     this.glassPane = new GlassPane();
     this.glassPane.setPointerEventsBehavior(
-      this.parentMenu ? "PierceGlassPane" : "BlockedByGlassPane"
-      /* PointerEventsBehavior.BLOCKED_BY_GLASS_PANE */
+      this.parentMenu ? "PierceGlassPane" /* PIERCE_GLASS_PANE */ : "BlockedByGlassPane" /* BLOCKED_BY_GLASS_PANE */
     );
     this.glassPane.registerRequiredCSS(softContextMenu_css_default);
     this.glassPane.setContentAnchorBox(anchorBox);
-    this.glassPane.setSizeBehavior(
-      "MeasureContent"
-      /* SizeBehavior.MEASURE_CONTENT */
-    );
-    this.glassPane.setMarginBehavior(
-      "NoMargin"
-      /* MarginBehavior.NO_MARGIN */
-    );
-    this.glassPane.setAnchorBehavior(
-      this.parentMenu ? "PreferRight" : "PreferBottom"
-      /* AnchorBehavior.PREFER_BOTTOM */
-    );
+    this.glassPane.setSizeBehavior("MeasureContent" /* MEASURE_CONTENT */);
+    this.glassPane.setMarginBehavior("NoMargin" /* NO_MARGIN */);
+    this.glassPane.setAnchorBehavior(this.parentMenu ? "PreferRight" /* PREFER_RIGHT */ : "PreferBottom" /* PREFER_BOTTOM */);
     this.contextMenuElement = this.glassPane.contentElement.createChild("div", "soft-context-menu");
     this.contextMenuElement.setAttribute("jslog", `${VisualLogging10.menu().track({ resize: true }).parent("mapped").track({
       keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Enter|Space|Escape"
@@ -9360,9 +9527,15 @@ var SoftContextMenu = class _SoftContextMenu {
     const detailsForElement = {};
     if (item8.jslogContext && item8.label) {
       if (item8.type === "checkbox") {
-        menuItemElement.setAttribute("jslog", `${VisualLogging10.toggle().track({ click: true }).context(item8.jslogContext)}`);
+        menuItemElement.setAttribute(
+          "jslog",
+          `${VisualLogging10.toggle().track({ click: true }).context(item8.jslogContext)}`
+        );
       } else {
-        menuItemElement.setAttribute("jslog", `${VisualLogging10.action().track({ click: true }).context(item8.jslogContext)}`);
+        menuItemElement.setAttribute(
+          "jslog",
+          `${VisualLogging10.action().track({ click: true }).context(item8.jslogContext)}`
+        );
       }
     }
     if (item8.element && !item8.label) {
@@ -9433,7 +9606,10 @@ var SoftContextMenu = class _SoftContextMenu {
     menuItemElement.addEventListener("mouseover", this.menuItemMouseOver.bind(this), false);
     menuItemElement.addEventListener("mouseleave", this.menuItemMouseLeave.bind(this), false);
     if (item8.jslogContext) {
-      menuItemElement.setAttribute("jslog", `${VisualLogging10.item(item8.jslogContext).track({ click: true, resize: true })}`);
+      menuItemElement.setAttribute(
+        "jslog",
+        `${VisualLogging10.item(item8.jslogContext).track({ click: true, resize: true })}`
+      );
     }
     return menuItemElement;
   }
@@ -9681,7 +9857,7 @@ var SoftContextMenu = class _SoftContextMenu {
   }
 };
 
-// gen/front_end/ui/legacy/ContextMenu.js
+// ../../front_end/ui/legacy/ContextMenu.ts
 var Item = class {
   typeInternal;
   label;
@@ -9813,7 +9989,10 @@ var Item = class {
    * @param modifiers An array of modifiers (e.g. Ctrl, Shift).
    */
   setAccelerator(key, modifiers) {
-    const modifierSum = modifiers.reduce((result, modifier) => result + ShortcutRegistry.instance().devToolsToChromeModifier(modifier), 0);
+    const modifierSum = modifiers.reduce(
+      (result, modifier) => result + ShortcutRegistry.instance().devToolsToChromeModifier(modifier),
+      0
+    );
     this.accelerator = { keyCode: key.code, modifiers: modifierSum };
   }
   /**
@@ -9853,7 +10032,18 @@ var Section = class {
     if (labelOrItem instanceof Item) {
       item8 = labelOrItem;
     } else {
-      item8 = new Item(this.contextMenu, "item", labelOrItem, options?.isPreviewFeature, options?.disabled, void 0, options?.accelerator, options?.tooltip, options?.jslogContext, options?.featureName);
+      item8 = new Item(
+        this.contextMenu,
+        "item",
+        labelOrItem,
+        options?.isPreviewFeature,
+        options?.disabled,
+        void 0,
+        options?.accelerator,
+        options?.tooltip,
+        options?.jslogContext,
+        options?.featureName
+      );
       if (options?.additionalElement) {
         item8.customElement = options?.additionalElement;
       }
@@ -9871,7 +10061,17 @@ var Section = class {
    * @returns The newly created `Item`.
    */
   appendCustomItem(element, jslogContext) {
-    const item8 = new Item(this.contextMenu, "item", void 0, void 0, void 0, void 0, void 0, void 0, jslogContext);
+    const item8 = new Item(
+      this.contextMenu,
+      "item",
+      void 0,
+      void 0,
+      void 0,
+      void 0,
+      void 0,
+      void 0,
+      jslogContext
+    );
     item8.customElement = element;
     this.items.push(item8);
     return item8;
@@ -9905,7 +10105,11 @@ var Section = class {
     if (promotionId) {
       additionalElement = maybeCreateNewBadge(promotionId);
     }
-    const result = this.appendItem(label, action6.execute.bind(action6), { disabled: !action6.enabled(), jslogContext: jslogContext ?? actionId, featureName: feature, additionalElement });
+    const result = this.appendItem(
+      label,
+      action6.execute.bind(action6),
+      { disabled: !action6.enabled(), jslogContext: jslogContext ?? actionId, featureName: feature, additionalElement }
+    );
     const shortcut = ShortcutRegistry.instance().shortcutTitleForAction(actionId);
     const keyAndModifier = ShortcutRegistry.instance().keyAndModifiersForAction(actionId);
     if (keyAndModifier) {
@@ -9936,7 +10140,18 @@ var Section = class {
    * @returns The newly created checkbox `Item`.
    */
   appendCheckboxItem(label, handler, options) {
-    const item8 = new Item(this.contextMenu, "checkbox", label, options?.experimental, options?.disabled, options?.checked, void 0, options?.tooltip, options?.jslogContext, options?.featureName);
+    const item8 = new Item(
+      this.contextMenu,
+      "checkbox",
+      label,
+      options?.experimental,
+      options?.disabled,
+      options?.checked,
+      void 0,
+      options?.tooltip,
+      options?.jslogContext,
+      options?.featureName
+    );
     this.items.push(item8);
     if (this.contextMenu) {
       this.contextMenu.setHandler(item8.id(), handler);
@@ -9951,7 +10166,18 @@ var SubMenu = class extends Item {
   sections;
   sectionList;
   constructor(contextMenu, label, disabled, jslogContext, featureName) {
-    super(contextMenu, "subMenu", label, void 0, disabled, void 0, void 0, void 0, jslogContext, featureName);
+    super(
+      contextMenu,
+      "subMenu",
+      label,
+      void 0,
+      disabled,
+      void 0,
+      void 0,
+      void 0,
+      jslogContext,
+      featureName
+    );
     this.sections = /* @__PURE__ */ new Map();
     this.sectionList = [];
   }
@@ -10190,7 +10416,10 @@ var ContextMenu = class _ContextMenu extends SubMenu {
    * commands from the host to toggle soft menu usage.
    */
   static initialize() {
-    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.SetUseSoftMenu, setUseSoftMenu);
+    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+      Host8.InspectorFrontendHostAPI.Events.SetUseSoftMenu,
+      setUseSoftMenu
+    );
     function setUseSoftMenu(event) {
       _ContextMenu.useSoftMenu = event.data;
     }
@@ -10271,11 +10500,26 @@ var ContextMenu = class _ContextMenu extends SubMenu {
     for (const descriptor of descriptors) {
       if (descriptor.jslogContext) {
         if (descriptor.type === "checkbox") {
-          VisualLogging11.registerLoggable(descriptor, `${VisualLogging11.toggle().track({ click: true }).context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
+          VisualLogging11.registerLoggable(
+            descriptor,
+            `${VisualLogging11.toggle().track({ click: true }).context(descriptor.jslogContext)}`,
+            parent || descriptors,
+            new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING)
+          );
         } else if (descriptor.type === "item") {
-          VisualLogging11.registerLoggable(descriptor, `${VisualLogging11.action().track({ click: true }).context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
+          VisualLogging11.registerLoggable(
+            descriptor,
+            `${VisualLogging11.action().track({ click: true }).context(descriptor.jslogContext)}`,
+            parent || descriptors,
+            new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING)
+          );
         } else if (descriptor.type === "subMenu") {
-          VisualLogging11.registerLoggable(descriptor, `${VisualLogging11.item().context(descriptor.jslogContext)}`, parent || descriptors, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING));
+          VisualLogging11.registerLoggable(
+            descriptor,
+            `${VisualLogging11.item().context(descriptor.jslogContext)}`,
+            parent || descriptors,
+            new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING)
+          );
         }
         if (descriptor.subItems) {
           this.registerLoggablesWithin(descriptor.subItems, descriptor);
@@ -10294,7 +10538,14 @@ var ContextMenu = class _ContextMenu extends SubMenu {
       useSoftMenu = false;
     }
     if (useSoftMenu) {
-      this.softMenu = new SoftContextMenu(menuObject, this.itemSelected.bind(this), this.keepOpen, void 0, this.onSoftMenuClosed, this.loggableParent);
+      this.softMenu = new SoftContextMenu(
+        menuObject,
+        this.itemSelected.bind(this),
+        this.keepOpen,
+        void 0,
+        this.onSoftMenuClosed,
+        this.loggableParent
+      );
       const isMouseEvent = this.event.pointerType === "mouse" && this.event.button >= 0;
       this.softMenu.setFocusOnTheFirstItem(!isMouseEvent);
       this.softMenu.show(ownerDocument, new AnchorBox(this.x, this.y, 0, 0));
@@ -10303,11 +10554,29 @@ var ContextMenu = class _ContextMenu extends SubMenu {
       }
     } else {
       let listenToEvents = function() {
-        Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
-        Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host8.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
+        Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+          Host8.InspectorFrontendHostAPI.Events.ContextMenuCleared,
+          this.menuCleared,
+          this
+        );
+        Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+          Host8.InspectorFrontendHostAPI.Events.ContextMenuItemSelected,
+          this.onItemSelected,
+          this
+        );
       };
-      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(this.x, this.y, menuObject, ownerDocument);
-      VisualLogging11.registerLoggable(menuObject, `${VisualLogging11.menu()}`, this.loggableParent, new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length));
+      Host8.InspectorFrontendHost.InspectorFrontendHostInstance.showContextMenuAtPoint(
+        this.x,
+        this.y,
+        menuObject,
+        ownerDocument
+      );
+      VisualLogging11.registerLoggable(
+        menuObject,
+        `${VisualLogging11.menu()}`,
+        this.loggableParent,
+        new DOMRect(0, 0, MENU_ITEM_WIDTH_FOR_LOGGING, MENU_ITEM_HEIGHT_FOR_LOGGING * menuObject.length)
+      );
       this.registerLoggablesWithin(menuObject);
       this.openHostedMenu = menuObject;
       queueMicrotask(listenToEvents.bind(this));
@@ -10380,14 +10649,24 @@ var ContextMenu = class _ContextMenu extends SubMenu {
         void VisualLogging11.logClick(item8, new MouseEvent("click"));
       }
       if (item8 && featuresUsed.length > 0) {
-        featuresUsed.map((feature) => Host8.InspectorFrontendHost.InspectorFrontendHostInstance.recordNewBadgeUsage(feature));
+        featuresUsed.map(
+          (feature) => Host8.InspectorFrontendHost.InspectorFrontendHostInstance.recordNewBadgeUsage(feature)
+        );
       }
     }
     this.menuCleared();
   }
   menuCleared() {
-    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host8.InspectorFrontendHostAPI.Events.ContextMenuCleared, this.menuCleared, this);
-    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host8.InspectorFrontendHostAPI.Events.ContextMenuItemSelected, this.onItemSelected, this);
+    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+      Host8.InspectorFrontendHostAPI.Events.ContextMenuCleared,
+      this.menuCleared,
+      this
+    );
+    Host8.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+      Host8.InspectorFrontendHostAPI.Events.ContextMenuItemSelected,
+      this.onItemSelected,
+      this
+    );
     if (this.openHostedMenu) {
       void VisualLogging11.logResize(this.openHostedMenu, new DOMRect(0, 0, 0, 0));
     }
@@ -10541,14 +10820,18 @@ var MenuButton = class extends HTMLElement {
     if (!this.iconName) {
       throw new Error("<devtools-menu-button> expects an icon.");
     }
-    render4(html3`
+    render4(
+      html3`
         <devtools-button .disabled=${this.disabled}
                          .iconName=${this.iconName}
-                         .variant=${"icon"}
+                         .variant=${Buttons4.Button.Variant.ICON}
                          .title=${this.title}
                          aria-haspopup='menu'
                          @click=${this.#triggerContextMenu}>
-        </devtools-button>`, this.#shadow, { host: this });
+        </devtools-button>`,
+      this.#shadow,
+      { host: this }
+    );
   }
 };
 customElements.define("devtools-menu-button", MenuButton);
@@ -10577,7 +10860,9 @@ function registerItem(registration) {
   registeredItemsProviders.push(registration);
 }
 function maybeRemoveItem(registration) {
-  const itemIndex = registeredItemsProviders.findIndex((item8) => item8.actionId === registration.actionId && item8.location === registration.location);
+  const itemIndex = registeredItemsProviders.findIndex(
+    (item8) => item8.actionId === registration.actionId && item8.location === registration.location
+  );
   if (itemIndex < 0) {
     return false;
   }
@@ -10587,8 +10872,7 @@ function maybeRemoveItem(registration) {
 function getRegisteredItems() {
   return registeredItemsProviders;
 }
-var ItemLocation;
-(function(ItemLocation2) {
+var ItemLocation = /* @__PURE__ */ ((ItemLocation2) => {
   ItemLocation2["DEVICE_MODE_MENU_SAVE"] = "deviceModeMenu/save";
   ItemLocation2["MAIN_MENU"] = "mainMenu";
   ItemLocation2["MAIN_MENU_DEFAULT"] = "mainMenu/default";
@@ -10597,12 +10881,13 @@ var ItemLocation;
   ItemLocation2["NAVIGATOR_MENU_DEFAULT"] = "navigatorMenu/default";
   ItemLocation2["PROFILER_MENU_DEFAULT"] = "profilerMenu/default";
   ItemLocation2["TIMELINE_MENU_OPEN"] = "timelineMenu/open";
-})(ItemLocation || (ItemLocation = {}));
+  return ItemLocation2;
+})(ItemLocation || {});
 
-// gen/front_end/ui/legacy/TextPrompt.js
+// ../../front_end/ui/legacy/TextPrompt.ts
 var TextPrompt_exports = {};
 __export(TextPrompt_exports, {
-  Events: () => Events10,
+  Events: () => Events9,
   TextPrompt: () => TextPrompt,
   TextPromptElement: () => TextPromptElement
 });
@@ -10611,7 +10896,7 @@ import * as Platform12 from "../../core/platform/platform.js";
 import * as TextUtils from "../../core/text_utils/text_utils.js";
 import * as VisualLogging14 from "../visual_logging/visual_logging.js";
 
-// gen/front_end/ui/legacy/SuggestBox.js
+// ../../front_end/ui/legacy/SuggestBox.ts
 var SuggestBox_exports = {};
 __export(SuggestBox_exports, {
   SuggestBox: () => SuggestBox
@@ -10621,20 +10906,116 @@ import * as Platform11 from "../../core/platform/platform.js";
 import * as Geometry4 from "../../models/geometry/geometry.js";
 import * as VisualLogging13 from "../visual_logging/visual_logging.js";
 
-// gen/front_end/ui/legacy/ListControl.js
+// ../../front_end/ui/legacy/ListControl.ts
 var ListControl_exports = {};
 __export(ListControl_exports, {
   ListControl: () => ListControl,
   ListMode: () => ListMode
 });
-import * as Platform9 from "../../core/platform/platform.js";
+import * as Platform10 from "../../core/platform/platform.js";
 import * as VisualLogging12 from "../visual_logging/visual_logging.js";
-var ListMode;
-(function(ListMode2) {
+
+// ../../front_end/ui/legacy/ListModel.ts
+var ListModel_exports = {};
+__export(ListModel_exports, {
+  Events: () => Events8,
+  ListModel: () => ListModel
+});
+import * as Common12 from "../../core/common/common.js";
+import * as Platform9 from "../../core/platform/platform.js";
+var ListModel = class extends Common12.ObjectWrapper.ObjectWrapper {
+  items;
+  constructor(items) {
+    super();
+    this.items = items || [];
+  }
+  [Symbol.iterator]() {
+    return this.items[Symbol.iterator]();
+  }
+  get length() {
+    return this.items.length;
+  }
+  at(index) {
+    return this.items[index];
+  }
+  every(callback) {
+    return this.items.every(callback);
+  }
+  filter(callback) {
+    return this.items.filter(callback);
+  }
+  find(callback) {
+    return this.items.find(callback);
+  }
+  findIndex(callback) {
+    return this.items.findIndex(callback);
+  }
+  indexOf(value, fromIndex) {
+    return this.items.indexOf(value, fromIndex);
+  }
+  insert(index, value) {
+    this.items.splice(index, 0, value);
+    this.replaced(index, [], 1);
+  }
+  insertWithComparator(value, comparator) {
+    this.insert(Platform9.ArrayUtilities.lowerBound(this.items, value, comparator), value);
+  }
+  join(separator) {
+    return this.items.join(separator);
+  }
+  remove(index) {
+    const result = this.items[index];
+    this.items.splice(index, 1);
+    this.replaced(index, [result], 0);
+    return result;
+  }
+  replace(index, value, keepSelectedIndex) {
+    const oldValue = this.items[index];
+    this.items[index] = value;
+    this.replaced(index, [oldValue], 1, keepSelectedIndex);
+    return oldValue;
+  }
+  replaceRange(from, to, items) {
+    let removed;
+    if (items.length < 1e4) {
+      removed = this.items.splice(from, to - from, ...items);
+    } else {
+      removed = this.items.slice(from, to);
+      const before = this.items.slice(0, from);
+      const after = this.items.slice(to);
+      this.items = [...before, ...items, ...after];
+    }
+    this.replaced(from, removed, items.length);
+    return removed;
+  }
+  replaceAll(items) {
+    const oldItems = this.items.slice();
+    this.items = items;
+    this.replaced(0, oldItems, items.length);
+    return oldItems;
+  }
+  slice(from, to) {
+    return this.items.slice(from, to);
+  }
+  some(callback) {
+    return this.items.some(callback);
+  }
+  replaced(index, removed, inserted, keepSelectedIndex) {
+    this.dispatchEventToListeners("ItemsReplaced" /* ITEMS_REPLACED */, { index, removed, inserted, keepSelectedIndex });
+  }
+};
+var Events8 = /* @__PURE__ */ ((Events12) => {
+  Events12["ITEMS_REPLACED"] = "ItemsReplaced";
+  return Events12;
+})(Events8 || {});
+
+// ../../front_end/ui/legacy/ListControl.ts
+var ListMode = /* @__PURE__ */ ((ListMode2) => {
   ListMode2["NonViewport"] = "UI.ListMode.NonViewport";
   ListMode2["EqualHeightItems"] = "UI.ListMode.EqualHeightItems";
   ListMode2["VariousHeightItems"] = "UI.ListMode.VariousHeightItems";
-})(ListMode || (ListMode = {}));
+  return ListMode2;
+})(ListMode || {});
 var ListControl = class {
   element;
   topElement;
@@ -10663,7 +11044,7 @@ var ListControl = class {
     this.topHeight = 0;
     this.bottomHeight = 0;
     this.model = model;
-    this.model.addEventListener("ItemsReplaced", this.replacedItemsInRange, this);
+    this.model.addEventListener("ItemsReplaced" /* ITEMS_REPLACED */, this.replacedItemsInRange, this);
     this.itemToElement = /* @__PURE__ */ new Map();
     this.#selectedIndex = -1;
     this.#selectedItem = null;
@@ -10672,11 +11053,11 @@ var ListControl = class {
     this.element.addEventListener("keydown", this.onKeyDown.bind(this), false);
     markAsListBox(this.element);
     this.delegate = delegate;
-    this.mode = mode || ListMode.EqualHeightItems;
+    this.mode = mode || "UI.ListMode.EqualHeightItems" /* EqualHeightItems */;
     this.fixedHeight = 0;
     this.variableOffsets = new Int32Array(0);
     this.clearContents();
-    if (this.mode !== ListMode.NonViewport) {
+    if (this.mode !== "UI.ListMode.NonViewport" /* NonViewport */) {
       this.element.addEventListener("scroll", () => {
         this.updateViewport(this.element.scrollTop, this.element.offsetHeight);
       }, false);
@@ -10685,9 +11066,9 @@ var ListControl = class {
   setModel(model) {
     this.itemToElement.clear();
     const length = this.model.length;
-    this.model.removeEventListener("ItemsReplaced", this.replacedItemsInRange, this);
+    this.model.removeEventListener("ItemsReplaced" /* ITEMS_REPLACED */, this.replacedItemsInRange, this);
     this.model = model;
-    this.model.addEventListener("ItemsReplaced", this.replacedItemsInRange, this);
+    this.model.addEventListener("ItemsReplaced" /* ITEMS_REPLACED */, this.replacedItemsInRange, this);
     this.invalidateRange(0, length);
   }
   replacedItemsInRange(event) {
@@ -10741,16 +11122,19 @@ var ListControl = class {
     this.invalidate(from, to, to - from);
   }
   viewportResized() {
-    if (this.mode === ListMode.NonViewport) {
+    if (this.mode === "UI.ListMode.NonViewport" /* NonViewport */) {
       return;
     }
     const scrollTop = this.element.scrollTop;
     const viewportHeight = this.element.offsetHeight;
     this.clearViewport();
-    this.updateViewport(Platform9.NumberUtilities.clamp(scrollTop, 0, this.totalHeight() - viewportHeight), viewportHeight);
+    this.updateViewport(
+      Platform10.NumberUtilities.clamp(scrollTop, 0, this.totalHeight() - viewportHeight),
+      viewportHeight
+    );
   }
   invalidateItemHeight() {
-    if (this.mode !== ListMode.EqualHeightItems) {
+    if (this.mode !== "UI.ListMode.EqualHeightItems" /* EqualHeightItems */) {
       console.error("Only supported in equal height items mode");
       return;
     }
@@ -10832,7 +11216,7 @@ var ListControl = class {
     return false;
   }
   selectItemPreviousPage(center) {
-    if (this.mode === ListMode.NonViewport) {
+    if (this.mode === "UI.ListMode.NonViewport" /* NonViewport */) {
       return false;
     }
     let index = this.#selectedIndex === -1 ? this.model.length - 1 : this.#selectedIndex;
@@ -10845,7 +11229,7 @@ var ListControl = class {
     return false;
   }
   selectItemNextPage(center) {
-    if (this.mode === ListMode.NonViewport) {
+    if (this.mode === "UI.ListMode.NonViewport" /* NonViewport */) {
       return false;
     }
     let index = this.#selectedIndex === -1 ? 0 : this.#selectedIndex;
@@ -10876,7 +11260,7 @@ var ListControl = class {
     return false;
   }
   scrollIntoView(index, center) {
-    if (this.mode === ListMode.NonViewport) {
+    if (this.mode === "UI.ListMode.NonViewport" /* NonViewport */) {
       this.elementAtIndex(index).scrollIntoViewIfNeeded(Boolean(center));
       return;
     }
@@ -10885,7 +11269,10 @@ var ListControl = class {
     const viewportHeight = this.element.offsetHeight;
     if (center) {
       const scrollTo = (top + bottom) / 2 - viewportHeight / 2;
-      this.updateViewport(Platform9.NumberUtilities.clamp(scrollTo, 0, this.totalHeight() - viewportHeight), viewportHeight);
+      this.updateViewport(
+        Platform10.NumberUtilities.clamp(scrollTo, 0, this.totalHeight() - viewportHeight),
+        viewportHeight
+      );
       return;
     }
     const scrollTop = this.element.scrollTop;
@@ -10931,14 +11318,23 @@ var ListControl = class {
     return this.offsetAtIndex(this.model.length);
   }
   indexAtOffset(offset) {
-    if (this.mode === ListMode.NonViewport) {
+    if (this.mode === "UI.ListMode.NonViewport" /* NonViewport */) {
       throw new Error("There should be no offset conversions in non-viewport mode");
     }
     if (!this.model.length || offset < 0) {
       return 0;
     }
-    if (this.mode === ListMode.VariousHeightItems) {
-      return Math.min(this.model.length - 1, Platform9.ArrayUtilities.lowerBound(this.variableOffsets, offset, Platform9.ArrayUtilities.DEFAULT_COMPARATOR, 0, this.model.length));
+    if (this.mode === "UI.ListMode.VariousHeightItems" /* VariousHeightItems */) {
+      return Math.min(
+        this.model.length - 1,
+        Platform10.ArrayUtilities.lowerBound(
+          this.variableOffsets,
+          offset,
+          Platform10.ArrayUtilities.DEFAULT_COMPARATOR,
+          0,
+          this.model.length
+        )
+      );
     }
     if (!this.fixedHeight) {
       this.measureHeight();
@@ -10979,13 +11375,13 @@ var ListControl = class {
     setPositionInSet(element, index + 1);
   }
   offsetAtIndex(index) {
-    if (this.mode === ListMode.NonViewport) {
+    if (this.mode === "UI.ListMode.NonViewport" /* NonViewport */) {
       throw new Error("There should be no offset conversions in non-viewport mode");
     }
     if (!this.model.length) {
       return 0;
     }
-    if (this.mode === ListMode.VariousHeightItems) {
+    if (this.mode === "UI.ListMode.VariousHeightItems" /* VariousHeightItems */) {
       return this.variableOffsets[index];
     }
     if (!this.fixedHeight) {
@@ -11010,7 +11406,12 @@ var ListControl = class {
     this.#selectedItem = index === -1 ? null : this.model.at(index);
     const newItem = this.#selectedItem;
     const newElement = this.#selectedIndex !== -1 ? this.elementAtIndex(index) : null;
-    this.delegate.selectedItemChanged(oldItem, newItem, oldElement, newElement);
+    this.delegate.selectedItemChanged(
+      oldItem,
+      newItem,
+      oldElement,
+      newElement
+    );
     if (!this.delegate.updateSelectedItemARIA(oldElement, newElement)) {
       if (oldElement) {
         setSelected(oldElement, false);
@@ -11067,11 +11468,11 @@ var ListControl = class {
     }
   }
   invalidate(from, to, inserted) {
-    if (this.mode === ListMode.NonViewport) {
+    if (this.mode === "UI.ListMode.NonViewport" /* NonViewport */) {
       this.invalidateNonViewportMode(from, to - from, inserted);
       return;
     }
-    if (this.mode === ListMode.VariousHeightItems) {
+    if (this.mode === "UI.ListMode.VariousHeightItems" /* VariousHeightItems */) {
       this.reallocateVariableOffsets(this.model.length + 1, from + 1);
       for (let i = from + 1; i <= this.model.length; i++) {
         this.variableOffsets[i] = this.variableOffsets[i - 1] + this.delegate.heightForItem(this.model.at(i - 1));
@@ -11082,7 +11483,7 @@ var ListControl = class {
     const scrollTop = this.element.scrollTop;
     if (this.renderedHeight < viewportHeight || totalHeight < viewportHeight) {
       this.clearViewport();
-      this.updateViewport(Platform9.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
+      this.updateViewport(Platform10.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
       return;
     }
     const heightDelta = totalHeight - this.renderedHeight;
@@ -11105,7 +11506,7 @@ var ListControl = class {
       return;
     }
     this.clearViewport();
-    this.updateViewport(Platform9.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
+    this.updateViewport(Platform10.NumberUtilities.clamp(scrollTop, 0, totalHeight - viewportHeight), viewportHeight);
     this.refreshARIA();
   }
   invalidateNonViewportMode(start, remove, add) {
@@ -11121,7 +11522,7 @@ var ListControl = class {
     }
   }
   clearViewport() {
-    if (this.mode === ListMode.NonViewport) {
+    if (this.mode === "UI.ListMode.NonViewport" /* NonViewport */) {
       console.error("There should be no viewport updates in non-viewport mode");
       return;
     }
@@ -11140,7 +11541,7 @@ var ListControl = class {
     this.element.appendChild(this.bottomElement);
   }
   updateViewport(scrollTop, viewportHeight) {
-    if (this.mode === ListMode.NonViewport) {
+    if (this.mode === "UI.ListMode.NonViewport" /* NonViewport */) {
       console.error("There should be no viewport updates in non-viewport mode");
       return;
     }
@@ -11185,100 +11586,6 @@ var ListControl = class {
     this.element.scrollTop = scrollTop;
   }
 };
-
-// gen/front_end/ui/legacy/ListModel.js
-var ListModel_exports = {};
-__export(ListModel_exports, {
-  Events: () => Events9,
-  ListModel: () => ListModel
-});
-import * as Common12 from "../../core/common/common.js";
-import * as Platform10 from "../../core/platform/platform.js";
-var ListModel = class extends Common12.ObjectWrapper.ObjectWrapper {
-  items;
-  constructor(items) {
-    super();
-    this.items = items || [];
-  }
-  [Symbol.iterator]() {
-    return this.items[Symbol.iterator]();
-  }
-  get length() {
-    return this.items.length;
-  }
-  at(index) {
-    return this.items[index];
-  }
-  every(callback) {
-    return this.items.every(callback);
-  }
-  filter(callback) {
-    return this.items.filter(callback);
-  }
-  find(callback) {
-    return this.items.find(callback);
-  }
-  findIndex(callback) {
-    return this.items.findIndex(callback);
-  }
-  indexOf(value, fromIndex) {
-    return this.items.indexOf(value, fromIndex);
-  }
-  insert(index, value) {
-    this.items.splice(index, 0, value);
-    this.replaced(index, [], 1);
-  }
-  insertWithComparator(value, comparator) {
-    this.insert(Platform10.ArrayUtilities.lowerBound(this.items, value, comparator), value);
-  }
-  join(separator) {
-    return this.items.join(separator);
-  }
-  remove(index) {
-    const result = this.items[index];
-    this.items.splice(index, 1);
-    this.replaced(index, [result], 0);
-    return result;
-  }
-  replace(index, value, keepSelectedIndex) {
-    const oldValue = this.items[index];
-    this.items[index] = value;
-    this.replaced(index, [oldValue], 1, keepSelectedIndex);
-    return oldValue;
-  }
-  replaceRange(from, to, items) {
-    let removed;
-    if (items.length < 1e4) {
-      removed = this.items.splice(from, to - from, ...items);
-    } else {
-      removed = this.items.slice(from, to);
-      const before = this.items.slice(0, from);
-      const after = this.items.slice(to);
-      this.items = [...before, ...items, ...after];
-    }
-    this.replaced(from, removed, items.length);
-    return removed;
-  }
-  replaceAll(items) {
-    const oldItems = this.items.slice();
-    this.items = items;
-    this.replaced(0, oldItems, items.length);
-    return oldItems;
-  }
-  slice(from, to) {
-    return this.items.slice(from, to);
-  }
-  some(callback) {
-    return this.items.some(callback);
-  }
-  replaced(index, removed, inserted, keepSelectedIndex) {
-    this.dispatchEventToListeners("ItemsReplaced", { index, removed, inserted, keepSelectedIndex });
-  }
-};
-var Events9;
-(function(Events13) {
-  Events13["ITEMS_REPLACED"] = "ItemsReplaced";
-})(Events9 || (Events9 = {}));
 
 // gen/front_end/ui/legacy/suggestBox.css.js
 var suggestBox_css_default = `/*
@@ -11374,7 +11681,7 @@ var suggestBox_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./suggestBox.css")} */`;
 
-// gen/front_end/ui/legacy/SuggestBox.js
+// ../../front_end/ui/legacy/SuggestBox.ts
 var UIStrings11 = {
   /**
    * @description Announcement text for screen readers when navigating suggestions in a suggestion box.
@@ -11408,17 +11715,17 @@ var SuggestBox = class {
     this.userEnteredText = "";
     this.onlyCompletion = null;
     this.items = new ListModel();
-    this.list = new ListControl(this.items, this, ListMode.EqualHeightItems);
+    this.list = new ListControl(this.items, this, "UI.ListMode.EqualHeightItems" /* EqualHeightItems */);
     this.element = this.list.element;
     this.element.classList.add("suggest-box");
     this.element.addEventListener("mousedown", (event) => event.preventDefault(), true);
     this.element.addEventListener("click", this.onClick.bind(this), false);
-    this.element.setAttribute("jslog", `${VisualLogging13.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
-    this.glassPane = new GlassPane();
-    this.glassPane.setAnchorBehavior(
-      "PreferBottom"
-      /* AnchorBehavior.PREFER_BOTTOM */
+    this.element.setAttribute(
+      "jslog",
+      `${VisualLogging13.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`
     );
+    this.glassPane = new GlassPane();
+    this.glassPane.setAnchorBehavior("PreferBottom" /* PREFER_BOTTOM */);
     this.glassPane.setOutsideClickCallback(this.hide.bind(this));
     const shadowRoot = createShadowRootWithCoreStyles(this.glassPane.contentElement, { cssFile: suggestBox_css_default });
     shadowRoot.appendChild(this.element);
@@ -11480,7 +11787,10 @@ var SuggestBox = class {
   }
   applySuggestion(isIntermediateSuggestion) {
     if (this.onlyCompletion) {
-      isIntermediateSuggestion ? LiveAnnouncer.alert(i18nString11(UIStrings11.sSuggestionSOfS, { PH1: this.onlyCompletion.text, PH2: this.list.selectedIndex() + 1, PH3: this.items.length })) : LiveAnnouncer.alert(i18nString11(UIStrings11.sSuggestionSSelected, { PH1: this.onlyCompletion.text }));
+      isIntermediateSuggestion ? LiveAnnouncer.alert(i18nString11(
+        UIStrings11.sSuggestionSOfS,
+        { PH1: this.onlyCompletion.text, PH2: this.list.selectedIndex() + 1, PH3: this.items.length }
+      )) : LiveAnnouncer.alert(i18nString11(UIStrings11.sSuggestionSSelected, { PH1: this.onlyCompletion.text }));
       this.suggestBoxDelegate.applySuggestion(this.onlyCompletion, isIntermediateSuggestion);
       return true;
     }
@@ -11490,7 +11800,10 @@ var SuggestBox = class {
         PH1: suggestion.title || suggestion.text,
         PH2: this.list.selectedIndex() + 1,
         PH3: this.items.length
-      })) : LiveAnnouncer.alert(i18nString11(UIStrings11.sSuggestionSSelected, { PH1: suggestion.title || suggestion.text }));
+      })) : LiveAnnouncer.alert(i18nString11(
+        UIStrings11.sSuggestionSSelected,
+        { PH1: suggestion.title || suggestion.text }
+      ));
     }
     this.suggestBoxDelegate.applySuggestion(suggestion, isIntermediateSuggestion);
     return this.visible() && Boolean(suggestion);
@@ -11721,7 +12034,7 @@ var textPrompt_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./textPrompt.css")} */`;
 
-// gen/front_end/ui/legacy/TextPrompt.js
+// ../../front_end/ui/legacy/TextPrompt.ts
 var TextPromptElement = class _TextPromptElement extends HTMLElement {
   static observedAttributes = ["editing", "completions", "placeholder", "cancel-on-blur", "render-as-block"];
   static formAssociated = true;
@@ -11946,7 +12259,7 @@ var TextPromptElement = class _TextPromptElement extends HTMLElement {
     return clone;
   }
 };
-(function(TextPromptElement2) {
+((TextPromptElement2) => {
   class CommitEvent extends CustomEvent {
     constructor(detail) {
       super("commit", { detail });
@@ -12079,16 +12392,8 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     }
     this.#element.classList.add("text-prompt");
     markAsTextBox(this.#element);
-    setAutocomplete(
-      this.#element,
-      "both"
-      /* ARIAUtils.AutocompleteInteractionModel.BOTH */
-    );
-    setHasPopup(
-      this.#element,
-      "listbox"
-      /* ARIAUtils.PopupRole.LIST_BOX */
-    );
+    setAutocomplete(this.#element, "both" /* BOTH */);
+    setHasPopup(this.#element, "listbox" /* LIST_BOX */);
     this.#element.setAttribute("contenteditable", "plaintext-only");
     this.element().addEventListener("keydown", this.boundOnKeyDown, false);
     this.#element.addEventListener("input", this.boundOnInput, false);
@@ -12121,11 +12426,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     this.element().removeAttribute("contenteditable");
     this.element().removeAttribute("role");
     clearAutocomplete(this.element());
-    setHasPopup(
-      this.element(),
-      "false"
-      /* ARIAUtils.PopupRole.FALSE */
-    );
+    setHasPopup(this.element(), "false" /* FALSE */);
   }
   textWithCurrentSuggestion() {
     const text = this.text();
@@ -12205,9 +12506,17 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   }
   removeFromElement() {
     this.clearAutocomplete();
-    this.element().removeEventListener("keydown", this.boundOnKeyDown, false);
+    this.element().removeEventListener(
+      "keydown",
+      this.boundOnKeyDown,
+      false
+    );
     this.element().removeEventListener("input", this.boundOnInput, false);
-    this.element().removeEventListener("selectstart", this.boundClearAutocomplete, false);
+    this.element().removeEventListener(
+      "selectstart",
+      this.boundClearAutocomplete,
+      false
+    );
     this.element().removeEventListener("blur", this.boundOnBlur, false);
     if (this.isEditing) {
       this.stopEditing();
@@ -12329,10 +12638,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     }
     this.refreshGhostText();
     this.previousText = text;
-    this.dispatchEventToListeners(
-      "TextChanged"
-      /* Events.TEXT_CHANGED */
-    );
+    this.dispatchEventToListeners("TextChanged" /* TEXT_CHANGED */);
     this.autoCompleteSoon();
   }
   acceptAutoComplete() {
@@ -12357,10 +12663,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     this.queryRange = null;
     this.refreshGhostText();
     if (beforeText !== this.textWithCurrentSuggestion()) {
-      this.dispatchEventToListeners(
-        "TextChanged"
-        /* Events.TEXT_CHANGED */
-      );
+      this.dispatchEventToListeners("TextChanged" /* TEXT_CHANGED */);
     }
     this.#currentSuggestion = null;
   }
@@ -12412,7 +12715,13 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
       this.clearAutocomplete();
       return;
     }
-    const wordQueryRange = rangeOfWord(selectionRange.startContainer, selectionRange.startOffset, this.completionStopCharacters, this.element(), "backward");
+    const wordQueryRange = rangeOfWord(
+      selectionRange.startContainer,
+      selectionRange.startOffset,
+      this.completionStopCharacters,
+      this.element(),
+      "backward"
+    );
     const expressionRange = wordQueryRange.cloneRange();
     expressionRange.collapse(true);
     expressionRange.setStartBefore(this.element());
@@ -12465,20 +12774,28 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     const beforeRange = document.createRange();
     beforeRange.setStart(this.element(), 0);
     beforeRange.setEnd(fullWordRange.startContainer, fullWordRange.startOffset);
-    this.queryRange = new TextUtils.TextRange.TextRange(0, beforeRange.toString().length, 0, beforeRange.toString().length + fullWordRange.toString().length);
+    this.queryRange = new TextUtils.TextRange.TextRange(
+      0,
+      beforeRange.toString().length,
+      0,
+      beforeRange.toString().length + fullWordRange.toString().length
+    );
     const shouldSelect = !this.#disableDefaultSuggestionForEmptyInput || Boolean(this.text());
     if (this.suggestBox) {
-      this.suggestBox.updateSuggestions(this.boxForAnchorAtStart(selection, fullWordRange), completions, shouldSelect, !this.isCaretAtEndOfPrompt(), this.text());
+      this.suggestBox.updateSuggestions(
+        this.boxForAnchorAtStart(selection, fullWordRange),
+        completions,
+        shouldSelect,
+        !this.isCaretAtEndOfPrompt(),
+        this.text()
+      );
     }
   }
   applySuggestion(suggestion, isIntermediateSuggestion) {
     this.#currentSuggestion = suggestion;
     this.refreshGhostText();
     if (isIntermediateSuggestion) {
-      this.dispatchEventToListeners(
-        "TextChanged"
-        /* Events.TEXT_CHANGED */
-      );
+      this.dispatchEventToListeners("TextChanged" /* TEXT_CHANGED */);
     }
   }
   acceptSuggestion() {
@@ -12496,10 +12813,7 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
     this.setDOMSelection(this.queryRange.startColumn + startColumn, this.queryRange.startColumn + endColumn);
     this.updateLeftParenthesesIndices();
     this.clearAutocomplete();
-    this.dispatchEventToListeners(
-      "TextChanged"
-      /* Events.TEXT_CHANGED */
-    );
+    this.dispatchEventToListeners("TextChanged" /* TEXT_CHANGED */);
     return true;
   }
   ownerElement() {
@@ -12625,10 +12939,10 @@ var TextPrompt = class extends Common13.ObjectWrapper.ObjectWrapper {
   }
 };
 var DefaultAutocompletionTimeout = 250;
-var Events10;
-(function(Events13) {
-  Events13["TEXT_CHANGED"] = "TextChanged";
-})(Events10 || (Events10 = {}));
+var Events9 = /* @__PURE__ */ ((Events12) => {
+  Events12["TEXT_CHANGED"] = "TextChanged";
+  return Events12;
+})(Events9 || {});
 
 // gen/front_end/ui/legacy/toolbar.css.js
 var toolbar_css_default = `/*
@@ -12678,7 +12992,7 @@ devtools-toolbar-input {
 
 /*# sourceURL=${import.meta.resolve("./toolbar.css")} */`;
 
-// gen/front_end/ui/legacy/Toolbar.js
+// ../../front_end/ui/legacy/Toolbar.ts
 var UIStrings12 = {
   /**
    * @description Announcement text for screen readers when a toolbar toggle button is pressed.
@@ -12806,7 +13120,7 @@ var Toolbar = class _Toolbar extends HTMLElement {
     const mainButtonClone = _Toolbar.createActionButton(action6);
     let longClickController = null;
     let longClickButtons = null;
-    action6.addEventListener("Toggled", updateOptions);
+    action6.addEventListener("Toggled" /* TOGGLED */, updateOptions);
     updateOptions();
     return button;
     function updateOptions() {
@@ -12830,10 +13144,7 @@ var Toolbar = class _Toolbar extends HTMLElement {
       const document2 = button.element.ownerDocument;
       document2.documentElement.addEventListener("mouseup", mouseUp, false);
       const optionsGlassPane = new GlassPane();
-      optionsGlassPane.setPointerEventsBehavior(
-        "BlockedByGlassPane"
-        /* PointerEventsBehavior.BLOCKED_BY_GLASS_PANE */
-      );
+      optionsGlassPane.setPointerEventsBehavior("BlockedByGlassPane" /* BLOCKED_BY_GLASS_PANE */);
       optionsGlassPane.show(document2);
       const optionsBar = optionsGlassPane.contentElement.createChild("devtools-toolbar");
       optionsBar.floating = true;
@@ -12900,8 +13211,8 @@ var Toolbar = class _Toolbar extends HTMLElement {
     const handler = () => {
       void action6.execute();
     };
-    button.addEventListener("Click", handler, action6);
-    action6.addEventListener("Enabled", enabledChanged);
+    button.addEventListener(ToolbarButton.Events.CLICK, handler, action6);
+    action6.addEventListener("Enabled" /* ENABLED */, enabledChanged);
     button.setEnabled(action6.enabled());
     return button;
     function makeButton() {
@@ -12916,7 +13227,7 @@ var Toolbar = class _Toolbar extends HTMLElement {
       if (action6.toggleWithRedColor()) {
         toggleButton.enableToggleWithRedColor();
       }
-      action6.addEventListener("Toggled", toggled);
+      action6.addEventListener("Toggled" /* TOGGLED */, toggled);
       toggled();
       return toggleButton;
       function toggled() {
@@ -13038,7 +13349,10 @@ var Toolbar = class _Toolbar extends HTMLElement {
     if (lastSeparator && lastSeparator !== this.items[this.items.length - 1]) {
       lastSeparator.setVisible(false);
     }
-    this.classList.toggle("hidden", lastSeparator !== null && lastSeparator !== void 0 && lastSeparator.visible() && !nonSeparatorVisible);
+    this.classList.toggle(
+      "hidden",
+      lastSeparator !== null && lastSeparator !== void 0 && lastSeparator.visible() && !nonSeparatorVisible
+    );
   }
   async appendItemsAtLocation(location) {
     const extensions = getRegisteredToolbarItems();
@@ -13126,13 +13440,13 @@ var ToolbarItem = class extends Common14.ObjectWrapper.ObjectWrapper {
     this.element.style.minWidth = width + "px";
   }
 };
-var ToolbarItemWithCompactLayoutEvents;
-(function(ToolbarItemWithCompactLayoutEvents2) {
+var ToolbarItemWithCompactLayoutEvents = /* @__PURE__ */ ((ToolbarItemWithCompactLayoutEvents2) => {
   ToolbarItemWithCompactLayoutEvents2["COMPACT_LAYOUT_UPDATED"] = "CompactLayoutUpdated";
-})(ToolbarItemWithCompactLayoutEvents || (ToolbarItemWithCompactLayoutEvents = {}));
+  return ToolbarItemWithCompactLayoutEvents2;
+})(ToolbarItemWithCompactLayoutEvents || {});
 var ToolbarItemWithCompactLayout = class extends ToolbarItem {
   setCompactLayout(enable) {
-    this.dispatchEventToListeners("CompactLayoutUpdated", enable);
+    this.dispatchEventToListeners("CompactLayoutUpdated" /* COMPACT_LAYOUT_UPDATED */, enable);
   }
 };
 var ToolbarText = class extends ToolbarItem {
@@ -13149,7 +13463,7 @@ var ToolbarText = class extends ToolbarItem {
     this.element.textContent = text;
   }
 };
-var ToolbarButton = class extends ToolbarItem {
+var ToolbarButton = class _ToolbarButton extends ToolbarItem {
   button;
   text;
   adorner;
@@ -13157,9 +13471,9 @@ var ToolbarButton = class extends ToolbarItem {
     if (!button) {
       button = new Buttons5.Button.Button();
       if (glyph && !text) {
-        button.data = { variant: "icon", iconName: glyph };
+        button.data = { variant: Buttons5.Button.Variant.ICON, iconName: glyph };
       } else {
-        button.variant = "text";
+        button.variant = Buttons5.Button.Variant.TEXT;
         button.reducedFocusRing = true;
         if (glyph) {
           button.iconName = glyph;
@@ -13208,7 +13522,7 @@ var ToolbarButton = class extends ToolbarItem {
       return;
     }
     this.button.textContent = text;
-    this.button.variant = "text";
+    this.button.variant = Buttons5.Button.Variant.TEXT;
     this.button.reducedFocusRing = true;
     this.text = text;
   }
@@ -13224,7 +13538,7 @@ var ToolbarButton = class extends ToolbarItem {
     this.button.iconName = iconName;
   }
   setToggledIcon(toggledIconName) {
-    this.button.variant = "icon_toggle";
+    this.button.variant = Buttons5.Button.Variant.ICON_TOGGLE;
     this.button.toggledIconName = toggledIconName;
   }
   setBackgroundImage(iconURL) {
@@ -13240,17 +13554,17 @@ var ToolbarButton = class extends ToolbarItem {
     if (!this.enabled) {
       return;
     }
-    this.dispatchEventToListeners("Click", event);
+    this.dispatchEventToListeners(_ToolbarButton.Events.CLICK, event);
     event.consume();
   }
 };
-(function(ToolbarButton2) {
-  let Events13;
-  (function(Events14) {
-    Events14["CLICK"] = "Click";
-  })(Events13 = ToolbarButton2.Events || (ToolbarButton2.Events = {}));
+((ToolbarButton2) => {
+  let Events12;
+  ((Events13) => {
+    Events13["CLICK"] = "Click";
+  })(Events12 = ToolbarButton2.Events || (ToolbarButton2.Events = {}));
 })(ToolbarButton || (ToolbarButton = {}));
-var ToolbarInput = class extends ToolbarItem {
+var ToolbarInput = class _ToolbarInput extends ToolbarItem {
   prompt;
   proxyElement;
   constructor(placeholder, accessiblePlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext, element) {
@@ -13268,12 +13582,16 @@ var ToolbarInput = class extends ToolbarItem {
     this.proxyElement = this.prompt.attach(internalPromptElement);
     this.proxyElement.classList.add("toolbar-prompt-proxy");
     this.proxyElement.addEventListener("keydown", (event) => this.onKeydownCallback(event));
-    this.prompt.initialize(completions || (() => Promise.resolve([])), " ", dynamicCompletions);
+    this.prompt.initialize(
+      completions || (() => Promise.resolve([])),
+      " ",
+      dynamicCompletions
+    );
     if (tooltip) {
       this.prompt.setTitle(tooltip);
     }
     this.prompt.setPlaceholder(placeholder, accessiblePlaceholder);
-    this.prompt.addEventListener("TextChanged", this.onChangeCallback.bind(this));
+    this.prompt.addEventListener("TextChanged" /* TEXT_CHANGED */, this.onChangeCallback.bind(this));
     if (growFactor) {
       this.element.style.flexGrow = String(growFactor);
     }
@@ -13283,16 +13601,16 @@ var ToolbarInput = class extends ToolbarItem {
     const clearButtonText = i18nString12(UIStrings12.clearInput);
     const clearButton = new Buttons5.Button.Button();
     clearButton.data = {
-      variant: "icon",
+      variant: Buttons5.Button.Variant.ICON,
       iconName: "cross-circle-filled",
-      size: "SMALL",
+      size: Buttons5.Button.Size.SMALL,
       title: clearButtonText
     };
     clearButton.className = "toolbar-input-clear-button";
     clearButton.setAttribute("jslog", `${VisualLogging15.action("clear").track({ click: true }).parent("mapped")}`);
     VisualLogging15.setMappedParent(clearButton, internalPromptElement);
-    clearButton.variant = "icon";
-    clearButton.size = "SMALL";
+    clearButton.variant = Buttons5.Button.Variant.ICON;
+    clearButton.size = Buttons5.Button.Size.SMALL;
     clearButton.iconName = "cross-circle-filled";
     clearButton.title = clearButtonText;
     clearButton.ariaLabel = clearButtonText;
@@ -13336,7 +13654,7 @@ var ToolbarInput = class extends ToolbarItem {
   }
   onKeydownCallback(event) {
     if (event.key === "Enter" && this.prompt.text()) {
-      this.dispatchEventToListeners("EnterPressed", this.prompt.text());
+      this.dispatchEventToListeners(_ToolbarInput.Event.ENTER_PRESSED, this.prompt.text());
     }
     if (!Platform13.KeyboardUtilities.isEscKey(event) || !this.prompt.text()) {
       return;
@@ -13346,7 +13664,7 @@ var ToolbarInput = class extends ToolbarItem {
   }
   onChangeCallback() {
     this.updateEmptyStyles();
-    this.dispatchEventToListeners("TextChanged", this.prompt.text());
+    this.dispatchEventToListeners(_ToolbarInput.Event.TEXT_CHANGED, this.prompt.text());
   }
   updateEmptyStyles() {
     this.element.classList.toggle("toolbar-input-empty", !this.prompt.text());
@@ -13355,7 +13673,17 @@ var ToolbarInput = class extends ToolbarItem {
 var ToolbarFilter = class extends ToolbarInput {
   constructor(filterBy, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext, element, showRegexToggle, onRegexToggle) {
     const filterPlaceholder = filterBy ? filterBy : i18nString12(UIStrings12.filter);
-    super(filterPlaceholder, filterPlaceholder, growFactor, shrinkFactor, tooltip, completions, dynamicCompletions, jslogContext || "filter", element);
+    super(
+      filterPlaceholder,
+      filterPlaceholder,
+      growFactor,
+      shrinkFactor,
+      tooltip,
+      completions,
+      dynamicCompletions,
+      jslogContext || "filter",
+      element
+    );
     const filterIcon = createIcon7("filter");
     this.element.prepend(filterIcon);
     this.element.classList.add("toolbar-filter");
@@ -13363,11 +13691,11 @@ var ToolbarFilter = class extends ToolbarInput {
       const regexIconName = "regular-expression";
       const regexButton = new Buttons5.Button.Button();
       regexButton.data = {
-        variant: "icon_toggle",
-        size: "SMALL",
+        variant: Buttons5.Button.Variant.ICON_TOGGLE,
+        size: Buttons5.Button.Size.SMALL,
         iconName: regexIconName,
         toggledIconName: regexIconName,
-        toggleType: "primary-toggle",
+        toggleType: Buttons5.Button.ToggleType.PRIMARY,
         toggled: false,
         title: i18nString12(UIStrings12.useRegularExpression),
         jslogContext: regexIconName
@@ -13437,10 +13765,10 @@ var ToolbarInputElement = class extends HTMLElement {
     if (this.#disabled) {
       this.item.setEnabled(false);
     }
-    this.item.addEventListener("TextChanged", (event) => {
+    this.item.addEventListener(ToolbarInput.Event.TEXT_CHANGED, (event) => {
       this.dispatchEvent(new CustomEvent("change", { detail: event.data }));
     });
-    this.item.addEventListener("EnterPressed", (event) => {
+    this.item.addEventListener(ToolbarInput.Event.ENTER_PRESSED, (event) => {
       this.dispatchEvent(new CustomEvent("submit", { detail: event.data }));
     });
   }
@@ -13489,9 +13817,9 @@ var ToolbarInputElement = class extends HTMLElement {
   }
 };
 customElements.define("devtools-toolbar-input", ToolbarInputElement);
-(function(ToolbarInput2) {
+((ToolbarInput2) => {
   let Event2;
-  (function(Event3) {
+  ((Event3) => {
     Event3["TEXT_CHANGED"] = "TextChanged";
     Event3["ENTER_PRESSED"] = "EnterPressed";
   })(Event2 = ToolbarInput2.Event || (ToolbarInput2.Event = {}));
@@ -13502,10 +13830,7 @@ var ToolbarToggle = class extends ToolbarButton {
     super(title, glyph, "");
     this.toggledGlyph = toggledGlyph ? toggledGlyph : glyph;
     this.setToggledIcon(this.toggledGlyph || "");
-    this.setToggleType(
-      "primary-toggle"
-      /* Buttons.Button.ToggleType.PRIMARY */
-    );
+    this.setToggleType(Buttons5.Button.ToggleType.PRIMARY);
     this.toggled(false);
     if (jslogContext) {
       this.element.setAttribute("jslog", `${VisualLogging15.toggle().track({ click: true }).context(jslogContext)}`);
@@ -13524,10 +13849,7 @@ var ToolbarToggle = class extends ToolbarButton {
     this.checked(checked);
   }
   enableToggleWithRedColor() {
-    this.setToggleType(
-      "red-toggle"
-      /* Buttons.Button.ToggleType.RED */
-    );
+    this.setToggleType(Buttons5.Button.ToggleType.RED);
   }
 };
 var ToolbarMenuButton = class extends ToolbarItem {
@@ -13545,7 +13867,7 @@ var ToolbarMenuButton = class extends ToolbarItem {
     let element;
     if (iconName) {
       element = new Buttons5.Button.Button();
-      element.data = { variant: "icon", iconName };
+      element.data = { variant: Buttons5.Button.Variant.ICON, iconName };
     } else {
       element = document.createElement("button");
     }
@@ -13860,17 +14182,19 @@ function registerToolbarItem(registration) {
   registeredToolbarItems.push(registration);
 }
 function getRegisteredToolbarItems() {
-  return registeredToolbarItems.filter((item8) => Root8.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition }));
+  return registeredToolbarItems.filter(
+    (item8) => Root8.Runtime.Runtime.isDescriptorEnabled({ experiment: item8.experiment, condition: item8.condition })
+  );
 }
-var ToolbarItemLocation;
-(function(ToolbarItemLocation2) {
+var ToolbarItemLocation = /* @__PURE__ */ ((ToolbarItemLocation2) => {
   ToolbarItemLocation2["FILES_NAVIGATION_TOOLBAR"] = "files-navigator-toolbar";
   ToolbarItemLocation2["MAIN_TOOLBAR_RIGHT"] = "main-toolbar-right";
   ToolbarItemLocation2["MAIN_TOOLBAR_LEFT"] = "main-toolbar-left";
   ToolbarItemLocation2["STYLES_SIDEBARPANE_TOOLBAR"] = "styles-sidebarpane-toolbar";
-})(ToolbarItemLocation || (ToolbarItemLocation = {}));
+  return ToolbarItemLocation2;
+})(ToolbarItemLocation || {});
 
-// gen/front_end/ui/legacy/UIUtils.js
+// ../../front_end/ui/legacy/UIUtils.ts
 import * as Common15 from "../../core/common/common.js";
 import * as Host9 from "../../core/host/host.js";
 import * as i18n25 from "../../core/i18n/i18n.js";
@@ -15334,6 +15658,17 @@ devtools-toolbar {
   }
 }
 
+.devtools-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sys-size-3);
+  padding: var(--sys-size-1) var(--sys-size-3) var(--sys-size-1) var(--sys-size-4);
+  border-radius: var(--sys-shape-corner-extra-small);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  box-sizing: border-box;
+}
+
 /*# sourceURL=${import.meta.resolve("./inspectorCommon.css")} */`;
 
 // gen/front_end/ui/legacy/smallBubble.css.js
@@ -15393,8 +15728,9 @@ div.error {
 
 /*# sourceURL=${import.meta.resolve("./smallBubble.css")} */`;
 
-// gen/front_end/ui/legacy/UIUtils.js
-var { Directives: Directives3, render: render6 } = Lit2;
+// ../../front_end/ui/legacy/UIUtils.ts
+var Directives4 = Lit2.Directives;
+var render7 = Lit2.render;
 var UIStrings13 = {
   /**
    * @description Context menu item to open a link in a new tab.
@@ -15450,7 +15786,15 @@ var i18nString13 = i18n25.i18n.getLocalizedString.bind(void 0, str_13);
 function installDragHandle(element, elementDragStart2, elementDrag, elementDragEnd, cursor, hoverCursor, startDelay, mouseDownPreventDefault = true) {
   function onMouseDown(event) {
     const dragHandler = new DragHandler();
-    const dragStart = () => dragHandler.elementDragStart(element, elementDragStart2, elementDrag, elementDragEnd, cursor, event, mouseDownPreventDefault);
+    const dragStart = () => dragHandler.elementDragStart(
+      element,
+      elementDragStart2,
+      elementDrag,
+      elementDragEnd,
+      cursor,
+      event,
+      mouseDownPreventDefault
+    );
     if (startDelay) {
       startTimer = window.setTimeout(dragStart, startDelay);
     } else {
@@ -15492,10 +15836,7 @@ var DragHandler = class _DragHandler {
     this.glassPaneInUse = true;
     if (!_DragHandler.glassPaneUsageCount++) {
       _DragHandler.glassPane = new GlassPane();
-      _DragHandler.glassPane.setPointerEventsBehavior(
-        "BlockedByGlassPane"
-        /* PointerEventsBehavior.BLOCKED_BY_GLASS_PANE */
-      );
+      _DragHandler.glassPane.setPointerEventsBehavior("BlockedByGlassPane" /* BLOCKED_BY_GLASS_PANE */);
       if (_DragHandler.documentForMouseOut) {
         _DragHandler.glassPane.show(_DragHandler.documentForMouseOut);
       }
@@ -15530,7 +15871,10 @@ var DragHandler = class _DragHandler {
     const targetDocument = event.target instanceof Node && event.target.ownerDocument;
     this.elementDraggingEventListener = elementDrag;
     this.elementEndDraggingEventListener = elementDragEnd;
-    console.assert((_DragHandler.documentForMouseOut || targetDocument) === targetDocument, "Dragging on multiple documents.");
+    console.assert(
+      (_DragHandler.documentForMouseOut || targetDocument) === targetDocument,
+      "Dragging on multiple documents."
+    );
     _DragHandler.documentForMouseOut = targetDocument;
     _DragHandler.rootForMouseOut = event.target instanceof Node && event.target.getRootNode() || null;
     this.dragEventsTargetDocument = targetDocument;
@@ -16133,7 +16477,7 @@ function createTextButton(text, clickHandler, opts) {
   }
   button.textContent = text;
   button.iconName = opts?.icon;
-  button.variant = opts?.variant ? opts.variant : "outlined";
+  button.variant = opts?.variant ? opts.variant : Buttons6.Button.Variant.OUTLINED;
   if (clickHandler) {
     button.addEventListener("click", clickHandler);
     button.addEventListener("keydown", (event) => {
@@ -16162,7 +16506,10 @@ function createInput(className, type, jslogContext) {
     element.type = type;
   }
   if (jslogContext) {
-    element.setAttribute("jslog", `${VisualLogging16.textField().track({ keydown: "Enter", change: true }).context(jslogContext)}`);
+    element.setAttribute(
+      "jslog",
+      `${VisualLogging16.textField().track({ keydown: "Enter", change: true }).context(jslogContext)}`
+    );
   }
   return element;
 }
@@ -16302,7 +16649,10 @@ var CheckboxLabel = class _CheckboxLabel extends HTMLElement {
     const element = document.createElement("devtools-checkbox");
     element.#checkboxElement.checked = Boolean(checked);
     if (jslogContext) {
-      element.#checkboxElement.setAttribute("jslog", `${VisualLogging16.toggle().track({ change: true }).context(jslogContext)}`);
+      element.#checkboxElement.setAttribute(
+        "jslog",
+        `${VisualLogging16.toggle().track({ change: true }).context(jslogContext)}`
+      );
     }
     if (title !== void 0) {
       element.#textElement.textContent = title;
@@ -16436,7 +16786,7 @@ var DevToolsCloseButton = class extends HTMLElement {
     super();
     const root = createShadowRootWithCoreStyles(this);
     this.#button = new Buttons6.Button.Button();
-    this.#button.data = { variant: "icon", iconName: "cross" };
+    this.#button.data = { variant: Buttons6.Button.Variant.ICON, iconName: "cross" };
     this.#button.classList.add("close-button");
     this.#button.setAttribute("jslog", `${VisualLogging16.close().track({ click: true })}`);
     Tooltip.install(this.#button, i18nString13(UIStrings13.close));
@@ -16598,19 +16948,16 @@ var MaxLengthForDisplayedURLsInConsole = 40;
 var MessageDialog = class {
   static async show(header, message, where, jslogContext) {
     const dialog3 = new Dialog(jslogContext);
-    dialog3.setSizeBehavior(
-      "MeasureContent"
-      /* SizeBehavior.MEASURE_CONTENT */
-    );
+    dialog3.setSizeBehavior("MeasureContent" /* MEASURE_CONTENT */);
     dialog3.setDimmed(true);
     const shadowRoot = createShadowRootWithCoreStyles(dialog3.contentElement, { cssFile: confirmDialog_css_default });
     const content = shadowRoot.createChild("div", "widget");
     await new Promise((resolve) => {
-      const okButton = createTextButton(i18nString13(UIStrings13.ok), resolve, {
-        jslogContext: "confirm",
-        variant: "primary"
-        /* Buttons.Button.Variant.PRIMARY */
-      });
+      const okButton = createTextButton(
+        i18nString13(UIStrings13.ok),
+        resolve,
+        { jslogContext: "confirm", variant: Buttons6.Button.Variant.PRIMARY }
+      );
       content.createChild("span", "header").textContent = header;
       content.createChild("div", "message").createChild("span").textContent = message;
       content.createChild("div", "button").appendChild(okButton);
@@ -16627,10 +16974,7 @@ var MessageDialog = class {
 var ConfirmDialog = class {
   static async show(message, header, where, options) {
     const dialog3 = new Dialog(options?.jslogContext);
-    dialog3.setSizeBehavior(
-      "MeasureContent"
-      /* SizeBehavior.MEASURE_CONTENT */
-    );
+    dialog3.setSizeBehavior("MeasureContent" /* MEASURE_CONTENT */);
     dialog3.setDimmed(true);
     setLabel(dialog3.contentElement, message);
     const shadowRoot = createShadowRootWithCoreStyles(dialog3.contentElement, { cssFile: confirmDialog_css_default });
@@ -16646,14 +16990,14 @@ var ConfirmDialog = class {
         options?.okButtonLabel || i18nString13(UIStrings13.ok),
         /* clickHandler= */
         () => resolve(true),
-        {
-          jslogContext: "confirm",
-          variant: "primary"
-          /* Buttons.Button.Variant.PRIMARY */
-        }
+        { jslogContext: "confirm", variant: Buttons6.Button.Variant.PRIMARY }
       );
       buttonsBar.appendChild(okButton);
-      buttonsBar.appendChild(createTextButton(options?.cancelButtonLabel || i18nString13(UIStrings13.cancel), () => resolve(false), { jslogContext: "cancel" }));
+      buttonsBar.appendChild(createTextButton(
+        options?.cancelButtonLabel || i18nString13(UIStrings13.cancel),
+        () => resolve(false),
+        { jslogContext: "cancel" }
+      ));
       dialog3.setOutsideClickCallback((event) => {
         event.consume();
         resolve(false);
@@ -16859,22 +17203,22 @@ function bindToAction(actionName) {
   function actionEnabledChanged(event) {
     setEnabled(event.data);
   }
-  return Directives3.ref((e) => {
+  return Directives4.ref((e) => {
     if (!e || !(e instanceof Buttons6.Button.Button)) {
-      action6.removeEventListener("Enabled", actionEnabledChanged);
-      action6.removeEventListener("Toggled", toggled);
+      action6.removeEventListener("Enabled" /* ENABLED */, actionEnabledChanged);
+      action6.removeEventListener("Toggled" /* TOGGLED */, toggled);
       return;
     }
     setEnabled = (enabled) => {
       e.disabled = !enabled;
     };
-    action6.addEventListener("Enabled", actionEnabledChanged);
+    action6.addEventListener("Enabled" /* ENABLED */, actionEnabledChanged);
     const toggleable = action6.toggleable();
     const title = action6.title();
     const iconName = action6.icon() ?? "";
     const jslogContext = action6.id();
     const toggledIconName = action6.toggledIcon() ?? iconName;
-    const toggleType = action6.toggleWithRedColor() ? "red-toggle" : "primary-toggle";
+    const toggleType = action6.toggleWithRedColor() ? Buttons6.Button.ToggleType.RED : Buttons6.Button.ToggleType.PRIMARY;
     if (e.childNodes.length) {
       e.jslogContext = jslogContext;
     } else if (toggleable) {
@@ -16885,11 +17229,11 @@ function bindToAction(actionName) {
           Tooltip.installWithActionBinding(e, action6.title(), action6.id());
         }
       };
-      action6.addEventListener("Toggled", toggled);
+      action6.addEventListener("Toggled" /* TOGGLED */, toggled);
       e.data = {
         jslogContext,
         title,
-        variant: "icon_toggle",
+        variant: Buttons6.Button.Variant.ICON_TOGGLE,
         iconName,
         toggledIconName,
         toggleType,
@@ -16897,20 +17241,9 @@ function bindToAction(actionName) {
       };
       toggled();
     } else if (iconName) {
-      e.data = {
-        iconName,
-        jslogContext,
-        title,
-        variant: "icon"
-        /* Buttons.Button.Variant.ICON */
-      };
+      e.data = { iconName, jslogContext, title, variant: Buttons6.Button.Variant.ICON };
     } else {
-      e.data = {
-        jslogContext,
-        title,
-        variant: "text"
-        /* Buttons.Button.Variant.TEXT */
-      };
+      e.data = { jslogContext, title, variant: Buttons6.Button.Variant.TEXT };
     }
     setEnabled(action6.enabled());
     e.onclick = () => action6.execute();
@@ -17044,7 +17377,9 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
     }
     template.values = template.values.map(patchValue);
     function isLitTemplate(value) {
-      return Boolean(typeof value === "object" && value && "_$litType$" in value && "strings" in value && "values" in value && value["_$litType$"] === 1);
+      return Boolean(
+        typeof value === "object" && value && "_$litType$" in value && "strings" in value && "values" in value && value["_$litType$"] === 1
+      );
     }
     function isCallable(value) {
       return typeof value === "function" && Object.getOwnPropertyDescriptor(value, "prototype")?.writable !== false;
@@ -17090,10 +17425,13 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
       this.removeChildren();
       this.#contentTemplate = this.createChild("template");
       this.#mutationObserver.disconnect();
-      this.#mutationObserver.observe(this.#contentTemplate.content, { childList: true, attributes: true, subtree: true, characterData: true });
+      this.#mutationObserver.observe(
+        this.#contentTemplate.content,
+        { childList: true, attributes: true, subtree: true, characterData: true }
+      );
     }
     _HTMLElementWithLightDOMTemplate.patchLitTemplate(template);
-    render6(template, this.#contentTemplate.content);
+    render7(template, this.#contentTemplate.content);
   }
   #onChange(mutationList) {
     this.onChange(mutationList);
@@ -17195,10 +17533,10 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
   function settingChanged() {
     setValue(setting.get());
   }
-  if (setting.type() === "boolean" || typeof setting.defaultValue === "boolean") {
+  if (setting.type() === Common15.Settings.SettingType.BOOLEAN || typeof setting.defaultValue === "boolean") {
     let attachedButton;
     let clickListener;
-    return Directives3.ref((e) => {
+    return Directives4.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         if (attachedButton && clickListener) {
@@ -17229,8 +17567,8 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
     });
   }
   const jslogBuilder = jslog ? VisualLogging16.toggle(setting.name).track({ change: true }) : null;
-  if (setting.type() === "regex" || setting instanceof Common15.Settings.RegExpSetting) {
-    return Directives3.ref((e) => {
+  if (setting.type() === Common15.Settings.SettingType.REGEX || setting instanceof Common15.Settings.RegExpSetting) {
+    return Directives4.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         return;
@@ -17257,7 +17595,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
     });
   }
   if (typeof setting.defaultValue === "string") {
-    return Directives3.ref((e) => {
+    return Directives4.ref((e) => {
       if (e === void 0) {
         setting.removeChangeListener(settingChanged);
         return;
@@ -17279,7 +17617,7 @@ var bindToSetting = (settingOrName, optionsOrValidator) => {
   throw new Error(`Cannot infer type for setting  '${setting.name}'`);
 };
 
-// gen/front_end/ui/legacy/GlassPane.js
+// ../../front_end/ui/legacy/GlassPane.ts
 var GlassPane = class _GlassPane {
   #widget;
   element;
@@ -17291,9 +17629,9 @@ var GlassPane = class _GlassPane {
   positionX = null;
   positionY = null;
   anchorBox = null;
-  anchorBehavior = "PreferTop";
-  sizeBehavior = "SetExactSize";
-  marginBehavior = "DefaultMargin";
+  anchorBehavior = "PreferTop" /* PREFER_TOP */;
+  sizeBehavior = "SetExactSize" /* SET_EXACT_SIZE */;
+  marginBehavior = "DefaultMargin" /* DEFAULT_MARGIN */;
   #ignoreLeftMargin = false;
   constructor(jslog) {
     this.#widget = new Widget({ jslog, useShadowDom: true });
@@ -17302,10 +17640,7 @@ var GlassPane = class _GlassPane {
     this.element = this.#widget.element;
     this.contentElement = this.#widget.contentElement;
     this.registerRequiredCSS(glassPane_css_default);
-    this.setPointerEventsBehavior(
-      "PierceGlassPane"
-      /* PointerEventsBehavior.PIERCE_GLASS_PANE */
-    );
+    this.setPointerEventsBehavior("PierceGlassPane" /* PIERCE_GLASS_PANE */);
     this.onMouseDownBound = this.onMouseDown.bind(this);
   }
   setJsLog(jslog) {
@@ -17326,13 +17661,11 @@ var GlassPane = class _GlassPane {
   setPointerEventsBehavior(pointerEventsBehavior) {
     this.element.classList.toggle(
       "no-pointer-events",
-      pointerEventsBehavior !== "BlockedByGlassPane"
-      /* PointerEventsBehavior.BLOCKED_BY_GLASS_PANE */
+      pointerEventsBehavior !== "BlockedByGlassPane" /* BLOCKED_BY_GLASS_PANE */
     );
     this.contentElement.classList.toggle(
       "no-pointer-events",
-      pointerEventsBehavior === "PierceContents"
-      /* PointerEventsBehavior.PIERCE_CONTENTS */
+      pointerEventsBehavior === "PierceContents" /* PIERCE_CONTENTS */
     );
   }
   setOutsideClickCallback(callback) {
@@ -17390,8 +17723,16 @@ var GlassPane = class _GlassPane {
   }
   #onDetach() {
     panes.delete(this);
-    this.element.ownerDocument.body.removeEventListener("mousedown", this.onMouseDownBound, true);
-    this.element.ownerDocument.body.removeEventListener("pointerdown", this.onMouseDownBound, true);
+    this.element.ownerDocument.body.removeEventListener(
+      "mousedown",
+      this.onMouseDownBound,
+      true
+    );
+    this.element.ownerDocument.body.removeEventListener(
+      "pointerdown",
+      this.onMouseDownBound,
+      true
+    );
   }
   onMouseDown(event) {
     if (!this.onClickOutsideCallback) {
@@ -17407,11 +17748,11 @@ var GlassPane = class _GlassPane {
     if (!this.isShowing()) {
       return;
     }
-    const gutterSize = this.marginBehavior === "NoMargin" ? 0 : 3;
+    const gutterSize = this.marginBehavior === "NoMargin" /* NO_MARGIN */ ? 0 : 3;
     const scrollbarSize = measuredScrollbarWidth(this.element.ownerDocument);
     const offsetSize = 10;
     const container = containers.get(this.element.ownerDocument);
-    if (this.sizeBehavior === "MeasureContent") {
+    if (this.sizeBehavior === "MeasureContent" /* MEASURE_CONTENT */) {
       this.contentElement.positionAt(0, 0);
       this.contentElement.style.width = "";
       this.contentElement.style.maxWidth = "";
@@ -17428,7 +17769,7 @@ var GlassPane = class _GlassPane {
       width = Math.min(width, this.maxSize.width);
       height = Math.min(height, this.maxSize.height);
     }
-    if (this.sizeBehavior === "MeasureContent") {
+    if (this.sizeBehavior === "MeasureContent" /* MEASURE_CONTENT */) {
       const measuredRect = this.contentElement.getBoundingClientRect();
       const widthOverflow = height < measuredRect.height ? scrollbarSize : 0;
       const heightOverflow = width < measuredRect.width ? scrollbarSize : 0;
@@ -17438,20 +17779,20 @@ var GlassPane = class _GlassPane {
     if (this.anchorBox) {
       const anchorBox = this.anchorBox.relativeToElement(container);
       let behavior = this.anchorBehavior;
-      if (behavior === "PreferTop" || behavior === "PreferBottom") {
+      if (behavior === "PreferTop" /* PREFER_TOP */ || behavior === "PreferBottom" /* PREFER_BOTTOM */) {
         const top = anchorBox.y - 2 * gutterSize;
         const bottom = containerHeight - anchorBox.y - anchorBox.height - 2 * gutterSize;
-        if (behavior === "PreferTop" && top < height && bottom > top) {
-          behavior = "PreferBottom";
+        if (behavior === "PreferTop" /* PREFER_TOP */ && top < height && bottom > top) {
+          behavior = "PreferBottom" /* PREFER_BOTTOM */;
         }
-        if (behavior === "PreferBottom" && bottom < height && top > bottom) {
-          behavior = "PreferTop";
+        if (behavior === "PreferBottom" /* PREFER_BOTTOM */ && bottom < height && top > bottom) {
+          behavior = "PreferTop" /* PREFER_TOP */;
         }
         let enoughHeight = true;
-        if (behavior === "PreferTop") {
+        if (behavior === "PreferTop" /* PREFER_TOP */) {
           positionY = Math.max(gutterSize, anchorBox.y - height - gutterSize);
           const spaceTop = anchorBox.y - positionY - gutterSize;
-          if (this.sizeBehavior === "MeasureContent") {
+          if (this.sizeBehavior === "MeasureContent" /* MEASURE_CONTENT */) {
             if (height > spaceTop) {
               enoughHeight = false;
             }
@@ -17461,7 +17802,7 @@ var GlassPane = class _GlassPane {
         } else {
           positionY = anchorBox.y + anchorBox.height + gutterSize;
           const spaceBottom = containerHeight - positionY - gutterSize;
-          if (this.sizeBehavior === "MeasureContent") {
+          if (this.sizeBehavior === "MeasureContent" /* MEASURE_CONTENT */) {
             if (height > spaceBottom) {
               positionY = containerHeight - gutterSize - height;
               enoughHeight = false;
@@ -17470,13 +17811,19 @@ var GlassPane = class _GlassPane {
             height = Math.min(height, spaceBottom);
           }
         }
-        const naturalPositionX = Math.min(anchorBox.x, containerWidth - width - gutterSize);
+        const naturalPositionX = Math.min(
+          anchorBox.x,
+          containerWidth - width - gutterSize
+        );
         positionX = Math.max(gutterSize, naturalPositionX);
         if (this.#ignoreLeftMargin && gutterSize > naturalPositionX) {
           positionX = 0;
         }
         if (!enoughHeight) {
-          positionX = Math.min(positionX + offsetSize, containerWidth - width - gutterSize);
+          positionX = Math.min(
+            positionX + offsetSize,
+            containerWidth - width - gutterSize
+          );
         } else if (positionX - offsetSize >= gutterSize) {
           positionX -= offsetSize;
         }
@@ -17484,17 +17831,17 @@ var GlassPane = class _GlassPane {
       } else {
         const left = anchorBox.x - 2 * gutterSize;
         const right = containerWidth - anchorBox.x - anchorBox.width - 2 * gutterSize;
-        if (behavior === "PreferLeft" && left < width && right > left) {
-          behavior = "PreferRight";
+        if (behavior === "PreferLeft" /* PREFER_LEFT */ && left < width && right > left) {
+          behavior = "PreferRight" /* PREFER_RIGHT */;
         }
-        if (behavior === "PreferRight" && right < width && left > right) {
-          behavior = "PreferLeft";
+        if (behavior === "PreferRight" /* PREFER_RIGHT */ && right < width && left > right) {
+          behavior = "PreferLeft" /* PREFER_LEFT */;
         }
         let enoughWidth = true;
-        if (behavior === "PreferLeft") {
+        if (behavior === "PreferLeft" /* PREFER_LEFT */) {
           positionX = Math.max(gutterSize, anchorBox.x - width - gutterSize);
           const spaceLeft = anchorBox.x - positionX - gutterSize;
-          if (this.sizeBehavior === "MeasureContent") {
+          if (this.sizeBehavior === "MeasureContent" /* MEASURE_CONTENT */) {
             if (width > spaceLeft) {
               enoughWidth = false;
             }
@@ -17504,7 +17851,7 @@ var GlassPane = class _GlassPane {
         } else {
           positionX = anchorBox.x + anchorBox.width + gutterSize;
           const spaceRight = containerWidth - positionX - gutterSize;
-          if (this.sizeBehavior === "MeasureContent") {
+          if (this.sizeBehavior === "MeasureContent" /* MEASURE_CONTENT */) {
             if (width > spaceRight) {
               positionX = containerWidth - gutterSize - width;
               enoughWidth = false;
@@ -17513,9 +17860,15 @@ var GlassPane = class _GlassPane {
             width = Math.min(width, spaceRight);
           }
         }
-        positionY = Math.max(gutterSize, Math.min(anchorBox.y, containerHeight - height - gutterSize));
+        positionY = Math.max(
+          gutterSize,
+          Math.min(anchorBox.y, containerHeight - height - gutterSize)
+        );
         if (!enoughWidth) {
-          positionY = Math.min(positionY + offsetSize, containerHeight - height - gutterSize);
+          positionY = Math.min(
+            positionY + offsetSize,
+            containerHeight - height - gutterSize
+          );
         } else if (positionY - offsetSize >= gutterSize) {
           positionY -= offsetSize;
         }
@@ -17528,7 +17881,7 @@ var GlassPane = class _GlassPane {
       height = Math.min(height, containerHeight - positionY - gutterSize);
     }
     this.contentElement.style.width = width + "px";
-    if (this.sizeBehavior === "SetExactWidthMaxHeight") {
+    if (this.sizeBehavior === "SetExactWidthMaxHeight" /* SET_EXACT_WIDTH_MAX_HEIGHT */) {
       this.contentElement.style.maxHeight = height + "px";
     } else {
       this.contentElement.style.height = height + "px";
@@ -17554,35 +17907,35 @@ var GlassPane = class _GlassPane {
     }
   }
 };
-var PointerEventsBehavior;
-(function(PointerEventsBehavior2) {
+var PointerEventsBehavior = /* @__PURE__ */ ((PointerEventsBehavior2) => {
   PointerEventsBehavior2["BLOCKED_BY_GLASS_PANE"] = "BlockedByGlassPane";
   PointerEventsBehavior2["PIERCE_GLASS_PANE"] = "PierceGlassPane";
   PointerEventsBehavior2["PIERCE_CONTENTS"] = "PierceContents";
-})(PointerEventsBehavior || (PointerEventsBehavior = {}));
-var AnchorBehavior;
-(function(AnchorBehavior2) {
+  return PointerEventsBehavior2;
+})(PointerEventsBehavior || {});
+var AnchorBehavior = /* @__PURE__ */ ((AnchorBehavior2) => {
   AnchorBehavior2["PREFER_TOP"] = "PreferTop";
   AnchorBehavior2["PREFER_BOTTOM"] = "PreferBottom";
   AnchorBehavior2["PREFER_LEFT"] = "PreferLeft";
   AnchorBehavior2["PREFER_RIGHT"] = "PreferRight";
-})(AnchorBehavior || (AnchorBehavior = {}));
-var SizeBehavior;
-(function(SizeBehavior2) {
+  return AnchorBehavior2;
+})(AnchorBehavior || {});
+var SizeBehavior = /* @__PURE__ */ ((SizeBehavior2) => {
   SizeBehavior2["SET_EXACT_SIZE"] = "SetExactSize";
   SizeBehavior2["SET_EXACT_WIDTH_MAX_HEIGHT"] = "SetExactWidthMaxHeight";
   SizeBehavior2["MEASURE_CONTENT"] = "MeasureContent";
-})(SizeBehavior || (SizeBehavior = {}));
-var MarginBehavior;
-(function(MarginBehavior2) {
+  return SizeBehavior2;
+})(SizeBehavior || {});
+var MarginBehavior = /* @__PURE__ */ ((MarginBehavior2) => {
   MarginBehavior2["DEFAULT_MARGIN"] = "DefaultMargin";
   MarginBehavior2["NO_MARGIN"] = "NoMargin";
-})(MarginBehavior || (MarginBehavior = {}));
+  return MarginBehavior2;
+})(MarginBehavior || {});
 var containers = /* @__PURE__ */ new Map();
 var panes = /* @__PURE__ */ new Set();
 var GlassPanePanes = panes;
 
-// gen/front_end/ui/legacy/Dialog.js
+// ../../front_end/ui/legacy/Dialog.ts
 var UIStrings14 = {
   /**
    * @description Tooltip text and accessible label for the close button in a dialog.
@@ -17591,9 +17944,11 @@ var UIStrings14 = {
 };
 var str_14 = i18n27.i18n.registerUIStrings("ui/legacy/Dialog.ts", UIStrings14);
 var i18nString14 = i18n27.i18n.getLocalizedString.bind(void 0, str_14);
-var DialogBase = Common16.ObjectWrapper.eventMixin(GlassPane);
+var DialogBase = Common16.ObjectWrapper.eventMixin(
+  GlassPane
+);
 var Dialog = class _Dialog extends DialogBase {
-  tabIndexBehavior = "DisableAllTabIndex";
+  tabIndexBehavior = "DisableAllTabIndex" /* DISABLE_ALL_OUTSIDE_TAB_INDEX */;
   tabIndexMap = /* @__PURE__ */ new Map();
   focusRestorer = null;
   closeOnEscape = true;
@@ -17608,10 +17963,7 @@ var Dialog = class _Dialog extends DialogBase {
     if (jslogContext) {
       this.jslogContext = jslogContext;
     }
-    this.setPointerEventsBehavior(
-      "BlockedByGlassPane"
-      /* PointerEventsBehavior.BLOCKED_BY_GLASS_PANE */
-    );
+    this.setPointerEventsBehavior("BlockedByGlassPane" /* BLOCKED_BY_GLASS_PANE */);
     this.setOutsideClickCallback((event) => {
       if (_Dialog.getInstance() !== this) {
         return;
@@ -17624,7 +17976,10 @@ var Dialog = class _Dialog extends DialogBase {
   }
   set jslogContext(jslogContext) {
     if (jslogContext) {
-      this.contentElement.setAttribute("jslog", `${VisualLogging17.dialog(jslogContext).track({ resize: true, keydown: "Escape" })}`);
+      this.contentElement.setAttribute(
+        "jslog",
+        `${VisualLogging17.dialog(jslogContext).track({ resize: true, keydown: "Escape" })}`
+      );
     } else {
       this.contentElement.removeAttribute("jslog");
     }
@@ -17669,10 +18024,7 @@ var Dialog = class _Dialog extends DialogBase {
       this.targetDocument.removeEventListener("keydown", this.targetDocumentKeyDownHandler, true);
     }
     this.restoreTabIndexOnElements();
-    this.dispatchEventToListeners(
-      "hidden"
-      /* Events.HIDDEN */
-    );
+    this.dispatchEventToListeners("hidden" /* HIDDEN */);
     const index = _Dialog.dialogs.indexOf(this);
     if (index !== -1) {
       _Dialog.dialogs.splice(index, 1);
@@ -17690,7 +18042,7 @@ var Dialog = class _Dialog extends DialogBase {
   addCloseButton() {
     const button = new Buttons7.Button.Button();
     button.data = {
-      variant: "icon",
+      variant: Buttons7.Button.Variant.ICON,
       iconName: "cross",
       accessibleLabel: i18nString14(UIStrings14.close),
       jslogContext: "dialog-close",
@@ -17704,11 +18056,11 @@ var Dialog = class _Dialog extends DialogBase {
     this.tabIndexBehavior = tabIndexBehavior;
   }
   disableTabIndexOnElements(document2) {
-    if (this.tabIndexBehavior === "PreserveTabIndex") {
+    if (this.tabIndexBehavior === "PreserveTabIndex" /* PRESERVE_TAB_INDEX */) {
       return;
     }
     let exclusionSet = null;
-    if (this.tabIndexBehavior === "PreserveMainViewTabIndex") {
+    if (this.tabIndexBehavior === "PreserveMainViewTabIndex" /* PRESERVE_MAIN_VIEW_TAB_INDEX */) {
       exclusionSet = this.getMainWidgetTabIndexElements(InspectorView.instance().ownerSplit());
     }
     this.tabIndexMap.clear();
@@ -17778,17 +18130,19 @@ var Dialog = class _Dialog extends DialogBase {
   }
   static dialogs = [];
 };
-var Events11;
-(function(Events13) {
-  Events13["HIDDEN"] = "hidden";
-})(Events11 || (Events11 = {}));
-var OutsideTabIndexBehavior;
-(function(OutsideTabIndexBehavior2) {
+var Events10 = /* @__PURE__ */ ((Events12) => {
+  Events12["HIDDEN"] = "hidden";
+  return Events12;
+})(Events10 || {});
+var OutsideTabIndexBehavior = /* @__PURE__ */ ((OutsideTabIndexBehavior2) => {
   OutsideTabIndexBehavior2["DISABLE_ALL_OUTSIDE_TAB_INDEX"] = "DisableAllTabIndex";
   OutsideTabIndexBehavior2["PRESERVE_MAIN_VIEW_TAB_INDEX"] = "PreserveMainViewTabIndex";
   OutsideTabIndexBehavior2["PRESERVE_TAB_INDEX"] = "PreserveTabIndex";
-})(OutsideTabIndexBehavior || (OutsideTabIndexBehavior = {}));
-var DialogWidgetBase = Common16.ObjectWrapper.eventMixin(Widget);
+  return OutsideTabIndexBehavior2;
+})(OutsideTabIndexBehavior || {});
+var DialogWidgetBase = Common16.ObjectWrapper.eventMixin(
+  Widget
+);
 var DialogWidget = class extends DialogWidgetBase {
   #open = false;
   #jslogContext = "";
@@ -17797,17 +18151,11 @@ var DialogWidget = class extends DialogWidgetBase {
   #dialog = new Dialog();
   constructor(element) {
     super(element);
-    this.#dialog.setSizeBehavior(
-      "MeasureContent"
-      /* SizeBehavior.MEASURE_CONTENT */
-    );
+    this.#dialog.setSizeBehavior("MeasureContent" /* MEASURE_CONTENT */);
     this.#dialog.contentElement.tabIndex = -1;
-    this.#dialog.addEventListener("hidden", () => {
+    this.#dialog.addEventListener("hidden" /* HIDDEN */, () => {
       this.#open = false;
-      this.dispatchEventToListeners(
-        "hidden"
-        /* Events.HIDDEN */
-      );
+      this.dispatchEventToListeners("hidden" /* HIDDEN */);
     });
   }
   get open() {
@@ -17859,7 +18207,7 @@ var DialogWidget = class extends DialogWidgetBase {
   }
   performUpdate() {
     if (this.open) {
-      render7(this.#content ?? nothing4, this.#dialog.contentElement);
+      render8(this.#content ?? nothing4, this.#dialog.contentElement);
       if (!this.#dialog.isShowing()) {
         this.#dialog.show(this.contentElement.ownerDocument, this.#dialogStack);
         this.#dialog.contentElement.focus();
@@ -17872,7 +18220,7 @@ var DialogWidget = class extends DialogWidgetBase {
   }
 };
 
-// gen/front_end/ui/legacy/ARIAUtils.js
+// ../../front_end/ui/legacy/ARIAUtils.ts
 var id = 0;
 function nextId(prefix) {
   return (prefix || "") + ++id;
@@ -18053,21 +18401,20 @@ function setHidden(element, value) {
 function setLevel(element, level) {
   element.setAttribute("aria-level", level.toString());
 }
-var AutocompleteInteractionModel;
-(function(AutocompleteInteractionModel2) {
+var AutocompleteInteractionModel = /* @__PURE__ */ ((AutocompleteInteractionModel2) => {
   AutocompleteInteractionModel2["INLINE"] = "inline";
   AutocompleteInteractionModel2["LIST"] = "list";
   AutocompleteInteractionModel2["BOTH"] = "both";
   AutocompleteInteractionModel2["NONE"] = "none";
-})(AutocompleteInteractionModel || (AutocompleteInteractionModel = {}));
-function setAutocomplete(element, interactionModel = "none") {
+  return AutocompleteInteractionModel2;
+})(AutocompleteInteractionModel || {});
+function setAutocomplete(element, interactionModel = "none" /* NONE */) {
   element.setAttribute("aria-autocomplete", interactionModel);
 }
 function clearAutocomplete(element) {
   element.removeAttribute("aria-autocomplete");
 }
-var PopupRole;
-(function(PopupRole2) {
+var PopupRole = /* @__PURE__ */ ((PopupRole2) => {
   PopupRole2["FALSE"] = "false";
   PopupRole2["TRUE"] = "true";
   PopupRole2["MENU"] = "menu";
@@ -18075,9 +18422,10 @@ var PopupRole;
   PopupRole2["TREE"] = "tree";
   PopupRole2["GRID"] = "grid";
   PopupRole2["DIALOG"] = "dialog";
-})(PopupRole || (PopupRole = {}));
-function setHasPopup(element, value = "false") {
-  if (value !== "false") {
+  return PopupRole2;
+})(PopupRole || {});
+function setHasPopup(element, value = "false" /* FALSE */) {
+  if (value !== "false" /* FALSE */) {
     element.setAttribute("aria-haspopup", value);
   } else {
     element.removeAttribute("aria-haspopup");
@@ -18123,7 +18471,10 @@ function setActiveDescendant(element, activedescendant) {
     return;
   }
   if (activedescendant.isConnected && element.isConnected) {
-    console.assert(getEnclosingShadowRootForNode(activedescendant) === getEnclosingShadowRootForNode(element), "elements are not in the same shadow dom");
+    console.assert(
+      getEnclosingShadowRootForNode(activedescendant) === getEnclosingShadowRootForNode(element),
+      "elements are not in the same shadow dom"
+    );
   }
   ensureId(activedescendant);
   element.setAttribute("aria-activedescendant", activedescendant.id);
@@ -18134,21 +18485,15 @@ function setSetSize(element, size) {
 function setPositionInSet(element, position) {
   element.setAttribute("aria-posinset", position.toString());
 }
-var AnnouncerRole;
-(function(AnnouncerRole2) {
+var AnnouncerRole = /* @__PURE__ */ ((AnnouncerRole2) => {
   AnnouncerRole2["ALERT"] = "alert";
   AnnouncerRole2["STATUS"] = "status";
-})(AnnouncerRole || (AnnouncerRole = {}));
+  return AnnouncerRole2;
+})(AnnouncerRole || {});
 var LiveAnnouncer = class _LiveAnnouncer {
   static #announcerElementsByRole = {
-    [
-      "alert"
-      /* AnnouncerRole.ALERT */
-    ]: /* @__PURE__ */ new WeakMap(),
-    [
-      "status"
-      /* AnnouncerRole.STATUS */
-    ]: /* @__PURE__ */ new WeakMap()
+    ["alert" /* ALERT */]: /* @__PURE__ */ new WeakMap(),
+    ["status" /* STATUS */]: /* @__PURE__ */ new WeakMap()
   };
   static #hideFromLayout(element) {
     element.style.position = "absolute";
@@ -18199,49 +18544,25 @@ var LiveAnnouncer = class _LiveAnnouncer {
     return newAnnouncerElement;
   }
   static initializeAnnouncerElements(container = document.body) {
-    _LiveAnnouncer.getOrCreateAnnouncerElement(
-      container,
-      "alert"
-      /* AnnouncerRole.ALERT */
-    );
-    _LiveAnnouncer.getOrCreateAnnouncerElement(
-      container,
-      "status"
-      /* AnnouncerRole.STATUS */
-    );
+    _LiveAnnouncer.getOrCreateAnnouncerElement(container, "alert" /* ALERT */);
+    _LiveAnnouncer.getOrCreateAnnouncerElement(container, "status" /* STATUS */);
   }
   static removeAnnouncerElements(container = document.body) {
-    _LiveAnnouncer.#removeAnnouncerElement(
-      container,
-      "alert"
-      /* AnnouncerRole.ALERT */
-    );
-    _LiveAnnouncer.#removeAnnouncerElement(
-      container,
-      "status"
-      /* AnnouncerRole.STATUS */
-    );
+    _LiveAnnouncer.#removeAnnouncerElement(container, "alert" /* ALERT */);
+    _LiveAnnouncer.#removeAnnouncerElement(container, "status" /* STATUS */);
   }
   static alert(message) {
-    _LiveAnnouncer.#announce(
-      message,
-      "alert"
-      /* AnnouncerRole.ALERT */
-    );
+    _LiveAnnouncer.#announce(message, "alert" /* ALERT */);
   }
   static status(message) {
-    _LiveAnnouncer.#announce(
-      message,
-      "status"
-      /* AnnouncerRole.STATUS */
-    );
+    _LiveAnnouncer.#announce(message, "status" /* STATUS */);
   }
 };
 
-// gen/front_end/ui/legacy/ContextFlavorListener.js
+// ../../front_end/ui/legacy/ContextFlavorListener.ts
 var ContextFlavorListener_exports = {};
 
-// gen/front_end/ui/legacy/DropTarget.js
+// ../../front_end/ui/legacy/DropTarget.ts
 var DropTarget_exports = {};
 __export(DropTarget_exports, {
   DropTarget: () => DropTarget,
@@ -18277,7 +18598,7 @@ var dropTarget_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./dropTarget.css")} */`;
 
-// gen/front_end/ui/legacy/DropTarget.js
+// ../../front_end/ui/legacy/DropTarget.ts
 var DropTarget = class {
   element;
   transferTypes;
@@ -18360,14 +18681,14 @@ var Type3 = {
   ImageFile: { kind: "file", type: /image\/.*/ }
 };
 
-// gen/front_end/ui/legacy/EmptyWidget.js
+// ../../front_end/ui/legacy/EmptyWidget.ts
 var EmptyWidget_exports = {};
 __export(EmptyWidget_exports, {
   EmptyWidget: () => EmptyWidget
 });
 import "../kit/kit.js";
 import * as i18n29 from "../../core/i18n/i18n.js";
-import { html as html4, render as render8 } from "../lit/lit.js";
+import { html as html4, render as render9 } from "../lit/lit.js";
 import * as VisualLogging18 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/emptyWidget.css.js
@@ -18389,7 +18710,7 @@ var emptyWidget_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./emptyWidget.css")} */`;
 
-// gen/front_end/ui/legacy/EmptyWidget.js
+// ../../front_end/ui/legacy/EmptyWidget.ts
 var UIStrings15 = {
   /**
    * @description Link text in an empty state view leading to external documentation.
@@ -18399,7 +18720,7 @@ var UIStrings15 = {
 var str_15 = i18n29.i18n.registerUIStrings("ui/legacy/EmptyWidget.ts", UIStrings15);
 var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 var DEFAULT_VIEW = (input, _output, target) => {
-  render8(html4`
+  render9(html4`
     <style>${inspectorCommon_css_default}</style>
     <style>${emptyWidget_css_default}</style>
     <div class="empty-state" jslog=${VisualLogging18.section("empty-view")}>
@@ -18445,7 +18766,7 @@ var EmptyWidget = class extends VBox {
   }
 };
 
-// gen/front_end/ui/legacy/FilterBar.js
+// ../../front_end/ui/legacy/FilterBar.ts
 var FilterBar_exports = {};
 __export(FilterBar_exports, {
   CheckboxFilterUI: () => CheckboxFilterUI,
@@ -18647,7 +18968,7 @@ var filter_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./filter.css")} */`;
 
-// gen/front_end/ui/legacy/FilterBar.js
+// ../../front_end/ui/legacy/FilterBar.ts
 var UIStrings16 = {
   /**
    * @description Tooltip text for the filter toggle button in the filter bar.
@@ -18669,7 +18990,9 @@ var UIStrings16 = {
 };
 var str_16 = i18n31.i18n.registerUIStrings("ui/legacy/FilterBar.ts", UIStrings16);
 var i18nString16 = i18n31.i18n.getLocalizedString.bind(void 0, str_16);
-var FilterBarBase = Common17.ObjectWrapper.eventMixin(HBox);
+var FilterBarBase = Common17.ObjectWrapper.eventMixin(
+  HBox
+);
 var FilterBar = class extends FilterBarBase {
   enabled;
   stateSetting;
@@ -18702,7 +19025,7 @@ var FilterBar = class extends FilterBarBase {
   addFilter(filter) {
     this.filters.push(filter);
     this.element.appendChild(filter.element());
-    filter.addEventListener("FilterChanged", this.filterChanged, this);
+    filter.addEventListener("FilterChanged" /* FILTER_CHANGED */, this.filterChanged, this);
     this.updateFilterButton();
   }
   setEnabled(enabled) {
@@ -18712,10 +19035,7 @@ var FilterBar = class extends FilterBarBase {
   }
   filterChanged() {
     this.updateFilterButton();
-    this.dispatchEventToListeners(
-      "Changed"
-      /* FilterBarEvents.CHANGED */
-    );
+    this.dispatchEventToListeners("Changed" /* CHANGED */);
   }
   wasShown() {
     super.wasShown();
@@ -18766,14 +19086,14 @@ var FilterBar = class extends FilterBarBase {
     return this.alwaysShowFilters || this.stateSetting.get() && this.enabled;
   }
 };
-var FilterBarEvents;
-(function(FilterBarEvents2) {
+var FilterBarEvents = /* @__PURE__ */ ((FilterBarEvents2) => {
   FilterBarEvents2["CHANGED"] = "Changed";
-})(FilterBarEvents || (FilterBarEvents = {}));
-var FilterUIEvents;
-(function(FilterUIEvents2) {
+  return FilterBarEvents2;
+})(FilterBarEvents || {});
+var FilterUIEvents = /* @__PURE__ */ ((FilterUIEvents2) => {
   FilterUIEvents2["FILTER_CHANGED"] = "FilterChanged";
-})(FilterUIEvents || (FilterUIEvents = {}));
+  return FilterUIEvents2;
+})(FilterUIEvents || {});
 var TextFilterUI = class extends Common17.ObjectWrapper.ObjectWrapper {
   filterElement;
   #filter;
@@ -18786,7 +19106,7 @@ var TextFilterUI = class extends Common17.ObjectWrapper.ObjectWrapper {
     filterToolbar.style.borderBottom = "none";
     this.#filter = new ToolbarFilter(void 0, 1, 1, i18nString16(UIStrings16.egSmalldUrlacomb), this.completions.bind(this));
     filterToolbar.appendToolbarItem(this.#filter);
-    this.#filter.addEventListener("TextChanged", () => this.valueChanged());
+    this.#filter.addEventListener(ToolbarInput.Event.TEXT_CHANGED, () => this.valueChanged());
     this.suggestionProvider = null;
   }
   completions(expression, prefix, force) {
@@ -18816,10 +19136,7 @@ var TextFilterUI = class extends Common17.ObjectWrapper.ObjectWrapper {
     this.suggestionProvider = suggestionProvider;
   }
   valueChanged() {
-    this.dispatchEventToListeners(
-      "FilterChanged"
-      /* FilterUIEvents.FILTER_CHANGED */
-    );
+    this.dispatchEventToListeners("FilterChanged" /* FILTER_CHANGED */);
   }
   clear() {
     this.setValue("");
@@ -18847,7 +19164,7 @@ var NamedBitSetFilterUIElement = class extends HTMLElement {
     styleElement.textContent = filter_css_default;
     const disclosureElement = this.#shadow.createChild("div", "named-bit-set-filter-disclosure");
     disclosureElement.appendChild(namedBitSetFilterUI.element());
-    namedBitSetFilterUI.addEventListener("FilterChanged", this.#filterChanged.bind(this));
+    namedBitSetFilterUI.addEventListener("FilterChanged" /* FILTER_CHANGED */, this.#filterChanged.bind(this));
     this.#namedBitSetFilterUI = namedBitSetFilterUI;
     return this.#namedBitSetFilterUI;
   }
@@ -18929,10 +19246,7 @@ var NamedBitSetFilterUI = class _NamedBitSetFilterUI extends Common17.ObjectWrap
       element.classList.toggle("selected", active);
       setSelected(element, active);
     }
-    this.dispatchEventToListeners(
-      "FilterChanged"
-      /* FilterUIEvents.FILTER_CHANGED */
-    );
+    this.dispatchEventToListeners("FilterChanged" /* FILTER_CHANGED */);
   }
   addBit(name, label, jslogContext, title) {
     const typeFilterElement = this.filtersElement.createChild("span", name);
@@ -19065,14 +19379,11 @@ var CheckboxFilterUI = class extends Common17.ObjectWrapper.ObjectWrapper {
     return this.checkbox;
   }
   fireUpdated() {
-    this.dispatchEventToListeners(
-      "FilterChanged"
-      /* FilterUIEvents.FILTER_CHANGED */
-    );
+    this.dispatchEventToListeners("FilterChanged" /* FILTER_CHANGED */);
   }
 };
 
-// gen/front_end/ui/legacy/FilterSuggestionBuilder.js
+// ../../front_end/ui/legacy/FilterSuggestionBuilder.ts
 var FilterSuggestionBuilder_exports = {};
 __export(FilterSuggestionBuilder_exports, {
   FilterSuggestionBuilder: () => FilterSuggestionBuilder
@@ -19134,7 +19445,7 @@ var FilterSuggestionBuilder = class {
   }
 };
 
-// gen/front_end/ui/legacy/ForwardedInputEventHandler.js
+// ../../front_end/ui/legacy/ForwardedInputEventHandler.ts
 var ForwardedInputEventHandler_exports = {};
 __export(ForwardedInputEventHandler_exports, {
   ForwardedInputEventHandler: () => ForwardedInputEventHandler
@@ -19142,7 +19453,11 @@ __export(ForwardedInputEventHandler_exports, {
 import * as Host11 from "../../core/host/host.js";
 var ForwardedInputEventHandler = class {
   constructor() {
-    Host11.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host11.InspectorFrontendHostAPI.Events.KeyEventUnhandled, this.onKeyEventUnhandled, this);
+    Host11.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+      Host11.InspectorFrontendHostAPI.Events.KeyEventUnhandled,
+      this.onKeyEventUnhandled,
+      this
+    );
   }
   async onKeyEventUnhandled(event) {
     const { type, key, keyCode, modifiers } = event.data;
@@ -19158,7 +19473,7 @@ var ForwardedInputEventHandler = class {
 };
 new ForwardedInputEventHandler();
 
-// gen/front_end/ui/legacy/InplaceEditor.js
+// ../../front_end/ui/legacy/InplaceEditor.ts
 var InplaceEditor_exports = {};
 __export(InplaceEditor_exports, {
   Config: () => Config,
@@ -19332,7 +19647,7 @@ var Config = class {
   }
 };
 
-// gen/front_end/ui/legacy/LinkContextMenuProvider.js
+// ../../front_end/ui/legacy/LinkContextMenuProvider.ts
 var LinkContextMenuProvider_exports = {};
 __export(LinkContextMenuProvider_exports, {
   LinkContextMenuProvider: () => LinkContextMenuProvider
@@ -19363,7 +19678,7 @@ var LinkContextMenuProvider = class {
   }
 };
 
-// gen/front_end/ui/legacy/ListWidget.js
+// ../../front_end/ui/legacy/ListWidget.ts
 var ListWidget_exports = {};
 __export(ListWidget_exports, {
   Editor: () => Editor,
@@ -19372,7 +19687,7 @@ __export(ListWidget_exports, {
 import * as i18n33 from "../../core/i18n/i18n.js";
 import * as Platform21 from "../../core/platform/platform.js";
 import * as Buttons8 from "../components/buttons/buttons.js";
-import { html as html5, nothing as nothing5, render as render9 } from "../lit/lit.js";
+import { html as html5, nothing as nothing5, render as render10 } from "../lit/lit.js";
 import * as VisualLogging20 from "../visual_logging/visual_logging.js";
 
 // gen/front_end/ui/legacy/listWidget.css.js
@@ -19543,7 +19858,7 @@ var listWidget_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./listWidget.css")} */`;
 
-// gen/front_end/ui/legacy/ListWidget.js
+// ../../front_end/ui/legacy/ListWidget.ts
 var UIStrings17 = {
   /**
    * @description Tooltip text for the edit button in a list widget.
@@ -19719,7 +20034,7 @@ var ListWidget = class extends VBox {
     const controls = document.createElement("div");
     controls.classList.add("controls-container");
     controls.classList.add("fill");
-    render9(html5`
+    render10(html5`
       <div class="controls-gradient"></div>
       <div class="controls-buttons">
         <devtools-toolbar>
@@ -19727,13 +20042,13 @@ var ListWidget = class extends VBox {
                            .iconName=${"edit"}
                            .jslogContext=${"edit-item"}
                            .title=${controlLabels?.edit ?? i18nString17(UIStrings17.editString)}
-                           .variant=${"icon"}
+                           .variant=${Buttons8.Button.Variant.ICON}
                            @click=${onEditClicked}></devtools-button>`}
           <devtools-button class=toolbar-button
                            .iconName=${"bin"}
                            .jslogContext=${"remove-item"}
                            .title=${controlLabels?.delete ?? i18nString17(UIStrings17.removeString)}
-                           .variant=${"icon"}
+                           .variant=${Buttons8.Button.Variant.ICON}
                            @click=${onRemoveClicked}></devtools-button>
         </devtools-toolbar>
       </div>`, controls, { host: this });
@@ -19784,7 +20099,13 @@ var ListWidget = class extends VBox {
     this.editor = this.delegate.beginEdit(item8);
     this.updatePlaceholder();
     this.list.insertBefore(this.editor.element, insertionPoint);
-    this.editor.beginEdit(item8, index, element ? i18nString17(UIStrings17.saveString) : i18nString17(UIStrings17.addString), this.commitEditing.bind(this), this.stopEditing.bind(this));
+    this.editor.beginEdit(
+      item8,
+      index,
+      element ? i18nString17(UIStrings17.saveString) : i18nString17(UIStrings17.addString),
+      this.commitEditing.bind(this),
+      this.stopEditing.bind(this)
+    );
   }
   commitEditing() {
     const editItem = this.editItem;
@@ -19835,7 +20156,11 @@ var Editor = class {
     this.element = document.createElement("div");
     this.element.classList.add("editor-container");
     this.element.setAttribute("jslog", `${VisualLogging20.pane("editor").track({ resize: true })}`);
-    this.element.addEventListener("keydown", onKeyDown.bind(null, Platform21.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)), false);
+    this.element.addEventListener(
+      "keydown",
+      onKeyDown.bind(null, Platform21.KeyboardUtilities.isEscKey, this.cancelClicked.bind(this)),
+      false
+    );
     this.#contentElement = this.element.createChild("div", "editor-content");
     this.#contentElement.addEventListener("keydown", onKeyDown.bind(null, (event) => {
       if (event.key !== "Enter") {
@@ -19849,13 +20174,13 @@ var Editor = class {
     const buttonsRow = this.element.createChild("div", "editor-buttons");
     this.cancelButton = createTextButton(i18nString17(UIStrings17.cancelString), this.cancelClicked.bind(this), {
       jslogContext: "cancel",
-      variant: "outlined"
+      variant: Buttons8.Button.Variant.OUTLINED
     });
     this.cancelButton.setAttribute("jslog", `${VisualLogging20.action("cancel").track({ click: true })}`);
     buttonsRow.appendChild(this.cancelButton);
     this.commitButton = createTextButton("", this.commitClicked.bind(this), {
       jslogContext: "commit",
-      variant: "primary"
+      variant: Buttons8.Button.Variant.PRIMARY
     });
     buttonsRow.appendChild(this.commitButton);
     this.errorMessageContainer = this.element.createChild("div", "list-widget-input-validation-error");
@@ -19888,7 +20213,10 @@ var Editor = class {
       const option = select.createChild("option");
       option.value = options[index];
       option.textContent = options[index];
-      option.setAttribute("jslog", `${VisualLogging20.item(Platform21.StringUtilities.toKebabCase(options[index])).track({ click: true })}`);
+      option.setAttribute(
+        "jslog",
+        `${VisualLogging20.item(Platform21.StringUtilities.toKebabCase(options[index])).track({ click: true })}`
+      );
     }
     if (title) {
       Tooltip.install(select, title);
@@ -19978,7 +20306,7 @@ var Editor = class {
   }
 };
 
-// gen/front_end/ui/legacy/Panel.js
+// ../../front_end/ui/legacy/Panel.ts
 var Panel_exports = {};
 __export(Panel_exports, {
   Panel: () => Panel,
@@ -20035,7 +20363,7 @@ var PanelWithSidebar = class extends Panel {
   }
 };
 
-// gen/front_end/ui/legacy/PopoverHelper.js
+// ../../front_end/ui/legacy/PopoverHelper.ts
 var PopoverHelper_exports = {};
 __export(PopoverHelper_exports, {
   PopoverHelper: () => PopoverHelper
@@ -20080,19 +20408,13 @@ var popover_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./popover.css")} */`;
 
-// gen/front_end/ui/legacy/PopoverHelper.js
+// ../../front_end/ui/legacy/PopoverHelper.ts
 var PopoverHelper = class _PopoverHelper {
   static createPopover = (jslogContext) => {
     const popover2 = new GlassPane(`${VisualLogging22.popover(jslogContext).parent("mapped")}`);
     popover2.registerRequiredCSS(popover_css_default);
-    popover2.setSizeBehavior(
-      "MeasureContent"
-      /* SizeBehavior.MEASURE_CONTENT */
-    );
-    popover2.setMarginBehavior(
-      "DefaultMargin"
-      /* MarginBehavior.DEFAULT_MARGIN */
-    );
+    popover2.setSizeBehavior("MeasureContent" /* MEASURE_CONTENT */);
+    popover2.setMarginBehavior("DefaultMargin" /* DEFAULT_MARGIN */);
     return popover2;
   };
   disableOnClick;
@@ -20302,7 +20624,7 @@ var PopoverHelper = class _PopoverHelper {
 };
 var popoverHelperInstance = null;
 
-// gen/front_end/ui/legacy/ProgressIndicator.js
+// ../../front_end/ui/legacy/ProgressIndicator.ts
 var ProgressIndicator_exports = {};
 __export(ProgressIndicator_exports, {
   ProgressIndicator: () => ProgressIndicator
@@ -20345,7 +20667,7 @@ var progressIndicator_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./progressIndicator.css")} */`;
 
-// gen/front_end/ui/legacy/ProgressIndicator.js
+// ../../front_end/ui/legacy/ProgressIndicator.ts
 var ProgressIndicator = class extends HTMLElement {
   #shadowRoot;
   #contentElement;
@@ -20412,7 +20734,7 @@ var ProgressIndicator = class extends HTMLElement {
 };
 customElements.define("devtools-progress", ProgressIndicator);
 
-// gen/front_end/ui/legacy/RemoteDebuggingTerminatedScreen.js
+// ../../front_end/ui/legacy/RemoteDebuggingTerminatedScreen.ts
 var RemoteDebuggingTerminatedScreen_exports = {};
 __export(RemoteDebuggingTerminatedScreen_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
@@ -20420,7 +20742,7 @@ __export(RemoteDebuggingTerminatedScreen_exports, {
 });
 import * as i18n35 from "../../core/i18n/i18n.js";
 import * as Buttons9 from "../components/buttons/buttons.js";
-import { html as html6, render as render10 } from "../lit/lit.js";
+import { html as html6, render as render11 } from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/remoteDebuggingTerminatedScreen.css.js
 var remoteDebuggingTerminatedScreen_css_default = `/*
@@ -20454,7 +20776,7 @@ var remoteDebuggingTerminatedScreen_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./remoteDebuggingTerminatedScreen.css")} */`;
 
-// gen/front_end/ui/legacy/RemoteDebuggingTerminatedScreen.js
+// ../../front_end/ui/legacy/RemoteDebuggingTerminatedScreen.ts
 var UIStrings18 = {
   /**
    * @description Dialog title indicating that the remote debugging connection was closed.
@@ -20485,7 +20807,8 @@ var UIStrings18 = {
 var str_18 = i18n35.i18n.registerUIStrings("ui/legacy/RemoteDebuggingTerminatedScreen.ts", UIStrings18);
 var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render10(html6`
+  render11(
+    html6`
     <style>${remoteDebuggingTerminatedScreen_css_default}</style>
     <div class="header">${i18nString18(UIStrings18.debuggingConnectionWasClosed)}</div>
     <div class="content">
@@ -20495,9 +20818,11 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
     <div class="button-container">
       <div class="button">
         <devtools-button @click=${input.onReconnect} .jslogContext=${"reconnect"}
-            .variant=${"outlined"}>${i18nString18(UIStrings18.reconnectDevtools)}</devtools-button>
+            .variant=${Buttons9.Button.Variant.OUTLINED}>${i18nString18(UIStrings18.reconnectDevtools)}</devtools-button>
       </div>
-    </div>`, target);
+    </div>`,
+    target
+  );
 };
 var RemoteDebuggingTerminatedScreen = class _RemoteDebuggingTerminatedScreen extends VBox {
   constructor(reason, view = DEFAULT_VIEW2) {
@@ -20512,10 +20837,7 @@ var RemoteDebuggingTerminatedScreen = class _RemoteDebuggingTerminatedScreen ext
   }
   static show(reason) {
     const dialog3 = new Dialog("remote-debnugging-terminated");
-    dialog3.setSizeBehavior(
-      "MeasureContent"
-      /* SizeBehavior.MEASURE_CONTENT */
-    );
+    dialog3.setSizeBehavior("MeasureContent" /* MEASURE_CONTENT */);
     dialog3.addCloseButton();
     dialog3.setDimmed(true);
     new _RemoteDebuggingTerminatedScreen(reason).show(dialog3.contentElement);
@@ -20523,7 +20845,7 @@ var RemoteDebuggingTerminatedScreen = class _RemoteDebuggingTerminatedScreen ext
   }
 };
 
-// gen/front_end/ui/legacy/ReportView.js
+// ../../front_end/ui/legacy/ReportView.ts
 var ReportView_exports = {};
 __export(ReportView_exports, {
   ReportView: () => ReportView,
@@ -20669,7 +20991,7 @@ var reportView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./reportView.css")} */`;
 
-// gen/front_end/ui/legacy/ReportView.js
+// ../../front_end/ui/legacy/ReportView.ts
 var ReportView = class extends VBox {
   contentBox;
   headerElement;
@@ -20748,12 +21070,6 @@ var ReportView = class extends VBox {
   }
 };
 var Section2 = class extends VBox {
-  jslogContext;
-  headerElement;
-  headerButtons = [];
-  titleElement;
-  fieldList;
-  fieldMap = /* @__PURE__ */ new Map();
   constructor(title, className, jslogContext) {
     super();
     this.jslogContext = jslogContext;
@@ -20771,6 +21087,12 @@ var Section2 = class extends VBox {
     markAsHeading(this.titleElement, 2);
     this.fieldList = this.element.createChild("div", "vbox");
   }
+  jslogContext;
+  headerElement;
+  headerButtons = [];
+  titleElement;
+  fieldList;
+  fieldMap = /* @__PURE__ */ new Map();
   title() {
     return this.titleElement.textContent || "";
   }
@@ -20860,7 +21182,7 @@ var Section2 = class extends VBox {
   }
 };
 
-// gen/front_end/ui/legacy/RootView.js
+// ../../front_end/ui/legacy/RootView.ts
 var RootView_exports = {};
 __export(RootView_exports, {
   RootView: () => RootView
@@ -20882,7 +21204,7 @@ var rootView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./rootView.css")} */`;
 
-// gen/front_end/ui/legacy/RootView.js
+// ../../front_end/ui/legacy/RootView.ts
 var RootView = class extends VBox {
   window;
   constructor(universe) {
@@ -20917,7 +21239,7 @@ var RootView = class extends VBox {
   }
 };
 
-// gen/front_end/ui/legacy/SearchableView.js
+// ../../front_end/ui/legacy/SearchableView.ts
 var SearchableView_exports = {};
 __export(SearchableView_exports, {
   SearchConfig: () => SearchConfig,
@@ -21097,7 +21419,7 @@ var searchableView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./searchableView.css")} */`;
 
-// gen/front_end/ui/legacy/SearchableView.js
+// ../../front_end/ui/legacy/SearchableView.ts
 var UIStrings19 = {
   /**
    * @description Button text and placeholder to replace the current search match in the search bar.
@@ -21174,8 +21496,8 @@ var i18nString19 = i18n37.i18n.getLocalizedString.bind(void 0, str_19);
 function createClearButton(jslogContext) {
   const button = new Buttons10.Button.Button();
   button.data = {
-    variant: "icon",
-    size: "SMALL",
+    variant: Buttons10.Button.Variant.ICON,
+    size: Buttons10.Button.Size.SMALL,
     jslogContext,
     title: i18nString19(UIStrings19.clearInput),
     iconName: "cross-circle-filled"
@@ -21226,7 +21548,7 @@ var SearchableView = class extends VBox {
     const replaceToggleToolbar = this.footerElement.createChild("devtools-toolbar", "replace-toggle-toolbar");
     this.replaceToggleButton = new ToolbarToggle(i18nString19(UIStrings19.enableFindAndReplace), "replace", void 0, "replace");
     setLabel(this.replaceToggleButton.element, i18nString19(UIStrings19.enableFindAndReplace));
-    this.replaceToggleButton.addEventListener("Click", this.toggleReplace, this);
+    this.replaceToggleButton.addEventListener(ToolbarButton.Events.CLICK, this.toggleReplace, this);
     replaceToggleToolbar.appendToolbarItem(this.replaceToggleButton);
     const searchInputElements = this.footerElement.createChild("div", "search-inputs");
     const iconAndInput = searchInputElements.createChild("div", "icon-and-input");
@@ -21236,7 +21558,10 @@ var SearchableView = class extends VBox {
     this.searchInputElement.id = "search-input-field";
     this.searchInputElement.autocomplete = "off";
     this.searchInputElement.placeholder = i18nString19(UIStrings19.findString);
-    this.searchInputElement.setAttribute("jslog", `${VisualLogging24.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}`);
+    this.searchInputElement.setAttribute(
+      "jslog",
+      `${VisualLogging24.textField("search").track({ change: true, keydown: "ArrowUp|ArrowDown|Enter|Escape" })}`
+    );
     this.searchInputElement.addEventListener("keydown", this.onSearchKeyDown.bind(this), true);
     this.searchInputElement.addEventListener("input", this.onInput.bind(this), false);
     iconAndInput.appendChild(this.searchInputElement);
@@ -21244,7 +21569,10 @@ var SearchableView = class extends VBox {
     this.replaceInputElement = replaceInputElements.createChild("input", "search-replace");
     this.replaceInputElement.addEventListener("keydown", this.onReplaceKeyDown.bind(this), true);
     this.replaceInputElement.placeholder = i18nString19(UIStrings19.replace);
-    this.replaceInputElement.setAttribute("jslog", `${VisualLogging24.textField("replace").track({ change: true, keydown: "Enter" })}`);
+    this.replaceInputElement.setAttribute(
+      "jslog",
+      `${VisualLogging24.textField("replace").track({ change: true, keydown: "Enter" })}`
+    );
     const replaceInputClearButton = createClearButton("clear-replace-input");
     replaceInputClearButton.addEventListener("click", () => {
       this.replaceInputElement.value = "";
@@ -21267,12 +21595,12 @@ var SearchableView = class extends VBox {
       const iconName = "match-case";
       this.caseSensitiveButton = new Buttons10.Button.Button();
       this.caseSensitiveButton.data = {
-        variant: "icon_toggle",
-        size: "SMALL",
+        variant: Buttons10.Button.Variant.ICON_TOGGLE,
+        size: Buttons10.Button.Size.SMALL,
         iconName,
         toggledIconName: iconName,
         toggled: false,
-        toggleType: "primary-toggle",
+        toggleType: Buttons10.Button.ToggleType.PRIMARY,
         title: i18nString19(UIStrings19.matchCase),
         jslogContext: iconName
       };
@@ -21284,12 +21612,12 @@ var SearchableView = class extends VBox {
       const iconName = "match-whole-word";
       this.wholeWordButton = new Buttons10.Button.Button();
       this.wholeWordButton.data = {
-        variant: "icon_toggle",
-        size: "SMALL",
+        variant: Buttons10.Button.Variant.ICON_TOGGLE,
+        size: Buttons10.Button.Size.SMALL,
         iconName,
         toggledIconName: iconName,
         toggled: false,
-        toggleType: "primary-toggle",
+        toggleType: Buttons10.Button.ToggleType.PRIMARY,
         title: i18nString19(UIStrings19.matchWholeWord),
         jslogContext: iconName
       };
@@ -21301,11 +21629,11 @@ var SearchableView = class extends VBox {
       const iconName = "regular-expression";
       this.regexButton = new Buttons10.Button.Button();
       this.regexButton.data = {
-        variant: "icon_toggle",
-        size: "SMALL",
+        variant: Buttons10.Button.Variant.ICON_TOGGLE,
+        size: Buttons10.Button.Size.SMALL,
         iconName,
         toggledIconName: iconName,
-        toggleType: "primary-toggle",
+        toggleType: Buttons10.Button.ToggleType.PRIMARY,
         toggled: false,
         jslogContext: iconName,
         title: i18nString19(UIStrings19.useRegularExpression)
@@ -21319,11 +21647,11 @@ var SearchableView = class extends VBox {
     const firstRowButtons = buttonsContainer.createChild("div", "first-row-buttons");
     const toolbar5 = firstRowButtons.createChild("devtools-toolbar", "toolbar-search-options");
     this.searchNavigationPrevElement = new ToolbarButton(i18nString19(UIStrings19.searchPrevious), "chevron-up", void 0, "select-previous");
-    this.searchNavigationPrevElement.addEventListener("Click", () => this.onPrevButtonSearch());
+    this.searchNavigationPrevElement.addEventListener(ToolbarButton.Events.CLICK, () => this.onPrevButtonSearch());
     toolbar5.appendToolbarItem(this.searchNavigationPrevElement);
     setLabel(this.searchNavigationPrevElement.element, i18nString19(UIStrings19.searchPrevious));
     this.searchNavigationNextElement = new ToolbarButton(i18nString19(UIStrings19.searchNext), "chevron-down", void 0, "select-next");
-    this.searchNavigationNextElement.addEventListener("Click", () => this.onNextButtonSearch());
+    this.searchNavigationNextElement.addEventListener(ToolbarButton.Events.CLICK, () => this.onNextButtonSearch());
     setLabel(this.searchNavigationNextElement.element, i18nString19(UIStrings19.searchNext));
     toolbar5.appendToolbarItem(this.searchNavigationNextElement);
     const matchesText = new ToolbarText();
@@ -21338,8 +21666,8 @@ var SearchableView = class extends VBox {
     toolbar5.appendToolbarItem(matchesText);
     const cancelButtonElement = new Buttons10.Button.Button();
     cancelButtonElement.data = {
-      variant: "toolbar",
-      size: "REGULAR",
+      variant: Buttons10.Button.Variant.TOOLBAR,
+      size: Buttons10.Button.Size.REGULAR,
       iconName: "cross",
       title: i18nString19(UIStrings19.closeSearchBar),
       jslogContext: "close-search"
@@ -21500,7 +21828,10 @@ var SearchableView = class extends VBox {
       this.matchesElementValue.textContent = "";
     } else if (matches === 0 || currentMatchIndex >= 0) {
       this.matchesElementValue.textContent = i18nString19(UIStrings19.dOfD, { PH1: currentMatchIndex + 1, PH2: matches });
-      setLabel(this.matchesElement, i18nString19(UIStrings19.accessibledOfD, { PH1: currentMatchIndex + 1, PH2: matches }));
+      setLabel(
+        this.matchesElement,
+        i18nString19(UIStrings19.accessibledOfD, { PH1: currentMatchIndex + 1, PH2: matches })
+      );
     } else if (matches === 1) {
       this.matchesElementValue.textContent = i18nString19(UIStrings19.matchString);
       setLabel(this.matchesElement, i18nString19(UIStrings19.matchString));
@@ -21691,7 +22022,7 @@ var SearchConfig = class {
   }
 };
 
-// gen/front_end/ui/legacy/SoftDropDown.js
+// ../../front_end/ui/legacy/SoftDropDown.ts
 var SoftDropDown_exports = {};
 __export(SoftDropDown_exports, {
   SoftDropDown: () => SoftDropDown
@@ -21801,7 +22132,7 @@ button.soft-dropdown:hover:not(:active) > .title {
 
 /*# sourceURL=${import.meta.resolve("./softDropDownButton.css")} */`;
 
-// gen/front_end/ui/legacy/SoftDropDown.js
+// ../../front_end/ui/legacy/SoftDropDown.ts
 var UIStrings20 = {
   /**
    * @description Placeholder text in a dropdown when no item is selected.
@@ -21828,7 +22159,10 @@ var SoftDropDown = class {
     this.placeholderText = i18nString20(UIStrings20.noItemSelected);
     this.element = document.createElement("button");
     if (jslogContext) {
-      this.element.setAttribute("jslog", `${VisualLogging25.dropDown().track({ click: true, keydown: "ArrowUp|ArrowDown|Enter" }).context(jslogContext)}`);
+      this.element.setAttribute(
+        "jslog",
+        `${VisualLogging25.dropDown().track({ click: true, keydown: "ArrowUp|ArrowDown|Enter" }).context(jslogContext)}`
+      );
     }
     this.element.classList.add("soft-dropdown");
     appendStyle(this.element, softDropDownButton_css_default);
@@ -21837,20 +22171,11 @@ var SoftDropDown = class {
     this.element.appendChild(dropdownArrowIcon);
     setExpanded(this.element, false);
     this.glassPane = new GlassPane();
-    this.glassPane.setMarginBehavior(
-      "NoMargin"
-      /* MarginBehavior.NO_MARGIN */
-    );
-    this.glassPane.setAnchorBehavior(
-      "PreferBottom"
-      /* AnchorBehavior.PREFER_BOTTOM */
-    );
+    this.glassPane.setMarginBehavior("NoMargin" /* NO_MARGIN */);
+    this.glassPane.setAnchorBehavior("PreferBottom" /* PREFER_BOTTOM */);
     this.glassPane.setOutsideClickCallback(this.hide.bind(this));
-    this.glassPane.setPointerEventsBehavior(
-      "BlockedByGlassPane"
-      /* PointerEventsBehavior.BLOCKED_BY_GLASS_PANE */
-    );
-    this.list = new ListControl(model, this, ListMode.EqualHeightItems);
+    this.glassPane.setPointerEventsBehavior("BlockedByGlassPane" /* BLOCKED_BY_GLASS_PANE */);
+    this.list = new ListControl(model, this, "UI.ListMode.EqualHeightItems" /* EqualHeightItems */);
     this.list.element.classList.add("item-list");
     this.rowHeight = 36;
     this.width = 315;
@@ -21859,7 +22184,10 @@ var SoftDropDown = class {
     }).appendChild(this.list.element);
     markAsMenu(this.list.element);
     VisualLogging25.setMappedParent(this.list.element, this.element);
-    this.list.element.setAttribute("jslog", `${VisualLogging25.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`);
+    this.list.element.setAttribute(
+      "jslog",
+      `${VisualLogging25.menu().parent("mapped").track({ resize: true, keydown: "ArrowUp|ArrowDown|PageUp|PageDown" })}`
+    );
     this.element.addEventListener("mousedown", (event) => {
       if (this.glassPane.isShowing()) {
         this.hide(event);
@@ -21881,7 +22209,7 @@ var SoftDropDown = class {
       }
       this.hide(event);
     }, false);
-    model.addEventListener("ItemsReplaced", this.itemsReplaced, this);
+    model.addEventListener("ItemsReplaced" /* ITEMS_REPLACED */, this.itemsReplaced, this);
   }
   show(event) {
     if (this.glassPane.isShowing()) {
@@ -22057,7 +22385,12 @@ var SoftDropDown = class {
       toElement.classList.add("highlighted");
     }
     setActiveDescendant(this.list.element, toElement);
-    this.delegate.highlightedItemChanged(from, to, fromElement?.firstElementChild ?? null, toElement?.firstElementChild ?? null);
+    this.delegate.highlightedItemChanged(
+      from,
+      to,
+      fromElement?.firstElementChild ?? null,
+      toElement?.firstElementChild ?? null
+    );
   }
   updateSelectedItemARIA(_fromElement, _toElement) {
     return false;
@@ -22070,14 +22403,14 @@ var SoftDropDown = class {
   }
 };
 
-// gen/front_end/ui/legacy/TargetCrashedScreen.js
+// ../../front_end/ui/legacy/TargetCrashedScreen.ts
 var TargetCrashedScreen_exports = {};
 __export(TargetCrashedScreen_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
   TargetCrashedScreen: () => TargetCrashedScreen
 });
 import * as i18n41 from "../../core/i18n/i18n.js";
-import { html as html7, render as render11 } from "../lit/lit.js";
+import { html as html7, render as render12 } from "../lit/lit.js";
 
 // gen/front_end/ui/legacy/targetCrashedScreen.css.js
 var targetCrashedScreen_css_default = `/*
@@ -22099,7 +22432,7 @@ var targetCrashedScreen_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./targetCrashedScreen.css")} */`;
 
-// gen/front_end/ui/legacy/TargetCrashedScreen.js
+// ../../front_end/ui/legacy/TargetCrashedScreen.ts
 var UIStrings21 = {
   /**
    * @description Message shown when the inspected page crashes and DevTools is disconnected.
@@ -22113,10 +22446,13 @@ var UIStrings21 = {
 var str_21 = i18n41.i18n.registerUIStrings("ui/legacy/TargetCrashedScreen.ts", UIStrings21);
 var i18nString21 = i18n41.i18n.getLocalizedString.bind(void 0, str_21);
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render11(html7`
+  render12(
+    html7`
     <style>${targetCrashedScreen_css_default}</style>
     <div class="message">${i18nString21(UIStrings21.devtoolsWasDisconnectedFromThe)}</div>
-    <div class="message">${i18nString21(UIStrings21.oncePageIsReloadedDevtoolsWill)}</div>`, target);
+    <div class="message">${i18nString21(UIStrings21.oncePageIsReloadedDevtoolsWill)}</div>`,
+    target
+  );
 };
 var TargetCrashedScreen = class extends VBox {
   hideCallback;
@@ -22131,10 +22467,10 @@ var TargetCrashedScreen = class extends VBox {
   }
 };
 
-// gen/front_end/ui/legacy/Treeoutline.js
+// ../../front_end/ui/legacy/Treeoutline.ts
 var Treeoutline_exports = {};
 __export(Treeoutline_exports, {
-  Events: () => Events12,
+  Events: () => Events11,
   TreeElement: () => TreeElement,
   TreeElementWrapper: () => TreeElementWrapper,
   TreeOutline: () => TreeOutline,
@@ -22477,7 +22813,7 @@ ol.tree-outline.tree-variant-navigation:not(.hide-selection-when-blurred) li.sel
 
 /*# sourceURL=${import.meta.resolve("./treeoutline.css")} */`;
 
-// gen/front_end/ui/legacy/Treeoutline.js
+// ../../front_end/ui/legacy/Treeoutline.ts
 var UIStrings22 = {
   /**
    * @description Screen reader announcement made when the user expands a tree item, such as a DOM
@@ -22495,15 +22831,15 @@ var UIStrings22 = {
 var str_22 = i18n43.i18n.registerUIStrings("ui/legacy/Treeoutline.ts", UIStrings22);
 var i18nString22 = i18n43.i18n.getLocalizedString.bind(void 0, str_22);
 var nodeToParentTreeElementMap = /* @__PURE__ */ new WeakMap();
-var { render: render12 } = Lit3;
-var Events12;
-(function(Events13) {
-  Events13["ElementAttached"] = "ElementAttached";
-  Events13["ElementsDetached"] = "ElementsDetached";
-  Events13["ElementExpanded"] = "ElementExpanded";
-  Events13["ElementCollapsed"] = "ElementCollapsed";
-  Events13["ElementSelected"] = "ElementSelected";
-})(Events12 || (Events12 = {}));
+var { render: render13 } = Lit3;
+var Events11 = /* @__PURE__ */ ((Events12) => {
+  Events12["ElementAttached"] = "ElementAttached";
+  Events12["ElementsDetached"] = "ElementsDetached";
+  Events12["ElementExpanded"] = "ElementExpanded";
+  Events12["ElementCollapsed"] = "ElementCollapsed";
+  Events12["ElementSelected"] = "ElementSelected";
+  return Events12;
+})(Events11 || {});
 var TreeOutline = class extends Common19.ObjectWrapper.ObjectWrapper {
   rootElementInternal;
   renderSelection;
@@ -22771,17 +23107,17 @@ var TreeOutline = class extends Common19.ObjectWrapper.ObjectWrapper {
   onStartedEditingTitle(_treeElement) {
   }
 };
-var TreeVariant;
-(function(TreeVariant2) {
+var TreeVariant = /* @__PURE__ */ ((TreeVariant2) => {
   TreeVariant2["NAVIGATION_TREE"] = "NavigationTree";
   TreeVariant2["OTHER"] = "Other";
-})(TreeVariant || (TreeVariant = {}));
+  return TreeVariant2;
+})(TreeVariant || {});
 var TreeOutlineInShadow = class extends TreeOutline {
   element;
   shadowRoot;
   disclosureElement;
   renderSelection;
-  constructor(variant = "Other", element, delegatesFocus) {
+  constructor(variant = "Other" /* OTHER */, element, delegatesFocus) {
     super();
     this.contentElement.classList.add("tree-outline");
     this.element = element ?? document.createElement("div");
@@ -22789,16 +23125,12 @@ var TreeOutlineInShadow = class extends TreeOutline {
     this.disclosureElement = this.shadowRoot.createChild("div", "tree-outline-disclosure");
     this.disclosureElement.appendChild(this.contentElement);
     this.renderSelection = true;
-    if (variant === "NavigationTree") {
+    if (variant === "NavigationTree" /* NAVIGATION_TREE */) {
       this.contentElement.classList.add("tree-variant-navigation");
     }
   }
   setVariant(variant) {
-    this.contentElement.classList.toggle(
-      "tree-variant-navigation",
-      variant === "NavigationTree"
-      /* TreeVariant.NAVIGATION_TREE */
-    );
+    this.contentElement.classList.toggle("tree-variant-navigation", variant === "NavigationTree" /* NAVIGATION_TREE */);
   }
   registerRequiredCSS(...cssFiles) {
     for (const cssFile of cssFiles) {
@@ -22864,11 +23196,14 @@ var TreeElement = class {
     this.listItemNode.addEventListener("mousedown", this.handleMouseDown.bind(this), false);
     this.listItemNode.addEventListener("click", this.treeElementToggled.bind(this), false);
     this.listItemNode.addEventListener("dblclick", this.handleDoubleClick.bind(this), false);
-    this.listItemNode.setAttribute("jslog", `${VisualLogging26.treeItem().parent("parentTreeItem").context(jslogContext).track({
-      click: true,
-      resize: true,
-      keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End"
-    })}`);
+    this.listItemNode.setAttribute(
+      "jslog",
+      `${VisualLogging26.treeItem().parent("parentTreeItem").context(jslogContext).track({
+        click: true,
+        resize: true,
+        keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End"
+      })}`
+    );
     markAsTreeitem(this.listItemNode);
     this.childrenInternal = null;
     this.childrenListNode = document.createElement("ol");
@@ -22961,7 +23296,10 @@ var TreeElement = class {
     if (!child) {
       throw new Error("child can't be undefined or null");
     }
-    console.assert(!child.parent, "Attempting to insert a child that is already in the tree, reparenting is not supported.");
+    console.assert(
+      !child.parent,
+      "Attempting to insert a child that is already in the tree, reparenting is not supported."
+    );
     const previousChild = index > 0 ? this.childrenInternal[index - 1] : null;
     if (previousChild) {
       previousChild.nextSibling = child;
@@ -22988,7 +23326,7 @@ var TreeElement = class {
     child.onattach();
     child.ensureSelection();
     if (this.treeOutline) {
-      this.treeOutline.dispatchEventToListeners(Events12.ElementAttached, child);
+      this.treeOutline.dispatchEventToListeners("ElementAttached" /* ElementAttached */, child);
     }
     const nextSibling = child.nextSibling ? child.nextSibling.listItemNode : null;
     this.childrenListNode.insertBefore(child.listItemNode, nextSibling);
@@ -23031,7 +23369,7 @@ var TreeElement = class {
     }
     child.detach();
     if (this.treeOutline) {
-      this.treeOutline.dispatchEventToListeners(Events12.ElementsDetached);
+      this.treeOutline.dispatchEventToListeners("ElementsDetached" /* ElementsDetached */);
     }
   }
   removeChild(child) {
@@ -23067,7 +23405,7 @@ var TreeElement = class {
     }
     this.childrenInternal = [];
     if (this.treeOutline) {
-      this.treeOutline.dispatchEventToListeners(Events12.ElementsDetached);
+      this.treeOutline.dispatchEventToListeners("ElementsDetached" /* ElementsDetached */);
     }
   }
   get selectable() {
@@ -23136,7 +23474,7 @@ var TreeElement = class {
       this.listItemNode.insertBefore(this.leadingIconsElement, this.titleElement);
       this.ensureSelection();
     }
-    render12(icons, this.leadingIconsElement);
+    render13(icons, this.leadingIconsElement);
   }
   setTrailingIcons(icons) {
     if (!this.trailingIconsElement && !icons.length) {
@@ -23149,7 +23487,7 @@ var TreeElement = class {
       this.listItemNode.appendChild(this.trailingIconsElement);
       this.ensureSelection();
     }
-    render12(icons, this.trailingIconsElement);
+    render13(icons, this.trailingIconsElement);
   }
   get tooltip() {
     return this.tooltipInternal;
@@ -23174,7 +23512,12 @@ var TreeElement = class {
       this.collapse();
       unsetExpandable(this.listItemNode);
     } else {
-      VisualLogging26.registerLoggable(this.expandLoggable, `${VisualLogging26.expand()}`, this.listItemNode, new DOMRect(0, 0, 16, 16));
+      VisualLogging26.registerLoggable(
+        this.expandLoggable,
+        `${VisualLogging26.expand()}`,
+        this.listItemNode,
+        new DOMRect(0, 0, 16, 16)
+      );
       setExpanded(this.listItemNode, false);
     }
   }
@@ -23309,7 +23652,7 @@ var TreeElement = class {
     this.expanded = false;
     this.oncollapse();
     if (this.treeOutline) {
-      this.treeOutline.dispatchEventToListeners(Events12.ElementCollapsed, this);
+      this.treeOutline.dispatchEventToListeners("ElementCollapsed" /* ElementCollapsed */, this);
     }
     const selectedTreeElement = this.treeOutline?.selectedTreeElement;
     if (selectedTreeElement?.hasAncestor(this)) {
@@ -23349,7 +23692,7 @@ var TreeElement = class {
     setExpanded(this.listItemNode, true);
     if (this.treeOutline) {
       this.onexpand();
-      this.treeOutline.dispatchEventToListeners(Events12.ElementExpanded, this);
+      this.treeOutline.dispatchEventToListeners("ElementExpanded" /* ElementExpanded */, this);
     }
   }
   async expandRecursively(maxDepth) {
@@ -23468,7 +23811,7 @@ var TreeElement = class {
     }
     this.listItemNode.classList.add("selected");
     setSelected(this.listItemNode, true);
-    this.treeOutline.dispatchEventToListeners(Events12.ElementSelected, this);
+    this.treeOutline.dispatchEventToListeners("ElementSelected" /* ElementSelected */, this);
     if (lastSelected) {
       lastSelected.deselect();
     }
@@ -23624,7 +23967,7 @@ var TreeElement = class {
 function hasBooleanAttribute(element, name) {
   return element.hasAttribute(name) && element.getAttribute(name) !== "false";
 }
-var TreeSearch = class extends Common19.ObjectWrapper.ObjectWrapper {
+var TreeSearch = class _TreeSearch extends Common19.ObjectWrapper.ObjectWrapper {
   #matches = [];
   #currentMatchIndex = 0;
   #nodeMatchMap;
@@ -23635,10 +23978,7 @@ var TreeSearch = class extends Common19.ObjectWrapper.ObjectWrapper {
   }
   reset() {
     this.#reset();
-    this.dispatchEventToListeners(
-      "SearchChanged"
-      /* TreeSearch.Events.SEARCH_CHANGED */
-    );
+    this.dispatchEventToListeners(_TreeSearch.Events.SEARCH_CHANGED);
   }
   currentMatch() {
     return this.#matches.at(this.#currentMatchIndex);
@@ -23668,7 +24008,11 @@ var TreeSearch = class extends Common19.ObjectWrapper.ObjectWrapper {
       const configListItem = element.closest('li[role="treeitem"]');
       const titleElement = configListItem ? TreeViewTreeElement.get(configListItem)?.titleElement : void 0;
       if (configListItem && titleElement) {
-        const targetElement = HTMLElementWithLightDOMTemplate.findCorrespondingElement(element, configListItem, titleElement);
+        const targetElement = HTMLElementWithLightDOMTemplate.findCorrespondingElement(
+          element,
+          configListItem,
+          titleElement
+        );
         if (targetElement) {
           Highlighting.HighlightManager.HighlightManager.instance().set(targetElement, ranges, selectedRange);
         }
@@ -23681,18 +24025,12 @@ var TreeSearch = class extends Common19.ObjectWrapper.ObjectWrapper {
   }
   next() {
     this.#currentMatchIndex = Platform24.NumberUtilities.mod(this.#currentMatchIndex + 1, this.#matches.length);
-    this.dispatchEventToListeners(
-      "SearchChanged"
-      /* TreeSearch.Events.SEARCH_CHANGED */
-    );
+    this.dispatchEventToListeners(_TreeSearch.Events.SEARCH_CHANGED);
     return this.currentMatch();
   }
   prev() {
     this.#currentMatchIndex = Platform24.NumberUtilities.mod(this.#currentMatchIndex - 1, this.#matches.length);
-    this.dispatchEventToListeners(
-      "SearchChanged"
-      /* TreeSearch.Events.SEARCH_CHANGED */
-    );
+    this.dispatchEventToListeners(_TreeSearch.Events.SEARCH_CHANGED);
     return this.currentMatch();
   }
   // This is a generator to sidestep stack overflow risks
@@ -23738,25 +24076,20 @@ var TreeSearch = class extends Common19.ObjectWrapper.ObjectWrapper {
     for (const _ of this.#innerSearch(node, currentMatch, jumpBackwards, match)) {
     }
     this.#currentMatchIndex = Platform24.NumberUtilities.mod(this.#currentMatchIndex, this.#matches.length);
-    this.dispatchEventToListeners(
-      "SearchChanged"
-      /* TreeSearch.Events.SEARCH_CHANGED */
-    );
+    this.dispatchEventToListeners(_TreeSearch.Events.SEARCH_CHANGED);
     return this.#matches.length;
   }
 };
-(function(TreeSearch2) {
-  let Events13;
-  (function(Events14) {
-    Events14["SEARCH_CHANGED"] = "SearchChanged";
-  })(Events13 = TreeSearch2.Events || (TreeSearch2.Events = {}));
+((TreeSearch2) => {
+  let Events12;
+  ((Events13) => {
+    Events13["SEARCH_CHANGED"] = "SearchChanged";
+  })(Events12 = TreeSearch2.Events || (TreeSearch2.Events = {}));
 })(TreeSearch || (TreeSearch = {}));
 var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
   static CLONED_ATTRIBUTES = SDK2.DOMModel.ARIA_ATTRIBUTES.union(/* @__PURE__ */ new Set(["jslog", "draggable"]));
   #clonedAttributes = /* @__PURE__ */ new Set();
   #clonedClasses = /* @__PURE__ */ new Set();
-  #userExpanded = false;
-  #isProcessingAttribute = false;
   #previousOpenAttributeValue;
   #refreshScheduled = false;
   static #elementToTreeElement = /* @__PURE__ */ new WeakMap();
@@ -23767,37 +24100,16 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
     _TreeViewTreeElement.#elementToTreeElement.set(configElement, this);
     this.refresh();
   }
-  onexpand() {
-    if (!this.#isProcessingAttribute) {
-      this.#userExpanded = true;
-    }
-  }
-  oncollapse() {
-    if (!this.#isProcessingAttribute) {
-      this.#userExpanded = false;
-    }
-  }
   updateExpansionFromAttribute() {
-    this.#isProcessingAttribute = true;
-    try {
-      const openAttr = this.configElement.getAttribute("open");
-      if (openAttr === this.#previousOpenAttributeValue) {
-        return;
-      }
-      this.#previousOpenAttributeValue = openAttr;
-      if (openAttr === null) {
-        if (this.#userExpanded) {
-          this.expand();
-        } else {
-          this.collapse();
-        }
-      } else if (openAttr === "false") {
-        this.collapse();
-      } else {
-        this.expand();
-      }
-    } finally {
-      this.#isProcessingAttribute = false;
+    const openAttr = this.configElement.getAttribute("open");
+    if (openAttr === this.#previousOpenAttributeValue) {
+      return;
+    }
+    this.#previousOpenAttributeValue = openAttr;
+    if (openAttr !== null && openAttr !== "false") {
+      this.expand();
+    } else {
+      this.collapse();
     }
   }
   refreshSoon() {
@@ -23852,7 +24164,10 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
     return configElement && _TreeViewTreeElement.#elementToTreeElement.get(configElement);
   }
   remove() {
-    removeNode(this, Boolean(this.parent && this.parent.configElement?.querySelector(':scope > ul[role="group"]')));
+    removeNode(
+      this,
+      Boolean(this.parent && this.parent.configElement?.querySelector(':scope > ul[role="group"]'))
+    );
     _TreeViewTreeElement.#elementToTreeElement.delete(this.configElement);
   }
 };
@@ -23864,7 +24179,9 @@ function getTreeNodes(nodeList) {
     if (node instanceof HTMLLIElement && node.role === "treeitem") {
       return [
         node,
-        ...node.querySelectorAll('ul[role="group"] li[role="treeitem"],ul[role="group"] devtools-tree-wrapper')
+        ...node.querySelectorAll(
+          'ul[role="group"] li[role="treeitem"],ul[role="group"] devtools-tree-wrapper'
+        )
       ];
     }
     if (node instanceof HTMLElement) {
@@ -23909,18 +24226,18 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
         );
       }
     });
-    this.#treeOutline.addEventListener(Events12.ElementSelected, (event) => {
+    this.#treeOutline.addEventListener("ElementSelected" /* ElementSelected */, (event) => {
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new _TreeViewElement.SelectEvent());
       }
     });
-    this.#treeOutline.addEventListener(Events12.ElementExpanded, (event) => {
+    this.#treeOutline.addEventListener("ElementExpanded" /* ElementExpanded */, (event) => {
       this.dispatchEvent(new _TreeViewElement.TreeElementExpandEvent(event.data, true));
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new _TreeViewElement.ExpandEvent({ expanded: true }));
       }
     });
-    this.#treeOutline.addEventListener(Events12.ElementCollapsed, (event) => {
+    this.#treeOutline.addEventListener("ElementCollapsed" /* ElementCollapsed */, (event) => {
       this.dispatchEvent(new _TreeViewElement.TreeElementExpandEvent(event.data, false));
       if (event.data instanceof TreeViewTreeElement) {
         event.data.listItemElement.dispatchEvent(new _TreeViewElement.ExpandEvent({ expanded: false }));
@@ -24052,7 +24369,10 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
       if (node instanceof HTMLLIElement) {
         TreeViewTreeElement.get(node)?.remove();
       } else if (node.treeElement) {
-        removeNode(node.treeElement, Boolean(node.treeElement.parent && node.treeElement.parent.configElement?.querySelector(':scope > ul[role="group"]')));
+        removeNode(
+          node.treeElement,
+          Boolean(node.treeElement.parent && node.treeElement.parent.configElement?.querySelector(':scope > ul[role="group"]'))
+        );
       }
     }
   }
@@ -24081,10 +24401,7 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
     const booleanValueIsTrue = newValue !== null && newValue !== "false";
     switch (name) {
       case "navigation-variant":
-        this.#treeOutline.setVariant(
-          booleanValueIsTrue ? "NavigationTree" : "Other"
-          /* TreeVariant.OTHER */
-        );
+        this.#treeOutline.setVariant(booleanValueIsTrue ? "NavigationTree" /* NAVIGATION_TREE */ : "Other" /* OTHER */);
         break;
       case "hide-overflow":
         this.#treeOutline.setHideOverflow(booleanValueIsTrue);
@@ -24098,7 +24415,7 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
     }
   }
 };
-(function(TreeViewElement2) {
+((TreeViewElement2) => {
   class SelectEvent extends CustomEvent {
     constructor() {
       super("select");
@@ -24182,7 +24499,7 @@ function loggingParentProvider(e) {
 }
 VisualLogging26.registerParentProvider("parentTreeItem", loggingParentProvider);
 
-// gen/front_end/ui/legacy/View.js
+// ../../front_end/ui/legacy/View.ts
 var View_exports = {};
 __export(View_exports, {
   SimpleView: () => SimpleView

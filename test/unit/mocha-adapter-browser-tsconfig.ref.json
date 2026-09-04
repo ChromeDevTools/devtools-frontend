@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../test/unit",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../test/unit/mocha-adapter-browser.ts",
+    "../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "browser-globals-tsconfig.ref.json"
+    },
+    {
+      "path": "mocha-interface-tsconfig.ref.json"
+    },
+    {
+      "path": "../../front_end/testing/mocha_helpers-tsconfig.ref.json"
+    }
+  ]
+}

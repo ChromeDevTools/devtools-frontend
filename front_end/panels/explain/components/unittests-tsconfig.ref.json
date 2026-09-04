@@ -1,0 +1,44 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/explain/components",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../front_end/panels/explain/components/ConsoleInsight.test.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/host/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../models/ai_assistance/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/components/markdown_view/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/lit/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../console/bundle-tsconfig.ref.json"
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import { Attribute, type Cookie } from './Cookie.js';
+import { SecurityOrigin } from './SecurityOrigin.js';
 import { ServerTiming } from './ServerTiming.js';
 export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventTypes> implements TextUtils.ContentProvider.StreamingContentProvider {
     #private;
@@ -27,6 +28,37 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     identityCompare(other: NetworkRequest): number;
     requestId(): string;
     backendRequestId(): Protocol.Network.RequestId | undefined;
+    /**
+     * Returns the security origin of the target resource URL (`request.url()`) for this network request.
+     *
+     * For example, if an inspected document at `https://example.com/index.html` initiates a fetch
+     * to `https://api.github.com/users`, `requestURLSecurityOrigin()` returns the origin for
+     * `https://api.github.com`.
+     *
+     * For imported HAR files, the origin is mapped to an isolated virtual domain
+     * (`imported-har://${authority}`) to ensure recorded network traffic never collides with
+     * live web origins.
+     *
+     * @see {@link initiatorSecurityOrigin} to obtain the origin of the document that initiated the request.
+     */
+    requestURLSecurityOrigin(): SecurityOrigin;
+    /**
+     * Returns the security origin of the document or context (`request.documentURL`) that initiated
+     * this network request.
+     *
+     * For example, if an inspected document at `https://example.com/index.html` initiates a fetch
+     * to `https://api.github.com/users`, `initiatorSecurityOrigin()` returns the origin for
+     * `https://example.com`.
+     *
+     * If `documentURL` is empty, invalid, or an opaque context (such as a `data:` URL or sandboxed
+     * iframe), this returns a unique opaque `SecurityOrigin`.
+     *
+     * For imported HAR files, the origin is mapped to an isolated virtual domain
+     * (`imported-har://${authority}`) matching the imported initiating document.
+     *
+     * @see {@link requestURLSecurityOrigin} to obtain the origin of the target resource URL being requested.
+     */
+    initiatorSecurityOrigin(): SecurityOrigin;
     url(): Platform.DevToolsPath.UrlString;
     isBlobRequest(): boolean;
     setUrl(x: Platform.DevToolsPath.UrlString): void;
@@ -51,7 +83,6 @@ export declare class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<E
     securityState(): Protocol.Security.SecurityState;
     setSecurityState(securityState: Protocol.Security.SecurityState): void;
     securityDetails(): Protocol.Network.SecurityDetails | null;
-    securityOrigin(): string;
     setSecurityDetails(securityDetails: Protocol.Network.SecurityDetails): void;
     get startTime(): number;
     setIssueTime(monotonicTime: number, wallTime: number): void;

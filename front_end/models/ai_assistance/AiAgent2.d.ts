@@ -12,7 +12,7 @@ export declare class AiAgent2 extends AiAgent<unknown> {
     #private;
     readonly preamble: string;
     readonly clientFeature: Host.AidaClient.ClientFeature;
-    readonly userTier: string;
+    get userTier(): string | undefined;
     get options(): RequestOptions;
     protected preRun(): Promise<void>;
     constructor(opts: AiAgent2Options);

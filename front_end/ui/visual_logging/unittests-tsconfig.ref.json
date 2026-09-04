@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/ui/visual_logging",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/ui/visual_logging/Debugging.test.ts",
+    "../../../../../../front_end/ui/visual_logging/DomState.test.ts",
+    "../../../../../../front_end/ui/visual_logging/LoggingConfig.test.ts",
+    "../../../../../../front_end/ui/visual_logging/LoggingDriver.test.ts",
+    "../../../../../../front_end/ui/visual_logging/LoggingEvents.test.ts",
+    "../../../../../../front_end/ui/visual_logging/LoggingState.test.ts",
+    "../../../../../../front_end/ui/visual_logging/NonDomState.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/host/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    }
+  ]
+}

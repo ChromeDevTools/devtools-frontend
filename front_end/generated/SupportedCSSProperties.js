@@ -3771,7 +3771,7 @@ export const generatedProperties = [
     {
         "name": "margin-trim",
         "runtime_flag": "MarginTrim",
-        "runtime_flag_status": "experimental"
+        "runtime_flag_status": "stable"
     },
     {
         "inherited": true,

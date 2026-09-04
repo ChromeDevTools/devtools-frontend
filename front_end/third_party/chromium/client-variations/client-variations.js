@@ -1,4 +1,4 @@
-// gen/front_end/third_party/chromium/client-variations/ClientVariations.js
+// ../../front_end/third_party/chromium/client-variations/ClientVariations.js
 var gen = {};
 (function() {
   var f, aa = this || self;

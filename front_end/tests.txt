@@ -146,6 +146,7 @@ core/sdk/DOMStorageModel.test.js
 core/sdk/EmulationModel.test.js
 core/sdk/EnhancedTracesParser.test.js
 core/sdk/NetworkRequest.test.js
+core/sdk/NetworkRequestAccess.test.js
 core/sdk/OverlayColorGenerator.test.js
 core/sdk/OverlayModel.test.js
 core/sdk/PreloadingModel.test.js

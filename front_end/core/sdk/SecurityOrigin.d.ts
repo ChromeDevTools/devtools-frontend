@@ -1,4 +1,10 @@
 /**
+ * String prefixes for imported artifact schemes (e.g., HAR recordings, traces).
+ * Imported entities operate in an isolated origin domain (`imported-har://${domain}`)
+ * that never matches live web origins (`https://${domain}`).
+ */
+export declare const IMPORTED_ORIGIN_PREFIXES: ReadonlySet<string>;
+/**
  * An immutable security origin for an entity in DevTools (such as a document,
  * network request, or storage key).
  *

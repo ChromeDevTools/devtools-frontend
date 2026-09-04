@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/coverage/CoverageModel.js
+// ../../front_end/panels/coverage/CoverageModel.ts
 var CoverageModel_exports = {};
 __export(CoverageModel_exports, {
   CoverageInfo: () => CoverageInfo,
@@ -21,24 +21,24 @@ import * as Platform from "../../core/platform/platform.js";
 import * as SDK from "../../core/sdk/sdk.js";
 import * as TextUtils from "../../core/text_utils/text_utils.js";
 import * as Workspace from "../../models/workspace/workspace.js";
-var CoverageType;
-(function(CoverageType2) {
+var CoverageType = /* @__PURE__ */ ((CoverageType2) => {
   CoverageType2[CoverageType2["CSS"] = 1] = "CSS";
   CoverageType2[CoverageType2["JAVA_SCRIPT"] = 2] = "JAVA_SCRIPT";
   CoverageType2[CoverageType2["JAVA_SCRIPT_PER_FUNCTION"] = 4] = "JAVA_SCRIPT_PER_FUNCTION";
-})(CoverageType || (CoverageType = {}));
-var SuspensionState;
-(function(SuspensionState2) {
+  return CoverageType2;
+})(CoverageType || {});
+var SuspensionState = /* @__PURE__ */ ((SuspensionState2) => {
   SuspensionState2["ACTIVE"] = "Active";
   SuspensionState2["SUSPENDING"] = "Suspending";
   SuspensionState2["SUSPENDED"] = "Suspended";
-})(SuspensionState || (SuspensionState = {}));
-var Events;
-(function(Events2) {
+  return SuspensionState2;
+})(SuspensionState || {});
+var Events = /* @__PURE__ */ ((Events2) => {
   Events2["CoverageUpdated"] = "CoverageUpdated";
   Events2["CoverageReset"] = "CoverageReset";
   Events2["SourceMapResolved"] = "SourceMapResolved";
-})(Events || (Events = {}));
+  return Events2;
+})(Events || {});
 var COVERAGE_POLLING_PERIOD_MS = 200;
 var RESOLVE_SOURCEMAP_TIMEOUT = 500;
 var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
@@ -65,11 +65,15 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     this.cssModel = target.model(SDK.CSSModel.CSSModel);
     this.debuggerModel = target.model(SDK.DebuggerModel.DebuggerModel);
     this.sourceMapManager = this.debuggerModel?.sourceMapManager() || null;
-    this.sourceMapManager?.addEventListener(SDK.SourceMapManager.Events.SourceMapAttached, this.sourceMapAttached, this);
+    this.sourceMapManager?.addEventListener(
+      SDK.SourceMapManager.Events.SourceMapAttached,
+      this.sourceMapAttached,
+      this
+    );
     this.coverageByURL = /* @__PURE__ */ new Map();
     this.coverageByContentProvider = /* @__PURE__ */ new Map();
     this.coverageUpdateTimes = /* @__PURE__ */ new Set();
-    this.suspensionState = "Active";
+    this.suspensionState = "Active" /* ACTIVE */;
     this.pollTimer = null;
     this.currentPollPromise = null;
     this.shouldResumePollingOnResume = false;
@@ -81,7 +85,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     this.isPolling = false;
   }
   async start(jsCoveragePerBlock) {
-    if (this.suspensionState !== "Active") {
+    if (this.suspensionState !== "Active" /* ACTIVE */) {
       throw new Error("Cannot start CoverageModel while it is not active.");
     }
     const promises = [];
@@ -91,7 +95,9 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
       promises.push(this.cssModel.startCoverage());
     }
     if (this.cpuProfilerModel) {
-      promises.push(this.cpuProfilerModel.startPreciseCoverage(jsCoveragePerBlock, this.preciseCoverageDeltaUpdate.bind(this)));
+      promises.push(
+        this.cpuProfilerModel.startPreciseCoverage(jsCoveragePerBlock, this.preciseCoverageDeltaUpdate.bind(this))
+      );
     }
     await Promise.all(promises);
     return Boolean(this.cssModel || this.cpuProfilerModel);
@@ -110,7 +116,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     const currentBacklog = this.processSourceMapBacklog;
     this.processSourceMapBacklog = [];
     await Promise.all(currentBacklog.map(({ script, sourceMap }) => this.resolveSourceMap(script, sourceMap)));
-    this.dispatchEventToListeners(Events.SourceMapResolved);
+    this.dispatchEventToListeners("SourceMapResolved" /* SourceMapResolved */);
   }
   async resolveSourceMap(script, sourceMap) {
     const url = script.sourceURL;
@@ -131,7 +137,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     this.coverageUpdateTimes.add(timestamp);
     const result = await this.backlogOrProcessJSCoverage(coverageData, timestamp);
     if (result.length) {
-      this.dispatchEventToListeners(Events.CoverageUpdated, result);
+      this.dispatchEventToListeners("CoverageUpdated" /* CoverageUpdated */, result);
     }
   }
   async stop() {
@@ -150,10 +156,10 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     this.coverageByURL = /* @__PURE__ */ new Map();
     this.coverageByContentProvider = /* @__PURE__ */ new Map();
     this.coverageUpdateTimes = /* @__PURE__ */ new Set();
-    this.dispatchEventToListeners(Events.CoverageReset);
+    this.dispatchEventToListeners("CoverageReset" /* CoverageReset */);
   }
   async startPolling() {
-    if (this.isPolling || this.suspensionState !== "Active") {
+    if (this.isPolling || this.suspensionState !== "Active" /* ACTIVE */) {
       return;
     }
     this.isPolling = true;
@@ -169,7 +175,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     if (!this.isPolling) {
       return;
     }
-    if (this.suspensionState === "Active" || this.performanceTraceRecording) {
+    if (this.suspensionState === "Active" /* ACTIVE */ || this.performanceTraceRecording) {
       this.pollTimer = window.setTimeout(() => this.pollLoop(), COVERAGE_POLLING_PERIOD_MS);
     }
   }
@@ -181,13 +187,16 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     await this.pollAndCallback();
   }
   async pollAndCallback() {
-    if (this.suspensionState === "Suspended" && !this.performanceTraceRecording) {
+    if (this.suspensionState === "Suspended" /* SUSPENDED */ && !this.performanceTraceRecording) {
       return;
     }
     const updates = await this.takeAllCoverage();
-    console.assert(this.suspensionState !== "Suspended" || Boolean(this.performanceTraceRecording), "CoverageModel was suspended while polling.");
+    console.assert(
+      this.suspensionState !== "Suspended" /* SUSPENDED */ || Boolean(this.performanceTraceRecording),
+      "CoverageModel was suspended while polling."
+    );
     if (updates.length) {
-      this.dispatchEventToListeners(Events.CoverageUpdated, updates);
+      this.dispatchEventToListeners("CoverageUpdated" /* CoverageUpdated */, updates);
     }
   }
   clearTimer() {
@@ -201,10 +210,10 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
    * due because it changes the state to suspending.
    */
   async preSuspendModel(reason) {
-    if (this.suspensionState !== "Active") {
+    if (this.suspensionState !== "Active" /* ACTIVE */) {
       return;
     }
-    this.suspensionState = "Suspending";
+    this.suspensionState = "Suspending" /* SUSPENDING */;
     if (reason === "performance-timeline") {
       this.performanceTraceRecording = true;
       return;
@@ -215,7 +224,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     }
   }
   async suspendModel(_reason) {
-    this.suspensionState = "Suspended";
+    this.suspensionState = "Suspended" /* SUSPENDED */;
   }
   async resumeModel() {
   }
@@ -224,7 +233,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
    * because starting polling is idempotent.
    */
   async postResumeModel() {
-    this.suspensionState = "Active";
+    this.suspensionState = "Active" /* ACTIVE */;
     this.performanceTraceRecording = false;
     if (this.shouldResumePollingOnResume) {
       this.shouldResumePollingOnResume = false;
@@ -243,7 +252,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
   }
   clearCSS() {
     for (const entry of this.coverageByContentProvider.values()) {
-      if (entry.type() !== 1) {
+      if (entry.type() !== 1 /* CSS */) {
         continue;
       }
       const contentProvider = entry.getContentProvider();
@@ -280,7 +289,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     if (freshRawCoverageData.length > 0) {
       this.jsBacklog.push({ rawCoverageData: freshRawCoverageData, stamp: freshTimestamp });
     }
-    if (this.suspensionState !== "Active") {
+    if (this.suspensionState !== "Active" /* ACTIVE */) {
       return [];
     }
     const ascendingByTimestamp = (x, y) => x.stamp - y.stamp;
@@ -305,16 +314,24 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
         continue;
       }
       const ranges = [];
-      let type = 2;
+      let type = 2 /* JAVA_SCRIPT */;
       for (const func of entry.functions) {
         if (func.isBlockCoverage === false && !(func.ranges.length === 1 && !func.ranges[0].count)) {
-          type |= 4;
+          type |= 4 /* JAVA_SCRIPT_PER_FUNCTION */;
         }
         for (const range of func.ranges) {
           ranges.push(range);
         }
       }
-      const subentry = await this.addCoverage(script, script.contentLength, script.lineOffset, script.columnOffset, ranges, type, stamp);
+      const subentry = await this.addCoverage(
+        script,
+        script.contentLength,
+        script.lineOffset,
+        script.columnOffset,
+        ranges,
+        type,
+        stamp
+      );
       if (subentry) {
         updatedEntries.push(...subentry);
       }
@@ -325,7 +342,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     this.addStyleSheetToCSSCoverage(event.data);
   }
   async takeCSSCoverage() {
-    if (!this.cssModel || this.suspensionState !== "Active") {
+    if (!this.cssModel || this.suspensionState !== "Active" /* ACTIVE */) {
       return [];
     }
     const { coverage, timestamp } = await this.cssModel.takeCoverageDelta();
@@ -336,7 +353,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     if (freshRawCoverageData.length > 0) {
       this.cssBacklog.push({ rawCoverageData: freshRawCoverageData, stamp: freshTimestamp });
     }
-    if (this.suspensionState !== "Active") {
+    if (this.suspensionState !== "Active" /* ACTIVE */) {
       return [];
     }
     const ascendingByTimestamp = (x, y) => x.stamp - y.stamp;
@@ -368,7 +385,15 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     for (const entry of rulesByStyleSheet) {
       const styleSheetHeader = entry[0];
       const ranges = entry[1];
-      const subentry = await this.addCoverage(styleSheetHeader, styleSheetHeader.contentLength, styleSheetHeader.startLine, styleSheetHeader.startColumn, ranges, 1, stamp);
+      const subentry = await this.addCoverage(
+        styleSheetHeader,
+        styleSheetHeader.contentLength,
+        styleSheetHeader.startLine,
+        styleSheetHeader.startColumn,
+        ranges,
+        1 /* CSS */,
+        stamp
+      );
       if (subentry) {
         updatedEntries.push(...subentry);
       }
@@ -408,7 +433,15 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     return result;
   }
   addStyleSheetToCSSCoverage(styleSheetHeader) {
-    void this.addCoverage(styleSheetHeader, styleSheetHeader.contentLength, styleSheetHeader.startLine, styleSheetHeader.startColumn, [], 1, Date.now());
+    void this.addCoverage(
+      styleSheetHeader,
+      styleSheetHeader.contentLength,
+      styleSheetHeader.startLine,
+      styleSheetHeader.startColumn,
+      [],
+      1 /* CSS */,
+      Date.now()
+    );
   }
   calculateSizeForSources(sourceMap, text, contentLength) {
     const sourceSizeMap = /* @__PURE__ */ new Map();
@@ -457,14 +490,20 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
       if (curEntry.sourceURL !== lastEntry.sourceURL) {
         if (text) {
           const endOffsetForLastEntry = text.offsetFromPosition(curEntry.lineNumber, curEntry.columnNumber);
-          sourceSegments.push({ end: endOffsetForLastEntry, sourceUrl: lastEntry.sourceURL || "" });
+          sourceSegments.push(
+            { end: endOffsetForLastEntry, sourceUrl: lastEntry.sourceURL || "" }
+          );
         } else {
-          sourceSegments.push({ end: totalSegmentSize, sourceUrl: lastEntry.sourceURL || "" });
+          sourceSegments.push(
+            { end: totalSegmentSize, sourceUrl: lastEntry.sourceURL || "" }
+          );
         }
       }
       lastEntry = curEntry;
       if (i === mappings.length - 1) {
-        sourceSegments.push({ end: contentLength, sourceUrl: curEntry.sourceURL || "" });
+        sourceSegments.push(
+          { end: contentLength, sourceUrl: curEntry.sourceURL || "" }
+        );
       }
     }
     return [sourceSizeMap, sourceSegments];
@@ -542,7 +581,7 @@ var CoverageModel = class _CoverageModel extends SDK.SDKModel.SDKModel {
     void fos.close();
   }
 };
-SDK.SDKModel.SDKModel.register(CoverageModel, { capabilities: 0, autostart: false });
+SDK.SDKModel.SDKModel.register(CoverageModel, { capabilities: SDK.Target.Capability.NONE, autostart: false });
 function locationCompare(a, b) {
   const [aLine, aPos] = a.split(":");
   const [bLine, bPos] = b.split(":");
@@ -623,7 +662,7 @@ var URLCoverageInfo = class _URLCoverageInfo extends Common.ObjectWrapper.Object
   ensureEntry(contentProvider, contentLength, lineOffset, columnOffset, type) {
     const key = `${lineOffset}:${columnOffset}`;
     let entry = this.coverageInfoByLocation.get(key);
-    if (type & 2 && !this.coverageInfoByLocation.size && contentProvider instanceof SDK.Script.Script) {
+    if (type & 2 /* JAVA_SCRIPT */ && !this.coverageInfoByLocation.size && contentProvider instanceof SDK.Script.Script) {
       this.#isContentScript = contentProvider.isContentScript();
     }
     this.#type |= type;
@@ -631,7 +670,7 @@ var URLCoverageInfo = class _URLCoverageInfo extends Common.ObjectWrapper.Object
       entry.addCoverageType(type);
       return entry;
     }
-    if (type & 2 && !this.coverageInfoByLocation.size && contentProvider instanceof SDK.Script.Script) {
+    if (type & 2 /* JAVA_SCRIPT */ && !this.coverageInfoByLocation.size && contentProvider instanceof SDK.Script.Script) {
       this.#isContentScript = contentProvider.isContentScript();
     }
     entry = new CoverageInfo(contentProvider, contentLength, lineOffset, columnOffset, type, this);
@@ -706,9 +745,9 @@ var SourceURLCoverageInfo = class extends URLCoverageInfo {
     this.generatedURLCoverageInfo = generatedUrlCoverage;
   }
 };
-(function(URLCoverageInfo2) {
+((URLCoverageInfo2) => {
   let Events2;
-  (function(Events3) {
+  ((Events3) => {
     Events3["SizesChanged"] = "SizesChanged";
   })(Events2 = URLCoverageInfo2.Events || (URLCoverageInfo2.Events = {}));
 })(URLCoverageInfo || (URLCoverageInfo = {}));
@@ -889,7 +928,7 @@ var CoverageInfo = class {
   }
 };
 
-// gen/front_end/panels/coverage/CoverageListView.js
+// ../../front_end/panels/coverage/CoverageListView.ts
 var CoverageListView_exports = {};
 __export(CoverageListView_exports, {
   CoverageListView: () => CoverageListView,
@@ -993,7 +1032,7 @@ var coverageListView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./coverageListView.css")} */`;
 
-// gen/front_end/panels/coverage/CoverageListView.js
+// ../../front_end/panels/coverage/CoverageListView.ts
 var { ifExpanded } = DataGrid;
 var UIStrings = {
   /**
@@ -1090,12 +1129,12 @@ var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var { styleMap, repeat } = Directives;
 function coverageTypeToString(type) {
   const types = [];
-  if (type & 1) {
+  if (type & 1 /* CSS */) {
     types.push(i18nString(UIStrings.css));
   }
-  if (type & 4) {
+  if (type & 4 /* JAVA_SCRIPT_PER_FUNCTION */) {
     types.push(i18nString(UIStrings.jsPerFunction));
-  } else if (type & 2) {
+  } else if (type & 2 /* JAVA_SCRIPT */) {
     types.push(i18nString(UIStrings.jsPerBlock));
   }
   return types.join("+");
@@ -1107,7 +1146,8 @@ var formatPercent = (value) => {
   return getPercentageFormatter().format(value ?? 0);
 };
 var DEFAULT_VIEW = (input, _output, target) => {
-  render(html`
+  render(
+    html`
     <style>${coverageListView_css_default}</style>
     <devtools-data-grid class="flex-auto" name=${i18nString(UIStrings.codeCoverage)} striped autofocus resize="last"
       .template=${html`
@@ -1121,7 +1161,9 @@ var DEFAULT_VIEW = (input, _output, target) => {
           </tr>
           ${repeat(input.items, (info) => info.url, (info) => renderItem(info, input))}
         </table>`}>
-      </devtools-data-grid>`, target);
+      </devtools-data-grid>`,
+    target
+  );
 };
 var CoverageListView = class extends UI.Widget.VBox {
   #highlightRegExp;
@@ -1229,7 +1271,7 @@ function renderItem(info, input) {
         </devtools-highlight>
       </td>
       <td data-value=${coverageTypeToString(info.type)}
-          title=${info.type & 4 ? i18nString(UIStrings.jsCoverageWithPerFunction) : info.type & 2 ? i18nString(UIStrings.jsCoverageWithPerBlock) : ""}>
+          title=${info.type & 4 /* JAVA_SCRIPT_PER_FUNCTION */ ? i18nString(UIStrings.jsCoverageWithPerFunction) : info.type & 2 /* JAVA_SCRIPT */ ? i18nString(UIStrings.jsCoverageWithPerBlock) : ""}>
         ${coverageTypeToString(info.type)}
       </td>
       <td data-value=${info.size} aria-label=${i18nString(UIStrings.sBytes, { n: info.size || 0 })}>
@@ -1245,12 +1287,12 @@ function renderItem(info, input) {
         <div class="bar-container">
           ${info.unusedSize > 0 ? html`
             <div class="bar bar-unused-size"
-                title=${info.type & 4 ? i18nString(UIStrings.sBytesSBelongToFunctionsThatHave, { PH1: info.unusedSize, PH2: formatPercent(info.unusedPercentage) }) : info.type & 2 ? i18nString(UIStrings.sBytesSBelongToBlocksOf, { PH1: info.unusedSize, PH2: formatPercent(info.unusedPercentage) }) : ""}
+                title=${info.type & 4 /* JAVA_SCRIPT_PER_FUNCTION */ ? i18nString(UIStrings.sBytesSBelongToFunctionsThatHave, { PH1: info.unusedSize, PH2: formatPercent(info.unusedPercentage) }) : info.type & 2 /* JAVA_SCRIPT */ ? i18nString(UIStrings.sBytesSBelongToBlocksOf, { PH1: info.unusedSize, PH2: formatPercent(info.unusedPercentage) }) : ""}
                   style=${styleMap({ width: (info.unusedSize / input.maxSize * 100 || 0) + "%" })}>
             </div>` : nothing}
           ${info.usedSize > 0 ? html`
             <div class="bar bar-used-size"
-                  title=${info.type & 4 ? i18nString(UIStrings.sBytesSBelongToFunctionsThatHaveExecuted, { PH1: info.usedSize, PH2: formatPercent(info.usedPercentage) }) : info.type & 2 ? i18nString(UIStrings.sBytesSBelongToBlocksOfJavascript, { PH1: info.usedSize, PH2: formatPercent(info.usedPercentage) }) : ""}
+                  title=${info.type & 4 /* JAVA_SCRIPT_PER_FUNCTION */ ? i18nString(UIStrings.sBytesSBelongToFunctionsThatHaveExecuted, { PH1: info.usedSize, PH2: formatPercent(info.usedPercentage) }) : info.type & 2 /* JAVA_SCRIPT */ ? i18nString(UIStrings.sBytesSBelongToBlocksOfJavascript, { PH1: info.usedSize, PH2: formatPercent(info.usedPercentage) }) : ""}
                 style=${styleMap({ width: (info.usedSize / input.maxSize * 100 || 0) + "%" })}>
             </div>` : nothing}
         </div>
@@ -1262,7 +1304,7 @@ function renderItem(info, input) {
     </tr>`;
 }
 
-// gen/front_end/panels/coverage/CoverageView.js
+// ../../front_end/panels/coverage/CoverageView.ts
 var CoverageView_exports = {};
 __export(CoverageView_exports, {
   ActionDelegate: () => ActionDelegate,
@@ -1282,7 +1324,7 @@ import * as UI2 from "../../ui/legacy/legacy.js";
 import { Directives as Directives2, html as html2, i18nTemplate as unboundI18nTemplate, render as render2 } from "../../ui/lit/lit.js";
 import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/coverage/CoverageDecorationManager.js
+// ../../front_end/panels/coverage/CoverageDecorationManager.ts
 var CoverageDecorationManager_exports = {};
 __export(CoverageDecorationManager_exports, {
   CoverageDecorationManager: () => CoverageDecorationManager,
@@ -1532,7 +1574,7 @@ var coverageView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./coverageView.css")} */`;
 
-// gen/front_end/panels/coverage/CoverageView.js
+// ../../front_end/panels/coverage/CoverageView.ts
 var UIStrings2 = {
   /**
    * @description Tooltip in coverage list view of the Coverage tab for selecting JavaScript coverage mode.
@@ -1642,12 +1684,12 @@ var DEFAULT_VIEW2 = (input, output, target) => {
               @change=${(event) => input.onCoverageTypeChanged(event.target.selectedIndex)}
               .selectedIndex=${input.coverageType}
               ?disabled=${input.recording}>
-            <option value=${2 | 4}
-                    jslog=${VisualLogging.item(`${2 | 4}`).track({ click: true })}>
+            <option value=${2 /* JAVA_SCRIPT */ | 4 /* JAVA_SCRIPT_PER_FUNCTION */}
+                    jslog=${VisualLogging.item(`${2 /* JAVA_SCRIPT */ | 4 /* JAVA_SCRIPT_PER_FUNCTION */}`).track({ click: true })}>
                  ${i18nString2(UIStrings2.perFunction)}
             </option>
-            <option value=${2}
-                    jslog=${VisualLogging.item(`${2}`).track({ click: true })}>
+            <option value=${2 /* JAVA_SCRIPT */}
+                    jslog=${VisualLogging.item(`${2 /* JAVA_SCRIPT */}`).track({ click: true })}>
               ${i18nString2(UIStrings2.perBlock)}
             </option>
           </select>
@@ -1667,17 +1709,19 @@ var DEFAULT_VIEW2 = (input, output, target) => {
               aria-label=${i18nString2(UIStrings2.filterCoverageByType)}
               jslog=${VisualLogging.dropDown("coverage-by-type").track({ change: true })}
               ?disabled=${!Boolean(input.coverageInfo)}
-              @change=${(event) => input.onTypeFilterChanged(Number(event.target.selectedOptions[0]?.value))}>
+              @change=${(event) => input.onTypeFilterChanged(
+    Number(event.target.selectedOptions[0]?.value)
+  )}>
             <option value="" jslog=${VisualLogging.item("").track({ click: true })}
                     .selected=${input.typeFilter === null}>${i18nString2(UIStrings2.all)}</option>
-            <option value=${1}
-                    jslog=${VisualLogging.item(`${1}`).track({ click: true })}
-                    .selected=${input.typeFilter === 1}>
+            <option value=${1 /* CSS */}
+                    jslog=${VisualLogging.item(`${1 /* CSS */}`).track({ click: true })}
+                    .selected=${input.typeFilter === 1 /* CSS */}>
               ${i18nString2(UIStrings2.css)}
             </option>
-            <option value=${2 | 4}
-                   jslog=${VisualLogging.item(`${2 | 4}`).track({ click: true })}
-                   .selected=${input.typeFilter !== null && Boolean(input.typeFilter & (2 | 4))}>
+            <option value=${2 /* JAVA_SCRIPT */ | 4 /* JAVA_SCRIPT_PER_FUNCTION */}
+                   jslog=${VisualLogging.item(`${2 /* JAVA_SCRIPT */ | 4 /* JAVA_SCRIPT_PER_FUNCTION */}`).track({ click: true })}
+                   .selected=${input.typeFilter !== null && Boolean(input.typeFilter & (2 /* JAVA_SCRIPT */ | 4 /* JAVA_SCRIPT_PER_FUNCTION */))}>
               ${i18nString2(UIStrings2.javascript)}
             </option>
           </select>
@@ -1690,7 +1734,10 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         </devtools-toolbar>
       </div>
       <div class="coverage-results">
-        ${input.needsReload ? renderReloadPromptPage(input.needsReload === "bfcache-page" ? i18nString2(UIStrings2.bfcacheNoCapture) : i18nString2(UIStrings2.activationNoCapture), input.needsReload) : input.coverageInfo ? html2`
+        ${input.needsReload ? renderReloadPromptPage(
+    input.needsReload === "bfcache-page" ? i18nString2(UIStrings2.bfcacheNoCapture) : i18nString2(UIStrings2.activationNoCapture),
+    input.needsReload
+  ) : input.coverageInfo ? html2`
           <devtools-widget autofocus class="results" ${widget(CoverageListView, {
     coverageInfo: input.coverageInfo,
     highlightRegExp: input.textFilter,
@@ -1719,7 +1766,7 @@ function renderLandingPage(supportsRecordOnReload) {
       text: i18nString2(UIStrings2.clickTheReloadButtonSToReloadAnd, { PH1: i18nString2(UIStrings2.reloadPage) })
     })}>
         <devtools-button ${bindToAction("coverage.start-with-reload")}
-                          .variant=${"tonal"} .iconName=${void 0}>
+                          .variant=${Buttons.Button.Variant.TONAL} .iconName=${void 0}>
           ${i18nString2(UIStrings2.reloadPage)}
         </devtools-button>
       </devtools-widget>`;
@@ -1731,7 +1778,7 @@ function renderLandingPage(supportsRecordOnReload) {
     text: i18nString2(UIStrings2.clickTheRecordButtonSToStart, { PH1: i18nString2(UIStrings2.startRecording) })
   })}>
       <devtools-button ${bindToAction("coverage.toggle-recording")}
-                       .variant=${"tonal"} .iconName=${void 0}>
+                       .variant=${Buttons.Button.Variant.TONAL} .iconName=${void 0}>
         ${i18nString2(UIStrings2.startRecording)}
       </devtools-button>
     </devtools-widget>`;
@@ -1843,7 +1890,7 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
     }
   }
   isBlockCoverageSelected() {
-    return this.#coverageTypeComboBoxSetting.get() === 2;
+    return this.#coverageTypeComboBoxSetting.get() === 2 /* JAVA_SCRIPT */;
   }
   #selectCoverageType(jsCoveragePerBlock) {
     const selectedIndex = jsCoveragePerBlock ? 1 : 0;
@@ -1874,11 +1921,21 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
       return;
     }
     this.#selectCoverageType(Boolean(jsCoveragePerBlock));
-    this.#model.addEventListener(Events.CoverageUpdated, this.#onCoverageDataReceived, this);
-    this.#model.addEventListener(Events.SourceMapResolved, this.#updateListView, this);
+    this.#model.addEventListener("CoverageUpdated" /* CoverageUpdated */, this.#onCoverageDataReceived, this);
+    this.#model.addEventListener("SourceMapResolved" /* SourceMapResolved */, this.#updateListView, this);
     const resourceTreeModel = mainTarget.model(SDK2.ResourceTreeModel.ResourceTreeModel);
-    SDK2.TargetManager.TargetManager.instance().addModelListener(SDK2.ResourceTreeModel.ResourceTreeModel, SDK2.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
-    this.#decorationManager = new CoverageDecorationManager(this.#model, Workspace7.Workspace.WorkspaceImpl.instance(), Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance());
+    SDK2.TargetManager.TargetManager.instance().addModelListener(
+      SDK2.ResourceTreeModel.ResourceTreeModel,
+      SDK2.ResourceTreeModel.Events.PrimaryPageChanged,
+      this.#onPrimaryPageChanged,
+      this
+    );
+    this.#decorationManager = new CoverageDecorationManager(
+      this.#model,
+      Workspace7.Workspace.WorkspaceImpl.instance(),
+      Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+      Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance()
+    );
     this.#toggleRecordAction.setToggled(true);
     this.#clearAction.setEnabled(false);
     this.#coverageInfo = [];
@@ -1897,7 +1954,9 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
     this.#updateViews(data);
   }
   #updateListView() {
-    const entries = (this.#model?.entries() || []).map((entry) => this.#toCoverageListItem(entry)).filter((info) => this.#isVisible(info)).map((entry) => ({ ...entry, sources: entry.sources.filter((entry2) => this.#isVisible(entry2)) }));
+    const entries = (this.#model?.entries() || []).map((entry) => this.#toCoverageListItem(entry)).filter((info) => this.#isVisible(info)).map(
+      (entry) => ({ ...entry, sources: entry.sources.filter((entry2) => this.#isVisible(entry2)) })
+    );
     this.#coverageInfo = entries;
   }
   #toCoverageListItem(info) {
@@ -1915,10 +1974,15 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
     };
   }
   async stopRecording() {
-    SDK2.TargetManager.TargetManager.instance().removeModelListener(SDK2.ResourceTreeModel.ResourceTreeModel, SDK2.ResourceTreeModel.Events.PrimaryPageChanged, this.#onPrimaryPageChanged, this);
+    SDK2.TargetManager.TargetManager.instance().removeModelListener(
+      SDK2.ResourceTreeModel.ResourceTreeModel,
+      SDK2.ResourceTreeModel.Events.PrimaryPageChanged,
+      this.#onPrimaryPageChanged,
+      this
+    );
     if (this.#model) {
       await this.#model.stop();
-      this.#model.removeEventListener(Events.CoverageUpdated, this.#onCoverageDataReceived, this);
+      this.#model.removeEventListener("CoverageUpdated" /* CoverageUpdated */, this.#onCoverageDataReceived, this);
     }
     this.#toggleRecordAction.setToggled(false);
     this.#clearAction.setEnabled(true);
@@ -1933,17 +1997,22 @@ var CoverageView = class _CoverageView extends UI2.Widget.VBox {
     if (this.#model !== coverageModel) {
       if (this.#model) {
         await this.#model.stop();
-        this.#model.removeEventListener(Events.CoverageUpdated, this.#onCoverageDataReceived, this);
+        this.#model.removeEventListener("CoverageUpdated" /* CoverageUpdated */, this.#onCoverageDataReceived, this);
       }
       this.#model = coverageModel;
       const success = await this.#model.start(this.isBlockCoverageSelected());
       if (!success) {
         return;
       }
-      this.#model.addEventListener(Events.CoverageUpdated, this.#onCoverageDataReceived, this);
-      this.#decorationManager = new CoverageDecorationManager(this.#model, Workspace7.Workspace.WorkspaceImpl.instance(), Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(), Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance());
+      this.#model.addEventListener("CoverageUpdated" /* CoverageUpdated */, this.#onCoverageDataReceived, this);
+      this.#decorationManager = new CoverageDecorationManager(
+        this.#model,
+        Workspace7.Workspace.WorkspaceImpl.instance(),
+        Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance(),
+        Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance()
+      );
     }
-    if (event.data.type === "Activation") {
+    if (event.data.type === SDK2.ResourceTreeModel.PrimaryPageChangeType.ACTIVATION) {
       this.#needsReload = "prerender-page";
     } else if (frame.backForwardCacheDetails.restoredFromCache) {
       this.#needsReload = "bfcache-page";

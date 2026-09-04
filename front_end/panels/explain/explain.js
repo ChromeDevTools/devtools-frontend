@@ -1,4 +1,4 @@
-// gen/front_end/panels/explain/components/ConsoleInsight.js
+// ../../front_end/panels/explain/components/ConsoleInsight.ts
 import "../../ui/components/spinners/spinners.js";
 import "../../ui/kit/kit.js";
 import * as Common from "../../core/common/common.js";
@@ -460,7 +460,7 @@ var consoleInsight_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("././components/consoleInsight.css")} */`;
 
-// gen/front_end/panels/explain/components/ConsoleInsight.js
+// ../../front_end/panels/explain/components/ConsoleInsight.ts
 var UIStrings = {
   /**
    * @description The title of the insight source "Console message".
@@ -614,8 +614,7 @@ var CODE_SNIPPET_WARNING_URL = "https://support.google.com/legal/answer/13505487
 var LEARN_MORE_URL = "https://goo.gle/devtools-console-messages-ai";
 var REPORT_URL = "https://support.google.com/legal/troubleshooter/1114905?hl=en#ts=1115658%2C13380504";
 var SIGN_IN_URL = "https://accounts.google.com";
-var State;
-(function(State2) {
+var State = /* @__PURE__ */ ((State2) => {
   State2["INSIGHT"] = "insight";
   State2["LOADING"] = "loading";
   State2["ERROR"] = "error";
@@ -624,7 +623,8 @@ var State;
   State2["NOT_LOGGED_IN"] = "not-logged-in";
   State2["SYNC_IS_PAUSED"] = "sync-is-paused";
   State2["OFFLINE"] = "offline";
-})(State || (State = {}));
+  return State2;
+})(State || {});
 var markedExtension = {
   name: "citation",
   level: "inline",
@@ -652,7 +652,7 @@ function renderSearchButton(onSearch) {
   return html`<devtools-button
     @click=${onSearch}
     class="search-button"
-    .variant=${"outlined"}
+    .variant=${Buttons.Button.Variant.OUTLINED}
     .jslogContext=${"search"}
   >
     ${i18nString(UIStrings.search)}
@@ -822,7 +822,9 @@ function renderSettingIsNotTrue(onEnableInsightsInSettingsLink) {
     </div>`;
 }
 function renderNotLoggedIn() {
-  return renderError(Root.Runtime.hostConfig.isOffTheRecord ? i18nString(UIStrings.notAvailableInIncognitoMode) : i18nString(UIStrings.notLoggedIn));
+  return renderError(
+    Root.Runtime.hostConfig.isOffTheRecord ? i18nString(UIStrings.notAvailableInIncognitoMode) : i18nString(UIStrings.notLoggedIn)
+  );
 }
 function renderDisclaimer(noLogging, onDisclaimerSettingsLink) {
   return html`<span>
@@ -850,7 +852,7 @@ function renderSignInFooter(onGoToSignIn) {
     <div>
       <devtools-button
         @click=${onGoToSignIn}
-        .variant=${"primary"}
+        .variant=${Buttons.Button.Variant.PRIMARY}
         .jslogContext=${"update-settings"}
       >
         ${i18nString(UIStrings.signIn)}
@@ -863,7 +865,7 @@ function renderConsentReminderFooter(onReminderSettingsLink, onConsentReminderCo
     <div class="buttons">
       <devtools-button
         @click=${onReminderSettingsLink}
-        .variant=${"tonal"}
+        .variant=${Buttons.Button.Variant.TONAL}
         .jslogContext=${"settings"}
         .title=${"Settings"}
       >
@@ -872,7 +874,7 @@ function renderConsentReminderFooter(onReminderSettingsLink, onConsentReminderCo
       <devtools-button
         class='continue-button'
         @click=${onConsentReminderConfirmed}
-        .variant=${"primary"}
+        .variant=${Buttons.Button.Variant.PRIMARY}
         .jslogContext=${"continue"}
         .title=${"continue"}
       >
@@ -891,10 +893,10 @@ function renderInsightFooter(noLogging, selectedRating, callbacks) {
       data-rating="true"
       .iconName=${"thumb-up"}
       .toggledIconName=${"thumb-up"}
-      .variant=${"icon_toggle"}
-      .size=${"SMALL"}
+      .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+      .size=${Buttons.Button.Size.SMALL}
       .toggleOnClick=${false}
-      .toggleType=${"primary-toggle"}
+      .toggleType=${Buttons.Button.ToggleType.PRIMARY}
       .disabled=${selectedRating !== void 0}
       .toggled=${selectedRating === true}
       .title=${i18nString(UIStrings.goodResponse)}
@@ -905,10 +907,10 @@ function renderInsightFooter(noLogging, selectedRating, callbacks) {
       data-rating="false"
       .iconName=${"thumb-down"}
       .toggledIconName=${"thumb-down"}
-      .variant=${"icon_toggle"}
-      .size=${"SMALL"}
+      .variant=${Buttons.Button.Variant.ICON_TOGGLE}
+      .size=${Buttons.Button.Size.SMALL}
       .toggleOnClick=${false}
-      .toggleType=${"primary-toggle"}
+      .toggleType=${Buttons.Button.ToggleType.PRIMARY}
       .disabled=${selectedRating !== void 0}
       .toggled=${selectedRating === false}
       .title=${i18nString(UIStrings.badResponse)}
@@ -917,8 +919,8 @@ function renderInsightFooter(noLogging, selectedRating, callbacks) {
     ></devtools-button>
     <devtools-button
       .iconName=${"report"}
-      .variant=${"icon"}
-      .size=${"SMALL"}
+      .variant=${Buttons.Button.Variant.ICON}
+      .size=${Buttons.Button.Size.SMALL}
       .title=${i18nString(UIStrings.report)}
       .jslogContext=${"report"}
       @click=${callbacks.onReport}
@@ -945,8 +947,8 @@ function renderHeader({ headerText, showIcon = false, showSpinner = false, onClo
       <div class="close-button">
         <devtools-button
           .iconName=${"cross"}
-          .variant=${"icon"}
-          .size=${"SMALL"}
+          .variant=${Buttons.Button.Variant.ICON}
+          .size=${Buttons.Button.Size.SMALL}
           .title=${i18nString(UIStrings.closeInsight)}
           jslog=${VisualLogging.close().track({ click: true })}
           @click=${onClose}
@@ -964,37 +966,40 @@ var DEFAULT_VIEW = (input, output, target) => {
   const mainClasses = {};
   let footer;
   switch (state.type) {
-    case "loading":
+    case "loading" /* LOADING */:
       header = renderHeader({ headerText: i18nString(UIStrings.generating), onClose }, output.headerRef);
       main = renderLoading();
       break;
-    case "insight":
-      header = renderHeader({ headerText: i18nString(UIStrings.insight), onClose, showSpinner: !state.completed }, output.headerRef);
+    case "insight" /* INSIGHT */:
+      header = renderHeader(
+        { headerText: i18nString(UIStrings.insight), onClose, showSpinner: !state.completed },
+        output.headerRef
+      );
       main = renderInsight(state, input, output);
       footer = renderInsightFooter(noLogging, input.selectedRating, callbacks);
       break;
-    case "error":
+    case "error" /* ERROR */:
       header = renderHeader({ headerText: i18nString(UIStrings.error), onClose }, output.headerRef);
       main = renderError(i18nString(UIStrings.errorBody));
       footer = renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink);
       break;
-    case "consent-reminder":
+    case "consent-reminder" /* CONSENT_REMINDER */:
       header = renderHeader({ headerText: "Understand console messages with AI", onClose, showIcon: true }, output.headerRef);
       mainClasses["reminder-container"] = true;
       main = renderConsentReminder(noLogging);
       footer = renderConsentReminderFooter(callbacks.onReminderSettingsLink, callbacks.onConsentReminderConfirmed);
       break;
-    case "setting-is-not-true":
+    case "setting-is-not-true" /* SETTING_IS_NOT_TRUE */:
       mainClasses["opt-in-teaser"] = true;
       main = renderSettingIsNotTrue(callbacks.onEnableInsightsInSettingsLink);
       break;
-    case "not-logged-in":
-    case "sync-is-paused":
+    case "not-logged-in" /* NOT_LOGGED_IN */:
+    case "sync-is-paused" /* SYNC_IS_PAUSED */:
       header = renderHeader({ headerText: i18nString(UIStrings.signInToUse), onClose }, output.headerRef);
       main = renderNotLoggedIn();
       footer = renderSignInFooter(callbacks.onGoToSignIn);
       break;
-    case "offline":
+    case "offline" /* OFFLINE */:
       header = renderHeader({ headerText: i18nString(UIStrings.offlineHeader), onClose }, output.headerRef);
       main = renderError(i18nString(UIStrings.offline));
       footer = renderDisclaimerFooter(noLogging, onDisclaimerSettingsLink);
@@ -1064,7 +1069,7 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
     this.requestUpdate();
   }
   #citationClickHandler(index) {
-    if (this.#state.type !== "insight") {
+    if (this.#state.type !== "insight" /* INSIGHT */) {
       return;
     }
     const areDetailsAlreadyExpanded = this.#areReferenceDetailsOpen;
@@ -1084,36 +1089,35 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
   }
   #getStateFromAidaAvailability() {
     switch (this.#aidaPreconditions) {
-      case "available": {
-        const skipReminder = Common.Settings.Settings.instance().createSetting(
-          "console-insights-skip-reminder",
-          false,
-          "Session"
-          /* Common.Settings.SettingStorageType.SESSION */
-        ).get();
+      case Host.AidaClient.AidaAccessPreconditions.AVAILABLE: {
+        const skipReminder = Common.Settings.Settings.instance().createSetting("console-insights-skip-reminder", false, Common.Settings.SettingStorageType.SESSION).get();
         return {
-          type: "loading",
+          type: "loading" /* LOADING */,
           consentOnboardingCompleted: this.#getOnboardingCompletedSetting().get() || skipReminder
         };
       }
-      case "no-account-email":
+      case Host.AidaClient.AidaAccessPreconditions.NO_ACCOUNT_EMAIL:
         return {
-          type: "not-logged-in"
+          type: "not-logged-in" /* NOT_LOGGED_IN */
         };
-      case "sync-is-paused":
+      case Host.AidaClient.AidaAccessPreconditions.SYNC_IS_PAUSED:
         return {
-          type: "sync-is-paused"
+          type: "sync-is-paused" /* SYNC_IS_PAUSED */
         };
-      case "no-internet":
+      case Host.AidaClient.AidaAccessPreconditions.NO_INTERNET:
         return {
-          type: "offline"
+          type: "offline" /* OFFLINE */
         };
     }
   }
   // off -> entrypoints are shown, and point to the AI setting panel where the setting can be turned on
   // on -> entrypoints are shown, and console insights can be generated
   #getConsoleInsightsEnabledSetting() {
-    return new AiAssistanceModel.AiSetting.AiSetting(AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor, Host.AidaClient.HostConfigTracker.instance(), Common.Settings.Settings.instance());
+    return new AiAssistanceModel.AiSetting.AiSetting(
+      AiAssistanceModel.AiUtils.consoleInsightsEnabledSettingDescriptor,
+      Host.AidaClient.HostConfigTracker.instance(),
+      Common.Settings.Settings.instance()
+    );
   }
   // off -> consent reminder is shown, unless the 'console-insights-enabled'-setting has been enabled in the current DevTools session
   // on -> no consent reminder shown
@@ -1123,25 +1127,39 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
   wasShown() {
     super.wasShown();
     this.focus();
-    this.#consoleInsightsEnabledSetting.addEventListener("Changed", this.#onConsoleInsightsSettingChanged, this);
+    this.#consoleInsightsEnabledSetting.addEventListener(
+      AiAssistanceModel.AiSetting.Events.CHANGED,
+      this.#onConsoleInsightsSettingChanged,
+      this
+    );
     const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
-    if (this.#state.type === "loading" && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true && !blockedByAge && this.#state.consentOnboardingCompleted) {
+    if (this.#state.type === "loading" /* LOADING */ && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true && !blockedByAge && this.#state.consentOnboardingCompleted) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.GeneratingInsightWithoutDisclaimer);
     }
-    Host.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host.AidaClient.HostConfigTracker.instance().addEventListener(
+      Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+      this.#boundOnAidaAvailabilityChange
+    );
     const initialAvailability = Host.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (initialAvailability !== void 0) {
       this.#updateAidaAvailability(initialAvailability);
     }
-    if (this.#state.type !== "insight" && this.#state.type !== "error") {
+    if (this.#state.type !== "insight" /* INSIGHT */ && this.#state.type !== "error" /* ERROR */) {
       this.#state = this.#getStateFromAidaAvailability();
     }
     void this.#generateInsightIfNeeded();
   }
   willHide() {
     super.willHide();
-    this.#consoleInsightsEnabledSetting.removeEventListener("Changed", this.#onConsoleInsightsSettingChanged, this);
-    Host.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    this.#consoleInsightsEnabledSetting.removeEventListener(
+      AiAssistanceModel.AiSetting.Events.CHANGED,
+      this.#onConsoleInsightsSettingChanged,
+      this
+    );
+    Host.AidaClient.HostConfigTracker.instance().removeEventListener(
+      Host.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+      this.#boundOnAidaAvailabilityChange
+    );
   }
   #updateAidaAvailability(aidaAvailability) {
     if (aidaAvailability !== this.#aidaPreconditions) {
@@ -1157,17 +1175,17 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
     if (this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true) {
       this.#getOnboardingCompletedSetting().set(true);
     }
-    if (this.#state.type === "setting-is-not-true" && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true) {
+    if (this.#state.type === "setting-is-not-true" /* SETTING_IS_NOT_TRUE */ && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === true) {
       this.#transitionTo({
-        type: "loading",
+        type: "loading" /* LOADING */,
         consentOnboardingCompleted: true
       });
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserConfirmedInSettings);
       void this.#generateInsightIfNeeded();
     }
-    if (this.#state.type === "consent-reminder" && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === false) {
+    if (this.#state.type === "consent-reminder" /* CONSENT_REMINDER */ && this.#consoleInsightsEnabledSetting?.getIfNotDisabled() === false) {
       this.#transitionTo({
-        type: "loading",
+        type: "loading" /* LOADING */,
         consentOnboardingCompleted: false
       });
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserAbortedInSettings);
@@ -1180,13 +1198,13 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
     this.requestUpdate();
   }
   async #generateInsightIfNeeded() {
-    if (this.#state.type !== "loading") {
+    if (this.#state.type !== "loading" /* LOADING */) {
       return;
     }
     const blockedByAge = Root.Runtime.hostConfig.aidaAvailability?.blockedByAge === true;
     if (this.#consoleInsightsEnabledSetting?.getIfNotDisabled() !== true || blockedByAge) {
       this.#transitionTo({
-        type: "setting-is-not-true"
+        type: "setting-is-not-true" /* SETTING_IS_NOT_TRUE */
       });
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsOptInTeaserShown);
       return;
@@ -1194,7 +1212,7 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
     if (!this.#state.consentOnboardingCompleted) {
       const { sources, isPageReloadRecommended } = await this.#promptBuilder.buildPrompt();
       this.#transitionTo({
-        type: "consent-reminder",
+        type: "consent-reminder" /* CONSENT_REMINDER */,
         sources,
         isPageReloadRecommended
       });
@@ -1204,7 +1222,7 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
     await this.#generateInsight();
   }
   #onClose() {
-    if (this.#state.type === "consent-reminder") {
+    if (this.#state.type === "consent-reminder" /* CONSENT_REMINDER */) {
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserCanceled);
     }
     this.#closing = true;
@@ -1226,7 +1244,7 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
     }
   }
   #onRating(isPositive) {
-    if (this.#state.type !== "insight") {
+    if (this.#state.type !== "insight" /* INSIGHT */) {
       throw new Error("Unexpected state");
     }
     if (this.#state.metadata?.rpcGlobalId === void 0) {
@@ -1248,7 +1266,7 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
       disable_user_content_logging: disallowLogging,
       do_conversation_client_event: {
         user_feedback: {
-          sentiment: this.#selectedRating ? "POSITIVE" : "NEGATIVE"
+          sentiment: this.#selectedRating ? Host.AidaClient.Rating.POSITIVE : Host.AidaClient.Rating.NEGATIVE
         }
       }
     });
@@ -1263,7 +1281,7 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
   async #onConsentReminderConfirmed() {
     this.#getOnboardingCompletedSetting().set(true);
     this.#transitionTo({
-      type: "loading",
+      type: "loading" /* LOADING */,
       consentOnboardingCompleted: true
     });
     Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightsReminderTeaserConfirmed);
@@ -1312,7 +1330,9 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
       return [];
     }
     const relatedUrls = metadata.factualityMetadata.facts.filter((fact) => fact.sourceUri && !directCitationUrls.includes(fact.sourceUri)).map((fact) => fact.sourceUri) || [];
-    const trainingDataUrls = metadata.attributionMetadata?.citations.filter((citation) => citation.sourceType === Host.AidaClient.CitationSourceType.TRAINING_DATA && (citation.uri || citation.repository)).map((citation) => citation.uri || `https://www.github.com/${citation.repository}`) || [];
+    const trainingDataUrls = metadata.attributionMetadata?.citations.filter(
+      (citation) => citation.sourceType === Host.AidaClient.CitationSourceType.TRAINING_DATA && (citation.uri || citation.repository)
+    ).map((citation) => citation.uri || `https://www.github.com/${citation.repository}`) || [];
     const dedupedTrainingDataUrls = [...new Set(trainingDataUrls.filter((url) => !relatedUrls.includes(url) && !directCitationUrls.includes(url)))];
     relatedUrls.push(...dedupedTrainingDataUrls);
     return relatedUrls;
@@ -1328,7 +1348,7 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
           this.#modifyTokensToHandleCitationsInCode(tokens);
         }
         this.#transitionTo({
-          type: "insight",
+          type: "insight" /* INSIGHT */,
           tokens: valid ? tokens : [],
           validMarkdown: valid,
           explanation,
@@ -1344,12 +1364,12 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
     } catch (err) {
       console.error("[ConsoleInsight] Error in #generateInsight:", err);
       Host.userMetrics.actionTaken(Host.UserMetrics.Action.InsightErrored);
-      if (err.message === "doAidaConversation timed out" && this.#state.type === "insight") {
+      if (err.message === "doAidaConversation timed out" && this.#state.type === "insight" /* INSIGHT */) {
         this.#state.timedOut = true;
         this.#transitionTo({ ...this.#state, completed: true, timedOut: true });
       } else {
         this.#transitionTo({
-          type: "error",
+          type: "error" /* ERROR */,
           error: err.message
         });
       }
@@ -1373,7 +1393,9 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
   async *#getInsight() {
     const { prompt, sources, isPageReloadRecommended } = await this.#promptBuilder.buildPrompt();
     try {
-      for await (const response of this.#aidaClient.doConversation(Host.AidaClient.AidaClient.buildConsoleInsightsRequest(prompt))) {
+      for await (const response of this.#aidaClient.doConversation(
+        Host.AidaClient.AidaClient.buildConsoleInsightsRequest(prompt)
+      )) {
         yield { sources, isPageReloadRecommended, ...response };
       }
     } catch (err) {
@@ -1455,7 +1477,7 @@ var ConsoleInsight = class _ConsoleInsight extends UI.Widget.Widget {
   }
 };
 
-// gen/front_end/panels/explain/ActionDelegate.js
+// ../../front_end/panels/explain/ActionDelegate.ts
 import * as Host2 from "../../core/host/host.js";
 import * as Console2 from "../console/console.js";
 var ActionDelegate = class {

@@ -1,11 +1,11 @@
-// gen/front_end/ui/visual_logging/Debugging.js
+// ../../front_end/ui/visual_logging/Debugging.ts
 import { assertNotNullOrUndefined } from "../../core/platform/platform.js";
 
-// gen/front_end/ui/visual_logging/LoggingConfig.js
+// ../../front_end/ui/visual_logging/LoggingConfig.ts
 import * as Host from "../../core/host/host.js";
 import * as Root from "../../core/root/root.js";
 
-// gen/front_end/ui/visual_logging/KnownContextValues.js
+// ../../front_end/ui/visual_logging/KnownContextValues.ts
 var knownContextValues = /* @__PURE__ */ new Set([
   "%",
   "*",
@@ -4674,7 +4674,7 @@ var knownContextValues = /* @__PURE__ */ new Set([
   "zu"
 ]);
 
-// gen/front_end/ui/visual_logging/LoggingConfig.js
+// ../../front_end/ui/visual_logging/LoggingConfig.ts
 var LOGGING_ATTRIBUTE = "jslog";
 function elementKey(config) {
   return `${VisualElements[config.ve]}${config.context ? `: ${config.context}` : ""}`;
@@ -4700,8 +4700,7 @@ function needsLogging(element) {
 function getLoggingConfig(element) {
   return parseJsLog(element.getAttribute(LOGGING_ATTRIBUTE) || "");
 }
-var VisualElements;
-(function(VisualElements2) {
+var VisualElements = /* @__PURE__ */ ((VisualElements2) => {
   VisualElements2[VisualElements2["TreeItem"] = 1] = "TreeItem";
   VisualElements2[VisualElements2["Close"] = 2] = "Close";
   VisualElements2[VisualElements2["Counter"] = 3] = "Counter";
@@ -4758,7 +4757,8 @@ var VisualElements;
   VisualElements2[VisualElements2["ResponsivePresets"] = 73] = "ResponsivePresets";
   VisualElements2[VisualElements2["DeviceModeRuler"] = 74] = "DeviceModeRuler";
   VisualElements2[VisualElements2["MediaInspectorView"] = 75] = "MediaInspectorView";
-})(VisualElements || (VisualElements = {}));
+  return VisualElements2;
+})(VisualElements || {});
 function resolveVe(ve) {
   return VisualElements[ve] ?? 0;
 }
@@ -4767,7 +4767,7 @@ function checkContextValue(context) {
   if (typeof context !== "string" || !context.length || knownContextValues.has(context) || reportedUnknownVeContext.has(context)) {
     return;
   }
-  if (Root.Runtime.Runtime.queryParam("debugFrontend") || Host.InspectorFrontendHost.isUnderTest() || localStorage.getItem("veDebugLoggingEnabled") === "Test") {
+  if (Root.Runtime.Runtime.queryParam("debugFrontend") || Host.InspectorFrontendHost.isUnderTest() || localStorage.getItem("veDebugLoggingEnabled") === "Test" /* TEST */) {
     const stack = (new Error().stack || "").split("\n").slice(3).join("\n");
     console.error(`Unknown VE context: '${context}'
 ${stack}
@@ -4833,7 +4833,7 @@ function makeConfigStringBuilder(veName, context) {
   };
 }
 
-// gen/front_end/ui/visual_logging/LoggingState.js
+// ../../front_end/ui/visual_logging/LoggingState.ts
 var state = /* @__PURE__ */ new WeakMap();
 function nextVeId() {
   const result = new BigInt64Array(1);
@@ -4881,7 +4881,7 @@ function setMappedParent(element, parent) {
   element[PARENT] = parent;
 }
 
-// gen/front_end/ui/visual_logging/Debugging.js
+// ../../front_end/ui/visual_logging/Debugging.ts
 var veDebuggingEnabled = false;
 var debugOverlay = null;
 var debugPopover = null;
@@ -5057,13 +5057,13 @@ function processEventForDebugging(event, state2, extraInfo) {
     return;
   }
   switch (format) {
-    case "Intuitive":
+    case "Intuitive" /* INTUITIVE */:
       processEventForIntuitiveDebugging(event, state2, extraInfo);
       break;
-    case "Test":
+    case "Test" /* TEST */:
       processEventForTestDebugging(event, state2, extraInfo);
       break;
-    case "AdHocAnalysis":
+    case "AdHocAnalysis" /* AD_HOC_ANALYSIS */:
       processEventForAdHocAnalysisDebugging(event, state2, extraInfo);
       break;
   }
@@ -5106,13 +5106,13 @@ function deleteUndefinedFields(entry) {
 function processImpressionsForDebugging(states) {
   const format = localStorage.getItem("veDebugLoggingEnabled");
   switch (format) {
-    case "Intuitive":
+    case "Intuitive" /* INTUITIVE */:
       processImpressionsForIntuitiveDebugLog(states);
       break;
-    case "Test":
+    case "Test" /* TEST */:
       processImpressionsForTestDebugLog(states);
       break;
-    case "AdHocAnalysis":
+    case "AdHocAnalysis" /* AD_HOC_ANALYSIS */:
       processImpressionsForAdHocAnalysisDebugLog(states);
       break;
     default:
@@ -5210,17 +5210,17 @@ function maybeLogDebugEvent(entry) {
     return;
   }
   veDebugEventsLog.push(entry);
-  if (format === "Intuitive") {
+  if (format === "Intuitive" /* INTUITIVE */) {
     console.info("VE Debug:", entry);
   }
 }
-var DebugLoggingFormat;
-(function(DebugLoggingFormat2) {
+var DebugLoggingFormat = /* @__PURE__ */ ((DebugLoggingFormat2) => {
   DebugLoggingFormat2["INTUITIVE"] = "Intuitive";
   DebugLoggingFormat2["TEST"] = "Test";
   DebugLoggingFormat2["AD_HOC_ANALYSIS"] = "AdHocAnalysis";
-})(DebugLoggingFormat || (DebugLoggingFormat = {}));
-function setVeDebugLoggingEnabled(enabled, format = "Intuitive") {
+  return DebugLoggingFormat2;
+})(DebugLoggingFormat || {});
+function setVeDebugLoggingEnabled(enabled, format = "Intuitive" /* INTUITIVE */) {
   if (enabled) {
     localStorage.setItem("veDebugLoggingEnabled", format);
   } else {
@@ -5406,7 +5406,7 @@ function buildStateFlow() {
 var sessionStartTime = Date.now();
 function processStartLoggingForDebugging() {
   sessionStartTime = Date.now();
-  if (localStorage.getItem("veDebugLoggingEnabled") === "Intuitive") {
+  if (localStorage.getItem("veDebugLoggingEnabled") === "Intuitive" /* INTUITIVE */) {
     maybeLogDebugEvent({ event: "SessionStart" });
   }
 }
@@ -5531,7 +5531,12 @@ function checkPendingEventExpectation() {
         break;
       }
       if (matchStarted) {
-        recordUnmatchedEvent(pendingEventExpectation, actualEvents[actualEventIndex], expectedEvent, matchedImpressions);
+        recordUnmatchedEvent(
+          pendingEventExpectation,
+          actualEvents[actualEventIndex],
+          expectedEvent,
+          matchedImpressions
+        );
       }
       actualEventIndex++;
     }
@@ -5559,12 +5564,12 @@ globalThis.exportAdHocAnalysisLogForSql = exportAdHocAnalysisLogForSql;
 globalThis.buildStateFlow = buildStateFlow;
 globalThis.expectVeEvents = expectVeEvents;
 
-// gen/front_end/ui/visual_logging/LoggingDriver.js
+// ../../front_end/ui/visual_logging/LoggingDriver.ts
 import * as Common2 from "../../core/common/common.js";
 import * as Host3 from "../../core/host/host.js";
 import * as RenderCoordinator from "../components/render_coordinator/render_coordinator.js";
 
-// gen/front_end/ui/visual_logging/DomState.js
+// ../../front_end/ui/visual_logging/DomState.ts
 function getDomState(documents2) {
   const loggables = [];
   const shadowRoots = [];
@@ -5627,7 +5632,7 @@ function intersection(a, b) {
   return null;
 }
 
-// gen/front_end/ui/visual_logging/LoggingEvents.js
+// ../../front_end/ui/visual_logging/LoggingEvents.ts
 import * as Common from "../../core/common/common.js";
 import * as Host2 from "../../core/host/host.js";
 import { assertNotNullOrUndefined as assertNotNullOrUndefined2 } from "../../core/platform/platform.js";
@@ -5676,40 +5681,32 @@ var logClick = (throttler) => (loggable, event, options) => {
   if (event instanceof MouseEvent && "sourceCapabilities" in event && event.sourceCapabilities) {
     clickEvent.mouseButton = event.button;
   }
-  void throttler.schedule(
-    async () => {
-      Host2.InspectorFrontendHost.InspectorFrontendHostInstance.recordClick(clickEvent);
-      processEventForDebugging("Click", loggingState, { mouseButton: clickEvent.mouseButton, doubleClick: clickEvent.doubleClick });
-    },
-    "Delayed"
-    /* Common.Throttler.Scheduling.DELAYED */
-  );
+  void throttler.schedule(async () => {
+    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.recordClick(clickEvent);
+    processEventForDebugging(
+      "Click",
+      loggingState,
+      { mouseButton: clickEvent.mouseButton, doubleClick: clickEvent.doubleClick }
+    );
+  }, Common.Throttler.Scheduling.DELAYED);
 };
 var logHover = (throttler) => async (event) => {
   const loggingState = getLoggingState(event.currentTarget);
   assertNotNullOrUndefined2(loggingState);
   const hoverEvent = { veid: loggingState.veid };
-  void throttler.schedule(
-    async () => {
-      Host2.InspectorFrontendHost.InspectorFrontendHostInstance.recordHover(hoverEvent);
-      processEventForDebugging("Hover", loggingState);
-    },
-    "Delayed"
-    /* Common.Throttler.Scheduling.DELAYED */
-  );
+  void throttler.schedule(async () => {
+    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.recordHover(hoverEvent);
+    processEventForDebugging("Hover", loggingState);
+  }, Common.Throttler.Scheduling.DELAYED);
 };
 var logDrag = (throttler) => async (event) => {
   const loggingState = getLoggingState(event.currentTarget);
   assertNotNullOrUndefined2(loggingState);
   const dragEvent = { veid: loggingState.veid };
-  void throttler.schedule(
-    async () => {
-      Host2.InspectorFrontendHost.InspectorFrontendHostInstance.recordDrag(dragEvent);
-      processEventForDebugging("Drag", loggingState);
-    },
-    "Delayed"
-    /* Common.Throttler.Scheduling.DELAYED */
-  );
+  void throttler.schedule(async () => {
+    Host2.InspectorFrontendHost.InspectorFrontendHostInstance.recordDrag(dragEvent);
+    processEventForDebugging("Drag", loggingState);
+  }, Common.Throttler.Scheduling.DELAYED);
 };
 async function logChange(loggable) {
   const loggingState = getLoggingState(loggable);
@@ -5817,7 +5814,7 @@ async function logFunctionCall(name, context) {
   processEventForDebugging("FunctionCall", null, { name, context });
 }
 
-// gen/front_end/ui/visual_logging/NonDomState.js
+// ../../front_end/ui/visual_logging/NonDomState.ts
 var registry = /* @__PURE__ */ new WeakMap();
 function getLoggables(parent) {
   return registry.get(parent || nullParent) || [];
@@ -5841,7 +5838,7 @@ function unregisterAllLoggables() {
 }
 var nullParent = {};
 
-// gen/front_end/ui/visual_logging/LoggingDriver.js
+// ../../front_end/ui/visual_logging/LoggingDriver.ts
 var PROCESS_DOM_INTERVAL = 500;
 var KEYBOARD_LOG_INTERVAL = 3e3;
 var HOVER_LOG_INTERVAL = 1e3;
@@ -5903,12 +5900,8 @@ async function addDocument(document2) {
   observeMutations([document2.body]);
 }
 async function stopLogging() {
-  await keyboardLogThrottler.schedule(
-    async () => {
-    },
-    "AsSoonAsPossible"
-    /* Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE */
-  );
+  await keyboardLogThrottler.schedule(async () => {
+  }, Common2.Throttler.Scheduling.AS_SOON_AS_POSSIBLE);
   logging = false;
   unregisterAllLoggables();
   for (const document2 of documents) {
@@ -6005,11 +5998,11 @@ async function process() {
       const trackHover = loggingState.config.track?.hover;
       if (trackHover) {
         element.addEventListener("mouseover", logHover(hoverLogThrottler), { capture: true });
-        element.addEventListener("mouseout", () => hoverLogThrottler.schedule(
-          cancelLogging,
-          "AsSoonAsPossible"
-          /* Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE */
-        ), { capture: true });
+        element.addEventListener(
+          "mouseout",
+          () => hoverLogThrottler.schedule(cancelLogging, Common2.Throttler.Scheduling.AS_SOON_AS_POSSIBLE),
+          { capture: true }
+        );
       }
       const trackDrag = loggingState.config.track?.drag;
       if (trackDrag) {
@@ -6138,11 +6131,7 @@ function maybeCancelDrag(event) {
   if (Math.abs(event.screenX - dragStartX) >= DRAG_REPORT_THRESHOLD || Math.abs(event.screenY - dragStartY) >= DRAG_REPORT_THRESHOLD) {
     return;
   }
-  void dragLogThrottler.schedule(
-    cancelLogging,
-    "AsSoonAsPossible"
-    /* Common.Throttler.Scheduling.AS_SOON_AS_POSSIBLE */
-  );
+  void dragLogThrottler.schedule(cancelLogging, Common2.Throttler.Scheduling.AS_SOON_AS_POSSIBLE);
 }
 function isAncestorOf(state1, state2) {
   while (state2) {
@@ -6181,30 +6170,26 @@ async function onResizeOrIntersection(entries) {
       continue;
     }
     pendingResize.set(element, overlap);
-    void resizeLogThrottler.schedule(
-      async () => {
-        if (pendingResize.size) {
-          await yieldToInteractions();
-          flushPendingChangeEvents();
+    void resizeLogThrottler.schedule(async () => {
+      if (pendingResize.size) {
+        await yieldToInteractions();
+        flushPendingChangeEvents();
+      }
+      for (const [element2, overlap2] of pendingResize.entries()) {
+        const loggingState2 = getLoggingState(element2);
+        if (!loggingState2) {
+          continue;
         }
-        for (const [element2, overlap2] of pendingResize.entries()) {
-          const loggingState2 = getLoggingState(element2);
-          if (!loggingState2) {
-            continue;
-          }
-          if (Math.abs(overlap2.width - loggingState2.size.width) >= RESIZE_REPORT_THRESHOLD || Math.abs(overlap2.height - loggingState2.size.height) >= RESIZE_REPORT_THRESHOLD) {
-            logResize(element2, overlap2);
-          }
+        if (Math.abs(overlap2.width - loggingState2.size.width) >= RESIZE_REPORT_THRESHOLD || Math.abs(overlap2.height - loggingState2.size.height) >= RESIZE_REPORT_THRESHOLD) {
+          logResize(element2, overlap2);
         }
-        pendingResize.clear();
-      },
-      "Delayed"
-      /* Common.Throttler.Scheduling.DELAYED */
-    );
+      }
+      pendingResize.clear();
+    }, Common2.Throttler.Scheduling.DELAYED);
   }
 }
 
-// gen/front_end/ui/visual_logging/visual_logging.prebundle.js
+// ../../front_end/ui/visual_logging/visual_logging.ts
 var logClick2 = (loggable, event, options = {}) => logClick(clickLogThrottler)(loggable, event, options);
 var logResize2 = (l, s) => logResize(l, s);
 var logKeyDown2 = async (l, e, context) => await logKeyDown(keyboardLogThrottler)(l, e, context);
@@ -6246,6 +6231,7 @@ var controlPoint = makeConfigStringBuilder.bind(null, "ControlPoint");
 var cssColorMix = makeConfigStringBuilder.bind(null, "CssColorMix");
 var cssRuleHeader = makeConfigStringBuilder.bind(null, "CSSRuleHeader");
 var deviceModeRuler = makeConfigStringBuilder.bind(null, "DeviceModeRuler");
+var dialog = makeConfigStringBuilder.bind(null, "Dialog");
 var domBreakpoint = makeConfigStringBuilder.bind(null, "DOMBreakpoint");
 var drawer = makeConfigStringBuilder.bind(null, "Drawer");
 var dropDown = makeConfigStringBuilder.bind(null, "DropDown");
@@ -6253,7 +6239,6 @@ var elementsBreadcrumbs = makeConfigStringBuilder.bind(null, "ElementsBreadcrumb
 var expand = makeConfigStringBuilder.bind(null, "Expand");
 var filterDropdown = makeConfigStringBuilder.bind(null, "FilterDropdown");
 var gutter = makeConfigStringBuilder.bind(null, "Gutter");
-var dialog = makeConfigStringBuilder.bind(null, "Dialog");
 var item = makeConfigStringBuilder.bind(null, "Item");
 var key = makeConfigStringBuilder.bind(null, "Key");
 var link = makeConfigStringBuilder.bind(null, "Link");
@@ -6281,8 +6266,8 @@ var tableHeader = makeConfigStringBuilder.bind(null, "TableHeader");
 var textField = makeConfigStringBuilder.bind(null, "TextField");
 var timeline = makeConfigStringBuilder.bind(null, "Timeline");
 var toggle = makeConfigStringBuilder.bind(null, "Toggle");
-var toolbar = makeConfigStringBuilder.bind(null, "Toolbar");
 var toggleSubpane = makeConfigStringBuilder.bind(null, "ToggleSubpane");
+var toolbar = makeConfigStringBuilder.bind(null, "Toolbar");
 var tree = makeConfigStringBuilder.bind(null, "Tree");
 var treeItem = makeConfigStringBuilder.bind(null, "TreeItem");
 var value = makeConfigStringBuilder.bind(null, "Value");

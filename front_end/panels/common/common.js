@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/common/GdpSignUpDialog.js
+// ../../front_end/panels/common/GdpSignUpDialog.ts
 import "../../ui/components/switch/switch.js";
 import "../../ui/kit/kit.js";
 import * as Common from "../../core/common/common.js";
@@ -120,7 +120,7 @@ var gdpSignUpDialog_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./gdpSignUpDialog.css")} */`;
 
-// gen/front_end/panels/common/GdpSignUpDialog.js
+// ../../front_end/panels/common/GdpSignUpDialog.ts
 var UIStrings = {
   /**
    * @description ARIA label for the Google Developer Program sign up dialog.
@@ -197,7 +197,8 @@ var PRIVACY_POLICY_URL = "https://policies.google.com/privacy";
 var CONTENT_POLICY_URL = "https://developers.google.com/profile/content-policy";
 var GDP_PROGRAM_URL = "https://developers.google.com/program";
 var DEFAULT_VIEW = (input, _output, target) => {
-  render(html`
+  render(
+    html`
       <style>${gdpSignUpDialog_css_default}</style>
       <div class="gdp-sign-up-dialog-header" role="img" aria-label="Google Developer Program"></div>
       <div class="main-content">
@@ -237,10 +238,10 @@ var DEFAULT_VIEW = (input, _output, target) => {
             <div class="section-text">
               <div>${i18nString(UIStrings.tailorProfileBody)}</div><br/>
               <div>${uiI18n.getFormatLocalizedStringTemplate(str_, UIStrings.tailorProfileBodyDisclaimer, {
-    PH1: html`<devtools-link href=${CONTENT_POLICY_URL} class="link" jslogcontext="content-policy">${i18nString(UIStrings.contentPolicy)}</devtools-link>`,
-    PH2: html`<devtools-link href=${TERMS_OF_SERVICE_URL} class="link" jslogcontext="terms-of-service">${i18nString(UIStrings.termsOfService)}</devtools-link>`,
-    PH3: html`<devtools-link href=${PRIVACY_POLICY_URL} class="link" jslogcontext="privacy-policy">${i18nString(UIStrings.privacyPolicy)}</devtools-link>`
-  })}</div>
+      PH1: html`<devtools-link href=${CONTENT_POLICY_URL} class="link" jslogcontext="content-policy">${i18nString(UIStrings.contentPolicy)}</devtools-link>`,
+      PH2: html`<devtools-link href=${TERMS_OF_SERVICE_URL} class="link" jslogcontext="terms-of-service">${i18nString(UIStrings.termsOfService)}</devtools-link>`,
+      PH3: html`<devtools-link href=${PRIVACY_POLICY_URL} class="link" jslogcontext="privacy-policy">${i18nString(UIStrings.privacyPolicy)}</devtools-link>`
+    })}</div>
             </div>
           </div>
         </div>
@@ -249,23 +250,25 @@ var DEFAULT_VIEW = (input, _output, target) => {
         <devtools-button
           aria-label=${i18nString(UIStrings.learnMoreAccessibleText)}
           .title=${i18nString(UIStrings.learnMoreAccessibleText)}
-          .variant=${"outlined"}
+          .variant=${Buttons.Button.Variant.OUTLINED}
           .jslogContext=${"learn-more"}
           @click=${() => UIHelpers.openInNewTab(GDP_PROGRAM_URL)}>${i18nString(UIStrings.learnMore)}</devtools-button>
         <div class="right-buttons">
           <devtools-button
-            .variant=${"tonal"}
+            .variant=${Buttons.Button.Variant.TONAL}
             .jslogContext=${"cancel"}
             @click=${input.onCancelClick}>${i18nString(UIStrings.cancel)}</devtools-button>
           <devtools-button
-            .variant=${"primary"}
+            .variant=${Buttons.Button.Variant.PRIMARY}
             .jslogContext=${"sign-up"}
             .spinner=${input.isSigningUp}
             .disabled=${input.isSigningUp}
             @click=${input.onSignUpClick}>${i18nString(UIStrings.signUp)}</devtools-button>
         </div>
       </div>
-    `, target);
+    `,
+    target
+  );
 };
 var GdpSignUpDialog = class _GdpSignUpDialog extends UI.Widget.VBox {
   #view;
@@ -285,7 +288,9 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI.Widget.VBox {
   async #onSignUpClick() {
     this.#isSigningUp = true;
     this.requestUpdate();
-    const syncInfo = await new Promise((resolve) => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve));
+    const syncInfo = await new Promise(
+      (resolve) => Host.InspectorFrontendHost.InspectorFrontendHostInstance.getSyncInformation(resolve)
+    );
     const user = syncInfo.accountFullName ?? "";
     const emailPreference = this.#keepMeUpdated ? Host.GdpClient.EmailPreference.ENABLED : Host.GdpClient.EmailPreference.DISABLED;
     const result = await Host.GdpClient.GdpClient.instance().createProfile({ user, emailPreference });
@@ -321,10 +326,7 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI.Widget.VBox {
     const dialog2 = new UI.Dialog.Dialog("gdp-sign-up-dialog");
     dialog2.setAriaLabel(i18nString(UIStrings.gdpDialogAriaLabel));
     dialog2.setMaxContentSize(new Geometry.Size(384, 500));
-    dialog2.setSizeBehavior(
-      "SetExactWidthMaxHeight"
-      /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
-    );
+    dialog2.setSizeBehavior(UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     dialog2.setDimmed(true);
     new _GdpSignUpDialog({ dialog: dialog2, onSuccess, onCancel }).show(dialog2.contentElement);
     dialog2.show(
@@ -335,7 +337,7 @@ var GdpSignUpDialog = class _GdpSignUpDialog extends UI.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/common/GeminiRebrandPromoDialog.js
+// ../../front_end/panels/common/GeminiRebrandPromoDialog.ts
 import "../../ui/components/switch/switch.js";
 import "../../ui/kit/kit.js";
 import * as Common2 from "../../core/common/common.js";
@@ -399,7 +401,7 @@ var geminiRebrandPromoDialog_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./geminiRebrandPromoDialog.css")} */`;
 
-// gen/front_end/panels/common/GeminiRebrandPromoDialog.js
+// ../../front_end/panels/common/GeminiRebrandPromoDialog.ts
 var UIStrings2 = {
   /**
    * @description ARIA label for the dialog.
@@ -435,7 +437,8 @@ var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var PROMO_IMAGE_1X = new URL("../../Images/geminiInDevTools.png", import.meta.url).toString();
 var PROMO_IMAGE_2X = new URL("../../Images/geminiInDevTools_2x.png", import.meta.url).toString();
 var DEFAULT_VIEW2 = (input, _output, target) => {
-  render2(html2`
+  render2(
+    html2`
       <style>${geminiRebrandPromoDialog_css_default}</style>
 
       <div class="header">
@@ -445,8 +448,8 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
             aria-hidden="true"
             tabindex="-1"
             .iconName=${"cross"}
-            .variant=${"icon"}
-            .size=${"REGULAR"}
+            .variant=${Buttons2.Button.Variant.ICON}
+            .size=${Buttons2.Button.Size.REGULAR}
             .title=${i18nString2(UIStrings2.dismiss)}
             jslog=${VisualLogging.close().track({ click: true }).context("gemini-promo-dismiss")}
             @click=${() => input.onCancelClick()}
@@ -477,15 +480,17 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
 
       <div class="buttons">
         <devtools-button
-          .variant=${"outlined"}
+          .variant=${Buttons2.Button.Variant.OUTLINED}
           jslog=${VisualLogging.close().track({ click: true }).context("gemini-promo-dismiss")}
           @click=${input.onCancelClick}>${i18nString2(UIStrings2.dismiss)}</devtools-button>
         <devtools-button
-          .variant=${"primary"}
+          .variant=${Buttons2.Button.Variant.PRIMARY}
           .jslogContext=${"gemini-promo-get-started"}
           @click=${input.onGetStartedClick}>${i18nString2(UIStrings2.getStarted)}</devtools-button>
       </div>
-    `, target);
+    `,
+    target
+  );
 };
 var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI2.Widget.VBox {
   #view;
@@ -514,10 +519,7 @@ var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI2.Widge
     const dialog2 = new UI2.Dialog.Dialog("gemini-promo-dialog");
     dialog2.setAriaLabel(i18nString2(UIStrings2.dialogAriaLabel));
     dialog2.setMaxContentSize(new Geometry2.Size(384, 500));
-    dialog2.setSizeBehavior(
-      "SetExactWidthMaxHeight"
-      /* UI.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT */
-    );
+    dialog2.setSizeBehavior(UI2.GlassPane.SizeBehavior.SET_EXACT_WIDTH_MAX_HEIGHT);
     dialog2.setDimmed(true);
     new _GeminiRebrandPromoDialog({ dialog: dialog2 }).show(dialog2.contentElement);
     dialog2.show(
@@ -531,14 +533,13 @@ var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI2.Widge
       return;
     }
     const currentAidaAvailability = Host2.AidaClient.HostConfigTracker.instance().aidaAvailability;
-    if (currentAidaAvailability !== "available") {
+    if (currentAidaAvailability !== Host2.AidaClient.AidaAccessPreconditions.AVAILABLE) {
       return;
     }
     const setting = Common2.Settings.Settings.instance().createSetting(
       "gemini-promo-dialog-shown",
       false,
-      "Synced"
-      /* Common.Settings.SettingStorageType.SYNCED */
+      Common2.Settings.SettingStorageType.SYNCED
     );
     if (setting.get()) {
       return;
@@ -548,7 +549,7 @@ var GeminiRebrandPromoDialog = class _GeminiRebrandPromoDialog extends UI2.Widge
   }
 };
 
-// gen/front_end/panels/common/AiCodeCompletionSummaryToolbar.js
+// ../../front_end/panels/common/AiCodeCompletionSummaryToolbar.ts
 var AiCodeCompletionSummaryToolbar_exports = {};
 __export(AiCodeCompletionSummaryToolbar_exports, {
   AiCodeCompletionSummaryToolbar: () => AiCodeCompletionSummaryToolbar,
@@ -668,7 +669,7 @@ var aiCodeCompletionSummaryToolbar_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./aiCodeCompletionSummaryToolbar.css")} */`;
 
-// gen/front_end/panels/common/AiCodeCompletionSummaryToolbar.js
+// ../../front_end/panels/common/AiCodeCompletionSummaryToolbar.ts
 var UIStringsNotTranslate = {
   /**
    * @description Text for recitation notice
@@ -682,7 +683,7 @@ var UIStringsNotTranslate = {
 var lockedString = i18n5.i18n.lockedString;
 var { widget } = UI3.Widget;
 var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
-  if (input.aidaAvailability !== "available") {
+  if (input.aidaAvailability !== Host3.AidaClient.AidaAccessPreconditions.AVAILABLE) {
     render3(nothing, target);
     return;
   }
@@ -718,13 +719,16 @@ var DEFAULT_SUMMARY_TOOLBAR_VIEW = (input, _output, target) => {
                         href=${citation}
                         jslogcontext="ai-code-completion-citations.citation-link">${citation}</devtools-link>`)}</div></devtools-tooltip>
             </div>` : nothing;
-  render3(html3`
+  render3(
+    html3`
         <style>${aiCodeCompletionSummaryToolbar_css_default}</style>
         <div class=${toolbarClasses}>
           ${disclaimer}
           ${recitationNotice}
         </div>
-        `, target);
+        `,
+    target
+  );
 };
 var AiCodeCompletionSummaryToolbar = class extends UI3.Widget.Widget {
   #view;
@@ -770,20 +774,27 @@ var AiCodeCompletionSummaryToolbar = class extends UI3.Widget.Widget {
     this.requestUpdate();
   }
   performUpdate() {
-    this.#view({
-      disclaimerTooltipId: this.#disclaimerTooltipId,
-      spinnerTooltipId: this.#spinnerTooltipId,
-      citations: this.#citations,
-      citationsTooltipId: this.#citationsTooltipId,
-      loading: this.#loading,
-      hasTopBorder: this.#hasTopBorder,
-      aidaAvailability: this.#aidaAvailability,
-      disclaimerTextVariant: this.#disclaimerTextVariant
-    }, void 0, this.contentElement);
+    this.#view(
+      {
+        disclaimerTooltipId: this.#disclaimerTooltipId,
+        spinnerTooltipId: this.#spinnerTooltipId,
+        citations: this.#citations,
+        citationsTooltipId: this.#citationsTooltipId,
+        loading: this.#loading,
+        hasTopBorder: this.#hasTopBorder,
+        aidaAvailability: this.#aidaAvailability,
+        disclaimerTextVariant: this.#disclaimerTextVariant
+      },
+      void 0,
+      this.contentElement
+    );
   }
   wasShown() {
     super.wasShown();
-    Host3.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host3.AidaClient.HostConfigTracker.instance().addEventListener(
+      Host3.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+      this.#boundOnAidaAvailabilityChange
+    );
     const initialAvailability = Host3.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (initialAvailability !== void 0) {
       this.#updateAidaAvailability(initialAvailability);
@@ -791,11 +802,14 @@ var AiCodeCompletionSummaryToolbar = class extends UI3.Widget.Widget {
   }
   willHide() {
     super.willHide();
-    Host3.AidaClient.HostConfigTracker.instance().removeEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host3.AidaClient.HostConfigTracker.instance().removeEventListener(
+      Host3.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+      this.#boundOnAidaAvailabilityChange
+    );
   }
 };
 
-// gen/front_end/panels/common/BadgeNotification.js
+// ../../front_end/panels/common/BadgeNotification.ts
 import "../../ui/kit/kit.js";
 import * as Common3 from "../../core/common/common.js";
 import * as Host4 from "../../core/host/host.js";
@@ -906,7 +920,7 @@ var badgeNotification_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./badgeNotification.css")} */`;
 
-// gen/front_end/panels/common/BadgeNotification.js
+// ../../front_end/panels/common/BadgeNotification.ts
 var { html: html4, render: render4 } = Lit;
 var UIStrings3 = {
   /**
@@ -964,7 +978,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
         class="notification-button"
         @click=${() => property.onClick()}
         jslog=${VisualLogging2.action(property.jslogContext).track({ click: true })}
-        .variant=${"text"}
+        .variant=${Buttons3.Button.Variant.TEXT}
         .title=${property.title ?? ""}
         .inverseColorTheme=${true}
     >${property.label}</devtools-button>`;
@@ -975,7 +989,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
         jslog=${VisualLogging2.action("badge-notification.dismiss").track({ click: true })}
         aria-label=${i18nString3(UIStrings3.close)}
         .iconName=${"cross"}
-        .variant=${"icon"}
+        .variant=${Buttons3.Button.Variant.ICON}
         .title=${i18nString3(UIStrings3.close)}
         .inverseColorTheme=${true}
     ></devtools-button>`;
@@ -1014,13 +1028,13 @@ var BadgeNotification = class extends UI4.Widget.Widget {
   }
   async present(badge, reason) {
     switch (reason) {
-      case "Award":
+      case Badges2.BadgeTriggerReason.AWARD:
         this.#presentActivityBasedBadge(badge);
         return;
-      case "StarterBadgeSettingsNudge":
+      case Badges2.BadgeTriggerReason.STARTER_BADGE_SETTINGS_NUDGE:
         this.#presentStarterBadgeSettingsNudge(badge);
         return;
-      case "StarterBadgeProfileNudge":
+      case Badges2.BadgeTriggerReason.STARTER_BADGE_PROFILE_NUDGE:
         this.#presentStarterBadgeProfileNudge(badge);
         return;
     }
@@ -1028,7 +1042,11 @@ var BadgeNotification = class extends UI4.Widget.Widget {
   #positionNotification() {
     const boundingRect = this.contentElement.getBoundingClientRect();
     const container = UI4.UIUtils.getDevToolsBoundingElement();
-    this.contentElement.positionAt(LEFT_OFFSET, container.clientHeight - boundingRect.height - BOTTOM_OFFSET, container);
+    this.contentElement.positionAt(
+      LEFT_OFFSET,
+      container.clientHeight - boundingRect.height - BOTTOM_OFFSET,
+      container
+    );
   }
   #show(properties) {
     this.message = properties.message;
@@ -1162,7 +1180,7 @@ var BadgeNotification = class extends UI4.Widget.Widget {
   }
 };
 
-// gen/front_end/panels/common/CPUThrottlingOption.js
+// ../../front_end/panels/common/CPUThrottlingOption.ts
 var CPUThrottlingOption_exports = {};
 __export(CPUThrottlingOption_exports, {
   CPUPerformanceTier: () => CPUPerformanceTier,
@@ -1209,15 +1227,15 @@ var UIStrings4 = {
 var str_4 = i18n9.i18n.registerUIStrings("panels/common/CPUThrottlingOption.ts", UIStrings4);
 var i18nString4 = i18n9.i18n.getLocalizedString.bind(void 0, str_4);
 var i18nLazyString = i18n9.i18n.getLazilyComputedLocalizedString.bind(void 0, str_4);
-var CPUThrottlingRates;
-(function(CPUThrottlingRates2) {
+var CPUThrottlingRates = /* @__PURE__ */ ((CPUThrottlingRates2) => {
   CPUThrottlingRates2[CPUThrottlingRates2["NO_THROTTLING"] = 1] = "NO_THROTTLING";
   CPUThrottlingRates2[CPUThrottlingRates2["MID_TIER_MOBILE"] = 4] = "MID_TIER_MOBILE";
   CPUThrottlingRates2[CPUThrottlingRates2["LOW_TIER_MOBILE"] = 6] = "LOW_TIER_MOBILE";
   CPUThrottlingRates2[CPUThrottlingRates2["EXTRA_SLOW"] = 20] = "EXTRA_SLOW";
-  CPUThrottlingRates2[CPUThrottlingRates2["MidTierMobile"] = 4] = "MidTierMobile";
-  CPUThrottlingRates2[CPUThrottlingRates2["LowEndMobile"] = 6] = "LowEndMobile";
-})(CPUThrottlingRates || (CPUThrottlingRates = {}));
+  CPUThrottlingRates2[CPUThrottlingRates2["MidTierMobile"] = 4 /* MID_TIER_MOBILE */] = "MidTierMobile";
+  CPUThrottlingRates2[CPUThrottlingRates2["LowEndMobile"] = 6 /* LOW_TIER_MOBILE */] = "LowEndMobile";
+  return CPUThrottlingRates2;
+})(CPUThrottlingRates || {});
 function makeFixedPresetThrottlingOption(rate) {
   return {
     title: rate === 1 ? i18nLazyString(UIStrings4.noThrottling) : i18nLazyString(UIStrings4.dSlowdown, { PH1: rate }),
@@ -1225,17 +1243,16 @@ function makeFixedPresetThrottlingOption(rate) {
     jslogContext: rate === 1 ? "cpu-no-throttling" : `cpu-throttled-${rate}`
   };
 }
-var NoThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.NO_THROTTLING);
-var MidTierThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.MID_TIER_MOBILE);
-var LowTierThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.LOW_TIER_MOBILE);
-var ExtraSlowThrottlingOption = makeFixedPresetThrottlingOption(CPUThrottlingRates.EXTRA_SLOW);
+var NoThrottlingOption = makeFixedPresetThrottlingOption(1 /* NO_THROTTLING */);
+var MidTierThrottlingOption = makeFixedPresetThrottlingOption(4 /* MID_TIER_MOBILE */);
+var LowTierThrottlingOption = makeFixedPresetThrottlingOption(6 /* LOW_TIER_MOBILE */);
+var ExtraSlowThrottlingOption = makeFixedPresetThrottlingOption(20 /* EXTRA_SLOW */);
 function makeCalibratedThrottlingOption(calibratedDeviceType) {
   const getSettingValue = () => {
     const setting = Common4.Settings.Settings.instance().createSetting(
       "calibrated-cpu-throttling",
       {},
-      "Global"
-      /* Common.Settings.SettingStorageType.GLOBAL */
+      Common4.Settings.SettingStorageType.GLOBAL
     );
     const value = setting.get();
     if (calibratedDeviceType === "low-tier-mobile") {
@@ -1289,7 +1306,7 @@ function determineOptionFromRate(rate, currentOption) {
   return cpuThrottlingPresets.find((o) => o.rate() === rate) || NoThrottlingOption;
 }
 
-// gen/front_end/panels/common/ExtensionPanel.js
+// ../../front_end/panels/common/ExtensionPanel.ts
 var ExtensionPanel_exports = {};
 __export(ExtensionPanel_exports, {
   ExtensionButton: () => ExtensionButton,
@@ -1302,7 +1319,7 @@ import * as Extensions from "../../models/extensions/extensions.js";
 import * as ObjectUI from "../../ui/legacy/components/object_ui/object_ui.js";
 import * as UI6 from "../../ui/legacy/legacy.js";
 
-// gen/front_end/panels/common/ExtensionView.js
+// ../../front_end/panels/common/ExtensionView.ts
 var ExtensionView_exports = {};
 __export(ExtensionView_exports, {
   ExtensionIframe: () => ExtensionIframe,
@@ -1342,11 +1359,15 @@ var ExtensionView = class extends UI5.Widget.Widget {
   }
   performUpdate() {
     const output = {};
-    this.#view({
-      src: this.#src,
-      className: this.#className,
-      onLoad: this.onLoad.bind(this)
-    }, output, this.element);
+    this.#view(
+      {
+        src: this.#src,
+        className: this.#className,
+        onLoad: this.onLoad.bind(this)
+      },
+      output,
+      this.element
+    );
     if (output.iframe) {
       this.#iframe = output.iframe;
     }
@@ -1430,7 +1451,7 @@ var ExtensionIframe = class {
   }
 };
 
-// gen/front_end/panels/common/ExtensionPanel.js
+// ../../front_end/panels/common/ExtensionPanel.ts
 var ExtensionPanel = class extends UI6.Panel.Panel {
   server;
   id;
@@ -1452,11 +1473,7 @@ var ExtensionPanel = class extends UI6.Panel.Panel {
     this.panelToolbar.appendToolbarItem(item2);
   }
   onSearchCanceled() {
-    this.server.notifySearchAction(
-      this.id,
-      "cancelSearch"
-      /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch */
-    );
+    this.server.notifySearchAction(this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.CancelSearch);
     this.#searchableView.updateSearchMatchesCount(0);
   }
   searchableView() {
@@ -1464,23 +1481,22 @@ var ExtensionPanel = class extends UI6.Panel.Panel {
   }
   performSearch(searchConfig, _shouldJump, _jumpBackwards) {
     const query = searchConfig.query;
-    this.server.notifySearchAction(this.id, "performSearch", query);
+    this.server.notifySearchAction(
+      this.id,
+      Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PerformSearch,
+      query
+    );
   }
   supportsMatchCounts() {
     return false;
   }
   jumpToNextSearchResult() {
-    this.server.notifySearchAction(
-      this.id,
-      "nextSearchResult"
-      /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult */
-    );
+    this.server.notifySearchAction(this.id, Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.NextSearchResult);
   }
   jumpToPreviousSearchResult() {
     this.server.notifySearchAction(
       this.id,
-      "previousSearchResult"
-      /* Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PreviousSearchResult */
+      Extensions.ExtensionAPI.PrivateAPI.Panels.SearchAction.PreviousSearchResult
     );
   }
   supportsCaseSensitiveSearch() {
@@ -1499,7 +1515,10 @@ var ExtensionButton = class {
   constructor(server, id, iconURL, tooltip, disabled) {
     this.id = id;
     this.#toolbarButton = new UI6.Toolbar.ToolbarButton("", "");
-    this.#toolbarButton.addEventListener("Click", server.notifyButtonClicked.bind(server, this.id));
+    this.#toolbarButton.addEventListener(
+      UI6.Toolbar.ToolbarButton.Events.CLICK,
+      server.notifyButtonClicked.bind(server, this.id)
+    );
     this.update(iconURL, tooltip, disabled);
   }
   update(iconURL, tooltip, disabled) {
@@ -1543,7 +1562,14 @@ var ExtensionSidebarPane = class extends UI6.View.SimpleView {
   }
   setExpression(expression, title, evaluateOptions, securityOrigin, callback) {
     this.createObjectPropertiesView();
-    this.server.evaluate(expression, true, false, evaluateOptions, securityOrigin, this.onEvaluate.bind(this, title, callback));
+    this.server.evaluate(
+      expression,
+      true,
+      false,
+      evaluateOptions,
+      securityOrigin,
+      this.onEvaluate.bind(this, title, callback)
+    );
   }
   setPage(url) {
     if (this.objectPropertiesView) {
@@ -1592,7 +1618,7 @@ var ExtensionSidebarPane = class extends UI6.View.SimpleView {
     const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget();
     section.objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
       readOnly: true,
-      propertiesMode: 1
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
     });
     section.objectTree.expanded = true;
     if (title) {
@@ -1605,7 +1631,7 @@ var ExtensionSidebarPane = class extends UI6.View.SimpleView {
   }
 };
 
-// gen/front_end/panels/common/ExtensionServer.js
+// ../../front_end/panels/common/ExtensionServer.ts
 var ExtensionServer_exports = {};
 __export(ExtensionServer_exports, {
   Events: () => Events,
@@ -1639,6 +1665,10 @@ var kForbiddenSchemes = [
 ];
 var extensionServerInstance;
 var HostsPolicy = class _HostsPolicy {
+  constructor(runtimeAllowedHosts, runtimeBlockedHosts) {
+    this.runtimeAllowedHosts = runtimeAllowedHosts;
+    this.runtimeBlockedHosts = runtimeBlockedHosts;
+  }
   runtimeAllowedHosts;
   runtimeBlockedHosts;
   static create(policy) {
@@ -1662,10 +1692,6 @@ var HostsPolicy = class _HostsPolicy {
     }
     return new _HostsPolicy(runtimeAllowedHosts, runtimeBlockedHosts);
   }
-  constructor(runtimeAllowedHosts, runtimeBlockedHosts) {
-    this.runtimeAllowedHosts = runtimeAllowedHosts;
-    this.runtimeBlockedHosts = runtimeBlockedHosts;
-  }
   isAllowedOnURL(inspectedURL) {
     if (!inspectedURL) {
       return this.runtimeBlockedHosts.length === 0;
@@ -1677,16 +1703,16 @@ var HostsPolicy = class _HostsPolicy {
   }
 };
 var RegisteredExtension = class {
-  origin;
-  name;
-  hostsPolicy;
-  allowFileAccess;
   constructor(origin, name, hostsPolicy, allowFileAccess) {
     this.origin = origin;
     this.name = name;
     this.hostsPolicy = hostsPolicy;
     this.allowFileAccess = allowFileAccess;
   }
+  origin;
+  name;
+  hostsPolicy;
+  allowFileAccess;
   isAllowedOnTarget(inspectedURL) {
     if (!inspectedURL) {
       inspectedURL = SDK3.TargetManager.TargetManager.instance().primaryPageTarget()?.inspectedURL();
@@ -1720,10 +1746,10 @@ var RegisteredExtension = class {
   }
 };
 var RevealableNetworkRequestFilter = class {
-  filter;
   constructor(filter) {
     this.filter = filter;
   }
+  filter;
 };
 var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.ObjectWrapper {
   clientObjects;
@@ -1760,46 +1786,116 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     this.status = new ExtensionStatus();
     this.#sidebarPanes = [];
     this.extensionsEnabled = true;
-    this.registerHandler("addRequestHeaders", this.onAddRequestHeaders.bind(this));
-    this.registerHandler("createPanel", this.onCreatePanel.bind(this));
-    this.registerHandler("createSidebarPane", this.onCreateSidebarPane.bind(this));
-    this.registerHandler("createToolbarButton", this.onCreateToolbarButton.bind(this));
-    this.registerHandler("evaluateOnInspectedPage", this.onEvaluateOnInspectedPage.bind(this));
-    this.registerHandler("_forwardKeyboardEvent", this.onForwardKeyboardEvent.bind(this));
-    this.registerHandler("getHAR", this.onGetHAR.bind(this));
-    this.registerHandler("getPageResources", this.onGetPageResources.bind(this));
-    this.registerHandler("getRequestContent", this.onGetRequestContent.bind(this));
-    this.registerHandler("getResourceContent", this.onGetResourceContent.bind(this));
-    this.registerHandler("Reload", this.onReload.bind(this));
-    this.registerHandler("setOpenResourceHandler", this.onSetOpenResourceHandler.bind(this));
-    this.registerHandler("setThemeChangeHandler", this.onSetThemeChangeHandler.bind(this));
-    this.registerHandler("setResourceContent", this.onSetResourceContent.bind(this));
-    this.registerHandler("attachSourceMapToResource", this.onAttachSourceMapToResource.bind(this));
-    this.registerHandler("setSidebarHeight", this.onSetSidebarHeight.bind(this));
-    this.registerHandler("setSidebarContent", this.onSetSidebarContent.bind(this));
-    this.registerHandler("setSidebarPage", this.onSetSidebarPage.bind(this));
-    this.registerHandler("showPanel", this.onShowPanel.bind(this));
-    this.registerHandler("subscribe", this.onSubscribe.bind(this));
-    this.registerHandler("openResource", this.onOpenResource.bind(this));
-    this.registerHandler("unsubscribe", this.onUnsubscribe.bind(this));
-    this.registerHandler("updateButton", this.onUpdateButton.bind(this));
-    this.registerHandler("registerLanguageExtensionPlugin", this.registerLanguageExtensionEndpoint.bind(this));
-    this.registerHandler("getWasmLinearMemory", this.onGetWasmLinearMemory.bind(this));
-    this.registerHandler("getWasmGlobal", this.onGetWasmGlobal.bind(this));
-    this.registerHandler("getWasmLocal", this.onGetWasmLocal.bind(this));
-    this.registerHandler("getWasmOp", this.onGetWasmOp.bind(this));
-    this.registerHandler("registerRecorderExtensionPlugin", this.registerRecorderExtensionEndpoint.bind(this));
-    this.registerHandler("reportResourceLoad", this.onReportResourceLoad.bind(this));
-    this.registerHandler("setFunctionRangesForScript", this.onSetFunctionRangesForScript.bind(this));
-    this.registerHandler("createRecorderView", this.onCreateRecorderView.bind(this));
-    this.registerHandler("showRecorderView", this.onShowRecorderView.bind(this));
-    this.registerHandler("showNetworkPanel", this.onShowNetworkPanel.bind(this));
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.AddRequestHeaders,
+      this.onAddRequestHeaders.bind(this)
+    );
+    this.registerHandler(Extensions2.ExtensionAPI.PrivateAPI.Commands.CreatePanel, this.onCreatePanel.bind(this));
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.CreateSidebarPane,
+      this.onCreateSidebarPane.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.CreateToolbarButton,
+      this.onCreateToolbarButton.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.EvaluateOnInspectedPage,
+      this.onEvaluateOnInspectedPage.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.ForwardKeyboardEvent,
+      this.onForwardKeyboardEvent.bind(this)
+    );
+    this.registerHandler(Extensions2.ExtensionAPI.PrivateAPI.Commands.GetHAR, this.onGetHAR.bind(this));
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.GetPageResources,
+      this.onGetPageResources.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.GetRequestContent,
+      this.onGetRequestContent.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.GetResourceContent,
+      this.onGetResourceContent.bind(this)
+    );
+    this.registerHandler(Extensions2.ExtensionAPI.PrivateAPI.Commands.Reload, this.onReload.bind(this));
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.SetOpenResourceHandler,
+      this.onSetOpenResourceHandler.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.SetThemeChangeHandler,
+      this.onSetThemeChangeHandler.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.SetResourceContent,
+      this.onSetResourceContent.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.AttachSourceMapToResource,
+      this.onAttachSourceMapToResource.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.SetSidebarHeight,
+      this.onSetSidebarHeight.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.SetSidebarContent,
+      this.onSetSidebarContent.bind(this)
+    );
+    this.registerHandler(Extensions2.ExtensionAPI.PrivateAPI.Commands.SetSidebarPage, this.onSetSidebarPage.bind(this));
+    this.registerHandler(Extensions2.ExtensionAPI.PrivateAPI.Commands.ShowPanel, this.onShowPanel.bind(this));
+    this.registerHandler(Extensions2.ExtensionAPI.PrivateAPI.Commands.Subscribe, this.onSubscribe.bind(this));
+    this.registerHandler(Extensions2.ExtensionAPI.PrivateAPI.Commands.OpenResource, this.onOpenResource.bind(this));
+    this.registerHandler(Extensions2.ExtensionAPI.PrivateAPI.Commands.Unsubscribe, this.onUnsubscribe.bind(this));
+    this.registerHandler(Extensions2.ExtensionAPI.PrivateAPI.Commands.UpdateButton, this.onUpdateButton.bind(this));
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.RegisterLanguageExtensionPlugin,
+      this.registerLanguageExtensionEndpoint.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmLinearMemory,
+      this.onGetWasmLinearMemory.bind(this)
+    );
+    this.registerHandler(Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmGlobal, this.onGetWasmGlobal.bind(this));
+    this.registerHandler(Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmLocal, this.onGetWasmLocal.bind(this));
+    this.registerHandler(Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmOp, this.onGetWasmOp.bind(this));
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.RegisterRecorderExtensionPlugin,
+      this.registerRecorderExtensionEndpoint.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.ReportResourceLoad,
+      this.onReportResourceLoad.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.SetFunctionRangesForScript,
+      this.onSetFunctionRangesForScript.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.CreateRecorderView,
+      this.onCreateRecorderView.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.ShowRecorderView,
+      this.onShowRecorderView.bind(this)
+    );
+    this.registerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Commands.ShowNetworkPanel,
+      this.onShowNetworkPanel.bind(this)
+    );
     window.addEventListener("message", this.onWindowMessage, false);
     const existingTabId = window.DevToolsAPI?.getInspectedTabId?.();
     if (existingTabId) {
       this.setInspectedTabId({ data: existingTabId });
     }
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(Host5.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
+    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.events.addEventListener(
+      Host5.InspectorFrontendHostAPI.Events.SetInspectedTabId,
+      this.setInspectedTabId,
+      this
+    );
     this.initExtensions();
     ThemeSupport.ThemeSupport.instance().addEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
   }
@@ -1807,15 +1903,26 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return this.extensionsEnabled;
   }
   dispose() {
-    ThemeSupport.ThemeSupport.instance().removeEventListener(ThemeSupport.ThemeChangeEvent.eventName, this.#onThemeChange);
-    SDK3.TargetManager.TargetManager.instance().removeEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
-    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(Host5.InspectorFrontendHostAPI.Events.SetInspectedTabId, this.setInspectedTabId, this);
+    ThemeSupport.ThemeSupport.instance().removeEventListener(
+      ThemeSupport.ThemeChangeEvent.eventName,
+      this.#onThemeChange
+    );
+    SDK3.TargetManager.TargetManager.instance().removeEventListener(
+      SDK3.TargetManager.Events.INSPECTED_URL_CHANGED,
+      this.inspectedURLChanged,
+      this
+    );
+    Host5.InspectorFrontendHost.InspectorFrontendHostInstance.events.removeEventListener(
+      Host5.InspectorFrontendHostAPI.Events.SetInspectedTabId,
+      this.setInspectedTabId,
+      this
+    );
     window.removeEventListener("message", this.onWindowMessage, false);
   }
   #onThemeChange = () => {
     const themeName = ThemeSupport.ThemeSupport.instance().themeName();
     for (const port of this.themeChangeHandlers.values()) {
-      port.postMessage({ command: "host-theme-change", themeName });
+      port.postMessage({ command: Extensions2.ExtensionAPI.PrivateAPI.Events.ThemeChange, themeName });
     }
   };
   static instance(opts = { forceNew: null }) {
@@ -1835,26 +1942,29 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return Boolean(this.registeredExtensions.size);
   }
   notifySearchAction(panelId, action2, searchString) {
-    this.postNotification("panel-search-" + panelId, [action2, searchString]);
+    this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.PanelSearch + panelId, [action2, searchString]);
   }
   notifyViewShown(identifier, frameIndex) {
-    this.postNotification("view-shown-" + identifier, [frameIndex]);
+    this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.ViewShown + identifier, [frameIndex]);
   }
   notifyViewHidden(identifier) {
-    this.postNotification("view-hidden," + identifier, []);
+    this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.ViewHidden + identifier, []);
   }
   notifyButtonClicked(identifier) {
-    this.postNotification("button-clicked-" + identifier, []);
+    this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.ButtonClicked + identifier, []);
   }
   profilingStarted() {
-    this.postNotification("profiling-started-", []);
+    this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.ProfilingStarted, []);
   }
   profilingStopped() {
-    this.postNotification("profiling-stopped-", []);
+    this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.ProfilingStopped, []);
   }
   registerLanguageExtensionEndpoint(message, _shared_port) {
-    if (message.command !== "registerLanguageExtensionPlugin") {
-      return this.status.E_BADARG("command", `expected ${"registerLanguageExtensionPlugin"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.RegisterLanguageExtensionPlugin) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.RegisterLanguageExtensionPlugin}`
+      );
     }
     const { pluginManager } = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance();
     const { pluginName, port, supportedScriptTypes: { language, symbol_types } } = message;
@@ -1864,7 +1974,14 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (!registration) {
       throw new Error("Received a message from an unregistered extension");
     }
-    const endpoint = new Extensions2.LanguageExtensionEndpoint.LanguageExtensionEndpoint(registration.allowFileAccess, extensionOrigin, pluginName, { language, symbol_types: symbol_types_array }, port, pluginManager);
+    const endpoint = new Extensions2.LanguageExtensionEndpoint.LanguageExtensionEndpoint(
+      registration.allowFileAccess,
+      extensionOrigin,
+      pluginName,
+      { language, symbol_types: symbol_types_array },
+      port,
+      pluginManager
+    );
     pluginManager.addPlugin(endpoint);
     return this.status.OK();
   }
@@ -1888,10 +2005,18 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return this.status.E_FAILED("Failed");
   }
   async onGetWasmLinearMemory(message) {
-    if (message.command !== "getWasmLinearMemory") {
-      return this.status.E_BADARG("command", `expected ${"getWasmLinearMemory"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmLinearMemory) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmLinearMemory}`
+      );
     }
-    return await this.loadWasmValue(false, (result) => result.value, `[].slice.call(new Uint8Array(memories[0].buffer, ${Number(message.offset)}, ${Number(message.length)}))`, message.stopId);
+    return await this.loadWasmValue(
+      false,
+      (result) => result.value,
+      `[].slice.call(new Uint8Array(memories[0].buffer, ${Number(message.offset)}, ${Number(message.length)}))`,
+      message.stopId
+    );
   }
   convertWasmValue(valueClass, index) {
     return (obj) => {
@@ -1918,32 +2043,50 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     };
   }
   async onGetWasmGlobal(message) {
-    if (message.command !== "getWasmGlobal") {
-      return this.status.E_BADARG("command", `expected ${"getWasmGlobal"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmGlobal) {
+      return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmGlobal}`);
     }
     const global = Number(message.global);
-    const result = await this.loadWasmValue(true, this.convertWasmValue("global", global), `globals[${global}]`, message.stopId);
+    const result = await this.loadWasmValue(
+      true,
+      this.convertWasmValue("global", global),
+      `globals[${global}]`,
+      message.stopId
+    );
     return result ?? this.status.E_BADARG("global", `No global with index ${global}`);
   }
   async onGetWasmLocal(message) {
-    if (message.command !== "getWasmLocal") {
-      return this.status.E_BADARG("command", `expected ${"getWasmLocal"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmLocal) {
+      return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmLocal}`);
     }
     const local = Number(message.local);
-    const result = await this.loadWasmValue(true, this.convertWasmValue("local", local), `locals[${local}]`, message.stopId);
+    const result = await this.loadWasmValue(
+      true,
+      this.convertWasmValue("local", local),
+      `locals[${local}]`,
+      message.stopId
+    );
     return result ?? this.status.E_BADARG("local", `No local with index ${local}`);
   }
   async onGetWasmOp(message) {
-    if (message.command !== "getWasmOp") {
-      return this.status.E_BADARG("command", `expected ${"getWasmOp"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmOp) {
+      return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.GetWasmOp}`);
     }
     const op = Number(message.op);
-    const result = await this.loadWasmValue(true, this.convertWasmValue("operand", op), `stack[${op}]`, message.stopId);
+    const result = await this.loadWasmValue(
+      true,
+      this.convertWasmValue("operand", op),
+      `stack[${op}]`,
+      message.stopId
+    );
     return result ?? this.status.E_BADARG("op", `No operand with index ${op}`);
   }
   registerRecorderExtensionEndpoint(message, _shared_port) {
-    if (message.command !== "registerRecorderExtensionPlugin") {
-      return this.status.E_BADARG("command", `expected ${"registerRecorderExtensionPlugin"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.RegisterRecorderExtensionPlugin) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.RegisterRecorderExtensionPlugin}`
+      );
     }
     const extensionOrigin = this.getExtensionOrigin(_shared_port);
     const extension = this.registeredExtensions.get(extensionOrigin);
@@ -1952,12 +2095,22 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
     const { pluginName, mediaType, port, capabilities } = message;
     const recorderPluginManager = Extensions2.RecorderPluginManager.RecorderPluginManager.instance();
-    recorderPluginManager.addPlugin(new Extensions2.RecorderExtensionEndpoint.RecorderExtensionEndpoint(pluginName, port, capabilities, extensionOrigin, recorderPluginManager, mediaType));
+    recorderPluginManager.addPlugin(new Extensions2.RecorderExtensionEndpoint.RecorderExtensionEndpoint(
+      pluginName,
+      port,
+      capabilities,
+      extensionOrigin,
+      recorderPluginManager,
+      mediaType
+    ));
     return this.status.OK();
   }
   onReportResourceLoad(message) {
-    if (message.command !== "reportResourceLoad") {
-      return this.status.E_BADARG("command", `expected ${"reportResourceLoad"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.ReportResourceLoad) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.ReportResourceLoad}`
+      );
     }
     const { resourceUrl, extensionId, status } = message;
     const url = resourceUrl;
@@ -1974,8 +2127,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return this.status.OK();
   }
   onSetFunctionRangesForScript(message, port) {
-    if (message.command !== "setFunctionRangesForScript") {
-      return this.status.E_BADARG("command", `expected ${"setFunctionRangesForScript"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.SetFunctionRangesForScript) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.SetFunctionRangesForScript}`
+      );
     }
     const { scriptUrl, ranges } = message;
     if (!scriptUrl || !ranges?.length) {
@@ -1997,8 +2153,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return this.status.OK();
   }
   onShowRecorderView(message, port) {
-    if (message.command !== "showRecorderView") {
-      return this.status.E_BADARG("command", `expected ${"showRecorderView"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.ShowRecorderView) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.ShowRecorderView}`
+      );
     }
     if (this.recorderViewPortMap.get(message.id) !== port) {
       return this.status.E_FAILED("Permission denied");
@@ -2007,15 +2166,21 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return void 0;
   }
   onShowNetworkPanel(message) {
-    if (message.command !== "showNetworkPanel") {
-      return this.status.E_BADARG("command", `expected ${"showNetworkPanel"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.ShowNetworkPanel) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.ShowNetworkPanel}`
+      );
     }
     void Common5.Revealer.reveal(new RevealableNetworkRequestFilter(message.filter));
     return this.status.OK();
   }
   onCreateRecorderView(message, port) {
-    if (message.command !== "createRecorderView") {
-      return this.status.E_BADARG("command", `expected ${"createRecorderView"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.CreateRecorderView) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.CreateRecorderView}`
+      );
     }
     const id = message.id;
     if (this.clientObjects.has(id)) {
@@ -2055,7 +2220,7 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     this.clearExtensionHeaders(event.data.inspectedURL());
     this.enableExtensions();
     const url = event.data.inspectedURL();
-    this.postNotification("inspected-url-changed", [url]);
+    this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.InspectedURLChanged, [url]);
     const extensions = this.#pendingExtensions.splice(0);
     extensions.forEach((e) => this.addExtension(e));
   }
@@ -2086,8 +2251,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
   }
   onSubscribe(message, port) {
-    if (message.command !== "subscribe") {
-      return this.status.E_BADARG("command", `expected ${"subscribe"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.Subscribe) {
+      return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.Subscribe}`);
     }
     const subscribers = this.subscribers.get(message.type);
     if (subscribers) {
@@ -2102,8 +2267,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return void 0;
   }
   onUnsubscribe(message, port) {
-    if (message.command !== "unsubscribe") {
-      return this.status.E_BADARG("command", `expected ${"unsubscribe"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.Unsubscribe) {
+      return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.Unsubscribe}`);
     }
     const subscribers = this.subscribers.get(message.type);
     if (!subscribers) {
@@ -2120,8 +2285,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return void 0;
   }
   onAddRequestHeaders(message, port) {
-    if (message.command !== "addRequestHeaders") {
-      return this.status.E_BADARG("command", `expected ${"addRequestHeaders"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.AddRequestHeaders) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.AddRequestHeaders}`
+      );
     }
     const id = this.getExtensionOrigin(port);
     const extension = this.registeredExtensions.get(id);
@@ -2150,8 +2318,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return origin;
   }
   onCreatePanel(message, port) {
-    if (message.command !== "createPanel") {
-      return this.status.E_BADARG("command", `expected ${"createPanel"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.CreatePanel) {
+      return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.CreatePanel}`);
     }
     const id = message.id;
     if (this.clientObjects.has(id) || UI7.InspectorView.InspectorView.instance().hasPanel(id)) {
@@ -2163,14 +2331,18 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
     let persistentId = this.getExtensionOrigin(port) + message.title;
     persistentId = persistentId.replace(/\s|:\d+/g, "");
-    const panelView = new ExtensionServerPanelView(persistentId, i18n11.i18n.lockedString(message.title), new ExtensionPanel(this, persistentId, id, page));
+    const panelView = new ExtensionServerPanelView(
+      persistentId,
+      i18n11.i18n.lockedString(message.title),
+      new ExtensionPanel(this, persistentId, id, page)
+    );
     this.clientObjects.set(id, panelView);
     UI7.InspectorView.InspectorView.instance().addPanel(panelView);
     return this.status.OK();
   }
   onShowPanel(message) {
-    if (message.command !== "showPanel") {
-      return this.status.E_BADARG("command", `expected ${"showPanel"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.ShowPanel) {
+      return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.ShowPanel}`);
     }
     let panelViewId = message.id;
     const panelView = this.clientObjects.get(message.id);
@@ -2181,8 +2353,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return void 0;
   }
   onCreateToolbarButton(message, port) {
-    if (message.command !== "createToolbarButton") {
-      return this.status.E_BADARG("command", `expected ${"createToolbarButton"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.CreateToolbarButton) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.CreateToolbarButton}`
+      );
     }
     const panelView = this.clientObjects.get(message.panel);
     if (!panelView || !(panelView instanceof ExtensionServerPanelView)) {
@@ -2201,8 +2376,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return this.status.OK();
   }
   onUpdateButton(message, port) {
-    if (message.command !== "updateButton") {
-      return this.status.E_BADARG("command", `expected ${"updateButton"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.UpdateButton) {
+      return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.UpdateButton}`);
     }
     const button = this.clientObjects.get(message.id);
     if (!button || !(button instanceof ExtensionButton)) {
@@ -2216,22 +2391,28 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return this.status.OK();
   }
   onCreateSidebarPane(message) {
-    if (message.command !== "createSidebarPane") {
-      return this.status.E_BADARG("command", `expected ${"createSidebarPane"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.CreateSidebarPane) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.CreateSidebarPane}`
+      );
     }
     const id = message.id;
     const sidebar = new ExtensionSidebarPane(this, message.panel, i18n11.i18n.lockedString(message.title), id);
     this.#sidebarPanes.push(sidebar);
     this.clientObjects.set(id, sidebar);
-    this.dispatchEventToListeners("SidebarPaneAdded", sidebar);
+    this.dispatchEventToListeners("SidebarPaneAdded" /* SidebarPaneAdded */, sidebar);
     return this.status.OK();
   }
   sidebarPanes() {
     return this.#sidebarPanes;
   }
   onSetSidebarHeight(message) {
-    if (message.command !== "setSidebarHeight") {
-      return this.status.E_BADARG("command", `expected ${"setSidebarHeight"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.SetSidebarHeight) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.SetSidebarHeight}`
+      );
     }
     const sidebar = this.clientObjects.get(message.id);
     if (!sidebar || !(sidebar instanceof ExtensionSidebarPane)) {
@@ -2241,8 +2422,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return this.status.OK();
   }
   onSetSidebarContent(message, port) {
-    if (message.command !== "setSidebarContent") {
-      return this.status.E_BADARG("command", `expected ${"setSidebarContent"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.SetSidebarContent) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.SetSidebarContent}`
+      );
     }
     const { requestId, id, rootTitle, expression, evaluateOptions, evaluateOnPage } = message;
     const sidebar = this.clientObjects.get(id);
@@ -2261,8 +2445,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return void 0;
   }
   onSetSidebarPage(message, port) {
-    if (message.command !== "setSidebarPage") {
-      return this.status.E_BADARG("command", `expected ${"setSidebarPage"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.SetSidebarPage) {
+      return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.SetSidebarPage}`);
     }
     const sidebar = this.clientObjects.get(message.id);
     if (!sidebar || !(sidebar instanceof ExtensionSidebarPane)) {
@@ -2276,8 +2460,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return void 0;
   }
   onOpenResource(message) {
-    if (message.command !== "openResource") {
-      return this.status.E_BADARG("command", `expected ${"openResource"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.OpenResource) {
+      return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.OpenResource}`);
     }
     const uiSourceCode = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(message.url);
     if (uiSourceCode) {
@@ -2297,8 +2481,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return this.status.E_NOTFOUND(message.url);
   }
   onSetOpenResourceHandler(message, port) {
-    if (message.command !== "setOpenResourceHandler") {
-      return this.status.E_BADARG("command", `expected ${"setOpenResourceHandler"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.SetOpenResourceHandler) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.SetOpenResourceHandler}`
+      );
     }
     const extension = this.registeredExtensions.get(this.getExtensionOrigin(port));
     if (!extension) {
@@ -2333,8 +2520,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return void 0;
   }
   onSetThemeChangeHandler(message, port) {
-    if (message.command !== "setThemeChangeHandler") {
-      return this.status.E_BADARG("command", `expected ${"setThemeChangeHandler"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.SetThemeChangeHandler) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.SetThemeChangeHandler}`
+      );
     }
     const extensionOrigin = this.getExtensionOrigin(port);
     const extension = this.registeredExtensions.get(extensionOrigin);
@@ -2380,7 +2570,9 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
    */
   extensionAllowedOnContentProvider(contentProvider, port) {
     if (contentProvider instanceof Workspace.UISourceCode.UISourceCode) {
-      const debuggerSourceMapURLs = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapURLsForUISourceCode(contentProvider);
+      const debuggerSourceMapURLs = Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().sourceMapURLsForUISourceCode(
+        contentProvider
+      );
       const cssSourceMapURLs = Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().sourceMapURLsForUISourceCode(contentProvider);
       const sourceMapURLs = [...debuggerSourceMapURLs, ...cssSourceMapURLs];
       if (sourceMapURLs.some((url) => !this.extensionAllowedOnURL(url, port))) {
@@ -2443,8 +2635,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return this.extensionAllowedOnURL(target.inspectedURL(), port);
   }
   onReload(message, port) {
-    if (message.command !== "Reload") {
-      return this.status.E_BADARG("command", `expected ${"Reload"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.Reload) {
+      return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.Reload}`);
     }
     const options = message.options || {};
     let injectedScript;
@@ -2459,13 +2651,19 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     if (!this.extensionAllowedOnTarget(target, port)) {
       return this.status.E_FAILED("Permission denied");
     }
-    SDK3.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(typeof options.userAgent === "string" ? options.userAgent : "", null);
+    SDK3.NetworkManager.MultitargetNetworkManager.instance().setUserAgentOverride(
+      typeof options.userAgent === "string" ? options.userAgent : "",
+      null
+    );
     resourceTreeModel?.reloadPage(Boolean(options.ignoreCache), injectedScript);
     return this.status.OK();
   }
   onEvaluateOnInspectedPage(message, port) {
-    if (message.command !== "evaluateOnInspectedPage") {
-      return this.status.E_BADARG("command", `expected ${"evaluateOnInspectedPage"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.EvaluateOnInspectedPage) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.EvaluateOnInspectedPage}`
+      );
     }
     const { requestId, expression, evaluateOptions } = message;
     function callback(error, object, wasThrown) {
@@ -2530,8 +2728,8 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return false;
   }
   async onGetHAR(message, port) {
-    if (message.command !== "getHAR") {
-      return this.status.E_BADARG("command", `expected ${"getHAR"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.GetHAR) {
+      return this.status.E_BADARG("command", `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.GetHAR}`);
     }
     const requests = Logs.NetworkLog.NetworkLog.instance().requests().filter((r) => this.extensionAllowedOnContentProvider(r, port));
     const harLog = await HAR.Log.Log.build(requests, { sanitize: false });
@@ -2560,10 +2758,16 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
       }
       return false;
     }
-    let uiSourceCodes = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodesForProjectType(Workspace.Workspace.projectTypes.Network);
-    uiSourceCodes = uiSourceCodes.concat(Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodesForProjectType(Workspace.Workspace.projectTypes.ContentScripts));
+    let uiSourceCodes = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodesForProjectType(
+      Workspace.Workspace.projectTypes.Network
+    );
+    uiSourceCodes = uiSourceCodes.concat(Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodesForProjectType(
+      Workspace.Workspace.projectTypes.ContentScripts
+    ));
     uiSourceCodes.forEach(pushResourceData.bind(this));
-    for (const resourceTreeModel of SDK3.TargetManager.TargetManager.instance().models(SDK3.ResourceTreeModel.ResourceTreeModel)) {
+    for (const resourceTreeModel of SDK3.TargetManager.TargetManager.instance().models(
+      SDK3.ResourceTreeModel.ResourceTreeModel
+    )) {
       if (this.extensionAllowedOnTarget(resourceTreeModel.target(), port)) {
         resourceTreeModel.forAllResources(pushResourceData.bind(this));
       }
@@ -2585,8 +2789,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     this.dispatchCallback(message.requestId, port, { encoding, content });
   }
   onGetRequestContent(message, port) {
-    if (message.command !== "getRequestContent") {
-      return this.status.E_BADARG("command", `expected ${"getRequestContent"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.GetRequestContent) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.GetRequestContent}`
+      );
     }
     const request = this.requestById(message.id);
     if (!request) {
@@ -2596,8 +2803,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return void 0;
   }
   onGetResourceContent(message, port) {
-    if (message.command !== "getResourceContent") {
-      return this.status.E_BADARG("command", `expected ${"getResourceContent"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.GetResourceContent) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.GetResourceContent}`
+      );
     }
     const url = message.url;
     const contentProvider = Workspace.Workspace.WorkspaceImpl.instance().uiSourceCodeForURL(url) || Bindings.ResourceUtils.resourceForURL(url);
@@ -2608,8 +2818,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return void 0;
   }
   onAttachSourceMapToResource(message, port) {
-    if (message.command !== "attachSourceMapToResource") {
-      return this.status.E_BADARG("command", `expected ${"getResourceContent"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.AttachSourceMapToResource) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.GetResourceContent}`
+      );
     }
     if (!message.sourceMapURL) {
       return this.status.E_FAILED("Expected a source map URL but got null");
@@ -2629,8 +2842,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return this.status.OK();
   }
   onSetResourceContent(message, port) {
-    if (message.command !== "setResourceContent") {
-      return this.status.E_BADARG("command", `expected ${"setResourceContent"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.SetResourceContent) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.SetResourceContent}`
+      );
     }
     const { url, requestId, content, commit } = message;
     function callbackWrapper(error) {
@@ -2643,7 +2859,10 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
     const { uiSourceCode } = resource;
     if (!uiSourceCode.contentType().isDocumentOrScriptOrStyleSheet()) {
-      const resource2 = SDK3.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK3.TargetManager.TargetManager.instance(), url);
+      const resource2 = SDK3.ResourceTreeModel.ResourceTreeModel.resourceForURL(
+        SDK3.TargetManager.TargetManager.instance(),
+        url
+      );
       if (!resource2) {
         return this.status.E_NOTFOUND(url);
       }
@@ -2670,8 +2889,11 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     return this.requests.get(id);
   }
   onForwardKeyboardEvent(message) {
-    if (message.command !== "_forwardKeyboardEvent") {
-      return this.status.E_BADARG("command", `expected ${"_forwardKeyboardEvent"}`);
+    if (message.command !== Extensions2.ExtensionAPI.PrivateAPI.Commands.ForwardKeyboardEvent) {
+      return this.status.E_BADARG(
+        "command",
+        `expected ${Extensions2.ExtensionAPI.PrivateAPI.Commands.ForwardKeyboardEvent}`
+      );
     }
     if (!Array.isArray(message.entries)) {
       return this.status.E_BADARG("entries", "expected array");
@@ -2760,57 +2982,96 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     }
   }
   initExtensions() {
-    this.registerAutosubscriptionHandler("resource-added", Workspace.Workspace.WorkspaceImpl.instance(), Workspace.Workspace.Events.UISourceCodeAdded, this.notifyResourceAdded);
-    this.registerAutosubscriptionTargetManagerHandler("network-request-finished", SDK3.NetworkManager.NetworkManager, SDK3.NetworkManager.Events.RequestFinished, this.notifyRequestFinished);
+    this.registerAutosubscriptionHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Events.ResourceAdded,
+      Workspace.Workspace.WorkspaceImpl.instance(),
+      Workspace.Workspace.Events.UISourceCodeAdded,
+      this.notifyResourceAdded
+    );
+    this.registerAutosubscriptionTargetManagerHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished,
+      SDK3.NetworkManager.NetworkManager,
+      SDK3.NetworkManager.Events.RequestFinished,
+      this.notifyRequestFinished
+    );
     function onElementsSubscriptionStarted() {
-      UI7.Context.Context.instance().addFlavorChangeListener(SDK3.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
+      UI7.Context.Context.instance().addFlavorChangeListener(
+        SDK3.DOMModel.DOMNode,
+        this.notifyElementsSelectionChanged,
+        this
+      );
     }
     function onElementsSubscriptionStopped() {
-      UI7.Context.Context.instance().removeFlavorChangeListener(SDK3.DOMModel.DOMNode, this.notifyElementsSelectionChanged, this);
+      UI7.Context.Context.instance().removeFlavorChangeListener(
+        SDK3.DOMModel.DOMNode,
+        this.notifyElementsSelectionChanged,
+        this
+      );
     }
-    this.registerSubscriptionHandler("panel-objectSelected-elements", onElementsSubscriptionStarted.bind(this), onElementsSubscriptionStopped.bind(this));
+    this.registerSubscriptionHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + "elements",
+      onElementsSubscriptionStarted.bind(this),
+      onElementsSubscriptionStopped.bind(this)
+    );
     this.registerResourceContentCommittedHandler(this.notifyUISourceCodeContentCommitted);
-    SDK3.TargetManager.TargetManager.instance().addEventListener("InspectedURLChanged", this.inspectedURLChanged, this);
+    SDK3.TargetManager.TargetManager.instance().addEventListener(
+      SDK3.TargetManager.Events.INSPECTED_URL_CHANGED,
+      this.inspectedURLChanged,
+      this
+    );
   }
   notifyResourceAdded(event) {
     const uiSourceCode = event.data;
     const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
     const targetUrl = target?.inspectedURL();
-    this.postNotification("resource-added", [this.makeResource(uiSourceCode)], (extension) => extension.isAllowedOnTarget(uiSourceCode.url()) && (!targetUrl || extension.isAllowedOnTarget(targetUrl)));
+    this.postNotification(
+      Extensions2.ExtensionAPI.PrivateAPI.Events.ResourceAdded,
+      [this.makeResource(uiSourceCode)],
+      (extension) => extension.isAllowedOnTarget(uiSourceCode.url()) && (!targetUrl || extension.isAllowedOnTarget(targetUrl))
+    );
   }
   notifyUISourceCodeContentCommitted(event) {
     const { uiSourceCode, content } = event.data;
     const target = Bindings.NetworkProject.NetworkProject.targetForUISourceCode(uiSourceCode);
     const targetUrl = target?.inspectedURL();
-    this.postNotification("resource-content-committed", [this.makeResource(uiSourceCode), content], (extension) => extension.isAllowedOnTarget(uiSourceCode.url()) && (!targetUrl || extension.isAllowedOnTarget(targetUrl)));
+    this.postNotification(
+      Extensions2.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted,
+      [this.makeResource(uiSourceCode), content],
+      (extension) => extension.isAllowedOnTarget(uiSourceCode.url()) && (!targetUrl || extension.isAllowedOnTarget(targetUrl))
+    );
   }
   async notifyRequestFinished(event) {
     if (!this.extensionsEnabled) {
       return;
     }
-    if (!this.subscribers.has(
-      "network-request-finished"
-      /* Extensions.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished */
-    )) {
+    if (!this.subscribers.has(Extensions2.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished)) {
       return;
     }
     const request = event.data;
     const entry = await HAR.Log.Entry.build(request, { sanitize: false });
     const networkManager = SDK3.NetworkManager.NetworkManager.forRequest(request);
     const targetUrl = networkManager?.target()?.inspectedURL();
-    this.postNotification("network-request-finished", [this.requestId(request), entry], (extension) => extension.isAllowedOnTarget(entry.request.url) && (!targetUrl || extension.isAllowedOnTarget(targetUrl)) && !this.harEntryReferencesBlockedURL(entry, extension));
+    this.postNotification(
+      Extensions2.ExtensionAPI.PrivateAPI.Events.NetworkRequestFinished,
+      [this.requestId(request), entry],
+      (extension) => extension.isAllowedOnTarget(entry.request.url) && (!targetUrl || extension.isAllowedOnTarget(targetUrl)) && !this.harEntryReferencesBlockedURL(entry, extension)
+    );
   }
   notifyElementsSelectionChanged() {
-    this.postNotification("panel-objectSelected-elements", []);
+    this.postNotification(Extensions2.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + "elements", []);
   }
   sourceSelectionChanged(url, range) {
-    this.postNotification("panel-objectSelected-sources", [{
-      startLine: range.startLine,
-      startColumn: range.startColumn,
-      endLine: range.endLine,
-      endColumn: range.endColumn,
-      url
-    }], (extension) => extension.isAllowedOnTarget(url));
+    this.postNotification(
+      Extensions2.ExtensionAPI.PrivateAPI.Events.PanelObjectSelected + "sources",
+      [{
+        startLine: range.startLine,
+        startColumn: range.startColumn,
+        endLine: range.endLine,
+        endColumn: range.endColumn,
+        url
+      }],
+      (extension) => extension.isAllowedOnTarget(url)
+    );
   }
   setInspectedTabId(event) {
     const oldId = this.inspectedTabId;
@@ -2854,8 +3115,17 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
         return;
       }
       if (!this.registeredExtensions.get(extensionOrigin)) {
-        const injectedAPI = self.buildExtensionAPIInjectedScript(extensionInfo, this.inspectedTabId, ThemeSupport.ThemeSupport.instance().themeName(), UI7.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(), _ExtensionServer.instance().extensionAPITestHook);
-        Host5.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(extensionOrigin, injectedAPI);
+        const injectedAPI = self.buildExtensionAPIInjectedScript(
+          extensionInfo,
+          this.inspectedTabId,
+          ThemeSupport.ThemeSupport.instance().themeName(),
+          UI7.ShortcutRegistry.ShortcutRegistry.instance().globalShortcutKeys(),
+          _ExtensionServer.instance().extensionAPITestHook
+        );
+        Host5.InspectorFrontendHost.InspectorFrontendHostInstance.setInjectedScriptForOrigin(
+          extensionOrigin,
+          injectedAPI
+        );
         this.registeredExtensions.set(extensionOrigin, extensionRegistration);
       }
       this.addExtensionFrame(extensionInfo);
@@ -2924,21 +3194,52 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     this.subscriptionStopHandlers.set(eventTopic, onUnsubscribeLast);
   }
   registerAutosubscriptionHandler(eventTopic, eventTarget, frontendEventType, handler) {
-    this.registerSubscriptionHandler(eventTopic, () => eventTarget.addEventListener(frontendEventType, handler, this), () => eventTarget.removeEventListener(frontendEventType, handler, this));
+    this.registerSubscriptionHandler(
+      eventTopic,
+      () => eventTarget.addEventListener(frontendEventType, handler, this),
+      () => eventTarget.removeEventListener(frontendEventType, handler, this)
+    );
   }
   registerAutosubscriptionTargetManagerHandler(eventTopic, modelClass, frontendEventType, handler) {
-    this.registerSubscriptionHandler(eventTopic, () => SDK3.TargetManager.TargetManager.instance().addModelListener(modelClass, frontendEventType, handler, this, { scoped: true }), () => SDK3.TargetManager.TargetManager.instance().removeModelListener(modelClass, frontendEventType, handler, this));
+    this.registerSubscriptionHandler(
+      eventTopic,
+      () => SDK3.TargetManager.TargetManager.instance().addModelListener(
+        modelClass,
+        frontendEventType,
+        handler,
+        this,
+        { scoped: true }
+      ),
+      () => SDK3.TargetManager.TargetManager.instance().removeModelListener(
+        modelClass,
+        frontendEventType,
+        handler,
+        this
+      )
+    );
   }
   registerResourceContentCommittedHandler(handler) {
     function addFirstEventListener() {
-      Workspace.Workspace.WorkspaceImpl.instance().addEventListener(Workspace.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
+      Workspace.Workspace.WorkspaceImpl.instance().addEventListener(
+        Workspace.Workspace.Events.WorkingCopyCommittedByUser,
+        handler,
+        this
+      );
       Workspace.Workspace.WorkspaceImpl.instance().setHasResourceContentTrackingExtensions(true);
     }
     function removeLastEventListener() {
       Workspace.Workspace.WorkspaceImpl.instance().setHasResourceContentTrackingExtensions(false);
-      Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(Workspace.Workspace.Events.WorkingCopyCommittedByUser, handler, this);
+      Workspace.Workspace.WorkspaceImpl.instance().removeEventListener(
+        Workspace.Workspace.Events.WorkingCopyCommittedByUser,
+        handler,
+        this
+      );
     }
-    this.registerSubscriptionHandler("resource-content-committed", addFirstEventListener.bind(this), removeLastEventListener.bind(this));
+    this.registerSubscriptionHandler(
+      Extensions2.ExtensionAPI.PrivateAPI.Events.ResourceContentCommitted,
+      addFirstEventListener.bind(this),
+      removeLastEventListener.bind(this)
+    );
   }
   static expandResourcePath(extensionOrigin, resourcePath) {
     const strippedOrigin = new URL(extensionOrigin).origin;
@@ -3122,10 +3423,10 @@ var ExtensionServer = class _ExtensionServer extends Common5.ObjectWrapper.Objec
     SDK3.NetworkManager.MultitargetNetworkManager.instance().setExtraHTTPHeaders(allHeaders);
   }
 };
-var Events;
-(function(Events2) {
+var Events = /* @__PURE__ */ ((Events2) => {
   Events2["SidebarPaneAdded"] = "SidebarPaneAdded";
-})(Events || (Events = {}));
+  return Events2;
+})(Events || {});
 var ExtensionServerPanelView = class extends UI7.View.SimpleView {
   name;
   panel;
@@ -3172,7 +3473,7 @@ var ExtensionStatus = class {
   }
 };
 
-// gen/front_end/panels/common/PersistenceUtils.js
+// ../../front_end/panels/common/PersistenceUtils.ts
 var PersistenceUtils_exports = {};
 __export(PersistenceUtils_exports, {
   LinkDecorator: () => LinkDecorator,
@@ -3207,10 +3508,15 @@ var PersistenceUtils = class _PersistenceUtils {
       return "";
     }
     if (uiSourceCode === binding.network) {
-      return Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.tooltipForUISourceCode(binding.fileSystem);
+      return Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding.tooltipForUISourceCode(
+        binding.fileSystem
+      );
     }
     if (binding.network.contentType().isFromSourceMap()) {
-      return i18nString5(UIStrings5.linkedToSourceMapS, { PH1: Platform3.StringUtilities.trimMiddle(binding.network.url(), 150) });
+      return i18nString5(
+        UIStrings5.linkedToSourceMapS,
+        { PH1: Platform3.StringUtilities.trimMiddle(binding.network.url(), 150) }
+      );
     }
     return i18nString5(UIStrings5.linkedToS, { PH1: Platform3.StringUtilities.trimMiddle(binding.network.url(), 150) });
   }
@@ -3228,7 +3534,9 @@ var PersistenceUtils = class _PersistenceUtils {
     if (uiSourceCode.project().type() !== Workspace3.Workspace.projectTypes.FileSystem || !Common6.ParsedURL.schemeIs(uiSourceCode.url(), "file:")) {
       return null;
     }
-    if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(uiSourceCode)) {
+    if (Persistence.NetworkPersistenceManager.NetworkPersistenceManager.instance().isActiveHeaderOverrides(
+      uiSourceCode
+    )) {
       return html6`<devtools-icon class="small dot purple" name="document"></devtools-icon>`;
     }
     return html6`<devtools-icon class="small" name="document"
@@ -3244,19 +3552,19 @@ var LinkDecorator = class extends Common6.ObjectWrapper.ObjectWrapper {
   }
   bindingChanged(event) {
     const binding = event.data;
-    this.dispatchEventToListeners("LinkIconChanged", binding.network);
+    this.dispatchEventToListeners(Components2.Linkifier.LinkDecorator.Events.LINK_ICON_CHANGED, binding.network);
   }
   linkIcon(uiSourceCode) {
     return PersistenceUtils.iconForUISourceCode(uiSourceCode);
   }
 };
 
-// gen/front_end/panels/common/DOMLinkifier.js
+// ../../front_end/panels/common/DOMLinkifier.ts
 var DOMLinkifier_exports = {};
 __export(DOMLinkifier_exports, {
   DOMNodeLink: () => DOMNodeLink,
   DeferredDOMNodeLink: () => DeferredDOMNodeLink,
-  Linkifier: () => Linkifier2
+  Linkifier: () => Linkifier3
 });
 import * as Common7 from "../../core/common/common.js";
 import * as i18n15 from "../../core/i18n/i18n.js";
@@ -3323,7 +3631,7 @@ var domLinkifier_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./domLinkifier.css")} */`;
 
-// gen/front_end/panels/common/DOMLinkifier.js
+// ../../front_end/panels/common/DOMLinkifier.ts
 var { classMap, ifDefined } = Directives2;
 var { widget: widget2 } = UI8.Widget;
 var UIStrings6 = {
@@ -3508,7 +3816,7 @@ var DeferredDOMNodeLink = class extends UI8.Widget.Widget {
   }
 };
 var linkifierInstance;
-var Linkifier2 = class _Linkifier {
+var Linkifier3 = class _Linkifier {
   static instance(opts = { forceNew: null }) {
     const { forceNew } = opts;
     if (!linkifierInstance || forceNew) {

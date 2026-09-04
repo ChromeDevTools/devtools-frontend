@@ -15,10 +15,9 @@ interface PreloadingDetailsReportViewDataInternal {
 export interface ViewInput {
     data: PreloadingDetailsReportViewData;
 }
-declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target: HTMLElement) => void;
 export declare class PreloadingDetailsReportView extends UI.Widget.VBox {
     #private;
-    constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW);
+    constructor(element?: HTMLElement, view?: (input: ViewInput, _output: undefined, target: HTMLElement) => void);
     set data(data: PreloadingDetailsReportViewData);
     wasShown(): void;
     performUpdate(): void;

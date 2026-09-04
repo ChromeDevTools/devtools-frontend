@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/third_party/marked/package/lib/marked.esm.js
+// ../../front_end/third_party/marked/package/lib/marked.esm.js
 var marked_esm_exports = {};
 __export(marked_esm_exports, {
   Hooks: () => P,

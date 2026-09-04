@@ -26,6 +26,7 @@
     "../../../../../../front_end/core/sdk/EmulationModel.test.ts",
     "../../../../../../front_end/core/sdk/EnhancedTracesParser.test.ts",
     "../../../../../../front_end/core/sdk/NetworkRequest.test.ts",
+    "../../../../../../front_end/core/sdk/NetworkRequestAccess.test.ts",
     "../../../../../../front_end/core/sdk/OverlayColorGenerator.test.ts",
     "../../../../../../front_end/core/sdk/OverlayModel.test.ts",
     "../../../../../../front_end/core/sdk/PreloadingModel.test.ts",

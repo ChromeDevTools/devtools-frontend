@@ -1,4 +1,4 @@
-// gen/front_end/third_party/third-party-web/lib/nostats-subset.js
+// ../../front_end/third_party/third-party-web/lib/nostats-subset.js
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;

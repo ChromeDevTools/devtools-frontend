@@ -68,16 +68,16 @@ declare global {
         'devtools-grid-lanes-editor': GridLanesEditor;
     }
 }
-export declare const FlexboxEditableProperties: {
+export declare const FlexboxEditableProperties: Array<{
     propertyName: string;
     propertyValues: string[];
-}[];
-export declare const GridEditableProperties: {
+}>;
+export declare const GridEditableProperties: Array<{
     propertyName: string;
     propertyValues: string[];
-}[];
-export declare const GridLanesEditableProperties: {
+}>;
+export declare const GridLanesEditableProperties: Array<{
     propertyName: string;
     propertyValues: string[];
-}[];
+}>;
 export {};

@@ -1,4 +1,4 @@
-// gen/front_end/panels/utils/utils.prebundle.js
+// ../../front_end/panels/utils/utils.ts
 import "../../ui/kit/kit.js";
 import "../../ui/components/icon_button/icon_button.js";
 import * as Common from "../../core/common/common.js";
@@ -234,10 +234,10 @@ var PanelUtils = class _PanelUtils {
     let recordedOriginalSelector, recordedCurrentSelector;
     let hasOpenDeclarationBlock = false;
     for (const { currentLineNumber, originalLineNumber, type } of rows) {
-      if (type !== "deletion" && type !== "addition") {
+      if (type !== DiffView.DiffView.RowType.DELETION && type !== DiffView.DiffView.RowType.ADDITION) {
         continue;
       }
-      const isDeletion = type === "deletion";
+      const isDeletion = type === DiffView.DiffView.RowType.DELETION;
       const lines = isDeletion ? originalLines : currentLines;
       const lineIndex = isDeletion ? originalLineNumber - 1 : currentLineNumber - 1;
       const line = lines[lineIndex].trim();
@@ -277,11 +277,14 @@ var PanelUtils = class _PanelUtils {
   }
   static highlightElement(element) {
     element.scrollIntoViewIfNeeded();
-    element.animate([
-      { offset: 0, backgroundColor: "rgba(255, 255, 0, 0.2)" },
-      { offset: 0.1, backgroundColor: "rgba(255, 255, 0, 0.7)" },
-      { offset: 1, backgroundColor: "transparent" }
-    ], { duration: 2e3, easing: "cubic-bezier(0, 0, 0.2, 1)" });
+    element.animate(
+      [
+        { offset: 0, backgroundColor: "rgba(255, 255, 0, 0.2)" },
+        { offset: 0.1, backgroundColor: "rgba(255, 255, 0, 0.7)" },
+        { offset: 1, backgroundColor: "transparent" }
+      ],
+      { duration: 2e3, easing: "cubic-bezier(0, 0, 0.2, 1)" }
+    );
   }
 };
 async function buildStyleRuleMaps(content) {

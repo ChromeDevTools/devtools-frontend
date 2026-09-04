@@ -1,0 +1,1 @@
+gen/front_end/ui/legacy/components/cookie_table/cookie_table.js: gen/front_end/ui/legacy/components/data_grid/dataGridAiButton.css.js gen/front_end/ui/legacy/components/cookie_table/cookiesTable.css.js ../../front_end/ui/legacy/components/cookie_table/CookiesTable.ts ../../front_end/ui/legacy/components/cookie_table/cookie_table.ts

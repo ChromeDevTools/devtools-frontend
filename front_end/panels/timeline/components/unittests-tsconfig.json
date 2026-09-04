@@ -1,0 +1,121 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": true,
+    "composite": false,
+    "declaration": false,
+    "disableSourceOfProjectReferenceRedirect": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "inlineSources": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "outDir": ".",
+    "preserveConstEnums": true,
+    "rootDir": "../../../../../../../front_end/panels/timeline/components",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "typeRoots": [
+      "../../../../../../../node_modules/@types",
+      "../../../../../../../node_modules"
+    ],
+    "types": [
+      "mocha"
+    ],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../../../front_end/panels/timeline/components/BreadcrumbsUI.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/CWVMetrics.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/ExportTraceOptions.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/FieldSettingsDialog.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/IgnoreListSetting.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/InteractionBreakdown.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/Invalidations.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/LayoutShiftDetails.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/LiveMetricsView.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/MetricCard.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/NetworkRequestDetails.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/NetworkRequestTooltip.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/OriginMap.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/RelatedInsightChips.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/Sidebar.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/SidebarAnnotationsTab.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/SidebarInsightsTab.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/SidebarSingleInsightSet.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/TimelineRangeSummaryView.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/TimelineSummary.test.ts",
+    "../../../../../../../front_end/panels/timeline/components/Utils.test.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/platform/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../models/crux-manager/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../models/emulation/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../models/live-metrics/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../models/trace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../models/workspace/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/components/render_coordinator/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/legacy/components/utils/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "insights/bundle-tsconfig.ref.json"
+    }
+  ]
+}

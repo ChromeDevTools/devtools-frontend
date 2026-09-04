@@ -1,4 +1,4 @@
-// gen/front_end/third_party/lighthouse/report/bundle.js
+// ../../front_end/third_party/lighthouse/report/bundle.js
 var De = 0.8999999999999999;
 var Pe = 0.5;
 var Re = 0.49999999999999994;

@@ -119,16 +119,19 @@ export function describeWithEnvironment(title, fn, opts = {
         afterEach(async () => await deinitializeGlobalVars());
     });
 }
-describeWithEnvironment.only = function (title, fn, opts = {
-    reset: true,
-}) {
-    // eslint-disable-next-line mocha/no-exclusive-tests
-    return describe.only(title, function () {
-        beforeEach(async () => await initializeGlobalVars(opts));
-        fn.call(this);
-        afterEach(async () => await deinitializeGlobalVars());
-    });
-};
+(function (describeWithEnvironment) {
+    function only(title, fn, opts = {
+        reset: true,
+    }) {
+        // eslint-disable-next-line mocha/no-exclusive-tests
+        return describe.only(title, function () {
+            beforeEach(async () => await initializeGlobalVars(opts));
+            fn.call(this);
+            afterEach(async () => await deinitializeGlobalVars());
+        });
+    }
+    describeWithEnvironment.only = only;
+})(describeWithEnvironment || (describeWithEnvironment = {}));
 export function createFakeSetting(name, defaultValue) {
     const storage = new Common.Settings.SettingsStorage({}, undefined, 'test');
     return new Common.Settings.Setting(name, defaultValue, new Common.ObjectWrapper.ObjectWrapper(), storage, Common.Console.Console.instance());

@@ -3176,13 +3176,13 @@ var Debugger;
   })(PausedEventReason = Debugger2.PausedEventReason || (Debugger2.PausedEventReason = {}));
 })(Debugger || (Debugger = {}));
 var Runtime;
-((Runtime19) => {
+((Runtime20) => {
   let SerializationOptionsSerialization;
   ((SerializationOptionsSerialization2) => {
     SerializationOptionsSerialization2["Deep"] = "deep";
     SerializationOptionsSerialization2["Json"] = "json";
     SerializationOptionsSerialization2["IdOnly"] = "idOnly";
-  })(SerializationOptionsSerialization = Runtime19.SerializationOptionsSerialization || (Runtime19.SerializationOptionsSerialization = {}));
+  })(SerializationOptionsSerialization = Runtime20.SerializationOptionsSerialization || (Runtime20.SerializationOptionsSerialization = {}));
   let DeepSerializedValueType;
   ((DeepSerializedValueType2) => {
     DeepSerializedValueType2["Undefined"] = "undefined";
@@ -3209,7 +3209,7 @@ var Runtime;
     DeepSerializedValueType2["Node"] = "node";
     DeepSerializedValueType2["Window"] = "window";
     DeepSerializedValueType2["Generator"] = "generator";
-  })(DeepSerializedValueType = Runtime19.DeepSerializedValueType || (Runtime19.DeepSerializedValueType = {}));
+  })(DeepSerializedValueType = Runtime20.DeepSerializedValueType || (Runtime20.DeepSerializedValueType = {}));
   let RemoteObjectType;
   ((RemoteObjectType2) => {
     RemoteObjectType2["Object"] = "object";
@@ -3220,7 +3220,7 @@ var Runtime;
     RemoteObjectType2["Boolean"] = "boolean";
     RemoteObjectType2["Symbol"] = "symbol";
     RemoteObjectType2["Bigint"] = "bigint";
-  })(RemoteObjectType = Runtime19.RemoteObjectType || (Runtime19.RemoteObjectType = {}));
+  })(RemoteObjectType = Runtime20.RemoteObjectType || (Runtime20.RemoteObjectType = {}));
   let RemoteObjectSubtype;
   ((RemoteObjectSubtype2) => {
     RemoteObjectSubtype2["Array"] = "array";
@@ -3243,7 +3243,7 @@ var Runtime;
     RemoteObjectSubtype2["Webassemblymemory"] = "webassemblymemory";
     RemoteObjectSubtype2["Wasmvalue"] = "wasmvalue";
     RemoteObjectSubtype2["Trustedtype"] = "trustedtype";
-  })(RemoteObjectSubtype = Runtime19.RemoteObjectSubtype || (Runtime19.RemoteObjectSubtype = {}));
+  })(RemoteObjectSubtype = Runtime20.RemoteObjectSubtype || (Runtime20.RemoteObjectSubtype = {}));
   let ObjectPreviewType;
   ((ObjectPreviewType2) => {
     ObjectPreviewType2["Object"] = "object";
@@ -3254,7 +3254,7 @@ var Runtime;
     ObjectPreviewType2["Boolean"] = "boolean";
     ObjectPreviewType2["Symbol"] = "symbol";
     ObjectPreviewType2["Bigint"] = "bigint";
-  })(ObjectPreviewType = Runtime19.ObjectPreviewType || (Runtime19.ObjectPreviewType = {}));
+  })(ObjectPreviewType = Runtime20.ObjectPreviewType || (Runtime20.ObjectPreviewType = {}));
   let ObjectPreviewSubtype;
   ((ObjectPreviewSubtype2) => {
     ObjectPreviewSubtype2["Array"] = "array";
@@ -3277,7 +3277,7 @@ var Runtime;
     ObjectPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
     ObjectPreviewSubtype2["Wasmvalue"] = "wasmvalue";
     ObjectPreviewSubtype2["Trustedtype"] = "trustedtype";
-  })(ObjectPreviewSubtype = Runtime19.ObjectPreviewSubtype || (Runtime19.ObjectPreviewSubtype = {}));
+  })(ObjectPreviewSubtype = Runtime20.ObjectPreviewSubtype || (Runtime20.ObjectPreviewSubtype = {}));
   let PropertyPreviewType;
   ((PropertyPreviewType2) => {
     PropertyPreviewType2["Object"] = "object";
@@ -3289,7 +3289,7 @@ var Runtime;
     PropertyPreviewType2["Symbol"] = "symbol";
     PropertyPreviewType2["Accessor"] = "accessor";
     PropertyPreviewType2["Bigint"] = "bigint";
-  })(PropertyPreviewType = Runtime19.PropertyPreviewType || (Runtime19.PropertyPreviewType = {}));
+  })(PropertyPreviewType = Runtime20.PropertyPreviewType || (Runtime20.PropertyPreviewType = {}));
   let PropertyPreviewSubtype;
   ((PropertyPreviewSubtype2) => {
     PropertyPreviewSubtype2["Array"] = "array";
@@ -3312,7 +3312,7 @@ var Runtime;
     PropertyPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
     PropertyPreviewSubtype2["Wasmvalue"] = "wasmvalue";
     PropertyPreviewSubtype2["Trustedtype"] = "trustedtype";
-  })(PropertyPreviewSubtype = Runtime19.PropertyPreviewSubtype || (Runtime19.PropertyPreviewSubtype = {}));
+  })(PropertyPreviewSubtype = Runtime20.PropertyPreviewSubtype || (Runtime20.PropertyPreviewSubtype = {}));
   let ConsoleAPICalledEventType;
   ((ConsoleAPICalledEventType2) => {
     ConsoleAPICalledEventType2["Log"] = "log";
@@ -3333,7 +3333,7 @@ var Runtime;
     ConsoleAPICalledEventType2["ProfileEnd"] = "profileEnd";
     ConsoleAPICalledEventType2["Count"] = "count";
     ConsoleAPICalledEventType2["TimeEnd"] = "timeEnd";
-  })(ConsoleAPICalledEventType = Runtime19.ConsoleAPICalledEventType || (Runtime19.ConsoleAPICalledEventType = {}));
+  })(ConsoleAPICalledEventType = Runtime20.ConsoleAPICalledEventType || (Runtime20.ConsoleAPICalledEventType = {}));
 })(Runtime || (Runtime = {}));
 
 // ../../front_end/models/ai_assistance/agents/ExecuteJavascript.ts
@@ -13929,6 +13929,7 @@ __export(AiAgent2_exports, {
   AiAgent2: () => AiAgent2
 });
 import * as Host35 from "../../core/host/host.js";
+import * as Root12 from "../../core/root/root.js";
 import * as SDK25 from "../../core/sdk/sdk.js";
 
 // ../../front_end/models/ai_assistance/skills/SkillRegistry.ts
@@ -14072,7 +14073,9 @@ var AiAgent2 = class extends AiAgent {
   // TODO: The static preamble is a placeholder and will eventually live server-side.
   preamble = preamble8;
   clientFeature = Host35.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
-  userTier = "TESTERS";
+  get userTier() {
+    return Root12.Runtime.hostConfig.devToolsAiV2Architecture?.userTier;
+  }
   #changes;
   #execJs;
   #allowedOrigin;
@@ -14288,10 +14291,9 @@ __export(AiConversation_exports, {
   NOT_FOUND_IMAGE_DATA: () => NOT_FOUND_IMAGE_DATA,
   generateContextDetailsMarkdown: () => generateContextDetailsMarkdown
 });
-import * as Common21 from "../../core/common/common.js";
 import * as Host37 from "../../core/host/host.js";
 import * as Platform6 from "../../core/platform/platform.js";
-import * as Root14 from "../../core/root/root.js";
+import * as Root15 from "../../core/root/root.js";
 import * as SDK26 from "../../core/sdk/sdk.js";
 
 // ../../front_end/models/ai_assistance/AiHistoryStorage.ts
@@ -14305,7 +14307,7 @@ __export(AiHistoryStorage_exports, {
   RECENT_PROMPTS_SIZE_LIMIT: () => RECENT_PROMPTS_SIZE_LIMIT
 });
 import * as Common19 from "../../core/common/common.js";
-import * as Root12 from "../../core/root/root.js";
+import * as Root13 from "../../core/root/root.js";
 var ConversationType = /* @__PURE__ */ ((ConversationType2) => {
   ConversationType2["NONE"] = "none";
   ConversationType2["STYLING"] = "freestyler";
@@ -14472,8 +14474,8 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common19.ObjectWrapper.Ob
   }
   static instance(opts = { forceNew: false, maxStorageSize: DEFAULT_MAX_STORAGE_SIZE }) {
     const { forceNew, maxStorageSize, settings } = opts;
-    if (!Root12.DevToolsContext.globalInstance().has(_AiHistoryStorage) || forceNew) {
-      Root12.DevToolsContext.globalInstance().set(
+    if (!Root13.DevToolsContext.globalInstance().has(_AiHistoryStorage) || forceNew) {
+      Root13.DevToolsContext.globalInstance().set(
         _AiHistoryStorage,
         new _AiHistoryStorage(
           // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
@@ -14482,10 +14484,10 @@ var AiHistoryStorage = class _AiHistoryStorage extends Common19.ObjectWrapper.Ob
         )
       );
     }
-    return Root12.DevToolsContext.globalInstance().get(_AiHistoryStorage);
+    return Root13.DevToolsContext.globalInstance().get(_AiHistoryStorage);
   }
   static removeInstance() {
-    Root12.DevToolsContext.globalInstance().delete(_AiHistoryStorage);
+    Root13.DevToolsContext.globalInstance().delete(_AiHistoryStorage);
   }
 };
 
@@ -14506,7 +14508,7 @@ __export(AiUtils_exports, {
 import * as Common20 from "../../core/common/common.js";
 import * as Host36 from "../../core/host/host.js";
 import * as i18n55 from "../../core/i18n/i18n.js";
-import * as Root13 from "../../core/root/root.js";
+import * as Root14 from "../../core/root/root.js";
 var DisabledReason = /* @__PURE__ */ ((DisabledReason2) => {
   DisabledReason2["GEO_RESTRICTED"] = "geo-restricted";
   DisabledReason2["POLICY_RESTRICTED"] = "policy-restricted";
@@ -14604,10 +14606,10 @@ var aiAssistanceV2OptInChangeDialogSeenSettingDescriptor = {
   defaultValue: false
 };
 function isGeminiBranding() {
-  return !!Root13.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
+  return !!Root14.Runtime.hostConfig.devToolsGeminiRebranding?.enabled;
 }
 function isContextSelectionEnabled() {
-  return Boolean(Root13.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) || Boolean(Root13.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
+  return Boolean(Root14.Runtime.hostConfig.devToolsAiAssistanceContextSelectionAgent?.enabled) || Boolean(Root14.Runtime.hostConfig.devToolsAiV2Architecture?.enabled);
 }
 var FrontendAccessPrecondition = /* @__PURE__ */ ((FrontendAccessPrecondition2) => {
   FrontendAccessPrecondition2["IS_OFF_THE_RECORD"] = "is-off-the-record";
@@ -14616,13 +14618,13 @@ var FrontendAccessPrecondition = /* @__PURE__ */ ((FrontendAccessPrecondition2) 
 })(FrontendAccessPrecondition || {});
 function getDisabledReasons(aidaAvailability) {
   const reasons = [];
-  if (Root13.Runtime.hostConfig.isOffTheRecord) {
+  if (Root14.Runtime.hostConfig.isOffTheRecord) {
     reasons.push("is-off-the-record" /* IS_OFF_THE_RECORD */);
   }
   if (aidaAvailability !== Host36.AidaClient.AidaAccessPreconditions.AVAILABLE) {
     reasons.push(aidaAvailability);
   }
-  if ((aidaAvailability === Host36.AidaClient.AidaAccessPreconditions.AVAILABLE || aidaAvailability === Host36.AidaClient.AidaAccessPreconditions.NO_INTERNET) && Root13.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
+  if ((aidaAvailability === Host36.AidaClient.AidaAccessPreconditions.AVAILABLE || aidaAvailability === Host36.AidaClient.AidaAccessPreconditions.NO_INTERNET) && Root14.Runtime.hostConfig?.aidaAvailability?.blockedByAge === true) {
     reasons.push("age-restricted" /* AGE_RESTRICTED */);
   }
   return reasons;
@@ -14641,7 +14643,7 @@ async function runOneShotPrompt({
   serverSideLoggingEnabled,
   signal
 }) {
-  const chromeVersion = Root13.Runtime.getChromeVersion();
+  const chromeVersion = Root14.Runtime.getChromeVersion();
   if (!chromeVersion) {
     throw new Error("Cannot determine Chrome version");
   }
@@ -14688,7 +14690,7 @@ var NOT_FOUND_IMAGE_DATA = "";
 var CONTEXT_TITLE = "Analyzing data";
 var MAX_TITLE_LENGTH = 80;
 var ALLOWED_PAGE_NAVIGATIONS = [
-  Platform6.DevToolsPath.urlString`about://`,
+  Platform6.DevToolsPath.urlString`about:blank`,
   Platform6.DevToolsPath.urlString`chrome://terms`
 ];
 function generateContextDetailsMarkdown(details) {
@@ -14967,7 +14969,7 @@ ${item.text.trim()}`);
     }
     const previousType = this.#type;
     this.#type = type;
-    if (Root14.Runtime.hostConfig.devToolsAiV2Architecture?.enabled && this.#agent instanceof AiAgent2) {
+    if (Root15.Runtime.hostConfig.devToolsAiV2Architecture?.enabled && this.#agent instanceof AiAgent2) {
       return;
     }
     const isTransitioningFromStorage = previousType === "storage" /* STORAGE */ && type !== "storage" /* STORAGE */;
@@ -14985,7 +14987,7 @@ ${item.text.trim()}`);
       history,
       targetManager: this.#targetManager
     };
-    this.#agent = Root14.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? new AiAgent2(options) : this.#createV1Agent(type, options);
+    this.#agent = Root15.Runtime.hostConfig.devToolsAiV2Architecture?.enabled ? new AiAgent2(options) : this.#createV1Agent(type, options);
   }
   #createV1Agent(type, options) {
     switch (type) {
@@ -15009,10 +15011,13 @@ ${item.text.trim()}`);
   }
   async *run(initialQuery, options = {}) {
     this.#navigationOccurredDuringRun = false;
-    const originAtRunStart = getPrimaryPageOrigin(this.#targetManager);
+    const originAtRunStart = getPrimaryPageSecurityOrigin(this.#targetManager);
     const listener = () => {
-      const newOrigin = getPrimaryPageOrigin(this.#targetManager);
-      if (originAtRunStart !== newOrigin && newOrigin && !ALLOWED_PAGE_NAVIGATIONS.includes(newOrigin)) {
+      const newInspectedURL = this.#targetManager.primaryPageTarget()?.inspectedURL();
+      const newOrigin = newInspectedURL ? SDK26.SecurityOrigin.SecurityOrigin.create(newInspectedURL) : void 0;
+      const isSameOrigin = Boolean(originAtRunStart && newOrigin && originAtRunStart.isSameOriginWith(newOrigin));
+      const isAllowedNavigation = Boolean(newInspectedURL && ALLOWED_PAGE_NAVIGATIONS.some((allowed) => newInspectedURL.startsWith(allowed)));
+      if (!isSameOrigin && !isAllowedNavigation) {
         this.#navigationOccurredDuringRun = true;
       }
     };
@@ -15106,6 +15111,10 @@ Original user query: ${initialQuery}`;
   get type() {
     return this.#type;
   }
+  /**
+   * Returns the permitted origin for agent tool execution, or blocks execution
+   * if an unapproved cross-origin navigation occurred during the current run.
+   */
   allowedOrigin = () => {
     if (this.#navigationOccurredDuringRun) {
       return { blocked: true };
@@ -15113,17 +15122,17 @@ Original user query: ${initialQuery}`;
     if (this.#origin) {
       return { origin: this.origin };
     }
-    this.#origin = getPrimaryPageOrigin(this.#targetManager);
+    this.#origin = getPrimaryPageSecurityOrigin(this.#targetManager);
     return { origin: this.origin };
   };
 };
 function isAiAssistanceServerSideLoggingAllowed() {
-  return !Root14.Runtime.hostConfig.aidaAvailability?.disallowLogging;
+  return !Root15.Runtime.hostConfig.aidaAvailability?.disallowLogging;
 }
-function getPrimaryPageOrigin(targetManager) {
+function getPrimaryPageSecurityOrigin(targetManager) {
   const target = targetManager.primaryPageTarget();
   const inspectedURL = target?.inspectedURL();
-  return inspectedURL ? new Common21.ParsedURL.ParsedURL(inspectedURL).securityOrigin() : void 0;
+  return inspectedURL ? SDK26.SecurityOrigin.SecurityOrigin.create(inspectedURL) : void 0;
 }
 
 // ../../front_end/models/ai_assistance/AiSetting.ts
@@ -15132,14 +15141,14 @@ __export(AiSetting_exports, {
   AiSetting: () => AiSetting,
   Events: () => Events2
 });
-import * as Common22 from "../../core/common/common.js";
+import * as Common21 from "../../core/common/common.js";
 import * as Host38 from "../../core/host/host.js";
-import * as Root15 from "../../core/root/root.js";
+import * as Root16 from "../../core/root/root.js";
 var Events2 = /* @__PURE__ */ ((Events4) => {
   Events4["CHANGED"] = "Changed";
   return Events4;
 })(Events2 || {});
-var AiSetting = class extends Common22.ObjectWrapper.ObjectWrapper {
+var AiSetting = class extends Common21.ObjectWrapper.ObjectWrapper {
   #setting;
   #descriptor;
   #hostConfigTracker;
@@ -15211,16 +15220,16 @@ var AiSetting = class extends Common22.ObjectWrapper.ObjectWrapper {
     }
   }
   get unavailable() {
-    const availability = this.#descriptor.isAvailable(Root15.Runtime.hostConfig);
-    return availability.status === Common22.Settings.SettingAvailability.UNAVAILABLE;
+    const availability = this.#descriptor.isAvailable(Root16.Runtime.hostConfig);
+    return availability.status === Common21.Settings.SettingAvailability.UNAVAILABLE;
   }
   get disabled() {
-    const availability = this.#descriptor.isAvailable(Root15.Runtime.hostConfig);
-    return availability.status === Common22.Settings.SettingAvailability.DISABLED;
+    const availability = this.#descriptor.isAvailable(Root16.Runtime.hostConfig);
+    return availability.status === Common21.Settings.SettingAvailability.DISABLED;
   }
   get disabledReasons() {
-    const availability = this.#descriptor.isAvailable(Root15.Runtime.hostConfig);
-    if (availability.status === Common22.Settings.SettingAvailability.DISABLED) {
+    const availability = this.#descriptor.isAvailable(Root16.Runtime.hostConfig);
+    if (availability.status === Common21.Settings.SettingAvailability.DISABLED) {
       return availability.reason;
     }
     return [];
@@ -15261,9 +15270,9 @@ __export(BuiltInAi_exports, {
   Events: () => Events3,
   LanguageModelAvailability: () => LanguageModelAvailability
 });
-import * as Common23 from "../../core/common/common.js";
+import * as Common22 from "../../core/common/common.js";
 import * as Host39 from "../../core/host/host.js";
-import * as Root16 from "../../core/root/root.js";
+import * as Root17 from "../../core/root/root.js";
 var LanguageModelAvailability = /* @__PURE__ */ ((LanguageModelAvailability2) => {
   LanguageModelAvailability2["UNAVAILABLE"] = "unavailable";
   LanguageModelAvailability2["DOWNLOADABLE"] = "downloadable";
@@ -15272,7 +15281,7 @@ var LanguageModelAvailability = /* @__PURE__ */ ((LanguageModelAvailability2) =>
   LanguageModelAvailability2["DISABLED"] = "disabled";
   return LanguageModelAvailability2;
 })(LanguageModelAvailability || {});
-var BuiltInAi = class _BuiltInAi extends Common23.ObjectWrapper.ObjectWrapper {
+var BuiltInAi = class _BuiltInAi extends Common22.ObjectWrapper.ObjectWrapper {
   #availability = null;
   #hasGpu;
   #consoleInsightsSession;
@@ -15280,10 +15289,10 @@ var BuiltInAi = class _BuiltInAi extends Common23.ObjectWrapper.ObjectWrapper {
   #downloadProgress = null;
   #currentlyCreatingSession = false;
   static instance() {
-    if (!Root16.DevToolsContext.globalInstance().has(_BuiltInAi)) {
-      Root16.DevToolsContext.globalInstance().set(_BuiltInAi, new _BuiltInAi());
+    if (!Root17.DevToolsContext.globalInstance().has(_BuiltInAi)) {
+      Root17.DevToolsContext.globalInstance().set(_BuiltInAi, new _BuiltInAi());
     }
-    return Root16.DevToolsContext.globalInstance().get(_BuiltInAi);
+    return Root17.DevToolsContext.globalInstance().get(_BuiltInAi);
   }
   constructor() {
     super();
@@ -15291,7 +15300,7 @@ var BuiltInAi = class _BuiltInAi extends Common23.ObjectWrapper.ObjectWrapper {
     this.initDoneForTesting = this.getLanguageModelAvailability().then(() => this.#sendAvailabilityMetrics()).then(() => this.initialize());
   }
   async getLanguageModelAvailability() {
-    if (!Root16.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled) {
+    if (!Root17.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.enabled) {
       this.#availability = "disabled" /* DISABLED */;
       return this.#availability;
     }
@@ -15315,7 +15324,7 @@ var BuiltInAi = class _BuiltInAi extends Common23.ObjectWrapper.ObjectWrapper {
     return this.#availability === "downloading" /* DOWNLOADING */;
   }
   isEventuallyAvailable() {
-    if (!this.#hasGpu && !Boolean(Root16.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu)) {
+    if (!this.#hasGpu && !Boolean(Root17.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu)) {
       return false;
     }
     return this.#availability === "available" /* AVAILABLE */ || this.#availability === "downloading" /* DOWNLOADING */ || this.#availability === "downloadable" /* DOWNLOADABLE */;
@@ -15328,7 +15337,7 @@ var BuiltInAi = class _BuiltInAi extends Common23.ObjectWrapper.ObjectWrapper {
     return this.#downloadProgress;
   }
   startDownloadingModel() {
-    if (!Root16.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root17.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== "downloadable" /* DOWNLOADABLE */) {
@@ -15366,7 +15375,7 @@ var BuiltInAi = class _BuiltInAi extends Common23.ObjectWrapper.ObjectWrapper {
     return Boolean(this.#consoleInsightsSession);
   }
   async initialize() {
-    if (!Root16.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
+    if (!Root17.Runtime.hostConfig.devToolsConsoleInsightsTeasers?.allowWithoutGpu && !this.#hasGpu) {
       return;
     }
     if (this.#availability !== "available" /* AVAILABLE */ && this.#availability !== "downloading" /* DOWNLOADING */) {
@@ -15425,7 +15434,7 @@ Your instructions are as follows:
     this.#currentlyCreatingSession = false;
   }
   static removeInstance() {
-    Root16.DevToolsContext.globalInstance().delete(_BuiltInAi);
+    Root17.DevToolsContext.globalInstance().delete(_BuiltInAi);
   }
   async *getConsoleInsight(prompt, abortController) {
     if (!this.#consoleInsightsSession) {
@@ -15498,7 +15507,7 @@ __export(ConversationSummary_exports, {
   ConversationSummary: () => ConversationSummary
 });
 import * as Host40 from "../../core/host/host.js";
-import * as Root17 from "../../core/root/root.js";
+import * as Root18 from "../../core/root/root.js";
 var preamble9 = `### Role
 You are a Conversation Summarizer. Your task is to take a transcript of a conversation between a user and a DevTools AI agent and produce a succinct, actionable Markdown summary. This summary will be used to help apply fixes in an IDE, so it must capture all relevant technical details, findings, and proposed code changes without any conversational fluff.
 
@@ -15600,9 +15609,9 @@ var ConversationSummary = class {
     const enhancedQuery = `Summarize the following conversation:
 
 ${conversation}`;
-    const temperature = Root17.Runtime.hostConfig.devToolsFreestyler?.temperature;
-    const modelId = Root17.Runtime.hostConfig.devToolsFreestyler?.modelId;
-    const userTier = Root17.Runtime.hostConfig.devToolsFreestyler?.userTier;
+    const temperature = Root18.Runtime.hostConfig.devToolsFreestyler?.temperature;
+    const modelId = Root18.Runtime.hostConfig.devToolsFreestyler?.modelId;
+    const userTier = Root18.Runtime.hostConfig.devToolsFreestyler?.userTier;
     const resultText = await runOneShotPrompt({
       aidaClient: this.#aidaClient,
       preamble: preamble9,
@@ -15629,7 +15638,7 @@ __export(PerformanceAnnotations_exports, {
   PerformanceAnnotations: () => PerformanceAnnotations
 });
 import * as Host41 from "../../core/host/host.js";
-import * as Root18 from "../../core/root/root.js";
+import * as Root19 from "../../core/root/root.js";
 var callTreePreamble = `You are an expert performance analyst embedded within Chrome DevTools.
 You meticulously examine web application behavior captured by the Chrome DevTools Performance Panel and Chrome tracing.
 You will receive a structured text representation of a call tree, derived from a user-selected call frame within a performance trace's flame chart.
@@ -15720,9 +15729,9 @@ var PerformanceAnnotations = class {
 # User request
 
 ${AI_LABEL_GENERATION_PROMPT}`;
-    const temperature = Root18.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
-    const modelId = Root18.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
-    const userTier = Root18.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
+    const temperature = Root19.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.temperature;
+    const modelId = Root19.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.modelId;
+    const userTier = Root19.Runtime.hostConfig.devToolsAiAssistancePerformanceAgent?.userTier;
     const resultText = await runOneShotPrompt({
       aidaClient: this.#aidaClient,
       preamble: callTreePreamble,

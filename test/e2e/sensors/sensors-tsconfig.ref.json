@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../test/e2e/sensors",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../test/e2e/sensors/emulate-hardware-concurrency.test.ts",
+    "../../../../../../test/e2e/sensors/helpers.ts",
+    "../../../../../../test/e2e/sensors/idle.test.ts",
+    "../../../../../../test/e2e/sensors/location.test.ts",
+    "../../../../../../test/e2e/sensors/orientation.test.ts",
+    "../../../../../../test/e2e/sensors/touch.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts",
+    "../../../../../../test/e2e/types.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../shared/shared-tsconfig.ref.json"
+    },
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../shared/shared-tsconfig.ref.json"
+    }
+  ]
+}

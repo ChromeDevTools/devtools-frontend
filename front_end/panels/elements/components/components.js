@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/elements/components/AccessibilityTreeNode.js
+// ../../front_end/panels/elements/components/AccessibilityTreeNode.ts
 var AccessibilityTreeNode_exports = {};
 __export(AccessibilityTreeNode_exports, {
   AccessibilityTreeNode: () => AccessibilityTreeNode
@@ -52,7 +52,7 @@ span {
 
 /*# sourceURL=${import.meta.resolve("./accessibilityTreeNode.css")} */`;
 
-// gen/front_end/panels/elements/components/AccessibilityTreeNode.js
+// ../../front_end/panels/elements/components/AccessibilityTreeNode.ts
 var UIStrings = {
   /**
    * @description Ignored node element text content in the accessibility tree view of the Elements panel.
@@ -89,20 +89,23 @@ var AccessibilityTreeNode = class extends HTMLElement {
     const properties = this.#properties.map(({ name: name2, value }) => SDK.AccessibilityModel.isPrintableType(value.type) ? html` <span class='attribute-name'>${name2}</span>:&nbsp;<span class='attribute-value'>${value.value}</span>` : nothing);
     const content = this.#ignored ? html`<span>${i18nString(UIStrings.ignored)}</span>` : html`${role}&nbsp;${name}${properties}`;
     await RenderCoordinator.write(`Accessibility node ${this.#id} render`, () => {
-      render(html`<div class='container'>${content}</div>`, this.#shadow, { host: this });
+      render(
+        html`<div class='container'>${content}</div>`,
+        this.#shadow,
+        { host: this }
+      );
     });
   }
 };
 customElements.define("devtools-accessibility-tree-node", AccessibilityTreeNode);
 
-// gen/front_end/panels/elements/components/AdornerManager.js
+// ../../front_end/panels/elements/components/AdornerManager.ts
 var AdornerManager_exports = {};
 __export(AdornerManager_exports, {
   AdornerManager: () => AdornerManager,
   RegisteredAdorners: () => RegisteredAdorners
 });
-var RegisteredAdorners;
-(function(RegisteredAdorners2) {
+var RegisteredAdorners = /* @__PURE__ */ ((RegisteredAdorners2) => {
   RegisteredAdorners2["AD"] = "ad";
   RegisteredAdorners2["CONTAINER"] = "container";
   RegisteredAdorners2["CUSTOM_ELEMENT"] = "custom-element";
@@ -120,7 +123,8 @@ var RegisteredAdorners;
   RegisteredAdorners2["STARTING_STYLE"] = "starting-style";
   RegisteredAdorners2["SUBGRID"] = "subgrid";
   RegisteredAdorners2["TOP_LAYER"] = "top-layer";
-})(RegisteredAdorners || (RegisteredAdorners = {}));
+  return RegisteredAdorners2;
+})(RegisteredAdorners || {});
 var AdornerManager = class {
   #adornerSettings = /* @__PURE__ */ new Map();
   #settingStore;
@@ -157,7 +161,7 @@ var AdornerManager = class {
     for (const adorner of Object.values(RegisteredAdorners)) {
       outdatedAdorners.delete(adorner);
       if (!this.#adornerSettings.has(adorner)) {
-        const isEnabled = adorner !== RegisteredAdorners.MEDIA;
+        const isEnabled = adorner !== "media" /* MEDIA */;
         this.#adornerSettings.set(adorner, isEnabled);
       }
     }
@@ -168,7 +172,7 @@ var AdornerManager = class {
   }
 };
 
-// gen/front_end/panels/elements/components/ComputedStyleProperty.js
+// ../../front_end/panels/elements/components/ComputedStyleProperty.ts
 var ComputedStyleProperty_exports = {};
 __export(ComputedStyleProperty_exports, {
   ComputedStyleProperty: () => ComputedStyleProperty,
@@ -301,7 +305,7 @@ var computedStyleProperty_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./computedStyleProperty.css")} */`;
 
-// gen/front_end/panels/elements/components/ComputedStyleProperty.js
+// ../../front_end/panels/elements/components/ComputedStyleProperty.ts
 var NavigateToSourceEvent = class _NavigateToSourceEvent extends Event {
   static eventName = "onnavigatetosource";
   constructor() {
@@ -353,7 +357,7 @@ var ComputedStyleProperty = class extends HTMLElement {
 };
 customElements.define("devtools-computed-style-property", ComputedStyleProperty);
 
-// gen/front_end/panels/elements/components/ComputedStyleTrace.js
+// ../../front_end/panels/elements/components/ComputedStyleTrace.ts
 var ComputedStyleTrace_exports = {};
 __export(ComputedStyleTrace_exports, {
   ComputedStyleTrace: () => ComputedStyleTrace
@@ -455,7 +459,7 @@ var computedStyleTrace_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./computedStyleTrace.css")} */`;
 
-// gen/front_end/panels/elements/components/ComputedStyleTrace.js
+// ../../front_end/panels/elements/components/ComputedStyleTrace.ts
 var ComputedStyleTrace = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #selector = "";
@@ -491,7 +495,7 @@ var ComputedStyleTrace = class extends HTMLElement {
 };
 customElements.define("devtools-computed-style-trace", ComputedStyleTrace);
 
-// gen/front_end/panels/elements/components/CSSHintDetailsView.js
+// ../../front_end/panels/elements/components/CSSHintDetailsView.ts
 var CSSHintDetailsView_exports = {};
 __export(CSSHintDetailsView_exports, {
   CSSHintDetailsView: () => CSSHintDetailsView
@@ -539,7 +543,7 @@ code {
 
 /*# sourceURL=${import.meta.resolve("./cssHintDetailsView.css")} */`;
 
-// gen/front_end/panels/elements/components/CSSHintDetailsView.js
+// ../../front_end/panels/elements/components/CSSHintDetailsView.ts
 var UIStrings2 = {
   /**
    * @description Text for button that redirects to CSS property documentation.
@@ -584,7 +588,7 @@ var CSSHintDetailsView = class extends HTMLElement {
 };
 customElements.define("devtools-css-hint-details-view", CSSHintDetailsView);
 
-// gen/front_end/panels/elements/components/CSSPropertyDocsView.js
+// ../../front_end/panels/elements/components/CSSPropertyDocsView.ts
 var CSSPropertyDocsView_exports = {};
 __export(CSSPropertyDocsView_exports, {
   BaselineStatus: () => BaselineStatus,
@@ -644,7 +648,7 @@ var cssPropertyDocsView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./cssPropertyDocsView.css")} */`;
 
-// gen/front_end/panels/elements/components/CSSPropertyDocsView.js
+// ../../front_end/panels/elements/components/CSSPropertyDocsView.ts
 var UIStrings3 = {
   /**
    * @description Text for button that redirects to CSS property documentation.
@@ -695,10 +699,10 @@ var BASELINE_LIMITED_AVAILABILITY_ICON = "../../../Images/baseline-limited-avail
 var getBaselineIconPath = (baseline) => {
   let relativePath;
   switch (baseline.status) {
-    case "high":
+    case "high" /* HIGH */:
       relativePath = BASELINE_HIGH_AVAILABILITY_ICON;
       break;
-    case "low":
+    case "low" /* LOW */:
       relativePath = BASELINE_LOW_AVAILABILITY_ICON;
       break;
     default:
@@ -706,76 +710,26 @@ var getBaselineIconPath = (baseline) => {
   }
   return new URL(relativePath, import.meta.url).toString();
 };
-var BrowserId;
-(function(BrowserId2) {
-  BrowserId2["C"] = "C";
-  BrowserId2["CA"] = "CA";
-  BrowserId2["E"] = "E";
-  BrowserId2["FF"] = "FF";
-  BrowserId2["FFA"] = "FFA";
-  BrowserId2["S"] = "S";
-  BrowserId2["SM"] = "SM";
-})(BrowserId || (BrowserId = {}));
-var allBrowserIds = /* @__PURE__ */ new Set([
-  "C",
-  "CA",
-  "E",
-  "FF",
-  "FFA",
-  "S",
-  "SM"
-  /* BrowserId.SM */
-]);
-var BrowserPlatform;
-(function(BrowserPlatform2) {
-  BrowserPlatform2["DESKTOP"] = "desktop";
-  BrowserPlatform2["ANDROID"] = "Android";
-  BrowserPlatform2["MACOS"] = "macOS";
-  BrowserPlatform2["IOS"] = "iOS";
-})(BrowserPlatform || (BrowserPlatform = {}));
+var allBrowserIds = /* @__PURE__ */ new Set(
+  ["C" /* C */, "CA" /* CA */, "E" /* E */, "FF" /* FF */, "FFA" /* FFA */, "S" /* S */, "SM" /* SM */]
+);
 var browserIdToNameAndPlatform = /* @__PURE__ */ new Map([
-  ["C", {
-    name: "Chrome",
-    platform: "desktop"
-    /* BrowserPlatform.DESKTOP */
-  }],
-  ["CA", {
-    name: "Chrome",
-    platform: "Android"
-    /* BrowserPlatform.ANDROID */
-  }],
-  ["E", {
-    name: "Edge",
-    platform: "desktop"
-    /* BrowserPlatform.DESKTOP */
-  }],
-  ["FF", {
-    name: "Firefox",
-    platform: "desktop"
-    /* BrowserPlatform.DESKTOP */
-  }],
-  ["FFA", {
-    name: "Firefox",
-    platform: "Android"
-    /* BrowserPlatform.ANDROID */
-  }],
-  ["S", {
-    name: "Safari",
-    platform: "macOS"
-    /* BrowserPlatform.MACOS */
-  }],
-  ["SM", {
-    name: "Safari",
-    platform: "iOS"
-    /* BrowserPlatform.IOS */
-  }]
+  ["C" /* C */, { name: "Chrome", platform: "desktop" /* DESKTOP */ }],
+  ["CA" /* CA */, { name: "Chrome", platform: "Android" /* ANDROID */ }],
+  ["E" /* E */, { name: "Edge", platform: "desktop" /* DESKTOP */ }],
+  ["FF" /* FF */, { name: "Firefox", platform: "desktop" /* DESKTOP */ }],
+  ["FFA" /* FFA */, { name: "Firefox", platform: "Android" /* ANDROID */ }],
+  ["S" /* S */, { name: "Safari", platform: "macOS" /* MACOS */ }],
+  ["SM" /* SM */, { name: "Safari", platform: "iOS" /* IOS */ }]
 ]);
 function formatBrowserList(browserNames) {
   const formatter = new Intl.ListFormat(i18n5.DevToolsLocale.DevToolsLocale.instance().locale, {
     style: "long",
     type: "disjunction"
   });
-  return formatter.format(browserNames.entries().map(([name, platforms]) => platforms.length !== 1 || platforms[0] === "desktop" ? name : i18nString3(UIStrings3.browserOnPlatform, { PH1: name, PH2: platforms[0] })));
+  return formatter.format(browserNames.entries().map(
+    ([name, platforms]) => platforms.length !== 1 || platforms[0] === "desktop" /* DESKTOP */ ? name : i18nString3(UIStrings3.browserOnPlatform, { PH1: name, PH2: platforms[0] })
+  ));
 }
 var formatBaselineDate = (date) => {
   if (!date) {
@@ -802,24 +756,24 @@ var getBaselineMissingBrowsers = (browsers) => {
   return missingBrowsers;
 };
 var getBaselineText = (baseline, browsers) => {
-  if (baseline.status === "false") {
+  if (baseline.status === "false" /* LIMITED */) {
     const missingBrowsers = browsers && getBaselineMissingBrowsers(browsers);
     if (missingBrowsers) {
       return i18nString3(UIStrings3.limitedAvailabilityInBrowsers, { PH1: formatBrowserList(missingBrowsers) });
     }
     return i18nString3(UIStrings3.limitedAvailability);
   }
-  if (baseline.status === "low") {
+  if (baseline.status === "low" /* LOW */) {
     return i18nString3(UIStrings3.newlyAvailableSince, { PH1: formatBaselineDate(baseline.baseline_low_date) });
   }
   return i18nString3(UIStrings3.widelyAvailableSince, { PH1: formatBaselineDate(baseline.baseline_high_date) });
 };
-var BaselineStatus;
-(function(BaselineStatus2) {
+var BaselineStatus = /* @__PURE__ */ ((BaselineStatus2) => {
   BaselineStatus2["LIMITED"] = "false";
   BaselineStatus2["LOW"] = "low";
   BaselineStatus2["HIGH"] = "high";
-})(BaselineStatus || (BaselineStatus = {}));
+  return BaselineStatus2;
+})(BaselineStatus || {});
 var CSSPropertyDocsView = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
   #cssProperty;
@@ -879,7 +833,7 @@ var CSSPropertyDocsView = class extends HTMLElement {
 };
 customElements.define("devtools-css-property-docs-view", CSSPropertyDocsView);
 
-// gen/front_end/panels/elements/components/CSSPropertyIconResolver.js
+// ../../front_end/panels/elements/components/CSSPropertyIconResolver.ts
 var CSSPropertyIconResolver_exports = {};
 __export(CSSPropertyIconResolver_exports, {
   PhysicalDirection: () => PhysicalDirection,
@@ -904,25 +858,25 @@ var writingModesAffectingFlexDirection = /* @__PURE__ */ new Set([
   "vertical-lr",
   "vertical-rl"
 ]);
-var PhysicalDirection;
-(function(PhysicalDirection2) {
+var PhysicalDirection = /* @__PURE__ */ ((PhysicalDirection2) => {
   PhysicalDirection2["LEFT_TO_RIGHT"] = "left-to-right";
   PhysicalDirection2["RIGHT_TO_LEFT"] = "right-to-left";
   PhysicalDirection2["BOTTOM_TO_TOP"] = "bottom-to-top";
   PhysicalDirection2["TOP_TO_BOTTOM"] = "top-to-bottom";
-})(PhysicalDirection || (PhysicalDirection = {}));
+  return PhysicalDirection2;
+})(PhysicalDirection || {});
 function reverseDirection(direction) {
-  if (direction === "left-to-right") {
-    return "right-to-left";
+  if (direction === "left-to-right" /* LEFT_TO_RIGHT */) {
+    return "right-to-left" /* RIGHT_TO_LEFT */;
   }
-  if (direction === "right-to-left") {
-    return "left-to-right";
+  if (direction === "right-to-left" /* RIGHT_TO_LEFT */) {
+    return "left-to-right" /* LEFT_TO_RIGHT */;
   }
-  if (direction === "top-to-bottom") {
-    return "bottom-to-top";
+  if (direction === "top-to-bottom" /* TOP_TO_BOTTOM */) {
+    return "bottom-to-top" /* BOTTOM_TO_TOP */;
   }
-  if (direction === "bottom-to-top") {
-    return "top-to-bottom";
+  if (direction === "bottom-to-top" /* BOTTOM_TO_TOP */) {
+    return "top-to-bottom" /* TOP_TO_BOTTOM */;
   }
   throw new Error("Unknown PhysicalFlexDirection");
 }
@@ -939,28 +893,28 @@ function getPhysicalDirections(computedStyles) {
   const isVertical = writingMode && writingModesAffectingFlexDirection.has(writingMode);
   if (isVertical) {
     return extendWithReverseDirections({
-      row: isRtl ? "bottom-to-top" : "top-to-bottom",
-      column: writingMode === "vertical-lr" ? "left-to-right" : "right-to-left"
+      row: isRtl ? "bottom-to-top" /* BOTTOM_TO_TOP */ : "top-to-bottom" /* TOP_TO_BOTTOM */,
+      column: writingMode === "vertical-lr" ? "left-to-right" /* LEFT_TO_RIGHT */ : "right-to-left" /* RIGHT_TO_LEFT */
     });
   }
   return extendWithReverseDirections({
-    row: isRtl ? "right-to-left" : "left-to-right",
-    column: "top-to-bottom"
+    row: isRtl ? "right-to-left" /* RIGHT_TO_LEFT */ : "left-to-right" /* LEFT_TO_RIGHT */,
+    column: "top-to-bottom" /* TOP_TO_BOTTOM */
   });
 }
 function rotateFlexDirectionIcon(direction) {
   let flipX = true;
   let flipY = false;
   let rotate = -90;
-  if (direction === "right-to-left") {
+  if (direction === "right-to-left" /* RIGHT_TO_LEFT */) {
     rotate = 90;
     flipY = false;
     flipX = false;
-  } else if (direction === "top-to-bottom") {
+  } else if (direction === "top-to-bottom" /* TOP_TO_BOTTOM */) {
     rotate = 0;
     flipX = false;
     flipY = false;
-  } else if (direction === "bottom-to-top") {
+  } else if (direction === "bottom-to-top" /* BOTTOM_TO_TOP */) {
     rotate = 0;
     flipX = false;
     flipY = true;
@@ -976,15 +930,15 @@ function rotateGridDirectionIcon(direction) {
   let flipX = true;
   let flipY = false;
   let rotate = -90;
-  if (direction === "right-to-left") {
+  if (direction === "right-to-left" /* RIGHT_TO_LEFT */) {
     rotate = 90;
     flipY = false;
     flipX = false;
-  } else if (direction === "top-to-bottom") {
+  } else if (direction === "top-to-bottom" /* TOP_TO_BOTTOM */) {
     rotate = 0;
     flipX = false;
     flipY = false;
-  } else if (direction === "bottom-to-top") {
+  } else if (direction === "bottom-to-top" /* BOTTOM_TO_TOP */) {
     rotate = 0;
     flipX = false;
     flipY = true;
@@ -999,7 +953,7 @@ function rotateGridDirectionIcon(direction) {
 function rotateAlignContentIcon(iconName, direction) {
   return {
     iconName,
-    rotate: direction === "right-to-left" ? 90 : direction === "left-to-right" ? -90 : 0,
+    rotate: direction === "right-to-left" /* RIGHT_TO_LEFT */ ? 90 : direction === "left-to-right" /* LEFT_TO_RIGHT */ ? -90 : 0,
     scaleX: 1,
     scaleY: 1
   };
@@ -1007,23 +961,23 @@ function rotateAlignContentIcon(iconName, direction) {
 function rotateJustifyContentIcon(iconName, direction) {
   return {
     iconName,
-    rotate: direction === "top-to-bottom" ? 90 : direction === "bottom-to-top" ? -90 : 0,
-    scaleX: direction === "right-to-left" ? -1 : 1,
+    rotate: direction === "top-to-bottom" /* TOP_TO_BOTTOM */ ? 90 : direction === "bottom-to-top" /* BOTTOM_TO_TOP */ ? -90 : 0,
+    scaleX: direction === "right-to-left" /* RIGHT_TO_LEFT */ ? -1 : 1,
     scaleY: 1
   };
 }
 function rotateJustifyItemsIcon(iconName, direction) {
   return {
     iconName,
-    rotate: direction === "top-to-bottom" ? 90 : direction === "bottom-to-top" ? -90 : 0,
-    scaleX: direction === "right-to-left" ? -1 : 1,
+    rotate: direction === "top-to-bottom" /* TOP_TO_BOTTOM */ ? 90 : direction === "bottom-to-top" /* BOTTOM_TO_TOP */ ? -90 : 0,
+    scaleX: direction === "right-to-left" /* RIGHT_TO_LEFT */ ? -1 : 1,
     scaleY: 1
   };
 }
 function rotateAlignItemsIcon(iconName, direction) {
   return {
     iconName,
-    rotate: direction === "right-to-left" ? 90 : direction === "left-to-right" ? -90 : 0,
+    rotate: direction === "right-to-left" /* RIGHT_TO_LEFT */ ? 90 : direction === "left-to-right" /* LEFT_TO_RIGHT */ ? -90 : 0,
     scaleX: 1,
     scaleY: 1
   };
@@ -1144,7 +1098,7 @@ function gridAlignSelfIcon(iconName) {
 function rotateFlexWrapIcon(iconName, direction) {
   return {
     iconName,
-    rotate: direction === "bottom-to-top" || direction === "top-to-bottom" ? 90 : 0,
+    rotate: direction === "bottom-to-top" /* BOTTOM_TO_TOP */ || direction === "top-to-bottom" /* TOP_TO_BOTTOM */ ? 90 : 0,
     scaleX: 1,
     scaleY: 1
   };
@@ -1322,7 +1276,7 @@ function findGridItemIcon(text, parentComputedStyles) {
   return null;
 }
 
-// gen/front_end/panels/elements/components/CSSQuery.js
+// ../../front_end/panels/elements/components/CSSQuery.ts
 var CSSQuery_exports = {};
 __export(CSSQuery_exports, {
   CSSQuery: () => CSSQuery
@@ -1356,7 +1310,7 @@ var cssQuery_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./cssQuery.css")} */`;
 
-// gen/front_end/panels/elements/components/CSSQuery.js
+// ../../front_end/panels/elements/components/CSSQuery.ts
 var { render: render6, html: html6 } = Lit;
 var CSSQuery = class extends HTMLElement {
   #shadow = this.attachShadow({ mode: "open" });
@@ -1468,7 +1422,8 @@ var CSSQuery = class extends HTMLElement {
       return html6`${section.text}`;
     })}</span>
     `;
-    render6(html6`
+    render6(
+      html6`
         <style>${cssQuery_css_default}</style>
         <style>${UI3.inspectorCommonStyles}</style>
         <div class=${queryClasses} jslog=${VisualLogging3.cssRuleHeader(this.#jslogContext).track({ click: true, change: true })}>
@@ -1476,12 +1431,15 @@ var CSSQuery = class extends HTMLElement {
           ${this.#queryPrefix ? html6`<span>${this.#queryPrefix + " "}</span>` : Lit.nothing}
           ${this.#queryName ? html6`<span>${this.#queryName + " "}</span>` : Lit.nothing}
           ${queryText} {
-        </div>`, this.#shadow, { host: this });
+        </div>`,
+      this.#shadow,
+      { host: this }
+    );
   }
 };
 customElements.define("devtools-css-query", CSSQuery);
 
-// gen/front_end/panels/elements/components/CSSVariableValueView.js
+// ../../front_end/panels/elements/components/CSSVariableValueView.ts
 var CSSVariableValueView_exports = {};
 __export(CSSVariableValueView_exports, {
   CSSVariableParserError: () => CSSVariableParserError,
@@ -1541,7 +1499,7 @@ var cssVariableValueView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./cssVariableValueView.css")} */`;
 
-// gen/front_end/panels/elements/components/CSSVariableValueView.js
+// ../../front_end/panels/elements/components/CSSVariableValueView.ts
 var UIStrings4 = {
   /**
    * @description Text for a link from a custom property to its defining registration.
@@ -1579,14 +1537,18 @@ var CSSVariableParserError = class extends HTMLElement {
   }
   #render(details) {
     const type = html7`<span class="monospace css-property">${details.registration.syntax()}</span>`;
-    render7(html7`
+    render7(
+      html7`
       <style>${cssVariableValueView_css_default}</style>
       <div class="variable-value-popup-wrapper">
         ${i18nTemplate2(UIStrings4.invalidPropertyValue, { type })}
         ${getLinkSection(details)}
-      </div>`, this.#shadow, {
-      host: this
-    });
+      </div>`,
+      this.#shadow,
+      {
+        host: this
+      }
+    );
   }
 };
 var CSSVariableValueView = class extends HTMLElement {
@@ -1594,7 +1556,11 @@ var CSSVariableValueView = class extends HTMLElement {
   variableName;
   #value;
   details;
-  constructor({ variableName, value, details }) {
+  constructor({
+    variableName,
+    value,
+    details
+  }) {
     super();
     this.variableName = variableName;
     this.details = details;
@@ -1620,20 +1586,24 @@ var CSSVariableValueView = class extends HTMLElement {
           ${getLinkSection(this.details)}
         </div>` : "";
     const valueText = this.value ?? i18nString4(UIStrings4.sIsNotDefined, { PH1: this.variableName });
-    render7(html7`<style>${cssVariableValueView_css_default}</style>
+    render7(
+      html7`<style>${cssVariableValueView_css_default}</style>
              <div class="variable-value-popup-wrapper">
                ${valueText}
              </div>
              ${registrationView}
-             `, this.#shadow, {
-      host: this
-    });
+             `,
+      this.#shadow,
+      {
+        host: this
+      }
+    );
   }
 };
 customElements.define("devtools-css-variable-value-view", CSSVariableValueView);
 customElements.define("devtools-css-variable-parser-error", CSSVariableParserError);
 
-// gen/front_end/panels/elements/components/ElementsBreadcrumbs.js
+// ../../front_end/panels/elements/components/ElementsBreadcrumbs.ts
 var ElementsBreadcrumbs_exports = {};
 __export(ElementsBreadcrumbs_exports, {
   ElementsBreadcrumbs: () => ElementsBreadcrumbs,
@@ -1745,7 +1715,7 @@ var elementsBreadcrumbs_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./elementsBreadcrumbs.css")} */`;
 
-// gen/front_end/panels/elements/components/ElementsBreadcrumbsUtils.js
+// ../../front_end/panels/elements/components/ElementsBreadcrumbsUtils.ts
 var ElementsBreadcrumbsUtils_exports = {};
 __export(ElementsBreadcrumbsUtils_exports, {
   crumbsToRender: () => crumbsToRender,
@@ -1814,7 +1784,7 @@ var determineElementTitle = (domNode) => {
   }
 };
 
-// gen/front_end/panels/elements/components/ElementsBreadcrumbs.js
+// ../../front_end/panels/elements/components/ElementsBreadcrumbs.ts
 var { html: html8 } = Lit3;
 var UIStrings6 = {
   /**
@@ -2069,7 +2039,7 @@ var ElementsBreadcrumbs = class extends HTMLElement {
 };
 customElements.define("devtools-elements-breadcrumbs", ElementsBreadcrumbs);
 
-// gen/front_end/panels/elements/components/ElementsTreeExpandButton.js
+// ../../front_end/panels/elements/components/ElementsTreeExpandButton.ts
 var ElementsTreeExpandButton_exports = {};
 __export(ElementsTreeExpandButton_exports, {
   ElementsTreeExpandButton: () => ElementsTreeExpandButton
@@ -2137,7 +2107,7 @@ var elementsTreeExpandButton_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./elementsTreeExpandButton.css")} */`;
 
-// gen/front_end/panels/elements/components/ElementsTreeExpandButton.js
+// ../../front_end/panels/elements/components/ElementsTreeExpandButton.ts
 var UIStrings7 = {
   /**
    * @description ARIA label for a button expanding a collapsed subtree.
@@ -2158,19 +2128,23 @@ var ElementsTreeExpandButton = class extends HTMLElement {
     this.#render();
   }
   #render() {
-    render9(html9`
+    render9(
+      html9`
       <style>${elementsTreeExpandButton_css_default}</style>
       <button
         class="expand-button"
         tabindex="-1"
         aria-label=${i18nString7(UIStrings7.expand)}
         jslog=${VisualLogging5.action("expand").track({ click: true })}
-        @click=${this.#clickHandler}><devtools-icon name="dots-horizontal"></devtools-icon></button>`, this.#shadow, { host: this });
+        @click=${this.#clickHandler}><devtools-icon name="dots-horizontal"></devtools-icon></button>`,
+      this.#shadow,
+      { host: this }
+    );
   }
 };
 customElements.define("devtools-elements-tree-expand-button", ElementsTreeExpandButton);
 
-// gen/front_end/panels/elements/components/QueryContainer.js
+// ../../front_end/panels/elements/components/QueryContainer.ts
 var QueryContainer_exports = {};
 __export(QueryContainer_exports, {
   QueriedSizeRequestedEvent: () => QueriedSizeRequestedEvent,
@@ -2219,7 +2193,7 @@ var queryContainer_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./queryContainer.css")} */`;
 
-// gen/front_end/panels/elements/components/QueryContainer.js
+// ../../front_end/panels/elements/components/QueryContainer.ts
 var { render: render10, html: html10 } = Lit4;
 var { PhysicalAxis, QueryAxis } = SDK4.CSSContainerQuery;
 var QueriedSizeRequestedEvent = class _QueriedSizeRequestedEvent extends Event {
@@ -2286,14 +2260,14 @@ var QueryContainer = class extends HTMLElement {
     });
   }
   #renderQueriedSizeDetails() {
-    if (!this.#queriedSizeDetails || this.#queriedSizeDetails.queryAxis === "") {
+    if (!this.#queriedSizeDetails || this.#queriedSizeDetails.queryAxis === QueryAxis.NONE) {
       return Lit4.nothing;
     }
-    const areBothAxesQueried = this.#queriedSizeDetails.queryAxis === "size";
+    const areBothAxesQueried = this.#queriedSizeDetails.queryAxis === QueryAxis.BOTH;
     const axisIconClasses = Lit4.Directives.classMap({
       "axis-icon": true,
       hidden: areBothAxesQueried,
-      vertical: this.#queriedSizeDetails.physicalAxis === "Vertical"
+      vertical: this.#queriedSizeDetails.physicalAxis === PhysicalAxis.VERTICAL
     });
     return html10`
       <span class="queried-size-details">
@@ -2310,7 +2284,7 @@ var QueryContainer = class extends HTMLElement {
 };
 customElements.define("devtools-query-container", QueryContainer);
 
-// gen/front_end/panels/elements/components/StylePropertyEditor.js
+// ../../front_end/panels/elements/components/StylePropertyEditor.ts
 var StylePropertyEditor_exports = {};
 __export(StylePropertyEditor_exports, {
   FlexboxEditableProperties: () => FlexboxEditableProperties,
@@ -2414,7 +2388,7 @@ var stylePropertyEditor_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./stylePropertyEditor.css")} */`;
 
-// gen/front_end/panels/elements/components/StylePropertyEditor.js
+// ../../front_end/panels/elements/components/StylePropertyEditor.ts
 var UIStrings8 = {
   /**
    * @description Title of the button that selects a flex property.

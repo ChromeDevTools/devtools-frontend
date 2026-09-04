@@ -60,7 +60,8 @@
     "../../../../../front_end/testing/test_setup.ts",
     "../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../front_end/global_typings/global_defs.d.ts",
-    "../../../../../node_modules/@types/filesystem/index.d.ts"
+    "../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../node_modules/@types/filewriter/index.d.ts"
   ],
   "references": [
     {
@@ -128,9 +129,6 @@
     },
     {
       "path": "../models/formatter/bundle-tsconfig.ref.json"
-    },
-    {
-      "path": "../models/issues_manager/issues_manager-tsconfig.ref.json"
     },
     {
       "path": "../models/issues_manager/bundle-tsconfig.ref.json"

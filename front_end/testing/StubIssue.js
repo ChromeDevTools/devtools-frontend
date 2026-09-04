@@ -1,16 +1,15 @@
 // Copyright 2020 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-// eslint-disable-next-line @devtools/es-modules-import
-import { Issue, } from '../models/issues_manager/Issue.js';
-export class StubIssue extends Issue {
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
+export class StubIssue extends IssuesManager.Issue.Issue {
     requestIds;
     cookieNames;
     issueKind;
     locations = [];
     mockIssueId;
     mockIssueCategory;
-    constructor(code, requestIds, cookieNames, issueKind = "Improvement" /* IssueKind.IMPROVEMENT */) {
+    constructor(code, requestIds, cookieNames, issueKind = "Improvement" /* IssuesManager.Issue.IssueKind.IMPROVEMENT */) {
         super(code, null);
         this.requestIds = requestIds;
         this.cookieNames = cookieNames;
@@ -31,7 +30,7 @@ export class StubIssue extends Issue {
         });
     }
     getCategory() {
-        return this.mockIssueCategory ? this.mockIssueCategory : "Other" /* IssueCategory.OTHER */;
+        return this.mockIssueCategory ? this.mockIssueCategory : "Other" /* IssuesManager.Issue.IssueCategory.OTHER */;
     }
     sources() {
         return this.locations;
@@ -68,7 +67,7 @@ export class StubIssue extends Issue {
     }
     static createCookieIssue(code) {
         const issue = new StubIssue(code, [], []);
-        issue.mockIssueCategory = "Cookie" /* IssueCategory.COOKIE */;
+        issue.mockIssueCategory = "Cookie" /* IssuesManager.Issue.IssueCategory.COOKIE */;
         return issue;
     }
 }

@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/third_party/lit/lib/lit.js
+// ../../front_end/third_party/lit/lib/lit.js
 var t = globalThis;
 var e = t.ShadowRoot && (void 0 === t.ShadyCSS || t.ShadyCSS.nativeShadow) && "adoptedStyleSheets" in Document.prototype && "replace" in CSSStyleSheet.prototype;
 var s = /* @__PURE__ */ Symbol();
@@ -553,7 +553,7 @@ var ft = { _$AK: (t7, e7, s6) => {
 (ut.litElementVersions ??= []).push("4.2.2");
 var At = false;
 
-// gen/front_end/third_party/lit/lib/async-directive.js
+// ../../front_end/third_party/lit/lib/async-directive.js
 var async_directive_exports = {};
 __export(async_directive_exports, {
   AsyncDirective: () => Z2,
@@ -873,7 +873,7 @@ var Z2 = class extends L2 {
   }
 };
 
-// gen/front_end/third_party/lit/lib/directives.js
+// ../../front_end/third_party/lit/lib/directives.js
 var directives_exports = {};
 __export(directives_exports, {
   UnsafeHTMLDirective: () => rt2,
@@ -1464,7 +1464,7 @@ var Ct = L3(class extends $t2 {
   }
 });
 
-// gen/front_end/third_party/lit/lib/directive.js
+// ../../front_end/third_party/lit/lib/directive.js
 var directive_exports = {};
 __export(directive_exports, {
   Directive: () => r4,
@@ -1490,7 +1490,7 @@ var r4 = class {
   }
 };
 
-// gen/front_end/third_party/lit/lib/decorators.js
+// ../../front_end/third_party/lit/lib/decorators.js
 var decorators_exports = {};
 __export(decorators_exports, {
   customElement: () => P4,
@@ -1788,7 +1788,7 @@ var P4 = (t7) => (e7, s6) => {
   }) : customElements.define(t7, e7);
 };
 
-// gen/front_end/third_party/lit/lib/static-html.js
+// ../../front_end/third_party/lit/lib/static-html.js
 var static_html_exports = {};
 __export(static_html_exports, {
   html: () => F3,

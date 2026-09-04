@@ -1,34 +1,24 @@
 import * as Protocol from '../generated/protocol.js';
-import { Issue, IssueCategory, IssueKind } from '../models/issues_manager/Issue.js';
-export declare class StubIssue extends Issue {
+import * as IssuesManager from '../models/issues_manager/issues_manager.js';
+export declare class StubIssue extends IssuesManager.Issue.Issue {
     private requestIds;
     private cookieNames;
     private issueKind;
     private locations;
     private mockIssueId?;
     private mockIssueCategory?;
-    constructor(code: string, requestIds: string[], cookieNames: string[], issueKind?: IssueKind);
-    getDescription(): {
-        file: string;
-        links: never[];
-    };
+    constructor(code: string, requestIds: string[], cookieNames: string[], issueKind?: IssuesManager.Issue.IssueKind);
+    getDescription(): IssuesManager.MarkdownIssueDescription.MarkdownIssueDescription;
     primaryKey(): string;
-    requests(): {
-        requestId: Protocol.Network.RequestId;
-        url: string;
-    }[];
-    getCategory(): IssueCategory;
+    requests(): Protocol.Audits.AffectedRequest[];
+    getCategory(): IssuesManager.Issue.IssueCategory;
     sources(): Protocol.Audits.SourceCodeLocation[];
-    getKind(): IssueKind;
-    cookies(): {
-        name: string;
-        domain: string;
-        path: string;
-    }[];
+    getKind(): IssuesManager.Issue.IssueKind;
+    cookies(): Protocol.Audits.AffectedCookie[];
     getIssueId(): Protocol.Audits.IssueId | undefined;
     static createFromRequestIds(requestIds: string[]): StubIssue;
     static createFromCookieNames(cookieNames: string[]): StubIssue;
-    static createFromIssueKinds(issueKinds: IssueKind[]): StubIssue[];
+    static createFromIssueKinds(issueKinds: IssuesManager.Issue.IssueKind[]): StubIssue[];
     static createFromAffectedLocations(locations: Protocol.Audits.SourceCodeLocation[]): StubIssue;
     static createFromIssueId(issueId: Protocol.Audits.IssueId): StubIssue;
     static createCookieIssue(code: string): StubIssue;

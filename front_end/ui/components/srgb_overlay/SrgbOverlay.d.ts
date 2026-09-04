@@ -1,4 +1,4 @@
-interface SrgbOverlayProps {
+export interface SrgbOverlayProps {
     hue: number;
     width: number;
     height: number;
@@ -12,4 +12,3 @@ declare global {
         'devtools-spectrum-srgb-overlay': SrgbOverlay;
     }
 }
-export {};

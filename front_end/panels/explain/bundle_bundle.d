@@ -1,0 +1,1 @@
+gen/front_end/panels/explain/explain.js: gen/front_end/panels/explain/components/consoleInsight.css.js ../../front_end/panels/explain/components/ConsoleInsight.ts ../../front_end/panels/explain/ActionDelegate.ts ../../front_end/panels/explain/explain.ts

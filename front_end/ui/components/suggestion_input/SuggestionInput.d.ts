@@ -1,5 +1,4 @@
 import * as Lit from '../../../ui/lit/lit.js';
-declare const LitElement: typeof Lit.LitElement;
 declare global {
     interface HTMLElementTagNameMap {
         'devtools-suggestion-input': SuggestionInput;
@@ -19,13 +18,14 @@ declare class EditableContent extends HTMLElement {
     constructor();
     attributeChangedCallback(name: string, _: string | null, value: string | null): void;
 }
-type SuggestionFilter = (option: string, query: string) => boolean;
+export type SuggestionFilter = (option: string, query: string) => boolean;
 /**
  * @fires SuggestionInitEvent#suggestioninit
  * @fires SuggestEvent#suggest
  */
-declare class SuggestionBox extends LitElement {
+declare class SuggestionBox extends Lit.LitElement {
     #private;
+    static properties: typeof Lit.LitElement.properties;
     options: readonly string[];
     expression: string;
     suggestionFilter?: SuggestionFilter;
@@ -35,16 +35,10 @@ declare class SuggestionBox extends LitElement {
     willUpdate(changedProperties: Lit.PropertyValues<this>): void;
     protected render(): Lit.TemplateResult | undefined;
 }
-export declare class SuggestionInput extends LitElement {
+export declare class SuggestionInput extends Lit.LitElement {
     #private;
-    static shadowRootOptions: {
-        readonly clonable?: boolean;
-        readonly customElementRegistry?: CustomElementRegistry | null;
-        readonly mode: ShadowRootMode;
-        readonly serializable?: boolean;
-        readonly slotAssignment?: SlotAssignmentMode;
-        readonly delegatesFocus: true;
-    };
+    static shadowRootOptions: ShadowRootInit;
+    static properties: typeof Lit.LitElement.properties;
     /**
      * State passed to devtools-suggestion-box.
      */

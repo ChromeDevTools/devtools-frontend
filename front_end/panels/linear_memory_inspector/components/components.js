@@ -307,7 +307,7 @@ var linearMemoryViewer_css_default = `/*
 :host {
   flex: auto;
   display: flex;
-  min-height: 20px;
+  min-height: var(--sys-size-9);
 }
 
 .view {
@@ -320,13 +320,13 @@ var linearMemoryViewer_css_default = `/*
 
 .row {
   display: flex;
-  height: 20px;
+  height: var(--sys-size-9);
   align-items: center;
 }
 
 .cell {
   text-align: center;
-  border: 1px solid transparent;
+  border: var(--sys-size-1) solid transparent;
   border-radius: 2px;
 
   &.focused-area {
@@ -351,7 +351,7 @@ var linearMemoryViewer_css_default = `/*
 }
 
 .text-cell {
-  min-width: 14px;
+  min-width: var(--sys-size-7);
   color: var(--sys-color-on-surface-subtle);
 }
 
@@ -365,10 +365,10 @@ var linearMemoryViewer_css_default = `/*
 }
 
 .divider {
-  width: 1px;
+  width: var(--sys-size-1);
   height: inherit;
   background-color: var(--sys-color-divider);
-  margin: 0 4px;
+  margin: 0 var(--sys-size-3);
 }
 
 .highlight-area {
@@ -641,7 +641,7 @@ var linearMemoryInspector_css_default = `/*
     flex-direction: column;
     font-family: var(--monospace-font-family);
     font-size: var(--monospace-font-size);
-    padding: 9px 12px 9px 7px;
+    padding: 9px var(--sys-size-6) 9px 7px;
   }
 
   devtools-linear-memory-inspector-viewer {
@@ -649,7 +649,7 @@ var linearMemoryInspector_css_default = `/*
   }
 
   .navigator-widget ~ devtools-linear-memory-inspector-viewer {
-    margin-top: 12px;
+    margin-top: var(--sys-size-6);
   }
 
   .value-interpreter {
@@ -682,7 +682,7 @@ var linearMemoryNavigator_css_default = `/*
  */
 
 .navigator {
-  min-height: 24px;
+  min-height: var(--sys-size-11);
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;
@@ -1027,7 +1027,7 @@ var linearMemoryValueInterpreter_css_default = `/*
   }
 
   .value-interpreter {
-    border: 1px solid var(--sys-color-divider);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     background-color: var(--sys-color-cdt-base-container);
     overflow: hidden;
     width: 400px;
@@ -1045,8 +1045,8 @@ var linearMemoryValueInterpreter_css_default = `/*
 
   .settings-toolbar-button {
     padding: 0;
-    width: 20px;
-    height: 20px;
+    width: var(--sys-size-9);
+    height: var(--sys-size-9);
     border: none;
     outline: none;
     background-color: transparent;
@@ -1058,8 +1058,8 @@ var linearMemoryValueInterpreter_css_default = `/*
 
   .divider {
     display: block;
-    height: 1px;
-    margin-bottom: 12px;
+    height: var(--sys-size-1);
+    margin-bottom: var(--sys-size-6);
     background-color: var(--sys-color-divider);
   }
 }
@@ -1095,10 +1095,10 @@ var valueInterpreterDisplay_css_default = `/*
   width: 100%;
   display: grid;
   grid-template-columns: auto auto 1fr;
-  gap: 4px 24px;
-  min-height: 24px;
+  gap: var(--sys-size-3) var(--sys-size-11);
+  min-height: var(--sys-size-11);
   overflow: hidden;
-  padding: 2px 12px;
+  padding: var(--sys-size-2) var(--sys-size-6);
   align-items: baseline;
   justify-content: start;
 }
@@ -1109,7 +1109,7 @@ var valueInterpreterDisplay_css_default = `/*
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 24px;
+  min-height: var(--sys-size-11);
 }
 
 .value-type-value-with-link {
@@ -1122,10 +1122,10 @@ var valueInterpreterDisplay_css_default = `/*
 }
 
 .signed-divider {
-  width: 1px;
+  width: var(--sys-size-1);
   height: 15px;
   background-color: var(--sys-color-divider);
-  margin: 0 4px;
+  margin: 0 var(--sys-size-3);
 }
 
 .selectable-text {
@@ -1583,13 +1583,13 @@ var valueInterpreterSettings_css_default = `/*
   :scope {
     flex: auto;
     display: flex;
-    min-height: 20px;
+    min-height: var(--sys-size-9);
   }
 
   .settings {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 12px 12px;
+    margin: 0 var(--sys-size-6) var(--sys-size-6);
     gap: 15px 45px;
   }
 

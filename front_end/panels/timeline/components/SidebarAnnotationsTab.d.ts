@@ -11,9 +11,10 @@ export interface SidebarAnnotationsTabViewInput {
     onAnnotationHoverOut: () => void;
     onAnnotationDelete: (annotation: Trace.Types.File.Annotation) => void;
 }
+export type View = (input: SidebarAnnotationsTabViewInput, output: object, target: HTMLElement) => void;
 export declare class SidebarAnnotationsTab extends UI.Widget.Widget {
     #private;
-    constructor(view?: (input: SidebarAnnotationsTabViewInput, output: object, target: HTMLElement) => void);
+    constructor(view?: View);
     deduplicatedAnnotations(): readonly Trace.Types.File.Annotation[];
     setData(data: {
         annotations: Trace.Types.File.Annotation[];
@@ -21,4 +22,4 @@ export declare class SidebarAnnotationsTab extends UI.Widget.Widget {
     }): void;
     performUpdate(): void;
 }
-export declare const DEFAULT_VIEW: (input: SidebarAnnotationsTabViewInput, output: object, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;

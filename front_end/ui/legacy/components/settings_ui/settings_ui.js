@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/legacy/components/settings_ui/SettingsUI.js
+// ../../front_end/ui/legacy/components/settings_ui/SettingsUI.ts
 var SettingsUI_exports = {};
 __export(SettingsUI_exports, {
   createControlForSetting: () => createControlForSetting,
@@ -53,7 +53,9 @@ function renderSettingSelect(setting, subtitle, disabled) {
     const select = e.target;
     setting.set(options[select.selectedIndex].value);
     if (requiresReload) {
-      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
+      UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
+        i18nString(UIStrings.settingsChangedReloadDevTools)
+      );
       if (reloadWarningRef.value) {
         reloadWarningRef.value.classList.remove("hidden");
       }
@@ -98,11 +100,13 @@ function renderSettingSelect(setting, subtitle, disabled) {
 }
 var renderControlForSetting = function(setting, subtitle, disabled) {
   switch (setting.type()) {
-    case "boolean": {
+    case Common.Settings.SettingType.BOOLEAN: {
       const onchange = () => {
         const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
         if (uiDescriptor?.reloadRequired) {
-          UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(i18nString(UIStrings.settingsChangedReloadDevTools));
+          UI.InspectorView.InspectorView.instance().displayReloadRequiredWarning(
+            i18nString(UIStrings.settingsChangedReloadDevTools)
+          );
         }
       };
       return html`<setting-checkbox .data=${{
@@ -110,7 +114,7 @@ var renderControlForSetting = function(setting, subtitle, disabled) {
         disabled
       }} @change=${onchange}></setting-checkbox>`;
     }
-    case "enum": {
+    case Common.Settings.SettingType.ENUM: {
       return renderSettingSelect(setting, subtitle, disabled);
     }
     default:

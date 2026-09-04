@@ -169,7 +169,7 @@ export class TimelinePaintProfilerView extends UI.SplitWidget.SplitWidget {
         this.logTreeView.selectionWindow = this.paintProfilerView.selectionWindow();
     }
 }
-export const DEFAULT_VIEW = (input, output, target) => {
+export const DEFAULT_VIEW = (input, _output, target) => {
     const imageElementRef = createRef();
     // clang-format off
     render(html `

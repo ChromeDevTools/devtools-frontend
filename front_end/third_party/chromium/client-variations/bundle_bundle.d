@@ -1,0 +1,1 @@
+gen/front_end/third_party/chromium/client-variations/client-variations.js: ../../front_end/third_party/chromium/client-variations/ClientVariations.js ../../front_end/third_party/chromium/client-variations/client-variations.ts

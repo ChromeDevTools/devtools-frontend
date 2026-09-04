@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/sources/components/HeadersView.js
+// ../../front_end/panels/sources/components/HeadersView.ts
 var HeadersView_exports = {};
 __export(HeadersView_exports, {
   HeadersView: () => HeadersView,
@@ -142,7 +142,7 @@ var HeadersView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./HeadersView.css")} */`;
 
-// gen/front_end/panels/sources/components/HeadersView.js
+// ../../front_end/panels/sources/components/HeadersView.ts
 var { html } = Lit;
 var UIStrings = {
   /**
@@ -190,8 +190,16 @@ var HeadersView = class extends UI.View.SimpleView {
       jslog: `${VisualLogging.pane("headers-view")}`
     });
     this.#uiSourceCode = uiSourceCode;
-    this.#uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged, this);
-    this.#uiSourceCode.addEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#onWorkingCopyCommitted, this);
+    this.#uiSourceCode.addEventListener(
+      Workspace.UISourceCode.Events.WorkingCopyChanged,
+      this.#onWorkingCopyChanged,
+      this
+    );
+    this.#uiSourceCode.addEventListener(
+      Workspace.UISourceCode.Events.WorkingCopyCommitted,
+      this.#onWorkingCopyCommitted,
+      this
+    );
     this.element.appendChild(this.#headersViewComponent);
     void this.#setInitialData();
   }
@@ -228,8 +236,16 @@ var HeadersView = class extends UI.View.SimpleView {
     return this.#headersViewComponent;
   }
   dispose() {
-    this.#uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyChanged, this.#onWorkingCopyChanged, this);
-    this.#uiSourceCode.removeEventListener(Workspace.UISourceCode.Events.WorkingCopyCommitted, this.#onWorkingCopyCommitted, this);
+    this.#uiSourceCode.removeEventListener(
+      Workspace.UISourceCode.Events.WorkingCopyChanged,
+      this.#onWorkingCopyChanged,
+      this
+    );
+    this.#uiSourceCode.removeEventListener(
+      Workspace.UISourceCode.Events.WorkingCopyCommitted,
+      this.#onWorkingCopyCommitted,
+      this
+    );
   }
 };
 var HeadersViewComponent = class extends HTMLElement {
@@ -338,13 +354,19 @@ var HeadersViewComponent = class extends HTMLElement {
     const blockIndex = Number(rowElement?.dataset.blockIndex || 0);
     const headerIndex = Number(rowElement?.dataset.headerIndex || 0);
     if (target.matches(".add-header")) {
-      this.#headerOverrides[blockIndex].headers.splice(headerIndex + 1, 0, { name: this.#generateNextHeaderName(this.#headerOverrides[blockIndex].headers), value: DEFAULT_HEADER_VALUE });
+      this.#headerOverrides[blockIndex].headers.splice(
+        headerIndex + 1,
+        0,
+        { name: this.#generateNextHeaderName(this.#headerOverrides[blockIndex].headers), value: DEFAULT_HEADER_VALUE }
+      );
       this.#focusElement = { blockIndex, headerIndex: headerIndex + 1 };
       this.#onHeadersChanged();
     } else if (target.matches(".remove-header")) {
       this.#removeHeader(blockIndex, headerIndex);
     } else if (target.matches(".add-block")) {
-      this.#headerOverrides.push({ applyTo: "*", headers: [{ name: getDefaultHeaderName(1), value: DEFAULT_HEADER_VALUE }] });
+      this.#headerOverrides.push(
+        { applyTo: "*", headers: [{ name: getDefaultHeaderName(1), value: DEFAULT_HEADER_VALUE }] }
+      );
       this.#focusElement = { blockIndex: this.#headerOverrides.length - 1 };
       this.#onHeadersChanged();
     } else if (target.matches(".remove-block")) {
@@ -359,7 +381,9 @@ var HeadersViewComponent = class extends HTMLElement {
   #removeHeader(blockIndex, headerIndex) {
     this.#headerOverrides[blockIndex].headers.splice(headerIndex, 1);
     if (this.#headerOverrides[blockIndex].headers.length === 0) {
-      this.#headerOverrides[blockIndex].headers.push({ name: this.#generateNextHeaderName(this.#headerOverrides[blockIndex].headers), value: DEFAULT_HEADER_VALUE });
+      this.#headerOverrides[blockIndex].headers.push(
+        { name: this.#generateNextHeaderName(this.#headerOverrides[blockIndex].headers), value: DEFAULT_HEADER_VALUE }
+      );
     }
     this.#onHeadersChanged();
   }
@@ -426,14 +450,18 @@ var HeadersViewComponent = class extends HTMLElement {
     }
     Lit.render(html`
       <style>${HeadersView_css_default}</style>
-      ${this.#headerOverrides.map((headerOverride, blockIndex) => html`
+      ${this.#headerOverrides.map(
+      (headerOverride, blockIndex) => html`
           ${this.#renderApplyToRow(headerOverride.applyTo, blockIndex)}
-          ${headerOverride.headers.map((header, headerIndex) => html`
+          ${headerOverride.headers.map(
+        (header, headerIndex) => html`
               ${this.#renderHeaderRow(header, blockIndex, headerIndex)}
-            `)}
-        `)}
+            `
+      )}
+        `
+    )}
       <devtools-button
-          .variant=${"outlined"}
+          .variant=${Buttons.Button.Variant.OUTLINED}
           .jslogContext=${"headers-view.add-override-rule"}
           class="add-block">
         ${i18nString(UIStrings.addOverrideRule)}
@@ -467,11 +495,11 @@ var HeadersViewComponent = class extends HTMLElement {
         ${this.#renderEditable(pattern, "apply-to")}
         <devtools-button
         title=${i18nString(UIStrings.removeBlock)}
-        .size=${"SMALL"}
+        .size=${Buttons.Button.Size.SMALL}
         .iconName=${"bin"}
         .iconWidth=${"14px"}
         .iconHeight=${"14px"}
-        .variant=${"icon"}
+        .variant=${Buttons.Button.Variant.ICON}
         .jslogContext=${"headers-view.remove-apply-to-section"}
         class="remove-block inline-button"
       ></devtools-button>
@@ -487,17 +515,17 @@ var HeadersViewComponent = class extends HTMLElement {
         ${this.#renderEditable(header.value, "header-value")}
         <devtools-button
           title=${i18nString(UIStrings.addHeader)}
-          .size=${"SMALL"}
+          .size=${Buttons.Button.Size.SMALL}
           .iconName=${"plus"}
-          .variant=${"icon"}
+          .variant=${Buttons.Button.Variant.ICON}
           .jslogContext=${"headers-view.add-header"}
           class="add-header inline-button"
         ></devtools-button>
         <devtools-button
           title=${i18nString(UIStrings.removeHeader)}
-          .size=${"SMALL"}
+          .size=${Buttons.Button.Size.SMALL}
           .iconName=${"bin"}
-          .variant=${"icon"}
+          .variant=${Buttons.Button.Variant.ICON}
           ?hidden=${!this.#isDeletable(blockIndex, headerIndex)}
           .jslogContext=${"headers-view.remove-header"}
           class="remove-header inline-button"

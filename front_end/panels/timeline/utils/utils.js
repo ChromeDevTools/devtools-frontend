@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/timeline/utils/EntryNodes.js
+// ../../front_end/panels/timeline/utils/EntryNodes.ts
 var EntryNodes_exports = {};
 __export(EntryNodes_exports, {
   domNodesForBackendIds: () => domNodesForBackendIds,
@@ -78,7 +78,7 @@ async function domNodesForBackendIds(frameId, nodeIds) {
   return await domModel.pushNodesByBackendIdsToFrontend(nodeIds) || /* @__PURE__ */ new Map();
 }
 
-// gen/front_end/panels/timeline/utils/Helpers.js
+// ../../front_end/panels/timeline/utils/Helpers.ts
 var Helpers_exports = {};
 __export(Helpers_exports, {
   RevealableBottomUpProfile: () => RevealableBottomUpProfile,
@@ -161,33 +161,33 @@ function formatOriginWithEntity(url, entity, parenthesizeEntity) {
   return originWithEntity;
 }
 var RevealableInsight = class {
-  insight;
   constructor(insight) {
     this.insight = insight;
   }
+  insight;
 };
 var RevealableCoreVitals = class {
-  insightSetKey;
   constructor(insightSetKey) {
     this.insightSetKey = insightSetKey;
   }
+  insightSetKey;
 };
 var RevealableTimeRange = class {
-  bounds;
   constructor(bounds) {
     this.bounds = bounds;
   }
+  bounds;
 };
 var RevealableBottomUpProfile = class {
-  bounds;
-  node;
   constructor(bounds, node) {
     this.bounds = bounds;
     this.node = node;
   }
+  bounds;
+  node;
 };
 
-// gen/front_end/panels/timeline/utils/IgnoreList.js
+// ../../front_end/panels/timeline/utils/IgnoreList.ts
 var IgnoreList_exports = {};
 __export(IgnoreList_exports, {
   getIgnoredReasonString: () => getIgnoredReasonString,
@@ -262,7 +262,7 @@ function getIgnoredReasonString(entry) {
   return regex ? regex.source : i18nString(UIStrings.unknown);
 }
 
-// gen/front_end/panels/timeline/utils/ImageCache.js
+// ../../front_end/panels/timeline/utils/ImageCache.ts
 var ImageCache_exports = {};
 __export(ImageCache_exports, {
   cacheForTesting: () => cacheForTesting,
@@ -310,7 +310,7 @@ function preload(screenshots) {
 var cacheForTesting = imageCache;
 var loadImageForTesting = loadImage;
 
-// gen/front_end/panels/timeline/utils/Treemap.js
+// ../../front_end/panels/timeline/utils/Treemap.ts
 var Treemap_exports = {};
 __export(Treemap_exports, {
   createTreemapData: () => createTreemapData,
@@ -481,7 +481,9 @@ function createTreemapData(scripts, duplication) {
     }
   }
   for (const [frameId, node] of htmlNodesByFrameId) {
-    const script = scripts.scripts.find((s) => s.request?.args.data.resourceType === "Document" && s.request?.args.data.frame === frameId);
+    const script = scripts.scripts.find(
+      (s) => s.request?.args.data.resourceType === "Document" && s.request?.args.data.frame === frameId
+    );
     if (script?.request) {
       const { resourceSize, transferSize, headersTransferSize } = getNetworkRequestSizes(script.request);
       const inlineScriptsPct = node.resourceBytes / resourceSize;

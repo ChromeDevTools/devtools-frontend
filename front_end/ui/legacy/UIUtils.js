@@ -56,7 +56,8 @@ import smallBubbleStyles from './smallBubble.css.js';
 import { Tooltip } from './Tooltip.js';
 import * as WidgetUtils from './Widget.js';
 import { Widget } from './Widget.js';
-const { Directives, render } = Lit;
+const Directives = Lit.Directives;
+const render = Lit.render;
 const UIStrings = {
     /**
      * @description Context menu item to open a link in a new tab.

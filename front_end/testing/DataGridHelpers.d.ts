@@ -10,8 +10,8 @@ export declare const getHeaderCells: (node: ParentNode, options?: {
 export declare const getAllRows: (node: ParentNode, options?: {
     withJslog?: boolean;
 }) => HTMLTableRowElement[];
-export declare const assertGridContents: (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) => import("../ui/legacy/components/data_grid/DataGridElement.js").DataGridElement;
-export declare const assertGridWidgetContents: (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) => import("../ui/legacy/components/data_grid/DataGridElement.js").DataGridElement;
+export declare const assertGridContents: (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) => Element;
+export declare const assertGridWidgetContents: (gridComponent: HTMLElement, headerExpected: string[], rowsExpected: string[][]) => Element;
 export declare const emulateUserKeyboardNavigation: (shadowRoot: ShadowRoot, key: 'ArrowLeft' | 'ArrowRight' | 'ArrowUp' | 'ArrowDown') => void;
 export declare const getValuesOfAllBodyRows: (node: ParentNode, options?: {
     onlyVisible: boolean;

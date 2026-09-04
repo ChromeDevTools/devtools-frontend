@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/timeline/overlays/components/EntriesLinkOverlay.js
+// ../../front_end/panels/timeline/overlays/components/EntriesLinkOverlay.ts
 var EntriesLinkOverlay_exports = {};
 __export(EntriesLinkOverlay_exports, {
   EntriesLinkOverlay: () => EntriesLinkOverlay,
@@ -69,7 +69,7 @@ var entriesLinkOverlay_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./entriesLinkOverlay.css")} */`;
 
-// gen/front_end/panels/timeline/overlays/components/EntriesLinkOverlay.js
+// ../../front_end/panels/timeline/overlays/components/EntriesLinkOverlay.ts
 var UIStrings = {
   /**
    * @description Accessible label for the connector container in the entries link overlay of the Performance panel.
@@ -202,7 +202,7 @@ var EntriesLinkOverlay = class extends HTMLElement {
       console.error("one of the required Entries Link elements is missing.");
       return;
     }
-    if (this.#linkState === "creation_not_started") {
+    if (this.#linkState === Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
       this.#entryFromCirleConnector.setAttribute("visibility", "hidden");
       this.#entryToCircleConnector.setAttribute("visibility", "hidden");
       this.#connector.style.display = "none";
@@ -298,7 +298,7 @@ var EntriesLinkOverlay = class extends HTMLElement {
       console.error("creating element is missing.");
       return;
     }
-    if (this.#linkState !== "creation_not_started") {
+    if (this.#linkState !== Trace.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
       createLinkIcon.style.display = "none";
       return;
     }
@@ -306,7 +306,7 @@ var EntriesLinkOverlay = class extends HTMLElement {
     createLinkIcon.style.top = `${this.#coordinateFrom.y}px`;
   }
   #startCreatingConnection() {
-    this.#linkState = "pending_to_event";
+    this.#linkState = Trace.Types.File.EntriesLinkState.PENDING_TO_EVENT;
     this.dispatchEvent(new EntryLinkStartCreating());
   }
   /*
@@ -321,7 +321,8 @@ var EntriesLinkOverlay = class extends HTMLElement {
   */
   #render() {
     const arrowColor = ThemeSupport.ThemeSupport.instance().getComputedValue("--color-text-primary");
-    render(html`
+    render(
+      html`
           <style>${entriesLinkOverlay_css_default}</style>
           <svg class="connectorContainer" width="100%" height="100%" role="region" aria-label=${i18nString(UIStrings.diagram)}>
             <defs>
@@ -380,7 +381,10 @@ var EntriesLinkOverlay = class extends HTMLElement {
               name='arrow-right-circle'>
             </devtools-icon>
           </div>
-        `, this.#shadow, { host: this });
+        `,
+      this.#shadow,
+      { host: this }
+    );
   }
 };
 var CONNECTOR_CIRCLE_RADIUS = 2;
@@ -388,7 +392,7 @@ var CONNECTOR_CIRCLE_STROKE_WIDTH = 1;
 var DASHED_STROKE_AMOUNT = 4;
 customElements.define("devtools-entries-link-overlay", EntriesLinkOverlay);
 
-// gen/front_end/panels/timeline/overlays/components/EntryLabelOverlay.js
+// ../../front_end/panels/timeline/overlays/components/EntryLabelOverlay.ts
 var EntryLabelOverlay_exports = {};
 __export(EntryLabelOverlay_exports, {
   EntryLabelChangeEvent: () => EntryLabelChangeEvent,
@@ -597,7 +601,7 @@ var entryLabelOverlay_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./entryLabelOverlay.css")} */`;
 
-// gen/front_end/panels/timeline/overlays/components/EntryLabelOverlay.js
+// ../../front_end/panels/timeline/overlays/components/EntryLabelOverlay.ts
 var { html: html2, Directives: Directives2 } = Lit;
 var UIStrings2 = {
   /**
@@ -675,14 +679,6 @@ var UIStringsNotTranslate = {
    */
   learnMoreButton: "Learn more"
 };
-var AIButtonState;
-(function(AIButtonState2) {
-  AIButtonState2["ENABLED"] = "enabled";
-  AIButtonState2["DISABLED"] = "disabled";
-  AIButtonState2["HIDDEN"] = "hidden";
-  AIButtonState2["GENERATION_FAILED"] = "generation_failed";
-  AIButtonState2["GENERATING_LABEL"] = "generating_label";
-})(AIButtonState || (AIButtonState = {}));
 var str_2 = i18n3.i18n.registerUIStrings("panels/timeline/overlays/components/EntryLabelOverlay.ts", UIStrings2);
 var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var lockedString = i18n3.i18n.lockedString;
@@ -699,20 +695,20 @@ var EntryLabelRemoveEvent = class _EntryLabelRemoveEvent extends Event {
   }
 };
 var EntryLabelChangeEvent = class _EntryLabelChangeEvent extends Event {
-  newLabel;
-  static eventName = "entrylabelchangeevent";
   constructor(newLabel) {
     super(_EntryLabelChangeEvent.eventName);
     this.newLabel = newLabel;
   }
+  newLabel;
+  static eventName = "entrylabelchangeevent";
 };
 var LabelAnnotationsConsentDialogVisibilityChange = class _LabelAnnotationsConsentDialogVisibilityChange extends Event {
-  isVisible;
-  static eventName = "labelannotationsconsentdialogvisiblitychange";
   constructor(isVisible) {
     super(_LabelAnnotationsConsentDialogVisibilityChange.eventName, { bubbles: true, composed: true });
     this.isVisible = isVisible;
   }
+  isVisible;
+  static eventName = "labelannotationsconsentdialogvisiblitychange";
 };
 var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
   // The label is angled on the left from the centre of the entry it belongs to.
@@ -758,7 +754,7 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
    * consented, hopefully!
    */
   #inAIConsentDialogFlow = false;
-  #currAIButtonState = "hidden";
+  #currAIButtonState = "hidden" /* HIDDEN */;
   /**
    * The entry label overlay consists of 3 parts - the label part with the label string inside,
    * the line connecting the label to the entry, and a black box around an entry to highlight the entry with a label.
@@ -879,7 +875,10 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
       console.error("Some entry label elements are missing.");
       return;
     }
-    this.#connectorLineContainer.setAttribute("width", (_EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH * 2).toString());
+    this.#connectorLineContainer.setAttribute(
+      "width",
+      (_EntryLabelOverlay.LABEL_AND_CONNECTOR_SHIFT_LENGTH * 2).toString()
+    );
     this.#connectorLineContainer.setAttribute("height", _EntryLabelOverlay.LABEL_CONNECTOR_HEIGHT.toString());
     connector.setAttribute("x1", "0");
     connector.setAttribute("y1", "0");
@@ -983,7 +982,7 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
         return;
       }
       try {
-        this.#currAIButtonState = "generating_label";
+        this.#currAIButtonState = "generating_label" /* GENERATING_LABEL */;
         UI.ARIAUtils.LiveAnnouncer.alert(UIStringsNotTranslate.generatingLabel);
         this.#render();
         this.#focusInputBox();
@@ -995,7 +994,7 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
         this.#setAIButtonRenderState();
         this.#render();
       } catch {
-        this.#currAIButtonState = "generation_failed";
+        this.#currAIButtonState = "generation_failed" /* GENERATION_FAILED */;
         void ComponentHelpers.ScheduledRender.scheduleRender(this, this.#render);
       }
     } else {
@@ -1044,13 +1043,13 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
     const dataToGenerateLabelAvailable = this.#callTree !== null;
     const labelIsEmpty = this.#label?.length <= 0;
     if (!hasAiExperiment || aiDisabledByEnterprisePolicy || !dataToGenerateLabelAvailable || !labelIsEmpty) {
-      this.#currAIButtonState = "hidden";
+      this.#currAIButtonState = "hidden" /* HIDDEN */;
     } else {
       const aiAvailable = Root.Runtime.hostConfig.aidaAvailability?.enabled && !Root.Runtime.hostConfig.aidaAvailability?.blockedByAge && !Root.Runtime.hostConfig.aidaAvailability?.blockedByGeo && navigator.onLine;
       if (aiAvailable) {
-        this.#currAIButtonState = "enabled";
+        this.#currAIButtonState = "enabled" /* ENABLED */;
       } else {
-        this.#currAIButtonState = "disabled";
+        this.#currAIButtonState = "disabled" /* DISABLED */;
       }
     }
   }
@@ -1084,7 +1083,7 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
     `;
   }
   #renderAiButton() {
-    if (this.#currAIButtonState === "generation_failed") {
+    if (this.#currAIButtonState === "generation_failed" /* GENERATION_FAILED */) {
       return html2`
         <span
           class="ai-label-error">
@@ -1120,7 +1119,7 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
           class="pen-icon"
           .title=${i18nString2(UIStrings2.moreInfoAriaLabel)}
           .iconName=${"info"}
-          .variant=${"icon"}
+          .variant=${Buttons.Button.Variant.ICON}
           ></devtools-button>
         ${this.#renderAITooltip({
       textContent: this.#noLogging ? lockedString(UIStringsNotTranslate.generateLabelSecurityDisclaimerLoggingOff) : lockedString(UIStringsNotTranslate.generateLabelSecurityDisclaimer),
@@ -1176,7 +1175,8 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
       // Once the consent flow is closed, we restore focus and maintain the appearance.
       "fake-focus-state": this.#inAIConsentDialogFlow
     });
-    Lit.render(html2`
+    Lit.render(
+      html2`
         <style>${entryLabelOverlay_css_default}</style>
         <span class="label-parts-wrapper" role="region" aria-label=${i18nString2(UIStrings2.entryLabel)}
           @focusout=${this.#handleFocusOutEvent}
@@ -1187,11 +1187,11 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
               class=${inputFieldClasses}
               role="textbox"
               @focus=${() => {
-      this.setLabelEditabilityAndRemoveEmptyLabel(true);
-    }}
+        this.setLabelEditabilityAndRemoveEmptyLabel(true);
+      }}
               @dblclick=${() => {
-      this.setLabelEditabilityAndRemoveEmptyLabel(true);
-    }}
+        this.setLabelEditabilityAndRemoveEmptyLabel(true);
+      }}
               @keydown=${this.#handleLabelInputKeyDown}
               @paste=${this.#handleLabelInputPaste}
               @input=${this.#handleLabelInputKeyUp}
@@ -1209,31 +1209,34 @@ var EntryLabelOverlay = class _EntryLabelOverlay extends HTMLElement {
               </button>
             ` : Lit.nothing}
             ${(() => {
-      switch (this.#currAIButtonState) {
-        case "hidden":
-          return Lit.nothing;
-        case "enabled":
-          return this.#renderAiButton();
-        case "generating_label":
-          return this.#renderGeneratingLabelAiButton();
-        case "generation_failed":
-          return this.#renderAiButton();
-        case "disabled":
-          return this.#renderDisabledAiButton();
-      }
-    })()}
+        switch (this.#currAIButtonState) {
+          case "hidden" /* HIDDEN */:
+            return Lit.nothing;
+          case "enabled" /* ENABLED */:
+            return this.#renderAiButton();
+          case "generating_label" /* GENERATING_LABEL */:
+            return this.#renderGeneratingLabelAiButton();
+          case "generation_failed" /* GENERATION_FAILED */:
+            return this.#renderAiButton();
+          case "disabled" /* DISABLED */:
+            return this.#renderDisabledAiButton();
+        }
+      })()}
           </span>
           <svg class="connectorContainer">
             <line/>
             <circle/>
           </svg>
           <div class="entry-highlight-wrapper"></div>
-        </span>`, this.#shadow, { host: this });
+        </span>`,
+      this.#shadow,
+      { host: this }
+    );
   }
 };
 customElements.define("devtools-entry-label-overlay", EntryLabelOverlay);
 
-// gen/front_end/panels/timeline/overlays/components/TimeRangeOverlay.js
+// ../../front_end/panels/timeline/overlays/components/TimeRangeOverlay.ts
 var TimeRangeOverlay_exports = {};
 __export(TimeRangeOverlay_exports, {
   TimeRangeLabelChangeEvent: () => TimeRangeLabelChangeEvent,
@@ -1339,7 +1342,7 @@ var timeRangeOverlay_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./timeRangeOverlay.css")} */`;
 
-// gen/front_end/panels/timeline/overlays/components/TimeRangeOverlay.js
+// ../../front_end/panels/timeline/overlays/components/TimeRangeOverlay.ts
 var UIStrings3 = {
   /**
    * @description Accessible label for the time range overlay in the Performance panel.
@@ -1349,12 +1352,12 @@ var UIStrings3 = {
 var str_3 = i18n5.i18n.registerUIStrings("panels/timeline/overlays/components/TimeRangeOverlay.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var TimeRangeLabelChangeEvent = class _TimeRangeLabelChangeEvent extends Event {
-  newLabel;
-  static eventName = "timerangelabelchange";
   constructor(newLabel) {
     super(_TimeRangeLabelChangeEvent.eventName);
     this.newLabel = newLabel;
   }
+  newLabel;
+  static eventName = "timerangelabelchange";
 };
 var TimeRangeRemoveEvent = class _TimeRangeRemoveEvent extends Event {
   static eventName = "timerangeremoveevent";
@@ -1509,7 +1512,8 @@ var TimeRangeOverlay = class extends HTMLElement {
   }
   #render() {
     const durationText = this.#duration ? i18n5.TimeUtilities.formatMicroSecondsTime(this.#duration) : "";
-    render3(html3`
+    render3(
+      html3`
           <style>${timeRangeOverlay_css_default}</style>
           <span class="range-container" role="region" aria-label=${i18nString3(UIStrings3.timeRange)}>
             <span
@@ -1524,13 +1528,16 @@ var TimeRangeOverlay = class extends HTMLElement {
             ></span>
             <span class="duration">${durationText}</span>
           </span>
-          `, this.#shadow, { host: this });
+          `,
+      this.#shadow,
+      { host: this }
+    );
     this.updateLabelPositioning();
   }
 };
 customElements.define("devtools-time-range-overlay", TimeRangeOverlay);
 
-// gen/front_end/panels/timeline/overlays/components/TimespanBreakdownOverlay.js
+// ../../front_end/panels/timeline/overlays/components/TimespanBreakdownOverlay.ts
 var TimespanBreakdownOverlay_exports = {};
 __export(TimespanBreakdownOverlay_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
@@ -1683,9 +1690,11 @@ var timespanBreakdownOverlay_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./timespanBreakdownOverlay.css")} */`;
 
-// gen/front_end/panels/timeline/overlays/components/TimespanBreakdownOverlay.js
+// ../../front_end/panels/timeline/overlays/components/TimespanBreakdownOverlay.ts
 var renderSection = (section, position) => {
-  const style = Directives3.styleMap({ left: position ? `${position.left}px` : void 0, width: position ? `${position.width}px` : void 0 });
+  const style = Directives3.styleMap(
+    { left: position ? `${position.left}px` : void 0, width: position ? `${position.width}px` : void 0 }
+  );
   const durationText = section.showDuration ? i18n7.TimeUtilities.formatMicroSecondsAsMillisFixed(section.bounds.range) : "";
   const labelText = section.label instanceof HTMLElement ? section.label.textContent || "" : section.label;
   const tooltip = durationText ? `${durationText} ${labelText}` : labelText;
@@ -1705,13 +1714,17 @@ var DEFAULT_VIEW = (input, _output, target) => {
     maxHeight: input.maxHeight !== null ? `${input.maxHeight}px` : void 0,
     position: "relative"
   });
-  render4(html4`
+  render4(
+    html4`
         <style>${timespanBreakdownOverlay_css_default}</style>
         <div style=${style} class=${input.className}>
           ${input.sections?.map((curr, index) => {
-    return renderSection(curr, input.positions[index]);
-  })}
-        </div>`, target, { container: { classes: ["devtools-timespan-breakdown-overlay"] } });
+      return renderSection(curr, input.positions[index]);
+    })}
+        </div>`,
+    target,
+    { container: { classes: ["devtools-timespan-breakdown-overlay"] } }
+  );
 };
 var TimespanBreakdownOverlay = class extends UI2.Widget.Widget {
   #canvasRect = null;

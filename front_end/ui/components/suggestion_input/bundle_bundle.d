@@ -1,0 +1,1 @@
+gen/front_end/ui/components/suggestion_input/suggestion_input.js: gen/front_end/ui/components/suggestion_input/suggestionInput.css.js ../../front_end/ui/components/suggestion_input/SuggestionInput.ts ../../front_end/ui/components/suggestion_input/suggestion_input.ts

@@ -92,6 +92,7 @@
     "../../../../../../front_end/core/sdk/LogModel.ts",
     "../../../../../../front_end/core/sdk/NetworkManager.ts",
     "../../../../../../front_end/core/sdk/NetworkRequest.ts",
+    "../../../../../../front_end/core/sdk/NetworkRequestAccess.ts",
     "../../../../../../front_end/core/sdk/OverlayColorGenerator.ts",
     "../../../../../../front_end/core/sdk/OverlayModel.ts",
     "../../../../../../front_end/core/sdk/OverlayPersistentHighlighter.ts",

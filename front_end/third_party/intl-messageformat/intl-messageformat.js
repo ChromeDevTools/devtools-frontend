@@ -1,4 +1,4 @@
-// gen/front_end/third_party/intl-messageformat/package/intl-messageformat.esm.js
+// ../../front_end/third_party/intl-messageformat/package/intl-messageformat.esm.js
 var __assign = function() {
   __assign = Object.assign || function __assign2(t) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {

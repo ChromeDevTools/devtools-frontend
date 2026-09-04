@@ -34,7 +34,7 @@ export declare const enum SidebarTabs {
     INSIGHTS = "insights",
     ANNOTATIONS = "annotations"
 }
-export declare const DEFAULT_SIDEBAR_TAB = SidebarTabs.INSIGHTS;
+export declare const DEFAULT_SIDEBAR_TAB: SidebarTabs;
 export declare const DEFAULT_SIDEBAR_WIDTH_PX = 240;
 export declare class SidebarWidget extends UI.Widget.VBox {
     #private;

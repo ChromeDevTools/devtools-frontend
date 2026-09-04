@@ -21,9 +21,9 @@ export declare class InsightDeactivated extends Event {
     constructor();
 }
 export declare class InsightSetHovered extends Event {
-    bounds?: Trace.Types.Timing.TraceWindowMicro | undefined;
+    bounds?: Trace.Types.Timing.TraceWindowMicro;
     static readonly eventName = "insightsethovered";
-    constructor(bounds?: Trace.Types.Timing.TraceWindowMicro | undefined);
+    constructor(bounds?: Trace.Types.Timing.TraceWindowMicro);
 }
 export declare class InsightSetZoom extends Event {
     bounds: Trace.Types.Timing.TraceWindowMicro;

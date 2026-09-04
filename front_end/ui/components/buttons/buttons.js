@@ -861,6 +861,31 @@ button {
   }
 }
 
+@media (forced-colors: active) {
+  button {
+    forced-color-adjust: none;
+    box-shadow: 0 0 0 var(--sys-size-1) ButtonText;
+
+    :host-context(:not(.theme-with-dark-background)) &,
+    :host-context(.theme-with-dark-background) &:not(:disabled) {
+      background-color: ButtonFace;
+    }
+
+    :host-context(:not(.theme-with-dark-background)) &:not(:disabled) > devtools-icon,
+    :host-context(.theme-with-dark-background) &:not(:disabled) > devtools-icon {
+      color: ButtonText;
+    }
+
+    &:focus-visible {
+      outline-color: ButtonText;
+    }
+
+    &:disabled > devtools-icon {
+      color: GrayText;
+    }
+  }
+}
+
 /*# sourceURL=${import.meta.resolve("./floatingButton.css")} */`;
 
 // ../../front_end/ui/components/buttons/FloatingButton.ts

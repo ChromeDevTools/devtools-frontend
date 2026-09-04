@@ -1301,11 +1301,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     collapseChildren(node) {
         if (this.#view === DECLARATIVE_VIEW) {
             const collapse = (n) => {
-                const pseudoElements = Array.from(n.pseudoElements().values()).flat();
-                const allChildren = [...(n.children() ?? []), ...pseudoElements];
-                for (const child of allChildren) {
-                    this.#expandedNodes.delete(child);
-                    collapse(child);
+                for (const child of getVisibleChildren(n, this.#showComments)) {
+                    if (this.#expandedNodes.delete(child)) {
+                        collapse(child);
+                    }
                 }
             };
             collapse(node);

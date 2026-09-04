@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/settings/emulation/components/UserAgentClientHintsForm.js
+// ../../front_end/panels/settings/emulation/components/UserAgentClientHintsForm.ts
 var UserAgentClientHintsForm_exports = {};
 __export(UserAgentClientHintsForm_exports, {
   ALL_PROTOCOL_FORM_FACTORS: () => ALL_PROTOCOL_FORM_FACTORS,
@@ -184,7 +184,7 @@ devtools-icon + .link {
 
 /*# sourceURL=${import.meta.resolve("./userAgentClientHintsForm.css")} */`;
 
-// gen/front_end/panels/settings/emulation/components/UserAgentClientHintsForm.js
+// ../../front_end/panels/settings/emulation/components/UserAgentClientHintsForm.ts
 var { html } = Lit;
 var UIStrings = {
   /**
@@ -713,12 +713,14 @@ var UserAgentClientHintsForm = class extends HTMLElement {
     `;
   }
   #renderUseragent() {
-    const { brands = [
-      {
-        brand: "",
-        version: ""
-      }
-    ] } = this.#metaData;
+    const {
+      brands = [
+        {
+          brand: "",
+          version: ""
+        }
+      ]
+    } = this.#metaData;
     const brandElements = brands.map((brandRow, index) => {
       const { brand, version } = brandRow;
       const handleDeleteClick = () => {
@@ -800,12 +802,14 @@ var UserAgentClientHintsForm = class extends HTMLElement {
     `;
   }
   #renderFullVersionList() {
-    const { fullVersionList = [
-      {
-        brand: "",
-        version: ""
-      }
-    ] } = this.#metaData;
+    const {
+      fullVersionList = [
+        {
+          brand: "",
+          version: ""
+        }
+      ]
+    } = this.#metaData;
     const elements = fullVersionList.map((brandRow, index) => {
       const { brand, version } = brandRow;
       const handleDeleteClick = () => {
@@ -923,14 +927,24 @@ var UserAgentClientHintsForm = class extends HTMLElement {
     const { fullVersion, architecture } = this.#metaData;
     const useragentSection = this.#renderUseragent();
     const fullVersionListSection = this.#renderFullVersionList();
-    const fullBrowserInput = this.#renderInputWithLabel(i18nString(UIStrings.fullBrowserVersion), i18nString(UIStrings.fullBrowserVersionPlaceholder), fullVersion || "", "fullVersion");
+    const fullBrowserInput = this.#renderInputWithLabel(
+      i18nString(UIStrings.fullBrowserVersion),
+      i18nString(UIStrings.fullBrowserVersionPlaceholder),
+      fullVersion || "",
+      "fullVersion"
+    );
     const formFactorsSection = this.#renderFormFactorsSection();
     const platformSection = this.#renderPlatformSection();
-    const architectureInput = this.#renderInputWithLabel(i18nString(UIStrings.architecture), i18nString(UIStrings.architecturePlaceholder), architecture, "architecture");
+    const architectureInput = this.#renderInputWithLabel(
+      i18nString(UIStrings.architecture),
+      i18nString(UIStrings.architecturePlaceholder),
+      architecture,
+      "architecture"
+    );
     const deviceModelSection = this.#renderDeviceModelSection();
     const submitButton = this.#showSubmitButton ? html`
       <devtools-button
-        .variant=${"outlined"}
+        .variant=${Buttons.Button.Variant.OUTLINED}
         .type=${"submit"}
       >
         ${i18nString(UIStrings.update)}
@@ -995,8 +1009,14 @@ var UserAgentClientHintsForm = class extends HTMLElement {
     for (const [metaDataKey, metaDataValue] of Object.entries(this.#metaData)) {
       if (metaDataKey === "brands" || metaDataKey === "fullVersionList") {
         const isBrandValid = this.#metaData.brands?.every(({ brand, version }) => {
-          const brandNameResult = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(brand, i18nString(UIStrings.notRepresentable));
-          const brandVersionResult = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(version, i18nString(UIStrings.notRepresentable));
+          const brandNameResult = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(
+            brand,
+            i18nString(UIStrings.notRepresentable)
+          );
+          const brandVersionResult = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(
+            version,
+            i18nString(UIStrings.notRepresentable)
+          );
           return brandNameResult.valid && brandVersionResult.valid;
         });
         if (!isBrandValid) {
@@ -1012,14 +1032,20 @@ var UserAgentClientHintsForm = class extends HTMLElement {
                 errorMessage: i18nString(UIStrings.notRepresentable) + ` (Invalid form factor: ${ff})`
               };
             }
-            const ffError = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(ff, i18nString(UIStrings.notRepresentable));
+            const ffError = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(
+              ff,
+              i18nString(UIStrings.notRepresentable)
+            );
             if (!ffError.valid) {
               return ffError;
             }
           }
         }
       } else {
-        const metaDataError = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(metaDataValue, i18nString(UIStrings.notRepresentable));
+        const metaDataError = EmulationUtils.UserAgentMetadata.validateAsStructuredHeadersString(
+          metaDataValue,
+          i18nString(UIStrings.notRepresentable)
+        );
         if (!metaDataError.valid) {
           return metaDataError;
         }

@@ -1,0 +1,1 @@
+gen/front_end/ui/components/srgb_overlay/srgb_overlay.js: gen/front_end/ui/components/srgb_overlay/srgbOverlay.css.js ../../front_end/ui/components/srgb_overlay/SrgbOverlay.ts ../../front_end/ui/components/srgb_overlay/srgb_overlay.ts

@@ -1307,4 +1307,15 @@ devtools-toolbar {
   }
 }
 
+.devtools-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sys-size-3);
+  padding: var(--sys-size-1) var(--sys-size-3) var(--sys-size-1) var(--sys-size-4);
+  border-radius: var(--sys-shape-corner-extra-small);
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  box-sizing: border-box;
+}
+
 /*# sourceURL=${import.meta.resolve('./inspectorCommon.css')} */`;

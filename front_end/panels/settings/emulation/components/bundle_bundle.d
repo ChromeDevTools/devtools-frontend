@@ -1,0 +1,1 @@
+gen/front_end/panels/settings/emulation/components/components.js: gen/front_end/panels/settings/emulation/components/userAgentClientHintsForm.css.js ../../front_end/panels/settings/emulation/components/UserAgentClientHintsForm.ts ../../front_end/panels/settings/emulation/components/components.ts

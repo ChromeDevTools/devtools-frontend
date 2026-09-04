@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/third_party/legacy-javascript/lib/legacy-javascript.js
+// ../../front_end/third_party/legacy-javascript/lib/legacy-javascript.js
 var legacy_javascript_exports = {};
 __export(legacy_javascript_exports, {
   detectLegacyJavaScript: () => detectLegacyJavaScript,

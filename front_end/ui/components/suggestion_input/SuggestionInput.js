@@ -2,12 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 /* eslint-disable @devtools/enforce-custom-element-definitions-location */
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
 import * as CodeHighlighter from '../../../ui/components/code_highlighter/code_highlighter.js';
 import * as Lit from '../../../ui/lit/lit.js';
 import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
@@ -20,8 +14,7 @@ function assert(predicate, message = 'Assertion failed!') {
         throw new Error(message);
     }
 }
-const { html, Decorators, Directives, LitElement } = Lit;
-const { customElement, property, state } = Decorators;
+const { html, Directives } = Lit;
 const { classMap } = Directives;
 const jsonPropertyOptions = {
     hasChanged(value, oldValue) {
@@ -29,7 +22,7 @@ const jsonPropertyOptions = {
     },
     attribute: false,
 };
-let EditableContent = class EditableContent extends HTMLElement {
+class EditableContent extends HTMLElement {
     static get observedAttributes() {
         return ['disabled', 'placeholder'];
     }
@@ -75,10 +68,7 @@ let EditableContent = class EditableContent extends HTMLElement {
                 break;
         }
     }
-};
-EditableContent = __decorate([
-    customElement('devtools-editable-content')
-], EditableContent);
+}
 /**
  * Contains a suggestion emitted due to action by the user.
  */
@@ -106,7 +96,13 @@ const defaultSuggestionFilter = (option, query) => option.toLowerCase().startsWi
  * @fires SuggestionInitEvent#suggestioninit
  * @fires SuggestEvent#suggest
  */
-let SuggestionBox = class SuggestionBox extends LitElement {
+class SuggestionBox extends Lit.LitElement {
+    static properties = {
+        options: jsonPropertyOptions,
+        expression: { type: String },
+        suggestionFilter: { attribute: false },
+        cursor: { state: true },
+    };
     #suggestions = [];
     constructor() {
         super();
@@ -173,26 +169,23 @@ let SuggestionBox = class SuggestionBox extends LitElement {
     </ul>`;
         // clang-format on
     }
-};
-__decorate([
-    property(jsonPropertyOptions)
-], SuggestionBox.prototype, "options", void 0);
-__decorate([
-    property()
-], SuggestionBox.prototype, "expression", void 0);
-__decorate([
-    property()
-], SuggestionBox.prototype, "suggestionFilter", void 0);
-__decorate([
-    state()
-], SuggestionBox.prototype, "cursor", void 0);
-SuggestionBox = __decorate([
-    customElement('devtools-suggestion-box')
-], SuggestionBox);
-let SuggestionInput = class SuggestionInput extends LitElement {
+}
+export class SuggestionInput extends Lit.LitElement {
     static shadowRootOptions = {
-        ...LitElement.shadowRootOptions,
+        ...Lit.LitElement.shadowRootOptions,
         delegatesFocus: true,
+    };
+    static properties = {
+        options: jsonPropertyOptions,
+        autocomplete: { type: Boolean },
+        suggestionFilter: { attribute: false },
+        expression: { state: true },
+        placeholder: { type: String },
+        value: { type: String },
+        disabled: { type: Boolean },
+        strikethrough: { type: Boolean },
+        mimeType: { type: String },
+        jslogContext: { type: String },
     };
     constructor() {
         super();
@@ -289,39 +282,8 @@ let SuggestionInput = class SuggestionInput extends LitElement {
       ></devtools-suggestion-box>`;
         // clang-format on
     }
-};
-__decorate([
-    property(jsonPropertyOptions)
-], SuggestionInput.prototype, "options", void 0);
-__decorate([
-    property({ type: Boolean })
-], SuggestionInput.prototype, "autocomplete", void 0);
-__decorate([
-    property()
-], SuggestionInput.prototype, "suggestionFilter", void 0);
-__decorate([
-    state()
-], SuggestionInput.prototype, "expression", void 0);
-__decorate([
-    property()
-], SuggestionInput.prototype, "placeholder", void 0);
-__decorate([
-    property()
-], SuggestionInput.prototype, "value", void 0);
-__decorate([
-    property({ type: Boolean })
-], SuggestionInput.prototype, "disabled", void 0);
-__decorate([
-    property({ type: Boolean })
-], SuggestionInput.prototype, "strikethrough", void 0);
-__decorate([
-    property()
-], SuggestionInput.prototype, "mimeType", void 0);
-__decorate([
-    property()
-], SuggestionInput.prototype, "jslogContext", void 0);
-SuggestionInput = __decorate([
-    customElement('devtools-suggestion-input')
-], SuggestionInput);
-export { SuggestionInput };
+}
+customElements.define('devtools-editable-content', EditableContent);
+customElements.define('devtools-suggestion-box', SuggestionBox);
+customElements.define('devtools-suggestion-input', SuggestionInput);
 //# sourceMappingURL=SuggestionInput.js.map

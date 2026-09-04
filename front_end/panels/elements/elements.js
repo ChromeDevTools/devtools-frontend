@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/elements/InspectElementModeController.js
+// ../../front_end/panels/elements/InspectElementModeController.ts
 var InspectElementModeController_exports = {};
 __export(InspectElementModeController_exports, {
   InspectElementModeController: () => InspectElementModeController,
@@ -13,10 +13,2813 @@ __export(InspectElementModeController_exports, {
 import * as Common16 from "../../core/common/common.js";
 import * as Root6 from "../../core/root/root.js";
 import * as SDK20 from "../../core/sdk/sdk.js";
+
+// ../../front_end/generated/protocol.ts
+var Accessibility;
+((Accessibility2) => {
+  let AXValueType;
+  ((AXValueType2) => {
+    AXValueType2["Boolean"] = "boolean";
+    AXValueType2["Tristate"] = "tristate";
+    AXValueType2["BooleanOrUndefined"] = "booleanOrUndefined";
+    AXValueType2["Idref"] = "idref";
+    AXValueType2["IdrefList"] = "idrefList";
+    AXValueType2["Integer"] = "integer";
+    AXValueType2["Node"] = "node";
+    AXValueType2["NodeList"] = "nodeList";
+    AXValueType2["Number"] = "number";
+    AXValueType2["String"] = "string";
+    AXValueType2["ComputedString"] = "computedString";
+    AXValueType2["Token"] = "token";
+    AXValueType2["TokenList"] = "tokenList";
+    AXValueType2["DomRelation"] = "domRelation";
+    AXValueType2["Role"] = "role";
+    AXValueType2["InternalRole"] = "internalRole";
+    AXValueType2["ValueUndefined"] = "valueUndefined";
+  })(AXValueType = Accessibility2.AXValueType || (Accessibility2.AXValueType = {}));
+  let AXValueSourceType;
+  ((AXValueSourceType2) => {
+    AXValueSourceType2["Attribute"] = "attribute";
+    AXValueSourceType2["Implicit"] = "implicit";
+    AXValueSourceType2["Style"] = "style";
+    AXValueSourceType2["Contents"] = "contents";
+    AXValueSourceType2["Placeholder"] = "placeholder";
+    AXValueSourceType2["RelatedElement"] = "relatedElement";
+  })(AXValueSourceType = Accessibility2.AXValueSourceType || (Accessibility2.AXValueSourceType = {}));
+  let AXValueNativeSourceType;
+  ((AXValueNativeSourceType2) => {
+    AXValueNativeSourceType2["Description"] = "description";
+    AXValueNativeSourceType2["Figcaption"] = "figcaption";
+    AXValueNativeSourceType2["Label"] = "label";
+    AXValueNativeSourceType2["Labelfor"] = "labelfor";
+    AXValueNativeSourceType2["Labelwrapped"] = "labelwrapped";
+    AXValueNativeSourceType2["Legend"] = "legend";
+    AXValueNativeSourceType2["Rubyannotation"] = "rubyannotation";
+    AXValueNativeSourceType2["Tablecaption"] = "tablecaption";
+    AXValueNativeSourceType2["Title"] = "title";
+    AXValueNativeSourceType2["Other"] = "other";
+  })(AXValueNativeSourceType = Accessibility2.AXValueNativeSourceType || (Accessibility2.AXValueNativeSourceType = {}));
+  let AXPropertyName;
+  ((AXPropertyName2) => {
+    AXPropertyName2["Actions"] = "actions";
+    AXPropertyName2["Busy"] = "busy";
+    AXPropertyName2["Disabled"] = "disabled";
+    AXPropertyName2["Editable"] = "editable";
+    AXPropertyName2["Focusable"] = "focusable";
+    AXPropertyName2["Focused"] = "focused";
+    AXPropertyName2["Hidden"] = "hidden";
+    AXPropertyName2["HiddenRoot"] = "hiddenRoot";
+    AXPropertyName2["Invalid"] = "invalid";
+    AXPropertyName2["Keyshortcuts"] = "keyshortcuts";
+    AXPropertyName2["Settable"] = "settable";
+    AXPropertyName2["Roledescription"] = "roledescription";
+    AXPropertyName2["Live"] = "live";
+    AXPropertyName2["Atomic"] = "atomic";
+    AXPropertyName2["Relevant"] = "relevant";
+    AXPropertyName2["Root"] = "root";
+    AXPropertyName2["Autocomplete"] = "autocomplete";
+    AXPropertyName2["HasPopup"] = "hasPopup";
+    AXPropertyName2["Level"] = "level";
+    AXPropertyName2["Multiselectable"] = "multiselectable";
+    AXPropertyName2["Orientation"] = "orientation";
+    AXPropertyName2["Multiline"] = "multiline";
+    AXPropertyName2["Readonly"] = "readonly";
+    AXPropertyName2["Required"] = "required";
+    AXPropertyName2["Valuemin"] = "valuemin";
+    AXPropertyName2["Valuemax"] = "valuemax";
+    AXPropertyName2["Valuetext"] = "valuetext";
+    AXPropertyName2["Checked"] = "checked";
+    AXPropertyName2["Expanded"] = "expanded";
+    AXPropertyName2["Modal"] = "modal";
+    AXPropertyName2["Pressed"] = "pressed";
+    AXPropertyName2["Selected"] = "selected";
+    AXPropertyName2["Activedescendant"] = "activedescendant";
+    AXPropertyName2["Controls"] = "controls";
+    AXPropertyName2["Describedby"] = "describedby";
+    AXPropertyName2["Details"] = "details";
+    AXPropertyName2["Errormessage"] = "errormessage";
+    AXPropertyName2["Flowto"] = "flowto";
+    AXPropertyName2["Labelledby"] = "labelledby";
+    AXPropertyName2["Owns"] = "owns";
+    AXPropertyName2["Url"] = "url";
+    AXPropertyName2["ActiveFullscreenElement"] = "activeFullscreenElement";
+    AXPropertyName2["ActiveModalDialog"] = "activeModalDialog";
+    AXPropertyName2["ActiveAriaModalDialog"] = "activeAriaModalDialog";
+    AXPropertyName2["AriaHiddenElement"] = "ariaHiddenElement";
+    AXPropertyName2["AriaHiddenSubtree"] = "ariaHiddenSubtree";
+    AXPropertyName2["EmptyAlt"] = "emptyAlt";
+    AXPropertyName2["EmptyText"] = "emptyText";
+    AXPropertyName2["InertElement"] = "inertElement";
+    AXPropertyName2["InertSubtree"] = "inertSubtree";
+    AXPropertyName2["LabelContainer"] = "labelContainer";
+    AXPropertyName2["LabelFor"] = "labelFor";
+    AXPropertyName2["NotRendered"] = "notRendered";
+    AXPropertyName2["NotVisible"] = "notVisible";
+    AXPropertyName2["PresentationalRole"] = "presentationalRole";
+    AXPropertyName2["ProbablyPresentational"] = "probablyPresentational";
+    AXPropertyName2["InactiveCarouselTabContent"] = "inactiveCarouselTabContent";
+    AXPropertyName2["Uninteresting"] = "uninteresting";
+  })(AXPropertyName = Accessibility2.AXPropertyName || (Accessibility2.AXPropertyName = {}));
+})(Accessibility || (Accessibility = {}));
+var Animation;
+((Animation2) => {
+  let AnimationType;
+  ((AnimationType2) => {
+    AnimationType2["CSSTransition"] = "CSSTransition";
+    AnimationType2["CSSAnimation"] = "CSSAnimation";
+    AnimationType2["WebAnimation"] = "WebAnimation";
+  })(AnimationType = Animation2.AnimationType || (Animation2.AnimationType = {}));
+})(Animation || (Animation = {}));
+var Audits;
+((Audits2) => {
+  let CookieExclusionReason;
+  ((CookieExclusionReason2) => {
+    CookieExclusionReason2["ExcludeSameSiteUnspecifiedTreatedAsLax"] = "ExcludeSameSiteUnspecifiedTreatedAsLax";
+    CookieExclusionReason2["ExcludeSameSiteNoneInsecure"] = "ExcludeSameSiteNoneInsecure";
+    CookieExclusionReason2["ExcludeSameSiteLax"] = "ExcludeSameSiteLax";
+    CookieExclusionReason2["ExcludeSameSiteStrict"] = "ExcludeSameSiteStrict";
+    CookieExclusionReason2["ExcludeDomainNonASCII"] = "ExcludeDomainNonASCII";
+    CookieExclusionReason2["ExcludeThirdPartyCookieBlockedInFirstPartySet"] = "ExcludeThirdPartyCookieBlockedInFirstPartySet";
+    CookieExclusionReason2["ExcludeThirdPartyPhaseout"] = "ExcludeThirdPartyPhaseout";
+    CookieExclusionReason2["ExcludePortMismatch"] = "ExcludePortMismatch";
+    CookieExclusionReason2["ExcludeSchemeMismatch"] = "ExcludeSchemeMismatch";
+  })(CookieExclusionReason = Audits2.CookieExclusionReason || (Audits2.CookieExclusionReason = {}));
+  let CookieWarningReason;
+  ((CookieWarningReason2) => {
+    CookieWarningReason2["WarnSameSiteUnspecifiedCrossSiteContext"] = "WarnSameSiteUnspecifiedCrossSiteContext";
+    CookieWarningReason2["WarnSameSiteNoneInsecure"] = "WarnSameSiteNoneInsecure";
+    CookieWarningReason2["WarnSameSiteUnspecifiedLaxAllowUnsafe"] = "WarnSameSiteUnspecifiedLaxAllowUnsafe";
+    CookieWarningReason2["WarnSameSiteStrictLaxDowngradeStrict"] = "WarnSameSiteStrictLaxDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteStrictCrossDowngradeStrict"] = "WarnSameSiteStrictCrossDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteStrictCrossDowngradeLax"] = "WarnSameSiteStrictCrossDowngradeLax";
+    CookieWarningReason2["WarnSameSiteLaxCrossDowngradeStrict"] = "WarnSameSiteLaxCrossDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteLaxCrossDowngradeLax"] = "WarnSameSiteLaxCrossDowngradeLax";
+    CookieWarningReason2["WarnAttributeValueExceedsMaxSize"] = "WarnAttributeValueExceedsMaxSize";
+    CookieWarningReason2["WarnDomainNonASCII"] = "WarnDomainNonASCII";
+    CookieWarningReason2["WarnThirdPartyPhaseout"] = "WarnThirdPartyPhaseout";
+    CookieWarningReason2["WarnCrossSiteRedirectDowngradeChangesInclusion"] = "WarnCrossSiteRedirectDowngradeChangesInclusion";
+    CookieWarningReason2["WarnDeprecationTrialMetadata"] = "WarnDeprecationTrialMetadata";
+    CookieWarningReason2["WarnThirdPartyCookieHeuristic"] = "WarnThirdPartyCookieHeuristic";
+  })(CookieWarningReason = Audits2.CookieWarningReason || (Audits2.CookieWarningReason = {}));
+  let CookieOperation;
+  ((CookieOperation2) => {
+    CookieOperation2["SetCookie"] = "SetCookie";
+    CookieOperation2["ReadCookie"] = "ReadCookie";
+  })(CookieOperation = Audits2.CookieOperation || (Audits2.CookieOperation = {}));
+  let InsightType;
+  ((InsightType2) => {
+    InsightType2["GitHubResource"] = "GitHubResource";
+    InsightType2["GracePeriod"] = "GracePeriod";
+    InsightType2["Heuristics"] = "Heuristics";
+  })(InsightType = Audits2.InsightType || (Audits2.InsightType = {}));
+  let PerformanceIssueType;
+  ((PerformanceIssueType2) => {
+    PerformanceIssueType2["DocumentCookie"] = "DocumentCookie";
+  })(PerformanceIssueType = Audits2.PerformanceIssueType || (Audits2.PerformanceIssueType = {}));
+  let MixedContentResolutionStatus;
+  ((MixedContentResolutionStatus2) => {
+    MixedContentResolutionStatus2["MixedContentBlocked"] = "MixedContentBlocked";
+    MixedContentResolutionStatus2["MixedContentAutomaticallyUpgraded"] = "MixedContentAutomaticallyUpgraded";
+    MixedContentResolutionStatus2["MixedContentWarning"] = "MixedContentWarning";
+  })(MixedContentResolutionStatus = Audits2.MixedContentResolutionStatus || (Audits2.MixedContentResolutionStatus = {}));
+  let MixedContentResourceType;
+  ((MixedContentResourceType2) => {
+    MixedContentResourceType2["Audio"] = "Audio";
+    MixedContentResourceType2["Beacon"] = "Beacon";
+    MixedContentResourceType2["CSPReport"] = "CSPReport";
+    MixedContentResourceType2["Download"] = "Download";
+    MixedContentResourceType2["EventSource"] = "EventSource";
+    MixedContentResourceType2["Favicon"] = "Favicon";
+    MixedContentResourceType2["Font"] = "Font";
+    MixedContentResourceType2["Form"] = "Form";
+    MixedContentResourceType2["Frame"] = "Frame";
+    MixedContentResourceType2["Image"] = "Image";
+    MixedContentResourceType2["Import"] = "Import";
+    MixedContentResourceType2["JSON"] = "JSON";
+    MixedContentResourceType2["Manifest"] = "Manifest";
+    MixedContentResourceType2["Ping"] = "Ping";
+    MixedContentResourceType2["PluginData"] = "PluginData";
+    MixedContentResourceType2["PluginResource"] = "PluginResource";
+    MixedContentResourceType2["Prefetch"] = "Prefetch";
+    MixedContentResourceType2["Resource"] = "Resource";
+    MixedContentResourceType2["Script"] = "Script";
+    MixedContentResourceType2["ServiceWorker"] = "ServiceWorker";
+    MixedContentResourceType2["SharedWorker"] = "SharedWorker";
+    MixedContentResourceType2["SpeculationRules"] = "SpeculationRules";
+    MixedContentResourceType2["Stylesheet"] = "Stylesheet";
+    MixedContentResourceType2["Track"] = "Track";
+    MixedContentResourceType2["Video"] = "Video";
+    MixedContentResourceType2["Worker"] = "Worker";
+    MixedContentResourceType2["XMLHttpRequest"] = "XMLHttpRequest";
+    MixedContentResourceType2["XSLT"] = "XSLT";
+  })(MixedContentResourceType = Audits2.MixedContentResourceType || (Audits2.MixedContentResourceType = {}));
+  let BlockedByResponseReason;
+  ((BlockedByResponseReason2) => {
+    BlockedByResponseReason2["CoepFrameResourceNeedsCoepHeader"] = "CoepFrameResourceNeedsCoepHeader";
+    BlockedByResponseReason2["CoopSandboxedIFrameCannotNavigateToCoopPage"] = "CoopSandboxedIFrameCannotNavigateToCoopPage";
+    BlockedByResponseReason2["CorpNotSameOrigin"] = "CorpNotSameOrigin";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoep"] = "CorpNotSameOriginAfterDefaultedToSameOriginByCoep";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByDip"] = "CorpNotSameOriginAfterDefaultedToSameOriginByDip";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"] = "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip";
+    BlockedByResponseReason2["CorpNotSameSite"] = "CorpNotSameSite";
+    BlockedByResponseReason2["SRIMessageSignatureMismatch"] = "SRIMessageSignatureMismatch";
+  })(BlockedByResponseReason = Audits2.BlockedByResponseReason || (Audits2.BlockedByResponseReason = {}));
+  let HeavyAdResolutionStatus;
+  ((HeavyAdResolutionStatus2) => {
+    HeavyAdResolutionStatus2["HeavyAdBlocked"] = "HeavyAdBlocked";
+    HeavyAdResolutionStatus2["HeavyAdWarning"] = "HeavyAdWarning";
+  })(HeavyAdResolutionStatus = Audits2.HeavyAdResolutionStatus || (Audits2.HeavyAdResolutionStatus = {}));
+  let HeavyAdReason;
+  ((HeavyAdReason2) => {
+    HeavyAdReason2["NetworkTotalLimit"] = "NetworkTotalLimit";
+    HeavyAdReason2["CpuTotalLimit"] = "CpuTotalLimit";
+    HeavyAdReason2["CpuPeakLimit"] = "CpuPeakLimit";
+  })(HeavyAdReason = Audits2.HeavyAdReason || (Audits2.HeavyAdReason = {}));
+  let ContentSecurityPolicyViolationType;
+  ((ContentSecurityPolicyViolationType2) => {
+    ContentSecurityPolicyViolationType2["KInlineViolation"] = "kInlineViolation";
+    ContentSecurityPolicyViolationType2["KEvalViolation"] = "kEvalViolation";
+    ContentSecurityPolicyViolationType2["KURLViolation"] = "kURLViolation";
+    ContentSecurityPolicyViolationType2["KSRIViolation"] = "kSRIViolation";
+    ContentSecurityPolicyViolationType2["KTrustedTypesSinkViolation"] = "kTrustedTypesSinkViolation";
+    ContentSecurityPolicyViolationType2["KTrustedTypesPolicyViolation"] = "kTrustedTypesPolicyViolation";
+    ContentSecurityPolicyViolationType2["KWasmEvalViolation"] = "kWasmEvalViolation";
+  })(ContentSecurityPolicyViolationType = Audits2.ContentSecurityPolicyViolationType || (Audits2.ContentSecurityPolicyViolationType = {}));
+  let SharedArrayBufferIssueType;
+  ((SharedArrayBufferIssueType2) => {
+    SharedArrayBufferIssueType2["TransferIssue"] = "TransferIssue";
+    SharedArrayBufferIssueType2["CreationIssue"] = "CreationIssue";
+  })(SharedArrayBufferIssueType = Audits2.SharedArrayBufferIssueType || (Audits2.SharedArrayBufferIssueType = {}));
+  let SharedDictionaryError;
+  ((SharedDictionaryError2) => {
+    SharedDictionaryError2["UseErrorCrossOriginNoCorsRequest"] = "UseErrorCrossOriginNoCorsRequest";
+    SharedDictionaryError2["UseErrorDictionaryLoadFailure"] = "UseErrorDictionaryLoadFailure";
+    SharedDictionaryError2["UseErrorMatchingDictionaryNotUsed"] = "UseErrorMatchingDictionaryNotUsed";
+    SharedDictionaryError2["UseErrorUnexpectedContentDictionaryHeader"] = "UseErrorUnexpectedContentDictionaryHeader";
+    SharedDictionaryError2["WriteErrorCossOriginNoCorsRequest"] = "WriteErrorCossOriginNoCorsRequest";
+    SharedDictionaryError2["WriteErrorDisallowedBySettings"] = "WriteErrorDisallowedBySettings";
+    SharedDictionaryError2["WriteErrorExpiredResponse"] = "WriteErrorExpiredResponse";
+    SharedDictionaryError2["WriteErrorFeatureDisabled"] = "WriteErrorFeatureDisabled";
+    SharedDictionaryError2["WriteErrorInsufficientResources"] = "WriteErrorInsufficientResources";
+    SharedDictionaryError2["WriteErrorInvalidMatchField"] = "WriteErrorInvalidMatchField";
+    SharedDictionaryError2["WriteErrorInvalidStructuredHeader"] = "WriteErrorInvalidStructuredHeader";
+    SharedDictionaryError2["WriteErrorInvalidTTLField"] = "WriteErrorInvalidTTLField";
+    SharedDictionaryError2["WriteErrorNavigationRequest"] = "WriteErrorNavigationRequest";
+    SharedDictionaryError2["WriteErrorNoMatchField"] = "WriteErrorNoMatchField";
+    SharedDictionaryError2["WriteErrorNonIntegerTTLField"] = "WriteErrorNonIntegerTTLField";
+    SharedDictionaryError2["WriteErrorNonListMatchDestField"] = "WriteErrorNonListMatchDestField";
+    SharedDictionaryError2["WriteErrorNonSecureContext"] = "WriteErrorNonSecureContext";
+    SharedDictionaryError2["WriteErrorNonStringIdField"] = "WriteErrorNonStringIdField";
+    SharedDictionaryError2["WriteErrorNonStringInMatchDestList"] = "WriteErrorNonStringInMatchDestList";
+    SharedDictionaryError2["WriteErrorInvalidMatchDestList"] = "WriteErrorInvalidMatchDestList";
+    SharedDictionaryError2["WriteErrorNonStringMatchField"] = "WriteErrorNonStringMatchField";
+    SharedDictionaryError2["WriteErrorNonTokenTypeField"] = "WriteErrorNonTokenTypeField";
+    SharedDictionaryError2["WriteErrorRequestAborted"] = "WriteErrorRequestAborted";
+    SharedDictionaryError2["WriteErrorShuttingDown"] = "WriteErrorShuttingDown";
+    SharedDictionaryError2["WriteErrorTooLongIdField"] = "WriteErrorTooLongIdField";
+    SharedDictionaryError2["WriteErrorUnsupportedType"] = "WriteErrorUnsupportedType";
+  })(SharedDictionaryError = Audits2.SharedDictionaryError || (Audits2.SharedDictionaryError = {}));
+  let SRIMessageSignatureError;
+  ((SRIMessageSignatureError2) => {
+    SRIMessageSignatureError2["MissingSignatureHeader"] = "MissingSignatureHeader";
+    SRIMessageSignatureError2["MissingSignatureInputHeader"] = "MissingSignatureInputHeader";
+    SRIMessageSignatureError2["InvalidSignatureHeader"] = "InvalidSignatureHeader";
+    SRIMessageSignatureError2["InvalidSignatureInputHeader"] = "InvalidSignatureInputHeader";
+    SRIMessageSignatureError2["SignatureHeaderValueIsNotByteSequence"] = "SignatureHeaderValueIsNotByteSequence";
+    SRIMessageSignatureError2["SignatureHeaderValueIsParameterized"] = "SignatureHeaderValueIsParameterized";
+    SRIMessageSignatureError2["SignatureHeaderValueIsIncorrectLength"] = "SignatureHeaderValueIsIncorrectLength";
+    SRIMessageSignatureError2["SignatureInputHeaderMissingLabel"] = "SignatureInputHeaderMissingLabel";
+    SRIMessageSignatureError2["SignatureInputHeaderValueNotInnerList"] = "SignatureInputHeaderValueNotInnerList";
+    SRIMessageSignatureError2["SignatureInputHeaderValueMissingComponents"] = "SignatureInputHeaderValueMissingComponents";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidComponentType"] = "SignatureInputHeaderInvalidComponentType";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidComponentName"] = "SignatureInputHeaderInvalidComponentName";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidHeaderComponentParameter"] = "SignatureInputHeaderInvalidHeaderComponentParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidDerivedComponentParameter"] = "SignatureInputHeaderInvalidDerivedComponentParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderKeyIdLength"] = "SignatureInputHeaderKeyIdLength";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidParameter"] = "SignatureInputHeaderInvalidParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderMissingRequiredParameters"] = "SignatureInputHeaderMissingRequiredParameters";
+    SRIMessageSignatureError2["ValidationFailedSignatureExpired"] = "ValidationFailedSignatureExpired";
+    SRIMessageSignatureError2["ValidationFailedInvalidLength"] = "ValidationFailedInvalidLength";
+    SRIMessageSignatureError2["ValidationFailedSignatureMismatch"] = "ValidationFailedSignatureMismatch";
+    SRIMessageSignatureError2["ValidationFailedIntegrityMismatch"] = "ValidationFailedIntegrityMismatch";
+    SRIMessageSignatureError2["SignatureBaseUnknownDerivedComponent"] = "SignatureBaseUnknownDerivedComponent";
+    SRIMessageSignatureError2["SignatureBaseMissingHeader"] = "SignatureBaseMissingHeader";
+    SRIMessageSignatureError2["SignatureBaseInvalidUnencodedDigest"] = "SignatureBaseInvalidUnencodedDigest";
+    SRIMessageSignatureError2["SignatureBaseUnsupportedComponent"] = "SignatureBaseUnsupportedComponent";
+  })(SRIMessageSignatureError = Audits2.SRIMessageSignatureError || (Audits2.SRIMessageSignatureError = {}));
+  let UnencodedDigestError;
+  ((UnencodedDigestError2) => {
+    UnencodedDigestError2["MalformedDictionary"] = "MalformedDictionary";
+    UnencodedDigestError2["UnknownAlgorithm"] = "UnknownAlgorithm";
+    UnencodedDigestError2["IncorrectDigestType"] = "IncorrectDigestType";
+    UnencodedDigestError2["IncorrectDigestLength"] = "IncorrectDigestLength";
+  })(UnencodedDigestError = Audits2.UnencodedDigestError || (Audits2.UnencodedDigestError = {}));
+  let ConnectionAllowlistError;
+  ((ConnectionAllowlistError2) => {
+    ConnectionAllowlistError2["InvalidHeader"] = "InvalidHeader";
+    ConnectionAllowlistError2["MoreThanOneList"] = "MoreThanOneList";
+    ConnectionAllowlistError2["ItemNotInnerList"] = "ItemNotInnerList";
+    ConnectionAllowlistError2["InvalidAllowlistItemType"] = "InvalidAllowlistItemType";
+    ConnectionAllowlistError2["ReportingEndpointNotToken"] = "ReportingEndpointNotToken";
+    ConnectionAllowlistError2["InvalidUrlPattern"] = "InvalidUrlPattern";
+    ConnectionAllowlistError2["IFrameAttributeLoosensEmbeddingRequirement"] = "IFrameAttributeLoosensEmbeddingRequirement";
+    ConnectionAllowlistError2["InvalidAllowConnectionAllowlistFrom"] = "InvalidAllowConnectionAllowlistFrom";
+    ConnectionAllowlistError2["EmbeddingRequirementNotSatisfied"] = "EmbeddingRequirementNotSatisfied";
+  })(ConnectionAllowlistError = Audits2.ConnectionAllowlistError || (Audits2.ConnectionAllowlistError = {}));
+  let GenericIssueErrorType;
+  ((GenericIssueErrorType2) => {
+    GenericIssueErrorType2["FormLabelForNameError"] = "FormLabelForNameError";
+    GenericIssueErrorType2["FormDuplicateIdForInputError"] = "FormDuplicateIdForInputError";
+    GenericIssueErrorType2["FormInputWithNoLabelError"] = "FormInputWithNoLabelError";
+    GenericIssueErrorType2["FormAutocompleteAttributeEmptyError"] = "FormAutocompleteAttributeEmptyError";
+    GenericIssueErrorType2["FormEmptyIdAndNameAttributesForInputError"] = "FormEmptyIdAndNameAttributesForInputError";
+    GenericIssueErrorType2["FormAriaLabelledByToNonExistingIdError"] = "FormAriaLabelledByToNonExistingIdError";
+    GenericIssueErrorType2["FormInputAssignedAutocompleteValueToIdOrNameAttributeError"] = "FormInputAssignedAutocompleteValueToIdOrNameAttributeError";
+    GenericIssueErrorType2["FormLabelHasNeitherForNorNestedInputError"] = "FormLabelHasNeitherForNorNestedInputError";
+    GenericIssueErrorType2["FormLabelForMatchesNonExistingIdError"] = "FormLabelForMatchesNonExistingIdError";
+    GenericIssueErrorType2["FormInputHasWrongButWellIntendedAutocompleteValueError"] = "FormInputHasWrongButWellIntendedAutocompleteValueError";
+    GenericIssueErrorType2["ResponseWasBlockedByORB"] = "ResponseWasBlockedByORB";
+    GenericIssueErrorType2["NavigationEntryMarkedSkippable"] = "NavigationEntryMarkedSkippable";
+    GenericIssueErrorType2["BackUINavigationWouldSkipAd"] = "BackUINavigationWouldSkipAd";
+    GenericIssueErrorType2["AutofillAndManualTextPolicyControlledFeaturesInfo"] = "AutofillAndManualTextPolicyControlledFeaturesInfo";
+    GenericIssueErrorType2["AutofillPolicyControlledFeatureInfo"] = "AutofillPolicyControlledFeatureInfo";
+    GenericIssueErrorType2["ManualTextPolicyControlledFeatureInfo"] = "ManualTextPolicyControlledFeatureInfo";
+    GenericIssueErrorType2["FormModelContextParameterMissingTitleAndDescription"] = "FormModelContextParameterMissingTitleAndDescription";
+    GenericIssueErrorType2["FormModelContextMissingToolName"] = "FormModelContextMissingToolName";
+    GenericIssueErrorType2["FormModelContextMissingToolDescription"] = "FormModelContextMissingToolDescription";
+    GenericIssueErrorType2["FormModelContextRequiredParameterMissingName"] = "FormModelContextRequiredParameterMissingName";
+    GenericIssueErrorType2["FormModelContextParameterMissingName"] = "FormModelContextParameterMissingName";
+  })(GenericIssueErrorType = Audits2.GenericIssueErrorType || (Audits2.GenericIssueErrorType = {}));
+  let ClientHintIssueReason;
+  ((ClientHintIssueReason2) => {
+    ClientHintIssueReason2["MetaTagAllowListInvalidOrigin"] = "MetaTagAllowListInvalidOrigin";
+    ClientHintIssueReason2["MetaTagModifiedHTML"] = "MetaTagModifiedHTML";
+  })(ClientHintIssueReason = Audits2.ClientHintIssueReason || (Audits2.ClientHintIssueReason = {}));
+  let FederatedAuthRequestIssueReason;
+  ((FederatedAuthRequestIssueReason2) => {
+    FederatedAuthRequestIssueReason2["ShouldEmbargo"] = "ShouldEmbargo";
+    FederatedAuthRequestIssueReason2["TooManyRequests"] = "TooManyRequests";
+    FederatedAuthRequestIssueReason2["WellKnownHttpNotFound"] = "WellKnownHttpNotFound";
+    FederatedAuthRequestIssueReason2["WellKnownNoResponse"] = "WellKnownNoResponse";
+    FederatedAuthRequestIssueReason2["WellKnownBlockedByConnectionAllowlist"] = "WellKnownBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["WellKnownInvalidResponse"] = "WellKnownInvalidResponse";
+    FederatedAuthRequestIssueReason2["WellKnownListEmpty"] = "WellKnownListEmpty";
+    FederatedAuthRequestIssueReason2["WellKnownInvalidContentType"] = "WellKnownInvalidContentType";
+    FederatedAuthRequestIssueReason2["ConfigNotInWellKnown"] = "ConfigNotInWellKnown";
+    FederatedAuthRequestIssueReason2["WellKnownTooBig"] = "WellKnownTooBig";
+    FederatedAuthRequestIssueReason2["ConfigHttpNotFound"] = "ConfigHttpNotFound";
+    FederatedAuthRequestIssueReason2["ConfigNoResponse"] = "ConfigNoResponse";
+    FederatedAuthRequestIssueReason2["ConfigBlockedByConnectionAllowlist"] = "ConfigBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["ConfigInvalidResponse"] = "ConfigInvalidResponse";
+    FederatedAuthRequestIssueReason2["ConfigInvalidContentType"] = "ConfigInvalidContentType";
+    FederatedAuthRequestIssueReason2["IdpNotPotentiallyTrustworthy"] = "IdpNotPotentiallyTrustworthy";
+    FederatedAuthRequestIssueReason2["DisabledInSettings"] = "DisabledInSettings";
+    FederatedAuthRequestIssueReason2["DisabledInFlags"] = "DisabledInFlags";
+    FederatedAuthRequestIssueReason2["ErrorFetchingSignin"] = "ErrorFetchingSignin";
+    FederatedAuthRequestIssueReason2["InvalidSigninResponse"] = "InvalidSigninResponse";
+    FederatedAuthRequestIssueReason2["AccountsHttpNotFound"] = "AccountsHttpNotFound";
+    FederatedAuthRequestIssueReason2["AccountsNoResponse"] = "AccountsNoResponse";
+    FederatedAuthRequestIssueReason2["AccountsBlockedByConnectionAllowlist"] = "AccountsBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["AccountsInvalidResponse"] = "AccountsInvalidResponse";
+    FederatedAuthRequestIssueReason2["AccountsListEmpty"] = "AccountsListEmpty";
+    FederatedAuthRequestIssueReason2["AccountsInvalidContentType"] = "AccountsInvalidContentType";
+    FederatedAuthRequestIssueReason2["IdTokenHttpNotFound"] = "IdTokenHttpNotFound";
+    FederatedAuthRequestIssueReason2["IdTokenNoResponse"] = "IdTokenNoResponse";
+    FederatedAuthRequestIssueReason2["IdTokenBlockedByConnectionAllowlist"] = "IdTokenBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidResponse"] = "IdTokenInvalidResponse";
+    FederatedAuthRequestIssueReason2["IdTokenIdpErrorResponse"] = "IdTokenIdpErrorResponse";
+    FederatedAuthRequestIssueReason2["IdTokenCrossSiteIdpErrorResponse"] = "IdTokenCrossSiteIdpErrorResponse";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidRequest"] = "IdTokenInvalidRequest";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidContentType"] = "IdTokenInvalidContentType";
+    FederatedAuthRequestIssueReason2["ErrorIdToken"] = "ErrorIdToken";
+    FederatedAuthRequestIssueReason2["Canceled"] = "Canceled";
+    FederatedAuthRequestIssueReason2["RpPageNotVisible"] = "RpPageNotVisible";
+    FederatedAuthRequestIssueReason2["SilentMediationFailure"] = "SilentMediationFailure";
+    FederatedAuthRequestIssueReason2["NotSignedInWithIdp"] = "NotSignedInWithIdp";
+    FederatedAuthRequestIssueReason2["MissingTransientUserActivation"] = "MissingTransientUserActivation";
+    FederatedAuthRequestIssueReason2["ReplacedByActiveMode"] = "ReplacedByActiveMode";
+    FederatedAuthRequestIssueReason2["RelyingPartyOriginIsOpaque"] = "RelyingPartyOriginIsOpaque";
+    FederatedAuthRequestIssueReason2["TypeNotMatching"] = "TypeNotMatching";
+    FederatedAuthRequestIssueReason2["UiDismissedNoEmbargo"] = "UiDismissedNoEmbargo";
+    FederatedAuthRequestIssueReason2["CorsError"] = "CorsError";
+    FederatedAuthRequestIssueReason2["SuppressedBySegmentationPlatform"] = "SuppressedBySegmentationPlatform";
+  })(FederatedAuthRequestIssueReason = Audits2.FederatedAuthRequestIssueReason || (Audits2.FederatedAuthRequestIssueReason = {}));
+  let FederatedAuthUserInfoRequestIssueReason;
+  ((FederatedAuthUserInfoRequestIssueReason2) => {
+    FederatedAuthUserInfoRequestIssueReason2["NotSameOrigin"] = "NotSameOrigin";
+    FederatedAuthUserInfoRequestIssueReason2["NotIframe"] = "NotIframe";
+    FederatedAuthUserInfoRequestIssueReason2["NotPotentiallyTrustworthy"] = "NotPotentiallyTrustworthy";
+    FederatedAuthUserInfoRequestIssueReason2["NoAPIPermission"] = "NoApiPermission";
+    FederatedAuthUserInfoRequestIssueReason2["NotSignedInWithIdp"] = "NotSignedInWithIdp";
+    FederatedAuthUserInfoRequestIssueReason2["NoAccountSharingPermission"] = "NoAccountSharingPermission";
+    FederatedAuthUserInfoRequestIssueReason2["InvalidConfigOrWellKnown"] = "InvalidConfigOrWellKnown";
+    FederatedAuthUserInfoRequestIssueReason2["InvalidAccountsResponse"] = "InvalidAccountsResponse";
+    FederatedAuthUserInfoRequestIssueReason2["NoReturningUserFromFetchedAccounts"] = "NoReturningUserFromFetchedAccounts";
+  })(FederatedAuthUserInfoRequestIssueReason = Audits2.FederatedAuthUserInfoRequestIssueReason || (Audits2.FederatedAuthUserInfoRequestIssueReason = {}));
+  let EmailVerificationRequestIssueReason;
+  ((EmailVerificationRequestIssueReason2) => {
+    EmailVerificationRequestIssueReason2["InvalidEmail"] = "InvalidEmail";
+    EmailVerificationRequestIssueReason2["DnsFetchFailed"] = "DnsFetchFailed";
+    EmailVerificationRequestIssueReason2["DnsInvalidRecord"] = "DnsInvalidRecord";
+    EmailVerificationRequestIssueReason2["WellKnownHttpNotFound"] = "WellKnownHttpNotFound";
+    EmailVerificationRequestIssueReason2["WellKnownNoResponse"] = "WellKnownNoResponse";
+    EmailVerificationRequestIssueReason2["WellKnownInvalidResponse"] = "WellKnownInvalidResponse";
+    EmailVerificationRequestIssueReason2["WellKnownListEmpty"] = "WellKnownListEmpty";
+    EmailVerificationRequestIssueReason2["WellKnownInvalidContentType"] = "WellKnownInvalidContentType";
+    EmailVerificationRequestIssueReason2["WellKnownMissingIssuanceEndpoint"] = "WellKnownMissingIssuanceEndpoint";
+    EmailVerificationRequestIssueReason2["WellKnownIssuanceEndpointCrossOrigin"] = "WellKnownIssuanceEndpointCrossOrigin";
+    EmailVerificationRequestIssueReason2["WellKnownUnsupportedSigningAlgorithm"] = "WellKnownUnsupportedSigningAlgorithm";
+    EmailVerificationRequestIssueReason2["TokenHttpNotFound"] = "TokenHttpNotFound";
+    EmailVerificationRequestIssueReason2["TokenNoResponse"] = "TokenNoResponse";
+    EmailVerificationRequestIssueReason2["TokenInvalidResponse"] = "TokenInvalidResponse";
+    EmailVerificationRequestIssueReason2["TokenInvalidContentType"] = "TokenInvalidContentType";
+    EmailVerificationRequestIssueReason2["TokenMalformedSdJwt"] = "TokenMalformedSdJwt";
+    EmailVerificationRequestIssueReason2["TokenInvalidSdJwt"] = "TokenInvalidSdJwt";
+    EmailVerificationRequestIssueReason2["KeyBindingSigningFailed"] = "KeyBindingSigningFailed";
+    EmailVerificationRequestIssueReason2["RpOriginIsOpaque"] = "RpOriginIsOpaque";
+    EmailVerificationRequestIssueReason2["WellKnownMissingAccountsEndpoint"] = "WellKnownMissingAccountsEndpoint";
+    EmailVerificationRequestIssueReason2["UserLoggedOut"] = "UserLoggedOut";
+    EmailVerificationRequestIssueReason2["WellKnownAccountsEndpointCrossOrigin"] = "WellKnownAccountsEndpointCrossOrigin";
+    EmailVerificationRequestIssueReason2["AccountsHttpNotFound"] = "AccountsHttpNotFound";
+    EmailVerificationRequestIssueReason2["AccountsNoResponse"] = "AccountsNoResponse";
+    EmailVerificationRequestIssueReason2["AccountsInvalidResponse"] = "AccountsInvalidResponse";
+    EmailVerificationRequestIssueReason2["AccountsInvalidContentType"] = "AccountsInvalidContentType";
+    EmailVerificationRequestIssueReason2["AccountsEmptyList"] = "AccountsEmptyList";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownHttpNotFound"] = "EmailVerificationWellKnownHttpNotFound";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownNoResponse"] = "EmailVerificationWellKnownNoResponse";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownInvalidResponse"] = "EmailVerificationWellKnownInvalidResponse";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownInvalidContentType"] = "EmailVerificationWellKnownInvalidContentType";
+    EmailVerificationRequestIssueReason2["JwksHttpNotFound"] = "JwksHttpNotFound";
+    EmailVerificationRequestIssueReason2["JwksInvalidResponse"] = "JwksInvalidResponse";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtUnsupportedHeaderAlg"] = "TokenVerificationSdJwtUnsupportedHeaderAlg";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidTyp"] = "TokenVerificationSdJwtInvalidTyp";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingIss"] = "TokenVerificationSdJwtMissingIss";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingIat"] = "TokenVerificationSdJwtMissingIat";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingCnf"] = "TokenVerificationSdJwtMissingCnf";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingEmail"] = "TokenVerificationSdJwtMissingEmail";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidIssuedAt"] = "TokenVerificationSdJwtInvalidIssuedAt";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidIssuer"] = "TokenVerificationSdJwtInvalidIssuer";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtJwksMissingKeys"] = "TokenVerificationSdJwtJwksMissingKeys";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtSignatureFailed"] = "TokenVerificationSdJwtSignatureFailed";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidEmailVerified"] = "TokenVerificationSdJwtInvalidEmailVerified";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidEmail"] = "TokenVerificationSdJwtInvalidEmail";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidHolderKey"] = "TokenVerificationSdJwtInvalidHolderKey";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidTyp"] = "TokenVerificationKbInvalidTyp";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingAud"] = "TokenVerificationKbMissingAud";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingNonce"] = "TokenVerificationKbMissingNonce";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingIat"] = "TokenVerificationKbMissingIat";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingSdHash"] = "TokenVerificationKbMissingSdHash";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidIssuedAt"] = "TokenVerificationKbInvalidIssuedAt";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidAudience"] = "TokenVerificationKbInvalidAudience";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidNonce"] = "TokenVerificationKbInvalidNonce";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidSdHash"] = "TokenVerificationKbInvalidSdHash";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingCnf"] = "TokenVerificationKbMissingCnf";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbSignatureFailed"] = "TokenVerificationKbSignatureFailed";
+  })(EmailVerificationRequestIssueReason = Audits2.EmailVerificationRequestIssueReason || (Audits2.EmailVerificationRequestIssueReason = {}));
+  let PartitioningBlobURLInfo;
+  ((PartitioningBlobURLInfo2) => {
+    PartitioningBlobURLInfo2["BlockedCrossPartitionFetching"] = "BlockedCrossPartitionFetching";
+    PartitioningBlobURLInfo2["EnforceNoopenerForNavigation"] = "EnforceNoopenerForNavigation";
+  })(PartitioningBlobURLInfo = Audits2.PartitioningBlobURLInfo || (Audits2.PartitioningBlobURLInfo = {}));
+  let ElementAccessibilityIssueReason;
+  ((ElementAccessibilityIssueReason2) => {
+    ElementAccessibilityIssueReason2["DisallowedSelectChild"] = "DisallowedSelectChild";
+    ElementAccessibilityIssueReason2["DisallowedOptGroupChild"] = "DisallowedOptGroupChild";
+    ElementAccessibilityIssueReason2["NonPhrasingContentOptionChild"] = "NonPhrasingContentOptionChild";
+    ElementAccessibilityIssueReason2["InteractiveContentOptionChild"] = "InteractiveContentOptionChild";
+    ElementAccessibilityIssueReason2["InteractiveContentLegendChild"] = "InteractiveContentLegendChild";
+    ElementAccessibilityIssueReason2["InteractiveContentSummaryDescendant"] = "InteractiveContentSummaryDescendant";
+  })(ElementAccessibilityIssueReason = Audits2.ElementAccessibilityIssueReason || (Audits2.ElementAccessibilityIssueReason = {}));
+  let StyleSheetLoadingIssueReason;
+  ((StyleSheetLoadingIssueReason2) => {
+    StyleSheetLoadingIssueReason2["LateImportRule"] = "LateImportRule";
+    StyleSheetLoadingIssueReason2["RequestFailed"] = "RequestFailed";
+  })(StyleSheetLoadingIssueReason = Audits2.StyleSheetLoadingIssueReason || (Audits2.StyleSheetLoadingIssueReason = {}));
+  let PropertyRuleIssueReason;
+  ((PropertyRuleIssueReason2) => {
+    PropertyRuleIssueReason2["InvalidSyntax"] = "InvalidSyntax";
+    PropertyRuleIssueReason2["InvalidInitialValue"] = "InvalidInitialValue";
+    PropertyRuleIssueReason2["InvalidInherits"] = "InvalidInherits";
+    PropertyRuleIssueReason2["InvalidName"] = "InvalidName";
+  })(PropertyRuleIssueReason = Audits2.PropertyRuleIssueReason || (Audits2.PropertyRuleIssueReason = {}));
+  let UserReidentificationIssueType;
+  ((UserReidentificationIssueType2) => {
+    UserReidentificationIssueType2["BlockedFrameNavigation"] = "BlockedFrameNavigation";
+    UserReidentificationIssueType2["BlockedSubresource"] = "BlockedSubresource";
+    UserReidentificationIssueType2["NoisedCanvasReadback"] = "NoisedCanvasReadback";
+  })(UserReidentificationIssueType = Audits2.UserReidentificationIssueType || (Audits2.UserReidentificationIssueType = {}));
+  let PermissionElementIssueType;
+  ((PermissionElementIssueType2) => {
+    PermissionElementIssueType2["InvalidType"] = "InvalidType";
+    PermissionElementIssueType2["FencedFrameDisallowed"] = "FencedFrameDisallowed";
+    PermissionElementIssueType2["CspFrameAncestorsMissing"] = "CspFrameAncestorsMissing";
+    PermissionElementIssueType2["PermissionsPolicyBlocked"] = "PermissionsPolicyBlocked";
+    PermissionElementIssueType2["PaddingRightUnsupported"] = "PaddingRightUnsupported";
+    PermissionElementIssueType2["PaddingBottomUnsupported"] = "PaddingBottomUnsupported";
+    PermissionElementIssueType2["InsetBoxShadowUnsupported"] = "InsetBoxShadowUnsupported";
+    PermissionElementIssueType2["RequestInProgress"] = "RequestInProgress";
+    PermissionElementIssueType2["UntrustedEvent"] = "UntrustedEvent";
+    PermissionElementIssueType2["RegistrationFailed"] = "RegistrationFailed";
+    PermissionElementIssueType2["TypeNotSupported"] = "TypeNotSupported";
+    PermissionElementIssueType2["InvalidTypeActivation"] = "InvalidTypeActivation";
+    PermissionElementIssueType2["SecurityChecksFailed"] = "SecurityChecksFailed";
+    PermissionElementIssueType2["ActivationDisabled"] = "ActivationDisabled";
+    PermissionElementIssueType2["GeolocationDeprecated"] = "GeolocationDeprecated";
+    PermissionElementIssueType2["InvalidDisplayStyle"] = "InvalidDisplayStyle";
+    PermissionElementIssueType2["NonOpaqueColor"] = "NonOpaqueColor";
+    PermissionElementIssueType2["LowContrast"] = "LowContrast";
+    PermissionElementIssueType2["FontSizeTooSmall"] = "FontSizeTooSmall";
+    PermissionElementIssueType2["FontSizeTooLarge"] = "FontSizeTooLarge";
+    PermissionElementIssueType2["InvalidSizeValue"] = "InvalidSizeValue";
+    PermissionElementIssueType2["NonSecureContext"] = "NonSecureContext";
+    PermissionElementIssueType2["MissingTransientUserActivation"] = "MissingTransientUserActivation";
+  })(PermissionElementIssueType = Audits2.PermissionElementIssueType || (Audits2.PermissionElementIssueType = {}));
+  let InspectorIssueCode;
+  ((InspectorIssueCode2) => {
+    InspectorIssueCode2["CookieIssue"] = "CookieIssue";
+    InspectorIssueCode2["MixedContentIssue"] = "MixedContentIssue";
+    InspectorIssueCode2["BlockedByResponseIssue"] = "BlockedByResponseIssue";
+    InspectorIssueCode2["HeavyAdIssue"] = "HeavyAdIssue";
+    InspectorIssueCode2["ContentSecurityPolicyIssue"] = "ContentSecurityPolicyIssue";
+    InspectorIssueCode2["SharedArrayBufferIssue"] = "SharedArrayBufferIssue";
+    InspectorIssueCode2["CorsIssue"] = "CorsIssue";
+    InspectorIssueCode2["QuirksModeIssue"] = "QuirksModeIssue";
+    InspectorIssueCode2["PartitioningBlobURLIssue"] = "PartitioningBlobURLIssue";
+    InspectorIssueCode2["NavigatorUserAgentIssue"] = "NavigatorUserAgentIssue";
+    InspectorIssueCode2["GenericIssue"] = "GenericIssue";
+    InspectorIssueCode2["DeprecationIssue"] = "DeprecationIssue";
+    InspectorIssueCode2["ClientHintIssue"] = "ClientHintIssue";
+    InspectorIssueCode2["FederatedAuthRequestIssue"] = "FederatedAuthRequestIssue";
+    InspectorIssueCode2["BounceTrackingIssue"] = "BounceTrackingIssue";
+    InspectorIssueCode2["CookieDeprecationMetadataIssue"] = "CookieDeprecationMetadataIssue";
+    InspectorIssueCode2["StylesheetLoadingIssue"] = "StylesheetLoadingIssue";
+    InspectorIssueCode2["FederatedAuthUserInfoRequestIssue"] = "FederatedAuthUserInfoRequestIssue";
+    InspectorIssueCode2["PropertyRuleIssue"] = "PropertyRuleIssue";
+    InspectorIssueCode2["SharedDictionaryIssue"] = "SharedDictionaryIssue";
+    InspectorIssueCode2["ElementAccessibilityIssue"] = "ElementAccessibilityIssue";
+    InspectorIssueCode2["SRIMessageSignatureIssue"] = "SRIMessageSignatureIssue";
+    InspectorIssueCode2["UnencodedDigestIssue"] = "UnencodedDigestIssue";
+    InspectorIssueCode2["ConnectionAllowlistIssue"] = "ConnectionAllowlistIssue";
+    InspectorIssueCode2["UserReidentificationIssue"] = "UserReidentificationIssue";
+    InspectorIssueCode2["PermissionElementIssue"] = "PermissionElementIssue";
+    InspectorIssueCode2["PerformanceIssue"] = "PerformanceIssue";
+    InspectorIssueCode2["SelectivePermissionsInterventionIssue"] = "SelectivePermissionsInterventionIssue";
+    InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
+    InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
+  })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
+  let GetEncodedResponseRequestEncoding;
+  ((GetEncodedResponseRequestEncoding2) => {
+    GetEncodedResponseRequestEncoding2["Webp"] = "webp";
+    GetEncodedResponseRequestEncoding2["Jpeg"] = "jpeg";
+    GetEncodedResponseRequestEncoding2["Png"] = "png";
+  })(GetEncodedResponseRequestEncoding = Audits2.GetEncodedResponseRequestEncoding || (Audits2.GetEncodedResponseRequestEncoding = {}));
+})(Audits || (Audits = {}));
+var Autofill;
+((Autofill2) => {
+  let FillingStrategy;
+  ((FillingStrategy2) => {
+    FillingStrategy2["AutocompleteAttribute"] = "autocompleteAttribute";
+    FillingStrategy2["AutofillInferred"] = "autofillInferred";
+  })(FillingStrategy = Autofill2.FillingStrategy || (Autofill2.FillingStrategy = {}));
+})(Autofill || (Autofill = {}));
+var BackgroundService;
+((BackgroundService2) => {
+  let ServiceName;
+  ((ServiceName2) => {
+    ServiceName2["BackgroundFetch"] = "backgroundFetch";
+    ServiceName2["BackgroundSync"] = "backgroundSync";
+    ServiceName2["PushMessaging"] = "pushMessaging";
+    ServiceName2["Notifications"] = "notifications";
+    ServiceName2["PaymentHandler"] = "paymentHandler";
+    ServiceName2["PeriodicBackgroundSync"] = "periodicBackgroundSync";
+  })(ServiceName = BackgroundService2.ServiceName || (BackgroundService2.ServiceName = {}));
+})(BackgroundService || (BackgroundService = {}));
+var BluetoothEmulation;
+((BluetoothEmulation2) => {
+  let CentralState;
+  ((CentralState2) => {
+    CentralState2["Absent"] = "absent";
+    CentralState2["PoweredOff"] = "powered-off";
+    CentralState2["PoweredOn"] = "powered-on";
+  })(CentralState = BluetoothEmulation2.CentralState || (BluetoothEmulation2.CentralState = {}));
+  let GATTOperationType;
+  ((GATTOperationType2) => {
+    GATTOperationType2["Connection"] = "connection";
+    GATTOperationType2["Discovery"] = "discovery";
+  })(GATTOperationType = BluetoothEmulation2.GATTOperationType || (BluetoothEmulation2.GATTOperationType = {}));
+  let CharacteristicWriteType;
+  ((CharacteristicWriteType2) => {
+    CharacteristicWriteType2["WriteDefaultDeprecated"] = "write-default-deprecated";
+    CharacteristicWriteType2["WriteWithResponse"] = "write-with-response";
+    CharacteristicWriteType2["WriteWithoutResponse"] = "write-without-response";
+  })(CharacteristicWriteType = BluetoothEmulation2.CharacteristicWriteType || (BluetoothEmulation2.CharacteristicWriteType = {}));
+  let CharacteristicOperationType;
+  ((CharacteristicOperationType2) => {
+    CharacteristicOperationType2["Read"] = "read";
+    CharacteristicOperationType2["Write"] = "write";
+    CharacteristicOperationType2["SubscribeToNotifications"] = "subscribe-to-notifications";
+    CharacteristicOperationType2["UnsubscribeFromNotifications"] = "unsubscribe-from-notifications";
+  })(CharacteristicOperationType = BluetoothEmulation2.CharacteristicOperationType || (BluetoothEmulation2.CharacteristicOperationType = {}));
+  let DescriptorOperationType;
+  ((DescriptorOperationType2) => {
+    DescriptorOperationType2["Read"] = "read";
+    DescriptorOperationType2["Write"] = "write";
+  })(DescriptorOperationType = BluetoothEmulation2.DescriptorOperationType || (BluetoothEmulation2.DescriptorOperationType = {}));
+})(BluetoothEmulation || (BluetoothEmulation = {}));
+var Browser;
+((Browser2) => {
+  let WindowState;
+  ((WindowState2) => {
+    WindowState2["Normal"] = "normal";
+    WindowState2["Minimized"] = "minimized";
+    WindowState2["Maximized"] = "maximized";
+    WindowState2["Fullscreen"] = "fullscreen";
+  })(WindowState = Browser2.WindowState || (Browser2.WindowState = {}));
+  let PermissionType;
+  ((PermissionType2) => {
+    PermissionType2["Ar"] = "ar";
+    PermissionType2["AudioCapture"] = "audioCapture";
+    PermissionType2["AutomaticFullscreen"] = "automaticFullscreen";
+    PermissionType2["BackgroundFetch"] = "backgroundFetch";
+    PermissionType2["BackgroundSync"] = "backgroundSync";
+    PermissionType2["CameraPanTiltZoom"] = "cameraPanTiltZoom";
+    PermissionType2["CapturedSurfaceControl"] = "capturedSurfaceControl";
+    PermissionType2["ClipboardReadWrite"] = "clipboardReadWrite";
+    PermissionType2["ClipboardSanitizedWrite"] = "clipboardSanitizedWrite";
+    PermissionType2["DisplayCapture"] = "displayCapture";
+    PermissionType2["DurableStorage"] = "durableStorage";
+    PermissionType2["Geolocation"] = "geolocation";
+    PermissionType2["HandTracking"] = "handTracking";
+    PermissionType2["IdleDetection"] = "idleDetection";
+    PermissionType2["KeyboardLock"] = "keyboardLock";
+    PermissionType2["LocalFonts"] = "localFonts";
+    PermissionType2["LocalNetwork"] = "localNetwork";
+    PermissionType2["LocalNetworkAccess"] = "localNetworkAccess";
+    PermissionType2["LoopbackNetwork"] = "loopbackNetwork";
+    PermissionType2["Midi"] = "midi";
+    PermissionType2["MidiSysex"] = "midiSysex";
+    PermissionType2["Nfc"] = "nfc";
+    PermissionType2["Notifications"] = "notifications";
+    PermissionType2["PaymentHandler"] = "paymentHandler";
+    PermissionType2["PeriodicBackgroundSync"] = "periodicBackgroundSync";
+    PermissionType2["PointerLock"] = "pointerLock";
+    PermissionType2["ProtectedMediaIdentifier"] = "protectedMediaIdentifier";
+    PermissionType2["Sensors"] = "sensors";
+    PermissionType2["SmartCard"] = "smartCard";
+    PermissionType2["SpeakerSelection"] = "speakerSelection";
+    PermissionType2["StorageAccess"] = "storageAccess";
+    PermissionType2["TopLevelStorageAccess"] = "topLevelStorageAccess";
+    PermissionType2["VideoCapture"] = "videoCapture";
+    PermissionType2["Vr"] = "vr";
+    PermissionType2["WakeLockScreen"] = "wakeLockScreen";
+    PermissionType2["WakeLockSystem"] = "wakeLockSystem";
+    PermissionType2["WebAppInstallation"] = "webAppInstallation";
+    PermissionType2["WebPrinting"] = "webPrinting";
+    PermissionType2["WindowManagement"] = "windowManagement";
+  })(PermissionType = Browser2.PermissionType || (Browser2.PermissionType = {}));
+  let PermissionSetting;
+  ((PermissionSetting2) => {
+    PermissionSetting2["Granted"] = "granted";
+    PermissionSetting2["Denied"] = "denied";
+    PermissionSetting2["Prompt"] = "prompt";
+  })(PermissionSetting = Browser2.PermissionSetting || (Browser2.PermissionSetting = {}));
+  let BrowserCommandId;
+  ((BrowserCommandId2) => {
+    BrowserCommandId2["OpenTabSearch"] = "openTabSearch";
+    BrowserCommandId2["CloseTabSearch"] = "closeTabSearch";
+    BrowserCommandId2["OpenGlic"] = "openGlic";
+  })(BrowserCommandId = Browser2.BrowserCommandId || (Browser2.BrowserCommandId = {}));
+  let SetDownloadBehaviorRequestBehavior;
+  ((SetDownloadBehaviorRequestBehavior2) => {
+    SetDownloadBehaviorRequestBehavior2["Deny"] = "deny";
+    SetDownloadBehaviorRequestBehavior2["Allow"] = "allow";
+    SetDownloadBehaviorRequestBehavior2["AllowAndName"] = "allowAndName";
+    SetDownloadBehaviorRequestBehavior2["Default"] = "default";
+  })(SetDownloadBehaviorRequestBehavior = Browser2.SetDownloadBehaviorRequestBehavior || (Browser2.SetDownloadBehaviorRequestBehavior = {}));
+  let DownloadProgressEventState;
+  ((DownloadProgressEventState2) => {
+    DownloadProgressEventState2["InProgress"] = "inProgress";
+    DownloadProgressEventState2["Completed"] = "completed";
+    DownloadProgressEventState2["Canceled"] = "canceled";
+  })(DownloadProgressEventState = Browser2.DownloadProgressEventState || (Browser2.DownloadProgressEventState = {}));
+})(Browser || (Browser = {}));
+var CSS2;
+((CSS3) => {
+  let StyleSheetOrigin;
+  ((StyleSheetOrigin2) => {
+    StyleSheetOrigin2["Injected"] = "injected";
+    StyleSheetOrigin2["UserAgent"] = "user-agent";
+    StyleSheetOrigin2["Inspector"] = "inspector";
+    StyleSheetOrigin2["Regular"] = "regular";
+  })(StyleSheetOrigin = CSS3.StyleSheetOrigin || (CSS3.StyleSheetOrigin = {}));
+  let CSSRuleType;
+  ((CSSRuleType2) => {
+    CSSRuleType2["MediaRule"] = "MediaRule";
+    CSSRuleType2["SupportsRule"] = "SupportsRule";
+    CSSRuleType2["ContainerRule"] = "ContainerRule";
+    CSSRuleType2["LayerRule"] = "LayerRule";
+    CSSRuleType2["ScopeRule"] = "ScopeRule";
+    CSSRuleType2["StyleRule"] = "StyleRule";
+    CSSRuleType2["StartingStyleRule"] = "StartingStyleRule";
+    CSSRuleType2["NavigationRule"] = "NavigationRule";
+  })(CSSRuleType = CSS3.CSSRuleType || (CSS3.CSSRuleType = {}));
+  let CSSMediaSource;
+  ((CSSMediaSource2) => {
+    CSSMediaSource2["MediaRule"] = "mediaRule";
+    CSSMediaSource2["ImportRule"] = "importRule";
+    CSSMediaSource2["LinkedSheet"] = "linkedSheet";
+    CSSMediaSource2["InlineSheet"] = "inlineSheet";
+  })(CSSMediaSource = CSS3.CSSMediaSource || (CSS3.CSSMediaSource = {}));
+  let CSSAtRuleType;
+  ((CSSAtRuleType2) => {
+    CSSAtRuleType2["FontFace"] = "font-face";
+    CSSAtRuleType2["FontFeatureValues"] = "font-feature-values";
+    CSSAtRuleType2["FontPaletteValues"] = "font-palette-values";
+    CSSAtRuleType2["CounterStyle"] = "counter-style";
+  })(CSSAtRuleType = CSS3.CSSAtRuleType || (CSS3.CSSAtRuleType = {}));
+  let CSSAtRuleSubsection;
+  ((CSSAtRuleSubsection2) => {
+    CSSAtRuleSubsection2["Swash"] = "swash";
+    CSSAtRuleSubsection2["Annotation"] = "annotation";
+    CSSAtRuleSubsection2["Ornaments"] = "ornaments";
+    CSSAtRuleSubsection2["Stylistic"] = "stylistic";
+    CSSAtRuleSubsection2["Styleset"] = "styleset";
+    CSSAtRuleSubsection2["CharacterVariant"] = "character-variant";
+  })(CSSAtRuleSubsection = CSS3.CSSAtRuleSubsection || (CSS3.CSSAtRuleSubsection = {}));
+})(CSS2 || (CSS2 = {}));
+var CacheStorage;
+((CacheStorage2) => {
+  let CachedResponseType;
+  ((CachedResponseType2) => {
+    CachedResponseType2["Basic"] = "basic";
+    CachedResponseType2["Cors"] = "cors";
+    CachedResponseType2["Default"] = "default";
+    CachedResponseType2["Error"] = "error";
+    CachedResponseType2["OpaqueResponse"] = "opaqueResponse";
+    CachedResponseType2["OpaqueRedirect"] = "opaqueRedirect";
+  })(CachedResponseType = CacheStorage2.CachedResponseType || (CacheStorage2.CachedResponseType = {}));
+})(CacheStorage || (CacheStorage = {}));
+var DOM;
+((DOM2) => {
+  let PseudoType;
+  ((PseudoType2) => {
+    PseudoType2["FirstLine"] = "first-line";
+    PseudoType2["FirstLetter"] = "first-letter";
+    PseudoType2["Checkmark"] = "checkmark";
+    PseudoType2["Before"] = "before";
+    PseudoType2["After"] = "after";
+    PseudoType2["ExpandIcon"] = "expand-icon";
+    PseudoType2["PickerIcon"] = "picker-icon";
+    PseudoType2["InterestButton"] = "interest-button";
+    PseudoType2["Marker"] = "marker";
+    PseudoType2["Backdrop"] = "backdrop";
+    PseudoType2["Column"] = "column";
+    PseudoType2["Selection"] = "selection";
+    PseudoType2["SearchText"] = "search-text";
+    PseudoType2["TargetText"] = "target-text";
+    PseudoType2["SpellingError"] = "spelling-error";
+    PseudoType2["GrammarError"] = "grammar-error";
+    PseudoType2["Highlight"] = "highlight";
+    PseudoType2["FirstLineInherited"] = "first-line-inherited";
+    PseudoType2["ScrollMarker"] = "scroll-marker";
+    PseudoType2["ScrollMarkerGroup"] = "scroll-marker-group";
+    PseudoType2["ScrollButton"] = "scroll-button";
+    PseudoType2["Scrollbar"] = "scrollbar";
+    PseudoType2["ScrollbarThumb"] = "scrollbar-thumb";
+    PseudoType2["ScrollbarButton"] = "scrollbar-button";
+    PseudoType2["ScrollbarTrack"] = "scrollbar-track";
+    PseudoType2["ScrollbarTrackPiece"] = "scrollbar-track-piece";
+    PseudoType2["ScrollbarCorner"] = "scrollbar-corner";
+    PseudoType2["Resizer"] = "resizer";
+    PseudoType2["InputListButton"] = "input-list-button";
+    PseudoType2["ViewTransition"] = "view-transition";
+    PseudoType2["ViewTransitionGroup"] = "view-transition-group";
+    PseudoType2["ViewTransitionImagePair"] = "view-transition-image-pair";
+    PseudoType2["ViewTransitionGroupChildren"] = "view-transition-group-children";
+    PseudoType2["ViewTransitionOld"] = "view-transition-old";
+    PseudoType2["ViewTransitionNew"] = "view-transition-new";
+    PseudoType2["Placeholder"] = "placeholder";
+    PseudoType2["FileSelectorButton"] = "file-selector-button";
+    PseudoType2["DetailsContent"] = "details-content";
+    PseudoType2["Picker"] = "picker";
+    PseudoType2["SelectListbox"] = "select-listbox";
+    PseudoType2["PermissionIcon"] = "permission-icon";
+    PseudoType2["OverscrollAreaParent"] = "overscroll-area-parent";
+    PseudoType2["OverscrollBackdrop"] = "overscroll-backdrop";
+    PseudoType2["Skeleton"] = "skeleton";
+  })(PseudoType = DOM2.PseudoType || (DOM2.PseudoType = {}));
+  let ShadowRootType;
+  ((ShadowRootType2) => {
+    ShadowRootType2["UserAgent"] = "user-agent";
+    ShadowRootType2["Open"] = "open";
+    ShadowRootType2["Closed"] = "closed";
+  })(ShadowRootType = DOM2.ShadowRootType || (DOM2.ShadowRootType = {}));
+  let CompatibilityMode;
+  ((CompatibilityMode2) => {
+    CompatibilityMode2["QuirksMode"] = "QuirksMode";
+    CompatibilityMode2["LimitedQuirksMode"] = "LimitedQuirksMode";
+    CompatibilityMode2["NoQuirksMode"] = "NoQuirksMode";
+  })(CompatibilityMode = DOM2.CompatibilityMode || (DOM2.CompatibilityMode = {}));
+  let PhysicalAxes;
+  ((PhysicalAxes2) => {
+    PhysicalAxes2["Horizontal"] = "Horizontal";
+    PhysicalAxes2["Vertical"] = "Vertical";
+    PhysicalAxes2["Both"] = "Both";
+  })(PhysicalAxes = DOM2.PhysicalAxes || (DOM2.PhysicalAxes = {}));
+  let LogicalAxes;
+  ((LogicalAxes2) => {
+    LogicalAxes2["Inline"] = "Inline";
+    LogicalAxes2["Block"] = "Block";
+    LogicalAxes2["Both"] = "Both";
+  })(LogicalAxes = DOM2.LogicalAxes || (DOM2.LogicalAxes = {}));
+  let ScrollOrientation;
+  ((ScrollOrientation2) => {
+    ScrollOrientation2["Horizontal"] = "horizontal";
+    ScrollOrientation2["Vertical"] = "vertical";
+  })(ScrollOrientation = DOM2.ScrollOrientation || (DOM2.ScrollOrientation = {}));
+  let EnableRequestIncludeWhitespace;
+  ((EnableRequestIncludeWhitespace2) => {
+    EnableRequestIncludeWhitespace2["None"] = "none";
+    EnableRequestIncludeWhitespace2["All"] = "all";
+  })(EnableRequestIncludeWhitespace = DOM2.EnableRequestIncludeWhitespace || (DOM2.EnableRequestIncludeWhitespace = {}));
+  let GetElementByRelationRequestRelation;
+  ((GetElementByRelationRequestRelation2) => {
+    GetElementByRelationRequestRelation2["PopoverTarget"] = "PopoverTarget";
+    GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
+    GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
+  })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+})(DOM || (DOM = {}));
+var DOMDebugger;
+((DOMDebugger2) => {
+  let DOMBreakpointType;
+  ((DOMBreakpointType2) => {
+    DOMBreakpointType2["SubtreeModified"] = "subtree-modified";
+    DOMBreakpointType2["AttributeModified"] = "attribute-modified";
+    DOMBreakpointType2["NodeRemoved"] = "node-removed";
+  })(DOMBreakpointType = DOMDebugger2.DOMBreakpointType || (DOMDebugger2.DOMBreakpointType = {}));
+  let CSPViolationType;
+  ((CSPViolationType2) => {
+    CSPViolationType2["TrustedtypeSinkViolation"] = "trustedtype-sink-violation";
+    CSPViolationType2["TrustedtypePolicyViolation"] = "trustedtype-policy-violation";
+  })(CSPViolationType = DOMDebugger2.CSPViolationType || (DOMDebugger2.CSPViolationType = {}));
+})(DOMDebugger || (DOMDebugger = {}));
+var DigitalCredentials;
+((DigitalCredentials2) => {
+  let VirtualWalletAction;
+  ((VirtualWalletAction2) => {
+    VirtualWalletAction2["Respond"] = "respond";
+    VirtualWalletAction2["Decline"] = "decline";
+    VirtualWalletAction2["Wait"] = "wait";
+    VirtualWalletAction2["Clear"] = "clear";
+  })(VirtualWalletAction = DigitalCredentials2.VirtualWalletAction || (DigitalCredentials2.VirtualWalletAction = {}));
+})(DigitalCredentials || (DigitalCredentials = {}));
+var Emulation;
+((Emulation3) => {
+  let ScreenOrientationType;
+  ((ScreenOrientationType2) => {
+    ScreenOrientationType2["PortraitPrimary"] = "portraitPrimary";
+    ScreenOrientationType2["PortraitSecondary"] = "portraitSecondary";
+    ScreenOrientationType2["LandscapePrimary"] = "landscapePrimary";
+    ScreenOrientationType2["LandscapeSecondary"] = "landscapeSecondary";
+  })(ScreenOrientationType = Emulation3.ScreenOrientationType || (Emulation3.ScreenOrientationType = {}));
+  let DisplayFeatureOrientation;
+  ((DisplayFeatureOrientation2) => {
+    DisplayFeatureOrientation2["Vertical"] = "vertical";
+    DisplayFeatureOrientation2["Horizontal"] = "horizontal";
+  })(DisplayFeatureOrientation = Emulation3.DisplayFeatureOrientation || (Emulation3.DisplayFeatureOrientation = {}));
+  let DevicePostureType;
+  ((DevicePostureType2) => {
+    DevicePostureType2["Continuous"] = "continuous";
+    DevicePostureType2["Folded"] = "folded";
+  })(DevicePostureType = Emulation3.DevicePostureType || (Emulation3.DevicePostureType = {}));
+  let VirtualTimePolicy;
+  ((VirtualTimePolicy2) => {
+    VirtualTimePolicy2["Advance"] = "advance";
+    VirtualTimePolicy2["Pause"] = "pause";
+    VirtualTimePolicy2["PauseIfNetworkFetchesPending"] = "pauseIfNetworkFetchesPending";
+  })(VirtualTimePolicy = Emulation3.VirtualTimePolicy || (Emulation3.VirtualTimePolicy = {}));
+  let SensorType;
+  ((SensorType2) => {
+    SensorType2["AbsoluteOrientation"] = "absolute-orientation";
+    SensorType2["Accelerometer"] = "accelerometer";
+    SensorType2["AmbientLight"] = "ambient-light";
+    SensorType2["Gravity"] = "gravity";
+    SensorType2["Gyroscope"] = "gyroscope";
+    SensorType2["LinearAcceleration"] = "linear-acceleration";
+    SensorType2["Magnetometer"] = "magnetometer";
+    SensorType2["RelativeOrientation"] = "relative-orientation";
+  })(SensorType = Emulation3.SensorType || (Emulation3.SensorType = {}));
+  let PressureSource;
+  ((PressureSource2) => {
+    PressureSource2["Cpu"] = "cpu";
+  })(PressureSource = Emulation3.PressureSource || (Emulation3.PressureSource = {}));
+  let PressureState;
+  ((PressureState2) => {
+    PressureState2["Nominal"] = "nominal";
+    PressureState2["Fair"] = "fair";
+    PressureState2["Serious"] = "serious";
+    PressureState2["Critical"] = "critical";
+  })(PressureState = Emulation3.PressureState || (Emulation3.PressureState = {}));
+  let DisabledImageType;
+  ((DisabledImageType2) => {
+    DisabledImageType2["Avif"] = "avif";
+    DisabledImageType2["Jxl"] = "jxl";
+    DisabledImageType2["Webp"] = "webp";
+  })(DisabledImageType = Emulation3.DisabledImageType || (Emulation3.DisabledImageType = {}));
+  let SetDeviceMetricsOverrideRequestScrollbarType;
+  ((SetDeviceMetricsOverrideRequestScrollbarType2) => {
+    SetDeviceMetricsOverrideRequestScrollbarType2["Overlay"] = "overlay";
+    SetDeviceMetricsOverrideRequestScrollbarType2["Default"] = "default";
+  })(SetDeviceMetricsOverrideRequestScrollbarType = Emulation3.SetDeviceMetricsOverrideRequestScrollbarType || (Emulation3.SetDeviceMetricsOverrideRequestScrollbarType = {}));
+  let SetEmitTouchEventsForMouseRequestConfiguration;
+  ((SetEmitTouchEventsForMouseRequestConfiguration2) => {
+    SetEmitTouchEventsForMouseRequestConfiguration2["Mobile"] = "mobile";
+    SetEmitTouchEventsForMouseRequestConfiguration2["Desktop"] = "desktop";
+  })(SetEmitTouchEventsForMouseRequestConfiguration = Emulation3.SetEmitTouchEventsForMouseRequestConfiguration || (Emulation3.SetEmitTouchEventsForMouseRequestConfiguration = {}));
+  let SetEmulatedVisionDeficiencyRequestType;
+  ((SetEmulatedVisionDeficiencyRequestType2) => {
+    SetEmulatedVisionDeficiencyRequestType2["None"] = "none";
+    SetEmulatedVisionDeficiencyRequestType2["BlurredVision"] = "blurredVision";
+    SetEmulatedVisionDeficiencyRequestType2["ReducedContrast"] = "reducedContrast";
+    SetEmulatedVisionDeficiencyRequestType2["Achromatopsia"] = "achromatopsia";
+    SetEmulatedVisionDeficiencyRequestType2["Deuteranopia"] = "deuteranopia";
+    SetEmulatedVisionDeficiencyRequestType2["Protanopia"] = "protanopia";
+    SetEmulatedVisionDeficiencyRequestType2["Tritanopia"] = "tritanopia";
+  })(SetEmulatedVisionDeficiencyRequestType = Emulation3.SetEmulatedVisionDeficiencyRequestType || (Emulation3.SetEmulatedVisionDeficiencyRequestType = {}));
+  let SetCPUPerformanceOverrideRequestPerformanceTier;
+  ((SetCPUPerformanceOverrideRequestPerformanceTier2) => {
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Unknown"] = "unknown";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Low"] = "low";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Mid"] = "mid";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["High"] = "high";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Ultra"] = "ultra";
+  })(SetCPUPerformanceOverrideRequestPerformanceTier = Emulation3.SetCPUPerformanceOverrideRequestPerformanceTier || (Emulation3.SetCPUPerformanceOverrideRequestPerformanceTier = {}));
+})(Emulation || (Emulation = {}));
+var Extensions;
+((Extensions2) => {
+  let StorageArea;
+  ((StorageArea2) => {
+    StorageArea2["Session"] = "session";
+    StorageArea2["Local"] = "local";
+    StorageArea2["Sync"] = "sync";
+    StorageArea2["Managed"] = "managed";
+  })(StorageArea = Extensions2.StorageArea || (Extensions2.StorageArea = {}));
+})(Extensions || (Extensions = {}));
+var FedCm;
+((FedCm2) => {
+  let LoginState;
+  ((LoginState2) => {
+    LoginState2["SignIn"] = "SignIn";
+    LoginState2["SignUp"] = "SignUp";
+  })(LoginState = FedCm2.LoginState || (FedCm2.LoginState = {}));
+  let DialogType;
+  ((DialogType2) => {
+    DialogType2["AccountChooser"] = "AccountChooser";
+    DialogType2["AutoReauthn"] = "AutoReauthn";
+    DialogType2["ConfirmIdpLogin"] = "ConfirmIdpLogin";
+    DialogType2["Error"] = "Error";
+  })(DialogType = FedCm2.DialogType || (FedCm2.DialogType = {}));
+  let DialogButton;
+  ((DialogButton2) => {
+    DialogButton2["ConfirmIdpLoginContinue"] = "ConfirmIdpLoginContinue";
+    DialogButton2["ErrorGotIt"] = "ErrorGotIt";
+    DialogButton2["ErrorMoreDetails"] = "ErrorMoreDetails";
+  })(DialogButton = FedCm2.DialogButton || (FedCm2.DialogButton = {}));
+  let AccountUrlType;
+  ((AccountUrlType2) => {
+    AccountUrlType2["TermsOfService"] = "TermsOfService";
+    AccountUrlType2["PrivacyPolicy"] = "PrivacyPolicy";
+  })(AccountUrlType = FedCm2.AccountUrlType || (FedCm2.AccountUrlType = {}));
+})(FedCm || (FedCm = {}));
+var Fetch;
+((Fetch2) => {
+  let RequestStage;
+  ((RequestStage2) => {
+    RequestStage2["Request"] = "Request";
+    RequestStage2["Response"] = "Response";
+  })(RequestStage = Fetch2.RequestStage || (Fetch2.RequestStage = {}));
+  let AuthChallengeSource;
+  ((AuthChallengeSource2) => {
+    AuthChallengeSource2["Server"] = "Server";
+    AuthChallengeSource2["Proxy"] = "Proxy";
+  })(AuthChallengeSource = Fetch2.AuthChallengeSource || (Fetch2.AuthChallengeSource = {}));
+  let AuthChallengeResponseResponse;
+  ((AuthChallengeResponseResponse2) => {
+    AuthChallengeResponseResponse2["Default"] = "Default";
+    AuthChallengeResponseResponse2["CancelAuth"] = "CancelAuth";
+    AuthChallengeResponseResponse2["ProvideCredentials"] = "ProvideCredentials";
+  })(AuthChallengeResponseResponse = Fetch2.AuthChallengeResponseResponse || (Fetch2.AuthChallengeResponseResponse = {}));
+})(Fetch || (Fetch = {}));
+var HeadlessExperimental;
+((HeadlessExperimental2) => {
+  let ScreenshotParamsFormat;
+  ((ScreenshotParamsFormat2) => {
+    ScreenshotParamsFormat2["Jpeg"] = "jpeg";
+    ScreenshotParamsFormat2["Png"] = "png";
+    ScreenshotParamsFormat2["Webp"] = "webp";
+  })(ScreenshotParamsFormat = HeadlessExperimental2.ScreenshotParamsFormat || (HeadlessExperimental2.ScreenshotParamsFormat = {}));
+})(HeadlessExperimental || (HeadlessExperimental = {}));
+var IndexedDB;
+((IndexedDB2) => {
+  let KeyType;
+  ((KeyType2) => {
+    KeyType2["Number"] = "number";
+    KeyType2["String"] = "string";
+    KeyType2["Date"] = "date";
+    KeyType2["Array"] = "array";
+  })(KeyType = IndexedDB2.KeyType || (IndexedDB2.KeyType = {}));
+  let KeyPathType;
+  ((KeyPathType2) => {
+    KeyPathType2["Null"] = "null";
+    KeyPathType2["String"] = "string";
+    KeyPathType2["Array"] = "array";
+  })(KeyPathType = IndexedDB2.KeyPathType || (IndexedDB2.KeyPathType = {}));
+})(IndexedDB || (IndexedDB = {}));
+var Input;
+((Input2) => {
+  let GestureSourceType;
+  ((GestureSourceType2) => {
+    GestureSourceType2["Default"] = "default";
+    GestureSourceType2["Touch"] = "touch";
+    GestureSourceType2["Mouse"] = "mouse";
+  })(GestureSourceType = Input2.GestureSourceType || (Input2.GestureSourceType = {}));
+  let MouseButton;
+  ((MouseButton2) => {
+    MouseButton2["None"] = "none";
+    MouseButton2["Left"] = "left";
+    MouseButton2["Middle"] = "middle";
+    MouseButton2["Right"] = "right";
+    MouseButton2["Back"] = "back";
+    MouseButton2["Forward"] = "forward";
+  })(MouseButton = Input2.MouseButton || (Input2.MouseButton = {}));
+  let DispatchDragEventRequestType;
+  ((DispatchDragEventRequestType2) => {
+    DispatchDragEventRequestType2["DragEnter"] = "dragEnter";
+    DispatchDragEventRequestType2["DragOver"] = "dragOver";
+    DispatchDragEventRequestType2["Drop"] = "drop";
+    DispatchDragEventRequestType2["DragCancel"] = "dragCancel";
+  })(DispatchDragEventRequestType = Input2.DispatchDragEventRequestType || (Input2.DispatchDragEventRequestType = {}));
+  let DispatchKeyEventRequestType;
+  ((DispatchKeyEventRequestType2) => {
+    DispatchKeyEventRequestType2["KeyDown"] = "keyDown";
+    DispatchKeyEventRequestType2["KeyUp"] = "keyUp";
+    DispatchKeyEventRequestType2["RawKeyDown"] = "rawKeyDown";
+    DispatchKeyEventRequestType2["Char"] = "char";
+  })(DispatchKeyEventRequestType = Input2.DispatchKeyEventRequestType || (Input2.DispatchKeyEventRequestType = {}));
+  let DispatchMouseEventRequestType;
+  ((DispatchMouseEventRequestType2) => {
+    DispatchMouseEventRequestType2["MousePressed"] = "mousePressed";
+    DispatchMouseEventRequestType2["MouseReleased"] = "mouseReleased";
+    DispatchMouseEventRequestType2["MouseMoved"] = "mouseMoved";
+    DispatchMouseEventRequestType2["MouseWheel"] = "mouseWheel";
+  })(DispatchMouseEventRequestType = Input2.DispatchMouseEventRequestType || (Input2.DispatchMouseEventRequestType = {}));
+  let DispatchMouseEventRequestPointerType;
+  ((DispatchMouseEventRequestPointerType2) => {
+    DispatchMouseEventRequestPointerType2["Mouse"] = "mouse";
+    DispatchMouseEventRequestPointerType2["Pen"] = "pen";
+  })(DispatchMouseEventRequestPointerType = Input2.DispatchMouseEventRequestPointerType || (Input2.DispatchMouseEventRequestPointerType = {}));
+  let DispatchTouchEventRequestType;
+  ((DispatchTouchEventRequestType2) => {
+    DispatchTouchEventRequestType2["TouchStart"] = "touchStart";
+    DispatchTouchEventRequestType2["TouchEnd"] = "touchEnd";
+    DispatchTouchEventRequestType2["TouchMove"] = "touchMove";
+    DispatchTouchEventRequestType2["TouchCancel"] = "touchCancel";
+  })(DispatchTouchEventRequestType = Input2.DispatchTouchEventRequestType || (Input2.DispatchTouchEventRequestType = {}));
+  let EmulateTouchFromMouseEventRequestType;
+  ((EmulateTouchFromMouseEventRequestType2) => {
+    EmulateTouchFromMouseEventRequestType2["MousePressed"] = "mousePressed";
+    EmulateTouchFromMouseEventRequestType2["MouseReleased"] = "mouseReleased";
+    EmulateTouchFromMouseEventRequestType2["MouseMoved"] = "mouseMoved";
+    EmulateTouchFromMouseEventRequestType2["MouseWheel"] = "mouseWheel";
+  })(EmulateTouchFromMouseEventRequestType = Input2.EmulateTouchFromMouseEventRequestType || (Input2.EmulateTouchFromMouseEventRequestType = {}));
+})(Input || (Input = {}));
+var LayerTree;
+((LayerTree2) => {
+  let ScrollRectType;
+  ((ScrollRectType2) => {
+    ScrollRectType2["RepaintsOnScroll"] = "RepaintsOnScroll";
+    ScrollRectType2["TouchEventHandler"] = "TouchEventHandler";
+    ScrollRectType2["WheelEventHandler"] = "WheelEventHandler";
+  })(ScrollRectType = LayerTree2.ScrollRectType || (LayerTree2.ScrollRectType = {}));
+})(LayerTree || (LayerTree = {}));
+var Log;
+((Log2) => {
+  let LogEntrySource;
+  ((LogEntrySource2) => {
+    LogEntrySource2["XML"] = "xml";
+    LogEntrySource2["Javascript"] = "javascript";
+    LogEntrySource2["Network"] = "network";
+    LogEntrySource2["Storage"] = "storage";
+    LogEntrySource2["Appcache"] = "appcache";
+    LogEntrySource2["Rendering"] = "rendering";
+    LogEntrySource2["Security"] = "security";
+    LogEntrySource2["Deprecation"] = "deprecation";
+    LogEntrySource2["Worker"] = "worker";
+    LogEntrySource2["Violation"] = "violation";
+    LogEntrySource2["Intervention"] = "intervention";
+    LogEntrySource2["Recommendation"] = "recommendation";
+    LogEntrySource2["Other"] = "other";
+  })(LogEntrySource = Log2.LogEntrySource || (Log2.LogEntrySource = {}));
+  let LogEntryLevel;
+  ((LogEntryLevel2) => {
+    LogEntryLevel2["Verbose"] = "verbose";
+    LogEntryLevel2["Info"] = "info";
+    LogEntryLevel2["Warning"] = "warning";
+    LogEntryLevel2["Error"] = "error";
+  })(LogEntryLevel = Log2.LogEntryLevel || (Log2.LogEntryLevel = {}));
+  let LogEntryCategory;
+  ((LogEntryCategory2) => {
+    LogEntryCategory2["Cors"] = "cors";
+  })(LogEntryCategory = Log2.LogEntryCategory || (Log2.LogEntryCategory = {}));
+  let ViolationSettingName;
+  ((ViolationSettingName2) => {
+    ViolationSettingName2["LongTask"] = "longTask";
+    ViolationSettingName2["LongLayout"] = "longLayout";
+    ViolationSettingName2["BlockedEvent"] = "blockedEvent";
+    ViolationSettingName2["BlockedParser"] = "blockedParser";
+    ViolationSettingName2["DiscouragedAPIUse"] = "discouragedAPIUse";
+    ViolationSettingName2["Handler"] = "handler";
+    ViolationSettingName2["RecurringHandler"] = "recurringHandler";
+  })(ViolationSettingName = Log2.ViolationSettingName || (Log2.ViolationSettingName = {}));
+})(Log || (Log = {}));
+var Media;
+((Media3) => {
+  let PlayerMessageLevel;
+  ((PlayerMessageLevel2) => {
+    PlayerMessageLevel2["Error"] = "error";
+    PlayerMessageLevel2["Warning"] = "warning";
+    PlayerMessageLevel2["Info"] = "info";
+    PlayerMessageLevel2["Debug"] = "debug";
+  })(PlayerMessageLevel = Media3.PlayerMessageLevel || (Media3.PlayerMessageLevel = {}));
+})(Media || (Media = {}));
+var Memory;
+((Memory2) => {
+  let PressureLevel;
+  ((PressureLevel2) => {
+    PressureLevel2["Moderate"] = "moderate";
+    PressureLevel2["Critical"] = "critical";
+  })(PressureLevel = Memory2.PressureLevel || (Memory2.PressureLevel = {}));
+})(Memory || (Memory = {}));
+var Network;
+((Network2) => {
+  let ResourceType;
+  ((ResourceType2) => {
+    ResourceType2["Document"] = "Document";
+    ResourceType2["Stylesheet"] = "Stylesheet";
+    ResourceType2["Image"] = "Image";
+    ResourceType2["Media"] = "Media";
+    ResourceType2["Font"] = "Font";
+    ResourceType2["Script"] = "Script";
+    ResourceType2["TextTrack"] = "TextTrack";
+    ResourceType2["XHR"] = "XHR";
+    ResourceType2["Fetch"] = "Fetch";
+    ResourceType2["Prefetch"] = "Prefetch";
+    ResourceType2["EventSource"] = "EventSource";
+    ResourceType2["WebSocket"] = "WebSocket";
+    ResourceType2["Manifest"] = "Manifest";
+    ResourceType2["SignedExchange"] = "SignedExchange";
+    ResourceType2["Ping"] = "Ping";
+    ResourceType2["CSPViolationReport"] = "CSPViolationReport";
+    ResourceType2["Preflight"] = "Preflight";
+    ResourceType2["FedCM"] = "FedCM";
+    ResourceType2["Other"] = "Other";
+  })(ResourceType = Network2.ResourceType || (Network2.ResourceType = {}));
+  let ErrorReason;
+  ((ErrorReason2) => {
+    ErrorReason2["Failed"] = "Failed";
+    ErrorReason2["Aborted"] = "Aborted";
+    ErrorReason2["TimedOut"] = "TimedOut";
+    ErrorReason2["AccessDenied"] = "AccessDenied";
+    ErrorReason2["ConnectionClosed"] = "ConnectionClosed";
+    ErrorReason2["ConnectionReset"] = "ConnectionReset";
+    ErrorReason2["ConnectionRefused"] = "ConnectionRefused";
+    ErrorReason2["ConnectionAborted"] = "ConnectionAborted";
+    ErrorReason2["ConnectionFailed"] = "ConnectionFailed";
+    ErrorReason2["NameNotResolved"] = "NameNotResolved";
+    ErrorReason2["InternetDisconnected"] = "InternetDisconnected";
+    ErrorReason2["AddressUnreachable"] = "AddressUnreachable";
+    ErrorReason2["BlockedByClient"] = "BlockedByClient";
+    ErrorReason2["BlockedByResponse"] = "BlockedByResponse";
+  })(ErrorReason = Network2.ErrorReason || (Network2.ErrorReason = {}));
+  let ConnectionType;
+  ((ConnectionType2) => {
+    ConnectionType2["None"] = "none";
+    ConnectionType2["Cellular2g"] = "cellular2g";
+    ConnectionType2["Cellular3g"] = "cellular3g";
+    ConnectionType2["Cellular4g"] = "cellular4g";
+    ConnectionType2["Bluetooth"] = "bluetooth";
+    ConnectionType2["Ethernet"] = "ethernet";
+    ConnectionType2["Wifi"] = "wifi";
+    ConnectionType2["Wimax"] = "wimax";
+    ConnectionType2["Other"] = "other";
+  })(ConnectionType = Network2.ConnectionType || (Network2.ConnectionType = {}));
+  let CookieSameSite;
+  ((CookieSameSite2) => {
+    CookieSameSite2["Strict"] = "Strict";
+    CookieSameSite2["Lax"] = "Lax";
+    CookieSameSite2["None"] = "None";
+  })(CookieSameSite = Network2.CookieSameSite || (Network2.CookieSameSite = {}));
+  let CookiePriority;
+  ((CookiePriority2) => {
+    CookiePriority2["Low"] = "Low";
+    CookiePriority2["Medium"] = "Medium";
+    CookiePriority2["High"] = "High";
+  })(CookiePriority = Network2.CookiePriority || (Network2.CookiePriority = {}));
+  let CookieSourceScheme;
+  ((CookieSourceScheme2) => {
+    CookieSourceScheme2["Unset"] = "Unset";
+    CookieSourceScheme2["NonSecure"] = "NonSecure";
+    CookieSourceScheme2["Secure"] = "Secure";
+  })(CookieSourceScheme = Network2.CookieSourceScheme || (Network2.CookieSourceScheme = {}));
+  let ResourcePriority;
+  ((ResourcePriority2) => {
+    ResourcePriority2["VeryLow"] = "VeryLow";
+    ResourcePriority2["Low"] = "Low";
+    ResourcePriority2["Medium"] = "Medium";
+    ResourcePriority2["High"] = "High";
+    ResourcePriority2["VeryHigh"] = "VeryHigh";
+  })(ResourcePriority = Network2.ResourcePriority || (Network2.ResourcePriority = {}));
+  let RenderBlockingBehavior;
+  ((RenderBlockingBehavior2) => {
+    RenderBlockingBehavior2["Blocking"] = "Blocking";
+    RenderBlockingBehavior2["InBodyParserBlocking"] = "InBodyParserBlocking";
+    RenderBlockingBehavior2["NonBlocking"] = "NonBlocking";
+    RenderBlockingBehavior2["NonBlockingDynamic"] = "NonBlockingDynamic";
+    RenderBlockingBehavior2["PotentiallyBlocking"] = "PotentiallyBlocking";
+  })(RenderBlockingBehavior = Network2.RenderBlockingBehavior || (Network2.RenderBlockingBehavior = {}));
+  let RequestReferrerPolicy;
+  ((RequestReferrerPolicy2) => {
+    RequestReferrerPolicy2["UnsafeUrl"] = "unsafe-url";
+    RequestReferrerPolicy2["NoReferrerWhenDowngrade"] = "no-referrer-when-downgrade";
+    RequestReferrerPolicy2["NoReferrer"] = "no-referrer";
+    RequestReferrerPolicy2["Origin"] = "origin";
+    RequestReferrerPolicy2["OriginWhenCrossOrigin"] = "origin-when-cross-origin";
+    RequestReferrerPolicy2["SameOrigin"] = "same-origin";
+    RequestReferrerPolicy2["StrictOrigin"] = "strict-origin";
+    RequestReferrerPolicy2["StrictOriginWhenCrossOrigin"] = "strict-origin-when-cross-origin";
+  })(RequestReferrerPolicy = Network2.RequestReferrerPolicy || (Network2.RequestReferrerPolicy = {}));
+  let CertificateTransparencyCompliance;
+  ((CertificateTransparencyCompliance2) => {
+    CertificateTransparencyCompliance2["Unknown"] = "unknown";
+    CertificateTransparencyCompliance2["NotCompliant"] = "not-compliant";
+    CertificateTransparencyCompliance2["Compliant"] = "compliant";
+  })(CertificateTransparencyCompliance = Network2.CertificateTransparencyCompliance || (Network2.CertificateTransparencyCompliance = {}));
+  let BlockedReason;
+  ((BlockedReason2) => {
+    BlockedReason2["Other"] = "other";
+    BlockedReason2["Csp"] = "csp";
+    BlockedReason2["MixedContent"] = "mixed-content";
+    BlockedReason2["Origin"] = "origin";
+    BlockedReason2["Inspector"] = "inspector";
+    BlockedReason2["Integrity"] = "integrity";
+    BlockedReason2["SubresourceFilter"] = "subresource-filter";
+    BlockedReason2["ContentType"] = "content-type";
+    BlockedReason2["CoepFrameResourceNeedsCoepHeader"] = "coep-frame-resource-needs-coep-header";
+    BlockedReason2["CoopSandboxedIframeCannotNavigateToCoopPage"] = "coop-sandboxed-iframe-cannot-navigate-to-coop-page";
+    BlockedReason2["CorpNotSameOrigin"] = "corp-not-same-origin";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoep"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByDip"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-dip";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip";
+    BlockedReason2["CorpNotSameSite"] = "corp-not-same-site";
+    BlockedReason2["SriMessageSignatureMismatch"] = "sri-message-signature-mismatch";
+  })(BlockedReason = Network2.BlockedReason || (Network2.BlockedReason = {}));
+  let CorsError;
+  ((CorsError2) => {
+    CorsError2["DisallowedByMode"] = "DisallowedByMode";
+    CorsError2["InvalidResponse"] = "InvalidResponse";
+    CorsError2["WildcardOriginNotAllowed"] = "WildcardOriginNotAllowed";
+    CorsError2["MissingAllowOriginHeader"] = "MissingAllowOriginHeader";
+    CorsError2["MultipleAllowOriginValues"] = "MultipleAllowOriginValues";
+    CorsError2["InvalidAllowOriginValue"] = "InvalidAllowOriginValue";
+    CorsError2["AllowOriginMismatch"] = "AllowOriginMismatch";
+    CorsError2["InvalidAllowCredentials"] = "InvalidAllowCredentials";
+    CorsError2["CorsDisabledScheme"] = "CorsDisabledScheme";
+    CorsError2["PreflightInvalidStatus"] = "PreflightInvalidStatus";
+    CorsError2["PreflightDisallowedRedirect"] = "PreflightDisallowedRedirect";
+    CorsError2["PreflightWildcardOriginNotAllowed"] = "PreflightWildcardOriginNotAllowed";
+    CorsError2["PreflightMissingAllowOriginHeader"] = "PreflightMissingAllowOriginHeader";
+    CorsError2["PreflightMultipleAllowOriginValues"] = "PreflightMultipleAllowOriginValues";
+    CorsError2["PreflightInvalidAllowOriginValue"] = "PreflightInvalidAllowOriginValue";
+    CorsError2["PreflightAllowOriginMismatch"] = "PreflightAllowOriginMismatch";
+    CorsError2["PreflightInvalidAllowCredentials"] = "PreflightInvalidAllowCredentials";
+    CorsError2["PreflightMissingAllowExternal"] = "PreflightMissingAllowExternal";
+    CorsError2["PreflightInvalidAllowExternal"] = "PreflightInvalidAllowExternal";
+    CorsError2["InvalidAllowMethodsPreflightResponse"] = "InvalidAllowMethodsPreflightResponse";
+    CorsError2["InvalidAllowHeadersPreflightResponse"] = "InvalidAllowHeadersPreflightResponse";
+    CorsError2["MethodDisallowedByPreflightResponse"] = "MethodDisallowedByPreflightResponse";
+    CorsError2["HeaderDisallowedByPreflightResponse"] = "HeaderDisallowedByPreflightResponse";
+    CorsError2["RedirectContainsCredentials"] = "RedirectContainsCredentials";
+    CorsError2["InsecureLocalNetwork"] = "InsecureLocalNetwork";
+    CorsError2["InvalidLocalNetworkAccess"] = "InvalidLocalNetworkAccess";
+    CorsError2["NoCorsRedirectModeNotFollow"] = "NoCorsRedirectModeNotFollow";
+    CorsError2["LocalNetworkAccessPermissionDenied"] = "LocalNetworkAccessPermissionDenied";
+  })(CorsError = Network2.CorsError || (Network2.CorsError = {}));
+  let ServiceWorkerResponseSource;
+  ((ServiceWorkerResponseSource2) => {
+    ServiceWorkerResponseSource2["CacheStorage"] = "cache-storage";
+    ServiceWorkerResponseSource2["HttpCache"] = "http-cache";
+    ServiceWorkerResponseSource2["FallbackCode"] = "fallback-code";
+    ServiceWorkerResponseSource2["Network"] = "network";
+  })(ServiceWorkerResponseSource = Network2.ServiceWorkerResponseSource || (Network2.ServiceWorkerResponseSource = {}));
+  let TrustTokenParamsRefreshPolicy;
+  ((TrustTokenParamsRefreshPolicy2) => {
+    TrustTokenParamsRefreshPolicy2["UseCached"] = "UseCached";
+    TrustTokenParamsRefreshPolicy2["Refresh"] = "Refresh";
+  })(TrustTokenParamsRefreshPolicy = Network2.TrustTokenParamsRefreshPolicy || (Network2.TrustTokenParamsRefreshPolicy = {}));
+  let TrustTokenOperationType;
+  ((TrustTokenOperationType2) => {
+    TrustTokenOperationType2["Issuance"] = "Issuance";
+    TrustTokenOperationType2["Redemption"] = "Redemption";
+    TrustTokenOperationType2["Signing"] = "Signing";
+  })(TrustTokenOperationType = Network2.TrustTokenOperationType || (Network2.TrustTokenOperationType = {}));
+  let AlternateProtocolUsage;
+  ((AlternateProtocolUsage2) => {
+    AlternateProtocolUsage2["AlternativeJobWonWithoutRace"] = "alternativeJobWonWithoutRace";
+    AlternateProtocolUsage2["AlternativeJobWonRace"] = "alternativeJobWonRace";
+    AlternateProtocolUsage2["MainJobWonRace"] = "mainJobWonRace";
+    AlternateProtocolUsage2["MappingMissing"] = "mappingMissing";
+    AlternateProtocolUsage2["Broken"] = "broken";
+    AlternateProtocolUsage2["DnsAlpnH3JobWonWithoutRace"] = "dnsAlpnH3JobWonWithoutRace";
+    AlternateProtocolUsage2["DnsAlpnH3JobWonRace"] = "dnsAlpnH3JobWonRace";
+    AlternateProtocolUsage2["UnspecifiedReason"] = "unspecifiedReason";
+  })(AlternateProtocolUsage = Network2.AlternateProtocolUsage || (Network2.AlternateProtocolUsage = {}));
+  let ServiceWorkerRouterSource;
+  ((ServiceWorkerRouterSource2) => {
+    ServiceWorkerRouterSource2["Network"] = "network";
+    ServiceWorkerRouterSource2["Cache"] = "cache";
+    ServiceWorkerRouterSource2["FetchEvent"] = "fetch-event";
+    ServiceWorkerRouterSource2["RaceNetworkAndFetchHandler"] = "race-network-and-fetch-handler";
+    ServiceWorkerRouterSource2["RaceNetworkAndCache"] = "race-network-and-cache";
+  })(ServiceWorkerRouterSource = Network2.ServiceWorkerRouterSource || (Network2.ServiceWorkerRouterSource = {}));
+  let InitiatorType;
+  ((InitiatorType2) => {
+    InitiatorType2["Parser"] = "parser";
+    InitiatorType2["Script"] = "script";
+    InitiatorType2["Preload"] = "preload";
+    InitiatorType2["SignedExchange"] = "SignedExchange";
+    InitiatorType2["Preflight"] = "preflight";
+    InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["Other"] = "other";
+  })(InitiatorType = Network2.InitiatorType || (Network2.InitiatorType = {}));
+  let SetCookieBlockedReason;
+  ((SetCookieBlockedReason2) => {
+    SetCookieBlockedReason2["SecureOnly"] = "SecureOnly";
+    SetCookieBlockedReason2["SameSiteStrict"] = "SameSiteStrict";
+    SetCookieBlockedReason2["SameSiteLax"] = "SameSiteLax";
+    SetCookieBlockedReason2["SameSiteUnspecifiedTreatedAsLax"] = "SameSiteUnspecifiedTreatedAsLax";
+    SetCookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
+    SetCookieBlockedReason2["UserPreferences"] = "UserPreferences";
+    SetCookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
+    SetCookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
+    SetCookieBlockedReason2["SyntaxError"] = "SyntaxError";
+    SetCookieBlockedReason2["SchemeNotSupported"] = "SchemeNotSupported";
+    SetCookieBlockedReason2["OverwriteSecure"] = "OverwriteSecure";
+    SetCookieBlockedReason2["InvalidDomain"] = "InvalidDomain";
+    SetCookieBlockedReason2["InvalidPrefix"] = "InvalidPrefix";
+    SetCookieBlockedReason2["UnknownError"] = "UnknownError";
+    SetCookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
+    SetCookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
+    SetCookieBlockedReason2["SchemefulSameSiteUnspecifiedTreatedAsLax"] = "SchemefulSameSiteUnspecifiedTreatedAsLax";
+    SetCookieBlockedReason2["NameValuePairExceedsMaxSize"] = "NameValuePairExceedsMaxSize";
+    SetCookieBlockedReason2["DisallowedCharacter"] = "DisallowedCharacter";
+    SetCookieBlockedReason2["NoCookieContent"] = "NoCookieContent";
+  })(SetCookieBlockedReason = Network2.SetCookieBlockedReason || (Network2.SetCookieBlockedReason = {}));
+  let CookieBlockedReason;
+  ((CookieBlockedReason2) => {
+    CookieBlockedReason2["SecureOnly"] = "SecureOnly";
+    CookieBlockedReason2["NotOnPath"] = "NotOnPath";
+    CookieBlockedReason2["DomainMismatch"] = "DomainMismatch";
+    CookieBlockedReason2["SameSiteStrict"] = "SameSiteStrict";
+    CookieBlockedReason2["SameSiteLax"] = "SameSiteLax";
+    CookieBlockedReason2["SameSiteUnspecifiedTreatedAsLax"] = "SameSiteUnspecifiedTreatedAsLax";
+    CookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
+    CookieBlockedReason2["UserPreferences"] = "UserPreferences";
+    CookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
+    CookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
+    CookieBlockedReason2["UnknownError"] = "UnknownError";
+    CookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
+    CookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
+    CookieBlockedReason2["SchemefulSameSiteUnspecifiedTreatedAsLax"] = "SchemefulSameSiteUnspecifiedTreatedAsLax";
+    CookieBlockedReason2["NameValuePairExceedsMaxSize"] = "NameValuePairExceedsMaxSize";
+    CookieBlockedReason2["PortMismatch"] = "PortMismatch";
+    CookieBlockedReason2["SchemeMismatch"] = "SchemeMismatch";
+    CookieBlockedReason2["AnonymousContext"] = "AnonymousContext";
+  })(CookieBlockedReason = Network2.CookieBlockedReason || (Network2.CookieBlockedReason = {}));
+  let CookieExemptionReason;
+  ((CookieExemptionReason2) => {
+    CookieExemptionReason2["None"] = "None";
+    CookieExemptionReason2["UserSetting"] = "UserSetting";
+    CookieExemptionReason2["EnterprisePolicy"] = "EnterprisePolicy";
+    CookieExemptionReason2["StorageAccess"] = "StorageAccess";
+    CookieExemptionReason2["TopLevelStorageAccess"] = "TopLevelStorageAccess";
+    CookieExemptionReason2["Scheme"] = "Scheme";
+    CookieExemptionReason2["SameSiteNoneCookiesInSandbox"] = "SameSiteNoneCookiesInSandbox";
+  })(CookieExemptionReason = Network2.CookieExemptionReason || (Network2.CookieExemptionReason = {}));
+  let AuthChallengeSource;
+  ((AuthChallengeSource2) => {
+    AuthChallengeSource2["Server"] = "Server";
+    AuthChallengeSource2["Proxy"] = "Proxy";
+  })(AuthChallengeSource = Network2.AuthChallengeSource || (Network2.AuthChallengeSource = {}));
+  let AuthChallengeResponseResponse;
+  ((AuthChallengeResponseResponse2) => {
+    AuthChallengeResponseResponse2["Default"] = "Default";
+    AuthChallengeResponseResponse2["CancelAuth"] = "CancelAuth";
+    AuthChallengeResponseResponse2["ProvideCredentials"] = "ProvideCredentials";
+  })(AuthChallengeResponseResponse = Network2.AuthChallengeResponseResponse || (Network2.AuthChallengeResponseResponse = {}));
+  let SignedExchangeErrorField;
+  ((SignedExchangeErrorField2) => {
+    SignedExchangeErrorField2["SignatureSig"] = "signatureSig";
+    SignedExchangeErrorField2["SignatureIntegrity"] = "signatureIntegrity";
+    SignedExchangeErrorField2["SignatureCertUrl"] = "signatureCertUrl";
+    SignedExchangeErrorField2["SignatureCertSha256"] = "signatureCertSha256";
+    SignedExchangeErrorField2["SignatureValidityUrl"] = "signatureValidityUrl";
+    SignedExchangeErrorField2["SignatureTimestamps"] = "signatureTimestamps";
+  })(SignedExchangeErrorField = Network2.SignedExchangeErrorField || (Network2.SignedExchangeErrorField = {}));
+  let DirectSocketDnsQueryType;
+  ((DirectSocketDnsQueryType2) => {
+    DirectSocketDnsQueryType2["Ipv4"] = "ipv4";
+    DirectSocketDnsQueryType2["Ipv6"] = "ipv6";
+  })(DirectSocketDnsQueryType = Network2.DirectSocketDnsQueryType || (Network2.DirectSocketDnsQueryType = {}));
+  let LocalNetworkAccessRequestPolicy;
+  ((LocalNetworkAccessRequestPolicy2) => {
+    LocalNetworkAccessRequestPolicy2["Allow"] = "Allow";
+    LocalNetworkAccessRequestPolicy2["BlockFromInsecureToMorePrivate"] = "BlockFromInsecureToMorePrivate";
+    LocalNetworkAccessRequestPolicy2["WarnFromInsecureToMorePrivate"] = "WarnFromInsecureToMorePrivate";
+    LocalNetworkAccessRequestPolicy2["PermissionBlock"] = "PermissionBlock";
+    LocalNetworkAccessRequestPolicy2["PermissionWarn"] = "PermissionWarn";
+  })(LocalNetworkAccessRequestPolicy = Network2.LocalNetworkAccessRequestPolicy || (Network2.LocalNetworkAccessRequestPolicy = {}));
+  let IPAddressSpace;
+  ((IPAddressSpace2) => {
+    IPAddressSpace2["Loopback"] = "Loopback";
+    IPAddressSpace2["Local"] = "Local";
+    IPAddressSpace2["Public"] = "Public";
+    IPAddressSpace2["Unknown"] = "Unknown";
+  })(IPAddressSpace = Network2.IPAddressSpace || (Network2.IPAddressSpace = {}));
+  let CrossOriginOpenerPolicyValue;
+  ((CrossOriginOpenerPolicyValue2) => {
+    CrossOriginOpenerPolicyValue2["SameOrigin"] = "SameOrigin";
+    CrossOriginOpenerPolicyValue2["SameOriginAllowPopups"] = "SameOriginAllowPopups";
+    CrossOriginOpenerPolicyValue2["RestrictProperties"] = "RestrictProperties";
+    CrossOriginOpenerPolicyValue2["UnsafeNone"] = "UnsafeNone";
+    CrossOriginOpenerPolicyValue2["SameOriginPlusCoep"] = "SameOriginPlusCoep";
+    CrossOriginOpenerPolicyValue2["RestrictPropertiesPlusCoep"] = "RestrictPropertiesPlusCoep";
+    CrossOriginOpenerPolicyValue2["NoopenerAllowPopups"] = "NoopenerAllowPopups";
+  })(CrossOriginOpenerPolicyValue = Network2.CrossOriginOpenerPolicyValue || (Network2.CrossOriginOpenerPolicyValue = {}));
+  let CrossOriginEmbedderPolicyValue;
+  ((CrossOriginEmbedderPolicyValue2) => {
+    CrossOriginEmbedderPolicyValue2["None"] = "None";
+    CrossOriginEmbedderPolicyValue2["Credentialless"] = "Credentialless";
+    CrossOriginEmbedderPolicyValue2["RequireCorp"] = "RequireCorp";
+  })(CrossOriginEmbedderPolicyValue = Network2.CrossOriginEmbedderPolicyValue || (Network2.CrossOriginEmbedderPolicyValue = {}));
+  let ContentSecurityPolicySource;
+  ((ContentSecurityPolicySource2) => {
+    ContentSecurityPolicySource2["HTTP"] = "HTTP";
+    ContentSecurityPolicySource2["Meta"] = "Meta";
+  })(ContentSecurityPolicySource = Network2.ContentSecurityPolicySource || (Network2.ContentSecurityPolicySource = {}));
+  let ReportStatus;
+  ((ReportStatus2) => {
+    ReportStatus2["Queued"] = "Queued";
+    ReportStatus2["Pending"] = "Pending";
+    ReportStatus2["MarkedForRemoval"] = "MarkedForRemoval";
+    ReportStatus2["Success"] = "Success";
+  })(ReportStatus = Network2.ReportStatus || (Network2.ReportStatus = {}));
+  let DeviceBoundSessionWithUsageUsage;
+  ((DeviceBoundSessionWithUsageUsage2) => {
+    DeviceBoundSessionWithUsageUsage2["NotInScope"] = "NotInScope";
+    DeviceBoundSessionWithUsageUsage2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+    DeviceBoundSessionWithUsageUsage2["InScopeRefreshNotAllowed"] = "InScopeRefreshNotAllowed";
+    DeviceBoundSessionWithUsageUsage2["ProactiveRefreshNotPossible"] = "ProactiveRefreshNotPossible";
+    DeviceBoundSessionWithUsageUsage2["ProactiveRefreshAttempted"] = "ProactiveRefreshAttempted";
+    DeviceBoundSessionWithUsageUsage2["Deferred"] = "Deferred";
+  })(DeviceBoundSessionWithUsageUsage = Network2.DeviceBoundSessionWithUsageUsage || (Network2.DeviceBoundSessionWithUsageUsage = {}));
+  let DeviceBoundSessionUrlRuleRuleType;
+  ((DeviceBoundSessionUrlRuleRuleType2) => {
+    DeviceBoundSessionUrlRuleRuleType2["Exclude"] = "Exclude";
+    DeviceBoundSessionUrlRuleRuleType2["Include"] = "Include";
+  })(DeviceBoundSessionUrlRuleRuleType = Network2.DeviceBoundSessionUrlRuleRuleType || (Network2.DeviceBoundSessionUrlRuleRuleType = {}));
+  let DeviceBoundSessionFetchResult;
+  ((DeviceBoundSessionFetchResult2) => {
+    DeviceBoundSessionFetchResult2["Success"] = "Success";
+    DeviceBoundSessionFetchResult2["SigningKeyGenerationError"] = "SigningKeyGenerationError";
+    DeviceBoundSessionFetchResult2["AttestationKeyGenerationError"] = "AttestationKeyGenerationError";
+    DeviceBoundSessionFetchResult2["SigningError"] = "SigningError";
+    DeviceBoundSessionFetchResult2["TransientSigningError"] = "TransientSigningError";
+    DeviceBoundSessionFetchResult2["ServerRequestedTermination"] = "ServerRequestedTermination";
+    DeviceBoundSessionFetchResult2["InvalidSessionId"] = "InvalidSessionId";
+    DeviceBoundSessionFetchResult2["InvalidChallenge"] = "InvalidChallenge";
+    DeviceBoundSessionFetchResult2["TooManyChallenges"] = "TooManyChallenges";
+    DeviceBoundSessionFetchResult2["InvalidFetcherUrl"] = "InvalidFetcherUrl";
+    DeviceBoundSessionFetchResult2["InvalidRefreshUrl"] = "InvalidRefreshUrl";
+    DeviceBoundSessionFetchResult2["TransientHttpError"] = "TransientHttpError";
+    DeviceBoundSessionFetchResult2["ScopeOriginSameSiteMismatch"] = "ScopeOriginSameSiteMismatch";
+    DeviceBoundSessionFetchResult2["RefreshUrlSameSiteMismatch"] = "RefreshUrlSameSiteMismatch";
+    DeviceBoundSessionFetchResult2["MismatchedSessionId"] = "MismatchedSessionId";
+    DeviceBoundSessionFetchResult2["MissingScope"] = "MissingScope";
+    DeviceBoundSessionFetchResult2["NoCredentials"] = "NoCredentials";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationWellKnownUnavailable"] = "SubdomainRegistrationWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationUnauthorized"] = "SubdomainRegistrationUnauthorized";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationWellKnownMalformed"] = "SubdomainRegistrationWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownUnavailable"] = "SessionProviderWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownUnavailable"] = "RelyingPartyWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["FederatedKeyThumbprintMismatch"] = "FederatedKeyThumbprintMismatch";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionUrl"] = "InvalidFederatedSessionUrl";
+    DeviceBoundSessionFetchResult2["InvalidFederatedKey"] = "InvalidFederatedKey";
+    DeviceBoundSessionFetchResult2["TooManyRelyingOriginLabels"] = "TooManyRelyingOriginLabels";
+    DeviceBoundSessionFetchResult2["BoundCookieSetForbidden"] = "BoundCookieSetForbidden";
+    DeviceBoundSessionFetchResult2["NetError"] = "NetError";
+    DeviceBoundSessionFetchResult2["ProxyError"] = "ProxyError";
+    DeviceBoundSessionFetchResult2["EmptySessionConfig"] = "EmptySessionConfig";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsConfig"] = "InvalidCredentialsConfig";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsType"] = "InvalidCredentialsType";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsEmptyName"] = "InvalidCredentialsEmptyName";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookie"] = "InvalidCredentialsCookie";
+    DeviceBoundSessionFetchResult2["PersistentHttpError"] = "PersistentHttpError";
+    DeviceBoundSessionFetchResult2["RegistrationAttemptedChallenge"] = "RegistrationAttemptedChallenge";
+    DeviceBoundSessionFetchResult2["InvalidScopeOrigin"] = "InvalidScopeOrigin";
+    DeviceBoundSessionFetchResult2["ScopeOriginContainsPath"] = "ScopeOriginContainsPath";
+    DeviceBoundSessionFetchResult2["RefreshInitiatorNotString"] = "RefreshInitiatorNotString";
+    DeviceBoundSessionFetchResult2["RefreshInitiatorInvalidHostPattern"] = "RefreshInitiatorInvalidHostPattern";
+    DeviceBoundSessionFetchResult2["InvalidScopeSpecification"] = "InvalidScopeSpecification";
+    DeviceBoundSessionFetchResult2["MissingScopeSpecificationType"] = "MissingScopeSpecificationType";
+    DeviceBoundSessionFetchResult2["EmptyScopeSpecificationDomain"] = "EmptyScopeSpecificationDomain";
+    DeviceBoundSessionFetchResult2["EmptyScopeSpecificationPath"] = "EmptyScopeSpecificationPath";
+    DeviceBoundSessionFetchResult2["InvalidScopeSpecificationType"] = "InvalidScopeSpecificationType";
+    DeviceBoundSessionFetchResult2["InvalidScopeIncludeSite"] = "InvalidScopeIncludeSite";
+    DeviceBoundSessionFetchResult2["MissingScopeIncludeSite"] = "MissingScopeIncludeSite";
+    DeviceBoundSessionFetchResult2["FederatedNotAuthorizedByProvider"] = "FederatedNotAuthorizedByProvider";
+    DeviceBoundSessionFetchResult2["FederatedNotAuthorizedByRelyingParty"] = "FederatedNotAuthorizedByRelyingParty";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownMalformed"] = "SessionProviderWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownHasProviderOrigin"] = "SessionProviderWellKnownHasProviderOrigin";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownMalformed"] = "RelyingPartyWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownHasRelyingOrigins"] = "RelyingPartyWellKnownHasRelyingOrigins";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionProviderSessionMissing"] = "InvalidFederatedSessionProviderSessionMissing";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionWrongProviderOrigin"] = "InvalidFederatedSessionWrongProviderOrigin";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieCreationTime"] = "InvalidCredentialsCookieCreationTime";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieName"] = "InvalidCredentialsCookieName";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieParsing"] = "InvalidCredentialsCookieParsing";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieUnpermittedAttribute"] = "InvalidCredentialsCookieUnpermittedAttribute";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieInvalidDomain"] = "InvalidCredentialsCookieInvalidDomain";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookiePrefix"] = "InvalidCredentialsCookiePrefix";
+    DeviceBoundSessionFetchResult2["InvalidScopeRulePath"] = "InvalidScopeRulePath";
+    DeviceBoundSessionFetchResult2["InvalidScopeRuleHostPattern"] = "InvalidScopeRuleHostPattern";
+    DeviceBoundSessionFetchResult2["ScopeRuleOriginScopedHostPatternMismatch"] = "ScopeRuleOriginScopedHostPatternMismatch";
+    DeviceBoundSessionFetchResult2["ScopeRuleSiteScopedHostPatternMismatch"] = "ScopeRuleSiteScopedHostPatternMismatch";
+    DeviceBoundSessionFetchResult2["SigningQuotaExceeded"] = "SigningQuotaExceeded";
+    DeviceBoundSessionFetchResult2["InvalidConfigJson"] = "InvalidConfigJson";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionProviderFailedToRestoreKey"] = "InvalidFederatedSessionProviderFailedToRestoreKey";
+    DeviceBoundSessionFetchResult2["FailedToUnwrapKey"] = "FailedToUnwrapKey";
+    DeviceBoundSessionFetchResult2["SessionDeletedDuringRefresh"] = "SessionDeletedDuringRefresh";
+    DeviceBoundSessionFetchResult2["CrossOriginRegistrationSiteNotIncluded"] = "CrossOriginRegistrationSiteNotIncluded";
+    DeviceBoundSessionFetchResult2["InvalidPreProvisionedKeyInitiatorMissing"] = "InvalidPreProvisionedKeyInitiatorMissing";
+    DeviceBoundSessionFetchResult2["PreProvisionedKeyAccessNotGranted"] = "PreProvisionedKeyAccessNotGranted";
+    DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
+    DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
+    DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+  })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
+  let RefreshEventDetailsRefreshResult;
+  ((RefreshEventDetailsRefreshResult2) => {
+    RefreshEventDetailsRefreshResult2["Refreshed"] = "Refreshed";
+    RefreshEventDetailsRefreshResult2["InitializedService"] = "InitializedService";
+    RefreshEventDetailsRefreshResult2["Unreachable"] = "Unreachable";
+    RefreshEventDetailsRefreshResult2["ServerError"] = "ServerError";
+    RefreshEventDetailsRefreshResult2["FatalError"] = "FatalError";
+    RefreshEventDetailsRefreshResult2["SigningQuotaExceeded"] = "SigningQuotaExceeded";
+    RefreshEventDetailsRefreshResult2["RefreshedAsWaiter"] = "RefreshedAsWaiter";
+    RefreshEventDetailsRefreshResult2["TransientSigningError"] = "TransientSigningError";
+    RefreshEventDetailsRefreshResult2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+  })(RefreshEventDetailsRefreshResult = Network2.RefreshEventDetailsRefreshResult || (Network2.RefreshEventDetailsRefreshResult = {}));
+  let TerminationEventDetailsDeletionReason;
+  ((TerminationEventDetailsDeletionReason2) => {
+    TerminationEventDetailsDeletionReason2["Expired"] = "Expired";
+    TerminationEventDetailsDeletionReason2["FailedToRestoreKey"] = "FailedToRestoreKey";
+    TerminationEventDetailsDeletionReason2["FailedToUnwrapKey"] = "FailedToUnwrapKey";
+    TerminationEventDetailsDeletionReason2["StoragePartitionCleared"] = "StoragePartitionCleared";
+    TerminationEventDetailsDeletionReason2["ClearBrowsingData"] = "ClearBrowsingData";
+    TerminationEventDetailsDeletionReason2["ServerRequested"] = "ServerRequested";
+    TerminationEventDetailsDeletionReason2["InvalidSessionParams"] = "InvalidSessionParams";
+    TerminationEventDetailsDeletionReason2["RefreshFatalError"] = "RefreshFatalError";
+    TerminationEventDetailsDeletionReason2["DevTools"] = "DevTools";
+  })(TerminationEventDetailsDeletionReason = Network2.TerminationEventDetailsDeletionReason || (Network2.TerminationEventDetailsDeletionReason = {}));
+  let ChallengeEventDetailsChallengeResult;
+  ((ChallengeEventDetailsChallengeResult2) => {
+    ChallengeEventDetailsChallengeResult2["Success"] = "Success";
+    ChallengeEventDetailsChallengeResult2["NoSessionId"] = "NoSessionId";
+    ChallengeEventDetailsChallengeResult2["NoSessionMatch"] = "NoSessionMatch";
+    ChallengeEventDetailsChallengeResult2["CantSetBoundCookie"] = "CantSetBoundCookie";
+  })(ChallengeEventDetailsChallengeResult = Network2.ChallengeEventDetailsChallengeResult || (Network2.ChallengeEventDetailsChallengeResult = {}));
+  let TrustTokenOperationDoneEventStatus;
+  ((TrustTokenOperationDoneEventStatus2) => {
+    TrustTokenOperationDoneEventStatus2["Ok"] = "Ok";
+    TrustTokenOperationDoneEventStatus2["InvalidArgument"] = "InvalidArgument";
+    TrustTokenOperationDoneEventStatus2["MissingIssuerKeys"] = "MissingIssuerKeys";
+    TrustTokenOperationDoneEventStatus2["FailedPrecondition"] = "FailedPrecondition";
+    TrustTokenOperationDoneEventStatus2["ResourceExhausted"] = "ResourceExhausted";
+    TrustTokenOperationDoneEventStatus2["AlreadyExists"] = "AlreadyExists";
+    TrustTokenOperationDoneEventStatus2["ResourceLimited"] = "ResourceLimited";
+    TrustTokenOperationDoneEventStatus2["Unauthorized"] = "Unauthorized";
+    TrustTokenOperationDoneEventStatus2["BadResponse"] = "BadResponse";
+    TrustTokenOperationDoneEventStatus2["InternalError"] = "InternalError";
+    TrustTokenOperationDoneEventStatus2["UnknownError"] = "UnknownError";
+    TrustTokenOperationDoneEventStatus2["FulfilledLocally"] = "FulfilledLocally";
+    TrustTokenOperationDoneEventStatus2["SiteIssuerLimit"] = "SiteIssuerLimit";
+  })(TrustTokenOperationDoneEventStatus = Network2.TrustTokenOperationDoneEventStatus || (Network2.TrustTokenOperationDoneEventStatus = {}));
+})(Network || (Network = {}));
+var Overlay;
+((Overlay2) => {
+  let LineStylePattern;
+  ((LineStylePattern2) => {
+    LineStylePattern2["Dashed"] = "dashed";
+    LineStylePattern2["Dotted"] = "dotted";
+  })(LineStylePattern = Overlay2.LineStylePattern || (Overlay2.LineStylePattern = {}));
+  let ContrastAlgorithm;
+  ((ContrastAlgorithm2) => {
+    ContrastAlgorithm2["Aa"] = "aa";
+    ContrastAlgorithm2["Aaa"] = "aaa";
+    ContrastAlgorithm2["Apca"] = "apca";
+  })(ContrastAlgorithm = Overlay2.ContrastAlgorithm || (Overlay2.ContrastAlgorithm = {}));
+  let ColorFormat;
+  ((ColorFormat2) => {
+    ColorFormat2["Rgb"] = "rgb";
+    ColorFormat2["Hsl"] = "hsl";
+    ColorFormat2["Hwb"] = "hwb";
+    ColorFormat2["Hex"] = "hex";
+  })(ColorFormat = Overlay2.ColorFormat || (Overlay2.ColorFormat = {}));
+  let DisplayCutoutShape;
+  ((DisplayCutoutShape2) => {
+    DisplayCutoutShape2["Pill"] = "pill";
+    DisplayCutoutShape2["Notch"] = "notch";
+    DisplayCutoutShape2["Circle"] = "circle";
+    DisplayCutoutShape2["Rectangle"] = "rectangle";
+  })(DisplayCutoutShape = Overlay2.DisplayCutoutShape || (Overlay2.DisplayCutoutShape = {}));
+  let InspectMode;
+  ((InspectMode2) => {
+    InspectMode2["SearchForNode"] = "searchForNode";
+    InspectMode2["SearchForUAShadowDOM"] = "searchForUAShadowDOM";
+    InspectMode2["CaptureAreaScreenshot"] = "captureAreaScreenshot";
+    InspectMode2["None"] = "none";
+  })(InspectMode = Overlay2.InspectMode || (Overlay2.InspectMode = {}));
+})(Overlay || (Overlay = {}));
+var PWA;
+((PWA2) => {
+  let DisplayMode;
+  ((DisplayMode2) => {
+    DisplayMode2["Standalone"] = "standalone";
+    DisplayMode2["Browser"] = "browser";
+  })(DisplayMode = PWA2.DisplayMode || (PWA2.DisplayMode = {}));
+})(PWA || (PWA = {}));
+var Page;
+((Page2) => {
+  let AdFrameType;
+  ((AdFrameType2) => {
+    AdFrameType2["None"] = "none";
+    AdFrameType2["Child"] = "child";
+    AdFrameType2["Root"] = "root";
+  })(AdFrameType = Page2.AdFrameType || (Page2.AdFrameType = {}));
+  let AdFrameExplanation;
+  ((AdFrameExplanation2) => {
+    AdFrameExplanation2["ParentIsAd"] = "ParentIsAd";
+    AdFrameExplanation2["CreatedByAdScript"] = "CreatedByAdScript";
+    AdFrameExplanation2["MatchedBlockingRule"] = "MatchedBlockingRule";
+  })(AdFrameExplanation = Page2.AdFrameExplanation || (Page2.AdFrameExplanation = {}));
+  let SecureContextType;
+  ((SecureContextType2) => {
+    SecureContextType2["Secure"] = "Secure";
+    SecureContextType2["SecureLocalhost"] = "SecureLocalhost";
+    SecureContextType2["InsecureScheme"] = "InsecureScheme";
+    SecureContextType2["InsecureAncestor"] = "InsecureAncestor";
+  })(SecureContextType = Page2.SecureContextType || (Page2.SecureContextType = {}));
+  let CrossOriginIsolatedContextType;
+  ((CrossOriginIsolatedContextType2) => {
+    CrossOriginIsolatedContextType2["Isolated"] = "Isolated";
+    CrossOriginIsolatedContextType2["NotIsolated"] = "NotIsolated";
+    CrossOriginIsolatedContextType2["NotIsolatedFeatureDisabled"] = "NotIsolatedFeatureDisabled";
+  })(CrossOriginIsolatedContextType = Page2.CrossOriginIsolatedContextType || (Page2.CrossOriginIsolatedContextType = {}));
+  let GatedAPIFeatures;
+  ((GatedAPIFeatures2) => {
+    GatedAPIFeatures2["SharedArrayBuffers"] = "SharedArrayBuffers";
+    GatedAPIFeatures2["SharedArrayBuffersTransferAllowed"] = "SharedArrayBuffersTransferAllowed";
+    GatedAPIFeatures2["PerformanceMeasureMemory"] = "PerformanceMeasureMemory";
+    GatedAPIFeatures2["PerformanceProfile"] = "PerformanceProfile";
+  })(GatedAPIFeatures = Page2.GatedAPIFeatures || (Page2.GatedAPIFeatures = {}));
+  let PermissionsPolicyFeature;
+  ((PermissionsPolicyFeature2) => {
+    PermissionsPolicyFeature2["Accelerometer"] = "accelerometer";
+    PermissionsPolicyFeature2["AllScreensCapture"] = "all-screens-capture";
+    PermissionsPolicyFeature2["AmbientLightSensor"] = "ambient-light-sensor";
+    PermissionsPolicyFeature2["AriaNotify"] = "aria-notify";
+    PermissionsPolicyFeature2["Autofill"] = "autofill";
+    PermissionsPolicyFeature2["Autoplay"] = "autoplay";
+    PermissionsPolicyFeature2["Bluetooth"] = "bluetooth";
+    PermissionsPolicyFeature2["BrowsingTopics"] = "browsing-topics";
+    PermissionsPolicyFeature2["Camera"] = "camera";
+    PermissionsPolicyFeature2["CapturedSurfaceControl"] = "captured-surface-control";
+    PermissionsPolicyFeature2["ChDpr"] = "ch-dpr";
+    PermissionsPolicyFeature2["ChDeviceMemory"] = "ch-device-memory";
+    PermissionsPolicyFeature2["ChDownlink"] = "ch-downlink";
+    PermissionsPolicyFeature2["ChEct"] = "ch-ect";
+    PermissionsPolicyFeature2["ChPrefersColorScheme"] = "ch-prefers-color-scheme";
+    PermissionsPolicyFeature2["ChPrefersReducedMotion"] = "ch-prefers-reduced-motion";
+    PermissionsPolicyFeature2["ChPrefersReducedTransparency"] = "ch-prefers-reduced-transparency";
+    PermissionsPolicyFeature2["ChRtt"] = "ch-rtt";
+    PermissionsPolicyFeature2["ChSaveData"] = "ch-save-data";
+    PermissionsPolicyFeature2["ChUa"] = "ch-ua";
+    PermissionsPolicyFeature2["ChUaArch"] = "ch-ua-arch";
+    PermissionsPolicyFeature2["ChUaBitness"] = "ch-ua-bitness";
+    PermissionsPolicyFeature2["ChUaHighEntropyValues"] = "ch-ua-high-entropy-values";
+    PermissionsPolicyFeature2["ChUaPlatform"] = "ch-ua-platform";
+    PermissionsPolicyFeature2["ChUaModel"] = "ch-ua-model";
+    PermissionsPolicyFeature2["ChUaMobile"] = "ch-ua-mobile";
+    PermissionsPolicyFeature2["ChUaFormFactors"] = "ch-ua-form-factors";
+    PermissionsPolicyFeature2["ChUaFullVersion"] = "ch-ua-full-version";
+    PermissionsPolicyFeature2["ChUaFullVersionList"] = "ch-ua-full-version-list";
+    PermissionsPolicyFeature2["ChUaPlatformVersion"] = "ch-ua-platform-version";
+    PermissionsPolicyFeature2["ChUaWow64"] = "ch-ua-wow64";
+    PermissionsPolicyFeature2["ChViewportHeight"] = "ch-viewport-height";
+    PermissionsPolicyFeature2["ChViewportWidth"] = "ch-viewport-width";
+    PermissionsPolicyFeature2["ChWidth"] = "ch-width";
+    PermissionsPolicyFeature2["ClipboardRead"] = "clipboard-read";
+    PermissionsPolicyFeature2["ClipboardWrite"] = "clipboard-write";
+    PermissionsPolicyFeature2["ComputePressure"] = "compute-pressure";
+    PermissionsPolicyFeature2["ControlledFrame"] = "controlled-frame";
+    PermissionsPolicyFeature2["CrossOriginIsolated"] = "cross-origin-isolated";
+    PermissionsPolicyFeature2["DeferredFetch"] = "deferred-fetch";
+    PermissionsPolicyFeature2["DeferredFetchMinimal"] = "deferred-fetch-minimal";
+    PermissionsPolicyFeature2["DeviceAttributes"] = "device-attributes";
+    PermissionsPolicyFeature2["DigitalCredentialsCreate"] = "digital-credentials-create";
+    PermissionsPolicyFeature2["DigitalCredentialsGet"] = "digital-credentials-get";
+    PermissionsPolicyFeature2["DirectSockets"] = "direct-sockets";
+    PermissionsPolicyFeature2["DirectSocketsMulticast"] = "direct-sockets-multicast";
+    PermissionsPolicyFeature2["DisplayCapture"] = "display-capture";
+    PermissionsPolicyFeature2["DocumentDomain"] = "document-domain";
+    PermissionsPolicyFeature2["EncryptedMedia"] = "encrypted-media";
+    PermissionsPolicyFeature2["ExecutionWhileOutOfViewport"] = "execution-while-out-of-viewport";
+    PermissionsPolicyFeature2["ExecutionWhileNotRendered"] = "execution-while-not-rendered";
+    PermissionsPolicyFeature2["FocusWithoutUserActivation"] = "focus-without-user-activation";
+    PermissionsPolicyFeature2["Fullscreen"] = "fullscreen";
+    PermissionsPolicyFeature2["Frobulate"] = "frobulate";
+    PermissionsPolicyFeature2["Gamepad"] = "gamepad";
+    PermissionsPolicyFeature2["Geolocation"] = "geolocation";
+    PermissionsPolicyFeature2["Gyroscope"] = "gyroscope";
+    PermissionsPolicyFeature2["Haptics"] = "haptics";
+    PermissionsPolicyFeature2["Hid"] = "hid";
+    PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
+    PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
+    PermissionsPolicyFeature2["InterestCohort"] = "interest-cohort";
+    PermissionsPolicyFeature2["KeyboardMap"] = "keyboard-map";
+    PermissionsPolicyFeature2["LanguageDetector"] = "language-detector";
+    PermissionsPolicyFeature2["LanguageModel"] = "language-model";
+    PermissionsPolicyFeature2["LocalFonts"] = "local-fonts";
+    PermissionsPolicyFeature2["LocalNetwork"] = "local-network";
+    PermissionsPolicyFeature2["LocalNetworkAccess"] = "local-network-access";
+    PermissionsPolicyFeature2["LoopbackNetwork"] = "loopback-network";
+    PermissionsPolicyFeature2["Magnetometer"] = "magnetometer";
+    PermissionsPolicyFeature2["ManualText"] = "manual-text";
+    PermissionsPolicyFeature2["MediaPlaybackWhileNotVisible"] = "media-playback-while-not-visible";
+    PermissionsPolicyFeature2["Microphone"] = "microphone";
+    PermissionsPolicyFeature2["Midi"] = "midi";
+    PermissionsPolicyFeature2["OnDeviceSpeechRecognition"] = "on-device-speech-recognition";
+    PermissionsPolicyFeature2["OtpCredentials"] = "otp-credentials";
+    PermissionsPolicyFeature2["Payment"] = "payment";
+    PermissionsPolicyFeature2["PictureInPicture"] = "picture-in-picture";
+    PermissionsPolicyFeature2["PrivateStateTokenIssuance"] = "private-state-token-issuance";
+    PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
+    PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
+    PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["Rewriter"] = "rewriter";
+    PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["Serial"] = "serial";
+    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
+    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
+    PermissionsPolicyFeature2["SmartCard"] = "smart-card";
+    PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
+    PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
+    PermissionsPolicyFeature2["SubApps"] = "sub-apps";
+    PermissionsPolicyFeature2["Summarizer"] = "summarizer";
+    PermissionsPolicyFeature2["SyncXhr"] = "sync-xhr";
+    PermissionsPolicyFeature2["Tools"] = "tools";
+    PermissionsPolicyFeature2["Translator"] = "translator";
+    PermissionsPolicyFeature2["Unload"] = "unload";
+    PermissionsPolicyFeature2["Usb"] = "usb";
+    PermissionsPolicyFeature2["UsbUnrestricted"] = "usb-unrestricted";
+    PermissionsPolicyFeature2["VerticalScroll"] = "vertical-scroll";
+    PermissionsPolicyFeature2["WebAppInstallation"] = "web-app-installation";
+    PermissionsPolicyFeature2["Webnn"] = "webnn";
+    PermissionsPolicyFeature2["WebPrinting"] = "web-printing";
+    PermissionsPolicyFeature2["WebShare"] = "web-share";
+    PermissionsPolicyFeature2["WindowManagement"] = "window-management";
+    PermissionsPolicyFeature2["Writer"] = "writer";
+    PermissionsPolicyFeature2["XrSpatialTracking"] = "xr-spatial-tracking";
+  })(PermissionsPolicyFeature = Page2.PermissionsPolicyFeature || (Page2.PermissionsPolicyFeature = {}));
+  let PermissionsPolicyBlockReason;
+  ((PermissionsPolicyBlockReason2) => {
+    PermissionsPolicyBlockReason2["Header"] = "Header";
+    PermissionsPolicyBlockReason2["IframeAttribute"] = "IframeAttribute";
+    PermissionsPolicyBlockReason2["InFencedFrameTree"] = "InFencedFrameTree";
+    PermissionsPolicyBlockReason2["InIsolatedApp"] = "InIsolatedApp";
+  })(PermissionsPolicyBlockReason = Page2.PermissionsPolicyBlockReason || (Page2.PermissionsPolicyBlockReason = {}));
+  let OriginTrialTokenStatus;
+  ((OriginTrialTokenStatus2) => {
+    OriginTrialTokenStatus2["Success"] = "Success";
+    OriginTrialTokenStatus2["NotSupported"] = "NotSupported";
+    OriginTrialTokenStatus2["Insecure"] = "Insecure";
+    OriginTrialTokenStatus2["Expired"] = "Expired";
+    OriginTrialTokenStatus2["WrongOrigin"] = "WrongOrigin";
+    OriginTrialTokenStatus2["InvalidSignature"] = "InvalidSignature";
+    OriginTrialTokenStatus2["Malformed"] = "Malformed";
+    OriginTrialTokenStatus2["WrongVersion"] = "WrongVersion";
+    OriginTrialTokenStatus2["FeatureDisabled"] = "FeatureDisabled";
+    OriginTrialTokenStatus2["TokenDisabled"] = "TokenDisabled";
+    OriginTrialTokenStatus2["FeatureDisabledForUser"] = "FeatureDisabledForUser";
+    OriginTrialTokenStatus2["UnknownTrial"] = "UnknownTrial";
+  })(OriginTrialTokenStatus = Page2.OriginTrialTokenStatus || (Page2.OriginTrialTokenStatus = {}));
+  let OriginTrialStatus;
+  ((OriginTrialStatus2) => {
+    OriginTrialStatus2["Enabled"] = "Enabled";
+    OriginTrialStatus2["ValidTokenNotProvided"] = "ValidTokenNotProvided";
+    OriginTrialStatus2["OSNotSupported"] = "OSNotSupported";
+    OriginTrialStatus2["TrialNotAllowed"] = "TrialNotAllowed";
+  })(OriginTrialStatus = Page2.OriginTrialStatus || (Page2.OriginTrialStatus = {}));
+  let OriginTrialUsageRestriction;
+  ((OriginTrialUsageRestriction2) => {
+    OriginTrialUsageRestriction2["None"] = "None";
+    OriginTrialUsageRestriction2["Subset"] = "Subset";
+  })(OriginTrialUsageRestriction = Page2.OriginTrialUsageRestriction || (Page2.OriginTrialUsageRestriction = {}));
+  let TransitionType;
+  ((TransitionType2) => {
+    TransitionType2["Link"] = "link";
+    TransitionType2["Typed"] = "typed";
+    TransitionType2["Address_bar"] = "address_bar";
+    TransitionType2["Auto_bookmark"] = "auto_bookmark";
+    TransitionType2["Auto_subframe"] = "auto_subframe";
+    TransitionType2["Manual_subframe"] = "manual_subframe";
+    TransitionType2["Generated"] = "generated";
+    TransitionType2["Auto_toplevel"] = "auto_toplevel";
+    TransitionType2["Form_submit"] = "form_submit";
+    TransitionType2["Reload"] = "reload";
+    TransitionType2["Keyword"] = "keyword";
+    TransitionType2["Keyword_generated"] = "keyword_generated";
+    TransitionType2["Other"] = "other";
+  })(TransitionType = Page2.TransitionType || (Page2.TransitionType = {}));
+  let DialogType;
+  ((DialogType2) => {
+    DialogType2["Alert"] = "alert";
+    DialogType2["Confirm"] = "confirm";
+    DialogType2["Prompt"] = "prompt";
+    DialogType2["Beforeunload"] = "beforeunload";
+  })(DialogType = Page2.DialogType || (Page2.DialogType = {}));
+  let ClientNavigationReason;
+  ((ClientNavigationReason2) => {
+    ClientNavigationReason2["AnchorClick"] = "anchorClick";
+    ClientNavigationReason2["FormSubmissionGet"] = "formSubmissionGet";
+    ClientNavigationReason2["FormSubmissionPost"] = "formSubmissionPost";
+    ClientNavigationReason2["HttpHeaderRefresh"] = "httpHeaderRefresh";
+    ClientNavigationReason2["InitialFrameNavigation"] = "initialFrameNavigation";
+    ClientNavigationReason2["MetaTagRefresh"] = "metaTagRefresh";
+    ClientNavigationReason2["Other"] = "other";
+    ClientNavigationReason2["PageBlockInterstitial"] = "pageBlockInterstitial";
+    ClientNavigationReason2["Reload"] = "reload";
+    ClientNavigationReason2["ScriptInitiated"] = "scriptInitiated";
+  })(ClientNavigationReason = Page2.ClientNavigationReason || (Page2.ClientNavigationReason = {}));
+  let ClientNavigationDisposition;
+  ((ClientNavigationDisposition2) => {
+    ClientNavigationDisposition2["CurrentTab"] = "currentTab";
+    ClientNavigationDisposition2["NewTab"] = "newTab";
+    ClientNavigationDisposition2["NewWindow"] = "newWindow";
+    ClientNavigationDisposition2["Download"] = "download";
+  })(ClientNavigationDisposition = Page2.ClientNavigationDisposition || (Page2.ClientNavigationDisposition = {}));
+  let ReferrerPolicy;
+  ((ReferrerPolicy2) => {
+    ReferrerPolicy2["NoReferrer"] = "noReferrer";
+    ReferrerPolicy2["NoReferrerWhenDowngrade"] = "noReferrerWhenDowngrade";
+    ReferrerPolicy2["Origin"] = "origin";
+    ReferrerPolicy2["OriginWhenCrossOrigin"] = "originWhenCrossOrigin";
+    ReferrerPolicy2["SameOrigin"] = "sameOrigin";
+    ReferrerPolicy2["StrictOrigin"] = "strictOrigin";
+    ReferrerPolicy2["StrictOriginWhenCrossOrigin"] = "strictOriginWhenCrossOrigin";
+    ReferrerPolicy2["UnsafeUrl"] = "unsafeUrl";
+  })(ReferrerPolicy = Page2.ReferrerPolicy || (Page2.ReferrerPolicy = {}));
+  let NavigationType;
+  ((NavigationType2) => {
+    NavigationType2["Navigation"] = "Navigation";
+    NavigationType2["BackForwardCacheRestore"] = "BackForwardCacheRestore";
+  })(NavigationType = Page2.NavigationType || (Page2.NavigationType = {}));
+  let BackForwardCacheNotRestoredReason;
+  ((BackForwardCacheNotRestoredReason2) => {
+    BackForwardCacheNotRestoredReason2["NotPrimaryMainFrame"] = "NotPrimaryMainFrame";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabled"] = "BackForwardCacheDisabled";
+    BackForwardCacheNotRestoredReason2["RelatedActiveContentsExist"] = "RelatedActiveContentsExist";
+    BackForwardCacheNotRestoredReason2["HTTPStatusNotOK"] = "HTTPStatusNotOK";
+    BackForwardCacheNotRestoredReason2["SchemeNotHTTPOrHTTPS"] = "SchemeNotHTTPOrHTTPS";
+    BackForwardCacheNotRestoredReason2["Loading"] = "Loading";
+    BackForwardCacheNotRestoredReason2["WasGrantedMediaAccess"] = "WasGrantedMediaAccess";
+    BackForwardCacheNotRestoredReason2["DisableForRenderFrameHostCalled"] = "DisableForRenderFrameHostCalled";
+    BackForwardCacheNotRestoredReason2["DomainNotAllowed"] = "DomainNotAllowed";
+    BackForwardCacheNotRestoredReason2["HTTPMethodNotGET"] = "HTTPMethodNotGET";
+    BackForwardCacheNotRestoredReason2["SubframeIsNavigating"] = "SubframeIsNavigating";
+    BackForwardCacheNotRestoredReason2["Timeout"] = "Timeout";
+    BackForwardCacheNotRestoredReason2["CacheLimit"] = "CacheLimit";
+    BackForwardCacheNotRestoredReason2["JavaScriptExecution"] = "JavaScriptExecution";
+    BackForwardCacheNotRestoredReason2["RendererProcessKilled"] = "RendererProcessKilled";
+    BackForwardCacheNotRestoredReason2["RendererProcessCrashed"] = "RendererProcessCrashed";
+    BackForwardCacheNotRestoredReason2["SchedulerTrackedFeatureUsed"] = "SchedulerTrackedFeatureUsed";
+    BackForwardCacheNotRestoredReason2["ConflictingBrowsingInstance"] = "ConflictingBrowsingInstance";
+    BackForwardCacheNotRestoredReason2["CacheFlushed"] = "CacheFlushed";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerVersionActivation"] = "ServiceWorkerVersionActivation";
+    BackForwardCacheNotRestoredReason2["SessionRestored"] = "SessionRestored";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerPostMessage"] = "ServiceWorkerPostMessage";
+    BackForwardCacheNotRestoredReason2["EnteredBackForwardCacheBeforeServiceWorkerHostAdded"] = "EnteredBackForwardCacheBeforeServiceWorkerHostAdded";
+    BackForwardCacheNotRestoredReason2["RenderFrameHostReused_SameSite"] = "RenderFrameHostReused_SameSite";
+    BackForwardCacheNotRestoredReason2["RenderFrameHostReused_CrossSite"] = "RenderFrameHostReused_CrossSite";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerClaim"] = "ServiceWorkerClaim";
+    BackForwardCacheNotRestoredReason2["IgnoreEventAndEvict"] = "IgnoreEventAndEvict";
+    BackForwardCacheNotRestoredReason2["HaveInnerContents"] = "HaveInnerContents";
+    BackForwardCacheNotRestoredReason2["TimeoutPuttingInCache"] = "TimeoutPuttingInCache";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledByLowMemory"] = "BackForwardCacheDisabledByLowMemory";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledByCommandLine"] = "BackForwardCacheDisabledByCommandLine";
+    BackForwardCacheNotRestoredReason2["NetworkRequestDatAPIpeDrainedAsBytesConsumer"] = "NetworkRequestDatapipeDrainedAsBytesConsumer";
+    BackForwardCacheNotRestoredReason2["NetworkRequestRedirected"] = "NetworkRequestRedirected";
+    BackForwardCacheNotRestoredReason2["NetworkRequestTimeout"] = "NetworkRequestTimeout";
+    BackForwardCacheNotRestoredReason2["NetworkExceedsBufferLimit"] = "NetworkExceedsBufferLimit";
+    BackForwardCacheNotRestoredReason2["NavigationCancelledWhileRestoring"] = "NavigationCancelledWhileRestoring";
+    BackForwardCacheNotRestoredReason2["NotMostRecentNavigationEntry"] = "NotMostRecentNavigationEntry";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledForPrerender"] = "BackForwardCacheDisabledForPrerender";
+    BackForwardCacheNotRestoredReason2["UserAgentOverrideDiffers"] = "UserAgentOverrideDiffers";
+    BackForwardCacheNotRestoredReason2["ForegroundCacheLimit"] = "ForegroundCacheLimit";
+    BackForwardCacheNotRestoredReason2["ForwardCacheDisabled"] = "ForwardCacheDisabled";
+    BackForwardCacheNotRestoredReason2["BrowsingInstanceNotSwapped"] = "BrowsingInstanceNotSwapped";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledForDelegate"] = "BackForwardCacheDisabledForDelegate";
+    BackForwardCacheNotRestoredReason2["UnloadHandlerExistsInMainFrame"] = "UnloadHandlerExistsInMainFrame";
+    BackForwardCacheNotRestoredReason2["UnloadHandlerExistsInSubFrame"] = "UnloadHandlerExistsInSubFrame";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerUnregistration"] = "ServiceWorkerUnregistration";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStore"] = "CacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreCookieModified"] = "CacheControlNoStoreCookieModified";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreHTTPOnlyCookieModified"] = "CacheControlNoStoreHTTPOnlyCookieModified";
+    BackForwardCacheNotRestoredReason2["NoResponseHead"] = "NoResponseHead";
+    BackForwardCacheNotRestoredReason2["Unknown"] = "Unknown";
+    BackForwardCacheNotRestoredReason2["ActivationNavigationsDisallowedForBug1234857"] = "ActivationNavigationsDisallowedForBug1234857";
+    BackForwardCacheNotRestoredReason2["ErrorDocument"] = "ErrorDocument";
+    BackForwardCacheNotRestoredReason2["FencedFramesEmbedder"] = "FencedFramesEmbedder";
+    BackForwardCacheNotRestoredReason2["CookieDisabled"] = "CookieDisabled";
+    BackForwardCacheNotRestoredReason2["HTTPAuthRequired"] = "HTTPAuthRequired";
+    BackForwardCacheNotRestoredReason2["CookieFlushed"] = "CookieFlushed";
+    BackForwardCacheNotRestoredReason2["BroadcastChannelOnMessage"] = "BroadcastChannelOnMessage";
+    BackForwardCacheNotRestoredReason2["WebViewSettingsChanged"] = "WebViewSettingsChanged";
+    BackForwardCacheNotRestoredReason2["WebViewJavaScriptObjectChanged"] = "WebViewJavaScriptObjectChanged";
+    BackForwardCacheNotRestoredReason2["WebViewMessageListenerInjected"] = "WebViewMessageListenerInjected";
+    BackForwardCacheNotRestoredReason2["WebViewSafeBrowsingAllowlistChanged"] = "WebViewSafeBrowsingAllowlistChanged";
+    BackForwardCacheNotRestoredReason2["WebViewDocumentStartJavascriptChanged"] = "WebViewDocumentStartJavascriptChanged";
+    BackForwardCacheNotRestoredReason2["WebSocket"] = "WebSocket";
+    BackForwardCacheNotRestoredReason2["WebTransport"] = "WebTransport";
+    BackForwardCacheNotRestoredReason2["WebRTC"] = "WebRTC";
+    BackForwardCacheNotRestoredReason2["MainResourceHasCacheControlNoStore"] = "MainResourceHasCacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["MainResourceHasCacheControlNoCache"] = "MainResourceHasCacheControlNoCache";
+    BackForwardCacheNotRestoredReason2["SubresourceHasCacheControlNoStore"] = "SubresourceHasCacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["SubresourceHasCacheControlNoCache"] = "SubresourceHasCacheControlNoCache";
+    BackForwardCacheNotRestoredReason2["ContainsPlugins"] = "ContainsPlugins";
+    BackForwardCacheNotRestoredReason2["DocumentLoaded"] = "DocumentLoaded";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestOthers"] = "OutstandingNetworkRequestOthers";
+    BackForwardCacheNotRestoredReason2["RequestedMIDIPermission"] = "RequestedMIDIPermission";
+    BackForwardCacheNotRestoredReason2["RequestedAudioCapturePermission"] = "RequestedAudioCapturePermission";
+    BackForwardCacheNotRestoredReason2["RequestedVideoCapturePermission"] = "RequestedVideoCapturePermission";
+    BackForwardCacheNotRestoredReason2["RequestedBackForwardCacheBlockedSensors"] = "RequestedBackForwardCacheBlockedSensors";
+    BackForwardCacheNotRestoredReason2["RequestedBackgroundWorkPermission"] = "RequestedBackgroundWorkPermission";
+    BackForwardCacheNotRestoredReason2["BroadcastChannel"] = "BroadcastChannel";
+    BackForwardCacheNotRestoredReason2["WebXR"] = "WebXR";
+    BackForwardCacheNotRestoredReason2["SharedWorker"] = "SharedWorker";
+    BackForwardCacheNotRestoredReason2["SharedWorkerMessage"] = "SharedWorkerMessage";
+    BackForwardCacheNotRestoredReason2["SharedWorkerWithNoActiveClient"] = "SharedWorkerWithNoActiveClient";
+    BackForwardCacheNotRestoredReason2["WebLocks"] = "WebLocks";
+    BackForwardCacheNotRestoredReason2["WebLocksContention"] = "WebLocksContention";
+    BackForwardCacheNotRestoredReason2["WebHID"] = "WebHID";
+    BackForwardCacheNotRestoredReason2["WebBluetooth"] = "WebBluetooth";
+    BackForwardCacheNotRestoredReason2["WebShare"] = "WebShare";
+    BackForwardCacheNotRestoredReason2["RequestedStorageAccessGrant"] = "RequestedStorageAccessGrant";
+    BackForwardCacheNotRestoredReason2["WebNfc"] = "WebNfc";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestFetch"] = "OutstandingNetworkRequestFetch";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestXHR"] = "OutstandingNetworkRequestXHR";
+    BackForwardCacheNotRestoredReason2["AppBanner"] = "AppBanner";
+    BackForwardCacheNotRestoredReason2["Printing"] = "Printing";
+    BackForwardCacheNotRestoredReason2["WebDatabase"] = "WebDatabase";
+    BackForwardCacheNotRestoredReason2["PictureInPicture"] = "PictureInPicture";
+    BackForwardCacheNotRestoredReason2["SpeechRecognizer"] = "SpeechRecognizer";
+    BackForwardCacheNotRestoredReason2["IdleManager"] = "IdleManager";
+    BackForwardCacheNotRestoredReason2["PaymentManager"] = "PaymentManager";
+    BackForwardCacheNotRestoredReason2["SpeechSynthesis"] = "SpeechSynthesis";
+    BackForwardCacheNotRestoredReason2["KeyboardLock"] = "KeyboardLock";
+    BackForwardCacheNotRestoredReason2["WebOTPService"] = "WebOTPService";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestDirectSocket"] = "OutstandingNetworkRequestDirectSocket";
+    BackForwardCacheNotRestoredReason2["InjectedJavascript"] = "InjectedJavascript";
+    BackForwardCacheNotRestoredReason2["InjectedStyleSheet"] = "InjectedStyleSheet";
+    BackForwardCacheNotRestoredReason2["KeepaliveRequest"] = "KeepaliveRequest";
+    BackForwardCacheNotRestoredReason2["IndexedDBEvent"] = "IndexedDBEvent";
+    BackForwardCacheNotRestoredReason2["Dummy"] = "Dummy";
+    BackForwardCacheNotRestoredReason2["JsNetworkRequestReceivedCacheControlNoStoreResource"] = "JsNetworkRequestReceivedCacheControlNoStoreResource";
+    BackForwardCacheNotRestoredReason2["WebRTCUsedWithCCNS"] = "WebRTCUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["WebTransportUsedWithCCNS"] = "WebTransportUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["WebSocketUsedWithCCNS"] = "WebSocketUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["SmartCard"] = "SmartCard";
+    BackForwardCacheNotRestoredReason2["LiveMediaStreamTrack"] = "LiveMediaStreamTrack";
+    BackForwardCacheNotRestoredReason2["UnloadHandler"] = "UnloadHandler";
+    BackForwardCacheNotRestoredReason2["ParserAborted"] = "ParserAborted";
+    BackForwardCacheNotRestoredReason2["ContentSecurityHandler"] = "ContentSecurityHandler";
+    BackForwardCacheNotRestoredReason2["ContentWebAuthenticationAPI"] = "ContentWebAuthenticationAPI";
+    BackForwardCacheNotRestoredReason2["ContentFileChooser"] = "ContentFileChooser";
+    BackForwardCacheNotRestoredReason2["ContentSerial"] = "ContentSerial";
+    BackForwardCacheNotRestoredReason2["ContentFileSystemAccess"] = "ContentFileSystemAccess";
+    BackForwardCacheNotRestoredReason2["ContentMediaDevicesDispatcherHost"] = "ContentMediaDevicesDispatcherHost";
+    BackForwardCacheNotRestoredReason2["ContentWebBluetooth"] = "ContentWebBluetooth";
+    BackForwardCacheNotRestoredReason2["ContentWebUSB"] = "ContentWebUSB";
+    BackForwardCacheNotRestoredReason2["ContentMediaSessionService"] = "ContentMediaSessionService";
+    BackForwardCacheNotRestoredReason2["ContentScreenReader"] = "ContentScreenReader";
+    BackForwardCacheNotRestoredReason2["ContentDiscarded"] = "ContentDiscarded";
+    BackForwardCacheNotRestoredReason2["EmbedderPopupBlockerTabHelper"] = "EmbedderPopupBlockerTabHelper";
+    BackForwardCacheNotRestoredReason2["EmbedderSafeBrowsingTriggeredPopupBlocker"] = "EmbedderSafeBrowsingTriggeredPopupBlocker";
+    BackForwardCacheNotRestoredReason2["EmbedderSafeBrowsingThreatDetails"] = "EmbedderSafeBrowsingThreatDetails";
+    BackForwardCacheNotRestoredReason2["EmbedderAppBannerManager"] = "EmbedderAppBannerManager";
+    BackForwardCacheNotRestoredReason2["EmbedderDomDistillerViewerSource"] = "EmbedderDomDistillerViewerSource";
+    BackForwardCacheNotRestoredReason2["EmbedderDomDistillerSelfDeletingRequestDelegate"] = "EmbedderDomDistillerSelfDeletingRequestDelegate";
+    BackForwardCacheNotRestoredReason2["EmbedderOomInterventionTabHelper"] = "EmbedderOomInterventionTabHelper";
+    BackForwardCacheNotRestoredReason2["EmbedderOfflinePage"] = "EmbedderOfflinePage";
+    BackForwardCacheNotRestoredReason2["EmbedderChromePasswordManagerClientBindCredentialManager"] = "EmbedderChromePasswordManagerClientBindCredentialManager";
+    BackForwardCacheNotRestoredReason2["EmbedderPermissionRequestManager"] = "EmbedderPermissionRequestManager";
+    BackForwardCacheNotRestoredReason2["EmbedderModalDialog"] = "EmbedderModalDialog";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensions"] = "EmbedderExtensions";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionMessaging"] = "EmbedderExtensionMessaging";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionMessagingForOpenPort"] = "EmbedderExtensionMessagingForOpenPort";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionSentMessageToCachedFrame"] = "EmbedderExtensionSentMessageToCachedFrame";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionFrame"] = "EmbedderExtensionFrame";
+    BackForwardCacheNotRestoredReason2["EmbedderPrivilegedWebContents"] = "EmbedderPrivilegedWebContents";
+    BackForwardCacheNotRestoredReason2["RequestedByWebViewClient"] = "RequestedByWebViewClient";
+    BackForwardCacheNotRestoredReason2["PostMessageByWebViewClient"] = "PostMessageByWebViewClient";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreDeviceBoundSessionTerminated"] = "CacheControlNoStoreDeviceBoundSessionTerminated";
+    BackForwardCacheNotRestoredReason2["CacheLimitPrunedOnModerateMemoryPressure"] = "CacheLimitPrunedOnModerateMemoryPressure";
+    BackForwardCacheNotRestoredReason2["CacheLimitPrunedOnCriticalMemoryPressure"] = "CacheLimitPrunedOnCriticalMemoryPressure";
+  })(BackForwardCacheNotRestoredReason = Page2.BackForwardCacheNotRestoredReason || (Page2.BackForwardCacheNotRestoredReason = {}));
+  let BackForwardCacheNotRestoredReasonType;
+  ((BackForwardCacheNotRestoredReasonType2) => {
+    BackForwardCacheNotRestoredReasonType2["SupportPending"] = "SupportPending";
+    BackForwardCacheNotRestoredReasonType2["PageSupportNeeded"] = "PageSupportNeeded";
+    BackForwardCacheNotRestoredReasonType2["Circumstantial"] = "Circumstantial";
+  })(BackForwardCacheNotRestoredReasonType = Page2.BackForwardCacheNotRestoredReasonType || (Page2.BackForwardCacheNotRestoredReasonType = {}));
+  let CaptureScreenshotRequestFormat;
+  ((CaptureScreenshotRequestFormat2) => {
+    CaptureScreenshotRequestFormat2["Jpeg"] = "jpeg";
+    CaptureScreenshotRequestFormat2["Png"] = "png";
+    CaptureScreenshotRequestFormat2["Webp"] = "webp";
+  })(CaptureScreenshotRequestFormat = Page2.CaptureScreenshotRequestFormat || (Page2.CaptureScreenshotRequestFormat = {}));
+  let CaptureSnapshotRequestFormat;
+  ((CaptureSnapshotRequestFormat2) => {
+    CaptureSnapshotRequestFormat2["MHTML"] = "mhtml";
+  })(CaptureSnapshotRequestFormat = Page2.CaptureSnapshotRequestFormat || (Page2.CaptureSnapshotRequestFormat = {}));
+  let PrintToPDFRequestTransferMode;
+  ((PrintToPDFRequestTransferMode2) => {
+    PrintToPDFRequestTransferMode2["ReturnAsBase64"] = "ReturnAsBase64";
+    PrintToPDFRequestTransferMode2["ReturnAsStream"] = "ReturnAsStream";
+  })(PrintToPDFRequestTransferMode = Page2.PrintToPDFRequestTransferMode || (Page2.PrintToPDFRequestTransferMode = {}));
+  let SetDownloadBehaviorRequestBehavior;
+  ((SetDownloadBehaviorRequestBehavior2) => {
+    SetDownloadBehaviorRequestBehavior2["Deny"] = "deny";
+    SetDownloadBehaviorRequestBehavior2["Allow"] = "allow";
+    SetDownloadBehaviorRequestBehavior2["Default"] = "default";
+  })(SetDownloadBehaviorRequestBehavior = Page2.SetDownloadBehaviorRequestBehavior || (Page2.SetDownloadBehaviorRequestBehavior = {}));
+  let SetTouchEmulationEnabledRequestConfiguration;
+  ((SetTouchEmulationEnabledRequestConfiguration2) => {
+    SetTouchEmulationEnabledRequestConfiguration2["Mobile"] = "mobile";
+    SetTouchEmulationEnabledRequestConfiguration2["Desktop"] = "desktop";
+  })(SetTouchEmulationEnabledRequestConfiguration = Page2.SetTouchEmulationEnabledRequestConfiguration || (Page2.SetTouchEmulationEnabledRequestConfiguration = {}));
+  let StartScreencastRequestFormat;
+  ((StartScreencastRequestFormat2) => {
+    StartScreencastRequestFormat2["Jpeg"] = "jpeg";
+    StartScreencastRequestFormat2["Png"] = "png";
+  })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let SetWebLifecycleStateRequestState;
+  ((SetWebLifecycleStateRequestState2) => {
+    SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
+    SetWebLifecycleStateRequestState2["Active"] = "active";
+  })(SetWebLifecycleStateRequestState = Page2.SetWebLifecycleStateRequestState || (Page2.SetWebLifecycleStateRequestState = {}));
+  let SetSPCTransactionModeRequestMode;
+  ((SetSPCTransactionModeRequestMode2) => {
+    SetSPCTransactionModeRequestMode2["None"] = "none";
+    SetSPCTransactionModeRequestMode2["AutoAccept"] = "autoAccept";
+    SetSPCTransactionModeRequestMode2["AutoChooseToAuthAnotherWay"] = "autoChooseToAuthAnotherWay";
+    SetSPCTransactionModeRequestMode2["AutoReject"] = "autoReject";
+    SetSPCTransactionModeRequestMode2["AutoOptOut"] = "autoOptOut";
+  })(SetSPCTransactionModeRequestMode = Page2.SetSPCTransactionModeRequestMode || (Page2.SetSPCTransactionModeRequestMode = {}));
+  let SetRPHRegistrationModeRequestMode;
+  ((SetRPHRegistrationModeRequestMode2) => {
+    SetRPHRegistrationModeRequestMode2["None"] = "none";
+    SetRPHRegistrationModeRequestMode2["AutoAccept"] = "autoAccept";
+    SetRPHRegistrationModeRequestMode2["AutoReject"] = "autoReject";
+  })(SetRPHRegistrationModeRequestMode = Page2.SetRPHRegistrationModeRequestMode || (Page2.SetRPHRegistrationModeRequestMode = {}));
+  let FileChooserOpenedEventMode;
+  ((FileChooserOpenedEventMode2) => {
+    FileChooserOpenedEventMode2["SelectSingle"] = "selectSingle";
+    FileChooserOpenedEventMode2["SelectMultiple"] = "selectMultiple";
+  })(FileChooserOpenedEventMode = Page2.FileChooserOpenedEventMode || (Page2.FileChooserOpenedEventMode = {}));
+  let FrameDetachedEventReason;
+  ((FrameDetachedEventReason2) => {
+    FrameDetachedEventReason2["Remove"] = "remove";
+    FrameDetachedEventReason2["Swap"] = "swap";
+  })(FrameDetachedEventReason = Page2.FrameDetachedEventReason || (Page2.FrameDetachedEventReason = {}));
+  let FrameStartedNavigatingEventNavigationType;
+  ((FrameStartedNavigatingEventNavigationType2) => {
+    FrameStartedNavigatingEventNavigationType2["Reload"] = "reload";
+    FrameStartedNavigatingEventNavigationType2["ReloadBypassingCache"] = "reloadBypassingCache";
+    FrameStartedNavigatingEventNavigationType2["Restore"] = "restore";
+    FrameStartedNavigatingEventNavigationType2["RestoreWithPost"] = "restoreWithPost";
+    FrameStartedNavigatingEventNavigationType2["HistorySameDocument"] = "historySameDocument";
+    FrameStartedNavigatingEventNavigationType2["HistoryDifferentDocument"] = "historyDifferentDocument";
+    FrameStartedNavigatingEventNavigationType2["SameDocument"] = "sameDocument";
+    FrameStartedNavigatingEventNavigationType2["DifferentDocument"] = "differentDocument";
+  })(FrameStartedNavigatingEventNavigationType = Page2.FrameStartedNavigatingEventNavigationType || (Page2.FrameStartedNavigatingEventNavigationType = {}));
+  let DownloadProgressEventState;
+  ((DownloadProgressEventState2) => {
+    DownloadProgressEventState2["InProgress"] = "inProgress";
+    DownloadProgressEventState2["Completed"] = "completed";
+    DownloadProgressEventState2["Canceled"] = "canceled";
+  })(DownloadProgressEventState = Page2.DownloadProgressEventState || (Page2.DownloadProgressEventState = {}));
+  let NavigatedWithinDocumentEventNavigationType;
+  ((NavigatedWithinDocumentEventNavigationType2) => {
+    NavigatedWithinDocumentEventNavigationType2["Fragment"] = "fragment";
+    NavigatedWithinDocumentEventNavigationType2["HistoryAPI"] = "historyApi";
+    NavigatedWithinDocumentEventNavigationType2["Other"] = "other";
+  })(NavigatedWithinDocumentEventNavigationType = Page2.NavigatedWithinDocumentEventNavigationType || (Page2.NavigatedWithinDocumentEventNavigationType = {}));
+})(Page || (Page = {}));
+var Performance;
+((Performance2) => {
+  let EnableRequestTimeDomain;
+  ((EnableRequestTimeDomain2) => {
+    EnableRequestTimeDomain2["TimeTicks"] = "timeTicks";
+    EnableRequestTimeDomain2["ThreadTicks"] = "threadTicks";
+  })(EnableRequestTimeDomain = Performance2.EnableRequestTimeDomain || (Performance2.EnableRequestTimeDomain = {}));
+  let SetTimeDomainRequestTimeDomain;
+  ((SetTimeDomainRequestTimeDomain2) => {
+    SetTimeDomainRequestTimeDomain2["TimeTicks"] = "timeTicks";
+    SetTimeDomainRequestTimeDomain2["ThreadTicks"] = "threadTicks";
+  })(SetTimeDomainRequestTimeDomain = Performance2.SetTimeDomainRequestTimeDomain || (Performance2.SetTimeDomainRequestTimeDomain = {}));
+})(Performance || (Performance = {}));
+var Preload;
+((Preload2) => {
+  let RuleSetErrorType;
+  ((RuleSetErrorType2) => {
+    RuleSetErrorType2["SourceIsNotJsonObject"] = "SourceIsNotJsonObject";
+    RuleSetErrorType2["InvalidRulesSkipped"] = "InvalidRulesSkipped";
+    RuleSetErrorType2["InvalidRulesetLevelTag"] = "InvalidRulesetLevelTag";
+  })(RuleSetErrorType = Preload2.RuleSetErrorType || (Preload2.RuleSetErrorType = {}));
+  let SpeculationAction;
+  ((SpeculationAction2) => {
+    SpeculationAction2["Prefetch"] = "Prefetch";
+    SpeculationAction2["Prerender"] = "Prerender";
+    SpeculationAction2["PrerenderUntilScript"] = "PrerenderUntilScript";
+  })(SpeculationAction = Preload2.SpeculationAction || (Preload2.SpeculationAction = {}));
+  let SpeculationTargetHint;
+  ((SpeculationTargetHint2) => {
+    SpeculationTargetHint2["Blank"] = "Blank";
+    SpeculationTargetHint2["Self"] = "Self";
+  })(SpeculationTargetHint = Preload2.SpeculationTargetHint || (Preload2.SpeculationTargetHint = {}));
+  let PrerenderFinalStatus;
+  ((PrerenderFinalStatus2) => {
+    PrerenderFinalStatus2["Activated"] = "Activated";
+    PrerenderFinalStatus2["Destroyed"] = "Destroyed";
+    PrerenderFinalStatus2["LowEndDevice"] = "LowEndDevice";
+    PrerenderFinalStatus2["InvalidSchemeRedirect"] = "InvalidSchemeRedirect";
+    PrerenderFinalStatus2["InvalidSchemeNavigation"] = "InvalidSchemeNavigation";
+    PrerenderFinalStatus2["NavigationRequestBlockedByCsp"] = "NavigationRequestBlockedByCsp";
+    PrerenderFinalStatus2["MojoBinderPolicy"] = "MojoBinderPolicy";
+    PrerenderFinalStatus2["RendererProcessCrashed"] = "RendererProcessCrashed";
+    PrerenderFinalStatus2["RendererProcessKilled"] = "RendererProcessKilled";
+    PrerenderFinalStatus2["Download"] = "Download";
+    PrerenderFinalStatus2["TriggerDestroyed"] = "TriggerDestroyed";
+    PrerenderFinalStatus2["NavigationNotCommitted"] = "NavigationNotCommitted";
+    PrerenderFinalStatus2["NavigationBadHttpStatus"] = "NavigationBadHttpStatus";
+    PrerenderFinalStatus2["ClientCertRequested"] = "ClientCertRequested";
+    PrerenderFinalStatus2["NavigationRequestNetworkError"] = "NavigationRequestNetworkError";
+    PrerenderFinalStatus2["CancelAllHostsForTesting"] = "CancelAllHostsForTesting";
+    PrerenderFinalStatus2["DidFailLoad"] = "DidFailLoad";
+    PrerenderFinalStatus2["Stop"] = "Stop";
+    PrerenderFinalStatus2["SslCertificateError"] = "SslCertificateError";
+    PrerenderFinalStatus2["LoginAuthRequested"] = "LoginAuthRequested";
+    PrerenderFinalStatus2["UaChangeRequiresReload"] = "UaChangeRequiresReload";
+    PrerenderFinalStatus2["BlockedByClient"] = "BlockedByClient";
+    PrerenderFinalStatus2["AudioOutputDeviceRequested"] = "AudioOutputDeviceRequested";
+    PrerenderFinalStatus2["MixedContent"] = "MixedContent";
+    PrerenderFinalStatus2["TriggerBackgrounded"] = "TriggerBackgrounded";
+    PrerenderFinalStatus2["MemoryLimitExceeded"] = "MemoryLimitExceeded";
+    PrerenderFinalStatus2["DataSaverEnabled"] = "DataSaverEnabled";
+    PrerenderFinalStatus2["TriggerUrlHasEffectiveUrl"] = "TriggerUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["ActivatedBeforeStarted"] = "ActivatedBeforeStarted";
+    PrerenderFinalStatus2["InactivePageRestriction"] = "InactivePageRestriction";
+    PrerenderFinalStatus2["StartFailed"] = "StartFailed";
+    PrerenderFinalStatus2["TimeoutBackgrounded"] = "TimeoutBackgrounded";
+    PrerenderFinalStatus2["CrossSiteRedirectInInitialNavigation"] = "CrossSiteRedirectInInitialNavigation";
+    PrerenderFinalStatus2["CrossSiteNavigationInInitialNavigation"] = "CrossSiteNavigationInInitialNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginRedirectNotOptInInInitialNavigation"] = "SameSiteCrossOriginRedirectNotOptInInInitialNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginNavigationNotOptInInInitialNavigation"] = "SameSiteCrossOriginNavigationNotOptInInInitialNavigation";
+    PrerenderFinalStatus2["ActivationNavigationParameterMismatch"] = "ActivationNavigationParameterMismatch";
+    PrerenderFinalStatus2["ActivatedInBackground"] = "ActivatedInBackground";
+    PrerenderFinalStatus2["EmbedderHostDisallowed"] = "EmbedderHostDisallowed";
+    PrerenderFinalStatus2["ActivationNavigationDestroyedBeforeSuccess"] = "ActivationNavigationDestroyedBeforeSuccess";
+    PrerenderFinalStatus2["TabClosedByUserGesture"] = "TabClosedByUserGesture";
+    PrerenderFinalStatus2["TabClosedWithoutUserGesture"] = "TabClosedWithoutUserGesture";
+    PrerenderFinalStatus2["PrimaryMainFrameRendererProcessCrashed"] = "PrimaryMainFrameRendererProcessCrashed";
+    PrerenderFinalStatus2["PrimaryMainFrameRendererProcessKilled"] = "PrimaryMainFrameRendererProcessKilled";
+    PrerenderFinalStatus2["ActivationFramePolicyNotCompatible"] = "ActivationFramePolicyNotCompatible";
+    PrerenderFinalStatus2["PreloadingDisabled"] = "PreloadingDisabled";
+    PrerenderFinalStatus2["BatterySaverEnabled"] = "BatterySaverEnabled";
+    PrerenderFinalStatus2["ActivatedDuringMainFrameNavigation"] = "ActivatedDuringMainFrameNavigation";
+    PrerenderFinalStatus2["PreloadingUnsupportedByWebContents"] = "PreloadingUnsupportedByWebContents";
+    PrerenderFinalStatus2["CrossSiteRedirectInMainFrameNavigation"] = "CrossSiteRedirectInMainFrameNavigation";
+    PrerenderFinalStatus2["CrossSiteNavigationInMainFrameNavigation"] = "CrossSiteNavigationInMainFrameNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation"] = "SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation"] = "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation";
+    PrerenderFinalStatus2["MemoryPressureOnTrigger"] = "MemoryPressureOnTrigger";
+    PrerenderFinalStatus2["MemoryPressureAfterTriggered"] = "MemoryPressureAfterTriggered";
+    PrerenderFinalStatus2["PrerenderingDisabledByDevTools"] = "PrerenderingDisabledByDevTools";
+    PrerenderFinalStatus2["SpeculationRuleRemoved"] = "SpeculationRuleRemoved";
+    PrerenderFinalStatus2["ActivatedWithAuxiliaryBrowsingContexts"] = "ActivatedWithAuxiliaryBrowsingContexts";
+    PrerenderFinalStatus2["MaxNumOfRunningEagerPrerendersExceeded"] = "MaxNumOfRunningEagerPrerendersExceeded";
+    PrerenderFinalStatus2["MaxNumOfRunningNonEagerPrerendersExceeded"] = "MaxNumOfRunningNonEagerPrerendersExceeded";
+    PrerenderFinalStatus2["MaxNumOfRunningEmbedderPrerendersExceeded"] = "MaxNumOfRunningEmbedderPrerendersExceeded";
+    PrerenderFinalStatus2["PrerenderingUrlHasEffectiveUrl"] = "PrerenderingUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["RedirectedPrerenderingUrlHasEffectiveUrl"] = "RedirectedPrerenderingUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["ActivationUrlHasEffectiveUrl"] = "ActivationUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["JavaScriptInterfaceAdded"] = "JavaScriptInterfaceAdded";
+    PrerenderFinalStatus2["JavaScriptInterfaceRemoved"] = "JavaScriptInterfaceRemoved";
+    PrerenderFinalStatus2["AllPrerenderingCanceled"] = "AllPrerenderingCanceled";
+    PrerenderFinalStatus2["WindowClosed"] = "WindowClosed";
+    PrerenderFinalStatus2["SlowNetwork"] = "SlowNetwork";
+    PrerenderFinalStatus2["OtherPrerenderedPageActivated"] = "OtherPrerenderedPageActivated";
+    PrerenderFinalStatus2["V8OptimizerDisabled"] = "V8OptimizerDisabled";
+    PrerenderFinalStatus2["PrerenderFailedDuringPrefetch"] = "PrerenderFailedDuringPrefetch";
+    PrerenderFinalStatus2["BrowsingDataRemoved"] = "BrowsingDataRemoved";
+    PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
+    PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
+    PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+  })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
+  let PreloadingStatus;
+  ((PreloadingStatus2) => {
+    PreloadingStatus2["Pending"] = "Pending";
+    PreloadingStatus2["Running"] = "Running";
+    PreloadingStatus2["Ready"] = "Ready";
+    PreloadingStatus2["Success"] = "Success";
+    PreloadingStatus2["Failure"] = "Failure";
+    PreloadingStatus2["NotSupported"] = "NotSupported";
+  })(PreloadingStatus = Preload2.PreloadingStatus || (Preload2.PreloadingStatus = {}));
+  let PrefetchStatus;
+  ((PrefetchStatus2) => {
+    PrefetchStatus2["PrefetchAllowed"] = "PrefetchAllowed";
+    PrefetchStatus2["PrefetchFailedIneligibleRedirect"] = "PrefetchFailedIneligibleRedirect";
+    PrefetchStatus2["PrefetchFailedInvalidRedirect"] = "PrefetchFailedInvalidRedirect";
+    PrefetchStatus2["PrefetchFailedMIMENotSupported"] = "PrefetchFailedMIMENotSupported";
+    PrefetchStatus2["PrefetchFailedNetError"] = "PrefetchFailedNetError";
+    PrefetchStatus2["PrefetchFailedNon2XX"] = "PrefetchFailedNon2XX";
+    PrefetchStatus2["PrefetchEvictedAfterBrowsingDataRemoved"] = "PrefetchEvictedAfterBrowsingDataRemoved";
+    PrefetchStatus2["PrefetchEvictedAfterCandidateRemoved"] = "PrefetchEvictedAfterCandidateRemoved";
+    PrefetchStatus2["PrefetchEvictedForNewerPrefetch"] = "PrefetchEvictedForNewerPrefetch";
+    PrefetchStatus2["PrefetchHeldback"] = "PrefetchHeldback";
+    PrefetchStatus2["PrefetchIneligibleRetryAfter"] = "PrefetchIneligibleRetryAfter";
+    PrefetchStatus2["PrefetchIsPrivacyDecoy"] = "PrefetchIsPrivacyDecoy";
+    PrefetchStatus2["PrefetchIsStale"] = "PrefetchIsStale";
+    PrefetchStatus2["PrefetchNotEligibleBlockedByConnectionAllowlist"] = "PrefetchNotEligibleBlockedByConnectionAllowlist";
+    PrefetchStatus2["PrefetchNotEligibleBrowserContextOffTheRecord"] = "PrefetchNotEligibleBrowserContextOffTheRecord";
+    PrefetchStatus2["PrefetchNotEligibleCrossOrigin"] = "PrefetchNotEligibleCrossOrigin";
+    PrefetchStatus2["PrefetchNotEligibleDataSaverEnabled"] = "PrefetchNotEligibleDataSaverEnabled";
+    PrefetchStatus2["PrefetchNotEligibleExistingProxy"] = "PrefetchNotEligibleExistingProxy";
+    PrefetchStatus2["PrefetchNotEligibleHostIsNonUnique"] = "PrefetchNotEligibleHostIsNonUnique";
+    PrefetchStatus2["PrefetchNotEligibleNonDefaultStoragePartition"] = "PrefetchNotEligibleNonDefaultStoragePartition";
+    PrefetchStatus2["PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy"] = "PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy";
+    PrefetchStatus2["PrefetchNotEligibleSchemeIsNotHttps"] = "PrefetchNotEligibleSchemeIsNotHttps";
+    PrefetchStatus2["PrefetchNotEligibleUserHasCookies"] = "PrefetchNotEligibleUserHasCookies";
+    PrefetchStatus2["PrefetchNotEligibleUserHasServiceWorker"] = "PrefetchNotEligibleUserHasServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler"] = "PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler";
+    PrefetchStatus2["PrefetchNotEligibleRedirectFromServiceWorker"] = "PrefetchNotEligibleRedirectFromServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleRedirectToServiceWorker"] = "PrefetchNotEligibleRedirectToServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleBatterySaverEnabled"] = "PrefetchNotEligibleBatterySaverEnabled";
+    PrefetchStatus2["PrefetchNotEligiblePreloadingDisabled"] = "PrefetchNotEligiblePreloadingDisabled";
+    PrefetchStatus2["PrefetchNotFinishedInTime"] = "PrefetchNotFinishedInTime";
+    PrefetchStatus2["PrefetchNotStarted"] = "PrefetchNotStarted";
+    PrefetchStatus2["PrefetchNotUsedCookiesChanged"] = "PrefetchNotUsedCookiesChanged";
+    PrefetchStatus2["PrefetchProxyNotAvailable"] = "PrefetchProxyNotAvailable";
+    PrefetchStatus2["PrefetchResponseUsed"] = "PrefetchResponseUsed";
+    PrefetchStatus2["PrefetchSuccessfulButNotUsed"] = "PrefetchSuccessfulButNotUsed";
+    PrefetchStatus2["PrefetchNotUsedProbeFailed"] = "PrefetchNotUsedProbeFailed";
+    PrefetchStatus2["PrefetchCancelledOnUserNavigation"] = "PrefetchCancelledOnUserNavigation";
+  })(PrefetchStatus = Preload2.PrefetchStatus || (Preload2.PrefetchStatus = {}));
+})(Preload || (Preload = {}));
+var Security;
+((Security2) => {
+  let MixedContentType;
+  ((MixedContentType2) => {
+    MixedContentType2["Blockable"] = "blockable";
+    MixedContentType2["OptionallyBlockable"] = "optionally-blockable";
+    MixedContentType2["None"] = "none";
+  })(MixedContentType = Security2.MixedContentType || (Security2.MixedContentType = {}));
+  let SecurityState;
+  ((SecurityState2) => {
+    SecurityState2["Unknown"] = "unknown";
+    SecurityState2["Neutral"] = "neutral";
+    SecurityState2["Insecure"] = "insecure";
+    SecurityState2["Secure"] = "secure";
+    SecurityState2["Info"] = "info";
+    SecurityState2["InsecureBroken"] = "insecure-broken";
+  })(SecurityState = Security2.SecurityState || (Security2.SecurityState = {}));
+  let SafetyTipStatus;
+  ((SafetyTipStatus2) => {
+    SafetyTipStatus2["BadReputation"] = "badReputation";
+    SafetyTipStatus2["Lookalike"] = "lookalike";
+  })(SafetyTipStatus = Security2.SafetyTipStatus || (Security2.SafetyTipStatus = {}));
+  let CertificateErrorAction;
+  ((CertificateErrorAction2) => {
+    CertificateErrorAction2["Continue"] = "continue";
+    CertificateErrorAction2["Cancel"] = "cancel";
+  })(CertificateErrorAction = Security2.CertificateErrorAction || (Security2.CertificateErrorAction = {}));
+})(Security || (Security = {}));
+var ServiceWorker;
+((ServiceWorker2) => {
+  let ServiceWorkerVersionRunningStatus;
+  ((ServiceWorkerVersionRunningStatus2) => {
+    ServiceWorkerVersionRunningStatus2["Stopped"] = "stopped";
+    ServiceWorkerVersionRunningStatus2["Starting"] = "starting";
+    ServiceWorkerVersionRunningStatus2["Running"] = "running";
+    ServiceWorkerVersionRunningStatus2["Stopping"] = "stopping";
+  })(ServiceWorkerVersionRunningStatus = ServiceWorker2.ServiceWorkerVersionRunningStatus || (ServiceWorker2.ServiceWorkerVersionRunningStatus = {}));
+  let ServiceWorkerVersionStatus;
+  ((ServiceWorkerVersionStatus2) => {
+    ServiceWorkerVersionStatus2["New"] = "new";
+    ServiceWorkerVersionStatus2["Installing"] = "installing";
+    ServiceWorkerVersionStatus2["Installed"] = "installed";
+    ServiceWorkerVersionStatus2["Activating"] = "activating";
+    ServiceWorkerVersionStatus2["Activated"] = "activated";
+    ServiceWorkerVersionStatus2["Redundant"] = "redundant";
+  })(ServiceWorkerVersionStatus = ServiceWorker2.ServiceWorkerVersionStatus || (ServiceWorker2.ServiceWorkerVersionStatus = {}));
+  let ServiceWorkerRouterSourceType;
+  ((ServiceWorkerRouterSourceType2) => {
+    ServiceWorkerRouterSourceType2["Cache"] = "cache";
+    ServiceWorkerRouterSourceType2["FetchEvent"] = "fetchEvent";
+    ServiceWorkerRouterSourceType2["Network"] = "network";
+    ServiceWorkerRouterSourceType2["RaceNetworkAndFetchHandler"] = "raceNetworkAndFetchHandler";
+    ServiceWorkerRouterSourceType2["RaceNetworkAndCache"] = "raceNetworkAndCache";
+    ServiceWorkerRouterSourceType2["SourceDict"] = "sourceDict";
+  })(ServiceWorkerRouterSourceType = ServiceWorker2.ServiceWorkerRouterSourceType || (ServiceWorker2.ServiceWorkerRouterSourceType = {}));
+})(ServiceWorker || (ServiceWorker = {}));
+var SmartCardEmulation;
+((SmartCardEmulation2) => {
+  let ResultCode;
+  ((ResultCode2) => {
+    ResultCode2["Success"] = "success";
+    ResultCode2["RemovedCard"] = "removed-card";
+    ResultCode2["ResetCard"] = "reset-card";
+    ResultCode2["UnpoweredCard"] = "unpowered-card";
+    ResultCode2["UnresponsiveCard"] = "unresponsive-card";
+    ResultCode2["UnsupportedCard"] = "unsupported-card";
+    ResultCode2["ReaderUnavailable"] = "reader-unavailable";
+    ResultCode2["SharingViolation"] = "sharing-violation";
+    ResultCode2["NotTransacted"] = "not-transacted";
+    ResultCode2["NoSmartcard"] = "no-smartcard";
+    ResultCode2["ProtoMismatch"] = "proto-mismatch";
+    ResultCode2["SystemCancelled"] = "system-cancelled";
+    ResultCode2["NotReady"] = "not-ready";
+    ResultCode2["Cancelled"] = "cancelled";
+    ResultCode2["InsufficientBuffer"] = "insufficient-buffer";
+    ResultCode2["InvalidHandle"] = "invalid-handle";
+    ResultCode2["InvalidParameter"] = "invalid-parameter";
+    ResultCode2["InvalidValue"] = "invalid-value";
+    ResultCode2["NoMemory"] = "no-memory";
+    ResultCode2["Timeout"] = "timeout";
+    ResultCode2["UnknownReader"] = "unknown-reader";
+    ResultCode2["UnsupportedFeature"] = "unsupported-feature";
+    ResultCode2["NoReadersAvailable"] = "no-readers-available";
+    ResultCode2["ServiceStopped"] = "service-stopped";
+    ResultCode2["NoService"] = "no-service";
+    ResultCode2["CommError"] = "comm-error";
+    ResultCode2["InternalError"] = "internal-error";
+    ResultCode2["ServerTooBusy"] = "server-too-busy";
+    ResultCode2["Unexpected"] = "unexpected";
+    ResultCode2["Shutdown"] = "shutdown";
+    ResultCode2["UnknownCard"] = "unknown-card";
+    ResultCode2["Unknown"] = "unknown";
+  })(ResultCode = SmartCardEmulation2.ResultCode || (SmartCardEmulation2.ResultCode = {}));
+  let ShareMode;
+  ((ShareMode2) => {
+    ShareMode2["Shared"] = "shared";
+    ShareMode2["Exclusive"] = "exclusive";
+    ShareMode2["Direct"] = "direct";
+  })(ShareMode = SmartCardEmulation2.ShareMode || (SmartCardEmulation2.ShareMode = {}));
+  let Disposition;
+  ((Disposition2) => {
+    Disposition2["LeaveCard"] = "leave-card";
+    Disposition2["ResetCard"] = "reset-card";
+    Disposition2["UnpowerCard"] = "unpower-card";
+    Disposition2["EjectCard"] = "eject-card";
+  })(Disposition = SmartCardEmulation2.Disposition || (SmartCardEmulation2.Disposition = {}));
+  let ConnectionState;
+  ((ConnectionState2) => {
+    ConnectionState2["Absent"] = "absent";
+    ConnectionState2["Present"] = "present";
+    ConnectionState2["Swallowed"] = "swallowed";
+    ConnectionState2["Powered"] = "powered";
+    ConnectionState2["Negotiable"] = "negotiable";
+    ConnectionState2["Specific"] = "specific";
+  })(ConnectionState = SmartCardEmulation2.ConnectionState || (SmartCardEmulation2.ConnectionState = {}));
+  let Protocol;
+  ((Protocol2) => {
+    Protocol2["T0"] = "t0";
+    Protocol2["T1"] = "t1";
+    Protocol2["Raw"] = "raw";
+  })(Protocol = SmartCardEmulation2.Protocol || (SmartCardEmulation2.Protocol = {}));
+})(SmartCardEmulation || (SmartCardEmulation = {}));
+var Storage;
+((Storage2) => {
+  let StorageType;
+  ((StorageType2) => {
+    StorageType2["Cookies"] = "cookies";
+    StorageType2["File_systems"] = "file_systems";
+    StorageType2["Indexeddb"] = "indexeddb";
+    StorageType2["Local_storage"] = "local_storage";
+    StorageType2["Shader_cache"] = "shader_cache";
+    StorageType2["Websql"] = "websql";
+    StorageType2["Service_workers"] = "service_workers";
+    StorageType2["Cache_storage"] = "cache_storage";
+    StorageType2["Storage_buckets"] = "storage_buckets";
+    StorageType2["All"] = "all";
+    StorageType2["Other"] = "other";
+  })(StorageType = Storage2.StorageType || (Storage2.StorageType = {}));
+  let StorageBucketsDurability;
+  ((StorageBucketsDurability2) => {
+    StorageBucketsDurability2["Relaxed"] = "relaxed";
+    StorageBucketsDurability2["Strict"] = "strict";
+  })(StorageBucketsDurability = Storage2.StorageBucketsDurability || (Storage2.StorageBucketsDurability = {}));
+})(Storage || (Storage = {}));
+var SystemInfo;
+((SystemInfo2) => {
+  let SubsamplingFormat;
+  ((SubsamplingFormat2) => {
+    SubsamplingFormat2["Yuv420"] = "yuv420";
+    SubsamplingFormat2["Yuv422"] = "yuv422";
+    SubsamplingFormat2["Yuv444"] = "yuv444";
+  })(SubsamplingFormat = SystemInfo2.SubsamplingFormat || (SystemInfo2.SubsamplingFormat = {}));
+  let ImageType;
+  ((ImageType2) => {
+    ImageType2["Jpeg"] = "jpeg";
+    ImageType2["Webp"] = "webp";
+    ImageType2["Unknown"] = "unknown";
+  })(ImageType = SystemInfo2.ImageType || (SystemInfo2.ImageType = {}));
+})(SystemInfo || (SystemInfo = {}));
+var Target;
+((Target2) => {
+  let WindowState;
+  ((WindowState2) => {
+    WindowState2["Normal"] = "normal";
+    WindowState2["Minimized"] = "minimized";
+    WindowState2["Maximized"] = "maximized";
+    WindowState2["Fullscreen"] = "fullscreen";
+  })(WindowState = Target2.WindowState || (Target2.WindowState = {}));
+})(Target || (Target = {}));
+var Tracing;
+((Tracing2) => {
+  let TraceConfigRecordMode;
+  ((TraceConfigRecordMode2) => {
+    TraceConfigRecordMode2["RecordUntilFull"] = "recordUntilFull";
+    TraceConfigRecordMode2["RecordContinuously"] = "recordContinuously";
+    TraceConfigRecordMode2["RecordAsMuchAsPossible"] = "recordAsMuchAsPossible";
+    TraceConfigRecordMode2["EchoToConsole"] = "echoToConsole";
+  })(TraceConfigRecordMode = Tracing2.TraceConfigRecordMode || (Tracing2.TraceConfigRecordMode = {}));
+  let StreamFormat;
+  ((StreamFormat2) => {
+    StreamFormat2["Json"] = "json";
+    StreamFormat2["Proto"] = "proto";
+  })(StreamFormat = Tracing2.StreamFormat || (Tracing2.StreamFormat = {}));
+  let StreamCompression;
+  ((StreamCompression2) => {
+    StreamCompression2["None"] = "none";
+    StreamCompression2["Gzip"] = "gzip";
+  })(StreamCompression = Tracing2.StreamCompression || (Tracing2.StreamCompression = {}));
+  let MemoryDumpLevelOfDetail;
+  ((MemoryDumpLevelOfDetail2) => {
+    MemoryDumpLevelOfDetail2["Background"] = "background";
+    MemoryDumpLevelOfDetail2["Light"] = "light";
+    MemoryDumpLevelOfDetail2["Detailed"] = "detailed";
+  })(MemoryDumpLevelOfDetail = Tracing2.MemoryDumpLevelOfDetail || (Tracing2.MemoryDumpLevelOfDetail = {}));
+  let TracingBackend;
+  ((TracingBackend2) => {
+    TracingBackend2["Auto"] = "auto";
+    TracingBackend2["Chrome"] = "chrome";
+    TracingBackend2["System"] = "system";
+  })(TracingBackend = Tracing2.TracingBackend || (Tracing2.TracingBackend = {}));
+  let StartRequestTransferMode;
+  ((StartRequestTransferMode2) => {
+    StartRequestTransferMode2["ReportEvents"] = "ReportEvents";
+    StartRequestTransferMode2["ReturnAsStream"] = "ReturnAsStream";
+  })(StartRequestTransferMode = Tracing2.StartRequestTransferMode || (Tracing2.StartRequestTransferMode = {}));
+})(Tracing || (Tracing = {}));
+var WebAudio;
+((WebAudio2) => {
+  let ContextType;
+  ((ContextType2) => {
+    ContextType2["Realtime"] = "realtime";
+    ContextType2["Offline"] = "offline";
+  })(ContextType = WebAudio2.ContextType || (WebAudio2.ContextType = {}));
+  let ContextState;
+  ((ContextState2) => {
+    ContextState2["Suspended"] = "suspended";
+    ContextState2["Running"] = "running";
+    ContextState2["Closed"] = "closed";
+    ContextState2["Interrupted"] = "interrupted";
+  })(ContextState = WebAudio2.ContextState || (WebAudio2.ContextState = {}));
+  let ChannelCountMode;
+  ((ChannelCountMode2) => {
+    ChannelCountMode2["ClampedMax"] = "clamped-max";
+    ChannelCountMode2["Explicit"] = "explicit";
+    ChannelCountMode2["Max"] = "max";
+  })(ChannelCountMode = WebAudio2.ChannelCountMode || (WebAudio2.ChannelCountMode = {}));
+  let ChannelInterpretation;
+  ((ChannelInterpretation2) => {
+    ChannelInterpretation2["Discrete"] = "discrete";
+    ChannelInterpretation2["Speakers"] = "speakers";
+  })(ChannelInterpretation = WebAudio2.ChannelInterpretation || (WebAudio2.ChannelInterpretation = {}));
+  let AutomationRate;
+  ((AutomationRate2) => {
+    AutomationRate2["ARate"] = "a-rate";
+    AutomationRate2["KRate"] = "k-rate";
+  })(AutomationRate = WebAudio2.AutomationRate || (WebAudio2.AutomationRate = {}));
+})(WebAudio || (WebAudio = {}));
+var WebAuthn;
+((WebAuthn2) => {
+  let AuthenticatorProtocol;
+  ((AuthenticatorProtocol2) => {
+    AuthenticatorProtocol2["U2f"] = "u2f";
+    AuthenticatorProtocol2["Ctap2"] = "ctap2";
+  })(AuthenticatorProtocol = WebAuthn2.AuthenticatorProtocol || (WebAuthn2.AuthenticatorProtocol = {}));
+  let Ctap2Version;
+  ((Ctap2Version2) => {
+    Ctap2Version2["Ctap2_0"] = "ctap2_0";
+    Ctap2Version2["Ctap2_1"] = "ctap2_1";
+    Ctap2Version2["Ctap2_2"] = "ctap2_2";
+  })(Ctap2Version = WebAuthn2.Ctap2Version || (WebAuthn2.Ctap2Version = {}));
+  let AuthenticatorTransport;
+  ((AuthenticatorTransport2) => {
+    AuthenticatorTransport2["Usb"] = "usb";
+    AuthenticatorTransport2["Nfc"] = "nfc";
+    AuthenticatorTransport2["Ble"] = "ble";
+    AuthenticatorTransport2["Cable"] = "cable";
+    AuthenticatorTransport2["Hybrid"] = "hybrid";
+    AuthenticatorTransport2["SmartCard"] = "smart-card";
+    AuthenticatorTransport2["Internal"] = "internal";
+  })(AuthenticatorTransport = WebAuthn2.AuthenticatorTransport || (WebAuthn2.AuthenticatorTransport = {}));
+})(WebAuthn || (WebAuthn = {}));
+var WebMCP;
+((WebMCP2) => {
+  let InvocationStatus;
+  ((InvocationStatus2) => {
+    InvocationStatus2["Completed"] = "Completed";
+    InvocationStatus2["Canceled"] = "Canceled";
+    InvocationStatus2["Error"] = "Error";
+  })(InvocationStatus = WebMCP2.InvocationStatus || (WebMCP2.InvocationStatus = {}));
+})(WebMCP || (WebMCP = {}));
+var Debugger;
+((Debugger2) => {
+  let ScopeType;
+  ((ScopeType2) => {
+    ScopeType2["Global"] = "global";
+    ScopeType2["Local"] = "local";
+    ScopeType2["With"] = "with";
+    ScopeType2["Closure"] = "closure";
+    ScopeType2["Catch"] = "catch";
+    ScopeType2["Block"] = "block";
+    ScopeType2["Script"] = "script";
+    ScopeType2["Eval"] = "eval";
+    ScopeType2["Module"] = "module";
+    ScopeType2["WasmExpressionStack"] = "wasm-expression-stack";
+  })(ScopeType = Debugger2.ScopeType || (Debugger2.ScopeType = {}));
+  let BreakLocationType;
+  ((BreakLocationType2) => {
+    BreakLocationType2["DebuggerStatement"] = "debuggerStatement";
+    BreakLocationType2["Call"] = "call";
+    BreakLocationType2["Return"] = "return";
+  })(BreakLocationType = Debugger2.BreakLocationType || (Debugger2.BreakLocationType = {}));
+  let ScriptLanguage;
+  ((ScriptLanguage2) => {
+    ScriptLanguage2["JavaScript"] = "JavaScript";
+    ScriptLanguage2["WebAssembly"] = "WebAssembly";
+  })(ScriptLanguage = Debugger2.ScriptLanguage || (Debugger2.ScriptLanguage = {}));
+  let DebugSymbolsType;
+  ((DebugSymbolsType2) => {
+    DebugSymbolsType2["SourceMap"] = "SourceMap";
+    DebugSymbolsType2["EmbeddedDWARF"] = "EmbeddedDWARF";
+    DebugSymbolsType2["ExternalDWARF"] = "ExternalDWARF";
+  })(DebugSymbolsType = Debugger2.DebugSymbolsType || (Debugger2.DebugSymbolsType = {}));
+  let ContinueToLocationRequestTargetCallFrames;
+  ((ContinueToLocationRequestTargetCallFrames2) => {
+    ContinueToLocationRequestTargetCallFrames2["Any"] = "any";
+    ContinueToLocationRequestTargetCallFrames2["Current"] = "current";
+  })(ContinueToLocationRequestTargetCallFrames = Debugger2.ContinueToLocationRequestTargetCallFrames || (Debugger2.ContinueToLocationRequestTargetCallFrames = {}));
+  let RestartFrameRequestMode;
+  ((RestartFrameRequestMode2) => {
+    RestartFrameRequestMode2["StepInto"] = "StepInto";
+  })(RestartFrameRequestMode = Debugger2.RestartFrameRequestMode || (Debugger2.RestartFrameRequestMode = {}));
+  let SetInstrumentationBreakpointRequestInstrumentation;
+  ((SetInstrumentationBreakpointRequestInstrumentation2) => {
+    SetInstrumentationBreakpointRequestInstrumentation2["BeforeScriptExecution"] = "beforeScriptExecution";
+    SetInstrumentationBreakpointRequestInstrumentation2["BeforeScriptWithSourceMapExecution"] = "beforeScriptWithSourceMapExecution";
+  })(SetInstrumentationBreakpointRequestInstrumentation = Debugger2.SetInstrumentationBreakpointRequestInstrumentation || (Debugger2.SetInstrumentationBreakpointRequestInstrumentation = {}));
+  let SetPauseOnExceptionsRequestState;
+  ((SetPauseOnExceptionsRequestState2) => {
+    SetPauseOnExceptionsRequestState2["None"] = "none";
+    SetPauseOnExceptionsRequestState2["Caught"] = "caught";
+    SetPauseOnExceptionsRequestState2["Uncaught"] = "uncaught";
+    SetPauseOnExceptionsRequestState2["All"] = "all";
+  })(SetPauseOnExceptionsRequestState = Debugger2.SetPauseOnExceptionsRequestState || (Debugger2.SetPauseOnExceptionsRequestState = {}));
+  let SetScriptSourceResponseStatus;
+  ((SetScriptSourceResponseStatus2) => {
+    SetScriptSourceResponseStatus2["Ok"] = "Ok";
+    SetScriptSourceResponseStatus2["CompileError"] = "CompileError";
+    SetScriptSourceResponseStatus2["BlockedByActiveGenerator"] = "BlockedByActiveGenerator";
+    SetScriptSourceResponseStatus2["BlockedByActiveFunction"] = "BlockedByActiveFunction";
+    SetScriptSourceResponseStatus2["BlockedByTopLevelEsModuleChange"] = "BlockedByTopLevelEsModuleChange";
+  })(SetScriptSourceResponseStatus = Debugger2.SetScriptSourceResponseStatus || (Debugger2.SetScriptSourceResponseStatus = {}));
+  let PausedEventReason;
+  ((PausedEventReason2) => {
+    PausedEventReason2["Ambiguous"] = "ambiguous";
+    PausedEventReason2["Assert"] = "assert";
+    PausedEventReason2["CSPViolation"] = "CSPViolation";
+    PausedEventReason2["DebugCommand"] = "debugCommand";
+    PausedEventReason2["DOM"] = "DOM";
+    PausedEventReason2["EventListener"] = "EventListener";
+    PausedEventReason2["Exception"] = "exception";
+    PausedEventReason2["Instrumentation"] = "instrumentation";
+    PausedEventReason2["OOM"] = "OOM";
+    PausedEventReason2["Other"] = "other";
+    PausedEventReason2["PromiseRejection"] = "promiseRejection";
+    PausedEventReason2["XHR"] = "XHR";
+    PausedEventReason2["Step"] = "step";
+  })(PausedEventReason = Debugger2.PausedEventReason || (Debugger2.PausedEventReason = {}));
+})(Debugger || (Debugger = {}));
+var Runtime;
+((Runtime8) => {
+  let SerializationOptionsSerialization;
+  ((SerializationOptionsSerialization2) => {
+    SerializationOptionsSerialization2["Deep"] = "deep";
+    SerializationOptionsSerialization2["Json"] = "json";
+    SerializationOptionsSerialization2["IdOnly"] = "idOnly";
+  })(SerializationOptionsSerialization = Runtime8.SerializationOptionsSerialization || (Runtime8.SerializationOptionsSerialization = {}));
+  let DeepSerializedValueType;
+  ((DeepSerializedValueType2) => {
+    DeepSerializedValueType2["Undefined"] = "undefined";
+    DeepSerializedValueType2["Null"] = "null";
+    DeepSerializedValueType2["String"] = "string";
+    DeepSerializedValueType2["Number"] = "number";
+    DeepSerializedValueType2["Boolean"] = "boolean";
+    DeepSerializedValueType2["Bigint"] = "bigint";
+    DeepSerializedValueType2["Regexp"] = "regexp";
+    DeepSerializedValueType2["Date"] = "date";
+    DeepSerializedValueType2["Symbol"] = "symbol";
+    DeepSerializedValueType2["Array"] = "array";
+    DeepSerializedValueType2["Object"] = "object";
+    DeepSerializedValueType2["Function"] = "function";
+    DeepSerializedValueType2["Map"] = "map";
+    DeepSerializedValueType2["Set"] = "set";
+    DeepSerializedValueType2["Weakmap"] = "weakmap";
+    DeepSerializedValueType2["Weakset"] = "weakset";
+    DeepSerializedValueType2["Error"] = "error";
+    DeepSerializedValueType2["Proxy"] = "proxy";
+    DeepSerializedValueType2["Promise"] = "promise";
+    DeepSerializedValueType2["Typedarray"] = "typedarray";
+    DeepSerializedValueType2["Arraybuffer"] = "arraybuffer";
+    DeepSerializedValueType2["Node"] = "node";
+    DeepSerializedValueType2["Window"] = "window";
+    DeepSerializedValueType2["Generator"] = "generator";
+  })(DeepSerializedValueType = Runtime8.DeepSerializedValueType || (Runtime8.DeepSerializedValueType = {}));
+  let RemoteObjectType;
+  ((RemoteObjectType2) => {
+    RemoteObjectType2["Object"] = "object";
+    RemoteObjectType2["Function"] = "function";
+    RemoteObjectType2["Undefined"] = "undefined";
+    RemoteObjectType2["String"] = "string";
+    RemoteObjectType2["Number"] = "number";
+    RemoteObjectType2["Boolean"] = "boolean";
+    RemoteObjectType2["Symbol"] = "symbol";
+    RemoteObjectType2["Bigint"] = "bigint";
+  })(RemoteObjectType = Runtime8.RemoteObjectType || (Runtime8.RemoteObjectType = {}));
+  let RemoteObjectSubtype;
+  ((RemoteObjectSubtype2) => {
+    RemoteObjectSubtype2["Array"] = "array";
+    RemoteObjectSubtype2["Null"] = "null";
+    RemoteObjectSubtype2["Node"] = "node";
+    RemoteObjectSubtype2["Regexp"] = "regexp";
+    RemoteObjectSubtype2["Date"] = "date";
+    RemoteObjectSubtype2["Map"] = "map";
+    RemoteObjectSubtype2["Set"] = "set";
+    RemoteObjectSubtype2["Weakmap"] = "weakmap";
+    RemoteObjectSubtype2["Weakset"] = "weakset";
+    RemoteObjectSubtype2["Iterator"] = "iterator";
+    RemoteObjectSubtype2["Generator"] = "generator";
+    RemoteObjectSubtype2["Error"] = "error";
+    RemoteObjectSubtype2["Proxy"] = "proxy";
+    RemoteObjectSubtype2["Promise"] = "promise";
+    RemoteObjectSubtype2["Typedarray"] = "typedarray";
+    RemoteObjectSubtype2["Arraybuffer"] = "arraybuffer";
+    RemoteObjectSubtype2["Dataview"] = "dataview";
+    RemoteObjectSubtype2["Webassemblymemory"] = "webassemblymemory";
+    RemoteObjectSubtype2["Wasmvalue"] = "wasmvalue";
+    RemoteObjectSubtype2["Trustedtype"] = "trustedtype";
+  })(RemoteObjectSubtype = Runtime8.RemoteObjectSubtype || (Runtime8.RemoteObjectSubtype = {}));
+  let ObjectPreviewType;
+  ((ObjectPreviewType2) => {
+    ObjectPreviewType2["Object"] = "object";
+    ObjectPreviewType2["Function"] = "function";
+    ObjectPreviewType2["Undefined"] = "undefined";
+    ObjectPreviewType2["String"] = "string";
+    ObjectPreviewType2["Number"] = "number";
+    ObjectPreviewType2["Boolean"] = "boolean";
+    ObjectPreviewType2["Symbol"] = "symbol";
+    ObjectPreviewType2["Bigint"] = "bigint";
+  })(ObjectPreviewType = Runtime8.ObjectPreviewType || (Runtime8.ObjectPreviewType = {}));
+  let ObjectPreviewSubtype;
+  ((ObjectPreviewSubtype2) => {
+    ObjectPreviewSubtype2["Array"] = "array";
+    ObjectPreviewSubtype2["Null"] = "null";
+    ObjectPreviewSubtype2["Node"] = "node";
+    ObjectPreviewSubtype2["Regexp"] = "regexp";
+    ObjectPreviewSubtype2["Date"] = "date";
+    ObjectPreviewSubtype2["Map"] = "map";
+    ObjectPreviewSubtype2["Set"] = "set";
+    ObjectPreviewSubtype2["Weakmap"] = "weakmap";
+    ObjectPreviewSubtype2["Weakset"] = "weakset";
+    ObjectPreviewSubtype2["Iterator"] = "iterator";
+    ObjectPreviewSubtype2["Generator"] = "generator";
+    ObjectPreviewSubtype2["Error"] = "error";
+    ObjectPreviewSubtype2["Proxy"] = "proxy";
+    ObjectPreviewSubtype2["Promise"] = "promise";
+    ObjectPreviewSubtype2["Typedarray"] = "typedarray";
+    ObjectPreviewSubtype2["Arraybuffer"] = "arraybuffer";
+    ObjectPreviewSubtype2["Dataview"] = "dataview";
+    ObjectPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
+    ObjectPreviewSubtype2["Wasmvalue"] = "wasmvalue";
+    ObjectPreviewSubtype2["Trustedtype"] = "trustedtype";
+  })(ObjectPreviewSubtype = Runtime8.ObjectPreviewSubtype || (Runtime8.ObjectPreviewSubtype = {}));
+  let PropertyPreviewType;
+  ((PropertyPreviewType2) => {
+    PropertyPreviewType2["Object"] = "object";
+    PropertyPreviewType2["Function"] = "function";
+    PropertyPreviewType2["Undefined"] = "undefined";
+    PropertyPreviewType2["String"] = "string";
+    PropertyPreviewType2["Number"] = "number";
+    PropertyPreviewType2["Boolean"] = "boolean";
+    PropertyPreviewType2["Symbol"] = "symbol";
+    PropertyPreviewType2["Accessor"] = "accessor";
+    PropertyPreviewType2["Bigint"] = "bigint";
+  })(PropertyPreviewType = Runtime8.PropertyPreviewType || (Runtime8.PropertyPreviewType = {}));
+  let PropertyPreviewSubtype;
+  ((PropertyPreviewSubtype2) => {
+    PropertyPreviewSubtype2["Array"] = "array";
+    PropertyPreviewSubtype2["Null"] = "null";
+    PropertyPreviewSubtype2["Node"] = "node";
+    PropertyPreviewSubtype2["Regexp"] = "regexp";
+    PropertyPreviewSubtype2["Date"] = "date";
+    PropertyPreviewSubtype2["Map"] = "map";
+    PropertyPreviewSubtype2["Set"] = "set";
+    PropertyPreviewSubtype2["Weakmap"] = "weakmap";
+    PropertyPreviewSubtype2["Weakset"] = "weakset";
+    PropertyPreviewSubtype2["Iterator"] = "iterator";
+    PropertyPreviewSubtype2["Generator"] = "generator";
+    PropertyPreviewSubtype2["Error"] = "error";
+    PropertyPreviewSubtype2["Proxy"] = "proxy";
+    PropertyPreviewSubtype2["Promise"] = "promise";
+    PropertyPreviewSubtype2["Typedarray"] = "typedarray";
+    PropertyPreviewSubtype2["Arraybuffer"] = "arraybuffer";
+    PropertyPreviewSubtype2["Dataview"] = "dataview";
+    PropertyPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
+    PropertyPreviewSubtype2["Wasmvalue"] = "wasmvalue";
+    PropertyPreviewSubtype2["Trustedtype"] = "trustedtype";
+  })(PropertyPreviewSubtype = Runtime8.PropertyPreviewSubtype || (Runtime8.PropertyPreviewSubtype = {}));
+  let ConsoleAPICalledEventType;
+  ((ConsoleAPICalledEventType2) => {
+    ConsoleAPICalledEventType2["Log"] = "log";
+    ConsoleAPICalledEventType2["Debug"] = "debug";
+    ConsoleAPICalledEventType2["Info"] = "info";
+    ConsoleAPICalledEventType2["Error"] = "error";
+    ConsoleAPICalledEventType2["Warning"] = "warning";
+    ConsoleAPICalledEventType2["Dir"] = "dir";
+    ConsoleAPICalledEventType2["DirXML"] = "dirxml";
+    ConsoleAPICalledEventType2["Table"] = "table";
+    ConsoleAPICalledEventType2["Trace"] = "trace";
+    ConsoleAPICalledEventType2["Clear"] = "clear";
+    ConsoleAPICalledEventType2["StartGroup"] = "startGroup";
+    ConsoleAPICalledEventType2["StartGroupCollapsed"] = "startGroupCollapsed";
+    ConsoleAPICalledEventType2["EndGroup"] = "endGroup";
+    ConsoleAPICalledEventType2["Assert"] = "assert";
+    ConsoleAPICalledEventType2["Profile"] = "profile";
+    ConsoleAPICalledEventType2["ProfileEnd"] = "profileEnd";
+    ConsoleAPICalledEventType2["Count"] = "count";
+    ConsoleAPICalledEventType2["TimeEnd"] = "timeEnd";
+  })(ConsoleAPICalledEventType = Runtime8.ConsoleAPICalledEventType || (Runtime8.ConsoleAPICalledEventType = {}));
+})(Runtime || (Runtime = {}));
+
+// ../../front_end/panels/elements/InspectElementModeController.ts
 import * as UI24 from "../../ui/legacy/legacy.js";
 import * as VisualLogging14 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/elements/ElementsPanel.js
+// ../../front_end/panels/elements/ElementsPanel.ts
 var ElementsPanel_exports = {};
 __export(ElementsPanel_exports, {
   CSSPropertyRevealer: () => CSSPropertyRevealer,
@@ -41,7 +2844,7 @@ import * as UI23 from "../../ui/legacy/legacy.js";
 import * as SettingsUI from "../../ui/settings/settings.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/elements/AccessibilityTreeView.js
+// ../../front_end/panels/elements/AccessibilityTreeView.ts
 var AccessibilityTreeView_exports = {};
 __export(AccessibilityTreeView_exports, {
   AccessibilityTreeView: () => AccessibilityTreeView,
@@ -54,7 +2857,7 @@ import * as UI from "../../ui/legacy/legacy.js";
 import * as Lit2 from "../../ui/lit/lit.js";
 import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/elements/AccessibilityTreeUtils.js
+// ../../front_end/panels/elements/AccessibilityTreeUtils.ts
 var AccessibilityTreeUtils_exports = {};
 __export(AccessibilityTreeUtils_exports, {
   accessibilityNodeRenderer: () => accessibilityNodeRenderer,
@@ -111,7 +2914,7 @@ var accessibilityTreeView_css_default = `/**
 
 /*# sourceURL=${import.meta.resolve("./accessibilityTreeView.css")} */`;
 
-// gen/front_end/panels/elements/AccessibilityTreeView.js
+// ../../front_end/panels/elements/AccessibilityTreeView.ts
 var { html: html2, render, Directives: { ref } } = Lit2;
 var UIStrings = {
   /**
@@ -134,7 +2937,7 @@ var DEFAULT_VIEW = (input, output, target) => {
     defaultRenderer: accessibilityNodeRenderer,
     tree: input.nodes,
     filter: (node) => {
-      return node.ignored() || node.role()?.value === "generic" && !node.name()?.value ? "FLATTEN" : "SHOW";
+      return node.ignored() || node.role()?.value === "generic" && !node.name()?.value ? TreeOutline.TreeOutline.FilterOption.FLATTEN : TreeOutline.TreeOutline.FilterOption.SHOW;
     }
   };
   const onTreeOutlineRef = (el) => {
@@ -161,11 +2964,23 @@ var DEFAULT_VIEW = (input, output, target) => {
   const onItemContextMenu = (event) => {
     const contextMenu = event.createContextMenu();
     const axNode = event.data.node.treeNodeData;
-    contextMenu.clipboardSection().appendItem(i18nString(UIStrings.copy), () => input.onCopy(axNode), { jslogContext: "copy" });
+    contextMenu.clipboardSection().appendItem(
+      i18nString(UIStrings.copy),
+      () => input.onCopy(axNode),
+      { jslogContext: "copy" }
+    );
     if (axNode.isDOMNode()) {
-      contextMenu.viewSection().appendItem(i18nString(UIStrings.scrollIntoView), () => input.onScrollIntoView(axNode), { jslogContext: "scroll-into-view" });
+      contextMenu.viewSection().appendItem(
+        i18nString(UIStrings.scrollIntoView),
+        () => input.onScrollIntoView(axNode),
+        { jslogContext: "scroll-into-view" }
+      );
     }
-    contextMenu.viewSection().appendItem(i18nString(UIStrings.switchToDomTree), () => input.onSwitchToDomTree(), { jslogContext: "switch-to-dom-tree" });
+    contextMenu.viewSection().appendItem(
+      i18nString(UIStrings.switchToDomTree),
+      () => input.onSwitchToDomTree(),
+      { jslogContext: "switch-to-dom-tree" }
+    );
     void contextMenu.show();
   };
   const onCopy = (event) => {
@@ -197,7 +3012,11 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
     this.#view = view;
     this.registerRequiredCSS(accessibilityTreeView_css_default);
     this.#frameManager = frameManager;
-    SDK.TargetManager.TargetManager.instance().observeModels(SDK.AccessibilityModel.AccessibilityModel, this, { scoped: true });
+    SDK.TargetManager.TargetManager.instance().observeModels(
+      SDK.AccessibilityModel.AccessibilityModel,
+      this,
+      { scoped: true }
+    );
   }
   #onNodeSelected = (axNode) => {
     if (!axNode.isDOMNode()) {
@@ -208,7 +3027,10 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
       deferredNode.resolve((domNode) => {
         if (domNode) {
           this.inspectedDOMNode = domNode;
-          void ElementsPanel.instance().revealAndSelectNode(domNode, { showPanel: true, focusNode: true, highlightInOverlay: true });
+          void ElementsPanel.instance().revealAndSelectNode(
+            domNode,
+            { showPanel: true, focusNode: true, highlightInOverlay: true }
+          );
         }
       });
     }
@@ -291,7 +3113,10 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
     }
     this.requestUpdate();
     await this.updateComplete;
-    await this.#treeOperations.revealNode?.(ancestors.map((node) => node.getFrameId() + "#" + node.id()), inspectedAXNode.getNodeId());
+    await this.#treeOperations.revealNode?.(
+      ancestors.map((node) => node.getFrameId() + "#" + node.id()),
+      inspectedAXNode.getNodeId()
+    );
   }
   // A node was revealed through the elements picker.
   async revealAndSelectNode(inspectedNode) {
@@ -335,14 +3160,14 @@ var AccessibilityTreeView = class extends UI.Widget.VBox {
     void this.refreshAccessibilityTree();
   }
   modelAdded(model) {
-    model.addEventListener("TreeUpdated", this.treeUpdated, this);
+    model.addEventListener(SDK.AccessibilityModel.Events.TREE_UPDATED, this.treeUpdated, this);
   }
   modelRemoved(model) {
-    model.removeEventListener("TreeUpdated", this.treeUpdated, this);
+    model.removeEventListener(SDK.AccessibilityModel.Events.TREE_UPDATED, this.treeUpdated, this);
   }
 };
 
-// gen/front_end/panels/elements/ColorSwatchPopoverIcon.js
+// ../../front_end/panels/elements/ColorSwatchPopoverIcon.ts
 var ColorSwatchPopoverIcon_exports = {};
 __export(ColorSwatchPopoverIcon_exports, {
   BezierPopoverIcon: () => BezierPopoverIcon,
@@ -382,7 +3207,12 @@ var BezierPopoverIcon = class {
   bezierEditor;
   scrollerElement;
   originalPropertyText;
-  constructor({ treeElement, swatchPopoverHelper, swatch, bezierText }) {
+  constructor({
+    treeElement,
+    swatchPopoverHelper,
+    swatch,
+    bezierText
+  }) {
     this.treeElement = treeElement;
     this.swatchPopoverHelper = swatchPopoverHelper;
     this.swatch = swatch;
@@ -405,7 +3235,7 @@ var BezierPopoverIcon = class {
     }
     const model = InlineEditor.AnimationTimingModel.AnimationTimingModel.parse(this.bezierText.innerText) || InlineEditor.AnimationTimingModel.LINEAR_BEZIER;
     this.bezierEditor = new InlineEditor.BezierEditor.BezierEditor(model);
-    this.bezierEditor.addEventListener("BezierChanged", this.boundBezierChanged);
+    this.bezierEditor.addEventListener(InlineEditor.BezierEditor.Events.BEZIER_CHANGED, this.boundBezierChanged);
     this.swatchPopoverHelper.show(this.bezierEditor, this.swatch, this.onPopoverHidden.bind(this));
     this.scrollerElement = this.swatch.enclosingNodeOrSelfWithClass("style-panes-wrapper");
     if (this.scrollerElement) {
@@ -438,7 +3268,7 @@ var BezierPopoverIcon = class {
       this.scrollerElement.removeEventListener("scroll", this.boundOnScroll, false);
     }
     if (this.bezierEditor) {
-      this.bezierEditor.removeEventListener("BezierChanged", this.boundBezierChanged);
+      this.bezierEditor.removeEventListener(InlineEditor.BezierEditor.Events.BEZIER_CHANGED, this.boundBezierChanged);
     }
     this.bezierEditor = void 0;
     const propertyText = commitEdit ? this.treeElement.renderedPropertyText() : this.originalPropertyText || "";
@@ -447,10 +3277,10 @@ var BezierPopoverIcon = class {
     delete this.originalPropertyText;
   }
 };
-var ColorSwatchPopoverIconEvents;
-(function(ColorSwatchPopoverIconEvents2) {
+var ColorSwatchPopoverIconEvents = /* @__PURE__ */ ((ColorSwatchPopoverIconEvents2) => {
   ColorSwatchPopoverIconEvents2["COLOR_CHANGED"] = "colorchanged";
-})(ColorSwatchPopoverIconEvents || (ColorSwatchPopoverIconEvents = {}));
+  return ColorSwatchPopoverIconEvents2;
+})(ColorSwatchPopoverIconEvents || {});
 var ColorSwatchPopoverIcon = class _ColorSwatchPopoverIcon extends Common.ObjectWrapper.ObjectWrapper {
   treeElement;
   swatchPopoverHelper;
@@ -516,8 +3346,8 @@ var ColorSwatchPopoverIcon = class _ColorSwatchPopoverIcon extends Common.Object
     this.spectrum = new ColorPicker.Spectrum.Spectrum(this.contrastInfo);
     this.spectrum.setColor(color);
     this.spectrum.addPalette(this.generateCSSVariablesPalette());
-    this.spectrum.addEventListener("SizeChanged", this.spectrumResized, this);
-    this.spectrum.addEventListener("ColorChanged", this.boundSpectrumChanged);
+    this.spectrum.addEventListener(ColorPicker.Spectrum.Events.SIZE_CHANGED, this.spectrumResized, this);
+    this.spectrum.addEventListener(ColorPicker.Spectrum.Events.COLOR_CHANGED, this.boundSpectrumChanged);
     this.swatchPopoverHelper.show(this.spectrum, this.swatch, this.onPopoverHidden.bind(this));
     this.scrollerElement = this.swatch.enclosingNodeOrSelfWithClass("style-panes-wrapper");
     if (this.scrollerElement) {
@@ -549,89 +3379,36 @@ var ColorSwatchPopoverIcon = class _ColorSwatchPopoverIcon extends Common.Object
       if (!color2 || !customProperty) {
         return color2;
       }
-      if (color2.is(
-        "hex"
-        /* Common.Color.Format.HEX */
-      ) || color2.is(
-        "hexa"
-        /* Common.Color.Format.HEXA */
-      ) || color2.is(
-        "rgb"
-        /* Common.Color.Format.RGB */
-      ) || color2.is(
-        "rgba"
-        /* Common.Color.Format.RGBA */
-      )) {
+      if (color2.is(Common.Color.Format.HEX) || color2.is(Common.Color.Format.HEXA) || color2.is(Common.Color.Format.RGB) || color2.is(Common.Color.Format.RGBA)) {
         return new Common.Color.Legacy(color2.rgba(), color2.format(), customProperty);
       }
-      if (color2.is(
-        "hsl"
-        /* Common.Color.Format.HSL */
-      )) {
+      if (color2.is(Common.Color.Format.HSL)) {
         return new Common.Color.HSL(color2.h, color2.s, color2.l, color2.alpha, customProperty);
       }
-      if (color2.is(
-        "hwb"
-        /* Common.Color.Format.HWB */
-      )) {
+      if (color2.is(Common.Color.Format.HWB)) {
         return new Common.Color.HWB(color2.h, color2.w, color2.b, color2.alpha, customProperty);
       }
-      if (color2.is(
-        "lch"
-        /* Common.Color.Format.LCH */
-      )) {
+      if (color2.is(Common.Color.Format.LCH)) {
         return new Common.Color.LCH(color2.l, color2.c, color2.h, color2.alpha, customProperty);
       }
-      if (color2.is(
-        "oklch"
-        /* Common.Color.Format.OKLCH */
-      )) {
+      if (color2.is(Common.Color.Format.OKLCH)) {
         return new Common.Color.Oklch(color2.l, color2.c, color2.h, color2.alpha, customProperty);
       }
-      if (color2.is(
-        "lab"
-        /* Common.Color.Format.LAB */
-      )) {
+      if (color2.is(Common.Color.Format.LAB)) {
         return new Common.Color.Lab(color2.l, color2.a, color2.b, color2.alpha, customProperty);
       }
-      if (color2.is(
-        "oklab"
-        /* Common.Color.Format.OKLAB */
-      )) {
+      if (color2.is(Common.Color.Format.OKLAB)) {
         return new Common.Color.Oklab(color2.l, color2.a, color2.b, color2.alpha, customProperty);
       }
-      if (color2.is(
-        "srgb"
-        /* Common.Color.Format.SRGB */
-      ) || color2.is(
-        "srgb-linear"
-        /* Common.Color.Format.SRGB_LINEAR */
-      ) || color2.is(
-        "display-p3"
-        /* Common.Color.Format.DISPLAY_P3 */
-      ) || color2.is(
-        "display-p3-linear"
-        /* Common.Color.Format.DISPLAY_P3_LINEAR */
-      ) || color2.is(
-        "a98-rgb"
-        /* Common.Color.Format.A98_RGB */
-      ) || color2.is(
-        "prophoto-rgb"
-        /* Common.Color.Format.PROPHOTO_RGB */
-      ) || color2.is(
-        "rec2020"
-        /* Common.Color.Format.REC_2020 */
-      ) || color2.is(
-        "xyz"
-        /* Common.Color.Format.XYZ */
-      ) || color2.is(
-        "xyz-d50"
-        /* Common.Color.Format.XYZ_D50 */
-      ) || color2.is(
-        "xyz-d65"
-        /* Common.Color.Format.XYZ_D65 */
-      )) {
-        return new Common.Color.ColorFunction(color2.colorSpace, color2.p0, color2.p1, color2.p2, color2.alpha, customProperty);
+      if (color2.is(Common.Color.Format.SRGB) || color2.is(Common.Color.Format.SRGB_LINEAR) || color2.is(Common.Color.Format.DISPLAY_P3) || color2.is(Common.Color.Format.DISPLAY_P3_LINEAR) || color2.is(Common.Color.Format.A98_RGB) || color2.is(Common.Color.Format.PROPHOTO_RGB) || color2.is(Common.Color.Format.REC_2020) || color2.is(Common.Color.Format.XYZ) || color2.is(Common.Color.Format.XYZ_D50) || color2.is(Common.Color.Format.XYZ_D65)) {
+        return new Common.Color.ColorFunction(
+          color2.colorSpace,
+          color2.p0,
+          color2.p1,
+          color2.p2,
+          color2.alpha,
+          customProperty
+        );
       }
       throw new Error(`Forgot to handle color format ${color2.format()}`);
     };
@@ -640,7 +3417,7 @@ var ColorSwatchPopoverIcon = class _ColorSwatchPopoverIcon extends Common.Object
       return;
     }
     this.swatch.renderColor(color);
-    this.dispatchEventToListeners("colorchanged", color);
+    this.dispatchEventToListeners("colorchanged" /* COLOR_CHANGED */, color);
   }
   onScroll(_event) {
     this.swatchPopoverHelper.hide(true);
@@ -650,7 +3427,7 @@ var ColorSwatchPopoverIcon = class _ColorSwatchPopoverIcon extends Common.Object
       this.scrollerElement.removeEventListener("scroll", this.boundOnScroll, false);
     }
     if (this.spectrum) {
-      this.spectrum.removeEventListener("ColorChanged", this.boundSpectrumChanged);
+      this.spectrum.removeEventListener(ColorPicker.Spectrum.Events.COLOR_CHANGED, this.boundSpectrumChanged);
     }
     this.spectrum = void 0;
     const propertyText = commitEdit ? this.treeElement.renderedPropertyText() : this.originalPropertyText || "";
@@ -660,10 +3437,10 @@ var ColorSwatchPopoverIcon = class _ColorSwatchPopoverIcon extends Common.Object
     UI2.Context.Context.instance().setFlavor(_ColorSwatchPopoverIcon, null);
   }
 };
-var ShadowEvents;
-(function(ShadowEvents2) {
+var ShadowEvents = /* @__PURE__ */ ((ShadowEvents2) => {
   ShadowEvents2["SHADOW_CHANGED"] = "shadowChanged";
-})(ShadowEvents || (ShadowEvents = {}));
+  return ShadowEvents2;
+})(ShadowEvents || {});
 var ShadowSwatchPopoverHelper = class extends Common.ObjectWrapper.ObjectWrapper {
   treeElement;
   swatchPopoverHelper;
@@ -705,7 +3482,7 @@ var ShadowSwatchPopoverHelper = class extends Common.ObjectWrapper.ObjectWrapper
     this.cssShadowEditor = new InlineEditor.CSSShadowEditor.CSSShadowEditor();
     this.cssShadowEditor.element.classList.toggle("with-padding", true);
     this.cssShadowEditor.setModel(this.shadowSwatch.model());
-    this.cssShadowEditor.addEventListener("ShadowChanged", this.boundShadowChanged);
+    this.cssShadowEditor.addEventListener(InlineEditor.CSSShadowEditor.Events.SHADOW_CHANGED, this.boundShadowChanged);
     this.swatchPopoverHelper.show(this.cssShadowEditor, this.iconElement, this.onPopoverHidden.bind(this));
     this.scrollerElement = this.iconElement.enclosingNodeOrSelfWithClass("style-panes-wrapper");
     if (this.scrollerElement) {
@@ -727,7 +3504,7 @@ var ShadowSwatchPopoverHelper = class extends Common.ObjectWrapper.ObjectWrapper
     }
   }
   shadowChanged(event) {
-    this.dispatchEventToListeners("shadowChanged", event.data);
+    this.dispatchEventToListeners("shadowChanged" /* SHADOW_CHANGED */, event.data);
   }
   onScroll(_event) {
     this.swatchPopoverHelper.hide(true);
@@ -737,7 +3514,10 @@ var ShadowSwatchPopoverHelper = class extends Common.ObjectWrapper.ObjectWrapper
       this.scrollerElement.removeEventListener("scroll", this.boundOnScroll, false);
     }
     if (this.cssShadowEditor) {
-      this.cssShadowEditor.removeEventListener("ShadowChanged", this.boundShadowChanged);
+      this.cssShadowEditor.removeEventListener(
+        InlineEditor.CSSShadowEditor.Events.SHADOW_CHANGED,
+        this.boundShadowChanged
+      );
     }
     this.cssShadowEditor = void 0;
     const propertyText = commitEdit ? this.treeElement.renderedPropertyText() : this.originalPropertyText || "";
@@ -747,10 +3527,10 @@ var ShadowSwatchPopoverHelper = class extends Common.ObjectWrapper.ObjectWrapper
   }
 };
 
-// gen/front_end/panels/elements/ElementsPanel.js
+// ../../front_end/panels/elements/ElementsPanel.ts
 import * as ElementsComponents8 from "./components/components.js";
 
-// gen/front_end/panels/elements/ComputedStyleWidget.js
+// ../../front_end/panels/elements/ComputedStyleWidget.ts
 var ComputedStyleWidget_exports = {};
 __export(ComputedStyleWidget_exports, {
   ComputedStyleWidget: () => ComputedStyleWidget,
@@ -761,7 +3541,7 @@ import * as Common7 from "../../core/common/common.js";
 import * as i18n20 from "../../core/i18n/i18n.js";
 import * as Platform6 from "../../core/platform/platform.js";
 import * as SDK9 from "../../core/sdk/sdk.js";
-import * as TreeOutline6 from "../../ui/components/tree_outline/tree_outline.js";
+import * as TreeOutline7 from "../../ui/components/tree_outline/tree_outline.js";
 import * as InlineEditor4 from "../../ui/legacy/components/inline_editor/inline_editor.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI12 from "../../ui/legacy/legacy.js";
@@ -797,7 +3577,7 @@ var computedStyleWidget_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./computedStyleWidget.css")} */`;
 
-// gen/front_end/panels/elements/ImagePreviewPopover.js
+// ../../front_end/panels/elements/ImagePreviewPopover.ts
 var ImagePreviewPopover_exports = {};
 __export(ImagePreviewPopover_exports, {
   ImagePreviewPopover: () => ImagePreviewPopover
@@ -829,7 +3609,7 @@ var ImagePreviewPopover = class {
         const precomputedFeatures = await this.#getNodeFeatures(link2);
         const preview = await Components.ImagePreview.ImagePreview.build(href, true, {
           precomputedFeatures,
-          align: "center"
+          align: Components.ImagePreview.Align.CENTER
         });
         if (preview) {
           popover.contentElement.appendChild(preview);
@@ -851,36 +3631,23 @@ var ImagePreviewPopover = class {
 };
 var elementToURLMap = /* @__PURE__ */ new WeakMap();
 
-// gen/front_end/panels/elements/PropertyNameCategories.js
+// ../../front_end/panels/elements/PropertyNameCategories.ts
 import * as SDK2 from "../../core/sdk/sdk.js";
-var Category;
-(function(Category2) {
-  Category2["LAYOUT"] = "Layout";
-  Category2["TEXT"] = "Text";
-  Category2["APPEARANCE"] = "Appearance";
-  Category2["ANIMATION"] = "Animation";
-  Category2["GRID"] = "Grid";
-  Category2["FLEX"] = "Flex";
-  Category2["TABLE"] = "Table";
-  Category2["CSS_VARIABLES"] = "CSS Variables";
-  Category2["GENERATED_CONTENT"] = "Generated Content";
-  Category2["OTHER"] = "Other";
-})(Category || (Category = {}));
 var DefaultCategoryOrder = [
-  "Layout",
-  "Text",
-  "Appearance",
-  "Animation",
-  "CSS Variables",
-  "Grid",
-  "Flex",
-  "Table",
-  "Generated Content",
-  "Other"
+  "Layout" /* LAYOUT */,
+  "Text" /* TEXT */,
+  "Appearance" /* APPEARANCE */,
+  "Animation" /* ANIMATION */,
+  "CSS Variables" /* CSS_VARIABLES */,
+  "Grid" /* GRID */,
+  "Flex" /* FLEX */,
+  "Table" /* TABLE */,
+  "Generated Content" /* GENERATED_CONTENT */,
+  "Other" /* OTHER */
 ];
 var CategorizedProperties = /* @__PURE__ */ new Map([
   [
-    "Layout",
+    "Layout" /* LAYOUT */,
     [
       "display",
       "margin",
@@ -925,7 +3692,7 @@ var CategorizedProperties = /* @__PURE__ */ new Map([
     ]
   ],
   [
-    "Text",
+    "Text" /* TEXT */,
     [
       "font",
       "font-family",
@@ -960,7 +3727,7 @@ var CategorizedProperties = /* @__PURE__ */ new Map([
     ]
   ],
   [
-    "Appearance",
+    "Appearance" /* APPEARANCE */,
     [
       "color",
       "outline",
@@ -978,7 +3745,7 @@ var CategorizedProperties = /* @__PURE__ */ new Map([
     ]
   ],
   [
-    "Animation",
+    "Animation" /* ANIMATION */,
     [
       "animation",
       "animation-delay",
@@ -997,7 +3764,7 @@ var CategorizedProperties = /* @__PURE__ */ new Map([
     ]
   ],
   [
-    "Grid",
+    "Grid" /* GRID */,
     [
       "grid",
       "grid-column",
@@ -1009,7 +3776,7 @@ var CategorizedProperties = /* @__PURE__ */ new Map([
     ]
   ],
   [
-    "Flex",
+    "Flex" /* FLEX */,
     [
       "flex",
       "order",
@@ -1019,7 +3786,7 @@ var CategorizedProperties = /* @__PURE__ */ new Map([
     ]
   ],
   [
-    "Table",
+    "Table" /* TABLE */,
     [
       "border-collapse",
       "border-spacing",
@@ -1029,7 +3796,7 @@ var CategorizedProperties = /* @__PURE__ */ new Map([
     ]
   ],
   [
-    "Generated Content",
+    "Generated Content" /* GENERATED_CONTENT */,
     [
       "content",
       "quotes",
@@ -1053,10 +3820,7 @@ var matchCategoriesByPropertyName = (propertyName) => {
     return CategoriesByPropertyName.get(propertyName);
   }
   if (propertyName.startsWith("--")) {
-    return [
-      "CSS Variables"
-      /* Category.CSS_VARIABLES */
-    ];
+    return ["CSS Variables" /* CSS_VARIABLES */];
   }
   return [];
 };
@@ -1076,13 +3840,10 @@ var categorizePropertyName = (propertyName) => {
       }
     }
   }
-  return [
-    "Other"
-    /* Category.OTHER */
-  ];
+  return ["Other" /* OTHER */];
 };
 
-// gen/front_end/panels/elements/PropertyRenderer.js
+// ../../front_end/panels/elements/PropertyRenderer.ts
 var PropertyRenderer_exports = {};
 __export(PropertyRenderer_exports, {
   BinOpRenderer: () => BinOpRenderer,
@@ -1101,7 +3862,7 @@ import * as Components3 from "../../ui/legacy/components/utils/utils.js";
 import * as UI11 from "../../ui/legacy/legacy.js";
 import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/elements/StylesSidebarPane.js
+// ../../front_end/panels/elements/StylesSidebarPane.ts
 var StylesSidebarPane_exports = {};
 __export(StylesSidebarPane_exports, {
   ActionDelegate: () => ActionDelegate,
@@ -1140,7 +3901,7 @@ import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon2 from "../common/common.js";
 import * as ElementsComponents3 from "./components/components.js";
 
-// gen/front_end/panels/elements/ElementsSidebarPane.js
+// ../../front_end/panels/elements/ElementsSidebarPane.ts
 var ElementsSidebarPane_exports = {};
 __export(ElementsSidebarPane_exports, {
   ElementsSidebarPane: () => ElementsSidebarPane
@@ -1152,8 +3913,16 @@ var ElementsSidebarPane = class extends UI4.Widget.VBox {
   constructor(computedStyleModel, options) {
     super(options);
     this.computedStyleModelInternal = computedStyleModel;
-    this.computedStyleModelInternal.addEventListener("CSSModelChanged", this.onCSSModelChanged, this);
-    this.computedStyleModelInternal.addEventListener("ComputedStyleChanged", this.onComputedStyleChanged, this);
+    this.computedStyleModelInternal.addEventListener(
+      ComputedStyle.ComputedStyleModel.Events.CSS_MODEL_CHANGED,
+      this.onCSSModelChanged,
+      this
+    );
+    this.computedStyleModelInternal.addEventListener(
+      ComputedStyle.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED,
+      this.onComputedStyleChanged,
+      this
+    );
   }
   node() {
     return this.computedStyleModelInternal.node;
@@ -1173,7 +3942,7 @@ var ElementsSidebarPane = class extends UI4.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/elements/LayersWidget.js
+// ../../front_end/panels/elements/LayersWidget.ts
 var LayersWidget_exports = {};
 __export(LayersWidget_exports, {
   ButtonProvider: () => ButtonProvider,
@@ -1181,7 +3950,7 @@ __export(LayersWidget_exports, {
 });
 import * as i18n5 from "../../core/i18n/i18n.js";
 import * as SDK3 from "../../core/sdk/sdk.js";
-import * as TreeOutline2 from "../../ui/components/tree_outline/tree_outline.js";
+import * as TreeOutline3 from "../../ui/components/tree_outline/tree_outline.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
 import * as Lit3 from "../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
@@ -1209,7 +3978,7 @@ var layersWidget_css_default = `/**
 
 /*# sourceURL=${import.meta.resolve("./layersWidget.css")} */`;
 
-// gen/front_end/panels/elements/LayersWidget.js
+// ../../front_end/panels/elements/LayersWidget.ts
 var { render: render2, html: html3, Directives: { ref: ref2 } } = Lit3;
 var UIStrings3 = {
   /**
@@ -1240,7 +4009,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       children: async () => subLayers.sort((layer1, layer2) => layer1.order - layer2.order).map(makeTreeNode(id))
     };
   };
-  const { defaultRenderer } = TreeOutline2.TreeOutline;
+  const { defaultRenderer } = TreeOutline3.TreeOutline;
   const tree3 = [makeTreeNode("")(input.rootLayer)];
   const data = {
     defaultRenderer,
@@ -1284,11 +4053,19 @@ var LayersWidget = class _LayersWidget extends UI5.Widget.Widget {
       return;
     }
     if (this.#node) {
-      this.#node.domModel().cssModel().removeEventListener(SDK3.CSSModel.Events.StyleSheetChanged, this.requestUpdate, this);
+      this.#node.domModel().cssModel().removeEventListener(
+        SDK3.CSSModel.Events.StyleSheetChanged,
+        this.requestUpdate,
+        this
+      );
     }
     this.#node = event.data;
     if (this.#node) {
-      this.#node.domModel().cssModel().addEventListener(SDK3.CSSModel.Events.StyleSheetChanged, this.requestUpdate, this);
+      this.#node.domModel().cssModel().addEventListener(
+        SDK3.CSSModel.Events.StyleSheetChanged,
+        this.requestUpdate,
+        this
+      );
     }
     if (this.isShowing()) {
       this.requestUpdate();
@@ -1332,7 +4109,7 @@ var ButtonProvider = class _ButtonProvider {
   constructor() {
     this.button = new UI5.Toolbar.ToolbarToggle(i18nString3(UIStrings3.toggleCSSLayers), "layers", "layers-filled");
     this.button.setVisible(false);
-    this.button.addEventListener("Click", this.clicked, this);
+    this.button.addEventListener(UI5.Toolbar.ToolbarButton.Events.CLICK, this.clicked, this);
     this.button.element.classList.add("monospace");
     this.button.element.setAttribute("jslog", `${VisualLogging2.toggleSubpane("css-layers").track({ click: true })}`);
   }
@@ -1352,7 +4129,7 @@ var ButtonProvider = class _ButtonProvider {
   }
 };
 
-// gen/front_end/panels/elements/StyleEditorWidget.js
+// ../../front_end/panels/elements/StyleEditorWidget.ts
 var StyleEditorWidget_exports = {};
 __export(StyleEditorWidget_exports, {
   StyleEditorWidget: () => StyleEditorWidget
@@ -1360,7 +4137,7 @@ __export(StyleEditorWidget_exports, {
 import { createIcon as createIcon2 } from "../../ui/kit/kit.js";
 import * as UI8 from "../../ui/legacy/legacy.js";
 
-// gen/front_end/panels/elements/StylePropertyTreeElement.js
+// ../../front_end/panels/elements/StylePropertyTreeElement.ts
 var StylePropertyTreeElement_exports = {};
 __export(StylePropertyTreeElement_exports, {
   AnchorFunctionRenderer: () => AnchorFunctionRenderer,
@@ -1413,7 +4190,7 @@ import * as Lit5 from "../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents from "./components/components.js";
 
-// gen/front_end/panels/elements/CSSRuleValidator.js
+// ../../front_end/panels/elements/CSSRuleValidator.ts
 var CSSRuleValidator_exports = {};
 __export(CSSRuleValidator_exports, {
   AlignContentValidator: () => AlignContentValidator,
@@ -1440,7 +4217,7 @@ import * as SDK4 from "../../core/sdk/sdk.js";
 import * as uiI18n from "../../ui/i18n/i18n.js";
 import { html as html5 } from "../../ui/lit/lit.js";
 
-// gen/front_end/panels/elements/CSSRuleValidatorHelper.js
+// ../../front_end/panels/elements/CSSRuleValidatorHelper.ts
 import { html as html4 } from "../../ui/lit/lit.js";
 var buildPropertyDefinitionText = (property, value5) => {
   if (value5 === void 0) {
@@ -1534,7 +4311,7 @@ var isMulticolContainer = (computedStyles) => {
   return columnWidth !== "auto" || columnCount !== "auto";
 };
 
-// gen/front_end/panels/elements/CSSRuleValidator.js
+// ../../front_end/panels/elements/CSSRuleValidator.ts
 var UIStrings4 = {
   /**
    * @description The message shown in the Styles tab when the user hovers over a property that has no effect due to some other property.
@@ -1610,11 +4387,11 @@ var UIStrings4 = {
 var str_4 = i18n7.i18n.registerUIStrings("panels/elements/CSSRuleValidator.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 var i18nLazyStringTemplate = uiI18n.getFormatLocalizedStringTemplate.bind(void 0, str_4);
-var HintType;
-(function(HintType2) {
+var HintType = /* @__PURE__ */ ((HintType2) => {
   HintType2["INACTIVE_PROPERTY"] = "ruleValidation";
   HintType2["DEPRECATED_PROPERTY"] = "deprecatedProperty";
-})(HintType || (HintType = {}));
+  return HintType2;
+})(HintType || {});
 var Hint = class {
   #hintMessage;
   #possibleFixMessage;
@@ -1655,13 +4432,16 @@ var AlignContentValidator = class extends CSSRuleValidator {
     if (!isFlex && !isBlockContainer(computedStyles) && !isGridContainer(computedStyles) && !isGridLanesContainer(computedStyles)) {
       const reasonPropertyDeclaration2 = buildPropertyDefinitionText("display", computedStyles?.get("display"));
       const affectedPropertyDeclarationCode2 = buildPropertyName("align-content");
-      return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
-        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration2,
-        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode2
-      }), i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
-        PROPERTY_NAME: buildPropertyName("display"),
-        PROPERTY_VALUE: buildPropertyValue(computedStyles?.get("display"))
-      }));
+      return new Hint(
+        i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
+          REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration2,
+          AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode2
+        }),
+        i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
+          PROPERTY_NAME: buildPropertyName("display"),
+          PROPERTY_VALUE: buildPropertyValue(computedStyles?.get("display"))
+        })
+      );
     }
     if (!isFlex) {
       return;
@@ -1671,13 +4451,16 @@ var AlignContentValidator = class extends CSSRuleValidator {
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText("flex-wrap", "nowrap");
     const affectedPropertyDeclarationCode = buildPropertyName("align-content");
-    return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
-      REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
-      AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
-    }), i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
-      PROPERTY_NAME: buildPropertyName("flex-wrap"),
-      PROPERTY_VALUE: buildPropertyValue("nowrap")
-    }));
+    return new Hint(
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
+        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
+        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
+      }),
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
+        PROPERTY_NAME: buildPropertyName("flex-wrap"),
+        PROPERTY_VALUE: buildPropertyValue("nowrap")
+      })
+    );
   }
 };
 var FlexItemValidator = class extends CSSRuleValidator {
@@ -1694,13 +4477,16 @@ var FlexItemValidator = class extends CSSRuleValidator {
     const reasonPropertyDeclaration = buildPropertyDefinitionText("display", parentComputedStyles?.get("display"));
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
     const targetParentPropertyDeclaration = buildPropertyDefinitionText("display", "flex");
-    return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedByParentElementRuleReason, {
-      REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
-      AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
-    }), i18nLazyStringTemplate(UIStrings4.ruleViolatedByParentElementRuleFix, {
-      EXISTING_PARENT_ELEMENT_RULE: reasonPropertyDeclaration,
-      TARGET_PARENT_ELEMENT_RULE: targetParentPropertyDeclaration
-    }));
+    return new Hint(
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedByParentElementRuleReason, {
+        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
+        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
+      }),
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedByParentElementRuleFix, {
+        EXISTING_PARENT_ELEMENT_RULE: reasonPropertyDeclaration,
+        TARGET_PARENT_ELEMENT_RULE: targetParentPropertyDeclaration
+      })
+    );
   }
 };
 var FlexContainerValidator = class extends CSSRuleValidator {
@@ -1717,13 +4503,16 @@ var FlexContainerValidator = class extends CSSRuleValidator {
     const reasonPropertyDeclaration = buildPropertyDefinitionText("display", computedStyles?.get("display"));
     const targetRuleCode = buildPropertyDefinitionText("display", "flex");
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
-    return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
-      REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
-      AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
-    }), i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleChangeSuggestion, {
-      EXISTING_PROPERTY_DECLARATION: reasonPropertyDeclaration,
-      TARGET_PROPERTY_DECLARATION: targetRuleCode
-    }));
+    return new Hint(
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
+        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
+        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
+      }),
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleChangeSuggestion, {
+        EXISTING_PROPERTY_DECLARATION: reasonPropertyDeclaration,
+        TARGET_PROPERTY_DECLARATION: targetRuleCode
+      })
+    );
   }
 };
 var GridContainerValidator = class extends CSSRuleValidator {
@@ -1746,13 +4535,16 @@ var GridContainerValidator = class extends CSSRuleValidator {
     const reasonPropertyDeclaration = buildPropertyDefinitionText("display", computedStyles?.get("display"));
     const targetRuleCode = buildPropertyDefinitionText("display", "grid");
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
-    return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
-      REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
-      AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
-    }), i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleChangeSuggestion, {
-      EXISTING_PROPERTY_DECLARATION: reasonPropertyDeclaration,
-      TARGET_PROPERTY_DECLARATION: targetRuleCode
-    }));
+    return new Hint(
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
+        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
+        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
+      }),
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleChangeSuggestion, {
+        EXISTING_PROPERTY_DECLARATION: reasonPropertyDeclaration,
+        TARGET_PROPERTY_DECLARATION: targetRuleCode
+      })
+    );
   }
 };
 var GridItemValidator = class extends CSSRuleValidator {
@@ -1775,13 +4567,16 @@ var GridItemValidator = class extends CSSRuleValidator {
     const reasonPropertyDeclaration = buildPropertyDefinitionText("display", parentComputedStyles?.get("display"));
     const targetParentPropertyDeclaration = buildPropertyDefinitionText("display", "grid");
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
-    return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedByParentElementRuleReason, {
-      REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
-      AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
-    }), i18nLazyStringTemplate(UIStrings4.ruleViolatedByParentElementRuleFix, {
-      EXISTING_PARENT_ELEMENT_RULE: reasonPropertyDeclaration,
-      TARGET_PARENT_ELEMENT_RULE: targetParentPropertyDeclaration
-    }));
+    return new Hint(
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedByParentElementRuleReason, {
+        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
+        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
+      }),
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedByParentElementRuleFix, {
+        EXISTING_PARENT_ELEMENT_RULE: reasonPropertyDeclaration,
+        TARGET_PARENT_ELEMENT_RULE: targetParentPropertyDeclaration
+      })
+    );
   }
 };
 var FlexOrGridItemValidator = class extends CSSRuleValidator {
@@ -1800,13 +4595,16 @@ var FlexOrGridItemValidator = class extends CSSRuleValidator {
     const reasonPropertyDeclaration = buildPropertyDefinitionText("display", parentComputedStyles?.get("display"));
     const targetParentPropertyDeclaration = html5`${buildPropertyDefinitionText("display", "flex")} or ${buildPropertyDefinitionText("display", "grid")}`;
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
-    return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedByParentElementRuleReason, {
-      REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
-      AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
-    }), i18nLazyStringTemplate(UIStrings4.ruleViolatedByParentElementRuleFix, {
-      EXISTING_PARENT_ELEMENT_RULE: reasonPropertyDeclaration,
-      TARGET_PARENT_ELEMENT_RULE: targetParentPropertyDeclaration
-    }));
+    return new Hint(
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedByParentElementRuleReason, {
+        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
+        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
+      }),
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedByParentElementRuleFix, {
+        EXISTING_PARENT_ELEMENT_RULE: reasonPropertyDeclaration,
+        TARGET_PARENT_ELEMENT_RULE: targetParentPropertyDeclaration
+      })
+    );
   }
 };
 var FlexGridValidator = class extends CSSRuleValidator {
@@ -1824,23 +4622,29 @@ var FlexGridValidator = class extends CSSRuleValidator {
       const reasonContainerDisplayName = buildPropertyValue(parentComputedStyles.get("display"));
       const reasonPropertyName = buildPropertyName(propertyName);
       const reasonAlternativePropertyName = buildPropertyName("justify-self");
-      return new Hint(i18nLazyStringTemplate(UIStrings4.flexGridContainerPropertyRuleReason, {
-        CONTAINER_DISPLAY_NAME: reasonContainerDisplayName,
-        PROPERTY_NAME: reasonPropertyName
-      }), i18nLazyStringTemplate(UIStrings4.flexGridContainerPropertyRuleFix, {
-        PROPERTY_NAME: reasonPropertyName,
-        ALTERNATIVE_PROPERTY_NAME: reasonAlternativePropertyName
-      }));
+      return new Hint(
+        i18nLazyStringTemplate(UIStrings4.flexGridContainerPropertyRuleReason, {
+          CONTAINER_DISPLAY_NAME: reasonContainerDisplayName,
+          PROPERTY_NAME: reasonPropertyName
+        }),
+        i18nLazyStringTemplate(UIStrings4.flexGridContainerPropertyRuleFix, {
+          PROPERTY_NAME: reasonPropertyName,
+          ALTERNATIVE_PROPERTY_NAME: reasonAlternativePropertyName
+        })
+      );
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText("display", computedStyles.get("display"));
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
-    return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
-      REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
-      AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
-    }), i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleChangeFlexOrGrid, {
-      DISPLAY_GRID_RULE: buildPropertyDefinitionText("display", "grid"),
-      DISPLAY_FLEX_RULE: buildPropertyDefinitionText("display", "flex")
-    }));
+    return new Hint(
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
+        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
+        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
+      }),
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleChangeFlexOrGrid, {
+        DISPLAY_GRID_RULE: buildPropertyDefinitionText("display", "grid"),
+        DISPLAY_FLEX_RULE: buildPropertyDefinitionText("display", "flex")
+      })
+    );
   }
 };
 var MulticolFlexGridValidator = class extends CSSRuleValidator {
@@ -1863,13 +4667,16 @@ var MulticolFlexGridValidator = class extends CSSRuleValidator {
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText("display", computedStyles?.get("display"));
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
-    return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
-      REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
-      AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
-    }), i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
-      PROPERTY_NAME: buildPropertyName("display"),
-      PROPERTY_VALUE: buildPropertyValue(computedStyles?.get("display"))
-    }));
+    return new Hint(
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
+        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
+        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
+      }),
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
+        PROPERTY_NAME: buildPropertyName("display"),
+        PROPERTY_VALUE: buildPropertyValue(computedStyles?.get("display"))
+      })
+    );
   }
 };
 var PaddingValidator = class extends CSSRuleValidator {
@@ -1900,13 +4707,16 @@ var PaddingValidator = class extends CSSRuleValidator {
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText("display", computedStyles?.get("display"));
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
-    return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
-      REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
-      AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
-    }), i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
-      PROPERTY_NAME: buildPropertyName("display"),
-      PROPERTY_VALUE: buildPropertyValue(computedStyles?.get("display"))
-    }));
+    return new Hint(
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
+        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
+        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
+      }),
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
+        PROPERTY_NAME: buildPropertyName("display"),
+        PROPERTY_VALUE: buildPropertyValue(computedStyles?.get("display"))
+      })
+    );
   }
 };
 var PositionValidator = class extends CSSRuleValidator {
@@ -1928,13 +4738,16 @@ var PositionValidator = class extends CSSRuleValidator {
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText("position", computedStyles?.get("position"));
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
-    return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
-      REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
-      AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
-    }), i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
-      PROPERTY_NAME: buildPropertyName("position"),
-      PROPERTY_VALUE: buildPropertyValue(computedStyles?.get("position"))
-    }));
+    return new Hint(
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
+        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
+        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
+      }),
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
+        PROPERTY_NAME: buildPropertyName("position"),
+        PROPERTY_VALUE: buildPropertyValue(computedStyles?.get("position"))
+      })
+    );
   }
 };
 var ZIndexValidator = class extends CSSRuleValidator {
@@ -1953,13 +4766,16 @@ var ZIndexValidator = class extends CSSRuleValidator {
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText("position", computedStyles?.get("position"));
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
-    return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
-      REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
-      AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
-    }), i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
-      PROPERTY_NAME: buildPropertyName("position"),
-      PROPERTY_VALUE: buildPropertyValue(computedStyles?.get("position"))
-    }));
+    return new Hint(
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
+        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
+        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
+      }),
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
+        PROPERTY_NAME: buildPropertyName("position"),
+        PROPERTY_VALUE: buildPropertyValue(computedStyles?.get("position"))
+      })
+    );
   }
 };
 var PositionAnchorValidator = class extends CSSRuleValidator {
@@ -1970,7 +4786,10 @@ var PositionAnchorValidator = class extends CSSRuleValidator {
     const position = computedStyles?.get("position") ?? "static";
     const display = computedStyles?.get("display");
     if (position !== "absolute" && position !== "fixed") {
-      return new Hint(i18nString4(UIStrings4.invalidAnchorPositioning, { POSITION: position }), i18nString4(UIStrings4.invalidAnchorPositioningFix));
+      return new Hint(
+        i18nString4(UIStrings4.invalidAnchorPositioning, { POSITION: position }),
+        i18nString4(UIStrings4.invalidAnchorPositioningFix)
+      );
     }
     if (display === "none") {
       return new Hint(i18nString4(UIStrings4.unusedAnchorPositioning, { POSITION: position }), null);
@@ -1997,13 +4816,16 @@ var SizingValidator = class extends CSSRuleValidator {
     }
     const reasonPropertyDeclaration = buildPropertyDefinitionText("display", computedStyles?.get("display"));
     const affectedPropertyDeclarationCode = buildPropertyName(propertyName);
-    return new Hint(i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
-      REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
-      AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
-    }), i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
-      PROPERTY_NAME: buildPropertyName("display"),
-      PROPERTY_VALUE: buildPropertyValue(computedStyles?.get("display"))
-    }));
+    return new Hint(
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleReason, {
+        REASON_PROPERTY_DECLARATION_CODE: reasonPropertyDeclaration,
+        AFFECTED_PROPERTY_DECLARATION_CODE: affectedPropertyDeclarationCode
+      }),
+      i18nLazyStringTemplate(UIStrings4.ruleViolatedBySameElementRuleFix, {
+        PROPERTY_NAME: buildPropertyName("display"),
+        PROPERTY_VALUE: buildPropertyValue(computedStyles?.get("display"))
+      })
+    );
   }
 };
 var FontVariationSettingsValidator = class extends CSSRuleValidator {
@@ -2048,7 +4870,10 @@ var FontVariationSettingsValidator = class extends CSSRuleValidator {
     if (!warnings.length) {
       return;
     }
-    return new Hint(warnings.join(" "), "");
+    return new Hint(
+      warnings.join(" "),
+      ""
+    );
   }
 };
 var CSS_RULE_VALIDATORS = [
@@ -2085,7 +4910,7 @@ var setupCSSRulesValidators = () => {
 };
 var cssRuleValidatorsMap = setupCSSRulesValidators();
 
-// gen/front_end/panels/elements/CSSValueTraceView.js
+// ../../front_end/panels/elements/CSSValueTraceView.ts
 var CSSValueTraceView_exports = {};
 __export(CSSValueTraceView_exports, {
   CSSValueTraceView: () => CSSValueTraceView
@@ -2539,7 +5364,7 @@ span.bezier-icon-and-text {
 
 /*# sourceURL=${import.meta.resolve("./stylePropertiesTreeOutline.css")} */`;
 
-// gen/front_end/panels/elements/CSSValueTraceView.js
+// ../../front_end/panels/elements/CSSValueTraceView.ts
 var { html: html6, render: render3, Directives: { classMap, ifDefined } } = Lit4;
 function defaultView(input, output, target) {
   const substitutions = [...input.substitutions];
@@ -2549,11 +5374,14 @@ function defaultView(input, output, target) {
   const hiddenSummary = !firstEvaluation || intermediateEvaluations.length === 0;
   const summaryTabIndex = hiddenSummary ? void 0 : 0;
   const singleResult = evaluations.length === 0 && substitutions.length === 0;
-  render3(html6`
+  render3(
+    html6`
       <div role=dialog class="css-value-trace monospace" @keydown=${onKeyDown}>
-        ${substitutions.map((line) => html6`
+        ${substitutions.map(
+      (line) => html6`
           <span class="trace-line-icon" aria-label="is equal to">↳</span>
-          <span class="trace-line">${line}</span>`)}
+          <span class="trace-line">${line}</span>`
+    )}
         ${firstEvaluation && intermediateEvaluations.length === 0 ? html6`
           <span class="trace-line-icon" aria-label="is equal to">↳</span>
           <span class="trace-line">${firstEvaluation}</span>` : html6`
@@ -2564,9 +5392,11 @@ function defaultView(input, output, target) {
               <span class="trace-line">${firstEvaluation}</span>
             </summary>
             <div>
-              ${intermediateEvaluations.map((evaluation) => html6`
+              ${intermediateEvaluations.map(
+      (evaluation) => html6`
                   <span class="trace-line-icon" aria-label="is equal to" >↳</span>
-                  <span class="trace-line">${evaluation}</span>`)}
+                  <span class="trace-line">${evaluation}</span>`
+    )}
             </div>
           </details>`}
         ${finalResult ? html6`
@@ -2574,7 +5404,9 @@ function defaultView(input, output, target) {
           <span class=${classMap({ "trace-line": true, "full-row": singleResult })}>
             ${finalResult}
           </span>` : ""}
-      </div>`, target);
+      </div>`,
+    target
+  );
   function onKeyDown(e) {
     if (!e.altKey) {
       if (e.key.startsWith("Arrow") || e.key === " " || e.key === "Enter") {
@@ -2608,7 +5440,10 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
   #pendingFocus = false;
   constructor(element, view = defaultView) {
     super(element, { useShadowDom: true });
-    this.registerRequiredCSS(cssValueTraceView_css_default, stylePropertiesTreeOutline_css_default);
+    this.registerRequiredCSS(
+      cssValueTraceView_css_default,
+      stylePropertiesTreeOutline_css_default
+    );
     this.#view = view;
     this.requestUpdate();
   }
@@ -2617,7 +5452,15 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
     if (!matchedResult) {
       return void 0;
     }
-    return await this.#showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus, signal);
+    return await this.#showTrace(
+      property,
+      matchedResult,
+      renderers,
+      expandPercentagesInShorthands,
+      shorthandPositionOffset,
+      focus,
+      signal
+    );
   }
   async #showTrace(property, matchedResult, renderers, expandPercentagesInShorthands, shorthandPositionOffset, focus, signal) {
     this.#highlighting = new Highlighting();
@@ -2665,7 +5508,16 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
       }
     }
     if (this.#substitutions.length === 0 && this.#evaluations.length === 0) {
-      const context = new RenderingContext(matchedResult.ast, property, rendererMap, matchedResult, void 0, {}, void 0, signal);
+      const context = new RenderingContext(
+        matchedResult.ast,
+        property,
+        rendererMap,
+        matchedResult,
+        void 0,
+        {},
+        void 0,
+        signal
+      );
       this.#evaluations.push(Renderer.render(matchedResult.ast.tree, context).nodes);
     }
     this.#pendingFocus = focus;
@@ -2690,7 +5542,7 @@ var CSSValueTraceView = class extends UI6.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/elements/StylePropertyUtils.js
+// ../../front_end/panels/elements/StylePropertyUtils.ts
 var StylePropertyUtils_exports = {};
 __export(StylePropertyUtils_exports, {
   getCssDeclarationAsJavascriptProperty: () => getCssDeclarationAsJavascriptProperty
@@ -2702,7 +5554,7 @@ function getCssDeclarationAsJavascriptProperty(declaration) {
   return `${declarationNameAsJs}: ${declarationAsJs}`;
 }
 
-// gen/front_end/panels/elements/StylePropertyTreeElement.js
+// ../../front_end/panels/elements/StylePropertyTreeElement.ts
 var { html: html7, nothing, render: render4, Directives: { classMap: classMap2 } } = Lit5;
 var ASTUtils = SDK5.CSSPropertyParser.ASTUtils;
 var FlexboxEditor = ElementsComponents.StylePropertyEditor.FlexboxEditor;
@@ -2814,10 +5666,6 @@ var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var parentMap = /* @__PURE__ */ new WeakMap();
 var EnvFunctionRendererBase = rendererBase(SDK5.CSSPropertyParserMatchers.EnvFunctionMatch);
 var EnvFunctionRenderer = class extends EnvFunctionRendererBase {
-  treeElement;
-  matchedStyles;
-  computedStyles;
-  computedStyleExtraFields;
   // clang-format on
   constructor(treeElement, matchedStyles, computedStyles, computedStyleExtraFields) {
     super();
@@ -2826,6 +5674,10 @@ var EnvFunctionRenderer = class extends EnvFunctionRendererBase {
     this.computedStyles = computedStyles;
     this.computedStyleExtraFields = computedStyleExtraFields;
   }
+  treeElement;
+  matchedStyles;
+  computedStyles;
+  computedStyleExtraFields;
   render(match, context) {
     const [, fallbackNodes] = ASTUtils.callArgs(match.node);
     if (match.value) {
@@ -2838,10 +5690,21 @@ var EnvFunctionRenderer = class extends EnvFunctionRendererBase {
       }
     }
     const span = document.createElement("span");
-    const func = this.treeElement?.getTracingTooltip("env", match.node, this.matchedStyles, this.computedStyles, this.computedStyleExtraFields, context) ?? "env";
+    const func = this.treeElement?.getTracingTooltip(
+      "env",
+      match.node,
+      this.matchedStyles,
+      this.computedStyles,
+      this.computedStyleExtraFields,
+      context
+    ) ?? "env";
     const valueClass = classMap2({ "inactive-value": !match.varNameIsValid });
     const fallbackClass = classMap2({ "inactive-value": match.varNameIsValid });
-    render4(html7`${func}(<span class=${valueClass}>${match.varName}</span>${fallbackNodes ? html7`, <span class=${fallbackClass}>${Renderer.render(fallbackNodes, context).nodes}</span>` : nothing})`, span, { host: span });
+    render4(
+      html7`${func}(<span class=${valueClass}>${match.varName}</span>${fallbackNodes ? html7`, <span class=${fallbackClass}>${Renderer.render(fallbackNodes, context).nodes}</span>` : nothing})`,
+      span,
+      { host: span }
+    );
     return [span];
   }
 };
@@ -2863,35 +5726,41 @@ var FlexGridRenderer = class extends FlexGridRendererBase {
     const key2 = `${this.#treeElement.section().getSectionIdx()}_${this.#treeElement.section().nextEditorTriggerButtonIdx}`;
     function getEditorClass(layoutType) {
       switch (layoutType) {
-        case "flex":
+        case SDK5.CSSPropertyParserMatchers.LayoutType.FLEX:
           return FlexboxEditor;
-        case "grid":
+        case SDK5.CSSPropertyParserMatchers.LayoutType.GRID:
           return GridEditor;
-        case "grid-lanes":
+        case SDK5.CSSPropertyParserMatchers.LayoutType.GRID_LANES:
           return GridLanesEditor;
       }
     }
     function getButtonTitle(layoutType) {
       switch (layoutType) {
-        case "flex":
+        case SDK5.CSSPropertyParserMatchers.LayoutType.FLEX:
           return i18nString5(UIStrings5.flexboxEditorButton);
-        case "grid":
+        case SDK5.CSSPropertyParserMatchers.LayoutType.GRID:
           return i18nString5(UIStrings5.gridEditorButton);
-        case "grid-lanes":
+        case SDK5.CSSPropertyParserMatchers.LayoutType.GRID_LANES:
           return i18nString5(UIStrings5.gridLanesEditorButton);
       }
     }
     function getSwatchType(layoutType) {
       switch (layoutType) {
-        case "flex":
+        case SDK5.CSSPropertyParserMatchers.LayoutType.FLEX:
           return Host.UserMetrics.SwatchType.FLEX;
-        case "grid":
+        case SDK5.CSSPropertyParserMatchers.LayoutType.GRID:
           return Host.UserMetrics.SwatchType.GRID;
-        case "grid-lanes":
+        case SDK5.CSSPropertyParserMatchers.LayoutType.GRID_LANES:
           return Host.UserMetrics.SwatchType.GRID_LANES;
       }
     }
-    const button = StyleEditorWidget.createTriggerButton(this.#stylesContainer, this.#treeElement.section(), getEditorClass(match.layoutType), getButtonTitle(match.layoutType), key2);
+    const button = StyleEditorWidget.createTriggerButton(
+      this.#stylesContainer,
+      this.#treeElement.section(),
+      getEditorClass(match.layoutType),
+      getButtonTitle(match.layoutType),
+      key2
+    );
     button.tabIndex = -1;
     button.setAttribute("jslog", `${VisualLogging3.showStyleEditor().track({ click: true }).context(match.layoutType)}`);
     this.#treeElement.section().nextEditorTriggerButtonIdx++;
@@ -2976,7 +5845,20 @@ var VariableRenderer = class extends VariableRendererBase {
     const substitution = context.tracing?.substitution({ match, context });
     if (substitution) {
       if (declaration?.declaration) {
-        const { nodes, cssControls } = Renderer.renderValueNodes({ name: declaration.name, value: declaration.value ?? "" }, substitution.cachedParsedValue(declaration.declaration, this.#matchedStyles, this.#computedStyles), getPropertyRenderers(declaration.name, declaration.style, this.#stylesContainer, this.#matchedStyles, null, this.#computedStyles, this.#computedStyleExtraFields), substitution);
+        const { nodes, cssControls } = Renderer.renderValueNodes(
+          { name: declaration.name, value: declaration.value ?? "" },
+          substitution.cachedParsedValue(declaration.declaration, this.#matchedStyles, this.#computedStyles),
+          getPropertyRenderers(
+            declaration.name,
+            declaration.style,
+            this.#stylesContainer,
+            this.#matchedStyles,
+            null,
+            this.#computedStyles,
+            this.#computedStyleExtraFields
+          ),
+          substitution
+        );
         cssControls.forEach((value5, key2) => value5.forEach((control) => context.addControl(key2, control)));
         return nodes;
       }
@@ -2985,7 +5867,14 @@ var VariableRenderer = class extends VariableRendererBase {
       }
     }
     const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : void 0;
-    const varCall = this.#treeElement?.getTracingTooltip("var", match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context);
+    const varCall = this.#treeElement?.getTracingTooltip(
+      "var",
+      match.node,
+      this.#matchedStyles,
+      this.#computedStyles,
+      this.#computedStyleExtraFields,
+      context
+    );
     const tooltipContents = this.#stylesContainer.getVariablePopoverContents(this.#matchedStyles, match.name, variableValue ?? null);
     const tooltipId = this.#treeElement?.getTooltipId("custom-property-var");
     const tooltip = tooltipId ? { tooltipId } : void 0;
@@ -3019,9 +5908,11 @@ var VariableRenderer = class extends VariableRendererBase {
     const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, varSwatch);
     context.addControl("color", colorSwatch);
     if (fromFallback) {
-      renderedFallback?.cssControls.get("color")?.forEach((innerSwatch) => innerSwatch.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
-        colorSwatch.setColor(ev.data.color);
-      }));
+      renderedFallback?.cssControls.get("color")?.forEach(
+        (innerSwatch) => innerSwatch.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
+          colorSwatch.setColor(ev.data.color);
+        })
+      );
     }
     return [colorSwatch, varSwatch];
   }
@@ -3108,12 +5999,36 @@ var AttributeRenderer = class extends AttributeRendererBase {
           return Renderer.render(match.fallback, substitution.renderingContext(context)).nodes;
         }
       } else if (match.substitutionText !== null) {
-        const matching = SDK5.CSSPropertyParser.matchDeclaration("--property", match.substitutionText, this.#matchedStyles.propertyMatchers(match.style, this.#computedStyles));
-        return Renderer.renderValueNodes({ name: "--property", value: match.substitutionText }, matching, getPropertyRenderers("--property", match.style, this.#stylesContainer, this.#matchedStyles, null, this.#computedStyles, this.#computedStyleExtraFields), substitution).nodes;
+        const matching = SDK5.CSSPropertyParser.matchDeclaration(
+          "--property",
+          match.substitutionText,
+          this.#matchedStyles.propertyMatchers(match.style, this.#computedStyles)
+        );
+        return Renderer.renderValueNodes(
+          { name: "--property", value: match.substitutionText },
+          matching,
+          getPropertyRenderers(
+            "--property",
+            match.style,
+            this.#stylesContainer,
+            this.#matchedStyles,
+            null,
+            this.#computedStyles,
+            this.#computedStyleExtraFields
+          ),
+          substitution
+        ).nodes;
       }
     }
     const renderedFallback = match.fallback ? Renderer.render(match.fallback, context) : void 0;
-    const attrCall = this.#treeElement?.getTracingTooltip("attr", match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context);
+    const attrCall = this.#treeElement?.getTracingTooltip(
+      "attr",
+      match.node,
+      this.#matchedStyles,
+      this.#computedStyles,
+      this.#computedStyleExtraFields,
+      context
+    );
     const tooltipId = attributeMissing ? void 0 : this.#treeElement?.getTooltipId("custom-attribute");
     const tooltip = tooltipId ? { tooltipId } : void 0;
     render4(html7`
@@ -3137,9 +6052,11 @@ var AttributeRenderer = class extends AttributeRendererBase {
     const colorSwatch = new ColorRenderer(this.#stylesContainer, this.#treeElement).renderColorSwatch(color, varSwatch);
     context.addControl("color", colorSwatch);
     if (fromFallback) {
-      renderedFallback?.cssControls.get("color")?.forEach((innerSwatch) => innerSwatch.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
-        colorSwatch.setColor(ev.data.color);
-      }));
+      renderedFallback?.cssControls.get("color")?.forEach(
+        (innerSwatch) => innerSwatch.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
+          colorSwatch.setColor(ev.data.color);
+        })
+      );
     }
     return [colorSwatch, varSwatch];
   }
@@ -3163,11 +6080,15 @@ var LinearGradientRenderer = class extends LinearGradientRendererBase {
     if (angle instanceof InlineEditor2.CSSAngle.CSSAngle) {
       angle.updateProperty(context.matchedResult.getComputedText(match.node));
       const args = ASTUtils.callArgs(match.node);
-      const angleNode = args[0]?.find((node) => context.matchedResult.getMatch(node) instanceof SDK5.CSSPropertyParserMatchers.AngleMatch);
+      const angleNode = args[0]?.find(
+        (node) => context.matchedResult.getMatch(node) instanceof SDK5.CSSPropertyParserMatchers.AngleMatch
+      );
       const angleMatch = angleNode && context.matchedResult.getMatch(angleNode);
       if (angleMatch) {
         angle.addEventListener(InlineEditor2.InlineEditorUtils.ValueChangedEvent.eventName, (ev) => {
-          angle.updateProperty(context.matchedResult.getComputedText(match.node, (match2) => match2 === angleMatch ? ev.data.value : null));
+          angle.updateProperty(
+            context.matchedResult.getComputedText(match.node, (match2) => match2 === angleMatch ? ev.data.value : null)
+          );
         });
       }
     }
@@ -3233,7 +6154,17 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
     const childTracingContexts = context.tracing?.evaluation([args], { match, context }) ?? void 0;
     const renderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
     const { nodes, cssControls } = Renderer.renderInto(args, renderingContext, valueChild);
-    render4(html7`${this.#treeElement?.getTracingTooltip(func, match.node, this.#treeElement.matchedStyles(), this.#treeElement.getComputedStyles() ?? /* @__PURE__ */ new Map(), this.#treeElement.getComputedStyleExtraFields(), renderingContext) ?? func}${nodes}`, valueChild);
+    render4(
+      html7`${this.#treeElement?.getTracingTooltip(
+        func,
+        match.node,
+        this.#treeElement.matchedStyles(),
+        this.#treeElement.getComputedStyles() ?? /* @__PURE__ */ new Map(),
+        this.#treeElement.getComputedStyleExtraFields(),
+        renderingContext
+      ) ?? func}${nodes}`,
+      valueChild
+    );
     return { valueChild, cssControls, childTracingContexts };
   }
   render(match, context) {
@@ -3254,13 +6185,13 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
     }
     if (match.node.name === "CallExpression" && childTracingContexts) {
       const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => {
-        const displayColor = color.as(
-          (color.alpha ?? 1) !== 1 ? "hexa" : "hex"
-          /* Common.Color.Format.HEX */
-        );
+        const displayColor = color.as((color.alpha ?? 1) !== 1 ? Common2.Color.Format.HEXA : Common2.Color.Format.HEX);
         const colorText2 = document.createElement("span");
         colorText2.textContent = displayColor.asString();
-        const swatch2 = new _ColorRenderer(this.#stylesContainer, null).renderColorSwatch(displayColor.isGamutClipped() ? color : displayColor.nickname() ?? displayColor, colorText2);
+        const swatch2 = new _ColorRenderer(this.#stylesContainer, null).renderColorSwatch(
+          displayColor.isGamutClipped() ? color : displayColor.nickname() ?? displayColor,
+          colorText2
+        );
         swatch2.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => {
           colorText2.textContent = ev.data.color.asString();
         });
@@ -3283,21 +6214,9 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
           if (!hue || !color2) {
             return;
           }
-          if (color2.is(
-            "hsl"
-            /* Common.Color.Format.HSL */
-          ) || color2.is(
-            "hsla"
-            /* Common.Color.Format.HSLA */
-          )) {
+          if (color2.is(Common2.Color.Format.HSL) || color2.is(Common2.Color.Format.HSLA)) {
             swatch.setColor(new Common2.Color.HSL(hue, color2.s, color2.l, color2.alpha));
-          } else if (color2.is(
-            "hwb"
-            /* Common.Color.Format.HWB */
-          ) || color2.is(
-            "hwba"
-            /* Common.Color.Format.HWBA */
-          )) {
+          } else if (color2.is(Common2.Color.Format.HWB) || color2.is(Common2.Color.Format.HWBA)) {
             swatch.setColor(new Common2.Color.HWB(hue, color2.w, color2.b, color2.alpha));
           }
           angle.updateProperty(swatch.color?.asString() ?? "");
@@ -3330,7 +6249,7 @@ var ColorRenderer = class _ColorRenderer extends ColorRendererBase {
       swatch.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, onColorChanged);
       swatch.addEventListener(InlineEditor2.ColorSwatch.ColorFormatChangedEvent.eventName, onColorFormatChanged);
       const swatchIcon = new ColorSwatchPopoverIcon(treeElement, treeElement.stylesContainer().swatchPopoverHelper(), swatch);
-      swatchIcon.addEventListener("colorchanged", (ev) => {
+      swatchIcon.addEventListener("colorchanged" /* COLOR_CHANGED */, (ev) => {
         valueChild.textContent = ev.data.getAuthoredText() ?? ev.data.asString();
         swatch.setColor(ev.data);
       });
@@ -3374,7 +6293,9 @@ var LightDarkColorRenderer = class extends LightDarkColorRendererBase {
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node)) {
       return [content];
     }
-    const color = Common2.Color.parse(context.matchedResult.getComputedTextRange(match.light[0], match.light[match.light.length - 1]));
+    const color = Common2.Color.parse(
+      context.matchedResult.getComputedTextRange(match.light[0], match.light[match.light.length - 1])
+    );
     if (!color) {
       return [content];
     }
@@ -3392,7 +6313,12 @@ var LightDarkColorRenderer = class extends LightDarkColorRendererBase {
       return;
     }
     const activeColorSwatches = (activeColor === match.light ? lightControls : darkControls).get("color");
-    activeColorSwatches?.forEach((swatch) => swatch.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => colorSwatch.setColor(ev.data.color)));
+    activeColorSwatches?.forEach(
+      (swatch) => swatch.addEventListener(
+        InlineEditor2.ColorSwatch.ColorChangedEvent.eventName,
+        (ev) => colorSwatch.setColor(ev.data.color)
+      )
+    );
     const inactiveColor = activeColor === match.light ? dark : light;
     const colorText = context.matchedResult.getComputedTextRange(activeColor[0], activeColor[activeColor.length - 1]);
     const color = colorText && Common2.Color.parse(colorText);
@@ -3406,14 +6332,8 @@ var LightDarkColorRenderer = class extends LightDarkColorRendererBase {
   // If the element has color-scheme set to both light and dark, we check the prefers-color-scheme media query.
   async #activeColor(match) {
     const activeColorSchemes = this.#matchedStyles.resolveProperty("color-scheme", match.style)?.parseValue(this.#matchedStyles, /* @__PURE__ */ new Map())?.getComputedPropertyValueText().split(" ") ?? [];
-    const hasLight = activeColorSchemes.includes(
-      "light"
-      /* SDK.CSSModel.ColorScheme.LIGHT */
-    );
-    const hasDark = activeColorSchemes.includes(
-      "dark"
-      /* SDK.CSSModel.ColorScheme.DARK */
-    );
+    const hasLight = activeColorSchemes.includes(SDK5.CSSModel.ColorScheme.LIGHT);
+    const hasDark = activeColorSchemes.includes(SDK5.CSSModel.ColorScheme.DARK);
     if (!hasDark && !hasLight) {
       return match.light;
     }
@@ -3424,9 +6344,9 @@ var LightDarkColorRenderer = class extends LightDarkColorRendererBase {
       return match.light;
     }
     switch (await this.#stylesContainer.cssModel()?.colorScheme()) {
-      case "dark":
+      case SDK5.CSSModel.ColorScheme.DARK:
         return match.dark;
-      case "light":
+      case SDK5.CSSModel.ColorScheme.LIGHT:
         return match.light;
       default:
         return void 0;
@@ -3453,9 +6373,15 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
     const hookUpColorArg = (node, onChange) => {
       if (node instanceof InlineEditor2.ColorMixSwatch.ColorMixSwatch || node instanceof InlineEditor2.ColorSwatch.ColorSwatch) {
         if (node instanceof InlineEditor2.ColorSwatch.ColorSwatch) {
-          node.addEventListener(InlineEditor2.ColorSwatch.ColorChangedEvent.eventName, (ev) => onChange(ev.data.color.getAuthoredText() ?? ev.data.color.asString()));
+          node.addEventListener(
+            InlineEditor2.ColorSwatch.ColorChangedEvent.eventName,
+            (ev) => onChange(ev.data.color.getAuthoredText() ?? ev.data.color.asString())
+          );
         } else {
-          node.addEventListener(InlineEditor2.ColorMixSwatch.ColorMixChangedEvent.eventName, (ev) => onChange(ev.data.text));
+          node.addEventListener(
+            InlineEditor2.ColorMixSwatch.ColorMixChangedEvent.eventName,
+            (ev) => onChange(ev.data.text)
+          );
         }
         const color = node.getText();
         if (color) {
@@ -3465,14 +6391,27 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
       }
       return false;
     };
-    const childTracingContexts = context.tracing?.evaluation(match.space.length ? [match.color1, match.color2, match.space] : [match.color1, match.color2], { match, context });
+    const childTracingContexts = context.tracing?.evaluation(
+      match.space.length ? [match.color1, match.color2, match.space] : [match.color1, match.color2],
+      { match, context }
+    );
     const color1RenderingContext = childTracingContexts?.at(0)?.renderingContext(context) ?? context;
     const color2RenderingContext = childTracingContexts?.at(1)?.renderingContext(context) ?? context;
     const spaceRenderingContext = childTracingContexts?.at(2)?.renderingContext(context) ?? context;
     const contentChild = document.createElement("span");
     const color1 = Renderer.renderInto(match.color1, color1RenderingContext, contentChild);
     const color2 = Renderer.renderInto(match.color2, color2RenderingContext, contentChild);
-    render4(html7`${this.#treeElement?.getTracingTooltip("color-mix", match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context) ?? "color-mix"}(${match.space.length ? html7`${Renderer.render(match.space, spaceRenderingContext).nodes}, ` : ""}${color1.nodes}, ${color2.nodes})`, contentChild);
+    render4(
+      html7`${this.#treeElement?.getTracingTooltip(
+        "color-mix",
+        match.node,
+        this.#matchedStyles,
+        this.#computedStyles,
+        this.#computedStyleExtraFields,
+        context
+      ) ?? "color-mix"}(${match.space.length ? html7`${Renderer.render(match.space, spaceRenderingContext).nodes}, ` : ""}${color1.nodes}, ${color2.nodes})`,
+      contentChild
+    );
     const color1Controls = color1.cssControls.get("color") ?? [];
     const color2Controls = color2.cssControls.get("color") ?? [];
     if (context.matchedResult.hasUnresolvedSubstitutions(match.node) || color1Controls.length !== 1 || color2Controls.length !== 1) {
@@ -3501,10 +6440,7 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
           if (results) {
             const color = Common2.Color.parse(results[0]);
             if (color) {
-              swatch2.setColor(color.as(
-                "hexa"
-                /* Common.Color.Format.HEXA */
-              ));
+              swatch2.setColor(color.as(Common2.Color.Format.HEXA));
               return true;
             }
           }
@@ -3547,10 +6483,7 @@ var ColorMixRenderer = class extends ColorMixRendererBase {
       if (!color) {
         return;
       }
-      const rgb = color.as(
-        "hex"
-        /* Common.Color.Format.HEX */
-      );
+      const rgb = color.as(Common2.Color.Format.HEX);
       colorTextSpan.textContent = rgb.isGamutClipped() ? color.asString() : rgb.asString();
     };
     return [swatch, contentChild, tooltip];
@@ -3651,33 +6584,37 @@ var LinkableNameRenderer = class extends LinkableNameRendererBase {
   }
   #getLinkData(match) {
     switch (match.propertyName) {
-      case "animation":
-      case "animation-name":
+      case SDK5.CSSPropertyParserMatchers.LinkableNameProperties.ANIMATION:
+      case SDK5.CSSPropertyParserMatchers.LinkableNameProperties.ANIMATION_NAME:
         return {
           jslogContext: "css-animation-name",
           metric: Host.UserMetrics.SwatchType.ANIMATION_NAME_LINK,
           ruleBlock: "@keyframes",
           isDefined: Boolean(this.#matchedStyles.keyframes().find((kf) => kf.name().text === match.text))
         };
-      case "font-palette":
+      case SDK5.CSSPropertyParserMatchers.LinkableNameProperties.FONT_PALETTE:
         return {
           jslogContext: "css-font-palette",
           metric: null,
           ruleBlock: "",
           // Not used
-          isDefined: Boolean(this.#matchedStyles.atRules().find((ar) => ar.type() === "font-palette-values" && ar.name()?.text === match.text))
+          isDefined: Boolean(this.#matchedStyles.atRules().find(
+            (ar) => ar.type() === "font-palette-values" && ar.name()?.text === match.text
+          ))
         };
-      case "list-style":
-      case "list-style-type":
+      case SDK5.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE:
+      case SDK5.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE_TYPE:
         return {
           jslogContext: "css-list-style-type",
           metric: null,
           ruleBlock: "",
           // Not used
-          isDefined: Boolean(this.#matchedStyles.atRules().find((ar) => ar.type() === "counter-style" && ar.name()?.text === match.text))
+          isDefined: Boolean(this.#matchedStyles.atRules().find(
+            (ar) => ar.type() === "counter-style" && ar.name()?.text === match.text
+          ))
         };
-      case "position-try":
-      case "position-try-fallbacks":
+      case SDK5.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY:
+      case SDK5.CSSPropertyParserMatchers.LinkableNameProperties.POSITION_TRY_FALLBACKS:
         return {
           jslogContext: "css-position-try",
           metric: Host.UserMetrics.SwatchType.POSITION_TRY_LINK,
@@ -3695,9 +6632,9 @@ var LinkableNameRenderer = class extends LinkableNameRendererBase {
       isDefined,
       onLinkActivate: () => {
         metric && Host.userMetrics.swatchActivated(metric);
-        if (match.propertyName === "font-palette") {
+        if (match.propertyName === SDK5.CSSPropertyParserMatchers.LinkableNameProperties.FONT_PALETTE) {
           this.#stylesContainer.jumpToFontPaletteDefinition(match.text);
-        } else if (match.propertyName === "list-style" || match.propertyName === "list-style-type") {
+        } else if (match.propertyName === SDK5.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE || match.propertyName === SDK5.CSSPropertyParserMatchers.LinkableNameProperties.LIST_STYLE_TYPE) {
           this.#stylesContainer.jumpToCounterStyleDefinition(match.text);
         } else {
           this.#stylesContainer.jumpToSectionBlock(`${ruleBlock} ${match.text}`);
@@ -3705,7 +6642,7 @@ var LinkableNameRenderer = class extends LinkableNameRendererBase {
       },
       jslogContext
     };
-    if (match.propertyName === "animation" || match.propertyName === "animation-name") {
+    if (match.propertyName === SDK5.CSSPropertyParserMatchers.LinkableNameProperties.ANIMATION || match.propertyName === SDK5.CSSPropertyParserMatchers.LinkableNameProperties.ANIMATION_NAME) {
       const el = document.createElement("span");
       el.appendChild(swatch);
       const node = this.#stylesContainer.node();
@@ -3741,7 +6678,9 @@ var BezierRenderer = class extends BezierRendererBase {
   }
   render(match, context) {
     const nodes = match.node.name === "CallExpression" ? Renderer.render(ASTUtils.children(match.node), context).nodes : [document.createTextNode(match.text)];
-    if (!this.#treeElement?.editable() || !InlineEditor2.AnimationTimingModel.AnimationTimingModel.parse(context.matchedResult.getComputedText(match.node))) {
+    if (!this.#treeElement?.editable() || !InlineEditor2.AnimationTimingModel.AnimationTimingModel.parse(
+      context.matchedResult.getComputedText(match.node)
+    )) {
       return nodes;
     }
     const swatchPopoverHelper = this.#treeElement.stylesContainer().swatchPopoverHelper();
@@ -3786,15 +6725,15 @@ var AutoBaseRenderer = class extends AutoBaseRendererBase {
     return [content];
   }
 };
-var ShadowPropertyType;
-(function(ShadowPropertyType2) {
+var ShadowPropertyType = /* @__PURE__ */ ((ShadowPropertyType2) => {
   ShadowPropertyType2["X"] = "x";
   ShadowPropertyType2["Y"] = "y";
   ShadowPropertyType2["SPREAD"] = "spread";
   ShadowPropertyType2["BLUR"] = "blur";
   ShadowPropertyType2["INSET"] = "inset";
   ShadowPropertyType2["COLOR"] = "color";
-})(ShadowPropertyType || (ShadowPropertyType = {}));
+  return ShadowPropertyType2;
+})(ShadowPropertyType || {});
 var ShadowModel = class {
   #properties;
   #shadowType;
@@ -3805,40 +6744,25 @@ var ShadowModel = class {
     this.#context = context;
   }
   isBoxShadow() {
-    return this.#shadowType === "boxShadow";
+    return this.#shadowType === SDK5.CSSPropertyParserMatchers.ShadowType.BOX_SHADOW;
   }
   inset() {
-    return Boolean(this.#properties.find(
-      (property) => property.propertyType === "inset"
-      /* ShadowPropertyType.INSET */
-    ));
+    return Boolean(this.#properties.find((property) => property.propertyType === "inset" /* INSET */));
   }
   #length(lengthType) {
     return this.#properties.find((property) => property.propertyType === lengthType)?.length ?? InlineEditor2.CSSShadowEditor.CSSLength.zero();
   }
   offsetX() {
-    return this.#length(
-      "x"
-      /* ShadowPropertyType.X */
-    );
+    return this.#length("x" /* X */);
   }
   offsetY() {
-    return this.#length(
-      "y"
-      /* ShadowPropertyType.Y */
-    );
+    return this.#length("y" /* Y */);
   }
   blurRadius() {
-    return this.#length(
-      "blur"
-      /* ShadowPropertyType.BLUR */
-    );
+    return this.#length("blur" /* BLUR */);
   }
   spreadRadius() {
-    return this.#length(
-      "spread"
-      /* ShadowPropertyType.SPREAD */
-    );
+    return this.#length("spread" /* SPREAD */);
   }
   #needsExpansion(property) {
     return Boolean(property.expansionContext && property.source);
@@ -3861,22 +6785,15 @@ var ShadowModel = class {
     if (!this.isBoxShadow()) {
       return;
     }
-    const { property, index } = this.#expandOrGetProperty(
-      "inset"
-      /* ShadowPropertyType.INSET */
-    );
+    const { property, index } = this.#expandOrGetProperty("inset" /* INSET */);
     if (property) {
       if (!inset) {
         this.#properties.splice(index, 1);
       }
     } else {
-      this.#properties.unshift({
-        value: "inset",
-        source: null,
-        expansionContext: null,
-        propertyType: "inset"
-        /* ShadowPropertyType.INSET */
-      });
+      this.#properties.unshift(
+        { value: "inset", source: null, expansionContext: null, propertyType: "inset" /* INSET */ }
+      );
     }
   }
   #setLength(value5, propertyType) {
@@ -3886,41 +6803,31 @@ var ShadowModel = class {
       property.length = value5;
       property.source = null;
     } else {
-      const insertionIdx = 1 + this.#properties.findLastIndex((property2) => property2.propertyType === "y" || propertyType === "spread" && property2.propertyType === "blur");
+      const insertionIdx = 1 + this.#properties.findLastIndex(
+        (property2) => property2.propertyType === "y" /* Y */ || propertyType === "spread" /* SPREAD */ && property2.propertyType === "blur" /* BLUR */
+      );
       if (insertionIdx > 0 && insertionIdx < this.#properties.length && this.#needsExpansion(this.#properties[insertionIdx]) && this.#properties[insertionIdx - 1].source === this.#properties[insertionIdx].source) {
         this.#expandPropertyIfNeeded(this.#properties[insertionIdx]);
       }
-      this.#properties.splice(insertionIdx, 0, { value: value5.asCSSText(), length: value5, source: null, expansionContext: null, propertyType });
+      this.#properties.splice(
+        insertionIdx,
+        0,
+        { value: value5.asCSSText(), length: value5, source: null, expansionContext: null, propertyType }
+      );
     }
   }
   setOffsetX(value5) {
-    this.#setLength(
-      value5,
-      "x"
-      /* ShadowPropertyType.X */
-    );
+    this.#setLength(value5, "x" /* X */);
   }
   setOffsetY(value5) {
-    this.#setLength(
-      value5,
-      "y"
-      /* ShadowPropertyType.Y */
-    );
+    this.#setLength(value5, "y" /* Y */);
   }
   setBlurRadius(value5) {
-    this.#setLength(
-      value5,
-      "blur"
-      /* ShadowPropertyType.BLUR */
-    );
+    this.#setLength(value5, "blur" /* BLUR */);
   }
   setSpreadRadius(value5) {
     if (this.isBoxShadow()) {
-      this.#setLength(
-        value5,
-        "spread"
-        /* ShadowPropertyType.SPREAD */
-      );
+      this.#setLength(value5, "spread" /* SPREAD */);
     }
   }
   renderContents(span) {
@@ -3953,15 +6860,11 @@ var ShadowRenderer = class extends ShadowRendererBase {
   }
   shadowModel(shadow, shadowType, context) {
     const properties = [];
-    const missingLengths = [
-      "spread",
-      "blur",
-      "y",
-      "x"
-      /* ShadowPropertyType.X */
-    ];
+    const missingLengths = ["spread" /* SPREAD */, "blur" /* BLUR */, "y" /* Y */, "x" /* X */];
     let stillAcceptsLengths = true;
-    const queue = shadow.map((value5) => ({ value: value5, source: value5, match: context.matchedResult.getMatch(value5), expansionContext: null }));
+    const queue = shadow.map(
+      (value5) => ({ value: value5, source: value5, match: context.matchedResult.getMatch(value5), expansionContext: null })
+    );
     for (let item2 = queue.shift(); item2; item2 = queue.shift()) {
       const { value: value5, source, match, expansionContext } = item2;
       const text = (expansionContext ?? context).ast.text(value5);
@@ -3970,7 +6873,7 @@ var ShadowRenderer = class extends ShadowRendererBase {
           return null;
         }
         const propertyType = missingLengths.pop();
-        if (propertyType === void 0 || propertyType === "spread" && shadowType === "textShadow") {
+        if (propertyType === void 0 || propertyType === "spread" /* SPREAD */ && shadowType === SDK5.CSSPropertyParserMatchers.ShadowType.TEXT_SHADOW) {
           return null;
         }
         const length = InlineEditor2.CSSShadowEditor.CSSLength.parse(text);
@@ -3984,34 +6887,33 @@ var ShadowRenderer = class extends ShadowRendererBase {
         if (!computedValueAst) {
           return null;
         }
-        const matches = SDK5.CSSPropertyParser.BottomUpTreeMatching.walkExcludingSuccessors(computedValueAst, [new SDK5.CSSPropertyParserMatchers.ColorMatcher()]);
+        const matches = SDK5.CSSPropertyParser.BottomUpTreeMatching.walkExcludingSuccessors(
+          computedValueAst,
+          [new SDK5.CSSPropertyParserMatchers.ColorMatcher()]
+        );
         if (matches.hasUnresolvedSubstitutions(matches.ast.tree)) {
           return null;
         }
-        queue.unshift(...ASTUtils.siblings(ASTUtils.declValue(matches.ast.tree)).map((matchedNode) => ({
-          value: matchedNode,
-          source: value5,
-          match: matches.getMatch(matchedNode),
-          expansionContext: new RenderingContext(computedValueAst, null, context.renderers, matches)
-        })));
+        queue.unshift(
+          ...ASTUtils.siblings(ASTUtils.declValue(matches.ast.tree)).map((matchedNode) => ({
+            value: matchedNode,
+            source: value5,
+            match: matches.getMatch(matchedNode),
+            expansionContext: new RenderingContext(computedValueAst, null, context.renderers, matches)
+          }))
+        );
       } else {
         stillAcceptsLengths = missingLengths.length === 4;
         if (value5.name === "ValueName" && text.toLowerCase() === "inset") {
-          if (shadowType === "textShadow" || properties.find(
-            ({ propertyType }) => propertyType === "inset"
-            /* ShadowPropertyType.INSET */
-          )) {
+          if (shadowType === SDK5.CSSPropertyParserMatchers.ShadowType.TEXT_SHADOW || properties.find(({ propertyType }) => propertyType === "inset" /* INSET */)) {
             return null;
           }
-          properties.push({ value: value5, source, propertyType: "inset", expansionContext });
+          properties.push({ value: value5, source, propertyType: "inset" /* INSET */, expansionContext });
         } else if (match instanceof SDK5.CSSPropertyParserMatchers.ColorMatch || match instanceof SDK5.CSSPropertyParserMatchers.ColorMixMatch || match instanceof SDK5.CSSPropertyParserMatchers.ContrastColorMatch) {
-          if (properties.find(
-            ({ propertyType }) => propertyType === "color"
-            /* ShadowPropertyType.COLOR */
-          )) {
+          if (properties.find(({ propertyType }) => propertyType === "color" /* COLOR */)) {
             return null;
           }
-          properties.push({ value: value5, source, propertyType: "color", expansionContext });
+          properties.push({ value: value5, source, propertyType: "color" /* COLOR */, expansionContext });
         } else if (value5.name !== "Comment" && value5.name !== "Important") {
           return null;
         }
@@ -4043,9 +6945,13 @@ var ShadowRenderer = class extends ShadowRendererBase {
       });
       const contents = document.createElement("span");
       model.renderContents(contents);
-      const popoverHelper = new ShadowSwatchPopoverHelper(this.#treeElement, this.#treeElement.stylesContainer().swatchPopoverHelper(), swatch);
+      const popoverHelper = new ShadowSwatchPopoverHelper(
+        this.#treeElement,
+        this.#treeElement.stylesContainer().swatchPopoverHelper(),
+        swatch
+      );
       const treeElement = this.#treeElement;
-      popoverHelper.addEventListener("shadowChanged", () => {
+      popoverHelper.addEventListener("shadowChanged" /* SHADOW_CHANGED */, () => {
         model.renderContents(contents);
         void treeElement.applyStyleText(treeElement.renderedPropertyText(), false);
       });
@@ -4145,7 +7051,9 @@ var LengthRenderer = class extends LengthRendererBase {
       return void 0;
     }
     valueElement.setAttribute("aria-details", tooltipId);
-    const tooltip = new Tooltips.Tooltip.Tooltip({ anchor: valueElement, variant: "rich", id: tooltipId, jslogContext: "length-popover" });
+    const tooltip = new Tooltips.Tooltip.Tooltip(
+      { anchor: valueElement, variant: "rich", id: tooltipId, jslogContext: "length-popover" }
+    );
     tooltip.addEventListener("beforetoggle", () => this.getTooltipValue(tooltip, match, context), { once: true });
     return tooltip;
   }
@@ -4182,13 +7090,30 @@ var BaseFunctionRenderer = class extends BaseFunctionRendererBase {
     const childTracingContexts = context.tracing?.evaluation(match.args, { match, context });
     const renderedArgs = match.args.map((arg, idx) => {
       const span2 = document.createElement("span");
-      Renderer.renderInto(arg, childTracingContexts ? childTracingContexts[idx].renderingContext(context) : context, span2);
+      Renderer.renderInto(
+        arg,
+        childTracingContexts ? childTracingContexts[idx].renderingContext(context) : context,
+        span2
+      );
       return span2;
     });
     const span = document.createElement("span");
-    render4(html7`${this.#treeElement?.getTracingTooltip(match.func, match.node, this.#matchedStyles, this.#computedStyles, this.#computedStyleExtraFields, context) ?? match.func}(${renderedArgs.map((arg, idx) => idx === 0 ? [arg] : [html7`, `, arg]).flat()})`, span);
+    render4(
+      html7`${this.#treeElement?.getTracingTooltip(
+        match.func,
+        match.node,
+        this.#matchedStyles,
+        this.#computedStyles,
+        this.#computedStyleExtraFields,
+        context
+      ) ?? match.func}(${renderedArgs.map((arg, idx) => idx === 0 ? [arg] : [html7`, `, arg]).flat()})`,
+      span
+    );
     if (childTracingContexts) {
-      const evaluation = context.tracing?.applyEvaluation(childTracingContexts, () => ({ placeholder: [span], asyncEvalCallback: () => this.applyEvaluation(span, match, context) }));
+      const evaluation = context.tracing?.applyEvaluation(
+        childTracingContexts,
+        () => ({ placeholder: [span], asyncEvalCallback: () => this.applyEvaluation(span, match, context) })
+      );
       if (evaluation) {
         return evaluation;
       }
@@ -4319,7 +7244,11 @@ var AnchorFunctionRenderer = class _AnchorFunctionRenderer extends AnchorFunctio
       content.appendChild(swatchContainer);
       const args = ASTUtils.children(match.node.getChild("ArgList"));
       const remainingArgs = args.splice(1);
-      void _AnchorFunctionRenderer.decorateAnchorForAnchorLink(this.#stylesContainer, swatchContainer, { needsSpace: remainingArgs.length > 1 });
+      void _AnchorFunctionRenderer.decorateAnchorForAnchorLink(
+        this.#stylesContainer,
+        swatchContainer,
+        { needsSpace: remainingArgs.length > 1 }
+      );
       Renderer.renderInto(remainingArgs, context, content);
     }
     return [content];
@@ -4390,8 +7319,22 @@ function getPropertyRenderers(propertyName, style, stylesContainer, matchedStyle
     new EnvFunctionRenderer(treeElement, matchedStyles, computedStyles, computedStyleExtraFields),
     new PositionTryRenderer(matchedStyles),
     new LengthRenderer(stylesContainer, propertyName, treeElement),
-    new MathFunctionRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, propertyName, treeElement),
-    new CustomFunctionRenderer(stylesContainer, matchedStyles, computedStyles, computedStyleExtraFields, propertyName, treeElement),
+    new MathFunctionRenderer(
+      stylesContainer,
+      matchedStyles,
+      computedStyles,
+      computedStyleExtraFields,
+      propertyName,
+      treeElement
+    ),
+    new CustomFunctionRenderer(
+      stylesContainer,
+      matchedStyles,
+      computedStyles,
+      computedStyleExtraFields,
+      propertyName,
+      treeElement
+    ),
     new AutoBaseRenderer(computedStyles, computedStyleExtraFields),
     new BinOpRenderer(),
     new RelativeColorChannelRenderer(treeElement),
@@ -4441,12 +7384,12 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     if (this.newProperty) {
       this.listItemElement.textContent = "";
     }
-    this.property.addEventListener("localValueUpdated", this.updateTitle, this);
+    this.property.addEventListener(SDK5.CSSProperty.Events.LOCAL_VALUE_UPDATED, this.updateTitle, this);
   }
   onunbind() {
     this.#stylesContainer.untrackForLazyRendering(this.listItemElement);
     this.#lazyRender = false;
-    this.property.removeEventListener("localValueUpdated", this.updateTitle, this);
+    this.property.removeEventListener(SDK5.CSSProperty.Events.LOCAL_VALUE_UPDATED, this.updateTitle, this);
     super.onunbind();
   }
   async gridNames() {
@@ -4472,12 +7415,19 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
         return SDK5.CSSPropertyParser.TreeSearch.findAll(ast, predicate).map((node2) => ast.text(node2));
       };
       if (SDK5.CSSMetadata.cssMetadata().isGridAreaNameAwareProperty(this.name)) {
-        return new Set(getNames("grid-template-areas", (node2) => node2.name === "StringLiteral")?.flatMap((row) => row.substring(1, row.length - 1).split(/\s+/).filter((cell) => !cell.match(/^\.*$/))));
+        return new Set(
+          getNames("grid-template-areas", (node2) => node2.name === "StringLiteral")?.flatMap((row) => row.substring(1, row.length - 1).split(/\s+/).filter((cell) => !cell.match(/^\.*$/)))
+        );
       }
       if (SDK5.CSSMetadata.cssMetadata().isGridColumnNameAwareProperty(this.name)) {
-        return new Set(getNames("grid-template-columns", (node2) => node2.name === "ValueName" && node2.parent?.name === "BracketedValue"));
+        return new Set(getNames(
+          "grid-template-columns",
+          (node2) => node2.name === "ValueName" && node2.parent?.name === "BracketedValue"
+        ));
       }
-      return new Set(getNames("grid-template-rows", (node2) => node2.name === "ValueName" && node2.parent?.name === "BracketedValue"));
+      return new Set(
+        getNames("grid-template-rows", (node2) => node2.name === "ValueName" && node2.parent?.name === "BracketedValue")
+      );
     }
     return /* @__PURE__ */ new Set();
   }
@@ -4632,7 +7582,9 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     if (!parsedProperty || parsedProperty === this.property.value) {
       return staticLonghandProperties;
     }
-    const parsedLonghands = await this.#stylesContainer.cssModel()?.agent.invoke_getLonghandProperties({ shorthandName: this.property.name, value: parsedProperty });
+    const parsedLonghands = await this.#stylesContainer.cssModel()?.agent.invoke_getLonghandProperties(
+      { shorthandName: this.property.name, value: parsedProperty }
+    );
     if (!parsedLonghands || parsedLonghands.getError()) {
       return staticLonghandProperties;
     }
@@ -4655,7 +7607,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       let inherited = false;
       let overloaded = false;
       inherited = this.#parentSection.isPropertyInherited(name);
-      overloaded = this.#matchedStyles.propertyState(property) === "Overloaded";
+      overloaded = this.#matchedStyles.propertyState(property) === SDK5.CSSMatchedStyles.PropertyState.OVERLOADED;
       const leadingProperty = leadingProperties.find((property2) => property2.name === name && property2.activeInStyle());
       if (leadingProperty) {
         overloaded = true;
@@ -4765,7 +7717,15 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       this.expandElement = createIcon("triangle-right", "expand-icon");
       this.expandElement.setAttribute("jslog", `${VisualLogging3.expand().track({ click: true })}`);
     }
-    const renderers = this.property.parsedOk ? getPropertyRenderers(this.name, this.style, this.#stylesContainer, this.#matchedStyles, this, this.getComputedStyles() ?? /* @__PURE__ */ new Map(), this.getComputedStyleExtraFields()) : [];
+    const renderers = this.property.parsedOk ? getPropertyRenderers(
+      this.name,
+      this.style,
+      this.#stylesContainer,
+      this.#matchedStyles,
+      this,
+      this.getComputedStyles() ?? /* @__PURE__ */ new Map(),
+      this.getComputedStyleExtraFields()
+    ) : [];
     this.listItemElement.removeChildren();
     const matchedResult = this.property.parseValue(this.matchedStyles(), this.computedStyles);
     this.valueElement = Renderer.renderValueElement(this.property, matchedResult, renderers).valueElement;
@@ -4774,13 +7734,22 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       return;
     }
     const indent = Common2.Settings.Settings.instance().moduleSetting("text-editor-indent").get();
-    UI7.UIUtils.createTextChild(this.listItemElement.createChild("span", "styles-clipboard-only"), indent.repeat(this.section().nestingLevel + 1) + (this.property.disabled ? "/* " : ""));
+    UI7.UIUtils.createTextChild(
+      this.listItemElement.createChild("span", "styles-clipboard-only"),
+      indent.repeat(this.section().nestingLevel + 1) + (this.property.disabled ? "/* " : "")
+    );
     this.listItemElement.appendChild(this.nameElement);
     if (this.property.name.startsWith("--") && !(this.property.ownerStyle.parentRule instanceof SDK5.CSSRule.CSSFunctionRule)) {
-      const contents = this.#stylesContainer.getVariablePopoverContents(this.matchedStyles(), this.property.name, this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value ?? null);
+      const contents = this.#stylesContainer.getVariablePopoverContents(
+        this.matchedStyles(),
+        this.property.name,
+        this.#matchedStyles.computeCSSVariable(this.style, this.property.name)?.value ?? null
+      );
       const tooltipId = this.getTooltipId("custom-property-decl");
       this.nameElement.setAttribute("aria-details", tooltipId);
-      const tooltip = new Tooltips.Tooltip.Tooltip({ anchor: this.nameElement, variant: "rich", id: tooltipId, jslogContext: "elements.css-var" });
+      const tooltip = new Tooltips.Tooltip.Tooltip(
+        { anchor: this.nameElement, variant: "rich", id: tooltipId, jslogContext: "elements.css-var" }
+      );
       tooltip.appendChild(contents);
       tooltip.onbeforetoggle = (e) => {
         if (e.newState === "open") {
@@ -4837,7 +7806,13 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       this.updateAnimationOverrideHint();
     } else {
       this.listItemElement.classList.add("not-parsed-ok");
-      this.listItemElement.insertBefore(this.createExclamationMark(this.property, this.#stylesContainer.getVariableParserError(this.matchedStyles(), this.property.name)), this.listItemElement.firstChild);
+      this.listItemElement.insertBefore(
+        this.createExclamationMark(
+          this.property,
+          this.#stylesContainer.getVariableParserError(this.matchedStyles(), this.property.name)
+        ),
+        this.listItemElement.firstChild
+      );
       const invalidPropertyValue = SDK5.CSSMetadata.cssMetadata().isCSSPropertyName(this.property.name);
       if (invalidPropertyValue) {
         this.listItemElement.classList.add("invalid-property-value");
@@ -4943,7 +7918,24 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
             jslogContext=elements.css-value-trace
             @beforetoggle=${function(e) {
       if (e.newState === "open") {
-        void this.querySelector("devtools-widget")?.getWidget()?.showTrace(property, text, matchedStyles, computedStyles, getPropertyRenderers(property.name, property.ownerStyle, stylesContainer, matchedStyles, null, computedStyles, computedStyleExtraFields), expandPercentagesInShorthands, shorthandPositionOffset, this.openedViaHotkey);
+        void this.querySelector("devtools-widget")?.getWidget()?.showTrace(
+          property,
+          text,
+          matchedStyles,
+          computedStyles,
+          getPropertyRenderers(
+            property.name,
+            property.ownerStyle,
+            stylesContainer,
+            matchedStyles,
+            null,
+            computedStyles,
+            computedStyleExtraFields
+          ),
+          expandPercentagesInShorthands,
+          shorthandPositionOffset,
+          this.openedViaHotkey
+        );
       }
     }}
             @toggle=${function(e) {
@@ -4975,7 +7967,10 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     this.#tooltipKeyCounts.set(key2, tooltipKeyCount + 1);
     const propertyNameForCounting = this.getLonghand()?.name ?? this.name;
     const ownIndex = this.style.allProperties().indexOf(this.property);
-    const propertyCount = this.style.allProperties().reduce((value5, property, index) => index < ownIndex && (property.name === this.name || property.name === propertyNameForCounting) ? value5 + 1 : value5, 0);
+    const propertyCount = this.style.allProperties().reduce(
+      (value5, property, index) => index < ownIndex && (property.name === this.name || property.name === propertyNameForCounting) ? value5 + 1 : value5,
+      0
+    );
     return `swatch-tooltip-${sectionId}-${this.name}-${propertyCount}-${key2}-${tooltipKeyCount}`;
   }
   updateAuthoringHint() {
@@ -4995,7 +7990,13 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     const fontFaces = cssModel?.fontFaces() || [];
     const localName = this.node()?.localName();
     for (const validator of cssRuleValidatorsMap.get(propertyName) || []) {
-      const hint = validator.getHint(propertyName, this.computedStyles || void 0, this.parentsComputedStyles || void 0, localName?.toLowerCase(), fontFaces);
+      const hint = validator.getHint(
+        propertyName,
+        this.computedStyles || void 0,
+        this.parentsComputedStyles || void 0,
+        localName?.toLowerCase(),
+        fontFaces
+      );
       if (hint) {
         const wrapper = document.createElement("span");
         wrapper.classList.add("hint-wrapper");
@@ -5008,7 +8009,9 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
         this.listItemElement.classList.add("inactive-property");
         const tooltipId = this.getTooltipId("css-hint");
         hintIcon.setAttribute("aria-details", tooltipId);
-        const tooltip = new Tooltips.Tooltip.Tooltip({ anchor: hintIcon, variant: "rich", padding: "large", id: tooltipId, jslogContext: "elements.css-hint" });
+        const tooltip = new Tooltips.Tooltip.Tooltip(
+          { anchor: hintIcon, variant: "rich", padding: "large", id: tooltipId, jslogContext: "elements.css-hint" }
+        );
         tooltip.appendChild(new ElementsComponents.CSSHintDetailsView.CSSHintDetailsView(hint));
         this.listItemElement.appendChild(tooltip);
         break;
@@ -5102,18 +8105,26 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     const contextMenu = new UI7.ContextMenu.ContextMenu(event);
     if (this.property.parsedOk && this.parent?.root) {
       const sectionIndex = this.#stylesContainer.focusedSectionIndex();
-      contextMenu.defaultSection().appendCheckboxItem(i18nString5(UIStrings5.togglePropertyAndContinueEditing), async () => {
-        if (this.treeOutline) {
-          const propertyIndex = this.treeOutline.rootElement().indexOfChild(this);
-          this.editingCancelled(context);
-          await this.toggleDisabled(!this.property.disabled);
-          event.consume();
-          this.#stylesContainer.continueEditingElement(sectionIndex, propertyIndex);
-        }
-      }, { checked: !this.property.disabled, jslogContext: "toggle-property-and-continue-editing" });
+      contextMenu.defaultSection().appendCheckboxItem(
+        i18nString5(UIStrings5.togglePropertyAndContinueEditing),
+        async () => {
+          if (this.treeOutline) {
+            const propertyIndex = this.treeOutline.rootElement().indexOfChild(this);
+            this.editingCancelled(context);
+            await this.toggleDisabled(!this.property.disabled);
+            event.consume();
+            this.#stylesContainer.continueEditingElement(sectionIndex, propertyIndex);
+          }
+        },
+        { checked: !this.property.disabled, jslogContext: "toggle-property-and-continue-editing" }
+      );
     }
     const revealCallback = this.navigateToSource.bind(this);
-    contextMenu.defaultSection().appendItem(i18nString5(UIStrings5.openInSourcesPanel), revealCallback, { jslogContext: "reveal-in-sources-panel" });
+    contextMenu.defaultSection().appendItem(
+      i18nString5(UIStrings5.openInSourcesPanel),
+      revealCallback,
+      { jslogContext: "reveal-in-sources-panel" }
+    );
     void contextMenu.show();
   }
   handleCopyContextMenuEvent(event) {
@@ -5140,12 +8151,20 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       const ruleText = this.#parentSection.formatLeadingProperties().ruleText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(ruleText);
     }, { jslogContext: "copy-rule" });
-    contextMenu.headerSection().appendItem(i18nString5(UIStrings5.copyCssDeclarationAsJs), this.copyCssDeclarationAsJs.bind(this), { jslogContext: "copy-css-declaration-as-js" });
+    contextMenu.headerSection().appendItem(
+      i18nString5(UIStrings5.copyCssDeclarationAsJs),
+      this.copyCssDeclarationAsJs.bind(this),
+      { jslogContext: "copy-css-declaration-as-js" }
+    );
     contextMenu.clipboardSection().appendItem(i18nString5(UIStrings5.copyAllDeclarations), () => {
       const allDeclarationText = this.#parentSection.formatLeadingProperties().allDeclarationText;
       Host.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(allDeclarationText);
     }, { jslogContext: "copy-all-declarations" });
-    contextMenu.clipboardSection().appendItem(i18nString5(UIStrings5.copyAllCssDeclarationsAsJs), this.copyAllCssDeclarationAsJs.bind(this), { jslogContext: "copy-all-css-declarations-as-js" });
+    contextMenu.clipboardSection().appendItem(
+      i18nString5(UIStrings5.copyAllCssDeclarationsAsJs),
+      this.copyAllCssDeclarationAsJs.bind(this),
+      { jslogContext: "copy-all-css-declarations-as-js" }
+    );
     contextMenu.footerSection().appendItem(i18nString5(UIStrings5.viewComputedValue), () => {
       void this.viewComputedValue();
     }, { jslogContext: "view-computed-value" });
@@ -5180,7 +8199,10 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
       return;
     }
     const propertyNameClicked = element === this.nameElement;
-    const uiLocation = Bindings2.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().propertyUILocation(this.property, propertyNameClicked);
+    const uiLocation = Bindings2.CSSWorkspaceBinding.CSSWorkspaceBinding.instance().propertyUILocation(
+      this.property,
+      propertyNameClicked
+    );
     if (uiLocation) {
       void Common2.Revealer.reveal(uiLocation, omitFocus);
     }
@@ -5280,7 +8302,7 @@ var StylePropertyTreeElement = class _StylePropertyTreeElement extends UI7.TreeO
     selectedElement.parentElement?.scrollIntoViewIfNeeded(false);
     this.prompt = new CSSPropertyPrompt(this, context.isEditingName, Array.from(this.#gridNames ?? []));
     this.prompt.setAutocompletionTimeout(0);
-    this.prompt.addEventListener("TextChanged", () => {
+    this.prompt.addEventListener(UI7.TextPrompt.Events.TEXT_CHANGED, () => {
       void this.applyFreeFlowStyleTextEdit(context);
     });
     const invalidString = this.property.getInvalidStringForInvalidProperty();
@@ -5765,7 +8787,7 @@ var GhostStylePropertyTreeElement = class extends StylePropertyTreeElement {
   }
 };
 
-// gen/front_end/panels/elements/StyleEditorWidget.js
+// ../../front_end/panels/elements/StyleEditorWidget.ts
 var instance = null;
 var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
   editor;
@@ -5885,7 +8907,9 @@ var StyleEditorWidget = class _StyleEditorWidget extends UI8.Widget.VBox {
   }
 };
 function ensureTreeElementForProperty(section5, propertyName) {
-  const target = section5.propertiesTreeOutline.rootElement().children().find((child) => child instanceof StylePropertyTreeElement && child.property.name === propertyName);
+  const target = section5.propertiesTreeOutline.rootElement().children().find(
+    (child) => child instanceof StylePropertyTreeElement && child.property.name === propertyName
+  );
   if (target) {
     return target;
   }
@@ -5909,7 +8933,7 @@ function getAuthoredStyles(section5, editableProperties) {
   return authoredProperties;
 }
 
-// gen/front_end/panels/elements/StylePropertiesSection.js
+// ../../front_end/panels/elements/StylePropertiesSection.ts
 var StylePropertiesSection_exports = {};
 __export(StylePropertiesSection_exports, {
   AtRuleSection: () => AtRuleSection,
@@ -5940,7 +8964,7 @@ import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon from "../common/common.js";
 import * as ElementsComponents2 from "./components/components.js";
 
-// gen/front_end/panels/elements/CSSSpecificityBreakdown.js
+// ../../front_end/panels/elements/CSSSpecificityBreakdown.ts
 var CSSSpecificityBreakdown_exports = {};
 __export(CSSSpecificityBreakdown_exports, {
   formatSpecificitySummary: () => formatSpecificitySummary,
@@ -6023,7 +9047,7 @@ function formatSpecificityTooltip(specificity) {
   return [formatSpecificitySummary(specificity), ...getSpecificityBreakdownLines(specificity)].join("\n");
 }
 
-// gen/front_end/panels/elements/StylePropertiesSection.js
+// ../../front_end/panels/elements/StylePropertiesSection.ts
 var UIStrings7 = {
   /**
    * @description Tooltip text that appears when hovering over the add button in the Styles tab of the Elements panel.
@@ -6227,12 +9251,14 @@ var StylePropertiesSection = class _StylePropertiesSection {
       this.titleElement.classList.add("hidden");
     }
     if (rule) {
-      const newRuleButton = new UI9.Toolbar.ToolbarButton(i18nString7(UIStrings7.insertStyleRuleBelow), "plus", void 0, "elements.new-style-rule");
-      newRuleButton.addEventListener("Click", this.onNewRuleClick, this);
-      newRuleButton.setSize(
-        "MICRO"
-        /* Buttons.Button.Size.MICRO */
+      const newRuleButton = new UI9.Toolbar.ToolbarButton(
+        i18nString7(UIStrings7.insertStyleRuleBelow),
+        "plus",
+        void 0,
+        "elements.new-style-rule"
       );
+      newRuleButton.addEventListener(UI9.Toolbar.ToolbarButton.Events.CLICK, this.onNewRuleClick, this);
+      newRuleButton.setSize(Buttons.Button.Size.MICRO);
       newRuleButton.element.tabIndex = -1;
       if (!this.newStyleRuleToolbar) {
         this.newStyleRuleToolbar = this.element.createChild("devtools-toolbar", "sidebar-pane-section-toolbar new-rule-toolbar");
@@ -6241,7 +9267,10 @@ var StylePropertiesSection = class _StylePropertiesSection {
       UI9.ARIAUtils.setHidden(this.newStyleRuleToolbar, true);
     }
     this.selectorElement.addEventListener("click", this.handleSelectorClick.bind(this), false);
-    this.selectorElement.setAttribute("jslog", `${VisualLogging4.cssRuleHeader("selector").track({ click: true, change: true })}`);
+    this.selectorElement.setAttribute(
+      "jslog",
+      `${VisualLogging4.cssRuleHeader("selector").track({ click: true, change: true })}`
+    );
     this.element.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this), false);
     this.element.addEventListener("mousedown", this.handleEmptySpaceMouseDown.bind(this), false);
     this.element.addEventListener("click", this.handleEmptySpaceClick.bind(this), false);
@@ -6348,7 +9377,12 @@ var StylePropertiesSection = class _StylePropertiesSection {
         return null;
       }
       if (ruleLocation && header && (!header.isAnonymousInlineStyleSheet() || matchedStyles.cssModel().sourceMapManager().sourceMapForClient(header))) {
-        return _StylePropertiesSection.linkifyRuleLocation(matchedStyles.cssModel(), linkifier, rule.header, ruleLocation);
+        return _StylePropertiesSection.linkifyRuleLocation(
+          matchedStyles.cssModel(),
+          linkifier,
+          rule.header,
+          ruleLocation
+        );
       }
       return null;
     }
@@ -6360,7 +9394,9 @@ var StylePropertiesSection = class _StylePropertiesSection {
       }
       if (rule && rule.style.styleSheetId && rule.treeScope) {
         const ownerNode = new SDK6.DOMModel.DeferredDOMNode(rule.cssModelInternal.target(), rule.treeScope);
-        return html8`<devtools-widget ${widget2((e) => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, void 0, rule.style.styleSheetId))}>
+        return html8`<devtools-widget ${widget2(
+          (e) => new PanelsCommon.DOMLinkifier.DeferredDOMNodeLink(e, ownerNode, void 0, rule.style.styleSheetId)
+        )}>
           ${label}
         </devtools-widget>`;
       }
@@ -6700,7 +9736,16 @@ var StylePropertiesSection = class _StylePropertiesSection {
     const properties = this.#activeAiSuggestion.properties.slice(1);
     for (let i = 0; i < properties.length; i++) {
       const property = properties[i];
-      const fakeProperty = new SDK6.CSSProperty.CSSProperty(this.styleInternal, this.styleInternal.allProperties().length, property.name, property.value, false, false, true, false);
+      const fakeProperty = new SDK6.CSSProperty.CSSProperty(
+        this.styleInternal,
+        this.styleInternal.allProperties().length,
+        property.name,
+        property.value,
+        false,
+        false,
+        true,
+        false
+      );
       const ghost = new GhostStylePropertyTreeElement(this.stylesContainer, this, this.matchedStyles, fakeProperty);
       this.propertiesTreeOutline.insertChild(ghost, index + i + 1);
       this.ghostStyleTreeElements.push(ghost);
@@ -6746,25 +9791,25 @@ var StylePropertiesSection = class _StylePropertiesSection {
     for (const ruleType of rule.ruleTypes) {
       let ancestorRuleElement;
       switch (ruleType) {
-        case "MediaRule":
+        case CSS2.CSSRuleType.MediaRule:
           ancestorRuleElement = this.createMediaElement(rule.media[mediaIndex++]);
           break;
-        case "ContainerRule":
+        case CSS2.CSSRuleType.ContainerRule:
           ancestorRuleElement = this.createContainerQueryElement(rule.containerQueries[containerIndex++], rule.style);
           break;
-        case "ScopeRule":
+        case CSS2.CSSRuleType.ScopeRule:
           ancestorRuleElement = this.createScopeElement(rule.scopes[scopeIndex++]);
           break;
-        case "SupportsRule":
+        case CSS2.CSSRuleType.SupportsRule:
           ancestorRuleElement = this.createSupportsElement(rule.supports[supportsIndex++]);
           break;
-        case "StyleRule":
+        case CSS2.CSSRuleType.StyleRule:
           ancestorRuleElement = this.createNestingElement(rule, nestingIndex++);
           break;
-        case "StartingStyleRule":
+        case CSS2.CSSRuleType.StartingStyleRule:
           ancestorRuleElement = this.createStartingStyleElement();
           break;
-        case "NavigationRule":
+        case CSS2.CSSRuleType.NavigationRule:
           ancestorRuleElement = this.createNavigationElement(rule.navigations[navigationsIndex++]);
           break;
       }
@@ -6962,7 +10007,13 @@ var StylePropertiesSection = class _StylePropertiesSection {
       selectorElement.addEventListener("mouseenter", () => this.onMouseEnterSelector(parentRule), false);
       selectorElement.addEventListener("mouseleave", this.onMouseOutSelector.bind(this), false);
       const specificityContainer = container.createChild("span");
-      this.renderSelectorsToElement(parentRule.selectors, matchingSelectors, this.elementToSelectorIndex, selectorElement, specificityContainer);
+      this.renderSelectorsToElement(
+        parentRule.selectors,
+        matchingSelectors,
+        this.elementToSelectorIndex,
+        selectorElement,
+        specificityContainer
+      );
       const openBrace = container.createChild("span", "sidebar-pane-open-brace");
       openBrace.textContent = " {";
       return container;
@@ -6984,7 +10035,10 @@ var StylePropertiesSection = class _StylePropertiesSection {
       queryName: containerQuery.name,
       onContainerLinkClick: (event) => {
         event.preventDefault();
-        void ElementsPanel.instance().revealAndSelectNode(container.containerNode, { showPanel: true, focusNode: true, highlightInOverlay: false });
+        void ElementsPanel.instance().revealAndSelectNode(
+          container.containerNode,
+          { showPanel: true, focusNode: true, highlightInOverlay: false }
+        );
         void container.containerNode.scrollIntoView();
       }
     };
@@ -7128,7 +10182,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     }
   }
   isPropertyOverloaded(property) {
-    return this.matchedStyles.propertyState(property) === "Overloaded";
+    return this.matchedStyles.propertyState(property) === SDK6.CSSMatchedStyles.PropertyState.OVERLOADED;
   }
   updateFilter() {
     let hasMatchingChild = false;
@@ -7179,10 +10233,7 @@ var StylePropertiesSection = class _StylePropertiesSection {
     if (hasDisabledProperty) {
       return false;
     }
-    const allOverloaded = properties.every(
-      (p) => this.matchedStyles.propertyState(p) === "Overloaded"
-      /* SDK.CSSMatchedStyles.PropertyState.OVERLOADED */
-    );
+    const allOverloaded = properties.every((p) => this.matchedStyles.propertyState(p) === SDK6.CSSMatchedStyles.PropertyState.OVERLOADED);
     return allOverloaded;
   }
   updateCollapsedState() {
@@ -7200,7 +10251,10 @@ var StylePropertiesSection = class _StylePropertiesSection {
     if (this.#collapseIcon) {
       this.#collapseIcon.name = collapsed ? "triangle-right" : "triangle-down";
       UI9.ARIAUtils.setExpanded(this.#collapseIcon, !collapsed);
-      UI9.ARIAUtils.setLabel(this.#collapseIcon, collapsed ? i18nString7(UIStrings7.expandCollapsedRule) : i18nString7(UIStrings7.collapseExpandedRule));
+      UI9.ARIAUtils.setLabel(
+        this.#collapseIcon,
+        collapsed ? i18nString7(UIStrings7.expandCollapsedRule) : i18nString7(UIStrings7.collapseExpandedRule)
+      );
     }
   }
   #toggleCollapsed() {
@@ -7242,7 +10296,13 @@ var StylePropertiesSection = class _StylePropertiesSection {
   renderSelectors(selectors, matchingSelectors, elementToSelectorIndex) {
     this.selectorElement.removeChildren();
     this.#specificityTooltips.removeChildren();
-    this.renderSelectorsToElement(selectors, matchingSelectors, elementToSelectorIndex, this.selectorElement, this.#specificityTooltips);
+    this.renderSelectorsToElement(
+      selectors,
+      matchingSelectors,
+      elementToSelectorIndex,
+      this.selectorElement,
+      this.#specificityTooltips
+    );
   }
   renderSelectorsToElement(selectors, matchingSelectors, elementToSelectorIndex, targetElement, tooltipContainer) {
     for (const [i, selector] of selectors.entries()) {
@@ -7353,7 +10413,12 @@ var StylePropertiesSection = class _StylePropertiesSection {
     if (!this.editable) {
       return;
     }
-    const config = new UI9.InplaceEditor.Config(this.editingMediaCommitted.bind(this, query), this.editingMediaCancelled.bind(this, element), void 0, this.editingMediaBlurHandler.bind(this));
+    const config = new UI9.InplaceEditor.Config(
+      this.editingMediaCommitted.bind(this, query),
+      this.editingMediaCancelled.bind(this, element),
+      void 0,
+      this.editingMediaBlurHandler.bind(this)
+    );
     UI9.InplaceEditor.InplaceEditor.startEditing(element, config);
     const selection = element.getComponentSelection();
     if (selection) {
@@ -7519,7 +10584,11 @@ ${allDeclarationText}
       this.#specificityTooltips.querySelectorAll("devtools-tooltip")?.forEach((tooltip) => tooltip.hidePopover());
       element.textContent = textContent.replace(/\s+/g, " ").trim();
     }
-    const config = new UI9.InplaceEditor.Config(this.editingSelectorCommitted.bind(this), this.editingSelectorCancelled.bind(this), void 0);
+    const config = new UI9.InplaceEditor.Config(
+      this.editingSelectorCommitted.bind(this),
+      this.editingSelectorCancelled.bind(this),
+      void 0
+    );
     UI9.InplaceEditor.InplaceEditor.startEditing(this.selectorElement, config);
     const selection = element.getComponentSelection();
     if (selection) {
@@ -7639,7 +10708,12 @@ var BlankStylePropertiesSection = class extends StylePropertiesSection {
     this.normal = false;
     this.ruleLocation = ruleLocation;
     this.styleSheetHeader = styleSheetHeader;
-    const locationNode = StylePropertiesSection.linkifyRuleLocation(cssModel, this.stylesContainer.linkifier, styleSheetHeader, this.actualRuleLocation());
+    const locationNode = StylePropertiesSection.linkifyRuleLocation(
+      cssModel,
+      this.stylesContainer.linkifier,
+      styleSheetHeader,
+      this.actualRuleLocation()
+    );
     render5(html8`${locationNode}`, this.selectorRefElement, { host: this });
     this.maybeCreateAncestorRules(insertAfterStyle);
     this.element.classList.add("blank-section");
@@ -7881,7 +10955,7 @@ function constructResolvedSelector(rule, nestingIndex) {
   return `:is(${sanitizedParent}) ${selectorText.trim()}`;
 }
 
-// gen/front_end/panels/elements/StylePropertyHighlighter.js
+// ../../front_end/panels/elements/StylePropertyHighlighter.ts
 var StylePropertyHighlighter_exports = {};
 __export(StylePropertyHighlighter_exports, {
   StylePropertyHighlighter: () => StylePropertyHighlighter
@@ -7925,7 +10999,9 @@ var StylePropertyHighlighter = class {
   }
   findAndHighlightSection(sectionName, blockName, treeScopeDistance = -1) {
     const block = this.styleSidebarPane.getSectionBlockByName(blockName);
-    const section5 = block?.sections.find((section6) => section6.headerText() === sectionName && (treeScopeDistance === -1 || section6.treeScopeDistance() === treeScopeDistance));
+    const section5 = block?.sections.find(
+      (section6) => section6.headerText() === sectionName && (treeScopeDistance === -1 || section6.treeScopeDistance() === treeScopeDistance)
+    );
     if (!section5 || !block) {
       return;
     }
@@ -7953,7 +11029,10 @@ var StylePropertyHighlighter = class {
       block?.expand(true);
       section5.expand();
       section5.showAllItems();
-      const treeElement = this.findTreeElementFromSection((treeElement2) => treeElement2.property.name === propertyName && !treeElement2.overloaded(), section5);
+      const treeElement = this.findTreeElementFromSection(
+        (treeElement2) => treeElement2.property.name === propertyName && !treeElement2.overloaded(),
+        section5
+      );
       if (treeElement) {
         this.scrollAndHighlightTreeElement(treeElement);
         section5.element.focus();
@@ -7977,7 +11056,7 @@ var StylePropertyHighlighter = class {
   }
 };
 
-// gen/front_end/panels/elements/StylesAiCodeCompletionProvider.js
+// ../../front_end/panels/elements/StylesAiCodeCompletionProvider.ts
 var StylesAiCodeCompletionProvider_exports = {};
 __export(StylesAiCodeCompletionProvider_exports, {
   StylesAiCodeCompletionProvider: () => StylesAiCodeCompletionProvider
@@ -8010,7 +11089,10 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
       throw new Error("AI code completion feature in Styles is not available.");
     }
     this.#aiCodeCompletionConfig = aiCodeCompletionConfig;
-    Host3.AidaClient.HostConfigTracker.instance().addEventListener("aidaAvailabilityChanged", this.#boundOnAidaAvailabilityChange);
+    Host3.AidaClient.HostConfigTracker.instance().addEventListener(
+      Host3.AidaClient.Events.AIDA_AVAILABILITY_CHANGED,
+      this.#boundOnAidaAvailabilityChange
+    );
     this.#aiCodeCompletionSetting.addChangeListener(this.#boundOnSettingChange);
     const initialAvailability = Host3.AidaClient.HostConfigTracker.instance().aidaAvailability;
     if (initialAvailability !== void 0) {
@@ -8031,10 +11113,14 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
     if (this.#aiCodeCompletionConfig.completionContext.stopSequences) {
       stopSequences.push(...this.#aiCodeCompletionConfig.completionContext.stopSequences);
     }
-    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion({
-      aidaClient: this.#aidaClient,
-      serverSideLoggingEnabled: !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging
-    }, void 0, stopSequences);
+    this.#aiCodeCompletion = new AiCodeCompletion.AiCodeCompletion.AiCodeCompletion(
+      {
+        aidaClient: this.#aidaClient,
+        serverSideLoggingEnabled: !Root.Runtime.hostConfig.aidaAvailability?.disallowLogging
+      },
+      void 0,
+      stopSequences
+    );
     this.#aiCodeCompletionConfig.onFeatureEnabled();
   }
   #cleanupAiCodeCompletion() {
@@ -8045,7 +11131,7 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
     this.#aiCodeCompletionConfig?.onFeatureDisabled();
   }
   #updateAiCodeCompletionStateWithAvailability(aidaAvailability) {
-    const isAvailable = aidaAvailability === "available";
+    const isAvailable = aidaAvailability === Host3.AidaClient.AidaAccessPreconditions.AVAILABLE;
     const devtoolsLocale = i18n15.DevToolsLocale.DevToolsLocale.instance().locale;
     const isEnabled = AiCodeCompletion.AiCodeCompletion.AiCodeCompletion.isAiCodeCompletionStylesEnabled(devtoolsLocale) && this.#aiCodeCompletionSetting.get();
     if (isAvailable && isEnabled) {
@@ -8124,8 +11210,7 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
         prefix,
         suffix,
         cursorPositionAtRequest,
-        "CSS"
-        /* Host.AidaClient.AidaInferenceLanguage.CSS */
+        Host3.AidaClient.AidaInferenceLanguage.CSS
       );
       this.#aiCodeCompletionConfig?.onResponseReceived();
       if (!completionResponse) {
@@ -8156,7 +11241,10 @@ var StylesAiCodeCompletionProvider = class _StylesAiCodeCompletionProvider {
     if (shouldBlock) {
       return null;
     }
-    const suggestionText = TextEditor.AiCodeCompletionProvider.AiCodeCompletionProvider.trimSuggestionOverlap(suggestionSample.generationString, suffix);
+    const suggestionText = TextEditor.AiCodeCompletionProvider.AiCodeCompletionProvider.trimSuggestionOverlap(
+      suggestionSample.generationString,
+      suffix
+    );
     if (suggestionText.length === 0) {
       return null;
     }
@@ -8571,7 +11659,7 @@ var stylesSidebarPane_css_default = `/**
 
 /*# sourceURL=${import.meta.resolve("./stylesSidebarPane.css")} */`;
 
-// gen/front_end/panels/elements/WebCustomData.js
+// ../../front_end/panels/elements/WebCustomData.ts
 var WebCustomData_exports = {};
 __export(WebCustomData_exports, {
   WebCustomData: () => WebCustomData
@@ -8611,7 +11699,7 @@ var WebCustomData = class _WebCustomData {
   }
 };
 
-// gen/front_end/panels/elements/StylesSidebarPane.js
+// ../../front_end/panels/elements/StylesSidebarPane.ts
 var UIStrings8 = {
   /**
    * @description No matches element text content in the Styles tab of the Elements panel.
@@ -8699,7 +11787,9 @@ var HIGHLIGHTABLE_PROPERTIES = [
 var DISCLAIMER_TOOLTIP_ID = "styles-ai-code-completion-disclaimer-tooltip";
 var SPINNER_TOOLTIP_ID = "styles-ai-code-completion-spinner-tooltip";
 var CITATIONS_TOOLTIP_ID = "styles-ai-code-completion-citations-tooltip";
-var StylesSidebarPaneBase = Common5.ObjectWrapper.eventMixin(ElementsSidebarPane);
+var StylesSidebarPaneBase = Common5.ObjectWrapper.eventMixin(
+  ElementsSidebarPane
+);
 var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
   matchedStyles = null;
   currentToolbarPane = null;
@@ -8769,25 +11859,41 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     this.sectionsContainer.show(this.contentElement);
     UI10.ARIAUtils.markAsList(this.sectionsContainer.contentElement);
     this.sectionsContainer.contentElement.addEventListener("keydown", this.sectionsContainerKeyDown.bind(this), false);
-    this.sectionsContainer.contentElement.addEventListener("focusin", this.sectionsContainerFocusChanged.bind(this), false);
-    this.sectionsContainer.contentElement.addEventListener("focusout", this.sectionsContainerFocusChanged.bind(this), false);
-    this.#swatchPopoverHelper.addEventListener("WillShowPopover", this.hideAllPopovers, this);
+    this.sectionsContainer.contentElement.addEventListener(
+      "focusin",
+      this.sectionsContainerFocusChanged.bind(this),
+      false
+    );
+    this.sectionsContainer.contentElement.addEventListener(
+      "focusout",
+      this.sectionsContainerFocusChanged.bind(this),
+      false
+    );
+    this.#swatchPopoverHelper.addEventListener(
+      InlineEditor3.SwatchPopoverHelper.Events.WILL_SHOW_POPOVER,
+      this.hideAllPopovers,
+      this
+    );
     this.decorator = new StylePropertyHighlighter(this);
     this.contentElement.classList.add("styles-pane");
     UI10.Context.Context.instance().addFlavorChangeListener(SDK7.DOMModel.DOMNode, this.forceUpdate, this);
     this.contentElement.addEventListener("copy", this.clipboardCopy.bind(this));
     this.boundOnScroll = this.onScroll.bind(this);
-    this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, (event) => {
-      const link2 = event.composedPath()[0];
-      if (link2 instanceof Element) {
-        return link2;
+    this.imagePreviewPopover = new ImagePreviewPopover(
+      this.contentElement,
+      (event) => {
+        const link2 = event.composedPath()[0];
+        if (link2 instanceof Element) {
+          return link2;
+        }
+        return null;
+      },
+      async () => {
+        const features = await Components2.ImagePreview.loadPrecomputedFeatures(this.node());
+        return features;
       }
-      return null;
-    }, async () => {
-      const features = await Components2.ImagePreview.loadPrecomputedFeatures(this.node());
-      return features;
-    });
-    UI10.ViewManager.ViewManager.instance().addEventListener("ViewVisibilityChanged", (event) => {
+    );
+    UI10.ViewManager.ViewManager.instance().addEventListener(UI10.ViewManager.Events.VIEW_VISIBILITY_CHANGED, (event) => {
       if (event.data.revealedViewId === "animations" || event.data.hiddenViewId === "animations") {
         this.#scheduleResetUpdateIfNotEditing();
       }
@@ -8951,9 +12057,17 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     const contextMenu = new UI10.ContextMenu.ContextMenu(event);
     for (let i = 0; i < contextMenuDescriptors.length; ++i) {
       const descriptor = contextMenuDescriptors[i];
-      contextMenu.defaultSection().appendItem(descriptor.text, descriptor.handler, { jslogContext: "style-sheet-header" });
+      contextMenu.defaultSection().appendItem(
+        descriptor.text,
+        descriptor.handler,
+        { jslogContext: "style-sheet-header" }
+      );
     }
-    contextMenu.footerSection().appendItem("inspector-stylesheet", this.createNewRuleInViaInspectorStyleSheet.bind(this), { jslogContext: "inspector-stylesheet" });
+    contextMenu.footerSection().appendItem(
+      "inspector-stylesheet",
+      this.createNewRuleInViaInspectorStyleSheet.bind(this),
+      { jslogContext: "inspector-stylesheet" }
+    );
     void contextMenu.show();
     function compareDescriptors(descriptor1, descriptor2) {
       return Platform5.StringUtilities.naturalOrderComparator(descriptor1.text, descriptor2.text);
@@ -9061,22 +12175,25 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
       this.fetchComputedStyleExtraFieldsFor(nodeId)
     ]);
     signal?.throwIfAborted();
-    await this.innerRebuildUpdate(signal, this.matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
+    await this.innerRebuildUpdate(
+      signal,
+      this.matchedStyles,
+      computedStyles,
+      parentsComputedStyles,
+      computedStyleExtraFields
+    );
     signal?.throwIfAborted();
     if (!this.initialUpdateCompleted) {
       this.initialUpdateCompleted = true;
       this.appendToolbarItem(this.createRenderingShortcuts());
-      this.dispatchEventToListeners(
-        "InitialUpdateCompleted"
-        /* Events.INITIAL_UPDATE_COMPLETED */
-      );
+      this.dispatchEventToListeners("InitialUpdateCompleted" /* INITIAL_UPDATE_COMPLETED */);
     }
     this.#updateId += 1;
     const currentUpdateId = this.#updateId;
     void UI10.Widget.Widget.allUpdatesComplete.then(() => {
       if (this.#updateId === currentUpdateId) {
         this.nodeStylesUpdatedForTest(this.node(), true);
-        this.dispatchEventToListeners("StylesUpdateCompleted", { hasMatchedStyles: this.hasMatchedStyles });
+        this.dispatchEventToListeners("StylesUpdateCompleted" /* STYLES_UPDATE_COMPLETED */, { hasMatchedStyles: this.hasMatchedStyles });
       }
     });
   }
@@ -9174,7 +12291,10 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
       if (!node) {
         continue;
       }
-      node.domModel().overlayModel().highlightInOverlay({ node: this.node(), selectorList }, mode);
+      node.domModel().overlayModel().highlightInOverlay(
+        { node: this.node(), selectorList },
+        mode
+      );
       this.isActivePropertyHighlighted = true;
       break;
     }
@@ -9280,7 +12400,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     }
     const inheritedStyles = this.matchedStyles.inheritedStyles() ?? [];
     const currentInheritedTransitionsStyles = inheritedStyles.filter((style) => style.type === SDK7.CSSStyleDeclaration.Type.Transition);
-    const newInheritedTransitionsStyles = animatedStyles.inherited?.map((inherited) => inherited.transitionsStyle).filter((style) => style?.cssProperties.some((cssProperty) => SDK7.CSSMetadata.cssMetadata().isPropertyInherited(cssProperty.name))) ?? [];
+    const newInheritedTransitionsStyles = animatedStyles.inherited?.map((inherited) => inherited.transitionsStyle).filter((style) => style?.cssProperties.some(
+      (cssProperty) => SDK7.CSSMetadata.cssMetadata().isPropertyInherited(cssProperty.name)
+    )) ?? [];
     if (currentInheritedTransitionsStyles.length !== newInheritedTransitionsStyles.length) {
       this.#scheduleResetUpdateIfNotEditing();
       return;
@@ -9291,7 +12413,9 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
       updateStyleSection(currentInheritedTransitionsStyle, newInheritedTransitionsStyle ?? null);
     }
     const currentInheritedAnimationsStyles = inheritedStyles.filter((style) => style.type === SDK7.CSSStyleDeclaration.Type.Animation);
-    const newInheritedAnimationsStyles = animatedStyles.inherited?.flatMap((inherited) => inherited.animationStyles).filter((animationStyle) => animationStyle?.style.cssProperties.some((cssProperty) => SDK7.CSSMetadata.cssMetadata().isPropertyInherited(cssProperty.name))) ?? [];
+    const newInheritedAnimationsStyles = animatedStyles.inherited?.flatMap((inherited) => inherited.animationStyles).filter((animationStyle) => animationStyle?.style.cssProperties.some(
+      (cssProperty) => SDK7.CSSMetadata.cssMetadata().isPropertyInherited(cssProperty.name)
+    )) ?? [];
     if (currentInheritedAnimationsStyles.length !== newInheritedAnimationsStyles.length) {
       this.#scheduleResetUpdateIfNotEditing();
       return;
@@ -9365,7 +12489,13 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
       this.noMatchesElement.classList.remove("hidden");
       return;
     }
-    const blocks = await this.rebuildSectionsForMatchedStyleRules(signal, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
+    const blocks = await this.rebuildSectionsForMatchedStyleRules(
+      signal,
+      matchedStyles,
+      computedStyles,
+      parentsComputedStyles,
+      computedStyleExtraFields
+    );
     signal?.throwIfAborted();
     this.sectionBlocks = blocks;
     const newSections = this.sectionBlocks.map((block) => block.sections).flat();
@@ -9417,7 +12547,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     }
     this.swatchPopoverHelper().reposition();
     UI10.UIUserMetrics.UIUserMetrics.instance().panelLoaded("elements", "DevTools.Launch.Elements");
-    this.dispatchEventToListeners("StylesUpdateCompleted", { hasMatchedStyles: false });
+    this.dispatchEventToListeners("StylesUpdateCompleted" /* STYLES_UPDATE_COMPLETED */, { hasMatchedStyles: false });
   }
   nodeStylesUpdatedForTest(_node, _rebuild) {
   }
@@ -9453,7 +12583,13 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     return `${style.type}:${style.cssText}`;
   }
   rebuildSectionsForMatchedStyleRulesForTest(matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
-    return this.rebuildSectionsForMatchedStyleRules(void 0, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields);
+    return this.rebuildSectionsForMatchedStyleRules(
+      void 0,
+      matchedStyles,
+      computedStyles,
+      parentsComputedStyles,
+      computedStyleExtraFields
+    );
   }
   async rebuildSectionsForMatchedStyleRules(signal, matchedStyles, computedStyles, parentsComputedStyles, computedStyleExtraFields) {
     if (this.idleCallbackManager) {
@@ -9507,7 +12643,15 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
           if (signal?.aborted) {
             return;
           }
-          const section5 = new StylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
+          const section5 = new StylePropertiesSection(
+            this,
+            matchedStyles,
+            style,
+            sectionIdx,
+            computedStyles,
+            parentsComputedStyles,
+            computedStyleExtraFields
+          );
           sectionIdx++;
           lastBlock.sections.push(section5);
         });
@@ -9517,7 +12661,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     const customHighlightPseudoRulesets = Array.from(matchedStyles.customHighlightPseudoNames()).map((highlightName) => {
       return {
         highlightName,
-        pseudoType: "highlight",
+        pseudoType: DOM.PseudoType.Highlight,
         pseudoStyles: matchedStyles.customHighlightPseudoStyles(highlightName)
       };
     });
@@ -9525,10 +12669,10 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
       return { highlightName: null, pseudoType, pseudoStyles: matchedStyles.pseudoStyles(pseudoType) };
     });
     const pseudoRulesets = customHighlightPseudoRulesets.concat(otherPseudoRulesets).sort((a, b) => {
-      if (a.pseudoType === "before" && b.pseudoType !== "before") {
+      if (a.pseudoType === DOM.PseudoType.Before && b.pseudoType !== DOM.PseudoType.Before) {
         return -1;
       }
-      if (a.pseudoType !== "before" && b.pseudoType === "before") {
+      if (a.pseudoType !== DOM.PseudoType.Before && b.pseudoType === DOM.PseudoType.Before) {
         return 1;
       }
       if (a.pseudoType < b.pseudoType) {
@@ -9563,7 +12707,15 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
           if (signal?.aborted) {
             return;
           }
-          const section5 = new HighlightPseudoStylePropertiesSection(this, matchedStyles, style, sectionIdx, computedStyles, parentsComputedStyles, computedStyleExtraFields);
+          const section5 = new HighlightPseudoStylePropertiesSection(
+            this,
+            matchedStyles,
+            style,
+            sectionIdx,
+            computedStyles,
+            parentsComputedStyles,
+            computedStyleExtraFields
+          );
           sectionIdx++;
           lastBlock.sections.push(section5);
         });
@@ -9603,7 +12755,13 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
         if (signal?.aborted) {
           return;
         }
-        block.sections.push(new PositionTryRuleSection(this, matchedStyles, positionTryRule.style, sectionIdx, positionTryRule.active()));
+        block.sections.push(new PositionTryRuleSection(
+          this,
+          matchedStyles,
+          positionTryRule.style,
+          sectionIdx,
+          positionTryRule.active()
+        ));
         sectionIdx++;
       });
       blocks.push(block);
@@ -9616,7 +12774,14 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
           if (signal?.aborted) {
             return;
           }
-          block.sections.push(new RegisteredPropertiesSection(this, matchedStyles, propertyRule.style(), sectionIdx, propertyRule.propertyName(), expandedByDefault));
+          block.sections.push(new RegisteredPropertiesSection(
+            this,
+            matchedStyles,
+            propertyRule.style(),
+            sectionIdx,
+            propertyRule.propertyName(),
+            expandedByDefault
+          ));
           sectionIdx++;
         });
       }
@@ -9630,7 +12795,15 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
           if (signal?.aborted) {
             return;
           }
-          block.sections.push(new FunctionRuleSection(this, matchedStyles, functionRule.style, functionRule.children(), sectionIdx, functionRule.nameWithParameters(), expandedByDefault));
+          block.sections.push(new FunctionRuleSection(
+            this,
+            matchedStyles,
+            functionRule.style,
+            functionRule.children(),
+            sectionIdx,
+            functionRule.nameWithParameters(),
+            expandedByDefault
+          ));
           sectionIdx++;
         });
       }
@@ -9668,11 +12841,21 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
       const bid = getBlockId(block);
       const knownBlock = this.#allKnownBlocks.get(bid);
       if (knownBlock) {
-        block.sections = mergeOrderedItems(knownBlock.sections, block.sections, (section5) => this.getStyleId(section5.styleInternal), (section5) => section5.setInactive(true));
+        block.sections = mergeOrderedItems(
+          knownBlock.sections,
+          block.sections,
+          (section5) => this.getStyleId(section5.styleInternal),
+          (section5) => section5.setInactive(true)
+        );
       }
     }
     const oldBlocks = Array.from(this.#allKnownBlocks.values());
-    const finalBlocks = mergeOrderedItems(oldBlocks, blocks, getBlockId, (block) => block.sections.forEach((section5) => section5.setInactive(true)));
+    const finalBlocks = mergeOrderedItems(
+      oldBlocks,
+      blocks,
+      getBlockId,
+      (block) => block.sections.forEach((section5) => section5.setInactive(true))
+    );
     this.#allKnownBlocks.clear();
     for (const block of finalBlocks) {
       this.#allKnownBlocks.set(getBlockId(block), block);
@@ -9703,7 +12886,15 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
   }
   addBlankSection(insertAfterSection, styleSheetHeader, ruleLocation) {
     const node = this.node();
-    const blankSection = new BlankStylePropertiesSection(this, insertAfterSection.matchedStyles, node ? node.simpleSelector() : "", styleSheetHeader, ruleLocation, insertAfterSection.style(), 0);
+    const blankSection = new BlankStylePropertiesSection(
+      this,
+      insertAfterSection.matchedStyles,
+      node ? node.simpleSelector() : "",
+      styleSheetHeader,
+      ruleLocation,
+      insertAfterSection.style(),
+      0
+    );
     this.sectionsContainer.contentElement.insertBefore(blankSection.element, insertAfterSection.element.nextSibling);
     for (const block of this.sectionBlocks) {
       const index = block.sections.indexOf(insertAfterSection);
@@ -9796,7 +12987,7 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
       true,
       this.onRegexToggled.bind(this)
     );
-    filterInput.addEventListener("TextChanged", this.onFilterChanged, this);
+    filterInput.addEventListener(UI10.Toolbar.ToolbarInput.Event.TEXT_CHANGED, this.onFilterChanged, this);
     toolbar2.appendToolbarItem(filterInput);
     void toolbar2.appendItemsAtLocation("styles-sidebarpane-toolbar");
     this.toolbar = toolbar2;
@@ -9824,10 +13015,10 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     }
   }
   addStyleUpdateListener(listener) {
-    this.addEventListener("StylesUpdateCompleted", listener);
+    this.addEventListener("StylesUpdateCompleted" /* STYLES_UPDATE_COMPLETED */, listener);
   }
   removeStyleUpdateListener(listener) {
-    this.removeEventListener("StylesUpdateCompleted", listener);
+    this.removeEventListener("StylesUpdateCompleted" /* STYLES_UPDATE_COMPLETED */, listener);
   }
   startToolbarPaneAnimation(widget4) {
     if (widget4 === this.currentToolbarPane) {
@@ -9869,10 +13060,18 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     }
   }
   createRenderingShortcuts() {
-    const prefersColorSchemeSetting = Common5.Settings.Settings.instance().resolve(SDK7.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor);
+    const prefersColorSchemeSetting = Common5.Settings.Settings.instance().resolve(
+      SDK7.SDKSettings.emulatedCSSMediaFeaturePrefersColorSchemeSettingDescriptor
+    );
     const autoDarkModeSetting = Common5.Settings.Settings.instance().resolve(SDK7.SDKSettings.emulateAutoDarkModeSettingDescriptor);
     const decorateStatus = (condition, title) => `${condition ? "\u2713 " : ""}${title}`;
-    const button = new UI10.Toolbar.ToolbarToggle(i18nString8(UIStrings8.toggleRenderingEmulations), "brush", "brush-filled", void 0, false);
+    const button = new UI10.Toolbar.ToolbarToggle(
+      i18nString8(UIStrings8.toggleRenderingEmulations),
+      "brush",
+      "brush-filled",
+      void 0,
+      false
+    );
     button.element.setAttribute("jslog", `${VisualLogging5.dropDown("rendering-emulations").track({ click: true })}`);
     button.element.addEventListener("click", (event) => {
       const boundingRect = button.element.getBoundingClientRect();
@@ -10009,11 +13208,11 @@ var StylesSidebarPane = class _StylesSidebarPane extends StylesSidebarPaneBase {
     this.#lazyRenderCallbacks.delete(element);
   }
 };
-var Events;
-(function(Events3) {
+var Events = /* @__PURE__ */ ((Events3) => {
   Events3["INITIAL_UPDATE_COMPLETED"] = "InitialUpdateCompleted";
   Events3["STYLES_UPDATE_COMPLETED"] = "StylesUpdateCompleted";
-})(Events || (Events = {}));
+  return Events3;
+})(Events || {});
 var MAX_LINK_LENGTH = 23;
 var SectionBlock = class _SectionBlock {
   #titleElement;
@@ -10116,8 +13315,8 @@ var SectionBlock = class _SectionBlock {
     separatorElement.setAttribute("jslog", `${VisualLogging5.sectionHeader("layer")}`);
     UI10.UIUtils.createTextChild(separatorElement.createChild("div"), i18nString8(UIStrings8.layer));
     const layers = rule.layers;
-    if (!layers.length && rule.origin === "user-agent") {
-      const name2 = rule.origin === "user-agent" ? "\xA0user\xA0agent\xA0stylesheet" : "\xA0implicit\xA0outer\xA0layer";
+    if (!layers.length && rule.origin === CSS2.StyleSheetOrigin.UserAgent) {
+      const name2 = rule.origin === CSS2.StyleSheetOrigin.UserAgent ? "\xA0user\xA0agent\xA0stylesheet" : "\xA0implicit\xA0outer\xA0layer";
       UI10.UIUtils.createTextChild(separatorElement.createChild("div"), name2);
       return new _SectionBlock(separatorElement);
     }
@@ -10242,9 +13441,13 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
         const optionOrAlt = Host4.Platform.isMac() ? "Option" : "Alt";
         if (cssValueText !== null) {
           if (cssValueText.match(/#[\da-f]{3,6}$/i)) {
-            this.setTitle(i18nString8(UIStrings8.incrementdecrementWithMousewheelOne, { PH1: cmdOrCtrl, PH2: optionOrAlt }));
+            this.setTitle(
+              i18nString8(UIStrings8.incrementdecrementWithMousewheelOne, { PH1: cmdOrCtrl, PH2: optionOrAlt })
+            );
           } else if (cssValueText.match(/\d+/)) {
-            this.setTitle(i18nString8(UIStrings8.incrementdecrementWithMousewheelHundred, { PH1: cmdOrCtrl, PH2: optionOrAlt }));
+            this.setTitle(
+              i18nString8(UIStrings8.incrementdecrementWithMousewheelHundred, { PH1: cmdOrCtrl, PH2: optionOrAlt })
+            );
           }
         }
       }
@@ -10346,7 +13549,10 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
   handleNameOrValueUpDown(event) {
     function finishHandler(_originalValue, _replacementString) {
       if (this.treeElement.nameElement && this.treeElement.valueElement) {
-        void this.treeElement.applyStyleText(this.treeElement.nameElement.textContent + ": " + this.treeElement.valueElement.textContent, false);
+        void this.treeElement.applyStyleText(
+          this.treeElement.nameElement.textContent + ": " + this.treeElement.valueElement.textContent,
+          false
+        );
       }
     }
     function customNumberHandler(prefix, number, suffix) {
@@ -10355,7 +13561,13 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
       }
       return prefix + number + suffix;
     }
-    if (!this.isEditingName && this.treeElement.valueElement && UI10.UIUtils.handleElementValueModifications(event, this.treeElement.valueElement, finishHandler.bind(this), this.isValueSuggestion.bind(this), customNumberHandler.bind(this))) {
+    if (!this.isEditingName && this.treeElement.valueElement && UI10.UIUtils.handleElementValueModifications(
+      event,
+      this.treeElement.valueElement,
+      finishHandler.bind(this),
+      this.isValueSuggestion.bind(this),
+      customNumberHandler.bind(this)
+    )) {
       return true;
     }
     return false;
@@ -10468,7 +13680,11 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     };
     for (const result of results) {
       await ensureComputedStyles();
-      const iconInfo = ElementsComponents3.CSSPropertyIconResolver.findIcon(this.isEditingName ? result.text : `${this.treeElement.property.name}: ${result.text}`, this.selectedNodeComputedStyles, this.parentNodeComputedStyles);
+      const iconInfo = ElementsComponents3.CSSPropertyIconResolver.findIcon(
+        this.isEditingName ? result.text : `${this.treeElement.property.name}: ${result.text}`,
+        this.selectedNodeComputedStyles,
+        this.parentNodeComputedStyles
+      );
       if (!iconInfo) {
         continue;
       }
@@ -10573,7 +13789,13 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     if (!cssModel) {
       return;
     }
-    await this.aiCodeCompletionProvider.triggerAiCodeCompletion(userInput, range.endOffset, this.isEditingName, this.treeElement.property, cssModel);
+    await this.aiCodeCompletionProvider.triggerAiCodeCompletion(
+      userInput,
+      range.endOffset,
+      this.isEditingName,
+      this.treeElement.property,
+      cssModel
+    );
   }
   setAiAutoCompletion(args) {
     if (!args) {
@@ -10685,7 +13907,11 @@ var CSSPropertyPrompt = class extends UI10.TextPrompt.TextPrompt {
     const suggestionText = this.treeElement.section().activeAiSuggestion?.text;
     await this.treeElement.section().commitActiveAiSuggestion();
     if (this.activeAiSuggestionInfo) {
-      this.aiCodeCompletionProvider?.onSuggestionAccepted(this.activeAiSuggestionInfo.citations, this.activeAiSuggestionInfo.rpcGlobalId, this.activeAiSuggestionInfo.sampleId);
+      this.aiCodeCompletionProvider?.onSuggestionAccepted(
+        this.activeAiSuggestionInfo.citations,
+        this.activeAiSuggestionInfo.rpcGlobalId,
+        this.activeAiSuggestionInfo.sampleId
+      );
     }
     if (suggestionText) {
       UI10.ARIAUtils.LiveAnnouncer.status(i18nString8(UIStrings8.aiSuggestionAccepted, { PH1: suggestionText }));
@@ -10788,7 +14014,7 @@ var ButtonProvider2 = class _ButtonProvider {
   }
 };
 
-// gen/front_end/panels/elements/PropertyRenderer.js
+// ../../front_end/panels/elements/PropertyRenderer.ts
 var UIStrings9 = {
   /**
    * @description Text that is announced by the screen reader when the user focuses on an input field for entering the name of a CSS property in the Styles tab of the Elements panel.
@@ -10916,7 +14142,12 @@ var TracingContext = class _TracingContext {
   expandPercentagesInShorthands;
   constructor(highlighting, expandPercentagesInShorthands, initialLonghandOffset = 0, matchedResult) {
     this.#highlighting = highlighting;
-    this.#hasMoreSubstitutions = matchedResult?.hasMatches(SDK8.CSSPropertyParserMatchers.VariableMatch, SDK8.CSSPropertyParserMatchers.BaseVariableMatch, SDK8.CSSPropertyParserMatchers.AttributeMatch, SDK8.CSSPropertyParserMatchers.EnvFunctionMatch) ?? false;
+    this.#hasMoreSubstitutions = matchedResult?.hasMatches(
+      SDK8.CSSPropertyParserMatchers.VariableMatch,
+      SDK8.CSSPropertyParserMatchers.BaseVariableMatch,
+      SDK8.CSSPropertyParserMatchers.AttributeMatch,
+      SDK8.CSSPropertyParserMatchers.EnvFunctionMatch
+    ) ?? false;
     this.#propertyName = matchedResult?.ast.propertyName ?? null;
     this.#longhandOffset = initialLonghandOffset;
     this.expandPercentagesInShorthands = expandPercentagesInShorthands;
@@ -10934,7 +14165,15 @@ var TracingContext = class _TracingContext {
     return this.#longhandOffset;
   }
   renderingContext(context) {
-    return new RenderingContext(context.ast, context.property, context.renderers, context.matchedResult, context.cssControls, context.options, this);
+    return new RenderingContext(
+      context.ast,
+      context.property,
+      context.renderers,
+      context.matchedResult,
+      context.cssControls,
+      context.options,
+      this
+    );
   }
   nextSubstitution() {
     if (!this.#hasMoreSubstitutions) {
@@ -10998,7 +14237,9 @@ var TracingContext = class _TracingContext {
       children.forEach((child) => this.#asyncEvalCallbacks.push(...child.#asyncEvalCallbacks));
       return null;
     }
-    this.#setAppliedEvaluations(children.map((child) => child.#appliedEvaluations).reduce((a, b) => Math.max(a, b), 0) + 1);
+    this.#setAppliedEvaluations(
+      children.map((child) => child.#appliedEvaluations).reduce((a, b) => Math.max(a, b), 0) + 1
+    );
     const { placeholder, asyncEvalCallback } = evaluation();
     this.#asyncEvalCallbacks.push(asyncEvalCallback);
     return placeholder;
@@ -11045,14 +14286,6 @@ var TracingContext = class _TracingContext {
   }
 };
 var RenderingContext = class {
-  ast;
-  property;
-  renderers;
-  matchedResult;
-  cssControls;
-  options;
-  tracing;
-  signal;
   constructor(ast, property, renderers, matchedResult, cssControls, options = {}, tracing, signal) {
     this.ast = ast;
     this.property = property;
@@ -11063,6 +14296,14 @@ var RenderingContext = class {
     this.tracing = tracing;
     this.signal = signal;
   }
+  ast;
+  property;
+  renderers;
+  matchedResult;
+  cssControls;
+  options;
+  tracing;
+  signal;
   addControl(cssType, control) {
     if (this.cssControls) {
       const controls = this.cssControls.get(cssType);
@@ -11112,7 +14353,18 @@ var Renderer = class _Renderer extends SDK8.CSSPropertyParser.TreeWalker {
       return this.render([nodeOrNodes], context);
     }
     const cssControls = new SDK8.CSSPropertyParser.CSSControlMap();
-    const renderers = nodeOrNodes.map((node) => this.walkExcludingSuccessors(context.ast.subtree(node), context.property, context.renderers, context.matchedResult, cssControls, context.options, context.tracing, context.signal));
+    const renderers = nodeOrNodes.map(
+      (node) => this.walkExcludingSuccessors(
+        context.ast.subtree(node),
+        context.property,
+        context.renderers,
+        context.matchedResult,
+        cssControls,
+        context.options,
+        context.tracing,
+        context.signal
+      )
+    );
     const nodes = renderers.map((node) => node.#output).reduce(mergeWithSpacing, []);
     return { nodes, cssControls };
   }
@@ -11140,10 +14392,13 @@ var Renderer = class _Renderer extends SDK8.CSSPropertyParser.TreeWalker {
   }
   static renderNameElement(name) {
     const nameElement = document.createElement("span");
-    nameElement.setAttribute("jslog", `${VisualLogging6.key().track({
-      change: true,
-      keydown: "ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape"
-    })}`);
+    nameElement.setAttribute(
+      "jslog",
+      `${VisualLogging6.key().track({
+        change: true,
+        keydown: "ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape"
+      })}`
+    );
     UI11.ARIAUtils.setLabel(nameElement, i18nString9(UIStrings9.cssPropertyName, { PH1: name }));
     nameElement.className = "webkit-css-property";
     nameElement.textContent = name;
@@ -11161,10 +14416,13 @@ var Renderer = class _Renderer extends SDK8.CSSPropertyParser.TreeWalker {
   // unmatched text and around rendered matching results.
   static renderValueElement(property, matchedResult, renderers, tracing, signal) {
     const valueElement = document.createElement("span");
-    valueElement.setAttribute("jslog", `${VisualLogging6.value().track({
-      change: true,
-      keydown: "ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape"
-    })}`);
+    valueElement.setAttribute(
+      "jslog",
+      `${VisualLogging6.value().track({
+        change: true,
+        keydown: "ArrowLeft|ArrowUp|PageUp|Home|PageDown|ArrowRight|ArrowDown|End|Space|Tab|Enter|Escape"
+      })}`
+    );
     UI11.ARIAUtils.setLabel(valueElement, i18nString9(UIStrings9.cssPropertyValue, { PH1: property.value }));
     valueElement.className = "value";
     valueElement.tabIndex = -1;
@@ -11181,20 +14439,29 @@ var Renderer = class _Renderer extends SDK8.CSSPropertyParser.TreeWalker {
     for (const renderer of renderers) {
       rendererMap.set(renderer.matchType, renderer);
     }
-    const context = new RenderingContext(matchedResult.ast, property instanceof SDK8.CSSProperty.CSSProperty ? property : null, rendererMap, matchedResult, void 0, {}, tracing, signal);
+    const context = new RenderingContext(
+      matchedResult.ast,
+      property instanceof SDK8.CSSProperty.CSSProperty ? property : null,
+      rendererMap,
+      matchedResult,
+      void 0,
+      {},
+      tracing,
+      signal
+    );
     return _Renderer.render([matchedResult.ast.tree, ...matchedResult.ast.trailingNodes], context);
   }
 };
 var URLRendererBase = rendererBase(SDK8.CSSPropertyParserMatchers.URLMatch);
 var URLRenderer = class extends URLRendererBase {
-  rule;
-  node;
   // clang-format on
   constructor(rule, node) {
     super();
     this.rule = rule;
     this.node = node;
   }
+  rule;
+  node;
   render(match) {
     const url = unescapeCssString(match.url);
     const container = document.createDocumentFragment();
@@ -11205,16 +14472,19 @@ var URLRenderer = class extends URLRendererBase {
     } else if (this.node) {
       hrefUrl = this.node.resolveURL(url);
     }
-    const link2 = ImagePreviewPopover.setImageUrl(Components3.Linkifier.Linkifier.linkifyURL(hrefUrl || url, {
-      text: url,
-      preventClick: false,
-      // crbug.com/1027168
-      // We rely on CSS text-overflow: ellipsis to hide long URLs in the Style panel,
-      // so that we don't have to keep two versions (original vs. trimmed) of URL
-      // at the same time, which complicates both StylesSidebarPane and StylePropertyTreeElement.
-      bypassURLTrimming: true,
-      showColumnNumber: false
-    }), hrefUrl || url);
+    const link2 = ImagePreviewPopover.setImageUrl(
+      Components3.Linkifier.Linkifier.linkifyURL(hrefUrl || url, {
+        text: url,
+        preventClick: false,
+        // crbug.com/1027168
+        // We rely on CSS text-overflow: ellipsis to hide long URLs in the Style panel,
+        // so that we don't have to keep two versions (original vs. trimmed) of URL
+        // at the same time, which complicates both StylesSidebarPane and StylePropertyTreeElement.
+        bypassURLTrimming: true,
+        showColumnNumber: false
+      }),
+      hrefUrl || url
+    );
     container.appendChild(link2);
     UI11.UIUtils.createTextChild(container, ")");
     return [container];
@@ -11243,7 +14513,7 @@ var BinOpRenderer = class extends BinOpRendererBase {
   }
 };
 
-// gen/front_end/panels/elements/ComputedStyleWidget.js
+// ../../front_end/panels/elements/ComputedStyleWidget.ts
 var { html: html9, render: render7 } = Lit6;
 var { bindToSetting } = UI12.UIUtils;
 var UIStrings10 = {
@@ -11297,7 +14567,11 @@ function renderPropertyContents(node, cache, propertyName, propertyValue) {
   }
   const name = Renderer.renderNameElement(propertyName);
   name.slot = "name";
-  const value5 = Renderer.renderValueElement({ name: propertyName, value: propertyValue }, matchProperty(propertyName, propertyValue), [new ColorRenderer2(), new URLRenderer(null, node), new StringRenderer()]).valueElement;
+  const value5 = Renderer.renderValueElement(
+    { name: propertyName, value: propertyValue },
+    matchProperty(propertyName, propertyValue),
+    [new ColorRenderer2(), new URLRenderer(null, node), new StringRenderer()]
+  ).valueElement;
   value5.slot = "value";
   cache.set(cacheKey, { name, value: value5 });
   return { name, value: value5 };
@@ -11319,7 +14593,11 @@ var createPropertyElement = (node, cache, propertyName, propertyValue, traceable
 };
 var createTraceElement = (node, property, isPropertyOverloaded, matchedStyles, linkifier) => {
   const trace = new ElementsComponents4.ComputedStyleTrace.ComputedStyleTrace();
-  const { valueElement } = Renderer.renderValueElement(property, matchProperty(property.name, property.value), [new ColorRenderer2(), new URLRenderer(null, node), new StringRenderer()]);
+  const { valueElement } = Renderer.renderValueElement(
+    property,
+    matchProperty(property.name, property.value),
+    [new ColorRenderer2(), new URLRenderer(null, node), new StringRenderer()]
+  );
   valueElement.slot = "trace-value";
   trace.appendChild(valueElement);
   const rule = property.ownerStyle.parentRule;
@@ -11355,10 +14633,13 @@ var ColorRenderer2 = class extends rendererBase(SDK9.CSSPropertyParserMatchers.C
     swatch.renderColor(color);
     const valueElement = document.createElement("span");
     valueElement.textContent = match.text;
-    swatch.addEventListener(InlineEditor4.ColorSwatch.ColorChangedEvent.eventName, (event) => {
-      const { data: { color: color2 } } = event;
-      valueElement.textContent = color2.getAuthoredText() ?? color2.asString();
-    });
+    swatch.addEventListener(
+      InlineEditor4.ColorSwatch.ColorChangedEvent.eventName,
+      (event) => {
+        const { data: { color: color2 } } = event;
+        valueElement.textContent = color2.getAuthoredText() ?? color2.asString();
+      }
+    );
     context.addControl("color", swatch);
     return [swatch, valueElement];
   }
@@ -11448,7 +14729,7 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
    * populated, because an HTML node cannot be in two locations at once.
    */
   #propertyElementsCache = /* @__PURE__ */ new Map();
-  #computedStylesTree = new TreeOutline6.TreeOutline.TreeOutline();
+  #computedStylesTree = new TreeOutline7.TreeOutline.TreeOutline();
   #treeData;
   #enableNarrowViewResizing = true;
   #view;
@@ -11473,16 +14754,20 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     });
     this.filterRegex = null;
     this.linkifier = new Components4.Linkifier.Linkifier(maxLinkLength);
-    this.imagePreviewPopover = new ImagePreviewPopover(this.contentElement, (event) => {
-      const link2 = event.composedPath()[0];
-      if (link2 instanceof Element) {
-        return link2;
+    this.imagePreviewPopover = new ImagePreviewPopover(
+      this.contentElement,
+      (event) => {
+        const link2 = event.composedPath()[0];
+        if (link2 instanceof Element) {
+          return link2;
+        }
+        return null;
+      },
+      async () => {
+        const liveFeatures = await Components4.ImagePreview.loadPrecomputedFeatures(this.#nodeStyle?.node);
+        return liveFeatures ?? this.#storedNodeFeatures ?? void 0;
       }
-      return null;
-    }, async () => {
-      const liveFeatures = await Components4.ImagePreview.loadPrecomputedFeatures(this.#nodeStyle?.node);
-      return liveFeatures ?? this.#storedNodeFeatures ?? void 0;
-    });
+    );
     this.#updateView({ hasMatches: true });
   }
   onResize() {
@@ -11527,16 +14812,20 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
    * @param input.hasMatches Whether any properties matched the current filter (or if any properties exist at all).
    */
   #updateView({ hasMatches }) {
-    this.#view({
-      computedStylesTree: this.#computedStylesTree,
-      includeToolbar: this.#allowUserControl,
-      hasMatches,
-      showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
-      groupComputedStylesSetting: this.groupComputedStylesSetting,
-      onFilterChanged: this.onFilterChanged.bind(this),
-      filterText: this.#filterText,
-      onRegexToggled: this.onRegexToggled.bind(this)
-    }, null, this.contentElement);
+    this.#view(
+      {
+        computedStylesTree: this.#computedStylesTree,
+        includeToolbar: this.#allowUserControl,
+        hasMatches,
+        showInheritedComputedStylePropertiesSetting: this.showInheritedComputedStylePropertiesSetting,
+        groupComputedStylesSetting: this.groupComputedStylesSetting,
+        onFilterChanged: this.onFilterChanged.bind(this),
+        filterText: this.#filterText,
+        onRegexToggled: this.onRegexToggled.bind(this)
+      },
+      null,
+      this.contentElement
+    );
   }
   get nodeStyle() {
     return this.#nodeStyle;
@@ -11692,20 +14981,31 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
       if (data.tag === "property") {
         const trace = propertyTraces.get(data.propertyName);
         const activeProperty = trace?.find(
-          (property) => matchedStyles.propertyState(property) === "Active"
-          /* SDK.CSSMatchedStyles.PropertyState.ACTIVE */
+          (property) => matchedStyles.propertyState(property) === SDK9.CSSMatchedStyles.PropertyState.ACTIVE
         );
-        const propertyElement = createPropertyElement(domNode, this.#propertyElementsCache, data.propertyName, data.propertyValue, propertyTraces.has(data.propertyName), data.inherited, activeProperty, (event) => {
-          if (activeProperty) {
-            this.handleContextMenuEvent(matchedStyles, activeProperty, event);
+        const propertyElement = createPropertyElement(
+          domNode,
+          this.#propertyElementsCache,
+          data.propertyName,
+          data.propertyValue,
+          propertyTraces.has(data.propertyName),
+          data.inherited,
+          activeProperty,
+          (event) => {
+            if (activeProperty) {
+              this.handleContextMenuEvent(matchedStyles, activeProperty, event);
+            }
           }
-        });
+        );
         return propertyElement;
       }
       if (data.tag === "traceElement") {
-        const isPropertyOverloaded = matchedStyles.propertyState(data.property) === "Overloaded";
+        const isPropertyOverloaded = matchedStyles.propertyState(data.property) === SDK9.CSSMatchedStyles.PropertyState.OVERLOADED;
         const traceElement = createTraceElement(domNode, data.property, isPropertyOverloaded, matchedStyles, this.linkifier);
-        traceElement.addEventListener("contextmenu", this.handleContextMenuEvent.bind(this, matchedStyles, data.property));
+        traceElement.addEventListener(
+          "contextmenu",
+          this.handleContextMenuEvent.bind(this, matchedStyles, data.property)
+        );
         return html9`${traceElement}`;
       }
       return html9`<span style="cursor: text; color: var(--sys-color-on-surface-subtle);">${data.name}</span>`;
@@ -11745,7 +15045,11 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
         }, { jslogContext: "navigate-to-selector-source" });
       }
     }
-    contextMenu.defaultSection().appendItem(i18nString10(UIStrings10.navigateToStyle), () => Common7.Revealer.reveal(property), { jslogContext: "navigate-to-style" });
+    contextMenu.defaultSection().appendItem(
+      i18nString10(UIStrings10.navigateToStyle),
+      () => Common7.Revealer.reveal(property),
+      { jslogContext: "navigate-to-style" }
+    );
     void contextMenu.show();
   }
   computeNonInheritedProperties(matchedStyles) {
@@ -11780,7 +15084,10 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
     this.#filterText = event.detail;
     await this.filterComputedStyles(this.#buildFilterRegex(event.detail));
     if (event.detail && this.#computedStylesTree.data && this.#computedStylesTree.data.tree) {
-      UI12.ARIAUtils.LiveAnnouncer.alert(i18nString10(UIStrings10.filterUpdateAriaText, { PH1: event.detail, PH2: this.#computedStylesTree.data.tree.length }));
+      UI12.ARIAUtils.LiveAnnouncer.alert(i18nString10(
+        UIStrings10.filterUpdateAriaText,
+        { PH1: event.detail, PH2: this.#computedStylesTree.data.tree.length }
+      ));
     }
   }
   async filterComputedStyles(regex) {
@@ -11824,7 +15131,9 @@ var ComputedStyleWidget = class extends UI12.Widget.VBox {
       const properties = await group.children();
       const filteredChildren = properties.filter(this.nodeFilter.bind(this));
       if (filteredChildren.length) {
-        tree3.push({ id: data.name, treeNodeData: { tag: "category", name: data.name }, children: async () => filteredChildren });
+        tree3.push(
+          { id: data.name, treeNodeData: { tag: "category", name: data.name }, children: async () => filteredChildren }
+        );
       }
     }
     this.#computedStylesTree.data = {
@@ -11934,7 +15243,7 @@ devtools-tree-outline {
 
 /*# sourceURL=${import.meta.resolve("./elementsPanel.css")} */`;
 
-// gen/front_end/panels/elements/ElementsTreeOutline.js
+// ../../front_end/panels/elements/ElementsTreeOutline.ts
 var ElementsTreeOutline_exports = {};
 __export(ElementsTreeOutline_exports, {
   DECLARATIVE_VIEW: () => DECLARATIVE_VIEW,
@@ -11959,7 +15268,7 @@ import * as UI19 from "../../ui/legacy/legacy.js";
 import * as Lit10 from "../../ui/lit/lit.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/elements/AdoptedStyleSheetTreeElement.js
+// ../../front_end/panels/elements/AdoptedStyleSheetTreeElement.ts
 var AdoptedStyleSheetTreeElement_exports = {};
 __export(AdoptedStyleSheetTreeElement_exports, {
   AdoptedStyleSheetContentsTreeElement: () => AdoptedStyleSheetContentsTreeElement,
@@ -11978,7 +15287,6 @@ import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 import { PanelUtils as PanelUtils2 } from "../utils/utils.js";
 var { Directives: { ref: ref3 }, html: html10, render: render8 } = Lit7;
 var AdoptedStyleSheetSetTreeElement = class extends UI13.TreeOutline.TreeElement {
-  adoptedStyleSheets;
   constructor(adoptedStyleSheets) {
     super("");
     this.adoptedStyleSheets = adoptedStyleSheets;
@@ -11988,10 +15296,9 @@ var AdoptedStyleSheetSetTreeElement = class extends UI13.TreeOutline.TreeElement
       this.appendChild(new AdoptedStyleSheetTreeElement(adoptedStyleSheet));
     }
   }
+  adoptedStyleSheets;
 };
 var AdoptedStyleSheetTreeElement = class _AdoptedStyleSheetTreeElement extends UI13.TreeOutline.TreeElement {
-  adoptedStyleSheet;
-  eventListener = null;
   constructor(adoptedStyleSheet) {
     super("");
     this.adoptedStyleSheet = adoptedStyleSheet;
@@ -11999,13 +15306,23 @@ var AdoptedStyleSheetTreeElement = class _AdoptedStyleSheetTreeElement extends U
     if (header) {
       _AdoptedStyleSheetTreeElement.createContents(header, this);
     } else {
-      this.eventListener = adoptedStyleSheet.cssModel.addEventListener(SDK10.CSSModel.Events.StyleSheetAdded, this.onStyleSheetAdded, this);
+      this.eventListener = adoptedStyleSheet.cssModel.addEventListener(
+        SDK10.CSSModel.Events.StyleSheetAdded,
+        this.onStyleSheetAdded,
+        this
+      );
     }
   }
+  adoptedStyleSheet;
+  eventListener = null;
   onStyleSheetAdded({ data: header }) {
     if (header.id === this.adoptedStyleSheet.id) {
       _AdoptedStyleSheetTreeElement.createContents(header, this);
-      this.adoptedStyleSheet.cssModel.removeEventListener(SDK10.CSSModel.Events.StyleSheetAdded, this.onStyleSheetAdded, this);
+      this.adoptedStyleSheet.cssModel.removeEventListener(
+        SDK10.CSSModel.Events.StyleSheetAdded,
+        this.onStyleSheetAdded,
+        this
+      );
       this.eventListener = null;
     }
   }
@@ -12110,12 +15427,20 @@ var AdoptedStyleSheetContentsWidget = class extends UI13.Widget.Widget {
       return;
     }
     if (this.#styleSheetHeader) {
-      this.#styleSheetHeader.cssModel().removeEventListener(SDK10.CSSModel.Events.StyleSheetChanged, this.#onStyleSheetChanged, this);
+      this.#styleSheetHeader.cssModel().removeEventListener(
+        SDK10.CSSModel.Events.StyleSheetChanged,
+        this.#onStyleSheetChanged,
+        this
+      );
     }
     this.#styleSheetHeader = header;
     this.#text = "";
     if (this.isShowing() && this.#styleSheetHeader) {
-      this.#styleSheetHeader.cssModel().addEventListener(SDK10.CSSModel.Events.StyleSheetChanged, this.#onStyleSheetChanged, this);
+      this.#styleSheetHeader.cssModel().addEventListener(
+        SDK10.CSSModel.Events.StyleSheetChanged,
+        this.#onStyleSheetChanged,
+        this
+      );
       void this.fetchContent();
     }
   }
@@ -12125,7 +15450,11 @@ var AdoptedStyleSheetContentsWidget = class extends UI13.Widget.Widget {
   wasShown() {
     super.wasShown();
     if (this.#styleSheetHeader) {
-      this.#styleSheetHeader.cssModel().addEventListener(SDK10.CSSModel.Events.StyleSheetChanged, this.#onStyleSheetChanged, this);
+      this.#styleSheetHeader.cssModel().addEventListener(
+        SDK10.CSSModel.Events.StyleSheetChanged,
+        this.#onStyleSheetChanged,
+        this
+      );
       if (!this.#text) {
         void this.fetchContent();
       }
@@ -12138,7 +15467,11 @@ var AdoptedStyleSheetContentsWidget = class extends UI13.Widget.Widget {
       this.#editing = null;
     }
     if (this.#styleSheetHeader) {
-      this.#styleSheetHeader.cssModel().removeEventListener(SDK10.CSSModel.Events.StyleSheetChanged, this.#onStyleSheetChanged, this);
+      this.#styleSheetHeader.cssModel().removeEventListener(
+        SDK10.CSSModel.Events.StyleSheetChanged,
+        this.#onStyleSheetChanged,
+        this
+      );
     }
   }
   async fetchContent() {
@@ -12191,7 +15524,11 @@ var AdoptedStyleSheetContentsWidget = class extends UI13.Widget.Widget {
       }
       const data = await this.#styleSheetHeader.requestContentData();
       textNode.textContent = TextUtils6.ContentData.ContentData.isError(data) || !data.isTextContent ? "" : data.text;
-      const config = new UI13.InplaceEditor.Config((element, newText, oldText) => this.#editingCommitted(element, newText, oldText), () => this.#editingCancelled(), void 0);
+      const config = new UI13.InplaceEditor.Config(
+        (element, newText, oldText) => this.#editingCommitted(element, newText, oldText),
+        () => this.#editingCancelled(),
+        void 0
+      );
       const editorHandles = UI13.InplaceEditor.InplaceEditor.startEditing(textNode, config);
       if (!editorHandles) {
         this.#editing = null;
@@ -12225,21 +15562,25 @@ var AdoptedStyleSheetContentsWidget = class extends UI13.Widget.Widget {
     if (this.isEditing()) {
       return;
     }
-    this.#view({
-      text: this.#text,
-      isEditing: this.isEditing(),
-      onDblClick: (event) => {
-        event.stopPropagation();
-        this.startEditing(event.target);
-      }
-    }, void 0, this.contentElement);
+    this.#view(
+      {
+        text: this.#text,
+        isEditing: this.isEditing(),
+        onDblClick: (event) => {
+          event.stopPropagation();
+          this.startEditing(event.target);
+        }
+      },
+      void 0,
+      this.contentElement
+    );
   }
 };
 
-// gen/front_end/panels/elements/ElementsTreeOutline.js
+// ../../front_end/panels/elements/ElementsTreeOutline.ts
 import * as ElementsComponents7 from "./components/components.js";
 
-// gen/front_end/panels/elements/DOMPath.js
+// ../../front_end/panels/elements/DOMPath.ts
 var DOMPath_exports = {};
 __export(DOMPath_exports, {
   Step: () => Step,
@@ -12507,7 +15848,7 @@ var Step = class {
   }
 };
 
-// gen/front_end/panels/elements/DOMTreeContextMenu.js
+// ../../front_end/panels/elements/DOMTreeContextMenu.ts
 var DOMTreeContextMenu_exports = {};
 __export(DOMTreeContextMenu_exports, {
   populateNodeContextMenu: () => populateNodeContextMenu,
@@ -12517,9 +15858,9 @@ import * as Common10 from "../../core/common/common.js";
 import * as i18n30 from "../../core/i18n/i18n.js";
 import * as SDK14 from "../../core/sdk/sdk.js";
 import * as UI16 from "../../ui/legacy/legacy.js";
-import * as Emulation from "../emulation/emulation.js";
+import * as Emulation2 from "../emulation/emulation.js";
 
-// gen/front_end/panels/elements/ElementsTreeElement.js
+// ../../front_end/panels/elements/ElementsTreeElement.ts
 var ElementsTreeElement_exports = {};
 __export(ElementsTreeElement_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW5,
@@ -12556,10 +15897,10 @@ import * as UI15 from "../../ui/legacy/legacy.js";
 import * as Lit8 from "../../ui/lit/lit.js";
 import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon3 from "../common/common.js";
-import * as Media from "../media/media.js";
+import * as Media2 from "../media/media.js";
 import * as ElementsComponents5 from "./components/components.js";
 
-// gen/front_end/panels/elements/ElementIssueUtils.js
+// ../../front_end/panels/elements/ElementIssueUtils.ts
 import * as i18n22 from "../../core/i18n/i18n.js";
 import * as IssuesManager from "../../models/issues_manager/issues_manager.js";
 var UIStrings11 = {
@@ -12668,25 +16009,25 @@ function getElementIssueDetails(issue) {
 }
 function getTooltipFromGenericIssue(errorType) {
   switch (errorType) {
-    case "FormLabelForNameError":
+    case Audits.GenericIssueErrorType.FormLabelForNameError:
       return i18nString11(UIStrings11.formLabelForNameError);
-    case "FormDuplicateIdForInputError":
+    case Audits.GenericIssueErrorType.FormDuplicateIdForInputError:
       return i18nString11(UIStrings11.formDuplicateIdForInputError);
-    case "FormInputWithNoLabelError":
+    case Audits.GenericIssueErrorType.FormInputWithNoLabelError:
       return i18nString11(UIStrings11.formInputWithNoLabelError);
-    case "FormAutocompleteAttributeEmptyError":
+    case Audits.GenericIssueErrorType.FormAutocompleteAttributeEmptyError:
       return i18nString11(UIStrings11.formAutocompleteAttributeEmptyError);
-    case "FormEmptyIdAndNameAttributesForInputError":
+    case Audits.GenericIssueErrorType.FormEmptyIdAndNameAttributesForInputError:
       return i18nString11(UIStrings11.formEmptyIdAndNameAttributesForInputError);
-    case "FormAriaLabelledByToNonExistingIdError":
+    case Audits.GenericIssueErrorType.FormAriaLabelledByToNonExistingIdError:
       return i18nString11(UIStrings11.formAriaLabelledByToNonExistingId);
-    case "FormInputAssignedAutocompleteValueToIdOrNameAttributeError":
+    case Audits.GenericIssueErrorType.FormInputAssignedAutocompleteValueToIdOrNameAttributeError:
       return i18nString11(UIStrings11.formInputAssignedAutocompleteValueToIdOrNameAttributeError);
-    case "FormLabelHasNeitherForNorNestedInputError":
+    case Audits.GenericIssueErrorType.FormLabelHasNeitherForNorNestedInputError:
       return i18nString11(UIStrings11.formLabelHasNeitherForNorNestedInput);
-    case "FormLabelForMatchesNonExistingIdError":
+    case Audits.GenericIssueErrorType.FormLabelForMatchesNonExistingIdError:
       return i18nString11(UIStrings11.formLabelForMatchesNonExistingIdError);
-    case "FormInputHasWrongButWellIntendedAutocompleteValueError":
+    case Audits.GenericIssueErrorType.FormInputHasWrongButWellIntendedAutocompleteValueError:
       return i18nString11(UIStrings11.formInputHasWrongButWellIntendedAutocompleteValueError);
     default:
       return "";
@@ -12694,24 +16035,24 @@ function getTooltipFromGenericIssue(errorType) {
 }
 function getTooltipFromElementAccessibilityIssue(reason) {
   switch (reason) {
-    case "DisallowedSelectChild":
+    case Audits.ElementAccessibilityIssueReason.DisallowedSelectChild:
       return i18nString11(UIStrings11.disallowedSelectChild);
-    case "DisallowedOptGroupChild":
+    case Audits.ElementAccessibilityIssueReason.DisallowedOptGroupChild:
       return i18nString11(UIStrings11.disallowedOptGroupChild);
-    case "NonPhrasingContentOptionChild":
+    case Audits.ElementAccessibilityIssueReason.NonPhrasingContentOptionChild:
       return i18nString11(UIStrings11.nonPhrasingContentOptionChild);
-    case "InteractiveContentOptionChild":
+    case Audits.ElementAccessibilityIssueReason.InteractiveContentOptionChild:
       return i18nString11(UIStrings11.interactiveContentOptionChild);
-    case "InteractiveContentLegendChild":
+    case Audits.ElementAccessibilityIssueReason.InteractiveContentLegendChild:
       return i18nString11(UIStrings11.interactiveContentLegendChild);
-    case "InteractiveContentSummaryDescendant":
+    case Audits.ElementAccessibilityIssueReason.InteractiveContentSummaryDescendant:
       return i18nString11(UIStrings11.interactiveContentSummaryDescendant);
     default:
       return "";
   }
 }
 
-// gen/front_end/panels/elements/ElementStatePaneWidget.js
+// ../../front_end/panels/elements/ElementStatePaneWidget.ts
 var ElementStatePaneWidget_exports = {};
 __export(ElementStatePaneWidget_exports, {
   ButtonProvider: () => ButtonProvider3,
@@ -12783,7 +16124,7 @@ var elementStatePaneWidget_css_default = `/**
 
 /*# sourceURL=${import.meta.resolve("./elementStatePaneWidget.css")} */`;
 
-// gen/front_end/panels/elements/ElementStatePaneWidget.js
+// ../../front_end/panels/elements/ElementStatePaneWidget.ts
 var { bindToSetting: bindToSetting2 } = UI14.UIUtils;
 var UIStrings12 = {
   /**
@@ -12817,29 +16158,6 @@ var UIStrings12 = {
 };
 var str_12 = i18n24.i18n.registerUIStrings("panels/elements/ElementStatePaneWidget.ts", UIStrings12);
 var i18nString12 = i18n24.i18n.getLocalizedString.bind(void 0, str_12);
-var SpecificPseudoStates;
-(function(SpecificPseudoStates2) {
-  SpecificPseudoStates2["ENABLED"] = "enabled";
-  SpecificPseudoStates2["DISABLED"] = "disabled";
-  SpecificPseudoStates2["VALID"] = "valid";
-  SpecificPseudoStates2["INVALID"] = "invalid";
-  SpecificPseudoStates2["USER_VALID"] = "user-valid";
-  SpecificPseudoStates2["USER_INVALID"] = "user-invalid";
-  SpecificPseudoStates2["REQUIRED"] = "required";
-  SpecificPseudoStates2["OPTIONAL"] = "optional";
-  SpecificPseudoStates2["READ_ONLY"] = "read-only";
-  SpecificPseudoStates2["READ_WRITE"] = "read-write";
-  SpecificPseudoStates2["IN_RANGE"] = "in-range";
-  SpecificPseudoStates2["OUT_OF_RANGE"] = "out-of-range";
-  SpecificPseudoStates2["VISITED"] = "visited";
-  SpecificPseudoStates2["LINK"] = "link";
-  SpecificPseudoStates2["CHECKED"] = "checked";
-  SpecificPseudoStates2["INDETERMINATE"] = "indeterminate";
-  SpecificPseudoStates2["PLACEHOLDER_SHOWN"] = "placeholder-shown";
-  SpecificPseudoStates2["AUTOFILL"] = "autofill";
-  SpecificPseudoStates2["OPEN"] = "open";
-  SpecificPseudoStates2["TARGET_CURRENT"] = "target-current";
-})(SpecificPseudoStates || (SpecificPseudoStates = {}));
 var DEFAULT_VIEW4 = (input, _output, target) => {
   const createElementStateCheckbox = (state) => {
     return html11`
@@ -12861,9 +16179,9 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
         <devtools-button
             @click=${() => UIHelpers.openInNewTab("https://developer.chrome.com/docs/devtools/rendering/apply-effects#emulate_a_focused_page")}
            .data=${{
-    variant: "icon",
+    variant: Buttons2.Button.Variant.ICON,
     iconName: "help",
-    size: "SMALL",
+    size: Buttons2.Button.Size.SMALL,
     jslogContext: "learn-more",
     title: i18nString12(UIStrings12.learnMore)
   }}></devtools-button>
@@ -12903,32 +16221,38 @@ var ElementStatePaneWidget = class extends UI14.Widget.Widget {
     this.#states.set("focus-within", { state: "focus-within", type: "persistent" });
     this.#states.set("focus-visible", { state: "focus-visible", type: "persistent" });
     this.#states.set("target", { state: "target", type: "persistent" });
-    this.#states.set(SpecificPseudoStates.ENABLED, { state: SpecificPseudoStates.ENABLED, type: "specific" });
-    this.#states.set(SpecificPseudoStates.DISABLED, { state: SpecificPseudoStates.DISABLED, type: "specific" });
-    this.#states.set(SpecificPseudoStates.VALID, { state: SpecificPseudoStates.VALID, type: "specific" });
-    this.#states.set(SpecificPseudoStates.INVALID, { state: SpecificPseudoStates.INVALID, type: "specific" });
-    this.#states.set(SpecificPseudoStates.USER_VALID, { state: SpecificPseudoStates.USER_VALID, type: "specific" });
-    this.#states.set(SpecificPseudoStates.USER_INVALID, { state: SpecificPseudoStates.USER_INVALID, type: "specific" });
-    this.#states.set(SpecificPseudoStates.REQUIRED, { state: SpecificPseudoStates.REQUIRED, type: "specific" });
-    this.#states.set(SpecificPseudoStates.OPTIONAL, { state: SpecificPseudoStates.OPTIONAL, type: "specific" });
-    this.#states.set(SpecificPseudoStates.READ_ONLY, { state: SpecificPseudoStates.READ_ONLY, type: "specific" });
-    this.#states.set(SpecificPseudoStates.READ_WRITE, { state: SpecificPseudoStates.READ_WRITE, type: "specific" });
-    this.#states.set(SpecificPseudoStates.IN_RANGE, { state: SpecificPseudoStates.IN_RANGE, type: "specific" });
-    this.#states.set(SpecificPseudoStates.OUT_OF_RANGE, { state: SpecificPseudoStates.OUT_OF_RANGE, type: "specific" });
-    this.#states.set(SpecificPseudoStates.VISITED, { state: SpecificPseudoStates.VISITED, type: "specific" });
-    this.#states.set(SpecificPseudoStates.LINK, { state: SpecificPseudoStates.LINK, type: "specific" });
-    this.#states.set(SpecificPseudoStates.CHECKED, { state: SpecificPseudoStates.CHECKED, type: "specific" });
-    this.#states.set(SpecificPseudoStates.INDETERMINATE, { state: SpecificPseudoStates.INDETERMINATE, type: "specific" });
-    this.#states.set(SpecificPseudoStates.PLACEHOLDER_SHOWN, { state: SpecificPseudoStates.PLACEHOLDER_SHOWN, type: "specific" });
-    this.#states.set(SpecificPseudoStates.AUTOFILL, { state: SpecificPseudoStates.AUTOFILL, type: "specific" });
-    this.#states.set(SpecificPseudoStates.OPEN, { state: SpecificPseudoStates.OPEN, type: "specific" });
-    this.#states.set(SpecificPseudoStates.TARGET_CURRENT, { state: SpecificPseudoStates.TARGET_CURRENT, type: "specific" });
-    setDualStateCheckboxes(SpecificPseudoStates.VALID, SpecificPseudoStates.INVALID);
-    setDualStateCheckboxes(SpecificPseudoStates.USER_VALID, SpecificPseudoStates.USER_INVALID);
-    setDualStateCheckboxes(SpecificPseudoStates.READ_ONLY, SpecificPseudoStates.READ_WRITE);
-    setDualStateCheckboxes(SpecificPseudoStates.IN_RANGE, SpecificPseudoStates.OUT_OF_RANGE);
-    setDualStateCheckboxes(SpecificPseudoStates.ENABLED, SpecificPseudoStates.DISABLED);
-    setDualStateCheckboxes(SpecificPseudoStates.VISITED, SpecificPseudoStates.LINK);
+    this.#states.set("enabled" /* ENABLED */, { state: "enabled" /* ENABLED */, type: "specific" });
+    this.#states.set("disabled" /* DISABLED */, { state: "disabled" /* DISABLED */, type: "specific" });
+    this.#states.set("valid" /* VALID */, { state: "valid" /* VALID */, type: "specific" });
+    this.#states.set("invalid" /* INVALID */, { state: "invalid" /* INVALID */, type: "specific" });
+    this.#states.set("user-valid" /* USER_VALID */, { state: "user-valid" /* USER_VALID */, type: "specific" });
+    this.#states.set("user-invalid" /* USER_INVALID */, { state: "user-invalid" /* USER_INVALID */, type: "specific" });
+    this.#states.set("required" /* REQUIRED */, { state: "required" /* REQUIRED */, type: "specific" });
+    this.#states.set("optional" /* OPTIONAL */, { state: "optional" /* OPTIONAL */, type: "specific" });
+    this.#states.set("read-only" /* READ_ONLY */, { state: "read-only" /* READ_ONLY */, type: "specific" });
+    this.#states.set("read-write" /* READ_WRITE */, { state: "read-write" /* READ_WRITE */, type: "specific" });
+    this.#states.set("in-range" /* IN_RANGE */, { state: "in-range" /* IN_RANGE */, type: "specific" });
+    this.#states.set("out-of-range" /* OUT_OF_RANGE */, { state: "out-of-range" /* OUT_OF_RANGE */, type: "specific" });
+    this.#states.set("visited" /* VISITED */, { state: "visited" /* VISITED */, type: "specific" });
+    this.#states.set("link" /* LINK */, { state: "link" /* LINK */, type: "specific" });
+    this.#states.set("checked" /* CHECKED */, { state: "checked" /* CHECKED */, type: "specific" });
+    this.#states.set("indeterminate" /* INDETERMINATE */, { state: "indeterminate" /* INDETERMINATE */, type: "specific" });
+    this.#states.set(
+      "placeholder-shown" /* PLACEHOLDER_SHOWN */,
+      { state: "placeholder-shown" /* PLACEHOLDER_SHOWN */, type: "specific" }
+    );
+    this.#states.set("autofill" /* AUTOFILL */, { state: "autofill" /* AUTOFILL */, type: "specific" });
+    this.#states.set("open" /* OPEN */, { state: "open" /* OPEN */, type: "specific" });
+    this.#states.set(
+      "target-current" /* TARGET_CURRENT */,
+      { state: "target-current" /* TARGET_CURRENT */, type: "specific" }
+    );
+    setDualStateCheckboxes("valid" /* VALID */, "invalid" /* INVALID */);
+    setDualStateCheckboxes("user-valid" /* USER_VALID */, "user-invalid" /* USER_INVALID */);
+    setDualStateCheckboxes("read-only" /* READ_ONLY */, "read-write" /* READ_WRITE */);
+    setDualStateCheckboxes("in-range" /* IN_RANGE */, "out-of-range" /* OUT_OF_RANGE */);
+    setDualStateCheckboxes("enabled" /* ENABLED */, "disabled" /* DISABLED */);
+    setDualStateCheckboxes("visited" /* VISITED */, "link" /* LINK */);
     UI14.Context.Context.instance().addFlavorChangeListener(SDK12.DOMModel.DOMNode, this.requestUpdate, this);
   }
   onStateCheckboxClicked(event) {
@@ -13032,85 +16356,85 @@ var ElementStatePaneWidget = class extends UI14.Widget.Widget {
     };
     const isFormAssociated = await isFormAssociatedCustomElement(node);
     if (isElementOfTypes(node, ["button", "input", "select", "textarea", "optgroup", "option", "fieldset"]) || isFormAssociated) {
-      hideSpecificCheckbox(SpecificPseudoStates.ENABLED, !isDisabled(node));
-      hideSpecificCheckbox(SpecificPseudoStates.DISABLED, isDisabled(node));
+      hideSpecificCheckbox("enabled" /* ENABLED */, !isDisabled(node));
+      hideSpecificCheckbox("disabled" /* DISABLED */, isDisabled(node));
     } else {
-      hideSpecificCheckbox(SpecificPseudoStates.ENABLED, true);
-      hideSpecificCheckbox(SpecificPseudoStates.DISABLED, true);
+      hideSpecificCheckbox("enabled" /* ENABLED */, true);
+      hideSpecificCheckbox("disabled" /* DISABLED */, true);
     }
     if (isElementOfTypes(node, ["button", "fieldset", "input", "object", "output", "select", "textarea", "img"]) || isFormAssociated) {
-      hideSpecificCheckbox(SpecificPseudoStates.VALID, false);
-      hideSpecificCheckbox(SpecificPseudoStates.INVALID, false);
+      hideSpecificCheckbox("valid" /* VALID */, false);
+      hideSpecificCheckbox("invalid" /* INVALID */, false);
     } else {
-      hideSpecificCheckbox(SpecificPseudoStates.VALID, true);
-      hideSpecificCheckbox(SpecificPseudoStates.INVALID, true);
+      hideSpecificCheckbox("valid" /* VALID */, true);
+      hideSpecificCheckbox("invalid" /* INVALID */, true);
     }
     if (isElementOfTypes(node, ["input", "select", "textarea"])) {
-      hideSpecificCheckbox(SpecificPseudoStates.USER_VALID, false);
-      hideSpecificCheckbox(SpecificPseudoStates.USER_INVALID, false);
+      hideSpecificCheckbox("user-valid" /* USER_VALID */, false);
+      hideSpecificCheckbox("user-invalid" /* USER_INVALID */, false);
       if (node.getAttribute("required") === void 0) {
-        hideSpecificCheckbox(SpecificPseudoStates.REQUIRED, false);
-        hideSpecificCheckbox(SpecificPseudoStates.OPTIONAL, true);
+        hideSpecificCheckbox("required" /* REQUIRED */, false);
+        hideSpecificCheckbox("optional" /* OPTIONAL */, true);
       } else {
-        hideSpecificCheckbox(SpecificPseudoStates.REQUIRED, true);
-        hideSpecificCheckbox(SpecificPseudoStates.OPTIONAL, false);
+        hideSpecificCheckbox("required" /* REQUIRED */, true);
+        hideSpecificCheckbox("optional" /* OPTIONAL */, false);
       }
     } else {
-      hideSpecificCheckbox(SpecificPseudoStates.USER_VALID, true);
-      hideSpecificCheckbox(SpecificPseudoStates.USER_INVALID, true);
-      hideSpecificCheckbox(SpecificPseudoStates.REQUIRED, true);
-      hideSpecificCheckbox(SpecificPseudoStates.OPTIONAL, true);
+      hideSpecificCheckbox("user-valid" /* USER_VALID */, true);
+      hideSpecificCheckbox("user-invalid" /* USER_INVALID */, true);
+      hideSpecificCheckbox("required" /* REQUIRED */, true);
+      hideSpecificCheckbox("optional" /* OPTIONAL */, true);
     }
     if (isMutable(node)) {
-      hideSpecificCheckbox(SpecificPseudoStates.READ_WRITE, true);
-      hideSpecificCheckbox(SpecificPseudoStates.READ_ONLY, false);
+      hideSpecificCheckbox("read-write" /* READ_WRITE */, true);
+      hideSpecificCheckbox("read-only" /* READ_ONLY */, false);
     } else {
-      hideSpecificCheckbox(SpecificPseudoStates.READ_WRITE, false);
-      hideSpecificCheckbox(SpecificPseudoStates.READ_ONLY, true);
+      hideSpecificCheckbox("read-write" /* READ_WRITE */, false);
+      hideSpecificCheckbox("read-only" /* READ_ONLY */, true);
     }
     if (isElementOfTypes(node, ["input"]) && (node.getAttribute("min") !== void 0 || node.getAttribute("max") !== void 0)) {
-      hideSpecificCheckbox(SpecificPseudoStates.IN_RANGE, false);
-      hideSpecificCheckbox(SpecificPseudoStates.OUT_OF_RANGE, false);
+      hideSpecificCheckbox("in-range" /* IN_RANGE */, false);
+      hideSpecificCheckbox("out-of-range" /* OUT_OF_RANGE */, false);
     } else {
-      hideSpecificCheckbox(SpecificPseudoStates.IN_RANGE, true);
-      hideSpecificCheckbox(SpecificPseudoStates.OUT_OF_RANGE, true);
+      hideSpecificCheckbox("in-range" /* IN_RANGE */, true);
+      hideSpecificCheckbox("out-of-range" /* OUT_OF_RANGE */, true);
     }
     if (isElementOfTypes(node, ["a", "area"]) && node.getAttribute("href") !== void 0) {
-      hideSpecificCheckbox(SpecificPseudoStates.VISITED, false);
-      hideSpecificCheckbox(SpecificPseudoStates.LINK, false);
+      hideSpecificCheckbox("visited" /* VISITED */, false);
+      hideSpecificCheckbox("link" /* LINK */, false);
     } else {
-      hideSpecificCheckbox(SpecificPseudoStates.VISITED, true);
-      hideSpecificCheckbox(SpecificPseudoStates.LINK, true);
+      hideSpecificCheckbox("visited" /* VISITED */, true);
+      hideSpecificCheckbox("link" /* LINK */, true);
     }
     if (isInputWithTypeRadioOrCheckbox(node) || isElementOfTypes(node, ["option"])) {
-      hideSpecificCheckbox(SpecificPseudoStates.CHECKED, false);
+      hideSpecificCheckbox("checked" /* CHECKED */, false);
     } else {
-      hideSpecificCheckbox(SpecificPseudoStates.CHECKED, true);
+      hideSpecificCheckbox("checked" /* CHECKED */, true);
     }
     if (isInputWithTypeRadioOrCheckbox(node) || isElementOfTypes(node, ["progress"])) {
-      hideSpecificCheckbox(SpecificPseudoStates.INDETERMINATE, false);
+      hideSpecificCheckbox("indeterminate" /* INDETERMINATE */, false);
     } else {
-      hideSpecificCheckbox(SpecificPseudoStates.INDETERMINATE, true);
+      hideSpecificCheckbox("indeterminate" /* INDETERMINATE */, true);
     }
     if (isElementOfTypes(node, ["input", "textarea"])) {
-      hideSpecificCheckbox(SpecificPseudoStates.PLACEHOLDER_SHOWN, false);
+      hideSpecificCheckbox("placeholder-shown" /* PLACEHOLDER_SHOWN */, false);
     } else {
-      hideSpecificCheckbox(SpecificPseudoStates.PLACEHOLDER_SHOWN, true);
+      hideSpecificCheckbox("placeholder-shown" /* PLACEHOLDER_SHOWN */, true);
     }
     if (isElementOfTypes(node, ["input"])) {
-      hideSpecificCheckbox(SpecificPseudoStates.AUTOFILL, false);
+      hideSpecificCheckbox("autofill" /* AUTOFILL */, false);
     } else {
-      hideSpecificCheckbox(SpecificPseudoStates.AUTOFILL, true);
+      hideSpecificCheckbox("autofill" /* AUTOFILL */, true);
     }
     if (isElementOfTypes(node, ["input", "select", "dialog", "details"])) {
-      hideSpecificCheckbox(SpecificPseudoStates.OPEN, false);
+      hideSpecificCheckbox("open" /* OPEN */, false);
     } else {
-      hideSpecificCheckbox(SpecificPseudoStates.OPEN, true);
+      hideSpecificCheckbox("open" /* OPEN */, true);
     }
     if (isAnchorElementWithHref(node) || node.pseudoType() === "scroll-marker") {
-      hideSpecificCheckbox(SpecificPseudoStates.TARGET_CURRENT, false);
+      hideSpecificCheckbox("target-current" /* TARGET_CURRENT */, false);
     } else {
-      hideSpecificCheckbox(SpecificPseudoStates.TARGET_CURRENT, true);
+      hideSpecificCheckbox("target-current" /* TARGET_CURRENT */, true);
     }
   }
 };
@@ -13120,7 +16444,7 @@ var ButtonProvider3 = class _ButtonProvider {
   view;
   constructor() {
     this.button = new UI14.Toolbar.ToolbarToggle(i18nString12(UIStrings12.toggleElementState), "hover");
-    this.button.addEventListener("Click", this.clicked, this);
+    this.button.addEventListener(UI14.Toolbar.ToolbarButton.Events.CLICK, this.clicked, this);
     this.button.element.classList.add("element-state");
     this.button.element.setAttribute("jslog", `${VisualLogging8.toggleSubpane("element-states").track({ click: true })}`);
     this.button.element.style.setProperty("--dot-toggle-top", "12px");
@@ -13145,7 +16469,7 @@ var ButtonProvider3 = class _ButtonProvider {
   }
 };
 
-// gen/front_end/panels/elements/MarkerDecorator.js
+// ../../front_end/panels/elements/MarkerDecorator.ts
 var MarkerDecorator_exports = {};
 __export(MarkerDecorator_exports, {
   GenericDecorator: () => GenericDecorator,
@@ -13205,7 +16529,7 @@ function getRegisteredDecorators() {
   ];
 }
 
-// gen/front_end/panels/elements/ElementsTreeElement.js
+// ../../front_end/panels/elements/ElementsTreeElement.ts
 var { html: html13, nothing: nothing5, render: render11, Directives: { classMap: classMap3, ref: ref4, repeat, until } } = Lit8;
 var { animateOn } = UI15.UIUtils;
 var UIStrings14 = {
@@ -13370,13 +16694,8 @@ var UIStrings14 = {
 };
 var str_14 = i18n28.i18n.registerUIStrings("panels/elements/ElementsTreeElement.ts", UIStrings14);
 var i18nString13 = i18n28.i18n.getLocalizedString.bind(void 0, str_14);
-var TagType;
-(function(TagType2) {
-  TagType2["OPENING"] = "OPENING_TAG";
-  TagType2["CLOSING"] = "CLOSING_TAG";
-})(TagType || (TagType = {}));
 function isOpeningTag(context) {
-  return context.tagType === "OPENING_TAG";
+  return context.tagType === "OPENING_TAG" /* OPENING */;
 }
 function adornerRef() {
   let adorner4;
@@ -13408,7 +16727,13 @@ function handleAdornerKeydown(cb) {
 function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, updateRecord, onUpdateSearchHighlight, onExpand2, issues) {
   switch (node.nodeType()) {
     case Node.ATTRIBUTE_NODE:
-      return renderAttribute({ name: node.name, value: node.value }, updateRecord, true, node, issues);
+      return renderAttribute(
+        { name: node.name, value: node.value },
+        updateRecord,
+        true,
+        node,
+        issues
+      );
     case Node.ELEMENT_NODE: {
       if (node.pseudoType()) {
         let pseudoElementName = node.nodeName();
@@ -13443,7 +16768,10 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
             Highlighting2.highlightRangesWithStyleClass(el, result.entityRanges, "webkit-html-entity-value");
           }
         });
-        return html13`${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging9.value("text-node").track({ change: true, dblclick: true })} ${animateOn(Boolean(updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified()), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
+        return html13`${openingTag}<span class="webkit-html-text-node" jslog=${VisualLogging9.value("text-node").track({ change: true, dblclick: true })} ${animateOn(
+          Boolean(updateRecord?.hasChangedChildren() || updateRecord?.isCharDataModified()),
+          DOM_UPDATE_ANIMATION_CLASS_NAME
+        )} ${renderTextNode}></span>\u200B${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
       }
       if (isXMLMimeType || !ForbiddenClosingTagElements.has(tagName)) {
         return html13`${openingTag}${renderTag(node, tagName, true, expanded, false, updateRecord, issues)}`;
@@ -13534,9 +16862,9 @@ function renderTitle(node, isClosingTag, expanded, isExpandable, isXMLMimeType, 
 function renderLinkifiedSrcset(tokens, node) {
   return html13`${repeat(tokens, (token) => {
     switch (token.type) {
-      case 1:
+      case Common9.Srcset.TokenType.URL:
         return renderLinkifiedValue(token.value, node);
-      case 0:
+      case Common9.Srcset.TokenType.LITERAL:
         return token.value;
     }
   })}`;
@@ -13608,13 +16936,13 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
   let tooltip = "";
   if (isRelation) {
     if (name === "popovertarget") {
-      relation = "PopoverTarget";
+      relation = DOM.GetElementByRelationRequestRelation.PopoverTarget;
       tooltip = i18nString13(UIStrings14.showPopoverTarget);
     } else if (name === "interesttarget") {
-      relation = "InterestTarget";
+      relation = DOM.GetElementByRelationRequestRelation.InterestTarget;
       tooltip = i18nString13(UIStrings14.showInterestTarget);
     } else if (name === "commandfor") {
-      relation = "CommandFor";
+      relation = DOM.GetElementByRelationRequestRelation.CommandFor;
       tooltip = i18nString13(UIStrings14.showCommandForTarget);
     }
   }
@@ -13667,20 +16995,20 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
   }
   const nodeName = node ? node.nodeName().toLowerCase() : "";
   let ValueType;
-  (function(ValueType2) {
+  ((ValueType2) => {
     ValueType2[ValueType2["UNKNOWN"] = 0] = "UNKNOWN";
     ValueType2[ValueType2["SRC"] = 1] = "SRC";
     ValueType2[ValueType2["SRCSET"] = 2] = "SRCSET";
   })(ValueType || (ValueType = {}));
-  let valueType = 0;
+  let valueType = 0 /* UNKNOWN */;
   if (nodeName && (name === "src" || name === "href") && value5) {
-    valueType = 1;
+    valueType = 1 /* SRC */;
   } else if ((nodeName === "img" || nodeName === "source") && name === "srcset") {
-    valueType = 2;
+    valueType = 2 /* SRCSET */;
   } else if (nodeName === "image" && (name === "xlink:href" || name === "href")) {
-    valueType = 2;
+    valueType = 2 /* SRCSET */;
   }
-  const withEntitiesRef = valueType === 0 && !isRelation ? ref4((el) => {
+  const withEntitiesRef = valueType === 0 /* UNKNOWN */ && !isRelation ? ref4((el) => {
     if (el) {
       setValueWithEntities(el, value5);
     }
@@ -13695,9 +17023,12 @@ function renderAttribute(attr, updateRecord, isDiff, node, issues) {
     "violating-element": hasAttributeIssues
   };
   return html13`<span class="webkit-html-attribute" jslog=${jslog}><span class=${classMap3(attributeNameClasses)}
-      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until(relationPromise, name) : name}</span>${hasText ? html13`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)} ${withEntitiesRef}>
-                        ${valueType === 1 ? renderLinkifiedValue(value5, node) : nothing5}
-                        ${valueType === 2 ? renderLinkifiedSrcset(Common9.Srcset.parseSrcset(value5), node) : nothing5}
+      ${animateOn(Boolean(updateRecord?.isAttributeModified(name) && !hasText), DOM_UPDATE_ANIMATION_CLASS_NAME)}>${linkifyName && relationPromise ? until(relationPromise, name) : name}</span>${hasText ? html13`=\u200B"<span class="webkit-html-attribute-value" ${animateOn(
+    Boolean(updateRecord?.isAttributeModified(name) && hasText),
+    DOM_UPDATE_ANIMATION_CLASS_NAME
+  )} ${withEntitiesRef}>
+                        ${valueType === 1 /* SRC */ ? renderLinkifiedValue(value5, node) : nothing5}
+                        ${valueType === 2 /* SRCSET */ ? renderLinkifiedSrcset(Common9.Srcset.parseSrcset(value5), node) : nothing5}
                         ${linkifyValue && relationPromise ? until(relationPromise, value5) : nothing5}
                 </span>"` : nothing5}</span>`;
 }
@@ -13797,7 +17128,17 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     <div ${ref4((el) => {
     output.contentElement = el;
   })}>
-      ${input.node ? html13`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand, input.issues)}</span>` : nothing5}
+      ${input.node ? html13`<span class="highlight ${input.editorState ? "hidden" : ""}">${renderTitle(
+    input.node,
+    input.isClosingTag,
+    input.expanded,
+    input.isExpandable,
+    input.isXMLMimeType,
+    input.updateRecord,
+    input.onHighlightSearchResults,
+    input.onExpand,
+    input.issues
+  )}</span>` : nothing5}
       ${input.isHovered || input.isSelected ? html13`
         <div class="selection fill ${input.editorState ? "hidden" : ""}" style=${`margin-left: ${-input.indent}px`}></div>
       ` : nothing5}
@@ -14150,13 +17491,10 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
   }
   get tagTypeContext() {
     if (this.isClosingTag) {
-      return {
-        tagType: "CLOSING_TAG"
-        /* TagType.CLOSING */
-      };
+      return { tagType: "CLOSING_TAG" /* CLOSING */ };
     }
     return {
-      tagType: "OPENING_TAG",
+      tagType: "OPENING_TAG" /* OPENING */,
       canAddAttributes: this.#node ? this.#node.nodeType() === Node.ELEMENT_NODE : false
     };
   }
@@ -14215,7 +17553,11 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     const stateMenu = contextMenu.debugSection().appendSubMenuItem(i18nString13(UIStrings14.forceState), false, "force-state");
     for (const pseudoClass of pseudoClasses) {
       const pseudoClassForced = forcedPseudoState ? forcedPseudoState.indexOf(pseudoClass) >= 0 : false;
-      stateMenu.defaultSection().appendCheckboxItem(":" + pseudoClass, setPseudoStateCallback.bind(null, pseudoClass, !pseudoClassForced), { checked: pseudoClassForced, jslogContext: pseudoClass });
+      stateMenu.defaultSection().appendCheckboxItem(
+        ":" + pseudoClass,
+        setPseudoStateCallback.bind(null, pseudoClass, !pseudoClassForced),
+        { checked: pseudoClassForced, jslogContext: pseudoClass }
+      );
     }
     function setPseudoStateCallback(pseudoState, enabled) {
       node.domModel().cssModel().forcePseudoState(node, pseudoState, enabled);
@@ -14245,97 +17587,101 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     }
     const isClosingTag = this.isClosingTag;
     const output = {};
-    this.#view({
-      node: this.node,
-      isClosingTag,
-      expanded: this.#expanded,
-      isExpandable: this.#isExpandable,
-      isXMLMimeType: this.isXMLMimeType,
-      updateRecord: this.#updateRecord,
-      onHighlightSearchResults: () => this.#highlightSearchResults(),
-      onExpand: () => this.expand?.(),
-      containerAdornerActive: this.#containerAdornerActive,
-      adProvenance: this.node.adProvenance(),
-      adTooltipId: this.#adTooltipId,
-      target: this.node.domModel().target(),
-      showContainerAdorner: Boolean(this.#layout?.containerType) && !isClosingTag,
-      containerType: this.#layout?.containerType,
-      showFlexAdorner: Boolean(this.#layout?.isFlex) && !isClosingTag,
-      flexAdornerActive: this.#flexAdornerActive,
-      showGridAdorner: Boolean(this.#layout?.isGrid) && !isClosingTag,
-      showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !isClosingTag,
-      showMediaAdorner: this.node.isMediaNode() && !isClosingTag,
-      showPopoverAdorner: Boolean(this.node.attributes().find((attr) => attr.name === "popover")) && !isClosingTag,
-      showInterestAdorner: Boolean(Root4.Runtime.hostConfig.devToolsAllowInterestForcing?.enabled) && Boolean(this.node.attributes().find((attr) => attr.name === "interesttarget" || attr.name === "interestfor")) && !isClosingTag,
-      showTopLayerAdorner: this.node.topLayerIndex() !== -1 && !isClosingTag,
-      gridAdornerActive: this.#gridAdornerActive,
-      popoverAdornerActive: this.#popoverAdornerActive,
-      interestAdornerActive: this.#interestAdornerActive,
-      isSubgrid: Boolean(this.#layout?.isSubgrid),
-      showViewSourceAdorner: this.node.isRootNode() && isOpeningTag(this.tagTypeContext),
-      showScrollAdorner: (this.node.nodeName() === "HTML" && this.node.ownerDocument?.isScrollable() || this.node.nodeName() !== "#document" && this.node.isScrollable()) && !isClosingTag,
-      decorations: this.#decorations,
-      descendantDecorations: this.#expanded ? [] : this.#descendantDecorations,
-      decorationsTooltip: this.#decorationsTooltip,
-      indent: this.#getLeftIndent(),
-      showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !isClosingTag,
-      scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
-      showSlotAdorner: Boolean(this.node.assignedSlot) && !isClosingTag,
-      showCustomElementAdorner: this.node.isCustomElement() && !isClosingTag,
-      onCustomElementAdornerClick: this.disableEdits ? () => {
-      } : (event) => void this.#onCustomElementAdornerClick(event),
-      showStartingStyleAdorner: this.node.affectedByStartingStyles() && !isClosingTag,
-      startingStyleAdornerActive: this.#startingStyleAdornerActive,
-      onStartingStyleAdornerClick: this.disableEdits ? () => {
-      } : (event) => this.#onStartingStyleAdornerClick(event),
-      onSlotAdornerClick: () => {
-        if (this.node.assignedSlot) {
-          const deferredNode = this.node.assignedSlot.deferredNode;
-          deferredNode.resolve((node) => {
-            void Common9.Revealer.reveal(node);
-          });
-        }
+    this.#view(
+      {
+        node: this.node,
+        isClosingTag,
+        expanded: this.#expanded,
+        isExpandable: this.#isExpandable,
+        isXMLMimeType: this.isXMLMimeType,
+        updateRecord: this.#updateRecord,
+        onHighlightSearchResults: () => this.#highlightSearchResults(),
+        onExpand: () => this.expand?.(),
+        containerAdornerActive: this.#containerAdornerActive,
+        adProvenance: this.node.adProvenance(),
+        adTooltipId: this.#adTooltipId,
+        target: this.node.domModel().target(),
+        showContainerAdorner: Boolean(this.#layout?.containerType) && !isClosingTag,
+        containerType: this.#layout?.containerType,
+        showFlexAdorner: Boolean(this.#layout?.isFlex) && !isClosingTag,
+        flexAdornerActive: this.#flexAdornerActive,
+        showGridAdorner: Boolean(this.#layout?.isGrid) && !isClosingTag,
+        showGridLanesAdorner: Boolean(this.#layout?.isGridLanes) && !isClosingTag,
+        showMediaAdorner: this.node.isMediaNode() && !isClosingTag,
+        showPopoverAdorner: Boolean(this.node.attributes().find((attr) => attr.name === "popover")) && !isClosingTag,
+        showInterestAdorner: Boolean(Root4.Runtime.hostConfig.devToolsAllowInterestForcing?.enabled) && Boolean(this.node.attributes().find((attr) => attr.name === "interesttarget" || attr.name === "interestfor")) && !isClosingTag,
+        showTopLayerAdorner: this.node.topLayerIndex() !== -1 && !isClosingTag,
+        gridAdornerActive: this.#gridAdornerActive,
+        popoverAdornerActive: this.#popoverAdornerActive,
+        interestAdornerActive: this.#interestAdornerActive,
+        isSubgrid: Boolean(this.#layout?.isSubgrid),
+        showViewSourceAdorner: this.node.isRootNode() && isOpeningTag(this.tagTypeContext),
+        showScrollAdorner: (this.node.nodeName() === "HTML" && this.node.ownerDocument?.isScrollable() || this.node.nodeName() !== "#document" && this.node.isScrollable()) && !isClosingTag,
+        decorations: this.#decorations,
+        descendantDecorations: this.#expanded ? [] : this.#descendantDecorations,
+        decorationsTooltip: this.#decorationsTooltip,
+        indent: this.#getLeftIndent(),
+        showScrollSnapAdorner: Boolean(this.#layout?.hasScroll) && !isClosingTag,
+        scrollSnapAdornerActive: this.#scrollSnapAdornerActive,
+        showSlotAdorner: Boolean(this.node.assignedSlot) && !isClosingTag,
+        showCustomElementAdorner: this.node.isCustomElement() && !isClosingTag,
+        onCustomElementAdornerClick: this.disableEdits ? () => {
+        } : (event) => void this.#onCustomElementAdornerClick(event),
+        showStartingStyleAdorner: this.node.affectedByStartingStyles() && !isClosingTag,
+        startingStyleAdornerActive: this.#startingStyleAdornerActive,
+        onStartingStyleAdornerClick: this.disableEdits ? () => {
+        } : (event) => this.#onStartingStyleAdornerClick(event),
+        onSlotAdornerClick: () => {
+          if (this.node.assignedSlot) {
+            const deferredNode = this.node.assignedSlot.deferredNode;
+            deferredNode.resolve((node) => {
+              void Common9.Revealer.reveal(node);
+            });
+          }
+        },
+        topLayerIndex: this.node.topLayerIndex(),
+        onViewSourceAdornerClick: this.disableEdits ? () => {
+        } : this.revealHTMLInSources.bind(this),
+        onGutterClick: this.showContextMenu ? (event) => this.showContextMenu?.(event, this) : () => {
+        },
+        onContainerAdornerClick: this.disableEdits ? () => {
+        } : (event) => this.#onContainerAdornerClick(event),
+        onFlexAdornerClick: this.disableEdits ? () => {
+        } : (event) => this.#onFlexAdornerClick(event),
+        onGridAdornerClick: this.disableEdits ? () => {
+        } : (event) => this.#onGridAdornerClick(event),
+        onMediaAdornerClick: this.disableEdits ? () => {
+        } : (event) => this.#onMediaAdornerClick(event),
+        onPopoverAdornerClick: this.disableEdits ? () => {
+        } : (event) => this.#onPopoverAdornerClick(event),
+        onInterestAdornerClick: this.disableEdits ? () => {
+        } : (event) => this.#onInterestAdornerClick(event),
+        onScrollSnapAdornerClick: this.disableEdits ? () => {
+        } : (event) => this.#onScrollSnapAdornerClick(event),
+        onTopLayerAdornerClick: this.disableEdits ? () => {
+        } : () => {
+          this.revealInTopLayer?.(this.node);
+        },
+        isHovered: this.#hovered,
+        isSelected: this.#selected,
+        canInspect: this.node.canInspectNode(),
+        showAiButton: Boolean(this.#hovered || this.#selected) && this.node.nodeType() === Node.ELEMENT_NODE && this.isAiButtonEnabled() && this.showAIButton,
+        aiButtonTitle: this.isAiButtonEnabled() ? UI15.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button").title() : void 0,
+        onAiButtonClick: (ev) => {
+          ev.stopPropagation();
+          this.selectTreeElement?.(true, false);
+          const action2 = UI15.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button");
+          if (action2) {
+            void action2.execute();
+          }
+        },
+        editorState: this.#editorState,
+        editorWidth: this.#editorWidth,
+        issues: this.issues
       },
-      topLayerIndex: this.node.topLayerIndex(),
-      onViewSourceAdornerClick: this.disableEdits ? () => {
-      } : this.revealHTMLInSources.bind(this),
-      onGutterClick: this.showContextMenu ? (event) => this.showContextMenu?.(event, this) : () => {
-      },
-      onContainerAdornerClick: this.disableEdits ? () => {
-      } : (event) => this.#onContainerAdornerClick(event),
-      onFlexAdornerClick: this.disableEdits ? () => {
-      } : (event) => this.#onFlexAdornerClick(event),
-      onGridAdornerClick: this.disableEdits ? () => {
-      } : (event) => this.#onGridAdornerClick(event),
-      onMediaAdornerClick: this.disableEdits ? () => {
-      } : (event) => this.#onMediaAdornerClick(event),
-      onPopoverAdornerClick: this.disableEdits ? () => {
-      } : (event) => this.#onPopoverAdornerClick(event),
-      onInterestAdornerClick: this.disableEdits ? () => {
-      } : (event) => this.#onInterestAdornerClick(event),
-      onScrollSnapAdornerClick: this.disableEdits ? () => {
-      } : (event) => this.#onScrollSnapAdornerClick(event),
-      onTopLayerAdornerClick: this.disableEdits ? () => {
-      } : () => {
-        this.revealInTopLayer?.(this.node);
-      },
-      isHovered: this.#hovered,
-      isSelected: this.#selected,
-      canInspect: this.node.canInspectNode(),
-      showAiButton: Boolean(this.#hovered || this.#selected) && this.node.nodeType() === Node.ELEMENT_NODE && this.isAiButtonEnabled() && this.showAIButton,
-      aiButtonTitle: this.isAiButtonEnabled() ? UI15.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button").title() : void 0,
-      onAiButtonClick: (ev) => {
-        ev.stopPropagation();
-        this.selectTreeElement?.(true, false);
-        const action2 = UI15.ActionRegistry.ActionRegistry.instance().getAction("freestyler.elements-floating-button");
-        if (action2) {
-          void action2.execute();
-        }
-      },
-      editorState: this.#editorState,
-      editorWidth: this.#editorWidth,
-      issues: this.issues
-    }, output, this.contentElement);
+      output,
+      this.contentElement
+    );
     this.#editorRef = output.editorRef;
     if (this.#updateRecord) {
       this.#updateRecord = null;
@@ -14389,7 +17735,9 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       if (constructorObject.type === "function") {
         const functionDetails = await SDK13.RemoteObject.RemoteFunction.objectAsFunction(constructorObject).targetFunctionDetails();
         if (functionDetails?.location) {
-          const uiLocation = await Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(functionDetails.location);
+          const uiLocation = await Bindings5.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding.instance().rawLocationToUILocation(
+            functionDetails.location
+          );
           if (uiLocation) {
             void Common9.Revealer.reveal(uiLocation);
           }
@@ -14461,7 +17809,7 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     const view = UI15.ViewManager.ViewManager.instance().view("medias");
     if (view) {
       const widget4 = await view.widget();
-      if (widget4 instanceof Media.MainView.MainView) {
+      if (widget4 instanceof Media2.MainView.MainView) {
         await widget4.waitForInitialPlayers();
         widget4.selectPlayerByDOMNodeId(this.node.backendNodeId());
       }
@@ -14528,109 +17876,165 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     this.requestUpdate();
     if (!this.isClosingTag) {
       this.node.addEventListener(SDK13.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
-      this.node.addEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
-      this.node.addEventListener(SDK13.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated, this);
-      this.node.addEventListener(SDK13.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED, this.#onPersistentContainerQueryOverlayStateChanged, this);
-      this.node.addEventListener(SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.#onPersistentFlexContainerOverlayStateChanged, this);
-      this.node.addEventListener(SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
-      this.node.addEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged, this);
+      this.node.addEventListener(
+        SDK13.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED,
+        this.#onScrollableFlagUpdated,
+        this
+      );
+      this.node.addEventListener(
+        SDK13.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED,
+        this.#onAdRelatedStateUpdated,
+        this
+      );
+      this.node.addEventListener(
+        SDK13.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
+        this.#onPersistentContainerQueryOverlayStateChanged,
+        this
+      );
+      this.node.addEventListener(
+        SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
+        this.#onPersistentFlexContainerOverlayStateChanged,
+        this
+      );
+      this.node.addEventListener(
+        SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED,
+        this.#onPersistentGridOverlayStateChanged,
+        this
+      );
+      this.node.addEventListener(
+        SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
+        this.#onPersistentScrollSnapOverlayStateChanged,
+        this
+      );
       if (this.#domIssuesManager && this.node.id) {
         this.#domIssuesManager.subscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
       }
     }
   }
   clearView() {
-    this.#view({
-      node: null,
-      isClosingTag: false,
-      expanded: false,
-      isExpandable: false,
-      isXMLMimeType: false,
-      updateRecord: null,
-      onHighlightSearchResults: () => {
+    this.#view(
+      {
+        node: null,
+        isClosingTag: false,
+        expanded: false,
+        isExpandable: false,
+        isXMLMimeType: false,
+        updateRecord: null,
+        onHighlightSearchResults: () => {
+        },
+        onExpand: () => {
+        },
+        containerAdornerActive: false,
+        adProvenance: void 0,
+        target: void 0,
+        adTooltipId: "",
+        showContainerAdorner: false,
+        containerType: this.#layout?.containerType,
+        showFlexAdorner: false,
+        flexAdornerActive: false,
+        showGridAdorner: false,
+        showGridLanesAdorner: false,
+        showMediaAdorner: false,
+        showPopoverAdorner: false,
+        showInterestAdorner: false,
+        showTopLayerAdorner: false,
+        gridAdornerActive: false,
+        popoverAdornerActive: false,
+        interestAdornerActive: false,
+        isSubgrid: false,
+        showViewSourceAdorner: false,
+        showScrollAdorner: false,
+        showScrollSnapAdorner: false,
+        scrollSnapAdornerActive: false,
+        showSlotAdorner: false,
+        showCustomElementAdorner: false,
+        showStartingStyleAdorner: false,
+        startingStyleAdornerActive: false,
+        onStartingStyleAdornerClick: () => {
+        },
+        onSlotAdornerClick: () => {
+        },
+        onCustomElementAdornerClick: () => {
+        },
+        topLayerIndex: -1,
+        onViewSourceAdornerClick: () => {
+        },
+        onGutterClick: () => {
+        },
+        onContainerAdornerClick: () => {
+        },
+        onFlexAdornerClick: () => {
+        },
+        onGridAdornerClick: () => {
+        },
+        onMediaAdornerClick: () => {
+        },
+        onPopoverAdornerClick: () => {
+        },
+        onInterestAdornerClick: () => {
+        },
+        onScrollSnapAdornerClick: () => {
+        },
+        onTopLayerAdornerClick: () => {
+        },
+        isHovered: false,
+        isSelected: false,
+        canInspect: false,
+        showAiButton: false,
+        onAiButtonClick: () => {
+        },
+        decorations: [],
+        descendantDecorations: [],
+        decorationsTooltip: "",
+        indent: 0,
+        editorState: null,
+        editorWidth: null,
+        issues: []
       },
-      onExpand: () => {
-      },
-      containerAdornerActive: false,
-      adProvenance: void 0,
-      target: void 0,
-      adTooltipId: "",
-      showContainerAdorner: false,
-      containerType: this.#layout?.containerType,
-      showFlexAdorner: false,
-      flexAdornerActive: false,
-      showGridAdorner: false,
-      showGridLanesAdorner: false,
-      showMediaAdorner: false,
-      showPopoverAdorner: false,
-      showInterestAdorner: false,
-      showTopLayerAdorner: false,
-      gridAdornerActive: false,
-      popoverAdornerActive: false,
-      interestAdornerActive: false,
-      isSubgrid: false,
-      showViewSourceAdorner: false,
-      showScrollAdorner: false,
-      showScrollSnapAdorner: false,
-      scrollSnapAdornerActive: false,
-      showSlotAdorner: false,
-      showCustomElementAdorner: false,
-      showStartingStyleAdorner: false,
-      startingStyleAdornerActive: false,
-      onStartingStyleAdornerClick: () => {
-      },
-      onSlotAdornerClick: () => {
-      },
-      onCustomElementAdornerClick: () => {
-      },
-      topLayerIndex: -1,
-      onViewSourceAdornerClick: () => {
-      },
-      onGutterClick: () => {
-      },
-      onContainerAdornerClick: () => {
-      },
-      onFlexAdornerClick: () => {
-      },
-      onGridAdornerClick: () => {
-      },
-      onMediaAdornerClick: () => {
-      },
-      onPopoverAdornerClick: () => {
-      },
-      onInterestAdornerClick: () => {
-      },
-      onScrollSnapAdornerClick: () => {
-      },
-      onTopLayerAdornerClick: () => {
-      },
-      isHovered: false,
-      isSelected: false,
-      canInspect: false,
-      showAiButton: false,
-      onAiButtonClick: () => {
-      },
-      decorations: [],
-      descendantDecorations: [],
-      decorationsTooltip: "",
-      indent: 0,
-      editorState: null,
-      editorWidth: null,
-      issues: []
-    }, {}, this.contentElement);
+      {},
+      this.contentElement
+    );
   }
   onunbind() {
     if (this.editing) {
       this.editing.cancel();
     }
     this.clearView();
-    this.node.removeEventListener(SDK13.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED, this.onTopLayerIndexChanged, this);
-    this.node.removeEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED, this.#onScrollableFlagUpdated, this);
-    this.node.removeEventListener(SDK13.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED, this.#onAdRelatedStateUpdated, this);
-    this.node.removeEventListener(SDK13.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED, this.#onPersistentContainerQueryOverlayStateChanged, this);
-    this.node.removeEventListener(SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED, this.#onPersistentFlexContainerOverlayStateChanged, this);
-    this.node.removeEventListener(SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED, this.#onPersistentGridOverlayStateChanged, this);
-    this.node.removeEventListener(SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED, this.#onPersistentScrollSnapOverlayStateChanged, this);
+    this.node.removeEventListener(
+      SDK13.DOMModel.DOMNodeEvents.TOP_LAYER_INDEX_CHANGED,
+      this.onTopLayerIndexChanged,
+      this
+    );
+    this.node.removeEventListener(
+      SDK13.DOMModel.DOMNodeEvents.SCROLLABLE_FLAG_UPDATED,
+      this.#onScrollableFlagUpdated,
+      this
+    );
+    this.node.removeEventListener(
+      SDK13.DOMModel.DOMNodeEvents.AD_RELATED_STATE_UPDATED,
+      this.#onAdRelatedStateUpdated,
+      this
+    );
+    this.node.removeEventListener(
+      SDK13.DOMModel.DOMNodeEvents.CONTAINER_QUERY_OVERLAY_STATE_CHANGED,
+      this.#onPersistentContainerQueryOverlayStateChanged,
+      this
+    );
+    this.node.removeEventListener(
+      SDK13.DOMModel.DOMNodeEvents.FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
+      this.#onPersistentFlexContainerOverlayStateChanged,
+      this
+    );
+    this.node.removeEventListener(
+      SDK13.DOMModel.DOMNodeEvents.GRID_OVERLAY_STATE_CHANGED,
+      this.#onPersistentGridOverlayStateChanged,
+      this
+    );
+    this.node.removeEventListener(
+      SDK13.DOMModel.DOMNodeEvents.SCROLL_SNAP_OVERLAY_STATE_CHANGED,
+      this.#onPersistentScrollSnapOverlayStateChanged,
+      this
+    );
     if (this.#domIssuesManager && this.node.id) {
       this.#domIssuesManager.unsubscribeByNodeId(this.node.id, this.#onDOMIssueUpdated);
     }
@@ -14795,7 +18199,10 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     if (isOpeningTag(this.tagTypeContext) && this.tagTypeContext.canAddAttributes) {
       const attribute = listItem.getElementsByClassName("webkit-html-attribute")[0];
       if (attribute) {
-        return this.startEditingAttribute(attribute, attribute.getElementsByClassName("webkit-html-attribute-value")[0]);
+        return this.startEditingAttribute(
+          attribute,
+          attribute.getElementsByClassName("webkit-html-attribute-value")[0]
+        );
       }
       return this.addNewAttribute();
     }
@@ -14879,10 +18286,17 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
       }
     }
     if (attributeValue !== void 0) {
-      attributeValueElement.setTextContentTruncatedIfNeeded(attributeValue, i18nString13(UIStrings14.valueIsTooLargeToEdit));
+      attributeValueElement.setTextContentTruncatedIfNeeded(
+        attributeValue,
+        i18nString13(UIStrings14.valueIsTooLargeToEdit)
+      );
     }
     removeZeroWidthSpaceRecursive(attribute);
-    const config = new UI15.InplaceEditor.Config(this.attributeEditingCommitted.bind(this), this.editingCancelled.bind(this), attributeName);
+    const config = new UI15.InplaceEditor.Config(
+      this.attributeEditingCommitted.bind(this),
+      this.editingCancelled.bind(this),
+      attributeName
+    );
     function postKeyDownFinishHandler(event) {
       UI15.UIUtils.handleElementValueModifications(event, attribute);
       return "";
@@ -14907,7 +18321,11 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     if (container) {
       container.textContent = textNode.nodeValue();
     }
-    const config = new UI15.InplaceEditor.Config(this.textNodeEditingCommitted.bind(this, textNode), this.editingCancelled.bind(this), null);
+    const config = new UI15.InplaceEditor.Config(
+      this.textNodeEditingCommitted.bind(this, textNode),
+      this.editingCancelled.bind(this),
+      null
+    );
     this.updateEditorHandles(textNodeElement, config);
     const componentSelection = this.element.getComponentSelection();
     componentSelection?.selectAllChildren(textNodeElement);
@@ -15354,7 +18772,10 @@ var ElementsTreeWidget = class _ElementsTreeWidget extends UI15.Widget.Widget {
     if (!matchRanges.length) {
       matchRanges.push(new TextUtils7.TextRange.SourceRange(0, text.length));
     }
-    this.#highlights = Highlighting2.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(this.contentElement, matchRanges);
+    this.#highlights = Highlighting2.HighlightManager.HighlightManager.instance().highlightOrderedTextRanges(
+      this.contentElement,
+      matchRanges
+    );
   }
   editAsHTML() {
     const promise = Common9.Revealer.reveal(this.node);
@@ -15431,13 +18852,10 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
   #isClosingTag;
   get tagTypeContext() {
     if (this.#isClosingTag) {
-      return {
-        tagType: "CLOSING_TAG"
-        /* TagType.CLOSING */
-      };
+      return { tagType: "CLOSING_TAG" /* CLOSING */ };
     }
     return {
-      tagType: "OPENING_TAG",
+      tagType: "OPENING_TAG" /* OPENING */,
       canAddAttributes: this.nodeInternal.nodeType() === Node.ELEMENT_NODE
     };
   }
@@ -15445,12 +18863,15 @@ var ElementsTreeElement = class extends UI15.TreeOutline.TreeElement {
     super();
     this.nodeInternal = node;
     this.#isClosingTag = Boolean(isClosingTag);
-    this.listItemElement.setAttribute("jslog", `${VisualLogging9.treeItem().parent("elementsTreeOutline").track({
-      keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End",
-      resize: true,
-      drag: true,
-      click: true
-    })}`);
+    this.listItemElement.setAttribute(
+      "jslog",
+      `${VisualLogging9.treeItem().parent("elementsTreeOutline").track({
+        keydown: "ArrowUp|ArrowDown|ArrowLeft|ArrowRight|Backspace|Delete|Enter|Space|Home|End",
+        resize: true,
+        drag: true,
+        click: true
+      })}`
+    );
     this.widgetWrapper = document.createElement("div");
     this.widgetWrapper.style.display = "contents";
     this.title = this.widgetWrapper;
@@ -15816,7 +19237,7 @@ function loggingParentProvider(e) {
 }
 VisualLogging9.registerParentProvider("elementsTreeOutline", loggingParentProvider);
 
-// gen/front_end/panels/elements/DOMTreeContextMenu.js
+// ../../front_end/panels/elements/DOMTreeContextMenu.ts
 var UIStrings15 = {
   /**
    * @description A context menu item to store a value as a global variable the Elements Panel
@@ -16000,7 +19421,11 @@ var i18nString14 = i18n30.i18n.getLocalizedString.bind(void 0, str_15);
 async function populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget) {
   const isEditable = !domNode.isShadowRoot() && !domNode.ancestorUserAgentShadowRoot();
   if (isEditable && !targetWidget?.isEditing) {
-    contextMenu.editSection().appendItem(i18nString14(UIStrings15.editAsHtml), () => domTreeWidget.toggleEditAsHTML(domNode), { jslogContext: "elements.edit-as-html" });
+    contextMenu.editSection().appendItem(
+      i18nString14(UIStrings15.editAsHtml),
+      () => domTreeWidget.toggleEditAsHTML(domNode),
+      { jslogContext: "elements.edit-as-html" }
+    );
   }
   const isShadowRoot = domNode.isShadowRoot();
   const createShortcut = UI16.KeyboardShortcut.KeyboardShortcut.shortcutToString.bind(null);
@@ -16140,51 +19565,127 @@ async function populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targ
     const config = submenuConfigs.find((c) => c.condition(layoutProps));
     if (config) {
       for (const item2 of config.items) {
-        appendSubmenuPromptAction(submenu, action2, item2.label, item2.prompt, openAiAssistanceId + item2.jslogContextSuffix);
+        appendSubmenuPromptAction(
+          submenu,
+          action2,
+          item2.label,
+          item2.prompt,
+          openAiAssistanceId + item2.jslogContextSuffix
+        );
       }
     }
   }
-  menuItem = contextMenu.clipboardSection().appendItem(i18nString14(UIStrings15.cut), () => domTreeWidget.performCopyOrCut(true, domNode), { disabled: !isEditable, jslogContext: "cut" });
+  menuItem = contextMenu.clipboardSection().appendItem(
+    i18nString14(UIStrings15.cut),
+    () => domTreeWidget.performCopyOrCut(true, domNode),
+    { disabled: !isEditable, jslogContext: "cut" }
+  );
   menuItem.setShortcut(createShortcut("X", modifier));
   const copyMenu = contextMenu.clipboardSection().appendSubMenuItem(i18nString14(UIStrings15.copy), false, "copy");
   const section5 = copyMenu.section();
   if (!isShadowRoot) {
-    menuItem = section5.appendItem(i18nString14(UIStrings15.copyOuterhtml), () => domTreeWidget.performCopyOrCut(false, domNode), { jslogContext: "copy-outer-html" });
+    menuItem = section5.appendItem(
+      i18nString14(UIStrings15.copyOuterhtml),
+      () => domTreeWidget.performCopyOrCut(false, domNode),
+      { jslogContext: "copy-outer-html" }
+    );
     menuItem.setShortcut(createShortcut("V", modifier));
   }
   if (domNode.nodeType() === Node.ELEMENT_NODE) {
-    section5.appendItem(i18nString14(UIStrings15.copySelector), () => domTreeWidget.copyCSSPath(domNode), { jslogContext: "copy-selector" });
-    section5.appendItem(i18nString14(UIStrings15.copyJsPath), () => domTreeWidget.copyJSPath(domNode), { disabled: !canGetJSPath(domNode), jslogContext: "copy-js-path" });
-    section5.appendItem(i18nString14(UIStrings15.copyStyles), () => void domTreeWidget.copyStyles(domNode), { jslogContext: "elements.copy-styles" });
+    section5.appendItem(
+      i18nString14(UIStrings15.copySelector),
+      () => domTreeWidget.copyCSSPath(domNode),
+      { jslogContext: "copy-selector" }
+    );
+    section5.appendItem(
+      i18nString14(UIStrings15.copyJsPath),
+      () => domTreeWidget.copyJSPath(domNode),
+      { disabled: !canGetJSPath(domNode), jslogContext: "copy-js-path" }
+    );
+    section5.appendItem(
+      i18nString14(UIStrings15.copyStyles),
+      () => void domTreeWidget.copyStyles(domNode),
+      { jslogContext: "elements.copy-styles" }
+    );
   }
   if (!isShadowRoot) {
-    section5.appendItem(i18nString14(UIStrings15.copyXpath), () => domTreeWidget.copyXPath(domNode), { jslogContext: "copy-xpath" });
-    section5.appendItem(i18nString14(UIStrings15.copyFullXpath), () => domTreeWidget.copyFullXPath(domNode), { jslogContext: "copy-full-xpath" });
+    section5.appendItem(
+      i18nString14(UIStrings15.copyXpath),
+      () => domTreeWidget.copyXPath(domNode),
+      { jslogContext: "copy-xpath" }
+    );
+    section5.appendItem(
+      i18nString14(UIStrings15.copyFullXpath),
+      () => domTreeWidget.copyFullXPath(domNode),
+      { jslogContext: "copy-full-xpath" }
+    );
   }
-  menuItem = copyMenu.clipboardSection().appendItem(i18nString14(UIStrings15.copyElement), () => domTreeWidget.performCopyOrCut(false, domNode, true), { jslogContext: "copy-element" });
+  menuItem = copyMenu.clipboardSection().appendItem(
+    i18nString14(UIStrings15.copyElement),
+    () => domTreeWidget.performCopyOrCut(false, domNode, true),
+    { jslogContext: "copy-element" }
+  );
   menuItem.setShortcut(createShortcut("C", modifier));
   if (!isShadowRoot) {
     const isRootElement = !domNode.parentNode || domNode.parentNode.nodeName() === "#document";
-    menuItem = contextMenu.editSection().appendItem(i18nString14(UIStrings15.duplicateElement), () => domTreeWidget.duplicateNode(domNode), {
-      disabled: domNode.isInShadowTree() || isRootElement,
-      jslogContext: "elements.duplicate-element"
-    });
+    menuItem = contextMenu.editSection().appendItem(
+      i18nString14(UIStrings15.duplicateElement),
+      () => domTreeWidget.duplicateNode(domNode),
+      {
+        disabled: domNode.isInShadowTree() || isRootElement,
+        jslogContext: "elements.duplicate-element"
+      }
+    );
   }
-  menuItem = contextMenu.clipboardSection().appendItem(i18nString14(UIStrings15.paste), () => domTreeWidget.pasteNode(domNode), { disabled: !domTreeWidget.canPaste(domNode), jslogContext: "paste" });
+  menuItem = contextMenu.clipboardSection().appendItem(
+    i18nString14(UIStrings15.paste),
+    () => domTreeWidget.pasteNode(domNode),
+    { disabled: !domTreeWidget.canPaste(domNode), jslogContext: "paste" }
+  );
   menuItem.setShortcut(createShortcut("V", modifier));
-  menuItem = contextMenu.debugSection().appendCheckboxItem(i18nString14(UIStrings15.hideElement), () => domTreeWidget.toggleHideElement(domNode), {
-    checked: Boolean(domTreeWidget.isToggledToHidden(domNode)),
-    jslogContext: "elements.hide-element"
-  });
-  menuItem.setShortcut(UI16.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction("elements.hide-element") || "");
+  menuItem = contextMenu.debugSection().appendCheckboxItem(
+    i18nString14(UIStrings15.hideElement),
+    () => domTreeWidget.toggleHideElement(domNode),
+    {
+      checked: Boolean(domTreeWidget.isToggledToHidden(domNode)),
+      jslogContext: "elements.hide-element"
+    }
+  );
+  menuItem.setShortcut(
+    UI16.ShortcutRegistry.ShortcutRegistry.instance().shortcutTitleForAction("elements.hide-element") || ""
+  );
   if (isEditable) {
-    contextMenu.editSection().appendItem(i18nString14(UIStrings15.deleteElement), () => void domTreeWidget.removeNode(domNode), { jslogContext: "delete-element" });
+    contextMenu.editSection().appendItem(
+      i18nString14(UIStrings15.deleteElement),
+      () => void domTreeWidget.removeNode(domNode),
+      { jslogContext: "delete-element" }
+    );
   }
-  contextMenu.viewSection().appendItem(i18nString14(UIStrings15.expandRecursively), () => void domTreeWidget.expandRecursively(domNode), { jslogContext: "expand-recursively" });
-  contextMenu.viewSection().appendItem(i18nString14(UIStrings15.collapseChildren), () => domTreeWidget.collapseChildren(domNode), { jslogContext: "collapse-children" });
-  contextMenu.viewSection().appendItem(i18nString14(UIStrings15.switchToAccessibilityTree), () => ElementsPanel.instance().toggleAccessibilityTree(), { jslogContext: "switch-to-accessibility-tree" });
-  const deviceModeWrapperAction = new Emulation.DeviceModeView.ActionDelegate();
-  contextMenu.viewSection().appendItem(i18nString14(UIStrings15.captureNodeScreenshot), deviceModeWrapperAction.handleAction.bind(null, UI16.Context.Context.instance(), "emulation.capture-node-screenshot"), { jslogContext: "emulation.capture-node-screenshot" });
+  contextMenu.viewSection().appendItem(
+    i18nString14(UIStrings15.expandRecursively),
+    () => void domTreeWidget.expandRecursively(domNode),
+    { jslogContext: "expand-recursively" }
+  );
+  contextMenu.viewSection().appendItem(
+    i18nString14(UIStrings15.collapseChildren),
+    () => domTreeWidget.collapseChildren(domNode),
+    { jslogContext: "collapse-children" }
+  );
+  contextMenu.viewSection().appendItem(
+    i18nString14(UIStrings15.switchToAccessibilityTree),
+    () => ElementsPanel.instance().toggleAccessibilityTree(),
+    { jslogContext: "switch-to-accessibility-tree" }
+  );
+  const deviceModeWrapperAction = new Emulation2.DeviceModeView.ActionDelegate();
+  contextMenu.viewSection().appendItem(
+    i18nString14(UIStrings15.captureNodeScreenshot),
+    deviceModeWrapperAction.handleAction.bind(
+      null,
+      UI16.Context.Context.instance(),
+      "emulation.capture-node-screenshot"
+    ),
+    { jslogContext: "emulation.capture-node-screenshot" }
+  );
   if (domNode.frameOwnerFrameId()) {
     contextMenu.viewSection().appendItem(i18nString14(UIStrings15.showFrameDetails), () => {
       const frameOwnerFrameId = domNode.frameOwnerFrameId();
@@ -16216,26 +19717,46 @@ async function showContextMenu(domTreeWidget, domNode, event, targetWidget) {
     textNode = null;
   }
   const commentNode = node.enclosingNodeOrSelfWithClass?.("webkit-html-comment");
-  contextMenu.saveSection().appendItem(i18nString14(UIStrings15.storeAsGlobalVariable), () => void domNode.saveNodeToTempVariable(), { jslogContext: "store-as-global-variable" });
+  contextMenu.saveSection().appendItem(
+    i18nString14(UIStrings15.storeAsGlobalVariable),
+    () => void domNode.saveNodeToTempVariable(),
+    { jslogContext: "store-as-global-variable" }
+  );
   if (textNode) {
     if (!targetWidget?.isEditing) {
-      contextMenu.editSection().appendItem(i18nString14(UIStrings15.editText), () => targetWidget?.startEditingTextNode(textNode), { jslogContext: "edit-text" });
+      contextMenu.editSection().appendItem(
+        i18nString14(UIStrings15.editText),
+        () => targetWidget?.startEditingTextNode(textNode),
+        { jslogContext: "edit-text" }
+      );
     }
     await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget);
   } else if (isTag) {
     const startTagWidget = targetWidget?.isClosingTag ? targetWidget.findStartTagWidget?.() ?? targetWidget : targetWidget;
     if (startTagWidget) {
-      contextMenu.editSection().appendItem(i18nString14(UIStrings15.addAttribute), () => startTagWidget.addNewAttribute(), { jslogContext: "add-attribute" });
+      contextMenu.editSection().appendItem(
+        i18nString14(UIStrings15.addAttribute),
+        () => startTagWidget.addNewAttribute(),
+        { jslogContext: "add-attribute" }
+      );
     }
     const target = event.composedPath()[0] || event.target;
     const attribute = target.enclosingNodeOrSelfWithClass?.("webkit-html-attribute");
     const newAttribute = target.enclosingNodeOrSelfWithClass?.("add-attribute");
     if (attribute && !newAttribute) {
-      contextMenu.editSection().appendItem(i18nString14(UIStrings15.editAttribute), () => startTagWidget?.startEditingAttribute(attribute, target), { jslogContext: "edit-attribute" });
+      contextMenu.editSection().appendItem(
+        i18nString14(UIStrings15.editAttribute),
+        () => startTagWidget?.startEditingAttribute(attribute, target),
+        { jslogContext: "edit-attribute" }
+      );
     }
     await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, startTagWidget);
     ElementsTreeElement.populateForcedPseudoStateItems(contextMenu, domNode);
-    contextMenu.viewSection().appendItem(i18nString14(UIStrings15.scrollIntoView), () => domNode.scrollIntoView(), { jslogContext: "scroll-into-view" });
+    contextMenu.viewSection().appendItem(
+      i18nString14(UIStrings15.scrollIntoView),
+      () => domNode.scrollIntoView(),
+      { jslogContext: "scroll-into-view" }
+    );
     contextMenu.viewSection().appendItem(i18nString14(UIStrings15.focus), async () => {
       await domNode.focus();
     }, { jslogContext: "focus" });
@@ -16243,16 +19764,36 @@ async function showContextMenu(domTreeWidget, domNode, event, targetWidget) {
     await populateNodeContextMenu(contextMenu, domTreeWidget, domNode, targetWidget);
   } else if (isPseudoElement) {
     if (domNode.childNodeCount() !== 0 || domNode.hasPseudoElements()) {
-      contextMenu.viewSection().appendItem(i18nString14(UIStrings15.expandRecursively), () => void domTreeWidget.expandRecursively(domNode), { jslogContext: "expand-recursively" });
+      contextMenu.viewSection().appendItem(
+        i18nString14(UIStrings15.expandRecursively),
+        () => void domTreeWidget.expandRecursively(domNode),
+        { jslogContext: "expand-recursively" }
+      );
     }
-    contextMenu.viewSection().appendItem(i18nString14(UIStrings15.scrollIntoView), () => domNode.scrollIntoView(), { jslogContext: "scroll-into-view" });
+    contextMenu.viewSection().appendItem(
+      i18nString14(UIStrings15.scrollIntoView),
+      () => domNode.scrollIntoView(),
+      { jslogContext: "scroll-into-view" }
+    );
   } else if (domNode.nodeType() === Node.PROCESSING_INSTRUCTION_NODE) {
-    contextMenu.editSection().appendItem(i18nString14(UIStrings15.editData), () => targetWidget?.startEditingProcessingInstructionValue(), { jslogContext: "elements.edit-data" });
-    contextMenu.editSection().appendItem(i18nString14(UIStrings15.duplicateElement), () => domTreeWidget.duplicateNode(domNode), {
-      disabled: domNode.isInShadowTree(),
-      jslogContext: "elements.duplicate-element"
-    });
-    contextMenu.editSection().appendItem(i18nString14(UIStrings15.deleteElement), () => void domTreeWidget.removeNode(domNode), { jslogContext: "delete-element" });
+    contextMenu.editSection().appendItem(
+      i18nString14(UIStrings15.editData),
+      () => targetWidget?.startEditingProcessingInstructionValue(),
+      { jslogContext: "elements.edit-data" }
+    );
+    contextMenu.editSection().appendItem(
+      i18nString14(UIStrings15.duplicateElement),
+      () => domTreeWidget.duplicateNode(domNode),
+      {
+        disabled: domNode.isInShadowTree(),
+        jslogContext: "elements.duplicate-element"
+      }
+    );
+    contextMenu.editSection().appendItem(
+      i18nString14(UIStrings15.deleteElement),
+      () => void domTreeWidget.removeNode(domNode),
+      { jslogContext: "delete-element" }
+    );
   }
   ElementsPanel.instance().populateAdornerSettingsContextMenu(contextMenu);
   contextMenu.appendApplicableItems(domNode);
@@ -16877,7 +20418,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 
 /*# sourceURL=${import.meta.resolve("./elementsTreeOutline.css")} */`;
 
-// gen/front_end/panels/elements/ShortcutTreeElement.js
+// ../../front_end/panels/elements/ShortcutTreeElement.ts
 import * as Common11 from "../../core/common/common.js";
 import * as i18n32 from "../../core/i18n/i18n.js";
 import * as UI17 from "../../ui/legacy/legacy.js";
@@ -16977,14 +20518,18 @@ var ShortcutTreeElement = class extends UI17.TreeOutline.TreeElement {
     if (this.nodeShortcut.nodeType === Node.ELEMENT_NODE) {
       text = "<" + text + ">";
     }
-    this.#view({
-      title: text,
-      onRevealAdornerClick: this.onRevealAdornerClick.bind(this)
-    }, void 0, this.listItemElement);
+    this.#view(
+      {
+        title: text,
+        onRevealAdornerClick: this.onRevealAdornerClick.bind(this)
+      },
+      void 0,
+      this.listItemElement
+    );
   }
 };
 
-// gen/front_end/panels/elements/TopLayerContainer.js
+// ../../front_end/panels/elements/TopLayerContainer.ts
 var TopLayerContainer_exports = {};
 __export(TopLayerContainer_exports, {
   TopLayerContainer: () => TopLayerContainer
@@ -16998,7 +20543,11 @@ var TopLayerContainer = class extends UI18.TreeOutline.TreeElement {
     super("#top-layer");
     this.tree = tree3;
     this.document = document2;
-    this.document.domModel().addEventListener(SDK15.DOMModel.Events.TopLayerElementsChanged, this.topLayerElementsChanged, this);
+    this.document.domModel().addEventListener(
+      SDK15.DOMModel.Events.TopLayerElementsChanged,
+      this.topLayerElementsChanged,
+      this
+    );
     this.topLayerElementsChanged({
       data: {
         document: document2,
@@ -17030,7 +20579,7 @@ var TopLayerContainer = class extends UI18.TreeOutline.TreeElement {
   }
 };
 
-// gen/front_end/panels/elements/ElementsTreeOutline.js
+// ../../front_end/panels/elements/ElementsTreeOutline.ts
 var { html: html15, nothing: nothing6, render: render13, Directives: { classMap: classMap4 } } = Lit10;
 var UIStrings17 = {
   /**
@@ -17062,10 +20611,29 @@ var elementsTreeOutlineByDOMModel = /* @__PURE__ */ new WeakMap();
 var populatedTreeElements = /* @__PURE__ */ new WeakSet();
 var DEFAULT_VIEW7 = (input, output, target) => {
   if (!output.elementsTreeOutline) {
-    const elementsTreeOutline = new ElementsTreeOutline(input.omitRootDOMNode, input.selectEnabled, input.hideGutter, input.maxTreeDepth, input.enableContextMenu, input.showComments, input.showAIButton, input.disableEdits, input.expandRoot, input.domTreeWidget);
+    const elementsTreeOutline = new ElementsTreeOutline(
+      input.omitRootDOMNode,
+      input.selectEnabled,
+      input.hideGutter,
+      input.maxTreeDepth,
+      input.enableContextMenu,
+      input.showComments,
+      input.showAIButton,
+      input.disableEdits,
+      input.expandRoot,
+      input.domTreeWidget
+    );
     output.elementsTreeOutline = elementsTreeOutline;
-    elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.SelectedNodeChanged, input.onSelectedNodeChanged, void 0);
-    elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ElementsTreeUpdated, input.onElementsTreeUpdated, void 0);
+    elementsTreeOutline.addEventListener(
+      ElementsTreeOutline.Events.SelectedNodeChanged,
+      input.onSelectedNodeChanged,
+      void 0
+    );
+    elementsTreeOutline.addEventListener(
+      ElementsTreeOutline.Events.ElementsTreeUpdated,
+      input.onElementsTreeUpdated,
+      void 0
+    );
     elementsTreeOutline.addEventListener(UI19.TreeOutline.Events.ElementExpanded, input.onElementExpanded, void 0);
     elementsTreeOutline.addEventListener(UI19.TreeOutline.Events.ElementCollapsed, input.onElementCollapsed, void 0);
     elementsTreeOutline.addEventListener(ElementsTreeOutline.Events.ShowAllRows, () => {
@@ -17484,7 +21052,9 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
   const renderNode = (node, depth = 0) => {
     const isSelected = input.selectedNode === node;
     const isHovered = input.currentHighlightedNode === node || input.hoveredNode === node;
-    const isExpanded = Boolean(input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode) || (input.isNodeExpanded ? input.isNodeExpanded(node) : input.expandRoot && (node === input.rootDOMNode || input.omitRootDOMNode && node.parentNode === input.rootDOMNode)));
+    const isExpanded = Boolean(
+      input.currentHighlightedNode && isAncestorOf(node, input.currentHighlightedNode) || (input.isNodeExpanded ? input.isNodeExpanded(node) : input.expandRoot && (node === input.rootDOMNode || input.omitRootDOMNode && node.parentNode === input.rootDOMNode))
+    );
     const hasChildren = nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
     const allVisibleChildren = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
     const limit = input.expandedChildrenLimit ? input.expandedChildrenLimit(node) : InitialChildrenLimit;
@@ -17636,7 +21206,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
                     style="--indent: ${computeLeftIndent(depth + 1, false)}px"
                     jslog=${VisualLogging10.treeItem("show-all-nodes").parent("elementsTreeOutline")}>
                   <devtools-button
-                      .variant=${"outlined"}
+                      .variant=${Buttons3.Button.Variant.OUTLINED}
                       title=${i18nString16(UIStrings17.showAllNodesDMore, { PH1: remainingChildrenCount })}
                       @click=${on2((event) => {
       event.stopPropagation();
@@ -17714,7 +21284,7 @@ var DECLARATIVE_VIEW = (input, _output, target) => {
                     style="--indent: ${computeLeftIndent(0, false)}px"
                     jslog=${VisualLogging10.treeItem("show-all-nodes").parent("elementsTreeOutline")}>
                   <devtools-button
-                      .variant=${"outlined"}
+                      .variant=${Buttons3.Button.Variant.OUTLINED}
                       title=${i18nString16(UIStrings17.showAllNodesDMore, { PH1: remaining })}
                       @click=${on((event) => {
       event.stopPropagation();
@@ -17896,23 +21466,39 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     this.#view = view;
     this.#showHTMLCommentsSetting.addChangeListener(this.#onShowHTMLCommentsChange, this);
     if (Common12.Settings.Settings.instance().moduleSetting("highlight-node-on-hover-in-overlay").get()) {
-      SDK16.TargetManager.TargetManager.instance().addModelListener(SDK16.OverlayModel.OverlayModel, "HighlightNodeRequested", this.#highlightNode, this, { scoped: true });
-      SDK16.TargetManager.TargetManager.instance().addModelListener(SDK16.OverlayModel.OverlayModel, "InspectModeWillBeToggled", this.#clearHighlightedNode, this, { scoped: true });
+      SDK16.TargetManager.TargetManager.instance().addModelListener(
+        SDK16.OverlayModel.OverlayModel,
+        SDK16.OverlayModel.Events.HIGHLIGHT_NODE_REQUESTED,
+        this.#highlightNode,
+        this,
+        { scoped: true }
+      );
+      SDK16.TargetManager.TargetManager.instance().addModelListener(
+        SDK16.OverlayModel.OverlayModel,
+        SDK16.OverlayModel.Events.INSPECT_MODE_WILL_BE_TOGGLED,
+        this.#clearHighlightedNode,
+        this,
+        { scoped: true }
+      );
     }
     this.#setupPopovers();
   }
   // TODO: Move imagePreviewPopover and issuePopoverHelper to the view once declarative versions exist.
   #setupPopovers() {
-    this.#imagePreviewPopover = new ImagePreviewPopover(this.contentElement, (event) => {
-      let link2 = event.composedPath()[0];
-      while (link2 && link2 !== this.contentElement && !ImagePreviewPopover.getImageURL(link2)) {
-        link2 = link2.parentElementOrShadowHost();
+    this.#imagePreviewPopover = new ImagePreviewPopover(
+      this.contentElement,
+      (event) => {
+        let link2 = event.composedPath()[0];
+        while (link2 && link2 !== this.contentElement && !ImagePreviewPopover.getImageURL(link2)) {
+          link2 = link2.parentElementOrShadowHost();
+        }
+        return link2 && link2 !== this.contentElement ? link2 : null;
+      },
+      async (link2) => {
+        const { node } = getElementsTreeWidgetAndNode(link2);
+        return await UIComponentUtils.ImagePreview.loadPrecomputedFeatures(node);
       }
-      return link2 && link2 !== this.contentElement ? link2 : null;
-    }, async (link2) => {
-      const { node } = getElementsTreeWidgetAndNode(link2);
-      return await UIComponentUtils.ImagePreview.loadPrecomputedFeatures(node);
-    });
+    );
     this.#issuePopoverHelper = new UI19.PopoverHelper.PopoverHelper(this.contentElement, (event) => {
       const hoveredNode = event.composedPath()[0];
       if (!(hoveredNode instanceof Element) || !hoveredNode.matches(".violating-element")) {
@@ -18083,7 +21669,11 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     domModel.removeEventListener(SDK16.DOMModel.Events.CharacterDataModified, this.#onCharacterDataModified, this);
     domModel.removeEventListener(SDK16.DOMModel.Events.ChildNodeCountUpdated, this.#onChildNodeCountUpdated, this);
     domModel.removeEventListener(SDK16.DOMModel.Events.MarkersChanged, this.#onMarkersChanged, this);
-    domModel.removeEventListener(SDK16.DOMModel.Events.AdoptedStyleSheetsModified, this.#onAdoptedStyleSheetsModified, this);
+    domModel.removeEventListener(
+      SDK16.DOMModel.Events.AdoptedStyleSheetsModified,
+      this.#onAdoptedStyleSheetsModified,
+      this
+    );
     domModel.removeEventListener(SDK16.DOMModel.Events.TopLayerElementsChanged, this.#onTopLayerElementsChanged, this);
     domModel.removeEventListener(SDK16.DOMModel.Events.DistributedNodesChanged, this.#onDistributedNodesChanged, this);
     domModel.removeEventListener(SDK16.DOMModel.Events.DocumentURLChanged, this.#onDocumentURLChanged, this);
@@ -18149,7 +21739,9 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       }
       this.#clearHighlightedNode();
       if (!isSameNode) {
-        this.onSelectedNodeChanged({ data: { node, focus: Boolean(focus) } });
+        this.onSelectedNodeChanged(
+          { data: { node, focus: Boolean(focus) } }
+        );
       }
       this.performUpdate();
       return;
@@ -18261,11 +21853,10 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
   collapseChildren(node) {
     if (this.#view === DECLARATIVE_VIEW) {
       const collapse = (n) => {
-        const pseudoElements = Array.from(n.pseudoElements().values()).flat();
-        const allChildren = [...n.children() ?? [], ...pseudoElements];
-        for (const child of allChildren) {
-          this.#expandedNodes.delete(child);
-          collapse(child);
+        for (const child of getVisibleChildren(n, this.#showComments)) {
+          if (this.#expandedNodes.delete(child)) {
+            collapse(child);
+          }
         }
       };
       collapse(node);
@@ -18347,143 +21938,147 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     }
     const firstRender = !this.#viewOutput.elementsTreeOutline;
     const updatedNodes = this.#view === DECLARATIVE_VIEW ? [...this.#updateRecords.keys()] : [];
-    this.#view({
-      domTreeWidget: this,
-      rootDOMNode: this.#rootDOMNode,
-      omitRootDOMNode: this.omitRootDOMNode,
-      selectEnabled: this.selectEnabled,
-      hideGutter: this.hideGutter,
-      maxTreeDepth: this.#maxTreeDepth,
-      enableContextMenu: this.#enableContextMenu,
-      showComments: this.#showComments,
-      showAIButton: this.#showAIButton,
-      disableEdits: this.#disableEdits,
-      expandRoot: this.#expandRoot,
-      visibleWidth: this.#visibleWidth,
-      visible: this.#visible,
-      wrap: this.#wrap,
-      maxRowsShown: this.#maxRows,
-      showSelectionOnKeyboardFocus: this.showSelectionOnKeyboardFocus,
-      preventTabOrder: this.preventTabOrder,
-      deindentSingleNode: this.deindentSingleNode,
-      currentHighlightedNode: this.#currentHighlightedNode,
-      hoveredNode: this.#hoveredDOMNode,
-      searchMatchNode: this.#searchMatchNode,
-      searchMatchQuery: this.#searchMatchQuery,
-      selectedNode: this.selectedDOMNode(),
-      onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
-      onSelectedNodeChanged: (event) => {
-        this.#clearHighlightedNode();
-        this.onSelectedNodeChanged(event);
+    this.#view(
+      {
+        domTreeWidget: this,
+        rootDOMNode: this.#rootDOMNode,
+        omitRootDOMNode: this.omitRootDOMNode,
+        selectEnabled: this.selectEnabled,
+        hideGutter: this.hideGutter,
+        maxTreeDepth: this.#maxTreeDepth,
+        enableContextMenu: this.#enableContextMenu,
+        showComments: this.#showComments,
+        showAIButton: this.#showAIButton,
+        disableEdits: this.#disableEdits,
+        expandRoot: this.#expandRoot,
+        visibleWidth: this.#visibleWidth,
+        visible: this.#visible,
+        wrap: this.#wrap,
+        maxRowsShown: this.#maxRows,
+        showSelectionOnKeyboardFocus: this.showSelectionOnKeyboardFocus,
+        preventTabOrder: this.preventTabOrder,
+        deindentSingleNode: this.deindentSingleNode,
+        currentHighlightedNode: this.#currentHighlightedNode,
+        hoveredNode: this.#hoveredDOMNode,
+        searchMatchNode: this.#searchMatchNode,
+        searchMatchQuery: this.#searchMatchQuery,
+        selectedNode: this.selectedDOMNode(),
+        onElementsTreeUpdated: this.onElementsTreeUpdated.bind(this),
+        onSelectedNodeChanged: (event) => {
+          this.#clearHighlightedNode();
+          this.onSelectedNodeChanged(event);
+        },
+        onElementCollapsed: () => {
+          this.#clearHighlightedNode();
+        },
+        onElementExpanded: () => {
+          this.#clearHighlightedNode();
+        },
+        onHoverNode: (node, showInfo) => {
+          this.setHoveredNode(node, showInfo);
+        },
+        onLeave: () => {
+          this.setHoveredNode(null);
+        },
+        onSelect: (node, selectedByUser) => {
+          this.selectDOMNode(node, selectedByUser);
+        },
+        onExpand: (node, expanded) => {
+          this.setNodeExpanded(node, expanded);
+        },
+        onContextMenu: (node, event, widget4) => {
+          void this.showContextMenu(node, event, widget4);
+        },
+        onToggleHideElement: (node) => {
+          this.toggleHideElement(node);
+        },
+        onKeyDown: (event) => {
+          this.onKeyDown(event);
+        },
+        isToggledToHidden: (node) => {
+          return this.isToggledToHidden(node);
+        },
+        onDuplicateNode: (node) => {
+          this.duplicateNode(node);
+        },
+        isNodeExpanded: (node) => {
+          return this.isNodeExpanded(node);
+        },
+        isNodeInClipboard: (node) => {
+          return this.isNodeInClipboard(node);
+        },
+        onCopyOrCut: (isCut, event) => {
+          this.onCopyOrCut(isCut, event);
+        },
+        onPaste: (event) => {
+          this.onPaste(event);
+        },
+        onSelectNodeAfterEdit: (wasExpanded, error, newNode, moveDirection) => {
+          this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
+        },
+        nodeToEdit: this.#nodeToEdit,
+        onInitialEditCompleted: () => {
+          this.#nodeToEdit = null;
+        },
+        dragOverNode: this.#dragOverNode,
+        isValidDragSource: (node) => this.isValidDragSource(node),
+        onDragStart: (node, event, textContent) => this.onDragStart(node, event, textContent),
+        onDragOver: (node, isClosingTag, event) => this.onDragOver(node, isClosingTag, event),
+        onDragLeave: (event) => this.onDragLeave(event),
+        onDrop: (node, isClosingTag, event) => this.onDrop(node, isClosingTag, event),
+        onDragEnd: (event) => this.onDragEnd(event),
+        getTopLayerShortcuts: (doc) => this.topLayerShortcuts(doc),
+        isTopLayerExpanded: (doc) => this.isTopLayerExpanded(doc),
+        onToggleTopLayerExpanded: (doc, expanded) => this.setTopLayerExpanded(doc, expanded),
+        onSelectTopLayerContainer: (_doc) => {
+          this.#selectedTopLayerShortcut = null;
+          this.selectDOMNode(null);
+          this.performUpdate();
+        },
+        isTopLayerShortcutExpanded: (shortcut) => this.isTopLayerShortcutExpanded(shortcut),
+        onToggleTopLayerShortcutExpanded: (shortcut, expanded) => this.setTopLayerShortcutExpanded(shortcut, expanded),
+        selectedTopLayerShortcut: this.#selectedTopLayerShortcut,
+        onSelectTopLayerShortcut: (shortcut) => {
+          this.#selectedTopLayerShortcut = shortcut;
+          this.selectDOMNode(null);
+          shortcut.deferredNode.highlight();
+          shortcut.deferredNode.resolve((node) => {
+            if (node) {
+              this.selectDOMNode(node, true);
+            }
+          });
+          this.performUpdate();
+        },
+        onRevealTopLayerShortcut: (shortcut) => {
+          shortcut.deferredNode.resolve((node) => {
+            if (node) {
+              this.selectDOMNode(node, true);
+              node.highlight();
+            }
+          });
+        },
+        isAdoptedStyleSheetsExpanded: (node) => this.isAdoptedStyleSheetsExpanded(node),
+        onToggleAdoptedStyleSheetsExpanded: (node, expanded) => this.setAdoptedStyleSheetsExpanded(node, expanded),
+        onSelectAdoptedStyleSheets: (_node) => {
+          this.#selectedAdoptedStyleSheet = null;
+          this.selectDOMNode(null);
+          this.performUpdate();
+        },
+        isAdoptedStyleSheetExpanded: (sheet) => this.isAdoptedStyleSheetExpanded(sheet),
+        onToggleAdoptedStyleSheetExpanded: (sheet, expanded) => this.setAdoptedStyleSheetExpanded(sheet, expanded),
+        selectedAdoptedStyleSheet: this.#selectedAdoptedStyleSheet,
+        onSelectAdoptedStyleSheet: (sheet) => {
+          this.#selectedAdoptedStyleSheet = sheet;
+          this.selectDOMNode(null);
+          this.performUpdate();
+        },
+        expandedChildrenLimit: (node) => this.expandedChildrenLimit(node),
+        onExpandAllChildren: (node) => this.expandAllChildren(node),
+        updateRecordForNode: (node) => this.#updateRecords.get(node) ?? null
       },
-      onElementCollapsed: () => {
-        this.#clearHighlightedNode();
-      },
-      onElementExpanded: () => {
-        this.#clearHighlightedNode();
-      },
-      onHoverNode: (node, showInfo) => {
-        this.setHoveredNode(node, showInfo);
-      },
-      onLeave: () => {
-        this.setHoveredNode(null);
-      },
-      onSelect: (node, selectedByUser) => {
-        this.selectDOMNode(node, selectedByUser);
-      },
-      onExpand: (node, expanded) => {
-        this.setNodeExpanded(node, expanded);
-      },
-      onContextMenu: (node, event, widget4) => {
-        void this.showContextMenu(node, event, widget4);
-      },
-      onToggleHideElement: (node) => {
-        this.toggleHideElement(node);
-      },
-      onKeyDown: (event) => {
-        this.onKeyDown(event);
-      },
-      isToggledToHidden: (node) => {
-        return this.isToggledToHidden(node);
-      },
-      onDuplicateNode: (node) => {
-        this.duplicateNode(node);
-      },
-      isNodeExpanded: (node) => {
-        return this.isNodeExpanded(node);
-      },
-      isNodeInClipboard: (node) => {
-        return this.isNodeInClipboard(node);
-      },
-      onCopyOrCut: (isCut, event) => {
-        this.onCopyOrCut(isCut, event);
-      },
-      onPaste: (event) => {
-        this.onPaste(event);
-      },
-      onSelectNodeAfterEdit: (wasExpanded, error, newNode, moveDirection) => {
-        this.selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection);
-      },
-      nodeToEdit: this.#nodeToEdit,
-      onInitialEditCompleted: () => {
-        this.#nodeToEdit = null;
-      },
-      dragOverNode: this.#dragOverNode,
-      isValidDragSource: (node) => this.isValidDragSource(node),
-      onDragStart: (node, event, textContent) => this.onDragStart(node, event, textContent),
-      onDragOver: (node, isClosingTag, event) => this.onDragOver(node, isClosingTag, event),
-      onDragLeave: (event) => this.onDragLeave(event),
-      onDrop: (node, isClosingTag, event) => this.onDrop(node, isClosingTag, event),
-      onDragEnd: (event) => this.onDragEnd(event),
-      getTopLayerShortcuts: (doc) => this.topLayerShortcuts(doc),
-      isTopLayerExpanded: (doc) => this.isTopLayerExpanded(doc),
-      onToggleTopLayerExpanded: (doc, expanded) => this.setTopLayerExpanded(doc, expanded),
-      onSelectTopLayerContainer: (_doc) => {
-        this.#selectedTopLayerShortcut = null;
-        this.selectDOMNode(null);
-        this.performUpdate();
-      },
-      isTopLayerShortcutExpanded: (shortcut) => this.isTopLayerShortcutExpanded(shortcut),
-      onToggleTopLayerShortcutExpanded: (shortcut, expanded) => this.setTopLayerShortcutExpanded(shortcut, expanded),
-      selectedTopLayerShortcut: this.#selectedTopLayerShortcut,
-      onSelectTopLayerShortcut: (shortcut) => {
-        this.#selectedTopLayerShortcut = shortcut;
-        this.selectDOMNode(null);
-        shortcut.deferredNode.highlight();
-        shortcut.deferredNode.resolve((node) => {
-          if (node) {
-            this.selectDOMNode(node, true);
-          }
-        });
-        this.performUpdate();
-      },
-      onRevealTopLayerShortcut: (shortcut) => {
-        shortcut.deferredNode.resolve((node) => {
-          if (node) {
-            this.selectDOMNode(node, true);
-            node.highlight();
-          }
-        });
-      },
-      isAdoptedStyleSheetsExpanded: (node) => this.isAdoptedStyleSheetsExpanded(node),
-      onToggleAdoptedStyleSheetsExpanded: (node, expanded) => this.setAdoptedStyleSheetsExpanded(node, expanded),
-      onSelectAdoptedStyleSheets: (_node) => {
-        this.#selectedAdoptedStyleSheet = null;
-        this.selectDOMNode(null);
-        this.performUpdate();
-      },
-      isAdoptedStyleSheetExpanded: (sheet) => this.isAdoptedStyleSheetExpanded(sheet),
-      onToggleAdoptedStyleSheetExpanded: (sheet, expanded) => this.setAdoptedStyleSheetExpanded(sheet, expanded),
-      selectedAdoptedStyleSheet: this.#selectedAdoptedStyleSheet,
-      onSelectAdoptedStyleSheet: (sheet) => {
-        this.#selectedAdoptedStyleSheet = sheet;
-        this.selectDOMNode(null);
-        this.performUpdate();
-      },
-      expandedChildrenLimit: (node) => this.expandedChildrenLimit(node),
-      onExpandAllChildren: (node) => this.expandAllChildren(node),
-      updateRecordForNode: (node) => this.#updateRecords.get(node) ?? null
-    }, this.#viewOutput, this.contentElement);
+      this.#viewOutput,
+      this.contentElement
+    );
     if (this.#view === DECLARATIVE_VIEW) {
       this.#updateRecords.clear();
       if (updatedNodes.length > 0) {
@@ -18801,7 +22396,11 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
       return;
     }
     const wasExpanded = this.#draggedNodeWasExpanded;
-    draggedNode.moveTo(parentNode, anchorNode, (error, newNode) => this.selectNodeAfterEdit(wasExpanded, error, newNode));
+    draggedNode.moveTo(
+      parentNode,
+      anchorNode,
+      (error, newNode) => this.selectNodeAfterEdit(wasExpanded, error, newNode)
+    );
   }
   selectNodeAfterEdit(wasExpanded, error, newNode, moveDirection) {
     if (error || !newNode) {
@@ -19049,7 +22648,7 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
         if (style.parentRule?.isUserAgent()) {
           continue;
         }
-        if (cascade.propertyState(property) !== "Active") {
+        if (cascade.propertyState(property) !== SDK16.CSSMatchedStyles.PropertyState.ACTIVE) {
           continue;
         }
         lines.push(`${indent}${property.name}: ${property.value};`);
@@ -19207,7 +22806,9 @@ var DOMTreeWidget = class extends UI19.Widget.Widget {
     super.show(parentElement, insertBefore, suppressOrphanWidgetError);
   }
 };
-var ElementsTreeOutlineBase = Common12.ObjectWrapper.eventMixin(UI19.TreeOutline.TreeOutline);
+var ElementsTreeOutlineBase = Common12.ObjectWrapper.eventMixin(
+  UI19.TreeOutline.TreeOutline
+);
 var ElementsTreeOutline = class _ElementsTreeOutline extends ElementsTreeOutlineBase {
   treeElementByNode;
   shadowRoot;
@@ -19244,7 +22845,10 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends ElementsTreeOutline
     this.renderSelection = true;
     this.treeElementByNode = /* @__PURE__ */ new WeakMap();
     const shadowContainer = document.createElement("div");
-    this.shadowRoot = UI19.UIUtils.createShadowRootWithCoreStyles(shadowContainer, { cssFile: [elementsTreeOutline_css_default, CodeHighlighter5.codeHighlighterStyles] });
+    this.shadowRoot = UI19.UIUtils.createShadowRootWithCoreStyles(
+      shadowContainer,
+      { cssFile: [elementsTreeOutline_css_default, CodeHighlighter5.codeHighlighterStyles] }
+    );
     const outlineDisclosureElement = this.shadowRoot.createChild("div", "elements-disclosure");
     this.elementInternal = this.element;
     this.elementInternal.classList.add("elements-tree-outline", "source-code");
@@ -19458,7 +23062,10 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends ElementsTreeOutline
     }
   }
   selectedNodeChanged(focus) {
-    this.dispatchEventToListeners(_ElementsTreeOutline.Events.SelectedNodeChanged, { node: this.selectedDOMNodeInternal, focus });
+    this.dispatchEventToListeners(
+      _ElementsTreeOutline.Events.SelectedNodeChanged,
+      { node: this.selectedDOMNodeInternal, focus }
+    );
   }
   fireElementsTreeUpdated(nodes) {
     this.dispatchEventToListeners(_ElementsTreeOutline.Events.ElementsTreeUpdated, nodes);
@@ -19603,11 +23210,19 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends ElementsTreeOutline
   highlightTreeElement(element, showInfo) {
     if (element instanceof ElementsTreeElement) {
       const selectorList = element.isDisplayContents() ? "*" : void 0;
-      element.node().domModel().overlayModel().highlightInOverlay({ node: element.node(), selectorList }, "all", showInfo);
+      element.node().domModel().overlayModel().highlightInOverlay(
+        { node: element.node(), selectorList },
+        "all",
+        showInfo
+      );
       return;
     }
     if (element instanceof ShortcutTreeElement) {
-      element.domModel().overlayModel().highlightInOverlay({ deferredNode: element.deferredNode(), selectorList: void 0 }, "all", showInfo);
+      element.domModel().overlayModel().highlightInOverlay(
+        { deferredNode: element.deferredNode(), selectorList: void 0 },
+        "all",
+        showInfo
+      );
     }
   }
   onmouseleave(_event) {
@@ -19717,7 +23332,11 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends ElementsTreeOutline
     domModel.addEventListener(SDK16.DOMModel.Events.DocumentURLChanged, this.documentURLChanged, this);
     domModel.addEventListener(SDK16.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.addEventListener(SDK16.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-    domModel.addEventListener(SDK16.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
+    domModel.addEventListener(
+      SDK16.DOMModel.Events.AffectedByStartingStylesFlagUpdated,
+      this.affectedByStartingStylesFlagUpdated,
+      this
+    );
     domModel.addEventListener(SDK16.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
   }
   unwireFromDOMModel(domModel) {
@@ -19731,7 +23350,11 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends ElementsTreeOutline
     domModel.removeEventListener(SDK16.DOMModel.Events.DocumentURLChanged, this.documentURLChanged, this);
     domModel.removeEventListener(SDK16.DOMModel.Events.ChildNodeCountUpdated, this.childNodeCountUpdated, this);
     domModel.removeEventListener(SDK16.DOMModel.Events.DistributedNodesChanged, this.distributedNodesChanged, this);
-    domModel.removeEventListener(SDK16.DOMModel.Events.AffectedByStartingStylesFlagUpdated, this.affectedByStartingStylesFlagUpdated, this);
+    domModel.removeEventListener(
+      SDK16.DOMModel.Events.AffectedByStartingStylesFlagUpdated,
+      this.affectedByStartingStylesFlagUpdated,
+      this
+    );
     domModel.removeEventListener(SDK16.DOMModel.Events.AdoptedStyleSheetsModified, this.adoptedStyleSheetsModified, this);
     elementsTreeOutlineByDOMModel.delete(domModel);
   }
@@ -20035,7 +23658,10 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends ElementsTreeOutline
     return expandAllButtonElement;
     function handleLoadAllChildren(event) {
       const visibleChildCount = this.visibleChildren(treeElement.node()).length;
-      this.setExpandedChildrenLimit(treeElement, Math.max(visibleChildCount, treeElement.expandedChildrenLimit() + InitialChildrenLimit));
+      this.setExpandedChildrenLimit(
+        treeElement,
+        Math.max(visibleChildCount, treeElement.expandedChildrenLimit() + InitialChildrenLimit)
+      );
       event.consume();
     }
   }
@@ -20166,9 +23792,9 @@ var ElementsTreeOutline = class _ElementsTreeOutline extends ElementsTreeOutline
     }
   }
 };
-(function(ElementsTreeOutline2) {
+((ElementsTreeOutline2) => {
   let Events3;
-  (function(Events4) {
+  ((Events4) => {
     Events4["SelectedNodeChanged"] = "SelectedNodeChanged";
     Events4["ElementsTreeUpdated"] = "ElementsTreeUpdated";
     Events4["ShowAllRows"] = "ShowAllRows";
@@ -20195,7 +23821,7 @@ var MappedCharToEntity = /* @__PURE__ */ new Map([
   ["\uFEFF", "#xFEFF"]
 ]);
 
-// gen/front_end/panels/elements/LayoutPane.js
+// ../../front_end/panels/elements/LayoutPane.ts
 var LayoutPane_exports = {};
 __export(LayoutPane_exports, {
   LayoutPane: () => LayoutPane
@@ -20356,7 +23982,7 @@ var layoutPane_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./layoutPane.css")} */`;
 
-// gen/front_end/panels/elements/LayoutPane.js
+// ../../front_end/panels/elements/LayoutPane.ts
 var UIStrings18 = {
   /**
    * @description Title of the input to select the overlay color for an element using the color picker.
@@ -20475,10 +24101,10 @@ var flexContainerNodesToElements = (nodes) => {
   });
 };
 function isEnumSetting(setting) {
-  return setting.type === "enum";
+  return setting.type === Common13.Settings.SettingType.ENUM;
 }
 function isBooleanSetting(setting) {
-  return setting.type === "boolean";
+  return setting.type === Common13.Settings.SettingType.BOOLEAN;
 }
 var layoutPaneInstance;
 var DEFAULT_VIEW8 = (input, output, target) => {
@@ -20541,8 +24167,8 @@ var DEFAULT_VIEW8 = (input, output, target) => {
            aria-label=${i18nString17(UIStrings18.showElementInTheElementsPanel)}
            .iconName=${"select-element"}
            .jslogContext=${"elements.select-element"}
-           .size=${"SMALL"}
-           .variant=${"icon"}
+           .size=${Buttons4.Button.Size.SMALL}
+           .variant=${Buttons4.Button.Variant.ICON}
            @click=${(e) => input.onElementClick(element, e)}
            ></devtools-button>
       </div>`;
@@ -20633,14 +24259,30 @@ var LayoutPane = class _LayoutPane extends UI20.Widget.Widget {
   }
   modelAdded(domModel) {
     const overlayModel = domModel.overlayModel();
-    overlayModel.addEventListener("PersistentGridOverlayStateChanged", this.requestUpdate, this);
-    overlayModel.addEventListener("PersistentFlexContainerOverlayStateChanged", this.requestUpdate, this);
+    overlayModel.addEventListener(
+      SDK17.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED,
+      this.requestUpdate,
+      this
+    );
+    overlayModel.addEventListener(
+      SDK17.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
+      this.requestUpdate,
+      this
+    );
     this.#domModels.push(domModel);
   }
   modelRemoved(domModel) {
     const overlayModel = domModel.overlayModel();
-    overlayModel.removeEventListener("PersistentGridOverlayStateChanged", this.requestUpdate, this);
-    overlayModel.removeEventListener("PersistentFlexContainerOverlayStateChanged", this.requestUpdate, this);
+    overlayModel.removeEventListener(
+      SDK17.OverlayModel.Events.PERSISTENT_GRID_OVERLAY_STATE_CHANGED,
+      this.requestUpdate,
+      this
+    );
+    overlayModel.removeEventListener(
+      SDK17.OverlayModel.Events.PERSISTENT_FLEX_CONTAINER_OVERLAY_STATE_CHANGED,
+      this.requestUpdate,
+      this
+    );
     this.#domModels = this.#domModels.filter((model) => model !== domModel);
   }
   async #fetchNodesByStyle(style) {
@@ -20685,7 +24327,7 @@ var LayoutPane = class _LayoutPane extends UI20.Widget.Widget {
       if (!settingType) {
         throw new Error("A setting provided to LayoutSidebarPane does not have a setting type");
       }
-      if (settingType !== "boolean" && settingType !== "enum") {
+      if (settingType !== Common13.Settings.SettingType.BOOLEAN && settingType !== Common13.Settings.SettingType.ENUM) {
         throw new Error("A setting provided to LayoutSidebarPane does not have a supported setting type");
       }
       const uiDescriptor = SettingUIRegistration.SettingUIRegistration.maybeResolve(setting.descriptor());
@@ -20815,7 +24457,7 @@ var LayoutPane = class _LayoutPane extends UI20.Widget.Widget {
   }
 };
 
-// gen/front_end/panels/elements/MetricsSidebarPane.js
+// ../../front_end/panels/elements/MetricsSidebarPane.ts
 var MetricsSidebarPane_exports = {};
 __export(MetricsSidebarPane_exports, {
   MetricsSidebarPane: () => MetricsSidebarPane
@@ -20980,7 +24622,7 @@ visible. */
 
 /*# sourceURL=${import.meta.resolve("./metricsSidebarPane.css")} */`;
 
-// gen/front_end/panels/elements/MetricsSidebarPane.js
+// ../../front_end/panels/elements/MetricsSidebarPane.ts
 var { live } = Directives;
 var DEFAULT_VIEW9 = (input, output, target) => {
   const { style, highlightedMode, node, contentWidth, contentHeight, onHighlightNode, onStartEditing } = input;
@@ -21048,10 +24690,7 @@ var DEFAULT_VIEW9 = (input, output, target) => {
       continue;
     }
     const shouldHighlight = !node || highlightedMode === "all" || name === highlightedMode;
-    const backgroundColor = boxColors[i].asString(
-      "rgba"
-      /* Common.Color.Format.RGBA */
-    ) || "";
+    const backgroundColor = boxColors[i].asString(Common14.Color.Format.RGBA) || "";
     const suffix = name === "border" ? "-width" : "";
     const box = html17`
       <div
@@ -21091,17 +24730,21 @@ var DEFAULT_VIEW9 = (input, output, target) => {
         </div>`;
     previousBox = box;
   }
-  render15(html17`
+  render15(
+    html17`
     <div class="metrics ${!node ? "collapsed" : ""}" @mouseover=${(e) => {
-    e.consume();
-    onHighlightNode(true, "all");
-  }}
+      e.consume();
+      onHighlightNode(true, "all");
+    }}
         @mouseleave=${(e) => {
-    e.consume();
-    onHighlightNode(false, "all");
-  }}>
+      e.consume();
+      onHighlightNode(false, "all");
+    }}>
       ${previousBox}
-    </div>`, target, { container: { classes: ["flex-none"], attributes: { jslog: `${VisualLogging12.section("styles-metrics")}` } } });
+    </div>`,
+    target,
+    { container: { classes: ["flex-none"], attributes: { jslog: `${VisualLogging12.section("styles-metrics")}` } } }
+  );
 };
 var MetricsSidebarPane = class extends ElementsSidebarPane {
   originalPropertyData;
@@ -21130,17 +24773,21 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
     const node = this.node();
     const cssModel = this.cssModel();
     if (!node || node.nodeType() !== Node.ELEMENT_NODE || !cssModel) {
-      this.view({
-        style: /* @__PURE__ */ new Map(),
-        highlightedMode: "",
-        node: null,
-        contentWidth: "",
-        contentHeight: "",
-        onHighlightNode: () => {
+      this.view(
+        {
+          style: /* @__PURE__ */ new Map(),
+          highlightedMode: "",
+          node: null,
+          contentWidth: "",
+          contentHeight: "",
+          onHighlightNode: () => {
+          },
+          onStartEditing: () => {
+          }
         },
-        onStartEditing: () => {
-        }
-      }, void 0, this.contentElement);
+        void 0,
+        this.contentElement
+      );
       return await Promise.resolve();
     }
     if (!node.id) {
@@ -21285,15 +24932,19 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
   }
   updateMetrics(style, highlightedMode = "all", boxModel) {
     const boxModelToUse = boxModel ?? this.boxModelInternal;
-    this.view({
-      style,
-      highlightedMode,
-      node: this.node(),
-      contentWidth: this.getContentAreaWidthPx(style, boxModelToUse),
-      contentHeight: this.getContentAreaHeightPx(style, boxModelToUse),
-      onHighlightNode: this.highlightDOMNode.bind(this),
-      onStartEditing: this.startEditing.bind(this)
-    }, void 0, this.contentElement);
+    this.view(
+      {
+        style,
+        highlightedMode,
+        node: this.node(),
+        contentWidth: this.getContentAreaWidthPx(style, boxModelToUse),
+        contentHeight: this.getContentAreaHeightPx(style, boxModelToUse),
+        onHighlightNode: this.highlightDOMNode.bind(this),
+        onStartEditing: this.startEditing.bind(this)
+      },
+      void 0,
+      this.contentElement
+    );
   }
   startEditing(targetElement, box, styleProperty, computedStyle) {
     if (UI21.UIUtils.isBeingEdited(targetElement)) {
@@ -21321,7 +24972,13 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
       }
       return prefix + number + suffix;
     }
-    UI21.UIUtils.handleElementValueModifications(event, element, finishHandler.bind(this), void 0, customNumberHandler);
+    UI21.UIUtils.handleElementValueModifications(
+      event,
+      element,
+      finishHandler.bind(this),
+      void 0,
+      customNumberHandler
+    );
   }
   editingEnded(element, context) {
     this.originalPropertyData = null;
@@ -21337,7 +24994,10 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
           void this.inlineStyle.allProperties()[pastLastSourcePropertyIndex - 1].setText("", false);
         }
       } else {
-        void this.inlineStyle.allProperties()[this.originalPropertyData.index].setText(this.originalPropertyData.propertyText || "", false);
+        void this.inlineStyle.allProperties()[this.originalPropertyData.index].setText(
+          this.originalPropertyData.propertyText || "",
+          false
+        );
       }
     }
     this.editingEnded(element, context);
@@ -21363,7 +25023,9 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
     const computedStyle = context.computedStyle;
     if (computedStyle.get("box-sizing") === "border-box" && (styleProperty === "width" || styleProperty === "height")) {
       if (!userInput.match(/px$/)) {
-        Common14.Console.Console.instance().error("For elements with box-sizing: border-box, only absolute content area dimensions can be applied");
+        Common14.Console.Console.instance().error(
+          "For elements with box-sizing: border-box, only absolute content area dimensions can be applied"
+        );
         return;
       }
       const borderBox = this.getBox(computedStyle, "border");
@@ -21416,7 +25078,7 @@ var MetricsSidebarPane = class extends ElementsSidebarPane {
   }
 };
 
-// gen/front_end/panels/elements/PlatformFontsWidget.js
+// ../../front_end/panels/elements/PlatformFontsWidget.ts
 var PlatformFontsWidget_exports = {};
 __export(PlatformFontsWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW10,
@@ -21476,7 +25138,7 @@ var platformFontsWidget_css_default = `/**
 
 /*# sourceURL=${import.meta.resolve("./platformFontsWidget.css")} */`;
 
-// gen/front_end/panels/elements/PlatformFontsWidget.js
+// ../../front_end/panels/elements/PlatformFontsWidget.ts
 var UIStrings19 = {
   /**
    * @description Section title text content in the Rendered Fonts section of the Computed styles tab in the Elements panel.
@@ -21511,26 +25173,29 @@ var str_19 = i18n38.i18n.registerUIStrings("panels/elements/PlatformFontsWidget.
 var i18nString18 = i18n38.i18n.getLocalizedString.bind(void 0, str_19);
 var DEFAULT_VIEW10 = (input, _output, target) => {
   const isEmptySection = !input.platformFonts?.length;
-  render16(html18`
+  render16(
+    html18`
     <style>${platformFontsWidget_css_default}</style>
     <div class="platform-fonts">
       ${isEmptySection ? "" : html18`
         <div class="title">${i18nString18(UIStrings19.renderedFonts)}</div>
         <div class="stats-section">
           ${input.platformFonts?.map((platformFont) => {
-    const fontOrigin = platformFont.isCustomFont ? i18nString18(UIStrings19.networkResource) : i18nString18(UIStrings19.localFile);
-    const usage = platformFont.glyphCount;
-    return html18`
+      const fontOrigin = platformFont.isCustomFont ? i18nString18(UIStrings19.networkResource) : i18nString18(UIStrings19.localFile);
+      const usage = platformFont.glyphCount;
+      return html18`
               <div class="font-stats-item">
                 <div><span class="font-property-name">${i18nString18(UIStrings19.familyName)}</span>: ${platformFont.familyName}</div>
                 <div><span class="font-property-name">${i18nString18(UIStrings19.postScriptName)}</span>: ${platformFont.postScriptName}</div>
                 <div><span class="font-property-name">${i18nString18(UIStrings19.fontOrigin)}</span>: ${fontOrigin}<span class="font-usage">${i18nString18(UIStrings19.dGlyphs, { n: usage })}</span></div>
               </div>
             `;
-  })}
+    })}
         </div>
       `}
-    </div>`, target);
+    </div>`,
+    target
+  );
 };
 var PlatformFontsWidget = class extends UI22.Widget.VBox {
   #view;
@@ -21545,10 +25210,18 @@ var PlatformFontsWidget = class extends UI22.Widget.VBox {
   }
   set sharedModel(model) {
     if (model !== this.sharedModel) {
-      this.sharedModel?.removeEventListener("CSSModelChanged", this.requestUpdate, this);
-      this.sharedModel?.removeEventListener("ComputedStyleChanged", this.requestUpdate, this);
-      model.addEventListener("CSSModelChanged", this.requestUpdate, this);
-      model.addEventListener("ComputedStyleChanged", this.requestUpdate, this);
+      this.sharedModel?.removeEventListener(
+        ComputedStyle2.ComputedStyleModel.Events.CSS_MODEL_CHANGED,
+        this.requestUpdate,
+        this
+      );
+      this.sharedModel?.removeEventListener(
+        ComputedStyle2.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED,
+        this.requestUpdate,
+        this
+      );
+      model.addEventListener(ComputedStyle2.ComputedStyleModel.Events.CSS_MODEL_CHANGED, this.requestUpdate, this);
+      model.addEventListener(ComputedStyle2.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED, this.requestUpdate, this);
     }
     this.#sharedModel = model;
     void this.requestUpdate();
@@ -21566,7 +25239,7 @@ var PlatformFontsWidget = class extends UI22.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/elements/ElementsPanel.js
+// ../../front_end/panels/elements/ElementsPanel.ts
 var UIStrings20 = {
   /**
    * @description Placeholder text for the search box in the Elements panel. Selector refers to CSS
@@ -21647,11 +25320,11 @@ var UIStrings20 = {
 };
 var str_20 = i18n40.i18n.registerUIStrings("panels/elements/ElementsPanel.ts", UIStrings20);
 var i18nString19 = i18n40.i18n.getLocalizedString.bind(void 0, str_20);
-var SidebarPaneTabId;
-(function(SidebarPaneTabId2) {
+var SidebarPaneTabId = /* @__PURE__ */ ((SidebarPaneTabId2) => {
   SidebarPaneTabId2["COMPUTED"] = "computed";
   SidebarPaneTabId2["STYLES"] = "styles";
-})(SidebarPaneTabId || (SidebarPaneTabId = {}));
+  return SidebarPaneTabId2;
+})(SidebarPaneTabId || {});
 var elementsPanelInstance;
 var DEFAULT_COMPUTED_STYLES_DEBOUNCE_MS = 100;
 var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
@@ -21706,7 +25379,10 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
     this.#settings = settings ?? Common15.Settings.Settings.instance();
     this.registerRequiredCSS(elementsPanel_css_default);
     this.splitWidget = new UI23.SplitWidget.SplitWidget(true, true, "elements-panel-split-view-state", 325, 325);
-    this.splitWidget.addEventListener("SidebarSizeChanged", this.updateTreeOutlineVisibleWidth.bind(this));
+    this.splitWidget.addEventListener(
+      UI23.SplitWidget.Events.SIDEBAR_SIZE_CHANGED,
+      this.updateTreeOutlineVisibleWidth.bind(this)
+    );
     this.splitWidget.show(this.element);
     this.#searchableView = new UI23.SearchableView.SearchableView(this, null);
     this.#searchableView.setMinimalSearchQuerySize(0);
@@ -21737,16 +25413,30 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
       this.crumbNodeSelected(event);
     });
     crumbsContainer.appendChild(this.breadcrumbs);
-    this.#computedStyleModel = new ComputedStyle3.ComputedStyleModel.ComputedStyleModel(UI23.Context.Context.instance().flavor(SDK19.DOMModel.DOMNode));
+    this.#computedStyleModel = new ComputedStyle3.ComputedStyleModel.ComputedStyleModel(
+      UI23.Context.Context.instance().flavor(SDK19.DOMModel.DOMNode)
+    );
     UI23.Context.Context.instance().addFlavorChangeListener(SDK19.DOMModel.DOMNode, (event) => {
       this.#computedStyleModel.node = event.data;
       this.evaluateTrackingComputedStyleUpdatesForNode();
     });
-    UI23.Context.Context.instance().addFlavorChangeListener(StylesSidebarPane, this.evaluateTrackingComputedStyleUpdatesForNode, this);
+    UI23.Context.Context.instance().addFlavorChangeListener(
+      StylesSidebarPane,
+      this.evaluateTrackingComputedStyleUpdatesForNode,
+      this
+    );
     this.stylesWidget = new StylesSidebarPane(this.#computedStyleModel);
     this.#computedStyleWidget = new ComputedStyleWidget();
-    this.#computedStyleModel.addEventListener("ComputedStyleChanged", this.#updateComputedStyles, this);
-    this.#computedStyleModel.addEventListener("CSSModelChanged", this.#updateComputedStyles, this);
+    this.#computedStyleModel.addEventListener(
+      ComputedStyle3.ComputedStyleModel.Events.COMPUTED_STYLE_CHANGED,
+      this.#updateComputedStyles,
+      this
+    );
+    this.#computedStyleModel.addEventListener(
+      ComputedStyle3.ComputedStyleModel.Events.CSS_MODEL_CHANGED,
+      this.#updateComputedStyles,
+      this
+    );
     this.metricsWidget = new MetricsSidebarPane(this.#computedStyleModel);
     this.#settings.resolve(SettingsUI.MainSettings.sidebarPositionSettingDescriptor).addChangeListener(this.updateSidebarPosition.bind(this));
     this.updateSidebarPosition();
@@ -21763,9 +25453,19 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
     this.#domTreeWidget.onDocumentUpdated = this.documentUpdated.bind(this);
     this.#domTreeWidget.setWordWrap(this.#settings.moduleSetting("dom-word-wrap").get());
     this.#targetManager.observeModels(SDK19.DOMModel.DOMModel, this, { scoped: true });
-    this.#targetManager.addModelListener(SDK19.ResourceTreeModel.ResourceTreeModel, SDK19.ResourceTreeModel.Events.PrimaryPageChanged, this.onPrimaryPageChanged, this, { scoped: true });
+    this.#targetManager.addModelListener(
+      SDK19.ResourceTreeModel.ResourceTreeModel,
+      SDK19.ResourceTreeModel.Events.PrimaryPageChanged,
+      this.onPrimaryPageChanged,
+      this,
+      { scoped: true }
+    );
     this.#settings.moduleSetting("show-ua-shadow-dom").addChangeListener(this.showUAShadowDOMChanged.bind(this));
-    PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener("SidebarPaneAdded", this.extensionSidebarPaneAdded, this);
+    PanelCommon.ExtensionServer.ExtensionServer.instance().addEventListener(
+      PanelCommon.ExtensionServer.Events.SidebarPaneAdded,
+      this.extensionSidebarPaneAdded,
+      this
+    );
   }
   // This is a debounced method because the user might be navigated from Styles tab to Computed Style tab and vice versa.
   // For that case, we want to only run this function once.
@@ -21777,7 +25477,9 @@ var ElementsPanel = class _ElementsPanel extends UI23.Panel.Panel {
     const isComputedStyleWidgetVisible = this.#computedStyleWidget.isShowing();
     const isStylesTabVisible = Boolean(UI23.Context.Context.instance().flavor(StylesSidebarPane));
     const shouldTrackComputedStyleUpdates = isComputedStyleWidgetVisible || isStylesTabVisible && Root5.Runtime.hostConfig.devToolsAnimationStylesInStylesTab?.enabled;
-    void selectedNode.domModel()?.cssModel()?.trackComputedStyleUpdatesForNode(shouldTrackComputedStyleUpdates ? selectedNode.id : void 0);
+    void selectedNode.domModel()?.cssModel()?.trackComputedStyleUpdatesForNode(
+      shouldTrackComputedStyleUpdates ? selectedNode.id : void 0
+    );
   }, 100);
   async #updateComputedStyles() {
     const computedStyle = await this.#computedStyleModel.fetchComputedStyle();
@@ -21879,7 +25581,7 @@ ${node.simpleSelector()} {}`, false);
   }
   onPrimaryPageChanged(event) {
     const { frame, type } = event.data;
-    if (type === "Activation") {
+    if (type === SDK19.ResourceTreeModel.PrimaryPageChangeType.ACTIVATION) {
       const domModel = frame.resourceTreeModel().target().model(SDK19.DOMModel.DOMModel);
       if (domModel && !domModel.parentModel()) {
         this.#domTreeWidget.show(this.domTreeContainer);
@@ -22327,10 +26029,7 @@ ${node.simpleSelector()} {}`, false);
     }
   }
   initializeSidebarPanes(splitMode) {
-    this.splitWidget.setVertical(
-      splitMode === "Vertical"
-      /* SplitMode.VERTICAL */
-    );
+    this.splitWidget.setVertical(splitMode === "Vertical" /* VERTICAL */);
     this.showToolbarPane(
       null,
       null
@@ -22350,22 +26049,33 @@ ${node.simpleSelector()} {}`, false);
     platformFontsWidget.element.classList.add("platform-fonts-wrapper");
     platformFontsWidget.sharedModel = this.#computedStyleModel;
     platformFontsWidget.show(computedStylePanesWrapper.element);
-    const stylesSplitWidget = new UI23.SplitWidget.SplitWidget(true, true, "elements.styles.sidebar.width", 100);
+    const stylesSplitWidget = new UI23.SplitWidget.SplitWidget(
+      true,
+      true,
+      "elements.styles.sidebar.width",
+      100
+    );
     stylesSplitWidget.setMainWidget(matchedStylePanesWrapper);
     stylesSplitWidget.hideSidebar();
     stylesSplitWidget.enableShowModeSaving();
-    stylesSplitWidget.addEventListener("ShowModeChanged", () => {
+    stylesSplitWidget.addEventListener(UI23.SplitWidget.Events.SHOW_MODE_CHANGED, () => {
       showMetricsWidgetInStylesPane();
     });
-    this.stylesWidget.addEventListener("InitialUpdateCompleted", () => {
-      this.stylesWidget.appendToolbarItem(stylesSplitWidget.createShowHideSidebarButton(i18nString19(UIStrings20.showComputedStylesSidebar), i18nString19(UIStrings20.hideComputedStylesSidebar), i18nString19(UIStrings20.computedStylesShown), i18nString19(UIStrings20.computedStylesHidden), "computed-styles"));
+    this.stylesWidget.addEventListener("InitialUpdateCompleted" /* INITIAL_UPDATE_COMPLETED */, () => {
+      this.stylesWidget.appendToolbarItem(stylesSplitWidget.createShowHideSidebarButton(
+        i18nString19(UIStrings20.showComputedStylesSidebar),
+        i18nString19(UIStrings20.hideComputedStylesSidebar),
+        i18nString19(UIStrings20.computedStylesShown),
+        i18nString19(UIStrings20.computedStylesHidden),
+        "computed-styles"
+      ));
     });
     const showMetricsWidgetInComputedPane = () => {
       this.metricsWidget.show(computedStylePanesWrapper.element, this.#computedStyleWidget.element);
-      this.stylesWidget.removeEventListener("StylesUpdateCompleted", toggleMetricsWidget);
+      this.stylesWidget.removeEventListener("StylesUpdateCompleted" /* STYLES_UPDATE_COMPLETED */, toggleMetricsWidget);
     };
     const showMetricsWidgetInStylesPane = () => {
-      const showMergedComputedPane = stylesSplitWidget.showMode() === "Both";
+      const showMergedComputedPane = stylesSplitWidget.showMode() === UI23.SplitWidget.ShowMode.BOTH;
       if (showMergedComputedPane) {
         showMetricsWidgetInComputedPane();
       } else {
@@ -22373,7 +26083,7 @@ ${node.simpleSelector()} {}`, false);
         if (!this.stylesWidget.hasMatchedStyles) {
           this.metricsWidget.hideWidget();
         }
-        this.stylesWidget.addEventListener("StylesUpdateCompleted", toggleMetricsWidget);
+        this.stylesWidget.addEventListener("StylesUpdateCompleted" /* STYLES_UPDATE_COMPLETED */, toggleMetricsWidget);
       }
     };
     const toggleMetricsWidget = (event) => {
@@ -22386,18 +26096,26 @@ ${node.simpleSelector()} {}`, false);
     const tabSelected = (event) => {
       const { tabId } = event.data;
       this.evaluateTrackingComputedStyleUpdatesForNode();
-      if (tabId === "computed") {
+      if (tabId === "computed" /* COMPUTED */) {
         computedStylePanesWrapper.show(computedView.element);
         showMetricsWidgetInComputedPane();
-      } else if (tabId === "styles") {
+      } else if (tabId === "styles" /* STYLES */) {
         stylesSplitWidget.setSidebarWidget(computedStylePanesWrapper);
         showMetricsWidgetInStylesPane();
       }
     };
-    this.sidebarPaneView = UI23.ViewManager.ViewManager.instance().createTabbedLocation(() => UI23.ViewManager.ViewManager.instance().showView("elements"), "styles-pane-sidebar", true, true);
+    this.sidebarPaneView = UI23.ViewManager.ViewManager.instance().createTabbedLocation(
+      () => UI23.ViewManager.ViewManager.instance().showView("elements"),
+      "styles-pane-sidebar",
+      true,
+      true
+    );
     const tabbedPane = this.sidebarPaneView.tabbedPane();
-    tabbedPane.headerElement().setAttribute("jslog", `${VisualLogging13.toolbar("sidebar").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`);
-    if (this.splitMode !== "Vertical") {
+    tabbedPane.headerElement().setAttribute(
+      "jslog",
+      `${VisualLogging13.toolbar("sidebar").track({ keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space" })}`
+    );
+    if (this.splitMode !== "Vertical" /* VERTICAL */) {
       this.splitWidget.installResizer(tabbedPane.headerElement());
     }
     const headerElement = tabbedPane.headerElement();
@@ -22408,14 +26126,14 @@ ${node.simpleSelector()} {}`, false);
     UI23.ARIAUtils.setLabel(contentElement, i18nString19(UIStrings20.sidePanelContent));
     const stylesView = new UI23.View.SimpleView({
       title: i18nString19(UIStrings20.styles),
-      viewId: "styles"
+      viewId: "styles" /* STYLES */
     });
     this.sidebarPaneView.appendView(stylesView);
     stylesView.element.classList.add("flex-auto");
     stylesSplitWidget.show(stylesView.element);
     const computedView = new UI23.View.SimpleView({
       title: i18nString19(UIStrings20.computed),
-      viewId: "computed"
+      viewId: "computed" /* COMPUTED */
     });
     computedView.element.classList.add("composite", "fill");
     tabbedPane.addEventListener(UI23.TabbedPane.Events.TabSelected, tabSelected, this);
@@ -22429,19 +26147,16 @@ ${node.simpleSelector()} {}`, false);
     this.splitWidget.setSidebarWidget(this.sidebarPaneView.tabbedPane());
   }
   revealComputedStylesPane() {
-    this.sidebarPaneView?.tabbedPane().selectTab(
-      "computed"
-      /* SidebarPaneTabId.COMPUTED */
-    );
+    this.sidebarPaneView?.tabbedPane().selectTab("computed" /* COMPUTED */);
   }
   updateSidebarPosition() {
     if (this.sidebarPaneView?.tabbedPane().shouldHideOnDetach()) {
       return;
     }
     const position = this.#settings.resolve(SettingsUI.MainSettings.sidebarPositionSettingDescriptor).get();
-    let splitMode = "Horizontal";
+    let splitMode = "Horizontal" /* HORIZONTAL */;
     if (position === "right" || position === "auto" && this.splitWidget.element.offsetWidth > 680) {
-      splitMode = "Vertical";
+      splitMode = "Vertical" /* VERTICAL */;
     }
     if (!this.sidebarPaneView) {
       this.initializeSidebarPanes(splitMode);
@@ -22453,16 +26168,13 @@ ${node.simpleSelector()} {}`, false);
     this.splitMode = splitMode;
     const tabbedPane = this.sidebarPaneView.tabbedPane();
     this.splitWidget.uninstallResizer(tabbedPane.headerElement());
-    this.splitWidget.setVertical(
-      this.splitMode === "Vertical"
-      /* SplitMode.VERTICAL */
-    );
+    this.splitWidget.setVertical(this.splitMode === "Vertical" /* VERTICAL */);
     this.showToolbarPane(
       null,
       null
       /* toggle */
     );
-    if (this.splitMode !== "Vertical") {
+    if (this.splitMode !== "Vertical" /* VERTICAL */) {
       this.splitWidget.installResizer(tabbedPane.headerElement());
     }
   }
@@ -22481,7 +26193,11 @@ ${node.simpleSelector()} {}`, false);
     const cssPropertyTracker = cssModel.createCSSPropertyTracker(TrackedCSSProperties);
     cssPropertyTracker.start();
     this.cssStyleTrackerByCSSModel.set(cssModel, cssPropertyTracker);
-    cssPropertyTracker.addEventListener("TrackedCSSPropertiesUpdated", this.trackedCSSPropertiesUpdated, this);
+    cssPropertyTracker.addEventListener(
+      SDK19.CSSModel.CSSPropertyTrackerEvents.TRACKED_CSS_PROPERTIES_UPDATED,
+      this.trackedCSSPropertiesUpdated,
+      this
+    );
   }
   removeStyleTracking(cssModel) {
     const cssPropertyTracker = this.cssStyleTrackerByCSSModel.get(cssModel);
@@ -22490,7 +26206,11 @@ ${node.simpleSelector()} {}`, false);
     }
     cssPropertyTracker.stop();
     this.cssStyleTrackerByCSSModel.delete(cssModel);
-    cssPropertyTracker.removeEventListener("TrackedCSSPropertiesUpdated", this.trackedCSSPropertiesUpdated, this);
+    cssPropertyTracker.removeEventListener(
+      SDK19.CSSModel.CSSPropertyTrackerEvents.TRACKED_CSS_PROPERTIES_UPDATED,
+      this.trackedCSSPropertiesUpdated,
+      this
+    );
   }
   trackedCSSPropertiesUpdated({ data: domNodes }) {
     for (const domNode of domNodes) {
@@ -22502,7 +26222,11 @@ ${node.simpleSelector()} {}`, false);
     LayoutPane.instance().requestUpdate();
   }
   populateAdornerSettingsContextMenu(contextMenu) {
-    const adornerSubMenu = contextMenu.viewSection().appendSubMenuItem(i18nString19(UIStrings20.adornerSettings), false, "show-adorner-settings");
+    const adornerSubMenu = contextMenu.viewSection().appendSubMenuItem(
+      i18nString19(UIStrings20.adornerSettings),
+      false,
+      "show-adorner-settings"
+    );
     const adornerSettings = this.adornerManager.getSettings();
     for (const [adorner4, isEnabled] of adornerSettings) {
       adornerSubMenu.defaultSection().appendCheckboxItem(adorner4, () => {
@@ -22557,11 +26281,6 @@ ${node.simpleSelector()} {}`, false);
 };
 globalThis.Elements = globalThis.Elements || {};
 globalThis.Elements.ElementsPanel = ElementsPanel;
-var SplitMode;
-(function(SplitMode2) {
-  SplitMode2["VERTICAL"] = "Vertical";
-  SplitMode2["HORIZONTAL"] = "Horizontal";
-})(SplitMode || (SplitMode = {}));
 var TrackedCSSProperties = [
   {
     name: "display",
@@ -22600,7 +26319,11 @@ var ContextMenuProvider = class {
     if (ElementsPanel.instance().element.isAncestor(event.target)) {
       return;
     }
-    contextMenu.revealSection().appendItem(i18nString19(UIStrings20.openInElementsPanel), () => Common15.Revealer.reveal(object), { jslogContext: "elements.reveal-node" });
+    contextMenu.revealSection().appendItem(
+      i18nString19(UIStrings20.openInElementsPanel),
+      () => Common15.Revealer.reveal(object),
+      { jslogContext: "elements.reveal-node" }
+    );
   }
 };
 var NodeComputedStyles = class {
@@ -22725,16 +26448,10 @@ var ElementsActionDelegate = class {
         return true;
       }
       case "elements.show-styles":
-        ElementsPanel.instance().selectAndShowSidebarTab(
-          "styles"
-          /* SidebarPaneTabId.STYLES */
-        );
+        ElementsPanel.instance().selectAndShowSidebarTab("styles" /* STYLES */);
         return true;
       case "elements.show-computed":
-        ElementsPanel.instance().selectAndShowSidebarTab(
-          "computed"
-          /* SidebarPaneTabId.COMPUTED */
-        );
+        ElementsPanel.instance().selectAndShowSidebarTab("computed" /* COMPUTED */);
         return true;
       case "elements.toggle-eye-dropper": {
         const colorSwatchPopoverIcon = UI23.Context.Context.instance().flavor(ColorSwatchPopoverIcon);
@@ -22768,7 +26485,7 @@ var PseudoStateMarkerDecorator = class _PseudoStateMarkerDecorator {
   }
 };
 
-// gen/front_end/panels/elements/InspectElementModeController.js
+// ../../front_end/panels/elements/InspectElementModeController.ts
 var inspectElementModeController;
 var InspectElementModeController = class _InspectElementModeController {
   toggleSearchAction;
@@ -22776,12 +26493,19 @@ var InspectElementModeController = class _InspectElementModeController {
   showDetailedInspectTooltipSetting;
   constructor() {
     this.toggleSearchAction = UI24.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
-    this.mode = "none";
-    SDK20.TargetManager.TargetManager.instance().addEventListener("SuspendStateChanged", this.suspendStateChanged, this);
-    SDK20.TargetManager.TargetManager.instance().addModelListener(SDK20.OverlayModel.OverlayModel, "InspectModeExited", () => this.setMode(
-      "none"
-      /* Protocol.Overlay.InspectMode.None */
-    ), void 0, { scoped: true });
+    this.mode = Overlay.InspectMode.None;
+    SDK20.TargetManager.TargetManager.instance().addEventListener(
+      SDK20.TargetManager.Events.SUSPEND_STATE_CHANGED,
+      this.suspendStateChanged,
+      this
+    );
+    SDK20.TargetManager.TargetManager.instance().addModelListener(
+      SDK20.OverlayModel.OverlayModel,
+      SDK20.OverlayModel.Events.EXITED_INSPECT_MODE,
+      () => this.setMode(Overlay.InspectMode.None),
+      void 0,
+      { scoped: true }
+    );
     SDK20.OverlayModel.OverlayModel.setInspectNodeHandler(this.inspectNode.bind(this));
     SDK20.TargetManager.TargetManager.instance().observeModels(SDK20.OverlayModel.OverlayModel, this, { scoped: true });
     this.showDetailedInspectTooltipSetting = Common16.Settings.Settings.instance().moduleSetting("show-detailed-inspect-tooltip");
@@ -22793,10 +26517,7 @@ var InspectElementModeController = class _InspectElementModeController {
       if (!this.isInInspectElementMode()) {
         return;
       }
-      this.setMode(
-        "none"
-        /* Protocol.Overlay.InspectMode.None */
-      );
+      this.setMode(Overlay.InspectMode.None);
       event.consume(true);
       void VisualLogging14.logKeyDown(null, event, "cancel-inspect-mode");
     }, true);
@@ -22808,7 +26529,7 @@ var InspectElementModeController = class _InspectElementModeController {
     return inspectElementModeController;
   }
   modelAdded(overlayModel) {
-    if (this.mode === "none") {
+    if (this.mode === Overlay.InspectMode.None) {
       return;
     }
     void overlayModel.setInspectMode(this.mode, this.showDetailedInspectTooltipSetting.get());
@@ -22816,29 +26537,29 @@ var InspectElementModeController = class _InspectElementModeController {
   modelRemoved(_overlayModel) {
   }
   isInInspectElementMode() {
-    return this.mode !== "none";
+    return this.mode !== Overlay.InspectMode.None;
   }
   toggleInspectMode() {
     let mode;
     if (this.isInInspectElementMode()) {
-      mode = "none";
+      mode = Overlay.InspectMode.None;
     } else {
-      mode = Common16.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get() ? "searchForUAShadowDOM" : "searchForNode";
+      mode = Common16.Settings.Settings.instance().moduleSetting("show-ua-shadow-dom").get() ? Overlay.InspectMode.SearchForUAShadowDOM : Overlay.InspectMode.SearchForNode;
     }
     this.setMode(mode);
   }
   captureScreenshotMode() {
-    this.setMode(
-      "captureAreaScreenshot"
-      /* Protocol.Overlay.InspectMode.CaptureAreaScreenshot */
-    );
+    this.setMode(Overlay.InspectMode.CaptureAreaScreenshot);
   }
   setMode(mode) {
     if (SDK20.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
     this.mode = mode;
-    for (const overlayModel of SDK20.TargetManager.TargetManager.instance().models(SDK20.OverlayModel.OverlayModel, { scoped: true })) {
+    for (const overlayModel of SDK20.TargetManager.TargetManager.instance().models(
+      SDK20.OverlayModel.OverlayModel,
+      { scoped: true }
+    )) {
       void overlayModel.setInspectMode(mode, this.showDetailedInspectTooltipSetting.get());
     }
     this.toggleSearchAction.setToggled(this.isInInspectElementMode());
@@ -22847,7 +26568,7 @@ var InspectElementModeController = class _InspectElementModeController {
     if (!SDK20.TargetManager.TargetManager.instance().allTargetsSuspended()) {
       return;
     }
-    this.mode = "none";
+    this.mode = Overlay.InspectMode.None;
     this.toggleSearchAction.setToggled(false);
   }
   inspectNode(node) {
@@ -22858,7 +26579,10 @@ var InspectElementModeController = class _InspectElementModeController {
         void UI24.ViewManager.ViewManager.instance().showView(returnToPanel.viewId, false, false);
       });
     }
-    return ElementsPanel.instance().revealAndSelectNode(node, { showPanel: true, focusNode: true, highlightInOverlay: false });
+    return ElementsPanel.instance().revealAndSelectNode(
+      node,
+      { showPanel: true, focusNode: true, highlightInOverlay: false }
+    );
   }
   showDetailedInspectTooltipChanged() {
     this.setMode(this.mode);
@@ -22882,7 +26606,7 @@ var ToggleSearchActionDelegate = class {
   }
 };
 
-// gen/front_end/panels/elements/EventListenersWidget.js
+// ../../front_end/panels/elements/EventListenersWidget.ts
 var EventListenersWidget_exports = {};
 __export(EventListenersWidget_exports, {
   ActionDelegate: () => ActionDelegate2,
@@ -23096,7 +26820,7 @@ var ActionDelegate2 = class {
   }
 };
 
-// gen/front_end/panels/elements/PropertiesWidget.js
+// ../../front_end/panels/elements/PropertiesWidget.ts
 var PropertiesWidget_exports = {};
 __export(PropertiesWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW12,
@@ -23136,7 +26860,7 @@ var propertiesWidget_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./propertiesWidget.css")} */`;
 
-// gen/front_end/panels/elements/PropertiesWidget.js
+// ../../front_end/panels/elements/PropertiesWidget.ts
 var OBJECT_GROUP_NAME = "properties-sidebar-pane";
 var { bindToSetting: bindToSetting4 } = UI26.UIUtils;
 var { repeat: repeat2 } = Directives2;
@@ -23185,12 +26909,15 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
         <ul role=tree class="source-code object-properties-section">
           <style>${ObjectUI.ObjectPropertiesSection.objectValueStyles}</style>;
           <style>${ObjectUI.ObjectPropertiesSection.objectPropertiesSectionStyles}</style>;
-          ${repeat2(ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(
-    input.objectTree?.children ?? {},
-    true,
-    true
-    /* skipGettersAndSetters */
-  ), (node) => html20`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`)}
+          ${repeat2(
+    ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.createPropertyNodes(
+      input.objectTree?.children ?? {},
+      true,
+      true
+      /* skipGettersAndSetters */
+    ),
+    (node) => html20`<devtools-tree-wrapper .treeElement=${node}></devtools-tree-wrapper>`
+  )}
         </ul>
       `}></devtools-tree>
     </div>`, target);
@@ -23220,10 +26947,34 @@ var PropertiesWidget = class extends UI26.Widget.VBox {
     this.registerRequiredCSS(propertiesWidget_css_default);
     this.showAllPropertiesSetting = getShowAllPropertiesSetting();
     this.showAllPropertiesSetting.addChangeListener(this.onFilterChanged.bind(this));
-    SDK22.TargetManager.TargetManager.instance().addModelListener(SDK22.DOMModel.DOMModel, SDK22.DOMModel.Events.AttrModified, this.onNodeChange, this, { scoped: true });
-    SDK22.TargetManager.TargetManager.instance().addModelListener(SDK22.DOMModel.DOMModel, SDK22.DOMModel.Events.AttrRemoved, this.onNodeChange, this, { scoped: true });
-    SDK22.TargetManager.TargetManager.instance().addModelListener(SDK22.DOMModel.DOMModel, SDK22.DOMModel.Events.CharacterDataModified, this.onNodeChange, this, { scoped: true });
-    SDK22.TargetManager.TargetManager.instance().addModelListener(SDK22.DOMModel.DOMModel, SDK22.DOMModel.Events.ChildNodeCountUpdated, this.onNodeChange, this, { scoped: true });
+    SDK22.TargetManager.TargetManager.instance().addModelListener(
+      SDK22.DOMModel.DOMModel,
+      SDK22.DOMModel.Events.AttrModified,
+      this.onNodeChange,
+      this,
+      { scoped: true }
+    );
+    SDK22.TargetManager.TargetManager.instance().addModelListener(
+      SDK22.DOMModel.DOMModel,
+      SDK22.DOMModel.Events.AttrRemoved,
+      this.onNodeChange,
+      this,
+      { scoped: true }
+    );
+    SDK22.TargetManager.TargetManager.instance().addModelListener(
+      SDK22.DOMModel.DOMModel,
+      SDK22.DOMModel.Events.CharacterDataModified,
+      this.onNodeChange,
+      this,
+      { scoped: true }
+    );
+    SDK22.TargetManager.TargetManager.instance().addModelListener(
+      SDK22.DOMModel.DOMModel,
+      SDK22.DOMModel.Events.ChildNodeCountUpdated,
+      this.onNodeChange,
+      this,
+      { scoped: true }
+    );
     UI26.Context.Context.instance().addFlavorChangeListener(SDK22.DOMModel.DOMNode, this.setNode, this);
     this.#view = view;
     this.requestUpdate();
@@ -23280,7 +27031,7 @@ var PropertiesWidget = class extends UI26.Widget.VBox {
       return;
     }
     this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
-      propertiesMode: 1,
+      propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
       readOnly: true
     });
     this.#updateFilter();
@@ -23289,13 +27040,17 @@ var PropertiesWidget = class extends UI26.Widget.VBox {
     await this.#updateNodeIfRequired();
     await this.#objectTree?.populateChildrenIfNeeded();
     const allChildrenFiltered = !(this.#objectTree?.children?.accessors?.some((c) => !c.isFiltered) || this.#objectTree?.children?.arrayRanges?.some(() => true) || this.#objectTree?.children?.internalProperties?.some((c) => !c.isFiltered) || this.#objectTree?.children?.properties?.some((c) => !c.isFiltered));
-    this.#view({
-      onFilterChanged: this.onFilterChanged.bind(this),
-      onRegexToggled: this.onRegexToggled.bind(this),
-      isRegex: this.#isRegex,
-      allChildrenFiltered,
-      objectTree: this.#objectTree
-    }, {}, this.contentElement);
+    this.#view(
+      {
+        onFilterChanged: this.onFilterChanged.bind(this),
+        onRegexToggled: this.onRegexToggled.bind(this),
+        isRegex: this.#isRegex,
+        allChildrenFiltered,
+        objectTree: this.#objectTree
+      },
+      {},
+      this.contentElement
+    );
   }
   onNodeChange(event) {
     if (!this.#lastRequestedNode) {
@@ -23311,7 +27066,7 @@ var PropertiesWidget = class extends UI26.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/elements/ClassesPaneWidget.js
+// ../../front_end/panels/elements/ClassesPaneWidget.ts
 var ClassesPaneWidget_exports = {};
 __export(ClassesPaneWidget_exports, {
   ButtonProvider: () => ButtonProvider4,
@@ -23371,7 +27126,7 @@ var classesPaneWidget_css_default = `/**
 
 /*# sourceURL=${import.meta.resolve("./classesPaneWidget.css")} */`;
 
-// gen/front_end/panels/elements/ClassesPaneWidget.js
+// ../../front_end/panels/elements/ClassesPaneWidget.ts
 var UIStrings23 = {
   /**
    * @description Prompt text for a text field to add CSS classes to the selected element in the Styles tab of the Elements panel.
@@ -23421,9 +27176,15 @@ var ClassesPaneWidget = class extends UI27.Widget.Widget {
     this.prompt.renderAsBlock();
     const proxyElement = this.prompt.attach(this.input);
     this.prompt.setPlaceholder(i18nString22(UIStrings23.addNewClass));
-    this.prompt.addEventListener("TextChanged", this.onTextChanged, this);
+    this.prompt.addEventListener(UI27.TextPrompt.Events.TEXT_CHANGED, this.onTextChanged, this);
     proxyElement.addEventListener("keydown", this.onKeyDown.bind(this), false);
-    SDK23.TargetManager.TargetManager.instance().addModelListener(SDK23.DOMModel.DOMModel, SDK23.DOMModel.Events.DOMMutated, this.onDOMMutated, this, { scoped: true });
+    SDK23.TargetManager.TargetManager.instance().addModelListener(
+      SDK23.DOMModel.DOMModel,
+      SDK23.DOMModel.Events.DOMMutated,
+      this.onDOMMutated,
+      this,
+      { scoped: true }
+    );
     this.mutatingNodes = /* @__PURE__ */ new Set();
     this.pendingNodeClasses = /* @__PURE__ */ new Map();
     this.updateNodeThrottler = new Common19.Throttler.Throttler(0);
@@ -23591,8 +27352,11 @@ var ButtonProvider4 = class _ButtonProvider {
     this.button = new UI27.Toolbar.ToolbarToggle(i18nString22(UIStrings23.elementClasses), "class");
     this.button.element.style.setProperty("--dot-toggle-top", "12px");
     this.button.element.style.setProperty("--dot-toggle-left", "18px");
-    this.button.element.setAttribute("jslog", `${VisualLogging17.toggleSubpane("elements-classes").track({ click: true })}`);
-    this.button.addEventListener("Click", this.clicked, this);
+    this.button.element.setAttribute(
+      "jslog",
+      `${VisualLogging17.toggleSubpane("elements-classes").track({ click: true })}`
+    );
+    this.button.addEventListener(UI27.Toolbar.ToolbarButton.Events.CLICK, this.clicked, this);
     this.view = new ClassesPaneWidget();
   }
   static instance(opts = { forceNew: null }) {
@@ -23681,7 +27445,7 @@ var ClassNamePrompt = class extends UI27.TextPrompt.TextPrompt {
   }
 };
 
-// gen/front_end/panels/elements/StandaloneStylesContainer.js
+// ../../front_end/panels/elements/StandaloneStylesContainer.ts
 var StandaloneStylesContainer_exports = {};
 __export(StandaloneStylesContainer_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW13,
@@ -23697,22 +27461,27 @@ import { html as html21, render as render19 } from "../../ui/lit/lit.js";
 import * as VisualLogging18 from "../../ui/visual_logging/visual_logging.js";
 import * as ElementsComponents9 from "./components/components.js";
 var DEFAULT_VIEW13 = (input, _output, target) => {
-  render19(html21`
+  render19(
+    html21`
     <style>${stylesSidebarPane_css_default}</style>
     <div class="style-panes-wrapper" jslog=${VisualLogging18.section("standalone-styles").track({
-    resize: true
-  })}>
+      resize: true
+    })}>
       <div class="styles-pane">
         ${input.sections.map((section5) => section5.element)}
       </div>
     </div>
-  `, target);
+  `,
+    target
+  );
 };
-var Events2;
-(function(Events3) {
+var Events2 = /* @__PURE__ */ ((Events3) => {
   Events3["STYLES_UPDATE_COMPLETED"] = "StylesUpdateCompleted";
-})(Events2 || (Events2 = {}));
-var StandaloneStylesContainerBase = Common20.ObjectWrapper.eventMixin(UI28.Widget.VBox);
+  return Events3;
+})(Events2 || {});
+var StandaloneStylesContainerBase = Common20.ObjectWrapper.eventMixin(
+  UI28.Widget.VBox
+);
 var StandaloneStylesContainer = class extends StandaloneStylesContainerBase {
   activeCSSAngle = null;
   isEditingStyle = false;
@@ -23734,7 +27503,11 @@ var StandaloneStylesContainer = class extends StandaloneStylesContainerBase {
   constructor(element, view = DEFAULT_VIEW13) {
     super(element, { useShadowDom: true });
     this.#view = view;
-    this.#computedStyleModelInternal.addEventListener("CSSModelChanged", this.#onCSSModelChanged, this);
+    this.#computedStyleModelInternal.addEventListener(
+      ComputedStyle4.ComputedStyleModel.Events.CSS_MODEL_CHANGED,
+      this.#onCSSModelChanged,
+      this
+    );
   }
   #rebuildAndUpdate() {
     void this.#rebuildThrottler.schedule(async () => {
@@ -23784,7 +27557,15 @@ var StandaloneStylesContainer = class extends StandaloneStylesContainerBase {
     const newSections = [];
     let sectionIdx = 0;
     for (const style of matchedStyles.nodeStyles()) {
-      const section5 = new StylePropertiesSection(this, matchedStyles, style, sectionIdx++, computedStyles, parentStyles, extraStyles);
+      const section5 = new StylePropertiesSection(
+        this,
+        matchedStyles,
+        style,
+        sectionIdx++,
+        computedStyles,
+        parentStyles,
+        extraStyles
+      );
       section5.update(true);
       newSections.push(section5);
       this.sectionByElement.set(section5.element, section5);
@@ -23803,10 +27584,7 @@ var StandaloneStylesContainer = class extends StandaloneStylesContainerBase {
     this.#onUpdateFinished();
   }
   #onUpdateFinished() {
-    this.dispatchEventToListeners(
-      "StylesUpdateCompleted"
-      /* Events.STYLES_UPDATE_COMPLETED */
-    );
+    this.dispatchEventToListeners("StylesUpdateCompleted" /* STYLES_UPDATE_COMPLETED */);
   }
   #updateFilter() {
     for (const section5 of this.#sections) {
@@ -23925,10 +27703,10 @@ var StandaloneStylesContainer = class extends StandaloneStylesContainerBase {
   jumpToDeclaration(_valueSource) {
   }
   addStyleUpdateListener(listener) {
-    this.addEventListener("StylesUpdateCompleted", listener);
+    this.addEventListener("StylesUpdateCompleted" /* STYLES_UPDATE_COMPLETED */, listener);
   }
   removeStyleUpdateListener(listener) {
-    this.removeEventListener("StylesUpdateCompleted", listener);
+    this.removeEventListener("StylesUpdateCompleted" /* STYLES_UPDATE_COMPLETED */, listener);
   }
   trackForLazyRendering(_element, _callback) {
   }

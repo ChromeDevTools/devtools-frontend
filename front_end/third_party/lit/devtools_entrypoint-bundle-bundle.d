@@ -1,1 +1,0 @@
-gen/front_end/third_party/lit/lit.js: gen/front_end/third_party/lit/lib/lit.js gen/front_end/third_party/lit/lib/async-directive.js gen/front_end/third_party/lit/lib/directives.js gen/front_end/third_party/lit/lib/directive.js gen/front_end/third_party/lit/lib/decorators.js gen/front_end/third_party/lit/lib/static-html.js gen/front_end/third_party/lit/lit.prebundle.js

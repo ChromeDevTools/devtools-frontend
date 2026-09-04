@@ -9182,10 +9182,16 @@ var pieChart_css_default = `/*
  * found in the LICENSE file.
  */
 
+:host {
+  display: block;
+}
+
 .root {
   align-items: flex-start; /* keep chart at top so it doesnt change position as the legend changes height */
+  gap: var(--sys-size-6) 30px;
   display: flex;
-  min-width: fit-content;
+  flex-wrap: wrap;
+  justify-content: flex-start;
   white-space: nowrap;
 }
 
@@ -9224,10 +9230,6 @@ var pieChart_css_default = `/*
   stroke-width: 0.04;
   stroke-linecap: round;
   stroke-linejoin: round;
-}
-
-.pie-chart-legend {
-  margin-left: 30px;
 }
 
 .pie-chart-legend-row {

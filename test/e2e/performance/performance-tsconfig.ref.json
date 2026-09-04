@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../test/e2e/performance",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../test/e2e/performance/landing-page.test.ts",
+    "../../../../../../test/e2e/performance/multiple-traces.test.ts",
+    "../../../../../../test/e2e/performance/recording.test.ts",
+    "../../../../../../test/e2e/performance/revealing-insights.test.ts",
+    "../../../../../../test/e2e/performance/selector-stats-tracing.test.ts",
+    "../../../../../../test/e2e/performance/settings-throttle-change.test.ts",
+    "../../../../../../test/e2e/performance/timeline-js-line-level-profile.test.ts",
+    "../../../../../../test/e2e/performance/timeline/treeview.test.ts",
+    "../../../../../../test/e2e/performance/trace-app.test.ts",
+    "../../../../../../test/e2e/performance/wasm/performance_profiling.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts",
+    "../../../../../../test/e2e/types.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../conductor/implementation-tsconfig.ref.json"
+    },
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../shared/shared-tsconfig.ref.json"
+    }
+  ]
+}

@@ -18,10 +18,10 @@ export default `/*
   width: 100%;
   display: grid;
   grid-template-columns: auto auto 1fr;
-  gap: 4px 24px;
-  min-height: 24px;
+  gap: var(--sys-size-3) var(--sys-size-11);
+  min-height: var(--sys-size-11);
   overflow: hidden;
-  padding: 2px 12px;
+  padding: var(--sys-size-2) var(--sys-size-6);
   align-items: baseline;
   justify-content: start;
 }
@@ -32,7 +32,7 @@ export default `/*
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  min-height: 24px;
+  min-height: var(--sys-size-11);
 }
 
 .value-type-value-with-link {
@@ -45,10 +45,10 @@ export default `/*
 }
 
 .signed-divider {
-  width: 1px;
+  width: var(--sys-size-1);
   height: 15px;
   background-color: var(--sys-color-divider);
-  margin: 0 4px;
+  margin: 0 var(--sys-size-3);
 }
 
 .selectable-text {

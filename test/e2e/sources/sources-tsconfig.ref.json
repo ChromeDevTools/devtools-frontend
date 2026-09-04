@@ -1,0 +1,72 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../test/e2e/sources",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../test/e2e/sources/authored-deployed-grouping.test.ts",
+    "../../../../../../test/e2e/sources/breakpoint-csp-violations.test.ts",
+    "../../../../../../test/e2e/sources/breakpoint-javascript.test.ts",
+    "../../../../../../test/e2e/sources/breakpoints-sidebarpane.test.ts",
+    "../../../../../../test/e2e/sources/call-stack.test.ts",
+    "../../../../../../test/e2e/sources/can-break-with-wasm-sourcemaps.test.ts",
+    "../../../../../../test/e2e/sources/can-disable-auto-sources-focus.test.ts",
+    "../../../../../../test/e2e/sources/can-handle-special-characters.test.ts",
+    "../../../../../../test/e2e/sources/can-open-linear-memory-inspector.test.ts",
+    "../../../../../../test/e2e/sources/can-pretty-print-sourcecode.test.ts",
+    "../../../../../../test/e2e/sources/can-show-multiple-workers.test.ts",
+    "../../../../../../test/e2e/sources/can-show-stylesheets-with-source-url-comment.test.ts",
+    "../../../../../../test/e2e/sources/can-show-wasm-scopes.test.ts",
+    "../../../../../../test/e2e/sources/color-swatch.test.ts",
+    "../../../../../../test/e2e/sources/continue-to-location-markers.test.ts",
+    "../../../../../../test/e2e/sources/debug-raw-wasm.test.ts",
+    "../../../../../../test/e2e/sources/debugger-sidebar.test.ts",
+    "../../../../../../test/e2e/sources/dom-breakpoints.test.ts",
+    "../../../../../../test/e2e/sources/eval.test.ts",
+    "../../../../../../test/e2e/sources/header-overrides.test.ts",
+    "../../../../../../test/e2e/sources/icon-row-bucket.test.ts",
+    "../../../../../../test/e2e/sources/ignore-list.test.ts",
+    "../../../../../../test/e2e/sources/inline-breakpoint.test.ts",
+    "../../../../../../test/e2e/sources/inline-scripts.test.ts",
+    "../../../../../../test/e2e/sources/inline-variable.test.ts",
+    "../../../../../../test/e2e/sources/link-to-correct-source-line.test.ts",
+    "../../../../../../test/e2e/sources/navigator-view.test.ts",
+    "../../../../../../test/e2e/sources/overrides.test.ts",
+    "../../../../../../test/e2e/sources/pause-button.test.ts",
+    "../../../../../../test/e2e/sources/popover.test.ts",
+    "../../../../../../test/e2e/sources/restart-frame.test.ts",
+    "../../../../../../test/e2e/sources/script-in-multiple-workers.test.ts",
+    "../../../../../../test/e2e/sources/scroll-into-view.test.ts",
+    "../../../../../../test/e2e/sources/snippets.test.ts",
+    "../../../../../../test/e2e/sources/sourcemap-without-mappings.test.ts",
+    "../../../../../../test/e2e/sources/sourcemap.test.ts",
+    "../../../../../../test/e2e/sources/sources-list.test.ts",
+    "../../../../../../test/e2e/sources/sourceurl.test.ts",
+    "../../../../../../test/e2e/sources/syntax-highlighting.test.ts",
+    "../../../../../../test/e2e/sources/text-editor.test.ts",
+    "../../../../../../test/e2e/sources/threads-sidebar-pane.test.ts",
+    "../../../../../../test/e2e/sources/watch-expressions.test.ts",
+    "../../../../../../test/e2e/sources/worker-relative-sourcemap.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts",
+    "../../../../../../test/e2e/types.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../front_end/ui/components/text_editor/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../shared/shared-tsconfig.ref.json"
+    }
+  ]
+}

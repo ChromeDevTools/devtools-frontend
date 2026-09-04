@@ -6638,7 +6638,7 @@ var generatedProperties = [
   {
     "name": "margin-trim",
     "runtime_flag": "MarginTrim",
-    "runtime_flag_status": "experimental"
+    "runtime_flag_status": "stable"
   },
   {
     "inherited": true,
@@ -27961,6 +27961,7 @@ var MessageSourceDisplayName = /* @__PURE__ */ new Map([
 // ../../front_end/core/sdk/SecurityOrigin.ts
 var SecurityOrigin_exports = {};
 __export(SecurityOrigin_exports, {
+  IMPORTED_ORIGIN_PREFIXES: () => IMPORTED_ORIGIN_PREFIXES,
   SecurityOrigin: () => SecurityOrigin
 });
 import * as Common19 from "../common/common.js";
@@ -27977,6 +27978,9 @@ var OPAQUE_PREFIXES = [
   "blob:data",
   "blob:null"
 ];
+var IMPORTED_ORIGIN_PREFIXES = /* @__PURE__ */ new Set([
+  "imported-har:"
+]);
 function isOpaqueUrlString(url) {
   const lower = url.trim().toLowerCase();
   if (OPAQUE_EXACT_MATCHES.has(lower)) {
@@ -28002,6 +28006,17 @@ var SecurityOrigin = class _SecurityOrigin {
   static create(rawUrl) {
     if (isOpaqueUrlString(rawUrl)) {
       return _SecurityOrigin.createUniqueOpaque();
+    }
+    for (const prefix of IMPORTED_ORIGIN_PREFIXES) {
+      if (rawUrl.toLowerCase().startsWith(prefix)) {
+        const afterScheme = rawUrl.substring(prefix.length).replace(/^\/+/, "");
+        const slashIndex = afterScheme.indexOf("/");
+        const host = slashIndex === -1 ? afterScheme : afterScheme.substring(0, slashIndex);
+        if (!host) {
+          return _SecurityOrigin.createUniqueOpaque();
+        }
+        return new _SecurityOrigin({ type: "origin", value: `${prefix}//${host.toLowerCase()}` });
+      }
     }
     if (rawUrl.toLowerCase().startsWith("file://")) {
       const parsed = Common19.ParsedURL.ParsedURL.fromString(rawUrl);
@@ -37307,6 +37322,52 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
   backendRequestId() {
     return this.#backendRequestId;
   }
+  /**
+   * Returns the security origin of the target resource URL (`request.url()`) for this network request.
+   *
+   * For example, if an inspected document at `https://example.com/index.html` initiates a fetch
+   * to `https://api.github.com/users`, `requestURLSecurityOrigin()` returns the origin for
+   * `https://api.github.com`.
+   *
+   * For imported HAR files, the origin is mapped to an isolated virtual domain
+   * (`imported-har://${authority}`) to ensure recorded network traffic never collides with
+   * live web origins.
+   *
+   * @see {@link initiatorSecurityOrigin} to obtain the origin of the document that initiated the request.
+   */
+  requestURLSecurityOrigin() {
+    return this.#resolveSecurityOrigin(this.#url);
+  }
+  /**
+   * Returns the security origin of the document or context (`request.documentURL`) that initiated
+   * this network request.
+   *
+   * For example, if an inspected document at `https://example.com/index.html` initiates a fetch
+   * to `https://api.github.com/users`, `initiatorSecurityOrigin()` returns the origin for
+   * `https://example.com`.
+   *
+   * If `documentURL` is empty, invalid, or an opaque context (such as a `data:` URL or sandboxed
+   * iframe), this returns a unique opaque `SecurityOrigin`.
+   *
+   * For imported HAR files, the origin is mapped to an isolated virtual domain
+   * (`imported-har://${authority}`) matching the imported initiating document.
+   *
+   * @see {@link requestURLSecurityOrigin} to obtain the origin of the target resource URL being requested.
+   */
+  initiatorSecurityOrigin() {
+    return this.#resolveSecurityOrigin(this.#documentURL);
+  }
+  #resolveSecurityOrigin(url) {
+    if (this.#isImportedHar) {
+      const parsed = Common30.ParsedURL.ParsedURL.fromString(url);
+      if (!parsed || !parsed.host) {
+        return SecurityOrigin.createUniqueOpaque();
+      }
+      const authority = parsed.host + (parsed.port ? ":" + parsed.port : "");
+      return SecurityOrigin.create(`imported-har://${authority}`);
+    }
+    return SecurityOrigin.create(url);
+  }
   url() {
     return this.#url;
   }
@@ -37379,9 +37440,6 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
   }
   securityDetails() {
     return this.#securityDetails;
-  }
-  securityOrigin() {
-    return this.#parsedURL.securityOrigin();
   }
   setSecurityDetails(securityDetails) {
     this.#securityDetails = securityDetails;
@@ -43164,6 +43222,87 @@ var LayerTreeBase = class {
   }
 };
 
+// ../../front_end/core/sdk/NetworkRequestAccess.ts
+var NetworkRequestAccess_exports = {};
+__export(NetworkRequestAccess_exports, {
+  CORS_SAFELISTED_RESPONSE_HEADERS: () => CORS_SAFELISTED_RESPONSE_HEADERS,
+  REDACTED_RESPONSE_BODY: () => REDACTED_RESPONSE_BODY,
+  ResponseAccessMode: () => ResponseAccessMode,
+  evaluateResponseAccessMode: () => evaluateResponseAccessMode,
+  getFilterableResponseHeaders: () => getFilterableResponseHeaders,
+  isRequestCredentialed: () => isRequestCredentialed
+});
+var ResponseAccessMode = /* @__PURE__ */ ((ResponseAccessMode2) => {
+  ResponseAccessMode2["SAME_ORIGIN"] = "SAME_ORIGIN";
+  ResponseAccessMode2["CORS_ALLOWED"] = "CORS_ALLOWED";
+  ResponseAccessMode2["OPAQUE_CROSS_ORIGIN"] = "OPAQUE_CROSS_ORIGIN";
+  return ResponseAccessMode2;
+})(ResponseAccessMode || {});
+var CORS_SAFELISTED_RESPONSE_HEADERS = /* @__PURE__ */ new Set([
+  "cache-control",
+  "content-language",
+  "content-length",
+  "content-type",
+  "expires",
+  "last-modified",
+  "pragma"
+]);
+var REDACTED_RESPONSE_BODY = "<redacted cross-origin response body>";
+function isRequestCredentialed(request) {
+  const hasAuthHeaders = Boolean(
+    request.requestHeaderValue("authorization") || request.requestHeaderValue("proxy-authorization")
+  );
+  const hasCookies = request.includedRequestCookies().length > 0 || request.responseCookies.length > 0 || Boolean(request.requestHeaderValue("cookie")) || Boolean(request.responseHeaderValue("set-cookie"));
+  const hasAllowCredentials = request.responseHeaderValue("access-control-allow-credentials")?.trim().toLowerCase() === "true";
+  return hasAuthHeaders || hasCookies || hasAllowCredentials;
+}
+function evaluateResponseAccessMode(request, initiatorOrigin) {
+  const effectiveInitiatorOrigin = initiatorOrigin ?? SecurityOrigin.create(request.documentURL);
+  if (effectiveInitiatorOrigin.isOpaque()) {
+    return "OPAQUE_CROSS_ORIGIN" /* OPAQUE_CROSS_ORIGIN */;
+  }
+  const resourceOrigin = SecurityOrigin.create(request.url());
+  if (effectiveInitiatorOrigin.isSameOriginWith(resourceOrigin)) {
+    return "SAME_ORIGIN" /* SAME_ORIGIN */;
+  }
+  if (request.corsErrorStatus()) {
+    return "OPAQUE_CROSS_ORIGIN" /* OPAQUE_CROSS_ORIGIN */;
+  }
+  const allowOriginHeader = request.responseHeaderValue("access-control-allow-origin")?.trim();
+  if (!allowOriginHeader) {
+    return "OPAQUE_CROSS_ORIGIN" /* OPAQUE_CROSS_ORIGIN */;
+  }
+  const isCredentialed = isRequestCredentialed(request);
+  if (allowOriginHeader === "*" && !isCredentialed) {
+    return "CORS_ALLOWED" /* CORS_ALLOWED */;
+  }
+  if (allowOriginHeader.toLowerCase() === effectiveInitiatorOrigin.siteId().toLowerCase()) {
+    return "CORS_ALLOWED" /* CORS_ALLOWED */;
+  }
+  return "OPAQUE_CROSS_ORIGIN" /* OPAQUE_CROSS_ORIGIN */;
+}
+function getFilterableResponseHeaders(request, accessMode) {
+  if (accessMode === "SAME_ORIGIN" /* SAME_ORIGIN */) {
+    return request.responseHeaders;
+  }
+  if (accessMode === "OPAQUE_CROSS_ORIGIN" /* OPAQUE_CROSS_ORIGIN */) {
+    return request.responseHeaders.filter((header) => {
+      const lowerName = header.name.toLowerCase().trim();
+      return CORS_SAFELISTED_RESPONSE_HEADERS.has(lowerName);
+    });
+  }
+  const exposeHeadersValue = request.responseHeaderValue("access-control-expose-headers")?.trim() || "";
+  const exposedSet = new Set(
+    exposeHeadersValue.split(",").map((h) => h.trim().toLowerCase()).filter(Boolean)
+  );
+  const isCredentialed = isRequestCredentialed(request);
+  const allowWildcardExposure = !isCredentialed && exposedSet.has("*");
+  return request.responseHeaders.filter((header) => {
+    const lowerName = header.name.toLowerCase().trim();
+    return CORS_SAFELISTED_RESPONSE_HEADERS.has(lowerName) || allowWildcardExposure || exposedSet.has(lowerName);
+  });
+}
+
 // ../../front_end/core/sdk/PageLoad.ts
 var PageLoad_exports = {};
 __export(PageLoad_exports, {
@@ -45249,6 +45388,7 @@ export {
   LogModel_exports as LogModel,
   NetworkManager_exports as NetworkManager,
   NetworkRequest_exports as NetworkRequest,
+  NetworkRequestAccess_exports as NetworkRequestAccess,
   OverlayColorGenerator_exports as OverlayColorGenerator,
   OverlayModel_exports as OverlayModel,
   OverlayPersistentHighlighter_exports as OverlayPersistentHighlighter,

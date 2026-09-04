@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/timeline/extensions/ExtensionUI.js
+// ../../front_end/panels/timeline/extensions/ExtensionUI.ts
 var ExtensionUI_exports = {};
 __export(ExtensionUI_exports, {
   extensionEntryColor: () => extensionEntryColor

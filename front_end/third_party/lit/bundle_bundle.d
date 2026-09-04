@@ -1,0 +1,1 @@
+gen/front_end/third_party/lit/lit.js: ../../front_end/third_party/lit/lib/lit.js ../../front_end/third_party/lit/lib/async-directive.js ../../front_end/third_party/lit/lib/directives.js ../../front_end/third_party/lit/lib/directive.js ../../front_end/third_party/lit/lib/decorators.js ../../front_end/third_party/lit/lib/static-html.js ../../front_end/third_party/lit/lit.ts

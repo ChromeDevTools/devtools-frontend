@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Host from '../../core/host/host.js';
+import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import { AiAgent, } from './agents/AiAgent.js';
 import { executeJsCode } from './agents/ExecuteJavascript.js';
@@ -56,7 +57,9 @@ export class AiAgent2 extends AiAgent {
     // TODO: The static preamble is a placeholder and will eventually live server-side.
     preamble = preamble;
     clientFeature = Host.AidaClient.ClientFeature.CHROME_DEVTOOLS_V2_AGENT;
-    userTier = 'TESTERS';
+    get userTier() {
+        return Root.Runtime.hostConfig.devToolsAiV2Architecture?.userTier;
+    }
     #changes;
     #execJs;
     #allowedOrigin;

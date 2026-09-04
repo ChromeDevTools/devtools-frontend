@@ -16,7 +16,7 @@ export default `/*
   }
 
   .value-interpreter {
-    border: 1px solid var(--sys-color-divider);
+    border: var(--sys-size-1) solid var(--sys-color-divider);
     background-color: var(--sys-color-cdt-base-container);
     overflow: hidden;
     width: 400px;
@@ -34,8 +34,8 @@ export default `/*
 
   .settings-toolbar-button {
     padding: 0;
-    width: 20px;
-    height: 20px;
+    width: var(--sys-size-9);
+    height: var(--sys-size-9);
     border: none;
     outline: none;
     background-color: transparent;
@@ -47,8 +47,8 @@ export default `/*
 
   .divider {
     display: block;
-    height: 1px;
-    margin-bottom: 12px;
+    height: var(--sys-size-1);
+    margin-bottom: var(--sys-size-6);
     background-color: var(--sys-color-divider);
   }
 }

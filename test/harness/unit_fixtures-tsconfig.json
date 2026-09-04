@@ -1,0 +1,69 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": true,
+    "composite": false,
+    "declaration": false,
+    "disableSourceOfProjectReferenceRedirect": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "incremental": false,
+    "inlineSources": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "ES2023",
+      "ES2024.Promise",
+      "ESNext.Iterator",
+      "ESNext.Collection",
+      "ESNext.Array"
+    ],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "outDir": ".",
+    "preserveConstEnums": true,
+    "rootDir": "../../../../../test/harness",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext",
+    "typeRoots": [
+      "../../../../../node_modules/@types",
+      "../../../../../node_modules"
+    ],
+    "types": [
+      "mocha"
+    ],
+    "useUnknownInCatchVariables": false
+  },
+  "files": [
+    "../../../../../test/harness/unit/after_each_hook_fail.test.ts",
+    "../../../../../test/harness/unit/before_each_hook_fail.test.ts",
+    "../../../../../test/harness/unit/duplicate.test.ts",
+    "../../../../../test/harness/unit/errors.test.ts",
+    "../../../../../test/harness/unit/get_test_id.test.ts",
+    "../../../../../test/harness/unit/global_after_hook_fail.test.ts",
+    "../../../../../test/harness/unit/global_before_hook_fail.test.ts",
+    "../../../../../test/harness/unit/hooks.test.ts",
+    "../../../../../test/harness/unit/multi_logs.test.ts",
+    "../../../../../test/harness/unit/screenshot_diff.test.ts",
+    "../../../../../test/harness/unit/screenshot_retry.test.ts",
+    "../../../../../test/harness/unit/snapshot.test.ts",
+    "../../../../../test/harness/unit/unit.test.ts",
+    "../../../../../test/harness/unit/unit_2.test.ts",
+    "../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../front_end/testing/testing-tsconfig.ref.json"
+    }
+  ]
+}

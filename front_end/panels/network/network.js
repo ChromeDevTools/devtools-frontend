@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/network/BinaryResourceView.js
+// ../../front_end/panels/network/BinaryResourceView.ts
 var BinaryResourceView_exports = {};
 __export(BinaryResourceView_exports, {
   BinaryResourceView: () => BinaryResourceView,
@@ -47,7 +47,7 @@ var binaryResourceView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./binaryResourceView.css")} */`;
 
-// gen/front_end/panels/network/BinaryResourceView.js
+// ../../front_end/panels/network/BinaryResourceView.ts
 var { widget } = UI.Widget;
 var UIStrings = {
   /**
@@ -99,32 +99,38 @@ var defaultView = (input, _output, target) => {
   render(html`
     <style>${binaryResourceView_css_default}</style>
     <div class="vbox flex-auto">
-      ${input.binaryViewObjects.map((obj) => obj.type === input.binaryViewTypeSetting.get() ? html`
+      ${input.binaryViewObjects.map(
+    (obj) => obj.type === input.binaryViewTypeSetting.get() ? html`
           <devtools-widget
             class="widget vbox flex-auto"
             ${widget((e) => {
-    const factory = new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(input.content, input.contentUrl, input.resourceType);
-    let view;
-    switch (obj.type) {
-      case "base64":
-        view = factory.createBase64View(e);
-        break;
-      case "hex":
-        view = factory.createHexView(e);
-        break;
-      case "utf8":
-        view = factory.createUtf8View(e);
-        break;
-      default:
-        throw new Error("Unsupported view type");
-    }
-    if ("setPositionPercentage" in view) {
-      view.setPositionPercentage(input.activePositionPercentage);
-    }
-    return view;
-  })}>
+      const factory = new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(
+        input.content,
+        input.contentUrl,
+        input.resourceType
+      );
+      let view;
+      switch (obj.type) {
+        case "base64":
+          view = factory.createBase64View(e);
+          break;
+        case "hex":
+          view = factory.createHexView(e);
+          break;
+        case "utf8":
+          view = factory.createUtf8View(e);
+          break;
+        default:
+          throw new Error("Unsupported view type");
+      }
+      if ("setPositionPercentage" in view) {
+        view.setPositionPercentage(input.activePositionPercentage);
+      }
+      return view;
+    })}>
           </devtools-widget>
-        ` : nothing)}
+        ` : nothing
+  )}
       <devtools-toolbar class="binary-view-toolbar">
           <select class="toolbar-item" title=${i18nString(UIStrings.binaryViewType)}
               aria-label=${i18nString(UIStrings.binaryViewType)}
@@ -138,7 +144,7 @@ var defaultView = (input, _output, target) => {
         <devtools-button class="toolbar-button toolbar-item" title=${i18nString(UIStrings.copyToClipboard)}
             @click=${input.copySelectedViewToClipboard}
             .data=${{
-    variant: "icon",
+    variant: Buttons.Button.Variant.ICON,
     iconName: "copy",
     jslogContext: "copy"
   }}></devtools-button>
@@ -167,9 +173,24 @@ var BinaryResourceView = class extends UI.Widget.VBox {
     this.resourceType = resourceType;
     this.binaryResourceViewFactory = new SourceFrame.BinaryResourceViewFactory.BinaryResourceViewFactory(content, contentUrl, resourceType);
     this.binaryViewObjects = [
-      new BinaryViewObject("base64", i18n.i18n.lockedString("Base64"), i18nString(UIStrings.copiedAsBase), this.binaryResourceViewFactory.base64.bind(this.binaryResourceViewFactory)),
-      new BinaryViewObject("hex", i18nString(UIStrings.hexViewer), i18nString(UIStrings.copiedAsHex), this.binaryResourceViewFactory.hex.bind(this.binaryResourceViewFactory)),
-      new BinaryViewObject("utf8", i18n.i18n.lockedString("UTF-8"), i18nString(UIStrings.copiedAsUtf), this.binaryResourceViewFactory.utf8.bind(this.binaryResourceViewFactory))
+      new BinaryViewObject(
+        "base64",
+        i18n.i18n.lockedString("Base64"),
+        i18nString(UIStrings.copiedAsBase),
+        this.binaryResourceViewFactory.base64.bind(this.binaryResourceViewFactory)
+      ),
+      new BinaryViewObject(
+        "hex",
+        i18nString(UIStrings.hexViewer),
+        i18nString(UIStrings.copiedAsHex),
+        this.binaryResourceViewFactory.hex.bind(this.binaryResourceViewFactory)
+      ),
+      new BinaryViewObject(
+        "utf8",
+        i18n.i18n.lockedString("UTF-8"),
+        i18nString(UIStrings.copiedAsUtf),
+        this.binaryResourceViewFactory.utf8.bind(this.binaryResourceViewFactory)
+      )
     ];
     this.binaryViewTypeSetting = Common.Settings.Settings.instance().createSetting("binary-view-type", "hex");
     this.copiedText = new UI.Toolbar.ToolbarText();
@@ -181,7 +202,10 @@ var BinaryResourceView = class extends UI.Widget.VBox {
   getCurrentViewObject() {
     const filter = (obj) => obj.type === this.binaryViewTypeSetting.get();
     const binaryViewObject = this.binaryViewObjects.find(filter);
-    console.assert(Boolean(binaryViewObject), `No binary view found for binary view type found in setting 'binary-view-type': ${this.binaryViewTypeSetting.get()}`);
+    console.assert(
+      Boolean(binaryViewObject),
+      `No binary view found for binary view type found in setting 'binary-view-type': ${this.binaryViewTypeSetting.get()}`
+    );
     return binaryViewObject || null;
   }
   copySelectedViewToClipboard() {
@@ -260,7 +284,7 @@ var BinaryViewObject = class {
   }
 };
 
-// gen/front_end/panels/network/RequestConditionsDrawer.js
+// ../../front_end/panels/network/RequestConditionsDrawer.ts
 var RequestConditionsDrawer_exports = {};
 __export(RequestConditionsDrawer_exports, {
   AFFECTED_COUNT_DEFAULT_VIEW: () => AFFECTED_COUNT_DEFAULT_VIEW,
@@ -383,7 +407,7 @@ var requestConditionsDrawer_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./requestConditionsDrawer.css")} */`;
 
-// gen/front_end/panels/network/RequestConditionsDrawer.js
+// ../../front_end/panels/network/RequestConditionsDrawer.ts
 var { ref, live, ifDefined } = Directives;
 var { widget: widget2 } = UI2.Widget;
 var UIStrings2 = {
@@ -506,7 +530,7 @@ var DEFAULT_VIEW = (input, output, target) => {
         class=add-button
         .jslogContext=${"network.add-network-request-blocking-pattern"}
         title=${i18nString2(UIStrings2.addPatternLabel)}
-        .variant=${"tonal"}>
+        .variant=${Buttons2.Button.Variant.TONAL}>
           ${i18nString2(UIStrings2.addRule)}
       </devtools-button>
     </div>
@@ -546,7 +570,21 @@ var DEFAULT_VIEW = (input, output, target) => {
     { container: { classes: !input.enabled && input.conditions.length > 0 ? ["blocking-disabled"] : [] } }
   );
 };
-function renderItem({ condition, editing, editable, index, onToggle, onConditionsChanged, onIncreasePriority, onDecreasePriority, onCommit, onCancel, onBeginEdit, validator, lookUpRequestCount }) {
+function renderItem({
+  condition,
+  editing,
+  editable,
+  index,
+  onToggle,
+  onConditionsChanged,
+  onIncreasePriority,
+  onDecreasePriority,
+  onCommit,
+  onCancel,
+  onBeginEdit,
+  validator,
+  lookUpRequestCount
+}) {
   const { enabled, originalOrUpgradedURLPattern, constructorStringOrWildcardURL, wildcardURL } = condition;
   const toggle3 = (e) => {
     e.consume(true);
@@ -587,7 +625,7 @@ function renderItem({ condition, editing, editable, index, onToggle, onCondition
       jslog=${VisualLogging2.toggle().track({ change: true })}>
     <devtools-button
       .iconName=${"arrow-up"}
-      .variant=${"icon"}
+      .variant=${Buttons2.Button.Variant.ICON}
       .title=${i18nString2(UIStrings2.increasePriority, { PH1: constructorStringOrWildcardURL })}
       .jslogContext=${"decrease-priority"}
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
@@ -595,7 +633,7 @@ function renderItem({ condition, editing, editable, index, onToggle, onCondition
     </devtools-button>
     <devtools-button
       .iconName=${"arrow-down"}
-      .variant=${"icon"}
+      .variant=${Buttons2.Button.Variant.ICON}
       .title=${i18nString2(UIStrings2.decreasePriority, { PH1: constructorStringOrWildcardURL })}
       .jslogContext=${"increase-priority"}
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
@@ -624,7 +662,7 @@ function renderItem({ condition, editing, editable, index, onToggle, onCondition
       <devtools-icon name=cross-circle-filled class=small aria-details=url-pattern-error-${index}>
       </devtools-icon>
       <devtools-tooltip variant=rich jslogcontext=url-pattern-warning id=url-pattern-error-${index}>
-        ${SDK.NetworkManager.RequestURLPattern.isValidPattern(constructorStringOrWildcardURL) === "has-regexp-groups" ? i18nString2(UIStrings2.patternFailedWithRegExpGroups) : i18nString2(UIStrings2.patternFailedToParse)}
+        ${SDK.NetworkManager.RequestURLPattern.isValidPattern(constructorStringOrWildcardURL) === SDK.NetworkManager.RequestURLPatternValidity.HAS_REGEXP_GROUPS ? i18nString2(UIStrings2.patternFailedWithRegExpGroups) : i18nString2(UIStrings2.patternFailedToParse)}
         ${learnMore()}
       </devtools-tooltip>` : nothing2}
     <devtools-prompt
@@ -649,18 +687,25 @@ function renderItem({ condition, editing, editable, index, onToggle, onCondition
        @ConditionsChanged=${(e) => {
     onConditionsChanged(condition, e.detail);
   }}
-       ${widget2(MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect, {
-    variant: "individual-request-conditions",
-    jslogContext: "request-conditions",
-    disabled: !editable,
-    currentConditions: condition.conditions
-  })}></select>
+       ${widget2(
+    MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect,
+    {
+      variant: MobileThrottling.NetworkThrottlingSelector.NetworkThrottlingSelect.Variant.INDIVIDUAL_REQUEST_CONDITIONS,
+      jslogContext: "request-conditions",
+      disabled: !editable,
+      currentConditions: condition.conditions
+    }
+  )}></select>
     <devtools-widget
       ?disabled=${!editable || !originalOrUpgradedURLPattern}
       ${widget2(AffectedCountWidget, { condition, lookUpRequestCount })}></devtools-widget>`;
 }
 var AFFECTED_COUNT_DEFAULT_VIEW = (input, output, target) => {
-  render2(html2`${i18nString2(UIStrings2.dAffected, { PH1: input.count })}`, target, { container: { classes: ["blocked-url-count"] } });
+  render2(
+    html2`${i18nString2(UIStrings2.dAffected, { PH1: input.count })}`,
+    target,
+    { container: { classes: ["blocked-url-count"] } }
+  );
 };
 function matchesUrl(conditions, url) {
   return Boolean(conditions.originalOrUpgradedURLPattern?.test(url));
@@ -693,13 +738,24 @@ var AffectedCountWidget = class extends UI2.Widget.Widget {
     this.#view({ count: this.#lookUpRequestCount(this.#condition) }, {}, this.element);
   }
   wasShown() {
-    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this.#onRequestFinished, this, { scoped: true });
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+      SDK.NetworkManager.NetworkManager,
+      SDK.NetworkManager.Events.RequestFinished,
+      this.#onRequestFinished,
+      this,
+      { scoped: true }
+    );
     Logs.NetworkLog.NetworkLog.instance().addEventListener(Logs.NetworkLog.Events.Reset, this.requestUpdate, this);
     super.wasShown();
   }
   willHide() {
     super.willHide();
-    SDK.TargetManager.TargetManager.instance().removeModelListener(SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this.#onRequestFinished, this);
+    SDK.TargetManager.TargetManager.instance().removeModelListener(
+      SDK.NetworkManager.NetworkManager,
+      SDK.NetworkManager.Events.RequestFinished,
+      this.#onRequestFinished,
+      this
+    );
     Logs.NetworkLog.NetworkLog.instance().removeEventListener(Logs.NetworkLog.Events.Reset, this.requestUpdate, this);
   }
   #onRequestFinished(event) {
@@ -735,9 +791,19 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     });
     this.#view = view;
     this.manager = SDK.NetworkManager.MultitargetNetworkManager.instance();
-    this.manager.addEventListener("BlockedPatternsChanged", this.requestUpdate, this);
+    this.manager.addEventListener(
+      SDK.NetworkManager.MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED,
+      this.requestUpdate,
+      this
+    );
     this.blockedCountForUrl = /* @__PURE__ */ new Map();
-    SDK.TargetManager.TargetManager.instance().addModelListener(SDK.NetworkManager.NetworkManager, SDK.NetworkManager.Events.RequestFinished, this.onRequestFinished, this, { scoped: true });
+    SDK.TargetManager.TargetManager.instance().addModelListener(
+      SDK.NetworkManager.NetworkManager,
+      SDK.NetworkManager.Events.RequestFinished,
+      this.onRequestFinished,
+      this,
+      { scoped: true }
+    );
     this.requestUpdate();
     Logs.NetworkLog.NetworkLog.instance().addEventListener(Logs.NetworkLog.Events.Reset, this.onNetworkLogReset, this);
   }
@@ -799,7 +865,10 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     if (this.#editingCondition) {
       this.#cancelEdit(this.#editingCondition);
     }
-    const condition = SDK.NetworkManager.RequestCondition.createFromSetting({ url: Platform.DevToolsPath.EmptyUrlString, enabled: true }, Common2.Settings.Settings.instance());
+    const condition = SDK.NetworkManager.RequestCondition.createFromSetting(
+      { url: Platform.DevToolsPath.EmptyUrlString, enabled: true },
+      Common2.Settings.Settings.instance()
+    );
     this.#editingCondition = condition;
     this.requestUpdate();
   }
@@ -818,9 +887,9 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
     }
     const isValid = SDK.NetworkManager.RequestURLPattern.isValidPattern(value);
     switch (isValid) {
-      case "failed-to-parse":
+      case SDK.NetworkManager.RequestURLPatternValidity.FAILED_TO_PARSE:
         return i18nString2(UIStrings2.patternFailedToParse);
-      case "has-regexp-groups":
+      case SDK.NetworkManager.RequestURLPatternValidity.HAS_REGEXP_GROUPS:
         return i18nString2(UIStrings2.patternFailedWithRegExpGroups);
     }
     return null;
@@ -902,7 +971,9 @@ var RequestConditionsDrawer = class _RequestConditionsDrawer extends UI2.Widget.
       console.assert(!!drawer, "Drawer not initialized");
       return;
     }
-    const condition = drawer.manager.requestConditions.conditions.find((condition2) => condition2.ruleIds.has(appliedConditions.appliedNetworkConditionsId) && condition2.constructorString && condition2.constructorString === appliedConditions.urlPattern);
+    const condition = drawer.manager.requestConditions.conditions.find(
+      (condition2) => condition2.ruleIds.has(appliedConditions.appliedNetworkConditionsId) && condition2.constructorString && condition2.constructorString === appliedConditions.urlPattern
+    );
     if (condition) {
       const element = drawer.#viewOutput.itemRefs.get(condition);
       if (element) {
@@ -938,7 +1009,7 @@ var AppliedConditionsRevealer = class {
   }
 };
 
-// gen/front_end/panels/network/RequestDeviceBoundSessionsView.js
+// ../../front_end/panels/network/RequestDeviceBoundSessionsView.ts
 var RequestDeviceBoundSessionsView_exports = {};
 __export(RequestDeviceBoundSessionsView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
@@ -947,6 +1018,2809 @@ __export(RequestDeviceBoundSessionsView_exports, {
 import "../../ui/legacy/components/data_grid/data_grid.js";
 import * as i18n5 from "../../core/i18n/i18n.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
+
+// ../../front_end/generated/protocol.ts
+var Accessibility;
+((Accessibility2) => {
+  let AXValueType;
+  ((AXValueType2) => {
+    AXValueType2["Boolean"] = "boolean";
+    AXValueType2["Tristate"] = "tristate";
+    AXValueType2["BooleanOrUndefined"] = "booleanOrUndefined";
+    AXValueType2["Idref"] = "idref";
+    AXValueType2["IdrefList"] = "idrefList";
+    AXValueType2["Integer"] = "integer";
+    AXValueType2["Node"] = "node";
+    AXValueType2["NodeList"] = "nodeList";
+    AXValueType2["Number"] = "number";
+    AXValueType2["String"] = "string";
+    AXValueType2["ComputedString"] = "computedString";
+    AXValueType2["Token"] = "token";
+    AXValueType2["TokenList"] = "tokenList";
+    AXValueType2["DomRelation"] = "domRelation";
+    AXValueType2["Role"] = "role";
+    AXValueType2["InternalRole"] = "internalRole";
+    AXValueType2["ValueUndefined"] = "valueUndefined";
+  })(AXValueType = Accessibility2.AXValueType || (Accessibility2.AXValueType = {}));
+  let AXValueSourceType;
+  ((AXValueSourceType2) => {
+    AXValueSourceType2["Attribute"] = "attribute";
+    AXValueSourceType2["Implicit"] = "implicit";
+    AXValueSourceType2["Style"] = "style";
+    AXValueSourceType2["Contents"] = "contents";
+    AXValueSourceType2["Placeholder"] = "placeholder";
+    AXValueSourceType2["RelatedElement"] = "relatedElement";
+  })(AXValueSourceType = Accessibility2.AXValueSourceType || (Accessibility2.AXValueSourceType = {}));
+  let AXValueNativeSourceType;
+  ((AXValueNativeSourceType2) => {
+    AXValueNativeSourceType2["Description"] = "description";
+    AXValueNativeSourceType2["Figcaption"] = "figcaption";
+    AXValueNativeSourceType2["Label"] = "label";
+    AXValueNativeSourceType2["Labelfor"] = "labelfor";
+    AXValueNativeSourceType2["Labelwrapped"] = "labelwrapped";
+    AXValueNativeSourceType2["Legend"] = "legend";
+    AXValueNativeSourceType2["Rubyannotation"] = "rubyannotation";
+    AXValueNativeSourceType2["Tablecaption"] = "tablecaption";
+    AXValueNativeSourceType2["Title"] = "title";
+    AXValueNativeSourceType2["Other"] = "other";
+  })(AXValueNativeSourceType = Accessibility2.AXValueNativeSourceType || (Accessibility2.AXValueNativeSourceType = {}));
+  let AXPropertyName;
+  ((AXPropertyName2) => {
+    AXPropertyName2["Actions"] = "actions";
+    AXPropertyName2["Busy"] = "busy";
+    AXPropertyName2["Disabled"] = "disabled";
+    AXPropertyName2["Editable"] = "editable";
+    AXPropertyName2["Focusable"] = "focusable";
+    AXPropertyName2["Focused"] = "focused";
+    AXPropertyName2["Hidden"] = "hidden";
+    AXPropertyName2["HiddenRoot"] = "hiddenRoot";
+    AXPropertyName2["Invalid"] = "invalid";
+    AXPropertyName2["Keyshortcuts"] = "keyshortcuts";
+    AXPropertyName2["Settable"] = "settable";
+    AXPropertyName2["Roledescription"] = "roledescription";
+    AXPropertyName2["Live"] = "live";
+    AXPropertyName2["Atomic"] = "atomic";
+    AXPropertyName2["Relevant"] = "relevant";
+    AXPropertyName2["Root"] = "root";
+    AXPropertyName2["Autocomplete"] = "autocomplete";
+    AXPropertyName2["HasPopup"] = "hasPopup";
+    AXPropertyName2["Level"] = "level";
+    AXPropertyName2["Multiselectable"] = "multiselectable";
+    AXPropertyName2["Orientation"] = "orientation";
+    AXPropertyName2["Multiline"] = "multiline";
+    AXPropertyName2["Readonly"] = "readonly";
+    AXPropertyName2["Required"] = "required";
+    AXPropertyName2["Valuemin"] = "valuemin";
+    AXPropertyName2["Valuemax"] = "valuemax";
+    AXPropertyName2["Valuetext"] = "valuetext";
+    AXPropertyName2["Checked"] = "checked";
+    AXPropertyName2["Expanded"] = "expanded";
+    AXPropertyName2["Modal"] = "modal";
+    AXPropertyName2["Pressed"] = "pressed";
+    AXPropertyName2["Selected"] = "selected";
+    AXPropertyName2["Activedescendant"] = "activedescendant";
+    AXPropertyName2["Controls"] = "controls";
+    AXPropertyName2["Describedby"] = "describedby";
+    AXPropertyName2["Details"] = "details";
+    AXPropertyName2["Errormessage"] = "errormessage";
+    AXPropertyName2["Flowto"] = "flowto";
+    AXPropertyName2["Labelledby"] = "labelledby";
+    AXPropertyName2["Owns"] = "owns";
+    AXPropertyName2["Url"] = "url";
+    AXPropertyName2["ActiveFullscreenElement"] = "activeFullscreenElement";
+    AXPropertyName2["ActiveModalDialog"] = "activeModalDialog";
+    AXPropertyName2["ActiveAriaModalDialog"] = "activeAriaModalDialog";
+    AXPropertyName2["AriaHiddenElement"] = "ariaHiddenElement";
+    AXPropertyName2["AriaHiddenSubtree"] = "ariaHiddenSubtree";
+    AXPropertyName2["EmptyAlt"] = "emptyAlt";
+    AXPropertyName2["EmptyText"] = "emptyText";
+    AXPropertyName2["InertElement"] = "inertElement";
+    AXPropertyName2["InertSubtree"] = "inertSubtree";
+    AXPropertyName2["LabelContainer"] = "labelContainer";
+    AXPropertyName2["LabelFor"] = "labelFor";
+    AXPropertyName2["NotRendered"] = "notRendered";
+    AXPropertyName2["NotVisible"] = "notVisible";
+    AXPropertyName2["PresentationalRole"] = "presentationalRole";
+    AXPropertyName2["ProbablyPresentational"] = "probablyPresentational";
+    AXPropertyName2["InactiveCarouselTabContent"] = "inactiveCarouselTabContent";
+    AXPropertyName2["Uninteresting"] = "uninteresting";
+  })(AXPropertyName = Accessibility2.AXPropertyName || (Accessibility2.AXPropertyName = {}));
+})(Accessibility || (Accessibility = {}));
+var Animation;
+((Animation2) => {
+  let AnimationType;
+  ((AnimationType2) => {
+    AnimationType2["CSSTransition"] = "CSSTransition";
+    AnimationType2["CSSAnimation"] = "CSSAnimation";
+    AnimationType2["WebAnimation"] = "WebAnimation";
+  })(AnimationType = Animation2.AnimationType || (Animation2.AnimationType = {}));
+})(Animation || (Animation = {}));
+var Audits;
+((Audits2) => {
+  let CookieExclusionReason;
+  ((CookieExclusionReason2) => {
+    CookieExclusionReason2["ExcludeSameSiteUnspecifiedTreatedAsLax"] = "ExcludeSameSiteUnspecifiedTreatedAsLax";
+    CookieExclusionReason2["ExcludeSameSiteNoneInsecure"] = "ExcludeSameSiteNoneInsecure";
+    CookieExclusionReason2["ExcludeSameSiteLax"] = "ExcludeSameSiteLax";
+    CookieExclusionReason2["ExcludeSameSiteStrict"] = "ExcludeSameSiteStrict";
+    CookieExclusionReason2["ExcludeDomainNonASCII"] = "ExcludeDomainNonASCII";
+    CookieExclusionReason2["ExcludeThirdPartyCookieBlockedInFirstPartySet"] = "ExcludeThirdPartyCookieBlockedInFirstPartySet";
+    CookieExclusionReason2["ExcludeThirdPartyPhaseout"] = "ExcludeThirdPartyPhaseout";
+    CookieExclusionReason2["ExcludePortMismatch"] = "ExcludePortMismatch";
+    CookieExclusionReason2["ExcludeSchemeMismatch"] = "ExcludeSchemeMismatch";
+  })(CookieExclusionReason = Audits2.CookieExclusionReason || (Audits2.CookieExclusionReason = {}));
+  let CookieWarningReason;
+  ((CookieWarningReason2) => {
+    CookieWarningReason2["WarnSameSiteUnspecifiedCrossSiteContext"] = "WarnSameSiteUnspecifiedCrossSiteContext";
+    CookieWarningReason2["WarnSameSiteNoneInsecure"] = "WarnSameSiteNoneInsecure";
+    CookieWarningReason2["WarnSameSiteUnspecifiedLaxAllowUnsafe"] = "WarnSameSiteUnspecifiedLaxAllowUnsafe";
+    CookieWarningReason2["WarnSameSiteStrictLaxDowngradeStrict"] = "WarnSameSiteStrictLaxDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteStrictCrossDowngradeStrict"] = "WarnSameSiteStrictCrossDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteStrictCrossDowngradeLax"] = "WarnSameSiteStrictCrossDowngradeLax";
+    CookieWarningReason2["WarnSameSiteLaxCrossDowngradeStrict"] = "WarnSameSiteLaxCrossDowngradeStrict";
+    CookieWarningReason2["WarnSameSiteLaxCrossDowngradeLax"] = "WarnSameSiteLaxCrossDowngradeLax";
+    CookieWarningReason2["WarnAttributeValueExceedsMaxSize"] = "WarnAttributeValueExceedsMaxSize";
+    CookieWarningReason2["WarnDomainNonASCII"] = "WarnDomainNonASCII";
+    CookieWarningReason2["WarnThirdPartyPhaseout"] = "WarnThirdPartyPhaseout";
+    CookieWarningReason2["WarnCrossSiteRedirectDowngradeChangesInclusion"] = "WarnCrossSiteRedirectDowngradeChangesInclusion";
+    CookieWarningReason2["WarnDeprecationTrialMetadata"] = "WarnDeprecationTrialMetadata";
+    CookieWarningReason2["WarnThirdPartyCookieHeuristic"] = "WarnThirdPartyCookieHeuristic";
+  })(CookieWarningReason = Audits2.CookieWarningReason || (Audits2.CookieWarningReason = {}));
+  let CookieOperation;
+  ((CookieOperation2) => {
+    CookieOperation2["SetCookie"] = "SetCookie";
+    CookieOperation2["ReadCookie"] = "ReadCookie";
+  })(CookieOperation = Audits2.CookieOperation || (Audits2.CookieOperation = {}));
+  let InsightType;
+  ((InsightType2) => {
+    InsightType2["GitHubResource"] = "GitHubResource";
+    InsightType2["GracePeriod"] = "GracePeriod";
+    InsightType2["Heuristics"] = "Heuristics";
+  })(InsightType = Audits2.InsightType || (Audits2.InsightType = {}));
+  let PerformanceIssueType;
+  ((PerformanceIssueType2) => {
+    PerformanceIssueType2["DocumentCookie"] = "DocumentCookie";
+  })(PerformanceIssueType = Audits2.PerformanceIssueType || (Audits2.PerformanceIssueType = {}));
+  let MixedContentResolutionStatus;
+  ((MixedContentResolutionStatus2) => {
+    MixedContentResolutionStatus2["MixedContentBlocked"] = "MixedContentBlocked";
+    MixedContentResolutionStatus2["MixedContentAutomaticallyUpgraded"] = "MixedContentAutomaticallyUpgraded";
+    MixedContentResolutionStatus2["MixedContentWarning"] = "MixedContentWarning";
+  })(MixedContentResolutionStatus = Audits2.MixedContentResolutionStatus || (Audits2.MixedContentResolutionStatus = {}));
+  let MixedContentResourceType;
+  ((MixedContentResourceType2) => {
+    MixedContentResourceType2["Audio"] = "Audio";
+    MixedContentResourceType2["Beacon"] = "Beacon";
+    MixedContentResourceType2["CSPReport"] = "CSPReport";
+    MixedContentResourceType2["Download"] = "Download";
+    MixedContentResourceType2["EventSource"] = "EventSource";
+    MixedContentResourceType2["Favicon"] = "Favicon";
+    MixedContentResourceType2["Font"] = "Font";
+    MixedContentResourceType2["Form"] = "Form";
+    MixedContentResourceType2["Frame"] = "Frame";
+    MixedContentResourceType2["Image"] = "Image";
+    MixedContentResourceType2["Import"] = "Import";
+    MixedContentResourceType2["JSON"] = "JSON";
+    MixedContentResourceType2["Manifest"] = "Manifest";
+    MixedContentResourceType2["Ping"] = "Ping";
+    MixedContentResourceType2["PluginData"] = "PluginData";
+    MixedContentResourceType2["PluginResource"] = "PluginResource";
+    MixedContentResourceType2["Prefetch"] = "Prefetch";
+    MixedContentResourceType2["Resource"] = "Resource";
+    MixedContentResourceType2["Script"] = "Script";
+    MixedContentResourceType2["ServiceWorker"] = "ServiceWorker";
+    MixedContentResourceType2["SharedWorker"] = "SharedWorker";
+    MixedContentResourceType2["SpeculationRules"] = "SpeculationRules";
+    MixedContentResourceType2["Stylesheet"] = "Stylesheet";
+    MixedContentResourceType2["Track"] = "Track";
+    MixedContentResourceType2["Video"] = "Video";
+    MixedContentResourceType2["Worker"] = "Worker";
+    MixedContentResourceType2["XMLHttpRequest"] = "XMLHttpRequest";
+    MixedContentResourceType2["XSLT"] = "XSLT";
+  })(MixedContentResourceType = Audits2.MixedContentResourceType || (Audits2.MixedContentResourceType = {}));
+  let BlockedByResponseReason;
+  ((BlockedByResponseReason2) => {
+    BlockedByResponseReason2["CoepFrameResourceNeedsCoepHeader"] = "CoepFrameResourceNeedsCoepHeader";
+    BlockedByResponseReason2["CoopSandboxedIFrameCannotNavigateToCoopPage"] = "CoopSandboxedIFrameCannotNavigateToCoopPage";
+    BlockedByResponseReason2["CorpNotSameOrigin"] = "CorpNotSameOrigin";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoep"] = "CorpNotSameOriginAfterDefaultedToSameOriginByCoep";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByDip"] = "CorpNotSameOriginAfterDefaultedToSameOriginByDip";
+    BlockedByResponseReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"] = "CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip";
+    BlockedByResponseReason2["CorpNotSameSite"] = "CorpNotSameSite";
+    BlockedByResponseReason2["SRIMessageSignatureMismatch"] = "SRIMessageSignatureMismatch";
+  })(BlockedByResponseReason = Audits2.BlockedByResponseReason || (Audits2.BlockedByResponseReason = {}));
+  let HeavyAdResolutionStatus;
+  ((HeavyAdResolutionStatus2) => {
+    HeavyAdResolutionStatus2["HeavyAdBlocked"] = "HeavyAdBlocked";
+    HeavyAdResolutionStatus2["HeavyAdWarning"] = "HeavyAdWarning";
+  })(HeavyAdResolutionStatus = Audits2.HeavyAdResolutionStatus || (Audits2.HeavyAdResolutionStatus = {}));
+  let HeavyAdReason;
+  ((HeavyAdReason2) => {
+    HeavyAdReason2["NetworkTotalLimit"] = "NetworkTotalLimit";
+    HeavyAdReason2["CpuTotalLimit"] = "CpuTotalLimit";
+    HeavyAdReason2["CpuPeakLimit"] = "CpuPeakLimit";
+  })(HeavyAdReason = Audits2.HeavyAdReason || (Audits2.HeavyAdReason = {}));
+  let ContentSecurityPolicyViolationType;
+  ((ContentSecurityPolicyViolationType2) => {
+    ContentSecurityPolicyViolationType2["KInlineViolation"] = "kInlineViolation";
+    ContentSecurityPolicyViolationType2["KEvalViolation"] = "kEvalViolation";
+    ContentSecurityPolicyViolationType2["KURLViolation"] = "kURLViolation";
+    ContentSecurityPolicyViolationType2["KSRIViolation"] = "kSRIViolation";
+    ContentSecurityPolicyViolationType2["KTrustedTypesSinkViolation"] = "kTrustedTypesSinkViolation";
+    ContentSecurityPolicyViolationType2["KTrustedTypesPolicyViolation"] = "kTrustedTypesPolicyViolation";
+    ContentSecurityPolicyViolationType2["KWasmEvalViolation"] = "kWasmEvalViolation";
+  })(ContentSecurityPolicyViolationType = Audits2.ContentSecurityPolicyViolationType || (Audits2.ContentSecurityPolicyViolationType = {}));
+  let SharedArrayBufferIssueType;
+  ((SharedArrayBufferIssueType2) => {
+    SharedArrayBufferIssueType2["TransferIssue"] = "TransferIssue";
+    SharedArrayBufferIssueType2["CreationIssue"] = "CreationIssue";
+  })(SharedArrayBufferIssueType = Audits2.SharedArrayBufferIssueType || (Audits2.SharedArrayBufferIssueType = {}));
+  let SharedDictionaryError;
+  ((SharedDictionaryError2) => {
+    SharedDictionaryError2["UseErrorCrossOriginNoCorsRequest"] = "UseErrorCrossOriginNoCorsRequest";
+    SharedDictionaryError2["UseErrorDictionaryLoadFailure"] = "UseErrorDictionaryLoadFailure";
+    SharedDictionaryError2["UseErrorMatchingDictionaryNotUsed"] = "UseErrorMatchingDictionaryNotUsed";
+    SharedDictionaryError2["UseErrorUnexpectedContentDictionaryHeader"] = "UseErrorUnexpectedContentDictionaryHeader";
+    SharedDictionaryError2["WriteErrorCossOriginNoCorsRequest"] = "WriteErrorCossOriginNoCorsRequest";
+    SharedDictionaryError2["WriteErrorDisallowedBySettings"] = "WriteErrorDisallowedBySettings";
+    SharedDictionaryError2["WriteErrorExpiredResponse"] = "WriteErrorExpiredResponse";
+    SharedDictionaryError2["WriteErrorFeatureDisabled"] = "WriteErrorFeatureDisabled";
+    SharedDictionaryError2["WriteErrorInsufficientResources"] = "WriteErrorInsufficientResources";
+    SharedDictionaryError2["WriteErrorInvalidMatchField"] = "WriteErrorInvalidMatchField";
+    SharedDictionaryError2["WriteErrorInvalidStructuredHeader"] = "WriteErrorInvalidStructuredHeader";
+    SharedDictionaryError2["WriteErrorInvalidTTLField"] = "WriteErrorInvalidTTLField";
+    SharedDictionaryError2["WriteErrorNavigationRequest"] = "WriteErrorNavigationRequest";
+    SharedDictionaryError2["WriteErrorNoMatchField"] = "WriteErrorNoMatchField";
+    SharedDictionaryError2["WriteErrorNonIntegerTTLField"] = "WriteErrorNonIntegerTTLField";
+    SharedDictionaryError2["WriteErrorNonListMatchDestField"] = "WriteErrorNonListMatchDestField";
+    SharedDictionaryError2["WriteErrorNonSecureContext"] = "WriteErrorNonSecureContext";
+    SharedDictionaryError2["WriteErrorNonStringIdField"] = "WriteErrorNonStringIdField";
+    SharedDictionaryError2["WriteErrorNonStringInMatchDestList"] = "WriteErrorNonStringInMatchDestList";
+    SharedDictionaryError2["WriteErrorInvalidMatchDestList"] = "WriteErrorInvalidMatchDestList";
+    SharedDictionaryError2["WriteErrorNonStringMatchField"] = "WriteErrorNonStringMatchField";
+    SharedDictionaryError2["WriteErrorNonTokenTypeField"] = "WriteErrorNonTokenTypeField";
+    SharedDictionaryError2["WriteErrorRequestAborted"] = "WriteErrorRequestAborted";
+    SharedDictionaryError2["WriteErrorShuttingDown"] = "WriteErrorShuttingDown";
+    SharedDictionaryError2["WriteErrorTooLongIdField"] = "WriteErrorTooLongIdField";
+    SharedDictionaryError2["WriteErrorUnsupportedType"] = "WriteErrorUnsupportedType";
+  })(SharedDictionaryError = Audits2.SharedDictionaryError || (Audits2.SharedDictionaryError = {}));
+  let SRIMessageSignatureError;
+  ((SRIMessageSignatureError2) => {
+    SRIMessageSignatureError2["MissingSignatureHeader"] = "MissingSignatureHeader";
+    SRIMessageSignatureError2["MissingSignatureInputHeader"] = "MissingSignatureInputHeader";
+    SRIMessageSignatureError2["InvalidSignatureHeader"] = "InvalidSignatureHeader";
+    SRIMessageSignatureError2["InvalidSignatureInputHeader"] = "InvalidSignatureInputHeader";
+    SRIMessageSignatureError2["SignatureHeaderValueIsNotByteSequence"] = "SignatureHeaderValueIsNotByteSequence";
+    SRIMessageSignatureError2["SignatureHeaderValueIsParameterized"] = "SignatureHeaderValueIsParameterized";
+    SRIMessageSignatureError2["SignatureHeaderValueIsIncorrectLength"] = "SignatureHeaderValueIsIncorrectLength";
+    SRIMessageSignatureError2["SignatureInputHeaderMissingLabel"] = "SignatureInputHeaderMissingLabel";
+    SRIMessageSignatureError2["SignatureInputHeaderValueNotInnerList"] = "SignatureInputHeaderValueNotInnerList";
+    SRIMessageSignatureError2["SignatureInputHeaderValueMissingComponents"] = "SignatureInputHeaderValueMissingComponents";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidComponentType"] = "SignatureInputHeaderInvalidComponentType";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidComponentName"] = "SignatureInputHeaderInvalidComponentName";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidHeaderComponentParameter"] = "SignatureInputHeaderInvalidHeaderComponentParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidDerivedComponentParameter"] = "SignatureInputHeaderInvalidDerivedComponentParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderKeyIdLength"] = "SignatureInputHeaderKeyIdLength";
+    SRIMessageSignatureError2["SignatureInputHeaderInvalidParameter"] = "SignatureInputHeaderInvalidParameter";
+    SRIMessageSignatureError2["SignatureInputHeaderMissingRequiredParameters"] = "SignatureInputHeaderMissingRequiredParameters";
+    SRIMessageSignatureError2["ValidationFailedSignatureExpired"] = "ValidationFailedSignatureExpired";
+    SRIMessageSignatureError2["ValidationFailedInvalidLength"] = "ValidationFailedInvalidLength";
+    SRIMessageSignatureError2["ValidationFailedSignatureMismatch"] = "ValidationFailedSignatureMismatch";
+    SRIMessageSignatureError2["ValidationFailedIntegrityMismatch"] = "ValidationFailedIntegrityMismatch";
+    SRIMessageSignatureError2["SignatureBaseUnknownDerivedComponent"] = "SignatureBaseUnknownDerivedComponent";
+    SRIMessageSignatureError2["SignatureBaseMissingHeader"] = "SignatureBaseMissingHeader";
+    SRIMessageSignatureError2["SignatureBaseInvalidUnencodedDigest"] = "SignatureBaseInvalidUnencodedDigest";
+    SRIMessageSignatureError2["SignatureBaseUnsupportedComponent"] = "SignatureBaseUnsupportedComponent";
+  })(SRIMessageSignatureError = Audits2.SRIMessageSignatureError || (Audits2.SRIMessageSignatureError = {}));
+  let UnencodedDigestError;
+  ((UnencodedDigestError2) => {
+    UnencodedDigestError2["MalformedDictionary"] = "MalformedDictionary";
+    UnencodedDigestError2["UnknownAlgorithm"] = "UnknownAlgorithm";
+    UnencodedDigestError2["IncorrectDigestType"] = "IncorrectDigestType";
+    UnencodedDigestError2["IncorrectDigestLength"] = "IncorrectDigestLength";
+  })(UnencodedDigestError = Audits2.UnencodedDigestError || (Audits2.UnencodedDigestError = {}));
+  let ConnectionAllowlistError;
+  ((ConnectionAllowlistError2) => {
+    ConnectionAllowlistError2["InvalidHeader"] = "InvalidHeader";
+    ConnectionAllowlistError2["MoreThanOneList"] = "MoreThanOneList";
+    ConnectionAllowlistError2["ItemNotInnerList"] = "ItemNotInnerList";
+    ConnectionAllowlistError2["InvalidAllowlistItemType"] = "InvalidAllowlistItemType";
+    ConnectionAllowlistError2["ReportingEndpointNotToken"] = "ReportingEndpointNotToken";
+    ConnectionAllowlistError2["InvalidUrlPattern"] = "InvalidUrlPattern";
+    ConnectionAllowlistError2["IFrameAttributeLoosensEmbeddingRequirement"] = "IFrameAttributeLoosensEmbeddingRequirement";
+    ConnectionAllowlistError2["InvalidAllowConnectionAllowlistFrom"] = "InvalidAllowConnectionAllowlistFrom";
+    ConnectionAllowlistError2["EmbeddingRequirementNotSatisfied"] = "EmbeddingRequirementNotSatisfied";
+  })(ConnectionAllowlistError = Audits2.ConnectionAllowlistError || (Audits2.ConnectionAllowlistError = {}));
+  let GenericIssueErrorType;
+  ((GenericIssueErrorType2) => {
+    GenericIssueErrorType2["FormLabelForNameError"] = "FormLabelForNameError";
+    GenericIssueErrorType2["FormDuplicateIdForInputError"] = "FormDuplicateIdForInputError";
+    GenericIssueErrorType2["FormInputWithNoLabelError"] = "FormInputWithNoLabelError";
+    GenericIssueErrorType2["FormAutocompleteAttributeEmptyError"] = "FormAutocompleteAttributeEmptyError";
+    GenericIssueErrorType2["FormEmptyIdAndNameAttributesForInputError"] = "FormEmptyIdAndNameAttributesForInputError";
+    GenericIssueErrorType2["FormAriaLabelledByToNonExistingIdError"] = "FormAriaLabelledByToNonExistingIdError";
+    GenericIssueErrorType2["FormInputAssignedAutocompleteValueToIdOrNameAttributeError"] = "FormInputAssignedAutocompleteValueToIdOrNameAttributeError";
+    GenericIssueErrorType2["FormLabelHasNeitherForNorNestedInputError"] = "FormLabelHasNeitherForNorNestedInputError";
+    GenericIssueErrorType2["FormLabelForMatchesNonExistingIdError"] = "FormLabelForMatchesNonExistingIdError";
+    GenericIssueErrorType2["FormInputHasWrongButWellIntendedAutocompleteValueError"] = "FormInputHasWrongButWellIntendedAutocompleteValueError";
+    GenericIssueErrorType2["ResponseWasBlockedByORB"] = "ResponseWasBlockedByORB";
+    GenericIssueErrorType2["NavigationEntryMarkedSkippable"] = "NavigationEntryMarkedSkippable";
+    GenericIssueErrorType2["BackUINavigationWouldSkipAd"] = "BackUINavigationWouldSkipAd";
+    GenericIssueErrorType2["AutofillAndManualTextPolicyControlledFeaturesInfo"] = "AutofillAndManualTextPolicyControlledFeaturesInfo";
+    GenericIssueErrorType2["AutofillPolicyControlledFeatureInfo"] = "AutofillPolicyControlledFeatureInfo";
+    GenericIssueErrorType2["ManualTextPolicyControlledFeatureInfo"] = "ManualTextPolicyControlledFeatureInfo";
+    GenericIssueErrorType2["FormModelContextParameterMissingTitleAndDescription"] = "FormModelContextParameterMissingTitleAndDescription";
+    GenericIssueErrorType2["FormModelContextMissingToolName"] = "FormModelContextMissingToolName";
+    GenericIssueErrorType2["FormModelContextMissingToolDescription"] = "FormModelContextMissingToolDescription";
+    GenericIssueErrorType2["FormModelContextRequiredParameterMissingName"] = "FormModelContextRequiredParameterMissingName";
+    GenericIssueErrorType2["FormModelContextParameterMissingName"] = "FormModelContextParameterMissingName";
+  })(GenericIssueErrorType = Audits2.GenericIssueErrorType || (Audits2.GenericIssueErrorType = {}));
+  let ClientHintIssueReason;
+  ((ClientHintIssueReason2) => {
+    ClientHintIssueReason2["MetaTagAllowListInvalidOrigin"] = "MetaTagAllowListInvalidOrigin";
+    ClientHintIssueReason2["MetaTagModifiedHTML"] = "MetaTagModifiedHTML";
+  })(ClientHintIssueReason = Audits2.ClientHintIssueReason || (Audits2.ClientHintIssueReason = {}));
+  let FederatedAuthRequestIssueReason;
+  ((FederatedAuthRequestIssueReason2) => {
+    FederatedAuthRequestIssueReason2["ShouldEmbargo"] = "ShouldEmbargo";
+    FederatedAuthRequestIssueReason2["TooManyRequests"] = "TooManyRequests";
+    FederatedAuthRequestIssueReason2["WellKnownHttpNotFound"] = "WellKnownHttpNotFound";
+    FederatedAuthRequestIssueReason2["WellKnownNoResponse"] = "WellKnownNoResponse";
+    FederatedAuthRequestIssueReason2["WellKnownBlockedByConnectionAllowlist"] = "WellKnownBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["WellKnownInvalidResponse"] = "WellKnownInvalidResponse";
+    FederatedAuthRequestIssueReason2["WellKnownListEmpty"] = "WellKnownListEmpty";
+    FederatedAuthRequestIssueReason2["WellKnownInvalidContentType"] = "WellKnownInvalidContentType";
+    FederatedAuthRequestIssueReason2["ConfigNotInWellKnown"] = "ConfigNotInWellKnown";
+    FederatedAuthRequestIssueReason2["WellKnownTooBig"] = "WellKnownTooBig";
+    FederatedAuthRequestIssueReason2["ConfigHttpNotFound"] = "ConfigHttpNotFound";
+    FederatedAuthRequestIssueReason2["ConfigNoResponse"] = "ConfigNoResponse";
+    FederatedAuthRequestIssueReason2["ConfigBlockedByConnectionAllowlist"] = "ConfigBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["ConfigInvalidResponse"] = "ConfigInvalidResponse";
+    FederatedAuthRequestIssueReason2["ConfigInvalidContentType"] = "ConfigInvalidContentType";
+    FederatedAuthRequestIssueReason2["IdpNotPotentiallyTrustworthy"] = "IdpNotPotentiallyTrustworthy";
+    FederatedAuthRequestIssueReason2["DisabledInSettings"] = "DisabledInSettings";
+    FederatedAuthRequestIssueReason2["DisabledInFlags"] = "DisabledInFlags";
+    FederatedAuthRequestIssueReason2["ErrorFetchingSignin"] = "ErrorFetchingSignin";
+    FederatedAuthRequestIssueReason2["InvalidSigninResponse"] = "InvalidSigninResponse";
+    FederatedAuthRequestIssueReason2["AccountsHttpNotFound"] = "AccountsHttpNotFound";
+    FederatedAuthRequestIssueReason2["AccountsNoResponse"] = "AccountsNoResponse";
+    FederatedAuthRequestIssueReason2["AccountsBlockedByConnectionAllowlist"] = "AccountsBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["AccountsInvalidResponse"] = "AccountsInvalidResponse";
+    FederatedAuthRequestIssueReason2["AccountsListEmpty"] = "AccountsListEmpty";
+    FederatedAuthRequestIssueReason2["AccountsInvalidContentType"] = "AccountsInvalidContentType";
+    FederatedAuthRequestIssueReason2["IdTokenHttpNotFound"] = "IdTokenHttpNotFound";
+    FederatedAuthRequestIssueReason2["IdTokenNoResponse"] = "IdTokenNoResponse";
+    FederatedAuthRequestIssueReason2["IdTokenBlockedByConnectionAllowlist"] = "IdTokenBlockedByConnectionAllowlist";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidResponse"] = "IdTokenInvalidResponse";
+    FederatedAuthRequestIssueReason2["IdTokenIdpErrorResponse"] = "IdTokenIdpErrorResponse";
+    FederatedAuthRequestIssueReason2["IdTokenCrossSiteIdpErrorResponse"] = "IdTokenCrossSiteIdpErrorResponse";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidRequest"] = "IdTokenInvalidRequest";
+    FederatedAuthRequestIssueReason2["IdTokenInvalidContentType"] = "IdTokenInvalidContentType";
+    FederatedAuthRequestIssueReason2["ErrorIdToken"] = "ErrorIdToken";
+    FederatedAuthRequestIssueReason2["Canceled"] = "Canceled";
+    FederatedAuthRequestIssueReason2["RpPageNotVisible"] = "RpPageNotVisible";
+    FederatedAuthRequestIssueReason2["SilentMediationFailure"] = "SilentMediationFailure";
+    FederatedAuthRequestIssueReason2["NotSignedInWithIdp"] = "NotSignedInWithIdp";
+    FederatedAuthRequestIssueReason2["MissingTransientUserActivation"] = "MissingTransientUserActivation";
+    FederatedAuthRequestIssueReason2["ReplacedByActiveMode"] = "ReplacedByActiveMode";
+    FederatedAuthRequestIssueReason2["RelyingPartyOriginIsOpaque"] = "RelyingPartyOriginIsOpaque";
+    FederatedAuthRequestIssueReason2["TypeNotMatching"] = "TypeNotMatching";
+    FederatedAuthRequestIssueReason2["UiDismissedNoEmbargo"] = "UiDismissedNoEmbargo";
+    FederatedAuthRequestIssueReason2["CorsError"] = "CorsError";
+    FederatedAuthRequestIssueReason2["SuppressedBySegmentationPlatform"] = "SuppressedBySegmentationPlatform";
+  })(FederatedAuthRequestIssueReason = Audits2.FederatedAuthRequestIssueReason || (Audits2.FederatedAuthRequestIssueReason = {}));
+  let FederatedAuthUserInfoRequestIssueReason;
+  ((FederatedAuthUserInfoRequestIssueReason2) => {
+    FederatedAuthUserInfoRequestIssueReason2["NotSameOrigin"] = "NotSameOrigin";
+    FederatedAuthUserInfoRequestIssueReason2["NotIframe"] = "NotIframe";
+    FederatedAuthUserInfoRequestIssueReason2["NotPotentiallyTrustworthy"] = "NotPotentiallyTrustworthy";
+    FederatedAuthUserInfoRequestIssueReason2["NoAPIPermission"] = "NoApiPermission";
+    FederatedAuthUserInfoRequestIssueReason2["NotSignedInWithIdp"] = "NotSignedInWithIdp";
+    FederatedAuthUserInfoRequestIssueReason2["NoAccountSharingPermission"] = "NoAccountSharingPermission";
+    FederatedAuthUserInfoRequestIssueReason2["InvalidConfigOrWellKnown"] = "InvalidConfigOrWellKnown";
+    FederatedAuthUserInfoRequestIssueReason2["InvalidAccountsResponse"] = "InvalidAccountsResponse";
+    FederatedAuthUserInfoRequestIssueReason2["NoReturningUserFromFetchedAccounts"] = "NoReturningUserFromFetchedAccounts";
+  })(FederatedAuthUserInfoRequestIssueReason = Audits2.FederatedAuthUserInfoRequestIssueReason || (Audits2.FederatedAuthUserInfoRequestIssueReason = {}));
+  let EmailVerificationRequestIssueReason;
+  ((EmailVerificationRequestIssueReason2) => {
+    EmailVerificationRequestIssueReason2["InvalidEmail"] = "InvalidEmail";
+    EmailVerificationRequestIssueReason2["DnsFetchFailed"] = "DnsFetchFailed";
+    EmailVerificationRequestIssueReason2["DnsInvalidRecord"] = "DnsInvalidRecord";
+    EmailVerificationRequestIssueReason2["WellKnownHttpNotFound"] = "WellKnownHttpNotFound";
+    EmailVerificationRequestIssueReason2["WellKnownNoResponse"] = "WellKnownNoResponse";
+    EmailVerificationRequestIssueReason2["WellKnownInvalidResponse"] = "WellKnownInvalidResponse";
+    EmailVerificationRequestIssueReason2["WellKnownListEmpty"] = "WellKnownListEmpty";
+    EmailVerificationRequestIssueReason2["WellKnownInvalidContentType"] = "WellKnownInvalidContentType";
+    EmailVerificationRequestIssueReason2["WellKnownMissingIssuanceEndpoint"] = "WellKnownMissingIssuanceEndpoint";
+    EmailVerificationRequestIssueReason2["WellKnownIssuanceEndpointCrossOrigin"] = "WellKnownIssuanceEndpointCrossOrigin";
+    EmailVerificationRequestIssueReason2["WellKnownUnsupportedSigningAlgorithm"] = "WellKnownUnsupportedSigningAlgorithm";
+    EmailVerificationRequestIssueReason2["TokenHttpNotFound"] = "TokenHttpNotFound";
+    EmailVerificationRequestIssueReason2["TokenNoResponse"] = "TokenNoResponse";
+    EmailVerificationRequestIssueReason2["TokenInvalidResponse"] = "TokenInvalidResponse";
+    EmailVerificationRequestIssueReason2["TokenInvalidContentType"] = "TokenInvalidContentType";
+    EmailVerificationRequestIssueReason2["TokenMalformedSdJwt"] = "TokenMalformedSdJwt";
+    EmailVerificationRequestIssueReason2["TokenInvalidSdJwt"] = "TokenInvalidSdJwt";
+    EmailVerificationRequestIssueReason2["KeyBindingSigningFailed"] = "KeyBindingSigningFailed";
+    EmailVerificationRequestIssueReason2["RpOriginIsOpaque"] = "RpOriginIsOpaque";
+    EmailVerificationRequestIssueReason2["WellKnownMissingAccountsEndpoint"] = "WellKnownMissingAccountsEndpoint";
+    EmailVerificationRequestIssueReason2["UserLoggedOut"] = "UserLoggedOut";
+    EmailVerificationRequestIssueReason2["WellKnownAccountsEndpointCrossOrigin"] = "WellKnownAccountsEndpointCrossOrigin";
+    EmailVerificationRequestIssueReason2["AccountsHttpNotFound"] = "AccountsHttpNotFound";
+    EmailVerificationRequestIssueReason2["AccountsNoResponse"] = "AccountsNoResponse";
+    EmailVerificationRequestIssueReason2["AccountsInvalidResponse"] = "AccountsInvalidResponse";
+    EmailVerificationRequestIssueReason2["AccountsInvalidContentType"] = "AccountsInvalidContentType";
+    EmailVerificationRequestIssueReason2["AccountsEmptyList"] = "AccountsEmptyList";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownHttpNotFound"] = "EmailVerificationWellKnownHttpNotFound";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownNoResponse"] = "EmailVerificationWellKnownNoResponse";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownInvalidResponse"] = "EmailVerificationWellKnownInvalidResponse";
+    EmailVerificationRequestIssueReason2["EmailVerificationWellKnownInvalidContentType"] = "EmailVerificationWellKnownInvalidContentType";
+    EmailVerificationRequestIssueReason2["JwksHttpNotFound"] = "JwksHttpNotFound";
+    EmailVerificationRequestIssueReason2["JwksInvalidResponse"] = "JwksInvalidResponse";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtUnsupportedHeaderAlg"] = "TokenVerificationSdJwtUnsupportedHeaderAlg";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidTyp"] = "TokenVerificationSdJwtInvalidTyp";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingIss"] = "TokenVerificationSdJwtMissingIss";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingIat"] = "TokenVerificationSdJwtMissingIat";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingCnf"] = "TokenVerificationSdJwtMissingCnf";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtMissingEmail"] = "TokenVerificationSdJwtMissingEmail";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidIssuedAt"] = "TokenVerificationSdJwtInvalidIssuedAt";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidIssuer"] = "TokenVerificationSdJwtInvalidIssuer";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtJwksMissingKeys"] = "TokenVerificationSdJwtJwksMissingKeys";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtSignatureFailed"] = "TokenVerificationSdJwtSignatureFailed";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidEmailVerified"] = "TokenVerificationSdJwtInvalidEmailVerified";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidEmail"] = "TokenVerificationSdJwtInvalidEmail";
+    EmailVerificationRequestIssueReason2["TokenVerificationSdJwtInvalidHolderKey"] = "TokenVerificationSdJwtInvalidHolderKey";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidTyp"] = "TokenVerificationKbInvalidTyp";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingAud"] = "TokenVerificationKbMissingAud";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingNonce"] = "TokenVerificationKbMissingNonce";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingIat"] = "TokenVerificationKbMissingIat";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingSdHash"] = "TokenVerificationKbMissingSdHash";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidIssuedAt"] = "TokenVerificationKbInvalidIssuedAt";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidAudience"] = "TokenVerificationKbInvalidAudience";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidNonce"] = "TokenVerificationKbInvalidNonce";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidSdHash"] = "TokenVerificationKbInvalidSdHash";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbMissingCnf"] = "TokenVerificationKbMissingCnf";
+    EmailVerificationRequestIssueReason2["TokenVerificationKbSignatureFailed"] = "TokenVerificationKbSignatureFailed";
+  })(EmailVerificationRequestIssueReason = Audits2.EmailVerificationRequestIssueReason || (Audits2.EmailVerificationRequestIssueReason = {}));
+  let PartitioningBlobURLInfo;
+  ((PartitioningBlobURLInfo2) => {
+    PartitioningBlobURLInfo2["BlockedCrossPartitionFetching"] = "BlockedCrossPartitionFetching";
+    PartitioningBlobURLInfo2["EnforceNoopenerForNavigation"] = "EnforceNoopenerForNavigation";
+  })(PartitioningBlobURLInfo = Audits2.PartitioningBlobURLInfo || (Audits2.PartitioningBlobURLInfo = {}));
+  let ElementAccessibilityIssueReason;
+  ((ElementAccessibilityIssueReason2) => {
+    ElementAccessibilityIssueReason2["DisallowedSelectChild"] = "DisallowedSelectChild";
+    ElementAccessibilityIssueReason2["DisallowedOptGroupChild"] = "DisallowedOptGroupChild";
+    ElementAccessibilityIssueReason2["NonPhrasingContentOptionChild"] = "NonPhrasingContentOptionChild";
+    ElementAccessibilityIssueReason2["InteractiveContentOptionChild"] = "InteractiveContentOptionChild";
+    ElementAccessibilityIssueReason2["InteractiveContentLegendChild"] = "InteractiveContentLegendChild";
+    ElementAccessibilityIssueReason2["InteractiveContentSummaryDescendant"] = "InteractiveContentSummaryDescendant";
+  })(ElementAccessibilityIssueReason = Audits2.ElementAccessibilityIssueReason || (Audits2.ElementAccessibilityIssueReason = {}));
+  let StyleSheetLoadingIssueReason;
+  ((StyleSheetLoadingIssueReason2) => {
+    StyleSheetLoadingIssueReason2["LateImportRule"] = "LateImportRule";
+    StyleSheetLoadingIssueReason2["RequestFailed"] = "RequestFailed";
+  })(StyleSheetLoadingIssueReason = Audits2.StyleSheetLoadingIssueReason || (Audits2.StyleSheetLoadingIssueReason = {}));
+  let PropertyRuleIssueReason;
+  ((PropertyRuleIssueReason2) => {
+    PropertyRuleIssueReason2["InvalidSyntax"] = "InvalidSyntax";
+    PropertyRuleIssueReason2["InvalidInitialValue"] = "InvalidInitialValue";
+    PropertyRuleIssueReason2["InvalidInherits"] = "InvalidInherits";
+    PropertyRuleIssueReason2["InvalidName"] = "InvalidName";
+  })(PropertyRuleIssueReason = Audits2.PropertyRuleIssueReason || (Audits2.PropertyRuleIssueReason = {}));
+  let UserReidentificationIssueType;
+  ((UserReidentificationIssueType2) => {
+    UserReidentificationIssueType2["BlockedFrameNavigation"] = "BlockedFrameNavigation";
+    UserReidentificationIssueType2["BlockedSubresource"] = "BlockedSubresource";
+    UserReidentificationIssueType2["NoisedCanvasReadback"] = "NoisedCanvasReadback";
+  })(UserReidentificationIssueType = Audits2.UserReidentificationIssueType || (Audits2.UserReidentificationIssueType = {}));
+  let PermissionElementIssueType;
+  ((PermissionElementIssueType2) => {
+    PermissionElementIssueType2["InvalidType"] = "InvalidType";
+    PermissionElementIssueType2["FencedFrameDisallowed"] = "FencedFrameDisallowed";
+    PermissionElementIssueType2["CspFrameAncestorsMissing"] = "CspFrameAncestorsMissing";
+    PermissionElementIssueType2["PermissionsPolicyBlocked"] = "PermissionsPolicyBlocked";
+    PermissionElementIssueType2["PaddingRightUnsupported"] = "PaddingRightUnsupported";
+    PermissionElementIssueType2["PaddingBottomUnsupported"] = "PaddingBottomUnsupported";
+    PermissionElementIssueType2["InsetBoxShadowUnsupported"] = "InsetBoxShadowUnsupported";
+    PermissionElementIssueType2["RequestInProgress"] = "RequestInProgress";
+    PermissionElementIssueType2["UntrustedEvent"] = "UntrustedEvent";
+    PermissionElementIssueType2["RegistrationFailed"] = "RegistrationFailed";
+    PermissionElementIssueType2["TypeNotSupported"] = "TypeNotSupported";
+    PermissionElementIssueType2["InvalidTypeActivation"] = "InvalidTypeActivation";
+    PermissionElementIssueType2["SecurityChecksFailed"] = "SecurityChecksFailed";
+    PermissionElementIssueType2["ActivationDisabled"] = "ActivationDisabled";
+    PermissionElementIssueType2["GeolocationDeprecated"] = "GeolocationDeprecated";
+    PermissionElementIssueType2["InvalidDisplayStyle"] = "InvalidDisplayStyle";
+    PermissionElementIssueType2["NonOpaqueColor"] = "NonOpaqueColor";
+    PermissionElementIssueType2["LowContrast"] = "LowContrast";
+    PermissionElementIssueType2["FontSizeTooSmall"] = "FontSizeTooSmall";
+    PermissionElementIssueType2["FontSizeTooLarge"] = "FontSizeTooLarge";
+    PermissionElementIssueType2["InvalidSizeValue"] = "InvalidSizeValue";
+    PermissionElementIssueType2["NonSecureContext"] = "NonSecureContext";
+    PermissionElementIssueType2["MissingTransientUserActivation"] = "MissingTransientUserActivation";
+  })(PermissionElementIssueType = Audits2.PermissionElementIssueType || (Audits2.PermissionElementIssueType = {}));
+  let InspectorIssueCode;
+  ((InspectorIssueCode2) => {
+    InspectorIssueCode2["CookieIssue"] = "CookieIssue";
+    InspectorIssueCode2["MixedContentIssue"] = "MixedContentIssue";
+    InspectorIssueCode2["BlockedByResponseIssue"] = "BlockedByResponseIssue";
+    InspectorIssueCode2["HeavyAdIssue"] = "HeavyAdIssue";
+    InspectorIssueCode2["ContentSecurityPolicyIssue"] = "ContentSecurityPolicyIssue";
+    InspectorIssueCode2["SharedArrayBufferIssue"] = "SharedArrayBufferIssue";
+    InspectorIssueCode2["CorsIssue"] = "CorsIssue";
+    InspectorIssueCode2["QuirksModeIssue"] = "QuirksModeIssue";
+    InspectorIssueCode2["PartitioningBlobURLIssue"] = "PartitioningBlobURLIssue";
+    InspectorIssueCode2["NavigatorUserAgentIssue"] = "NavigatorUserAgentIssue";
+    InspectorIssueCode2["GenericIssue"] = "GenericIssue";
+    InspectorIssueCode2["DeprecationIssue"] = "DeprecationIssue";
+    InspectorIssueCode2["ClientHintIssue"] = "ClientHintIssue";
+    InspectorIssueCode2["FederatedAuthRequestIssue"] = "FederatedAuthRequestIssue";
+    InspectorIssueCode2["BounceTrackingIssue"] = "BounceTrackingIssue";
+    InspectorIssueCode2["CookieDeprecationMetadataIssue"] = "CookieDeprecationMetadataIssue";
+    InspectorIssueCode2["StylesheetLoadingIssue"] = "StylesheetLoadingIssue";
+    InspectorIssueCode2["FederatedAuthUserInfoRequestIssue"] = "FederatedAuthUserInfoRequestIssue";
+    InspectorIssueCode2["PropertyRuleIssue"] = "PropertyRuleIssue";
+    InspectorIssueCode2["SharedDictionaryIssue"] = "SharedDictionaryIssue";
+    InspectorIssueCode2["ElementAccessibilityIssue"] = "ElementAccessibilityIssue";
+    InspectorIssueCode2["SRIMessageSignatureIssue"] = "SRIMessageSignatureIssue";
+    InspectorIssueCode2["UnencodedDigestIssue"] = "UnencodedDigestIssue";
+    InspectorIssueCode2["ConnectionAllowlistIssue"] = "ConnectionAllowlistIssue";
+    InspectorIssueCode2["UserReidentificationIssue"] = "UserReidentificationIssue";
+    InspectorIssueCode2["PermissionElementIssue"] = "PermissionElementIssue";
+    InspectorIssueCode2["PerformanceIssue"] = "PerformanceIssue";
+    InspectorIssueCode2["SelectivePermissionsInterventionIssue"] = "SelectivePermissionsInterventionIssue";
+    InspectorIssueCode2["EmailVerificationRequestIssue"] = "EmailVerificationRequestIssue";
+    InspectorIssueCode2["LazyLoadImageIssue"] = "LazyLoadImageIssue";
+  })(InspectorIssueCode = Audits2.InspectorIssueCode || (Audits2.InspectorIssueCode = {}));
+  let GetEncodedResponseRequestEncoding;
+  ((GetEncodedResponseRequestEncoding2) => {
+    GetEncodedResponseRequestEncoding2["Webp"] = "webp";
+    GetEncodedResponseRequestEncoding2["Jpeg"] = "jpeg";
+    GetEncodedResponseRequestEncoding2["Png"] = "png";
+  })(GetEncodedResponseRequestEncoding = Audits2.GetEncodedResponseRequestEncoding || (Audits2.GetEncodedResponseRequestEncoding = {}));
+})(Audits || (Audits = {}));
+var Autofill;
+((Autofill2) => {
+  let FillingStrategy;
+  ((FillingStrategy2) => {
+    FillingStrategy2["AutocompleteAttribute"] = "autocompleteAttribute";
+    FillingStrategy2["AutofillInferred"] = "autofillInferred";
+  })(FillingStrategy = Autofill2.FillingStrategy || (Autofill2.FillingStrategy = {}));
+})(Autofill || (Autofill = {}));
+var BackgroundService;
+((BackgroundService2) => {
+  let ServiceName;
+  ((ServiceName2) => {
+    ServiceName2["BackgroundFetch"] = "backgroundFetch";
+    ServiceName2["BackgroundSync"] = "backgroundSync";
+    ServiceName2["PushMessaging"] = "pushMessaging";
+    ServiceName2["Notifications"] = "notifications";
+    ServiceName2["PaymentHandler"] = "paymentHandler";
+    ServiceName2["PeriodicBackgroundSync"] = "periodicBackgroundSync";
+  })(ServiceName = BackgroundService2.ServiceName || (BackgroundService2.ServiceName = {}));
+})(BackgroundService || (BackgroundService = {}));
+var BluetoothEmulation;
+((BluetoothEmulation2) => {
+  let CentralState;
+  ((CentralState2) => {
+    CentralState2["Absent"] = "absent";
+    CentralState2["PoweredOff"] = "powered-off";
+    CentralState2["PoweredOn"] = "powered-on";
+  })(CentralState = BluetoothEmulation2.CentralState || (BluetoothEmulation2.CentralState = {}));
+  let GATTOperationType;
+  ((GATTOperationType2) => {
+    GATTOperationType2["Connection"] = "connection";
+    GATTOperationType2["Discovery"] = "discovery";
+  })(GATTOperationType = BluetoothEmulation2.GATTOperationType || (BluetoothEmulation2.GATTOperationType = {}));
+  let CharacteristicWriteType;
+  ((CharacteristicWriteType2) => {
+    CharacteristicWriteType2["WriteDefaultDeprecated"] = "write-default-deprecated";
+    CharacteristicWriteType2["WriteWithResponse"] = "write-with-response";
+    CharacteristicWriteType2["WriteWithoutResponse"] = "write-without-response";
+  })(CharacteristicWriteType = BluetoothEmulation2.CharacteristicWriteType || (BluetoothEmulation2.CharacteristicWriteType = {}));
+  let CharacteristicOperationType;
+  ((CharacteristicOperationType2) => {
+    CharacteristicOperationType2["Read"] = "read";
+    CharacteristicOperationType2["Write"] = "write";
+    CharacteristicOperationType2["SubscribeToNotifications"] = "subscribe-to-notifications";
+    CharacteristicOperationType2["UnsubscribeFromNotifications"] = "unsubscribe-from-notifications";
+  })(CharacteristicOperationType = BluetoothEmulation2.CharacteristicOperationType || (BluetoothEmulation2.CharacteristicOperationType = {}));
+  let DescriptorOperationType;
+  ((DescriptorOperationType2) => {
+    DescriptorOperationType2["Read"] = "read";
+    DescriptorOperationType2["Write"] = "write";
+  })(DescriptorOperationType = BluetoothEmulation2.DescriptorOperationType || (BluetoothEmulation2.DescriptorOperationType = {}));
+})(BluetoothEmulation || (BluetoothEmulation = {}));
+var Browser;
+((Browser2) => {
+  let WindowState;
+  ((WindowState2) => {
+    WindowState2["Normal"] = "normal";
+    WindowState2["Minimized"] = "minimized";
+    WindowState2["Maximized"] = "maximized";
+    WindowState2["Fullscreen"] = "fullscreen";
+  })(WindowState = Browser2.WindowState || (Browser2.WindowState = {}));
+  let PermissionType;
+  ((PermissionType2) => {
+    PermissionType2["Ar"] = "ar";
+    PermissionType2["AudioCapture"] = "audioCapture";
+    PermissionType2["AutomaticFullscreen"] = "automaticFullscreen";
+    PermissionType2["BackgroundFetch"] = "backgroundFetch";
+    PermissionType2["BackgroundSync"] = "backgroundSync";
+    PermissionType2["CameraPanTiltZoom"] = "cameraPanTiltZoom";
+    PermissionType2["CapturedSurfaceControl"] = "capturedSurfaceControl";
+    PermissionType2["ClipboardReadWrite"] = "clipboardReadWrite";
+    PermissionType2["ClipboardSanitizedWrite"] = "clipboardSanitizedWrite";
+    PermissionType2["DisplayCapture"] = "displayCapture";
+    PermissionType2["DurableStorage"] = "durableStorage";
+    PermissionType2["Geolocation"] = "geolocation";
+    PermissionType2["HandTracking"] = "handTracking";
+    PermissionType2["IdleDetection"] = "idleDetection";
+    PermissionType2["KeyboardLock"] = "keyboardLock";
+    PermissionType2["LocalFonts"] = "localFonts";
+    PermissionType2["LocalNetwork"] = "localNetwork";
+    PermissionType2["LocalNetworkAccess"] = "localNetworkAccess";
+    PermissionType2["LoopbackNetwork"] = "loopbackNetwork";
+    PermissionType2["Midi"] = "midi";
+    PermissionType2["MidiSysex"] = "midiSysex";
+    PermissionType2["Nfc"] = "nfc";
+    PermissionType2["Notifications"] = "notifications";
+    PermissionType2["PaymentHandler"] = "paymentHandler";
+    PermissionType2["PeriodicBackgroundSync"] = "periodicBackgroundSync";
+    PermissionType2["PointerLock"] = "pointerLock";
+    PermissionType2["ProtectedMediaIdentifier"] = "protectedMediaIdentifier";
+    PermissionType2["Sensors"] = "sensors";
+    PermissionType2["SmartCard"] = "smartCard";
+    PermissionType2["SpeakerSelection"] = "speakerSelection";
+    PermissionType2["StorageAccess"] = "storageAccess";
+    PermissionType2["TopLevelStorageAccess"] = "topLevelStorageAccess";
+    PermissionType2["VideoCapture"] = "videoCapture";
+    PermissionType2["Vr"] = "vr";
+    PermissionType2["WakeLockScreen"] = "wakeLockScreen";
+    PermissionType2["WakeLockSystem"] = "wakeLockSystem";
+    PermissionType2["WebAppInstallation"] = "webAppInstallation";
+    PermissionType2["WebPrinting"] = "webPrinting";
+    PermissionType2["WindowManagement"] = "windowManagement";
+  })(PermissionType = Browser2.PermissionType || (Browser2.PermissionType = {}));
+  let PermissionSetting;
+  ((PermissionSetting2) => {
+    PermissionSetting2["Granted"] = "granted";
+    PermissionSetting2["Denied"] = "denied";
+    PermissionSetting2["Prompt"] = "prompt";
+  })(PermissionSetting = Browser2.PermissionSetting || (Browser2.PermissionSetting = {}));
+  let BrowserCommandId;
+  ((BrowserCommandId2) => {
+    BrowserCommandId2["OpenTabSearch"] = "openTabSearch";
+    BrowserCommandId2["CloseTabSearch"] = "closeTabSearch";
+    BrowserCommandId2["OpenGlic"] = "openGlic";
+  })(BrowserCommandId = Browser2.BrowserCommandId || (Browser2.BrowserCommandId = {}));
+  let SetDownloadBehaviorRequestBehavior;
+  ((SetDownloadBehaviorRequestBehavior2) => {
+    SetDownloadBehaviorRequestBehavior2["Deny"] = "deny";
+    SetDownloadBehaviorRequestBehavior2["Allow"] = "allow";
+    SetDownloadBehaviorRequestBehavior2["AllowAndName"] = "allowAndName";
+    SetDownloadBehaviorRequestBehavior2["Default"] = "default";
+  })(SetDownloadBehaviorRequestBehavior = Browser2.SetDownloadBehaviorRequestBehavior || (Browser2.SetDownloadBehaviorRequestBehavior = {}));
+  let DownloadProgressEventState;
+  ((DownloadProgressEventState2) => {
+    DownloadProgressEventState2["InProgress"] = "inProgress";
+    DownloadProgressEventState2["Completed"] = "completed";
+    DownloadProgressEventState2["Canceled"] = "canceled";
+  })(DownloadProgressEventState = Browser2.DownloadProgressEventState || (Browser2.DownloadProgressEventState = {}));
+})(Browser || (Browser = {}));
+var CSS;
+((CSS2) => {
+  let StyleSheetOrigin;
+  ((StyleSheetOrigin2) => {
+    StyleSheetOrigin2["Injected"] = "injected";
+    StyleSheetOrigin2["UserAgent"] = "user-agent";
+    StyleSheetOrigin2["Inspector"] = "inspector";
+    StyleSheetOrigin2["Regular"] = "regular";
+  })(StyleSheetOrigin = CSS2.StyleSheetOrigin || (CSS2.StyleSheetOrigin = {}));
+  let CSSRuleType;
+  ((CSSRuleType2) => {
+    CSSRuleType2["MediaRule"] = "MediaRule";
+    CSSRuleType2["SupportsRule"] = "SupportsRule";
+    CSSRuleType2["ContainerRule"] = "ContainerRule";
+    CSSRuleType2["LayerRule"] = "LayerRule";
+    CSSRuleType2["ScopeRule"] = "ScopeRule";
+    CSSRuleType2["StyleRule"] = "StyleRule";
+    CSSRuleType2["StartingStyleRule"] = "StartingStyleRule";
+    CSSRuleType2["NavigationRule"] = "NavigationRule";
+  })(CSSRuleType = CSS2.CSSRuleType || (CSS2.CSSRuleType = {}));
+  let CSSMediaSource;
+  ((CSSMediaSource2) => {
+    CSSMediaSource2["MediaRule"] = "mediaRule";
+    CSSMediaSource2["ImportRule"] = "importRule";
+    CSSMediaSource2["LinkedSheet"] = "linkedSheet";
+    CSSMediaSource2["InlineSheet"] = "inlineSheet";
+  })(CSSMediaSource = CSS2.CSSMediaSource || (CSS2.CSSMediaSource = {}));
+  let CSSAtRuleType;
+  ((CSSAtRuleType2) => {
+    CSSAtRuleType2["FontFace"] = "font-face";
+    CSSAtRuleType2["FontFeatureValues"] = "font-feature-values";
+    CSSAtRuleType2["FontPaletteValues"] = "font-palette-values";
+    CSSAtRuleType2["CounterStyle"] = "counter-style";
+  })(CSSAtRuleType = CSS2.CSSAtRuleType || (CSS2.CSSAtRuleType = {}));
+  let CSSAtRuleSubsection;
+  ((CSSAtRuleSubsection2) => {
+    CSSAtRuleSubsection2["Swash"] = "swash";
+    CSSAtRuleSubsection2["Annotation"] = "annotation";
+    CSSAtRuleSubsection2["Ornaments"] = "ornaments";
+    CSSAtRuleSubsection2["Stylistic"] = "stylistic";
+    CSSAtRuleSubsection2["Styleset"] = "styleset";
+    CSSAtRuleSubsection2["CharacterVariant"] = "character-variant";
+  })(CSSAtRuleSubsection = CSS2.CSSAtRuleSubsection || (CSS2.CSSAtRuleSubsection = {}));
+})(CSS || (CSS = {}));
+var CacheStorage;
+((CacheStorage2) => {
+  let CachedResponseType;
+  ((CachedResponseType2) => {
+    CachedResponseType2["Basic"] = "basic";
+    CachedResponseType2["Cors"] = "cors";
+    CachedResponseType2["Default"] = "default";
+    CachedResponseType2["Error"] = "error";
+    CachedResponseType2["OpaqueResponse"] = "opaqueResponse";
+    CachedResponseType2["OpaqueRedirect"] = "opaqueRedirect";
+  })(CachedResponseType = CacheStorage2.CachedResponseType || (CacheStorage2.CachedResponseType = {}));
+})(CacheStorage || (CacheStorage = {}));
+var DOM;
+((DOM2) => {
+  let PseudoType;
+  ((PseudoType2) => {
+    PseudoType2["FirstLine"] = "first-line";
+    PseudoType2["FirstLetter"] = "first-letter";
+    PseudoType2["Checkmark"] = "checkmark";
+    PseudoType2["Before"] = "before";
+    PseudoType2["After"] = "after";
+    PseudoType2["ExpandIcon"] = "expand-icon";
+    PseudoType2["PickerIcon"] = "picker-icon";
+    PseudoType2["InterestButton"] = "interest-button";
+    PseudoType2["Marker"] = "marker";
+    PseudoType2["Backdrop"] = "backdrop";
+    PseudoType2["Column"] = "column";
+    PseudoType2["Selection"] = "selection";
+    PseudoType2["SearchText"] = "search-text";
+    PseudoType2["TargetText"] = "target-text";
+    PseudoType2["SpellingError"] = "spelling-error";
+    PseudoType2["GrammarError"] = "grammar-error";
+    PseudoType2["Highlight"] = "highlight";
+    PseudoType2["FirstLineInherited"] = "first-line-inherited";
+    PseudoType2["ScrollMarker"] = "scroll-marker";
+    PseudoType2["ScrollMarkerGroup"] = "scroll-marker-group";
+    PseudoType2["ScrollButton"] = "scroll-button";
+    PseudoType2["Scrollbar"] = "scrollbar";
+    PseudoType2["ScrollbarThumb"] = "scrollbar-thumb";
+    PseudoType2["ScrollbarButton"] = "scrollbar-button";
+    PseudoType2["ScrollbarTrack"] = "scrollbar-track";
+    PseudoType2["ScrollbarTrackPiece"] = "scrollbar-track-piece";
+    PseudoType2["ScrollbarCorner"] = "scrollbar-corner";
+    PseudoType2["Resizer"] = "resizer";
+    PseudoType2["InputListButton"] = "input-list-button";
+    PseudoType2["ViewTransition"] = "view-transition";
+    PseudoType2["ViewTransitionGroup"] = "view-transition-group";
+    PseudoType2["ViewTransitionImagePair"] = "view-transition-image-pair";
+    PseudoType2["ViewTransitionGroupChildren"] = "view-transition-group-children";
+    PseudoType2["ViewTransitionOld"] = "view-transition-old";
+    PseudoType2["ViewTransitionNew"] = "view-transition-new";
+    PseudoType2["Placeholder"] = "placeholder";
+    PseudoType2["FileSelectorButton"] = "file-selector-button";
+    PseudoType2["DetailsContent"] = "details-content";
+    PseudoType2["Picker"] = "picker";
+    PseudoType2["SelectListbox"] = "select-listbox";
+    PseudoType2["PermissionIcon"] = "permission-icon";
+    PseudoType2["OverscrollAreaParent"] = "overscroll-area-parent";
+    PseudoType2["OverscrollBackdrop"] = "overscroll-backdrop";
+    PseudoType2["Skeleton"] = "skeleton";
+  })(PseudoType = DOM2.PseudoType || (DOM2.PseudoType = {}));
+  let ShadowRootType;
+  ((ShadowRootType2) => {
+    ShadowRootType2["UserAgent"] = "user-agent";
+    ShadowRootType2["Open"] = "open";
+    ShadowRootType2["Closed"] = "closed";
+  })(ShadowRootType = DOM2.ShadowRootType || (DOM2.ShadowRootType = {}));
+  let CompatibilityMode;
+  ((CompatibilityMode2) => {
+    CompatibilityMode2["QuirksMode"] = "QuirksMode";
+    CompatibilityMode2["LimitedQuirksMode"] = "LimitedQuirksMode";
+    CompatibilityMode2["NoQuirksMode"] = "NoQuirksMode";
+  })(CompatibilityMode = DOM2.CompatibilityMode || (DOM2.CompatibilityMode = {}));
+  let PhysicalAxes;
+  ((PhysicalAxes2) => {
+    PhysicalAxes2["Horizontal"] = "Horizontal";
+    PhysicalAxes2["Vertical"] = "Vertical";
+    PhysicalAxes2["Both"] = "Both";
+  })(PhysicalAxes = DOM2.PhysicalAxes || (DOM2.PhysicalAxes = {}));
+  let LogicalAxes;
+  ((LogicalAxes2) => {
+    LogicalAxes2["Inline"] = "Inline";
+    LogicalAxes2["Block"] = "Block";
+    LogicalAxes2["Both"] = "Both";
+  })(LogicalAxes = DOM2.LogicalAxes || (DOM2.LogicalAxes = {}));
+  let ScrollOrientation;
+  ((ScrollOrientation2) => {
+    ScrollOrientation2["Horizontal"] = "horizontal";
+    ScrollOrientation2["Vertical"] = "vertical";
+  })(ScrollOrientation = DOM2.ScrollOrientation || (DOM2.ScrollOrientation = {}));
+  let EnableRequestIncludeWhitespace;
+  ((EnableRequestIncludeWhitespace2) => {
+    EnableRequestIncludeWhitespace2["None"] = "none";
+    EnableRequestIncludeWhitespace2["All"] = "all";
+  })(EnableRequestIncludeWhitespace = DOM2.EnableRequestIncludeWhitespace || (DOM2.EnableRequestIncludeWhitespace = {}));
+  let GetElementByRelationRequestRelation;
+  ((GetElementByRelationRequestRelation2) => {
+    GetElementByRelationRequestRelation2["PopoverTarget"] = "PopoverTarget";
+    GetElementByRelationRequestRelation2["InterestTarget"] = "InterestTarget";
+    GetElementByRelationRequestRelation2["CommandFor"] = "CommandFor";
+  })(GetElementByRelationRequestRelation = DOM2.GetElementByRelationRequestRelation || (DOM2.GetElementByRelationRequestRelation = {}));
+})(DOM || (DOM = {}));
+var DOMDebugger;
+((DOMDebugger2) => {
+  let DOMBreakpointType;
+  ((DOMBreakpointType2) => {
+    DOMBreakpointType2["SubtreeModified"] = "subtree-modified";
+    DOMBreakpointType2["AttributeModified"] = "attribute-modified";
+    DOMBreakpointType2["NodeRemoved"] = "node-removed";
+  })(DOMBreakpointType = DOMDebugger2.DOMBreakpointType || (DOMDebugger2.DOMBreakpointType = {}));
+  let CSPViolationType;
+  ((CSPViolationType2) => {
+    CSPViolationType2["TrustedtypeSinkViolation"] = "trustedtype-sink-violation";
+    CSPViolationType2["TrustedtypePolicyViolation"] = "trustedtype-policy-violation";
+  })(CSPViolationType = DOMDebugger2.CSPViolationType || (DOMDebugger2.CSPViolationType = {}));
+})(DOMDebugger || (DOMDebugger = {}));
+var DigitalCredentials;
+((DigitalCredentials2) => {
+  let VirtualWalletAction;
+  ((VirtualWalletAction2) => {
+    VirtualWalletAction2["Respond"] = "respond";
+    VirtualWalletAction2["Decline"] = "decline";
+    VirtualWalletAction2["Wait"] = "wait";
+    VirtualWalletAction2["Clear"] = "clear";
+  })(VirtualWalletAction = DigitalCredentials2.VirtualWalletAction || (DigitalCredentials2.VirtualWalletAction = {}));
+})(DigitalCredentials || (DigitalCredentials = {}));
+var Emulation;
+((Emulation2) => {
+  let ScreenOrientationType;
+  ((ScreenOrientationType2) => {
+    ScreenOrientationType2["PortraitPrimary"] = "portraitPrimary";
+    ScreenOrientationType2["PortraitSecondary"] = "portraitSecondary";
+    ScreenOrientationType2["LandscapePrimary"] = "landscapePrimary";
+    ScreenOrientationType2["LandscapeSecondary"] = "landscapeSecondary";
+  })(ScreenOrientationType = Emulation2.ScreenOrientationType || (Emulation2.ScreenOrientationType = {}));
+  let DisplayFeatureOrientation;
+  ((DisplayFeatureOrientation2) => {
+    DisplayFeatureOrientation2["Vertical"] = "vertical";
+    DisplayFeatureOrientation2["Horizontal"] = "horizontal";
+  })(DisplayFeatureOrientation = Emulation2.DisplayFeatureOrientation || (Emulation2.DisplayFeatureOrientation = {}));
+  let DevicePostureType;
+  ((DevicePostureType2) => {
+    DevicePostureType2["Continuous"] = "continuous";
+    DevicePostureType2["Folded"] = "folded";
+  })(DevicePostureType = Emulation2.DevicePostureType || (Emulation2.DevicePostureType = {}));
+  let VirtualTimePolicy;
+  ((VirtualTimePolicy2) => {
+    VirtualTimePolicy2["Advance"] = "advance";
+    VirtualTimePolicy2["Pause"] = "pause";
+    VirtualTimePolicy2["PauseIfNetworkFetchesPending"] = "pauseIfNetworkFetchesPending";
+  })(VirtualTimePolicy = Emulation2.VirtualTimePolicy || (Emulation2.VirtualTimePolicy = {}));
+  let SensorType;
+  ((SensorType2) => {
+    SensorType2["AbsoluteOrientation"] = "absolute-orientation";
+    SensorType2["Accelerometer"] = "accelerometer";
+    SensorType2["AmbientLight"] = "ambient-light";
+    SensorType2["Gravity"] = "gravity";
+    SensorType2["Gyroscope"] = "gyroscope";
+    SensorType2["LinearAcceleration"] = "linear-acceleration";
+    SensorType2["Magnetometer"] = "magnetometer";
+    SensorType2["RelativeOrientation"] = "relative-orientation";
+  })(SensorType = Emulation2.SensorType || (Emulation2.SensorType = {}));
+  let PressureSource;
+  ((PressureSource2) => {
+    PressureSource2["Cpu"] = "cpu";
+  })(PressureSource = Emulation2.PressureSource || (Emulation2.PressureSource = {}));
+  let PressureState;
+  ((PressureState2) => {
+    PressureState2["Nominal"] = "nominal";
+    PressureState2["Fair"] = "fair";
+    PressureState2["Serious"] = "serious";
+    PressureState2["Critical"] = "critical";
+  })(PressureState = Emulation2.PressureState || (Emulation2.PressureState = {}));
+  let DisabledImageType;
+  ((DisabledImageType2) => {
+    DisabledImageType2["Avif"] = "avif";
+    DisabledImageType2["Jxl"] = "jxl";
+    DisabledImageType2["Webp"] = "webp";
+  })(DisabledImageType = Emulation2.DisabledImageType || (Emulation2.DisabledImageType = {}));
+  let SetDeviceMetricsOverrideRequestScrollbarType;
+  ((SetDeviceMetricsOverrideRequestScrollbarType2) => {
+    SetDeviceMetricsOverrideRequestScrollbarType2["Overlay"] = "overlay";
+    SetDeviceMetricsOverrideRequestScrollbarType2["Default"] = "default";
+  })(SetDeviceMetricsOverrideRequestScrollbarType = Emulation2.SetDeviceMetricsOverrideRequestScrollbarType || (Emulation2.SetDeviceMetricsOverrideRequestScrollbarType = {}));
+  let SetEmitTouchEventsForMouseRequestConfiguration;
+  ((SetEmitTouchEventsForMouseRequestConfiguration2) => {
+    SetEmitTouchEventsForMouseRequestConfiguration2["Mobile"] = "mobile";
+    SetEmitTouchEventsForMouseRequestConfiguration2["Desktop"] = "desktop";
+  })(SetEmitTouchEventsForMouseRequestConfiguration = Emulation2.SetEmitTouchEventsForMouseRequestConfiguration || (Emulation2.SetEmitTouchEventsForMouseRequestConfiguration = {}));
+  let SetEmulatedVisionDeficiencyRequestType;
+  ((SetEmulatedVisionDeficiencyRequestType2) => {
+    SetEmulatedVisionDeficiencyRequestType2["None"] = "none";
+    SetEmulatedVisionDeficiencyRequestType2["BlurredVision"] = "blurredVision";
+    SetEmulatedVisionDeficiencyRequestType2["ReducedContrast"] = "reducedContrast";
+    SetEmulatedVisionDeficiencyRequestType2["Achromatopsia"] = "achromatopsia";
+    SetEmulatedVisionDeficiencyRequestType2["Deuteranopia"] = "deuteranopia";
+    SetEmulatedVisionDeficiencyRequestType2["Protanopia"] = "protanopia";
+    SetEmulatedVisionDeficiencyRequestType2["Tritanopia"] = "tritanopia";
+  })(SetEmulatedVisionDeficiencyRequestType = Emulation2.SetEmulatedVisionDeficiencyRequestType || (Emulation2.SetEmulatedVisionDeficiencyRequestType = {}));
+  let SetCPUPerformanceOverrideRequestPerformanceTier;
+  ((SetCPUPerformanceOverrideRequestPerformanceTier2) => {
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Unknown"] = "unknown";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Low"] = "low";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Mid"] = "mid";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["High"] = "high";
+    SetCPUPerformanceOverrideRequestPerformanceTier2["Ultra"] = "ultra";
+  })(SetCPUPerformanceOverrideRequestPerformanceTier = Emulation2.SetCPUPerformanceOverrideRequestPerformanceTier || (Emulation2.SetCPUPerformanceOverrideRequestPerformanceTier = {}));
+})(Emulation || (Emulation = {}));
+var Extensions;
+((Extensions2) => {
+  let StorageArea;
+  ((StorageArea2) => {
+    StorageArea2["Session"] = "session";
+    StorageArea2["Local"] = "local";
+    StorageArea2["Sync"] = "sync";
+    StorageArea2["Managed"] = "managed";
+  })(StorageArea = Extensions2.StorageArea || (Extensions2.StorageArea = {}));
+})(Extensions || (Extensions = {}));
+var FedCm;
+((FedCm2) => {
+  let LoginState;
+  ((LoginState2) => {
+    LoginState2["SignIn"] = "SignIn";
+    LoginState2["SignUp"] = "SignUp";
+  })(LoginState = FedCm2.LoginState || (FedCm2.LoginState = {}));
+  let DialogType;
+  ((DialogType2) => {
+    DialogType2["AccountChooser"] = "AccountChooser";
+    DialogType2["AutoReauthn"] = "AutoReauthn";
+    DialogType2["ConfirmIdpLogin"] = "ConfirmIdpLogin";
+    DialogType2["Error"] = "Error";
+  })(DialogType = FedCm2.DialogType || (FedCm2.DialogType = {}));
+  let DialogButton;
+  ((DialogButton2) => {
+    DialogButton2["ConfirmIdpLoginContinue"] = "ConfirmIdpLoginContinue";
+    DialogButton2["ErrorGotIt"] = "ErrorGotIt";
+    DialogButton2["ErrorMoreDetails"] = "ErrorMoreDetails";
+  })(DialogButton = FedCm2.DialogButton || (FedCm2.DialogButton = {}));
+  let AccountUrlType;
+  ((AccountUrlType2) => {
+    AccountUrlType2["TermsOfService"] = "TermsOfService";
+    AccountUrlType2["PrivacyPolicy"] = "PrivacyPolicy";
+  })(AccountUrlType = FedCm2.AccountUrlType || (FedCm2.AccountUrlType = {}));
+})(FedCm || (FedCm = {}));
+var Fetch;
+((Fetch2) => {
+  let RequestStage;
+  ((RequestStage2) => {
+    RequestStage2["Request"] = "Request";
+    RequestStage2["Response"] = "Response";
+  })(RequestStage = Fetch2.RequestStage || (Fetch2.RequestStage = {}));
+  let AuthChallengeSource;
+  ((AuthChallengeSource2) => {
+    AuthChallengeSource2["Server"] = "Server";
+    AuthChallengeSource2["Proxy"] = "Proxy";
+  })(AuthChallengeSource = Fetch2.AuthChallengeSource || (Fetch2.AuthChallengeSource = {}));
+  let AuthChallengeResponseResponse;
+  ((AuthChallengeResponseResponse2) => {
+    AuthChallengeResponseResponse2["Default"] = "Default";
+    AuthChallengeResponseResponse2["CancelAuth"] = "CancelAuth";
+    AuthChallengeResponseResponse2["ProvideCredentials"] = "ProvideCredentials";
+  })(AuthChallengeResponseResponse = Fetch2.AuthChallengeResponseResponse || (Fetch2.AuthChallengeResponseResponse = {}));
+})(Fetch || (Fetch = {}));
+var HeadlessExperimental;
+((HeadlessExperimental2) => {
+  let ScreenshotParamsFormat;
+  ((ScreenshotParamsFormat2) => {
+    ScreenshotParamsFormat2["Jpeg"] = "jpeg";
+    ScreenshotParamsFormat2["Png"] = "png";
+    ScreenshotParamsFormat2["Webp"] = "webp";
+  })(ScreenshotParamsFormat = HeadlessExperimental2.ScreenshotParamsFormat || (HeadlessExperimental2.ScreenshotParamsFormat = {}));
+})(HeadlessExperimental || (HeadlessExperimental = {}));
+var IndexedDB;
+((IndexedDB2) => {
+  let KeyType;
+  ((KeyType2) => {
+    KeyType2["Number"] = "number";
+    KeyType2["String"] = "string";
+    KeyType2["Date"] = "date";
+    KeyType2["Array"] = "array";
+  })(KeyType = IndexedDB2.KeyType || (IndexedDB2.KeyType = {}));
+  let KeyPathType;
+  ((KeyPathType2) => {
+    KeyPathType2["Null"] = "null";
+    KeyPathType2["String"] = "string";
+    KeyPathType2["Array"] = "array";
+  })(KeyPathType = IndexedDB2.KeyPathType || (IndexedDB2.KeyPathType = {}));
+})(IndexedDB || (IndexedDB = {}));
+var Input;
+((Input3) => {
+  let GestureSourceType;
+  ((GestureSourceType2) => {
+    GestureSourceType2["Default"] = "default";
+    GestureSourceType2["Touch"] = "touch";
+    GestureSourceType2["Mouse"] = "mouse";
+  })(GestureSourceType = Input3.GestureSourceType || (Input3.GestureSourceType = {}));
+  let MouseButton;
+  ((MouseButton2) => {
+    MouseButton2["None"] = "none";
+    MouseButton2["Left"] = "left";
+    MouseButton2["Middle"] = "middle";
+    MouseButton2["Right"] = "right";
+    MouseButton2["Back"] = "back";
+    MouseButton2["Forward"] = "forward";
+  })(MouseButton = Input3.MouseButton || (Input3.MouseButton = {}));
+  let DispatchDragEventRequestType;
+  ((DispatchDragEventRequestType2) => {
+    DispatchDragEventRequestType2["DragEnter"] = "dragEnter";
+    DispatchDragEventRequestType2["DragOver"] = "dragOver";
+    DispatchDragEventRequestType2["Drop"] = "drop";
+    DispatchDragEventRequestType2["DragCancel"] = "dragCancel";
+  })(DispatchDragEventRequestType = Input3.DispatchDragEventRequestType || (Input3.DispatchDragEventRequestType = {}));
+  let DispatchKeyEventRequestType;
+  ((DispatchKeyEventRequestType2) => {
+    DispatchKeyEventRequestType2["KeyDown"] = "keyDown";
+    DispatchKeyEventRequestType2["KeyUp"] = "keyUp";
+    DispatchKeyEventRequestType2["RawKeyDown"] = "rawKeyDown";
+    DispatchKeyEventRequestType2["Char"] = "char";
+  })(DispatchKeyEventRequestType = Input3.DispatchKeyEventRequestType || (Input3.DispatchKeyEventRequestType = {}));
+  let DispatchMouseEventRequestType;
+  ((DispatchMouseEventRequestType2) => {
+    DispatchMouseEventRequestType2["MousePressed"] = "mousePressed";
+    DispatchMouseEventRequestType2["MouseReleased"] = "mouseReleased";
+    DispatchMouseEventRequestType2["MouseMoved"] = "mouseMoved";
+    DispatchMouseEventRequestType2["MouseWheel"] = "mouseWheel";
+  })(DispatchMouseEventRequestType = Input3.DispatchMouseEventRequestType || (Input3.DispatchMouseEventRequestType = {}));
+  let DispatchMouseEventRequestPointerType;
+  ((DispatchMouseEventRequestPointerType2) => {
+    DispatchMouseEventRequestPointerType2["Mouse"] = "mouse";
+    DispatchMouseEventRequestPointerType2["Pen"] = "pen";
+  })(DispatchMouseEventRequestPointerType = Input3.DispatchMouseEventRequestPointerType || (Input3.DispatchMouseEventRequestPointerType = {}));
+  let DispatchTouchEventRequestType;
+  ((DispatchTouchEventRequestType2) => {
+    DispatchTouchEventRequestType2["TouchStart"] = "touchStart";
+    DispatchTouchEventRequestType2["TouchEnd"] = "touchEnd";
+    DispatchTouchEventRequestType2["TouchMove"] = "touchMove";
+    DispatchTouchEventRequestType2["TouchCancel"] = "touchCancel";
+  })(DispatchTouchEventRequestType = Input3.DispatchTouchEventRequestType || (Input3.DispatchTouchEventRequestType = {}));
+  let EmulateTouchFromMouseEventRequestType;
+  ((EmulateTouchFromMouseEventRequestType2) => {
+    EmulateTouchFromMouseEventRequestType2["MousePressed"] = "mousePressed";
+    EmulateTouchFromMouseEventRequestType2["MouseReleased"] = "mouseReleased";
+    EmulateTouchFromMouseEventRequestType2["MouseMoved"] = "mouseMoved";
+    EmulateTouchFromMouseEventRequestType2["MouseWheel"] = "mouseWheel";
+  })(EmulateTouchFromMouseEventRequestType = Input3.EmulateTouchFromMouseEventRequestType || (Input3.EmulateTouchFromMouseEventRequestType = {}));
+})(Input || (Input = {}));
+var LayerTree;
+((LayerTree2) => {
+  let ScrollRectType;
+  ((ScrollRectType2) => {
+    ScrollRectType2["RepaintsOnScroll"] = "RepaintsOnScroll";
+    ScrollRectType2["TouchEventHandler"] = "TouchEventHandler";
+    ScrollRectType2["WheelEventHandler"] = "WheelEventHandler";
+  })(ScrollRectType = LayerTree2.ScrollRectType || (LayerTree2.ScrollRectType = {}));
+})(LayerTree || (LayerTree = {}));
+var Log;
+((Log3) => {
+  let LogEntrySource;
+  ((LogEntrySource2) => {
+    LogEntrySource2["XML"] = "xml";
+    LogEntrySource2["Javascript"] = "javascript";
+    LogEntrySource2["Network"] = "network";
+    LogEntrySource2["Storage"] = "storage";
+    LogEntrySource2["Appcache"] = "appcache";
+    LogEntrySource2["Rendering"] = "rendering";
+    LogEntrySource2["Security"] = "security";
+    LogEntrySource2["Deprecation"] = "deprecation";
+    LogEntrySource2["Worker"] = "worker";
+    LogEntrySource2["Violation"] = "violation";
+    LogEntrySource2["Intervention"] = "intervention";
+    LogEntrySource2["Recommendation"] = "recommendation";
+    LogEntrySource2["Other"] = "other";
+  })(LogEntrySource = Log3.LogEntrySource || (Log3.LogEntrySource = {}));
+  let LogEntryLevel;
+  ((LogEntryLevel2) => {
+    LogEntryLevel2["Verbose"] = "verbose";
+    LogEntryLevel2["Info"] = "info";
+    LogEntryLevel2["Warning"] = "warning";
+    LogEntryLevel2["Error"] = "error";
+  })(LogEntryLevel = Log3.LogEntryLevel || (Log3.LogEntryLevel = {}));
+  let LogEntryCategory;
+  ((LogEntryCategory2) => {
+    LogEntryCategory2["Cors"] = "cors";
+  })(LogEntryCategory = Log3.LogEntryCategory || (Log3.LogEntryCategory = {}));
+  let ViolationSettingName;
+  ((ViolationSettingName2) => {
+    ViolationSettingName2["LongTask"] = "longTask";
+    ViolationSettingName2["LongLayout"] = "longLayout";
+    ViolationSettingName2["BlockedEvent"] = "blockedEvent";
+    ViolationSettingName2["BlockedParser"] = "blockedParser";
+    ViolationSettingName2["DiscouragedAPIUse"] = "discouragedAPIUse";
+    ViolationSettingName2["Handler"] = "handler";
+    ViolationSettingName2["RecurringHandler"] = "recurringHandler";
+  })(ViolationSettingName = Log3.ViolationSettingName || (Log3.ViolationSettingName = {}));
+})(Log || (Log = {}));
+var Media;
+((Media2) => {
+  let PlayerMessageLevel;
+  ((PlayerMessageLevel2) => {
+    PlayerMessageLevel2["Error"] = "error";
+    PlayerMessageLevel2["Warning"] = "warning";
+    PlayerMessageLevel2["Info"] = "info";
+    PlayerMessageLevel2["Debug"] = "debug";
+  })(PlayerMessageLevel = Media2.PlayerMessageLevel || (Media2.PlayerMessageLevel = {}));
+})(Media || (Media = {}));
+var Memory;
+((Memory2) => {
+  let PressureLevel;
+  ((PressureLevel2) => {
+    PressureLevel2["Moderate"] = "moderate";
+    PressureLevel2["Critical"] = "critical";
+  })(PressureLevel = Memory2.PressureLevel || (Memory2.PressureLevel = {}));
+})(Memory || (Memory = {}));
+var Network;
+((Network2) => {
+  let ResourceType10;
+  ((ResourceType11) => {
+    ResourceType11["Document"] = "Document";
+    ResourceType11["Stylesheet"] = "Stylesheet";
+    ResourceType11["Image"] = "Image";
+    ResourceType11["Media"] = "Media";
+    ResourceType11["Font"] = "Font";
+    ResourceType11["Script"] = "Script";
+    ResourceType11["TextTrack"] = "TextTrack";
+    ResourceType11["XHR"] = "XHR";
+    ResourceType11["Fetch"] = "Fetch";
+    ResourceType11["Prefetch"] = "Prefetch";
+    ResourceType11["EventSource"] = "EventSource";
+    ResourceType11["WebSocket"] = "WebSocket";
+    ResourceType11["Manifest"] = "Manifest";
+    ResourceType11["SignedExchange"] = "SignedExchange";
+    ResourceType11["Ping"] = "Ping";
+    ResourceType11["CSPViolationReport"] = "CSPViolationReport";
+    ResourceType11["Preflight"] = "Preflight";
+    ResourceType11["FedCM"] = "FedCM";
+    ResourceType11["Other"] = "Other";
+  })(ResourceType10 = Network2.ResourceType || (Network2.ResourceType = {}));
+  let ErrorReason;
+  ((ErrorReason2) => {
+    ErrorReason2["Failed"] = "Failed";
+    ErrorReason2["Aborted"] = "Aborted";
+    ErrorReason2["TimedOut"] = "TimedOut";
+    ErrorReason2["AccessDenied"] = "AccessDenied";
+    ErrorReason2["ConnectionClosed"] = "ConnectionClosed";
+    ErrorReason2["ConnectionReset"] = "ConnectionReset";
+    ErrorReason2["ConnectionRefused"] = "ConnectionRefused";
+    ErrorReason2["ConnectionAborted"] = "ConnectionAborted";
+    ErrorReason2["ConnectionFailed"] = "ConnectionFailed";
+    ErrorReason2["NameNotResolved"] = "NameNotResolved";
+    ErrorReason2["InternetDisconnected"] = "InternetDisconnected";
+    ErrorReason2["AddressUnreachable"] = "AddressUnreachable";
+    ErrorReason2["BlockedByClient"] = "BlockedByClient";
+    ErrorReason2["BlockedByResponse"] = "BlockedByResponse";
+  })(ErrorReason = Network2.ErrorReason || (Network2.ErrorReason = {}));
+  let ConnectionType;
+  ((ConnectionType2) => {
+    ConnectionType2["None"] = "none";
+    ConnectionType2["Cellular2g"] = "cellular2g";
+    ConnectionType2["Cellular3g"] = "cellular3g";
+    ConnectionType2["Cellular4g"] = "cellular4g";
+    ConnectionType2["Bluetooth"] = "bluetooth";
+    ConnectionType2["Ethernet"] = "ethernet";
+    ConnectionType2["Wifi"] = "wifi";
+    ConnectionType2["Wimax"] = "wimax";
+    ConnectionType2["Other"] = "other";
+  })(ConnectionType = Network2.ConnectionType || (Network2.ConnectionType = {}));
+  let CookieSameSite;
+  ((CookieSameSite2) => {
+    CookieSameSite2["Strict"] = "Strict";
+    CookieSameSite2["Lax"] = "Lax";
+    CookieSameSite2["None"] = "None";
+  })(CookieSameSite = Network2.CookieSameSite || (Network2.CookieSameSite = {}));
+  let CookiePriority;
+  ((CookiePriority2) => {
+    CookiePriority2["Low"] = "Low";
+    CookiePriority2["Medium"] = "Medium";
+    CookiePriority2["High"] = "High";
+  })(CookiePriority = Network2.CookiePriority || (Network2.CookiePriority = {}));
+  let CookieSourceScheme;
+  ((CookieSourceScheme2) => {
+    CookieSourceScheme2["Unset"] = "Unset";
+    CookieSourceScheme2["NonSecure"] = "NonSecure";
+    CookieSourceScheme2["Secure"] = "Secure";
+  })(CookieSourceScheme = Network2.CookieSourceScheme || (Network2.CookieSourceScheme = {}));
+  let ResourcePriority;
+  ((ResourcePriority2) => {
+    ResourcePriority2["VeryLow"] = "VeryLow";
+    ResourcePriority2["Low"] = "Low";
+    ResourcePriority2["Medium"] = "Medium";
+    ResourcePriority2["High"] = "High";
+    ResourcePriority2["VeryHigh"] = "VeryHigh";
+  })(ResourcePriority = Network2.ResourcePriority || (Network2.ResourcePriority = {}));
+  let RenderBlockingBehavior;
+  ((RenderBlockingBehavior2) => {
+    RenderBlockingBehavior2["Blocking"] = "Blocking";
+    RenderBlockingBehavior2["InBodyParserBlocking"] = "InBodyParserBlocking";
+    RenderBlockingBehavior2["NonBlocking"] = "NonBlocking";
+    RenderBlockingBehavior2["NonBlockingDynamic"] = "NonBlockingDynamic";
+    RenderBlockingBehavior2["PotentiallyBlocking"] = "PotentiallyBlocking";
+  })(RenderBlockingBehavior = Network2.RenderBlockingBehavior || (Network2.RenderBlockingBehavior = {}));
+  let RequestReferrerPolicy;
+  ((RequestReferrerPolicy2) => {
+    RequestReferrerPolicy2["UnsafeUrl"] = "unsafe-url";
+    RequestReferrerPolicy2["NoReferrerWhenDowngrade"] = "no-referrer-when-downgrade";
+    RequestReferrerPolicy2["NoReferrer"] = "no-referrer";
+    RequestReferrerPolicy2["Origin"] = "origin";
+    RequestReferrerPolicy2["OriginWhenCrossOrigin"] = "origin-when-cross-origin";
+    RequestReferrerPolicy2["SameOrigin"] = "same-origin";
+    RequestReferrerPolicy2["StrictOrigin"] = "strict-origin";
+    RequestReferrerPolicy2["StrictOriginWhenCrossOrigin"] = "strict-origin-when-cross-origin";
+  })(RequestReferrerPolicy = Network2.RequestReferrerPolicy || (Network2.RequestReferrerPolicy = {}));
+  let CertificateTransparencyCompliance;
+  ((CertificateTransparencyCompliance2) => {
+    CertificateTransparencyCompliance2["Unknown"] = "unknown";
+    CertificateTransparencyCompliance2["NotCompliant"] = "not-compliant";
+    CertificateTransparencyCompliance2["Compliant"] = "compliant";
+  })(CertificateTransparencyCompliance = Network2.CertificateTransparencyCompliance || (Network2.CertificateTransparencyCompliance = {}));
+  let BlockedReason;
+  ((BlockedReason2) => {
+    BlockedReason2["Other"] = "other";
+    BlockedReason2["Csp"] = "csp";
+    BlockedReason2["MixedContent"] = "mixed-content";
+    BlockedReason2["Origin"] = "origin";
+    BlockedReason2["Inspector"] = "inspector";
+    BlockedReason2["Integrity"] = "integrity";
+    BlockedReason2["SubresourceFilter"] = "subresource-filter";
+    BlockedReason2["ContentType"] = "content-type";
+    BlockedReason2["CoepFrameResourceNeedsCoepHeader"] = "coep-frame-resource-needs-coep-header";
+    BlockedReason2["CoopSandboxedIframeCannotNavigateToCoopPage"] = "coop-sandboxed-iframe-cannot-navigate-to-coop-page";
+    BlockedReason2["CorpNotSameOrigin"] = "corp-not-same-origin";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoep"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByDip"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-dip";
+    BlockedReason2["CorpNotSameOriginAfterDefaultedToSameOriginByCoepAndDip"] = "corp-not-same-origin-after-defaulted-to-same-origin-by-coep-and-dip";
+    BlockedReason2["CorpNotSameSite"] = "corp-not-same-site";
+    BlockedReason2["SriMessageSignatureMismatch"] = "sri-message-signature-mismatch";
+  })(BlockedReason = Network2.BlockedReason || (Network2.BlockedReason = {}));
+  let CorsError;
+  ((CorsError2) => {
+    CorsError2["DisallowedByMode"] = "DisallowedByMode";
+    CorsError2["InvalidResponse"] = "InvalidResponse";
+    CorsError2["WildcardOriginNotAllowed"] = "WildcardOriginNotAllowed";
+    CorsError2["MissingAllowOriginHeader"] = "MissingAllowOriginHeader";
+    CorsError2["MultipleAllowOriginValues"] = "MultipleAllowOriginValues";
+    CorsError2["InvalidAllowOriginValue"] = "InvalidAllowOriginValue";
+    CorsError2["AllowOriginMismatch"] = "AllowOriginMismatch";
+    CorsError2["InvalidAllowCredentials"] = "InvalidAllowCredentials";
+    CorsError2["CorsDisabledScheme"] = "CorsDisabledScheme";
+    CorsError2["PreflightInvalidStatus"] = "PreflightInvalidStatus";
+    CorsError2["PreflightDisallowedRedirect"] = "PreflightDisallowedRedirect";
+    CorsError2["PreflightWildcardOriginNotAllowed"] = "PreflightWildcardOriginNotAllowed";
+    CorsError2["PreflightMissingAllowOriginHeader"] = "PreflightMissingAllowOriginHeader";
+    CorsError2["PreflightMultipleAllowOriginValues"] = "PreflightMultipleAllowOriginValues";
+    CorsError2["PreflightInvalidAllowOriginValue"] = "PreflightInvalidAllowOriginValue";
+    CorsError2["PreflightAllowOriginMismatch"] = "PreflightAllowOriginMismatch";
+    CorsError2["PreflightInvalidAllowCredentials"] = "PreflightInvalidAllowCredentials";
+    CorsError2["PreflightMissingAllowExternal"] = "PreflightMissingAllowExternal";
+    CorsError2["PreflightInvalidAllowExternal"] = "PreflightInvalidAllowExternal";
+    CorsError2["InvalidAllowMethodsPreflightResponse"] = "InvalidAllowMethodsPreflightResponse";
+    CorsError2["InvalidAllowHeadersPreflightResponse"] = "InvalidAllowHeadersPreflightResponse";
+    CorsError2["MethodDisallowedByPreflightResponse"] = "MethodDisallowedByPreflightResponse";
+    CorsError2["HeaderDisallowedByPreflightResponse"] = "HeaderDisallowedByPreflightResponse";
+    CorsError2["RedirectContainsCredentials"] = "RedirectContainsCredentials";
+    CorsError2["InsecureLocalNetwork"] = "InsecureLocalNetwork";
+    CorsError2["InvalidLocalNetworkAccess"] = "InvalidLocalNetworkAccess";
+    CorsError2["NoCorsRedirectModeNotFollow"] = "NoCorsRedirectModeNotFollow";
+    CorsError2["LocalNetworkAccessPermissionDenied"] = "LocalNetworkAccessPermissionDenied";
+  })(CorsError = Network2.CorsError || (Network2.CorsError = {}));
+  let ServiceWorkerResponseSource;
+  ((ServiceWorkerResponseSource2) => {
+    ServiceWorkerResponseSource2["CacheStorage"] = "cache-storage";
+    ServiceWorkerResponseSource2["HttpCache"] = "http-cache";
+    ServiceWorkerResponseSource2["FallbackCode"] = "fallback-code";
+    ServiceWorkerResponseSource2["Network"] = "network";
+  })(ServiceWorkerResponseSource = Network2.ServiceWorkerResponseSource || (Network2.ServiceWorkerResponseSource = {}));
+  let TrustTokenParamsRefreshPolicy;
+  ((TrustTokenParamsRefreshPolicy2) => {
+    TrustTokenParamsRefreshPolicy2["UseCached"] = "UseCached";
+    TrustTokenParamsRefreshPolicy2["Refresh"] = "Refresh";
+  })(TrustTokenParamsRefreshPolicy = Network2.TrustTokenParamsRefreshPolicy || (Network2.TrustTokenParamsRefreshPolicy = {}));
+  let TrustTokenOperationType;
+  ((TrustTokenOperationType2) => {
+    TrustTokenOperationType2["Issuance"] = "Issuance";
+    TrustTokenOperationType2["Redemption"] = "Redemption";
+    TrustTokenOperationType2["Signing"] = "Signing";
+  })(TrustTokenOperationType = Network2.TrustTokenOperationType || (Network2.TrustTokenOperationType = {}));
+  let AlternateProtocolUsage;
+  ((AlternateProtocolUsage2) => {
+    AlternateProtocolUsage2["AlternativeJobWonWithoutRace"] = "alternativeJobWonWithoutRace";
+    AlternateProtocolUsage2["AlternativeJobWonRace"] = "alternativeJobWonRace";
+    AlternateProtocolUsage2["MainJobWonRace"] = "mainJobWonRace";
+    AlternateProtocolUsage2["MappingMissing"] = "mappingMissing";
+    AlternateProtocolUsage2["Broken"] = "broken";
+    AlternateProtocolUsage2["DnsAlpnH3JobWonWithoutRace"] = "dnsAlpnH3JobWonWithoutRace";
+    AlternateProtocolUsage2["DnsAlpnH3JobWonRace"] = "dnsAlpnH3JobWonRace";
+    AlternateProtocolUsage2["UnspecifiedReason"] = "unspecifiedReason";
+  })(AlternateProtocolUsage = Network2.AlternateProtocolUsage || (Network2.AlternateProtocolUsage = {}));
+  let ServiceWorkerRouterSource;
+  ((ServiceWorkerRouterSource2) => {
+    ServiceWorkerRouterSource2["Network"] = "network";
+    ServiceWorkerRouterSource2["Cache"] = "cache";
+    ServiceWorkerRouterSource2["FetchEvent"] = "fetch-event";
+    ServiceWorkerRouterSource2["RaceNetworkAndFetchHandler"] = "race-network-and-fetch-handler";
+    ServiceWorkerRouterSource2["RaceNetworkAndCache"] = "race-network-and-cache";
+  })(ServiceWorkerRouterSource = Network2.ServiceWorkerRouterSource || (Network2.ServiceWorkerRouterSource = {}));
+  let InitiatorType;
+  ((InitiatorType2) => {
+    InitiatorType2["Parser"] = "parser";
+    InitiatorType2["Script"] = "script";
+    InitiatorType2["Preload"] = "preload";
+    InitiatorType2["SignedExchange"] = "SignedExchange";
+    InitiatorType2["Preflight"] = "preflight";
+    InitiatorType2["FedCM"] = "FedCM";
+    InitiatorType2["Other"] = "other";
+  })(InitiatorType = Network2.InitiatorType || (Network2.InitiatorType = {}));
+  let SetCookieBlockedReason;
+  ((SetCookieBlockedReason2) => {
+    SetCookieBlockedReason2["SecureOnly"] = "SecureOnly";
+    SetCookieBlockedReason2["SameSiteStrict"] = "SameSiteStrict";
+    SetCookieBlockedReason2["SameSiteLax"] = "SameSiteLax";
+    SetCookieBlockedReason2["SameSiteUnspecifiedTreatedAsLax"] = "SameSiteUnspecifiedTreatedAsLax";
+    SetCookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
+    SetCookieBlockedReason2["UserPreferences"] = "UserPreferences";
+    SetCookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
+    SetCookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
+    SetCookieBlockedReason2["SyntaxError"] = "SyntaxError";
+    SetCookieBlockedReason2["SchemeNotSupported"] = "SchemeNotSupported";
+    SetCookieBlockedReason2["OverwriteSecure"] = "OverwriteSecure";
+    SetCookieBlockedReason2["InvalidDomain"] = "InvalidDomain";
+    SetCookieBlockedReason2["InvalidPrefix"] = "InvalidPrefix";
+    SetCookieBlockedReason2["UnknownError"] = "UnknownError";
+    SetCookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
+    SetCookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
+    SetCookieBlockedReason2["SchemefulSameSiteUnspecifiedTreatedAsLax"] = "SchemefulSameSiteUnspecifiedTreatedAsLax";
+    SetCookieBlockedReason2["NameValuePairExceedsMaxSize"] = "NameValuePairExceedsMaxSize";
+    SetCookieBlockedReason2["DisallowedCharacter"] = "DisallowedCharacter";
+    SetCookieBlockedReason2["NoCookieContent"] = "NoCookieContent";
+  })(SetCookieBlockedReason = Network2.SetCookieBlockedReason || (Network2.SetCookieBlockedReason = {}));
+  let CookieBlockedReason;
+  ((CookieBlockedReason2) => {
+    CookieBlockedReason2["SecureOnly"] = "SecureOnly";
+    CookieBlockedReason2["NotOnPath"] = "NotOnPath";
+    CookieBlockedReason2["DomainMismatch"] = "DomainMismatch";
+    CookieBlockedReason2["SameSiteStrict"] = "SameSiteStrict";
+    CookieBlockedReason2["SameSiteLax"] = "SameSiteLax";
+    CookieBlockedReason2["SameSiteUnspecifiedTreatedAsLax"] = "SameSiteUnspecifiedTreatedAsLax";
+    CookieBlockedReason2["SameSiteNoneInsecure"] = "SameSiteNoneInsecure";
+    CookieBlockedReason2["UserPreferences"] = "UserPreferences";
+    CookieBlockedReason2["ThirdPartyPhaseout"] = "ThirdPartyPhaseout";
+    CookieBlockedReason2["ThirdPartyBlockedInFirstPartySet"] = "ThirdPartyBlockedInFirstPartySet";
+    CookieBlockedReason2["UnknownError"] = "UnknownError";
+    CookieBlockedReason2["SchemefulSameSiteStrict"] = "SchemefulSameSiteStrict";
+    CookieBlockedReason2["SchemefulSameSiteLax"] = "SchemefulSameSiteLax";
+    CookieBlockedReason2["SchemefulSameSiteUnspecifiedTreatedAsLax"] = "SchemefulSameSiteUnspecifiedTreatedAsLax";
+    CookieBlockedReason2["NameValuePairExceedsMaxSize"] = "NameValuePairExceedsMaxSize";
+    CookieBlockedReason2["PortMismatch"] = "PortMismatch";
+    CookieBlockedReason2["SchemeMismatch"] = "SchemeMismatch";
+    CookieBlockedReason2["AnonymousContext"] = "AnonymousContext";
+  })(CookieBlockedReason = Network2.CookieBlockedReason || (Network2.CookieBlockedReason = {}));
+  let CookieExemptionReason;
+  ((CookieExemptionReason2) => {
+    CookieExemptionReason2["None"] = "None";
+    CookieExemptionReason2["UserSetting"] = "UserSetting";
+    CookieExemptionReason2["EnterprisePolicy"] = "EnterprisePolicy";
+    CookieExemptionReason2["StorageAccess"] = "StorageAccess";
+    CookieExemptionReason2["TopLevelStorageAccess"] = "TopLevelStorageAccess";
+    CookieExemptionReason2["Scheme"] = "Scheme";
+    CookieExemptionReason2["SameSiteNoneCookiesInSandbox"] = "SameSiteNoneCookiesInSandbox";
+  })(CookieExemptionReason = Network2.CookieExemptionReason || (Network2.CookieExemptionReason = {}));
+  let AuthChallengeSource;
+  ((AuthChallengeSource2) => {
+    AuthChallengeSource2["Server"] = "Server";
+    AuthChallengeSource2["Proxy"] = "Proxy";
+  })(AuthChallengeSource = Network2.AuthChallengeSource || (Network2.AuthChallengeSource = {}));
+  let AuthChallengeResponseResponse;
+  ((AuthChallengeResponseResponse2) => {
+    AuthChallengeResponseResponse2["Default"] = "Default";
+    AuthChallengeResponseResponse2["CancelAuth"] = "CancelAuth";
+    AuthChallengeResponseResponse2["ProvideCredentials"] = "ProvideCredentials";
+  })(AuthChallengeResponseResponse = Network2.AuthChallengeResponseResponse || (Network2.AuthChallengeResponseResponse = {}));
+  let SignedExchangeErrorField;
+  ((SignedExchangeErrorField2) => {
+    SignedExchangeErrorField2["SignatureSig"] = "signatureSig";
+    SignedExchangeErrorField2["SignatureIntegrity"] = "signatureIntegrity";
+    SignedExchangeErrorField2["SignatureCertUrl"] = "signatureCertUrl";
+    SignedExchangeErrorField2["SignatureCertSha256"] = "signatureCertSha256";
+    SignedExchangeErrorField2["SignatureValidityUrl"] = "signatureValidityUrl";
+    SignedExchangeErrorField2["SignatureTimestamps"] = "signatureTimestamps";
+  })(SignedExchangeErrorField = Network2.SignedExchangeErrorField || (Network2.SignedExchangeErrorField = {}));
+  let DirectSocketDnsQueryType;
+  ((DirectSocketDnsQueryType2) => {
+    DirectSocketDnsQueryType2["Ipv4"] = "ipv4";
+    DirectSocketDnsQueryType2["Ipv6"] = "ipv6";
+  })(DirectSocketDnsQueryType = Network2.DirectSocketDnsQueryType || (Network2.DirectSocketDnsQueryType = {}));
+  let LocalNetworkAccessRequestPolicy;
+  ((LocalNetworkAccessRequestPolicy2) => {
+    LocalNetworkAccessRequestPolicy2["Allow"] = "Allow";
+    LocalNetworkAccessRequestPolicy2["BlockFromInsecureToMorePrivate"] = "BlockFromInsecureToMorePrivate";
+    LocalNetworkAccessRequestPolicy2["WarnFromInsecureToMorePrivate"] = "WarnFromInsecureToMorePrivate";
+    LocalNetworkAccessRequestPolicy2["PermissionBlock"] = "PermissionBlock";
+    LocalNetworkAccessRequestPolicy2["PermissionWarn"] = "PermissionWarn";
+  })(LocalNetworkAccessRequestPolicy = Network2.LocalNetworkAccessRequestPolicy || (Network2.LocalNetworkAccessRequestPolicy = {}));
+  let IPAddressSpace;
+  ((IPAddressSpace2) => {
+    IPAddressSpace2["Loopback"] = "Loopback";
+    IPAddressSpace2["Local"] = "Local";
+    IPAddressSpace2["Public"] = "Public";
+    IPAddressSpace2["Unknown"] = "Unknown";
+  })(IPAddressSpace = Network2.IPAddressSpace || (Network2.IPAddressSpace = {}));
+  let CrossOriginOpenerPolicyValue;
+  ((CrossOriginOpenerPolicyValue2) => {
+    CrossOriginOpenerPolicyValue2["SameOrigin"] = "SameOrigin";
+    CrossOriginOpenerPolicyValue2["SameOriginAllowPopups"] = "SameOriginAllowPopups";
+    CrossOriginOpenerPolicyValue2["RestrictProperties"] = "RestrictProperties";
+    CrossOriginOpenerPolicyValue2["UnsafeNone"] = "UnsafeNone";
+    CrossOriginOpenerPolicyValue2["SameOriginPlusCoep"] = "SameOriginPlusCoep";
+    CrossOriginOpenerPolicyValue2["RestrictPropertiesPlusCoep"] = "RestrictPropertiesPlusCoep";
+    CrossOriginOpenerPolicyValue2["NoopenerAllowPopups"] = "NoopenerAllowPopups";
+  })(CrossOriginOpenerPolicyValue = Network2.CrossOriginOpenerPolicyValue || (Network2.CrossOriginOpenerPolicyValue = {}));
+  let CrossOriginEmbedderPolicyValue;
+  ((CrossOriginEmbedderPolicyValue2) => {
+    CrossOriginEmbedderPolicyValue2["None"] = "None";
+    CrossOriginEmbedderPolicyValue2["Credentialless"] = "Credentialless";
+    CrossOriginEmbedderPolicyValue2["RequireCorp"] = "RequireCorp";
+  })(CrossOriginEmbedderPolicyValue = Network2.CrossOriginEmbedderPolicyValue || (Network2.CrossOriginEmbedderPolicyValue = {}));
+  let ContentSecurityPolicySource;
+  ((ContentSecurityPolicySource2) => {
+    ContentSecurityPolicySource2["HTTP"] = "HTTP";
+    ContentSecurityPolicySource2["Meta"] = "Meta";
+  })(ContentSecurityPolicySource = Network2.ContentSecurityPolicySource || (Network2.ContentSecurityPolicySource = {}));
+  let ReportStatus;
+  ((ReportStatus2) => {
+    ReportStatus2["Queued"] = "Queued";
+    ReportStatus2["Pending"] = "Pending";
+    ReportStatus2["MarkedForRemoval"] = "MarkedForRemoval";
+    ReportStatus2["Success"] = "Success";
+  })(ReportStatus = Network2.ReportStatus || (Network2.ReportStatus = {}));
+  let DeviceBoundSessionWithUsageUsage;
+  ((DeviceBoundSessionWithUsageUsage2) => {
+    DeviceBoundSessionWithUsageUsage2["NotInScope"] = "NotInScope";
+    DeviceBoundSessionWithUsageUsage2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+    DeviceBoundSessionWithUsageUsage2["InScopeRefreshNotAllowed"] = "InScopeRefreshNotAllowed";
+    DeviceBoundSessionWithUsageUsage2["ProactiveRefreshNotPossible"] = "ProactiveRefreshNotPossible";
+    DeviceBoundSessionWithUsageUsage2["ProactiveRefreshAttempted"] = "ProactiveRefreshAttempted";
+    DeviceBoundSessionWithUsageUsage2["Deferred"] = "Deferred";
+  })(DeviceBoundSessionWithUsageUsage = Network2.DeviceBoundSessionWithUsageUsage || (Network2.DeviceBoundSessionWithUsageUsage = {}));
+  let DeviceBoundSessionUrlRuleRuleType;
+  ((DeviceBoundSessionUrlRuleRuleType2) => {
+    DeviceBoundSessionUrlRuleRuleType2["Exclude"] = "Exclude";
+    DeviceBoundSessionUrlRuleRuleType2["Include"] = "Include";
+  })(DeviceBoundSessionUrlRuleRuleType = Network2.DeviceBoundSessionUrlRuleRuleType || (Network2.DeviceBoundSessionUrlRuleRuleType = {}));
+  let DeviceBoundSessionFetchResult;
+  ((DeviceBoundSessionFetchResult2) => {
+    DeviceBoundSessionFetchResult2["Success"] = "Success";
+    DeviceBoundSessionFetchResult2["SigningKeyGenerationError"] = "SigningKeyGenerationError";
+    DeviceBoundSessionFetchResult2["AttestationKeyGenerationError"] = "AttestationKeyGenerationError";
+    DeviceBoundSessionFetchResult2["SigningError"] = "SigningError";
+    DeviceBoundSessionFetchResult2["TransientSigningError"] = "TransientSigningError";
+    DeviceBoundSessionFetchResult2["ServerRequestedTermination"] = "ServerRequestedTermination";
+    DeviceBoundSessionFetchResult2["InvalidSessionId"] = "InvalidSessionId";
+    DeviceBoundSessionFetchResult2["InvalidChallenge"] = "InvalidChallenge";
+    DeviceBoundSessionFetchResult2["TooManyChallenges"] = "TooManyChallenges";
+    DeviceBoundSessionFetchResult2["InvalidFetcherUrl"] = "InvalidFetcherUrl";
+    DeviceBoundSessionFetchResult2["InvalidRefreshUrl"] = "InvalidRefreshUrl";
+    DeviceBoundSessionFetchResult2["TransientHttpError"] = "TransientHttpError";
+    DeviceBoundSessionFetchResult2["ScopeOriginSameSiteMismatch"] = "ScopeOriginSameSiteMismatch";
+    DeviceBoundSessionFetchResult2["RefreshUrlSameSiteMismatch"] = "RefreshUrlSameSiteMismatch";
+    DeviceBoundSessionFetchResult2["MismatchedSessionId"] = "MismatchedSessionId";
+    DeviceBoundSessionFetchResult2["MissingScope"] = "MissingScope";
+    DeviceBoundSessionFetchResult2["NoCredentials"] = "NoCredentials";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationWellKnownUnavailable"] = "SubdomainRegistrationWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationUnauthorized"] = "SubdomainRegistrationUnauthorized";
+    DeviceBoundSessionFetchResult2["SubdomainRegistrationWellKnownMalformed"] = "SubdomainRegistrationWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownUnavailable"] = "SessionProviderWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownUnavailable"] = "RelyingPartyWellKnownUnavailable";
+    DeviceBoundSessionFetchResult2["FederatedKeyThumbprintMismatch"] = "FederatedKeyThumbprintMismatch";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionUrl"] = "InvalidFederatedSessionUrl";
+    DeviceBoundSessionFetchResult2["InvalidFederatedKey"] = "InvalidFederatedKey";
+    DeviceBoundSessionFetchResult2["TooManyRelyingOriginLabels"] = "TooManyRelyingOriginLabels";
+    DeviceBoundSessionFetchResult2["BoundCookieSetForbidden"] = "BoundCookieSetForbidden";
+    DeviceBoundSessionFetchResult2["NetError"] = "NetError";
+    DeviceBoundSessionFetchResult2["ProxyError"] = "ProxyError";
+    DeviceBoundSessionFetchResult2["EmptySessionConfig"] = "EmptySessionConfig";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsConfig"] = "InvalidCredentialsConfig";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsType"] = "InvalidCredentialsType";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsEmptyName"] = "InvalidCredentialsEmptyName";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookie"] = "InvalidCredentialsCookie";
+    DeviceBoundSessionFetchResult2["PersistentHttpError"] = "PersistentHttpError";
+    DeviceBoundSessionFetchResult2["RegistrationAttemptedChallenge"] = "RegistrationAttemptedChallenge";
+    DeviceBoundSessionFetchResult2["InvalidScopeOrigin"] = "InvalidScopeOrigin";
+    DeviceBoundSessionFetchResult2["ScopeOriginContainsPath"] = "ScopeOriginContainsPath";
+    DeviceBoundSessionFetchResult2["RefreshInitiatorNotString"] = "RefreshInitiatorNotString";
+    DeviceBoundSessionFetchResult2["RefreshInitiatorInvalidHostPattern"] = "RefreshInitiatorInvalidHostPattern";
+    DeviceBoundSessionFetchResult2["InvalidScopeSpecification"] = "InvalidScopeSpecification";
+    DeviceBoundSessionFetchResult2["MissingScopeSpecificationType"] = "MissingScopeSpecificationType";
+    DeviceBoundSessionFetchResult2["EmptyScopeSpecificationDomain"] = "EmptyScopeSpecificationDomain";
+    DeviceBoundSessionFetchResult2["EmptyScopeSpecificationPath"] = "EmptyScopeSpecificationPath";
+    DeviceBoundSessionFetchResult2["InvalidScopeSpecificationType"] = "InvalidScopeSpecificationType";
+    DeviceBoundSessionFetchResult2["InvalidScopeIncludeSite"] = "InvalidScopeIncludeSite";
+    DeviceBoundSessionFetchResult2["MissingScopeIncludeSite"] = "MissingScopeIncludeSite";
+    DeviceBoundSessionFetchResult2["FederatedNotAuthorizedByProvider"] = "FederatedNotAuthorizedByProvider";
+    DeviceBoundSessionFetchResult2["FederatedNotAuthorizedByRelyingParty"] = "FederatedNotAuthorizedByRelyingParty";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownMalformed"] = "SessionProviderWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["SessionProviderWellKnownHasProviderOrigin"] = "SessionProviderWellKnownHasProviderOrigin";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownMalformed"] = "RelyingPartyWellKnownMalformed";
+    DeviceBoundSessionFetchResult2["RelyingPartyWellKnownHasRelyingOrigins"] = "RelyingPartyWellKnownHasRelyingOrigins";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionProviderSessionMissing"] = "InvalidFederatedSessionProviderSessionMissing";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionWrongProviderOrigin"] = "InvalidFederatedSessionWrongProviderOrigin";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieCreationTime"] = "InvalidCredentialsCookieCreationTime";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieName"] = "InvalidCredentialsCookieName";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieParsing"] = "InvalidCredentialsCookieParsing";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieUnpermittedAttribute"] = "InvalidCredentialsCookieUnpermittedAttribute";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookieInvalidDomain"] = "InvalidCredentialsCookieInvalidDomain";
+    DeviceBoundSessionFetchResult2["InvalidCredentialsCookiePrefix"] = "InvalidCredentialsCookiePrefix";
+    DeviceBoundSessionFetchResult2["InvalidScopeRulePath"] = "InvalidScopeRulePath";
+    DeviceBoundSessionFetchResult2["InvalidScopeRuleHostPattern"] = "InvalidScopeRuleHostPattern";
+    DeviceBoundSessionFetchResult2["ScopeRuleOriginScopedHostPatternMismatch"] = "ScopeRuleOriginScopedHostPatternMismatch";
+    DeviceBoundSessionFetchResult2["ScopeRuleSiteScopedHostPatternMismatch"] = "ScopeRuleSiteScopedHostPatternMismatch";
+    DeviceBoundSessionFetchResult2["SigningQuotaExceeded"] = "SigningQuotaExceeded";
+    DeviceBoundSessionFetchResult2["InvalidConfigJson"] = "InvalidConfigJson";
+    DeviceBoundSessionFetchResult2["InvalidFederatedSessionProviderFailedToRestoreKey"] = "InvalidFederatedSessionProviderFailedToRestoreKey";
+    DeviceBoundSessionFetchResult2["FailedToUnwrapKey"] = "FailedToUnwrapKey";
+    DeviceBoundSessionFetchResult2["SessionDeletedDuringRefresh"] = "SessionDeletedDuringRefresh";
+    DeviceBoundSessionFetchResult2["CrossOriginRegistrationSiteNotIncluded"] = "CrossOriginRegistrationSiteNotIncluded";
+    DeviceBoundSessionFetchResult2["InvalidPreProvisionedKeyInitiatorMissing"] = "InvalidPreProvisionedKeyInitiatorMissing";
+    DeviceBoundSessionFetchResult2["PreProvisionedKeyAccessNotGranted"] = "PreProvisionedKeyAccessNotGranted";
+    DeviceBoundSessionFetchResult2["PreProvisionedKeyNotFound"] = "PreProvisionedKeyNotFound";
+    DeviceBoundSessionFetchResult2["AttestationCertificationError"] = "AttestationCertificationError";
+    DeviceBoundSessionFetchResult2["AttestationSigningError"] = "AttestationSigningError";
+  })(DeviceBoundSessionFetchResult = Network2.DeviceBoundSessionFetchResult || (Network2.DeviceBoundSessionFetchResult = {}));
+  let RefreshEventDetailsRefreshResult;
+  ((RefreshEventDetailsRefreshResult2) => {
+    RefreshEventDetailsRefreshResult2["Refreshed"] = "Refreshed";
+    RefreshEventDetailsRefreshResult2["InitializedService"] = "InitializedService";
+    RefreshEventDetailsRefreshResult2["Unreachable"] = "Unreachable";
+    RefreshEventDetailsRefreshResult2["ServerError"] = "ServerError";
+    RefreshEventDetailsRefreshResult2["FatalError"] = "FatalError";
+    RefreshEventDetailsRefreshResult2["SigningQuotaExceeded"] = "SigningQuotaExceeded";
+    RefreshEventDetailsRefreshResult2["RefreshedAsWaiter"] = "RefreshedAsWaiter";
+    RefreshEventDetailsRefreshResult2["TransientSigningError"] = "TransientSigningError";
+    RefreshEventDetailsRefreshResult2["InScopeRefreshNotYetNeeded"] = "InScopeRefreshNotYetNeeded";
+  })(RefreshEventDetailsRefreshResult = Network2.RefreshEventDetailsRefreshResult || (Network2.RefreshEventDetailsRefreshResult = {}));
+  let TerminationEventDetailsDeletionReason;
+  ((TerminationEventDetailsDeletionReason2) => {
+    TerminationEventDetailsDeletionReason2["Expired"] = "Expired";
+    TerminationEventDetailsDeletionReason2["FailedToRestoreKey"] = "FailedToRestoreKey";
+    TerminationEventDetailsDeletionReason2["FailedToUnwrapKey"] = "FailedToUnwrapKey";
+    TerminationEventDetailsDeletionReason2["StoragePartitionCleared"] = "StoragePartitionCleared";
+    TerminationEventDetailsDeletionReason2["ClearBrowsingData"] = "ClearBrowsingData";
+    TerminationEventDetailsDeletionReason2["ServerRequested"] = "ServerRequested";
+    TerminationEventDetailsDeletionReason2["InvalidSessionParams"] = "InvalidSessionParams";
+    TerminationEventDetailsDeletionReason2["RefreshFatalError"] = "RefreshFatalError";
+    TerminationEventDetailsDeletionReason2["DevTools"] = "DevTools";
+  })(TerminationEventDetailsDeletionReason = Network2.TerminationEventDetailsDeletionReason || (Network2.TerminationEventDetailsDeletionReason = {}));
+  let ChallengeEventDetailsChallengeResult;
+  ((ChallengeEventDetailsChallengeResult2) => {
+    ChallengeEventDetailsChallengeResult2["Success"] = "Success";
+    ChallengeEventDetailsChallengeResult2["NoSessionId"] = "NoSessionId";
+    ChallengeEventDetailsChallengeResult2["NoSessionMatch"] = "NoSessionMatch";
+    ChallengeEventDetailsChallengeResult2["CantSetBoundCookie"] = "CantSetBoundCookie";
+  })(ChallengeEventDetailsChallengeResult = Network2.ChallengeEventDetailsChallengeResult || (Network2.ChallengeEventDetailsChallengeResult = {}));
+  let TrustTokenOperationDoneEventStatus;
+  ((TrustTokenOperationDoneEventStatus2) => {
+    TrustTokenOperationDoneEventStatus2["Ok"] = "Ok";
+    TrustTokenOperationDoneEventStatus2["InvalidArgument"] = "InvalidArgument";
+    TrustTokenOperationDoneEventStatus2["MissingIssuerKeys"] = "MissingIssuerKeys";
+    TrustTokenOperationDoneEventStatus2["FailedPrecondition"] = "FailedPrecondition";
+    TrustTokenOperationDoneEventStatus2["ResourceExhausted"] = "ResourceExhausted";
+    TrustTokenOperationDoneEventStatus2["AlreadyExists"] = "AlreadyExists";
+    TrustTokenOperationDoneEventStatus2["ResourceLimited"] = "ResourceLimited";
+    TrustTokenOperationDoneEventStatus2["Unauthorized"] = "Unauthorized";
+    TrustTokenOperationDoneEventStatus2["BadResponse"] = "BadResponse";
+    TrustTokenOperationDoneEventStatus2["InternalError"] = "InternalError";
+    TrustTokenOperationDoneEventStatus2["UnknownError"] = "UnknownError";
+    TrustTokenOperationDoneEventStatus2["FulfilledLocally"] = "FulfilledLocally";
+    TrustTokenOperationDoneEventStatus2["SiteIssuerLimit"] = "SiteIssuerLimit";
+  })(TrustTokenOperationDoneEventStatus = Network2.TrustTokenOperationDoneEventStatus || (Network2.TrustTokenOperationDoneEventStatus = {}));
+})(Network || (Network = {}));
+var Overlay;
+((Overlay2) => {
+  let LineStylePattern;
+  ((LineStylePattern2) => {
+    LineStylePattern2["Dashed"] = "dashed";
+    LineStylePattern2["Dotted"] = "dotted";
+  })(LineStylePattern = Overlay2.LineStylePattern || (Overlay2.LineStylePattern = {}));
+  let ContrastAlgorithm;
+  ((ContrastAlgorithm2) => {
+    ContrastAlgorithm2["Aa"] = "aa";
+    ContrastAlgorithm2["Aaa"] = "aaa";
+    ContrastAlgorithm2["Apca"] = "apca";
+  })(ContrastAlgorithm = Overlay2.ContrastAlgorithm || (Overlay2.ContrastAlgorithm = {}));
+  let ColorFormat;
+  ((ColorFormat2) => {
+    ColorFormat2["Rgb"] = "rgb";
+    ColorFormat2["Hsl"] = "hsl";
+    ColorFormat2["Hwb"] = "hwb";
+    ColorFormat2["Hex"] = "hex";
+  })(ColorFormat = Overlay2.ColorFormat || (Overlay2.ColorFormat = {}));
+  let DisplayCutoutShape;
+  ((DisplayCutoutShape2) => {
+    DisplayCutoutShape2["Pill"] = "pill";
+    DisplayCutoutShape2["Notch"] = "notch";
+    DisplayCutoutShape2["Circle"] = "circle";
+    DisplayCutoutShape2["Rectangle"] = "rectangle";
+  })(DisplayCutoutShape = Overlay2.DisplayCutoutShape || (Overlay2.DisplayCutoutShape = {}));
+  let InspectMode;
+  ((InspectMode2) => {
+    InspectMode2["SearchForNode"] = "searchForNode";
+    InspectMode2["SearchForUAShadowDOM"] = "searchForUAShadowDOM";
+    InspectMode2["CaptureAreaScreenshot"] = "captureAreaScreenshot";
+    InspectMode2["None"] = "none";
+  })(InspectMode = Overlay2.InspectMode || (Overlay2.InspectMode = {}));
+})(Overlay || (Overlay = {}));
+var PWA;
+((PWA2) => {
+  let DisplayMode;
+  ((DisplayMode2) => {
+    DisplayMode2["Standalone"] = "standalone";
+    DisplayMode2["Browser"] = "browser";
+  })(DisplayMode = PWA2.DisplayMode || (PWA2.DisplayMode = {}));
+})(PWA || (PWA = {}));
+var Page;
+((Page2) => {
+  let AdFrameType;
+  ((AdFrameType2) => {
+    AdFrameType2["None"] = "none";
+    AdFrameType2["Child"] = "child";
+    AdFrameType2["Root"] = "root";
+  })(AdFrameType = Page2.AdFrameType || (Page2.AdFrameType = {}));
+  let AdFrameExplanation;
+  ((AdFrameExplanation2) => {
+    AdFrameExplanation2["ParentIsAd"] = "ParentIsAd";
+    AdFrameExplanation2["CreatedByAdScript"] = "CreatedByAdScript";
+    AdFrameExplanation2["MatchedBlockingRule"] = "MatchedBlockingRule";
+  })(AdFrameExplanation = Page2.AdFrameExplanation || (Page2.AdFrameExplanation = {}));
+  let SecureContextType;
+  ((SecureContextType2) => {
+    SecureContextType2["Secure"] = "Secure";
+    SecureContextType2["SecureLocalhost"] = "SecureLocalhost";
+    SecureContextType2["InsecureScheme"] = "InsecureScheme";
+    SecureContextType2["InsecureAncestor"] = "InsecureAncestor";
+  })(SecureContextType = Page2.SecureContextType || (Page2.SecureContextType = {}));
+  let CrossOriginIsolatedContextType;
+  ((CrossOriginIsolatedContextType2) => {
+    CrossOriginIsolatedContextType2["Isolated"] = "Isolated";
+    CrossOriginIsolatedContextType2["NotIsolated"] = "NotIsolated";
+    CrossOriginIsolatedContextType2["NotIsolatedFeatureDisabled"] = "NotIsolatedFeatureDisabled";
+  })(CrossOriginIsolatedContextType = Page2.CrossOriginIsolatedContextType || (Page2.CrossOriginIsolatedContextType = {}));
+  let GatedAPIFeatures;
+  ((GatedAPIFeatures2) => {
+    GatedAPIFeatures2["SharedArrayBuffers"] = "SharedArrayBuffers";
+    GatedAPIFeatures2["SharedArrayBuffersTransferAllowed"] = "SharedArrayBuffersTransferAllowed";
+    GatedAPIFeatures2["PerformanceMeasureMemory"] = "PerformanceMeasureMemory";
+    GatedAPIFeatures2["PerformanceProfile"] = "PerformanceProfile";
+  })(GatedAPIFeatures = Page2.GatedAPIFeatures || (Page2.GatedAPIFeatures = {}));
+  let PermissionsPolicyFeature;
+  ((PermissionsPolicyFeature2) => {
+    PermissionsPolicyFeature2["Accelerometer"] = "accelerometer";
+    PermissionsPolicyFeature2["AllScreensCapture"] = "all-screens-capture";
+    PermissionsPolicyFeature2["AmbientLightSensor"] = "ambient-light-sensor";
+    PermissionsPolicyFeature2["AriaNotify"] = "aria-notify";
+    PermissionsPolicyFeature2["Autofill"] = "autofill";
+    PermissionsPolicyFeature2["Autoplay"] = "autoplay";
+    PermissionsPolicyFeature2["Bluetooth"] = "bluetooth";
+    PermissionsPolicyFeature2["BrowsingTopics"] = "browsing-topics";
+    PermissionsPolicyFeature2["Camera"] = "camera";
+    PermissionsPolicyFeature2["CapturedSurfaceControl"] = "captured-surface-control";
+    PermissionsPolicyFeature2["ChDpr"] = "ch-dpr";
+    PermissionsPolicyFeature2["ChDeviceMemory"] = "ch-device-memory";
+    PermissionsPolicyFeature2["ChDownlink"] = "ch-downlink";
+    PermissionsPolicyFeature2["ChEct"] = "ch-ect";
+    PermissionsPolicyFeature2["ChPrefersColorScheme"] = "ch-prefers-color-scheme";
+    PermissionsPolicyFeature2["ChPrefersReducedMotion"] = "ch-prefers-reduced-motion";
+    PermissionsPolicyFeature2["ChPrefersReducedTransparency"] = "ch-prefers-reduced-transparency";
+    PermissionsPolicyFeature2["ChRtt"] = "ch-rtt";
+    PermissionsPolicyFeature2["ChSaveData"] = "ch-save-data";
+    PermissionsPolicyFeature2["ChUa"] = "ch-ua";
+    PermissionsPolicyFeature2["ChUaArch"] = "ch-ua-arch";
+    PermissionsPolicyFeature2["ChUaBitness"] = "ch-ua-bitness";
+    PermissionsPolicyFeature2["ChUaHighEntropyValues"] = "ch-ua-high-entropy-values";
+    PermissionsPolicyFeature2["ChUaPlatform"] = "ch-ua-platform";
+    PermissionsPolicyFeature2["ChUaModel"] = "ch-ua-model";
+    PermissionsPolicyFeature2["ChUaMobile"] = "ch-ua-mobile";
+    PermissionsPolicyFeature2["ChUaFormFactors"] = "ch-ua-form-factors";
+    PermissionsPolicyFeature2["ChUaFullVersion"] = "ch-ua-full-version";
+    PermissionsPolicyFeature2["ChUaFullVersionList"] = "ch-ua-full-version-list";
+    PermissionsPolicyFeature2["ChUaPlatformVersion"] = "ch-ua-platform-version";
+    PermissionsPolicyFeature2["ChUaWow64"] = "ch-ua-wow64";
+    PermissionsPolicyFeature2["ChViewportHeight"] = "ch-viewport-height";
+    PermissionsPolicyFeature2["ChViewportWidth"] = "ch-viewport-width";
+    PermissionsPolicyFeature2["ChWidth"] = "ch-width";
+    PermissionsPolicyFeature2["ClipboardRead"] = "clipboard-read";
+    PermissionsPolicyFeature2["ClipboardWrite"] = "clipboard-write";
+    PermissionsPolicyFeature2["ComputePressure"] = "compute-pressure";
+    PermissionsPolicyFeature2["ControlledFrame"] = "controlled-frame";
+    PermissionsPolicyFeature2["CrossOriginIsolated"] = "cross-origin-isolated";
+    PermissionsPolicyFeature2["DeferredFetch"] = "deferred-fetch";
+    PermissionsPolicyFeature2["DeferredFetchMinimal"] = "deferred-fetch-minimal";
+    PermissionsPolicyFeature2["DeviceAttributes"] = "device-attributes";
+    PermissionsPolicyFeature2["DigitalCredentialsCreate"] = "digital-credentials-create";
+    PermissionsPolicyFeature2["DigitalCredentialsGet"] = "digital-credentials-get";
+    PermissionsPolicyFeature2["DirectSockets"] = "direct-sockets";
+    PermissionsPolicyFeature2["DirectSocketsMulticast"] = "direct-sockets-multicast";
+    PermissionsPolicyFeature2["DisplayCapture"] = "display-capture";
+    PermissionsPolicyFeature2["DocumentDomain"] = "document-domain";
+    PermissionsPolicyFeature2["EncryptedMedia"] = "encrypted-media";
+    PermissionsPolicyFeature2["ExecutionWhileOutOfViewport"] = "execution-while-out-of-viewport";
+    PermissionsPolicyFeature2["ExecutionWhileNotRendered"] = "execution-while-not-rendered";
+    PermissionsPolicyFeature2["FocusWithoutUserActivation"] = "focus-without-user-activation";
+    PermissionsPolicyFeature2["Fullscreen"] = "fullscreen";
+    PermissionsPolicyFeature2["Frobulate"] = "frobulate";
+    PermissionsPolicyFeature2["Gamepad"] = "gamepad";
+    PermissionsPolicyFeature2["Geolocation"] = "geolocation";
+    PermissionsPolicyFeature2["Gyroscope"] = "gyroscope";
+    PermissionsPolicyFeature2["Haptics"] = "haptics";
+    PermissionsPolicyFeature2["Hid"] = "hid";
+    PermissionsPolicyFeature2["IdentityCredentialsGet"] = "identity-credentials-get";
+    PermissionsPolicyFeature2["IdleDetection"] = "idle-detection";
+    PermissionsPolicyFeature2["InterestCohort"] = "interest-cohort";
+    PermissionsPolicyFeature2["KeyboardMap"] = "keyboard-map";
+    PermissionsPolicyFeature2["LanguageDetector"] = "language-detector";
+    PermissionsPolicyFeature2["LanguageModel"] = "language-model";
+    PermissionsPolicyFeature2["LocalFonts"] = "local-fonts";
+    PermissionsPolicyFeature2["LocalNetwork"] = "local-network";
+    PermissionsPolicyFeature2["LocalNetworkAccess"] = "local-network-access";
+    PermissionsPolicyFeature2["LoopbackNetwork"] = "loopback-network";
+    PermissionsPolicyFeature2["Magnetometer"] = "magnetometer";
+    PermissionsPolicyFeature2["ManualText"] = "manual-text";
+    PermissionsPolicyFeature2["MediaPlaybackWhileNotVisible"] = "media-playback-while-not-visible";
+    PermissionsPolicyFeature2["Microphone"] = "microphone";
+    PermissionsPolicyFeature2["Midi"] = "midi";
+    PermissionsPolicyFeature2["OnDeviceSpeechRecognition"] = "on-device-speech-recognition";
+    PermissionsPolicyFeature2["OtpCredentials"] = "otp-credentials";
+    PermissionsPolicyFeature2["Payment"] = "payment";
+    PermissionsPolicyFeature2["PictureInPicture"] = "picture-in-picture";
+    PermissionsPolicyFeature2["PrivateStateTokenIssuance"] = "private-state-token-issuance";
+    PermissionsPolicyFeature2["PrivateStateTokenRedemption"] = "private-state-token-redemption";
+    PermissionsPolicyFeature2["PublickeyCredentialsCreate"] = "publickey-credentials-create";
+    PermissionsPolicyFeature2["PublickeyCredentialsGet"] = "publickey-credentials-get";
+    PermissionsPolicyFeature2["Rewriter"] = "rewriter";
+    PermissionsPolicyFeature2["ScreenWakeLock"] = "screen-wake-lock";
+    PermissionsPolicyFeature2["Serial"] = "serial";
+    PermissionsPolicyFeature2["SharedStorage"] = "shared-storage";
+    PermissionsPolicyFeature2["SharedStorageSelectUrl"] = "shared-storage-select-url";
+    PermissionsPolicyFeature2["SmartCard"] = "smart-card";
+    PermissionsPolicyFeature2["SpeakerSelection"] = "speaker-selection";
+    PermissionsPolicyFeature2["StorageAccess"] = "storage-access";
+    PermissionsPolicyFeature2["SubApps"] = "sub-apps";
+    PermissionsPolicyFeature2["Summarizer"] = "summarizer";
+    PermissionsPolicyFeature2["SyncXhr"] = "sync-xhr";
+    PermissionsPolicyFeature2["Tools"] = "tools";
+    PermissionsPolicyFeature2["Translator"] = "translator";
+    PermissionsPolicyFeature2["Unload"] = "unload";
+    PermissionsPolicyFeature2["Usb"] = "usb";
+    PermissionsPolicyFeature2["UsbUnrestricted"] = "usb-unrestricted";
+    PermissionsPolicyFeature2["VerticalScroll"] = "vertical-scroll";
+    PermissionsPolicyFeature2["WebAppInstallation"] = "web-app-installation";
+    PermissionsPolicyFeature2["Webnn"] = "webnn";
+    PermissionsPolicyFeature2["WebPrinting"] = "web-printing";
+    PermissionsPolicyFeature2["WebShare"] = "web-share";
+    PermissionsPolicyFeature2["WindowManagement"] = "window-management";
+    PermissionsPolicyFeature2["Writer"] = "writer";
+    PermissionsPolicyFeature2["XrSpatialTracking"] = "xr-spatial-tracking";
+  })(PermissionsPolicyFeature = Page2.PermissionsPolicyFeature || (Page2.PermissionsPolicyFeature = {}));
+  let PermissionsPolicyBlockReason;
+  ((PermissionsPolicyBlockReason2) => {
+    PermissionsPolicyBlockReason2["Header"] = "Header";
+    PermissionsPolicyBlockReason2["IframeAttribute"] = "IframeAttribute";
+    PermissionsPolicyBlockReason2["InFencedFrameTree"] = "InFencedFrameTree";
+    PermissionsPolicyBlockReason2["InIsolatedApp"] = "InIsolatedApp";
+  })(PermissionsPolicyBlockReason = Page2.PermissionsPolicyBlockReason || (Page2.PermissionsPolicyBlockReason = {}));
+  let OriginTrialTokenStatus;
+  ((OriginTrialTokenStatus2) => {
+    OriginTrialTokenStatus2["Success"] = "Success";
+    OriginTrialTokenStatus2["NotSupported"] = "NotSupported";
+    OriginTrialTokenStatus2["Insecure"] = "Insecure";
+    OriginTrialTokenStatus2["Expired"] = "Expired";
+    OriginTrialTokenStatus2["WrongOrigin"] = "WrongOrigin";
+    OriginTrialTokenStatus2["InvalidSignature"] = "InvalidSignature";
+    OriginTrialTokenStatus2["Malformed"] = "Malformed";
+    OriginTrialTokenStatus2["WrongVersion"] = "WrongVersion";
+    OriginTrialTokenStatus2["FeatureDisabled"] = "FeatureDisabled";
+    OriginTrialTokenStatus2["TokenDisabled"] = "TokenDisabled";
+    OriginTrialTokenStatus2["FeatureDisabledForUser"] = "FeatureDisabledForUser";
+    OriginTrialTokenStatus2["UnknownTrial"] = "UnknownTrial";
+  })(OriginTrialTokenStatus = Page2.OriginTrialTokenStatus || (Page2.OriginTrialTokenStatus = {}));
+  let OriginTrialStatus;
+  ((OriginTrialStatus2) => {
+    OriginTrialStatus2["Enabled"] = "Enabled";
+    OriginTrialStatus2["ValidTokenNotProvided"] = "ValidTokenNotProvided";
+    OriginTrialStatus2["OSNotSupported"] = "OSNotSupported";
+    OriginTrialStatus2["TrialNotAllowed"] = "TrialNotAllowed";
+  })(OriginTrialStatus = Page2.OriginTrialStatus || (Page2.OriginTrialStatus = {}));
+  let OriginTrialUsageRestriction;
+  ((OriginTrialUsageRestriction2) => {
+    OriginTrialUsageRestriction2["None"] = "None";
+    OriginTrialUsageRestriction2["Subset"] = "Subset";
+  })(OriginTrialUsageRestriction = Page2.OriginTrialUsageRestriction || (Page2.OriginTrialUsageRestriction = {}));
+  let TransitionType;
+  ((TransitionType2) => {
+    TransitionType2["Link"] = "link";
+    TransitionType2["Typed"] = "typed";
+    TransitionType2["Address_bar"] = "address_bar";
+    TransitionType2["Auto_bookmark"] = "auto_bookmark";
+    TransitionType2["Auto_subframe"] = "auto_subframe";
+    TransitionType2["Manual_subframe"] = "manual_subframe";
+    TransitionType2["Generated"] = "generated";
+    TransitionType2["Auto_toplevel"] = "auto_toplevel";
+    TransitionType2["Form_submit"] = "form_submit";
+    TransitionType2["Reload"] = "reload";
+    TransitionType2["Keyword"] = "keyword";
+    TransitionType2["Keyword_generated"] = "keyword_generated";
+    TransitionType2["Other"] = "other";
+  })(TransitionType = Page2.TransitionType || (Page2.TransitionType = {}));
+  let DialogType;
+  ((DialogType2) => {
+    DialogType2["Alert"] = "alert";
+    DialogType2["Confirm"] = "confirm";
+    DialogType2["Prompt"] = "prompt";
+    DialogType2["Beforeunload"] = "beforeunload";
+  })(DialogType = Page2.DialogType || (Page2.DialogType = {}));
+  let ClientNavigationReason;
+  ((ClientNavigationReason2) => {
+    ClientNavigationReason2["AnchorClick"] = "anchorClick";
+    ClientNavigationReason2["FormSubmissionGet"] = "formSubmissionGet";
+    ClientNavigationReason2["FormSubmissionPost"] = "formSubmissionPost";
+    ClientNavigationReason2["HttpHeaderRefresh"] = "httpHeaderRefresh";
+    ClientNavigationReason2["InitialFrameNavigation"] = "initialFrameNavigation";
+    ClientNavigationReason2["MetaTagRefresh"] = "metaTagRefresh";
+    ClientNavigationReason2["Other"] = "other";
+    ClientNavigationReason2["PageBlockInterstitial"] = "pageBlockInterstitial";
+    ClientNavigationReason2["Reload"] = "reload";
+    ClientNavigationReason2["ScriptInitiated"] = "scriptInitiated";
+  })(ClientNavigationReason = Page2.ClientNavigationReason || (Page2.ClientNavigationReason = {}));
+  let ClientNavigationDisposition;
+  ((ClientNavigationDisposition2) => {
+    ClientNavigationDisposition2["CurrentTab"] = "currentTab";
+    ClientNavigationDisposition2["NewTab"] = "newTab";
+    ClientNavigationDisposition2["NewWindow"] = "newWindow";
+    ClientNavigationDisposition2["Download"] = "download";
+  })(ClientNavigationDisposition = Page2.ClientNavigationDisposition || (Page2.ClientNavigationDisposition = {}));
+  let ReferrerPolicy;
+  ((ReferrerPolicy2) => {
+    ReferrerPolicy2["NoReferrer"] = "noReferrer";
+    ReferrerPolicy2["NoReferrerWhenDowngrade"] = "noReferrerWhenDowngrade";
+    ReferrerPolicy2["Origin"] = "origin";
+    ReferrerPolicy2["OriginWhenCrossOrigin"] = "originWhenCrossOrigin";
+    ReferrerPolicy2["SameOrigin"] = "sameOrigin";
+    ReferrerPolicy2["StrictOrigin"] = "strictOrigin";
+    ReferrerPolicy2["StrictOriginWhenCrossOrigin"] = "strictOriginWhenCrossOrigin";
+    ReferrerPolicy2["UnsafeUrl"] = "unsafeUrl";
+  })(ReferrerPolicy = Page2.ReferrerPolicy || (Page2.ReferrerPolicy = {}));
+  let NavigationType;
+  ((NavigationType2) => {
+    NavigationType2["Navigation"] = "Navigation";
+    NavigationType2["BackForwardCacheRestore"] = "BackForwardCacheRestore";
+  })(NavigationType = Page2.NavigationType || (Page2.NavigationType = {}));
+  let BackForwardCacheNotRestoredReason;
+  ((BackForwardCacheNotRestoredReason2) => {
+    BackForwardCacheNotRestoredReason2["NotPrimaryMainFrame"] = "NotPrimaryMainFrame";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabled"] = "BackForwardCacheDisabled";
+    BackForwardCacheNotRestoredReason2["RelatedActiveContentsExist"] = "RelatedActiveContentsExist";
+    BackForwardCacheNotRestoredReason2["HTTPStatusNotOK"] = "HTTPStatusNotOK";
+    BackForwardCacheNotRestoredReason2["SchemeNotHTTPOrHTTPS"] = "SchemeNotHTTPOrHTTPS";
+    BackForwardCacheNotRestoredReason2["Loading"] = "Loading";
+    BackForwardCacheNotRestoredReason2["WasGrantedMediaAccess"] = "WasGrantedMediaAccess";
+    BackForwardCacheNotRestoredReason2["DisableForRenderFrameHostCalled"] = "DisableForRenderFrameHostCalled";
+    BackForwardCacheNotRestoredReason2["DomainNotAllowed"] = "DomainNotAllowed";
+    BackForwardCacheNotRestoredReason2["HTTPMethodNotGET"] = "HTTPMethodNotGET";
+    BackForwardCacheNotRestoredReason2["SubframeIsNavigating"] = "SubframeIsNavigating";
+    BackForwardCacheNotRestoredReason2["Timeout"] = "Timeout";
+    BackForwardCacheNotRestoredReason2["CacheLimit"] = "CacheLimit";
+    BackForwardCacheNotRestoredReason2["JavaScriptExecution"] = "JavaScriptExecution";
+    BackForwardCacheNotRestoredReason2["RendererProcessKilled"] = "RendererProcessKilled";
+    BackForwardCacheNotRestoredReason2["RendererProcessCrashed"] = "RendererProcessCrashed";
+    BackForwardCacheNotRestoredReason2["SchedulerTrackedFeatureUsed"] = "SchedulerTrackedFeatureUsed";
+    BackForwardCacheNotRestoredReason2["ConflictingBrowsingInstance"] = "ConflictingBrowsingInstance";
+    BackForwardCacheNotRestoredReason2["CacheFlushed"] = "CacheFlushed";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerVersionActivation"] = "ServiceWorkerVersionActivation";
+    BackForwardCacheNotRestoredReason2["SessionRestored"] = "SessionRestored";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerPostMessage"] = "ServiceWorkerPostMessage";
+    BackForwardCacheNotRestoredReason2["EnteredBackForwardCacheBeforeServiceWorkerHostAdded"] = "EnteredBackForwardCacheBeforeServiceWorkerHostAdded";
+    BackForwardCacheNotRestoredReason2["RenderFrameHostReused_SameSite"] = "RenderFrameHostReused_SameSite";
+    BackForwardCacheNotRestoredReason2["RenderFrameHostReused_CrossSite"] = "RenderFrameHostReused_CrossSite";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerClaim"] = "ServiceWorkerClaim";
+    BackForwardCacheNotRestoredReason2["IgnoreEventAndEvict"] = "IgnoreEventAndEvict";
+    BackForwardCacheNotRestoredReason2["HaveInnerContents"] = "HaveInnerContents";
+    BackForwardCacheNotRestoredReason2["TimeoutPuttingInCache"] = "TimeoutPuttingInCache";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledByLowMemory"] = "BackForwardCacheDisabledByLowMemory";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledByCommandLine"] = "BackForwardCacheDisabledByCommandLine";
+    BackForwardCacheNotRestoredReason2["NetworkRequestDatAPIpeDrainedAsBytesConsumer"] = "NetworkRequestDatapipeDrainedAsBytesConsumer";
+    BackForwardCacheNotRestoredReason2["NetworkRequestRedirected"] = "NetworkRequestRedirected";
+    BackForwardCacheNotRestoredReason2["NetworkRequestTimeout"] = "NetworkRequestTimeout";
+    BackForwardCacheNotRestoredReason2["NetworkExceedsBufferLimit"] = "NetworkExceedsBufferLimit";
+    BackForwardCacheNotRestoredReason2["NavigationCancelledWhileRestoring"] = "NavigationCancelledWhileRestoring";
+    BackForwardCacheNotRestoredReason2["NotMostRecentNavigationEntry"] = "NotMostRecentNavigationEntry";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledForPrerender"] = "BackForwardCacheDisabledForPrerender";
+    BackForwardCacheNotRestoredReason2["UserAgentOverrideDiffers"] = "UserAgentOverrideDiffers";
+    BackForwardCacheNotRestoredReason2["ForegroundCacheLimit"] = "ForegroundCacheLimit";
+    BackForwardCacheNotRestoredReason2["ForwardCacheDisabled"] = "ForwardCacheDisabled";
+    BackForwardCacheNotRestoredReason2["BrowsingInstanceNotSwapped"] = "BrowsingInstanceNotSwapped";
+    BackForwardCacheNotRestoredReason2["BackForwardCacheDisabledForDelegate"] = "BackForwardCacheDisabledForDelegate";
+    BackForwardCacheNotRestoredReason2["UnloadHandlerExistsInMainFrame"] = "UnloadHandlerExistsInMainFrame";
+    BackForwardCacheNotRestoredReason2["UnloadHandlerExistsInSubFrame"] = "UnloadHandlerExistsInSubFrame";
+    BackForwardCacheNotRestoredReason2["ServiceWorkerUnregistration"] = "ServiceWorkerUnregistration";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStore"] = "CacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreCookieModified"] = "CacheControlNoStoreCookieModified";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreHTTPOnlyCookieModified"] = "CacheControlNoStoreHTTPOnlyCookieModified";
+    BackForwardCacheNotRestoredReason2["NoResponseHead"] = "NoResponseHead";
+    BackForwardCacheNotRestoredReason2["Unknown"] = "Unknown";
+    BackForwardCacheNotRestoredReason2["ActivationNavigationsDisallowedForBug1234857"] = "ActivationNavigationsDisallowedForBug1234857";
+    BackForwardCacheNotRestoredReason2["ErrorDocument"] = "ErrorDocument";
+    BackForwardCacheNotRestoredReason2["FencedFramesEmbedder"] = "FencedFramesEmbedder";
+    BackForwardCacheNotRestoredReason2["CookieDisabled"] = "CookieDisabled";
+    BackForwardCacheNotRestoredReason2["HTTPAuthRequired"] = "HTTPAuthRequired";
+    BackForwardCacheNotRestoredReason2["CookieFlushed"] = "CookieFlushed";
+    BackForwardCacheNotRestoredReason2["BroadcastChannelOnMessage"] = "BroadcastChannelOnMessage";
+    BackForwardCacheNotRestoredReason2["WebViewSettingsChanged"] = "WebViewSettingsChanged";
+    BackForwardCacheNotRestoredReason2["WebViewJavaScriptObjectChanged"] = "WebViewJavaScriptObjectChanged";
+    BackForwardCacheNotRestoredReason2["WebViewMessageListenerInjected"] = "WebViewMessageListenerInjected";
+    BackForwardCacheNotRestoredReason2["WebViewSafeBrowsingAllowlistChanged"] = "WebViewSafeBrowsingAllowlistChanged";
+    BackForwardCacheNotRestoredReason2["WebViewDocumentStartJavascriptChanged"] = "WebViewDocumentStartJavascriptChanged";
+    BackForwardCacheNotRestoredReason2["WebSocket"] = "WebSocket";
+    BackForwardCacheNotRestoredReason2["WebTransport"] = "WebTransport";
+    BackForwardCacheNotRestoredReason2["WebRTC"] = "WebRTC";
+    BackForwardCacheNotRestoredReason2["MainResourceHasCacheControlNoStore"] = "MainResourceHasCacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["MainResourceHasCacheControlNoCache"] = "MainResourceHasCacheControlNoCache";
+    BackForwardCacheNotRestoredReason2["SubresourceHasCacheControlNoStore"] = "SubresourceHasCacheControlNoStore";
+    BackForwardCacheNotRestoredReason2["SubresourceHasCacheControlNoCache"] = "SubresourceHasCacheControlNoCache";
+    BackForwardCacheNotRestoredReason2["ContainsPlugins"] = "ContainsPlugins";
+    BackForwardCacheNotRestoredReason2["DocumentLoaded"] = "DocumentLoaded";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestOthers"] = "OutstandingNetworkRequestOthers";
+    BackForwardCacheNotRestoredReason2["RequestedMIDIPermission"] = "RequestedMIDIPermission";
+    BackForwardCacheNotRestoredReason2["RequestedAudioCapturePermission"] = "RequestedAudioCapturePermission";
+    BackForwardCacheNotRestoredReason2["RequestedVideoCapturePermission"] = "RequestedVideoCapturePermission";
+    BackForwardCacheNotRestoredReason2["RequestedBackForwardCacheBlockedSensors"] = "RequestedBackForwardCacheBlockedSensors";
+    BackForwardCacheNotRestoredReason2["RequestedBackgroundWorkPermission"] = "RequestedBackgroundWorkPermission";
+    BackForwardCacheNotRestoredReason2["BroadcastChannel"] = "BroadcastChannel";
+    BackForwardCacheNotRestoredReason2["WebXR"] = "WebXR";
+    BackForwardCacheNotRestoredReason2["SharedWorker"] = "SharedWorker";
+    BackForwardCacheNotRestoredReason2["SharedWorkerMessage"] = "SharedWorkerMessage";
+    BackForwardCacheNotRestoredReason2["SharedWorkerWithNoActiveClient"] = "SharedWorkerWithNoActiveClient";
+    BackForwardCacheNotRestoredReason2["WebLocks"] = "WebLocks";
+    BackForwardCacheNotRestoredReason2["WebLocksContention"] = "WebLocksContention";
+    BackForwardCacheNotRestoredReason2["WebHID"] = "WebHID";
+    BackForwardCacheNotRestoredReason2["WebBluetooth"] = "WebBluetooth";
+    BackForwardCacheNotRestoredReason2["WebShare"] = "WebShare";
+    BackForwardCacheNotRestoredReason2["RequestedStorageAccessGrant"] = "RequestedStorageAccessGrant";
+    BackForwardCacheNotRestoredReason2["WebNfc"] = "WebNfc";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestFetch"] = "OutstandingNetworkRequestFetch";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestXHR"] = "OutstandingNetworkRequestXHR";
+    BackForwardCacheNotRestoredReason2["AppBanner"] = "AppBanner";
+    BackForwardCacheNotRestoredReason2["Printing"] = "Printing";
+    BackForwardCacheNotRestoredReason2["WebDatabase"] = "WebDatabase";
+    BackForwardCacheNotRestoredReason2["PictureInPicture"] = "PictureInPicture";
+    BackForwardCacheNotRestoredReason2["SpeechRecognizer"] = "SpeechRecognizer";
+    BackForwardCacheNotRestoredReason2["IdleManager"] = "IdleManager";
+    BackForwardCacheNotRestoredReason2["PaymentManager"] = "PaymentManager";
+    BackForwardCacheNotRestoredReason2["SpeechSynthesis"] = "SpeechSynthesis";
+    BackForwardCacheNotRestoredReason2["KeyboardLock"] = "KeyboardLock";
+    BackForwardCacheNotRestoredReason2["WebOTPService"] = "WebOTPService";
+    BackForwardCacheNotRestoredReason2["OutstandingNetworkRequestDirectSocket"] = "OutstandingNetworkRequestDirectSocket";
+    BackForwardCacheNotRestoredReason2["InjectedJavascript"] = "InjectedJavascript";
+    BackForwardCacheNotRestoredReason2["InjectedStyleSheet"] = "InjectedStyleSheet";
+    BackForwardCacheNotRestoredReason2["KeepaliveRequest"] = "KeepaliveRequest";
+    BackForwardCacheNotRestoredReason2["IndexedDBEvent"] = "IndexedDBEvent";
+    BackForwardCacheNotRestoredReason2["Dummy"] = "Dummy";
+    BackForwardCacheNotRestoredReason2["JsNetworkRequestReceivedCacheControlNoStoreResource"] = "JsNetworkRequestReceivedCacheControlNoStoreResource";
+    BackForwardCacheNotRestoredReason2["WebRTCUsedWithCCNS"] = "WebRTCUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["WebTransportUsedWithCCNS"] = "WebTransportUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["WebSocketUsedWithCCNS"] = "WebSocketUsedWithCCNS";
+    BackForwardCacheNotRestoredReason2["SmartCard"] = "SmartCard";
+    BackForwardCacheNotRestoredReason2["LiveMediaStreamTrack"] = "LiveMediaStreamTrack";
+    BackForwardCacheNotRestoredReason2["UnloadHandler"] = "UnloadHandler";
+    BackForwardCacheNotRestoredReason2["ParserAborted"] = "ParserAborted";
+    BackForwardCacheNotRestoredReason2["ContentSecurityHandler"] = "ContentSecurityHandler";
+    BackForwardCacheNotRestoredReason2["ContentWebAuthenticationAPI"] = "ContentWebAuthenticationAPI";
+    BackForwardCacheNotRestoredReason2["ContentFileChooser"] = "ContentFileChooser";
+    BackForwardCacheNotRestoredReason2["ContentSerial"] = "ContentSerial";
+    BackForwardCacheNotRestoredReason2["ContentFileSystemAccess"] = "ContentFileSystemAccess";
+    BackForwardCacheNotRestoredReason2["ContentMediaDevicesDispatcherHost"] = "ContentMediaDevicesDispatcherHost";
+    BackForwardCacheNotRestoredReason2["ContentWebBluetooth"] = "ContentWebBluetooth";
+    BackForwardCacheNotRestoredReason2["ContentWebUSB"] = "ContentWebUSB";
+    BackForwardCacheNotRestoredReason2["ContentMediaSessionService"] = "ContentMediaSessionService";
+    BackForwardCacheNotRestoredReason2["ContentScreenReader"] = "ContentScreenReader";
+    BackForwardCacheNotRestoredReason2["ContentDiscarded"] = "ContentDiscarded";
+    BackForwardCacheNotRestoredReason2["EmbedderPopupBlockerTabHelper"] = "EmbedderPopupBlockerTabHelper";
+    BackForwardCacheNotRestoredReason2["EmbedderSafeBrowsingTriggeredPopupBlocker"] = "EmbedderSafeBrowsingTriggeredPopupBlocker";
+    BackForwardCacheNotRestoredReason2["EmbedderSafeBrowsingThreatDetails"] = "EmbedderSafeBrowsingThreatDetails";
+    BackForwardCacheNotRestoredReason2["EmbedderAppBannerManager"] = "EmbedderAppBannerManager";
+    BackForwardCacheNotRestoredReason2["EmbedderDomDistillerViewerSource"] = "EmbedderDomDistillerViewerSource";
+    BackForwardCacheNotRestoredReason2["EmbedderDomDistillerSelfDeletingRequestDelegate"] = "EmbedderDomDistillerSelfDeletingRequestDelegate";
+    BackForwardCacheNotRestoredReason2["EmbedderOomInterventionTabHelper"] = "EmbedderOomInterventionTabHelper";
+    BackForwardCacheNotRestoredReason2["EmbedderOfflinePage"] = "EmbedderOfflinePage";
+    BackForwardCacheNotRestoredReason2["EmbedderChromePasswordManagerClientBindCredentialManager"] = "EmbedderChromePasswordManagerClientBindCredentialManager";
+    BackForwardCacheNotRestoredReason2["EmbedderPermissionRequestManager"] = "EmbedderPermissionRequestManager";
+    BackForwardCacheNotRestoredReason2["EmbedderModalDialog"] = "EmbedderModalDialog";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensions"] = "EmbedderExtensions";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionMessaging"] = "EmbedderExtensionMessaging";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionMessagingForOpenPort"] = "EmbedderExtensionMessagingForOpenPort";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionSentMessageToCachedFrame"] = "EmbedderExtensionSentMessageToCachedFrame";
+    BackForwardCacheNotRestoredReason2["EmbedderExtensionFrame"] = "EmbedderExtensionFrame";
+    BackForwardCacheNotRestoredReason2["EmbedderPrivilegedWebContents"] = "EmbedderPrivilegedWebContents";
+    BackForwardCacheNotRestoredReason2["RequestedByWebViewClient"] = "RequestedByWebViewClient";
+    BackForwardCacheNotRestoredReason2["PostMessageByWebViewClient"] = "PostMessageByWebViewClient";
+    BackForwardCacheNotRestoredReason2["CacheControlNoStoreDeviceBoundSessionTerminated"] = "CacheControlNoStoreDeviceBoundSessionTerminated";
+    BackForwardCacheNotRestoredReason2["CacheLimitPrunedOnModerateMemoryPressure"] = "CacheLimitPrunedOnModerateMemoryPressure";
+    BackForwardCacheNotRestoredReason2["CacheLimitPrunedOnCriticalMemoryPressure"] = "CacheLimitPrunedOnCriticalMemoryPressure";
+  })(BackForwardCacheNotRestoredReason = Page2.BackForwardCacheNotRestoredReason || (Page2.BackForwardCacheNotRestoredReason = {}));
+  let BackForwardCacheNotRestoredReasonType;
+  ((BackForwardCacheNotRestoredReasonType2) => {
+    BackForwardCacheNotRestoredReasonType2["SupportPending"] = "SupportPending";
+    BackForwardCacheNotRestoredReasonType2["PageSupportNeeded"] = "PageSupportNeeded";
+    BackForwardCacheNotRestoredReasonType2["Circumstantial"] = "Circumstantial";
+  })(BackForwardCacheNotRestoredReasonType = Page2.BackForwardCacheNotRestoredReasonType || (Page2.BackForwardCacheNotRestoredReasonType = {}));
+  let CaptureScreenshotRequestFormat;
+  ((CaptureScreenshotRequestFormat2) => {
+    CaptureScreenshotRequestFormat2["Jpeg"] = "jpeg";
+    CaptureScreenshotRequestFormat2["Png"] = "png";
+    CaptureScreenshotRequestFormat2["Webp"] = "webp";
+  })(CaptureScreenshotRequestFormat = Page2.CaptureScreenshotRequestFormat || (Page2.CaptureScreenshotRequestFormat = {}));
+  let CaptureSnapshotRequestFormat;
+  ((CaptureSnapshotRequestFormat2) => {
+    CaptureSnapshotRequestFormat2["MHTML"] = "mhtml";
+  })(CaptureSnapshotRequestFormat = Page2.CaptureSnapshotRequestFormat || (Page2.CaptureSnapshotRequestFormat = {}));
+  let PrintToPDFRequestTransferMode;
+  ((PrintToPDFRequestTransferMode2) => {
+    PrintToPDFRequestTransferMode2["ReturnAsBase64"] = "ReturnAsBase64";
+    PrintToPDFRequestTransferMode2["ReturnAsStream"] = "ReturnAsStream";
+  })(PrintToPDFRequestTransferMode = Page2.PrintToPDFRequestTransferMode || (Page2.PrintToPDFRequestTransferMode = {}));
+  let SetDownloadBehaviorRequestBehavior;
+  ((SetDownloadBehaviorRequestBehavior2) => {
+    SetDownloadBehaviorRequestBehavior2["Deny"] = "deny";
+    SetDownloadBehaviorRequestBehavior2["Allow"] = "allow";
+    SetDownloadBehaviorRequestBehavior2["Default"] = "default";
+  })(SetDownloadBehaviorRequestBehavior = Page2.SetDownloadBehaviorRequestBehavior || (Page2.SetDownloadBehaviorRequestBehavior = {}));
+  let SetTouchEmulationEnabledRequestConfiguration;
+  ((SetTouchEmulationEnabledRequestConfiguration2) => {
+    SetTouchEmulationEnabledRequestConfiguration2["Mobile"] = "mobile";
+    SetTouchEmulationEnabledRequestConfiguration2["Desktop"] = "desktop";
+  })(SetTouchEmulationEnabledRequestConfiguration = Page2.SetTouchEmulationEnabledRequestConfiguration || (Page2.SetTouchEmulationEnabledRequestConfiguration = {}));
+  let StartScreencastRequestFormat;
+  ((StartScreencastRequestFormat2) => {
+    StartScreencastRequestFormat2["Jpeg"] = "jpeg";
+    StartScreencastRequestFormat2["Png"] = "png";
+  })(StartScreencastRequestFormat = Page2.StartScreencastRequestFormat || (Page2.StartScreencastRequestFormat = {}));
+  let SetWebLifecycleStateRequestState;
+  ((SetWebLifecycleStateRequestState2) => {
+    SetWebLifecycleStateRequestState2["Frozen"] = "frozen";
+    SetWebLifecycleStateRequestState2["Active"] = "active";
+  })(SetWebLifecycleStateRequestState = Page2.SetWebLifecycleStateRequestState || (Page2.SetWebLifecycleStateRequestState = {}));
+  let SetSPCTransactionModeRequestMode;
+  ((SetSPCTransactionModeRequestMode2) => {
+    SetSPCTransactionModeRequestMode2["None"] = "none";
+    SetSPCTransactionModeRequestMode2["AutoAccept"] = "autoAccept";
+    SetSPCTransactionModeRequestMode2["AutoChooseToAuthAnotherWay"] = "autoChooseToAuthAnotherWay";
+    SetSPCTransactionModeRequestMode2["AutoReject"] = "autoReject";
+    SetSPCTransactionModeRequestMode2["AutoOptOut"] = "autoOptOut";
+  })(SetSPCTransactionModeRequestMode = Page2.SetSPCTransactionModeRequestMode || (Page2.SetSPCTransactionModeRequestMode = {}));
+  let SetRPHRegistrationModeRequestMode;
+  ((SetRPHRegistrationModeRequestMode2) => {
+    SetRPHRegistrationModeRequestMode2["None"] = "none";
+    SetRPHRegistrationModeRequestMode2["AutoAccept"] = "autoAccept";
+    SetRPHRegistrationModeRequestMode2["AutoReject"] = "autoReject";
+  })(SetRPHRegistrationModeRequestMode = Page2.SetRPHRegistrationModeRequestMode || (Page2.SetRPHRegistrationModeRequestMode = {}));
+  let FileChooserOpenedEventMode;
+  ((FileChooserOpenedEventMode2) => {
+    FileChooserOpenedEventMode2["SelectSingle"] = "selectSingle";
+    FileChooserOpenedEventMode2["SelectMultiple"] = "selectMultiple";
+  })(FileChooserOpenedEventMode = Page2.FileChooserOpenedEventMode || (Page2.FileChooserOpenedEventMode = {}));
+  let FrameDetachedEventReason;
+  ((FrameDetachedEventReason2) => {
+    FrameDetachedEventReason2["Remove"] = "remove";
+    FrameDetachedEventReason2["Swap"] = "swap";
+  })(FrameDetachedEventReason = Page2.FrameDetachedEventReason || (Page2.FrameDetachedEventReason = {}));
+  let FrameStartedNavigatingEventNavigationType;
+  ((FrameStartedNavigatingEventNavigationType2) => {
+    FrameStartedNavigatingEventNavigationType2["Reload"] = "reload";
+    FrameStartedNavigatingEventNavigationType2["ReloadBypassingCache"] = "reloadBypassingCache";
+    FrameStartedNavigatingEventNavigationType2["Restore"] = "restore";
+    FrameStartedNavigatingEventNavigationType2["RestoreWithPost"] = "restoreWithPost";
+    FrameStartedNavigatingEventNavigationType2["HistorySameDocument"] = "historySameDocument";
+    FrameStartedNavigatingEventNavigationType2["HistoryDifferentDocument"] = "historyDifferentDocument";
+    FrameStartedNavigatingEventNavigationType2["SameDocument"] = "sameDocument";
+    FrameStartedNavigatingEventNavigationType2["DifferentDocument"] = "differentDocument";
+  })(FrameStartedNavigatingEventNavigationType = Page2.FrameStartedNavigatingEventNavigationType || (Page2.FrameStartedNavigatingEventNavigationType = {}));
+  let DownloadProgressEventState;
+  ((DownloadProgressEventState2) => {
+    DownloadProgressEventState2["InProgress"] = "inProgress";
+    DownloadProgressEventState2["Completed"] = "completed";
+    DownloadProgressEventState2["Canceled"] = "canceled";
+  })(DownloadProgressEventState = Page2.DownloadProgressEventState || (Page2.DownloadProgressEventState = {}));
+  let NavigatedWithinDocumentEventNavigationType;
+  ((NavigatedWithinDocumentEventNavigationType2) => {
+    NavigatedWithinDocumentEventNavigationType2["Fragment"] = "fragment";
+    NavigatedWithinDocumentEventNavigationType2["HistoryAPI"] = "historyApi";
+    NavigatedWithinDocumentEventNavigationType2["Other"] = "other";
+  })(NavigatedWithinDocumentEventNavigationType = Page2.NavigatedWithinDocumentEventNavigationType || (Page2.NavigatedWithinDocumentEventNavigationType = {}));
+})(Page || (Page = {}));
+var Performance;
+((Performance2) => {
+  let EnableRequestTimeDomain;
+  ((EnableRequestTimeDomain2) => {
+    EnableRequestTimeDomain2["TimeTicks"] = "timeTicks";
+    EnableRequestTimeDomain2["ThreadTicks"] = "threadTicks";
+  })(EnableRequestTimeDomain = Performance2.EnableRequestTimeDomain || (Performance2.EnableRequestTimeDomain = {}));
+  let SetTimeDomainRequestTimeDomain;
+  ((SetTimeDomainRequestTimeDomain2) => {
+    SetTimeDomainRequestTimeDomain2["TimeTicks"] = "timeTicks";
+    SetTimeDomainRequestTimeDomain2["ThreadTicks"] = "threadTicks";
+  })(SetTimeDomainRequestTimeDomain = Performance2.SetTimeDomainRequestTimeDomain || (Performance2.SetTimeDomainRequestTimeDomain = {}));
+})(Performance || (Performance = {}));
+var Preload;
+((Preload2) => {
+  let RuleSetErrorType;
+  ((RuleSetErrorType2) => {
+    RuleSetErrorType2["SourceIsNotJsonObject"] = "SourceIsNotJsonObject";
+    RuleSetErrorType2["InvalidRulesSkipped"] = "InvalidRulesSkipped";
+    RuleSetErrorType2["InvalidRulesetLevelTag"] = "InvalidRulesetLevelTag";
+  })(RuleSetErrorType = Preload2.RuleSetErrorType || (Preload2.RuleSetErrorType = {}));
+  let SpeculationAction;
+  ((SpeculationAction2) => {
+    SpeculationAction2["Prefetch"] = "Prefetch";
+    SpeculationAction2["Prerender"] = "Prerender";
+    SpeculationAction2["PrerenderUntilScript"] = "PrerenderUntilScript";
+  })(SpeculationAction = Preload2.SpeculationAction || (Preload2.SpeculationAction = {}));
+  let SpeculationTargetHint;
+  ((SpeculationTargetHint2) => {
+    SpeculationTargetHint2["Blank"] = "Blank";
+    SpeculationTargetHint2["Self"] = "Self";
+  })(SpeculationTargetHint = Preload2.SpeculationTargetHint || (Preload2.SpeculationTargetHint = {}));
+  let PrerenderFinalStatus;
+  ((PrerenderFinalStatus2) => {
+    PrerenderFinalStatus2["Activated"] = "Activated";
+    PrerenderFinalStatus2["Destroyed"] = "Destroyed";
+    PrerenderFinalStatus2["LowEndDevice"] = "LowEndDevice";
+    PrerenderFinalStatus2["InvalidSchemeRedirect"] = "InvalidSchemeRedirect";
+    PrerenderFinalStatus2["InvalidSchemeNavigation"] = "InvalidSchemeNavigation";
+    PrerenderFinalStatus2["NavigationRequestBlockedByCsp"] = "NavigationRequestBlockedByCsp";
+    PrerenderFinalStatus2["MojoBinderPolicy"] = "MojoBinderPolicy";
+    PrerenderFinalStatus2["RendererProcessCrashed"] = "RendererProcessCrashed";
+    PrerenderFinalStatus2["RendererProcessKilled"] = "RendererProcessKilled";
+    PrerenderFinalStatus2["Download"] = "Download";
+    PrerenderFinalStatus2["TriggerDestroyed"] = "TriggerDestroyed";
+    PrerenderFinalStatus2["NavigationNotCommitted"] = "NavigationNotCommitted";
+    PrerenderFinalStatus2["NavigationBadHttpStatus"] = "NavigationBadHttpStatus";
+    PrerenderFinalStatus2["ClientCertRequested"] = "ClientCertRequested";
+    PrerenderFinalStatus2["NavigationRequestNetworkError"] = "NavigationRequestNetworkError";
+    PrerenderFinalStatus2["CancelAllHostsForTesting"] = "CancelAllHostsForTesting";
+    PrerenderFinalStatus2["DidFailLoad"] = "DidFailLoad";
+    PrerenderFinalStatus2["Stop"] = "Stop";
+    PrerenderFinalStatus2["SslCertificateError"] = "SslCertificateError";
+    PrerenderFinalStatus2["LoginAuthRequested"] = "LoginAuthRequested";
+    PrerenderFinalStatus2["UaChangeRequiresReload"] = "UaChangeRequiresReload";
+    PrerenderFinalStatus2["BlockedByClient"] = "BlockedByClient";
+    PrerenderFinalStatus2["AudioOutputDeviceRequested"] = "AudioOutputDeviceRequested";
+    PrerenderFinalStatus2["MixedContent"] = "MixedContent";
+    PrerenderFinalStatus2["TriggerBackgrounded"] = "TriggerBackgrounded";
+    PrerenderFinalStatus2["MemoryLimitExceeded"] = "MemoryLimitExceeded";
+    PrerenderFinalStatus2["DataSaverEnabled"] = "DataSaverEnabled";
+    PrerenderFinalStatus2["TriggerUrlHasEffectiveUrl"] = "TriggerUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["ActivatedBeforeStarted"] = "ActivatedBeforeStarted";
+    PrerenderFinalStatus2["InactivePageRestriction"] = "InactivePageRestriction";
+    PrerenderFinalStatus2["StartFailed"] = "StartFailed";
+    PrerenderFinalStatus2["TimeoutBackgrounded"] = "TimeoutBackgrounded";
+    PrerenderFinalStatus2["CrossSiteRedirectInInitialNavigation"] = "CrossSiteRedirectInInitialNavigation";
+    PrerenderFinalStatus2["CrossSiteNavigationInInitialNavigation"] = "CrossSiteNavigationInInitialNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginRedirectNotOptInInInitialNavigation"] = "SameSiteCrossOriginRedirectNotOptInInInitialNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginNavigationNotOptInInInitialNavigation"] = "SameSiteCrossOriginNavigationNotOptInInInitialNavigation";
+    PrerenderFinalStatus2["ActivationNavigationParameterMismatch"] = "ActivationNavigationParameterMismatch";
+    PrerenderFinalStatus2["ActivatedInBackground"] = "ActivatedInBackground";
+    PrerenderFinalStatus2["EmbedderHostDisallowed"] = "EmbedderHostDisallowed";
+    PrerenderFinalStatus2["ActivationNavigationDestroyedBeforeSuccess"] = "ActivationNavigationDestroyedBeforeSuccess";
+    PrerenderFinalStatus2["TabClosedByUserGesture"] = "TabClosedByUserGesture";
+    PrerenderFinalStatus2["TabClosedWithoutUserGesture"] = "TabClosedWithoutUserGesture";
+    PrerenderFinalStatus2["PrimaryMainFrameRendererProcessCrashed"] = "PrimaryMainFrameRendererProcessCrashed";
+    PrerenderFinalStatus2["PrimaryMainFrameRendererProcessKilled"] = "PrimaryMainFrameRendererProcessKilled";
+    PrerenderFinalStatus2["ActivationFramePolicyNotCompatible"] = "ActivationFramePolicyNotCompatible";
+    PrerenderFinalStatus2["PreloadingDisabled"] = "PreloadingDisabled";
+    PrerenderFinalStatus2["BatterySaverEnabled"] = "BatterySaverEnabled";
+    PrerenderFinalStatus2["ActivatedDuringMainFrameNavigation"] = "ActivatedDuringMainFrameNavigation";
+    PrerenderFinalStatus2["PreloadingUnsupportedByWebContents"] = "PreloadingUnsupportedByWebContents";
+    PrerenderFinalStatus2["CrossSiteRedirectInMainFrameNavigation"] = "CrossSiteRedirectInMainFrameNavigation";
+    PrerenderFinalStatus2["CrossSiteNavigationInMainFrameNavigation"] = "CrossSiteNavigationInMainFrameNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation"] = "SameSiteCrossOriginRedirectNotOptInInMainFrameNavigation";
+    PrerenderFinalStatus2["SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation"] = "SameSiteCrossOriginNavigationNotOptInInMainFrameNavigation";
+    PrerenderFinalStatus2["MemoryPressureOnTrigger"] = "MemoryPressureOnTrigger";
+    PrerenderFinalStatus2["MemoryPressureAfterTriggered"] = "MemoryPressureAfterTriggered";
+    PrerenderFinalStatus2["PrerenderingDisabledByDevTools"] = "PrerenderingDisabledByDevTools";
+    PrerenderFinalStatus2["SpeculationRuleRemoved"] = "SpeculationRuleRemoved";
+    PrerenderFinalStatus2["ActivatedWithAuxiliaryBrowsingContexts"] = "ActivatedWithAuxiliaryBrowsingContexts";
+    PrerenderFinalStatus2["MaxNumOfRunningEagerPrerendersExceeded"] = "MaxNumOfRunningEagerPrerendersExceeded";
+    PrerenderFinalStatus2["MaxNumOfRunningNonEagerPrerendersExceeded"] = "MaxNumOfRunningNonEagerPrerendersExceeded";
+    PrerenderFinalStatus2["MaxNumOfRunningEmbedderPrerendersExceeded"] = "MaxNumOfRunningEmbedderPrerendersExceeded";
+    PrerenderFinalStatus2["PrerenderingUrlHasEffectiveUrl"] = "PrerenderingUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["RedirectedPrerenderingUrlHasEffectiveUrl"] = "RedirectedPrerenderingUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["ActivationUrlHasEffectiveUrl"] = "ActivationUrlHasEffectiveUrl";
+    PrerenderFinalStatus2["JavaScriptInterfaceAdded"] = "JavaScriptInterfaceAdded";
+    PrerenderFinalStatus2["JavaScriptInterfaceRemoved"] = "JavaScriptInterfaceRemoved";
+    PrerenderFinalStatus2["AllPrerenderingCanceled"] = "AllPrerenderingCanceled";
+    PrerenderFinalStatus2["WindowClosed"] = "WindowClosed";
+    PrerenderFinalStatus2["SlowNetwork"] = "SlowNetwork";
+    PrerenderFinalStatus2["OtherPrerenderedPageActivated"] = "OtherPrerenderedPageActivated";
+    PrerenderFinalStatus2["V8OptimizerDisabled"] = "V8OptimizerDisabled";
+    PrerenderFinalStatus2["PrerenderFailedDuringPrefetch"] = "PrerenderFailedDuringPrefetch";
+    PrerenderFinalStatus2["BrowsingDataRemoved"] = "BrowsingDataRemoved";
+    PrerenderFinalStatus2["PrerenderHostReused"] = "PrerenderHostReused";
+    PrerenderFinalStatus2["FormSubmitWhenPrerendering"] = "FormSubmitWhenPrerendering";
+    PrerenderFinalStatus2["CrossDocumentRestart"] = "CrossDocumentRestart";
+  })(PrerenderFinalStatus = Preload2.PrerenderFinalStatus || (Preload2.PrerenderFinalStatus = {}));
+  let PreloadingStatus;
+  ((PreloadingStatus2) => {
+    PreloadingStatus2["Pending"] = "Pending";
+    PreloadingStatus2["Running"] = "Running";
+    PreloadingStatus2["Ready"] = "Ready";
+    PreloadingStatus2["Success"] = "Success";
+    PreloadingStatus2["Failure"] = "Failure";
+    PreloadingStatus2["NotSupported"] = "NotSupported";
+  })(PreloadingStatus = Preload2.PreloadingStatus || (Preload2.PreloadingStatus = {}));
+  let PrefetchStatus;
+  ((PrefetchStatus2) => {
+    PrefetchStatus2["PrefetchAllowed"] = "PrefetchAllowed";
+    PrefetchStatus2["PrefetchFailedIneligibleRedirect"] = "PrefetchFailedIneligibleRedirect";
+    PrefetchStatus2["PrefetchFailedInvalidRedirect"] = "PrefetchFailedInvalidRedirect";
+    PrefetchStatus2["PrefetchFailedMIMENotSupported"] = "PrefetchFailedMIMENotSupported";
+    PrefetchStatus2["PrefetchFailedNetError"] = "PrefetchFailedNetError";
+    PrefetchStatus2["PrefetchFailedNon2XX"] = "PrefetchFailedNon2XX";
+    PrefetchStatus2["PrefetchEvictedAfterBrowsingDataRemoved"] = "PrefetchEvictedAfterBrowsingDataRemoved";
+    PrefetchStatus2["PrefetchEvictedAfterCandidateRemoved"] = "PrefetchEvictedAfterCandidateRemoved";
+    PrefetchStatus2["PrefetchEvictedForNewerPrefetch"] = "PrefetchEvictedForNewerPrefetch";
+    PrefetchStatus2["PrefetchHeldback"] = "PrefetchHeldback";
+    PrefetchStatus2["PrefetchIneligibleRetryAfter"] = "PrefetchIneligibleRetryAfter";
+    PrefetchStatus2["PrefetchIsPrivacyDecoy"] = "PrefetchIsPrivacyDecoy";
+    PrefetchStatus2["PrefetchIsStale"] = "PrefetchIsStale";
+    PrefetchStatus2["PrefetchNotEligibleBlockedByConnectionAllowlist"] = "PrefetchNotEligibleBlockedByConnectionAllowlist";
+    PrefetchStatus2["PrefetchNotEligibleBrowserContextOffTheRecord"] = "PrefetchNotEligibleBrowserContextOffTheRecord";
+    PrefetchStatus2["PrefetchNotEligibleCrossOrigin"] = "PrefetchNotEligibleCrossOrigin";
+    PrefetchStatus2["PrefetchNotEligibleDataSaverEnabled"] = "PrefetchNotEligibleDataSaverEnabled";
+    PrefetchStatus2["PrefetchNotEligibleExistingProxy"] = "PrefetchNotEligibleExistingProxy";
+    PrefetchStatus2["PrefetchNotEligibleHostIsNonUnique"] = "PrefetchNotEligibleHostIsNonUnique";
+    PrefetchStatus2["PrefetchNotEligibleNonDefaultStoragePartition"] = "PrefetchNotEligibleNonDefaultStoragePartition";
+    PrefetchStatus2["PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy"] = "PrefetchNotEligibleSameSiteCrossOriginPrefetchRequiredProxy";
+    PrefetchStatus2["PrefetchNotEligibleSchemeIsNotHttps"] = "PrefetchNotEligibleSchemeIsNotHttps";
+    PrefetchStatus2["PrefetchNotEligibleUserHasCookies"] = "PrefetchNotEligibleUserHasCookies";
+    PrefetchStatus2["PrefetchNotEligibleUserHasServiceWorker"] = "PrefetchNotEligibleUserHasServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler"] = "PrefetchNotEligibleUserHasServiceWorkerNoFetchHandler";
+    PrefetchStatus2["PrefetchNotEligibleRedirectFromServiceWorker"] = "PrefetchNotEligibleRedirectFromServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleRedirectToServiceWorker"] = "PrefetchNotEligibleRedirectToServiceWorker";
+    PrefetchStatus2["PrefetchNotEligibleBatterySaverEnabled"] = "PrefetchNotEligibleBatterySaverEnabled";
+    PrefetchStatus2["PrefetchNotEligiblePreloadingDisabled"] = "PrefetchNotEligiblePreloadingDisabled";
+    PrefetchStatus2["PrefetchNotFinishedInTime"] = "PrefetchNotFinishedInTime";
+    PrefetchStatus2["PrefetchNotStarted"] = "PrefetchNotStarted";
+    PrefetchStatus2["PrefetchNotUsedCookiesChanged"] = "PrefetchNotUsedCookiesChanged";
+    PrefetchStatus2["PrefetchProxyNotAvailable"] = "PrefetchProxyNotAvailable";
+    PrefetchStatus2["PrefetchResponseUsed"] = "PrefetchResponseUsed";
+    PrefetchStatus2["PrefetchSuccessfulButNotUsed"] = "PrefetchSuccessfulButNotUsed";
+    PrefetchStatus2["PrefetchNotUsedProbeFailed"] = "PrefetchNotUsedProbeFailed";
+    PrefetchStatus2["PrefetchCancelledOnUserNavigation"] = "PrefetchCancelledOnUserNavigation";
+  })(PrefetchStatus = Preload2.PrefetchStatus || (Preload2.PrefetchStatus = {}));
+})(Preload || (Preload = {}));
+var Security;
+((Security2) => {
+  let MixedContentType;
+  ((MixedContentType2) => {
+    MixedContentType2["Blockable"] = "blockable";
+    MixedContentType2["OptionallyBlockable"] = "optionally-blockable";
+    MixedContentType2["None"] = "none";
+  })(MixedContentType = Security2.MixedContentType || (Security2.MixedContentType = {}));
+  let SecurityState;
+  ((SecurityState2) => {
+    SecurityState2["Unknown"] = "unknown";
+    SecurityState2["Neutral"] = "neutral";
+    SecurityState2["Insecure"] = "insecure";
+    SecurityState2["Secure"] = "secure";
+    SecurityState2["Info"] = "info";
+    SecurityState2["InsecureBroken"] = "insecure-broken";
+  })(SecurityState = Security2.SecurityState || (Security2.SecurityState = {}));
+  let SafetyTipStatus;
+  ((SafetyTipStatus2) => {
+    SafetyTipStatus2["BadReputation"] = "badReputation";
+    SafetyTipStatus2["Lookalike"] = "lookalike";
+  })(SafetyTipStatus = Security2.SafetyTipStatus || (Security2.SafetyTipStatus = {}));
+  let CertificateErrorAction;
+  ((CertificateErrorAction2) => {
+    CertificateErrorAction2["Continue"] = "continue";
+    CertificateErrorAction2["Cancel"] = "cancel";
+  })(CertificateErrorAction = Security2.CertificateErrorAction || (Security2.CertificateErrorAction = {}));
+})(Security || (Security = {}));
+var ServiceWorker;
+((ServiceWorker2) => {
+  let ServiceWorkerVersionRunningStatus;
+  ((ServiceWorkerVersionRunningStatus2) => {
+    ServiceWorkerVersionRunningStatus2["Stopped"] = "stopped";
+    ServiceWorkerVersionRunningStatus2["Starting"] = "starting";
+    ServiceWorkerVersionRunningStatus2["Running"] = "running";
+    ServiceWorkerVersionRunningStatus2["Stopping"] = "stopping";
+  })(ServiceWorkerVersionRunningStatus = ServiceWorker2.ServiceWorkerVersionRunningStatus || (ServiceWorker2.ServiceWorkerVersionRunningStatus = {}));
+  let ServiceWorkerVersionStatus;
+  ((ServiceWorkerVersionStatus2) => {
+    ServiceWorkerVersionStatus2["New"] = "new";
+    ServiceWorkerVersionStatus2["Installing"] = "installing";
+    ServiceWorkerVersionStatus2["Installed"] = "installed";
+    ServiceWorkerVersionStatus2["Activating"] = "activating";
+    ServiceWorkerVersionStatus2["Activated"] = "activated";
+    ServiceWorkerVersionStatus2["Redundant"] = "redundant";
+  })(ServiceWorkerVersionStatus = ServiceWorker2.ServiceWorkerVersionStatus || (ServiceWorker2.ServiceWorkerVersionStatus = {}));
+  let ServiceWorkerRouterSourceType;
+  ((ServiceWorkerRouterSourceType2) => {
+    ServiceWorkerRouterSourceType2["Cache"] = "cache";
+    ServiceWorkerRouterSourceType2["FetchEvent"] = "fetchEvent";
+    ServiceWorkerRouterSourceType2["Network"] = "network";
+    ServiceWorkerRouterSourceType2["RaceNetworkAndFetchHandler"] = "raceNetworkAndFetchHandler";
+    ServiceWorkerRouterSourceType2["RaceNetworkAndCache"] = "raceNetworkAndCache";
+    ServiceWorkerRouterSourceType2["SourceDict"] = "sourceDict";
+  })(ServiceWorkerRouterSourceType = ServiceWorker2.ServiceWorkerRouterSourceType || (ServiceWorker2.ServiceWorkerRouterSourceType = {}));
+})(ServiceWorker || (ServiceWorker = {}));
+var SmartCardEmulation;
+((SmartCardEmulation2) => {
+  let ResultCode;
+  ((ResultCode2) => {
+    ResultCode2["Success"] = "success";
+    ResultCode2["RemovedCard"] = "removed-card";
+    ResultCode2["ResetCard"] = "reset-card";
+    ResultCode2["UnpoweredCard"] = "unpowered-card";
+    ResultCode2["UnresponsiveCard"] = "unresponsive-card";
+    ResultCode2["UnsupportedCard"] = "unsupported-card";
+    ResultCode2["ReaderUnavailable"] = "reader-unavailable";
+    ResultCode2["SharingViolation"] = "sharing-violation";
+    ResultCode2["NotTransacted"] = "not-transacted";
+    ResultCode2["NoSmartcard"] = "no-smartcard";
+    ResultCode2["ProtoMismatch"] = "proto-mismatch";
+    ResultCode2["SystemCancelled"] = "system-cancelled";
+    ResultCode2["NotReady"] = "not-ready";
+    ResultCode2["Cancelled"] = "cancelled";
+    ResultCode2["InsufficientBuffer"] = "insufficient-buffer";
+    ResultCode2["InvalidHandle"] = "invalid-handle";
+    ResultCode2["InvalidParameter"] = "invalid-parameter";
+    ResultCode2["InvalidValue"] = "invalid-value";
+    ResultCode2["NoMemory"] = "no-memory";
+    ResultCode2["Timeout"] = "timeout";
+    ResultCode2["UnknownReader"] = "unknown-reader";
+    ResultCode2["UnsupportedFeature"] = "unsupported-feature";
+    ResultCode2["NoReadersAvailable"] = "no-readers-available";
+    ResultCode2["ServiceStopped"] = "service-stopped";
+    ResultCode2["NoService"] = "no-service";
+    ResultCode2["CommError"] = "comm-error";
+    ResultCode2["InternalError"] = "internal-error";
+    ResultCode2["ServerTooBusy"] = "server-too-busy";
+    ResultCode2["Unexpected"] = "unexpected";
+    ResultCode2["Shutdown"] = "shutdown";
+    ResultCode2["UnknownCard"] = "unknown-card";
+    ResultCode2["Unknown"] = "unknown";
+  })(ResultCode = SmartCardEmulation2.ResultCode || (SmartCardEmulation2.ResultCode = {}));
+  let ShareMode;
+  ((ShareMode2) => {
+    ShareMode2["Shared"] = "shared";
+    ShareMode2["Exclusive"] = "exclusive";
+    ShareMode2["Direct"] = "direct";
+  })(ShareMode = SmartCardEmulation2.ShareMode || (SmartCardEmulation2.ShareMode = {}));
+  let Disposition;
+  ((Disposition2) => {
+    Disposition2["LeaveCard"] = "leave-card";
+    Disposition2["ResetCard"] = "reset-card";
+    Disposition2["UnpowerCard"] = "unpower-card";
+    Disposition2["EjectCard"] = "eject-card";
+  })(Disposition = SmartCardEmulation2.Disposition || (SmartCardEmulation2.Disposition = {}));
+  let ConnectionState;
+  ((ConnectionState2) => {
+    ConnectionState2["Absent"] = "absent";
+    ConnectionState2["Present"] = "present";
+    ConnectionState2["Swallowed"] = "swallowed";
+    ConnectionState2["Powered"] = "powered";
+    ConnectionState2["Negotiable"] = "negotiable";
+    ConnectionState2["Specific"] = "specific";
+  })(ConnectionState = SmartCardEmulation2.ConnectionState || (SmartCardEmulation2.ConnectionState = {}));
+  let Protocol;
+  ((Protocol2) => {
+    Protocol2["T0"] = "t0";
+    Protocol2["T1"] = "t1";
+    Protocol2["Raw"] = "raw";
+  })(Protocol = SmartCardEmulation2.Protocol || (SmartCardEmulation2.Protocol = {}));
+})(SmartCardEmulation || (SmartCardEmulation = {}));
+var Storage;
+((Storage2) => {
+  let StorageType;
+  ((StorageType2) => {
+    StorageType2["Cookies"] = "cookies";
+    StorageType2["File_systems"] = "file_systems";
+    StorageType2["Indexeddb"] = "indexeddb";
+    StorageType2["Local_storage"] = "local_storage";
+    StorageType2["Shader_cache"] = "shader_cache";
+    StorageType2["Websql"] = "websql";
+    StorageType2["Service_workers"] = "service_workers";
+    StorageType2["Cache_storage"] = "cache_storage";
+    StorageType2["Storage_buckets"] = "storage_buckets";
+    StorageType2["All"] = "all";
+    StorageType2["Other"] = "other";
+  })(StorageType = Storage2.StorageType || (Storage2.StorageType = {}));
+  let StorageBucketsDurability;
+  ((StorageBucketsDurability2) => {
+    StorageBucketsDurability2["Relaxed"] = "relaxed";
+    StorageBucketsDurability2["Strict"] = "strict";
+  })(StorageBucketsDurability = Storage2.StorageBucketsDurability || (Storage2.StorageBucketsDurability = {}));
+})(Storage || (Storage = {}));
+var SystemInfo;
+((SystemInfo2) => {
+  let SubsamplingFormat;
+  ((SubsamplingFormat2) => {
+    SubsamplingFormat2["Yuv420"] = "yuv420";
+    SubsamplingFormat2["Yuv422"] = "yuv422";
+    SubsamplingFormat2["Yuv444"] = "yuv444";
+  })(SubsamplingFormat = SystemInfo2.SubsamplingFormat || (SystemInfo2.SubsamplingFormat = {}));
+  let ImageType;
+  ((ImageType2) => {
+    ImageType2["Jpeg"] = "jpeg";
+    ImageType2["Webp"] = "webp";
+    ImageType2["Unknown"] = "unknown";
+  })(ImageType = SystemInfo2.ImageType || (SystemInfo2.ImageType = {}));
+})(SystemInfo || (SystemInfo = {}));
+var Target;
+((Target4) => {
+  let WindowState;
+  ((WindowState2) => {
+    WindowState2["Normal"] = "normal";
+    WindowState2["Minimized"] = "minimized";
+    WindowState2["Maximized"] = "maximized";
+    WindowState2["Fullscreen"] = "fullscreen";
+  })(WindowState = Target4.WindowState || (Target4.WindowState = {}));
+})(Target || (Target = {}));
+var Tracing;
+((Tracing3) => {
+  let TraceConfigRecordMode;
+  ((TraceConfigRecordMode2) => {
+    TraceConfigRecordMode2["RecordUntilFull"] = "recordUntilFull";
+    TraceConfigRecordMode2["RecordContinuously"] = "recordContinuously";
+    TraceConfigRecordMode2["RecordAsMuchAsPossible"] = "recordAsMuchAsPossible";
+    TraceConfigRecordMode2["EchoToConsole"] = "echoToConsole";
+  })(TraceConfigRecordMode = Tracing3.TraceConfigRecordMode || (Tracing3.TraceConfigRecordMode = {}));
+  let StreamFormat;
+  ((StreamFormat2) => {
+    StreamFormat2["Json"] = "json";
+    StreamFormat2["Proto"] = "proto";
+  })(StreamFormat = Tracing3.StreamFormat || (Tracing3.StreamFormat = {}));
+  let StreamCompression;
+  ((StreamCompression2) => {
+    StreamCompression2["None"] = "none";
+    StreamCompression2["Gzip"] = "gzip";
+  })(StreamCompression = Tracing3.StreamCompression || (Tracing3.StreamCompression = {}));
+  let MemoryDumpLevelOfDetail;
+  ((MemoryDumpLevelOfDetail2) => {
+    MemoryDumpLevelOfDetail2["Background"] = "background";
+    MemoryDumpLevelOfDetail2["Light"] = "light";
+    MemoryDumpLevelOfDetail2["Detailed"] = "detailed";
+  })(MemoryDumpLevelOfDetail = Tracing3.MemoryDumpLevelOfDetail || (Tracing3.MemoryDumpLevelOfDetail = {}));
+  let TracingBackend;
+  ((TracingBackend2) => {
+    TracingBackend2["Auto"] = "auto";
+    TracingBackend2["Chrome"] = "chrome";
+    TracingBackend2["System"] = "system";
+  })(TracingBackend = Tracing3.TracingBackend || (Tracing3.TracingBackend = {}));
+  let StartRequestTransferMode;
+  ((StartRequestTransferMode2) => {
+    StartRequestTransferMode2["ReportEvents"] = "ReportEvents";
+    StartRequestTransferMode2["ReturnAsStream"] = "ReturnAsStream";
+  })(StartRequestTransferMode = Tracing3.StartRequestTransferMode || (Tracing3.StartRequestTransferMode = {}));
+})(Tracing || (Tracing = {}));
+var WebAudio;
+((WebAudio2) => {
+  let ContextType;
+  ((ContextType2) => {
+    ContextType2["Realtime"] = "realtime";
+    ContextType2["Offline"] = "offline";
+  })(ContextType = WebAudio2.ContextType || (WebAudio2.ContextType = {}));
+  let ContextState;
+  ((ContextState2) => {
+    ContextState2["Suspended"] = "suspended";
+    ContextState2["Running"] = "running";
+    ContextState2["Closed"] = "closed";
+    ContextState2["Interrupted"] = "interrupted";
+  })(ContextState = WebAudio2.ContextState || (WebAudio2.ContextState = {}));
+  let ChannelCountMode;
+  ((ChannelCountMode2) => {
+    ChannelCountMode2["ClampedMax"] = "clamped-max";
+    ChannelCountMode2["Explicit"] = "explicit";
+    ChannelCountMode2["Max"] = "max";
+  })(ChannelCountMode = WebAudio2.ChannelCountMode || (WebAudio2.ChannelCountMode = {}));
+  let ChannelInterpretation;
+  ((ChannelInterpretation2) => {
+    ChannelInterpretation2["Discrete"] = "discrete";
+    ChannelInterpretation2["Speakers"] = "speakers";
+  })(ChannelInterpretation = WebAudio2.ChannelInterpretation || (WebAudio2.ChannelInterpretation = {}));
+  let AutomationRate;
+  ((AutomationRate2) => {
+    AutomationRate2["ARate"] = "a-rate";
+    AutomationRate2["KRate"] = "k-rate";
+  })(AutomationRate = WebAudio2.AutomationRate || (WebAudio2.AutomationRate = {}));
+})(WebAudio || (WebAudio = {}));
+var WebAuthn;
+((WebAuthn2) => {
+  let AuthenticatorProtocol;
+  ((AuthenticatorProtocol2) => {
+    AuthenticatorProtocol2["U2f"] = "u2f";
+    AuthenticatorProtocol2["Ctap2"] = "ctap2";
+  })(AuthenticatorProtocol = WebAuthn2.AuthenticatorProtocol || (WebAuthn2.AuthenticatorProtocol = {}));
+  let Ctap2Version;
+  ((Ctap2Version2) => {
+    Ctap2Version2["Ctap2_0"] = "ctap2_0";
+    Ctap2Version2["Ctap2_1"] = "ctap2_1";
+    Ctap2Version2["Ctap2_2"] = "ctap2_2";
+  })(Ctap2Version = WebAuthn2.Ctap2Version || (WebAuthn2.Ctap2Version = {}));
+  let AuthenticatorTransport;
+  ((AuthenticatorTransport2) => {
+    AuthenticatorTransport2["Usb"] = "usb";
+    AuthenticatorTransport2["Nfc"] = "nfc";
+    AuthenticatorTransport2["Ble"] = "ble";
+    AuthenticatorTransport2["Cable"] = "cable";
+    AuthenticatorTransport2["Hybrid"] = "hybrid";
+    AuthenticatorTransport2["SmartCard"] = "smart-card";
+    AuthenticatorTransport2["Internal"] = "internal";
+  })(AuthenticatorTransport = WebAuthn2.AuthenticatorTransport || (WebAuthn2.AuthenticatorTransport = {}));
+})(WebAuthn || (WebAuthn = {}));
+var WebMCP;
+((WebMCP2) => {
+  let InvocationStatus;
+  ((InvocationStatus2) => {
+    InvocationStatus2["Completed"] = "Completed";
+    InvocationStatus2["Canceled"] = "Canceled";
+    InvocationStatus2["Error"] = "Error";
+  })(InvocationStatus = WebMCP2.InvocationStatus || (WebMCP2.InvocationStatus = {}));
+})(WebMCP || (WebMCP = {}));
+var Debugger;
+((Debugger2) => {
+  let ScopeType;
+  ((ScopeType2) => {
+    ScopeType2["Global"] = "global";
+    ScopeType2["Local"] = "local";
+    ScopeType2["With"] = "with";
+    ScopeType2["Closure"] = "closure";
+    ScopeType2["Catch"] = "catch";
+    ScopeType2["Block"] = "block";
+    ScopeType2["Script"] = "script";
+    ScopeType2["Eval"] = "eval";
+    ScopeType2["Module"] = "module";
+    ScopeType2["WasmExpressionStack"] = "wasm-expression-stack";
+  })(ScopeType = Debugger2.ScopeType || (Debugger2.ScopeType = {}));
+  let BreakLocationType;
+  ((BreakLocationType2) => {
+    BreakLocationType2["DebuggerStatement"] = "debuggerStatement";
+    BreakLocationType2["Call"] = "call";
+    BreakLocationType2["Return"] = "return";
+  })(BreakLocationType = Debugger2.BreakLocationType || (Debugger2.BreakLocationType = {}));
+  let ScriptLanguage;
+  ((ScriptLanguage2) => {
+    ScriptLanguage2["JavaScript"] = "JavaScript";
+    ScriptLanguage2["WebAssembly"] = "WebAssembly";
+  })(ScriptLanguage = Debugger2.ScriptLanguage || (Debugger2.ScriptLanguage = {}));
+  let DebugSymbolsType;
+  ((DebugSymbolsType2) => {
+    DebugSymbolsType2["SourceMap"] = "SourceMap";
+    DebugSymbolsType2["EmbeddedDWARF"] = "EmbeddedDWARF";
+    DebugSymbolsType2["ExternalDWARF"] = "ExternalDWARF";
+  })(DebugSymbolsType = Debugger2.DebugSymbolsType || (Debugger2.DebugSymbolsType = {}));
+  let ContinueToLocationRequestTargetCallFrames;
+  ((ContinueToLocationRequestTargetCallFrames2) => {
+    ContinueToLocationRequestTargetCallFrames2["Any"] = "any";
+    ContinueToLocationRequestTargetCallFrames2["Current"] = "current";
+  })(ContinueToLocationRequestTargetCallFrames = Debugger2.ContinueToLocationRequestTargetCallFrames || (Debugger2.ContinueToLocationRequestTargetCallFrames = {}));
+  let RestartFrameRequestMode;
+  ((RestartFrameRequestMode2) => {
+    RestartFrameRequestMode2["StepInto"] = "StepInto";
+  })(RestartFrameRequestMode = Debugger2.RestartFrameRequestMode || (Debugger2.RestartFrameRequestMode = {}));
+  let SetInstrumentationBreakpointRequestInstrumentation;
+  ((SetInstrumentationBreakpointRequestInstrumentation2) => {
+    SetInstrumentationBreakpointRequestInstrumentation2["BeforeScriptExecution"] = "beforeScriptExecution";
+    SetInstrumentationBreakpointRequestInstrumentation2["BeforeScriptWithSourceMapExecution"] = "beforeScriptWithSourceMapExecution";
+  })(SetInstrumentationBreakpointRequestInstrumentation = Debugger2.SetInstrumentationBreakpointRequestInstrumentation || (Debugger2.SetInstrumentationBreakpointRequestInstrumentation = {}));
+  let SetPauseOnExceptionsRequestState;
+  ((SetPauseOnExceptionsRequestState2) => {
+    SetPauseOnExceptionsRequestState2["None"] = "none";
+    SetPauseOnExceptionsRequestState2["Caught"] = "caught";
+    SetPauseOnExceptionsRequestState2["Uncaught"] = "uncaught";
+    SetPauseOnExceptionsRequestState2["All"] = "all";
+  })(SetPauseOnExceptionsRequestState = Debugger2.SetPauseOnExceptionsRequestState || (Debugger2.SetPauseOnExceptionsRequestState = {}));
+  let SetScriptSourceResponseStatus;
+  ((SetScriptSourceResponseStatus2) => {
+    SetScriptSourceResponseStatus2["Ok"] = "Ok";
+    SetScriptSourceResponseStatus2["CompileError"] = "CompileError";
+    SetScriptSourceResponseStatus2["BlockedByActiveGenerator"] = "BlockedByActiveGenerator";
+    SetScriptSourceResponseStatus2["BlockedByActiveFunction"] = "BlockedByActiveFunction";
+    SetScriptSourceResponseStatus2["BlockedByTopLevelEsModuleChange"] = "BlockedByTopLevelEsModuleChange";
+  })(SetScriptSourceResponseStatus = Debugger2.SetScriptSourceResponseStatus || (Debugger2.SetScriptSourceResponseStatus = {}));
+  let PausedEventReason;
+  ((PausedEventReason2) => {
+    PausedEventReason2["Ambiguous"] = "ambiguous";
+    PausedEventReason2["Assert"] = "assert";
+    PausedEventReason2["CSPViolation"] = "CSPViolation";
+    PausedEventReason2["DebugCommand"] = "debugCommand";
+    PausedEventReason2["DOM"] = "DOM";
+    PausedEventReason2["EventListener"] = "EventListener";
+    PausedEventReason2["Exception"] = "exception";
+    PausedEventReason2["Instrumentation"] = "instrumentation";
+    PausedEventReason2["OOM"] = "OOM";
+    PausedEventReason2["Other"] = "other";
+    PausedEventReason2["PromiseRejection"] = "promiseRejection";
+    PausedEventReason2["XHR"] = "XHR";
+    PausedEventReason2["Step"] = "step";
+  })(PausedEventReason = Debugger2.PausedEventReason || (Debugger2.PausedEventReason = {}));
+})(Debugger || (Debugger = {}));
+var Runtime;
+((Runtime2) => {
+  let SerializationOptionsSerialization;
+  ((SerializationOptionsSerialization2) => {
+    SerializationOptionsSerialization2["Deep"] = "deep";
+    SerializationOptionsSerialization2["Json"] = "json";
+    SerializationOptionsSerialization2["IdOnly"] = "idOnly";
+  })(SerializationOptionsSerialization = Runtime2.SerializationOptionsSerialization || (Runtime2.SerializationOptionsSerialization = {}));
+  let DeepSerializedValueType;
+  ((DeepSerializedValueType2) => {
+    DeepSerializedValueType2["Undefined"] = "undefined";
+    DeepSerializedValueType2["Null"] = "null";
+    DeepSerializedValueType2["String"] = "string";
+    DeepSerializedValueType2["Number"] = "number";
+    DeepSerializedValueType2["Boolean"] = "boolean";
+    DeepSerializedValueType2["Bigint"] = "bigint";
+    DeepSerializedValueType2["Regexp"] = "regexp";
+    DeepSerializedValueType2["Date"] = "date";
+    DeepSerializedValueType2["Symbol"] = "symbol";
+    DeepSerializedValueType2["Array"] = "array";
+    DeepSerializedValueType2["Object"] = "object";
+    DeepSerializedValueType2["Function"] = "function";
+    DeepSerializedValueType2["Map"] = "map";
+    DeepSerializedValueType2["Set"] = "set";
+    DeepSerializedValueType2["Weakmap"] = "weakmap";
+    DeepSerializedValueType2["Weakset"] = "weakset";
+    DeepSerializedValueType2["Error"] = "error";
+    DeepSerializedValueType2["Proxy"] = "proxy";
+    DeepSerializedValueType2["Promise"] = "promise";
+    DeepSerializedValueType2["Typedarray"] = "typedarray";
+    DeepSerializedValueType2["Arraybuffer"] = "arraybuffer";
+    DeepSerializedValueType2["Node"] = "node";
+    DeepSerializedValueType2["Window"] = "window";
+    DeepSerializedValueType2["Generator"] = "generator";
+  })(DeepSerializedValueType = Runtime2.DeepSerializedValueType || (Runtime2.DeepSerializedValueType = {}));
+  let RemoteObjectType;
+  ((RemoteObjectType2) => {
+    RemoteObjectType2["Object"] = "object";
+    RemoteObjectType2["Function"] = "function";
+    RemoteObjectType2["Undefined"] = "undefined";
+    RemoteObjectType2["String"] = "string";
+    RemoteObjectType2["Number"] = "number";
+    RemoteObjectType2["Boolean"] = "boolean";
+    RemoteObjectType2["Symbol"] = "symbol";
+    RemoteObjectType2["Bigint"] = "bigint";
+  })(RemoteObjectType = Runtime2.RemoteObjectType || (Runtime2.RemoteObjectType = {}));
+  let RemoteObjectSubtype;
+  ((RemoteObjectSubtype2) => {
+    RemoteObjectSubtype2["Array"] = "array";
+    RemoteObjectSubtype2["Null"] = "null";
+    RemoteObjectSubtype2["Node"] = "node";
+    RemoteObjectSubtype2["Regexp"] = "regexp";
+    RemoteObjectSubtype2["Date"] = "date";
+    RemoteObjectSubtype2["Map"] = "map";
+    RemoteObjectSubtype2["Set"] = "set";
+    RemoteObjectSubtype2["Weakmap"] = "weakmap";
+    RemoteObjectSubtype2["Weakset"] = "weakset";
+    RemoteObjectSubtype2["Iterator"] = "iterator";
+    RemoteObjectSubtype2["Generator"] = "generator";
+    RemoteObjectSubtype2["Error"] = "error";
+    RemoteObjectSubtype2["Proxy"] = "proxy";
+    RemoteObjectSubtype2["Promise"] = "promise";
+    RemoteObjectSubtype2["Typedarray"] = "typedarray";
+    RemoteObjectSubtype2["Arraybuffer"] = "arraybuffer";
+    RemoteObjectSubtype2["Dataview"] = "dataview";
+    RemoteObjectSubtype2["Webassemblymemory"] = "webassemblymemory";
+    RemoteObjectSubtype2["Wasmvalue"] = "wasmvalue";
+    RemoteObjectSubtype2["Trustedtype"] = "trustedtype";
+  })(RemoteObjectSubtype = Runtime2.RemoteObjectSubtype || (Runtime2.RemoteObjectSubtype = {}));
+  let ObjectPreviewType;
+  ((ObjectPreviewType2) => {
+    ObjectPreviewType2["Object"] = "object";
+    ObjectPreviewType2["Function"] = "function";
+    ObjectPreviewType2["Undefined"] = "undefined";
+    ObjectPreviewType2["String"] = "string";
+    ObjectPreviewType2["Number"] = "number";
+    ObjectPreviewType2["Boolean"] = "boolean";
+    ObjectPreviewType2["Symbol"] = "symbol";
+    ObjectPreviewType2["Bigint"] = "bigint";
+  })(ObjectPreviewType = Runtime2.ObjectPreviewType || (Runtime2.ObjectPreviewType = {}));
+  let ObjectPreviewSubtype;
+  ((ObjectPreviewSubtype2) => {
+    ObjectPreviewSubtype2["Array"] = "array";
+    ObjectPreviewSubtype2["Null"] = "null";
+    ObjectPreviewSubtype2["Node"] = "node";
+    ObjectPreviewSubtype2["Regexp"] = "regexp";
+    ObjectPreviewSubtype2["Date"] = "date";
+    ObjectPreviewSubtype2["Map"] = "map";
+    ObjectPreviewSubtype2["Set"] = "set";
+    ObjectPreviewSubtype2["Weakmap"] = "weakmap";
+    ObjectPreviewSubtype2["Weakset"] = "weakset";
+    ObjectPreviewSubtype2["Iterator"] = "iterator";
+    ObjectPreviewSubtype2["Generator"] = "generator";
+    ObjectPreviewSubtype2["Error"] = "error";
+    ObjectPreviewSubtype2["Proxy"] = "proxy";
+    ObjectPreviewSubtype2["Promise"] = "promise";
+    ObjectPreviewSubtype2["Typedarray"] = "typedarray";
+    ObjectPreviewSubtype2["Arraybuffer"] = "arraybuffer";
+    ObjectPreviewSubtype2["Dataview"] = "dataview";
+    ObjectPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
+    ObjectPreviewSubtype2["Wasmvalue"] = "wasmvalue";
+    ObjectPreviewSubtype2["Trustedtype"] = "trustedtype";
+  })(ObjectPreviewSubtype = Runtime2.ObjectPreviewSubtype || (Runtime2.ObjectPreviewSubtype = {}));
+  let PropertyPreviewType;
+  ((PropertyPreviewType2) => {
+    PropertyPreviewType2["Object"] = "object";
+    PropertyPreviewType2["Function"] = "function";
+    PropertyPreviewType2["Undefined"] = "undefined";
+    PropertyPreviewType2["String"] = "string";
+    PropertyPreviewType2["Number"] = "number";
+    PropertyPreviewType2["Boolean"] = "boolean";
+    PropertyPreviewType2["Symbol"] = "symbol";
+    PropertyPreviewType2["Accessor"] = "accessor";
+    PropertyPreviewType2["Bigint"] = "bigint";
+  })(PropertyPreviewType = Runtime2.PropertyPreviewType || (Runtime2.PropertyPreviewType = {}));
+  let PropertyPreviewSubtype;
+  ((PropertyPreviewSubtype2) => {
+    PropertyPreviewSubtype2["Array"] = "array";
+    PropertyPreviewSubtype2["Null"] = "null";
+    PropertyPreviewSubtype2["Node"] = "node";
+    PropertyPreviewSubtype2["Regexp"] = "regexp";
+    PropertyPreviewSubtype2["Date"] = "date";
+    PropertyPreviewSubtype2["Map"] = "map";
+    PropertyPreviewSubtype2["Set"] = "set";
+    PropertyPreviewSubtype2["Weakmap"] = "weakmap";
+    PropertyPreviewSubtype2["Weakset"] = "weakset";
+    PropertyPreviewSubtype2["Iterator"] = "iterator";
+    PropertyPreviewSubtype2["Generator"] = "generator";
+    PropertyPreviewSubtype2["Error"] = "error";
+    PropertyPreviewSubtype2["Proxy"] = "proxy";
+    PropertyPreviewSubtype2["Promise"] = "promise";
+    PropertyPreviewSubtype2["Typedarray"] = "typedarray";
+    PropertyPreviewSubtype2["Arraybuffer"] = "arraybuffer";
+    PropertyPreviewSubtype2["Dataview"] = "dataview";
+    PropertyPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
+    PropertyPreviewSubtype2["Wasmvalue"] = "wasmvalue";
+    PropertyPreviewSubtype2["Trustedtype"] = "trustedtype";
+  })(PropertyPreviewSubtype = Runtime2.PropertyPreviewSubtype || (Runtime2.PropertyPreviewSubtype = {}));
+  let ConsoleAPICalledEventType;
+  ((ConsoleAPICalledEventType2) => {
+    ConsoleAPICalledEventType2["Log"] = "log";
+    ConsoleAPICalledEventType2["Debug"] = "debug";
+    ConsoleAPICalledEventType2["Info"] = "info";
+    ConsoleAPICalledEventType2["Error"] = "error";
+    ConsoleAPICalledEventType2["Warning"] = "warning";
+    ConsoleAPICalledEventType2["Dir"] = "dir";
+    ConsoleAPICalledEventType2["DirXML"] = "dirxml";
+    ConsoleAPICalledEventType2["Table"] = "table";
+    ConsoleAPICalledEventType2["Trace"] = "trace";
+    ConsoleAPICalledEventType2["Clear"] = "clear";
+    ConsoleAPICalledEventType2["StartGroup"] = "startGroup";
+    ConsoleAPICalledEventType2["StartGroupCollapsed"] = "startGroupCollapsed";
+    ConsoleAPICalledEventType2["EndGroup"] = "endGroup";
+    ConsoleAPICalledEventType2["Assert"] = "assert";
+    ConsoleAPICalledEventType2["Profile"] = "profile";
+    ConsoleAPICalledEventType2["ProfileEnd"] = "profileEnd";
+    ConsoleAPICalledEventType2["Count"] = "count";
+    ConsoleAPICalledEventType2["TimeEnd"] = "timeEnd";
+  })(ConsoleAPICalledEventType = Runtime2.ConsoleAPICalledEventType || (Runtime2.ConsoleAPICalledEventType = {}));
+})(Runtime || (Runtime = {}));
+
+// ../../front_end/panels/network/RequestDeviceBoundSessionsView.ts
 import * as UI3 from "../../ui/legacy/legacy.js";
 import { html as html3, nothing as nothing3, render as render3 } from "../../ui/lit/lit.js";
 import * as VisualLogging3 from "../../ui/visual_logging/visual_logging.js";
@@ -969,7 +3843,7 @@ var requestDeviceBoundSessionsView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./requestDeviceBoundSessionsView.css")} */`;
 
-// gen/front_end/panels/network/RequestDeviceBoundSessionsView.js
+// ../../front_end/panels/network/RequestDeviceBoundSessionsView.ts
 var UIStrings3 = {
   /**
    * @description Heading for the ID of a session.
@@ -1024,7 +3898,8 @@ var str_3 = i18n5.i18n.registerUIStrings("panels/network/RequestDeviceBoundSessi
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var DEFAULT_VIEW2 = (input, _output, target) => {
   const { deviceBoundSessionUsages } = input;
-  render3(html3`
+  render3(
+    html3`
       <style>${UI3.inspectorCommonStyles}</style>
       <style>${requestDeviceBoundSessionsView_css_default}</style>
       <div class="request-device-bound-sessions-view">
@@ -1051,7 +3926,10 @@ var DEFAULT_VIEW2 = (input, _output, target) => {
             </div>
           ` : nothing3}
       </div>
-    `, target, { container: { attributes: { jslog: `${VisualLogging3.pane("device-bound-sessions-request")}` } } });
+    `,
+    target,
+    { container: { attributes: { jslog: `${VisualLogging3.pane("device-bound-sessions-request")}` } } }
+  );
 };
 var RequestDeviceBoundSessionsView = class extends UI3.Widget.VBox {
   #request;
@@ -1079,24 +3957,24 @@ var RequestDeviceBoundSessionsView = class extends UI3.Widget.VBox {
 };
 function getDeferralDecision(usage) {
   switch (usage) {
-    case "NotInScope":
+    case Network.DeviceBoundSessionWithUsageUsage.NotInScope:
       return i18nString3(UIStrings3.notInScope);
-    case "InScopeRefreshNotYetNeeded":
+    case Network.DeviceBoundSessionWithUsageUsage.InScopeRefreshNotYetNeeded:
       return i18nString3(UIStrings3.inScopeRefreshNotYetNeeded);
-    case "InScopeRefreshNotAllowed":
+    case Network.DeviceBoundSessionWithUsageUsage.InScopeRefreshNotAllowed:
       return i18nString3(UIStrings3.inScopeRefreshNotAllowed);
-    case "ProactiveRefreshNotPossible":
+    case Network.DeviceBoundSessionWithUsageUsage.ProactiveRefreshNotPossible:
       return i18nString3(UIStrings3.proactiveRefreshNotPossible);
-    case "ProactiveRefreshAttempted":
+    case Network.DeviceBoundSessionWithUsageUsage.ProactiveRefreshAttempted:
       return i18nString3(UIStrings3.proactiveRefreshAttempted);
-    case "Deferred":
+    case Network.DeviceBoundSessionWithUsageUsage.Deferred:
       return i18nString3(UIStrings3.deferred);
     default:
       return usage;
   }
 }
 
-// gen/front_end/panels/network/EventSourceMessagesView.js
+// ../../front_end/panels/network/EventSourceMessagesView.ts
 var EventSourceMessagesView_exports = {};
 __export(EventSourceMessagesView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW3,
@@ -1135,7 +4013,7 @@ var eventSourceMessagesView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./eventSourceMessagesView.css")} */`;
 
-// gen/front_end/panels/network/EventSourceMessagesView.js
+// ../../front_end/panels/network/EventSourceMessagesView.ts
 var { repeat } = Directives2;
 var UIStrings4 = {
   /**
@@ -1182,7 +4060,7 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
       <devtools-toolbar>
         <devtools-button title=${i18nString4(UIStrings4.clearAll)} .iconName=${"clear"}
             @click=${input.onClear}
-            .variant=${"toolbar"}
+            .variant=${Buttons3.Button.Variant.TOOLBAR}
             .jslogContext=${"clear"}></devtools-button>
         <devtools-toolbar-input
             type="filter"
@@ -1276,7 +4154,14 @@ var EventSourceMessagesView = class extends UI4.Widget.VBox {
   }
   onRowContextMenu(message, event) {
     const contextMenu = new UI4.ContextMenu.ContextMenu(event);
-    contextMenu.clipboardSection().appendItem(i18nString4(UIStrings4.copyMessage), Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host2.InspectorFrontendHost.InspectorFrontendHostInstance, message.data), { jslogContext: "copy" });
+    contextMenu.clipboardSection().appendItem(
+      i18nString4(UIStrings4.copyMessage),
+      Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
+        Host2.InspectorFrontendHost.InspectorFrontendHostInstance,
+        message.data
+      ),
+      { jslogContext: "copy" }
+    );
     void contextMenu.show();
   }
   performUpdate() {
@@ -1299,7 +4184,7 @@ function formatTime(d) {
 }
 var clearMessageOffsets = /* @__PURE__ */ new WeakMap();
 
-// gen/front_end/panels/network/NetworkConfigView.js
+// ../../front_end/panels/network/NetworkConfigView.ts
 var NetworkConfigView_exports = {};
 __export(NetworkConfigView_exports, {
   NetworkConfigView: () => NetworkConfigView,
@@ -1436,7 +4321,7 @@ devtools-user-agent-client-hints-form {
 
 /*# sourceURL=${import.meta.resolve("./networkConfigView.css")} */`;
 
-// gen/front_end/panels/network/NetworkConfigView.js
+// ../../front_end/panels/network/NetworkConfigView.ts
 var UIStrings5 = {
   /**
    * @description Option in network conditions view of the Network panel shown in user agent dropdown.
@@ -1505,9 +4390,15 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
   }
   static createUserAgentSelectAndInput(title) {
     const userAgentSetting = Common4.Settings.Settings.instance().createSetting("custom-user-agent", "");
-    const userAgentMetadataSetting = Common4.Settings.Settings.instance().createSetting("custom-user-agent-metadata", null);
+    const userAgentMetadataSetting = Common4.Settings.Settings.instance().createSetting(
+      "custom-user-agent-metadata",
+      null
+    );
     const userAgentSelectElement = document.createElement("select");
-    userAgentSelectElement.setAttribute("jslog", `${VisualLogging5.dropDown().track({ change: true }).context(userAgentSetting.name)}`);
+    userAgentSelectElement.setAttribute(
+      "jslog",
+      `${VisualLogging5.dropDown().track({ change: true }).context(userAgentSetting.name)}`
+    );
     UI5.ARIAUtils.setLabel(userAgentSelectElement, title);
     const customOverride = { title: i18nString5(UIStrings5.custom), value: "custom" };
     userAgentSelectElement.appendChild(UI5.UIUtils.createOption(customOverride.title, customOverride.value, "custom"));
@@ -1516,12 +4407,19 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
       groupElement.label = userAgentDescriptor.title;
       for (const userAgentVersion of userAgentDescriptor.values) {
         const userAgentValue = SDK4.NetworkManager.MultitargetNetworkManager.patchUserAgentWithChromeVersion(userAgentVersion.value);
-        groupElement.appendChild(UI5.UIUtils.createOption(userAgentVersion.title, userAgentValue, Platform2.StringUtilities.toKebabCase(userAgentVersion.title)));
+        groupElement.appendChild(UI5.UIUtils.createOption(
+          userAgentVersion.title,
+          userAgentValue,
+          Platform2.StringUtilities.toKebabCase(userAgentVersion.title)
+        ));
       }
     }
     userAgentSelectElement.selectedIndex = 0;
     const otherUserAgentElement = UI5.UIUtils.createInput("", "text");
-    otherUserAgentElement.setAttribute("jslog", `${VisualLogging5.textField().track({ change: true }).context(userAgentSetting.name)}`);
+    otherUserAgentElement.setAttribute(
+      "jslog",
+      `${VisualLogging5.textField().track({ change: true }).context(userAgentSetting.name)}`
+    );
     otherUserAgentElement.value = userAgentSetting.get();
     UI5.Tooltip.Tooltip.install(otherUserAgentElement, userAgentSetting.get());
     otherUserAgentElement.placeholder = i18nString5(UIStrings5.enterACustomUserAgent);
@@ -1592,7 +4490,10 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
   }
   createCacheSection() {
     const section4 = this.createSection(i18nString5(UIStrings5.caching), "network-config-disable-cache");
-    section4.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(i18nString5(UIStrings5.disableCache), Common4.Settings.Settings.instance().resolve(SDK4.SDKSettings.cacheDisabledSettingDescriptor)));
+    section4.appendChild(SettingsUI.SettingsUI.createSettingCheckbox(
+      i18nString5(UIStrings5.disableCache),
+      Common4.Settings.Settings.instance().resolve(SDK4.SDKSettings.cacheDisabledSettingDescriptor)
+    ));
   }
   createNetworkThrottlingSection() {
     const title = i18nString5(UIStrings5.networkThrottling);
@@ -1602,11 +4503,19 @@ var NetworkConfigView = class _NetworkConfigView extends UI5.Widget.VBox {
     section4.appendChild(saveDataSelect);
   }
   createUserAgentSection() {
-    const userAgentMetadataSetting = Common4.Settings.Settings.instance().createSetting("custom-user-agent-metadata", null);
+    const userAgentMetadataSetting = Common4.Settings.Settings.instance().createSetting(
+      "custom-user-agent-metadata",
+      null
+    );
     const customUserAgentSetting = Common4.Settings.Settings.instance().createSetting("custom-user-agent", "");
     const title = i18nString5(UIStrings5.userAgent);
     const section4 = this.createSection(title, "network-config-ua");
-    const autoCheckbox = UI5.UIUtils.CheckboxLabel.create(i18nString5(UIStrings5.selectAutomatically), true, void 0, customUserAgentSetting.name);
+    const autoCheckbox = UI5.UIUtils.CheckboxLabel.create(
+      i18nString5(UIStrings5.selectAutomatically),
+      true,
+      void 0,
+      customUserAgentSetting.name
+    );
     section4.appendChild(autoCheckbox);
     customUserAgentSetting.addChangeListener(() => {
       if (autoCheckbox.checked) {
@@ -2114,7 +5023,7 @@ var userAgentGroups = [
   }
 ];
 
-// gen/front_end/panels/network/NetworkDataGridNode.js
+// ../../front_end/panels/network/NetworkDataGridNode.ts
 var NetworkDataGridNode_exports = {};
 __export(NetworkDataGridNode_exports, {
   Events: () => Events,
@@ -2432,17 +5341,17 @@ var UIStrings6 = {
 };
 var str_6 = i18n11.i18n.registerUIStrings("panels/network/NetworkDataGridNode.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
-var Events;
-(function(Events2) {
-  Events2["RequestSelected"] = "RequestSelected";
-  Events2["RequestActivated"] = "RequestActivated";
-})(Events || (Events = {}));
-var RequestPanelBehavior;
-(function(RequestPanelBehavior2) {
+var Events = /* @__PURE__ */ ((Events3) => {
+  Events3["RequestSelected"] = "RequestSelected";
+  Events3["RequestActivated"] = "RequestActivated";
+  return Events3;
+})(Events || {});
+var RequestPanelBehavior = /* @__PURE__ */ ((RequestPanelBehavior2) => {
   RequestPanelBehavior2["ShowPanel"] = "ShowPanel";
   RequestPanelBehavior2["HidePanel"] = "HidePanel";
   RequestPanelBehavior2["Unchanged"] = "Unchanged";
-})(RequestPanelBehavior || (RequestPanelBehavior = {}));
+  return RequestPanelBehavior2;
+})(RequestPanelBehavior || {});
 var NetworkNode = class extends DataGrid.SortableDataGrid.SortableDataGridNode {
   parentViewInternal;
   isHovered;
@@ -2837,11 +5746,11 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       return !aRequest ? !bRequest ? 0 : -1 : 1;
     }
     const order = [
-      "InBodyParserBlocking",
-      "Blocking",
-      "PotentiallyBlocking",
-      "NonBlocking",
-      "NonBlockingDynamic",
+      Network.RenderBlockingBehavior.InBodyParserBlocking,
+      Network.RenderBlockingBehavior.Blocking,
+      Network.RenderBlockingBehavior.PotentiallyBlocking,
+      Network.RenderBlockingBehavior.NonBlocking,
+      Network.RenderBlockingBehavior.NonBlockingDynamic,
       void 0
     ];
     const aOrder = order.indexOf(aRequest.renderBlockingBehavior());
@@ -2924,8 +5833,14 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     const bValue = String(getHeaderValue(bRequest, propertyName) || "");
     return aValue.localeCompare(bValue) || aRequest.identityCompare(bRequest);
   }
-  static ResponseHeaderStringComparator = _NetworkRequestNode.HeaderStringComparator.bind(null, (req, name) => req.responseHeaderValue(name));
-  static RequestHeaderStringComparator = _NetworkRequestNode.HeaderStringComparator.bind(null, (req, name) => req.requestHeaderValue(name));
+  static ResponseHeaderStringComparator = _NetworkRequestNode.HeaderStringComparator.bind(
+    null,
+    (req, name) => req.responseHeaderValue(name)
+  );
+  static RequestHeaderStringComparator = _NetworkRequestNode.HeaderStringComparator.bind(
+    null,
+    (req, name) => req.requestHeaderValue(name)
+  );
   static ResponseHeaderNumberComparator(propertyName, a, b) {
     const aRequest = a.requestOrFirstKnownChildRequest();
     const bRequest = b.requestOrFirstKnownChildRequest();
@@ -2972,7 +5887,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       return false;
     }
     const initiator = request.initiator();
-    if (!initiator || initiator.type !== "script") {
+    if (!initiator || initiator.type !== Network.InitiatorType.Script) {
       return false;
     }
     if (initiator.url) {
@@ -3115,8 +6030,19 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       case "method": {
         const preflightRequest = this.requestInternal.preflightRequest();
         if (preflightRequest) {
-          this.setTextAndTitle(cell, `${this.requestInternal.requestMethod} + `, i18nString6(UIStrings6.sPreflight, { PH1: this.requestInternal.requestMethod }));
-          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(preflightRequest, i18nString6(UIStrings6.preflight), void 0, i18nString6(UIStrings6.selectPreflightRequest), void 0, "preflight-request"));
+          this.setTextAndTitle(
+            cell,
+            `${this.requestInternal.requestMethod} + `,
+            i18nString6(UIStrings6.sPreflight, { PH1: this.requestInternal.requestMethod })
+          );
+          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
+            preflightRequest,
+            i18nString6(UIStrings6.preflight),
+            void 0,
+            i18nString6(UIStrings6.selectPreflightRequest),
+            void 0,
+            "preflight-request"
+          ));
         } else {
           this.setTextAndTitle(cell, this.requestInternal.requestMethod);
         }
@@ -3170,14 +6096,24 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
         const priority = this.requestInternal.priority();
         const initialPriority = this.requestInternal.initialPriority();
         if (priority && initialPriority) {
-          this.setTextAndTitle(cell, PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority), i18nString6(UIStrings6.initialPriorityToolTip, {
-            PH1: PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority),
-            PH2: PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority)
-          }));
+          this.setTextAndTitle(
+            cell,
+            PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority),
+            i18nString6(
+              UIStrings6.initialPriorityToolTip,
+              {
+                PH1: PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority),
+                PH2: PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority)
+              }
+            )
+          );
         } else {
           this.setTextAndTitle(cell, priority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(priority) : "");
         }
-        this.appendSubtitle(cell, initialPriority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority) : "");
+        this.appendSubtitle(
+          cell,
+          initialPriority ? PerfUI.NetworkPriorities.uiLabelForNetworkPriority(initialPriority) : ""
+        );
         break;
       }
       case "connection-id": {
@@ -3196,8 +6132,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
         const clientSecurityState = this.requestInternal.clientSecurityState();
         this.renderAddressSpaceCell(
           cell,
-          clientSecurityState ? clientSecurityState.initiatorIPAddressSpace : "Unknown"
-          /* Protocol.Network.IPAddressSpace.Unknown */
+          clientSecurityState ? clientSecurityState.initiatorIPAddressSpace : Network.IPAddressSpace.Unknown
         );
         break;
       }
@@ -3246,7 +6181,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
   }
   select(suppressSelectedEvent) {
     super.select(suppressSelectedEvent);
-    this.parentView().dispatchEventToListeners("RequestSelected", this.requestInternal);
+    this.parentView().dispatchEventToListeners("RequestSelected" /* RequestSelected */, this.requestInternal);
   }
   openInNewTab() {
     Host3.InspectorFrontendHost.InspectorFrontendHostInstance.openInNewTab(this.requestInternal.url());
@@ -3263,8 +6198,8 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       cell.addEventListener("dblclick", this.openInNewTab.bind(this), false);
       cell.addEventListener("mousedown", (event) => {
         this.select();
-        const showPanel = event.button ? "Unchanged" : "ShowPanel";
-        this.parentView().dispatchEventToListeners("RequestActivated", { showPanel });
+        const showPanel = event.button ? "Unchanged" /* Unchanged */ : "ShowPanel" /* ShowPanel */;
+        this.parentView().dispatchEventToListeners("RequestActivated" /* RequestActivated */, { showPanel });
       });
       cell.addEventListener("focus", () => this.parentView().resetFocus());
       const iconElement = PanelUtils3.getIconForNetworkRequest(this.requestInternal);
@@ -3292,7 +6227,10 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     }
   }
   renderStatusCell(cell) {
-    cell.classList.toggle("network-dim-cell", !this.isFailed() && (this.requestInternal.cached() || !this.requestInternal.statusCode));
+    cell.classList.toggle(
+      "network-dim-cell",
+      !this.isFailed() && (this.requestInternal.cached() || !this.requestInternal.statusCode)
+    );
     const corsErrorStatus = this.requestInternal.corsErrorStatus();
     if (this.requestInternal.failed && !this.requestInternal.canceled && !this.requestInternal.wasBlocked() && !corsErrorStatus) {
       const failText = i18nString6(UIStrings6.failed);
@@ -3316,64 +6254,73 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       let reason = i18nString6(UIStrings6.other);
       let displayShowHeadersLink = false;
       switch (this.requestInternal.blockedReason()) {
-        case "other":
+        case Network.BlockedReason.Other:
           reason = i18nString6(UIStrings6.other);
           break;
-        case "csp":
+        case Network.BlockedReason.Csp:
           reason = i18nString6(UIStrings6.csp);
           break;
-        case "mixed-content":
+        case Network.BlockedReason.MixedContent:
           reason = i18n11.i18n.lockedString("mixed-content");
           break;
-        case "origin":
+        case Network.BlockedReason.Origin:
           reason = i18nString6(UIStrings6.origin);
           break;
-        case "inspector":
+        case Network.BlockedReason.Inspector:
           reason = i18nString6(UIStrings6.devtools);
           break;
-        case "subresource-filter":
+        case Network.BlockedReason.SubresourceFilter:
           reason = i18n11.i18n.lockedString("subresource-filter");
           break;
-        case "content-type":
+        case Network.BlockedReason.ContentType:
           reason = i18n11.i18n.lockedString("content-type");
           break;
-        case "coep-frame-resource-needs-coep-header":
+        case Network.BlockedReason.CoepFrameResourceNeedsCoepHeader:
           displayShowHeadersLink = true;
           reason = i18nString6(UIStrings6.coepFrameResourceNeedsCoepHeader);
           break;
-        case "coop-sandboxed-iframe-cannot-navigate-to-coop-page":
+        case Network.BlockedReason.CoopSandboxedIframeCannotNavigateToCoopPage:
           displayShowHeadersLink = true;
           reason = i18nString6(UIStrings6.coopSandboxedIframeCannotNavigateToCoopPage);
           break;
-        case "corp-not-same-origin":
+        case Network.BlockedReason.CorpNotSameOrigin:
           displayShowHeadersLink = true;
           reason = i18nString6(UIStrings6.corpNotSameOrigin);
           break;
-        case "corp-not-same-site":
+        case Network.BlockedReason.CorpNotSameSite:
           displayShowHeadersLink = true;
           reason = i18nString6(UIStrings6.corpNotSameSite);
           break;
-        case "corp-not-same-origin-after-defaulted-to-same-origin-by-coep":
+        case Network.BlockedReason.CorpNotSameOriginAfterDefaultedToSameOriginByCoep:
           displayShowHeadersLink = true;
           reason = i18nString6(UIStrings6.corpNotSameOriginAfterDefaultedToSameOriginByCoep);
           break;
-        case "sri-message-signature-mismatch":
+        case Network.BlockedReason.SriMessageSignatureMismatch:
           displayShowHeadersLink = true;
           reason = i18nString6(UIStrings6.integrity);
           break;
       }
       if (displayShowHeadersLink) {
-        this.setTextAndTitleAsLink(cell, i18nString6(UIStrings6.blockeds, { PH1: reason }), i18nString6(UIStrings6.blockedTooltip), () => {
-          this.parentView().dispatchEventToListeners("RequestActivated", {
-            showPanel: "ShowPanel",
-            tab: "headers-component"
-          });
-        });
+        this.setTextAndTitleAsLink(
+          cell,
+          i18nString6(UIStrings6.blockeds, { PH1: reason }),
+          i18nString6(UIStrings6.blockedTooltip),
+          () => {
+            this.parentView().dispatchEventToListeners("RequestActivated" /* RequestActivated */, {
+              showPanel: "ShowPanel" /* ShowPanel */,
+              tab: NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT
+            });
+          }
+        );
       } else {
         this.setTextAndTitle(cell, i18nString6(UIStrings6.blockeds, { PH1: reason }));
       }
     } else if (corsErrorStatus) {
-      this.setTextAndTitle(cell, i18nString6(UIStrings6.corsError), i18nString6(UIStrings6.crossoriginResourceSharingErrorS, { PH1: corsErrorStatus.corsError }));
+      this.setTextAndTitle(
+        cell,
+        i18nString6(UIStrings6.corsError),
+        i18nString6(UIStrings6.crossoriginResourceSharingErrorS, { PH1: corsErrorStatus.corsError })
+      );
     } else if (this.requestInternal.statusCode) {
       UI6.UIUtils.createTextChild(cell, String(this.requestInternal.statusCode));
       const statusText = this.requestInternal.getInferredStatusText();
@@ -3392,31 +6339,31 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
   renderProtocolCell(cell) {
     UI6.UIUtils.createTextChild(cell, this.requestInternal.protocol);
     switch (this.requestInternal.alternateProtocolUsage) {
-      case "alternativeJobWonWithoutRace": {
+      case Network.AlternateProtocolUsage.AlternativeJobWonWithoutRace: {
         UI6.Tooltip.Tooltip.install(cell, UIStrings6.alternativeJobWonWithoutRace);
         break;
       }
-      case "alternativeJobWonRace": {
+      case Network.AlternateProtocolUsage.AlternativeJobWonRace: {
         UI6.Tooltip.Tooltip.install(cell, UIStrings6.alternativeJobWonRace);
         break;
       }
-      case "mainJobWonRace": {
+      case Network.AlternateProtocolUsage.MainJobWonRace: {
         UI6.Tooltip.Tooltip.install(cell, UIStrings6.mainJobWonRace);
         break;
       }
-      case "mappingMissing": {
+      case Network.AlternateProtocolUsage.MappingMissing: {
         UI6.Tooltip.Tooltip.install(cell, UIStrings6.mappingMissing);
         break;
       }
-      case "broken": {
+      case Network.AlternateProtocolUsage.Broken: {
         UI6.Tooltip.Tooltip.install(cell, UIStrings6.broken);
         break;
       }
-      case "dnsAlpnH3JobWonWithoutRace": {
+      case Network.AlternateProtocolUsage.DnsAlpnH3JobWonWithoutRace: {
         UI6.Tooltip.Tooltip.install(cell, UIStrings6.dnsAlpnH3JobWonWithoutRace);
         break;
       }
-      case "dnsAlpnH3JobWonRace": {
+      case Network.AlternateProtocolUsage.DnsAlpnH3JobWonRace: {
         UI6.Tooltip.Tooltip.install(cell, UIStrings6.dnsAlpnH3JobWonRace);
         break;
       }
@@ -3428,19 +6375,19 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
   }
   renderRenderBlockingCell(cell) {
     switch (this.requestInternal.renderBlockingBehavior()) {
-      case "Blocking":
+      case Network.RenderBlockingBehavior.Blocking:
         UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.blocking));
         break;
-      case "InBodyParserBlocking":
+      case Network.RenderBlockingBehavior.InBodyParserBlocking:
         UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.inBodyParserBlocking));
         break;
-      case "NonBlocking":
+      case Network.RenderBlockingBehavior.NonBlocking:
         UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.nonBlocking));
         break;
-      case "NonBlockingDynamic":
+      case Network.RenderBlockingBehavior.NonBlockingDynamic:
         UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.nonBlockingDynamic));
         break;
-      case "PotentiallyBlocking":
+      case Network.RenderBlockingBehavior.PotentiallyBlocking:
         UI6.UIUtils.createTextChild(cell, i18nString6(UIStrings6.potentiallyBlocking));
         break;
       default:
@@ -3463,7 +6410,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       cell.appendChild(document.createTextNode(i18nString6(UIStrings6.push)));
     }
     switch (initiator.type) {
-      case "parser": {
+      case SDK5.NetworkRequest.InitiatorType.PARSER: {
         cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url, {
           lineNumber: initiator.lineNumber,
           columnNumber: initiator.columnNumber,
@@ -3472,48 +6419,74 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
         this.appendSubtitle(cell, i18nString6(UIStrings6.parser));
         break;
       }
-      case "redirect": {
+      case SDK5.NetworkRequest.InitiatorType.REDIRECT: {
         UI6.Tooltip.Tooltip.install(cell, initiator.url);
         const redirectSource = request.redirectSource();
         console.assert(redirectSource !== null);
         if (this.parentView().nodeForRequest(redirectSource)) {
-          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(redirectSource, Bindings.ResourceUtils.displayNameForURL(redirectSource.url()), void 0, void 0, void 0, "redirect-source-request"));
+          cell.appendChild(Components.Linkifier.Linkifier.linkifyRevealable(
+            redirectSource,
+            Bindings.ResourceUtils.displayNameForURL(redirectSource.url()),
+            void 0,
+            void 0,
+            void 0,
+            "redirect-source-request"
+          ));
         } else {
-          cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(redirectSource.url(), { jslogContext: "redirect-source-request-url" }));
+          cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(
+            redirectSource.url(),
+            { jslogContext: "redirect-source-request-url" }
+          ));
         }
         this.appendSubtitle(cell, i18nString6(UIStrings6.redirect));
         break;
       }
-      case "script": {
+      case SDK5.NetworkRequest.InitiatorType.SCRIPT: {
         const target = SDK5.NetworkManager.NetworkManager.forRequest(request)?.target() || null;
         const linkifier = this.parentView().linkifier();
         if (initiator.stack?.callFrames.length) {
           this.linkifiedInitiatorAnchor = linkifier.linkifyStackTraceTopFrame(target, initiator.stack);
         } else {
-          this.linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(target, initiator.scriptId, initiator.url, initiator.lineNumber, { columnNumber: initiator.columnNumber });
+          this.linkifiedInitiatorAnchor = linkifier.linkifyScriptLocation(
+            target,
+            initiator.scriptId,
+            initiator.url,
+            initiator.lineNumber,
+            { columnNumber: initiator.columnNumber }
+          );
         }
         UI6.Tooltip.Tooltip.install(this.linkifiedInitiatorAnchor, "");
         cell.appendChild(this.linkifiedInitiatorAnchor);
-        this.appendSubtitle(cell, this.isConsoleOriginated() ? i18nString6(UIStrings6.console) : i18nString6(UIStrings6.script));
+        this.appendSubtitle(
+          cell,
+          this.isConsoleOriginated() ? i18nString6(UIStrings6.console) : i18nString6(UIStrings6.script)
+        );
         cell.classList.add("network-script-initiated");
         break;
       }
-      case "preload": {
+      case SDK5.NetworkRequest.InitiatorType.PRELOAD: {
         UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.preload));
         cell.classList.add("network-dim-cell");
         cell.appendChild(document.createTextNode(i18nString6(UIStrings6.preload)));
         break;
       }
-      case "signedExchange": {
+      case SDK5.NetworkRequest.InitiatorType.SIGNED_EXCHANGE: {
         cell.appendChild(Components.Linkifier.Linkifier.linkifyURL(initiator.url));
         this.appendSubtitle(cell, i18nString6(UIStrings6.signedexchange));
         break;
       }
-      case "preflight": {
+      case SDK5.NetworkRequest.InitiatorType.PREFLIGHT: {
         cell.appendChild(document.createTextNode(i18nString6(UIStrings6.preflight)));
         if (initiator.initiatorRequest) {
           const icon = createIcon("arrow-up-down-circle");
-          const link = Components.Linkifier.Linkifier.linkifyRevealable(initiator.initiatorRequest, icon, void 0, i18nString6(UIStrings6.selectTheRequestThatTriggered), "trailing-link-icon", "initator-request");
+          const link = Components.Linkifier.Linkifier.linkifyRevealable(
+            initiator.initiatorRequest,
+            icon,
+            void 0,
+            i18nString6(UIStrings6.selectTheRequestThatTriggered),
+            "trailing-link-icon",
+            "initator-request"
+          );
           UI6.ARIAUtils.setLabel(link, i18nString6(UIStrings6.selectTheRequestThatTriggered));
           cell.appendChild(link);
         }
@@ -3528,7 +6501,7 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     }
   }
   renderAddressSpaceCell(cell, ipAddressSpace) {
-    if (ipAddressSpace !== "Unknown") {
+    if (ipAddressSpace !== Network.IPAddressSpace.Unknown) {
       UI6.UIUtils.createTextChild(cell, ipAddressSpace);
     }
   }
@@ -3543,9 +6516,12 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
       const matchedSourceType = this.requestInternal.serviceWorkerRouterInfo?.matchedSourceType;
       UI6.UIUtils.createTextChild(cell, i18n11.i18n.lockedString("(ServiceWorker router)"));
       let tooltipText;
-      if (matchedSourceType === "network") {
+      if (matchedSourceType === Network.ServiceWorkerRouterSource.Network) {
         const transferSize = i18n11.ByteUtilities.formatBytesToKb(this.requestInternal.transferSize);
-        tooltipText = i18nString6(UIStrings6.matchedToServiceWorkerRouterWithNetworkSource, { PH1: ruleIdMatched, PH2: transferSize, PH3: resourceSize });
+        tooltipText = i18nString6(
+          UIStrings6.matchedToServiceWorkerRouterWithNetworkSource,
+          { PH1: ruleIdMatched, PH2: transferSize, PH3: resourceSize }
+        );
       } else {
         tooltipText = i18nString6(UIStrings6.matchedToServiceWorkerRouter, { PH1: ruleIdMatched, PH2: resourceSize });
       }
@@ -3558,7 +6534,10 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     } else if (this.requestInternal.serviceWorkerRouterInfo) {
       const transferSize = i18n11.ByteUtilities.formatBytesToKb(this.requestInternal.transferSize);
       UI6.UIUtils.createTextChild(cell, transferSize);
-      UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.servedFromNetworkMissingServiceWorkerRoute, { PH1: transferSize, PH2: resourceSize }));
+      UI6.Tooltip.Tooltip.install(
+        cell,
+        i18nString6(UIStrings6.servedFromNetworkMissingServiceWorkerRoute, { PH1: transferSize, PH2: resourceSize })
+      );
     } else if (this.requestInternal.redirectSourceSignedExchangeInfoHasNoErrors()) {
       UI6.UIUtils.createTextChild(cell, i18n11.i18n.lockedString("(signed-exchange)"));
       UI6.Tooltip.Tooltip.install(cell, i18nString6(UIStrings6.servedFromSignedHttpExchange, { PH1: resourceSize }));
@@ -3589,7 +6568,12 @@ var NetworkRequestNode = class _NetworkRequestNode extends NetworkNode {
     }
     if (this.requestInternal.duration > 0) {
       this.setTextAndTitle(cell, i18n11.TimeUtilities.secondsToString(this.requestInternal.duration));
-      this.appendSubtitle(cell, i18n11.TimeUtilities.secondsToString(this.requestInternal.latency), false, i18nString6(UIStrings6.timeSubtitleTooltipText));
+      this.appendSubtitle(
+        cell,
+        i18n11.TimeUtilities.secondsToString(this.requestInternal.latency),
+        false,
+        i18nString6(UIStrings6.timeSubtitleTooltipText)
+      );
     } else if (this.requestInternal.preserved) {
       this.setTextAndTitle(cell, i18nString6(UIStrings6.unknown), i18nString6(UIStrings6.unknownExplanation));
     } else {
@@ -3661,12 +6645,12 @@ var NetworkGroupNode = class extends NetworkNode {
     const firstChildNode = this.traverseNextNode(false, void 0, true);
     const request = firstChildNode?.request();
     if (request) {
-      this.parentView().dispatchEventToListeners("RequestSelected", request);
+      this.parentView().dispatchEventToListeners("RequestSelected" /* RequestSelected */, request);
     }
   }
 };
 
-// gen/front_end/panels/network/NetworkItemView.js
+// ../../front_end/panels/network/NetworkItemView.ts
 var NetworkItemView_exports = {};
 __export(NetworkItemView_exports, {
   NetworkItemView: () => NetworkItemView
@@ -3681,7 +6665,7 @@ import * as UI18 from "../../ui/legacy/legacy.js";
 import * as VisualLogging15 from "../../ui/visual_logging/visual_logging.js";
 import * as NetworkComponents2 from "./components/components.js";
 
-// gen/front_end/panels/network/RequestCookiesView.js
+// ../../front_end/panels/network/RequestCookiesView.ts
 var RequestCookiesView_exports = {};
 __export(RequestCookiesView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW4,
@@ -3732,7 +6716,7 @@ var requestCookiesView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./requestCookiesView.css")} */`;
 
-// gen/front_end/panels/network/RequestCookiesView.js
+// ../../front_end/panels/network/RequestCookiesView.ts
 var { render: render6, html: html5 } = Lit;
 var { widget: widget3 } = UI7.Widget;
 var UIStrings7 = {
@@ -3789,13 +6773,14 @@ var UIStrings7 = {
 var str_7 = i18n13.i18n.registerUIStrings("panels/network/RequestCookiesView.ts", UIStrings7);
 var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
 var DEFAULT_VIEW4 = (input, _output, target) => {
-  render6(html5`
+  render6(
+    html5`
     <style>${requestCookiesView_css_default}</style>
     <style>${UI7.inspectorCommonStyles}</style>
     <div class="request-cookies-view">
       ${input.gotCookies ? Lit.nothing : widget3(UI7.EmptyWidget.EmptyWidget, {
-    header: i18nString7(UIStrings7.thisRequestHasNoCookies)
-  })}
+      header: i18nString7(UIStrings7.thisRequestHasNoCookies)
+    })}
 
       <div class=${input.requestCookies.cookies.length || input.hasBlockedCookies ? "" : "hidden"}>
         <span class="request-cookies-title" title=${i18nString7(UIStrings7.cookiesThatWereSentToTheServerIn)}>
@@ -3814,15 +6799,15 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
 
       ${input.requestCookies.cookies.length > 0 ? html5`
         <devtools-widget ${widget3(CookieTable.CookiesTable.CookiesTable, {
-    cookiesData: input.requestCookies,
-    inline: true
-  })} class="cookie-table cookies-panel-item"></devtools-widget>
+      cookiesData: input.requestCookies,
+      inline: true
+    })} class="cookie-table cookies-panel-item"></devtools-widget>
       ` : Lit.nothing}
 
       <div class="cookies-panel-item site-has-cookies-in-other-partition ${input.siteHasCookieInOtherPartition ? "" : "hidden"}">
         ${uiI18n2.getFormatLocalizedStringTemplate(str_7, UIStrings7.siteHasCookieInOtherPartition, {
-    PH1: html5`<devtools-link href="https://developer.chrome.com/en/docs/privacy-sandbox/chips/" .jslogContext=${"learn-more"}>${i18nString7(UIStrings7.learnMore)}</devtools-link>`
-  })}
+      PH1: html5`<devtools-link href="https://developer.chrome.com/en/docs/privacy-sandbox/chips/" .jslogContext=${"learn-more"}>${i18nString7(UIStrings7.learnMore)}</devtools-link>`
+    })}
       </div>
 
       <div class="request-cookies-title ${input.responseCookies.cookies.length ? "" : "hidden"}"
@@ -3832,9 +6817,9 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
 
       ${input.responseCookies.cookies.length ? html5`
         <devtools-widget ${widget3(CookieTable.CookiesTable.CookiesTable, {
-    cookiesData: input.responseCookies,
-    inline: true
-  })} class="cookie-table cookies-panel-item"></devtools-widget>
+      cookiesData: input.responseCookies,
+      inline: true
+    })} class="cookie-table cookies-panel-item"></devtools-widget>
       ` : Lit.nothing}
 
       <div class="request-cookies-title ${input.malformedResponseCookies.length ? "" : "hidden"}" title=${i18nString7(UIStrings7.cookiesThatWereReceivedFromTheServer)}>
@@ -3850,22 +6835,18 @@ var DEFAULT_VIEW4 = (input, _output, target) => {
         `)}
       </div>
     </div>
-  `, target, { container: { attributes: { jslog: `${VisualLogging6.pane("cookies").track({ resize: true })}` } } });
+  `,
+    target,
+    { container: { attributes: { jslog: `${VisualLogging6.pane("cookies").track({ resize: true })}` } } }
+  );
 };
 function getMalformedCookieTooltip(malformedCookie) {
-  if (malformedCookie.blockedReasons.includes(
-    "NameValuePairExceedsMaxSize"
-    /* Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize */
-  )) {
+  if (malformedCookie.blockedReasons.includes(Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize)) {
     return SDK6.NetworkRequest.setCookieBlockedReasonToUiString(
-      "NameValuePairExceedsMaxSize"
-      /* Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize */
+      Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize
     );
   }
-  return SDK6.NetworkRequest.setCookieBlockedReasonToUiString(
-    "SyntaxError"
-    /* Protocol.Network.SetCookieBlockedReason.SyntaxError */
-  );
+  return SDK6.NetworkRequest.setCookieBlockedReasonToUiString(Network.SetCookieBlockedReason.SyntaxError);
 }
 var RequestCookiesView = class extends UI7.Widget.Widget {
   request;
@@ -3914,12 +6895,8 @@ var RequestCookiesView = class extends UI7.Widget.Widget {
       responseCookies = this.request.nonBlockedResponseCookies();
       for (const blockedCookie of this.request.blockedResponseCookies()) {
         const parsedCookies = SDK6.CookieParser.CookieParser.parseSetCookie(blockedCookie.cookieLine);
-        if (parsedCookies && !parsedCookies.length || blockedCookie.blockedReasons.includes(
-          "SyntaxError"
-          /* Protocol.Network.SetCookieBlockedReason.SyntaxError */
-        ) || blockedCookie.blockedReasons.includes(
-          "NameValuePairExceedsMaxSize"
-          /* Protocol.Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize */
+        if (parsedCookies && !parsedCookies.length || blockedCookie.blockedReasons.includes(Network.SetCookieBlockedReason.SyntaxError) || blockedCookie.blockedReasons.includes(
+          Network.SetCookieBlockedReason.NameValuePairExceedsMaxSize
         )) {
           malformedResponseCookies.push(blockedCookie);
           continue;
@@ -3991,7 +6968,7 @@ var RequestCookiesView = class extends UI7.Widget.Widget {
   }
 };
 
-// gen/front_end/panels/network/RequestHeadersView.js
+// ../../front_end/panels/network/RequestHeadersView.ts
 var RequestHeadersView_exports = {};
 __export(RequestHeadersView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW6,
@@ -4010,14 +6987,14 @@ import * as SDK7 from "../../core/sdk/sdk.js";
 import * as Persistence from "../../models/persistence/persistence.js";
 import * as Workspace from "../../models/workspace/workspace.js";
 import * as NetworkForward2 from "./forward/forward.js";
-import * as Input from "../../ui/components/input/input.js";
+import * as Input2 from "../../ui/components/input/input.js";
 import * as UI9 from "../../ui/legacy/legacy.js";
 import * as Lit3 from "../../ui/lit/lit.js";
 import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 import * as Sources from "../sources/sources.js";
 import * as NetworkComponents from "./components/components.js";
 
-// gen/front_end/panels/network/ShowMoreDetailsWidget.js
+// ../../front_end/panels/network/ShowMoreDetailsWidget.ts
 var ShowMoreDetailsWidget_exports = {};
 __export(ShowMoreDetailsWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW5,
@@ -4048,15 +7025,18 @@ var DEFAULT_VIEW5 = (input, output, target) => {
     }
     void contextMenu.show();
   };
-  render7(html6`<span
+  render7(
+    html6`<span
             @contextmenu=${onContextMenuShowMore}
             >${input.showMore ? input.text : input.text.substr(0, MAX_LENGTH)}</span>
           ${!input.showMore && input.text.length > MAX_LENGTH ? html6`<devtools-button
-            .variant=${"outlined"}
+            .variant=${Buttons5.Button.Variant.OUTLINED}
             .jslogContext=${"show-more"}
             @click=${input.onToggle}>
             ${i18nString8(UIStrings8.showMore)}
-          </devtools-button>` : Lit2.nothing}`, target);
+          </devtools-button>` : Lit2.nothing}`,
+    target
+  );
 };
 var ShowMoreDetailsWidget = class extends UI8.Widget.Widget {
   #view;
@@ -4079,19 +7059,23 @@ var ShowMoreDetailsWidget = class extends UI8.Widget.Widget {
     this.requestUpdate();
   }
   performUpdate() {
-    this.#view({
-      copy: this.#copy,
-      text: this.#text,
-      showMore: this.#showMore,
-      onToggle: () => {
-        this.#showMore = true;
-        this.requestUpdate();
-      }
-    }, {}, this.contentElement);
+    this.#view(
+      {
+        copy: this.#copy,
+        text: this.#text,
+        showMore: this.#showMore,
+        onToggle: () => {
+          this.#showMore = true;
+          this.requestUpdate();
+        }
+      },
+      {},
+      this.contentElement
+    );
   }
 };
 
-// gen/front_end/panels/network/RequestHeadersView.js
+// ../../front_end/panels/network/RequestHeadersView.ts
 var { render: render8, html: html7 } = Lit3;
 var { widget: widget4 } = UI9.Widget;
 var UIStrings9 = {
@@ -4215,12 +7199,8 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
   render8(
     html7`
         <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
-        <style>${Input.checkboxStyles}</style>
-        ${renderGeneralSection(
-      input,
-      input.toReveal?.section === "General"
-      /* NetworkForward.UIRequestLocation.UIHeaderSection.GENERAL */
-    )}
+        <style>${Input2.checkboxStyles}</style>
+        ${renderGeneralSection(input, input.toReveal?.section === NetworkForward2.UIRequestLocation.UIHeaderSection.GENERAL)}
         ${!input.request?.earlyHintsHeaders || input.request.earlyHintsHeaders.length === 0 ? Lit3.nothing : renderCategory({
       name: "early-hints-headers",
       onToggleRawHeaders: input.toggleShowRawResponseHeaders,
@@ -4228,7 +7208,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       headerCount: input.request.earlyHintsHeaders.length,
       checked: void 0,
       additionalContent: void 0,
-      forceOpen: input.toReveal?.section === "EarlyHints",
+      forceOpen: input.toReveal?.section === NetworkForward2.UIRequestLocation.UIHeaderSection.EARLY_HINTS,
       loggingContext: "early-hints-headers",
       contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html7`
             <devtools-early-hints-header-section .data=${{
@@ -4244,7 +7224,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       headerCount: input.request.sortedResponseHeaders.length,
       checked: input.request.responseHeadersText ? input.showResponseHeadersText : void 0,
       additionalContent: renderHeaderOverridesLink(input),
-      forceOpen: input.toReveal?.section === "Response",
+      forceOpen: input.toReveal?.section === NetworkForward2.UIRequestLocation.UIHeaderSection.RESPONSE,
       loggingContext: "response-headers",
       contents: input.showResponseHeadersText ? renderRawHeaders(input.request.responseHeadersText) : html7`
           <devtools-response-header-section .data=${{
@@ -4259,7 +7239,7 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
       title: i18nString9(UIStrings9.requestHeaders),
       headerCount: input.request.requestHeaders().length,
       checked: requestHeadersText ? input.showRequestHeadersText : void 0,
-      forceOpen: input.toReveal?.section === "Request",
+      forceOpen: input.toReveal?.section === NetworkForward2.UIRequestLocation.UIHeaderSection.REQUEST,
       loggingContext: "request-headers",
       contents: input.showRequestHeadersText && requestHeadersText ? renderRawHeaders(requestHeadersText) : html7`
           <devtools-widget ${widget4(NetworkComponents.RequestHeaderSection.RequestHeaderSection, {
@@ -4274,11 +7254,15 @@ var DEFAULT_VIEW6 = (input, _output, target) => {
   );
 };
 var GENERAL_HEADERS_ONLY_VIEW = (input, _output, target) => {
-  render8(html7`
+  render8(
+    html7`
         <style>${NetworkComponents.RequestHeaderSection.requestHeadersViewStyles}</style>
-        <style>${Input.checkboxStyles}</style>
+        <style>${Input2.checkboxStyles}</style>
         ${renderGeneralRows(input)}
-      `, target, { container: { attributes: { jslog: `${VisualLogging7.pane("headers").track({ resize: true })}` } } });
+      `,
+    target,
+    { container: { attributes: { jslog: `${VisualLogging7.pane("headers").track({ resize: true })}` } } }
+  );
 };
 var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
   #request;
@@ -4308,9 +7292,21 @@ var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
     this.#request?.addEventListener(SDK7.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED, this.#refreshHeadersView, this);
     this.#request?.addEventListener(SDK7.NetworkRequest.Events.FINISHED_LOADING, this.#refreshHeadersView, this);
     this.#request?.addEventListener(SDK7.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshHeadersView, this);
-    this.#request?.addEventListener(SDK7.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
-    this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
-    this.#workspace.addEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
+    this.#request?.addEventListener(
+      SDK7.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED,
+      this.#resetAndRefreshHeadersView,
+      this
+    );
+    this.#workspace.addEventListener(
+      Workspace.Workspace.Events.UISourceCodeAdded,
+      this.#uiSourceCodeAddedOrRemoved,
+      this
+    );
+    this.#workspace.addEventListener(
+      Workspace.Workspace.Events.UISourceCodeRemoved,
+      this.#uiSourceCodeAddedOrRemoved,
+      this
+    );
     Common7.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).addChangeListener(this.requestUpdate, this);
   }
   wasShown() {
@@ -4324,12 +7320,32 @@ var RequestHeadersView = class _RequestHeadersView extends UI9.Widget.Widget {
     this.#removeEventListeners();
   }
   #removeEventListeners() {
-    this.#request?.removeEventListener(SDK7.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED, this.#refreshHeadersView, this);
+    this.#request?.removeEventListener(
+      SDK7.NetworkRequest.Events.REMOTE_ADDRESS_CHANGED,
+      this.#refreshHeadersView,
+      this
+    );
     this.#request?.removeEventListener(SDK7.NetworkRequest.Events.FINISHED_LOADING, this.#refreshHeadersView, this);
-    this.#request?.removeEventListener(SDK7.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.#refreshHeadersView, this);
-    this.#request?.removeEventListener(SDK7.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.#resetAndRefreshHeadersView, this);
-    this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeAdded, this.#uiSourceCodeAddedOrRemoved, this);
-    this.#workspace.removeEventListener(Workspace.Workspace.Events.UISourceCodeRemoved, this.#uiSourceCodeAddedOrRemoved, this);
+    this.#request?.removeEventListener(
+      SDK7.NetworkRequest.Events.REQUEST_HEADERS_CHANGED,
+      this.#refreshHeadersView,
+      this
+    );
+    this.#request?.removeEventListener(
+      SDK7.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED,
+      this.#resetAndRefreshHeadersView,
+      this
+    );
+    this.#workspace.removeEventListener(
+      Workspace.Workspace.Events.UISourceCodeAdded,
+      this.#uiSourceCodeAddedOrRemoved,
+      this
+    );
+    this.#workspace.removeEventListener(
+      Workspace.Workspace.Events.UISourceCodeRemoved,
+      this.#uiSourceCodeAddedOrRemoved,
+      this
+    );
     Common7.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor).removeChangeListener(this.requestUpdate, this);
   }
   #resetAndRefreshHeadersView() {
@@ -4397,7 +7413,9 @@ function renderHeaderOverridesLink(input) {
     event.preventDefault();
     input.revealHeadersFile?.();
   };
-  const overridesSetting = Common7.Settings.Settings.instance().resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor);
+  const overridesSetting = Common7.Settings.Settings.instance().resolve(
+    Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor
+  );
   const fileIcon = html7`
       <devtools-icon name="document" class=${"medium" + overridesSetting.get() ? "inline-icon dot purple" : "inline-icon"}>
       </devtools-icon>`;
@@ -4425,7 +7443,7 @@ function renderRawHeaders(text) {
       ${widget4(ShowMoreDetailsWidget, { text })}></devtools-widget></div>`;
 }
 function renderGeneralRow(input, name, value, id, classNames) {
-  const isHighlighted = input.toReveal?.section === "General" && name.toLowerCase() === input.toReveal?.header?.toLowerCase();
+  const isHighlighted = input.toReveal?.section === NetworkForward2.UIRequestLocation.UIHeaderSection.GENERAL && name.toLowerCase() === input.toReveal?.header?.toLowerCase();
   return html7`
       <div class="row ${isHighlighted ? "header-highlight" : ""}">
         <div class="header-name">${name}</div>
@@ -4487,7 +7505,7 @@ function renderCategory(data) {
   }
 }
 
-// gen/front_end/panels/network/RequestInitiatorView.js
+// ../../front_end/panels/network/RequestInitiatorView.ts
 var RequestInitiatorView_exports = {};
 __export(RequestInitiatorView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW7,
@@ -4557,7 +7575,7 @@ var requestInitiatorViewTree_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./requestInitiatorViewTree.css")} */`;
 
-// gen/front_end/panels/network/RequestInitiatorView.js
+// ../../front_end/panels/network/RequestInitiatorView.ts
 var { widget: widget5 } = UI10.Widget;
 var UIStrings10 = {
   /**
@@ -4590,11 +7608,14 @@ function trimUrl(url) {
 var DEFAULT_VIEW7 = (input, _output, target) => {
   const hasInitiatorData = input.initiatorGraph.initiators.size > 1 || input.initiatorGraph.initiated.size > 1 || input.stackTrace;
   if (!hasInitiatorData) {
-    render9(html8`
+    render9(
+      html8`
       <div class="empty-view" style="display: flex; justify-content: center; align-items: center; height: 100%; color: var(--sys-color-token-subtle);">
         ${i18nString10(UIStrings10.noInitiator)}
       </div>
-    `, target);
+    `,
+      target
+    );
     return;
   }
   const renderStackTraceSection = () => {
@@ -4758,7 +7779,7 @@ var RequestInitiatorView = class extends UI10.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/network/RequestPayloadView.js
+// ../../front_end/panels/network/RequestPayloadView.ts
 var RequestPayloadView_exports = {};
 __export(RequestPayloadView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW8,
@@ -5019,7 +8040,7 @@ var objectValue_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./objectValue.css")} */`;
 
-// gen/front_end/panels/network/RequestPayloadView.js
+// ../../front_end/panels/network/RequestPayloadView.ts
 import * as UI11 from "../../ui/legacy/legacy.js";
 import { Directives as Directives4, html as html9, nothing as nothing8, render as render10 } from "../../ui/lit/lit.js";
 import * as VisualLogging9 from "../../ui/visual_logging/visual_logging.js";
@@ -5179,7 +8200,7 @@ var requestPayloadView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./requestPayloadView.css")} */`;
 
-// gen/front_end/panels/network/RequestPayloadView.js
+// ../../front_end/panels/network/RequestPayloadView.ts
 var { classMap } = Directives4;
 var { widget: widget6 } = UI11.Widget;
 var { ifExpanded } = UI11.TreeOutline;
@@ -5238,7 +8259,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
   const createViewSourceToggle = (viewSource, callback) => html9`<devtools-button
       class="payload-toggle"
       jslog=${VisualLogging9.action().track({ click: true }).context("source-parse")}
-      .variant=${"outlined"}
+      .variant=${Buttons6.Button.Variant.OUTLINED}
       @click=${(e) => {
     e.consume();
     callback(!viewSource);
@@ -5260,11 +8281,19 @@ var DEFAULT_VIEW8 = (input, output, target) => {
   const createParsedParams = (params, decodeParameters) => params.map((param) => {
     return html9`
         <li role=treeitem
-            @contextmenu=${copyValueContextmenu(i18nString11(UIStrings11.copyValue), () => decodeURIComponent(param.value), "copy-value")}>
+            @contextmenu=${copyValueContextmenu(
+      i18nString11(UIStrings11.copyValue),
+      () => decodeURIComponent(param.value),
+      "copy-value"
+    )}>
           ${param.name !== "" ? html9`
             ${RequestPayloadView.formatParameter(param.name, "payload-name", decodeParameters)}
             ${RequestPayloadView.formatParameter(param.value, "payload-value source-code", decodeParameters)}
-          ` : RequestPayloadView.formatParameter(i18nString11(UIStrings11.empty), "empty-request-payload", decodeParameters)}
+          ` : RequestPayloadView.formatParameter(
+      i18nString11(UIStrings11.empty),
+      "empty-request-payload",
+      decodeParameters
+    )}
         </li>
       `;
   });
@@ -5293,9 +8322,17 @@ var DEFAULT_VIEW8 = (input, output, target) => {
     const contextMenu = new UI11.ContextMenu.ContextMenu(event);
     const section4 = contextMenu.newSection();
     if (viewSource) {
-      section4.appendItem(i18nString11(UIStrings11.viewParsed), () => setViewSource(!viewSource), { jslogContext: "view-parsed" });
+      section4.appendItem(
+        i18nString11(UIStrings11.viewParsed),
+        () => setViewSource(!viewSource),
+        { jslogContext: "view-parsed" }
+      );
     } else {
-      section4.appendItem(i18nString11(UIStrings11.viewSource), () => setViewSource(!viewSource), { jslogContext: "view-source" });
+      section4.appendItem(
+        i18nString11(UIStrings11.viewSource),
+        () => setViewSource(!viewSource),
+        { jslogContext: "view-source" }
+      );
       if (decoding) {
         const viewURLEncodedText = decoding.decode ? i18nString11(UIStrings11.viewUrlEncoded) : i18nString11(UIStrings11.viewDecoded);
         section4.appendItem(viewURLEncodedText, () => decoding.toggleDecode(), { jslogContext: "toggle-url-decoding" });
@@ -5314,10 +8351,14 @@ var DEFAULT_VIEW8 = (input, output, target) => {
           toggle-on-click
           ?hidden=${!input.queryParameters}
           jslog=${VisualLogging9.section().context("query-string")}
-          @contextmenu=${onContextMenu(input.viewQueryParamSource, input.setViewQueryParamSource, {
-    decode: input.decodeQueryParameters,
-    toggleDecode: () => input.setDecodeQueryParameters(!input.decodeQueryParameters)
-  })}
+          @contextmenu=${onContextMenu(
+    input.viewQueryParamSource,
+    input.setViewQueryParamSource,
+    {
+      decode: input.decodeQueryParameters,
+      toggleDecode: () => input.setDecodeQueryParameters(!input.decodeQueryParameters)
+    }
+  )}
           @expanded=${(e) => queryStringExpandedSetting.set(e.detail.expanded)}
           ?open=${queryStringExpandedSetting.get()}
         >
@@ -5327,7 +8368,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
             class=payload-toggle
             ?hidden=${input.viewQueryParamSource}
             jslog=${VisualLogging9.action().track({ click: true }).context("decode-encode")}
-            .variant=${"outlined"}
+            .variant=${Buttons6.Button.Variant.OUTLINED}
             @click=${(e) => {
     e.consume();
     input.setDecodeQueryParameters(!input.decodeQueryParameters);
@@ -5343,10 +8384,14 @@ var DEFAULT_VIEW8 = (input, output, target) => {
           toggle-on-click
           ?hidden=${!input.formData || !input.formParameters}
           jslog=${VisualLogging9.section().context("form-data")}
-          @contextmenu=${onContextMenu(input.viewFormParamSource, input.setViewFormParamSource, {
-    decode: input.decodeFormParameters,
-    toggleDecode: () => input.setDecodeFormParameters(!input.decodeFormParameters)
-  })}
+          @contextmenu=${onContextMenu(
+    input.viewFormParamSource,
+    input.setViewFormParamSource,
+    {
+      decode: input.decodeFormParameters,
+      toggleDecode: () => input.setDecodeFormParameters(!input.decodeFormParameters)
+    }
+  )}
           @expanded=${(e) => formDataExpandedSetting.set(e.detail.expanded)}
           ?open=${formDataExpandedSetting.get()}
         >
@@ -5356,7 +8401,7 @@ var DEFAULT_VIEW8 = (input, output, target) => {
             class=payload-toggle
             ?hidden=${input.viewFormParamSource}
             jslog=${VisualLogging9.action().track({ click: true }).context("decode-encode")}
-            .variant=${"outlined"}
+            .variant=${Buttons6.Button.Variant.OUTLINED}
             @click=${(e) => {
     e.consume();
     input.setDecodeFormParameters(!input.decodeFormParameters);
@@ -5372,7 +8417,10 @@ var DEFAULT_VIEW8 = (input, output, target) => {
           toggle-on-click
           ?hidden=${!input.formData || Boolean(input.formParameters) || Boolean(input.binaryPayloadContentData)}
           jslog=${VisualLogging9.section().context("request-payload")}
-          @contextmenu=${onContextMenu(input.viewJSONPayloadSource, input.setViewJSONPayloadSource)}
+          @contextmenu=${onContextMenu(
+    input.viewJSONPayloadSource,
+    input.setViewJSONPayloadSource
+  )}
           @expanded=${(e) => requestPayloadExpandedSetting.set(e.detail.expanded)}
           ?open=${requestPayloadExpandedSetting.get()}
         >
@@ -5387,8 +8435,15 @@ var DEFAULT_VIEW8 = (input, output, target) => {
      <div class="raw-payload-section"
           jslog=${VisualLogging9.section().context("binary-request-payload")}>
        ${widget6((element) => {
-    const streamingContent = TextUtils.StreamingContentData.StreamingContentData.from(input.binaryPayloadContentData);
-    return new BinaryResourceView(streamingContent, input.requestUrl, Common8.ResourceType.resourceTypes.XHR, element);
+    const streamingContent = TextUtils.StreamingContentData.StreamingContentData.from(
+      input.binaryPayloadContentData
+    );
+    return new BinaryResourceView(
+      streamingContent,
+      input.requestUrl,
+      Common8.ResourceType.resourceTypes.XHR,
+      element
+    );
   })}
      </div>` : nothing8}
    `, target, {
@@ -5505,19 +8560,26 @@ var RequestPayloadView = class extends UI11.Widget.VBox {
           return;
         }
         const objectTree = this.#objectTree;
-        ObjectUI.ObjectPropertiesSection.populateObjectTreeContextMenu(contextMenu, objectTree, async () => {
-          await objectTree.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
-          this.requestUpdate();
-        }, () => {
-          objectTree.collapseRecursively();
-          this.requestUpdate();
-        }, () => {
-          objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
-          this.requestUpdate();
-        }, () => {
-          objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
-          this.requestUpdate();
-        });
+        ObjectUI.ObjectPropertiesSection.populateObjectTreeContextMenu(
+          contextMenu,
+          objectTree,
+          async () => {
+            await objectTree.expandRecursively(ObjectUI.ObjectPropertiesSection.EXPANDABLE_MAX_DEPTH);
+            this.requestUpdate();
+          },
+          () => {
+            objectTree.collapseRecursively();
+            this.requestUpdate();
+          },
+          () => {
+            objectTree.sortPropertiesAlphabetically = !objectTree.sortPropertiesAlphabetically;
+            this.requestUpdate();
+          },
+          () => {
+            objectTree.includeNullOrUndefinedValues = !objectTree.includeNullOrUndefinedValues;
+            this.requestUpdate();
+          }
+        );
       },
       onPayloadToggle: (expanded) => {
         if (this.#objectTree) {
@@ -5538,8 +8600,16 @@ var RequestPayloadView = class extends UI11.Widget.VBox {
       this.#formParameters = await this.request?.formParameters() ?? void 0;
     }
     if (this.#objectTree) {
-      this.#objectTree.removeEventListener("children-changed", this.requestUpdate, this);
-      this.#objectTree.removeEventListener("expanded-changed", this.requestUpdate, this);
+      this.#objectTree.removeEventListener(
+        ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED,
+        this.requestUpdate,
+        this
+      );
+      this.#objectTree.removeEventListener(
+        ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED,
+        this.requestUpdate,
+        this
+      );
       this.#objectTree = null;
     }
     if (this.#formData && !this.#formParameters) {
@@ -5548,11 +8618,19 @@ var RequestPayloadView = class extends UI11.Widget.VBox {
         const object = new SDK9.RemoteObject.LocalJSONObject(parsedFormData);
         this.#objectTree = new ObjectUI.ObjectPropertiesSection.ObjectTree(object, {
           readOnly: true,
-          propertiesMode: 1
+          propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
         });
         this.#objectTree.expanded = true;
-        this.#objectTree.addEventListener("children-changed", this.requestUpdate, this);
-        this.#objectTree.addEventListener("expanded-changed", this.requestUpdate, this);
+        this.#objectTree.addEventListener(
+          ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.CHILDREN_CHANGED,
+          this.requestUpdate,
+          this
+        );
+        this.#objectTree.addEventListener(
+          ObjectUI.ObjectPropertiesSection.ObjectTreeNodeBase.Events.EXPANDED_CHANGED,
+          this.requestUpdate,
+          this
+        );
       } catch {
       }
     }
@@ -5584,7 +8662,7 @@ var RequestPayloadView = class extends UI11.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/network/RequestPreviewView.js
+// ../../front_end/panels/network/RequestPreviewView.ts
 var RequestPreviewView_exports = {};
 __export(RequestPreviewView_exports, {
   RequestPreviewView: () => RequestPreviewView
@@ -5597,7 +8675,7 @@ import * as UI14 from "../../ui/legacy/legacy.js";
 import { render as render12 } from "../../ui/lit/lit.js";
 import * as VisualLogging10 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/network/RequestHTMLView.js
+// ../../front_end/panels/network/RequestHTMLView.ts
 var RequestHTMLView_exports = {};
 __export(RequestHTMLView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW9,
@@ -5625,9 +8703,10 @@ var requestHTMLView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./requestHTMLView.css")} */`;
 
-// gen/front_end/panels/network/RequestHTMLView.js
+// ../../front_end/panels/network/RequestHTMLView.ts
 var DEFAULT_VIEW9 = (input, _output, target) => {
-  render11(html10`
+  render11(
+    html10`
     <style>${requestHTMLView_css_default}</style>
     <div class="html request-view widget vbox">
       ${input.dataURL ? html10`
@@ -5635,7 +8714,9 @@ var DEFAULT_VIEW9 = (input, _output, target) => {
         <iframe class="html-preview-frame" sandbox
           csp="default-src 'none';img-src data:;style-src 'unsafe-inline'" src=${input.dataURL}
           tabindex="-1" role="presentation"></iframe>` : nothing9}
-    </div>`, target);
+    </div>`,
+    target
+  );
 };
 var RequestHTMLView = class _RequestHTMLView extends UI12.Widget.VBox {
   #dataURL;
@@ -5662,7 +8743,7 @@ var RequestHTMLView = class _RequestHTMLView extends UI12.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/network/SignedExchangeInfoView.js
+// ../../front_end/panels/network/SignedExchangeInfoView.ts
 var SignedExchangeInfoView_exports = {};
 __export(SignedExchangeInfoView_exports, {
   Category: () => Category,
@@ -5793,7 +8874,7 @@ var signedExchangeInfoView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./signedExchangeInfoView.css")} */`;
 
-// gen/front_end/panels/network/SignedExchangeInfoView.js
+// ../../front_end/panels/network/SignedExchangeInfoView.ts
 var UIStrings12 = {
   /**
    * @description Text for errors
@@ -5920,7 +9001,12 @@ var SignedExchangeInfoView = class extends UI13.Widget.VBox {
     }
     const titleElement = document.createDocumentFragment();
     titleElement.createChild("div", "header-name").textContent = i18nString12(UIStrings12.signedHttpExchange);
-    const learnMoreNode = Link.create("https://github.com/WICG/webpackage", i18nString12(UIStrings12.learnmore), "header-toggle", "learn-more");
+    const learnMoreNode = Link.create(
+      "https://github.com/WICG/webpackage",
+      i18nString12(UIStrings12.learnmore),
+      "header-toggle",
+      "learn-more"
+    );
     titleElement.appendChild(learnMoreNode);
     const headerCategory = new Category(root, titleElement);
     if (signedExchangeInfo.header) {
@@ -5928,7 +9014,14 @@ var SignedExchangeInfoView = class extends UI13.Widget.VBox {
       const redirectDestination = request.redirectDestination();
       const requestURLElement = this.formatHeader(i18nString12(UIStrings12.requestUrl), header.requestUrl);
       if (redirectDestination) {
-        const viewRequestLink = Components3.Linkifier.Linkifier.linkifyRevealable(redirectDestination, "View request", void 0, void 0, void 0, "redirect-destination-request");
+        const viewRequestLink = Components3.Linkifier.Linkifier.linkifyRevealable(
+          redirectDestination,
+          "View request",
+          void 0,
+          void 0,
+          void 0,
+          "redirect-destination-request"
+        );
         viewRequestLink.classList.add("header-toggle");
         requestURLElement.appendChild(viewRequestLink);
       }
@@ -5948,52 +9041,70 @@ var SignedExchangeInfoView = class extends UI13.Widget.VBox {
         const signature = header.signatures[i];
         const signatureCategory = new Category(root, i18nString12(UIStrings12.signature));
         signatureCategory.createLeaf(this.formatHeader(i18nString12(UIStrings12.label), signature.label));
-        signatureCategory.createLeaf(this.formatHeaderForHexData(i18nString12(UIStrings12.signature), signature.signature, errorFieldSet.has(
-          "signatureSig"
-          /* Protocol.Network.SignedExchangeErrorField.SignatureSig */
-        )));
+        signatureCategory.createLeaf(this.formatHeaderForHexData(
+          i18nString12(UIStrings12.signature),
+          signature.signature,
+          errorFieldSet.has(Network.SignedExchangeErrorField.SignatureSig)
+        ));
         if (signature.certUrl) {
-          const certURLElement = this.formatHeader(i18nString12(UIStrings12.certificateUrl), signature.certUrl, errorFieldSet.has(
-            "signatureCertUrl"
-            /* Protocol.Network.SignedExchangeErrorField.SignatureCertUrl */
-          ));
+          const certURLElement = this.formatHeader(
+            i18nString12(UIStrings12.certificateUrl),
+            signature.certUrl,
+            errorFieldSet.has(Network.SignedExchangeErrorField.SignatureCertUrl)
+          );
           if (signature.certificates) {
             const viewCertLink = certURLElement.createChild("span", "devtools-link header-toggle");
             viewCertLink.textContent = i18nString12(UIStrings12.viewCertificate);
-            viewCertLink.addEventListener("click", Host6.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer.bind(null, signature.certificates), false);
+            viewCertLink.addEventListener(
+              "click",
+              Host6.InspectorFrontendHost.InspectorFrontendHostInstance.showCertificateViewer.bind(
+                null,
+                signature.certificates
+              ),
+              false
+            );
           }
           signatureCategory.createLeaf(certURLElement);
         }
-        signatureCategory.createLeaf(this.formatHeader(i18nString12(UIStrings12.integrity), signature.integrity, errorFieldSet.has(
-          "signatureIntegrity"
-          /* Protocol.Network.SignedExchangeErrorField.SignatureIntegrity */
-        )));
+        signatureCategory.createLeaf(this.formatHeader(
+          i18nString12(UIStrings12.integrity),
+          signature.integrity,
+          errorFieldSet.has(Network.SignedExchangeErrorField.SignatureIntegrity)
+        ));
         if (signature.certSha256) {
-          signatureCategory.createLeaf(this.formatHeaderForHexData(i18nString12(UIStrings12.certificateSha), signature.certSha256, errorFieldSet.has(
-            "signatureCertSha256"
-            /* Protocol.Network.SignedExchangeErrorField.SignatureCertSha256 */
-          )));
+          signatureCategory.createLeaf(this.formatHeaderForHexData(
+            i18nString12(UIStrings12.certificateSha),
+            signature.certSha256,
+            errorFieldSet.has(Network.SignedExchangeErrorField.SignatureCertSha256)
+          ));
         }
-        signatureCategory.createLeaf(this.formatHeader(i18nString12(UIStrings12.validityUrl), signature.validityUrl, errorFieldSet.has(
-          "signatureValidityUrl"
-          /* Protocol.Network.SignedExchangeErrorField.SignatureValidityUrl */
-        )));
-        signatureCategory.createLeaf().title = this.formatHeader(i18nString12(UIStrings12.date), new Date(1e3 * signature.date).toUTCString(), errorFieldSet.has(
-          "signatureTimestamps"
-          /* Protocol.Network.SignedExchangeErrorField.SignatureTimestamps */
+        signatureCategory.createLeaf(this.formatHeader(
+          i18nString12(UIStrings12.validityUrl),
+          signature.validityUrl,
+          errorFieldSet.has(Network.SignedExchangeErrorField.SignatureValidityUrl)
         ));
-        signatureCategory.createLeaf().title = this.formatHeader(i18nString12(UIStrings12.expires), new Date(1e3 * signature.expires).toUTCString(), errorFieldSet.has(
-          "signatureTimestamps"
-          /* Protocol.Network.SignedExchangeErrorField.SignatureTimestamps */
-        ));
+        signatureCategory.createLeaf().title = this.formatHeader(
+          i18nString12(UIStrings12.date),
+          new Date(1e3 * signature.date).toUTCString(),
+          errorFieldSet.has(Network.SignedExchangeErrorField.SignatureTimestamps)
+        );
+        signatureCategory.createLeaf().title = this.formatHeader(
+          i18nString12(UIStrings12.expires),
+          new Date(1e3 * signature.expires).toUTCString(),
+          errorFieldSet.has(Network.SignedExchangeErrorField.SignatureTimestamps)
+        );
       }
     }
     if (signedExchangeInfo.securityDetails) {
       const securityDetails = signedExchangeInfo.securityDetails;
       const securityCategory = new Category(root, i18nString12(UIStrings12.certificate));
       securityCategory.createLeaf(this.formatHeader(i18nString12(UIStrings12.subject), securityDetails.subjectName));
-      securityCategory.createLeaf(this.formatHeader(i18nString12(UIStrings12.validFrom), new Date(1e3 * securityDetails.validFrom).toUTCString()));
-      securityCategory.createLeaf(this.formatHeader(i18nString12(UIStrings12.validUntil), new Date(1e3 * securityDetails.validTo).toUTCString()));
+      securityCategory.createLeaf(
+        this.formatHeader(i18nString12(UIStrings12.validFrom), new Date(1e3 * securityDetails.validFrom).toUTCString())
+      );
+      securityCategory.createLeaf(
+        this.formatHeader(i18nString12(UIStrings12.validUntil), new Date(1e3 * securityDetails.validTo).toUTCString())
+      );
       securityCategory.createLeaf(this.formatHeader(i18nString12(UIStrings12.issuer), securityDetails.issuer));
     }
   }
@@ -6042,7 +9153,7 @@ var Category = class extends UI13.TreeOutline.TreeElement {
   }
 };
 
-// gen/front_end/panels/network/RequestPreviewView.js
+// ../../front_end/panels/network/RequestPreviewView.ts
 var UIStrings13 = {
   /**
    * @description Text in Request Preview View of the Network panel
@@ -6122,7 +9233,7 @@ var RequestPreviewView = class extends UI14.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/network/RequestResponseView.js
+// ../../front_end/panels/network/RequestResponseView.ts
 var RequestResponseView_exports = {};
 __export(RequestResponseView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW10,
@@ -6156,16 +9267,33 @@ var { widgetRef, widget: widget7 } = UI15.Widget;
 var DEFAULT_VIEW10 = (input, output, target) => {
   let widgetTemplate;
   if (TextUtils3.StreamingContentData.isError(input.contentData)) {
-    widgetTemplate = html11`${widget7((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.failedToLoadResponseData), input.contentData.error, element))}`;
+    widgetTemplate = html11`${widget7((element) => new UI15.EmptyWidget.EmptyWidget(
+      i18nString14(UIStrings14.failedToLoadResponseData),
+      input.contentData.error,
+      element
+    ))}`;
   } else if (input.request.statusCode === 204 || input.request.failed) {
-    widgetTemplate = html11`${widget7((element) => new UI15.EmptyWidget.EmptyWidget(i18nString14(UIStrings14.noPreview), i18nString14(UIStrings14.thisRequestHasNoResponseData), element))}`;
+    widgetTemplate = html11`${widget7((element) => new UI15.EmptyWidget.EmptyWidget(
+      i18nString14(UIStrings14.noPreview),
+      i18nString14(UIStrings14.thisRequestHasNoResponseData),
+      element
+    ))}`;
   } else if (input.renderAsText) {
-    widgetTemplate = html11`<devtools-widget ${widget7((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(input.request, input.mimeType, element))}
+    widgetTemplate = html11`<devtools-widget ${widget7((element) => new SourceFrame3.ResourceSourceFrame.SearchableContainer(
+      input.request,
+      input.mimeType,
+      element
+    ))}
                     ${widgetRef(SourceFrame3.ResourceSourceFrame.SearchableContainer, (widget8) => {
       output.revealPosition = widget8.revealPosition.bind(widget8);
     })}></devtools-widget>`;
   } else {
-    widgetTemplate = html11`${widget7((element) => new BinaryResourceView(input.contentData, input.request.url(), input.request.resourceType(), element))}`;
+    widgetTemplate = html11`${widget7((element) => new BinaryResourceView(
+      input.contentData,
+      input.request.url(),
+      input.request.resourceType(),
+      element
+    ))}`;
   }
   render13(widgetTemplate, target);
 };
@@ -6190,7 +9318,13 @@ var RequestResponseView = class extends UI15.Widget.VBox {
       const isWasm = contentData.mimeType === "application/wasm";
       renderAsText = contentData.isTextContent || isWasm;
       const isMinified = isWasm || !contentData.isTextContent ? false : TextUtils3.TextUtils.isMinified(contentData.content().text);
-      const mediaType = Common9.ResourceType.ResourceType.mediaTypeForMetrics(mimeType, this.request.resourceType().isFromSourceMap(), isMinified, false, false);
+      const mediaType = Common9.ResourceType.ResourceType.mediaTypeForMetrics(
+        mimeType,
+        this.request.resourceType().isFromSourceMap(),
+        isMinified,
+        false,
+        false
+      );
       Host7.userMetrics.networkPanelResponsePreviewOpened(mediaType);
     }
     const viewInput = { request: this.request, contentData, mimeType, renderAsText };
@@ -6215,7 +9349,7 @@ var RequestResponseView = class extends UI15.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/network/RequestTimingView.js
+// ../../front_end/panels/network/RequestTimingView.ts
 var RequestTimingView_exports = {};
 __export(RequestTimingView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW11,
@@ -6506,7 +9640,7 @@ tr.synthetic {
 
 /*# sourceURL=${import.meta.resolve("./networkTimingTable.css")} */`;
 
-// gen/front_end/panels/network/RequestTimingView.js
+// ../../front_end/panels/network/RequestTimingView.ts
 var { repeat: repeat2, classMap: classMap2, ifDefined: ifDefined2 } = Directives5;
 var UIStrings15 = {
   /**
@@ -6711,49 +9845,49 @@ var str_15 = i18n29.i18n.registerUIStrings("panels/network/RequestTimingView.ts"
 var i18nString15 = i18n29.i18n.getLocalizedString.bind(void 0, str_15);
 function timeRangeTitle(name) {
   switch (name) {
-    case "push":
+    case NetworkTimeCalculator.RequestTimeRangeNames.PUSH:
       return i18nString15(UIStrings15.receivingPush);
-    case "queueing":
+    case NetworkTimeCalculator.RequestTimeRangeNames.QUEUEING:
       return i18nString15(UIStrings15.queueing);
-    case "blocking":
+    case NetworkTimeCalculator.RequestTimeRangeNames.BLOCKING:
       return i18nString15(UIStrings15.stalled);
-    case "connecting":
+    case NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING:
       return i18nString15(UIStrings15.initialConnection);
-    case "dns":
+    case NetworkTimeCalculator.RequestTimeRangeNames.DNS:
       return i18nString15(UIStrings15.dnsLookup);
-    case "proxy":
+    case NetworkTimeCalculator.RequestTimeRangeNames.PROXY:
       return i18nString15(UIStrings15.proxyNegotiation);
-    case "receiving-push":
+    case NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH:
       return i18nString15(UIStrings15.readingPush);
-    case "receiving":
+    case NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING:
       return i18nString15(UIStrings15.contentDownload);
-    case "sending":
+    case NetworkTimeCalculator.RequestTimeRangeNames.SENDING:
       return i18nString15(UIStrings15.requestSent);
-    case "serviceworker":
+    case NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER:
       return i18nString15(UIStrings15.requestToServiceworker);
-    case "serviceworker-preparation":
+    case NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION:
       return i18nString15(UIStrings15.startup);
-    case "serviceworker-routerevaluation":
+    case NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION:
       return i18nString15(UIStrings15.routerEvaluation);
-    case "serviceworker-cachelookup":
+    case NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP:
       return i18nString15(UIStrings15.routerCacheLookup);
-    case "serviceworker-respondwith":
+    case NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH:
       return i18nString15(UIStrings15.respondwith);
-    case "ssl":
+    case NetworkTimeCalculator.RequestTimeRangeNames.SSL:
       return i18nString15(UIStrings15.ssl);
-    case "total":
+    case NetworkTimeCalculator.RequestTimeRangeNames.TOTAL:
       return i18nString15(UIStrings15.total);
-    case "waiting":
+    case NetworkTimeCalculator.RequestTimeRangeNames.WAITING:
       return i18nString15(UIStrings15.waitingTtfb);
     default:
       return name;
   }
 }
 function groupHeader(name) {
-  if (name === "push") {
+  if (name === NetworkTimeCalculator.RequestTimeRangeNames.PUSH) {
     return i18nString15(UIStrings15.serverPush);
   }
-  if (name === "queueing") {
+  if (name === NetworkTimeCalculator.RequestTimeRangeNames.QUEUEING) {
     return i18nString15(UIStrings15.resourceScheduling);
   }
   if (NetworkTimeCalculator.ConnectionSetupRangeNames.has(name)) {
@@ -6766,11 +9900,11 @@ function groupHeader(name) {
 }
 function getLocalizedResponseSourceForCode(swResponseSource) {
   switch (swResponseSource) {
-    case "cache-storage":
+    case Network.ServiceWorkerResponseSource.CacheStorage:
       return i18nString15(UIStrings15.serviceworkerCacheStorage);
-    case "http-cache":
+    case Network.ServiceWorkerResponseSource.HttpCache:
       return i18nString15(UIStrings15.fromHttpCache);
-    case "network":
+    case Network.ServiceWorkerResponseSource.Network:
       return i18nString15(UIStrings15.networkFetch);
     default:
       return i18nString15(UIStrings15.fallbackCode);
@@ -6794,10 +9928,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
     const isTotal = serverTiming.metric.toLowerCase() === "total";
     const metricDesc = [serverTiming.metric, serverTiming.description].filter(Boolean).join(" \u2014 ");
     const left = serverTiming.value === null ? -1 : scale * (input.endTime - input.startTime - serverTiming.value / 1e3);
-    const lastRange = input.timeRanges.findLast(
-      (range) => range.name !== "total"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.TOTAL */
-    );
+    const lastRange = input.timeRanges.findLast((range) => range.name !== NetworkTimeCalculator.RequestTimeRangeNames.TOTAL);
     const lastTimingRightEdge = lastRange ? scale * (input.endTime - lastRange.end) : 100;
     const classes2 = classMap2({
       ["network-timing-footer"]: isTotal,
@@ -6852,12 +9983,12 @@ var DEFAULT_VIEW11 = (input, output, target) => {
     const origRequest = Logs4.NetworkLog.NetworkLog.instance().originalRequestForURL(input.request.url());
     const origRequestTree = origRequest && new ObjectUI2.ObjectPropertiesSection.ObjectTree(SDK10.RemoteObject.RemoteObject.fromLocalObject(origRequest), {
       readOnly: true,
-      propertiesMode: 1
+      propertiesMode: ObjectUI2.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
     });
     const response = Logs4.NetworkLog.NetworkLog.instance().originalResponseForURL(input.request.url());
     const responseTree = response && new ObjectUI2.ObjectPropertiesSection.ObjectTree(SDK10.RemoteObject.RemoteObject.fromLocalObject(response), {
       readOnly: true,
-      propertiesMode: 1
+      propertiesMode: ObjectUI2.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED
     });
     const swResponseSource = input.request.serviceWorkerResponseSource();
     const responseCacheStorageName = input.request.getResponseCacheStorageCacheName();
@@ -6913,7 +10044,7 @@ var DEFAULT_VIEW11 = (input, output, target) => {
   });
   const timeRangeGroups = [];
   for (const range of input.timeRanges) {
-    if (range.name === "total") {
+    if (range.name === NetworkTimeCalculator.RequestTimeRangeNames.TOTAL) {
       continue;
     }
     const groupName = groupHeader(range.name);
@@ -7069,10 +10200,7 @@ var RequestTimingView = class _RequestTimingView extends UI16.Widget.VBox {
     const timeRanges = NetworkTimeCalculator.calculateRequestTimeRanges(this.#request, this.#calculator.minimumBoundary());
     const startTime = timeRanges.map((r) => r.start).reduce((a, b) => Math.min(a, b));
     const endTime = timeRanges.map((r) => r.end).reduce((a, b) => Math.max(a, b));
-    const total = timeRanges.findLast(
-      (range) => range.name === "total"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.TOTAL */
-    );
+    const total = timeRanges.findLast((range) => range.name === NetworkTimeCalculator.RequestTimeRangeNames.TOTAL);
     const totalDuration = total ? total?.end - total?.start : 0;
     const conditions = SDK10.NetworkManager.MultitargetNetworkManager.instance().appliedRequestConditions(this.#request);
     const input = {
@@ -7097,7 +10225,7 @@ var RequestTimingView = class _RequestTimingView extends UI16.Widget.VBox {
   set calculator(calculator) {
     this.#calculator = calculator;
     if (this.isShowing()) {
-      this.#calculator.addEventListener("BoundariesChanged", this.boundaryChanged, this);
+      this.#calculator.addEventListener(NetworkTimeCalculator.Events.BOUNDARIES_CHANGED, this.boundaryChanged, this);
       this.requestUpdate();
     }
   }
@@ -7105,14 +10233,14 @@ var RequestTimingView = class _RequestTimingView extends UI16.Widget.VBox {
     super.wasShown();
     this.#request?.addEventListener(SDK10.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
     this.#request?.addEventListener(SDK10.NetworkRequest.Events.FINISHED_LOADING, this.requestUpdate, this);
-    this.#calculator?.addEventListener("BoundariesChanged", this.boundaryChanged, this);
+    this.#calculator?.addEventListener(NetworkTimeCalculator.Events.BOUNDARIES_CHANGED, this.boundaryChanged, this);
     this.requestUpdate();
   }
   willHide() {
     super.willHide();
     this.#request?.removeEventListener(SDK10.NetworkRequest.Events.TIMING_CHANGED, this.requestUpdate, this);
     this.#request?.removeEventListener(SDK10.NetworkRequest.Events.FINISHED_LOADING, this.requestUpdate, this);
-    this.#calculator?.removeEventListener("BoundariesChanged", this.boundaryChanged, this);
+    this.#calculator?.removeEventListener(NetworkTimeCalculator.Events.BOUNDARIES_CHANGED, this.boundaryChanged, this);
   }
   boundaryChanged() {
     const minimumBoundary = this.calculator.minimumBoundary();
@@ -7123,7 +10251,7 @@ var RequestTimingView = class _RequestTimingView extends UI16.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/network/ResourceDirectSocketChunkView.js
+// ../../front_end/panels/network/ResourceDirectSocketChunkView.ts
 var ResourceDirectSocketChunkView_exports = {};
 __export(ResourceDirectSocketChunkView_exports, {
   ResourceDirectSocketChunkView: () => ResourceDirectSocketChunkView
@@ -7133,11 +10261,11 @@ import * as i18n33 from "../../core/i18n/i18n.js";
 import * as Platform8 from "../../core/platform/platform.js";
 import * as SDK11 from "../../core/sdk/sdk.js";
 import * as TextUtils6 from "../../core/text_utils/text_utils.js";
-import * as DataGrid3 from "../../ui/legacy/components/data_grid/data_grid.js";
+import * as DataGrid4 from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as Lit6 from "../../ui/lit/lit.js";
 import * as VisualLogging13 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/network/ResourceChunkView.js
+// ../../front_end/panels/network/ResourceChunkView.ts
 import * as Common11 from "../../core/common/common.js";
 import * as Host9 from "../../core/host/host.js";
 import * as i18n31 from "../../core/i18n/i18n.js";
@@ -7208,7 +10336,7 @@ var resourceChunkView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./resourceChunkView.css")} */`;
 
-// gen/front_end/panels/network/ResourceChunkView.js
+// ../../front_end/panels/network/ResourceChunkView.ts
 var { html: html13, render: render15, Directives: { ifDefined: ifDefined3 } } = Lit5;
 var UIStrings16 = {
   /**
@@ -7272,17 +10400,18 @@ function defaultHeaderTemplate() {
     </tr>`;
 }
 var DEFAULT_VIEW12 = (input, _output, target) => {
-  render15(html13`
+  render15(
+    html13`
       <style>${resourceChunkView_css_default}</style>
       <div class="resource-chunk-view vbox">
         <devtools-toolbar class="resource-chunk-view-toolbar" jslog=${VisualLogging12.toolbar()}>
           <devtools-button
               .data=${{
-    variant: "toolbar",
-    iconName: "clear",
-    title: i18nString16(UIStrings16.clearAll),
-    jslogContext: "network.clear-all"
-  }}
+      variant: Buttons7.Button.Variant.TOOLBAR,
+      iconName: "clear",
+      title: i18nString16(UIStrings16.clearAll),
+      jslogContext: "network.clear-all"
+    }}
               aria-label=${i18nString16(UIStrings16.clearAll)}
               @click=${input.onClear}>
           </devtools-button>
@@ -7323,19 +10452,19 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
                           data-index=${row.index}
                           @select=${input.onSelect}
                           @contextmenu=${(e) => {
-    if (e instanceof CustomEvent && e.detail) {
-      input.onContextMenu(row.item, e.detail);
-    }
-  }}>
+      if (e instanceof CustomEvent && e.detail) {
+        input.onContextMenu(row.item, e.detail);
+      }
+    }}>
                         ${input.columns.map((col) => {
-    const value = col.id === "time" ? row.timeText : row.item.data[col.id] ?? "";
-    const title = col.id === "time" ? row.timeTooltip : void 0;
-    return html13`
+      const value = col.id === "time" ? row.timeText : row.item.data[col.id] ?? "";
+      const title = col.id === "time" ? row.timeTooltip : void 0;
+      return html13`
                               <td class="resource-chunk-view-td" title=${ifDefined3(title)}
                                   data-value=${ifDefined3(typeof value === "string" ? value : void 0)}>
                                 ${value}
                               </td>`;
-  })}
+    })}
                       </tr>
                     `)}
                   </table>
@@ -7349,14 +10478,16 @@ var DEFAULT_VIEW12 = (input, _output, target) => {
               </devtools-widget>` : html13`
               <devtools-widget
                   ${UI17.Widget.widget(UI17.EmptyWidget.EmptyWidget, {
-    header: i18nString16(UIStrings16.noMessageSelected),
-    text: i18nString16(UIStrings16.selectMessageToBrowseItsContent)
-  })}>
+      header: i18nString16(UIStrings16.noMessageSelected),
+      text: i18nString16(UIStrings16.selectMessageToBrowseItsContent)
+    })}>
               </devtools-widget>
             `}
           </div>
         </devtools-split-view>
-      </div>`, target);
+      </div>`,
+    target
+  );
 };
 var ResourceChunkView = class extends UI17.Widget.VBox {
   #view;
@@ -7394,9 +10525,20 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
     } else {
       const dataVal = node.data.data;
       const textToCopy = typeof dataVal === "string" ? dataVal : node.dataText();
-      contextMenu.clipboardSection().appendItem(i18nString16(UIStrings16.copyMessage), Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host9.InspectorFrontendHost.InspectorFrontendHostInstance, textToCopy), { jslogContext: "copy" });
+      contextMenu.clipboardSection().appendItem(
+        i18nString16(UIStrings16.copyMessage),
+        Host9.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
+          Host9.InspectorFrontendHost.InspectorFrontendHostInstance,
+          textToCopy
+        ),
+        { jslogContext: "copy" }
+      );
     }
-    contextMenu.footerSection().appendItem(i18nString16(UIStrings16.clearAll), this.clearChunks.bind(this), { jslogContext: "clear-all" });
+    contextMenu.footerSection().appendItem(
+      i18nString16(UIStrings16.clearAll),
+      this.clearChunks.bind(this),
+      { jslogContext: "clear-all" }
+    );
   }
   getColumns() {
     return [
@@ -7405,7 +10547,7 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
         id: "length",
         title: i18nString16(UIStrings16.length),
         sortable: false,
-        align: "right",
+        align: DataGrid2.DataGrid.Align.RIGHT,
         weight: 5
       },
       { id: "time", title: i18nString16(UIStrings16.time), sortable: true, weight: 7 }
@@ -7481,7 +10623,14 @@ var ResourceChunkView = class extends UI17.Widget.VBox {
       this.requestUpdate();
       return;
     }
-    this.sidebarWidget = new SourceFrame4.ResourceSourceFrame.ResourceSourceFrame(TextUtils5.StaticContentProvider.StaticContentProvider.fromString(this.request.url(), this.request.resourceType(), content), "");
+    this.sidebarWidget = new SourceFrame4.ResourceSourceFrame.ResourceSourceFrame(
+      TextUtils5.StaticContentProvider.StaticContentProvider.fromString(
+        this.request.url(),
+        this.request.resourceType(),
+        content
+      ),
+      ""
+    );
     this.requestUpdate();
   }
   performUpdate() {
@@ -7545,8 +10694,10 @@ var DataGridItem = class {
 };
 var clearChunkOffsets = /* @__PURE__ */ new WeakMap();
 
-// gen/front_end/panels/network/ResourceDirectSocketChunkView.js
-var { html: html14 } = Lit6;
+// ../../front_end/panels/network/ResourceDirectSocketChunkView.ts
+var {
+  html: html14
+} = Lit6;
 var UIStrings17 = {
   /**
    * @description Text in Event Source Messages View of the Network panel
@@ -7598,7 +10749,14 @@ var ResourceDirectSocketChunkView = class extends ResourceChunkView {
     return defaultHeaderTemplate();
   }
   constructor(request) {
-    super(request, "network-direct-socket-chunk-filter", "resource-direct-socket-chunk-split-view-state", i18nString17(UIStrings17.directSocketChunk), i18nString17(UIStrings17.filterUsingRegex), { jslog: `${VisualLogging13.pane("direct-socket-messages").track({ resize: true })}` });
+    super(
+      request,
+      "network-direct-socket-chunk-filter",
+      "resource-direct-socket-chunk-split-view-state",
+      i18nString17(UIStrings17.directSocketChunk),
+      i18nString17(UIStrings17.filterUsingRegex),
+      { jslog: `${VisualLogging13.pane("direct-socket-messages").track({ resize: true })}` }
+    );
   }
   getRequestChunks() {
     return this.request.directSocketChunks();
@@ -7610,16 +10768,27 @@ var ResourceDirectSocketChunkView = class extends ResourceChunkView {
     return !this.filterRegex || this.filterRegex.test(chunk.data);
   }
   createGridItem(chunk) {
-    return new ResourceChunkNode(chunk, this.request.directSocketInfo?.type === SDK11.NetworkRequest.DirectSocketType.UDP_BOUND);
+    return new ResourceChunkNode(
+      chunk,
+      this.request.directSocketInfo?.type === SDK11.NetworkRequest.DirectSocketType.UDP_BOUND
+    );
   }
   wasShown() {
     super.wasShown();
     this.requestUpdate();
-    this.request.addEventListener(SDK11.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.onDirectSocketChunkAdded, this);
+    this.request.addEventListener(
+      SDK11.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED,
+      this.onDirectSocketChunkAdded,
+      this
+    );
   }
   willHide() {
     super.willHide();
-    this.request.removeEventListener(SDK11.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED, this.onDirectSocketChunkAdded, this);
+    this.request.removeEventListener(
+      SDK11.NetworkRequest.Events.DIRECTSOCKET_CHUNK_ADDED,
+      this.onDirectSocketChunkAdded,
+      this
+    );
   }
   onDirectSocketChunkAdded(event) {
     this.chunkAdded(event.data);
@@ -7637,21 +10806,21 @@ var ResourceDirectSocketChunkView = class extends ResourceChunkView {
           id: "address",
           title: i18nString17(UIStrings17.address),
           sortable: false,
-          align: "right",
+          align: DataGrid4.DataGrid.Align.RIGHT,
           weight: 15
         },
         {
           id: "port",
           title: i18nString17(UIStrings17.port),
           sortable: false,
-          align: "right",
+          align: DataGrid4.DataGrid.Align.RIGHT,
           weight: 10
         },
         {
           id: "length",
           title: i18nString17(UIStrings17.length),
           sortable: false,
-          align: "right",
+          align: DataGrid4.DataGrid.Align.RIGHT,
           weight: 5
         },
         {
@@ -7709,7 +10878,13 @@ var ResourceChunkNode = class extends DataGridItem {
   binaryView() {
     if (!this.#binaryView) {
       if (this.dataText().length > 0) {
-        this.#binaryView = new BinaryResourceView(TextUtils6.StreamingContentData.StreamingContentData.from(new TextUtils6.ContentData.ContentData(this.dataText(), true, "application/octet-stream")), Platform8.DevToolsPath.EmptyUrlString, Common12.ResourceType.resourceTypes.DirectSocket);
+        this.#binaryView = new BinaryResourceView(
+          TextUtils6.StreamingContentData.StreamingContentData.from(
+            new TextUtils6.ContentData.ContentData(this.dataText(), true, "application/octet-stream")
+          ),
+          Platform8.DevToolsPath.EmptyUrlString,
+          Common12.ResourceType.resourceTypes.DirectSocket
+        );
       }
     }
     return this.#binaryView;
@@ -7719,7 +10894,7 @@ var ResourceChunkNode = class extends DataGridItem {
   }
 };
 
-// gen/front_end/panels/network/ResourceWebSocketFrameView.js
+// ../../front_end/panels/network/ResourceWebSocketFrameView.ts
 var ResourceWebSocketFrameView_exports = {};
 __export(ResourceWebSocketFrameView_exports, {
   ResourceWebSocketFrameView: () => ResourceWebSocketFrameView
@@ -7790,7 +10965,14 @@ var i18nString18 = i18n35.i18n.getLocalizedString.bind(void 0, str_18);
 var i18nLazyString3 = i18n35.i18n.getLazilyComputedLocalizedString.bind(void 0, str_18);
 var ResourceWebSocketFrameView = class extends ResourceChunkView {
   constructor(request) {
-    super(request, "network-web-socket-message-filter", "resource-web-socket-frame-split-view-state", i18nString18(UIStrings18.webSocketFrame), i18nString18(UIStrings18.filterUsingRegex), { jslog: `${VisualLogging14.pane("web-socket-messages").track({ resize: true })}` });
+    super(
+      request,
+      "network-web-socket-message-filter",
+      "resource-web-socket-frame-split-view-state",
+      i18nString18(UIStrings18.webSocketFrame),
+      i18nString18(UIStrings18.filterUsingRegex),
+      { jslog: `${VisualLogging14.pane("web-socket-messages").track({ resize: true })}` }
+    );
   }
   getRequestChunks() {
     return this.request.frames();
@@ -7824,41 +11006,14 @@ var ResourceWebSocketFrameView = class extends ResourceChunkView {
     return i18nString18(UIStrings18.sOpcodeS, { PH1: localizedDescription(), PH2: opCode });
   }
 };
-var OpCodes;
-(function(OpCodes2) {
-  OpCodes2[OpCodes2["CONTINUATION_FRAME"] = 0] = "CONTINUATION_FRAME";
-  OpCodes2[OpCodes2["TEXT_FRAME"] = 1] = "TEXT_FRAME";
-  OpCodes2[OpCodes2["BINARY_FRAME"] = 2] = "BINARY_FRAME";
-  OpCodes2[OpCodes2["CONNECTION_CLOSE_FRAME"] = 8] = "CONNECTION_CLOSE_FRAME";
-  OpCodes2[OpCodes2["PING_FRAME"] = 9] = "PING_FRAME";
-  OpCodes2[OpCodes2["PONG_FRAME"] = 10] = "PONG_FRAME";
-})(OpCodes || (OpCodes = {}));
 var opCodeDescriptions = (function() {
   const map = [];
-  map[
-    0
-    /* OpCodes.CONTINUATION_FRAME */
-  ] = i18nLazyString3(UIStrings18.continuationFrame);
-  map[
-    1
-    /* OpCodes.TEXT_FRAME */
-  ] = i18nLazyString3(UIStrings18.textMessage);
-  map[
-    2
-    /* OpCodes.BINARY_FRAME */
-  ] = i18nLazyString3(UIStrings18.binaryMessage);
-  map[
-    8
-    /* OpCodes.CONNECTION_CLOSE_FRAME */
-  ] = i18nLazyString3(UIStrings18.connectionCloseMessage);
-  map[
-    9
-    /* OpCodes.PING_FRAME */
-  ] = i18nLazyString3(UIStrings18.pingMessage);
-  map[
-    10
-    /* OpCodes.PONG_FRAME */
-  ] = i18nLazyString3(UIStrings18.pongMessage);
+  map[0 /* CONTINUATION_FRAME */] = i18nLazyString3(UIStrings18.continuationFrame);
+  map[1 /* TEXT_FRAME */] = i18nLazyString3(UIStrings18.textMessage);
+  map[2 /* BINARY_FRAME */] = i18nLazyString3(UIStrings18.binaryMessage);
+  map[8 /* CONNECTION_CLOSE_FRAME */] = i18nLazyString3(UIStrings18.connectionCloseMessage);
+  map[9 /* PING_FRAME */] = i18nLazyString3(UIStrings18.pingMessage);
+  map[10 /* PONG_FRAME */] = i18nLazyString3(UIStrings18.pongMessage);
   return map;
 })();
 var ResourceFrameNode = class extends DataGridItem {
@@ -7873,13 +11028,13 @@ var ResourceFrameNode = class extends DataGridItem {
     let length = String(frame.text.length);
     let dataText = frame.text;
     let description = ResourceWebSocketFrameView.opCodeDescription(frame.opCode, frame.mask);
-    const isTextFrame = frame.opCode === 1;
+    const isTextFrame = frame.opCode === 1 /* TEXT_FRAME */;
     if (frame.type === SDK12.NetworkRequest.WebSocketFrameType.Error) {
       description = dataText;
       length = i18nString18(UIStrings18.na);
     } else if (isTextFrame) {
       description = dataText;
-    } else if (frame.opCode === 2) {
+    } else if (frame.opCode === 2 /* BINARY_FRAME */) {
       length = i18n35.ByteUtilities.bytesToString(Platform9.StringUtilities.base64ToSize(frame.text));
       description = opCodeDescriptions[frame.opCode]();
     } else {
@@ -7909,7 +11064,13 @@ var ResourceFrameNode = class extends DataGridItem {
     }
     if (!this.#binaryView) {
       if (this.#dataText.length > 0) {
-        this.#binaryView = new BinaryResourceView(TextUtils7.StreamingContentData.StreamingContentData.from(new TextUtils7.ContentData.ContentData(this.#dataText, true, "applicaiton/octet-stream")), Platform9.DevToolsPath.EmptyUrlString, Common13.ResourceType.resourceTypes.WebSocket);
+        this.#binaryView = new BinaryResourceView(
+          TextUtils7.StreamingContentData.StreamingContentData.from(
+            new TextUtils7.ContentData.ContentData(this.#dataText, true, "applicaiton/octet-stream")
+          ),
+          Platform9.DevToolsPath.EmptyUrlString,
+          Common13.ResourceType.resourceTypes.WebSocket
+        );
       }
     }
     return this.#binaryView;
@@ -7919,7 +11080,7 @@ var ResourceFrameNode = class extends DataGridItem {
   }
 };
 
-// gen/front_end/panels/network/NetworkItemView.js
+// ../../front_end/panels/network/NetworkItemView.ts
 var UIStrings19 = {
   /**
    * @description Title of a tab in network item view of the Network panel for viewing HTTP request/response headers.
@@ -8050,61 +11211,115 @@ var NetworkItemView = class extends UI18.TabbedPane.TabbedPane {
       keydown: "ArrowUp|ArrowLeft|ArrowDown|ArrowRight|Enter|Space"
     })}`);
     if (request.resourceType() === Common14.ResourceType.resourceTypes.DirectSocket) {
-      this.#firstTab = "direct-socket-connection";
-      this.appendTab("direct-socket-connection", i18nString19(UIStrings19.connectionInfo), new NetworkComponents2.DirectSocketConnectionView.DirectSocketConnectionView(request), i18nString19(UIStrings19.headers));
+      this.#firstTab = NetworkForward3.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION;
+      this.appendTab(
+        NetworkForward3.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CONNECTION,
+        i18nString19(UIStrings19.connectionInfo),
+        new NetworkComponents2.DirectSocketConnectionView.DirectSocketConnectionView(request),
+        i18nString19(UIStrings19.headers)
+      );
     } else {
-      this.#firstTab = "headers-component";
+      this.#firstTab = NetworkForward3.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT;
       this.#headersViewComponent = new RequestHeadersView();
       this.#headersViewComponent.request = request;
-      this.appendTab("headers-component", i18nString19(UIStrings19.headers), this.#headersViewComponent, i18nString19(UIStrings19.headers));
+      this.appendTab(
+        NetworkForward3.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
+        i18nString19(UIStrings19.headers),
+        this.#headersViewComponent,
+        i18nString19(UIStrings19.headers)
+      );
     }
     this.#resourceViewTabSetting = Common14.Settings.Settings.instance().createSetting("resource-view-tab", this.#firstTab);
     if (this.#request.hasOverriddenHeaders()) {
       const statusDot = document.createElement("div");
       statusDot.className = "status-dot";
       statusDot.title = i18nString19(UIStrings19.containsOverriddenHeaders);
-      this.setSuffixElement("headers-component", statusDot);
+      this.setSuffixElement(NetworkForward3.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT, statusDot);
     }
     void this.maybeAppendPayloadPanel();
     this.addEventListener(UI18.TabbedPane.Events.TabSelected, this.tabSelected, this);
     if (request.resourceType() === Common14.ResourceType.resourceTypes.WebSocket) {
       const frameView = new ResourceWebSocketFrameView(request);
-      this.appendTab("web-socket-frames", i18nString19(UIStrings19.messages), frameView, i18nString19(UIStrings19.websocketMessages));
+      this.appendTab(
+        NetworkForward3.UIRequestLocation.UIRequestTabs.WS_FRAMES,
+        i18nString19(UIStrings19.messages),
+        frameView,
+        i18nString19(UIStrings19.websocketMessages)
+      );
     } else if (request.resourceType() === Common14.ResourceType.resourceTypes.DirectSocket) {
-      this.appendTab("direct-socket-chunks", i18nString19(UIStrings19.messages), new ResourceDirectSocketChunkView(request), i18nString19(UIStrings19.directsocketMessages));
-    } else if (request.mimeType === "text/event-stream") {
-      this.appendTab("eventSource", i18nString19(UIStrings19.eventstream), new EventSourceMessagesView(request));
+      this.appendTab(
+        NetworkForward3.UIRequestLocation.UIRequestTabs.DIRECT_SOCKET_CHUNKS,
+        i18nString19(UIStrings19.messages),
+        new ResourceDirectSocketChunkView(request),
+        i18nString19(UIStrings19.directsocketMessages)
+      );
+    } else if (request.mimeType === Platform10.MimeType.MimeType.EVENTSTREAM) {
+      this.appendTab(
+        NetworkForward3.UIRequestLocation.UIRequestTabs.EVENT_SOURCE,
+        i18nString19(UIStrings19.eventstream),
+        new EventSourceMessagesView(request)
+      );
       this.#responseView = requestToResponseView.get(request) ?? new RequestResponseView(request);
       requestToResponseView.set(request, this.#responseView);
-      this.appendTab("response", i18nString19(UIStrings19.response), this.#responseView, i18nString19(UIStrings19.rawResponseData));
+      this.appendTab(
+        NetworkForward3.UIRequestLocation.UIRequestTabs.RESPONSE,
+        i18nString19(UIStrings19.response),
+        this.#responseView,
+        i18nString19(UIStrings19.rawResponseData)
+      );
     } else {
       this.#responseView = requestToResponseView.get(request) ?? new RequestResponseView(request);
       requestToResponseView.set(request, this.#responseView);
       const previewView = requestToPreviewView.get(request) ?? new RequestPreviewView(request);
       requestToPreviewView.set(request, previewView);
-      this.appendTab("preview", i18nString19(UIStrings19.preview), previewView, i18nString19(UIStrings19.responsePreview));
+      this.appendTab(
+        NetworkForward3.UIRequestLocation.UIRequestTabs.PREVIEW,
+        i18nString19(UIStrings19.preview),
+        previewView,
+        i18nString19(UIStrings19.responsePreview)
+      );
       const signedExchangeInfo = request.signedExchangeInfo();
       if (signedExchangeInfo?.errors?.length) {
         const icon = new Icon2();
         icon.name = "cross-circle-filled";
         icon.classList.add("small");
         UI18.Tooltip.Tooltip.install(icon, i18nString19(UIStrings19.signedexchangeError));
-        this.setTabIcon("preview", icon);
+        this.setTabIcon(NetworkForward3.UIRequestLocation.UIRequestTabs.PREVIEW, icon);
       }
-      this.appendTab("response", i18nString19(UIStrings19.response), this.#responseView, i18nString19(UIStrings19.rawResponseData));
+      this.appendTab(
+        NetworkForward3.UIRequestLocation.UIRequestTabs.RESPONSE,
+        i18nString19(UIStrings19.response),
+        this.#responseView,
+        i18nString19(UIStrings19.rawResponseData)
+      );
       if (this.#request.hasOverriddenContent) {
         const statusDot = document.createElement("div");
         statusDot.className = "status-dot";
         statusDot.title = i18nString19(UIStrings19.responseIsOverridden);
-        this.setSuffixElement("response", statusDot);
+        this.setSuffixElement(NetworkForward3.UIRequestLocation.UIRequestTabs.RESPONSE, statusDot);
       }
     }
-    this.appendTab("initiator", i18nString19(UIStrings19.initiator), new RequestInitiatorView(request), i18nString19(UIStrings19.requestInitiatorCallStack));
-    this.appendTab("timing", i18nString19(UIStrings19.timing), RequestTimingView.create(request, calculator), i18nString19(UIStrings19.requestAndResponseTimeline));
+    this.appendTab(
+      NetworkForward3.UIRequestLocation.UIRequestTabs.INITIATOR,
+      i18nString19(UIStrings19.initiator),
+      new RequestInitiatorView(request),
+      i18nString19(UIStrings19.requestInitiatorCallStack)
+    );
+    this.appendTab(
+      NetworkForward3.UIRequestLocation.UIRequestTabs.TIMING,
+      i18nString19(UIStrings19.timing),
+      RequestTimingView.create(request, calculator),
+      i18nString19(UIStrings19.requestAndResponseTimeline)
+    );
     if (request.trustTokenParams()) {
       const trustTokensView = new NetworkComponents2.RequestTrustTokensView.RequestTrustTokensView();
       trustTokensView.request = request;
-      this.appendTab("trust-tokens", i18nString19(UIStrings19.trustTokens), trustTokensView, i18nString19(UIStrings19.trustTokenOperationDetails));
+      this.appendTab(
+        NetworkForward3.UIRequestLocation.UIRequestTabs.TRUST_TOKENS,
+        i18nString19(UIStrings19.trustTokens),
+        trustTokensView,
+        i18nString19(UIStrings19.trustTokenOperationDetails)
+      );
     }
     this.#initialTab = initialTab || this.#resourceViewTabSetting.get();
     this.setAutoSelectFirstItemOnShow(false);
@@ -8112,8 +11327,16 @@ var NetworkItemView = class extends UI18.TabbedPane.TabbedPane {
   wasShown() {
     super.wasShown();
     this.#request.addEventListener(SDK13.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestHeadersChanged, this);
-    this.#request.addEventListener(SDK13.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.maybeAppendCookieResponsePanels, this);
-    this.#request.addEventListener(SDK13.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.maybeShowErrorIconInTrustTokenTabHeader, this);
+    this.#request.addEventListener(
+      SDK13.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED,
+      this.maybeAppendCookieResponsePanels,
+      this
+    );
+    this.#request.addEventListener(
+      SDK13.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED,
+      this.maybeShowErrorIconInTrustTokenTabHeader,
+      this
+    );
     this.maybeAppendCookieResponsePanels();
     this.maybeShowErrorIconInTrustTokenTabHeader();
     if (this.#initialTab) {
@@ -8123,9 +11346,21 @@ var NetworkItemView = class extends UI18.TabbedPane.TabbedPane {
   }
   willHide() {
     super.willHide();
-    this.#request.removeEventListener(SDK13.NetworkRequest.Events.REQUEST_HEADERS_CHANGED, this.requestHeadersChanged, this);
-    this.#request.removeEventListener(SDK13.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED, this.maybeAppendCookieResponsePanels, this);
-    this.#request.removeEventListener(SDK13.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED, this.maybeShowErrorIconInTrustTokenTabHeader, this);
+    this.#request.removeEventListener(
+      SDK13.NetworkRequest.Events.REQUEST_HEADERS_CHANGED,
+      this.requestHeadersChanged,
+      this
+    );
+    this.#request.removeEventListener(
+      SDK13.NetworkRequest.Events.RESPONSE_HEADERS_CHANGED,
+      this.maybeAppendCookieResponsePanels,
+      this
+    );
+    this.#request.removeEventListener(
+      SDK13.NetworkRequest.Events.TRUST_TOKEN_RESULT_ADDED,
+      this.maybeShowErrorIconInTrustTokenTabHeader,
+      this
+    );
   }
   async requestHeadersChanged() {
     this.maybeAppendCookiesPanel();
@@ -8140,21 +11375,31 @@ var NetworkItemView = class extends UI18.TabbedPane.TabbedPane {
     console.assert(cookiesPresent || !this.#cookiesView, "Cookies were introduced in headers and then removed!");
     if (cookiesPresent && !this.#cookiesView) {
       this.#cookiesView = new RequestCookiesView(this.#request);
-      this.appendTab("cookies", i18nString19(UIStrings19.cookies), this.#cookiesView, i18nString19(UIStrings19.requestAndResponseCookies));
+      this.appendTab(
+        NetworkForward3.UIRequestLocation.UIRequestTabs.COOKIES,
+        i18nString19(UIStrings19.cookies),
+        this.#cookiesView,
+        i18nString19(UIStrings19.requestAndResponseCookies)
+      );
     }
     if (this.#request.hasThirdPartyCookiePhaseoutIssue()) {
       const icon = new Icon2();
       icon.name = "warning-filled";
       icon.classList.add("small");
       icon.title = i18nString19(UIStrings19.thirdPartyPhaseout);
-      this.setTrailingTabIcon("cookies", icon);
+      this.setTrailingTabIcon(NetworkForward3.UIRequestLocation.UIRequestTabs.COOKIES, icon);
     }
   }
   maybeAppendDeviceBoundSessionsPanel() {
     const deviceBoundSessionsPresent = this.#request.getDeviceBoundSessionUsages().length > 0;
     if (deviceBoundSessionsPresent && !this.#deviceBoundSessionsView) {
       this.#deviceBoundSessionsView = new RequestDeviceBoundSessionsView(this.#request);
-      this.appendTab("device-bound-sessions", i18nString19(UIStrings19.deviceBoundSessions), this.#deviceBoundSessionsView, i18nString19(UIStrings19.deviceBoundSessions));
+      this.appendTab(
+        NetworkForward3.UIRequestLocation.UIRequestTabs.DEVICE_BOUND_SESSIONS,
+        i18nString19(UIStrings19.deviceBoundSessions),
+        this.#deviceBoundSessionsView,
+        i18nString19(UIStrings19.deviceBoundSessions)
+      );
     }
   }
   async maybeAppendPayloadPanel() {
@@ -8165,7 +11410,7 @@ var NetworkItemView = class extends UI18.TabbedPane.TabbedPane {
       this.#payloadView = new RequestPayloadView();
       this.#payloadView.request = this.#request;
       this.appendTab(
-        "payload",
+        NetworkForward3.UIRequestLocation.UIRequestTabs.PAYLOAD,
         i18nString19(UIStrings19.payload),
         this.#payloadView,
         i18nString19(UIStrings19.payload),
@@ -8186,7 +11431,7 @@ var NetworkItemView = class extends UI18.TabbedPane.TabbedPane {
       const icon = new Icon2();
       icon.name = "cross-circle-filled";
       icon.classList.add("small");
-      this.setTabIcon("trust-tokens", icon);
+      this.setTabIcon(NetworkForward3.UIRequestLocation.UIRequestTabs.TRUST_TOKENS, icon);
     }
   }
   #selectTab(tabId) {
@@ -8208,17 +11453,11 @@ var NetworkItemView = class extends UI18.TabbedPane.TabbedPane {
     return this.#request;
   }
   async revealResponseBody(position) {
-    this.#selectTab(
-      "response"
-      /* NetworkForward.UIRequestLocation.UIRequestTabs.RESPONSE */
-    );
+    this.#selectTab(NetworkForward3.UIRequestLocation.UIRequestTabs.RESPONSE);
     await this.#responseView?.revealPosition(position);
   }
   revealHeader(section4, header) {
-    this.#selectTab(
-      "headers-component"
-      /* NetworkForward.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT */
-    );
+    this.#selectTab(NetworkForward3.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT);
     this.#headersViewComponent?.revealHeader(section4, header);
   }
   getHeadersViewComponent() {
@@ -8226,10 +11465,10 @@ var NetworkItemView = class extends UI18.TabbedPane.TabbedPane {
   }
 };
 
-// gen/front_end/panels/network/network.prebundle.js
+// ../../front_end/panels/network/network.ts
 import "../../models/network_time_calculator/network_time_calculator.js";
 
-// gen/front_end/panels/network/NetworkLogView.js
+// ../../front_end/panels/network/NetworkLogView.ts
 var NetworkLogView_exports = {};
 __export(NetworkLogView_exports, {
   HTTPSchemas: () => HTTPSchemas,
@@ -8257,7 +11496,7 @@ import * as Sources2 from "../sources/sources.js";
 import * as Adorners from "../../ui/components/adorners/adorners.js";
 import * as Buttons8 from "../../ui/components/buttons/buttons.js";
 import * as RenderCoordinator3 from "../../ui/components/render_coordinator/render_coordinator.js";
-import * as DataGrid6 from "../../ui/legacy/components/data_grid/data_grid.js";
+import * as DataGrid8 from "../../ui/legacy/components/data_grid/data_grid.js";
 
 // gen/front_end/ui/legacy/components/data_grid/dataGridAiButton.css.js
 var dataGridAiButton_css_default = `/*
@@ -8283,13 +11522,13 @@ var dataGridAiButton_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./dataGridAiButton.css")} */`;
 
-// gen/front_end/panels/network/NetworkLogView.js
+// ../../front_end/panels/network/NetworkLogView.ts
 import * as PerfUI4 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as Components5 from "../../ui/legacy/components/utils/utils.js";
 import * as UI23 from "../../ui/legacy/legacy.js";
 import * as VisualLogging17 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/network/FetchHeaderCommenting.js
+// ../../front_end/panels/network/FetchHeaderCommenting.ts
 var FetchHeaderCommenting_exports = {};
 __export(FetchHeaderCommenting_exports, {
   FORBIDDEN_HEADER_RULES: () => FORBIDDEN_HEADER_RULES,
@@ -8449,37 +11688,37 @@ function commentForbiddenHeaders(serializedOptions, rules = FORBIDDEN_HEADER_RUL
   const lines = serializedOptions.split("\n");
   const result = [];
   let Mode;
-  (function(Mode2) {
+  ((Mode2) => {
     Mode2[Mode2["BEFORE_HEADERS"] = 1] = "BEFORE_HEADERS";
     Mode2[Mode2["INSIDE_HEADERS"] = 2] = "INSIDE_HEADERS";
     Mode2[Mode2["AFTER_HEADERS"] = 3] = "AFTER_HEADERS";
   })(Mode || (Mode = {}));
-  let mode = 1;
+  let mode = 1 /* BEFORE_HEADERS */;
   let pendingPrefixRule = null;
   function resetPrefixState() {
     pendingPrefixRule = null;
   }
   for (const line of lines) {
     switch (mode) {
-      case 1: {
+      case 1 /* BEFORE_HEADERS */: {
         result.push(line);
         if (HEADERS_START_RE.test(line)) {
-          mode = 2;
+          mode = 2 /* INSIDE_HEADERS */;
         }
         break;
       }
-      case 2: {
+      case 2 /* INSIDE_HEADERS */: {
         if (BLOCK_CLOSE_RE.test(line)) {
           resetPrefixState();
           result.push(line);
-          mode = 3;
+          mode = 3 /* AFTER_HEADERS */;
           break;
         }
         const match = HEADER_LINE_RE.exec(line);
         if (!match) {
           resetPrefixState();
           result.push(line);
-          mode = 3;
+          mode = 3 /* AFTER_HEADERS */;
           break;
         }
         const indent = match[1];
@@ -8501,7 +11740,7 @@ function commentForbiddenHeaders(serializedOptions, rules = FORBIDDEN_HEADER_RUL
         }
         break;
       }
-      case 3: {
+      case 3 /* AFTER_HEADERS */: {
         result.push(line);
         break;
       }
@@ -8510,7 +11749,7 @@ function commentForbiddenHeaders(serializedOptions, rules = FORBIDDEN_HEADER_RUL
   return result.join("\n");
 }
 
-// gen/front_end/panels/network/LinkPreloadGenerator.js
+// ../../front_end/panels/network/LinkPreloadGenerator.ts
 var LinkPreloadGenerator_exports = {};
 __export(LinkPreloadGenerator_exports, {
   canPreloadRequest: () => canPreloadRequest,
@@ -8576,7 +11815,7 @@ function generatePreloadLink(request) {
   return `<link rel="preload" href="${escapedUrl}" ${asAttr}${typeAttr}${crossoriginAttr}>`;
 }
 
-// gen/front_end/panels/network/NetworkFrameGrouper.js
+// ../../front_end/panels/network/NetworkFrameGrouper.ts
 var NetworkFrameGrouper_exports = {};
 __export(NetworkFrameGrouper_exports, {
   FrameGroupNode: () => FrameGroupNode,
@@ -9111,7 +12350,7 @@ td.time-column {
 
 /*# sourceURL=${import.meta.resolve("./networkLogView.css")} */`;
 
-// gen/front_end/panels/network/NetworkLogViewColumns.js
+// ../../front_end/panels/network/NetworkLogViewColumns.ts
 var NetworkLogViewColumns_exports = {};
 __export(NetworkLogViewColumns_exports, {
   NetworkLogViewColumns: () => NetworkLogViewColumns
@@ -9120,13 +12359,13 @@ import * as Common18 from "../../core/common/common.js";
 import * as i18n43 from "../../core/i18n/i18n.js";
 import * as StackTrace3 from "../../models/stack_trace/stack_trace.js";
 import { Icon as Icon3 } from "../../ui/kit/kit.js";
-import * as DataGrid4 from "../../ui/legacy/components/data_grid/data_grid.js";
+import * as DataGrid6 from "../../ui/legacy/components/data_grid/data_grid.js";
 import * as Components4 from "../../ui/legacy/components/utils/utils.js";
 import * as UI22 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport5 from "../../ui/legacy/theme_support/theme_support.js";
 import * as VisualLogging16 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/network/NetworkManageCustomHeadersView.js
+// ../../front_end/panels/network/NetworkManageCustomHeadersView.ts
 var NetworkManageCustomHeadersView_exports = {};
 __export(NetworkManageCustomHeadersView_exports, {
   NetworkManageCustomHeadersView: () => NetworkManageCustomHeadersView
@@ -9173,7 +12412,7 @@ var networkManageCustomHeadersView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./networkManageCustomHeadersView.css")} */`;
 
-// gen/front_end/panels/network/NetworkManageCustomHeadersView.js
+// ../../front_end/panels/network/NetworkManageCustomHeadersView.ts
 var UIStrings21 = {
   /**
    * @description Text in Network Manage Custom Headers View of the Network panel
@@ -9213,10 +12452,12 @@ var NetworkManageCustomHeadersView = class extends UI20.Widget.VBox {
     placeholder.textContent = i18nString20(UIStrings21.noCustomHeaders);
     this.list.setEmptyPlaceholder(placeholder);
     this.list.show(this.contentElement);
-    this.contentElement.appendChild(UI20.UIUtils.createTextButton(i18nString20(UIStrings21.addCustomHeader), this.addButtonClicked.bind(this), {
-      className: "add-button",
-      jslogContext: "network.add-custom-header"
-    }));
+    this.contentElement.appendChild(
+      UI20.UIUtils.createTextButton(i18nString20(UIStrings21.addCustomHeader), this.addButtonClicked.bind(this), {
+        className: "add-button",
+        jslogContext: "network.add-custom-header"
+      })
+    );
     this.columnConfigs = /* @__PURE__ */ new Map();
     columnData.forEach((columnData2) => this.columnConfigs.set(columnData2.title.toLowerCase(), columnData2));
     this.addHeaderColumnCallback = addHeaderColumnCallback;
@@ -9294,7 +12535,7 @@ var NetworkManageCustomHeadersView = class extends UI20.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/network/NetworkWaterfallColumn.js
+// ../../front_end/panels/network/NetworkWaterfallColumn.ts
 var NetworkWaterfallColumn_exports = {};
 __export(NetworkWaterfallColumn_exports, {
   NetworkWaterfallColumn: () => NetworkWaterfallColumn
@@ -9306,7 +12547,7 @@ import * as PerfUI3 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI21 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport3 from "../../ui/legacy/theme_support/theme_support.js";
 
-// gen/front_end/panels/network/NetworkOverview.js
+// ../../front_end/panels/network/NetworkOverview.ts
 var NetworkOverview_exports = {};
 __export(NetworkOverview_exports, {
   NetworkOverview: () => NetworkOverview,
@@ -9336,8 +12577,20 @@ var NetworkOverview = class extends PerfUI2.TimelineOverviewPane.TimelineOvervie
     this.element.classList.add("network-overview");
     this.numBands = 1;
     this.highlightedRequest = null;
-    SDK15.TargetManager.TargetManager.instance().addModelListener(SDK15.ResourceTreeModel.ResourceTreeModel, SDK15.ResourceTreeModel.Events.Load, this.loadEventFired, this, { scoped: true });
-    SDK15.TargetManager.TargetManager.instance().addModelListener(SDK15.ResourceTreeModel.ResourceTreeModel, SDK15.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this, { scoped: true });
+    SDK15.TargetManager.TargetManager.instance().addModelListener(
+      SDK15.ResourceTreeModel.ResourceTreeModel,
+      SDK15.ResourceTreeModel.Events.Load,
+      this.loadEventFired,
+      this,
+      { scoped: true }
+    );
+    SDK15.TargetManager.TargetManager.instance().addModelListener(
+      SDK15.ResourceTreeModel.ResourceTreeModel,
+      SDK15.ResourceTreeModel.Events.DOMContentLoaded,
+      this.domContentLoadedEventFired,
+      this,
+      { scoped: true }
+    );
     this.reset();
   }
   setHighlightedRequest(request) {
@@ -9425,7 +12678,10 @@ var NetworkOverview = class extends PerfUI2.TimelineOverviewPane.TimelineOvervie
       while (this.span < span) {
         this.span *= 1.25;
       }
-      calculator.setBounds(calculator.minimumBoundary(), Trace.Types.Timing.Milli(calculator.minimumBoundary() + this.span));
+      calculator.setBounds(
+        calculator.minimumBoundary(),
+        Trace.Types.Timing.Milli(calculator.minimumBoundary() + this.span)
+      );
       this.lastBoundary = new NetworkTimeCalculator2.NetworkTimeBoundary(calculator.minimumBoundary(), calculator.maximumBoundary());
     }
     const context = this.context();
@@ -9471,7 +12727,7 @@ var NetworkOverview = class extends PerfUI2.TimelineOverviewPane.TimelineOvervie
       const timeRanges = NetworkTimeCalculator2.calculateRequestTimeRanges(request, this.calculator().minimumBoundary());
       for (let j = 0; j < timeRanges.length; ++j) {
         const type = timeRanges[j].name;
-        if (band !== -1 || type === "total") {
+        if (band !== -1 || type === NetworkTimeCalculator2.RequestTimeRangeNames.TOTAL) {
           addLine(type, y, timeRanges[j].start * 1e3, timeRanges[j].end * 1e3);
         }
       }
@@ -9480,70 +12736,22 @@ var NetworkOverview = class extends PerfUI2.TimelineOverviewPane.TimelineOvervie
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     context.lineWidth = 2;
-    drawLines(
-      "total"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.TOTAL */
-    );
-    drawLines(
-      "blocking"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.BLOCKING */
-    );
-    drawLines(
-      "connecting"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING */
-    );
-    drawLines(
-      "serviceworker"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER */
-    );
-    drawLines(
-      "serviceworker-preparation"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION */
-    );
-    drawLines(
-      "serviceworker-respondwith"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH */
-    );
-    drawLines(
-      "serviceworker-routerevaluation"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION */
-    );
-    drawLines(
-      "serviceworker-cachelookup"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP */
-    );
-    drawLines(
-      "push"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */
-    );
-    drawLines(
-      "proxy"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.PROXY */
-    );
-    drawLines(
-      "dns"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.DNS */
-    );
-    drawLines(
-      "ssl"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.SSL */
-    );
-    drawLines(
-      "sending"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.SENDING */
-    );
-    drawLines(
-      "waiting"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.WAITING */
-    );
-    drawLines(
-      "receiving"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING */
-    );
-    drawLines(
-      "receiving-push"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */
-    );
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.TOTAL);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.BLOCKING);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.CONNECTING);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.SERVICE_WORKER);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.PUSH);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.PROXY);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.DNS);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.SSL);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.SENDING);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.WAITING);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.RECEIVING);
+    drawLines(NetworkTimeCalculator2.RequestTimeRangeNames.RECEIVING_PUSH);
     if (this.highlightedRequest) {
       const size = 5;
       const borderSize = 2;
@@ -9554,10 +12762,15 @@ var NetworkOverview = class extends PerfUI2.TimelineOverviewPane.TimelineOvervie
       context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue("--sys-color-tonal-container");
       const start = Trace.Types.Timing.Milli(timeRanges[0].start * 1e3);
       const end = Trace.Types.Timing.Milli(timeRanges[0].end * 1e3);
-      context.fillRect(calculator.computePosition(start) - borderSize, y - size / 2 - borderSize, calculator.computePosition(end) - calculator.computePosition(start) + 1 + 2 * borderSize, size * borderSize);
+      context.fillRect(
+        calculator.computePosition(start) - borderSize,
+        y - size / 2 - borderSize,
+        calculator.computePosition(end) - calculator.computePosition(start) + 1 + 2 * borderSize,
+        size * borderSize
+      );
       for (let j = 0; j < timeRanges.length; ++j) {
         const type = timeRanges[j].name;
-        if (band !== -1 || type === "total") {
+        if (band !== -1 || type === NetworkTimeCalculator2.RequestTimeRangeNames.TOTAL) {
           context.beginPath();
           context.strokeStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(RequestTimeRangeNameToColor[type]);
           context.lineWidth = size;
@@ -9603,74 +12816,23 @@ var NetworkOverview = class extends PerfUI2.TimelineOverviewPane.TimelineOvervie
   }
 };
 var RequestTimeRangeNameToColor = {
-  [
-    "total"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.TOTAL */
-  ]: "--network-overview-total",
-  [
-    "blocking"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.BLOCKING */
-  ]: "--network-overview-blocking",
-  [
-    "connecting"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING */
-  ]: "--network-overview-connecting",
-  [
-    "serviceworker"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER */
-  ]: "--network-overview-service-worker",
-  [
-    "serviceworker-preparation"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION */
-  ]: "--network-overview-service-worker",
-  [
-    "serviceworker-respondwith"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH */
-  ]: "--network-overview-service-worker-respond-with",
-  [
-    "serviceworker-routerevaluation"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION */
-  ]: "--network-overview-service-worker",
-  [
-    "serviceworker-cachelookup"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP */
-  ]: "--network-overview-service-worker",
-  [
-    "push"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */
-  ]: "--network-overview-push",
-  [
-    "proxy"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.PROXY */
-  ]: "--override-network-overview-proxy",
-  [
-    "dns"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.DNS */
-  ]: "--network-overview-dns",
-  [
-    "ssl"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.SSL */
-  ]: "--network-overview-ssl",
-  [
-    "sending"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.SENDING */
-  ]: "--override-network-overview-sending",
-  [
-    "waiting"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.WAITING */
-  ]: "--network-overview-waiting",
-  [
-    "receiving"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING */
-  ]: "--network-overview-receiving",
-  [
-    "receiving-push"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */
-  ]: "--network-overview-receiving",
-  [
-    "queueing"
-    /* NetworkTimeCalculator.RequestTimeRangeNames.QUEUEING */
-  ]: "--network-overview-queueing"
+  [NetworkTimeCalculator2.RequestTimeRangeNames.TOTAL]: "--network-overview-total",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.BLOCKING]: "--network-overview-blocking",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.CONNECTING]: "--network-overview-connecting",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.SERVICE_WORKER]: "--network-overview-service-worker",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION]: "--network-overview-service-worker",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH]: "--network-overview-service-worker-respond-with",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION]: "--network-overview-service-worker",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP]: "--network-overview-service-worker",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.PUSH]: "--network-overview-push",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.PROXY]: "--override-network-overview-proxy",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.DNS]: "--network-overview-dns",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.SSL]: "--network-overview-ssl",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.SENDING]: "--override-network-overview-sending",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.WAITING]: "--network-overview-waiting",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.RECEIVING]: "--network-overview-receiving",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.RECEIVING_PUSH]: "--network-overview-receiving",
+  [NetworkTimeCalculator2.RequestTimeRangeNames.QUEUEING]: "--network-overview-queueing"
 };
 var BAND_HEIGHT = 3;
 var PADDING = 5;
@@ -9716,7 +12878,7 @@ var networkWaterfallColumn_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./networkWaterfallColumn.css")} */`;
 
-// gen/front_end/panels/network/NetworkWaterfallColumn.js
+// ../../front_end/panels/network/NetworkWaterfallColumn.ts
 var BAR_SPACING = 1;
 var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.VBox {
   canvas;
@@ -9781,78 +12943,60 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
   }
   static buildRequestTimeRangeStyle() {
     const styleMap = /* @__PURE__ */ new Map();
-    styleMap.set("connecting", { fillStyle: RequestTimeRangeNameToColor[
-      "connecting"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.CONNECTING */
-    ] });
-    styleMap.set("ssl", { fillStyle: RequestTimeRangeNameToColor[
-      "ssl"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.SSL */
-    ] });
-    styleMap.set("dns", { fillStyle: RequestTimeRangeNameToColor[
-      "dns"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.DNS */
-    ] });
-    styleMap.set("proxy", { fillStyle: RequestTimeRangeNameToColor[
-      "proxy"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.PROXY */
-    ] });
-    styleMap.set("blocking", { fillStyle: "--network-waterfall-blocking" });
-    styleMap.set("push", { fillStyle: RequestTimeRangeNameToColor[
-      "push"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.PUSH */
-    ] });
-    styleMap.set("queueing", {
-      fillStyle: RequestTimeRangeNameToColor[
-        "queueing"
-        /* NetworkTimeCalculator.RequestTimeRangeNames.QUEUEING */
-      ],
+    styleMap.set(
+      NetworkTimeCalculator3.RequestTimeRangeNames.CONNECTING,
+      { fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.CONNECTING] }
+    );
+    styleMap.set(
+      NetworkTimeCalculator3.RequestTimeRangeNames.SSL,
+      { fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.SSL] }
+    );
+    styleMap.set(
+      NetworkTimeCalculator3.RequestTimeRangeNames.DNS,
+      { fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.DNS] }
+    );
+    styleMap.set(
+      NetworkTimeCalculator3.RequestTimeRangeNames.PROXY,
+      { fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.PROXY] }
+    );
+    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.BLOCKING, { fillStyle: "--network-waterfall-blocking" });
+    styleMap.set(
+      NetworkTimeCalculator3.RequestTimeRangeNames.PUSH,
+      { fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.PUSH] }
+    );
+    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.QUEUEING, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.QUEUEING],
       lineWidth: 2,
       borderColor: "lightgrey"
     });
-    styleMap.set("receiving", {
-      fillStyle: RequestTimeRangeNameToColor[
-        "receiving"
-        /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING */
-      ],
+    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.RECEIVING, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.RECEIVING],
       lineWidth: 2,
       borderColor: "#03A9F4"
     });
-    styleMap.set("waiting", { fillStyle: RequestTimeRangeNameToColor[
-      "waiting"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.WAITING */
-    ] });
-    styleMap.set("receiving-push", { fillStyle: RequestTimeRangeNameToColor[
-      "receiving-push"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.RECEIVING_PUSH */
-    ] });
-    styleMap.set("serviceworker", { fillStyle: RequestTimeRangeNameToColor[
-      "serviceworker"
-      /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER */
-    ] });
-    styleMap.set("serviceworker-preparation", {
-      fillStyle: RequestTimeRangeNameToColor[
-        "serviceworker-preparation"
-        /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION */
-      ]
+    styleMap.set(
+      NetworkTimeCalculator3.RequestTimeRangeNames.WAITING,
+      { fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.WAITING] }
+    );
+    styleMap.set(
+      NetworkTimeCalculator3.RequestTimeRangeNames.RECEIVING_PUSH,
+      { fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.RECEIVING_PUSH] }
+    );
+    styleMap.set(
+      NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER,
+      { fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER] }
+    );
+    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_PREPARATION]
     });
-    styleMap.set("serviceworker-respondwith", {
-      fillStyle: RequestTimeRangeNameToColor[
-        "serviceworker-respondwith"
-        /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH */
-      ]
+    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_RESPOND_WITH]
     });
-    styleMap.set("serviceworker-routerevaluation", {
-      fillStyle: RequestTimeRangeNameToColor[
-        "serviceworker-routerevaluation"
-        /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION */
-      ]
+    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_ROUTER_EVALUATION]
     });
-    styleMap.set("serviceworker-cachelookup", {
-      fillStyle: RequestTimeRangeNameToColor[
-        "serviceworker-cachelookup"
-        /* NetworkTimeCalculator.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP */
-      ]
+    styleMap.set(NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP, {
+      fillStyle: RequestTimeRangeNameToColor[NetworkTimeCalculator3.RequestTimeRangeNames.SERVICE_WORKER_CACHE_LOOKUP]
     });
     return styleMap;
   }
@@ -9888,10 +13032,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
     }
     return [waitingStyleMap, downloadingStyleMap];
     function toBorderColor(color) {
-      const parsedColor = Common17.Color.parse(color)?.as(
-        "hsl"
-        /* Common.Color.Format.HSL */
-      );
+      const parsedColor = Common17.Color.parse(color)?.as(Common17.Color.Format.HSL);
       if (!parsedColor) {
         return "";
       }
@@ -9901,10 +13042,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
       return new Common17.Color.HSL(parsedColor.h, s, l, parsedColor.alpha).asString();
     }
     function toWaitingColor(color) {
-      const parsedColor = Common17.Color.parse(color)?.as(
-        "hsl"
-        /* Common.Color.Format.HSL */
-      );
+      const parsedColor = Common17.Color.parse(color)?.as(Common17.Color.Format.HSL);
       if (!parsedColor) {
         return "";
       }
@@ -9954,10 +13092,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
     let start;
     let end;
     if (useTimingBars) {
-      range = NetworkTimeCalculator3.calculateRequestTimeRanges(request, 0).find(
-        (data) => data.name === "total"
-        /* NetworkTimeCalculator.RequestTimeRangeNames.TOTAL */
-      );
+      range = NetworkTimeCalculator3.calculateRequestTimeRanges(request, 0).find((data) => data.name === NetworkTimeCalculator3.RequestTimeRangeNames.TOTAL);
       start = this.timeToPosition(range.start);
       end = this.timeToPosition(range.end);
     } else {
@@ -10121,7 +13256,14 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
     const freeZoneAtRight = 18;
     const dividersData = PerfUI3.TimelineGrid.TimelineGrid.calculateGridOffsets(this.calculator);
     PerfUI3.TimelineGrid.TimelineGrid.drawCanvasGrid(context, dividersData);
-    PerfUI3.TimelineGrid.TimelineGrid.drawCanvasHeaders(context, dividersData, (time) => this.calculator.formatValue(time, dividersData.precision), this.fontSize, this.headerHeight, freeZoneAtLeft);
+    PerfUI3.TimelineGrid.TimelineGrid.drawCanvasHeaders(
+      context,
+      dividersData,
+      (time) => this.calculator.formatValue(time, dividersData.precision),
+      this.fontSize,
+      this.headerHeight,
+      freeZoneAtLeft
+    );
     context.save();
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     context.clearRect(this.offsetWidth - freeZoneAtRight, 0, freeZoneAtRight, this.headerHeight);
@@ -10165,13 +13307,13 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
   }
   getBarHeight(type) {
     switch (type) {
-      case "connecting":
-      case "ssl":
-      case "dns":
-      case "proxy":
-      case "blocking":
-      case "push":
-      case "queueing":
+      case NetworkTimeCalculator3.RequestTimeRangeNames.CONNECTING:
+      case NetworkTimeCalculator3.RequestTimeRangeNames.SSL:
+      case NetworkTimeCalculator3.RequestTimeRangeNames.DNS:
+      case NetworkTimeCalculator3.RequestTimeRangeNames.PROXY:
+      case NetworkTimeCalculator3.RequestTimeRangeNames.BLOCKING:
+      case NetworkTimeCalculator3.RequestTimeRangeNames.PUSH:
+      case NetworkTimeCalculator3.RequestTimeRangeNames.QUEUEING:
         return 7;
       default:
         return 13;
@@ -10216,7 +13358,9 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
         const midBarX = ranges.start + (ranges.mid - ranges.start - leftLabelWidth) / 2;
         this.textLayers.push({ text: labels.left, x: midBarX, y: y + this.fontSize });
       } else if (barDotLineLength + leftLabelWidth + this.leftPadding < ranges.start) {
-        this.textLayers.push({ text: labels.left, x: ranges.start - leftLabelWidth - barDotLineLength - 1, y: y + this.fontSize });
+        this.textLayers.push(
+          { text: labels.left, x: ranges.start - leftLabelWidth - barDotLineLength - 1, y: y + this.fontSize }
+        );
         hoverLinePath.moveTo(ranges.start - barDotLineLength, y + Math.floor(height / 2));
         hoverLinePath.arc(ranges.start, y + Math.floor(height / 2), 2, 0, 2 * Math.PI);
         hoverLinePath.moveTo(ranges.start - barDotLineLength, y + Math.floor(height / 2));
@@ -10235,10 +13379,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
       }
     }
     if (!this.calculator.startAtZero) {
-      const queueingRange = NetworkTimeCalculator3.calculateRequestTimeRanges(request, 0).find(
-        (data) => data.name === "total"
-        /* NetworkTimeCalculator.RequestTimeRangeNames.TOTAL */
-      );
+      const queueingRange = NetworkTimeCalculator3.calculateRequestTimeRanges(request, 0).find((data) => data.name === NetworkTimeCalculator3.RequestTimeRangeNames.TOTAL);
       const leftLabelWidth = labels ? context.measureText(labels.left).width : 0;
       const leftTextPlacedInBar = leftLabelWidth < ranges.mid - ranges.start;
       const wiskerTextPadding = 13;
@@ -10262,7 +13403,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
     const ranges = NetworkTimeCalculator3.calculateRequestTimeRanges(request, 0);
     let index = 0;
     for (const range of ranges) {
-      if (range.name === "total" || range.name === "sending" || range.end - range.start === 0) {
+      if (range.name === NetworkTimeCalculator3.RequestTimeRangeNames.TOTAL || range.name === NetworkTimeCalculator3.RequestTimeRangeNames.SENDING || range.end - range.start === 0) {
         continue;
       }
       const style = this.styleForTimeRangeName.get(range.name);
@@ -10293,7 +13434,7 @@ var NetworkWaterfallColumn = class _NetworkWaterfallColumn extends UI21.Widget.V
   }
 };
 
-// gen/front_end/panels/network/NetworkLogViewColumns.js
+// ../../front_end/panels/network/NetworkLogViewColumns.ts
 var UIStrings22 = {
   /**
    * @description Data grid name for network log data grids.
@@ -10486,8 +13627,8 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.waterfallScrollerWidthIsStale = true;
     this.popupLinkifier = new Components4.Linkifier.Linkifier();
     this.calculatorsMap = /* @__PURE__ */ new Map();
-    this.calculatorsMap.set("Time", timeCalculator);
-    this.calculatorsMap.set("Duration", durationCalculator);
+    this.calculatorsMap.set("Time" /* TIME */, timeCalculator);
+    this.calculatorsMap.set("Duration" /* DURATION */, durationCalculator);
     this.lastWheelTime = 0;
     this.setupDataGrid();
     this.setupWaterfall();
@@ -10537,18 +13678,22 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       this.columns.push(columnConfig);
     }
     this.loadCustomColumnsAndSettings();
-    this.popoverHelper = new UI22.PopoverHelper.PopoverHelper(this.networkLogView.element, this.getPopoverRequest.bind(this), "network.initiator-stacktrace");
+    this.popoverHelper = new UI22.PopoverHelper.PopoverHelper(
+      this.networkLogView.element,
+      this.getPopoverRequest.bind(this),
+      "network.initiator-stacktrace"
+    );
     this.popoverHelper.setTimeout(300, 300);
-    this.#dataGrid = new DataGrid4.SortableDataGrid.SortableDataGrid({
+    this.#dataGrid = new DataGrid6.SortableDataGrid.SortableDataGrid({
       displayName: i18nString21(UIStrings22.networkLog),
       columns: this.columns.map(_NetworkLogViewColumns.convertToDataGridDescriptor)
     });
     this.dataGridScroller = this.#dataGrid.scrollContainer;
     this.updateColumns();
-    this.#dataGrid.addEventListener("SortingChanged", this.sortHandler, this);
+    this.#dataGrid.addEventListener(DataGrid6.DataGrid.Events.SORTING_CHANGED, this.sortHandler, this);
     this.#dataGrid.setHeaderContextMenuCallback(this.#headerContextMenu.bind(this));
-    this.activeWaterfallSortId = WaterfallSortIds.StartTime;
-    this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid4.DataGrid.Order.Ascending);
+    this.activeWaterfallSortId = "startTime" /* StartTime */;
+    this.#dataGrid.markColumnAsSortedBy(INITIAL_SORT_COLUMN, DataGrid6.DataGrid.Order.Ascending);
     this.splitWidget = new UI22.SplitWidget.SplitWidget(true, true, "network-panel-split-view-waterfall", 200);
     const widget8 = this.#dataGrid.asWidget();
     widget8.setMinimumSize(150, 0);
@@ -10567,11 +13712,14 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.dataGridScroller.addEventListener("touchend", this.onTouchEnd.bind(this));
     this.waterfallScroller = this.waterfallColumn.contentElement.createChild("div", "network-waterfall-v-scroll");
     this.waterfallScrollerContent = this.waterfallScroller.createChild("div", "network-waterfall-v-scroll-content");
-    this.#dataGrid.addEventListener("PaddingChanged", () => {
+    this.#dataGrid.addEventListener(DataGrid6.DataGrid.Events.PADDING_CHANGED, () => {
       this.waterfallScrollerWidthIsStale = true;
       this.syncScrollers();
     });
-    this.#dataGrid.addEventListener("ViewportCalculated", this.redrawWaterfallColumn.bind(this));
+    this.#dataGrid.addEventListener(
+      DataGrid6.ViewportDataGrid.Events.VIEWPORT_CALCULATED,
+      this.redrawWaterfallColumn.bind(this)
+    );
     this.createWaterfallHeader();
     this.waterfallColumn.contentElement.classList.add("network-waterfall-view");
     this.waterfallColumn.setMinimumSize(100, 0);
@@ -10628,13 +13776,18 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
   updateScrollerWidthIfNeeded() {
     if (this.waterfallScrollerWidthIsStale) {
       this.waterfallScrollerWidthIsStale = false;
-      this.waterfallColumn.setRightPadding(this.waterfallScroller.offsetWidth - this.waterfallScrollerContent.offsetWidth);
+      this.waterfallColumn.setRightPadding(
+        this.waterfallScroller.offsetWidth - this.waterfallScrollerContent.offsetWidth
+      );
     }
   }
   redrawWaterfallColumn() {
     if (!this.waterfallRequestsAreStale) {
       this.updateScrollerWidthIfNeeded();
-      this.waterfallColumn.update(this.activeScroller.scrollTop, this.eventDividersShown ? this.eventDividers : void 0);
+      this.waterfallColumn.update(
+        this.activeScroller.scrollTop,
+        this.eventDividersShown ? this.eventDividers : void 0
+      );
       return;
     }
     this.syncScrollers();
@@ -10643,7 +13796,10 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
   }
   createWaterfallHeader() {
     this.waterfallHeaderElement = this.waterfallColumn.contentElement.createChild("div", "network-waterfall-header");
-    this.waterfallHeaderElement.setAttribute("jslog", `${VisualLogging16.tableHeader("waterfall").track({ click: true, resize: true })}`);
+    this.waterfallHeaderElement.setAttribute(
+      "jslog",
+      `${VisualLogging16.tableHeader("waterfall").track({ click: true, resize: true })}`
+    );
     this.waterfallHeaderElement.addEventListener("click", waterfallHeaderClicked.bind(this));
     this.waterfallHeaderElement.addEventListener("contextmenu", (event) => {
       const contextMenu = new UI22.ContextMenu.ContextMenu(event);
@@ -10657,7 +13813,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.waterfallColumnSortIcon.className = "sort-order-icon";
     this.waterfallHeaderElement.createChild("div", "sort-order-icon-container").appendChild(this.waterfallColumnSortIcon);
     function waterfallHeaderClicked() {
-      const sortOrders = DataGrid4.DataGrid.Order;
+      const sortOrders = DataGrid6.DataGrid.Order;
       const wasSortedByWaterfall = this.#dataGrid.sortColumnId() === "waterfall";
       const wasSortedAscending = this.#dataGrid.isSortOrderAscending();
       const sortOrder = wasSortedByWaterfall && wasSortedAscending ? sortOrders.Descending : sortOrders.Ascending;
@@ -10706,7 +13862,7 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
     this.networkLogView.removeAllNodeHighlights();
     this.waterfallRequestsAreStale = true;
     if (columnId === "waterfall") {
-      if (this.#dataGrid.sortOrder() === DataGrid4.DataGrid.Order.Ascending) {
+      if (this.#dataGrid.sortOrder() === DataGrid6.DataGrid.Order.Ascending) {
         this.waterfallColumnSortIcon.name = "triangle-up";
       } else {
         this.waterfallColumnSortIcon.name = "triangle-down";
@@ -10847,50 +14003,88 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
       for (const columnConfig of group) {
         const disabled = visibleColumns.length === 1 && visibleColumns[0] === columnConfig;
         const title = columnConfig.title instanceof Function ? columnConfig.title() : columnConfig.title;
-        contextMenu.headerSection().appendCheckboxItem(title, this.toggleColumnVisibility.bind(this, columnConfig), { checked: columnConfig.visible, disabled, jslogContext: columnConfig.id });
+        contextMenu.headerSection().appendCheckboxItem(
+          title,
+          this.toggleColumnVisibility.bind(this, columnConfig),
+          { checked: columnConfig.visible, disabled, jslogContext: columnConfig.id }
+        );
       }
       contextMenu.headerSection().appendSeparator();
     }
     for (const columnConfig of nonRequestResponseHeadersWithoutGroup) {
       const title = columnConfig.title instanceof Function ? columnConfig.title() : columnConfig.title;
-      contextMenu.headerSection().appendCheckboxItem(title, this.toggleColumnVisibility.bind(this, columnConfig), { checked: columnConfig.visible, jslogContext: columnConfig.id });
+      contextMenu.headerSection().appendCheckboxItem(
+        title,
+        this.toggleColumnVisibility.bind(this, columnConfig),
+        { checked: columnConfig.visible, jslogContext: columnConfig.id }
+      );
     }
     const responseSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString21(UIStrings22.responseHeaders), false, "response-headers");
     const responseHeaders = columnConfigs.filter((columnConfig) => columnConfig.isResponseHeader);
     for (const columnConfig of responseHeaders) {
       const title = columnConfig.title instanceof Function ? columnConfig.title() : columnConfig.title;
-      responseSubMenu.defaultSection().appendCheckboxItem(title, this.toggleColumnVisibility.bind(this, columnConfig), { checked: columnConfig.visible, jslogContext: columnConfig.id });
+      responseSubMenu.defaultSection().appendCheckboxItem(
+        title,
+        this.toggleColumnVisibility.bind(this, columnConfig),
+        { checked: columnConfig.visible, jslogContext: columnConfig.id }
+      );
     }
-    responseSubMenu.footerSection().appendItem(i18nString21(UIStrings22.manageHeaderColumns), this.manageResponseCustomHeaderDialog.bind(this), { jslogContext: "manage-header-columns" });
+    responseSubMenu.footerSection().appendItem(
+      i18nString21(UIStrings22.manageHeaderColumns),
+      this.manageResponseCustomHeaderDialog.bind(this),
+      { jslogContext: "manage-header-columns" }
+    );
     const requestSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString21(UIStrings22.requestHeaders), false, "request-headers");
     const requestHeaders = columnConfigs.filter((columnConfig) => columnConfig.isRequestHeader);
     for (const columnConfig of requestHeaders) {
       const title = columnConfig.title instanceof Function ? columnConfig.title() : columnConfig.title;
-      requestSubMenu.defaultSection().appendCheckboxItem(title, this.toggleColumnVisibility.bind(this, columnConfig), { checked: columnConfig.visible, jslogContext: columnConfig.id });
+      requestSubMenu.defaultSection().appendCheckboxItem(
+        title,
+        this.toggleColumnVisibility.bind(this, columnConfig),
+        { checked: columnConfig.visible, jslogContext: columnConfig.id }
+      );
     }
-    requestSubMenu.footerSection().appendItem(i18nString21(UIStrings22.manageHeaderColumns), this.manageRequestCustomHeaderDialog.bind(this), { jslogContext: "manage-header-columns" });
+    requestSubMenu.footerSection().appendItem(
+      i18nString21(UIStrings22.manageHeaderColumns),
+      this.manageRequestCustomHeaderDialog.bind(this),
+      { jslogContext: "manage-header-columns" }
+    );
     const waterfallSortIds = WaterfallSortIds;
     const waterfallSubMenu = contextMenu.footerSection().appendSubMenuItem(i18nString21(UIStrings22.waterfall), false, "waterfall");
-    waterfallSubMenu.defaultSection().appendCheckboxItem(i18nString21(UIStrings22.startTime), setWaterfallMode.bind(this, waterfallSortIds.StartTime), { checked: this.activeWaterfallSortId === waterfallSortIds.StartTime, jslogContext: "start-time" });
-    waterfallSubMenu.defaultSection().appendCheckboxItem(i18nString21(UIStrings22.responseTime), setWaterfallMode.bind(this, waterfallSortIds.ResponseTime), { checked: this.activeWaterfallSortId === waterfallSortIds.ResponseTime, jslogContext: "response-time" });
-    waterfallSubMenu.defaultSection().appendCheckboxItem(i18nString21(UIStrings22.endTime), setWaterfallMode.bind(this, waterfallSortIds.EndTime), { checked: this.activeWaterfallSortId === waterfallSortIds.EndTime, jslogContext: "end-time" });
-    waterfallSubMenu.defaultSection().appendCheckboxItem(i18nString21(UIStrings22.totalDuration), setWaterfallMode.bind(this, waterfallSortIds.Duration), { checked: this.activeWaterfallSortId === waterfallSortIds.Duration, jslogContext: "total-duration" });
-    waterfallSubMenu.defaultSection().appendCheckboxItem(i18nString21(UIStrings22.latency), setWaterfallMode.bind(this, waterfallSortIds.Latency), { checked: this.activeWaterfallSortId === waterfallSortIds.Latency, jslogContext: "latency" });
+    waterfallSubMenu.defaultSection().appendCheckboxItem(
+      i18nString21(UIStrings22.startTime),
+      setWaterfallMode.bind(this, waterfallSortIds.StartTime),
+      { checked: this.activeWaterfallSortId === waterfallSortIds.StartTime, jslogContext: "start-time" }
+    );
+    waterfallSubMenu.defaultSection().appendCheckboxItem(
+      i18nString21(UIStrings22.responseTime),
+      setWaterfallMode.bind(this, waterfallSortIds.ResponseTime),
+      { checked: this.activeWaterfallSortId === waterfallSortIds.ResponseTime, jslogContext: "response-time" }
+    );
+    waterfallSubMenu.defaultSection().appendCheckboxItem(
+      i18nString21(UIStrings22.endTime),
+      setWaterfallMode.bind(this, waterfallSortIds.EndTime),
+      { checked: this.activeWaterfallSortId === waterfallSortIds.EndTime, jslogContext: "end-time" }
+    );
+    waterfallSubMenu.defaultSection().appendCheckboxItem(
+      i18nString21(UIStrings22.totalDuration),
+      setWaterfallMode.bind(this, waterfallSortIds.Duration),
+      { checked: this.activeWaterfallSortId === waterfallSortIds.Duration, jslogContext: "total-duration" }
+    );
+    waterfallSubMenu.defaultSection().appendCheckboxItem(
+      i18nString21(UIStrings22.latency),
+      setWaterfallMode.bind(this, waterfallSortIds.Latency),
+      { checked: this.activeWaterfallSortId === waterfallSortIds.Latency, jslogContext: "latency" }
+    );
     function setWaterfallMode(sortId) {
-      let calculator = this.calculatorsMap.get(
-        "Time"
-        /* CalculatorTypes.TIME */
-      );
+      let calculator = this.calculatorsMap.get("Time" /* TIME */);
       const waterfallSortIds2 = WaterfallSortIds;
       if (sortId === waterfallSortIds2.Duration || sortId === waterfallSortIds2.Latency) {
-        calculator = this.calculatorsMap.get(
-          "Duration"
-          /* CalculatorTypes.DURATION */
-        );
+        calculator = this.calculatorsMap.get("Duration" /* DURATION */);
       }
       this.networkLogView.setCalculator(calculator);
       this.activeWaterfallSortId = sortId;
-      this.#dataGrid.markColumnAsSortedBy("waterfall", DataGrid4.DataGrid.Order.Ascending);
+      this.#dataGrid.markColumnAsSortedBy("waterfall", DataGrid6.DataGrid.Order.Ascending);
       this.sortHandler();
     }
   }
@@ -10902,13 +14096,17 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
         customHeadersRequest.push({ title, editable: columnConfig.isCustomHeader });
       }
     }
-    const manageCustomHeadersRequest = new NetworkManageCustomHeadersView(customHeadersRequest, (headerTitle) => Boolean(this.addCustomHeader(headerTitle, `request-header-${headerTitle}`)), (oldHeaderId, headerTitle) => Boolean(this.changeCustomHeader(`request-header-${oldHeaderId}`, headerTitle, `request-header-${headerTitle}`)), (headerTitle) => Boolean(this.removeCustomHeader(`request-header-${headerTitle}`)));
+    const manageCustomHeadersRequest = new NetworkManageCustomHeadersView(
+      customHeadersRequest,
+      (headerTitle) => Boolean(this.addCustomHeader(headerTitle, `request-header-${headerTitle}`)),
+      (oldHeaderId, headerTitle) => Boolean(
+        this.changeCustomHeader(`request-header-${oldHeaderId}`, headerTitle, `request-header-${headerTitle}`)
+      ),
+      (headerTitle) => Boolean(this.removeCustomHeader(`request-header-${headerTitle}`))
+    );
     const dialogRequest = new UI22.Dialog.Dialog("manage-custom-request-headers");
     manageCustomHeadersRequest.show(dialogRequest.contentElement);
-    dialogRequest.setSizeBehavior(
-      "MeasureContent"
-      /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
-    );
+    dialogRequest.setSizeBehavior(UI22.GlassPane.SizeBehavior.MEASURE_CONTENT);
     dialogRequest.show(this.networkLogView.element);
   }
   manageResponseCustomHeaderDialog() {
@@ -10919,13 +14117,17 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
         customHeadersResponse.push({ title, editable: columnConfig.isCustomHeader });
       }
     }
-    const manageCustomHeadersResponse = new NetworkManageCustomHeadersView(customHeadersResponse, (headerTitle) => Boolean(this.addCustomHeader(headerTitle, `response-header-${headerTitle}`)), (oldHeaderId, headerTitle) => Boolean(this.changeCustomHeader(`response-header-${oldHeaderId}`, headerTitle, `response-header-${headerTitle}`)), (headerTitle) => Boolean(this.removeCustomHeader(`response-header-${headerTitle}`)));
+    const manageCustomHeadersResponse = new NetworkManageCustomHeadersView(
+      customHeadersResponse,
+      (headerTitle) => Boolean(this.addCustomHeader(headerTitle, `response-header-${headerTitle}`)),
+      (oldHeaderId, headerTitle) => Boolean(
+        this.changeCustomHeader(`response-header-${oldHeaderId}`, headerTitle, `response-header-${headerTitle}`)
+      ),
+      (headerTitle) => Boolean(this.removeCustomHeader(`response-header-${headerTitle}`))
+    );
     const dialogResponse = new UI22.Dialog.Dialog("manage-custom-response-headers");
     manageCustomHeadersResponse.show(dialogResponse.contentElement);
-    dialogResponse.setSizeBehavior(
-      "MeasureContent"
-      /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
-    );
+    dialogResponse.setSizeBehavior(UI22.GlassPane.SizeBehavior.MEASURE_CONTENT);
     dialogResponse.show(this.networkLogView.element);
   }
   removeCustomHeader(headerId) {
@@ -11012,19 +14214,13 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
         if (!content) {
           return false;
         }
-        descriptor = content.stackTrace?.addEventListener("UPDATED", async () => {
+        descriptor = content.stackTrace?.addEventListener(StackTrace3.StackTrace.Events.UPDATED, async () => {
           await content.preview.updateComplete;
-          popover.setSizeBehavior(
-            "MeasureContent"
-            /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
-          );
+          popover.setSizeBehavior(UI22.GlassPane.SizeBehavior.MEASURE_CONTENT);
         });
         content.preview.show(popover.contentElement);
         await content.preview.updateComplete.then(() => {
-          popover.setSizeBehavior(
-            "MeasureContent"
-            /* UI.GlassPane.SizeBehavior.MEASURE_CONTENT */
-          );
+          popover.setSizeBehavior(UI22.GlassPane.SizeBehavior.MEASURE_CONTENT);
         });
         return true;
       },
@@ -11070,11 +14266,6 @@ var NetworkLogViewColumns = class _NetworkLogViewColumns {
   }
 };
 var INITIAL_SORT_COLUMN = "waterfall";
-var CalculatorTypes;
-(function(CalculatorTypes2) {
-  CalculatorTypes2["DURATION"] = "Duration";
-  CalculatorTypes2["TIME"] = "Time";
-})(CalculatorTypes || (CalculatorTypes = {}));
 var DEFAULT_COLUMN_CONFIG = {
   subtitle: null,
   visible: false,
@@ -11092,7 +14283,7 @@ var DEFAULT_COLUMNS = [
   {
     id: "request-number",
     title: i18nLazyString5(UIStrings22.requestNumber),
-    align: "right",
+    align: DataGrid6.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.RequestNumberComparator
   },
   {
@@ -11150,7 +14341,7 @@ var DEFAULT_COLUMNS = [
     id: "remote-address",
     title: i18nLazyString5(UIStrings22.remoteAddress),
     weight: 10,
-    align: "right",
+    align: DataGrid6.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.RemoteAddressComparator
   },
   {
@@ -11183,13 +14374,13 @@ var DEFAULT_COLUMNS = [
   {
     id: "cookies",
     title: i18nLazyString5(UIStrings22.cookies),
-    align: "right",
+    align: DataGrid6.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.RequestCookiesCountComparator
   },
   {
     id: "set-cookies",
     title: i18nLazyString5(UIStrings22.setCookies),
-    align: "right",
+    align: DataGrid6.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.ResponseCookiesCountComparator
   },
   {
@@ -11197,7 +14388,7 @@ var DEFAULT_COLUMNS = [
     title: i18nLazyString5(UIStrings22.size),
     visible: true,
     subtitle: i18nLazyString5(UIStrings22.content),
-    align: "right",
+    align: DataGrid6.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.SizeComparator
   },
   {
@@ -11205,7 +14396,7 @@ var DEFAULT_COLUMNS = [
     title: i18nLazyString5(UIStrings22.time),
     visible: true,
     subtitle: i18nLazyString5(UIStrings22.latency),
-    align: "right",
+    align: DataGrid6.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.RequestPropertyComparator.bind(null, "duration")
   },
   { id: "priority", title: i18nLazyString5(UIStrings22.priority), sortingFunction: NetworkRequestNode.PriorityComparator },
@@ -11236,7 +14427,7 @@ var DEFAULT_COLUMNS = [
     id: "response-header-content-length",
     isResponseHeader: true,
     title: i18n43.i18n.lockedLazyString("Content-Length"),
-    align: "right",
+    align: DataGrid6.DataGrid.Align.RIGHT,
     sortingFunction: NetworkRequestNode.ResponseHeaderNumberComparator.bind(null, "content-length")
   },
   {
@@ -11356,16 +14547,16 @@ var DEFAULT_COLUMNS = [
   }
 ];
 var FILM_STRIP_DIVIDER_COLOR = "#fccc49";
-var WaterfallSortIds;
-(function(WaterfallSortIds2) {
+var WaterfallSortIds = /* @__PURE__ */ ((WaterfallSortIds2) => {
   WaterfallSortIds2["StartTime"] = "startTime";
   WaterfallSortIds2["ResponseTime"] = "responseReceivedTime";
   WaterfallSortIds2["EndTime"] = "endTime";
   WaterfallSortIds2["Duration"] = "duration";
   WaterfallSortIds2["Latency"] = "latency";
-})(WaterfallSortIds || (WaterfallSortIds = {}));
+  return WaterfallSortIds2;
+})(WaterfallSortIds || {});
 
-// gen/front_end/panels/network/NetworkLogView.js
+// ../../front_end/panels/network/NetworkLogView.ts
 var UIStrings23 = {
   /**
    * @description Text in Network Log View of the Network panel
@@ -11835,12 +15026,9 @@ var UIStrings23 = {
 };
 var str_23 = i18n45.i18n.registerUIStrings("panels/network/NetworkLogView.ts", UIStrings23);
 var i18nString22 = i18n45.i18n.getLocalizedString.bind(void 0, str_23);
-var FetchStyle;
-(function(FetchStyle2) {
-  FetchStyle2[FetchStyle2["BROWSER"] = 0] = "BROWSER";
-  FetchStyle2[FetchStyle2["NODE_JS"] = 1] = "NODE_JS";
-})(FetchStyle || (FetchStyle = {}));
-var NetworkLogViewBase = Common19.ObjectWrapper.eventMixin(UI23.Widget.VBox);
+var NetworkLogViewBase = Common19.ObjectWrapper.eventMixin(
+  UI23.Widget.VBox
+);
 var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
   networkInvertFilterSetting;
   networkHideDataURLSetting;
@@ -11898,7 +15086,10 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     this.networkOnlyBlockedRequestsSetting = Common19.Settings.Settings.instance().createSetting("network-only-blocked-requests", false);
     this.networkOnlyThirdPartySetting = Common19.Settings.Settings.instance().createSetting("network-only-third-party-setting", false);
     this.networkResourceTypeFiltersSetting = Common19.Settings.Settings.instance().createSetting("network-resource-type-filters", {});
-    this.networkShowOptionsToGenerateHarWithSensitiveData = Common19.Settings.Settings.instance().createSetting("network.show-options-to-generate-har-with-sensitive-data", false);
+    this.networkShowOptionsToGenerateHarWithSensitiveData = Common19.Settings.Settings.instance().createSetting(
+      "network.show-options-to-generate-har-with-sensitive-data",
+      false
+    );
     this.progressBarContainer = progressBarContainer;
     this.networkLogLargeRowsSetting = networkLogLargeRowsSetting;
     this.networkLogLargeRowsSetting.addChangeListener(updateRowHeight.bind(this), this);
@@ -11910,7 +15101,12 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     this.timeCalculatorInternal = new NetworkTimeCalculator4.NetworkTransferTimeCalculator();
     this.durationCalculator = new NetworkTimeCalculator4.NetworkTransferDurationCalculator();
     this.calculatorInternal = this.timeCalculatorInternal;
-    this.columnsInternal = new NetworkLogViewColumns(this, this.timeCalculatorInternal, this.durationCalculator, networkLogLargeRowsSetting);
+    this.columnsInternal = new NetworkLogViewColumns(
+      this,
+      this.timeCalculatorInternal,
+      this.durationCalculator,
+      networkLogLargeRowsSetting
+    );
     this.columnsInternal.show(this.element);
     this.staleRequests = /* @__PURE__ */ new Set();
     this.mainRequestLoadTime = -1;
@@ -11928,10 +15124,19 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     this.groupLookups.set("Frame", new NetworkFrameGrouper(this));
     this.activeGroupLookup = null;
     this.textFilterUI = new UI23.FilterBar.TextFilterUI();
-    this.textFilterUI.addEventListener("FilterChanged", this.filterChanged, this);
+    this.textFilterUI.addEventListener(UI23.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged, this);
     filterBar.addFilter(this.textFilterUI);
-    this.invertFilterUI = new UI23.FilterBar.CheckboxFilterUI(i18nString22(UIStrings23.invertFilter), true, this.networkInvertFilterSetting, "invert-filter");
-    this.invertFilterUI.addEventListener("FilterChanged", this.filterChanged.bind(this), this);
+    this.invertFilterUI = new UI23.FilterBar.CheckboxFilterUI(
+      i18nString22(UIStrings23.invertFilter),
+      true,
+      this.networkInvertFilterSetting,
+      "invert-filter"
+    );
+    this.invertFilterUI.addEventListener(
+      UI23.FilterBar.FilterUIEvents.FILTER_CHANGED,
+      this.filterChanged.bind(this),
+      this
+    );
     UI23.Tooltip.Tooltip.install(this.invertFilterUI.element(), i18nString22(UIStrings23.invertsFilter));
     filterBar.addFilter(this.invertFilterUI);
     filterBar.addDivider();
@@ -11942,11 +15147,15 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
       jslogContext: Platform12.StringUtilities.toKebabCase(key)
     }));
     this.moreFiltersDropDownUI = new MoreFiltersDropDownUI();
-    this.moreFiltersDropDownUI.addEventListener("FilterChanged", this.filterChanged, this);
+    this.moreFiltersDropDownUI.addEventListener(UI23.FilterBar.FilterUIEvents.FILTER_CHANGED, this.filterChanged, this);
     filterBar.addFilter(this.moreFiltersDropDownUI);
     this.resourceCategoryFilterUI = new UI23.FilterBar.NamedBitSetFilterUI(filterItems, this.networkResourceTypeFiltersSetting);
     UI23.ARIAUtils.setLabel(this.resourceCategoryFilterUI.element(), i18nString22(UIStrings23.requestTypesToInclude));
-    this.resourceCategoryFilterUI.addEventListener("FilterChanged", this.filterChanged.bind(this), this);
+    this.resourceCategoryFilterUI.addEventListener(
+      UI23.FilterBar.FilterUIEvents.FILTER_CHANGED,
+      this.filterChanged.bind(this),
+      this
+    );
     filterBar.addFilter(this.resourceCategoryFilterUI);
     this.filterParser = new TextUtils8.TextUtils.FilterParser(searchKeys);
     this.suggestionBuilder = new UI23.FilterSuggestionBuilder.FilterSuggestionBuilder(searchKeys, _NetworkLogView.sortSearchValues);
@@ -11954,19 +15163,39 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     this.dataGrid = this.columnsInternal.dataGrid();
     this.setupDataGrid();
     this.columnsInternal.sortByCurrentColumn();
-    filterBar.filterButton().addEventListener("Click", this.dataGrid.scheduleUpdate.bind(
-      this.dataGrid,
-      true
-      /* isFromUser */
-    ));
+    filterBar.filterButton().addEventListener(
+      UI23.Toolbar.ToolbarButton.Events.CLICK,
+      this.dataGrid.scheduleUpdate.bind(
+        this.dataGrid,
+        true
+        /* isFromUser */
+      )
+    );
     this.summaryToolbarInternal = this.element.createChild("devtools-toolbar", "network-summary-bar");
     this.summaryToolbarInternal.setAttribute("role", "status");
-    new UI23.DropTarget.DropTarget(this.element, [UI23.DropTarget.Type.File], i18nString22(UIStrings23.dropHarFilesHere), this.handleDrop.bind(this));
+    new UI23.DropTarget.DropTarget(
+      this.element,
+      [UI23.DropTarget.Type.File],
+      i18nString22(UIStrings23.dropHarFilesHere),
+      this.handleDrop.bind(this)
+    );
     Common19.Settings.Settings.instance().moduleSetting("network-color-code-resource-types").addChangeListener(this.invalidateAllItems.bind(this, false), this);
     SDK16.TargetManager.TargetManager.instance().observeModels(SDK16.NetworkManager.NetworkManager, this, { scoped: true });
-    Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.RequestAdded, this.onRequestUpdated, this);
-    Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.RequestUpdated, this.onRequestUpdated, this);
-    Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.RequestRemoved, this.onRequestRemoved, this);
+    Logs5.NetworkLog.NetworkLog.instance().addEventListener(
+      Logs5.NetworkLog.Events.RequestAdded,
+      this.onRequestUpdated,
+      this
+    );
+    Logs5.NetworkLog.NetworkLog.instance().addEventListener(
+      Logs5.NetworkLog.Events.RequestUpdated,
+      this.onRequestUpdated,
+      this
+    );
+    Logs5.NetworkLog.NetworkLog.instance().addEventListener(
+      Logs5.NetworkLog.Events.RequestRemoved,
+      this.onRequestRemoved,
+      this
+    );
     Logs5.NetworkLog.NetworkLog.instance().addEventListener(Logs5.NetworkLog.Events.Reset, this.reset, this);
     this.updateGroupByFrame();
     Common19.Settings.Settings.instance().moduleSetting("network.group-by-frame").addChangeListener(() => this.updateGroupByFrame());
@@ -12050,17 +15279,17 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     return request.mimeType === value;
   }
   static requestMixedContentFilter(value, request) {
-    if (value === "displayed") {
-      return request.mixedContentType === "optionally-blockable";
+    if (value === NetworkForward4.UIFilter.MixedContentFilterValues.DISPLAYED) {
+      return request.mixedContentType === Security.MixedContentType.OptionallyBlockable;
     }
-    if (value === "blocked") {
-      return request.mixedContentType === "blockable" && request.wasBlocked();
+    if (value === NetworkForward4.UIFilter.MixedContentFilterValues.BLOCKED) {
+      return request.mixedContentType === Security.MixedContentType.Blockable && request.wasBlocked();
     }
-    if (value === "block-overridden") {
-      return request.mixedContentType === "blockable" && !request.wasBlocked();
+    if (value === NetworkForward4.UIFilter.MixedContentFilterValues.BLOCK_OVERRIDDEN) {
+      return request.mixedContentType === Security.MixedContentType.Blockable && !request.wasBlocked();
     }
-    if (value === "all") {
-      return request.mixedContentType !== "none";
+    if (value === NetworkForward4.UIFilter.MixedContentFilterValues.ALL) {
+      return request.mixedContentType !== Security.MixedContentType.None;
     }
     return false;
   }
@@ -12218,7 +15447,11 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     const resourceTreeModel = target.model(SDK16.ResourceTreeModel.ResourceTreeModel);
     if (resourceTreeModel) {
       resourceTreeModel.addEventListener(SDK16.ResourceTreeModel.Events.Load, this.loadEventFired, this);
-      resourceTreeModel.addEventListener(SDK16.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this);
+      resourceTreeModel.addEventListener(
+        SDK16.ResourceTreeModel.Events.DOMContentLoaded,
+        this.domContentLoadedEventFired,
+        this
+      );
     }
     for (const request of Logs5.NetworkLog.NetworkLog.instance().requests()) {
       if (this.isInScope(request)) {
@@ -12234,7 +15467,11 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     const resourceTreeModel = target.model(SDK16.ResourceTreeModel.ResourceTreeModel);
     if (resourceTreeModel) {
       resourceTreeModel.removeEventListener(SDK16.ResourceTreeModel.Events.Load, this.loadEventFired, this);
-      resourceTreeModel.removeEventListener(SDK16.ResourceTreeModel.Events.DOMContentLoaded, this.domContentLoadedEventFired, this);
+      resourceTreeModel.removeEventListener(
+        SDK16.ResourceTreeModel.Events.DOMContentLoaded,
+        this.domContentLoadedEventFired,
+        this
+      );
     }
     const preserveLog = Common19.Settings.Settings.instance().resolve(SDK16.SDKSettings.preserveNetworkLogSettingDescriptor).get();
     if (!preserveLog) {
@@ -12259,31 +15496,20 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
   }
   resetSuggestionBuilder() {
     this.suggestionBuilder.clear();
+    this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.Is, NetworkForward4.UIFilter.IsFilterType.RUNNING);
     this.suggestionBuilder.addItem(
       NetworkForward4.UIFilter.FilterType.Is,
-      "running"
-      /* NetworkForward.UIFilter.IsFilterType.RUNNING */
+      NetworkForward4.UIFilter.IsFilterType.FROM_CACHE
     );
     this.suggestionBuilder.addItem(
       NetworkForward4.UIFilter.FilterType.Is,
-      "from-cache"
-      /* NetworkForward.UIFilter.IsFilterType.FROM_CACHE */
+      NetworkForward4.UIFilter.IsFilterType.SERVICE_WORKER_INTERCEPTED
     );
     this.suggestionBuilder.addItem(
       NetworkForward4.UIFilter.FilterType.Is,
-      "service-worker-intercepted"
-      /* NetworkForward.UIFilter.IsFilterType.SERVICE_WORKER_INTERCEPTED */
+      NetworkForward4.UIFilter.IsFilterType.SERVICE_WORKER_INITIATED
     );
-    this.suggestionBuilder.addItem(
-      NetworkForward4.UIFilter.FilterType.Is,
-      "service-worker-initiated"
-      /* NetworkForward.UIFilter.IsFilterType.SERVICE_WORKER_INITIATED */
-    );
-    this.suggestionBuilder.addItem(
-      NetworkForward4.UIFilter.FilterType.Is,
-      "preloaded"
-      /* NetworkForward.UIFilter.IsFilterType.PRELOAD */
-    );
+    this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.Is, NetworkForward4.UIFilter.IsFilterType.PRELOAD);
     this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.LargerThan, "100");
     this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.LargerThan, "10k");
     this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.LargerThan, "1M");
@@ -12324,7 +15550,7 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     if (shortcutTitle && action2) {
       const button = UI23.UIUtils.createTextButton(buttonText, () => action2.execute(), {
         jslogContext: actionName,
-        variant: "tonal"
+        variant: Buttons8.Button.Variant.TONAL
       });
       this.recordingHint.element.appendChild(button);
     }
@@ -12362,10 +15588,7 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     });
     this.dataGrid.setEnableAutoScrollToBottom(true);
     this.dataGrid.setName("network-log");
-    this.dataGrid.setResizeMethod(
-      "last"
-      /* DataGrid.DataGrid.ResizeMethod.LAST */
-    );
+    this.dataGrid.setResizeMethod(DataGrid8.DataGrid.ResizeMethod.LAST);
     this.dataGrid.element.classList.add("network-log-grid");
     this.dataGrid.element.addEventListener("mousemove", this.dataGridMouseMove.bind(this), true);
     this.dataGrid.element.addEventListener("mouseleave", () => this.setHoveredNode(null), true);
@@ -12377,7 +15600,10 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
         }
       }
       if (Platform12.KeyboardUtilities.isEnterOrSpaceKey(event)) {
-        this.dispatchEventToListeners("RequestActivated", { showPanel: "ShowPanel", takeFocus: true });
+        this.dispatchEventToListeners(
+          "RequestActivated" /* RequestActivated */,
+          { showPanel: "ShowPanel" /* ShowPanel */, takeFocus: true }
+        );
         event.consume(true);
       }
     });
@@ -12462,28 +15688,43 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     if (selectedNodeNumber !== nodeCount) {
       appendChunk(i18nString22(UIStrings23.sSRequests, { PH1: selectedNodeNumber, PH2: nodeCount }));
       this.summaryToolbarInternal.appendSeparator();
-      appendChunk(i18nString22(UIStrings23.sSTransferred, {
-        PH1: i18n45.ByteUtilities.formatBytesToKb(selectedTransferSize),
-        PH2: i18n45.ByteUtilities.formatBytesToKb(transferSize)
-      }), i18nString22(UIStrings23.sBSBTransferredOverNetwork, { PH1: selectedTransferSize, PH2: transferSize }));
+      appendChunk(
+        i18nString22(UIStrings23.sSTransferred, {
+          PH1: i18n45.ByteUtilities.formatBytesToKb(selectedTransferSize),
+          PH2: i18n45.ByteUtilities.formatBytesToKb(transferSize)
+        }),
+        i18nString22(UIStrings23.sBSBTransferredOverNetwork, { PH1: selectedTransferSize, PH2: transferSize })
+      );
       this.summaryToolbarInternal.appendSeparator();
-      appendChunk(i18nString22(UIStrings23.sSResources, {
-        PH1: i18n45.ByteUtilities.formatBytesToKb(selectedResourceSize),
-        PH2: i18n45.ByteUtilities.formatBytesToKb(resourceSize)
-      }), i18nString22(UIStrings23.sBSBResourcesLoadedByThePage, { PH1: selectedResourceSize, PH2: resourceSize }));
+      appendChunk(
+        i18nString22(UIStrings23.sSResources, {
+          PH1: i18n45.ByteUtilities.formatBytesToKb(selectedResourceSize),
+          PH2: i18n45.ByteUtilities.formatBytesToKb(resourceSize)
+        }),
+        i18nString22(UIStrings23.sBSBResourcesLoadedByThePage, { PH1: selectedResourceSize, PH2: resourceSize })
+      );
     } else {
       appendChunk(i18nString22(UIStrings23.sRequests, { PH1: nodeCount }));
       this.summaryToolbarInternal.appendSeparator();
-      appendChunk(i18nString22(UIStrings23.sTransferred, { PH1: i18n45.ByteUtilities.bytesToString(transferSize) }), i18nString22(UIStrings23.sBTransferredOverNetwork, { PH1: transferSize }));
+      appendChunk(
+        i18nString22(UIStrings23.sTransferred, { PH1: i18n45.ByteUtilities.bytesToString(transferSize) }),
+        i18nString22(UIStrings23.sBTransferredOverNetwork, { PH1: transferSize })
+      );
       this.summaryToolbarInternal.appendSeparator();
-      appendChunk(i18nString22(UIStrings23.sResources, { PH1: i18n45.ByteUtilities.bytesToString(resourceSize) }), i18nString22(UIStrings23.sBResourcesLoadedByThePage, { PH1: resourceSize }));
+      appendChunk(
+        i18nString22(UIStrings23.sResources, { PH1: i18n45.ByteUtilities.bytesToString(resourceSize) }),
+        i18nString22(UIStrings23.sBResourcesLoadedByThePage, { PH1: resourceSize })
+      );
     }
     if (baseTime !== -1 && maxTime !== -1) {
       this.summaryToolbarInternal.appendSeparator();
       appendChunk(i18nString22(UIStrings23.finishS, { PH1: i18n45.TimeUtilities.secondsToString(maxTime - baseTime) }));
       if (this.mainRequestDOMContentLoadedTime !== -1 && this.mainRequestDOMContentLoadedTime > baseTime) {
         this.summaryToolbarInternal.appendSeparator();
-        const domContentLoadedText = i18nString22(UIStrings23.domcontentloadedS, { PH1: i18n45.TimeUtilities.secondsToString(this.mainRequestDOMContentLoadedTime - baseTime) });
+        const domContentLoadedText = i18nString22(
+          UIStrings23.domcontentloadedS,
+          { PH1: i18n45.TimeUtilities.secondsToString(this.mainRequestDOMContentLoadedTime - baseTime) }
+        );
         appendChunk(domContentLoadedText).style.color = `var(${_NetworkLogView.getDCLEventColor()})`;
       }
       if (this.mainRequestLoadTime !== -1) {
@@ -12697,11 +15938,8 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     return groupNode;
   }
   reset() {
-    this.dispatchEventToListeners("RequestActivated", {
-      showPanel: "HidePanel"
-      /* RequestPanelBehavior.HidePanel */
-    });
-    this.dispatchEventToListeners("RequestSelected", null);
+    this.dispatchEventToListeners("RequestActivated" /* RequestActivated */, { showPanel: "HidePanel" /* HidePanel */ });
+    this.dispatchEventToListeners("RequestSelected" /* RequestSelected */, null);
     this.setHoveredNode(null);
     this.columnsInternal.reset();
     this.timeFilter = null;
@@ -12758,33 +15996,39 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     }
   }
   refreshRequest(request) {
-    _NetworkLogView.subdomains(request.domain).forEach(this.suggestionBuilder.addItem.bind(this.suggestionBuilder, NetworkForward4.UIFilter.FilterType.Domain));
+    _NetworkLogView.subdomains(request.domain).forEach(
+      this.suggestionBuilder.addItem.bind(this.suggestionBuilder, NetworkForward4.UIFilter.FilterType.Domain)
+    );
     this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.Method, request.requestMethod);
     this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.MimeType, request.mimeType);
     this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.Scheme, String(request.scheme));
     this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.StatusCode, String(request.statusCode));
     this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.ResourceType, request.resourceType().name());
-    this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.Url, request.securityOrigin());
+    const requestURLSecurityOrigin = request.requestURLSecurityOrigin();
+    if (!requestURLSecurityOrigin.isOpaque()) {
+      this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.Url, requestURLSecurityOrigin.siteId());
+    }
     const priority = request.priority();
     if (priority) {
-      this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.Priority, PerfUI4.NetworkPriorities.uiLabelForNetworkPriority(priority));
-    }
-    if (request.mixedContentType !== "none") {
       this.suggestionBuilder.addItem(
-        NetworkForward4.UIFilter.FilterType.MixedContent,
-        "all"
-        /* NetworkForward.UIFilter.MixedContentFilterValues.ALL */
+        NetworkForward4.UIFilter.FilterType.Priority,
+        PerfUI4.NetworkPriorities.uiLabelForNetworkPriority(priority)
       );
     }
-    if (request.mixedContentType === "optionally-blockable") {
+    if (request.mixedContentType !== Security.MixedContentType.None) {
       this.suggestionBuilder.addItem(
         NetworkForward4.UIFilter.FilterType.MixedContent,
-        "displayed"
-        /* NetworkForward.UIFilter.MixedContentFilterValues.DISPLAYED */
+        NetworkForward4.UIFilter.MixedContentFilterValues.ALL
       );
     }
-    if (request.mixedContentType === "blockable") {
-      const suggestion = request.wasBlocked() ? "blocked" : "block-overridden";
+    if (request.mixedContentType === Security.MixedContentType.OptionallyBlockable) {
+      this.suggestionBuilder.addItem(
+        NetworkForward4.UIFilter.FilterType.MixedContent,
+        NetworkForward4.UIFilter.MixedContentFilterValues.DISPLAYED
+      );
+    }
+    if (request.mixedContentType === Security.MixedContentType.Blockable) {
+      const suggestion = request.wasBlocked() ? NetworkForward4.UIFilter.MixedContentFilterValues.BLOCKED : NetworkForward4.UIFilter.MixedContentFilterValues.BLOCK_OVERRIDDEN;
       this.suggestionBuilder.addItem(NetworkForward4.UIFilter.FilterType.MixedContent, suggestion);
     }
     const responseHeaders = request.responseHeaders;
@@ -12825,27 +16069,78 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
       const openAiAssistanceId = "drjones.network-panel-context";
       if (UI23.ActionRegistry.ActionRegistry.instance().hasAction(openAiAssistanceId)) {
         let appendSubmenuPromptAction = function(submenu2, action3, label, prompt, jslogContext) {
-          submenu2.defaultSection().appendItem(label, () => action3.execute({ prompt }), { disabled: !action3.enabled(), jslogContext });
+          submenu2.defaultSection().appendItem(
+            label,
+            () => action3.execute({ prompt }),
+            { disabled: !action3.enabled(), jslogContext }
+          );
         };
         UI23.Context.Context.instance().setFlavor(SDK16.NetworkRequest.NetworkRequest, request);
         const action2 = UI23.ActionRegistry.ActionRegistry.instance().getAction(openAiAssistanceId);
         const submenu = contextMenu.footerSection().appendSubMenuItem(action2.title(), false, openAiAssistanceId);
         submenu.defaultSection().appendAction(openAiAssistanceId, i18nString22(UIStrings23.startAChat));
-        appendSubmenuPromptAction(submenu, action2, i18nString22(UIStrings23.explainPurpose), "What is the purpose of this request?", openAiAssistanceId + ".purpose");
-        appendSubmenuPromptAction(submenu, action2, i18nString22(UIStrings23.explainSlowness), "Why is this request taking so long?", openAiAssistanceId + ".slowness");
-        appendSubmenuPromptAction(submenu, action2, i18nString22(UIStrings23.explainFailures), "Why is the request failing?", openAiAssistanceId + ".failures");
-        appendSubmenuPromptAction(submenu, action2, i18nString22(UIStrings23.assessSecurityHeaders), "Are there any security headers present?", openAiAssistanceId + ".security");
+        appendSubmenuPromptAction(
+          submenu,
+          action2,
+          i18nString22(UIStrings23.explainPurpose),
+          "What is the purpose of this request?",
+          openAiAssistanceId + ".purpose"
+        );
+        appendSubmenuPromptAction(
+          submenu,
+          action2,
+          i18nString22(UIStrings23.explainSlowness),
+          "Why is this request taking so long?",
+          openAiAssistanceId + ".slowness"
+        );
+        appendSubmenuPromptAction(
+          submenu,
+          action2,
+          i18nString22(UIStrings23.explainFailures),
+          "Why is the request failing?",
+          openAiAssistanceId + ".failures"
+        );
+        appendSubmenuPromptAction(
+          submenu,
+          action2,
+          i18nString22(UIStrings23.assessSecurityHeaders),
+          "Are there any security headers present?",
+          openAiAssistanceId + ".security"
+        );
       }
-      copyMenu.defaultSection().appendItem(i18nString22(UIStrings23.copyURL), Host10.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(Host10.InspectorFrontendHost.InspectorFrontendHostInstance, request.contentURL()), { jslogContext: "copy-url" });
-      copyMenu.footerSection().appendItem(filtered ? i18nString22(UIStrings23.copyAllListedURLs) : i18nString22(UIStrings23.copyAllURLs), this.copyAllURLs.bind(this), { jslogContext: "copy-all-urls" });
+      copyMenu.defaultSection().appendItem(
+        i18nString22(UIStrings23.copyURL),
+        Host10.InspectorFrontendHost.InspectorFrontendHostInstance.copyText.bind(
+          Host10.InspectorFrontendHost.InspectorFrontendHostInstance,
+          request.contentURL()
+        ),
+        { jslogContext: "copy-url" }
+      );
+      copyMenu.footerSection().appendItem(
+        filtered ? i18nString22(UIStrings23.copyAllListedURLs) : i18nString22(UIStrings23.copyAllURLs),
+        this.copyAllURLs.bind(this),
+        { jslogContext: "copy-all-urls" }
+      );
       if (request.requestHeadersText()) {
-        copyMenu.saveSection().appendItem(i18nString22(UIStrings23.copyRequestHeaders), _NetworkLogView.copyRequestHeaders.bind(null, request), { jslogContext: "copy-request-headers" });
+        copyMenu.saveSection().appendItem(
+          i18nString22(UIStrings23.copyRequestHeaders),
+          _NetworkLogView.copyRequestHeaders.bind(null, request),
+          { jslogContext: "copy-request-headers" }
+        );
       }
       if (request.responseHeadersText) {
-        copyMenu.saveSection().appendItem(i18nString22(UIStrings23.copyResponseHeaders), _NetworkLogView.copyResponseHeaders.bind(null, request), { jslogContext: "copy-response-headers" });
+        copyMenu.saveSection().appendItem(
+          i18nString22(UIStrings23.copyResponseHeaders),
+          _NetworkLogView.copyResponseHeaders.bind(null, request),
+          { jslogContext: "copy-response-headers" }
+        );
       }
       if (request.finished) {
-        copyMenu.saveSection().appendItem(i18nString22(UIStrings23.copyResponse), _NetworkLogView.copyResponse.bind(null, request), { jslogContext: "copy-response" });
+        copyMenu.saveSection().appendItem(
+          i18nString22(UIStrings23.copyResponse),
+          _NetworkLogView.copyResponse.bind(null, request),
+          { jslogContext: "copy-response" }
+        );
       }
       const initiator = request.initiator();
       if (initiator) {
@@ -12861,53 +16156,103 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
       }
       const disableIfBlob = request.isBlobRequest();
       if (Host10.Platform.isWin()) {
-        copyMenu.defaultSection().appendItem(i18nString22(UIStrings23.copyAsCurlCmd), this.copyCurlCommand.bind(this, request, "win"), { disabled: disableIfBlob, jslogContext: "copy-as-curl-cmd" });
-        copyMenu.defaultSection().appendItem(i18nString22(UIStrings23.copyAsCurlBash), this.copyCurlCommand.bind(this, request, "unix"), { disabled: disableIfBlob, jslogContext: "copy-as-curl-bash" });
+        copyMenu.defaultSection().appendItem(
+          i18nString22(UIStrings23.copyAsCurlCmd),
+          this.copyCurlCommand.bind(this, request, "win"),
+          { disabled: disableIfBlob, jslogContext: "copy-as-curl-cmd" }
+        );
+        copyMenu.defaultSection().appendItem(
+          i18nString22(UIStrings23.copyAsCurlBash),
+          this.copyCurlCommand.bind(this, request, "unix"),
+          { disabled: disableIfBlob, jslogContext: "copy-as-curl-bash" }
+        );
       } else {
-        copyMenu.defaultSection().appendItem(i18nString22(UIStrings23.copyAsCurl), this.copyCurlCommand.bind(this, request, "unix"), { disabled: disableIfBlob, jslogContext: "copy-as-curl" });
+        copyMenu.defaultSection().appendItem(
+          i18nString22(UIStrings23.copyAsCurl),
+          this.copyCurlCommand.bind(this, request, "unix"),
+          { disabled: disableIfBlob, jslogContext: "copy-as-curl" }
+        );
       }
-      copyMenu.defaultSection().appendItem(i18nString22(UIStrings23.copyAsPowershell), this.copyPowerShellCommand.bind(this, request), { disabled: disableIfBlob, jslogContext: "copy-as-powershell" });
-      copyMenu.defaultSection().appendItem(i18nString22(UIStrings23.copyAsFetch), this.copyFetchCall.bind(
-        this,
-        request,
-        0
-        /* FetchStyle.BROWSER */
-      ), { disabled: disableIfBlob, jslogContext: "copy-as-fetch" });
-      copyMenu.defaultSection().appendItem(i18nString22(UIStrings23.copyAsNodejsFetch), this.copyFetchCall.bind(
-        this,
-        request,
-        1
-        /* FetchStyle.NODE_JS */
-      ), { disabled: disableIfBlob, jslogContext: "copy-as-nodejs-fetch" });
+      copyMenu.defaultSection().appendItem(
+        i18nString22(UIStrings23.copyAsPowershell),
+        this.copyPowerShellCommand.bind(this, request),
+        { disabled: disableIfBlob, jslogContext: "copy-as-powershell" }
+      );
+      copyMenu.defaultSection().appendItem(
+        i18nString22(UIStrings23.copyAsFetch),
+        this.copyFetchCall.bind(this, request, 0 /* BROWSER */),
+        { disabled: disableIfBlob, jslogContext: "copy-as-fetch" }
+      );
+      copyMenu.defaultSection().appendItem(
+        i18nString22(UIStrings23.copyAsNodejsFetch),
+        this.copyFetchCall.bind(this, request, 1 /* NODE_JS */),
+        { disabled: disableIfBlob, jslogContext: "copy-as-nodejs-fetch" }
+      );
       this.appendCopyAsPreloadItem(copyMenu, request);
       if (Host10.Platform.isWin()) {
-        copyMenu.footerSection().appendItem(filtered ? i18nString22(UIStrings23.copyAllListedAsCurlCmd) : i18nString22(UIStrings23.copyAllAsCurlCmd), this.copyAllCurlCommand.bind(this, "win"), { jslogContext: "copy-all-as-curl-cmd" });
-        copyMenu.footerSection().appendItem(filtered ? i18nString22(UIStrings23.copyAllListedAsCurlBash) : i18nString22(UIStrings23.copyAllAsCurlBash), this.copyAllCurlCommand.bind(this, "unix"), { jslogContext: "copy-all-as-curl-bash" });
+        copyMenu.footerSection().appendItem(
+          filtered ? i18nString22(UIStrings23.copyAllListedAsCurlCmd) : i18nString22(UIStrings23.copyAllAsCurlCmd),
+          this.copyAllCurlCommand.bind(this, "win"),
+          { jslogContext: "copy-all-as-curl-cmd" }
+        );
+        copyMenu.footerSection().appendItem(
+          filtered ? i18nString22(UIStrings23.copyAllListedAsCurlBash) : i18nString22(UIStrings23.copyAllAsCurlBash),
+          this.copyAllCurlCommand.bind(this, "unix"),
+          { jslogContext: "copy-all-as-curl-bash" }
+        );
       } else {
-        copyMenu.footerSection().appendItem(filtered ? i18nString22(UIStrings23.copyAllListedAsCurl) : i18nString22(UIStrings23.copyAllAsCurl), this.copyAllCurlCommand.bind(this, "unix"), { jslogContext: "copy-all-as-curl" });
+        copyMenu.footerSection().appendItem(
+          filtered ? i18nString22(UIStrings23.copyAllListedAsCurl) : i18nString22(UIStrings23.copyAllAsCurl),
+          this.copyAllCurlCommand.bind(this, "unix"),
+          { jslogContext: "copy-all-as-curl" }
+        );
       }
-      copyMenu.footerSection().appendItem(filtered ? i18nString22(UIStrings23.copyAllListedAsPowershell) : i18nString22(UIStrings23.copyAllAsPowershell), this.copyAllPowerShellCommand.bind(this), { jslogContext: "copy-all-as-powershell" });
-      copyMenu.footerSection().appendItem(filtered ? i18nString22(UIStrings23.copyAllListedAsFetch) : i18nString22(UIStrings23.copyAllAsFetch), this.copyAllFetchCall.bind(
-        this,
-        0
-        /* FetchStyle.BROWSER */
-      ), { jslogContext: "copy-all-as-fetch" });
-      copyMenu.footerSection().appendItem(filtered ? i18nString22(UIStrings23.copyAllListedAsNodejsFetch) : i18nString22(UIStrings23.copyAllAsNodejsFetch), this.copyAllFetchCall.bind(
-        this,
-        1
-        /* FetchStyle.NODE_JS */
-      ), { jslogContext: "copy-all-as-nodejs-fetch" });
+      copyMenu.footerSection().appendItem(
+        filtered ? i18nString22(UIStrings23.copyAllListedAsPowershell) : i18nString22(UIStrings23.copyAllAsPowershell),
+        this.copyAllPowerShellCommand.bind(this),
+        { jslogContext: "copy-all-as-powershell" }
+      );
+      copyMenu.footerSection().appendItem(
+        filtered ? i18nString22(UIStrings23.copyAllListedAsFetch) : i18nString22(UIStrings23.copyAllAsFetch),
+        this.copyAllFetchCall.bind(this, 0 /* BROWSER */),
+        { jslogContext: "copy-all-as-fetch" }
+      );
+      copyMenu.footerSection().appendItem(
+        filtered ? i18nString22(UIStrings23.copyAllListedAsNodejsFetch) : i18nString22(UIStrings23.copyAllAsNodejsFetch),
+        this.copyAllFetchCall.bind(this, 1 /* NODE_JS */),
+        { jslogContext: "copy-all-as-nodejs-fetch" }
+      );
     }
-    copyMenu.footerSection().appendItem(filtered ? i18nString22(UIStrings23.copyAllListedAsHarSanitized) : i18nString22(UIStrings23.copyAllAsHarSanitized), this.copyAllAsHAR.bind(this, { sanitize: true }), { jslogContext: "copy-all-as-har" });
+    copyMenu.footerSection().appendItem(
+      filtered ? i18nString22(UIStrings23.copyAllListedAsHarSanitized) : i18nString22(UIStrings23.copyAllAsHarSanitized),
+      this.copyAllAsHAR.bind(this, { sanitize: true }),
+      { jslogContext: "copy-all-as-har" }
+    );
     if (this.networkShowOptionsToGenerateHarWithSensitiveData.get()) {
-      copyMenu.footerSection().appendItem(filtered ? i18nString22(UIStrings23.copyAllListedAsHarWithSensitiveData) : i18nString22(UIStrings23.copyAllAsHarWithSensitiveData), this.copyAllAsHAR.bind(this, { sanitize: false }), { jslogContext: "copy-all-as-har-with-sensitive-data" });
+      copyMenu.footerSection().appendItem(
+        filtered ? i18nString22(UIStrings23.copyAllListedAsHarWithSensitiveData) : i18nString22(UIStrings23.copyAllAsHarWithSensitiveData),
+        this.copyAllAsHAR.bind(this, { sanitize: false }),
+        { jslogContext: "copy-all-as-har-with-sensitive-data" }
+      );
     }
-    contextMenu.overrideSection().appendItem(i18nString22(UIStrings23.overrideHeaders), this.#handleCreateResponseHeaderOverrideClick.bind(this, request), {
-      disabled: Persistence2.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(request.url()),
-      jslogContext: "override-headers"
-    });
-    contextMenu.editSection().appendItem(i18nString22(UIStrings23.clearBrowserCache), this.clearBrowserCache.bind(this), { jslogContext: "clear-browser-cache" });
-    contextMenu.editSection().appendItem(i18nString22(UIStrings23.clearBrowserCookies), this.clearBrowserCookies.bind(this), { jslogContext: "clear-browser-cookies" });
+    contextMenu.overrideSection().appendItem(
+      i18nString22(UIStrings23.overrideHeaders),
+      this.#handleCreateResponseHeaderOverrideClick.bind(this, request),
+      {
+        disabled: Persistence2.NetworkPersistenceManager.NetworkPersistenceManager.isForbiddenNetworkUrl(request.url()),
+        jslogContext: "override-headers"
+      }
+    );
+    contextMenu.editSection().appendItem(
+      i18nString22(UIStrings23.clearBrowserCache),
+      this.clearBrowserCache.bind(this),
+      { jslogContext: "clear-browser-cache" }
+    );
+    contextMenu.editSection().appendItem(
+      i18nString22(UIStrings23.clearBrowserCookies),
+      this.clearBrowserCookies.bind(this),
+      { jslogContext: "clear-browser-cookies" }
+    );
     if (request) {
       let removeRequestCondition = function(pattern) {
         const entry = manager.requestConditions.findCondition(pattern.constructorString);
@@ -12954,7 +16299,9 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
       } else if (parsed.urlWithoutScheme()) {
         urlPatternString = "*://" + Platform12.StringUtilities.escapeForURLPattern(parsed.urlWithoutScheme());
       }
-      const urlPattern = urlPatternString && SDK16.NetworkManager.RequestURLPattern.create(urlPatternString);
+      const urlPattern = urlPatternString && SDK16.NetworkManager.RequestURLPattern.create(
+        urlPatternString
+      );
       if (urlPattern) {
         throttlingMenu.setEnabled(true);
         blockingMenu.setEnabled(true);
@@ -12962,8 +16309,16 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
         const isBlocking = existingConditions?.conditions === SDK16.NetworkManager.BlockingConditions;
         const isThrottling = existingConditions && existingConditions.conditions !== SDK16.NetworkManager.BlockingConditions && existingConditions.conditions !== SDK16.NetworkManager.NoThrottlingConditions;
         const croppedURL = Platform12.StringUtilities.trimMiddle(urlPattern.constructorString, maxBlockedURLLength);
-        blockingMenu.debugSection().appendItem(isBlocking ? i18nString22(UIStrings23.unblockS, { PH1: croppedURL }) : i18nString22(UIStrings23.blockRequestUrl), () => isBlocking ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK16.NetworkManager.BlockingConditions), { jslogContext: "block-request-url" });
-        throttlingMenu.debugSection().appendItem(isThrottling ? i18nString22(UIStrings23.unthrottleS, { PH1: croppedURL }) : i18nString22(UIStrings23.throttleRequestUrl), () => isThrottling ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK16.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-url" });
+        blockingMenu.debugSection().appendItem(
+          isBlocking ? i18nString22(UIStrings23.unblockS, { PH1: croppedURL }) : i18nString22(UIStrings23.blockRequestUrl),
+          () => isBlocking ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK16.NetworkManager.BlockingConditions),
+          { jslogContext: "block-request-url" }
+        );
+        throttlingMenu.debugSection().appendItem(
+          isThrottling ? i18nString22(UIStrings23.unthrottleS, { PH1: croppedURL }) : i18nString22(UIStrings23.throttleRequestUrl),
+          () => isThrottling ? removeRequestCondition(urlPattern) : addRequestCondition(urlPattern, SDK16.NetworkManager.Slow3GConditions),
+          { jslogContext: "throttle-request-url" }
+        );
       }
       let domainPatternString = "";
       if (parsed.isValid) {
@@ -12974,7 +16329,9 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
       } else if (parsed.domain()) {
         domainPatternString = "*://" + Platform12.StringUtilities.escapeForURLPattern(parsed.domain());
       }
-      const domainPattern = domainPatternString && SDK16.NetworkManager.RequestURLPattern.create(domainPatternString);
+      const domainPattern = domainPatternString && SDK16.NetworkManager.RequestURLPattern.create(
+        domainPatternString
+      );
       if (domainPattern) {
         throttlingMenu.setEnabled(true);
         blockingMenu.setEnabled(true);
@@ -12982,14 +16339,30 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
         const isBlocking = existingConditions?.conditions === SDK16.NetworkManager.BlockingConditions;
         const isThrottling = existingConditions && existingConditions.conditions !== SDK16.NetworkManager.BlockingConditions && existingConditions.conditions !== SDK16.NetworkManager.NoThrottlingConditions;
         const croppedURL = Platform12.StringUtilities.trimMiddle(domainPattern.constructorString, maxBlockedURLLength);
-        blockingMenu.debugSection().appendItem(isBlocking ? i18nString22(UIStrings23.unblockS, { PH1: croppedURL }) : i18nString22(UIStrings23.blockRequestDomain), () => isBlocking ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK16.NetworkManager.BlockingConditions), { jslogContext: "block-request-domain" });
-        throttlingMenu.debugSection().appendItem(isThrottling ? i18nString22(UIStrings23.unthrottleS, { PH1: croppedURL }) : i18nString22(UIStrings23.throttleRequestDomain), () => isThrottling ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK16.NetworkManager.Slow3GConditions), { jslogContext: "throttle-request-domain" });
+        blockingMenu.debugSection().appendItem(
+          isBlocking ? i18nString22(UIStrings23.unblockS, { PH1: croppedURL }) : i18nString22(UIStrings23.blockRequestDomain),
+          () => isBlocking ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK16.NetworkManager.BlockingConditions),
+          { jslogContext: "block-request-domain" }
+        );
+        throttlingMenu.debugSection().appendItem(
+          isThrottling ? i18nString22(UIStrings23.unthrottleS, { PH1: croppedURL }) : i18nString22(UIStrings23.throttleRequestDomain),
+          () => isThrottling ? removeRequestCondition(domainPattern) : addRequestCondition(domainPattern, SDK16.NetworkManager.Slow3GConditions),
+          { jslogContext: "throttle-request-domain" }
+        );
       }
       if (SDK16.NetworkManager.NetworkManager.canResendRequest(request, true)) {
-        contextMenu.debugSection().appendItem(i18nString22(UIStrings23.resend), SDK16.NetworkManager.NetworkManager.replayRequest.bind(null, request), { jslogContext: "resend" });
+        contextMenu.debugSection().appendItem(
+          i18nString22(UIStrings23.resend),
+          SDK16.NetworkManager.NetworkManager.replayRequest.bind(null, request),
+          { jslogContext: "resend" }
+        );
       }
       if (SDK16.NetworkManager.NetworkManager.canResendRequest(request, false)) {
-        contextMenu.debugSection().appendItem(i18nString22(UIStrings23.editAndResendAsFetch), this.resendFromConsole.bind(this, request), { jslogContext: "edit-and-resend-as-fetch" });
+        contextMenu.debugSection().appendItem(
+          i18nString22(UIStrings23.editAndResendAsFetch),
+          this.resendFromConsole.bind(this, request),
+          { jslogContext: "edit-and-resend-as-fetch" }
+        );
       }
     }
   }
@@ -13029,7 +16402,11 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     const resourceTreeModel = networkManager?.target().model(SDK16.ResourceTreeModel.ResourceTreeModel);
     const isMainDocument = Boolean(resourceTreeModel?.mainFrame && resourceTreeModel.mainFrame.id === request.frameId && request.resourceType() === Common19.ResourceType.resourceTypes.Document);
     const disablePreload = !isHttpOrHttps || request.isBlobRequest() || !isGetRequest || isMainDocument || !canPreloadRequest(request);
-    copyMenu.defaultSection().appendItem(i18nString22(UIStrings23.copyAsPreload), this.copyPreloadElement.bind(this, request), { disabled: disablePreload, jslogContext: "copy-as-preload" });
+    copyMenu.defaultSection().appendItem(
+      i18nString22(UIStrings23.copyAsPreload),
+      this.copyPreloadElement.bind(this, request),
+      { disabled: disablePreload, jslogContext: "copy-as-preload" }
+    );
   }
   async copyFetchCall(request, style) {
     const command = await this.generateFetchCall(request, style);
@@ -13042,7 +16419,7 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
   }
   async resendFromConsole(request) {
     Host10.userMetrics.editResendRequest(Host10.UserMetrics.resendRequestType(request.resourceType()));
-    let fetchCommand = await this.generateFetchCall(request, 0, { commentForbiddenHeaders: true });
+    let fetchCommand = await this.generateFetchCall(request, 0 /* BROWSER */, { commentForbiddenHeaders: true });
     if (!fetchCommand.startsWith("await ")) {
       fetchCommand = "await " + fetchCommand;
     }
@@ -13086,9 +16463,15 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
     const name = request.name();
     const logMessage = i18nString22(UIStrings23.resendableCopyOfRequest, { PH1: method, PH2: name });
     const requestId = request.requestId();
-    const message = new SDK16.ConsoleModel.ConsoleMessage(runtimeModel, "network", "info", logMessage, {
-      affectedResources: { requestId }
-    });
+    const message = new SDK16.ConsoleModel.ConsoleMessage(
+      runtimeModel,
+      Log.LogEntrySource.Network,
+      Log.LogEntryLevel.Info,
+      logMessage,
+      {
+        affectedResources: { requestId }
+      }
+    );
     consoleModel.addMessage(message);
     Logs5.NetworkLog.NetworkLog.instance().associateConsoleMessageWithRequest(message, requestId);
     message.url = void 0;
@@ -13207,7 +16590,10 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
       } else if (this.isValidUrl(text)) {
         filter = _NetworkLogView.requestUrlFilter.bind(null, text);
       } else {
-        filter = _NetworkLogView.requestHostAndPathFilter.bind(null, new RegExp(Platform12.StringUtilities.escapeForRegExp(text), "i"));
+        filter = _NetworkLogView.requestHostAndPathFilter.bind(
+          null,
+          new RegExp(Platform12.StringUtilities.escapeForRegExp(text), "i")
+        );
       }
       if (descriptor.negative && !invert || !descriptor.negative && invert) {
         return _NetworkLogView.negativeFilter.bind(null, filter);
@@ -13226,19 +16612,19 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
       case NetworkForward4.UIFilter.FilterType.HasRequestHeader:
         return _NetworkLogView.requestRequestHeaderFilter.bind(null, value);
       case NetworkForward4.UIFilter.FilterType.Is:
-        if (value.toLowerCase() === "running") {
+        if (value.toLowerCase() === NetworkForward4.UIFilter.IsFilterType.RUNNING) {
           return _NetworkLogView.runningRequestFilter;
         }
-        if (value.toLowerCase() === "from-cache") {
+        if (value.toLowerCase() === NetworkForward4.UIFilter.IsFilterType.FROM_CACHE) {
           return _NetworkLogView.fromCacheRequestFilter;
         }
-        if (value.toLowerCase() === "service-worker-intercepted") {
+        if (value.toLowerCase() === NetworkForward4.UIFilter.IsFilterType.SERVICE_WORKER_INTERCEPTED) {
           return _NetworkLogView.interceptedByServiceWorkerFilter;
         }
-        if (value.toLowerCase() === "service-worker-initiated") {
+        if (value.toLowerCase() === NetworkForward4.UIFilter.IsFilterType.SERVICE_WORKER_INITIATED) {
           return _NetworkLogView.initiatedByServiceWorkerFilter;
         }
-        if (value.toLowerCase() === "preloaded") {
+        if (value.toLowerCase() === NetworkForward4.UIFilter.IsFilterType.PRELOAD) {
           return _NetworkLogView.linkPreloadRequestFilter;
         }
         break;
@@ -13249,7 +16635,10 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
       case NetworkForward4.UIFilter.FilterType.MimeType:
         return _NetworkLogView.requestMimeTypeFilter.bind(null, value);
       case NetworkForward4.UIFilter.FilterType.MixedContent:
-        return _NetworkLogView.requestMixedContentFilter.bind(null, value);
+        return _NetworkLogView.requestMixedContentFilter.bind(
+          null,
+          value
+        );
       case NetworkForward4.UIFilter.FilterType.Scheme:
         return _NetworkLogView.requestSchemeFilter.bind(null, value);
       case NetworkForward4.UIFilter.FilterType.SetCookieDomain:
@@ -13267,7 +16656,10 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
       case NetworkForward4.UIFilter.FilterType.CookieValue:
         return _NetworkLogView.requestCookieValueFilter.bind(null, value);
       case NetworkForward4.UIFilter.FilterType.Priority:
-        return _NetworkLogView.requestPriorityFilter.bind(null, PerfUI4.NetworkPriorities.uiLabelToNetworkPriority(value));
+        return _NetworkLogView.requestPriorityFilter.bind(
+          null,
+          PerfUI4.NetworkPriorities.uiLabelToNetworkPriority(value)
+        );
       case NetworkForward4.UIFilter.FilterType.StatusCode:
         return _NetworkLogView.statusCodeFilter.bind(null, value);
       case NetworkForward4.UIFilter.FilterType.HasOverrides:
@@ -13399,7 +16791,7 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
       method: request.requestMethod,
       mode: "cors"
     };
-    if (style === 1) {
+    if (style === 1 /* NODE_JS */) {
       const cookieHeader = requestHeaders.find((header) => header.name.toLowerCase() === "cookie");
       const extraHeaders = {};
       delete fetchOptions.mode;
@@ -13485,7 +16877,7 @@ var NetworkLogView = class _NetworkLogView extends NetworkLogViewBase {
       }
     }
     command = command.concat(data);
-    if (request.securityState() === "insecure") {
+    if (request.securityState() === Security.SecurityState.Insecure) {
       command.push("--insecure");
     }
     return "curl " + command.join(command.length >= 3 ? platform === "win" ? " ^\n  " : " \\\n  " : " ");
@@ -13660,10 +17052,7 @@ var MoreFiltersDropDownUI = class extends Common19.ObjectWrapper.ObjectWrapper {
     this.updateTooltip();
   }
   #onSettingChanged() {
-    this.dispatchEventToListeners(
-      "FilterChanged"
-      /* UI.FilterBar.FilterUIEvents.FILTER_CHANGED */
-    );
+    this.dispatchEventToListeners(UI23.FilterBar.FilterUIEvents.FILTER_CHANGED);
   }
   showMoreFiltersContextMenu(contextMenu) {
     this.networkHideDataURLSetting.addChangeListener(this.#onSettingChanged.bind(this));
@@ -13671,32 +17060,52 @@ var MoreFiltersDropDownUI = class extends Common19.ObjectWrapper.ObjectWrapper {
     this.networkShowBlockedCookiesOnlySetting.addChangeListener(this.#onSettingChanged.bind(this));
     this.networkOnlyBlockedRequestsSetting.addChangeListener(this.#onSettingChanged.bind(this));
     this.networkOnlyThirdPartySetting.addChangeListener(this.#onSettingChanged.bind(this));
-    contextMenu.defaultSection().appendCheckboxItem(i18nString22(UIStrings23.hideDataUrls), () => this.networkHideDataURLSetting.set(!this.networkHideDataURLSetting.get()), {
-      checked: this.networkHideDataURLSetting.get(),
-      tooltip: i18nString22(UIStrings23.hidesDataAndBlobUrls),
-      jslogContext: "hide-data-urls"
-    });
-    contextMenu.defaultSection().appendCheckboxItem(i18nString22(UIStrings23.chromeExtensions), () => this.networkHideChromeExtensionsSetting.set(!this.networkHideChromeExtensionsSetting.get()), {
-      checked: this.networkHideChromeExtensionsSetting.get(),
-      tooltip: i18nString22(UIStrings23.hideChromeExtension),
-      jslogContext: "hide-extension-urls"
-    });
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString22(UIStrings23.hideDataUrls),
+      () => this.networkHideDataURLSetting.set(!this.networkHideDataURLSetting.get()),
+      {
+        checked: this.networkHideDataURLSetting.get(),
+        tooltip: i18nString22(UIStrings23.hidesDataAndBlobUrls),
+        jslogContext: "hide-data-urls"
+      }
+    );
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString22(UIStrings23.chromeExtensions),
+      () => this.networkHideChromeExtensionsSetting.set(!this.networkHideChromeExtensionsSetting.get()),
+      {
+        checked: this.networkHideChromeExtensionsSetting.get(),
+        tooltip: i18nString22(UIStrings23.hideChromeExtension),
+        jslogContext: "hide-extension-urls"
+      }
+    );
     contextMenu.defaultSection().appendSeparator();
-    contextMenu.defaultSection().appendCheckboxItem(i18nString22(UIStrings23.hasBlockedCookies), () => this.networkShowBlockedCookiesOnlySetting.set(!this.networkShowBlockedCookiesOnlySetting.get()), {
-      checked: this.networkShowBlockedCookiesOnlySetting.get(),
-      tooltip: i18nString22(UIStrings23.onlyShowRequestsWithBlockedCookies),
-      jslogContext: "only-blocked-response-cookies"
-    });
-    contextMenu.defaultSection().appendCheckboxItem(i18nString22(UIStrings23.blockedRequests), () => this.networkOnlyBlockedRequestsSetting.set(!this.networkOnlyBlockedRequestsSetting.get()), {
-      checked: this.networkOnlyBlockedRequestsSetting.get(),
-      tooltip: i18nString22(UIStrings23.onlyShowBlockedRequests),
-      jslogContext: "only-blocked-requests"
-    });
-    contextMenu.defaultSection().appendCheckboxItem(i18nString22(UIStrings23.thirdParty), () => this.networkOnlyThirdPartySetting.set(!this.networkOnlyThirdPartySetting.get()), {
-      checked: this.networkOnlyThirdPartySetting.get(),
-      tooltip: i18nString22(UIStrings23.onlyShowThirdPartyRequests),
-      jslogContext: "only-3rd-party-requests"
-    });
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString22(UIStrings23.hasBlockedCookies),
+      () => this.networkShowBlockedCookiesOnlySetting.set(!this.networkShowBlockedCookiesOnlySetting.get()),
+      {
+        checked: this.networkShowBlockedCookiesOnlySetting.get(),
+        tooltip: i18nString22(UIStrings23.onlyShowRequestsWithBlockedCookies),
+        jslogContext: "only-blocked-response-cookies"
+      }
+    );
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString22(UIStrings23.blockedRequests),
+      () => this.networkOnlyBlockedRequestsSetting.set(!this.networkOnlyBlockedRequestsSetting.get()),
+      {
+        checked: this.networkOnlyBlockedRequestsSetting.get(),
+        tooltip: i18nString22(UIStrings23.onlyShowBlockedRequests),
+        jslogContext: "only-blocked-requests"
+      }
+    );
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString22(UIStrings23.thirdParty),
+      () => this.networkOnlyThirdPartySetting.set(!this.networkOnlyThirdPartySetting.get()),
+      {
+        checked: this.networkOnlyThirdPartySetting.get(),
+        tooltip: i18nString22(UIStrings23.onlyShowThirdPartyRequests),
+        jslogContext: "only-3rd-party-requests"
+      }
+    );
   }
   selectedFilters() {
     const filters = [
@@ -13728,7 +17137,7 @@ var MoreFiltersDropDownUI = class extends Common19.ObjectWrapper.ObjectWrapper {
   }
 };
 
-// gen/front_end/panels/network/NetworkSearchScope.js
+// ../../front_end/panels/network/NetworkSearchScope.ts
 var NetworkSearchScope_exports = {};
 __export(NetworkSearchScope_exports, {
   NetworkSearchResult: () => NetworkSearchResult,
@@ -13891,7 +17300,7 @@ var NetworkSearchResult = class {
   }
 };
 
-// gen/front_end/panels/network/NetworkPanel.js
+// ../../front_end/panels/network/NetworkPanel.ts
 var NetworkPanel_exports = {};
 __export(NetworkPanel_exports, {
   ActionDelegate: () => ActionDelegate2,
@@ -13914,7 +17323,7 @@ import * as NetworkTimeCalculator5 from "../../models/network_time_calculator/ne
 import * as Trace2 from "../../models/trace/trace.js";
 import * as Workspace4 from "../../models/workspace/workspace.js";
 import * as NetworkForward6 from "./forward/forward.js";
-import * as Tracing from "../../services/tracing/tracing.js";
+import * as Tracing2 from "../../services/tracing/tracing.js";
 import * as PerfUI5 from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as SettingsUI3 from "../../ui/legacy/components/settings_ui/settings_ui.js";
 import * as UI24 from "../../ui/legacy/legacy.js";
@@ -14105,7 +17514,7 @@ devtools-request-headers {
 
 /*# sourceURL=${import.meta.resolve("./networkPanel.css")} */`;
 
-// gen/front_end/panels/network/NetworkPanel.js
+// ../../front_end/panels/network/NetworkPanel.ts
 var UIStrings25 = {
   /**
    * @description Text to close something
@@ -14289,15 +17698,41 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
     this.rightToolbar.role = "presentation";
     this.filterBar = new UI24.FilterBar.FilterBar("network-panel", true);
     this.filterBar.show(panel3.contentElement);
-    this.filterBar.addEventListener("Changed", this.handleFilterChanged.bind(this));
+    this.filterBar.addEventListener(UI24.FilterBar.FilterBarEvents.CHANGED, this.handleFilterChanged.bind(this));
     const settingsPane = panel3.contentElement.createChild("div", "network-settings-pane");
-    settingsPane.append(SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings25.useLargeRequestRows), this.networkLogLargeRowsSetting, i18nString24(UIStrings25.showMoreInformationInRequestRows)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings25.groupByFrame), Common20.Settings.Settings.instance().moduleSetting("network.group-by-frame"), i18nString24(UIStrings25.groupRequestsByTopLevelRequest)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings25.showOverview), this.networkLogShowOverviewSetting, i18nString24(UIStrings25.showOverviewOfNetworkRequests)), SettingsUI3.SettingsUI.createSettingCheckbox(i18nString24(UIStrings25.captureScreenshots), this.networkRecordFilmStripSetting, i18nString24(UIStrings25.captureScreenshotsWhenLoadingA)));
+    settingsPane.append(
+      SettingsUI3.SettingsUI.createSettingCheckbox(
+        i18nString24(UIStrings25.useLargeRequestRows),
+        this.networkLogLargeRowsSetting,
+        i18nString24(UIStrings25.showMoreInformationInRequestRows)
+      ),
+      SettingsUI3.SettingsUI.createSettingCheckbox(
+        i18nString24(UIStrings25.groupByFrame),
+        Common20.Settings.Settings.instance().moduleSetting("network.group-by-frame"),
+        i18nString24(UIStrings25.groupRequestsByTopLevelRequest)
+      ),
+      SettingsUI3.SettingsUI.createSettingCheckbox(
+        i18nString24(UIStrings25.showOverview),
+        this.networkLogShowOverviewSetting,
+        i18nString24(UIStrings25.showOverviewOfNetworkRequests)
+      ),
+      SettingsUI3.SettingsUI.createSettingCheckbox(
+        i18nString24(UIStrings25.captureScreenshots),
+        this.networkRecordFilmStripSetting,
+        i18nString24(UIStrings25.captureScreenshotsWhenLoadingA)
+      )
+    );
     this.showSettingsPaneSetting = Common20.Settings.Settings.instance().createSetting("network-show-settings-toolbar", false);
     settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get());
-    this.showSettingsPaneSetting.addChangeListener(() => settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get()));
+    this.showSettingsPaneSetting.addChangeListener(
+      () => settingsPane.classList.toggle("hidden", !this.showSettingsPaneSetting.get())
+    );
     this.filmStripPlaceholderElement = panel3.contentElement.createChild("div", "network-film-strip-placeholder");
     this.overviewPane = new PerfUI5.TimelineOverviewPane.TimelineOverviewPane("network");
-    this.overviewPane.addEventListener("OverviewPaneWindowChanged", this.onWindowChanged.bind(this));
+    this.overviewPane.addEventListener(
+      PerfUI5.TimelineOverviewPane.Events.OVERVIEW_PANE_WINDOW_CHANGED,
+      this.onWindowChanged.bind(this)
+    );
     this.overviewPane.element.id = "network-overview-panel";
     this.networkOverview = new NetworkOverview();
     this.overviewPane.setOverviewControls([this.networkOverview]);
@@ -14328,7 +17763,7 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
       void VisualLogging18.logKeyDown(event.currentTarget, event, "hide-sidebar");
     });
     const closeSidebar = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings25.close), "cross");
-    closeSidebar.addEventListener("Click", () => splitWidget.hideSidebar());
+    closeSidebar.addEventListener(UI24.Toolbar.ToolbarButton.Events.CLICK, () => splitWidget.hideSidebar());
     closeSidebar.element.setAttribute("jslog", `${VisualLogging18.close().track({ click: true })}`);
     tabbedPane.rightToolbar().appendToolbarItem(closeSidebar);
     splitWidget.setSidebarWidget(tabbedPane);
@@ -14362,12 +17797,32 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
     this.toggleLargerRequests();
     this.toggleRecordFilmStrip();
     this.updateUI();
-    SDK17.TargetManager.TargetManager.instance().addModelListener(SDK17.ResourceTreeModel.ResourceTreeModel, SDK17.ResourceTreeModel.Events.WillReloadPage, this.willReloadPage, this, { scoped: true });
-    SDK17.TargetManager.TargetManager.instance().addModelListener(SDK17.ResourceTreeModel.ResourceTreeModel, SDK17.ResourceTreeModel.Events.Load, this.load, this, { scoped: true });
-    this.networkLogView.addEventListener("RequestSelected", this.onRequestSelected, this);
-    this.networkLogView.addEventListener("RequestActivated", this.onRequestActivated, this);
-    Logs6.NetworkLog.NetworkLog.instance().addEventListener(Logs6.NetworkLog.Events.RequestAdded, this.onUpdateRequest, this);
-    Logs6.NetworkLog.NetworkLog.instance().addEventListener(Logs6.NetworkLog.Events.RequestUpdated, this.onUpdateRequest, this);
+    SDK17.TargetManager.TargetManager.instance().addModelListener(
+      SDK17.ResourceTreeModel.ResourceTreeModel,
+      SDK17.ResourceTreeModel.Events.WillReloadPage,
+      this.willReloadPage,
+      this,
+      { scoped: true }
+    );
+    SDK17.TargetManager.TargetManager.instance().addModelListener(
+      SDK17.ResourceTreeModel.ResourceTreeModel,
+      SDK17.ResourceTreeModel.Events.Load,
+      this.load,
+      this,
+      { scoped: true }
+    );
+    this.networkLogView.addEventListener("RequestSelected" /* RequestSelected */, this.onRequestSelected, this);
+    this.networkLogView.addEventListener("RequestActivated" /* RequestActivated */, this.onRequestActivated, this);
+    Logs6.NetworkLog.NetworkLog.instance().addEventListener(
+      Logs6.NetworkLog.Events.RequestAdded,
+      this.onUpdateRequest,
+      this
+    );
+    Logs6.NetworkLog.NetworkLog.instance().addEventListener(
+      Logs6.NetworkLog.Events.RequestUpdated,
+      this.onUpdateRequest,
+      this
+    );
     Logs6.NetworkLog.NetworkLog.instance().addEventListener(Logs6.NetworkLog.Events.Reset, this.onNetworkLogReset, this);
   }
   static instance(opts) {
@@ -14413,7 +17868,7 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
   setupToolbarButtons(splitWidget) {
     const searchToggle = new UI24.Toolbar.ToolbarToggle(i18nString24(UIStrings25.search), "search", void 0, "search");
     function updateSidebarToggle() {
-      const isSidebarShowing = splitWidget.showMode() !== "OnlyMain";
+      const isSidebarShowing = splitWidget.showMode() !== UI24.SplitWidget.ShowMode.ONLY_MAIN;
       searchToggle.setToggled(isSidebarShowing);
       if (!isSidebarShowing) {
         searchToggle.element.focus();
@@ -14424,35 +17879,70 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
     this.panelToolbar.appendSeparator();
     this.panelToolbar.appendToolbarItem(this.filterBar.filterButton());
     updateSidebarToggle();
-    splitWidget.addEventListener("ShowModeChanged", updateSidebarToggle);
-    searchToggle.addEventListener("Click", () => {
+    splitWidget.addEventListener(UI24.SplitWidget.Events.SHOW_MODE_CHANGED, updateSidebarToggle);
+    searchToggle.addEventListener(UI24.Toolbar.ToolbarButton.Events.CLICK, () => {
       void this.searchToggleClick();
     });
     this.panelToolbar.appendToolbarItem(searchToggle);
     this.panelToolbar.appendSeparator();
-    this.panelToolbar.appendToolbarItem(new UI24.Toolbar.ToolbarSettingCheckbox(this.preserveLogSetting, i18nString24(UIStrings25.doNotClearLogOnPageReload), i18nString24(UIStrings25.preserveLog)));
+    this.panelToolbar.appendToolbarItem(new UI24.Toolbar.ToolbarSettingCheckbox(
+      this.preserveLogSetting,
+      i18nString24(UIStrings25.doNotClearLogOnPageReload),
+      i18nString24(UIStrings25.preserveLog)
+    ));
     this.panelToolbar.appendSeparator();
-    const disableCacheCheckbox = new UI24.Toolbar.ToolbarSettingCheckbox(Common20.Settings.Settings.instance().resolve(SDK17.SDKSettings.cacheDisabledSettingDescriptor), i18nString24(UIStrings25.disableCacheWhileDevtoolsIsOpen), i18nString24(UIStrings25.disableCache));
+    const disableCacheCheckbox = new UI24.Toolbar.ToolbarSettingCheckbox(
+      Common20.Settings.Settings.instance().resolve(SDK17.SDKSettings.cacheDisabledSettingDescriptor),
+      i18nString24(UIStrings25.disableCacheWhileDevtoolsIsOpen),
+      i18nString24(UIStrings25.disableCache)
+    );
     this.panelToolbar.appendToolbarItem(disableCacheCheckbox);
     this.panelToolbar.appendToolbarItem(this.throttlingSelect);
-    const networkConditionsButton = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings25.moreNetworkConditions), "network-settings", void 0, "network-conditions");
-    networkConditionsButton.addEventListener("Click", () => {
+    const networkConditionsButton = new UI24.Toolbar.ToolbarButton(
+      i18nString24(UIStrings25.moreNetworkConditions),
+      "network-settings",
+      void 0,
+      "network-conditions"
+    );
+    networkConditionsButton.addEventListener(UI24.Toolbar.ToolbarButton.Events.CLICK, () => {
       void UI24.ViewManager.ViewManager.instance().showView("network.config");
     }, this);
     this.panelToolbar.appendToolbarItem(networkConditionsButton);
     this.rightToolbar.appendToolbarItem(new UI24.Toolbar.ToolbarItem(this.progressBarContainer));
     this.rightToolbar.appendSeparator();
-    this.rightToolbar.appendToolbarItem(new UI24.Toolbar.ToolbarSettingToggle(this.showSettingsPaneSetting, "gear", i18nString24(UIStrings25.networkSettings), "gear-filled", "network-settings"));
+    this.rightToolbar.appendToolbarItem(new UI24.Toolbar.ToolbarSettingToggle(
+      this.showSettingsPaneSetting,
+      "gear",
+      i18nString24(UIStrings25.networkSettings),
+      "gear-filled",
+      "network-settings"
+    ));
     const exportHarContextMenu = (contextMenu) => {
-      contextMenu.defaultSection().appendItem(i18nString24(UIStrings25.exportHarSanitized), this.networkLogView.exportAll.bind(this.networkLogView, { sanitize: true }), { jslogContext: "export-har" });
-      contextMenu.defaultSection().appendItem(i18nString24(UIStrings25.exportHarWithSensitiveData), this.networkLogView.exportAll.bind(this.networkLogView, { sanitize: false }), { jslogContext: "export-har-with-sensitive-data" });
+      contextMenu.defaultSection().appendItem(
+        i18nString24(UIStrings25.exportHarSanitized),
+        this.networkLogView.exportAll.bind(this.networkLogView, { sanitize: true }),
+        { jslogContext: "export-har" }
+      );
+      contextMenu.defaultSection().appendItem(
+        i18nString24(UIStrings25.exportHarWithSensitiveData),
+        this.networkLogView.exportAll.bind(this.networkLogView, { sanitize: false }),
+        { jslogContext: "export-har-with-sensitive-data" }
+      );
     };
     this.panelToolbar.appendSeparator();
     const importHarButton = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings25.importHarFile), "import", void 0, "import-har");
-    importHarButton.addEventListener("Click", () => this.fileSelectorElement.click(), this);
+    importHarButton.addEventListener(
+      UI24.Toolbar.ToolbarButton.Events.CLICK,
+      () => this.fileSelectorElement.click(),
+      this
+    );
     this.panelToolbar.appendToolbarItem(importHarButton);
     const exportHarButton = new UI24.Toolbar.ToolbarButton(i18nString24(UIStrings25.exportHarSanitized), "download", void 0, "export-har");
-    exportHarButton.addEventListener("Click", this.networkLogView.exportAll.bind(this.networkLogView, { sanitize: true }), this);
+    exportHarButton.addEventListener(
+      UI24.Toolbar.ToolbarButton.Events.CLICK,
+      this.networkLogView.exportAll.bind(this.networkLogView, { sanitize: true }),
+      this
+    );
     this.panelToolbar.appendToolbarItem(exportHarButton);
     const exportHarMenuButton = new UI24.Toolbar.ToolbarMenuButton(
       exportHarContextMenu,
@@ -14465,7 +17955,10 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
     );
     exportHarMenuButton.setTitle(i18nString24(UIStrings25.exportHar));
     this.panelToolbar.appendToolbarItem(exportHarMenuButton);
-    const networkShowOptionsToGenerateHarWithSensitiveData = Common20.Settings.Settings.instance().createSetting("network.show-options-to-generate-har-with-sensitive-data", false);
+    const networkShowOptionsToGenerateHarWithSensitiveData = Common20.Settings.Settings.instance().createSetting(
+      "network.show-options-to-generate-har-with-sensitive-data",
+      false
+    );
     const updateShowOptionsToGenerateHarWithSensitiveData = () => {
       const showOptionsToGenerateHarWithSensitiveData = networkShowOptionsToGenerateHarWithSensitiveData.get();
       exportHarButton.setVisible(!showOptionsToGenerateHarWithSensitiveData);
@@ -14477,7 +17970,10 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
   createThrottlingConditionsSelect() {
     const toolbarItem = new UI24.Toolbar.ToolbarItem(document.createElement("div"));
     toolbarItem.setMaxWidth(160);
-    MobileThrottling3.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(toolbarItem.element, i18nString24(UIStrings25.throttling));
+    MobileThrottling3.NetworkThrottlingSelector.NetworkThrottlingSelect.createForGlobalConditions(
+      toolbarItem.element,
+      i18nString24(UIStrings25.throttling)
+    );
     return toolbarItem;
   }
   toggleRecord(toggled) {
@@ -14552,9 +18048,9 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
       this.filmStripView.element.setAttribute("jslog", `${VisualLogging18.section("film-strip")}`);
       this.filmStripRecorder = new FilmStripRecorder(this.networkLogView.timeCalculator(), this.filmStripView);
       this.filmStripView.show(this.filmStripPlaceholderElement);
-      this.filmStripView.addEventListener("FrameSelected", this.onFilmFrameSelected, this);
-      this.filmStripView.addEventListener("FrameEnter", this.onFilmFrameEnter, this);
-      this.filmStripView.addEventListener("FrameExit", this.onFilmFrameExit, this);
+      this.filmStripView.addEventListener(PerfUI5.FilmStripView.Events.FRAME_SELECTED, this.onFilmFrameSelected, this);
+      this.filmStripView.addEventListener(PerfUI5.FilmStripView.Events.FRAME_ENTER, this.onFilmFrameEnter, this);
+      this.filmStripView.addEventListener(PerfUI5.FilmStripView.Events.FRAME_EXIT, this.onFilmFrameExit, this);
       this.resetFilmStripView();
     }
     if (!toggled && this.filmStripRecorder) {
@@ -14570,7 +18066,9 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
     if (this.filmStripView) {
       this.filmStripView.reset();
       if (reloadShortcut) {
-        this.filmStripView.setStatusText(i18nString24(UIStrings25.hitSToReloadAndCaptureFilmstrip, { PH1: reloadShortcut.title() }));
+        this.filmStripView.setStatusText(
+          i18nString24(UIStrings25.hitSToReloadAndCaptureFilmstrip, { PH1: reloadShortcut.title() })
+        );
       }
     }
   }
@@ -14617,14 +18115,14 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
   }
   onRequestActivated(event) {
     const { showPanel, tab, takeFocus } = event.data;
-    if (showPanel === "ShowPanel") {
+    if (showPanel === "ShowPanel" /* ShowPanel */) {
       this.showRequestPanel(tab, takeFocus);
-    } else if (showPanel === "HidePanel") {
+    } else if (showPanel === "HidePanel" /* HidePanel */) {
       this.hideRequestPanel();
     }
   }
   showRequestPanel(shownTab, takeFocus) {
-    if (this.splitWidget.showMode() === "Both" && !shownTab && !takeFocus) {
+    if (this.splitWidget.showMode() === UI24.SplitWidget.ShowMode.BOTH && !shownTab && !takeFocus) {
       return;
     }
     this.clearNetworkItemView();
@@ -14642,7 +18140,7 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
     this.updateUI();
   }
   updateNetworkItemView() {
-    if (this.splitWidget.showMode() === "Both") {
+    if (this.splitWidget.showMode() === UI24.SplitWidget.ShowMode.BOTH) {
       this.clearNetworkItemView();
       this.createNetworkItemView();
       this.updateUI();
@@ -14666,7 +18164,10 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
   }
   updateUI() {
     if (this.detailsWidget) {
-      this.detailsWidget.element.classList.toggle("network-details-view-tall-header", this.networkLogLargeRowsSetting.get());
+      this.detailsWidget.element.classList.toggle(
+        "network-details-view-tall-header",
+        this.networkLogLargeRowsSetting.get()
+      );
     }
     if (this.networkLogView) {
       this.networkLogView.switchViewMode(!this.splitWidget.isResizable());
@@ -14674,7 +18175,11 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
   }
   appendApplicableItems(event, contextMenu, target) {
     const appendRevealItem = (request) => {
-      contextMenu.revealSection().appendItem(i18nString24(UIStrings25.openInNetworkPanel), () => UI24.ViewManager.ViewManager.instance().showView("network").then(this.networkLogView.resetFilter.bind(this.networkLogView)).then(this.revealAndHighlightRequest.bind(this, request)), { jslogContext: "reveal-in-network" });
+      contextMenu.revealSection().appendItem(
+        i18nString24(UIStrings25.openInNetworkPanel),
+        () => UI24.ViewManager.ViewManager.instance().showView("network").then(this.networkLogView.resetFilter.bind(this.networkLogView)).then(this.revealAndHighlightRequest.bind(this, request)),
+        { jslogContext: "reveal-in-network" }
+      );
     };
     const appendRevealItemMissingData = () => {
       contextMenu.revealSection().appendItem(i18nString24(UIStrings25.openInNetworkPanelMissingRequest), () => {
@@ -14684,13 +18189,17 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
       });
     };
     const appendRevealItemAndSelect = (request) => {
-      contextMenu.revealSection().appendItem(i18nString24(UIStrings25.openInNetworkPanel), () => UI24.ViewManager.ViewManager.instance().showView("network").then(this.networkLogView.resetFilter.bind(this.networkLogView)).then(this.selectAndActivateRequest.bind(
-        this,
-        request.networkRequest,
-        "headers-component",
-        /* FilterOptions= */
-        void 0
-      )), { jslogContext: "timeline.reveal-in-network" });
+      contextMenu.revealSection().appendItem(
+        i18nString24(UIStrings25.openInNetworkPanel),
+        () => UI24.ViewManager.ViewManager.instance().showView("network").then(this.networkLogView.resetFilter.bind(this.networkLogView)).then(this.selectAndActivateRequest.bind(
+          this,
+          request.networkRequest,
+          NetworkForward6.UIRequestLocation.UIRequestTabs.HEADERS_COMPONENT,
+          /* FilterOptions= */
+          void 0
+        )),
+        { jslogContext: "timeline.reveal-in-network" }
+      );
     };
     if (event.target.isSelfOrDescendant(this.element)) {
       return;
@@ -14704,7 +18213,10 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
       return;
     }
     if (target instanceof Workspace4.UISourceCode.UISourceCode) {
-      const resource = SDK17.ResourceTreeModel.ResourceTreeModel.resourceForURL(SDK17.TargetManager.TargetManager.instance(), target.url());
+      const resource = SDK17.ResourceTreeModel.ResourceTreeModel.resourceForURL(
+        SDK17.TargetManager.TargetManager.instance(),
+        target.url()
+      );
       if (resource?.request) {
         appendRevealItem(resource.request);
       } else {
@@ -14738,7 +18250,10 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
   onUpdateRequest(event) {
     const { request } = event.data;
     this.calculator.updateBoundaries(request);
-    this.overviewPane.setBounds(Trace2.Types.Timing.Milli(this.calculator.minimumBoundary() * 1e3), Trace2.Types.Timing.Milli(this.calculator.maximumBoundary() * 1e3));
+    this.overviewPane.setBounds(
+      Trace2.Types.Timing.Milli(this.calculator.minimumBoundary() * 1e3),
+      Trace2.Types.Timing.Milli(this.calculator.maximumBoundary() * 1e3)
+    );
     this.networkOverview.updateRequest(request);
   }
   resolveLocation(locationName) {
@@ -14751,13 +18266,17 @@ var NetworkPanel = class _NetworkPanel extends UI24.Panel.Panel {
 var RequestRevealer = class {
   reveal(request) {
     const panel3 = NetworkPanel.instance();
-    return UI24.ViewManager.ViewManager.instance().showView("network").then(panel3.revealAndHighlightRequest.bind(panel3, request));
+    return UI24.ViewManager.ViewManager.instance().showView("network").then(
+      panel3.revealAndHighlightRequest.bind(panel3, request)
+    );
   }
 };
 var RequestIdRevealer = class {
   reveal(requestId) {
     const panel3 = NetworkPanel.instance();
-    return UI24.ViewManager.ViewManager.instance().showView("network").then(panel3.revealAndHighlightRequestWithId.bind(panel3, requestId));
+    return UI24.ViewManager.ViewManager.instance().showView("network").then(
+      panel3.revealAndHighlightRequestWithId.bind(panel3, requestId)
+    );
   }
 };
 var NetworkLogWithFilterRevealer = class {
@@ -14816,7 +18335,7 @@ var FilmStripRecorder = class {
     this.#collectedTraceEvents = [];
     this.#filmStripView.reset();
     this.#filmStripView.setStatusText(i18nString24(UIStrings25.recordingFrames));
-    const tracingManager = SDK17.TargetManager.TargetManager.instance().scopeTarget()?.model(Tracing.TracingManager.TracingManager);
+    const tracingManager = SDK17.TargetManager.TargetManager.instance().scopeTarget()?.model(Tracing2.TracingManager.TracingManager);
     if (this.#tracingManager || !tracingManager) {
       return;
     }

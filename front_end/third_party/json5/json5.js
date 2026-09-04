@@ -1,4 +1,4 @@
-// gen/front_end/third_party/json5/lib/index.js
+// ../../front_end/third_party/json5/lib/index.js
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
@@ -1111,7 +1111,7 @@ var require_index = __commonJS({
 });
 var lib_default = require_index();
 
-// gen/front_end/third_party/json5/json5.prebundle.js
+// ../../front_end/third_party/json5/json5.ts
 var parse = lib_default.parse;
 var stringify = lib_default.stringify;
 export {

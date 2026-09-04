@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/settings/emulation/utils/StructuredHeaders.js
+// ../../front_end/panels/settings/emulation/utils/StructuredHeaders.ts
 var StructuredHeaders_exports = {};
 __export(StructuredHeaders_exports, {
   ResultKind: () => ResultKind,
@@ -13,8 +13,7 @@ __export(StructuredHeaders_exports, {
   serializeItem: () => serializeItem,
   serializeList: () => serializeList
 });
-var ResultKind;
-(function(ResultKind2) {
+var ResultKind = /* @__PURE__ */ ((ResultKind2) => {
   ResultKind2[ResultKind2["ERROR"] = 0] = "ERROR";
   ResultKind2[ResultKind2["PARAM_NAME"] = 1] = "PARAM_NAME";
   ResultKind2[ResultKind2["PARAMETER"] = 2] = "PARAMETER";
@@ -29,7 +28,8 @@ var ResultKind;
   ResultKind2[ResultKind2["LIST"] = 11] = "LIST";
   ResultKind2[ResultKind2["INNER_LIST"] = 12] = "INNER_LIST";
   ResultKind2[ResultKind2["SERIALIZATION_RESULT"] = 13] = "SERIALIZATION_RESULT";
-})(ResultKind || (ResultKind = {}));
+  return ResultKind2;
+})(ResultKind || {});
 var CHAR_MINUS = "-".charCodeAt(0);
 var CHAR_0 = "0".charCodeAt(0);
 var CHAR_9 = "9".charCodeAt(0);
@@ -146,16 +146,13 @@ var Input = class {
   }
 };
 function makeError() {
-  return {
-    kind: 0
-    /* ResultKind.ERROR */
-  };
+  return { kind: 0 /* ERROR */ };
 }
 function parseListInternal(input) {
-  const result = { kind: 11, items: [] };
+  const result = { kind: 11 /* LIST */, items: [] };
   while (!input.atEnd()) {
     const piece = parseItemOrInnerList(input);
-    if (piece.kind === 0) {
+    if (piece.kind === 0 /* ERROR */) {
       return piece;
     }
     result.items.push(piece);
@@ -191,17 +188,17 @@ function parseInnerList(input) {
     if (input.peek() === ")") {
       input.eat();
       const params = parseParameters(input);
-      if (params.kind === 0) {
+      if (params.kind === 0 /* ERROR */) {
         return params;
       }
       return {
-        kind: 12,
+        kind: 12 /* INNER_LIST */,
         items,
         parameters: params
       };
     }
     const item = parseItemInternal(input);
-    if (item.kind === 0) {
+    if (item.kind === 0 /* ERROR */) {
       return item;
     }
     items.push(item);
@@ -213,14 +210,14 @@ function parseInnerList(input) {
 }
 function parseItemInternal(input) {
   const bareItem = parseBareItem(input);
-  if (bareItem.kind === 0) {
+  if (bareItem.kind === 0 /* ERROR */) {
     return bareItem;
   }
   const params = parseParameters(input);
-  if (params.kind === 0) {
+  if (params.kind === 0 /* ERROR */) {
     return params;
   }
-  return { kind: 4, value: bareItem, parameters: params };
+  return { kind: 4 /* ITEM */, value: bareItem, parameters: params };
 }
 function parseBareItem(input) {
   const upcoming = input.peekCharCode();
@@ -250,14 +247,14 @@ function parseParameters(input) {
     input.eat();
     input.skipSP();
     const paramName = parseKey(input);
-    if (paramName.kind === 0) {
+    if (paramName.kind === 0 /* ERROR */) {
       return paramName;
     }
-    let paramValue = { kind: 10, value: true };
+    let paramValue = { kind: 10 /* BOOLEAN */, value: true };
     if (input.peek() === "=") {
       input.eat();
       const parsedParamValue = parseBareItem(input);
-      if (parsedParamValue.kind === 0) {
+      if (parsedParamValue.kind === 0 /* ERROR */) {
         return parsedParamValue;
       }
       paramValue = parsedParamValue;
@@ -265,9 +262,9 @@ function parseParameters(input) {
     if (items.has(paramName.value)) {
       items.delete(paramName.value);
     }
-    items.set(paramName.value, { kind: 2, name: paramName, value: paramValue });
+    items.set(paramName.value, { kind: 2 /* PARAMETER */, name: paramName, value: paramValue });
   }
-  return { kind: 3, items: [...items.values()] };
+  return { kind: 3 /* PARAMETERS */, items: [...items.values()] };
 }
 function parseKey(input) {
   let outputString = "";
@@ -283,10 +280,10 @@ function parseKey(input) {
     outputString += input.peek();
     input.eat();
   }
-  return { kind: 1, value: outputString };
+  return { kind: 1 /* PARAM_NAME */, value: outputString };
 }
 function parseIntegerOrDecimal(input) {
-  let resultKind = 5;
+  let resultKind = 5 /* INTEGER */;
   let sign = 1;
   let inputNumber = "";
   if (input.peek() === "-") {
@@ -301,35 +298,35 @@ function parseIntegerOrDecimal(input) {
     if (char !== void 0 && isDigit(char)) {
       input.eat();
       inputNumber += String.fromCodePoint(char);
-    } else if (char === CHAR_DOT && resultKind === 5) {
+    } else if (char === CHAR_DOT && resultKind === 5 /* INTEGER */) {
       input.eat();
       if (inputNumber.length > 12) {
         return makeError();
       }
       inputNumber += ".";
-      resultKind = 6;
+      resultKind = 6 /* DECIMAL */;
     } else {
       break;
     }
-    if (resultKind === 5 && inputNumber.length > 15) {
+    if (resultKind === 5 /* INTEGER */ && inputNumber.length > 15) {
       return makeError();
     }
-    if (resultKind === 6 && inputNumber.length > 16) {
+    if (resultKind === 6 /* DECIMAL */ && inputNumber.length > 16) {
       return makeError();
     }
   }
-  if (resultKind === 5) {
+  if (resultKind === 5 /* INTEGER */) {
     const num = sign * Number.parseInt(inputNumber, 10);
     if (num < -999999999999999 || num > 999999999999999) {
       return makeError();
     }
-    return { kind: 5, value: num };
+    return { kind: 5 /* INTEGER */, value: num };
   }
   const afterDot = inputNumber.length - 1 - inputNumber.indexOf(".");
   if (afterDot > 3 || afterDot === 0) {
     return makeError();
   }
-  return { kind: 6, value: sign * Number.parseFloat(inputNumber) };
+  return { kind: 6 /* DECIMAL */, value: sign * Number.parseFloat(inputNumber) };
 }
 function parseString(input) {
   let outputString = "";
@@ -354,7 +351,7 @@ function parseString(input) {
       }
       outputString += String.fromCodePoint(nextChar);
     } else if (char === CHAR_DQUOTE) {
-      return { kind: 7, value: outputString };
+      return { kind: 7 /* STRING */, value: outputString };
     } else if (char < CHAR_MIN_ASCII_PRINTABLE || char > CHAR_MAX_ASCII_PRINTABLE) {
       return makeError();
     } else {
@@ -377,7 +374,7 @@ function parseToken(input) {
     input.eat();
     outputString += String.fromCodePoint(upcoming);
   }
-  return { kind: 8, value: outputString };
+  return { kind: 8 /* TOKEN */, value: outputString };
 }
 function parseByteSequence(input) {
   let outputString = "";
@@ -392,7 +389,7 @@ function parseByteSequence(input) {
     }
     input.eat();
     if (char === CHAR_COLON) {
-      return { kind: 9, value: outputString };
+      return { kind: 9 /* BINARY */, value: outputString };
     }
     if (isDigit(char) || isAlpha(char) || char === CHAR_PLUS || char === CHAR_SLASH || char === CHAR_EQUALS) {
       outputString += String.fromCodePoint(char);
@@ -409,11 +406,11 @@ function parseBoolean(input) {
   input.eat();
   if (input.peek() === "0") {
     input.eat();
-    return { kind: 10, value: false };
+    return { kind: 10 /* BOOLEAN */, value: false };
   }
   if (input.peek() === "1") {
     input.eat();
-    return { kind: 10, value: true };
+    return { kind: 10 /* BOOLEAN */, value: true };
   }
   return makeError();
 }
@@ -430,73 +427,73 @@ function parseList(input) {
 }
 function serializeItem(input) {
   const bareItemVal = serializeBareItem(input.value);
-  if (bareItemVal.kind === 0) {
+  if (bareItemVal.kind === 0 /* ERROR */) {
     return bareItemVal;
   }
   const paramVal = serializeParameters(input.parameters);
-  if (paramVal.kind === 0) {
+  if (paramVal.kind === 0 /* ERROR */) {
     return paramVal;
   }
-  return { kind: 13, value: bareItemVal.value + paramVal.value };
+  return { kind: 13 /* SERIALIZATION_RESULT */, value: bareItemVal.value + paramVal.value };
 }
 function serializeList(input) {
   const outputPieces = [];
   for (let i = 0; i < input.items.length; ++i) {
     const item = input.items[i];
-    if (item.kind === 12) {
+    if (item.kind === 12 /* INNER_LIST */) {
       const itemResult = serializeInnerList(item);
-      if (itemResult.kind === 0) {
+      if (itemResult.kind === 0 /* ERROR */) {
         return itemResult;
       }
       outputPieces.push(itemResult.value);
     } else {
       const itemResult = serializeItem(item);
-      if (itemResult.kind === 0) {
+      if (itemResult.kind === 0 /* ERROR */) {
         return itemResult;
       }
       outputPieces.push(itemResult.value);
     }
   }
   const output = outputPieces.join(", ");
-  return { kind: 13, value: output };
+  return { kind: 13 /* SERIALIZATION_RESULT */, value: output };
 }
 function serializeInnerList(input) {
   const outputPieces = [];
   for (let i = 0; i < input.items.length; ++i) {
     const itemResult = serializeItem(input.items[i]);
-    if (itemResult.kind === 0) {
+    if (itemResult.kind === 0 /* ERROR */) {
       return itemResult;
     }
     outputPieces.push(itemResult.value);
   }
   let output = "(" + outputPieces.join(" ") + ")";
   const paramResult = serializeParameters(input.parameters);
-  if (paramResult.kind === 0) {
+  if (paramResult.kind === 0 /* ERROR */) {
     return paramResult;
   }
   output += paramResult.value;
-  return { kind: 13, value: output };
+  return { kind: 13 /* SERIALIZATION_RESULT */, value: output };
 }
 function serializeParameters(input) {
   let output = "";
   for (const item of input.items) {
     output += ";";
     const nameResult = serializeKey(item.name);
-    if (nameResult.kind === 0) {
+    if (nameResult.kind === 0 /* ERROR */) {
       return nameResult;
     }
     output += nameResult.value;
     const itemVal = item.value;
-    if (itemVal.kind !== 10 || !itemVal.value) {
+    if (itemVal.kind !== 10 /* BOOLEAN */ || !itemVal.value) {
       output += "=";
       const itemValResult = serializeBareItem(itemVal);
-      if (itemValResult.kind === 0) {
+      if (itemValResult.kind === 0 /* ERROR */) {
         return itemValResult;
       }
       output += itemValResult.value;
     }
   }
-  return { kind: 13, value: output };
+  return { kind: 13 /* SERIALIZATION_RESULT */, value: output };
 }
 function serializeKey(input) {
   if (input.value.length === 0) {
@@ -512,25 +509,25 @@ function serializeKey(input) {
       return makeError();
     }
   }
-  return { kind: 13, value: input.value };
+  return { kind: 13 /* SERIALIZATION_RESULT */, value: input.value };
 }
 function serializeBareItem(input) {
-  if (input.kind === 5) {
+  if (input.kind === 5 /* INTEGER */) {
     return serializeInteger(input);
   }
-  if (input.kind === 6) {
+  if (input.kind === 6 /* DECIMAL */) {
     return serializeDecimal(input);
   }
-  if (input.kind === 7) {
+  if (input.kind === 7 /* STRING */) {
     return serializeString(input);
   }
-  if (input.kind === 8) {
+  if (input.kind === 8 /* TOKEN */) {
     return serializeToken(input);
   }
-  if (input.kind === 10) {
+  if (input.kind === 10 /* BOOLEAN */) {
     return serializeBoolean(input);
   }
-  if (input.kind === 9) {
+  if (input.kind === 9 /* BINARY */) {
     return serializeByteSequence(input);
   }
   return makeError();
@@ -539,7 +536,7 @@ function serializeInteger(input) {
   if (input.value < -999999999999999 || input.value > 999999999999999 || !Number.isInteger(input.value)) {
     return makeError();
   }
-  return { kind: 13, value: input.value.toString(10) };
+  return { kind: 13 /* SERIALIZATION_RESULT */, value: input.value.toString(10) };
 }
 function serializeDecimal(_input) {
   throw new Error("Unimplemented");
@@ -560,7 +557,7 @@ function serializeString(input) {
     output += charStr;
   }
   output += '"';
-  return { kind: 13, value: output };
+  return { kind: 13 /* SERIALIZATION_RESULT */, value: output };
 }
 function serializeToken(input) {
   if (input.value.length === 0) {
@@ -576,16 +573,16 @@ function serializeToken(input) {
       return makeError();
     }
   }
-  return { kind: 13, value: input.value };
+  return { kind: 13 /* SERIALIZATION_RESULT */, value: input.value };
 }
 function serializeByteSequence(_input) {
   throw new Error("Unimplemented");
 }
 function serializeBoolean(input) {
-  return { kind: 13, value: input.value ? "?1" : "?0" };
+  return { kind: 13 /* SERIALIZATION_RESULT */, value: input.value ? "?1" : "?0" };
 }
 
-// gen/front_end/panels/settings/emulation/utils/UserAgentMetadata.js
+// ../../front_end/panels/settings/emulation/utils/UserAgentMetadata.ts
 var UserAgentMetadata_exports = {};
 __export(UserAgentMetadata_exports, {
   parseBrandsList: () => parseBrandsList,
@@ -595,15 +592,15 @@ __export(UserAgentMetadata_exports, {
 function parseBrandsList(stringForm, parseErrorString, structErrorString) {
   const brandList = [];
   const parseResult = parseList(stringForm);
-  if (parseResult.kind === 0) {
+  if (parseResult.kind === 0 /* ERROR */) {
     return parseErrorString;
   }
   for (const listItem of parseResult.items) {
-    if (listItem.kind !== 4) {
+    if (listItem.kind !== 4 /* ITEM */) {
       return structErrorString;
     }
     const bareItem = listItem.value;
-    if (bareItem.kind !== 7) {
+    if (bareItem.kind !== 7 /* STRING */) {
       return structErrorString;
     }
     if (listItem.parameters.items.length !== 1) {
@@ -614,7 +611,7 @@ function parseBrandsList(stringForm, parseErrorString, structErrorString) {
       return structErrorString;
     }
     const paramValue = param.value;
-    if (paramValue.kind !== 7) {
+    if (paramValue.kind !== 7 /* STRING */) {
       return structErrorString;
     }
     brandList.push({ brand: bareItem.value, version: paramValue.value });
@@ -622,28 +619,28 @@ function parseBrandsList(stringForm, parseErrorString, structErrorString) {
   return brandList;
 }
 function serializeBrandsList(brands) {
-  const shList = { kind: 11, items: [] };
-  const vParamName = { kind: 1, value: "v" };
+  const shList = { kind: 11 /* LIST */, items: [] };
+  const vParamName = { kind: 1 /* PARAM_NAME */, value: "v" };
   for (const brand of brands) {
-    const nameString = { kind: 7, value: brand.brand };
-    const verString = { kind: 7, value: brand.version };
+    const nameString = { kind: 7 /* STRING */, value: brand.brand };
+    const verString = { kind: 7 /* STRING */, value: brand.version };
     const verParams = {
-      kind: 3,
-      items: [{ kind: 2, name: vParamName, value: verString }]
+      kind: 3 /* PARAMETERS */,
+      items: [{ kind: 2 /* PARAMETER */, name: vParamName, value: verString }]
     };
-    const shItem = { kind: 4, value: nameString, parameters: verParams };
+    const shItem = { kind: 4 /* ITEM */, value: nameString, parameters: verParams };
     shList.items.push(shItem);
   }
   const serializeResult = serializeList(shList);
-  return serializeResult.kind === 0 ? "" : serializeResult.value;
+  return serializeResult.kind === 0 /* ERROR */ ? "" : serializeResult.value;
 }
 function validateAsStructuredHeadersString(value, errorString) {
   const parsedResult = serializeItem({
-    kind: 4,
-    value: { kind: 7, value },
-    parameters: { kind: 3, items: [] }
+    kind: 4 /* ITEM */,
+    value: { kind: 7 /* STRING */, value },
+    parameters: { kind: 3 /* PARAMETERS */, items: [] }
   });
-  if (parsedResult.kind === 0) {
+  if (parsedResult.kind === 0 /* ERROR */) {
     return { valid: false, errorMessage: errorString };
   }
   return { valid: true };

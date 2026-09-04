@@ -17,25 +17,8 @@ export declare class DropTarget {
     private onDragLeave;
     private removeMask;
 }
-export declare const Type: {
-    URI: {
-        kind: string;
-        type: RegExp;
-    };
-    Folder: {
-        kind: string;
-        type: RegExp;
-    };
-    File: {
-        kind: string;
-        type: RegExp;
-    };
-    WebFile: {
-        kind: string;
-        type: RegExp;
-    };
-    ImageFile: {
-        kind: string;
-        type: RegExp;
-    };
-};
+export interface DropTargetType {
+    kind: string;
+    type: RegExp;
+}
+export declare const Type: Record<'URI' | 'Folder' | 'File' | 'WebFile' | 'ImageFile', DropTargetType>;

@@ -1,4 +1,45 @@
-// gen/front_end/third_party/source-map-scopes-codec/package/src/vlq.js
+// ../../front_end/third_party/source-map-scopes-codec/package/src/codec.js
+var Tag = /* @__PURE__ */ (function(Tag2) {
+  Tag2[Tag2["EMPTY"] = 0] = "EMPTY";
+  Tag2[Tag2["ORIGINAL_SCOPE_START"] = 1] = "ORIGINAL_SCOPE_START";
+  Tag2[Tag2["ORIGINAL_SCOPE_END"] = 2] = "ORIGINAL_SCOPE_END";
+  Tag2[Tag2["ORIGINAL_SCOPE_VARIABLES"] = 3] = "ORIGINAL_SCOPE_VARIABLES";
+  Tag2[Tag2["GENERATED_RANGE_START"] = 4] = "GENERATED_RANGE_START";
+  Tag2[Tag2["GENERATED_RANGE_END"] = 5] = "GENERATED_RANGE_END";
+  Tag2[Tag2["GENERATED_RANGE_BINDINGS"] = 6] = "GENERATED_RANGE_BINDINGS";
+  Tag2[Tag2["GENERATED_RANGE_SUBRANGE_BINDING"] = 7] = "GENERATED_RANGE_SUBRANGE_BINDING";
+  Tag2[Tag2["GENERATED_RANGE_CALL_SITE"] = 8] = "GENERATED_RANGE_CALL_SITE";
+  Tag2[Tag2["VENDOR_EXTENSION"] = 99] = "VENDOR_EXTENSION";
+  return Tag2;
+})({});
+var EncodedTag = /* @__PURE__ */ (function(EncodedTag2) {
+  EncodedTag2["EMPTY"] = "A";
+  EncodedTag2["ORIGINAL_SCOPE_START"] = "B";
+  EncodedTag2["ORIGINAL_SCOPE_END"] = "C";
+  EncodedTag2["ORIGINAL_SCOPE_VARIABLES"] = "D";
+  EncodedTag2["GENERATED_RANGE_START"] = "E";
+  EncodedTag2["GENERATED_RANGE_END"] = "F";
+  EncodedTag2["GENERATED_RANGE_BINDINGS"] = "G";
+  EncodedTag2["GENERATED_RANGE_SUBRANGE_BINDING"] = "H";
+  EncodedTag2["GENERATED_RANGE_CALL_SITE"] = "I";
+  EncodedTag2["VENDOR_EXTENSION"] = "/";
+  return EncodedTag2;
+})({});
+var OriginalScopeFlags = /* @__PURE__ */ (function(OriginalScopeFlags2) {
+  OriginalScopeFlags2[OriginalScopeFlags2["HAS_NAME"] = 1] = "HAS_NAME";
+  OriginalScopeFlags2[OriginalScopeFlags2["HAS_KIND"] = 2] = "HAS_KIND";
+  OriginalScopeFlags2[OriginalScopeFlags2["IS_STACK_FRAME"] = 4] = "IS_STACK_FRAME";
+  return OriginalScopeFlags2;
+})({});
+var GeneratedRangeFlags = /* @__PURE__ */ (function(GeneratedRangeFlags2) {
+  GeneratedRangeFlags2[GeneratedRangeFlags2["HAS_LINE"] = 1] = "HAS_LINE";
+  GeneratedRangeFlags2[GeneratedRangeFlags2["HAS_DEFINITION"] = 2] = "HAS_DEFINITION";
+  GeneratedRangeFlags2[GeneratedRangeFlags2["IS_STACK_FRAME"] = 4] = "IS_STACK_FRAME";
+  GeneratedRangeFlags2[GeneratedRangeFlags2["IS_HIDDEN"] = 8] = "IS_HIDDEN";
+  return GeneratedRangeFlags2;
+})({});
+
+// ../../front_end/third_party/source-map-scopes-codec/package/src/vlq.js
 var BASE64_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 var BASE64_CODES = new Uint8Array(123);
 for (let index = 0; index < BASE64_CHARS.length; ++index) {
@@ -68,12 +109,12 @@ var TokenIterator = class {
   }
 };
 
-// gen/front_end/third_party/source-map-scopes-codec/package/src/util.js
+// ../../front_end/third_party/source-map-scopes-codec/package/src/util.js
 function comparePositions(a, b) {
   return a.line - b.line || a.column - b.column;
 }
 
-// gen/front_end/third_party/source-map-scopes-codec/package/src/encode/encoder.js
+// ../../front_end/third_party/source-map-scopes-codec/package/src/encode/encoder.js
 var DEFAULT_SCOPE_STATE = {
   line: 0,
   column: 0,
@@ -92,8 +133,12 @@ var Encoder = class {
   // Hash map to resolve indices of strings in the "names" array. Otherwise we'd have
   // to use 'indexOf' for every name we want to encode.
   #namesToIndex = /* @__PURE__ */ new Map();
-  #scopeState = { ...DEFAULT_SCOPE_STATE };
-  #rangeState = { ...DEFAULT_RANGE_STATE };
+  #scopeState = {
+    ...DEFAULT_SCOPE_STATE
+  };
+  #rangeState = {
+    ...DEFAULT_RANGE_STATE
+  };
   #encodedItems = [];
   #currentItem = "";
   #scopeToCount = /* @__PURE__ */ new Map();
@@ -119,10 +164,7 @@ var Encoder = class {
   }
   #encodeOriginalScope(scope) {
     if (scope === null) {
-      this.#encodedItems.push(
-        "A"
-        /* EncodedTag.EMPTY */
-      );
+      this.#encodedItems.push(EncodedTag.EMPTY);
       return;
     }
     this.#encodeOriginalScopeStart(scope);
@@ -140,38 +182,28 @@ var Encoder = class {
     this.#scopeState.column = column;
     let encodedName;
     if (scope.name !== void 0) {
-      flags |= 1;
+      flags |= OriginalScopeFlags.HAS_NAME;
       const nameIdx = this.#resolveNamesIdx(scope.name);
       encodedName = nameIdx - this.#scopeState.name;
       this.#scopeState.name = nameIdx;
     }
     let encodedKind;
     if (scope.kind !== void 0) {
-      flags |= 2;
+      flags |= OriginalScopeFlags.HAS_KIND;
       const kindIdx = this.#resolveNamesIdx(scope.kind);
       encodedKind = kindIdx - this.#scopeState.kind;
       this.#scopeState.kind = kindIdx;
     }
-    if (scope.isStackFrame)
-      flags |= 4;
-    this.#encodeTag(
-      "B"
-      /* EncodedTag.ORIGINAL_SCOPE_START */
-    ).#encodeUnsigned(flags).#encodeUnsigned(encodedLine).#encodeUnsigned(encodedColumn);
-    if (encodedName !== void 0)
-      this.#encodeSigned(encodedName);
-    if (encodedKind !== void 0)
-      this.#encodeSigned(encodedKind);
+    if (scope.isStackFrame) flags |= OriginalScopeFlags.IS_STACK_FRAME;
+    this.#encodeTag(EncodedTag.ORIGINAL_SCOPE_START).#encodeUnsigned(flags).#encodeUnsigned(encodedLine).#encodeUnsigned(encodedColumn);
+    if (encodedName !== void 0) this.#encodeSigned(encodedName);
+    if (encodedKind !== void 0) this.#encodeSigned(encodedKind);
     this.#finishItem();
     this.#scopeToCount.set(scope, this.#scopeCounter++);
   }
   #encodeOriginalScopeVariables(scope) {
-    if (scope.variables.length === 0)
-      return;
-    this.#encodeTag(
-      "D"
-      /* EncodedTag.ORIGINAL_SCOPE_VARIABLES */
-    );
+    if (scope.variables.length === 0) return;
+    this.#encodeTag(EncodedTag.ORIGINAL_SCOPE_VARIABLES);
     for (const variable of scope.variables) {
       const idx = this.#resolveNamesIdx(variable);
       this.#encodeSigned(idx - this.#scopeState.variable);
@@ -186,10 +218,7 @@ var Encoder = class {
     const encodedColumn = encodedLine === 0 ? column - this.#scopeState.column : column;
     this.#scopeState.line = line;
     this.#scopeState.column = column;
-    this.#encodeTag(
-      "C"
-      /* EncodedTag.ORIGINAL_SCOPE_END */
-    ).#encodeUnsigned(encodedLine).#encodeUnsigned(encodedColumn).#finishItem();
+    this.#encodeTag(EncodedTag.ORIGINAL_SCOPE_END).#encodeUnsigned(encodedLine).#encodeUnsigned(encodedColumn).#finishItem();
   }
   #encodeGeneratedRange(range) {
     this.#encodeGeneratedRangeStart(range);
@@ -206,7 +235,7 @@ var Encoder = class {
     const encodedLine = line - this.#rangeState.line;
     let encodedColumn = column - this.#rangeState.column;
     if (encodedLine > 0) {
-      flags |= 1;
+      flags |= GeneratedRangeFlags.HAS_LINE;
       encodedColumn = column;
     }
     this.#rangeState.line = line;
@@ -217,37 +246,26 @@ var Encoder = class {
       if (definitionIdx === void 0) {
         throw new Error("Unknown OriginalScope for definition!");
       }
-      flags |= 2;
+      flags |= GeneratedRangeFlags.HAS_DEFINITION;
       encodedDefinition = definitionIdx - this.#rangeState.defScopeIdx;
       this.#rangeState.defScopeIdx = definitionIdx;
     }
-    if (range.isStackFrame)
-      flags |= 4;
-    if (range.isHidden)
-      flags |= 8;
-    this.#encodeTag(
-      "E"
-      /* EncodedTag.GENERATED_RANGE_START */
-    ).#encodeUnsigned(flags);
-    if (encodedLine > 0)
-      this.#encodeUnsigned(encodedLine);
+    if (range.isStackFrame) flags |= GeneratedRangeFlags.IS_STACK_FRAME;
+    if (range.isHidden) flags |= GeneratedRangeFlags.IS_HIDDEN;
+    this.#encodeTag(EncodedTag.GENERATED_RANGE_START).#encodeUnsigned(flags);
+    if (encodedLine > 0) this.#encodeUnsigned(encodedLine);
     this.#encodeUnsigned(encodedColumn);
-    if (encodedDefinition !== void 0)
-      this.#encodeSigned(encodedDefinition);
+    if (encodedDefinition !== void 0) this.#encodeSigned(encodedDefinition);
     this.#finishItem();
   }
   #encodeGeneratedRangeSubRangeBindings(range) {
-    if (range.values.length === 0)
-      return;
+    if (range.values.length === 0) return;
     for (let i = 0; i < range.values.length; ++i) {
       const value = range.values[i];
       if (!Array.isArray(value) || value.length <= 1) {
         continue;
       }
-      this.#encodeTag(
-        "H"
-        /* EncodedTag.GENERATED_RANGE_SUBRANGE_BINDING */
-      ).#encodeUnsigned(i);
+      this.#encodeTag(EncodedTag.GENERATED_RANGE_SUBRANGE_BINDING).#encodeUnsigned(i);
       let lastLine = range.start.line;
       let lastColumn = range.start.column;
       for (let j = 1; j < value.length; ++j) {
@@ -270,17 +288,13 @@ var Encoder = class {
     }
   }
   #encodeGeneratedRangeBindings(range) {
-    if (range.values.length === 0)
-      return;
+    if (range.values.length === 0) return;
     if (!range.originalScope) {
       throw new Error("Range has binding expressions but no OriginalScope");
     } else if (range.originalScope.variables.length !== range.values.length) {
       throw new Error("Range's binding expressions don't match OriginalScopes' variables");
     }
-    this.#encodeTag(
-      "G"
-      /* EncodedTag.GENERATED_RANGE_BINDINGS */
-    );
+    this.#encodeTag(EncodedTag.GENERATED_RANGE_BINDINGS);
     for (const val of range.values) {
       if (val === null || val === void 0) {
         this.#encodeUnsigned(0);
@@ -295,13 +309,9 @@ var Encoder = class {
     this.#finishItem();
   }
   #encodeGeneratedRangeCallSite(range) {
-    if (!range.callSite)
-      return;
+    if (!range.callSite) return;
     const { sourceIndex, line, column } = range.callSite;
-    this.#encodeTag(
-      "I"
-      /* EncodedTag.GENERATED_RANGE_CALL_SITE */
-    ).#encodeUnsigned(sourceIndex).#encodeUnsigned(line).#encodeUnsigned(column).#finishItem();
+    this.#encodeTag(EncodedTag.GENERATED_RANGE_CALL_SITE).#encodeUnsigned(sourceIndex).#encodeUnsigned(line).#encodeUnsigned(column).#finishItem();
   }
   #encodeGeneratedRangeEnd(range) {
     const { line, column } = range.end;
@@ -310,23 +320,18 @@ var Encoder = class {
     const encodedLine = line - this.#rangeState.line;
     let encodedColumn = column - this.#rangeState.column;
     if (encodedLine > 0) {
-      flags |= 1;
+      flags |= GeneratedRangeFlags.HAS_LINE;
       encodedColumn = column;
     }
     this.#rangeState.line = line;
     this.#rangeState.column = column;
-    this.#encodeTag(
-      "F"
-      /* EncodedTag.GENERATED_RANGE_END */
-    );
-    if (encodedLine > 0)
-      this.#encodeUnsigned(encodedLine);
+    this.#encodeTag(EncodedTag.GENERATED_RANGE_END);
+    if (encodedLine > 0) this.#encodeUnsigned(encodedLine);
     this.#encodeUnsigned(encodedColumn).#finishItem();
   }
   #resolveNamesIdx(name) {
     const index = this.#namesToIndex.get(name);
-    if (index !== void 0)
-      return index;
+    if (index !== void 0) return index;
     const addedIndex = this.#names.length;
     this.#names.push(name);
     this.#namesToIndex.set(name, addedIndex);
@@ -360,7 +365,7 @@ var Encoder = class {
   }
 };
 
-// gen/front_end/third_party/source-map-scopes-codec/package/src/encode/encode.js
+// ../../front_end/third_party/source-map-scopes-codec/package/src/encode/encode.js
 function encode(scopesInfo, inputSourceMap) {
   inputSourceMap ||= {
     version: 3,
@@ -375,29 +380,42 @@ function encode(scopesInfo, inputSourceMap) {
   return inputSourceMap;
 }
 
-// gen/front_end/third_party/source-map-scopes-codec/package/src/decode/decode.js
-var DecodeMode;
-(function(DecodeMode2) {
+// ../../front_end/third_party/source-map-scopes-codec/package/src/decode/decode.js
+var DecodeMode = /* @__PURE__ */ (function(DecodeMode2) {
   DecodeMode2[DecodeMode2["STRICT"] = 1] = "STRICT";
   DecodeMode2[DecodeMode2["LAX"] = 2] = "LAX";
-})(DecodeMode || (DecodeMode = {}));
+  return DecodeMode2;
+})({});
 var DEFAULT_DECODE_OPTIONS = {
   mode: 2,
-  generatedOffset: { line: 0, column: 0 }
+  generatedOffset: {
+    line: 0,
+    column: 0
+  }
 };
 function decode(sourceMap, options = DEFAULT_DECODE_OPTIONS) {
-  const opts = { ...DEFAULT_DECODE_OPTIONS, ...options };
+  const opts = {
+    ...DEFAULT_DECODE_OPTIONS,
+    ...options
+  };
   if ("sections" in sourceMap) {
     return decodeIndexMap(sourceMap, {
       ...opts,
-      generatedOffset: { line: 0, column: 0 }
+      generatedOffset: {
+        line: 0,
+        column: 0
+      }
     });
   }
   return decodeMap(sourceMap, opts);
 }
 function decodeMap(sourceMap, options) {
   if (!sourceMap.scopes || !sourceMap.names) {
-    return { scopes: [], ranges: [], hasVariableAndBindingInfo: false };
+    return {
+      scopes: [],
+      ranges: [],
+      hasVariableAndBindingInfo: false
+    };
   }
   return new Decoder(sourceMap.scopes, sourceMap.names, options).decode();
 }
@@ -412,10 +430,8 @@ function decodeIndexMap(sourceMap, options) {
       ...options,
       generatedOffset: section.offset
     });
-    for (const scope of scopes)
-      scopeInfo.scopes.push(scope);
-    for (const range of ranges)
-      scopeInfo.ranges.push(range);
+    for (const scope of scopes) scopeInfo.scopes.push(scope);
+    for (const range of ranges) scopeInfo.ranges.push(range);
     scopeInfo.hasVariableAndBindingInfo ||= hasVariableAndBindingInfo;
   }
   return scopeInfo;
@@ -438,8 +454,12 @@ var Decoder = class {
   #mode;
   #scopes = [];
   #ranges = [];
-  #scopeState = { ...DEFAULT_SCOPE_STATE2 };
-  #rangeState = { ...DEFAULT_RANGE_STATE2 };
+  #scopeState = {
+    ...DEFAULT_SCOPE_STATE2
+  };
+  #rangeState = {
+    ...DEFAULT_RANGE_STATE2
+  };
   #scopeStack = [];
   #rangeStack = [];
   #flatOriginalScopes = [];
@@ -458,26 +478,26 @@ var Decoder = class {
     while (iter.hasNext()) {
       const tag = iter.nextUnsignedVLQ();
       switch (tag) {
-        case 0: {
+        case Tag.EMPTY: {
           this.#scopes.push(null);
           break;
         }
-        case 1: {
+        case Tag.ORIGINAL_SCOPE_START: {
           const item = {
             flags: iter.nextUnsignedVLQ(),
             line: iter.nextUnsignedVLQ(),
             column: iter.nextUnsignedVLQ()
           };
-          if (item.flags & 1) {
+          if (item.flags & OriginalScopeFlags.HAS_NAME) {
             item.nameIdx = iter.nextSignedVLQ();
           }
-          if (item.flags & 2) {
+          if (item.flags & OriginalScopeFlags.HAS_KIND) {
             item.kindIdx = iter.nextSignedVLQ();
           }
           this.#handleOriginalScopeStartItem(item);
           break;
         }
-        case 3: {
+        case Tag.ORIGINAL_SCOPE_VARIABLES: {
           const variableIdxs = [];
           while (iter.hasNext() && iter.peek() !== ",") {
             variableIdxs.push(iter.nextSignedVLQ());
@@ -486,15 +506,15 @@ var Decoder = class {
           this.#seenOriginalScopeVariables = true;
           break;
         }
-        case 2: {
+        case Tag.ORIGINAL_SCOPE_END: {
           this.#handleOriginalScopeEndItem(iter.nextUnsignedVLQ(), iter.nextUnsignedVLQ());
           break;
         }
-        case 4: {
+        case Tag.GENERATED_RANGE_START: {
           const flags = iter.nextUnsignedVLQ();
-          const line = flags & 1 ? iter.nextUnsignedVLQ() : void 0;
+          const line = flags & GeneratedRangeFlags.HAS_LINE ? iter.nextUnsignedVLQ() : void 0;
           const column = iter.nextUnsignedVLQ();
-          const definitionIdx = flags & 2 ? iter.nextSignedVLQ() : void 0;
+          const definitionIdx = flags & GeneratedRangeFlags.HAS_DEFINITION ? iter.nextSignedVLQ() : void 0;
           this.#handleGeneratedRangeStartItem({
             flags,
             line,
@@ -503,7 +523,7 @@ var Decoder = class {
           });
           break;
         }
-        case 5: {
+        case Tag.GENERATED_RANGE_END: {
           const lineOrColumn = iter.nextUnsignedVLQ();
           const maybeColumn = iter.hasNext() && iter.peek() !== "," ? iter.nextUnsignedVLQ() : void 0;
           if (maybeColumn !== void 0) {
@@ -513,7 +533,7 @@ var Decoder = class {
           }
           break;
         }
-        case 6: {
+        case Tag.GENERATED_RANGE_BINDINGS: {
           const valueIdxs = [];
           while (iter.hasNext() && iter.peek() !== ",") {
             valueIdxs.push(iter.nextUnsignedVLQ());
@@ -522,7 +542,7 @@ var Decoder = class {
           this.#seenGeneratedRangeBindings = true;
           break;
         }
-        case 7: {
+        case Tag.GENERATED_RANGE_SUBRANGE_BINDING: {
           const variableIndex = iter.nextUnsignedVLQ();
           const bindings = [];
           while (iter.hasNext() && iter.peek() !== ",") {
@@ -536,11 +556,11 @@ var Decoder = class {
           this.#seenGeneratedRangeBindings = true;
           break;
         }
-        case 8: {
+        case Tag.GENERATED_RANGE_CALL_SITE: {
           this.#handleGeneratedRangeCallSite(iter.nextUnsignedVLQ(), iter.nextUnsignedVLQ(), iter.nextUnsignedVLQ());
           break;
         }
-        case 99: {
+        case Tag.VENDOR_EXTENSION: {
           const _extensionNameIdx = iter.nextUnsignedVLQ();
           break;
         }
@@ -549,10 +569,8 @@ var Decoder = class {
           break;
         }
       }
-      while (iter.hasNext() && iter.peek() !== ",")
-        iter.nextUnsignedVLQ();
-      if (iter.hasNext())
-        iter.nextChar();
+      while (iter.hasNext() && iter.peek() !== ",") iter.nextUnsignedVLQ();
+      if (iter.hasNext()) iter.nextChar();
     }
     if (this.#scopeStack.length > 0) {
       this.#throwInStrictMode("Encountered ORIGINAL_SCOPE_START without matching END!");
@@ -573,8 +591,7 @@ var Decoder = class {
     return info;
   }
   #throwInStrictMode(message) {
-    if (this.#mode === 1)
-      throw new Error(message);
+    if (this.#mode === 1) throw new Error(message);
   }
   #handleOriginalScopeStartItem(item) {
     this.#scopeState.line += item.line;
@@ -584,8 +601,14 @@ var Decoder = class {
       this.#scopeState.column = item.column;
     }
     const scope = {
-      start: { line: this.#scopeState.line, column: this.#scopeState.column },
-      end: { line: this.#scopeState.line, column: this.#scopeState.column },
+      start: {
+        line: this.#scopeState.line,
+        column: this.#scopeState.column
+      },
+      end: {
+        line: this.#scopeState.line,
+        column: this.#scopeState.column
+      },
       isStackFrame: false,
       variables: [],
       children: []
@@ -598,10 +621,7 @@ var Decoder = class {
       this.#scopeState.kind += item.kindIdx;
       scope.kind = this.#resolveName(this.#scopeState.kind);
     }
-    scope.isStackFrame = Boolean(
-      item.flags & 4
-      /* OriginalScopeFlags.IS_STACK_FRAME */
-    );
+    scope.isStackFrame = Boolean(item.flags & OriginalScopeFlags.IS_STACK_FRAME);
     this.#scopeStack.push(scope);
     this.#flatOriginalScopes.push(scope);
   }
@@ -658,14 +678,8 @@ var Decoder = class {
         line: this.#rangeState.line,
         column: this.#rangeState.column
       },
-      isStackFrame: Boolean(
-        item.flags & 4
-        /* GeneratedRangeFlags.IS_STACK_FRAME */
-      ),
-      isHidden: Boolean(
-        item.flags & 8
-        /* GeneratedRangeFlags.IS_HIDDEN */
-      ),
+      isStackFrame: Boolean(item.flags & GeneratedRangeFlags.IS_STACK_FRAME),
+      isHidden: Boolean(item.flags & GeneratedRangeFlags.IS_HIDDEN),
       values: [],
       children: []
     };
@@ -749,8 +763,7 @@ var Decoder = class {
   }
   #handleGeneratedRangeSubRangeBindings(range) {
     const subRangeBindings = this.#subRangeBindingsForRange.get(range);
-    if (!subRangeBindings)
-      return;
+    if (!subRangeBindings) return;
     for (const [variableIndex, bindings] of subRangeBindings) {
       const value = range.values[variableIndex];
       const subRanges = [];
@@ -758,8 +771,14 @@ var Decoder = class {
       let lastLine = range.start.line;
       let lastColumn = range.start.column;
       subRanges.push({
-        from: { line: lastLine, column: lastColumn },
-        to: { line: 0, column: 0 },
+        from: {
+          line: lastLine,
+          column: lastColumn
+        },
+        to: {
+          line: 0,
+          column: 0
+        },
         value
       });
       for (const [line, column, binding] of bindings) {
@@ -770,9 +789,14 @@ var Decoder = class {
           lastColumn = column;
         }
         subRanges.push({
-          from: { line: lastLine, column: lastColumn },
-          to: { line: 0, column: 0 },
-          // This will be fixed in the post-processing step.
+          from: {
+            line: lastLine,
+            column: lastColumn
+          },
+          to: {
+            line: 0,
+            column: 0
+          },
           value: binding === 0 ? void 0 : this.#resolveName(binding - 1)
         });
       }
@@ -795,7 +819,7 @@ var Decoder = class {
   }
 };
 
-// gen/front_end/third_party/source-map-scopes-codec/package/src/builder/builder.js
+// ../../front_end/third_party/source-map-scopes-codec/package/src/builder/builder.js
 var ScopeInfoBuilder = class {
   #scopes = [];
   #ranges = [];
@@ -810,54 +834,55 @@ var ScopeInfoBuilder = class {
   }
   startScope(line, column, options) {
     const scope = {
-      start: { line, column },
-      end: { line, column },
+      start: {
+        line,
+        column
+      },
+      end: {
+        line,
+        column
+      },
       variables: options?.variables?.slice(0) ?? [],
       children: [],
       isStackFrame: Boolean(options?.isStackFrame)
     };
-    if (options?.name !== void 0)
-      scope.name = options.name;
-    if (options?.kind !== void 0)
-      scope.kind = options.kind;
+    if (options?.name !== void 0) scope.name = options.name;
+    if (options?.kind !== void 0) scope.kind = options.kind;
     if (this.#scopeStack.length > 0) {
       scope.parent = this.#scopeStack.at(-1);
     }
     this.#scopeStack.push(scope);
     this.#knownScopes.add(scope);
-    if (options?.key !== void 0)
-      this.#keyToScope.set(options.key, scope);
+    if (options?.key !== void 0) this.#keyToScope.set(options.key, scope);
     return this;
   }
   setScopeName(name) {
     const scope = this.#scopeStack.at(-1);
-    if (scope)
-      scope.name = name;
+    if (scope) scope.name = name;
     return this;
   }
   setScopeKind(kind) {
     const scope = this.#scopeStack.at(-1);
-    if (scope)
-      scope.kind = kind;
+    if (scope) scope.kind = kind;
     return this;
   }
   setScopeStackFrame(isStackFrame) {
     const scope = this.#scopeStack.at(-1);
-    if (scope)
-      scope.isStackFrame = isStackFrame;
+    if (scope) scope.isStackFrame = isStackFrame;
     return this;
   }
   setScopeVariables(variables) {
     const scope = this.#scopeStack.at(-1);
-    if (scope)
-      scope.variables = variables.slice(0);
+    if (scope) scope.variables = variables.slice(0);
     return this;
   }
   endScope(line, column) {
     const scope = this.#scopeStack.pop();
-    if (!scope)
-      return this;
-    scope.end = { line, column };
+    if (!scope) return this;
+    scope.end = {
+      line,
+      column
+    };
     if (this.#scopeStack.length === 0) {
       this.#scopes.push(scope);
     } else {
@@ -884,8 +909,14 @@ var ScopeInfoBuilder = class {
    */
   startRange(line, column, options) {
     const range = {
-      start: { line, column },
-      end: { line, column },
+      start: {
+        line,
+        column
+      },
+      end: {
+        line,
+        column
+      },
       isStackFrame: Boolean(options?.isStackFrame),
       isHidden: Boolean(options?.isHidden),
       values: options?.values ?? [],
@@ -907,45 +938,41 @@ var ScopeInfoBuilder = class {
   }
   setRangeDefinitionScope(scope) {
     const range = this.#rangeStack.at(-1);
-    if (range)
-      range.originalScope = scope;
+    if (range) range.originalScope = scope;
     return this;
   }
   setRangeDefinitionScopeKey(scopeKey) {
     const range = this.#rangeStack.at(-1);
-    if (range)
-      range.originalScope = this.#keyToScope.get(scopeKey);
+    if (range) range.originalScope = this.#keyToScope.get(scopeKey);
     return this;
   }
   setRangeStackFrame(isStackFrame) {
     const range = this.#rangeStack.at(-1);
-    if (range)
-      range.isStackFrame = isStackFrame;
+    if (range) range.isStackFrame = isStackFrame;
     return this;
   }
   setRangeHidden(isHidden) {
     const range = this.#rangeStack.at(-1);
-    if (range)
-      range.isHidden = isHidden;
+    if (range) range.isHidden = isHidden;
     return this;
   }
   setRangeValues(values) {
     const range = this.#rangeStack.at(-1);
-    if (range)
-      range.values = values;
+    if (range) range.values = values;
     return this;
   }
   setRangeCallSite(callSite) {
     const range = this.#rangeStack.at(-1);
-    if (range)
-      range.callSite = callSite;
+    if (range) range.callSite = callSite;
     return this;
   }
   endRange(line, column) {
     const range = this.#rangeStack.pop();
-    if (!range)
-      return this;
-    range.end = { line, column };
+    if (!range) return this;
+    range.end = {
+      line,
+      column
+    };
     if (this.#rangeStack.length === 0) {
       this.#ranges.push(range);
     } else {
@@ -954,7 +981,10 @@ var ScopeInfoBuilder = class {
     return this;
   }
   build() {
-    const info = { scopes: this.#scopes, ranges: this.#ranges };
+    const info = {
+      scopes: this.#scopes,
+      ranges: this.#ranges
+    };
     this.#scopes = [];
     this.#ranges = [];
     this.#knownScopes.clear();
@@ -979,7 +1009,7 @@ var ScopeInfoBuilder = class {
   }
 };
 
-// gen/front_end/third_party/source-map-scopes-codec/package/src/builder/safe_builder.js
+// ../../front_end/third_party/source-map-scopes-codec/package/src/builder/safe_builder.js
 var SafeScopeInfoBuilder = class extends ScopeInfoBuilder {
   addNullScope() {
     this.#verifyEmptyScopeStack("add null scope");
@@ -990,11 +1020,17 @@ var SafeScopeInfoBuilder = class extends ScopeInfoBuilder {
   startScope(line, column, options) {
     this.#verifyEmptyRangeStack("start scope");
     const parent = this.scopeStack.at(-1);
-    if (parent && comparePositions(parent.start, { line, column }) > 0) {
+    if (parent && comparePositions(parent.start, {
+      line,
+      column
+    }) > 0) {
       throw new Error(`Scope start (${line}, ${column}) must not precede parent start (${parent.start.line}, ${parent.start.column})`);
     }
     const precedingSibling = parent?.children.at(-1);
-    if (precedingSibling && comparePositions(precedingSibling.end, { line, column }) > 0) {
+    if (precedingSibling && comparePositions(precedingSibling.end, {
+      line,
+      column
+    }) > 0) {
       throw new Error(`Scope start (${line}, ${column}) must not precede preceding siblings' end (${precedingSibling.end.line, precedingSibling.end.column})`);
     }
     super.startScope(line, column, options);
@@ -1030,7 +1066,10 @@ var SafeScopeInfoBuilder = class extends ScopeInfoBuilder {
       throw new Error("No scope to end");
     }
     const scope = this.scopeStack.at(-1);
-    if (comparePositions(scope.start, { line, column }) > 0) {
+    if (comparePositions(scope.start, {
+      line,
+      column
+    }) > 0) {
       throw new Error(`Scope end (${line}, ${column}) must not precede scope start (${scope.start.line}, ${scope.start.column})`);
     }
     super.endScope(line, column);
@@ -1039,11 +1078,17 @@ var SafeScopeInfoBuilder = class extends ScopeInfoBuilder {
   startRange(line, column, options) {
     this.#verifyEmptyScopeStack("starRange");
     const parent = this.rangeStack.at(-1);
-    if (parent && comparePositions(parent.start, { line, column }) > 0) {
+    if (parent && comparePositions(parent.start, {
+      line,
+      column
+    }) > 0) {
       throw new Error(`Range start (${line}, ${column}) must not precede parent start (${parent.start.line}, ${parent.start.column})`);
     }
     const precedingSibling = parent?.children.at(-1);
-    if (precedingSibling && comparePositions(precedingSibling.end, { line, column }) > 0) {
+    if (precedingSibling && comparePositions(precedingSibling.end, {
+      line,
+      column
+    }) > 0) {
       throw new Error(`Range start (${line}, ${column}) must not precede preceding siblings' end (${precedingSibling.end.line, precedingSibling.end.column})`);
     }
     if (options?.scopeKey !== void 0 && !this.isValidScopeKey(options.scopeKey)) {
@@ -1119,10 +1164,16 @@ var SafeScopeInfoBuilder = class extends ScopeInfoBuilder {
       throw new Error("No range to end");
     }
     const range = this.rangeStack.at(-1);
-    if (comparePositions(range.start, { line, column }) > 0) {
+    if (comparePositions(range.start, {
+      line,
+      column
+    }) > 0) {
       throw new Error(`Range end (${line}, ${column}) must not precede range start (${range.start.line}, ${range.start.column})`);
     }
-    this.#verifyRangeValues(range, { line, column });
+    this.#verifyRangeValues(range, {
+      line,
+      column
+    });
     super.endRange(line, column);
     return this;
   }

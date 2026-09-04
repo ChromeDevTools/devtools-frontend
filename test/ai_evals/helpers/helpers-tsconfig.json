@@ -45,6 +45,7 @@
   },
   "files": [
     "../../../../../../test/ai_evals/helpers/ai_eval-helpers.ts",
+    "../../../../../../test/ai_evals/helpers/eval-environment.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",
@@ -54,6 +55,9 @@
   "references": [
     {
       "path": "../../../front_end/panels/ai_assistance/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../conductor/implementation-tsconfig.ref.json"
     },
     {
       "path": "../../e2e/helpers/helpers-tsconfig.ref.json"

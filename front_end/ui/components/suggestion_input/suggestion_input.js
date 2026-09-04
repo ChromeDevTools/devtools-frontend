@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/ui/components/suggestion_input/SuggestionInput.js
+// ../../front_end/ui/components/suggestion_input/SuggestionInput.ts
 var SuggestionInput_exports = {};
 __export(SuggestionInput_exports, {
   SuggestionInput: () => SuggestionInput
@@ -104,13 +104,7 @@ devtools-editable-content:focus ~ devtools-suggestion-box {
 
 /*# sourceURL=${import.meta.resolve("./suggestionInput.css")} */`;
 
-// gen/front_end/ui/components/suggestion_input/SuggestionInput.js
-var __decorate = function(decorators, target, key, desc) {
-  var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-  if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-  else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-  return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
+// ../../front_end/ui/components/suggestion_input/SuggestionInput.ts
 var mod = (a, n) => {
   return (a % n + n) % n;
 };
@@ -119,8 +113,7 @@ function assert(predicate, message = "Assertion failed!") {
     throw new Error(message);
   }
 }
-var { html, Decorators, Directives, LitElement } = Lit;
-var { customElement, property, state } = Decorators;
+var { html, Directives } = Lit;
 var { classMap } = Directives;
 var jsonPropertyOptions = {
   hasChanged(value2, oldValue) {
@@ -128,7 +121,7 @@ var jsonPropertyOptions = {
   },
   attribute: false
 };
-var EditableContent = class EditableContent2 extends HTMLElement {
+var EditableContent = class extends HTMLElement {
   static get observedAttributes() {
     return ["disabled", "placeholder"];
   }
@@ -175,9 +168,6 @@ var EditableContent = class EditableContent2 extends HTMLElement {
     }
   }
 };
-EditableContent = __decorate([
-  customElement("devtools-editable-content")
-], EditableContent);
 var SuggestEvent = class _SuggestEvent extends Event {
   static eventName = "suggest";
   constructor(suggestion) {
@@ -194,7 +184,13 @@ var SuggestionInitEvent = class _SuggestionInitEvent extends Event {
   }
 };
 var defaultSuggestionFilter = (option, query) => option.toLowerCase().startsWith(query.toLowerCase());
-var SuggestionBox = class SuggestionBox2 extends LitElement {
+var SuggestionBox = class extends Lit.LitElement {
+  static properties = {
+    options: jsonPropertyOptions,
+    expression: { type: String },
+    suggestionFilter: { attribute: false },
+    cursor: { state: true }
+  };
   #suggestions = [];
   constructor() {
     super();
@@ -235,7 +231,9 @@ var SuggestionBox = class SuggestionBox2 extends LitElement {
   }
   connectedCallback() {
     super.connectedCallback();
-    this.dispatchEvent(new SuggestionInitEvent([["keydown", this.#handleKeyDownEvent]]));
+    this.dispatchEvent(
+      new SuggestionInitEvent([["keydown", this.#handleKeyDownEvent]])
+    );
   }
   willUpdate(changedProperties) {
     if (changedProperties.has("options")) {
@@ -243,7 +241,9 @@ var SuggestionBox = class SuggestionBox2 extends LitElement {
     }
     if (changedProperties.has("expression") || changedProperties.has("options")) {
       this.cursor = 0;
-      this.#suggestions = this.options.filter((option) => (this.suggestionFilter || defaultSuggestionFilter)(option, this.expression));
+      this.#suggestions = this.options.filter(
+        (option) => (this.suggestionFilter || defaultSuggestionFilter)(option, this.expression)
+      );
     }
   }
   render() {
@@ -260,25 +260,22 @@ var SuggestionBox = class SuggestionBox2 extends LitElement {
     </ul>`;
   }
 };
-__decorate([
-  property(jsonPropertyOptions)
-], SuggestionBox.prototype, "options", void 0);
-__decorate([
-  property()
-], SuggestionBox.prototype, "expression", void 0);
-__decorate([
-  property()
-], SuggestionBox.prototype, "suggestionFilter", void 0);
-__decorate([
-  state()
-], SuggestionBox.prototype, "cursor", void 0);
-SuggestionBox = __decorate([
-  customElement("devtools-suggestion-box")
-], SuggestionBox);
-var SuggestionInput = class SuggestionInput2 extends LitElement {
+var SuggestionInput = class extends Lit.LitElement {
   static shadowRootOptions = {
-    ...LitElement.shadowRootOptions,
+    ...Lit.LitElement.shadowRootOptions,
     delegatesFocus: true
+  };
+  static properties = {
+    options: jsonPropertyOptions,
+    autocomplete: { type: Boolean },
+    suggestionFilter: { attribute: false },
+    expression: { state: true },
+    placeholder: { type: String },
+    value: { type: String },
+    disabled: { type: Boolean },
+    strikethrough: { type: Boolean },
+    mimeType: { type: String },
+    jslogContext: { type: String }
   };
   constructor() {
     super();
@@ -372,39 +369,9 @@ var SuggestionInput = class SuggestionInput2 extends LitElement {
       ></devtools-suggestion-box>`;
   }
 };
-__decorate([
-  property(jsonPropertyOptions)
-], SuggestionInput.prototype, "options", void 0);
-__decorate([
-  property({ type: Boolean })
-], SuggestionInput.prototype, "autocomplete", void 0);
-__decorate([
-  property()
-], SuggestionInput.prototype, "suggestionFilter", void 0);
-__decorate([
-  state()
-], SuggestionInput.prototype, "expression", void 0);
-__decorate([
-  property()
-], SuggestionInput.prototype, "placeholder", void 0);
-__decorate([
-  property()
-], SuggestionInput.prototype, "value", void 0);
-__decorate([
-  property({ type: Boolean })
-], SuggestionInput.prototype, "disabled", void 0);
-__decorate([
-  property({ type: Boolean })
-], SuggestionInput.prototype, "strikethrough", void 0);
-__decorate([
-  property()
-], SuggestionInput.prototype, "mimeType", void 0);
-__decorate([
-  property()
-], SuggestionInput.prototype, "jslogContext", void 0);
-SuggestionInput = __decorate([
-  customElement("devtools-suggestion-input")
-], SuggestionInput);
+customElements.define("devtools-editable-content", EditableContent);
+customElements.define("devtools-suggestion-box", SuggestionBox);
+customElements.define("devtools-suggestion-input", SuggestionInput);
 export {
   SuggestionInput_exports as SuggestionInput
 };

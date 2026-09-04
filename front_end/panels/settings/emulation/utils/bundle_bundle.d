@@ -1,0 +1,1 @@
+gen/front_end/panels/settings/emulation/utils/utils.js: ../../front_end/panels/settings/emulation/utils/StructuredHeaders.ts ../../front_end/panels/settings/emulation/utils/UserAgentMetadata.ts ../../front_end/panels/settings/emulation/utils/utils.ts

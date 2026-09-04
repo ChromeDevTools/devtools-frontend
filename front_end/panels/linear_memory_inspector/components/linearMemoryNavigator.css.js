@@ -10,7 +10,7 @@ export default `/*
  */
 
 .navigator {
-  min-height: 24px;
+  min-height: var(--sys-size-11);
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-between;

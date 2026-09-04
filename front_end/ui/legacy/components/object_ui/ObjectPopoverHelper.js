@@ -49,7 +49,7 @@ export class ObjectPopoverHelper {
             }
             if (result.customPreview()) {
                 const customPreviewComponent = new CustomPreviewComponent(result);
-                customPreviewComponent.expandIfPossible();
+                void customPreviewComponent.expandIfPossible();
                 popoverContentElement = customPreviewComponent.element;
             }
             else {

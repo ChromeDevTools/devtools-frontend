@@ -1,1 +1,26 @@
-{"compilerOptions":{"composite":true,"declaration":true,"emitDeclarationOnly":true,"skipLibCheck":true,"rootDir":"../../../../../../front_end/third_party/diff","outDir":".","declarationDir":"."},"files":["../../../../../../front_end/third_party/diff/diff.ts"],"references":[{"path":"./diff-tsconfig.ref.json"}]}
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/third_party/diff",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/third_party/diff/diff.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "diff-tsconfig.ref.json"
+    },
+    {
+      "path": "diff_match_patch-tsconfig.ref.json"
+    }
+  ]
+}

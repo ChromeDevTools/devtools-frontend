@@ -79,8 +79,8 @@ export declare function dispatchPasteEvent<T extends Element>(element: T, option
  * specified event type.
  */
 export declare function getEventPromise<T extends Event>(element: EventTarget, eventName: string): Promise<T>;
-export declare function doubleRaf(): Promise<unknown>;
-export declare function raf(): Promise<unknown>;
+export declare function doubleRaf(): Promise<number>;
+export declare function raf(): Promise<number>;
 /**
  * It's useful to use innerHTML in the tests to have full confidence in the
  * renderer output, but Lit uses comment nodes to split dynamic from

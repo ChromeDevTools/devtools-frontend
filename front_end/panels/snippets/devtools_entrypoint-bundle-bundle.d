@@ -1,1 +1,0 @@
-gen/front_end/panels/snippets/snippets.js: gen/front_end/panels/snippets/ScriptSnippetFileSystem.js gen/front_end/panels/snippets/SnippetsQuickOpen.js gen/front_end/panels/snippets/snippets.prebundle.js

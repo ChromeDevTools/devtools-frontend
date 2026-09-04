@@ -11,7 +11,7 @@ export interface ViewInput {
 export declare const DEFAULT_VIEW: (input: ViewInput | null, _output: object, target: HTMLElement) => void;
 export declare class RuleSetDetailsView extends UI.Widget.VBox {
     #private;
-    constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW);
+    constructor(element?: HTMLElement, view?: (input: ViewInput | null, _output: object, target: HTMLElement) => void);
     wasShown(): void;
     set ruleSet(ruleSet: RuleSet | null);
     set shouldPrettyPrint(shouldPrettyPrint: boolean);

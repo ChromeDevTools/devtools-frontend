@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../test/e2e/recorder",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../test/e2e/recorder/export.test.ts",
+    "../../../../../../test/e2e/recorder/recorder.test.ts",
+    "../../../../../../test/e2e/recorder/replay.test.ts",
+    "../../../../../../test/e2e/recorder/ui.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts",
+    "../../../../../../test/e2e/types.d.ts"
+  ],
+  "references": [
+    {
+      "path": "../../../front_end/panels/recorder/models/recorder-tsconfig.ref.json"
+    },
+    {
+      "path": "../../conductor/implementation-tsconfig.ref.json"
+    },
+    {
+      "path": "../helpers/helpers-tsconfig.ref.json"
+    },
+    {
+      "path": "../shared/shared-tsconfig.ref.json"
+    }
+  ]
+}

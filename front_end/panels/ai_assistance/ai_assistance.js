@@ -1081,8 +1081,10 @@ var chatMessage_css_default = `/*
 
   .storage-breakdown-widget {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
+    min-width: fit-content;
     padding: var(--sys-size-4);
+    width: 100%;
   }
 }
 

@@ -40,6 +40,11 @@ export interface RawRequest {
   };
 }
 
+export interface RawFunctionCall {
+  name: string;
+  args: Record<string, unknown>;
+}
+
 export interface RawAidaResponse {
   metadata: {
     rcpGlobalId?: string,
@@ -49,7 +54,7 @@ export interface RawAidaResponse {
     },
   };
   explanation?: string;
-  functionCalls?: Array<{name: string, args: Record<string, unknown>}>;
+  functionCalls?: RawFunctionCall[];
   completed?: true;
 }
 
@@ -164,26 +169,40 @@ function createUserTurn(turnId: string, userText: string): Turn {
 
 function createGeminiTurn(turnId: string, aidaResponse: RawAidaResponse): Turn {
   const responseText = aidaResponse.explanation?.trim();
-  const toolCalls = aidaResponse.functionCalls?.map(call => ({
-                                                      name: call.name,
-                                                      args: call.args,
-                                                      status: 'success' as const,
-                                                      timestamp: Math.floor(Date.now() * 1000),
-                                                    })) ??
-      [];
+  // TODO: Look into capturing the actual execution timestamp instead of current time.
+  const timestamp = Math.floor(Date.now() * 1000);
+  const functionCalls = aidaResponse.functionCalls ?? [];
+  const toolCalls = functionCalls.map(call => ({
+                                        name: call.name,
+                                        args: call.args,
+                                        timestamp,
+                                      }));
 
   return {
     turn_id: turnId,
     role: 'gemini',
-    // TODO: Look into capturing the actual execution timestamp instead of current time.
-    timestamp: Math.floor(Date.now() * 1000),
+    timestamp,
     // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
     tokens: {},
     content: responseText ? [responseText] : [],
-    // TODO: Correctly assign thoughts to this field
-    thoughts: [],
+    thoughts: buildThoughts(functionCalls, timestamp),
     tool_calls: toolCalls,
   };
+}
+
+/**
+ * Extracts model thoughts/explanations from tool function calls into structured thought objects.
+ */
+function buildThoughts(functionCalls: RawFunctionCall[], timestamp: number): Turn['thoughts'] {
+  return functionCalls.flatMap(call => {
+    if (!call.args.explanation) {
+      return [];
+    }
+    // Prefer the explicit title provided by the model (e.g. in executeJavaScript), otherwise fall back to tool name.
+    const subject = (call.args.title as string) || call.name;
+    const description = call.args.explanation as string;
+    return [{subject, description, timestamp}];
+  });
 }
 
 /**
@@ -196,6 +215,7 @@ function attachToolResultToLastTurn(turns: Turn[], toolName: string, response: u
     const toolCall = prevTurn.tool_calls.find(tc => tc.name === toolName);
     if (toolCall) {
       toolCall.result = response;
+      toolCall.status = (response && typeof response === 'object' && 'error' in response) ? 'error' : 'success';
     }
   }
 }

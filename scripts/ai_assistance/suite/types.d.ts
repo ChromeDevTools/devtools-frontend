@@ -18,7 +18,7 @@ export interface Turn {
     name: string,
     args: Record<string, unknown>,
     timestamp: number,
-    status: 'success'|'error',
+    status?: 'success'|'error',
     result?: unknown,
   }>;
 }

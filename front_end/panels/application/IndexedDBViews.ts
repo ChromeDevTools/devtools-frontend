@@ -289,14 +289,14 @@ const populateContextMenu = (e: CustomEvent<UI.ContextMenu.ContextMenu>): void =
 const renderDataGrid = (input: IndexedDBDataViewInput): LitTemplate => {
   const keyPath = input.isIndex && input.index ? input.index.keyPath : input.objectStore.keyPath;
   // clang-format off
-  return html`<devtools-data-grid striped style="flex: auto;" name=${i18nString(UIStrings.indexedDb)} .template=${html`
+  return html`<devtools-data-grid row-height="auto" striped style="flex: auto;" name=${i18nString(UIStrings.indexedDb)} .template=${html`
     <style>${indexedDBViewsStyles}</style>
     <table>
       <tr>
         <th id="number" fixed width="50px">#</th>
-        <th id="key">${renderKeyColumnHeader(i18nString(UIStrings.keyString), keyPath)}</th>
-        ${input.isIndex ? html`<th id="primary-key">${renderKeyColumnHeader(i18nString(UIStrings.primaryKey), input.objectStore.keyPath)}</th>` : nothing}
-        <th id="value">${i18nString(UIStrings.valueString)}</th>
+        <th id="key" weight="2">${renderKeyColumnHeader(i18nString(UIStrings.keyString), keyPath)}</th>
+        ${input.isIndex ? html`<th id="primary-key" weight="2">${renderKeyColumnHeader(i18nString(UIStrings.primaryKey), input.objectStore.keyPath)}</th>` : nothing}
+        <th id="value" weight="8">${i18nString(UIStrings.valueString)}</th>
       </tr>
       ${repeat(input.entries, (_entry, index) => index, (entry, index) => {
         return html`

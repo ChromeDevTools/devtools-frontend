@@ -335,6 +335,7 @@ describeWithEnvironment('IDBDataView', () => {
     // Verify datagrid exists
     const dataGrid = component.element.querySelector('devtools-data-grid');
     assert.isNotNull(dataGrid);
+    assert.strictEqual(dataGrid.getAttribute('row-height'), 'auto');
 
     // Verify rows rendered
     const bodyRows = getValuesOfAllBodyRows(dataGrid.shadowRoot!);
@@ -373,9 +374,9 @@ describeWithEnvironment('IDBDataView', () => {
 
     const dataGrid = component.element.querySelector('devtools-data-grid');
     assert.isNotNull(dataGrid);
+    assert.isNotNull(dataGrid.shadowRoot);
 
-    const allRows = getAllRows(dataGrid!.shadowRoot!, {withJslog: false});
-    const dataRows = allRows.filter(r => r.querySelector('td') !== null);
+    const dataRows = getAllRows(dataGrid.shadowRoot);
     assert.lengthOf(dataRows, 1);
     dataRows[0].click();
 
@@ -427,9 +428,9 @@ describeWithEnvironment('IDBDataView', () => {
 
     const dataGrid = component.element.querySelector('devtools-data-grid');
     assert.isNotNull(dataGrid);
+    assert.isNotNull(dataGrid.shadowRoot);
 
-    const allRows = getAllRows(dataGrid!.shadowRoot!, {withJslog: false});
-    const dataRows = allRows.filter(r => r.querySelector('td') !== null);
+    const dataRows = getAllRows(dataGrid.shadowRoot);
     assert.lengthOf(dataRows, 1);
     dataRows[0].click();
 

@@ -13,47 +13,55 @@ import type {Trajectory, Turn} from './types.js';
 
 /** Note: non-exhaustive. **/
 /* eslint-disable @typescript-eslint/naming-convention */
-export interface RawOutput {
-  metadata: Array<{session_id: string, explanation: string}>;
-  examples: Array<{
-    session_id: string,
-    request: {
+export interface RawMetadata {
+  session_id: string;
+  explanation: string;
+}
 
-      current_message: {
-        parts: Array<{
-          text?: string,
-          functionResponse?: {
-            name: string,
-            response: {result: Record<string, string>},
-          },
-        }>,
-      },
-
-      function_declarations: Array<{
+export interface RawRequest {
+  current_message: {
+    parts: Array<{
+      text?: string,
+      functionResponse?: {
         name: string,
-        description: string,
-        parameters: {
-          properties?: Record<string, unknown>,
-        },
-      }>,
-      metadata: {
-
-        client_version: string,
+        response: {result: Record<string, string>},
       },
-    },
-    aidaResponse: {
-      metadata: {
-        rcpGlobalId?: string,
-        inferenceOptionMetadata?: {
-          modelId: string,
-          modelVersion: string,
-        },
-      },
-      explanation?: string,
-      functionCalls?: Array<{name: string, args: Record<string, unknown>}>,
-      completed?: true,
+    }>,
+  };
+  function_declarations: Array<{
+    name: string,
+    description: string,
+    parameters: {
+      properties?: Record<string, unknown>,
     },
   }>;
+  metadata: {
+    client_version: string,
+  };
+}
+
+export interface RawAidaResponse {
+  metadata: {
+    rcpGlobalId?: string,
+    inferenceOptionMetadata?: {
+      modelId: string,
+      modelVersion: string,
+    },
+  };
+  explanation?: string;
+  functionCalls?: Array<{name: string, args: Record<string, unknown>}>;
+  completed?: true;
+}
+
+export interface RawExample {
+  session_id: string;
+  request: RawRequest;
+  aidaResponse: RawAidaResponse;
+}
+
+export interface RawOutput {
+  metadata: RawMetadata[];
+  examples: RawExample[];
 }
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -62,100 +70,134 @@ interface RawToEvalOptions {
   label: string;
 }
 
+/**
+ * Converts raw DevTools AIDA interaction logs collected during auto-run
+ * into standard evaluation trajectories used by LLM grading suites.
+ */
 export function convertRawOutputToEval(opts: RawToEvalOptions): Trajectory[] {
   const inputHash = hash(JSON.stringify(opts.inputFromAutoRun));
-  const sessionIds = opts.inputFromAutoRun.metadata.map(m => m.session_id);
+  const {metadata, examples} = opts.inputFromAutoRun;
 
-  const processedExamples: Trajectory[] =
-      sessionIds
-          .map((sessionIdFromInput, index) => {
-            const data = opts.inputFromAutoRun.examples.filter(e => e.session_id === sessionIdFromInput);
-            if (!data.length) {
-              return null;
-            }
-            const exampleMetadata = opts.inputFromAutoRun.metadata[index];
+  return metadata
+      .map((meta, index) => {
+        const sessionExamples = examples.filter(e => e.session_id === meta.session_id);
+        if (!sessionExamples.length) {
+          return null;
+        }
+        const sessionId = `${inputHash}-${index}`;
+        return buildTrajectory(sessionId, meta, sessionExamples);
+      })
+      .filter((trajectory): trajectory is Trajectory => trajectory !== null);
+}
 
-            const id = inputHash + '-' + index;
-            const chromeVersion = data.at(0)?.request.metadata.client_version;
-            assert.ok(chromeVersion, 'No client_version');
-            const modelData = data.at(0)?.aidaResponse.metadata.inferenceOptionMetadata;
-            assert.ok(modelData, 'No inferenceOptionMetadata');
+/**
+ * Constructs a single Trajectory from session metadata and its corresponding raw turns.
+ */
+function buildTrajectory(
+    sessionId: string,
+    meta: RawMetadata,
+    examples: RawExample[],
+    ): Trajectory {
+  const firstExample = examples[0];
+  const chromeVersion = firstExample?.request.metadata.client_version;
+  assert.ok(chromeVersion, 'No client_version found in example');
 
-            const processed: Trajectory = {
-              metadata: {
-                session_id: id,
-                model: modelData?.modelId ?? '',
-                chromeVersion,
-                autoRunExampleId: sessionIdFromInput,
-                explanation: exampleMetadata?.explanation ?? '',
-              },
-              data: [],
-            };
+  const modelData = firstExample?.aidaResponse.metadata.inferenceOptionMetadata;
+  assert.ok(modelData, 'No inferenceOptionMetadata found in example');
 
-            let turnIndex = 1;
-            for (const {request, aidaResponse} of data) {
-              if (!aidaResponse.completed) {
-                continue;
-              }
+  return {
+    metadata: {
+      session_id: sessionId,
+      model: modelData.modelId ?? '',
+      chromeVersion,
+      autoRunExampleId: meta.session_id,
+      explanation: meta.explanation ?? '',
+    },
+    data: buildTurns(examples),
+  };
+}
 
-              const userText = request.current_message.parts[0].text;
-              const functionResponse = request.current_message.parts[0].functionResponse;
+/**
+ * Iterates through raw request/response pairs and reconstructs the chronological turn history.
+ */
+function buildTurns(examples: RawExample[]): Turn[] {
+  const turns: Turn[] = [];
+  let turnIndex = 1;
 
-              // A client message part can either be a user text query or a tool call result.
-              if (userText) {
-                // If it is user text, it starts a new user turn in the conversation.
-                processed.data.push({
-                  turn_id: String(turnIndex++),
-                  role: 'user',
-                  timestamp: Math.floor(Date.now() * 1000),
-                  // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
-                  tokens: {},
-                  content: [userText],
-                  // TODO: DevTools does not currently receive internal reasoning/thought steps from Aida.
-                  // Temporarily assigning an empty thoughts array to match the KAF eval schema.
-                  thoughts: [],
-                  tool_calls: [],
-                });
-              } else if (functionResponse) {
-                // If it is a tool response, we attach the result back to the matching
-                // tool call in the previous Gemini turn to keep them associated.
-                const prevTurn = processed.data.at(-1);
-                if (prevTurn && prevTurn.role === 'gemini' && prevTurn.tool_calls) {
-                  const toolCall = prevTurn.tool_calls.find(tc => tc.name === functionResponse.name);
-                  if (toolCall) {
-                    toolCall.result = functionResponse.response;
-                  }
-                }
-              }
+  for (const {request, aidaResponse} of examples) {
+    if (!aidaResponse.completed) {
+      continue;
+    }
 
-              const responseText = aidaResponse.explanation?.trim();
-              const toolCalls = aidaResponse.functionCalls?.map(call => ({
-                                                                  name: call.name,
-                                                                  args: call.args,
-                                                                  status: 'success' as const,
-                                                                  timestamp: Math.floor(Date.now() * 1000),
-                                                                })) ??
-                  [];
+    const [requestPart] = request.current_message.parts;
+    const userText = requestPart?.text;
+    const functionResponse = requestPart?.functionResponse;
 
-              const geminiTurn: Turn = {
-                turn_id: String(turnIndex++),
-                role: 'gemini',
-                timestamp: Math.floor(Date.now() * 1000),
-                // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
-                tokens: {},
-                content: responseText ? [responseText] : [],
-                // TODO: DevTools does not currently receive internal reasoning/thought steps from Aida.
-                // Temporarily assigning an empty thoughts array to match the KAF eval schema.
-                thoughts: [],
-                tool_calls: toolCalls,
-              };
-              processed.data.push(geminiTurn);
-            }
-            return processed;
-          })
-          .filter(x => x !== null);
+    if (userText) {
+      // User prompt starts a new turn.
+      turns.push(createUserTurn(String(turnIndex++), userText));
+    } else if (functionResponse) {
+      // Tool responses from DevTools are attached back to the preceding Gemini turn that invoked them.
+      attachToolResultToLastTurn(turns, functionResponse.name, functionResponse.response);
+    }
 
-  return processedExamples;
+    // AIDA response turn (text explanation and/or tool call invocations).
+    turns.push(createGeminiTurn(String(turnIndex++), aidaResponse));
+  }
+
+  return turns;
+}
+
+function createUserTurn(turnId: string, userText: string): Turn {
+  return {
+    turn_id: turnId,
+    role: 'user',
+    // TODO: Look into capturing the actual execution timestamp instead of current time.
+    timestamp: Math.floor(Date.now() * 1000),
+    // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
+    tokens: {},
+    content: [userText],
+    thoughts: [],
+    tool_calls: [],
+  };
+}
+
+function createGeminiTurn(turnId: string, aidaResponse: RawAidaResponse): Turn {
+  const responseText = aidaResponse.explanation?.trim();
+  const toolCalls = aidaResponse.functionCalls?.map(call => ({
+                                                      name: call.name,
+                                                      args: call.args,
+                                                      status: 'success' as const,
+                                                      timestamp: Math.floor(Date.now() * 1000),
+                                                    })) ??
+      [];
+
+  return {
+    turn_id: turnId,
+    role: 'gemini',
+    // TODO: Look into capturing the actual execution timestamp instead of current time.
+    timestamp: Math.floor(Date.now() * 1000),
+    // TODO: Temporarily assigning an empty tokens object to match the KAF eval schema. We need to get the actual token usage.
+    tokens: {},
+    content: responseText ? [responseText] : [],
+    // TODO: Correctly assign thoughts to this field
+    thoughts: [],
+    tool_calls: toolCalls,
+  };
+}
+
+/**
+ * Finds the preceding Gemini turn and associates the tool execution result with the matching tool call.
+ * Note: DevTools executes at most one tool call per turn, so matching by tool name is sufficient.
+ */
+function attachToolResultToLastTurn(turns: Turn[], toolName: string, response: unknown): void {
+  const prevTurn = turns.at(-1);
+  if (prevTurn && prevTurn.role === 'gemini' && prevTurn.tool_calls) {
+    const toolCall = prevTurn.tool_calls.find(tc => tc.name === toolName);
+    if (toolCall) {
+      toolCall.result = response;
+    }
+  }
 }
 
 if (import.meta.main) {
@@ -184,6 +226,9 @@ if (import.meta.main) {
   }
 }
 
+/**
+ * Computes a 15-character MD5 hash of the string for generating unique session IDs.
+ */
 function hash(str: string) {
   const hash = crypto.createHash('md5').update(str).digest('hex');
   return hash.substring(0, 15);

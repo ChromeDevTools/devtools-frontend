@@ -19,21 +19,18 @@ import * as Trace from '../trace.js';
 
 describeWithEnvironment('Trace helpers', function() {
   describe('extractOriginFromTrace', () => {
-    it('extracts the origin of a parsed trace correctly', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const origin = Trace.Helpers.Trace.extractOriginFromTrace(parsedTrace.data.Meta.mainFrameURL);
+    it('extracts the origin of a parsed trace correctly', () => {
+      const origin = Trace.Helpers.Trace.extractOriginFromTrace('https://web.dev/some/path');
       assert.strictEqual(origin, 'web.dev');
     });
 
-    it('will remove the `www` if it is present', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'multiple-navigations.json.gz');
-      const origin = Trace.Helpers.Trace.extractOriginFromTrace(parsedTrace.data.Meta.mainFrameURL);
+    it('will remove the `www` if it is present', () => {
+      const origin = Trace.Helpers.Trace.extractOriginFromTrace('https://www.google.com/search');
       assert.strictEqual(origin, 'google.com');
     });
 
-    it('returns null when no origin is found', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'missing-url.json.gz');
-      const origin = Trace.Helpers.Trace.extractOriginFromTrace(parsedTrace.data.Meta.mainFrameURL);
+    it('returns null when no origin is found', () => {
+      const origin = Trace.Helpers.Trace.extractOriginFromTrace('');
       assert.isNull(origin);
     });
   });
@@ -841,11 +838,9 @@ describeWithEnvironment('Trace helpers', function() {
   });
 
   describe('isTopLevelEvent', () => {
-    it('is true for a RunTask event', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const runTask = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isRunTask);
-      assert.isOk(runTask);
-
+    it('is true for a RunTask event', () => {
+      const runTask =
+          makeCompleteEvent(Trace.Types.Events.Name.RUN_TASK, 0, 100, 'disabled-by-default-devtools.timeline');
       assert.isTrue(Trace.Helpers.Trace.isTopLevelEvent(runTask));
     });
   });

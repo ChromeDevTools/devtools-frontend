@@ -16,7 +16,6 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import {
   dispatchClickEvent,
-  doubleRaf,
   raf,
   renderElementIntoDOM,
 } from '../../testing/DOMHelpers.js';
@@ -93,6 +92,31 @@ function getStackTraceForDetailsElement(details: DocumentFragment): string[]|nul
     const functionName = row.querySelector<HTMLElement>('.function-name')?.innerText;
     const url = row.querySelector<HTMLElement>('.link')?.innerText;
     return `${functionName || ''} @ ${url || ''}`;
+  });
+}
+
+/**
+ * Waits for an image to be appended to the given container.
+ * This is used to fix flakiness in tests where we wait for an image to load/render.
+ * Using an arbitrary wait like `await doubleRaf()` can cause tests to flake (and hang)
+ * when run on heavily throttled CPU constrained CQ bots. Bypassing the browser's
+ * rendering loop by explicitly pausing using a `MutationObserver`
+ * ensures we correctly advance once the image actually appears in the DOM.
+ */
+async function waitForImage(container: HTMLElement): Promise<HTMLImageElement> {
+  let img = container.querySelector<HTMLImageElement>('img');
+  if (img) {
+    return img;
+  }
+  return await new Promise<HTMLImageElement>(resolve => {
+    const observer = new MutationObserver(() => {
+      img = container.querySelector<HTMLImageElement>('img');
+      if (img) {
+        observer.disconnect();
+        resolve(img);
+      }
+    });
+    observer.observe(container, {childList: true, subtree: true});
   });
 }
 
@@ -1507,8 +1531,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
     renderElementIntoDOM(container);
     container.appendChild(details);
     // Give the image element time to render and load.
-    await doubleRaf();
-    const img = container.querySelector<HTMLImageElement>('.timeline-filmstrip-preview img');
+    const img = await waitForImage(container);
     assert.isOk(img);
     const filmStripFrame = filmStrip.frames[0];
     assert.isTrue(Trace.Types.Events.isLegacySyntheticScreenshot(filmStripFrame.screenshotEvent) &&
@@ -1538,8 +1561,7 @@ describeWithEnvironment('TimelineUIUtils', function() {
     renderElementIntoDOM(container);
     container.appendChild(details);
     // Give the image element time to render and load.
-    await doubleRaf();
-    const img = container.querySelector<HTMLImageElement>('.timeline-filmstrip-preview img');
+    const img = await waitForImage(container);
     assert.isOk(img);
     const filmStripFrame = filmStrip.frames[0];
     assert.isTrue(Trace.Types.Events.isScreenshot(filmStripFrame.screenshotEvent) &&

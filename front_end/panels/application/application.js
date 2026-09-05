@@ -7818,20 +7818,6 @@ var indexedDBViews_css_default = `/*
   color: inherit;
 }
 
-:host-context(.indexed-db-data-view) .section,
-:host-context(.indexed-db-data-view) .section > .header,
-:host-context(.indexed-db-data-view) .section > .header .title {
-  margin: 0;
-  min-height: inherit;
-  line-height: inherit;
-}
-
-:host-context(.indexed-db-data-view) .data-grid .data-container td .section .header .title {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
 .indexed-db-key-path {
   color: var(--sys-color-error);
   white-space: pre-wrap;
@@ -8118,14 +8104,14 @@ var populateContextMenu = (e) => {
 };
 var renderDataGrid = (input) => {
   const keyPath = input.isIndex && input.index ? input.index.keyPath : input.objectStore.keyPath;
-  return html6`<devtools-data-grid striped style="flex: auto;" name=${i18nString8(UIStrings8.indexedDb)} .template=${html6`
+  return html6`<devtools-data-grid row-height="auto" striped style="flex: auto;" name=${i18nString8(UIStrings8.indexedDb)} .template=${html6`
     <style>${indexedDBViews_css_default}</style>
     <table>
       <tr>
         <th id="number" fixed width="50px">#</th>
-        <th id="key">${renderKeyColumnHeader(i18nString8(UIStrings8.keyString), keyPath)}</th>
-        ${input.isIndex ? html6`<th id="primary-key">${renderKeyColumnHeader(i18nString8(UIStrings8.primaryKey), input.objectStore.keyPath)}</th>` : nothing4}
-        <th id="value">${i18nString8(UIStrings8.valueString)}</th>
+        <th id="key" weight="2">${renderKeyColumnHeader(i18nString8(UIStrings8.keyString), keyPath)}</th>
+        ${input.isIndex ? html6`<th id="primary-key" weight="2">${renderKeyColumnHeader(i18nString8(UIStrings8.primaryKey), input.objectStore.keyPath)}</th>` : nothing4}
+        <th id="value" weight="8">${i18nString8(UIStrings8.valueString)}</th>
       </tr>
       ${repeat(input.entries, (_entry, index) => index, (entry, index) => {
     return html6`

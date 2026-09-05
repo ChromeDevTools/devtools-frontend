@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/layer_viewer/LayerDetailsView.js
+// ../../front_end/panels/layer_viewer/LayerDetailsView.ts
 var LayerDetailsView_exports = {};
 __export(LayerDetailsView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
@@ -65,7 +65,7 @@ ul {
 
 /*# sourceURL=${import.meta.resolve("./layerDetailsView.css")} */`;
 
-// gen/front_end/panels/layer_viewer/LayerViewHost.js
+// ../../front_end/panels/layer_viewer/LayerViewHost.ts
 var LayerViewHost_exports = {};
 __export(LayerViewHost_exports, {
   LayerSelection: () => LayerSelection,
@@ -109,39 +109,39 @@ var Selection = class {
     return false;
   }
 };
-var Type;
-(function(Type2) {
+var Type = /* @__PURE__ */ ((Type2) => {
   Type2["LAYER"] = "Layer";
   Type2["SCROLL_RECT"] = "ScrollRect";
   Type2["SNAPSHOT"] = "Snapshot";
-})(Type || (Type = {}));
+  return Type2;
+})(Type || {});
 var LayerSelection = class extends Selection {
   constructor(layer) {
     console.assert(Boolean(layer), "LayerSelection with empty layer");
-    super("Layer", layer);
+    super("Layer" /* LAYER */, layer);
   }
   isEqual(other) {
-    return other.typeInternal === "Layer" && other.layer().id() === this.layer().id();
+    return other.typeInternal === "Layer" /* LAYER */ && other.layer().id() === this.layer().id();
   }
 };
 var ScrollRectSelection = class extends Selection {
   scrollRectIndex;
   constructor(layer, scrollRectIndex) {
-    super("ScrollRect", layer);
+    super("ScrollRect" /* SCROLL_RECT */, layer);
     this.scrollRectIndex = scrollRectIndex;
   }
   isEqual(other) {
-    return other.typeInternal === "ScrollRect" && this.layer().id() === other.layer().id() && this.scrollRectIndex === other.scrollRectIndex;
+    return other.typeInternal === "ScrollRect" /* SCROLL_RECT */ && this.layer().id() === other.layer().id() && this.scrollRectIndex === other.scrollRectIndex;
   }
 };
 var SnapshotSelection = class extends Selection {
   #snapshot;
   constructor(layer, snapshot) {
-    super("Snapshot", layer);
+    super("Snapshot" /* SNAPSHOT */, layer);
     this.#snapshot = snapshot;
   }
   isEqual(other) {
-    return other.typeInternal === "Snapshot" && this.layer().id() === other.layer().id() && this.#snapshot === other.#snapshot;
+    return other.typeInternal === "Snapshot" /* SNAPSHOT */ && this.layer().id() === other.layer().id() && this.#snapshot === other.#snapshot;
   }
   snapshot() {
     return this.#snapshot;
@@ -209,10 +209,14 @@ var LayerViewHost = class {
     return this.selectedObject;
   }
   showContextMenu(contextMenu, selection) {
-    contextMenu.defaultSection().appendCheckboxItem(i18nString(UIStrings.showInternalLayers), this.toggleShowInternalLayers.bind(this), {
-      checked: this.#showInternalLayersSetting.get(),
-      jslogContext: this.#showInternalLayersSetting.name
-    });
+    contextMenu.defaultSection().appendCheckboxItem(
+      i18nString(UIStrings.showInternalLayers),
+      this.toggleShowInternalLayers.bind(this),
+      {
+        checked: this.#showInternalLayersSetting.get(),
+        jslogContext: this.#showInternalLayersSetting.name
+      }
+    );
     const node = selection?.layer()?.nodeForSelfOrAncestor();
     if (node) {
       contextMenu.appendApplicableItems(node);
@@ -234,7 +238,7 @@ var LayerViewHost = class {
   }
 };
 
-// gen/front_end/panels/layer_viewer/LayerDetailsView.js
+// ../../front_end/panels/layer_viewer/LayerDetailsView.ts
 var { html, nothing } = Lit;
 var { widget } = UI.Widget;
 var UIStrings2 = {
@@ -387,7 +391,10 @@ var DEFAULT_VIEW = (input, _output, target) => {
     const nearestLayerShiftingStickyBox = constraint.nearestLayerShiftingStickyBox();
     const nearestLayerShiftingContainingBlock = constraint.nearestLayerShiftingContainingBlock();
     return html`
-      <span>${i18nString2(UIStrings2.stickyBoxRectangleDimensions, { PH1: stickyBoxRect.width, PH2: stickyBoxRect.height, PH3: stickyBoxRect.x, PH4: stickyBoxRect.y })}</span>
+      <span>${i18nString2(
+      UIStrings2.stickyBoxRectangleDimensions,
+      { PH1: stickyBoxRect.width, PH2: stickyBoxRect.height, PH3: stickyBoxRect.x, PH4: stickyBoxRect.y }
+    )}</span>
       <span>, </span>
       <span>${i18nString2(UIStrings2.containingBlocRectangleDimensions, {
       PH1: containingBlockRect.width,
@@ -395,12 +402,19 @@ var DEFAULT_VIEW = (input, _output, target) => {
       PH3: containingBlockRect.x,
       PH4: containingBlockRect.y
     })}</span>
-      ${nearestLayerShiftingStickyBox ? html`, <span>${formatStickyAncestorLayer(i18nString2(UIStrings2.nearestLayerShiftingStickyBox), nearestLayerShiftingStickyBox)}</span>` : nothing}
-      ${nearestLayerShiftingContainingBlock ? html`, <span>${formatStickyAncestorLayer(i18nString2(UIStrings2.nearestLayerShiftingContaining), nearestLayerShiftingContainingBlock)}</span>` : nothing}
+      ${nearestLayerShiftingStickyBox ? html`, <span>${formatStickyAncestorLayer(
+      i18nString2(UIStrings2.nearestLayerShiftingStickyBox),
+      nearestLayerShiftingStickyBox
+    )}</span>` : nothing}
+      ${nearestLayerShiftingContainingBlock ? html`, <span>${formatStickyAncestorLayer(
+      i18nString2(UIStrings2.nearestLayerShiftingContaining),
+      nearestLayerShiftingContainingBlock
+    )}</span>` : nothing}
     `;
   };
   const domNode = layer.nodeForSelfOrAncestor();
-  Lit.render(html`
+  Lit.render(
+    html`
     <div class="layer-details-container"
          data-backend-node-id=${domNode ? domNode.backendNodeId() : nothing}
          jslog=${VisualLogging.section("layer-details")}>
@@ -408,7 +422,10 @@ var DEFAULT_VIEW = (input, _output, target) => {
         <tbody>
           <tr jslog=${VisualLogging.tableRow("detail-row")}>
             <td>${i18nString2(UIStrings2.size)}</td>
-            <td>${i18nString2(UIStrings2.updateRectangleDimensions, { PH1: layer.width(), PH2: layer.height(), PH3: layer.offsetX(), PH4: layer.offsetY() })}</td>
+            <td>${i18nString2(
+      UIStrings2.updateRectangleDimensions,
+      { PH1: layer.width(), PH2: layer.height(), PH3: layer.offsetX(), PH4: layer.offsetY() }
+    )}</td>
           </tr>
           <tr jslog=${VisualLogging.tableRow("detail-row")}>
             <td>${i18nString2(UIStrings2.compositingReasons)}</td>
@@ -432,12 +449,12 @@ var DEFAULT_VIEW = (input, _output, target) => {
                 <span class="scroll-rect" @click=${(e) => onScrollRectClick(index, e)}
                       jslog=${VisualLogging.action("layers.select-object").track({ click: true })}>
                   ${i18nString2(UIStrings2.scrollRectangleDimensions, {
-    PH1: String(slowScrollRectNames.get(scrollRect.type)?.()),
-    PH2: scrollRect.rect.width,
-    PH3: scrollRect.rect.height,
-    PH4: scrollRect.rect.x,
-    PH5: scrollRect.rect.y
-  })}
+      PH1: String(slowScrollRectNames.get(scrollRect.type)?.()),
+      PH2: scrollRect.rect.width,
+      PH3: scrollRect.rect.height,
+      PH4: scrollRect.rect.x,
+      PH5: scrollRect.rect.y
+    })}
                 </span>`)}
             </td>
           </tr>
@@ -453,9 +470,14 @@ var DEFAULT_VIEW = (input, _output, target) => {
               jslog=${VisualLogging.action("layers.paint-profiler").track({ click: true, keydown: "Enter" })}>
         ${i18nString2(UIStrings2.paintProfiler)}
       </button>` : nothing}
-    </div>`, target, { container: { attributes: { jslog: `${VisualLogging.pane("layers-details")}` } } });
+    </div>`,
+    target,
+    { container: { attributes: { jslog: `${VisualLogging.pane("layers-details")}` } } }
+  );
 };
-var LayerDetailsViewBase = Common2.ObjectWrapper.eventMixin(UI.Widget.Widget);
+var LayerDetailsViewBase = Common2.ObjectWrapper.eventMixin(
+  UI.Widget.Widget
+);
 var LayerDetailsView = class extends LayerDetailsViewBase {
   layerViewHost;
   layerSnapshotMap;
@@ -498,9 +520,9 @@ var LayerDetailsView = class extends LayerDetailsViewBase {
     if (!this.selection) {
       return;
     }
-    const snapshotSelection = this.selection.type() === "Snapshot" ? this.selection : this.layerSnapshotMap.get(this.selection.layer());
+    const snapshotSelection = this.selection.type() === "Snapshot" /* SNAPSHOT */ ? this.selection : this.layerSnapshotMap.get(this.selection.layer());
     if (snapshotSelection) {
-      this.dispatchEventToListeners("PaintProfilerRequested", snapshotSelection);
+      this.dispatchEventToListeners("PaintProfilerRequested" /* PAINT_PROFILER_REQUESTED */, snapshotSelection);
     }
   }
   update() {
@@ -518,32 +540,36 @@ var LayerDetailsView = class extends LayerDetailsViewBase {
   }
   performUpdate() {
     const layer = this.selection?.layer() || null;
-    const snapshotSelection = (this.selection && this.selection.type() === "Snapshot" ? this.selection : layer ? this.layerSnapshotMap.get(layer) : null) || null;
-    this.view({
-      layer,
-      snapshotSelection,
-      compositingReasons: this.compositingReasons,
-      onScrollRectClick: this.onScrollRectClicked.bind(this),
-      onPaintProfilerRequested: this.invokeProfilerLink.bind(this)
-    }, void 0, this.contentElement);
+    const snapshotSelection = (this.selection && this.selection.type() === "Snapshot" /* SNAPSHOT */ ? this.selection : layer ? this.layerSnapshotMap.get(layer) : null) || null;
+    this.view(
+      {
+        layer,
+        snapshotSelection,
+        compositingReasons: this.compositingReasons,
+        onScrollRectClick: this.onScrollRectClicked.bind(this),
+        onPaintProfilerRequested: this.invokeProfilerLink.bind(this)
+      },
+      void 0,
+      this.contentElement
+    );
   }
 };
-var Events;
-(function(Events6) {
+var Events = /* @__PURE__ */ ((Events6) => {
   Events6["PAINT_PROFILER_REQUESTED"] = "PaintProfilerRequested";
-})(Events || (Events = {}));
+  return Events6;
+})(Events || {});
 var slowScrollRectNames = /* @__PURE__ */ new Map([
-  ["NonFastScrollable", i18nLazyString(UIStrings2.nonFastScrollable)],
-  ["TouchEventHandler", i18nLazyString(UIStrings2.touchEventHandler)],
-  ["WheelEventHandler", i18nLazyString(UIStrings2.wheelEventHandler)],
-  ["RepaintsOnScroll", i18nLazyString(UIStrings2.repaintsOnScroll)],
+  [SDK2.LayerTreeBase.Layer.ScrollRectType.NON_FAST_SCROLLABLE, i18nLazyString(UIStrings2.nonFastScrollable)],
+  [SDK2.LayerTreeBase.Layer.ScrollRectType.TOUCH_EVENT_HANDLER, i18nLazyString(UIStrings2.touchEventHandler)],
+  [SDK2.LayerTreeBase.Layer.ScrollRectType.WHEEL_EVENT_HANDLER, i18nLazyString(UIStrings2.wheelEventHandler)],
+  [SDK2.LayerTreeBase.Layer.ScrollRectType.REPAINTS_ON_SCROLL, i18nLazyString(UIStrings2.repaintsOnScroll)],
   [
-    "MainThreadScrollingReason",
+    SDK2.LayerTreeBase.Layer.ScrollRectType.MAIN_THREAD_SCROLL_REASON,
     i18nLazyString(UIStrings2.mainThreadScrollingReason)
   ]
 ]);
 
-// gen/front_end/panels/layer_viewer/LayerTreeOutline.js
+// ../../front_end/panels/layer_viewer/LayerTreeOutline.ts
 var LayerTreeOutline_exports = {};
 __export(LayerTreeOutline_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
@@ -589,7 +615,7 @@ var layerTreeOutline_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./layerTreeOutline.css")} */`;
 
-// gen/front_end/panels/layer_viewer/LayerTreeOutline.js
+// ../../front_end/panels/layer_viewer/LayerTreeOutline.ts
 var UIStrings3 = {
   /**
    * @description A count of the number of rendering layers in layer tree outline of the Layers panel.
@@ -678,7 +704,9 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     </div>
   `, target);
 };
-var LayerTreeOutlineBase = Common3.ObjectWrapper.eventMixin(UI2.Widget.Widget);
+var LayerTreeOutlineBase = Common3.ObjectWrapper.eventMixin(
+  UI2.Widget.Widget
+);
 var LayerTreeOutline = class extends LayerTreeOutlineBase {
   layerViewHost;
   layerTree;
@@ -701,16 +729,20 @@ var LayerTreeOutline = class extends LayerTreeOutlineBase {
     this.requestUpdate();
   }
   performUpdate() {
-    this.#view({
-      treeData: this.#treeData,
-      selectedLayer: this.layerViewHost.selection()?.layer() || null,
-      hoveredLayer: this.#hoveredLayer,
-      layerCount: this.#layerCount,
-      totalLayerMemory: this.#totalLayerMemory,
-      onSelect: this.onSelect.bind(this),
-      onHover: this.onHover.bind(this),
-      onContextMenu: this.onContextMenu.bind(this)
-    }, this.#viewOutput, this.contentElement);
+    this.#view(
+      {
+        treeData: this.#treeData,
+        selectedLayer: this.layerViewHost.selection()?.layer() || null,
+        hoveredLayer: this.#hoveredLayer,
+        layerCount: this.#layerCount,
+        totalLayerMemory: this.#totalLayerMemory,
+        onSelect: this.onSelect.bind(this),
+        onHover: this.onHover.bind(this),
+        onContextMenu: this.onContextMenu.bind(this)
+      },
+      this.#viewOutput,
+      this.contentElement
+    );
   }
   focus() {
     this.#viewOutput.focusTree?.();
@@ -806,17 +838,21 @@ var LayerTreeOutline = class extends LayerTreeOutlineBase {
     const contextMenu = new UI2.ContextMenu.ContextMenu(event);
     this.layerSnapshotMap = this.layerViewHost.getLayerSnapshotMap();
     if (layer && this.layerSnapshotMap.has(layer) && selection) {
-      contextMenu.defaultSection().appendItem(i18nString3(UIStrings3.showPaintProfiler), () => this.dispatchEventToListeners("PaintProfilerRequested", selection), { jslogContext: "layers.paint-profiler" });
+      contextMenu.defaultSection().appendItem(
+        i18nString3(UIStrings3.showPaintProfiler),
+        () => this.dispatchEventToListeners("PaintProfilerRequested" /* PAINT_PROFILER_REQUESTED */, selection),
+        { jslogContext: "layers.paint-profiler" }
+      );
     }
     this.layerViewHost.showContextMenu(contextMenu, selection);
   }
 };
-var Events2;
-(function(Events6) {
+var Events2 = /* @__PURE__ */ ((Events6) => {
   Events6["PAINT_PROFILER_REQUESTED"] = "PaintProfilerRequested";
-})(Events2 || (Events2 = {}));
+  return Events6;
+})(Events2 || {});
 
-// gen/front_end/panels/layer_viewer/Layers3DView.js
+// ../../front_end/panels/layer_viewer/Layers3DView.ts
 var Layers3DView_exports = {};
 __export(Layers3DView_exports, {
   BorderColor: () => BorderColor,
@@ -884,7 +920,7 @@ canvas {
 
 /*# sourceURL=${import.meta.resolve("./layers3DView.css")} */`;
 
-// gen/front_end/panels/layer_viewer/TransformController.js
+// ../../front_end/panels/layer_viewer/TransformController.ts
 var TransformController_exports = {};
 __export(TransformController_exports, {
   Events: () => Events3,
@@ -947,7 +983,16 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
     this.originY = 0;
     this.element = element;
     this.registerShortcuts();
-    UI3.UIUtils.installDragHandle(element, this.onDragStart.bind(this), this.onDrag.bind(this), this.onDragEnd.bind(this), "move", null, 0, preventDefaultOnMouseDown);
+    UI3.UIUtils.installDragHandle(
+      element,
+      this.onDragStart.bind(this),
+      this.onDrag.bind(this),
+      this.onDragEnd.bind(this),
+      "move",
+      null,
+      0,
+      preventDefaultOnMouseDown
+    );
     element.addEventListener("wheel", this.onMouseWheel.bind(this), false);
     this.minScale = 0;
     this.maxScale = Infinity;
@@ -964,15 +1009,8 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
         /* toggleOnClick */
         false
       );
-      panModeButton.addEventListener("Click", this.setMode.bind(
-        this,
-        "Pan"
-        /* Modes.PAN */
-      ));
-      this.modeButtons[
-        "Pan"
-        /* Modes.PAN */
-      ] = panModeButton;
+      panModeButton.addEventListener(UI3.Toolbar.ToolbarButton.Events.CLICK, this.setMode.bind(this, "Pan" /* PAN */));
+      this.modeButtons["Pan" /* PAN */] = panModeButton;
       this.controlPanelToolbar.appendToolbarItem(panModeButton);
       const rotateModeButton = new UI3.Toolbar.ToolbarToggle(
         i18nString4(UIStrings4.rotateModeV),
@@ -982,23 +1020,13 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
         /* toggleOnClick */
         false
       );
-      rotateModeButton.addEventListener("Click", this.setMode.bind(
-        this,
-        "Rotate"
-        /* Modes.ROTATE */
-      ));
-      this.modeButtons[
-        "Rotate"
-        /* Modes.ROTATE */
-      ] = rotateModeButton;
+      rotateModeButton.addEventListener(UI3.Toolbar.ToolbarButton.Events.CLICK, this.setMode.bind(this, "Rotate" /* ROTATE */));
+      this.modeButtons["Rotate" /* ROTATE */] = rotateModeButton;
       this.controlPanelToolbar.appendToolbarItem(rotateModeButton);
     }
-    this.setMode(
-      "Pan"
-      /* Modes.PAN */
-    );
+    this.setMode("Pan" /* PAN */);
     const resetButton = new UI3.Toolbar.ToolbarButton(i18nString4(UIStrings4.resetTransform), "3d-center", void 0, "layers.3d-center");
-    resetButton.addEventListener("Click", this.resetAndNotify.bind(this, void 0));
+    resetButton.addEventListener(UI3.Toolbar.ToolbarButton.Events.CLICK, this.resetAndNotify.bind(this, void 0));
     this.controlPanelToolbar.appendToolbarItem(resetButton);
     this.reset();
   }
@@ -1013,17 +1041,11 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
         return true;
       },
       "layers.pan-mode": async () => {
-        this.setMode(
-          "Pan"
-          /* Modes.PAN */
-        );
+        this.setMode("Pan" /* PAN */);
         return true;
       },
       "layers.rotate-mode": async () => {
-        this.setMode(
-          "Rotate"
-          /* Modes.ROTATE */
-        );
+        this.setMode("Rotate" /* ROTATE */);
         return true;
       },
       "layers.zoom-in": this.onKeyboardZoom.bind(this, zoomFactor),
@@ -1035,10 +1057,7 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
     });
   }
   postChangeEvent() {
-    this.dispatchEventToListeners(
-      "TransformChanged"
-      /* Events.TRANSFORM_CHANGED */
-    );
+    this.dispatchEventToListeners("TransformChanged" /* TRANSFORM_CHANGED */);
   }
   reset() {
     this.#scale = 1;
@@ -1115,8 +1134,11 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
   async onKeyboardPanOrRotate(xMultiplier, yMultiplier) {
     const panStepInPixels = 6;
     const rotateStepInDegrees = 5;
-    if (this.mode === "Rotate") {
-      this.onRotate(this.#rotateX + yMultiplier * rotateStepInDegrees, this.#rotateY + xMultiplier * rotateStepInDegrees);
+    if (this.mode === "Rotate" /* ROTATE */) {
+      this.onRotate(
+        this.#rotateX + yMultiplier * rotateStepInDegrees,
+        this.#rotateY + xMultiplier * rotateStepInDegrees
+      );
     } else {
       this.onPan(xMultiplier * panStepInPixels, yMultiplier * panStepInPixels);
     }
@@ -1127,12 +1149,19 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
     const wheelZoomSpeed = 1 / 53;
     const mouseEvent = event;
     const scaleFactor = Math.pow(zoomFactor, -mouseEvent.deltaY * wheelZoomSpeed);
-    this.onScale(scaleFactor, mouseEvent.clientX - this.element.getBoundingClientRect().left, mouseEvent.clientY - this.element.getBoundingClientRect().top);
+    this.onScale(
+      scaleFactor,
+      mouseEvent.clientX - this.element.getBoundingClientRect().left,
+      mouseEvent.clientY - this.element.getBoundingClientRect().top
+    );
   }
   onDrag(event) {
     const { clientX, clientY } = event;
-    if (this.mode === "Rotate") {
-      this.onRotate(this.oldRotateX + (this.originY - clientY) / this.element.clientHeight * 180, this.oldRotateY - (this.originX - clientX) / this.element.clientWidth * 180);
+    if (this.mode === "Rotate" /* ROTATE */) {
+      this.onRotate(
+        this.oldRotateX + (this.originY - clientY) / this.element.clientHeight * 180,
+        this.oldRotateY - (this.originX - clientX) / this.element.clientWidth * 180
+      );
     } else {
       this.onPan(clientX - this.originX, clientY - this.originY);
       this.originX = clientX;
@@ -1154,17 +1183,17 @@ var TransformController = class extends Common4.ObjectWrapper.ObjectWrapper {
     this.oldRotateY = 0;
   }
 };
-var Events3;
-(function(Events6) {
+var Events3 = /* @__PURE__ */ ((Events6) => {
   Events6["TRANSFORM_CHANGED"] = "TransformChanged";
-})(Events3 || (Events3 = {}));
-var Modes;
-(function(Modes2) {
+  return Events6;
+})(Events3 || {});
+var Modes = /* @__PURE__ */ ((Modes2) => {
   Modes2["PAN"] = "Pan";
   Modes2["ROTATE"] = "Rotate";
-})(Modes || (Modes = {}));
+  return Modes2;
+})(Modes || {});
 
-// gen/front_end/panels/layer_viewer/Layers3DView.js
+// ../../front_end/panels/layer_viewer/Layers3DView.ts
 var { html: html3, render: render3, Directives: { ref: ref2 } } = Lit2;
 var { widget: widget2 } = UI4.Widget;
 var UIStrings5 = {
@@ -1211,28 +1240,33 @@ var uniformMatrixLocations = /* @__PURE__ */ new Map();
 var uniformSamplerLocations = /* @__PURE__ */ new Map();
 var imageForTexture = /* @__PURE__ */ new Map();
 var DEFAULT_VIEW3 = (input, output, target) => {
-  render3(html3`<style>
+  render3(
+    html3`<style>
       ${layers3DView_css_default}
     </style>
     ${input.panelToolbar}
     ${input.error === "missing-root" ? html3`<div>${widget2(UI4.EmptyWidget.EmptyWidget, {
-    header: i18nString5(UIStrings5.noLayerInformation),
-    text: i18nString5(UIStrings5.layerExplanation)
-  })}</div>` : Lit2.nothing}
+      header: i18nString5(UIStrings5.noLayerInformation),
+      text: i18nString5(UIStrings5.layerExplanation)
+    })}</div>` : Lit2.nothing}
     ${input.error === "webgl-disabled" ? html3`<div><devtools-widget ${widget2(UI4.EmptyWidget.EmptyWidget, {
-    header: i18nString5(UIStrings5.cantDisplayLayers),
-    text: i18nString5(UIStrings5.webglSupportIsDisabledInYour)
-  })}>
-      ${uiI18n.getFormatLocalizedString(str_5, UIStrings5.checkSForPossibleReasons, {
-    PH1: Link.create("chrome://gpu", void 0, void 0, "about-gpu", 0, true)
-  })}
+      header: i18nString5(UIStrings5.cantDisplayLayers),
+      text: i18nString5(UIStrings5.webglSupportIsDisabledInYour)
+    })}>
+      ${uiI18n.getFormatLocalizedString(
+      str_5,
+      UIStrings5.checkSForPossibleReasons,
+      {
+        PH1: Link.create("chrome://gpu", void 0, void 0, "about-gpu", 0, true)
+      }
+    )}
     </devtools-widget></div>` : Lit2.nothing}
     <canvas
       tabindex="0"
       jslog=${VisualLogging4.canvas("layers").track({
-    click: true,
-    drag: true
-  })}
+      click: true,
+      drag: true
+    })}
       aria-label=${i18nString5(UIStrings5.dLayersView)}
       @dblclick=${input.onDoubleClick}
       @mousedown=${input.onMouseDown}
@@ -1241,13 +1275,18 @@ var DEFAULT_VIEW3 = (input, output, target) => {
       @mousemove=${input.onMouseMove}
       @contextmenu=${input.onContextMenu}
       ${ref2((el) => {
-    if (!el) {
-      return;
-    }
-    output.canvasElement = el;
-  })}></canvas>`, target, { container: { attributes: { jslog: `${VisualLogging4.pane("layers-3d-view")}` } } });
+      if (!el) {
+        return;
+      }
+      output.canvasElement = el;
+    })}></canvas>`,
+    target,
+    { container: { attributes: { jslog: `${VisualLogging4.pane("layers-3d-view")}` } } }
+  );
 };
-var Layers3DViewBase = Common5.ObjectWrapper.eventMixin(UI4.Widget.VBox);
+var Layers3DViewBase = Common5.ObjectWrapper.eventMixin(
+  UI4.Widget.VBox
+);
 var Layers3DView = class extends Layers3DViewBase {
   layerViewHost;
   transformController;
@@ -1289,7 +1328,7 @@ var Layers3DView = class extends Layers3DViewBase {
       false
       /* preventDefaultOnMouseDown */
     );
-    this.transformController.addEventListener("TransformChanged", this.updateData, this);
+    this.transformController.addEventListener("TransformChanged" /* TRANSFORM_CHANGED */, this.updateData, this);
     this.panelToolbar = this.transformController.toolbar();
     this.showPaintsSetting = this.createVisibilitySetting("frame-viewer-show-paints", this.panelToolbar);
     this.showSlowScrollRectsSetting = this.createVisibilitySetting("frame-viewer-show-slow-scroll-rects", this.panelToolbar);
@@ -1308,15 +1347,19 @@ var Layers3DView = class extends Layers3DViewBase {
   }
   performUpdate() {
     const output = {};
-    this.#view({
-      panelToolbar: this.panelToolbar,
-      onDoubleClick: this.onDoubleClick.bind(this),
-      onMouseDown: this.onMouseDown.bind(this),
-      onMouseUp: this.onMouseUp.bind(this),
-      onMouseMove: this.onMouseMove.bind(this),
-      onContextMenu: this.onContextMenu.bind(this),
-      error: this.#error
-    }, output, this.contentElement);
+    this.#view(
+      {
+        panelToolbar: this.panelToolbar,
+        onDoubleClick: this.onDoubleClick.bind(this),
+        onMouseDown: this.onMouseDown.bind(this),
+        onMouseUp: this.onMouseUp.bind(this),
+        onMouseMove: this.onMouseMove.bind(this),
+        onContextMenu: this.onContextMenu.bind(this),
+        error: this.#error
+      },
+      output,
+      this.contentElement
+    );
     if (output.canvasElement) {
       this.#canvasElement = output.canvasElement;
     }
@@ -1369,14 +1412,14 @@ var Layers3DView = class extends Layers3DViewBase {
     this.updateData();
   }
   hoverObject(selection) {
-    this.setOutline(OutlineType.Hovered, selection);
+    this.setOutline("hovered" /* Hovered */, selection);
   }
   selectObject(selection) {
-    this.setOutline(OutlineType.Hovered, null);
-    this.setOutline(OutlineType.Selected, selection);
+    this.setOutline("hovered" /* Hovered */, null);
+    this.setOutline("selected" /* Selected */, selection);
   }
   snapshotForSelection(selection) {
-    if (selection.type() === "Snapshot") {
+    if (selection.type() === "Snapshot" /* SNAPSHOT */) {
       const snapshotWithRect = selection.snapshot();
       snapshotWithRect.snapshot.addReference();
       return Promise.resolve(snapshotWithRect);
@@ -1455,7 +1498,10 @@ var Layers3DView = class extends Layers3DViewBase {
     const scaleY = (canvasHeight - 2 * paddingY) / baseHeight;
     const viewScale = Math.min(scaleX, scaleY);
     const minScaleConstraint = Math.min(baseWidth / dimensionsForAutoscale.width, baseHeight / dimensionsForAutoscale.width) / 2;
-    this.transformController.setScaleConstraints(minScaleConstraint, 10 / viewScale);
+    this.transformController.setScaleConstraints(
+      minScaleConstraint,
+      10 / viewScale
+    );
     const scale = this.transformController.scale();
     const rotateX = this.transformController.rotateX();
     const rotateY = this.transformController.rotateY();
@@ -1464,7 +1510,7 @@ var Layers3DView = class extends Layers3DViewBase {
     if (textureScale !== this.oldTextureScale) {
       this.oldTextureScale = textureScale;
       this.textureManager.setScale(textureScale);
-      this.dispatchEventToListeners("ScaleChanged", textureScale);
+      this.dispatchEventToListeners("ScaleChanged" /* SCALE_CHANGED */, textureScale);
     }
     const scaleAndRotationMatrix = new WebKitCSSMatrix().scale(scale, scale, scale).translate(canvasWidth / 2, canvasHeight / 2, 0).rotate(rotateX, rotateY, 0).scale(viewScale, viewScale, viewScale).translate(-baseWidth / 2, -baseHeight / 2, 0);
     let bounds;
@@ -1472,7 +1518,12 @@ var Layers3DView = class extends Layers3DViewBase {
       bounds = Geometry.boundsForTransformedPoints(scaleAndRotationMatrix, this.rects[i].vertices, bounds);
     }
     if (bounds) {
-      this.transformController.clampOffsets((paddingX - bounds.maxX) / window.devicePixelRatio, (canvasWidth - paddingX - bounds.minX) / window.devicePixelRatio, (paddingY - bounds.maxY) / window.devicePixelRatio, (canvasHeight - paddingY - bounds.minY) / window.devicePixelRatio);
+      this.transformController.clampOffsets(
+        (paddingX - bounds.maxX) / window.devicePixelRatio,
+        (canvasWidth - paddingX - bounds.minX) / window.devicePixelRatio,
+        (paddingY - bounds.maxY) / window.devicePixelRatio,
+        (canvasHeight - paddingY - bounds.minY) / window.devicePixelRatio
+      );
     }
     const offsetX = this.transformController.offsetX() * window.devicePixelRatio;
     const offsetY = this.transformController.offsetY() * window.devicePixelRatio;
@@ -1520,9 +1571,9 @@ var Layers3DView = class extends Layers3DViewBase {
         this.chromeTextures[index] = image && LayerTextureManager.createTextureForImage(this.gl || null, image) || void 0;
       });
     }
-    loadChromeTexture.call(this, 0, "Images/chromeLeft.avif");
-    loadChromeTexture.call(this, 1, "Images/chromeMiddle.avif");
-    loadChromeTexture.call(this, 2, "Images/chromeRight.avif");
+    loadChromeTexture.call(this, 0 /* LEFT */, "Images/chromeLeft.avif");
+    loadChromeTexture.call(this, 1 /* MIDDLE */, "Images/chromeMiddle.avif");
+    loadChromeTexture.call(this, 2 /* RIGHT */, "Images/chromeRight.avif");
   }
   initGLIfNecessary() {
     if (this.gl && this.gl.canvas === this.#canvasElement) {
@@ -1593,8 +1644,8 @@ var Layers3DView = class extends Layers3DViewBase {
   }
   appendRect(rect) {
     const selection = rect.relatedObject;
-    const isSelected = Selection.isEqual(this.lastSelection[OutlineType.Selected], selection);
-    const isHovered = Selection.isEqual(this.lastSelection[OutlineType.Hovered], selection);
+    const isSelected = Selection.isEqual(this.lastSelection["selected" /* Selected */], selection);
+    const isHovered = Selection.isEqual(this.lastSelection["hovered" /* Hovered */], selection);
     if (isSelected) {
       rect.borderColor = SelectedBorderColor;
     } else if (isHovered) {
@@ -1766,7 +1817,7 @@ var Layers3DView = class extends Layers3DViewBase {
         if (!image) {
           continue;
         }
-        const width = i === 1 ? middleFragmentWidth : image.naturalWidth;
+        const width = i === 1 /* MIDDLE */ ? middleFragmentWidth : image.naturalWidth;
         if (width < 0 || x + width > viewportWidth) {
           break;
         }
@@ -1859,14 +1910,22 @@ var Layers3DView = class extends Layers3DViewBase {
   }
   onContextMenu(event) {
     const contextMenu = new UI4.ContextMenu.ContextMenu(event);
-    contextMenu.defaultSection().appendItem(i18nString5(UIStrings5.resetView), () => this.transformController.resetAndNotify(), {
-      jslogContext: "layers.3d-center"
-    });
+    contextMenu.defaultSection().appendItem(
+      i18nString5(UIStrings5.resetView),
+      () => this.transformController.resetAndNotify(),
+      {
+        jslogContext: "layers.3d-center"
+      }
+    );
     const selection = this.selectionFromEventPoint(event);
-    if (selection && selection.type() === "Snapshot") {
-      contextMenu.defaultSection().appendItem(i18nString5(UIStrings5.showPaintProfiler), () => this.dispatchEventToListeners("PaintProfilerRequested", selection), {
-        jslogContext: "layers.paint-profiler"
-      });
+    if (selection && selection.type() === "Snapshot" /* SNAPSHOT */) {
+      contextMenu.defaultSection().appendItem(
+        i18nString5(UIStrings5.showPaintProfiler),
+        () => this.dispatchEventToListeners("PaintProfilerRequested" /* PAINT_PROFILER_REQUESTED */, selection),
+        {
+          jslogContext: "layers.paint-profiler"
+        }
+      );
     }
     this.layerViewHost.showContextMenu(contextMenu, selection);
   }
@@ -1894,8 +1953,8 @@ var Layers3DView = class extends Layers3DViewBase {
   }
   onDoubleClick(event) {
     const selection = this.selectionFromEventPoint(event);
-    if (selection && (selection.type() === "Snapshot" || selection.layer())) {
-      this.dispatchEventToListeners("PaintProfilerRequested", selection);
+    if (selection && (selection.type() === "Snapshot" /* SNAPSHOT */ || selection.layer())) {
+      this.dispatchEventToListeners("PaintProfilerRequested" /* PAINT_PROFILER_REQUESTED */, selection);
     }
     event.stopPropagation();
   }
@@ -1912,22 +1971,22 @@ var Layers3DView = class extends Layers3DViewBase {
     return this.showPaintsSetting ? this.showPaintsSetting.get() : false;
   }
 };
-var OutlineType;
-(function(OutlineType2) {
+var OutlineType = /* @__PURE__ */ ((OutlineType2) => {
   OutlineType2["Hovered"] = "hovered";
   OutlineType2["Selected"] = "selected";
-})(OutlineType || (OutlineType = {}));
-var Events4;
-(function(Events6) {
+  return OutlineType2;
+})(OutlineType || {});
+var Events4 = /* @__PURE__ */ ((Events6) => {
   Events6["PAINT_PROFILER_REQUESTED"] = "PaintProfilerRequested";
   Events6["SCALE_CHANGED"] = "ScaleChanged";
-})(Events4 || (Events4 = {}));
-var ChromeTexture;
-(function(ChromeTexture2) {
+  return Events6;
+})(Events4 || {});
+var ChromeTexture = /* @__PURE__ */ ((ChromeTexture2) => {
   ChromeTexture2[ChromeTexture2["LEFT"] = 0] = "LEFT";
   ChromeTexture2[ChromeTexture2["MIDDLE"] = 1] = "MIDDLE";
   ChromeTexture2[ChromeTexture2["RIGHT"] = 2] = "RIGHT";
-})(ChromeTexture || (ChromeTexture = {}));
+  return ChromeTexture2;
+})(ChromeTexture || {});
 var FragmentShader = "precision mediump float;\nvarying vec4 vColor;\nvarying vec2 vTextureCoord;\nuniform sampler2D uSampler;\nvoid main(void)\n{\n    gl_FragColor = texture2D(uSampler, vec2(vTextureCoord.s, vTextureCoord.t)) * vColor;\n}";
 var VertexShader = "attribute vec3 aVertexPosition;\nattribute vec2 aTextureCoord;\nattribute vec4 aVertexColor;\nuniform mat4 uPMatrix;\nvarying vec2 vTextureCoord;\nvarying vec4 vColor;\nvoid main(void)\n{\ngl_Position = uPMatrix * vec4(aVertexPosition, 1.0);\nvColor = aVertexColor;\nvTextureCoord = aTextureCoord;\n}";
 var HoveredBorderColor = [0, 0, 255, 1];
@@ -2156,7 +2215,10 @@ var Rectangle = class {
     let i;
     const points = [];
     for (i = 0; i < 4; ++i) {
-      points[i] = Geometry.multiplyVectorByMatrixAndNormalize(new Geometry.Vector(this.vertices[i * 3], this.vertices[i * 3 + 1], this.vertices[i * 3 + 2]), matrix);
+      points[i] = Geometry.multiplyVectorByMatrixAndNormalize(
+        new Geometry.Vector(this.vertices[i * 3], this.vertices[i * 3 + 1], this.vertices[i * 3 + 2]),
+        matrix
+      );
     }
     const normal = Geometry.crossProduct(Geometry.subtract(points[1], points[0]), Geometry.subtract(points[2], points[1]));
     const A = normal.x;
@@ -2209,7 +2271,7 @@ var Tile = class {
   }
 };
 
-// gen/front_end/panels/layer_viewer/PaintProfilerView.js
+// ../../front_end/panels/layer_viewer/PaintProfilerView.ts
 var PaintProfilerView_exports = {};
 __export(PaintProfilerView_exports, {
   COMMAND_LOG_DEFAULT_VIEW: () => COMMAND_LOG_DEFAULT_VIEW,
@@ -2267,7 +2329,7 @@ var paintProfiler_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./paintProfiler.css")} */`;
 
-// gen/front_end/panels/layer_viewer/PaintProfilerView.js
+// ../../front_end/panels/layer_viewer/PaintProfilerView.ts
 var { html: html4, render: render4, nothing: nothing4 } = Lit3;
 var { ref: ref3 } = Lit3.Directives;
 var UIStrings6 = {
@@ -2377,7 +2439,16 @@ function calculatePieChartData(input, canvasWidth, samplesPerBar, emptyPieChartD
   if (!profiles || !profiles.length || !logCategories) {
     return emptyPieChartData;
   }
-  const { left: stepLeft, right: stepRight } = calculateSelectionWindow(input.windowLeftRatio, input.windowRightRatio, canvasWidth, input.outerBarWidth, input.innerBarWidth, input.barPaddingWidth, samplesPerBar, input.log.length);
+  const { left: stepLeft, right: stepRight } = calculateSelectionWindow(
+    input.windowLeftRatio,
+    input.windowRightRatio,
+    canvasWidth,
+    input.outerBarWidth,
+    input.innerBarWidth,
+    input.barPaddingWidth,
+    samplesPerBar,
+    input.log.length
+  );
   let totalTime = 0;
   const timeByCategory = {};
   for (let i = stepLeft; i < stepRight; ++i) {
@@ -2443,7 +2514,9 @@ var DEFAULT_VIEW4 = (input, output, target) => {
   const pieChartData = calculatePieChartData(input, canvas2.width, samplesPerBar, emptyPieChartData);
   render4(getTemplate(pieChartData), target);
 };
-var PaintProfilerViewBase = Common6.ObjectWrapper.eventMixin(UI5.Widget.Widget);
+var PaintProfilerViewBase = Common6.ObjectWrapper.eventMixin(
+  UI5.Widget.Widget
+);
 var PaintProfilerView = class _PaintProfilerView extends PaintProfilerViewBase {
   canvasContainer;
   #selectionWindow;
@@ -2480,7 +2553,7 @@ var PaintProfilerView = class _PaintProfilerView extends PaintProfilerViewBase {
         if (el && !this.canvasContainer) {
           this.canvasContainer = el;
           this.#selectionWindow = new PerfUI.OverviewGrid.Window(this.canvasContainer);
-          this.#selectionWindow.addEventListener("WindowChanged", this.onWindowChanged, this);
+          this.#selectionWindow.addEventListener(PerfUI.OverviewGrid.Events.WINDOW_CHANGED, this.onWindowChanged, this);
           this.#selectionWindow.setResizeEnabled(this.#isResizeEnabled);
         }
       }
@@ -2622,7 +2695,7 @@ var PaintProfilerView = class _PaintProfilerView extends PaintProfilerViewBase {
     this.#view(input, this.#viewOutput, this.contentElement);
   }
   onWindowChanged() {
-    this.dispatchEventToListeners("WindowChanged", this.selectionWindow());
+    this.dispatchEventToListeners("WindowChanged" /* WINDOW_CHANGED */, this.selectionWindow());
     this.requestUpdate();
     if (this.updateImageTimer) {
       return;
@@ -2636,7 +2709,16 @@ var PaintProfilerView = class _PaintProfilerView extends PaintProfilerViewBase {
     const canvasWidth = this.canvasContainer.clientWidth * window.devicePixelRatio;
     const maxBars = Math.floor((canvasWidth - 2 * this.barPaddingWidth) / this.outerBarWidth);
     const samplesPerBar = Math.ceil(this.log.length / maxBars);
-    return calculateSelectionWindow(this.#selectionWindow.windowLeftRatio || 0, this.#selectionWindow.windowRightRatio || 0, canvasWidth, this.outerBarWidth, this.innerBarWidth, this.barPaddingWidth, samplesPerBar, this.log.length);
+    return calculateSelectionWindow(
+      this.#selectionWindow.windowLeftRatio || 0,
+      this.#selectionWindow.windowRightRatio || 0,
+      canvasWidth,
+      this.outerBarWidth,
+      this.innerBarWidth,
+      this.barPaddingWidth,
+      samplesPerBar,
+      this.log.length
+    );
   }
   updateImage() {
     delete this.updateImageTimer;
@@ -2671,10 +2753,10 @@ var PaintProfilerView = class _PaintProfilerView extends PaintProfilerViewBase {
     this.isProfiling = false;
   }
 };
-var Events5;
-(function(Events6) {
+var Events5 = /* @__PURE__ */ ((Events6) => {
   Events6["WINDOW_CHANGED"] = "WindowChanged";
-})(Events5 || (Events5 = {}));
+  return Events6;
+})(Events5 || {});
 function paramToString(param, name) {
   if (typeof param !== "object") {
     return typeof param === "string" && param.length > 100 ? name : JSON.stringify(param);
@@ -2729,7 +2811,8 @@ function renderLogItem(logItem) {
   `;
 }
 var COMMAND_LOG_DEFAULT_VIEW = (input, _output, target) => {
-  render4(html4`
+  render4(
+    html4`
     <div class="overflow-auto flex-auto vbox">
       <devtools-tree
           autofocus
@@ -2739,7 +2822,9 @@ var COMMAND_LOG_DEFAULT_VIEW = (input, _output, target) => {
           ${input.visibleLogItems.map((item) => renderLogItem(item))}
         </ul>`}>
       </devtools-tree>
-    </div>`, target);
+    </div>`,
+    target
+  );
 };
 var PaintProfilerCommandLogView = class extends UI5.Widget.VBox {
   #log = [];

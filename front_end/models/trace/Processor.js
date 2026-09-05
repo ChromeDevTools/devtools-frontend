@@ -183,7 +183,7 @@ export class TraceProcessor extends EventTarget {
         // Handle each event.
         for (let i = 0; i < traceEvents.length; ++i) {
             // Every so often we take a break just to render.
-            if (i % eventsPerChunk === 0 && i) {
+            if (options.yieldToMain !== false && i % eventsPerChunk === 0 && i) {
                 // Take the opportunity to provide status update events.
                 const percent = calculateProgress(i / traceEvents.length, 0.2 /* ProgressPhase.HANDLE_EVENT */);
                 this.dispatchEvent(new TraceParseProgressEvent({ percent }));
@@ -206,9 +206,11 @@ export class TraceProcessor extends EventTarget {
             const [name, handler] = sortedHandlers[i];
             if (handler.finalize) {
                 options.logger?.start(`parse:${name}:finalize`);
-                // Yield to the UI because finalize() calls can be expensive
-                // TODO(jacktfranklin): consider using `scheduler.yield()` or `scheduler.postTask(() => {}, {priority: 'user-blocking'})`
-                await new Promise(resolve => setTimeout(resolve, 0));
+                if (options.yieldToMain !== false) {
+                    // Yield to the UI because finalize() calls can be expensive
+                    // TODO(jacktfranklin): consider using `scheduler.yield()` or `scheduler.postTask(() => {}, {priority: 'user-blocking'})`
+                    await new Promise(resolve => setTimeout(resolve, 0));
+                }
                 await handler.finalize(finalizeOptions);
                 options.logger?.end(`parse:${name}:finalize`);
             }

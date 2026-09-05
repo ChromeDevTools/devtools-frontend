@@ -1,7 +1,6 @@
 // Copyright 2014 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-/* eslint-disable @devtools/no-imperative-dom-api */
 import * as Common from '../../../../core/common/common.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
 import { Directives, html, nothing, render } from '../../../lit/lit.js';
@@ -19,7 +18,7 @@ const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/object_ui/CustomP
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 export class CustomPreviewSection extends UI.Widget.Widget {
     #object;
-    expanded = false;
+    #expanded = false;
     cachedContent;
     headerJsonML;
     view;
@@ -37,10 +36,23 @@ export class CustomPreviewSection extends UI.Widget.Widget {
         this.#object = object;
         this.headerJsonML = undefined;
         this.cachedContent = undefined;
-        this.expanded = false;
+        this.#expanded = false;
         this.parseHeader();
         // CustomPreviewComponent is used synchronously by ConsoleViewMessage. We must render synchronously
         // so ConsoleViewport can measure the true row height upon insertion.
+        this.performUpdate();
+    }
+    get expanded() {
+        return this.#expanded;
+    }
+    set expanded(expanded) {
+        if (this.#expanded === expanded) {
+            return;
+        }
+        this.#expanded = expanded;
+        if (this.#expanded && !this.cachedContent) {
+            void this.loadBody();
+        }
         this.performUpdate();
     }
     parseHeader() {
@@ -59,23 +71,14 @@ export class CustomPreviewSection extends UI.Widget.Widget {
         this.view({
             object: this.#object,
             headerJsonML: this.headerJsonML,
-            expanded: this.expanded,
+            expanded: this.#expanded,
             cachedContent: this.cachedContent,
             toggleExpanded: this.toggleExpanded,
         }, undefined, this.contentElement);
     }
     toggleExpanded = () => {
-        if (this.cachedContent !== undefined) {
-            this.toggleExpand();
-        }
-        else {
-            void this.loadBody();
-        }
-    };
-    toggleExpand() {
         this.expanded = !this.expanded;
-        this.performUpdate();
-    }
+    };
     async loadBody() {
         const customPreview = this.#object?.customPreview();
         if (!this.#object || !customPreview?.bodyGetterId) {
@@ -95,11 +98,11 @@ export class CustomPreviewSection extends UI.Widget.Widget {
         else {
             this.cachedContent = bodyJsonML;
         }
-        this.expanded = true;
         this.performUpdate();
     }
 }
 const ALLOWED_TAGS = ['span', 'div', 'ol', 'li', 'table', 'tr', 'td'];
+const remoteObjectCache = new WeakMap();
 export const DEFAULT_VIEW = (input, _output, target) => {
     const renderJSONMLTag = (object, jsonML) => {
         if (!Array.isArray(jsonML)) {
@@ -168,7 +171,13 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         const it = objectTag[Symbol.iterator]();
         it.next(); // skip 'object'
         const attributes = it.next().value;
-        const remoteObject = object.runtimeModel().createRemoteObject(attributes);
+        let remoteObject = typeof attributes === 'object' && attributes !== null ? remoteObjectCache.get(attributes) : undefined;
+        if (!remoteObject) {
+            remoteObject = object.runtimeModel().createRemoteObject(attributes);
+            if (typeof attributes === 'object' && attributes !== null) {
+                remoteObjectCache.set(attributes, remoteObject);
+            }
+        }
         if (remoteObject.customPreview()) {
             return html `${UI.Widget.widget(CustomPreviewSection, { object: remoteObject })}`;
         }
@@ -211,44 +220,75 @@ export const DEFAULT_VIEW = (input, _output, target) => {
         render(html `${headerTemplate}`, target, { container: { classes: ['custom-expandable-section'] } });
     }
 };
-export class CustomPreviewComponent {
-    object;
-    customPreviewSection;
-    element;
-    constructor(object) {
-        this.object = object;
-        this.customPreviewSection = new CustomPreviewSection();
-        this.customPreviewSection.object = object;
-        this.element = document.createElement('span');
-        this.element.classList.add('source-code');
-        const shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(this.element, { cssFile: customPreviewComponentStyles });
-        this.element.addEventListener('contextmenu', this.contextMenuEventFired.bind(this), false);
-        this.customPreviewSection.show(shadowRoot, undefined, /* suppressOrphanWidgetError= */ true);
+export const CUSTOM_PREVIEW_COMPONENT_DEFAULT_VIEW = (input, _output, target) => {
+    if (!input.object) {
+        render(nothing, target);
+        return;
     }
-    async expandIfPossible() {
-        const customPreview = this.object.customPreview();
-        if (customPreview && customPreview.bodyGetterId && this.customPreviewSection) {
-            await this.customPreviewSection.loadBody();
+    render(html `<style>${customPreviewComponentStyles}</style>${input.disassembled ?
+        defaultObjectPresentation(input.object) :
+        UI.Widget.widget(CustomPreviewSection, { object: input.object, expanded: input.expanded })}`, target, {
+        container: {
+            classes: ['source-code'],
+            listeners: { contextmenu: input.onContextMenu },
+        },
+    });
+};
+export class CustomPreviewComponent extends UI.Widget.Widget {
+    #object;
+    #expanded = false;
+    #disassembled = false;
+    #view;
+    constructor(element, view = CUSTOM_PREVIEW_COMPONENT_DEFAULT_VIEW) {
+        super(element, { useShadowDom: 'pure' });
+        this.#view = view;
+    }
+    get object() {
+        return this.#object;
+    }
+    set object(object) {
+        if (this.#object === object) {
+            return;
         }
+        this.#object = object;
+        this.#disassembled = false;
+        this.performUpdate();
     }
-    contextMenuEventFired(event) {
+    get expanded() {
+        return this.#expanded;
+    }
+    set expanded(expanded) {
+        if (this.#expanded === expanded) {
+            return;
+        }
+        this.#expanded = expanded;
+        this.performUpdate();
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    performUpdate() {
+        this.#view({
+            object: this.#object,
+            expanded: this.#expanded,
+            disassembled: this.#disassembled,
+            onContextMenu: this.#onContextMenu,
+        }, undefined, this.contentElement);
+    }
+    #onContextMenu = (event) => {
         const contextMenu = new UI.ContextMenu.ContextMenu(event);
-        if (this.customPreviewSection) {
-            contextMenu.revealSection().appendItem(i18nString(UIStrings.showAsJavascriptObject), this.disassemble.bind(this), { jslogContext: 'show-as-javascript-object' });
+        if (!this.#disassembled) {
+            contextMenu.revealSection().appendItem(i18nString(UIStrings.showAsJavascriptObject), this.#disassemble.bind(this), { jslogContext: 'show-as-javascript-object' });
         }
-        contextMenu.appendApplicableItems(this.object);
+        if (this.#object) {
+            contextMenu.appendApplicableItems(this.#object);
+        }
         void contextMenu.show();
-    }
-    disassemble() {
-        if (this.element.shadowRoot) {
-            if (this.customPreviewSection) {
-                this.customPreviewSection.detach();
-                this.customPreviewSection = null;
-            }
-            this.element.shadowRoot.textContent = '';
-            // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
-            render(defaultObjectPresentation(this.object), this.element.shadowRoot);
-        }
+    };
+    #disassemble() {
+        this.#disassembled = true;
+        this.requestUpdate();
     }
 }
 //# sourceMappingURL=CustomPreviewComponent.js.map

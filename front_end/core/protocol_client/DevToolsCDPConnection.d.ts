@@ -13,7 +13,4 @@ export declare class DevToolsCDPConnection implements CDPConnection {
     resolvePendingCalls(sessionId: string): void;
     private sendRawMessageForTesting;
     private onMessage;
-    private hasOutstandingNonLongPollingRequests;
-    private deprecatedRunAfterPendingDispatches;
-    private executeAfterPendingDispatches;
 }

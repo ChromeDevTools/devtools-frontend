@@ -19,13 +19,12 @@ interface NodeChildren {
     arrayRanges?: ArrayGroupTreeNode[];
     accessors?: ObjectTreeNode[];
 }
-export interface ObjectTreeOptions {
+interface ObjectTreeOptions {
     readonly propertiesMode: ObjectPropertiesMode;
     readonly readOnly: boolean;
     readonly expansionTracker?: ObjectTreeExpansionTracker;
     readonly search?: UI.TreeOutline.TreeSearch<ObjectTreeNodeBase>;
 }
-export declare function isWasmObject(object: SDK.RemoteObject.RemoteObject | undefined): boolean;
 export declare class ObjectTreeExpansionTracker {
     #private;
     clear(): void;
@@ -99,7 +98,7 @@ interface ArrayGroupRange {
     toIndex: number;
     count: number;
 }
-export declare class ArrayGroupTreeNode extends ObjectTreeNodeBase {
+declare class ArrayGroupTreeNode extends ObjectTreeNodeBase {
     #private;
     constructor(object: SDK.RemoteObject.RemoteObject, range: ArrayGroupRange, parent: ObjectTreeNodeBase, options: ObjectTreeOptions);
     populateChildrenIfNeededImpl(): Promise<NodeChildren>;
@@ -145,12 +144,6 @@ export declare class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
     onDetach(): void;
     wasShown(): void;
     private onRootItemContextMenu;
-}
-export interface TreeOutlineOptions {
-    readOnly?: boolean;
-}
-export declare class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutlineInShadow {
-    constructor();
 }
 export declare const enum ObjectPropertiesMode {
     ALL = 0,// All properties, including prototype properties
@@ -201,11 +194,6 @@ export declare function renderPropertyName(name: string | null, isPrivate?: bool
 export declare function formatObjectAsFunction(func: SDK.RemoteObject.RemoteObject, linkify: boolean, includePreview?: boolean): Promise<LitTemplate>;
 export declare function renderPropertyValue(value: SDK.RemoteObject.RemoteObject, wasThrown: boolean, showPreview: boolean, linkifier?: Components.Linkifier.Linkifier, isSyntheticProperty?: boolean, variableName?: string, includeNullOrUndefined?: boolean, useCustomPreview?: boolean, valueRef?: (element: Element | undefined) => void): LitTemplate;
 export declare function defaultObjectPresentation(objectOrTree: SDK.RemoteObject.RemoteObject | ObjectTree, linkifier?: Components.Linkifier.Linkifier, skipProto?: boolean, readOnly?: boolean, extraClasses?: Record<string, boolean>): LitTemplate;
-/**
- * Number of initially visible children in an ObjectPropertyTreeElement.
- * Remaining children are shown as soon as requested via a show more properties button.
- **/
-export declare const InitialVisibleChildrenLimit = 200;
 export interface ObjectPropertyViewInput {
     editable: boolean;
     startEditing(): unknown;

@@ -47,10 +47,14 @@ export class ObjectPopoverHelper {
                 SDK.OverlayModel.OverlayModel.highlightObjectAsDOMNode(result);
                 resultHighlightedAsDOM = true;
             }
+            popover.setMaxContentSize(new Geometry.Size(300, 250));
+            popover.setSizeBehavior("SetExactSize" /* UI.GlassPane.SizeBehavior.SET_EXACT_SIZE */);
             if (result.customPreview()) {
-                const customPreviewComponent = new CustomPreviewComponent(result);
-                void customPreviewComponent.expandIfPossible();
-                popoverContentElement = customPreviewComponent.element;
+                const customPreviewComponent = new CustomPreviewComponent();
+                customPreviewComponent.object = result;
+                customPreviewComponent.expanded = true;
+                customPreviewComponent.element.dataset.stableNameForTest = 'object-popover-content';
+                customPreviewComponent.show(popover.contentElement);
             }
             else {
                 popoverContentElement = document.createElement('div');
@@ -76,11 +80,9 @@ export class ObjectPopoverHelper {
                 section.linkifier = linkifier;
                 section.showOverflow = true;
                 section.show(popoverContentElement, null, true);
+                popoverContentElement.dataset.stableNameForTest = 'object-popover-content';
+                popover.contentElement.appendChild(popoverContentElement);
             }
-            popoverContentElement.dataset.stableNameForTest = 'object-popover-content';
-            popover.setMaxContentSize(new Geometry.Size(300, 250));
-            popover.setSizeBehavior("SetExactSize" /* UI.GlassPane.SizeBehavior.SET_EXACT_SIZE */);
-            popover.contentElement.appendChild(popoverContentElement);
             return new ObjectPopoverHelper(linkifier, resultHighlightedAsDOM);
         }
         popoverContentElement = document.createElement('span');

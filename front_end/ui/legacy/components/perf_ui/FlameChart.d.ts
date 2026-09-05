@@ -159,7 +159,6 @@ export declare class FlameChart extends FlameChartBase implements NetworkTimeCal
      * in the right place.
      */
     setTooltipYPixelAdjustment(y: number): void;
-    getBarHeight(): number;
     setBarHeight(value: number): void;
     setTextBaseline(value: number): void;
     setTextPadding(value: number): void;
@@ -233,11 +232,6 @@ export declare class FlameChart extends FlameChartBase implements NetworkTimeCal
     onContextMenu(event: MouseEvent): void;
     private onKeyDown;
     bindCanvasEvent(eventName: string, onEvent: (arg0: Event) => void): void;
-    drawTrackOnCanvas(trackName: string, context: CanvasRenderingContext2D, minWidth: number): {
-        top: number;
-        height: number;
-        visibleEntries: Set<number>;
-    } | null;
     private handleKeyboardGroupNavigation;
     /**
      * Used when the user presses "enter" when a group is selected, so that we
@@ -314,7 +308,6 @@ export declare class FlameChart extends FlameChartBase implements NetworkTimeCal
      * Make sure |setWindowTimes| is called with correct time range before this function.
      */
     private draw;
-    entryWidth(entryIndex: number): number;
     /**
      * Preprocess the data to be drawn to speed the rendering time.
      * Specifically:

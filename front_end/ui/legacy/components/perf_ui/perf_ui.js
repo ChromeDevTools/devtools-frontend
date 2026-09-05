@@ -4,523 +4,6 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// ../../front_end/ui/legacy/components/perf_ui/BrickBreaker.ts
-var BrickBreaker_exports = {};
-__export(BrickBreaker_exports, {
-  BrickBreaker: () => BrickBreaker
-});
-import * as i18n from "../../../../core/i18n/i18n.js";
-import * as UI from "../../legacy.js";
-import * as ThemeSupport from "../../theme_support/theme_support.js";
-var UIStrings = {
-  /**
-   * @description Message congratulating the user for winning the brick breaker game.
-   */
-  congrats: "Congrats, you win!",
-  /**
-   * @description Postscript message explaining how to open the brick breaker game using a keyboard shortcut.
-   */
-  ps: "PS: You can also open the game by typing `fixme`"
-};
-var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/perf_ui/BrickBreaker.ts", UIStrings);
-var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
-var MAX_DELTA = 16;
-var MIN_DELTA = 10;
-var MAX_PADDLE_LENGTH = 150;
-var MIN_PADDLE_LENGTH = 85;
-var PADDLE_HEIGHT = 15;
-var BALL_RADIUS = 10;
-var colorPallettes = [
-  // blues
-  {
-    light: "rgb(224,240,255)",
-    mediumLighter: "rgb(176,208,255)",
-    mediumDarker: "rgb(112,160,221)",
-    dark: "rgb(0,92,153)"
-  },
-  // pinks
-  {
-    light: "rgb(253, 216, 229)",
-    mediumLighter: "rgb(250, 157, 188)",
-    mediumDarker: "rgb(249, 98, 154)",
-    dark: "rgb(254, 5, 105)"
-  },
-  // pastel pinks
-  {
-    light: "rgb(254, 234, 234)",
-    mediumLighter: "rgb(255, 216, 216)",
-    mediumDarker: "rgb(255, 195, 195)",
-    dark: "rgb(235, 125, 138)"
-  },
-  // purples
-  {
-    light: "rgb(226,183,206)",
-    mediumLighter: "rgb(219,124,165)",
-    mediumDarker: "rgb(146,60,129)",
-    dark: "rgb(186, 85, 255)"
-  },
-  // greens
-  {
-    light: "rgb(206,255,206)",
-    mediumLighter: "rgb(128,255,128)",
-    mediumDarker: "rgb(0,246,0)",
-    dark: "rgb(0,187,0)"
-  },
-  // reds
-  {
-    light: "rgb(255, 188, 181)",
-    mediumLighter: "rgb(254, 170, 170)",
-    mediumDarker: "rgb(215, 59, 43)",
-    dark: "rgb(187, 37, 23)"
-  },
-  // aqua
-  {
-    light: "rgb(236, 254, 250)",
-    mediumLighter: "rgb(204, 255, 245)",
-    mediumDarker: "rgb(164, 240, 233)",
-    dark: "rgb(72,189,144)"
-  },
-  // yellow/pink
-  {
-    light: "rgb(255, 225, 185)",
-    mediumLighter: "rgb(255, 204, 141)",
-    mediumDarker: "rgb(240, 140, 115)",
-    dark: "rgb(211, 96, 117)"
-  },
-  // ocean breeze
-  {
-    light: "rgb(218, 255, 248)",
-    mediumLighter: "rgb(177, 235, 236)",
-    mediumDarker: "rgb(112, 214, 214)",
-    dark: "rgb(34, 205, 181)"
-  }
-];
-var BrickBreaker = class extends HTMLElement {
-  constructor(timelineFlameChart) {
-    super();
-    this.timelineFlameChart = timelineFlameChart;
-    this.#canvas = this.createChild("canvas", "fill");
-    this.#ctx = this.#canvas.getContext("2d");
-    this.#helperCanvas = document.createElement("canvas");
-    this.#helperCanvasCtx = this.#helperCanvas.getContext("2d");
-    const randomPaletteIndex = Math.floor(Math.random() * colorPallettes.length);
-    this.#currentPalette = colorPallettes[randomPaletteIndex];
-    this.#scorePanel = this.createChild("div");
-    this.#scorePanel.classList.add("scorePanel");
-    this.#scorePanel.style.borderImage = "linear-gradient(" + this.#currentPalette.mediumDarker + "," + this.#currentPalette.dark + ") 1";
-    this.initButton();
-  }
-  timelineFlameChart;
-  #canvas;
-  #ctx;
-  #helperCanvas;
-  #helperCanvasCtx;
-  #scorePanel;
-  #trackTimelineOffset = 0;
-  #visibleEntries = /* @__PURE__ */ new Set();
-  #brokenBricks = /* @__PURE__ */ new Map();
-  #keyDownHandlerBound = this.#keyDownHandler.bind(this);
-  #keyUpHandlerBound = this.#keyUpHandler.bind(this);
-  #keyPressHandlerBound = this.#keyPressHandler.bind(this);
-  #closeGameBound = this.#closeGame.bind(this);
-  #mouseMoveHandlerBound = this.#mouseMoveHandler.bind(this);
-  #boundingElement = UI.UIUtils.getDevToolsBoundingElement();
-  // Value by which we moved the game up relative to the viewport
-  #gameViewportOffset = 0;
-  #running = false;
-  #initialDPR = devicePixelRatio;
-  #ballX = 0;
-  #ballY = 0;
-  #ballDx = 0;
-  #ballDy = 0;
-  #paddleX = 0;
-  #rightPressed = false;
-  #leftPressed = false;
-  #brickHeight = 0;
-  #lives = 0;
-  #blockCount = 0;
-  #paddleLength = MAX_PADDLE_LENGTH;
-  #minScreenHeight = 150;
-  #maxScreenHeight = 1500;
-  #screenHeightDiff = this.#maxScreenHeight - this.#minScreenHeight;
-  // Value from 0.1 to 1 that multiplies speed depending on the screen height
-  #deltaMultiplier = 0;
-  #deltaVectorLength = 0;
-  #currentPalette;
-  initButton() {
-    const button = this.createChild("div");
-    button.classList.add("game-close-button");
-    button.innerHTML = "<b><span style='font-size: 1.2em; color: white'>x</span></b>";
-    button.style.background = this.#currentPalette.dark;
-    button.style.boxShadow = this.#currentPalette.dark + " 1px 1px, " + this.#currentPalette.mediumDarker + " 3px 3px, " + this.#currentPalette.mediumLighter + " 5px 5px";
-    button.addEventListener("click", this.#closeGame.bind(this));
-    this.appendChild(button);
-  }
-  connectedCallback() {
-    this.#running = true;
-    this.#setUpNewGame();
-    this.#boundingElement.addEventListener("keydown", this.#keyDownHandlerBound);
-    document.addEventListener("keydown", this.#keyDownHandlerBound, false);
-    document.addEventListener("keyup", this.#keyUpHandlerBound, false);
-    document.addEventListener("keypress", this.#keyPressHandlerBound, false);
-    window.addEventListener("resize", this.#closeGameBound);
-    document.addEventListener("mousemove", this.#mouseMoveHandlerBound, false);
-    this.tabIndex = 1;
-    this.focus();
-  }
-  disconnectedCallback() {
-    this.#boundingElement.removeEventListener("keydown", this.#keyDownHandlerBound);
-    window.removeEventListener("resize", this.#closeGameBound);
-    document.removeEventListener("keydown", this.#keyDownHandlerBound, false);
-    document.removeEventListener("keyup", this.#keyUpHandlerBound, false);
-    window.removeEventListener("resize", this.#closeGameBound);
-    document.removeEventListener("keypress", this.#keyPressHandlerBound, false);
-    document.removeEventListener("mousemove", this.#mouseMoveHandlerBound, false);
-  }
-  #resetCanvas() {
-    const dPR = window.devicePixelRatio;
-    const height = Math.round(this.offsetHeight * dPR);
-    const width = Math.round(this.offsetWidth * dPR);
-    this.#canvas.height = height;
-    this.#canvas.width = width;
-    this.#canvas.style.height = height / dPR + "px";
-    this.#canvas.style.width = width / dPR + "px";
-  }
-  #closeGame() {
-    this.#running = false;
-    this.remove();
-  }
-  #setUpNewGame() {
-    this.#resetCanvas();
-    this.#deltaMultiplier = Math.max(0.1, (this.offsetHeight - this.#minScreenHeight) / this.#screenHeightDiff);
-    this.#deltaVectorLength = MIN_DELTA * this.#deltaMultiplier;
-    const trackData = this.timelineFlameChart.drawTrackOnCanvas("Main", this.#ctx, BALL_RADIUS);
-    if (trackData === null || trackData.visibleEntries.size === 0) {
-      console.error("Could not draw game");
-      this.#closeGame();
-      return;
-    }
-    this.#trackTimelineOffset = trackData.top;
-    this.#visibleEntries = trackData.visibleEntries;
-    this.#gameViewportOffset = this.#trackTimelineOffset + this.timelineFlameChart.getCanvas().getBoundingClientRect().top - this.timelineFlameChart.getScrollOffset();
-    requestAnimationFrame(() => this.#animateFlameChartTopPositioning(trackData.top, trackData.height));
-  }
-  #animateFlameChartTopPositioning(currentOffset, flameChartHeight) {
-    if (currentOffset === 0) {
-      this.#createGame();
-      return;
-    }
-    const dPR = window.devicePixelRatio;
-    const currentOffsetOnDPR = Math.round(currentOffset * dPR);
-    const newOffset = Math.max(currentOffset - 4, 0);
-    const newOffsetOnDPR = Math.round(newOffset * dPR);
-    const baseCanvas = this.#canvas;
-    this.#helperCanvas.height = baseCanvas.height;
-    this.#helperCanvas.width = baseCanvas.width;
-    this.#helperCanvas.style.height = baseCanvas.style.height;
-    this.#helperCanvas.style.width = baseCanvas.style.width;
-    this.#helperCanvasCtx.drawImage(
-      baseCanvas,
-      0,
-      currentOffsetOnDPR,
-      baseCanvas.width,
-      flameChartHeight * dPR,
-      0,
-      newOffsetOnDPR,
-      baseCanvas.width,
-      flameChartHeight * dPR
-    );
-    this.#resetCanvas();
-    this.#ctx.drawImage(this.#helperCanvas, 0, 0);
-    requestAnimationFrame(() => this.#animateFlameChartTopPositioning(newOffset, flameChartHeight));
-  }
-  #keyUpHandler(event) {
-    if (event.key === "Right" || event.key === "ArrowRight" || event.key === "d") {
-      this.#rightPressed = false;
-      event.preventDefault();
-    } else if (event.key === "Left" || event.key === "ArrowLeft" || event.key === "a") {
-      this.#leftPressed = false;
-      event.preventDefault();
-    } else {
-      event.stopImmediatePropagation();
-    }
-  }
-  #keyPressHandler(e) {
-    e.stopImmediatePropagation();
-    e.preventDefault();
-  }
-  #keyDownHandler(event) {
-    if (event.key === "Escape") {
-      this.#closeGame();
-      event.stopImmediatePropagation();
-    } else if (event.key === "Right" || event.key === "ArrowRight" || event.key === "d") {
-      this.#rightPressed = true;
-      event.preventDefault();
-    } else if (event.key === "Left" || event.key === "ArrowLeft" || event.key === "a") {
-      this.#leftPressed = true;
-      event.preventDefault();
-    } else {
-      event.preventDefault();
-      event.stopImmediatePropagation();
-    }
-  }
-  #mouseMoveHandler(e) {
-    this.#paddleX = Math.max(e.offsetX - this.#paddleLength / 2, 0);
-    this.#paddleX = Math.min(this.#paddleX, this.offsetWidth - this.#paddleLength);
-  }
-  #createGame() {
-    this.#ballX = this.offsetWidth / 2;
-    this.#ballY = this.offsetHeight - PADDLE_HEIGHT - BALL_RADIUS;
-    this.#ballDx = 0;
-    this.#ballDy = -Math.SQRT2 * this.#deltaVectorLength;
-    this.#paddleX = (this.#canvas.width - this.#paddleLength) / 2;
-    this.#rightPressed = false;
-    this.#leftPressed = false;
-    this.#brickHeight = this.timelineFlameChart.getBarHeight();
-    this.#blockCount = this.#visibleEntries.size;
-    this.#lives = Math.max(Math.round(this.#blockCount / 17), 2);
-    this.#draw();
-  }
-  #restartBall() {
-    this.#ballX = this.offsetWidth / 2;
-    this.#ballY = this.offsetHeight - PADDLE_HEIGHT - BALL_RADIUS;
-    this.#ballDx = 0;
-    this.#ballDy = -Math.SQRT2 * this.#deltaVectorLength;
-  }
-  #drawBall() {
-    if (!this.#ctx) {
-      return;
-    }
-    const gradient = this.#ctx.createRadialGradient(
-      this.#ballX + BALL_RADIUS / 4,
-      // Offset towards the left
-      this.#ballY - BALL_RADIUS / 4,
-      // Offset downwards
-      0,
-      this.#ballX + BALL_RADIUS / 4,
-      this.#ballY - BALL_RADIUS / 4,
-      BALL_RADIUS
-    );
-    gradient.addColorStop(0.3, this.#currentPalette.mediumLighter);
-    gradient.addColorStop(0.6, this.#currentPalette.mediumDarker);
-    gradient.addColorStop(1, this.#currentPalette.dark);
-    this.#ctx.beginPath();
-    this.#ctx.arc(this.#ballX, this.#ballY, BALL_RADIUS, 0, Math.PI * 2);
-    this.#ctx.fillStyle = gradient;
-    this.#ctx.fill();
-    this.#ctx.closePath();
-  }
-  #drawPaddle() {
-    if (!this.#ctx) {
-      return;
-    }
-    const gradient = this.#ctx.createRadialGradient(
-      this.#paddleX + this.#paddleLength / 3,
-      this.offsetHeight - PADDLE_HEIGHT - PADDLE_HEIGHT / 4,
-      0,
-      this.#paddleX + this.#paddleLength / 3,
-      this.offsetHeight - PADDLE_HEIGHT - PADDLE_HEIGHT / 4,
-      this.#paddleLength / 2
-    );
-    gradient.addColorStop(0.3, this.#currentPalette.dark);
-    gradient.addColorStop(1, this.#currentPalette.mediumDarker);
-    this.#ctx.beginPath();
-    this.#ctx.rect(this.#paddleX, this.offsetHeight - PADDLE_HEIGHT, this.#paddleLength, PADDLE_HEIGHT);
-    this.#ctx.fillStyle = gradient;
-    this.#ctx.fill();
-    this.#ctx.closePath();
-  }
-  #patchBrokenBricks() {
-    if (!this.#ctx) {
-      return;
-    }
-    for (const brick of this.#brokenBricks.values()) {
-      this.#ctx.beginPath();
-      this.#ctx.rect(brick.x, brick.y, brick.width + 0.5, this.#brickHeight + 0.5);
-      this.#ctx.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue("--sys-color-neutral-container", this);
-      this.#ctx.fill();
-      this.#ctx.closePath();
-    }
-  }
-  #draw() {
-    if (this.#initialDPR !== devicePixelRatio) {
-      this.#running = false;
-    }
-    if (this.#lives === 0) {
-      window.alert("GAME OVER");
-      this.#closeGame();
-      return;
-    }
-    if (this.#blockCount === 0) {
-      this.#party();
-      return;
-    }
-    this.#ctx.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
-    this.#ctx.drawImage(this.#helperCanvas, 0, 0);
-    this.#ctx.save();
-    this.#ctx.scale(devicePixelRatio, devicePixelRatio);
-    this.#helperCanvasCtx.save();
-    this.#helperCanvasCtx.scale(devicePixelRatio, devicePixelRatio);
-    this.#patchBrokenBricks();
-    this.#drawBall();
-    this.#drawPaddle();
-    this.#brickCollisionDetection();
-    const lives = `<div><b><span style='font-size: 1.3em; color:  ${this.#currentPalette.dark}'>&#x2764;&#xfe0f; ${this.#lives}</span></b></div>`;
-    const blocks = `<div><b><span style='font-size: 1.3em; color: ${this.#currentPalette.dark}'> \u{1F9F1} ${this.#blockCount}</span></b></div>`;
-    this.#scorePanel.innerHTML = lives + blocks;
-    this.#blockCount = this.#visibleEntries.size - this.#brokenBricks.size;
-    this.#deltaVectorLength = (MIN_DELTA + (MAX_DELTA - MIN_DELTA) * this.#brokenBricks.size / this.#visibleEntries.size) * this.#deltaMultiplier;
-    this.#paddleLength = MAX_PADDLE_LENGTH - (MAX_PADDLE_LENGTH - MIN_PADDLE_LENGTH) * this.#brokenBricks.size / this.#visibleEntries.size;
-    if (this.#ballX + this.#ballDx > this.offsetWidth - BALL_RADIUS || this.#ballX + this.#ballDx < BALL_RADIUS) {
-      this.#ballDx = -this.#ballDx;
-    }
-    if (this.#ballY + this.#ballDy < BALL_RADIUS) {
-      this.#ballDy = -this.#ballDy;
-    } else if (this.#ballY + this.#ballDy > this.offsetHeight - BALL_RADIUS && this.#ballDy > 0) {
-      if (this.#ballX > this.#paddleX - BALL_RADIUS && this.#ballX < this.#paddleX + this.#paddleLength + BALL_RADIUS) {
-        let roundedBallX = Math.min(this.#ballX, this.#paddleX + this.#paddleLength);
-        roundedBallX = Math.max(roundedBallX, this.#paddleX);
-        const paddleLenghtPortion = (roundedBallX - this.#paddleX) * this.#deltaVectorLength * 2 / this.#paddleLength;
-        this.#ballDx = -this.#deltaVectorLength + paddleLenghtPortion;
-        this.#ballDy = -Math.sqrt(2 * Math.pow(this.#deltaVectorLength, 2) - Math.pow(this.#ballDx, 2));
-      } else {
-        this.#restartBall();
-        this.#paddleX = (this.offsetWidth - this.#paddleLength) / 2;
-        this.#lives--;
-      }
-    }
-    const keyDelta = Math.round(this.clientWidth / 60);
-    if (this.#rightPressed && this.#paddleX < this.offsetWidth - this.#paddleLength) {
-      this.#paddleX += keyDelta;
-    } else if (this.#leftPressed && this.#paddleX > 0) {
-      this.#paddleX -= keyDelta;
-    }
-    this.#ballX += Math.round(this.#ballDx);
-    this.#ballY += Math.round(this.#ballDy);
-    this.#ctx.restore();
-    this.#helperCanvasCtx.restore();
-    if (this.#running) {
-      requestAnimationFrame(this.#draw.bind(this));
-    }
-  }
-  #brickCollisionDetection() {
-    const timelineCanvasOffset = this.timelineFlameChart.getCanvas().getBoundingClientRect();
-    const ballYRelativeToGame = this.#ballY + this.#gameViewportOffset - timelineCanvasOffset.top;
-    const entryIndexTop = this.timelineFlameChart.coordinatesToEntryIndex(this.#ballX, ballYRelativeToGame + BALL_RADIUS);
-    const entryIndexBottom = this.timelineFlameChart.coordinatesToEntryIndex(this.#ballX, ballYRelativeToGame - BALL_RADIUS);
-    const entryIndexRight = this.timelineFlameChart.coordinatesToEntryIndex(this.#ballX + BALL_RADIUS, ballYRelativeToGame);
-    const entryIndexLeft = this.timelineFlameChart.coordinatesToEntryIndex(this.#ballX - BALL_RADIUS, ballYRelativeToGame);
-    const diffBetweenCornerandCircle = BALL_RADIUS / Math.SQRT2;
-    const entryIndexRightTop = this.timelineFlameChart.coordinatesToEntryIndex(
-      this.#ballX + diffBetweenCornerandCircle,
-      ballYRelativeToGame + diffBetweenCornerandCircle
-    );
-    const entryIndexLeftTop = this.timelineFlameChart.coordinatesToEntryIndex(
-      this.#ballX - diffBetweenCornerandCircle,
-      ballYRelativeToGame + diffBetweenCornerandCircle
-    );
-    const entryIndexRightBottom = this.timelineFlameChart.coordinatesToEntryIndex(
-      this.#ballX + diffBetweenCornerandCircle,
-      ballYRelativeToGame - diffBetweenCornerandCircle
-    );
-    const entryIndexLeftBottom = this.timelineFlameChart.coordinatesToEntryIndex(
-      this.#ballX - diffBetweenCornerandCircle,
-      ballYRelativeToGame - diffBetweenCornerandCircle
-    );
-    const breakBrick = (entryIndex) => {
-      const entryCoordinates = this.timelineFlameChart.entryIndexToCoordinates(entryIndex);
-      if (entryCoordinates) {
-        const entryBegin = Math.max(entryCoordinates.x - timelineCanvasOffset.left, 0);
-        this.#brokenBricks.set(entryIndex, {
-          x: entryBegin - 0.5,
-          y: entryCoordinates.y - this.#gameViewportOffset - 0.5,
-          width: this.timelineFlameChart.entryWidth(entryIndex)
-        });
-      }
-    };
-    if (entryIndexTop > -1 && !this.#brokenBricks.has(entryIndexTop) && this.#visibleEntries.has(entryIndexTop)) {
-      this.#ballDy = -this.#ballDy;
-      breakBrick(entryIndexTop);
-      return;
-    }
-    if (entryIndexBottom > -1 && !this.#brokenBricks.has(entryIndexBottom) && this.#visibleEntries.has(entryIndexBottom)) {
-      this.#ballDy = -this.#ballDy;
-      breakBrick(entryIndexBottom);
-      return;
-    }
-    if (entryIndexRight > -1 && !this.#brokenBricks.has(entryIndexRight) && this.#visibleEntries.has(entryIndexRight)) {
-      this.#ballDx = -this.#ballDx;
-      breakBrick(entryIndexRight);
-      return;
-    }
-    if (entryIndexLeft > -1 && !this.#brokenBricks.has(entryIndexLeft) && this.#visibleEntries.has(entryIndexLeft)) {
-      this.#ballDx = -this.#ballDx;
-      breakBrick(entryIndexLeft);
-      return;
-    }
-    const diagonalIndexes = [entryIndexRightTop, entryIndexLeftTop, entryIndexRightBottom, entryIndexLeftBottom];
-    for (const index of diagonalIndexes) {
-      if (index > -1 && !this.#brokenBricks.has(index) && this.#visibleEntries.has(index)) {
-        this.#ballDx = -this.#ballDx;
-        this.#ballDy = -this.#ballDy;
-        breakBrick(index);
-        return;
-      }
-    }
-  }
-  #random(min, max) {
-    return Math.floor(Math.random() * (max - min) + min);
-  }
-  #party() {
-    this.#resetCanvas();
-    let count = 0;
-    const columnCount = 15;
-    const rowCount = 5;
-    const xSpacing = this.offsetWidth / columnCount;
-    const ySpacing = this.offsetHeight * 0.7 / columnCount;
-    const timeoutIDs = [];
-    const randomOffset = () => -20 + Math.random() * 40;
-    const drawConfetti = () => {
-      for (let i = 0; i < columnCount * rowCount; i++) {
-        const confettiContainerElement = document.createElement("span");
-        confettiContainerElement.className = "confetti-100";
-        confettiContainerElement.append(this.#createConfettiElement(
-          i % columnCount * xSpacing + randomOffset(),
-          i % rowCount * ySpacing + randomOffset()
-        ));
-        timeoutIDs.push(window.setTimeout(() => this.append(confettiContainerElement), Math.random() * 100));
-        timeoutIDs.push(window.setTimeout(() => {
-          confettiContainerElement.remove();
-        }, 1e3));
-      }
-      if (++count < 6) {
-        setTimeout(drawConfetti, Math.random() * 100 + 400);
-        return;
-      }
-      window.alert(`${i18nString(UIStrings.congrats)}
-${i18nString(UIStrings.ps)}`);
-      timeoutIDs.forEach((id) => clearTimeout(id));
-      this.#closeGame();
-    };
-    drawConfetti();
-  }
-  #createConfettiElement(x, y) {
-    const maxDistance = 400;
-    const maxRotation = 3;
-    const emojies = ["\u{1F4AF}", "\u{1F389}", "\u{1F38A}"];
-    const confettiElement = document.createElement("span");
-    confettiElement.textContent = emojies[this.#random(0, emojies.length)];
-    confettiElement.className = "confetti-100-particle";
-    confettiElement.style.setProperty("--rotation", this.#random(-maxRotation * 360, maxRotation * 360) + "deg");
-    confettiElement.style.setProperty("--to-X", this.#random(-maxDistance, maxDistance) + "px");
-    confettiElement.style.setProperty("--to-Y", this.#random(-maxDistance, maxDistance) + "px");
-    confettiElement.style.left = x + "px";
-    confettiElement.style.top = y + "px";
-    return confettiElement;
-  }
-};
-customElements.define("brick-breaker", BrickBreaker);
-
 // ../../front_end/ui/legacy/components/perf_ui/ChartViewport.ts
 var ChartViewport_exports = {};
 __export(ChartViewport_exports, {
@@ -529,7 +12,7 @@ __export(ChartViewport_exports, {
 import * as Common2 from "../../../../core/common/common.js";
 import * as Platform3 from "../../../../core/platform/platform.js";
 import * as RenderCoordinator from "../../../components/render_coordinator/render_coordinator.js";
-import * as UI4 from "../../legacy.js";
+import * as UI3 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/chartViewport.css.js
 var chartViewport_css_default = `/*
@@ -627,17 +110,17 @@ __export(FlameChart_exports, {
 });
 import * as Common from "../../../../core/common/common.js";
 import * as Host2 from "../../../../core/host/host.js";
-import * as i18n3 from "../../../../core/i18n/i18n.js";
+import * as i18n from "../../../../core/i18n/i18n.js";
 import * as Platform2 from "../../../../core/platform/platform.js";
 import * as Trace from "../../../../models/trace/trace.js";
 import * as VisualLogging from "../../../visual_logging/visual_logging.js";
 import * as Buttons from "../../../components/buttons/buttons.js";
 import { html, nothing, render } from "../../../lit/lit.js";
-import * as UI3 from "../../legacy.js";
-import * as ThemeSupport7 from "../../theme_support/theme_support.js";
+import * as UI2 from "../../legacy.js";
+import * as ThemeSupport5 from "../../theme_support/theme_support.js";
 
 // ../../front_end/ui/legacy/components/perf_ui/CanvasHelper.ts
-import * as ThemeSupport3 from "../../theme_support/theme_support.js";
+import * as ThemeSupport from "../../theme_support/theme_support.js";
 function horizontalLine(context, width, y) {
   context.moveTo(0, y);
   context.lineTo(width, y);
@@ -659,9 +142,9 @@ function drawIcon(context, x, y, width, pathData, iconColor = "--sys-color-on-su
   const p = new Path2D(pathData);
   context.save();
   context.translate(x, y);
-  context.fillStyle = ThemeSupport3.ThemeSupport.instance().getComputedValue("--sys-color-cdt-base-container");
+  context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue("--sys-color-cdt-base-container");
   context.fillRect(0, 0, width, width);
-  context.fillStyle = ThemeSupport3.ThemeSupport.instance().getComputedValue(iconColor);
+  context.fillStyle = ThemeSupport.ThemeSupport.instance().getComputedValue(iconColor);
   const scale = width / 20;
   context.scale(scale, scale);
   context.fill(p);
@@ -783,8 +266,8 @@ var TimelineGrid_exports = {};
 __export(TimelineGrid_exports, {
   TimelineGrid: () => TimelineGrid
 });
-import * as UI2 from "../../legacy.js";
-import * as ThemeSupport5 from "../../theme_support/theme_support.js";
+import * as UI from "../../legacy.js";
+import * as ThemeSupport3 from "../../theme_support/theme_support.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/timelineGrid.css.js
 var timelineGrid_css_default = `/*
@@ -863,7 +346,7 @@ var TimelineGrid = class _TimelineGrid {
   #dividersLabelBarElement;
   constructor() {
     this.element = document.createElement("div");
-    UI2.DOMUtilities.appendStyle(this.element, timelineGrid_css_default);
+    UI.DOMUtilities.appendStyle(this.element, timelineGrid_css_default);
     this.#dividersElement = this.element.createChild("div", "resources-dividers");
     this.gridHeaderElement = document.createElement("div");
     this.gridHeaderElement.classList.add("timeline-grid-header");
@@ -923,9 +406,9 @@ var TimelineGrid = class _TimelineGrid {
     context.scale(window.devicePixelRatio, window.devicePixelRatio);
     const width = Math.ceil(context.canvas.width / window.devicePixelRatio);
     context.beginPath();
-    context.fillStyle = ThemeSupport5.ThemeSupport.instance().getComputedValue("--color-background-opacity-80");
+    context.fillStyle = ThemeSupport3.ThemeSupport.instance().getComputedValue("--color-background-opacity-80");
     context.fillRect(0, 0, width, headerHeight);
-    context.fillStyle = ThemeSupport5.ThemeSupport.instance().getComputedValue("--sys-color-on-surface");
+    context.fillStyle = ThemeSupport3.ThemeSupport.instance().getComputedValue("--sys-color-on-surface");
     context.textBaseline = "hanging";
     context.font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
     const paddingRight = 4;
@@ -1028,7 +511,7 @@ var TimelineGrid = class _TimelineGrid {
 // ../../front_end/ui/legacy/components/perf_ui/FlameChart.ts
 var KEYBOARD_FAKED_CONTEXT_MENU_DETAIL = -1;
 var SUBTITLE_FONT_SIZE_AND_STYLE = "italic 10px";
-var UIStrings2 = {
+var UIStrings = {
   /**
    * @description Accessible announcement when an event is selected by tabbing into a group in the flame chart.
    * @example {Paint} PH1
@@ -1084,8 +567,8 @@ var UIStrings2 = {
    */
   copyTrackUrl: "Copy track URL"
 };
-var str_2 = i18n3.i18n.registerUIStrings("ui/legacy/components/perf_ui/FlameChart.ts", UIStrings2);
-var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
+var str_ = i18n.i18n.registerUIStrings("ui/legacy/components/perf_ui/FlameChart.ts", UIStrings);
+var i18nString = i18n.i18n.getLocalizedString.bind(void 0, str_);
 var HEADER_LEFT_PADDING = 6;
 var ARROW_SIDE = 8;
 var EXPANSION_ARROW_INDENT = HEADER_LEFT_PADDING + ARROW_SIDE / 2;
@@ -1128,7 +611,7 @@ var FilterAction = /* @__PURE__ */ ((FilterAction2) => {
   return FilterAction2;
 })(FilterAction || {});
 var FlameChartBase = Common.ObjectWrapper.eventMixin(
-  UI3.Widget.VBox
+  UI2.Widget.VBox
 );
 var FlameChart = class extends FlameChartBase {
   flameChartDelegate;
@@ -1220,7 +703,7 @@ var FlameChart = class extends FlameChartBase {
     this.#font = `${DEFAULT_FONT_SIZE} ${getFontFamilyForCanvas()}`;
     this.#subtitleFont = `${SUBTITLE_FONT_SIZE_AND_STYLE} ${getFontFamilyForCanvas()}`;
     this.registerRequiredCSS(flameChart_css_default);
-    this.registerRequiredCSS(UI3.inspectorCommonStyles);
+    this.registerRequiredCSS(UI2.inspectorCommonStyles);
     this.contentElement.classList.add("flame-chart-main-pane");
     if (typeof optionalConfig.selectedElementOutline === "boolean") {
       this.#selectedElementOutlineEnabled = optionalConfig.selectedElementOutline;
@@ -1246,8 +729,8 @@ var FlameChart = class extends FlameChartBase {
     this.context = this.canvas.getContext("2d");
     this.candyStripePattern = this.candyStripePatternGray = null;
     this.canvas.tabIndex = 0;
-    UI3.ARIAUtils.setLabel(this.canvas, i18nString2(UIStrings2.flameChart));
-    UI3.ARIAUtils.markAsTree(this.canvas);
+    UI2.ARIAUtils.setLabel(this.canvas, i18nString(UIStrings.flameChart));
+    UI2.ARIAUtils.markAsTree(this.canvas);
     this.setDefaultFocusedElement(this.canvas);
     this.canvas.classList.add("flame-chart-canvas");
     this.canvas.addEventListener("mousemove", this.onMouseMove.bind(this), false);
@@ -1266,7 +749,7 @@ var FlameChart = class extends FlameChartBase {
     this.canvas.addEventListener("focus", () => {
       this.dispatchEventToListeners("CanvasFocused" /* CANVAS_FOCUSED */);
     }, false);
-    UI3.UIUtils.installDragHandle(
+    UI2.UIUtils.installDragHandle(
       this.viewportElement,
       this.startDragging.bind(this),
       this.dragging.bind(this),
@@ -1303,14 +786,14 @@ var FlameChart = class extends FlameChartBase {
   }
   wasShown() {
     super.wasShown();
-    ThemeSupport7.ThemeSupport.instance().addEventListener(
-      ThemeSupport7.ThemeChangeEvent.eventName,
+    ThemeSupport5.ThemeSupport.instance().addEventListener(
+      ThemeSupport5.ThemeChangeEvent.eventName,
       this.#boundOnThemeChanged
     );
   }
   willHide() {
-    ThemeSupport7.ThemeSupport.instance().removeEventListener(
-      ThemeSupport7.ThemeChangeEvent.eventName,
+    ThemeSupport5.ThemeSupport.instance().removeEventListener(
+      ThemeSupport5.ThemeChangeEvent.eventName,
       this.#boundOnThemeChanged
     );
     this.hideHighlight();
@@ -1342,9 +825,6 @@ var FlameChart = class extends FlameChartBase {
     if (this.popoverElement.children.length) {
       this.updatePopoverOffset();
     }
-  }
-  getBarHeight() {
-    return this.barHeight;
   }
   setBarHeight(value) {
     this.barHeight = value;
@@ -1861,12 +1341,12 @@ var FlameChart = class extends FlameChartBase {
     const groupName = groups[groupIndex].name;
     if (!groups[groupIndex].selectable) {
       this.deselectAllGroups();
-      UI3.ARIAUtils.LiveAnnouncer.alert(i18nString2(UIStrings2.sHovered, { PH1: groupName }));
+      UI2.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.sHovered, { PH1: groupName }));
     } else {
       this.selectedGroupIndex = groupIndex;
       this.flameChartDelegate.updateSelectedGroup(this, groups[groupIndex]);
       this.draw();
-      UI3.ARIAUtils.LiveAnnouncer.alert(i18nString2(UIStrings2.sSelected, { PH1: groupName }));
+      UI2.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.sSelected, { PH1: groupName }));
     }
   }
   deselectAllGroups() {
@@ -1984,8 +1464,8 @@ var FlameChart = class extends FlameChartBase {
     this.scrollGroupIntoView(groupIndex);
     if (!propagatedExpand) {
       const groupName = groups[groupIndex].name;
-      const content = group.expanded ? i18nString2(UIStrings2.sExpanded, { PH1: groupName }) : i18nString2(UIStrings2.sCollapsed, { PH1: groupName });
-      UI3.ARIAUtils.LiveAnnouncer.alert(content);
+      const content = group.expanded ? i18nString(UIStrings.sExpanded, { PH1: groupName }) : i18nString(UIStrings.sCollapsed, { PH1: groupName });
+      UI2.ARIAUtils.LiveAnnouncer.alert(content);
     }
   }
   moveGroupUp(groupIndex) {
@@ -2129,8 +1609,8 @@ var FlameChart = class extends FlameChartBase {
     if (this.#inTrackConfigEditMode === false) {
       return;
     }
-    this.contextMenu = new UI3.ContextMenu.ContextMenu(event);
-    const label = i18nString2(UIStrings2.exitTrackConfigurationMode);
+    this.contextMenu = new UI2.ContextMenu.ContextMenu(event);
+    const label = i18nString(UIStrings.exitTrackConfigurationMode);
     this.contextMenu.defaultSection().appendItem(label, () => {
       this.#exitEditMode();
     }, {
@@ -2147,14 +1627,14 @@ var FlameChart = class extends FlameChartBase {
     if (!group) {
       return;
     }
-    this.contextMenu = new UI3.ContextMenu.ContextMenu(event);
-    this.contextMenu.defaultSection().appendItem(i18nString2(UIStrings2.copyTrackName), () => {
+    this.contextMenu = new UI2.ContextMenu.ContextMenu(event);
+    this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyTrackName), () => {
       Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(group.name);
     }, {
       jslogContext: "timeline.copy-track-name"
     });
     if (group.url) {
-      this.contextMenu.defaultSection().appendItem(i18nString2(UIStrings2.copyTrackUrl), () => {
+      this.contextMenu.defaultSection().appendItem(i18nString(UIStrings.copyTrackUrl), () => {
         Host2.InspectorFrontendHost.InspectorFrontendHostInstance.copyText(group.url);
       }, {
         jslogContext: "timeline.copy-track-url"
@@ -2162,7 +1642,7 @@ var FlameChart = class extends FlameChartBase {
     }
     if (this.#hasTrackConfigurationMode()) {
       this.contextMenu.defaultSection().appendSeparator();
-      const label = i18nString2(UIStrings2.enterTrackConfigurationMode);
+      const label = i18nString(UIStrings.enterTrackConfigurationMode);
       this.contextMenu.defaultSection().appendItem(label, () => {
         this.enterTrackConfigurationMode();
       }, {
@@ -2194,9 +1674,9 @@ var FlameChart = class extends FlameChartBase {
       this.setSelectedEntry(entryIndexToUse);
       this.#selectGroup(groupIndex);
     }
-    this.contextMenu = this.dataProvider.customizedContextMenu?.(event, this.selectedEntryIndex, groupIndex) ?? new UI3.ContextMenu.ContextMenu(event);
+    this.contextMenu = this.dataProvider.customizedContextMenu?.(event, this.selectedEntryIndex, groupIndex) ?? new UI2.ContextMenu.ContextMenu(event);
     const annotationSection = this.contextMenu.annotationSection();
-    annotationSection.appendItem(i18nString2(UIStrings2.labelEntry), () => {
+    annotationSection.appendItem(i18nString(UIStrings.labelEntry), () => {
       this.dispatchEventToListeners(
         "EntryLabelAnnotationAdded" /* ENTRY_LABEL_ANNOTATION_ADDED */,
         { entryIndex: this.selectedEntryIndex, withLinkCreationButton: false }
@@ -2204,7 +1684,7 @@ var FlameChart = class extends FlameChartBase {
     }, {
       jslogContext: "timeline.annotations.create-entry-label"
     });
-    annotationSection.appendItem(i18nString2(UIStrings2.linkEntries), () => {
+    annotationSection.appendItem(i18nString(UIStrings.linkEntries), () => {
       this.dispatchEventToListeners("EntriesLinkAnnotationCreated" /* ENTRIES_LINK_ANNOTATION_CREATED */, { entryFromIndex: this.selectedEntryIndex });
     }, {
       jslogContext: "timeline.annotations.create-entries-link"
@@ -2240,7 +1720,7 @@ var FlameChart = class extends FlameChartBase {
     this.canvas.dispatchEvent(event);
   }
   onKeyDown(e) {
-    if (UI3.KeyboardShortcut.KeyboardShortcut.hasAtLeastOneModifier(e) || !this.timelineData()) {
+    if (UI2.KeyboardShortcut.KeyboardShortcut.hasAtLeastOneModifier(e) || !this.timelineData()) {
       return;
     }
     if (e.key === " " && this.selectedEntryIndex > -1) {
@@ -2256,54 +1736,6 @@ var FlameChart = class extends FlameChartBase {
   }
   bindCanvasEvent(eventName, onEvent) {
     this.canvas.addEventListener(eventName, onEvent);
-  }
-  drawTrackOnCanvas(trackName, context, minWidth) {
-    const timelineData = this.timelineData();
-    if (!timelineData) {
-      return null;
-    }
-    const canvasWidth = this.offsetWidth;
-    const canvasHeight = this.offsetHeight;
-    context.save();
-    const ratio = window.devicePixelRatio;
-    context.scale(ratio, ratio);
-    context.fillStyle = "rgba(0, 0, 0, 0)";
-    context.fillRect(0, 0, canvasWidth, canvasHeight);
-    context.font = this.#font;
-    const groups = this.rawTimelineData?.groups || [];
-    const groupOffsets = this.groupOffsets;
-    if (!groups.length || !groupOffsets) {
-      return null;
-    }
-    const trackIndex = groups.findIndex((g) => g.name.includes(trackName));
-    if (trackIndex < 0) {
-      return null;
-    }
-    this.scrollGroupIntoView(trackIndex);
-    const group = groups[trackIndex];
-    const startLevel = group.startLevel;
-    const endLevel = groups[trackIndex + 1].startLevel;
-    const groupTop = groupOffsets[trackIndex];
-    const nextOffset = groupOffsets[trackIndex + 1];
-    const { drawBatches, titleIndices } = this.getDrawBatches(context, timelineData);
-    const entryIndexIsInTrack = (index) => {
-      const barWidth = Math.min(this.#eventBarWidth(timelineData, index), canvasWidth);
-      return timelineData.entryLevels[index] >= startLevel && timelineData.entryLevels[index] < endLevel && barWidth > minWidth;
-    };
-    let allFilteredIndexes = [];
-    for (const [{ color, outline }, { indexes }] of drawBatches) {
-      const filteredIndexes = indexes.filter(entryIndexIsInTrack);
-      allFilteredIndexes = [...allFilteredIndexes, ...filteredIndexes];
-      this.#drawBatchEvents(context, timelineData, color, filteredIndexes, outline);
-    }
-    const filteredTitleIndices = titleIndices.filter(entryIndexIsInTrack);
-    this.drawEventTitles(context, timelineData, filteredTitleIndices, canvasWidth);
-    context.restore();
-    return {
-      top: groupOffsets[trackIndex],
-      height: nextOffset - groupTop,
-      visibleEntries: new Set(allFilteredIndexes)
-    };
   }
   handleKeyboardGroupNavigation(event) {
     const keyboardEvent = event;
@@ -2386,7 +1818,7 @@ var FlameChart = class extends FlameChartBase {
     );
     const eventName = this.dataProvider.entryTitle(firstEntryIndex);
     if (eventName) {
-      UI3.ARIAUtils.LiveAnnouncer.alert(i18nString2(UIStrings2.eventSelectedFromGroup, {
+      UI2.ARIAUtils.LiveAnnouncer.alert(i18nString(UIStrings.eventSelectedFromGroup, {
         PH1: eventName,
         PH2: group.name
       }));
@@ -2471,7 +1903,7 @@ var FlameChart = class extends FlameChartBase {
       return start1 < end2 && start2 < end1;
     }
     const keyboardEvent = event;
-    const keys = UI3.KeyboardShortcut.Keys;
+    const keys = UI2.KeyboardShortcut.Keys;
     if (keyboardEvent.keyCode === keys.Left.code || keyboardEvent.keyCode === keys.Right.code) {
       const level = timelineData.entryLevels[this.selectedEntryIndex];
       const levelIndexes = this.timelineLevels ? this.timelineLevels[level] : [];
@@ -2745,7 +2177,7 @@ var FlameChart = class extends FlameChartBase {
       variant: Buttons.Button.Variant.PRIMARY,
       jslogContext: "track-configuration-exit"
     };
-    button.innerText = i18nString2(UIStrings2.exitTrackConfigurationMode);
+    button.innerText = i18nString(UIStrings.exitTrackConfigurationMode);
     div.appendChild(button);
     button.addEventListener("click", () => {
       this.#exitEditMode();
@@ -2882,7 +2314,7 @@ var FlameChart = class extends FlameChartBase {
       this.#drawEventRect(context, timelineData, entryIndex);
     }
     if (outline) {
-      const nearBlack = ThemeSupport7.ThemeSupport.instance().getComputedValue("--ref-palette-neutral10");
+      const nearBlack = ThemeSupport5.ThemeSupport.instance().getComputedValue("--ref-palette-neutral10");
       context.strokeStyle = `color-mix(in srgb, ${color}, ${nearBlack} 60%)`;
       context.stroke();
     }
@@ -3036,13 +2468,6 @@ var FlameChart = class extends FlameChartBase {
     const barHeight = this.levelHeight(barLevel);
     return barHeight;
   }
-  entryWidth(entryIndex) {
-    const timelineData = this.timelineData();
-    if (!timelineData) {
-      return 0;
-    }
-    return this.#eventBarWidth(timelineData, entryIndex);
-  }
   #eventBarWidth(timelineData, entryIndex) {
     const { entryTotalTimes, entryStartTimes } = timelineData;
     const duration = entryTotalTimes[entryIndex];
@@ -3067,7 +2492,7 @@ var FlameChart = class extends FlameChartBase {
     const { entryTotalTimes, entryStartTimes } = timelineData;
     const top = this.chartViewport.scrollOffset();
     const textPadding = this.textPadding;
-    const minTextWidth = 2 * textPadding + UI3.UIUtils.measureTextWidth(context, "\u2026");
+    const minTextWidth = 2 * textPadding + UI2.UIUtils.measureTextWidth(context, "\u2026");
     const minTextWidthDuration = this.chartViewport.pixelToTimeOffset(minTextWidth);
     const keysByColorWithOutline = /* @__PURE__ */ new Map();
     const keysByColorWithNoOutline = /* @__PURE__ */ new Map();
@@ -3168,7 +2593,7 @@ var FlameChart = class extends FlameChartBase {
     context.scale(ratio, ratio);
     context.translate(0, -top);
     context.font = this.#font;
-    context.fillStyle = ThemeSupport7.ThemeSupport.instance().getComputedValue("--sys-color-cdt-base-container");
+    context.fillStyle = ThemeSupport5.ThemeSupport.instance().getComputedValue("--sys-color-cdt-base-container");
     this.forEachGroupInViewport((offset, _, group) => {
       const paddingHeight = group.style.padding;
       if (paddingHeight < 5) {
@@ -3179,7 +2604,7 @@ var FlameChart = class extends FlameChartBase {
     if (groups.length && lastGroupOffset < top + height) {
       context.fillRect(0, lastGroupOffset + 2, width, top + height - lastGroupOffset);
     }
-    context.strokeStyle = ThemeSupport7.ThemeSupport.instance().getComputedValue("--sys-color-neutral-container");
+    context.strokeStyle = ThemeSupport5.ThemeSupport.instance().getComputedValue("--sys-color-neutral-container");
     context.beginPath();
     this.forEachGroupInViewport((offset, _, group, isFirst) => {
       if (isFirst || group.style.padding < 4) {
@@ -3225,7 +2650,7 @@ var FlameChart = class extends FlameChartBase {
           group.style.height - 2 * HEADER_LABEL_Y_PADDING
         );
       }
-      context.fillStyle = this.#inTrackConfigEditMode && group.hidden ? ThemeSupport7.ThemeSupport.instance().getComputedValue("--sys-color-token-subtle", this.contentElement) : group.style.color;
+      context.fillStyle = this.#inTrackConfigEditMode && group.hidden ? ThemeSupport5.ThemeSupport.instance().getComputedValue("--sys-color-token-subtle", this.contentElement) : group.style.color;
       const nestingLevel = group.style.nestingLevel || 0;
       const titleStart = iconsWidth + EXPANSION_ARROW_INDENT * (nestingLevel + 1) + ARROW_SIDE / 2 + HEADER_LABEL_X_PADDING;
       const y = offset + group.style.height - this.textBaseline;
@@ -3234,7 +2659,7 @@ var FlameChart = class extends FlameChartBase {
         displayName = group.name;
         const maxTextWidth = (width - titleStart - HEADER_LABEL_X_PADDING) * 0.85;
         if (context.measureText(displayName).width > maxTextWidth) {
-          displayName = UI3.UIUtils.trimTextMiddle(context, displayName, maxTextWidth);
+          displayName = UI2.UIUtils.trimTextMiddle(context, displayName, maxTextWidth);
         }
         this.#urlTruncations.names.set(groupIndex, displayName);
       }
@@ -3249,7 +2674,7 @@ var FlameChart = class extends FlameChartBase {
         context.fillRect(
           titleStart,
           offset + group.style.height / 2,
-          UI3.UIUtils.measureTextWidth(context, displayName),
+          UI2.UIUtils.measureTextWidth(context, displayName),
           1
         );
       }
@@ -3272,7 +2697,7 @@ var FlameChart = class extends FlameChartBase {
       }
     });
     context.restore();
-    context.fillStyle = ThemeSupport7.ThemeSupport.instance().getComputedValue("--sys-color-token-subtle");
+    context.fillStyle = ThemeSupport5.ThemeSupport.instance().getComputedValue("--sys-color-token-subtle");
     this.forEachGroupInViewport((offset, index, group) => {
       if (this.isGroupCollapsible(index)) {
         drawExpansionArrow(
@@ -3283,14 +2708,14 @@ var FlameChart = class extends FlameChartBase {
         );
       }
     });
-    context.strokeStyle = ThemeSupport7.ThemeSupport.instance().getComputedValue("--sys-color-neutral-outline");
+    context.strokeStyle = ThemeSupport5.ThemeSupport.instance().getComputedValue("--sys-color-neutral-outline");
     context.beginPath();
     context.stroke();
     this.forEachGroupInViewport((offset, index, group, _isFirst, groupHeight) => {
       if (this.isGroupFocused(index)) {
         const lineWidth = 2;
         const bracketLength = 10;
-        context.fillStyle = ThemeSupport7.ThemeSupport.instance().getComputedValue("--selected-group-border", this.contentElement);
+        context.fillStyle = ThemeSupport5.ThemeSupport.instance().getComputedValue("--selected-group-border", this.contentElement);
         context.fillRect(0, offset - lineWidth, lineWidth, groupHeight - group.style.padding + 2 * lineWidth);
         context.fillRect(0, offset - lineWidth, bracketLength, lineWidth);
         context.fillRect(0, offset + groupHeight - group.style.padding, bracketLength, lineWidth);
@@ -3324,7 +2749,7 @@ var FlameChart = class extends FlameChartBase {
       const y = this.levelToOffset(level);
       const h = this.levelHeight(level);
       const padding = 4;
-      const width = Math.ceil(UI3.UIUtils.measureTextWidth(context, title)) + 2 * padding;
+      const width = Math.ceil(UI2.UIUtils.measureTextWidth(context, title)) + 2 * padding;
       lastMarkerX = x + width + 1;
       lastMarkerLevel = level;
       this.markerPositions.set(entryIndex, { x, width });
@@ -3401,7 +2826,7 @@ var FlameChart = class extends FlameChartBase {
         context.font = this.#font;
         const hasArrowDecoration = this.entryHasDecoration(entryIndex, "HIDDEN_DESCENDANTS_ARROW" /* HIDDEN_DESCENDANTS_ARROW */);
         const maxBarWidth = hasArrowDecoration && barWidth > barHeight * 2 ? barWidth - textPadding - this.barHeight : barWidth - 2 * textPadding;
-        text = UI3.UIUtils.trimTextMiddle(
+        text = UI2.UIUtils.trimTextMiddle(
           context,
           text,
           maxBarWidth
@@ -3519,7 +2944,7 @@ var FlameChart = class extends FlameChartBase {
   labelWidthForGroup(context, group) {
     context.save();
     context.font = this.#font;
-    const width = EXPANSION_ARROW_INDENT * (group.style.nestingLevel + 1) + ARROW_SIDE / 2 + HEADER_LABEL_X_PADDING + UI3.UIUtils.measureTextWidth(context, group.name) + HEADER_LABEL_X_PADDING - HEADER_LEFT_PADDING;
+    const width = EXPANSION_ARROW_INDENT * (group.style.nestingLevel + 1) + ARROW_SIDE / 2 + HEADER_LABEL_X_PADDING + UI2.UIUtils.measureTextWidth(context, group.name) + HEADER_LABEL_X_PADDING - HEADER_LEFT_PADDING;
     context.restore();
     return width;
   }
@@ -3611,7 +3036,7 @@ var FlameChart = class extends FlameChartBase {
     context.save();
     context.scale(ratio, ratio);
     context.translate(0, -top);
-    const arrowColor = ThemeSupport7.ThemeSupport.instance().getComputedValue("--sys-color-on-surface-subtle");
+    const arrowColor = ThemeSupport5.ThemeSupport.instance().getComputedValue("--sys-color-on-surface-subtle");
     context.fillStyle = arrowColor;
     context.strokeStyle = arrowColor;
     for (let i = 0; i < td.initiatorsData.length; ++i) {
@@ -3752,7 +3177,7 @@ var FlameChart = class extends FlameChartBase {
     }
     const marker = timelineData.markers[markerIndex];
     const barX = this.timeToPositionClipped(marker.startTime());
-    UI3.Tooltip.Tooltip.install(element, marker.title() || "");
+    UI2.Tooltip.Tooltip.install(element, marker.title() || "");
     const style = element.style;
     style.left = barX + "px";
     style.backgroundColor = marker.color();
@@ -4454,7 +3879,7 @@ function calculatePopoverOffset(options) {
 }
 
 // ../../front_end/ui/legacy/components/perf_ui/ChartViewport.ts
-var ChartViewport = class extends UI4.Widget.VBox {
+var ChartViewport = class extends UI3.Widget.VBox {
   delegate;
   viewportElement;
   #alwaysShowVerticalScroll;
@@ -4496,7 +3921,7 @@ var ChartViewport = class extends UI4.Widget.VBox {
     this.viewportElement.addEventListener("wheel", this.onMouseWheel.bind(this), false);
     this.viewportElement.addEventListener("keydown", this.onChartKeyDown.bind(this), false);
     this.viewportElement.addEventListener("keyup", this.onChartKeyUp.bind(this), false);
-    UI4.UIUtils.installDragHandle(
+    UI3.UIUtils.installDragHandle(
       this.viewportElement,
       this.startDragging.bind(this),
       this.dragging.bind(this),
@@ -4504,7 +3929,7 @@ var ChartViewport = class extends UI4.Widget.VBox {
       "-webkit-grabbing",
       null
     );
-    UI4.UIUtils.installDragHandle(
+    UI3.UIUtils.installDragHandle(
       this.viewportElement,
       this.startRangeSelection.bind(this),
       this.rangeSelectionDragging.bind(this),
@@ -4652,7 +4077,7 @@ var ChartViewport = class extends UI4.Widget.VBox {
         this.handleZoomGesture(zoomDelta);
       }
     } else if (navigation === "modern") {
-      const isCtrlOrCmd = UI4.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(wheelEvent);
+      const isCtrlOrCmd = UI3.KeyboardShortcut.KeyboardShortcut.eventHasCtrlEquivalentKey(wheelEvent);
       if (wheelEvent.shiftKey) {
         this.handleHorizontalPanGesture(
           panDelta,
@@ -4781,7 +4206,7 @@ var ChartViewport = class extends UI4.Widget.VBox {
     this.showCursor(keyboardEvent.shiftKey);
   }
   handleZoomPanScrollKeys(keyboardEvent) {
-    if (UI4.KeyboardShortcut.KeyboardShortcut.hasAtLeastOneModifier(keyboardEvent) && !keyboardEvent.shiftKey) {
+    if (UI3.KeyboardShortcut.KeyboardShortcut.hasAtLeastOneModifier(keyboardEvent) && !keyboardEvent.shiftKey) {
       return;
     }
     const zoomFactor = keyboardEvent.shiftKey ? 0.8 : 0.3;
@@ -4924,7 +4349,7 @@ var ChartViewport = class extends UI4.Widget.VBox {
       this.scheduleUpdate();
       return;
     }
-    this.cancelWindowTimesAnimation = UI4.UIUtils.animateFunction(
+    this.cancelWindowTimesAnimation = UI3.UIUtils.animateFunction(
       this.element.window(),
       animateWindowTimes.bind(this),
       [{ from: this.visibleLeftTime, to: startTime }, { from: this.visibleRightTime, to: endTime }],
@@ -4959,10 +4384,10 @@ __export(FilmStripView_exports, {
 });
 import * as Common3 from "../../../../core/common/common.js";
 import * as Host3 from "../../../../core/host/host.js";
-import * as i18n5 from "../../../../core/i18n/i18n.js";
+import * as i18n3 from "../../../../core/i18n/i18n.js";
 import * as Trace2 from "../../../../models/trace/trace.js";
 import * as VisualLogging2 from "../../../visual_logging/visual_logging.js";
-import * as UI5 from "../../legacy.js";
+import * as UI4 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/filmStripView.css.js
 var filmStripView_css_default = `/*
@@ -5059,7 +4484,7 @@ var filmStripView_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./filmStripView.css")} */`;
 
 // ../../front_end/ui/legacy/components/perf_ui/FilmStripView.ts
-var UIStrings3 = {
+var UIStrings2 = {
   /**
    * @description Tooltip text for a screenshot frame in the film strip view of the Performance panel.
    */
@@ -5082,10 +4507,10 @@ var UIStrings3 = {
    */
   nextFrame: "Next frame"
 };
-var str_3 = i18n5.i18n.registerUIStrings("ui/legacy/components/perf_ui/FilmStripView.ts", UIStrings3);
-var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
+var str_2 = i18n3.i18n.registerUIStrings("ui/legacy/components/perf_ui/FilmStripView.ts", UIStrings2);
+var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var FilmStripViewBase = Common3.ObjectWrapper.eventMixin(
-  UI5.Widget.HBox
+  UI4.Widget.HBox
 );
 var FilmStripView = class _FilmStripView extends FilmStripViewBase {
   statusLabel;
@@ -5114,17 +4539,17 @@ var FilmStripView = class _FilmStripView extends FilmStripViewBase {
   }
   createFrameElement(frame) {
     const time = Trace2.Helpers.Timing.microToMilli(frame.screenshotEvent.ts);
-    const frameTime = i18n5.TimeUtilities.millisToString(time - this.zeroTime);
+    const frameTime = i18n3.TimeUtilities.millisToString(time - this.zeroTime);
     const element = document.createElement("button");
     element.classList.add("frame");
-    UI5.Tooltip.Tooltip.install(element, i18nString3(UIStrings3.doubleclickToZoomImageClickTo));
+    UI4.Tooltip.Tooltip.install(element, i18nString2(UIStrings2.doubleclickToZoomImageClickTo));
     element.createChild("div", "time").textContent = frameTime;
     element.tabIndex = 0;
     element.setAttribute("jslog", `${VisualLogging2.preview("film-strip").track({ click: true, dblclick: true })}`);
-    element.setAttribute("aria-label", i18nString3(UIStrings3.screenshotForSSelectToView, { PH1: frameTime }));
-    UI5.ARIAUtils.markAsButton(element);
+    element.setAttribute("aria-label", i18nString2(UIStrings2.screenshotForSSelectToView, { PH1: frameTime }));
+    UI4.ARIAUtils.markAsButton(element);
     const imageElement = element.createChild("div", "thumbnail").createChild("img");
-    imageElement.alt = i18nString3(UIStrings3.screenshot);
+    imageElement.alt = i18nString2(UIStrings2.screenshot);
     element.addEventListener("mousedown", this.onMouseEvent.bind(this, "FrameSelected" /* FRAME_SELECTED */, time), false);
     element.addEventListener("mouseenter", this.onMouseEvent.bind(this, "FrameEnter" /* FRAME_ENTER */, time), false);
     element.addEventListener("mouseout", this.onMouseEvent.bind(this, "FrameExit" /* FRAME_EXIT */, time), false);
@@ -5187,11 +4612,11 @@ var Dialog2 = class _Dialog {
   constructor(data) {
     this.#data = data;
     this.index = data.index;
-    const prevButton = UI5.UIUtils.createTextButton("\u25C0", this.onPrevFrame.bind(this));
-    UI5.Tooltip.Tooltip.install(prevButton, i18nString3(UIStrings3.previousFrame));
-    const nextButton = UI5.UIUtils.createTextButton("\u25B6", this.onNextFrame.bind(this));
-    UI5.Tooltip.Tooltip.install(nextButton, i18nString3(UIStrings3.nextFrame));
-    this.widget = new UI5.Widget.Widget({ classes: ["film-strip-image-dialog"] });
+    const prevButton = UI4.UIUtils.createTextButton("\u25C0", this.onPrevFrame.bind(this));
+    UI4.Tooltip.Tooltip.install(prevButton, i18nString2(UIStrings2.previousFrame));
+    const nextButton = UI4.UIUtils.createTextButton("\u25B6", this.onNextFrame.bind(this));
+    UI4.Tooltip.Tooltip.install(nextButton, i18nString2(UIStrings2.nextFrame));
+    this.widget = new UI4.Widget.Widget({ classes: ["film-strip-image-dialog"] });
     this.widget.registerRequiredCSS(filmStripView_css_default);
     const imageBox = document.createElement("div");
     imageBox.classList.add("image-box");
@@ -5226,12 +4651,12 @@ var Dialog2 = class _Dialog {
   }
   resize() {
     if (!this.dialog) {
-      this.dialog = new UI5.Dialog.Dialog();
+      this.dialog = new UI4.Dialog.Dialog();
       this.widget.show(this.dialog.contentElement);
       this.dialog.setDefaultFocusedElement(this.widget.element);
       this.dialog.show();
     }
-    this.dialog.setSizeBehavior(UI5.GlassPane.SizeBehavior.MEASURE_CONTENT);
+    this.dialog.setSizeBehavior(UI4.GlassPane.SizeBehavior.MEASURE_CONTENT);
   }
   keyDown(event) {
     const keyboardEvent = event;
@@ -5283,7 +4708,7 @@ var Dialog2 = class _Dialog {
     const timestamp = Trace2.Helpers.Timing.microToMilli(frame.screenshotEvent.ts);
     const timeBox = this.widget.contentElement.querySelector(".time-box");
     if (timeBox) {
-      timeBox.textContent = i18n5.TimeUtilities.millisToString(timestamp - this.#zeroTime());
+      timeBox.textContent = i18n3.TimeUtilities.millisToString(timestamp - this.#zeroTime());
     }
     const image = this.widget.contentElement.querySelector("img");
     if (!image) {
@@ -5301,22 +4726,22 @@ var GCActionDelegate_exports = {};
 __export(GCActionDelegate_exports, {
   GCActionDelegate: () => GCActionDelegate
 });
-import * as i18n7 from "../../../../core/i18n/i18n.js";
+import * as i18n5 from "../../../../core/i18n/i18n.js";
 import * as SDK from "../../../../core/sdk/sdk.js";
 import * as Snackbars from "../../../components/snackbars/snackbars.js";
-var UIStrings4 = {
+var UIStrings3 = {
   /**
    * @description Notification message shown when garbage collection completes.
    */
   garbageCollectionCompleted: "Garbage collection completed"
 };
-var str_4 = i18n7.i18n.registerUIStrings("ui/legacy/components/perf_ui/GCActionDelegate.ts", UIStrings4);
-var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
+var str_3 = i18n5.i18n.registerUIStrings("ui/legacy/components/perf_ui/GCActionDelegate.ts", UIStrings3);
+var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var GCActionDelegate = class {
   handleAction(_context, _actionId) {
     const promises = SDK.TargetManager.TargetManager.instance().models(SDK.HeapProfilerModel.HeapProfilerModel).map((heapProfilerModel) => heapProfilerModel.collectGarbage());
     void Promise.all(promises).then(() => {
-      Snackbars.Snackbar.Snackbar.show({ message: i18nString4(UIStrings4.garbageCollectionCompleted) });
+      Snackbars.Snackbar.Snackbar.show({ message: i18nString3(UIStrings3.garbageCollectionCompleted) });
     });
     return true;
   }
@@ -5519,7 +4944,7 @@ __export(NetworkPriorities_exports, {
   uiLabelForNetworkPriority: () => uiLabelForNetworkPriority,
   uiLabelToNetworkPriority: () => uiLabelToNetworkPriority
 });
-import * as i18n9 from "../../../../core/i18n/i18n.js";
+import * as i18n7 from "../../../../core/i18n/i18n.js";
 
 // ../../front_end/generated/protocol.ts
 var Accessibility;
@@ -8323,7 +7748,7 @@ var Runtime;
 })(Runtime || (Runtime = {}));
 
 // ../../front_end/ui/legacy/components/perf_ui/NetworkPriorities.ts
-var UIStrings5 = {
+var UIStrings4 = {
   /**
    * @description Label for lowest network priority.
    */
@@ -8345,8 +7770,8 @@ var UIStrings5 = {
    */
   highest: "Highest"
 };
-var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/components/perf_ui/NetworkPriorities.ts", UIStrings5);
-var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
+var str_4 = i18n7.i18n.registerUIStrings("ui/legacy/components/perf_ui/NetworkPriorities.ts", UIStrings4);
+var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
 function uiLabelForNetworkPriority(priority) {
   return priorityUILabelMap().get(priority) || "";
 }
@@ -8364,11 +7789,11 @@ function uiLabelToNetworkPriority(priorityLabel) {
 var priorityUILabelMapInstance = /* @__PURE__ */ new Map();
 function priorityUILabelMap() {
   if (priorityUILabelMapInstance.size === 0) {
-    priorityUILabelMapInstance.set(Network.ResourcePriority.VeryLow, i18nString5(UIStrings5.lowest));
-    priorityUILabelMapInstance.set(Network.ResourcePriority.Low, i18nString5(UIStrings5.low));
-    priorityUILabelMapInstance.set(Network.ResourcePriority.Medium, i18nString5(UIStrings5.medium));
-    priorityUILabelMapInstance.set(Network.ResourcePriority.High, i18nString5(UIStrings5.high));
-    priorityUILabelMapInstance.set(Network.ResourcePriority.VeryHigh, i18nString5(UIStrings5.highest));
+    priorityUILabelMapInstance.set(Network.ResourcePriority.VeryLow, i18nString4(UIStrings4.lowest));
+    priorityUILabelMapInstance.set(Network.ResourcePriority.Low, i18nString4(UIStrings4.low));
+    priorityUILabelMapInstance.set(Network.ResourcePriority.Medium, i18nString4(UIStrings4.medium));
+    priorityUILabelMapInstance.set(Network.ResourcePriority.High, i18nString4(UIStrings4.high));
+    priorityUILabelMapInstance.set(Network.ResourcePriority.VeryHigh, i18nString4(UIStrings4.highest));
   }
   return priorityUILabelMapInstance;
 }
@@ -8393,11 +7818,11 @@ __export(OverviewGrid_exports, {
   WindowSelector: () => WindowSelector
 });
 import * as Common4 from "../../../../core/common/common.js";
-import * as i18n11 from "../../../../core/i18n/i18n.js";
+import * as i18n9 from "../../../../core/i18n/i18n.js";
 import * as Platform5 from "../../../../core/platform/platform.js";
 import { createIcon } from "../../../kit/kit.js";
 import * as VisualLogging3 from "../../../visual_logging/visual_logging.js";
-import * as UI6 from "../../legacy.js";
+import * as UI5 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/overviewGrid.css.js
 var overviewGrid_css_default = `/*
@@ -8560,7 +7985,7 @@ var overviewGrid_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./overviewGrid.css")} */`;
 
 // ../../front_end/ui/legacy/components/perf_ui/OverviewGrid.ts
-var UIStrings6 = {
+var UIStrings5 = {
   /**
    * @description Accessible label for the selection window in the overview grid.
    */
@@ -8574,8 +7999,8 @@ var UIStrings6 = {
    */
   rightResizer: "Right resizer"
 };
-var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/components/perf_ui/OverviewGrid.ts", UIStrings6);
-var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
+var str_5 = i18n9.i18n.registerUIStrings("ui/legacy/components/perf_ui/OverviewGrid.ts", UIStrings5);
+var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var OverviewGrid = class {
   element;
   grid;
@@ -8680,10 +8105,10 @@ var Window = class extends Common4.ObjectWrapper.ObjectWrapper {
     super();
     this.parentElement = parentElement;
     this.parentElement.classList.add("parent-element");
-    UI6.ARIAUtils.markAsGroup(this.parentElement);
+    UI5.ARIAUtils.markAsGroup(this.parentElement);
     this.calculator = calculator;
-    UI6.ARIAUtils.setLabel(this.parentElement, i18nString6(UIStrings6.overviewGridWindow));
-    UI6.UIUtils.installDragHandle(
+    UI5.ARIAUtils.setLabel(this.parentElement, i18nString5(UIStrings5.overviewGridWindow));
+    UI5.UIUtils.installDragHandle(
       this.parentElement,
       this.startWindowSelectorDragging.bind(this),
       this.windowSelectorDragging.bind(this),
@@ -8692,7 +8117,7 @@ var Window = class extends Common4.ObjectWrapper.ObjectWrapper {
       null
     );
     if (dividersLabelBarElement) {
-      UI6.UIUtils.installDragHandle(
+      UI5.UIUtils.installDragHandle(
         dividersLabelBarElement,
         this.startWindowDragging.bind(this),
         this.windowDragging.bind(this),
@@ -8703,9 +8128,9 @@ var Window = class extends Common4.ObjectWrapper.ObjectWrapper {
     }
     this.parentElement.addEventListener("wheel", this.onMouseWheel.bind(this), true);
     this.parentElement.addEventListener("dblclick", this.resizeWindowMaximum.bind(this), true);
-    UI6.DOMUtilities.appendStyle(this.parentElement, overviewGrid_css_default);
+    UI5.DOMUtilities.appendStyle(this.parentElement, overviewGrid_css_default);
     this.leftResizeElement = parentElement.createChild("div", "overview-grid-window-resizer");
-    UI6.UIUtils.installDragHandle(
+    UI5.UIUtils.installDragHandle(
       this.leftResizeElement,
       this.resizerElementStartDragging.bind(this),
       this.leftResizeElementDragging.bind(this),
@@ -8713,20 +8138,20 @@ var Window = class extends Common4.ObjectWrapper.ObjectWrapper {
       "ew-resize"
     );
     this.rightResizeElement = parentElement.createChild("div", "overview-grid-window-resizer");
-    UI6.UIUtils.installDragHandle(
+    UI5.UIUtils.installDragHandle(
       this.rightResizeElement,
       this.resizerElementStartDragging.bind(this),
       this.rightResizeElementDragging.bind(this),
       null,
       "ew-resize"
     );
-    UI6.ARIAUtils.setLabel(this.leftResizeElement, i18nString6(UIStrings6.leftResizer));
-    UI6.ARIAUtils.markAsSlider(this.leftResizeElement);
+    UI5.ARIAUtils.setLabel(this.leftResizeElement, i18nString5(UIStrings5.leftResizer));
+    UI5.ARIAUtils.markAsSlider(this.leftResizeElement);
     const leftKeyDown = (event) => this.handleKeyboardResizing(event, false);
     this.leftResizeElement.addEventListener("keydown", leftKeyDown);
     this.leftResizeElement.addEventListener("click", this.onResizerClicked);
-    UI6.ARIAUtils.setLabel(this.rightResizeElement, i18nString6(UIStrings6.rightResizer));
-    UI6.ARIAUtils.markAsSlider(this.rightResizeElement);
+    UI5.ARIAUtils.setLabel(this.rightResizeElement, i18nString5(UIStrings5.rightResizer));
+    UI5.ARIAUtils.markAsSlider(this.rightResizeElement);
     const rightKeyDown = (event) => this.handleKeyboardResizing(event, true);
     this.rightResizeElement.addEventListener("keydown", rightKeyDown);
     this.rightResizeElement.addEventListener("focus", this.onRightResizeElementFocused.bind(this));
@@ -8958,12 +8383,12 @@ var Window = class extends Common4.ObjectWrapper.ObjectWrapper {
   updateResizeElementAriaValue(leftPercentValue, rightPercentValue) {
     const roundedLeftValue = leftPercentValue.toFixed(2);
     const roundedRightValue = rightPercentValue.toFixed(2);
-    UI6.ARIAUtils.setAriaValueNow(this.leftResizeElement, roundedLeftValue);
-    UI6.ARIAUtils.setAriaValueNow(this.rightResizeElement, roundedRightValue);
+    UI5.ARIAUtils.setAriaValueNow(this.leftResizeElement, roundedLeftValue);
+    UI5.ARIAUtils.setAriaValueNow(this.rightResizeElement, roundedRightValue);
     const leftResizeCeiling = Number(roundedRightValue) - 0.5;
     const rightResizeFloor = Number(roundedLeftValue) + 0.5;
-    UI6.ARIAUtils.setAriaValueMinMax(this.leftResizeElement, "0", leftResizeCeiling.toString());
-    UI6.ARIAUtils.setAriaValueMinMax(this.rightResizeElement, rightResizeFloor.toString(), "100");
+    UI5.ARIAUtils.setAriaValueMinMax(this.leftResizeElement, "0", leftResizeCeiling.toString());
+    UI5.ARIAUtils.setAriaValueMinMax(this.rightResizeElement, rightResizeFloor.toString(), "100");
   }
   updateResizeElementPositionLabels() {
     if (!this.calculator) {
@@ -8977,12 +8402,12 @@ var Window = class extends Common4.ObjectWrapper.ObjectWrapper {
       /* leftSlider */
       false
     ));
-    UI6.ARIAUtils.setAriaValueText(this.leftResizeElement, String(startValue));
-    UI6.ARIAUtils.setAriaValueText(this.rightResizeElement, String(endValue));
+    UI5.ARIAUtils.setAriaValueText(this.leftResizeElement, String(startValue));
+    UI5.ARIAUtils.setAriaValueText(this.rightResizeElement, String(endValue));
   }
   updateResizeElementPercentageLabels(leftValue, rightValue) {
-    UI6.ARIAUtils.setAriaValueText(this.leftResizeElement, leftValue);
-    UI6.ARIAUtils.setAriaValueText(this.rightResizeElement, rightValue);
+    UI5.ARIAUtils.setAriaValueText(this.leftResizeElement, leftValue);
+    UI5.ARIAUtils.setAriaValueText(this.rightResizeElement, rightValue);
   }
   /**
    * This function will return the raw value of the slider window.
@@ -9171,7 +8596,7 @@ var PieChart_exports = {};
 __export(PieChart_exports, {
   PieChart: () => PieChart
 });
-import * as i18n13 from "../../../../core/i18n/i18n.js";
+import * as i18n11 from "../../../../core/i18n/i18n.js";
 import { html as html2, render as render2, svg } from "../../../lit/lit.js";
 import * as VisualLogging4 from "../../../visual_logging/visual_logging.js";
 
@@ -9280,14 +8705,14 @@ var pieChart_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./pieChart.css")} */`;
 
 // ../../front_end/ui/legacy/components/perf_ui/PieChart.ts
-var UIStrings7 = {
+var UIStrings6 = {
   /**
    * @description Label for the total sum in a pie chart legend.
    */
   total: "Total"
 };
-var str_7 = i18n13.i18n.registerUIStrings("ui/legacy/components/perf_ui/PieChart.ts", UIStrings7);
-var i18nString7 = i18n13.i18n.getLocalizedString.bind(void 0, str_7);
+var str_6 = i18n11.i18n.registerUIStrings("ui/legacy/components/perf_ui/PieChart.ts", UIStrings6);
+var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var PieChart = class extends HTMLElement {
   shadow = this.attachShadow({ mode: "open" });
   chartName = "";
@@ -9362,7 +8787,7 @@ var PieChart = class extends HTMLElement {
               @click=${this.selectTotal} tabIndex=${this.totalSelected ? "0" : "-1"}>
             <div class="pie-chart-size">${this.formatter(this.total)}</div>
             <div class="pie-chart-swatch"></div>
-            <div class="pie-chart-name">${i18nString7(UIStrings7.total)}</div>
+            <div class="pie-chart-name">${i18nString6(UIStrings6.total)}</div>
           </div>
         </div>
         ` : ""}
@@ -9462,7 +8887,7 @@ var TimelineOverviewCalculator_exports = {};
 __export(TimelineOverviewCalculator_exports, {
   TimelineOverviewCalculator: () => TimelineOverviewCalculator
 });
-import * as i18n15 from "../../../../core/i18n/i18n.js";
+import * as i18n13 from "../../../../core/i18n/i18n.js";
 import * as Trace3 from "../../../../models/trace/trace.js";
 var TimelineOverviewCalculator = class {
   #minimumBoundary = Trace3.Types.Timing.Milli(0);
@@ -9512,7 +8937,7 @@ var TimelineOverviewCalculator = class {
         }
       }
     }
-    return i18n15.TimeUtilities.preciseMillisToString(time - this.zeroTime(), precision);
+    return i18n13.TimeUtilities.preciseMillisToString(time - this.zeroTime(), precision);
   }
   maximumBoundary() {
     return this.#maximumBoundary;
@@ -9545,8 +8970,8 @@ import * as Common5 from "../../../../core/common/common.js";
 import * as Trace4 from "../../../../models/trace/trace.js";
 import * as TraceBounds from "../../../../services/trace_bounds/trace_bounds.js";
 import * as VisualLogging5 from "../../../visual_logging/visual_logging.js";
-import * as UI7 from "../../legacy.js";
-import * as ThemeSupport9 from "../../theme_support/theme_support.js";
+import * as UI6 from "../../legacy.js";
+import * as ThemeSupport7 from "../../theme_support/theme_support.js";
 
 // gen/front_end/ui/legacy/components/perf_ui/timelineOverviewInfo.css.js
 var timelineOverviewInfo_css_default = `/*
@@ -9576,7 +9001,7 @@ var timelineOverviewInfo_css_default = `/*
 
 // ../../front_end/ui/legacy/components/perf_ui/TimelineOverviewPane.ts
 var TimelineOverviewPaneBase = Common5.ObjectWrapper.eventMixin(
-  UI7.Widget.VBox
+  UI6.Widget.VBox
 );
 var TimelineOverviewPane = class extends TimelineOverviewPaneBase {
   overviewCalculator;
@@ -9618,7 +9043,7 @@ var TimelineOverviewPane = class extends TimelineOverviewPaneBase {
     this.overviewGrid.addEventListener("BreadcrumbAdded" /* BREADCRUMB_ADDED */, this.onBreadcrumbAdded, this);
     this.overviewGrid.setClickHandler(this.onClick.bind(this));
     this.overviewInfo = new OverviewInfo(this.cursorElement);
-    this.#dimHighlightSVG = UI7.UIUtils.createSVGChild(this.element, "svg", "timeline-minimap-dim-highlight-svg hidden");
+    this.#dimHighlightSVG = UI6.UIUtils.createSVGChild(this.element, "svg", "timeline-minimap-dim-highlight-svg hidden");
     this.#initializeDimHighlightSVG();
   }
   enableCreateBreadcrumbsButton() {
@@ -9689,14 +9114,14 @@ var TimelineOverviewPane = class extends TimelineOverviewPaneBase {
     const start = TraceBounds.TraceBounds.BoundsManager.instance().state()?.milli.minimapTraceBounds.min;
     const end = TraceBounds.TraceBounds.BoundsManager.instance().state()?.milli.minimapTraceBounds.max;
     this.update(start, end);
-    ThemeSupport9.ThemeSupport.instance().addEventListener(
-      ThemeSupport9.ThemeChangeEvent.eventName,
+    ThemeSupport7.ThemeSupport.instance().addEventListener(
+      ThemeSupport7.ThemeChangeEvent.eventName,
       this.#boundOnThemeChanged
     );
   }
   willHide() {
-    ThemeSupport9.ThemeSupport.instance().removeEventListener(
-      ThemeSupport9.ThemeChangeEvent.eventName,
+    ThemeSupport7.ThemeSupport.instance().removeEventListener(
+      ThemeSupport7.ThemeChangeEvent.eventName,
       this.#boundOnThemeChanged
     );
     this.overviewInfo.hide();
@@ -9854,33 +9279,33 @@ var TimelineOverviewPane = class extends TimelineOverviewPaneBase {
    * This function will create three rectangles and a polygon, which will be use to highlight the time range.
    */
   #initializeDimHighlightSVG() {
-    const defs = UI7.UIUtils.createSVGChild(this.#dimHighlightSVG, "defs");
-    const mask = UI7.UIUtils.createSVGChild(defs, "mask");
+    const defs = UI6.UIUtils.createSVGChild(this.#dimHighlightSVG, "defs");
+    const mask = UI6.UIUtils.createSVGChild(defs, "mask");
     mask.id = "dim-highlight-cutouts";
-    const showAllRect = UI7.UIUtils.createSVGChild(mask, "rect");
+    const showAllRect = UI6.UIUtils.createSVGChild(mask, "rect");
     showAllRect.setAttribute("width", "100%");
     showAllRect.setAttribute("height", "100%");
     showAllRect.setAttribute("fill", "hsl(0deg 0% 95%)");
-    const desaturateRect = UI7.UIUtils.createSVGChild(this.#dimHighlightSVG, "rect", "background");
+    const desaturateRect = UI6.UIUtils.createSVGChild(this.#dimHighlightSVG, "rect", "background");
     desaturateRect.setAttribute("width", "100%");
     desaturateRect.setAttribute("height", "100%");
-    desaturateRect.setAttribute("fill", ThemeSupport9.ThemeSupport.instance().getComputedValue("--color-background"));
+    desaturateRect.setAttribute("fill", ThemeSupport7.ThemeSupport.instance().getComputedValue("--color-background"));
     desaturateRect.setAttribute("mask", `url(#${mask.id})`);
     desaturateRect.style.mixBlendMode = "saturation";
-    const punchRect = UI7.UIUtils.createSVGChild(mask, "rect", "punch");
+    const punchRect = UI6.UIUtils.createSVGChild(mask, "rect", "punch");
     punchRect.setAttribute("y", "0");
     punchRect.setAttribute("height", "100%");
     punchRect.setAttribute("fill", "black");
-    const bracketColor = ThemeSupport9.ThemeSupport.instance().getComputedValue("--sys-color-state-on-header-hover");
-    const bracket = UI7.UIUtils.createSVGChild(this.#dimHighlightSVG, "polygon");
+    const bracketColor = ThemeSupport7.ThemeSupport.instance().getComputedValue("--sys-color-state-on-header-hover");
+    const bracket = UI6.UIUtils.createSVGChild(this.#dimHighlightSVG, "polygon");
     bracket.setAttribute("fill", bracketColor);
-    ThemeSupport9.ThemeSupport.instance().addEventListener(ThemeSupport9.ThemeChangeEvent.eventName, () => {
+    ThemeSupport7.ThemeSupport.instance().addEventListener(ThemeSupport7.ThemeChangeEvent.eventName, () => {
       const desaturateRect2 = this.#dimHighlightSVG.querySelector("rect.background");
-      desaturateRect2?.setAttribute("fill", ThemeSupport9.ThemeSupport.instance().getComputedValue("--color-background"));
+      desaturateRect2?.setAttribute("fill", ThemeSupport7.ThemeSupport.instance().getComputedValue("--color-background"));
       const bracket2 = this.#dimHighlightSVG.querySelector("polygon");
       bracket2?.setAttribute(
         "fill",
-        ThemeSupport9.ThemeSupport.instance().getComputedValue("--sys-color-state-on-header-hover")
+        ThemeSupport7.ThemeSupport.instance().getComputedValue("--sys-color-state-on-header-hover")
       );
     });
   }
@@ -9923,7 +9348,7 @@ var Events4 = /* @__PURE__ */ ((Events5) => {
   Events5["OVERVIEW_PANE_MOUSE_LEAVE"] = "OverviewPaneMouseLeave";
   return Events5;
 })(Events4 || {});
-var TimelineOverviewBase = class extends UI7.Widget.VBox {
+var TimelineOverviewBase = class extends UI6.Widget.VBox {
   #calculator;
   canvas;
   #context;
@@ -9982,12 +9407,12 @@ var OverviewInfo = class {
   element;
   constructor(anchor) {
     this.anchorElement = anchor;
-    this.glassPane = new UI7.GlassPane.GlassPane();
-    this.glassPane.setPointerEventsBehavior(UI7.GlassPane.PointerEventsBehavior.PIERCE_CONTENTS);
-    this.glassPane.setMarginBehavior(UI7.GlassPane.MarginBehavior.DEFAULT_MARGIN);
-    this.glassPane.setSizeBehavior(UI7.GlassPane.SizeBehavior.MEASURE_CONTENT);
+    this.glassPane = new UI6.GlassPane.GlassPane();
+    this.glassPane.setPointerEventsBehavior(UI6.GlassPane.PointerEventsBehavior.PIERCE_CONTENTS);
+    this.glassPane.setMarginBehavior(UI6.GlassPane.MarginBehavior.DEFAULT_MARGIN);
+    this.glassPane.setSizeBehavior(UI6.GlassPane.SizeBehavior.MEASURE_CONTENT);
     this.visible = false;
-    this.element = UI7.UIUtils.createShadowRootWithCoreStyles(this.glassPane.contentElement, { cssFile: timelineOverviewInfo_css_default }).createChild("div", "overview-info");
+    this.element = UI6.UIUtils.createShadowRootWithCoreStyles(this.glassPane.contentElement, { cssFile: timelineOverviewInfo_css_default }).createChild("div", "overview-info");
   }
   async setContent(contentPromise) {
     this.visible = true;
@@ -10012,7 +9437,6 @@ var OverviewInfo = class {
   }
 };
 export {
-  BrickBreaker_exports as BrickBreaker,
   ChartViewport_exports as ChartViewport,
   FilmStripView_exports as FilmStripView,
   FlameChart_exports as FlameChart,

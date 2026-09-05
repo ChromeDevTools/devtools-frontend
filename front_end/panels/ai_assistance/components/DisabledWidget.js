@@ -1,13 +1,13 @@
 // Copyright 2025 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import '../../../ui/kit/kit.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as uiI18n from '../../../ui/i18n/i18n.js';
 import * as UI from '../../../ui/legacy/legacy.js';
 import { html, render } from '../../../ui/lit/lit.js';
-import * as VisualLogging from '../../../ui/visual_logging/visual_logging.js';
 import disabledWidgetStyles from './disabledWidget.css.js';
 const UIStrings = {
     /**
@@ -65,14 +65,14 @@ function renderConsentViewContents(hostConfig) {
         return html `${i18nString(UIStrings.notAvailableInIncognitoMode)}`;
     }
     // eslint-disable-next-line @devtools/no-imperative-dom-api
-    const settingsLink = document.createElement('span');
+    const settingsLink = document.createElement('devtools-link');
     settingsLink.textContent = i18nString(UIStrings.settingsLink);
     settingsLink.classList.add('link');
     UI.ARIAUtils.markAsLink(settingsLink);
     settingsLink.addEventListener('click', () => {
         void UI.ViewManager.ViewManager.instance().showView('chrome-ai');
     });
-    settingsLink.setAttribute('jslog', `${VisualLogging.action('open-ai-settings').track({ click: true })}`);
+    settingsLink.jslogContext = 'open-ai-settings';
     let consentViewContents;
     if (hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
         consentViewContents = uiI18n.getFormatLocalizedString(str_, UIStrings.turnOnForStylesRequestsPerformanceAndFiles, { PH1: settingsLink });

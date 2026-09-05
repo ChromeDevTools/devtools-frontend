@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../../front_end/panels/linear_memory_inspector/components",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryHighlightChipList.test.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.test.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryNavigator.test.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/LinearMemoryViewer.test.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/ValueInterpreterDisplay.test.ts",
+    "../../../../../../../front_end/panels/linear_memory_inspector/components/ValueInterpreterSettings.test.ts",
+    "../../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../ui/components/buttons/bundle-tsconfig.ref.json"
+    }
+  ]
+}

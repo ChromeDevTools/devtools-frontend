@@ -15,7 +15,8 @@ export interface ViewInput {
 export interface ViewOutput {
     canvasElement?: HTMLCanvasElement;
 }
-export declare const DEFAULT_VIEW: (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export type View = (input: ViewInput, output: ViewOutput, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
 declare const Layers3DViewBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
 export declare class Layers3DView extends Layers3DViewBase implements LayerView {
     #private;
@@ -45,7 +46,7 @@ export declare class Layers3DView extends Layers3DViewBase implements LayerView 
     private showPaintsSetting?;
     private mouseDownX?;
     private mouseDownY?;
-    constructor(layerViewHost: LayerViewHost, view?: typeof DEFAULT_VIEW);
+    constructor(layerViewHost: LayerViewHost, view?: View);
     performUpdate(): void;
     setLayerTree(layerTree: SDK.LayerTreeBase.LayerTreeBase | null): void;
     showImageForLayer(layer: SDK.LayerTreeBase.Layer, imageURL?: string): void;

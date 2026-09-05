@@ -366,9 +366,6 @@ export class FlameChart extends FlameChartBase {
             this.updatePopoverOffset();
         }
     }
-    getBarHeight() {
-        return this.barHeight;
-    }
     setBarHeight(value) {
         this.barHeight = value;
     }
@@ -1370,55 +1367,6 @@ export class FlameChart extends FlameChartBase {
     bindCanvasEvent(eventName, onEvent) {
         this.canvas.addEventListener(eventName, onEvent);
     }
-    drawTrackOnCanvas(trackName, context, minWidth) {
-        const timelineData = this.timelineData();
-        if (!timelineData) {
-            return null;
-        }
-        const canvasWidth = this.offsetWidth;
-        const canvasHeight = this.offsetHeight;
-        context.save();
-        const ratio = window.devicePixelRatio;
-        context.scale(ratio, ratio);
-        context.fillStyle = 'rgba(0, 0, 0, 0)';
-        context.fillRect(0, 0, canvasWidth, canvasHeight);
-        context.font = this.#font;
-        const groups = this.rawTimelineData?.groups || [];
-        const groupOffsets = this.groupOffsets;
-        if (!groups.length || !groupOffsets) {
-            return null;
-        }
-        const trackIndex = groups.findIndex(g => g.name.includes(trackName));
-        if (trackIndex < 0) {
-            return null;
-        }
-        this.scrollGroupIntoView(trackIndex);
-        const group = groups[trackIndex];
-        const startLevel = group.startLevel;
-        const endLevel = groups[trackIndex + 1].startLevel;
-        const groupTop = groupOffsets[trackIndex];
-        const nextOffset = groupOffsets[trackIndex + 1];
-        const { drawBatches, titleIndices } = this.getDrawBatches(context, timelineData);
-        const entryIndexIsInTrack = (index) => {
-            const barWidth = Math.min(this.#eventBarWidth(timelineData, index), canvasWidth);
-            return timelineData.entryLevels[index] >= startLevel && timelineData.entryLevels[index] < endLevel &&
-                barWidth > minWidth;
-        };
-        let allFilteredIndexes = [];
-        for (const [{ color, outline }, { indexes }] of drawBatches) {
-            const filteredIndexes = indexes.filter(entryIndexIsInTrack);
-            allFilteredIndexes = [...allFilteredIndexes, ...filteredIndexes];
-            this.#drawBatchEvents(context, timelineData, color, filteredIndexes, outline);
-        }
-        const filteredTitleIndices = titleIndices.filter(entryIndexIsInTrack);
-        this.drawEventTitles(context, timelineData, filteredTitleIndices, canvasWidth);
-        context.restore();
-        return {
-            top: groupOffsets[trackIndex],
-            height: nextOffset - groupTop,
-            visibleEntries: new Set(allFilteredIndexes),
-        };
-    }
     handleKeyboardGroupNavigation(event) {
         const keyboardEvent = event;
         let handled = false;
@@ -2205,13 +2153,6 @@ export class FlameChart extends FlameChartBase {
         const barLevel = entryLevels[entryIndex];
         const barHeight = this.levelHeight(barLevel);
         return barHeight;
-    }
-    entryWidth(entryIndex) {
-        const timelineData = this.timelineData();
-        if (!timelineData) {
-            return 0;
-        }
-        return this.#eventBarWidth(timelineData, entryIndex);
     }
     #eventBarWidth(timelineData, entryIndex) {
         const { entryTotalTimes, entryStartTimes } = timelineData;

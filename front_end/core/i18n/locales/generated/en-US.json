@@ -16550,9 +16550,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "Exporting the trace failed"
   },
-  "panels/timeline/TimelinePanel.ts | fixMe": {
-    "message": "Fix me"
-  },
   "panels/timeline/TimelinePanel.ts | frameSelected": {
     "message": "Frame selected"
   },
@@ -17881,12 +17878,6 @@
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "The property is computed with a getter"
-  },
-  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
-    "message": "Congrats, you win!"
-  },
-  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
-    "message": "PS: You can also open the game by typing fixme"
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Double-click to zoom image. Click to view preceding requests."

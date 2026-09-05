@@ -2757,6 +2757,196 @@ var LinkSwatch = class extends HTMLElement {
 };
 customElements.define("devtools-link-swatch", LinkSwatch);
 
+// ../../front_end/ui/legacy/components/inline_editor/PositionAreaEditor.ts
+var PositionAreaEditor_exports = {};
+__export(PositionAreaEditor_exports, {
+  Axis: () => Axis,
+  Keyword: () => Keyword,
+  Mode: () => Mode,
+  parsePositionArea: () => parsePositionArea,
+  stringifyPositionArea: () => stringifyPositionArea
+});
+var Mode = /* @__PURE__ */ ((Mode2) => {
+  Mode2["PHYSICAL"] = "physical";
+  Mode2["COORDINATE"] = "coordinate";
+  Mode2["LOGICAL"] = "logical";
+  Mode2["AUTO"] = "auto";
+  return Mode2;
+})(Mode || {});
+var Axis = /* @__PURE__ */ ((Axis2) => {
+  Axis2["BLOCK"] = "block";
+  Axis2["INLINE"] = "inline";
+  return Axis2;
+})(Axis || {});
+var Keyword = /* @__PURE__ */ ((Keyword2) => {
+  Keyword2["TOP"] = "top";
+  Keyword2["BOTTOM"] = "bottom";
+  Keyword2["LEFT"] = "left";
+  Keyword2["RIGHT"] = "right";
+  Keyword2["SPAN_TOP"] = "span-top";
+  Keyword2["SPAN_BOTTOM"] = "span-bottom";
+  Keyword2["SPAN_LEFT"] = "span-left";
+  Keyword2["SPAN_RIGHT"] = "span-right";
+  Keyword2["Y_START"] = "y-start";
+  Keyword2["Y_END"] = "y-end";
+  Keyword2["X_START"] = "x-start";
+  Keyword2["X_END"] = "x-end";
+  Keyword2["SPAN_Y_START"] = "span-y-start";
+  Keyword2["SPAN_Y_END"] = "span-y-end";
+  Keyword2["SPAN_X_START"] = "span-x-start";
+  Keyword2["SPAN_X_END"] = "span-x-end";
+  Keyword2["BLOCK_START"] = "block-start";
+  Keyword2["BLOCK_END"] = "block-end";
+  Keyword2["INLINE_START"] = "inline-start";
+  Keyword2["INLINE_END"] = "inline-end";
+  Keyword2["SPAN_BLOCK_START"] = "span-block-start";
+  Keyword2["SPAN_BLOCK_END"] = "span-block-end";
+  Keyword2["SPAN_INLINE_START"] = "span-inline-start";
+  Keyword2["SPAN_INLINE_END"] = "span-inline-end";
+  Keyword2["SELF_BLOCK_START"] = "self-block-start";
+  Keyword2["SELF_BLOCK_END"] = "self-block-end";
+  Keyword2["SELF_INLINE_START"] = "self-inline-start";
+  Keyword2["SELF_INLINE_END"] = "self-inline-end";
+  Keyword2["SPAN_SELF_BLOCK_START"] = "span-self-block-start";
+  Keyword2["SPAN_SELF_BLOCK_END"] = "span-self-block-end";
+  Keyword2["SPAN_SELF_INLINE_START"] = "span-self-inline-start";
+  Keyword2["SPAN_SELF_INLINE_END"] = "span-self-inline-end";
+  Keyword2["Y_SELF_START"] = "self-y-start";
+  Keyword2["Y_SELF_END"] = "self-y-end";
+  Keyword2["X_SELF_START"] = "self-x-start";
+  Keyword2["X_SELF_END"] = "self-x-end";
+  Keyword2["SPAN_Y_SELF_START"] = "span-self-y-start";
+  Keyword2["SPAN_Y_SELF_END"] = "span-self-y-end";
+  Keyword2["SPAN_X_SELF_START"] = "span-self-x-start";
+  Keyword2["SPAN_X_SELF_END"] = "span-self-x-end";
+  Keyword2["CENTER"] = "center";
+  Keyword2["SPAN_ALL"] = "span-all";
+  Keyword2["START"] = "start";
+  Keyword2["END"] = "end";
+  Keyword2["SPAN_START"] = "span-start";
+  Keyword2["SPAN_END"] = "span-end";
+  Keyword2["SELF_START"] = "self-start";
+  Keyword2["SELF_END"] = "self-end";
+  Keyword2["SPAN_SELF_START"] = "span-self-start";
+  Keyword2["SPAN_SELF_END"] = "span-self-end";
+  return Keyword2;
+})(Keyword || {});
+var KEYWORD_DEFS = {
+  // Physical block
+  ["top" /* TOP */]: { axis: "block" /* BLOCK */, start: 0, end: 0, mode: "physical" /* PHYSICAL */, self: false },
+  ["bottom" /* BOTTOM */]: { axis: "block" /* BLOCK */, start: 2, end: 2, mode: "physical" /* PHYSICAL */, self: false },
+  ["span-top" /* SPAN_TOP */]: { axis: "block" /* BLOCK */, start: 0, end: 1, mode: "physical" /* PHYSICAL */, self: false },
+  ["span-bottom" /* SPAN_BOTTOM */]: { axis: "block" /* BLOCK */, start: 1, end: 2, mode: "physical" /* PHYSICAL */, self: false },
+  // Physical inline
+  ["left" /* LEFT */]: { axis: "inline" /* INLINE */, start: 0, end: 0, mode: "physical" /* PHYSICAL */, self: false },
+  ["right" /* RIGHT */]: { axis: "inline" /* INLINE */, start: 2, end: 2, mode: "physical" /* PHYSICAL */, self: false },
+  ["span-left" /* SPAN_LEFT */]: { axis: "inline" /* INLINE */, start: 0, end: 1, mode: "physical" /* PHYSICAL */, self: false },
+  ["span-right" /* SPAN_RIGHT */]: { axis: "inline" /* INLINE */, start: 1, end: 2, mode: "physical" /* PHYSICAL */, self: false },
+  // Coordinate block
+  ["y-start" /* Y_START */]: { axis: "block" /* BLOCK */, start: 0, end: 0, mode: "coordinate" /* COORDINATE */, self: false },
+  ["y-end" /* Y_END */]: { axis: "block" /* BLOCK */, start: 2, end: 2, mode: "coordinate" /* COORDINATE */, self: false },
+  ["span-y-start" /* SPAN_Y_START */]: { axis: "block" /* BLOCK */, start: 0, end: 1, mode: "coordinate" /* COORDINATE */, self: false },
+  ["span-y-end" /* SPAN_Y_END */]: { axis: "block" /* BLOCK */, start: 1, end: 2, mode: "coordinate" /* COORDINATE */, self: false },
+  ["self-y-start" /* Y_SELF_START */]: { axis: "block" /* BLOCK */, start: 0, end: 0, mode: "coordinate" /* COORDINATE */, self: true },
+  ["self-y-end" /* Y_SELF_END */]: { axis: "block" /* BLOCK */, start: 2, end: 2, mode: "coordinate" /* COORDINATE */, self: true },
+  ["span-self-y-start" /* SPAN_Y_SELF_START */]: { axis: "block" /* BLOCK */, start: 0, end: 1, mode: "coordinate" /* COORDINATE */, self: true },
+  ["span-self-y-end" /* SPAN_Y_SELF_END */]: { axis: "block" /* BLOCK */, start: 1, end: 2, mode: "coordinate" /* COORDINATE */, self: true },
+  // Coordinate inline
+  ["x-start" /* X_START */]: { axis: "inline" /* INLINE */, start: 0, end: 0, mode: "coordinate" /* COORDINATE */, self: false },
+  ["x-end" /* X_END */]: { axis: "inline" /* INLINE */, start: 2, end: 2, mode: "coordinate" /* COORDINATE */, self: false },
+  ["span-x-start" /* SPAN_X_START */]: { axis: "inline" /* INLINE */, start: 0, end: 1, mode: "coordinate" /* COORDINATE */, self: false },
+  ["span-x-end" /* SPAN_X_END */]: { axis: "inline" /* INLINE */, start: 1, end: 2, mode: "coordinate" /* COORDINATE */, self: false },
+  ["self-x-start" /* X_SELF_START */]: { axis: "inline" /* INLINE */, start: 0, end: 0, mode: "coordinate" /* COORDINATE */, self: true },
+  ["self-x-end" /* X_SELF_END */]: { axis: "inline" /* INLINE */, start: 2, end: 2, mode: "coordinate" /* COORDINATE */, self: true },
+  ["span-self-x-start" /* SPAN_X_SELF_START */]: { axis: "inline" /* INLINE */, start: 0, end: 1, mode: "coordinate" /* COORDINATE */, self: true },
+  ["span-self-x-end" /* SPAN_X_SELF_END */]: { axis: "inline" /* INLINE */, start: 1, end: 2, mode: "coordinate" /* COORDINATE */, self: true },
+  // Logical block
+  ["block-start" /* BLOCK_START */]: { axis: "block" /* BLOCK */, start: 0, end: 0, mode: "logical" /* LOGICAL */, self: false },
+  ["block-end" /* BLOCK_END */]: { axis: "block" /* BLOCK */, start: 2, end: 2, mode: "logical" /* LOGICAL */, self: false },
+  ["span-block-start" /* SPAN_BLOCK_START */]: { axis: "block" /* BLOCK */, start: 0, end: 1, mode: "logical" /* LOGICAL */, self: false },
+  ["span-block-end" /* SPAN_BLOCK_END */]: { axis: "block" /* BLOCK */, start: 1, end: 2, mode: "logical" /* LOGICAL */, self: false },
+  ["self-block-start" /* SELF_BLOCK_START */]: { axis: "block" /* BLOCK */, start: 0, end: 0, mode: "logical" /* LOGICAL */, self: true },
+  ["self-block-end" /* SELF_BLOCK_END */]: { axis: "block" /* BLOCK */, start: 2, end: 2, mode: "logical" /* LOGICAL */, self: true },
+  ["span-self-block-start" /* SPAN_SELF_BLOCK_START */]: { axis: "block" /* BLOCK */, start: 0, end: 1, mode: "logical" /* LOGICAL */, self: true },
+  ["span-self-block-end" /* SPAN_SELF_BLOCK_END */]: { axis: "block" /* BLOCK */, start: 1, end: 2, mode: "logical" /* LOGICAL */, self: true },
+  // Logical inline
+  ["inline-start" /* INLINE_START */]: { axis: "inline" /* INLINE */, start: 0, end: 0, mode: "logical" /* LOGICAL */, self: false },
+  ["inline-end" /* INLINE_END */]: { axis: "inline" /* INLINE */, start: 2, end: 2, mode: "logical" /* LOGICAL */, self: false },
+  ["span-inline-start" /* SPAN_INLINE_START */]: { axis: "inline" /* INLINE */, start: 0, end: 1, mode: "logical" /* LOGICAL */, self: false },
+  ["span-inline-end" /* SPAN_INLINE_END */]: { axis: "inline" /* INLINE */, start: 1, end: 2, mode: "logical" /* LOGICAL */, self: false },
+  ["self-inline-start" /* SELF_INLINE_START */]: { axis: "inline" /* INLINE */, start: 0, end: 0, mode: "logical" /* LOGICAL */, self: true },
+  ["self-inline-end" /* SELF_INLINE_END */]: { axis: "inline" /* INLINE */, start: 2, end: 2, mode: "logical" /* LOGICAL */, self: true },
+  ["span-self-inline-start" /* SPAN_SELF_INLINE_START */]: { axis: "inline" /* INLINE */, start: 0, end: 1, mode: "logical" /* LOGICAL */, self: true },
+  ["span-self-inline-end" /* SPAN_SELF_INLINE_END */]: { axis: "inline" /* INLINE */, start: 1, end: 2, mode: "logical" /* LOGICAL */, self: true },
+  // Auto / Ambiguous
+  ["center" /* CENTER */]: { start: 1, end: 1, mode: "auto" /* AUTO */, self: false },
+  ["span-all" /* SPAN_ALL */]: { start: 0, end: 2, mode: "auto" /* AUTO */, self: false },
+  ["start" /* START */]: { start: 0, end: 0, mode: "auto" /* AUTO */, self: false },
+  ["end" /* END */]: { start: 2, end: 2, mode: "auto" /* AUTO */, self: false },
+  ["span-start" /* SPAN_START */]: { start: 0, end: 1, mode: "auto" /* AUTO */, self: false },
+  ["span-end" /* SPAN_END */]: { start: 1, end: 2, mode: "auto" /* AUTO */, self: false },
+  ["self-start" /* SELF_START */]: { start: 0, end: 0, mode: "auto" /* AUTO */, self: true },
+  ["self-end" /* SELF_END */]: { start: 2, end: 2, mode: "auto" /* AUTO */, self: true },
+  ["span-self-start" /* SPAN_SELF_START */]: { start: 0, end: 1, mode: "auto" /* AUTO */, self: true },
+  ["span-self-end" /* SPAN_SELF_END */]: { start: 1, end: 2, mode: "auto" /* AUTO */, self: true }
+};
+var KEYWORD_MAP = new Map(Object.entries(KEYWORD_DEFS));
+function isGeneric(axis) {
+  return axis.start === 0 && axis.end === 2 || axis.start === 1 && axis.end === 1;
+}
+function parsePositionArea(text) {
+  const tokens = text.trim().split(/\s+/).filter((t) => t.length > 0);
+  if (tokens.length === 0 || tokens.length > 2) {
+    return null;
+  }
+  const first = KEYWORD_MAP.get(tokens[0]);
+  const second = KEYWORD_MAP.get(tokens[1] ?? (tokens[0] === "center" /* CENTER */ ? "center" /* CENTER */ : "span-all" /* SPAN_ALL */));
+  if (!first || !second) {
+    return null;
+  }
+  if (first.axis && second.axis && first.axis === second.axis) {
+    return null;
+  }
+  const primaryAxis = first.axis ?? (second.axis === "block" /* BLOCK */ ? "inline" /* INLINE */ : "block" /* BLOCK */);
+  const firstMode = isGeneric(first) && !isGeneric(second) ? second.mode : first.mode;
+  const secondMode = isGeneric(second) && !isGeneric(first) ? first.mode : second.mode;
+  return {
+    first: { start: first.start, end: first.end, mode: firstMode, self: first.self },
+    second: { start: second.start, end: second.end, mode: secondMode, self: second.self },
+    primaryAxis
+  };
+}
+function axisToKeyword(axis, axisType) {
+  if (axis.start === 0 && axis.end === 2) {
+    return "span-all" /* SPAN_ALL */;
+  }
+  if (axis.start === 1 && axis.end === 1) {
+    return "center" /* CENTER */;
+  }
+  for (const [kw, def] of KEYWORD_MAP) {
+    if (def.start === axis.start && def.end === axis.end && def.mode === axis.mode && def.self === axis.self && (def.axis === void 0 || def.axis === axisType)) {
+      return kw;
+    }
+  }
+  return null;
+}
+function stringifyPositionArea(area) {
+  const firstAxis = area.primaryAxis;
+  const secondAxis = area.primaryAxis === "inline" /* INLINE */ ? "block" /* BLOCK */ : "inline" /* INLINE */;
+  const firstKw = axisToKeyword(area.first, firstAxis);
+  const secondKw = axisToKeyword(area.second, secondAxis);
+  if (!firstKw || !secondKw) {
+    return "";
+  }
+  if (firstKw === "center" /* CENTER */ && secondKw === "center" /* CENTER */) {
+    return "center" /* CENTER */;
+  }
+  if (secondKw === "span-all" /* SPAN_ALL */) {
+    return firstKw;
+  }
+  return `${firstKw} ${secondKw}`;
+}
+
 // ../../front_end/ui/legacy/components/inline_editor/Swatches.ts
 var Swatches_exports = {};
 __export(Swatches_exports, {
@@ -2985,6 +3175,7 @@ export {
   ColorSwatch_exports as ColorSwatch,
   InlineEditorUtils_exports as InlineEditorUtils,
   LinkSwatch_exports as LinkSwatch,
+  PositionAreaEditor_exports as PositionAreaEditor,
   SwatchPopoverHelper_exports as SwatchPopoverHelper,
   Swatches_exports as Swatches
 };

@@ -55,6 +55,7 @@
     "../../../../../../../../front_end/ui/legacy/components/inline_editor/ColorSwatch.ts",
     "../../../../../../../../front_end/ui/legacy/components/inline_editor/InlineEditorUtils.ts",
     "../../../../../../../../front_end/ui/legacy/components/inline_editor/LinkSwatch.ts",
+    "../../../../../../../../front_end/ui/legacy/components/inline_editor/PositionAreaEditor.ts",
     "../../../../../../../../front_end/ui/legacy/components/inline_editor/SwatchPopoverHelper.ts",
     "../../../../../../../../front_end/ui/legacy/components/inline_editor/Swatches.ts",
     "../../../../../../../../front_end/legacy/legacy-defs.d.ts",

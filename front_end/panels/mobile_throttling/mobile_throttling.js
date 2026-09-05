@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/mobile_throttling/CPUThrottlingSelector.js
+// ../../front_end/panels/mobile_throttling/CPUThrottlingSelector.ts
 var CPUThrottlingSelector_exports = {};
 __export(CPUThrottlingSelector_exports, {
   CPUThrottlingSelector: () => CPUThrottlingSelector,
@@ -19,7 +19,7 @@ import * as Lit from "../../ui/lit/lit.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon3 from "../common/common.js";
 
-// gen/front_end/panels/mobile_throttling/ThrottlingManager.js
+// ../../front_end/panels/mobile_throttling/ThrottlingManager.ts
 var ThrottlingManager_exports = {};
 __export(ThrottlingManager_exports, {
   ActionDelegate: () => ActionDelegate,
@@ -38,7 +38,7 @@ import { html, render } from "../../ui/lit/lit.js";
 import * as VisualLogging from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon2 from "../common/common.js";
 
-// gen/front_end/panels/mobile_throttling/ThrottlingPresets.js
+// ../../front_end/panels/mobile_throttling/ThrottlingPresets.ts
 var ThrottlingPresets_exports = {};
 __export(ThrottlingPresets_exports, {
   ThrottlingPresets: () => ThrottlingPresets
@@ -167,7 +167,7 @@ var ThrottlingPresets = class _ThrottlingPresets {
 globalThis.MobileThrottling = globalThis.MobileThrottling || {};
 globalThis.MobileThrottling.networkPresets = ThrottlingPresets.networkPresets;
 
-// gen/front_end/panels/mobile_throttling/ThrottlingManager.js
+// ../../front_end/panels/mobile_throttling/ThrottlingManager.ts
 var UIStrings2 = {
   /**
    * @description Text to indicate the network connectivity is offline.
@@ -251,7 +251,10 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
   constructor(settings) {
     super();
     this.cpuThrottlingManager = SDK2.CPUThrottlingManager.CPUThrottlingManager.instance();
-    this.cpuThrottlingManager.addEventListener("RateChanged", (event) => this.onCPUThrottlingRateChangedOnSDK(event.data));
+    this.cpuThrottlingManager.addEventListener(
+      SDK2.CPUThrottlingManager.Events.RATE_CHANGED,
+      (event) => this.onCPUThrottlingRateChangedOnSDK(event.data)
+    );
     this.cpuThrottlingControls = /* @__PURE__ */ new Set();
     this.cpuThrottlingOptions = ThrottlingPresets.cpuThrottlingPresets;
     this.customNetworkConditionsSetting = SDK2.NetworkManager.customUserNetworkConditionsSetting(settings);
@@ -259,15 +262,17 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
     this.calibratedCpuThrottlingSetting = settings.createSetting(
       "calibrated-cpu-throttling",
       {},
-      "Global"
-      /* Common.Settings.SettingStorageType.GLOBAL */
+      Common.Settings.SettingStorageType.GLOBAL
     );
     this.calibratedCpuThrottlingSetting.addChangeListener(this.onCalibratedSettingChanged, this);
-    SDK2.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", () => {
-      this.lastNetworkThrottlingConditions = this.#getCurrentNetworkConditions();
-      const conditions = SDK2.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
-      this.currentNetworkThrottlingConditionKeySetting.set(conditions.key);
-    });
+    SDK2.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
+      SDK2.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED,
+      () => {
+        this.lastNetworkThrottlingConditions = this.#getCurrentNetworkConditions();
+        const conditions = SDK2.NetworkManager.MultitargetNetworkManager.instance().networkConditions();
+        this.currentNetworkThrottlingConditionKeySetting.set(conditions.key);
+      }
+    );
     if (this.isDirty()) {
       SDK2.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(this.#getCurrentNetworkConditions());
     }
@@ -289,13 +294,22 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
     return throttlingManagerInstance;
   }
   createOfflineToolbarCheckbox() {
-    const checkbox = new UI.Toolbar.ToolbarCheckbox(i18nString2(UIStrings2.offline), i18nString2(UIStrings2.forceDisconnectedFromNetwork), forceOffline.bind(this));
+    const checkbox = new UI.Toolbar.ToolbarCheckbox(
+      i18nString2(UIStrings2.offline),
+      i18nString2(UIStrings2.forceDisconnectedFromNetwork),
+      forceOffline.bind(this)
+    );
     checkbox.element.setAttribute("jslog", `${VisualLogging.toggle("disconnect-from-network").track({ click: true })}`);
-    SDK2.NetworkManager.MultitargetNetworkManager.instance().addEventListener("ConditionsChanged", networkConditionsChanged);
+    SDK2.NetworkManager.MultitargetNetworkManager.instance().addEventListener(
+      SDK2.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED,
+      networkConditionsChanged
+    );
     checkbox.setChecked(SDK2.NetworkManager.MultitargetNetworkManager.instance().isOffline());
     function forceOffline() {
       if (checkbox.checked()) {
-        SDK2.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(SDK2.NetworkManager.OfflineConditions);
+        SDK2.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
+          SDK2.NetworkManager.OfflineConditions
+        );
       } else {
         const newConditions = !this.lastNetworkThrottlingConditions.download && !this.lastNetworkThrottlingConditions.upload ? SDK2.NetworkManager.NoThrottlingConditions : this.lastNetworkThrottlingConditions;
         SDK2.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(newConditions);
@@ -409,7 +423,12 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
     const inputElement = numericInput.element;
     inputElement.min = "1";
     numericInput.setEnabled(false);
-    const checkbox = UI.UIUtils.CheckboxLabel.create(i18nString2(UIStrings2.hardwareConcurrency), false, i18nString2(UIStrings2.hardwareConcurrencySettingLabel), "hardware-concurrency");
+    const checkbox = UI.UIUtils.CheckboxLabel.create(
+      i18nString2(UIStrings2.hardwareConcurrency),
+      false,
+      i18nString2(UIStrings2.hardwareConcurrencySettingLabel),
+      "hardware-concurrency"
+    );
     const reset = new UI.Toolbar.ToolbarButton("Reset concurrency", "undo", void 0, "hardware-concurrency-reset");
     reset.setTitle(i18nString2(UIStrings2.resetConcurrency));
     const icon = new Icon();
@@ -447,7 +466,7 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
         numericInput.setEnabled(this.hardwareConcurrencyOverrideEnabled);
         setHardwareConcurrency(this.hardwareConcurrencyOverrideEnabled ? Number(inputElement.value) : defaultValue);
       });
-      reset.addEventListener("Click", () => {
+      reset.addEventListener(UI.Toolbar.ToolbarButton.Events.CLICK, () => {
         inputElement.value = `${defaultValue}`;
         setHardwareConcurrency(defaultValue);
       });
@@ -465,9 +484,9 @@ var ThrottlingManager = class _ThrottlingManager extends Common.ObjectWrapper.Ob
 };
 var DEFAULT_SAVE_DATA_VIEW = (input, _output, target) => {
   render(html`
-    <option value=${"unset"} ?selected=${input.selectedOption === "unset"}>${i18nString2(UIStrings2.noSaveDataOverride)}</option>
-    <option value=${"enabled"} ?selected=${input.selectedOption === "enabled"}>${i18nString2(UIStrings2.saveDataOn)}</option>
-    <option value=${"disabled"} ?selected=${input.selectedOption === "disabled"}>${i18nString2(UIStrings2.saveDataOff)}</option>
+    <option value=${SDK2.EmulationModel.DataSaverOverride.UNSET} ?selected=${input.selectedOption === SDK2.EmulationModel.DataSaverOverride.UNSET}>${i18nString2(UIStrings2.noSaveDataOverride)}</option>
+    <option value=${SDK2.EmulationModel.DataSaverOverride.ENABLED} ?selected=${input.selectedOption === SDK2.EmulationModel.DataSaverOverride.ENABLED}>${i18nString2(UIStrings2.saveDataOn)}</option>
+    <option value=${SDK2.EmulationModel.DataSaverOverride.DISABLED} ?selected=${input.selectedOption === SDK2.EmulationModel.DataSaverOverride.DISABLED}>${i18nString2(UIStrings2.saveDataOff)}</option>
   `, target, { container: { listeners: { change: (e) => input.onSelect(e.target.value) } } });
 };
 var SaveDataOverrideSelect = class extends UI.Widget.Widget {
@@ -489,18 +508,24 @@ var SaveDataOverrideSelect = class extends UI.Widget.Widget {
     this.#setting.removeChangeListener(this.requestUpdate, this);
   }
   performUpdate() {
-    this.#view({
-      selectedOption: this.#setting.get(),
-      onSelect: (selectedOption) => {
-        this.#setting.set(selectedOption);
-      }
-    }, void 0, this.contentElement);
+    this.#view(
+      {
+        selectedOption: this.#setting.get(),
+        onSelect: (selectedOption) => {
+          this.#setting.set(selectedOption);
+        }
+      },
+      void 0,
+      this.contentElement
+    );
   }
 };
 var ActionDelegate = class {
   handleAction(_context, actionId) {
     if (actionId === "network-conditions.network-online") {
-      SDK2.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(SDK2.NetworkManager.NoThrottlingConditions);
+      SDK2.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
+        SDK2.NetworkManager.NoThrottlingConditions
+      );
       return true;
     }
     if (actionId === "network-conditions.network-low-end-mobile") {
@@ -512,7 +537,9 @@ var ActionDelegate = class {
       return true;
     }
     if (actionId === "network-conditions.network-offline") {
-      SDK2.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(SDK2.NetworkManager.OfflineConditions);
+      SDK2.NetworkManager.MultitargetNetworkManager.instance().setNetworkConditions(
+        SDK2.NetworkManager.OfflineConditions
+      );
       return true;
     }
     return false;
@@ -522,7 +549,7 @@ function throttlingManager() {
   return ThrottlingManager.instance();
 }
 
-// gen/front_end/panels/mobile_throttling/CPUThrottlingSelector.js
+// ../../front_end/panels/mobile_throttling/CPUThrottlingSelector.ts
 var { render: render2, html: html2, Directives } = Lit;
 var UIStrings3 = {
   /**
@@ -556,7 +583,10 @@ var UIStrings3 = {
    */
   labelCalibratedPresets: "Calibrated presets"
 };
-var str_3 = i18n5.i18n.registerUIStrings("panels/mobile_throttling/CPUThrottlingSelector.ts", UIStrings3);
+var str_3 = i18n5.i18n.registerUIStrings(
+  "panels/mobile_throttling/CPUThrottlingSelector.ts",
+  UIStrings3
+);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var optionsMap = /* @__PURE__ */ new WeakMap();
 var DEFAULT_VIEW = (input, _output, target) => {
@@ -578,54 +608,64 @@ var DEFAULT_VIEW = (input, _output, target) => {
     } else {
       input.onCalibrateClick();
       event.consume(true);
-      element.value = String(input.currentOption.calibratedDeviceType ?? input.currentOption.rate());
+      element.value = String(
+        input.currentOption.calibratedDeviceType ?? input.currentOption.rate()
+      );
     }
   }
-  render2(html2`${input.groups.map((group) => {
-    return html2` <optgroup
+  render2(
+    html2`${input.groups.map((group) => {
+      return html2` <optgroup
         label=${group.name}
         title=${group.name}
       >
         ${group.items.map((option) => {
-      const title = option === input.recommendedOption ? i18nString3(UIStrings3.recommendedThrottling, {
-        PH1: option.title()
-      }) : option.title();
-      const rate = option.rate();
-      return html2`
+        const title = option === input.recommendedOption ? i18nString3(UIStrings3.recommendedThrottling, {
+          PH1: option.title()
+        }) : option.title();
+        const rate = option.rate();
+        return html2`
             <option
-              ${Directives.ref((optionEl) => optionEl && optionsMap.set(optionEl, option))}
+              ${Directives.ref(
+          (optionEl) => optionEl && optionsMap.set(optionEl, option)
+        )}
               .value=${String(option.calibratedDeviceType ?? rate)}
               ?selected=${input.currentOption === option}
               ?disabled=${rate === 0}
               title=${title}
               aria-label=${title}
               jslog=${VisualLogging2.item(option.jslogContext).track({
-        click: true
-      })}
+          click: true
+        })}
             >
               ${title}
             </option>
           `;
-    })}
+      })}
         ${group.name === i18nString3(UIStrings3.labelCalibratedPresets) ? html2`<option
               .value=${"-1"}
               title=${calibrationLabel}
               aria-label=${calibrationLabel}
-              jslog=${VisualLogging2.action("cpu-throttling-selector-calibrate").track({ click: true })}
+              jslog=${VisualLogging2.action(
+        "cpu-throttling-selector-calibrate"
+      ).track({ click: true })}
             >
               ${calibrationLabel}
             </option>` : Lit.nothing}
       </optgroup>`;
-  })}`, target, {
-    container: {
-      listeners: { change: onSelect },
-      attributes: {
-        title: i18nString3(UIStrings3.cpuThrottling, { PH1: selectionTitle }),
-        "aria-label": i18nString3(UIStrings3.cpuThrottling, { PH1: selectionTitle }),
-        jslog: `${VisualLogging2.dropDown("cpu-throttling").track({ change: true })}`
+    })}`,
+    target,
+    {
+      container: {
+        listeners: { change: onSelect },
+        attributes: {
+          title: i18nString3(UIStrings3.cpuThrottling, { PH1: selectionTitle }),
+          "aria-label": i18nString3(UIStrings3.cpuThrottling, { PH1: selectionTitle }),
+          jslog: `${VisualLogging2.dropDown("cpu-throttling").track({ change: true })}`
+        }
       }
     }
-  });
+  );
 };
 var CPUThrottlingSelector = class _CPUThrottlingSelector extends UI2.Widget.Widget {
   #currentOption;
@@ -652,8 +692,7 @@ var CPUThrottlingSelector = class _CPUThrottlingSelector extends UI2.Widget.Widg
     this.#calibratedThrottlingSetting = Common2.Settings.Settings.instance().createSetting(
       "calibrated-cpu-throttling",
       {},
-      "Global"
-      /* Common.Settings.SettingStorageType.GLOBAL */
+      Common2.Settings.SettingStorageType.GLOBAL
     );
     this.#resetGroups();
     this.#view = view;
@@ -672,17 +711,37 @@ var CPUThrottlingSelector = class _CPUThrottlingSelector extends UI2.Widget.Widg
   };
   wasShown() {
     super.wasShown();
-    this.#cpuThrottlingManager.addEventListener("RateChanged", this.#onOptionChange, this);
-    this.#calibratedThrottlingSetting.addChangeListener(this.#onCalibratedSettingChanged, this);
-    CrUXManager.CrUXManager.instance().addEventListener("field-data-changed", this.#updateRecommendation);
+    this.#cpuThrottlingManager.addEventListener(
+      SDK3.CPUThrottlingManager.Events.RATE_CHANGED,
+      this.#onOptionChange,
+      this
+    );
+    this.#calibratedThrottlingSetting.addChangeListener(
+      this.#onCalibratedSettingChanged,
+      this
+    );
+    CrUXManager.CrUXManager.instance().addEventListener(
+      CrUXManager.Events.FIELD_DATA_CHANGED,
+      this.#updateRecommendation
+    );
     this.#updateRecommendation();
     this.#onOptionChange();
   }
   willHide() {
     super.willHide();
-    this.#calibratedThrottlingSetting.removeChangeListener(this.#onCalibratedSettingChanged, this);
-    this.#cpuThrottlingManager.removeEventListener("RateChanged", this.#onOptionChange, this);
-    CrUXManager.CrUXManager.instance().removeEventListener("field-data-changed", this.#updateRecommendation);
+    this.#calibratedThrottlingSetting.removeChangeListener(
+      this.#onCalibratedSettingChanged,
+      this
+    );
+    this.#cpuThrottlingManager.removeEventListener(
+      SDK3.CPUThrottlingManager.Events.RATE_CHANGED,
+      this.#onOptionChange,
+      this
+    );
+    CrUXManager.CrUXManager.instance().removeEventListener(
+      CrUXManager.Events.FIELD_DATA_CHANGED,
+      this.#updateRecommendation
+    );
   }
   #onOptionChange() {
     this.#currentOption = throttlingManager().cpuThrottlingOption();
@@ -703,15 +762,21 @@ var CPUThrottlingSelector = class _CPUThrottlingSelector extends UI2.Widget.Widg
     this.#groups = [
       {
         name: i18nString3(UIStrings3.disabledThrottlingPreset),
-        items: ThrottlingPresets.cpuThrottlingPresets.filter((option) => option.rate() === 1 && !option.calibratedDeviceType)
+        items: ThrottlingPresets.cpuThrottlingPresets.filter(
+          (option) => option.rate() === 1 && !option.calibratedDeviceType
+        )
       },
       {
         name: i18nString3(UIStrings3.defaultPresets),
-        items: ThrottlingPresets.cpuThrottlingPresets.filter((option) => !option.calibratedDeviceType && option.rate() > 1)
+        items: ThrottlingPresets.cpuThrottlingPresets.filter(
+          (option) => !option.calibratedDeviceType && option.rate() > 1
+        )
       },
       {
         name: i18nString3(UIStrings3.labelCalibratedPresets),
-        items: ThrottlingPresets.cpuThrottlingPresets.filter((option) => option.calibratedDeviceType)
+        items: ThrottlingPresets.cpuThrottlingPresets.filter(
+          (option) => option.calibratedDeviceType
+        )
       }
     ];
   }
@@ -728,7 +793,7 @@ var CPUThrottlingSelector = class _CPUThrottlingSelector extends UI2.Widget.Widg
   }
 };
 
-// gen/front_end/panels/mobile_throttling/NetworkPanelIndicator.js
+// ../../front_end/panels/mobile_throttling/NetworkPanelIndicator.ts
 var NetworkPanelIndicator_exports = {};
 __export(NetworkPanelIndicator_exports, {
   NetworkPanelIndicator: () => NetworkPanelIndicator
@@ -759,9 +824,15 @@ var NetworkPanelIndicator = class {
       return;
     }
     const manager = SDK4.NetworkManager.MultitargetNetworkManager.instance();
-    manager.addEventListener("ConditionsChanged", updateVisibility);
-    manager.addEventListener("BlockedPatternsChanged", updateVisibility);
-    manager.addEventListener("InterceptorsChanged", updateVisibility);
+    manager.addEventListener(SDK4.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED, updateVisibility);
+    manager.addEventListener(
+      SDK4.NetworkManager.MultitargetNetworkManager.Events.BLOCKED_PATTERNS_CHANGED,
+      updateVisibility
+    );
+    manager.addEventListener(
+      SDK4.NetworkManager.MultitargetNetworkManager.Events.INTERCEPTORS_CHANGED,
+      updateVisibility
+    );
     Common3.Settings.Settings.instance().resolve(SDK4.SDKSettings.cacheDisabledSettingDescriptor).addChangeListener(updateVisibility, this);
     updateVisibility();
     function updateVisibility() {
@@ -780,11 +851,11 @@ var NetworkPanelIndicator = class {
   }
 };
 
-// gen/front_end/panels/mobile_throttling/NetworkThrottlingSelector.js
+// ../../front_end/panels/mobile_throttling/NetworkThrottlingSelector.ts
 var NetworkThrottlingSelector_exports = {};
 __export(NetworkThrottlingSelector_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
-  Events: () => Events,
+  Events: () => Events3,
   NetworkThrottlingSelect: () => NetworkThrottlingSelect,
   getRecommendedNetworkConditions: () => getRecommendedNetworkConditions
 });
@@ -841,7 +912,9 @@ var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
 var optionsMap2 = /* @__PURE__ */ new WeakMap();
 var DEFAULT_VIEW2 = (input, output, target) => {
   const title = (conditions) => typeof conditions.title === "function" ? conditions.title() : conditions.title;
-  const jslog = (group, condition) => `${VisualLogging3.item(Platform.StringUtilities.toKebabCase("i18nTitleKey" in condition && condition.i18nTitleKey || title(condition))).track({ click: true })}`;
+  const jslog = (group, condition) => `${VisualLogging3.item(Platform.StringUtilities.toKebabCase(
+    "i18nTitleKey" in condition && condition.i18nTitleKey || title(condition)
+  )).track({ click: true })}`;
   let selectedConditions = input.selectedConditions;
   function onSelect(event) {
     const element = event.target;
@@ -866,7 +939,8 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   }
   render3(
     // clang-format off
-    html3`${input.throttlingGroups.map((group) => html3`<optgroup
+    html3`${input.throttlingGroups.map(
+      (group) => html3`<optgroup
             label=${group.title}>
             ${group.items.map((condition) => html3`<option
               ${Directives2.ref((option) => option && optionsMap2.set(option, condition))}
@@ -876,7 +950,8 @@ var DEFAULT_VIEW2 = (input, output, target) => {
               jslog=${jslog(group, condition)}>
                 ${condition === input.recommendedConditions ? i18nString5(UIStrings5.recommendedThrottling, { PH1: title(condition) }) : title(condition)}
             </option>`)}
-        </optgroup>`)}
+        </optgroup>`
+    )}
         <optgroup label=${input.customConditionsGroup.title}>
           ${input.customConditionsGroup.items.map((condition) => html3`<option
               ${Directives2.ref((option) => option && optionsMap2.set(option, condition))}
@@ -907,10 +982,10 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     }
   );
 };
-var Events;
-(function(Events2) {
-  Events2["CONDITIONS_CHANGED"] = "ConditionsChanged";
-})(Events || (Events = {}));
+var Events3 = /* @__PURE__ */ ((Events4) => {
+  Events4["CONDITIONS_CHANGED"] = "ConditionsChanged";
+  return Events4;
+})(Events3 || {});
 function getRecommendedNetworkConditions(roundTripTimeMetricData) {
   if (roundTripTimeMetricData?.percentiles) {
     const rtt = Number(roundTripTimeMetricData.percentiles.p75);
@@ -918,7 +993,9 @@ function getRecommendedNetworkConditions(roundTripTimeMetricData) {
   }
   return null;
 }
-var NetworkThrottlingSelectBase = Common4.ObjectWrapper.eventMixin(UI4.Widget.Widget);
+var NetworkThrottlingSelectBase = Common4.ObjectWrapper.eventMixin(
+  UI4.Widget.Widget
+);
 var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThrottlingSelectBase {
   #settings;
   #recommendedConditions = null;
@@ -926,7 +1003,7 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThro
   #currentConditions;
   #title;
   #view;
-  #variant = "global-conditions";
+  #variant = _NetworkThrottlingSelect.Variant.GLOBAL_CONDITIONS;
   #disabled = false;
   static createForGlobalConditions(element, title) {
     const selectElement = element.createChild("select");
@@ -991,7 +1068,9 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThro
   #updateRecommendation = () => {
     const cruxManager = CrUXManager3.CrUXManager.instance();
     const roundTripTimeMetricData = cruxManager.getSelectedFieldMetricData("round_trip_time");
-    this.recommendedConditions = getRecommendedNetworkConditions(roundTripTimeMetricData);
+    this.recommendedConditions = getRecommendedNetworkConditions(
+      roundTripTimeMetricData
+    );
   };
   set bindToGlobalConditions(bind) {
     const cruxManager = CrUXManager3.CrUXManager.instance();
@@ -1000,14 +1079,20 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThro
       this.#jslogContext = SDK5.NetworkManager.activeNetworkThrottlingKeySetting(this.#settings).name;
       ThrottlingManager.instance();
       this.#currentConditions = multitargetNetworkManager.networkConditions();
-      this.addEventListener("ConditionsChanged", this.#onConditionsChanged);
-      multitargetNetworkManager.addEventListener("ConditionsChanged", this.#onGlobalConditionsChanged);
-      cruxManager.addEventListener("field-data-changed", this.#updateRecommendation);
+      this.addEventListener("ConditionsChanged" /* CONDITIONS_CHANGED */, this.#onConditionsChanged);
+      multitargetNetworkManager.addEventListener(
+        SDK5.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED,
+        this.#onGlobalConditionsChanged
+      );
+      cruxManager.addEventListener(CrUXManager3.Events.FIELD_DATA_CHANGED, this.#updateRecommendation);
       this.#updateRecommendation();
     } else {
-      this.removeEventListener("ConditionsChanged", this.#onConditionsChanged);
-      multitargetNetworkManager.removeEventListener("ConditionsChanged", this.#onGlobalConditionsChanged);
-      cruxManager.removeEventListener("field-data-changed", this.#updateRecommendation);
+      this.removeEventListener("ConditionsChanged" /* CONDITIONS_CHANGED */, this.#onConditionsChanged);
+      multitargetNetworkManager.removeEventListener(
+        SDK5.NetworkManager.MultitargetNetworkManager.Events.CONDITIONS_CHANGED,
+        this.#onGlobalConditionsChanged
+      );
+      cruxManager.removeEventListener(CrUXManager3.Events.FIELD_DATA_CHANGED, this.#updateRecommendation);
     }
     this.requestUpdate();
   }
@@ -1032,30 +1117,36 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThro
       void Common4.Revealer.reveal(customNetworkConditionsSetting);
     };
     const onSelect = (conditions) => {
-      this.dispatchEventToListeners("ConditionsChanged", conditions);
+      this.dispatchEventToListeners("ConditionsChanged" /* CONDITIONS_CHANGED */, conditions);
     };
     const throttlingGroups = [];
     switch (this.#variant) {
-      case "global-conditions":
-        throttlingGroups.push({ title: i18nString5(UIStrings5.disabled), items: [SDK5.NetworkManager.NoThrottlingConditions] }, {
-          title: i18nString5(UIStrings5.presets),
-          items: [
-            SDK5.NetworkManager.Fast4GConditions,
-            SDK5.NetworkManager.Slow4GConditions,
-            SDK5.NetworkManager.Slow3GConditions,
-            SDK5.NetworkManager.OfflineConditions
-          ]
-        });
+      case _NetworkThrottlingSelect.Variant.GLOBAL_CONDITIONS:
+        throttlingGroups.push(
+          { title: i18nString5(UIStrings5.disabled), items: [SDK5.NetworkManager.NoThrottlingConditions] },
+          {
+            title: i18nString5(UIStrings5.presets),
+            items: [
+              SDK5.NetworkManager.Fast4GConditions,
+              SDK5.NetworkManager.Slow4GConditions,
+              SDK5.NetworkManager.Slow3GConditions,
+              SDK5.NetworkManager.OfflineConditions
+            ]
+          }
+        );
         break;
-      case "individual-request-conditions":
-        throttlingGroups.push({ title: i18nString5(UIStrings5.blockingGroup), items: [SDK5.NetworkManager.BlockingConditions] }, {
-          title: i18nString5(UIStrings5.presets),
-          items: [
-            SDK5.NetworkManager.Fast4GConditions,
-            SDK5.NetworkManager.Slow4GConditions,
-            SDK5.NetworkManager.Slow3GConditions
-          ]
-        });
+      case _NetworkThrottlingSelect.Variant.INDIVIDUAL_REQUEST_CONDITIONS:
+        throttlingGroups.push(
+          { title: i18nString5(UIStrings5.blockingGroup), items: [SDK5.NetworkManager.BlockingConditions] },
+          {
+            title: i18nString5(UIStrings5.presets),
+            items: [
+              SDK5.NetworkManager.Fast4GConditions,
+              SDK5.NetworkManager.Slow4GConditions,
+              SDK5.NetworkManager.Slow3GConditions
+            ]
+          }
+        );
         break;
     }
     const customConditionsGroup = { title: i18nString5(UIStrings5.custom), items: customNetworkConditions };
@@ -1073,15 +1164,15 @@ var NetworkThrottlingSelect = class _NetworkThrottlingSelect extends NetworkThro
     this.#view(viewInput, {}, this.contentElement);
   }
 };
-(function(NetworkThrottlingSelect2) {
+((NetworkThrottlingSelect2) => {
   let Variant;
-  (function(Variant2) {
+  ((Variant2) => {
     Variant2["GLOBAL_CONDITIONS"] = "global-conditions";
     Variant2["INDIVIDUAL_REQUEST_CONDITIONS"] = "individual-request-conditions";
   })(Variant = NetworkThrottlingSelect2.Variant || (NetworkThrottlingSelect2.Variant = {}));
 })(NetworkThrottlingSelect || (NetworkThrottlingSelect = {}));
 
-// gen/front_end/panels/mobile_throttling/ThrottlingSettingsTab.js
+// ../../front_end/panels/mobile_throttling/ThrottlingSettingsTab.ts
 var ThrottlingSettingsTab_exports = {};
 __export(ThrottlingSettingsTab_exports, {
   CPUThrottlingCard: () => CPUThrottlingCard,
@@ -1097,7 +1188,7 @@ import * as UI5 from "../../ui/legacy/legacy.js";
 import * as VisualLogging4 from "../../ui/visual_logging/visual_logging.js";
 import * as PanelsCommon5 from "../common/common.js";
 
-// gen/front_end/panels/mobile_throttling/CalibrationController.js
+// ../../front_end/panels/mobile_throttling/CalibrationController.ts
 import * as i18n11 from "../../core/i18n/i18n.js";
 import * as SDK6 from "../../core/sdk/sdk.js";
 import * as PanelsCommon4 from "../common/common.js";
@@ -1493,7 +1584,7 @@ var throttlingSettingsTab_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./throttlingSettingsTab.css")} */`;
 
-// gen/front_end/panels/mobile_throttling/ThrottlingSettingsTab.js
+// ../../front_end/panels/mobile_throttling/ThrottlingSettingsTab.ts
 var UIStrings7 = {
   /**
    * @description Title for default network throttling profiles card.
@@ -1688,8 +1779,7 @@ var CPUThrottlingCard = class {
     this.setting = settings.createSetting(
       "calibrated-cpu-throttling",
       {},
-      "Global"
-      /* Common.Settings.SettingStorageType.GLOBAL */
+      Common5.Settings.SettingStorageType.GLOBAL
     );
     this.element = document.createElement("devtools-card");
     this.element.heading = i18nString7(UIStrings7.cpuThrottlingPresets);
@@ -1706,7 +1796,7 @@ var CPUThrottlingCard = class {
     this.calibrateButton = new Buttons.Button.Button();
     this.calibrateButton.classList.add("calibrate-button");
     this.calibrateButton.data = {
-      variant: "primary",
+      variant: Buttons.Button.Variant.PRIMARY,
       jslogContext: "throttling.calibrate"
     };
     this.calibrateButton.addEventListener("click", () => this.calibrateButtonClicked());
@@ -1714,7 +1804,7 @@ var CPUThrottlingCard = class {
     this.cancelButton = new Buttons.Button.Button();
     this.cancelButton.classList.add("cancel-button");
     this.cancelButton.data = {
-      variant: "outlined",
+      variant: Buttons.Button.Variant.OUTLINED,
       jslogContext: "throttling.calibrate-cancel"
     };
     this.cancelButton.textContent = i18nString7(UIStrings7.cancel);
@@ -1895,7 +1985,7 @@ var ThrottlingSettingsTab = class extends UI5.Widget.VBox {
     const addButton = new Buttons.Button.Button();
     addButton.classList.add("add-conditions-button");
     addButton.data = {
-      variant: "outlined",
+      variant: Buttons.Button.Variant.OUTLINED,
       iconName: "plus",
       jslogContext: "network.add-conditions"
     };
@@ -2093,7 +2183,14 @@ var ThrottlingSettingsTab = class extends UI5.Widget.VBox {
       }
     };
     settings.forEach((setting) => {
-      createSettingField(setting.name, setting.labelText, setting.inputType, setting.placeholder, setting.validator, setting.isOptional);
+      createSettingField(
+        setting.name,
+        setting.labelText,
+        setting.inputType,
+        setting.placeholder,
+        setting.validator,
+        setting.isOptional
+      );
     });
     return editor;
     function titleValidator(_item, _index, input) {
@@ -2116,7 +2213,10 @@ var ThrottlingSettingsTab = class extends UI5.Widget.VBox {
       const throughput = input.getAttribute("aria-label");
       const valid = !Number.isNaN(parsedValue) && parsedValue >= minThroughput && parsedValue <= maxThroughput;
       if (!valid) {
-        const errorMessage = i18nString7(UIStrings7.sMustBeANumberBetweenSkbsToSkbs, { PH1: String(throughput), PH2: minThroughput, PH3: maxThroughput });
+        const errorMessage = i18nString7(
+          UIStrings7.sMustBeANumberBetweenSkbsToSkbs,
+          { PH1: String(throughput), PH2: minThroughput, PH3: maxThroughput }
+        );
         return { valid, errorMessage };
       }
       return {

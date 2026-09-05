@@ -117,7 +117,7 @@ export class TestUniverse {
         ],
         [
             Emulation.DeviceModeModel.DeviceModeModel,
-            () => new Emulation.DeviceModeModel.DeviceModeModel(this.targetManager, this.settings, this.multitargetNetworkManager, this.fileManager),
+            () => new Emulation.DeviceModeModel.DeviceModeModel(this.targetManager, this.settings, this.multitargetNetworkManager),
         ],
         [
             Emulation.EmulatedDevices.EmulatedDevicesList,

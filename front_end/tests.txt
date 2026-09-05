@@ -820,6 +820,7 @@ ui/legacy/components/inline_editor/CSSShadowEditor.test.js
 ui/legacy/components/inline_editor/ColorMixSwatch.test.js
 ui/legacy/components/inline_editor/ColorSwatch.test.js
 ui/legacy/components/inline_editor/LinkSwatch.test.js
+ui/legacy/components/inline_editor/PositionAreaEditor.test.js
 ui/legacy/components/object_ui/CSSStyleSanitizer.test.js
 ui/legacy/components/object_ui/CustomPreviewComponent.test.js
 ui/legacy/components/object_ui/JavaScriptREPL.test.js

@@ -63,19 +63,10 @@ var Universe = class {
     context.set(SDK.FrameManager.FrameManager, frameManager);
     const multitargetNetworkManager = new SDK.NetworkManager.MultitargetNetworkManager(targetManager);
     context.set(SDK.NetworkManager.MultitargetNetworkManager, multitargetNetworkManager);
-    const workspace = new Workspace.Workspace.WorkspaceImpl();
-    context.set(Workspace.Workspace.WorkspaceImpl, workspace);
-    const fileManager = new Workspace.FileManager.FileManager();
-    context.set(Workspace.FileManager.FileManager, fileManager);
     this.supportsEmulation = options.supportsEmulation;
     let deviceModeModel = null;
     if (options.supportsEmulation) {
-      deviceModeModel = new Emulation.DeviceModeModel.DeviceModeModel(
-        targetManager,
-        settings,
-        multitargetNetworkManager,
-        fileManager
-      );
+      deviceModeModel = new Emulation.DeviceModeModel.DeviceModeModel(targetManager, settings, multitargetNetworkManager);
       context.set(Emulation.DeviceModeModel.DeviceModeModel, deviceModeModel);
     }
     const pageResourceLoader = new SDK.PageResourceLoader.PageResourceLoader(targetManager, settings, multitargetNetworkManager, null);
@@ -107,6 +98,10 @@ var Universe = class {
     context.set(SDK.EventBreakpointsModel.EventBreakpointsManager, eventBreakpointsManager);
     const domModelUndoStack = new SDK.DOMModel.DOMModelUndoStack();
     context.set(SDK.DOMModel.DOMModelUndoStack, domModelUndoStack);
+    const workspace = new Workspace.Workspace.WorkspaceImpl();
+    context.set(Workspace.Workspace.WorkspaceImpl, workspace);
+    const fileManager = new Workspace.FileManager.FileManager();
+    context.set(Workspace.FileManager.FileManager, fileManager);
     if (automaticFileSystemManager) {
       const automaticFileSystemWorkspaceBinding = new Persistence.AutomaticFileSystemWorkspaceBinding.AutomaticFileSystemWorkspaceBinding(
         automaticFileSystemManager,

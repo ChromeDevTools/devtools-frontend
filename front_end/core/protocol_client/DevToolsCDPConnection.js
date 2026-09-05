@@ -3,18 +3,13 @@
 // found in the LICENSE file.
 import { CDPErrorStatus, } from './CDPConnection.js';
 import { InspectorBackend, test } from './InspectorBackend.js';
-const LongPollingMethods = new Set(['CSS.takeComputedStyleUpdates']);
 export class DevToolsCDPConnection {
     #transport;
     #lastMessageId = 1;
-    #pendingResponsesCount = 0;
-    #pendingLongPollingMessageIds = new Set();
-    #pendingScripts = [];
     #callbacks = new Map();
     #observers = new Set();
     constructor(transport) {
         this.#transport = transport;
-        test.deprecatedRunAfterPendingDispatches = this.deprecatedRunAfterPendingDispatches.bind(this);
         test.sendRawMessage = this.sendRawMessageForTesting.bind(this);
         this.#transport.setOnMessage(this.onMessage.bind(this));
         this.#transport.setOnDisconnect(reason => {
@@ -46,10 +41,6 @@ export class DevToolsCDPConnection {
             const domain = method.split('.')[0];
             const paramsObject = JSON.parse(JSON.stringify(params || {}));
             test.onMessageSent({ domain, method, params: paramsObject, id: messageId, sessionId });
-        }
-        ++this.#pendingResponsesCount;
-        if (LongPollingMethods.has(method)) {
-            this.#pendingLongPollingMessageIds.add(messageId);
         }
         return new Promise(resolve => {
             this.#callbacks.set(messageId, { resolve, method, sessionId });
@@ -104,43 +95,12 @@ export class DevToolsCDPConnection {
                 return;
             }
             callback.resolve(messageObject);
-            --this.#pendingResponsesCount;
-            this.#pendingLongPollingMessageIds.delete(messageObject.id);
-            if (this.#pendingScripts.length && !this.hasOutstandingNonLongPollingRequests()) {
-                this.deprecatedRunAfterPendingDispatches();
-            }
         }
         else if ('method' in messageObject) {
             this.#observers.forEach(observer => observer.onEvent(messageObject));
         }
         else {
             InspectorBackend.reportProtocolError('Protocol Error: the message without method', messageObject);
-        }
-    }
-    hasOutstandingNonLongPollingRequests() {
-        return this.#pendingResponsesCount - this.#pendingLongPollingMessageIds.size > 0;
-    }
-    deprecatedRunAfterPendingDispatches(script) {
-        if (script) {
-            this.#pendingScripts.push(script);
-        }
-        // Execute all promises.
-        setTimeout(() => {
-            if (!this.hasOutstandingNonLongPollingRequests()) {
-                this.executeAfterPendingDispatches();
-            }
-            else {
-                this.deprecatedRunAfterPendingDispatches();
-            }
-        }, 0);
-    }
-    executeAfterPendingDispatches() {
-        if (!this.hasOutstandingNonLongPollingRequests()) {
-            const scripts = this.#pendingScripts;
-            this.#pendingScripts = [];
-            for (let id = 0; id < scripts.length; ++id) {
-                scripts[id]();
-            }
         }
     }
 }

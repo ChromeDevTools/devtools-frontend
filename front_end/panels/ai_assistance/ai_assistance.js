@@ -20,7 +20,7 @@ import * as Snackbars4 from "../../ui/components/snackbars/snackbars.js";
 import * as UIHelpers2 from "../../ui/helpers/helpers.js";
 import * as UI9 from "../../ui/legacy/legacy.js";
 import * as Lit10 from "../../ui/lit/lit.js";
-import * as VisualLogging8 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
 import * as LighthousePanel2 from "../lighthouse/lighthouse.js";
 import * as NetworkForward2 from "../network/forward/forward.js";
 import * as NetworkPanel from "../network/network.js";
@@ -1126,9 +1126,9 @@ function getButtonLabel(input) {
   if (input.isLoading && !input.isExpanded && input.stepTitle) {
     labelBase = input.stepTitle;
   } else {
-    const action3 = input.isExpanded ? "Hide" : "Show";
+    const action2 = input.isExpanded ? "Hide" : "Show";
     const type = input.hasWidgets ? "AI walkthrough" : "thinking";
-    labelBase = `${action3} ${type}`;
+    labelBase = `${action2} ${type}`;
   }
   if (input.isLoading) {
     return `Loading: ${labelBase}`;
@@ -8612,13 +8612,13 @@ __export(DisabledWidget_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW6,
   DisabledWidget: () => DisabledWidget
 });
+import "../../ui/kit/kit.js";
 import * as Host4 from "../../core/host/host.js";
 import * as i18n11 from "../../core/i18n/i18n.js";
 import * as Root from "../../core/root/root.js";
 import * as uiI18n from "../../ui/i18n/i18n.js";
 import * as UI6 from "../../ui/legacy/legacy.js";
 import { html as html9, render as render6 } from "../../ui/lit/lit.js";
-import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/disabledWidget.css.js
 var disabledWidget_css_default = `/*
@@ -8725,14 +8725,14 @@ function renderConsentViewContents(hostConfig) {
   if (hostConfig.isOffTheRecord) {
     return html9`${i18nString4(UIStrings4.notAvailableInIncognitoMode)}`;
   }
-  const settingsLink = document.createElement("span");
+  const settingsLink = document.createElement("devtools-link");
   settingsLink.textContent = i18nString4(UIStrings4.settingsLink);
   settingsLink.classList.add("link");
   UI6.ARIAUtils.markAsLink(settingsLink);
   settingsLink.addEventListener("click", () => {
     void UI6.ViewManager.ViewManager.instance().showView("chrome-ai");
   });
-  settingsLink.setAttribute("jslog", `${VisualLogging5.action("open-ai-settings").track({ click: true })}`);
+  settingsLink.jslogContext = "open-ai-settings";
   let consentViewContents;
   if (hostConfig.devToolsAiAssistancePerformanceAgent?.enabled) {
     consentViewContents = uiI18n.getFormatLocalizedString(
@@ -8801,7 +8801,7 @@ import * as i18n13 from "../../core/i18n/i18n.js";
 import * as Root2 from "../../core/root/root.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
 import { html as html10, render as render7 } from "../../ui/lit/lit.js";
-import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging5 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/exploreWidget.css.js
 var exploreWidget_css_default = `/*
@@ -8960,7 +8960,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
      <button
        class="link"
        role="link"
-       jslog=${VisualLogging6.link(featureCard.jslogContext).track({
+       jslog=${VisualLogging5.link(featureCard.jslogContext).track({
       click: true
     })}
        @click=${featureCard.onClick}
@@ -8984,7 +8984,7 @@ var DEFAULT_VIEW7 = (input, _output, target) => {
             <button
               class="link"
               role="link"
-              jslog=${VisualLogging6.link("open-ai-settings").track({ click: true })}
+              jslog=${VisualLogging5.link("open-ai-settings").track({ click: true })}
               @click=${() => {
       void UI7.ViewManager.ViewManager.instance().showView("chrome-ai");
     }}
@@ -9102,7 +9102,7 @@ import * as Root3 from "../../core/root/root.js";
 import * as Buttons6 from "../../ui/components/buttons/buttons.js";
 import * as UI8 from "../../ui/legacy/legacy.js";
 import * as Lit8 from "../../ui/lit/lit.js";
-import * as VisualLogging7 from "../../ui/visual_logging/visual_logging.js";
+import * as VisualLogging6 from "../../ui/visual_logging/visual_logging.js";
 
 // gen/front_end/panels/ai_assistance/components/optInChangeDialog.css.js
 var optInChangeDialog_css_default = `/*
@@ -9240,7 +9240,7 @@ var DEFAULT_VIEW8 = (input, _output, target) => {
   const disclaimer = input.loggingEnabled ? i18nString5(UIStrings5.privacyDisclaimer) : i18nString5(UIStrings5.privacyDisclaimerEnterpriseNoLogging);
   render8(html11`
     <style>${optInChangeDialog_css_default}</style>
-    <div class="opt-in-change-dialog" jslog=${VisualLogging7.dialog("ai-v2-opt-in-change-dialog")}>
+    <div class="opt-in-change-dialog" jslog=${VisualLogging6.dialog("ai-v2-opt-in-change-dialog")}>
       <header>
         <div class="header-icon-container">
           <devtools-icon name="smart-assistant" role="presentation"></devtools-icon>
@@ -9681,7 +9681,7 @@ var ViewState = /* @__PURE__ */ ((ViewState2) => {
 })(ViewState || {});
 function toolbarView(input) {
   return html13`
-    <div class="toolbar-container" role="toolbar" jslog=${VisualLogging8.toolbar()}>
+    <div class="toolbar-container" role="toolbar" jslog=${VisualLogging7.toolbar()}>
       <devtools-toolbar class="freestyler-left-toolbar" role="presentation">
       ${input.showChatActions ? html13`<devtools-button
           title=${i18nString6(UIStrings6.newChat)}
@@ -10754,7 +10754,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     } else if (data instanceof AiAssistanceModel7.StorageContext.StorageContext) {
       this.#selectedStorage = data;
     }
-    void VisualLogging8.logFunctionCall(`context-change-${this.#conversation?.type}`);
+    void VisualLogging7.logFunctionCall(`context-change-${this.#conversation?.type}`);
     this.requestUpdate();
   };
   async #handleInspectElement() {
@@ -10819,7 +10819,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
         type: multimodalInputType
       };
     }
-    void VisualLogging8.logFunctionCall(`start-conversation-${this.#conversation.type}`, "ui");
+    void VisualLogging7.logFunctionCall(`start-conversation-${this.#conversation.type}`, "ui");
     await this.#doConversation(
       this.#conversation.run(
         text,

@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/search/SearchResultsPane.js
+// ../../front_end/panels/search/SearchResultsPane.ts
 var SearchResultsPane_exports = {};
 __export(SearchResultsPane_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
@@ -149,7 +149,7 @@ li.search-match .link-style.search-match-link {
 
 /*# sourceURL=${import.meta.resolve("./searchResultsPane.css")} */`;
 
-// gen/front_end/panels/search/SearchResultsPane.js
+// ../../front_end/panels/search/SearchResultsPane.ts
 var UIStrings = {
   /**
    * @description Accessibility label for the number of matches in each file in the search results view of the Search panel.
@@ -180,7 +180,8 @@ var DEFAULT_VIEW = (input, _output, target) => {
       expandedResults.delete(searchResult);
     }
   };
-  render(html`
+  render(
+    html`
     <devtools-tree hide-overflow .template=${html`
       <ul role="tree">
         ${results.map((searchResult) => html`
@@ -195,7 +196,9 @@ var DEFAULT_VIEW = (input, _output, target) => {
             </ul>
           </li>`)}
       </ul>
-    `}></devtools-tree>`, target);
+    `}></devtools-tree>`,
+    target
+  );
 };
 var renderSearchResult = (searchResult) => {
   return html`
@@ -304,7 +307,11 @@ var SearchResultsPane = class extends UI.Widget.VBox {
     const queries = this.#searchConfig.queries();
     const regexes = [];
     for (let i = 0; i < queries.length; ++i) {
-      regexes.push(Platform.StringUtilities.createSearchRegex(queries[i], !this.#searchConfig.ignoreCase(), this.#searchConfig.isRegex()));
+      regexes.push(Platform.StringUtilities.createSearchRegex(
+        queries[i],
+        !this.#searchConfig.ignoreCase(),
+        this.#searchConfig.isRegex()
+      ));
     }
     const searchMatches = this.#searchMatches.get(searchResult) ?? [];
     this.#searchMatches.set(searchResult, searchMatches);
@@ -348,16 +355,20 @@ var SearchResultsPane = class extends UI.Widget.VBox {
       }
       this.#resultsUpdated = false;
     }
-    this.#view({
-      results: this.#searchResults,
-      matches: this.#searchMatches,
-      expandedResults: this.#expandedResults,
-      onSelectMatch: (searchResult, matchIndex) => {
-        void Common.Revealer.reveal(searchResult.matchRevealable(matchIndex));
+    this.#view(
+      {
+        results: this.#searchResults,
+        matches: this.#searchMatches,
+        expandedResults: this.#expandedResults,
+        onSelectMatch: (searchResult, matchIndex) => {
+          void Common.Revealer.reveal(searchResult.matchRevealable(matchIndex));
+        },
+        onExpandSearchResult: this.#onExpandSearchResult.bind(this),
+        onShowMoreMatches: this.#onShowMoreMatches.bind(this)
       },
-      onExpandSearchResult: this.#onExpandSearchResult.bind(this),
-      onShowMoreMatches: this.#onShowMoreMatches.bind(this)
-    }, {}, this.contentElement);
+      {},
+      this.contentElement
+    );
   }
   #regexMatchRanges(lineContent, regex) {
     regex.lastIndex = 0;
@@ -408,10 +419,10 @@ function lineSegmentForMultipleMatches(lineContent, ranges) {
   return { lineSegment, matchRanges };
 }
 
-// gen/front_end/panels/search/SearchScope.js
+// ../../front_end/panels/search/SearchScope.ts
 var SearchScope_exports = {};
 
-// gen/front_end/panels/search/SearchView.js
+// ../../front_end/panels/search/SearchView.ts
 var SearchView_exports = {};
 __export(SearchView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
@@ -548,7 +559,7 @@ var searchView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./searchView.css")} */`;
 
-// gen/front_end/panels/search/SearchView.js
+// ../../front_end/panels/search/SearchView.ts
 var UIStrings2 = {
   /**
    * @description Placeholder text of a search bar.
@@ -640,11 +651,31 @@ var i18nString2 = i18n3.i18n.getLocalizedString.bind(void 0, str_2);
 var { ref, live } = Directives;
 var { widget, widgetRef } = UI2.Widget;
 var DEFAULT_VIEW2 = (input, output, target) => {
-  const { query, matchCase, isRegex, searchConfig, searchMessage, searchResults, searchResultsMessage, progress, onQueryChange, onQueryKeyDown, onPanelKeyDown, onClearSearchInput, onToggleRegex, onToggleMatchCase, onRefresh, onClearSearch } = input;
+  const {
+    query,
+    matchCase,
+    isRegex,
+    searchConfig,
+    searchMessage,
+    searchResults,
+    searchResultsMessage,
+    progress,
+    onQueryChange,
+    onQueryKeyDown,
+    onPanelKeyDown,
+    onClearSearchInput,
+    onToggleRegex,
+    onToggleMatchCase,
+    onRefresh,
+    onClearSearch
+  } = input;
   let header = "", text = "";
   if (!query) {
     header = i18nString2(UIStrings2.noSearchResult);
-    text = i18nString2(UIStrings2.typeAndPressSToSearch, { PH1: UI2.KeyboardShortcut.KeyboardShortcut.shortcutToString(UI2.KeyboardShortcut.Keys.Enter) });
+    text = i18nString2(
+      UIStrings2.typeAndPressSToSearch,
+      { PH1: UI2.KeyboardShortcut.KeyboardShortcut.shortcutToString(UI2.KeyboardShortcut.Keys.Enter) }
+    );
   } else if (progress) {
     header = i18nString2(UIStrings2.searching);
   } else if (!searchResults.length) {
@@ -681,19 +712,19 @@ var DEFAULT_VIEW2 = (input, output, target) => {
             <devtools-button class="clear-button" tabindex="-1"
                 @click=${onClearSearchInput}
                 .data=${{
-    variant: "icon",
+    variant: Buttons.Button.Variant.ICON,
     iconName: "cross-circle-filled",
     jslogContext: "clear-input",
-    size: "SMALL",
+    size: Buttons.Button.Size.SMALL,
     title: i18nString2(UIStrings2.clearInput)
   }}
             ></devtools-button>
             <devtools-button @click=${onToggleRegex} .data=${{
-    variant: "icon_toggle",
+    variant: Buttons.Button.Variant.ICON_TOGGLE,
     iconName: "regular-expression",
     toggledIconName: "regular-expression",
-    toggleType: "primary-toggle",
-    size: "SMALL",
+    toggleType: Buttons.Button.ToggleType.PRIMARY,
+    size: Buttons.Button.Size.SMALL,
     toggled: isRegex,
     title: isRegex ? i18nString2(UIStrings2.disableRegularExpression) : i18nString2(UIStrings2.enableRegularExpression),
     jslogContext: "regular-expression"
@@ -701,11 +732,11 @@ var DEFAULT_VIEW2 = (input, output, target) => {
               class="regex-button"
             ></devtools-button>
             <devtools-button @click=${onToggleMatchCase} .data=${{
-    variant: "icon_toggle",
+    variant: Buttons.Button.Variant.ICON_TOGGLE,
     iconName: "match-case",
     toggledIconName: "match-case",
-    toggleType: "primary-toggle",
-    size: "SMALL",
+    toggleType: Buttons.Button.ToggleType.PRIMARY,
+    size: Buttons.Button.Size.SMALL,
     toggled: matchCase,
     title: matchCase ? i18nString2(UIStrings2.disableCaseSensitive) : i18nString2(UIStrings2.enableCaseSensitive),
     jslogContext: "match-case"
@@ -717,13 +748,13 @@ var DEFAULT_VIEW2 = (input, output, target) => {
         <devtools-toolbar class="search-toolbar" jslog=${VisualLogging.toolbar()}>
           <devtools-button title=${i18nString2(UIStrings2.refresh)} @click=${onRefresh}
               .data=${{
-    variant: "toolbar",
+    variant: Buttons.Button.Variant.TOOLBAR,
     iconName: "refresh",
     jslogContext: "search.refresh"
   }}></devtools-button>
           <devtools-button title=${i18nString2(UIStrings2.clear)} @click=${onClearSearch}
               .data=${{
-    variant: "toolbar",
+    variant: Buttons.Button.Variant.TOOLBAR,
     iconName: "clear",
     jslogContext: "search.clear"
   }}></devtools-button>
@@ -787,7 +818,10 @@ var SearchView = class extends UI2.Widget.VBox {
     this.#searchConfig = null;
     this.#pendingSearchConfig = null;
     this.#progress = null;
-    this.#advancedSearchConfig = Common2.Settings.Settings.instance().createLocalSetting(settingKey + "-search-config", new Workspace.SearchConfig.SearchConfig("", true, false).toPlainObject());
+    this.#advancedSearchConfig = Common2.Settings.Settings.instance().createLocalSetting(
+      settingKey + "-search-config",
+      new Workspace.SearchConfig.SearchConfig("", true, false).toPlainObject()
+    );
     this.performUpdate();
     this.#load();
     this.performUpdate();
@@ -882,7 +916,11 @@ var SearchView = class extends UI2.Widget.VBox {
     if (this.#progress) {
       this.#progress.done = true;
     }
-    this.#progress = new Common2.Progress.ProgressProxy(new Common2.Progress.Progress(), this.#onIndexingFinished.bind(this), this.requestUpdate.bind(this));
+    this.#progress = new Common2.Progress.ProgressProxy(
+      new Common2.Progress.Progress(),
+      this.#onIndexingFinished.bind(this),
+      this.requestUpdate.bind(this)
+    );
     this.#searchMessage = i18nString2(UIStrings2.indexing);
     this.performUpdate();
     if (this.#searchScope) {
@@ -923,7 +961,12 @@ var SearchView = class extends UI2.Widget.VBox {
     this.#progress = new Common2.Progress.ProgressProxy(new Common2.Progress.Progress(), void 0, this.requestUpdate.bind(this));
     this.#searchStarted();
     if (this.#searchScope) {
-      void this.#searchScope.performSearch(searchConfig, this.#progress, this.#onSearchResult.bind(this, this.#searchId), this.#onSearchFinished.bind(this, this.#searchId));
+      void this.#searchScope.performSearch(
+        searchConfig,
+        this.#progress,
+        this.#onSearchResult.bind(this, this.#searchId),
+        this.#onSearchFinished.bind(this, this.#searchId)
+      );
     }
   }
   #resetSearch() {
@@ -960,7 +1003,10 @@ var SearchView = class extends UI2.Widget.VBox {
       } else if (this.#searchMatchesCount > 1 && this.#nonEmptySearchResultsCount === 1) {
         this.#searchResultsMessage = i18nString2(UIStrings2.foundDMatchingLinesInFile, { PH1: this.#searchMatchesCount });
       } else {
-        this.#searchResultsMessage = i18nString2(UIStrings2.foundDMatchingLinesInDFiles, { PH1: this.#searchMatchesCount, PH2: this.#nonEmptySearchResultsCount });
+        this.#searchResultsMessage = i18nString2(
+          UIStrings2.foundDMatchingLinesInDFiles,
+          { PH1: this.#searchMatchesCount, PH2: this.#nonEmptySearchResultsCount }
+        );
       }
     } else {
       this.#searchResultsMessage = "";

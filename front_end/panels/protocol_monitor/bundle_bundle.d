@@ -1,0 +1,1 @@
+gen/front_end/panels/protocol_monitor/protocol_monitor.js: gen/front_end/panels/protocol_monitor/JSONEditor.css.js ../../front_end/panels/protocol_monitor/JSONEditor.ts gen/front_end/panels/protocol_monitor/protocolMonitor.css.js ../../front_end/panels/protocol_monitor/ProtocolMonitor.ts ../../front_end/panels/protocol_monitor/protocol_monitor.ts

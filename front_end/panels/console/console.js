@@ -5334,7 +5334,7 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
       if (shouldFormatMessage && parameters[i].type === "string") {
         appendOrShow(formattedResult, this.linkifyStringAsFragment(parameters[i].description || ""));
       } else {
-        formattedResult.appendChild(this.formatParameter(parameters[i], false, true));
+        appendOrShow(formattedResult, this.formatParameter(parameters[i], false, true));
       }
       if (i < parameters.length - 1) {
         UI3.UIUtils.createTextChild(formattedResult, " ");
@@ -5344,7 +5344,9 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
   }
   formatParameter(output, forceObjectFormat, includePreview) {
     if (output.customPreview()) {
-      return new ObjectUI2.CustomPreviewComponent.CustomPreviewComponent(output).element;
+      const component = new ObjectUI2.CustomPreviewComponent.CustomPreviewComponent();
+      component.object = output;
+      return component;
     }
     const outputType = forceObjectFormat ? "object" : output.subtype || output.type;
     let element;
@@ -5693,21 +5695,27 @@ var ConsoleViewMessage = class _ConsoleViewMessage {
     for (const token of tokens) {
       switch (token.type) {
         case "generic": {
-          formattedResult.append(this.formatParameter(
-            token.value,
-            true,
-            false
-            /* includePreview */
-          ));
+          appendOrShow(
+            formattedResult,
+            this.formatParameter(
+              token.value,
+              true,
+              false
+              /* includePreview */
+            )
+          );
           break;
         }
         case "optimal": {
-          formattedResult.append(this.formatParameter(
-            token.value,
-            false,
-            true
-            /* includePreview */
-          ));
+          appendOrShow(
+            formattedResult,
+            this.formatParameter(
+              token.value,
+              false,
+              true
+              /* includePreview */
+            )
+          );
           break;
         }
         case "string": {
@@ -6633,7 +6641,7 @@ var ConsoleTableMessageView = class extends ConsoleViewMessage {
         formattedResult.classList.add("console-message-text");
         const tableElement = formattedResult.createChild("div", "console-message-formatted-table");
         const dataGridContainer = tableElement.createChild("span");
-        tableElement.appendChild(this.formatParameter(actualTable, true, false));
+        appendOrShow(tableElement, this.formatParameter(actualTable, true, false));
         const shadowRoot = dataGridContainer.attachShadow({ mode: "open" });
         const dataGridWidget = this.dataGrid.asWidget();
         dataGridWidget.markAsRoot();

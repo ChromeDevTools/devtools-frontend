@@ -139,7 +139,7 @@ const topLevelNodesCache = new WeakMap();
 // WASM properties are index-based (e.g. locals[0], globals[1]); alphabetical
 // reordering would break the correspondence between displayed index and actual
 // index, so WASM objects are always shown in insertion order.
-export function isWasmObject(object) {
+function isWasmObject(object) {
     return object?.subtype === 'webassemblymemory' || object?.subtype === 'wasmvalue';
 }
 class NodeExpansionLog {
@@ -575,7 +575,7 @@ export class ObjectTree extends ObjectTreeNodeBase {
         return this.#object;
     }
 }
-export class ArrayGroupTreeNode extends ObjectTreeNodeBase {
+class ArrayGroupTreeNode extends ObjectTreeNodeBase {
     #object;
     #range;
     constructor(object, range, parent, options) {
@@ -1042,14 +1042,6 @@ export class ObjectPropertiesSectionWidget extends UI.Widget.Widget {
 /** @constant */
 const ARRAY_LOAD_THRESHOLD = 100;
 const maxRenderableStringLength = 10000;
-export class ObjectPropertiesSectionsTreeOutline extends UI.TreeOutline.TreeOutlineInShadow {
-    constructor() {
-        super();
-        this.registerRequiredCSS(objectValueStyles, objectPropertiesSectionStyles);
-        this.contentElement.classList.add('source-code');
-        this.contentElement.classList.add('object-properties-section');
-    }
-}
 export var ObjectPropertiesMode;
 (function (ObjectPropertiesMode) {
     ObjectPropertiesMode[ObjectPropertiesMode["ALL"] = 0] = "ALL";
@@ -1255,10 +1247,7 @@ export async function formatObjectAsFunction(func, linkify, includePreview) {
 }
 export function renderPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty = false, variableName, includeNullOrUndefined, useCustomPreview = false, valueRef) {
     if (useCustomPreview && value.customPreview()) {
-        const result = (new CustomPreviewComponent(value)).element;
-        result.classList.add('object-properties-section-custom-section');
-        valueRef?.(result);
-        return html `${result}`;
+        return html `<devtools-widget class="object-properties-section-custom-section" ${UI.Widget.widget(CustomPreviewComponent, { object: value })} ${valueRef ? Directives.ref(valueRef) : nothing}></devtools-widget>`;
     }
     const type = value.type;
     const subtype = value.subtype;
@@ -1361,7 +1350,7 @@ export function defaultObjectPresentation(objectOrTree, linkifier, skipProto, re
  * Number of initially visible children in an ObjectPropertyTreeElement.
  * Remaining children are shown as soon as requested via a show more properties button.
  **/
-export const InitialVisibleChildrenLimit = 200;
+const InitialVisibleChildrenLimit = 200;
 export const OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
     const { property } = input.node;
     const isInternalEntries = property.synthetic && input.node.name === '[[Entries]]';

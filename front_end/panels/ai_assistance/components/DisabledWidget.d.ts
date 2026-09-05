@@ -1,3 +1,4 @@
+import '../../../ui/kit/kit.js';
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as UI from '../../../ui/legacy/legacy.js';

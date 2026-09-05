@@ -49,6 +49,7 @@ function sanitizeStyle(currentStyle, styleToAdd) {
 // ../../front_end/ui/legacy/components/object_ui/CustomPreviewComponent.ts
 var CustomPreviewComponent_exports = {};
 __export(CustomPreviewComponent_exports, {
+  CUSTOM_PREVIEW_COMPONENT_DEFAULT_VIEW: () => CUSTOM_PREVIEW_COMPONENT_DEFAULT_VIEW,
   CustomPreviewComponent: () => CustomPreviewComponent,
   CustomPreviewSection: () => CustomPreviewSection,
   DEFAULT_VIEW: () => DEFAULT_VIEW
@@ -64,6 +65,10 @@ var customPreviewComponent_css_default = `/*
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
  */
+
+:host {
+  display: inline-flex;
+}
 
 .custom-expandable-section {
   display: inline-flex;
@@ -89,18 +94,15 @@ var customPreviewComponent_css_default = `/*
 // ../../front_end/ui/legacy/components/object_ui/ObjectPropertiesSection.ts
 var ObjectPropertiesSection_exports = {};
 __export(ObjectPropertiesSection_exports, {
-  ArrayGroupTreeNode: () => ArrayGroupTreeNode,
   ArrayGroupingTreeElement: () => ArrayGroupingTreeElement,
   EXPANDABLE_MAX_DEPTH: () => EXPANDABLE_MAX_DEPTH,
   EXPANDABLE_TEXT_DEFAULT_VIEW: () => EXPANDABLE_TEXT_DEFAULT_VIEW,
   ExpandableTextPropertyValue: () => ExpandableTextPropertyValue,
-  InitialVisibleChildrenLimit: () => InitialVisibleChildrenLimit,
   OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW: () => OBJECT_PROPERTIES_SECTION_DEFAULT_VIEW,
   OBJECT_PROPERTY_DEFAULT_VIEW: () => OBJECT_PROPERTY_DEFAULT_VIEW,
   OBJECT_TREE_DEFAULT_VIEW: () => OBJECT_TREE_DEFAULT_VIEW,
   ObjectPropertiesMode: () => ObjectPropertiesMode,
   ObjectPropertiesSectionWidget: () => ObjectPropertiesSectionWidget,
-  ObjectPropertiesSectionsTreeOutline: () => ObjectPropertiesSectionsTreeOutline,
   ObjectPropertyTreeElement: () => ObjectPropertyTreeElement,
   ObjectPropertyWidget: () => ObjectPropertyWidget,
   ObjectTree: () => ObjectTree,
@@ -112,7 +114,6 @@ __export(ObjectPropertiesSection_exports, {
   defaultObjectPresentation: () => defaultObjectPresentation,
   formatObjectAsFunction: () => formatObjectAsFunction,
   getMemoryIcon: () => getMemoryIcon,
-  isWasmObject: () => isWasmObject,
   objectPropertiesSectionStyles: () => objectPropertiesSection_css_default,
   objectValueStyles: () => objectValue_css_default,
   populateObjectTreeContextMenu: () => populateObjectTreeContextMenu,
@@ -3284,7 +3285,7 @@ var objectPropertiesSection_css_default = `/*
   color: var(--sys-color-on-surface);
   display: flex;
   flex-direction: column;
-  overflow-x: auto;
+  overflow: auto hidden;
 }
 
 .object-properties-section li,
@@ -4509,14 +4510,6 @@ var ObjectPropertiesSectionWidget = class extends UI2.Widget.Widget {
 };
 var ARRAY_LOAD_THRESHOLD = 100;
 var maxRenderableStringLength = 1e4;
-var ObjectPropertiesSectionsTreeOutline = class extends UI2.TreeOutline.TreeOutlineInShadow {
-  constructor() {
-    super();
-    this.registerRequiredCSS(objectValue_css_default, objectPropertiesSection_css_default);
-    this.contentElement.classList.add("source-code");
-    this.contentElement.classList.add("object-properties-section");
-  }
-};
 var ObjectPropertiesMode = /* @__PURE__ */ ((ObjectPropertiesMode2) => {
   ObjectPropertiesMode2[ObjectPropertiesMode2["ALL"] = 0] = "ALL";
   ObjectPropertiesMode2[ObjectPropertiesMode2["OWN_AND_INTERNAL_AND_INHERITED"] = 1] = "OWN_AND_INTERNAL_AND_INHERITED";
@@ -4749,10 +4742,10 @@ async function formatObjectAsFunction(func, linkify, includePreview) {
 }
 function renderPropertyValue(value, wasThrown, showPreview, linkifier, isSyntheticProperty = false, variableName, includeNullOrUndefined, useCustomPreview = false, valueRef) {
   if (useCustomPreview && value.customPreview()) {
-    const result = new CustomPreviewComponent(value).element;
-    result.classList.add("object-properties-section-custom-section");
-    valueRef?.(result);
-    return html2`${result}`;
+    return html2`<devtools-widget class="object-properties-section-custom-section" ${UI2.Widget.widget(
+      CustomPreviewComponent,
+      { object: value }
+    )} ${valueRef ? Directives2.ref(valueRef) : nothing2}></devtools-widget>`;
   }
   const type = value.type;
   const subtype = value.subtype;
@@ -5691,7 +5684,7 @@ var str_3 = i18n5.i18n.registerUIStrings("ui/legacy/components/object_ui/CustomP
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
 var CustomPreviewSection = class extends UI3.Widget.Widget {
   #object;
-  expanded = false;
+  #expanded = false;
   cachedContent;
   headerJsonML;
   view;
@@ -5709,8 +5702,21 @@ var CustomPreviewSection = class extends UI3.Widget.Widget {
     this.#object = object;
     this.headerJsonML = void 0;
     this.cachedContent = void 0;
-    this.expanded = false;
+    this.#expanded = false;
     this.parseHeader();
+    this.performUpdate();
+  }
+  get expanded() {
+    return this.#expanded;
+  }
+  set expanded(expanded) {
+    if (this.#expanded === expanded) {
+      return;
+    }
+    this.#expanded = expanded;
+    if (this.#expanded && !this.cachedContent) {
+      void this.loadBody();
+    }
     this.performUpdate();
   }
   parseHeader() {
@@ -5729,7 +5735,7 @@ var CustomPreviewSection = class extends UI3.Widget.Widget {
       {
         object: this.#object,
         headerJsonML: this.headerJsonML,
-        expanded: this.expanded,
+        expanded: this.#expanded,
         cachedContent: this.cachedContent,
         toggleExpanded: this.toggleExpanded
       },
@@ -5738,16 +5744,8 @@ var CustomPreviewSection = class extends UI3.Widget.Widget {
     );
   }
   toggleExpanded = () => {
-    if (this.cachedContent !== void 0) {
-      this.toggleExpand();
-    } else {
-      void this.loadBody();
-    }
-  };
-  toggleExpand() {
     this.expanded = !this.expanded;
-    this.performUpdate();
-  }
+  };
   async loadBody() {
     const customPreview = this.#object?.customPreview();
     if (!this.#object || !customPreview?.bodyGetterId) {
@@ -5764,11 +5762,11 @@ var CustomPreviewSection = class extends UI3.Widget.Widget {
     } else {
       this.cachedContent = bodyJsonML;
     }
-    this.expanded = true;
     this.performUpdate();
   }
 };
 var ALLOWED_TAGS = ["span", "div", "ol", "li", "table", "tr", "td"];
+var remoteObjectCache = /* @__PURE__ */ new WeakMap();
 var DEFAULT_VIEW = (input, _output, target) => {
   const renderJSONMLTag = (object2, jsonML) => {
     if (!Array.isArray(jsonML)) {
@@ -5836,7 +5834,13 @@ var DEFAULT_VIEW = (input, _output, target) => {
     const it = objectTag[Symbol.iterator]();
     it.next();
     const attributes = it.next().value;
-    const remoteObject = object2.runtimeModel().createRemoteObject(attributes);
+    let remoteObject = typeof attributes === "object" && attributes !== null ? remoteObjectCache.get(attributes) : void 0;
+    if (!remoteObject) {
+      remoteObject = object2.runtimeModel().createRemoteObject(attributes);
+      if (typeof attributes === "object" && attributes !== null) {
+        remoteObjectCache.set(attributes, remoteObject);
+      }
+    }
     if (remoteObject.customPreview()) {
       return html3`${UI3.Widget.widget(CustomPreviewSection, { object: remoteObject })}`;
     }
@@ -5887,52 +5891,85 @@ var DEFAULT_VIEW = (input, _output, target) => {
     render3(html3`${headerTemplate}`, target, { container: { classes: ["custom-expandable-section"] } });
   }
 };
-var CustomPreviewComponent = class {
-  object;
-  customPreviewSection;
-  element;
-  constructor(object) {
-    this.object = object;
-    this.customPreviewSection = new CustomPreviewSection();
-    this.customPreviewSection.object = object;
-    this.element = document.createElement("span");
-    this.element.classList.add("source-code");
-    const shadowRoot = UI3.UIUtils.createShadowRootWithCoreStyles(this.element, { cssFile: customPreviewComponent_css_default });
-    this.element.addEventListener("contextmenu", this.contextMenuEventFired.bind(this), false);
-    this.customPreviewSection.show(
-      shadowRoot,
+var CUSTOM_PREVIEW_COMPONENT_DEFAULT_VIEW = (input, _output, target) => {
+  if (!input.object) {
+    render3(nothing3, target);
+    return;
+  }
+  render3(
+    html3`<style>${customPreviewComponent_css_default}</style>${input.disassembled ? defaultObjectPresentation(input.object) : UI3.Widget.widget(CustomPreviewSection, { object: input.object, expanded: input.expanded })}`,
+    target,
+    {
+      container: {
+        classes: ["source-code"],
+        listeners: { contextmenu: input.onContextMenu }
+      }
+    }
+  );
+};
+var CustomPreviewComponent = class extends UI3.Widget.Widget {
+  #object;
+  #expanded = false;
+  #disassembled = false;
+  #view;
+  constructor(element, view = CUSTOM_PREVIEW_COMPONENT_DEFAULT_VIEW) {
+    super(element, { useShadowDom: "pure" });
+    this.#view = view;
+  }
+  get object() {
+    return this.#object;
+  }
+  set object(object) {
+    if (this.#object === object) {
+      return;
+    }
+    this.#object = object;
+    this.#disassembled = false;
+    this.performUpdate();
+  }
+  get expanded() {
+    return this.#expanded;
+  }
+  set expanded(expanded) {
+    if (this.#expanded === expanded) {
+      return;
+    }
+    this.#expanded = expanded;
+    this.performUpdate();
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  performUpdate() {
+    this.#view(
+      {
+        object: this.#object,
+        expanded: this.#expanded,
+        disassembled: this.#disassembled,
+        onContextMenu: this.#onContextMenu
+      },
       void 0,
-      /* suppressOrphanWidgetError= */
-      true
+      this.contentElement
     );
   }
-  async expandIfPossible() {
-    const customPreview = this.object.customPreview();
-    if (customPreview && customPreview.bodyGetterId && this.customPreviewSection) {
-      await this.customPreviewSection.loadBody();
-    }
-  }
-  contextMenuEventFired(event) {
+  #onContextMenu = (event) => {
     const contextMenu = new UI3.ContextMenu.ContextMenu(event);
-    if (this.customPreviewSection) {
+    if (!this.#disassembled) {
       contextMenu.revealSection().appendItem(
         i18nString3(UIStrings3.showAsJavascriptObject),
-        this.disassemble.bind(this),
+        this.#disassemble.bind(this),
         { jslogContext: "show-as-javascript-object" }
       );
     }
-    contextMenu.appendApplicableItems(this.object);
-    void contextMenu.show();
-  }
-  disassemble() {
-    if (this.element.shadowRoot) {
-      if (this.customPreviewSection) {
-        this.customPreviewSection.detach();
-        this.customPreviewSection = null;
-      }
-      this.element.shadowRoot.textContent = "";
-      render3(defaultObjectPresentation(this.object), this.element.shadowRoot);
+    if (this.#object) {
+      contextMenu.appendApplicableItems(this.#object);
     }
+    void contextMenu.show();
+  };
+  #disassemble() {
+    this.#disassembled = true;
+    this.requestUpdate();
   }
 };
 
@@ -6038,10 +6075,14 @@ var ObjectPopoverHelper = class _ObjectPopoverHelper {
         SDK4.OverlayModel.OverlayModel.highlightObjectAsDOMNode(result);
         resultHighlightedAsDOM = true;
       }
+      popover.setMaxContentSize(new Geometry.Size(300, 250));
+      popover.setSizeBehavior(UI4.GlassPane.SizeBehavior.SET_EXACT_SIZE);
       if (result.customPreview()) {
-        const customPreviewComponent = new CustomPreviewComponent(result);
-        void customPreviewComponent.expandIfPossible();
-        popoverContentElement = customPreviewComponent.element;
+        const customPreviewComponent = new CustomPreviewComponent();
+        customPreviewComponent.object = result;
+        customPreviewComponent.expanded = true;
+        customPreviewComponent.element.dataset.stableNameForTest = "object-popover-content";
+        customPreviewComponent.show(popover.contentElement);
       } else {
         popoverContentElement = document.createElement("div");
         popoverContentElement.classList.add("object-popover-content");
@@ -6064,11 +6105,9 @@ var ObjectPopoverHelper = class _ObjectPopoverHelper {
         section.linkifier = linkifier;
         section.showOverflow = true;
         section.show(popoverContentElement, null, true);
+        popoverContentElement.dataset.stableNameForTest = "object-popover-content";
+        popover.contentElement.appendChild(popoverContentElement);
       }
-      popoverContentElement.dataset.stableNameForTest = "object-popover-content";
-      popover.setMaxContentSize(new Geometry.Size(300, 250));
-      popover.setSizeBehavior(UI4.GlassPane.SizeBehavior.SET_EXACT_SIZE);
-      popover.contentElement.appendChild(popoverContentElement);
       return new _ObjectPopoverHelper(linkifier, resultHighlightedAsDOM);
     }
     popoverContentElement = document.createElement("span");

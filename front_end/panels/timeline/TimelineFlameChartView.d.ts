@@ -35,7 +35,6 @@ export declare class TimelineFlameChartView extends TimelineFlameChartViewBase i
     private readonly networkPane;
     private readonly splitResizer;
     private readonly chartSplitWidget;
-    private brickGame?;
     private readonly countersView;
     private readonly detailsSplitWidget;
     private readonly detailsView;
@@ -60,7 +59,6 @@ export declare class TimelineFlameChartView extends TimelineFlameChartViewBase i
     addTimestampMarkerOverlay(timestamp: Trace.Types.Timing.Micro): void;
     removeTimestampMarkerOverlay(): Promise<void>;
     forceAnimationsForTest(): void;
-    runBrickBreakerGame(): void;
     getLinkSelectionAnnotation(): Trace.Types.File.EntriesLinkAnnotation | null;
     getMainDataProvider(): TimelineFlameChartDataProvider;
     getNetworkDataProvider(): TimelineFlameChartNetworkDataProvider;

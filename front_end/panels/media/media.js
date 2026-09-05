@@ -4,7 +4,7 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 
-// gen/front_end/panels/media/EventDisplayTable.js
+// ../../front_end/panels/media/EventDisplayTable.ts
 var EventDisplayTable_exports = {};
 __export(EventDisplayTable_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW,
@@ -48,7 +48,7 @@ devtools-data-grid.event-display-table-contents-table-container {
 
 /*# sourceURL=${import.meta.resolve("./eventDisplayTable.css")} */`;
 
-// gen/front_end/panels/media/EventDisplayTable.js
+// ../../front_end/panels/media/EventDisplayTable.ts
 var { widget } = UI.Widget;
 var { repeat } = Directives;
 var UIStrings = {
@@ -154,7 +154,7 @@ var PlayerEventsView = class extends UI.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/media/MainView.js
+// ../../front_end/panels/media/MainView.ts
 var MainView_exports = {};
 __export(MainView_exports, {
   MainView: () => MainView,
@@ -164,21 +164,21 @@ import * as i18n13 from "../../core/i18n/i18n.js";
 import * as SDK2 from "../../core/sdk/sdk.js";
 import * as UI7 from "../../ui/legacy/legacy.js";
 
-// gen/front_end/panels/media/MediaModel.js
+// ../../front_end/panels/media/MediaModel.ts
 var MediaModel_exports = {};
 __export(MediaModel_exports, {
   Events: () => Events,
   MediaModel: () => MediaModel
 });
 import * as SDK from "../../core/sdk/sdk.js";
-var Events;
-(function(Events2) {
+var Events = /* @__PURE__ */ ((Events2) => {
   Events2["PLAYER_PROPERTIES_CHANGED"] = "PlayerPropertiesChanged";
   Events2["PLAYER_EVENTS_ADDED"] = "PlayerEventsAdded";
   Events2["PLAYER_MESSAGES_LOGGED"] = "PlayerMessagesLogged";
   Events2["PLAYER_ERRORS_RAISED"] = "PlayerErrorsRaised";
   Events2["PLAYER_CREATED"] = "PlayerCreated";
-})(Events || (Events = {}));
+  return Events2;
+})(Events || {});
 var MediaModel = class extends SDK.SDKModel.SDKModel {
   enabled;
   agent;
@@ -199,24 +199,24 @@ var MediaModel = class extends SDK.SDKModel.SDKModel {
     this.enabled = true;
   }
   playerPropertiesChanged(event) {
-    this.dispatchEventToListeners("PlayerPropertiesChanged", event);
+    this.dispatchEventToListeners("PlayerPropertiesChanged" /* PLAYER_PROPERTIES_CHANGED */, event);
   }
   playerEventsAdded(event) {
-    this.dispatchEventToListeners("PlayerEventsAdded", event);
+    this.dispatchEventToListeners("PlayerEventsAdded" /* PLAYER_EVENTS_ADDED */, event);
   }
   playerMessagesLogged(event) {
-    this.dispatchEventToListeners("PlayerMessagesLogged", event);
+    this.dispatchEventToListeners("PlayerMessagesLogged" /* PLAYER_MESSAGES_LOGGED */, event);
   }
   playerErrorsRaised(event) {
-    this.dispatchEventToListeners("PlayerErrorsRaised", event);
+    this.dispatchEventToListeners("PlayerErrorsRaised" /* PLAYER_ERRORS_RAISED */, event);
   }
   playerCreated({ player }) {
-    this.dispatchEventToListeners("PlayerCreated", player);
+    this.dispatchEventToListeners("PlayerCreated" /* PLAYER_CREATED */, player);
   }
 };
-SDK.SDKModel.SDKModel.register(MediaModel, { capabilities: 262144, autostart: false });
+SDK.SDKModel.SDKModel.register(MediaModel, { capabilities: SDK.Target.Capability.MEDIA, autostart: false });
 
-// gen/front_end/panels/media/PlayerDetailView.js
+// ../../front_end/panels/media/PlayerDetailView.ts
 var PlayerDetailView_exports = {};
 __export(PlayerDetailView_exports, {
   PlayerDetailView: () => PlayerDetailView,
@@ -225,11 +225,11 @@ __export(PlayerDetailView_exports, {
 import * as i18n9 from "../../core/i18n/i18n.js";
 import * as UI5 from "../../ui/legacy/legacy.js";
 
-// gen/front_end/panels/media/EventTimelineView.js
+// ../../front_end/panels/media/EventTimelineView.ts
 import * as i18n3 from "../../core/i18n/i18n.js";
 import * as VisualLogging2 from "../../ui/visual_logging/visual_logging.js";
 
-// gen/front_end/panels/media/TickingFlameChart.js
+// ../../front_end/panels/media/TickingFlameChart.ts
 var TickingFlameChart_exports = {};
 __export(TickingFlameChart_exports, {
   ColdColorScheme: () => ColdColorScheme,
@@ -243,7 +243,7 @@ import * as PerfUI from "../../ui/legacy/components/perf_ui/perf_ui.js";
 import * as UI2 from "../../ui/legacy/legacy.js";
 import * as ThemeSupport from "../../ui/legacy/theme_support/theme_support.js";
 
-// gen/front_end/panels/media/TickingFlameChartHelpers.js
+// ../../front_end/panels/media/TickingFlameChartHelpers.ts
 var TickingFlameChartHelpers_exports = {};
 __export(TickingFlameChartHelpers_exports, {
   Bounds: () => Bounds,
@@ -356,7 +356,7 @@ var Bounds = class {
   }
 };
 
-// gen/front_end/panels/media/TickingFlameChart.js
+// ../../front_end/panels/media/TickingFlameChart.ts
 var defaultFont = "11px " + Host.Platform.fontFamily();
 function getGroupDefaultTextColor() {
   return ThemeSupport.ThemeSupport.instance().getComputedValue("--sys-color-on-surface");
@@ -364,7 +364,7 @@ function getGroupDefaultTextColor() {
 var DefaultStyle = () => ({
   height: 20,
   padding: 2,
-  collapsible: 1,
+  collapsible: PerfUI.FlameChart.GroupCollapsibleState.NEVER,
   font: defaultFont,
   color: getGroupDefaultTextColor(),
   backgroundColor: "rgba(100 0 0 / 10%)",
@@ -377,10 +377,7 @@ var DefaultStyle = () => ({
 var HotColorScheme = ["#ffba08", "#faa307", "#f48c06", "#e85d04", "#dc2f02", "#d00000", "#9d0208"];
 var ColdColorScheme = ["#7400b8", "#6930c3", "#5e60ce", "#5390d9", "#4ea8de", "#48bfe3", "#56cfe1", "#64dfdf"];
 function calculateFontColor(backgroundColor) {
-  const parsedColor = Common.Color.parse(backgroundColor)?.as(
-    "hsl"
-    /* Common.Color.Format.HSL */
-  );
+  const parsedColor = Common.Color.parse(backgroundColor)?.as(Common.Color.Format.HSL);
   if (parsedColor && parsedColor.l < 0.5) {
     return "#eee";
   }
@@ -652,11 +649,15 @@ var TickingFlameChartDataProvider = class {
     if (properties["level"] > this.maxLevel) {
       throw new Error(`level ${properties["level"]} is above the maximum allowed of ${this.maxLevel}`);
     }
-    const event = new Event(this.#timelineData, {
-      setLive: this.setLive.bind(this),
-      setComplete: this.setComplete.bind(this),
-      updateMaxTime: this.updateMaxTimeHandle
-    }, properties);
+    const event = new Event(
+      this.#timelineData,
+      {
+        setLive: this.setLive.bind(this),
+        setComplete: this.setComplete.bind(this),
+        updateMaxTime: this.updateMaxTimeHandle
+      },
+      properties
+    );
     this.eventMap.set(event.id, event);
     return event;
   }
@@ -726,7 +727,7 @@ var TickingFlameChartDataProvider = class {
   }
 };
 
-// gen/front_end/panels/media/EventTimelineView.js
+// ../../front_end/panels/media/EventTimelineView.ts
 var NO_NORMALIZED_TIMESTAMP = -1.5;
 var UIStrings2 = {
   /**
@@ -880,7 +881,7 @@ var PlayerEventsTimeline = class extends TickingFlameChart {
   }
 };
 
-// gen/front_end/panels/media/PlayerMessagesView.js
+// ../../front_end/panels/media/PlayerMessagesView.ts
 var PlayerMessagesView_exports = {};
 __export(PlayerMessagesView_exports, {
   PlayerMessagesView: () => PlayerMessagesView
@@ -978,7 +979,7 @@ var playerMessagesView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./playerMessagesView.css")} */`;
 
-// gen/front_end/panels/media/PlayerMessagesView.js
+// ../../front_end/panels/media/PlayerMessagesView.ts
 var { classMap } = Directives2;
 var UIStrings3 = {
   /**
@@ -1040,16 +1041,6 @@ var UIStrings3 = {
 };
 var str_3 = i18n5.i18n.registerUIStrings("panels/media/PlayerMessagesView.ts", UIStrings3);
 var i18nString3 = i18n5.i18n.getLocalizedString.bind(void 0, str_3);
-var MessageLevelBitfield;
-(function(MessageLevelBitfield2) {
-  MessageLevelBitfield2[MessageLevelBitfield2["ERROR"] = 1] = "ERROR";
-  MessageLevelBitfield2[MessageLevelBitfield2["WARNING"] = 2] = "WARNING";
-  MessageLevelBitfield2[MessageLevelBitfield2["INFO"] = 4] = "INFO";
-  MessageLevelBitfield2[MessageLevelBitfield2["DEBUG"] = 8] = "DEBUG";
-  MessageLevelBitfield2[MessageLevelBitfield2["DEFAULT"] = 7] = "DEFAULT";
-  MessageLevelBitfield2[MessageLevelBitfield2["ALL"] = 15] = "ALL";
-  MessageLevelBitfield2[MessageLevelBitfield2["CUSTOM"] = 0] = "CUSTOM";
-})(MessageLevelBitfield || (MessageLevelBitfield = {}));
 var MessageLevelSelector = class {
   items;
   view;
@@ -1065,7 +1056,7 @@ var MessageLevelSelector = class {
     this.view = view;
     this.itemMap = /* @__PURE__ */ new Map();
     this.hiddenLevels = [];
-    this.bitFieldValue = 7;
+    this.bitFieldValue = 7 /* DEFAULT */;
     this.#defaultTitle = i18nString3(UIStrings3.default);
     this.customTitle = i18nString3(UIStrings3.custom);
     this.allTitle = i18nString3(UIStrings3.all);
@@ -1082,7 +1073,7 @@ var MessageLevelSelector = class {
       title: this.#defaultTitle,
       overwrite: true,
       stringValue: "",
-      value: 7
+      value: 7 /* DEFAULT */
     };
     this.items.insert(this.items.length, defaultLevel);
     this.itemMap.set(defaultLevel.value, defaultLevel);
@@ -1090,7 +1081,7 @@ var MessageLevelSelector = class {
       title: this.allTitle,
       overwrite: true,
       stringValue: "",
-      value: 15
+      value: 15 /* ALL */
     };
     this.items.insert(this.items.length, allLevel);
     this.itemMap.set(allLevel.value, allLevel);
@@ -1098,7 +1089,7 @@ var MessageLevelSelector = class {
       title: i18nString3(UIStrings3.error),
       overwrite: false,
       stringValue: "error",
-      value: 1
+      value: 1 /* ERROR */
     };
     this.items.insert(this.items.length, errorLevel);
     this.itemMap.set(errorLevel.value, errorLevel);
@@ -1106,7 +1097,7 @@ var MessageLevelSelector = class {
       title: i18nString3(UIStrings3.warning),
       overwrite: false,
       stringValue: "warning",
-      value: 2
+      value: 2 /* WARNING */
     };
     this.items.insert(this.items.length, warningLevel);
     this.itemMap.set(warningLevel.value, warningLevel);
@@ -1114,7 +1105,7 @@ var MessageLevelSelector = class {
       title: i18nString3(UIStrings3.info),
       overwrite: false,
       stringValue: "info",
-      value: 4
+      value: 4 /* INFO */
     };
     this.items.insert(this.items.length, infoLevel);
     this.itemMap.set(infoLevel.value, infoLevel);
@@ -1122,7 +1113,7 @@ var MessageLevelSelector = class {
       title: i18nString3(UIStrings3.debug),
       overwrite: false,
       stringValue: "debug",
-      value: 8
+      value: 8 /* DEBUG */
     };
     this.items.insert(this.items.length, debugLevel);
     this.itemMap.set(debugLevel.value, debugLevel);
@@ -1158,10 +1149,10 @@ var MessageLevelSelector = class {
     } else {
       this.bitFieldValue ^= item2.value;
     }
-    if (this.bitFieldValue === 7) {
+    if (this.bitFieldValue === 7 /* DEFAULT */) {
       return this.#defaultTitle;
     }
-    if (this.bitFieldValue === 15) {
+    if (this.bitFieldValue === 15 /* ALL */) {
       return this.allTitle;
     }
     const potentialMatch = this.itemMap.get(this.bitFieldValue);
@@ -1219,12 +1210,15 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
     dropDownItem.element.classList.add("toolbar-has-dropdown");
     dropDownItem.setEnabled(true);
     dropDownItem.setTitle(this.messageLevelSelector.defaultTitle());
-    UI3.ARIAUtils.setLabel(dropDownItem.element, `${i18nString3(UIStrings3.logLevel)} ${this.messageLevelSelector.defaultTitle()}`);
+    UI3.ARIAUtils.setLabel(
+      dropDownItem.element,
+      `${i18nString3(UIStrings3.logLevel)} ${this.messageLevelSelector.defaultTitle()}`
+    );
     return dropDownItem;
   }
   createFilterInput() {
     const filterInput = new UI3.Toolbar.ToolbarFilter(i18nString3(UIStrings3.filterByLogMessages), 1, 1);
-    filterInput.addEventListener("TextChanged", (data) => {
+    filterInput.addEventListener(UI3.Toolbar.ToolbarInput.Event.TEXT_CHANGED, (data) => {
       this.filterByString(data);
     }, this);
     return filterInput;
@@ -1325,7 +1319,9 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
                   >${i18nString3(UIStrings3.errorDataLabel)}</span
                 >
                 <div>
-                  ${Object.entries(error.data).map(([key, value]) => html2`<div>${key}: ${value}</div>`)}
+                  ${Object.entries(error.data).map(
+      ([key, value]) => html2`<div>${key}: ${value}</div>`
+    )}
                 </div>` : nothing}
         </div>
         <div class="status-error-field-labeled">
@@ -1333,7 +1329,9 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
                     >${i18nString3(UIStrings3.errorStackLabel)}</span
                   >
                   <div>
-                    ${error.stack.map((stackEntry) => html2`<div>${stackEntry.file}:${stackEntry.line}</div>`)}
+                    ${error.stack.map(
+      (stackEntry) => html2`<div>${stackEntry.file}:${stackEntry.line}</div>`
+    )}
                   </div>` : nothing}
         </div>
         <div class="status-error-field-labeled">
@@ -1355,7 +1353,7 @@ var PlayerMessagesView = class extends UI3.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/media/PlayerPropertiesView.js
+// ../../front_end/panels/media/PlayerPropertiesView.ts
 var PlayerPropertiesView_exports = {};
 __export(PlayerPropertiesView_exports, {
   DEFAULT_VIEW: () => DEFAULT_VIEW2,
@@ -1434,7 +1432,7 @@ var playerPropertiesView_css_default = `/*
 
 /*# sourceURL=${import.meta.resolve("./playerPropertiesView.css")} */`;
 
-// gen/front_end/panels/media/PlayerPropertiesView.js
+// ../../front_end/panels/media/PlayerPropertiesView.ts
 var UIStrings4 = {
   /**
    * @description A video or audio stream - but capitalized.
@@ -1557,8 +1555,7 @@ var UIStrings4 = {
 };
 var str_4 = i18n7.i18n.registerUIStrings("panels/media/PlayerPropertiesView.ts", UIStrings4);
 var i18nString4 = i18n7.i18n.getLocalizedString.bind(void 0, str_4);
-var PlayerPropertyKeys;
-(function(PlayerPropertyKeys2) {
+var PlayerPropertyKeys = /* @__PURE__ */ ((PlayerPropertyKeys2) => {
   PlayerPropertyKeys2["RESOLUTION"] = "kResolution";
   PlayerPropertyKeys2["TOTAL_BYTES"] = "kTotalBytes";
   PlayerPropertyKeys2["BITRATE"] = "kBitrate";
@@ -1585,13 +1582,14 @@ var PlayerPropertyKeys;
   PlayerPropertyKeys2["VIDEO_PLAYBACK_ROUGHNESS"] = "kVideoPlaybackRoughness";
   PlayerPropertyKeys2["VIDEO_PLAYBACK_FREEZING"] = "kVideoPlaybackFreezing";
   PlayerPropertyKeys2["HLS_BUFFERED_RANGES"] = "kHlsBufferedRanges";
-})(PlayerPropertyKeys || (PlayerPropertyKeys = {}));
+  return PlayerPropertyKeys2;
+})(PlayerPropertyKeys || {});
 var Property = class {
-  type;
-  dataInternal = null;
   constructor(type) {
     this.type = type;
   }
+  type;
+  dataInternal = null;
   parse(val) {
     try {
       return JSON.parse(val);
@@ -1612,10 +1610,7 @@ var Property = class {
 };
 var TotalBytesProperty = class _TotalBytesProperty extends Property {
   constructor() {
-    super(
-      "kTotalBytes"
-      /* PlayerPropertyKeys.TOTAL_BYTES */
-    );
+    super("kTotalBytes" /* TOTAL_BYTES */);
   }
   get data() {
     return this.dataInternal;
@@ -1639,10 +1634,7 @@ var TotalBytesProperty = class _TotalBytesProperty extends Property {
 };
 var BitRateProperty = class _BitRateProperty extends Property {
   constructor() {
-    super(
-      "kBitrate"
-      /* PlayerPropertyKeys.BITRATE */
-    );
+    super("kBitrate" /* BITRATE */);
   }
   get data() {
     return this.dataInternal;
@@ -1660,10 +1652,7 @@ var BitRateProperty = class _BitRateProperty extends Property {
 };
 var MaxDurationProperty = class _MaxDurationProperty extends Property {
   constructor() {
-    super(
-      "kMaxDuration"
-      /* PlayerPropertyKeys.MAX_DURATION */
-    );
+    super("kMaxDuration" /* MAX_DURATION */);
   }
   get data() {
     return this.dataInternal;
@@ -1682,10 +1671,7 @@ var MaxDurationProperty = class _MaxDurationProperty extends Property {
 };
 var HlsBufferedRangesProperty = class _HlsBufferedRangesProperty extends Property {
   constructor() {
-    super(
-      "kHlsBufferedRanges"
-      /* PlayerPropertyKeys.HLS_BUFFERED_RANGES */
-    );
+    super("kHlsBufferedRanges" /* HLS_BUFFERED_RANGES */);
   }
   get data() {
     return this.dataInternal;
@@ -1725,51 +1711,51 @@ var { widget: widget2 } = UI4.Widget;
 var DEFAULT_VIEW2 = (input, output, target) => {
   function propertyTitle(type) {
     switch (type) {
-      case "kResolution":
+      case "kResolution" /* RESOLUTION */:
         return i18nString4(UIStrings4.resolution);
-      case "kTotalBytes":
+      case "kTotalBytes" /* TOTAL_BYTES */:
         return i18nString4(UIStrings4.fileSize);
-      case "kBitrate":
+      case "kBitrate" /* BITRATE */:
         return i18nString4(UIStrings4.bitrate);
-      case "kMaxDuration":
+      case "kMaxDuration" /* MAX_DURATION */:
         return i18nString4(UIStrings4.duration);
-      case "kStartTime":
+      case "kStartTime" /* START_TIME */:
         return i18nString4(UIStrings4.startTime);
-      case "kIsStreaming":
+      case "kIsStreaming" /* IS_STREAMING */:
         return i18nString4(UIStrings4.streaming);
-      case "kFrameUrl":
+      case "kFrameUrl" /* FRAME_URL */:
         return i18nString4(UIStrings4.playbackFrameUrl);
-      case "kFrameTitle":
+      case "kFrameTitle" /* FRAME_TITLE */:
         return i18nString4(UIStrings4.playbackFrameTitle);
-      case "kIsSingleOrigin":
+      case "kIsSingleOrigin" /* IS_SINGLE_ORIGIN */:
         return i18nString4(UIStrings4.singleoriginPlayback);
-      case "kIsRangeHeaderSupported":
+      case "kIsRangeHeaderSupported" /* IS_RANGE_HEADER_SUPPORTED */:
         return i18nString4(UIStrings4.rangeHeaderSupport);
-      case "kFramerate":
+      case "kFramerate" /* FRAMERATE */:
         return i18nString4(UIStrings4.frameRate);
-      case "kVideoPlaybackRoughness":
+      case "kVideoPlaybackRoughness" /* VIDEO_PLAYBACK_ROUGHNESS */:
         return i18nString4(UIStrings4.videoPlaybackRoughness);
-      case "kVideoPlaybackFreezing":
+      case "kVideoPlaybackFreezing" /* VIDEO_PLAYBACK_FREEZING */:
         return i18nString4(UIStrings4.videoFreezingScore);
-      case "kRendererName":
+      case "kRendererName" /* RENDERER_NAME */:
         return i18nString4(UIStrings4.rendererName);
-      case "kHlsBufferedRanges":
+      case "kHlsBufferedRanges" /* HLS_BUFFERED_RANGES */:
         return i18nString4(UIStrings4.hlsBufferedRanges);
-      case "kVideoDecoderName":
+      case "kVideoDecoderName" /* VIDEO_DECODER_NAME */:
         return i18nString4(UIStrings4.decoderName);
-      case "kIsPlatformVideoDecoder":
+      case "kIsPlatformVideoDecoder" /* IS_PLATFORM_VIDEO_DECODER */:
         return i18nString4(UIStrings4.hardwareDecoder);
-      case "kVideoEncoderName":
+      case "kVideoEncoderName" /* VIDEO_ENCODER_NAME */:
         return i18nString4(UIStrings4.encoderName);
-      case "kIsPlatformVideoEncoder":
+      case "kIsPlatformVideoEncoder" /* IS_PLATFORM_VIDEO_ENCODER */:
         return i18nString4(UIStrings4.hardwareEncoder);
-      case "kIsVideoDecryptingDemuxerStream":
+      case "kIsVideoDecryptingDemuxerStream" /* IS_VIDEO_DECRYPTION_DEMUXER_STREAM */:
         return i18nString4(UIStrings4.decryptingDemuxer);
-      case "kAudioDecoderName":
+      case "kAudioDecoderName" /* AUDIO_DECODER_NAME */:
         return i18nString4(UIStrings4.decoderName);
-      case "kIsPlatformAudioDecoder":
+      case "kIsPlatformAudioDecoder" /* IS_PLATFORM_AUDIO_DECODER */:
         return i18nString4(UIStrings4.hardwareDecoder);
-      case "kIsAudioDecryptingDemuxerStream":
+      case "kIsAudioDecryptingDemuxerStream" /* IS_AUDIO_DECRYPTING_DEMUXER_STREAM */:
         return i18nString4(UIStrings4.decryptingDemuxer);
       default:
         return Platform2.UIString.LocalizedEmptyString;
@@ -1788,9 +1774,9 @@ var DEFAULT_VIEW2 = (input, output, target) => {
   };
   const renderProperty = (property) => {
     let fallback = null;
-    if (property.type === "kVideoDecoderName" || property.type === "kAudioDecoderName") {
+    if (property.type === "kVideoDecoderName" /* VIDEO_DECODER_NAME */ || property.type === "kAudioDecoderName" /* AUDIO_DECODER_NAME */) {
       fallback = i18nString4(UIStrings4.noDecoder);
-    } else if (property.type === "kVideoEncoderName") {
+    } else if (property.type === "kVideoEncoderName" /* VIDEO_ENCODER_NAME */) {
       fallback = i18nString4(UIStrings4.noEncoder);
     }
     return renderAttribute(property.data ?? fallback, propertyTitle(property.type));
@@ -1800,7 +1786,14 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     (track, i) => html3`
               <div id=track-${idPrefix}-${i} title=${i18nString4(UIStrings4.trackNumber, { PH1: trackName, PH2: i + 1 })}>
                 <div class="widget vbox media-attributes-view">
-                  ${Object.entries(track).map(([name, data]) => renderAttribute(typeof data === "object" ? html3`${widget2((e) => new SourceFrame2.JSONView.JSONView(new SourceFrame2.JSONView.ParsedJSON(data, "", ""), true, e))}` : String(data), name))}
+                  ${Object.entries(track).map(([name, data]) => renderAttribute(
+      typeof data === "object" ? html3`${widget2((e) => new SourceFrame2.JSONView.JSONView(
+        new SourceFrame2.JSONView.ParsedJSON(data, "", ""),
+        true,
+        e
+      ))}` : String(data),
+      name
+    ))}
                 </div>
               </div>`
   ) : [nothing2];
@@ -1809,134 +1802,47 @@ var DEFAULT_VIEW2 = (input, output, target) => {
     html3`
     <style>${playerPropertiesView_css_default}</style>
     <div class="widget vbox media-attributes-view">
-      ${renderProperty(input.properties[
-      "kResolution"
-      /* PlayerPropertyKeys.RESOLUTION */
-    ])}
-      ${renderProperty(input.properties[
-      "kTotalBytes"
-      /* PlayerPropertyKeys.TOTAL_BYTES */
-    ])}
-      ${renderProperty(input.properties[
-      "kBitrate"
-      /* PlayerPropertyKeys.BITRATE */
-    ])}
-      ${renderProperty(input.properties[
-      "kMaxDuration"
-      /* PlayerPropertyKeys.MAX_DURATION */
-    ])}
-      ${renderProperty(input.properties[
-      "kStartTime"
-      /* PlayerPropertyKeys.START_TIME */
-    ])}
-      ${renderProperty(input.properties[
-      "kIsStreaming"
-      /* PlayerPropertyKeys.IS_STREAMING */
-    ])}
-      ${renderProperty(input.properties[
-      "kFrameUrl"
-      /* PlayerPropertyKeys.FRAME_URL */
-    ])}
-      ${renderProperty(input.properties[
-      "kFrameTitle"
-      /* PlayerPropertyKeys.FRAME_TITLE */
-    ])}
-      ${renderProperty(input.properties[
-      "kIsSingleOrigin"
-      /* PlayerPropertyKeys.IS_SINGLE_ORIGIN */
-    ])}
-      ${renderProperty(input.properties[
-      "kIsRangeHeaderSupported"
-      /* PlayerPropertyKeys.IS_RANGE_HEADER_SUPPORTED */
-    ])}
-      ${renderProperty(input.properties[
-      "kFramerate"
-      /* PlayerPropertyKeys.FRAMERATE */
-    ])}
-      ${renderProperty(input.properties[
-      "kVideoPlaybackRoughness"
-      /* PlayerPropertyKeys.VIDEO_PLAYBACK_ROUGHNESS */
-    ])}
-      ${renderProperty(input.properties[
-      "kVideoPlaybackFreezing"
-      /* PlayerPropertyKeys.VIDEO_PLAYBACK_FREEZING */
-    ])}
-      ${renderProperty(input.properties[
-      "kRendererName"
-      /* PlayerPropertyKeys.RENDERER_NAME */
-    ])}
-      ${renderProperty(input.properties[
-      "kHlsBufferedRanges"
-      /* PlayerPropertyKeys.HLS_BUFFERED_RANGES */
-    ])}
+      ${renderProperty(input.properties["kResolution" /* RESOLUTION */])}
+      ${renderProperty(input.properties["kTotalBytes" /* TOTAL_BYTES */])}
+      ${renderProperty(input.properties["kBitrate" /* BITRATE */])}
+      ${renderProperty(input.properties["kMaxDuration" /* MAX_DURATION */])}
+      ${renderProperty(input.properties["kStartTime" /* START_TIME */])}
+      ${renderProperty(input.properties["kIsStreaming" /* IS_STREAMING */])}
+      ${renderProperty(input.properties["kFrameUrl" /* FRAME_URL */])}
+      ${renderProperty(input.properties["kFrameTitle" /* FRAME_TITLE */])}
+      ${renderProperty(input.properties["kIsSingleOrigin" /* IS_SINGLE_ORIGIN */])}
+      ${renderProperty(input.properties["kIsRangeHeaderSupported" /* IS_RANGE_HEADER_SUPPORTED */])}
+      ${renderProperty(input.properties["kFramerate" /* FRAMERATE */])}
+      ${renderProperty(input.properties["kVideoPlaybackRoughness" /* VIDEO_PLAYBACK_ROUGHNESS */])}
+      ${renderProperty(input.properties["kVideoPlaybackFreezing" /* VIDEO_PLAYBACK_FREEZING */])}
+      ${renderProperty(input.properties["kRendererName" /* RENDERER_NAME */])}
+      ${renderProperty(input.properties["kHlsBufferedRanges" /* HLS_BUFFERED_RANGES */])}
     </div>
     <devtools-tabbed-pane>
       <div id=decoder-properties title=${i18nString4(UIStrings4.videoDecoderProperties)}>
         <div class="widget vbox media-attributes-view">
-          ${renderProperty(input.properties[
-      "kVideoDecoderName"
-      /* PlayerPropertyKeys.VIDEO_DECODER_NAME */
-    ])}
-          ${renderProperty(input.properties[
-      "kIsPlatformVideoDecoder"
-      /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_DECODER */
-    ])}
-          ${renderProperty(input.properties[
-      "kVideoEncoderName"
-      /* PlayerPropertyKeys.VIDEO_ENCODER_NAME */
-    ])}
-          ${renderProperty(input.properties[
-      "kIsPlatformVideoEncoder"
-      /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_ENCODER */
-    ])}
-          ${renderProperty(input.properties[
-      "kIsVideoDecryptingDemuxerStream"
-      /* PlayerPropertyKeys.IS_VIDEO_DECRYPTION_DEMUXER_STREAM */
-    ])}
+          ${renderProperty(input.properties["kVideoDecoderName" /* VIDEO_DECODER_NAME */])}
+          ${renderProperty(input.properties["kIsPlatformVideoDecoder" /* IS_PLATFORM_VIDEO_DECODER */])}
+          ${renderProperty(input.properties["kVideoEncoderName" /* VIDEO_ENCODER_NAME */])}
+          ${renderProperty(input.properties["kIsPlatformVideoEncoder" /* IS_PLATFORM_VIDEO_ENCODER */])}
+          ${renderProperty(input.properties["kIsVideoDecryptingDemuxerStream" /* IS_VIDEO_DECRYPTION_DEMUXER_STREAM */])}
         </div>
       </div>
-      ${renderTracks(input.properties[
-      "kVideoTracks"
-      /* PlayerPropertyKeys.VIDEO_TRACKS */
-    ], i18nString4(UIStrings4.track), "video")}
+      ${renderTracks(input.properties["kVideoTracks" /* VIDEO_TRACKS */], i18nString4(UIStrings4.track), "video")}
     </devtools-tabbed-pane>
     <devtools-tabbed-pane>
       <div id=decoder-properties title=${i18nString4(UIStrings4.audioDecoderProperties)}>
         <div class="widget vbox media-attributes-view">
-          ${renderProperty(input.properties[
-      "kAudioDecoderName"
-      /* PlayerPropertyKeys.AUDIO_DECODER_NAME */
-    ])}
-          ${renderProperty(input.properties[
-      "kIsPlatformAudioDecoder"
-      /* PlayerPropertyKeys.IS_PLATFORM_AUDIO_DECODER */
-    ])}
-          ${renderProperty(input.properties[
-      "kIsAudioDecryptingDemuxerStream"
-      /* PlayerPropertyKeys.IS_AUDIO_DECRYPTING_DEMUXER_STREAM */
-    ])}
+          ${renderProperty(input.properties["kAudioDecoderName" /* AUDIO_DECODER_NAME */])}
+          ${renderProperty(input.properties["kIsPlatformAudioDecoder" /* IS_PLATFORM_AUDIO_DECODER */])}
+          ${renderProperty(input.properties["kIsAudioDecryptingDemuxerStream" /* IS_AUDIO_DECRYPTING_DEMUXER_STREAM */])}
         </div>
       </div>
-      ${renderTracks(input.properties[
-      "kAudioTracks"
-      /* PlayerPropertyKeys.AUDIO_TRACKS */
-    ], i18nString4(UIStrings4.track), "audio")}
+      ${renderTracks(input.properties["kAudioTracks" /* AUDIO_TRACKS */], i18nString4(UIStrings4.track), "audio")}
     </devtools-tabbed-pane>
-    ${input.properties[
-      "kTextTracks"
-      /* PlayerPropertyKeys.TEXT_TRACKS */
-    ] instanceof TrackProperty && input.properties[
-      "kTextTracks"
-      /* PlayerPropertyKeys.TEXT_TRACKS */
-    ].entries !== null ? html3`
+    ${input.properties["kTextTracks" /* TEXT_TRACKS */] instanceof TrackProperty && input.properties["kTextTracks" /* TEXT_TRACKS */].entries !== null ? html3`
         <devtools-tabbed-pane>
-          ${input.properties[
-      "kTextTracks"
-      /* PlayerPropertyKeys.TEXT_TRACKS */
-    ].entries.length === 0 ? html3`<div id=_placeholder title=${i18nString4(UIStrings4.noTextTracks)}></div>` : renderTracks(input.properties[
-      "kTextTracks"
-      /* PlayerPropertyKeys.TEXT_TRACKS */
-    ], i18nString4(UIStrings4.textTrack), "text")}
+          ${input.properties["kTextTracks" /* TEXT_TRACKS */].entries.length === 0 ? html3`<div id=_placeholder title=${i18nString4(UIStrings4.noTextTracks)}></div>` : renderTracks(input.properties["kTextTracks" /* TEXT_TRACKS */], i18nString4(UIStrings4.textTrack), "text")}
         </devtools-tabbed-pane>` : nothing2}
     `,
     // clang-format on
@@ -1948,178 +1854,34 @@ var PlayerPropertiesView = class extends UI4.Widget.VBox {
   #view;
   #properties = {
     /* Media properties */
-    [
-      "kResolution"
-      /* PlayerPropertyKeys.RESOLUTION */
-    ]: new Property(
-      "kResolution"
-      /* PlayerPropertyKeys.RESOLUTION */
-    ),
-    [
-      "kTotalBytes"
-      /* PlayerPropertyKeys.TOTAL_BYTES */
-    ]: new TotalBytesProperty(),
-    [
-      "kBitrate"
-      /* PlayerPropertyKeys.BITRATE */
-    ]: new BitRateProperty(),
-    [
-      "kMaxDuration"
-      /* PlayerPropertyKeys.MAX_DURATION */
-    ]: new MaxDurationProperty(),
-    [
-      "kStartTime"
-      /* PlayerPropertyKeys.START_TIME */
-    ]: new Property(
-      "kStartTime"
-      /* PlayerPropertyKeys.START_TIME */
-    ),
-    [
-      "kIsStreaming"
-      /* PlayerPropertyKeys.IS_STREAMING */
-    ]: new Property(
-      "kIsStreaming"
-      /* PlayerPropertyKeys.IS_STREAMING */
-    ),
-    [
-      "kFrameUrl"
-      /* PlayerPropertyKeys.FRAME_URL */
-    ]: new Property(
-      "kFrameUrl"
-      /* PlayerPropertyKeys.FRAME_URL */
-    ),
-    [
-      "kFrameTitle"
-      /* PlayerPropertyKeys.FRAME_TITLE */
-    ]: new Property(
-      "kFrameTitle"
-      /* PlayerPropertyKeys.FRAME_TITLE */
-    ),
-    [
-      "kIsSingleOrigin"
-      /* PlayerPropertyKeys.IS_SINGLE_ORIGIN */
-    ]: new Property(
-      "kIsSingleOrigin"
-      /* PlayerPropertyKeys.IS_SINGLE_ORIGIN */
-    ),
-    [
-      "kIsRangeHeaderSupported"
-      /* PlayerPropertyKeys.IS_RANGE_HEADER_SUPPORTED */
-    ]: new Property(
-      "kIsRangeHeaderSupported"
-      /* PlayerPropertyKeys.IS_RANGE_HEADER_SUPPORTED */
-    ),
-    [
-      "kFramerate"
-      /* PlayerPropertyKeys.FRAMERATE */
-    ]: new Property(
-      "kFramerate"
-      /* PlayerPropertyKeys.FRAMERATE */
-    ),
-    [
-      "kVideoPlaybackRoughness"
-      /* PlayerPropertyKeys.VIDEO_PLAYBACK_ROUGHNESS */
-    ]: new Property(
-      "kVideoPlaybackRoughness"
-      /* PlayerPropertyKeys.VIDEO_PLAYBACK_ROUGHNESS */
-    ),
-    [
-      "kVideoPlaybackFreezing"
-      /* PlayerPropertyKeys.VIDEO_PLAYBACK_FREEZING */
-    ]: new Property(
-      "kVideoPlaybackFreezing"
-      /* PlayerPropertyKeys.VIDEO_PLAYBACK_FREEZING */
-    ),
-    [
-      "kRendererName"
-      /* PlayerPropertyKeys.RENDERER_NAME */
-    ]: new Property(
-      "kRendererName"
-      /* PlayerPropertyKeys.RENDERER_NAME */
-    ),
-    [
-      "kHlsBufferedRanges"
-      /* PlayerPropertyKeys.HLS_BUFFERED_RANGES */
-    ]: new HlsBufferedRangesProperty(),
+    ["kResolution" /* RESOLUTION */]: new Property("kResolution" /* RESOLUTION */),
+    ["kTotalBytes" /* TOTAL_BYTES */]: new TotalBytesProperty(),
+    ["kBitrate" /* BITRATE */]: new BitRateProperty(),
+    ["kMaxDuration" /* MAX_DURATION */]: new MaxDurationProperty(),
+    ["kStartTime" /* START_TIME */]: new Property("kStartTime" /* START_TIME */),
+    ["kIsStreaming" /* IS_STREAMING */]: new Property("kIsStreaming" /* IS_STREAMING */),
+    ["kFrameUrl" /* FRAME_URL */]: new Property("kFrameUrl" /* FRAME_URL */),
+    ["kFrameTitle" /* FRAME_TITLE */]: new Property("kFrameTitle" /* FRAME_TITLE */),
+    ["kIsSingleOrigin" /* IS_SINGLE_ORIGIN */]: new Property("kIsSingleOrigin" /* IS_SINGLE_ORIGIN */),
+    ["kIsRangeHeaderSupported" /* IS_RANGE_HEADER_SUPPORTED */]: new Property("kIsRangeHeaderSupported" /* IS_RANGE_HEADER_SUPPORTED */),
+    ["kFramerate" /* FRAMERATE */]: new Property("kFramerate" /* FRAMERATE */),
+    ["kVideoPlaybackRoughness" /* VIDEO_PLAYBACK_ROUGHNESS */]: new Property("kVideoPlaybackRoughness" /* VIDEO_PLAYBACK_ROUGHNESS */),
+    ["kVideoPlaybackFreezing" /* VIDEO_PLAYBACK_FREEZING */]: new Property("kVideoPlaybackFreezing" /* VIDEO_PLAYBACK_FREEZING */),
+    ["kRendererName" /* RENDERER_NAME */]: new Property("kRendererName" /* RENDERER_NAME */),
+    ["kHlsBufferedRanges" /* HLS_BUFFERED_RANGES */]: new HlsBufferedRangesProperty(),
     /* Video Decoder Properties */
-    [
-      "kVideoDecoderName"
-      /* PlayerPropertyKeys.VIDEO_DECODER_NAME */
-    ]: new Property(
-      "kVideoDecoderName"
-      /* PlayerPropertyKeys.VIDEO_DECODER_NAME */
-    ),
-    [
-      "kIsPlatformVideoDecoder"
-      /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_DECODER */
-    ]: new Property(
-      "kIsPlatformVideoDecoder"
-      /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_DECODER */
-    ),
-    [
-      "kVideoEncoderName"
-      /* PlayerPropertyKeys.VIDEO_ENCODER_NAME */
-    ]: new Property(
-      "kVideoEncoderName"
-      /* PlayerPropertyKeys.VIDEO_ENCODER_NAME */
-    ),
-    [
-      "kIsPlatformVideoEncoder"
-      /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_ENCODER */
-    ]: new Property(
-      "kIsPlatformVideoEncoder"
-      /* PlayerPropertyKeys.IS_PLATFORM_VIDEO_ENCODER */
-    ),
-    [
-      "kIsVideoDecryptingDemuxerStream"
-      /* PlayerPropertyKeys.IS_VIDEO_DECRYPTION_DEMUXER_STREAM */
-    ]: new Property(
-      "kIsVideoDecryptingDemuxerStream"
-      /* PlayerPropertyKeys.IS_VIDEO_DECRYPTION_DEMUXER_STREAM */
-    ),
-    [
-      "kVideoTracks"
-      /* PlayerPropertyKeys.VIDEO_TRACKS */
-    ]: new TrackProperty(
-      "kVideoTracks"
-      /* PlayerPropertyKeys.VIDEO_TRACKS */
-    ),
+    ["kVideoDecoderName" /* VIDEO_DECODER_NAME */]: new Property("kVideoDecoderName" /* VIDEO_DECODER_NAME */),
+    ["kIsPlatformVideoDecoder" /* IS_PLATFORM_VIDEO_DECODER */]: new Property("kIsPlatformVideoDecoder" /* IS_PLATFORM_VIDEO_DECODER */),
+    ["kVideoEncoderName" /* VIDEO_ENCODER_NAME */]: new Property("kVideoEncoderName" /* VIDEO_ENCODER_NAME */),
+    ["kIsPlatformVideoEncoder" /* IS_PLATFORM_VIDEO_ENCODER */]: new Property("kIsPlatformVideoEncoder" /* IS_PLATFORM_VIDEO_ENCODER */),
+    ["kIsVideoDecryptingDemuxerStream" /* IS_VIDEO_DECRYPTION_DEMUXER_STREAM */]: new Property("kIsVideoDecryptingDemuxerStream" /* IS_VIDEO_DECRYPTION_DEMUXER_STREAM */),
+    ["kVideoTracks" /* VIDEO_TRACKS */]: new TrackProperty("kVideoTracks" /* VIDEO_TRACKS */),
     /* Audio Decoder Properties */
-    [
-      "kAudioDecoderName"
-      /* PlayerPropertyKeys.AUDIO_DECODER_NAME */
-    ]: new Property(
-      "kAudioDecoderName"
-      /* PlayerPropertyKeys.AUDIO_DECODER_NAME */
-    ),
-    [
-      "kIsPlatformAudioDecoder"
-      /* PlayerPropertyKeys.IS_PLATFORM_AUDIO_DECODER */
-    ]: new Property(
-      "kIsPlatformAudioDecoder"
-      /* PlayerPropertyKeys.IS_PLATFORM_AUDIO_DECODER */
-    ),
-    [
-      "kIsAudioDecryptingDemuxerStream"
-      /* PlayerPropertyKeys.IS_AUDIO_DECRYPTING_DEMUXER_STREAM */
-    ]: new Property(
-      "kIsAudioDecryptingDemuxerStream"
-      /* PlayerPropertyKeys.IS_AUDIO_DECRYPTING_DEMUXER_STREAM */
-    ),
-    [
-      "kAudioTracks"
-      /* PlayerPropertyKeys.AUDIO_TRACKS */
-    ]: new TrackProperty(
-      "kAudioTracks"
-      /* PlayerPropertyKeys.AUDIO_TRACKS */
-    ),
-    [
-      "kTextTracks"
-      /* PlayerPropertyKeys.TEXT_TRACKS */
-    ]: new TrackProperty(
-      "kTextTracks"
-      /* PlayerPropertyKeys.TEXT_TRACKS */
-    )
+    ["kAudioDecoderName" /* AUDIO_DECODER_NAME */]: new Property("kAudioDecoderName" /* AUDIO_DECODER_NAME */),
+    ["kIsPlatformAudioDecoder" /* IS_PLATFORM_AUDIO_DECODER */]: new Property("kIsPlatformAudioDecoder" /* IS_PLATFORM_AUDIO_DECODER */),
+    ["kIsAudioDecryptingDemuxerStream" /* IS_AUDIO_DECRYPTING_DEMUXER_STREAM */]: new Property("kIsAudioDecryptingDemuxerStream" /* IS_AUDIO_DECRYPTING_DEMUXER_STREAM */),
+    ["kAudioTracks" /* AUDIO_TRACKS */]: new TrackProperty("kAudioTracks" /* AUDIO_TRACKS */),
+    ["kTextTracks" /* TEXT_TRACKS */]: new TrackProperty("kTextTracks" /* TEXT_TRACKS */)
   };
   constructor(target, view = DEFAULT_VIEW2) {
     super(target);
@@ -2144,7 +1906,7 @@ var PlayerPropertiesView = class extends UI4.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/media/PlayerDetailView.js
+// ../../front_end/panels/media/PlayerDetailView.ts
 var UIStrings5 = {
   /**
    * @description Title of the 'Properties' tool in the sidebar of the Elements tool.
@@ -2181,13 +1943,13 @@ var UIStrings5 = {
 };
 var str_5 = i18n9.i18n.registerUIStrings("panels/media/PlayerDetailView.ts", UIStrings5);
 var i18nString5 = i18n9.i18n.getLocalizedString.bind(void 0, str_5);
-var PlayerDetailViewTabs;
-(function(PlayerDetailViewTabs2) {
+var PlayerDetailViewTabs = /* @__PURE__ */ ((PlayerDetailViewTabs2) => {
   PlayerDetailViewTabs2["EVENTS"] = "events";
   PlayerDetailViewTabs2["PROPERTIES"] = "properties";
   PlayerDetailViewTabs2["MESSAGES"] = "messages";
   PlayerDetailViewTabs2["TIMELINE"] = "timeline";
-})(PlayerDetailViewTabs || (PlayerDetailViewTabs = {}));
+  return PlayerDetailViewTabs2;
+})(PlayerDetailViewTabs || {});
 var PlayerDetailView = class extends UI5.TabbedPane.TabbedPane {
   eventView;
   propertyView;
@@ -2199,10 +1961,30 @@ var PlayerDetailView = class extends UI5.TabbedPane.TabbedPane {
     this.propertyView = new PlayerPropertiesView();
     this.messageView = new PlayerMessagesView();
     this.timelineView = new PlayerEventsTimeline();
-    this.appendTab("properties", i18nString5(UIStrings5.properties), this.propertyView, i18nString5(UIStrings5.playerProperties));
-    this.appendTab("events", i18nString5(UIStrings5.events), this.eventView, i18nString5(UIStrings5.playerEvents));
-    this.appendTab("messages", i18nString5(UIStrings5.messages), this.messageView, i18nString5(UIStrings5.playerMessages));
-    this.appendTab("timeline", i18nString5(UIStrings5.timeline), this.timelineView, i18nString5(UIStrings5.playerTimeline));
+    this.appendTab(
+      "properties" /* PROPERTIES */,
+      i18nString5(UIStrings5.properties),
+      this.propertyView,
+      i18nString5(UIStrings5.playerProperties)
+    );
+    this.appendTab(
+      "events" /* EVENTS */,
+      i18nString5(UIStrings5.events),
+      this.eventView,
+      i18nString5(UIStrings5.playerEvents)
+    );
+    this.appendTab(
+      "messages" /* MESSAGES */,
+      i18nString5(UIStrings5.messages),
+      this.messageView,
+      i18nString5(UIStrings5.playerMessages)
+    );
+    this.appendTab(
+      "timeline" /* TIMELINE */,
+      i18nString5(UIStrings5.timeline),
+      this.timelineView,
+      i18nString5(UIStrings5.playerTimeline)
+    );
   }
   onProperty(property) {
     this.propertyView.onProperty(property);
@@ -2219,7 +2001,7 @@ var PlayerDetailView = class extends UI5.TabbedPane.TabbedPane {
   }
 };
 
-// gen/front_end/panels/media/PlayerListView.js
+// ../../front_end/panels/media/PlayerListView.ts
 var PlayerListView_exports = {};
 __export(PlayerListView_exports, {
   PlayerListView: () => PlayerListView
@@ -2323,7 +2105,7 @@ li.storage-group-list-item::before {
 
 /*# sourceURL=${import.meta.resolve("./playerListView.css")} */`;
 
-// gen/front_end/panels/media/PlayerListView.js
+// ../../front_end/panels/media/PlayerListView.ts
 var { classMap: classMap3 } = Directives4;
 var UIStrings6 = {
   /**
@@ -2346,27 +2128,28 @@ var UIStrings6 = {
 var str_6 = i18n11.i18n.registerUIStrings("panels/media/PlayerListView.ts", UIStrings6);
 var i18nString6 = i18n11.i18n.getLocalizedString.bind(void 0, str_6);
 var DEFAULT_VIEW3 = (input, _output, target) => {
-  render4(html4`
+  render4(
+    html4`
       <style>${playerListView_css_default}</style>
       <div class="player-entry-header" id="players-header">${i18nString6(UIStrings6.players)}</div>
       <div role="listbox" aria-labelledby="players-header">
       ${input.players.map((player) => {
-    const isSelected = player.playerID === input.selectedPlayerID;
-    return html4`
+      const isSelected = player.playerID === input.selectedPlayerID;
+      return html4`
           <div class=${classMap3({
-      "player-entry-row": true,
-      hbox: true,
-      selected: isSelected,
-      "force-white-icons": isSelected
-    })}
+        "player-entry-row": true,
+        hbox: true,
+        selected: isSelected,
+        "force-white-icons": isSelected
+      })}
                tabindex="0"
                @click=${() => input.onPlayerClick(player.playerID)}
                @keydown=${(e) => {
-      if (Platform3.KeyboardUtilities.isEnterOrSpaceKey(e)) {
-        e.preventDefault();
-        input.onPlayerClick(player.playerID);
-      }
-    }}
+        if (Platform3.KeyboardUtilities.isEnterOrSpaceKey(e)) {
+          e.preventDefault();
+          input.onPlayerClick(player.playerID);
+        }
+      }}
                @contextmenu=${(e) => input.onPlayerContextMenu(player.playerID, e)}
                role="option"
                aria-selected=${isSelected}
@@ -2380,9 +2163,11 @@ var DEFAULT_VIEW3 = (input, _output, target) => {
             <div class="player-entry-player-title">${player.playerTitle}</div>
           </div>
         `;
-  })}
+    })}
       </div>
-    `, target);
+    `,
+    target
+  );
 };
 var PlayerListView = class extends UI6.Widget.VBox {
   #view;
@@ -2420,9 +2205,21 @@ var PlayerListView = class extends UI6.Widget.VBox {
   }
   rightClickPlayer(playerID, event) {
     const contextMenu = new UI6.ContextMenu.ContextMenu(event);
-    contextMenu.headerSection().appendItem(i18nString6(UIStrings6.hidePlayer), this.mainContainer.markPlayerForDeletion.bind(this.mainContainer, playerID), { jslogContext: "hide-player" });
-    contextMenu.headerSection().appendItem(i18nString6(UIStrings6.hideAllOthers), this.mainContainer.markOtherPlayersForDeletion.bind(this.mainContainer, playerID), { jslogContext: "hide-all-others" });
-    contextMenu.headerSection().appendItem(i18nString6(UIStrings6.savePlayerInfo), this.mainContainer.exportPlayerData.bind(this.mainContainer, playerID), { jslogContext: "save-player-info" });
+    contextMenu.headerSection().appendItem(
+      i18nString6(UIStrings6.hidePlayer),
+      this.mainContainer.markPlayerForDeletion.bind(this.mainContainer, playerID),
+      { jslogContext: "hide-player" }
+    );
+    contextMenu.headerSection().appendItem(
+      i18nString6(UIStrings6.hideAllOthers),
+      this.mainContainer.markOtherPlayersForDeletion.bind(this.mainContainer, playerID),
+      { jslogContext: "hide-all-others" }
+    );
+    contextMenu.headerSection().appendItem(
+      i18nString6(UIStrings6.savePlayerInfo),
+      this.mainContainer.exportPlayerData.bind(this.mainContainer, playerID),
+      { jslogContext: "save-player-info" }
+    );
     void contextMenu.show();
   }
   setMediaElementFrameTitle(playerID, frameTitle, isHostname) {
@@ -2514,12 +2311,12 @@ var PlayerListView = class extends UI6.Widget.VBox {
     }
   }
   onProperty(playerID, property) {
-    if (property.name === "kFrameUrl") {
+    if (property.name === "kFrameUrl" /* FRAME_URL */) {
       const frameTitle = new URL(property.value).hostname;
       this.formatAndEvaluate(playerID, this.setMediaElementFrameTitle, frameTitle, 1, 20);
       return;
     }
-    if (property.name === "kFrameTitle" && property.value) {
+    if (property.name === "kFrameTitle" /* FRAME_TITLE */ && property.value) {
       this.formatAndEvaluate(playerID, this.setMediaElementFrameTitle, property.value, 1, 20);
       return;
     }
@@ -2530,7 +2327,7 @@ var PlayerListView = class extends UI6.Widget.VBox {
   }
 };
 
-// gen/front_end/panels/media/MainView.js
+// ../../front_end/panels/media/MainView.ts
 var UIStrings7 = {
   /**
    * @description Text to show if no media player has been selected.
@@ -2691,18 +2488,18 @@ var MainView = class extends UI7.Panel.PanelWithSidebar {
   }
   addEventListeners(mediaModel) {
     mediaModel.ensureEnabled();
-    mediaModel.addEventListener("PlayerPropertiesChanged", this.propertiesChanged, this);
-    mediaModel.addEventListener("PlayerEventsAdded", this.eventsAdded, this);
-    mediaModel.addEventListener("PlayerMessagesLogged", this.messagesLogged, this);
-    mediaModel.addEventListener("PlayerErrorsRaised", this.errorsRaised, this);
-    mediaModel.addEventListener("PlayerCreated", this.playerCreated, this);
+    mediaModel.addEventListener("PlayerPropertiesChanged" /* PLAYER_PROPERTIES_CHANGED */, this.propertiesChanged, this);
+    mediaModel.addEventListener("PlayerEventsAdded" /* PLAYER_EVENTS_ADDED */, this.eventsAdded, this);
+    mediaModel.addEventListener("PlayerMessagesLogged" /* PLAYER_MESSAGES_LOGGED */, this.messagesLogged, this);
+    mediaModel.addEventListener("PlayerErrorsRaised" /* PLAYER_ERRORS_RAISED */, this.errorsRaised, this);
+    mediaModel.addEventListener("PlayerCreated" /* PLAYER_CREATED */, this.playerCreated, this);
   }
   removeEventListeners(mediaModel) {
-    mediaModel.removeEventListener("PlayerPropertiesChanged", this.propertiesChanged, this);
-    mediaModel.removeEventListener("PlayerEventsAdded", this.eventsAdded, this);
-    mediaModel.removeEventListener("PlayerMessagesLogged", this.messagesLogged, this);
-    mediaModel.removeEventListener("PlayerErrorsRaised", this.errorsRaised, this);
-    mediaModel.removeEventListener("PlayerCreated", this.playerCreated, this);
+    mediaModel.removeEventListener("PlayerPropertiesChanged" /* PLAYER_PROPERTIES_CHANGED */, this.propertiesChanged, this);
+    mediaModel.removeEventListener("PlayerEventsAdded" /* PLAYER_EVENTS_ADDED */, this.eventsAdded, this);
+    mediaModel.removeEventListener("PlayerMessagesLogged" /* PLAYER_MESSAGES_LOGGED */, this.messagesLogged, this);
+    mediaModel.removeEventListener("PlayerErrorsRaised" /* PLAYER_ERRORS_RAISED */, this.errorsRaised, this);
+    mediaModel.removeEventListener("PlayerCreated" /* PLAYER_CREATED */, this.playerCreated, this);
   }
   propertiesChanged(event) {
     for (const property of event.data.properties) {
@@ -2778,7 +2575,7 @@ var MainView = class extends UI7.Panel.PanelWithSidebar {
     if (player.domNodeId) {
       this.#domNodeIdsToPlayerIds.set(player.domNodeId, player.playerId);
     }
-    if (this.splitWidget().showMode() !== "Both") {
+    if (this.splitWidget().showMode() !== UI7.SplitWidget.ShowMode.BOTH) {
       this.splitWidget().showBoth();
     }
     this.sidebar.addMediaElementItem(player.playerId);

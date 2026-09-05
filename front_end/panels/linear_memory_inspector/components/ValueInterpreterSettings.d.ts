@@ -8,7 +8,7 @@ export declare const DEFAULT_VIEW: (input: ViewInput, _output: undefined, target
 export type View = typeof DEFAULT_VIEW;
 export declare class ValueInterpreterSettings extends UI.Widget.Widget {
     #private;
-    constructor(element?: HTMLElement, view?: typeof DEFAULT_VIEW);
+    constructor(element?: HTMLElement, view?: View);
     get valueTypes(): Set<ValueType>;
     set valueTypes(value: Set<ValueType>);
     get onToggle(): (type: ValueType, checked: boolean) => void;

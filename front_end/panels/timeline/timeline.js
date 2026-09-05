@@ -2698,9 +2698,6 @@ var Calculator = class {
   }
 };
 
-// gen/front_end/panels/timeline/EasterEgg.js
-var SHOULD_SHOW_EASTER_EGG = false;
-
 // ../../front_end/panels/timeline/TimelineFlameChartView.ts
 import * as OverlayComponents from "./overlays/components/components.js";
 import * as Overlays3 from "./overlays/overlays.js";
@@ -5719,7 +5716,6 @@ import * as SourceMapsResolver from "../../models/trace_source_maps_resolver/tra
 import * as Workspace2 from "../../models/workspace/workspace.js";
 import * as TraceBounds9 from "../../services/trace_bounds/trace_bounds.js";
 import * as Tracing3 from "../../services/tracing/tracing.js";
-import * as Adorners from "../../ui/components/adorners/adorners.js";
 import * as Dialogs from "../../ui/components/dialogs/dialogs.js";
 import { Link } from "../../ui/kit/kit.js";
 import * as PerfUI11 from "../../ui/legacy/components/perf_ui/perf_ui.js";
@@ -8599,80 +8595,6 @@ var timelinePanel_css_default = `/*
   overflow: hidden;
 }
 
-.brick-game {
-  background-color: var(--sys-color-neutral-container);
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 9999; /* A high value to ensure it's on top */
-}
-
-.game-close-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 25px;
-  height: 25px;
-  position: absolute;
-  right: 15px;
-  top: 15px;
-  border-radius: var(--sys-shape-corner-full);
-  cursor: pointer;
-}
-
-.scorePanel {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  white-space: pre-line;
-  padding: 15px;
-  position: absolute;
-  left: 15px;
-  bottom: 15px;
-  border: double 7px transparent;
-  border-radius: 20px;
-  background-origin: border-box;
-  background-clip: content-box, border-box;
-  font-weight: 200;
-}
-
-.confetti-100 {
-  display: block;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.confetti-100 > .confetti-100-particle {
-  opacity: 0%;
-  position: fixed;
-  animation: confetti-100-animation 1s none ease-out;
-  font-size: 30px;
-}
-
-@keyframes confetti-100-animation {
-  0% {
-    opacity: 100%;
-    transform: translateY(0%) translateY(0%) rotate(0deg);
-  }
-
-  100% {
-    opacity: 0%;
-    /* stylelint-disable-next-line custom-property-pattern */
-    transform: translateY(var(--to-Y)) translateX(var(--to-X)) rotate(var(--rotation));
-  }
-}
-
-@media (prefers-reduced-motion) {
-  .confetti-100 > .confetti-100-particle {
-    animation-name: dissolve;
-  }
-}
-
 .timeline-layers-view-properties table {
   width: 100%;
   border-collapse: collapse;
@@ -9157,10 +9079,6 @@ var UIStrings17 = {
    */
   clear: "Clear",
   /**
-   * @description Adorner label for a trace event that needs attention.
-   */
-  fixMe: "Fix me",
-  /**
    * @description Tooltip for the load trace button in the Performance panel toolbar.
    */
   loadTrace: "Load trace\u2026",
@@ -9501,18 +9419,6 @@ var TimelinePanel = class _TimelinePanel extends TimelinePanelBase {
     this.#targetManager = targetManager;
     this.#isolateManager = isolateManager;
     this.registerRequiredCSS(timelinePanel_css_default);
-    const adornerContent = document.createElement("span");
-    adornerContent.innerHTML = `<div style="
-      font-size: 12px;
-      transform: scale(1.25);
-      color: transparent;
-      background: linear-gradient(90deg,CLICK255 0 0 / 100%) 0%, rgb(255 154 0 / 100%) 10%, rgb(208 222 33 / 100%) 20%, rgb(79 220 74 / 100%) 30%, rgb(63 218 216 / 100%) 40%, rgb(47 201 226 / 100%) 50%, rgb(28 127 238 / 100%) 60%, rgb(95 21 242 / 100%) 70%, rgb(186 12 248 / 100%) 80%, rgb(251 7 217 / 100%) 90%, rgb(255 0 0 / 100%) 100%);
-      -webkit-background-clip: text;
-      ">\u{1F4AB}</div>`;
-    const adorner = new Adorners.Adorner.Adorner();
-    adorner.classList.add("fix-perf-icon");
-    adorner.name = i18nString17(UIStrings17.fixMe);
-    adorner.append(adornerContent);
     this.#traceEngineModel = traceModel || this.#instantiateNewModel();
     this.element.addEventListener("contextmenu", this.contextMenu.bind(this), false);
     this.dropTarget = new UI8.DropTarget.DropTarget(
@@ -18899,7 +18805,6 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
   networkPane;
   splitResizer;
   chartSplitWidget;
-  brickGame;
   countersView;
   detailsSplitWidget;
   detailsView;
@@ -18927,8 +18832,6 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
     () => this.updateSearchResults(false, false),
     100
   );
-  #gameKeyMatches = 0;
-  #gameTimeout = setTimeout(() => ({}), 0);
   #overlaysContainer = document.createElement("div");
   #overlays;
   // Tracks the in-progress time range annotation when the user alt/option clicks + drags, or when the user uses the keyboard
@@ -19680,7 +19583,6 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
     }
   }
   #keydownHandler(event) {
-    const keyCombo = "fixme";
     if (this.#linkSelectionAnnotation && this.#linkSelectionAnnotation.state === Trace32.Types.File.EntriesLinkState.CREATION_NOT_STARTED) {
       this.#clearLinkSelectionAnnotation(true);
       event.stopPropagation();
@@ -19696,34 +19598,9 @@ var TimelineFlameChartView = class extends TimelineFlameChartViewBase {
       event.stopPropagation();
       return;
     }
-    if (event.key === keyCombo[this.#gameKeyMatches]) {
-      this.#gameKeyMatches++;
-      clearTimeout(this.#gameTimeout);
-      this.#gameTimeout = setTimeout(() => {
-        this.#gameKeyMatches = 0;
-      }, 2e3);
-    } else {
-      this.#gameKeyMatches = 0;
-      clearTimeout(this.#gameTimeout);
-    }
-    if (this.#gameKeyMatches !== keyCombo.length) {
-      return;
-    }
-    this.runBrickBreakerGame();
   }
   forceAnimationsForTest() {
     this.#checkReducedMotion = false;
-  }
-  runBrickBreakerGame() {
-    if (!SHOULD_SHOW_EASTER_EGG) {
-      return;
-    }
-    if ([...this.element.childNodes].find((child) => child instanceof PerfUI15.BrickBreaker.BrickBreaker)) {
-      return;
-    }
-    this.brickGame = new PerfUI15.BrickBreaker.BrickBreaker(this.mainFlameChart);
-    this.brickGame.classList.add("brick-game");
-    this.element.append(this.brickGame);
   }
   #onTraceBoundsChange(event) {
     if (event.updateType === "MINIMAP_BOUNDS") {

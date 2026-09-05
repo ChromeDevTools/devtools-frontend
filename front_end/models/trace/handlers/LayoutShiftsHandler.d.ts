@@ -2,7 +2,7 @@ import type * as Protocol from '../../../generated/protocol.js';
 import * as Types from '../types/types.js';
 import { ScoreClassification } from './PageLoadMetricsHandler.js';
 import type { HandlerName } from './types.js';
-interface LayoutShiftsData {
+export interface LayoutShiftsData {
     clusters: readonly Types.Events.SyntheticLayoutShiftCluster[];
     sessionMaxScore: number;
     clsWindowID: number;

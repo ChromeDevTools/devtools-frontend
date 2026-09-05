@@ -771,12 +771,6 @@ devtools-toolbar {
     padding: 0 var(--sys-size-1);
   }
 
-  devtools-adorner.fix-perf-icon {
-    --override-adorner-text-color: transparent;
-    --override-adorner-border-color: transparent;
-    --override-adorner-background-color: transparent;
-  }
-
   devtools-issue-counter.main-toolbar {
     margin-left: var(--sys-size-1);
     margin-right: var(--sys-size-1);

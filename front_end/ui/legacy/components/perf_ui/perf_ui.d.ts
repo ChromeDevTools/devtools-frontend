@@ -1,4 +1,3 @@
-import * as BrickBreaker from './BrickBreaker.js';
 import * as ChartViewport from './ChartViewport.js';
 import * as FilmStripView from './FilmStripView.js';
 import * as FlameChart from './FlameChart.js';
@@ -11,4 +10,4 @@ import * as PieChart from './PieChart.js';
 import * as TimelineGrid from './TimelineGrid.js';
 import * as TimelineOverviewCalculator from './TimelineOverviewCalculator.js';
 import * as TimelineOverviewPane from './TimelineOverviewPane.js';
-export { BrickBreaker, ChartViewport, FilmStripView, FlameChart, Font, GCActionDelegate, LineLevelProfile, NetworkPriorities, OverviewGrid, PieChart, TimelineGrid, TimelineOverviewCalculator, TimelineOverviewPane, };
+export { ChartViewport, FilmStripView, FlameChart, Font, GCActionDelegate, LineLevelProfile, NetworkPriorities, OverviewGrid, PieChart, TimelineGrid, TimelineOverviewCalculator, TimelineOverviewPane, };

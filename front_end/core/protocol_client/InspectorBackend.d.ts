@@ -60,11 +60,6 @@ export declare const test: {
      */
     dumpProtocol: ((arg0: string) => void) | null;
     /**
-     * Runs a function when no protocol activity is present.
-     * ProtocolClient.test.deprecatedRunAfterPendingDispatches(() => console.log('done'))
-     */
-    deprecatedRunAfterPendingDispatches: ((arg0: () => void) => void) | null;
-    /**
      * Sends a raw message over main connection.
      * ProtocolClient.test.sendRawMessage('Page.enable', {}, console.log)
      */
@@ -87,6 +82,11 @@ export declare const test: {
      * Set to get notified about any messages received over protocol.
      */
     onMessageReceived: ((message: Object) => void) | null;
+    /**
+     * Runs a function when no protocol activity is present.
+     * ProtocolClient.test.deprecatedRunAfterPendingDispatches(() => console.log('done'))
+     */
+    deprecatedRunAfterPendingDispatches: ((arg0: () => void) => void) | null;
 };
 export declare class SessionRouter implements CDPConnectionObserver {
     #private;

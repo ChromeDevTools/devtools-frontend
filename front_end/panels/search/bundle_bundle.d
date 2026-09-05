@@ -1,0 +1,1 @@
+gen/front_end/panels/search/search.js: gen/front_end/panels/search/searchResultsPane.css.js ../../front_end/panels/search/SearchResultsPane.ts ../../front_end/panels/search/SearchScope.ts gen/front_end/panels/search/searchView.css.js ../../front_end/panels/search/SearchView.ts ../../front_end/panels/search/search.ts

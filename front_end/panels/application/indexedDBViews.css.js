@@ -37,20 +37,6 @@ export default `/*
   color: inherit;
 }
 
-:host-context(.indexed-db-data-view) .section,
-:host-context(.indexed-db-data-view) .section > .header,
-:host-context(.indexed-db-data-view) .section > .header .title {
-  margin: 0;
-  min-height: inherit;
-  line-height: inherit;
-}
-
-:host-context(.indexed-db-data-view) .data-grid .data-container td .section .header .title {
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-}
-
 .indexed-db-key-path {
   color: var(--sys-color-error);
   white-space: pre-wrap;

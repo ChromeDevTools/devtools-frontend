@@ -7815,7 +7815,7 @@ var objectPropertiesSection_css_default = `/*
   color: var(--sys-color-on-surface);
   display: flex;
   flex-direction: column;
-  overflow-x: auto;
+  overflow: auto hidden;
 }
 
 .object-properties-section li,

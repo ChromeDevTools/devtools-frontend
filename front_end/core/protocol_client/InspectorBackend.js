@@ -83,11 +83,6 @@ export const test = {
      */
     dumpProtocol: null,
     /**
-     * Runs a function when no protocol activity is present.
-     * ProtocolClient.test.deprecatedRunAfterPendingDispatches(() => console.log('done'))
-     */
-    deprecatedRunAfterPendingDispatches: null,
-    /**
      * Sends a raw message over main connection.
      * ProtocolClient.test.sendRawMessage('Page.enable', {}, console.log)
      */
@@ -104,6 +99,11 @@ export const test = {
      * Set to get notified about any messages received over protocol.
      */
     onMessageReceived: null,
+    /**
+     * Runs a function when no protocol activity is present.
+     * ProtocolClient.test.deprecatedRunAfterPendingDispatches(() => console.log('done'))
+     */
+    deprecatedRunAfterPendingDispatches: null,
 };
 export class SessionRouter {
     #connection;

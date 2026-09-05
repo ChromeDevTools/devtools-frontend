@@ -1654,11 +1654,6 @@ var test = {
    */
   dumpProtocol: null,
   /**
-   * Runs a function when no protocol activity is present.
-   * ProtocolClient.test.deprecatedRunAfterPendingDispatches(() => console.log('done'))
-   */
-  deprecatedRunAfterPendingDispatches: null,
-  /**
    * Sends a raw message over main connection.
    * ProtocolClient.test.sendRawMessage('Page.enable', {}, console.log)
    */
@@ -1674,7 +1669,12 @@ var test = {
   /**
    * Set to get notified about any messages received over protocol.
    */
-  onMessageReceived: null
+  onMessageReceived: null,
+  /**
+   * Runs a function when no protocol activity is present.
+   * ProtocolClient.test.deprecatedRunAfterPendingDispatches(() => console.log('done'))
+   */
+  deprecatedRunAfterPendingDispatches: null
 };
 var SessionRouter = class {
   #connection;
@@ -2114,18 +2114,13 @@ var DispatcherManager = class {
 var inspectorBackend = new InspectorBackend();
 
 // ../../front_end/core/protocol_client/DevToolsCDPConnection.ts
-var LongPollingMethods = /* @__PURE__ */ new Set(["CSS.takeComputedStyleUpdates"]);
 var DevToolsCDPConnection = class {
   #transport;
   #lastMessageId = 1;
-  #pendingResponsesCount = 0;
-  #pendingLongPollingMessageIds = /* @__PURE__ */ new Set();
-  #pendingScripts = [];
   #callbacks = /* @__PURE__ */ new Map();
   #observers = /* @__PURE__ */ new Set();
   constructor(transport) {
     this.#transport = transport;
-    test.deprecatedRunAfterPendingDispatches = this.deprecatedRunAfterPendingDispatches.bind(this);
     test.sendRawMessage = this.sendRawMessageForTesting.bind(this);
     this.#transport.setOnMessage(this.onMessage.bind(this));
     this.#transport.setOnDisconnect((reason) => {
@@ -2157,10 +2152,6 @@ var DevToolsCDPConnection = class {
       const domain = method.split(".")[0];
       const paramsObject = JSON.parse(JSON.stringify(params || {}));
       test.onMessageSent({ domain, method, params: paramsObject, id: messageId, sessionId });
-    }
-    ++this.#pendingResponsesCount;
-    if (LongPollingMethods.has(method)) {
-      this.#pendingLongPollingMessageIds.add(messageId);
     }
     return new Promise((resolve) => {
       this.#callbacks.set(messageId, { resolve, method, sessionId });
@@ -2208,39 +2199,10 @@ var DevToolsCDPConnection = class {
         return;
       }
       callback.resolve(messageObject);
-      --this.#pendingResponsesCount;
-      this.#pendingLongPollingMessageIds.delete(messageObject.id);
-      if (this.#pendingScripts.length && !this.hasOutstandingNonLongPollingRequests()) {
-        this.deprecatedRunAfterPendingDispatches();
-      }
     } else if ("method" in messageObject) {
       this.#observers.forEach((observer) => observer.onEvent(messageObject));
     } else {
       InspectorBackend.reportProtocolError("Protocol Error: the message without method", messageObject);
-    }
-  }
-  hasOutstandingNonLongPollingRequests() {
-    return this.#pendingResponsesCount - this.#pendingLongPollingMessageIds.size > 0;
-  }
-  deprecatedRunAfterPendingDispatches(script) {
-    if (script) {
-      this.#pendingScripts.push(script);
-    }
-    setTimeout(() => {
-      if (!this.hasOutstandingNonLongPollingRequests()) {
-        this.executeAfterPendingDispatches();
-      } else {
-        this.deprecatedRunAfterPendingDispatches();
-      }
-    }, 0);
-  }
-  executeAfterPendingDispatches() {
-    if (!this.hasOutstandingNonLongPollingRequests()) {
-      const scripts = this.#pendingScripts;
-      this.#pendingScripts = [];
-      for (let id = 0; id < scripts.length; ++id) {
-        scripts[id]();
-      }
     }
   }
 };

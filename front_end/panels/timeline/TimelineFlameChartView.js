@@ -17,7 +17,6 @@ import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 import { getAnnotationEntries, getAnnotationWindow } from './AnnotationHelpers.js';
 import * as TimelineInsights from './components/insights/insights.js';
 import { CountersGraph } from './CountersGraph.js';
-import { SHOULD_SHOW_EASTER_EGG } from './EasterEgg.js';
 import { ModificationsManager } from './ModificationsManager.js';
 import * as OverlayComponents from './overlays/components/components.js';
 import * as Overlays from './overlays/overlays.js';
@@ -77,7 +76,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
     networkPane;
     splitResizer;
     chartSplitWidget;
-    brickGame;
     countersView;
     detailsSplitWidget;
     detailsView;
@@ -102,8 +100,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
     #selectedGroupName = null;
     #onTraceBoundsChangeBound = this.#onTraceBoundsChange.bind(this);
     #debouncedUpdateSearchResults = Common.Debouncer.debounce(() => this.updateSearchResults(false, false), 100);
-    #gameKeyMatches = 0;
-    #gameTimeout = setTimeout(() => ({}), 0);
     #overlaysContainer = document.createElement('div');
     #overlays;
     // Tracks the in-progress time range annotation when the user alt/option clicks + drags, or when the user uses the keyboard
@@ -869,7 +865,6 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
         }
     }
     #keydownHandler(event) {
-        const keyCombo = 'fixme';
         // `CREATION_NOT_STARTED` is only true in the state when both empty label and button to create connection are
         // created at the same time. If any key is typed in that state, it means that the label is in focus and the key
         // is typed into the label. This tells us that the user chose to create the
@@ -896,35 +891,9 @@ export class TimelineFlameChartView extends TimelineFlameChartViewBase {
             event.stopPropagation();
             return;
         }
-        if (event.key === keyCombo[this.#gameKeyMatches]) {
-            this.#gameKeyMatches++;
-            clearTimeout(this.#gameTimeout);
-            this.#gameTimeout = setTimeout(() => {
-                this.#gameKeyMatches = 0;
-            }, 2000);
-        }
-        else {
-            this.#gameKeyMatches = 0;
-            clearTimeout(this.#gameTimeout);
-        }
-        if (this.#gameKeyMatches !== keyCombo.length) {
-            return;
-        }
-        this.runBrickBreakerGame();
     }
     forceAnimationsForTest() {
         this.#checkReducedMotion = false;
-    }
-    runBrickBreakerGame() {
-        if (!SHOULD_SHOW_EASTER_EGG) {
-            return;
-        }
-        if ([...this.element.childNodes].find(child => child instanceof PerfUI.BrickBreaker.BrickBreaker)) {
-            return;
-        }
-        this.brickGame = new PerfUI.BrickBreaker.BrickBreaker(this.mainFlameChart);
-        this.brickGame.classList.add('brick-game');
-        this.element.append(this.brickGame);
     }
     #onTraceBoundsChange(event) {
         if (event.updateType === 'MINIMAP_BOUNDS') {

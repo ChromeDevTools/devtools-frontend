@@ -182,6 +182,7 @@ export class TraceLoader {
                 .parse(events, {
                 metadata,
                 isFreshRecording: emulateFreshRecording,
+                yieldToMain: false,
                 async resolveSourceMap(params) {
                     const { sourceUrl, sourceMapUrl, cachedRawSourceMap } = params;
                     if (cachedRawSourceMap) {

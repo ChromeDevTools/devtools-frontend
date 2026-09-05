@@ -9,6 +9,10 @@ export default `/*
  * found in the LICENSE file.
  */
 
+:host {
+  display: inline-flex;
+}
+
 .custom-expandable-section {
   display: inline-flex;
   flex-direction: column;

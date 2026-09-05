@@ -47,7 +47,6 @@ import * as SourceMapsResolver from '../../models/trace_source_maps_resolver/tra
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import * as Tracing from '../../services/tracing/tracing.js';
-import * as Adorners from '../../ui/components/adorners/adorners.js';
 import * as Dialogs from '../../ui/components/dialogs/dialogs.js';
 import { Link } from '../../ui/kit/kit.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
@@ -104,10 +103,6 @@ const UIStrings = {
      * @description Tooltip for the clear button in the Performance panel toolbar.
      */
     clear: 'Clear',
-    /**
-     * @description Adorner label for a trace event that needs attention.
-     */
-    fixMe: 'Fix me',
     /**
      * @description Tooltip for the load trace button in the Performance panel toolbar.
      */
@@ -432,18 +427,6 @@ export class TimelinePanel extends TimelinePanelBase {
         this.#targetManager = targetManager;
         this.#isolateManager = isolateManager;
         this.registerRequiredCSS(timelinePanelStyles);
-        const adornerContent = document.createElement('span');
-        adornerContent.innerHTML = `<div style="
-      font-size: 12px;
-      transform: scale(1.25);
-      color: transparent;
-      background: linear-gradient(90deg,CLICK255 0 0 / 100%) 0%, rgb(255 154 0 / 100%) 10%, rgb(208 222 33 / 100%) 20%, rgb(79 220 74 / 100%) 30%, rgb(63 218 216 / 100%) 40%, rgb(47 201 226 / 100%) 50%, rgb(28 127 238 / 100%) 60%, rgb(95 21 242 / 100%) 70%, rgb(186 12 248 / 100%) 80%, rgb(251 7 217 / 100%) 90%, rgb(255 0 0 / 100%) 100%);
-      -webkit-background-clip: text;
-      ">💫</div>`;
-        const adorner = new Adorners.Adorner.Adorner();
-        adorner.classList.add('fix-perf-icon');
-        adorner.name = i18nString(UIStrings.fixMe);
-        adorner.append(adornerContent);
         this.#traceEngineModel = traceModel || this.#instantiateNewModel();
         this.element.addEventListener('contextmenu', this.contextMenu.bind(this), false);
         this.dropTarget = new UI.DropTarget.DropTarget(this.element, [UI.DropTarget.Type.File, UI.DropTarget.Type.URI], i18nString(UIStrings.dropTimelineFileOrUrlHere), this.handleDrop.bind(this));

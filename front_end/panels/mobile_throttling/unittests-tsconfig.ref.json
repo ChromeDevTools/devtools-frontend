@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationDir": ".",
+    "emitDeclarationOnly": true,
+    "outDir": ".",
+    "rootDir": "../../../../../../front_end/panels/mobile_throttling",
+    "skipLibCheck": true
+  },
+  "files": [
+    "../../../../../../front_end/panels/mobile_throttling/CPUThrottlingSelector.test.ts",
+    "../../../../../../front_end/panels/mobile_throttling/NetworkThrottlingSelector.test.ts",
+    "../../../../../../front_end/panels/mobile_throttling/ThrottlingManager.test.ts",
+    "../../../../../../front_end/panels/mobile_throttling/ThrottlingSettingsTab.test.ts",
+    "../../../../../../front_end/legacy/legacy-defs.d.ts",
+    "../../../../../../front_end/global_typings/global_defs.d.ts",
+    "../../../../../../node_modules/@types/filesystem/index.d.ts",
+    "../../../../../../node_modules/@types/filewriter/index.d.ts"
+  ],
+  "references": [
+    {
+      "path": "bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../models/crux-manager/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../common/bundle-tsconfig.ref.json"
+    }
+  ]
+}

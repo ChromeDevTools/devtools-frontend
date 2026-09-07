@@ -8,9 +8,19 @@ import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_foundation_module("comment_manager") {
-  sources = [ "CommentManager.ts" ]
+  sources = [
+    "CD4ABridge.ts",
+    "CommentManager.ts",
+  ]
 
-  ts_deps = [ "../../core/common:bundle" ]
+  ts_deps = [
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
+    "../../generated",
+    "../logs:bundle",
+  ]
 }
 
 devtools_entrypoint("bundle") {
@@ -32,10 +42,18 @@ devtools_entrypoint("bundle") {
 devtools_foundation_module("foundation_unittests") {
   testonly = true
 
-  sources = [ "CommentManager.test.ts" ]
+  sources = [
+    "CD4ABridge.test.ts",
+    "CommentManager.test.ts",
+  ]
 
   ts_deps = [
     ":bundle",
+    "../../core/common:bundle",
+    "../../core/host:bundle",
+    "../../core/root:bundle",
+    "../../core/sdk:bundle",
     "../../testing",
+    "../logs:bundle",
   ]
 }

@@ -214,6 +214,8 @@ export class MainImpl {
     };
     this.#universe = new Foundation.Universe.Universe(creationOptions);
     Root.DevToolsContext.setGlobalInstance(this.#universe.context as Root.DevToolsContext.WritableDevToolsContext);
+    // Needed to allow CD4A to access the server bridge class.
+    (globalThis as unknown as {universe: Foundation.Universe.Universe}).universe = this.#universe;
 
     // Mark 'cache-disabled' as requiring user interaction when multiple CDP clients are attached.
     if (Root.Runtime.Runtime.queryParam('hasOtherClients')) {

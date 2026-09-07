@@ -44,6 +44,7 @@ devtools_entrypoint("bundle") {
     "../../ui/components/request_link_icon/*",
     "../../ui/legacy/*",
     "../ai_assistance/*",
+    "../comment_manager/*",
     "../extensions/*",
   ]
 

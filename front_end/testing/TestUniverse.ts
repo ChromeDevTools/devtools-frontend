@@ -109,6 +109,10 @@ export class TestUniverse implements Foundation.Universe.Universe {
                                                                 this.debuggerWorkspaceBinding, this.settings),
     ],
     [
+      CommentManager.CD4ABridge.CD4ABridge,
+      () => new CommentManager.CD4ABridge.CD4ABridge(this.commentManager, this.targetManager, this.networkLog),
+    ],
+    [
       CommentManager.CommentManager.CommentManager,
       () => new CommentManager.CommentManager.CommentManager(),
     ],
@@ -343,6 +347,9 @@ export class TestUniverse implements Foundation.Universe.Universe {
 
   // eslint-disable-next-line @devtools/enforce-test-universe-return-types
   dispose(): void {
+    if (this.#context.has(CommentManager.CD4ABridge.CD4ABridge)) {
+      this.cd4aBridge.dispose();
+    }
     if (this.#context.has(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager)) {
       this.isolatedFileSystemManager.dispose();
     }
@@ -380,6 +387,10 @@ export class TestUniverse implements Foundation.Universe.Universe {
 
   get breakpointManager(): Breakpoints.BreakpointManager.BreakpointManager {
     return this.get(Breakpoints.BreakpointManager.BreakpointManager);
+  }
+
+  get cd4aBridge(): CommentManager.CD4ABridge.CD4ABridge {
+    return this.get(CommentManager.CD4ABridge.CD4ABridge);
   }
 
   get commentManager(): CommentManager.CommentManager.CommentManager {

@@ -1,9 +1,5 @@
 # GN TypeScript Build System
 
-> [!NOTE]
-> **Migrating an existing target to TypeScript Split Compilation?**
-> See [MIGRATION.md](MIGRATION.md) for the 4-phase migration plan, tier breakdown, compatibility matrix, and step-by-step developer migration guide.
-
 This directory contains the GN and Ninja build integration for compiling TypeScript and JavaScript sources in DevTools.
 
 The DevTools build system uses a high-performance, parallelized TypeScript architecture (`ts_library` and `devtools_entrypoint`) powered by `--isolatedDeclarations` and Ninja restat caching.

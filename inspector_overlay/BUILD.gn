@@ -16,6 +16,19 @@ bundle("build_inspector_overlay") {
   global_name = "InspectorOverlay"
   css_style_sheet = true
   max_size = 85000
+
+  # Explicitly declare imported CSS stylesheets as inputs so they are
+  # available to esbuild under remote execution (e.g. Siso with -strict_remote).
+  inputs = [
+    "common.css",
+    "tool_green_dev_anchors.css",
+    "tool_grid.css",
+    "tool_highlight.css",
+    "tool_paused.css",
+    "tool_screenshot.css",
+    "tool_source_order.css",
+    "tool_window_controls.css",
+  ]
   deps = [
     ":inspector_overlay",
     ":inspector_overlay_sources",

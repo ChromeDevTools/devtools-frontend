@@ -687,6 +687,9 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
              (input.expandRoot &&
               (node === input.rootDOMNode || (input.omitRootDOMNode && node.parentNode === input.rootDOMNode)))));
     const hasChildren = nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
+    const isCollapsible = !(node.nodeType() === Node.ELEMENT_NODE &&
+                            node.parentNode?.nodeType() === Node.DOCUMENT_NODE && !node.parentNode.parentNode);
+    const isExpandable = hasChildren && isCollapsible;
     const allVisibleChildren = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
     const limit = input.expandedChildrenLimit ? input.expandedChildrenLimit(node) : InitialChildrenLimit;
     const children = allVisibleChildren.slice(0, limit);
@@ -713,6 +716,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
       hovered: isHovered,
       'in-clipboard': Boolean(input.isNodeInClipboard?.(node)),
       'elements-drag-over': isDragOver,
+      'always-parent': !isCollapsible,
     });
 
     const onMouseMove = (event: MouseEvent): void => {
@@ -795,7 +799,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           hovered: isHovered,
           searchQuery: input.searchMatchNode === node ? (input.searchMatchQuery ?? null) : null,
           inClipboard: input.isNodeInClipboard?.(node) ?? false,
-          computeLeftIndent: computeLeftIndent(depth, hasChildren),
+          computeLeftIndent: computeLeftIndent(depth, isExpandable),
           disableEdits: input.disableEdits ?? false,
           showAIButton: input.showAIButton ?? true,
           initialEdit: input.nodeToEdit?.node === node ? input.nodeToEdit : null,
@@ -888,6 +892,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         aria-label=${i18nString(UIStrings.pageDom)}
         jslog=${VisualLogging.tree('elements')}
         ?show-selection-on-keyboard-focus=${input.showSelectionOnKeyboardFocus}
+        @enter=${(event: Event) => event.preventDefault()}
         @keydown=${input.onKeyDown}
         @clipboard-copy=${(event: Event) => input.onCopyOrCut?.(false, event)}
         @clipboard-cut=${(event: Event) => input.onCopyOrCut?.(true, event)}
@@ -898,6 +903,8 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           <style>${elementsTreeOutlineStyles}</style>
           <style>${CodeHighlighter.codeHighlighterStyles}</style>
           <ul role="tree">
+            ${input.omitRootDOMNode && input.rootDOMNode && input.rootDOMNode.adoptedStyleSheetsForNode.length > 0 ?
+                renderAdoptedStyleSheets(input.rootDOMNode, 0) : nothing}
             ${rootNodes.map(node => renderNode(node))}
             ${input.omitRootDOMNode && input.rootDOMNode ? (() => {
               const remaining = allRootNodes.length - rootNodes.length;
@@ -1007,20 +1014,35 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   #expandedNodes = new Set<SDK.DOMModel.DOMNode>();
   #expandedChildrenLimitByNode = new WeakMap<SDK.DOMModel.DOMNode, number>();
 
+  #expandRootNode(node: SDK.DOMModel.DOMNode): void {
+    if (!this.#expandRoot && !this.omitRootDOMNode) {
+      return;
+    }
+    this.#expandedNodes.add(node);
+    const expandChildren = (): void => {
+      if (this.#expandRoot && this.omitRootDOMNode && node.children()) {
+        for (const child of node.children() ?? []) {
+          this.#expandedNodes.add(child);
+        }
+      }
+    };
+    if (node.children()) {
+      expandChildren();
+    } else if (node.childNodeCount()) {
+      void node.getChildNodes(() => {
+        expandChildren();
+        this.performUpdate();
+      });
+    }
+  }
+
   // FIXME: this is not declarative because ElementsTreeOutline can
   // change root node internally.
   set rootDOMNode(node: SDK.DOMModel.DOMNode|null) {
     if (this.#view === DECLARATIVE_VIEW) {
       this.#rootDOMNode = node;
       if (node) {
-        if (this.expandRoot || this.omitRootDOMNode) {
-          this.#expandedNodes.add(node);
-        }
-        if (!node.children() && node.childNodeCount()) {
-          void node.getChildNodes(() => {
-            this.performUpdate();
-          });
-        }
+        this.#expandRootNode(node);
       }
       this.performUpdate();
       return;
@@ -1090,6 +1112,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
 
   set expandRoot(expandRoot: boolean) {
     this.#expandRoot = expandRoot;
+    if (this.#rootDOMNode) {
+      this.#expandRootNode(this.#rootDOMNode);
+    }
     this.performUpdate();
   }
 
@@ -1314,6 +1339,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   updateModifiedNodes(): void {
+    if (this.#updateModifiedNodesTimeout) {
+      clearTimeout(this.#updateModifiedNodesTimeout);
+      this.#updateModifiedNodesTimeout = undefined;
+    }
     if (this.#view === DECLARATIVE_VIEW) {
       this.performUpdate();
       return;
@@ -1849,12 +1878,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     this.performUpdate();
   }
 
-  /**
-   * FIXME: which node is expanded should be part of the view input.
-   */
   expand(): void {
-    if (this.#viewOutput.elementsTreeOutline?.selectedTreeElement) {
-      this.#viewOutput.elementsTreeOutline.selectedTreeElement.expand();
+    const selectedNode = this.selectedDOMNode();
+    if (selectedNode) {
+      this.setNodeExpanded(selectedNode, true);
     }
   }
 

@@ -2046,6 +2046,54 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    it('triggers in-place editing on double click in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['id', 'test-div'],
+          children: [],
+        });
+
+        domTree.rootDOMNode = rootNode;
+        domTree.expandRoot = true;
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElement = internalTree.rootElement().children()[0];
+        const rootWidgetElement = rootTreeElement.listItemElement.querySelector('devtools-widget');
+        const rootWidget = UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+        assert.exists(rootWidget);
+
+        domTree.selectDOMNode(rootNode);
+        await waitForTreeUpdates();
+
+        const attrElement = rootWidget.contentElement.querySelector('.webkit-html-attribute');
+        assert.exists(attrElement);
+
+        const dblClickEvent = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
+        attrElement.dispatchEvent(dblClickEvent);
+        await waitForTreeUpdates();
+
+        assert.isTrue(rootWidget.isEditing);
+        assert.isTrue(dblClickEvent.defaultPrevented,
+                      'dblclick event should be prevented to stop tree expansion toggle');
+
+        rootWidget.editing?.cancel();
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('triggers in-place editing on Enter and edit-as-html on F2 in DEFAULT_VIEW', async () => {
       const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
       sinon.stub(domModel, 'requestDocument').resolves(null);
@@ -2326,6 +2374,45 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.selectDOMNode(adoptedSheet);
         await waitForTreeUpdates();
         assert.isTrue(domTree.isAdoptedStyleSheetsExpanded(rootNode));
+      } finally {
+        domTree.detach();
+      }
+    });
+
+    it('renders adopted style sheets when omitRootDOMNode is true in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const sheetId = 'sheet-id' as Protocol.DOM.StyleSheetId;
+
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+      domTree.omitRootDOMNode = true;
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: '#document',
+          adoptedStyleSheets: [sheetId],
+          children: [
+            {
+              nodeId: 2,
+              nodeName: 'HTML',
+              children: [],
+            },
+          ],
+        });
+        const adoptedSheet = rootNode.adoptedStyleSheetsForNode[0];
+        assert.exists(adoptedSheet);
+
+        domTree.rootDOMNode = rootNode;
+        domTree.performUpdate();
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+
+        const adoptedStyleSheetsContainer = tree.shadowRoot?.querySelector('.elements-tree-adopted-style-sheets');
+        assert.exists(adoptedStyleSheetsContainer);
+        assert.include(adoptedStyleSheetsContainer.textContent, '#adopted-style-sheets');
       } finally {
         domTree.detach();
       }

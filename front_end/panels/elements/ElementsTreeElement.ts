@@ -1293,6 +1293,20 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
 
     this.editing = null;
     this.expandAllButtonElement = null;
+
+    this.contentElement.addEventListener('dblclick', (event: MouseEvent) => {
+      if (!this.node || this.editing || this.isClosingTag) {
+        return;
+      }
+      if (!this.isDOMNodeSelected) {
+        this.selectDOMNode?.(this.node, true);
+        this.isDOMNodeSelected = true;
+      }
+      const target = (event.composedPath()[0] || event.target) as Element;
+      if (this.startEditingTarget(target)) {
+        event.preventDefault();
+      }
+    });
   }
 
   static visibleShadowRoots(node: SDK.DOMModel.DOMNode): SDK.DOMModel.DOMNode[] {

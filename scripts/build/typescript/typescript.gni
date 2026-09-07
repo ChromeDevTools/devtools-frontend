@@ -340,6 +340,10 @@ template("ts_library") {
         emitDeclarationOnly = true
         skipLibCheck = true
         rootDir = rebase_path(_rootdir, target_gen_dir)
+        rootDirs = [
+          rebase_path(devtools_location_prepend, target_gen_dir),
+          rebase_path("$root_gen_dir/$devtools_location", target_gen_dir),
+        ]
         outDir = "."
         declarationDir = "."
       }

@@ -1148,7 +1148,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
                          moveDirection?: string) => void;
   runPendingUpdates?: () => void;
   focusOutline?: () => void;
-  setMultilineEditing?: (multilineEditing: EditorHandles|null) => void;
+  setMultilineEditing?: (multilineEditing: EditorHandles|null, node?: SDK.DOMModel.DOMNode) => void;
   visibleWidth?: () => number;
 
   #view: View;
@@ -2261,6 +2261,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
       commitCallback: (arg0: string, arg1: string) => void, disposeCallback: () => void,
       maybeInitialValue: string|null): Promise<void> {
     if (maybeInitialValue === null) {
+      disposeCallback();
       return;
     }
     if (this.editing) {
@@ -2352,7 +2353,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     this.requestUpdate();
     resize.call(this);
     this.editing = {commit: commit.bind(this), cancel: dispose.bind(this), resize: resize.bind(this)};
-    this.setMultilineEditing?.(this.editing);
+    this.setMultilineEditing?.(this.editing, this.node);
     await this.updateComplete;
     this.#editorRef?.focus();
 
@@ -3026,8 +3027,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
       };
       this.widget.runPendingUpdates = () => outline.runPendingUpdates();
       this.widget.focusOutline = () => outline.focus();
-      this.widget.setMultilineEditing = multilineEditing => {
-        outline.domTreeWidget?.setMultilineEditing(multilineEditing);
+      this.widget.setMultilineEditing = (multilineEditing, n) => {
+        outline.domTreeWidget?.setMultilineEditing(multilineEditing, n ?? this.nodeInternal);
       };
       this.widget.visibleWidth = () => outline.domTreeWidget?.visibleWidth ?? outline.visibleWidth();
     }

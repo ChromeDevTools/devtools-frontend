@@ -157,6 +157,7 @@ interface ViewInput {
                            moveDirection?: string) => void;
   nodeToEdit?: ({node: SDK.DOMModel.DOMNode}&InitialEditState)|null;
   onInitialEditCompleted?: () => void;
+  multilineEditingNode?: SDK.DOMModel.DOMNode|null;
   dragOverNode?: {node: SDK.DOMModel.DOMNode, isClosingTag: boolean}|null;
   isValidDragSource?: (node: SDK.DOMModel.DOMNode) => boolean;
   onDragStart?: (node: SDK.DOMModel.DOMNode, event: DragEvent, textContent?: string) => boolean;
@@ -686,9 +687,13 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
              input.isNodeExpanded(node) :
              (input.expandRoot &&
               (node === input.rootDOMNode || (input.omitRootDOMNode && node.parentNode === input.rootDOMNode)))));
-    const hasChildren = nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
-    const isCollapsible = !(node.nodeType() === Node.ELEMENT_NODE &&
-                            node.parentNode?.nodeType() === Node.DOCUMENT_NODE && !node.parentNode.parentNode);
+    const isEditingAsHTML = input.multilineEditingNode === node ||
+        (input.nodeToEdit?.node === node && Boolean(input.nodeToEdit.isEditAsHTML));
+    const hasChildren =
+        !isEditingAsHTML && nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
+    const isCollapsible = !isEditingAsHTML &&
+        !(node.nodeType() === Node.ELEMENT_NODE && node.parentNode?.nodeType() === Node.DOCUMENT_NODE &&
+          !node.parentNode.parentNode);
     const isExpandable = hasChildren && isCollapsible;
     const allVisibleChildren = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
     const limit = input.expandedChildrenLimit ? input.expandedChildrenLimit(node) : InitialChildrenLimit;
@@ -705,6 +710,9 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
     };
 
     const onExpand = (event: UI.TreeOutline.TreeViewElement.ExpandEvent): void => {
+      if (isEditingAsHTML) {
+        return;
+      }
       input.onExpand?.(node, event.detail.expanded);
     };
 
@@ -716,7 +724,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
       hovered: isHovered,
       'in-clipboard': Boolean(input.isNodeInClipboard?.(node)),
       'elements-drag-over': isDragOver,
-      'always-parent': !isCollapsible,
+      'always-parent': !isCollapsible && !isEditingAsHTML,
     });
 
     const onMouseMove = (event: MouseEvent): void => {
@@ -772,7 +780,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
       <li role="treeitem"
           ?selected=${isSelected}
           class=${classes}
-          ?open=${isExpanded}
+          ?open=${isExpanded && !isEditingAsHTML}
           draggable=${isDraggable ? 'true' : 'false'}
           @select=${onSelect}
           @expand=${onExpand}
@@ -792,7 +800,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
         ${UI.Widget.widget(ElementsTreeWidget, {
           node,
           isClosingTag: false,
-          expanded: isExpanded,
+          expanded: isExpanded && !isEditingAsHTML,
           isExpandable: hasChildren,
           selected: isSelected,
           isDOMNodeSelected: isSelected,
@@ -805,7 +813,7 @@ export const DECLARATIVE_VIEW: View = (input: ViewInput, _output: ViewOutput, ta
           initialEdit: input.nodeToEdit?.node === node ? input.nodeToEdit : null,
           onInitialEditCompleted: input.onInitialEditCompleted,
           revealInTopLayer: (n: SDK.DOMModel.DOMNode) => input.domTreeWidget?.revealInTopLayer(n),
-          setMultilineEditing: multilineEditing => input.domTreeWidget?.setMultilineEditing(multilineEditing),
+          setMultilineEditing: (multilineEditing, n) => input.domTreeWidget?.setMultilineEditing(multilineEditing, n ?? node),
           visibleWidth: () => input.domTreeWidget?.visibleWidth ?? 0,
           selectDOMNode: (n: SDK.DOMModel.DOMNode, selectedByUser?: boolean) => input.onSelect?.(n, selectedByUser),
           selectNodeAfterEdit: (wasExpanded: boolean, error: string|null, newNode: SDK.DOMModel.DOMNode|null, moveDirection?: string) => {
@@ -1484,6 +1492,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   setNodeExpanded(node: SDK.DOMModel.DOMNode, expanded: boolean): void {
+    if (!expanded && this.#multilineEditingNode === node) {
+      return;
+    }
     if (this.#view === DECLARATIVE_VIEW) {
       if (expanded) {
         this.#expandedNodes.add(node);
@@ -1754,6 +1765,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       onInitialEditCompleted: () => {
         this.#nodeToEdit = null;
       },
+      multilineEditingNode: this.#multilineEditingNode,
       dragOverNode: this.#dragOverNode,
       isValidDragSource: (node: SDK.DOMModel.DOMNode) => this.isValidDragSource(node),
       onDragStart: (node: SDK.DOMModel.DOMNode, event: DragEvent, textContent?: string) =>
@@ -1941,13 +1953,20 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   #multilineEditing: MultilineEditorController|null = null;
+  #multilineEditingNode: SDK.DOMModel.DOMNode|null = null;
 
-  setMultilineEditing(multilineEditing: MultilineEditorController|null): void {
+  setMultilineEditing(multilineEditing: MultilineEditorController|null, node?: SDK.DOMModel.DOMNode): void {
     this.#multilineEditing = multilineEditing;
+    this.#multilineEditingNode = multilineEditing ? (node ?? this.#multilineEditingNode) : null;
+    this.performUpdate();
   }
 
   multilineEditing(): MultilineEditorController|null {
     return this.#multilineEditing;
+  }
+
+  multilineEditingNode(): SDK.DOMModel.DOMNode|null {
+    return this.#multilineEditingNode;
   }
 
   runPendingUpdates(): void {
@@ -1989,6 +2008,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     const wasExpanded = this.isNodeExpanded(node);
 
     const editingFinished = (success: boolean): void => {
+      this.#multilineEditingNode = null;
       if (callback) {
         callback();
       }
@@ -2026,6 +2046,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
       return;
     }
 
+    this.#multilineEditingNode = node;
     this.#nodeToEdit = {
       node,
       isEditAsHTML: true,
@@ -2749,8 +2770,8 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
     this.elementInternal.classList.toggle('elements-tree-nowrap', !wrap);
   }
 
-  setMultilineEditing(multilineEditing: MultilineEditorController|null): void {
-    this.domTreeWidget?.setMultilineEditing(multilineEditing);
+  setMultilineEditing(multilineEditing: MultilineEditorController|null, node?: SDK.DOMModel.DOMNode): void {
+    this.domTreeWidget?.setMultilineEditing(multilineEditing, node);
   }
 
   visibleWidth(): number {

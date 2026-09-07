@@ -1890,6 +1890,67 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    it('hides children and closing tag when editing an element with children as HTML in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['id', 'test-div'],
+          children: [
+            {nodeId: 2, nodeName: 'P', attributes: ['class', 'intro']},
+          ],
+        });
+        sinon.stub(rootNode, 'getOuterHTML').resolves('<div id="test-div"><p class="intro"></p></div>');
+
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElement = internalTree.rootElement().children()[0];
+        assert.exists(rootTreeElement);
+
+        // Before edit: root has 2 children (p child and closing tag) and is a parent
+        assert.lengthOf(rootTreeElement.children(), 2);
+        assert.isTrue(rootTreeElement.listItemElement.classList.contains('parent'));
+
+        // Start Edit as HTML on rootNode
+        domTree.toggleEditAsHTML(rootNode);
+
+        await waitForTreeUpdates();
+
+        const multiline = domTree.multilineEditing();
+        assert.exists(multiline);
+        assert.strictEqual(domTree.multilineEditingNode(), rootNode);
+
+        // While editing: children and closing tag are hidden, parent disclosure styling is removed, and editor is present
+        assert.lengthOf(rootTreeElement.children(), 0);
+        assert.isFalse(rootTreeElement.listItemElement.classList.contains('parent'));
+        const editor = rootTreeElement.listItemElement.querySelector('.elements-tree-editor');
+        assert.exists(editor);
+
+        // Cancel editing restores children and closing tag
+        multiline.cancel();
+        await waitForTreeUpdates();
+
+        assert.isNull(domTree.multilineEditing());
+        assert.isNull(domTree.multilineEditingNode());
+        assert.lengthOf(rootTreeElement.children(), 2);
+        assert.isTrue(rootTreeElement.listItemElement.classList.contains('parent'));
+        assert.isNull(rootTreeElement.listItemElement.querySelector('.elements-tree-editor'));
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('handles drag and drop reordering and class styling in DECLARATIVE_VIEW', async () => {
       const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
       sinon.stub(domModel, 'requestDocument').resolves(null);

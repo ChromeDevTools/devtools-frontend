@@ -507,6 +507,11 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   display: inline;
 }
 
+.tree-outline-disclosure devtools-widget > div:has(.elements-tree-editor),
+.tree-outline-disclosure li:has(.elements-tree-editor) {
+  display: block;
+}
+
 .tree-outline-disclosure li .webkit-html-tag.close {
   margin-left: -12px;
 }

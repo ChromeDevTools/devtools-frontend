@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../../../scripts/build/ninja/bundle.gni")
 import("../../../../scripts/build/ninja/devtools_module.gni")
-import("../../../../scripts/build/ninja/node.gni")
 import("../../../../scripts/build/typescript/typescript.gni")
 
 recorder_injected_sources = [
@@ -40,36 +40,22 @@ devtools_module("injected") {
   ]
 }
 
-node_action("bundled_library") {
-  script = "node_modules/rollup/dist/bin/rollup"
-
-  _bundled_entrypoint = target_gen_dir + "/injected.js"
-  _output_file_location = target_gen_dir + "/injected.generated.js"
-
-  inputs = [
-             _bundled_entrypoint,
-             "rollup.config.mjs",
-           ] + recorder_injected_sources
-
-  deps = [ ":injected_checked" ]
-
-  args = [
-    "--config",
-    rebase_path("rollup.config.mjs", root_build_dir),
-    "--input",
-    rebase_path(_bundled_entrypoint, root_build_dir),
-    "--file",
-    rebase_path(_output_file_location, root_build_dir),
+bundle("bundled_library") {
+  entrypoint = "injected.ts"
+  output_file_location = "$target_gen_dir/injected.generated.js"
+  bundle_all = true
+  format = "iife"
+  sourcemap = false
+  deps = [
+    ":injected_sources",
+    "../../../third_party/puppeteer",
+    "../../../third_party/puppeteer:bundle",
+    "../../../third_party/puppeteer-replay:bundle",
   ]
 
-  if (is_debug) {
-    args += [ "--environment=DEBUG_INJECTED" ]
-  }
-
-  outputs = [ _output_file_location ]
-  data = outputs
+  data = [ output_file_location ]
   metadata = {
-    grd_files = [ _output_file_location ]
+    grd_files = [ output_file_location ]
   }
 
   visibility = [

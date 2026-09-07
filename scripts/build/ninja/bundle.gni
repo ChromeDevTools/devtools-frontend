@@ -10,30 +10,44 @@ template("bundle") {
   assert(defined(invoker.entrypoint),
          "You must define the 'entrypoint' for a bundle target")
 
+  _bundle_all = false
+  if (defined(invoker.bundle_all)) {
+    _bundle_all = invoker.bundle_all
+  }
+
+  _sourcemap = true
+  if (defined(invoker.sourcemap)) {
+    _sourcemap = invoker.sourcemap
+  } else if (_bundle_all) {
+    _sourcemap = false
+  }
+
   node_action(target_name) {
     script = "scripts/build/esbuild.js"
-    _bundled_entrypoints_target =
-        devtools_location_prepend + ":bundled_entrypoints"
-    deps = [ _bundled_entrypoints_target ]
+
+    deps = []
     if (defined(invoker.deps)) {
       deps += invoker.deps
     }
-    forward_variables_from(invoker,
-                           [
-                             "visibility",
-                             "public_deps",
-                             "testonly",
-                           ])
 
-    _entrypoints_file =
-        get_label_info(_bundled_entrypoints_target, "target_gen_dir") +
-        "/bundled_entrypoints.json"
     inputs = [
       invoker.entrypoint,
-      _entrypoints_file,
       devtools_location_prepend + "scripts/build/devtools_plugin.js",
       devtools_location_prepend + "scripts/devtools_paths.js",
     ]
+    if (defined(invoker.inputs)) {
+      inputs += invoker.inputs
+    }
+
+    if (!_bundle_all) {
+      _bundled_entrypoints_target =
+          devtools_location_prepend + ":bundled_entrypoints"
+      deps += [ _bundled_entrypoints_target ]
+      _entrypoints_file =
+          get_label_info(_bundled_entrypoints_target, "target_gen_dir") +
+          "/bundled_entrypoints.json"
+      inputs += [ _entrypoints_file ]
+    }
 
     _esbuild = devtools_location_prepend + "third_party/esbuild/esbuild"
     if (host_os == "win") {
@@ -48,21 +62,47 @@ template("bundle") {
     args = [
       rebase_path(invoker.entrypoint, root_build_dir),
       rebase_path(invoker.output_file_location, root_build_dir),
-      "--entrypointsFile",
-      rebase_path(_entrypoints_file, root_build_dir),
       "--rootDir",
       rebase_path("//", root_build_dir),
       "--rootGenDir",
       rebase_path(root_gen_dir, root_build_dir),
-      "--configSourcemaps",
       "--depfile",
       rebase_path(_depfile, root_build_dir),
     ]
+
+    if (_sourcemap) {
+      args += [ "--configSourcemaps" ]
+    }
+
+    if (!_bundle_all) {
+      args += [
+        "--entrypointsFile",
+        rebase_path(_entrypoints_file, root_build_dir),
+      ]
+    } else {
+      args += [ "--bundleAll" ]
+    }
+
+    if (defined(invoker.format)) {
+      args += [
+        "--format",
+        invoker.format,
+      ]
+    }
 
     if (!is_debug) {
       args += [ "--minify" ]
     }
 
     outputs = [ invoker.output_file_location ]
+
+    forward_variables_from(invoker,
+                           [
+                             "data",
+                             "metadata",
+                             "public_deps",
+                             "testonly",
+                             "visibility",
+                           ])
   }
 }

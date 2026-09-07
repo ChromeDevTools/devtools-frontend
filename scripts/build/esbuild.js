@@ -33,6 +33,11 @@ const outfile = process.argv[3];
 const additionalArgs = process.argv.slice(4);
 const useSourceMaps = additionalArgs.includes('--configSourcemaps');
 const minify = additionalArgs.includes('--minify');
+const bundleAll = additionalArgs.includes('--bundleAll');
+
+const formatFlagIndex = additionalArgs.indexOf('--format');
+const format =
+    formatFlagIndex !== -1 ? /** @type {import('esbuild').Format} */ (additionalArgs[formatFlagIndex + 1]) : 'esm';
 
 const rootDirFlagIndex = additionalArgs.indexOf('--rootDir');
 const rootDir = rootDirFlagIndex !== -1 ? additionalArgs[rootDirFlagIndex + 1] : undefined;
@@ -46,11 +51,13 @@ const depfile = depfileFlagIndex !== -1 ? additionalArgs[depfileFlagIndex + 1] :
 const entrypointsFileFlagIndex = additionalArgs.indexOf('--entrypointsFile');
 const entrypointsFile = entrypointsFileFlagIndex !== -1 ? additionalArgs[entrypointsFileFlagIndex + 1] : undefined;
 
-if (!entrypointsFile) {
-  throw new Error('Missing required --entrypointsFile argument');
-}
-if (!fs.existsSync(entrypointsFile)) {
-  throw new Error(`Entrypoints file does not exist: ${entrypointsFile}`);
+if (!bundleAll) {
+  if (!entrypointsFile) {
+    throw new Error('Missing required --entrypointsFile argument');
+  }
+  if (!fs.existsSync(entrypointsFile)) {
+    throw new Error(`Entrypoints file does not exist: ${entrypointsFile}`);
+  }
 }
 if (!rootDir) {
   throw new Error('Missing required --rootDir argument');
@@ -63,18 +70,21 @@ const outdir = path.dirname(outfile);
 const genRoot = path.resolve(rootGenDir);
 const root = path.resolve(rootDir);
 
-const content = fs.readFileSync(entrypointsFile, 'utf-8');
-const parsed = JSON.parse(content);
-if (!Array.isArray(parsed)) {
-  throw new Error(`Expected array of entrypoints in ${entrypointsFile}`);
+let externalFiles;
+if (!bundleAll && entrypointsFile) {
+  const content = fs.readFileSync(entrypointsFile, 'utf-8');
+  const parsed = JSON.parse(content);
+  if (!Array.isArray(parsed)) {
+    throw new Error(`Expected array of entrypoints in ${entrypointsFile}`);
+  }
+  externalFiles = new Set(parsed);
 }
-const externalFiles = new Set(parsed);
 
 const plugin = {
   name: 'devtools-plugin',
   setup(build) {
     // https://esbuild.github.io/plugins/#on-resolve
-    build.onResolve({filter: /.*/}, esbuildPlugin(outdir, genRoot, root, externalFiles));
+    build.onResolve({filter: /.*/}, esbuildPlugin(outdir, genRoot, root, externalFiles, bundleAll));
   },
 };
 
@@ -83,7 +93,7 @@ try {
     entryPoints,
     outfile,
     bundle: true,
-    format: 'esm',
+    format,
     platform: 'browser',
     plugins: [plugin],
     sourcemap: useSourceMaps,

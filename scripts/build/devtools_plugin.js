@@ -39,12 +39,12 @@ export function dirnameWithSeparator(file) {
   return path.dirname(file) + path.sep;
 }
 
-export function devtoolsPlugin(source, importer, externalFiles, root, genRoot) {
+export function devtoolsPlugin(source, importer, externalFiles, root, genRoot, bundleAll = false) {
   if (!importer) {
     return null;
   }
 
-  if (!externalFiles || !(externalFiles instanceof Set)) {
+  if (!bundleAll && (!externalFiles || !(externalFiles instanceof Set))) {
     throw new Error('devtoolsPlugin requires an externalFiles Set');
   }
   if (!root || typeof root !== 'string') {
@@ -54,14 +54,18 @@ export function devtoolsPlugin(source, importer, externalFiles, root, genRoot) {
     throw new Error('devtoolsPlugin requires a genRoot path');
   }
 
-  if (source === '../../lib/codemirror' || !source.startsWith('.')) {
-    // These are imported via require(...), but we don't use
-    // @rollup/plugin-commonjs. So this check is not necessary for rollup. But
-    // need to have this for esbuild as it doesn't ignore require(...).
-    return {
-      id: source,
-      external: true,
-    };
+  if (!bundleAll) {
+    if (source === '../../lib/codemirror' || !source.startsWith('.')) {
+      // These are imported via require(...), but we don't use
+      // @rollup/plugin-commonjs. So this check is not necessary for rollup. But
+      // need to have this for esbuild as it doesn't ignore require(...).
+      return {
+        id: source,
+        external: true,
+      };
+    }
+  } else if (!source.startsWith('.')) {
+    return null;
   }
 
   const importedFilelocation = path.normalize(
@@ -81,15 +85,15 @@ export function devtoolsPlugin(source, importer, externalFiles, root, genRoot) {
   if (frontEndIndex !== -1) {
     normalizedRel = normalizedRel.slice(frontEndIndex);
   }
-  const isExternal = externalFiles.has(normalizedRel);
+  const isExternal = bundleAll ? false : Boolean(externalFiles && externalFiles.has(normalizedRel));
   return {
     id: importedFilelocation,
     external: isExternal,
   };
 }
 
-export function esbuildPlugin(outdir, genRoot, rootDir, externalFiles) {
-  if (!externalFiles || !(externalFiles instanceof Set)) {
+export function esbuildPlugin(outdir, genRoot, rootDir, externalFiles, bundleAll = false) {
+  if (!bundleAll && (!externalFiles || !(externalFiles instanceof Set))) {
     throw new Error('esbuildPlugin requires an externalFiles Set');
   }
   if (!outdir || typeof outdir !== 'string') {
@@ -108,7 +112,7 @@ export function esbuildPlugin(outdir, genRoot, rootDir, externalFiles) {
 
   return args => {
     // args.importer is absolute path in esbuild.
-    const res = devtoolsPlugin(args.path, args.importer, externalFiles, root, normGenRoot);
+    const res = devtoolsPlugin(args.path, args.importer, externalFiles, root, normGenRoot, bundleAll);
     if (!res) {
       return null;
     }

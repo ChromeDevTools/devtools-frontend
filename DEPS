@@ -330,16 +330,6 @@ deps = {
           },
       ],
   },
-  'third_party/rollup_libs': {
-      'packages': [
-          {
-              'package': 'infra/3pp/tools/rollup_libs/${{platform}}',
-              'version': 'version:3@4.60.4',
-          },
-      ],
-      'dep_type': 'cipd',
-      'condition': 'non_git_source',
-  },
 
   'third_party/typescript/linux-amd64/src': {
       'dep_type': 'cipd',
@@ -432,15 +422,6 @@ hooks = [
                'projects/rbe-chrome-untrusted/instances/default_instance',
                ],
   },
-{
-    'name': 'sync_rollup_libs',
-    'pattern': '.',
-    'action': [
-      'vpython3',
-      'scripts/deps/sync_rollup_libs.py',
-    ],
-  },
-
   {
     'name': 'fix_cft_permissions',
     'pattern': '.',

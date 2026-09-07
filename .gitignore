@@ -69,8 +69,5 @@ test/perf/.generated
 # test runner copies dumps into the source tree.
 artifacts/*
 
-# cipd rollup binaries synced from third_party/
-node_modules/@rollup/rollup*/
-
 # some siso file
 siso_result.json

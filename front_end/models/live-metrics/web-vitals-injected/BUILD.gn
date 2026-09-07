@@ -32,9 +32,19 @@ bundle("bundled_library") {
   bundle_all = true
   format = "iife"
   sourcemap = false
+
+  # Injected bundles inline all dependencies into a standalone IIFE (bundle_all
+  # = true). Because devtools_entrypoint does not expose implementation sources
+  # across module boundaries, explicitly list the imported entrypoint TS files
+  # and pre-built JS sources so they are staged for esbuild during strict remote
+  # execution.
+  inputs = [
+    "spec/spec.ts",
+    "../../../third_party/web-vitals/web-vitals.ts",
+  ]
   deps = [
     ":web-vitals-injected_sources",
-    "../../../third_party/web-vitals:bundle",
+    "../../../third_party/web-vitals:web-vitals_sources",
   ]
 
   data = [ output_file_location ]

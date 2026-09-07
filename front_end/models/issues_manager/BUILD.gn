@@ -318,6 +318,12 @@ devtools_issue_description_files = [
   "unencodedDigestUnknownAlgorithm.md",
 ]
 
+generated_file("description_list") {
+  outputs = [ "$target_gen_dir/description_list.json" ]
+  contents = devtools_issue_description_files
+  output_conversion = "json"
+}
+
 devtools_pre_built("descriptions") {
   sources = []
   data = []
@@ -326,9 +332,7 @@ devtools_pre_built("descriptions") {
     data += [ "$target_gen_dir/descriptions/$file" ]
   }
 
-  write_file("$target_gen_dir/description_list.json",
-             devtools_issue_description_files,
-             "json")
+  public_deps = [ ":description_list" ]
 }
 
 devtools_entrypoint("bundle") {

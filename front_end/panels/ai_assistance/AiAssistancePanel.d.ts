@@ -37,8 +37,8 @@ export interface PanelViewOutput {
 type View = (input: ViewInput, output: PanelViewOutput, target: HTMLElement) => void;
 export declare class AiAssistancePanel extends UI.Panel.Panel {
     #private;
-    private view;
     static panelName: string;
+    private view;
     constructor(view: View | undefined, { aidaClient, aidaAvailability }: {
         aidaClient: Host.AidaClient.AidaClient;
         aidaAvailability: Host.AidaClient.AidaAccessPreconditions;

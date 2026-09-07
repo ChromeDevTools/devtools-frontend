@@ -455,7 +455,6 @@ function createStorageContext(item) {
 }
 let panelInstance;
 export class AiAssistancePanel extends UI.Panel.Panel {
-    view;
     static panelName = 'freestyler';
     // NodeJS debugging does not have Elements panel, thus this action might not exist.
     #toggleSearchElementAction;
@@ -488,6 +487,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         inlineExpandedMessages: [],
     };
     #textInputValue = '';
+    view;
     constructor(view = defaultView, { aidaClient, aidaAvailability }) {
         super(AiAssistancePanel.panelName);
         this.view = view;

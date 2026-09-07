@@ -9827,18 +9827,6 @@ function createStorageContext(item) {
 }
 var panelInstance;
 var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
-  constructor(view = defaultView, { aidaClient, aidaAvailability }) {
-    super(_AiAssistancePanel.panelName);
-    this.view = view;
-    this.registerRequiredCSS(aiAssistancePanel_css_default);
-    this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
-    this.#aidaClient = aidaClient;
-    this.#aidaAvailability = aidaAvailability;
-    if (UI9.ActionRegistry.ActionRegistry.instance().hasAction("elements.toggle-element-search")) {
-      this.#toggleSearchElementAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
-    }
-  }
-  view;
   static panelName = "freestyler";
   // NodeJS debugging does not have Elements panel, thus this action might not exist.
   #toggleSearchElementAction;
@@ -9871,6 +9859,18 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
     inlineExpandedMessages: []
   };
   #textInputValue = "";
+  view;
+  constructor(view = defaultView, { aidaClient, aidaAvailability }) {
+    super(_AiAssistancePanel.panelName);
+    this.view = view;
+    this.registerRequiredCSS(aiAssistancePanel_css_default);
+    this.#aiAssistanceEnabledSetting = this.#getAiAssistanceEnabledSetting();
+    this.#aidaClient = aidaClient;
+    this.#aidaAvailability = aidaAvailability;
+    if (UI9.ActionRegistry.ActionRegistry.instance().hasAction("elements.toggle-element-search")) {
+      this.#toggleSearchElementAction = UI9.ActionRegistry.ActionRegistry.instance().getAction("elements.toggle-element-search");
+    }
+  }
   #getToolbarInput() {
     return {
       isLoading: this.#isLoading,

@@ -1,6 +1,5 @@
-(function () {
-  'use strict';
-
+"use strict";
+(() => {
   var __defProp = Object.defineProperty;
   var __export = (target, all) => {
     for (var name in all)
@@ -311,7 +310,7 @@
 
   // ../../front_end/third_party/web-vitals/package/dist/modules/onCLS.js
   var CLSThresholds = [0.1, 0.25];
-  var onCLS$1 = (onReport, opts = {}) => {
+  var onCLS = (onReport, opts = {}) => {
     const visibilityWatcher = getVisibilityWatcher();
     onFCP(runOnce(() => {
       let metric = initMetric("CLS", 0);
@@ -508,7 +507,7 @@
   // ../../front_end/third_party/web-vitals/package/dist/modules/onINP.js
   var INPThresholds = [200, 500];
   var DEFAULT_DURATION_THRESHOLD = 40;
-  var onINP$1 = (onReport, opts = {}) => {
+  var onINP = (onReport, opts = {}) => {
     if (!(globalThis.PerformanceEventTiming && "interactionId" in PerformanceEventTiming.prototype)) {
       return;
     }
@@ -582,7 +581,7 @@
 
   // ../../front_end/third_party/web-vitals/package/dist/modules/onLCP.js
   var LCPThresholds = [2500, 4e3];
-  var onLCP$1 = (onReport, opts = {}) => {
+  var onLCP = (onReport, opts = {}) => {
     let isFinalized = false;
     const softNavsEnabled = checkSoftNavsEnabled(opts);
     whenActivated(() => {
@@ -838,7 +837,7 @@
       }
       return Object.assign(metric, { attribution });
     };
-    onCLS$1((metric) => {
+    onCLS((metric) => {
       onReport(attributeCLS(metric));
     }, opts);
   };
@@ -1118,7 +1117,7 @@
       return Object.assign(metric, { attribution });
     };
     observe(["long-animation-frame"], handleLoAFEntries, opts);
-    onINP$1((metric) => {
+    onINP((metric) => {
       onReport(attributeINP(metric));
     }, opts);
   };
@@ -1207,7 +1206,7 @@
       }
       return Object.assign(metric, { attribution });
     };
-    onLCP$1((metric) => {
+    onLCP((metric) => {
       onReport(attributeLCP(metric));
     }, opts);
   };
@@ -1256,41 +1255,39 @@
     }, opts);
   };
 
-  // Copyright 2024 The Chromium Authors
-  // Use of this source code is governed by a BSD-style license that can be
-  // found in the LICENSE file.
-  function onEachLayoutShift$1(callback) {
-      const eventObserver = new PerformanceObserver(list => {
-          const entries = list.getEntries().filter((entry) => 'hadRecentInput' in entry);
-          for (const entry of entries) {
-              if (entry.hadRecentInput) {
-                  continue;
-              }
-              const affectedNodes = entry.sources.map(source => source.node).filter(node => node instanceof Node);
-              callback({
-                  attribution: {
-                      affectedNodes,
-                  },
-                  entry,
-                  value: entry.value,
-              });
-          }
-      });
-      eventObserver.observe({
-          type: 'layout-shift',
-          buffered: true,
-      });
-  }
-
-  var OnEachLayoutShift = /*#__PURE__*/Object.freeze({
-    __proto__: null,
-    onEachLayoutShift: onEachLayoutShift$1
+  // ../../front_end/models/live-metrics/web-vitals-injected/OnEachLayoutShift.ts
+  var OnEachLayoutShift_exports = {};
+  __export(OnEachLayoutShift_exports, {
+    onEachLayoutShift: () => onEachLayoutShift
   });
+  function onEachLayoutShift(callback) {
+    const eventObserver = new PerformanceObserver((list) => {
+      const entries = list.getEntries().filter((entry) => "hadRecentInput" in entry);
+      for (const entry of entries) {
+        if (entry.hadRecentInput) {
+          continue;
+        }
+        const affectedNodes = entry.sources.map((source) => source.node).filter((node) => node instanceof Node);
+        callback({
+          attribution: {
+            affectedNodes
+          },
+          entry,
+          value: entry.value
+        });
+      }
+    });
+    eventObserver.observe({
+      type: "layout-shift",
+      buffered: true
+    });
+  }
 
   // ../../front_end/models/live-metrics/web-vitals-injected/spec/spec.ts
   var EVENT_BINDING_NAME = "__chromium_devtools_metrics_reporter";
   var INTERNAL_KILL_SWITCH = "__chromium_devtools_kill_live_metrics";
   var SCRIPTS_PER_LOAF_LIMIT = 10;
+  var LOAF_LIMIT = 5;
   function getUniqueLayoutShiftId(entry) {
     return `layout-shift-${entry.value}-${entry.startTime}`;
   }
@@ -1317,7 +1314,7 @@
       eventName: interaction.entries?.[0]?.name,
       // To limit the amount of events, just get the last 5 LoAFs
       longAnimationFrameEntries: limitScripts(
-        interaction.attribution.longAnimationFrameEntries?.slice(-5).map((loaf) => loaf.toJSON()) ?? []
+        interaction.attribution.longAnimationFrameEntries?.slice(-LOAF_LIMIT).map((loaf) => loaf.toJSON()) ?? []
       )
     };
     const target = interaction.attribution.interactionTarget;
@@ -1341,182 +1338,148 @@
     };
   }
 
-  // Copyright 2024 The Chromium Authors
-  // Use of this source code is governed by a BSD-style license that can be
-  // found in the LICENSE file.
-  const { onLCP, onCLS, onINP } = attribution_exports;
-  const { onEachLayoutShift } = OnEachLayoutShift;
-  const eventListenerCleanupController = new AbortController();
-  const patchAddListener = (proto) => {
-      const original = proto.addEventListener;
-      proto.addEventListener = function (type, listener, options) {
-          // Standardize options into an object
-          const navOptions = typeof options === 'boolean' ? { capture: options } : { ...options };
-          // If we already have a signal, we should respect it,
-          // but also link it to our global cleanup signal.
-          if (navOptions.signal) {
-              navOptions.signal = AbortSignal.any([navOptions.signal, eventListenerCleanupController.signal]);
-          }
-          else {
-              navOptions.signal = eventListenerCleanupController.signal;
-          }
-          return original.call(this, type, listener, navOptions);
-      };
+  // ../../front_end/models/live-metrics/web-vitals-injected/web-vitals-injected.ts
+  var { onLCP: onLCP3, onCLS: onCLS3, onINP: onINP3 } = attribution_exports;
+  var { onEachLayoutShift: onEachLayoutShift2 } = OnEachLayoutShift_exports;
+  var eventListenerCleanupController = new AbortController();
+  var patchAddListener = (proto) => {
+    const original = proto.addEventListener;
+    proto.addEventListener = function(type, listener, options) {
+      const navOptions = typeof options === "boolean" ? { capture: options } : { ...options };
+      if (navOptions.signal) {
+        navOptions.signal = AbortSignal.any([navOptions.signal, eventListenerCleanupController.signal]);
+      } else {
+        navOptions.signal = eventListenerCleanupController.signal;
+      }
+      return original.call(this, type, listener, navOptions);
+    };
   };
-  // Patch the core targets
   patchAddListener(Window.prototype);
   patchAddListener(Document.prototype);
-  // Use a class wrapper that auto-registers and auto-unregisters
-  const activeObservers = new Set();
-  class TrackedPerformanceObserver extends globalThis.PerformanceObserver {
-      constructor(callback) {
-          super(callback);
-          activeObservers.add(this);
-      }
-      // Override disconnect to remove it from our tracking set
-      disconnect() {
-          super.disconnect();
-          activeObservers.delete(this);
-      }
-  }
-  const nodeList = [];
-  const nodeToIdMap = new WeakMap();
+  var activeObservers = /* @__PURE__ */ new Set();
+  var TrackedPerformanceObserver = class extends globalThis.PerformanceObserver {
+    constructor(callback) {
+      super(callback);
+      activeObservers.add(this);
+    }
+    // Override disconnect to remove it from our tracking set
+    disconnect() {
+      super.disconnect();
+      activeObservers.delete(this);
+    }
+  };
+  var nodeList = [];
+  var nodeToIdMap = /* @__PURE__ */ new WeakMap();
   function establishNodeIndex(node) {
-      let index = nodeToIdMap.get(node);
-      if (index !== undefined) {
-          return index;
-      }
-      index = nodeList.length;
-      nodeList.push(new WeakRef(node));
-      nodeToIdMap.set(node, index);
+    let index = nodeToIdMap.get(node);
+    if (index !== void 0) {
       return index;
+    }
+    index = nodeList.length;
+    nodeList.push(new WeakRef(node));
+    nodeToIdMap.set(node, index);
+    return index;
   }
-  // Replace the global constructor
   globalThis.PerformanceObserver = TrackedPerformanceObserver;
-  /**
-   * This is a hack solution to remove any listeners that were added by web-vitals.js
-   * or additional services in this bundle. Once this function is called, the execution
-   * context should be considered dead and a new one will need to be created for live metrics
-   * to be served again.
-   */
-  let killed = false;
+  var killed = false;
   window[INTERNAL_KILL_SWITCH] = () => {
-      if (killed) {
-          return;
-      }
-      for (const observer of activeObservers) {
-          // This calls the overridden disconnect above,
-          // cleaning up BOTH the browser resource and our Set.
-          observer.disconnect();
-      }
-      activeObservers.clear();
-      eventListenerCleanupController.abort();
-      // Explicitly clear the Node List to help GC
-      nodeList.length = 0;
-      killed = true;
+    if (killed) {
+      return;
+    }
+    for (const observer of activeObservers) {
+      observer.disconnect();
+    }
+    activeObservers.clear();
+    eventListenerCleanupController.abort();
+    nodeList.length = 0;
+    killed = true;
   };
   function sendEventToDevTools(event) {
-      const payload = JSON.stringify(event);
-      window[EVENT_BINDING_NAME]?.(payload);
+    const payload = JSON.stringify(event);
+    window[EVENT_BINDING_NAME]?.(payload);
   }
-  /**
-   * The data sent over the event binding needs to be JSON serializable, so we
-   * can't send DOM nodes directly. Instead we create an ID for each node (see
-   * `establishNodeIndex`) that we can later use to retrieve a remote object
-   * for that node.
-   *
-   * This function is used by `Runtime.evaluate` calls to get a remote object
-   * for the specified index.
-   */
   window.getNodeForIndex = (index) => {
-      return nodeList[index].deref();
+    return nodeList[index].deref();
   };
   function isPrerendered() {
-      if (document.prerendering) {
-          return true;
-      }
-      const firstNavStart = self.performance.getEntriesByType?.('navigation')[0]?.activationStart;
-      return firstNavStart !== undefined && firstNavStart > 0;
+    if (document.prerendering) {
+      return true;
+    }
+    const firstNavStart = self.performance.getEntriesByType?.("navigation")[0]?.activationStart;
+    return firstNavStart !== void 0 && firstNavStart > 0;
   }
-  let startedHidden = null;
+  var startedHidden = null;
   function initialize() {
-      sendEventToDevTools({ name: 'reset' });
-      new PerformanceObserver(list => {
-          for (const entry of list.getEntries()) {
-              if (startedHidden === null && !isPrerendered()) {
-                  startedHidden = entry.name === 'hidden';
-              }
-          }
-      }).observe({ type: 'visibility-state', buffered: true });
-      // We want to treat bfcache navigations like a standard navigations, so emit
-      // a reset event when bfcache is restored.
-      //
-      // Metric functions will also re-emit their values using this listener's callback.
-      // To ensure this event is fired before those values are emitted, register this
-      // callback before any others.
-      onBFCacheRestore(() => {
-          startedHidden = false;
-          sendEventToDevTools({ name: 'reset', navigationType: 'back-forward-cache' });
-      });
-      let lastLcpNavigationId;
-      onLCP(metric => {
-          if (lastLcpNavigationId && metric.navigationId && metric.navigationId !== lastLcpNavigationId) {
-              sendEventToDevTools({ name: 'reset', url: window.location.href, navigationType: metric.navigationType });
-          }
-          lastLcpNavigationId = metric.navigationId;
-          const event = {
-              name: 'LCP',
-              value: metric.value,
-              startedHidden: Boolean(startedHidden),
-              subparts: {
-                  timeToFirstByte: metric.attribution.timeToFirstByte,
-                  resourceLoadDelay: metric.attribution.resourceLoadDelay,
-                  resourceLoadTime: metric.attribution.resourceLoadDuration,
-                  elementRenderDelay: metric.attribution.elementRenderDelay,
-              },
-          };
-          const element = metric.attribution.lcpEntry?.element;
-          if (element) {
-              event.nodeIndex = establishNodeIndex(element);
-          }
-          sendEventToDevTools(event);
-      }, { reportAllChanges: true, reportSoftNavs: window.devToolsReportSoftNavs });
-      onCLS(metric => {
-          const event = {
-              name: 'CLS',
-              value: metric.value,
-              clusterShiftIds: metric.entries.map(getUniqueLayoutShiftId),
-          };
-          sendEventToDevTools(event);
-      }, { reportAllChanges: true, reportSoftNavs: window.devToolsReportSoftNavs });
-      function onEachInteraction(interaction) {
-          sendEventToDevTools(createInteractionEntryEvent(interaction));
+    sendEventToDevTools({ name: "reset" });
+    new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        if (startedHidden === null && !isPrerendered()) {
+          startedHidden = entry.name === "hidden";
+        }
       }
-      onINP(metric => {
-          sendEventToDevTools(createInpChangeEvent(metric));
-      }, {
-          reportAllChanges: true,
-          durationThreshold: 0,
-          includeProcessedEventEntries: false,
-          reportSoftNavs: window.devToolsReportSoftNavs,
-          onEachInteraction,
-          generateTarget(el) {
-              if (el) {
-                  return String(establishNodeIndex(el));
-              }
-              return undefined;
-          },
-      });
-      onEachLayoutShift(layoutShift => {
-          const event = {
-              name: 'LayoutShift',
-              score: layoutShift.value,
-              uniqueLayoutShiftId: getUniqueLayoutShiftId(layoutShift.entry),
-              affectedNodeIndices: layoutShift.attribution.affectedNodes.map(establishNodeIndex),
-          };
-          sendEventToDevTools(event);
-      });
+    }).observe({ type: "visibility-state", buffered: true });
+    onBFCacheRestore(() => {
+      startedHidden = false;
+      sendEventToDevTools({ name: "reset", navigationType: "back-forward-cache" });
+    });
+    let lastLcpNavigationId;
+    onLCP3((metric) => {
+      if (lastLcpNavigationId && metric.navigationId && metric.navigationId !== lastLcpNavigationId) {
+        sendEventToDevTools({ name: "reset", url: window.location.href, navigationType: metric.navigationType });
+      }
+      lastLcpNavigationId = metric.navigationId;
+      const event = {
+        name: "LCP",
+        value: metric.value,
+        startedHidden: Boolean(startedHidden),
+        subparts: {
+          timeToFirstByte: metric.attribution.timeToFirstByte,
+          resourceLoadDelay: metric.attribution.resourceLoadDelay,
+          resourceLoadTime: metric.attribution.resourceLoadDuration,
+          elementRenderDelay: metric.attribution.elementRenderDelay
+        }
+      };
+      const element = metric.attribution.lcpEntry?.element;
+      if (element) {
+        event.nodeIndex = establishNodeIndex(element);
+      }
+      sendEventToDevTools(event);
+    }, { reportAllChanges: true, reportSoftNavs: window.devToolsReportSoftNavs });
+    onCLS3((metric) => {
+      const event = {
+        name: "CLS",
+        value: metric.value,
+        clusterShiftIds: metric.entries.map(getUniqueLayoutShiftId)
+      };
+      sendEventToDevTools(event);
+    }, { reportAllChanges: true, reportSoftNavs: window.devToolsReportSoftNavs });
+    function onEachInteraction(interaction) {
+      sendEventToDevTools(createInteractionEntryEvent(interaction));
+    }
+    onINP3((metric) => {
+      sendEventToDevTools(createInpChangeEvent(metric));
+    }, {
+      reportAllChanges: true,
+      durationThreshold: 0,
+      includeProcessedEventEntries: false,
+      reportSoftNavs: window.devToolsReportSoftNavs,
+      onEachInteraction,
+      generateTarget(el) {
+        if (el) {
+          return String(establishNodeIndex(el));
+        }
+        return void 0;
+      }
+    });
+    onEachLayoutShift2((layoutShift) => {
+      const event = {
+        name: "LayoutShift",
+        score: layoutShift.value,
+        uniqueLayoutShiftId: getUniqueLayoutShiftId(layoutShift.entry),
+        affectedNodeIndices: layoutShift.attribution.affectedNodes.map(establishNodeIndex)
+      };
+      sendEventToDevTools(event);
+    });
   }
   initialize();
-
 })();

@@ -4,14 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 
-declare global {
-  /* eslint-disable @typescript-eslint/naming-convention */
-  class diff_match_patch {
-    diff_main(text1: string, text2: string): Array<{0: number, 1: string}>;
-    diff_cleanupSemantic(diff: Array<{0: number, 1: string}>): void;
-  }
-  /* eslint-enable @typescript-eslint/naming-convention */
-}
+import './diff_match_patch.js';
 
 export const DiffWrapper = {
   charDiff: function(text1: string, text2: string, cleanup?: boolean): {0: number, 1: string}[] {

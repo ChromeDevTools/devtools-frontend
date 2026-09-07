@@ -20,8 +20,7 @@ describe('PerformanceAnnotations', () => {
         explanation: 'hello world\n',
       }]]),
     });
-    const parsedTrace =
-        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', undefined, {withTimelinePanel: false});
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     const evalScriptEvent =
         allThreadEntriesInTrace(parsedTrace)
             .find(event => event.name === Trace.Types.Events.Name.EVALUATE_SCRIPT && event.ts === 122411195649);

@@ -29,9 +29,7 @@ async function createFormatter(
     ):
     Promise<
         {formatter: PerformanceTraceFormatter.PerformanceTraceFormatter, parsedTrace: Trace.TraceModel.ParsedTrace}> {
-  const parsedTrace = await TraceLoader.traceEngine(context, name, undefined, {
-    withTimelinePanel: false,
-  });
+  const parsedTrace = await TraceLoader.traceEngine(context, name);
   assert.isOk(parsedTrace.insights);
   const focus = AIContext.AgentFocus.fromParsedTrace(parsedTrace);
   const formatter = new PerformanceTraceFormatter.PerformanceTraceFormatter(focus, null, cruxManager);

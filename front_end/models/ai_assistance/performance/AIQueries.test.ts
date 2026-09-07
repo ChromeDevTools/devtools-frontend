@@ -12,8 +12,7 @@ import {AIQueries} from '../ai_assistance.js';
 describe('AIQueries', () => {
   setupLocaleHooks();
   it('can query for the longest tasks', async function() {
-    const parsedTrace =
-        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', undefined, {withTimelinePanel: false});
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     assert.isOk(parsedTrace.insights);
 
     const firstNav = getFirstOrError(parsedTrace.data.Meta.navigationsByNavigationId.values());

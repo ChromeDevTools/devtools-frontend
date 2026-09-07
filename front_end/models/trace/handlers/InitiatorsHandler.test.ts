@@ -76,8 +76,7 @@ describeWithEnvironment('InitiatorsHandler', () => {
     let parsedTrace: Trace.TraceModel.ParsedTrace;
 
     before(async function() {
-      parsedTrace =
-          await TraceLoader.traceEngine(this, 'async-js-calls.json.gz', undefined, {withTimelinePanel: false});
+      parsedTrace = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
     });
 
     it('sets an initiator relationship between a requestAnimationFrame and the scheduled FunctionCall', () => {

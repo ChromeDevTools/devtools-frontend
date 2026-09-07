@@ -53,8 +53,7 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       let pageLoadMetrics: Trace.Handlers.ModelHandlers.PageLoadMetrics.PageLoadMetricsData;
 
       before(async function() {
-        const result =
-            await TraceLoader.traceEngine(this, 'reload-and-trace-page.json.gz', undefined, {withTimelinePanel: false});
+        const result = await TraceLoader.traceEngine(this, 'reload-and-trace-page.json.gz');
         meta = result.data.Meta;
         pageLoadMetrics = result.data.PageLoadMetrics;
       });
@@ -135,8 +134,7 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
     const firstNavigationId = '05059ACF683224E6FC7E344F544A4050';
     const secondNavigationId = '550FC08C662EF691E1535F305CBC0FCA';
     before(async function() {
-      const {data} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz', undefined,
-                                                   {withTimelinePanel: false});
+      const {data} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
       const {Meta, PageLoadMetrics} = data;
       const pageLoadMetricsData = PageLoadMetrics.metricScoresByFrameId.get(Meta.mainFrameId);
       assert.isOk(pageLoadMetricsData, 'Page load events for main frame were unexpectedly undefined.');
@@ -249,8 +247,7 @@ describeWithEnvironment('PageLoadMetricsHandler', function() {
       let allMarkerEvents: Trace.Types.Events.PageLoadEvent[];
 
       before(async function() {
-        const {data} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz', undefined,
-                                                     {withTimelinePanel: false});
+        const {data} = await TraceLoader.traceEngine(this, 'multiple-navigations-with-iframes.json.gz');
         const {PageLoadMetrics, Meta} = data;
         mainFrameId = Meta.mainFrameId;
         allMarkerEvents = PageLoadMetrics.allMarkerEvents;

@@ -16,10 +16,8 @@ describe('NetworkAnalyzer', () => {
   let requests: Trace.Lantern.Types.NetworkRequest[];
   let requestsWithRedirect: Trace.Lantern.Types.NetworkRequest[];
   before(async function() {
-    const parsedTrace =
-        await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz', undefined, {withTimelinePanel: false});
-    const parsedTraceWithRedirect =
-        await TraceLoader.traceEngine(this, 'lantern/redirect/trace.json.gz', undefined, {withTimelinePanel: false});
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
+    const parsedTraceWithRedirect = await TraceLoader.traceEngine(this, 'lantern/redirect/trace.json.gz');
     const trace = toLanternTrace(parsedTrace.traceEvents);
     const traceWithRedirect = toLanternTrace(parsedTraceWithRedirect.traceEvents);
     requests = Trace.LanternComputationData.createNetworkRequests(trace, parsedTrace.data);

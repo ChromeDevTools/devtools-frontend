@@ -161,8 +161,7 @@ describe('UserTimingsHandler', function() {
 
   describe('console timings', function() {
     before(async function() {
-      const {data} =
-          await TraceLoader.traceEngine(this, 'timings-track.json.gz', undefined, {withTimelinePanel: false});
+      const {data} = await TraceLoader.traceEngine(this, 'timings-track.json.gz');
       timingsData = data.UserTimings;
     });
     describe('console.time events parsing', function() {
@@ -558,8 +557,7 @@ describe('UserTimingsHandler', function() {
     }
 
     before(async function() {
-      const {data} =
-          await TraceLoader.traceEngine(this, 'user-timings-overlaps.json.gz', undefined, {withTimelinePanel: false});
+      const {data} = await TraceLoader.traceEngine(this, 'user-timings-overlaps.json.gz');
 
       measures = data.UserTimings.performanceMeasures;
       traceBoundMin = data.Meta.traceBounds.min;

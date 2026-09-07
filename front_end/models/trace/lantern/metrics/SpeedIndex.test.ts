@@ -16,8 +16,7 @@ const defaultThrottling = Lantern.Simulation.Constants.throttling.mobileSlow4G;
 describe('Metrics: Lantern Speed Index', function() {
   let parsedTrace: Trace.TraceModel.ParsedTrace;
   before(async function() {
-    parsedTrace = await TraceLoader.traceEngine(this, 'lantern/progressive-app/trace.json.gz', undefined,
-                                                {withTimelinePanel: false});
+    parsedTrace = await TraceLoader.traceEngine(this, 'lantern/progressive-app/trace.json.gz');
   });
 
   it('should compute predicted value', async () => {

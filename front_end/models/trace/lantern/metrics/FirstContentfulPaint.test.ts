@@ -14,8 +14,7 @@ const {FirstContentfulPaint} = Lantern.Metrics;
 describe('Metrics: Lantern FCP', function() {
   let parsedTrace: Trace.TraceModel.ParsedTrace;
   before(async function() {
-    parsedTrace = await TraceLoader.traceEngine(this, 'lantern/progressive-app/trace.json.gz', undefined,
-                                                {withTimelinePanel: false});
+    parsedTrace = await TraceLoader.traceEngine(this, 'lantern/progressive-app/trace.json.gz');
   });
 
   it('should compute predicted value', async () => {

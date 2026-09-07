@@ -205,8 +205,7 @@ describe('GetInsightDetailsTool', () => {
   });
 
   it('returns formatted insight details and PERF_INSIGHT widget on success', async function() {
-    const parsedTrace =
-        await TraceLoader.traceEngine(this, 'lcp-images.json.gz', undefined, {withTimelinePanel: false});
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     assert.isOk(parsedTrace.insights);
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;
@@ -232,8 +231,7 @@ describe('GetInsightDetailsTool', () => {
   });
 
   it('resolves DOM node snapshot and emits DOM_TREE widget for LCPBreakdown insight', async function() {
-    const parsedTrace =
-        await TraceLoader.traceEngine(this, 'lcp-images.json.gz', undefined, {withTimelinePanel: false});
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     assert.isOk(parsedTrace.insights);
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;
@@ -276,8 +274,7 @@ describe('GetInsightDetailsTool', () => {
   });
 
   it('resolves DOM node snapshot and network image content when LCP request is present', async function() {
-    const parsedTrace =
-        await TraceLoader.traceEngine(this, 'lcp-images.json.gz', undefined, {withTimelinePanel: false});
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     assert.isOk(parsedTrace.insights);
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;
@@ -346,8 +343,7 @@ describe('GetInsightDetailsTool', () => {
   });
 
   it('resolves DOM node snapshot and emits DOM_TREE widget for LCPDiscovery insight', async function() {
-    const parsedTrace =
-        await TraceLoader.traceEngine(this, 'lcp-images.json.gz', undefined, {withTimelinePanel: false});
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     assert.isOk(parsedTrace.insights);
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;
@@ -385,8 +381,7 @@ describe('GetInsightDetailsTool', () => {
   });
 
   it('omits DOM_TREE widget on imported traces', async function() {
-    const parsedTrace =
-        await TraceLoader.traceEngine(this, 'lcp-images.json.gz', undefined, {withTimelinePanel: false});
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     assert.isOk(parsedTrace.insights);
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;
@@ -417,8 +412,7 @@ describe('GetInsightDetailsTool', () => {
   });
 
   it('handles DOM snapshotting rejection gracefully without failing the tool handler', async function() {
-    const parsedTrace =
-        await TraceLoader.traceEngine(this, 'lcp-images.json.gz', undefined, {withTimelinePanel: false});
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     assert.isOk(parsedTrace.insights);
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;
@@ -451,8 +445,7 @@ describe('GetInsightDetailsTool', () => {
   });
 
   it('returns error when formatted details exceed MAX_FUNCTION_RESULT_BYTE_LENGTH', async function() {
-    const parsedTrace =
-        await TraceLoader.traceEngine(this, 'lcp-images.json.gz', undefined, {withTimelinePanel: false});
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
     assert.isOk(parsedTrace.insights);
     const insightSetId = [...parsedTrace.insights.keys()][0];
     const insightSet = parsedTrace.insights.get(insightSetId)!;

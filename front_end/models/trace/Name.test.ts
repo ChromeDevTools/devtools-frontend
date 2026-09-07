@@ -16,8 +16,7 @@ describeWithEnvironment('Name', () => {
     let parsedTrace: Trace.TraceModel.ParsedTrace;
 
     before(async function() {
-      parsedTrace =
-          await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', undefined, {withTimelinePanel: false});
+      parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
     });
 
     it('uses the URL for the name of a network request', () => {
@@ -128,8 +127,7 @@ describeWithEnvironment('Name', () => {
     let parsedTrace: Trace.TraceModel.ParsedTrace;
 
     before(async function() {
-      parsedTrace =
-          await TraceLoader.traceEngine(this, 'react-hello-world.json.gz', undefined, {withTimelinePanel: false});
+      parsedTrace = await TraceLoader.traceEngine(this, 'react-hello-world.json.gz');
     });
 
     it('uses the profile name for a ProfileCall if it has been set', () => {

@@ -125,7 +125,7 @@ describeWithEnvironment('Overlays', () => {
   });
 
   it('can calculate the y position of a main chart event', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
     const charts = createCharts(parsedTrace);
 
     const flameChartsContainer = document.createElement('div');
@@ -169,7 +169,7 @@ describeWithEnvironment('Overlays', () => {
   });
 
   it('can adjust the y position of a main chart event when the network track is collapsed', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
     const charts = createCharts(parsedTrace);
 
     const flameChartsContainer = document.createElement('div');
@@ -214,7 +214,7 @@ describeWithEnvironment('Overlays', () => {
   });
 
   it('can calculate the y position of a network chart event', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
     const charts = createCharts(parsedTrace);
 
     const flameChartsContainer = document.createElement('div');
@@ -335,7 +335,7 @@ describeWithEnvironment('Overlays', () => {
       event: Trace.Types.Events.Event,
       component: Components.EntryLabelOverlay.EntryLabelOverlay,
     }> {
-      const parsedTrace = await TraceLoader.traceEngine(context, file);
+      const parsedTrace = await TraceLoader.traceEngine(context, file, {withModificationsManager: true});
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       let event;
       if (isEventOnMainChart) {
@@ -370,7 +370,7 @@ describeWithEnvironment('Overlays', () => {
     }
 
     it('can render an entry selected overlay', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const event = charts.mainProvider.eventByIndex?.(50);
       assert.isOk(event);
@@ -387,7 +387,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('renders an ENTRY_OUTLINE even if the entry is also the ENTRY_SELECTED entry', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const event = charts.mainProvider.eventByIndex?.(50);
       assert.isOk(event);
@@ -414,7 +414,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('only ever renders a single selected overlay', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const event1 = charts.mainProvider.eventByIndex?.(50);
       const event2 = charts.mainProvider.eventByIndex?.(51);
@@ -438,7 +438,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('can render entry label overlay', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const event = charts.mainProvider.eventByIndex?.(50);
       assert.isOk(event);
@@ -456,7 +456,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('dispatches an event when the entry label overlay is clicked', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const event = charts.mainProvider.eventByIndex?.(50);
       assert.isOk(event);
@@ -555,7 +555,7 @@ describeWithEnvironment('Overlays', () => {
        });
 
     it('toggles overlays container display', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
 
       overlays.toggleAllOverlaysDisplayed(true);
@@ -575,7 +575,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('only renders one TIMESTAMP_MARKER as it is a singleton', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       overlays.add({
         type: 'TIMESTAMP_MARKER',
@@ -845,7 +845,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('Inputting `Enter` into time range label field when the label is empty removes the overlay', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const event = charts.mainProvider.eventByIndex?.(50);
       assert.isOk(event);
@@ -884,7 +884,7 @@ describeWithEnvironment('Overlays', () => {
 
     it('Inputting `Enter` into time range label field when the label is not empty does not remove the overlay',
        async function() {
-         const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+         const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
          const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
          const event = charts.mainProvider.eventByIndex?.(50);
          assert.isOk(event);
@@ -922,7 +922,7 @@ describeWithEnvironment('Overlays', () => {
        });
 
     it('Can create multiple Time Range Overlays for Time Range annotations', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const event = charts.mainProvider.eventByIndex?.(50);
       assert.isOk(event);
@@ -966,7 +966,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('Update label overlay when the label changes', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const event = charts.mainProvider.eventByIndex?.(50);
       assert.isOk(event);
@@ -996,7 +996,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('creates an overlay for a time range when an time range annotation is created', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
 
       // Since TIME_RANGE is AnnotationOverlay, create it through ModificationsManager
@@ -1014,7 +1014,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('can render an overlay for a time range', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       overlays.add({
         type: 'TIME_RANGE',
@@ -1029,7 +1029,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('can update a time range overlay with new bounds', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const rangeOverlay = overlays.add({
         type: 'TIME_RANGE',
@@ -1056,7 +1056,8 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('renders the overlay for a selected layout shift entry correctly', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz');
+      const parsedTrace =
+          await TraceLoader.traceEngine(this, 'cls-single-frame.json.gz', {withModificationsManager: true});
       const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const layoutShiftEvent = parsedTrace.data.LayoutShifts.clusters.at(0)?.events.at(0);
       if (!layoutShiftEvent) {
@@ -1076,7 +1077,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('renders the duration and label for a time range overlay', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       overlays.add({
         type: 'TIME_RANGE',
@@ -1098,7 +1099,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('can remove an overlay', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const event = charts.mainProvider.eventByIndex?.(50);
       assert.isOk(event);
@@ -1116,7 +1117,8 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('can render an entry selected overlay for a frame', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const parsedTrace =
+          await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
       const {overlays, container, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const timelineFrame = charts.mainProvider.eventByIndex?.(5);
       assert.isOk(timelineFrame);
@@ -1133,7 +1135,8 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('can render the infobar banner at the bottom of the view', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const parsedTrace =
+          await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
       const {overlays, container} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
 
       const infobar = new UI.Infobar.Infobar(UI.Infobar.Type.WARNING, 'Test infobar', []);
@@ -1161,7 +1164,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('can return a list of overlays for an entry', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const event = charts.mainProvider.eventByIndex?.(50);
       assert.isOk(event);
@@ -1179,7 +1182,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('can delete overlays and remove them from the DOM', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {container, overlays, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
       const event = charts.mainProvider.eventByIndex?.(50);
       assert.isOk(event);
@@ -1219,7 +1222,7 @@ describeWithEnvironment('Overlays', () => {
     });
 
     it('brings the correct label forward when multiple labels exist', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
+      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
       const {overlays, charts} = setupChartWithDimensionsAndAnnotationOverlayListeners(parsedTrace);
 
       const event1 = charts.mainProvider.eventByIndex?.(50);

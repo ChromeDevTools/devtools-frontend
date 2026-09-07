@@ -14,8 +14,7 @@ const {FirstContentfulPaint, LargestContentfulPaint} = Lantern.Metrics;
 describe('Metrics: Lantern LCP', function() {
   let parsedTrace: Trace.TraceModel.ParsedTrace;
   before(async function() {
-    parsedTrace =
-        await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz', undefined, {withTimelinePanel: false});
+    parsedTrace = await TraceLoader.traceEngine(this, 'lantern/paul/trace.json.gz');
   });
 
   it('should compute predicted value', async () => {

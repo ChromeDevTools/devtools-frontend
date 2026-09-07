@@ -15,7 +15,7 @@ const NODE_NAME_INDEX = 2;
 
 async function loadTrace(context: Mocha.Context|Mocha.Suite|null, name: string,
                          config?: Trace.Types.Configuration.Configuration): Promise<Trace.TraceModel.ParsedTrace> {
-  return await TraceLoader.traceEngine(context, name, config, {withTimelinePanel: false});
+  return await TraceLoader.traceEngine(context, name, config ? {config} : undefined);
 }
 
 describe('AICallTree', function() {

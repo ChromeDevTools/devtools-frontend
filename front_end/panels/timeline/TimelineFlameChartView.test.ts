@@ -132,7 +132,8 @@ describe('TimelineFlameChartView', function() {
     });
 
     it('renders the network and other tracks in collapsed and expanded modes', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const parsedTrace =
+          await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
       const mockViewDelegate = new MockViewDelegate();
 
       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
@@ -171,7 +172,8 @@ describe('TimelineFlameChartView', function() {
     });
 
     it('does not show the network track when there is no network request', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz');
+      const parsedTrace =
+          await TraceLoader.traceEngine(this, 'slow-interaction-keydown.json.gz', {withModificationsManager: true});
       const mockViewDelegate = new MockViewDelegate();
       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
       renderWidgetInVbox(flameChartView, {width: 1500, height: 2000});
@@ -189,7 +191,8 @@ describe('TimelineFlameChartView', function() {
     });
 
     it('shows the details for a selected network event', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const parsedTrace =
+          await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
       const mockViewDelegate = new MockViewDelegate();
 
       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
@@ -232,7 +235,8 @@ describe('TimelineFlameChartView', function() {
 
     it('shows the details for a selected main thread event', async function() {
       createTarget();  // TimelineUIUtils will pick this up as the "root" target to translate stack traces.
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const parsedTrace =
+          await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
       const mockViewDelegate = new MockViewDelegate();
 
       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
@@ -278,7 +282,8 @@ describe('TimelineFlameChartView', function() {
   });
 
   it('knows if the current trace has got hidden tracks', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
     const mockViewDelegate = new MockViewDelegate();
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
     renderElementIntoDOM(flameChartView);
@@ -298,7 +303,8 @@ describe('TimelineFlameChartView', function() {
   });
 
   it('can gather the visual track config to store as metadata', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
     const mockViewDelegate = new MockViewDelegate();
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
     renderElementIntoDOM(flameChartView);
@@ -351,7 +357,8 @@ describe('TimelineFlameChartView', function() {
   });
 
   it('does not apply visual config from a file', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
 
     const FROM_FILE_VISUAL_CONFIG_NETWORK: Trace.Types.File.TrackVisualConfig[] =
         [{expanded: true, hidden: false, originalIndex: 0, visualIndex: 0, trackName: 'Network'}];
@@ -384,7 +391,8 @@ describe('TimelineFlameChartView', function() {
 
   it('creates an entry label annotation when the data provider sends an entry label annotation created event',
      async function() {
-       const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-modifications.json.gz');
+       const parsedTrace =
+           await TraceLoader.traceEngine(this, 'web-dev-modifications.json.gz', {withModificationsManager: true});
        const mockViewDelegate = new MockViewDelegate();
 
        const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
@@ -401,7 +409,8 @@ describe('TimelineFlameChartView', function() {
      });
 
   it('fires an event when an entry label overlay is clicked', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-modifications.json.gz');
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'web-dev-modifications.json.gz', {withModificationsManager: true});
     const mockViewDelegate = new MockViewDelegate();
 
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
@@ -468,7 +477,7 @@ describe('TimelineFlameChartView', function() {
   });
 
   it('Can search for events by name in the timeline', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'lcp-images.json.gz', {withModificationsManager: true});
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();
@@ -508,7 +517,8 @@ describe('TimelineFlameChartView', function() {
   });
 
   it('can search across both flame charts for events', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
     // The timeline flamechart view will invoke the `select` method
     // of this delegate every time an event has matched on a search.
     const mockViewDelegate = new MockViewDelegate();
@@ -532,7 +542,8 @@ describe('TimelineFlameChartView', function() {
   });
 
   it('can search for extension track entries by their tooltip text', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz');
+    const parsedTrace =
+        await TraceLoader.traceEngine(this, 'extension-tracks-and-marks.json.gz', {withModificationsManager: true});
     const mockViewDelegate = new MockViewDelegate();
 
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
@@ -559,7 +570,7 @@ describe('TimelineFlameChartView', function() {
   });
 
   it('Adds Hidden Descendants Arrow as a decoration when a Context Menu action is applied on a node', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'load-simple.json.gz', {withModificationsManager: true});
     const mockViewDelegate = new MockViewDelegate();
 
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
@@ -601,7 +612,7 @@ describe('TimelineFlameChartView', function() {
 
   it('Adds Hidden Descendants Arrow as a decoration when a Context Menu action is applied on a selected node with a key shortcut event',
      async function() {
-       const parsedTrace = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+       const parsedTrace = await TraceLoader.traceEngine(this, 'load-simple.json.gz', {withModificationsManager: true});
        const mockViewDelegate = new MockViewDelegate();
 
        const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
@@ -646,7 +657,7 @@ describe('TimelineFlameChartView', function() {
 
   it('Removes Hidden Descendants Arrow as a decoration when Reset Children action is applied on a node',
      async function() {
-       const parsedTrace = await TraceLoader.traceEngine(this, 'load-simple.json.gz');
+       const parsedTrace = await TraceLoader.traceEngine(this, 'load-simple.json.gz', {withModificationsManager: true});
        const mockViewDelegate = new MockViewDelegate();
 
        const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
@@ -702,7 +713,7 @@ describe('TimelineFlameChartView', function() {
      });
 
   it('renders metrics as marker overlays w/ tooltips', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'crux.json.gz');
+    const parsedTrace = await TraceLoader.traceEngine(this, 'crux.json.gz', {withModificationsManager: true});
     const mockViewDelegate = new MockViewDelegate();
 
     const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
@@ -734,7 +745,8 @@ describe('TimelineFlameChartView', function() {
     const flameChartContainer = document.createElement('div');
 
     this.beforeEach(async function() {
-      parsedTrace = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
+      parsedTrace =
+          await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz', {withModificationsManager: true});
       const mockViewDelegate = new MockViewDelegate();
 
       flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
@@ -1219,7 +1231,8 @@ describe('TimelineFlameChartView', function() {
 
   describe('updating the active AI focus', () => {
     it('updates the UI Context with the active AI Call tree for the selected event', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz');
+      const parsedTrace =
+          await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
       const mockViewDelegate = new MockViewDelegate();
       const flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);
       flameChartView.setModel(parsedTrace, new Map());
@@ -1244,7 +1257,8 @@ describe('TimelineFlameChartView', function() {
     let parsedTrace: Trace.TraceModel.ParsedTrace;
 
     this.beforeEach(async () => {
-      parsedTrace = await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz');
+      parsedTrace =
+          await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz', {withModificationsManager: true});
       const mockViewDelegate = new MockViewDelegate();
 
       flameChartView = new Timeline.TimelineFlameChartView.TimelineFlameChartView(mockViewDelegate);

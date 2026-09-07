@@ -15,10 +15,8 @@ describe('Metrics: Lantern TTI', function() {
   let parsedTrace: Trace.TraceModel.ParsedTrace;
   let iframeParsedTrace: Trace.TraceModel.ParsedTrace;
   before(async function() {
-    parsedTrace = await TraceLoader.traceEngine(this, 'lantern/progressive-app/trace.json.gz', undefined,
-                                                {withTimelinePanel: false});
-    iframeParsedTrace =
-        await TraceLoader.traceEngine(this, 'lantern/iframe/trace.json.gz', undefined, {withTimelinePanel: false});
+    parsedTrace = await TraceLoader.traceEngine(this, 'lantern/progressive-app/trace.json.gz');
+    iframeParsedTrace = await TraceLoader.traceEngine(this, 'lantern/iframe/trace.json.gz');
   });
 
   it('should compute predicted value', async () => {

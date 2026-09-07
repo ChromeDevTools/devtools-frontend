@@ -36,6 +36,7 @@ interface ViewInput {
   attributeBeingEdited: SDK.DOMModel.Attribute|null;
   attributes: SDK.DOMModel.Attribute[];
   backendNodeId?: number;
+  targetId?: string;
 }
 
 type View = (input: ViewInput, output: object, target: HTMLElement|DocumentFragment) => void;
@@ -99,6 +100,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
           attributes: {
             jslog: `${VisualLogging.section('aria-attributes')}`,
             ...(input.backendNodeId ? {'data-backend-node-id': `${input.backendNodeId}`} : {}),
+            ...(input.targetId ? {'data-target-id': `${input.targetId}`} : {}),
           },
         },
       });
@@ -159,6 +161,7 @@ export class ARIAAttributesPane extends AccessibilitySubPane<ShadowRoot> {
       onCancelEditing,
       propertyCompletions,
       backendNodeId: this.node()?.backendNodeId(),
+      targetId: this.node()?.domModel().target().id(),
     };
     this.#view(input, {}, this.contentElement);
   }

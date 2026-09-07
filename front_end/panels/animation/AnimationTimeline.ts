@@ -1213,6 +1213,7 @@ export class NodeUI {
       return;
     }
     this.element.setAttribute('data-backend-node-id', String(node.backendNodeId()));
+    this.element.setAttribute('data-target-id', node.domModel().target().id());
     this.#node = node;
     this.nodeChanged();
     const link = PanelsCommon.DOMLinkifier.Linkifier.instance().linkify(node, {

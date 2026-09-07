@@ -222,6 +222,7 @@ export const DEFAULT_VIEW = (input: ViewInput, _output: ViewOutput, target: Docu
       html`
     <div class="layer-details-container"
          data-backend-node-id=${domNode ? domNode.backendNodeId() : nothing}
+         data-target-id=${domNode ? domNode.domModel().target().id() : nothing}
          jslog=${VisualLogging.section('layer-details')}>
       <table>
         <tbody>

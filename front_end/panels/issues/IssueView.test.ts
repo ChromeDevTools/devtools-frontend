@@ -3,10 +3,13 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
+import type * as Protocol from '../../generated/protocol.js';
 import * as IssuesManager from '../../models/issues_manager/issues_manager.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {raf} from '../../testing/DOMHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {StubIssue} from '../../testing/StubIssue.js';
 import {recordedMetricsContain, setupUserMetricHooks} from '../../testing/UserMetricsHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -53,5 +56,35 @@ describeWithEnvironment('IssueView', () => {
         Host.InspectorFrontendHostAPI.EnumeratedHistogram.IssuesPanelIssueExpanded,
         Host.UserMetrics.IssueExpanded.GenericCookie));
     view.clear();
+  });
+
+  it('sets data-backend-node-id and data-target-id on affected element rows', async () => {
+    const target = createTarget();
+    const mockElement: IssuesManager.Issue.AffectedElement = {
+      backendNodeId: 42 as Protocol.DOM.BackendNodeId,
+      nodeName: 'DIV',
+      target,
+    };
+    const aggregationKey = 'key' as unknown as IssuesManager.IssueAggregator.AggregationKey;
+    const aggregatedIssue = new IssuesManager.IssueAggregator.AggregatedIssue('code', aggregationKey);
+    sinon.stub(aggregatedIssue, 'elements').returns([mockElement]);
+
+    const mockIssueView = {
+      updateAffectedResourceVisibility: () => {},
+    } as unknown as Issues.IssueView.IssueView;
+
+    const view =
+        new Issues.AffectedElementsView.AffectedElementsView(mockIssueView, aggregatedIssue, 'affected-elements');
+    const treeOutline = new UI.TreeOutline.TreeOutline();
+    treeOutline.appendChild(view);
+    view.update();
+
+    await raf();
+
+    const resourceRows = (view as unknown as {affectedResources: HTMLElement}).affectedResources.querySelectorAll('tr');
+    assert.lengthOf(resourceRows, 1);
+    const row = resourceRows[0];
+    assert.strictEqual(row.getAttribute('data-backend-node-id'), '42');
+    assert.strictEqual(row.getAttribute('data-target-id'), target.id());
   });
 });

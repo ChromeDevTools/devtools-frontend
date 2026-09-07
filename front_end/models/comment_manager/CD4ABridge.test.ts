@@ -27,7 +27,10 @@ describe('CD4ABridge', () => {
           vePath: 'Panel: elements > Pane: styles',
           textSignature: 'color: red',
           networkRequestId: 'req-1',
-          backendNodeId: 10,
+          node: {
+            backendNodeId: 10,
+            targetId: 'target-1',
+          },
           editor: {
             filePath: 'index.html',
             lineNumber: 42,

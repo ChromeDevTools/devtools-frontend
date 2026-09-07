@@ -120,4 +120,34 @@ describeWithEnvironment('ARIAAttributesView', () => {
 
     await assertScreenshot('accessibility/aria-attributes.png');
   });
+
+  it('renders data-backend-node-id and data-target-id attributes when provided in input', () => {
+    const container = document.createElement('div');
+    renderElementIntoDOM(container, {includeCommonStyles: true});
+    const input = {
+      onStartEditing: sinon.stub(),
+      onCommitEditing: sinon.stub(),
+      onCancelEditing: sinon.stub(),
+      attributeBeingEdited: null,
+      attributes: node.attributes(),
+      propertyCompletions: new Map(),
+      backendNodeId: 42 as Protocol.DOM.BackendNodeId,
+      targetId: 'target-abc' as Protocol.Target.TargetID,
+    };
+    Accessibility.ARIAAttributesView.DEFAULT_VIEW(input, {}, container);
+
+    assert.strictEqual(container.getAttribute('data-backend-node-id'), '42');
+    assert.strictEqual(container.getAttribute('data-target-id'), 'target-abc');
+  });
+
+  it('passes backendNodeId and targetId from node to view input', async () => {
+    sinon.stub(node, 'backendNodeId').returns(55 as Protocol.DOM.BackendNodeId);
+    const viewFunction = createViewFunctionStub(Accessibility.ARIAAttributesView.ARIAAttributesPane);
+    const view = new Accessibility.ARIAAttributesView.ARIAAttributesPane(viewFunction);
+    view.setNode(node);
+
+    const input = await viewFunction.nextInput;
+    assert.strictEqual(input.backendNodeId, 55);
+    assert.strictEqual(input.targetId, node.domModel().target().id());
+  });
 });

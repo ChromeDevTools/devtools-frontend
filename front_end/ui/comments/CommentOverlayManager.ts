@@ -615,8 +615,14 @@ export class CommentOverlayManager extends Common.ObjectWrapper.ObjectWrapper<Ev
     this.#mutationObserver.observe(targetNode, {
       childList: true,
       subtree: true,
-      attributes: true,
-      attributeFilter: ['jslog', 'data-network-request-id', 'data-backend-node-id', 'aria-expanded', 'data-file-path'],
+      attributeFilter: [
+        'jslog',
+        'data-network-request-id',
+        'data-backend-node-id',
+        'data-target-id',
+        'aria-expanded',
+        'data-file-path',
+      ],
     });
   }
 

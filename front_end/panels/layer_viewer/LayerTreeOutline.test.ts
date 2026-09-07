@@ -115,4 +115,94 @@ describeWithEnvironment('LayerTreeOutline', () => {
     assert.strictEqual(layerViewHost.selection()?.layer(), childLayer,
                        'layerViewHost selection should be the child layer');
   });
+
+  it('renders data-backend-node-id and data-target-id on layer items with DOM nodes', async () => {
+    const mockDomNode = {
+      backendNodeId: () => 123,
+      domModel: () => ({
+        target: () => ({
+          id: () => 'target-xyz',
+        }),
+      }),
+      simpleSelector: () => 'div#my-layer',
+    } as unknown as SDK.DOMModel.DOMNode;
+
+    const layerWithNode = {
+      id: () => 'layer-1',
+      width: () => 100,
+      height: () => 100,
+      nodeForSelfOrAncestor: () => mockDomNode,
+    } as unknown as SDK.LayerTreeBase.Layer;
+
+    const viewInput = {
+      treeData: [{
+        layer: layerWithNode,
+        isExpanded: false,
+        children: [],
+      }],
+      hoveredLayer: null,
+      selectedLayer: null,
+      layerCount: 1,
+      totalLayerMemory: 100,
+      onSelect: () => {},
+      onHover: () => {},
+      onContextMenu: () => {},
+    };
+
+    const target = document.createElement('div');
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+    LayerViewer.LayerTreeOutline.DEFAULT_VIEW(viewInput, {}, target);
+
+    await RenderCoordinator.done();
+    const tree = target.querySelector('devtools-tree');
+    assert.exists(tree);
+    const item = tree.templateRoot.querySelector('li[role="treeitem"]');
+    assert.exists(item);
+    assert.strictEqual(item?.getAttribute('data-backend-node-id'), '123');
+    assert.strictEqual(item?.getAttribute('data-target-id'), 'target-xyz');
+  });
+});
+
+describeWithEnvironment('LayerDetailsView', () => {
+  it('renders data-backend-node-id and data-target-id on layer details container with DOM nodes', async () => {
+    const mockDomNode = {
+      backendNodeId: () => 456,
+      domModel: () => ({
+        target: () => ({
+          id: () => 'target-abc',
+        }),
+      }),
+    } as unknown as SDK.DOMModel.DOMNode;
+
+    const layerWithNode = {
+      id: () => 'layer-2',
+      width: () => 200,
+      height: () => 150,
+      offsetX: () => 0,
+      offsetY: () => 0,
+      nodeForSelfOrAncestor: () => mockDomNode,
+      gpuMemoryUsage: () => 2048,
+      paintCount: () => 1,
+      scrollRects: () => [],
+      stickyPositionConstraint: () => null,
+    } as unknown as SDK.LayerTreeBase.Layer;
+
+    const viewInput = {
+      layer: layerWithNode,
+      snapshotSelection: null,
+      compositingReasons: [],
+      onScrollRectClick: () => {},
+      onPaintProfilerRequested: () => {},
+    };
+
+    const target = document.createElement('div');
+    renderElementIntoDOM(target, {includeCommonStyles: true});
+    LayerViewer.LayerDetailsView.DEFAULT_VIEW(viewInput, undefined, target as unknown as DocumentFragment);
+
+    await RenderCoordinator.done();
+    const container = target.querySelector('.layer-details-container');
+    assert.exists(container);
+    assert.strictEqual(container?.getAttribute('data-backend-node-id'), '456');
+    assert.strictEqual(container?.getAttribute('data-target-id'), 'target-abc');
+  });
 });

@@ -38,6 +38,9 @@ export class AffectedElementsView extends AffectedResourcesView {
     rowElement.setAttribute('jslog', `${VisualLogging.tableRow('affected-element')}`);
     if (element.backendNodeId) {
       rowElement.setAttribute('data-backend-node-id', String(element.backendNodeId));
+      if (element.target) {
+        rowElement.setAttribute('data-target-id', element.target.id());
+      }
     }
     rowElement.appendChild(cellElement);
     this.affectedResources.appendChild(rowElement);

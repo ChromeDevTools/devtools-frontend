@@ -79,8 +79,8 @@ export class CD4ABridge extends Common.ObjectWrapper.ObjectWrapper<EventTypes> {
       if (thread.anchor.networkRequestId) {
         threadPayload.networkRequestId = thread.anchor.networkRequestId;
       }
-      if (thread.anchor.backendNodeId !== undefined) {
-        threadPayload.backendNodeId = thread.anchor.backendNodeId;
+      if (thread.anchor.node) {
+        threadPayload.backendNodeId = thread.anchor.node.backendNodeId;
       }
       if (thread.anchor.editor) {
         threadPayload.editor = thread.anchor.editor;

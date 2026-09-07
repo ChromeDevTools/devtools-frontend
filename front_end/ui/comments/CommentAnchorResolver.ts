@@ -366,6 +366,8 @@ export function resolveCommentAnchor(
 
   const backendNodeIdStr = target.getAttribute('data-backend-node-id');
   const backendNodeId = backendNodeIdStr ? Number(backendNodeIdStr) : undefined;
+  const targetId = target.getAttribute('data-target-id') ?? undefined;
+  const node = (backendNodeId !== undefined && targetId !== undefined) ? {backendNodeId, targetId} : undefined;
 
   return {
     vePath,
@@ -373,7 +375,7 @@ export function resolveCommentAnchor(
     parentTextSignature,
     siblingIndex,
     networkRequestId,
-    backendNodeId,
+    node,
     editor,
   };
 }
@@ -455,8 +457,11 @@ export function rematchCommentAnchor(comment: CommentThread, root: Document|Elem
   if (anchor.networkRequestId) {
     return deepQuerySelector(root, `[data-network-request-id="${CSS.escape(anchor.networkRequestId)}"]`);
   }
-  if (anchor.backendNodeId !== undefined) {
-    return deepQuerySelector(root, `[data-backend-node-id="${CSS.escape(String(anchor.backendNodeId))}"]`);
+  if (anchor.node) {
+    return deepQuerySelector(
+        root,
+        `[data-backend-node-id="${CSS.escape(String(anchor.node.backendNodeId))}"][data-target-id="${
+            CSS.escape(anchor.node.targetId)}"]`);
   }
   if (anchor.editor) {
     const {lineNumber, filePath} = anchor.editor;

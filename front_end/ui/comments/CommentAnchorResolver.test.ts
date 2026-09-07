@@ -537,7 +537,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       assert.strictEqual(anchor2?.siblingIndex, 1);
     });
 
-    it('captures backendNodeId from element or closest ancestor', () => {
+    it('does not capture node if data-target-id is missing', () => {
       const ancestor = document.createElement('div');
       ancestor.setAttribute('jslog', 'TreeItem; context: dom-node');
       ancestor.setAttribute('data-backend-node-id', '101');
@@ -549,7 +549,23 @@ describeWithEnvironment('CommentAnchorResolver', () => {
 
       const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(node);
       assert.isNotNull(anchor);
-      assert.strictEqual(anchor?.backendNodeId, 101);
+      assert.isUndefined(anchor?.node);
+    });
+
+    it('captures targetId along with backendNodeId from element or closest ancestor', () => {
+      const ancestor = document.createElement('div');
+      ancestor.setAttribute('jslog', 'TreeItem; context: dom-node');
+      ancestor.setAttribute('data-backend-node-id', '101');
+      ancestor.setAttribute('data-target-id', 'target-456');
+      const node = document.createElement('div');
+      node.setAttribute('jslog', 'TreeItem; context: child-node');
+      node.textContent = '<div>Hello</div>';
+      ancestor.appendChild(node);
+      container.appendChild(ancestor);
+
+      const anchor = Comments.CommentAnchorResolver.resolveCommentAnchor(node);
+      assert.isNotNull(anchor);
+      assert.deepEqual(anchor?.node, {backendNodeId: 101, targetId: 'target-456'});
     });
 
     it('returns null if element cannot be resolved to an anchor element', () => {
@@ -1020,9 +1036,10 @@ describeWithEnvironment('CommentAnchorResolver', () => {
       assert.isNull(rematched);
     });
 
-    it('finds element using backendNodeId domain ID', () => {
+    it('finds element using backendNodeId and targetId domain IDs', () => {
       const el = document.createElement('div');
       el.setAttribute('data-backend-node-id', '99');
+      el.setAttribute('data-target-id', 'target-1');
       el.textContent = '<button>Submit</button>';
       container.appendChild(el);
 
@@ -1031,7 +1048,10 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         anchor: {
           vePath: 'Panel: elements > TreeItem: node',
           textSignature: '<button>Submit</button>',
-          backendNodeId: 99,
+          node: {
+            backendNodeId: 99,
+            targetId: 'target-1',
+          },
         },
         comments: [],
         status: 'ACTIVE',
@@ -1039,6 +1059,37 @@ describeWithEnvironment('CommentAnchorResolver', () => {
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
       assert.strictEqual(rematched, el);
+    });
+
+    it('disambiguates elements sharing same backendNodeId with different targetIds', () => {
+      const el1 = document.createElement('div');
+      el1.setAttribute('data-backend-node-id', '99');
+      el1.setAttribute('data-target-id', 'target-1');
+      el1.textContent = '<button>Submit</button>';
+      container.appendChild(el1);
+
+      const el2 = document.createElement('div');
+      el2.setAttribute('data-backend-node-id', '99');
+      el2.setAttribute('data-target-id', 'target-2');
+      el2.textContent = '<button>Submit</button>';
+      container.appendChild(el2);
+
+      const thread: Comments.CommentAnchorResolver.CommentThread = {
+        id: 'comment-dom',
+        anchor: {
+          vePath: 'Panel: elements > TreeItem: node',
+          textSignature: '<button>Submit</button>',
+          node: {
+            backendNodeId: 99,
+            targetId: 'target-2',
+          },
+        },
+        comments: [],
+        status: 'ACTIVE',
+      };
+
+      const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
+      assert.strictEqual(rematched, el2);
     });
 
     it('finds element using VE path and textSignature fallback', () => {

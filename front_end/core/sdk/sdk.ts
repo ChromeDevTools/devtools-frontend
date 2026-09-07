@@ -26,6 +26,7 @@ import * as CrashReportContextModel from './CrashReportContextModel.js';
 import * as CSSContainerQuery from './CSSContainerQuery.js';
 import * as CSSFontFace from './CSSFontFace.js';
 import * as CSSLayer from './CSSLayer.js';
+import * as CSSLocation from './CSSLocation.js';
 import * as CSSMatchedStyles from './CSSMatchedStyles.js';
 import * as CSSMedia from './CSSMedia.js';
 import * as CSSMetadata from './CSSMetadata.js';
@@ -115,6 +116,7 @@ export {
   CSSContainerQuery,
   CSSFontFace,
   CSSLayer,
+  CSSLocation,
   CSSMatchedStyles,
   CSSMedia,
   CSSMetadata,

@@ -11,6 +11,7 @@ import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 
 import {CSSFontFace} from './CSSFontFace.js';
+import {CSSLocation} from './CSSLocation.js';
 import {CSSMatchedStyles} from './CSSMatchedStyles.js';
 import {CSSMedia} from './CSSMedia.js';
 import {cssMetadata} from './CSSMetadata.js';
@@ -1052,28 +1053,7 @@ export class Edit {
   }
 }
 
-export class CSSLocation {
-  readonly #cssModel: CSSModel;
-  styleSheetId: Protocol.DOM.StyleSheetId;
-  url: Platform.DevToolsPath.UrlString;
-  lineNumber: number;
-  columnNumber: number;
-  constructor(header: CSSStyleSheetHeader, lineNumber: number, columnNumber?: number) {
-    this.#cssModel = header.cssModel();
-    this.styleSheetId = header.id;
-    this.url = header.resourceURL();
-    this.lineNumber = lineNumber;
-    this.columnNumber = columnNumber || 0;
-  }
-
-  cssModel(): CSSModel {
-    return this.#cssModel;
-  }
-
-  header(): CSSStyleSheetHeader|null {
-    return this.#cssModel.styleSheetHeaderForId(this.styleSheetId);
-  }
-}
+export {CSSLocation};
 
 class CSSDispatcher implements ProtocolProxyApi.CSSDispatcher {
   readonly #cssModel: CSSModel;

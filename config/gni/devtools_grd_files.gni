@@ -953,6 +953,7 @@ grd_files_unbundled_sources = [
   "front_end/core/sdk/CSSContainerQuery.js",
   "front_end/core/sdk/CSSFontFace.js",
   "front_end/core/sdk/CSSLayer.js",
+  "front_end/core/sdk/CSSLocation.js",
   "front_end/core/sdk/CSSMatchedStyles.js",
   "front_end/core/sdk/CSSMedia.js",
   "front_end/core/sdk/CSSMetadata.js",

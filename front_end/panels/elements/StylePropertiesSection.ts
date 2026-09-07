@@ -734,7 +734,7 @@ export class StylePropertiesSection {
     if (this.hoverTimer) {
       clearTimeout(this.hoverTimer);
     }
-    const selectorList = constructResolvedSelector(rule, nestingIndex);
+    const selectorList = rule.constructResolvedSelector(nestingIndex);
     if (!selectorList) {
       return;
     }
@@ -2329,37 +2329,4 @@ export class HighlightPseudoStylePropertiesSection extends StylePropertiesSectio
 
 interface TreeElementParent {
   appendChild(child: UI.TreeOutline.TreeElement): void;
-}
-
-export function constructResolvedSelector(rule: SDK.CSSRule.CSSRule|null, nestingIndex?: number): string|undefined {
-  if (!(rule instanceof SDK.CSSRule.CSSStyleRule)) {
-    return undefined;
-  }
-
-  const nestingSelectors = rule.nestingSelectors;
-  if (!nestingSelectors) {
-    return nestingIndex === undefined ? rule.selectorText() : undefined;
-  }
-
-  if (nestingIndex !== undefined && (nestingIndex < 0 || nestingIndex >= nestingSelectors.length)) {
-    return undefined;
-  }
-
-  const selectorText = nestingIndex !== undefined ? nestingSelectors[nestingIndex] : rule.selectorText();
-
-  const parentIndex = nestingIndex !== undefined ? nestingIndex + 1 : 0;
-  const parentSelector = constructResolvedSelector(rule, parentIndex);
-
-  if (!parentSelector) {
-    return selectorText;
-  }
-
-  // Strip pseudo-elements (e.g. ::before) because pseudo-elements are invalid inside CSS :is(...).
-  const sanitizedParent = parentSelector.replace(/::[a-zA-Z-]+/g, '').trim();
-
-  if (selectorText.includes('&')) {
-    return selectorText.replaceAll('&', `:is(${sanitizedParent})`);
-  }
-
-  return `:is(${sanitizedParent}) ${selectorText.trim()}`;
 }

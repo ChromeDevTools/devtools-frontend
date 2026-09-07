@@ -15,7 +15,12 @@ export type * as CDPConnection from '../front_end/core/protocol_client/CDPConnec
 export {ConnectionTransport} from '../front_end/core/protocol_client/ConnectionTransport.js';
 export * as ProtocolClient from '../front_end/core/protocol_client/protocol_client.js';
 export {PuppeteerDevToolsConnection} from '../front_end/core/protocol_client/PuppeteerDevToolsConnection.js';
+export * as CSSMatchedStyles from '../front_end/core/sdk/CSSMatchedStyles.js';
+export * as CSSMetadata from '../front_end/core/sdk/CSSMetadata.js';
 export * as CSSModel from '../front_end/core/sdk/CSSModel.js';
+export * as CSSProperty from '../front_end/core/sdk/CSSProperty.js';
+export * as CSSRule from '../front_end/core/sdk/CSSRule.js';
+export * as CSSStyleDeclaration from '../front_end/core/sdk/CSSStyleDeclaration.js';
 export {DebuggerModel, skipAllPausesSettingDescriptor} from '../front_end/core/sdk/DebuggerModel.js';
 export * as DOMModel from '../front_end/core/sdk/DOMModel.js';
 export * as NetworkManager from '../front_end/core/sdk/NetworkManager.js';

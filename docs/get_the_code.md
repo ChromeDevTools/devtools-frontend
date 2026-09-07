@@ -43,17 +43,12 @@ npm run build -- -t Debug
 will build in `out/Debug` instead of `out/Default`. If the directory doesn't exist,
 it'll automatically create and initialize it.
 
-You can disable type checking (via TypeScript) by using the `devtools_skip_typecheck`
-argument in your GN configuration. This uses [esbuild](https://esbuild.github.io/)
-instead of `tsc` to compile the TypeScript files and generally results in much
-shorter build times.
-
-Additionally, we now bundle files together by default in all builds, which has
-a build time cost. If you want an even fast fast build, you might want to opt
-out of bundling by setting `devtools_bundle` to `false`
+We bundle files together by default in all builds, which has a build time cost.
+If you want a faster build, you can opt out of bundling by setting `devtools_bundle`
+to `false`:
 
 ```bash
-gn gen out/Fast --args="devtools_skip_typecheck=true devtools_bundle=false"
+gn gen out/Fast --args="devtools_bundle=false"
 ```
 
 and use `npm run build -- -t Fast` to build this target.

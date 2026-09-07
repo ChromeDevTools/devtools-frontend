@@ -91,7 +91,7 @@ for more details.
 ## Type checks
 
 The DevTools front-end is written in TypeScript and uses `tsc` (TypeScript Compiler) to check type consistency.
-Unless you specify `devtools_skip_typecheck = true` in your `out/Default/args.gn`, running
+Running
 
 ```bash
 autoninja -C out/Default

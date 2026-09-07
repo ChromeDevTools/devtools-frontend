@@ -125,7 +125,7 @@ export class SecurityOrigin {
       return SecurityOrigin.createUniqueOpaque();
     }
 
-    return new SecurityOrigin({type: 'origin', value: origin});
+    return new SecurityOrigin({type: 'origin', value: origin.toLowerCase()});
   }
 
   /**

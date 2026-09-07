@@ -13,30 +13,30 @@ const {urlString} = Platform.DevToolsPath;
 
 describe('NetworkRequestAccess', () => {
   describe('evaluateResponseAccessMode', () => {
-    it('returns SAME_ORIGIN when initiatorOrigin is same-origin with request URL', () => {
+    it('returns SAME_ORIGIN when initiatorSecurityOrigin is same-origin with request URL', () => {
       const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
           'requestId',
           urlString`https://example.com/api/data`,
           urlString`https://example.com/index.html`,
           null,
       );
-      const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
-      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
       assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.SAME_ORIGIN);
     });
 
-    it('falls back to documentURL and returns SAME_ORIGIN when initiatorOrigin is omitted', () => {
+    it('returns SAME_ORIGIN when passing request.initiatorSecurityOrigin() for same-origin document', () => {
       const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
           'requestId',
           urlString`https://example.com/api/data`,
           urlString`https://example.com/index.html`,
           null,
       );
-      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request);
+      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, request.initiatorSecurityOrigin());
       assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.SAME_ORIGIN);
     });
 
-    it('falls back to documentURL and returns OPAQUE_CROSS_ORIGIN when documentURL is cross-origin and no CORS headers exist',
+    it('returns OPAQUE_CROSS_ORIGIN when passing request.initiatorSecurityOrigin() for cross-origin document without CORS',
        () => {
          const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
              'requestId',
@@ -44,7 +44,7 @@ describe('NetworkRequestAccess', () => {
              urlString`https://attacker.com/index.html`,
              null,
          );
-         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request);
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, request.initiatorSecurityOrigin());
          assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
        });
 
@@ -55,8 +55,8 @@ describe('NetworkRequestAccess', () => {
           urlString`https://attacker.com/index.html`,
           null,
       );
-      const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
       assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
     });
 
@@ -73,8 +73,8 @@ describe('NetworkRequestAccess', () => {
            corsError: Protocol.Network.CorsError.DisallowedByMode,
            failedParameter: 'foo',
          });
-         const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
          assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
        });
 
@@ -87,8 +87,8 @@ describe('NetworkRequestAccess', () => {
              null,
          );
          request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: '*'}];
-         const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
          assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.CORS_ALLOWED);
        });
 
@@ -105,12 +105,12 @@ describe('NetworkRequestAccess', () => {
            cookie: new SDK.Cookie.Cookie('sid', '12345'),
            exemptionReason: undefined,
          }]);
-         const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
          assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
        });
 
-    it('returns OPAQUE_CROSS_ORIGIN when Access-Control-Allow-Credentials is true and server returns wildcard Access-Control-Allow-Origin',
+    it('returns CORS_ALLOWED when request is uncredentialed and server returns wildcard Access-Control-Allow-Origin with Access-Control-Allow-Credentials',
        () => {
          const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
              'requestId',
@@ -122,8 +122,29 @@ describe('NetworkRequestAccess', () => {
            {name: 'Access-Control-Allow-Origin', value: '*'},
            {name: 'Access-Control-Allow-Credentials', value: 'true'},
          ];
-         const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
+         assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.CORS_ALLOWED);
+       });
+
+    it('returns OPAQUE_CROSS_ORIGIN when request included cookies and server returns wildcard Access-Control-Allow-Origin with Access-Control-Allow-Credentials',
+       () => {
+         const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+             'requestId',
+             urlString`https://victim.com/api/data`,
+             urlString`https://attacker.com/index.html`,
+             null,
+         );
+         request.responseHeaders = [
+           {name: 'Access-Control-Allow-Origin', value: '*'},
+           {name: 'Access-Control-Allow-Credentials', value: 'true'},
+         ];
+         request.setIncludedRequestCookies([{
+           cookie: new SDK.Cookie.Cookie('sid', '12345'),
+           exemptionReason: undefined,
+         }]);
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
          assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
        });
 
@@ -136,27 +157,79 @@ describe('NetworkRequestAccess', () => {
              null,
          );
          request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: '  https://attacker.com  '}];
-         const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
          assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.CORS_ALLOWED);
        });
 
-    it('returns CORS_ALLOWED when credentialed request has explicit matching Access-Control-Allow-Origin', () => {
-      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
-          'requestId',
-          urlString`https://victim.com/api/data`,
-          urlString`https://attacker.com/index.html`,
-          null,
-      );
-      request.responseHeaders = [
-        {name: 'Access-Control-Allow-Origin', value: 'https://attacker.com'},
-        {name: 'Access-Control-Allow-Credentials', value: 'true'},
-      ];
-      request.responseCookies = [new SDK.Cookie.Cookie('sid', '12345')];
-      const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
-      assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.CORS_ALLOWED);
-    });
+    it('returns CORS_ALLOWED when credentialed request has explicit matching Access-Control-Allow-Origin and Access-Control-Allow-Credentials is true',
+       () => {
+         const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+             'requestId',
+             urlString`https://victim.com/api/data`,
+             urlString`https://attacker.com/index.html`,
+             null,
+         );
+         request.responseHeaders = [
+           {name: 'Access-Control-Allow-Origin', value: 'https://attacker.com'},
+           {name: 'Access-Control-Allow-Credentials', value: 'true'},
+         ];
+         request.responseCookies = [new SDK.Cookie.Cookie('sid', '12345')];
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
+         assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.CORS_ALLOWED);
+       });
+
+    it('returns OPAQUE_CROSS_ORIGIN when credentialed request matches Access-Control-Allow-Origin but lacks Access-Control-Allow-Credentials',
+       () => {
+         const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+             'requestId',
+             urlString`https://victim.com/api/data`,
+             urlString`https://attacker.com/index.html`,
+             null,
+         );
+         request.responseHeaders = [
+           {name: 'Access-Control-Allow-Origin', value: 'https://attacker.com'},
+         ];
+         request.responseCookies = [new SDK.Cookie.Cookie('sid', '12345')];
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
+         assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
+       });
+
+    it('returns OPAQUE_CROSS_ORIGIN when credentialed request matches Access-Control-Allow-Origin but Access-Control-Allow-Credentials is false',
+       () => {
+         const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+             'requestId',
+             urlString`https://victim.com/api/data`,
+             urlString`https://attacker.com/index.html`,
+             null,
+         );
+         request.responseHeaders = [
+           {name: 'Access-Control-Allow-Origin', value: 'https://attacker.com'},
+           {name: 'Access-Control-Allow-Credentials', value: 'false'},
+         ];
+         request.setRequestHeaders([{name: 'Authorization', value: 'Bearer token'}]);
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
+         assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
+       });
+
+    it('returns CORS_ALLOWED when uncredentialed request matches Access-Control-Allow-Origin without Access-Control-Allow-Credentials',
+       () => {
+         const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+             'requestId',
+             urlString`https://victim.com/api/data`,
+             urlString`https://attacker.com/index.html`,
+             null,
+         );
+         request.responseHeaders = [
+           {name: 'Access-Control-Allow-Origin', value: 'https://attacker.com'},
+         ];
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
+         assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.CORS_ALLOWED);
+       });
 
     it('returns CORS_ALLOWED when Access-Control-Allow-Origin has different casing than initiator', () => {
       const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
@@ -166,8 +239,8 @@ describe('NetworkRequestAccess', () => {
           null,
       );
       request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: 'HTTPS://ATTACKER.COM'}];
-      const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
       assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.CORS_ALLOWED);
     });
 
@@ -179,8 +252,8 @@ describe('NetworkRequestAccess', () => {
           null,
       );
       request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: 'https://other.com'}];
-      const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
       assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
     });
 
@@ -191,8 +264,8 @@ describe('NetworkRequestAccess', () => {
           urlString`https://example.com:8443/index.html`,
           null,
       );
-      const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com:8443');
-      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com:8443');
+      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
       assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
     });
 
@@ -205,8 +278,8 @@ describe('NetworkRequestAccess', () => {
              null,
          );
          request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: '*'}];
-         const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
-         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
          assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
        });
 
@@ -220,8 +293,8 @@ describe('NetworkRequestAccess', () => {
          );
          request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: '*'}];
          request.setRequestHeaders([{name: 'Authorization', value: 'Bearer secret-token'}]);
-         const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
          assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
        });
 
@@ -235,10 +308,36 @@ describe('NetworkRequestAccess', () => {
          );
          request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: '*'}];
          request.responseCookies = [new SDK.Cookie.Cookie('sid', '12345')];
-         const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorOrigin);
+         const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+         const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
          assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
        });
+
+    it('returns SAME_ORIGIN for requests within the same domain in an imported HAR', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api/data`,
+          urlString`https://example.com/index.html`,
+          null,
+      );
+      request.setIsImportedHar(true);
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('imported-har://example.com');
+      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
+      assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.SAME_ORIGIN);
+    });
+
+    it('returns OPAQUE_CROSS_ORIGIN for requests to different domains in an imported HAR without CORS', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://other-domain.com/api/data`,
+          urlString`https://example.com/index.html`,
+          null,
+      );
+      request.setIsImportedHar(true);
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('imported-har://example.com');
+      const mode = SDK.NetworkRequestAccess.evaluateResponseAccessMode(request, initiatorSecurityOrigin);
+      assert.strictEqual(mode, SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN);
+    });
   });
 
   describe('getFilterableResponseHeaders', () => {
@@ -349,6 +448,7 @@ describe('NetworkRequestAccess', () => {
           urlString`https://attacker.com/`,
           null,
       );
+      request.setRequestHeaders([{name: 'Authorization', value: 'Bearer secret'}]);
       request.responseHeaders = [
         {name: 'Content-Type', value: 'application/json'},
         {name: 'Location', value: '/secret-redirect'},
@@ -363,6 +463,99 @@ describe('NetworkRequestAccess', () => {
       assert.deepEqual(headers, [
         {name: 'Content-Type', value: 'application/json'},
       ]);
+    });
+  });
+
+  describe('isRequestCredentialed', () => {
+    it('returns true when Authorization header is present in request', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api`,
+          urlString`https://example.com/`,
+          null,
+      );
+      request.setRequestHeaders([{name: 'Authorization', value: 'Bearer token123'}]);
+      assert.isTrue(SDK.NetworkRequestAccess.isRequestCredentialed(request));
+    });
+
+    it('returns true when Proxy-Authorization header is present in request', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api`,
+          urlString`https://example.com/`,
+          null,
+      );
+      request.setRequestHeaders([{name: 'Proxy-Authorization', value: 'Basic dXNlcjpwYXNz'}]);
+      assert.isTrue(SDK.NetworkRequestAccess.isRequestCredentialed(request));
+    });
+
+    it('returns true when Cookie header is present in request', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api`,
+          urlString`https://example.com/`,
+          null,
+      );
+      request.setRequestHeaders([{name: 'Cookie', value: 'sessionId=abc'}]);
+      assert.isTrue(SDK.NetworkRequestAccess.isRequestCredentialed(request));
+    });
+
+    it('returns true when Set-Cookie header is present in response', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api`,
+          urlString`https://example.com/`,
+          null,
+      );
+      request.responseHeaders = [{name: 'Set-Cookie', value: 'sessionId=abc; Secure'}];
+      assert.isTrue(SDK.NetworkRequestAccess.isRequestCredentialed(request));
+    });
+
+    it('returns true when includedRequestCookies are present', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api`,
+          urlString`https://example.com/`,
+          null,
+      );
+      request.setIncludedRequestCookies([{
+        cookie: new SDK.Cookie.Cookie('sid', '12345'),
+        exemptionReason: undefined,
+      }]);
+      assert.isTrue(SDK.NetworkRequestAccess.isRequestCredentialed(request));
+    });
+
+    it('returns true when responseCookies are present', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api`,
+          urlString`https://example.com/`,
+          null,
+      );
+      request.responseCookies = [new SDK.Cookie.Cookie('sid', '12345')];
+      assert.isTrue(SDK.NetworkRequestAccess.isRequestCredentialed(request));
+    });
+
+    it('returns false when response has Access-Control-Allow-Credentials but request has no credentials', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api`,
+          urlString`https://example.com/`,
+          null,
+      );
+      request.responseHeaders = [{name: 'Access-Control-Allow-Credentials', value: 'true'}];
+      assert.isFalse(SDK.NetworkRequestAccess.isRequestCredentialed(request));
+    });
+
+    it('returns false when request has no credentials or auth headers', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api`,
+          urlString`https://example.com/`,
+          null,
+      );
+      request.responseHeaders = [{name: 'Content-Type', value: 'application/json'}];
+      assert.isFalse(SDK.NetworkRequestAccess.isRequestCredentialed(request));
     });
   });
 });

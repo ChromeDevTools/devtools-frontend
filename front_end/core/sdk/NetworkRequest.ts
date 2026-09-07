@@ -178,6 +178,7 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
   #endTime = -1;
   #blockedReason: Protocol.Network.BlockedReason|undefined = undefined;
   #renderBlockingBehavior?: Protocol.Network.RenderBlockingBehavior;
+  #initiatorSecurityOrigin?: SecurityOrigin;
   #corsErrorStatus: Protocol.Network.CorsErrorStatus|undefined = undefined;
   statusCode = 0;
   statusText = '';
@@ -423,7 +424,10 @@ export class NetworkRequest extends Common.ObjectWrapper.ObjectWrapper<EventType
    * @see {@link requestURLSecurityOrigin} to obtain the origin of the target resource URL being requested.
    */
   initiatorSecurityOrigin(): SecurityOrigin {
-    return this.#resolveSecurityOrigin(this.#documentURL);
+    if (!this.#initiatorSecurityOrigin) {
+      this.#initiatorSecurityOrigin = this.#resolveSecurityOrigin(this.#documentURL);
+    }
+    return this.#initiatorSecurityOrigin;
   }
 
   #resolveSecurityOrigin(url: Platform.DevToolsPath.UrlString): SecurityOrigin {

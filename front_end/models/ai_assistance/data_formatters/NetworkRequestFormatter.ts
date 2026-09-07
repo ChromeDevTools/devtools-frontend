@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as Protocol from '../../../generated/protocol.js';
 import * as Logs from '../../logs/logs.js';
@@ -16,7 +15,10 @@ const MAX_HEADERS_SIZE = 1000;
 const MAX_BODY_SIZE = 10000;
 
 /**
- * Sanitizes the set of headers, removing values that are not on the allow-list and replacing them with '<redacted>'.
+ * Sanitizes headers by replacing unapproved header values with '<redacted>'.
+ *
+ * @param headers List of header name/value pairs to sanitize.
+ * @returns Sanitized list of headers with unapproved values redacted.
  */
 export function sanitizeHeaders(headers: Array<{name: string, value: string}>): Array<{name: string, value: string}> {
   return headers.map(header => {
@@ -27,9 +29,46 @@ export function sanitizeHeaders(headers: Array<{name: string, value: string}>): 
   });
 }
 
+/**
+ * Options for configuring {@link NetworkRequestFormatter}.
+ */
+export interface NetworkRequestFormatterOptions {
+  /** The security origin of the initiating context for SOP/CORS evaluation. Defaults to `request.initiatorSecurityOrigin()`. */
+  initiatorSecurityOrigin?: SDK.SecurityOrigin.SecurityOrigin;
+  /** Optional network log instance for resolving initiator graphs. */
+  networkLog?: Logs.NetworkLog.NetworkLog;
+}
+
 export class NetworkRequestFormatter {
   #calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator;
   #request: SDK.NetworkRequest.NetworkRequest;
+  readonly #networkLog?: Logs.NetworkLog.NetworkLog;
+  readonly #initiatorSecurityOrigin: SDK.SecurityOrigin.SecurityOrigin;
+
+  /**
+   * @param request The network request to format.
+   * @param calculator Calculator for request timing metrics.
+   * @param options Optional configuration options.
+   */
+  constructor(
+      request: SDK.NetworkRequest.NetworkRequest,
+      calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator,
+      options?: NetworkRequestFormatterOptions,
+  ) {
+    this.#request = request;
+    this.#calculator = calculator;
+    this.#networkLog = options?.networkLog;
+    this.#initiatorSecurityOrigin = options?.initiatorSecurityOrigin ?? request.initiatorSecurityOrigin();
+  }
+
+  /**
+   * Evaluates the response access mode for this network request relative to the initiator security origin.
+   *
+   * @returns The evaluated `ResponseAccessMode`.
+   */
+  responseAccessMode(): SDK.NetworkRequestAccess.ResponseAccessMode {
+    return SDK.NetworkRequestAccess.evaluateResponseAccessMode(this.#request, this.#initiatorSecurityOrigin);
+  }
 
   static allowHeader(headerName: string): boolean {
     return allowedHeaders.has(headerName.toLowerCase().trim());
@@ -73,9 +112,9 @@ export class NetworkRequestFormatter {
       initiatorUrl: Platform.DevToolsPath.UrlString,
       allowedOrigin: Platform.DevToolsPath.UrlString,
       ): string {
-    // We extract the origin, and if it is invalid/empty we default to redacting.
-    const initiatorOrigin = Common.ParsedURL.ParsedURL.extractOrigin(initiatorUrl);
-    if (initiatorOrigin && initiatorOrigin === allowedOrigin) {
+    const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create(initiatorUrl);
+    const targetOrigin = SDK.SecurityOrigin.SecurityOrigin.create(allowedOrigin);
+    if (initiatorOrigin.isSameOriginWith(targetOrigin)) {
       return initiatorUrl;
     }
     return '<redacted cross-origin initiator URL>';
@@ -131,28 +170,35 @@ export class NetworkRequestFormatter {
     return lines.length > 0 ? `${lines.join('\n')}\n` : '';
   }
 
-  readonly #networkLog: Logs.NetworkLog.NetworkLog;
-
-  constructor(
-      request: SDK.NetworkRequest.NetworkRequest,
-      calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator,
-      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-      networkLog: Logs.NetworkLog.NetworkLog = Logs.NetworkLog.NetworkLog.instance(),
-  ) {
-    this.#request = request;
-    this.#calculator = calculator;
-    this.#networkLog = networkLog;
-  }
-
   formatRequestHeaders(): string {
     return NetworkRequestFormatter.formatHeaders('Request headers:', this.#request.requestHeaders());
   }
 
+  /**
+   * Formats response headers for the AI prompt.
+   *
+   * Headers are filtered based on the request's evaluated ResponseAccessMode:
+   * - Opaque cross-origin requests only include CORS-safelisted response headers.
+   * - CORS-authorized requests include CORS-safelisted and Access-Control-Expose-Headers.
+   * - Same-origin requests include all response headers.
+   * Values of headers not present on the global allowedHeaders list are then redacted.
+   */
   formatResponseHeaders(): string {
-    return NetworkRequestFormatter.formatHeaders('Response headers:', this.#request.responseHeaders);
+    const accessMode = this.responseAccessMode();
+    const headers = SDK.NetworkRequestAccess.getFilterableResponseHeaders(this.#request, accessMode);
+    return NetworkRequestFormatter.formatHeaders('Response headers:', headers);
   }
 
+  /**
+   * Formats the response body for the AI prompt.
+   *
+   * For opaque cross-origin requests, the response body is redacted because the initiating page's
+   * JavaScript is forbidden by the Same-Origin Policy from reading it.
+   */
   async formatResponseBody(): Promise<string> {
+    if (this.responseAccessMode() === SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN) {
+      return SDK.NetworkRequestAccess.REDACTED_RESPONSE_BODY;
+    }
     return await NetworkRequestFormatter.formatBody('Response body:', this.#request, MAX_BODY_SIZE);
   }
 
@@ -203,10 +249,12 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
    * the request's origin.
    */
   formatRequestInitiatorChain(): string {
-    const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(this.#request.url());
+    const allowedOrigin = this.#request.url();
     let initiatorChain = '';
     let lineStart = '- URL: ';
-    const graph = this.#networkLog.initiatorGraphForRequest(this.#request);
+    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+    const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
+    const graph = networkLog.initiatorGraphForRequest(this.#request);
 
     for (const initiator of Array.from(graph.initiators).reverse()) {
       initiatorChain = initiatorChain + lineStart +

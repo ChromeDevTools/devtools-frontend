@@ -85,4 +85,125 @@ describe('RequestContext', function() {
     assert.isNotNull(details);
     snapshotTester.assert(this, JSON.stringify(details, null, 2));
   });
+
+  it('getPromptDetails redacts response body and non-safelisted headers for cross-origin requests', async function() {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        urlString`https://victim.com/sensitive-data`,
+        urlString`https://attacker.com/index.html`,
+        null,
+        null,
+        null,
+    );
+    request.responseHeaders = [
+      {name: 'Content-Type', value: 'application/json'},
+      {name: 'Location', value: '/secret-redirect'},
+      {name: 'WWW-Authenticate', value: 'Bearer realm="secret"'},
+    ];
+    request.setRequestHeaders([{name: 'Accept', value: 'application/json'}]);
+    request.statusCode = 200;
+    request.requestContentData = () => {
+      return Promise.resolve(
+          new TextUtils.ContentData.ContentData('{"secret":"leak"}', false, 'application/json', 'utf-8'));
+    };
+
+    const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+    const context = new AiAssistance.RequestContext.RequestContext(request, calculator);
+    const promptDetails = await context.getPromptDetails();
+
+    assert.isNotNull(promptDetails);
+    assert.include(promptDetails!, SDK.NetworkRequestAccess.REDACTED_RESPONSE_BODY);
+    assert.notInclude(promptDetails!, '{"secret":"leak"}');
+    assert.notInclude(promptDetails!, 'Location');
+    assert.notInclude(promptDetails!, 'secret-redirect');
+    assert.notInclude(promptDetails!, 'WWW-Authenticate');
+  });
+
+  it('getUserFacingDetails redacts response body and non-safelisted headers for cross-origin requests',
+     async function() {
+       const request = SDK.NetworkRequest.NetworkRequest.create(
+           'requestId' as Protocol.Network.RequestId,
+           urlString`https://victim.com/sensitive-data`,
+           urlString`https://attacker.com/index.html`,
+           null,
+           null,
+           null,
+       );
+       request.responseHeaders = [
+         {name: 'Content-Type', value: 'application/json'},
+         {name: 'Location', value: '/secret-redirect'},
+         {name: 'WWW-Authenticate', value: 'Bearer realm="secret"'},
+       ];
+       request.setRequestHeaders([{name: 'Accept', value: 'application/json'}]);
+       request.statusCode = 200;
+       request.requestContentData = () => {
+         return Promise.resolve(
+             new TextUtils.ContentData.ContentData('{"secret":"leak"}', false, 'application/json', 'utf-8'));
+       };
+
+       const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+       const context = new AiAssistance.RequestContext.RequestContext(request, calculator);
+       const details = await context.getUserFacingDetails();
+
+       assert.isNotNull(details);
+       const responseDetail = details!.find(d => d.title === 'Response');
+       assert.isDefined(responseDetail);
+       assert.include(responseDetail!.text, SDK.NetworkRequestAccess.REDACTED_RESPONSE_BODY);
+       assert.notInclude(responseDetail!.text, '{"secret":"leak"}');
+       assert.notInclude(responseDetail!.text, 'Location');
+       assert.notInclude(responseDetail!.text, 'secret-redirect');
+       assert.notInclude(responseDetail!.text, 'WWW-Authenticate');
+     });
+
+  it('preserves response body for same-origin requests in an imported HAR', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'harRequestId' as Protocol.Network.RequestId,
+        urlString`https://example.com/api/users`,
+        urlString`https://example.com/index.html`,
+        null,
+        null,
+        null,
+    );
+    request.setIsImportedHar(true);
+    request.statusCode = 200;
+    request.responseHeaders = [{name: 'Content-Type', value: 'application/json'}];
+    request.requestContentData = () => {
+      return Promise.resolve(
+          new TextUtils.ContentData.ContentData('{"har":"data"}', false, 'application/json', 'utf-8'));
+    };
+
+    const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+    const context = new AiAssistance.RequestContext.RequestContext(request, calculator);
+    const promptDetails = await context.getPromptDetails();
+
+    assert.isNotNull(promptDetails);
+    assert.include(promptDetails!, '{"har":"data"}');
+    assert.notInclude(promptDetails!, SDK.NetworkRequestAccess.REDACTED_RESPONSE_BODY);
+  });
+
+  it('redacts response body for cross-origin requests in an imported HAR', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'harRequestId' as Protocol.Network.RequestId,
+        urlString`https://third-party.com/api/data`,
+        urlString`https://example.com/index.html`,
+        null,
+        null,
+        null,
+    );
+    request.setIsImportedHar(true);
+    request.statusCode = 200;
+    request.responseHeaders = [{name: 'Content-Type', value: 'application/json'}];
+    request.requestContentData = () => {
+      return Promise.resolve(
+          new TextUtils.ContentData.ContentData('{"secret":"leak"}', false, 'application/json', 'utf-8'));
+    };
+
+    const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+    const context = new AiAssistance.RequestContext.RequestContext(request, calculator);
+    const promptDetails = await context.getPromptDetails();
+
+    assert.isNotNull(promptDetails);
+    assert.include(promptDetails!, SDK.NetworkRequestAccess.REDACTED_RESPONSE_BODY);
+    assert.notInclude(promptDetails!, '{"secret":"leak"}');
+  });
 });

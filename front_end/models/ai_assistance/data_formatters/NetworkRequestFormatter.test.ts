@@ -9,6 +9,7 @@ import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as Protocol from '../../../generated/protocol.js';
+import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import {NetworkRequestFormatter} from '../ai_assistance.js';
 
 const {urlString} = Platform.DevToolsPath;
@@ -27,67 +28,68 @@ describe('NetworkRequestFormatter', () => {
   });
 
   describe('formatInitiatorUrl', () => {
-    const tests = [
-      {
-        allowedResource: 'https://example.test',
-        targetResource: 'https://example.test',
-        shouldBeRedacted: false,
-      },
-      {
-        allowedResource: 'https://example.test',
-        targetResource: 'https://another-example.test',
-        shouldBeRedacted: true,
-      },
-      {
-        allowedResource: 'file://test',
-        targetResource: 'https://another-example.test',
-        shouldBeRedacted: true,
-      },
-      {
-        allowedResource: 'https://another-example.test',
-        targetResource: 'file://test',
-        shouldBeRedacted: true,
-      },
-      {
-        allowedResource: 'https://test.example.test',
-        targetResource: 'https://example.test',
-        shouldBeRedacted: true,
-      },
-      {
-        allowedResource: 'https://test.example.test:9900',
-        targetResource: 'https://test.example.test:9901',
-        shouldBeRedacted: true,
-      },
-      {
-        allowedResource: 'invalid-url',
-        targetResource: 'invalid-url',
-        shouldBeRedacted: true,
-      },
-      {
-        allowedResource: 'https://example.test',
-        targetResource: 'invalid-url',
-        shouldBeRedacted: true,
-      },
-      {
-        allowedResource: 'invalid-url',
-        targetResource: 'https://example.test',
-        shouldBeRedacted: true,
-      },
-    ];
+    it('returns target resource when allowed resource is same-origin', () => {
+      const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(urlString`https://example.test`);
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
+          urlString`https://example.test`, allowedOrigin);
+      assert.strictEqual(formatted, 'https://example.test');
+    });
 
-    for (const t of tests) {
-      it(`${t.targetResource} test when allowed resource is ${t.allowedResource}`, () => {
-        const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(urlString`${t.allowedResource}`);
-        const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
-            urlString`${t.targetResource}`, allowedOrigin);
-        if (t.shouldBeRedacted) {
-          assert.strictEqual(
-              formatted, '<redacted cross-origin initiator URL>', `${JSON.stringify(t)} was not redacted`);
-        } else {
-          assert.strictEqual(formatted, t.targetResource, `${JSON.stringify(t)} was redacted`);
-        }
-      });
-    }
+    it('redacts target resource when allowed resource is cross-origin', () => {
+      const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(urlString`https://example.test`);
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
+          urlString`https://another-example.test`, allowedOrigin);
+      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    });
+
+    it('redacts target resource when allowed resource is file URL', () => {
+      const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(urlString`file://test`);
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
+          urlString`https://another-example.test`, allowedOrigin);
+      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    });
+
+    it('redacts target resource when target resource is file URL and allowed is https', () => {
+      const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(urlString`https://another-example.test`);
+      const formatted =
+          NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(urlString`file://test`, allowedOrigin);
+      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    });
+
+    it('redacts target resource when subdomain differs', () => {
+      const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(urlString`https://test.example.test`);
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
+          urlString`https://example.test`, allowedOrigin);
+      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    });
+
+    it('redacts target resource when port differs', () => {
+      const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(urlString`https://test.example.test:9900`);
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
+          urlString`https://test.example.test:9901`, allowedOrigin);
+      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    });
+
+    it('redacts target resource when both URLs are invalid', () => {
+      const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(urlString`invalid-url`);
+      const formatted =
+          NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(urlString`invalid-url`, allowedOrigin);
+      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    });
+
+    it('redacts target resource when target is invalid URL', () => {
+      const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(urlString`https://example.test`);
+      const formatted =
+          NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(urlString`invalid-url`, allowedOrigin);
+      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    });
+
+    it('redacts target resource when allowed is invalid URL', () => {
+      const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(urlString`invalid-url`);
+      const formatted = NetworkRequestFormatter.NetworkRequestFormatter.formatInitiatorUrl(
+          urlString`https://example.test`, allowedOrigin);
+      assert.strictEqual(formatted, '<redacted cross-origin initiator URL>');
+    });
   });
 
   describe('formatBody', () => {
@@ -283,6 +285,299 @@ describe('NetworkRequestFormatter', () => {
             localizedFailDescription: 'net::ERR_FAILED',
           }),
           'Fail description: net::ERR_FAILED\n');
+    });
+  });
+
+  describe('responseAccessMode', () => {
+    const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+
+    it('returns SAME_ORIGIN when passing request.initiatorSecurityOrigin() for same-origin request', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://victim.com/api/data`,
+          urlString`https://victim.com/`,
+          null,
+      );
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(request, calculator, {
+        initiatorSecurityOrigin: request.initiatorSecurityOrigin(),
+      });
+      assert.strictEqual(
+          formatter.responseAccessMode(),
+          SDK.NetworkRequestAccess.ResponseAccessMode.SAME_ORIGIN,
+      );
+    });
+
+    it('returns SAME_ORIGIN when initiator origin matches request URL origin', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api/data`,
+          urlString`https://example.com/index.html`,
+          null,
+      );
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
+          request,
+          calculator,
+          {initiatorSecurityOrigin},
+      );
+      assert.strictEqual(
+          formatter.responseAccessMode(),
+          SDK.NetworkRequestAccess.ResponseAccessMode.SAME_ORIGIN,
+      );
+    });
+
+    it('returns OPAQUE_CROSS_ORIGIN when request is cross-origin with no CORS headers', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://victim.com/api/data`,
+          urlString`https://attacker.com/index.html`,
+          null,
+      );
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
+          request,
+          calculator,
+          {initiatorSecurityOrigin},
+      );
+      assert.strictEqual(
+          formatter.responseAccessMode(),
+          SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN,
+      );
+    });
+
+    it('returns CORS_ALLOWED when request is cross-origin with wildcard Access-Control-Allow-Origin', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://victim.com/api/data`,
+          urlString`https://attacker.com/index.html`,
+          null,
+      );
+      request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: '*'}];
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
+          request,
+          calculator,
+          {initiatorSecurityOrigin},
+      );
+      assert.strictEqual(
+          formatter.responseAccessMode(),
+          SDK.NetworkRequestAccess.ResponseAccessMode.CORS_ALLOWED,
+      );
+    });
+
+    it('returns CORS_ALLOWED when request is cross-origin with matching Access-Control-Allow-Origin', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://victim.com/api/data`,
+          urlString`https://attacker.com/index.html`,
+          null,
+      );
+      request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: 'https://attacker.com'}];
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
+          request,
+          calculator,
+          {initiatorSecurityOrigin},
+      );
+      assert.strictEqual(
+          formatter.responseAccessMode(),
+          SDK.NetworkRequestAccess.ResponseAccessMode.CORS_ALLOWED,
+      );
+    });
+
+    it('returns OPAQUE_CROSS_ORIGIN when request is cross-origin with mismatched Access-Control-Allow-Origin', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://victim.com/api/data`,
+          urlString`https://attacker.com/index.html`,
+          null,
+      );
+      request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: 'https://other.com'}];
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
+          request,
+          calculator,
+          {initiatorSecurityOrigin},
+      );
+      assert.strictEqual(
+          formatter.responseAccessMode(),
+          SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN,
+      );
+    });
+
+    it('returns OPAQUE_CROSS_ORIGIN when request has CORS error status despite header presence', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://victim.com/api/data`,
+          urlString`https://attacker.com/index.html`,
+          null,
+      );
+      request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: '*'}];
+      request.setCorsErrorStatus({
+        corsError: Protocol.Network.CorsError.DisallowedByMode,
+        failedParameter: 'foo',
+      });
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
+          request,
+          calculator,
+          {initiatorSecurityOrigin},
+      );
+      assert.strictEqual(
+          formatter.responseAccessMode(),
+          SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN,
+      );
+    });
+  });
+
+  describe('formatResponseHeaders with CORS / Opaque restrictions', () => {
+    const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+
+    it('includes all allowed headers for same-origin requests', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api/data`,
+          urlString`https://example.com/`,
+          null,
+      );
+      request.responseHeaders = [
+        {name: 'Content-Type', value: 'application/json'},
+        {name: 'Cache-Control', value: 'no-cache'},
+        {name: 'Location', value: '/secret-redirect'},
+        {name: 'Server', value: 'Apache'},
+      ];
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
+          request,
+          calculator,
+          {initiatorSecurityOrigin},
+      );
+      const formatted = formatter.formatResponseHeaders();
+      assert.strictEqual(
+          formatted,
+          'Response headers:\nContent-Type: application/json\nCache-Control: no-cache\nLocation: /secret-redirect\nServer: Apache',
+      );
+    });
+
+    it('filters out non-safelisted headers for opaque cross-origin requests', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://victim.com/api/data`,
+          urlString`https://attacker.com/`,
+          null,
+      );
+      request.responseHeaders = [
+        {name: 'Content-Type', value: 'application/json'},
+        {name: 'Cache-Control', value: 'no-cache'},
+        {name: 'Location', value: '/secret-redirect'},
+        {name: 'Server', value: 'Apache'},
+        {name: 'WWW-Authenticate', value: 'Basic realm="Secret"'},
+      ];
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
+          request,
+          calculator,
+          {initiatorSecurityOrigin},
+      );
+      const formatted = formatter.formatResponseHeaders();
+      assert.strictEqual(
+          formatted,
+          'Response headers:\nContent-Type: application/json\nCache-Control: no-cache',
+      );
+    });
+
+    it('includes explicitly exposed headers via Access-Control-Expose-Headers for CORS-allowed requests', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://victim.com/api/data`,
+          urlString`https://attacker.com/`,
+          null,
+      );
+      request.responseHeaders = [
+        {name: 'Access-Control-Allow-Origin', value: 'https://attacker.com'},
+        {name: 'Content-Type', value: 'application/json'},
+        {name: 'X-Request-Id', value: 'req-12345'},
+        {name: 'Location', value: '/secret-redirect'},
+        {name: 'Access-Control-Expose-Headers', value: 'X-Request-Id'},
+      ];
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
+          request,
+          calculator,
+          {initiatorSecurityOrigin},
+      );
+      const formatted = formatter.formatResponseHeaders();
+      assert.strictEqual(
+          formatted,
+          'Response headers:\nContent-Type: application/json\nX-Request-Id: req-12345',
+      );
+    });
+  });
+
+  describe('formatResponseBody with CORS / Opaque restrictions', () => {
+    const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+
+    it('returns response body for same-origin requests', async () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api/data`,
+          urlString`https://example.com/`,
+          null,
+      );
+      request.requestContentData = () => {
+        return Promise.resolve(new TextUtils.ContentData.ContentData('{"user":"alice"}', false, 'application/json'));
+      };
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
+          request,
+          calculator,
+          {initiatorSecurityOrigin},
+      );
+      const body = await formatter.formatResponseBody();
+      assert.strictEqual(body, 'Response body:\n{"user":"alice"}');
+    });
+
+    it('returns response body for CORS-allowed cross-origin requests', async () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://victim.com/api/data`,
+          urlString`https://attacker.com/`,
+          null,
+      );
+      request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: 'https://attacker.com'}];
+      request.requestContentData = () => {
+        return Promise.resolve(new TextUtils.ContentData.ContentData('{"user":"alice"}', false, 'application/json'));
+      };
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
+          request,
+          calculator,
+          {initiatorSecurityOrigin},
+      );
+      const body = await formatter.formatResponseBody();
+      assert.strictEqual(body, 'Response body:\n{"user":"alice"}');
+    });
+
+    it('redacts response body for opaque cross-origin requests', async () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://victim.com/api/data`,
+          urlString`https://attacker.com/`,
+          null,
+      );
+      request.requestContentData = () => {
+        return Promise.resolve(
+            new TextUtils.ContentData.ContentData('{"secret":"confidential"}', false, 'application/json'));
+      };
+      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
+          request,
+          calculator,
+          {initiatorSecurityOrigin},
+      );
+      const body = await formatter.formatResponseBody();
+      assert.strictEqual(body, SDK.NetworkRequestAccess.REDACTED_RESPONSE_BODY);
+      assert.notInclude(body, 'confidential');
     });
   });
 });

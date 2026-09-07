@@ -93,7 +93,8 @@ describe('NetworkAgent', function() {
 
     beforeEach(() => {
       selectedNetworkRequest = SDK.NetworkRequest.NetworkRequest.create(
-          'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
+          'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`,
+          urlString`https://www.example.com`, null, null, null);
       selectedNetworkRequest.statusCode = 200;
       selectedNetworkRequest.setRequestHeaders([{name: 'content-type', value: 'bar1'}]);
       selectedNetworkRequest.responseHeaders =
@@ -104,39 +105,48 @@ describe('NetworkAgent', function() {
             new TextUtils.ContentData.ContentData(exampleResponse, false, 'application/json', 'utf-8'));
       };
       const initiatorNetworkRequest = SDK.NetworkRequest.NetworkRequest.create(
-          'requestId' as Protocol.Network.RequestId, urlString`https://www.initiator.com`, urlString``, null, null,
-          null);
+          'requestId' as Protocol.Network.RequestId, urlString`https://www.initiator.com`,
+          urlString`https://www.example.com`, null, null, null);
       const initiatedNetworkRequest1 = SDK.NetworkRequest.NetworkRequest.create(
-          'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/1`, urlString``, null, null,
-          null);
+          'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/1`,
+          urlString`https://www.example.com`, null, null, null);
       const initiatedNetworkRequest2 = SDK.NetworkRequest.NetworkRequest.create(
-          'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/2`, urlString``, null, null,
-          null);
+          'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/2`,
+          urlString`https://www.example.com`, null, null, null);
 
-      sinon.stub(universe.networkLog, 'initiatorGraphForRequest')
-          .withArgs(selectedNetworkRequest)
-          .returns({
+      const initiatorGraphStub = sinon.stub(universe.networkLog, 'initiatorGraphForRequest');
+      initiatorGraphStub.callsFake((req: SDK.NetworkRequest.NetworkRequest) => {
+        if (req === selectedNetworkRequest) {
+          return {
             initiators: new Set([selectedNetworkRequest, initiatorNetworkRequest]),
             initiated: new Map([
               [selectedNetworkRequest, initiatorNetworkRequest],
               [initiatedNetworkRequest1, selectedNetworkRequest],
               [initiatedNetworkRequest2, selectedNetworkRequest],
             ]),
-          })
-          .withArgs(initiatedNetworkRequest1)
-          .returns({
+          };
+        }
+        if (req === initiatedNetworkRequest1) {
+          return {
             initiators: new Set([]),
             initiated: new Map([
               [initiatedNetworkRequest1, selectedNetworkRequest],
             ]),
-          })
-          .withArgs(initiatedNetworkRequest2)
-          .returns({
+          };
+        }
+        if (req === initiatedNetworkRequest2) {
+          return {
             initiators: new Set([]),
             initiated: new Map([
               [initiatedNetworkRequest2, selectedNetworkRequest],
             ]),
-          });
+          };
+        }
+        return {
+          initiators: new Set([req]),
+          initiated: new Map(),
+        };
+      });
 
       calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
       calculator.updateBoundaries(selectedNetworkRequest);
@@ -194,6 +204,46 @@ describe('NetworkAgent', function() {
 
       const historicalCtx = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts;
       snapshotTester.assert(this, JSON.stringify(historicalCtx, null, 2));
+    });
+
+    it('redacts cross-origin response body in request built for AIDA', async function() {
+      const crossOriginRequest = SDK.NetworkRequest.NetworkRequest.create(
+          'crossOriginRequestId' as Protocol.Network.RequestId,
+          urlString`https://victim.com/sensitive-data`,
+          urlString`https://attacker.com/index.html`,
+          null,
+          null,
+          null,
+      );
+      crossOriginRequest.statusCode = 200;
+      crossOriginRequest.responseHeaders = [
+        {name: 'content-type', value: 'application/json'},
+        {name: 'location', value: '/secret-redirect'},
+        {name: 'www-authenticate', value: 'Bearer secret'},
+      ];
+      crossOriginRequest.timing = timingInfo;
+      crossOriginRequest.requestContentData = () => {
+        return Promise.resolve(new TextUtils.ContentData.ContentData('{"secret":"victim-confidential"}', false,
+                                                                     'application/json', 'utf-8'));
+      };
+
+      const agent = new NetworkAgent.NetworkAgent({
+        aidaClient: mockAidaClient([[{
+          explanation: 'This is the answer',
+          metadata: {
+            rpcGlobalId: 123,
+          },
+        }]]),
+      });
+
+      await Array.fromAsync(agent.run('explain this request',
+                                      {selected: new RequestContext.RequestContext(crossOriginRequest, calculator)}));
+
+      const historicalCtx = agent.buildRequest({text: ''}, Host.AidaClient.Role.USER).historical_contexts;
+      const ctxText = JSON.stringify(historicalCtx);
+      assert.include(ctxText, '<redacted cross-origin response body>');
+      assert.notInclude(ctxText, 'victim-confidential');
+      assert.notInclude(ctxText, 'secret-redirect');
     });
   });
 });

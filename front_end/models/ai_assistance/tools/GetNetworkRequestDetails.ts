@@ -110,7 +110,7 @@ export class GetNetworkRequestDetailsTool implements
     }
 
     const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
-    const formatter = new NetworkRequestFormatter(request, calculator, networkLog);
+    const formatter = new NetworkRequestFormatter(request, calculator, {networkLog});
     const formattedDetails = await formatter.formatNetworkRequest();
 
     return {

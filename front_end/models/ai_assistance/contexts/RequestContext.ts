@@ -2,17 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as Platform from '../../../core/platform/platform.js';
 import type * as SDK from '../../../core/sdk/sdk.js';
 import type * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import {
   type ContextDetail,
   ConversationContext,
 } from '../agents/AiAgent.js';
-import {extractContextOrigin} from '../AiOrigins.js';
-import {NetworkRequestFormatter} from '../data_formatters/NetworkRequestFormatter.js';
+import {
+  NetworkRequestFormatter,
+} from '../data_formatters/NetworkRequestFormatter.js';
 
 const UIStringsNotTranslate = {
   request: 'Request',
@@ -25,21 +24,13 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 
 /**
- * Returns the origin for a network request in the AI context.
+ * Returns the serialized security origin string for a network request context.
  *
- * To prevent cross-origin prompt injection attacks, HAR-imported requests
- * are isolated from live pages. We assign them a virtual origin
- * (`imported-har://${domain}`) so they do not share the origin of live pages
- * (e.g., `https://${domain}`). This forces a conversation reset when transitioning
- * between imported HAR data and live pages.
+ * @param request The network request from which to extract the context origin.
+ * @returns The resolved security origin string.
  */
 export function getRequestContextOrigin(request: SDK.NetworkRequest.NetworkRequest): string {
-  const origin = extractContextOrigin(request.documentURL);
-  if (request.isImportedHar()) {
-    const parsed = Common.ParsedURL.ParsedURL.fromString(origin as Platform.DevToolsPath.UrlString);
-    return `imported-har://${parsed ? parsed.domain() : origin}`;
-  }
-  return origin;
+  return request.initiatorSecurityOrigin().siteId();
 }
 
 export class RequestContext extends ConversationContext<SDK.NetworkRequest.NetworkRequest> {
@@ -77,13 +68,19 @@ export class RequestContext extends ConversationContext<SDK.NetworkRequest.Netwo
     return this.#request.name();
   }
 
+  #createFormatter(): NetworkRequestFormatter {
+    return new NetworkRequestFormatter(this.#request, this.#calculator, {
+      initiatorSecurityOrigin: this.#request.initiatorSecurityOrigin(),
+    });
+  }
+
   override async getPromptDetails(): Promise<string|null> {
-    const formatter = new NetworkRequestFormatter(this.#request, this.#calculator);
+    const formatter = this.#createFormatter();
     return `# Selected network request\n${await formatter.formatNetworkRequest()}`;
   }
 
   override async getUserFacingDetails(): Promise<[ContextDetail, ...ContextDetail[]]|null> {
-    const formatter = new NetworkRequestFormatter(this.#request, this.#calculator);
+    const formatter = this.#createFormatter();
     const requestContextDetail: ContextDetail = {
       title: lockedString(UIStringsNotTranslate.request),
       text: lockedString(UIStringsNotTranslate.requestUrl) + ': ' + this.#request.url() + '\n\n' +

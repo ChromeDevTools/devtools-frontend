@@ -32,7 +32,6 @@ import {
 import {
   allThreadEntriesInTrace,
   getBaseTraceHandlerData,
-  getEventOfType,
   getMainThread,
   makeCompleteEvent,
   makeInstantEvent,
@@ -1624,83 +1623,115 @@ describeWithEnvironment('TimelineUIUtils', function() {
   });
 
   describe('isMarkerEvent', () => {
-    it('is true for a timestamp event', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const timestamp = allThreadEntriesInTrace(parsedTrace).find(Trace.Types.Events.isConsoleTimeStamp);
-      assert.isOk(timestamp);
-      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(parsedTrace, timestamp));
+    const mockParsedTrace = {
+      data: {
+        Meta: {
+          mainFrameId: 'main-frame-id',
+        },
+      },
+    } as unknown as Trace.TraceModel.ParsedTrace;
+
+    it('is true for a timestamp event', () => {
+      const timestamp = makeInstantEvent(Trace.Types.Events.Name.TIME_STAMP, 0);
+      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(mockParsedTrace, timestamp));
     });
 
-    it('is true for a Mark First Paint event', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const markFirstPaint = parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(Trace.Types.Events.isFirstPaint);
-      assert.isOk(markFirstPaint);
-      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(parsedTrace, markFirstPaint));
+    it('is true for a Mark First Paint event', () => {
+      const markFirstPaint: Trace.Types.Events.FirstPaint = {
+        ...makeInstantEvent(Trace.Types.Events.Name.MARK_FIRST_PAINT, 0),
+        name: Trace.Types.Events.Name.MARK_FIRST_PAINT,
+        ph: Trace.Types.Events.Phase.MARK,
+        args: {frame: 'main-frame-id'},
+      };
+      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(mockParsedTrace, markFirstPaint));
     });
 
-    it('is true for a Mark FCP event', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const markFCPEvent =
-          parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(Trace.Types.Events.isFirstContentfulPaint);
-      assert.isOk(markFCPEvent);
-      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(parsedTrace, markFCPEvent));
+    it('is true for a Mark FCP event', () => {
+      const markFCPEvent: Trace.Types.Events.FirstContentfulPaint = {
+        ...makeInstantEvent(Trace.Types.Events.Name.MARK_FCP, 0),
+        name: Trace.Types.Events.Name.MARK_FCP,
+        ph: Trace.Types.Events.Phase.MARK,
+        args: {frame: 'main-frame-id'},
+      };
+      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(mockParsedTrace, markFCPEvent));
     });
 
-    it('is false for a Mark FCP event not on the main frame', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const markFCPEvent =
-          parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(Trace.Types.Events.isFirstContentfulPaint);
-      assert.isOk(markFCPEvent);
-      assert.isOk(markFCPEvent.args);
-      // Now make a copy (so we do not mutate any data) and pretend it is not on the main frame.
-      const copyOfEvent = {...markFCPEvent, args: {...markFCPEvent.args}};
-      copyOfEvent.args.frame = 'not-the-main-frame';
-      assert.isFalse(Timeline.TimelineUIUtils.isMarkerEvent(parsedTrace, copyOfEvent));
+    it('is false for a Mark FCP event not on the main frame', () => {
+      const markFCPEvent: Trace.Types.Events.FirstContentfulPaint = {
+        ...makeInstantEvent(Trace.Types.Events.Name.MARK_FCP, 0),
+        name: Trace.Types.Events.Name.MARK_FCP,
+        ph: Trace.Types.Events.Phase.MARK,
+        args: {frame: 'not-the-main-frame'},
+      };
+      assert.isFalse(Timeline.TimelineUIUtils.isMarkerEvent(mockParsedTrace, markFCPEvent));
     });
 
-    it('is true for a MarkDOMContent event', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const markDOMContentEvent =
-          parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(Trace.Types.Events.isMarkDOMContent);
-      assert.isOk(markDOMContentEvent);
-      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(parsedTrace, markDOMContentEvent));
-    });
-
-    it('is true for a MarkLoad event', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const markLoadEvent = parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(Trace.Types.Events.isMarkLoad);
-      assert.isOk(markLoadEvent);
-      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(parsedTrace, markLoadEvent));
-    });
-
-    it('is true for a LCP candiadate event', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const markLCPCandidate = parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(
-          Trace.Types.Events.isAnyLargestContentfulPaintCandidate);
-      assert.isOk(markLCPCandidate);
-      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(parsedTrace, markLCPCandidate));
-    });
-
-    it('is false for a MarkDOMContent event not on outermost main frame', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev-initial-url.json.gz');
-      const markDOMContentEvent =
-          parsedTrace.data.PageLoadMetrics.allMarkerEvents.find(Trace.Types.Events.isMarkDOMContent);
-      assert.isOk(markDOMContentEvent);
-      assert.isOk(markDOMContentEvent.args);
-      assert.isOk(markDOMContentEvent.args.data);
-
-      const copyOfEventNotOutermostFrame = {
-        ...markDOMContentEvent,
+    it('is true for a MarkDOMContent event', () => {
+      const markDOMContentEvent: Trace.Types.Events.MarkDOMContent = {
+        ...makeInstantEvent(Trace.Types.Events.Name.MARK_DOM_CONTENT, 0),
+        name: Trace.Types.Events.Name.MARK_DOM_CONTENT,
         args: {
-          ...markDOMContentEvent.args,
           data: {
-            ...markDOMContentEvent.args.data,
+            frame: 'main-frame-id',
+            isMainFrame: true,
+            page: 'page',
+            isOutermostMainFrame: true,
+          },
+        },
+      };
+      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(mockParsedTrace, markDOMContentEvent));
+    });
+
+    it('is true for a MarkLoad event', () => {
+      const markLoadEvent: Trace.Types.Events.MarkLoad = {
+        ...makeInstantEvent(Trace.Types.Events.Name.MARK_LOAD, 0),
+        name: Trace.Types.Events.Name.MARK_LOAD,
+        args: {
+          data: {
+            frame: 'main-frame-id',
+            isMainFrame: true,
+            page: 'page',
+            isOutermostMainFrame: true,
+          },
+        },
+      };
+      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(mockParsedTrace, markLoadEvent));
+    });
+
+    it('is true for an LCP candidate event', () => {
+      const markLCPCandidate: Trace.Types.Events.LargestContentfulPaintCandidate = {
+        ...makeInstantEvent(Trace.Types.Events.Name.MARK_LCP_CANDIDATE, 0),
+        name: Trace.Types.Events.Name.MARK_LCP_CANDIDATE,
+        ph: Trace.Types.Events.Phase.MARK,
+        args: {
+          frame: 'main-frame-id',
+          data: {
+            candidateIndex: 1,
+            isOutermostMainFrame: true,
+            isMainFrame: true,
+            navigationId: 'nav-id',
+            nodeId: 1 as Protocol.DOM.BackendNodeId,
+            loadingAttr: '',
+          },
+        },
+      };
+      assert.isTrue(Timeline.TimelineUIUtils.isMarkerEvent(mockParsedTrace, markLCPCandidate));
+    });
+
+    it('is false for a MarkDOMContent event not on outermost main frame', () => {
+      const markDOMContentEvent: Trace.Types.Events.MarkDOMContent = {
+        ...makeInstantEvent(Trace.Types.Events.Name.MARK_DOM_CONTENT, 0),
+        name: Trace.Types.Events.Name.MARK_DOM_CONTENT,
+        args: {
+          data: {
+            frame: 'main-frame-id',
+            isMainFrame: false,
+            page: 'page',
             isOutermostMainFrame: false,
           },
         },
-
       };
-      assert.isFalse(Timeline.TimelineUIUtils.isMarkerEvent(parsedTrace, copyOfEventNotOutermostFrame));
+      assert.isFalse(Timeline.TimelineUIUtils.isMarkerEvent(mockParsedTrace, markDOMContentEvent));
     });
   });
 
@@ -1742,10 +1773,9 @@ describeWithEnvironment('TimelineUIUtils', function() {
   });
 
   describe('buildDetailsNodeForMarkerEvents', () => {
-    it('builds the right link for an LCP Event', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const markLCPEvent = getEventOfType(parsedTrace.data.PageLoadMetrics.allMarkerEvents,
-                                          Trace.Types.Events.isAnyLargestContentfulPaintCandidate);
+    it('builds the right link for an LCP Event', () => {
+      const markLCPEvent =
+          makeInstantEvent(Trace.Types.Events.Name.MARK_LCP_CANDIDATE, 0) as Trace.Types.Events.MarkerEvent;
       const html = Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
           markLCPEvent,
       );
@@ -1754,10 +1784,8 @@ describeWithEnvironment('TimelineUIUtils', function() {
       assert.strictEqual(html.innerText, 'Learn more about Largest Contentful Paint.');
     });
 
-    it('builds the right link for an FCP Event', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const markFCPEvent =
-          getEventOfType(parsedTrace.data.PageLoadMetrics.allMarkerEvents, Trace.Types.Events.isFirstContentfulPaint);
+    it('builds the right link for an FCP Event', () => {
+      const markFCPEvent = makeInstantEvent(Trace.Types.Events.Name.MARK_FCP, 0) as Trace.Types.Events.MarkerEvent;
       const html = Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
           markFCPEvent,
       );
@@ -1766,10 +1794,8 @@ describeWithEnvironment('TimelineUIUtils', function() {
       assert.strictEqual(html.innerText, 'Learn more about First Contentful Paint.');
     });
 
-    it('builds a generic event for other marker events', async function() {
-      const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
-      const markLoadEvent =
-          getEventOfType(parsedTrace.data.PageLoadMetrics.allMarkerEvents, Trace.Types.Events.isMarkLoad);
+    it('builds a generic event for other marker events', () => {
+      const markLoadEvent = makeInstantEvent(Trace.Types.Events.Name.MARK_LOAD, 0) as Trace.Types.Events.MarkerEvent;
       const html = Timeline.TimelineUIUtils.TimelineUIUtils.buildDetailsNodeForMarkerEvents(
           markLoadEvent,
       );

@@ -5,24 +5,32 @@
 import {assert} from 'chai';
 
 import * as Trace from '../../models/trace/trace.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {deinitializeGlobalVars, initializeGlobalVars} from '../../testing/EnvironmentHelpers.js';
 import {allThreadEntriesInTrace} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 
 import * as Timeline from './timeline.js';
 
-describeWithEnvironment('Initiators', () => {
+describe('Initiators', function() {
+  before(async function() {
+    await initializeGlobalVars();
+  });
+
+  after(async function() {
+    await deinitializeGlobalVars();
+  });
+
   describe('initiator-initiated event relationships', () => {
     let requestIdleCallbackCall: Trace.Types.Events.SyntheticProfileCall;
-    let functionCallByrequestIdleCallback: Trace.Types.Events.Event;
+    let functionCallByRequestIdleCallback: Trace.Types.Events.Event;
     let setTimeoutCall: Trace.Types.Events.SyntheticProfileCall;
     let functionCallBySetTimeout: Trace.Types.Events.Event;
     let rAFCall: Trace.Types.Events.SyntheticProfileCall;
     let functionCallByRAF: Trace.Types.Events.Event;
-
     let parsedTrace: Trace.TraceModel.ParsedTrace;
-    beforeEach(async function() {
-      parsedTrace = await TraceLoader.traceEngine(this, 'async-js-calls.json.gz');
+
+    before(async function() {
+      parsedTrace = await TraceLoader.traceEngine(null, 'async-js-calls.json.gz');
       setTimeoutCall =
           allThreadEntriesInTrace(parsedTrace)
               .filter(e => Trace.Types.Events.isProfileCall(e) && e.callFrame.functionName === 'setTimeout')
@@ -54,11 +62,10 @@ describeWithEnvironment('Initiators', () => {
       assert.exists(requestIdleCallbackCall);
       assert.isTrue(Trace.Types.Events.isProfileCall(requestIdleCallbackCall));
 
-      functionCallByrequestIdleCallback =
-          allThreadEntriesInTrace(parsedTrace)
-              .find(e => Trace.Types.Events.isFunctionCall(e) && e.ts > requestIdleCallbackCall.ts) as
-          Trace.Types.Events.Event;
-      assert.exists(functionCallByrequestIdleCallback);
+      functionCallByRequestIdleCallback = allThreadEntriesInTrace(parsedTrace)
+                                              .find(e => Trace.Types.Events.isFunctionCall(e) &&
+                                                        e.ts > requestIdleCallbackCall.ts) as Trace.Types.Events.Event;
+      assert.exists(functionCallByRequestIdleCallback);
     });
 
     it('returns the initiator data', async function() {
@@ -102,7 +109,7 @@ describeWithEnvironment('Initiators', () => {
 
       assert.deepEqual(initiatorsData, [
         {
-          event: functionCallByrequestIdleCallback,
+          event: functionCallByRequestIdleCallback,
           initiator: requestIdleCallbackCall,
         },
         {

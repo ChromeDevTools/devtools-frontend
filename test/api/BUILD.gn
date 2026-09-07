@@ -2,7 +2,27 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../scripts/build/typescript/typescript.gni")
+
+# We expose types.d.ts as a devtools_pre_built library so that the
+# devtools_api_test_module template can inject it as a ts_dep into API test
+# targets. Because types.d.ts imports from Foundation and Conductor, this
+# establishes a Ninja DAG dependency edge ensuring API tests are re-typechecked
+# whenever Foundation or Conductor change.
+#
+# Additionally, this target acts as an architectural bridge: core/ and models/
+# cannot depend directly on Foundation due to GN visibility restrictions, but
+# test/api/* is explicitly allowlisted by Foundation.
+devtools_pre_built("test_interface_types") {
+  testonly = true
+  sources_are_release = false
+  sources = [ "types.d.ts" ]
+  ts_deps = [
+    "../../front_end/foundation:bundle",
+    "../conductor:implementation",
+  ]
+}
 
 node_ts_library("api") {
   additional_type_definitions = [ "types.d.ts" ]

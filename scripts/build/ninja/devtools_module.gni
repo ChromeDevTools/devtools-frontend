@@ -29,6 +29,7 @@ template("devtools_api_test_module") {
                            [
                              "additional_type_definitions",
                              "testonly",
+                             "ts_deps",
                            ])
     if (defined(invoker.additional_type_definitions)) {
       additional_type_definitions = invoker.additional_type_definitions
@@ -37,6 +38,13 @@ template("devtools_api_test_module") {
     }
     additional_type_definitions +=
         [ devtools_location_prepend + "test/api/types.d.ts" ]
+
+    if (defined(invoker.ts_deps)) {
+      ts_deps = invoker.ts_deps
+    } else {
+      ts_deps = []
+    }
+    ts_deps += [ devtools_location_prepend + "test/api:test_interface_types" ]
   }
 }
 

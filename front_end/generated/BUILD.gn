@@ -2,9 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("../../scripts/build/typescript/ts_library_split.gni")
+import("../../scripts/build/typescript/typescript.gni")
 
-ts_library_split("generated") {
+ts_library("generated") {
   sources = [
     "ARIAProperties.ts",
     "Deprecation.ts",

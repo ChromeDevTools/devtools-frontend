@@ -15,7 +15,7 @@ devtools_pre_built("prebuilt_lib") {
   ]
 }
 
-devtools_entrypoint_split("bundle") {
+devtools_entrypoint("bundle") {
   entrypoint = "prebuilt_lib.ts"
 
   ts_deps = [ ":prebuilt_lib" ]

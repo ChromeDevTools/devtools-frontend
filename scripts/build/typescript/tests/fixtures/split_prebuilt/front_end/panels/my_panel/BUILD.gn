@@ -4,7 +4,7 @@
 
 import("../../../../../../typescript.gni")
 
-ts_library_split("my_panel") {
+ts_library("my_panel") {
   sources = [ "MyPanel.ts" ]
   ts_deps = [ "../../third_party/prebuilt_lib:bundle" ]
 }

@@ -69,6 +69,7 @@ Migrate modules tier-by-tier from leaf dependencies up to top-level panels and t
   - `legacy_ts_library` in `scripts/build/typescript/typescript.gni`
   - `legacy_devtools_entrypoint` in `scripts/build/ninja/devtools_entrypoint.gni`
 - Remove all `split_compilation = true` overrides across `BUILD.gn` files.
+- Rename `ts_library_split` and `devtools_entrypoint_split` back to `ts_library` and `devtools_entrypoint`, consolidating their definitions directly into `typescript.gni` and `devtools_entrypoint.gni`.
 
 ---
 
@@ -82,7 +83,7 @@ To enable seamless, incremental migration of hundreds of DevTools modules withou
 | :--- | :--- | :--- |
 | **Legacy** | **Legacy** | Standard legacy project reference resolution via `*-tsconfig.ref.json` / `*-tsconfig.json`. |
 | **Legacy** | **Split** | Legacy `ts_library` accepts `ts_deps`, generates references to split compilation's `*-tsconfig.ref.json`, and type-checks against split compilation's emitted `.d.ts`. |
-| **Split** | **Legacy** | Split `ts_library_split` specifies `ts_deps = [ "//legacy_target" ]`. Legacy target emits `*-tsconfig.ref.json` and `.d.ts`; split compilation type-checker resolves against them. |
+| **Split** | **Legacy** | Split `ts_library` specifies `ts_deps = [ "//legacy_target" ]`. Legacy target emits `*-tsconfig.ref.json` and `.d.ts`; split compilation type-checker resolves against them. |
 | **Split** | **Split** | Fully decoupled `--isolatedDeclarations` emit and restat caching. |
 
 ### Adapter Mechanisms

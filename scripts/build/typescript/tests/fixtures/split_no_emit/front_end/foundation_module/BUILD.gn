@@ -11,7 +11,7 @@ ts_type_check("foundation_node_typecheck") {
   runs_in = "node_esm"
 }
 
-ts_library_split("foundation_module") {
+ts_library("foundation_module") {
   sources = [ "Foundation.ts" ]
   es_target = "es2023"
   es_libs = [

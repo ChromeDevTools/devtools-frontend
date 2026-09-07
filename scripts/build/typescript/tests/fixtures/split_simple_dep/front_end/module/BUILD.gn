@@ -4,11 +4,11 @@
 
 import("../../../../../typescript.gni")
 
-ts_library_split("dep") {
+ts_library("dep") {
   sources = [ "exporting.ts" ]
 }
 
-ts_library_split("module") {
+ts_library("module") {
   sources = [ "index.ts" ]
   ts_deps = [ ":dep" ]
 }

@@ -104,7 +104,7 @@ template("devtools_pre_built") {
     }
   }
 
-  # Expose ${target_name}-dts group alias so ts_deps and ts_library_split
+  # Expose ${target_name}-dts group alias so ts_deps and ts_library
   # dependencies resolve seamlessly to this target.
   group("${target_name}-dts") {
     public_deps = [ ":$_gen_target_name" ]
@@ -123,7 +123,7 @@ template("devtools_pre_built") {
     }
   }
 
-  # Expose ${target_name}_sources group so ts_deps in devtools_entrypoint_split
+  # Expose ${target_name}_sources group so ts_deps in devtools_entrypoint
   # can resolve source dependencies for bundling.
   _sources = []
   if (!invoker.sources_are_release) {

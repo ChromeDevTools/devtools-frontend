@@ -155,7 +155,7 @@ devtools_entrypoint("bundle") {
 
 In the legacy architecture, each TypeScript library invoked a heavy Python runner (`ts_library.py`) which performed combined type checking, `.d.ts` declaration emit, and JavaScript transpilation in a single serial step. This serialized the dependency graph and caused extensive rebuild cascades across DevTools whenever upstream files changed.
 
-The split compilation architecture (`ts_library_split` and `devtools_entrypoint_split`) decouples compilation into distinct, highly parallelized phases:
+The split compilation architecture (`ts_library` and `devtools_entrypoint`) decouples compilation into distinct, highly parallelized phases:
 
 ```
 [Source .ts files]

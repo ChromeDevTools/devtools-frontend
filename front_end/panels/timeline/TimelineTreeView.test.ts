@@ -134,6 +134,11 @@ describe('TimelineTreeView', function() {
       bottomUpTreeView.model = {selectedEvents: consoleTimings, parsedTrace, entityMapper: mapper};
 
       await RenderCoordinator.done();
+      // Ensure the datagrid or row does not have focus. If a row is focused,
+      // Chromium can match :focus-visible (if previous tests in the runner
+      // dispatched keyboard events), rendering a focus ring outline and
+      // focused selection colors.
+      (document.activeElement as HTMLElement | null)?.blur();
       await assertScreenshot('timeline/bottom_up_tree_view.png');
 
       const tree = bottomUpTreeView.buildTree();

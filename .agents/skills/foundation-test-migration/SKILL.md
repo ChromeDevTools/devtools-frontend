@@ -143,13 +143,13 @@ When a module and its tests are ready, update `BUILD.gn`:
 
 devtools_foundation_module("my_module") {
   sources = [ "MyModule.ts" ]
-  deps = [ "../../core/common:bundle" ]
+  ts_deps = [ "../../core/common:bundle" ]
 }
 
 devtools_foundation_module("unittests") {
   testonly = true
   sources = [ "MyModule.test.ts" ]
-  deps = [
+  ts_deps = [
     ":my_module",
     "../../testing",
   ]

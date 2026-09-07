@@ -19,7 +19,7 @@ You will need the following information:
 
 Read the contents of the `BUILD.gn` file from both the child module and the parent module. Identify the following from the child's `BUILD.gn`:
 -   The list of `sources` in the `devtools_module`.
--   The list of `deps` (dependencies) in the `devtools_module`.
+-   The list of `ts_deps` (and non-TypeScript `deps`) in the `devtools_module`.
 -   The `entrypoint` for the `devtools_entrypoint("bundle")`.
 
 ### 2. Modify the Parent `BUILD.gn`
@@ -27,8 +27,8 @@ Read the contents of the `BUILD.gn` file from both the child module and the pare
 Edit the `BUILD.gn` file in the parent module's directory to incorporate the child module's configuration.
 
 1.  **Add Child's Sources:** Append the list of `sources` from the child's `devtools_module` to the parent's `sources` list. Remember to maintain the relative path from the parent's directory (e.g., `extensions/ExtensionUI.ts`).
-2.  **Merge Dependencies:** Add the `deps` from the child's `devtools_module` to the parent's `deps` list. Remove any duplicate entries.
-3.  **Remove Child Bundle Dependency:** Delete the dependency on the child's bundle from the parent's `deps` list (e.g., remove `./extensions:bundle`).
+2.  **Merge Dependencies:** Add the `ts_deps` from the child's `devtools_module` to the parent's `ts_deps` list (and merge any non-TypeScript `deps`). Remove any duplicate entries.
+3.  **Remove Child Bundle Dependency:** Delete the dependency on the child's bundle from the parent's `ts_deps` list (e.g., remove `./extensions:bundle`).
 
 ### 3. Delete the Child `BUILD.gn`
 
@@ -63,7 +63,7 @@ devtools_module("timeline") {
     "UIDevtoolsUtils.ts",
   ]
 
-  deps = [
+  ts_deps = [
     ...
     "./components:bundle",
     "./extensions:bundle",
@@ -82,7 +82,7 @@ devtools_module("timeline") {
     "extensions/ExtensionUI.ts", # Added from child
   ]
 
-  deps = [
+  ts_deps = [
     ...
     "./components:bundle",
     # "./extensions:bundle", # Removed

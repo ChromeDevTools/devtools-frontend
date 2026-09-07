@@ -22,12 +22,12 @@ This guide outlines the standard procedure for creating a new model or migrating
 ## 2. Build Configuration (`BUILD.gn`)
 Every model requires a `BUILD.gn` file in its directory with three specific targets:
 
-1.  **`devtools_module("<model_name>")`**: Lists implementation source files (`sources`) and dependencies (`deps`).
+1.  **`devtools_module("<model_name>")`**: Lists implementation source files (`sources`) and TypeScript dependencies (`ts_deps`). Non-TypeScript dependencies (e.g. CSS, assets) go into `deps`.
     *   **Crucial:** Do NOT include the barrel file (`<model_name>.ts`) in `sources`.
 2.  **`devtools_entrypoint("bundle")`**: Defines the barrel file (`entrypoint = "<model_name>.ts"`).
-    *   **Crucial:** Must depend on the module target: `deps = [ ":<model_name>" ]`.
+    *   **Crucial:** Must depend on the module target: `ts_deps = [ ":<model_name>" ]`.
 3.  **`ts_library("unittests")`**: Lists test files and test-only dependencies.
-    *   **Crucial:** Must depend on the bundle: `deps = [ ":bundle" ]`.
+    *   **Crucial:** Must depend on the bundle: `ts_deps = [ ":bundle" ]`.
 
 ## 3. Global Registration (Crucial)
 The build system does not auto-detect new modules. You must manually register them in **`config/gni/devtools_grd_files.gni`**:

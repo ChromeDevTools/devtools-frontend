@@ -65,20 +65,20 @@ devtools_module("timeline") {
     # more files listed, omitted to save space!
   ]
 
-  deps = [
+  ts_deps = [
     # more deps listed in reality, omitted to save space!
     "../../core/host:bundle",
   ]
 }
 ```
 
-Within the `devtools_module` we list all the source files - a list of every TypeScript file that is in this directory - and ensure that any dependencies are listed in the `deps` section. Because we just added an import to `../../core/sdk/sdk.ts`, we need to update the `deps` entry accordingly:
+Within the `devtools_module` we list all the source files - a list of every TypeScript file that is in this directory - and ensure that any TypeScript dependencies are listed in the `ts_deps` section (non-TypeScript dependencies like generated CSS or assets go into `deps`). Because we just added an import to `../../core/sdk/sdk.ts`, we need to update the `ts_deps` entry accordingly:
 
 ```gn
 devtools_module("timeline") {
   sources = [...] # omitted
 
-  deps = [
+  ts_deps = [
     "../../core/host:bundle",
     "../../core/sdk:bundle", # <--- this line added
   ]
@@ -101,7 +101,7 @@ devtools_module("timeline") {
     # omitted...
   ]
 
-  deps = [
+  ts_deps = [
     "../../core/host:bundle",
     # omitted...
   ]
@@ -110,7 +110,7 @@ devtools_module("timeline") {
 devtools_entrypoint("bundle") {
   entrypoint = "timeline.ts"
 
-  deps = [
+  ts_deps = [
     ":timeline",
     # omitted...
   ]

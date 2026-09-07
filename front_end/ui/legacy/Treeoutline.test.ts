@@ -436,6 +436,71 @@ describe('TreeViewElement', () => {
     assert.deepEqual(onExpand.args[0][0].detail, {expanded: true});
   });
 
+  it('sends an `enter` event and suppresses expansion when canceled', async () => {
+    const onEnter = sinon.stub<[UI.TreeOutline.TreeViewElement.EnterEvent]>().callsFake(e => e.preventDefault());
+    const component = await makeTree(html`<devtools-tree @enter=${onEnter} .template=${html`
+      <ul role="tree">
+         <li role="treeitem">
+           Parent Node
+           <ul role="group">
+             <li role="treeitem">Child Node</li>
+           </ul>
+         </li>
+      </ul>
+    `}></devtools-tree>`);
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const parentNode = treeOutline.rootElement().children()[0];
+    parentNode.select();
+    assert.isFalse(parentNode.expanded);
+
+    dispatchKeyDownEvent(parentNode.listItemElement, {bubbles: true, key: 'Enter'});
+    sinon.assert.calledOnce(onEnter);
+    assert.isFalse(parentNode.expanded, 'Node should not expand on Enter when enter event is canceled');
+  });
+
+  it('expands nodes on Enter when enter event is not canceled', async () => {
+    const onEnter = sinon.stub<[UI.TreeOutline.TreeViewElement.EnterEvent]>();
+    const component = await makeTree(html`<devtools-tree @enter=${onEnter} .template=${html`
+      <ul role="tree">
+         <li role="treeitem">
+           Parent Node
+           <ul role="group">
+             <li role="treeitem">Child Node</li>
+           </ul>
+         </li>
+      </ul>
+    `}></devtools-tree>`);
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const parentNode = treeOutline.rootElement().children()[0];
+    parentNode.select();
+    assert.isFalse(parentNode.expanded);
+
+    dispatchKeyDownEvent(parentNode.listItemElement, {bubbles: true, key: 'Enter'});
+    sinon.assert.calledOnce(onEnter);
+    assert.isTrue(parentNode.expanded, 'Node should expand on Enter when enter event is not canceled');
+  });
+
+  it('does not toggle node expansion on double click if event is defaultPrevented', async () => {
+    const component = await makeTree(html`<devtools-tree .template=${html`
+      <ul role="tree">
+         <li role="treeitem">
+           Parent Node
+           <ul role="group">
+             <li role="treeitem">Child Node</li>
+           </ul>
+         </li>
+      </ul>
+    `}></devtools-tree>`);
+    const treeOutline = component.getInternalTreeOutlineForTest();
+    const parentNode = treeOutline.rootElement().children()[0];
+    assert.isFalse(parentNode.expanded);
+
+    const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
+    event.preventDefault();
+    parentNode.listItemElement.dispatchEvent(event);
+    assert.isFalse(parentNode.expanded, 'Node should not expand on double click when default is prevented');
+  });
+
   it('applies jslog contexts to tree elements', async () => {
     const component = await makeTree(html`
       <devtools-tree

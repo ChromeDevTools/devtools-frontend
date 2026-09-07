@@ -1001,6 +1001,10 @@ export class TreeElement {
       return;
     }
 
+    if (event.defaultPrevented) {
+      return;
+    }
+
     const handled = this.ondblclick(event);
     if (handled) {
       return;
@@ -1679,6 +1683,15 @@ class TreeViewTreeElement extends TreeElement {
     return configElement && TreeViewTreeElement.#elementToTreeElement.get(configElement);
   }
 
+  override onenter(): boolean {
+    const enterEvent = new TreeViewElement.EnterEvent();
+    const shouldExpand = this.listItemElement.dispatchEvent(enterEvent);
+    if (!shouldExpand) {
+      return false;
+    }
+    return super.onenter();
+  }
+
   remove(): void {
     removeNode(this,
                Boolean(this.parent &&
@@ -2028,6 +2041,12 @@ export namespace TreeViewElement {
   export class ExpandEvent extends CustomEvent<{expanded: boolean}> {
     constructor(detail: {expanded: boolean}) {
       super('expand', {detail});
+    }
+  }
+
+  export class EnterEvent extends CustomEvent<void> {
+    constructor() {
+      super('enter', {bubbles: true, cancelable: true, composed: true});
     }
   }
 

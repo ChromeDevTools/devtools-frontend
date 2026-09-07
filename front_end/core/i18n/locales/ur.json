@@ -659,8 +659,14 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | disableAvifFormat": {
     "message": "‫AVIF فارمیٹ کو غیر فعال کریں"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | disableJpegXlFormat": {
+    "message": "‫JPEG XL فارمیٹ کو غیر فعال کریں"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | disableLocalFonts": {
     "message": "مقامی فونٹس کو غیر فعال کریں"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | disableWebpFormat": {
+    "message": "‫WebP فارمیٹ کو غیر فعال کریں"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
     "message": "پاپ اپس کے لیے DevTools کو خودکار طور پر نہ کھولیں"
@@ -688,6 +694,9 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateAchromatopsia": {
     "message": "achromatopsia کو ایمولیٹ کریں (کوئی رنگ نہیں)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateAutoDarkMode": {
+    "message": "خودکار تاریک وضع کو ایمولیٹ کریں"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateBlurredVision": {
     "message": "دھندلی بصارت کو ایمولیٹ کریں"
@@ -728,8 +737,14 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | enableAvifFormat": {
     "message": "‫AVIF فارمیٹ کو فعال کریں"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | enableJpegXlFormat": {
+    "message": "‫JPEG XL فارمیٹ کو فعال کریں"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | enableLocalFonts": {
     "message": "مقامی فونٹس کو فعال کریں"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | enableWebpFormat": {
+    "message": "WebP فارمیٹ کو فعال کریں"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | forceAdBlocking": {
     "message": "اس سائٹ پر اشتہار مسدود کرنے کو فورس کریں"
@@ -941,6 +956,12 @@
   "entrypoints/main/main-meta.ts | devtoolsDefault": {
     "message": "DevTools ‏(ڈیفالٹ)"
   },
+  "entrypoints/main/main-meta.ts | disableOverrideNetworkRequests": {
+    "message": "اوور رائیڈ نیٹ ورک کی درخواستیں غیر فعال کریں"
+  },
+  "entrypoints/main/main-meta.ts | disablePaused": {
+    "message": "موقوف شدہ حالت کا اوور لے غیر فعال کریں"
+  },
   "entrypoints/main/main-meta.ts | dockToBottom": {
     "message": "نیچے ڈاک کریں"
   },
@@ -953,8 +974,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "‫Chrome رنگ کی اسکیم مماثل نہ کریں"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "بَیجز حاصل کريں"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "پینلز پر سوئچ کرنے کے لیے Ctrl + 1-9 کا استعمال کریں"
+  },
+  "entrypoints/main/main-meta.ts | enableOverrideNetworkRequests": {
+    "message": "اوور رائیڈ نیٹ ورک کی درخواستیں فعال کریں"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "پینلز کو سوئچ کرنے کے لیے ‎⌘ + 1-9 کا استعمال کریں"
@@ -971,6 +998,9 @@
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "افقی"
   },
+  "entrypoints/main/main-meta.ts | interception": {
+    "message": "مداخلت"
+  },
   "entrypoints/main/main-meta.ts | language": {
     "message": "زبان:"
   },
@@ -983,6 +1013,9 @@
   "entrypoints/main/main-meta.ts | lightLower": {
     "message": "لائٹ"
   },
+  "entrypoints/main/main-meta.ts | localOverrides": {
+    "message": "مقامی اوور رائیڈز"
+  },
   "entrypoints/main/main-meta.ts | matchChromeColorScheme": {
     "message": "‫Chrome رنگ کی اسکیم سے مماثل کریں"
   },
@@ -992,8 +1025,14 @@
   "entrypoints/main/main-meta.ts | matchChromeColorSchemeDocumentation": {
     "message": "‫DevTools کے رنگوں کو اپنی حسب ضرورت Chrome تھیم کے ساتھ مماثل کریں (جب فعال ہو)"
   },
+  "entrypoints/main/main-meta.ts | network": {
+    "message": "نیٹ ورک"
+  },
   "entrypoints/main/main-meta.ts | nextPanel": {
     "message": "اگلا پینل"
+  },
+  "entrypoints/main/main-meta.ts | override": {
+    "message": "اوور رائیڈ"
   },
   "entrypoints/main/main-meta.ts | panelLayout": {
     "message": "پینل لے آؤٹ:"
@@ -1004,11 +1043,17 @@
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "‫DevTools کو دوبارہ لوڈ کریں"
   },
+  "entrypoints/main/main-meta.ts | request": {
+    "message": "درخواست"
+  },
   "entrypoints/main/main-meta.ts | resetZoomLevel": {
     "message": "زوم کی سطح کو ری سیٹ کریں"
   },
   "entrypoints/main/main-meta.ts | restoreLastDockPosition": {
     "message": "آخری ڈاک کی پوزیشن بحال کریں"
+  },
+  "entrypoints/main/main-meta.ts | rewrite": {
+    "message": "دوبارہ لکھیں"
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "دائیں"
@@ -1647,7 +1692,7 @@
     "message": "اینیمیشن فریم فعال کی گئی"
   },
   "models/trace/Styles.ts | async": {
-    "message": "نا ہم وقت"
+    "message": "ناہم وقت"
   },
   "models/trace/Styles.ts | asyncTask": {
     "message": "نا ہم وقت ٹاسک"
@@ -1797,7 +1842,7 @@
     "message": "ٹائمر انسٹال کریں"
   },
   "models/trace/Styles.ts | invalidateLayout": {
-    "message": "لے آؤٹ غلط ہے"
+    "message": "لے آؤٹ کو غلط قرار دیں"
   },
   "models/trace/Styles.ts | jsFrame": {
     "message": "‫JS فریم"
@@ -1872,7 +1917,7 @@
     "message": "پینٹ ریسٹرائز کریں"
   },
   "models/trace/Styles.ts | rasterizing": {
-    "message": "ریسٹرائزنگ"
+    "message": "ریسٹرائز ہو رہا ہے"
   },
   "models/trace/Styles.ts | recalculateStyle": {
     "message": "ریکیلکیولیٹ کا اسٹائل"
@@ -1917,7 +1962,7 @@
     "message": "شیڈول اسٹائل ریکیلکیولیشن"
   },
   "models/trace/Styles.ts | scripting": {
-    "message": "اسکرپٹنگ"
+    "message": "اسکرپٹ سازی"
   },
   "models/trace/Styles.ts | scroll": {
     "message": "اسکرول کریں"
@@ -2223,7 +2268,7 @@
     "message": "‫INP بریک ڈاؤن"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "تصاویر کے ڈاؤن لوڈ کے وقت کو کم کرنا صفحہ کے ظاہری لوڈ ٹائم اور LCP کو بہتر بنا سکتا ہے۔ [تصویر کے سائز کو بہتر بنانے کے بارے میں مزید جانیں](https://developer.chrome.com/docs/performance/insights/image-delivery)"
+    "message": "تصاویر کے ڈاؤن لوڈ کے وقت کو کم کرنا صفحہ کے ظاہری لوڈ ٹائم اور LCP کو بہتر بنا سکتا ہے۔ [تصویر کے سائز کو بہتر بنانے کے بارے میں مزید جانیں](https://developer.chrome.com/docs/performance/insights/image-delivery)۔"
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (تخمینی {PH2})"
@@ -2283,7 +2328,7 @@
     "message": "‫LCP بریک ڈاؤن"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "‫[LCP کو بہتر بنانے](https://developer.chrome.com/docs/performance/insights/lcp-discovery) کے لیے HTML سے فوری طور پر LCP تصویر کو قابل دریافت بنائيں اور لیزی لوڈنگ سے بچیں"
+    "message": "‫[LCP کو بہتر بنانے](https://developer.chrome.com/docs/performance/insights/lcp-discovery) کے لیے HTML سے فوری طور پر LCP تصویر کو قابل دریافت بنائيں اور لیزی لوڈنگ سے بچیں۔"
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "fetchpriority = اعلی لاگو"
@@ -2319,7 +2364,7 @@
     "message": "ضائع کردہ بائٹس"
   },
   "models/trace/insights/LegacyJavaScript.ts | description": {
-    "message": "پولی فِلز اور ٹرانسفارمز پرانے براؤزرز کو نئی JavaScript خصوصیات استعمال کرنے کی اجازت دیتے ہیں۔ تاہم، ان میں سے کئی جدید براؤزرز کیلئے ضروری نہیں ہیں۔ اپنے JavaScript بلڈ پروسیس میں [بیس لائن](https://web.dev/articles/baseline-and-polyfills) خصوصیات کو ٹرانسپائل نہ کرنے کیلئے ترمیم کرنے پر غور کریں، الا یہ کہ آپ جانتے ہوں کہ آپ کیلئے پرانے براؤزر کا تعاون کرنا لازمی ہے۔ [جانیں کہ کیوں زیادہ تر سائٹس ٹرانسپائل کیے بغیر ES6+‎ کوڈ تعینات کر سکتی ہیں](https://developer.chrome.com/docs/performance/insights/legacy-javascript)"
+    "message": "پولی فِلز اور ٹرانسفارمز پرانے براؤزرز کو نئی JavaScript خصوصیات استعمال کرنے کی اجازت دیتے ہیں۔ تاہم، ان میں سے کئی جدید براؤزرز کیلئے ضروری نہیں ہیں۔ اپنے JavaScript بلڈ پروسیس میں [بیس لائن](https://web.dev/articles/baseline-and-polyfills) خصوصیات کو ٹرانسپائل نہ کرنے کیلئے ترمیم کرنے پر غور کریں، الا یہ کہ آپ جانتے ہوں کہ آپ کیلئے پرانے براؤزر کا تعاون کرنا لازمی ہے۔ [جانیں کہ کیوں زیادہ تر سائٹس ٹرانسپائل کیے بغیر ES6+‎ کوڈ تعینات کر سکتی ہیں](https://developer.chrome.com/docs/performance/insights/legacy-javascript)۔"
   },
   "models/trace/insights/LegacyJavaScript.ts | noLegacyJavaScript": {
     "message": "کوئی پرانا JavaScript نہیں ملا"
@@ -2415,7 +2460,7 @@
     "message": "مسدود کرنے کی درخواستیں رینڈر کریں"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "اگر ریکیلکیولیٹ اسٹائل کے اخراجات زیادہ رہتے ہیں تو منتخب کنندہ کی بہتری انہیں کم کر سکتی ہے۔ زیادہ گزرا ہوا وقت اور زیادہ سلو پاتھ کا % دونوں کے ساتھ [منتخب کنندگان کو بہتر بنائیں۔](https://developer.chrome.com/docs/performance/insights/slow-css-selector) آسان منتخب کنندگان، کم منتخب کنندگان، ایک چھوٹا DOM، اور ہلکا DOM سبھی مماثل اخراجات کو کم کر دیں گے۔"
+    "message": "اگر دوبارہ حساب لگانے کے اسٹائل کے اخراجات زیادہ رہتے ہیں تو منتخب کنندہ کی بہتری انہیں کم کر سکتی ہے۔ زیادہ گزرا ہوا وقت اور زیادہ سلو پاتھ کا % دونوں کے ساتھ [منتخب کنندگان کو بہتر بنائیں۔](https://developer.chrome.com/docs/performance/insights/slow-css-selector) آسان منتخب کنندگان، کم منتخب کنندگان، ایک چھوٹا DOM، اور ہلکا DOM سبھی مماثل اخراجات کو کم کر دیں گے۔"
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "گزرا ہوا وقت"
@@ -2502,7 +2547,7 @@
     "message": "کوئی ARIA انتساب نہیں ہے"
   },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveRecording": {
-    "message": "‫A11y اعلانات کی ریکارڈنگ"
+    "message": "اعلانات کی ریکارڈنگ"
   },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "ایکسیسبیلٹی نوڈ افشاء نہیں ہے"
@@ -2592,7 +2637,7 @@
     "message": "قدر سیٹ کی جا سکتی ہے"
   },
   "panels/accessibility/AccessibilityStrings.ts | checked": {
-    "message": "نشان زد کر دیا گیا"
+    "message": "Checked"
   },
   "panels/accessibility/AccessibilityStrings.ts | contents": {
     "message": "مواد"
@@ -4895,6 +4940,12 @@
   "panels/application/components/AdsView.ts | adIframesTitle": {
     "message": "اشتہار کے iframes (کل {PH1})"
   },
+  "panels/application/components/AdsView.ts | adScripts": {
+    "message": "اشتہار کی اسکرپٹس"
+  },
+  "panels/application/components/AdsView.ts | adScriptsTitle": {
+    "message": "اشتہار کی اسکرپٹس (کل {PH1})"
+  },
   "panels/application/components/AdsView.ts | average": {
     "message": "(اوسط: {PH1})"
   },
@@ -4936,6 +4987,9 @@
   },
   "panels/application/components/AdsView.ts | unnamed": {
     "message": "<unnamed>"
+  },
+  "panels/application/components/AdsView.ts | url": {
+    "message": "URL"
   },
   "panels/application/components/AdsView.ts | viewportAdCount": {
     "message": "ویوپورٹ اشتہار کی تعداد"
@@ -6926,6 +6980,9 @@
   "panels/console/console-meta.ts | createLiveExpression": {
     "message": "لائیو ایکسپریشن تخلیق کریں"
   },
+  "panels/console/console-meta.ts | customFormatters": {
+    "message": "حسب ضرورت فارمیٹرز"
+  },
   "panels/console/console-meta.ts | doNotAutocompleteFromHistory": {
     "message": "سرگزشت سے خودکار تکمیل نہ کریں"
   },
@@ -6967,6 +7024,9 @@
   },
   "panels/console/console-meta.ts | hideTimestamps": {
     "message": "ٹائم اسٹیمپس چھپائیں"
+  },
+  "panels/console/console-meta.ts | logXmlhttprequests": {
+    "message": "لاگ XMLHttpRequests"
   },
   "panels/console/console-meta.ts | networkMessages": {
     "message": "نیٹ ورک کے پیغامات"
@@ -7449,7 +7509,7 @@
     "message": "کلاسز {PH1} کو شامل کیا گیا"
   },
   "panels/elements/ClassesPaneWidget.ts | elementClasses": {
-    "message": "عنصر کلاسز"
+    "message": "عنصر کی کلاسز"
   },
   "panels/elements/ColorSwatchPopoverIcon.ts | openCubicBezierEditor": {
     "message": "کیوبک بیزیر ایڈیٹر کھولیں"
@@ -7475,6 +7535,138 @@
   "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "سبھی دکھائیں"
   },
+  "panels/elements/DOMTreeContextMenu.ts | addAttribute": {
+    "message": "انتساب شامل کريں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | addPadding": {
+    "message": "پیڈنگ شامل کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | alignItems": {
+    "message": "آئٹمز کو موافق بنائیں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | assessVisibility": {
+    "message": "مرئیت کا جائزہ لیں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | captureNodeScreenshot": {
+    "message": "نوڈ کا اسکرین شاٹ کیپچر کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | centerElement": {
+    "message": "عنصر کو مرکز میں رکھیں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | changeParentProperties": {
+    "message": "پیرنٹ خصوصیات تبدیل کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | collapseChildren": {
+    "message": "بچوں کے سیکشن کو سکیڑیں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copy": {
+    "message": "کاپی کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyElement": {
+    "message": "عنصر کاپی کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyFullXpath": {
+    "message": "مکمل XPath کو کاپی کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyJsPath": {
+    "message": "JS پاتھ کاپی کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyOuterhtml": {
+    "message": "outerHTML کاپی کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copySelector": {
+    "message": "selector کاپی کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyStyles": {
+    "message": "اسٹائلز کاپی کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyXpath": {
+    "message": "XPath کاپی کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | cut": {
+    "message": "کٹ کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | deleteElement": {
+    "message": "عنصر حذف کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | distributeItemsEvenly": {
+    "message": "آئٹمز کو مساوی طور پر تقسیم کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | duplicateElement": {
+    "message": "ڈپلیکیٹ عنصر"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | editAsHtml": {
+    "message": "HTML کے بطور ترمیم کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | editAttribute": {
+    "message": "انتساب میں ترمیم کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | editData": {
+    "message": "ڈیٹا میں ترمیم کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | editText": {
+    "message": "ٹیکسٹ میں ترمیم کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | expandRecursively": {
+    "message": "بار بار پھیلائیں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainContainerContext": {
+    "message": "کنٹینر کے سیاق و سباق کی وضاحت کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainContainerQueries": {
+    "message": "کنٹینر کے استفسارات کی وضاحت کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainContainerTypes": {
+    "message": "کنٹینر کی اقسام کی وضاحت کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainFlexbox": {
+    "message": "‫flexbox کی وضاحت کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainGridLayout": {
+    "message": "گرڈ لے آؤٹ کی وضاحت کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainScrollbars": {
+    "message": "سکرول بارز کی وضاحت کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainSubgrids": {
+    "message": "ذیلی گرڈز کی وضاحت کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | findGridDefinition": {
+    "message": "گرڈ کی وضاحت تلاش کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | focus": {
+    "message": "فوکس کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | hideElement": {
+    "message": "عنصر چھپائیں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | paste": {
+    "message": "پیسٹ کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | removeScrollbars": {
+    "message": "سکرول بارز کو ہٹائیں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | scrollIntoView": {
+    "message": "اس کے نظر آنے تک اسکرول کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | showFrameDetails": {
+    "message": "iframe کی تفصیلات دکھائیں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | startAChat": {
+    "message": "ایک چیٹ شروع کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | storeAsGlobalVariable": {
+    "message": "عالمگیر متغیرہ کے طور پر اسٹور کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | styleScrollbars": {
+    "message": "اسٹائل سکرول بارز"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | switchToAccessibilityTree": {
+    "message": "ایکسیسبیلٹی ٹری پر سوئچ کریں"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
+    "message": "ان آئٹمز کو لپیٹیں"
+  },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "<optgroup> کے اندر غلط عنصر یا ٹیکسٹ نوڈ"
   },
@@ -7482,7 +7674,7 @@
     "message": "<select> کے اندر غلط عنصر یا ٹیکسٹ نوڈ"
   },
   "panels/elements/ElementIssueUtils.ts | formAriaLabelledByToNonExistingId": {
-    "message": "‫aria-labelledby وصف کسی بھی عنصر id سے مماثل نہیں ہے"
+    "message": "‫aria-labelledby وصف کسی بھی عنصر ID سے مماثل نہیں ہے"
   },
   "panels/elements/ElementIssueUtils.ts | formAutocompleteAttributeEmptyError": {
     "message": "خودکار تکمیل وصف کا غلط استعمال"
@@ -7491,7 +7683,7 @@
     "message": "ایک ہی فارم میں ڈپلیکیٹ فارم فیلڈ ID"
   },
   "panels/elements/ElementIssueUtils.ts | formEmptyIdAndNameAttributesForInputError": {
-    "message": "ایک فارم فیلڈ عنصر میں id یا نام کا وصف ہونا چاہیے"
+    "message": "ایک فارم فیلڈ عنصر میں ID یا نام کا وصف ہونا چاہیے"
   },
   "panels/elements/ElementIssueUtils.ts | formInputAssignedAutocompleteValueToIdOrNameAttributeError": {
     "message": "ایک عنصر میں خودکار تکمیل کا وصف نہیں ہوتا ہے"
@@ -7503,10 +7695,10 @@
     "message": "فارم فیلڈ بغیر درست aria-labelledby وصف یا وابستہ لیبل کے"
   },
   "panels/elements/ElementIssueUtils.ts | formLabelForMatchesNonExistingIdError": {
-    "message": "<label for=FORM_ELEMENT> کا غلط استعمال"
+    "message": "‫<label for=FORM_ELEMENT> کا غلط استعمال"
   },
   "panels/elements/ElementIssueUtils.ts | formLabelForNameError": {
-    "message": "<label for=FORM_ELEMENT> کا غلط استعمال"
+    "message": "‫<label for=FORM_ELEMENT> کا غلط استعمال"
   },
   "panels/elements/ElementIssueUtils.ts | formLabelHasNeitherForNorNestedInput": {
     "message": "فارم فیلڈ کے ساتھ کوئی لیبل وابستہ نہیں ہے"
@@ -7542,7 +7734,7 @@
     "message": "مزید جانیں"
   },
   "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
-    "message": "عنصر کی حالت ٹوگل کریں"
+    "message": "عنصر کی حالت کو ٹوگل کریں"
   },
   "panels/elements/ElementsPanel.ts | adornerSettings": {
     "message": "بَیج کی ترتیبات"
@@ -7551,10 +7743,10 @@
     "message": "شمار کردہ"
   },
   "panels/elements/ElementsPanel.ts | computedStylesHidden": {
-    "message": "شمار کردہ اسٹائلز کے سائیڈ بار پوشیدہ ہے"
+    "message": "کمپیوٹ کردہ اسٹائلز کا سائیڈ بار پوشیدہ ہے"
   },
   "panels/elements/ElementsPanel.ts | computedStylesShown": {
-    "message": "شمار کردہ اسٹائلز کے سائیڈ بار دکھایا گیا ہے"
+    "message": "کمپیوٹ کردہ اسٹائلز کے سائیڈ بار دکھایا گیا ہے"
   },
   "panels/elements/ElementsPanel.ts | domTreeExplorer": {
     "message": "DOM ٹری ایکسپلورر"
@@ -7575,7 +7767,7 @@
     "message": "عناصر پینل میں کھولیں"
   },
   "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
-    "message": "شمار کردہ اسٹائلز کے سائیڈ بار دکھائیں"
+    "message": "کمپیوٹ کردہ اسٹائلز کے سائیڈ بار دکھائیں"
   },
   "panels/elements/ElementsPanel.ts | sidePanelContent": {
     "message": "سائیڈ پینل مواد"
@@ -7674,16 +7866,16 @@
     "message": "سبھی منتخب کریں"
   },
   "panels/elements/ElementsTreeElement.ts | showCommandForTarget": {
-    "message": "commandfor انتساب کے ساتھ وابستہ عنصر دکھائیں"
+    "message": "‫commandfor انتساب کے ساتھ وابستہ عنصر دکھائیں"
   },
   "panels/elements/ElementsTreeElement.ts | showCustomElementDefinition": {
     "message": "حسب ضرورت عنصر کی تعریف دکھائیں"
   },
   "panels/elements/ElementsTreeElement.ts | showInterestTarget": {
-    "message": "interesttarget انتساب کے ساتھ وابستہ عنصر دکھائیں"
+    "message": "‫interesttarget انتساب کے ساتھ وابستہ عنصر دکھائیں"
   },
   "panels/elements/ElementsTreeElement.ts | showPopoverTarget": {
-    "message": "popovertarget انتساب کے ساتھ وابستہ عنصر دکھائیں"
+    "message": "‫popovertarget انتساب کے ساتھ وابستہ عنصر دکھائیں"
   },
   "panels/elements/ElementsTreeElement.ts | stopForceOpenPopover": {
     "message": "اس پاپ اوور کو کھلا رکھنے سے روکیں"
@@ -7706,6 +7898,9 @@
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "صفحہ DOM"
   },
+  "panels/elements/ElementsTreeOutline.ts | reveal": {
+    "message": "reveal"
+  },
   "panels/elements/ElementsTreeOutline.ts | showAllLines": {
     "message": "سبھی دکھائیں ({PH1} لائنز)"
   },
@@ -7722,7 +7917,7 @@
     "message": "اسلاف"
   },
   "panels/elements/EventListenersWidget.ts | blocking": {
-    "message": "مسدود کر رہی ہے"
+    "message": "مسدود کرنا"
   },
   "panels/elements/EventListenersWidget.ts | eventListenersCategory": {
     "message": "ایونٹ لسنرز کا زمرہ"
@@ -7743,7 +7938,7 @@
     "message": "CSS پرتیں"
   },
   "panels/elements/LayersWidget.ts | toggleCSSLayers": {
-    "message": "CSS پرتوں کے منظر کو ٹوگل کریں"
+    "message": "‫CSS پرتوں کے منظر کو ٹوگل کریں"
   },
   "panels/elements/LayoutPane.ts | chooseElementOverlayColor": {
     "message": "اس عنصر کے لیے اوورلے رنگ منتخب کریں"
@@ -7776,7 +7971,7 @@
     "message": "عناصر پینل میں عنصر دکھائیں"
   },
   "panels/elements/MarkerDecorator.ts | domBreakpoint": {
-    "message": "DOM بریک پوائنٹ"
+    "message": "‫DOM بریک پوائنٹ"
   },
   "panels/elements/MarkerDecorator.ts | elementIsHidden": {
     "message": "عنصر پوشیدہ ہے"
@@ -7800,7 +7995,7 @@
     "message": "Postscript کا نام"
   },
   "panels/elements/PlatformFontsWidget.ts | renderedFonts": {
-    "message": "رینڈ کردہ فونٹس"
+    "message": "رینڈر کردہ فونٹس"
   },
   "panels/elements/PropertiesWidget.ts | noMatchingProperty": {
     "message": "کوئی مماثل پراپرٹی نہیں"
@@ -7818,7 +8013,7 @@
     "message": "CSS پراپرٹی کی قدر: {PH1}"
   },
   "panels/elements/ShortcutTreeElement.ts | reveal": {
-    "message": "دکھائیں"
+    "message": "reveal"
   },
   "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
     "message": "توسیع شدہ اصول کو سکیڑیں"
@@ -7833,7 +8028,7 @@
     "message": "اصول کاپی کریں"
   },
   "panels/elements/StylePropertiesSection.ts | copySelector": {
-    "message": "selector کاپی کریں"
+    "message": "‫selector کاپی کریں"
   },
   "panels/elements/StylePropertiesSection.ts | cssSelector": {
     "message": "CSS منتخب کنندہ"
@@ -7846,6 +8041,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
     "message": "ذیل میں اسٹائل کا اصول درج کریں"
+  },
+  "panels/elements/StylePropertiesSection.ts | notMatching": {
+    "message": "یہ اصول فی الحال منتخب کردہ عنصر سے مماثل نہیں ہے"
   },
   "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
     "message": "‎{PH1}[انتساب کا اسٹائل]"
@@ -7884,10 +8082,10 @@
     "message": "قدر کاپی کریں"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
-    "message": "flexbox ایڈیٹر کھولیں"
+    "message": "‫flexbox ایڈیٹر کھولیں"
   },
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
-    "message": "grid ایڈیٹر کھولیں"
+    "message": "‫grid ایڈیٹر کھولیں"
   },
   "panels/elements/StylePropertyTreeElement.ts | gridLanesEditorButton": {
     "message": "‫grid-lanes ایڈیٹر کھولیں"
@@ -7917,7 +8115,7 @@
     "message": "اینیمیشن اسٹائلز کے ذریعے اوور رائیڈ کیا گیا۔"
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
-    "message": "‫{PH1} متعین نہیں ہے"
+    "message": "{PH1} متعین نہیں ہے"
   },
   "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
     "message": "رنگ کا فارمیٹ تبدیل کرنے کے لیے Shift دبا کر کلک کریں۔"
@@ -8124,7 +8322,7 @@
     "message": "علاقے کے نام دکھائیں"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
-    "message": "شمار کردہ اسٹائلز دکھائیں"
+    "message": "کمپیوٹ کردہ اسٹائلز دکھائیں"
   },
   "panels/elements/elements-meta.ts | showElements": {
     "message": "عناصر دکھائیں"
@@ -8140,6 +8338,9 @@
   },
   "panels/elements/elements-meta.ts | showHtmlComments": {
     "message": "HTML تبصرے دکھائیں"
+  },
+  "panels/elements/elements-meta.ts | showInactiveCSSRules": {
+    "message": "غیر فعال CSS اصول دکھائیں"
   },
   "panels/elements/elements-meta.ts | showLayout": {
     "message": "لے آؤٹ دکھائیں"
@@ -9512,6 +9713,9 @@
   "panels/media/PlayerMessagesView.ts | warning": {
     "message": "وارننگ"
   },
+  "panels/media/PlayerPropertiesView.ts | audioDecoderProperties": {
+    "message": "آڈیو ڈیکوڈر کی خصوصیات"
+  },
   "panels/media/PlayerPropertiesView.ts | bitrate": {
     "message": "بِٹ ریٹ"
   },
@@ -9581,6 +9785,12 @@
   "panels/media/PlayerPropertiesView.ts | track": {
     "message": "ٹریک"
   },
+  "panels/media/PlayerPropertiesView.ts | trackNumber": {
+    "message": "{PH2}# {PH1}"
+  },
+  "panels/media/PlayerPropertiesView.ts | videoDecoderProperties": {
+    "message": "ویڈیو ڈیکوڈر کی پراپرٹیز"
+  },
   "panels/media/PlayerPropertiesView.ts | videoFreezingScore": {
     "message": "ویڈیو فریزنگ اسکور"
   },
@@ -9624,7 +9834,7 @@
     "message": "نیٹ ورک تھروٹلنگ فعال ہے"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
-    "message": "درخواستیں مسدود ہو سکتی ہیں، نیٹ ورک کی درخواست مسدود کرنے والا پینل دیکھیں"
+    "message": "Requests may be blocked. See the Request conditions panel"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "درخواستیں مقامی طور پر اوور رائیڈ ہو سکتی ہیں، مآخذ کا پینل دیکھیں"
@@ -11453,6 +11663,9 @@
   "panels/network/network-meta.ts | clear": {
     "message": "نیٹ ورک کے لاگ کو صاف کریں"
   },
+  "panels/network/network-meta.ts | clearTag": {
+    "message": "صاف کریں"
+  },
   "panels/network/network-meta.ts | colorCode": {
     "message": "رنگ کا کوڈ"
   },
@@ -11462,14 +11675,29 @@
   "panels/network/network-meta.ts | colorcodeResourceTypes": {
     "message": "رنگ کے کوڈ کے وسیلے کی اقسام"
   },
+  "panels/network/network-meta.ts | disableCache": {
+    "message": "‫DevTools کے کھلے ہونے کے دوران کیش غیر فعال کریں"
+  },
+  "panels/network/network-meta.ts | disableRequestBlockingAndThrottling": {
+    "message": "Disable request blocking and throttling"
+  },
   "panels/network/network-meta.ts | diskCache": {
     "message": "ڈسک کیش"
+  },
+  "panels/network/network-meta.ts | doNotKeepLogOnPageReload": {
+    "message": "صفحہ ری لوڈ / نیویگیشن پر لاگ کو برقرار نہ رکھیں"
   },
   "panels/network/network-meta.ts | dontAllowToGenerateHarWithSensitiveData": {
     "message": "حساس ڈیٹا کے ساتھ HAR تخلیق کرنے کی اجازت نہ دیں"
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "نیٹ ورک لاگ کے آئٹمز کو فریم کے لحاظ سے گروپ بند نہ کریں"
+  },
+  "panels/network/network-meta.ts | enableCache": {
+    "message": "cache فعال کریں"
+  },
+  "panels/network/network-meta.ts | enableRequestBlockingAndThrottling": {
+    "message": "Enable request blocking and throttling"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "فریم"
@@ -11486,11 +11714,23 @@
   "panels/network/network-meta.ts | hideRequestDetails": {
     "message": "درخواست کی تفصیلات چھپائیں"
   },
+  "panels/network/network-meta.ts | keep": {
+    "message": "رکھیں"
+  },
+  "panels/network/network-meta.ts | keepLog": {
+    "message": "لاگ برقرار رکھیں"
+  },
+  "panels/network/network-meta.ts | keepLogOnPageReload": {
+    "message": "صفحہ ری لوڈ / نیویگیشن پر لاگ کو برقرار رکھیں"
+  },
   "panels/network/network-meta.ts | netWork": {
     "message": "نیٹ ورک"
   },
   "panels/network/network-meta.ts | network": {
     "message": "نیٹ ورک"
+  },
+  "panels/network/network-meta.ts | networkCacheExplanation": {
+    "message": "نیٹ ورک کیش کو غیر فعال کرنے سے نیٹ ورک کا تجربہ پہلی بار آنے والے کے جیسا ہی ہوگا۔"
   },
   "panels/network/network-meta.ts | networkConditions": {
     "message": "نیٹ ورک کی حالتیں"
@@ -11501,11 +11741,20 @@
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "نیٹ ورک تھروٹلنگ"
   },
+  "panels/network/network-meta.ts | preserve": {
+    "message": "محفوظ کریں"
+  },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "نیٹ ورک لاگ ریکارڈ کریں"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
     "message": "نیٹ ورک کی درخواست کو بلاک کرنے یا تھروٹلنگ کے تمام پیٹرنز کو ہٹائیں"
+  },
+  "panels/network/network-meta.ts | requestBlockingAndThrottling": {
+    "message": "Request blocking and throttling"
+  },
+  "panels/network/network-meta.ts | reset": {
+    "message": "ری سیٹ کریں"
   },
   "panels/network/network-meta.ts | resourceType": {
     "message": "وسیلے کی قسم"
@@ -14912,6 +15161,9 @@
   "panels/sources/sources-meta.ts | enableJavascript": {
     "message": "JavaScript کو فعال کریں"
   },
+  "panels/sources/sources-meta.ts | enableRemoteFileLoading": {
+    "message": "‫DevTools میں ریموٹ فائل پاتھ کے وسائل کو لوڈ کرنے کی اجازت دیں"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "ٹیب کی منتقلی کا فوکس فعال کریں"
   },
@@ -14980,6 +15232,9 @@
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "فوری ماخذ"
+  },
+  "panels/sources/sources-meta.ts | remoteFileLoadingInfo": {
+    "message": "مثال کے وسائل ماخذ کے نقشے ہیں۔ سیکیورٹی کی وجوہات کی بنا پر بطور ڈیفالٹ کو غیر فعال کر دیا گیا۔"
   },
   "panels/sources/sources-meta.ts | rename": {
     "message": "نام بدلیں"
@@ -15114,7 +15369,7 @@
     "message": "Workspace"
   },
   "panels/timeline/AnimationsTrackAppender.ts | animations": {
-    "message": "انیمیشنز"
+    "message": "Animations"
   },
   "panels/timeline/AnnotationHelpers.ts | entriesLink": {
     "message": "منسلکہ اندراجات"
@@ -15147,34 +15402,34 @@
     "message": "{PH1} (خود {PH2})"
   },
   "panels/timeline/CountersGraph.ts | documents": {
-    "message": "دستاویزات"
+    "message": "Documents"
   },
   "panels/timeline/CountersGraph.ts | gpuMemory": {
-    "message": "‫GPU میموری"
+    "message": "GPU memory"
   },
   "panels/timeline/CountersGraph.ts | jsHeap": {
-    "message": "‫JS ہیپ"
+    "message": "JS heap"
   },
   "panels/timeline/CountersGraph.ts | listeners": {
-    "message": "لسنرز"
+    "message": "Listeners"
   },
   "panels/timeline/CountersGraph.ts | noEventsFound": {
-    "message": "منتخب ایونٹس میں میموری کے استعمال کا کوئی ڈیٹا نہیں ملا۔"
+    "message": "No memory usage data found within selected events"
   },
   "panels/timeline/CountersGraph.ts | nodes": {
-    "message": "نوڈز"
+    "message": "Nodes"
   },
   "panels/timeline/CountersGraph.ts | ss": {
     "message": "[{PH1} – {PH2}]"
   },
   "panels/timeline/EventsTimelineTreeView.ts | all": {
-    "message": "سبھی"
+    "message": "All"
   },
   "panels/timeline/EventsTimelineTreeView.ts | durationFilter": {
     "message": "مدت کا فلٹر"
   },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
-    "message": "وقت آغاز"
+    "message": "Start time"
   },
   "panels/timeline/ExtensionTrackAppender.ts | customTrackSubtitle": {
     "message": "— حسب ضرورت"
@@ -15183,52 +15438,52 @@
     "message": "GPU"
   },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
-    "message": "تعاملات"
+    "message": "Interactions"
   },
   "panels/timeline/IsolateSelector.ts | empty": {
-    "message": "(خالی)"
+    "message": "(empty)"
   },
   "panels/timeline/IsolateSelector.ts | selectJavascriptVmInstance": {
-    "message": "JavaScript VM کا نمونہ منتخب کریں"
+    "message": "Select JavaScript VM instance"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShift": {
-    "message": "لے آؤٹ شفٹ"
+    "message": "Layout shift"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShiftCluster": {
-    "message": "لے آؤٹ شفٹ کلسٹر"
+    "message": "Layout shift cluster"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
-    "message": "لے آؤٹ شفٹس"
+    "message": "Layout shifts"
   },
   "panels/timeline/NetworkTrackAppender.ts | network": {
-    "message": "نیٹ ورک"
+    "message": "Network"
   },
   "panels/timeline/StatusDialog.ts | description": {
-    "message": "تفصیل"
+    "message": "Description"
   },
   "panels/timeline/StatusDialog.ts | downloadAfterError": {
     "message": "ٹریس ڈاؤن لوڈ کریں"
   },
   "panels/timeline/StatusDialog.ts | status": {
-    "message": "صورتحال"
+    "message": "Status"
   },
   "panels/timeline/StatusDialog.ts | stop": {
-    "message": "روکیں"
+    "message": "Stop"
   },
   "panels/timeline/StatusDialog.ts | time": {
-    "message": "وقت"
+    "message": "Time"
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
     "message": "فریق اول / ثالث"
   },
   "panels/timeline/ThirdPartyTreeView.ts | mainThreadTime": {
-    "message": "اصل تھریڈ کا وقت"
+    "message": "Main thread time"
   },
   "panels/timeline/ThirdPartyTreeView.ts | transferSize": {
-    "message": "ٹرانسفر کا سائز"
+    "message": "Transfer size"
   },
   "panels/timeline/ThirdPartyTreeView.ts | unattributed": {
-    "message": "[کوئی انتساب نہیں]"
+    "message": "[unattributed]"
   },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "وقف کردہ Worker"
@@ -15237,7 +15492,7 @@
     "message": "فریم — {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | main": {
-    "message": "بنیادی"
+    "message": "Main"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "اصل — {PH1}"
@@ -15267,10 +15522,10 @@
     "message": "Worker: {PH1} — {PH2}"
   },
   "panels/timeline/TimelineController.ts | initializingTracing": {
-    "message": "ٹریسنگ کا آغاز ہو رہا ہے…"
+    "message": "Initializing tracing…"
   },
   "panels/timeline/TimelineController.ts | tracing": {
-    "message": "ٹریسنگ…"
+    "message": "Tracing…"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "اس طرح کے ٹارگٹ کے لیے پرفارمنس ٹریس ریکارڈنگ تعاون یافتہ نہیں ہے"
@@ -15282,7 +15537,7 @@
     "message": "لوڈ ایونٹ کا انتظار ہے (+5s)…"
   },
   "panels/timeline/TimelineDetailsView.ts | bottomup": {
-    "message": "نیچے سے اوپر کی جانب"
+    "message": "Bottom-up"
   },
   "panels/timeline/TimelineDetailsView.ts | callTree": {
     "message": "کال ٹری"
@@ -15291,16 +15546,16 @@
     "message": "ایونٹ لاگ"
   },
   "panels/timeline/TimelineDetailsView.ts | layers": {
-    "message": "پرتیں"
+    "message": "Layers"
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
-    "message": "پینٹ پروفائلر"
+    "message": "Paint profiler"
   },
   "panels/timeline/TimelineDetailsView.ts | selectorStats": {
-    "message": "منتخب کنندہ کے اعداد و شمار"
+    "message": "Selector stats"
   },
   "panels/timeline/TimelineDetailsView.ts | summary": {
-    "message": "خلاصہ"
+    "message": "Summary"
   },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
     "message": "CPU"
@@ -15315,7 +15570,7 @@
     "message": "{PH1} – {PH2}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | addScriptToIgnoreList": {
-    "message": "نظر انداز کرنے کی فہرست میں اسکرپٹ شامل کریں"
+    "message": "Add script to ignore list"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | assessThePurpose": {
     "message": "مقصد کا جائزہ لیں"
@@ -15327,10 +15582,10 @@
     "message": "بہتریاں تلاش کریں"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
-    "message": "فریم"
+    "message": "Frame"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
-    "message": "فریمز"
+    "message": "Frames"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | hideChildren": {
     "message": "چلڈرن چھپائیں"
@@ -15348,7 +15603,7 @@
     "message": "غیر فعال فریم"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | labelEntry": {
-    "message": "لیبل کا اندراج"
+    "message": "Label entry"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "جزوی طور پر پیش کردہ فریم"
@@ -15363,10 +15618,10 @@
     "message": "تریس کو ری سیٹ کریں"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | startAChat": {
-    "message": "ایک چیٹ شروع کریں"
+    "message": "Start a chat"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
-    "message": "{PH1} بوقت {PH2}"
+    "message": "{PH1} at {PH2}"
   },
   "panels/timeline/TimelineHistoryManager.ts | backButtonTooltip": {
     "message": "لائیو میٹرکس کا صفحہ دیکھیں"
@@ -15378,7 +15633,7 @@
     "message": "‫{PH1} ({PH2})"
   },
   "panels/timeline/TimelineHistoryManager.ts | dSlowdown": {
-    "message": "{PH1}× رفتار میں کمی"
+    "message": "{PH1}× slowdown"
   },
   "panels/timeline/TimelineHistoryManager.ts | landingPageTitle": {
     "message": "لائیو میٹرکس"
@@ -15387,7 +15642,7 @@
     "message": "نئی ریکارڈنگ"
   },
   "panels/timeline/TimelineHistoryManager.ts | sD": {
-    "message": "{PH2}# {PH1}"
+    "message": "{PH1} #{PH2}"
   },
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "ٹائم لائن سیشن منتخب کریں"
@@ -15429,10 +15684,10 @@
     "message": "CSS منتخب کنندہ کے اعدادوشمار کیپچر کرتا ہے"
   },
   "panels/timeline/TimelinePanel.ts | clear": {
-    "message": "صاف کریں"
+    "message": "Clear"
   },
   "panels/timeline/TimelinePanel.ts | close": {
-    "message": "بند کریں"
+    "message": "Close"
   },
   "panels/timeline/TimelinePanel.ts | compressingTraceForDownload": {
     "message": "کمپریس ہو رہی ہیں…"
@@ -15455,9 +15710,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "ٹریس ایکسپورٹ کرنا ناکام ہو گیا"
   },
-  "panels/timeline/TimelinePanel.ts | fixMe": {
-    "message": "مجھے درست کریں"
-  },
   "panels/timeline/TimelinePanel.ts | frameSelected": {
     "message": "فریم منتخب کیا گیا"
   },
@@ -15465,10 +15717,10 @@
     "message": "سائیڈ بار چھپائیں"
   },
   "panels/timeline/TimelinePanel.ts | initializingTracing": {
-    "message": "ٹریسنگ کا آغاز ہو رہا ہے…"
+    "message": "Initializing tracing…"
   },
   "panels/timeline/TimelinePanel.ts | learnMore": {
-    "message": "مزید جانیں"
+    "message": "Learn more"
   },
   "panels/timeline/TimelinePanel.ts | loadCpuProfileConfirmation": {
     "message": "کیا آپ ریکارڈ شدہ CPU پروفائل \"{PH1}\" کو کارکردگی کے پینل میں لوڈ کرنا چاہتے ہیں؟"
@@ -15483,7 +15735,7 @@
     "message": "ٹریس لوڈ ہو رہا ہے…"
   },
   "panels/timeline/TimelinePanel.ts | network": {
-    "message": "نیٹ ورک:"
+    "message": "Network:"
   },
   "panels/timeline/TimelinePanel.ts | preparingTraceForDownload": {
     "message": "تیار کر رہا ہے…"
@@ -15516,7 +15768,7 @@
     "message": "انتخاب صاف ہو گیا"
   },
   "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
-    "message": "فلیم چارٹ کے لیے کی بورڈ شارٹ کٹس"
+    "message": "Keyboard shortcuts for flame chart"
   },
   "panels/timeline/TimelinePanel.ts | showDataAddedByExtensions": {
     "message": "کارکردگی پینل کی ایکسٹینشنز کے ذریعے شامل کردہ ڈیٹا دکھائیں"
@@ -15540,13 +15792,13 @@
     "message": "فریق ثالث ویب کے ذریعہ درجہ بندی کردہ فریقین ثالث"
   },
   "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
-    "message": "اسکرول اور پین کریں"
+    "message": "Scroll & pan"
   },
   "panels/timeline/TimelinePanel.ts | timelineZoom": {
-    "message": "زوم کریں"
+    "message": "Zoom"
   },
   "panels/timeline/TimelinePanel.ts | tracing": {
-    "message": "ٹریسنگ…"
+    "message": "Tracing…"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "ٹیبل کاپی کریں"
@@ -15555,7 +15807,7 @@
     "message": "گزر گیا (ms)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | elapsedExplanation": {
-    "message": "‫DOM کے ساتھ کسی سلیکٹر کی مماثلت کے لیے صرف شدہ وقت ملی سیکنڈز میں۔"
+    "message": "Elapsed time spent matching a selector against the DOM in milliseconds"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | invalidationCount": {
     "message": "عدم توثیق کی تعداد"
@@ -15567,34 +15819,34 @@
     "message": "لائن {PH1}:{PH2}"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | matchAttempts": {
-    "message": "مماثلت کی کوششیں"
+    "message": "Match attempts"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | matchAttemptsExplanation": {
-    "message": "نوڈز کی تعداد جنہیں انجن نے کسی اسٹائل کے اصول کے ساتھ مماثل کرنے کی کوشش کی۔"
+    "message": "Count of nodes that the engine attempted to match against a style rule"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | matchCount": {
-    "message": "مماثلت کی تعداد"
+    "message": "Match count"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | matchCountExplanation": {
-    "message": "نوڈز کی تعداد جو کسی اسٹائل کے اصول سے مماثلت رکھتی ہیں۔"
+    "message": "Count of nodes that matched a style rule"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "منتخب کنندہ"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selectorExplanation": {
-    "message": "کسی اسٹائل کے اصول کا CSS کا سلیکٹر ٹیکسٹ۔"
+    "message": "CSS selector text of a style rule"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selectorStats": {
-    "message": "منتخب کنندہ کے اعداد و شمار"
+    "message": "Selector stats"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | slowPathNonMatches": {
     "message": "سلو پاتھ غیر مماثلتوں کا %"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | slowPathNonMatchesExplanation": {
-    "message": "غیر مماثلتوں والے نوڈز کا فیصد (مماثلت کی کوششیں - مماثلت کی تعداد) جسے بلوم فلٹر کے ذریعے منتخب کنندہ کی اعلی پیچیدگی کی وجہ سے فوری مسترد نہیں کیا جا سکا۔ جتنا کم ہو اتنا ہی اچھا ہے۔"
+    "message": "The percentage of non-matching nodes (match attempts − match count) that couldn’t be quickly ruled out by the bloom filter due to high selector complexity. Lower is better."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | styleSheetId": {
-    "message": "سٹائل شیٹ"
+    "message": "Style sheet"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | styleSheetIdExplanation": {
     "message": "سلیکٹر کے اصول کی وضاحت کے اسٹائل شیٹس میں لنکس۔ نوٹ کریں کہ سلیکٹر کے کسی اصول کی اسٹائل شیٹ میں کئی مقامات پر یا کئی اسٹائل شیٹس میں بھی وضاحت ہو سکتی ہے۔ براؤزر کے صارف کے ایجنٹ کی اسٹائل شیٹ یا ڈائنیمک اسٹائل شیٹس سے سلیکٹر کے اصولوں کے پاس لنک نہیں ہوتا۔"
@@ -15615,13 +15867,13 @@
     "message": "سرگرمی"
   },
   "panels/timeline/TimelineTreeView.ts | bottomUp": {
-    "message": "نیچے سے اوپر کی جانب"
+    "message": "Bottom-up"
   },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Chrome ایکسٹینشنز اوور ہیڈ]"
   },
   "panels/timeline/TimelineTreeView.ts | extension": {
-    "message": "ایکسٹینشن"
+    "message": "Extension"
   },
   "panels/timeline/TimelineTreeView.ts | firstParty": {
     "message": "پہلا فریق"
@@ -15633,19 +15885,19 @@
     "message": "سرگرمی کے لحاظ سے گروپ بندی کریں"
   },
   "panels/timeline/TimelineTreeView.ts | groupByCategory": {
-    "message": "زمرہ کے لحاظ سے گروپ بندی کریں"
+    "message": "Group by category"
   },
   "panels/timeline/TimelineTreeView.ts | groupByDomain": {
     "message": "ڈومین کے لحاظ سے گروپ بندی کریں"
   },
   "panels/timeline/TimelineTreeView.ts | groupByFrame": {
-    "message": "فریم کے لحاظ سے گروپ بندی کریں"
+    "message": "Group by frame"
   },
   "panels/timeline/TimelineTreeView.ts | groupBySubdomain": {
     "message": "گروپ بلحاظ ذیلی ڈومین"
   },
   "panels/timeline/TimelineTreeView.ts | groupByThirdParties": {
-    "message": "گروپ بلحاظ فریقین ثالث"
+    "message": "Group by 3rd parties"
   },
   "panels/timeline/TimelineTreeView.ts | groupByUrl": {
     "message": "URL کے لحاظ سے گروپ بنائیں"
@@ -15663,25 +15915,25 @@
     "message": "سب سے بھاری اسٹیک چھپائيں"
   },
   "panels/timeline/TimelineTreeView.ts | matchCase": {
-    "message": "کیس مماثل کریں"
+    "message": "Match case"
   },
   "panels/timeline/TimelineTreeView.ts | matchWholeWord": {
-    "message": "پورے لفظ کو مماثل کریں"
+    "message": "Match whole word"
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "کوئی گروپنگ نہیں"
   },
   "panels/timeline/TimelineTreeView.ts | page": {
-    "message": "صفحہ"
+    "message": "Page"
   },
   "panels/timeline/TimelineTreeView.ts | percentPlaceholder": {
-    "message": "% {PH1}"
+    "message": "{PH1} %"
   },
   "panels/timeline/TimelineTreeView.ts | performance": {
-    "message": "کارکردگی"
+    "message": "Performance"
   },
   "panels/timeline/TimelineTreeView.ts | selectItemForDetails": {
-    "message": "تفصیلات کے لیے آئٹم منتخب کریں۔"
+    "message": "Select item for details"
   },
   "panels/timeline/TimelineTreeView.ts | selfTime": {
     "message": "خود کا وقت"
@@ -15696,16 +15948,16 @@
     "message": "کُل وقت"
   },
   "panels/timeline/TimelineTreeView.ts | unattributed": {
-    "message": "[کوئی انتساب نہیں]"
+    "message": "[unattributed]"
   },
   "panels/timeline/TimelineTreeView.ts | useRegularExpression": {
-    "message": "ریگولر ایکسپریشن استعمال کریں"
+    "message": "Use regular expression"
   },
   "panels/timeline/TimelineTreeView.ts | vRuntime": {
-    "message": "[V8 چلنے کا وقت]"
+    "message": "[V8 runtime]"
   },
   "panels/timeline/TimelineTreeView.ts | viewBottomUp": {
-    "message": "نیچے سے اوپر کی جانب دیکھیں"
+    "message": "View bottom-up"
   },
   "panels/timeline/TimelineUIUtils.ts | UnknownNode": {
     "message": "[نامعلوم نوڈ]"
@@ -15765,7 +16017,7 @@
     "message": "اثر میں غیر تعاون یافتہ ٹائمنگ پیرامیٹرز ہیں"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedEffectSuppressedByDevtools": {
-    "message": "‫DevTools کے ذریعے اثر کو مسترد کر دیا گیا "
+    "message": "Effect suppressed by DevTools"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedFilterRelatedPropertyMayMovePixels": {
     "message": "فلٹر سے متعلق پراپرٹی پکسلز کو منتقل کر سکتی ہے"
@@ -15798,7 +16050,7 @@
     "message": "ٹرانسفارم سے متعلقہ پراپرٹی کو ہدف پر تیزگام نہیں کیا جا سکتا"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedUnknownReason": {
-    "message": "نامعلوم وجہ"
+    "message": "Unknown reason"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedUnsupportedCSSProperty": {
     "message": "{propertyCount,plural, =1{غیر تعاون یافتہ CSS پراپرٹی: {properties}}other{غیر تعاون یافتہ CSS پراپرٹیز: {properties}}}"
@@ -15810,10 +16062,10 @@
     "message": "تاخیر"
   },
   "panels/timeline/TimelineUIUtils.ts | details": {
-    "message": "تفصیلات"
+    "message": "Details"
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
-    "message": "دورانیہ"
+    "message": "Duration"
   },
   "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
     "message": "سبھی فنکشنز کو بغور مرتب کیا جا رہا ہے"
@@ -15837,10 +16089,10 @@
     "message": "پہلا لے آؤٹ انویلیڈیشن"
   },
   "panels/timeline/TimelineUIUtils.ts | frame": {
-    "message": "فریم"
+    "message": "Frame"
   },
   "panels/timeline/TimelineUIUtils.ts | function": {
-    "message": "فنکشن"
+    "message": "Function"
   },
   "panels/timeline/TimelineUIUtils.ts | functionStack": {
     "message": "فنکشن اسٹیک"
@@ -15852,7 +16104,7 @@
     "message": "تصویری URL"
   },
   "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
-    "message": "شروع کردہ بذریعہ"
+    "message": "Initiated by"
   },
   "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
     "message": "آغاز کنندہ برائے"
@@ -15861,13 +16113,13 @@
     "message": "آغاز کنندہ اسٹیک ٹریس"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
-    "message": "ان پٹ میں تاخیر"
+    "message": "Input delay"
   },
   "panels/timeline/TimelineUIUtils.ts | interactionID": {
     "message": "ID"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidationWithCallFrame": {
-    "message": "{PH1} میں {PH2}"
+    "message": "{PH1} at {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
     "message": "انویلیڈیشنز ({PH1} کل)"
@@ -15882,19 +16134,19 @@
     "message": "لے آؤٹ روٹ"
   },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
-    "message": "مزید جانیں"
+    "message": "Learn more"
   },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "پیغام"
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
-    "message": "ماڈیول"
+    "message": "Module"
   },
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "نوڈز جنہیں لے آؤٹ کی ضرورت ہے"
   },
   "panels/timeline/TimelineUIUtils.ts | origin": {
-    "message": "اصل"
+    "message": "Origin"
   },
   "panels/timeline/TimelineUIUtils.ts | outsideBreadcrumbRange": {
     "message": "(بریڈ کرمب رینج سے باہر)"
@@ -15903,25 +16155,25 @@
     "message": "مالک کا عنصر"
   },
   "panels/timeline/TimelineUIUtils.ts | paintProfiler": {
-    "message": "پینٹ پروفائلر"
+    "message": "Paint profiler"
   },
   "panels/timeline/TimelineUIUtils.ts | parse": {
-    "message": "پارس کریں"
+    "message": "Parse"
   },
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "اس کے لیے زیر التواء"
   },
   "panels/timeline/TimelineUIUtils.ts | presentationDelay": {
-    "message": "پیشکش کی تاخیر"
+    "message": "Presentation delay"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
-    "message": "پیش منظر"
+    "message": "Preview"
   },
   "panels/timeline/TimelineUIUtils.ts | priority": {
-    "message": "ترجیح"
+    "message": "Priority"
   },
   "panels/timeline/TimelineUIUtils.ts | processingDuration": {
-    "message": "پروسیسنگ کا دورانیہ"
+    "message": "Processing duration"
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "تخلیق کردہ کیش کا سائز"
@@ -15936,10 +16188,10 @@
     "message": "دہرایا جاتا ہے"
   },
   "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
-    "message": "ٹائم آؤٹ"
+    "message": "Timeout"
   },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
-    "message": "{PH1} بوقت {PH2}"
+    "message": "{PH1} at {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sAtSParentheses": {
     "message": "{PH1} (بوقت {PH2})"
@@ -15948,19 +16200,19 @@
     "message": "{PH1} (چلڈرین)"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
-    "message": "{PH2} میں سے {PH1}"
+    "message": "{PH1} of {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
-    "message": "تفصیلی CSS منتخب کنندہ مماثل اعداد و شمار جمع کرنے کے لیے \"{PH1}\" کو منتخب کریں۔"
+    "message": "Select \"{PH1}\" to collect detailed CSS selector matching statistics"
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (خود)"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
-    "message": "اسکرپٹ"
+    "message": "Script"
   },
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "کیش سے اسکرپٹ لوڈ کی گئی ہے"
@@ -15969,13 +16221,13 @@
     "message": "اسکرپٹ اہل نہیں ہے"
   },
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
-    "message": "منتخب کنندہ کے اعداد و شمار"
+    "message": "Selector stats"
   },
   "panels/timeline/TimelineUIUtils.ts | size": {
-    "message": "سائز"
+    "message": "Size"
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
-    "message": "ماخذ"
+    "message": "Source"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "سلسلہ بند"
@@ -15987,7 +16239,7 @@
     "message": "رینڈرنگ میں صرف کردہ وقت"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
-    "message": "ٹائم آؤٹ"
+    "message": "Timeout"
   },
   "panels/timeline/TimelineUIUtils.ts | timerId": {
     "message": "ٹائمر ID"
@@ -15996,76 +16248,76 @@
     "message": "ٹائمر انسٹال ہو گیا"
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
-    "message": "ٹائم اسٹیمپ"
+    "message": "Timestamp"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "ٹریس ایونٹ"
   },
   "panels/timeline/TimelineUIUtils.ts | type": {
-    "message": "قسم"
+    "message": "Type"
   },
   "panels/timeline/TimelineUIUtils.ts | url": {
     "message": "URL"
   },
   "panels/timeline/TimelineUIUtils.ts | warning": {
-    "message": "وارننگ"
+    "message": "Warning"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "ٹائمنگز"
   },
   "panels/timeline/TrackConfigBanner.ts | configureTracks": {
-    "message": "ٹریکس کنفیگر کریں"
+    "message": "Configure tracks"
   },
   "panels/timeline/TrackConfigBanner.ts | showAll": {
-    "message": "سبھی دکھائیں"
+    "message": "Show all"
   },
   "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
-    "message": "اس ٹریس میں کچھ ٹریکس چھپے ہوئے ہیں۔ آپ ٹریک کے نام پر دائیں کلک کر کے ٹریکس کو کنفیگر کر سکتے ہیں۔"
+    "message": "Some tracks are hidden in this trace. You can configure tracks by right-clicking the track name."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
-    "message": "نا ہم وقت"
+    "message": "Async"
   },
   "panels/timeline/UIDevtoolsUtils.ts | drawFrame": {
-    "message": "فریم ڈرا کریں"
+    "message": "Draw frame"
   },
   "panels/timeline/UIDevtoolsUtils.ts | drawing": {
-    "message": "ڈرائنگ"
+    "message": "Drawing"
   },
   "panels/timeline/UIDevtoolsUtils.ts | experience": {
-    "message": "تجربہ"
+    "message": "Experience"
   },
   "panels/timeline/UIDevtoolsUtils.ts | frameStart": {
-    "message": "فریم اسٹارٹ"
+    "message": "Frame start"
   },
   "panels/timeline/UIDevtoolsUtils.ts | gpu": {
     "message": "GPU"
   },
   "panels/timeline/UIDevtoolsUtils.ts | idle": {
-    "message": "غیر فعال"
+    "message": "Idle"
   },
   "panels/timeline/UIDevtoolsUtils.ts | layout": {
-    "message": "لے آؤٹ"
+    "message": "Layout"
   },
   "panels/timeline/UIDevtoolsUtils.ts | loading": {
-    "message": "لوڈ ہو رہا ہے"
+    "message": "Loading"
   },
   "panels/timeline/UIDevtoolsUtils.ts | messaging": {
-    "message": "پیغام رسانی"
+    "message": "Messaging"
   },
   "panels/timeline/UIDevtoolsUtils.ts | painting": {
-    "message": "پینٹنگ"
+    "message": "Painting"
   },
   "panels/timeline/UIDevtoolsUtils.ts | rasterizing": {
-    "message": "ریسٹرائزنگ"
+    "message": "Rasterizing"
   },
   "panels/timeline/UIDevtoolsUtils.ts | rendering": {
-    "message": "رینڈرنگ"
+    "message": "Rendering"
   },
   "panels/timeline/UIDevtoolsUtils.ts | scripting": {
-    "message": "اسکرپٹنگ"
+    "message": "Scripting"
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
-    "message": "سسٹم"
+    "message": "System"
   },
   "panels/timeline/components/BreadcrumbsUI.ts | activateBreadcrumb": {
     "message": "بریڈ کرمبس کو فعال کریں"
@@ -16077,7 +16329,7 @@
     "message": "برخاست کریں"
   },
   "panels/timeline/components/CWVMetrics.ts | fieldMismatchNotice": {
-    "message": "مقامی اور فیلڈ میٹرکس [مماثل نہ ہونے](https://web.dev/articles/lab-and-field-data-differences) کی بہت سی وجوہات ہیں۔ اوسط صارف کے ماحول سے زیادہ ملتے جلتے ٹریسز کا تجزیہ کرنے کے لیے [تھروٹلنگ کی ترتیبات اور آلے کے ایمولیشن](https://developer.chrome.com/docs/devtools/device-mode) کو ایڈجسٹ کریں۔"
+    "message": "مقامی اور فیلڈ میٹرکس کئی وجوہات کی بنا پر [مماثل نہیں ہو سکتے](https://web.dev/articles/lab-and-field-data-differences)۔ اوسط صارف کے ماحول سے زیادہ ملتے جلتے ٹریسز کا تجزیہ کرنے کے لیے [تھروٹلنگ کی ترتیبات اور آلے کے ایمولیشن](https://developer.chrome.com/docs/devtools/device-mode) کو ایڈجسٹ کریں۔"
   },
   "panels/timeline/components/CWVMetrics.ts | fieldMismatchTitle": {
     "message": "فیلڈ اور مقامی میٹرکس مماثل نہیں ہیں"
@@ -16113,7 +16365,7 @@
     "message": "{PH1} شاید کارکردگی میں رکاوٹ ہے۔"
   },
   "panels/timeline/components/DetailsView.ts | sIsLikelyPoorPageResponsiveness": {
-    "message": "{PH1} صفحہ کے ناقص ردعمل کی نشاندہی کر رہا ہے۔"
+    "message": "{PH1} صفحہ کے ناقص ردعمل کی نشاندہی کرتا ہے۔"
   },
   "panels/timeline/components/DetailsView.ts | sTookS": {
     "message": "{PH1} نے {PH2} لیا۔"
@@ -16131,7 +16383,7 @@
     "message": "وضاحت"
   },
   "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
-    "message": "کارکردگی کا سراغ محفوظ کریں "
+    "message": "کارکردگی کا سراغ محفوظ کریں"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "تشریحات شامل کریں"
@@ -16143,7 +16395,7 @@
     "message": "اسکرپٹ سورس نقشے شامل کریں"
   },
   "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
-    "message": "اضافی معلومات:"
+    "message": "مزید معلومات:"
   },
   "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
     "message": "اس میں تمام لوڈ کردہ HTML، ‏CSS اور اسکرپٹس کا مکمل مواد شامل ہوتا ہے (ایکسٹینشنز کے علاوہ)۔"
@@ -16173,13 +16425,13 @@
     "message": "فیلڈ میٹرکس کی بازیافت کو کنفیگر کریں"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | doesNotHaveSufficientData": {
-    "message": "‫Chrome UX Report میں اس صفحہ کے لیے حقیقی دنیا کی رفتار کا کافی ڈیٹا نہیں ہے۔"
+    "message": "‫Chrome UX رپورٹ میں اس صفحہ کے لیے حقیقی دنیا کی رفتار کا کافی ڈیٹا نہیں ہے۔"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | fetchAggregated": {
     "message": "ویب سائٹ پر حقیقی صارفین کے تجربے کے ساتھ مقامی پیمائشوں کو تناظر میں رکھنے میں آپ کی مدد کرنے کیلئے {PH1} سے مجموعی فیلڈ میٹرکس حاصل کریں۔"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
-    "message": "\"{PH1}\" ایک درست اوریجن یا URL نہیں ہے۔"
+    "message": "‫\"{PH1}\" ایک درست اوریجن یا URL نہیں ہے۔"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
     "message": "ایک ڈیولپمنٹ اوریجن سیٹ کریں تاکہ اس کی پروڈکشن اوریجن کی خاطر متعلقہ فیلڈ میٹرکس خودکار طور پر حاصل کیا جا سکے۔"
@@ -16233,7 +16485,7 @@
     "message": "ان پٹ میں تاخیر"
   },
   "panels/timeline/components/InteractionBreakdown.ts | presentationDelay": {
-    "message": "پیشکش کی تاخیر"
+    "message": "پیشکش میں تاخیر"
   },
   "panels/timeline/components/InteractionBreakdown.ts | processingDuration": {
     "message": "پروسیسنگ کا دورانیہ"
@@ -16254,7 +16506,7 @@
     "message": "فونٹ کی درخواست"
   },
   "panels/timeline/components/LayoutShiftDetails.ts | injectedIframe": {
-    "message": "انجیکٹ کردہ فریم"
+    "message": "انجیکٹ کردہ iframe"
   },
   "panels/timeline/components/LayoutShiftDetails.ts | layoutShift": {
     "message": "لے آؤٹ شفٹ @ {PH1}"
@@ -16284,13 +16536,13 @@
     "message": "خودکار ({PH1})"
   },
   "panels/timeline/components/LiveMetricsView.ts | clearCurrentLog": {
-    "message": "موجودہ لاگ کو صاف کریں"
+    "message": "موجودہ لاگ صاف کریں"
   },
   "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
     "message": "جمع آوری کی مدت: {PH1}"
   },
   "panels/timeline/components/LiveMetricsView.ts | cpuThrottling": {
-    "message": "CPU:"
+    "message": "CPU:‎"
   },
   "panels/timeline/components/LiveMetricsView.ts | dateRange": {
     "message": "{PH1} - {PH2}"
@@ -16362,7 +16614,7 @@
     "message": "مقامی میٹرکس"
   },
   "panels/timeline/components/LiveMetricsView.ts | logToConsole": {
-    "message": "کونسول میں اضافی تعامل کا ڈیٹا لاگ کریں"
+    "message": "کونسول میں مزید تعامل کا ڈیٹا لاگ کریں"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
     "message": "موبائل"
@@ -16611,7 +16863,7 @@
     "message": " (service worker سے)"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | blocking": {
-    "message": "مسدود کر رہی ہے"
+    "message": "مسدود کرنا"
   },
   "panels/timeline/components/NetworkRequestDetails.ts | decodedBody": {
     "message": "ڈی کوڈ کردہ باڈی"
@@ -16698,7 +16950,7 @@
     "message": "ڈویلپمنٹ اوریجن"
   },
   "panels/timeline/components/OriginMap.ts | invalidOrigin": {
-    "message": "\"{PH1}\" ایک درست اوریجن یا URL نہیں ہے۔"
+    "message": "‫\"{PH1}\" ایک درست اوریجن یا URL نہیں ہے۔"
   },
   "panels/timeline/components/OriginMap.ts | pageHasNoData": {
     "message": "‫Chrome UX رپورٹ میں اس صفحہ کے لیے حقیقی صارف کا کافی ڈیٹا نہیں ہے۔"
@@ -16716,7 +16968,7 @@
     "message": "اپنے اور دوسروں کے لیے ایک ٹریس کی تشریح کریں"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | deleteAnnotationTutorialDescription": {
-    "message": "حذف کے فنکشن تک رسائی کے لیے تشریحات کا منتخب کردہ ٹیب کے ساتھ سائیڈ بار میں فہرست پر گھمائیں۔"
+    "message": "تشریح کو حذف کرنے کے لیے سائیڈ بار تشریحات کے ٹیب میں فہرست پر گھمائیں۔"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | deleteAnnotationTutorialTitle": {
     "message": "تشریح حذف کریں"
@@ -16728,7 +16980,7 @@
     "message": "ٹیکسٹ \"{PH2}\" کے ساتھ تشریح کردہ \"{PH1}\" ایونٹ"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "کسی آئٹم پر دو بار کلک کرنا یا Enter دبائیں اور آئٹم کا لیبل بنانے کے لیے ٹائپ کریں۔"
+    "message": "کسی آئٹم پر دو بار کلک کریں یا Enter دبائیں اور آئٹم کا لیبل شامل کرنے کے لیے ٹائپ کریں۔"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "کسی آئٹم پر لیبل لگائیں"
@@ -16746,7 +16998,7 @@
     "message": "وقت کی حد جو {PH1} سے شروع ہو کر {PH2} پر ختم ہوتی ہے"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialDescription": {
-    "message": "فلیم چارٹ میں شفٹ ڈریگ کریں پھر ٹائم رینج کی تشریح تخلیق کرنے کے لیے ٹائپ کریں۔"
+    "message": "فلیم چارٹ میں شفٹ ڈریگ کریں، پھر ٹائم رینج کی تشریح شامل کرنے کے لیے ٹائپ کریں۔"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialTitle": {
     "message": "وقت کی حد کی وضاحت کریں"
@@ -16791,7 +17043,7 @@
     "message": "بصیرت کی جانچ کامیاب ہو گئی: {PH1}"
   },
   "panels/timeline/components/insights/Table.ts | others": {
-    "message": "‫{PH1} دیگر"
+    "message": "{PH1} دیگر"
   },
   "panels/timeline/overlays/OverlaysImpl.ts | fieldMetricMarkerField": {
     "message": "{PH1} - فیلڈ ({PH2})"
@@ -16800,7 +17052,7 @@
     "message": "{PH1} - مقامی"
   },
   "panels/timeline/overlays/OverlaysImpl.ts | originOption": {
-    "message": "اوریجن"
+    "message": "Origin"
   },
   "panels/timeline/overlays/OverlaysImpl.ts | urlOption": {
     "message": "URL"
@@ -16839,7 +17091,7 @@
     "message": "JavaScript نمونے غیر فعال کریں"
   },
   "panels/timeline/timeline-meta.ts | documents": {
-    "message": "دستاویزات"
+    "message": "Documents"
   },
   "panels/timeline/timeline-meta.ts | enableAdvancedPaint": {
     "message": "جدید ترین پینٹ انسٹرومنٹیشن فعال کریں (سست)"
@@ -16851,52 +17103,52 @@
     "message": "سافٹ نیویگیشن کی کارکردگی کی نگرانی کو فعال کریں"
   },
   "panels/timeline/timeline-meta.ts | gpuMemory": {
-    "message": "‫GPU میموری"
+    "message": "GPU memory"
   },
   "panels/timeline/timeline-meta.ts | jsHeap": {
-    "message": "‫JS ہیپ"
+    "message": "JS heap"
   },
   "panels/timeline/timeline-meta.ts | listeners": {
-    "message": "لسنرز"
+    "message": "Listeners"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
-    "message": "پروفائل لوڈ کریں…"
+    "message": "Load profile…"
   },
   "panels/timeline/timeline-meta.ts | memory": {
-    "message": "میموری"
+    "message": "Memory"
   },
   "panels/timeline/timeline-meta.ts | nextFrame": {
-    "message": "اگلا فریم"
+    "message": "Next frame"
   },
   "panels/timeline/timeline-meta.ts | nextRecording": {
     "message": "اگلی ریکارڈنگ"
   },
   "panels/timeline/timeline-meta.ts | nodes": {
-    "message": "نوڈز"
+    "message": "Nodes"
   },
   "panels/timeline/timeline-meta.ts | performance": {
-    "message": "کارکردگی"
+    "message": "Performance"
   },
   "panels/timeline/timeline-meta.ts | previousFrame": {
-    "message": "گزشتہ فریم"
+    "message": "Previous frame"
   },
   "panels/timeline/timeline-meta.ts | previousRecording": {
     "message": "پچھلی ریکارڈنگ"
   },
   "panels/timeline/timeline-meta.ts | record": {
-    "message": "ریکارڈ کریں"
+    "message": "Record"
   },
   "panels/timeline/timeline-meta.ts | recordAndReload": {
     "message": "ریکارڈ کریں اور دوبارہ لوڈ کریں"
   },
   "panels/timeline/timeline-meta.ts | saveProfile": {
-    "message": "پروفائل محفوظ کریں…"
+    "message": "Save profile…"
   },
   "panels/timeline/timeline-meta.ts | screenshotCapture": {
     "message": "اسکرین شاٹ کیپچر"
   },
   "panels/timeline/timeline-meta.ts | screenshots": {
-    "message": "اسکرین شاٹس"
+    "message": "Screenshots"
   },
   "panels/timeline/timeline-meta.ts | showCustomtracks": {
     "message": "حسب ضرورت ٹریکس دکھائیں"
@@ -16908,10 +17160,10 @@
     "message": "حالیہ ٹائم لائن کے سیشنز دکھائیں"
   },
   "panels/timeline/timeline-meta.ts | stop": {
-    "message": "روکیں"
+    "message": "Stop"
   },
   "panels/timeline/timeline-meta.ts | timelineDebugMode": {
-    "message": "ٹائم لائن ڈیبگ موڈ (ایونٹ کی تفصیلات وغیرہ کو ٹریس کریں)"
+    "message": "ٹائم لائن ڈیبگ وضع (ایونٹ کی تفصیلات وغیرہ کو ٹریس کریں)"
   },
   "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
     "message": "عدم توثیق کی ٹریکنگ"
@@ -16929,7 +17181,7 @@
     "message": "مواد کی اسکرپٹ"
   },
   "panels/timeline/utils/IgnoreList.ts | unknown": {
-    "message": "نامعلوم"
+    "message": "Unknown"
   },
   "panels/utils/utils.ts | prefetchFailed": {
     "message": "‫{PH1} پیشگی بازیافت کی درخواست ناکام ہو گئی"
@@ -16978,6 +17230,9 @@
   },
   "panels/web_audio/WebAudioView.ts | renderCapacity": {
     "message": "رینڈر کی گنجائش"
+  },
+  "panels/web_audio/WebAudioView.ts | renderQuantumSize": {
+    "message": "کوانٹم سائز رینڈر کریں"
   },
   "panels/web_audio/WebAudioView.ts | sampleRate": {
     "message": "نمونہ کی شرح"
@@ -17286,7 +17541,7 @@
     "message": "مدد"
   },
   "ui/legacy/ActionRegistration.ts | javascript_profiler": {
-    "message": "JavaScript پروفائلر"
+    "message": "‫JavaScript پروفائلر"
   },
   "ui/legacy/ActionRegistration.ts | layers": {
     "message": "پرتیں"
@@ -17379,7 +17634,7 @@
     "message": "‫DevTools اب {PH1} میں دستیاب ہے"
   },
   "ui/legacy/InspectorView.ts | drawer": {
-    "message": "ٹول دراز"
+    "message": "دراز"
   },
   "ui/legacy/InspectorView.ts | drawerExpanded": {
     "message": "دراز کو پھیلا دیا گیا"
@@ -17409,7 +17664,7 @@
     "message": "صفحہ دوبارہ لوڈ کریں"
   },
   "ui/legacy/InspectorView.ts | reloadDevtools": {
-    "message": "DevTools کو دوبارہ لوڈ کریں"
+    "message": "‫DevTools کو دوبارہ لوڈ کریں"
   },
   "ui/legacy/InspectorView.ts | restartChrome": {
     "message": "‫Chrome کو دوبارہ شروع کریں"
@@ -17475,7 +17730,7 @@
     "message": "{PH1} مماثلتیں"
   },
   "ui/legacy/SearchableView.ts | dOfD": {
-    "message": "{PH2} میں سے {PH1}"
+    "message": "{PH1} از {PH2}"
   },
   "ui/legacy/SearchableView.ts | disableFindAndReplace": {
     "message": "تلاش کریں اور بدلیں کو غیر فعال کریں"
@@ -17538,7 +17793,7 @@
     "message": "بند کریں"
   },
   "ui/legacy/TabbedPane.ts | closeAll": {
-    "message": "سبھی کو بند کریں"
+    "message": "تمام بند کریں"
   },
   "ui/legacy/TabbedPane.ts | closeOthers": {
     "message": "دیگر کو بند کریں"
@@ -17559,7 +17814,7 @@
     "message": "دائیں منتقل کریں"
   },
   "ui/legacy/TabbedPane.ts | previewFeature": {
-    "message": "پیش منظر کی خصوصیت"
+    "message": "خصوصیت کا پیش منظر"
   },
   "ui/legacy/TargetCrashedScreen.ts | devtoolsWasDisconnectedFromThe": {
     "message": "DevTools صفحے سے منقطع ہو گیا تھا۔"
@@ -17715,7 +17970,7 @@
     "message": "{PH1} کے متبادل شیڈز کو دکھانے کے لیے اسپیس پر دیر تک کلک کر کے رکھیں یا دبا کر رکھیں"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | pressArrowKeysMessage": {
-    "message": "نمونے کی پوزیشن منتقل کرنے کے لیے موڈیفائرز کے ساتھ یا بغیر تیر کے نشان والی کلیدیں دبائيں۔ Shift کلید کے ساتھ تیر کے نشان والی کیلد پوزیشن کو زیادہ منتقل کرتی ہے، Ctrl کلید کے ساتھ کم منتقل کرتی ہے اور Alt کے ساتھ اس سے کم کرتی ہے"
+    "message": "نمونے کی پوزیشن منتقل کرنے کے لیے تیر کے نشان والی کلیدیں استعمال کریں۔ زیادہ منتقل کرنے کے لیے Shift، کم منتقل کرنے کے لیے Ctrl اور اس سے بھی کم منتقل کرنے کے لیے Alt کا استعمال کریں۔"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | previewPalettes": {
     "message": "پیش منظر کے پیلیٹس"
@@ -17748,7 +18003,7 @@
     "message": "‫HttpOnly کوکیز کو سیاق و سباق کے طور پر شامل نہیں کیا جا سکتا"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | na": {
-    "message": "قابل اطلاق نہیں"
+    "message": "ناقابل اطلاق"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | name": {
     "message": "نام"
@@ -17766,7 +18021,7 @@
     "message": "ترجیح"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | secure": {
-    "message": "محفوظ ہے"
+    "message": "محفوظ"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | session": {
     "message": "سیشن"
@@ -17799,55 +18054,55 @@
     "message": "نیا شامل کریں"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | checked": {
-    "message": "چیک کیا گیا"
+    "message": "Checked"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | collapsed": {
-    "message": "سکیڑا ہوا"
+    "message": "collapsed"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | delete": {
-    "message": "حذف کریں"
+    "message": "Delete"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | editS": {
     "message": "\"{PH1}\" میں ترمیم کریں"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | emptyRowCreated": {
-    "message": "ایک خالی ٹیبل کی قطار تخلیق کی گئی ہے۔ ترمیم کرنے کیلئے، آپ دو بار کلک کر سکتے ہیں یا سیاق و سباق کا مینیو استعمال کر سکتے ہیں۔"
+    "message": "An empty table row was added. Double-click or use the context menu to edit."
   },
   "ui/legacy/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "کالم کی ترتیب کی حالت: {PH1}. ترتیب دینے والے فلٹر کو لاگو کرنے کے لیے اینٹر دبائیں"
+    "message": "Column sort state: {PH1}. Press enter to sort."
   },
   "ui/legacy/components/data_grid/DataGrid.ts | expanded": {
-    "message": "پھیلایا گیا"
+    "message": "expanded"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "ہیڈر کے اختیارات"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | levelS": {
-    "message": "لیول {PH1}"
+    "message": "Level {PH1}"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | refresh": {
-    "message": "ریفریش کریں"
+    "message": "Refresh"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "کالمز کو ری سیٹ کریں"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | rowsS": {
-    "message": "قطاریں: {PH1}"
+    "message": "rows: {PH1}"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sRowS": {
-    "message": "{PH1} قطار {PH2}"
+    "message": "{PH1} row {PH2}"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sSUseTheUpAndDownArrowKeysTo": {
-    "message": "{PH1} {PH2}، اوپر اور نیچے کے تیر کے نشان کی کلیدیں استعمال کر کے نیویگيٹ کریں اور ٹیبل کی قطاروں کے ساتھ تعامل کریں؛ سیل در سیل پڑھنے کے لیے براؤز موڈ استعمال کریں۔"
+    "message": "{PH1} {PH2}, use the up and down arrow keys to navigate and interact with the rows of the table; use browse mode to read cell by cell."
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortByString": {
     "message": "ترتیب دیں بلحاظ"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "قابل ترتیب کالم۔ ترتیب دینے والے فلٹر کو لاگو کرنے کے لیے اینٹر دبائیں"
+    "message": "Sortable column. Press enter to sort."
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
-    "message": "سبھی {PH1} دکھائیں"
+    "message": "Show all {PH1}"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showDAfter": {
     "message": "{PH1} کو بعد میں دکھائيں"
@@ -17907,7 +18162,7 @@
     "message": "پراپرٹی حاصل کنندہ کو طلب کریں"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | longTextWasTruncatedS": {
-    "message": "لمبا ٹیکسٹ مختصر کر دیا گيا ({PH1})"
+    "message": "لمبا ٹیکسٹ مختصر کر دیا گیا ({PH1})"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "کوئی پراپرٹی نہیں ہے"
@@ -17948,12 +18203,6 @@
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "پراپرٹی کا حساب گيٹر سے لگایا جاتا ہے"
   },
-  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
-    "message": "مبارک ہو، آپ جیت گئے!"
-  },
-  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
-    "message": "PS: آپ گیم کو fixme ٹائپ کرکے بھی کھول سکتے ہیں"
-  },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "تصویر کو زوم کرنے کے لیے دو بار کلک کریں۔ سابقہ درخواستوں کو دیکھنے کے لیے کلک کریں۔"
   },
@@ -17979,7 +18228,7 @@
     "message": "ٹریکس کنفیگر کریں"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | eventSelectedFromGroup": {
-    "message": "‫{PH2} کے اندر {PH1} ایونٹ منتخب کیا گیا۔ اس ایونٹ پر فوکس کرنے کے لیے Enter دبائیں۔"
+    "message": "{PH2} کے اندر {PH1} ایونٹ منتخب کیا گیا۔ اس ایونٹ پر فوکس کرنے کے لیے Enter دبائیں۔"
   },
   "ui/legacy/components/perf_ui/FlameChart.ts | exitTrackConfigurationMode": {
     "message": "ٹریکس کی کنفیگریشن مکمل کریں"
@@ -18030,7 +18279,7 @@
     "message": "مجموعی جائزہ کی گرڈ ونڈو"
   },
   "ui/legacy/components/perf_ui/OverviewGrid.ts | rightResizer": {
-    "message": "دائیں جانب سائز تبدیل کرنے والا"
+    "message": "دایاں سائز تبدیل کرنے والا"
   },
   "ui/legacy/components/perf_ui/PieChart.ts | total": {
     "message": "کُل"
@@ -18054,16 +18303,16 @@
     "message": "کوئی کمانڈ نہیں ملی"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | run": {
-    "message": "دوڑ"
+    "message": "چلائیں"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | runCommand": {
     "message": "کمانڈ چلائیں"
   },
   "ui/legacy/components/quick_open/CommandMenu.ts | settingsChangedReloadDevTools": {
-    "message": "ترتیبات تبدیل کر دی گئیں لاگو کرنے کے لیے، DevTools کو دوبارہ لوڈ کریں۔"
+    "message": "ترتیبات تبدیل کر دی گئیں۔ لاگو کرنے کے لیے، DevTools کو دوبارہ لوڈ کریں۔"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
-    "message": "یہ نئی خصوصیت ہے"
+    "message": "نئی خصوصیت"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "کوئی نتیجہ نہیں ملا"
@@ -18076,6 +18325,9 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | sItemSOfS": {
     "message": "{PH1}، {PH3} میں سے {PH2}"
+  },
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailableCommands": {
+    "message": "دستیاب کمانڈز کو دیکھنے کے لیے سوالیہ نشان ٹائپ کریں"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "دستیاب کمانڈز دیکھنے کے لیے ؟ ٹائپ کریں"
@@ -18159,7 +18411,7 @@
     "message": "{PH1} انتخاب کے علاقے"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doNotPaste": {
-    "message": "ایسا کوڈ پیسٹ نہ کریں جسے آپ نہیں سمجھتے ہیں یا جس کا آپ نے DevTools میں بذات خود جائزہ نہیں لیا ہے۔ یہ حملہ آوروں کو آپ کی شناخت چوری کرنے یا آپ کے کمپیوٹر کا کنٹرول حاصل کرنے کی سہولت دے سکتا ہے۔ پیسٹ کرنے کی اجازت دینے کے لیے براہ کرم نیچے \"{PH1}\" ٹائپ کریں۔"
+    "message": "ایسا کوڈ پیسٹ نہ کریں جسے آپ نہیں سمجھتے ہیں یا جس کا آپ نے DevTools میں بذات خود جائزہ نہیں لیا ہے۔ یہ حملہ آوروں کو آپ کی شناخت چوری کرنے یا آپ کے کمپیوٹر کا کنٹرول حاصل کرنے کی سہولت دے سکتا ہے۔ پیسٹ کرنے کی اجازت دینے کے لیے نیچے \"{PH1}\" ٹائپ کریں۔"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
     "message": "کیا آپ اس کوڈ پر بھروسہ کرتے ہیں؟"
@@ -18189,7 +18441,7 @@
     "message": "2 اسپیسز"
   },
   "ui/legacy/components/source_frame/source_frame-meta.ts | defaultIndentation": {
-    "message": "ڈیفالٹ حاشیہ سازی:"
+    "message": "ڈیفالٹ حاشیہ سازی"
   },
   "ui/legacy/components/source_frame/source_frame-meta.ts | eSpaces": {
     "message": "8 اسپیسز"
@@ -18213,34 +18465,34 @@
     "message": "ٹیب کیریکٹر"
   },
   "ui/legacy/components/utils/ImagePreview.ts | currentSource": {
-    "message": "موجودہ مآخذ:"
+    "message": "موجودہ ماخذ"
   },
   "ui/legacy/components/utils/ImagePreview.ts | fileSize": {
-    "message": "فائل سائز:"
+    "message": "فائل سائز"
   },
   "ui/legacy/components/utils/ImagePreview.ts | imageFromS": {
     "message": "{PH1} سے تصویر"
   },
   "ui/legacy/components/utils/ImagePreview.ts | intrinsicAspectRatio": {
-    "message": "اندرونی تناسبی شرح:"
+    "message": "اندرونی تناسبی شرح"
   },
   "ui/legacy/components/utils/ImagePreview.ts | intrinsicSize": {
-    "message": "اندرونی سائز:"
+    "message": "اندرونی سائز"
   },
   "ui/legacy/components/utils/ImagePreview.ts | renderedAspectRatio": {
-    "message": "رینڈر کردہ تناسبی شرح:"
+    "message": "رینڈر کردہ تناسبی شرح"
   },
   "ui/legacy/components/utils/ImagePreview.ts | renderedSize": {
-    "message": "رینڈ کردہ سائز:"
+    "message": "رینڈر کردہ سائز"
   },
   "ui/legacy/components/utils/ImagePreview.ts | unknownSource": {
     "message": "نامعلوم ماخذ"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | addToIgnore": {
-    "message": "نظر انداز کی فہرست میں اسکرپٹ شامل کریں"
+    "message": "نظر انداز کرنے کی فہرست میں اسکرپٹ شامل کریں"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | removeFromIgnore": {
-    "message": "نظر انداز والی فہرست سے ہٹائیں"
+    "message": "نظر انداز کرنے کی فہرست سے ہٹائیں"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
     "message": "کم دکھائیں"
@@ -18252,13 +18504,13 @@
     "message": "خودکار"
   },
   "ui/legacy/components/utils/Linkifier.ts | linkHandling": {
-    "message": "لنک ہینڈلنگ:"
+    "message": "لنک ہینڈلنگ"
   },
   "ui/legacy/components/utils/Linkifier.ts | openUsingS": {
     "message": "{PH1} کا استعمال کر کے کھولیں"
   },
   "ui/legacy/components/utils/Linkifier.ts | reveal": {
-    "message": "ظاہر کریں"
+    "message": "دکھائیں"
   },
   "ui/legacy/components/utils/Linkifier.ts | revealInS": {
     "message": "{PH1} میں ظاہر کریں"

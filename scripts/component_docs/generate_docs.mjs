@@ -121,6 +121,14 @@ async function main() {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
         <title>DevTools components</title>
+        <script type="importmap">
+          {
+            "imports": {
+              "chai": "data:text/javascript,export const assert = new Proxy({}, {get: () => () => {}});",
+              "sinon": "data:text/javascript,export default new Proxy({}, {get: () => () => new Proxy({}, {get: () => () => {}})});"
+            }
+          }
+        </script>
         ${linksToStyleSheets}
       </head>
       <body>

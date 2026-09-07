@@ -1,6 +1,13 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../../../core/common/common.js';
+import {Directives, html, nothing, render} from '../../../../ui/lit/lit.js';
+import * as UI from '../../legacy.js';
+
+import positionAreaEditorStyles from './positionAreaEditor.css.js';
+
+const {repeat} = Directives;
 
 /**
  * Valid combinations of (Mode, Self) across axes according to the CSS Anchor Positioning specification
@@ -232,4 +239,223 @@ export function stringifyPositionArea(area: Area): string {
     return firstKw;
   }
   return `${firstKw} ${secondKw}`;
+}
+
+export interface ViewInput {
+  area: Area|undefined;
+  onSelectStart: (x: number, y: number) => void;
+  onSelect: (x: number, y: number) => void;
+  onSelectEnd: (x?: number, y?: number) => void;
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export const DEFAULT_VIEW: View = (input, output, target) => {
+  if (!input.area) {
+    render(nothing, target);
+    return;
+  }
+  const x = input.area.primaryAxis === Axis.INLINE ? input.area.first : input.area.second;
+  const y = input.area.primaryAxis === Axis.BLOCK ? input.area.first : input.area.second;
+  const grid = [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1], [0, 2], [1, 2], [2, 2]];
+
+  function getCellCoords(e: PointerEvent, container: HTMLElement): [number, number]|null {
+    const root = container.getRootNode() as Document | ShadowRoot;
+    const el = root.elementFromPoint(e.clientX, e.clientY);
+    const cell = el?.closest<HTMLElement>('.position-area-builder > div');
+    if (!cell || !container.contains(cell)) {
+      return null;
+    }
+    const cellX = Number(cell.dataset.x);
+    const cellY = Number(cell.dataset.y);
+    return [cellX, cellY];
+  }
+
+  function onPointerDown(e: PointerEvent): void {
+    const container = e.currentTarget as HTMLElement;
+    const targetCell = (e.target as HTMLElement).closest('[data-x]') as HTMLElement | null;
+    if (!targetCell) {
+      return;
+    }
+    const startX = Number(targetCell.dataset.x);
+    const startY = Number(targetCell.dataset.y);
+    container.setPointerCapture(e.pointerId);
+    input.onSelectStart(startX, startY);
+  }
+
+  function onPointerMove(e: PointerEvent): void {
+    const container = e.currentTarget as HTMLElement;
+    if (!container.hasPointerCapture(e.pointerId)) {
+      return;
+    }
+    const cell = getCellCoords(e, container);
+    if (cell) {
+      input.onSelect(...cell);
+    }
+  }
+
+  function onPointerUp(e: PointerEvent): void {
+    const container = e.currentTarget as HTMLElement;
+    if (!container.hasPointerCapture(e.pointerId)) {
+      return;
+    }
+    container.releasePointerCapture(e.pointerId);
+    const coords = getCellCoords(e, container);
+    if (coords) {
+      input.onSelectEnd(...coords);
+    } else {
+      input.onSelectEnd(x.end, y.end);
+    }
+  }
+
+  function onPointerCancel(e: PointerEvent): void {
+    const container = e.currentTarget as HTMLElement;
+    if (!container.hasPointerCapture(e.pointerId)) {
+      return;
+    }
+    container.releasePointerCapture(e.pointerId);
+    input.onSelectEnd();
+  }
+
+  const propertyValue = stringifyPositionArea(input.area);
+
+  render(html`
+    <style>${positionAreaEditorStyles}</style>
+    <div class=property>
+      <span class=property-name>position-area:</span>
+      <span class=property-value>${
+             propertyValue.split(' ').map(
+                 (keyword, i) => html`${i > 0 ? ' ' : ''}<span class=property-keyword>${keyword}</span>`)}</span>
+    </div>
+    <div class=position-area-builder
+        data-x-start=${x.start} data-x-end=${x.end} data-y-start=${y.start} data-y-end=${y.end}
+        @pointerdown=${onPointerDown}
+        @pointermove=${onPointerMove}
+        @pointerup=${onPointerUp}
+        @pointercancel=${onPointerCancel}>
+      ${repeat(grid, ([x, y]) => x * 10 + y, ([x, y]) => html`
+         <div data-x=${x} data-y=${y}>
+         </div>
+        `)}
+    </div>
+    `,
+         target);
+};
+
+export const enum Events {
+  POSITION_AREA_CHANGED = 'positionAreaChanged',
+}
+
+export interface EventTypes {
+  [Events.POSITION_AREA_CHANGED]: Area;
+}
+
+const PositionAreaEditorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox> =
+    Common.ObjectWrapper.eventMixin(
+        UI.Widget.VBox,
+    );
+
+export class PositionAreaEditor extends PositionAreaEditorBase {
+  #view: View;
+  #area?: Area;
+  #inProgressSelection?: {
+    start: {x: number, y: number},
+    end: {x: number, y: number},
+    origin?: Area,
+  };
+
+  constructor(element?: HTMLElement, view: View = DEFAULT_VIEW) {
+    super(element);
+    this.setDefaultFocusedElement(this.contentElement);
+    this.#view = view;
+  }
+
+  override wasShown(): void {
+    super.wasShown();
+    this.requestUpdate();
+  }
+
+  get area(): Area|undefined {
+    return this.#area;
+  }
+
+  set area(val: Area|undefined) {
+    if ((this.#inProgressSelection?.origin ?? this.#area) === val) {
+      return;
+    }
+    this.#area = val;
+    this.#inProgressSelection = undefined;
+    this.requestUpdate();
+  }
+
+  #startSelection(x: number, y: number): void {
+    this.#finishSelection();
+    this.#select(x, y);
+  }
+
+  #inlineAxis(): GridAxis {
+    if (!this.#area) {
+      return {start: 0, end: 0, mode: Mode.PHYSICAL, self: false};
+    }
+    return this.#area.primaryAxis === Axis.INLINE ? this.#area.first : this.#area.second;
+  }
+
+  #blockAxis(): GridAxis {
+    if (!this.#area) {
+      return {start: 0, end: 0, mode: Mode.PHYSICAL, self: false};
+    }
+    return this.#area.primaryAxis === Axis.BLOCK ? this.#area.first : this.#area.second;
+  }
+
+  #notifyChange(): void {
+    if (!this.#area) {
+      return;
+    }
+    this.dispatchEventToListeners(Events.POSITION_AREA_CHANGED, this.#area);
+  }
+
+  #select(x: number, y: number): void {
+    if (!this.#inProgressSelection) {
+      this.#inProgressSelection = {origin: this.#area, start: {x, y}, end: {x, y}};
+    }
+    this.#inProgressSelection.end = {x, y};
+
+    const {start, end} = this.#inProgressSelection;
+
+    const primaryAxis = this.#area?.primaryAxis ?? Axis.INLINE;
+
+    // The visual 3x3 grid maps horizontal (x) to the inline axis and vertical (y) to the block axis.
+    const inlineAxis = {...this.#inlineAxis(), start: Math.min(start.x, end.x), end: Math.max(start.x, end.x)};
+    const blockAxis = {...this.#blockAxis(), start: Math.min(start.y, end.y), end: Math.max(start.y, end.y)};
+    this.#area = {
+      first: primaryAxis === Axis.INLINE ? inlineAxis : blockAxis,
+      second: primaryAxis === Axis.BLOCK ? inlineAxis : blockAxis,
+      primaryAxis,
+    };
+    this.requestUpdate();
+    this.#notifyChange();
+  }
+
+  #finishSelection(x?: number, y?: number): void {
+    if (!this.#inProgressSelection) {
+      return;
+    }
+    if (x === undefined || y === undefined) {
+      this.#area = this.#inProgressSelection.origin ?? this.#area;
+      this.#inProgressSelection = undefined;
+      this.#notifyChange();
+      this.requestUpdate();
+      return;
+    }
+    this.#select(x, y);
+    this.#inProgressSelection = undefined;
+  }
+
+  override performUpdate(): void {
+    this.#view({
+      area: this.#area,
+      onSelectStart: this.#startSelection.bind(this),
+      onSelect: this.#select.bind(this),
+      onSelectEnd: this.#finishSelection.bind(this),
+    },
+               undefined, this.contentElement);
+  }
 }

@@ -3,6 +3,10 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
+
+import {assertScreenshot, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {createViewFunctionStub} from '../../../../testing/ViewFunctionHelpers.js';
 
 import * as InlineEditor from './inline_editor.js';
 
@@ -206,6 +210,94 @@ describe('PositionAreaEditor', () => {
       const blockStartInlineEnd = parsePositionArea('block-start inline-end');
       assert.exists(blockStartInlineEnd);
       assert.strictEqual(stringifyPositionArea(blockStartInlineEnd), 'block-start inline-end');
+    });
+  });
+
+  describe('presenter', () => {
+    it('updates view input when setting area', async () => {
+      const view = createViewFunctionStub(InlineEditor.PositionAreaEditor.PositionAreaEditor);
+      const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor(undefined, view);
+      editor.wasShown();
+
+      const area = parsePositionArea('top left');
+      assert.exists(area);
+      editor.area = area;
+      await view.nextInput;
+      assert.strictEqual(editor.area, area);
+      assert.strictEqual(view.input.area, area);
+    });
+
+    it('handles selection with SelectStart and SelectEnd', async () => {
+      const view = createViewFunctionStub(InlineEditor.PositionAreaEditor.PositionAreaEditor);
+      const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor(undefined, view);
+      editor.area = parsePositionArea('top left') ?? undefined;
+      editor.wasShown();
+      await editor.updateComplete;
+
+      const changeSpy = sinon.spy();
+      editor.addEventListener(InlineEditor.PositionAreaEditor.Events.POSITION_AREA_CHANGED, changeSpy);
+
+      view.input.onSelectStart(0, 0);
+      view.input.onSelectEnd(2, 2);
+
+      assert.exists(editor.area);
+      assert.strictEqual(stringifyPositionArea(editor.area), 'span-all');
+      sinon.assert.called(changeSpy);
+    });
+
+    it('handles selection with SelectStart, Select, and SelectEnd', async () => {
+      const view = createViewFunctionStub(InlineEditor.PositionAreaEditor.PositionAreaEditor);
+      const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor(undefined, view);
+      editor.area = parsePositionArea('top left') ?? undefined;
+      editor.wasShown();
+      await editor.updateComplete;
+
+      const changeSpy = sinon.spy();
+      editor.addEventListener(InlineEditor.PositionAreaEditor.Events.POSITION_AREA_CHANGED, changeSpy);
+
+      view.input.onSelectStart(0, 0);
+      view.input.onSelect(1, 0);
+      assert.exists(editor.area);
+      assert.strictEqual(stringifyPositionArea(editor.area), 'top span-left');
+
+      view.input.onSelectEnd(2, 0);
+      assert.exists(editor.area);
+      assert.strictEqual(stringifyPositionArea(editor.area), 'top');
+      sinon.assert.called(changeSpy);
+    });
+
+    it('restores original area on cancelled selection (SelectStart, SelectEnd(undefined))', async () => {
+      const view = createViewFunctionStub(InlineEditor.PositionAreaEditor.PositionAreaEditor);
+      const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor(undefined, view);
+      const initialArea = parsePositionArea('top left') ?? undefined;
+      editor.area = initialArea;
+      editor.wasShown();
+      await editor.updateComplete;
+
+      view.input.onSelectStart(1, 1);
+      assert.exists(editor.area);
+      assert.strictEqual(stringifyPositionArea(editor.area), 'center');
+
+      view.input.onSelectEnd(undefined, undefined);
+      assert.exists(editor.area);
+      assert.strictEqual(stringifyPositionArea(editor.area), 'top left');
+    });
+  });
+
+  describe('DEFAULT_VIEW screenshot', () => {
+    it('renders the view', async () => {
+      const target = document.createElement('div');
+      renderElementIntoDOM(target, {includeCommonStyles: true});
+      const area = parsePositionArea('top span-left');
+      assert.exists(area);
+      InlineEditor.PositionAreaEditor.DEFAULT_VIEW({
+        area,
+        onSelectStart: () => {},
+        onSelect: () => {},
+        onSelectEnd: () => {},
+      },
+                                                   undefined, target);
+      await assertScreenshot('inline_editor/position_area_editor.png');
     });
   });
 });

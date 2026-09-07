@@ -1,0 +1,80 @@
+/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  :scope {
+    padding: var(--sys-size-7);
+    width: min-content;
+  }
+
+  .property {
+    display: flex;
+    gap: var(--sys-size-2);
+    line-height: 16px;
+    height: 32px;
+    padding-bottom: var(--sys-size-3);
+    overflow-wrap: break-word;
+    flex-shrink: 0;
+  }
+
+  .property-name,
+  .property-keyword {
+    white-space: nowrap;
+  }
+
+  .property-name {
+    flex-shrink: 0;
+    color: var(--sys-color-token-property-special);
+  }
+
+  .property-value {
+    color: var(--sys-color-on-surface);
+  }
+
+  .position-area-builder {
+    --x-start: attr(data-x-start type(<number>));
+    --x-end: attr(data-x-end type(<number>));
+    --y-start: attr(data-y-start type(<number>));
+    --y-end: attr(data-y-end type(<number>));
+
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 56px);
+    grid-template-rows: repeat(3, 56px);
+    gap: 4px;
+    margin: var(--sys-size-6) auto var(--sys-size-9);
+    touch-action: none;
+    user-select: none;
+    flex-shrink: 0;
+
+    div {
+      background-color: if(
+        style(
+          (--x-start <= attr(data-x type(<number>))) and
+          (--x-end >= attr(data-x type(<number>))) and
+          (--y-start <= attr(data-y type(<number>))) and
+          (--y-end >= attr(data-y type(<number>)))
+        ): var(--sys-color-tonal-container);
+        else: transparent
+      );
+      min-width: 56px;
+      min-height: 56px;
+      outline: 1px solid var(--sys-color-neutral-outline);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      grid-column: calc(var(--x-start) + 1) / calc(var(--x-end) + 2);
+      grid-row: calc(var(--y-start) + 1) / calc(var(--y-end) + 2);
+      border: 2px solid var(--sys-color-primary);
+      border-radius: var(--sys-shape-corner-extra-small);
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
+}

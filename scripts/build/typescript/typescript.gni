@@ -6,13 +6,6 @@ import("../ninja/vars.gni")
 import("./ts_type_check.gni")
 import("./typescript_vars.gni")
 
-declare_args() {
-  devtools_skip_typecheck = build_with_chromium && !is_official_build
-}
-
-assert(!devtools_skip_typecheck || !is_official_build,
-       "Official build should not skip typecheck")
-
 # Architecture Overview:
 # ======================
 # ts_library decouples declaration generation from type-checking and

@@ -1,6 +1,0 @@
-ninja: Entering directory `./third_party/typescript/tests/out/fixtures/simple_dep'
-[1/5] ACTION //front_end/module:dep(//toolchain:default)
-[2/5] STAMP obj/front_end/module/dep.stamp
-[3/5] ACTION //front_end/module:module(//toolchain:default)
-[4/5] STAMP obj/front_end/module/module.stamp
-[5/5] STAMP obj/simple_dep.stamp

@@ -2,6 +2,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-group("split_simple_dep") {
-  deps = [ "front_end/module" ]
+group("prebuilt") {
+  deps = [ "front_end/panels/my_panel" ]
 }

@@ -1,10 +1,11 @@
 # `ts_library` tests
 
-These tests verify that the compilation succeeds/fails with the correct messages as part of the GN build.
+These tests verify that TypeScript compilation rules succeed and compile correctly as part of the GN build.
 
-All tests are fixtures in the [fixtures/](fixtures/) directory, which are compiled by `verify_ts_library.sh` and checked against their output.
+All tests are fixtures in the [fixtures/](fixtures/) directory and are defined as GN targets included in `//scripts/build:tests`.
 
-Each test fixture contains the following:
-- A `.gn` file which specifies this is a GN root, to run `gn gen` on the correct directory.
-- A `BUILDCONFIG.gn` which includes the minimal Chromium configuration to work with `autoninja`.
-- A `toolchain/BUILD.gn` which specifies an (otherwise unused) toolchain, as it is required by Ninja to succesfully run a build.
+To run the fixture tests, build the target with Ninja:
+
+```bash
+autoninja -C out/Default scripts/build:tests
+```

@@ -30,6 +30,15 @@ template("bundle") {
       deps += invoker.deps
     }
 
+    # esbuild resolves the module type and package configuration from
+    # package.json in the build root, which //tools/typescript:copy_package_json
+    # produces. Depend on it so the copy runs first; otherwise a concurrent copy
+    # can fail the read on Windows with a sharing violation. The target only
+    # exists in a Chromium checkout.
+    if (build_with_chromium) {
+      deps += [ "//tools/typescript:copy_package_json" ]
+    }
+
     inputs = [
       invoker.entrypoint,
       devtools_location_prepend + "scripts/build/devtools_plugin.js",

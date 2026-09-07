@@ -51,6 +51,14 @@ template("ts_type_check") {
     _non_ts_deps = invoker.deps
   }
 
+  # tsc resolves the module type from package.json in the build root,
+  # which //tools/typescript:copy_package_json produces. Depend on it so the
+  # copy runs first; otherwise a concurrent copy can fail the read on Windows
+  # with a sharing violation. The target only exists in a Chromium checkout.
+  if (build_with_chromium) {
+    _non_ts_deps += [ "//tools/typescript:copy_package_json" ]
+  }
+
   _es_target = "ES2023"
   if (defined(invoker.es_target)) {
     _es_target = invoker.es_target

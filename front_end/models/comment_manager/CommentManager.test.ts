@@ -63,17 +63,33 @@ describe('CommentManager', () => {
     assert.strictEqual(threadChangedEvents[0][0], thread);
   });
 
-  it('supports AGENT author and changes metadata in created threads', () => {
+  it('supports changes metadata in created threads', () => {
     const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
       vePath: 'Panel: elements > TreeItem: rule',
       textSignature: 'margin: 0;',
     };
     const changes = [{property: 'margin', oldValue: '0', newValue: '8px'}];
-    const thread = manager.createCommentThread(anchor, 'Agent fix', 'AGENT', changes);
+    const thread = manager.createCommentThread(anchor, 'CSS fix', 'DEVELOPER', changes);
 
-    assert.strictEqual(thread.comments[0].author, 'AGENT');
-    assert.strictEqual(thread.comments[0].text, 'Agent fix');
+    assert.strictEqual(thread.comments[0].author, 'DEVELOPER');
+    assert.strictEqual(thread.comments[0].text, 'CSS fix');
     assert.deepEqual(thread.changes, changes);
+  });
+
+  it('resolves comment threads with optional reply text', () => {
+    const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
+      vePath: 'Panel: elements > TreeItem: rule',
+      textSignature: 'color: red;',
+    };
+    const thread = manager.createCommentThread(anchor, 'Initial comment');
+    assert.strictEqual(thread.status, 'ACTIVE');
+
+    const success = manager.resolveCommentThread(thread.id, 'Done');
+    assert.isTrue(success);
+    assert.strictEqual(thread.status, 'RESOLVED');
+    assert.lengthOf(thread.comments, 2);
+    assert.strictEqual(thread.comments[1].author, 'AGENT');
+    assert.strictEqual(thread.comments[1].text, 'Done');
   });
 
   it('returns undefined for non-existent comment thread ID', () => {
@@ -122,5 +138,41 @@ describe('CommentManager', () => {
     manager.clear();
     assert.lengthOf(manager.getCommentThreads(), 0);
     assert.isFalse(manager.isCommentMode());
+  });
+
+  it('returns previously unsent comments and marks them as sent in takeComments()', () => {
+    const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
+      vePath: 'Panel: elements > TreeItem: rule',
+      textSignature: 'color: red;',
+    };
+
+    const thread1 = manager.createCommentThread(anchor, 'Initial developer comment', 'DEVELOPER');
+    assert.isFalse(thread1.transmitted);
+
+    const taken = manager.takeComments();
+    assert.lengthOf(taken, 1);
+    assert.strictEqual(taken[0].id, thread1.id);
+    assert.isTrue(taken[0].transmitted);
+    assert.isTrue(thread1.transmitted);
+    assert.lengthOf(taken[0].comments, 1);
+    assert.strictEqual(taken[0].comments[0].text, 'Initial developer comment');
+
+    // Calling takeComments again returns empty array as it was marked as sent
+    const takenAgain = manager.takeComments();
+    assert.lengthOf(takenAgain, 0);
+
+    // Creating another thread makes it available in takeComments
+    const thread2 = manager.createCommentThread(anchor, 'Second thread', 'DEVELOPER');
+    assert.isFalse(thread2.transmitted);
+
+    const takenNew = manager.takeComments();
+    assert.lengthOf(takenNew, 1);
+    assert.strictEqual(takenNew[0].id, thread2.id);
+    assert.isTrue(thread2.transmitted);
+    assert.strictEqual(takenNew[0].comments[0].text, 'Second thread');
+
+    // Resolving thread with agent reply
+    manager.resolveCommentThread(thread2.id, 'Agent reply');
+    assert.lengthOf(manager.takeComments(), 0);
   });
 });

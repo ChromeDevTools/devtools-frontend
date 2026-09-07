@@ -3,6 +3,12 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
+
+import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
+import * as SDK from '../../core/sdk/sdk.js';
+import type * as Logs from '../logs/logs.js';
 
 import * as CommentManager from './comment_manager.js';
 
@@ -113,5 +119,98 @@ describe('CD4ABridge', () => {
     );
 
     assert.isFalse(eventFired);
+  });
+
+  describe('reveal', () => {
+    let mockHost: Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI;
+    let showPanelSpy: sinon.SinonSpy;
+
+    beforeEach(() => {
+      showPanelSpy = sinon.spy();
+      const hostEvents = new Common.ObjectWrapper.ObjectWrapper<Host.InspectorFrontendHostAPI.EventTypes>();
+      hostEvents.addEventListener(Host.InspectorFrontendHostAPI.Events.ShowPanel, event => {
+        showPanelSpy(event.data);
+      });
+      mockHost = {
+        events: hostEvents,
+      } as unknown as Host.InspectorFrontendHostAPI.InspectorFrontendHostAPI;
+    });
+
+    afterEach(() => {
+      sinon.restore();
+      Common.Revealer.RevealerRegistry.removeInstance();
+    });
+
+    it('shows panel for any given panel name', async () => {
+      const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager, undefined, undefined, mockHost);
+      await bridge.reveal('custom_panel');
+
+      assert.isTrue(showPanelSpy.calledOnceWith('custom_panel'));
+    });
+
+    it('reveals network request in addition to panel reveal', async () => {
+      const mockRequest = {requestId: () => 'req-1'} as SDK.NetworkRequest.NetworkRequest;
+      const mockNetworkLog = {
+        requestsForId: (id: string) => id === 'req-1' ? [mockRequest] : [],
+      } as unknown as Logs.NetworkLog.NetworkLog;
+
+      const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+
+      const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager, undefined, mockNetworkLog, mockHost);
+      await bridge.reveal('network', {networkRequestId: 'req-1'});
+
+      assert.isTrue(showPanelSpy.calledOnceWith('network'));
+      assert.isTrue(revealStub.calledOnceWith(mockRequest));
+    });
+
+    it('reveals DOM node in addition to panel reveal', async () => {
+      const mockNode = {} as SDK.DOMModel.DOMNode;
+      const mockDomModel = {
+        pushNodesByBackendIdsToFrontend: sinon.stub().resolves(new Map([[10, mockNode]])),
+      };
+      const mockPrimaryTarget = {
+        model: sinon.stub().withArgs(SDK.DOMModel.DOMModel).returns(mockDomModel),
+      };
+      const mockTargetManager = {
+        primaryPageTarget: () => mockPrimaryTarget,
+      } as unknown as SDK.TargetManager.TargetManager;
+
+      const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+
+      const bridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager, mockTargetManager, undefined, mockHost);
+      await bridge.reveal('elements', {backendNodeId: 10});
+
+      assert.isTrue(showPanelSpy.calledOnceWith('elements'));
+      assert.isTrue(revealStub.calledOnceWith(mockNode));
+    });
+
+    it('reveals both network request and DOM node if both are present in target', async () => {
+      const mockRequest = {requestId: () => 'req-1'} as SDK.NetworkRequest.NetworkRequest;
+      const mockNetworkLog = {
+        requestsForId: (id: string) => id === 'req-1' ? [mockRequest] : [],
+      } as unknown as Logs.NetworkLog.NetworkLog;
+
+      const mockNode = {} as SDK.DOMModel.DOMNode;
+      const mockDomModel = {
+        pushNodesByBackendIdsToFrontend: sinon.stub().resolves(new Map([[10, mockNode]])),
+      };
+      const mockPrimaryTarget = {
+        model: sinon.stub().withArgs(SDK.DOMModel.DOMModel).returns(mockDomModel),
+      };
+      const mockTargetManager = {
+        primaryPageTarget: () => mockPrimaryTarget,
+      } as unknown as SDK.TargetManager.TargetManager;
+
+      const revealStub = sinon.stub(Common.Revealer.RevealerRegistry.instance(), 'reveal').resolves();
+
+      const bridge =
+          new CommentManager.CD4ABridge.CD4ABridge(commentManager, mockTargetManager, mockNetworkLog, mockHost);
+      await bridge.reveal('summary_panel', {networkRequestId: 'req-1', backendNodeId: 10});
+
+      assert.isTrue(showPanelSpy.calledOnceWith('summary_panel'));
+      sinon.assert.callCount(revealStub, 2);
+      sinon.assert.calledWith(revealStub.firstCall, mockRequest);
+      sinon.assert.calledWith(revealStub.secondCall, mockNode);
+    });
   });
 });

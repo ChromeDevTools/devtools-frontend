@@ -26,6 +26,7 @@ devtools_pre_built("test_interface_types") {
 
 node_ts_library("api") {
   additional_type_definitions = [ "types.d.ts" ]
+  inputs = typescript_puppeteer_types_inputs
 
   sources = [
     "TargetUniverse.ts",

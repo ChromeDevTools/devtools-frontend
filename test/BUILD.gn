@@ -43,6 +43,8 @@ group("unittests") {
 node_ts_library("run") {
   sources = [ "run.ts" ]
 
+  inputs = typescript_yargs_types_inputs
+
   ts_deps = [ "conductor:implementation" ]
 }
 

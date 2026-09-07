@@ -138,8 +138,412 @@ if (use_remoteexec) {
 
 typescript_test_types_inputs = [
   devtools_location_prepend + "node_modules/@types/mocha/index.d.ts",
+  devtools_location_prepend + "node_modules/@types/mocha/package.json",
   devtools_location_prepend + "node_modules/@types/sinon/index.d.ts",
+  devtools_location_prepend + "node_modules/@types/sinon/package.json",
+  devtools_location_prepend + "node_modules/@sinonjs/fake-timers/package.json",
+  devtools_location_prepend +
+      "node_modules/@sinonjs/fake-timers/types/fake-timers-src.d.ts",
   devtools_location_prepend + "node_modules/@types/chai/index.d.ts",
+  devtools_location_prepend + "node_modules/@types/chai/package.json",
+  devtools_location_prepend + "node_modules/@types/deep-eql/index.d.ts",
+  devtools_location_prepend + "node_modules/@types/deep-eql/package.json",
+  devtools_location_prepend + "node_modules/assertion-error/index.d.ts",
+  devtools_location_prepend + "node_modules/assertion-error/package.json",
+]
+
+typescript_yargs_types_inputs = [
+  devtools_location_prepend + "node_modules/@types/yargs/helpers.d.ts",
+  devtools_location_prepend + "node_modules/@types/yargs/index.d.ts",
+  devtools_location_prepend + "node_modules/@types/yargs/yargs.d.ts",
+  devtools_location_prepend + "node_modules/@types/yargs-parser/index.d.ts",
+  devtools_location_prepend + "node_modules/@types/yargs-unparser/index.d.ts",
+]
+
+typescript_puppeteer_types_inputs = [
+  devtools_location_prepend + "node_modules/puppeteer-core/package.json",
+  devtools_location_prepend + "node_modules/devtools-protocol/package.json",
+  devtools_location_prepend +
+      "node_modules/devtools-protocol/types/protocol-mapping.d.ts",
+  devtools_location_prepend +
+      "node_modules/devtools-protocol/types/protocol-proxy-api.d.ts",
+  devtools_location_prepend +
+      "node_modules/devtools-protocol/types/protocol-tests-proxy-api.d.ts",
+  devtools_location_prepend +
+      "node_modules/devtools-protocol/types/protocol.d.ts",
+  devtools_location_prepend + "node_modules/typed-query-selector/package.json",
+  devtools_location_prepend + "node_modules/typed-query-selector/parser.d.ts",
+  devtools_location_prepend + "node_modules/typed-query-selector/shim.d.ts",
+  devtools_location_prepend + "node_modules/typed-query-selector/strict.d.ts",
+  devtools_location_prepend +
+      "node_modules/webdriver-bidi-protocol/package.json",
+  devtools_location_prepend +
+      "node_modules/webdriver-bidi-protocol/out/gen/main.d.ts",
+  devtools_location_prepend +
+      "node_modules/webdriver-bidi-protocol/out/gen/mapping.d.ts",
+  devtools_location_prepend +
+      "node_modules/webdriver-bidi-protocol/out/gen/permissions.d.ts",
+  devtools_location_prepend +
+      "node_modules/webdriver-bidi-protocol/out/gen/ua-client-hints.d.ts",
+  devtools_location_prepend +
+      "node_modules/webdriver-bidi-protocol/out/gen/web-bluetooth.d.ts",
+  devtools_location_prepend +
+      "node_modules/webdriver-bidi-protocol/out/index.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/es5-iife/puppeteer-core-browser.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/BluetoothEmulation.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/Browser.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/BrowserContext.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/CDPSession.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/DeviceRequestPrompt.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/Dialog.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/ElementHandle.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/ElementHandleSymbol.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/Environment.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/Extension.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/Frame.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/HTTPRequest.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/HTTPResponse.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/Input.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/Issue.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/JSHandle.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/Page.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/Realm.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/Target.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/WebWorker.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/api.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/api/locators/locators.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/BidiOverCdp.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/BluetoothEmulation.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/Browser.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/BrowserConnector.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/BrowserContext.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/CDPSession.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/Connection.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/Deserializer.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/DeviceRequestPrompt.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/Dialog.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/ElementHandle.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/ExposedFunction.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/Frame.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/HTTPRequest.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/HTTPResponse.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/Input.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/JSHandle.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/Page.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/Realm.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/Serializer.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/Target.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/WebWorker.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/bidi.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/core/Browser.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/bidi/core/BrowsingContext.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/core/Connection.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/core/Navigation.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/core/Realm.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/core/Request.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/core/Session.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/core/UserContext.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/core/UserPrompt.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/core/core.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/bidi/util.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/Accessibility.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/Binding.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/BluetoothEmulation.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/Browser.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/BrowserConnector.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/BrowserContext.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/CdpIssue.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/CdpPreloadScript.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/CdpSession.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/Connection.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/Coverage.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/DeviceRequestPrompt.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/Dialog.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/ElementHandle.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/EmulationManager.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/ExecutionContext.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/Extension.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/ExtensionTransport.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/Frame.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/FrameManager.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/FrameManagerEvents.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/FrameTree.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/HTTPRequest.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/HTTPResponse.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/Input.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/IsolatedWorld.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/IsolatedWorlds.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/JSHandle.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/LifecycleWatcher.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/NetworkEventManager.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/NetworkManager.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/Page.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/cdp/PredefinedNetworkConditions.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/Target.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/TargetManageEvents.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/TargetManager.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/Tracing.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/WebMCP.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/WebWorker.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/cdp.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/cdp/utils.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/AriaQueryHandler.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/BrowserConnector.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/common/BrowserWebSocketTransport.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/CSSQueryHandler.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/CallbackRegistry.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/Configuration.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/ConnectOptions.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/common/ConnectionTransport.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/ConsoleMessage.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/Cookie.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/common/CustomQueryHandler.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/Debug.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/Device.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/DownloadBehavior.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/Errors.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/EventEmitter.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/FileChooser.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/GetQueryHandler.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/HandleIterator.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/LazyArg.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/common/NetworkManagerEvents.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/PDFOptions.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/PQueryHandler.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/PSelectorParser.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/common/PierceQueryHandler.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/Puppeteer.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/QueryHandler.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/ScriptInjector.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/SecurityDetails.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/SupportedBrowser.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/TaskQueue.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/TextQueryHandler.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/TimeoutSettings.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/USKeyboardLayout.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/Viewport.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/WaitTask.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/XPathQueryHandler.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/common.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/types.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/common/util.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/environment.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/generated/injected.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/index-browser.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/index.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/injected/ARIAQuerySelector.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/injected/CSSSelector.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/injected/CustomQuerySelector.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/injected/PQuerySelector.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/injected/PierceQuerySelector.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/injected/Poller.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/injected/TextContent.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/injected/TextQuerySelector.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/injected/XPathQuerySelector.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/injected/injected.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/injected/util.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/node-env-setup.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/node/BrowserLauncher.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/node/ChromeLauncher.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/node/FirefoxLauncher.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/node/LaunchOptions.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/node/NodeWebSocketTransport.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/node/PipeTransport.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/node/PuppeteerNode.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/node/ScreenRecorder.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/node/node.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/node/util/fs.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/puppeteer-core-browser.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/puppeteer-core.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/revisions.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/util/AsyncIterableUtil.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/util/Deferred.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/util/ErrorLike.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/util/Function.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/util/Mutex.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/util/assert.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/util/decorators.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/util/disposable.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/util/encoding.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/util/httpUtils.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/puppeteer/util/incremental-id-generator.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/util/util.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/puppeteer/util/version.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/third_party/mitt/mitt.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/third_party/parsel-js/parsel-js.d.ts",
+  devtools_location_prepend +
+      "node_modules/puppeteer-core/lib/third_party/rxjs/rxjs.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/third_party/urlpattern-polyfill/urlpattern-polyfill.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/lib/types.d.ts",
+  devtools_location_prepend + "node_modules/puppeteer-core/package.json",
 ]
 
 typescript_node_types_inputs = [

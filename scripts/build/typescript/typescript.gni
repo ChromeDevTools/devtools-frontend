@@ -508,6 +508,9 @@ template("node_ts_library") {
 
     inputs =
         [ devtools_location_prepend + "node_modules/@types/node/index.d.ts" ]
+    if (defined(invoker.inputs)) {
+      inputs += invoker.inputs
+    }
 
     forward_variables_from(invoker,
                            [
@@ -526,6 +529,10 @@ template("ts_e2e_library") {
   node_ts_library(target_name) {
     additional_type_definitions =
         [ devtools_location_prepend + "test/e2e/types.d.ts" ]
+    inputs = typescript_test_types_inputs + typescript_puppeteer_types_inputs
+    if (defined(invoker.inputs)) {
+      inputs += invoker.inputs
+    }
     forward_variables_from(invoker,
                            [
                              "sources",

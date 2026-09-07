@@ -659,8 +659,14 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | disableAvifFormat": {
     "message": "Адключыць фармат AVIF"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | disableJpegXlFormat": {
+    "message": "Адключыць фармат JPEG XL"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | disableLocalFonts": {
     "message": "Адключыць лакальныя шрыфты"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | disableWebpFormat": {
+    "message": "Адключыць фармат WebP"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | doNotAutoOpen": {
     "message": "Не адкрываць інструменты распрацоўшчыка аўтаматычна для ўсплывальных вокнаў"
@@ -688,6 +694,9 @@
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateAchromatopsia": {
     "message": "Эмуляцыя ахраматапсіі (без колеру)"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | emulateAutoDarkMode": {
+    "message": "Ажыццявіць эмуляцыю аўтаматычнага цёмнага рэжыму"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | emulateBlurredVision": {
     "message": "Эмуляваць расфакусіраваны зрок"
@@ -728,8 +737,14 @@
   "entrypoints/inspector_main/inspector_main-meta.ts | enableAvifFormat": {
     "message": "Уключыць фармат AVIF"
   },
+  "entrypoints/inspector_main/inspector_main-meta.ts | enableJpegXlFormat": {
+    "message": "Уключыць фармат JPEG XL"
+  },
   "entrypoints/inspector_main/inspector_main-meta.ts | enableLocalFonts": {
     "message": "Уключыць лакальныя шрыфты"
+  },
+  "entrypoints/inspector_main/inspector_main-meta.ts | enableWebpFormat": {
+    "message": "Уключыць фармат WebP"
   },
   "entrypoints/inspector_main/inspector_main-meta.ts | forceAdBlocking": {
     "message": "Прымусова блакіраваць рэкламу на гэтым сайце"
@@ -941,6 +956,12 @@
   "entrypoints/main/main-meta.ts | devtoolsDefault": {
     "message": "Інструменты распрацоўшчыка (стандартна)"
   },
+  "entrypoints/main/main-meta.ts | disableOverrideNetworkRequests": {
+    "message": "Адключыць перавызначэнне запытаў сеткі"
+  },
+  "entrypoints/main/main-meta.ts | disablePaused": {
+    "message": "Адключыць накладку прыпыненага стану"
+  },
   "entrypoints/main/main-meta.ts | dockToBottom": {
     "message": "Замацаваць унізе"
   },
@@ -953,8 +974,14 @@
   "entrypoints/main/main-meta.ts | dontMatchChromeColorSchemeCommand": {
     "message": "Не падбіраць да колеравай схемы Chrome"
   },
+  "entrypoints/main/main-meta.ts | earnBadges": {
+    "message": "Зарабляць значкі"
+  },
   "entrypoints/main/main-meta.ts | enableCtrlShortcutToSwitchPanels": {
     "message": "Для пераключэння панэлей выкарыстоўвайце спалучэнні клавіш Ctrl + 1-9"
+  },
+  "entrypoints/main/main-meta.ts | enableOverrideNetworkRequests": {
+    "message": "Уключыць перавызначэнне запытаў сеткі"
   },
   "entrypoints/main/main-meta.ts | enableShortcutToSwitchPanels": {
     "message": "Для пераключэння панэляў выкарыстоўвайце спалучэнні клавіш ⌘ + 1-9"
@@ -971,6 +998,9 @@
   "entrypoints/main/main-meta.ts | horizontal": {
     "message": "гарызантальна"
   },
+  "entrypoints/main/main-meta.ts | interception": {
+    "message": "перахоп"
+  },
   "entrypoints/main/main-meta.ts | language": {
     "message": "Мова:"
   },
@@ -983,6 +1013,9 @@
   "entrypoints/main/main-meta.ts | lightLower": {
     "message": "светлая"
   },
+  "entrypoints/main/main-meta.ts | localOverrides": {
+    "message": "Лакальныя перавызначэнні"
+  },
   "entrypoints/main/main-meta.ts | matchChromeColorScheme": {
     "message": "Падабраць да колеравай схемы Chrome"
   },
@@ -992,8 +1025,14 @@
   "entrypoints/main/main-meta.ts | matchChromeColorSchemeDocumentation": {
     "message": "Падбор колераў інструментаў распрацоўшчыка пад індывідуальную тэму Chrome (калі такая функцыя ўключана)"
   },
+  "entrypoints/main/main-meta.ts | network": {
+    "message": "сетка"
+  },
   "entrypoints/main/main-meta.ts | nextPanel": {
     "message": "Наступная панэль"
+  },
+  "entrypoints/main/main-meta.ts | override": {
+    "message": "перавызначэнне"
   },
   "entrypoints/main/main-meta.ts | panelLayout": {
     "message": "Макет панэлі:"
@@ -1004,11 +1043,17 @@
   "entrypoints/main/main-meta.ts | reloadDevtools": {
     "message": "Перазагрузіць інструменты распрацоўшчыка"
   },
+  "entrypoints/main/main-meta.ts | request": {
+    "message": "запыт"
+  },
   "entrypoints/main/main-meta.ts | resetZoomLevel": {
     "message": "Скінуць каэфіцыент маштабавання"
   },
   "entrypoints/main/main-meta.ts | restoreLastDockPosition": {
     "message": "Аднавіць апошнюю пазіцыю замацавання"
+  },
+  "entrypoints/main/main-meta.ts | rewrite": {
+    "message": "перазапісаць"
   },
   "entrypoints/main/main-meta.ts | right": {
     "message": "Справа"
@@ -1647,7 +1692,7 @@
     "message": "Спрацаваў кадр анімацыі"
   },
   "models/trace/Styles.ts | async": {
-    "message": "Асінхроннае выкананне"
+    "message": "Асінхронныя"
   },
   "models/trace/Styles.ts | asyncTask": {
     "message": "Асінхронная задача"
@@ -1725,10 +1770,10 @@
     "message": "Падзея DOMContentLoaded"
   },
   "models/trace/Styles.ts | drawFrame": {
-    "message": "Нарысаваць фрэйм"
+    "message": "Намаляваць фрэйм"
   },
   "models/trace/Styles.ts | drawing": {
-    "message": "Рысаванне"
+    "message": "Маляванне"
   },
   "models/trace/Styles.ts | embedderCallback": {
     "message": "Зваротны выклік убудоўшчыка"
@@ -1797,7 +1842,7 @@
     "message": "Усталяваць таймер"
   },
   "models/trace/Styles.ts | invalidateLayout": {
-    "message": "Зрабіць макет неправадзейным"
+    "message": "Ануляваць макет"
   },
   "models/trace/Styles.ts | jsFrame": {
     "message": "Фрэйм JS"
@@ -1851,7 +1896,7 @@
     "message": "Наладжванне адмалёўкі"
   },
   "models/trace/Styles.ts | painting": {
-    "message": "Маляванне"
+    "message": "Адмалёўка"
   },
   "models/trace/Styles.ts | parseAndCompile": {
     "message": "Прааналізаваць і скампіляваць"
@@ -2067,7 +2112,7 @@
     "message": "Не абвяшчае набор сімвалаў з дапамогай метатэга"
   },
   "models/trace/insights/CharacterSet.ts | failedMetaCharsetUnknown": {
-    "message": "Не ўдалося вызначыць абвяшчэнне набору сімвалаў з дапамогай метатэга з трасіроўкі"
+    "message": "Не атрымалася вызначыць абвяшчэнне набору сімвалаў з дапамогай метатэга з трасіроўкі"
   },
   "models/trace/insights/CharacterSet.ts | passingHttpHeader": {
     "message": "Абвяшчае набор сімвалаў у загалоўку HTTP"
@@ -2178,7 +2223,7 @@
     "message": "Патрачаны час"
   },
   "models/trace/insights/ForcedReflow.ts | anonymous": {
-    "message": "(ананімная)"
+    "message": "(ананімна)"
   },
   "models/trace/insights/ForcedReflow.ts | description": {
     "message": "Прымусовая перакампаноўка выконваецца, калі JavaScript запытвае геаметрычныя ўласцівасці (напрыклад, offsetWidth) пасля таго, як змяненні ў стане DOM робяць стылі несапраўднымі. Гэта можа прывесці да зніжэння прадукцыйнасці. Даведацца больш пра [прымусовыя перакампаноўкі](https://developer.chrome.com/docs/performance/insights/forced-reflow) і магчымыя спосабы іх устаранення."
@@ -2223,7 +2268,7 @@
     "message": "Разбіўка INP"
   },
   "models/trace/insights/ImageDelivery.ts | description": {
-    "message": "Памяншэнне часу спампоўвання відарысаў можа палепшыць меркаваны час загрузкі старонкі і LCP. [Даведацца больш пра аптымізацыю памераў відарысаў](https://developer.chrome.com/docs/performance/insights/image-delivery)"
+    "message": "Памяншэнне часу спампоўвання відарысаў можа палепшыць меркаваны час загрузкі старонкі і LCP. [Даведацца больш пра аптымізацыю памераў відарысаў](https://developer.chrome.com/docs/performance/insights/image-delivery)."
   },
   "models/trace/insights/ImageDelivery.ts | estimatedSavings": {
     "message": "{PH1} (каля {PH2})"
@@ -2283,7 +2328,7 @@
     "message": "Разбіўка LCP"
   },
   "models/trace/insights/LCPDiscovery.ts | description": {
-    "message": "[Аптымізуйце LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery), зрабіўшы відарыс LCP бачным у HTML адразу і не дапускаючы адкладзеную загрузку"
+    "message": "[Аптымізуйце LCP](https://developer.chrome.com/docs/performance/insights/lcp-discovery), зрабіўшы відарыс LCP бачным у HTML адразу і не дапускаючы адкладзеную загрузку."
   },
   "models/trace/insights/LCPDiscovery.ts | fetchPriorityApplied": {
     "message": "Прыменена fetchpriority=high"
@@ -2379,7 +2424,7 @@
     "message": "Няма дадатковых крыніц, якія былі б добрымі кандыдатамі для папярэдняга падключэння"
   },
   "models/trace/insights/NetworkDependencyTree.ts | noPreconnectOrigins": {
-    "message": "няма папярэдне падключаных крыніц"
+    "message": "Папярэдне падключаных крыніц няма"
   },
   "models/trace/insights/NetworkDependencyTree.ts | preconnectOriginsTableDescription": {
     "message": "Падказкі для [папярэдняга падключэння](https://developer.chrome.com/docs/lighthouse/performance/uses-rel-preconnect/) дапамагаюць браўзеру ўсталяваць падключэнне на больш раннім этапе загрузкі старонкі. Гэта эканоміць час пры першым запыце да такой крыніцы. Ніжэй указаны крыніцы, да якіх папярэдне падключана старонка."
@@ -2415,7 +2460,7 @@
     "message": "Запыты, якія блакіруюць візуалізацыю"
   },
   "models/trace/insights/SlowCSSSelector.ts | description": {
-    "message": "Калі выдаткі на пералічванне стылю застаюцца высокімі, іх можна паменшыць, аптымізуючы селектар. [Аптымізуйце селектары](https://developer.chrome.com/docs/performance/insights/slow-css-selector) як з вялікай працягласцю часу, які яны займаюць, так і з высокім працэнтам павольнай працы. Каб знізіць выдаткі на супастаўленне, выкарыстоўвайце прасцейшыя селектары або меншую колькасць селектараў, DOM меншага памеру або менш глыбокі DOM."
+    "message": "Калі выдаткі на пералічэнне стылю застаюцца высокімі, іх можна паменшыць, аптымізуючы селектар. [Аптымізуйце селектары](https://developer.chrome.com/docs/performance/insights/slow-css-selector) як з вялікай працягласцю часу, які яны займаюць, так і з высокім працэнтам павольнай працы. Каб знізіць выдаткі на супастаўленне, выкарыстоўвайце прасцейшыя селектары або меншую колькасць селектараў, DOM меншага памеру або менш глыбокі DOM."
   },
   "models/trace/insights/SlowCSSSelector.ts | elapsed": {
     "message": "Пройдзены час"
@@ -2430,7 +2475,7 @@
     "message": "Колькасць супадзенняў"
   },
   "models/trace/insights/SlowCSSSelector.ts | title": {
-    "message": "Селектары CSS (выдаткі)"
+    "message": "Выдаткі на селектары CSS"
   },
   "models/trace/insights/SlowCSSSelector.ts | topSelectorElapsedTime": {
     "message": "Найлепшы інструмент выбару па затрачаным часе"
@@ -2502,7 +2547,7 @@
     "message": "Няма атрыбутаў ARIA"
   },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveRecording": {
-    "message": "Запіс апавяшчэнняў пра спецыяльныя магчымасці"
+    "message": "Запіс апавяшчэнняў"
   },
   "panels/accessibility/AccessibilityNodeView.ts | accessibilityNodeNotExposed": {
     "message": "Вузел даступнасці не раскрыты"
@@ -2592,7 +2637,7 @@
     "message": "Можа задаць значэнне"
   },
   "panels/accessibility/AccessibilityStrings.ts | checked": {
-    "message": "Выбрана"
+    "message": "Checked"
   },
   "panels/accessibility/AccessibilityStrings.ts | contents": {
     "message": "Змесціва"
@@ -4895,6 +4940,12 @@
   "panels/application/components/AdsView.ts | adIframesTitle": {
     "message": "Рэкламныя вокны iframe (усяго: {PH1})"
   },
+  "panels/application/components/AdsView.ts | adScripts": {
+    "message": "Сцэнарыі рэкламы"
+  },
+  "panels/application/components/AdsView.ts | adScriptsTitle": {
+    "message": "Сцэнарыі рэкламы (усяго: {PH1})"
+  },
   "panels/application/components/AdsView.ts | average": {
     "message": "(Сярэдняе значэнне: {PH1})"
   },
@@ -4936,6 +4987,9 @@
   },
   "panels/application/components/AdsView.ts | unnamed": {
     "message": "<без назвы>"
+  },
+  "panels/application/components/AdsView.ts | url": {
+    "message": "URL-адрас"
   },
   "panels/application/components/AdsView.ts | viewportAdCount": {
     "message": "Колькасць рэкламных аб’яў у акне прагляду"
@@ -6926,6 +6980,9 @@
   "panels/console/console-meta.ts | createLiveExpression": {
     "message": "Стварыць жывы выраз"
   },
+  "panels/console/console-meta.ts | customFormatters": {
+    "message": "Карыстальніцкія функцыі фармаціравання"
+  },
   "panels/console/console-meta.ts | doNotAutocompleteFromHistory": {
     "message": "Не выкарыстоўваць аўтазапаўненне з гісторыі"
   },
@@ -6967,6 +7024,9 @@
   },
   "panels/console/console-meta.ts | hideTimestamps": {
     "message": "Схаваць меткі часу"
+  },
+  "panels/console/console-meta.ts | logXmlhttprequests": {
+    "message": "Уносіць у журнал запыты XMLHttpRequests"
   },
   "panels/console/console-meta.ts | networkMessages": {
     "message": "Паведамленні сеткі"
@@ -7458,7 +7518,7 @@
     "message": "Адкрыць рэдактар ценяў"
   },
   "panels/elements/ComputedStyleWidget.ts | filterUpdateAriaText": {
-    "message": "Фільтр прыменены: {PH1}. Агульная колькасць вынікаў: {PH2}."
+    "message": "Фільтр прыменены: {PH1}. Усяго вынікаў: {PH2}"
   },
   "panels/elements/ComputedStyleWidget.ts | group": {
     "message": "Група"
@@ -7475,6 +7535,138 @@
   "panels/elements/ComputedStyleWidget.ts | showAll": {
     "message": "Паказаць усе"
   },
+  "panels/elements/DOMTreeContextMenu.ts | addAttribute": {
+    "message": "Дадаць атрыбут"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | addPadding": {
+    "message": "Дадаць водступ"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | alignItems": {
+    "message": "Выраўнаваць элементы"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | assessVisibility": {
+    "message": "Ацаніць бачнасць"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | captureNodeScreenshot": {
+    "message": "Зрабіць здымак вузла"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | centerElement": {
+    "message": "Размясціць элемент па цэнтры"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | changeParentProperties": {
+    "message": "Змяніць бацькоўскія ўласцівасці"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | collapseChildren": {
+    "message": "Згарнуць даччыныя элементы"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copy": {
+    "message": "Скапіраваць"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyElement": {
+    "message": "Скапіраваць элемент"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyFullXpath": {
+    "message": "Скапіраваць поўны XPath"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyJsPath": {
+    "message": "Скапіраваць шлях JS"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyOuterhtml": {
+    "message": "Скапіраваць outerHTML"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copySelector": {
+    "message": "Скапіраваць: selector"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyStyles": {
+    "message": "Скапіраваць стылі"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | copyXpath": {
+    "message": "Скапіраваць XPath"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | cut": {
+    "message": "Выразаць"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | deleteElement": {
+    "message": "Выдаліць элемент"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | distributeItemsEvenly": {
+    "message": "Размеркаваць элементы раўнамерна"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | duplicateElement": {
+    "message": "Дубліраваць элемент"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | editAsHtml": {
+    "message": "Рэдагаваць як HTML"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | editAttribute": {
+    "message": "Змяніць атрыбут"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | editData": {
+    "message": "Рэдагаваць даныя"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | editText": {
+    "message": "Рэдагаваць тэкст"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | expandRecursively": {
+    "message": "Разгарнуць рэкурсіўна"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainContainerContext": {
+    "message": "Растлумачыць кантэкст кантэйнера"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainContainerQueries": {
+    "message": "Растлумачыць запыты кантэйнера"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainContainerTypes": {
+    "message": "Растлумачыць тыпы кантэйнераў"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainFlexbox": {
+    "message": "Растлумачыць Flexbox"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainGridLayout": {
+    "message": "Растлумачыць макет сеткі"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainScrollbars": {
+    "message": "Растлумачыць палосы прагорткі"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | explainSubgrids": {
+    "message": "Растлумачыць падсеткі"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | findGridDefinition": {
+    "message": "Знайсці азначэнне сеткі"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | focus": {
+    "message": "Перамясціць фокус"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | hideElement": {
+    "message": "Не паказваць элемент"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | paste": {
+    "message": "Уставіць"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | removeScrollbars": {
+    "message": "Выдаліць палосы прагорткі"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | scrollIntoView": {
+    "message": "Прагартайце, пакуль змесціва не стане бачным"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | showFrameDetails": {
+    "message": "Паказаць падрабязныя звесткі пра iframe"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | startAChat": {
+    "message": "Пачаць чат"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | storeAsGlobalVariable": {
+    "message": "Захаваць як глабальную пераменную"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | styleScrollbars": {
+    "message": "Задаць стыль палос прагорткі"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | switchToAccessibilityTree": {
+    "message": "Пераключыцца на дрэва даступнасці"
+  },
+  "panels/elements/DOMTreeContextMenu.ts | wrapTheseItems": {
+    "message": "Упакаваць гэтыя элементы"
+  },
   "panels/elements/ElementIssueUtils.ts | disallowedOptGroupChild": {
     "message": "<optgroup>: няправільны элемент або вузел тэксту"
   },
@@ -7482,7 +7674,7 @@
     "message": "<select>: няправільны элемент або вузел тэксту"
   },
   "panels/elements/ElementIssueUtils.ts | formAriaLabelledByToNonExistingId": {
-    "message": "Атрыбут aria-labelledby не адпавядае ні аднаму з ідэнтыфікатараў элемента"
+    "message": "Атрыбут aria-labelledby не адпавядае ніводнаму ідэнтыфікатару элемента"
   },
   "panels/elements/ElementIssueUtils.ts | formAutocompleteAttributeEmptyError": {
     "message": "Няправільнае выкарыстанне атрыбута аўтазапаўнення"
@@ -7542,7 +7734,7 @@
     "message": "Даведацца больш"
   },
   "panels/elements/ElementStatePaneWidget.ts | toggleElementState": {
-    "message": "Уключэнне і выключэнне стану элементаў"
+    "message": "Пераключыць стан элемента"
   },
   "panels/elements/ElementsPanel.ts | adornerSettings": {
     "message": "Налады значка"
@@ -7566,7 +7758,7 @@
     "message": "Знайсці па радку, селектары або XPath"
   },
   "panels/elements/ElementsPanel.ts | hideComputedStylesSidebar": {
-    "message": "Не паказваць панэль вылічаных стыляў"
+    "message": "Схаваць бакавую панэль \"Вылічаныя стылі\""
   },
   "panels/elements/ElementsPanel.ts | nodeCannotBeFoundInTheCurrent": {
     "message": "Вузел не ўдаецца знайсці на бягучай старонцы."
@@ -7575,7 +7767,7 @@
     "message": "Адкрыць на панэлі \"Элементы\""
   },
   "panels/elements/ElementsPanel.ts | showComputedStylesSidebar": {
-    "message": "Паказваць панэль вылічаных стыляў"
+    "message": "Паказаць бакавую панэль \"Вылічаныя стылі\""
   },
   "panels/elements/ElementsPanel.ts | sidePanelContent": {
     "message": "Змесціва бакавой панэлі"
@@ -7596,7 +7788,7 @@
     "message": "Даччыныя элементы:"
   },
   "panels/elements/ElementsTreeElement.ts | copy": {
-    "message": "Скапіраваць"
+    "message": "Капіраваць"
   },
   "panels/elements/ElementsTreeElement.ts | creatorAdScriptAncestry": {
     "message": "Паходжанне сцэнарыя аб’явы для стваральнікаў"
@@ -7665,7 +7857,7 @@
     "message": "Уставіць"
   },
   "panels/elements/ElementsTreeElement.ts | reveal": {
-    "message": "паказаць"
+    "message": "Паказаць"
   },
   "panels/elements/ElementsTreeElement.ts | rootScriptFilterListRule": {
     "message": "Правіла фільтрацыі спіса са сцэнарыем каранёвага ўзроўню"
@@ -7706,6 +7898,9 @@
   "panels/elements/ElementsTreeOutline.ts | pageDom": {
     "message": "Старонка DOM"
   },
+  "panels/elements/ElementsTreeOutline.ts | reveal": {
+    "message": "reveal"
+  },
   "panels/elements/ElementsTreeOutline.ts | showAllLines": {
     "message": "Паказаць усе (радкоў: {PH1})"
   },
@@ -7716,7 +7911,7 @@
     "message": "Праглядзець праблему:"
   },
   "panels/elements/EventListenersWidget.ts | all": {
-    "message": "Усё"
+    "message": "Усе"
   },
   "panels/elements/EventListenersWidget.ts | ancestors": {
     "message": "Продкі"
@@ -7818,7 +8013,7 @@
     "message": "Значэнне ўласцівасці CSS: {PH1}"
   },
   "panels/elements/ShortcutTreeElement.ts | reveal": {
-    "message": "паказаць"
+    "message": "reveal"
   },
   "panels/elements/StylePropertiesSection.ts | collapseExpandedRule": {
     "message": "Згарнуць разгорнутае правіла"
@@ -7846,6 +8041,9 @@
   },
   "panels/elements/StylePropertiesSection.ts | insertStyleRuleBelow": {
     "message": "Уставіць правіла стылю ніжэй"
+  },
+  "panels/elements/StylePropertiesSection.ts | notMatching": {
+    "message": "Гэта правіла зараз не адпавядае выбранаму элементу"
   },
   "panels/elements/StylePropertiesSection.ts | sattributesStyle": {
     "message": "{PH1}[стыль атрыбутаў]"
@@ -7884,10 +8082,10 @@
     "message": "Скапіраваць значэнне"
   },
   "panels/elements/StylePropertyTreeElement.ts | flexboxEditorButton": {
-    "message": "Адкрыць рэдактар flexbox"
+    "message": "Адкрыць рэдактар \"flexbox\""
   },
   "panels/elements/StylePropertyTreeElement.ts | gridEditorButton": {
-    "message": "Адкрыць рэдактар grid"
+    "message": "Адкрыць рэдактар \"grid\""
   },
   "panels/elements/StylePropertyTreeElement.ts | gridLanesEditorButton": {
     "message": "Адкрыць рэдактар \"grid-lanes\""
@@ -7917,7 +8115,7 @@
     "message": "Перавызначана стылямі анімацыі."
   },
   "panels/elements/StylePropertyTreeElement.ts | sIsNotDefined": {
-    "message": "\"{PH1}\" не вызначана"
+    "message": "Функцыя \"{PH1}\" не вызначана"
   },
   "panels/elements/StylePropertyTreeElement.ts | shiftClickToChangeColorFormat": {
     "message": "Каб змяніць фармат колеру, націсніце кнопку мышы, утрымліваючы Shift."
@@ -8007,7 +8205,7 @@
     "message": "Паказаць зарэгістраваную ўласцівасць"
   },
   "panels/elements/components/CSSVariableValueView.ts | sIsNotDefined": {
-    "message": "Уласцівасць \"{PH1}\" не вызначана"
+    "message": "Функцыя \"{PH1}\" не вызначана"
   },
   "panels/elements/components/ElementsBreadcrumbs.ts | breadcrumbs": {
     "message": "Ланцужкі навігацыі дрэва DOM"
@@ -8124,7 +8322,7 @@
     "message": "Паказваць імёны абласцей"
   },
   "panels/elements/elements-meta.ts | showComputedStyles": {
-    "message": "Паказаць інструмент \"Вылічаныя стылі\""
+    "message": "Паказаць вылічаныя стылі"
   },
   "panels/elements/elements-meta.ts | showElements": {
     "message": "Паказаць панэль \"Элементы\""
@@ -8140,6 +8338,9 @@
   },
   "panels/elements/elements-meta.ts | showHtmlComments": {
     "message": "Паказваць каментарыі ў HTML"
+  },
+  "panels/elements/elements-meta.ts | showInactiveCSSRules": {
+    "message": "Паказаць неактыўныя правілы CSS"
   },
   "panels/elements/elements-meta.ts | showLayout": {
     "message": "Паказаць інструмент \"Макет\""
@@ -9512,6 +9713,9 @@
   "panels/media/PlayerMessagesView.ts | warning": {
     "message": "Папярэджанне"
   },
+  "panels/media/PlayerPropertiesView.ts | audioDecoderProperties": {
+    "message": "Уласцівасці аўдыядэкодара"
+  },
   "panels/media/PlayerPropertiesView.ts | bitrate": {
     "message": "Бітрэйт"
   },
@@ -9581,6 +9785,12 @@
   "panels/media/PlayerPropertiesView.ts | track": {
     "message": "Дарожка"
   },
+  "panels/media/PlayerPropertiesView.ts | trackNumber": {
+    "message": "{PH1} №{PH2}"
+  },
+  "panels/media/PlayerPropertiesView.ts | videoDecoderProperties": {
+    "message": "Уласцівасці відэадэкодара"
+  },
   "panels/media/PlayerPropertiesView.ts | videoFreezingScore": {
     "message": "Ацэнка перарывання відэа"
   },
@@ -9624,7 +9834,7 @@
     "message": "Уключана рэгуляванне нагрузкі на сетку"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeBlocked": {
-    "message": "Запыты могуць блакіравацца; праглядзіце панэль \"Блакіроўка сеткавых запытаў\""
+    "message": "Requests may be blocked. See the Request conditions panel"
   },
   "panels/mobile_throttling/NetworkPanelIndicator.ts | requestsMayBeOverridden": {
     "message": "Запыты могуць быць перавызначаны лакальна; праглядзіце панэль \"Крыніцы\""
@@ -11453,6 +11663,9 @@
   "panels/network/network-meta.ts | clear": {
     "message": "Ачысціць сеткавы журнал"
   },
+  "panels/network/network-meta.ts | clearTag": {
+    "message": "ачысціць"
+  },
   "panels/network/network-meta.ts | colorCode": {
     "message": "код колеру"
   },
@@ -11462,14 +11675,29 @@
   "panels/network/network-meta.ts | colorcodeResourceTypes": {
     "message": "Тыпы рэсурсаў кода колеру"
   },
+  "panels/network/network-meta.ts | disableCache": {
+    "message": "Адключыць кэш, пакуль адкрыты інструменты распрацоўшчыка"
+  },
+  "panels/network/network-meta.ts | disableRequestBlockingAndThrottling": {
+    "message": "Disable request blocking and throttling"
+  },
   "panels/network/network-meta.ts | diskCache": {
     "message": "кэш на дыску"
+  },
+  "panels/network/network-meta.ts | doNotKeepLogOnPageReload": {
+    "message": "Не захоўваць журнал пры перазагрузцы старонкі або пераходзе па ёй"
   },
   "panels/network/network-meta.ts | dontAllowToGenerateHarWithSensitiveData": {
     "message": "Не дазваляць ствараць HAR з канфідэнцыяльнымі данымі"
   },
   "panels/network/network-meta.ts | dontGroupNetworkLogItemsByFrame": {
     "message": "Не групаваць элементы сеткавага журнала па фрэймах"
+  },
+  "panels/network/network-meta.ts | enableCache": {
+    "message": "Уключыць кэш"
+  },
+  "panels/network/network-meta.ts | enableRequestBlockingAndThrottling": {
+    "message": "Enable request blocking and throttling"
   },
   "panels/network/network-meta.ts | frame": {
     "message": "фрэйм"
@@ -11486,11 +11714,23 @@
   "panels/network/network-meta.ts | hideRequestDetails": {
     "message": "Схаваць падрабязныя звесткі пра запыт"
   },
+  "panels/network/network-meta.ts | keep": {
+    "message": "захоўваць"
+  },
+  "panels/network/network-meta.ts | keepLog": {
+    "message": "Захоўваць журнал"
+  },
+  "panels/network/network-meta.ts | keepLogOnPageReload": {
+    "message": "Захоўваць журнал пры перазагрузцы старонкі або пераходзе па ёй"
+  },
   "panels/network/network-meta.ts | netWork": {
     "message": "сетка"
   },
   "panels/network/network-meta.ts | network": {
     "message": "Сетка"
+  },
+  "panels/network/network-meta.ts | networkCacheExplanation": {
+    "message": "Адключэнне кэша сеткі будзе імітаваць узаемадзеянне з сеткай, як у першага наведвальніка."
   },
   "panels/network/network-meta.ts | networkConditions": {
     "message": "Стан сеткі"
@@ -11501,11 +11741,20 @@
   "panels/network/network-meta.ts | networkThrottling": {
     "message": "рэгуляванне нагрузкі на сетку"
   },
+  "panels/network/network-meta.ts | preserve": {
+    "message": "захаваць"
+  },
   "panels/network/network-meta.ts | recordNetworkLog": {
     "message": "Уносіць запісы ў сеткавы журнал"
   },
   "panels/network/network-meta.ts | removeAllNetworkRequestBlockingOrThrottlingPatterns": {
     "message": "Выдаліць усе шаблоны блакіроўкі і абмежавання сеткавых запытаў"
+  },
+  "panels/network/network-meta.ts | requestBlockingAndThrottling": {
+    "message": "Request blocking and throttling"
+  },
+  "panels/network/network-meta.ts | reset": {
+    "message": "скінуць"
   },
   "panels/network/network-meta.ts | resourceType": {
     "message": "тып рэсурсу"
@@ -14912,6 +15161,9 @@
   "panels/sources/sources-meta.ts | enableJavascript": {
     "message": "Уключыць JavaScript"
   },
+  "panels/sources/sources-meta.ts | enableRemoteFileLoading": {
+    "message": "Дазволіць загрузку рэсурсаў з аддаленых файлаў у інструментах распрацоўшчыка"
+  },
   "panels/sources/sources-meta.ts | enableTabMovesFocus": {
     "message": "Уключыць змену фокуса па націсканні клавішы Tab"
   },
@@ -14980,6 +15232,9 @@
   },
   "panels/sources/sources-meta.ts | quickSource": {
     "message": "Хуткая крыніца"
+  },
+  "panels/sources/sources-meta.ts | remoteFileLoadingInfo": {
+    "message": "Прыкладам рэсурсаў з’яўляюцца карты крыніц. Стандартна гэта функцыя адключана з меркаванняў бяспекі."
   },
   "panels/sources/sources-meta.ts | rename": {
     "message": "Перайменаваць"
@@ -15114,7 +15369,7 @@
     "message": "Працоўная вобласць"
   },
   "panels/timeline/AnimationsTrackAppender.ts | animations": {
-    "message": "Анімацыі"
+    "message": "Animations"
   },
   "panels/timeline/AnnotationHelpers.ts | entriesLink": {
     "message": "падключаныя запісы"
@@ -15147,88 +15402,88 @@
     "message": "{PH1} (уласны час дзеяння: {PH2})"
   },
   "panels/timeline/CountersGraph.ts | documents": {
-    "message": "Дакументы"
+    "message": "Documents"
   },
   "panels/timeline/CountersGraph.ts | gpuMemory": {
-    "message": "Памяць графічнага працэсара"
+    "message": "GPU memory"
   },
   "panels/timeline/CountersGraph.ts | jsHeap": {
-    "message": "Куча JS"
+    "message": "JS heap"
   },
   "panels/timeline/CountersGraph.ts | listeners": {
-    "message": "Слухачы"
+    "message": "Listeners"
   },
   "panels/timeline/CountersGraph.ts | noEventsFound": {
-    "message": "Даныя пра выкарыстанне памяці ў выбраных падзеях не знойдзены."
+    "message": "No memory usage data found within selected events"
   },
   "panels/timeline/CountersGraph.ts | nodes": {
-    "message": "Вузлы"
+    "message": "Nodes"
   },
   "panels/timeline/CountersGraph.ts | ss": {
     "message": "[{PH1}-{PH2}]"
   },
   "panels/timeline/EventsTimelineTreeView.ts | all": {
-    "message": "Усё"
+    "message": "All"
   },
   "panels/timeline/EventsTimelineTreeView.ts | durationFilter": {
     "message": "Фільтр працягласці"
   },
   "panels/timeline/EventsTimelineTreeView.ts | startTime": {
-    "message": "Час пачатку"
+    "message": "Start time"
   },
   "panels/timeline/ExtensionTrackAppender.ts | customTrackSubtitle": {
     "message": "– карыстальніцкі"
   },
   "panels/timeline/GPUTrackAppender.ts | gpu": {
-    "message": "Графічны працэсар"
+    "message": "GPU"
   },
   "panels/timeline/InteractionsTrackAppender.ts | interactions": {
-    "message": "Узаемадзеянні"
+    "message": "Interactions"
   },
   "panels/timeline/IsolateSelector.ts | empty": {
-    "message": "(пуста)"
+    "message": "(empty)"
   },
   "panels/timeline/IsolateSelector.ts | selectJavascriptVmInstance": {
-    "message": "Выбраць экзэмпляр віртуальнай машыны JavaScript"
+    "message": "Select JavaScript VM instance"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShift": {
-    "message": "Зрушэнне макета"
+    "message": "Layout shift"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShiftCluster": {
-    "message": "Кластар зрушэння макета"
+    "message": "Layout shift cluster"
   },
   "panels/timeline/LayoutShiftsTrackAppender.ts | layoutShifts": {
-    "message": "Зрушэнні макета"
+    "message": "Layout shifts"
   },
   "panels/timeline/NetworkTrackAppender.ts | network": {
-    "message": "Сетка"
+    "message": "Network"
   },
   "panels/timeline/StatusDialog.ts | description": {
-    "message": "Апісанне"
+    "message": "Description"
   },
   "panels/timeline/StatusDialog.ts | downloadAfterError": {
     "message": "Спампаваць файл трасіроўкі"
   },
   "panels/timeline/StatusDialog.ts | status": {
-    "message": "Стан"
+    "message": "Status"
   },
   "panels/timeline/StatusDialog.ts | stop": {
-    "message": "Спыніць"
+    "message": "Stop"
   },
   "panels/timeline/StatusDialog.ts | time": {
-    "message": "Час"
+    "message": "Time"
   },
   "panels/timeline/ThirdPartyTreeView.ts | firstOrThirdPartyName": {
     "message": "Уласныя або староннія аб’екты"
   },
   "panels/timeline/ThirdPartyTreeView.ts | mainThreadTime": {
-    "message": "Час у асноўнай плыні"
+    "message": "Main thread time"
   },
   "panels/timeline/ThirdPartyTreeView.ts | transferSize": {
-    "message": "Аб’ём перадачы"
+    "message": "Transfer size"
   },
   "panels/timeline/ThirdPartyTreeView.ts | unattributed": {
-    "message": "[без атрыбутаў]"
+    "message": "[unattributed]"
   },
   "panels/timeline/ThreadAppender.ts | dedicatedWorker": {
     "message": "Вылучаны Worker"
@@ -15237,7 +15492,7 @@
     "message": "Фрэйм – {PH1}"
   },
   "panels/timeline/ThreadAppender.ts | main": {
-    "message": "Галоўная плынь"
+    "message": "Main"
   },
   "panels/timeline/ThreadAppender.ts | mainS": {
     "message": "Галоўная – {PH1}"
@@ -15267,10 +15522,10 @@
     "message": "Worker: {PH1} – {PH2}"
   },
   "panels/timeline/TimelineController.ts | initializingTracing": {
-    "message": "Ініцыялізуецца трасіроўка…"
+    "message": "Initializing tracing…"
   },
   "panels/timeline/TimelineController.ts | tracing": {
-    "message": "Выконваецца трасіроўка…"
+    "message": "Tracing…"
   },
   "panels/timeline/TimelineController.ts | tracingNotSupported": {
     "message": "Запіс трасіроўкі прадукцыйнасці для мэтавага аб’екта такога тыпу не падтрымліваецца"
@@ -15282,7 +15537,7 @@
     "message": "Чакаецца падзея загрузкі (звыш 5 с)…"
   },
   "panels/timeline/TimelineDetailsView.ts | bottomup": {
-    "message": "Знізу ўверх"
+    "message": "Bottom-up"
   },
   "panels/timeline/TimelineDetailsView.ts | callTree": {
     "message": "Дрэва выклікаў"
@@ -15291,19 +15546,19 @@
     "message": "Журнал рэгістрацыі падзей"
   },
   "panels/timeline/TimelineDetailsView.ts | layers": {
-    "message": "Слаі"
+    "message": "Layers"
   },
   "panels/timeline/TimelineDetailsView.ts | paintProfiler": {
-    "message": "Прафіліроўшчык адмалёўкі"
+    "message": "Paint profiler"
   },
   "panels/timeline/TimelineDetailsView.ts | selectorStats": {
-    "message": "Статыстыка селектараў"
+    "message": "Selector stats"
   },
   "panels/timeline/TimelineDetailsView.ts | summary": {
-    "message": "Зводка"
+    "message": "Summary"
   },
   "panels/timeline/TimelineEventOverview.ts | cpu": {
-    "message": "ЦП"
+    "message": "CPU"
   },
   "panels/timeline/TimelineEventOverview.ts | heap": {
     "message": "ДЫНАМІЧНАЯ ПАМЯЦЬ"
@@ -15315,7 +15570,7 @@
     "message": "{PH1} – {PH2}"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | addScriptToIgnoreList": {
-    "message": "Дадаць сцэнарый у ліст ігнаравання"
+    "message": "Add script to ignore list"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | assessThePurpose": {
     "message": "Ацаніць мэту"
@@ -15327,10 +15582,10 @@
     "message": "Знайсці паляпшэнні"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frame": {
-    "message": "Фрэйм"
+    "message": "Frame"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | frames": {
-    "message": "Фрэймы"
+    "message": "Frames"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | hideChildren": {
     "message": "Схаваць даччыныя элементы"
@@ -15348,7 +15603,7 @@
     "message": "Бяздзейны фрэйм"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | labelEntry": {
-    "message": "Дадаць метку да запісу"
+    "message": "Label entry"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | partiallyPresentedFrame": {
     "message": "Часткова бачны фрэйм"
@@ -15363,10 +15618,10 @@
     "message": "Скінуць параметры трасіроўкі"
   },
   "panels/timeline/TimelineFlameChartDataProvider.ts | startAChat": {
-    "message": "Пачаць чат"
+    "message": "Start a chat"
   },
   "panels/timeline/TimelineFlameChartView.ts | sAtS": {
-    "message": "{PH1} на {PH2}"
+    "message": "{PH1} at {PH2}"
   },
   "panels/timeline/TimelineHistoryManager.ts | backButtonTooltip": {
     "message": "Прагляд старонкі з паказчыкамі ў рэальным часе"
@@ -15378,7 +15633,7 @@
     "message": "{PH1} ({PH2})"
   },
   "panels/timeline/TimelineHistoryManager.ts | dSlowdown": {
-    "message": "{PH1}-кратнае запаволенне"
+    "message": "{PH1}× slowdown"
   },
   "panels/timeline/TimelineHistoryManager.ts | landingPageTitle": {
     "message": "Паказчыкі ў рэальным часе"
@@ -15387,7 +15642,7 @@
     "message": "Новы запіс"
   },
   "panels/timeline/TimelineHistoryManager.ts | sD": {
-    "message": "{PH1} №{PH2}"
+    "message": "{PH1} #{PH2}"
   },
   "panels/timeline/TimelineHistoryManager.ts | selectTimelineSession": {
     "message": "Выбар сеанса храналогіі"
@@ -15429,16 +15684,16 @@
     "message": "Збірае статыстыку селектараў CSS"
   },
   "panels/timeline/TimelinePanel.ts | clear": {
-    "message": "Ачысціць"
+    "message": "Clear"
   },
   "panels/timeline/TimelinePanel.ts | close": {
-    "message": "Закрыць"
+    "message": "Close"
   },
   "panels/timeline/TimelinePanel.ts | compressingTraceForDownload": {
     "message": "Ідзе сцісканне…"
   },
   "panels/timeline/TimelinePanel.ts | cpu": {
-    "message": "ЦП:"
+    "message": "CPU:"
   },
   "panels/timeline/TimelinePanel.ts | disablesJavascriptSampling": {
     "message": "Адключае выбарку JavaScript, зніжае затраты прадукцыйнасці пры рабоце з мабільнымі прыладамі"
@@ -15455,9 +15710,6 @@
   "panels/timeline/TimelinePanel.ts | exportingFailed": {
     "message": "Не ўдалося экспартаваць трасіроўку"
   },
-  "panels/timeline/TimelinePanel.ts | fixMe": {
-    "message": "Выправіць"
-  },
   "panels/timeline/TimelinePanel.ts | frameSelected": {
     "message": "Фрэйм выбраны"
   },
@@ -15465,10 +15717,10 @@
     "message": "Схаваць бакавую панэль"
   },
   "panels/timeline/TimelinePanel.ts | initializingTracing": {
-    "message": "Ініцыялізуецца трасіроўка…"
+    "message": "Initializing tracing…"
   },
   "panels/timeline/TimelinePanel.ts | learnMore": {
-    "message": "Даведацца больш"
+    "message": "Learn more"
   },
   "panels/timeline/TimelinePanel.ts | loadCpuProfileConfirmation": {
     "message": "Загрузіць запісаны профіль ЦП \"{PH1}\" на панэль \"Прадукцыйнасць\"?"
@@ -15483,7 +15735,7 @@
     "message": "Загружаецца трасіроўка…"
   },
   "panels/timeline/TimelinePanel.ts | network": {
-    "message": "Сетка:"
+    "message": "Network:"
   },
   "panels/timeline/TimelinePanel.ts | preparingTraceForDownload": {
     "message": "Ідзе падрыхтоўка…"
@@ -15516,7 +15768,7 @@
     "message": "Вылучэнне выдалена"
   },
   "panels/timeline/TimelinePanel.ts | shortcutsDialogTitle": {
-    "message": "Спалучэнні клавіш для графіка тыпу \"полымя\""
+    "message": "Keyboard shortcuts for flame chart"
   },
   "panels/timeline/TimelinePanel.ts | showDataAddedByExtensions": {
     "message": "Паказваць даныя, дададзеныя пашырэннямі панэлі \"Прадукцыйнасць\""
@@ -15540,13 +15792,13 @@
     "message": "Трэція бакі класіфікуюцца староннімі вэб-рэсурсамі"
   },
   "panels/timeline/TimelinePanel.ts | timelineScrollPan": {
-    "message": "Прагортванне і панараміраванне"
+    "message": "Scroll & pan"
   },
   "panels/timeline/TimelinePanel.ts | timelineZoom": {
-    "message": "Маштаб"
+    "message": "Zoom"
   },
   "panels/timeline/TimelinePanel.ts | tracing": {
-    "message": "Выконваецца трасіроўка…"
+    "message": "Tracing…"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | copyTable": {
     "message": "Скапіраваць табліцу"
@@ -15555,7 +15807,7 @@
     "message": "Затрачаны час (мс)"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | elapsedExplanation": {
-    "message": "Затрачаны час на супастаўленне інструмента выбару з DOM у мілісекундах"
+    "message": "Elapsed time spent matching a selector against the DOM in milliseconds"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | invalidationCount": {
     "message": "Колькасць несапраўднасцей"
@@ -15567,34 +15819,34 @@
     "message": "Радок {PH1}:{PH2}"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | matchAttempts": {
-    "message": "Спробы падабраць супадзенне"
+    "message": "Match attempts"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | matchAttemptsExplanation": {
-    "message": "Колькасць вузлоў, якія сістэма спрабавала супаставіць з правілам стылю."
+    "message": "Count of nodes that the engine attempted to match against a style rule"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | matchCount": {
-    "message": "Колькасць супадзенняў"
+    "message": "Match count"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | matchCountExplanation": {
-    "message": "Колькасць вузлоў, якія адпавядаюць правілу стылю."
+    "message": "Count of nodes that matched a style rule"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selector": {
     "message": "Селектар"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selectorExplanation": {
-    "message": "Тэкст інструмента выбару CSS для правіла стылю."
+    "message": "CSS selector text of a style rule"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | selectorStats": {
-    "message": "Статыстыка селектараў"
+    "message": "Selector stats"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | slowPathNonMatches": {
     "message": "% несупадзенняў з павольным шляхам"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | slowPathNonMatchesExplanation": {
-    "message": "Працэнт несупадзенняў вузлоў (спробы знайсці супадзенні – колькасць знойдзеных супадзенняў), якія не ўдалося хутка выключыць з дапамогай фільтра Блума, бо селектар занадта складаны. Чым ніжэй значэнне, тым лепш."
+    "message": "The percentage of non-matching nodes (match attempts − match count) that couldn’t be quickly ruled out by the bloom filter due to high selector complexity. Lower is better."
   },
   "panels/timeline/TimelineSelectorStatsView.ts | styleSheetId": {
-    "message": "Аркуш стыляў"
+    "message": "Style sheet"
   },
   "panels/timeline/TimelineSelectorStatsView.ts | styleSheetIdExplanation": {
     "message": "Спасылкі на азначэнне правіла інструмента выбару ў аркушах стыляў. Звярніце ўвагу, што правіла інструмента выбару можа быць вызначана ў некалькіх месцах аркуша стыляў або ў некалькіх аркушах стыляў. Для правіл інструмента выбару з аркуша стыляў агента карыстальніка або дынамічных аркушаў стыляў у браўзеры няма спасылак."
@@ -15615,13 +15867,13 @@
     "message": "Дзеянні"
   },
   "panels/timeline/TimelineTreeView.ts | bottomUp": {
-    "message": "Знізу ўверх"
+    "message": "Bottom-up"
   },
   "panels/timeline/TimelineTreeView.ts | chromeExtensionsOverhead": {
     "message": "[Затраты для пашырэнняў Chrome]"
   },
   "panels/timeline/TimelineTreeView.ts | extension": {
-    "message": "Пашырэнне"
+    "message": "Extension"
   },
   "panels/timeline/TimelineTreeView.ts | firstParty": {
     "message": "Уласны"
@@ -15633,19 +15885,19 @@
     "message": "Групаваць па актыўнасці"
   },
   "panels/timeline/TimelineTreeView.ts | groupByCategory": {
-    "message": "Групаваць па катэгорыях"
+    "message": "Group by category"
   },
   "panels/timeline/TimelineTreeView.ts | groupByDomain": {
     "message": "Групаваць па даменах"
   },
   "panels/timeline/TimelineTreeView.ts | groupByFrame": {
-    "message": "Групаваць па фрэймах"
+    "message": "Group by frame"
   },
   "panels/timeline/TimelineTreeView.ts | groupBySubdomain": {
     "message": "Групаваць па субдаменах"
   },
   "panels/timeline/TimelineTreeView.ts | groupByThirdParties": {
-    "message": "Згрупаваць па трэціх баках"
+    "message": "Group by 3rd parties"
   },
   "panels/timeline/TimelineTreeView.ts | groupByUrl": {
     "message": "Групаваць па URL-адрасах"
@@ -15663,25 +15915,25 @@
     "message": "Не паказваць самы цяжкі стэк"
   },
   "panels/timeline/TimelineTreeView.ts | matchCase": {
-    "message": "Улічваць рэгістр"
+    "message": "Match case"
   },
   "panels/timeline/TimelineTreeView.ts | matchWholeWord": {
-    "message": "Шукаць слова цалкам"
+    "message": "Match whole word"
   },
   "panels/timeline/TimelineTreeView.ts | noGrouping": {
     "message": "Без групавання"
   },
   "panels/timeline/TimelineTreeView.ts | page": {
-    "message": "Старонка"
+    "message": "Page"
   },
   "panels/timeline/TimelineTreeView.ts | percentPlaceholder": {
-    "message": "{PH1}%"
+    "message": "{PH1} %"
   },
   "panels/timeline/TimelineTreeView.ts | performance": {
-    "message": "Прадукцыйнасць"
+    "message": "Performance"
   },
   "panels/timeline/TimelineTreeView.ts | selectItemForDetails": {
-    "message": "Каб атрымаць падрабязныя звесткі пра элемент, выберыце яго."
+    "message": "Select item for details"
   },
   "panels/timeline/TimelineTreeView.ts | selfTime": {
     "message": "Уласны час дзеяння"
@@ -15696,16 +15948,16 @@
     "message": "Агульны час"
   },
   "panels/timeline/TimelineTreeView.ts | unattributed": {
-    "message": "[без атрыбутаў]"
+    "message": "[unattributed]"
   },
   "panels/timeline/TimelineTreeView.ts | useRegularExpression": {
-    "message": "Выкарыстаць рэгулярны выраз"
+    "message": "Use regular expression"
   },
   "panels/timeline/TimelineTreeView.ts | vRuntime": {
-    "message": "[Асяроддзе выканання V8]"
+    "message": "[V8 runtime]"
   },
   "panels/timeline/TimelineTreeView.ts | viewBottomUp": {
-    "message": "Паглядзець знізу ўверх"
+    "message": "View bottom-up"
   },
   "panels/timeline/TimelineUIUtils.ts | UnknownNode": {
     "message": "[ невядомы вузел ]"
@@ -15765,7 +16017,7 @@
     "message": "Эфект мае параметры часу, якія не падтрымліваюцца"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedEffectSuppressedByDevtools": {
-    "message": "Інструменты распрацоўшчыка не паказваюць эфект "
+    "message": "Effect suppressed by DevTools"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedFilterRelatedPropertyMayMovePixels": {
     "message": "Уласцівасць, звязаная з \"filter\", можа перамяшчаць пікселі"
@@ -15798,7 +16050,7 @@
     "message": "Уласцівасць, звязаную з трансфармацыяй, нельга паскорыць на мэтавым элеменце"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedUnknownReason": {
-    "message": "Невядомая прычына"
+    "message": "Unknown reason"
   },
   "panels/timeline/TimelineUIUtils.ts | compositingFailedUnsupportedCSSProperty": {
     "message": "{propertyCount,plural, =1{Уласцівасць CSS, якая не падтрымліваецца: {properties}}one{Уласцівасці CSS, якія не падтрымліваюцца: {properties}}few{Уласцівасці CSS, якія не падтрымліваюцца: {properties}}many{Уласцівасці CSS, якія не падтрымліваюцца: {properties}}other{Уласцівасці CSS, якія не падтрымліваюцца: {properties}}}"
@@ -15810,10 +16062,10 @@
     "message": "Затрымка"
   },
   "panels/timeline/TimelineUIUtils.ts | details": {
-    "message": "Падрабязныя звесткі"
+    "message": "Details"
   },
   "panels/timeline/TimelineUIUtils.ts | duration": {
-    "message": "Працягласць"
+    "message": "Duration"
   },
   "panels/timeline/TimelineUIUtils.ts | eagerCompile": {
     "message": "Ідзе папераджальная кампіляцыя ўсіх функцый"
@@ -15837,10 +16089,10 @@
     "message": "Першая несапраўднасць макета"
   },
   "panels/timeline/TimelineUIUtils.ts | frame": {
-    "message": "Фрэйм"
+    "message": "Frame"
   },
   "panels/timeline/TimelineUIUtils.ts | function": {
-    "message": "Функцыя"
+    "message": "Function"
   },
   "panels/timeline/TimelineUIUtils.ts | functionStack": {
     "message": "Стэк функцый"
@@ -15852,7 +16104,7 @@
     "message": "URL-адрас відарыса"
   },
   "panels/timeline/TimelineUIUtils.ts | initiatedBy": {
-    "message": "Ініцыятар:"
+    "message": "Initiated by"
   },
   "panels/timeline/TimelineUIUtils.ts | initiatorFor": {
     "message": "Ініцыятар для:"
@@ -15861,13 +16113,13 @@
     "message": "Трасіроўка стэка ініцыятара"
   },
   "panels/timeline/TimelineUIUtils.ts | inputDelay": {
-    "message": "Затрымка ўводу"
+    "message": "Input delay"
   },
   "panels/timeline/TimelineUIUtils.ts | interactionID": {
     "message": "ID"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidationWithCallFrame": {
-    "message": "{PH1}, {PH2}"
+    "message": "{PH1} at {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | invalidations": {
     "message": "Неправадзейнасці (усяго {PH1})"
@@ -15882,19 +16134,19 @@
     "message": "Корань макета"
   },
   "panels/timeline/TimelineUIUtils.ts | learnMore": {
-    "message": "Даведацца больш"
+    "message": "Learn more"
   },
   "panels/timeline/TimelineUIUtils.ts | message": {
     "message": "Паведамленне"
   },
   "panels/timeline/TimelineUIUtils.ts | module": {
-    "message": "Модуль"
+    "message": "Module"
   },
   "panels/timeline/TimelineUIUtils.ts | nodesThatNeedLayout": {
     "message": "Вузлы, якім патрабуецца макет"
   },
   "panels/timeline/TimelineUIUtils.ts | origin": {
-    "message": "Крыніца"
+    "message": "Origin"
   },
   "panels/timeline/TimelineUIUtils.ts | outsideBreadcrumbRange": {
     "message": "(па-за дыяпазонам ланцужка навігацыі)"
@@ -15903,25 +16155,25 @@
     "message": "Элемент-уладальнік"
   },
   "panels/timeline/TimelineUIUtils.ts | paintProfiler": {
-    "message": "Прафіліроўшчык адмалёўкі"
+    "message": "Paint profiler"
   },
   "panels/timeline/TimelineUIUtils.ts | parse": {
-    "message": "Аналізаваць"
+    "message": "Parse"
   },
   "panels/timeline/TimelineUIUtils.ts | pendingFor": {
     "message": "У чаканні:"
   },
   "panels/timeline/TimelineUIUtils.ts | presentationDelay": {
-    "message": "Затрымка паказу"
+    "message": "Presentation delay"
   },
   "panels/timeline/TimelineUIUtils.ts | preview": {
-    "message": "Перадпрагляд"
+    "message": "Preview"
   },
   "panels/timeline/TimelineUIUtils.ts | priority": {
-    "message": "Прыярытэт"
+    "message": "Priority"
   },
   "panels/timeline/TimelineUIUtils.ts | processingDuration": {
-    "message": "Працягласць апрацоўкі"
+    "message": "Processing duration"
   },
   "panels/timeline/TimelineUIUtils.ts | producedCacheSize": {
     "message": "Аб’ём створанага кэша"
@@ -15936,10 +16188,10 @@
     "message": "Паўтараецца"
   },
   "panels/timeline/TimelineUIUtils.ts | requestIdleCallbackTimeout": {
-    "message": "Час чакання"
+    "message": "Timeout"
   },
   "panels/timeline/TimelineUIUtils.ts | sAtS": {
-    "message": "{PH1} на {PH2}"
+    "message": "{PH1} at {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sAtSParentheses": {
     "message": "{PH1} (на {PH2})"
@@ -15948,19 +16200,19 @@
     "message": "{PH1} (даччыныя элементы)"
   },
   "panels/timeline/TimelineUIUtils.ts | sOfS": {
-    "message": "{PH1} з {PH2}"
+    "message": "{PH1} of {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sS": {
     "message": "{PH1}: {PH2}"
   },
   "panels/timeline/TimelineUIUtils.ts | sSelectorStatsInfo": {
-    "message": "Выберыце \"{PH1}\", каб збіраць падрабязную статыстыку пра супадзенні селектараў CSS."
+    "message": "Select \"{PH1}\" to collect detailed CSS selector matching statistics"
   },
   "panels/timeline/TimelineUIUtils.ts | sSelf": {
     "message": "{PH1} (уласны час дзеяння)"
   },
   "panels/timeline/TimelineUIUtils.ts | script": {
-    "message": "Сцэнарый"
+    "message": "Script"
   },
   "panels/timeline/TimelineUIUtils.ts | scriptLoadedFromCache": {
     "message": "сцэнарый, загружаны з кэша"
@@ -15969,13 +16221,13 @@
     "message": "сцэнарый непрыдатны"
   },
   "panels/timeline/TimelineUIUtils.ts | selectorStatsTitle": {
-    "message": "Статыстыка селектараў"
+    "message": "Selector stats"
   },
   "panels/timeline/TimelineUIUtils.ts | size": {
-    "message": "Памер"
+    "message": "Size"
   },
   "panels/timeline/TimelineUIUtils.ts | source": {
-    "message": "Крыніца"
+    "message": "Source"
   },
   "panels/timeline/TimelineUIUtils.ts | streamed": {
     "message": "Ажыццяўлялася плыневая перадача"
@@ -15987,7 +16239,7 @@
     "message": "Час, затрачаны на візуалізацыю"
   },
   "panels/timeline/TimelineUIUtils.ts | timeout": {
-    "message": "Час чакання выйшаў"
+    "message": "Timeout"
   },
   "panels/timeline/TimelineUIUtils.ts | timerId": {
     "message": "Ідэнтыфікатар таймера"
@@ -15996,76 +16248,76 @@
     "message": "Таймер усталяваны"
   },
   "panels/timeline/TimelineUIUtils.ts | timestamp": {
-    "message": "Метка часу"
+    "message": "Timestamp"
   },
   "panels/timeline/TimelineUIUtils.ts | traceEvent": {
     "message": "Падзея трасіроўкі"
   },
   "panels/timeline/TimelineUIUtils.ts | type": {
-    "message": "Тып"
+    "message": "Type"
   },
   "panels/timeline/TimelineUIUtils.ts | url": {
-    "message": "URL-адрас"
+    "message": "URL"
   },
   "panels/timeline/TimelineUIUtils.ts | warning": {
-    "message": "Папярэджанне"
+    "message": "Warning"
   },
   "panels/timeline/TimingsTrackAppender.ts | timings": {
     "message": "Разлік часу"
   },
   "panels/timeline/TrackConfigBanner.ts | configureTracks": {
-    "message": "Наладзіць версіі"
+    "message": "Configure tracks"
   },
   "panels/timeline/TrackConfigBanner.ts | showAll": {
-    "message": "Паказаць усе"
+    "message": "Show all"
   },
   "panels/timeline/TrackConfigBanner.ts | someTracksAreHidden": {
-    "message": "Некаторыя версіі ў гэтай трасіроўцы схаваны. Каб наладзіць версію, націсніце на яе назву правай кнопкай мышы."
+    "message": "Some tracks are hidden in this trace. You can configure tracks by right-clicking the track name."
   },
   "panels/timeline/UIDevtoolsUtils.ts | async": {
-    "message": "Асінхроннае выкананне"
+    "message": "Async"
   },
   "panels/timeline/UIDevtoolsUtils.ts | drawFrame": {
-    "message": "Нарысаваць фрэйм"
+    "message": "Draw frame"
   },
   "panels/timeline/UIDevtoolsUtils.ts | drawing": {
-    "message": "Рысаванне"
+    "message": "Drawing"
   },
   "panels/timeline/UIDevtoolsUtils.ts | experience": {
-    "message": "Вопыт"
+    "message": "Experience"
   },
   "panels/timeline/UIDevtoolsUtils.ts | frameStart": {
-    "message": "Пачатак кадра"
+    "message": "Frame start"
   },
   "panels/timeline/UIDevtoolsUtils.ts | gpu": {
-    "message": "Графічны працэсар"
+    "message": "GPU"
   },
   "panels/timeline/UIDevtoolsUtils.ts | idle": {
-    "message": "Бяздзейнасць"
+    "message": "Idle"
   },
   "panels/timeline/UIDevtoolsUtils.ts | layout": {
-    "message": "Макет"
+    "message": "Layout"
   },
   "panels/timeline/UIDevtoolsUtils.ts | loading": {
-    "message": "Ідзе загрузка"
+    "message": "Loading"
   },
   "panels/timeline/UIDevtoolsUtils.ts | messaging": {
-    "message": "Абмен паведамленнямі"
+    "message": "Messaging"
   },
   "panels/timeline/UIDevtoolsUtils.ts | painting": {
-    "message": "Маляванне"
+    "message": "Painting"
   },
   "panels/timeline/UIDevtoolsUtils.ts | rasterizing": {
-    "message": "Растрыраванне"
+    "message": "Rasterizing"
   },
   "panels/timeline/UIDevtoolsUtils.ts | rendering": {
-    "message": "Візуалізацыя"
+    "message": "Rendering"
   },
   "panels/timeline/UIDevtoolsUtils.ts | scripting": {
-    "message": "Выкананне сцэнарыяў"
+    "message": "Scripting"
   },
   "panels/timeline/UIDevtoolsUtils.ts | system": {
-    "message": "Сістэма"
+    "message": "System"
   },
   "panels/timeline/components/BreadcrumbsUI.ts | activateBreadcrumb": {
     "message": "Актываваць ланцужок навігацыі"
@@ -16077,7 +16329,7 @@
     "message": "Закрыць"
   },
   "panels/timeline/components/CWVMetrics.ts | fieldMismatchNotice": {
-    "message": "Існуе шмат прычын, з якіх лакальныя і рэальныя паказчыкі [могуць не супадаць](https://web.dev/articles/lab-and-field-data-differences). Скарэкціруйце [налады нагрузкі і эмуляцыю прылады](https://developer.chrome.com/docs/devtools/device-mode), каб аналізаваць трасіроўку ва ўмовах, блізкіх да ўмоў большасці карыстальнікаў."
+    "message": "Лакальныя і рэальныя паказчыкі [могуць не супадаць](https://web.dev/articles/lab-and-field-data-differences) па некалькіх прычынах. Скарэкціруйце [налады нагрузкі і эмуляцыю прылады](https://developer.chrome.com/docs/devtools/device-mode), каб аналізаваць трасіроўку ва ўмовах, блізкіх да ўмоў большасці карыстальнікаў."
   },
   "panels/timeline/components/CWVMetrics.ts | fieldMismatchTitle": {
     "message": "Несупадзенне рэальных і лакальных паказчыкаў"
@@ -16092,13 +16344,13 @@
     "message": "{PH1}: недаступна"
   },
   "panels/timeline/components/CWVMetrics.ts | originOption": {
-    "message": "Паходжанне"
+    "message": "Крыніца"
   },
   "panels/timeline/components/CWVMetrics.ts | urlOption": {
     "message": "URL-адрас"
   },
   "panels/timeline/components/DetailsView.ts | forcedReflow": {
-    "message": "Прымусовая перакампаноўка"
+    "message": "Прымусовае перакампаноўка"
   },
   "panels/timeline/components/DetailsView.ts | idleCallbackExecutionExtended": {
     "message": "Тэрмін выканання зваротнага выкліку бяздзейнасці быў падоўжаны на {PH1}"
@@ -16131,7 +16383,7 @@
     "message": "Тлумачэнне"
   },
   "panels/timeline/components/ExportTraceOptions.ts | exportTraceOptionsDialogTitle": {
-    "message": "Захавайце трасіроўку паказчыкаў эфектыўнасці "
+    "message": "Захавайце трасіроўку паказчыкаў эфектыўнасці"
   },
   "panels/timeline/components/ExportTraceOptions.ts | includeAnnotations": {
     "message": "Уключыць анатацыі"
@@ -16143,7 +16395,7 @@
     "message": "Уключыць карты крыніц сцэнарыяў"
   },
   "panels/timeline/components/ExportTraceOptions.ts | moreInfoLabel": {
-    "message": "Дадатковая інфармацыя:"
+    "message": "Падрабязней:"
   },
   "panels/timeline/components/ExportTraceOptions.ts | resourceContentPrivacyInfo": {
     "message": "Будзе ўключана поўнае змесціва ўсіх загружаных HTML, CSS і сцэнарыяў (акрамя пашырэнняў)."
@@ -16179,7 +16431,7 @@
     "message": "Вы можаце загрузіць аб’яднаныя рэальныя паказчыкі з дакумента \"{PH1}\". Яны дапамогуць узгадніць даныя лакальных вымярэнняў з паказчыкамі рэальных карыстальнікаў на сайце."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | invalidOrigin": {
-    "message": "\"{PH1}\" не з’яўляецца сапраўдным паходжаннем ці URL-адрасам."
+    "message": "\"{PH1}\" не з’яўляецца сапраўднай крыніцай або URL-адрасам."
   },
   "panels/timeline/components/FieldSettingsDialog.ts | mapDevelopmentOrigins": {
     "message": "Укажыце, каб паходжанне распрацоўкі аўтаматычна атрымлівала рэальныя паказчыкі, якія адпавядаюць яго паходжанню вытворчасці."
@@ -16206,7 +16458,7 @@
     "message": "URL-адрас"
   },
   "panels/timeline/components/FieldSettingsDialog.ts | whenPerformanceIsShown": {
-    "message": "Калі адкрыты інструменты распрацоўшчыка, URL-адрасы, якія вы наведваеце, будуць адпраўляцца ў Google для запытвання рэальных паказчыкаў. Такія запыты не прывязваюцца да ўліковага запісу Google."
+    "message": "Калі адкрыты інструменты распрацоўшчыка, URL-адрасы, якія вы наведваеце, будуць адпраўляцца ў Google для запытвання рэальных паказчыкаў. Такія запыты не прывязваюцца да вашага Уліковага запісу Google."
   },
   "panels/timeline/components/IgnoreListSetting.ts | addNewRegex": {
     "message": "Дадаць правіла з рэгулярным выразам для URL-адраса сцэнарыя"
@@ -16272,7 +16524,7 @@
     "message": "Час пачатку"
   },
   "panels/timeline/components/LayoutShiftDetails.ts | total": {
-    "message": "Усяго"
+    "message": "Разам"
   },
   "panels/timeline/components/LayoutShiftDetails.ts | unsizedImage": {
     "message": "Відарыс без зададзенага памеру"
@@ -16284,7 +16536,7 @@
     "message": "Аўтаматычна ({PH1})"
   },
   "panels/timeline/components/LiveMetricsView.ts | clearCurrentLog": {
-    "message": "Ачысціць гэты журнал"
+    "message": "Ачысціць бягучы журнал"
   },
   "panels/timeline/components/LiveMetricsView.ts | collectionPeriod": {
     "message": "Перыяд збору: {PH1}"
@@ -16296,7 +16548,7 @@
     "message": "{PH1} – {PH2}"
   },
   "panels/timeline/components/LiveMetricsView.ts | desktop": {
-    "message": "ПК"
+    "message": "Камп’ютар"
   },
   "panels/timeline/components/LiveMetricsView.ts | device": {
     "message": "Прылада: {PH1}"
@@ -16356,7 +16608,7 @@
     "message": "Даведацца больш пра лакальныя і рэальныя паказчыкі"
   },
   "panels/timeline/components/LiveMetricsView.ts | localFieldLearnMoreTooltip": {
-    "message": "Лакальныя паказчыкі збіраюцца з бягучай старонкі праз падключэнне да сеткі і прыладу. Рэальныя паказчыкі вымяраюцца на аснове даных ад рэальных карыстальнікаў з рознымі прыладамі і спосабамі падключэння да сеткі."
+    "message": "Лакальныя паказчыкі збіраюцца з бягучай старонкі праз падключэнне да сеткі і прыладу. Рэальныя паказчыкі вымяраюцца на падставе даных ад рэальных карыстальнікаў з рознымі прыладамі і спосабамі падключэння да сеткі."
   },
   "panels/timeline/components/LiveMetricsView.ts | localMetrics": {
     "message": "Лакальныя паказчыкі"
@@ -16365,7 +16617,7 @@
     "message": "Дадаць на кансоль даныя пра ўзаемадзеянне"
   },
   "panels/timeline/components/LiveMetricsView.ts | mobile": {
-    "message": "Мабільная"
+    "message": "Мабільная прылада"
   },
   "panels/timeline/components/LiveMetricsView.ts | needsDataOption": {
     "message": "{PH1} – няма даных"
@@ -16392,7 +16644,7 @@
     "message": "{shiftCount,plural, =1{{shiftCount} зрушэнне}one{{shiftCount} зрушэнне}few{{shiftCount} зрушэнні}many{{shiftCount} зрушэнняў}other{{shiftCount} зрушэння}}"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOption": {
-    "message": "Паходжанне"
+    "message": "Крыніца"
   },
   "panels/timeline/components/LiveMetricsView.ts | originOptionWithKey": {
     "message": "Паходжанне: {PH1}"
@@ -16494,7 +16746,7 @@
     "message": "(≤ {PH1})"
   },
   "panels/timeline/components/MetricCard.ts | localValue": {
-    "message": "Лакальнае"
+    "message": "Лакальныя"
   },
   "panels/timeline/components/MetricCard.ts | needsImprovement": {
     "message": "Патрабуе паляпшэння"
@@ -16698,10 +16950,10 @@
     "message": "Паходжанне распрацоўкі"
   },
   "panels/timeline/components/OriginMap.ts | invalidOrigin": {
-    "message": "\"{PH1}\" не з’яўляецца сапраўдным паходжаннем ці URL-адрасам."
+    "message": "\"{PH1}\" не з’яўляецца сапраўднай крыніцай або URL-адрасам."
   },
   "panels/timeline/components/OriginMap.ts | pageHasNoData": {
-    "message": "Справаздача Chrome UX не змяшчае дастатковай колькасці даных рэальных карыстальнікаў для гэтай старонкі."
+    "message": "У справаздачы па зручнасці выкарыстання Chrome недастаткова даных рэальных карыстальнікаў для гэтай старонкі."
   },
   "panels/timeline/components/OriginMap.ts | productionOrigin": {
     "message": "Паходжанне вытворчасці"
@@ -16716,7 +16968,7 @@
     "message": "Дадайце да трасіроўкі анатацыю для сябе і іншых"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | deleteAnnotationTutorialDescription": {
-    "message": "Каб атрымаць доступ да функцыі выдалення, навядзіце курсор на спіс на бакавой панэлі, калі адкрыта ўкладка \"Анатацыі\"."
+    "message": "Каб выдаліць анатацыю, навядзіце курсор на спіс на бакавой панэлі, калі адкрыта ўкладка \"Анатацыі\"."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | deleteAnnotationTutorialTitle": {
     "message": "Выдаліць анатацыю"
@@ -16728,7 +16980,7 @@
     "message": "Да падзеі \"{PH1}\" дададзена тэкставая анатацыя \"{PH2}\""
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialDescription": {
-    "message": "Каб стварыць метку, націсніце клавішу \"Увод\" або двойчы націсніце на элемент і ўвядзіце тэкст."
+    "message": "Каб дадаць метку элемента, двойчы націсніце на элемент або націсніце клавішу \"Увод\" і ўвядзіце тэкст."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | entryLabelTutorialTitle": {
     "message": "Пазначыць элемент"
@@ -16746,7 +16998,7 @@
     "message": "Дыяпазон часу ад {PH1} да {PH2}"
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialDescription": {
-    "message": "Утрымліваючы Shift, выканайце перацягванне на flame-дыяграме, а потым увядзіце тэкст, каб дадаць анатацыю для дыяпазону часу."
+    "message": "Утрымліваючы Shift, выканайце перацягванне на графіку тыпу \"Полымя\", а потым увядзіце тэкст, каб дадаць анатацыю для дыяпазону часу."
   },
   "panels/timeline/components/SidebarAnnotationsTab.ts | timeRangeTutorialTitle": {
     "message": "Вызначыце перыяд часу"
@@ -16758,7 +17010,7 @@
     "message": "Дыяпазон: {PH1} – {PH2}"
   },
   "panels/timeline/components/TimelineSummary.ts | total": {
-    "message": "Усяго"
+    "message": "Разам"
   },
   "panels/timeline/components/Utils.ts | fms": {
     "message": "{PH1} [мс]()"
@@ -16791,7 +17043,7 @@
     "message": "Статыстыка праверана: {PH1}"
   },
   "panels/timeline/components/insights/Table.ts | others": {
-    "message": "яшчэ {PH1}"
+    "message": "Яшчэ {PH1}"
   },
   "panels/timeline/overlays/OverlaysImpl.ts | fieldMetricMarkerField": {
     "message": "{PH1} – поле ({PH2})"
@@ -16800,10 +17052,10 @@
     "message": "{PH1} – лакальны"
   },
   "panels/timeline/overlays/OverlaysImpl.ts | originOption": {
-    "message": "Паходжанне"
+    "message": "Origin"
   },
   "panels/timeline/overlays/OverlaysImpl.ts | urlOption": {
-    "message": "URL-адрас"
+    "message": "URL"
   },
   "panels/timeline/overlays/components/EntriesLinkOverlay.ts | diagram": {
     "message": "Сувязь паміж запісамі"
@@ -16839,7 +17091,7 @@
     "message": "Адключыць выбаркі JavaScript"
   },
   "panels/timeline/timeline-meta.ts | documents": {
-    "message": "Дакументы"
+    "message": "Documents"
   },
   "panels/timeline/timeline-meta.ts | enableAdvancedPaint": {
     "message": "Уключыць пашыраны інструментарый малявання (павольна)"
@@ -16851,52 +17103,52 @@
     "message": "Уключыць маніторынг прадукцыйнасці мяккай навігацыі"
   },
   "panels/timeline/timeline-meta.ts | gpuMemory": {
-    "message": "Памяць графічнага працэсара"
+    "message": "GPU memory"
   },
   "panels/timeline/timeline-meta.ts | jsHeap": {
-    "message": "Куча JS"
+    "message": "JS heap"
   },
   "panels/timeline/timeline-meta.ts | listeners": {
-    "message": "Слухачы"
+    "message": "Listeners"
   },
   "panels/timeline/timeline-meta.ts | loadProfile": {
-    "message": "Загрузіць профіль…"
+    "message": "Load profile…"
   },
   "panels/timeline/timeline-meta.ts | memory": {
-    "message": "Памяць"
+    "message": "Memory"
   },
   "panels/timeline/timeline-meta.ts | nextFrame": {
-    "message": "Наступны кадр"
+    "message": "Next frame"
   },
   "panels/timeline/timeline-meta.ts | nextRecording": {
     "message": "Наступны запіс"
   },
   "panels/timeline/timeline-meta.ts | nodes": {
-    "message": "Вузлы"
+    "message": "Nodes"
   },
   "panels/timeline/timeline-meta.ts | performance": {
-    "message": "Прадукцыйнасць"
+    "message": "Performance"
   },
   "panels/timeline/timeline-meta.ts | previousFrame": {
-    "message": "Папярэдні кадр"
+    "message": "Previous frame"
   },
   "panels/timeline/timeline-meta.ts | previousRecording": {
     "message": "Папярэдні запіс"
   },
   "panels/timeline/timeline-meta.ts | record": {
-    "message": "Запісаць"
+    "message": "Record"
   },
   "panels/timeline/timeline-meta.ts | recordAndReload": {
     "message": "Запісаць і перазагрузіць"
   },
   "panels/timeline/timeline-meta.ts | saveProfile": {
-    "message": "Захаваць профіль…"
+    "message": "Save profile…"
   },
   "panels/timeline/timeline-meta.ts | screenshotCapture": {
     "message": "Здымак экрана"
   },
   "panels/timeline/timeline-meta.ts | screenshots": {
-    "message": "Здымкі экрана"
+    "message": "Screenshots"
   },
   "panels/timeline/timeline-meta.ts | showCustomtracks": {
     "message": "Паказваць карыстальніцкія версіі"
@@ -16908,10 +17160,10 @@
     "message": "Паказаць нядаўнія сеансы храналогіі"
   },
   "panels/timeline/timeline-meta.ts | stop": {
-    "message": "Спыніць"
+    "message": "Stop"
   },
   "panels/timeline/timeline-meta.ts | timelineDebugMode": {
-    "message": "Рэжым адладкі храналогіі (падрабязныя звесткі пра падзеі трасіроўкі і г. д.)"
+    "message": "Рэжым адладкі храналогіі (звесткі пра падзеі трасіроўкі і г. д.)"
   },
   "panels/timeline/timeline-meta.ts | timelineInvalidationTracking": {
     "message": "Адсочванне несапраўднасцей"
@@ -16929,7 +17181,7 @@
     "message": "Сцэнарый змесціва"
   },
   "panels/timeline/utils/IgnoreList.ts | unknown": {
-    "message": "Невядомае"
+    "message": "Unknown"
   },
   "panels/utils/utils.ts | prefetchFailed": {
     "message": "Не ўдалося выканаць запыт на папярэднюю выбарку ({PH1})"
@@ -16978,6 +17230,9 @@
   },
   "panels/web_audio/WebAudioView.ts | renderCapacity": {
     "message": "Ёмістасць візуалізацыі"
+  },
+  "panels/web_audio/WebAudioView.ts | renderQuantumSize": {
+    "message": "Квантавы памер візуалізацыі"
   },
   "panels/web_audio/WebAudioView.ts | sampleRate": {
     "message": "Частата дыскрэтызацыі"
@@ -17307,7 +17562,7 @@
     "message": "Прадукцыйнасць"
   },
   "ui/legacy/ActionRegistration.ts | recorder": {
-    "message": "Рэгістратар"
+    "message": "Дыктафон"
   },
   "ui/legacy/ActionRegistration.ts | rendering": {
     "message": "Візуалізацыя"
@@ -17340,7 +17595,7 @@
     "message": "Даведацца больш"
   },
   "ui/legacy/FilterBar.ts | allStrings": {
-    "message": "Усё"
+    "message": "Усе"
   },
   "ui/legacy/FilterBar.ts | egSmalldUrlacomb": {
     "message": "напрыклад, /small[d]+/ url:a.com/b"
@@ -17379,7 +17634,7 @@
     "message": "Інструменты распрацоўшчыка цяпер даступныя на гэтай мове ({PH1})"
   },
   "ui/legacy/InspectorView.ts | drawer": {
-    "message": "Высоўнае меню інструментаў"
+    "message": "Высоўнае меню"
   },
   "ui/legacy/InspectorView.ts | drawerExpanded": {
     "message": "Высоўнае меню разгорнута"
@@ -17511,7 +17766,7 @@
     "message": "Выкарыстаць рэгулярны выраз"
   },
   "ui/legacy/SoftContextMenu.ts | checked": {
-    "message": "птушка стаіць"
+    "message": "выбрана"
   },
   "ui/legacy/SoftContextMenu.ts | newFeature": {
     "message": "Гэта новая функцыя"
@@ -17523,7 +17778,7 @@
     "message": "{PH1}, {PH2} {PH3}"
   },
   "ui/legacy/SoftContextMenu.ts | unchecked": {
-    "message": "птушка не стаіць"
+    "message": "без птушкі"
   },
   "ui/legacy/SoftDropDown.ts | noItemSelected": {
     "message": "(элемент не выбраны)"
@@ -17571,7 +17826,7 @@
     "message": "Ачысціць"
   },
   "ui/legacy/Toolbar.ts | filter": {
-    "message": "Фільтраваць"
+    "message": "Фільтр"
   },
   "ui/legacy/Toolbar.ts | notPressed": {
     "message": "не націснута"
@@ -17589,7 +17844,7 @@
     "message": "разгорнута"
   },
   "ui/legacy/UIUtils.ts | anonymous": {
-    "message": "(ананімная)"
+    "message": "(ананімна)"
   },
   "ui/legacy/UIUtils.ts | anotherProfilerIsAlreadyActive": {
     "message": "Іншы прафіліроўшчык ужо актыўны"
@@ -17670,7 +17925,7 @@
     "message": ": {PH1}"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | showLess": {
-    "message": "Паказаць менш"
+    "message": "Згарнуць"
   },
   "ui/legacy/components/color_picker/ContrastDetails.ts | showMore": {
     "message": "Паказаць больш"
@@ -17700,7 +17955,7 @@
     "message": "Ачысціць палітру"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | colorPalettes": {
-    "message": "Палітры колераў"
+    "message": "Колеравыя палітры"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | colorS": {
     "message": "Колер {PH1}"
@@ -17715,7 +17970,7 @@
     "message": "Доўгае націсканне на кнопку мышы або клавішу \"Прабел\" пакажа альтэрнатыўныя адценні колеру {PH1}"
   },
   "ui/legacy/components/color_picker/Spectrum.ts | pressArrowKeysMessage": {
-    "message": "Для перамяшчэння палітры выкарыстоўвайце клавішы са стрэлкамі (з мадыфікатарамі або без іх). Націсканне клавішы са стрэлкай разам з клавішай Shift прывядзе да значнага перамяшчэння, разам з клавішай Ctrl – да меншага, разам з клавішай Alt – да яшчэ меншага."
+    "message": "Для перамяшчэння палітры выкарыстоўвайце клавішы са стрэлкамі. Каб перамяшчацца на большую адлегласць, выкарыстоўвайце Shift, на меншую – Ctrl, на яшчэ меншую – Alt."
   },
   "ui/legacy/components/color_picker/Spectrum.ts | previewPalettes": {
     "message": "Перадпрагляд палітраў"
@@ -17736,22 +17991,22 @@
     "message": "Піпетка [{PH1}]"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | cookies": {
-    "message": "Запісы cookie"
+    "message": "Файлы cookie"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | domain": {
     "message": "Дамен"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | editableCookies": {
-    "message": "Запісы cookie, якія можна рэдагаваць"
+    "message": "Файлы cookie, якія можна рэдагаваць"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | httpOnlyCookiesCannotBeAdded": {
     "message": "Немагчыма дадаць файлы cookie HttpOnly як кантэкст"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | na": {
-    "message": "Н/Д"
+    "message": "–"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | name": {
-    "message": "Імя"
+    "message": "Назва"
   },
   "ui/legacy/components/cookie_table/CookiesTable.ts | opaquePartitionKey": {
     "message": "(непразрысты)"
@@ -17799,55 +18054,55 @@
     "message": "Дадаць"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | checked": {
-    "message": "птушка стаіць"
+    "message": "Checked"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | collapsed": {
-    "message": "згорнута"
+    "message": "collapsed"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | delete": {
-    "message": "Выдаліць"
+    "message": "Delete"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | editS": {
     "message": "Рэдагаваць \"{PH1}\""
   },
   "ui/legacy/components/data_grid/DataGrid.ts | emptyRowCreated": {
-    "message": "Пусты радок табліцы створаны. Каб унесці ў яго змяненні, двойчы націсніце на радок або выкарыстайце кантэкстнае меню."
+    "message": "An empty table row was added. Double-click or use the context menu to edit."
   },
   "ui/legacy/components/data_grid/DataGrid.ts | enterToSort": {
-    "message": "Сартаванне слупка: {PH1}. Каб прымяніць фільтр сартавання, націсніце Увод."
+    "message": "Column sort state: {PH1}. Press enter to sort."
   },
   "ui/legacy/components/data_grid/DataGrid.ts | expanded": {
-    "message": "разгорнута"
+    "message": "expanded"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | headerOptions": {
     "message": "Параметры загалоўка"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | levelS": {
-    "message": "узровень {PH1}"
+    "message": "Level {PH1}"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | refresh": {
-    "message": "Абнавіць"
+    "message": "Refresh"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | resetColumns": {
     "message": "Скінуць слупкі"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | rowsS": {
-    "message": "Радкі: {PH1}"
+    "message": "rows: {PH1}"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sRowS": {
-    "message": "{PH1}: радок {PH2}"
+    "message": "{PH1} row {PH2}"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sSUseTheUpAndDownArrowKeysTo": {
-    "message": "{PH1} {PH2}, выкарыстоўвайце стрэлкі ўверх і ўніз для навігацыі і ўзаемадзеяння са слупкамі табліцы; выкарыстоўвайце рэжым прагляду, каб чытаць ячэйкі адну за адной."
+    "message": "{PH1} {PH2}, use the up and down arrow keys to navigate and interact with the rows of the table; use browse mode to read cell by cell."
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortByString": {
     "message": "Сартаваць па:"
   },
   "ui/legacy/components/data_grid/DataGrid.ts | sortableColumn": {
-    "message": "Слупок з магчымасцю сартавання. Каб прымяніць фільтр сартавання, націсніце Увод."
+    "message": "Sortable column. Press enter to sort."
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showAllD": {
-    "message": "Паказаць усе {PH1}"
+    "message": "Show all {PH1}"
   },
   "ui/legacy/components/data_grid/ShowMoreDataGridNode.ts | showDAfter": {
     "message": "Паказаць {PH1} пасля"
@@ -17886,7 +18141,7 @@
     "message": "Згарнуць даччыныя элементы"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | copy": {
-    "message": "Скапіраваць"
+    "message": "Капіраваць"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | copyPropertyPath": {
     "message": "Скапіраваць шлях уласцівасці"
@@ -17907,7 +18162,7 @@
     "message": "Выклікаць метад – атрымальнік уласцівасцей"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | longTextWasTruncatedS": {
-    "message": "доўгі тэкст быў абрэзаны ({PH1})"
+    "message": "Доўгі тэкст быў абрэзаны ({PH1})"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | noProperties": {
     "message": "Няма ўласцівасцей"
@@ -17934,7 +18189,7 @@
     "message": "невядома"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueNotAccessibleToTheDebugger": {
-    "message": "Адладчык не можа атрымаць доступу да значэння"
+    "message": "Адладчык не можа атрымаць доступ да значэння"
   },
   "ui/legacy/components/object_ui/ObjectPropertiesSection.ts | valueUnavailable": {
     "message": "<значэнне недаступнае>"
@@ -17947,12 +18202,6 @@
   },
   "ui/legacy/components/object_ui/RemoteObjectPreviewFormatter.ts | thePropertyIsComputedWithAGetter": {
     "message": "Гэта ўласцівасць вылічаецца з дапамогай метаду-атрымальніка"
-  },
-  "ui/legacy/components/perf_ui/BrickBreaker.ts | congrats": {
-    "message": "Вы выйгралі. Віншуем!"
-  },
-  "ui/legacy/components/perf_ui/BrickBreaker.ts | ps": {
-    "message": "P. S. Каб адкрыць гульню, можна таксама ўвесці fixme"
   },
   "ui/legacy/components/perf_ui/FilmStripView.ts | doubleclickToZoomImageClickTo": {
     "message": "Націсніце двойчы, каб павялічыць відарыс. Націсніце, каб пабачыць папярэднія запыты."
@@ -18024,7 +18273,7 @@
     "message": "Сярэдні прыярытэт"
   },
   "ui/legacy/components/perf_ui/OverviewGrid.ts | leftResizer": {
-    "message": "Левы рэсайзер"
+    "message": "Інструмент змянення памеру левага акна"
   },
   "ui/legacy/components/perf_ui/OverviewGrid.ts | overviewGridWindow": {
     "message": "Акно сетак агляду"
@@ -18033,7 +18282,7 @@
     "message": "Змяненне памеру правага акна"
   },
   "ui/legacy/components/perf_ui/PieChart.ts | total": {
-    "message": "Усяго"
+    "message": "Разам"
   },
   "ui/legacy/components/perf_ui/perf_ui-meta.ts | classic": {
     "message": "Класіка"
@@ -18063,7 +18312,7 @@
     "message": "Налады зменены. Каб прымяніць змяненні, перазагрузіце інструменты распрацоўшчыка."
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | newFeature": {
-    "message": "Гэта новая функцыя"
+    "message": "Новая функцыя"
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | noResultsFound": {
     "message": "Вынікі не знойдзены"
@@ -18076,6 +18325,9 @@
   },
   "ui/legacy/components/quick_open/FilteredListWidget.ts | sItemSOfS": {
     "message": "{PH1}, элемент {PH2} з {PH3}"
+  },
+  "ui/legacy/components/quick_open/QuickOpen.ts | typeQuestionMarkToSeeAvailableCommands": {
+    "message": "Увядзіце пытальнік, каб пабачыць даступныя каманды"
   },
   "ui/legacy/components/quick_open/QuickOpen.ts | typeToSeeAvailableCommands": {
     "message": "Каб пабачыць, якія каманды даступныя, увядзіце \"?\""
@@ -18162,7 +18414,7 @@
     "message": "Не ўстаўляйце ў інструменты распрацоўшчыка код, які вы не разумееце або не правяралі. Так зламыснікі могуць украсці вашы даныя або атрымаць кантроль над вашым камп’ютарам. Каб дазволіць устаўку, увядзіце \"{PH1}\" ніжэй."
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | doYouTrustThisCode": {
-    "message": "Ці давяраеце вы гэтаму коду?"
+    "message": "Вы давяраеце гэтаму коду?"
   },
   "ui/legacy/components/source_frame/SourceFrame.ts | formatting": {
     "message": "Ідзе фармаціраванне…"
@@ -18189,7 +18441,7 @@
     "message": "2 прабелы"
   },
   "ui/legacy/components/source_frame/source_frame-meta.ts | defaultIndentation": {
-    "message": "Стандартны водступ:"
+    "message": "Стандартны водступ"
   },
   "ui/legacy/components/source_frame/source_frame-meta.ts | eSpaces": {
     "message": "8 прабелаў"
@@ -18213,28 +18465,28 @@
     "message": "Сімвал табуляцыі"
   },
   "ui/legacy/components/utils/ImagePreview.ts | currentSource": {
-    "message": "Бягучая крыніца:"
+    "message": "Бягучая крыніца"
   },
   "ui/legacy/components/utils/ImagePreview.ts | fileSize": {
-    "message": "Памер файла:"
+    "message": "Памер файла"
   },
   "ui/legacy/components/utils/ImagePreview.ts | imageFromS": {
     "message": "Крыніца відарыса: {PH1}"
   },
   "ui/legacy/components/utils/ImagePreview.ts | intrinsicAspectRatio": {
-    "message": "Прадвызначаныя суадносіны бакоў:"
+    "message": "Прадвызначаныя суадносіны бакоў"
   },
   "ui/legacy/components/utils/ImagePreview.ts | intrinsicSize": {
-    "message": "Прадвызначаны памер:"
+    "message": "Прадвызначаны памер"
   },
   "ui/legacy/components/utils/ImagePreview.ts | renderedAspectRatio": {
-    "message": "Візуалізаваныя суадносіны бакоў:"
+    "message": "Візуалізаваныя суадносіны бакоў"
   },
   "ui/legacy/components/utils/ImagePreview.ts | renderedSize": {
-    "message": "Візуалізаваны памер:"
+    "message": "Візуалізаваны памер"
   },
   "ui/legacy/components/utils/ImagePreview.ts | unknownSource": {
-    "message": "невядомая крыніца"
+    "message": "Невядомая крыніца"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | addToIgnore": {
     "message": "Дадаць сцэнарый у ліст ігнаравання"
@@ -18243,16 +18495,16 @@
     "message": "Выдаліць са спіса ігнаравання"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showLess": {
-    "message": "Паказаць менш"
+    "message": "Згарнуць"
   },
   "ui/legacy/components/utils/JSPresentationUtils.ts | showMoreFrames": {
     "message": "Паказаць занесеныя ў спіс ігнаравання фрэймы"
   },
   "ui/legacy/components/utils/Linkifier.ts | auto": {
-    "message": "аўтаматычна"
+    "message": "Аўта"
   },
   "ui/legacy/components/utils/Linkifier.ts | linkHandling": {
-    "message": "Апрацоўка спасылак:"
+    "message": "Апрацоўка спасылак"
   },
   "ui/legacy/components/utils/Linkifier.ts | openUsingS": {
     "message": "Адкрыць, выкарыстаўшы {PH1}"

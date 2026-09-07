@@ -901,6 +901,53 @@ describeWithEnvironment('AI Assistance Panel', () => {
     });
   });
 
+  describe('query submission', () => {
+    beforeEach(async () => {
+      await enableAllFeatureAndSetting();
+    });
+
+    it('should log start-conversation VE event only on first turn and record AiAssistanceQuerySubmitted on each turn',
+       async () => {
+         const recordFunctionCallStub = sinon.stub(
+             Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+             'recordFunctionCall',
+         );
+         const actionTakenSpy = sinon.spy(
+             Host.userMetrics,
+             'actionTaken',
+         );
+         const querySubmittedSpy = actionTakenSpy.withArgs(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
+
+         const {panel, view} = await createAiAssistancePanel({
+           aidaClient: mockAidaClient([
+             [{explanation: 'test'}],
+             [{explanation: 'test 2'}],
+           ]),
+         });
+
+         void panel.handleAction('freestyler.elements-floating-button');
+         const nextInput = await view.nextInput;
+         assert(nextInput.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+
+         // Turn 1.
+         nextInput.props.onTextSubmit('test');
+         const turn1Finished = await waitForLoadingToFinish(view);
+
+         sinon.assert.calledOnce(recordFunctionCallStub);
+         sinon.assert.callCount(querySubmittedSpy, 1);
+
+         // Turn 2.
+         assert(turn1Finished.state === AiAssistancePanel.ViewState.CHAT_VIEW);
+         turn1Finished.props.onTextSubmit('test 2');
+         await waitForLoadingToFinish(view);
+
+         // start-conversation must NOT be called on subsequent turns.
+         sinon.assert.calledOnce(recordFunctionCallStub);
+         // But AiAssistanceQuerySubmitted must be called on turn 2 (twice total).
+         sinon.assert.callCount(querySubmittedSpy, 2);
+       });
+  });
+
   describe('opt-in change dialog', () => {
     it('should restore the prompt when onManageSettings is clicked', async () => {
       await enableAllFeatureAndSetting();

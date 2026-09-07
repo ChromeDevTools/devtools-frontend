@@ -733,8 +733,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
           onTextSubmit: async (text: string, imageInput?: Host.AidaClient.Part,
                                multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType) => {
             const submit = (): void => {
-              Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
-              void this.#startConversation(text, imageInput, multimodalInputType);
+              void this.#submitQuery(text, imageInput, multimodalInputType);
             };
 
             const seenSetting = Common.Settings.Settings.instance().resolve(
@@ -1508,11 +1507,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
         return;
       }
 
-      Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
       if (this.#conversation && this.#conversation.isBlockedByOrigin) {
         this.#handleNewChatRequest();
       }
-      await this.#startConversation(predefinedPrompt);
+      await this.#submitQuery(predefinedPrompt);
     } else {
       this.#viewOutput.chatView?.focusTextInput();
     }
@@ -1592,7 +1590,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
 
     this.#updateConversationState(conversation);
-    await this.#doConversation(conversation.history);
+    await this.#consumeResponseStream(conversation.history);
   }
 
   #handleNewChatRequest(): void {
@@ -1710,7 +1708,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     }
   }
 
-  async #startConversation(
+  /**
+   * Submits a user query turn to the active conversation and streams the response.
+   * Executes on every turn (both initial prompt and follow-up turns).
+   */
+  async #submitQuery(
       text: string,
       imageInput?: Host.AidaClient.Part,
       multimodalInputType?: AiAssistanceModel.AiAgent.MultimodalInputType,
@@ -1718,13 +1720,18 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     if (!this.#conversation) {
       return;
     }
-    // Cancel any previous in-flight conversation.
+    // Cancel any previous in-flight query.
     this.#cancel();
+    Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
     const signal = this.#runAbortController.signal;
 
-    // If a different context is provided, it must be from the same origin.
+    // Initial conversation boundary (turn 1 only).
     if (this.#conversation.isEmpty) {
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.STARTED_AI_CONVERSATION);
+      // Note: Prior to September 2026 (crrev.com/c/8366147), this event erroneously logged on every query
+      // turn because this method was named #startConversation. It is now correctly
+      // restricted to conversation initialization.
+      void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
     }
 
     let multimodalInput: AiAssistanceModel.AiAgent.MultimodalInput|undefined;
@@ -1736,9 +1743,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
       };
     }
 
-    void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
-
-    await this.#doConversation(
+    await this.#consumeResponseStream(
         this.#conversation.run(
             text,
             {
@@ -1749,9 +1754,11 @@ export class AiAssistancePanel extends UI.Panel.Panel {
     );
   }
 
-  async #doConversation(
-      items: Iterable<AiAssistanceModel.AiAgent.ResponseData, void, void>|
-      AsyncIterable<AiAssistanceModel.AiAgent.ResponseData, void, void>): Promise<void> {
+  /**
+   * Consumes response items (live generator or historic array) and drives UI updates.
+   */
+  async #consumeResponseStream(items: Iterable<AiAssistanceModel.AiAgent.ResponseData, void, void>|
+                               AsyncIterable<AiAssistanceModel.AiAgent.ResponseData, void, void>): Promise<void> {
     const release = await this.#mutex.acquire();
     try {
       let systemMessage: ModelChatMessage = {

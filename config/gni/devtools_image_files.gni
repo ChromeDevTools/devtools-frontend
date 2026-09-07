@@ -317,9 +317,3 @@ devtools_svg_sources = [
   "width.svg",
   "zoom-in.svg",
 ]
-
-devtools_src_svg_files = []
-
-foreach(svg_image, devtools_svg_sources) {
-  devtools_src_svg_files += [ "src/$svg_image" ]
-}

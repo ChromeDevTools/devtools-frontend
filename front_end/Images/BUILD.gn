@@ -2,68 +2,52 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("//build/timestamp.gni")
 import("../../config/gni/devtools_image_files.gni")
 import("../../scripts/build/ninja/devtools_pre_built.gni")
 import("../../scripts/build/ninja/node.gni")
 import("../../scripts/build/ninja/vars.gni")
 
 devtools_pre_built("Images") {
-  sources = devtools_image_files + devtools_src_svg_files
-}
-
-node_action("generate_css_vars") {
-  script = "front_end/Images/generate-css-vars.js"
-
-  args = [
-           build_timestamp,
-           rebase_path(target_gen_dir, root_build_dir),
-           "optimize_images",
-         ] + devtools_image_files + devtools_src_svg_files
-
-  outputs = [
-    "$target_gen_dir/Images.prebundle.js",
-    "$target_gen_dir/optimize_images-tsconfig.json",
-  ]
+  sources = devtools_image_files
 }
 
 node_action("optimize_images") {
-  script = "node_modules/rollup/dist/bin/rollup"
+  script = "scripts/build/optimize_images.js"
 
-  _bundled_entrypoint = target_gen_dir + "/Images.prebundle.js"
   _output_file_location = target_gen_dir + "/Images.js"
 
-  inputs = [
-    _bundled_entrypoint,
-    "rollup.config.mjs",
-    devtools_location_prepend + "node_modules/svgo/package.json",
-  ]
-  foreach(svg_image, devtools_src_svg_files) {
-    inputs += [ "$target_gen_dir/$svg_image" ]
+  _svg_sources = []
+  foreach(svg_image, devtools_svg_sources) {
+    _svg_sources += [ "src/$svg_image" ]
   }
 
-  public_deps = [
-    ":Images",
-    ":generate_css_vars",
-  ]
+  inputs = [ devtools_location_prepend + "node_modules/svgo/package.json" ] +
+           _svg_sources + devtools_image_files
+
+  public_deps = [ ":Images" ]
+
+  response_file_contents = [ "--svgs" ]
+  response_file_contents += rebase_path(_svg_sources, root_build_dir)
+  response_file_contents += [ "--images" ]
+  response_file_contents += devtools_image_files
 
   args = [
-    "--config",
-    rebase_path("rollup.config.mjs", root_build_dir),
-    "--input",
-    rebase_path(_bundled_entrypoint, root_build_dir),
-    "--file",
-    rebase_path(_output_file_location, root_build_dir),
+    "--target-gen-dir",
+    rebase_path(target_gen_dir, root_build_dir),
+    "--file-list",
+    "{{response_file_name}}",
   ]
 
-  outputs = [ _output_file_location ]
+  _grd_files = [ _output_file_location ]
   foreach(svg_image, devtools_svg_sources) {
-    outputs += [ "$target_gen_dir/$svg_image" ]
+    _grd_files += [ "$target_gen_dir/$svg_image" ]
   }
+
+  outputs = _grd_files
   data = outputs
 
   metadata = {
-    grd_files = outputs
+    grd_files = _grd_files
     foreach(_image_file, devtools_image_files) {
       grd_files += [ "$target_gen_dir/$_image_file" ]
     }

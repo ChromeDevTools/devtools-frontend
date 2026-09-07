@@ -2083,7 +2083,8 @@ export class HTMLElementWithLightDOMTemplate extends HTMLElement {
     const clones: Node[] = [];
     for (const cloneRef of cloneSet) {
       const clone = cloneRef.deref();
-      if (clone) {
+      const root = clone?.getRootNode();
+      if (clone && (root instanceof Document || root instanceof DocumentFragment)) {
         clones.push(clone);
       } else {
         cloneSet.delete(cloneRef);

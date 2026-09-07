@@ -583,6 +583,25 @@ describe('UIUtils', () => {
           lightWidgetStrD, prevFactoryStrC,
           'DOM node should NOT be recreated if the identical inline factory stringified representations match');
     });
+
+    it('prunes discarded clones not attached to a Document or DocumentFragment', () => {
+      const original = document.createElement('div');
+      const clone1 = UI.UIUtils.HTMLElementWithLightDOMTemplate.cloneNode(original);
+      const clone2 = UI.UIUtils.HTMLElementWithLightDOMTemplate.cloneNode(original);
+
+      // clone1 is attached to a DocumentFragment (e.g. ShadowRoot)
+      const fragment = document.createDocumentFragment();
+      fragment.appendChild(clone1);
+
+      // clone2 is detached (root is itself), so only clone1 is returned
+      const clones = UI.UIUtils.HTMLElementWithLightDOMTemplate.getClones(original);
+      assert.deepEqual(clones, [clone1]);
+      assert.isFalse(clones.includes(clone2));
+
+      // clone1 is removed from fragment (now also detached)
+      fragment.removeChild(clone1);
+      assert.deepEqual(UI.UIUtils.HTMLElementWithLightDOMTemplate.getClones(original), []);
+    });
   });
 
   describe('animateOn', () => {

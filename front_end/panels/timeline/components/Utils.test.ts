@@ -6,12 +6,13 @@ import {assert} from 'chai';
 
 import * as Protocol from '../../../generated/protocol.js';
 import type * as Trace from '../../../models/trace/trace.js';
-import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
-import {TraceLoader} from '../../../testing/TraceLoader.js';
+import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 
 import * as Components from './components.js';
 
-describeWithEnvironment('Utils', () => {
+describe('Utils', () => {
+  setupLocaleHooks();
+
   describe('NumberWithUnit', () => {
     const {NumberWithUnit} = Components.Utils;
 
@@ -69,21 +70,18 @@ describeWithEnvironment('Utils', () => {
     const {networkResourceCategory, NetworkCategory} = Components.Utils;
     const {ResourceType} = Protocol.Network;
     const getCategory = networkResourceCategory;
-    let req: Trace.Types.Events.SyntheticNetworkRequest|undefined;
-
-    before(async function() {
-      const events = await TraceLoader.fixtureContents(this, 'load-simple.json.gz');
-      const {parsedTrace} = await TraceLoader.executeTraceEngineOnFileContents(events);
-      req = parsedTrace.data.NetworkRequests.byId.get('2648544.35');
-    });
 
     function tweakRequest(
         mimeType: string, resourceType: Protocol.Network.ResourceType = Protocol.Network.ResourceType.Other):
         Trace.Types.Events.SyntheticNetworkRequest {
-      assert.exists(req);
-      req.args.data.mimeType = mimeType;
-      req.args.data.resourceType = resourceType;
-      return req;
+      return {
+        args: {
+          data: {
+            mimeType,
+            resourceType,
+          },
+        },
+      } as unknown as Trace.Types.Events.SyntheticNetworkRequest;
     }
 
     it('uses resource type when available', () => {

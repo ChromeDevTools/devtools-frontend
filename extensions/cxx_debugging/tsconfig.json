@@ -2,6 +2,7 @@
   "extends": "../../config/typescript/tsconfig.base.json",
   "compilerOptions": {
     "moduleResolution": "bundler",
+    "isolatedDeclarations": false,
     "allowUnreachableCode": false,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,

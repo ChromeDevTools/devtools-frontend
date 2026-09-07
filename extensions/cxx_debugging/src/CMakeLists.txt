@@ -23,22 +23,28 @@ set(EXTENSION_BUNDLE_ENTRYPOINTS
   DevToolsPluginWorkerMain.js
   ExtensionOptions.js
 )
-if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
-  set(EXTENSION_BUNDLE_SOURCEMAP TRUE)
-else()
-  set(EXTENSION_BUNDLE_SOURCEMAP FALSE)
-endif()
-set(EXTENSION_BUNDLE_FORMAT "es")
-
 set(EXTENSION_BUNDLED_SOURCES)
 foreach(entrypoint IN LISTS EXTENSION_BUNDLE_ENTRYPOINTS)
   get_filename_component(NAME_WE ${entrypoint} NAME_WE)
   list(APPEND EXTENSION_BUNDLED_SOURCES ${CMAKE_CURRENT_BINARY_DIR}/${NAME_WE}.bundle.js)
 endforeach()
 
-configure_file(rollup.config.in.mjs rollup.config.in.mjs @ONLY)
-file(GENERATE OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/rollup.config.mjs
-  INPUT ${CMAKE_CURRENT_BINARY_DIR}/rollup.config.in.mjs)
+set(ESBUILD_BINARY ${DEVTOOLS_SOURCE_DIR}/third_party/esbuild/esbuild)
+if (CMAKE_HOST_WIN32)
+  set(ESBUILD_BINARY ${ESBUILD_BINARY}.exe)
+endif()
+
+set(ESBUILD_ARGS
+  ${EXTENSION_BUNDLE_ENTRYPOINTS}
+  --bundle
+  --format=esm
+  --outdir=.
+  --out-extension:.js=.bundle.js
+  --external:./SymbolsBackend.js
+)
+if (NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+  list(APPEND ESBUILD_ARGS --sourcemap=inline)
+endif()
 
 add_custom_command(
   OUTPUT
@@ -46,15 +52,11 @@ add_custom_command(
   COMMAND
     ${CMAKE_COMMAND}
   ARGS
-    -E env NODE_PATH=${PROJECT_SOURCE_DIR}/node_modules:${DEVTOOLS_SOURCE_DIR}/node_modules
-    python3
-    ${DEVTOOLS_SOURCE_DIR}/third_party/node/node.py
-    --output
-    ${DEVTOOLS_SOURCE_DIR}/node_modules/rollup/dist/bin/rollup
-    -c --failAfterWarnings
+    -E env GODEBUG=asyncpreemptoff=1 NODE_PATH=${PROJECT_SOURCE_DIR}/third_party
+    ${ESBUILD_BINARY}
+    ${ESBUILD_ARGS}
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-  MAIN_DEPENDENCY ${CMAKE_CURRENT_BINARY_DIR}/rollup.config.mjs
-  DEPENDS ${TS_COMPILER_OUTPUTS}
+  DEPENDS ${TS_COMPILER_OUTPUTS} ${ESBUILD_BINARY}
 )
 
 add_custom_target(Bundles DEPENDS ${EXTENSION_BUNDLED_SOURCES})

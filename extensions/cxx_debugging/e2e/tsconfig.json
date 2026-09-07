@@ -4,6 +4,7 @@
     "target": "esnext",
     "module": "commonjs",
     "composite": false,
+    "isolatedDeclarations": false,
     "allowUnreachableCode": false,
     "skipLibCheck": true,
     "rootDir": "../../..",

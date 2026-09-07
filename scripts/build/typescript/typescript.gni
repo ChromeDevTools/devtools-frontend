@@ -105,8 +105,6 @@ template("ts_library") {
   assert(defined(invoker.sources),
          "You must specify 'sources' for $target_name")
 
-  not_needed(invoker, [ "reset_timestamps" ])
-
   _rootdir = "."
   if (defined(invoker.rootdir)) {
     _rootdir = invoker.rootdir
@@ -502,7 +500,6 @@ template("node_ts_library") {
     if (defined(invoker.testonly)) {
       testonly = invoker.testonly
     }
-    reset_timestamps = true
 
     inputs =
         [ devtools_location_prepend + "node_modules/@types/node/index.d.ts" ]

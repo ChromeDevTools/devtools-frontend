@@ -9,8 +9,6 @@ template("devtools_base_module") {
   ts_library(target_name) {
     forward_variables_from(invoker, "*", [ "visibility" ])
 
-    reset_timestamps = true
-
     visibility += [ ":*" ]
   }
 }
@@ -67,11 +65,9 @@ template("devtools_foundation_module") {
 
       if (defined(invoker.ts_deps)) {
         ts_deps = invoker.ts_deps
-        if (defined(invoker.deps)) {
-          deps = invoker.deps
-        }
-      } else if (defined(invoker.deps)) {
-        ts_deps = invoker.deps
+      }
+      if (defined(invoker.deps)) {
+        deps = invoker.deps
       }
 
       es_target = "es2023"
@@ -82,8 +78,6 @@ template("devtools_foundation_module") {
 
   ts_library(target_name) {
     forward_variables_from(invoker, "*", [ "visibility" ])
-
-    reset_timestamps = true
 
     es_target = "es2023"
     es_libs = [

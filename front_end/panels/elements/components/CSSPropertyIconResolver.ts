@@ -313,20 +313,20 @@ function gridAlignSelfIcon(iconName: string): (parentStyles: ComputedStyles) => 
   return getIcon;
 }
 
-export function rotateFlexWrapIcon(iconName: string, direction: PhysicalDirection): IconInfo {
+export function rotateFlexWrapIcon(iconName: string, direction: PhysicalDirection, reverse = false): IconInfo {
   return {
     iconName,
     rotate: direction === PhysicalDirection.BOTTOM_TO_TOP || direction === PhysicalDirection.TOP_TO_BOTTOM ? 90 : 0,
     scaleX: 1,
-    scaleY: 1,
+    scaleY: reverse ? -1 : 1,
   };
 }
 
-function flexWrapIcon(iconName: string): (styles: ComputedStyles) => IconInfo {
+function flexWrapIcon(iconName: string, reverse = false): (styles: ComputedStyles) => IconInfo {
   function getIcon(computedStyles: ComputedStyles): IconInfo {
     const directions = getPhysicalDirections(computedStyles);
     const computedFlexDirection = computedStyles.get('flex-direction') || 'row';
-    return rotateFlexWrapIcon(iconName, directions[computedFlexDirection]);
+    return rotateFlexWrapIcon(iconName, directions[computedFlexDirection], reverse);
   }
   return getIcon;
 }
@@ -374,6 +374,7 @@ const flexContainerIcons = new Map([
   ['align-content: baseline', baselineIcon],
   ['flex-wrap: wrap', flexWrapIcon('flex-wrap')],
   ['flex-wrap: nowrap', flexWrapIcon('flex-no-wrap')],
+  ['flex-wrap: wrap-reverse', flexWrapIcon('flex-wrap', /* reverse */ true)],
 ]);
 
 const flexItemIcons = new Map([

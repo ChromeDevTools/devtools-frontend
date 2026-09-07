@@ -63,16 +63,6 @@ def license_checker_path():
                      'license-checker')
 
 
-def rollup_path():
-    return path.join(
-        node_modules_path(),
-        'rollup',
-        'dist',
-        'bin',
-        'rollup',
-    )
-
-
 def package_json_path():
     return path.join(devtools_root_path(), 'package.json')
 

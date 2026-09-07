@@ -2,83 +2,31 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("../scripts/build/ninja/bundle.gni")
 import("../scripts/build/ninja/vars.gni")
 import("../scripts/build/typescript/typescript.gni")
 
 resources_out_dir = "$root_out_dir/resources/inspector_overlay"
 
-action("build_inspector_overlay") {
-  script = "../scripts/build/build_inspector_overlay.py"
-
-  inputs = [
-    "$target_gen_dir/common.css",
-    "$target_gen_dir/common.js",
-    "$target_gen_dir/css_grid_label_helpers.js",
-    "$target_gen_dir/drag_resize_handler.js",
-    "$target_gen_dir/highlight_common.js",
-    "$target_gen_dir/highlight_container_query.js",
-    "$target_gen_dir/highlight_flex_common.js",
-    "$target_gen_dir/highlight_grid_common.js",
-    "$target_gen_dir/highlight_isolated_element.js",
-    "$target_gen_dir/highlight_scroll_snap.js",
-    "$target_gen_dir/tool_persistent.js",
-    "$target_gen_dir/tool_green_dev_anchors.js",
-    "$target_gen_dir/tool_green_dev_anchors.css",
-    "$target_gen_dir/tool_grid.css",
-    "$target_gen_dir/tool_highlight.js",
-    "$target_gen_dir/tool_highlight.css",
-    "$target_gen_dir/tool_paused.js",
-    "$target_gen_dir/tool_paused.css",
-    "$target_gen_dir/tool_screenshot.js",
-    "$target_gen_dir/tool_screenshot.css",
-    "$target_gen_dir/tool_source_order.js",
-    "$target_gen_dir/tool_source_order.css",
-    "$target_gen_dir/tool_viewport_size.js",
-    "$target_gen_dir/tool_window_controls.js",
-    "$target_gen_dir/tool_window_controls.css",
-    "$target_gen_dir/main.js",
-    devtools_location_prepend + "inspector_overlay/loadCSS.rollup.js",
-    devtools_location_prepend + "node_modules/rollup/dist/bin/rollup",
+bundle("build_inspector_overlay") {
+  entrypoint = "main.ts"
+  output_file_location = "$resources_out_dir/main.js"
+  bundle_all = true
+  format = "iife"
+  global_name = "InspectorOverlay"
+  css_style_sheet = true
+  max_size = 85000
+  deps = [
+    ":inspector_overlay",
+    ":inspector_overlay_sources",
   ]
 
-  outputs = [ "$resources_out_dir/main.js" ]
-
-  args = [
-    "main.js",
-    "85000",  # max_size in bytes
-    "--input_path",
-    rebase_path(target_gen_dir, root_build_dir),
-    "--output_path",
-    rebase_path(resources_out_dir, root_build_dir),
-    "--rollup_plugin",
-    rebase_path("loadCSS.rollup.js", root_build_dir),
-  ]
-
-  public_deps = [
-    ":copy_css_to_gen",
-    ":copy_resources",
-  ]
-
-  public_deps += [ ":inspector_overlay_checked" ]
+  public_deps = [ ":copy_resources" ]
 }
 
 copy("copy_resources") {
   sources = [ "resources.grd" ]
   outputs = [ "$resources_out_dir/inspector_overlay_resources.grd" ]
-}
-
-copy("copy_css_to_gen") {
-  sources = [
-    "common.css",
-    "tool_green_dev_anchors.css",
-    "tool_grid.css",
-    "tool_highlight.css",
-    "tool_paused.css",
-    "tool_screenshot.css",
-    "tool_source_order.css",
-    "tool_window_controls.css",
-  ]
-  outputs = [ "$target_gen_dir/{{source_file_part}}" ]
 }
 
 ts_library("inspector_overlay") {

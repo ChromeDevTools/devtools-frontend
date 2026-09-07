@@ -46,7 +46,6 @@ _EXCLUDED_PATHS = [
     r'^front_end[\\/]ui[\\/]legacy[\\/]components[\\/]data_grid[\\/]DataGrid\.ts$',
     r'^front_end[\\/]ui[\\/]legacy[\\/]tabbedPane\.css$',  # Apple copyright
     r'^node_modules[\\/].*',  # 3rd party code
-    r'^scripts[\\/]build[\\/]build_inspector_overlay\.py$',  # Lines too long
     r'^scripts[\\/]build[\\/]code_generator_frontend\.py$',
     r'^scripts[\\/]deps[\\/]manage_node_deps\.py$',  # Lines too long
     # Auto-generated files

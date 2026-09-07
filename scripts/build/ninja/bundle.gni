@@ -90,6 +90,28 @@ template("bundle") {
       ]
     }
 
+    if (defined(invoker.global_name)) {
+      args += [
+        "--globalName",
+        invoker.global_name,
+      ]
+    }
+
+    if (defined(invoker.css_style_sheet) && invoker.css_style_sheet) {
+      args += [ "--cssStyleSheet" ]
+    }
+
+    if (defined(invoker.max_size)) {
+      if (!is_debug) {
+        args += [
+          "--maxSize",
+          "${invoker.max_size}",
+        ]
+      } else {
+        not_needed(invoker, [ "max_size" ])
+      }
+    }
+
     if (!is_debug) {
       args += [ "--minify" ]
     }

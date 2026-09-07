@@ -34,10 +34,17 @@ const additionalArgs = process.argv.slice(4);
 const useSourceMaps = additionalArgs.includes('--configSourcemaps');
 const minify = additionalArgs.includes('--minify');
 const bundleAll = additionalArgs.includes('--bundleAll');
+const cssStyleSheet = additionalArgs.includes('--cssStyleSheet');
 
 const formatFlagIndex = additionalArgs.indexOf('--format');
 const format =
     formatFlagIndex !== -1 ? /** @type {import('esbuild').Format} */ (additionalArgs[formatFlagIndex + 1]) : 'esm';
+
+const globalNameFlagIndex = additionalArgs.indexOf('--globalName');
+const globalName = globalNameFlagIndex !== -1 ? additionalArgs[globalNameFlagIndex + 1] : undefined;
+
+const maxSizeFlagIndex = additionalArgs.indexOf('--maxSize');
+const maxSize = maxSizeFlagIndex !== -1 ? Number(additionalArgs[maxSizeFlagIndex + 1]) : undefined;
 
 const rootDirFlagIndex = additionalArgs.indexOf('--rootDir');
 const rootDir = rootDirFlagIndex !== -1 ? additionalArgs[rootDirFlagIndex + 1] : undefined;
@@ -83,6 +90,17 @@ if (!bundleAll && entrypointsFile) {
 const plugin = {
   name: 'devtools-plugin',
   setup(build) {
+    if (cssStyleSheet) {
+      build.onLoad({filter: /\.css$/}, async args => {
+        const css = await fs.promises.readFile(args.path, 'utf8');
+        return {
+          contents:
+              `const style = new CSSStyleSheet();\nstyle.replaceSync(${JSON.stringify(css)});\nexport default style;\n`,
+          loader: 'js',
+        };
+      });
+    }
+
     // https://esbuild.github.io/plugins/#on-resolve
     build.onResolve({filter: /.*/}, esbuildPlugin(outdir, genRoot, root, externalFiles, bundleAll));
   },
@@ -94,6 +112,7 @@ try {
     outfile,
     bundle: true,
     format,
+    globalName,
     platform: 'browser',
     plugins: [plugin],
     sourcemap: useSourceMaps,
@@ -111,6 +130,14 @@ try {
     const normalizedOutfile = outfile.replaceAll('\\', '/');
     const depfileContent = `${normalizedOutfile}: ${inputs.join(' ')}\n`;
     await fs.promises.writeFile(depfile, depfileContent, 'utf-8');
+  }
+
+  if (maxSize !== undefined) {
+    const stats = await fs.promises.stat(outfile);
+    if (stats.size >= maxSize) {
+      throw new Error(
+          `Generated file ${outfile} should not exceed max_size of ${maxSize} bytes. Current size: ${stats.size}`);
+    }
   }
 } catch (err) {
   console.error('Failed to run esbuild:', err);

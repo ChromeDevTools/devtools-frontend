@@ -4,10 +4,9 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
 import {isOpaqueOrigin} from '../AiOrigins.js';
-import {getRequestContextOrigin} from '../contexts/RequestContext.js';
 import {formatBytesToKb, seconds} from '../data_formatters/UnitFormatters.js';
 
 import {
@@ -86,18 +85,14 @@ export class ListNetworkRequestsTool implements
       };
     }
 
+    const conversationOrigin = origin ? SDK.SecurityOrigin.SecurityOrigin.create(origin) : null;
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
     let hasCrossOriginRequest = false;
     const requestsToShow: SDK.NetworkRequest.NetworkRequest[] = [];
     for (const request of networkLog.requests()) {
-      // To prevent cross-origin prompt injection attacks, HAR-imported requests
-      // are assigned a virtual origin (e.g., `imported-har://${domain}`) rather than
-      // sharing the origin of live pages.
-      const requestOrigin = getRequestContextOrigin(request);
-
       // If the conversation is locked to an origin, skip requests from other origins.
-      if (origin && requestOrigin !== origin) {
+      if (conversationOrigin && !request.initiatorSecurityOrigin().isSameOriginWith(conversationOrigin)) {
         hasCrossOriginRequest = true;
         continue;
       }

@@ -23,16 +23,6 @@ const UIStringsNotTranslate = {
 
 const lockedString = i18n.i18n.lockedString;
 
-/**
- * Returns the serialized security origin string for a network request context.
- *
- * @param request The network request from which to extract the context origin.
- * @returns The resolved security origin string.
- */
-export function getRequestContextOrigin(request: SDK.NetworkRequest.NetworkRequest): string {
-  return request.initiatorSecurityOrigin().siteId();
-}
-
 export class RequestContext extends ConversationContext<SDK.NetworkRequest.NetworkRequest> {
   #request: SDK.NetworkRequest.NetworkRequest;
   #calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator;
@@ -57,7 +47,7 @@ export class RequestContext extends ConversationContext<SDK.NetworkRequest.Netwo
   }
 
   override getOrigin(): string {
-    return getRequestContextOrigin(this.#request);
+    return this.#request.initiatorSecurityOrigin().siteId();
   }
 
   override getItem(): SDK.NetworkRequest.NetworkRequest {

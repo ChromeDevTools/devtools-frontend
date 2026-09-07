@@ -4,10 +4,10 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import {isOpaqueOrigin} from '../AiOrigins.js';
-import {getRequestContextOrigin} from '../contexts/RequestContext.js';
 import {NetworkRequestFormatter} from '../data_formatters/NetworkRequestFormatter.js';
 
 import {
@@ -87,6 +87,7 @@ export class GetNetworkRequestDetailsTool implements
       };
     }
 
+    const conversationOrigin = origin ? SDK.SecurityOrigin.SecurityOrigin.create(origin) : null;
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
     const request = networkLog.requests().find(req => {
@@ -94,13 +95,8 @@ export class GetNetworkRequestDetailsTool implements
         return false;
       }
 
-      // To prevent cross-origin prompt injection attacks, HAR-imported requests
-      // are assigned a virtual origin (e.g., `imported-har://${domain}`) rather than
-      // sharing the origin of live pages.
-      const requestOrigin = getRequestContextOrigin(req);
-
       // If the conversation is locked to an origin, only allow accessing requests from that origin.
-      return !origin || requestOrigin === origin;
+      return !conversationOrigin || req.initiatorSecurityOrigin().isSameOriginWith(conversationOrigin);
     });
 
     if (!request) {
@@ -110,7 +106,10 @@ export class GetNetworkRequestDetailsTool implements
     }
 
     const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
-    const formatter = new NetworkRequestFormatter(request, calculator, {networkLog});
+    const formatter = new NetworkRequestFormatter(request, calculator, {
+      networkLog,
+      initiatorSecurityOrigin: conversationOrigin ?? undefined,
+    });
     const formattedDetails = await formatter.formatNetworkRequest();
 
     return {

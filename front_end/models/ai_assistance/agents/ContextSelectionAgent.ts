@@ -6,7 +6,7 @@ import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
@@ -17,7 +17,7 @@ import {AccessibilityContext} from '../contexts/AccessibilityContext.js';
 import {DOMNodeContext} from '../contexts/DOMNodeContext.js';
 import {FileContext} from '../contexts/FileContext.js';
 import {PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
-import {getRequestContextOrigin, RequestContext} from '../contexts/RequestContext.js';
+import {RequestContext} from '../contexts/RequestContext.js';
 import {StorageContext} from '../contexts/StorageContext.js';
 import {formatBytesToKb, seconds} from '../data_formatters/UnitFormatters.js';
 import {debugLog} from '../debug.js';
@@ -155,10 +155,10 @@ export class ContextSelectionAgent extends AiAgent<never> {
           };
         }
 
+        const allowedSecurityOrigin = origin ? SDK.SecurityOrigin.SecurityOrigin.create(origin) : null;
         let hasCrossOriginRequest = false;
         const requestsToShow: NetworkRequest[] = [];
         for (const request of this.#networkLog.requests()) {
-          const requestOrigin = getRequestContextOrigin(request);
           /**
            * NOTE: this origin check does not ensure that all the requests are
            * from the same origin as the target page. Instead, it ensures that
@@ -167,7 +167,7 @@ export class ContextSelectionAgent extends AiAgent<never> {
            * during the loading of the target page, and do not leak URLs from
            * other pages.
            */
-          if (origin && requestOrigin !== origin) {
+          if (allowedSecurityOrigin && !request.initiatorSecurityOrigin().isSameOriginWith(allowedSecurityOrigin)) {
             hasCrossOriginRequest = true;
             continue;
           }
@@ -237,13 +237,13 @@ export class ContextSelectionAgent extends AiAgent<never> {
             error: 'No request found',
           };
         }
+        const allowedSecurityOrigin = origin ? SDK.SecurityOrigin.SecurityOrigin.create(origin) : null;
         const request = this.#networkLog.requests().find(req => {
           if (req.requestId() !== id) {
             return false;
           }
 
-          const requestOrigin = getRequestContextOrigin(req);
-          return !origin || requestOrigin === origin;
+          return !allowedSecurityOrigin || req.initiatorSecurityOrigin().isSameOriginWith(allowedSecurityOrigin);
         });
 
         if (request) {

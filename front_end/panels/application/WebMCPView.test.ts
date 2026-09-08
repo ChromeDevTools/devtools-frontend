@@ -234,6 +234,8 @@ describe('WebMCPView (View)', () => {
     renderElementIntoDOM(target, {includeCommonStyles: true});
     DEFAULT_VIEW(createDefaultViewInput(), {}, target);
 
+    await UI.Widget.Widget.allUpdatesComplete;
+
     const listElements = target.querySelectorAll('.tool-item');
     assert.lengthOf(listElements, 0);
 

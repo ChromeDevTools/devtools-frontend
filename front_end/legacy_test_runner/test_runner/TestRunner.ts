@@ -562,63 +562,6 @@ export function check(passCondition: any, failureText: any): void {
   }
 }
 
-const LongPollingMethods = new Set<string>(['CSS.takeComputedStyleUpdates']);
-const pendingMessageIds = new Set<number>();
-let pendingScripts: Array<() => void> = [];
-
-function hasOutstandingNonLongPollingRequests(): boolean {
-  return pendingMessageIds.size > 0;
-}
-
-function executeAfterPendingDispatches(): void {
-  if (!hasOutstandingNonLongPollingRequests()) {
-    const scripts = pendingScripts;
-    pendingScripts = [];
-    for (let id = 0; id < scripts.length; ++id) {
-      scripts[id]();
-    }
-  }
-}
-
-/**
- * @param callback
- */
-export function deprecatedRunAfterPendingDispatches(callback?: any): void {
-  if (callback) {
-    pendingScripts.push(callback);
-  }
-
-  setTimeout(() => {
-    if (!hasOutstandingNonLongPollingRequests()) {
-      executeAfterPendingDispatches();
-    } else {
-      deprecatedRunAfterPendingDispatches();
-    }
-  }, 0);
-}
-
-const prevOnMessageSent = ProtocolClient.InspectorBackend.test.onMessageSent;
-ProtocolClient.InspectorBackend.test.onMessageSent =
-    (message: {domain: string, method: string, params: Object, id: number, sessionId?: string}) => {
-      prevOnMessageSent?.(message);
-      if (!LongPollingMethods.has(message.method)) {
-        pendingMessageIds.add(message.id);
-      }
-    };
-
-const prevOnMessageReceived = ProtocolClient.InspectorBackend.test.onMessageReceived;
-ProtocolClient.InspectorBackend.test.onMessageReceived = (message: Object) => {
-  prevOnMessageReceived?.(message);
-  if (typeof message === 'object' && message !== null && 'id' in message && typeof message.id === 'number') {
-    pendingMessageIds.delete(message.id);
-    if (pendingScripts.length && !hasOutstandingNonLongPollingRequests()) {
-      deprecatedRunAfterPendingDispatches();
-    }
-  }
-};
-
-ProtocolClient.InspectorBackend.test.deprecatedRunAfterPendingDispatches = deprecatedRunAfterPendingDispatches;
-
 /**
  * This ensures a base tag is set so all DOM references
  * are relative to the test file and not the inspected page
@@ -939,6 +882,26 @@ export function dump(value: any, customFormatters: any, prefix: any, prefixWithN
   } else {
     addResult(prefixWithName + value);
   }
+}
+
+/**
+ * Polls a predicate until it returns a truthy value or timeout expires.
+ */
+export function pollUntil<T>(predicate: () => T | null | undefined, timeout = 3000): Promise<T|null> {
+  return new Promise(resolve => {
+    const startTime = Date.now();
+    function check(): void {
+      const result = predicate();
+      if (result) {
+        resolve(result);
+      } else if (Date.now() - startTime > timeout) {
+        resolve(null);
+      } else {
+        setTimeout(check, 10);
+      }
+    }
+    check();
+  });
 }
 
 /**
@@ -1484,7 +1447,6 @@ TestRunner.callFunctionInPageAsync = callFunctionInPageAsync;
 TestRunner.evaluateInPageWithTimeout = evaluateInPageWithTimeout;
 TestRunner.evaluateFunctionInOverlay = evaluateFunctionInOverlay;
 TestRunner.check = check;
-TestRunner.deprecatedRunAfterPendingDispatches = deprecatedRunAfterPendingDispatches;
 TestRunner.loadHTML = loadHTML;
 TestRunner.addScriptTag = addScriptTag;
 TestRunner.addStylesheetTag = addStylesheetTag;
@@ -1497,6 +1459,7 @@ TestRunner.addArray = addArray;
 TestRunner.dumpDeepInnerHTML = dumpDeepInnerHTML;
 TestRunner.deepTextContent = deepTextContent;
 TestRunner.dump = dump;
+TestRunner.pollUntil = pollUntil;
 TestRunner.waitForEvent = waitForEvent;
 TestRunner.waitForTarget = waitForTarget;
 TestRunner.waitForTargetRemoved = waitForTargetRemoved;

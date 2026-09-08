@@ -185,7 +185,7 @@ export const waitUntilPausedAndDumpStackAndResume = function(callback, options) 
   async function step1() {
     await captureStackTrace(callFrames, asyncStackTrace, options);
     TestRunner.addResult(TestRunner.clearSpecificInfoFromStackFrames(caption));
-    TestRunner.deprecatedRunAfterPendingDispatches(step2);
+    setTimeout(step2, 0);
   }
 
   function step2() {
@@ -522,22 +522,23 @@ export const scopeChainSections = function() {
       .children();
 };
 
-export const expandScopeVariablesSidebarPane = function(callback) {
+export const expandScopeVariablesSidebarPane = async function(callback) {
   const sections = scopeChainSections();
 
   for (let i = 0; i < sections.length - 1; ++i) {
     sections[i].expand();
+    await TestRunner.pollUntil(() => sections[i].childCount() > 0 || !sections[i].isExpandable());
   }
 
-  setTimeout(() => {
-    TestRunner.deprecatedRunAfterPendingDispatches(callback);
-  }, 1000);
+  if (callback) {
+    callback();
+  }
 };
 
 export const expandProperties = function(properties, callback) {
   let index = 0;
 
-  function expandNextPath() {
+  async function expandNextPath() {
     if (index === properties.length) {
       TestRunner.safeWrap(callback)();
       return;
@@ -545,21 +546,23 @@ export const expandProperties = function(properties, callback) {
 
     const parentTreeElement = properties[index++];
     const path = properties[index++];
-    expandProperty(parentTreeElement, path, 0, expandNextPath);
+    await expandProperty(parentTreeElement, path, 0, expandNextPath);
   }
 
-  TestRunner.deprecatedRunAfterPendingDispatches(expandNextPath);
+  void expandNextPath();
 };
 
-export const expandProperty = function(parentTreeElement, path, pathIndex, callback) {
+export const expandProperty = async function(parentTreeElement, path, pathIndex, callback) {
   if (pathIndex === path.length) {
     TestRunner.addResult('Expanded property: ' + path.join('.'));
-    callback();
+    if (callback) {
+      callback();
+    }
     return;
   }
 
   const name = path[pathIndex++];
-  const propertyTreeElement = findChildPropertyTreeElement(parentTreeElement, name);
+  const propertyTreeElement = await TestRunner.pollUntil(() => findChildPropertyTreeElement(parentTreeElement, name));
 
   if (!propertyTreeElement) {
     TestRunner.addResult('Failed to expand property: ' + path.slice(0, pathIndex).join('.'));
@@ -568,8 +571,11 @@ export const expandProperty = function(parentTreeElement, path, pathIndex, callb
   }
 
   propertyTreeElement.expand();
-  TestRunner.deprecatedRunAfterPendingDispatches(
-      expandProperty.bind(undefined, propertyTreeElement, path, pathIndex, callback));
+  if (propertyTreeElement.isExpandable()) {
+    await TestRunner.pollUntil(() => propertyTreeElement.childCount() > 0 || !propertyTreeElement.isExpandable());
+  }
+
+  await expandProperty(propertyTreeElement, path, pathIndex, callback);
 };
 
 export const findChildPropertyTreeElement = function(parent, childName) {

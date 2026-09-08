@@ -60,7 +60,7 @@ export class RequestContext extends ConversationContext<SDK.NetworkRequest.Netwo
 
   #createFormatter(): NetworkRequestFormatter {
     return new NetworkRequestFormatter(this.#request, this.#calculator, {
-      initiatorSecurityOrigin: this.#request.initiatorSecurityOrigin(),
+      accessingSecurityOrigin: this.#request.initiatorSecurityOrigin(),
     });
   }
 

@@ -79,6 +79,7 @@ export class FileFormatter {
       calculator.updateBoundaries(resource.request);
       lines.push(`Request initiator chain:
 ${new NetworkRequestFormatter(resource.request, calculator, {
+        accessingSecurityOrigin: resource.request.initiatorSecurityOrigin(),
         networkLog: this.#networkLog,
       }).formatRequestInitiatorChain()}`);
     }

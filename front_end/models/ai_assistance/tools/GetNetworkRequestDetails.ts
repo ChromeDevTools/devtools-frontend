@@ -107,8 +107,8 @@ export class GetNetworkRequestDetailsTool implements
 
     const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
     const formatter = new NetworkRequestFormatter(request, calculator, {
+      accessingSecurityOrigin: conversationOrigin ?? request.initiatorSecurityOrigin(),
       networkLog,
-      initiatorSecurityOrigin: conversationOrigin ?? undefined,
     });
     const formattedDetails = await formatter.formatNetworkRequest();
 

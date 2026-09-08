@@ -299,7 +299,7 @@ describe('NetworkRequestFormatter', () => {
           null,
       );
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(request, calculator, {
-        initiatorSecurityOrigin: request.initiatorSecurityOrigin(),
+        accessingSecurityOrigin: request.initiatorSecurityOrigin(),
       });
       assert.strictEqual(
           formatter.responseAccessMode(),
@@ -307,18 +307,18 @@ describe('NetworkRequestFormatter', () => {
       );
     });
 
-    it('returns SAME_ORIGIN when initiator origin matches request URL origin', () => {
+    it('returns SAME_ORIGIN when accessing origin matches request URL origin', () => {
       const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
           'requestId',
           urlString`https://example.com/api/data`,
           urlString`https://example.com/index.html`,
           null,
       );
-      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
           request,
           calculator,
-          {initiatorSecurityOrigin},
+          {accessingSecurityOrigin},
       );
       assert.strictEqual(
           formatter.responseAccessMode(),
@@ -333,11 +333,11 @@ describe('NetworkRequestFormatter', () => {
           urlString`https://attacker.com/index.html`,
           null,
       );
-      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
           request,
           calculator,
-          {initiatorSecurityOrigin},
+          {accessingSecurityOrigin},
       );
       assert.strictEqual(
           formatter.responseAccessMode(),
@@ -353,11 +353,11 @@ describe('NetworkRequestFormatter', () => {
           null,
       );
       request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: '*'}];
-      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
           request,
           calculator,
-          {initiatorSecurityOrigin},
+          {accessingSecurityOrigin},
       );
       assert.strictEqual(
           formatter.responseAccessMode(),
@@ -373,11 +373,11 @@ describe('NetworkRequestFormatter', () => {
           null,
       );
       request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: 'https://attacker.com'}];
-      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
           request,
           calculator,
-          {initiatorSecurityOrigin},
+          {accessingSecurityOrigin},
       );
       assert.strictEqual(
           formatter.responseAccessMode(),
@@ -393,11 +393,11 @@ describe('NetworkRequestFormatter', () => {
           null,
       );
       request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: 'https://other.com'}];
-      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
           request,
           calculator,
-          {initiatorSecurityOrigin},
+          {accessingSecurityOrigin},
       );
       assert.strictEqual(
           formatter.responseAccessMode(),
@@ -417,11 +417,11 @@ describe('NetworkRequestFormatter', () => {
         corsError: Protocol.Network.CorsError.DisallowedByMode,
         failedParameter: 'foo',
       });
-      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
           request,
           calculator,
-          {initiatorSecurityOrigin},
+          {accessingSecurityOrigin},
       );
       assert.strictEqual(
           formatter.responseAccessMode(),
@@ -446,11 +446,11 @@ describe('NetworkRequestFormatter', () => {
         {name: 'Location', value: '/secret-redirect'},
         {name: 'Server', value: 'Apache'},
       ];
-      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
           request,
           calculator,
-          {initiatorSecurityOrigin},
+          {accessingSecurityOrigin},
       );
       const formatted = formatter.formatResponseHeaders();
       assert.strictEqual(
@@ -473,11 +473,11 @@ describe('NetworkRequestFormatter', () => {
         {name: 'Server', value: 'Apache'},
         {name: 'WWW-Authenticate', value: 'Basic realm="Secret"'},
       ];
-      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
           request,
           calculator,
-          {initiatorSecurityOrigin},
+          {accessingSecurityOrigin},
       );
       const formatted = formatter.formatResponseHeaders();
       assert.strictEqual(
@@ -500,11 +500,11 @@ describe('NetworkRequestFormatter', () => {
         {name: 'Location', value: '/secret-redirect'},
         {name: 'Access-Control-Expose-Headers', value: 'X-Request-Id'},
       ];
-      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
           request,
           calculator,
-          {initiatorSecurityOrigin},
+          {accessingSecurityOrigin},
       );
       const formatted = formatter.formatResponseHeaders();
       assert.strictEqual(
@@ -527,11 +527,11 @@ describe('NetworkRequestFormatter', () => {
       request.requestContentData = () => {
         return Promise.resolve(new TextUtils.ContentData.ContentData('{"user":"alice"}', false, 'application/json'));
       };
-      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
           request,
           calculator,
-          {initiatorSecurityOrigin},
+          {accessingSecurityOrigin},
       );
       const body = await formatter.formatResponseBody();
       assert.strictEqual(body, 'Response body:\n{"user":"alice"}');
@@ -548,11 +548,11 @@ describe('NetworkRequestFormatter', () => {
       request.requestContentData = () => {
         return Promise.resolve(new TextUtils.ContentData.ContentData('{"user":"alice"}', false, 'application/json'));
       };
-      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
           request,
           calculator,
-          {initiatorSecurityOrigin},
+          {accessingSecurityOrigin},
       );
       const body = await formatter.formatResponseBody();
       assert.strictEqual(body, 'Response body:\n{"user":"alice"}');
@@ -569,11 +569,11 @@ describe('NetworkRequestFormatter', () => {
         return Promise.resolve(
             new TextUtils.ContentData.ContentData('{"secret":"confidential"}', false, 'application/json'));
       };
-      const initiatorSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
       const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
           request,
           calculator,
-          {initiatorSecurityOrigin},
+          {accessingSecurityOrigin},
       );
       const body = await formatter.formatResponseBody();
       assert.strictEqual(body, SDK.NetworkRequestAccess.REDACTED_RESPONSE_BODY);

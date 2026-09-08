@@ -33,8 +33,22 @@ export function sanitizeHeaders(headers: Array<{name: string, value: string}>): 
  * Options for configuring {@link NetworkRequestFormatter}.
  */
 export interface NetworkRequestFormatterOptions {
-  /** The security origin of the initiating context for SOP/CORS evaluation. Defaults to `request.initiatorSecurityOrigin()`. */
-  initiatorSecurityOrigin?: SDK.SecurityOrigin.SecurityOrigin;
+  /**
+   * The security origin used to evaluate Same-Origin Policy (SOP) and Cross-Origin
+   * Resource Sharing (CORS) access.
+   *
+   * This is required because evaluating access solely against `request.initiatorSecurityOrigin()`
+   * is unsafe in cross-origin embedded contexts.
+   *
+   * Example:
+   * When debugging a page at `https://example.com` (the active conversation origin), an embedded
+   * `<iframe>` at `https://third-party.com` may fetch `https://third-party.com/api/user.json`.
+   * Relative to the iframe, that request is same-origin (`request.initiatorSecurityOrigin() === https://third-party.com`).
+   * However, from the perspective of the top-level conversation (`https://example.com`), that request
+   * is cross-origin. Its response body and unexposed headers must be redacted to prevent leaking
+   * unauthorized data into the prompt.
+   */
+  accessingSecurityOrigin: SDK.SecurityOrigin.SecurityOrigin;
   /** Optional network log instance for resolving initiator graphs. */
   networkLog?: Logs.NetworkLog.NetworkLog;
 }
@@ -43,31 +57,31 @@ export class NetworkRequestFormatter {
   #calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator;
   #request: SDK.NetworkRequest.NetworkRequest;
   readonly #networkLog?: Logs.NetworkLog.NetworkLog;
-  readonly #initiatorSecurityOrigin: SDK.SecurityOrigin.SecurityOrigin;
+  readonly #accessingSecurityOrigin: SDK.SecurityOrigin.SecurityOrigin;
 
   /**
    * @param request The network request to format.
    * @param calculator Calculator for request timing metrics.
-   * @param options Optional configuration options.
+   * @param options Configuration options specifying the accessing security origin.
    */
   constructor(
       request: SDK.NetworkRequest.NetworkRequest,
       calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator,
-      options?: NetworkRequestFormatterOptions,
+      options: NetworkRequestFormatterOptions,
   ) {
     this.#request = request;
     this.#calculator = calculator;
-    this.#networkLog = options?.networkLog;
-    this.#initiatorSecurityOrigin = options?.initiatorSecurityOrigin ?? request.initiatorSecurityOrigin();
+    this.#networkLog = options.networkLog;
+    this.#accessingSecurityOrigin = options.accessingSecurityOrigin;
   }
 
   /**
-   * Evaluates the response access mode for this network request relative to the initiator security origin.
+   * Evaluates the response access mode for this network request relative to the accessing security origin.
    *
    * @returns The evaluated `ResponseAccessMode`.
    */
   responseAccessMode(): SDK.NetworkRequestAccess.ResponseAccessMode {
-    return SDK.NetworkRequestAccess.evaluateResponseAccessMode(this.#request, this.#initiatorSecurityOrigin);
+    return SDK.NetworkRequestAccess.evaluateResponseAccessMode(this.#request, this.#accessingSecurityOrigin);
   }
 
   static allowHeader(headerName: string): boolean {
@@ -192,8 +206,8 @@ export class NetworkRequestFormatter {
   /**
    * Formats the response body for the AI prompt.
    *
-   * For opaque cross-origin requests, the response body is redacted because the initiating page's
-   * JavaScript is forbidden by the Same-Origin Policy from reading it.
+   * For opaque cross-origin requests, the response body is redacted because the accessing
+   * security origin is forbidden by the Same-Origin Policy from reading it.
    */
   async formatResponseBody(): Promise<string> {
     if (this.responseAccessMode() === SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN) {

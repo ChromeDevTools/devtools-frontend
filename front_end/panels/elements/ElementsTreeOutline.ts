@@ -2013,6 +2013,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         callback();
       }
       if (!success) {
+        this.performUpdate();
         return;
       }
 

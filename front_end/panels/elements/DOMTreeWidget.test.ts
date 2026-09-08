@@ -1951,6 +1951,97 @@ describeWithEnvironment('DOMTreeWidget', () => {
       }
     });
 
+    it('cleans up multilineEditingNode when Edit as HTML is requested during active inline edit in DECLARATIVE_VIEW',
+       async () => {
+         const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+         sinon.stub(domModel, 'requestDocument').resolves(null);
+         const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+         try {
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: 'DIV',
+             attributes: ['id', 'test-div'],
+             children: [
+               {nodeId: 2, nodeName: 'P', attributes: ['class', 'intro']},
+             ],
+           });
+           sinon.stub(rootNode, 'getOuterHTML').resolves('<div id="test-div"><p class="intro"></p></div>');
+
+           domTree.rootDOMNode = rootNode;
+           domTree.setNodeExpanded(rootNode, true);
+           domTree.performUpdate();
+
+           await waitForTreeUpdates();
+
+           const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+           assert.exists(tree);
+           const internalTree = tree.getInternalTreeOutlineForTest();
+           const rootTreeElement = internalTree.rootElement().children()[0];
+           const rootWidgetElement = rootTreeElement.listItemElement.querySelector('devtools-widget');
+           const rootWidget =
+               UI.Widget.Widget.get(rootWidgetElement!) as Elements.ElementsTreeElement.ElementsTreeWidget;
+           assert.exists(rootWidget);
+
+           // Start inline attribute editing on rootWidget
+           rootWidget.triggerEditAttribute('id');
+           await waitForTreeUpdates();
+           assert.isTrue(rootWidget.isEditing);
+
+           // Trigger Edit as HTML while inline editing is active
+           domTree.toggleEditAsHTML(rootNode);
+           await waitForTreeUpdates();
+
+           // Editing aborts, multilineEditingNode should be cleaned up, and children should remain visible
+           assert.isNull(domTree.multilineEditingNode());
+           assert.lengthOf(rootTreeElement.children(), 2);
+
+           rootWidget.editing?.cancel();
+         } finally {
+           domTree.detach();
+         }
+       });
+
+    it('cleans up multilineEditingNode when getOuterHTML fails in DECLARATIVE_VIEW', async () => {
+      const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
+      sinon.stub(domModel, 'requestDocument').resolves(null);
+      const {domTree} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DECLARATIVE_VIEW);
+
+      try {
+        const rootNode = createTestDOMTree(domModel, {
+          nodeId: 1,
+          nodeName: 'DIV',
+          attributes: ['id', 'test-div'],
+          children: [
+            {nodeId: 2, nodeName: 'P', attributes: ['class', 'intro']},
+          ],
+        });
+        // Simulate backend error returning undefined
+        sinon.stub(rootNode, 'getOuterHTML').resolves(undefined as unknown as string);
+
+        domTree.rootDOMNode = rootNode;
+        domTree.setNodeExpanded(rootNode, true);
+        domTree.performUpdate();
+
+        await waitForTreeUpdates();
+
+        const tree = domTree.contentElement.querySelector<UI.TreeOutline.TreeViewElement>('devtools-tree');
+        assert.exists(tree);
+        const internalTree = tree.getInternalTreeOutlineForTest();
+        const rootTreeElement = internalTree.rootElement().children()[0];
+
+        // Trigger Edit as HTML
+        domTree.toggleEditAsHTML(rootNode);
+        await waitForTreeUpdates();
+
+        // multilineEditingNode should be cleaned up and children restored
+        assert.isNull(domTree.multilineEditingNode());
+        assert.lengthOf(rootTreeElement.children(), 2);
+      } finally {
+        domTree.detach();
+      }
+    });
+
     it('handles drag and drop reordering and class styling in DECLARATIVE_VIEW', async () => {
       const domModel = target.model(SDK.DOMModel.DOMModel) as SDK.DOMModel.DOMModel;
       sinon.stub(domModel, 'requestDocument').resolves(null);

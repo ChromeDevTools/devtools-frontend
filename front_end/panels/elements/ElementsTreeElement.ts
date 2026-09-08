@@ -1382,6 +1382,14 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     // editorState) is happening. Doing an update would break editing
     // (crbug.com/515639787).
     if (this.editing && !this.#editorState) {
+      if (this.initialEdit) {
+        const edit = this.initialEdit;
+        this.initialEdit = null;
+        this.onInitialEditCompleted?.();
+        if (edit.isEditAsHTML) {
+          edit.editAsHTMLCallback?.(false);
+        }
+      }
       return;
     }
     this.updateDecorations();
@@ -2257,14 +2265,14 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
   }
 
-  private async startEditingAsHTML(
-      commitCallback: (arg0: string, arg1: string) => void, disposeCallback: () => void,
-      maybeInitialValue: string|null): Promise<void> {
-    if (maybeInitialValue === null) {
+  private async startEditingAsHTML(commitCallback: (arg0: string, arg1: string) => void, disposeCallback: () => void,
+                                   maybeInitialValue: string|null|undefined): Promise<void> {
+    if (maybeInitialValue === null || maybeInitialValue === undefined) {
       disposeCallback();
       return;
     }
     if (this.editing) {
+      disposeCallback();
       return;
     }
 
@@ -2720,7 +2728,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
 
     const node = this.node;
-    void node.getOuterHTML().then(this.startEditingAsHTML.bind(this, commitChange, disposeCallback));
+    void node.getOuterHTML()
+        .then(this.startEditingAsHTML.bind(this, commitChange, disposeCallback))
+        .catch(disposeCallback);
   }
 
   #highlightSearchResults(): void {

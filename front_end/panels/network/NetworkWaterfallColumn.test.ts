@@ -5,16 +5,13 @@
 import {assert} from 'chai';
 
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as NetworkTimeCalculator from '../../models/network_time_calculator/network_time_calculator.js';
 import {renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 
 import * as Network from './network.js';
-
-const {urlString} = Platform.DevToolsPath;
 
 // Fails compilation if a RequestTimeRangeNames enum value is missing.
 const ALL_REQUEST_TIME_RANGE_NAMES: Record<NetworkTimeCalculator.RequestTimeRangeNames, true> = {
@@ -74,14 +71,11 @@ describeWithEnvironment('NetworkWaterfallColumn', () => {
   function createRequestNode(
       timingInfo?: Protocol.Network.ResourceTiming,
       routerInfo?: Protocol.Network.ServiceWorkerRouterInfo): Network.NetworkDataGridNode.NetworkRequestNode {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
-    if (timingInfo) {
-      request.timing = timingInfo;
-    }
-    if (routerInfo) {
-      request.serviceWorkerRouterInfo = routerInfo;
-    }
+    const request = createNetworkRequest({
+      url: 'https://www.example.com',
+      timing: timingInfo,
+      serviceWorkerRouterInfo: routerInfo,
+    });
     return new Network.NetworkDataGridNode.NetworkRequestNode({} as Network.NetworkDataGridNode.NetworkLogViewInterface,
                                                               request);
   }

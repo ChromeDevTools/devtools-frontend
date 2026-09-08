@@ -4,19 +4,17 @@
 
 import {assert} from 'chai';
 
-import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
+import type * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import {assertScreenshot, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {StubStackTrace} from '../../testing/StackTraceHelpers.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
-
-const {urlString} = Platform.DevToolsPath;
 
 describe('RequestInitiatorView', () => {
   setupLocaleHooks();
@@ -34,9 +32,10 @@ describe('RequestInitiatorView', () => {
     const component = document.createElement('div');
     renderElementIntoDOM(component, {includeCommonStyles: true});
 
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/foo.js`,
-        urlString`https://example.com`, null, null, null);
+    const request = createNetworkRequest({
+      url: 'https://example.com/foo.js',
+      documentURL: 'https://example.com',
+    });
 
     const initiatorGraph = {initiators: new Set<SDK.NetworkRequest.NetworkRequest>(), initiated: new Map()};
 
@@ -55,11 +54,13 @@ describe('RequestInitiatorView', () => {
     const component = document.createElement('div');
     renderElementIntoDOM(component, {includeCommonStyles: true});
 
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/foo.js`,
-        urlString`https://example.com`, null, null, {
-          type: Protocol.Network.InitiatorType.Script,
-        });
+    const request = createNetworkRequest({
+      url: 'https://example.com/foo.js',
+      documentURL: 'https://example.com',
+      initiator: {
+        type: Protocol.Network.InitiatorType.Script,
+      },
+    });
 
     const initiatorGraph = {initiators: new Set<SDK.NetworkRequest.NetworkRequest>(), initiated: new Map()};
 
@@ -81,13 +82,16 @@ describe('RequestInitiatorView', () => {
     const component = document.createElement('div');
     renderElementIntoDOM(component, {includeCommonStyles: true});
 
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/foo.js`,
-        urlString`https://example.com`, null, null, null);
+    const request = createNetworkRequest({
+      url: 'https://example.com/foo.js',
+      documentURL: 'https://example.com',
+    });
 
-    const initiator = SDK.NetworkRequest.NetworkRequest.create(
-        'initiatorId' as Protocol.Network.RequestId, urlString`https://example.com/initiator.js`,
-        urlString`https://example.com`, null, null, null);
+    const initiator = createNetworkRequest({
+      requestId: 'initiatorId',
+      url: 'https://example.com/initiator.js',
+      documentURL: 'https://example.com',
+    });
 
     const initiatorGraph = {initiators: new Set([initiator, request]), initiated: new Map()};
 
@@ -106,15 +110,19 @@ describe('RequestInitiatorView', () => {
     const component = document.createElement('div');
     renderElementIntoDOM(component, {includeCommonStyles: true});
 
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/foo.js`,
-        urlString`https://example.com`, null, null, {
-          type: Protocol.Network.InitiatorType.Script,
-        });
+    const request = createNetworkRequest({
+      url: 'https://example.com/foo.js',
+      documentURL: 'https://example.com',
+      initiator: {
+        type: Protocol.Network.InitiatorType.Script,
+      },
+    });
 
-    const initiator = SDK.NetworkRequest.NetworkRequest.create(
-        'initiatorId' as Protocol.Network.RequestId, urlString`https://example.com/initiator.js`,
-        urlString`https://example.com`, null, null, null);
+    const initiator = createNetworkRequest({
+      requestId: 'initiatorId',
+      url: 'https://example.com/initiator.js',
+      documentURL: 'https://example.com',
+    });
 
     const initiatorGraph = {initiators: new Set([initiator, request]), initiated: new Map()};
 
@@ -136,11 +144,13 @@ describe('RequestInitiatorView', () => {
     const component = document.createElement('div');
     renderElementIntoDOM(component, {includeCommonStyles: true});
 
-    const request = SDK.NetworkRequest.NetworkRequest.create('requestId' as Protocol.Network.RequestId,
-                                                             urlString`https://example.com/api`,
-                                                             urlString`https://example.com`, null, null, {
-                                                               type: Protocol.Network.InitiatorType.Script,
-                                                             });
+    const request = createNetworkRequest({
+      url: 'https://example.com/api',
+      documentURL: 'https://example.com',
+      initiator: {
+        type: Protocol.Network.InitiatorType.Script,
+      },
+    });
 
     const initiatorGraph = {initiators: new Set([request]), initiated: new Map()};
 
@@ -166,11 +176,13 @@ describe('RequestInitiatorView', () => {
     const component = document.createElement('div');
     renderElementIntoDOM(component, {includeCommonStyles: true});
 
-    const request = SDK.NetworkRequest.NetworkRequest.create('requestId' as Protocol.Network.RequestId,
-                                                             urlString`https://example.com/foo.js`,
-                                                             urlString`https://example.com`, null, null, {
-                                                               type: Protocol.Network.InitiatorType.Script,
-                                                             });
+    const request = createNetworkRequest({
+      url: 'https://example.com/foo.js',
+      documentURL: 'https://example.com',
+      initiator: {
+        type: Protocol.Network.InitiatorType.Script,
+      },
+    });
 
     const initiatorGraph = {initiators: new Set([request]), initiated: new Map()};
 
@@ -198,13 +210,16 @@ describe('RequestInitiatorView', () => {
 
     const longUrl = 'https://example.com/' +
         'a'.repeat(150) + '/path.js';
-    const request =
-        SDK.NetworkRequest.NetworkRequest.create('requestId' as Protocol.Network.RequestId, urlString`${longUrl}`,
-                                                 urlString`https://example.com`, null, null, null);
+    const request = createNetworkRequest({
+      url: longUrl,
+      documentURL: 'https://example.com',
+    });
 
-    const initiator = SDK.NetworkRequest.NetworkRequest.create('initiatorId' as Protocol.Network.RequestId,
-                                                               urlString`https://example.com/initiator.js`,
-                                                               urlString`https://example.com`, null, null, null);
+    const initiator = createNetworkRequest({
+      requestId: 'initiatorId',
+      url: 'https://example.com/initiator.js',
+      documentURL: 'https://example.com',
+    });
 
     const initiatorGraph = {initiators: new Set([initiator, request]), initiated: new Map()};
 

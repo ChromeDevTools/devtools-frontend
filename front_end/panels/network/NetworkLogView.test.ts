@@ -30,6 +30,7 @@ import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {stubFileManager} from '../../testing/FileManagerHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {dispatchEvent} from '../../testing/MockConnection.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {activate} from '../../testing/ResourceTreeHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -1762,9 +1763,7 @@ describeWithEnvironment('NetworkLogView', () => {
     const progressBarContainer = document.createElement('div');
     const setting = Common.Settings.Settings.instance().createSetting('network-log-large-rows', false);
     const networkLogView = new Network.NetworkLogView.NetworkLogView(filterBar, progressBarContainer, setting);
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, Platform.DevToolsPath.urlString`https://www.example.com/script.js`,
-        Platform.DevToolsPath.urlString``, null, null, null);
+    const request = createNetworkRequest({url: 'https://www.example.com/script.js'});
 
     const event = new Event('contextmenu');
     sinon.stub(event, 'target').value(document);

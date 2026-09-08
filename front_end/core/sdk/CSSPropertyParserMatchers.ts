@@ -1508,3 +1508,32 @@ export class EnvFunctionMatcher extends EnvFunctionMatcherBase {
     return new EnvFunctionMatch(matching.ast.text(node), node, varName, value ?? fallbackValue ?? null, Boolean(value));
   }
 }
+
+export class PositionAreaMatch implements Match {
+  constructor(readonly text: string, readonly node: CodeMirror.SyntaxNode) {
+  }
+}
+
+const PositionAreaMatcherBase: MatcherClass<PositionAreaMatch> = matcherBase(PositionAreaMatch);
+// clang-format off
+export class PositionAreaMatcher extends PositionAreaMatcherBase {
+  // clang-format on
+  override accepts(propertyName: string): boolean {
+    return propertyName === 'position-area' || propertyName === 'inset-area';
+  }
+
+  override matches(node: CodeMirror.SyntaxNode, matching: BottomUpTreeMatching): PositionAreaMatch|null {
+    if (node.name !== 'Declaration') {
+      return null;
+    }
+    const valueNodes = ASTUtils.siblings(ASTUtils.declValue(node));
+    if (valueNodes.length === 0) {
+      return null;
+    }
+    const valueText = matching.getComputedTextRange(valueNodes[0], valueNodes[valueNodes.length - 1]);
+    if (CSSMetadata.isCSSWideKeyword(valueText)) {
+      return null;
+    }
+    return new PositionAreaMatch(valueText, node);
+  }
+}

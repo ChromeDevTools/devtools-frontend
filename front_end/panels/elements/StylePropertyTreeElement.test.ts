@@ -1990,6 +1990,75 @@ describeWithEnvironment('StylePropertyTreeElement', () => {
     });
   });
 
+  describe('PositionAreaRenderer', () => {
+    it('renders a trigger button for position-area property', () => {
+      const stylePropertyTreeElement = getTreeElement('position-area', 'bottom right');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      const icon = stylePropertyTreeElement.valueElement.querySelector('devtools-icon.position-area-swatch-icon');
+      assert.exists(icon);
+    });
+
+    it('does not render trigger button for invalid position-area values', () => {
+      const stylePropertyTreeElement = getTreeElement('position-area', 'foo bar');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      const icon = stylePropertyTreeElement.valueElement.querySelector('devtools-icon.position-area-swatch-icon');
+      assert.isNull(icon);
+    });
+
+    it('opens PositionAreaEditor popover when button is clicked', async () => {
+      const stylePropertyTreeElement = getTreeElement('position-area', 'bottom right');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      const icon = stylePropertyTreeElement.valueElement.querySelector('devtools-icon.position-area-swatch-icon');
+      assert.exists(icon);
+      const popoverHelper = stylePropertyTreeElement.stylesContainer().swatchPopoverHelper();
+      const showSpy = sinon.spy(popoverHelper, 'show');
+      icon.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+      sinon.assert.calledOnce(showSpy);
+      const editor = showSpy.firstCall.args[0];
+      assert.instanceOf(editor, InlineEditor.PositionAreaEditor.PositionAreaEditor);
+      assert.isTrue(popoverHelper.isShowing());
+      assert.isAbove(editor.contentElement.childElementCount, 0);
+
+      icon.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+      assert.isFalse(popoverHelper.isShowing());
+    });
+
+    it('consumes mousedown event on the trigger button', () => {
+      const stylePropertyTreeElement = getTreeElement('position-area', 'bottom right');
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      const icon = stylePropertyTreeElement.valueElement.querySelector('devtools-icon.position-area-swatch-icon');
+      assert.exists(icon);
+      const mousedownEvent = new MouseEvent('mousedown', {bubbles: true, cancelable: true});
+      const consumeSpy = sinon.spy(mousedownEvent, 'consume');
+      icon.dispatchEvent(mousedownEvent);
+      sinon.assert.calledOnce(consumeSpy);
+    });
+
+    it('updates style when position area changes', async () => {
+      const stylePropertyTreeElement = getTreeElement('position-area', 'bottom right');
+      renderElementIntoDOM(stylePropertyTreeElement.listItemElement, {allowMultipleChildren: true});
+      stylePropertyTreeElement.updateTitle();
+      assert.exists(stylePropertyTreeElement.valueElement);
+      const icon = stylePropertyTreeElement.valueElement.querySelector('devtools-icon.position-area-swatch-icon');
+      assert.exists(icon);
+      const popoverHelper = stylePropertyTreeElement.stylesContainer().swatchPopoverHelper();
+      const showSpy = sinon.spy(popoverHelper, 'show');
+      icon.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+      sinon.assert.calledOnce(showSpy);
+      const editor = showSpy.firstCall.args[0];
+      assert.instanceOf(editor, InlineEditor.PositionAreaEditor.PositionAreaEditor);
+      const applyStyleTextSpy = sinon.spy(stylePropertyTreeElement, 'applyStyleText');
+      const newArea = InlineEditor.PositionAreaEditor.parsePositionArea('top left');
+      assert.exists(newArea);
+      editor.dispatchEventToListeners(InlineEditor.PositionAreaEditor.Events.POSITION_AREA_CHANGED, newArea);
+      sinon.assert.calledOnceWithExactly(applyStyleTextSpy, 'position-area: top left', false);
+    });
+  });
+
   describe('PositionTryRenderer', () => {
     it('renders the position-try fallback values with correct styles', () => {
       sinon.stub(matchedStyles, 'activePositionFallbackIndex').returns(1);

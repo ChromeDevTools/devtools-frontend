@@ -227,6 +227,22 @@ describe('PositionAreaEditor', () => {
   });
 
   describe('presenter', () => {
+    it('sets tabIndex on contentElement when shown', () => {
+      const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor();
+      editor.wasShown();
+      assert.strictEqual(editor.contentElement.tabIndex, 0);
+    });
+
+    it('performs synchronous update when shown', () => {
+      const view = createViewFunctionStub(InlineEditor.PositionAreaEditor.PositionAreaEditor);
+      const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor(undefined, view);
+      const area = parsePositionArea('top left');
+      editor.area = area ?? undefined;
+      editor.wasShown();
+      assert.isTrue(view.callCount > 0);
+      assert.strictEqual(view.input.area, area);
+    });
+
     it('updates view input when setting area', async () => {
       const view = createViewFunctionStub(InlineEditor.PositionAreaEditor.PositionAreaEditor);
       const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor(undefined, view);

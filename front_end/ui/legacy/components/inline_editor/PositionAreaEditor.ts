@@ -256,8 +256,13 @@ export interface ViewInput {
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
+  const container = {
+    attributes: {
+      tabindex: '0',
+    },
+  };
   if (!input.area) {
-    render(nothing, target);
+    render(nothing, target, {container});
     return;
   }
   const x = input.area.primaryAxis === Axis.INLINE ? input.area.first : input.area.second;
@@ -400,7 +405,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       </div>
     </div>
     `,
-         target);
+         target, {container});
 };
 
 export const enum Events {
@@ -433,7 +438,7 @@ export class PositionAreaEditor extends PositionAreaEditorBase {
 
   override wasShown(): void {
     super.wasShown();
-    this.requestUpdate();
+    this.performUpdate();
   }
 
   get area(): Area|undefined {

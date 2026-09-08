@@ -883,4 +883,35 @@ describe('Matchers for SDK.CSSPropertyParser.BottomUpTreeMatching', () => {
       assert.strictEqual(match.text, '--foo');
     }
   });
+
+  it('matches position-area declarations', () => {
+    for (const valid
+             of ['top', 'top left', 'center', 'span-all', 'inline-start block-end', 'self-start', 'top self-end']) {
+      const {match, text} =
+          matchSingleValue('position-area', valid, new SDK.CSSPropertyParserMatchers.PositionAreaMatcher());
+      assert.exists(match, text);
+      assert.strictEqual(match.text, valid);
+    }
+
+    // Accepts legacy inset-area property
+    {
+      const {match, text} =
+          matchSingleValue('inset-area', 'top left', new SDK.CSSPropertyParserMatchers.PositionAreaMatcher());
+      assert.exists(match, text);
+      assert.strictEqual(match.text, 'top left');
+    }
+
+    // Does not match CSS-wide keywords
+    for (const wide of ['inherit', 'initial', 'unset', 'revert', 'revert-layer']) {
+      const {match, text} =
+          matchSingleValue('position-area', wide, new SDK.CSSPropertyParserMatchers.PositionAreaMatcher());
+      assert.isNull(match, text);
+    }
+
+    // Does not match other properties
+    {
+      const {match, text} = matchSingleValue('color', 'red', new SDK.CSSPropertyParserMatchers.PositionAreaMatcher());
+      assert.isNull(match, text);
+    }
+  });
 });

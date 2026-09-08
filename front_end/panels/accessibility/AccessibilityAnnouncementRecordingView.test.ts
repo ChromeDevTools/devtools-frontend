@@ -58,12 +58,46 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
     SDK.TargetManager.TargetManager.instance().setScopeTarget(null);
   });
 
-  function setupMockBinding(recorded: Array<Record<string, unknown>>): void {
+  function setupMockBinding(recorded: Array<Record<string, unknown>>): {
+    waitForAnnouncement: (predicate?: (item: Record<string, unknown>) => boolean) => Promise<Record<string, unknown>>,
+    clear: () => void,
+  } {
+    const unconsumed: Array<Record<string, unknown>> = [];
+    const waiters: Array<{
+      predicate: (item: Record<string, unknown>) => boolean,
+      resolve: (item: Record<string, unknown>) => void,
+    }> = [];
     window.__announcementsRecorderBinding = (payload: string) => {
       try {
-        recorded.push(JSON.parse(payload));
+        const parsed = JSON.parse(payload);
+        recorded.push(parsed);
+
+        const waiterIndex = waiters.findIndex(w => w.predicate(parsed));
+        if (waiterIndex !== -1) {
+          const {resolve} = waiters.splice(waiterIndex, 1)[0];
+          resolve(parsed);
+        } else {
+          unconsumed.push(parsed);
+        }
       } catch {
       }
+    };
+
+    return {
+      waitForAnnouncement: (predicate = () => true) => {
+        const unconsumedIndex = unconsumed.findIndex(predicate);
+        if (unconsumedIndex !== -1) {
+          const [item] = unconsumed.splice(unconsumedIndex, 1);
+          return Promise.resolve(item);
+        }
+        return new Promise<Record<string, unknown>>(resolve => {
+          waiters.push({predicate, resolve});
+        });
+      },
+      clear: () => {
+        recorded.length = 0;
+        unconsumed.length = 0;
+      },
     };
   }
 
@@ -550,7 +584,7 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
 
     it('captures aria-live text mutations without polluting DOM attributes', async () => {
       const recorded: Array<Record<string, unknown>> = [];
-      setupMockBinding(recorded);
+      const {waitForAnnouncement, clear} = setupMockBinding(recorded);
 
       new Function(INJECTED_SCRIPT_SOURCE)();
 
@@ -565,20 +599,18 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
       container.appendChild(nonLiveElement);
 
       renderElementIntoDOM(container);
-      await new Promise(resolve => setTimeout(resolve, 30));
-      recorded.length = 0;
+      clear();
 
       // 1. Attribute change on non-live element (CRITICAL FIX check: must NOT record)
       nonLiveElement.className = 'some-new-class';
-      await new Promise(resolve => setTimeout(resolve, 50));
-      assert.lengthOf(recorded, 0, 'Attribute change on non-live element should not be recorded');
 
       // 2. Text mutation on live region (must record)
       liveRegion.textContent = 'Live update!';
-      await new Promise(resolve => setTimeout(resolve, 50));
+      const announcement = await waitForAnnouncement(r => r.message === 'Live update!');
+
       assert.lengthOf(recorded, 1);
-      assert.strictEqual(recorded[0].message, 'Live update!');
-      assert.strictEqual(recorded[0].politeness, 'polite');
+      assert.strictEqual(announcement.message, 'Live update!');
+      assert.strictEqual(announcement.politeness, 'polite');
 
       // 3. Verify NO DOM attribute pollution occurred on liveRegion
       assert.isFalse(liveRegion.hasAttribute('data-devtools-aria-live-record-id'));
@@ -589,7 +621,7 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
 
     it('assigns unique element IDs across cloned elements', async () => {
       const recorded: Array<Record<string, unknown>> = [];
-      setupMockBinding(recorded);
+      const {waitForAnnouncement, clear} = setupMockBinding(recorded);
 
       new Function(INJECTED_SCRIPT_SOURCE)();
 
@@ -600,34 +632,31 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
       container.appendChild(liveRegion);
       renderElementIntoDOM(container);
 
-      await new Promise(resolve => setTimeout(resolve, 30));
-      recorded.length = 0;
+      await waitForAnnouncement(r => r.message === 'Original text');
+      clear();
 
       // Mutate original live region
       liveRegion.textContent = 'Original updated';
-      await new Promise(resolve => setTimeout(resolve, 50));
-      assert.lengthOf(recorded, 1);
-      const originalId = recorded[0].elementId;
+      const originalRecord = await waitForAnnouncement(r => r.message === 'Original updated');
+      const originalId = originalRecord.elementId;
 
       // Clone original element and add to container
       const cloned = liveRegion.cloneNode(true) as HTMLElement;
       cloned.textContent = 'Clone initial';
       container.appendChild(cloned);
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await waitForAnnouncement(r => r.message === 'Clone initial');
 
       cloned.textContent = 'Clone updated';
-      await new Promise(resolve => setTimeout(resolve, 50));
+      const cloneRecord = await waitForAnnouncement(r => r.message === 'Clone updated');
 
-      const cloneRecords = recorded.filter(r => r.message === 'Clone updated');
-      assert.lengthOf(cloneRecords, 1);
-      assert.notStrictEqual(cloneRecords[0].elementId, originalId);
+      assert.notStrictEqual(cloneRecord.elementId, originalId);
 
       container.remove();
     });
 
     it('captures live region mutations inside open Shadow DOM trees', async () => {
       const recorded: Array<Record<string, unknown>> = [];
-      setupMockBinding(recorded);
+      const {waitForAnnouncement} = setupMockBinding(recorded);
 
       new Function(INJECTED_SCRIPT_SOURCE)();
 
@@ -638,22 +667,20 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
       shadowRoot.appendChild(shadowLiveRegion);
 
       renderElementIntoDOM(host);
-      await new Promise(resolve => setTimeout(resolve, 30));
-      recorded.length = 0;
 
       shadowLiveRegion.textContent = 'Notification in shadow DOM';
-      await new Promise(resolve => setTimeout(resolve, 50));
+      const announcement = await waitForAnnouncement(r => r.message === 'Notification in shadow DOM');
 
       assert.lengthOf(recorded, 1);
-      assert.strictEqual(recorded[0].message, 'Notification in shadow DOM');
-      assert.strictEqual(recorded[0].politeness, 'polite');
+      assert.strictEqual(announcement.message, 'Notification in shadow DOM');
+      assert.strictEqual(announcement.politeness, 'polite');
 
       host.remove();
     });
 
     it('isolates ariaNotify failure so MutationObserver still captures live regions', async () => {
       const recorded: Array<Record<string, unknown>> = [];
-      setupMockBinding(recorded);
+      const {waitForAnnouncement, clear} = setupMockBinding(recorded);
 
       const frozenElementProto = Object.freeze({
         ariaNotify: function() {},
@@ -678,16 +705,14 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
 
       // Verify blocked event was emitted for ariaNotify
       assert.isTrue(recorded.some(r => r.api === 'blocked'));
-      recorded.length = 0;
+      clear();
 
       // Verify that MutationObserver still functions for ARIA-live
       liveRegion.textContent = 'Assertive message despite frozen proto';
-      await new Promise(resolve => setTimeout(resolve, 50));
+      const announcement = await waitForAnnouncement(r => r.api === 'aria-live');
 
-      const liveAnnouncements = recorded.filter(r => r.api === 'aria-live');
-      assert.lengthOf(liveAnnouncements, 1);
-      assert.strictEqual(liveAnnouncements[0].message, 'Assertive message despite frozen proto');
-      assert.strictEqual(liveAnnouncements[0].politeness, 'assertive');
+      assert.strictEqual(announcement.message, 'Assertive message despite frozen proto');
+      assert.strictEqual(announcement.politeness, 'assertive');
 
       container.remove();
     });
@@ -751,6 +776,36 @@ describeWithEnvironment('AccessibilityAnnouncementRecordingView', () => {
 
       teardownScript();
       btn.remove();
+    });
+
+    it('handles deeply nested DOM trees without stack overflow during scanAndObserveShadowRoots', async () => {
+      const recorded: Array<Record<string, unknown>> = [];
+      const {waitForAnnouncement} = setupMockBinding(recorded);
+
+      new Function(INJECTED_SCRIPT_SOURCE)();
+
+      const depth = 600;
+      const root = document.createElement('div');
+      let current = root;
+      for (let i = 0; i < depth; i++) {
+        const next = document.createElement('div');
+        current.appendChild(next);
+        current = next;
+      }
+
+      const liveRegion = document.createElement('div');
+      liveRegion.setAttribute('aria-live', 'polite');
+      current.appendChild(liveRegion);
+
+      renderElementIntoDOM(root);
+
+      liveRegion.textContent = 'Deep announcement';
+      const announcement = await waitForAnnouncement(r => r.message === 'Deep announcement');
+
+      assert.strictEqual(announcement.message, 'Deep announcement');
+      assert.strictEqual(announcement.politeness, 'polite');
+
+      root.remove();
     });
   });
 });

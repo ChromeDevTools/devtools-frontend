@@ -205,12 +205,49 @@ export function injectedScript(ariaLiveApi: string, jsTriggeredApi: string): voi
   let lastRecordedPoliteness: string|null = null;
   let lastRecordedTime = 0;
 
-  // Emits an announcement payload for an active live region node via the CDP binding.
+  const pendingLiveNodes = new Set<Element>();
+  let scheduledFlushId: number|null = null;
+
+  function scheduleFlush(): void {
+    if (scheduledFlushId !== null) {
+      return;
+    }
+    scheduledFlushId = window.requestAnimationFrame(() => {
+      scheduledFlushId = null;
+      flushPendingNodes();
+    });
+  }
+
+  function flushPendingNodes(): void {
+    const nodes = Array.from(pendingLiveNodes);
+    pendingLiveNodes.clear();
+    for (let i = 0; i < nodes.length; i++) {
+      processLiveNode(nodes[i]);
+    }
+  }
+
+  // Queues an active live region node for deferred visibility checking and emission.
   function recordLiveNode(node: Node|null|undefined): void {
     if (!node || node.nodeType !== Node.ELEMENT_NODE) {
       return;
     }
     const element = node as Element;
+    const politeness = derivePoliteness(element);
+    if (politeness === 'off') {
+      return;
+    }
+    if (element.getAttribute('aria-hidden') === 'true') {
+      return;
+    }
+    pendingLiveNodes.add(element);
+    scheduleFlush();
+  }
+
+  // Emits an announcement payload for an active live region node via the CDP binding after layout.
+  function processLiveNode(element: Element): void {
+    if ('isConnected' in element && !element.isConnected) {
+      return;
+    }
     const politeness = derivePoliteness(element);
     if (politeness === 'off') {
       return;
@@ -293,18 +330,14 @@ export function injectedScript(ariaLiveApi: string, jsTriggeredApi: string): voi
         for (const node of mutation.addedNodes) {
           if (node.nodeType === Node.ELEMENT_NODE) {
             const el = node as Element;
-            if (el.shadowRoot) {
-              observeSubtree(el.shadowRoot);
-              scanAndObserveShadowRoots(el.shadowRoot);
-            }
             scanAndObserveShadowRoots(el);
 
-            if (el.matches && el.matches(selector)) {
+            if (el.matches(selector)) {
               recordLiveNode(el);
             }
-            const children = el.querySelectorAll ? el.querySelectorAll(selector) : [];
-            for (const child of children) {
-              recordLiveNode(child);
+            const children = el.querySelectorAll(selector);
+            for (let i = 0; i < children.length; i++) {
+              recordLiveNode(children[i]);
             }
           }
         }
@@ -348,20 +381,29 @@ export function injectedScript(ariaLiveApi: string, jsTriggeredApi: string): voi
     }
   }
 
-  function scanAndObserveShadowRoots(node: Node|null|undefined): void {
-    if (!node) {
+  function scanAndObserveShadowRoots(root: Element|ShadowRoot|null|undefined): void {
+    if (!root) {
       return;
     }
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      const el = node as Element;
-      if (el.shadowRoot) {
-        observeSubtree(el.shadowRoot);
-        scanAndObserveShadowRoots(el.shadowRoot);
+    const queue: Array<Element|ShadowRoot> = [root];
+    while (queue.length > 0) {
+      const current = queue.pop();
+      if (!current) {
+        continue;
       }
-    }
-    const children = (node as Element).children || [];
-    for (let i = 0; i < children.length; i++) {
-      scanAndObserveShadowRoots(children[i]);
+      const el = current as Element;
+      if (el.shadowRoot && !observedRoots.has(el.shadowRoot)) {
+        observeSubtree(el.shadowRoot);
+        queue.push(el.shadowRoot);
+      }
+      const descendants = current.querySelectorAll('*');
+      for (let i = 0; i < descendants.length; i++) {
+        const descendant = descendants[i];
+        if (descendant.shadowRoot && !observedRoots.has(descendant.shadowRoot)) {
+          observeSubtree(descendant.shadowRoot);
+          queue.push(descendant.shadowRoot);
+        }
+      }
     }
   }
 
@@ -380,6 +422,7 @@ export function injectedScript(ariaLiveApi: string, jsTriggeredApi: string): voi
         const shadow = origAttachShadow.apply(this, [init]);
         if (init && init.mode === 'open') {
           observeSubtree(shadow);
+          scanAndObserveShadowRoots(shadow);
         }
         return shadow;
       };
@@ -392,6 +435,11 @@ export function injectedScript(ariaLiveApi: string, jsTriggeredApi: string): voi
   // Registers cleanup function invoked during recording teardown.
   window.__announcementsRecorderBinding_cleanup = function(): void {
     observer.disconnect();
+    if (scheduledFlushId !== null) {
+      window.cancelAnimationFrame(scheduledFlushId);
+      scheduledFlushId = null;
+    }
+    pendingLiveNodes.clear();
     if (originalElementAriaNotify) {
       try {
         (Element.prototype as unknown as Record<string, unknown>)['ariaNotify'] = originalElementAriaNotify;

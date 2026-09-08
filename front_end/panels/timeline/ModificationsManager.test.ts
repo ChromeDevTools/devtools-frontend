@@ -37,7 +37,7 @@ describeWithEnvironment('ModificationsManager', () => {
     assert.deepEqual(rangeLabel, 'Visibility change 1');
   });
 
-  it('generates a serializable modifications json ', async function() {
+  it('generates a serializable modifications json', async function() {
     await TraceLoader.traceEngine(this, 'web-dev-modifications.json.gz', {withModificationsManager: true});
     const modificationsManager = Timeline.ModificationsManager.ModificationsManager.activeManager();
     if (!modificationsManager) {
@@ -66,7 +66,7 @@ describeWithEnvironment('ModificationsManager', () => {
   it('creates annotations and generates correct json for annotations', async function() {
     const parsedTrace =
         await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
-    // Get any entres to create a label and a link with.
+    // Get any entries to create a label and a link with.
     const entry = allThreadEntriesInTrace(parsedTrace)[0];
     const entry2 = allThreadEntriesInTrace(parsedTrace)[1];
 
@@ -184,18 +184,18 @@ describeWithEnvironment('ModificationsManager', () => {
         },
         {loadedFromFile: false, muteAriaNotifications: false});
 
-    // Chech if a connection between entries 1 and 3 exists
+    // Check if a connection between entries 1 and 3 exists
     const existsBetween1And3 = modificationsManager.linkAnnotationBetweenEntriesExists(entry1, entry3);
-    // Make sure the link does not exists
+    // Make sure the link does not exist
     assert.isFalse(existsBetween1And3);
 
-    // Chech if a connection between entries 1 and 2 exists
+    // Check if a connection between entries 1 and 2 exists
     const existsBetween1And2 = modificationsManager.linkAnnotationBetweenEntriesExists(entry1, entry2);
     // Make sure the link exists
     assert.isTrue(existsBetween1And2);
 
-    // Chech if a connection between entries 2 and 1 exists. It should since the order of entries does not matter.
-    const existsBetween2And1 = modificationsManager.linkAnnotationBetweenEntriesExists(entry1, entry2);
+    // Check if a connection between entries 2 and 1 exists. It should since the order of entries does not matter.
+    const existsBetween2And1 = modificationsManager.linkAnnotationBetweenEntriesExists(entry2, entry1);
     // Make sure the link exists
     assert.isTrue(existsBetween2And1);
   });
@@ -217,7 +217,7 @@ describeWithEnvironment('ModificationsManager', () => {
         },
         {loadedFromFile: false, muteAriaNotifications: false});
 
-    // Create time range with empty label that shoud be removed
+    // Create time range with empty label that should be removed
     modificationsManager.createAnnotation(
         {
           type: 'TIME_RANGE',
@@ -230,7 +230,7 @@ describeWithEnvironment('ModificationsManager', () => {
         },
         {loadedFromFile: false, muteAriaNotifications: false});
 
-    // Create time range with empty label that shoud be removed
+    // Create time range with empty label that should be removed
     modificationsManager.createAnnotation(
         {
           type: 'TIME_RANGE',

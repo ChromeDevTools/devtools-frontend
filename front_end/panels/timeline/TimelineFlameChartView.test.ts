@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
+import * as Host from '../../core/host/host.js';
 import * as Platform from '../../core/platform/platform.js';
 import * as AIAssistance from '../../models/ai_assistance/ai_assistance.js';
 import * as Bindings from '../../models/bindings/bindings.js';
@@ -13,11 +14,9 @@ import * as Trace from '../../models/trace/trace.js';
 import * as Workspace from '../../models/workspace/workspace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {assertScreenshot, dispatchClickEvent, doubleRaf, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {
-  createTarget,
-  deinitializeGlobalVars,
-  initializeGlobalVars,
-} from '../../testing/EnvironmentHelpers.js';
+import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
+import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import {
   allThreadEntriesInTrace,
@@ -82,18 +81,19 @@ async function waitForWidgetSizeToUpdate(flameChartView: Timeline.TimelineFlameC
 }
 
 describe('TimelineFlameChartView', function() {
-  before(async () => {
-    await initializeGlobalVars();
-    // In case any previous test suite set this.
-    clearPersistTrackConfigSettings();
-  });
+  setupLocaleHooks();
+  setupSettingsHooks();
+  setupRuntimeHooks();
 
-  after(async () => {
-    await deinitializeGlobalVars();
-  });
+  let universe: TestUniverse;
 
   beforeEach(() => {
-    const universe = new TestUniverse();
+    universe = new TestUniverse();
+    UI.ZoomManager.ZoomManager.instance({
+      forceNew: true,
+      win: window,
+      frontendHost: Host.InspectorFrontendHost.InspectorFrontendHostInstance,
+    });
     sinon.stub(Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding, 'instance')
         .returns(universe.debuggerWorkspaceBinding);
     sinon.stub(Bindings.CSSWorkspaceBinding.CSSWorkspaceBinding, 'instance').returns(universe.cssWorkspaceBinding);
@@ -105,13 +105,14 @@ describe('TimelineFlameChartView', function() {
   afterEach(() => {
     // Avoid any group expansion state leaking across tests.
     clearPersistTrackConfigSettings();
+    UI.ZoomManager.ZoomManager.removeInstance();
   });
 
   describe('rendering', () => {
     beforeEach(() => {
       document.body.style.overflow = 'hidden';
       // Force a consistent layout width across all bots and OSes by replacing updateContentElementSize.
-      // This prevents the native scrollbar width from unpredictablely altering offsetWidth,
+      // This prevents the native scrollbar width from unpredictably altering offsetWidth,
       // which scales the chart unpredictably on screenshots.
       sinon.stub(PerfUI.ChartViewport.ChartViewport.prototype, 'updateContentElementSize')
           .callsFake(function(this: PerfUI.ChartViewport.ChartViewport) {
@@ -234,7 +235,7 @@ describe('TimelineFlameChartView', function() {
     });
 
     it('shows the details for a selected main thread event', async function() {
-      createTarget();  // TimelineUIUtils will pick this up as the "root" target to translate stack traces.
+      universe.createTarget();  // TimelineUIUtils will pick this up as the "root" target to translate stack traces.
       const parsedTrace =
           await TraceLoader.traceEngine(this, 'web-dev-with-commit.json.gz', {withModificationsManager: true});
       const mockViewDelegate = new MockViewDelegate();
@@ -744,7 +745,7 @@ describe('TimelineFlameChartView', function() {
     let parsedTrace: Trace.TraceModel.ParsedTrace;
     const flameChartContainer = document.createElement('div');
 
-    this.beforeEach(async function() {
+    beforeEach(async function() {
       parsedTrace =
           await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz', {withModificationsManager: true});
       const mockViewDelegate = new MockViewDelegate();
@@ -769,7 +770,7 @@ describe('TimelineFlameChartView', function() {
       sinon.stub(UI.ContextMenu.ContextMenu.prototype, 'show').resolves();
     });
 
-    this.afterEach(() => {
+    afterEach(() => {
       flameChartView.detach();
     });
 
@@ -806,7 +807,7 @@ describe('TimelineFlameChartView', function() {
     });
 
     describe('Context Menu Actions For Thread tracks', function() {
-      this.beforeEach(async () => {
+      beforeEach(async () => {
         // Find the Main track to later collapse entries of
         const mainTrack = flameChartView.getMainFlameChart().timelineData()?.groups.find(group => {
           return group.name === 'Main — http://127.0.0.1:8080/';
@@ -1256,7 +1257,7 @@ describe('TimelineFlameChartView', function() {
     let flameChartView: Timeline.TimelineFlameChartView.TimelineFlameChartView;
     let parsedTrace: Trace.TraceModel.ParsedTrace;
 
-    this.beforeEach(async () => {
+    beforeEach(async function() {
       parsedTrace =
           await TraceLoader.traceEngine(this, 'recursive-blocking-js.json.gz', {withModificationsManager: true});
       const mockViewDelegate = new MockViewDelegate();
@@ -1285,38 +1286,37 @@ describe('TimelineFlameChartView', function() {
       assert.strictEqual(annotations[0].type, 'ENTRIES_LINK');
     });
 
-    it('Sets the link between entries annotation in progress to null when the second entry is selected',
-       async function() {
-         // Make sure the link annotation in the progress of creation does not exist
-         assert.isNull(flameChartView.getLinkSelectionAnnotation());
+    it('Creates a link between entries', async function() {
+      // Make sure the link annotation in the progress of creation does not exist
+      assert.isNull(flameChartView.getLinkSelectionAnnotation());
 
-         // Start creating a link between entries from an entry with ID 204
-         flameChartView.onEntriesLinkAnnotationCreate(flameChartView.getMainDataProvider(), 204);
-         const entryFrom = flameChartView.getMainDataProvider().eventByIndex(204);
+      // Start creating a link between entries from an entry with ID 204
+      flameChartView.onEntriesLinkAnnotationCreate(flameChartView.getMainDataProvider(), 204);
+      const entryFrom = flameChartView.getMainDataProvider().eventByIndex(204);
 
-         // Hover on another entry to complete the link
-         flameChartView.updateLinkSelectionAnnotationWithToEntry(flameChartView.getMainDataProvider(), 245);
-         const entryTo = flameChartView.getMainDataProvider().eventByIndex(245);
-         // Make sure the entry 'to' is set
-         assert.exists(flameChartView.getLinkSelectionAnnotation()?.entryTo);
+      // Hover on another entry to complete the link
+      flameChartView.updateLinkSelectionAnnotationWithToEntry(flameChartView.getMainDataProvider(), 245);
+      const entryTo = flameChartView.getMainDataProvider().eventByIndex(245);
+      // Make sure the entry 'to' is set
+      assert.exists(flameChartView.getLinkSelectionAnnotation()?.entryTo);
 
-         // Select the other entry to complete the link and set the one in progress to null
-         flameChartView.handleToEntryOfLinkBetweenEntriesSelection(245);
-         // Make sure the link annotation in progress is set to null
-         assert.isNull(flameChartView.getLinkSelectionAnnotation());
+      // Select the other entry to complete the link and set the one in progress to null
+      flameChartView.handleToEntryOfLinkBetweenEntriesSelection(245);
+      // Make sure the link annotation in progress is set to null
+      assert.isNull(flameChartView.getLinkSelectionAnnotation());
 
-         // Make sure the annotation exists in the ModificationsManager
-         const annotations = Timeline.ModificationsManager.ModificationsManager.activeManager()?.getAnnotations();
-         assert.exists(annotations);
-         assert.strictEqual(annotations?.length, 1);
-         assert.strictEqual(annotations[0].type, 'ENTRIES_LINK');
-         const entriesLink = annotations[0] as Trace.Types.File.EntriesLinkAnnotation;
+      // Make sure the annotation exists in the ModificationsManager
+      const annotations = Timeline.ModificationsManager.ModificationsManager.activeManager()?.getAnnotations();
+      assert.exists(annotations);
+      assert.strictEqual(annotations?.length, 1);
+      assert.strictEqual(annotations[0].type, 'ENTRIES_LINK');
+      const entriesLink = annotations[0] as Trace.Types.File.EntriesLinkAnnotation;
 
-         assert.strictEqual(entriesLink.entryFrom, entryFrom);
-         assert.strictEqual(entriesLink.entryTo, entryTo);
-       });
+      assert.strictEqual(entriesLink.entryFrom, entryFrom);
+      assert.strictEqual(entriesLink.entryTo, entryTo);
+    });
 
-    it('Reverses entries in the link if `to` entry timestamp is earlier than `from` entry timestamo', async function() {
+    it('Reverses entries in the link if `to` entry timestamp is earlier than `from` entry timestamp', async function() {
       // Make sure the link annotation in the progress of creation does not exist
       assert.isNull(flameChartView.getLinkSelectionAnnotation());
 
@@ -1338,7 +1338,7 @@ describe('TimelineFlameChartView', function() {
       assert.strictEqual(annotations[0].type, 'ENTRIES_LINK');
       const entriesLink = annotations[0] as Trace.Types.File.EntriesLinkAnnotation;
 
-      // Make 'entryFrom' has an earlier timestamp and the entries `to` and `from` got switched up
+      // Make sure 'entryFrom' has an earlier timestamp and the entries `to` and `from` got switched up
       assert.strictEqual(entriesLink.entryFrom, entryTo);
       assert.strictEqual(entriesLink.entryTo, entryFrom);
     });

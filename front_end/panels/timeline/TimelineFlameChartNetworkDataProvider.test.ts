@@ -6,7 +6,9 @@ import {assert} from 'chai';
 
 import * as Common from '../../core/common/common.js';
 import * as Trace from '../../models/trace/trace.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {
+  describeWithEnvironment,
+} from '../../testing/EnvironmentHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import type * as PerfUi from '../../ui/legacy/components/perf_ui/perf_ui.js';
 
@@ -127,7 +129,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.strictEqual(dataProvider.indexForEvent(event), 0);
   });
 
-  it('does not render the network track if there is no network requests', async function() {
+  it('does not render the network track if there are no network requests', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     const parsedTrace = await TraceLoader.traceEngine(this, 'basic.json.gz');
     const entityMapper = new Trace.EntityMapper.EntityMapper(parsedTrace);
@@ -159,7 +161,7 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     assert.strictEqual(dataProvider.preferredHeight(), 0);
   });
 
-  it('decorate a event correctly', async function() {
+  it('decorates an event correctly', async function() {
     const dataProvider = new Timeline.TimelineFlameChartNetworkDataProvider.TimelineFlameChartNetworkDataProvider();
     const parsedTrace = await TraceLoader.traceEngine(this, 'cls-cluster-max-timeout.json.gz');
     // The field that is important of this test:
@@ -192,8 +194,8 @@ describeWithEnvironment('TimelineFlameChartNetworkDataProvider', function() {
     // sendStartTime is requestTime + sendStart = 183752462.479
     // headersEndTime is requestTime + receiveHeadersEnd = 183752667.771
     //
-    // To calculate the pixel of a timestamp, we substrate the begin time  from
-    // it, then multiple the timeToPixelRatio and then add the unclippedBarX.
+    // To calculate the pixel of a timestamp, we subtract the begin time from
+    // it, then multiply the timeToPixelRatio and then add the unclippedBarX.
     // Then get the floor of the pixel.
     // So the pixel of sendStart is (183752462.479 - 183752441.977) + 10, in ts it will be 30.502000004053116.
     // So the pixel of headersEnd is (183752667.771 - 183752441.977) + 10, in ts it will be 235.79399999976158.

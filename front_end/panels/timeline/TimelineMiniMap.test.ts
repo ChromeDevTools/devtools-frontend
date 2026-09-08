@@ -7,7 +7,9 @@ import {assert} from 'chai';
 import * as Trace from '../../models/trace/trace.js';
 import * as TraceBounds from '../../services/trace_bounds/trace_bounds.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
-import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {
+  describeWithEnvironment,
+} from '../../testing/EnvironmentHelpers.js';
 import {getMainThread} from '../../testing/TraceHelpers.js';
 import {TraceLoader} from '../../testing/TraceLoader.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -48,7 +50,7 @@ describeWithEnvironment('TimelineMiniMap', function() {
   }
 
   it('always shows the responsiveness, CPU activity and network panel', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
 
     const container = document.createElement('div');
     renderElementIntoDOM(container);
@@ -73,15 +75,14 @@ describeWithEnvironment('TimelineMiniMap', function() {
     assert.isNull(container.querySelector('#timeline-overview-memory'));
   });
 
-  it('shows memory and screenshots also if they are set to be visible', async function() {
-    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz', {withModificationsManager: true});
+  it('shows memory and screenshots when configured to be visible', async function() {
+    const parsedTrace = await TraceLoader.traceEngine(this, 'web-dev.json.gz');
     await renderMiniMapForScreenshot(parsedTrace);
     await assertScreenshot('timeline/minimap_with_memory_and_screenshots.png');
   });
 
   it('highlights long tasks in red', async function() {
-    const parsedTrace =
-        await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz', {withModificationsManager: true});
+    const parsedTrace = await TraceLoader.traceEngine(this, 'one-second-interaction.json.gz');
     await renderMiniMapForScreenshot(parsedTrace);
     await assertScreenshot('timeline/minimap_long_task.png');
   });

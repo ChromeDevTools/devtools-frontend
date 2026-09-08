@@ -13,7 +13,12 @@ import yargs from 'yargs/yargs';
 import {convertRawOutputToEval, type RawOutput, slug} from '../suite/to_eval_output.ts';
 import type {ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, Logs, RpcGlobalId} from '../types.js';
 
-import {generateRunId, uploadEvalToGCS} from './gcs-upload.ts';
+import {
+  generateRunId,
+  PROJECT_ID,
+  uploadEvalToGCS,
+  uploadRunStarted,
+} from './gcs-upload.ts';
 import {createTargetExecutor} from './targets/factory.ts';
 import type {TargetExecutor, TargetPreparationResult} from './targets/interface.ts';
 import {TraceDownloader} from './trace-downloader.ts';
@@ -384,7 +389,21 @@ function loadRecipes(target: string): Array<{url: string, label: string}> {
 async function main() {
   const userArgs: UserArgs = userArgsBuilder.parseSync();
   const runId = generateRunId();
+  const runStartTimestamp = new Date().toISOString();
   console.info(`\n[Info]: Run ID for this evaluation: ${runId}`);
+
+  if (userArgs.upload) {
+    uploadRunStarted({
+      project: PROJECT_ID,
+      runId,
+      agent: `devtools-${userArgs.testTarget}`,
+      // TODO: Figure out if the model ID can be determined prior to execution. Currently,
+      // the exact model ID is resolved server-side by AIDA and only available in the response metadata per task.
+      model: 'default',
+      startTime: runStartTimestamp,
+      status: 'RUNNING',
+    });
+  }
 
   const pairsToRun: Array<{url: string, label: string}> = [];
   const isRecipeMode = !userArgs.exampleUrls || userArgs.exampleUrls.length === 0;

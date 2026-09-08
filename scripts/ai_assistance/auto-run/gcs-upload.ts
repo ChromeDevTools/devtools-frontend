@@ -93,13 +93,48 @@ function uploadMarkerToGCS(destination: string): boolean {
   }
 }
 
+export interface RunStartedPayload {
+  project: string;
+  runId: string;
+  model: string;
+  agent: string;
+  startTime: string;
+  status: string;
+}
+
 /**
  * Phase 1: Uploads <run_id>/run_started.marker (0-byte file)
  * Must be called immediately after run_started.json is uploaded.
- * TODO: Upload the markers at correct stages.
  */
 export function uploadRunStartedMarker(runId: string): boolean {
   return uploadMarkerToGCS(formatGCSRunDestination(runId, Markers.RUN_STARTED));
+}
+
+/**
+ * Phase 1: Emits run_started.json and immediately uploads run_started.marker.
+ */
+export function uploadRunStarted(payload: RunStartedPayload): boolean {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'run-started-'));
+  const runStartedPath = path.join(tempDir, 'run_started.json');
+  try {
+    const jsonContent = {
+      project: payload.project,
+      run_id: payload.runId,
+      model: payload.model,
+      agent: payload.agent,
+      start_time: payload.startTime,
+      status: payload.status,
+    };
+    fs.writeFileSync(runStartedPath, JSON.stringify(jsonContent, null, 2), 'utf8');
+
+    const jsonUploaded = uploadFileToGCS(runStartedPath, formatGCSRunDestination(payload.runId, 'run_started.json'));
+    if (jsonUploaded) {
+      return uploadRunStartedMarker(payload.runId);
+    }
+    return false;
+  } finally {
+    fs.rmSync(tempDir, {recursive: true, force: true});
+  }
 }
 
 /**

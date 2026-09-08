@@ -12,6 +12,7 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
+import * as VisualLogging from '../visual_logging/visual_logging.js';
 
 import * as Comments from './comments.js';
 
@@ -60,10 +61,9 @@ describeWithEnvironment('CommentsStatusBarPill', () => {
   });
 });
 
-describe('DEFAULT_VIEW', () => {
+describeWithEnvironment('DEFAULT_VIEW', () => {
   function renderView(inputOverrides: Partial<Parameters<typeof DEFAULT_VIEW>[0]> = {}): HTMLElement {
     const target = document.createElement('div');
-    renderElementIntoDOM(target, {includeCommonStyles: true});
 
     DEFAULT_VIEW(
         {
@@ -92,13 +92,25 @@ describe('DEFAULT_VIEW', () => {
     return target;
   }
 
-  it('renders the status bar with thread count', async () => {
-    renderView();
+  it('renders the button text with thread count and visual logging attribute', () => {
+    const target = renderView();
+    const button = target.querySelector('button.devtools-pill');
+    assert.strictEqual(button?.textContent?.trim(), 'Comments (2)');
+    assert.strictEqual(
+        button?.getAttribute('jslog'),
+        `${VisualLogging.action('comments-status-bar-pill').track({click: true})}`,
+    );
+  });
+
+  it('renders screenshot with thread count', async () => {
+    const target = renderView();
+    renderElementIntoDOM(target, {includeCommonStyles: true});
     await assertScreenshot('status_bar/status_bar.png');
   });
 
-  it('renders disabled state', async () => {
-    renderView({disabled: true});
+  it('renders disabled state screenshot', async () => {
+    const target = renderView({disabled: true});
+    renderElementIntoDOM(target, {includeCommonStyles: true});
     await assertScreenshot('status_bar/status_bar_disabled.png');
   });
 });

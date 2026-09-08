@@ -29,8 +29,8 @@ export interface ViewInput {
 
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 
-// clang-format off
 const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLElement): void => {
+  // clang-format off
   render(html`
     <style>${commentsOverlayStyles}</style>
     <div class="comments-overlay-container">
@@ -71,8 +71,8 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
       ` : nothing)}
     </div>
   `, target);
+  // clang-format on
 };
-// clang-format on
 
 export class CommentsOverlayWidget extends UI.Widget.Widget {
   readonly #view: View;

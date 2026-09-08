@@ -16,6 +16,7 @@ devtools_ui_module("comments") {
     "CommentAnchorResolver.ts",
     "CommentOverlayManager.ts",
     "CommentsOverlayWidget.ts",
+    "CommentsStatusBarPill.ts",
   ]
 
   ts_deps = [
@@ -68,6 +69,7 @@ devtools_ui_module("unittests") {
     "CommentAnchorResolver.test.ts",
     "CommentOverlayManager.test.ts",
     "CommentsOverlayWidget.test.ts",
+    "CommentsStatusBarPill.test.ts",
   ]
 
   ts_deps = [

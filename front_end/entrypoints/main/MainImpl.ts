@@ -554,6 +554,7 @@ export class MainImpl {
           inspectorView.displaySelectOverrideFolderInfobar(event.data);
         });
     await inspectorView.createToolbars();
+    inspectorView.renderStatusBar();
     Host.InspectorFrontendHost.InspectorFrontendHostInstance.loadCompleted();
 
     // Initialize elements for the live announcer functionality for a11y.

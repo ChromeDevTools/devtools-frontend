@@ -10,6 +10,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import {createIcon, type Icon} from '../kit/kit.js';
+import * as Lit from '../lit/lit.js';
 import * as SettingsUI from '../settings/settings.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 
@@ -26,12 +27,15 @@ import {InspectorDrawerView} from './InspectorDrawerView.js';
 import {KeyboardShortcut} from './KeyboardShortcut.js';
 import type {Panel} from './Panel.js';
 import {type ShowMode, SplitWidget} from './SplitWidget.js';
+import {StatusBarWidget} from './StatusBar.js';
 import {type EventData, Events as TabbedPaneEvents, type TabbedPane, type TabbedPaneTabDelegate} from './TabbedPane.js';
 import {Tooltip} from './Tooltip.js';
 import {UIUserMetrics} from './UIUserMetrics.js';
 import type {TabbedViewLocation, View, ViewLocation, ViewLocationResolver} from './View.js';
 import {ViewManager} from './ViewManager.js';
-import {VBox, type Widget, WidgetFocusRestorer} from './Widget.js';
+import {VBox, type Widget, widget, WidgetFocusRestorer} from './Widget.js';
+
+const {html} = Lit;
 
 const UIStrings = {
   /**
@@ -166,6 +170,7 @@ export class InspectorView extends VBox implements ViewLocationResolver {
   #resizeObserver: ResizeObserver;
   #drawerShowModeBeforeDockSideChange: ShowMode|null = null;
   #drawerMinimizedBeforeDockSideChange: boolean|null = null;
+  #statusBarContainer?: HTMLDivElement;
 
   constructor() {
     super();
@@ -846,6 +851,17 @@ export class InspectorView extends VBox implements ViewLocationResolver {
         this.#selectOverrideFolderInfobar = undefined;
       });
     }
+  }
+
+  renderStatusBar(): void {
+    if (!this.#statusBarContainer) {
+      this.#statusBarContainer = document.createElement('div');
+      this.#statusBarContainer.style.display = 'contents';
+      this.element.appendChild(this.#statusBarContainer);
+    }
+    // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+    Lit.render(html`<devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>`,
+               this.#statusBarContainer);
   }
 
   private createInfoBarDiv(): void {

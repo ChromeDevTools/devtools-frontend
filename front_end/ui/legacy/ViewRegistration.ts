@@ -60,6 +60,7 @@ export const enum ViewLocationValues {
   NETWORK_SIDEBAR = 'network-sidebar',
   SOURCES_SIDEBAR_TOP = 'sources.sidebar-top',
   SOURCES_SIDEBAR_TABS = 'sources.sidebar-tabs',
+  STATUS_BAR = 'status-bar',
 }
 
 export interface ViewRegistration {

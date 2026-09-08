@@ -569,6 +569,62 @@ describeWithEnvironment('DOMTreeWidget', () => {
         domTree.detach();
       }
     });
+
+    it('highlights closing tag and not opening tag when hovering over expanded closing tag in DEFAULT_VIEW',
+       async () => {
+         const {domTree, domModel} = setupDOMTreeWidget(target, Elements.ElementsTreeOutline.DEFAULT_VIEW);
+         try {
+           const rootNode = createTestDOMTree(domModel, {
+             nodeId: 1,
+             nodeName: 'DIV',
+             children: [
+               {nodeId: 2, nodeName: 'P'},
+             ],
+           });
+           domTree.rootDOMNode = rootNode;
+           domTree.performUpdate();
+           await waitForTreeUpdates();
+
+           const treeOutline = Elements.ElementsTreeOutline.ElementsTreeOutline.forDOMModel(domModel);
+           assert.exists(treeOutline);
+           const rootTreeElement = treeOutline.findTreeElement(rootNode);
+           assert.exists(rootTreeElement);
+           rootTreeElement.expand();
+           await waitForTreeUpdates();
+
+           const closingTreeElement = rootTreeElement.childAt(rootTreeElement.childCount() - 1) as
+               Elements.ElementsTreeElement.ElementsTreeElement;
+           assert.exists(closingTreeElement);
+           assert.isTrue(closingTreeElement.isClosingTag());
+
+           const highlightSpy = sinon.spy(domModel.overlayModel(), 'highlightInOverlay');
+
+           // Hover over the opening tag first.
+           rootTreeElement.listItemElement.dispatchEvent(new MouseEvent('mousemove', {bubbles: true}));
+           assert.isTrue(rootTreeElement.hovered);
+           assert.isTrue(rootTreeElement.listItemElement.classList.contains('hovered'));
+           assert.isFalse(closingTreeElement.hovered);
+           assert.isFalse(closingTreeElement.listItemElement.classList.contains('hovered'));
+           assert.strictEqual(domTree.hoveredDOMNode(), rootNode);
+
+           // Move hover to the closing tag.
+           closingTreeElement.listItemElement.dispatchEvent(new MouseEvent('mousemove', {bubbles: true}));
+           assert.isFalse(rootTreeElement.hovered);
+           assert.isFalse(rootTreeElement.listItemElement.classList.contains('hovered'));
+           assert.isTrue(closingTreeElement.hovered);
+           assert.isTrue(closingTreeElement.listItemElement.classList.contains('hovered'));
+           assert.strictEqual(domTree.hoveredDOMNode(), rootNode);
+           sinon.assert.calledWith(highlightSpy, sinon.match({node: rootNode}), 'all', true);
+
+           // Move mouse away.
+           treeOutline.elementInternal.dispatchEvent(new MouseEvent('mouseleave'));
+           assert.isFalse(closingTreeElement.hovered);
+           assert.isFalse(closingTreeElement.listItemElement.classList.contains('hovered'));
+           assert.isNull(domTree.hoveredDOMNode());
+         } finally {
+           domTree.detach();
+         }
+       });
   });
 
   describe('DECLARATIVE_VIEW', () => {

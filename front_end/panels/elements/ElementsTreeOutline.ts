@@ -1656,7 +1656,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
   }
 
   setHoveredNode(node: SDK.DOMModel.DOMNode|null, showInfo = true): void {
-    if (this.#hoveredDOMNode === node) {
+    if (this.hoveredDOMNode() === node) {
       return;
     }
     this.#hoveredDOMNode = node;
@@ -2709,7 +2709,6 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
     super();
 
     this.domTreeWidget = domTreeWidget ?? null;
-    this.renderSelection = true;
     this.treeElementByNode = new WeakMap();
     const shadowContainer = document.createElement('div');
     this.shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(
@@ -3149,18 +3148,12 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
       return;
     }
 
-    const showInfo = !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
-    if (this.domTreeWidget && element instanceof ElementsTreeElement) {
-      this.domTreeWidget.setHoveredNode(element.node(), showInfo);
-      return;
-    }
-
-    this.domTreeWidget?.setHoveredNode(null);
     this.setHoverEffect(element);
-    this.highlightTreeElement((element as UI.TreeOutline.TreeElement), showInfo);
+    const showInfo = !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
+    this.highlightTreeElement((element as UI.TreeOutline.TreeElement | null), showInfo);
   }
 
-  private highlightTreeElement(element: UI.TreeOutline.TreeElement, showInfo: boolean): void {
+  private highlightTreeElement(element: UI.TreeOutline.TreeElement|null, showInfo: boolean): void {
     if (element instanceof ElementsTreeElement) {
       const selectorList = element.isDisplayContents() ? '*' : undefined;
       element.node().domModel().overlayModel().highlightInOverlay({node: element.node(), selectorList}, 'all',
@@ -3171,11 +3164,13 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
     if (element instanceof ShortcutTreeElement) {
       element.domModel().overlayModel().highlightInOverlay(
           {deferredNode: element.deferredNode(), selectorList: undefined}, 'all', showInfo);
+      return;
     }
+
+    SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
   }
 
   private onmouseleave(_event: MouseEvent): void {
-    this.domTreeWidget?.setHoveredNode(null);
     this.setHoverEffect(null);
     SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
   }

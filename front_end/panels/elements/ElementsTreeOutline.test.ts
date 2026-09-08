@@ -438,6 +438,72 @@ describeWithEnvironment('ElementsTreeOutline', () => {
     sinon.assert.calledWith(highlightSpy, sinon.match({node: childNode, selectorList: '*'}), 'all', true);
   });
 
+  it('highlights the closing tag and not the opening tag when hovering over expanded closing tag', () => {
+    const childPayload = {
+      nodeId: 3 as Protocol.DOM.NodeId,
+      parentId: 2 as Protocol.DOM.NodeId,
+      backendNodeId: 3 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'SPAN',
+      localName: 'span',
+      nodeValue: '',
+      childNodeCount: 0,
+      attributes: [],
+    } as Protocol.DOM.Node;
+    const containerPayload = {
+      nodeId: 2 as Protocol.DOM.NodeId,
+      parentId: 1 as Protocol.DOM.NodeId,
+      backendNodeId: 2 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'DIV',
+      localName: 'div',
+      nodeValue: '',
+      childNodeCount: 1,
+      children: [childPayload],
+      attributes: [],
+    } as Protocol.DOM.Node;
+    const rootNode = SDK.DOMModel.DOMNode.create(model, null, false, {
+      nodeId: 1 as Protocol.DOM.NodeId,
+      backendNodeId: 1 as Protocol.DOM.BackendNodeId,
+      nodeType: Node.ELEMENT_NODE,
+      nodeName: 'BODY',
+      localName: 'body',
+      nodeValue: '',
+      childNodeCount: 1,
+      children: [containerPayload],
+      attributes: [],
+    });
+    assert.isNotNull(rootNode);
+    treeOutline.rootDOMNode = rootNode;
+
+    const containerNode = rootNode.children()![0];
+    const containerTreeElement = treeOutline.findTreeElement(containerNode);
+    assert.isNotNull(containerTreeElement);
+    containerTreeElement!.expand();
+
+    const closingTreeElement = containerTreeElement!.childAt(containerTreeElement!.childCount() - 1) as
+        Elements.ElementsTreeElement.ElementsTreeElement;
+    assert.exists(closingTreeElement);
+    assert.isTrue(closingTreeElement.isClosingTag());
+
+    const highlightSpy = sinon.spy(model.overlayModel(), 'highlightInOverlay');
+
+    // Hover over closing tag.
+    closingTreeElement.listItemElement.dispatchEvent(new MouseEvent('mousemove', {bubbles: true}));
+    assert.isTrue(closingTreeElement.hovered);
+    assert.isTrue(closingTreeElement.listItemElement.classList.contains('hovered'));
+    assert.isFalse(containerTreeElement!.hovered);
+    assert.isFalse(containerTreeElement!.listItemElement.classList.contains('hovered'));
+    sinon.assert.calledWith(highlightSpy, sinon.match({node: containerNode}), 'all', true);
+
+    // Hover over opening tag.
+    containerTreeElement!.listItemElement.dispatchEvent(new MouseEvent('mousemove', {bubbles: true}));
+    assert.isFalse(closingTreeElement.hovered);
+    assert.isFalse(closingTreeElement.listItemElement.classList.contains('hovered'));
+    assert.isTrue(containerTreeElement!.hovered);
+    assert.isTrue(containerTreeElement!.listItemElement.classList.contains('hovered'));
+  });
+
   it('updates the DOM tree structure upon changing or removing namespaced attributes', () => {
     const aNodePayload = {
       nodeId: 2 as Protocol.DOM.NodeId,
@@ -1251,10 +1317,18 @@ describeWithEnvironment('ElementsTreeOutline', () => {
       assert.exists(childTreeElement2);
     });
 
-    it('sets renderSelection to true and configures draggable on list items', () => {
-      assert.isTrue(treeOutline.renderSelection);
+    it('leaves renderSelection false and configures draggable on list items', () => {
+      assert.isFalse(treeOutline.renderSelection);
       assert.isTrue(childTreeElement1.listItemElement.draggable);
       assert.isTrue(childTreeElement2.listItemElement.draggable);
+    });
+
+    it('renders exactly one selection element when hovered to avoid duplicate highlights', async () => {
+      childTreeElement1.hovered = true;
+      await doubleRaf();
+      const selections = childTreeElement1.listItemElement.querySelectorAll('.selection');
+      assert.lengthOf(selections, 1);
+      assert.isNull(childTreeElement1.listItemElement.querySelector(':scope > .selection'));
     });
 
     it('handles dragstart and populates dataTransfer', () => {

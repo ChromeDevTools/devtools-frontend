@@ -13,8 +13,8 @@ import * as AiAssistance from '../ai_assistance.js';
 
 function mockConversationContext(): AiAssistance.AiAgent.ConversationContext<unknown> {
   return new (class extends AiAssistance.AiAgent.ConversationContext<unknown>{
-    override getURL(): string {
-      return 'https://origin.test';
+    override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
+      return SDK.SecurityOrigin.SecurityOrigin.create('https://origin.test');
     }
 
     override getItem(): unknown {
@@ -426,13 +426,13 @@ describe('AiAgent', () => {
   });
 
   describe('ConversationContext', () => {
-    function getTestContext(url: string) {
+    function getTestContext(originString: string): AiAssistance.AiAgent.ConversationContext<undefined> {
       class TestContext extends AiAssistance.AiAgent.ConversationContext<undefined> {
         override getTitle(): string {
           throw new Error('Method not implemented.');
         }
-        override getURL(): string {
-          return url;
+        override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
+          return SDK.SecurityOrigin.SecurityOrigin.create(originString);
         }
         override getItem(): undefined {
           return undefined;

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../../core/sdk/sdk.js';
 import {
   ConversationContext,
   type ConversationSuggestions,
@@ -16,8 +17,18 @@ export class StorageContext extends ConversationContext<StorageItem> {
     this.#item = item;
   }
 
-  override getURL(): string {
-    return this.#item.primaryTargetOrigin;
+  /**
+   * Returns the security origin of the primary inspected page target.
+   *
+   * The storage context binds to `primaryTargetOrigin` rather than the specific
+   * item origin (`this.#item.origin`). This allows generic storage views
+   * (which have an empty origin) and third-party storage items to be inspected
+   * within the current page conversation.
+   *
+   * @returns The security origin of the primary page target.
+   */
+  override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
+    return SDK.SecurityOrigin.SecurityOrigin.create(this.#item.primaryTargetOrigin);
   }
 
   override getItem(): StorageItem {

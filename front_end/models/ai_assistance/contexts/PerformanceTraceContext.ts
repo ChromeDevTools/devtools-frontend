@@ -86,6 +86,7 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   readonly #targetManager: SDK.TargetManager.TargetManager;
   readonly #freshRecordingTracker: Tracing.FreshRecording.Tracker;
   readonly #debuggerWorkspaceBinding: Bindings.DebuggerWorkspaceBinding.DebuggerWorkspaceBinding;
+  #origin?: SDK.SecurityOrigin.SecurityOrigin;
 
   constructor(focus: AgentFocus,
               // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
@@ -126,17 +127,6 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
     return formatter;
   }
 
-  override getURL(): string {
-    const url = this.#focus.parsedTrace.data.Meta.mainFrameURL;
-    try {
-      new URL(url);
-      return url;
-    } catch {
-      const {min, max} = this.#focus.parsedTrace.data.Meta.traceBounds;
-      return `trace-${min}-${max}`;
-    }
-  }
-
   /**
    * Returns whether this trace was imported rather than recorded live in the current session.
    */
@@ -145,28 +135,33 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   }
 
   /**
-   * Returns the origin for a performance trace in the AI context.
+   * Returns the security origin for the performance trace.
    *
-   * To prevent cross-origin prompt injection attacks, imported traces
-   * are isolated from live pages. We assign them a virtual origin
-   * (`imported-trace://${domain}`) so they do not share the origin of live pages
-   * (e.g., `https://${domain}`). This forces a conversation reset when transitioning
-   * between imported trace data and live pages.
+   * Live traces use the origin of the main frame URL.
+   *
+   * Imported traces use a custom scheme (`imported-trace://${host}`) to isolate
+   * them from live pages (such as `https://${host}`). This isolation prevents
+   * cross-origin prompt injection and requires a new conversation when switching
+   * between imported traces and live pages.
+   *
+   * If an imported trace origin does not contain a host, this method returns a
+   * unique opaque origin.
+   *
+   * @returns The security origin for the trace.
    */
   override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
-    const url = this.getURL();
-    if (this.isImported()) {
-      try {
-        const parsedUrl = new URL(url);
-        if (parsedUrl.host) {
-          return SDK.SecurityOrigin.SecurityOrigin.create(`imported-trace://${parsedUrl.host}`);
-        }
-      } catch {
-        // Fall through to opaque below.
+    if (!this.#origin) {
+      if (this.isImported()) {
+        this.#origin = SDK.SecurityOrigin.SecurityOrigin.createForImportedTrace(
+            this.#focus.parsedTrace.data.Meta.mainFrameURL,
+        );
+      } else {
+        this.#origin = SDK.SecurityOrigin.SecurityOrigin.create(
+            this.#focus.parsedTrace.data.Meta.mainFrameURL,
+        );
       }
-      return SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
     }
-    return SDK.SecurityOrigin.SecurityOrigin.create(url);
+    return this.#origin;
   }
 
   override getItem(): AgentFocus {

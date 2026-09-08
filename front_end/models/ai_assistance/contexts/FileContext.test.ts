@@ -23,14 +23,15 @@ describe('FileContext', () => {
     universe = new TestUniverse();
   });
 
-  it('should return URL, item, and title correctly', async () => {
+  it('should return origin, item, and title correctly', async () => {
     const uiSourceCode = await createUISourceCode({
       url: urlString`https://example.com/script.js`,
       content: 'console.log("hello");',
     });
     const context = new AiAssistance.FileContext.FileContext(uiSourceCode, universe.debuggerWorkspaceBinding);
 
-    assert.strictEqual(context.getURL(), 'https://example.com/script.js');
+    assert.isTrue(
+        context.getOrigin().isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
     assert.strictEqual(context.getItem(), uiSourceCode);
     assert.strictEqual(context.getTitle(), 'script.js');
   });

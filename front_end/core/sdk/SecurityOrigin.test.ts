@@ -191,4 +191,55 @@ describe('SecurityOrigin', () => {
       assert.isFalse(opaqueOrigin.isFile());
     });
   });
+
+  describe('createForImportedTrace', () => {
+    it('creates an imported-trace origin for a standard web URL', () => {
+      const origin = SDK.SecurityOrigin.SecurityOrigin.createForImportedTrace('https://example.com/trace/path');
+      const expectedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('imported-trace://example.com');
+      assert.isTrue(origin.isSameOriginWith(expectedOrigin));
+      assert.isFalse(origin.isOpaque());
+    });
+
+    it('creates an imported-trace origin preserving port for URLs with port', () => {
+      const origin = SDK.SecurityOrigin.SecurityOrigin.createForImportedTrace('http://localhost:8080/app');
+      const expectedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('imported-trace://localhost:8080');
+      assert.isTrue(origin.isSameOriginWith(expectedOrigin));
+      assert.isFalse(origin.isOpaque());
+    });
+
+    it('isolates imported trace origin from live web origins', () => {
+      const traceOrigin = SDK.SecurityOrigin.SecurityOrigin.createForImportedTrace('https://example.com');
+      const webOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      assert.isFalse(traceOrigin.isSameOriginWith(webOrigin));
+    });
+
+    it('returns an opaque origin when URL is null or undefined', () => {
+      const nullOrigin = SDK.SecurityOrigin.SecurityOrigin.createForImportedTrace(null);
+      const undefinedOrigin = SDK.SecurityOrigin.SecurityOrigin.createForImportedTrace(undefined);
+      assert.isTrue(nullOrigin.isOpaque());
+      assert.isTrue(undefinedOrigin.isOpaque());
+      assert.isFalse(nullOrigin.isSameOriginWith(undefinedOrigin));
+    });
+
+    it('returns an opaque origin when URL is empty or invalid', () => {
+      const emptyOrigin = SDK.SecurityOrigin.SecurityOrigin.createForImportedTrace('');
+      const invalidOrigin = SDK.SecurityOrigin.SecurityOrigin.createForImportedTrace('invalid:url');
+      assert.isTrue(emptyOrigin.isOpaque());
+      assert.isTrue(invalidOrigin.isOpaque());
+      assert.isFalse(emptyOrigin.isSameOriginWith(invalidOrigin));
+    });
+
+    it('returns an opaque origin for local files without host', () => {
+      const origin = SDK.SecurityOrigin.SecurityOrigin.createForImportedTrace('file:///tmp/trace.json');
+      assert.isTrue(origin.isOpaque());
+    });
+
+    it('returns an opaque origin for data or about URLs', () => {
+      const dataOrigin = SDK.SecurityOrigin.SecurityOrigin.createForImportedTrace('data:text/html,<html></html>');
+      const aboutOrigin = SDK.SecurityOrigin.SecurityOrigin.createForImportedTrace('about:blank');
+      assert.isTrue(dataOrigin.isOpaque());
+      assert.isTrue(aboutOrigin.isOpaque());
+      assert.isFalse(dataOrigin.isSameOriginWith(aboutOrigin));
+    });
+  });
 });

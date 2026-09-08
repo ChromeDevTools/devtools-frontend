@@ -36,10 +36,6 @@ export class RequestContext extends ConversationContext<SDK.NetworkRequest.Netwo
     this.#calculator = calculator;
   }
 
-  override getURL(): string {
-    return this.#request.documentURL;
-  }
-
   /**
    * Returns the security origin of the document that initiated the request.
    *

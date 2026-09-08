@@ -62,8 +62,8 @@ To prevent prompt injection attacks and cross-origin data leaks, the AI Assistan
 - **Origin Locking**: Once a conversation session begins, it locks to the origin of the initial data context (e.g. `https://google.com` or a specific file path).
 - **Opaque Origins**: Any origin classified as opaque (e.g. `data:`, `about:`, `detached` nodes, or synthetic opaque origins) is blocked from starting AI assistance (`SecurityOrigin.isOpaque()`).
 - **File Isolation**: Local files (`file://`) do not share a single wildcard origin. Instead, the path is appended (e.g. `file:///path/to/file.js`) to treat each local file as its own unique origin. Swapping local files in the same conversation is blocked.
-- **Trace Isolation**: Imported performance trace recordings are isolated using the virtual origin `imported-trace://${domain}`. This ensures that loaded local trace files do not share origins with live pages, preventing potential cross-origin prompt injection attacks when switching contexts.
-- **HAR Isolation**: Imported HAR network recordings use the virtual origin `imported-har://${domain}` to isolate imported network traffic from live pages.
+- **Trace Isolation**: Imported performance trace recordings are isolated using the virtual origin `imported-trace://${host}`. This ensures that loaded local trace files do not share origins with live pages, preventing potential cross-origin prompt injection attacks when switching contexts.
+- **HAR Isolation**: Imported HAR network recordings use the virtual origin `imported-har://${host}` to isolate imported network traffic from live pages.
 - **CORS Response Gating**: Network requests initiated cross-origin without valid CORS authorization (`Access-Control-Allow-Origin`) are classified as `OPAQUE_CROSS_ORIGIN`. DevTools redacts the response body and restricts response headers to CORS-safelisted names to prevent cross-origin data disclosure (b/513821237).
 - **Equivalence**: `SecurityOrigin.isSameOriginWith()` ensures opaque origins never match any other origin (even with identical URL representations), forcing a conversation reset on context switch.
 

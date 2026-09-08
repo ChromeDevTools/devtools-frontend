@@ -922,8 +922,8 @@ describe('AiConversation', () => {
     });
 
     class OpaqueContext extends AiAssistance.AiAgent.ConversationContext<unknown> {
-      override getURL(): string {
-        return 'null';
+      override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
+        return SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
       }
       override getItem(): unknown {
         return null;

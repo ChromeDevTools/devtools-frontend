@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import * as SDK from '../../../core/sdk/sdk.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import {
   type AiWidget,
@@ -23,8 +24,16 @@ export class AccessibilityContext extends ConversationContext<LHModel.ReporterTy
     return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
   }
 
-  override getURL(): string {
-    return this.#url();
+  /**
+   * Returns the security origin of the audited page from the Lighthouse report.
+   *
+   * Derives the origin from the report URL (`finalUrl` or `finalDisplayedUrl`).
+   * If the report does not contain a valid URL, returns a unique opaque origin.
+   *
+   * @returns The security origin of the audited page.
+   */
+  override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
+    return SDK.SecurityOrigin.SecurityOrigin.create(this.#url());
   }
 
   override getItem(): LHModel.ReporterTypes.ReportJSON {

@@ -124,4 +124,28 @@ describe('DOMNodeContext', function() {
 
     snapshotTester.assert(this, result);
   });
+
+  describe('getOrigin', () => {
+    it('returns the owner document URL origin when attached to a document', () => {
+      const mockDocument = {
+        documentURL: 'https://example.com/page.html',
+      } as unknown as SDK.DOMModel.DOMDocument;
+      element.ownerDocument = mockDocument;
+
+      const nodeContext = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
+      assert.isTrue(
+          nodeContext.getOrigin().isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
+    });
+
+    it('returns a stable opaque origin when detached from a document', () => {
+      element.ownerDocument = null;
+
+      const nodeContext = new AiAssistance.DOMNodeContext.DOMNodeContext(element);
+      const origin1 = nodeContext.getOrigin();
+      const origin2 = nodeContext.getOrigin();
+
+      assert.isTrue(origin1.isOpaque());
+      assert.isTrue(origin1.isSameOriginWith(origin2));
+    });
+  });
 });

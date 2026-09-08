@@ -35,10 +35,6 @@ export class FileContext extends ConversationContext<Workspace.UISourceCode.UISo
     return FileContext.originForUISourceCode(this.#file);
   }
 
-  override getURL(): string {
-    return this.#file.url();
-  }
-
   override getItem(): Workspace.UISourceCode.UISourceCode {
     return this.#file;
   }

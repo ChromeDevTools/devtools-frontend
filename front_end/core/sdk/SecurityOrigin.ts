@@ -166,6 +166,28 @@ export class SecurityOrigin {
   }
 
   /**
+   * Creates an isolated security origin for an imported performance trace.
+   *
+   * Imported traces isolate to `imported-trace://${authority}` based on the recorded
+   * main frame URL. If the URL is missing, invalid, or has no host, this returns a
+   * unique opaque origin so that unhosted traces do not share access with each other
+   * or live web origins.
+   *
+   * @param mainFrameURL The URL string of the main frame recorded in the trace.
+   */
+  static createForImportedTrace(mainFrameURL: string|null|undefined): SecurityOrigin {
+    if (!mainFrameURL) {
+      return SecurityOrigin.createUniqueOpaque();
+    }
+    const parsed = Common.ParsedURL.ParsedURL.fromString(mainFrameURL);
+    if (!parsed?.host) {
+      return SecurityOrigin.createUniqueOpaque();
+    }
+    const authority = parsed.host + (parsed.port ? `:${parsed.port}` : '');
+    return SecurityOrigin.create(`imported-trace://${authority}`);
+  }
+
+  /**
    * Checks whether this security origin is equivalent to another security origin.
    *
    * - Standard origins return `true` if their scheme, host, and port match.

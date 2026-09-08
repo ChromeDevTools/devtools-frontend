@@ -192,7 +192,6 @@ export interface ConversationSuggestion {
 export type ConversationSuggestions = [ConversationSuggestion, ...ConversationSuggestion[]];
 
 export abstract class ConversationContext<T> {
-  abstract getURL(): string;
   abstract getItem(): T;
   abstract getTitle(): string;
 
@@ -209,14 +208,15 @@ export abstract class ConversationContext<T> {
    *
    * The AI Assistance panel locks each conversation to the origin of the initial
    * context. If the user selects a context with a different origin, DevTools
-   * blocks access or requires a new conversation to prevent cross-origin leaks.
+   * blocks access to prevent unauthorized cross-origin data exposure.
    *
-   * Subclasses must override this method if their origin cannot be derived
-   * directly from `getURL()` (e.g., `RequestContext`, `FileContext`, `PerformanceTraceContext`).
+   * Subclasses must implement this method. If a context is detached, invalid,
+   * or anonymous, the method must return a unique opaque origin
+   * (`SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque()`).
+   *
+   * @returns The {@link SDK.SecurityOrigin.SecurityOrigin} that owns this context.
    */
-  getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
-    return SDK.SecurityOrigin.SecurityOrigin.create(this.getURL());
-  }
+  abstract getOrigin(): SDK.SecurityOrigin.SecurityOrigin;
 
   /**
    * Checks whether this context can participate in a conversation locked to `establishedOrigin`.

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import * as i18n from '../../../core/i18n/i18n.js';
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import {
   type ContextDetail,
   ConversationContext,
@@ -21,19 +21,31 @@ const lockedString = i18n.i18n.lockedString;
 
 export class DOMNodeContext extends ConversationContext<SDK.DOMModel.DOMNode> {
   #node: SDK.DOMModel.DOMNode;
+  #opaqueOrigin?: SDK.SecurityOrigin.SecurityOrigin;
 
   constructor(node: SDK.DOMModel.DOMNode) {
     super();
     this.#node = node;
   }
 
-  override getURL(): string {
+  /**
+   * Returns the security origin of the node's owner document.
+   *
+   * If the node is detached from a document, returns a unique opaque origin to
+   * prevent unauthorized cross-origin access in AI conversations.
+   *
+   * @returns The security origin of the owner document, or a unique opaque origin.
+   */
+  override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
     const ownerDocument = this.#node.ownerDocument;
     if (!ownerDocument) {
-      // The node is detached from a document.
-      return 'detached';
+      // Detached nodes have no security document; isolate them with a unique opaque origin.
+      if (!this.#opaqueOrigin) {
+        this.#opaqueOrigin = SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
+      }
+      return this.#opaqueOrigin;
     }
-    return ownerDocument.documentURL;
+    return SDK.SecurityOrigin.SecurityOrigin.create(ownerDocument.documentURL);
   }
 
   getItem(): SDK.DOMModel.DOMNode {

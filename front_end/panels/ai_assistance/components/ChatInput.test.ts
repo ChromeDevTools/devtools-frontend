@@ -369,8 +369,8 @@ describeWithEnvironment('ChatInput', () => {
       getItem() {
         return 'test';
       }
-      override getURL() {
-        return '';
+      override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
+        return SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
       }
     }
 

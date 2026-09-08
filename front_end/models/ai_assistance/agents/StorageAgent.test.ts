@@ -877,6 +877,14 @@ describe('StorageAgent', function() {
   });
 
   describe('StorageContext', () => {
+    it('returns the primary target origin', () => {
+      const item = new AiAssistance.StorageItem.DOMStorageItem('https://example.com', 'https://cross-origin.com',
+                                                               'https://cross-origin.com/', 'localStorage', 'key1');
+      const context = new AiAssistance.StorageContext.StorageContext(item);
+      assert.isTrue(
+          context.getOrigin().isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
+    });
+
     it('correctly formats the title for DOMStorageItem with a key', () => {
       const item = new AiAssistance.StorageItem.DOMStorageItem('https://example.com', 'https://example.com',
                                                                'https://example.com/', 'localStorage', 'key1');

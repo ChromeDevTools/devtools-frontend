@@ -3,10 +3,20 @@
 // found in the LICENSE file.
 
 import {execSync} from 'node:child_process';
-import crypto from 'node:crypto';
+import * as crypto from 'node:crypto';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 
 export const BUCKET = 'gleam-eval-cd4h-nonprod';
 export const PROJECT_ID = 'ai_evals';
+
+export const Markers = {
+  RUN_STARTED: 'run_started.marker',
+  TASK_COMPLETED: 'eval_task_completed.marker',
+  RUN_COMPLETED: 'run_completed.marker',
+} as const;
+export type Markers = (typeof Markers)[keyof typeof Markers];
 
 export interface UploadOptions {
   runId: string;
@@ -26,24 +36,28 @@ export function generateRunId(): string {
   return `${dateStr}-${hex.slice(0, 4)}-${hex.slice(4, 11)}`;
 }
 
-export function formatGCSDestination(
-    options: Pick<UploadOptions, 'runId'|'taskId'>,
-    destinationFileName: string,
-    ): string {
-  const gcsPath = `${PROJECT_ID}/runs/${options.runId}/tasks/${options.taskId}/output/${destinationFileName}`;
-  return `gs://${BUCKET}/${gcsPath}`;
+/**
+ * Formats a run-level GCS destination URI (e.g., gs://bucket/ai_evals/runs/<runId>/<fileName>).
+ */
+export function formatGCSRunDestination(runId: string, destinationFileName: string): string {
+  return `gs://${BUCKET}/${PROJECT_ID}/runs/${runId}/${destinationFileName}`;
 }
 
 /**
- * Uploads a local JSON file to GCS using system gcloud CLI.
+ * Formats a task-level GCS destination URI (e.g., gs://bucket/ai_evals/runs/<runId>/tasks/<taskId>/output/<fileName>).
  */
-export function uploadEvalToGCS(options: UploadOptions): boolean {
-  const destination = formatGCSDestination(options, options.destinationFileName);
+export function formatGCSTaskDestination(runId: string, taskId: string, destinationFileName: string): string {
+  return `gs://${BUCKET}/${PROJECT_ID}/runs/${runId}/tasks/${taskId}/output/${destinationFileName}`;
+}
 
-  console.log(`[GCS] Preparing upload of ${options.localJsonPath} to ${destination}`);
+/**
+ * Uploads a local file to GCS using system gcloud CLI.
+ */
+export function uploadFileToGCS(localFilePath: string, destination: string): boolean {
+  console.log(`[GCS] Preparing upload of ${localFilePath} to ${destination}`);
 
   try {
-    const command = `gcloud storage cp "${options.localJsonPath}" "${destination}"`;
+    const command = `gcloud storage cp "${localFilePath}" "${destination}"`;
     execSync(command, {
       stdio: 'inherit',
     });
@@ -51,8 +65,55 @@ export function uploadEvalToGCS(options: UploadOptions): boolean {
     console.log('[GCS] ✅ Upload successful!');
     return true;
   } catch (error) {
-    console.error('[GCS] ❌ Failed to upload to GCS. Ensure you are logged in via \'gcloud auth login\'.');
+    console.error(`[GCS] ❌ Failed to upload to ${destination}. Ensure you are logged in via 'gcloud auth login'.`);
     console.error(error);
     return false;
   }
+}
+
+/**
+ * Uploads a local JSON file to GCS using system gcloud CLI.
+ */
+export function uploadEvalToGCS(options: UploadOptions): boolean {
+  const destination = formatGCSTaskDestination(options.runId, options.taskId, options.destinationFileName);
+  return uploadFileToGCS(options.localJsonPath, destination);
+}
+
+/**
+ * Uploads a 0-byte marker file to GCS by creating a temporary empty regular file.
+ */
+function uploadMarkerToGCS(destination: string): boolean {
+  const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'marker-'));
+  const tempFilePath = path.join(tempDir, 'empty.marker');
+  try {
+    fs.writeFileSync(tempFilePath, '');
+    return uploadFileToGCS(tempFilePath, destination);
+  } finally {
+    fs.rmSync(tempDir, {recursive: true, force: true});
+  }
+}
+
+/**
+ * Phase 1: Uploads <run_id>/run_started.marker (0-byte file)
+ * Must be called immediately after run_started.json is uploaded.
+ * TODO: Upload the markers at correct stages.
+ */
+export function uploadRunStartedMarker(runId: string): boolean {
+  return uploadMarkerToGCS(formatGCSRunDestination(runId, Markers.RUN_STARTED));
+}
+
+/**
+ * Phase 2: Uploads tasks/<task_id>/output/eval_task_completed.marker (0-byte file)
+ * Must be called immediately after all task artifacts and eval_task_completed.json are uploaded.
+ */
+export function uploadTaskCompletedMarker(runId: string, taskId: string): boolean {
+  return uploadMarkerToGCS(formatGCSTaskDestination(runId, taskId, Markers.TASK_COMPLETED));
+}
+
+/**
+ * Phase 3: Uploads <run_id>/run_completed.marker (0-byte file)
+ * Must be called immediately after run_completed.json and eval_run.log are uploaded.
+ */
+export function uploadRunCompletedMarker(runId: string): boolean {
+  return uploadMarkerToGCS(formatGCSRunDestination(runId, Markers.RUN_COMPLETED));
 }

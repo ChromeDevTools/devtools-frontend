@@ -466,11 +466,11 @@ describe('PositionAreaEditor', () => {
     checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [autoSelf, autoSelf],
               InlineEditor.PositionAreaEditor.Mode.PHYSICAL, [physicalBlock, coordinateInlineSelf]);
 
-    // [logical, logical] + coordinate = [coordinate, physical] / [physical, coordinate]
+    // [logical, logical] + coordinate = [coordinate, coordinate]
     checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [logicalInline, logicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateInline, physicalBlock]);
+              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateInline, coordinateBlock]);
     checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [logicalInline, logicalBlock],
-              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [physicalInline, coordinateBlock]);
+              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateInline, coordinateBlock]);
 
     // [logical/s, logical/s] + coordinate = [coordinate/s, coordinate/s]
     checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [logicalInlineSelf, logicalBlockSelf],
@@ -478,11 +478,11 @@ describe('PositionAreaEditor', () => {
     checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [logicalInlineSelf, logicalBlockSelf],
               InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateInlineSelf, coordinateBlockSelf]);
 
-    // [auto, auto] + coordinate = [physical, coordinate] / [coordinate, physical]
+    // [auto, auto] + coordinate = [coordinate, coordinate]
     checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [auto, auto],
-              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [physicalBlock, coordinateInline]);
+              InlineEditor.PositionAreaEditor.Mode.COORDINATE, [coordinateBlock, coordinateInline]);
     checkMode(InlineEditor.PositionAreaEditor.Axis.BLOCK, [auto, auto], InlineEditor.PositionAreaEditor.Mode.COORDINATE,
-              [coordinateBlock, physicalInline]);
+              [coordinateBlock, coordinateInline]);
 
     // [auto/s, auto/s] + coordinate = [coordinate/s, coordinate/s]
     checkMode(InlineEditor.PositionAreaEditor.Axis.INLINE, [autoSelf, autoSelf],
@@ -559,5 +559,73 @@ describe('PositionAreaEditor', () => {
     checkSelf(InlineEditor.PositionAreaEditor.Axis.BLOCK, [autoSelf, autoSelf], false, [auto, auto]);
 
     await editor.updateComplete;
+  });
+
+  it('updates generic keyword mode to match the other dimension when mode changes', async () => {
+    const view = createViewFunctionStub(InlineEditor.PositionAreaEditor.PositionAreaEditor);
+    const editor = new InlineEditor.PositionAreaEditor.PositionAreaEditor(undefined, view);
+
+    // Initial: "top center"
+    const topCenter = parsePositionArea('top center');
+    assert.exists(topCenter);
+    editor.area = topCenter;
+    editor.performUpdate();
+
+    // Switch block mode to logical: center should also change to logical
+    view.input.onModeChange(InlineEditor.PositionAreaEditor.Axis.BLOCK, InlineEditor.PositionAreaEditor.Mode.LOGICAL);
+    editor.performUpdate();
+
+    assert.exists(view.input.area);
+    assert.strictEqual(stringifyPositionArea(view.input.area), 'block-start center');
+    const blockAxis = view.input.area.primaryAxis === Axis.BLOCK ? view.input.area.first : view.input.area.second;
+    const inlineAxis = view.input.area.primaryAxis === Axis.INLINE ? view.input.area.first : view.input.area.second;
+    assert.strictEqual(blockAxis.mode, InlineEditor.PositionAreaEditor.Mode.LOGICAL);
+    assert.strictEqual(inlineAxis.mode, InlineEditor.PositionAreaEditor.Mode.LOGICAL);
+
+    // Selecting top right corner should now yield "block-start inline-end"
+    view.input.onSelectStart(2, 0);
+    view.input.onSelectEnd(2, 0);
+    editor.performUpdate();
+
+    assert.exists(view.input.area);
+    assert.strictEqual(stringifyPositionArea(view.input.area), 'block-start inline-end');
+
+    // Generic block axis with non-generic inline axis: "center left"
+    const centerLeft = parsePositionArea('center left');
+    assert.exists(centerLeft);
+    editor.area = centerLeft;
+    editor.performUpdate();
+
+    view.input.onModeChange(InlineEditor.PositionAreaEditor.Axis.INLINE, InlineEditor.PositionAreaEditor.Mode.LOGICAL);
+    editor.performUpdate();
+
+    assert.exists(view.input.area);
+    assert.strictEqual(stringifyPositionArea(view.input.area), 'center inline-start');
+    const blockAxis2 = view.input.area.primaryAxis === Axis.BLOCK ? view.input.area.first : view.input.area.second;
+    const inlineAxis2 = view.input.area.primaryAxis === Axis.INLINE ? view.input.area.first : view.input.area.second;
+    assert.strictEqual(blockAxis2.mode, InlineEditor.PositionAreaEditor.Mode.LOGICAL);
+    assert.strictEqual(inlineAxis2.mode, InlineEditor.PositionAreaEditor.Mode.LOGICAL);
+
+    // Both axes generic: "center"
+    const center = parsePositionArea('center');
+    assert.exists(center);
+    editor.area = center;
+    editor.performUpdate();
+
+    view.input.onModeChange(InlineEditor.PositionAreaEditor.Axis.BLOCK, InlineEditor.PositionAreaEditor.Mode.LOGICAL);
+    editor.performUpdate();
+
+    assert.exists(view.input.area);
+    const blockAxis3 = view.input.area.primaryAxis === Axis.BLOCK ? view.input.area.first : view.input.area.second;
+    const inlineAxis3 = view.input.area.primaryAxis === Axis.INLINE ? view.input.area.first : view.input.area.second;
+    assert.strictEqual(blockAxis3.mode, InlineEditor.PositionAreaEditor.Mode.LOGICAL);
+    assert.strictEqual(inlineAxis3.mode, InlineEditor.PositionAreaEditor.Mode.LOGICAL);
+
+    view.input.onSelectStart(2, 0);
+    view.input.onSelectEnd(2, 0);
+    editor.performUpdate();
+
+    assert.exists(view.input.area);
+    assert.strictEqual(stringifyPositionArea(view.input.area), 'block-start inline-end');
   });
 });

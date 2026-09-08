@@ -23,7 +23,7 @@ export default `/*
 
 .computed-style-trace:hover {
   background-color: var(--sys-color-state-hover-on-subtle);
-  cursor: text;
+  cursor: var(--override-cursor, text);
 }
 
 .goto {

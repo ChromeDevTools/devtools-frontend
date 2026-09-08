@@ -880,7 +880,7 @@ function isUpdateLayer(event) {
   return event.name === "UpdateLayer" /* UPDATE_LAYER */;
 }
 function isDisplayListItemListSnapshot(event) {
-  return event.name === "cc::DisplayItemList" /* DISPLAY_ITEM_LIST_SNAPSHOT */;
+  return event.name === "cc::DisplayItemList" /* LEGACY_DISPLAY_ITEM_LIST_SNAPSHOT */ && event.ph === "O" /* OBJECT_SNAPSHOT */ || event.name === "cc::DisplayItemList:snapshot" /* DISPLAY_ITEM_LIST_SNAPSHOT */ && event.ph === "I" /* INSTANT */;
 }
 function isLayerTreeHostImplSnapshot(event) {
   return event.name === "cc::LayerTreeHostImpl" /* LAYER_TREE_HOST_IMPL_SNAPSHOT */;
@@ -1124,7 +1124,8 @@ var Name = /* @__PURE__ */ ((Name2) => {
   Name2["LAZY_PIXEL_REF"] = "LazyPixelRef";
   Name2["LAYER_TREE_HOST_IMPL_SNAPSHOT"] = "cc::LayerTreeHostImpl";
   Name2["PICTURE_SNAPSHOT"] = "cc::Picture";
-  Name2["DISPLAY_ITEM_LIST_SNAPSHOT"] = "cc::DisplayItemList";
+  Name2["LEGACY_DISPLAY_ITEM_LIST_SNAPSHOT"] = "cc::DisplayItemList";
+  Name2["DISPLAY_ITEM_LIST_SNAPSHOT"] = "cc::DisplayItemList:snapshot";
   Name2["INPUT_LATENCY_MOUSE_MOVE"] = "InputLatency::MouseMove";
   Name2["INPUT_LATENCY_MOUSE_WHEEL"] = "InputLatency::MouseWheel";
   Name2["IMPL_SIDE_FLING"] = "InputHandlerProxy::HandleGestureFling::started";

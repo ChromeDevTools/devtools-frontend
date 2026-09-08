@@ -6,6 +6,10 @@
     "emitDeclarationOnly": true,
     "outDir": ".",
     "rootDir": "../../../../../../../front_end/ui/components/spinners",
+    "rootDirs": [
+      "../../../../../../../",
+      "../../../../"
+    ],
     "skipLibCheck": true
   },
   "files": [

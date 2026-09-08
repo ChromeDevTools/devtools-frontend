@@ -6,6 +6,10 @@
     "emitDeclarationOnly": true,
     "outDir": ".",
     "rootDir": "../../../../../../front_end/core/sdk",
+    "rootDirs": [
+      "../../../../../../",
+      "../../../"
+    ],
     "skipLibCheck": true
   },
   "files": [
@@ -15,6 +19,7 @@
     "../../../../../../front_end/core/sdk/CPUThrottlingManager.test.ts",
     "../../../../../../front_end/core/sdk/CSSContainerQuery.test.ts",
     "../../../../../../front_end/core/sdk/CSSModel.test.ts",
+    "../../../../../../front_end/core/sdk/CSSRule.test.ts",
     "../../../../../../front_end/core/sdk/DOMModel.test.ts",
     "../../../../../../front_end/core/sdk/DebuggerModel.test.ts",
     "../../../../../../front_end/core/sdk/FrameManager.test.ts",

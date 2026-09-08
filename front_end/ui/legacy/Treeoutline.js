@@ -866,6 +866,9 @@ export class TreeElement {
         if (!element || treeElementBylistItemNode.get(element) !== this) {
             return;
         }
+        if (event.defaultPrevented) {
+            return;
+        }
         const handled = this.ondblclick(event);
         if (handled) {
             return;
@@ -1429,6 +1432,14 @@ class TreeViewTreeElement extends TreeElement {
     static get(configElement) {
         return configElement && TreeViewTreeElement.#elementToTreeElement.get(configElement);
     }
+    onenter() {
+        const enterEvent = new TreeViewElement.EnterEvent();
+        const shouldExpand = this.listItemElement.dispatchEvent(enterEvent);
+        if (!shouldExpand) {
+            return false;
+        }
+        return super.onenter();
+    }
     remove() {
         removeNode(this, Boolean(this.parent &&
             this.parent.configElement?.querySelector(':scope > ul[role="group"]')));
@@ -1760,6 +1771,12 @@ export class TreeViewElement extends HTMLElementWithLightDOMTemplate {
         }
     }
     TreeViewElement.ExpandEvent = ExpandEvent;
+    class EnterEvent extends CustomEvent {
+        constructor() {
+            super('enter', { bubbles: true, cancelable: true, composed: true });
+        }
+    }
+    TreeViewElement.EnterEvent = EnterEvent;
     /**
      * @deprecated
      */

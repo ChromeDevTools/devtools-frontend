@@ -55,10 +55,10 @@ table th[scope='row'] {
   color: var(--sys-color-primary);
   text-decoration: underline;
   cursor: pointer;
-  outline-offset: 2px;
+  outline-offset: var(--sys-size-2);
   padding: 0;
   margin-left: var(--sys-size-3);
-  white-space: nowrap;;
+  white-space: nowrap;
 }
 
 button.devtools-link {
@@ -66,7 +66,7 @@ button.devtools-link {
   background: none;
   font-family: inherit;
   font-size: inherit;
-  height: 16px;
+  height: var(--sys-size-8);
 }
 
 /*# sourceURL=${import.meta.resolve('./table.css')} */`;

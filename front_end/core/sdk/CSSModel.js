@@ -7,6 +7,7 @@ import * as Platform from '../platform/platform.js';
 import * as Root from '../root/root.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import { CSSFontFace } from './CSSFontFace.js';
+import { CSSLocation } from './CSSLocation.js';
 import { CSSMatchedStyles } from './CSSMatchedStyles.js';
 import { CSSMedia } from './CSSMedia.js';
 import { cssMetadata } from './CSSMetadata.js';
@@ -858,26 +859,7 @@ export class Edit {
         this.payload = payload;
     }
 }
-export class CSSLocation {
-    #cssModel;
-    styleSheetId;
-    url;
-    lineNumber;
-    columnNumber;
-    constructor(header, lineNumber, columnNumber) {
-        this.#cssModel = header.cssModel();
-        this.styleSheetId = header.id;
-        this.url = header.resourceURL();
-        this.lineNumber = lineNumber;
-        this.columnNumber = columnNumber || 0;
-    }
-    cssModel() {
-        return this.#cssModel;
-    }
-    header() {
-        return this.#cssModel.styleSheetHeaderForId(this.styleSheetId);
-    }
-}
+export { CSSLocation };
 class CSSDispatcher {
     #cssModel;
     constructor(cssModel) {

@@ -17330,7 +17330,8 @@ var HTMLElementWithLightDOMTemplate = class _HTMLElementWithLightDOMTemplate ext
     const clones = [];
     for (const cloneRef of cloneSet) {
       const clone = cloneRef.deref();
-      if (clone) {
+      const root = clone?.getRootNode();
+      if (clone && (root instanceof Document || root instanceof DocumentFragment)) {
         clones.push(clone);
       } else {
         cloneSet.delete(cloneRef);
@@ -23607,6 +23608,9 @@ var TreeElement = class {
     if (!element || treeElementBylistItemNode.get(element) !== this) {
       return;
     }
+    if (event.defaultPrevented) {
+      return;
+    }
     const handled = this.ondblclick(event);
     if (handled) {
       return;
@@ -24157,6 +24161,14 @@ var TreeViewTreeElement = class _TreeViewTreeElement extends TreeElement {
   static get(configElement) {
     return configElement && _TreeViewTreeElement.#elementToTreeElement.get(configElement);
   }
+  onenter() {
+    const enterEvent = new TreeViewElement.EnterEvent();
+    const shouldExpand = this.listItemElement.dispatchEvent(enterEvent);
+    if (!shouldExpand) {
+      return false;
+    }
+    return super.onenter();
+  }
   remove() {
     removeNode(
       this,
@@ -24422,6 +24434,12 @@ var TreeViewElement = class _TreeViewElement extends HTMLElementWithLightDOMTemp
     }
   }
   TreeViewElement2.ExpandEvent = ExpandEvent;
+  class EnterEvent extends CustomEvent {
+    constructor() {
+      super("enter", { bubbles: true, cancelable: true, composed: true });
+    }
+  }
+  TreeViewElement2.EnterEvent = EnterEvent;
   class TreeElementExpandEvent extends CustomEvent {
     constructor(treeElement, expanded) {
       super("treeelementexpand", { detail: { treeElement, expanded } });

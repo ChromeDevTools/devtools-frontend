@@ -5,6 +5,12 @@ export interface EditorAnchorSignature {
     /** File path associated with the editor */
     filePath?: string;
 }
+export interface DOMNodeAnchorSignature {
+    /** Backend NodeId for DOM nodes (`data-backend-node-id`) */
+    backendNodeId: number;
+    /** Target ID associated with the DOM node (`data-target-id`) */
+    targetId: string;
+}
 export interface CommentAnchorSignature {
     /** Visual logging tree path, e.g. "Panel: elements > Pane: styles > TreeOutline > TreeItem: color" */
     vePath: string;
@@ -16,8 +22,8 @@ export interface CommentAnchorSignature {
     siblingIndex?: number;
     /** Optional backend RequestId for Network panel elements (`data-network-request-id`) */
     networkRequestId?: string;
-    /** Optional backend NodeId for Elements panel DOM nodes (`data-backend-node-id`) */
-    backendNodeId?: number;
+    /** Optional DOM node identifiers (`data-backend-node-id`, `data-target-id`) */
+    node?: DOMNodeAnchorSignature;
     /** Optional editor anchor coordinates for CodeMirror text editors */
     editor?: EditorAnchorSignature;
 }
@@ -31,6 +37,7 @@ export interface CommentThread {
     anchor: CommentAnchorSignature;
     comments: Comment[];
     status: 'ACTIVE' | 'RESOLVED';
+    transmitted?: boolean;
     changes?: Array<Record<string, unknown>>;
 }
 export declare const enum Events {
@@ -51,6 +58,8 @@ export declare class CommentManager extends Common.ObjectWrapper.ObjectWrapper<E
     createCommentThread(anchor: CommentAnchorSignature, text: string, author?: 'DEVELOPER' | 'AGENT', changes?: Array<Record<string, unknown>>): CommentThread;
     getCommentThread(id: string): CommentThread | undefined;
     getCommentThreads(): CommentThread[];
+    takeComments(): CommentThread[];
+    resolveCommentThread(threadId: string, replyText?: string): boolean;
     removeCommentThread(id: string): void;
     clear(): void;
 }

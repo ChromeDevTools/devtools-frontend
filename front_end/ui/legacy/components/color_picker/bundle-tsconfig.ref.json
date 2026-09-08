@@ -6,6 +6,10 @@
     "emitDeclarationOnly": true,
     "outDir": ".",
     "rootDir": "../../../../../../../../front_end/ui/legacy/components/color_picker",
+    "rootDirs": [
+      "../../../../../../../../",
+      "../../../../../"
+    ],
     "skipLibCheck": true
   },
   "files": [

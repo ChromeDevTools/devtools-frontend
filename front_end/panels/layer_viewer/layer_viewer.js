@@ -417,6 +417,7 @@ var DEFAULT_VIEW = (input, _output, target) => {
     html`
     <div class="layer-details-container"
          data-backend-node-id=${domNode ? domNode.backendNodeId() : nothing}
+         data-target-id=${domNode ? domNode.domModel().target().id() : nothing}
          jslog=${VisualLogging.section("layer-details")}>
       <table>
         <tbody>
@@ -652,6 +653,7 @@ var DEFAULT_VIEW2 = (input, output, target) => {
       <li role="treeitem"
           data-layer-id=${layer.id()}
           data-backend-node-id=${domNode ? domNode.backendNodeId() : nothing2}
+          data-target-id=${domNode ? domNode.domModel().target().id() : nothing2}
           jslog=${VisualLogging2.treeItem("layer-item")}
           class=${isHovered ? "hovered" : ""}
           ?selected=${isSelected}

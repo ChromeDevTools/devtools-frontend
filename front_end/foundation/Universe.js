@@ -27,6 +27,7 @@ export class Universe {
     //                            directly on the `Universe`.
     context;
     autofillManager;
+    cd4aBridge = null;
     supportsEmulation;
     initAutomaticFilesystem;
     fileSystemWorkspaceBinding;
@@ -138,12 +139,17 @@ export class Universe {
         context.set(AiAssistance.BuiltInAi.BuiltInAi, builtInAi);
         const commentManager = new CommentManager.CommentManager.CommentManager();
         context.set(CommentManager.CommentManager.CommentManager, commentManager);
+        if (options.hostConfig.devToolsComments?.enabled ?? Root.Runtime.hostConfig.devToolsComments?.enabled) {
+            this.cd4aBridge = new CommentManager.CD4ABridge.CD4ABridge(commentManager, targetManager, networkLog);
+            context.set(CommentManager.CD4ABridge.CD4ABridge, this.cd4aBridge);
+        }
         this.autofillManager = new AutofillManager.AutofillManager.AutofillManager(targetManager, frameManager);
         context.set(AutofillManager.AutofillManager.AutofillManager, this.autofillManager);
     }
     // TODO(crbug.com/542394587): Should be `Symbol.dispose`
     dispose() {
         // TODO(crbug.com/542394587): Track these in a DisposableStack.
+        this.cd4aBridge?.dispose();
         this.context.get(Persistence.IsolatedFileSystemManager.IsolatedFileSystemManager).dispose();
         if (this.initAutomaticFilesystem) {
             this.context.get(Persistence.AutomaticFileSystemManager.AutomaticFileSystemManager).dispose();

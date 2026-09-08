@@ -91,7 +91,7 @@ export default `/*
   align-items: center;
   gap: var(--sys-size-4);
   padding: var(--sys-size-3) var(--sys-size-5);
-  border: 1px solid var(--color-primary);
+  border: var(--sys-size-1) solid var(--color-primary);
   border-radius: var(--sys-shape-corner-large);
 
   &.enabled {
@@ -122,7 +122,7 @@ export default `/*
   font-family: var(--default-font-family);
   font-size: var(--sys-typescale-body2-size);
   font-weight: var(--ref-typeface-weight-medium);
-  outline: 2px solid var(--color-background);
+  outline: var(--sys-size-2) solid var(--color-background);
 }
 
 
@@ -137,7 +137,7 @@ export default `/*
 .input-field.fake-focus-state {
   background-color: var(--color-background);
   color: var(--color-background-inverted);
-  outline: 2px solid var(--color-background-inverted);
+  outline: var(--sys-size-2) solid var(--color-background-inverted);
 }
 
 .connectorContainer {
@@ -146,7 +146,7 @@ export default `/*
 
 .entry-highlight-wrapper {
   box-sizing: border-box;
-  border: 2px solid var(--sys-color-on-surface);
+  border: var(--sys-size-2) solid var(--sys-color-on-surface);
 
   &.cut-off-top {
     border-top: none;

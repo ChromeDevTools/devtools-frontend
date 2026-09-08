@@ -217,5 +217,4 @@ export declare class HighlightPseudoStylePropertiesSection extends StyleProperti
 interface TreeElementParent {
     appendChild(child: UI.TreeOutline.TreeElement): void;
 }
-export declare function constructResolvedSelector(rule: SDK.CSSRule.CSSRule | null, nestingIndex?: number): string | undefined;
 export {};

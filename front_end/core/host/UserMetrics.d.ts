@@ -41,6 +41,12 @@ export declare class UserMetrics {
     consoleInsightTeaserAbortedBeforeFirstCharacter(timeInMilliseconds: number): void;
     consoleInsightLongTeaserGenerated(timeInMilliseconds: number): void;
     consoleInsightShortTeaserGenerated(timeInMilliseconds: number): void;
+    changeRecorded(count: number): void;
+    changeSharedWithAgent(count: number): void;
+    commentCreated(count: number): void;
+    commentResolved(resolver: CommentResolver, count: number): void;
+    commentSharedWithAgent(count: number): void;
+    commentSize(characters: number): void;
 }
 export type Action = Enums.Action;
 export declare const Action: typeof Enums.Action;
@@ -107,3 +113,4 @@ export declare const BuiltInAiAvailability: typeof Enums.BuiltInAiAvailability;
 export type ResendRequestType = Enums.ResendRequestType;
 export declare const ResendRequestType: typeof Enums.ResendRequestType;
 export declare function resendRequestType(resourceType: Common.ResourceType.ResourceType): ResendRequestType;
+export type CommentResolver = 'Agent' | 'User';

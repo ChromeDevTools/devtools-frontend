@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
+import './diff_match_patch.js';
 export const DiffWrapper = {
     charDiff: function (text1, text2, cleanup) {
         const differ = new diff_match_patch();

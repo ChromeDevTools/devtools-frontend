@@ -6,6 +6,10 @@
     "emitDeclarationOnly": true,
     "outDir": ".",
     "rootDir": "../../../../../../front_end/core/sdk",
+    "rootDirs": [
+      "../../../../../../",
+      "../../../"
+    ],
     "skipLibCheck": true
   },
   "files": [
@@ -28,6 +32,9 @@
     },
     {
       "path": "../common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../../test/api/test_interface_types-tsconfig.ref.json"
     }
   ]
 }

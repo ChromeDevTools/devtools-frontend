@@ -19,7 +19,7 @@ export default `/*
   pointer-events: none;
   position: absolute;
   display: block;
-  border: 2px solid var(--color-text-primary);
+  border: var(--sys-size-2) solid var(--color-text-primary);
   box-sizing: border-box;
 
   &.cut-off-top {
@@ -40,15 +40,15 @@ export default `/*
 }
 
 .entry-is-not-source {
-  border: 2px dashed var(--color-text-primary);
+  border: var(--sys-size-2) dashed var(--color-text-primary);
 }
 
 .create-link-icon {
   pointer-events: auto;
   cursor: pointer;
   color: var(--sys-color-on-surface);
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
   position: absolute;
 }
 

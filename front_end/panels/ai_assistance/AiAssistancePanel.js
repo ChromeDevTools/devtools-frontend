@@ -581,8 +581,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                     },
                     onTextSubmit: async (text, imageInput, multimodalInputType) => {
                         const submit = () => {
-                            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
-                            void this.#startConversation(text, imageInput, multimodalInputType);
+                            void this.#submitQuery(text, imageInput, multimodalInputType);
                         };
                         const seenSetting = Common.Settings.Settings.instance().resolve(AiAssistanceModel.AiUtils.aiAssistanceV2OptInChangeDialogSeenSettingDescriptor);
                         if (!seenSetting.get()) {
@@ -1211,11 +1210,10 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             if (!this.#canExecuteQuery()) {
                 return;
             }
-            Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
             if (this.#conversation && this.#conversation.isBlockedByOrigin) {
                 this.#handleNewChatRequest();
             }
-            await this.#startConversation(predefinedPrompt);
+            await this.#submitQuery(predefinedPrompt);
         }
         else {
             this.#viewOutput.chatView?.focusTextInput();
@@ -1279,7 +1277,7 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             return;
         }
         this.#updateConversationState(conversation);
-        await this.#doConversation(conversation.history);
+        await this.#consumeResponseStream(conversation.history);
     }
     #handleNewChatRequest() {
         this.#textInputValue = '';
@@ -1381,16 +1379,25 @@ export class AiAssistancePanel extends UI.Panel.Panel {
             }
         }
     }
-    async #startConversation(text, imageInput, multimodalInputType) {
+    /**
+     * Submits a user query turn to the active conversation and streams the response.
+     * Executes on every turn (both initial prompt and follow-up turns).
+     */
+    async #submitQuery(text, imageInput, multimodalInputType) {
         if (!this.#conversation) {
             return;
         }
-        // Cancel any previous in-flight conversation.
+        // Cancel any previous in-flight query.
         this.#cancel();
+        Host.userMetrics.actionTaken(Host.UserMetrics.Action.AiAssistanceQuerySubmitted);
         const signal = this.#runAbortController.signal;
-        // If a different context is provided, it must be from the same origin.
+        // Initial conversation boundary (turn 1 only).
         if (this.#conversation.isEmpty) {
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.STARTED_AI_CONVERSATION);
+            // Note: Prior to September 2026 (crrev.com/c/8366147), this event erroneously logged on every query
+            // turn because this method was named #startConversation. It is now correctly
+            // restricted to conversation initialization.
+            void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
         }
         let multimodalInput;
         if (isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType) {
@@ -1400,13 +1407,15 @@ export class AiAssistancePanel extends UI.Panel.Panel {
                 type: multimodalInputType,
             };
         }
-        void VisualLogging.logFunctionCall(`start-conversation-${this.#conversation.type}`, 'ui');
-        await this.#doConversation(this.#conversation.run(text, {
+        await this.#consumeResponseStream(this.#conversation.run(text, {
             signal,
             multimodalInput,
         }));
     }
-    async #doConversation(items) {
+    /**
+     * Consumes response items (live generator or historic array) and drives UI updates.
+     */
+    async #consumeResponseStream(items) {
         const release = await this.#mutex.acquire();
         try {
             let systemMessage = {

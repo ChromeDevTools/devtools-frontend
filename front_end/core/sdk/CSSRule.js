@@ -195,6 +195,27 @@ export class CSSStyleRule extends CSSRule {
         this.navigations.forEach(navigation => navigation.rebase(edit));
         super.rebase(edit);
     }
+    constructResolvedSelector(nestingIndex) {
+        const nestingSelectors = this.nestingSelectors;
+        if (!nestingSelectors) {
+            return nestingIndex === undefined ? this.selectorText() : undefined;
+        }
+        if (nestingIndex !== undefined && (nestingIndex < 0 || nestingIndex >= nestingSelectors.length)) {
+            return undefined;
+        }
+        const selectorText = nestingIndex !== undefined ? nestingSelectors[nestingIndex] : this.selectorText();
+        const parentIndex = nestingIndex !== undefined ? nestingIndex + 1 : 0;
+        const parentSelector = this.constructResolvedSelector(parentIndex);
+        if (!parentSelector) {
+            return selectorText;
+        }
+        // Strip pseudo-elements (e.g. ::before) because pseudo-elements are invalid inside CSS :is(...).
+        const sanitizedParent = parentSelector.replace(/::[a-zA-Z-]+/g, '').trim();
+        if (selectorText.includes('&')) {
+            return selectorText.replaceAll('&', `:is(${sanitizedParent})`);
+        }
+        return `:is(${sanitizedParent}) ${selectorText.trim()}`;
+    }
 }
 export class CSSPropertyRule extends CSSRule {
     #name;

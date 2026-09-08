@@ -16240,6 +16240,32 @@ var CSSFontFace = class {
   }
 };
 
+// ../../front_end/core/sdk/CSSLocation.ts
+var CSSLocation_exports = {};
+__export(CSSLocation_exports, {
+  CSSLocation: () => CSSLocation
+});
+var CSSLocation = class {
+  #cssModel;
+  styleSheetId;
+  url;
+  lineNumber;
+  columnNumber;
+  constructor(header, lineNumber, columnNumber) {
+    this.#cssModel = header.cssModel();
+    this.styleSheetId = header.id;
+    this.url = header.resourceURL();
+    this.lineNumber = lineNumber;
+    this.columnNumber = columnNumber || 0;
+  }
+  cssModel() {
+    return this.#cssModel;
+  }
+  header() {
+    return this.#cssModel.styleSheetHeaderForId(this.styleSheetId);
+  }
+};
+
 // ../../front_end/core/sdk/CSSMatchedStyles.ts
 var CSSMatchedStyles_exports = {};
 __export(CSSMatchedStyles_exports, {
@@ -19507,6 +19533,26 @@ var CSSStyleRule = class _CSSStyleRule extends CSSRule {
     this.supports.forEach((supports) => supports.rebase(edit));
     this.navigations.forEach((navigation) => navigation.rebase(edit));
     super.rebase(edit);
+  }
+  constructResolvedSelector(nestingIndex) {
+    const nestingSelectors = this.nestingSelectors;
+    if (!nestingSelectors) {
+      return nestingIndex === void 0 ? this.selectorText() : void 0;
+    }
+    if (nestingIndex !== void 0 && (nestingIndex < 0 || nestingIndex >= nestingSelectors.length)) {
+      return void 0;
+    }
+    const selectorText = nestingIndex !== void 0 ? nestingSelectors[nestingIndex] : this.selectorText();
+    const parentIndex = nestingIndex !== void 0 ? nestingIndex + 1 : 0;
+    const parentSelector = this.constructResolvedSelector(parentIndex);
+    if (!parentSelector) {
+      return selectorText;
+    }
+    const sanitizedParent = parentSelector.replace(/::[a-zA-Z-]+/g, "").trim();
+    if (selectorText.includes("&")) {
+      return selectorText.replaceAll("&", `:is(${sanitizedParent})`);
+    }
+    return `:is(${sanitizedParent}) ${selectorText.trim()}`;
   }
 };
 var CSSPropertyRule = class extends CSSRule {
@@ -25036,26 +25082,6 @@ var Edit = class {
     this.payload = payload;
   }
 };
-var CSSLocation = class {
-  #cssModel;
-  styleSheetId;
-  url;
-  lineNumber;
-  columnNumber;
-  constructor(header, lineNumber, columnNumber) {
-    this.#cssModel = header.cssModel();
-    this.styleSheetId = header.id;
-    this.url = header.resourceURL();
-    this.lineNumber = lineNumber;
-    this.columnNumber = columnNumber || 0;
-  }
-  cssModel() {
-    return this.#cssModel;
-  }
-  header() {
-    return this.#cssModel.styleSheetHeaderForId(this.styleSheetId);
-  }
-};
 var CSSDispatcher = class {
   #cssModel;
   constructor(cssModel) {
@@ -28030,7 +28056,7 @@ var SecurityOrigin = class _SecurityOrigin {
     if (!origin || isOpaqueUrlString(origin)) {
       return _SecurityOrigin.createUniqueOpaque();
     }
-    return new _SecurityOrigin({ type: "origin", value: origin });
+    return new _SecurityOrigin({ type: "origin", value: origin.toLowerCase() });
   }
   /**
    * Creates a synthetic, unique opaque origin.
@@ -37153,6 +37179,7 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
   #endTime = -1;
   #blockedReason = void 0;
   #renderBlockingBehavior;
+  #initiatorSecurityOrigin;
   #corsErrorStatus = void 0;
   statusCode = 0;
   statusText = "";
@@ -37355,7 +37382,10 @@ var NetworkRequest = class _NetworkRequest extends Common30.ObjectWrapper.Object
    * @see {@link requestURLSecurityOrigin} to obtain the origin of the target resource URL being requested.
    */
   initiatorSecurityOrigin() {
-    return this.#resolveSecurityOrigin(this.#documentURL);
+    if (!this.#initiatorSecurityOrigin) {
+      this.#initiatorSecurityOrigin = this.#resolveSecurityOrigin(this.#documentURL);
+    }
+    return this.#initiatorSecurityOrigin;
   }
   #resolveSecurityOrigin(url) {
     if (this.#isImportedHar) {
@@ -43253,16 +43283,14 @@ function isRequestCredentialed(request) {
     request.requestHeaderValue("authorization") || request.requestHeaderValue("proxy-authorization")
   );
   const hasCookies = request.includedRequestCookies().length > 0 || request.responseCookies.length > 0 || Boolean(request.requestHeaderValue("cookie")) || Boolean(request.responseHeaderValue("set-cookie"));
-  const hasAllowCredentials = request.responseHeaderValue("access-control-allow-credentials")?.trim().toLowerCase() === "true";
-  return hasAuthHeaders || hasCookies || hasAllowCredentials;
+  return hasAuthHeaders || hasCookies;
 }
-function evaluateResponseAccessMode(request, initiatorOrigin) {
-  const effectiveInitiatorOrigin = initiatorOrigin ?? SecurityOrigin.create(request.documentURL);
-  if (effectiveInitiatorOrigin.isOpaque()) {
+function evaluateResponseAccessMode(request, initiatorSecurityOrigin) {
+  if (initiatorSecurityOrigin.isOpaque()) {
     return "OPAQUE_CROSS_ORIGIN" /* OPAQUE_CROSS_ORIGIN */;
   }
-  const resourceOrigin = SecurityOrigin.create(request.url());
-  if (effectiveInitiatorOrigin.isSameOriginWith(resourceOrigin)) {
+  const resourceOrigin = request.requestURLSecurityOrigin();
+  if (initiatorSecurityOrigin.isSameOriginWith(resourceOrigin)) {
     return "SAME_ORIGIN" /* SAME_ORIGIN */;
   }
   if (request.corsErrorStatus()) {
@@ -43276,7 +43304,14 @@ function evaluateResponseAccessMode(request, initiatorOrigin) {
   if (allowOriginHeader === "*" && !isCredentialed) {
     return "CORS_ALLOWED" /* CORS_ALLOWED */;
   }
-  if (allowOriginHeader.toLowerCase() === effectiveInitiatorOrigin.siteId().toLowerCase()) {
+  const allowedOrigin = SecurityOrigin.create(allowOriginHeader);
+  if (initiatorSecurityOrigin.isSameOriginWith(allowedOrigin)) {
+    if (isCredentialed) {
+      const allowCredentials = request.responseHeaderValue("access-control-allow-credentials")?.trim().toLowerCase() === "true";
+      if (!allowCredentials) {
+        return "OPAQUE_CROSS_ORIGIN" /* OPAQUE_CROSS_ORIGIN */;
+      }
+    }
     return "CORS_ALLOWED" /* CORS_ALLOWED */;
   }
   return "OPAQUE_CROSS_ORIGIN" /* OPAQUE_CROSS_ORIGIN */;
@@ -45347,6 +45382,7 @@ export {
   CSSContainerQuery_exports as CSSContainerQuery,
   CSSFontFace_exports as CSSFontFace,
   CSSLayer_exports as CSSLayer,
+  CSSLocation_exports as CSSLocation,
   CSSMatchedStyles_exports as CSSMatchedStyles,
   CSSMedia_exports as CSSMedia,
   CSSMetadata_exports as CSSMetadata,

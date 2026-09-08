@@ -1057,6 +1057,19 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         this.#hovered = false;
         this.editing = null;
         this.expandAllButtonElement = null;
+        this.contentElement.addEventListener('dblclick', (event) => {
+            if (!this.node || this.editing || this.isClosingTag) {
+                return;
+            }
+            if (!this.isDOMNodeSelected) {
+                this.selectDOMNode?.(this.node, true);
+                this.isDOMNodeSelected = true;
+            }
+            const target = (event.composedPath()[0] || event.target);
+            if (this.startEditingTarget(target)) {
+                event.preventDefault();
+            }
+        });
     }
     static visibleShadowRoots(node) {
         let roots = node.shadowRoots();
@@ -1876,6 +1889,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
     }
     async startEditingAsHTML(commitCallback, disposeCallback, maybeInitialValue) {
         if (maybeInitialValue === null) {
+            disposeCallback();
             return;
         }
         if (this.editing) {
@@ -1965,7 +1979,7 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         this.requestUpdate();
         resize.call(this);
         this.editing = { commit: commit.bind(this), cancel: dispose.bind(this), resize: resize.bind(this) };
-        this.setMultilineEditing?.(this.editing);
+        this.setMultilineEditing?.(this.editing, this.node);
         await this.updateComplete;
         this.#editorRef?.focus();
         function resize() {
@@ -2547,8 +2561,8 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
             };
             this.widget.runPendingUpdates = () => outline.runPendingUpdates();
             this.widget.focusOutline = () => outline.focus();
-            this.widget.setMultilineEditing = multilineEditing => {
-                outline.domTreeWidget?.setMultilineEditing(multilineEditing);
+            this.widget.setMultilineEditing = (multilineEditing, n) => {
+                outline.domTreeWidget?.setMultilineEditing(multilineEditing, n ?? this.nodeInternal);
             };
             this.widget.visibleWidth = () => outline.domTreeWidget?.visibleWidth ?? outline.visibleWidth();
         }

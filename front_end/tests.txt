@@ -56,6 +56,7 @@ core/sdk/AutofillModel.test.js
 core/sdk/CPUThrottlingManager.test.js
 core/sdk/CSSContainerQuery.test.js
 core/sdk/CSSModel.test.js
+core/sdk/CSSRule.test.js
 core/sdk/DOMModel.test.js
 core/sdk/DebuggerModel.test.js
 core/sdk/FrameManager.test.js
@@ -92,6 +93,7 @@ models/ai_assistance/data_formatters/PerformanceInsightFormatter.test.js
 models/ai_assistance/data_formatters/PerformanceTraceFormatter.test.js
 models/ai_code_completion/AiCodeCompletion.test.js
 models/ai_code_generation/AiCodeGeneration.test.js
+models/comment_manager/CD4ABridge.test.js
 models/comment_manager/CommentManager.test.js
 models/crux-manager/CrUXManager.test.js
 models/formatter/FormatterWorkerPool.test.js

@@ -14,7 +14,7 @@ export default `/*
     pointer-events: auto;
     border: solid;
     border-color: var(--sys-color-on-surface);
-    border-width: 4px 1px 0;
+    border-width: var(--sys-size-3) var(--sys-size-1) 0;
     align-content: flex-start;
     text-align: center;
     overflow: hidden;
@@ -26,7 +26,7 @@ export default `/*
 
     .is-below & {
       border-top-width: 0;
-      border-bottom-width: 4px;
+      border-bottom-width: var(--sys-size-3);
       align-content: flex-end;
       /* anchor the text at the bottom */
       padding-bottom: var(--sys-size-2);
@@ -56,12 +56,12 @@ export default `/*
    * styles below + keeping them here is clearer to read) */
     .timespan-breakdown-overlay-section:first-child {
       /* stylelint-disable-next-line declaration-no-important */
-      border-left-width: 1px !important;
+      border-left-width: var(--sys-size-1) !important;
     }
 
     .timespan-breakdown-overlay-section:last-child {
       /* stylelint-disable-next-line declaration-no-important */
-      border-right-width: 1px !important;
+      border-right-width: var(--sys-size-1) !important;
     }
   }
 

@@ -43,48 +43,58 @@ export const CORS_SAFELISTED_RESPONSE_HEADERS = new Set([
  */
 export const REDACTED_RESPONSE_BODY = '<redacted cross-origin response body>';
 /**
- * Returns whether a network request used credentials (cookies, authorization headers,
- * or server-indicated credentials mode).
+ * Returns whether a network request was made with credentials (cookies or authorization headers)
+ * or received `Set-Cookie` in the response.
+ *
+ * NOTE: The response header `Access-Control-Allow-Credentials: true` is sent by the server
+ * to grant permission for credentialed CORS; it is not a credential sent by the client.
+ *
+ * Example:
+ * If a page makes an uncredentialed request:
+ *   `fetch('https://api.example.com/data', {credentials: 'omit'})`
+ * And the server responds with:
+ *   `Access-Control-Allow-Origin: *`
+ *   `Access-Control-Allow-Credentials: true`
+ * The browser allows the page to read the response under `*` because the client sent no cookies or auth.
+ * If we treated `Access-Control-Allow-Credentials: true` as a credential here, we would falsely mark
+ * this request as credentialed and reject the wildcard `*`.
  *
  * @param request The network request to inspect.
- * @returns True if the request included credentials or requires credentialed CORS.
+ * @returns True if the request or response carried authentication credentials or cookies.
  * @see https://fetch.spec.whatwg.org/#credentials
  */
 export function isRequestCredentialed(request) {
     const hasAuthHeaders = Boolean(request.requestHeaderValue('authorization') || request.requestHeaderValue('proxy-authorization'));
     const hasCookies = request.includedRequestCookies().length > 0 || request.responseCookies.length > 0 ||
         Boolean(request.requestHeaderValue('cookie')) || Boolean(request.responseHeaderValue('set-cookie'));
-    const hasAllowCredentials = request.responseHeaderValue('access-control-allow-credentials')?.trim().toLowerCase() === 'true';
-    return hasAuthHeaders || hasCookies || hasAllowCredentials;
+    return hasAuthHeaders || hasCookies;
 }
 /**
  * Evaluates the response access mode for a network request relative to an initiator origin.
  *
  * Evaluation rules:
- * 1. If `initiatorOrigin` is omitted, the origin is derived from `request.documentURL`. If
- *    `documentURL` is invalid or opaque, access mode defaults to `OPAQUE_CROSS_ORIGIN`.
- * 2. If the initiator origin is opaque (e.g. sandboxed iframe or `data:` URL), returns `OPAQUE_CROSS_ORIGIN`.
- * 3. If the initiator origin is same-origin with the request URL, returns `SAME_ORIGIN`.
- * 4. If Chrome's network stack flagged a CORS error (`corsErrorStatus`), returns `OPAQUE_CROSS_ORIGIN`.
- * 5. If the server provided an `Access-Control-Allow-Origin` header:
+ * 1. If the initiator security origin is opaque (e.g. sandboxed iframe or `data:` URL), returns `OPAQUE_CROSS_ORIGIN`.
+ * 2. If the initiator security origin is same-origin with the request URL, returns `SAME_ORIGIN`.
+ * 3. If Chrome's network stack flagged a CORS error (`corsErrorStatus`), returns `OPAQUE_CROSS_ORIGIN`.
+ * 4. If the server provided an `Access-Control-Allow-Origin` header:
  *    - Wildcard `*` grants `CORS_ALLOWED` only if the request does not include credentials. Under the
  *      Fetch specification, wildcard `*` is invalid for credentialed requests.
- *    - An explicit match against the initiator origin grants `CORS_ALLOWED`.
- * 6. Otherwise, returns `OPAQUE_CROSS_ORIGIN`.
+ *    - An explicit match against the initiator origin grants `CORS_ALLOWED` if uncredentialed, or if
+ *      `Access-Control-Allow-Credentials: true` is also present for credentialed requests.
+ * 5. Otherwise, returns `OPAQUE_CROSS_ORIGIN`.
  *
  * @param request The network request being inspected.
- * @param initiatorOrigin The security origin of the initiating context (e.g. page or conversation origin).
+ * @param initiatorSecurityOrigin The security origin of the initiating context (e.g. page or conversation origin).
  * @returns The evaluated `ResponseAccessMode`.
  */
-export function evaluateResponseAccessMode(request, initiatorOrigin) {
-    const effectiveInitiatorOrigin = initiatorOrigin ?? SecurityOrigin.SecurityOrigin.create(request.documentURL);
+export function evaluateResponseAccessMode(request, initiatorSecurityOrigin) {
     // Opaque initiator contexts (e.g. data: URLs, sandboxed iframes) are never permitted
     // to inspect cross-origin response content.
-    if (effectiveInitiatorOrigin.isOpaque()) {
+    if (initiatorSecurityOrigin.isOpaque()) {
         return "OPAQUE_CROSS_ORIGIN" /* ResponseAccessMode.OPAQUE_CROSS_ORIGIN */;
     }
-    const resourceOrigin = SecurityOrigin.SecurityOrigin.create(request.url());
-    if (effectiveInitiatorOrigin.isSameOriginWith(resourceOrigin)) {
+    const resourceOrigin = request.requestURLSecurityOrigin();
+    if (initiatorSecurityOrigin.isSameOriginWith(resourceOrigin)) {
         return "SAME_ORIGIN" /* ResponseAccessMode.SAME_ORIGIN */;
     }
     // If the browser blocked the request with a CORS error, treat the response
@@ -101,7 +111,17 @@ export function evaluateResponseAccessMode(request, initiatorOrigin) {
     if (allowOriginHeader === '*' && !isCredentialed) {
         return "CORS_ALLOWED" /* ResponseAccessMode.CORS_ALLOWED */;
     }
-    if (allowOriginHeader.toLowerCase() === effectiveInitiatorOrigin.siteId().toLowerCase()) {
+    const allowedOrigin = SecurityOrigin.SecurityOrigin.create(allowOriginHeader);
+    if (initiatorSecurityOrigin.isSameOriginWith(allowedOrigin)) {
+        // Under the WHATWG Fetch specification (§ 3.2.5), when a request includes
+        // credentials (cookies or authorization headers), the response is only exposed
+        // if the server explicitly includes Access-Control-Allow-Credentials: true.
+        if (isCredentialed) {
+            const allowCredentials = request.responseHeaderValue('access-control-allow-credentials')?.trim().toLowerCase() === 'true';
+            if (!allowCredentials) {
+                return "OPAQUE_CROSS_ORIGIN" /* ResponseAccessMode.OPAQUE_CROSS_ORIGIN */;
+            }
+        }
         return "CORS_ALLOWED" /* ResponseAccessMode.CORS_ALLOWED */;
     }
     return "OPAQUE_CROSS_ORIGIN" /* ResponseAccessMode.OPAQUE_CROSS_ORIGIN */;

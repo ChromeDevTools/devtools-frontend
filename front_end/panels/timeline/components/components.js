@@ -318,8 +318,8 @@ var cwvMetrics_css_default = `/*
   white-space: nowrap;
 
   .unit {
-    font-size: 14px;
-    padding: 0 1px;
+    font-size: var(--sys-typescale-body2-size);
+    padding: 0 var(--sys-size-1);
   }
 }
 

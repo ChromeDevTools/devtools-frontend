@@ -45,6 +45,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
       <li role="treeitem"
           data-layer-id=${layer.id()}
           data-backend-node-id=${domNode ? domNode.backendNodeId() : nothing}
+          data-target-id=${domNode ? domNode.domModel().target().id() : nothing}
           jslog=${VisualLogging.treeItem('layer-item')}
           class=${isHovered ? 'hovered' : ''}
           ?selected=${isSelected}

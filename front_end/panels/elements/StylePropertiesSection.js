@@ -617,7 +617,7 @@ export class StylePropertiesSection {
         if (this.hoverTimer) {
             clearTimeout(this.hoverTimer);
         }
-        const selectorList = constructResolvedSelector(rule, nestingIndex);
+        const selectorList = rule.constructResolvedSelector(nestingIndex);
         if (!selectorList) {
             return;
         }
@@ -1961,29 +1961,5 @@ export class HighlightPseudoStylePropertiesSection extends StylePropertiesSectio
         // be shown in the darker style of non-inherited properties.
         return false;
     }
-}
-export function constructResolvedSelector(rule, nestingIndex) {
-    if (!(rule instanceof SDK.CSSRule.CSSStyleRule)) {
-        return undefined;
-    }
-    const nestingSelectors = rule.nestingSelectors;
-    if (!nestingSelectors) {
-        return nestingIndex === undefined ? rule.selectorText() : undefined;
-    }
-    if (nestingIndex !== undefined && (nestingIndex < 0 || nestingIndex >= nestingSelectors.length)) {
-        return undefined;
-    }
-    const selectorText = nestingIndex !== undefined ? nestingSelectors[nestingIndex] : rule.selectorText();
-    const parentIndex = nestingIndex !== undefined ? nestingIndex + 1 : 0;
-    const parentSelector = constructResolvedSelector(rule, parentIndex);
-    if (!parentSelector) {
-        return selectorText;
-    }
-    // Strip pseudo-elements (e.g. ::before) because pseudo-elements are invalid inside CSS :is(...).
-    const sanitizedParent = parentSelector.replace(/::[a-zA-Z-]+/g, '').trim();
-    if (selectorText.includes('&')) {
-        return selectorText.replaceAll('&', `:is(${sanitizedParent})`);
-    }
-    return `:is(${sanitizedParent}) ${selectorText.trim()}`;
 }
 //# sourceMappingURL=StylePropertiesSection.js.map

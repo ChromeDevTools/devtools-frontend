@@ -67,7 +67,9 @@ export class FileFormatter {
             const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
             calculator.updateBoundaries(resource.request);
             lines.push(`Request initiator chain:
-${new NetworkRequestFormatter(resource.request, calculator, this.#networkLog).formatRequestInitiatorChain()}`);
+${new NetworkRequestFormatter(resource.request, calculator, {
+                networkLog: this.#networkLog,
+            }).formatRequestInitiatorChain()}`);
         }
         lines.push(`File content:
 ${this.#formatFileContent()}`);

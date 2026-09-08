@@ -42,11 +42,27 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../front_end/models/comment_manager/CD4ABridge.ts",
     "../../../../../../front_end/models/comment_manager/CommentManager.ts"
   ],
   "references": [
     {
       "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/host/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/root/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../generated/generated-tsconfig.ref.json"
+    },
+    {
+      "path": "../logs/bundle-tsconfig.ref.json"
     }
   ]
 }

@@ -179,6 +179,24 @@ export class UserMetrics {
     consoleInsightShortTeaserGenerated(timeInMilliseconds) {
         InspectorFrontendHostInstance.recordPerformanceHistogram('DevTools.Insights.ShortTeaserGenerationTime', timeInMilliseconds);
     }
+    changeRecorded(count) {
+        InspectorFrontendHostInstance.recordCountHistogram('DevTools.Comments.ChangeRecorded', count, 1, 100, 50);
+    }
+    changeSharedWithAgent(count) {
+        InspectorFrontendHostInstance.recordCountHistogram('DevTools.Comments.ChangeSharedWithAgent', count, 1, 100, 50);
+    }
+    commentCreated(count) {
+        InspectorFrontendHostInstance.recordCountHistogram('DevTools.Comments.CommentCreated', count, 1, 100, 50);
+    }
+    commentResolved(resolver, count) {
+        InspectorFrontendHostInstance.recordCountHistogram(`DevTools.Comments.CommentResolvedBy${resolver}`, count, 1, 100, 50);
+    }
+    commentSharedWithAgent(count) {
+        InspectorFrontendHostInstance.recordCountHistogram('DevTools.Comments.CommentSharedWithAgent', count, 1, 100, 50);
+    }
+    commentSize(characters) {
+        InspectorFrontendHostInstance.recordCountHistogram('DevTools.Comments.CommentSize', characters, 1, 100_000, 50);
+    }
 }
 /**
  * Creates a proxy that delays the resolution of UMA enum values until runtime.

@@ -34,7 +34,7 @@ var entriesLinkOverlay_css_default = `/*
   pointer-events: none;
   position: absolute;
   display: block;
-  border: 2px solid var(--color-text-primary);
+  border: var(--sys-size-2) solid var(--color-text-primary);
   box-sizing: border-box;
 
   &.cut-off-top {
@@ -55,15 +55,15 @@ var entriesLinkOverlay_css_default = `/*
 }
 
 .entry-is-not-source {
-  border: 2px dashed var(--color-text-primary);
+  border: var(--sys-size-2) dashed var(--color-text-primary);
 }
 
 .create-link-icon {
   pointer-events: auto;
   cursor: pointer;
   color: var(--sys-color-on-surface);
-  width: 16px;
-  height: 16px;
+  width: var(--sys-size-8);
+  height: var(--sys-size-8);
   position: absolute;
 }
 
@@ -507,7 +507,7 @@ var entryLabelOverlay_css_default = `/*
   align-items: center;
   gap: var(--sys-size-4);
   padding: var(--sys-size-3) var(--sys-size-5);
-  border: 1px solid var(--color-primary);
+  border: var(--sys-size-1) solid var(--color-primary);
   border-radius: var(--sys-shape-corner-large);
 
   &.enabled {
@@ -538,7 +538,7 @@ var entryLabelOverlay_css_default = `/*
   font-family: var(--default-font-family);
   font-size: var(--sys-typescale-body2-size);
   font-weight: var(--ref-typeface-weight-medium);
-  outline: 2px solid var(--color-background);
+  outline: var(--sys-size-2) solid var(--color-background);
 }
 
 
@@ -553,7 +553,7 @@ var entryLabelOverlay_css_default = `/*
 .input-field.fake-focus-state {
   background-color: var(--color-background);
   color: var(--color-background-inverted);
-  outline: 2px solid var(--color-background-inverted);
+  outline: var(--sys-size-2) solid var(--color-background-inverted);
 }
 
 .connectorContainer {
@@ -562,7 +562,7 @@ var entryLabelOverlay_css_default = `/*
 
 .entry-highlight-wrapper {
   box-sizing: border-box;
-  border: 2px solid var(--sys-color-on-surface);
+  border: var(--sys-size-2) solid var(--sys-color-on-surface);
 
   &.cut-off-top {
     border-top: none;
@@ -1271,7 +1271,7 @@ var timeRangeOverlay_css_default = `/*
     rgb(255 125 210 / 15%) 85%
   );
   border-color: var(--ref-palette-pink55);
-  border-width: 0 1px 5px;
+  border-width: 0 var(--sys-size-1) 5px;
   border-style: solid;
   pointer-events: none;
 }
@@ -1333,7 +1333,7 @@ var timeRangeOverlay_css_default = `/*
 
 .label-text[contenteditable='true'] {
   outline: none;
-  box-shadow: 0 0 0 1px var(--ref-palette-pink55);
+  box-shadow: 0 0 0 var(--sys-size-1) var(--ref-palette-pink55);
 }
 
 .label-text[contenteditable='false'] {
@@ -1559,7 +1559,7 @@ var timespanBreakdownOverlay_css_default = `/*
     pointer-events: auto;
     border: solid;
     border-color: var(--sys-color-on-surface);
-    border-width: 4px 1px 0;
+    border-width: var(--sys-size-3) var(--sys-size-1) 0;
     align-content: flex-start;
     text-align: center;
     overflow: hidden;
@@ -1571,7 +1571,7 @@ var timespanBreakdownOverlay_css_default = `/*
 
     .is-below & {
       border-top-width: 0;
-      border-bottom-width: 4px;
+      border-bottom-width: var(--sys-size-3);
       align-content: flex-end;
       /* anchor the text at the bottom */
       padding-bottom: var(--sys-size-2);
@@ -1601,12 +1601,12 @@ var timespanBreakdownOverlay_css_default = `/*
    * styles below + keeping them here is clearer to read) */
     .timespan-breakdown-overlay-section:first-child {
       /* stylelint-disable-next-line declaration-no-important */
-      border-left-width: 1px !important;
+      border-left-width: var(--sys-size-1) !important;
     }
 
     .timespan-breakdown-overlay-section:last-child {
       /* stylelint-disable-next-line declaration-no-important */
-      border-right-width: 1px !important;
+      border-right-width: var(--sys-size-1) !important;
     }
   }
 

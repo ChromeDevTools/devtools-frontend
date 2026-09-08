@@ -459,20 +459,26 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   line-height: 1.36;
   min-width: 200px;
   text-overflow: clip;
+  white-space: inherit;
+}
+
+:host(.elements-tree-nowrap) .tree-outline-disclosure li {
+  white-space: pre;
 }
 
 .tree-outline-disclosure li:not(.parent) {
   display: block;
 }
 
-.tree-outline-disclosure li:not(.parent)::before {
+.tree-outline-disclosure li:not(.parent)::before,
+.tree-outline-disclosure li.always-parent::before {
   display: none;
   content: none;
 }
 
 .tree-outline-disclosure li.parent {
   display: flex;
-  align-items: center;
+  align-items: normal;
 }
 
 .tree-outline-disclosure li.parent:not(.always-parent) {
@@ -490,16 +496,25 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
   text-shadow: none;
   margin: 0 var(--sys-size-2) 0 -3px;
   background-color: var(--icon-default);
+  flex-shrink: 0;
 }
 
-.tree-outline-disclosure li.parent.expanded::before {
+.tree-outline-disclosure li.parent:not(.always-parent).expanded::before {
   mask-image: var(--image-file-arrow-drop-down);
 }
 
 .tree-outline-disclosure devtools-widget,
-.tree-outline-disclosure devtools-widget > div,
 .tree-outline-disclosure .tree-element-title {
   display: contents;
+}
+
+.tree-outline-disclosure devtools-widget > div {
+  display: inline;
+}
+
+.tree-outline-disclosure devtools-widget > div:has(.elements-tree-editor),
+.tree-outline-disclosure li:has(.elements-tree-editor) {
+  display: block;
 }
 
 .tree-outline-disclosure li .webkit-html-tag.close {
@@ -560,6 +575,7 @@ li.hovered:not(.always-parent) + ol.children:not(.shadow-root) {
 .tree-outline-disclosure li .selection {
   display: none;
   z-index: -1;
+  margin-left: 0;
 }
 
 .tree-outline-disclosure li.selected .selection {

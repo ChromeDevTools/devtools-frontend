@@ -6,6 +6,10 @@
     "emitDeclarationOnly": true,
     "outDir": ".",
     "rootDir": "../../../../../test/unit",
+    "rootDirs": [
+      "../../../../../",
+      "../../"
+    ],
     "skipLibCheck": true
   },
   "files": [

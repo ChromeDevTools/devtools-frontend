@@ -9948,8 +9948,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
           },
           onTextSubmit: async (text, imageInput, multimodalInputType) => {
             const submit = () => {
-              Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceQuerySubmitted);
-              void this.#startConversation(text, imageInput, multimodalInputType);
+              void this.#submitQuery(text, imageInput, multimodalInputType);
             };
             const seenSetting = Common5.Settings.Settings.instance().resolve(
               AiAssistanceModel7.AiUtils.aiAssistanceV2OptInChangeDialogSeenSettingDescriptor
@@ -10638,11 +10637,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       if (!this.#canExecuteQuery()) {
         return;
       }
-      Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceQuerySubmitted);
       if (this.#conversation && this.#conversation.isBlockedByOrigin) {
         this.#handleNewChatRequest();
       }
-      await this.#startConversation(predefinedPrompt);
+      await this.#submitQuery(predefinedPrompt);
     } else {
       this.#viewOutput.chatView?.focusTextInput();
     }
@@ -10709,7 +10707,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       return;
     }
     this.#updateConversationState(conversation);
-    await this.#doConversation(conversation.history);
+    await this.#consumeResponseStream(conversation.history);
   }
   #handleNewChatRequest() {
     this.#textInputValue = "";
@@ -10802,14 +10800,20 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       }
     }
   }
-  async #startConversation(text, imageInput, multimodalInputType) {
+  /**
+   * Submits a user query turn to the active conversation and streams the response.
+   * Executes on every turn (both initial prompt and follow-up turns).
+   */
+  async #submitQuery(text, imageInput, multimodalInputType) {
     if (!this.#conversation) {
       return;
     }
     this.#cancel();
+    Host5.userMetrics.actionTaken(Host5.UserMetrics.Action.AiAssistanceQuerySubmitted);
     const signal = this.#runAbortController.signal;
     if (this.#conversation.isEmpty) {
       Badges.UserBadges.instance().recordAction(Badges.BadgeAction.STARTED_AI_CONVERSATION);
+      void VisualLogging7.logFunctionCall(`start-conversation-${this.#conversation.type}`, "ui");
     }
     let multimodalInput;
     if (isAiAssistanceMultimodalInputEnabled() && imageInput && multimodalInputType) {
@@ -10819,8 +10823,7 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
         type: multimodalInputType
       };
     }
-    void VisualLogging7.logFunctionCall(`start-conversation-${this.#conversation.type}`, "ui");
-    await this.#doConversation(
+    await this.#consumeResponseStream(
       this.#conversation.run(
         text,
         {
@@ -10830,7 +10833,10 @@ var AiAssistancePanel = class _AiAssistancePanel extends UI9.Panel.Panel {
       )
     );
   }
-  async #doConversation(items) {
+  /**
+   * Consumes response items (live generator or historic array) and drives UI updates.
+   */
+  async #consumeResponseStream(items) {
     const release = await this.#mutex.acquire();
     try {
       let commitStep = function() {

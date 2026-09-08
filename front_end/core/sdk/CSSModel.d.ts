@@ -4,6 +4,7 @@ import * as Common from '../common/common.js';
 import * as Platform from '../platform/platform.js';
 import * as TextUtils from '../text_utils/text_utils.js';
 import { CSSFontFace } from './CSSFontFace.js';
+import { CSSLocation } from './CSSLocation.js';
 import { CSSMatchedStyles } from './CSSMatchedStyles.js';
 import { CSSMedia } from './CSSMedia.js';
 import { CSSStyleRule } from './CSSRule.js';
@@ -153,16 +154,7 @@ export declare class Edit {
     payload: Object | null;
     constructor(styleSheetId: string, oldRange: TextUtils.TextRange.TextRange, newText: string, payload: Object | null);
 }
-export declare class CSSLocation {
-    #private;
-    styleSheetId: Protocol.DOM.StyleSheetId;
-    url: Platform.DevToolsPath.UrlString;
-    lineNumber: number;
-    columnNumber: number;
-    constructor(header: CSSStyleSheetHeader, lineNumber: number, columnNumber?: number);
-    cssModel(): CSSModel;
-    header(): CSSStyleSheetHeader | null;
-}
+export { CSSLocation };
 export declare class InlineStyleResult {
     inlineStyle: CSSStyleDeclaration | null;
     attributesStyle: CSSStyleDeclaration | null;

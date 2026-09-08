@@ -3735,6 +3735,30 @@ var UserMetrics = class {
       timeInMilliseconds
     );
   }
+  changeRecorded(count) {
+    InspectorFrontendHostInstance.recordCountHistogram("DevTools.Comments.ChangeRecorded", count, 1, 100, 50);
+  }
+  changeSharedWithAgent(count) {
+    InspectorFrontendHostInstance.recordCountHistogram("DevTools.Comments.ChangeSharedWithAgent", count, 1, 100, 50);
+  }
+  commentCreated(count) {
+    InspectorFrontendHostInstance.recordCountHistogram("DevTools.Comments.CommentCreated", count, 1, 100, 50);
+  }
+  commentResolved(resolver, count) {
+    InspectorFrontendHostInstance.recordCountHistogram(
+      `DevTools.Comments.CommentResolvedBy${resolver}`,
+      count,
+      1,
+      100,
+      50
+    );
+  }
+  commentSharedWithAgent(count) {
+    InspectorFrontendHostInstance.recordCountHistogram("DevTools.Comments.CommentSharedWithAgent", count, 1, 100, 50);
+  }
+  commentSize(characters) {
+    InspectorFrontendHostInstance.recordCountHistogram("DevTools.Comments.CommentSize", characters, 1, 1e5, 50);
+  }
 };
 function createDynamicEnumProxy(enumName, fallbackEnum) {
   return new Proxy(fallbackEnum, {

@@ -16,6 +16,8 @@ export function resetRecordedMetrics() {
     const instance = Host.InspectorFrontendHost.InspectorFrontendHostInstance;
     if (instance instanceof Host.InspectorFrontendHost.InspectorFrontendHostStub) {
         instance.recordedEnumeratedHistograms = [];
+        instance.recordedPerformanceHistograms = [];
+        instance.recordedCountHistograms = [];
     }
 }
 export function setupUserMetricHooks() {

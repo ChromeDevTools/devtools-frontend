@@ -27,6 +27,7 @@ export interface CreationOptions {
 export declare class Universe {
     readonly context: Root.DevToolsContext.DevToolsContext;
     readonly autofillManager: AutofillManager.AutofillManager.AutofillManager;
+    readonly cd4aBridge: CommentManager.CD4ABridge.CD4ABridge | null;
     readonly supportsEmulation: boolean;
     readonly initAutomaticFilesystem: boolean;
     readonly fileSystemWorkspaceBinding: Persistence.FileSystemWorkspaceBinding.FileSystemWorkspaceBinding;

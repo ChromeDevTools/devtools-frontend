@@ -15,7 +15,7 @@ export default `/*
 
 .coverage-toolbar-container {
   display: flex;
-  border-bottom: 1px solid var(--sys-color-divider);
+  border-bottom: var(--sys-size-1) solid var(--sys-color-divider);
   flex: 0 0 auto;
 }
 
@@ -25,7 +25,7 @@ export default `/*
 
 .coverage-toolbar-summary {
   background-color: var(--sys-color-cdt-base-container);
-  border-top: 1px solid var(--sys-color-divider);
+  border-top: var(--sys-size-1) solid var(--sys-color-divider);
   padding-left: 5px;
   flex: 0 0 19px;
   display: flex;
@@ -33,7 +33,7 @@ export default `/*
 }
 
 .coverage-toolbar-summary .coverage-message {
-  padding-top: 2px;
+  padding-top: var(--sys-size-2);
   padding-left: 1ex;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -50,7 +50,7 @@ export default `/*
 .prerender-page {
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: var(--sys-size-9);
 }
 
 .bfcache-page .message,
@@ -61,14 +61,14 @@ export default `/*
 
 .inline-button {
   display: inline-flex;
-  border: 1px solid var(--sys-color-neutral-outline);
-  border-radius: 4px;
+  border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+  border-radius: var(--sys-shape-corner-extra-small);
   position: relative;
   vertical-align: sub;
-  margin: 2px;
+  margin: var(--sys-size-2);
   background-color: var(--sys-color-cdt-base-container);
   justify-content: center;
-  width: 28px;
+  width: var(--sys-size-12);
 }
 
 .inline-button:hover {

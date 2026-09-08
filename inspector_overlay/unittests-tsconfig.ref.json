@@ -6,6 +6,10 @@
     "emitDeclarationOnly": true,
     "outDir": ".",
     "rootDir": "../../../../inspector_overlay",
+    "rootDirs": [
+      "../../../../",
+      "../"
+    ],
     "skipLibCheck": true
   },
   "files": [

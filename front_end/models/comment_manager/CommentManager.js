@@ -26,15 +26,17 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper {
     }
     createCommentThread(anchor, text, author = 'DEVELOPER', changes) {
         const id = `comment-${this.#nextId++}`;
+        const comment = {
+            author,
+            text,
+            timestamp: Date.now(),
+        };
         const thread = {
             id,
             anchor,
-            comments: [{
-                    author,
-                    text,
-                    timestamp: Date.now(),
-                }],
+            comments: [comment],
             status: 'ACTIVE',
+            transmitted: false,
             changes,
         };
         this.#commentThreads.set(id, thread);
@@ -46,6 +48,33 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper {
     }
     getCommentThreads() {
         return Array.from(this.#commentThreads.values());
+    }
+    takeComments() {
+        const threads = [];
+        for (const thread of this.#commentThreads.values()) {
+            if (!thread.transmitted) {
+                thread.transmitted = true;
+                threads.push(thread);
+            }
+        }
+        return threads;
+    }
+    resolveCommentThread(threadId, replyText) {
+        const thread = this.#commentThreads.get(threadId);
+        if (!thread) {
+            return false;
+        }
+        if (replyText && replyText.trim().length > 0) {
+            const comment = {
+                author: 'AGENT',
+                text: replyText.trim(),
+                timestamp: Date.now(),
+            };
+            thread.comments.push(comment);
+        }
+        thread.status = 'RESOLVED';
+        this.dispatchEventToListeners("CommentThreadsChanged" /* Events.COMMENT_THREADS_CHANGED */, this.getCommentThreads());
+        return true;
     }
     removeCommentThread(id) {
         if (!this.#commentThreads.has(id)) {

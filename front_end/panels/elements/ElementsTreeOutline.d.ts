@@ -57,6 +57,7 @@ interface ViewInput {
         node: SDK.DOMModel.DOMNode;
     } & InitialEditState) | null;
     onInitialEditCompleted?: () => void;
+    multilineEditingNode?: SDK.DOMModel.DOMNode | null;
     dragOverNode?: {
         node: SDK.DOMModel.DOMNode;
         isClosingTag: boolean;
@@ -173,9 +174,6 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     performUpdate(): void;
     modelAdded(domModel: SDK.DOMModel.DOMModel): void;
     modelRemoved(domModel: SDK.DOMModel.DOMModel): void;
-    /**
-     * FIXME: which node is expanded should be part of the view input.
-     */
     expand(): void;
     /**
      * FIXME: which node is selected should be part of the view input.
@@ -190,8 +188,9 @@ export declare class DOMTreeWidget extends UI.Widget.Widget {
     toggleHideElement(node: SDK.DOMModel.DOMNode): void;
     removeNode(node: SDK.DOMModel.DOMNode): Promise<void>;
     isToggledToHidden(node: SDK.DOMModel.DOMNode): boolean;
-    setMultilineEditing(multilineEditing: MultilineEditorController | null): void;
+    setMultilineEditing(multilineEditing: MultilineEditorController | null, node?: SDK.DOMModel.DOMNode): void;
     multilineEditing(): MultilineEditorController | null;
+    multilineEditingNode(): SDK.DOMModel.DOMNode | null;
     runPendingUpdates(): void;
     onResize(): void;
     willHide(): void;
@@ -284,7 +283,7 @@ export declare class ElementsTreeOutline extends ElementsTreeOutlineBase {
     static forDOMModel(domModel: SDK.DOMModel.DOMModel): ElementsTreeOutline | null;
     deindentSingleNode(): void;
     setWordWrap(wrap: boolean): void;
-    setMultilineEditing(multilineEditing: MultilineEditorController | null): void;
+    setMultilineEditing(multilineEditing: MultilineEditorController | null, node?: SDK.DOMModel.DOMNode): void;
     visibleWidth(): number;
     setVisibleWidth(width: number): void;
     setClipboardData(data: ClipboardData | null): void;

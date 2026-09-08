@@ -104,7 +104,7 @@ export class SecurityOrigin {
         if (!origin || isOpaqueUrlString(origin)) {
             return SecurityOrigin.createUniqueOpaque();
         }
-        return new SecurityOrigin({ type: 'origin', value: origin });
+        return new SecurityOrigin({ type: 'origin', value: origin.toLowerCase() });
     }
     /**
      * Creates a synthetic, unique opaque origin.

@@ -42,6 +42,7 @@
     "useUnknownInCatchVariables": false
   },
   "files": [
+    "../../../../../../front_end/models/comment_manager/CD4ABridge.test.ts",
     "../../../../../../front_end/models/comment_manager/CommentManager.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
@@ -53,7 +54,22 @@
       "path": "bundle-tsconfig.ref.json"
     },
     {
+      "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/host/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/root/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/sdk/bundle-tsconfig.ref.json"
+    },
+    {
       "path": "../../testing/testing-tsconfig.ref.json"
+    },
+    {
+      "path": "../logs/bundle-tsconfig.ref.json"
     }
   ]
 }

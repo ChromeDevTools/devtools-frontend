@@ -25,7 +25,7 @@ export default `/*
     rgb(255 125 210 / 15%) 85%
   );
   border-color: var(--ref-palette-pink55);
-  border-width: 0 1px 5px;
+  border-width: 0 var(--sys-size-1) 5px;
   border-style: solid;
   pointer-events: none;
 }
@@ -87,7 +87,7 @@ export default `/*
 
 .label-text[contenteditable='true'] {
   outline: none;
-  box-shadow: 0 0 0 1px var(--ref-palette-pink55);
+  box-shadow: 0 0 0 var(--sys-size-1) var(--ref-palette-pink55);
 }
 
 .label-text[contenteditable='false'] {

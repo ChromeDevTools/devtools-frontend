@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 var _a;
-import * as Common from '../../../core/common/common.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
@@ -10,7 +10,10 @@ import { seconds } from './UnitFormatters.js';
 const MAX_HEADERS_SIZE = 1000;
 const MAX_BODY_SIZE = 10000;
 /**
- * Sanitizes the set of headers, removing values that are not on the allow-list and replacing them with '<redacted>'.
+ * Sanitizes headers by replacing unapproved header values with '<redacted>'.
+ *
+ * @param headers List of header name/value pairs to sanitize.
+ * @returns Sanitized list of headers with unapproved values redacted.
  */
 export function sanitizeHeaders(headers) {
     return headers.map(header => {
@@ -23,6 +26,27 @@ export function sanitizeHeaders(headers) {
 export class NetworkRequestFormatter {
     #calculator;
     #request;
+    #networkLog;
+    #initiatorSecurityOrigin;
+    /**
+     * @param request The network request to format.
+     * @param calculator Calculator for request timing metrics.
+     * @param options Optional configuration options.
+     */
+    constructor(request, calculator, options) {
+        this.#request = request;
+        this.#calculator = calculator;
+        this.#networkLog = options?.networkLog;
+        this.#initiatorSecurityOrigin = options?.initiatorSecurityOrigin ?? request.initiatorSecurityOrigin();
+    }
+    /**
+     * Evaluates the response access mode for this network request relative to the initiator security origin.
+     *
+     * @returns The evaluated `ResponseAccessMode`.
+     */
+    responseAccessMode() {
+        return SDK.NetworkRequestAccess.evaluateResponseAccessMode(this.#request, this.#initiatorSecurityOrigin);
+    }
     static allowHeader(headerName) {
         return allowedHeaders.has(headerName.toLowerCase().trim());
     }
@@ -50,9 +74,9 @@ export class NetworkRequestFormatter {
         return `${title}\n<binary data>`;
     }
     static formatInitiatorUrl(initiatorUrl, allowedOrigin) {
-        // We extract the origin, and if it is invalid/empty we default to redacting.
-        const initiatorOrigin = Common.ParsedURL.ParsedURL.extractOrigin(initiatorUrl);
-        if (initiatorOrigin && initiatorOrigin === allowedOrigin) {
+        const initiatorOrigin = SDK.SecurityOrigin.SecurityOrigin.create(initiatorUrl);
+        const targetOrigin = SDK.SecurityOrigin.SecurityOrigin.create(allowedOrigin);
+        if (initiatorOrigin.isSameOriginWith(targetOrigin)) {
             return initiatorUrl;
         }
         return '<redacted cross-origin initiator URL>';
@@ -95,21 +119,33 @@ export class NetworkRequestFormatter {
         }
         return lines.length > 0 ? `${lines.join('\n')}\n` : '';
     }
-    #networkLog;
-    constructor(request, calculator, 
-    // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-    networkLog = Logs.NetworkLog.NetworkLog.instance()) {
-        this.#request = request;
-        this.#calculator = calculator;
-        this.#networkLog = networkLog;
-    }
     formatRequestHeaders() {
         return _a.formatHeaders('Request headers:', this.#request.requestHeaders());
     }
+    /**
+     * Formats response headers for the AI prompt.
+     *
+     * Headers are filtered based on the request's evaluated ResponseAccessMode:
+     * - Opaque cross-origin requests only include CORS-safelisted response headers.
+     * - CORS-authorized requests include CORS-safelisted and Access-Control-Expose-Headers.
+     * - Same-origin requests include all response headers.
+     * Values of headers not present on the global allowedHeaders list are then redacted.
+     */
     formatResponseHeaders() {
-        return _a.formatHeaders('Response headers:', this.#request.responseHeaders);
+        const accessMode = this.responseAccessMode();
+        const headers = SDK.NetworkRequestAccess.getFilterableResponseHeaders(this.#request, accessMode);
+        return _a.formatHeaders('Response headers:', headers);
     }
+    /**
+     * Formats the response body for the AI prompt.
+     *
+     * For opaque cross-origin requests, the response body is redacted because the initiating page's
+     * JavaScript is forbidden by the Same-Origin Policy from reading it.
+     */
     async formatResponseBody() {
+        if (this.responseAccessMode() === "OPAQUE_CROSS_ORIGIN" /* SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN */) {
+            return SDK.NetworkRequestAccess.REDACTED_RESPONSE_BODY;
+        }
         return await _a.formatBody('Response body:', this.#request, MAX_BODY_SIZE);
     }
     /**
@@ -154,10 +190,12 @@ Request initiator chain:\n${this.formatRequestInitiatorChain()}`;
      * the request's origin.
      */
     formatRequestInitiatorChain() {
-        const allowedOrigin = Common.ParsedURL.ParsedURL.extractOrigin(this.#request.url());
+        const allowedOrigin = this.#request.url();
         let initiatorChain = '';
         let lineStart = '- URL: ';
-        const graph = this.#networkLog.initiatorGraphForRequest(this.#request);
+        // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+        const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
+        const graph = networkLog.initiatorGraphForRequest(this.#request);
         for (const initiator of Array.from(graph.initiators).reverse()) {
             initiatorChain = initiatorChain + lineStart +
                 _a.formatInitiatorUrl(initiator.url(), allowedOrigin) + '\n';

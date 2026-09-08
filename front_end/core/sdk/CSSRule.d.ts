@@ -61,6 +61,7 @@ export declare class CSSStyleRule extends CSSRule {
     lineNumberInSource(selectorIndex: number): number;
     columnNumberInSource(selectorIndex: number): number | undefined;
     rebase(edit: Edit): void;
+    constructResolvedSelector(nestingIndex?: number): string | undefined;
 }
 export declare class CSSPropertyRule extends CSSRule {
     #private;

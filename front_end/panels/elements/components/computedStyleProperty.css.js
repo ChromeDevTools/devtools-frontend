@@ -30,7 +30,7 @@ export default `/*
 
 .computed-style-property:hover {
   background-color: var(--sys-color-state-hover-on-subtle);
-  cursor: text;
+  cursor: var(--override-cursor, text);
 }
 
 .computed-style-property.inherited {

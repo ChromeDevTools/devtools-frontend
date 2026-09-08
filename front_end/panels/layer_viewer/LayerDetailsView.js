@@ -184,6 +184,7 @@ export const DEFAULT_VIEW = (input, _output, target) => {
     Lit.render(html `
     <div class="layer-details-container"
          data-backend-node-id=${domNode ? domNode.backendNodeId() : nothing}
+         data-target-id=${domNode ? domNode.domModel().target().id() : nothing}
          jslog=${VisualLogging.section('layer-details')}>
       <table>
         <tbody>

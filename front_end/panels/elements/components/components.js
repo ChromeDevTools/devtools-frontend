@@ -209,7 +209,7 @@ var computedStyleProperty_css_default = `/*
 
 .computed-style-property:hover {
   background-color: var(--sys-color-state-hover-on-subtle);
-  cursor: text;
+  cursor: var(--override-cursor, text);
 }
 
 .computed-style-property.inherited {
@@ -387,7 +387,7 @@ var computedStyleTrace_css_default = `/*
 
 .computed-style-trace:hover {
   background-color: var(--sys-color-state-hover-on-subtle);
-  cursor: text;
+  cursor: var(--override-cursor, text);
 }
 
 .goto {

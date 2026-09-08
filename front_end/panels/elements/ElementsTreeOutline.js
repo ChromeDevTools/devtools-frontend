@@ -534,7 +534,13 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
                 input.isNodeExpanded(node) :
                 (input.expandRoot &&
                     (node === input.rootDOMNode || (input.omitRootDOMNode && node.parentNode === input.rootDOMNode)))));
-        const hasChildren = nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
+        const isEditingAsHTML = input.multilineEditingNode === node ||
+            (input.nodeToEdit?.node === node && Boolean(input.nodeToEdit.isEditAsHTML));
+        const hasChildren = !isEditingAsHTML && nodeHasVisibleChildren(node, input.rootDOMNode, input.maxTreeDepth, input.omitRootDOMNode);
+        const isCollapsible = !isEditingAsHTML &&
+            !(node.nodeType() === Node.ELEMENT_NODE && node.parentNode?.nodeType() === Node.DOCUMENT_NODE &&
+                !node.parentNode.parentNode);
+        const isExpandable = hasChildren && isCollapsible;
         const allVisibleChildren = hasChildren ? getVisibleChildren(node, input.showComments ?? true) : [];
         const limit = input.expandedChildrenLimit ? input.expandedChildrenLimit(node) : InitialChildrenLimit;
         const children = allVisibleChildren.slice(0, limit);
@@ -547,6 +553,9 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
             input.onSelect?.(node, /* selectedByUser= */ true);
         };
         const onExpand = (event) => {
+            if (isEditingAsHTML) {
+                return;
+            }
             input.onExpand?.(node, event.detail.expanded);
         };
         const isDragOver = input.dragOverNode?.node === node && !input.dragOverNode.isClosingTag;
@@ -556,6 +565,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
             hovered: isHovered,
             'in-clipboard': Boolean(input.isNodeInClipboard?.(node)),
             'elements-drag-over': isDragOver,
+            'always-parent': !isCollapsible && !isEditingAsHTML,
         });
         const onMouseMove = (event) => {
             event.stopPropagation();
@@ -601,7 +611,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
       <li role="treeitem"
           ?selected=${isSelected}
           class=${classes}
-          ?open=${isExpanded}
+          ?open=${isExpanded && !isEditingAsHTML}
           draggable=${isDraggable ? 'true' : 'false'}
           @select=${onSelect}
           @expand=${onExpand}
@@ -621,20 +631,20 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         ${UI.Widget.widget(ElementsTreeWidget, {
             node,
             isClosingTag: false,
-            expanded: isExpanded,
+            expanded: isExpanded && !isEditingAsHTML,
             isExpandable: hasChildren,
             selected: isSelected,
             isDOMNodeSelected: isSelected,
             hovered: isHovered,
             searchQuery: input.searchMatchNode === node ? (input.searchMatchQuery ?? null) : null,
             inClipboard: input.isNodeInClipboard?.(node) ?? false,
-            computeLeftIndent: computeLeftIndent(depth, hasChildren),
+            computeLeftIndent: computeLeftIndent(depth, isExpandable),
             disableEdits: input.disableEdits ?? false,
             showAIButton: input.showAIButton ?? true,
             initialEdit: input.nodeToEdit?.node === node ? input.nodeToEdit : null,
             onInitialEditCompleted: input.onInitialEditCompleted,
             revealInTopLayer: (n) => input.domTreeWidget?.revealInTopLayer(n),
-            setMultilineEditing: multilineEditing => input.domTreeWidget?.setMultilineEditing(multilineEditing),
+            setMultilineEditing: (multilineEditing, n) => input.domTreeWidget?.setMultilineEditing(multilineEditing, n ?? node),
             visibleWidth: () => input.domTreeWidget?.visibleWidth ?? 0,
             selectDOMNode: (n, selectedByUser) => input.onSelect?.(n, selectedByUser),
             selectNodeAfterEdit: (wasExpanded, error, newNode, moveDirection) => {
@@ -720,6 +730,7 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
         aria-label=${i18nString(UIStrings.pageDom)}
         jslog=${VisualLogging.tree('elements')}
         ?show-selection-on-keyboard-focus=${input.showSelectionOnKeyboardFocus}
+        @enter=${(event) => event.preventDefault()}
         @keydown=${input.onKeyDown}
         @clipboard-copy=${(event) => input.onCopyOrCut?.(false, event)}
         @clipboard-cut=${(event) => input.onCopyOrCut?.(true, event)}
@@ -730,6 +741,8 @@ export const DECLARATIVE_VIEW = (input, _output, target) => {
           <style>${elementsTreeOutlineStyles}</style>
           <style>${CodeHighlighter.codeHighlighterStyles}</style>
           <ul role="tree">
+            ${input.omitRootDOMNode && input.rootDOMNode && input.rootDOMNode.adoptedStyleSheetsForNode.length > 0 ?
+        renderAdoptedStyleSheets(input.rootDOMNode, 0) : nothing}
             ${rootNodes.map(node => renderNode(node))}
             ${input.omitRootDOMNode && input.rootDOMNode ? (() => {
         const remaining = allRootNodes.length - rootNodes.length;
@@ -828,20 +841,35 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     #selectedDOMNode = null;
     #expandedNodes = new Set();
     #expandedChildrenLimitByNode = new WeakMap();
+    #expandRootNode(node) {
+        if (!this.#expandRoot && !this.omitRootDOMNode) {
+            return;
+        }
+        this.#expandedNodes.add(node);
+        const expandChildren = () => {
+            if (this.#expandRoot && this.omitRootDOMNode && node.children()) {
+                for (const child of node.children() ?? []) {
+                    this.#expandedNodes.add(child);
+                }
+            }
+        };
+        if (node.children()) {
+            expandChildren();
+        }
+        else if (node.childNodeCount()) {
+            void node.getChildNodes(() => {
+                expandChildren();
+                this.performUpdate();
+            });
+        }
+    }
     // FIXME: this is not declarative because ElementsTreeOutline can
     // change root node internally.
     set rootDOMNode(node) {
         if (this.#view === DECLARATIVE_VIEW) {
             this.#rootDOMNode = node;
             if (node) {
-                if (this.expandRoot || this.omitRootDOMNode) {
-                    this.#expandedNodes.add(node);
-                }
-                if (!node.children() && node.childNodeCount()) {
-                    void node.getChildNodes(() => {
-                        this.performUpdate();
-                    });
-                }
+                this.#expandRootNode(node);
             }
             this.performUpdate();
             return;
@@ -899,6 +927,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
     }
     set expandRoot(expandRoot) {
         this.#expandRoot = expandRoot;
+        if (this.#rootDOMNode) {
+            this.#expandRootNode(this.#rootDOMNode);
+        }
         this.performUpdate();
     }
     #currentHighlightedNode = null;
@@ -1088,6 +1119,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         this.#updateModifiedNodesSoon();
     }
     updateModifiedNodes() {
+        if (this.#updateModifiedNodesTimeout) {
+            clearTimeout(this.#updateModifiedNodesTimeout);
+            this.#updateModifiedNodesTimeout = undefined;
+        }
         if (this.#view === DECLARATIVE_VIEW) {
             this.performUpdate();
             return;
@@ -1214,6 +1249,9 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         return this.#viewOutput.elementsTreeOutline?.selectedDOMNode() ?? null;
     }
     setNodeExpanded(node, expanded) {
+        if (!expanded && this.#multilineEditingNode === node) {
+            return;
+        }
         if (this.#view === DECLARATIVE_VIEW) {
             if (expanded) {
                 this.#expandedNodes.add(node);
@@ -1469,6 +1507,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
             onInitialEditCompleted: () => {
                 this.#nodeToEdit = null;
             },
+            multilineEditingNode: this.#multilineEditingNode,
             dragOverNode: this.#dragOverNode,
             isValidDragSource: (node) => this.isValidDragSource(node),
             onDragStart: (node, event, textContent) => this.onDragStart(node, event, textContent),
@@ -1583,12 +1622,10 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         this.#viewOutput.elementsTreeOutline?.unwireFromDOMModel(domModel);
         this.performUpdate();
     }
-    /**
-     * FIXME: which node is expanded should be part of the view input.
-     */
     expand() {
-        if (this.#viewOutput.elementsTreeOutline?.selectedTreeElement) {
-            this.#viewOutput.elementsTreeOutline.selectedTreeElement.expand();
+        const selectedNode = this.selectedDOMNode();
+        if (selectedNode) {
+            this.setNodeExpanded(selectedNode, true);
         }
     }
     /**
@@ -1641,11 +1678,17 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         return node.isToggledToHidden();
     }
     #multilineEditing = null;
-    setMultilineEditing(multilineEditing) {
+    #multilineEditingNode = null;
+    setMultilineEditing(multilineEditing, node) {
         this.#multilineEditing = multilineEditing;
+        this.#multilineEditingNode = multilineEditing ? (node ?? this.#multilineEditingNode) : null;
+        this.performUpdate();
     }
     multilineEditing() {
         return this.#multilineEditing;
+    }
+    multilineEditingNode() {
+        return this.#multilineEditingNode;
     }
     runPendingUpdates() {
         this.updateModifiedNodes();
@@ -1682,6 +1725,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         const index = node.index;
         const wasExpanded = this.isNodeExpanded(node);
         const editingFinished = (success) => {
+            this.#multilineEditingNode = null;
             if (callback) {
                 callback();
             }
@@ -1710,6 +1754,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         if (startEditing === false) {
             return;
         }
+        this.#multilineEditingNode = node;
         this.#nodeToEdit = {
             node,
             isEditAsHTML: true,
@@ -2344,8 +2389,8 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
     setWordWrap(wrap) {
         this.elementInternal.classList.toggle('elements-tree-nowrap', !wrap);
     }
-    setMultilineEditing(multilineEditing) {
-        this.domTreeWidget?.setMultilineEditing(multilineEditing);
+    setMultilineEditing(multilineEditing, node) {
+        this.domTreeWidget?.setMultilineEditing(multilineEditing, node);
     }
     visibleWidth() {
         return this.domTreeWidget?.visibleWidth ?? this.visibleWidthInternal ?? 0;

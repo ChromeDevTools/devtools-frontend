@@ -136,7 +136,7 @@ export declare class ElementsTreeWidget extends UI.Widget.Widget {
     selectNodeAfterEdit?: (wasExpanded: boolean, error: string | null, newNode: SDK.DOMModel.DOMNode | null, moveDirection?: string) => void;
     runPendingUpdates?: () => void;
     focusOutline?: () => void;
-    setMultilineEditing?: (multilineEditing: EditorHandles | null) => void;
+    setMultilineEditing?: (multilineEditing: EditorHandles | null, node?: SDK.DOMModel.DOMNode) => void;
     visibleWidth?: () => number;
     inClipboard: boolean;
     editing: EditorHandles | null;

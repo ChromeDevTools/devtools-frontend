@@ -6,6 +6,10 @@
     "emitDeclarationOnly": true,
     "outDir": ".",
     "rootDir": "../../../../../test/api",
+    "rootDirs": [
+      "../../../../../",
+      "../../"
+    ],
     "skipLibCheck": true
   },
   "files": [

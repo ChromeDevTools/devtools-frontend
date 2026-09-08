@@ -24,7 +24,7 @@ ul {
 
     span {
       /* push the text down to align slightly better with the icons */
-      padding-top: 2px;
+      padding-top: var(--sys-size-2);
     }
   }
 }

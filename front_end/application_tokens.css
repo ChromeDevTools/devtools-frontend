@@ -254,6 +254,11 @@
    */
    --combobox-dropdown-arrow: var(--image-file-arrow-drop-down-light);
 
+  /**
+   * Comment mode cursor.
+   */
+  --comment-cursor: var(--image-file-comment-mode-cursor) 10 28, auto;
+
   &.theme-with-dark-background {
     --color-primary-old: rgb(138 180 248);
     --color-primary-variant: rgb(102 157 246);

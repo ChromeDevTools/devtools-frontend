@@ -314,6 +314,9 @@ export declare namespace TreeViewElement {
             expanded: boolean;
         });
     }
+    class EnterEvent extends CustomEvent<void> {
+        constructor();
+    }
     /**
      * @deprecated
      */

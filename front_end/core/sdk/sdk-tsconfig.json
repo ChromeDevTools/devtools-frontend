@@ -49,6 +49,7 @@
     "../../../../../../front_end/core/sdk/CSSContainerQuery.ts",
     "../../../../../../front_end/core/sdk/CSSFontFace.ts",
     "../../../../../../front_end/core/sdk/CSSLayer.ts",
+    "../../../../../../front_end/core/sdk/CSSLocation.ts",
     "../../../../../../front_end/core/sdk/CSSMatchedStyles.ts",
     "../../../../../../front_end/core/sdk/CSSMedia.ts",
     "../../../../../../front_end/core/sdk/CSSMetadata.ts",

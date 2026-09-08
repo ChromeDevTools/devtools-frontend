@@ -50,9 +50,9 @@ export async function finalize() {
         }
         else if (Types.Events.isPaint(event)) {
             if (!event.args.data.layerId) {
-                // Note that this check purposefully includes excluding an event with a layerId of 0.
-                // 0 indicates that this paint was for a subframe - we do not want these
-                // as we only care about paints for top level frames.
+                // A layerId of 0 means that this event cannot be associated with a
+                // compositor layer. This includes modern Paint duration events and
+                // older Paint events for subframes.
                 continue;
             }
             paintEvents.push(event);

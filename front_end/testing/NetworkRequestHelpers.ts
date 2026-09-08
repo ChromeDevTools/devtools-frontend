@@ -2,11 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import sinon from 'sinon';
+
 import type * as Common from '../core/common/common.js';
 import * as Platform from '../core/platform/platform.js';
 import * as SDK from '../core/sdk/sdk.js';
 import type * as TextUtils from '../core/text_utils/text_utils.js';
 import type * as Protocol from '../generated/protocol.js';
+import * as Logs from '../models/logs/logs.js';
 
 const {urlString} = Platform.DevToolsPath;
 
@@ -112,4 +115,99 @@ export function createNetworkRequest(options: CreateNetworkRequestOptions = {}):
   }
 
   return request;
+}
+
+/**
+ * Configuration options for {@link stubInitiatorGraph}.
+ */
+export interface StubInitiatorGraphOptions {
+  /**
+   * Upstream requests that triggered the target request. Do not include the target
+   * request itself; it is automatically added as the primary initiator.
+   * Defaults to a single synthetic cross-origin initiator.
+   */
+  initiators?: SDK.NetworkRequest.NetworkRequest[];
+  /**
+   * Downstream requests triggered by the target request.
+   * Defaults to two synthetic cross-origin child requests.
+   */
+  initiated?: SDK.NetworkRequest.NetworkRequest[];
+  /**
+   * The NetworkLog instance on which to install the Sinon stub.
+   * Defaults to `Logs.NetworkLog.NetworkLog.instance()`.
+   */
+  networkLog?: Logs.NetworkLog.NetworkLog;
+}
+
+/**
+ * Stubs {@link Logs.NetworkLog.NetworkLog.initiatorGraphForRequest} for the given request
+ * using Sinon.
+ *
+ * If `initiators` or `initiated` lists are omitted, generates default synthetic requests
+ * simulating a typical multi-level initiator chain with cross-origin boundaries.
+ *
+ * @param request The network request whose initiator graph is being queried.
+ * @param options Custom requests or NetworkLog instance to configure the stub.
+ * @returns The lists of ancestor (`initiators`) and descendant (`initiated`) requests used,
+ * along with the Sinon stub.
+ */
+export function stubInitiatorGraph(
+    request: SDK.NetworkRequest.NetworkRequest,
+    options: StubInitiatorGraphOptions = {},
+    ): {
+  initiators: SDK.NetworkRequest.NetworkRequest[],
+  initiated: SDK.NetworkRequest.NetworkRequest[],
+  stub: sinon.SinonStub<[SDK.NetworkRequest.NetworkRequest], Logs.NetworkLog.InitiatorGraph>,
+} {
+  // Explicitly use EmptyUrlString so that default synthetic requests are treated as
+  // cross-origin, exercising URL redaction and security checks in downstream formatters.
+  const initiators = options.initiators ?? [
+    createNetworkRequest({
+      requestId: 'requestId-initiator',
+      url: urlString`https://www.initiator.com`,
+      documentURL: Platform.DevToolsPath.EmptyUrlString,
+    }),
+  ];
+
+  const initiated = options.initiated ?? [
+    createNetworkRequest({
+      requestId: 'requestId-initiated-1',
+      url: urlString`https://www.example.com/1`,
+      documentURL: Platform.DevToolsPath.EmptyUrlString,
+    }),
+    createNetworkRequest({
+      requestId: 'requestId-initiated-2',
+      url: urlString`https://www.example.com/2`,
+      documentURL: Platform.DevToolsPath.EmptyUrlString,
+    }),
+  ];
+
+  const networkLog = options.networkLog ?? Logs.NetworkLog.NetworkLog.instance();
+
+  const stub = sinon.stub(networkLog, 'initiatorGraphForRequest');
+  // Default fallback for any request not explicitly handled:
+  stub.returns({
+    initiators: new Set<SDK.NetworkRequest.NetworkRequest>(),
+    initiated: new Map<SDK.NetworkRequest.NetworkRequest, SDK.NetworkRequest.NetworkRequest>(),
+  });
+
+  // InitiatorGraph.initiated is a Map<ChildRequest, ParentInitiator>:
+  // - [request, init]: target request was initiated by upstream ancestor `init`.
+  // - [init, request]: downstream child `init` was initiated by target `request`.
+  stub.withArgs(request).returns({
+    initiators: new Set([request, ...initiators]),
+    initiated: new Map([
+      ...initiators.map(init => [request, init] as const),
+      ...initiated.map(init => [init, request] as const),
+    ]),
+  });
+  // Downstream consumers may recursively query initiatorGraphForRequest on child requests:
+  for (const init of initiated) {
+    stub.withArgs(init).returns({
+      initiators: new Set([]),
+      initiated: new Map([[init, request]]),
+    });
+  }
+
+  return {initiators, initiated, stub};
 }

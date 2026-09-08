@@ -11,7 +11,7 @@ import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
-import {createNetworkRequest, mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
+import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {
   deinitializeGlobalVars,
   restoreUserAgentForTesting,
@@ -20,6 +20,7 @@ import {
 } from '../../../testing/EnvironmentHelpers.js';
 import {getInsightOrError} from '../../../testing/InsightHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {createNetworkRequest} from '../../../testing/NetworkRequestHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
@@ -1141,12 +1142,10 @@ code
         {takeSnapshot: sinon.stub().resolves({root: {nodeName: 'IMG'}})} as unknown as SDK.DOMModel.DOMNode,
       ]]));
 
-      const mockRequest = createNetworkRequest();
-      sinon.stub(mockRequest, 'contentType').returns({
-        isImage: () => true,
-      } as unknown as Common.ResourceType.ResourceType);
-      sinon.stub(mockRequest, 'requestContentData')
-          .resolves(new TextUtils.ContentData.ContentData('base64', true, 'image/jpeg'));
+      const mockRequest = createNetworkRequest({
+        resourceType: Common.ResourceType.resourceTypes.Image,
+        contentData: new TextUtils.ContentData.ContentData('base64', true, 'image/jpeg'),
+      });
       // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
       sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requestByManagerAndId').returns(mockRequest);
 

@@ -9,8 +9,9 @@ import sinon from 'sinon';
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import {createNetworkRequest, createUISourceCode} from '../../../testing/AiAssistanceHelpers.js';
+import {createUISourceCode} from '../../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
+import {createNetworkRequest, stubInitiatorGraph} from '../../../testing/NetworkRequestHelpers.js';
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {loadBasicSourceMapExample} from '../../../testing/SourceMapHelpers.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
@@ -59,7 +60,10 @@ lorem ipsum
     });
 
     it('formats file with associated request initiator chain', async () => {
-      const networkRequest = createNetworkRequest({includeInitiators: true});
+      const networkRequest = createNetworkRequest({
+        url: 'https://www.example.com/script.js',
+      });
+      stubInitiatorGraph(networkRequest);
       const uiSourceCode = await createUISourceCode({
         content: 'lorem ipsum',
         requestContentData: true,

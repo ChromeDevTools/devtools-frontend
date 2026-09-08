@@ -19,7 +19,6 @@ import * as Workspace from '../../models/workspace/workspace.js';
 import {
   cleanup,
   createAiAssistancePanel,
-  createNetworkRequest,
   mockAidaClient,
   openHistoryContextMenu,
   stripId,
@@ -36,6 +35,7 @@ import {
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {expectCall} from '../../testing/ExpectStubCall.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../testing/SnapshotTester.js';
 import * as Snackbars from '../../ui/components/snackbars/snackbars.js';

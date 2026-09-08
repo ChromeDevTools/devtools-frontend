@@ -14,7 +14,6 @@ import type * as Protocol from '../../generated/protocol.js';
 import {
   assertSkillLoaded,
   assertSkillNotLoaded,
-  createNetworkRequest,
   mockAidaClient,
 } from '../../testing/AiAssistanceHelpers.js';
 import {
@@ -22,6 +21,7 @@ import {
   updateHostConfig,
 } from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {TestUniverse} from '../../testing/TestUniverse.js';
 import * as Bindings from '../bindings/bindings.js';
 import * as Logs from '../logs/logs.js';
@@ -401,6 +401,7 @@ describe('AiConversation', () => {
     });
 
     const networkRequest = createNetworkRequest({
+      requestId: 'requestId-0',
       url: Platform.DevToolsPath.urlString`https://example.com/test`,
       documentURL: Platform.DevToolsPath.urlString`https://example.com`,
     });
@@ -460,6 +461,7 @@ describe('AiConversation', () => {
       aidaClient,
     });
     const networkRequest = createNetworkRequest({
+      requestId: 'requestId-0',
       url: Platform.DevToolsPath.urlString`https://example.com`,
       documentURL: Platform.DevToolsPath.urlString`https://example.com`,
     });

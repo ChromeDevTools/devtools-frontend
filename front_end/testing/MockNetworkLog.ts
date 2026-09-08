@@ -10,17 +10,6 @@ interface MockNetworkRequest {
   requestId(): string;
 }
 
-export function createNetworkRequest(requestId: string): SDK.NetworkRequest.NetworkRequest {
-  return {
-    requestId() {
-      return requestId;
-    },
-    backendRequestId() {
-      return requestId;
-    },
-  } as unknown as SDK.NetworkRequest.NetworkRequest;
-}
-
 export class MockNetworkLog extends Common.ObjectWrapper.ObjectWrapper<Logs.NetworkLog.EventTypes> {
   private mockRequests: MockNetworkRequest[];
 

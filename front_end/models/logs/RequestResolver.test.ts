@@ -6,7 +6,8 @@ import {assert} from 'chai';
 
 import type * as SDK from '../../core/sdk/sdk.js';
 import type * as Protocol from '../../generated/protocol.js';
-import {createNetworkRequest, MockNetworkLog} from '../../testing/MockNetworkLog.js';
+import {MockNetworkLog} from '../../testing/MockNetworkLog.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import * as Logs from '../logs/logs.js';
 
 describe('RequestResolver', () => {
@@ -14,7 +15,7 @@ describe('RequestResolver', () => {
 
   describe('tryGet', () => {
     it('should resolve an existing request', () => {
-      const mockRequest = createNetworkRequest(requestId1);
+      const mockRequest = createNetworkRequest({requestId: requestId1});
       const networkLog = new MockNetworkLog([mockRequest]) as unknown as Logs.NetworkLog.NetworkLog;
       const requestResolver = new Logs.RequestResolver.RequestResolver(networkLog);
       const request = requestResolver.tryGet(requestId1, () => {
@@ -44,7 +45,7 @@ describe('RequestResolver', () => {
         assert.isNull(request);
       });
       assert.isTrue(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
-      const mockRequest = createNetworkRequest(requestId1);
+      const mockRequest = createNetworkRequest({requestId: requestId1});
       mockNetworkLog.addRequest(mockRequest);
       const request = await waitForCall;
       assert.isFalse(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
@@ -55,7 +56,7 @@ describe('RequestResolver', () => {
 
   describe('waitFor', () => {
     it('should resolve an existing request', async () => {
-      const mockRequest = createNetworkRequest(requestId1);
+      const mockRequest = createNetworkRequest({requestId: requestId1});
       const networkLog = new MockNetworkLog([mockRequest]) as unknown as Logs.NetworkLog.NetworkLog;
       const requestResolver = new Logs.RequestResolver.RequestResolver(networkLog);
       const request = await requestResolver.waitFor(requestId1);
@@ -84,7 +85,7 @@ describe('RequestResolver', () => {
       const requestResolver = new Logs.RequestResolver.RequestResolver(networkLog);
       const requestPromise = requestResolver.waitFor(requestId1);
       assert.isTrue(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));
-      const mockRequest = createNetworkRequest(requestId1);
+      const mockRequest = createNetworkRequest({requestId: requestId1});
       mockNetworkLog.addRequest(mockRequest);
       const request = await requestPromise;
       assert.isFalse(networkLog.hasEventListeners(Logs.NetworkLog.Events.RequestAdded));

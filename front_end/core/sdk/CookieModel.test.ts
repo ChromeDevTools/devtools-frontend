@@ -10,7 +10,7 @@ import * as Protocol from '../../generated/protocol.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {expectCalled} from '../../testing/ExpectStubCall.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
-import {createNetworkRequest} from '../../testing/MockNetworkLog.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {
   addChildFrame,
   createResource,
@@ -124,7 +124,7 @@ describeWithEnvironment('CookieModel', () => {
     const target = universe.createTarget({connection});
 
     const dispatchLoadingFinished = () => target.model(SDK.NetworkManager.NetworkManager)!.dispatchEventToListeners(
-        SDK.NetworkManager.Events.LoadingFinished, createNetworkRequest('1'));
+        SDK.NetworkManager.Events.LoadingFinished, createNetworkRequest({requestId: '1'}));
 
     const mainFrame = getMainFrame(target);
     const model = target.model(SDK.CookieModel.CookieModel)!;
@@ -157,7 +157,7 @@ describeWithEnvironment('CookieModel', () => {
 
     const target = universe.createTarget({connection});
     const dispatchLoadingFinished = () => target.model(SDK.NetworkManager.NetworkManager)!.dispatchEventToListeners(
-        SDK.NetworkManager.Events.LoadingFinished, createNetworkRequest('1'));
+        SDK.NetworkManager.Events.LoadingFinished, createNetworkRequest({requestId: '1'}));
 
     const mainFrame = getMainFrame(target);
     const model = target.model(SDK.CookieModel.CookieModel)!;
@@ -185,7 +185,7 @@ describeWithEnvironment('CookieModel', () => {
 
     const target = universe.createTarget({connection});
     const dispatchLoadingFinished = () => target.model(SDK.NetworkManager.NetworkManager)!.dispatchEventToListeners(
-        SDK.NetworkManager.Events.LoadingFinished, createNetworkRequest('1'));
+        SDK.NetworkManager.Events.LoadingFinished, createNetworkRequest({requestId: '1'}));
 
     const mainFrame = getMainFrame(target);
     const model = target.model(SDK.CookieModel.CookieModel)!;

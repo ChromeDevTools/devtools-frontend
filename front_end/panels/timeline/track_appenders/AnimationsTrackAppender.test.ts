@@ -47,17 +47,17 @@ describeWithEnvironment('AnimationsTrackAppender', function() {
     });
 
     it('adds start times correctly', function() {
-      const animationsRequests = parsedTrace.data.Animations.animations;
-      for (let i = 0; i < animationsRequests.length; ++i) {
-        const event = animationsRequests[i];
+      const animations = parsedTrace.data.Animations.animations;
+      for (let i = 0; i < animations.length; ++i) {
+        const event = animations[i];
         assert.strictEqual(flameChartData.entryStartTimes[i], Trace.Helpers.Timing.microToMilli(event.ts));
       }
     });
 
     it('adds total times correctly', function() {
-      const animationsRequests = parsedTrace.data.Animations.animations;
-      for (let i = 0; i < animationsRequests.length; i++) {
-        const event = animationsRequests[i];
+      const animations = parsedTrace.data.Animations.animations;
+      for (let i = 0; i < animations.length; i++) {
+        const event = animations[i];
         if (Trace.Types.Events.isMarkerEvent(event)) {
           assert.isNaN(flameChartData.entryTotalTimes[i]);
           continue;

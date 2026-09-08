@@ -78,9 +78,10 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
           await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
       const events = parsedTrace.data.UserInteractions.interactionEventsWithNoNesting;
       for (const event of events) {
-        const markerIndex = entryData.indexOf(event);
-        assert.exists(markerIndex);
-        assert.strictEqual(flameChartData.entryStartTimes[markerIndex], Trace.Helpers.Timing.microToMilli(event.ts));
+        const interactionIndex = entryData.indexOf(event);
+        assert.exists(interactionIndex);
+        assert.strictEqual(flameChartData.entryStartTimes[interactionIndex],
+                           Trace.Helpers.Timing.microToMilli(event.ts));
       }
     });
 
@@ -89,11 +90,11 @@ describeWithEnvironment('InteractionsTrackAppender', function() {
           await renderTrackAppender(this, 'slow-interaction-button-click.json.gz');
       const events = parsedTrace.data.UserInteractions.interactionEventsWithNoNesting;
       for (const event of events) {
-        const markerIndex = entryData.indexOf(event);
-        assert.exists(markerIndex);
+        const interactionIndex = entryData.indexOf(event);
+        assert.exists(interactionIndex);
         const expectedTotalTimeForEvent =
             Trace.Helpers.Timing.microToMilli((event.dur || 0) as Trace.Types.Timing.Micro);
-        assert.strictEqual(flameChartData.entryTotalTimes[markerIndex], expectedTotalTimeForEvent);
+        assert.strictEqual(flameChartData.entryTotalTimes[interactionIndex], expectedTotalTimeForEvent);
       }
     });
   });

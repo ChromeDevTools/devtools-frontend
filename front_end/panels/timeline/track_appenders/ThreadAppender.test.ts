@@ -483,6 +483,7 @@ describeWithEnvironment('ThreadAppender', function() {
       Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
     });
     afterEach(() => {
+      Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').set(false);
       SDK.TargetManager.TargetManager.removeInstance();
       Workspace.Workspace.WorkspaceImpl.removeInstance();
       Workspace.IgnoreListManager.IgnoreListManager.removeInstance();
@@ -508,7 +509,6 @@ describeWithEnvironment('ThreadAppender', function() {
       assert.isAbove(unknownEventIndex, -1);
       assert.exists(finalFlamechartData.entryStartTimes);
       assert.exists(finalFlamechartData.entryTotalTimes);
-      Common.Settings.Settings.instance().moduleSetting('timeline-show-all-events').set(false);
     });
 
     it('appends WASM profile calls to the flame chart data', async function() {

@@ -74,7 +74,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     assert.lengthOf(annotationEntryIdentifierElements, 3);
 
     const annotationEntryLabelElements = component.contentElement.querySelectorAll<HTMLElement>('.label');
-    assert.lengthOf(annotationEntryIdentifierElements, 3);
+    assert.lengthOf(annotationEntryLabelElements, 3);
 
     assert.strictEqual(annotationEntryLabelElements[0].innerText, 'Entry Label 1');
     assert.strictEqual(annotationEntryIdentifierElements[0].style['backgroundColor'], 'rgb(82, 252, 3)');
@@ -245,7 +245,7 @@ describeWithEnvironment('SidebarAnnotationsTab', () => {
     assert.lengthOf(annotationIdentifierElements, 1);
   });
 
-  it('displays multiple not started annotations if they are not different entries', async () => {
+  it('displays multiple not started annotations if they are on different entries', async () => {
     const defaultTraceEvents = [
       makeInstantEvent('thread_name', 0),
       makeInstantEvent('thread_name', 10),

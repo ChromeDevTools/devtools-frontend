@@ -191,7 +191,7 @@ describeWithEnvironment('CompatibilityTracksAppender', function() {
           return false;
         }
         if (duration <= event.args.data.allottedMilliseconds) {
-          false;
+          return false;
         }
         return true;
       });

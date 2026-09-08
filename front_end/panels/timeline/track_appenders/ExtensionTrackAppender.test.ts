@@ -251,7 +251,7 @@ describeWithEnvironment('ExtensionTrackAppender', function() {
       assert.strictEqual(info.title, 'A hint if needed');
       // The i18n encodes spaces using the u00A0 unicode character.
       assert.strictEqual(info.formattedTime, '1.00\u00A0s');
-      assert.isUndefined(info.additionalElements?.at(0)?.nodeName);
+      assert.isEmpty(info.additionalElements);
     });
   });
 });

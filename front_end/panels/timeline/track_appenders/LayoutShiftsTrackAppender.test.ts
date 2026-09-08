@@ -69,9 +69,9 @@ describeWithEnvironment('LayoutShiftsTrackAppender', function() {
     const {flameChartData, parsedTrace, entryData} = await renderTrackAppender(this, 'cls-single-frame.json.gz');
     const events = parsedTrace.data.LayoutShifts.clusters.flatMap(c => c.events);
     for (const event of events) {
-      const markerIndex = entryData.indexOf(event);
-      assert.exists(markerIndex);
-      assert.strictEqual(flameChartData.entryStartTimes[markerIndex], Trace.Helpers.Timing.microToMilli(event.ts));
+      const shiftIndex = entryData.indexOf(event);
+      assert.exists(shiftIndex);
+      assert.strictEqual(flameChartData.entryStartTimes[shiftIndex], Trace.Helpers.Timing.microToMilli(event.ts));
     }
   });
 

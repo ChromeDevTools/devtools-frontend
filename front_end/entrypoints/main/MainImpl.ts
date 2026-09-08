@@ -672,7 +672,7 @@ export class MainImpl {
   }
 
   #redispatchClipboardEvent(event: Event): void {
-    const eventCopy = new CustomEvent('clipboard-' + event.type, {bubbles: true});
+    const eventCopy = new CustomEvent('clipboard-' + event.type, {bubbles: true, composed: true});
     // @ts-expect-error Used in ElementsTreeOutline
     eventCopy['original'] = event;
     const document = event.target && (event.target as HTMLElement).ownerDocument;
@@ -703,6 +703,10 @@ export class MainImpl {
   #onSuspendStateChanged(): void {
     const suspended = SDK.TargetManager.TargetManager.instance().allTargetsSuspended();
     UI.InspectorView.InspectorView.instance().onSuspendStateChanged(suspended);
+  }
+
+  redispatchClipboardEventForTest(event: Event): void {
+    this.#redispatchClipboardEvent(event);
   }
 
   static instanceForTest: MainImpl|null = null;

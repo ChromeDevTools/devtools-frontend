@@ -5,6 +5,7 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/generate_css.gni")
+import("../../../scripts/build/ninja/vars.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
@@ -32,6 +33,9 @@ generate_css("css_files") {
 }
 
 devtools_ui_module("application") {
+  additional_type_definitions = [ devtools_location_prepend +
+                                  "node_modules/@types/json-schema/index.d.ts" ]
+
   sources = [
     "AppManifestView.ts",
     "ApplicationPanelSidebar.ts",
@@ -164,6 +168,8 @@ devtools_entrypoint("meta") {
 }
 
 devtools_ui_module("unittests") {
+  additional_type_definitions = [ devtools_location_prepend +
+                                  "node_modules/@types/json-schema/index.d.ts" ]
   testonly = true
 
   sources = [

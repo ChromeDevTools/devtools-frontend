@@ -5,10 +5,14 @@
 import("../../../scripts/build/ninja/devtools_entrypoint.gni")
 import("../../../scripts/build/ninja/devtools_module.gni")
 import("../../../scripts/build/ninja/devtools_worker.gni")
+import("../../../scripts/build/ninja/vars.gni")
 import("../../../scripts/build/typescript/typescript.gni")
 import("../visibility.gni")
 
 devtools_foundation_module("formatter_worker") {
+  additional_type_definitions =
+      [ devtools_location_prepend + "node_modules/@types/estree/index.d.ts" ]
+
   sources = [
     "AcornTokenizer.ts",
     "CSSFormatter.ts",

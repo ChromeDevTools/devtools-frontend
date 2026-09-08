@@ -19,6 +19,7 @@ import {
   renderElementIntoDOM,
 } from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {createNetworkRequest} from '../../../testing/NetworkRequestHelpers.js';
 import {
   createWorkspaceProject,
   setUpEnvironment,
@@ -887,11 +888,11 @@ Learn more`,
   });
 
   it('renders headers as (not) editable depending on overall overrides setting', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/index.html`, urlString``, null,
-        null, null);
-    request.responseHeaders = [{name: 'server', value: 'overridden server'}];
-    request.originalResponseHeaders = [{name: 'server', value: 'original server'}];
+    const request = createNetworkRequest({
+      url: 'https://www.example.com/index.html',
+      responseHeaders: [{name: 'server', value: 'overridden server'}],
+      originalResponseHeaders: [{name: 'server', value: 'original server'}],
+    });
 
     const {component} = await setupHeaderEditingWithRequest('[]', request);
     assert.isNotNull(component.shadowRoot);
@@ -931,11 +932,11 @@ Learn more`,
   });
 
   it('can show the "edit header" button', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.foo.com/index.html`, urlString``, null, null,
-        null);
-    request.responseHeaders = [{name: 'foo', value: 'bar'}];
-    request.originalResponseHeaders = [{name: 'foo', value: 'bar'}];
+    const request = createNetworkRequest({
+      url: 'https://www.foo.com/index.html',
+      responseHeaders: [{name: 'foo', value: 'bar'}],
+      originalResponseHeaders: [{name: 'foo', value: 'bar'}],
+    });
 
     const {component} = await setupHeaderEditingWithRequest('[]', request);
     assert.isNotNull(component.shadowRoot);
@@ -946,10 +947,11 @@ Learn more`,
   });
 
   it('does not show the "edit header" button for requests with a forbidden URL', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`chrome://terms/`, urlString``, null, null, null);
-    request.responseHeaders = [{name: 'foo', value: 'bar'}];
-    request.originalResponseHeaders = [{name: 'foo', value: 'bar'}];
+    const request = createNetworkRequest({
+      url: 'chrome://terms/',
+      responseHeaders: [{name: 'foo', value: 'bar'}],
+      originalResponseHeaders: [{name: 'foo', value: 'bar'}],
+    });
 
     const {component} = await setupHeaderEditingWithRequest('[]', request);
     assert.isNotNull(component.shadowRoot);
@@ -1107,11 +1109,11 @@ Learn more`,
   });
 
   it('persists edits to header overrides and resurfaces them upon component (re-)creation', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/index.html`, urlString``, null,
-        null, null);
-    request.responseHeaders = [{name: 'server', value: 'overridden server'}];
-    request.originalResponseHeaders = [{name: 'server', value: 'original server'}];
+    const request = createNetworkRequest({
+      url: 'https://www.example.com/index.html',
+      responseHeaders: [{name: 'server', value: 'overridden server'}],
+      originalResponseHeaders: [{name: 'server', value: 'original server'}],
+    });
 
     const headerOverridesFileContent = `[
       {
@@ -1159,11 +1161,11 @@ Learn more`,
   });
 
   it('focuses on newly added header rows on initial render', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/index.html`, urlString``, null,
-        null, null);
-    request.responseHeaders = [{name: 'server', value: 'overridden server'}];
-    request.originalResponseHeaders = [{name: 'server', value: 'original server'}];
+    const request = createNetworkRequest({
+      url: 'https://www.example.com/index.html',
+      responseHeaders: [{name: 'server', value: 'overridden server'}],
+      originalResponseHeaders: [{name: 'server', value: 'original server'}],
+    });
 
     const headerOverridesFileContent = `[
       {
@@ -1192,11 +1194,11 @@ Learn more`,
   });
 
   it('can handle removal of ".headers" file', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/index.html`, urlString``, null,
-        null, null);
-    request.responseHeaders = [{name: 'server', value: 'overridden server'}];
-    request.originalResponseHeaders = [{name: 'server', value: 'original server'}];
+    const request = createNetworkRequest({
+      url: 'https://www.example.com/index.html',
+      responseHeaders: [{name: 'server', value: 'overridden server'}],
+      originalResponseHeaders: [{name: 'server', value: 'original server'}],
+    });
 
     const headerOverridesFileContent = `[
       {
@@ -1230,13 +1232,13 @@ Learn more`,
   });
 
   it('handles rendering and editing \'set-cookie\' headers', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/index.html`, urlString``, null,
-        null, null);
-    request.responseHeaders = [
-      {name: 'Cache-Control', value: 'max-age=600'},
-      {name: 'Z-Header', value: 'zzz'},
-    ];
+    const request = createNetworkRequest({
+      url: 'https://www.example.com/index.html',
+      responseHeaders: [
+        {name: 'Cache-Control', value: 'max-age=600'},
+        {name: 'Z-Header', value: 'zzz'},
+      ],
+    });
     request.originalResponseHeaders = [
       {name: 'Set-Cookie', value: 'bar=original'},
       {name: 'Set-Cookie', value: 'foo=original'},

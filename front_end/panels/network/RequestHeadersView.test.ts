@@ -21,6 +21,7 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {cleanTestDOM} from '../../testing/DOMHooks.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {createWorkspaceProject, setUpEnvironment} from '../../testing/OverridesHelpers.js';
 import {createFileSystemUISourceCode} from '../../testing/UISourceCodeHelpers.js';
 import {
@@ -154,10 +155,11 @@ describeWithEnvironment('RequestHeadersView', () => {
   });
 
   it('status text of a request from cache memory corresponds to the status code', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`, urlString``, null, null, null);
-    request.statusCode = 200;
-    request.setFromMemoryCache();
+    const request = createNetworkRequest({
+      url: 'https://www.example.com',
+      statusCode: 200,
+      fromMemoryCache: true,
+    });
 
     component = await renderHeadersComponent(request);
 
@@ -301,10 +303,10 @@ describeWithEnvironment('RequestHeadersView', () => {
   });
 
   it('re-renders on request headers update', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/foo.html`, urlString``, null, null,
-        null);
-    request.responseHeaders = [{name: 'originalName', value: 'originalValue'}];
+    const request = createNetworkRequest({
+      url: 'https://www.example.com/foo.html',
+      responseHeaders: [{name: 'originalName', value: 'originalValue'}],
+    });
 
     component = await renderHeadersComponent(request);
     const responseHeadersCategory = component.contentElement.querySelector('[aria-label="Response headers"]');
@@ -320,14 +322,14 @@ describeWithEnvironment('RequestHeadersView', () => {
   });
 
   it('can highlight individual response headers', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/foo.html`, urlString``, null, null,
-        null);
-    request.responseHeaders = [
-      {name: 'foo', value: 'bar'},
-      {name: 'highlightMe', value: 'some value'},
-      {name: 'DevTools', value: 'rock'},
-    ];
+    const request = createNetworkRequest({
+      url: 'https://www.example.com/foo.html',
+      responseHeaders: [
+        {name: 'foo', value: 'bar'},
+        {name: 'highlightMe', value: 'some value'},
+        {name: 'DevTools', value: 'rock'},
+      ],
+    });
 
     component = await renderHeadersComponent(request);
 
@@ -346,14 +348,14 @@ describeWithEnvironment('RequestHeadersView', () => {
   });
 
   it('can highlight individual request headers', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/foo.html`, urlString``, null, null,
-        null);
-    request.setRequestHeaders([
-      {name: 'foo', value: 'bar'},
-      {name: 'highlightMe', value: 'some value'},
-      {name: 'DevTools', value: 'rock'},
-    ]);
+    const request = createNetworkRequest({
+      url: 'https://www.example.com/foo.html',
+      requestHeaders: [
+        {name: 'foo', value: 'bar'},
+        {name: 'highlightMe', value: 'some value'},
+        {name: 'DevTools', value: 'rock'},
+      ],
+    });
 
     component = await renderHeadersComponent(request);
 
@@ -417,11 +419,12 @@ describeWithEnvironment('RequestHeadersView', () => {
         .resolve(Persistence.NetworkPersistenceManager.persistenceNetworkOverridesEnabledSettingDescriptor)
         .set(false);
 
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/`, urlString``, null, null, null);
-    request.responseHeaders = [
-      {name: 'foo', value: 'bar'},
-    ];
+    const request = createNetworkRequest({
+      url: 'https://www.example.com/',
+      responseHeaders: [
+        {name: 'foo', value: 'bar'},
+      ],
+    });
 
     await createWorkspaceProject(urlString`file:///path/to/overrides`, [
       {
@@ -473,11 +476,12 @@ describeWithEnvironment('RequestHeadersView', () => {
   });
 
   it('records metrics when a new \'.headers\' file is created', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/`, urlString``, null, null, null);
-    request.responseHeaders = [
-      {name: 'foo', value: 'bar'},
-    ];
+    const request = createNetworkRequest({
+      url: 'https://www.example.com/',
+      responseHeaders: [
+        {name: 'foo', value: 'bar'},
+      ],
+    });
     await createWorkspaceProject(urlString`file:///path/to/overrides`, []);
 
     component = await renderHeadersComponent(request);

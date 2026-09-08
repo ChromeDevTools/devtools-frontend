@@ -37,6 +37,8 @@ export interface CreateNetworkRequestOptions {
   requestMethod?: string;
   requestHeaders?: SDK.NetworkRequest.NameValue[];
   responseHeaders?: SDK.NetworkRequest.NameValue[];
+  originalResponseHeaders?: SDK.NetworkRequest.NameValue[];
+  fromMemoryCache?: boolean;
   /**
    * Content data or a content data provider function. When provided, configures
    * `request.setContentDataProvider()`. Pass a function returning `{error: string}`
@@ -101,6 +103,12 @@ export function createNetworkRequest(options: CreateNetworkRequestOptions = {}):
   }
   if (options.responseHeaders) {
     request.responseHeaders = options.responseHeaders;
+  }
+  if (options.originalResponseHeaders) {
+    request.originalResponseHeaders = options.originalResponseHeaders;
+  }
+  if (options.fromMemoryCache) {
+    request.setFromMemoryCache();
   }
   if (options.mimeType !== undefined) {
     request.mimeType = options.mimeType;

@@ -8,7 +8,7 @@
 
 .animation-name-link:not(.undefined) {
   cursor: pointer;
-  text-underline-offset: 2px;
+  text-underline-offset: var(--sys-size-2);
   color: var(--sys-color-primary);
 }
 

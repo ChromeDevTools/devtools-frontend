@@ -46,6 +46,7 @@ copy_to_gen("integration_test_runner") {
 
 group("web_test_resources") {
   public_deps = [
+    ":color_tokens",
     ":integration_test_runner",
     "legacy_test_runner",
   ]

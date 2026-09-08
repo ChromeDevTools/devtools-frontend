@@ -44,12 +44,6 @@ const str_ = i18n.i18n.registerUIStrings(
 );
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-recording-list-view': RecordingListView;
-  }
-}
-
 interface Recording {
   storageName: string;
   name: string;

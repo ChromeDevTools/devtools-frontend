@@ -115,7 +115,6 @@ template("devtools_entrypoint") {
         data_deps += invoker.data_deps
       }
       metadata = {
-        typescript_files = rebase_path([ invoker.entrypoint ], root_build_dir)
         grd_files = [ "$target_gen_dir/$_file_name.js" ]
       }
       forward_variables_from(invoker,

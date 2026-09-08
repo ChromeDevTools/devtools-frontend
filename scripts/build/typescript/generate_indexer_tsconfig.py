@@ -79,12 +79,17 @@ def main():
                             tsconfig_output_directory)
 
     sources = shlex.split(opts.sources_list.read())
-    all_ts_files = sources + (opts.additional_type_definitions or [])
+    all_ts_files = list(
+        dict.fromkeys(sources + (opts.additional_type_definitions or [])))
 
     tsconfig['files'] = [
         get_relative_path_from_output_directory(x) for x in all_ts_files
     ]
-    tsconfig['checkJs'] = True
+    tsconfig['compilerOptions'].pop('isolatedDeclarations', None)
+    tsconfig['compilerOptions']['checkJs'] = True
+    tsconfig['compilerOptions']['composite'] = False
+    tsconfig['compilerOptions']['declaration'] = False
+    tsconfig['compilerOptions']['noEmit'] = True
     tsconfig['compilerOptions']['skipLibCheck'] = True
     tsconfig['compilerOptions'][
         'disableSourceOfProjectReferenceRedirect'] = True

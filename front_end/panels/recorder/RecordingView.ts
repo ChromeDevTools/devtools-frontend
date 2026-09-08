@@ -155,12 +155,6 @@ const str_ = i18n.i18n.registerUIStrings(
 );
 const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
-declare global {
-  interface HTMLElementTagNameMap {
-    'devtools-recording-view': RecordingView;
-  }
-}
-
 export interface ReplayState {
   isPlaying: boolean;             // Replay is in progress
   isPausedOnBreakpoint: boolean;  // Replay is in progress and is in stopped state

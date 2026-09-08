@@ -167,10 +167,6 @@ template("ts_type_check") {
 
     args = [ "@{{response_file_name}}" ]
 
-    metadata = {
-      typescript_files = rebase_path(invoker.sources, root_build_dir)
-    }
-
     if (defined(invoker.visibility)) {
       visibility = invoker.visibility
     }

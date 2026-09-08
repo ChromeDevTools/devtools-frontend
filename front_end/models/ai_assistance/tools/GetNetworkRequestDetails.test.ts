@@ -5,59 +5,17 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
-import type * as Protocol from '../../../generated/protocol.js';
 import {
   assertIsError,
   assertIsResult,
 } from '../../../testing/AiAssistanceHelpers.js';
 import {deinitializeGlobalVars} from '../../../testing/EnvironmentHelpers.js';
+import {createNetworkRequest} from '../../../testing/NetworkRequestHelpers.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
 import type * as Logs from '../../logs/logs.js';
 import * as AiAssistance from '../ai_assistance.js';
-
-const {urlString} = Platform.DevToolsPath;
-
-interface CreateNetworkRequestOptions {
-  url: string;
-  documentURL?: string;
-  requestId?: string;
-  statusCode?: number;
-  responseHeaders?: Array<{name: string, value: string}>;
-  requestHeaders?: Array<{name: string, value: string}>;
-  contentData?: TextUtils.ContentData.ContentData;
-  isImportedHar?: boolean;
-}
-
-function createNetworkRequest(options: CreateNetworkRequestOptions): SDK.NetworkRequest.NetworkRequest {
-  const request = SDK.NetworkRequest.NetworkRequest.create(
-      (options.requestId ?? 'requestId') as Protocol.Network.RequestId,
-      urlString`${options.url}`,
-      urlString`${options.documentURL ?? options.url}`,
-      null,
-      null,
-      null,
-  );
-  if (options.statusCode !== undefined) {
-    request.statusCode = options.statusCode;
-  }
-  if (options.responseHeaders) {
-    request.responseHeaders = options.responseHeaders;
-  }
-  if (options.requestHeaders) {
-    request.setRequestHeaders(options.requestHeaders);
-  }
-  if (options.contentData) {
-    const contentData = options.contentData;
-    request.requestContentData = () => Promise.resolve(contentData);
-  }
-  if (options.isImportedHar) {
-    request.setIsImportedHar(true);
-  }
-  return request;
-}
 
 describe('GetNetworkRequestDetailsTool', () => {
   let universe: TestUniverse;

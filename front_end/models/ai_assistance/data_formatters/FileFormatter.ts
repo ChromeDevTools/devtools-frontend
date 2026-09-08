@@ -4,10 +4,9 @@
 
 import * as Bindings from '../../bindings/bindings.js';
 import * as Logs from '../../logs/logs.js';
-import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import type * as Workspace from '../../workspace/workspace.js';
 
-import {NetworkRequestFormatter} from './NetworkRequestFormatter.js';
+import {formatRequestInitiatorChain} from './NetworkRequestFormatter.js';
 
 const MAX_FILE_SIZE = 10000;
 
@@ -75,13 +74,8 @@ export class FileFormatter {
     ];
     const resource = Bindings.ResourceUtils.resourceForURL(this.#file.url());
     if (resource?.request) {
-      const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
-      calculator.updateBoundaries(resource.request);
       lines.push(`Request initiator chain:
-${new NetworkRequestFormatter(resource.request, calculator, {
-        accessingSecurityOrigin: resource.request.initiatorSecurityOrigin(),
-        networkLog: this.#networkLog,
-      }).formatRequestInitiatorChain()}`);
+${formatRequestInitiatorChain(resource.request, this.#networkLog)}`);
     }
     lines.push(`File content:
 ${this.#formatFileContent()}`);

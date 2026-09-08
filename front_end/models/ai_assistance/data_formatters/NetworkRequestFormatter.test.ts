@@ -3,12 +3,14 @@
 // found in the LICENSE file.
 
 import {assert} from 'chai';
+import sinon from 'sinon';
 
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as Protocol from '../../../generated/protocol.js';
+import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import {NetworkRequestFormatter} from '../ai_assistance.js';
 
@@ -290,6 +292,21 @@ describe('NetworkRequestFormatter', () => {
 
   describe('responseAccessMode', () => {
     const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+    const stubNetworkLog = sinon.createStubInstance(Logs.NetworkLog.NetworkLog);
+    stubNetworkLog.initiatorGraphForRequest.returns({
+      initiators: new Set(),
+      initiated: new Map(),
+    });
+
+    function createFormatter(
+        request: SDK.NetworkRequest.NetworkRequest,
+        accessingSecurityOrigin: SDK.SecurityOrigin.SecurityOrigin,
+        ): NetworkRequestFormatter.NetworkRequestFormatter {
+      return new NetworkRequestFormatter.NetworkRequestFormatter(request, calculator, {
+        accessingSecurityOrigin,
+        networkLog: stubNetworkLog,
+      });
+    }
 
     it('returns SAME_ORIGIN when passing request.initiatorSecurityOrigin() for same-origin request', () => {
       const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
@@ -298,9 +315,7 @@ describe('NetworkRequestFormatter', () => {
           urlString`https://victim.com/`,
           null,
       );
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(request, calculator, {
-        accessingSecurityOrigin: request.initiatorSecurityOrigin(),
-      });
+      const formatter = createFormatter(request, request.initiatorSecurityOrigin());
       assert.strictEqual(
           formatter.responseAccessMode(),
           SDK.NetworkRequestAccess.ResponseAccessMode.SAME_ORIGIN,
@@ -315,11 +330,7 @@ describe('NetworkRequestFormatter', () => {
           null,
       );
       const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
-          request,
-          calculator,
-          {accessingSecurityOrigin},
-      );
+      const formatter = createFormatter(request, accessingSecurityOrigin);
       assert.strictEqual(
           formatter.responseAccessMode(),
           SDK.NetworkRequestAccess.ResponseAccessMode.SAME_ORIGIN,
@@ -334,11 +345,7 @@ describe('NetworkRequestFormatter', () => {
           null,
       );
       const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
-          request,
-          calculator,
-          {accessingSecurityOrigin},
-      );
+      const formatter = createFormatter(request, accessingSecurityOrigin);
       assert.strictEqual(
           formatter.responseAccessMode(),
           SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN,
@@ -354,11 +361,7 @@ describe('NetworkRequestFormatter', () => {
       );
       request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: '*'}];
       const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
-          request,
-          calculator,
-          {accessingSecurityOrigin},
-      );
+      const formatter = createFormatter(request, accessingSecurityOrigin);
       assert.strictEqual(
           formatter.responseAccessMode(),
           SDK.NetworkRequestAccess.ResponseAccessMode.CORS_ALLOWED,
@@ -374,11 +377,7 @@ describe('NetworkRequestFormatter', () => {
       );
       request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: 'https://attacker.com'}];
       const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
-          request,
-          calculator,
-          {accessingSecurityOrigin},
-      );
+      const formatter = createFormatter(request, accessingSecurityOrigin);
       assert.strictEqual(
           formatter.responseAccessMode(),
           SDK.NetworkRequestAccess.ResponseAccessMode.CORS_ALLOWED,
@@ -394,11 +393,7 @@ describe('NetworkRequestFormatter', () => {
       );
       request.responseHeaders = [{name: 'Access-Control-Allow-Origin', value: 'https://other.com'}];
       const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
-          request,
-          calculator,
-          {accessingSecurityOrigin},
-      );
+      const formatter = createFormatter(request, accessingSecurityOrigin);
       assert.strictEqual(
           formatter.responseAccessMode(),
           SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN,
@@ -418,11 +413,7 @@ describe('NetworkRequestFormatter', () => {
         failedParameter: 'foo',
       });
       const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
-          request,
-          calculator,
-          {accessingSecurityOrigin},
-      );
+      const formatter = createFormatter(request, accessingSecurityOrigin);
       assert.strictEqual(
           formatter.responseAccessMode(),
           SDK.NetworkRequestAccess.ResponseAccessMode.OPAQUE_CROSS_ORIGIN,
@@ -432,6 +423,21 @@ describe('NetworkRequestFormatter', () => {
 
   describe('formatResponseHeaders with CORS / Opaque restrictions', () => {
     const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+    const stubNetworkLog = sinon.createStubInstance(Logs.NetworkLog.NetworkLog);
+    stubNetworkLog.initiatorGraphForRequest.returns({
+      initiators: new Set(),
+      initiated: new Map(),
+    });
+
+    function createFormatter(
+        request: SDK.NetworkRequest.NetworkRequest,
+        accessingSecurityOrigin: SDK.SecurityOrigin.SecurityOrigin,
+        ): NetworkRequestFormatter.NetworkRequestFormatter {
+      return new NetworkRequestFormatter.NetworkRequestFormatter(request, calculator, {
+        accessingSecurityOrigin,
+        networkLog: stubNetworkLog,
+      });
+    }
 
     it('includes all allowed headers for same-origin requests', () => {
       const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
@@ -447,11 +453,7 @@ describe('NetworkRequestFormatter', () => {
         {name: 'Server', value: 'Apache'},
       ];
       const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
-          request,
-          calculator,
-          {accessingSecurityOrigin},
-      );
+      const formatter = createFormatter(request, accessingSecurityOrigin);
       const formatted = formatter.formatResponseHeaders();
       assert.strictEqual(
           formatted,
@@ -474,11 +476,7 @@ describe('NetworkRequestFormatter', () => {
         {name: 'WWW-Authenticate', value: 'Basic realm="Secret"'},
       ];
       const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
-          request,
-          calculator,
-          {accessingSecurityOrigin},
-      );
+      const formatter = createFormatter(request, accessingSecurityOrigin);
       const formatted = formatter.formatResponseHeaders();
       assert.strictEqual(
           formatted,
@@ -501,11 +499,7 @@ describe('NetworkRequestFormatter', () => {
         {name: 'Access-Control-Expose-Headers', value: 'X-Request-Id'},
       ];
       const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
-          request,
-          calculator,
-          {accessingSecurityOrigin},
-      );
+      const formatter = createFormatter(request, accessingSecurityOrigin);
       const formatted = formatter.formatResponseHeaders();
       assert.strictEqual(
           formatted,
@@ -516,6 +510,21 @@ describe('NetworkRequestFormatter', () => {
 
   describe('formatResponseBody with CORS / Opaque restrictions', () => {
     const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
+    const stubNetworkLog = sinon.createStubInstance(Logs.NetworkLog.NetworkLog);
+    stubNetworkLog.initiatorGraphForRequest.returns({
+      initiators: new Set(),
+      initiated: new Map(),
+    });
+
+    function createFormatter(
+        request: SDK.NetworkRequest.NetworkRequest,
+        accessingSecurityOrigin: SDK.SecurityOrigin.SecurityOrigin,
+        ): NetworkRequestFormatter.NetworkRequestFormatter {
+      return new NetworkRequestFormatter.NetworkRequestFormatter(request, calculator, {
+        accessingSecurityOrigin,
+        networkLog: stubNetworkLog,
+      });
+    }
 
     it('returns response body for same-origin requests', async () => {
       const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
@@ -528,11 +537,7 @@ describe('NetworkRequestFormatter', () => {
         return Promise.resolve(new TextUtils.ContentData.ContentData('{"user":"alice"}', false, 'application/json'));
       };
       const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
-          request,
-          calculator,
-          {accessingSecurityOrigin},
-      );
+      const formatter = createFormatter(request, accessingSecurityOrigin);
       const body = await formatter.formatResponseBody();
       assert.strictEqual(body, 'Response body:\n{"user":"alice"}');
     });
@@ -549,11 +554,7 @@ describe('NetworkRequestFormatter', () => {
         return Promise.resolve(new TextUtils.ContentData.ContentData('{"user":"alice"}', false, 'application/json'));
       };
       const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
-          request,
-          calculator,
-          {accessingSecurityOrigin},
-      );
+      const formatter = createFormatter(request, accessingSecurityOrigin);
       const body = await formatter.formatResponseBody();
       assert.strictEqual(body, 'Response body:\n{"user":"alice"}');
     });
@@ -570,14 +571,87 @@ describe('NetworkRequestFormatter', () => {
             new TextUtils.ContentData.ContentData('{"secret":"confidential"}', false, 'application/json'));
       };
       const accessingSecurityOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
-      const formatter = new NetworkRequestFormatter.NetworkRequestFormatter(
-          request,
-          calculator,
-          {accessingSecurityOrigin},
-      );
+      const formatter = createFormatter(request, accessingSecurityOrigin);
       const body = await formatter.formatResponseBody();
       assert.strictEqual(body, SDK.NetworkRequestAccess.REDACTED_RESPONSE_BODY);
       assert.notInclude(body, 'confidential');
+    });
+  });
+
+  describe('formatRequestInitiatorChain', () => {
+    it('formats single initiator request', () => {
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'requestId',
+          urlString`https://example.com/api/data`,
+          urlString`https://example.com/index.html`,
+          null,
+      );
+      const networkLog = sinon.createStubInstance(Logs.NetworkLog.NetworkLog);
+      networkLog.initiatorGraphForRequest.withArgs(request).returns({
+        initiators: new Set([request]),
+        initiated: new Map(),
+      });
+
+      const formatted = NetworkRequestFormatter.formatRequestInitiatorChain(request, networkLog);
+      assert.strictEqual(formatted, '- URL: https://example.com/api/data');
+    });
+
+    it('formats initiator chain with parent and child requests', () => {
+      const parentRequest = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'parent',
+          urlString`https://example.com/index.html`,
+          urlString`https://example.com/`,
+          null,
+      );
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'request',
+          urlString`https://example.com/script.js`,
+          urlString`https://example.com/index.html`,
+          null,
+      );
+      const childRequest = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'child',
+          urlString`https://example.com/data.json`,
+          urlString`https://example.com/script.js`,
+          null,
+      );
+      const networkLog = sinon.createStubInstance(Logs.NetworkLog.NetworkLog);
+      networkLog.initiatorGraphForRequest.withArgs(request).returns({
+        initiators: new Set([request, parentRequest]),
+        initiated: new Map([[childRequest, request]]),
+      });
+
+      const formatted = NetworkRequestFormatter.formatRequestInitiatorChain(request, networkLog);
+      assert.strictEqual(
+          formatted,
+          '- URL: https://example.com/index.html\n\t- URL: https://example.com/script.js\n\t\t- URL: https://example.com/data.json',
+      );
+    });
+
+    it('redacts cross-origin URLs in initiator chain', () => {
+      const crossOriginParent = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'parent',
+          urlString`https://third-party.com/embed.js`,
+          urlString`https://third-party.com/`,
+          null,
+      );
+      const request = SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
+          'request',
+          urlString`https://example.com/data`,
+          urlString`https://example.com/`,
+          null,
+      );
+      const networkLog = sinon.createStubInstance(Logs.NetworkLog.NetworkLog);
+      networkLog.initiatorGraphForRequest.withArgs(request).returns({
+        initiators: new Set([request, crossOriginParent]),
+        initiated: new Map(),
+      });
+
+      const formatted = NetworkRequestFormatter.formatRequestInitiatorChain(request, networkLog);
+      assert.strictEqual(
+          formatted,
+          '- URL: <redacted cross-origin initiator URL>\n\t- URL: https://example.com/data',
+      );
     });
   });
 });

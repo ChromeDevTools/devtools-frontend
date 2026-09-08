@@ -63,6 +63,11 @@ describe('PositionAreaEditor', () => {
         second: {start: 0, end: 2, mode: Mode.AUTO, self: false},
         primaryAxis: Axis.BLOCK,
       });
+      assert.deepEqual(parsePositionArea('start'), {
+        first: {start: 0, end: 0, mode: Mode.AUTO, self: false},
+        second: {start: 0, end: 0, mode: Mode.AUTO, self: false},
+        primaryAxis: Axis.BLOCK,
+      });
     });
 
     it('parses two physical keywords preserving authored order', () => {
@@ -204,6 +209,14 @@ describe('PositionAreaEditor', () => {
       const bottomRight = parsePositionArea('bottom right');
       assert.exists(bottomRight);
       assert.strictEqual(stringifyPositionArea(bottomRight), 'bottom right');
+
+      const centerAll = parsePositionArea('center span-all');
+      assert.exists(centerAll);
+      assert.strictEqual(stringifyPositionArea(centerAll), 'center span-all');
+
+      const start = parsePositionArea('start');
+      assert.exists(start);
+      assert.strictEqual(stringifyPositionArea(start), 'start');
     });
 
     it('stringifies logical keywords', () => {

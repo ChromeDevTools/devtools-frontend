@@ -188,8 +188,11 @@ export function parsePositionArea(text: string): Area|null {
   }
 
   const first = KEYWORD_MAP.get(tokens[0]);
-  const second = KEYWORD_MAP.get(tokens[1] ?? (tokens[0] === Keyword.CENTER ? Keyword.CENTER : Keyword.SPAN_ALL));
-  if (!first || !second) {
+  if (!first) {
+    return null;
+  }
+  const second = KEYWORD_MAP.get(tokens[1] ?? (first.axis ? Keyword.SPAN_ALL : tokens[0]));
+  if (!second) {
     return null;
   }
 
@@ -232,10 +235,11 @@ export function stringifyPositionArea(area: Area): string {
   if (!firstKw || !secondKw) {
     return '';
   }
-  if (firstKw === Keyword.CENTER && secondKw === Keyword.CENTER) {
-    return Keyword.CENTER;
+  const firstDef = KEYWORD_MAP.get(firstKw);
+  if (!firstDef?.axis && firstKw === secondKw) {
+    return firstKw;
   }
-  if (secondKw === Keyword.SPAN_ALL) {
+  if (firstDef?.axis && secondKw === Keyword.SPAN_ALL) {
     return firstKw;
   }
   return `${firstKw} ${secondKw}`;

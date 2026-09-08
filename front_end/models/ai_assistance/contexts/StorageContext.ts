@@ -38,7 +38,7 @@ export class StorageContext extends ConversationContext<StorageItem> {
       const prefix = this.#item.type === 'localStorage' ? 'local storage' : 'session storage';
       return `${prefix}${this.#item.isGenericContext ? '' : `: ${this.#item.origin}`}`;
     }
-    return `Storage: ${this.getOrigin()}`;
+    return `Storage: ${this.getOrigin().siteId()}`;
   }
 
   /**

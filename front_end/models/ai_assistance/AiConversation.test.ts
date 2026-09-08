@@ -409,11 +409,14 @@ describe('AiConversation', () => {
     sinon.stub(networkRequest, 'requestContentData').resolves(contentData);
     sinon.stub(universe.networkLog, 'requests').returns([networkRequest]);
 
-    assert.isUndefined(conversation.origin);
+    const initialOrigin = conversation.origin;
+    assert.isUndefined(initialOrigin);
 
     await Array.fromAsync(conversation.run('test query'));
 
-    assert.strictEqual(conversation.origin, 'https://example.com');
+    const origin = conversation.origin;
+    assert.isOk(origin);
+    assert.isTrue(origin.isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
   });
 
   it('should forward history to the new agent when switching agents', async () => {

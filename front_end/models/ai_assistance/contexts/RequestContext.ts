@@ -36,18 +36,19 @@ export class RequestContext extends ConversationContext<SDK.NetworkRequest.Netwo
     this.#calculator = calculator;
   }
 
-  /**
-   * Note: this is not the literal origin of the network request. This URL
-   * is used to determine when we should force the user to start a new AI
-   * conversation when the context changes. We allow a single AI conversation to
-   * inspect all network requests that were made for that given target URL.
-   */
   override getURL(): string {
     return this.#request.documentURL;
   }
 
-  override getOrigin(): string {
-    return this.#request.initiatorSecurityOrigin().siteId();
+  /**
+   * Returns the security origin of the document that initiated the request.
+   *
+   * Network requests to third-party endpoints share the origin of the page
+   * that initiated them. This permits the AI to inspect third-party subresources
+   * without triggering a cross-origin conversation reset.
+   */
+  override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
+    return this.#request.initiatorSecurityOrigin();
   }
 
   override getItem(): SDK.NetworkRequest.NetworkRequest {

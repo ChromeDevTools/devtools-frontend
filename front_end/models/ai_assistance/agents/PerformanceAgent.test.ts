@@ -322,7 +322,7 @@ describe('PerformanceAgent', function() {
     const parsedTrace = await loadTrace(this, 'web-dev-with-commit.json.gz');
     Tracing.FreshRecording.Tracker.instance().registerFreshRecording(parsedTrace);
     const context = PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(parsedTrace);
-    assert.strictEqual(context.getOrigin(), 'https://web.dev');
+    assert.isTrue(context.getOrigin().isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://web.dev')));
   });
 
   it('falls back to the min and max bounds if the URL is invalid', () => {
@@ -337,7 +337,7 @@ describe('PerformanceAgent', function() {
     } as unknown as Trace.TraceModel.ParsedTrace;
     Tracing.FreshRecording.Tracker.instance().registerFreshRecording(parsedTrace);
     const context = PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(parsedTrace);
-    assert.strictEqual(context.getOrigin(), 'trace-100-200');
+    assert.isTrue(context.getOrigin().isOpaque());
   });
 
   it('outputs the right title for the selected insight', async () => {
@@ -641,7 +641,7 @@ code
             [[{explanation: '', functionCalls: [{name: 'getResourceContent', args: {url}}]}], [{explanation: 'done'}]]),
       });
       const context = PerformanceTraceContext.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
-      sinon.stub(context, 'getOrigin').returns('file://');
+      sinon.stub(context, 'getOrigin').returns(SDK.SecurityOrigin.SecurityOrigin.create('file://'));
 
       // Mock script in trace with file URL
       parsedTrace.data.Scripts.scripts.push({
@@ -942,7 +942,8 @@ code
           // Run 3: after error, we try again.
           [{explanation: 'done'}],
         ]),
-        allowedOrigin: () => originBlocked ? {blocked: true} : {origin: 'https://google.com'},
+        allowedOrigin: () =>
+            originBlocked ? {blocked: true} : {origin: SDK.SecurityOrigin.SecurityOrigin.create('https://google.com')},
       });
 
       const context = PerformanceTraceContext.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
@@ -1964,7 +1965,8 @@ code
 
       Tracing.FreshRecording.Tracker.instance().registerFreshRecording(parsedTrace);
       const context = PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(parsedTrace);
-      assert.strictEqual(context.getOrigin(), 'https://example.com');
+      assert.isTrue(
+          context.getOrigin().isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
     });
 
     it('returns imported-trace origin for non-fresh (imported) recordings', () => {
@@ -1981,10 +1983,11 @@ code
 
       // Do not register as fresh
       const context = PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(parsedTrace);
-      assert.strictEqual(context.getOrigin(), 'imported-trace://example.com');
+      assert.isTrue(context.getOrigin().isSameOriginWith(
+          SDK.SecurityOrigin.SecurityOrigin.create('imported-trace://example.com')));
     });
 
-    it('handles invalid URLs by prefixing the fallback URL', () => {
+    it('handles invalid URLs by returning an opaque origin', () => {
       const parsedTrace = {
         insights: new Map(),
         metadata: {},
@@ -1997,7 +2000,7 @@ code
       } as unknown as Trace.TraceModel.ParsedTrace;
 
       const context = PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(parsedTrace);
-      assert.strictEqual(context.getOrigin(), 'imported-trace://trace-100-200');
+      assert.isTrue(context.getOrigin().isOpaque());
     });
   });
 

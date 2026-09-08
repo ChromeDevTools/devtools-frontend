@@ -4,6 +4,7 @@
 
 import * as Common from '../../core/common/common.js';
 import type * as Platform from '../../core/platform/platform.js';
+import * as SDK from '../../core/sdk/sdk.js';
 
 /**
  * Returns true if the origin is considered opaque and should be blocked from
@@ -92,16 +93,24 @@ export function areOriginsEquivalent(origin1: string, origin2: string): boolean 
  * @param traceOrigin The allowed origin of the trace context.
  * @returns true if reading the file is permitted; false otherwise.
  */
-export function canResourceContentsBeReadForTrace(targetURL: string, traceOrigin: string): boolean {
+export function canResourceContentsBeReadForTrace(
+    targetURL: string,
+    traceOrigin: SDK.SecurityOrigin.SecurityOrigin,
+    ): boolean {
+  if (traceOrigin.isOpaque()) {
+    return false;
+  }
+  const targetOrigin = SDK.SecurityOrigin.SecurityOrigin.create(targetURL);
+  if (targetOrigin.isOpaque()) {
+    return false;
+  }
   // We explicitly block all file:// URLs. While we want to allow users to debug
   // traces on local sites, allowing file:// access poses security risks (e.g.,
   // reading local files like /etc/passwd via prompt injection) because file://
   // origins are not sufficiently isolated from each other in DevTools' origin model.
-  if (traceOrigin.startsWith('file://') || targetURL.startsWith('file://')) {
+  if (traceOrigin.isFile() || targetOrigin.isFile()) {
     return false;
   }
 
-  const targetOrigin = extractContextOrigin(targetURL);
-
-  return areOriginsEquivalent(targetOrigin, traceOrigin);
+  return traceOrigin.isSameOriginWith(targetOrigin);
 }

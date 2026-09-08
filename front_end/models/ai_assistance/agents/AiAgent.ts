@@ -11,7 +11,6 @@ import type * as Protocol from '../../../generated/protocol.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import type * as Trace from '../../trace/trace.js';
 import type * as Workspace from '../../workspace/workspace.js';
-import {areOriginsEquivalent, extractContextOrigin, isOpaqueOrigin} from '../AiOrigins.js';
 import {debugLog, isStructuredLogEnabled} from '../debug.js';
 import type {ContextHandlerResult, DataHandlerResult} from '../tools/Tool.js';
 
@@ -158,7 +157,7 @@ export interface RequestOptions {
 }
 
 export type AllowedOriginResult = {
-  origin: string|undefined,
+  origin: SDK.SecurityOrigin.SecurityOrigin|undefined,
 }|{
   blocked: true,
 };
@@ -205,47 +204,46 @@ export abstract class ConversationContext<T> {
     return true;
   }
 
-  getOrigin(): string|SDK.SecurityOrigin.SecurityOrigin {
-    return extractContextOrigin(this.getURL());
+  /**
+   * Returns the security origin that owns this context data.
+   *
+   * The AI Assistance panel locks each conversation to the origin of the initial
+   * context. If the user selects a context with a different origin, DevTools
+   * blocks access or requires a new conversation to prevent cross-origin leaks.
+   *
+   * Subclasses must override this method if their origin cannot be derived
+   * directly from `getURL()` (e.g., `RequestContext`, `FileContext`, `PerformanceTraceContext`).
+   */
+  getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
+    return SDK.SecurityOrigin.SecurityOrigin.create(this.getURL());
   }
 
   /**
-   * Returns true if this data context (e.g., a DOM node or Network Request) is
-   * allowed to be included in a conversation that is locked to the provided
-   * `establishedOrigin`.
+   * Checks whether this context can participate in a conversation locked to `establishedOrigin`.
    *
-   * A conversation is "locked" to an origin once the first query is made.
-   * This method ensures that we don't mix data from different origins in the
-   * same conversation.
+   * Evaluation rules:
+   * 1. Returns `false` if this context origin is opaque. Opaque contexts can never
+   *    participate in AI conversations.
+   * 2. Returns `true` if `establishedOrigin` is `undefined` (conversation is not yet locked).
+   * 3. Returns `true` if this context origin is same-origin with `establishedOrigin`.
    *
-   * @param establishedOrigin The origin that the current conversation is locked to.
-   * If undefined, the conversation has not yet been locked to an origin.
+   * @param establishedOrigin The locked origin of the current conversation, or `undefined`
+   * if the conversation has not made its first query. Strings are automatically parsed into
+   * `SecurityOrigin` instances.
    */
-  isOriginAllowed(establishedOrigin: string|SDK.SecurityOrigin.SecurityOrigin|undefined): boolean {
+  isOriginAllowed(establishedOrigin: SDK.SecurityOrigin.SecurityOrigin|string|undefined): boolean {
     const origin = this.getOrigin();
 
-    if (origin instanceof SDK.SecurityOrigin.SecurityOrigin) {
-      if (origin.isOpaque()) {
-        return false;
-      }
-      if (!establishedOrigin) {
-        return true;
-      }
-      const established = establishedOrigin instanceof SDK.SecurityOrigin.SecurityOrigin ?
-          establishedOrigin :
-          SDK.SecurityOrigin.SecurityOrigin.create(establishedOrigin);
-      return origin.isSameOriginWith(established);
+    if (origin.isOpaque()) {
+      return false;
     }
-
-    // If no origin is established yet, this context will be the one to lock the conversation.
-    // Opaque origins are never allowed to be used as context.
     if (!establishedOrigin) {
-      return !isOpaqueOrigin(origin);
+      return true;
     }
-    // Only allow data that matches the origin the conversation is already locked to.
-    const establishedString =
-        establishedOrigin instanceof SDK.SecurityOrigin.SecurityOrigin ? establishedOrigin.siteId() : establishedOrigin;
-    return areOriginsEquivalent(origin, establishedString);
+    const established = typeof establishedOrigin === 'string' ?
+        SDK.SecurityOrigin.SecurityOrigin.create(establishedOrigin) :
+        establishedOrigin;
+    return origin.isSameOriginWith(established);
   }
 
   /**

@@ -5,6 +5,8 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
+import * as SDK from '../../../core/sdk/sdk.js';
+import * as Tracing from '../../../services/tracing/tracing.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
 import * as Trace from '../../trace/trace.js';
@@ -318,5 +320,70 @@ Mock Longest Tasks`);
         },
       },
     ]);
+  });
+
+  describe('isImported and getOrigin', () => {
+    it('returns isImported false and live origin for fresh recordings', () => {
+      const mockTrace = {
+        insights: new Map(),
+        data: {
+          Meta: {
+            mainFrameURL: 'https://example.com/page.html',
+            traceBounds: {min: 0, max: 100},
+          },
+        },
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+      tracker.registerFreshRecording(mockTrace);
+
+      const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          mockTrace, universe.targetManager, tracker, universe.debuggerWorkspaceBinding);
+
+      assert.isFalse(context.isImported());
+      assert.isTrue(
+          context.getOrigin().isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')));
+    });
+
+    it('returns isImported true and imported-trace origin for non-fresh recordings', () => {
+      const mockTrace = {
+        insights: new Map(),
+        data: {
+          Meta: {
+            mainFrameURL: 'https://example.com/page.html',
+            traceBounds: {min: 0, max: 100},
+          },
+        },
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+
+      const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          mockTrace, universe.targetManager, tracker, universe.debuggerWorkspaceBinding);
+
+      assert.isTrue(context.isImported());
+      assert.isTrue(context.getOrigin().isSameOriginWith(
+          SDK.SecurityOrigin.SecurityOrigin.create('imported-trace://example.com')));
+    });
+
+    it('returns an opaque origin for non-fresh recordings with invalid mainFrameURL', () => {
+      const mockTrace = {
+        insights: new Map(),
+        data: {
+          Meta: {
+            mainFrameURL: 'not a valid url',
+            traceBounds: {min: 0, max: 100},
+          },
+        },
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+
+      const context = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          mockTrace, universe.targetManager, tracker, universe.debuggerWorkspaceBinding);
+
+      assert.isTrue(context.isImported());
+      assert.isTrue(context.getOrigin().isOpaque());
+    });
   });
 });

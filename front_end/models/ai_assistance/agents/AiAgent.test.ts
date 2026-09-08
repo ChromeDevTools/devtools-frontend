@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Host from '../../../core/host/host.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import {mockAidaClient, MockAidaPayloadLimitError, MockAidaQuotaError} from '../../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
@@ -439,6 +440,7 @@ describe('AiAgent', () => {
       }
       return new TestContext();
     }
+
     it('checks context origins', () => {
       const tests: Array<{dataOrigin: string, establishedOrigin: string | undefined, isAllowed: boolean}> = [
         {
@@ -502,13 +504,13 @@ describe('AiAgent', () => {
           isAllowed: false,
         },
         {
-          dataOrigin: 'trace-1-10',
-          establishedOrigin: 'trace-1-10',
+          dataOrigin: 'imported-trace://example.com',
+          establishedOrigin: 'imported-trace://example.com',
           isAllowed: true,
         },
         {
-          dataOrigin: 'trace-1-10',
-          establishedOrigin: 'trace-1-20',
+          dataOrigin: 'imported-trace://example.com',
+          establishedOrigin: 'imported-trace://other.com',
           isAllowed: false,
         },
       ];
@@ -726,7 +728,8 @@ describe('AiAgent', () => {
           }],
         ]),
         // Mock allowedOrigin to return blocked if our flag is set.
-        allowedOrigin: () => originBlocked ? {blocked: true} : {origin: 'https://google.com'},
+        allowedOrigin: () =>
+            originBlocked ? {blocked: true} : {origin: SDK.SecurityOrigin.SecurityOrigin.create('https://google.com')},
         // Mock the side effect confirmation to simulate user approval AND concurrent navigation.
         confirmSideEffectForTest: <T>() => {
           const resolvers = Promise.withResolvers<T>();
@@ -780,7 +783,8 @@ describe('AiAgent', () => {
             explanation: 'Final answer',
           }],
         ]),
-        allowedOrigin: () => originBlocked ? {blocked: true} : {origin: 'https://google.com'},
+        allowedOrigin: () =>
+            originBlocked ? {blocked: true} : {origin: SDK.SecurityOrigin.SecurityOrigin.create('https://google.com')},
       });
 
       agent.declareFunctionForTest('testFn', {

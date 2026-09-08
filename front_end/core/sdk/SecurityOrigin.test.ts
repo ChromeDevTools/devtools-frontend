@@ -179,4 +179,16 @@ describe('SecurityOrigin', () => {
       assert.isFalse(origin.siteId().startsWith('data:'));
     });
   });
+
+  describe('isFile', () => {
+    it('returns true for file URLs and false for other origins', () => {
+      const fileOrigin = SDK.SecurityOrigin.SecurityOrigin.create('file:///tmp/index.html');
+      const webOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      const opaqueOrigin = SDK.SecurityOrigin.SecurityOrigin.create('data:text/html,test');
+
+      assert.isTrue(fileOrigin.isFile());
+      assert.isFalse(webOrigin.isFile());
+      assert.isFalse(opaqueOrigin.isFile());
+    });
+  });
 });

@@ -27,7 +27,8 @@ describe('RequestContext', function() {
         urlString`https://www.example.com/path/to/page.html`, null, null, null);
     const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
     const context = new AiAssistance.RequestContext.RequestContext(request, calculator);
-    assert.strictEqual(context.getOrigin(), 'https://www.example.com');
+    assert.isTrue(
+        context.getOrigin().isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://www.example.com')));
   });
 
   it('should return the origin of the documentURL and strips the trailing slash', () => {
@@ -36,7 +37,8 @@ describe('RequestContext', function() {
                                                              urlString`https://www.example.com/`, null, null, null);
     const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
     const context = new AiAssistance.RequestContext.RequestContext(request, calculator);
-    assert.strictEqual(context.getOrigin(), 'https://www.example.com');
+    assert.isTrue(
+        context.getOrigin().isSameOriginWith(SDK.SecurityOrigin.SecurityOrigin.create('https://www.example.com')));
   });
 
   it('should return the virtual HAR origin if the request is imported from HAR', () => {
@@ -45,7 +47,8 @@ describe('RequestContext', function() {
     request.setIsImportedHar(true);
     const calculator = new NetworkTimeCalculator.NetworkTransferTimeCalculator();
     const context = new AiAssistance.RequestContext.RequestContext(request, calculator);
-    assert.strictEqual(context.getOrigin(), 'imported-har://www.example.com');
+    assert.isTrue(context.getOrigin().isSameOriginWith(
+        SDK.SecurityOrigin.SecurityOrigin.create('imported-har://www.example.com')));
   });
 
   it('getPromptDetails describes the network request correctly', async function() {

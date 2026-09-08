@@ -7,11 +7,12 @@ import type * as Platform from '../platform/platform.js';
 
 /**
  * Internal representation of a security origin:
- * - `origin`: A comparable origin string (`<scheme>://<host>[:<port>]` or path-scoped `file://<host>/<path>`).
+ * - `origin`: A comparable origin string (`<scheme>://<host>[:<port>]`).
+ * - `file`: A path-scoped local file origin (`file://<host>/<path>`).
  * - `opaque`: An isolated opaque origin uniquely identified by a UUID that never matches any other origin.
  */
-type InternalOrigin =
-    |{readonly type: 'origin', readonly value: string}|{readonly type: 'opaque', readonly uuid: string};
+type InternalOrigin =|{readonly type: 'origin', readonly value: string}|{readonly type: 'file', readonly value: string}|
+    {readonly type: 'opaque', readonly uuid: string};
 
 /** Exact string matches that represent an invalid or opaque origin. */
 const OPAQUE_EXACT_MATCHES = new Set([
@@ -115,7 +116,7 @@ export class SecurityOrigin {
         return SecurityOrigin.createUniqueOpaque();
       }
       const authority = parsed.host + (parsed.port ? ':' + parsed.port : '');
-      return new SecurityOrigin({type: 'origin', value: `file://${authority}${parsed.path}`});
+      return new SecurityOrigin({type: 'file', value: `file://${authority}${parsed.path}`});
     }
 
     const origin = Common.ParsedURL.ParsedURL.extractOrigin(rawUrl as Platform.DevToolsPath.UrlString);
@@ -182,7 +183,7 @@ export class SecurityOrigin {
       return this.#origin.type === 'opaque' && other.#origin.type === 'opaque' &&
           this.#origin.uuid === other.#origin.uuid;
     }
-    return this.#origin.value === other.#origin.value;
+    return this.#origin.type === other.#origin.type && this.#origin.value === other.#origin.value;
   }
 
   /**
@@ -196,12 +197,23 @@ export class SecurityOrigin {
   }
 
   /**
-   * Returns a stable string representation of this origin for identification, storage keys,
-   * or debugging logs.
+   * Returns whether this origin represents a local file origin (`file://`).
+   */
+  isFile(): boolean {
+    return this.#origin.type === 'file';
+  }
+
+  /**
+   * Returns a stable string identifier for display, logging, or storage keys.
    *
-   * - For standard origins, returns the serialized origin string (e.g. `https://example.com:8080`).
-   * - For file origins, returns the path-scoped origin (e.g. `file:///path/to/file.html`).
-   * - For opaque origins, returns the unique UUID string.
+   * WARNING: Do not compare `siteId()` strings to verify origin equality or
+   * enforce security boundaries. Always use `isSameOriginWith()` instead.
+   *
+   * Return formats:
+   * - Standard origins: `<scheme>://<host>[:<port>]` (e.g., `https://example.com:8080`).
+   * - File origins: `file://<authority><path>` (e.g., `file:///path/to/file.html`).
+   * - Opaque origins: A bare UUID string (e.g., `3fa85f64-5717-4562-b3fc-2c963f66afa6`).
+   *   Note: Opaque site IDs do not have URI schemes and are not valid URLs.
    */
   siteId(): string {
     return this.#origin.type === 'opaque' ? this.#origin.uuid : this.#origin.value;

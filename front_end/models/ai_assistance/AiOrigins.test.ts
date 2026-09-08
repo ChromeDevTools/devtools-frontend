@@ -4,6 +4,8 @@
 
 import {assert} from 'chai';
 
+import * as SDK from '../../core/sdk/sdk.js';
+
 import * as AiAssistance from './ai_assistance.js';
 
 describe('AiOrigins', () => {
@@ -149,28 +151,32 @@ describe('AiOrigins', () => {
 
   describe('canResourceContentsBeReadForTrace', () => {
     it('returns true if origins are equivalent', () => {
-      assert.isTrue(
-          AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('https://a.com/script.js', 'https://a.com'));
+      assert.isTrue(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace(
+          'https://a.com/script.js', SDK.SecurityOrigin.SecurityOrigin.create('https://a.com')));
     });
 
     it('returns false if origins are different', () => {
-      assert.isFalse(
-          AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('https://b.com/script.js', 'https://a.com'));
+      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace(
+          'https://b.com/script.js', SDK.SecurityOrigin.SecurityOrigin.create('https://a.com')));
     });
 
     it('blocks opaque target origins even with matching allowedOrigin', () => {
-      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('data:text/javascript,console.log()',
-                                                                              'https://a.com'));
+      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace(
+          'data:text/javascript,console.log()', SDK.SecurityOrigin.SecurityOrigin.create('https://a.com')));
     });
 
     it('blocks opaque allowedOrigin', () => {
-      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('https://a.com/script.js', 'data:'));
-      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('https://a.com/script.js', 'null'));
+      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace(
+          'https://a.com/script.js', SDK.SecurityOrigin.SecurityOrigin.create('data:')));
+      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace(
+          'https://a.com/script.js', SDK.SecurityOrigin.SecurityOrigin.create('null')));
     });
 
     it('blocks local files for fresh recordings even if same-origin', () => {
-      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('file:///etc/passwd', 'file://'));
-      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace('file:///tmp/index.html', 'file://'));
+      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace(
+          'file:///etc/passwd', SDK.SecurityOrigin.SecurityOrigin.create('file:///tmp')));
+      assert.isFalse(AiAssistance.AiOrigins.canResourceContentsBeReadForTrace(
+          'file:///tmp/index.html', SDK.SecurityOrigin.SecurityOrigin.create('file:///tmp')));
     });
   });
 });

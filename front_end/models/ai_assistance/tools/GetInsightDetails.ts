@@ -205,7 +205,7 @@ export class GetInsightDetailsTool implements
     }
 
     const widgets: AiWidget[] = [];
-    const isImportedTrace = performanceTraceContext.getOrigin().startsWith('imported-trace://');
+    const isImportedTrace = performanceTraceContext.isImported();
     if (!isImportedTrace) {
       const domTreeWidget = await this.#generateDOMTreeWidget(insight, insightSet, capabilities.getTarget());
       if (domTreeWidget) {

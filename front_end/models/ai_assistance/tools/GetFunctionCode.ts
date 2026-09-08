@@ -77,7 +77,7 @@ export class GetFunctionCodeTool implements
       return {error: 'Performance trace context is not available.'};
     }
 
-    if (performanceTraceContext.getOrigin().startsWith('imported-trace://')) {
+    if (performanceTraceContext.isImported()) {
       return {error: 'Cannot use this tool on an imported file.'};
     }
 

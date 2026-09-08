@@ -71,16 +71,19 @@ export function isSamePageOrigin(target: SDK.Target.Target|null, context?: Conve
   if (!target || !context) {
     return false;
   }
-  const pageOrigin = Common.ParsedURL.ParsedURL.extractOrigin(target.inspectedURL());
-  return pageOrigin !== '' && context.isOriginAllowed(pageOrigin);
+  const inspectedURL = target.inspectedURL();
+  if (!inspectedURL) {
+    return false;
+  }
+  const pageOrigin = SDK.SecurityOrigin.SecurityOrigin.create(inspectedURL);
+  return !pageOrigin.isOpaque() && context.isOriginAllowed(pageOrigin);
 }
 
 const MAX_TARGET_ORIGINS = 100;
 
 function resolveTargetOrigins(context?: ConversationContext<StorageItem>, origins?: string[]): string[] {
   const primaryOrigin = context?.getOrigin();
-  const primaryString =
-      primaryOrigin instanceof SDK.SecurityOrigin.SecurityOrigin ? primaryOrigin.siteId() : primaryOrigin;
+  const primaryString = primaryOrigin?.siteId();
   const rawList = (origins && origins.length > 0) ? origins : (primaryString ? [primaryString] : []);
   const uniqueOrigins = Array.from(new Set(rawList));
   return uniqueOrigins.slice(0, MAX_TARGET_ORIGINS);

@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
 import type * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
@@ -15,7 +14,6 @@ import {
   ConversationContext,
   type ConversationSuggestions,
 } from '../agents/AiAgent.js';
-import {extractContextOrigin} from '../AiOrigins.js';
 import {
   PerformanceInsightFormatter,
 } from '../data_formatters/PerformanceInsightFormatter.js';
@@ -140,6 +138,13 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
   }
 
   /**
+   * Returns whether this trace was imported rather than recorded live in the current session.
+   */
+  isImported(): boolean {
+    return !this.#freshRecordingTracker.recordingIsFresh(this.#focus.parsedTrace);
+  }
+
+  /**
    * Returns the origin for a performance trace in the AI context.
    *
    * To prevent cross-origin prompt injection attacks, imported traces
@@ -148,16 +153,20 @@ export class PerformanceTraceContext extends ConversationContext<AgentFocus> {
    * (e.g., `https://${domain}`). This forces a conversation reset when transitioning
    * between imported trace data and live pages.
    */
-  override getOrigin(): string {
-    const parsedTrace = this.#focus.parsedTrace;
+  override getOrigin(): SDK.SecurityOrigin.SecurityOrigin {
     const url = this.getURL();
-    const origin = extractContextOrigin(url);
-    const isFresh = this.#freshRecordingTracker.recordingIsFresh(parsedTrace);
-    if (!isFresh) {
-      const parsed = Common.ParsedURL.ParsedURL.fromString(origin as Platform.DevToolsPath.UrlString);
-      return `imported-trace://${parsed ? parsed.domain() : origin}`;
+    if (this.isImported()) {
+      try {
+        const parsedUrl = new URL(url);
+        if (parsedUrl.host) {
+          return SDK.SecurityOrigin.SecurityOrigin.create(`imported-trace://${parsedUrl.host}`);
+        }
+      } catch {
+        // Fall through to opaque below.
+      }
+      return SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
     }
-    return origin;
+    return SDK.SecurityOrigin.SecurityOrigin.create(url);
   }
 
   override getItem(): AgentFocus {

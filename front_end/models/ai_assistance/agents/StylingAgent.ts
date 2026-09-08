@@ -4,7 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
-import * as SDK from '../../../core/sdk/sdk.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import {ChangeManager} from '../ChangeManager.js';
 import {ExtensionScope} from '../ExtensionScope.js';
 import {AI_ASSISTANCE_CSS_CLASS_NAME} from '../injected.js';
@@ -155,8 +155,7 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         return await getStylesTool.handler(args, {
           getTarget: () => this.targetManager.primaryPageTarget() ?? context.getItem().domModel().target(),
           getEstablishedOrigin: () => {
-            const origin = context.getOrigin();
-            return origin instanceof SDK.SecurityOrigin.SecurityOrigin ? origin.siteId() : origin;
+            return context.getOrigin().siteId();
           },
         });
       },

@@ -252,7 +252,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'null'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('null')}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -278,7 +278,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'data:'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('data:')}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -330,7 +330,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'https://example.com'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -402,7 +402,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'https://example.com'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -467,7 +467,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'https://example.com'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -507,7 +507,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'imported-har://example.com'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('imported-har://example.com')}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -544,7 +544,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'https://example.com'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -608,7 +608,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'https://example.com'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -666,7 +666,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'https://example.com'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')}),
       });
 
       await Array.fromAsync(agent.run('test', {selected: null}));
@@ -802,7 +802,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'https://example.com'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')}),
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: null}));
@@ -850,7 +850,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'https://example.com'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')}),
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: null}));
@@ -938,7 +938,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'https://example.com'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')}),
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: null}));
@@ -1050,7 +1050,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'https://example.com'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')}),
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: null}));
@@ -1111,7 +1111,7 @@ describe('ContextSelectionAgent', function() {
           }],
           [{explanation: 'Done'}],
         ]),
-        allowedOrigin: () => ({origin: 'https://example.com'}),
+        allowedOrigin: () => ({origin: SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')}),
       });
 
       const responses = await Array.fromAsync(agent.run('test', {selected: null}));

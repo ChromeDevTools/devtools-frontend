@@ -12,6 +12,7 @@ describe('Network AI Eval: failing-request', function() {
   it('sets up and runs the app, verifies it started from console output, and terminates it', async () => {
     const app = await setupAndRunEvalApp('network', 'failing-request');
     try {
+      assert.strictEqual(app.config.initialUrl, 'http://localhost:4321/devtools-times/articles/life-with-charlie');
       const output = await app.waitForOutput(/localhost:\d+/i);
       assert.match(output, /localhost:\d+/i, 'Expected console output to indicate the app has started on localhost');
     } finally {

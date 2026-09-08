@@ -25,6 +25,8 @@ export interface EvalTaskConfig {
    * one by one in order, and the final command starts the application server.
    */
   taskEntryPoint: string[];
+  /** The initial URL to navigate to for the evaluation. */
+  initialUrl?: string;
 }
 
 export interface RunningEvalApp {
@@ -35,7 +37,7 @@ export interface RunningEvalApp {
 }
 
 /**
- * Parses the `base_app` and `task_entry_point` fields from a `task.textproto` file.
+ * Parses the `base_app`, `task_entry_point`, and optional `initial_url` fields from a `task.textproto` file.
  */
 export function parseTaskTextproto(content: string): EvalTaskConfig {
   const baseAppMatch = content.match(/^\s*base_app:\s*"([^"]+)"/m);
@@ -56,9 +58,13 @@ export function parseTaskTextproto(content: string): EvalTaskConfig {
     throw new Error(`Missing or empty \`task_entry_point\` field in ${TASK_TEXTPROTO}`);
   }
 
+  const initialUrlMatch = content.match(/^\s*initial_url:\s*["']([^"']+)["']/m);
+  const initialUrl = initialUrlMatch ? initialUrlMatch[1] : undefined;
+
   return {
     baseApp,
     taskEntryPoint,
+    initialUrl,
   };
 }
 

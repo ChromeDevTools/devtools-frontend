@@ -4,7 +4,6 @@
 
 import {assert} from 'chai';
 
-import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {
@@ -13,12 +12,12 @@ import {
 } from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 
 import * as Network from './network.js';
 
 const {RequestCookiesView} = Network;
-const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('RequestCookiesView', () => {
   setupLocaleHooks();
@@ -94,9 +93,7 @@ describeWithEnvironment('RequestCookiesView', () => {
   });
 
   it('shows a message when request site has cookies in another partition', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/foo.html`, urlString``, null, null,
-        null);
+    const request = createNetworkRequest({url: 'https://www.example.com/foo.html'});
     request.addExtraRequestInfo({
       siteHasCookieInOtherPartition: true,
       includedRequestCookies: [],
@@ -114,9 +111,7 @@ describeWithEnvironment('RequestCookiesView', () => {
   });
 
   it('shows filtered out cookies when checkbox is ticked', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/foo.html`, urlString``, null, null,
-        null);
+    const request = createNetworkRequest({url: 'https://www.example.com/foo.html'});
 
     const view = createViewFunctionStub(RequestCookiesView.RequestCookiesView);
     const component = new RequestCookiesView.RequestCookiesView(request, view);

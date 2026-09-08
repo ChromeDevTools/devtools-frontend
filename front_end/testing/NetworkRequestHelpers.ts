@@ -48,6 +48,11 @@ export interface CreateNetworkRequestOptions {
   mimeType?: string;
   resourceType?: Common.ResourceType.ResourceType;
   finished?: boolean;
+  failed?: boolean;
+  charset?: string;
+  timing?: Protocol.Network.ResourceTiming;
+  serviceWorkerRouterInfo?: Protocol.Network.ServiceWorkerRouterInfo;
+  fetchedViaServiceWorker?: boolean;
   initiator?: Protocol.Network.Initiator|null;
   frameId?: Protocol.Page.FrameId|null;
   loaderId?: Protocol.Network.LoaderId|null;
@@ -105,6 +110,21 @@ export function createNetworkRequest(options: CreateNetworkRequestOptions = {}):
   }
   if (options.finished !== undefined) {
     request.finished = options.finished;
+  }
+  if (options.failed !== undefined) {
+    request.failed = options.failed;
+  }
+  if (options.charset !== undefined) {
+    request.setCharset(options.charset);
+  }
+  if (options.timing !== undefined) {
+    request.timing = options.timing;
+  }
+  if (options.serviceWorkerRouterInfo !== undefined) {
+    request.serviceWorkerRouterInfo = options.serviceWorkerRouterInfo;
+  }
+  if (options.fetchedViaServiceWorker !== undefined) {
+    request.fetchedViaServiceWorker = options.fetchedViaServiceWorker;
   }
   if (options.contentData) {
     const dataOrFn = options.contentData;

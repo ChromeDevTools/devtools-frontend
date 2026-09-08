@@ -5,30 +5,25 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import * as Platform from '../../core/platform/platform.js';
-import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
-import type * as Protocol from '../../generated/protocol.js';
 import {raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import * as SourceFrame from '../../ui/legacy/components/source_frame/source_frame.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
 
-const {urlString} = Platform.DevToolsPath;
-
 describeWithEnvironment('RequestResponseView', () => {
   it('does show WASM disassembly for WASM module requests', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/module.wasm`, urlString``,
-        null, null, null);
-    request.setContentDataProvider(
-        () => Promise.resolve(new TextUtils.ContentData.ContentData(
-            'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=',
-            true, 'application/wasm')));
-    request.mimeType = 'application/wasm';
-    request.finished = true;
+    const request = createNetworkRequest({
+      url: 'http://devtools-frontend.test/module.wasm',
+      contentData: new TextUtils.ContentData.ContentData(
+          'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=', true,
+          'application/wasm'),
+      mimeType: 'application/wasm',
+      finished: true,
+    });
 
     // This is required, as it otherwise tries to create and wait for a worker to fetch and disassemble wasm
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,15 +42,14 @@ describeWithEnvironment('RequestResponseView', () => {
   });
 
   it('shows the BinaryResourceView for binary content', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/image.png`, urlString``,
-        null, null, null);
-    request.setContentDataProvider(
-        () => Promise.resolve(new TextUtils.ContentData.ContentData(
-            'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=',
-            true, 'application/octet-stream')));
-    request.mimeType = 'application/octet-stream';
-    request.finished = true;
+    const request = createNetworkRequest({
+      url: 'http://devtools-frontend.test/image.png',
+      contentData: new TextUtils.ContentData.ContentData(
+          'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=', true,
+          'application/octet-stream'),
+      mimeType: 'application/octet-stream',
+      finished: true,
+    });
 
     const component = new Network.RequestResponseView.RequestResponseView(request);
     assert.deepEqual(component.getMimeTypeForDisplay(), 'application/octet-stream');
@@ -73,10 +67,10 @@ describeWithEnvironment('RequestResponseView', () => {
   });
 
   it('renders a view even if mime type is undefined', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/image.png`, urlString``,
-        null, null, null);
-    request.finished = true;
+    const request = createNetworkRequest({
+      url: 'http://devtools-frontend.test/image.png',
+      finished: true,
+    });
 
     const component = new Network.RequestResponseView.RequestResponseView(request);
     assert.isUndefined(component.getMimeTypeForDisplay());
@@ -98,15 +92,14 @@ describeWithEnvironment('RequestResponseView', () => {
   });
 
   it('forwards calls to reveal position to the SearchableContainer', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/module.wasm`, urlString``,
-        null, null, null);
-    request.setContentDataProvider(
-        () => Promise.resolve(new TextUtils.ContentData.ContentData(
-            'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=',
-            true, 'application/wasm')));
-    request.mimeType = 'application/wasm';
-    request.finished = true;
+    const request = createNetworkRequest({
+      url: 'http://devtools-frontend.test/module.wasm',
+      contentData: new TextUtils.ContentData.ContentData(
+          'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=', true,
+          'application/wasm'),
+      mimeType: 'application/wasm',
+      finished: true,
+    });
 
     // This is required, as it otherwise tries to create and wait for a worker to fetch and disassemble wasm
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -135,16 +128,15 @@ describeWithEnvironment('RequestResponseView', () => {
   });
 
   it('shows no response data if the request failed', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`http://devtools-frontend.test/module.wasm`, urlString``,
-        null, null, null);
-    request.setContentDataProvider(
-        () => Promise.resolve(new TextUtils.ContentData.ContentData(
-            'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=',
-            true, 'application/wasm')));
-    request.mimeType = 'application/wasm';
-    request.finished = true;
-    request.failed = true;
+    const request = createNetworkRequest({
+      url: 'http://devtools-frontend.test/module.wasm',
+      contentData: new TextUtils.ContentData.ContentData(
+          'AGFzbQEAAAABBQFgAAF/AwIBAAcHAQNiYXIAAAoGAQQAQQILACQEbmFtZQAQD3Nob3ctd2FzbS0yLndhdAEGAQADYmFyAgMBAAA=', true,
+          'application/wasm'),
+      mimeType: 'application/wasm',
+      finished: true,
+      failed: true,
+    });
 
     const component = new Network.RequestResponseView.RequestResponseView(request);
     assert.deepEqual(component.getMimeTypeForDisplay(), 'application/wasm');

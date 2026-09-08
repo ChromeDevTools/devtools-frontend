@@ -8,7 +8,6 @@ import sinon from 'sinon';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Deprecation from '../../../generated/Deprecation.js';
 /* eslint-disable @devtools/es-modules-import */
-// @ts-expect-error
 import ISSUE_DESCRIPTIONS from '../../../models/issues_manager/description_list.json' with {type : 'json'};
 /* eslint-enable @devtools/es-modules-import */
 import * as IssuesManager from '../../../models/issues_manager/issues_manager.js';

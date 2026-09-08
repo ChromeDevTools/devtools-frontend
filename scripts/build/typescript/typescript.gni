@@ -177,6 +177,12 @@ template("ts_library") {
   _compiler_options.moduleResolution = _module_resolution
   _compiler_options.rootDir = rebase_path(_rootdir, target_gen_dir)
   _compiler_options.outDir = _outdir
+  _compiler_options.rootDirs = [
+    rebase_path(devtools_location_prepend, target_gen_dir),
+    rebase_path("$root_gen_dir/$devtools_location", target_gen_dir),
+  ]
+  _compiler_options.allowJs = false
+  _compiler_options.checkJs = false
   if (_no_js_emit) {
     _compiler_options.noEmit = true
   }

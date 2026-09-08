@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../../../core/common/common.js';
-import {Directives, html, nothing, render} from '../../../../ui/lit/lit.js';
+import * as Lit from '../../../../ui/lit/lit.js';
 import * as UI from '../../legacy.js';
 
 import positionAreaEditorStyles from './positionAreaEditor.css.js';
 
+const {Directives, html, nothing, render} = Lit;
 const {repeat} = Directives;
 
 /**
@@ -250,6 +251,8 @@ export interface ViewInput {
   onSelectStart: (x: number, y: number) => void;
   onSelect: (x: number, y: number) => void;
   onSelectEnd: (x?: number, y?: number) => void;
+  onModeChange: (axis: Axis, mode: Mode) => void;
+  onSelfChange: (axis: Axis, self: boolean) => void;
 }
 export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
 export const DEFAULT_VIEW: View = (input, output, target) => {
@@ -321,6 +324,36 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 
   const propertyValue = stringifyPositionArea(input.area);
 
+  const blockAxis = input.area.primaryAxis === Axis.BLOCK ? input.area.first : input.area.second;
+  const inlineAxis = input.area.primaryAxis === Axis.INLINE ? input.area.first : input.area.second;
+
+  function renderModeRadioGroup(axis: Axis, currentMode: Mode): Lit.TemplateResult {
+    const modes = [
+      {mode: Mode.PHYSICAL, label: 'Physical'},
+      {mode: Mode.COORDINATE, label: 'Coordinate'},
+      {mode: Mode.LOGICAL, label: 'Logical'},
+      {mode: Mode.AUTO, label: 'Auto'},
+    ];
+
+    return html`
+      <fieldset class="chip-radio-group" aria-label="${axis} axis mode">
+        ${modes.map(({mode, label}) => {
+      const id = `${axis}-mode-${mode}`;
+      return html`
+            <input
+              type="radio"
+              id=${id}
+              name="${axis}-mode"
+              value=${mode}
+              .checked=${currentMode === mode}
+              @change=${() => input.onModeChange(axis, mode)}
+            >
+            <label for=${id}>${label}</label>
+          `;
+    })}
+      </fieldset>
+    `;
+  }
   render(html`
     <style>${positionAreaEditorStyles}</style>
     <div class=property>
@@ -339,6 +372,32 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
          <div data-x=${x} data-y=${y}>
          </div>
         `)}
+    </div>
+    <div class=position-area-controls>
+      <div class=axis-section>
+        <div class=axis-header>
+          <span class=axis-title>Block</span>
+          <devtools-checkbox
+            .checked=${blockAxis.self}
+            ?disabled=${isGeneric(blockAxis)}
+            @change=${(e: Event) => input.onSelfChange(Axis.BLOCK, (e.target as UI.UIUtils.CheckboxLabel).checked)}>
+            self
+          </devtools-checkbox>
+        </div>
+        ${renderModeRadioGroup(Axis.BLOCK, blockAxis.mode)}
+      </div>
+      <div class=axis-section>
+        <div class=axis-header>
+          <span class=axis-title>Inline</span>
+          <devtools-checkbox
+            .checked=${inlineAxis.self}
+            ?disabled=${isGeneric(inlineAxis)}
+            @change=${(e: Event) => input.onSelfChange(Axis.INLINE, (e.target as UI.UIUtils.CheckboxLabel).checked)}>
+            self
+          </devtools-checkbox>
+        </div>
+        ${renderModeRadioGroup(Axis.INLINE, inlineAxis.mode)}
+      </div>
     </div>
     `,
          target);
@@ -409,6 +468,10 @@ export class PositionAreaEditor extends PositionAreaEditorBase {
     return this.#area.primaryAxis === Axis.BLOCK ? this.#area.first : this.#area.second;
   }
 
+  #axis(axis: Axis): GridAxis {
+    return axis === Axis.INLINE ? this.#inlineAxis() : this.#blockAxis();
+  }
+
   #notifyChange(): void {
     if (!this.#area) {
       return;
@@ -453,12 +516,81 @@ export class PositionAreaEditor extends PositionAreaEditorBase {
     this.#inProgressSelection = undefined;
   }
 
+  #setAxisMode(axis: Axis, mode: Mode): void {
+    if (!this.#area) {
+      return;
+    }
+    const otherAxis = axis === Axis.INLINE ? Axis.BLOCK : Axis.INLINE;
+    const current = this.#axis(axis);
+
+    if (mode === current.mode) {
+      return;
+    }
+
+    const other = this.#axis(otherAxis);
+
+    current.mode = mode;
+    if (isGeneric(current) || mode === Mode.PHYSICAL) {
+      // center and span-all and physical axes don't support self
+      current.self = false;
+    }
+
+    if (!isGeneric(other)) {
+      if (mode === Mode.PHYSICAL || mode === Mode.COORDINATE) {
+        // physical axes may be combined with coordinate
+        if (other.mode !== Mode.PHYSICAL && other.mode !== Mode.COORDINATE) {
+          other.mode = other.self ? Mode.COORDINATE : Mode.PHYSICAL;
+        }
+      } else {
+        other.mode = mode;
+        if (!isGeneric(current)) {
+          other.self = current.self;
+        }
+      }
+    }
+
+    this.requestUpdate();
+    this.#notifyChange();
+  }
+
+  #setAxisSelf(axis: Axis, self: boolean): void {
+    if (!this.#area) {
+      return;
+    }
+    const current = this.#axis(axis);
+    const other = this.#axis(axis === Axis.INLINE ? Axis.BLOCK : Axis.INLINE);
+
+    if (isGeneric(current)) {
+      if (!isGeneric(other)) {
+        this.#setAxisSelf(axis === Axis.INLINE ? Axis.BLOCK : Axis.INLINE, self);
+      }
+      this.requestUpdate();
+      this.#notifyChange();
+      return;
+    }
+
+    current.self = self;
+
+    if (current.mode === Mode.PHYSICAL && self) {
+      current.mode = Mode.COORDINATE;
+    }
+
+    if (!isGeneric(other) && other.mode !== Mode.PHYSICAL && other.mode !== Mode.COORDINATE) {
+      other.self = self;
+    }
+
+    this.requestUpdate();
+    this.#notifyChange();
+  }
+
   override performUpdate(): void {
     this.#view({
       area: this.#area,
       onSelectStart: this.#startSelection.bind(this),
       onSelect: this.#select.bind(this),
       onSelectEnd: this.#finishSelection.bind(this),
+      onModeChange: this.#setAxisMode.bind(this),
+      onSelfChange: this.#setAxisSelf.bind(this),
     },
                undefined, this.contentElement);
   }

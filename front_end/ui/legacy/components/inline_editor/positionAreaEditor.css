@@ -77,4 +77,74 @@
       z-index: 1;
     }
   }
+
+  .position-area-controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-5);
+    flex-shrink: 0;
+  }
+
+  .axis-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-1);
+  }
+
+  .axis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .axis-title {
+    font-size: var(--sys-typescale-body4-size);
+    font-weight: 500;
+    color: var(--sys-color-on-surface-subtle);
+  }
+
+  .chip-radio-group {
+    display: inline-flex;
+    gap: var(--sys-size-3);
+    border: none;
+    padding: 0;
+    margin: 0;
+
+    & > input[type='radio'] {
+      position: absolute;
+      opacity: 0%;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    & > label {
+      box-sizing: border-box;
+      display: inline-block;
+      padding: 3px var(--sys-size-4);
+      border-radius: var(--sys-shape-corner-extra-small);
+      outline: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+      outline-offset: calc(-1 * var(--sys-size-1));
+      background: transparent;
+      color: var(--sys-color-on-surface);
+      font-size: var(--sys-typescale-body5-size);
+      font-weight: 500;
+      cursor: pointer;
+      user-select: none;
+
+      &:hover {
+        background-color: var(--sys-color-state-hover-on-subtle);
+      }
+    }
+
+    & > input[type='radio']:checked + label {
+      background-color: var(--sys-color-tonal-container);
+      color: var(--sys-color-on-tonal-container);
+      outline: none;
+    }
+
+    & > input[type='radio']:focus-visible + label {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    }
+  }
 }

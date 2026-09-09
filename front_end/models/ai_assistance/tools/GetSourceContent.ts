@@ -13,6 +13,7 @@ import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  isOriginAllowedByLock,
   type OriginLockCapability,
   type ToolArgs,
   ToolName,
@@ -66,7 +67,7 @@ export class GetSourceContentTool implements
       context: BaseToolCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<{content: string}>> {
     const origin = context.getEstablishedOrigin();
-    if (origin?.isOpaque()) {
+    if (!origin || origin.isOpaque()) {
       return {
         error: 'Opaque origin not allowed',
       };
@@ -82,8 +83,7 @@ export class GetSourceContentTool implements
       };
     }
 
-    const fileContext = new FileContext(file);
-    if (!fileContext.isOriginAllowed(origin)) {
+    if (!isOriginAllowedByLock(context, FileContext.originForUISourceCode(file))) {
       return {
         error: 'Cross-origin access blocked.',
       };

@@ -161,4 +161,30 @@ describe('GetSourceContentTool', () => {
     assertIsError(response);
     assert.strictEqual(response.error, 'Opaque origin not allowed');
   });
+
+  it('returns error when origin lock is not established', async () => {
+    const {uiSourceCodes} = createContentProviderUISourceCodes({
+      items: [
+        {
+          url: urlString`https://example.com/script.js`,
+          mimeType: 'application/javascript',
+          resourceType: Common.ResourceType.resourceTypes.Script,
+          content: 'console.log("hello");',
+        },
+      ],
+      projectType: Workspace.Workspace.projectTypes.Network,
+      universe,
+    });
+
+    AiAssistance.ListSources.ListSourcesTool.getUISourceCodes();
+    const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
+
+    const context = {
+      getEstablishedOrigin: () => undefined,
+    };
+
+    const response = await tool.handler({id: sourceId}, context);
+    assertIsError(response);
+    assert.strictEqual(response.error, 'Opaque origin not allowed');
+  });
 });

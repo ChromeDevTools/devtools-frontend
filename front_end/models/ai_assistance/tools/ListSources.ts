@@ -11,6 +11,7 @@ import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  isOriginAllowedByLock,
   type OriginLockCapability,
   ToolName,
 } from './Tool.js';
@@ -93,15 +94,14 @@ export class ListSourcesTool implements
       context: BaseToolCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<{files: SourceSummary[]}>> {
     const origin = context.getEstablishedOrigin();
-    if (origin?.isOpaque()) {
+    if (!origin || origin.isOpaque()) {
       return {
         error: 'Opaque origin not allowed',
       };
     }
 
     const files = ListSourcesTool.getUISourceCodes().filter(file => {
-      const fileContext = new FileContext(file);
-      return fileContext.isOriginAllowed(origin);
+      return isOriginAllowedByLock(context, FileContext.originForUISourceCode(file));
     });
 
     return {

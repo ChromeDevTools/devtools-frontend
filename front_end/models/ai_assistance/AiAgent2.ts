@@ -280,7 +280,11 @@ User query: ${enhancedQuery}`;
       description: tool.description,
       parameters: tool.parameters,
       displayInfoFromArgs: tool.displayInfoFromArgs,
-      handler: (args, options) => {
+      handler: async (args, options) => {
+        const allowed = this.#allowedOrigin?.();
+        if (allowed && 'blocked' in allowed) {
+          return {error: 'Error: Cannot execute tool because conversation origin is blocked due to navigation.'};
+        }
         const context: AllToolsCapabilities = {
           changeManager: this.#changes,
           createExtensionScope: this.#createExtensionScope.bind(this),
@@ -297,7 +301,7 @@ User query: ${enhancedQuery}`;
             this.disableServerSideLogging();
           },
         };
-        return tool.handler(args, context, options);
+        return await tool.handler(args, context, options);
       },
     });
   }

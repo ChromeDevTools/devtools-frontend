@@ -125,6 +125,53 @@ export interface OriginLockCapability {
 }
 
 /**
+ * Verifies that the conversation origin lock is established and non-opaque, and
+ * that a target resource origin matches the locked origin.
+ * Fails closed, returning a ToolErrorResult if invalid, or undefined if allowed.
+ */
+export function validateOriginLock(
+    context: OriginLockCapability,
+    targetOrigin?: SDK.SecurityOrigin.SecurityOrigin|null,
+    actionDescription: string = 'execute tool',
+    ): ToolErrorResult|undefined {
+  const establishedOrigin = context.getEstablishedOrigin();
+  if (!establishedOrigin || establishedOrigin.isOpaque()) {
+    return {error: `Error: Cannot ${actionDescription} because origin lock is not established.`};
+  }
+
+  if (targetOrigin !== undefined) {
+    if (!targetOrigin || targetOrigin.isOpaque()) {
+      return {error: `Error: Cannot ${actionDescription} because the context node has no valid security origin.`};
+    }
+    if (!targetOrigin.isSameOriginWith(establishedOrigin)) {
+      return {
+        error: `Error: Cannot ${actionDescription} because the context node does not belong to the locked origin.`,
+      };
+    }
+  }
+
+  return undefined;
+}
+
+/**
+ * Checks whether a target origin matches the established conversation origin lock.
+ * Fails closed (returns false) if origin lock is missing/opaque or target is cross-origin.
+ */
+export function isOriginAllowedByLock(
+    context: OriginLockCapability,
+    targetOrigin: SDK.SecurityOrigin.SecurityOrigin|null|undefined,
+    ): boolean {
+  const establishedOrigin = context.getEstablishedOrigin();
+  if (!establishedOrigin || establishedOrigin.isOpaque()) {
+    return false;
+  }
+  if (!targetOrigin || targetOrigin.isOpaque()) {
+    return false;
+  }
+  return targetOrigin.isSameOriginWith(establishedOrigin);
+}
+
+/**
  * Capability for tools that need to inspect an active Lighthouse report from context.
  */
 export interface LighthouseReportCapability {

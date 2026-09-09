@@ -152,4 +152,14 @@ describe('ListSourcesTool', () => {
     assertIsError(response);
     assert.strictEqual(response.error, 'Opaque origin not allowed');
   });
+
+  it('returns error when origin lock is not established', async () => {
+    const context = {
+      getEstablishedOrigin: () => undefined,
+    };
+
+    const response = await tool.handler({}, context);
+    assertIsError(response);
+    assert.strictEqual(response.error, 'Opaque origin not allowed');
+  });
 });

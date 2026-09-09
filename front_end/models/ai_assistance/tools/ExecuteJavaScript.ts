@@ -18,6 +18,7 @@ import {
   type StyleMutationCapability,
   type ToolArgs,
   ToolName,
+  validateOriginLock,
 } from './Tool.js';
 
 const MAX_FORMATTED_LINES = 40;
@@ -130,17 +131,9 @@ const data = {
       return {error: 'Error: Could not find the context node for execution.'};
     }
 
-    const establishedOrigin = context.getEstablishedOrigin();
-    if (establishedOrigin) {
-      const nodeOrigin = executionNode.securityOrigin();
-      if (!nodeOrigin || nodeOrigin.isOpaque()) {
-        return {error: 'Error: Cannot execute JavaScript because the context node has no valid security origin.'};
-      }
-      if (!nodeOrigin.isSameOriginWith(establishedOrigin)) {
-        return {
-          error: 'Error: Cannot execute JavaScript because the context node does not belong to the locked origin.',
-        };
-      }
+    const originError = validateOriginLock(context, executionNode.securityOrigin(), 'execute JavaScript');
+    if (originError) {
+      return originError;
     }
 
     if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {

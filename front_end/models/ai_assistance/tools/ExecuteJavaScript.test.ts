@@ -543,5 +543,61 @@ describe('ExecuteJavaScriptTool', () => {
                          'Error: Cannot execute JavaScript because the context node has no valid security origin.');
       sinon.assert.notCalled(mockExecJs);
     });
+
+    it('returns error when origin lock is not established', async () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const mockExecJs = sinon.stub().resolves('{"success": true}');
+      const mockScope = {
+        install: sinon.stub().resolves(),
+        uninstall: sinon.stub().resolves(),
+      };
+
+      const context = {
+        getExecutionContextNode: () => element,
+        execJs: mockExecJs,
+        changeManager: new AiAssistance.ChangeManager.ChangeManager(),
+        createExtensionScope: sinon.stub().returns(mockScope),
+        getEstablishedOrigin: () => undefined,
+      };
+
+      const response = await tool.handler({
+        explanation: 'Check element',
+        title: 'Title',
+        code: 'console.log("hello")',
+      },
+                                          context);
+
+      assertIsError(response);
+      assert.strictEqual(response.error, 'Error: Cannot execute JavaScript because origin lock is not established.');
+      sinon.assert.notCalled(mockExecJs);
+    });
+
+    it('returns error when established origin is opaque', async () => {
+      const tool = new AiAssistance.ExecuteJavaScript.ExecuteJavaScriptTool();
+      const mockExecJs = sinon.stub().resolves('{"success": true}');
+      const mockScope = {
+        install: sinon.stub().resolves(),
+        uninstall: sinon.stub().resolves(),
+      };
+
+      const context = {
+        getExecutionContextNode: () => element,
+        execJs: mockExecJs,
+        changeManager: new AiAssistance.ChangeManager.ChangeManager(),
+        createExtensionScope: sinon.stub().returns(mockScope),
+        getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque(),
+      };
+
+      const response = await tool.handler({
+        explanation: 'Check element',
+        title: 'Title',
+        code: 'console.log("hello")',
+      },
+                                          context);
+
+      assertIsError(response);
+      assert.strictEqual(response.error, 'Error: Cannot execute JavaScript because origin lock is not established.');
+      sinon.assert.notCalled(mockExecJs);
+    });
   });
 });

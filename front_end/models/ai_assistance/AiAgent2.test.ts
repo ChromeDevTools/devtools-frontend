@@ -99,6 +99,34 @@ describe('AiAgent2', () => {
     assert.strictEqual(context.changeManager, changeManager);
   });
 
+  it('blocks tool execution when conversation origin is blocked', async () => {
+    const aidaClient = mockAidaClient([
+      [{
+        explanation: '',
+        functionCalls: [{name: 'learnSkills', args: {skills: ['styling']}}],
+      }],
+      [{
+        explanation: '',
+        functionCalls: [{name: 'executeJavaScript', args: {action: 'console.log(1)'}}],
+      }],
+      [{
+        explanation: 'Done',
+      }],
+    ]);
+    const agent = new AiAssistance.AiAgent2.AiAgent2({
+      aidaClient,
+      allowedOrigin: () => ({blocked: true}),
+    });
+
+    const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
+    assert.exists(executeJsTool);
+    const handlerStub = sinon.stub(executeJsTool, 'handler').resolves({result: 'mocked result'});
+
+    await Array.fromAsync(agent.run('question', {selected: null}));
+
+    sinon.assert.notCalled(handlerStub);
+  });
+
   it('can learn a skill', async () => {
     const aidaClient = mockAidaClient();
     const agent = new AiAssistance.AiAgent2.AiAgent2({aidaClient});

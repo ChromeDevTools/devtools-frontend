@@ -20,7 +20,6 @@ Before you run this automated test suite, the prerequisites are:
    gcloud auth login
    ```
 3. A Google OTA (test) account. Make sure to create a production test account, with a password set (see 'updated password flow' during account creation).
-4. Add `"checkout_ai_evals": True` to `custom_vars` in your `.gclient` file and run `gclient sync`.
 
 ---
 
@@ -38,10 +37,6 @@ autoninja -C out/Default test/ai_evals:ai_evals
 
 AI Evals tests:
 
-```bash
-npm run test:evals -- --ota-username your_ota_account@gmail.com
-```
-Or:
 ```bash
 npm run test -- test/ai_evals/ --ota-username your_ota_account@gmail.com
 ```

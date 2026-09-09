@@ -10,7 +10,6 @@ group("ai_evals") {
   deps = [
     ":eval_tests",
     ":test_inputs",
-    "network",
   ]
 }
 
@@ -42,8 +41,5 @@ generated_file("test_inputs") {
   data_keys = [ "tests" ]
   rebase = target_gen_dir
 
-  deps = [
-    ":eval_tests",
-    "network",
-  ]
+  deps = [ ":eval_tests" ]
 }

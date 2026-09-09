@@ -10,7 +10,6 @@ gclient_gn_args = [
 
 vars = {
   'build_with_chromium': False,
-  'checkout_ai_evals': False,
 
   'build_url': 'https://chromium.googlesource.com/chromium/src/build.git',
   'build_revision': '042f906423c4be487c8767c6b99ec69b8692ff32',
@@ -80,10 +79,6 @@ allowed_hosts = [
 ]
 
 deps = {
-  'test/ai_evals/eval_data': {
-    'url': 'https://chrome-internal.googlesource.com/devtools/chrome-devtools-evals@6b082b600c2dca515acf47c33ff14fcbcd7f4c4d',
-    'condition': 'checkout_ai_evals == True',
-  },
   'third_party/clang-format/script': {
     'url': Var('clang_format_url') + '@' + Var('clang_format_revision'),
     'condition': 'build_with_chromium == False',

@@ -2232,6 +2232,29 @@ describe('NetworkDispatcher', () => {
       assert.exists(networkDispatcher.requestForId('mockId'));
     });
 
+    it('captures the cache-disabled setting when the request is sent', () => {
+      const cacheDisabledSetting = universe.settings.resolve(SDK.SDKSettings.cacheDisabledSettingDescriptor);
+      cacheDisabledSetting.set(true);
+      networkDispatcher.requestWillBeSent({
+        ...requestWillBeSentEvent,
+        requestId: 'cacheDisabledRequest' as Protocol.Network.RequestId,
+      });
+      const cacheDisabledRequest = networkDispatcher.requestForId('cacheDisabledRequest');
+      assert.exists(cacheDisabledRequest);
+      assert.isTrue(cacheDisabledRequest.cacheDisabled());
+
+      cacheDisabledSetting.set(false);
+      assert.isTrue(cacheDisabledRequest.cacheDisabled());
+
+      networkDispatcher.requestWillBeSent({
+        ...requestWillBeSentEvent,
+        requestId: 'cacheEnabledRequest' as Protocol.Network.RequestId,
+      });
+      const cacheEnabledRequest = networkDispatcher.requestForId('cacheEnabledRequest');
+      assert.exists(cacheEnabledRequest);
+      assert.isFalse(cacheEnabledRequest.cacheDisabled());
+    });
+
     it('clears finished requests on clearRequests()', () => {
       networkDispatcher.requestWillBeSent(requestWillBeSentEvent);
       networkDispatcher.loadingFinished(loadingFinishedEvent);

@@ -1014,6 +1014,8 @@ export class NetworkDispatcher implements ProtocolProxyApi.NetworkDispatcher {
       }
       requestToManagerMap.set(networkRequest, this.#manager);
     }
+    networkRequest.setCacheDisabled(
+        this.#manager.target().targetManager().settings.resolve(cacheDisabledSettingDescriptor).get());
     networkRequest.hasNetworkData = true;
     this.updateNetworkRequestWithRequest(networkRequest, request);
     networkRequest.setIssueTime(timestamp, wallTime);

@@ -54,8 +54,8 @@ export function resolveAllowedTargetOrigins(
     return {error: 'Primary page target not found.'};
   }
 
-  const pageOrigin = SDK.SecurityOrigin.SecurityOrigin.create(primaryPageTarget.inspectedURL());
-  if (!pageOrigin || !pageOrigin.isSameOriginWith(establishedOrigin)) {
+  const pageOrigin = primaryPageTarget.inspectedSecurityOrigin();
+  if (!pageOrigin.isSameOriginWith(establishedOrigin)) {
     return {error: 'Page origin does not match allowed origin.'};
   }
 

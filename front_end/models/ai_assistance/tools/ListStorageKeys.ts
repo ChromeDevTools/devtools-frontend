@@ -109,8 +109,8 @@ export class ListStorageKeysTool implements DataTool<ListStorageKeysArgs, ListSt
       return {error: 'No origin available or not allowed.'};
     }
 
-    const pageOrigin = SDK.SecurityOrigin.SecurityOrigin.create(primaryPageTarget.inspectedURL());
-    if (!pageOrigin || !pageOrigin.isSameOriginWith(establishedOrigin)) {
+    const pageOrigin = primaryPageTarget.inspectedSecurityOrigin();
+    if (!pageOrigin.isSameOriginWith(establishedOrigin)) {
       return {error: 'No origin available or not allowed.'};
     }
 

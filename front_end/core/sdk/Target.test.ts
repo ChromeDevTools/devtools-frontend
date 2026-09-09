@@ -74,6 +74,34 @@ describe('Target', () => {
     sinon.assert.calledTwice(inspectedURLChanged);
   });
 
+  it('returns and caches inspected security origin based on inspected URL', () => {
+    subframeTarget.setInspectedURL(urlString`https://example.com/subframe`);
+    const origin1 = subframeTarget.inspectedSecurityOrigin();
+    const origin2 = subframeTarget.inspectedSecurityOrigin();
+
+    assert.strictEqual(origin1, origin2);
+    assert.strictEqual(origin1.siteId(), 'https://example.com');
+    assert.isFalse(origin1.isOpaque());
+
+    subframeTarget.setInspectedURL(urlString`https://other.org/page`);
+    const origin3 = subframeTarget.inspectedSecurityOrigin();
+
+    assert.notStrictEqual(origin1, origin3);
+    assert.strictEqual(origin3.siteId(), 'https://other.org');
+  });
+
+  it('returns opaque origin when inspected URL is empty', () => {
+    const origin = subframeTarget.inspectedSecurityOrigin();
+    assert.isTrue(origin.isOpaque());
+  });
+
+  it('maintains the same opaque origin instance until URL changes', () => {
+    const origin1 = subframeTarget.inspectedSecurityOrigin();
+    const origin2 = subframeTarget.inspectedSecurityOrigin();
+    assert.strictEqual(origin1, origin2);
+    assert.isTrue(origin1.isSameOriginWith(origin2));
+  });
+
   it('determines outermost target', () => {
     assert.isNull(tabTarget.outermostTarget());
     assert.strictEqual(mainFrameTargetUnderTab.outermostTarget(), mainFrameTargetUnderTab);

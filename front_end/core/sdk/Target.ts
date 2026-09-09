@@ -8,6 +8,7 @@ import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 
 import {SDKModel, type SDKModelConstructor} from './SDKModel.js';
+import {SecurityOrigin} from './SecurityOrigin.js';
 import type {TargetManager} from './TargetManager.js';
 
 export class Target extends ProtocolClient.InspectorBackend.TargetBase {
@@ -15,6 +16,8 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
   #name: string;
   #inspectedURL: Platform.DevToolsPath.UrlString = Platform.DevToolsPath.EmptyUrlString;
   #inspectedURLName = '';
+  /** Caches the parsed security origin for `#inspectedURL`. */
+  #inspectedSecurityOrigin: SecurityOrigin|null = null;
   readonly #capabilitiesMask: number;
   #type: Type;
   readonly #parentTarget: Target|null;
@@ -206,8 +209,23 @@ export class Target extends ProtocolClient.InspectorBackend.TargetBase {
     return this.#inspectedURL;
   }
 
+  /**
+   * Returns the security origin for this target's inspected URL.
+   *
+   * The target caches the origin until `setInspectedURL()` changes the URL.
+   * If the URL is empty or invalid, this method returns a unique opaque origin.
+   * An opaque origin does not match any other origin.
+   */
+  inspectedSecurityOrigin(): SecurityOrigin {
+    if (!this.#inspectedSecurityOrigin) {
+      this.#inspectedSecurityOrigin = SecurityOrigin.create(this.#inspectedURL);
+    }
+    return this.#inspectedSecurityOrigin;
+  }
+
   setInspectedURL(inspectedURL: Platform.DevToolsPath.UrlString): void {
     this.#inspectedURL = inspectedURL;
+    this.#inspectedSecurityOrigin = null;
     const parsedURL = Common.ParsedURL.ParsedURL.fromString(inspectedURL);
     this.#inspectedURLName = parsedURL ? parsedURL.lastPathComponentWithFragment() : '#' + this.#id;
     this.#targetManager.onInspectedURLChange(this);

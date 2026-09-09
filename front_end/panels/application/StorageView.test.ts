@@ -9,7 +9,7 @@ import * as Common from '../../core/common/common.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Protocol from '../../generated/protocol.js';
 import {dispatchFocusOutEvent} from '../../testing/DOMHelpers.js';
-import {createTarget, describeWithEnvironment, expectConsoleLogs} from '../../testing/EnvironmentHelpers.js';
+import {createTarget, describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
 import {SECURITY_ORIGIN} from '../../testing/ResourceTreeHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 
@@ -20,6 +20,7 @@ describeWithEnvironment('StorageView', () => {
   let target: SDK.Target.Target;
   let domStorageModel: SDK.DOMStorageModel.DOMStorageModel|null;
   let storageKeyManager: SDK.StorageKeyManager.StorageKeyManager|null;
+  let view: Resources.StorageView.StorageView|null = null;
 
   beforeEach(() => {
     const tabTarget = createTarget({type: SDK.Target.Type.TAB});
@@ -34,8 +35,12 @@ describeWithEnvironment('StorageView', () => {
     });
   });
 
-  expectConsoleLogs({
-    error: ['Error: No LanguageSelector instance exists yet.'],
+  afterEach(() => {
+    if (view) {
+      SDK.TargetManager.TargetManager.instance().unobserveTargets(view);
+      view.detach();
+      view = null;
+    }
   });
 
   it('emits correct events on clear', () => {
@@ -62,7 +67,7 @@ describeWithEnvironment('StorageView', () => {
   it('changes subtitle on MainStorageKeyChanged event', () => {
     assert.exists(domStorageModel);
     assert.exists(storageKeyManager);
-    const view = new Resources.StorageView.StorageView();
+    view = new Resources.StorageView.StorageView();
 
     storageKeyManager.dispatchEventToListeners(
         SDK.StorageKeyManager.Events.MAIN_STORAGE_KEY_CHANGED, {mainStorageKey: testKey});
@@ -72,7 +77,7 @@ describeWithEnvironment('StorageView', () => {
   });
 
   it('groups site-data checkboxes into columns and indents third-party cookies under cookies', () => {
-    const view = new Resources.StorageView.StorageView();
+    view = new Resources.StorageView.StorageView();
     const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
     assert.instanceOf(container, HTMLDivElement);
 
@@ -100,7 +105,7 @@ describeWithEnvironment('StorageView', () => {
     cookiesSetting.set(true);
     includeThirdPartyCookiesSetting.set(false);
 
-    const view = new Resources.StorageView.StorageView();
+    view = new Resources.StorageView.StorageView();
     const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
     assert.instanceOf(container, HTMLDivElement);
 
@@ -144,7 +149,7 @@ describeWithEnvironment('StorageView', () => {
     assert.exists(securityOriginManager);
     sinon.stub(securityOriginManager, 'mainSecurityOrigin').returns(SECURITY_ORIGIN);
 
-    const view = new Resources.StorageView.StorageView();
+    view = new Resources.StorageView.StorageView();
     const container = view.element.shadowRoot?.querySelector('.clear-storage-header') || null;
     assert.instanceOf(container, HTMLDivElement);
     const customQuotaCheckbox =

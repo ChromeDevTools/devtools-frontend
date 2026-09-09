@@ -33,6 +33,7 @@ import {dispatchEvent} from '../../testing/MockConnection.js';
 import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {activate} from '../../testing/ResourceTreeHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
+import * as DataGrid from '../../ui/legacy/components/data_grid/data_grid.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import * as Network from './network.js';
@@ -1251,6 +1252,31 @@ Invoke-WebRequest -UseBasicParsing -Uri "https://url-header-and-content-overridd
     const customResponseHeaderItem = responseHeadersSubMenu.defaultSection().items.find(
         (item: UI.ContextMenu.Item) => item.buildDescriptor().label === customResponseTitle);
     assert.exists(customResponseHeaderItem, 'Custom response header item should be in the "Response headers" submenu');
+  });
+
+  it('sorts requests by the value of a custom response header column', async () => {
+    const columnSettings = Common.Settings.Settings.instance().createSetting('network-log-columns', {});
+    columnSettings.set({
+      'response-header-age': {visible: true, title: 'Age'},
+    });
+
+    const r1 = createNetworkRequest(urlString`https://a.com/`, {target});
+    const r2 = createNetworkRequest(urlString`https://b.com/`, {target});
+    const r3 = createNetworkRequest(urlString`https://c.com/`, {target});
+    r1.responseHeaders = [{name: 'age', value: '30'}];
+    r2.responseHeaders = [{name: 'age', value: '10'}];
+    r3.responseHeaders = [{name: 'age', value: '20'}];
+
+    networkLogView = createNetworkLogView();
+    renderElementIntoDOM(networkLogView);
+    const columns = networkLogView.columns();
+    const dataGrid = columns.dataGrid();
+    dataGrid.markColumnAsSortedBy('response-header-age', DataGrid.DataGrid.Order.Ascending);
+    columns.sortByCurrentColumn();
+
+    const rootNode = dataGrid.rootNode();
+    assert.deepEqual(rootNode.children.map(n => (n as Network.NetworkDataGridNode.NetworkNode).request()?.url()),
+                     [urlString`https://b.com/`, urlString`https://c.com/`, urlString`https://a.com/`]);
   });
 
   describe('Request blocking and throttling', () => {

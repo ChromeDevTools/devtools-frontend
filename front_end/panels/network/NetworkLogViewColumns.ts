@@ -831,8 +831,11 @@ export class NetworkLogViewColumns {
     }
 
     const isRequestHeader = headerId.startsWith('request-header-');
-    const sortingFunction = isRequestHeader ? NetworkRequestNode.RequestHeaderStringComparator.bind(null, headerId) :
-                                              NetworkRequestNode.ResponseHeaderStringComparator.bind(null, headerId);
+    // The comparators look up the raw header value by its actual name, so strip
+    // the 'request-header-'/'response-header-' prefix from the column id first.
+    const headerName = headerId.replace(/^(?:request|response)-header-/, '');
+    const sortingFunction = isRequestHeader ? NetworkRequestNode.RequestHeaderStringComparator.bind(null, headerName) :
+                                              NetworkRequestNode.ResponseHeaderStringComparator.bind(null, headerName);
 
     const columnConfigBase = Object.assign({}, DEFAULT_COLUMN_CONFIG, {
       id: headerId,

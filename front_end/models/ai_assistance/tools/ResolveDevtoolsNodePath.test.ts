@@ -4,14 +4,14 @@
 
 import {assert} from 'chai';
 
-import type * as SDK from '../../../core/sdk/sdk.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import {assertIsError, assertIsResult} from '../../../testing/AiAssistanceHelpers.js';
 import * as AiAssistance from '../ai_assistance.js';
 
 describe('ResolveDevtoolsNodePathTool', () => {
   function createMockContext(overrides?: {
     nodeUrl?: string,
-    establishedOrigin?: string,
+    establishedOrigin?: SDK.SecurityOrigin.SecurityOrigin,
     resolvedNodeId?: number,
     backendNodeId?: number,
     pushNodeResult?: number|null,
@@ -20,8 +20,9 @@ describe('ResolveDevtoolsNodePathTool', () => {
     hasDomModel?: boolean,
   }) {
     const nodeUrl = overrides?.nodeUrl ?? 'https://example.com/page.html';
-    const establishedOrigin =
-        overrides && 'establishedOrigin' in overrides ? overrides.establishedOrigin : 'https://example.com';
+    const establishedOrigin = overrides && 'establishedOrigin' in overrides ?
+        overrides.establishedOrigin :
+        SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
     const resolvedNodeId = overrides?.resolvedNodeId ?? 123;
     const backendNodeId = overrides?.backendNodeId ?? 42;
     const pushNodeResult = overrides && 'pushNodeResult' in overrides ? overrides.pushNodeResult : 123;

@@ -155,7 +155,7 @@ export class StylingAgent extends AiAgent<SDK.DOMModel.DOMNode> {
         return await getStylesTool.handler(args, {
           getTarget: () => this.targetManager.primaryPageTarget() ?? context.getItem().domModel().target(),
           getEstablishedOrigin: () => {
-            return context.getOrigin().siteId();
+            return context.getOrigin();
           },
         });
       },

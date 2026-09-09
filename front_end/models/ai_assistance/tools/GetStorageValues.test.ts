@@ -58,7 +58,7 @@ describe('GetStorageValuesTool', () => {
 
     const disableLoggingStub = sinon.stub();
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: disableLoggingStub,
     };
 
@@ -85,7 +85,7 @@ describe('GetStorageValuesTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -122,7 +122,7 @@ describe('GetStorageValuesTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -153,7 +153,7 @@ describe('GetStorageValuesTool', () => {
     activeStorages = [];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -164,8 +164,7 @@ describe('GetStorageValuesTool', () => {
         {approved: true},
     );
 
-    assertIsError(response);
-    assert.strictEqual(response.error, 'No matching storage partitions found.');
+    assertIsError(response, 'No matching storage partitions found.');
   });
 
   it('truncates large values exceeding 10000 characters', async () => {
@@ -179,7 +178,7 @@ describe('GetStorageValuesTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -201,7 +200,7 @@ describe('GetStorageValuesTool', () => {
     setupPrimaryTarget('https://example.com');
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns(''),
+      getEstablishedOrigin: sinon.stub().returns(undefined),
       disableLogging: sinon.stub(),
     };
 
@@ -212,15 +211,32 @@ describe('GetStorageValuesTool', () => {
         {approved: true},
     );
 
-    assertIsError(response);
-    assert.strictEqual(response.error, 'No origin available or not allowed.');
+    assertIsError(response, 'No origin available or not allowed.');
+  });
+
+  it('returns error when allowed origin is opaque', async () => {
+    setupPrimaryTarget('https://example.com');
+
+    const context = {
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque()),
+      disableLogging: sinon.stub(),
+    };
+
+    const tool = new AiAssistance.GetStorageValues.GetStorageValuesTool();
+    const response = await tool.handler(
+        {type: 'localStorage', keys: ['key1'], origins: ['https://example.com']},
+        context,
+        {approved: true},
+    );
+
+    assertIsError(response, 'No origin available or not allowed.');
   });
 
   it('returns error when primary page target does not match allowed origin', async () => {
     setupPrimaryTarget('https://other-domain.com');
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -231,8 +247,7 @@ describe('GetStorageValuesTool', () => {
         {approved: true},
     );
 
-    assertIsError(response);
-    assert.strictEqual(response.error, 'No origin available or not allowed.');
+    assertIsError(response, 'No origin available or not allowed.');
   });
 
   it('filters by storageKey when specified for a single origin', async () => {
@@ -251,7 +266,7 @@ describe('GetStorageValuesTool', () => {
     activeStorages = [mockStorage1, mockStorage2];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -281,7 +296,7 @@ describe('GetStorageValuesTool', () => {
     setupPrimaryTarget('https://example.com');
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -292,8 +307,7 @@ describe('GetStorageValuesTool', () => {
         {approved: true},
     );
 
-    assertIsError(response);
-    assert.strictEqual(response.error, 'No valid origins found.');
+    assertIsError(response, 'No valid origins found.');
   });
 
   it('returns correct displayInfoFromArgs for localStorage', () => {
@@ -320,7 +334,7 @@ describe('GetStorageValuesTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -354,7 +368,7 @@ describe('GetStorageValuesTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -396,7 +410,7 @@ describe('GetStorageValuesTool', () => {
     activeStorages = [mockStorage1, mockStorage2];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 

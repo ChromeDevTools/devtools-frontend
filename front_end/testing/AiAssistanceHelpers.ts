@@ -300,9 +300,15 @@ export function createTestFilesystem(fileSystemPath: string, files?: Array<{
 export function assertIsError<T>(
     response: AiAssistance.Tool.DataHandlerResult<T>|AiAssistance.Tool.ContextHandlerResult<T>|
     AiAssistance.AiAgent.ToolResult<T>,
+    expectedError?: string|RegExp,
     ): asserts response is AiAssistance.Tool.ToolErrorResult {
   if (!('error' in response)) {
     assert.fail(`Expected error response, but got: ${JSON.stringify(response)}`);
+  }
+  if (typeof expectedError === 'string') {
+    assert.strictEqual(response.error, expectedError);
+  } else if (expectedError instanceof RegExp) {
+    assert.match(response.error, expectedError);
   }
 }
 

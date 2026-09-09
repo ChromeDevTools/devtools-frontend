@@ -52,7 +52,7 @@ describe('GetNetworkRequestDetailsTool', () => {
 
     const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({id: 'requestId'}, context);
@@ -69,7 +69,7 @@ describe('GetNetworkRequestDetailsTool', () => {
 
     const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({id: 'requestId'}, context);
@@ -87,7 +87,7 @@ describe('GetNetworkRequestDetailsTool', () => {
 
     const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({id: 'requestId'}, context);
@@ -98,7 +98,7 @@ describe('GetNetworkRequestDetailsTool', () => {
   it('returns error for opaque origins', async () => {
     const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
     const context = {
-      getEstablishedOrigin: () => 'null',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('null'),
     };
 
     const response = await tool.handler({id: 'requestId'}, context);
@@ -124,7 +124,7 @@ describe('GetNetworkRequestDetailsTool', () => {
 
     const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
     const context = {
-      getEstablishedOrigin: () => 'https://attacker.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com'),
     };
 
     const response = await tool.handler({id: 'requestId'}, context);
@@ -160,7 +160,7 @@ describe('GetNetworkRequestDetailsTool', () => {
 
     const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
     const context = {
-      getEstablishedOrigin: () => 'https://attacker.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com'),
     };
 
     const response = await tool.handler({id: 'requestId'}, context);
@@ -187,7 +187,7 @@ describe('GetNetworkRequestDetailsTool', () => {
 
     const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
     const context = {
-      getEstablishedOrigin: () => 'imported-har://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('imported-har://example.com'),
     };
 
     const response = await tool.handler({id: 'harRequestId'}, context);
@@ -213,7 +213,7 @@ describe('GetNetworkRequestDetailsTool', () => {
 
     const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
     const context = {
-      getEstablishedOrigin: () => 'imported-har://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('imported-har://example.com'),
     };
 
     const response = await tool.handler({id: 'harRequestId'}, context);
@@ -259,7 +259,7 @@ describe('GetNetworkRequestDetailsTool', () => {
 
     const tool = new AiAssistance.GetNetworkRequestDetails.GetNetworkRequestDetailsTool(networkLog);
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({id: 'harRequestId'}, context);

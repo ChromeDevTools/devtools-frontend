@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
+import {FileContext} from '../contexts/FileContext.js';
 import {FileFormatter} from '../data_formatters/FileFormatter.js';
 
 import {ListSourcesTool} from './ListSources.js';
@@ -66,6 +66,12 @@ export class GetSourceContentTool implements
       context: BaseToolCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<{content: string}>> {
     const origin = context.getEstablishedOrigin();
+    if (origin?.isOpaque()) {
+      return {
+        error: 'Opaque origin not allowed',
+      };
+    }
+
     const file = ListSourcesTool.getUISourceCodes().find(
         f => ListSourcesTool.uiSourceCodeId.get(f) === args.id,
     );
@@ -76,9 +82,8 @@ export class GetSourceContentTool implements
       };
     }
 
-    const fileUrl = file.url();
-    const fileOrigin = Common.ParsedURL.ParsedURL.extractOrigin(fileUrl);
-    if (origin && fileOrigin !== origin) {
+    const fileContext = new FileContext(file);
+    if (!fileContext.isOriginAllowed(origin)) {
       return {
         error: 'Cross-origin access blocked.',
       };

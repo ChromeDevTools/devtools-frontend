@@ -42,7 +42,7 @@ describe('ListNetworkRequestsTool', () => {
 
     const tool = new AiAssistance.ListNetworkRequests.ListNetworkRequestsTool(networkLog);
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({}, context);
@@ -87,7 +87,7 @@ describe('ListNetworkRequestsTool', () => {
 
     const tool = new AiAssistance.ListNetworkRequests.ListNetworkRequestsTool(networkLog);
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({}, context);
@@ -111,7 +111,7 @@ describe('ListNetworkRequestsTool', () => {
     const tool = new AiAssistance.ListNetworkRequests.ListNetworkRequestsTool(networkLog);
     const context = {
       conversationContext: null,
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({}, context);
@@ -128,11 +128,33 @@ describe('ListNetworkRequestsTool', () => {
   it('returns error for opaque origins', async () => {
     const tool = new AiAssistance.ListNetworkRequests.ListNetworkRequestsTool(networkLog);
     const context = {
-      getEstablishedOrigin: () => 'null',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('null'),
     };
 
     const response = await tool.handler({}, context);
     assertIsError(response);
     assert.strictEqual(response.error, 'Opaque origin not allowed');
+  });
+
+  it('returns error when requests exist but none match established origin', async () => {
+    const request = SDK.NetworkRequest.NetworkRequest.create(
+        'requestId' as Protocol.Network.RequestId,
+        urlString`https://cross-origin.com/api`,
+        urlString`https://cross-origin.com/`,
+        null,
+        null,
+        null,
+    );
+    networkLog.requests.returns([request]);
+
+    const tool = new AiAssistance.ListNetworkRequests.ListNetworkRequestsTool(networkLog);
+    const context = {
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+    };
+
+    const response = await tool.handler({}, context);
+    assertIsError(response);
+    assert.strictEqual(response.error,
+                       'No requests showing with origin https://example.com. Tell the user to start a new chat');
   });
 });

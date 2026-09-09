@@ -58,7 +58,7 @@ describe('ListStorageKeysTool', () => {
 
     const disableLoggingStub = sinon.stub();
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: disableLoggingStub,
     };
 
@@ -89,7 +89,7 @@ describe('ListStorageKeysTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -125,7 +125,7 @@ describe('ListStorageKeysTool', () => {
     activeStorages = [mockStorage1, mockStorage2];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -152,7 +152,22 @@ describe('ListStorageKeysTool', () => {
     setupPrimaryTarget('https://example.com');
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns(''),
+      getEstablishedOrigin: sinon.stub().returns(undefined),
+      disableLogging: sinon.stub(),
+    };
+
+    const tool = new AiAssistance.ListStorageKeys.ListStorageKeysTool();
+    const response = await tool.handler({type: 'localStorage', origins: ['https://example.com']}, context);
+
+    assertIsError(response);
+    assert.strictEqual(response.error, 'No origin available or not allowed.');
+  });
+
+  it('returns error when allowed origin is opaque', async () => {
+    setupPrimaryTarget('https://example.com');
+
+    const context = {
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque()),
       disableLogging: sinon.stub(),
     };
 
@@ -167,7 +182,7 @@ describe('ListStorageKeysTool', () => {
     setupPrimaryTarget('https://other-domain.com');
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -188,7 +203,7 @@ describe('ListStorageKeysTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -233,7 +248,7 @@ describe('ListStorageKeysTool', () => {
     activeStorages = [primaryStorage];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -257,7 +272,7 @@ describe('ListStorageKeysTool', () => {
     setupPrimaryTarget('https://example.com');
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -292,7 +307,7 @@ describe('ListStorageKeysTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -322,7 +337,7 @@ describe('ListStorageKeysTool', () => {
     activeStorages = [mockStorage];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 
@@ -371,7 +386,7 @@ describe('ListStorageKeysTool', () => {
 
     const context = {
       conversationContext: null,
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 

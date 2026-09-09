@@ -39,8 +39,9 @@ describe('ListCookiesTool', () => {
     return mockFrame;
   }
 
-  function createMockContext(options?: {origin?: string}) {
-    const origin = options && 'origin' in options ? options.origin : 'https://example.com';
+  function createMockContext(options?: {origin?: SDK.SecurityOrigin.SecurityOrigin}) {
+    const origin = options && 'origin' in options ? options.origin :
+                                                    SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
     return {
       getEstablishedOrigin: sinon.stub().returns(origin),
       disableLogging: sinon.stub(),
@@ -236,7 +237,7 @@ describe('ListCookiesTool', () => {
   it('rejects opaque established origin', async () => {
     setupPrimaryTarget('https://example.com');
 
-    const context = createMockContext({origin: 'data:text/html,test'});
+    const context = createMockContext({origin: SDK.SecurityOrigin.SecurityOrigin.create('data:text/html,test')});
     const tool = new AiAssistance.ListCookies.ListCookiesTool();
     const response = await tool.handler({origins: ['https://example.com']}, context);
 
@@ -319,7 +320,7 @@ describe('ListCookiesTool', () => {
     activeCookies = [cookie];
 
     const context = {
-      getEstablishedOrigin: sinon.stub().returns('https://example.com'),
+      getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
       disableLogging: sinon.stub(),
     };
 

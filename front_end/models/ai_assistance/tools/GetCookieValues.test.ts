@@ -61,8 +61,10 @@ describe('GetCookieValuesTool', () => {
     return {primaryTarget, cookieModel};
   }
 
-  function createMockContext(options?: {origin?: string, disableLoggingStub?: sinon.SinonStub}) {
-    const origin = options && 'origin' in options ? options.origin : 'https://example.com';
+  function createMockContext(
+      options?: {origin?: SDK.SecurityOrigin.SecurityOrigin, disableLoggingStub?: sinon.SinonStub}) {
+    const origin = options && 'origin' in options ? options.origin :
+                                                    SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
     return {
       getEstablishedOrigin: sinon.stub().returns(origin),
       disableLogging: options?.disableLoggingStub ?? sinon.stub(),
@@ -375,7 +377,7 @@ describe('GetCookieValuesTool', () => {
   it('rejects opaque established origin', async () => {
     setupPrimaryTarget('https://example.com');
 
-    const context = createMockContext({origin: 'data:text/html,test'});
+    const context = createMockContext({origin: SDK.SecurityOrigin.SecurityOrigin.create('data:text/html,test')});
 
     const tool = new AiAssistance.GetCookieValues.GetCookieValuesTool();
     const response = await tool.handler(

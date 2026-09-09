@@ -8,7 +8,7 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type {FunctionHandlerOptions} from '../agents/AiAgent.js';
-import {areOriginsEquivalent, extractContextOrigin, isOpaqueOrigin} from '../AiOrigins.js';
+import {areOriginsEquivalent, extractContextOrigin} from '../AiOrigins.js';
 
 import {MAX_TARGET_ORIGINS, resolveDOMStorages} from './DOMStorageUtils.js';
 import {
@@ -116,10 +116,11 @@ export class GetStorageValuesTool implements DataTool<GetStorageValuesArgs, GetS
     const targetManager = SDK.TargetManager.TargetManager.instance();
     const primaryPageTarget = targetManager.primaryPageTarget();
 
-    const allowedOrigin = context.getEstablishedOrigin();
-    if (!allowedOrigin || isOpaqueOrigin(allowedOrigin)) {
+    const establishedOrigin = context.getEstablishedOrigin();
+    if (!establishedOrigin || establishedOrigin.isOpaque()) {
       return {error: 'No origin available or not allowed.'};
     }
+    const allowedOrigin = establishedOrigin.siteId();
 
     if (!primaryPageTarget) {
       return {error: 'No origin available or not allowed.'};

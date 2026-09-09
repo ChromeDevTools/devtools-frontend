@@ -4,9 +4,8 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as SDK from '../../../core/sdk/sdk.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
-import {isOpaqueOrigin} from '../AiOrigins.js';
 import {formatBytesToKb, seconds} from '../data_formatters/UnitFormatters.js';
 
 import {
@@ -79,13 +78,13 @@ export class ListNetworkRequestsTool implements
     const origin = context.getEstablishedOrigin();
 
     // Opaque origins are never allowed to be used as context.
-    if (origin && isOpaqueOrigin(origin)) {
+    if (origin?.isOpaque()) {
       return {
         error: 'Opaque origin not allowed',
       };
     }
 
-    const conversationOrigin = origin ? SDK.SecurityOrigin.SecurityOrigin.create(origin) : null;
+    const conversationOrigin = origin ?? null;
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
     let hasCrossOriginRequest = false;
@@ -110,7 +109,7 @@ export class ListNetworkRequestsTool implements
     if (requests.length === 0) {
       if (hasCrossOriginRequest) {
         return {
-          error: `No requests showing with origin ${origin}. Tell the user to start a new chat`,
+          error: `No requests showing with origin ${origin?.siteId() ?? ''}. Tell the user to start a new chat`,
         };
       }
       return {

@@ -312,9 +312,9 @@ User query: ${enhancedQuery}`;
     return document?.body ?? null;
   }
 
-  #getConversationOrigin(): string|undefined {
+  #getConversationOrigin(): SDK.SecurityOrigin.SecurityOrigin|undefined {
     const allowed = this.#allowedOrigin?.();
-    return allowed && 'origin' in allowed ? allowed.origin?.siteId() : undefined;
+    return allowed && 'origin' in allowed ? allowed.origin : undefined;
   }
 
   get activeSkills(): Set<SkillName> {

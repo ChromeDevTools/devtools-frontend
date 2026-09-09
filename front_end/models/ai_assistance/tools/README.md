@@ -16,8 +16,10 @@ Instead of passing a monolithic "grab-bag" context object to all tool handlers, 
 - `BaseToolCapability`: Base interface providing access to the top-level conversation context step.
 - `PageExecutionCapability`: For tools executing JavaScript code on the inspected page.
 - `StyleMutationCapability`: For tools managing and applying style mutations via a `ChangeManager`.
-- `TargetCapability`: For tools requiring access to the page's current SDK `Target`.
-- `OriginLockCapability`: For tools enforcing cross-origin security via origin locks. Tools that fetch resources or state from the inspected page (such as styling or source code) must use this capability to verify that the target resource matches the conversation's established origin. This prevents the LLM from executing tools against out-of-origin elements or documents. Verification should be done by wrapping resolved resources in helper context classes (e.g., `DOMNodeContext`) and calling `isOriginAllowed(establishedOrigin)`.
+- `OriginLockCapability`: Enforces origin boundaries for tools that access inspected page state or resources. Tools verify targets against the established origin before reading data to prevent unauthorized cross-origin access.
+  - For DOM nodes and source files: wrap the target in a context helper (such as `DOMNodeContext` or `FileContext`) and call `isOriginAllowed(establishedOrigin)`.
+  - For cookies and DOM storage: validate target origins using `resolveAllowedTargetOrigins()`.
+  - For network requests: compare `request.initiatorSecurityOrigin()` to the established origin.
 
 ### Unified Context
 

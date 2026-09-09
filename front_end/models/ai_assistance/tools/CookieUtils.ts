@@ -5,7 +5,7 @@
 import * as Common from '../../../core/common/common.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {areOriginsEquivalent, extractContextOrigin, isOpaqueOrigin} from '../AiOrigins.js';
+import {areOriginsEquivalent, extractContextOrigin} from '../AiOrigins.js';
 
 import {MAX_TARGET_ORIGINS} from './DOMStorageUtils.js';
 import type {OriginLockCapability} from './Tool.js';
@@ -38,10 +38,11 @@ export function resolveAllowedTargetOrigins(
   error: string,
 }
 {
-  const allowedOrigin = context.getEstablishedOrigin();
-  if (!allowedOrigin || isOpaqueOrigin(allowedOrigin) || isOpaqueOrigin(extractContextOrigin(allowedOrigin))) {
+  const establishedOrigin = context.getEstablishedOrigin();
+  if (!establishedOrigin || establishedOrigin.isOpaque()) {
     return {error: 'No origin available or not allowed.'};
   }
+  const allowedOrigin = establishedOrigin.siteId();
 
   const primaryPageTarget = targetManager.primaryPageTarget();
   if (!primaryPageTarget) {

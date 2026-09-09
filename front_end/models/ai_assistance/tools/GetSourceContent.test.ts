@@ -7,6 +7,8 @@ import sinon from 'sinon';
 
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import {assertIsError} from '../../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
@@ -60,7 +62,7 @@ describe('GetSourceContentTool', () => {
     const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
 
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({id: sourceId}, context);
@@ -71,7 +73,7 @@ describe('GetSourceContentTool', () => {
 
   it('returns error when file is not found', async () => {
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({id: 999}, context);
@@ -97,12 +99,12 @@ describe('GetSourceContentTool', () => {
     const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
 
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({id: sourceId}, context);
-    assert.exists((response as {error?: string}).error);
-    assert.strictEqual((response as {error: string}).error, 'Cross-origin access blocked.');
+    assertIsError(response);
+    assert.strictEqual(response.error, 'Cross-origin access blocked.');
   });
 
   it('returns error when file content request fails', async () => {
@@ -126,11 +128,37 @@ describe('GetSourceContentTool', () => {
     const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
 
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({id: sourceId}, context);
-    assert.exists((response as {error?: string}).error);
-    assert.strictEqual((response as {error: string}).error, 'Failed to load file content: Failed to load');
+    assertIsError(response);
+    assert.strictEqual(response.error, 'Failed to load file content: Failed to load');
+  });
+
+  it('returns error for opaque origins', async () => {
+    const {uiSourceCodes} = createContentProviderUISourceCodes({
+      items: [
+        {
+          url: urlString`https://example.com/script.js`,
+          mimeType: 'application/javascript',
+          resourceType: Common.ResourceType.resourceTypes.Script,
+          content: 'console.log("hello");',
+        },
+      ],
+      projectType: Workspace.Workspace.projectTypes.Network,
+      universe,
+    });
+
+    AiAssistance.ListSources.ListSourcesTool.getUISourceCodes();
+    const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
+
+    const context = {
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('about:blank'),
+    };
+
+    const response = await tool.handler({id: sourceId}, context);
+    assertIsError(response);
+    assert.strictEqual(response.error, 'Opaque origin not allowed');
   });
 });

@@ -37,8 +37,9 @@ describe('GetStorageBreakdownTool', () => {
     sinon.stub(SDK.TargetManager.TargetManager, 'instance').returns(universe.targetManager);
   });
 
-  function createMockContext(options?: {origin?: string}) {
-    const origin = options && 'origin' in options ? options.origin : 'https://example.com';
+  function createMockContext(options?: {origin?: SDK.SecurityOrigin.SecurityOrigin}) {
+    const origin = options && 'origin' in options ? options.origin :
+                                                    SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
     return {
       getEstablishedOrigin: sinon.stub().returns(origin),
     };
@@ -212,7 +213,7 @@ describe('GetStorageBreakdownTool', () => {
   it('returns error when origin is disallowed or mismatched', async () => {
     setupPrimaryTarget({origin: 'https://example.com'});
 
-    const context = createMockContext({origin: 'https://another-origin.com'});
+    const context = createMockContext({origin: SDK.SecurityOrigin.SecurityOrigin.create('https://another-origin.com')});
     const tool = new AiAssistance.GetStorageBreakdown.GetStorageBreakdownTool();
     const response = await tool.handler({}, context);
 
@@ -223,7 +224,7 @@ describe('GetStorageBreakdownTool', () => {
   it('returns error when origin is opaque', async () => {
     setupPrimaryTarget({origin: 'data:text/html,hello'});
 
-    const context = createMockContext({origin: 'data:text/html,hello'});
+    const context = createMockContext({origin: SDK.SecurityOrigin.SecurityOrigin.create('data:text/html,hello')});
     const tool = new AiAssistance.GetStorageBreakdown.GetStorageBreakdownTool();
     const response = await tool.handler({}, context);
 

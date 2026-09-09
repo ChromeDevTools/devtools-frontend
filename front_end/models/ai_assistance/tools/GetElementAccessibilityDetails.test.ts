@@ -30,7 +30,7 @@ describe('GetElementAccessibilityDetailsTool', () => {
    */
   function createMockContext(overrides?: {
     nodeUrl?: string,
-    establishedOrigin?: string,
+    establishedOrigin?: SDK.SecurityOrigin.SecurityOrigin,
     hasTarget?: boolean,
     hasAxModel?: boolean,
     hasAxNode?: boolean,
@@ -38,8 +38,9 @@ describe('GetElementAccessibilityDetailsTool', () => {
     ignoredReasons?: Protocol.Accessibility.AXProperty[],
   }) {
     const nodeUrl = overrides?.nodeUrl ?? 'https://example.com/page.html';
-    const establishedOrigin =
-        overrides && 'establishedOrigin' in overrides ? overrides.establishedOrigin : 'https://example.com';
+    const establishedOrigin = overrides && 'establishedOrigin' in overrides ?
+        overrides.establishedOrigin :
+        SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
     const hasTarget = overrides?.hasTarget ?? true;
     const hasAxModel = overrides?.hasAxModel ?? true;
     const hasAxNode = overrides?.hasAxNode ?? true;

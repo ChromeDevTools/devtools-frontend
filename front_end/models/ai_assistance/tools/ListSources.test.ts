@@ -7,6 +7,11 @@ import sinon from 'sinon';
 
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
+import * as SDK from '../../../core/sdk/sdk.js';
+import {
+  assertIsError,
+  assertIsResult,
+} from '../../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
@@ -55,7 +60,7 @@ describe('ListSourcesTool', () => {
     });
 
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({}, context);
@@ -87,7 +92,7 @@ describe('ListSourcesTool', () => {
     sinon.stub(uiSourceCodes[1], 'isIgnoreListed').returns(true);
 
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({}, context);
@@ -124,12 +129,12 @@ describe('ListSourcesTool', () => {
     });
 
     const context = {
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler({}, context);
-    assert.isUndefined((response as {error?: string}).error);
-    const result = (response as {result: {files: Array<{id: number, name: string}>}}).result;
+    assertIsResult(response);
+    const result = response.result as {files: Array<{id: number, name: string}>};
     assert.lengthOf(result.files, 1);
     assert.strictEqual(result.files[0].name, 'example.com/script.js');
 
@@ -140,11 +145,11 @@ describe('ListSourcesTool', () => {
 
   it('returns error for opaque origins', async () => {
     const context = {
-      getEstablishedOrigin: () => 'about:blank',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('about:blank'),
     };
 
     const response = await tool.handler({}, context);
-    assert.exists((response as {error?: string}).error);
-    assert.strictEqual((response as {error: string}).error, 'Opaque origin not allowed');
+    assertIsError(response);
+    assert.strictEqual(response.error, 'Opaque origin not allowed');
   });
 });

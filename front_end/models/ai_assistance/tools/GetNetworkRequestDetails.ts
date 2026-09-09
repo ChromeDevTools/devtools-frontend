@@ -4,10 +4,8 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
-import {isOpaqueOrigin} from '../AiOrigins.js';
 import {NetworkRequestFormatter} from '../data_formatters/NetworkRequestFormatter.js';
 
 import {
@@ -81,13 +79,13 @@ export class GetNetworkRequestDetailsTool implements
     const origin = context.getEstablishedOrigin();
 
     // Opaque origins are never allowed to be used as context.
-    if (origin && isOpaqueOrigin(origin)) {
+    if (origin?.isOpaque()) {
       return {
         error: 'Opaque origin not allowed',
       };
     }
 
-    const conversationOrigin = origin ? SDK.SecurityOrigin.SecurityOrigin.create(origin) : null;
+    const conversationOrigin = origin ?? null;
     // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
     const networkLog = this.#networkLog ?? Logs.NetworkLog.NetworkLog.instance();
     const request = networkLog.requests().find(req => {

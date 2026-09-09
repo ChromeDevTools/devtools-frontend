@@ -61,7 +61,7 @@ describe('GetStylesTool', () => {
     const tool = new AiAssistance.GetStyles.GetStylesTool();
     const context = {
       getTarget: () => target,
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler(
@@ -116,7 +116,7 @@ describe('GetStylesTool', () => {
     const tool = new AiAssistance.GetStyles.GetStylesTool();
     const context = {
       getTarget: () => target,
-      getEstablishedOrigin: () => 'https://example.com',
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
     };
 
     const response = await tool.handler(

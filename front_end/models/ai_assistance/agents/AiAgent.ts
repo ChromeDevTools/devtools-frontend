@@ -228,10 +228,9 @@ export abstract class ConversationContext<T> {
    * 3. Returns `true` if this context origin is same-origin with `establishedOrigin`.
    *
    * @param establishedOrigin The locked origin of the current conversation, or `undefined`
-   * if the conversation has not made its first query. Strings are automatically parsed into
-   * `SecurityOrigin` instances.
+   * if the conversation has not made its first query.
    */
-  isOriginAllowed(establishedOrigin: SDK.SecurityOrigin.SecurityOrigin|string|undefined): boolean {
+  isOriginAllowed(establishedOrigin: SDK.SecurityOrigin.SecurityOrigin|undefined): boolean {
     const origin = this.getOrigin();
 
     if (origin.isOpaque()) {
@@ -240,10 +239,7 @@ export abstract class ConversationContext<T> {
     if (!establishedOrigin) {
       return true;
     }
-    const established = typeof establishedOrigin === 'string' ?
-        SDK.SecurityOrigin.SecurityOrigin.create(establishedOrigin) :
-        establishedOrigin;
-    return origin.isSameOriginWith(established);
+    return origin.isSameOriginWith(establishedOrigin);
   }
 
   /**

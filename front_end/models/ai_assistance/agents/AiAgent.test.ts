@@ -442,83 +442,27 @@ describe('AiAgent', () => {
     }
 
     it('checks context origins', () => {
-      const tests: Array<{dataOrigin: string, establishedOrigin: string | undefined, isAllowed: boolean}> = [
-        {
-          dataOrigin: 'https://google.test',
-          establishedOrigin: 'https://google.test',
-          isAllowed: true,
-        },
-        {
-          dataOrigin: 'https://google.test',
-          establishedOrigin: 'about:blank',
-          isAllowed: false,
-        },
-        {
-          dataOrigin: 'https://google.test',
-          establishedOrigin: 'https://www.google.test',
-          isAllowed: false,
-        },
-        {
-          dataOrigin: 'https://a.test',
-          establishedOrigin: 'https://b.test',
-          isAllowed: false,
-        },
-        {
-          dataOrigin: 'https://a.test',
-          establishedOrigin: 'file:///tmp',
-          isAllowed: false,
-        },
-        {
-          dataOrigin: 'https://a.test',
-          establishedOrigin: 'http://a.test',
-          isAllowed: false,
-        },
-        {
-          dataOrigin: 'null',
-          establishedOrigin: 'null',
-          isAllowed: false,
-        },
-        {
-          dataOrigin: 'null',
-          establishedOrigin: undefined,
-          isAllowed: false,
-        },
-        {
-          dataOrigin: 'data:',
-          establishedOrigin: 'data:',
-          isAllowed: false,
-        },
-        {
-          dataOrigin: 'about://',
-          establishedOrigin: 'about://',
-          isAllowed: false,
-        },
-        {
-          dataOrigin: 'about:srcdoc',
-          establishedOrigin: 'about:srcdoc',
-          isAllowed: false,
-        },
-        {
-          dataOrigin: 'detached',
-          establishedOrigin: 'detached',
-          isAllowed: false,
-        },
-        {
-          dataOrigin: 'imported-trace://example.com',
-          establishedOrigin: 'imported-trace://example.com',
-          isAllowed: true,
-        },
-        {
-          dataOrigin: 'imported-trace://example.com',
-          establishedOrigin: 'imported-trace://other.com',
-          isAllowed: false,
-        },
-      ];
-      for (const test of tests) {
-        assert.strictEqual(
-            getTestContext(test.dataOrigin).isOriginAllowed(test.establishedOrigin), test.isAllowed,
-            `Checking origin ${test.dataOrigin} against ${test.establishedOrigin}`);
+      function isAllowed(opts: {newContext: string, established?: string}): boolean {
+        const origin = opts.established ? SDK.SecurityOrigin.SecurityOrigin.create(opts.established) : undefined;
+        return getTestContext(opts.newContext).isOriginAllowed(origin);
       }
+
+      assert.isTrue(isAllowed({established: 'https://google.test', newContext: 'https://google.test'}));
+      assert.isFalse(isAllowed({established: 'about:blank', newContext: 'https://google.test'}));
+      assert.isFalse(isAllowed({established: 'https://www.google.test', newContext: 'https://google.test'}));
+      assert.isFalse(isAllowed({established: 'https://b.test', newContext: 'https://a.test'}));
+      assert.isFalse(isAllowed({established: 'file:///tmp', newContext: 'https://a.test'}));
+      assert.isFalse(isAllowed({established: 'http://a.test', newContext: 'https://a.test'}));
+      assert.isFalse(isAllowed({established: 'null', newContext: 'null'}));
+      assert.isFalse(isAllowed({established: undefined, newContext: 'null'}));
+      assert.isFalse(isAllowed({established: 'data:', newContext: 'data:'}));
+      assert.isFalse(isAllowed({established: 'about://', newContext: 'about://'}));
+      assert.isFalse(isAllowed({established: 'about:srcdoc', newContext: 'about:srcdoc'}));
+      assert.isFalse(isAllowed({established: 'detached', newContext: 'detached'}));
+      assert.isTrue(
+          isAllowed({established: 'imported-trace://example.com', newContext: 'imported-trace://example.com'}));
+      assert.isFalse(
+          isAllowed({established: 'imported-trace://other.com', newContext: 'imported-trace://example.com'}));
     });
   });
 

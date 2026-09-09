@@ -112,13 +112,16 @@ export interface TargetCapability {
 }
 
 /**
- * Capability for tools that need to enforce origin locking for security.
+ * Capability for tools that enforce conversation origin boundaries.
  */
 export interface OriginLockCapability {
   /**
-   * Returns the origin that the current conversation is locked to, if any.
+   * Returns the security origin locked for the current conversation.
+   *
+   * @returns The established {@link SDK.SecurityOrigin.SecurityOrigin}, or `undefined`
+   * if the conversation is not yet locked to an origin (e.g. before the first query).
    */
-  getEstablishedOrigin(): string|undefined;
+  getEstablishedOrigin(): SDK.SecurityOrigin.SecurityOrigin|undefined;
 }
 
 /**

@@ -7,13 +7,12 @@ import sinon from 'sinon';
 
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
-import type * as Protocol from '../../../generated/protocol.js';
 import * as AiAssistanceModel from '../../../models/ai_assistance/ai_assistance.js';
 import * as Logs from '../../../models/logs/logs.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {createNetworkRequest} from '../../../testing/NetworkRequestHelpers.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import * as AiAssistance from '../ai_assistance.js';
@@ -62,15 +61,11 @@ color: red;
 
     describe('linkifies DevTools resources', () => {
       it('work for requests', () => {
-        const request = SDK.NetworkRequest.NetworkRequest.create(
-            'requestId' as Protocol.Network.RequestId,
-            urlString`https://example.com/`,
-            urlString`https://example.com/`,
-            null,
-            null,
-            null,
-        );
-        request.statusCode = 200;
+        const request = createNetworkRequest({
+          url: 'https://example.com/',
+          requestId: 'requestId',
+          statusCode: 200,
+        });
 
         const networkLog = Logs.NetworkLog.NetworkLog.instance();
         sinon.stub(networkLog, 'requests').returns([request]);
@@ -125,15 +120,11 @@ color: red;
       });
 
       it('work for links inside codespan', () => {
-        const request = SDK.NetworkRequest.NetworkRequest.create(
-            'requestId' as Protocol.Network.RequestId,
-            urlString`https://example.com/`,
-            urlString`https://example.com/`,
-            null,
-            null,
-            null,
-        );
-        request.statusCode = 200;
+        const request = createNetworkRequest({
+          url: 'https://example.com/',
+          requestId: 'requestId',
+          statusCode: 200,
+        });
 
         const networkLog = Logs.NetworkLog.NetworkLog.instance();
         sinon.stub(networkLog, 'requests').returns([request]);

@@ -15,6 +15,7 @@ import type * as Trace from '../../../models/trace/trace.js';
 import * as Workspace from '../../../models/workspace/workspace.js';
 import {renderElementIntoDOM} from '../../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../../testing/EnvironmentHelpers.js';
+import {createNetworkRequest} from '../../../testing/NetworkRequestHelpers.js';
 import * as Marked from '../../../third_party/marked/marked.js';
 import * as MarkdownView from '../../../ui/components/markdown_view/markdown_view.js';
 import {html} from '../../../ui/lit/lit.js';
@@ -65,15 +66,11 @@ color: red;
 
     describe('DevTools resources', () => {
       it('works for requests', () => {
-        const request = SDK.NetworkRequest.NetworkRequest.create(
-            'requestId' as Protocol.Network.RequestId,
-            urlString`https://example.com/`,
-            urlString`https://example.com/`,
-            null,
-            null,
-            null,
-        );
-        request.statusCode = 200;
+        const request = createNetworkRequest({
+          url: 'https://example.com/',
+          requestId: 'requestId',
+          statusCode: 200,
+        });
 
         const networkLog = Logs.NetworkLog.NetworkLog.instance();
         sinon.stub(networkLog, 'requests').returns([request]);
@@ -107,21 +104,16 @@ color: red;
       });
 
       it('works for links inside codespan', () => {
-        const request = SDK.NetworkRequest.NetworkRequest.create(
-            'requestId' as Protocol.Network.RequestId,
-            urlString`https://example.com/`,
-            urlString`https://example.com/`,
-            null,
-            null,
-            null,
-        );
-        request.statusCode = 200;
+        const request = createNetworkRequest({
+          url: 'https://example.com/',
+          requestId: 'requestId',
+          statusCode: 200,
+        });
 
         const networkLog = Logs.NetworkLog.NetworkLog.instance();
         sinon.stub(networkLog, 'requests').returns([request]);
 
         const el = renderToElem('`[text](#req-requestId)`');
-
         const link = el.querySelector('devtools-link');
         assert.exists(link);
         assert.isNull(link.getAttribute('href'));

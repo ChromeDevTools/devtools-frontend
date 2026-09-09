@@ -56,8 +56,8 @@ export interface CreateNetworkRequestOptions {
   serviceWorkerRouterInfo?: Protocol.Network.ServiceWorkerRouterInfo;
   fetchedViaServiceWorker?: boolean;
   initiator?: Protocol.Network.Initiator|null;
-  frameId?: Protocol.Page.FrameId|null;
-  loaderId?: Protocol.Network.LoaderId|null;
+  frameId?: string|Protocol.Page.FrameId|null;
+  loaderId?: string|Protocol.Network.LoaderId|null;
 }
 
 /**
@@ -73,6 +73,11 @@ export function createNetworkRequest(options: CreateNetworkRequestOptions = {}):
   // avoiding unintended cross-origin redactions or security checks in tests.
   const rawDocUrl = options.documentURL ?? reqUrl;
   const docUrl = typeof rawDocUrl === 'string' ? urlString`${rawDocUrl}` : rawDocUrl;
+  const frameId =
+      (options.frameId !== undefined && options.frameId !== null) ? options.frameId as Protocol.Page.FrameId : null;
+  const loaderId = (options.loaderId !== undefined && options.loaderId !== null) ?
+      options.loaderId as Protocol.Network.LoaderId :
+      null;
 
   const request = options.withoutBackend ? SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(
                                                reqId,
@@ -84,8 +89,8 @@ export function createNetworkRequest(options: CreateNetworkRequestOptions = {}):
                                                reqId,
                                                reqUrl,
                                                docUrl,
-                                               options.frameId ?? null,
-                                               options.loaderId ?? null,
+                                               frameId,
+                                               loaderId,
                                                options.initiator ?? null,
                                            );
 

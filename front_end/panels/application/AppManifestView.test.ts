@@ -39,8 +39,10 @@ describeWithEnvironment('AppManifestView', () => {
 
   afterEach(() => {
     if (view) {
+      SDK.TargetManager.TargetManager.instance().unobserveTargets(view);
       view.detach();
     }
+    SDK.PageResourceLoader.PageResourceLoader.removeInstance();
   });
 
   it('shows report view once manifest available', async () => {

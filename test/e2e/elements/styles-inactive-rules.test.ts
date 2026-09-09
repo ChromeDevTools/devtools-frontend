@@ -10,7 +10,7 @@ import {
   waitForElementsStyleSection,
 } from '../helpers/elements-helpers.js';
 import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 // Return the full list of {selector: string, active: boolean}
 async function getRuleActivity(devToolsPage: DevToolsPage) {

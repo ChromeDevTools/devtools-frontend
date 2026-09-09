@@ -5,8 +5,8 @@
 import {assert} from 'chai';
 
 import {createSelectorsForWorkerFile, expandFileTree, type NestedFileSelector} from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 function createSelectorsForEvalWorker(fileName: string, inspectedPage: InspectedPage) {
   const EVAL_WORKER_NAME = '#1';

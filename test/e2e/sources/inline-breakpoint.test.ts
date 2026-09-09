@@ -13,7 +13,7 @@ import {
   PAUSE_INDICATOR_SELECTOR,
   RESUME_BUTTON,
 } from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 // These tests are ported from the web test:
 // https://crsrc.org/c/third_party/blink/web_tests/http/tests/devtools/sources/debugger/source-frame-inline-breakpoint-decorations.js;drc=74dacd13f4b89f64ebe1aa99d4b5d80480a8d3b4

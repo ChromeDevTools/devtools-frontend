@@ -11,7 +11,7 @@ import {
   openSourcesPanel,
   waitForStackTopMatch,
 } from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 async function addWatchExpression(expression: string, devToolsPage: DevToolsPage) {
   await devToolsPage.click('[aria-label="Watch"]');

@@ -192,8 +192,8 @@ export class PageWrapper {
     }, asyncScope, `Waiting for element matching selector '${handler ? `${handler}/` : ''}${selector}'`));
   }
 
-  async performActionOnSelector(selector: string, options: {root?: puppeteer.ElementHandle}, action: Action):
-      Promise<puppeteer.ElementHandle> {
+  async performActionOnSelector(selector: string, options: {root?: puppeteer.ElementHandle},
+                                action: Action): Promise<puppeteer.ElementHandle> {
     // TODO(crbug.com/1410168): we should refactor waitFor to be compatible with
     // Puppeteer's syntax for selectors.
     const queryHandlers = new Set([
@@ -235,8 +235,8 @@ export class PageWrapper {
     }, options?.modifiers ?? {});
   }
 
-  async #withKeyModifiers<T>(action: () => Promise<T>, modifiers: KeyModifiers):
-      Promise<Exclude<NonNullable<T>, false>> {
+  async #withKeyModifiers<T>(action: () => Promise<T>,
+                             modifiers: KeyModifiers): Promise<Exclude<NonNullable<T>, false>> {
     return (await this.waitForFunction(async () => {
       if (modifiers.control) {
         if (platform === 'mac') {
@@ -402,8 +402,8 @@ export class PageWrapper {
     return await (await this.$<ElementType, typeof selector>(selector, root))?.evaluate(node => node.textContent);
   }
 
-  async getAllTextContents(selector: string, root?: puppeteer.JSHandle, handler = 'pierce'):
-      Promise<Array<string|null>> {
+  async getAllTextContents(selector: string, root?: puppeteer.JSHandle,
+                           handler = 'pierce'): Promise<Array<string|null>> {
     const allElements = await this.$$(selector, root, handler);
     return await Promise.all(allElements.map(e => e.evaluate(e => e.textContent)));
   }
@@ -554,7 +554,7 @@ export class PageWrapper {
     if (checked !== wantChecked) {
       await this.click(`${selector} + label`);
     }
-    assert.strictEqual(
-        await checkbox.evaluate(box => box.checked), wantChecked, `Expected checkbox to be ${wantChecked}`);
+    assert.strictEqual(await checkbox.evaluate(box => box.checked), wantChecked,
+                       `Expected checkbox to be ${wantChecked}`);
   }
 }

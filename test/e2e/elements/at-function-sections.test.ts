@@ -12,7 +12,7 @@ import {
   waitForAndClickTreeElementWithPartialText,
   waitForStyleRule,
 } from '../helpers/elements-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 async function getStyleRuleProperties(selector: string, count: number, devToolsPage: DevToolsPage) {
   const rule = await getStyleRule(devToolsPage, selector);

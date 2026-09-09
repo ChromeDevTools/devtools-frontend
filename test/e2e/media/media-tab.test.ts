@@ -5,8 +5,8 @@
 import {assert} from 'chai';
 
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 describe('Media Tab', () => {
   async function playMediaFile(media: string, inspectedPage: InspectedPage) {

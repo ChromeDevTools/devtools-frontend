@@ -21,8 +21,8 @@ import {
   retrieveTopCallFrameWithoutResuming,
   SELECTED_THREAD_SELECTOR,
 } from 'test/e2e/helpers/sources-helpers.js';
-import type {DevToolsPage} from 'test/e2e/shared/frontend-helper.js';
-import type {InspectedPage} from 'test/e2e/shared/target-helper.js';
+import type {DevToolsPage} from 'test/e2e/shared/DevToolsPage.js';
+import type {InspectedPage} from 'test/e2e/shared/InspectedPage.js';
 
 import {
   type Action,

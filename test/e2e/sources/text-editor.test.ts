@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
 import type * as TextEditor from '../../../front_end/ui/components/text_editor/text_editor.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 describe('text editor', () => {
   // Undocked mode helps against flakes when opening tabs (here Sources)

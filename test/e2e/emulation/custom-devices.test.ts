@@ -14,8 +14,8 @@ import {
   selectZoomLevel,
   waitForZoom,
 } from '../helpers/emulation-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 const ADD_DEVICE_BUTTON_SELECTOR = '#custom-device-add-button';
 const FOCUSED_DEVICE_NAME_FIELD_SELECTOR = '#custom-device-name-field:focus';

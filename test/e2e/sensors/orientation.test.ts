@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 import {
   getInputFieldValue,

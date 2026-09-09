@@ -7,8 +7,8 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {navigateToIssuesTab} from '../helpers/issues-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 const PRETTY_PRINT_BUTTON = '[aria-label="Pretty print"]';
 const PRETTY_PRINTED_TOGGLE = 'devtools-text-editor.pretty-printed';

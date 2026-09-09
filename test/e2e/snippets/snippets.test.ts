@@ -15,7 +15,7 @@ import {
   openSourcesPanel,
   runSnippet,
 } from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 describe('Snippet creation', () => {
   it('can show newly created snippets show up in command menu', async ({devToolsPage}) => {

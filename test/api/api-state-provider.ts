@@ -7,7 +7,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type {TestStateProvider} from '../conductor/mocha-interface-helpers.js';
 import {StateProvider} from '../e2e/conductor/state-provider.js';
-import {type InspectedPage, setupInspectedPage} from '../e2e/shared/target-helper.js';
+import {type InspectedPage, setupInspectedPage} from '../e2e/shared/InspectedPage.js';
 
 import {createTargetUniverse} from './TargetUniverse.js';
 

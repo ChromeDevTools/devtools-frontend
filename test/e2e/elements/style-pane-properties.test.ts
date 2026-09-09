@@ -40,8 +40,8 @@ import {
 } from '../helpers/elements-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 import {expectVeEvents, veImpression, veImpressionsUnder} from '../helpers/visual-logging-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 const PROPERTIES_TO_DELETE_SELECTOR = '#properties-to-delete';
 const PROPERTIES_TO_INSPECT_SELECTOR = '#properties-to-inspect';

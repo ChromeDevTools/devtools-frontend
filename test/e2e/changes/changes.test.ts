@@ -8,8 +8,8 @@ import {veImpressionForChangesPanel} from '../helpers/changes-helpers.js';
 import {editCSSProperty} from '../helpers/elements-helpers.js';
 import {openCommandMenu} from '../helpers/quick_open-helpers.js';
 import {expectVeEvents, veImpressionsUnder} from '../helpers/visual-logging-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 describe('The Changes Panel', () => {
   const PANEL_ROOT_SELECTOR = 'div[aria-label="Changes panel"]';

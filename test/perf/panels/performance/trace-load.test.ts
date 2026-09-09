@@ -6,8 +6,8 @@ import {
   navigateToPerformanceTab,
   uploadTraceFile,
 } from '../../../e2e/helpers/performance-helpers.js';
-import type {DevToolsPage} from '../../../e2e/shared/frontend-helper.js';
-import type {InspectedPage} from '../../../e2e/shared/target-helper.js';
+import type {DevToolsPage} from '../../../e2e/shared/DevToolsPage.js';
+import type {InspectedPage} from '../../../e2e/shared/InspectedPage.js';
 import {measurements} from '../../report/report.js';
 async function timeFixture(fixture: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage): Promise<number> {
   await navigateToPerformanceTab(devToolsPage, inspectedPage, undefined);

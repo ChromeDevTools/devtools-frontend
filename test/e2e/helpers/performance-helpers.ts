@@ -8,8 +8,8 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type * as Timeline from '../../../front_end/panels/timeline/timeline.js';
 import {GEN_DIR} from '../../conductor/paths.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 import {openCommandMenu} from './quick_open-helpers.js';
 import {

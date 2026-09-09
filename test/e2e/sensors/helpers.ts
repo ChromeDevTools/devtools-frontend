@@ -4,7 +4,7 @@
 
 import type {ElementHandle} from 'puppeteer-core';
 
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 export async function setCustomOrientation(devtoolsPage: DevToolsPage): Promise<void> {
   const dropDown = await devtoolsPage.waitFor('.orientation-fields select');

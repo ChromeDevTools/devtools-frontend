@@ -6,8 +6,8 @@ import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
 import {navigateToNetworkTab} from '../helpers/network-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 interface Navigator {
   userAgentData?: {

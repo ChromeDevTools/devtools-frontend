@@ -8,7 +8,7 @@ import type * as puppeteer from 'puppeteer-core';
 import {
   matchStringTable,
 } from '../../shared/helper.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 import {openPanelViaMoreTools} from './settings-helpers.js';
 

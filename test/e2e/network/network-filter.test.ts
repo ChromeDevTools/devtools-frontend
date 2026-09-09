@@ -13,7 +13,7 @@ import {
   setKeepLog,
   waitForSomeRequestsToAppear,
 } from '../helpers/network-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 10;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;

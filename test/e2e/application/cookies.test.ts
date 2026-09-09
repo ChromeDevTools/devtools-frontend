@@ -15,7 +15,7 @@ import {
   navigateToCookiesForTopDomain,
   selectCookieByName,
 } from '../helpers/application-helpers.js';
-import type {BrowserWrapper} from '../shared/browser-helper.js';
+import type {BrowserWrapper} from '../shared/BrowserWrapper.js';
 
 async function deleteCookies(browserWrapper: BrowserWrapper) {
   expectError('Request CacheStorage.requestCacheNames failed. {"code":-32602,"message":"Invalid security origin"}');

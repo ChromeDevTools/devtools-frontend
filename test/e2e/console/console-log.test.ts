@@ -23,7 +23,7 @@ import {
   addLogpointForLine,
   openSourceCodeEditorForFile,
 } from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 /* eslint-disable no-console */
 

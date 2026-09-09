@@ -6,8 +6,8 @@ import {assert} from 'chai';
 
 import type * as Host from '../../../front_end/core/host/host.js';
 import type * as Root from '../../../front_end/core/root/root.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 describe('AI Assistance', function() {
   if (this.timeout() > 0) {

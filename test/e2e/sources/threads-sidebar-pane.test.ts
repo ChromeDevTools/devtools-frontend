@@ -8,7 +8,7 @@ import {
   PAUSE_INDICATOR_SELECTOR,
   RESUME_BUTTON,
 } from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 async function expandThreads(devToolsPage: DevToolsPage): Promise<void> {
   await devToolsPage.click('aria/Threads');

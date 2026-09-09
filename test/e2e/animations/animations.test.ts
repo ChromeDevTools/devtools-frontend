@@ -7,8 +7,8 @@ import {assert} from 'chai';
 import {veImpressionForAnimationsPanel} from '../helpers/animations-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
 import {expectVeEvents, veImpressionsUnder} from '../helpers/visual-logging-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 describe('The Animations Panel', () => {
   async function runAnimationTest(animationFn: string, devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {

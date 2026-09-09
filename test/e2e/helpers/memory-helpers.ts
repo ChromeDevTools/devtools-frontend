@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 const NEW_HEAP_SNAPSHOT_BUTTON = 'devtools-button[aria-label="Take heap snapshot"]';
 const MEMORY_PANEL_CONTENT = 'div[aria-label="Memory panel"]';

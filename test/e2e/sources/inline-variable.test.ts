@@ -8,7 +8,7 @@ import {
   STEP_INTO_BUTTON,
   STEP_OVER_BUTTON,
 } from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 async function waitForInlineVariables(devToolsPage: DevToolsPage, expected: string[]): Promise<void> {
   await devToolsPage.waitForFunction(async () => {

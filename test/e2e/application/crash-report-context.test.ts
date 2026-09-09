@@ -6,8 +6,8 @@ import {assert} from 'chai';
 
 import {navigateToApplicationTab} from '../helpers/application-helpers.js';
 import {getDataGrid, getDataGridRows, getInnerTextOfDataGridCells} from '../helpers/datagrid-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 const REPORTING_API_SELECTOR = '[aria-label="Reporting API"]';
 const CRASH_REPORT_CONTEXT_SELECTOR = '[aria-label="Crash Report Context"]';

@@ -42,7 +42,7 @@ import {
   waitForSelectedRowWithText,
   waitUntilRetainerChainSatisfies,
 } from '../helpers/memory-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 async function runJSSetTest(devToolsPage: DevToolsPage) {
   await navigateToMemoryTab(devToolsPage);

@@ -19,8 +19,8 @@ import {
   waitForCSSPropertyValue,
   waitForElementsComputedSection,
 } from '../helpers/elements-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 async function goToTestPageAndSelectTestElement(
     inspectedPage: InspectedPage, devToolsPage: DevToolsPage, path = 'inline_editor/default.html') {

@@ -5,8 +5,8 @@
 import {assert} from 'chai';
 
 import {expandSelectedNodeRecursively, goToResourceAndWaitForStyleSection} from '../helpers/elements-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 describe('Element has violating properties', function() {
   async function expandFormWithIssues(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {

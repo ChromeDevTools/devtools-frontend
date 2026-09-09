@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import {AsyncScope} from '../../conductor/async-scope.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 /** Corresponds to the type in front_end/ui/visual_logging/Debugging.ts **/
 interface TestImpressionLogEntry {

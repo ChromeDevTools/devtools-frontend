@@ -11,7 +11,7 @@ import {
   clickOnContextMenu,
   CONSOLE_TAB_SELECTOR,
 } from '../helpers/console-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 describe('ConsoleInsight', function() {
   const CLICK_TARGET_SELECTOR = '.console-message-text';

@@ -6,8 +6,8 @@ import {
   checkCommandResultFunction,
   navigateToConsoleTab,
 } from '../helpers/console-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 async function openConsoleOnTestPage(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
   await inspectedPage.goToResource('../resources/console/command-line-api.html');

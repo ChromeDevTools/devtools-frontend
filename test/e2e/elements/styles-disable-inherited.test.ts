@@ -11,7 +11,7 @@ import {
   expectVeEvents,
   veImpression,
 } from '../helpers/visual-logging-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 describe('The Elements tab', function() {
   const uncheckStylesPaneCheckbox = async (checkboxLabel: string, devToolsPage: DevToolsPage) => {

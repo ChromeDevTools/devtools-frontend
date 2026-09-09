@@ -14,8 +14,8 @@ import {
 } from '../helpers/quick_open-helpers.js';
 import {setIgnoreListPattern, togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
 import {openSourcesPanel, SourceFileEvents, waitForSourceFiles} from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 async function openAFileWithQuickMenu(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {
   await waitForSourceFiles(

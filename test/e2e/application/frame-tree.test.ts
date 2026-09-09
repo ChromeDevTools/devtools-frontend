@@ -16,7 +16,7 @@ import {
   unregisterServiceWorker,
 } from '../helpers/application-helpers.js';
 import {setIgnoreListPattern} from '../helpers/settings-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 const OPENED_WINDOWS_SELECTOR = '[aria-label="Opened Windows"]';
 const EXPAND_STACKTRACE_BUTTON_SELECTOR = '.arrow-icon-button';

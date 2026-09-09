@@ -15,9 +15,9 @@ import {
   type BrowserWrapper,
   DEFAULT_BROWSER_SETTINGS,
   Launcher,
-} from '../shared/browser-helper.js';
-import {DEFAULT_DEVTOOLS_SETTINGS, type DevToolsPage, setupDevToolsPage} from '../shared/frontend-helper.js';
-import {type InspectedPage, setupInspectedPage} from '../shared/target-helper.js';
+} from '../shared/BrowserWrapper.js';
+import {DEFAULT_DEVTOOLS_SETTINGS, type DevToolsPage, setupDevToolsPage} from '../shared/DevToolsPage.js';
+import {type InspectedPage, setupInspectedPage} from '../shared/InspectedPage.js';
 
 const DEFAULT_SETTINGS = {
   ...DEFAULT_BROWSER_SETTINGS,

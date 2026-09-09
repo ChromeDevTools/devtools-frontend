@@ -12,8 +12,8 @@ import {
   navigateToPerformanceTab,
   searchForComponent,
 } from '../helpers/performance-helpers.js';
-import {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 async function loadEnhancedTrace(
     devToolsPage: DevToolsPage, inspectedPage: InspectedPage, resource: string): Promise<DevToolsPage> {

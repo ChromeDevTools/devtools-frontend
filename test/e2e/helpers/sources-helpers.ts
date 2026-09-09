@@ -8,8 +8,8 @@ import * as path from 'node:path';
 import type * as puppeteer from 'puppeteer-core';
 
 import {GEN_DIR} from '../../conductor/paths.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 import {openSoftContextMenuAndClickOnItem} from './context-menu-helpers.js';
 import {veImpression} from './visual-logging-helpers.js';

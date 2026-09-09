@@ -12,8 +12,8 @@ import {
   waitForElementsStyleSection,
   waitForSelectedTreeElementSelectorWithTextcontent,
 } from '../helpers/elements-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 const EXPECTED_TEXT_CONTENT = '<div class=\u200B"div2">\u200B last child \u200B</div>\u200B';
 

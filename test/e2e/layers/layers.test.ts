@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 describe('The Layers Panel', function() {
   async function getCurrentUrl(devToolsPage: DevToolsPage) {

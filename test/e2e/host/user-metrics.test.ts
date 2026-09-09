@@ -20,8 +20,8 @@ import {navigateToPerformanceTab} from '../helpers/performance-helpers.js';
 import {openCommandMenu} from '../helpers/quick_open-helpers.js';
 import {openPanelViaMoreTools, openSettingsTab} from '../helpers/settings-helpers.js';
 import {waitForSourcesPanel} from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 interface UserMetrics {
   // eslint-disable-next-line @typescript-eslint/naming-convention

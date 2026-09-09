@@ -12,7 +12,7 @@ import {
   waitForElementsDOMBreakpointsSection,
 } from '../helpers/elements-helpers.js';
 import {getCallFrameNames, getPausedMessages, RESUME_BUTTON} from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 declare global {
   function appendElementToOpenShadowRoot(childId: string): void;

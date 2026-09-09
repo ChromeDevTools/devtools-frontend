@@ -8,7 +8,7 @@ import {
   focusConsolePrompt,
 } from '../helpers/console-helpers.js';
 import {openSourcesPanel} from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 /** See the comments in console-repl-mode_test to see why this is necessary. **/
 async function autocompleteTest(prefix: string, suffix: string, devToolsPage: DevToolsPage) {

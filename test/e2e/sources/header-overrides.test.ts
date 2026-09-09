@@ -17,7 +17,7 @@ import {
   openOverridesSubPane,
   openSourcesPanel,
 } from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 const ENABLE_OVERRIDES_SELECTOR = '[aria-label="Select folder for overrides"]';
 const OVERRIDES_FILESYSTEM_SELECTOR = '[aria-label="overrides, fs"]';

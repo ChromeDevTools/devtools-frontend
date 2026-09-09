@@ -10,8 +10,8 @@ import type * as Root from '../../../front_end/core/root/root.js';
 import {installPageErrorHandlers} from '../../conductor/events.js';
 import {TestConfig} from '../../conductor/test_config.js';
 
-import {type DeducedElementType, PageWrapper} from './page-wrapper.js';
-import type {InspectedPage} from './target-helper.js';
+import type {InspectedPage} from './InspectedPage.js';
+import {type DeducedElementType, PageWrapper} from './PageWrapper.js';
 
 const envLatePromises = process.env['LATE_PROMISES'] !== undefined ?
     ['true', ''].includes(process.env['LATE_PROMISES'].toLowerCase()) ? 10 : Number(process.env['LATE_PROMISES']) :
@@ -39,11 +39,11 @@ export class DevToolsPage extends PageWrapper {
     console.log(`Delaying promises by ${envLatePromises}ms`);
     await this.evaluate(delay => {
       global.Promise = class<T> extends Promise<T>{
-        constructor(
-            executor: (resolve: (value: T|PromiseLike<T>) => void, reject: (reason?: unknown) => void) => void) {
+        constructor(executor: (resolve: (value: T|PromiseLike<T>) => void, reject: (reason?: unknown) => void) =>
+                        void) {
           super((resolve, reject) => {
-            executor(
-                value => setTimeout(() => resolve(value), delay), reason => setTimeout(() => reject(reason), delay));
+            executor(value => setTimeout(() => resolve(value), delay),
+                     reason => setTimeout(() => reject(reason), delay));
           });
         }
       };

@@ -9,7 +9,7 @@ import {
   waitForSelectedNodeToBeExpanded,
 } from '../helpers/elements-helpers.js';
 import {togglePreferenceInSettingsTab} from '../helpers/settings-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 async function toggleSearchAsYouType(devToolsPage: DevToolsPage, enabled: boolean) {
   await togglePreferenceInSettingsTab(devToolsPage, 'Search as you type', enabled);

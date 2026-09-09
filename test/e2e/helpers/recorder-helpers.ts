@@ -7,8 +7,8 @@ import type {ElementHandle} from 'puppeteer-core';
 
 import type {UserFlow} from '../../../front_end/panels/recorder/models/Schema.js';
 import type * as Recorder from '../../../front_end/panels/recorder/recorder.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 import {openCommandMenu} from './quick_open-helpers.js';
 

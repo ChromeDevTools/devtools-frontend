@@ -5,8 +5,8 @@
 import {assert} from 'chai';
 
 import {AsyncScope} from '../../conductor/async-scope.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 import {
   expectVeEvents,

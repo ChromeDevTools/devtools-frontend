@@ -7,7 +7,7 @@ import type {ElementHandle} from 'puppeteer-core';
 import {
   platform,
 } from '../../shared/helper.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 const CANCEL_BUTTON_SELECTOR = '[aria-label="Discard changes"]';
 const CONFIRM_BUTTON_SELECTOR = '[aria-label="Confirm changes"]';

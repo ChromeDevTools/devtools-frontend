@@ -14,7 +14,7 @@ import {
   waitForPartialContentOfSelectedElementsNode,
   waitForSelectedNodeChange,
 } from '../helpers/elements-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 async function waitForStartsWith(devToolsPage: DevToolsPage, tree: puppeteer.ElementHandle,
                                  expectedText: string): Promise<void> {

@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 import type * as puppeteer from 'puppeteer-core';
 
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 export async function waitForSoftContextMenu(devToolsPage: DevToolsPage): Promise<puppeteer.ElementHandle<Element>> {
   return await devToolsPage.waitFor('.soft-context-menu');

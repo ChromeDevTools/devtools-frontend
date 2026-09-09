@@ -6,8 +6,8 @@ import type {ElementHandle} from 'puppeteer-core';
 
 import {navigateToNetworkTab, setTextFilter, waitForSomeRequestsToAppear} from '../helpers/network-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 async function checkboxIsChecked(element: ElementHandle<HTMLInputElement>): Promise<boolean> {
   return await element.evaluate(node => node.checked);

@@ -11,10 +11,10 @@ ts_e2e_library("shared") {
     "../../conductor:implementation",
   ]
   sources = [
+    "BrowserWrapper.ts",
+    "DevToolsPage.ts",
+    "InspectedPage.ts",
+    "PageWrapper.ts",
     "auth-helper.ts",
-    "browser-helper.ts",
-    "frontend-helper.ts",
-    "page-wrapper.ts",
-    "target-helper.ts",
   ]
 }

@@ -8,7 +8,7 @@ import {
   step,
 } from '../../shared/helper.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 describe('Idle Emulation on Sensors panel', () => {
   async function getState(inspectedPage: InspectedPage) {

@@ -15,8 +15,8 @@ import {
   toggleRegExButtonBottomUp,
   uploadTraceFile,
 } from '../../helpers/performance-helpers.js';
-import type {DevToolsPage} from '../../shared/frontend-helper.js';
-import type {InspectedPage} from '../../shared/target-helper.js';
+import type {DevToolsPage} from '../../shared/DevToolsPage.js';
+import type {InspectedPage} from '../../shared/InspectedPage.js';
 
 async function expandNodeRecursively(rootActivity: puppeteer.ElementHandle, devToolsPage: DevToolsPage) {
   // Trigger an alt-click on the disclosure triangle. Requires getting the event.pageX correctly placed.

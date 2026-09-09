@@ -5,8 +5,8 @@
 import type * as puppeteer from 'puppeteer-core';
 import type {CdpPage} from 'puppeteer-core/internal/cdp/Page.js';
 
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalThis: any = global;

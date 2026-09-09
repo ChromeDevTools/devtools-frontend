@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {runCommandWithQuickOpen} from '../helpers/quick_open-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 const MINIMIZE_BUTTON_SELECTOR = '[aria-label="Minimize drawer"]';
 const EXPAND_BUTTON_SELECTOR = '[aria-label="Expand drawer"]';

@@ -15,8 +15,8 @@ import {
   waitForNonEmptyHeapSnapshotData,
 } from '../helpers/memory-helpers.js';
 import {increaseTimeoutForPerfPanel, navigateToPerformanceTab} from '../helpers/performance-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 const READY_LOCAL_METRIC_SELECTOR = '#local-value .metric-value:not(.waiting)';
 const READY_FIELD_METRIC_SELECTOR = '#field-value .metric-value:not(.waiting)';

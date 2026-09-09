@@ -6,7 +6,7 @@ import {assert} from 'chai';
 import type {ElementHandle} from 'puppeteer-core';
 
 import type {DataGridElement} from '../../../front_end/ui/legacy/components/data_grid/DataGridElement.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 export async function getDataGridRows(
     devToolsPage: DevToolsPage, expectedNumberOfRows: number, root: ElementHandle<Node>|undefined,

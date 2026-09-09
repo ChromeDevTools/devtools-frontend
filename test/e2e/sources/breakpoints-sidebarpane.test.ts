@@ -13,8 +13,8 @@ import {
   openSourceCodeEditorForFile,
   retrieveCodeMirrorEditorContent,
 } from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 const BREAKPOINT_VIEW_COMPONENT = '#devtools-breakpoint-view';
 const FIRST_BREAKPOINT_ITEM_SELECTOR = '[data-first-breakpoint]';

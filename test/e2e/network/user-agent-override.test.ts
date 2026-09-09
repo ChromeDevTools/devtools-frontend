@@ -11,7 +11,7 @@ import {
   setTextFilter,
   waitForSomeRequestsToAppear,
 } from '../helpers/network-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 const NETWORK_VIEW_SELECTOR = '.network-item-view';
 const HEADERS_TAB_SELECTOR = '[aria-label=Headers].tabbed-pane-header-tab';

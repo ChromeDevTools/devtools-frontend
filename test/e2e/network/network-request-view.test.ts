@@ -18,8 +18,8 @@ import {
   selectRequestByName,
   waitForSomeRequestsToAppear,
 } from '../helpers/network-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 const SIMPLE_PAGE_REQUEST_NUMBER = 2;
 const SIMPLE_PAGE_URL = `requests.html?num=${SIMPLE_PAGE_REQUEST_NUMBER}`;

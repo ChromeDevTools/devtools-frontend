@@ -5,8 +5,8 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import {openSourcesPanel} from 'test/e2e/helpers/sources-helpers.js';
-import type {DevToolsPage} from 'test/e2e/shared/frontend-helper.js';
-import type {InspectedPage} from 'test/e2e/shared/target-helper.js';
+import type {DevToolsPage} from 'test/e2e/shared/DevToolsPage.js';
+import type {InspectedPage} from 'test/e2e/shared/InspectedPage.js';
 
 export interface Action {
   action: string;

@@ -11,7 +11,7 @@ import {
   tabExistsInDrawer,
   tabExistsInMainPanel,
 } from '../helpers/cross-tool-helper.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 const PANEL_PLUS_BUTTON_SELECTOR = 'devtools-menu-button[jslog*="context: plus-button-panel"]';
 const DRAWER_PLUS_BUTTON_SELECTOR = 'devtools-menu-button[jslog*="context: plus-button-drawer"]';

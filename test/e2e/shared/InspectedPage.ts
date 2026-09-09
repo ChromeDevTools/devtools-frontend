@@ -6,7 +6,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import type {InspectedPage as InspectedPageInterface} from '../../conductor/inspected_page.js';
 
-import {PageWrapper} from './page-wrapper.js';
+import {PageWrapper} from './PageWrapper.js';
 
 export class InspectedPage extends PageWrapper implements InspectedPageInterface {
   constructor(page: puppeteer.Page, readonly serverPort: number) {

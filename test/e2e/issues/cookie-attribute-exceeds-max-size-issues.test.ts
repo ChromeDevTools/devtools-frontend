@@ -12,7 +12,7 @@ import {
   navigateToIssuesTab,
   waitForTableFromResourceSectionContents,
 } from '../helpers/issues-helpers.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 describe('Cookie attribute exceeds max size issues test', () => {
   const clearCookies = async (inspectedPage: InspectedPage) => {

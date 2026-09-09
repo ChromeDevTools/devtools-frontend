@@ -6,7 +6,7 @@ import type * as childProcess from 'node:child_process';
 
 import type * as AiAssistance from '../../../front_end/panels/ai_assistance/ai_assistance.js';
 import {openNetworkTab, selectRequestByName} from '../../e2e/helpers/network-helpers.js';
-import type {DevToolsPage} from '../../e2e/shared/frontend-helper.js';
+import type {DevToolsPage} from '../../e2e/shared/DevToolsPage.js';
 
 export const TASK_TEXTPROTO = 'task.textproto';
 

@@ -7,7 +7,7 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {navigateToConsoleTab} from '../helpers/console-helpers.js';
 import {openSourcesPanel, RESUME_BUTTON} from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 describe('The Console Tab', () => {
   it('context selector', async ({devToolsPage, inspectedPage}) => {

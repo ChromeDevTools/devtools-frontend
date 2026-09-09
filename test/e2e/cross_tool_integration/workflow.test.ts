@@ -20,8 +20,8 @@ import {
   stopRecording,
 } from '../helpers/performance-helpers.js';
 import {openPanelViaMoreTools} from '../helpers/settings-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 describe('A user can navigate across', function() {
   async function setupForTests(devToolsPage: DevToolsPage, inspectedPage: InspectedPage) {

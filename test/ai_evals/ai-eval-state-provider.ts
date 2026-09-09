@@ -6,8 +6,8 @@ import type * as puppeteer from 'puppeteer-core';
 
 import {TestConfig} from '../conductor/test_config.js';
 import {type E2EState, StateProvider} from '../e2e/conductor/state-provider.js';
-import {type BrowserSettings, type BrowserWrapper, Launcher} from '../e2e/shared/browser-helper.js';
-import {InspectedPage} from '../e2e/shared/target-helper.js';
+import {type BrowserSettings, type BrowserWrapper, Launcher} from '../e2e/shared/BrowserWrapper.js';
+import {InspectedPage} from '../e2e/shared/InspectedPage.js';
 
 export class AiEvalStateProvider extends StateProvider {
   static override instance: AiEvalStateProvider = new AiEvalStateProvider();

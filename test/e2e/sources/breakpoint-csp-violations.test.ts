@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {openSourcesPanel, PAUSE_ON_UNCAUGHT_EXCEPTION_SELECTOR} from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 async function setCheckboxState(devToolsPage: DevToolsPage, selector: string, checked: boolean) {
   const isChecked = await devToolsPage.evaluate(sel => {

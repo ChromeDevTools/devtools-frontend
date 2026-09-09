@@ -39,7 +39,7 @@ import {
   STEP_OVER_BUTTON,
   waitForStackTopMatch,
 } from '../helpers/sources-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 async function waitForTextContent(selector: string, devToolsPage: DevToolsPage) {
   const element = await devToolsPage.waitFor(selector);

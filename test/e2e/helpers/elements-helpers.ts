@@ -10,8 +10,8 @@ import {
   step,
 
 } from '../../shared/helper.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 import {openSubMenu} from './context-menu-helpers.js';
 import {

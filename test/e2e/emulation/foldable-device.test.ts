@@ -11,8 +11,8 @@ import {
   selectNonDualScreenDevice,
   waitForWidthOfDevice,
 } from '../helpers/emulation-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 const PIXEL_9_PRO_FOLD_VERTICAL_SPANNED_WIDTH = '836';
 const PIXEL_9_PRO_FOLD_VERTICAL_WIDTH = '412';

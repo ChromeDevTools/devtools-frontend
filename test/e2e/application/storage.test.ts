@@ -11,8 +11,8 @@ import {
   navigateToStorage,
   waitForQuotaUsage,
 } from '../helpers/application-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 // The parent suffix makes sure we wait for the Cookies item to have children before trying to click it.
 const CLEAR_SITE_DATA_BUTTON_SELECTOR = '#storage-view-clear-button';

@@ -4,8 +4,8 @@
 
 import {assert} from 'chai';
 
-import type {DevToolsPage} from '../shared/frontend-helper.js';
-import type {InspectedPage} from '../shared/target-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
+import type {InspectedPage} from '../shared/InspectedPage.js';
 
 const COMMENT_TOGGLE_SELECTOR = '[aria-label="Add comments to send to your AI coding agent"]';
 const OVERLAY_CONTAINER_SELECTOR = '.comments-overlay-container';

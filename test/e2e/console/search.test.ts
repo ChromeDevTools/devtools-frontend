@@ -5,7 +5,7 @@
 import {assert} from 'chai';
 
 import {navigateToConsoleTab} from '../helpers/console-helpers.js';
-import type {DevToolsPage} from '../shared/frontend-helper.js';
+import type {DevToolsPage} from '../shared/DevToolsPage.js';
 
 describe('Console search', () => {
   it('finds and highlights matches including a "current match"', async ({devToolsPage, inspectedPage}) => {

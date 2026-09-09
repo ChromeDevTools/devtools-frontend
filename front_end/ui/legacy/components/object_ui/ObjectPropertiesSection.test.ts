@@ -708,14 +708,12 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
         propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
       }),
     };
-    const output = {valueElement: undefined, nameElement: undefined};
-    ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTY_DEFAULT_VIEW(input, output, container);
+    ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTY_DEFAULT_VIEW(input, undefined, container);
 
     sinon.assert.notCalled(startEditing);
     const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
     const valueElement = container.querySelector('.value');
     assert.exists(valueElement);
-    assert.strictEqual(valueElement, output.valueElement);
     valueElement.dispatchEvent(event);
     sinon.assert.notCalled(startEditing);
   });
@@ -741,18 +739,17 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
         propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
       }),
     };
-    const output = {valueElement: undefined, nameElement: undefined};
-    ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTY_DEFAULT_VIEW(input, output, container);
+    ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTY_DEFAULT_VIEW(input, undefined, container);
 
     sinon.assert.notCalled(startEditing);
     const event = new MouseEvent('dblclick', {bubbles: true, cancelable: true});
     const valueElement = container.querySelector('.value');
     assert.exists(valueElement);
-    assert.strictEqual(valueElement, output.valueElement);
     valueElement.dispatchEvent(event);
     sinon.assert.calledOnce(startEditing);
 
-    const viewFunction = sinon.stub<[ObjectUI.ObjectPropertiesSection.ObjectPropertyViewInput, object, HTMLElement]>();
+    const viewFunction =
+        sinon.stub<[ObjectUI.ObjectPropertiesSection.ObjectPropertyViewInput, undefined, HTMLElement]>();
     const section = new ObjectUI.ObjectPropertiesSection.ObjectPropertyWidget(undefined, viewFunction);
     section.property = new ObjectUI.ObjectPropertiesSection.ObjectTreeNode(property, undefined, {
       readOnly: false,
@@ -898,8 +895,7 @@ describeWithEnvironment('ObjectPropertyTreeElement', () => {
         propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
       }),
     };
-    const output = {valueElement: undefined, nameElement: undefined};
-    ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTY_DEFAULT_VIEW(input, output, container);
+    ObjectUI.ObjectPropertiesSection.OBJECT_PROPERTY_DEFAULT_VIEW(input, undefined, container);
 
     const nameElement = container.querySelector('.name');
     assert.exists(nameElement);

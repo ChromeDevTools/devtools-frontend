@@ -6,20 +6,18 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Host from '../../../core/host/host.js';
-import * as Platform from '../../../core/platform/platform.js';
-import * as SDK from '../../../core/sdk/sdk.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import type * as Protocol from '../../../generated/protocol.js';
 import {mockAidaClient} from '../../../testing/AiAssistanceHelpers.js';
 import {deinitializeGlobalVars, updateHostConfig} from '../../../testing/EnvironmentHelpers.js';
+import {createNetworkRequest} from '../../../testing/NetworkRequestHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
 import {SnapshotTester} from '../../../testing/SnapshotTester.js';
 import {TestUniverse} from '../../../testing/TestUniverse.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import {AiAgent, NetworkAgent, RequestContext} from '../ai_assistance.js';
-
-const {urlString} = Platform.DevToolsPath;
 
 describe('NetworkAgent', function() {
   setupSettingsHooks();
@@ -92,27 +90,32 @@ describe('NetworkAgent', function() {
     } as unknown as Protocol.Network.ResourceTiming;
 
     beforeEach(() => {
-      selectedNetworkRequest = SDK.NetworkRequest.NetworkRequest.create(
-          'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com`,
-          urlString`https://www.example.com`, null, null, null);
-      selectedNetworkRequest.statusCode = 200;
-      selectedNetworkRequest.setRequestHeaders([{name: 'content-type', value: 'bar1'}]);
-      selectedNetworkRequest.responseHeaders =
-          [{name: 'content-type', value: 'bar2'}, {name: 'x-forwarded-for', value: 'bar3'}];
-      selectedNetworkRequest.timing = timingInfo;
-      selectedNetworkRequest.requestContentData = () => {
-        return Promise.resolve(
-            new TextUtils.ContentData.ContentData(exampleResponse, false, 'application/json', 'utf-8'));
-      };
-      const initiatorNetworkRequest = SDK.NetworkRequest.NetworkRequest.create(
-          'requestId' as Protocol.Network.RequestId, urlString`https://www.initiator.com`,
-          urlString`https://www.example.com`, null, null, null);
-      const initiatedNetworkRequest1 = SDK.NetworkRequest.NetworkRequest.create(
-          'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/1`,
-          urlString`https://www.example.com`, null, null, null);
-      const initiatedNetworkRequest2 = SDK.NetworkRequest.NetworkRequest.create(
-          'requestId' as Protocol.Network.RequestId, urlString`https://www.example.com/2`,
-          urlString`https://www.example.com`, null, null, null);
+      selectedNetworkRequest = createNetworkRequest({
+        requestId: 'requestId',
+        url: 'https://www.example.com',
+        documentURL: 'https://www.example.com',
+        statusCode: 200,
+        requestHeaders: [{name: 'content-type', value: 'bar1'}],
+        responseHeaders: [{name: 'content-type', value: 'bar2'}, {name: 'x-forwarded-for', value: 'bar3'}],
+        timing: timingInfo,
+        contentData: () =>
+            Promise.resolve(new TextUtils.ContentData.ContentData(exampleResponse, false, 'application/json', 'utf-8')),
+      });
+      const initiatorNetworkRequest = createNetworkRequest({
+        requestId: 'requestId',
+        url: 'https://www.initiator.com',
+        documentURL: 'https://www.example.com',
+      });
+      const initiatedNetworkRequest1 = createNetworkRequest({
+        requestId: 'requestId',
+        url: 'https://www.example.com/1',
+        documentURL: 'https://www.example.com',
+      });
+      const initiatedNetworkRequest2 = createNetworkRequest({
+        requestId: 'requestId',
+        url: 'https://www.example.com/2',
+        documentURL: 'https://www.example.com',
+      });
 
       const initiatorGraphStub = sinon.stub(universe.networkLog, 'initiatorGraphForRequest');
       initiatorGraphStub.callsFake((req: SDK.NetworkRequest.NetworkRequest) => {
@@ -207,25 +210,20 @@ describe('NetworkAgent', function() {
     });
 
     it('redacts cross-origin response body in request built for AIDA', async function() {
-      const crossOriginRequest = SDK.NetworkRequest.NetworkRequest.create(
-          'crossOriginRequestId' as Protocol.Network.RequestId,
-          urlString`https://victim.com/sensitive-data`,
-          urlString`https://attacker.com/index.html`,
-          null,
-          null,
-          null,
-      );
-      crossOriginRequest.statusCode = 200;
-      crossOriginRequest.responseHeaders = [
-        {name: 'content-type', value: 'application/json'},
-        {name: 'location', value: '/secret-redirect'},
-        {name: 'www-authenticate', value: 'Bearer secret'},
-      ];
-      crossOriginRequest.timing = timingInfo;
-      crossOriginRequest.requestContentData = () => {
-        return Promise.resolve(new TextUtils.ContentData.ContentData('{"secret":"victim-confidential"}', false,
-                                                                     'application/json', 'utf-8'));
-      };
+      const crossOriginRequest = createNetworkRequest({
+        requestId: 'crossOriginRequestId',
+        url: 'https://victim.com/sensitive-data',
+        documentURL: 'https://attacker.com/index.html',
+        statusCode: 200,
+        responseHeaders: [
+          {name: 'content-type', value: 'application/json'},
+          {name: 'location', value: '/secret-redirect'},
+          {name: 'www-authenticate', value: 'Bearer secret'},
+        ],
+        timing: timingInfo,
+        contentData: () => Promise.resolve(new TextUtils.ContentData.ContentData('{"secret":"victim-confidential"}',
+                                                                                 false, 'application/json', 'utf-8')),
+      });
 
       const agent = new NetworkAgent.NetworkAgent({
         aidaClient: mockAidaClient([[{

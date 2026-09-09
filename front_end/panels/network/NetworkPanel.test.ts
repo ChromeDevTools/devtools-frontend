@@ -6,9 +6,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as Logs from '../../models/logs/logs.js';
 import * as Tracing from '../../services/tracing/tracing.js';
 import {
@@ -17,13 +15,12 @@ import {
 } from '../../testing/EnvironmentHelpers.js';
 import {MockCDPConnection} from '../../testing/MockCDPConnection.js';
 import {createNetworkPanelForMockConnection} from '../../testing/NetworkHelpers.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import * as RenderCoordinator from '../../ui/components/render_coordinator/render_coordinator.js';
 import * as PerfUI from '../../ui/legacy/components/perf_ui/perf_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
 
 import type * as Network from './network.js';
-
-const {urlString} = Platform.DevToolsPath;
 
 describeWithEnvironment('NetworkPanel', () => {
   let target: SDK.Target.Target;
@@ -82,14 +79,10 @@ describeWithEnvironment('NetworkPanel', () => {
     const filmStripView = UI.Widget.Widget.get(filmStripElement) as PerfUI.FilmStripView.FilmStripView;
     assert.exists(filmStripView);
 
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        '1' as Protocol.Network.RequestId,
-        urlString`https://example.com`,
-        urlString``,
-        null,
-        null,
-        null,
-    );
+    const request = createNetworkRequest({
+      requestId: '1',
+      url: 'https://example.com',
+    });
     request.setIssueTime(0, 0);
     request.endTime = 10;
     Logs.NetworkLog.NetworkLog.instance().dispatchEventToListeners(Logs.NetworkLog.Events.RequestUpdated, {request});

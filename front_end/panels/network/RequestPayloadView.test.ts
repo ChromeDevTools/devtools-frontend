@@ -7,9 +7,9 @@ import sinon from 'sinon';
 import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
-import type * as Protocol from '../../generated/protocol.js';
 import {assertScreenshot, raf, renderElementIntoDOM} from '../../testing/DOMHelpers.js';
 import {describeWithEnvironment} from '../../testing/EnvironmentHelpers.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 import {createViewFunctionStub} from '../../testing/ViewFunctionHelpers.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 import * as UI from '../../ui/legacy/legacy.js';
@@ -60,9 +60,7 @@ describeWithEnvironment('RequestPayloadView', () => {
   });
 
   it('displays query string parameters', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api?foo=bar&baz=qux`, urlString``,
-        null, null, null);
+    const request = createNetworkRequest({url: 'https://example.com/api?foo=bar&baz=qux'});
     const view = new Network.RequestPayloadView.RequestPayloadView();
     view.request = request;
     renderElementIntoDOM(view, {includeCommonStyles: true});
@@ -72,9 +70,10 @@ describeWithEnvironment('RequestPayloadView', () => {
   });
 
   it('displays form data parameters', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api`, urlString``, null, null, null);
-    request.setRequestHeaders([{name: 'Content-Type', value: 'application/x-www-form-urlencoded'}]);
+    const request = createNetworkRequest({
+      url: 'https://example.com/api',
+      requestHeaders: [{name: 'Content-Type', value: 'application/x-www-form-urlencoded'}],
+    });
     // Mock requestFormData to return URL-encoded form data.
     sinon.stub(request, 'requestFormData').resolves('foo=bar&baz=qux');
 
@@ -88,9 +87,7 @@ describeWithEnvironment('RequestPayloadView', () => {
   });
 
   it('toggles URL decoding', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api?foo=bar%20baz`, urlString``, null,
-        null, null);
+    const request = createNetworkRequest({url: 'https://example.com/api?foo=bar%20baz'});
     const view = new Network.RequestPayloadView.RequestPayloadView();
     view.request = request;
     renderElementIntoDOM(view, {includeCommonStyles: true});
@@ -123,9 +120,7 @@ describeWithEnvironment('RequestPayloadView', () => {
   });
 
   it('toggles between parsed and source view', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api?foo=bar`, urlString``, null, null,
-        null);
+    const request = createNetworkRequest({url: 'https://example.com/api?foo=bar'});
     const view = new Network.RequestPayloadView.RequestPayloadView();
     view.request = request;
     renderElementIntoDOM(view, {includeCommonStyles: true});
@@ -176,9 +171,7 @@ describeWithEnvironment('RequestPayloadView', () => {
 
   it('truncates long source text and in a ShowMore widget', async () => {
     const text = 'A'.repeat(3010);
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api?foo=${text}`, urlString``, null,
-        null, null);
+    const request = createNetworkRequest({url: `https://example.com/api?foo=${text}`});
     const view = new Network.RequestPayloadView.RequestPayloadView();
     view.request = request;
     renderElementIntoDOM(view, {includeCommonStyles: true});
@@ -207,9 +200,10 @@ describeWithEnvironment('RequestPayloadView', () => {
   });
 
   it('displays JSON payload and toggles between parsed and source view', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api`, urlString``, null, null, null);
-    request.setRequestHeaders([{name: 'Content-Type', value: 'application/json'}]);
+    const request = createNetworkRequest({
+      url: 'https://example.com/api',
+      requestHeaders: [{name: 'Content-Type', value: 'application/json'}],
+    });
     sinon.stub(request, 'requestFormData').resolves('{"foo": "bar"}');
 
     const view = new Network.RequestPayloadView.RequestPayloadView();
@@ -261,9 +255,10 @@ describeWithEnvironment('RequestPayloadView', () => {
   });
 
   it('renders read-only object properties for payload', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api`, urlString``, null, null, null);
-    request.setRequestHeaders([{name: 'Content-Type', value: 'application/json'}]);
+    const request = createNetworkRequest({
+      url: 'https://example.com/api',
+      requestHeaders: [{name: 'Content-Type', value: 'application/json'}],
+    });
     sinon.stub(request, 'requestFormData').resolves('{"foo": "bar"}');
 
     const populateSpy =
@@ -355,9 +350,10 @@ describeWithEnvironment('RequestPayloadView', () => {
   });
 
   it('handles payload context menu operations in presenter', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api`, urlString``, null, null, null);
-    request.setRequestHeaders([{name: 'Content-Type', value: 'application/json'}]);
+    const request = createNetworkRequest({
+      url: 'https://example.com/api',
+      requestHeaders: [{name: 'Content-Type', value: 'application/json'}],
+    });
     sinon.stub(request, 'requestFormData').resolves('{"outer": {"inner": "val"}}');
     sinon.stub(request, 'formParameters').resolves(null);
 
@@ -441,12 +437,13 @@ describeWithEnvironment('RequestPayloadView', () => {
     const binaryContentData =
         new TextUtils.ContentData.ContentData(base64Data, /* isBase64= */ true, 'application/octet-stream');
 
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api`, urlString``, null, null, null);
-    request.setRequestHeaders([
-      {name: 'Content-Type', value: 'application/octet-stream'},
-      {name: 'Content-Encoding', value: 'gzip'},
-    ]);
+    const request = createNetworkRequest({
+      url: 'https://example.com/api',
+      requestHeaders: [
+        {name: 'Content-Type', value: 'application/octet-stream'},
+        {name: 'Content-Encoding', value: 'gzip'},
+      ],
+    });
 
     sinon.stub(request, 'requestFormData').resolves(base64Data);
     sinon.stub(request, 'formParameters').resolves(null);
@@ -468,9 +465,10 @@ describeWithEnvironment('RequestPayloadView', () => {
   });
 
   it('does not set binaryPayloadContentData for text request bodies', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId, urlString`https://example.com/api`, urlString``, null, null, null);
-    request.setRequestHeaders([{name: 'Content-Type', value: 'application/json'}]);
+    const request = createNetworkRequest({
+      url: 'https://example.com/api',
+      requestHeaders: [{name: 'Content-Type', value: 'application/json'}],
+    });
 
     const textContentData =
         new TextUtils.ContentData.ContentData('{"foo": "bar"}', /* isBase64= */ false, 'application/json');
@@ -489,10 +487,10 @@ describeWithEnvironment('RequestPayloadView', () => {
   });
 
   it('decodes query string parameters by default even for POST requests with JSON body', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create('requestId' as Protocol.Network.RequestId,
-                                                             urlString`https://example.com/api?foo=bar%20baz`,
-                                                             urlString``, null, null, null);
-    request.setRequestHeaders([{name: 'Content-Type', value: 'application/json'}]);
+    const request = createNetworkRequest({
+      url: 'https://example.com/api?foo=bar%20baz',
+      requestHeaders: [{name: 'Content-Type', value: 'application/json'}],
+    });
     sinon.stub(request, 'requestFormData').resolves('{"jsonKey": "jsonVal"}');
 
     const view = new Network.RequestPayloadView.RequestPayloadView();
@@ -515,10 +513,10 @@ describeWithEnvironment('RequestPayloadView', () => {
   });
 
   it('toggles query parameters and form data independently', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create('requestId' as Protocol.Network.RequestId,
-                                                             urlString`https://example.com/api?qFoo=qBar%20qBaz`,
-                                                             urlString``, null, null, null);
-    request.setRequestHeaders([{name: 'Content-Type', value: 'application/x-www-form-urlencoded'}]);
+    const request = createNetworkRequest({
+      url: 'https://example.com/api?qFoo=qBar%20qBaz',
+      requestHeaders: [{name: 'Content-Type', value: 'application/x-www-form-urlencoded'}],
+    });
     sinon.stub(request, 'requestFormData').resolves('fFoo=fBar%20fBaz');
 
     const view = new Network.RequestPayloadView.RequestPayloadView();
@@ -585,9 +583,7 @@ describeWithEnvironment('RequestPayloadView', () => {
   });
 
   it('toggles section expansion on click', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create('requestId' as Protocol.Network.RequestId,
-                                                             urlString`https://example.com/api?foo=bar`, urlString``,
-                                                             null, null, null);
+    const request = createNetworkRequest({url: 'https://example.com/api?foo=bar'});
     const view = new Network.RequestPayloadView.RequestPayloadView();
     view.request = request;
     renderElementIntoDOM(view, {includeCommonStyles: true});

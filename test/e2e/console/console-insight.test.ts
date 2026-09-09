@@ -190,6 +190,9 @@ describe('ConsoleInsight', function() {
     // Check for the citation link within the code block
     const citationSelector = '.citation';
     const citation = await devToolsPage.waitFor(citationSelector);
+    await devToolsPage.waitForNone('devtools-spinner');
+    await devToolsPage.waitForNone('.pending');
+    await devToolsPage.waitForNone('.animating');
     const citationText = await citation.evaluate(el => (el as HTMLElement).innerText);
     assert.strictEqual(citationText, '[1]');
 

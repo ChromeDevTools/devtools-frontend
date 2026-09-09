@@ -10,6 +10,7 @@ import("../visibility.gni")
 
 generate_css("css_files") {
   sources = [
+    "accessibilityAnnouncementRecordingListView.css",
     "accessibilityNode.css",
     "accessibilityProperties.css",
     "accessibilitySidebarView.css",
@@ -21,6 +22,7 @@ devtools_ui_module("accessibility") {
   sources = [
     "ARIAAttributesView.ts",
     "ARIAMetadata.ts",
+    "AccessibilityAnnouncementRecordingListView.ts",
     "AccessibilityAnnouncementRecordingView.ts",
     "AccessibilityNodeView.ts",
     "AccessibilitySidebarView.ts",
@@ -39,6 +41,7 @@ devtools_ui_module("accessibility") {
     "../../ui/components/switch:bundle",
     "../../ui/i18n:bundle",
     "../../ui/legacy:bundle",
+    "../../ui/legacy/components/data_grid:bundle",
     "../../ui/lit:bundle",
     "../../ui/visual_logging:bundle",
     "../common:bundle",
@@ -80,6 +83,7 @@ devtools_ui_module("unittests") {
 
   sources = [
     "ARIAAttributesView.test.ts",
+    "AccessibilityAnnouncementRecordingListView.test.ts",
     "AccessibilityAnnouncementRecordingView.test.ts",
     "AccessibilitySidebarView.test.ts",
   ]

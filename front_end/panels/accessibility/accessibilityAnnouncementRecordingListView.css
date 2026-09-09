@@ -1,0 +1,33 @@
+/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+:host {
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  flex: auto;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@scope to (devtools-widget > *) {
+  :scope {
+    font-family: inherit;
+    display: flex;
+    flex-direction: column;
+    flex: auto;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  devtools-data-grid {
+    font-family: inherit;
+    flex: auto;
+    height: 100%;
+    border: none;
+  }
+}

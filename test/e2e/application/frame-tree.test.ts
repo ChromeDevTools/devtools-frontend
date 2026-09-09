@@ -200,8 +200,7 @@ describe('The Application Tab', () => {
     await devToolsPage.bringToFront();
 
     await navigateToOpenedWindows(devToolsPage);
-    await devToolsPage.waitFor(`${OPENED_WINDOWS_SELECTOR} + ol li:first-child`);
-    void devToolsPage.pressKey('ArrowDown');
+    await devToolsPage.click(`${OPENED_WINDOWS_SELECTOR} + ol li:first-child`);
 
     const fieldValuesTextContent = await devToolsPage.waitForFunction(async () => {
       const fieldValues = await getTrimmedTextContent(devToolsPage, '.report-field-value');

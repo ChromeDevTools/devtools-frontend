@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import * as Host from '../../core/host/host.js';
+import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import {mockAidaClient} from '../../testing/AiAssistanceHelpers.js';
 import {updateHostConfig} from '../../testing/EnvironmentHelpers.js';
@@ -933,5 +934,201 @@ describe('AiAgent2', () => {
     sinon.assert.calledOnce(handlerStub);
     const [, context] = handlerStub.getCall(0).args;
     assert.isNull(context.getPerformanceTraceContext());
+  });
+
+  describe('origin lock target and body handling', () => {
+    it('returns primaryPageTarget for getTarget when no origin is locked', async () => {
+      const target = universe.createTarget({url: 'https://example.com'});
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [{name: 'learnSkills', args: {skills: ['styling']}}],
+        }],
+        [{
+          explanation: '',
+          functionCalls: [{name: 'getStyles', args: {}}],
+        }],
+        [{
+          explanation: 'Done.',
+        }],
+      ]);
+      const agent = new AiAssistance.AiAgent2.AiAgent2({
+        aidaClient,
+        allowedOrigin: () => ({origin: undefined}),
+      });
+
+      const getStylesTool = AiAssistance.ToolRegistry.ToolRegistry.get('getStyles');
+      assert.exists(getStylesTool);
+      const handlerStub = sinon.stub(getStylesTool, 'handler').resolves({result: 'mock styles'});
+
+      await Array.fromAsync(agent.run('query', {selected: null}));
+
+      sinon.assert.calledOnce(handlerStub);
+      const [, context] = handlerStub.getCall(0).args;
+      assert.strictEqual(context.getTarget(), target);
+    });
+
+    it('returns primaryPageTarget for getTarget when locked origin matches primaryPageTarget', async () => {
+      const target = universe.createTarget();
+      target.setInspectedURL(Platform.DevToolsPath.urlString`https://example.com`);
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [{name: 'learnSkills', args: {skills: ['styling']}}],
+        }],
+        [{
+          explanation: '',
+          functionCalls: [{name: 'getStyles', args: {}}],
+        }],
+        [{
+          explanation: 'Done.',
+        }],
+      ]);
+      const matchingOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      const agent = new AiAssistance.AiAgent2.AiAgent2({
+        aidaClient,
+        allowedOrigin: () => ({origin: matchingOrigin}),
+      });
+
+      const getStylesTool = AiAssistance.ToolRegistry.ToolRegistry.get('getStyles');
+      assert.exists(getStylesTool);
+      const handlerStub = sinon.stub(getStylesTool, 'handler').resolves({result: 'mock styles'});
+
+      await Array.fromAsync(agent.run('query', {selected: null}));
+
+      sinon.assert.calledOnce(handlerStub);
+      const [, context] = handlerStub.getCall(0).args;
+      assert.strictEqual(context.getTarget(), target);
+    });
+
+    it('returns null for getTarget when locked origin does not match primaryPageTarget', async () => {
+      universe.createTarget({url: 'https://example.com'});
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [{name: 'learnSkills', args: {skills: ['styling']}}],
+        }],
+        [{
+          explanation: '',
+          functionCalls: [{name: 'getStyles', args: {}}],
+        }],
+        [{
+          explanation: 'Done.',
+        }],
+      ]);
+      const mismatchedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://iframe.example');
+      const agent = new AiAssistance.AiAgent2.AiAgent2({
+        aidaClient,
+        allowedOrigin: () => ({origin: mismatchedOrigin}),
+      });
+
+      const getStylesTool = AiAssistance.ToolRegistry.ToolRegistry.get('getStyles');
+      assert.exists(getStylesTool);
+      const handlerStub = sinon.stub(getStylesTool, 'handler').resolves({result: 'mock styles'});
+
+      await Array.fromAsync(agent.run('query', {selected: null}));
+
+      sinon.assert.calledOnce(handlerStub);
+      const [, context] = handlerStub.getCall(0).args;
+      assert.isNull(context.getTarget());
+    });
+
+    it('skips requesting document during preRun when origin access is blocked', async () => {
+      const target = universe.createTarget();
+      target.setInspectedURL(Platform.DevToolsPath.urlString`https://example.com`);
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+      sinon.stub(domModel, 'existingDocument').returns(null);
+      const requestStub = sinon.stub(domModel, 'requestDocument').resolves(null);
+
+      const aidaClient = mockAidaClient([[{explanation: 'Done.'}]]);
+      const agent = new AiAssistance.AiAgent2.AiAgent2({
+        aidaClient,
+        allowedOrigin: () => ({blocked: true}),
+      });
+
+      await Array.fromAsync(agent.run('question', {selected: null}));
+
+      sinon.assert.notCalled(requestStub);
+    });
+
+    it('returns null for getExecutionContextNode when locked origin does not match primaryPageTarget', async () => {
+      const target = universe.createTarget({url: 'https://example.com'});
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+      const mockDocument = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
+      const mockBodyNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
+      mockDocument.body = mockBodyNode;
+      sinon.stub(domModel, 'existingDocument').returns(mockDocument);
+
+      const aidaClient = mockAidaClient([
+        [{
+          explanation: '',
+          functionCalls: [{name: 'learnSkills', args: {skills: ['accessibility']}}],
+        }],
+        [{
+          explanation: '',
+          functionCalls: [{name: 'executeJavaScript', args: {action: 'console.log(1)'}}],
+        }],
+        [{
+          explanation: 'Done.',
+        }],
+      ]);
+      const mismatchedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://iframe.example');
+      const agent = new AiAssistance.AiAgent2.AiAgent2({
+        aidaClient,
+        allowedOrigin: () => ({origin: mismatchedOrigin}),
+      });
+
+      const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
+      assert.exists(executeJsTool);
+      const handlerStub = sinon.stub(executeJsTool, 'handler').resolves({result: 'mocked result'});
+
+      await Array.fromAsync(agent.run('question', {selected: null}));
+
+      sinon.assert.calledOnce(handlerStub);
+      const [, context] = handlerStub.getCall(0).args;
+      assert.isNull(context.getExecutionContextNode());
+    });
+
+    it('skips requesting document during preRun when locked origin does not match primaryPageTarget', async () => {
+      const target = universe.createTarget({url: 'https://example.com'});
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+      sinon.stub(domModel, 'existingDocument').returns(null);
+      const requestStub = sinon.stub(domModel, 'requestDocument').resolves(null);
+
+      const aidaClient = mockAidaClient([[{explanation: 'Done.'}]]);
+      const mismatchedOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://iframe.example');
+      const agent = new AiAssistance.AiAgent2.AiAgent2({
+        aidaClient,
+        allowedOrigin: () => ({origin: mismatchedOrigin}),
+      });
+
+      await Array.fromAsync(agent.run('question', {selected: null}));
+
+      sinon.assert.notCalled(requestStub);
+    });
+
+    it('requests document during preRun when locked origin matches primaryPageTarget', async () => {
+      const target = universe.createTarget();
+      target.setInspectedURL(Platform.DevToolsPath.urlString`https://example.com`);
+      const domModel = target.model(SDK.DOMModel.DOMModel);
+      assert.exists(domModel);
+      sinon.stub(domModel, 'existingDocument').returns(null);
+      sinon.stub(domModel, 'pushNodeByPathToFrontend').resolves(null);
+      const requestStub = sinon.stub(domModel, 'requestDocument').resolves(null);
+
+      const aidaClient = mockAidaClient([[{explanation: 'Done.'}]]);
+      const matchingOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      const agent = new AiAssistance.AiAgent2.AiAgent2({
+        aidaClient,
+        allowedOrigin: () => ({origin: matchingOrigin}),
+      });
+
+      await Array.fromAsync(agent.run('question', {selected: null}));
+
+      sinon.assert.calledOnce(requestStub);
+    });
   });
 });

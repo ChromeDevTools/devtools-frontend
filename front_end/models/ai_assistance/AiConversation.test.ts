@@ -90,6 +90,7 @@ describe('AiConversation', () => {
     const origin = Platform.DevToolsPath.urlString`https://example.com`;
     const target = sinon.createStubInstance(SDK.Target.Target);
     target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
+    target.inspectedSecurityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(origin));
     sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
 
     const listNetworkRequestsTool = AiAssistance.ToolRegistry.ToolRegistry.get('listNetworkRequests');
@@ -156,6 +157,7 @@ describe('AiConversation', () => {
     const origin = Platform.DevToolsPath.urlString`https://example.com`;
     const target = sinon.createStubInstance(SDK.Target.Target);
     target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
+    target.inspectedSecurityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(origin));
     sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
 
     const aidaClient = mockAidaClient([
@@ -211,6 +213,7 @@ describe('AiConversation', () => {
     const origin = Platform.DevToolsPath.urlString`https://example.com`;
     const target = sinon.createStubInstance(SDK.Target.Target);
     target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
+    target.inspectedSecurityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(origin));
     sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
 
     const aidaClient = mockAidaClient([
@@ -241,6 +244,7 @@ describe('AiConversation', () => {
     const origin = Platform.DevToolsPath.urlString`https://example.com`;
     const target = sinon.createStubInstance(SDK.Target.Target);
     target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
+    target.inspectedSecurityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(origin));
     sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
 
     const aidaClient = mockAidaClient([
@@ -504,6 +508,7 @@ describe('AiConversation', () => {
 
     const target = sinon.createStubInstance(SDK.Target.Target);
     target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
+    target.inspectedSecurityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(origin));
     sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
 
     const sameOriginRequest = createNetworkRequest({
@@ -571,6 +576,7 @@ describe('AiConversation', () => {
 
     const target = sinon.createStubInstance(SDK.Target.Target);
     target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
+    target.inspectedSecurityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create(origin));
     sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
 
     const request1 = createNetworkRequest({

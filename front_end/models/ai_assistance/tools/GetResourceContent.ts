@@ -8,7 +8,6 @@ import type * as Platform from '../../../core/platform/platform.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
-import {canResourceContentsBeReadForTrace} from '../AiOrigins.js';
 
 import {
   type BaseToolCapability,
@@ -73,8 +72,7 @@ export class GetResourceContentTool implements DataTool<
       return {error: 'Cannot use this tool on an imported file.'};
     }
 
-    const allowedOrigin = performanceTraceContext.getOrigin();
-    if (!canResourceContentsBeReadForTrace(params.url, allowedOrigin)) {
+    if (!performanceTraceContext.canAccessResource(params.url)) {
       return {error: 'Resource not found'};
     }
 

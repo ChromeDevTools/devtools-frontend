@@ -744,6 +744,33 @@ code
       assert.strictEqual(actionResponse.output, 'Cannot use this tool on an imported file.');
     });
 
+    it('returns error from getFunctionCode when script URL is cross-origin or file://', async function() {
+      sinon.stub(Tracing.FreshRecording.Tracker.instance(), 'recordingIsFresh').returns(true);
+      const parsedTrace = await loadTrace(this, 'lcp-discovery-delay.json.gz');
+      assert.isOk(parsedTrace.insights);
+      const [firstNav] = parsedTrace.data.Meta.mainFrameNavigations;
+      const lcpBreakdown = getInsightOrError('LCPBreakdown', parsedTrace.insights, firstNav);
+
+      const agent = createAgentForConversation({
+        aidaClient: mockAidaClient([
+          [{
+            explanation: '',
+            functionCalls: [{
+              name: 'getFunctionCode',
+              args: {scriptUrl: 'file:///etc/passwd', line: 10, column: 5},
+            }],
+          }],
+          [{explanation: 'done'}],
+        ]),
+      });
+      const context = PerformanceTraceContext.PerformanceTraceContext.fromInsight(parsedTrace, lcpBreakdown);
+
+      const responses = await Array.fromAsync(agent.run('test', {selected: context}));
+      const actionResponse = responses.find(response => response.type === AiAgent.ResponseType.ACTION);
+      assert.exists(actionResponse);
+      assert.strictEqual(actionResponse.output, 'Resource not found');
+    });
+
     it('can call getMainThreadTrackSummaryByLabel', async function() {
       const parsedTrace = await loadTrace(this, 'lcp-discovery-delay.json.gz');
       assert.isOk(parsedTrace.insights);

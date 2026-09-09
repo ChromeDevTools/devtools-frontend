@@ -5,7 +5,6 @@
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import type * as Platform from '../../../core/platform/platform.js';
-import {canResourceContentsBeReadForTrace} from '../AiOrigins.js';
 
 import {
   type BaseToolCapability,
@@ -85,9 +84,8 @@ export class GetFunctionCodeTool implements
       return {error: 'Missing arg: scriptUrl'};
     }
 
-    const allowedOrigin = performanceTraceContext.getOrigin();
-    if (!canResourceContentsBeReadForTrace(params.scriptUrl, allowedOrigin)) {
-      return {error: 'Script not found'};
+    if (!performanceTraceContext.canAccessResource(params.scriptUrl)) {
+      return {error: 'Resource not found'};
     }
 
     if (params.line === undefined) {

@@ -166,4 +166,130 @@ describe('CookieUtils', () => {
       }
     });
   });
+
+  describe('resolveAllowedTargetOrigins', () => {
+    it('resolves primary page origin when requestedOrigins is omitted', () => {
+      const {primaryTarget} = setupPrimaryTarget('https://example.com');
+      const context = {
+        getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
+      };
+
+      const result = AiAssistance.CookieUtils.resolveAllowedTargetOrigins(
+          undefined,
+          context,
+          universe.targetManager,
+      );
+
+      assert.isFalse('error' in result);
+      if (!('error' in result)) {
+        assert.deepEqual(result.targetOrigins, ['https://example.com']);
+        assert.strictEqual(result.primaryPageTarget, primaryTarget);
+      }
+    });
+
+    it('filters out requested origins that do not match the established origin', () => {
+      const {primaryTarget} = setupPrimaryTarget('https://example.com');
+      const context = {
+        getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
+      };
+
+      const result = AiAssistance.CookieUtils.resolveAllowedTargetOrigins(
+          ['https://example.com', 'https://other.com'],
+          context,
+          universe.targetManager,
+      );
+
+      assert.isFalse('error' in result);
+      if (!('error' in result)) {
+        assert.deepEqual(result.targetOrigins, ['https://example.com']);
+        assert.strictEqual(result.primaryPageTarget, primaryTarget);
+      }
+    });
+
+    it('returns error when established origin is opaque', () => {
+      setupPrimaryTarget('https://example.com');
+      const context = {
+        getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque()),
+      };
+
+      const result = AiAssistance.CookieUtils.resolveAllowedTargetOrigins(
+          undefined,
+          context,
+          universe.targetManager,
+      );
+
+      assert.isTrue('error' in result);
+      if ('error' in result) {
+        assert.strictEqual(result.error, 'No origin available or not allowed.');
+      }
+    });
+
+    it('returns error when primary target origin does not match established origin', () => {
+      setupPrimaryTarget('https://other.com');
+      const context = {
+        getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
+      };
+
+      const result = AiAssistance.CookieUtils.resolveAllowedTargetOrigins(
+          undefined,
+          context,
+          universe.targetManager,
+      );
+
+      assert.isTrue('error' in result);
+      if ('error' in result) {
+        assert.strictEqual(result.error, 'Page origin does not match allowed origin.');
+      }
+    });
+
+    it('returns error when primaryPageTarget is null', () => {
+      sinon.stub(universe.targetManager, 'primaryPageTarget').returns(null);
+      const context = {
+        getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
+      };
+
+      const result = AiAssistance.CookieUtils.resolveAllowedTargetOrigins(
+          undefined,
+          context,
+          universe.targetManager,
+      );
+
+      assert.isTrue('error' in result);
+      if ('error' in result) {
+        assert.strictEqual(result.error, 'Primary page target not found.');
+      }
+    });
+
+    it('returns error when all requested origins are cross-origin', () => {
+      setupPrimaryTarget('https://example.com');
+      const context = {
+        getEstablishedOrigin: sinon.stub().returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com')),
+      };
+
+      const result = AiAssistance.CookieUtils.resolveAllowedTargetOrigins(
+          ['https://other1.com', 'https://other2.com'],
+          context,
+          universe.targetManager,
+      );
+
+      assert.isTrue('error' in result);
+      if ('error' in result) {
+        assert.strictEqual(result.error, 'No valid origins found.');
+      }
+    });
+  });
+
+  describe('findFrameForOrigin', () => {
+    it('returns null when origin is opaque', () => {
+      const {primaryTarget} = setupPrimaryTarget('https://example.com');
+
+      const result = AiAssistance.CookieUtils.findFrameForOrigin(
+          'data:text/html,test',
+          universe.targetManager,
+          primaryTarget,
+      );
+
+      assert.isNull(result);
+    });
+  });
 });

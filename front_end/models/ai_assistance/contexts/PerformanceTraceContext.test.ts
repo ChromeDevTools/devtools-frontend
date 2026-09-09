@@ -386,4 +386,82 @@ Mock Longest Tasks`);
       assert.isTrue(context.getOrigin().isOpaque());
     });
   });
+
+  describe('canAccessResource', () => {
+    function createMockTraceContext(mainFrameURL: string):
+        AiAssistance.PerformanceTraceContext.PerformanceTraceContext {
+      const mockTrace = {
+        insights: new Map(),
+        data: {
+          Meta: {
+            mainFrameURL,
+            traceBounds: {min: 0, max: 100},
+          },
+        },
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+      tracker.registerFreshRecording(mockTrace);
+
+      return AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          mockTrace, universe.targetManager, tracker, universe.debuggerWorkspaceBinding);
+    }
+
+    it('returns true when target URL has the same origin as trace origin', () => {
+      const context = createMockTraceContext('https://example.com/page.html');
+      assert.isTrue(context.canAccessResource('https://example.com/script.js'));
+    });
+
+    it('returns false when target URL has a different origin from trace origin', () => {
+      const context = createMockTraceContext('https://example.com/page.html');
+      assert.isFalse(context.canAccessResource('https://other.com/script.js'));
+    });
+
+    it('blocks opaque target origins', () => {
+      const context = createMockTraceContext('https://example.com/page.html');
+      assert.isFalse(context.canAccessResource('data:text/javascript,console.log()'));
+    });
+
+    it('blocks opaque trace origins', () => {
+      const dataContext = createMockTraceContext('data:text/html,test');
+      assert.isFalse(dataContext.canAccessResource('https://example.com/script.js'));
+
+      const nullContext = createMockTraceContext('about:blank');
+      assert.isFalse(nullContext.canAccessResource('https://example.com/script.js'));
+    });
+
+    it('blocks local file origins for both trace and target', () => {
+      const fileContext = createMockTraceContext('file:///tmp/index.html');
+      assert.isFalse(fileContext.canAccessResource('file:///etc/passwd'));
+      assert.isFalse(fileContext.canAccessResource('file:///tmp/index.html'));
+
+      const httpsContext = createMockTraceContext('https://example.com/page.html');
+      assert.isFalse(httpsContext.canAccessResource('file:///tmp/script.js'));
+    });
+
+    it('blocks resources with different subdomain or port', () => {
+      const context = createMockTraceContext('https://example.com/page.html');
+      assert.isFalse(context.canAccessResource('https://subdomain.example.com/script.js'));
+      assert.isFalse(context.canAccessResource('https://example.com:8080/script.js'));
+    });
+
+    it('blocks access when trace is imported', () => {
+      const mockTrace = {
+        insights: new Map(),
+        data: {
+          Meta: {
+            mainFrameURL: 'https://example.com/page.html',
+            traceBounds: {min: 0, max: 100},
+          },
+        },
+      } as unknown as Trace.TraceModel.ParsedTrace;
+
+      // Do NOT register with tracker so isFresh is false.
+      const tracker = Tracing.FreshRecording.Tracker.instance({forceNew: true});
+      const importedContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+          mockTrace, universe.targetManager, tracker, universe.debuggerWorkspaceBinding);
+
+      assert.isFalse(importedContext.canAccessResource('https://example.com/script.js'));
+    });
+  });
 });

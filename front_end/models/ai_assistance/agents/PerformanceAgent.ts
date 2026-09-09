@@ -12,7 +12,6 @@ import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Logs from '../../logs/logs.js';
 import * as Trace from '../../trace/trace.js';
-import {canResourceContentsBeReadForTrace} from '../AiOrigins.js';
 import type {MainThreadSectionLabel, PerformanceTraceContext} from '../contexts/PerformanceTraceContext.js';
 import {
   PerformanceInsightFormatter,
@@ -1053,6 +1052,10 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
           return {error: 'Missing arg: column'};
         }
 
+        if (!context.canAccessResource(args.scriptUrl)) {
+          return {error: 'Resource not found'};
+        }
+
         if (!this.#formatter) {
           throw new Error('missing formatter');
         }
@@ -1115,8 +1118,7 @@ export class PerformanceAgent extends AiAgent<AgentFocus> {
         }
 
         const url = args.url;
-        const allowedOrigin = context.getOrigin();
-        if (!canResourceContentsBeReadForTrace(url, allowedOrigin)) {
+        if (!context.canAccessResource(url)) {
           return {error: 'Resource not found'};
         }
 

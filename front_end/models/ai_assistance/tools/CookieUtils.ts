@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import * as Common from '../../../core/common/common.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import type * as Protocol from '../../../generated/protocol.js';
-import {areOriginsEquivalent, extractContextOrigin} from '../AiOrigins.js';
 
 import {MAX_TARGET_ORIGINS} from './DOMStorageUtils.js';
 import type {OriginLockCapability} from './Tool.js';
@@ -27,8 +25,16 @@ export interface CookieDetails {
 }
 
 /**
- * Resolves and validates target origins against origin-lock constraints and primary page target.
- * If `requestedOrigins` is omitted or empty, defaults to the established context origin.
+ * Resolves and validates target origins against the established context origin and primary page target.
+ *
+ * When `requestedOrigins` is empty or omitted, defaults to the established context origin.
+ * Rejects opaque origins, mismatches with the primary page origin, and cross-origin targets.
+ * Limits results to at most `MAX_TARGET_ORIGINS` unique origins.
+ *
+ * @param requestedOrigins Optional list of origin URLs to validate.
+ * @param context The origin lock capability containing the established origin.
+ * @param targetManager The target manager used to resolve the primary page target.
+ * @returns An object with validated target origins and the primary page target, or an error object.
  */
 export function resolveAllowedTargetOrigins(
     requestedOrigins: string[]|undefined,
@@ -42,22 +48,25 @@ export function resolveAllowedTargetOrigins(
   if (!establishedOrigin || establishedOrigin.isOpaque()) {
     return {error: 'No origin available or not allowed.'};
   }
-  const allowedOrigin = establishedOrigin.siteId();
 
   const primaryPageTarget = targetManager.primaryPageTarget();
   if (!primaryPageTarget) {
     return {error: 'Primary page target not found.'};
   }
 
-  const pageOrigin = Common.ParsedURL.ParsedURL.extractOrigin(primaryPageTarget.inspectedURL());
-  if (!pageOrigin || !areOriginsEquivalent(pageOrigin, allowedOrigin)) {
+  const pageOrigin = SDK.SecurityOrigin.SecurityOrigin.create(primaryPageTarget.inspectedURL());
+  if (!pageOrigin || !pageOrigin.isSameOriginWith(establishedOrigin)) {
     return {error: 'Page origin does not match allowed origin.'};
   }
 
-  const rawOrigins =
-      (Array.isArray(requestedOrigins) && requestedOrigins.length > 0) ? requestedOrigins : [allowedOrigin];
-  const validOrigins = rawOrigins.map(origin => extractContextOrigin(origin))
-                           .filter(origin => areOriginsEquivalent(origin, allowedOrigin));
+  const candidateOrigins: SDK.SecurityOrigin.SecurityOrigin[] =
+      (Array.isArray(requestedOrigins) && requestedOrigins.length > 0) ?
+      requestedOrigins.map(origin => SDK.SecurityOrigin.SecurityOrigin.create(origin)) :
+      [establishedOrigin];
+
+  const validOrigins =
+      candidateOrigins.filter(origin => origin.isSameOriginWith(establishedOrigin)).map(origin => origin.siteId());
+
   const targetOrigins = Array.from(new Set(validOrigins)).slice(0, MAX_TARGET_ORIGINS);
   if (targetOrigins.length === 0) {
     return {error: 'No valid origins found.'};
@@ -73,19 +82,33 @@ export type GetCookiesForOriginResult = {
 };
 
 /**
- * Finds the resource tree frame matching the target origin within the primary page's outermost target tree.
+ * Finds a frame in the primary page target tree that matches the specified origin.
+ *
+ * Returns `null` if the origin is opaque or if no matching frame exists.
+ *
+ * @param origin The target origin URL to match.
+ * @param targetManager The target manager to query for active frames.
+ * @param primaryPageTarget The primary page target containing the frame tree.
+ * @returns The matching frame, or `null` if not found.
  */
 export function findFrameForOrigin(
     origin: string,
     targetManager: SDK.TargetManager.TargetManager,
     primaryPageTarget: SDK.Target.Target,
     ): SDK.ResourceTreeModel.ResourceTreeFrame|null {
-  const targetOrigin = extractContextOrigin(origin);
+  const targetOrigin = SDK.SecurityOrigin.SecurityOrigin.create(origin);
+  if (targetOrigin.isOpaque()) {
+    return null;
+  }
   for (const frame of SDK.ResourceTreeModel.ResourceTreeModel.frames(targetManager)) {
     if (frame.resourceTreeModel().target().outermostTarget() !== primaryPageTarget) {
       continue;
     }
-    if (frame.securityOrigin && areOriginsEquivalent(frame.securityOrigin, targetOrigin)) {
+    if (!frame.securityOrigin) {
+      continue;
+    }
+    const frameOrigin = SDK.SecurityOrigin.SecurityOrigin.create(frame.securityOrigin);
+    if (frameOrigin.isSameOriginWith(targetOrigin)) {
       return frame;
     }
   }

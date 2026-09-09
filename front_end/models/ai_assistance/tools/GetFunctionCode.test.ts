@@ -77,7 +77,7 @@ describe('GetFunctionCodeTool', () => {
     assert.strictEqual(result.error, 'Cannot use this tool on an imported file.');
   });
 
-  it('returns error when script URL is cross-origin or file://', async () => {
+  it('returns error when script URL is cross-origin', async () => {
     const parsedTrace = makeFakeParsedTrace();
     const tracker = new Tracing.FreshRecording.Tracker();
     tracker.registerFreshRecording(parsedTrace);
@@ -98,7 +98,30 @@ describe('GetFunctionCodeTool', () => {
         await tool.handler({scriptUrl: 'https://cross-origin.com/app.js', line: 10, column: 5}, capabilities);
 
     assertIsError(result);
-    assert.strictEqual(result.error, 'Script not found');
+    assert.strictEqual(result.error, 'Resource not found');
+  });
+
+  it('returns error when script URL is a file:// URL', async () => {
+    const parsedTrace = makeFakeParsedTrace();
+    const tracker = new Tracing.FreshRecording.Tracker();
+    tracker.registerFreshRecording(parsedTrace);
+
+    const traceContext = AiAssistance.PerformanceTraceContext.PerformanceTraceContext.fromParsedTrace(
+        parsedTrace,
+        universe.targetManager,
+        tracker,
+        universe.debuggerWorkspaceBinding,
+    );
+
+    const capabilities: AiAssistance.Tool.BaseToolCapability&AiAssistance.Tool.PerformanceTraceCapability = {
+      getPerformanceTraceContext: () => traceContext,
+    };
+
+    const tool = new GetFunctionCodeTool();
+    const result = await tool.handler({scriptUrl: 'file:///tmp/app.js', line: 10, column: 5}, capabilities);
+
+    assertIsError(result);
+    assert.strictEqual(result.error, 'Resource not found');
   });
 
   it('returns error when scriptUrl is missing', async () => {

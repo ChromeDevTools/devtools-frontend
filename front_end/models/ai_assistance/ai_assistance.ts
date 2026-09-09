@@ -12,7 +12,6 @@ import * as StylingAgent from './agents/StylingAgent.js';
 import * as AiAgent2 from './AiAgent2.js';
 import * as AiConversation from './AiConversation.js';
 import * as AiHistoryStorage from './AiHistoryStorage.js';
-import * as AiOrigins from './AiOrigins.js';
 import * as AiSetting from './AiSetting.js';
 import * as AiUtils from './AiUtils.js';
 import * as BuiltInAi from './BuiltInAi.js';
@@ -80,7 +79,6 @@ export {
   AIContext,
   AiConversation,
   AiHistoryStorage,
-  AiOrigins,
   AIQueries,
   AiSetting,
   AiUtils,

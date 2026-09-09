@@ -5,22 +5,21 @@
 import {assert} from 'chai';
 
 import * as Common from '../../core/common/common.js';
-import * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as TextUtils from '../../core/text_utils/text_utils.js';
-import type * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
+import {createNetworkRequest} from '../../testing/NetworkRequestHelpers.js';
 
 import * as HAR from './har.js';
 
-const {urlString} = Platform.DevToolsPath;
 const simulateRequestWithStartTime = (startTime: number) => {
-  const requestId = 'r0' as Protocol.Network.RequestId;
-  const request = SDK.NetworkRequest.NetworkRequest.create(
-      requestId, urlString`p0.com`, Platform.DevToolsPath.EmptyUrlString, null, null, null);
+  const request = createNetworkRequest({
+    requestId: 'r0',
+    url: 'p0.com',
+    documentURL: '',
+    contentData: () => Promise.resolve(new TextUtils.ContentData.ContentData('', false, request.mimeType)),
+  });
   request.setIssueTime(startTime, startTime);
-  request.setContentDataProvider(
-      () => Promise.resolve(new TextUtils.ContentData.ContentData('', false, request.mimeType)));
   return request;
 };
 

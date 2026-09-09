@@ -2741,6 +2741,7 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
     super();
 
     this.domTreeWidget = domTreeWidget ?? null;
+    this.renderSelection = true;
     this.treeElementByNode = new WeakMap();
     const shadowContainer = document.createElement('div');
     this.shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(

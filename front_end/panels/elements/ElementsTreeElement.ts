@@ -3140,6 +3140,10 @@ export class ElementsTreeElement extends UI.TreeOutline.TreeElement {
     this.widget.onunbind();
   }
 
+  override ensureSelection(): void {
+    // Selection element is rendered in DEFAULT_VIEW via ElementsTreeWidget.
+  }
+
   static animateOnDOMUpdate(treeElement: ElementsTreeElement): void {
     treeElement.widget.animateOnDOMUpdate();
   }

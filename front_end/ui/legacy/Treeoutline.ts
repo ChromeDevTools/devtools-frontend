@@ -663,6 +663,7 @@ export class TreeElement {
     for (let current = child.firstChild(); this.treeOutline && current;
          current = current.traverseNextTreeElement(false, child, true)) {
       this.treeOutline.bindTreeElement(current);
+      current.ensureSelection();
     }
     child.onattach();
     child.ensureSelection();
@@ -945,7 +946,7 @@ export class TreeElement {
     }
   }
 
-  private ensureSelection(): void {
+  protected ensureSelection(): void {
     if (!this.treeOutline?.renderSelection) {
       return;
     }

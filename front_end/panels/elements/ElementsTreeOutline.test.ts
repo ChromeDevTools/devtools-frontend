@@ -1317,8 +1317,8 @@ describeWithEnvironment('ElementsTreeOutline', () => {
       assert.exists(childTreeElement2);
     });
 
-    it('leaves renderSelection false and configures draggable on list items', () => {
-      assert.isFalse(treeOutline.renderSelection);
+    it('sets renderSelection to true and configures draggable on list items', () => {
+      assert.isTrue(treeOutline.renderSelection);
       assert.isTrue(childTreeElement1.listItemElement.draggable);
       assert.isTrue(childTreeElement2.listItemElement.draggable);
     });

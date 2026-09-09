@@ -60,6 +60,7 @@ describeWithEnvironment('AdoptedStyleSheetTreeElement highlighting', () => {
     treeOutline.wireToDOMModel(domModel);
 
     const containerTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(containerNode);
+    treeOutline.appendChild(containerTreeElement);
     shadowRootTreeElement = new Elements.ElementsTreeElement.ElementsTreeElement(shadowRootNode);
     containerTreeElement.appendChild(shadowRootTreeElement);
 
@@ -71,6 +72,19 @@ describeWithEnvironment('AdoptedStyleSheetTreeElement highlighting', () => {
   afterEach(() => {
     treeOutline.removeChildren();
     treeOutline.setVisible(false);
+  });
+
+  it('adds a .selection div for the highlight', async () => {
+    const adoptedSheet = shadowRootNode.adoptedStyleSheetsForNode[0];
+    const adoptedStyleSheetSetTreeElement =
+        new Elements.AdoptedStyleSheetTreeElement.AdoptedStyleSheetSetTreeElement([adoptedSheet]);
+    shadowRootTreeElement.appendChild(adoptedStyleSheetSetTreeElement);
+    await shadowRootTreeElement.onpopulate();
+    shadowRootTreeElement.expand();
+
+    // Assert .selection div exists
+    const selectionDiv = adoptedStyleSheetSetTreeElement.listItemElement.querySelector('.selection');
+    assert.exists(selectionDiv, 'selection div must exist to show highlight');
   });
 
   it('edits an adopted style sheet', async () => {

@@ -131,6 +131,10 @@ export class ShortcutTreeElement extends UI.TreeOutline.TreeElement {
     this.setLeftIndentOverlay();
   }
 
+  override ensureSelection(): void {
+    // Selection element is rendered in DEFAULT_VIEW.
+  }
+
   override onselect(selectedByUser?: boolean): boolean {
     if (!selectedByUser) {
       return true;

@@ -6,6 +6,7 @@ import {assert} from 'chai';
 import sinon from 'sinon';
 
 import {assertScreenshot, renderElementIntoDOM} from '../../../../testing/DOMHelpers.js';
+import {setupLocaleHooks} from '../../../../testing/LocaleHelpers.js';
 import {createViewFunctionStub} from '../../../../testing/ViewFunctionHelpers.js';
 
 import * as InlineEditor from './inline_editor.js';
@@ -18,6 +19,8 @@ const {
 } = InlineEditor.PositionAreaEditor;
 
 describe('PositionAreaEditor', () => {
+  setupLocaleHooks();
+
   describe('parsePositionArea', () => {
     it('parses single physical keywords', () => {
       assert.deepEqual(parsePositionArea('top'), {

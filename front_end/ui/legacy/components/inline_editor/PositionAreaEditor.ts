@@ -2,10 +2,57 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../../../core/common/common.js';
+import * as i18n from '../../../../core/i18n/i18n.js';
 import * as Lit from '../../../../ui/lit/lit.js';
 import * as UI from '../../legacy.js';
 
 import positionAreaEditorStyles from './positionAreaEditor.css.js';
+
+const UIStrings = {
+  /**
+   * @description Accessible description for the position-area grid editor explaining keyboard navigation and range selection.
+   */
+  positionAreaGridDescription:
+      'Use arrow keys to navigate, Space or Enter to select, and Shift + arrow keys to select a range.',
+  /**
+   * @description Accessible label for the position-area grid editor.
+   */
+  positionAreaGrid: 'position-area grid',
+  /**
+   * @description Title for the block axis section in the position-area editor.
+   */
+  block: 'Block',
+  /**
+   * @description Title for the inline axis section in the position-area editor.
+   */
+  inline: 'Inline',
+  /**
+   * @description Accessible label for the block axis mode radio button group.
+   */
+  blockAxisMode: 'Block axis mode',
+  /**
+   * @description Accessible label for the inline axis mode radio button group.
+   */
+  inlineAxisMode: 'Inline axis mode',
+  /**
+   * @description Label for physical mode radio button in the position-area editor.
+   */
+  physical: 'Physical',
+  /**
+   * @description Label for coordinate mode radio button in the position-area editor.
+   */
+  coordinate: 'Coordinate',
+  /**
+   * @description Label for logical mode radio button in the position-area editor.
+   */
+  logical: 'Logical',
+  /**
+   * @description Label for auto mode radio button in the position-area editor.
+   */
+  auto: 'Auto',
+} as const;
+const str_ = i18n.i18n.registerUIStrings('ui/legacy/components/inline_editor/PositionAreaEditor.ts', UIStrings);
+const i18nString = i18n.i18n.getLocalizedString.bind(undefined, str_);
 
 const {Directives, html, nothing, render} = Lit;
 const {repeat} = Directives;
@@ -248,6 +295,7 @@ export function stringifyPositionArea(area: Area): string {
 
 export interface ViewInput {
   area: Area|undefined;
+  readonly isSelecting?: boolean;
   onSelectStart: (x: number, y: number) => void;
   onSelect: (x: number, y: number) => void;
   onSelectEnd: (x?: number, y?: number) => void;
@@ -269,6 +317,12 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
   const y = input.area.primaryAxis === Axis.BLOCK ? input.area.first : input.area.second;
   const grid = [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1], [0, 2], [1, 2], [2, 2]];
 
+  // Determine which cell receives tabindex="0" for roving focus:
+  // use the currently focused cell if any, otherwise default to the selection's start.
+  const activeCell = target.querySelector<HTMLElement>('.position-area-builder > div:focus');
+  const focusedX = activeCell ? Number(activeCell.dataset.x) : x.start;
+  const focusedY = activeCell ? Number(activeCell.dataset.y) : y.start;
+
   function getCellCoords(e: PointerEvent, container: HTMLElement): [number, number]|null {
     const root = container.getRootNode() as Document | ShadowRoot;
     const el = root.elementFromPoint(e.clientX, e.clientY);
@@ -281,6 +335,13 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     return [cellX, cellY];
   }
 
+  function focusCell(cell: HTMLElement, container: HTMLElement): void {
+    for (const c of container.querySelectorAll<HTMLElement>('[data-x]')) {
+      c.tabIndex = c === cell ? 0 : -1;
+    }
+    cell.focus();
+  }
+
   function onPointerDown(e: PointerEvent): void {
     const container = e.currentTarget as HTMLElement;
     const targetCell = (e.target as HTMLElement).closest('[data-x]') as HTMLElement | null;
@@ -289,6 +350,7 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     }
     const startX = Number(targetCell.dataset.x);
     const startY = Number(targetCell.dataset.y);
+    focusCell(targetCell, container);
     container.setPointerCapture(e.pointerId);
     input.onSelectStart(startX, startY);
   }
@@ -300,6 +362,10 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     }
     const cell = getCellCoords(e, container);
     if (cell) {
+      const targetCell = container.querySelector<HTMLElement>(`[data-x="${cell[0]}"][data-y="${cell[1]}"]`);
+      if (targetCell && targetCell !== document.activeElement) {
+        focusCell(targetCell, container);
+      }
       input.onSelect(...cell);
     }
   }
@@ -312,6 +378,10 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     container.releasePointerCapture(e.pointerId);
     const coords = getCellCoords(e, container);
     if (coords) {
+      const targetCell = container.querySelector<HTMLElement>(`[data-x="${coords[0]}"][data-y="${coords[1]}"]`);
+      if (targetCell) {
+        focusCell(targetCell, container);
+      }
       input.onSelectEnd(...coords);
     } else {
       input.onSelectEnd(x.end, y.end);
@@ -327,6 +397,91 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
     input.onSelectEnd();
   }
 
+  function onCellKeyDown(e: KeyboardEvent): void {
+    const currentCell = e.currentTarget as HTMLElement;
+    const cellX = Number(currentCell.dataset.x);
+    const cellY = Number(currentCell.dataset.y);
+    const builder = currentCell.closest<HTMLElement>('.position-area-builder');
+    if (!builder) {
+      return;
+    }
+
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      input.onSelectStart(cellX, cellY);
+      input.onSelectEnd(cellX, cellY);
+      return;
+    }
+
+    let dx = 0;
+    let dy = 0;
+    switch (e.key) {
+      case 'ArrowLeft':
+        dx = -1;
+        break;
+      case 'ArrowRight':
+        dx = 1;
+        break;
+      case 'ArrowUp':
+        dy = -1;
+        break;
+      case 'ArrowDown':
+        dy = 1;
+        break;
+      default:
+        return;
+    }
+
+    const nextX = Math.max(0, Math.min(2, cellX + dx));
+    const nextY = Math.max(0, Math.min(2, cellY + dy));
+    if (nextX === cellX && nextY === cellY) {
+      return;
+    }
+
+    e.preventDefault();
+
+    const nextCell = builder.querySelector<HTMLElement>(`[data-x="${nextX}"][data-y="${nextY}"]`);
+    if (!nextCell) {
+      return;
+    }
+
+    focusCell(nextCell, builder);
+
+    if (e.shiftKey) {
+      if (!input.isSelecting) {
+        input.onSelectStart(cellX, cellY);
+      }
+      input.onSelect(nextX, nextY);
+    }
+  }
+
+  function onKeyUp(e: KeyboardEvent): void {
+    if (e.key === 'Shift' && input.isSelecting) {
+      const activeCell = (e.target as HTMLElement).closest<HTMLElement>('[data-x]');
+      if (activeCell) {
+        const activeX = Number(activeCell.dataset.x);
+        const activeY = Number(activeCell.dataset.y);
+        input.onSelectEnd(activeX, activeY);
+      } else {
+        input.onSelectEnd();
+      }
+    }
+  }
+
+  function getCellTitle(cellX: number, cellY: number): string {
+    if (!input.area) {
+      return '';
+    }
+    const cellArea: Area = {
+      first: input.area.primaryAxis === Axis.INLINE ? {...x, start: cellX, end: cellX} :
+                                                      {...y, start: cellY, end: cellY},
+      second: input.area.primaryAxis === Axis.BLOCK ? {...x, start: cellX, end: cellX} :
+                                                      {...y, start: cellY, end: cellY},
+      primaryAxis: input.area.primaryAxis,
+    };
+    return stringifyPositionArea(cellArea);
+  }
+
   const propertyValue = stringifyPositionArea(input.area);
 
   const blockAxis = input.area.primaryAxis === Axis.BLOCK ? input.area.first : input.area.second;
@@ -334,14 +489,16 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
 
   function renderModeRadioGroup(axis: Axis, currentMode: Mode): Lit.TemplateResult {
     const modes = [
-      {mode: Mode.PHYSICAL, label: 'Physical'},
-      {mode: Mode.COORDINATE, label: 'Coordinate'},
-      {mode: Mode.LOGICAL, label: 'Logical'},
-      {mode: Mode.AUTO, label: 'Auto'},
+      {mode: Mode.PHYSICAL, label: i18nString(UIStrings.physical)},
+      {mode: Mode.COORDINATE, label: i18nString(UIStrings.coordinate)},
+      {mode: Mode.LOGICAL, label: i18nString(UIStrings.logical)},
+      {mode: Mode.AUTO, label: i18nString(UIStrings.auto)},
     ];
+    const axisModeLabel =
+        axis === Axis.BLOCK ? i18nString(UIStrings.blockAxisMode) : i18nString(UIStrings.inlineAxisMode);
 
     return html`
-      <fieldset class="chip-radio-group" aria-label="${axis} axis mode">
+      <fieldset class="chip-radio-group" aria-label=${axisModeLabel}>
         ${modes.map(({mode, label}) => {
       const id = `${axis}-mode-${mode}`;
       return html`
@@ -359,52 +516,73 @@ export const DEFAULT_VIEW: View = (input, output, target) => {
       </fieldset>
     `;
   }
+
+  // clang-format off
   render(html`
     <style>${positionAreaEditorStyles}</style>
-    <div class=property>
+    <div class=property aria-live="polite" aria-atomic="true">
       <span class=property-name>position-area:</span>
       <span class=property-value>${
              propertyValue.split(' ').map(
                  (keyword, i) => html`${i > 0 ? ' ' : ''}<span class=property-keyword>${keyword}</span>`)}</span>
     </div>
     <div class=position-area-builder
+        role="grid"
+        aria-label=${i18nString(UIStrings.positionAreaGrid)}
+        aria-description=${i18nString(UIStrings.positionAreaGridDescription)}
+        aria-multiselectable="true"
         data-x-start=${x.start} data-x-end=${x.end} data-y-start=${y.start} data-y-end=${y.end}
         @pointerdown=${onPointerDown}
         @pointermove=${onPointerMove}
         @pointerup=${onPointerUp}
-        @pointercancel=${onPointerCancel}>
-      ${repeat(grid, ([x, y]) => x * 10 + y, ([x, y]) => html`
-         <div data-x=${x} data-y=${y}>
+        @pointercancel=${onPointerCancel}
+        @keyup=${onKeyUp}>
+      ${repeat(grid, ([cellX, cellY]) => cellX * 10 + cellY, ([cellX, cellY]) => {
+        const isFocused = cellX === focusedX && cellY === focusedY;
+        const isSelected = cellX >= x.start && cellX <= x.end && cellY >= y.start && cellY <= y.end;
+        const cellTitle = getCellTitle(cellX, cellY);
+        return html`
+         <div
+           role="gridcell"
+           data-x=${cellX}
+           data-y=${cellY}
+           title=${cellTitle}
+           aria-label=${cellTitle}
+           tabindex=${isFocused ? 0 : -1}
+           aria-selected=${isSelected ? 'true' : 'false'}
+           @keydown=${onCellKeyDown}>
          </div>
-        `)}
+        `;
+      })}
     </div>
     <div class=position-area-controls>
       <div class=axis-section>
         <div class=axis-header>
-          <span class=axis-title>Block</span>
+          <span class=axis-title>${i18nString(UIStrings.block)}</span>
           <devtools-checkbox
             .checked=${blockAxis.self}
             ?disabled=${isGeneric(blockAxis)}
             @change=${(e: Event) => input.onSelfChange(Axis.BLOCK, (e.target as UI.UIUtils.CheckboxLabel).checked)}>
-            <span class=self-checkbox-label>self</span>
+            <span class="self-checkbox-label source-code">self</span>
           </devtools-checkbox>
         </div>
         ${renderModeRadioGroup(Axis.BLOCK, blockAxis.mode)}
       </div>
       <div class=axis-section>
         <div class=axis-header>
-          <span class=axis-title>Inline</span>
+          <span class=axis-title>${i18nString(UIStrings.inline)}</span>
           <devtools-checkbox
             .checked=${inlineAxis.self}
             ?disabled=${isGeneric(inlineAxis)}
             @change=${(e: Event) => input.onSelfChange(Axis.INLINE, (e.target as UI.UIUtils.CheckboxLabel).checked)}>
-            <span class=self-checkbox-label>self</span>
+            <span class="self-checkbox-label source-code">self</span>
           </devtools-checkbox>
         </div>
         ${renderModeRadioGroup(Axis.INLINE, inlineAxis.mode)}
       </div>
     </div>
     `,
+         // clang-format on
          target, {container});
 };
 
@@ -592,8 +770,12 @@ export class PositionAreaEditor extends PositionAreaEditorBase {
   }
 
   override performUpdate(): void {
+    const isSelecting = (): boolean => this.#inProgressSelection !== undefined;
     this.#view({
       area: this.#area,
+      get isSelecting(): boolean {
+        return isSelecting();
+      },
       onSelectStart: this.#startSelection.bind(this),
       onSelect: this.#select.bind(this),
       onSelectEnd: this.#finishSelection.bind(this),

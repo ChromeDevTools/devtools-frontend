@@ -1,3 +1,4 @@
+import * as SDK from '../../core/sdk/sdk.js';
 /**
  * Returns true if the origin is considered opaque and should be blocked from
  * AI assistance to prevent potential data leakage.
@@ -35,4 +36,4 @@ export declare function areOriginsEquivalent(origin1: string, origin2: string): 
  * @param traceOrigin The allowed origin of the trace context.
  * @returns true if reading the file is permitted; false otherwise.
  */
-export declare function canResourceContentsBeReadForTrace(targetURL: string, traceOrigin: string): boolean;
+export declare function canResourceContentsBeReadForTrace(targetURL: string, traceOrigin: SDK.SecurityOrigin.SecurityOrigin): boolean;

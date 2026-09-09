@@ -125,7 +125,7 @@ export interface RequestOptions {
     modelId?: string;
 }
 export type AllowedOriginResult = {
-    origin: string | undefined;
+    origin: SDK.SecurityOrigin.SecurityOrigin | undefined;
 } | {
     blocked: true;
 };
@@ -153,7 +153,6 @@ export interface ConversationSuggestion {
 /** At least one. */
 export type ConversationSuggestions = [ConversationSuggestion, ...ConversationSuggestion[]];
 export declare abstract class ConversationContext<T> {
-    abstract getURL(): string;
     abstract getItem(): T;
     abstract getTitle(): string;
     /**
@@ -161,20 +160,34 @@ export declare abstract class ConversationContext<T> {
      * Currently only used for AI v2.
      */
     isLoggingEnabled(): boolean;
-    getOrigin(): string | SDK.SecurityOrigin.SecurityOrigin;
     /**
-     * Returns true if this data context (e.g., a DOM node or Network Request) is
-     * allowed to be included in a conversation that is locked to the provided
-     * `establishedOrigin`.
+     * Returns the security origin that owns this context data.
      *
-     * A conversation is "locked" to an origin once the first query is made.
-     * This method ensures that we don't mix data from different origins in the
-     * same conversation.
+     * The AI Assistance panel locks each conversation to the origin of the initial
+     * context. If the user selects a context with a different origin, DevTools
+     * blocks access to prevent unauthorized cross-origin data exposure.
      *
-     * @param establishedOrigin The origin that the current conversation is locked to.
-     * If undefined, the conversation has not yet been locked to an origin.
+     * Subclasses must implement this method. If a context is detached, invalid,
+     * or anonymous, the method must return a unique opaque origin
+     * (`SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque()`).
+     *
+     * @returns The {@link SDK.SecurityOrigin.SecurityOrigin} that owns this context.
      */
-    isOriginAllowed(establishedOrigin: string | SDK.SecurityOrigin.SecurityOrigin | undefined): boolean;
+    abstract getOrigin(): SDK.SecurityOrigin.SecurityOrigin;
+    /**
+     * Checks whether this context can participate in a conversation locked to `establishedOrigin`.
+     *
+     * Evaluation rules:
+     * 1. Returns `false` if this context origin is opaque. Opaque contexts can never
+     *    participate in AI conversations.
+     * 2. Returns `true` if `establishedOrigin` is `undefined` (conversation is not yet locked).
+     * 3. Returns `true` if this context origin is same-origin with `establishedOrigin`.
+     *
+     * @param establishedOrigin The locked origin of the current conversation, or `undefined`
+     * if the conversation has not made its first query. Strings are automatically parsed into
+     * `SecurityOrigin` instances.
+     */
+    isOriginAllowed(establishedOrigin: SDK.SecurityOrigin.SecurityOrigin | string | undefined): boolean;
     /**
      * This method is called at the start of `AiAgent.run`.
      * It will be overridden in subclasses to fetch data related to the context item.

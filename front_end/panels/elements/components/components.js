@@ -1095,19 +1095,19 @@ function gridAlignSelfIcon(iconName) {
   }
   return getIcon;
 }
-function rotateFlexWrapIcon(iconName, direction) {
+function rotateFlexWrapIcon(iconName, direction, reverse = false) {
   return {
     iconName,
     rotate: direction === "bottom-to-top" /* BOTTOM_TO_TOP */ || direction === "top-to-bottom" /* TOP_TO_BOTTOM */ ? 90 : 0,
     scaleX: 1,
-    scaleY: 1
+    scaleY: reverse ? -1 : 1
   };
 }
-function flexWrapIcon(iconName) {
+function flexWrapIcon(iconName, reverse = false) {
   function getIcon(computedStyles) {
     const directions = getPhysicalDirections(computedStyles);
     const computedFlexDirection = computedStyles.get("flex-direction") || "row";
-    return rotateFlexWrapIcon(iconName, directions[computedFlexDirection]);
+    return rotateFlexWrapIcon(iconName, directions[computedFlexDirection], reverse);
   }
   return getIcon;
 }
@@ -1153,7 +1153,12 @@ var flexContainerIcons = /* @__PURE__ */ new Map([
   ["align-items: baseline", baselineIcon],
   ["align-content: baseline", baselineIcon],
   ["flex-wrap: wrap", flexWrapIcon("flex-wrap")],
-  ["flex-wrap: nowrap", flexWrapIcon("flex-no-wrap")]
+  ["flex-wrap: nowrap", flexWrapIcon("flex-no-wrap")],
+  ["flex-wrap: wrap-reverse", flexWrapIcon(
+    "flex-wrap",
+    /* reverse */
+    true
+  )]
 ]);
 var flexItemIcons = /* @__PURE__ */ new Map([
   ["align-self: baseline", baselineIcon],
@@ -2600,7 +2605,8 @@ var FlexboxEditableProperties = [
     propertyName: "flex-wrap",
     propertyValues: [
       "nowrap",
-      "wrap"
+      "wrap",
+      "wrap-reverse"
     ]
   },
   {

@@ -1,9 +1,18 @@
+import * as SDK from '../../../core/sdk/sdk.js';
 import type * as LHModel from '../../lighthouse/lighthouse.js';
 import { type AiWidget, type ContextDetail, ConversationContext } from '../agents/AiAgent.js';
 export declare class AccessibilityContext extends ConversationContext<LHModel.ReporterTypes.ReportJSON> {
     #private;
     constructor(report: LHModel.ReporterTypes.ReportJSON);
-    getURL(): string;
+    /**
+     * Returns the security origin of the audited page from the Lighthouse report.
+     *
+     * Derives the origin from the report URL (`finalUrl` or `finalDisplayedUrl`).
+     * If the report does not contain a valid URL, returns a unique opaque origin.
+     *
+     * @returns The security origin of the audited page.
+     */
+    getOrigin(): SDK.SecurityOrigin.SecurityOrigin;
     getItem(): LHModel.ReporterTypes.ReportJSON;
     getTitle(): string;
     getPromptDetails(): Promise<string | null>;

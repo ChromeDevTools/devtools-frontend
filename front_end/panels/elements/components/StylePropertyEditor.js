@@ -231,6 +231,7 @@ export const FlexboxEditableProperties = [
         propertyValues: [
             'nowrap',
             'wrap',
+            'wrap-reverse',
         ],
     },
     {

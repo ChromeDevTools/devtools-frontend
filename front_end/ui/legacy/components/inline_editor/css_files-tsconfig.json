@@ -13,6 +13,7 @@
     "cssShadowEditor.css.js",
     "cssShadowSwatch.css.js",
     "linkSwatch.css.js",
+    "positionAreaEditor.css.js",
     "swatchPopover.css.js"
   ]
 }

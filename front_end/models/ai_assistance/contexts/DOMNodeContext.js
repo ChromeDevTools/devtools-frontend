@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as i18n from '../../../core/i18n/i18n.js';
+import * as SDK from '../../../core/sdk/sdk.js';
 import { ConversationContext, } from '../agents/AiAgent.js';
 const UIStringsNotTranslate = {
     /**
@@ -12,17 +13,29 @@ const UIStringsNotTranslate = {
 const lockedString = i18n.i18n.lockedString;
 export class DOMNodeContext extends ConversationContext {
     #node;
+    #opaqueOrigin;
     constructor(node) {
         super();
         this.#node = node;
     }
-    getURL() {
+    /**
+     * Returns the security origin of the node's owner document.
+     *
+     * If the node is detached from a document, returns a unique opaque origin to
+     * prevent unauthorized cross-origin access in AI conversations.
+     *
+     * @returns The security origin of the owner document, or a unique opaque origin.
+     */
+    getOrigin() {
         const ownerDocument = this.#node.ownerDocument;
         if (!ownerDocument) {
-            // The node is detached from a document.
-            return 'detached';
+            // Detached nodes have no security document; isolate them with a unique opaque origin.
+            if (!this.#opaqueOrigin) {
+                this.#opaqueOrigin = SDK.SecurityOrigin.SecurityOrigin.createUniqueOpaque();
+            }
+            return this.#opaqueOrigin;
         }
-        return ownerDocument.documentURL;
+        return SDK.SecurityOrigin.SecurityOrigin.create(ownerDocument.documentURL);
     }
     getItem() {
         return this.#node;

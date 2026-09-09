@@ -5,6 +5,14 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
         <title>DevTools components</title>
+        <script type="importmap">
+          {
+            "imports": {
+              "chai": "data:text/javascript,export const assert = new Proxy({}, {get: () => () => {}});",
+              "sinon": "data:text/javascript,export default new Proxy({}, {get: () => () => new Proxy({}, {get: () => () => {}})});"
+            }
+          }
+        </script>
         <link rel="stylesheet" href="./front_end/design_system_tokens.css" type="text/css" />
 <link rel="stylesheet" href="./front_end/application_tokens.css" type="text/css" />
 <link rel="stylesheet" href="./front_end/ui/legacy/inspectorCommon.css" type="text/css" />
@@ -21,6 +29,7 @@
 <li><a href="#Icon">Icon</a></li>
 <li><a href="#Link">Link</a></li>
 <li><a href="#MarkdownView">MarkdownView</a></li>
+<li><a href="#PositionAreaEditor">PositionAreaEditor</a></li>
 <li><a href="#RadioButton">RadioButton</a></li>
 <li><a href="#ReportView">ReportView</a></li>
 <li><a href="#SelectMenu">SelectMenu</a></li>

@@ -1,5 +1,5 @@
 import * as Host from '../../../core/host/host.js';
-import * as SDK from '../../../core/sdk/sdk.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import type * as Trace from '../../trace/trace.js';

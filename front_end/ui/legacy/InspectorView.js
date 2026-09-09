@@ -9,6 +9,7 @@ import * as Root from '../../core/root/root.js';
 import * as SDK from '../../core/sdk/sdk.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import { createIcon } from '../kit/kit.js';
+import * as Lit from '../lit/lit.js';
 import * as SettingsUI from '../settings/settings.js';
 import * as VisualLogging from '../visual_logging/visual_logging.js';
 import { ActionRegistry } from './ActionRegistry.js';
@@ -20,11 +21,13 @@ import { Infobar } from './Infobar.js';
 import { InspectorDrawerView } from './InspectorDrawerView.js';
 import { KeyboardShortcut } from './KeyboardShortcut.js';
 import { SplitWidget } from './SplitWidget.js';
+import { StatusBarWidget } from './StatusBar.js';
 import { Events as TabbedPaneEvents } from './TabbedPane.js';
 import { Tooltip } from './Tooltip.js';
 import { UIUserMetrics } from './UIUserMetrics.js';
 import { ViewManager } from './ViewManager.js';
-import { VBox, WidgetFocusRestorer } from './Widget.js';
+import { VBox, widget, WidgetFocusRestorer } from './Widget.js';
+const { html } = Lit;
 const UIStrings = {
     /**
      * @description Announcement text for screen readers when the drawer is minimized.
@@ -144,6 +147,7 @@ export class InspectorView extends VBox {
     #resizeObserver;
     #drawerShowModeBeforeDockSideChange = null;
     #drawerMinimizedBeforeDockSideChange = null;
+    #statusBarContainer;
     constructor() {
         super();
         GlassPane.setContainer(this.element);
@@ -713,6 +717,15 @@ export class InspectorView extends VBox {
                 this.#selectOverrideFolderInfobar = undefined;
             });
         }
+    }
+    renderStatusBar() {
+        if (!this.#statusBarContainer) {
+            this.#statusBarContainer = document.createElement('div');
+            this.#statusBarContainer.style.display = 'contents';
+            this.element.appendChild(this.#statusBarContainer);
+        }
+        // eslint-disable-next-line @devtools/no-lit-render-outside-of-view
+        Lit.render(html `<devtools-widget class="flex-none" ${widget(StatusBarWidget)}></devtools-widget>`, this.#statusBarContainer);
     }
     createInfoBarDiv() {
         if (!this.infoBarDiv) {

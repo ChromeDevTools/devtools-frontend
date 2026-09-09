@@ -1,3 +1,5 @@
+import * as Common from '../../../../core/common/common.js';
+import * as UI from '../../legacy.js';
 /**
  * Valid combinations of (Mode, Self) across axes according to the CSS Anchor Positioning specification
  * (https://drafts.csswg.org/css-anchor-position-1/#typedef-position-area):
@@ -94,3 +96,29 @@ export interface Area {
 }
 export declare function parsePositionArea(text: string): Area | null;
 export declare function stringifyPositionArea(area: Area): string;
+export interface ViewInput {
+    area: Area | undefined;
+    onSelectStart: (x: number, y: number) => void;
+    onSelect: (x: number, y: number) => void;
+    onSelectEnd: (x?: number, y?: number) => void;
+    onModeChange: (axis: Axis, mode: Mode) => void;
+    onSelfChange: (axis: Axis, self: boolean) => void;
+}
+export type View = (input: ViewInput, output: undefined, target: HTMLElement) => void;
+export declare const DEFAULT_VIEW: View;
+export declare const enum Events {
+    POSITION_AREA_CHANGED = "positionAreaChanged"
+}
+export interface EventTypes {
+    [Events.POSITION_AREA_CHANGED]: Area;
+}
+declare const PositionAreaEditorBase: Common.ObjectWrapper.EventMixin<EventTypes, typeof UI.Widget.VBox>;
+export declare class PositionAreaEditor extends PositionAreaEditorBase {
+    #private;
+    constructor(element?: HTMLElement, view?: View);
+    wasShown(): void;
+    get area(): Area | undefined;
+    set area(val: Area | undefined);
+    performUpdate(): void;
+}
+export {};

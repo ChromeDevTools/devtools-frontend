@@ -1,15 +1,12 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
-import * as SDK from '../../../core/sdk/sdk.js';
 import * as Logs from '../../logs/logs.js';
 import * as NetworkTimeCalculator from '../../network_time_calculator/network_time_calculator.js';
 import * as Workspace from '../../workspace/workspace.js';
-import { isOpaqueOrigin } from '../AiOrigins.js';
 import { AccessibilityContext } from '../contexts/AccessibilityContext.js';
 import { DOMNodeContext } from '../contexts/DOMNodeContext.js';
 import { FileContext } from '../contexts/FileContext.js';
@@ -122,12 +119,12 @@ export class ContextSelectionAgent extends AiAgent {
                     };
                 }
                 const origin = allowedOriginResult.origin;
-                if (origin && isOpaqueOrigin(origin)) {
+                if (origin?.isOpaque()) {
                     return {
                         error: 'No requests recorded by DevTools',
                     };
                 }
-                const allowedSecurityOrigin = origin ? SDK.SecurityOrigin.SecurityOrigin.create(origin) : null;
+                const allowedSecurityOrigin = origin ?? null;
                 let hasCrossOriginRequest = false;
                 const requestsToShow = [];
                 for (const request of this.#networkLog.requests()) {
@@ -155,7 +152,7 @@ export class ContextSelectionAgent extends AiAgent {
                 if (requests.length === 0) {
                     return {
                         error: hasCrossOriginRequest ?
-                            `No requests showing with origin ${origin}. Tell the user to start a new chat` :
+                            `No requests showing with origin ${origin?.siteId() ?? ''}. Tell the user to start a new chat` :
                             'No requests recorded by DevTools',
                     };
                 }
@@ -199,12 +196,12 @@ export class ContextSelectionAgent extends AiAgent {
                     };
                 }
                 const origin = allowedOriginResult.origin;
-                if (origin && isOpaqueOrigin(origin)) {
+                if (origin?.isOpaque()) {
                     return {
                         error: 'No request found',
                     };
                 }
-                const allowedSecurityOrigin = origin ? SDK.SecurityOrigin.SecurityOrigin.create(origin) : null;
+                const allowedSecurityOrigin = origin ?? null;
                 const request = this.#networkLog.requests().find(req => {
                     if (req.requestId() !== id) {
                         return false;
@@ -255,9 +252,8 @@ export class ContextSelectionAgent extends AiAgent {
                 const files = [];
                 const uiSourceCodes = [];
                 for (const file of ContextSelectionAgent.getUISourceCodes(this.#workspace)) {
-                    const fileUrl = file.url();
-                    const fileOrigin = Common.ParsedURL.ParsedURL.extractOrigin(fileUrl);
-                    if (origin && fileOrigin !== origin) {
+                    const fileSecurityOrigin = FileContext.originForUISourceCode(file);
+                    if (origin && !fileSecurityOrigin.isSameOriginWith(origin)) {
                         continue;
                     }
                     files.push({
@@ -310,9 +306,8 @@ export class ContextSelectionAgent extends AiAgent {
                     if (ContextSelectionAgent.uiSourceCodeId.get(file) !== params.id) {
                         return false;
                     }
-                    const fileUrl = file.url();
-                    const fileOrigin = Common.ParsedURL.ParsedURL.extractOrigin(fileUrl);
-                    return !origin || fileOrigin === origin;
+                    const fileSecurityOrigin = FileContext.originForUISourceCode(file);
+                    return !origin || fileSecurityOrigin.isSameOriginWith(origin);
                 });
                 if (!file) {
                     return {
@@ -472,7 +467,7 @@ export class ContextSelectionAgent extends AiAgent {
                         };
                     }
                     return {
-                        context: new StorageContext(new StorageItem(origin, origin)),
+                        context: new StorageContext(new StorageItem(origin.siteId(), origin.siteId())),
                         description: 'User selected page storage',
                     };
                 },

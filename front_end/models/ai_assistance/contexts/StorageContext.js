@@ -1,6 +1,7 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as SDK from '../../../core/sdk/sdk.js';
 import { ConversationContext, } from '../agents/AiAgent.js';
 import { CookieItem, DOMStorageItem } from '../StorageItem.js';
 export class StorageContext extends ConversationContext {
@@ -9,8 +10,18 @@ export class StorageContext extends ConversationContext {
         super();
         this.#item = item;
     }
-    getURL() {
-        return this.#item.primaryTargetOrigin;
+    /**
+     * Returns the security origin of the primary inspected page target.
+     *
+     * The storage context binds to `primaryTargetOrigin` rather than the specific
+     * item origin (`this.#item.origin`). This allows generic storage views
+     * (which have an empty origin) and third-party storage items to be inspected
+     * within the current page conversation.
+     *
+     * @returns The security origin of the primary page target.
+     */
+    getOrigin() {
+        return SDK.SecurityOrigin.SecurityOrigin.create(this.#item.primaryTargetOrigin);
     }
     getItem() {
         return this.#item;
@@ -29,7 +40,7 @@ export class StorageContext extends ConversationContext {
             const prefix = this.#item.type === 'localStorage' ? 'local storage' : 'session storage';
             return `${prefix}${this.#item.isGenericContext ? '' : `: ${this.#item.origin}`}`;
         }
-        return `Storage: ${this.getOrigin()}`;
+        return `Storage: ${this.getOrigin().siteId()}`;
     }
     /**
      * @override

@@ -5,7 +5,32 @@ interface ParsedTraceAndModel {
     model: Trace.TraceModel.Model;
 }
 export interface TraceEngineLoaderOptions {
-    initTraceBounds: boolean;
+    /**
+     * The configuration the trace engine runs with.
+     *
+     * TraceLoader caches parsed traces by file name and stringified configuration key.
+     * If a test supplies a custom configuration, TraceLoader parses the trace again
+     * and caches the result under that configuration key.
+     *
+     * Optional. Falls back to default configuration if not provided.
+     */
+    config?: Trace.Types.Configuration.Configuration;
+    /**
+     * Whether to initialize and activate the Timeline ModificationsManager.
+     *
+     * ModificationsManager tracks user modifications in the Timeline panel.
+     * These include breadcrumbs, entry annotations, entry labels, and hidden entries.
+     *
+     * Setting this to `true` dynamically imports the `panels/timeline` entrypoint.
+     * This import pulls in UI widgets and settings that depend on the browser DOM.
+     * Do not enable this in headless or Node unit tests that run without DOM support.
+     *
+     * Enable this only in Timeline panel unit tests that test modifications,
+     * breadcrumbs, or annotation overlays.
+     *
+     * Defaults to `false`.
+     */
+    withModificationsManager?: boolean;
 }
 /**
  * Loads trace files defined as fixtures in front_end/panels/timeline/fixtures/traces.
@@ -36,21 +61,35 @@ export declare class TraceLoader {
      **/
     static rawCPUProfile(context: Mocha.Context | Mocha.Suite | null, name: string): Promise<Protocol.Profiler.Profile>;
     /**
-     * Executes only the new trace engine on the fixture and returns the resulting parsed data.
+     * Executes the trace engine on a fixture file and returns the parsed trace.
+     *
+     * TraceLoader caches parsed trace results in memory across tests.
+     * When loading a trace, TraceLoader executes the following steps:
+     * 1. Resets TraceBounds.BoundsManager to empty to avoid leaking state between tests.
+     * 2. Checks the cache for an existing parsed trace matching the fixture name and configuration.
+     * 3. If missing from the cache, reads the fixture and parses the events.
+     *    Parsing runs with `yieldToMain: false` to avoid simulated main thread delays in tests.
+     * 4. Initializes TraceBounds.BoundsManager with the trace bounds and activates SyntheticEventsManager.
+     * 5. If `options.withModificationsManager` is `true`, dynamically imports the Timeline panel
+     *    entrypoint, resets ModificationsManager, and activates a new manager instance.
+     *
+     * Usage examples:
+     * ```ts
+     * // Standard trace parse (model, handler, lantern, or AI assistance tests)
+     * const parsedTrace = await TraceLoader.traceEngine(this, 'basic-trace.json.gz');
+     *
+     * // Custom engine configuration
+     * const parsedTrace = await TraceLoader.traceEngine(this, 'basic-trace.json.gz', {config});
+     *
+     * // Timeline panel test that tests modifications, breadcrumbs, or annotations
+     * const parsedTrace = await TraceLoader.traceEngine(this, 'basic-trace.json.gz', {withModificationsManager: true});
+     * ```
      *
      * @param context The Mocha test context.
-     * @param file The name of the trace file to be loaded.
-     * The trace file should be in ../panels/timeline/fixtures/traces folder.
-     * @param options Additional trace options.
-     * @param options.initTraceBounds (defaults to `true`) after the trace is
-     * loaded, the TraceBounds manager will automatically be initialised using
-     * the bounds from the trace.
-     * @param config The config the new trace engine should run with. Optional,
-     * will fall back to the Default config if not provided.
+     * @param name The name of the trace file in `front_end/panels/timeline/fixtures/traces`.
+     * @param options Trace engine loader options.
      */
-    static traceEngine(context: Mocha.Context | Mocha.Suite | null, name: string, config?: Trace.Types.Configuration.Configuration, opts?: {
-        withTimelinePanel: boolean;
-    }): Promise<Trace.TraceModel.ParsedTrace>;
+    static traceEngine(context: Mocha.Context | Mocha.Suite | null, name: string, options?: TraceEngineLoaderOptions): Promise<Trace.TraceModel.ParsedTrace>;
     /**
      * Initialise the BoundsManager with the bounds from a trace.
      * This isn't always required, but some of our code - particularly at the UI

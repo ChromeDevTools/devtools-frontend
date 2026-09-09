@@ -1048,9 +1048,9 @@ var BezierEditor = class extends BezierEditorBase {
     }
   }
 };
-var Events = /* @__PURE__ */ ((Events4) => {
-  Events4["BEZIER_CHANGED"] = "BezierChanged";
-  return Events4;
+var Events = /* @__PURE__ */ ((Events5) => {
+  Events5["BEZIER_CHANGED"] = "BezierChanged";
+  return Events5;
 })(Events || {});
 var Presets = [
   [
@@ -2659,9 +2659,9 @@ var CSSShadowEditor = class extends CSSShadowEditorBase {
     return this.constrainPoint(new Geometry5.Point(x, y), this.innerCanvasSize);
   }
 };
-var Events2 = /* @__PURE__ */ ((Events4) => {
-  Events4["SHADOW_CHANGED"] = "ShadowChanged";
-  return Events4;
+var Events2 = /* @__PURE__ */ ((Events5) => {
+  Events5["SHADOW_CHANGED"] = "ShadowChanged";
+  return Events5;
 })(Events2 || {});
 
 // ../../front_end/ui/legacy/components/inline_editor/LinkSwatch.ts
@@ -2761,11 +2761,175 @@ customElements.define("devtools-link-swatch", LinkSwatch);
 var PositionAreaEditor_exports = {};
 __export(PositionAreaEditor_exports, {
   Axis: () => Axis,
+  DEFAULT_VIEW: () => DEFAULT_VIEW,
+  Events: () => Events3,
   Keyword: () => Keyword,
   Mode: () => Mode,
+  PositionAreaEditor: () => PositionAreaEditor,
   parsePositionArea: () => parsePositionArea,
   stringifyPositionArea: () => stringifyPositionArea
 });
+import * as Common5 from "../../../../core/common/common.js";
+import * as Lit7 from "../../../lit/lit.js";
+import * as UI6 from "../../legacy.js";
+
+// gen/front_end/ui/legacy/components/inline_editor/positionAreaEditor.css.js
+var positionAreaEditor_css_default = `/*
+ * Copyright 2026 The Chromium Authors
+ * Use of this source code is governed by a BSD-style license that can be
+ * found in the LICENSE file.
+ */
+
+@scope to (devtools-widget > *) {
+  :scope {
+    padding: var(--sys-size-7);
+    width: min-content;
+  }
+
+  .property {
+    display: flex;
+    gap: var(--sys-size-2);
+    line-height: 16px;
+    height: 32px;
+    padding-bottom: var(--sys-size-3);
+    overflow-wrap: break-word;
+    flex-shrink: 0;
+  }
+
+  .property-name,
+  .property-keyword {
+    white-space: nowrap;
+  }
+
+  .property-name {
+    flex-shrink: 0;
+    color: var(--sys-color-token-property-special);
+  }
+
+  .property-value {
+    color: var(--sys-color-on-surface);
+  }
+
+  .position-area-builder {
+    --x-start: attr(data-x-start type(<number>));
+    --x-end: attr(data-x-end type(<number>));
+    --y-start: attr(data-y-start type(<number>));
+    --y-end: attr(data-y-end type(<number>));
+
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 56px);
+    grid-template-rows: repeat(3, 56px);
+    gap: 4px;
+    margin: var(--sys-size-6) auto var(--sys-size-9);
+    touch-action: none;
+    user-select: none;
+    flex-shrink: 0;
+
+    div {
+      background-color: if(
+        style(
+          (--x-start <= attr(data-x type(<number>))) and
+          (--x-end >= attr(data-x type(<number>))) and
+          (--y-start <= attr(data-y type(<number>))) and
+          (--y-end >= attr(data-y type(<number>)))
+        ): var(--sys-color-tonal-container);
+        else: transparent
+      );
+      min-width: 56px;
+      min-height: 56px;
+      outline: 1px solid var(--sys-color-neutral-outline);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      grid-column: calc(var(--x-start) + 1) / calc(var(--x-end) + 2);
+      grid-row: calc(var(--y-start) + 1) / calc(var(--y-end) + 2);
+      border: 2px solid var(--sys-color-primary);
+      border-radius: var(--sys-shape-corner-extra-small);
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
+
+  .position-area-controls {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-5);
+    flex-shrink: 0;
+  }
+
+  .axis-section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sys-size-1);
+  }
+
+  .axis-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .axis-title {
+    font-size: var(--sys-typescale-body4-size);
+    font-weight: 500;
+    color: var(--sys-color-on-surface-subtle);
+  }
+
+  .chip-radio-group {
+    display: inline-flex;
+    gap: var(--sys-size-3);
+    border: none;
+    padding: 0;
+    margin: 0;
+
+    & > input[type='radio'] {
+      position: absolute;
+      opacity: 0%;
+      width: 0;
+      height: 0;
+      pointer-events: none;
+    }
+
+    & > label {
+      box-sizing: border-box;
+      display: inline-block;
+      padding: 3px var(--sys-size-4);
+      border-radius: var(--sys-shape-corner-extra-small);
+      outline: var(--sys-size-1) solid var(--sys-color-neutral-outline);
+      outline-offset: calc(-1 * var(--sys-size-1));
+      background: transparent;
+      color: var(--sys-color-on-surface);
+      font-size: var(--sys-typescale-body5-size);
+      font-weight: 500;
+      cursor: pointer;
+      user-select: none;
+
+      &:hover {
+        background-color: var(--sys-color-state-hover-on-subtle);
+      }
+    }
+
+    & > input[type='radio']:checked + label {
+      background-color: var(--sys-color-tonal-container);
+      color: var(--sys-color-on-tonal-container);
+      outline: none;
+    }
+
+    & > input[type='radio']:focus-visible + label {
+      outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    }
+  }
+}
+
+/*# sourceURL=${import.meta.resolve("./positionAreaEditor.css")} */`;
+
+// ../../front_end/ui/legacy/components/inline_editor/PositionAreaEditor.ts
+var { Directives: Directives5, html: html7, nothing: nothing2, render: render7 } = Lit7;
+var { repeat } = Directives5;
 var Mode = /* @__PURE__ */ ((Mode2) => {
   Mode2["PHYSICAL"] = "physical";
   Mode2["COORDINATE"] = "coordinate";
@@ -2900,8 +3064,11 @@ function parsePositionArea(text) {
     return null;
   }
   const first = KEYWORD_MAP.get(tokens[0]);
-  const second = KEYWORD_MAP.get(tokens[1] ?? (tokens[0] === "center" /* CENTER */ ? "center" /* CENTER */ : "span-all" /* SPAN_ALL */));
-  if (!first || !second) {
+  if (!first) {
+    return null;
+  }
+  const second = KEYWORD_MAP.get(tokens[1] ?? (first.axis ? "span-all" /* SPAN_ALL */ : tokens[0]));
+  if (!second) {
     return null;
   }
   if (first.axis && second.axis && first.axis === second.axis) {
@@ -2938,14 +3105,310 @@ function stringifyPositionArea(area) {
   if (!firstKw || !secondKw) {
     return "";
   }
-  if (firstKw === "center" /* CENTER */ && secondKw === "center" /* CENTER */) {
-    return "center" /* CENTER */;
+  const firstDef = KEYWORD_MAP.get(firstKw);
+  if (!firstDef?.axis && firstKw === secondKw) {
+    return firstKw;
   }
-  if (secondKw === "span-all" /* SPAN_ALL */) {
+  if (firstDef?.axis && secondKw === "span-all" /* SPAN_ALL */) {
     return firstKw;
   }
   return `${firstKw} ${secondKw}`;
 }
+var DEFAULT_VIEW = (input, output, target) => {
+  if (!input.area) {
+    render7(nothing2, target);
+    return;
+  }
+  const x = input.area.primaryAxis === "inline" /* INLINE */ ? input.area.first : input.area.second;
+  const y = input.area.primaryAxis === "block" /* BLOCK */ ? input.area.first : input.area.second;
+  const grid = [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1], [0, 2], [1, 2], [2, 2]];
+  function getCellCoords(e, container) {
+    const root = container.getRootNode();
+    const el = root.elementFromPoint(e.clientX, e.clientY);
+    const cell = el?.closest(".position-area-builder > div");
+    if (!cell || !container.contains(cell)) {
+      return null;
+    }
+    const cellX = Number(cell.dataset.x);
+    const cellY = Number(cell.dataset.y);
+    return [cellX, cellY];
+  }
+  function onPointerDown(e) {
+    const container = e.currentTarget;
+    const targetCell = e.target.closest("[data-x]");
+    if (!targetCell) {
+      return;
+    }
+    const startX = Number(targetCell.dataset.x);
+    const startY = Number(targetCell.dataset.y);
+    container.setPointerCapture(e.pointerId);
+    input.onSelectStart(startX, startY);
+  }
+  function onPointerMove(e) {
+    const container = e.currentTarget;
+    if (!container.hasPointerCapture(e.pointerId)) {
+      return;
+    }
+    const cell = getCellCoords(e, container);
+    if (cell) {
+      input.onSelect(...cell);
+    }
+  }
+  function onPointerUp(e) {
+    const container = e.currentTarget;
+    if (!container.hasPointerCapture(e.pointerId)) {
+      return;
+    }
+    container.releasePointerCapture(e.pointerId);
+    const coords = getCellCoords(e, container);
+    if (coords) {
+      input.onSelectEnd(...coords);
+    } else {
+      input.onSelectEnd(x.end, y.end);
+    }
+  }
+  function onPointerCancel(e) {
+    const container = e.currentTarget;
+    if (!container.hasPointerCapture(e.pointerId)) {
+      return;
+    }
+    container.releasePointerCapture(e.pointerId);
+    input.onSelectEnd();
+  }
+  const propertyValue = stringifyPositionArea(input.area);
+  const blockAxis = input.area.primaryAxis === "block" /* BLOCK */ ? input.area.first : input.area.second;
+  const inlineAxis = input.area.primaryAxis === "inline" /* INLINE */ ? input.area.first : input.area.second;
+  function renderModeRadioGroup(axis, currentMode) {
+    const modes = [
+      { mode: "physical" /* PHYSICAL */, label: "Physical" },
+      { mode: "coordinate" /* COORDINATE */, label: "Coordinate" },
+      { mode: "logical" /* LOGICAL */, label: "Logical" },
+      { mode: "auto" /* AUTO */, label: "Auto" }
+    ];
+    return html7`
+      <fieldset class="chip-radio-group" aria-label="${axis} axis mode">
+        ${modes.map(({ mode, label }) => {
+      const id = `${axis}-mode-${mode}`;
+      return html7`
+            <input
+              type="radio"
+              id=${id}
+              name="${axis}-mode"
+              value=${mode}
+              .checked=${currentMode === mode}
+              @change=${() => input.onModeChange(axis, mode)}
+            >
+            <label for=${id}>${label}</label>
+          `;
+    })}
+      </fieldset>
+    `;
+  }
+  render7(
+    html7`
+    <style>${positionAreaEditor_css_default}</style>
+    <div class=property>
+      <span class=property-name>position-area:</span>
+      <span class=property-value>${propertyValue.split(" ").map(
+      (keyword, i) => html7`${i > 0 ? " " : ""}<span class=property-keyword>${keyword}</span>`
+    )}</span>
+    </div>
+    <div class=position-area-builder
+        data-x-start=${x.start} data-x-end=${x.end} data-y-start=${y.start} data-y-end=${y.end}
+        @pointerdown=${onPointerDown}
+        @pointermove=${onPointerMove}
+        @pointerup=${onPointerUp}
+        @pointercancel=${onPointerCancel}>
+      ${repeat(grid, ([x2, y2]) => x2 * 10 + y2, ([x2, y2]) => html7`
+         <div data-x=${x2} data-y=${y2}>
+         </div>
+        `)}
+    </div>
+    <div class=position-area-controls>
+      <div class=axis-section>
+        <div class=axis-header>
+          <span class=axis-title>Block</span>
+          <devtools-checkbox
+            .checked=${blockAxis.self}
+            ?disabled=${isGeneric(blockAxis)}
+            @change=${(e) => input.onSelfChange("block" /* BLOCK */, e.target.checked)}>
+            self
+          </devtools-checkbox>
+        </div>
+        ${renderModeRadioGroup("block" /* BLOCK */, blockAxis.mode)}
+      </div>
+      <div class=axis-section>
+        <div class=axis-header>
+          <span class=axis-title>Inline</span>
+          <devtools-checkbox
+            .checked=${inlineAxis.self}
+            ?disabled=${isGeneric(inlineAxis)}
+            @change=${(e) => input.onSelfChange("inline" /* INLINE */, e.target.checked)}>
+            self
+          </devtools-checkbox>
+        </div>
+        ${renderModeRadioGroup("inline" /* INLINE */, inlineAxis.mode)}
+      </div>
+    </div>
+    `,
+    target
+  );
+};
+var Events3 = /* @__PURE__ */ ((Events5) => {
+  Events5["POSITION_AREA_CHANGED"] = "positionAreaChanged";
+  return Events5;
+})(Events3 || {});
+var PositionAreaEditorBase = Common5.ObjectWrapper.eventMixin(
+  UI6.Widget.VBox
+);
+var PositionAreaEditor = class extends PositionAreaEditorBase {
+  #view;
+  #area;
+  #inProgressSelection;
+  constructor(element, view = DEFAULT_VIEW) {
+    super(element);
+    this.setDefaultFocusedElement(this.contentElement);
+    this.#view = view;
+  }
+  wasShown() {
+    super.wasShown();
+    this.requestUpdate();
+  }
+  get area() {
+    return this.#area;
+  }
+  set area(val) {
+    if ((this.#inProgressSelection?.origin ?? this.#area) === val) {
+      return;
+    }
+    this.#area = val;
+    this.#inProgressSelection = void 0;
+    this.requestUpdate();
+  }
+  #startSelection(x, y) {
+    this.#finishSelection();
+    this.#select(x, y);
+  }
+  #inlineAxis() {
+    if (!this.#area) {
+      return { start: 0, end: 0, mode: "physical" /* PHYSICAL */, self: false };
+    }
+    return this.#area.primaryAxis === "inline" /* INLINE */ ? this.#area.first : this.#area.second;
+  }
+  #blockAxis() {
+    if (!this.#area) {
+      return { start: 0, end: 0, mode: "physical" /* PHYSICAL */, self: false };
+    }
+    return this.#area.primaryAxis === "block" /* BLOCK */ ? this.#area.first : this.#area.second;
+  }
+  #axis(axis) {
+    return axis === "inline" /* INLINE */ ? this.#inlineAxis() : this.#blockAxis();
+  }
+  #notifyChange() {
+    if (!this.#area) {
+      return;
+    }
+    this.dispatchEventToListeners("positionAreaChanged" /* POSITION_AREA_CHANGED */, this.#area);
+  }
+  #select(x, y) {
+    if (!this.#inProgressSelection) {
+      this.#inProgressSelection = { origin: this.#area, start: { x, y }, end: { x, y } };
+    }
+    this.#inProgressSelection.end = { x, y };
+    const { start, end } = this.#inProgressSelection;
+    const primaryAxis = this.#area?.primaryAxis ?? "inline" /* INLINE */;
+    const inlineAxis = { ...this.#inlineAxis(), start: Math.min(start.x, end.x), end: Math.max(start.x, end.x) };
+    const blockAxis = { ...this.#blockAxis(), start: Math.min(start.y, end.y), end: Math.max(start.y, end.y) };
+    this.#area = {
+      first: primaryAxis === "inline" /* INLINE */ ? inlineAxis : blockAxis,
+      second: primaryAxis === "block" /* BLOCK */ ? inlineAxis : blockAxis,
+      primaryAxis
+    };
+    this.requestUpdate();
+    this.#notifyChange();
+  }
+  #finishSelection(x, y) {
+    if (!this.#inProgressSelection) {
+      return;
+    }
+    if (x === void 0 || y === void 0) {
+      this.#area = this.#inProgressSelection.origin ?? this.#area;
+      this.#inProgressSelection = void 0;
+      this.#notifyChange();
+      this.requestUpdate();
+      return;
+    }
+    this.#select(x, y);
+    this.#inProgressSelection = void 0;
+  }
+  #setAxisMode(axis, mode) {
+    if (!this.#area) {
+      return;
+    }
+    const otherAxis = axis === "inline" /* INLINE */ ? "block" /* BLOCK */ : "inline" /* INLINE */;
+    const current = this.#axis(axis);
+    if (mode === current.mode) {
+      return;
+    }
+    const other = this.#axis(otherAxis);
+    current.mode = mode;
+    if (isGeneric(current) || mode === "physical" /* PHYSICAL */) {
+      current.self = false;
+    }
+    if (!isGeneric(other)) {
+      if (mode === "physical" /* PHYSICAL */ || mode === "coordinate" /* COORDINATE */) {
+        if (other.mode !== "physical" /* PHYSICAL */ && other.mode !== "coordinate" /* COORDINATE */) {
+          other.mode = other.self ? "coordinate" /* COORDINATE */ : "physical" /* PHYSICAL */;
+        }
+      } else {
+        other.mode = mode;
+        if (!isGeneric(current)) {
+          other.self = current.self;
+        }
+      }
+    }
+    this.requestUpdate();
+    this.#notifyChange();
+  }
+  #setAxisSelf(axis, self) {
+    if (!this.#area) {
+      return;
+    }
+    const current = this.#axis(axis);
+    const other = this.#axis(axis === "inline" /* INLINE */ ? "block" /* BLOCK */ : "inline" /* INLINE */);
+    if (isGeneric(current)) {
+      if (!isGeneric(other)) {
+        this.#setAxisSelf(axis === "inline" /* INLINE */ ? "block" /* BLOCK */ : "inline" /* INLINE */, self);
+      }
+      this.requestUpdate();
+      this.#notifyChange();
+      return;
+    }
+    current.self = self;
+    if (current.mode === "physical" /* PHYSICAL */ && self) {
+      current.mode = "coordinate" /* COORDINATE */;
+    }
+    if (!isGeneric(other) && other.mode !== "physical" /* PHYSICAL */ && other.mode !== "coordinate" /* COORDINATE */) {
+      other.self = self;
+    }
+    this.requestUpdate();
+    this.#notifyChange();
+  }
+  performUpdate() {
+    this.#view(
+      {
+        area: this.#area,
+        onSelectStart: this.#startSelection.bind(this),
+        onSelect: this.#select.bind(this),
+        onSelectEnd: this.#finishSelection.bind(this),
+        onModeChange: this.#setAxisMode.bind(this),
+        onSelfChange: this.#setAxisSelf.bind(this)
+      },
+      void 0,
+      this.contentElement
+    );
+  }
+};
 
 // ../../front_end/ui/legacy/components/inline_editor/Swatches.ts
 var Swatches_exports = {};
@@ -2953,7 +3416,7 @@ __export(Swatches_exports, {
   CSSShadowSwatch: () => CSSShadowSwatch
 });
 import "../../../kit/kit.js";
-import { html as html7, render as render7 } from "../../../lit/lit.js";
+import { html as html8, render as render8 } from "../../../lit/lit.js";
 
 // gen/front_end/ui/legacy/components/inline_editor/cssShadowSwatch.css.js
 var cssShadowSwatch_css_default = `/*
@@ -2985,8 +3448,8 @@ var CSSShadowSwatch = class extends HTMLElement {
   constructor(model) {
     super();
     this.#model = model;
-    render7(
-      html7`
+    render8(
+      html8`
         <style>${cssShadowSwatch_css_default}</style>
         <devtools-icon tabindex=-1 name="shadow" class="shadow-swatch-icon"></devtools-icon>`,
       this,
@@ -3006,13 +3469,13 @@ customElements.define("css-shadow-swatch", CSSShadowSwatch);
 // ../../front_end/ui/legacy/components/inline_editor/SwatchPopoverHelper.ts
 var SwatchPopoverHelper_exports = {};
 __export(SwatchPopoverHelper_exports, {
-  Events: () => Events3,
+  Events: () => Events4,
   SwatchPopoverHelper: () => SwatchPopoverHelper
 });
-import * as Common5 from "../../../../core/common/common.js";
+import * as Common6 from "../../../../core/common/common.js";
 import * as Platform8 from "../../../../core/platform/platform.js";
 import * as VisualLogging9 from "../../../visual_logging/visual_logging.js";
-import * as UI6 from "../../legacy.js";
+import * as UI7 from "../../legacy.js";
 
 // gen/front_end/ui/legacy/components/inline_editor/swatchPopover.css.js
 var swatchPopover_css_default = `/*
@@ -3040,7 +3503,7 @@ var swatchPopover_css_default = `/*
 /*# sourceURL=${import.meta.resolve("./swatchPopover.css")} */`;
 
 // ../../front_end/ui/legacy/components/inline_editor/SwatchPopoverHelper.ts
-var SwatchPopoverHelper = class extends Common5.ObjectWrapper.ObjectWrapper {
+var SwatchPopoverHelper = class extends Common6.ObjectWrapper.ObjectWrapper {
   popover;
   hideProxy;
   boundOnKeyDown;
@@ -3052,9 +3515,9 @@ var SwatchPopoverHelper = class extends Common5.ObjectWrapper.ObjectWrapper {
   focusRestorer;
   constructor() {
     super();
-    this.popover = new UI6.GlassPane.GlassPane();
-    this.popover.setSizeBehavior(UI6.GlassPane.SizeBehavior.MEASURE_CONTENT);
-    this.popover.setMarginBehavior(UI6.GlassPane.MarginBehavior.DEFAULT_MARGIN);
+    this.popover = new UI7.GlassPane.GlassPane();
+    this.popover.setSizeBehavior(UI7.GlassPane.SizeBehavior.MEASURE_CONTENT);
+    this.popover.setMarginBehavior(UI7.GlassPane.MarginBehavior.DEFAULT_MARGIN);
     this.popover.element.addEventListener("mousedown", (e) => e.consume(), false);
     this.hideProxy = this.hide.bind(this, true);
     this.boundOnKeyDown = this.onKeyDown.bind(this);
@@ -3118,7 +3581,7 @@ var SwatchPopoverHelper = class extends Common5.ObjectWrapper.ObjectWrapper {
     }
     this.view.contentElement.addEventListener("focusout", this.boundFocusOut, false);
     if (!this.focusRestorer) {
-      this.focusRestorer = new UI6.Widget.WidgetFocusRestorer(this.view);
+      this.focusRestorer = new UI7.Widget.WidgetFocusRestorer(this.view);
     }
   }
   hide(commitEdit) {
@@ -3158,10 +3621,10 @@ var SwatchPopoverHelper = class extends Common5.ObjectWrapper.ObjectWrapper {
     }
   }
 };
-var Events3 = /* @__PURE__ */ ((Events4) => {
-  Events4["WILL_SHOW_POPOVER"] = "WillShowPopover";
-  return Events4;
-})(Events3 || {});
+var Events4 = /* @__PURE__ */ ((Events5) => {
+  Events5["WILL_SHOW_POPOVER"] = "WillShowPopover";
+  return Events5;
+})(Events4 || {});
 export {
   AnimationTimingModel_exports as AnimationTimingModel,
   AnimationTimingUI_exports as AnimationTimingUI,

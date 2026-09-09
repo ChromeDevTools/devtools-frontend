@@ -674,9 +674,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
     render(html `
     <div ${ref(el => { output.contentElement = el; })}>
       ${input.node ? html `<span class="highlight ${input.editorState ? 'hidden' : ''}">${renderTitle(input.node, input.isClosingTag, input.expanded, input.isExpandable, input.isXMLMimeType, input.updateRecord, input.onHighlightSearchResults, input.onExpand, input.issues)}</span>` : nothing}
-      ${input.isHovered || input.isSelected ? html `
-        <div class="selection fill ${input.editorState ? 'hidden' : ''}" style=${`margin-left: ${-input.indent}px`}></div>
-      ` : nothing}
+      <div class="selection fill ${input.editorState ? 'hidden' : ''}" style=${`margin-left: ${-input.indent}px`}></div>
       <div class=${classMap(gutterContainerClasses)}
            style="left: ${-input.indent}px"
            @click=${input.onGutterClick}>
@@ -1133,6 +1131,14 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         // editorState) is happening. Doing an update would break editing
         // (crbug.com/515639787).
         if (this.editing && !this.#editorState) {
+            if (this.initialEdit) {
+                const edit = this.initialEdit;
+                this.initialEdit = null;
+                this.onInitialEditCompleted?.();
+                if (edit.isEditAsHTML) {
+                    edit.editAsHTMLCallback?.(false);
+                }
+            }
             return;
         }
         this.updateDecorations();
@@ -1888,11 +1894,12 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
         }
     }
     async startEditingAsHTML(commitCallback, disposeCallback, maybeInitialValue) {
-        if (maybeInitialValue === null) {
+        if (maybeInitialValue === null || maybeInitialValue === undefined) {
             disposeCallback();
             return;
         }
         if (this.editing) {
+            disposeCallback();
             return;
         }
         // Hide children item.
@@ -2278,7 +2285,9 @@ export class ElementsTreeWidget extends UI.Widget.Widget {
             }
         }
         const node = this.node;
-        void node.getOuterHTML().then(this.startEditingAsHTML.bind(this, commitChange, disposeCallback));
+        void node.getOuterHTML()
+            .then(this.startEditingAsHTML.bind(this, commitChange, disposeCallback))
+            .catch(disposeCallback);
     }
     #highlightSearchResults() {
         this.hideSearchHighlights();

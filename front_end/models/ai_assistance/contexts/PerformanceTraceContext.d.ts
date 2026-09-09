@@ -31,17 +31,26 @@ export declare class PerformanceTraceContext extends ConversationContext<AgentFo
      * imported traces, it returns null to prevent mismatched source resolution.
      */
     createFormatter(): PerformanceTraceFormatter;
-    getURL(): string;
     /**
-     * Returns the origin for a performance trace in the AI context.
-     *
-     * To prevent cross-origin prompt injection attacks, imported traces
-     * are isolated from live pages. We assign them a virtual origin
-     * (`imported-trace://${domain}`) so they do not share the origin of live pages
-     * (e.g., `https://${domain}`). This forces a conversation reset when transitioning
-     * between imported trace data and live pages.
+     * Returns whether this trace was imported rather than recorded live in the current session.
      */
-    getOrigin(): string;
+    isImported(): boolean;
+    /**
+     * Returns the security origin for the performance trace.
+     *
+     * Live traces use the origin of the main frame URL.
+     *
+     * Imported traces use a custom scheme (`imported-trace://${host}`) to isolate
+     * them from live pages (such as `https://${host}`). This isolation prevents
+     * cross-origin prompt injection and requires a new conversation when switching
+     * between imported traces and live pages.
+     *
+     * If an imported trace origin does not contain a host, this method returns a
+     * unique opaque origin.
+     *
+     * @returns The security origin for the trace.
+     */
+    getOrigin(): SDK.SecurityOrigin.SecurityOrigin;
     getItem(): AgentFocus;
     getTitle(): string;
     /**

@@ -53,6 +53,7 @@ export var ViewLocationValues;
     ViewLocationValues["NETWORK_SIDEBAR"] = "network-sidebar";
     ViewLocationValues["SOURCES_SIDEBAR_TOP"] = "sources.sidebar-top";
     ViewLocationValues["SOURCES_SIDEBAR_TABS"] = "sources.sidebar-tabs";
+    ViewLocationValues["STATUS_BAR"] = "status-bar";
 })(ViewLocationValues || (ViewLocationValues = {}));
 const registeredViewExtensions = new Map();
 export function registerViewExtension(registration) {

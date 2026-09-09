@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "allowJs": false,
     "allowSyntheticDefaultImports": true,
-    "checkJs": true,
+    "checkJs": false,
     "composite": false,
     "declaration": false,
     "disableSourceOfProjectReferenceRedirect": true,
@@ -28,6 +28,10 @@
     "outDir": ".",
     "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/ui/comments",
+    "rootDirs": [
+      "../../../../../../",
+      "../../../"
+    ],
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
@@ -44,6 +48,7 @@
     "../../../../../../front_end/ui/comments/CommentAnchorResolver.ts",
     "../../../../../../front_end/ui/comments/CommentOverlayManager.ts",
     "../../../../../../front_end/ui/comments/CommentsOverlayWidget.ts",
+    "../../../../../../front_end/ui/comments/CommentsStatusBarPill.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",
@@ -52,6 +57,9 @@
   "references": [
     {
       "path": "../../core/common/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../core/i18n/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../core/root/bundle-tsconfig.ref.json"

@@ -1669,12 +1669,7 @@ var test = {
   /**
    * Set to get notified about any messages received over protocol.
    */
-  onMessageReceived: null,
-  /**
-   * Runs a function when no protocol activity is present.
-   * ProtocolClient.test.deprecatedRunAfterPendingDispatches(() => console.log('done'))
-   */
-  deprecatedRunAfterPendingDispatches: null
+  onMessageReceived: null
 };
 var SessionRouter = class {
   #connection;

@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "allowJs": false,
     "allowSyntheticDefaultImports": true,
-    "checkJs": true,
+    "checkJs": false,
     "composite": false,
     "declaration": false,
     "disableSourceOfProjectReferenceRedirect": true,
@@ -27,6 +27,10 @@
     "outDir": ".",
     "preserveConstEnums": true,
     "rootDir": "../../../../../../front_end/entrypoints/formatter_worker",
+    "rootDirs": [
+      "../../../../../../",
+      "../../../"
+    ],
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
@@ -53,7 +57,8 @@
     "../../../../../../front_end/entrypoints/formatter_worker/JSONFormatter.ts",
     "../../../../../../front_end/entrypoints/formatter_worker/JavaScriptFormatter.ts",
     "../../../../../../front_end/entrypoints/formatter_worker/ScopeParser.ts",
-    "../../../../../../front_end/entrypoints/formatter_worker/Substitute.ts"
+    "../../../../../../front_end/entrypoints/formatter_worker/Substitute.ts",
+    "../../../../../../node_modules/@types/estree/index.d.ts"
   ],
   "references": [
     {

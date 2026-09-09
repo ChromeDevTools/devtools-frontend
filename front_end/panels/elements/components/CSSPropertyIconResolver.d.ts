@@ -38,7 +38,7 @@ export declare function rotateAlignContentIcon(iconName: string, direction: Phys
 export declare function rotateJustifyContentIcon(iconName: string, direction: PhysicalDirection): IconInfo;
 export declare function rotateJustifyItemsIcon(iconName: string, direction: PhysicalDirection): IconInfo;
 export declare function rotateAlignItemsIcon(iconName: string, direction: PhysicalDirection): IconInfo;
-export declare function rotateFlexWrapIcon(iconName: string, direction: PhysicalDirection): IconInfo;
+export declare function rotateFlexWrapIcon(iconName: string, direction: PhysicalDirection, reverse?: boolean): IconInfo;
 export declare function findIcon(text: string, computedStyles: ComputedStyles | null, parentComputedStyles?: ComputedStyles | null): IconInfo | null;
 export declare function findFlexContainerIcon(text: string, computedStyles: ComputedStyles | null): IconInfo | null;
 export declare function findFlexItemIcon(text: string, parentComputedStyles?: ComputedStyles | null): IconInfo | null;

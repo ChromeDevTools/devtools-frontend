@@ -5,13 +5,13 @@ export declare class RequestContext extends ConversationContext<SDK.NetworkReque
     #private;
     constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator);
     /**
-     * Note: this is not the literal origin of the network request. This URL
-     * is used to determine when we should force the user to start a new AI
-     * conversation when the context changes. We allow a single AI conversation to
-     * inspect all network requests that were made for that given target URL.
+     * Returns the security origin of the document that initiated the request.
+     *
+     * Network requests to third-party endpoints share the origin of the page
+     * that initiated them. This permits the AI to inspect third-party subresources
+     * without triggering a cross-origin conversation reset.
      */
-    getURL(): string;
-    getOrigin(): string;
+    getOrigin(): SDK.SecurityOrigin.SecurityOrigin;
     getItem(): SDK.NetworkRequest.NetworkRequest;
     getTitle(): string;
     getPromptDetails(): Promise<string | null>;

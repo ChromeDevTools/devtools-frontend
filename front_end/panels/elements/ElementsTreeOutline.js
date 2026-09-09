@@ -1399,7 +1399,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
         return this.#searchMatchQuery;
     }
     setHoveredNode(node, showInfo = true) {
-        if (this.#hoveredDOMNode === node) {
+        if (this.hoveredDOMNode() === node) {
             return;
         }
         this.#hoveredDOMNode = node;
@@ -1730,6 +1730,7 @@ export class DOMTreeWidget extends UI.Widget.Widget {
                 callback();
             }
             if (!success) {
+                this.performUpdate();
                 return;
             }
             Badges.UserBadges.instance().recordAction(Badges.BadgeAction.DOM_ELEMENT_OR_ATTRIBUTE_EDITED);
@@ -2339,7 +2340,6 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
     constructor(omitRootDOMNode, selectEnabled, hideGutter, maxTreeDepth, enableContextMenu, showComments, showAIButton, disableEdits, expandRoot, domTreeWidget) {
         super();
         this.domTreeWidget = domTreeWidget ?? null;
-        this.renderSelection = true;
         this.treeElementByNode = new WeakMap();
         const shadowContainer = document.createElement('div');
         this.shadowRoot = UI.UIUtils.createShadowRootWithCoreStyles(shadowContainer, { cssFile: [elementsTreeOutlineStyles, CodeHighlighter.codeHighlighterStyles] });
@@ -2709,13 +2709,8 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
         if (element && this.previousHoveredElement === element) {
             return;
         }
-        const showInfo = !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
-        if (this.domTreeWidget && element instanceof ElementsTreeElement) {
-            this.domTreeWidget.setHoveredNode(element.node(), showInfo);
-            return;
-        }
-        this.domTreeWidget?.setHoveredNode(null);
         this.setHoverEffect(element);
+        const showInfo = !UI.KeyboardShortcut.KeyboardShortcut.eventHasEitherCtrlOrMeta(event);
         this.highlightTreeElement(element, showInfo);
     }
     highlightTreeElement(element, showInfo) {
@@ -2726,10 +2721,11 @@ export class ElementsTreeOutline extends ElementsTreeOutlineBase {
         }
         if (element instanceof ShortcutTreeElement) {
             element.domModel().overlayModel().highlightInOverlay({ deferredNode: element.deferredNode(), selectorList: undefined }, 'all', showInfo);
+            return;
         }
+        SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     }
     onmouseleave(_event) {
-        this.domTreeWidget?.setHoveredNode(null);
         this.setHoverEffect(null);
         SDK.OverlayModel.OverlayModel.hideDOMNodeHighlight(SDK.TargetManager.TargetManager.instance());
     }

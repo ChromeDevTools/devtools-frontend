@@ -30,6 +30,7 @@
     "softDropDown.css.js",
     "softDropDownButton.css.js",
     "splitWidget.css.js",
+    "statusBar.css.js",
     "suggestBox.css.js",
     "tabbedPane.css.js",
     "targetCrashedScreen.css.js",

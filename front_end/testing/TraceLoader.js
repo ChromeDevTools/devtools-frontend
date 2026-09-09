@@ -83,23 +83,38 @@ export class TraceLoader {
         return contents;
     }
     /**
-     * Executes only the new trace engine on the fixture and returns the resulting parsed data.
+     * Executes the trace engine on a fixture file and returns the parsed trace.
+     *
+     * TraceLoader caches parsed trace results in memory across tests.
+     * When loading a trace, TraceLoader executes the following steps:
+     * 1. Resets TraceBounds.BoundsManager to empty to avoid leaking state between tests.
+     * 2. Checks the cache for an existing parsed trace matching the fixture name and configuration.
+     * 3. If missing from the cache, reads the fixture and parses the events.
+     *    Parsing runs with `yieldToMain: false` to avoid simulated main thread delays in tests.
+     * 4. Initializes TraceBounds.BoundsManager with the trace bounds and activates SyntheticEventsManager.
+     * 5. If `options.withModificationsManager` is `true`, dynamically imports the Timeline panel
+     *    entrypoint, resets ModificationsManager, and activates a new manager instance.
+     *
+     * Usage examples:
+     * ```ts
+     * // Standard trace parse (model, handler, lantern, or AI assistance tests)
+     * const parsedTrace = await TraceLoader.traceEngine(this, 'basic-trace.json.gz');
+     *
+     * // Custom engine configuration
+     * const parsedTrace = await TraceLoader.traceEngine(this, 'basic-trace.json.gz', {config});
+     *
+     * // Timeline panel test that tests modifications, breadcrumbs, or annotations
+     * const parsedTrace = await TraceLoader.traceEngine(this, 'basic-trace.json.gz', {withModificationsManager: true});
+     * ```
      *
      * @param context The Mocha test context.
-     * @param file The name of the trace file to be loaded.
-     * The trace file should be in ../panels/timeline/fixtures/traces folder.
-     * @param options Additional trace options.
-     * @param options.initTraceBounds (defaults to `true`) after the trace is
-     * loaded, the TraceBounds manager will automatically be initialised using
-     * the bounds from the trace.
-     * @param config The config the new trace engine should run with. Optional,
-     * will fall back to the Default config if not provided.
+     * @param name The name of the trace file in `front_end/panels/timeline/fixtures/traces`.
+     * @param options Trace engine loader options.
      */
-    static async traceEngine(context, name, config = Trace.Types.Configuration.defaults(), opts = {
-        withTimelinePanel: true,
-    }) {
+    static async traceEngine(context, name, options = {}) {
+        const { config = Trace.Types.Configuration.defaults(), withModificationsManager = false, } = options;
         let timelineModule;
-        if (opts.withTimelinePanel) {
+        if (withModificationsManager) {
             timelineModule = await import('../panels/timeline/timeline.js');
         }
         // Force the TraceBounds to be reset to empty. This ensures that in

@@ -268,7 +268,7 @@ User query: ${enhancedQuery}`;
     }
     #getConversationOrigin() {
         const allowed = this.#allowedOrigin?.();
-        return allowed && 'origin' in allowed ? allowed.origin : undefined;
+        return allowed && 'origin' in allowed ? allowed.origin?.siteId() : undefined;
     }
     get activeSkills() {
         return this.#activeSkills;

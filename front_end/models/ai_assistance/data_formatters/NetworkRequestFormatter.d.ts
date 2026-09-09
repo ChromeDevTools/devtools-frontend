@@ -20,8 +20,22 @@ export declare function sanitizeHeaders(headers: Array<{
  * Options for configuring {@link NetworkRequestFormatter}.
  */
 export interface NetworkRequestFormatterOptions {
-    /** The security origin of the initiating context for SOP/CORS evaluation. Defaults to `request.initiatorSecurityOrigin()`. */
-    initiatorSecurityOrigin?: SDK.SecurityOrigin.SecurityOrigin;
+    /**
+     * The security origin used to evaluate Same-Origin Policy (SOP) and Cross-Origin
+     * Resource Sharing (CORS) access.
+     *
+     * This is required because evaluating access solely against `request.initiatorSecurityOrigin()`
+     * is unsafe in cross-origin embedded contexts.
+     *
+     * Example:
+     * When debugging a page at `https://example.com` (the active conversation origin), an embedded
+     * `<iframe>` at `https://third-party.com` may fetch `https://third-party.com/api/user.json`.
+     * Relative to the iframe, that request is same-origin (`request.initiatorSecurityOrigin() === https://third-party.com`).
+     * However, from the perspective of the top-level conversation (`https://example.com`), that request
+     * is cross-origin. Its response body and unexposed headers must be redacted to prevent leaking
+     * unauthorized data into the prompt.
+     */
+    accessingSecurityOrigin: SDK.SecurityOrigin.SecurityOrigin;
     /** Optional network log instance for resolving initiator graphs. */
     networkLog?: Logs.NetworkLog.NetworkLog;
 }
@@ -30,11 +44,11 @@ export declare class NetworkRequestFormatter {
     /**
      * @param request The network request to format.
      * @param calculator Calculator for request timing metrics.
-     * @param options Optional configuration options.
+     * @param options Configuration options specifying the accessing security origin.
      */
-    constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator, options?: NetworkRequestFormatterOptions);
+    constructor(request: SDK.NetworkRequest.NetworkRequest, calculator: NetworkTimeCalculator.NetworkTransferTimeCalculator, options: NetworkRequestFormatterOptions);
     /**
-     * Evaluates the response access mode for this network request relative to the initiator security origin.
+     * Evaluates the response access mode for this network request relative to the accessing security origin.
      *
      * @returns The evaluated `ResponseAccessMode`.
      */
@@ -73,8 +87,8 @@ export declare class NetworkRequestFormatter {
     /**
      * Formats the response body for the AI prompt.
      *
-     * For opaque cross-origin requests, the response body is redacted because the initiating page's
-     * JavaScript is forbidden by the Same-Origin Policy from reading it.
+     * For opaque cross-origin requests, the response body is redacted because the accessing
+     * security origin is forbidden by the Same-Origin Policy from reading it.
      */
     formatResponseBody(): Promise<string>;
     /**
@@ -91,3 +105,11 @@ export declare class NetworkRequestFormatter {
     formatRequestInitiatorChain(): string;
     formatNetworkRequestTiming(): string;
 }
+/**
+ * Formats the initiator chain for a given network request into a formatted string.
+ *
+ * @param request The network request to format the initiator chain for.
+ * @param networkLog Network log instance used to build the initiator graph.
+ * @returns Formatted initiator chain.
+ */
+export declare function formatRequestInitiatorChain(request: SDK.NetworkRequest.NetworkRequest, networkLog: Logs.NetworkLog.NetworkLog): string;

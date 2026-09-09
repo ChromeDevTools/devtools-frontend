@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "allowJs": false,
     "allowSyntheticDefaultImports": true,
-    "checkJs": true,
+    "checkJs": false,
     "composite": false,
     "declaration": false,
     "disableSourceOfProjectReferenceRedirect": true,
@@ -28,6 +28,10 @@
     "outDir": ".",
     "preserveConstEnums": true,
     "rootDir": "../../../../../front_end/testing",
+    "rootDirs": [
+      "../../../../../",
+      "../../"
+    ],
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
@@ -66,6 +70,7 @@
     "../../../../../front_end/testing/MockScopeChain.ts",
     "../../../../../front_end/testing/MutationHelpers.ts",
     "../../../../../front_end/testing/NetworkHelpers.ts",
+    "../../../../../front_end/testing/NetworkRequestHelpers.ts",
     "../../../../../front_end/testing/OverridesHelpers.ts",
     "../../../../../front_end/testing/PersistenceHelpers.ts",
     "../../../../../front_end/testing/PropertyParser.ts",

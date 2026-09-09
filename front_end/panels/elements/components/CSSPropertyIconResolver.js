@@ -277,19 +277,19 @@ function gridAlignSelfIcon(iconName) {
     }
     return getIcon;
 }
-export function rotateFlexWrapIcon(iconName, direction) {
+export function rotateFlexWrapIcon(iconName, direction, reverse = false) {
     return {
         iconName,
         rotate: direction === "bottom-to-top" /* PhysicalDirection.BOTTOM_TO_TOP */ || direction === "top-to-bottom" /* PhysicalDirection.TOP_TO_BOTTOM */ ? 90 : 0,
         scaleX: 1,
-        scaleY: 1,
+        scaleY: reverse ? -1 : 1,
     };
 }
-function flexWrapIcon(iconName) {
+function flexWrapIcon(iconName, reverse = false) {
     function getIcon(computedStyles) {
         const directions = getPhysicalDirections(computedStyles);
         const computedFlexDirection = computedStyles.get('flex-direction') || 'row';
-        return rotateFlexWrapIcon(iconName, directions[computedFlexDirection]);
+        return rotateFlexWrapIcon(iconName, directions[computedFlexDirection], reverse);
     }
     return getIcon;
 }
@@ -336,6 +336,7 @@ const flexContainerIcons = new Map([
     ['align-content: baseline', baselineIcon],
     ['flex-wrap: wrap', flexWrapIcon('flex-wrap')],
     ['flex-wrap: nowrap', flexWrapIcon('flex-no-wrap')],
+    ['flex-wrap: wrap-reverse', flexWrapIcon('flex-wrap', /* reverse */ true)],
 ]);
 const flexItemIcons = new Map([
     ['align-self: baseline', baselineIcon],

@@ -10,7 +10,6 @@ import * as SDK from '../core/sdk/sdk.js';
 import * as AiAssistance from '../models/ai_assistance/ai_assistance.js';
 import * as Bindings from '../models/bindings/bindings.js';
 import * as Breakpoints from '../models/breakpoints/breakpoints.js';
-import * as Logs from '../models/logs/logs.js';
 import * as Persistence from '../models/persistence/persistence.js';
 import * as ProjectSettings from '../models/project_settings/project_settings.js';
 import * as Workspace from '../models/workspace/workspace.js';
@@ -111,42 +110,6 @@ export async function createUISourceCode(options) {
         await uiSourceCode.requestContentData();
     }
     return uiSourceCode;
-}
-export function createNetworkRequest(opts) {
-    const networkRequest = SDK.NetworkRequest.NetworkRequest.create('requestId-0', opts?.url ?? Platform.DevToolsPath.urlString `https://www.example.com/script.js`, opts?.documentURL ?? Platform.DevToolsPath.urlString ``, null, null, null);
-    networkRequest.statusCode = 200;
-    networkRequest.setRequestHeaders([{ name: 'content-type', value: 'bar1' }]);
-    networkRequest.responseHeaders = [{ name: 'content-type', value: 'bar2' }, { name: 'x-forwarded-for', value: 'bar3' }];
-    if (opts?.includeInitiators) {
-        const initiatorNetworkRequest = SDK.NetworkRequest.NetworkRequest.create('requestId-1', Platform.DevToolsPath.urlString `https://www.initiator.com`, Platform.DevToolsPath.urlString ``, null, null, null);
-        const initiatedNetworkRequest1 = SDK.NetworkRequest.NetworkRequest.create('requestId-2', Platform.DevToolsPath.urlString `https://www.example.com/1`, Platform.DevToolsPath.urlString ``, null, null, null);
-        const initiatedNetworkRequest2 = SDK.NetworkRequest.NetworkRequest.create('requestId-3', Platform.DevToolsPath.urlString `https://www.example.com/2`, Platform.DevToolsPath.urlString ``, null, null, null);
-        sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'initiatorGraphForRequest')
-            .withArgs(networkRequest)
-            .returns({
-            initiators: new Set([networkRequest, initiatorNetworkRequest]),
-            initiated: new Map([
-                [networkRequest, initiatorNetworkRequest],
-                [initiatedNetworkRequest1, networkRequest],
-                [initiatedNetworkRequest2, networkRequest],
-            ]),
-        })
-            .withArgs(initiatedNetworkRequest1)
-            .returns({
-            initiators: new Set([]),
-            initiated: new Map([
-                [initiatedNetworkRequest1, networkRequest],
-            ]),
-        })
-            .withArgs(initiatedNetworkRequest2)
-            .returns({
-            initiators: new Set([]),
-            initiated: new Map([
-                [initiatedNetworkRequest2, networkRequest],
-            ]),
-        });
-    }
-    return networkRequest;
 }
 let panels = [];
 /**

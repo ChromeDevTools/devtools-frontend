@@ -4,7 +4,6 @@
 import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import { areOriginsEquivalent, extractContextOrigin, isOpaqueOrigin } from '../AiOrigins.js';
 import { debugLog, isStructuredLogEnabled } from '../debug.js';
 const MAX_SUGGESTION_LENGTH = 200;
 export var ResponseType;
@@ -45,43 +44,31 @@ export class ConversationContext {
     isLoggingEnabled() {
         return true;
     }
-    getOrigin() {
-        return extractContextOrigin(this.getURL());
-    }
     /**
-     * Returns true if this data context (e.g., a DOM node or Network Request) is
-     * allowed to be included in a conversation that is locked to the provided
-     * `establishedOrigin`.
+     * Checks whether this context can participate in a conversation locked to `establishedOrigin`.
      *
-     * A conversation is "locked" to an origin once the first query is made.
-     * This method ensures that we don't mix data from different origins in the
-     * same conversation.
+     * Evaluation rules:
+     * 1. Returns `false` if this context origin is opaque. Opaque contexts can never
+     *    participate in AI conversations.
+     * 2. Returns `true` if `establishedOrigin` is `undefined` (conversation is not yet locked).
+     * 3. Returns `true` if this context origin is same-origin with `establishedOrigin`.
      *
-     * @param establishedOrigin The origin that the current conversation is locked to.
-     * If undefined, the conversation has not yet been locked to an origin.
+     * @param establishedOrigin The locked origin of the current conversation, or `undefined`
+     * if the conversation has not made its first query. Strings are automatically parsed into
+     * `SecurityOrigin` instances.
      */
     isOriginAllowed(establishedOrigin) {
         const origin = this.getOrigin();
-        if (origin instanceof SDK.SecurityOrigin.SecurityOrigin) {
-            if (origin.isOpaque()) {
-                return false;
-            }
-            if (!establishedOrigin) {
-                return true;
-            }
-            const established = establishedOrigin instanceof SDK.SecurityOrigin.SecurityOrigin ?
-                establishedOrigin :
-                SDK.SecurityOrigin.SecurityOrigin.create(establishedOrigin);
-            return origin.isSameOriginWith(established);
+        if (origin.isOpaque()) {
+            return false;
         }
-        // If no origin is established yet, this context will be the one to lock the conversation.
-        // Opaque origins are never allowed to be used as context.
         if (!establishedOrigin) {
-            return !isOpaqueOrigin(origin);
+            return true;
         }
-        // Only allow data that matches the origin the conversation is already locked to.
-        const establishedString = establishedOrigin instanceof SDK.SecurityOrigin.SecurityOrigin ? establishedOrigin.siteId() : establishedOrigin;
-        return areOriginsEquivalent(origin, establishedString);
+        const established = typeof establishedOrigin === 'string' ?
+            SDK.SecurityOrigin.SecurityOrigin.create(establishedOrigin) :
+            establishedOrigin;
+        return origin.isSameOriginWith(established);
     }
     /**
      * This method is called at the start of `AiAgent.run`.

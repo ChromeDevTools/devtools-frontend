@@ -719,6 +719,7 @@ third_party/i18n/i18n.test.js
 ui/comments/CommentAnchorResolver.test.js
 ui/comments/CommentOverlayManager.test.js
 ui/comments/CommentsOverlayWidget.test.js
+ui/comments/CommentsStatusBarPill.test.js
 ui/components/adorners/Adorner.test.js
 ui/components/buttons/Button.test.js
 ui/components/code_highlighter/CodeHighlighter.test.js
@@ -796,6 +797,7 @@ ui/legacy/SoftDropDown.test.js
 ui/legacy/SplitWidget.test.js
 ui/legacy/StackLocation.test.js
 ui/legacy/StackedPane.test.js
+ui/legacy/StatusBar.test.js
 ui/legacy/SuggestBox.test.js
 ui/legacy/TabbedPane.test.js
 ui/legacy/TextPrompt.test.js

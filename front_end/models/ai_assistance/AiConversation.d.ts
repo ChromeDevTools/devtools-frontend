@@ -58,7 +58,7 @@ export declare class AiConversation {
      * origin than the selected context.
      */
     get isBlockedByOrigin(): boolean;
-    get origin(): string | undefined;
+    get origin(): SDK.SecurityOrigin.SecurityOrigin | undefined;
     get type(): ConversationType;
     /**
      * Returns the permitted origin for agent tool execution, or blocks execution

@@ -1,1 +1,2 @@
 ai_smoke.test.js
+network/failing-request.test.js

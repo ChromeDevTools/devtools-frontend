@@ -37,6 +37,7 @@
     "../../../../../front_end/testing/MockScopeChain.ts",
     "../../../../../front_end/testing/MutationHelpers.ts",
     "../../../../../front_end/testing/NetworkHelpers.ts",
+    "../../../../../front_end/testing/NetworkRequestHelpers.ts",
     "../../../../../front_end/testing/OverridesHelpers.ts",
     "../../../../../front_end/testing/PersistenceHelpers.ts",
     "../../../../../front_end/testing/PropertyParser.ts",

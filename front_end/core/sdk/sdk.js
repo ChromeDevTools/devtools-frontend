@@ -28005,7 +28005,8 @@ var OPAQUE_PREFIXES = [
   "blob:null"
 ];
 var IMPORTED_ORIGIN_PREFIXES = /* @__PURE__ */ new Set([
-  "imported-har:"
+  "imported-har:",
+  "imported-trace:"
 ]);
 function isOpaqueUrlString(url) {
   const lower = url.trim().toLowerCase();
@@ -28024,6 +28025,8 @@ var SecurityOrigin = class _SecurityOrigin {
    *
    * - If the URL is determined to be opaque (e.g. `data:`, `about:blank`, empty, `null`),
    *   a new unique opaque origin is returned.
+   * - If the URL is an imported artifact scheme (e.g. `imported-har:`, `imported-trace:`),
+   *   a scheme-and-host origin (`<scheme>//<host>`) is returned.
    * - If the URL is a `file://` URL, a path-scoped origin (`file://<authority><path>`) is returned.
    * - Otherwise, the standard origin (`<scheme>://<host>[:<port>]`) is extracted and returned.
    *
@@ -28033,16 +28036,9 @@ var SecurityOrigin = class _SecurityOrigin {
     if (isOpaqueUrlString(rawUrl)) {
       return _SecurityOrigin.createUniqueOpaque();
     }
-    for (const prefix of IMPORTED_ORIGIN_PREFIXES) {
-      if (rawUrl.toLowerCase().startsWith(prefix)) {
-        const afterScheme = rawUrl.substring(prefix.length).replace(/^\/+/, "");
-        const slashIndex = afterScheme.indexOf("/");
-        const host = slashIndex === -1 ? afterScheme : afterScheme.substring(0, slashIndex);
-        if (!host) {
-          return _SecurityOrigin.createUniqueOpaque();
-        }
-        return new _SecurityOrigin({ type: "origin", value: `${prefix}//${host.toLowerCase()}` });
-      }
+    const importedOrigin = _SecurityOrigin.#tryCreateImportedArtifactOrigin(rawUrl);
+    if (importedOrigin) {
+      return importedOrigin;
     }
     if (rawUrl.toLowerCase().startsWith("file://")) {
       const parsed = Common19.ParsedURL.ParsedURL.fromString(rawUrl);
@@ -28050,13 +28046,40 @@ var SecurityOrigin = class _SecurityOrigin {
         return _SecurityOrigin.createUniqueOpaque();
       }
       const authority = parsed.host + (parsed.port ? ":" + parsed.port : "");
-      return new _SecurityOrigin({ type: "origin", value: `file://${authority}${parsed.path}` });
+      return new _SecurityOrigin({ type: "file", value: `file://${authority}${parsed.path}` });
     }
     const origin = Common19.ParsedURL.ParsedURL.extractOrigin(rawUrl);
     if (!origin || isOpaqueUrlString(origin)) {
       return _SecurityOrigin.createUniqueOpaque();
     }
     return new _SecurityOrigin({ type: "origin", value: origin.toLowerCase() });
+  }
+  /**
+   * Attempts to parse a URL as an imported artifact scheme (such as `imported-har:` or `imported-trace:`).
+   *
+   * Standard web origins do not match imported artifact origins. If the URL starts with an imported
+   * prefix, this helper isolates the origin to `<scheme>//<host>`. If the authority or host is missing,
+   * or if the URL cannot be parsed, it returns a unique opaque origin.
+   *
+   * @param rawUrl The raw URL string to evaluate.
+   * @returns A `SecurityOrigin` if the URL matches an imported artifact scheme, or `null` otherwise.
+   */
+  static #tryCreateImportedArtifactOrigin(rawUrl) {
+    const lowerUrl = rawUrl.toLowerCase();
+    for (const prefix of IMPORTED_ORIGIN_PREFIXES) {
+      if (lowerUrl.startsWith(prefix)) {
+        try {
+          const parsedUrl = new URL(rawUrl);
+          if (!parsedUrl.host) {
+            return _SecurityOrigin.createUniqueOpaque();
+          }
+          return new _SecurityOrigin({ type: "origin", value: `${parsedUrl.protocol}//${parsedUrl.host.toLowerCase()}` });
+        } catch {
+          return _SecurityOrigin.createUniqueOpaque();
+        }
+      }
+    }
+    return null;
   }
   /**
    * Creates a synthetic, unique opaque origin.
@@ -28066,6 +28089,27 @@ var SecurityOrigin = class _SecurityOrigin {
    */
   static createUniqueOpaque() {
     return new _SecurityOrigin({ type: "opaque", uuid: crypto.randomUUID() });
+  }
+  /**
+   * Creates an isolated security origin for an imported performance trace.
+   *
+   * Imported traces isolate to `imported-trace://${authority}` based on the recorded
+   * main frame URL. If the URL is missing, invalid, or has no host, this returns a
+   * unique opaque origin so that unhosted traces do not share access with each other
+   * or live web origins.
+   *
+   * @param mainFrameURL The URL string of the main frame recorded in the trace.
+   */
+  static createForImportedTrace(mainFrameURL) {
+    if (!mainFrameURL) {
+      return _SecurityOrigin.createUniqueOpaque();
+    }
+    const parsed = Common19.ParsedURL.ParsedURL.fromString(mainFrameURL);
+    if (!parsed?.host) {
+      return _SecurityOrigin.createUniqueOpaque();
+    }
+    const authority = parsed.host + (parsed.port ? `:${parsed.port}` : "");
+    return _SecurityOrigin.create(`imported-trace://${authority}`);
   }
   /**
    * Checks whether this security origin is equivalent to another security origin.
@@ -28084,7 +28128,7 @@ var SecurityOrigin = class _SecurityOrigin {
     if (this.#origin.type === "opaque" || other.#origin.type === "opaque") {
       return this.#origin.type === "opaque" && other.#origin.type === "opaque" && this.#origin.uuid === other.#origin.uuid;
     }
-    return this.#origin.value === other.#origin.value;
+    return this.#origin.type === other.#origin.type && this.#origin.value === other.#origin.value;
   }
   /**
    * Returns whether this origin is opaque.
@@ -28096,12 +28140,22 @@ var SecurityOrigin = class _SecurityOrigin {
     return this.#origin.type === "opaque";
   }
   /**
-   * Returns a stable string representation of this origin for identification, storage keys,
-   * or debugging logs.
+   * Returns whether this origin represents a local file origin (`file://`).
+   */
+  isFile() {
+    return this.#origin.type === "file";
+  }
+  /**
+   * Returns a stable string identifier for display, logging, or storage keys.
    *
-   * - For standard origins, returns the serialized origin string (e.g. `https://example.com:8080`).
-   * - For file origins, returns the path-scoped origin (e.g. `file:///path/to/file.html`).
-   * - For opaque origins, returns the unique UUID string.
+   * WARNING: Do not compare `siteId()` strings to verify origin equality or
+   * enforce security boundaries. Always use `isSameOriginWith()` instead.
+   *
+   * Return formats:
+   * - Standard origins: `<scheme>://<host>[:<port>]` (e.g., `https://example.com:8080`).
+   * - File origins: `file://<authority><path>` (e.g., `file:///path/to/file.html`).
+   * - Opaque origins: A bare UUID string (e.g., `3fa85f64-5717-4562-b3fc-2c963f66afa6`).
+   *   Note: Opaque site IDs do not have URI schemes and are not valid URLs.
    */
   siteId() {
     return this.#origin.type === "opaque" ? this.#origin.uuid : this.#origin.value;

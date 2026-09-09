@@ -18,6 +18,7 @@
 'SelectMenu': () => import('../../front_end/ui/legacy/SelectMenu.docs.js'),
 'Slider': () => import('../../front_end/ui/legacy/Slider.docs.js'),
 'TextPrompt': () => import('../../front_end/ui/legacy/TextPrompt.docs.js'),
+'PositionAreaEditor': () => import('../../front_end/ui/legacy/components/inline_editor/PositionAreaEditor.docs.js'),
 'ThemeColors': () => import('../../front_end/ui/legacy/theme_support/ThemeColors.docs.js'),
     };
 

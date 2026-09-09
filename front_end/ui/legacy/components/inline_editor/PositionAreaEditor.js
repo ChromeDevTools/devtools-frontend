@@ -1,6 +1,12 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as Common from '../../../../core/common/common.js';
+import * as Lit from '../../../../ui/lit/lit.js';
+import * as UI from '../../legacy.js';
+import positionAreaEditorStyles from './positionAreaEditor.css.js';
+const { Directives, html, nothing, render } = Lit;
+const { repeat } = Directives;
 /**
  * Valid combinations of (Mode, Self) across axes according to the CSS Anchor Positioning specification
  * (https://drafts.csswg.org/css-anchor-position-1/#typedef-position-area):
@@ -156,8 +162,11 @@ export function parsePositionArea(text) {
         return null;
     }
     const first = KEYWORD_MAP.get(tokens[0]);
-    const second = KEYWORD_MAP.get(tokens[1] ?? (tokens[0] === "center" /* Keyword.CENTER */ ? "center" /* Keyword.CENTER */ : "span-all" /* Keyword.SPAN_ALL */));
-    if (!first || !second) {
+    if (!first) {
+        return null;
+    }
+    const second = KEYWORD_MAP.get(tokens[1] ?? (first.axis ? "span-all" /* Keyword.SPAN_ALL */ : tokens[0]));
+    if (!second) {
         return null;
     }
     if (first.axis && second.axis && first.axis === second.axis) {
@@ -195,12 +204,302 @@ export function stringifyPositionArea(area) {
     if (!firstKw || !secondKw) {
         return '';
     }
-    if (firstKw === "center" /* Keyword.CENTER */ && secondKw === "center" /* Keyword.CENTER */) {
-        return "center" /* Keyword.CENTER */;
+    const firstDef = KEYWORD_MAP.get(firstKw);
+    if (!firstDef?.axis && firstKw === secondKw) {
+        return firstKw;
     }
-    if (secondKw === "span-all" /* Keyword.SPAN_ALL */) {
+    if (firstDef?.axis && secondKw === "span-all" /* Keyword.SPAN_ALL */) {
         return firstKw;
     }
     return `${firstKw} ${secondKw}`;
+}
+export const DEFAULT_VIEW = (input, output, target) => {
+    if (!input.area) {
+        render(nothing, target);
+        return;
+    }
+    const x = input.area.primaryAxis === "inline" /* Axis.INLINE */ ? input.area.first : input.area.second;
+    const y = input.area.primaryAxis === "block" /* Axis.BLOCK */ ? input.area.first : input.area.second;
+    const grid = [[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1], [0, 2], [1, 2], [2, 2]];
+    function getCellCoords(e, container) {
+        const root = container.getRootNode();
+        const el = root.elementFromPoint(e.clientX, e.clientY);
+        const cell = el?.closest('.position-area-builder > div');
+        if (!cell || !container.contains(cell)) {
+            return null;
+        }
+        const cellX = Number(cell.dataset.x);
+        const cellY = Number(cell.dataset.y);
+        return [cellX, cellY];
+    }
+    function onPointerDown(e) {
+        const container = e.currentTarget;
+        const targetCell = e.target.closest('[data-x]');
+        if (!targetCell) {
+            return;
+        }
+        const startX = Number(targetCell.dataset.x);
+        const startY = Number(targetCell.dataset.y);
+        container.setPointerCapture(e.pointerId);
+        input.onSelectStart(startX, startY);
+    }
+    function onPointerMove(e) {
+        const container = e.currentTarget;
+        if (!container.hasPointerCapture(e.pointerId)) {
+            return;
+        }
+        const cell = getCellCoords(e, container);
+        if (cell) {
+            input.onSelect(...cell);
+        }
+    }
+    function onPointerUp(e) {
+        const container = e.currentTarget;
+        if (!container.hasPointerCapture(e.pointerId)) {
+            return;
+        }
+        container.releasePointerCapture(e.pointerId);
+        const coords = getCellCoords(e, container);
+        if (coords) {
+            input.onSelectEnd(...coords);
+        }
+        else {
+            input.onSelectEnd(x.end, y.end);
+        }
+    }
+    function onPointerCancel(e) {
+        const container = e.currentTarget;
+        if (!container.hasPointerCapture(e.pointerId)) {
+            return;
+        }
+        container.releasePointerCapture(e.pointerId);
+        input.onSelectEnd();
+    }
+    const propertyValue = stringifyPositionArea(input.area);
+    const blockAxis = input.area.primaryAxis === "block" /* Axis.BLOCK */ ? input.area.first : input.area.second;
+    const inlineAxis = input.area.primaryAxis === "inline" /* Axis.INLINE */ ? input.area.first : input.area.second;
+    function renderModeRadioGroup(axis, currentMode) {
+        const modes = [
+            { mode: "physical" /* Mode.PHYSICAL */, label: 'Physical' },
+            { mode: "coordinate" /* Mode.COORDINATE */, label: 'Coordinate' },
+            { mode: "logical" /* Mode.LOGICAL */, label: 'Logical' },
+            { mode: "auto" /* Mode.AUTO */, label: 'Auto' },
+        ];
+        return html `
+      <fieldset class="chip-radio-group" aria-label="${axis} axis mode">
+        ${modes.map(({ mode, label }) => {
+            const id = `${axis}-mode-${mode}`;
+            return html `
+            <input
+              type="radio"
+              id=${id}
+              name="${axis}-mode"
+              value=${mode}
+              .checked=${currentMode === mode}
+              @change=${() => input.onModeChange(axis, mode)}
+            >
+            <label for=${id}>${label}</label>
+          `;
+        })}
+      </fieldset>
+    `;
+    }
+    render(html `
+    <style>${positionAreaEditorStyles}</style>
+    <div class=property>
+      <span class=property-name>position-area:</span>
+      <span class=property-value>${propertyValue.split(' ').map((keyword, i) => html `${i > 0 ? ' ' : ''}<span class=property-keyword>${keyword}</span>`)}</span>
+    </div>
+    <div class=position-area-builder
+        data-x-start=${x.start} data-x-end=${x.end} data-y-start=${y.start} data-y-end=${y.end}
+        @pointerdown=${onPointerDown}
+        @pointermove=${onPointerMove}
+        @pointerup=${onPointerUp}
+        @pointercancel=${onPointerCancel}>
+      ${repeat(grid, ([x, y]) => x * 10 + y, ([x, y]) => html `
+         <div data-x=${x} data-y=${y}>
+         </div>
+        `)}
+    </div>
+    <div class=position-area-controls>
+      <div class=axis-section>
+        <div class=axis-header>
+          <span class=axis-title>Block</span>
+          <devtools-checkbox
+            .checked=${blockAxis.self}
+            ?disabled=${isGeneric(blockAxis)}
+            @change=${(e) => input.onSelfChange("block" /* Axis.BLOCK */, e.target.checked)}>
+            self
+          </devtools-checkbox>
+        </div>
+        ${renderModeRadioGroup("block" /* Axis.BLOCK */, blockAxis.mode)}
+      </div>
+      <div class=axis-section>
+        <div class=axis-header>
+          <span class=axis-title>Inline</span>
+          <devtools-checkbox
+            .checked=${inlineAxis.self}
+            ?disabled=${isGeneric(inlineAxis)}
+            @change=${(e) => input.onSelfChange("inline" /* Axis.INLINE */, e.target.checked)}>
+            self
+          </devtools-checkbox>
+        </div>
+        ${renderModeRadioGroup("inline" /* Axis.INLINE */, inlineAxis.mode)}
+      </div>
+    </div>
+    `, target);
+};
+export var Events;
+(function (Events) {
+    Events["POSITION_AREA_CHANGED"] = "positionAreaChanged";
+})(Events || (Events = {}));
+const PositionAreaEditorBase = Common.ObjectWrapper.eventMixin(UI.Widget.VBox);
+export class PositionAreaEditor extends PositionAreaEditorBase {
+    #view;
+    #area;
+    #inProgressSelection;
+    constructor(element, view = DEFAULT_VIEW) {
+        super(element);
+        this.setDefaultFocusedElement(this.contentElement);
+        this.#view = view;
+    }
+    wasShown() {
+        super.wasShown();
+        this.requestUpdate();
+    }
+    get area() {
+        return this.#area;
+    }
+    set area(val) {
+        if ((this.#inProgressSelection?.origin ?? this.#area) === val) {
+            return;
+        }
+        this.#area = val;
+        this.#inProgressSelection = undefined;
+        this.requestUpdate();
+    }
+    #startSelection(x, y) {
+        this.#finishSelection();
+        this.#select(x, y);
+    }
+    #inlineAxis() {
+        if (!this.#area) {
+            return { start: 0, end: 0, mode: "physical" /* Mode.PHYSICAL */, self: false };
+        }
+        return this.#area.primaryAxis === "inline" /* Axis.INLINE */ ? this.#area.first : this.#area.second;
+    }
+    #blockAxis() {
+        if (!this.#area) {
+            return { start: 0, end: 0, mode: "physical" /* Mode.PHYSICAL */, self: false };
+        }
+        return this.#area.primaryAxis === "block" /* Axis.BLOCK */ ? this.#area.first : this.#area.second;
+    }
+    #axis(axis) {
+        return axis === "inline" /* Axis.INLINE */ ? this.#inlineAxis() : this.#blockAxis();
+    }
+    #notifyChange() {
+        if (!this.#area) {
+            return;
+        }
+        this.dispatchEventToListeners("positionAreaChanged" /* Events.POSITION_AREA_CHANGED */, this.#area);
+    }
+    #select(x, y) {
+        if (!this.#inProgressSelection) {
+            this.#inProgressSelection = { origin: this.#area, start: { x, y }, end: { x, y } };
+        }
+        this.#inProgressSelection.end = { x, y };
+        const { start, end } = this.#inProgressSelection;
+        const primaryAxis = this.#area?.primaryAxis ?? "inline" /* Axis.INLINE */;
+        // The visual 3x3 grid maps horizontal (x) to the inline axis and vertical (y) to the block axis.
+        const inlineAxis = { ...this.#inlineAxis(), start: Math.min(start.x, end.x), end: Math.max(start.x, end.x) };
+        const blockAxis = { ...this.#blockAxis(), start: Math.min(start.y, end.y), end: Math.max(start.y, end.y) };
+        this.#area = {
+            first: primaryAxis === "inline" /* Axis.INLINE */ ? inlineAxis : blockAxis,
+            second: primaryAxis === "block" /* Axis.BLOCK */ ? inlineAxis : blockAxis,
+            primaryAxis,
+        };
+        this.requestUpdate();
+        this.#notifyChange();
+    }
+    #finishSelection(x, y) {
+        if (!this.#inProgressSelection) {
+            return;
+        }
+        if (x === undefined || y === undefined) {
+            this.#area = this.#inProgressSelection.origin ?? this.#area;
+            this.#inProgressSelection = undefined;
+            this.#notifyChange();
+            this.requestUpdate();
+            return;
+        }
+        this.#select(x, y);
+        this.#inProgressSelection = undefined;
+    }
+    #setAxisMode(axis, mode) {
+        if (!this.#area) {
+            return;
+        }
+        const otherAxis = axis === "inline" /* Axis.INLINE */ ? "block" /* Axis.BLOCK */ : "inline" /* Axis.INLINE */;
+        const current = this.#axis(axis);
+        if (mode === current.mode) {
+            return;
+        }
+        const other = this.#axis(otherAxis);
+        current.mode = mode;
+        if (isGeneric(current) || mode === "physical" /* Mode.PHYSICAL */) {
+            // center and span-all and physical axes don't support self
+            current.self = false;
+        }
+        if (!isGeneric(other)) {
+            if (mode === "physical" /* Mode.PHYSICAL */ || mode === "coordinate" /* Mode.COORDINATE */) {
+                // physical axes may be combined with coordinate
+                if (other.mode !== "physical" /* Mode.PHYSICAL */ && other.mode !== "coordinate" /* Mode.COORDINATE */) {
+                    other.mode = other.self ? "coordinate" /* Mode.COORDINATE */ : "physical" /* Mode.PHYSICAL */;
+                }
+            }
+            else {
+                other.mode = mode;
+                if (!isGeneric(current)) {
+                    other.self = current.self;
+                }
+            }
+        }
+        this.requestUpdate();
+        this.#notifyChange();
+    }
+    #setAxisSelf(axis, self) {
+        if (!this.#area) {
+            return;
+        }
+        const current = this.#axis(axis);
+        const other = this.#axis(axis === "inline" /* Axis.INLINE */ ? "block" /* Axis.BLOCK */ : "inline" /* Axis.INLINE */);
+        if (isGeneric(current)) {
+            if (!isGeneric(other)) {
+                this.#setAxisSelf(axis === "inline" /* Axis.INLINE */ ? "block" /* Axis.BLOCK */ : "inline" /* Axis.INLINE */, self);
+            }
+            this.requestUpdate();
+            this.#notifyChange();
+            return;
+        }
+        current.self = self;
+        if (current.mode === "physical" /* Mode.PHYSICAL */ && self) {
+            current.mode = "coordinate" /* Mode.COORDINATE */;
+        }
+        if (!isGeneric(other) && other.mode !== "physical" /* Mode.PHYSICAL */ && other.mode !== "coordinate" /* Mode.COORDINATE */) {
+            other.self = self;
+        }
+        this.requestUpdate();
+        this.#notifyChange();
+    }
+    performUpdate() {
+        this.#view({
+            area: this.#area,
+            onSelectStart: this.#startSelection.bind(this),
+            onSelect: this.#select.bind(this),
+            onSelectEnd: this.#finishSelection.bind(this),
+            onModeChange: this.#setAxisMode.bind(this),
+            onSelfChange: this.#setAxisSelf.bind(this),
+        }, undefined, this.contentElement);
+    }
 }
 //# sourceMappingURL=PositionAreaEditor.js.map

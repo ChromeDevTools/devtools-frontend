@@ -3,16 +3,6 @@
 // found in the LICENSE file.
 import * as Common from '../core/common/common.js';
 import * as Logs from '../models/logs/logs.js';
-export function createNetworkRequest(requestId) {
-    return {
-        requestId() {
-            return requestId;
-        },
-        backendRequestId() {
-            return requestId;
-        },
-    };
-}
 export class MockNetworkLog extends Common.ObjectWrapper.ObjectWrapper {
     mockRequests;
     constructor(mockRequests) {

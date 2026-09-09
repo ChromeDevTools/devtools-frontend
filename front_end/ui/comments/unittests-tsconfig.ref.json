@@ -16,6 +16,7 @@
     "../../../../../../front_end/ui/comments/CommentAnchorResolver.test.ts",
     "../../../../../../front_end/ui/comments/CommentOverlayManager.test.ts",
     "../../../../../../front_end/ui/comments/CommentsOverlayWidget.test.ts",
+    "../../../../../../front_end/ui/comments/CommentsStatusBarPill.test.ts",
     "../../../../../../front_end/legacy/legacy-defs.d.ts",
     "../../../../../../front_end/global_typings/global_defs.d.ts",
     "../../../../../../node_modules/@types/filesystem/index.d.ts",
@@ -36,6 +37,9 @@
     },
     {
       "path": "../legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../visual_logging/bundle-tsconfig.ref.json"
     },
     {
       "path": "../components/text_editor/bundle-tsconfig.ref.json"

@@ -1305,11 +1305,41 @@ devtools-toolbar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  font: inherit;
+  font-size: var(--sys-typescale-body4-size);
   gap: var(--sys-size-3);
   padding: var(--sys-size-1) var(--sys-size-3) var(--sys-size-1) var(--sys-size-4);
   border-radius: var(--sys-shape-corner-extra-small);
   border: var(--sys-size-1) solid var(--sys-color-neutral-outline);
   box-sizing: border-box;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover:not(:disabled, [aria-disabled="true"]) {
+    background-color: var(--sys-color-state-hover-on-subtle);
+  }
+
+  &:active:not(:disabled, [aria-disabled="true"]),
+  &[aria-pressed="true"]:not(:disabled, [aria-disabled="true"]) {
+    background-color: var(--sys-color-state-ripple-neutral-on-subtle);
+  }
+
+  &:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  &:focus-visible:not(:disabled, [aria-disabled="true"]) {
+    outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+    outline-offset: var(--sys-size-2);
+  }
+
+  &:disabled,
+  &[aria-disabled="true"] {
+    color: var(--sys-color-state-disabled);
+    border-color: var(--sys-color-state-disabled);
+    cursor: not-allowed;
+  }
 }
 
 /*# sourceURL=${import.meta.resolve('./inspectorCommon.css')} */`;

@@ -1,6 +1,7 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import * as SDK from '../../../core/sdk/sdk.js';
 import { ConversationContext, } from '../agents/AiAgent.js';
 import { LighthouseFormatter } from '../data_formatters/LighthouseFormatter.js';
 export class AccessibilityContext extends ConversationContext {
@@ -13,8 +14,16 @@ export class AccessibilityContext extends ConversationContext {
     #url() {
         return this.#lh.finalUrl ?? this.#lh.finalDisplayedUrl;
     }
-    getURL() {
-        return this.#url();
+    /**
+     * Returns the security origin of the audited page from the Lighthouse report.
+     *
+     * Derives the origin from the report URL (`finalUrl` or `finalDisplayedUrl`).
+     * If the report does not contain a valid URL, returns a unique opaque origin.
+     *
+     * @returns The security origin of the audited page.
+     */
+    getOrigin() {
+        return SDK.SecurityOrigin.SecurityOrigin.create(this.#url());
     }
     getItem() {
         return this.#lh;

@@ -18,7 +18,8 @@ export declare const enum ViewLocationValues {
     DRAWER_SIDEBAR = "drawer-sidebar",
     NETWORK_SIDEBAR = "network-sidebar",
     SOURCES_SIDEBAR_TOP = "sources.sidebar-top",
-    SOURCES_SIDEBAR_TABS = "sources.sidebar-tabs"
+    SOURCES_SIDEBAR_TABS = "sources.sidebar-tabs",
+    STATUS_BAR = "status-bar"
 }
 export interface ViewRegistration {
     /**

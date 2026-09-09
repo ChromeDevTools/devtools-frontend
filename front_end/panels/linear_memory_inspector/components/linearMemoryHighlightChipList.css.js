@@ -10,26 +10,26 @@ export default `/*
  */
 
 .highlight-chip-list {
-  min-height: 20px;
+  min-height: var(--sys-size-9);
   display: flex;
   flex-wrap: wrap;
   justify-content: left;
   align-items: center;
   background-color: var(--sys-color-cdt-base-container);
-  margin: 8px 0;
-  gap: 8px;
-  row-gap: 6px;
+  margin: var(--sys-size-5) 0;
+  gap: var(--sys-size-5);
+  row-gap: var(--sys-size-4);
 }
 
 .highlight-chip {
   background: var(--sys-color-cdt-base-container);
-  border: 1px solid var(--sys-color-divider);
+  border: var(--sys-size-1) solid var(--sys-color-divider);
   height: 18px;
-  border-radius: 4px;
+  border-radius: var(--sys-shape-corner-extra-small);
   flex: 0 0 auto;
   max-width: 250px;
   position: relative;
-  padding: 0 6px;
+  padding: 0 var(--sys-size-4);
 }
 
 .highlight-chip:hover {
@@ -42,8 +42,8 @@ export default `/*
   position: absolute;
   right: 0;
   top: 0;
-  border-radius: 4px;
-  width: 24px;
+  border-radius: var(--sys-shape-corner-extra-small);
+  width: var(--sys-size-11);
   align-items: center;
   justify-content: center;
 }
@@ -103,8 +103,8 @@ export default `/*
 }
 
 .highlight-chip.focused {
-  outline: 2px solid var(--sys-color-state-focus-ring);
-  outline-offset: 2px;
+  outline: var(--sys-size-2) solid var(--sys-color-state-focus-ring);
+  outline-offset: var(--sys-size-2);
 }
 
 .highlight-chip:hover > .delete-highlight-container {

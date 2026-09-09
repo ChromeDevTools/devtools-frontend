@@ -17375,8 +17375,17 @@
   "panels/whats_new/whats_new-meta.ts | whatsNew": {
     "message": "What’s new"
   },
+  "ui/comments/comments-meta.ts | comments": {
+    "message": "Comments"
+  },
+  "ui/comments/comments-meta.ts | showComments": {
+    "message": "Show comments"
+  },
   "ui/comments/comments-meta.ts | toggleCommentMode": {
     "message": "Add comments to send to your AI coding agent"
+  },
+  "ui/comments/CommentsStatusBarPill.ts | commentsCount": {
+    "message": "Comments ({PH1})"
   },
   "ui/components/dialogs/Dialog.ts | close": {
     "message": "Close"

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as Common from '../../core/common/common.js';
+import * as SDK from '../../core/sdk/sdk.js';
 /**
  * Returns true if the origin is considered opaque and should be blocked from
  * AI assistance to prevent potential data leakage.
@@ -87,14 +88,20 @@ export function areOriginsEquivalent(origin1, origin2) {
  * @returns true if reading the file is permitted; false otherwise.
  */
 export function canResourceContentsBeReadForTrace(targetURL, traceOrigin) {
+    if (traceOrigin.isOpaque()) {
+        return false;
+    }
+    const targetOrigin = SDK.SecurityOrigin.SecurityOrigin.create(targetURL);
+    if (targetOrigin.isOpaque()) {
+        return false;
+    }
     // We explicitly block all file:// URLs. While we want to allow users to debug
     // traces on local sites, allowing file:// access poses security risks (e.g.,
     // reading local files like /etc/passwd via prompt injection) because file://
     // origins are not sufficiently isolated from each other in DevTools' origin model.
-    if (traceOrigin.startsWith('file://') || targetURL.startsWith('file://')) {
+    if (traceOrigin.isFile() || targetOrigin.isFile()) {
         return false;
     }
-    const targetOrigin = extractContextOrigin(targetURL);
-    return areOriginsEquivalent(targetOrigin, traceOrigin);
+    return traceOrigin.isSameOriginWith(targetOrigin);
 }
 //# sourceMappingURL=AiOrigins.js.map

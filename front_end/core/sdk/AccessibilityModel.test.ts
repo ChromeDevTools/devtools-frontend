@@ -4,6 +4,7 @@
 
 import {assert} from 'chai';
 
+import type * as Protocol from '../../generated/protocol.js';
 import {setupLocaleHooks} from '../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../testing/SettingsHelpers.js';
@@ -23,6 +24,14 @@ describe('AccessibilityModel', () => {
       const target = universe.createTarget();
       new SDK.AccessibilityModel.AccessibilityModel(target);
     });
+  });
+
+  it('returns empty array when requesting children for a node not in the model', async () => {
+    const universe = new TestUniverse();
+    const target = universe.createTarget();
+    const model = new SDK.AccessibilityModel.AccessibilityModel(target);
+    const children = await model.requestAXChildren('non-existent-id' as Protocol.Accessibility.AXNodeId);
+    assert.deepEqual(children, []);
   });
 
   describe('axNodeToText', function() {

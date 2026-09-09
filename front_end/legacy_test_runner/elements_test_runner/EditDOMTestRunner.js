@@ -13,7 +13,7 @@ ElementsTestRunner.doAddAttribute = function(testName, dataNodeId, attributeText
   function testBody(node, done) {
     ElementsTestRunner.editNodePart(node, 'webkit-html-attribute');
     eventSender.keyDown('Tab');
-    setTimeout(testContinuation, 0);
+    TestRunner.deprecatedRunAfterPendingDispatches(testContinuation);
 
     function testContinuation() {
       const editorElement =
@@ -40,7 +40,7 @@ ElementsTestRunner.domActionTest = function(testName, dataNodeSelectionCallback,
   dataNodeSelectionCallback(testNode, step0);
 
   function step0(node) {
-    setTimeout(step1.bind(null, node), 0);
+    TestRunner.deprecatedRunAfterPendingDispatches(step1.bind(null, node));
   }
 
   function step1(node) {
@@ -74,6 +74,6 @@ ElementsTestRunner.editNodePartAndRun = function(node, className, newValue, step
   if (useSniffer) {
     TestRunner.addSniffer(Elements.ElementsTreeOutline.prototype, 'updateModifiedNodes', step2);
   } else {
-    setTimeout(step2, 0);
+    TestRunner.deprecatedRunAfterPendingDispatches(step2);
   }
 };

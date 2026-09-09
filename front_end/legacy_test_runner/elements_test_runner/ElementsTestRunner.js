@@ -141,7 +141,7 @@ ElementsTestRunner.expandAndDumpEventListeners = function(eventListenersView, ca
         listenerItems[j].expand();
       }
     }
-    setTimeout(objectsExpanded, 0);
+    TestRunner.deprecatedRunAfterPendingDispatches(objectsExpanded);
   }
 
   function objectsExpanded() {

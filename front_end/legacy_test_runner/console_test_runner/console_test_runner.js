@@ -399,63 +399,6 @@ ConsoleTestRunner.dumpConsoleCounters = async function() {
 };
 
 /**
- * @returns {!Promise<void>}
- */
-ConsoleTestRunner.waitForAllPopulations = async function() {
-  const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
-  await TestRunner.pollUntil(() => {
-    return messageViews.every(view => {
-      const el = view.element();
-      const hasNodeParam = view.message.parameters?.some(p => p.type === 'object' && p.subtype === 'node');
-      if (hasNodeParam && !el.querySelector('.elements-tree-outline')) {
-        return false;
-      }
-      return true;
-    });
-  });
-
-  await TestRunner.pollUntil(() => {
-    for (const view of messageViews) {
-      const element = view.element();
-      for (let node = element; node; node = node.traverseNextNode(element)) {
-        if (node.treeElementForTest?.expanded && node.treeElementForTest.isExpandable() &&
-            node.treeElementForTest.childCount() === 0) {
-          return false;
-        }
-        const section = UI.Widget.Widget.get(node);
-        if (section instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget) {
-          if (section.objectTree?.expanded) {
-            const devtoolsTree = section.element.querySelector('devtools-tree');
-            if (!devtoolsTree) {
-              return false;
-            }
-            const treeOutline = devtoolsTree.getInternalTreeOutlineForTest();
-            if (!treeOutline || treeOutline.rootElement().childCount() === 0) {
-              return false;
-            }
-          }
-        }
-      }
-      const devtoolsTrees = element.querySelectorAll('devtools-tree');
-      for (const devtoolsTree of devtoolsTrees) {
-        const treeOutline = devtoolsTree.getInternalTreeOutlineForTest();
-        if (!treeOutline) {
-          continue;
-        }
-        for (let treeElement = treeOutline.rootElement().firstChild(); treeElement;
-             treeElement = treeElement.traverseNextTreeElement(true, null, true)) {
-          if (treeElement.expanded && treeElement.isExpandable() && treeElement.childCount() === 0) {
-            return false;
-          }
-        }
-      }
-    }
-    return true;
-  });
-  await new Promise(requestAnimationFrame);
-};
-
-/**
  * @param {!Function} callback
  * @param {function(!Element):boolean} deepFilter
  * @param {function(!ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget):boolean} sectionFilter
@@ -469,18 +412,9 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
     messageViews[i].element();
   }
 
-  void (async () => {
-    await TestRunner.pollUntil(() => {
-      return messageViews.every(view => {
-        const el = view.element();
-        const hasNodeParam = view.message.parameters?.some(p => p.type === 'object' && p.subtype === 'node');
-        if (hasNodeParam && !el.querySelector('.elements-tree-outline')) {
-          return false;
-        }
-        return true;
-      });
-    });
+  TestRunner.deprecatedRunAfterPendingDispatches(expandTreeElements);
 
+  async function expandTreeElements() {
     for (let i = 0; i < messageViews.length; ++i) {
       const element = messageViews[i].element();
       for (let node = element; node; node = node.traverseNextNode(element)) {
@@ -500,46 +434,25 @@ ConsoleTestRunner.expandConsoleMessages = function(callback, deepFilter, section
         if (section.objectTree) {
           section.objectTree.expanded = true;
         }
-      }
-    }
 
-    await ConsoleTestRunner.waitForAllPopulations();
-
-    if (deepFilter) {
-      const elementsToExpand = [];
-      for (let i = 0; i < messageViews.length; ++i) {
-        const element = messageViews[i].element();
-        for (let node = element; node; node = node.traverseNextNode(element)) {
-          const section = UI.Widget.Widget.get(node);
-          if (!(section instanceof ObjectUI.ObjectPropertiesSection.ObjectPropertiesSectionWidget)) {
-            continue;
-          }
-          if (sectionFilter && !sectionFilter(section)) {
-            continue;
-          }
-          const treeOutline = section.element.querySelector('devtools-tree')?.getInternalTreeOutlineForTest();
-          const treeElements = treeOutline?.rootElement().children() || [];
-          for (let j = 0; j < treeElements.length; ++j) {
-            for (let treeElement = treeElements[j]; treeElement;
-                 treeElement = treeElement.traverseNextTreeElement(true, null, true)) {
-              if (deepFilter(treeElement)) {
-                elementsToExpand.push(treeElement);
-              }
+        if (!deepFilter) {
+          continue;
+        }
+        const treeOutline = section.element.querySelector('devtools-tree')?.getInternalTreeOutlineForTest();
+        const treeElements = treeOutline?.rootElement().children() || [];
+        for (let j = 0; j < treeElements.length; ++j) {
+          for (let treeElement = treeElements[j]; treeElement;
+               treeElement = treeElement.traverseNextTreeElement(true, null, true)) {
+            if (deepFilter(treeElement)) {
+              treeElement.expand();
             }
           }
         }
       }
-      for (const treeElement of elementsToExpand) {
-        treeElement.expand();
-      }
-      await ConsoleTestRunner.waitForAllPopulations();
     }
-
     await new Promise(requestAnimationFrame);
-    if (callback) {
-      callback();
-    }
-  })();
+    TestRunner.deprecatedRunAfterPendingDispatches(callback);
+  }
 };
 
 /**
@@ -552,10 +465,17 @@ ConsoleTestRunner.expandConsoleMessagesPromise = function(deepFilter, sectionFil
 };
 
 /**
+ * @returns {!Promise<void>}
+ */
+ConsoleTestRunner.waitForAllPopulations = function() {
+  return new Promise(resolve => TestRunner.deprecatedRunAfterPendingDispatches(resolve));
+};
+
+/**
  * @param {!Function} callback
  */
 ConsoleTestRunner.expandGettersInConsoleMessages = async function(callback) {
-  await ConsoleTestRunner.waitForAllPopulations();
+  await new Promise(requestAnimationFrame);
   const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   const properties = [];
   let propertiesCount = 0;
@@ -573,9 +493,7 @@ ConsoleTestRunner.expandGettersInConsoleMessages = async function(callback) {
     }
   }
   if (propertiesCount === 0) {
-    if (callback) {
-      callback();
-    }
+    TestRunner.deprecatedRunAfterPendingDispatches(callback);
     return;
   }
 
@@ -585,11 +503,8 @@ ConsoleTestRunner.expandGettersInConsoleMessages = async function(callback) {
       for (let i = 0; i < properties.length; ++i) {
         properties[i].click();
       }
-      await ConsoleTestRunner.waitForAllPopulations();
       await new Promise(requestAnimationFrame);
-      if (callback) {
-        callback();
-      }
+      TestRunner.deprecatedRunAfterPendingDispatches(callback);
     } else {
       TestRunner.addSniffer(
           ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.prototype, 'updateExpandable',
@@ -601,30 +516,24 @@ ConsoleTestRunner.expandGettersInConsoleMessages = async function(callback) {
 /**
  * @param {!Function} callback
  */
-ConsoleTestRunner.expandConsoleMessagesErrorParameters = async function(callback) {
+ConsoleTestRunner.expandConsoleMessagesErrorParameters = function(callback) {
   const messageViews = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   // Initiate round-trips to fetch necessary data for further rendering.
   for (let i = 0; i < messageViews.length; ++i) {
     messageViews[i].element();
   }
-  await new Promise(requestAnimationFrame);
-  if (callback) {
-    callback();
-  }
+  TestRunner.deprecatedRunAfterPendingDispatches(callback);
 };
 
 /**
  * @param {!Function} callback
  */
-ConsoleTestRunner.waitForRemoteObjectsConsoleMessages = async function(callback) {
+ConsoleTestRunner.waitForRemoteObjectsConsoleMessages = function(callback) {
   const messages = Console.ConsoleView.ConsoleView.instance().visibleViewMessages;
   for (let i = 0; i < messages.length; ++i) {
     messages[i].toMessageElement();
   }
-  await new Promise(requestAnimationFrame);
-  if (callback) {
-    callback();
-  }
+  TestRunner.deprecatedRunAfterPendingDispatches(callback);
 };
 
 /**

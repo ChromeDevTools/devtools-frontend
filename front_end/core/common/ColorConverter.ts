@@ -274,9 +274,9 @@ export class ColorConverter {
     const xyzInput = new Vector3([x, y, z]);
     const lmsIntermediate = XYZ_TO_LMS_MATRIX.multiply(xyzInput);
 
-    lmsIntermediate.values[0] = Math.pow(lmsIntermediate.values[0], 1.0 / 3.0);
-    lmsIntermediate.values[1] = Math.pow(lmsIntermediate.values[1], 1.0 / 3.0);
-    lmsIntermediate.values[2] = Math.pow(lmsIntermediate.values[2], 1.0 / 3.0);
+    lmsIntermediate.values[0] = Math.cbrt(lmsIntermediate.values[0]);
+    lmsIntermediate.values[1] = Math.cbrt(lmsIntermediate.values[1]);
+    lmsIntermediate.values[2] = Math.cbrt(lmsIntermediate.values[2]);
 
     const labOutput = LMS_TO_OKLAB_MATRIX.multiply(lmsIntermediate);
     return [labOutput.values[0], labOutput.values[1], labOutput.values[2]];

@@ -253,6 +253,7 @@ export class AccessibilityAgent extends AiAgent<LHModel.ReporterTypes.ReportJSON
               createExtensionScope: this.#createExtensionScope.bind(this),
               execJs: this.#execJs,
               getExecutionContextNode: () => this.#getDocumentBodyNode(),
+              getEstablishedOrigin: () => this.context?.getOrigin(),
             },
             options,
         );

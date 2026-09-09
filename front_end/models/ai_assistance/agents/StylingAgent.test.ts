@@ -78,6 +78,7 @@ describe('StylingAgent', function() {
     element.ownerDocument = {
       documentURL: 'https://example.com',
     } as unknown as SDK.DOMModel.DOMDocument;
+    element.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
   });
 
   describe('buildRequest', () => {

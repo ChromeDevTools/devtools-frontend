@@ -439,6 +439,7 @@ describe('AccessibilityAgent', () => {
     const domModel = target.model(SDK.DOMModel.DOMModel)!;
     const documentNode = sinon.createStubInstance(SDK.DOMModel.DOMNode);
     documentNode.domModel.returns(domModel);
+    documentNode.securityOrigin.returns(SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'));
     const document = sinon.createStubInstance(SDK.DOMModel.DOMDocument);
     document.body = documentNode;
     sinon.stub(domModel, 'existingDocument').returns(document);

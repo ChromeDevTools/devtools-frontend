@@ -13,6 +13,7 @@ import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  type OriginLockCapability,
   type PageExecutionCapability,
   type StyleMutationCapability,
   type ToolArgs,
@@ -30,7 +31,8 @@ export interface ExecuteJavaScriptArgs extends ToolArgs {
 }
 
 export class ExecuteJavaScriptTool implements
-    DataTool<ExecuteJavaScriptArgs, unknown, BaseToolCapability&PageExecutionCapability&StyleMutationCapability> {
+    DataTool<ExecuteJavaScriptArgs, unknown,
+             BaseToolCapability&PageExecutionCapability&StyleMutationCapability&OriginLockCapability> {
   readonly name: ToolName = ToolName.EXECUTE_JAVASCRIPT;
 
   readonly description: string =
@@ -120,12 +122,25 @@ const data = {
 
   async handler(
       params: ExecuteJavaScriptArgs,
-      context: BaseToolCapability&PageExecutionCapability&StyleMutationCapability,
+      context: BaseToolCapability&PageExecutionCapability&StyleMutationCapability&OriginLockCapability,
       options?: FunctionHandlerOptions,
       ): Promise<DataHandlerResult<unknown>> {
     const executionNode = context.getExecutionContextNode();
     if (!executionNode) {
       return {error: 'Error: Could not find the context node for execution.'};
+    }
+
+    const establishedOrigin = context.getEstablishedOrigin();
+    if (establishedOrigin) {
+      const nodeOrigin = executionNode.securityOrigin();
+      if (!nodeOrigin || nodeOrigin.isOpaque()) {
+        return {error: 'Error: Cannot execute JavaScript because the context node has no valid security origin.'};
+      }
+      if (!nodeOrigin.isSameOriginWith(establishedOrigin)) {
+        return {
+          error: 'Error: Cannot execute JavaScript because the context node does not belong to the locked origin.',
+        };
+      }
     }
 
     if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {

@@ -5,17 +5,14 @@
 import {assert} from 'chai';
 import sinon from 'sinon';
 
-import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import type * as Protocol from '../../../generated/protocol.js';
 import {
   assertIsError,
   assertIsResult,
 } from '../../../testing/AiAssistanceHelpers.js';
+import {createNetworkRequest} from '../../../testing/NetworkRequestHelpers.js';
 import * as Logs from '../../logs/logs.js';
 import * as AiAssistance from '../ai_assistance.js';
-
-const {urlString} = Platform.DevToolsPath;
 
 describe('ListNetworkRequestsTool', () => {
   let networkLog: sinon.SinonStubbedInstance<Logs.NetworkLog.NetworkLog>;
@@ -25,17 +22,14 @@ describe('ListNetworkRequestsTool', () => {
   });
 
   it('lists network requests successfully', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        urlString`https://example.com/`,
-        urlString`https://example.com/`,
-        null,
-        null,
-        null,
-    );
-    request.statusCode = 200;
-    request.setIssueTime(0, 0);
+    const request = createNetworkRequest({
+      requestId: 'requestId',
+      url: 'https://example.com/',
+      documentURL: 'https://example.com/',
+      statusCode: 200,
+    });
     request.setTransferSize(3000);
+    request.setIssueTime(0, 0);
     request.endTime = 2;
 
     networkLog.requests.returns([request]);
@@ -61,27 +55,21 @@ describe('ListNetworkRequestsTool', () => {
   });
 
   it('filters out cross-origin requests', async () => {
-    const request1 = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId1' as Protocol.Network.RequestId,
-        urlString`https://example.com/`,
-        urlString`https://example.com/`,
-        null,
-        null,
-        null,
-    );
-    request1.statusCode = 200;
+    const request1 = createNetworkRequest({
+      requestId: 'requestId1',
+      url: 'https://example.com/',
+      documentURL: 'https://example.com/',
+      statusCode: 200,
+    });
     request1.setIssueTime(0, 0);
     request1.endTime = 0;
 
-    const request2 = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId2' as Protocol.Network.RequestId,
-        urlString`https://another.com/`,
-        urlString`https://another.com/`,
-        null,
-        null,
-        null,
-    );
-    request2.statusCode = 200;
+    const request2 = createNetworkRequest({
+      requestId: 'requestId2',
+      url: 'https://another.com/',
+      documentURL: 'https://another.com/',
+      statusCode: 200,
+    });
 
     networkLog.requests.returns([request1, request2]);
 
@@ -137,14 +125,11 @@ describe('ListNetworkRequestsTool', () => {
   });
 
   it('returns error when requests exist but none match established origin', async () => {
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId' as Protocol.Network.RequestId,
-        urlString`https://cross-origin.com/api`,
-        urlString`https://cross-origin.com/`,
-        null,
-        null,
-        null,
-    );
+    const request = createNetworkRequest({
+      requestId: 'requestId',
+      url: 'https://cross-origin.com/api',
+      documentURL: 'https://cross-origin.com/',
+    });
     networkLog.requests.returns([request]);
 
     const tool = new AiAssistance.ListNetworkRequests.ListNetworkRequestsTool(networkLog);

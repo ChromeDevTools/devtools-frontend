@@ -506,27 +506,21 @@ describe('AiConversation', () => {
     target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
     sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
 
-    const sameOriginRequest = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId1' as Protocol.Network.RequestId,
-        Platform.DevToolsPath.urlString`${origin}/foo`,
-        Platform.DevToolsPath.urlString`${origin}/foo`,
-        null,
-        null,
-        null,
-    );
-    sameOriginRequest.statusCode = 200;
+    const sameOriginRequest = createNetworkRequest({
+      requestId: 'requestId1',
+      url: `${origin}/foo`,
+      documentURL: `${origin}/foo`,
+      statusCode: 200,
+    });
     sameOriginRequest.setIssueTime(0, 0);
     sameOriginRequest.endTime = 1;
 
-    const crossOriginRequest = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId2' as Protocol.Network.RequestId,
-        Platform.DevToolsPath.urlString`${otherOrigin}/bar`,
-        Platform.DevToolsPath.urlString`${otherOrigin}/bar`,
-        null,
-        null,
-        null,
-    );
-    crossOriginRequest.statusCode = 200;
+    const crossOriginRequest = createNetworkRequest({
+      requestId: 'requestId2',
+      url: `${otherOrigin}/bar`,
+      documentURL: `${otherOrigin}/bar`,
+      statusCode: 200,
+    });
     crossOriginRequest.setIssueTime(0, 0);
     crossOriginRequest.endTime = 1;
 
@@ -579,15 +573,12 @@ describe('AiConversation', () => {
     target.inspectedURL.returns(Platform.DevToolsPath.urlString`${origin}/`);
     sinon.stub(universe.targetManager, 'primaryPageTarget').returns(target);
 
-    const request1 = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId1' as Protocol.Network.RequestId,
-        Platform.DevToolsPath.urlString`${origin}/foo`,
-        Platform.DevToolsPath.urlString`${origin}/foo`,
-        null,
-        null,
-        null,
-    );
-    request1.statusCode = 200;
+    const request1 = createNetworkRequest({
+      requestId: 'requestId1',
+      url: `${origin}/foo`,
+      documentURL: `${origin}/foo`,
+      statusCode: 200,
+    });
     request1.setIssueTime(0, 0);
     request1.endTime = 1;
 
@@ -624,15 +615,12 @@ describe('AiConversation', () => {
 
     target.inspectedURL.returns(Platform.DevToolsPath.urlString`${otherOrigin}/`);
 
-    const request2 = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId2' as Protocol.Network.RequestId,
-        Platform.DevToolsPath.urlString`${otherOrigin}/bar`,
-        Platform.DevToolsPath.urlString`${otherOrigin}/bar`,
-        null,
-        null,
-        null,
-    );
-    request2.statusCode = 200;
+    const request2 = createNetworkRequest({
+      requestId: 'requestId2',
+      url: `${otherOrigin}/bar`,
+      documentURL: `${otherOrigin}/bar`,
+      statusCode: 200,
+    });
     request2.setIssueTime(0, 0);
     request2.endTime = 1;
     requestsStub.returns([request2]);
@@ -772,15 +760,12 @@ describe('AiConversation', () => {
     const target = universe.createTarget({url: initialUrl});
     target.setInspectedURL(initialUrl);
 
-    const request = SDK.NetworkRequest.NetworkRequest.create(
-        'requestId1' as Protocol.Network.RequestId,
-        Platform.DevToolsPath.urlString`${origin}/foo`,
-        Platform.DevToolsPath.urlString`${origin}/foo`,
-        null,
-        null,
-        null,
-    );
-    request.statusCode = 200;
+    const request = createNetworkRequest({
+      requestId: 'requestId1',
+      url: `${origin}/foo`,
+      documentURL: `${origin}/foo`,
+      statusCode: 200,
+    });
     request.setIssueTime(0, 0);
     request.endTime = 1;
 

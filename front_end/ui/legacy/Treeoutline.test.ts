@@ -399,6 +399,55 @@ describe('TreeViewElement', () => {
 
     sinon.assert.notCalled(onSelectFirst);
     sinon.assert.calledOnce(onSelectSecond);
+    assert.isFalse(onSelectSecond.firstCall.args[0].detail?.selectedByUser);
+
+    component.getInternalTreeOutlineForTest().rootElement().firstChild()?.select(/* omitFocus= */ false,
+                                                                                 /* selectedByUser= */ true);
+    sinon.assert.calledOnce(onSelectFirst);
+    assert.isTrue(onSelectFirst.firstCall.args[0].detail?.selectedByUser);
+  });
+
+  it('applies disclosure-class attribute to the tree outline disclosure element', async () => {
+    const component = await makeTree(html`
+      <devtools-tree disclosure-class="custom-disclosure-style" .template=${html`
+        <ul role="tree">
+          <li role="treeitem">node</li>
+        </ul>`}>
+      </devtools-tree>`);
+    const disclosureElement = component.shadowRoot?.querySelector('.tree-outline-disclosure');
+    assert.isNotNull(disclosureElement);
+    assert.isTrue(disclosureElement?.classList.contains('custom-disclosure-style'));
+  });
+
+  it('propagates tree ul class names to internal tree outline contentElement without overwriting internal classes',
+     async () => {
+       const component = await makeTree(html`
+      <devtools-tree dense .template=${html`
+        <ul role="tree" class="custom-tree-class">
+          <li role="treeitem">node</li>
+        </ul>`}>
+      </devtools-tree>`);
+       const treeOutline = component.getInternalTreeOutlineForTest();
+       assert.isTrue(treeOutline.contentElement.classList.contains('custom-tree-class'));
+       assert.isTrue(treeOutline.contentElement.classList.contains('tree-outline-dense'));
+       assert.isTrue(treeOutline.contentElement.classList.contains('tree-outline'));
+     });
+
+  it('preserves focus on listItemElement when TreeViewTreeElement is refreshed', async () => {
+    const component = await makeTree(html`
+      <devtools-tree .template=${html`
+        <ul role="tree">
+          <li role="treeitem">node</li>
+        </ul>`}>
+      </devtools-tree>`);
+    const treeElement =
+        component.getInternalTreeOutlineForTest().rootElement().firstChild() as UI.TreeOutline.TreeElement;
+    assert.exists(treeElement);
+    treeElement.select();
+    assert.isTrue(treeElement.listItemElement.hasFocus());
+
+    (treeElement as unknown as {refresh: () => void}).refresh();
+    assert.isTrue(treeElement.listItemElement.hasFocus());
   });
 
   it('sends an `expand` event when a node is expanded or collapsed', async () => {

@@ -6,7 +6,6 @@ import * as i18n from '../../../core/i18n/i18n.js';
 import * as Root from '../../../core/root/root.js';
 import * as SDK from '../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
-import { canResourceContentsBeReadForTrace } from '../AiOrigins.js';
 const UIStringsNotTranslate = {
     lookingAtResourceContent: 'Looking at resource content',
 };
@@ -41,8 +40,7 @@ export class GetResourceContentTool {
         if (performanceTraceContext.isImported()) {
             return { error: 'Cannot use this tool on an imported file.' };
         }
-        const allowedOrigin = performanceTraceContext.getOrigin();
-        if (!canResourceContentsBeReadForTrace(params.url, allowedOrigin)) {
+        if (!performanceTraceContext.canAccessResource(params.url)) {
             return { error: 'Resource not found' };
         }
         const focus = performanceTraceContext.getItem();

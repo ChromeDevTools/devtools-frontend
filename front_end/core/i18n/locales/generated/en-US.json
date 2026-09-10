@@ -2546,6 +2546,27 @@
   "panels/accessibility/accessibility-meta.ts | shoAccessibility": {
     "message": "Show Accessibility"
   },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | api": {
+    "message": "API"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | ariaLive": {
+    "message": "ARIA live"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | ariaLiveRecordingList": {
+    "message": "Accessibility Announcements"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | jsTriggered": {
+    "message": "JS-triggered"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | message": {
+    "message": "Message"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | politeness": {
+    "message": "Politeness"
+  },
+  "panels/accessibility/AccessibilityAnnouncementRecordingListView.ts | time": {
+    "message": "Time"
+  },
   "panels/accessibility/AccessibilityAnnouncementRecordingView.ts | ariaLiveRecording": {
     "message": "Announcements recording"
   },

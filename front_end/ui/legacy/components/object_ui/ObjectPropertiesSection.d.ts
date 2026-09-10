@@ -1,3 +1,4 @@
+import '../../../components/highlighting/highlighting.js';
 import * as Common from '../../../../core/common/common.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
@@ -208,10 +209,7 @@ export interface ObjectPropertyViewInput {
     node: ObjectTreeNode;
     search?: UI.TreeOutline.TreeSearch<ObjectTreeNodeBase>;
 }
-export interface ObjectPropertyViewOutput {
-    valueElement: Element | undefined;
-    nameElement: Element | undefined;
-}
+export type ObjectPropertyViewOutput = undefined;
 export type ObjectPropertyView = (input: ObjectPropertyViewInput, output: ObjectPropertyViewOutput, target: HTMLElement) => void;
 export declare const OBJECT_PROPERTY_DEFAULT_VIEW: ObjectPropertyView;
 export declare class ObjectPropertyWidget extends UI.Widget.Widget {
@@ -226,8 +224,6 @@ export declare class ObjectPropertyWidget extends UI.Widget.Widget {
     get editable(): boolean;
     set editable(val: boolean);
     performUpdate(): void;
-    setSearchRegex(regex: RegExp, additionalCssClassName?: string): boolean;
-    revertHighlightChanges(): void;
     get editing(): boolean;
     startEditing(): void;
 }
@@ -244,8 +240,6 @@ export declare class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElemen
     static createNodes(value: ObjectTreeNodeBase, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null, isNotDisplayablePropertyCallback?: (property: SDK.RemoteObject.RemoteObjectProperty) => boolean): Generator<UI.TreeOutline.TreeElement>;
     static createPropertyNodes({ properties, internalProperties, accessors, arrayRanges }: NodeChildren, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null, isNotDisplayablePropertyCallback?: (property: SDK.RemoteObject.RemoteObjectProperty) => boolean): Generator<UI.TreeOutline.TreeElement>;
     static populateWithProperties(treeNode: UI.TreeOutline.TreeElement, children: NodeChildren, skipProto: boolean, skipGettersAndSetters: boolean, linkifier?: Components.Linkifier.Linkifier, emptyPlaceholder?: string | null): void;
-    revertHighlightChanges(): void;
-    setSearchRegex(regex: RegExp, additionalCssClassName?: string): boolean;
     startEditing(): void;
     get editing(): boolean;
     get editable(): boolean;

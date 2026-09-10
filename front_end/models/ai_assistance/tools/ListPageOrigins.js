@@ -1,11 +1,9 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import { areOriginsEquivalent, isOpaqueOrigin } from '../AiOrigins.js';
 const lockedString = i18n.i18n.lockedString;
 export class ListPageOriginsTool {
     name = "listPageOrigins" /* ToolName.LIST_PAGE_ORIGINS */;
@@ -36,13 +34,12 @@ export class ListPageOriginsTool {
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         const targetManager = SDK.TargetManager.TargetManager.instance();
         const primaryPageTarget = targetManager.primaryPageTarget();
-        const allowedOrigin = context.getEstablishedOrigin();
-        if (!allowedOrigin || isOpaqueOrigin(allowedOrigin)) {
+        const establishedOrigin = context.getEstablishedOrigin();
+        if (!establishedOrigin || establishedOrigin.isOpaque()) {
             return { error: 'No origin available or not allowed.' };
         }
-        const pageOrigin = primaryPageTarget ? Common.ParsedURL.ParsedURL.extractOrigin(primaryPageTarget.inspectedURL()) : '';
-        const isAllowed = pageOrigin !== '' && areOriginsEquivalent(pageOrigin, allowedOrigin);
-        if (!isAllowed) {
+        const pageOrigin = primaryPageTarget ? SDK.SecurityOrigin.SecurityOrigin.create(primaryPageTarget.inspectedURL()) : null;
+        if (!pageOrigin || !pageOrigin.isSameOriginWith(establishedOrigin)) {
             return { error: 'No origin available or not allowed.' };
         }
         const origins = new Set();
@@ -50,17 +47,17 @@ export class ListPageOriginsTool {
             if (frame.resourceTreeModel().target().outermostTarget() !== primaryPageTarget) {
                 continue;
             }
-            const origin = frame.securityOrigin;
+            if (!frame.securityOrigin) {
+                continue;
+            }
+            const frameOrigin = SDK.SecurityOrigin.SecurityOrigin.create(frame.securityOrigin);
             // Filter out frames that are not same-origin to the page's allowed origin.
             // Under site isolation, frames can be hosted on different targets/processes,
             // so we check the security origin of the frame directly instead of the target.
-            if (!origin || !areOriginsEquivalent(origin, allowedOrigin)) {
+            if (!frameOrigin.isSameOriginWith(establishedOrigin)) {
                 continue;
             }
-            if (origins.has(origin)) {
-                continue;
-            }
-            origins.add(origin);
+            origins.add(frameOrigin.siteId());
         }
         return { result: { origins: Array.from(origins) } };
     }

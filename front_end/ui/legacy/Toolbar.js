@@ -743,11 +743,15 @@ export class ToolbarFilter extends ToolbarInput {
                 toggledIconName: regexIconName,
                 toggleType: "primary-toggle" /* Buttons.Button.ToggleType.PRIMARY */,
                 toggled: false,
+                checked: false,
                 title: i18nString(UIStrings.useRegularExpression),
                 jslogContext: regexIconName,
             };
+            regexButton.style.setProperty('--dot-toggle-top', 'calc(100% - var(--sys-size-3) - var(--sys-size-1))');
+            regexButton.style.setProperty('--dot-toggle-left', 'calc(100% - var(--sys-size-3) - var(--sys-size-1))');
             ARIAUtils.setLabel(regexButton, i18nString(UIStrings.useRegularExpression));
             regexButton.addEventListener('click', () => {
+                regexButton.checked = regexButton.toggled;
                 onRegexToggle?.();
             });
             this.insertTrailingElement(regexButton);

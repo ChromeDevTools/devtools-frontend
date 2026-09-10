@@ -17,8 +17,16 @@ export interface CookieDetails {
     sourceScheme?: Protocol.Network.CookieSourceScheme;
 }
 /**
- * Resolves and validates target origins against origin-lock constraints and primary page target.
- * If `requestedOrigins` is omitted or empty, defaults to the established context origin.
+ * Resolves and validates target origins against the established context origin and primary page target.
+ *
+ * When `requestedOrigins` is empty or omitted, defaults to the established context origin.
+ * Rejects opaque origins, mismatches with the primary page origin, and cross-origin targets.
+ * Limits results to at most `MAX_TARGET_ORIGINS` unique origins.
+ *
+ * @param requestedOrigins Optional list of origin URLs to validate.
+ * @param context The origin lock capability containing the established origin.
+ * @param targetManager The target manager used to resolve the primary page target.
+ * @returns An object with validated target origins and the primary page target, or an error object.
  */
 export declare function resolveAllowedTargetOrigins(requestedOrigins: string[] | undefined, context: OriginLockCapability, targetManager: SDK.TargetManager.TargetManager): {
     targetOrigins: string[];
@@ -32,7 +40,14 @@ export type GetCookiesForOriginResult = {
     error: string;
 };
 /**
- * Finds the resource tree frame matching the target origin within the primary page's outermost target tree.
+ * Finds a frame in the primary page target tree that matches the specified origin.
+ *
+ * Returns `null` if the origin is opaque or if no matching frame exists.
+ *
+ * @param origin The target origin URL to match.
+ * @param targetManager The target manager to query for active frames.
+ * @param primaryPageTarget The primary page target containing the frame tree.
+ * @returns The matching frame, or `null` if not found.
  */
 export declare function findFrameForOrigin(origin: string, targetManager: SDK.TargetManager.TargetManager, primaryPageTarget: SDK.Target.Target): SDK.ResourceTreeModel.ResourceTreeFrame | null;
 /**

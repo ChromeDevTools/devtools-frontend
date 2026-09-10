@@ -48,8 +48,8 @@ export interface CreateNetworkRequestOptions {
     serviceWorkerRouterInfo?: Protocol.Network.ServiceWorkerRouterInfo;
     fetchedViaServiceWorker?: boolean;
     initiator?: Protocol.Network.Initiator | null;
-    frameId?: Protocol.Page.FrameId | null;
-    loaderId?: Protocol.Network.LoaderId | null;
+    frameId?: string | Protocol.Page.FrameId | null;
+    loaderId?: string | Protocol.Network.LoaderId | null;
 }
 /**
  * Creates and configures a synthetic {@link SDK.NetworkRequest.NetworkRequest} for unit testing.

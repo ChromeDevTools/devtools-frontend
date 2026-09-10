@@ -13796,11 +13796,15 @@ var ToolbarFilter = class extends ToolbarInput {
         toggledIconName: regexIconName,
         toggleType: Buttons5.Button.ToggleType.PRIMARY,
         toggled: false,
+        checked: false,
         title: i18nString12(UIStrings12.useRegularExpression),
         jslogContext: regexIconName
       };
+      regexButton.style.setProperty("--dot-toggle-top", "calc(100% - var(--sys-size-3) - var(--sys-size-1))");
+      regexButton.style.setProperty("--dot-toggle-left", "calc(100% - var(--sys-size-3) - var(--sys-size-1))");
       setLabel(regexButton, i18nString12(UIStrings12.useRegularExpression));
       regexButton.addEventListener("click", () => {
+        regexButton.checked = regexButton.toggled;
         onRegexToggle?.();
       });
       this.insertTrailingElement(regexButton);

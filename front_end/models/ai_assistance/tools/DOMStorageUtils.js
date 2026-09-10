@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import * as SDK from '../../../core/sdk/sdk.js';
-import { areOriginsEquivalent, extractContextOrigin } from '../AiOrigins.js';
 /**
  * Maximum number of target origins allowed in a single batch query to bound
  * model iteration, memory usage, and CDP traffic.
@@ -33,7 +32,10 @@ export function resolveDOMStorages(origin, type, targetManager, primaryPageTarge
     const resolvedStorages = [];
     const seenStorageKeys = new Set();
     const isLocalStorage = type === 'localStorage';
-    const targetOrigin = extractContextOrigin(origin);
+    const targetOrigin = SDK.SecurityOrigin.SecurityOrigin.create(origin);
+    if (targetOrigin.isOpaque()) {
+        return [];
+    }
     const domStorageModels = targetManager.models(SDK.DOMStorageModel.DOMStorageModel);
     for (const domStorageModel of domStorageModels) {
         // Scope models strictly to the primary page target tree (including subframes and OOPIFs)
@@ -64,7 +66,8 @@ export function resolveDOMStorages(origin, type, targetManager, primaryPageTarge
             // Parse the serialized StorageKey (e.g. "https://example.com/^0https://top.com") to
             // extract the partition's origin for equivalence comparison.
             const parsedKey = SDK.StorageKeyManager.parseStorageKey(currentStorageKey);
-            if (areOriginsEquivalent(parsedKey.origin, targetOrigin)) {
+            const parsedOrigin = SDK.SecurityOrigin.SecurityOrigin.create(parsedKey.origin);
+            if (parsedOrigin.isSameOriginWith(targetOrigin)) {
                 resolvedStorages.push(storage);
             }
         }

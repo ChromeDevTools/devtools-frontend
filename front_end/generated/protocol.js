@@ -423,6 +423,7 @@ export var Audits;
         FederatedAuthRequestIssueReason["UiDismissedNoEmbargo"] = "UiDismissedNoEmbargo";
         FederatedAuthRequestIssueReason["CorsError"] = "CorsError";
         FederatedAuthRequestIssueReason["SuppressedBySegmentationPlatform"] = "SuppressedBySegmentationPlatform";
+        FederatedAuthRequestIssueReason["PopupBlockedByConnectionAllowlist"] = "PopupBlockedByConnectionAllowlist";
     })(FederatedAuthRequestIssueReason = Audits.FederatedAuthRequestIssueReason || (Audits.FederatedAuthRequestIssueReason = {}));
     /**
      * Represents the failure reason when a getUserInfo() call fails.
@@ -505,6 +506,7 @@ export var Audits;
         EmailVerificationRequestIssueReason["TokenVerificationKbInvalidSdHash"] = "TokenVerificationKbInvalidSdHash";
         EmailVerificationRequestIssueReason["TokenVerificationKbMissingCnf"] = "TokenVerificationKbMissingCnf";
         EmailVerificationRequestIssueReason["TokenVerificationKbSignatureFailed"] = "TokenVerificationKbSignatureFailed";
+        EmailVerificationRequestIssueReason["CrossOriginIframeNotSupported"] = "CrossOriginIframeNotSupported";
     })(EmailVerificationRequestIssueReason = Audits.EmailVerificationRequestIssueReason || (Audits.EmailVerificationRequestIssueReason = {}));
     let PartitioningBlobURLInfo;
     (function (PartitioningBlobURLInfo) {
@@ -1087,6 +1089,11 @@ export var Emulation;
         SetDeviceMetricsOverrideRequestScrollbarType["Overlay"] = "overlay";
         SetDeviceMetricsOverrideRequestScrollbarType["Default"] = "default";
     })(SetDeviceMetricsOverrideRequestScrollbarType = Emulation.SetDeviceMetricsOverrideRequestScrollbarType || (Emulation.SetDeviceMetricsOverrideRequestScrollbarType = {}));
+    let SetDeviceMetricsOverrideRequestViewportMeta;
+    (function (SetDeviceMetricsOverrideRequestViewportMeta) {
+        SetDeviceMetricsOverrideRequestViewportMeta["Enable"] = "enable";
+        SetDeviceMetricsOverrideRequestViewportMeta["Default"] = "default";
+    })(SetDeviceMetricsOverrideRequestViewportMeta = Emulation.SetDeviceMetricsOverrideRequestViewportMeta || (Emulation.SetDeviceMetricsOverrideRequestViewportMeta = {}));
     let SetEmitTouchEventsForMouseRequestConfiguration;
     (function (SetEmitTouchEventsForMouseRequestConfiguration) {
         SetEmitTouchEventsForMouseRequestConfiguration["Mobile"] = "mobile";
@@ -3175,6 +3182,7 @@ export var Runtime;
         RemoteObjectSubtype["Dataview"] = "dataview";
         RemoteObjectSubtype["Webassemblymemory"] = "webassemblymemory";
         RemoteObjectSubtype["Wasmvalue"] = "wasmvalue";
+        RemoteObjectSubtype["Deferredmodule"] = "deferredmodule";
         RemoteObjectSubtype["Trustedtype"] = "trustedtype";
     })(RemoteObjectSubtype = Runtime.RemoteObjectSubtype || (Runtime.RemoteObjectSubtype = {}));
     let ObjectPreviewType;
@@ -3209,6 +3217,7 @@ export var Runtime;
         ObjectPreviewSubtype["Dataview"] = "dataview";
         ObjectPreviewSubtype["Webassemblymemory"] = "webassemblymemory";
         ObjectPreviewSubtype["Wasmvalue"] = "wasmvalue";
+        ObjectPreviewSubtype["Deferredmodule"] = "deferredmodule";
         ObjectPreviewSubtype["Trustedtype"] = "trustedtype";
     })(ObjectPreviewSubtype = Runtime.ObjectPreviewSubtype || (Runtime.ObjectPreviewSubtype = {}));
     let PropertyPreviewType;
@@ -3244,6 +3253,7 @@ export var Runtime;
         PropertyPreviewSubtype["Dataview"] = "dataview";
         PropertyPreviewSubtype["Webassemblymemory"] = "webassemblymemory";
         PropertyPreviewSubtype["Wasmvalue"] = "wasmvalue";
+        PropertyPreviewSubtype["Deferredmodule"] = "deferredmodule";
         PropertyPreviewSubtype["Trustedtype"] = "trustedtype";
     })(PropertyPreviewSubtype = Runtime.PropertyPreviewSubtype || (Runtime.PropertyPreviewSubtype = {}));
     let ConsoleAPICalledEventType;

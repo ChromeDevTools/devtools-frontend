@@ -184,10 +184,9 @@ export declare abstract class ConversationContext<T> {
      * 3. Returns `true` if this context origin is same-origin with `establishedOrigin`.
      *
      * @param establishedOrigin The locked origin of the current conversation, or `undefined`
-     * if the conversation has not made its first query. Strings are automatically parsed into
-     * `SecurityOrigin` instances.
+     * if the conversation has not made its first query.
      */
-    isOriginAllowed(establishedOrigin: SDK.SecurityOrigin.SecurityOrigin | string | undefined): boolean;
+    isOriginAllowed(establishedOrigin: SDK.SecurityOrigin.SecurityOrigin | undefined): boolean;
     /**
      * This method is called at the start of `AiAgent.run`.
      * It will be overridden in subclasses to fetch data related to the context item.

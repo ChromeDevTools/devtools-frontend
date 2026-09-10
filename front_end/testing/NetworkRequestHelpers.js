@@ -19,8 +19,12 @@ export function createNetworkRequest(options = {}) {
     // avoiding unintended cross-origin redactions or security checks in tests.
     const rawDocUrl = options.documentURL ?? reqUrl;
     const docUrl = typeof rawDocUrl === 'string' ? urlString `${rawDocUrl}` : rawDocUrl;
+    const frameId = (options.frameId !== undefined && options.frameId !== null) ? options.frameId : null;
+    const loaderId = (options.loaderId !== undefined && options.loaderId !== null) ?
+        options.loaderId :
+        null;
     const request = options.withoutBackend ? SDK.NetworkRequest.NetworkRequest.createWithoutBackendRequest(reqId, reqUrl, docUrl, options.initiator ?? null) :
-        SDK.NetworkRequest.NetworkRequest.create(reqId, reqUrl, docUrl, options.frameId ?? null, options.loaderId ?? null, options.initiator ?? null);
+        SDK.NetworkRequest.NetworkRequest.create(reqId, reqUrl, docUrl, frameId, loaderId, options.initiator ?? null);
     if (options.statusCode !== undefined) {
         request.statusCode = options.statusCode;
     }

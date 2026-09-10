@@ -81,6 +81,26 @@ export class PerformanceTraceContext extends ConversationContext {
         return !this.#freshRecordingTracker.recordingIsFresh(this.#focus.parsedTrace);
     }
     /**
+     * Checks whether the AI can access the resource at the specified URL.
+     *
+     * Access requires the resource origin to match the trace origin.
+     * Always rejects `file://` URLs to prevent local file leaks (b/523743289).
+     *
+     * @param url The URL of the resource to access.
+     * @returns `true` if the resource is same-origin with the trace and not a `file://` URL; otherwise `false`.
+     */
+    canAccessResource(url) {
+        const traceOrigin = this.getOrigin();
+        const targetOrigin = SDK.SecurityOrigin.SecurityOrigin.create(url);
+        // We explicitly block all file:// URLs even if same-origin (b/523743289).
+        // Allowing local file access in trace AI risks leaking local system files
+        // (such as /etc/passwd) via prompt injection across filesystem edge cases.
+        if (traceOrigin.isFile() || targetOrigin.isFile()) {
+            return false;
+        }
+        return traceOrigin.isSameOriginWith(targetOrigin);
+    }
+    /**
      * Returns the security origin for the performance trace.
      *
      * Live traces use the origin of the main frame URL.

@@ -54,8 +54,7 @@ export class ConversationContext {
      * 3. Returns `true` if this context origin is same-origin with `establishedOrigin`.
      *
      * @param establishedOrigin The locked origin of the current conversation, or `undefined`
-     * if the conversation has not made its first query. Strings are automatically parsed into
-     * `SecurityOrigin` instances.
+     * if the conversation has not made its first query.
      */
     isOriginAllowed(establishedOrigin) {
         const origin = this.getOrigin();
@@ -65,10 +64,7 @@ export class ConversationContext {
         if (!establishedOrigin) {
             return true;
         }
-        const established = typeof establishedOrigin === 'string' ?
-            SDK.SecurityOrigin.SecurityOrigin.create(establishedOrigin) :
-            establishedOrigin;
-        return origin.isSameOriginWith(established);
+        return origin.isSameOriginWith(establishedOrigin);
     }
     /**
      * This method is called at the start of `AiAgent.run`.

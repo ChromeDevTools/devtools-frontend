@@ -8,6 +8,7 @@
     "skipLibCheck": true
   },
   "files": [
+    "accessibilityAnnouncementRecordingListView.css.js",
     "accessibilityNode.css.js",
     "accessibilityProperties.css.js",
     "accessibilitySidebarView.css.js",

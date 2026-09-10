@@ -1303,7 +1303,8 @@ export declare namespace Audits {
         TypeNotMatching = "TypeNotMatching",
         UiDismissedNoEmbargo = "UiDismissedNoEmbargo",
         CorsError = "CorsError",
-        SuppressedBySegmentationPlatform = "SuppressedBySegmentationPlatform"
+        SuppressedBySegmentationPlatform = "SuppressedBySegmentationPlatform",
+        PopupBlockedByConnectionAllowlist = "PopupBlockedByConnectionAllowlist"
     }
     interface FederatedAuthUserInfoRequestIssueDetails {
         federatedAuthUserInfoRequestIssueReason: FederatedAuthUserInfoRequestIssueReason;
@@ -1389,7 +1390,8 @@ export declare namespace Audits {
         TokenVerificationKbInvalidNonce = "TokenVerificationKbInvalidNonce",
         TokenVerificationKbInvalidSdHash = "TokenVerificationKbInvalidSdHash",
         TokenVerificationKbMissingCnf = "TokenVerificationKbMissingCnf",
-        TokenVerificationKbSignatureFailed = "TokenVerificationKbSignatureFailed"
+        TokenVerificationKbSignatureFailed = "TokenVerificationKbSignatureFailed",
+        CrossOriginIframeNotSupported = "CrossOriginIframeNotSupported"
     }
     /**
      * This issue tracks client hints related issues. It's used to deprecate old
@@ -6868,6 +6870,10 @@ export declare namespace Emulation {
         Overlay = "overlay",
         Default = "default"
     }
+    const enum SetDeviceMetricsOverrideRequestViewportMeta {
+        Enable = "enable",
+        Default = "default"
+    }
     interface SetDeviceMetricsOverrideRequest {
         /**
          * Overriding width value in pixels (minimum 0, maximum 10000000). 0 disables the override.
@@ -6945,6 +6951,11 @@ export declare namespace Emulation {
          * responsive design mode.
          */
         screenOrientationLockEmulation?: boolean;
+        /**
+         * Viewport meta tag behavior. Default: `default`. Note: if `mobile` is `true`,
+         * the viewport meta tag is always enabled.
+         */
+        viewportMeta?: SetDeviceMetricsOverrideRequestViewportMeta;
     }
     interface SetDevicePostureOverrideRequest {
         posture: DevicePosture;
@@ -18987,6 +18998,14 @@ export declare namespace Debugger {
          * Location in the source code where scope ends
          */
         endLocation?: Location;
+        /**
+         * True if the scope does not declare any variables or have a runtime context.
+         * Only present if true.
+         * Empty scopes are retained in the scope chain because
+         * they can be targeted via `evaluateOnCallFrame` (using `scopeNumber`) or
+         * matched against scopes in source maps.
+         */
+        empty?: boolean;
     }
     /**
      * Search match for resource.
@@ -20315,6 +20334,7 @@ export declare namespace Runtime {
         Dataview = "dataview",
         Webassemblymemory = "webassemblymemory",
         Wasmvalue = "wasmvalue",
+        Deferredmodule = "deferredmodule",
         Trustedtype = "trustedtype"
     }
     /**
@@ -20405,6 +20425,7 @@ export declare namespace Runtime {
         Dataview = "dataview",
         Webassemblymemory = "webassemblymemory",
         Wasmvalue = "wasmvalue",
+        Deferredmodule = "deferredmodule",
         Trustedtype = "trustedtype"
     }
     /**
@@ -20467,6 +20488,7 @@ export declare namespace Runtime {
         Dataview = "dataview",
         Webassemblymemory = "webassemblymemory",
         Wasmvalue = "wasmvalue",
+        Deferredmodule = "deferredmodule",
         Trustedtype = "trustedtype"
     }
     interface PropertyPreview {

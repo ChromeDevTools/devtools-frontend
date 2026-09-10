@@ -1,6 +1,42 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+/**
+ * Verifies that the conversation origin lock is established and non-opaque, and
+ * that a target resource origin matches the locked origin.
+ * Fails closed, returning a ToolErrorResult if invalid, or undefined if allowed.
+ */
+export function validateOriginLock(context, targetOrigin, actionDescription = 'execute tool') {
+    const establishedOrigin = context.getEstablishedOrigin();
+    if (!establishedOrigin || establishedOrigin.isOpaque()) {
+        return { error: `Error: Cannot ${actionDescription} because origin lock is not established.` };
+    }
+    if (targetOrigin !== undefined) {
+        if (!targetOrigin || targetOrigin.isOpaque()) {
+            return { error: `Error: Cannot ${actionDescription} because the context node has no valid security origin.` };
+        }
+        if (!targetOrigin.isSameOriginWith(establishedOrigin)) {
+            return {
+                error: `Error: Cannot ${actionDescription} because the context node does not belong to the locked origin.`,
+            };
+        }
+    }
+    return undefined;
+}
+/**
+ * Checks whether a target origin matches the established conversation origin lock.
+ * Fails closed (returns false) if origin lock is missing/opaque or target is cross-origin.
+ */
+export function isOriginAllowedByLock(context, targetOrigin) {
+    const establishedOrigin = context.getEstablishedOrigin();
+    if (!establishedOrigin || establishedOrigin.isOpaque()) {
+        return false;
+    }
+    if (!targetOrigin || targetOrigin.isOpaque()) {
+        return false;
+    }
+    return targetOrigin.isSameOriginWith(establishedOrigin);
+}
 // The maximum size (in bytes) of a function execution result.
 // Approximately 16k tokens at ~4 characters per token, designed to limit
 // result sizes to prevent overloading the LLM's context window.

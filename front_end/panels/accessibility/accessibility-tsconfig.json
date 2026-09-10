@@ -47,6 +47,7 @@
   "files": [
     "../../../../../../front_end/panels/accessibility/ARIAAttributesView.ts",
     "../../../../../../front_end/panels/accessibility/ARIAMetadata.ts",
+    "../../../../../../front_end/panels/accessibility/AccessibilityAnnouncementRecordingListView.ts",
     "../../../../../../front_end/panels/accessibility/AccessibilityAnnouncementRecordingView.ts",
     "../../../../../../front_end/panels/accessibility/AccessibilityNodeView.ts",
     "../../../../../../front_end/panels/accessibility/AccessibilitySidebarView.ts",
@@ -85,6 +86,9 @@
     },
     {
       "path": "../../ui/legacy/bundle-tsconfig.ref.json"
+    },
+    {
+      "path": "../../ui/legacy/components/data_grid/bundle-tsconfig.ref.json"
     },
     {
       "path": "../../ui/lit/bundle-tsconfig.ref.json"

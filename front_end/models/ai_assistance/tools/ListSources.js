@@ -1,11 +1,11 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Workspace from '../../workspace/workspace.js';
-import { isOpaqueOrigin } from '../AiOrigins.js';
+import { FileContext } from '../contexts/FileContext.js';
+import { isOriginAllowedByLock, } from './Tool.js';
 const UIStringsNotTranslate = {
     listingSources: 'Listing workspace sources',
 };
@@ -58,15 +58,13 @@ export class ListSourcesTool {
     }
     async handler(_params, context) {
         const origin = context.getEstablishedOrigin();
-        if (origin && isOpaqueOrigin(origin)) {
+        if (!origin || origin.isOpaque()) {
             return {
                 error: 'Opaque origin not allowed',
             };
         }
         const files = ListSourcesTool.getUISourceCodes().filter(file => {
-            const fileUrl = file.url();
-            const fileOrigin = Common.ParsedURL.ParsedURL.extractOrigin(fileUrl);
-            return !origin || fileOrigin === origin;
+            return isOriginAllowedByLock(context, FileContext.originForUISourceCode(file));
         });
         return {
             result: {

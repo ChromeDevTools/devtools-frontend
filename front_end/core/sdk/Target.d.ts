@@ -2,6 +2,7 @@ import type * as Protocol from '../../generated/protocol.js';
 import * as Platform from '../platform/platform.js';
 import * as ProtocolClient from '../protocol_client/protocol_client.js';
 import { SDKModel, type SDKModelConstructor } from './SDKModel.js';
+import { SecurityOrigin } from './SecurityOrigin.js';
 import type { TargetManager } from './TargetManager.js';
 export declare class Target extends ProtocolClient.InspectorBackend.TargetBase {
     #private;
@@ -22,6 +23,14 @@ export declare class Target extends ProtocolClient.InspectorBackend.TargetBase {
     model<T extends SDKModel>(modelClass: new (arg1: Target) => T): T | null;
     models(): Map<new (arg1: Target) => SDKModel, SDKModel>;
     inspectedURL(): Platform.DevToolsPath.UrlString;
+    /**
+     * Returns the security origin for this target's inspected URL.
+     *
+     * The target caches the origin until `setInspectedURL()` changes the URL.
+     * If the URL is empty or invalid, this method returns a unique opaque origin.
+     * An opaque origin does not match any other origin.
+     */
+    inspectedSecurityOrigin(): SecurityOrigin;
     setInspectedURL(inspectedURL: Platform.DevToolsPath.UrlString): void;
     hasCrashed(): boolean;
     setHasCrashed(isCrashed: boolean): void;

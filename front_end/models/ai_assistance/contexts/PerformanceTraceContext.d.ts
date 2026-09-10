@@ -36,6 +36,16 @@ export declare class PerformanceTraceContext extends ConversationContext<AgentFo
      */
     isImported(): boolean;
     /**
+     * Checks whether the AI can access the resource at the specified URL.
+     *
+     * Access requires the resource origin to match the trace origin.
+     * Always rejects `file://` URLs to prevent local file leaks (b/523743289).
+     *
+     * @param url The URL of the resource to access.
+     * @returns `true` if the resource is same-origin with the trace and not a `file://` URL; otherwise `false`.
+     */
+    canAccessResource(url: string): boolean;
+    /**
      * Returns the security origin for the performance trace.
      *
      * Live traces use the origin of the main frame URL.

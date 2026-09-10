@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
-import { canResourceContentsBeReadForTrace } from '../AiOrigins.js';
 const UIStringsNotTranslate = {
     lookingUpFunctionCode: 'Looking up function code',
 };
@@ -51,9 +50,8 @@ export class GetFunctionCodeTool {
         if (!params.scriptUrl) {
             return { error: 'Missing arg: scriptUrl' };
         }
-        const allowedOrigin = performanceTraceContext.getOrigin();
-        if (!canResourceContentsBeReadForTrace(params.scriptUrl, allowedOrigin)) {
-            return { error: 'Script not found' };
+        if (!performanceTraceContext.canAccessResource(params.scriptUrl)) {
+            return { error: 'Resource not found' };
         }
         if (params.line === undefined) {
             return { error: 'Missing arg: line' };

@@ -1,12 +1,10 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import { areOriginsEquivalent, extractContextOrigin, isOpaqueOrigin } from '../AiOrigins.js';
 import { MAX_TARGET_ORIGINS, resolveDOMStorages } from './DOMStorageUtils.js';
 const lockedString = i18n.i18n.lockedString;
 // Maximum character length allowed per storage value to prevent large values (e.g. huge JSON blobs)
@@ -68,20 +66,21 @@ export class GetStorageValuesTool {
         // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
         const targetManager = SDK.TargetManager.TargetManager.instance();
         const primaryPageTarget = targetManager.primaryPageTarget();
-        const allowedOrigin = context.getEstablishedOrigin();
-        if (!allowedOrigin || isOpaqueOrigin(allowedOrigin)) {
+        const establishedOrigin = context.getEstablishedOrigin();
+        if (!establishedOrigin || establishedOrigin.isOpaque()) {
             return { error: 'No origin available or not allowed.' };
         }
         if (!primaryPageTarget) {
             return { error: 'No origin available or not allowed.' };
         }
-        const pageOrigin = Common.ParsedURL.ParsedURL.extractOrigin(primaryPageTarget.inspectedURL());
-        if (!pageOrigin || !areOriginsEquivalent(pageOrigin, allowedOrigin)) {
+        const pageOrigin = primaryPageTarget.inspectedSecurityOrigin();
+        if (!pageOrigin.isSameOriginWith(establishedOrigin)) {
             return { error: 'No origin available or not allowed.' };
         }
-        const rawList = (args.origins && args.origins.length > 0) ? args.origins : [allowedOrigin];
-        const validOrigins = rawList.map(origin => extractContextOrigin(origin))
-            .filter(origin => areOriginsEquivalent(origin, allowedOrigin));
+        const candidateOrigins = (args.origins && args.origins.length > 0) ?
+            args.origins.map(origin => SDK.SecurityOrigin.SecurityOrigin.create(origin)) :
+            [establishedOrigin];
+        const validOrigins = candidateOrigins.filter(origin => origin.isSameOriginWith(establishedOrigin)).map(origin => origin.siteId());
         const targetOrigins = Array.from(new Set(validOrigins)).slice(0, MAX_TARGET_ORIGINS);
         if (targetOrigins.length === 0) {
             return { error: 'No valid origins found.' };

@@ -6660,7 +6660,7 @@ var NativeFunctions = [
   },
   {
     name: "WebSocket",
-    signatures: [["url", "?protocols"]]
+    signatures: [["url", "?protocolsOrOptions"]]
   },
   {
     name: "WebSocketError",
@@ -6809,6 +6809,10 @@ var NativeFunctions = [
   {
     name: "provokingVertexWEBGL",
     signatures: [["provokeMode"]]
+  },
+  {
+    name: "drawingBufferToneMapping",
+    signatures: [["?toneMapping"]]
   },
   {
     name: "texElementImage2D",
@@ -8730,6 +8734,10 @@ var NativeFunctions = [
   },
   {
     name: "CanvasPaintEvent",
+    signatures: [["type", "?eventInitDict"]]
+  },
+  {
+    name: "ElementGeometryUpdateEvent",
     signatures: [["type", "?eventInitDict"]]
   },
   {

@@ -1,12 +1,13 @@
 // Copyright 2026 The Chromium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import * as Common from '../../../core/common/common.js';
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
 import * as TextUtils from '../../../core/text_utils/text_utils.js';
+import { FileContext } from '../contexts/FileContext.js';
 import { FileFormatter } from '../data_formatters/FileFormatter.js';
 import { ListSourcesTool } from './ListSources.js';
+import { isOriginAllowedByLock, } from './Tool.js';
 const UIStringsNotTranslate = {
     readingSource: 'Reading source content',
 };
@@ -38,15 +39,18 @@ export class GetSourceContentTool {
     }
     async handler(args, context) {
         const origin = context.getEstablishedOrigin();
+        if (!origin || origin.isOpaque()) {
+            return {
+                error: 'Opaque origin not allowed',
+            };
+        }
         const file = ListSourcesTool.getUISourceCodes().find(f => ListSourcesTool.uiSourceCodeId.get(f) === args.id);
         if (!file) {
             return {
                 error: 'Unable to find file.',
             };
         }
-        const fileUrl = file.url();
-        const fileOrigin = Common.ParsedURL.ParsedURL.extractOrigin(fileUrl);
-        if (origin && fileOrigin !== origin) {
+        if (!isOriginAllowedByLock(context, FileContext.originForUISourceCode(file))) {
             return {
                 error: 'Cross-origin access blocked.',
             };

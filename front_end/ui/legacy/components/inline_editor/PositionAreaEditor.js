@@ -329,7 +329,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             .checked=${blockAxis.self}
             ?disabled=${isGeneric(blockAxis)}
             @change=${(e) => input.onSelfChange("block" /* Axis.BLOCK */, e.target.checked)}>
-            self
+            <span class=self-checkbox-label>self</span>
           </devtools-checkbox>
         </div>
         ${renderModeRadioGroup("block" /* Axis.BLOCK */, blockAxis.mode)}
@@ -341,7 +341,7 @@ export const DEFAULT_VIEW = (input, output, target) => {
             .checked=${inlineAxis.self}
             ?disabled=${isGeneric(inlineAxis)}
             @change=${(e) => input.onSelfChange("inline" /* Axis.INLINE */, e.target.checked)}>
-            self
+            <span class=self-checkbox-label>self</span>
           </devtools-checkbox>
         </div>
         ${renderModeRadioGroup("inline" /* Axis.INLINE */, inlineAxis.mode)}
@@ -454,7 +454,7 @@ export class PositionAreaEditor extends PositionAreaEditorBase {
             if (mode === "physical" /* Mode.PHYSICAL */ || mode === "coordinate" /* Mode.COORDINATE */) {
                 // physical axes may be combined with coordinate
                 if (other.mode !== "physical" /* Mode.PHYSICAL */ && other.mode !== "coordinate" /* Mode.COORDINATE */) {
-                    other.mode = other.self ? "coordinate" /* Mode.COORDINATE */ : "physical" /* Mode.PHYSICAL */;
+                    other.mode = mode === "coordinate" /* Mode.COORDINATE */ ? "coordinate" /* Mode.COORDINATE */ : (other.self ? "coordinate" /* Mode.COORDINATE */ : "physical" /* Mode.PHYSICAL */);
                 }
             }
             else {
@@ -463,6 +463,10 @@ export class PositionAreaEditor extends PositionAreaEditorBase {
                     other.self = current.self;
                 }
             }
+        }
+        else {
+            other.mode = mode;
+            other.self = false;
         }
         this.requestUpdate();
         this.#notifyChange();

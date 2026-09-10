@@ -122,7 +122,7 @@ export class StylingAgent extends AiAgent {
                 return await getStylesTool.handler(args, {
                     getTarget: () => this.targetManager.primaryPageTarget() ?? context.getItem().domModel().target(),
                     getEstablishedOrigin: () => {
-                        return context.getOrigin().siteId();
+                        return context.getOrigin();
                     },
                 });
             },
@@ -140,6 +140,7 @@ export class StylingAgent extends AiAgent {
                 createExtensionScope: this.#createExtensionScope.bind(this),
                 execJs: this.#execJs,
                 getExecutionContextNode: () => this.context?.getItem() ?? null,
+                getEstablishedOrigin: () => this.context?.getOrigin(),
             }, options),
         });
     }

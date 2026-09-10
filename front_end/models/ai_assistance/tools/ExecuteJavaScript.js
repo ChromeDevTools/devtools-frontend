@@ -6,6 +6,7 @@ import * as Host from '../../../core/host/host.js';
 import * as Root from '../../../core/root/root.js';
 import * as Formatter from '../../formatter/formatter.js';
 import { JavascriptExecutor } from '../agents/ExecuteJavascript.js';
+import { validateOriginLock, } from './Tool.js';
 const MAX_FORMATTED_LINES = 40;
 const MAX_LINE_LENGTH = 120;
 const MAX_TOTAL_CHARACTERS = 2500;
@@ -85,6 +86,10 @@ const data = {
         const executionNode = context.getExecutionContextNode();
         if (!executionNode) {
             return { error: 'Error: Could not find the context node for execution.' };
+        }
+        const originError = validateOriginLock(context, executionNode.securityOrigin(), 'execute JavaScript');
+        if (originError) {
+            return originError;
         }
         if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {
             const validationResult = await ExecuteJavaScriptTool.validateAndFormatCode(params.code);

@@ -2815,11 +2815,12 @@ var positionAreaEditor_css_default = `/*
     --x-end: attr(data-x-end type(<number>));
     --y-start: attr(data-y-start type(<number>));
     --y-end: attr(data-y-end type(<number>));
+    --box-size: 28px;
 
     position: relative;
     display: grid;
-    grid-template-columns: repeat(3, 56px);
-    grid-template-rows: repeat(3, 56px);
+    grid-template-columns: repeat(3, var(--box-size));
+    grid-template-rows: repeat(3, var(--box-size));
     gap: 4px;
     margin: var(--sys-size-6) auto var(--sys-size-9);
     touch-action: none;
@@ -2836,8 +2837,8 @@ var positionAreaEditor_css_default = `/*
         ): var(--sys-color-tonal-container);
         else: transparent
       );
-      min-width: 56px;
-      min-height: 56px;
+      min-width: var(--box-size);
+      min-height: var(--box-size);
       outline: 1px solid var(--sys-color-neutral-outline);
     }
 
@@ -2848,7 +2849,6 @@ var positionAreaEditor_css_default = `/*
       grid-column: calc(var(--x-start) + 1) / calc(var(--x-end) + 2);
       grid-row: calc(var(--y-start) + 1) / calc(var(--y-end) + 2);
       border: 2px solid var(--sys-color-primary);
-      border-radius: var(--sys-shape-corner-extra-small);
       pointer-events: none;
       z-index: 1;
     }
@@ -2871,6 +2871,10 @@ var positionAreaEditor_css_default = `/*
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .self-checkbox-label {
+    padding-inline-end: var(--sys-size-2);
   }
 
   .axis-title {
@@ -3232,7 +3236,7 @@ var DEFAULT_VIEW = (input, output, target) => {
             .checked=${blockAxis.self}
             ?disabled=${isGeneric(blockAxis)}
             @change=${(e) => input.onSelfChange("block" /* BLOCK */, e.target.checked)}>
-            self
+            <span class=self-checkbox-label>self</span>
           </devtools-checkbox>
         </div>
         ${renderModeRadioGroup("block" /* BLOCK */, blockAxis.mode)}
@@ -3244,7 +3248,7 @@ var DEFAULT_VIEW = (input, output, target) => {
             .checked=${inlineAxis.self}
             ?disabled=${isGeneric(inlineAxis)}
             @change=${(e) => input.onSelfChange("inline" /* INLINE */, e.target.checked)}>
-            self
+            <span class=self-checkbox-label>self</span>
           </devtools-checkbox>
         </div>
         ${renderModeRadioGroup("inline" /* INLINE */, inlineAxis.mode)}
@@ -3358,7 +3362,7 @@ var PositionAreaEditor = class extends PositionAreaEditorBase {
     if (!isGeneric(other)) {
       if (mode === "physical" /* PHYSICAL */ || mode === "coordinate" /* COORDINATE */) {
         if (other.mode !== "physical" /* PHYSICAL */ && other.mode !== "coordinate" /* COORDINATE */) {
-          other.mode = other.self ? "coordinate" /* COORDINATE */ : "physical" /* PHYSICAL */;
+          other.mode = mode === "coordinate" /* COORDINATE */ ? "coordinate" /* COORDINATE */ : other.self ? "coordinate" /* COORDINATE */ : "physical" /* PHYSICAL */;
         }
       } else {
         other.mode = mode;
@@ -3366,6 +3370,9 @@ var PositionAreaEditor = class extends PositionAreaEditorBase {
           other.self = current.self;
         }
       }
+    } else {
+      other.mode = mode;
+      other.self = false;
     }
     this.requestUpdate();
     this.#notifyChange();

@@ -122,6 +122,7 @@ __export(ObjectPropertiesSection_exports, {
   renderPropertyValue: () => renderPropertyValue,
   valueElementForFunctionDescription: () => valueElementForFunctionDescription
 });
+import "../../../components/highlighting/highlighting.js";
 import * as Common2 from "../../../../core/common/common.js";
 import * as Host from "../../../../core/host/host.js";
 import * as i18n3 from "../../../../core/i18n/i18n.js";
@@ -129,7 +130,6 @@ import * as Platform2 from "../../../../core/platform/platform.js";
 import * as SDK3 from "../../../../core/sdk/sdk.js";
 import * as TextUtils from "../../../../core/text_utils/text_utils.js";
 import * as uiI18n from "../../../i18n/i18n.js";
-import * as Highlighting from "../../../components/highlighting/highlighting.js";
 import * as TextEditor from "../../../components/text_editor/text_editor.js";
 import {
   Directives as Directives2,
@@ -552,6 +552,7 @@ var Audits;
     FederatedAuthRequestIssueReason2["UiDismissedNoEmbargo"] = "UiDismissedNoEmbargo";
     FederatedAuthRequestIssueReason2["CorsError"] = "CorsError";
     FederatedAuthRequestIssueReason2["SuppressedBySegmentationPlatform"] = "SuppressedBySegmentationPlatform";
+    FederatedAuthRequestIssueReason2["PopupBlockedByConnectionAllowlist"] = "PopupBlockedByConnectionAllowlist";
   })(FederatedAuthRequestIssueReason = Audits2.FederatedAuthRequestIssueReason || (Audits2.FederatedAuthRequestIssueReason = {}));
   let FederatedAuthUserInfoRequestIssueReason;
   ((FederatedAuthUserInfoRequestIssueReason2) => {
@@ -624,6 +625,7 @@ var Audits;
     EmailVerificationRequestIssueReason2["TokenVerificationKbInvalidSdHash"] = "TokenVerificationKbInvalidSdHash";
     EmailVerificationRequestIssueReason2["TokenVerificationKbMissingCnf"] = "TokenVerificationKbMissingCnf";
     EmailVerificationRequestIssueReason2["TokenVerificationKbSignatureFailed"] = "TokenVerificationKbSignatureFailed";
+    EmailVerificationRequestIssueReason2["CrossOriginIframeNotSupported"] = "CrossOriginIframeNotSupported";
   })(EmailVerificationRequestIssueReason = Audits2.EmailVerificationRequestIssueReason || (Audits2.EmailVerificationRequestIssueReason = {}));
   let PartitioningBlobURLInfo;
   ((PartitioningBlobURLInfo2) => {
@@ -1080,6 +1082,11 @@ var Emulation;
     SetDeviceMetricsOverrideRequestScrollbarType2["Overlay"] = "overlay";
     SetDeviceMetricsOverrideRequestScrollbarType2["Default"] = "default";
   })(SetDeviceMetricsOverrideRequestScrollbarType = Emulation2.SetDeviceMetricsOverrideRequestScrollbarType || (Emulation2.SetDeviceMetricsOverrideRequestScrollbarType = {}));
+  let SetDeviceMetricsOverrideRequestViewportMeta;
+  ((SetDeviceMetricsOverrideRequestViewportMeta2) => {
+    SetDeviceMetricsOverrideRequestViewportMeta2["Enable"] = "enable";
+    SetDeviceMetricsOverrideRequestViewportMeta2["Default"] = "default";
+  })(SetDeviceMetricsOverrideRequestViewportMeta = Emulation2.SetDeviceMetricsOverrideRequestViewportMeta || (Emulation2.SetDeviceMetricsOverrideRequestViewportMeta = {}));
   let SetEmitTouchEventsForMouseRequestConfiguration;
   ((SetEmitTouchEventsForMouseRequestConfiguration2) => {
     SetEmitTouchEventsForMouseRequestConfiguration2["Mobile"] = "mobile";
@@ -2870,6 +2877,7 @@ var Runtime;
     RemoteObjectSubtype2["Dataview"] = "dataview";
     RemoteObjectSubtype2["Webassemblymemory"] = "webassemblymemory";
     RemoteObjectSubtype2["Wasmvalue"] = "wasmvalue";
+    RemoteObjectSubtype2["Deferredmodule"] = "deferredmodule";
     RemoteObjectSubtype2["Trustedtype"] = "trustedtype";
   })(RemoteObjectSubtype = Runtime2.RemoteObjectSubtype || (Runtime2.RemoteObjectSubtype = {}));
   let ObjectPreviewType;
@@ -2904,6 +2912,7 @@ var Runtime;
     ObjectPreviewSubtype2["Dataview"] = "dataview";
     ObjectPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
     ObjectPreviewSubtype2["Wasmvalue"] = "wasmvalue";
+    ObjectPreviewSubtype2["Deferredmodule"] = "deferredmodule";
     ObjectPreviewSubtype2["Trustedtype"] = "trustedtype";
   })(ObjectPreviewSubtype = Runtime2.ObjectPreviewSubtype || (Runtime2.ObjectPreviewSubtype = {}));
   let PropertyPreviewType;
@@ -2939,6 +2948,7 @@ var Runtime;
     PropertyPreviewSubtype2["Dataview"] = "dataview";
     PropertyPreviewSubtype2["Webassemblymemory"] = "webassemblymemory";
     PropertyPreviewSubtype2["Wasmvalue"] = "wasmvalue";
+    PropertyPreviewSubtype2["Deferredmodule"] = "deferredmodule";
     PropertyPreviewSubtype2["Trustedtype"] = "trustedtype";
   })(PropertyPreviewSubtype = Runtime2.PropertyPreviewSubtype || (Runtime2.PropertyPreviewSubtype = {}));
   let ConsoleAPICalledEventType;
@@ -4848,7 +4858,7 @@ function defaultObjectPresentation(objectOrTree, linkifier, skipProto, readOnly,
   )}></devtools-widget>`;
 }
 var InitialVisibleChildrenLimit = 200;
-var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
+var OBJECT_PROPERTY_DEFAULT_VIEW = (input, _output, target) => {
   const { property } = input.node;
   const isInternalEntries = property.synthetic && input.node.name === "[[Entries]]";
   const completionsId = `completions-${input.node.parent?.object?.objectId?.replaceAll(".", "-")}-${input.node.name}`;
@@ -4875,11 +4885,8 @@ var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
   const nameRanges = (entries ?? []).filter((e) => e !== currentMatch && e.matchType === "name").map((e) => e.range.cssValue()).join(" ");
   const valueRanges = (entries ?? []).filter((e) => e !== currentMatch && e.matchType === "value").map((e) => e.range.cssValue()).join(" ");
   const value = () => {
-    const valueRef = ref((e) => {
-      output.valueElement = e;
-    });
     if (isInternalEntries) {
-      return html2`<span ${valueRef} class=value></span>`;
+      return html2`<span class=value></span>`;
     }
     if (property.value) {
       const showPreview = property.name !== "[[Prototype]]";
@@ -4892,10 +4899,7 @@ var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
         input.node.path,
         input.node.includeNullOrUndefinedValues,
         /* useCustomPreview */
-        true,
-        (e) => {
-          output.valueElement = e;
-        }
+        true
       );
     }
     if (property.getter) {
@@ -4904,13 +4908,13 @@ var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
         event.consume();
         input.invokeGetter(getter);
       };
-      return html2`<span ${valueRef}><span
+      return html2`<span><span
         class=object-value-calculate-value-button
         title=${i18nString2(UIStrings2.invokePropertyGetter)}
         @click=${invokeGetter}
         >${i18nString2(UIStrings2.dots)}</span></span>`;
     }
-    return html2`<span ${valueRef}
+    return html2`<span
         class=object-value-unavailable
         title=${i18nString2(UIStrings2.valueNotAccessibleToTheDebugger)}>${i18nString2(UIStrings2.valueUnavailable)}</span>`;
   };
@@ -4925,9 +4929,6 @@ var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
   };
   render2(
     html2`<span class=name-and-value><span
-          ${ref((e) => {
-      output.nameElement = e;
-    })}
           class=${nameClasses}
           title=${input.node.path}><devtools-highlight ranges=${nameRanges} current-range=${nameCurrent}>${property.private ? html2`<span class="private-property-hash">${property.name[0]}</span>${property.name.substring(1)}` : quotedName}</devtools-highlight></span>${isInternalEntries ? nothing2 : html2`<span class='separator'>: </span><devtools-prompt
                 @commit=${(e) => input.editingCommitted(e.detail)}
@@ -4950,10 +4951,7 @@ var OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
   );
 };
 var ObjectPropertyWidget = class extends UI2.Widget.Widget {
-  #highlightChanges = [];
   #property;
-  #nameElement;
-  #valueElement;
   #completions = [];
   #editing = false;
   #view;
@@ -5022,50 +5020,7 @@ var ObjectPropertyWidget = class extends UI2.Widget.Widget {
       startEditing: this.startEditing.bind(this),
       search: this.#search
     };
-    const that = this;
-    const output = {
-      set nameElement(e) {
-        that.#nameElement = e;
-      },
-      set valueElement(e) {
-        that.#valueElement = e;
-      }
-    };
-    this.#view(input, output, this.element);
-  }
-  setSearchRegex(regex, additionalCssClassName) {
-    let cssClasses = Highlighting.highlightedSearchResultClassName;
-    if (additionalCssClassName) {
-      cssClasses += " " + additionalCssClassName;
-    }
-    this.revertHighlightChanges();
-    if (this.#nameElement) {
-      this.#applySearch(regex, this.#nameElement, cssClasses);
-    }
-    if (this.property?.object) {
-      const valueType = this.property?.object.type;
-      if (valueType !== "object" && this.#valueElement) {
-        this.#applySearch(regex, this.#valueElement, cssClasses);
-      }
-    }
-    return Boolean(this.#highlightChanges.length);
-  }
-  #applySearch(regex, element, cssClassName) {
-    const ranges = [];
-    const content = element.textContent || "";
-    regex.lastIndex = 0;
-    let match = regex.exec(content);
-    while (match) {
-      ranges.push(new TextUtils.TextRange.SourceRange(match.index, match[0].length));
-      match = regex.exec(content);
-    }
-    if (ranges.length) {
-      Highlighting.highlightRangesWithStyleClass(element, ranges, cssClassName, this.#highlightChanges);
-    }
-  }
-  revertHighlightChanges() {
-    Highlighting.revertDomChanges(this.#highlightChanges);
-    this.#highlightChanges = [];
+    this.#view(input, void 0, this.element);
   }
   async #updateCompletions(expression, filter, force) {
     const suggestions = await TextEditor.JavaScript.completeInContext(expression, filter, force);
@@ -5229,12 +5184,6 @@ var ObjectPropertyTreeElement = class _ObjectPropertyTreeElement extends UI2.Tre
     )) {
       treeNode.appendChild(childNode);
     }
-  }
-  revertHighlightChanges() {
-    this.#widget.revertHighlightChanges();
-  }
-  setSearchRegex(regex, additionalCssClassName) {
-    return this.#widget.setSearchRegex(regex, additionalCssClassName);
   }
   // This is called by layout tests
   startEditing() {

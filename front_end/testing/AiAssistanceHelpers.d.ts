@@ -81,7 +81,7 @@ export declare function createTestFilesystem(fileSystemPath: string, files?: Arr
     project: Persistence.FileSystemWorkspaceBinding.FileSystem;
     uiSourceCode: Workspace.UISourceCode.UISourceCode;
 };
-export declare function assertIsError<T>(response: AiAssistance.Tool.DataHandlerResult<T> | AiAssistance.Tool.ContextHandlerResult<T> | AiAssistance.AiAgent.ToolResult<T>): asserts response is AiAssistance.Tool.ToolErrorResult;
+export declare function assertIsError<T>(response: AiAssistance.Tool.DataHandlerResult<T> | AiAssistance.Tool.ContextHandlerResult<T> | AiAssistance.AiAgent.ToolResult<T>, expectedError?: string | RegExp): asserts response is AiAssistance.Tool.ToolErrorResult;
 export declare function assertIsResult<T>(response: AiAssistance.Tool.DataHandlerResult<T> | AiAssistance.Tool.ContextHandlerResult<T> | AiAssistance.AiAgent.ToolResult<T>): asserts response is AiAssistance.Tool.ToolDataResult<T>;
 export declare function assertRequiresApproval<T>(response: AiAssistance.Tool.DataHandlerResult<T> | AiAssistance.Tool.ContextHandlerResult<T> | AiAssistance.AiAgent.ToolResult<T>): asserts response is AiAssistance.Tool.ToolApprovalResult;
 export declare function assertIsContext<T>(response: AiAssistance.Tool.DataHandlerResult<T> | AiAssistance.Tool.ContextHandlerResult<T> | AiAssistance.AiAgent.ToolResult<T>): asserts response is AiAssistance.Tool.ToolContextResult<T>;

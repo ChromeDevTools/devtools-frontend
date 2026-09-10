@@ -27,6 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+import '../../../components/highlighting/highlighting.js';
 import * as Common from '../../../../core/common/common.js';
 import * as Host from '../../../../core/host/host.js';
 import * as i18n from '../../../../core/i18n/i18n.js';
@@ -34,7 +35,6 @@ import * as Platform from '../../../../core/platform/platform.js';
 import * as SDK from '../../../../core/sdk/sdk.js';
 import * as TextUtils from '../../../../core/text_utils/text_utils.js';
 import * as uiI18n from '../../../../ui/i18n/i18n.js';
-import * as Highlighting from '../../../components/highlighting/highlighting.js';
 import * as TextEditor from '../../../components/text_editor/text_editor.js';
 import { Directives, html, nothing, render, } from '../../../lit/lit.js';
 import * as VisualLogging from '../../../visual_logging/visual_logging.js';
@@ -1351,7 +1351,7 @@ export function defaultObjectPresentation(objectOrTree, linkifier, skipProto, re
  * Remaining children are shown as soon as requested via a show more properties button.
  **/
 const InitialVisibleChildrenLimit = 200;
-export const OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
+export const OBJECT_PROPERTY_DEFAULT_VIEW = (input, _output, target) => {
     const { property } = input.node;
     const isInternalEntries = property.synthetic && input.node.name === '[[Entries]]';
     const completionsId = `completions-${input.node.parent?.object?.objectId?.replaceAll('.', '-')}-${input.node.name}`;
@@ -1380,18 +1380,13 @@ export const OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
     const nameRanges = (entries ?? []).filter(e => e !== currentMatch && e.matchType === 'name').map(e => e.range.cssValue()).join(' ');
     const valueRanges = (entries ?? []).filter(e => e !== currentMatch && e.matchType === 'value').map(e => e.range.cssValue()).join(' ');
     const value = () => {
-        const valueRef = ref(e => {
-            output.valueElement = e;
-        });
         if (isInternalEntries) {
-            return html `<span ${valueRef} class=value></span>`;
+            return html `<span class=value></span>`;
         }
         if (property.value) {
             const showPreview = property.name !== '[[Prototype]]';
             return renderPropertyValue(property.value, property.wasThrown, showPreview, input.linkifier, property.synthetic, input.node.path /* variableName */, input.node.includeNullOrUndefinedValues, 
-            /* useCustomPreview */ true, e => {
-                output.valueElement = e;
-            });
+            /* useCustomPreview */ true);
         }
         if (property.getter) {
             const getter = property.getter;
@@ -1399,13 +1394,13 @@ export const OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
                 event.consume();
                 input.invokeGetter(getter);
             };
-            return html `<span ${valueRef}><span
+            return html `<span><span
         class=object-value-calculate-value-button
         title=${i18nString(UIStrings.invokePropertyGetter)}
         @click=${invokeGetter}
         >${i18nString(UIStrings.dots)}</span></span>`;
         }
-        return html `<span ${valueRef}
+        return html `<span
         class=object-value-unavailable
         title=${i18nString(UIStrings.valueNotAccessibleToTheDebugger)}>${i18nString(UIStrings.valueUnavailable)}</span>`;
     };
@@ -1420,7 +1415,6 @@ export const OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
     };
     // clang-format off
     render(html `<span class=name-and-value><span
-          ${ref(e => { output.nameElement = e; })}
           class=${nameClasses}
           title=${input.node.path}><devtools-highlight ranges=${nameRanges} current-range=${nameCurrent}>${property.private ?
         html `<span class="private-property-hash">${property.name[0]}</span>${property.name.substring(1)}` : quotedName}</devtools-highlight></span>${isInternalEntries ? nothing :
@@ -1445,10 +1439,7 @@ export const OBJECT_PROPERTY_DEFAULT_VIEW = (input, output, target) => {
     // clang-format on
 };
 export class ObjectPropertyWidget extends UI.Widget.Widget {
-    #highlightChanges = [];
     #property;
-    #nameElement;
-    #valueElement;
     #completions = [];
     #editing = false;
     #view;
@@ -1517,50 +1508,7 @@ export class ObjectPropertyWidget extends UI.Widget.Widget {
             startEditing: this.startEditing.bind(this),
             search: this.#search,
         };
-        const that = this;
-        const output = {
-            set nameElement(e) {
-                that.#nameElement = e;
-            },
-            set valueElement(e) {
-                that.#valueElement = e;
-            },
-        };
-        this.#view(input, output, this.element);
-    }
-    setSearchRegex(regex, additionalCssClassName) {
-        let cssClasses = Highlighting.highlightedSearchResultClassName;
-        if (additionalCssClassName) {
-            cssClasses += ' ' + additionalCssClassName;
-        }
-        this.revertHighlightChanges();
-        if (this.#nameElement) {
-            this.#applySearch(regex, this.#nameElement, cssClasses);
-        }
-        if (this.property?.object) {
-            const valueType = this.property?.object.type;
-            if (valueType !== 'object' && this.#valueElement) {
-                this.#applySearch(regex, this.#valueElement, cssClasses);
-            }
-        }
-        return Boolean(this.#highlightChanges.length);
-    }
-    #applySearch(regex, element, cssClassName) {
-        const ranges = [];
-        const content = element.textContent || '';
-        regex.lastIndex = 0;
-        let match = regex.exec(content);
-        while (match) {
-            ranges.push(new TextUtils.TextRange.SourceRange(match.index, match[0].length));
-            match = regex.exec(content);
-        }
-        if (ranges.length) {
-            Highlighting.highlightRangesWithStyleClass(element, ranges, cssClassName, this.#highlightChanges);
-        }
-    }
-    revertHighlightChanges() {
-        Highlighting.revertDomChanges(this.#highlightChanges);
-        this.#highlightChanges = [];
+        this.#view(input, undefined, this.element);
     }
     async #updateCompletions(expression, filter, force) {
         const suggestions = await TextEditor.JavaScript.completeInContext(expression, filter, force);
@@ -1702,12 +1650,6 @@ export class ObjectPropertyTreeElement extends UI.TreeOutline.TreeElement {
             !isDisplayableProperty(property, treeNode.property?.property))) {
             treeNode.appendChild(childNode);
         }
-    }
-    revertHighlightChanges() {
-        this.#widget.revertHighlightChanges();
-    }
-    setSearchRegex(regex, additionalCssClassName) {
-        return this.#widget.setSearchRegex(regex, additionalCssClassName);
     }
     // This is called by layout tests
     startEditing() {

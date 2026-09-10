@@ -44,11 +44,12 @@ export default `/*
     --x-end: attr(data-x-end type(<number>));
     --y-start: attr(data-y-start type(<number>));
     --y-end: attr(data-y-end type(<number>));
+    --box-size: 28px;
 
     position: relative;
     display: grid;
-    grid-template-columns: repeat(3, 56px);
-    grid-template-rows: repeat(3, 56px);
+    grid-template-columns: repeat(3, var(--box-size));
+    grid-template-rows: repeat(3, var(--box-size));
     gap: 4px;
     margin: var(--sys-size-6) auto var(--sys-size-9);
     touch-action: none;
@@ -65,8 +66,8 @@ export default `/*
         ): var(--sys-color-tonal-container);
         else: transparent
       );
-      min-width: 56px;
-      min-height: 56px;
+      min-width: var(--box-size);
+      min-height: var(--box-size);
       outline: 1px solid var(--sys-color-neutral-outline);
     }
 
@@ -77,7 +78,6 @@ export default `/*
       grid-column: calc(var(--x-start) + 1) / calc(var(--x-end) + 2);
       grid-row: calc(var(--y-start) + 1) / calc(var(--y-end) + 2);
       border: 2px solid var(--sys-color-primary);
-      border-radius: var(--sys-shape-corner-extra-small);
       pointer-events: none;
       z-index: 1;
     }
@@ -100,6 +100,10 @@ export default `/*
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .self-checkbox-label {
+    padding-inline-end: var(--sys-size-2);
   }
 
   .axis-title {

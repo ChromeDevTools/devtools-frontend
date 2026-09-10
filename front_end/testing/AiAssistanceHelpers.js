@@ -224,9 +224,15 @@ export function createTestFilesystem(fileSystemPath, files) {
     }
     return { project, uiSourceCode };
 }
-export function assertIsError(response) {
+export function assertIsError(response, expectedError) {
     if (!('error' in response)) {
         assert.fail(`Expected error response, but got: ${JSON.stringify(response)}`);
+    }
+    if (typeof expectedError === 'string') {
+        assert.strictEqual(response.error, expectedError);
+    }
+    else if (expectedError instanceof RegExp) {
+        assert.match(response.error, expectedError);
     }
 }
 export function assertIsResult(response) {

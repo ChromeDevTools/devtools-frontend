@@ -10,7 +10,6 @@ import * as TextUtils from '../../../core/text_utils/text_utils.js';
 import * as Tracing from '../../../services/tracing/tracing.js';
 import * as Logs from '../../logs/logs.js';
 import * as Trace from '../../trace/trace.js';
-import { canResourceContentsBeReadForTrace } from '../AiOrigins.js';
 import { PerformanceInsightFormatter, } from '../data_formatters/PerformanceInsightFormatter.js';
 import { formatEventForAI, PerformanceTraceFormatter } from '../data_formatters/PerformanceTraceFormatter.js';
 import { debugLog } from '../debug.js';
@@ -892,6 +891,9 @@ export class PerformanceAgent extends AiAgent {
                 if (args.column === undefined) {
                     return { error: 'Missing arg: column' };
                 }
+                if (!context.canAccessResource(args.scriptUrl)) {
+                    return { error: 'Resource not found' };
+                }
                 if (!this.#formatter) {
                     throw new Error('missing formatter');
                 }
@@ -946,8 +948,7 @@ export class PerformanceAgent extends AiAgent {
                     return { error: 'Cannot use this tool on an imported file.' };
                 }
                 const url = args.url;
-                const allowedOrigin = context.getOrigin();
-                if (!canResourceContentsBeReadForTrace(url, allowedOrigin)) {
+                if (!context.canAccessResource(url)) {
                     return { error: 'Resource not found' };
                 }
                 let content;

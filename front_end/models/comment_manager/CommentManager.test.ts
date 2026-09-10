@@ -63,6 +63,19 @@ describe('CommentManager', () => {
     assert.strictEqual(threadChangedEvents[0][0], thread);
   });
 
+  it('assigns incrementing index to created threads', () => {
+    const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
+      vePath: 'Panel: elements > TreeItem: rule',
+      textSignature: 'color: red;',
+    };
+
+    const thread1 = manager.createCommentThread(anchor, 'First comment');
+    const thread2 = manager.createCommentThread(anchor, 'Second comment');
+
+    assert.strictEqual(thread1.index, 1);
+    assert.strictEqual(thread2.index, 2);
+  });
+
   it('supports changes metadata in created threads', () => {
     const anchor: CommentManager.CommentManager.CommentAnchorSignature = {
       vePath: 'Panel: elements > TreeItem: rule',

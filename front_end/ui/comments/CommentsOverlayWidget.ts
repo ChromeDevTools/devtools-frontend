@@ -66,7 +66,7 @@ const DEFAULT_VIEW: View = (input: ViewInput, _output: undefined, target: HTMLEl
             left: `${p.left}px`,
           })}
           @click=${() => input.onPinClick(p.id)}>
-          💬
+          <div class="comment-cursor">${p.index}</div>
         </div>
       ` : nothing)}
     </div>

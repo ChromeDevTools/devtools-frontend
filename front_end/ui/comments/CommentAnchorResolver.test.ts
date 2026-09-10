@@ -660,6 +660,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -993,6 +994,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
           timestamp: Date.now(),
         }],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1014,6 +1016,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1030,6 +1033,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1055,6 +1059,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1086,6 +1091,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1110,6 +1116,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
           timestamp: Date.now(),
         }],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1140,6 +1147,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1177,6 +1185,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1208,6 +1217,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         anchor: anchor!,
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1233,6 +1243,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1255,6 +1266,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1277,6 +1289,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1299,6 +1312,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const cachedElements = Comments.CommentAnchorResolver.deepQuerySelectorAll(container, '[jslog]');
@@ -1341,6 +1355,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
            anchor: anchorB2!,
            comments: [],
            status: 'ACTIVE',
+           index: 1,
          };
 
          const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1371,6 +1386,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1413,6 +1429,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
            anchor: anchor2!,
            comments: [],
            status: 'ACTIVE',
+           index: 1,
          };
 
          const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1438,6 +1455,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1458,6 +1476,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);
@@ -1483,6 +1502,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, host);
@@ -1507,6 +1527,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, host);
@@ -1522,6 +1543,7 @@ describeWithEnvironment('CommentAnchorResolver', () => {
         },
         comments: [],
         status: 'ACTIVE',
+        index: 1,
       };
 
       const rematched = Comments.CommentAnchorResolver.rematchCommentAnchor(thread, container);

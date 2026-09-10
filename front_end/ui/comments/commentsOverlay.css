@@ -21,16 +21,35 @@
     position: absolute;
     pointer-events: auto;
     cursor: pointer;
-    font-size: var(--sys-typescale-headline1-size);
-    line-height: var(--sys-typescale-body1-line-height);
-    filter: drop-shadow(0 2px 5px rgb(0 0 0 / 35%));
     user-select: none;
     transition: transform 0.1s ease;
+    transform-origin: center center;
+      will-change: transform;
   }
 
   .comment-pin:hover {
     transform: scale(1.15);
   }
+
+    .comment-cursor {
+      display: flex;
+      width: var(--sys-size-9);
+      height: var(--sys-size-9);
+      box-sizing: border-box;
+      padding: 0;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      flex-shrink: 0;
+      box-shadow: var(--sys-elevation-level2);
+      border-radius: 100px 100px 100px var(--sys-shape-corner-extra-small, 4px);
+      background: var(--sys-color-primary);
+      color: var(--sys-color-on-primary);
+      font-family: var(--default-font-family);
+      font-size: var(--sys-typescale-body5-size);
+      font-weight: var(--ref-typeface-weight-bold, 600);
+      line-height: 1;
+    }
 
   .comment-anchor-highlight {
     position: absolute;

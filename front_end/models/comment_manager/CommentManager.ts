@@ -48,6 +48,7 @@ export interface CommentThread {
   status: 'ACTIVE'|'RESOLVED';
   transmitted?: boolean;
   changes?: Array<Record<string, unknown>>;
+  index: number;
 }
 
 export const enum Events {
@@ -86,7 +87,8 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
       author: 'DEVELOPER'|'AGENT' = 'DEVELOPER',
       changes?: Array<Record<string, unknown>>,
       ): CommentThread {
-    const id = `comment-${this.#nextId++}`;
+    const index = this.#nextId++;
+    const id = `comment-${index}`;
     const comment: Comment = {
       author,
       text,
@@ -99,6 +101,7 @@ export class CommentManager extends Common.ObjectWrapper.ObjectWrapper<EventType
       status: 'ACTIVE',
       transmitted: false,
       changes,
+      index,
     };
 
     this.#commentThreads.set(id, thread);

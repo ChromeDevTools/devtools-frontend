@@ -88,7 +88,10 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
 
     const pin = widget.contentElement.querySelector('.comment-pin') as HTMLElement;
     assert.isNotNull(pin);
-    assert.include(pin.textContent || '', '💬');
+    assert.include(pin.textContent || '', '1');
+    const cursor = pin.querySelector('.comment-cursor');
+    assert.isNotNull(cursor);
+    assert.strictEqual(cursor.textContent?.trim(), '1');
     assert.strictEqual(pin.getAttribute('data-comment-id'), thread.id);
 
     const highlight = widget.contentElement.querySelector('.comment-anchor-highlight') as HTMLElement;
@@ -96,6 +99,53 @@ describeWithEnvironment('CommentsOverlayWidget', () => {
     assert.strictEqual(highlight.getAttribute('data-comment-id'), thread.id);
 
     testEl.remove();
+    widget.detach();
+  });
+
+  it('renders sequential numbers for multiple comment pins in order of creation', async () => {
+    const widget = new Comments.CommentsOverlayWidget.CommentsOverlayWidget(
+        undefined,
+        commentManager,
+    );
+    widget.setOverlayManagerForTest(overlayManager);
+    widget.markAsRoot();
+    renderElementIntoDOM(widget, {allowMultipleChildren: true});
+
+    const el1 = document.createElement('div');
+    el1.setAttribute('jslog', 'TreeItem; context: seq-test-1');
+    el1.textContent = 'item 1';
+    el1.getBoundingClientRect = () => new DOMRect(10, 10, 100, 30);
+    renderElementIntoDOM(el1, {allowMultipleChildren: true});
+
+    const el2 = document.createElement('div');
+    el2.setAttribute('jslog', 'TreeItem; context: seq-test-2');
+    el2.textContent = 'item 2';
+    el2.getBoundingClientRect = () => new DOMRect(10, 50, 100, 30);
+    renderElementIntoDOM(el2, {allowMultipleChildren: true});
+
+    const el3 = document.createElement('div');
+    el3.setAttribute('jslog', 'TreeItem; context: seq-test-3');
+    el3.textContent = 'item 3';
+    el3.getBoundingClientRect = () => new DOMRect(10, 90, 100, 30);
+    renderElementIntoDOM(el3, {allowMultipleChildren: true});
+
+    commentManager.setCommentMode(true);
+    overlayManager.createComment(el1, 'First comment');
+    overlayManager.createComment(el2, 'Second comment');
+    overlayManager.createComment(el3, 'Third comment');
+
+    widget.requestUpdate();
+    await widget.updateComplete;
+
+    const pins = Array.from(widget.contentElement.querySelectorAll('.comment-pin'));
+    assert.lengthOf(pins, 3);
+
+    const texts = pins.map(p => p.querySelector('.comment-cursor')?.textContent?.trim());
+    assert.deepEqual(texts, ['1', '2', '3']);
+
+    el1.remove();
+    el2.remove();
+    el3.remove();
     widget.detach();
   });
 

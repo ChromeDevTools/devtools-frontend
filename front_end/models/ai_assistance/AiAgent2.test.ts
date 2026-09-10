@@ -100,7 +100,7 @@ describe('AiAgent2', () => {
     assert.strictEqual(context.changeManager, changeManager);
   });
 
-  it('blocks tool execution when conversation origin is blocked', async () => {
+  it('passes established origin to tools in context', async () => {
     const aidaClient = mockAidaClient([
       [{
         explanation: '',
@@ -114,9 +114,10 @@ describe('AiAgent2', () => {
         explanation: 'Done',
       }],
     ]);
+    const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
     const agent = new AiAssistance.AiAgent2.AiAgent2({
       aidaClient,
-      allowedOrigin: () => ({blocked: true}),
+      allowedOrigin: () => ({origin}),
     });
 
     const executeJsTool = AiAssistance.ToolRegistry.ToolRegistry.get('executeJavaScript');
@@ -125,7 +126,9 @@ describe('AiAgent2', () => {
 
     await Array.fromAsync(agent.run('question', {selected: null}));
 
-    sinon.assert.notCalled(handlerStub);
+    sinon.assert.calledOnce(handlerStub);
+    const [, context] = handlerStub.getCall(0).args;
+    assert.strictEqual(context.getEstablishedOrigin(), origin);
   });
 
   it('can learn a skill', async () => {

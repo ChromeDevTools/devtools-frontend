@@ -64,11 +64,10 @@ describe('ListSourcesTool', () => {
     };
 
     const response = await tool.handler({}, context);
-    assert.isUndefined((response as {error?: string}).error);
-    const result = (response as {result: {files: Array<{id: number, name: string}>}}).result;
-    assert.lengthOf(result.files, 1);
-    assert.strictEqual(result.files[0].name, 'example.com/script1.js');
-    assert.strictEqual(result.files[0].id, 1);
+    assertIsResult(response);
+    assert.lengthOf(response.result.files, 1);
+    assert.strictEqual(response.result.files[0].name, 'example.com/script1.js');
+    assert.strictEqual(response.result.files[0].id, 1);
   });
 
   it('filters out ignore-listed files', async () => {
@@ -96,10 +95,37 @@ describe('ListSourcesTool', () => {
     };
 
     const response = await tool.handler({}, context);
-    assert.isUndefined((response as {error?: string}).error);
-    const result = (response as {result: {files: Array<{id: number, name: string}>}}).result;
-    assert.lengthOf(result.files, 1);
-    assert.strictEqual(result.files[0].name, 'example.com/script1.js');
+    assertIsResult(response);
+    assert.lengthOf(response.result.files, 1);
+    assert.strictEqual(response.result.files[0].name, 'example.com/script1.js');
+  });
+
+  it('filters out files with opaque origins', async () => {
+    createContentProviderUISourceCodes({
+      items: [
+        {
+          url: urlString`https://example.com/script1.js`,
+          mimeType: 'application/javascript',
+          resourceType: Common.ResourceType.resourceTypes.Script,
+        },
+        {
+          url: urlString`data:text/javascript,console.log(1)`,
+          mimeType: 'application/javascript',
+          resourceType: Common.ResourceType.resourceTypes.Script,
+        },
+      ],
+      projectType: Workspace.Workspace.projectTypes.Network,
+      universe,
+    });
+
+    const context = {
+      getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'),
+    };
+
+    const response = await tool.handler({}, context);
+    assertIsResult(response);
+    assert.lengthOf(response.result.files, 1);
+    assert.strictEqual(response.result.files[0].name, 'example.com/script1.js');
   });
 
   it('prioritizes source-mapped files over non-source-mapped ones with identical URLs', async () => {
@@ -134,9 +160,8 @@ describe('ListSourcesTool', () => {
 
     const response = await tool.handler({}, context);
     assertIsResult(response);
-    const result = response.result as {files: Array<{id: number, name: string}>};
-    assert.lengthOf(result.files, 1);
-    assert.strictEqual(result.files[0].name, 'example.com/script.js');
+    assert.lengthOf(response.result.files, 1);
+    assert.strictEqual(response.result.files[0].name, 'example.com/script.js');
 
     const sourceCodes = AiAssistance.ListSources.ListSourcesTool.getUISourceCodes();
     assert.lengthOf(sourceCodes, 1);
@@ -149,8 +174,7 @@ describe('ListSourcesTool', () => {
     };
 
     const response = await tool.handler({}, context);
-    assertIsError(response);
-    assert.strictEqual(response.error, 'Opaque origin not allowed');
+    assertIsError(response, 'Opaque origin not allowed');
   });
 
   it('returns error when origin lock is not established', async () => {
@@ -159,7 +183,6 @@ describe('ListSourcesTool', () => {
     };
 
     const response = await tool.handler({}, context);
-    assertIsError(response);
-    assert.strictEqual(response.error, 'Opaque origin not allowed');
+    assertIsError(response, 'Opaque origin not allowed');
   });
 });

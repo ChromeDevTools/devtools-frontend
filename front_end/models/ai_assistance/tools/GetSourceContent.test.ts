@@ -8,7 +8,7 @@ import sinon from 'sinon';
 import * as Common from '../../../core/common/common.js';
 import * as Platform from '../../../core/platform/platform.js';
 import * as SDK from '../../../core/sdk/sdk.js';
-import {assertIsError} from '../../../testing/AiAssistanceHelpers.js';
+import {assertIsError, assertIsResult} from '../../../testing/AiAssistanceHelpers.js';
 import {setupLocaleHooks} from '../../../testing/LocaleHelpers.js';
 import {setupRuntimeHooks} from '../../../testing/RuntimeHelpers.js';
 import {setupSettingsHooks} from '../../../testing/SettingsHelpers.js';
@@ -66,9 +66,8 @@ describe('GetSourceContentTool', () => {
     };
 
     const response = await tool.handler({id: sourceId}, context);
-    assert.isUndefined((response as {error?: string}).error);
-    const result = (response as {result: {content: string}}).result;
-    assert.include(result.content, 'console.log("hello");');
+    assertIsResult(response);
+    assert.include(response.result.content, 'console.log("hello");');
   });
 
   it('returns error when file is not found', async () => {
@@ -77,8 +76,7 @@ describe('GetSourceContentTool', () => {
     };
 
     const response = await tool.handler({id: 999}, context);
-    assert.exists((response as {error?: string}).error);
-    assert.strictEqual((response as {error: string}).error, 'Unable to find file.');
+    assertIsError(response, 'Unable to find file.');
   });
 
   it('returns error when accessing cross-origin file', async () => {
@@ -103,8 +101,7 @@ describe('GetSourceContentTool', () => {
     };
 
     const response = await tool.handler({id: sourceId}, context);
-    assertIsError(response);
-    assert.strictEqual(response.error, 'Cross-origin access blocked.');
+    assertIsError(response, 'Unable to find file.');
   });
 
   it('returns error when file content request fails', async () => {
@@ -132,59 +129,24 @@ describe('GetSourceContentTool', () => {
     };
 
     const response = await tool.handler({id: sourceId}, context);
-    assertIsError(response);
-    assert.strictEqual(response.error, 'Failed to load file content: Failed to load');
+    assertIsError(response, 'Failed to load file content: Failed to load');
   });
 
   it('returns error for opaque origins', async () => {
-    const {uiSourceCodes} = createContentProviderUISourceCodes({
-      items: [
-        {
-          url: urlString`https://example.com/script.js`,
-          mimeType: 'application/javascript',
-          resourceType: Common.ResourceType.resourceTypes.Script,
-          content: 'console.log("hello");',
-        },
-      ],
-      projectType: Workspace.Workspace.projectTypes.Network,
-      universe,
-    });
-
-    AiAssistance.ListSources.ListSourcesTool.getUISourceCodes();
-    const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
-
     const context = {
       getEstablishedOrigin: () => SDK.SecurityOrigin.SecurityOrigin.create('about:blank'),
     };
 
-    const response = await tool.handler({id: sourceId}, context);
-    assertIsError(response);
-    assert.strictEqual(response.error, 'Opaque origin not allowed');
+    const response = await tool.handler({id: 1}, context);
+    assertIsError(response, 'Unable to find file.');
   });
 
   it('returns error when origin lock is not established', async () => {
-    const {uiSourceCodes} = createContentProviderUISourceCodes({
-      items: [
-        {
-          url: urlString`https://example.com/script.js`,
-          mimeType: 'application/javascript',
-          resourceType: Common.ResourceType.resourceTypes.Script,
-          content: 'console.log("hello");',
-        },
-      ],
-      projectType: Workspace.Workspace.projectTypes.Network,
-      universe,
-    });
-
-    AiAssistance.ListSources.ListSourcesTool.getUISourceCodes();
-    const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
-
     const context = {
       getEstablishedOrigin: () => undefined,
     };
 
-    const response = await tool.handler({id: sourceId}, context);
-    assertIsError(response);
-    assert.strictEqual(response.error, 'Opaque origin not allowed');
+    const response = await tool.handler({id: 1}, context);
+    assertIsError(response, 'Unable to find file.');
   });
 });

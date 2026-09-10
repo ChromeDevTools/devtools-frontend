@@ -13,12 +13,12 @@ import {
   type BaseToolCapability,
   type DataHandlerResult,
   type DataTool,
+  isOriginAllowedByLock,
   type OriginLockCapability,
   type PageExecutionCapability,
   type StyleMutationCapability,
   type ToolArgs,
   ToolName,
-  validateOriginLock,
 } from './Tool.js';
 
 const MAX_FORMATTED_LINES = 40;
@@ -131,9 +131,8 @@ const data = {
       return {error: 'Error: Could not find the context node for execution.'};
     }
 
-    const originError = validateOriginLock(context, executionNode.securityOrigin(), 'execute JavaScript');
-    if (originError) {
-      return originError;
+    if (!isOriginAllowedByLock(context.getEstablishedOrigin(), executionNode.securityOrigin())) {
+      return {error: 'Error: Cannot execute JavaScript on cross-origin target.'};
     }
 
     if (Root.Runtime.hostConfig.devToolsAiV2Architecture?.enabled) {

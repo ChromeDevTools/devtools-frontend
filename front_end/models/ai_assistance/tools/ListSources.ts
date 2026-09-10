@@ -93,15 +93,15 @@ export class ListSourcesTool implements
       _params: Record<string, never>,
       context: BaseToolCapability&OriginLockCapability,
       ): Promise<DataHandlerResult<{files: SourceSummary[]}>> {
-    const origin = context.getEstablishedOrigin();
-    if (!origin || origin.isOpaque()) {
+    const establishedOrigin = context.getEstablishedOrigin();
+    if (!establishedOrigin || establishedOrigin.isOpaque()) {
       return {
         error: 'Opaque origin not allowed',
       };
     }
 
     const files = ListSourcesTool.getUISourceCodes().filter(file => {
-      return isOriginAllowedByLock(context, FileContext.originForUISourceCode(file));
+      return isOriginAllowedByLock(establishedOrigin, FileContext.originForUISourceCode(file));
     });
 
     return {

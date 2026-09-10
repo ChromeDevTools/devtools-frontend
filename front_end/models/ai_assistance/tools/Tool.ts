@@ -118,6 +118,10 @@ export interface OriginLockCapability {
   /**
    * Returns the security origin locked for the current conversation.
    *
+   * TODO: When V1 agents (StylingAgent, AccessibilityAgent) are removed,
+   * simplify getEstablishedOrigin() to return SDK.SecurityOrigin.SecurityOrigin
+   * non-optionally.
+   *
    * @returns The established {@link SDK.SecurityOrigin.SecurityOrigin}, or `undefined`
    * if the conversation is not yet locked to an origin (e.g. before the first query).
    */
@@ -125,43 +129,13 @@ export interface OriginLockCapability {
 }
 
 /**
- * Verifies that the conversation origin lock is established and non-opaque, and
- * that a target resource origin matches the locked origin.
- * Fails closed, returning a ToolErrorResult if invalid, or undefined if allowed.
- */
-export function validateOriginLock(
-    context: OriginLockCapability,
-    targetOrigin?: SDK.SecurityOrigin.SecurityOrigin|null,
-    actionDescription: string = 'execute tool',
-    ): ToolErrorResult|undefined {
-  const establishedOrigin = context.getEstablishedOrigin();
-  if (!establishedOrigin || establishedOrigin.isOpaque()) {
-    return {error: `Error: Cannot ${actionDescription} because origin lock is not established.`};
-  }
-
-  if (targetOrigin !== undefined) {
-    if (!targetOrigin || targetOrigin.isOpaque()) {
-      return {error: `Error: Cannot ${actionDescription} because the context node has no valid security origin.`};
-    }
-    if (!targetOrigin.isSameOriginWith(establishedOrigin)) {
-      return {
-        error: `Error: Cannot ${actionDescription} because the context node does not belong to the locked origin.`,
-      };
-    }
-  }
-
-  return undefined;
-}
-
-/**
  * Checks whether a target origin matches the established conversation origin lock.
- * Fails closed (returns false) if origin lock is missing/opaque or target is cross-origin.
+ * Fails closed (returns false) if established origin is missing/opaque or target is cross-origin.
  */
 export function isOriginAllowedByLock(
-    context: OriginLockCapability,
+    establishedOrigin: SDK.SecurityOrigin.SecurityOrigin|undefined,
     targetOrigin: SDK.SecurityOrigin.SecurityOrigin|null|undefined,
     ): boolean {
-  const establishedOrigin = context.getEstablishedOrigin();
   if (!establishedOrigin || establishedOrigin.isOpaque()) {
     return false;
   }

@@ -197,6 +197,7 @@ ts_library("unittests") {
     "tools/ResolveDevtoolsNodePath.test.ts",
     "tools/RunLighthouse.test.ts",
     "tools/SelectTraceEventByKey.test.ts",
+    "tools/Tool.test.ts",
     "tools/ToolRegistry.test.ts",
   ]
 

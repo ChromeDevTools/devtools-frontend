@@ -7,7 +7,6 @@ import * as Common from '../../core/common/common.js';
 import * as i18n from '../../core/i18n/i18n.js';
 import type * as Platform from '../../core/platform/platform.js';
 import * as SDK from '../../core/sdk/sdk.js';
-import type * as Protocol from '../../generated/protocol.js';
 import * as Buttons from '../../ui/components/buttons/buttons.js';
 import * as ObjectUI from '../../ui/legacy/components/object_ui/object_ui.js';
 /* eslint-disable @devtools/es-modules-import */
@@ -17,7 +16,7 @@ import * as UI from '../../ui/legacy/legacy.js';
 import {render} from '../../ui/lit/lit.js';
 import * as VisualLogging from '../../ui/visual_logging/visual_logging.js';
 
-import {frameworkEventListeners, type FrameworkEventListenersObject} from './EventListenersUtils.js';
+import {frameworkEventListeners} from './EventListenersUtils.js';
 import eventListenersViewStyles from './eventListenersView.css.js';
 
 const UIStrings = {
@@ -67,8 +66,8 @@ export class EventListenersView extends UI.Widget.VBox {
     this.registerRequiredCSS(eventListenersViewStyles);
     this.emptyHolder = this.element.createChild('div', 'placeholder hidden');
     this.emptyHolder.createChild('span', 'gray-info-message').textContent = i18nString(UIStrings.noEventListeners);
-    const emptyWidget = new UI.EmptyWidget.EmptyWidget(
-        i18nString(UIStrings.noEventListeners), i18nString(UIStrings.eventListenersExplanation));
+    const emptyWidget = new UI.EmptyWidget.EmptyWidget(i18nString(UIStrings.noEventListeners),
+                                                       i18nString(UIStrings.eventListenersExplanation));
     emptyWidget.show(this.emptyHolder);
 
     this.treeOutline = new UI.TreeOutline.TreeOutlineInShadow();
@@ -98,6 +97,48 @@ export class EventListenersView extends UI.Widget.VBox {
     }
   }
 
+  static async #loadListeners(objects: SDK.RemoteObject.RemoteObject[]): Promise<
+      Map<string, Array<{object: SDK.RemoteObject.RemoteObject, listener: SDK.DOMDebuggerModel.EventListener}>>> {
+    return Map.groupBy((await Promise.all(objects.map(this.#loadListenersForObject))).flat(),
+                       ({listener}) => listener.type());
+  }
+
+  static async #loadListenersForObject(object: SDK.RemoteObject.RemoteObject):
+      Promise<Array<{object: SDK.RemoteObject.RemoteObject, listener: SDK.DOMDebuggerModel.EventListener}>> {
+    const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel.DOMDebuggerModel);
+    const [eventListeners, frameworkEventListenersObject] =
+        await Promise.all([domDebuggerModel?.eventListeners(object), frameworkEventListeners(object)]);
+
+    // TODO(kozyatinskiy): figure out how this should work for |window| when there is no DOMDebugger.
+    if (!eventListeners) {
+      return [];
+    }
+
+    const isInternal = await frameworkEventListenersObject.internalHandlers?.object().callFunctionJSON(
+        isInternalEventListener as (this: Object) => boolean[],
+        eventListeners.map(listener => SDK.RemoteObject.RemoteObject.toCallArgument(listener.handler())));
+
+    if (isInternal) {
+      for (let i = 0; i < eventListeners.length; ++i) {
+        if (isInternal[i]) {
+          eventListeners[i].markAsFramework();
+        }
+      }
+    }
+
+    return [eventListeners, frameworkEventListenersObject.eventListeners].flatMap(
+        listeners => listeners.map(listener => ({object, listener})));
+
+    function isInternalEventListener(this: Array<Platform.Constructor.Constructor<unknown>>): boolean[] {
+      const isInternal = [];
+      const internalHandlersSet = new Set<Platform.Constructor.Constructor<unknown>>(this);
+      for (const handler of arguments) {
+        isInternal.push(internalHandlersSet.has(handler));
+      }
+      return isInternal;
+    }
+  }
+
   async addObjects(objects: Array<SDK.RemoteObject.RemoteObject|null>): Promise<void> {
     // Remove existing event listeners and reset linkifier first.
     const eventTypes = this.treeOutline.rootElement().children();
@@ -106,87 +147,17 @@ export class EventListenersView extends UI.Widget.VBox {
     }
     this.#linkifier.reset();
 
-    await Promise.all(objects.map(obj => obj ? this.addObject(obj) : Promise.resolve()));
+    const listeners = await EventListenersView.#loadListeners(objects.filter((o): o is NonNullable<typeof o> => !!o));
+
+    for (const [type, groupedListeners] of listeners) {
+      const treeItem = this.getOrCreateTreeElementForType(type);
+      for (const {object, listener} of groupedListeners) {
+        treeItem.addObjectEventListener(listener, object);
+      }
+    }
+
     this.addEmptyHolderIfNeeded();
     this.eventListenersArrivedForTest();
-  }
-
-  private addObject(object: SDK.RemoteObject.RemoteObject): Promise<void> {
-    let eventListeners: SDK.DOMDebuggerModel.EventListener[];
-    let frameworkEventListenersObject: (FrameworkEventListenersObject|null)|null = null;
-
-    const promises = [];
-    const domDebuggerModel = object.runtimeModel().target().model(SDK.DOMDebuggerModel.DOMDebuggerModel);
-    // TODO(kozyatinskiy): figure out how this should work for |window| when there is no DOMDebugger.
-    if (domDebuggerModel) {
-      promises.push(domDebuggerModel.eventListeners(object).then(storeEventListeners));
-    }
-    promises.push(frameworkEventListeners(object).then(storeFrameworkEventListenersObject));
-    return Promise.all(promises).then(markInternalEventListeners).then(addEventListeners.bind(this));
-
-    function storeEventListeners(result: SDK.DOMDebuggerModel.EventListener[]): void {
-      eventListeners = result;
-    }
-
-    function storeFrameworkEventListenersObject(result: FrameworkEventListenersObject|null): void {
-      frameworkEventListenersObject = result;
-    }
-
-    async function markInternalEventListeners(): Promise<void> {
-      if (!frameworkEventListenersObject) {
-        return;
-      }
-
-      if (!frameworkEventListenersObject.internalHandlers) {
-        return;
-      }
-      return await frameworkEventListenersObject.internalHandlers.object()
-          .callFunctionJSON(isInternalEventListener as (this: Object) => boolean[], eventListeners.map(handlerArgument))
-          .then(setIsInternal);
-
-      function handlerArgument(listener: SDK.DOMDebuggerModel.EventListener): Protocol.Runtime.CallArgument {
-        return SDK.RemoteObject.RemoteObject.toCallArgument(listener.handler());
-      }
-
-      function isInternalEventListener(this: Array<Platform.Constructor.Constructor<unknown>>): boolean[] {
-        const isInternal = [];
-        const internalHandlersSet = new Set<Platform.Constructor.Constructor<unknown>>(this);
-        for (const handler of arguments) {
-          isInternal.push(internalHandlersSet.has(handler));
-        }
-        return isInternal;
-      }
-
-      function setIsInternal(isInternal: boolean[]|null): void {
-        if (!isInternal) {
-          return;
-        }
-
-        for (let i = 0; i < eventListeners.length; ++i) {
-          if (isInternal[i]) {
-            eventListeners[i].markAsFramework();
-          }
-        }
-      }
-    }
-
-    function addEventListeners(this: EventListenersView): void {
-      this.addObjectEventListeners(object, eventListeners);
-      if (frameworkEventListenersObject) {
-        this.addObjectEventListeners(object, frameworkEventListenersObject.eventListeners);
-      }
-    }
-  }
-
-  private addObjectEventListeners(
-      object: SDK.RemoteObject.RemoteObject, eventListeners: SDK.DOMDebuggerModel.EventListener[]|null): void {
-    if (!eventListeners) {
-      return;
-    }
-    for (const eventListener of eventListeners) {
-      const treeItem = this.getOrCreateTreeElementForType(eventListener.type());
-      treeItem.addObjectEventListener(eventListener, object);
-    }
   }
 
   showFrameworkListeners(showFramework: boolean, showPassive: boolean, showBlocking: boolean): void {
@@ -271,8 +242,8 @@ export class EventListenersTreeElement extends UI.TreeOutline.TreeElement {
     return element1.title > element2.title ? 1 : -1;
   }
 
-  addObjectEventListener(eventListener: SDK.DOMDebuggerModel.EventListener, object: SDK.RemoteObject.RemoteObject):
-      void {
+  addObjectEventListener(eventListener: SDK.DOMDebuggerModel.EventListener,
+                         object: SDK.RemoteObject.RemoteObject): void {
     const treeElement = new ObjectEventListenerBar(eventListener, object, this.linkifier, this.changeCallback);
     this.appendChild(treeElement as UI.TreeOutline.TreeElement);
   }
@@ -283,9 +254,8 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
   editable: boolean;
   private readonly changeCallback: () => void;
   private valueTitle?: Element;
-  constructor(
-      eventListener: SDK.DOMDebuggerModel.EventListener, object: SDK.RemoteObject.RemoteObject,
-      linkifier: Components.Linkifier.Linkifier, changeCallback: () => void) {
+  constructor(eventListener: SDK.DOMDebuggerModel.EventListener, object: SDK.RemoteObject.RemoteObject,
+              linkifier: Components.Linkifier.Linkifier, changeCallback: () => void) {
     super('', true);
     this.#eventListener = eventListener;
     this.editable = false;
@@ -319,8 +289,8 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
             propertiesMode: ObjectUI.ObjectPropertiesSection.ObjectPropertiesMode.OWN_AND_INTERNAL_AND_INHERITED,
           }));
     }
-    ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(
-        this, {properties}, true, true, undefined);
+    ObjectUI.ObjectPropertiesSection.ObjectPropertyTreeElement.populateWithProperties(this, {properties}, true, true,
+                                                                                      undefined);
   }
 
   private setTitle(object: SDK.RemoteObject.RemoteObject, linkifier: Components.Linkifier.Linkifier): void {
@@ -363,8 +333,8 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
     }
 
     const subtitle = title.createChild('span', 'event-listener-tree-subtitle');
-    const linkElement = linkifier.linkifyRawLocation(
-        this.#eventListener.location(), this.#eventListener.sourceURL(), undefined, {tabStop: true});
+    const linkElement = linkifier.linkifyRawLocation(this.#eventListener.location(), this.#eventListener.sourceURL(),
+                                                     undefined, {tabStop: true});
     subtitle.appendChild(linkElement);
 
     this.listItemElement.addEventListener('contextmenu', event => {
@@ -373,9 +343,8 @@ export class ObjectEventListenerBar extends UI.TreeOutline.TreeElement {
         menu.appendApplicableItems(linkElement);
       }
       if (object.subtype === 'node') {
-        menu.defaultSection().appendItem(
-            i18nString(UIStrings.openInElementsPanel), () => Common.Revealer.reveal(object),
-            {jslogContext: 'reveal-in-elements'});
+        menu.defaultSection().appendItem(i18nString(UIStrings.openInElementsPanel),
+                                         () => Common.Revealer.reveal(object), {jslogContext: 'reveal-in-elements'});
       }
       menu.defaultSection().appendItem(
           i18nString(UIStrings.deleteEventListener), this.removeListener.bind(this),

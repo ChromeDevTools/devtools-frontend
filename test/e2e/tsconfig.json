@@ -8,5 +8,6 @@
       "path": "../shared/tsconfig.json"
     }
   ],
+  "include": [".", "../../front_end/"],
   "exclude": ["./resources/"]
 }

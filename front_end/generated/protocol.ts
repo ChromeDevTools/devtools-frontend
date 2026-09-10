@@ -12242,6 +12242,7 @@ export namespace Network {
     InvalidSessionParams = 'InvalidSessionParams',
     RefreshFatalError = 'RefreshFatalError',
     DevTools = 'DevTools',
+    Replaced = 'Replaced',
   }
 
   /**

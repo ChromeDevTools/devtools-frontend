@@ -18302,7 +18302,8 @@
                                 "ServerRequested",
                                 "InvalidSessionParams",
                                 "RefreshFatalError",
-                                "DevTools"
+                                "DevTools",
+                                "Replaced"
                             ]
                         }
                     ]

@@ -20,6 +20,14 @@ const {until} = Lit.Directives;
 export interface AIv2MarkdownRendererOptions {
   mainFrameId?: string;
   mainDocumentURL?: Platform.DevToolsPath.UrlString;
+  /**
+   * Retrieves the established origin locked for the active conversation.
+   * Required to authorize #file-<id> links and prevent cross-origin file leakage.
+   *
+   * TODO(crbug.com/559522248): Defer renderer instantiation until a conversation
+   * starts so this origin can be passed as a mandatory, non-getter property.
+   */
+  getEstablishedOrigin?: () => SDK.SecurityOrigin.SecurityOrigin | undefined;
   lookupTraceEvent?: (key: string) => Trace.Types.Events.Event | null;
 }
 
@@ -110,8 +118,11 @@ export class AIv2MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownInsi
       return html`${fallbackText}`;
     }
     if (href.startsWith('#file-')) {
-      const file = AiAssistanceModel.ListSources.ListSourcesTool.getUISourceCodes().find(
-          file => AiAssistanceModel.ListSources.ListSourcesTool.uiSourceCodeId.get(file) === Number(href.substring(6)));
+      const fileId = Number(href.substring(6));
+      const origin = this.options.getEstablishedOrigin?.();
+      const file = (origin && Number.isInteger(fileId) && fileId > 0) ?
+          AiAssistanceModel.ListSources.ListSourcesTool.getSourceById(fileId, origin) :
+          undefined;
 
       if (file) {
         return this.#revealableLink(file, file.name());
@@ -209,7 +220,7 @@ export class AIv2MarkdownRenderer extends MarkdownView.MarkdownView.MarkdownInsi
 
     if (token.type === 'codespan') {
       // LLM likes outputting the link inside a codespan block.
-      // Remove the codespan and render the link directly
+      // Remove the codespan and render the link directly.
       const matches = token.text.match(/^\[(.*)\]\((.+)\)$/);
       if (matches?.[2]) {
         const link = this.#renderLink(

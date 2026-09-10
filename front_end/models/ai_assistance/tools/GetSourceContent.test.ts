@@ -58,7 +58,8 @@ describe('GetSourceContentTool', () => {
     });
 
     // Populate ID mapping by running ListSourcesTool scan.
-    AiAssistance.ListSources.ListSourcesTool.getUISourceCodes();
+    AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(
+        SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'), universe.workspace);
     const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
 
     const context = {
@@ -93,7 +94,8 @@ describe('GetSourceContentTool', () => {
       universe,
     });
 
-    AiAssistance.ListSources.ListSourcesTool.getUISourceCodes();
+    AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(
+        SDK.SecurityOrigin.SecurityOrigin.create('https://another.com'), universe.workspace);
     const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
 
     const context = {
@@ -121,7 +123,8 @@ describe('GetSourceContentTool', () => {
     // Stub requestContentData to return an error.
     sinon.stub(uiSourceCodes[0], 'requestContentData').resolves({error: 'Failed to load'});
 
-    AiAssistance.ListSources.ListSourcesTool.getUISourceCodes();
+    AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(
+        SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'), universe.workspace);
     const sourceId = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
 
     const context = {

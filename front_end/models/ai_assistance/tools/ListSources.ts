@@ -4,6 +4,7 @@
 
 import * as Host from '../../../core/host/host.js';
 import * as i18n from '../../../core/i18n/i18n.js';
+import type * as SDK from '../../../core/sdk/sdk.js';
 import * as Workspace from '../../workspace/workspace.js';
 import {FileContext} from '../contexts/FileContext.js';
 
@@ -46,9 +47,15 @@ export class ListSourcesTool implements
     ListSourcesTool.uiSourceCodeId = new WeakMap();
   }
 
-  // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
-  static getUISourceCodes(workspace: Workspace.Workspace.WorkspaceImpl = Workspace.Workspace.WorkspaceImpl.instance()):
-      Workspace.UISourceCode.UISourceCode[] {
+  static getUISourceCodes(
+      establishedOrigin: SDK.SecurityOrigin.SecurityOrigin,
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+      workspace: Workspace.Workspace.WorkspaceImpl = Workspace.Workspace.WorkspaceImpl.instance(),
+      ): Workspace.UISourceCode.UISourceCode[] {
+    if (establishedOrigin.isOpaque()) {
+      return [];
+    }
+
     const projects =
         workspace.projects().filter(project => project.type() === Workspace.Workspace.projectTypes.Network);
     const uiSourceCodes = new Map<string, Workspace.UISourceCode.UISourceCode>();
@@ -68,7 +75,21 @@ export class ListSourcesTool implements
       }
     }
 
-    return [...uiSourceCodes.values()];
+    return [...uiSourceCodes.values()].filter(
+        file => isOriginAllowedByLock(establishedOrigin, FileContext.originForUISourceCode(file)));
+  }
+
+  static getSourceById(
+      id: number,
+      establishedOrigin: SDK.SecurityOrigin.SecurityOrigin,
+      // eslint-disable-next-line @devtools/no-instance-of-migrated-singletons
+      workspace: Workspace.Workspace.WorkspaceImpl = Workspace.Workspace.WorkspaceImpl.instance(),
+      ): Workspace.UISourceCode.UISourceCode|undefined {
+    if (establishedOrigin.isOpaque()) {
+      return undefined;
+    }
+    return ListSourcesTool.getUISourceCodes(establishedOrigin, workspace)
+        .find(file => ListSourcesTool.uiSourceCodeId.get(file) === id);
   }
 
   readonly parameters: Host.AidaClient.FunctionObjectParam<never> = {
@@ -100,9 +121,7 @@ export class ListSourcesTool implements
       };
     }
 
-    const files = ListSourcesTool.getUISourceCodes().filter(file => {
-      return isOriginAllowedByLock(establishedOrigin, FileContext.originForUISourceCode(file));
-    });
+    const files = ListSourcesTool.getUISourceCodes(establishedOrigin);
 
     return {
       result: {

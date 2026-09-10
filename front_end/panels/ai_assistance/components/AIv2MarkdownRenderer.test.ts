@@ -96,11 +96,38 @@ color: red;
         sinon.stub(workspace, 'projects').returns([project]);
         AiAssistanceModel.ListSources.ListSourcesTool.uiSourceCodeId.set(file, 1);
 
-        const el = renderToElem('[text](#file-1)');
+        const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+        const el = renderToElem('[text](#file-1)', {getEstablishedOrigin: () => origin});
 
         const link = el.querySelector('devtools-link');
         assert.exists(link);
         assert.isNull(link.getAttribute('href'));
+      });
+
+      it('falls back to text when origin is missing or does not match', () => {
+        Workspace.IgnoreListManager.IgnoreListManager.instance({forceNew: true});
+        const workspace = Workspace.Workspace.WorkspaceImpl.instance();
+        const project = {
+          id: () => 'test-project',
+          type: () => Workspace.Workspace.projectTypes.Network,
+          uiSourceCodes: () => [file],
+          fullDisplayName: () => 'script.js',
+        } as unknown as Workspace.Workspace.Project;
+        const file = new Workspace.UISourceCode.UISourceCode(project, urlString`https://example.com/script.js`,
+                                                             Common.ResourceType.resourceTypes.Script);
+        sinon.stub(workspace, 'projects').returns([project]);
+        AiAssistanceModel.ListSources.ListSourcesTool.uiSourceCodeId.set(file, 1);
+
+        const origin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+        const crossOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+        const elCrossOrigin = renderToElem('[text](#file-1)', {getEstablishedOrigin: () => crossOrigin});
+        assert.isNull(elCrossOrigin.querySelector('devtools-link'));
+
+        const elNoOrigin = renderToElem('[text](#file-1)');
+        assert.isNull(elNoOrigin.querySelector('devtools-link'));
+
+        const elInvalidId = renderToElem('[text](#file-notanumber)', {getEstablishedOrigin: () => origin});
+        assert.isNull(elInvalidId.querySelector('devtools-link'));
       });
 
       it('works for links inside codespan', () => {
@@ -110,8 +137,7 @@ color: red;
           statusCode: 200,
         });
 
-        const networkLog = Logs.NetworkLog.NetworkLog.instance();
-        sinon.stub(networkLog, 'requests').returns([request]);
+        sinon.stub(Logs.NetworkLog.NetworkLog.instance(), 'requests').returns([request]);
 
         const el = renderToElem('`[text](#req-requestId)`');
         const link = el.querySelector('devtools-link');
@@ -150,7 +176,7 @@ color: red;
 
         const el = renderToElem('[text](#node-23)', {mainDocumentURL: urlString`https://example.com`});
 
-        // Wait for async rendering
+        // Wait for async rendering.
         await new Promise(resolve => setTimeout(resolve, 0));
 
         sinon.assert.calledOnce(mockDomModel.pushNodesByBackendIdsToFrontend);

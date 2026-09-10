@@ -289,6 +289,9 @@ async function getEmptyStateSuggestions(conversation?: AiAssistanceModel.AiConve
 function createV2MarkdownRenderer(conversation?: AiAssistanceModel.AiConversation.AiConversation):
     AIv2MarkdownRenderer {
   const options: AIv2MarkdownRendererOptions = {};
+  if (conversation) {
+    options.getEstablishedOrigin = () => conversation.origin;
+  }
   const primaryTarget = SDK.TargetManager.TargetManager.instance().primaryPageTarget();
   const domModel = primaryTarget?.model(SDK.DOMModel.DOMModel);
   const resourceTreeModel = primaryTarget?.model(SDK.ResourceTreeModel.ResourceTreeModel);

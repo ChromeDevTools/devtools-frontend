@@ -163,7 +163,8 @@ describe('ListSourcesTool', () => {
     assert.lengthOf(response.result.files, 1);
     assert.strictEqual(response.result.files[0].name, 'example.com/script.js');
 
-    const sourceCodes = AiAssistance.ListSources.ListSourcesTool.getUISourceCodes();
+    const sourceCodes = AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(
+        SDK.SecurityOrigin.SecurityOrigin.create('https://example.com'), universe.workspace);
     assert.lengthOf(sourceCodes, 1);
     assert.isTrue(sourceCodes[0].contentType().isFromSourceMap());
   });
@@ -184,5 +185,94 @@ describe('ListSourcesTool', () => {
 
     const response = await tool.handler({}, context);
     assertIsError(response, 'Opaque origin not allowed');
+  });
+
+  describe('getUISourceCodes and getSourceById', () => {
+    it('filters sources by established origin in getUISourceCodes', () => {
+      createContentProviderUISourceCodes({
+        items: [
+          {
+            url: urlString`https://example.com/script1.js`,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.Script,
+          },
+          {
+            url: urlString`https://another.com/script2.js`,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.Script,
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        universe,
+      });
+
+      const sameOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      const filtered = AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(sameOrigin, universe.workspace);
+      assert.lengthOf(filtered, 1);
+      assert.strictEqual(filtered[0].url(), 'https://example.com/script1.js');
+    });
+
+    it('returns empty array from getUISourceCodes when origin is opaque', () => {
+      createContentProviderUISourceCodes({
+        items: [
+          {
+            url: urlString`https://example.com/script1.js`,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.Script,
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        universe,
+      });
+
+      const opaqueOrigin = SDK.SecurityOrigin.SecurityOrigin.create('about:blank');
+      const filtered = AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(opaqueOrigin, universe.workspace);
+      assert.lengthOf(filtered, 0);
+    });
+
+    it('retrieves source by ID when matching established origin in getSourceById', () => {
+      const {uiSourceCodes} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: urlString`https://example.com/script1.js`,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.Script,
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        universe,
+      });
+
+      const sameOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(sameOrigin, universe.workspace);
+      const id = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
+
+      const found = AiAssistance.ListSources.ListSourcesTool.getSourceById(id, sameOrigin, universe.workspace);
+      assert.strictEqual(found, uiSourceCodes[0]);
+    });
+
+    it('returns undefined from getSourceById when origin does not match or is opaque', () => {
+      const {uiSourceCodes} = createContentProviderUISourceCodes({
+        items: [
+          {
+            url: urlString`https://example.com/script1.js`,
+            mimeType: 'application/javascript',
+            resourceType: Common.ResourceType.resourceTypes.Script,
+          },
+        ],
+        projectType: Workspace.Workspace.projectTypes.Network,
+        universe,
+      });
+
+      const sameOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://example.com');
+      AiAssistance.ListSources.ListSourcesTool.getUISourceCodes(sameOrigin, universe.workspace);
+      const id = AiAssistance.ListSources.ListSourcesTool.uiSourceCodeId.get(uiSourceCodes[0])!;
+
+      const crossOrigin = SDK.SecurityOrigin.SecurityOrigin.create('https://attacker.com');
+      assert.isUndefined(AiAssistance.ListSources.ListSourcesTool.getSourceById(id, crossOrigin, universe.workspace));
+
+      const opaqueOrigin = SDK.SecurityOrigin.SecurityOrigin.create('about:blank');
+      assert.isUndefined(AiAssistance.ListSources.ListSourcesTool.getSourceById(id, opaqueOrigin, universe.workspace));
+    });
   });
 });

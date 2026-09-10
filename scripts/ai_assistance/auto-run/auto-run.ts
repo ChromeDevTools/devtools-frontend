@@ -16,8 +16,11 @@ import type {ExampleMetadata, ExecutedExample, IndividualPromptRequestResponse, 
 import {
   generateRunId,
   PROJECT_ID,
+  type TaskStatus,
   uploadEvalToGCS,
+  uploadRunCompleted,
   uploadRunStarted,
+  uploadTaskCompleted,
 } from './gcs-upload.ts';
 import {createTargetExecutor} from './targets/factory.ts';
 import type {TargetExecutor, TargetPreparationResult} from './targets/interface.ts';
@@ -173,6 +176,7 @@ export class Example {
   #traceDownloader: TraceDownloader;
   #preparationResult: TargetPreparationResult|null = null;
   #exampleUrls: readonly string[];
+  #durationSeconds = 0;
 
   constructor(
       url: string, label: string, browser: Browser, userArgs: UserArgs, logger: Logger,
@@ -298,11 +302,15 @@ export class Example {
       };
 
     } finally {
-      const elapsedTime = numberFormatter.format(
-          (performance.now() - executionStartTime) / 1000,
-      );
+      // Record task execution duration in seconds, rounded to two decimal places, for reporting in eval_task_completed.json.
+      this.#durationSeconds = Number(((performance.now() - executionStartTime) / 1000).toFixed(2));
+      const elapsedTime = numberFormatter.format(this.#durationSeconds);
       this.log(`Finished (${elapsedTime}s)`);
     }
+  }
+
+  durationSeconds(): number {
+    return this.#durationSeconds;
   }
 
   log(text: string) {
@@ -324,11 +332,42 @@ export class Example {
   }
 }
 
-async function runInParallel(examples: Example[], logger: Logger):
-    Promise<Array<{results: IndividualPromptRequestResponse[], metadata: ExampleMetadata, label: string}>> {
+function recordTaskFailure(
+    taskId: string,
+    runId: string,
+    durationSeconds: number,
+    taskStatuses: TaskStatus[],
+) {
+  uploadTaskCompleted({
+    taskId,
+    runId,
+    status: 'FAILED',
+    // Failed tasks receive 0.0 as they encountered an error or timeout prior to completing.
+    score: 0.0,
+    durationSeconds,
+    tokens: {},
+  });
+  taskStatuses.push({taskId, status: 'FAILED', score: 0.0});
+}
+
+async function runInParallel(
+    examples: Example[],
+    logger: Logger,
+    userArgs: UserArgs,
+    runId: string,
+    taskStatuses: TaskStatus[],
+    taskDurations: Map<string, number>,
+    ): Promise<Array<{results: IndividualPromptRequestResponse[], metadata: ExampleMetadata, label: string}>> {
   logger.head('Preparing examples...');
   for (const example of examples) {
     await example.prepare();
+    if (!example.isReady()) {
+      const durationSeconds = example.durationSeconds();
+      taskDurations.set(example.id(), durationSeconds);
+      if (userArgs.upload) {
+        recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
+      }
+    }
   }
 
   logger.head('Running examples...');
@@ -337,12 +376,18 @@ async function runInParallel(examples: Example[], logger: Logger):
       examples.filter(example => example.isReady()).map(async example => {
         try {
           const executedExample = await example.execute();
+          taskDurations.set(example.id(), example.durationSeconds());
           results.push(executedExample);
         } catch (err) {
           const errorMsg = err instanceof Error ? logger.formatError(err) : String(err);
           example.error(
               `There is an error, skipping it.\n${errorMsg}`,
           );
+          const durationSeconds = example.durationSeconds();
+          taskDurations.set(example.id(), durationSeconds);
+          if (userArgs.upload) {
+            recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
+          }
         }
       }),
   );
@@ -350,22 +395,39 @@ async function runInParallel(examples: Example[], logger: Logger):
   return results;
 }
 
-async function runSequentially(examples: Example[], logger: Logger):
-    Promise<Array<{results: IndividualPromptRequestResponse[], metadata: ExampleMetadata, label: string}>> {
+async function runSequentially(
+    examples: Example[],
+    logger: Logger,
+    userArgs: UserArgs,
+    runId: string,
+    taskStatuses: TaskStatus[],
+    taskDurations: Map<string, number>,
+    ): Promise<Array<{results: IndividualPromptRequestResponse[], metadata: ExampleMetadata, label: string}>> {
   const results: Array<{results: IndividualPromptRequestResponse[], metadata: ExampleMetadata, label: string}> = [];
   logger.head('Running examples sequentially...');
   for (const example of examples) {
     await example.prepare();
     if (!example.isReady()) {
+      const durationSeconds = example.durationSeconds();
+      taskDurations.set(example.id(), durationSeconds);
+      if (userArgs.upload) {
+        recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
+      }
       continue;
     }
 
     try {
       const executedExample = await example.execute();
+      taskDurations.set(example.id(), example.durationSeconds());
       results.push(executedExample);
     } catch (err) {
       const errorMsg = err instanceof Error ? logger.formatError(err) : String(err);
       example.error(`There is an error, skipping it.\n${errorMsg}`);
+      const durationSeconds = example.durationSeconds();
+      taskDurations.set(example.id(), durationSeconds);
+      if (userArgs.upload) {
+        recordTaskFailure(example.id(), runId, durationSeconds, taskStatuses);
+      }
     }
   }
 
@@ -388,6 +450,13 @@ function loadRecipes(target: string): Array<{url: string, label: string}> {
 // Run if this file invoked as a CLI directly
 async function main() {
   const userArgs: UserArgs = userArgsBuilder.parseSync();
+  if (userArgs.grade) {
+    const graderScript = path.resolve(import.meta.dirname, '..', 'suite', `${userArgs.testTarget}.eval.ts`);
+    if (!fs.existsSync(graderScript)) {
+      throw new Error(`Grader script not found at ${graderScript}. Cannot run with --grade.`);
+    }
+  }
+
   const runId = generateRunId();
   const runStartTimestamp = new Date().toISOString();
   console.info(`\n[Info]: Run ID for this evaluation: ${runId}`);
@@ -466,8 +535,12 @@ async function main() {
   const examples =
       pairsToRun.map(pair => new Example(pair.url, pair.label, browser, userArgs, logger, traceDownloader, allUrls));
 
-  const executionResults =
-      userArgs.parallel ? await runInParallel(examples, logger) : await runSequentially(examples, logger);
+  const taskStatuses: TaskStatus[] = [];
+  const taskDurations = new Map<string, number>();
+
+  const executionResults = userArgs.parallel ?
+      await runInParallel(examples, logger, userArgs, runId, taskStatuses, taskDurations) :
+      await runSequentially(examples, logger, userArgs, runId, taskStatuses, taskDurations);
 
   await browser.disconnect();
 
@@ -489,9 +562,10 @@ async function main() {
       metadata: data.metadata,
       examples: data.results,
     };
-    writeOutput(output, {...userArgs, label}, runId);
+    writeOutput(output, {...userArgs, label}, runId, taskStatuses, taskDurations);
   }
 
+  let graderFailed = false;
   // Run grader once at the end if --grade is set
   if (userArgs.grade) {
     const target = userArgs.testTarget;
@@ -523,14 +597,59 @@ async function main() {
               localJsonPath: evalResultPath,
               destinationFileName: 'eval_result.json',
             });
+            const durationSeconds = taskDurations.get(taskId) ?? 0.0;
+            // TODO: Parse grader output to report individual task pass/fail status and scores instead of defaulting to 1.0.
+            uploadTaskCompleted({
+              taskId,
+              runId,
+              status: 'PASSED',
+              score: 1.0,
+              durationSeconds,
+              tokens: {},
+            });
+            taskStatuses.push({taskId, status: 'PASSED', score: 1.0});
           }
         }
       } catch (error) {
+        graderFailed = true;
         console.error(`\n[Error]: Grader failed`, error);
+        if (userArgs.upload) {
+          const allTaskIds = new Set(executionResults.map(r => r.metadata.session_id));
+          for (const taskId of allTaskIds) {
+            const durationSeconds = taskDurations.get(taskId) ?? 0.0;
+            recordTaskFailure(taskId, runId, durationSeconds, taskStatuses);
+          }
+        }
       }
     } else {
-      console.warn(`\n[Warn]: Grader script ${graderScript} not found.`);
+      graderFailed = true;
+      console.error(`\n[Error]: Grader script ${graderScript} not found.`);
+      if (userArgs.upload) {
+        const allTaskIds = new Set(executionResults.map(r => r.metadata.session_id));
+        for (const taskId of allTaskIds) {
+          const durationSeconds = taskDurations.get(taskId) ?? 0.0;
+          recordTaskFailure(taskId, runId, durationSeconds, taskStatuses);
+        }
+      }
     }
+  }
+
+  if (userArgs.upload) {
+    const totalTasks = taskStatuses.length;
+    const failedTasks = taskStatuses.filter(t => t.status === 'FAILED').length;
+    const passedTasks = totalTasks - failedTasks;
+    const runStatus = (graderFailed || failedTasks > 0 || totalTasks === 0) ? 'FAILED' : 'COMPLETED';
+
+    uploadRunCompleted({
+      project: PROJECT_ID,
+      runId,
+      status: runStatus,
+      startTime: runStartTimestamp,
+      endTime: new Date().toISOString(),
+      totalTasks,
+      passedTasks,
+      failedTasks,
+    });
   }
 
   logger.destroy();
@@ -540,6 +659,8 @@ function writeOutput(
     output: {metadata: ExampleMetadata[], examples: IndividualPromptRequestResponse[]},
     userArgs: UserArgs,
     runId: string,
+    taskStatuses: TaskStatus[],
+    taskDurations: Map<string, number>,
 ) {
   const OUTPUT_DIR = path.resolve(import.meta.dirname, 'data');
   fs.mkdirSync(OUTPUT_DIR, {recursive: true});
@@ -574,12 +695,38 @@ function writeOutput(
     }
 
     if (userArgs.upload) {
-      uploadEvalToGCS({
+      const trajectoryUploaded = uploadEvalToGCS({
         runId,
         taskId: trajectory.metadata.auto_run_example_id,
         localJsonPath: evalOutputPath,
         destinationFileName: 'trajectory.json',
       });
+
+      if (!userArgs.grade) {
+        const matchingExamples = output.examples.filter(e => e.session_id === trajectory.metadata.auto_run_example_id);
+        const hasError = matchingExamples.some(e => Boolean(e.error) ||
+                                                   Boolean(e.assertionFailures && e.assertionFailures.length > 0));
+        // TODO: Parse grader output or evaluation assertions to report individual task scores instead of defaulting to 1.0.
+        const score = matchingExamples.find(e => e.score !== undefined)?.score ?? (hasError ? 0.0 : 1.0);
+        // Status indicates execution outcome (PASSED if prompt turns completed and uploaded without error,
+        // FAILED if upload failed, assertion failures occurred, or score is 0.0).
+        const status = (!trajectoryUploaded || hasError || score <= 0.0) ? 'FAILED' : 'PASSED';
+        const durationSeconds = taskDurations.get(trajectory.metadata.auto_run_example_id) ?? 0.0;
+
+        uploadTaskCompleted({
+          taskId: trajectory.metadata.auto_run_example_id,
+          runId,
+          status,
+          score: trajectoryUploaded ? score : 0.0,
+          durationSeconds,
+          tokens: {},
+        });
+        taskStatuses.push({
+          taskId: trajectory.metadata.auto_run_example_id,
+          status,
+          score: trajectoryUploaded ? score : 0.0,
+        });
+      }
     }
   }
 }

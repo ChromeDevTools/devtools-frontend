@@ -17,14 +17,5 @@
 # crbug.com/1234567 [ mac ] front_end/panels/elements/ElementsPanel.test.ts [ Failure ]
 
 
-crbug.com/538395855 [ linux ] front_end/panels/application/ReportingApiView.test.ts:reportingapiview:view:updates_report_details [ Failure Pass ]
-crbug.com/538175758 [ linux ] front_end/panels/emulation/DeviceModeView.test.ts:devicemodeview:devicemodeview_tests:renders_the_view [ Failure Pass ]
-crbug.com/538275618 [ linux ] front_end/panels/explain/components/ConsoleInsight.test.ts:consoleinsight:with_logging:renders_the_insight [ Failure Pass ]
-crbug.com/538269887 [ linux ] front_end/panels/explain/components/ConsoleInsight.test.ts:consoleinsight:without_logging:renders_the_insight [ Failure Pass ]
-crbug.com/538206828 [ linux ] front_end/panels/linear_memory_inspector/components/LinearMemoryInspector.test.ts:linearmemoryinspector:renders_the_inspector [ Failure Pass ]
-crbug.com/538332664 [ linux ] front_end/ui/legacy/components/object_ui/ObjectPropertiesSection.test.ts:objectpropertytreeelement:shows_expandable_text_contents_for_lengthy_strings [ Failure Pass ]
-crbug.com/537672763 test/e2e/performance/wasm/performance_profiling.test.ts [ Failure Pass ]
 
-crbug.com/546489345 front_end/models/trace/Processor.test.ts:traceprocessor:can_use_a_trace_processor [ Failure Pass ]
-crbug.com/549585978 test/e2e/cross_tool_integration/click-to-comment.test.ts:click-to-comment_mode_across_devtools_panels:creates_comment_on_dom_tree_item_in_elements_panel_with_treeitem_vepath [ Failure Pass ]
-crbug.com/537311179 test/e2e/memory/memory.test.ts:the_memory_panel:enables_the_sampling_timeline_checkbox_only_when_allocation_sampling_is_selected [ Failure Pass ]
+
